@@ -6,6 +6,13 @@ http://taiyaki.org/elisp/word-count/src/word-count.el
 
 As you type, it shows the number of characters in the buffer, the number of words, and the number of lines: "WC:148/40/4".  You can set a marker to the point where you want to begin counting (when you enable `word-count-mode' in a buffer, the marker is at the position of point), and you can set a region to count.
 
+== Show wc-like info in the mode-line ==
+
+WordCountMode (`wc-mode') is another minor mode that does essentially the same thing: it displays the character count, word count and line count for the buffer in the [[mode line]] (similar to the output of the Unix <code>wc</code> command). It doesn't have any region-counting features, though.
+
+[Somewhat related:  Library <tt>[[modeline-posn.el]]</tt> shows, in the mode line, the number of characters (not words) in the active [[region]].  That is, the buffer size is replaced in the mode line by the region size whenever the region is active. See ModeLinePosition.]
+
+
 == Various other ways to show the number of words ==
 
 Here is a function that counts words in the region.

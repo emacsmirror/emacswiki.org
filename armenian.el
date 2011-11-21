@@ -1,100 +1,24 @@
-(require 'quail)
-(quail-define-package
- "armenian-translit" "Armenian" "Հ" nil
- "A transliteration scheme for Armenian characters."
- nil t t t t nil nil nil nil nil t)
-(quail-define-rules
- ("a" ?ա)
- ("b" ?բ)
- ("g" ?գ)
- ("d" ?դ)
- ("e" ?ե)
- ("ye" ?ե)
- ("z" ?զ)
- ("ee" ?է)
- ("e'" ?ը)
- ("t'" ?թ)
- ("zh" ?ժ)
- ("i" ?ի)
- ("l" ?լ)
- ("x" ?խ)
- ("c" ?ծ)
- ("k" ?կ)
- ("h" ?հ)
- ("j" ?ձ)
- ("g." ?ղ)
- ("ch." ?ճ)
- ("m" ?մ)
- ("y" ?յ)
- ("n" ?ն)
- ("sh" ?շ)
- ("o" ?ո)
- ("vo" ?ո)
- ("ch" ?չ)
- ("p" ?պ)
- ("jh" ?ջ)
- ("r." ?ռ)
- ("s" ?ս)
- ("v" ?վ)
- ("t" ?տ)
- ("r" ?ր)
- ("c'" ?ց)
- ("w" ?ւ)
- ("p'" ?փ)
- ("k'" ?ք)
- ("o'" ?օ)
- ("f" ?ֆ)
- ("u" ["ու"])
- ("ev" ?և)
- ("?" ?՞)
- ("." ?։)
- (".'" ?՝)
- (";" ?՟)
- (";'" ?՛)
- ("!" ?՜)
- ("``" ?«)
- ("''" ?»)
- ("A" ?Ա)
- ("B" ?Բ)
- ("G" ?Գ)
- ("D" ?Դ)
- ("E" ?Ե)
- ("YE" ?Ե)
- ("Ye" ?Ե)
- ("Z" ?Զ)
- ("EE" ?Է)
- ("E'" ?Ը)
- ("T'" ?Թ)
- ("ZH" ?Ժ)
- ("I" ?Ի)
- ("L" ?Լ)
- ("X" ?Խ)
- ("C" ?Ծ)
- ("K" ?Կ)
- ("H" ?Հ)
- ("J" ?Ձ)
- ("G." ?Ղ)
- ("CH." ?Ճ)
- ("M" ?Մ)
- ("Y" ?Յ)
- ("N" ?Ն)
- ("SH" ?Շ)
- ("O" ?Ո)
- ("VO" ?Ո)
- ("Vo" ?Ո)
- ("CH" ?Չ)
- ("P" ?Պ)
- ("JH" ?Ջ)
- ("R." ?Ռ)
- ("S" ?Ս)
- ("V." ?Վ)
- ("T" ?Տ)
- ("R" ?Ր)
- ("C'" ?Ց)
- ("W" ?Ւ)
- ("P'" ?Փ)
- ("K'" ?Ք)
- ("O" ?Օ)
- ("F" ?Ֆ)
- ("U" ["Սւ"])
-)
+#FILE text/plain
+KHJlcXVpcmUgJ3F1YWlsKQoocXVhaWwtZGVmaW5lLXBhY2thZ2UKICJhcm1lbmlhbi10cmFuc2xp
+dCIgIkFybWVuaWFuIiAi1YAiIG5pbAogIkEgdHJhbnNsaXRlcmF0aW9uIHNjaGVtZSBmb3IgQXJt
+ZW5pYW4gY2hhcmFjdGVycy4iCiBuaWwgdCB0IHQgdCBuaWwgbmlsIG5pbCBuaWwgbmlsIHQpCihx
+dWFpbC1kZWZpbmUtcnVsZXMKICgiYSIgP9WhKQogKCJiIiA/1aIpCiAoImciID/VoykKICgiZCIg
+P9WkKQogKCJlIiA/1aUpCiAoInllIiA/1aUpCiAoInoiID/VpikKICgiZWUiID/VpykKICgiZSci
+ID/VqCkKICgidCciID/VqSkKICgiemgiID/VqikKICgiaSIgP9WrKQogKCJsIiA/1awpCiAoIngi
+ID/VrSkKICgiYyIgP9WuKQogKCJrIiA/1a8pCiAoImgiID/VsCkKICgiaiIgP9WxKQogKCJnLiIg
+P9WyKQogKCJjaC4iID/VsykKICgibSIgP9W0KQogKCJ5IiA/1bUpCiAoIm4iID/VtikKICgic2gi
+ID/VtykKICgibyIgP9W4KQogKCJ2byIgP9W4KQogKCJjaCIgP9W5KQogKCJwIiA/1bopCiAoImpo
+IiA/1bspCiAoInIuIiA/1bwpCiAoInMiID/VvSkKICgidiIgP9W+KQogKCJ0IiA/1b8pCiAoInIi
+ID/WgCkKICgiYyciID/WgSkKICgidyIgP9aCKQogKCJwJyIgP9aDKQogKCJrJyIgP9aEKQogKCJv
+JyIgP9aFKQogKCJmIiA/1oYpCiAoInUiIFsi1bjWgiJdKQogKCJldiIgP9aHKQogKCI/IiA/1Z4p
+CiAoIi4iID/WiSkKICgiLiciID/VnSkKICgiOyIgP9WfKQogKCI7JyIgP9WbKQogKCIhIiA/1Zwp
+CiAoImBgIiA/wqspCiAoIicnIiA/wrspCiAoIkEiID/UsSkKICgiQiIgP9SyKQogKCJHIiA/1LMp
+CiAoIkQiID/UtCkKICgiRSIgP9S1KQogKCJZRSIgP9S1KQogKCJZZSIgP9S1KQogKCJaIiA/1LYp
+CiAoIkVFIiA/1LcpCiAoIkUnIiA/1LgpCiAoIlQnIiA/1LkpCiAoIlpIIiA/1LopCiAoIkkiID/U
+uykKICgiTCIgP9S8KQogKCJYIiA/1L0pCiAoIkMiID/UvikKICgiSyIgP9S/KQogKCJIIiA/1YAp
+CiAoIkoiID/VgSkKICgiRy4iID/VgikKICgiQ0guIiA/1YMpCiAoIk0iID/VhCkKICgiWSIgP9WF
+KQogKCJOIiA/1YYpCiAoIlNIIiA/1YcpCiAoIk8iID/ViCkKICgiVk8iID/ViCkKICgiVm8iID/V
+iCkKICgiQ0giID/ViSkKICgiUCIgP9WKKQogKCJKSCIgP9WLKQogKCJSLiIgP9WMKQogKCJTIiA/
+1Y0pCiAoIlYuIiA/1Y4pCiAoIlQiID/VjykKICgiUiIgP9WQKQogKCJDJyIgP9WRKQogKCJXIiA/
+1ZIpCiAoIlAnIiA/1ZMpCiAoIksnIiA/1ZQpCiAoIk8iID/VlSkKICgiRiIgP9WWKQogKCJVIiBb
+ItWN1oIiXSkKKQo=

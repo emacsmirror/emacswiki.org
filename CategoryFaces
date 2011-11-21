@@ -39,6 +39,7 @@ Here are some of the pages in CategoryFaces.
 ** MousePlus -- Highlight the yank position while you press `mouse-2', so you hit the right spot.
 ** HighlightCurrentLine
 ** HighlightCurrentColumn
+** HighlightSexp -- highlight the s-exp at point
 ** CrosshairHighlighting -- highlight the current line and column: track the TextCursor or highlight momentarily
 ** HighlightEndOfBuffer
 ** HighlightSymbol – highlight the current symbol throughout the buffer

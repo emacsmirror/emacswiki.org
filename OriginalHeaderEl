@@ -1,1100 +1,693 @@
-From ark1!nems!mimsy!haven!purdue!tut.cis.ohio-state.edu!indetech.com!lrs Thu Nov  2 10:28:02 1989
-Article 642 of gnu.emacs
-Path: ark1!nems!mimsy!haven!purdue!tut.cis.ohio-state.edu!indetech.com!lrs
->From lrs@indetech.com (Lynn Slater)
-Newsgroups: gnu.emacs
-Subject: Automatic header creation and maintenance
-Message-ID: <m0gMOq1-0000F7C@fire.indetech.com>
-Date: 1 Nov 89 17:33:00 GMT
-Sender: daemon@tut.cis.ohio-state.edu
-Distribution: gnu
-Organization: GNUs Not Usenet
-Lines: 1085
-
-Enclosed is code to automatically create and maintain file headers.  This
-code is cleaner and mush more easily customized than any of my previous
-header postings.
-
-New in this release is a set of customizations that allow headers to be
-created and maintained from the command line.  This is good for projects
-with some vi die-hards or when headers are being added in mass for the
-first time.  Example:
-   cd $EMACS/lisp
-   headers -make *.el
-
-I have found file headers to be very valuable in project development. I
-always know who has been where and how many times they were there. Most
-often, I also know what they did.  The update count and last modified date
-are very useful in determining the proper version of a file to use.  I have
-often thought that it would be easier to integrate patches from individuals
-to gnu tools such as gcc and g++ if I knew for certain what version of a
-particular file they were working from.  If all had headers, I would see
-the update count and date in the "diff -c" output and would be able to find
-or recreate the file to patch accordingly.
-
-In this message are three files:
-  header.el  -- Emacs header functions and customization instructions
-  headers.1  -- Man page for command line headers useage
-  headers    -- Shell script to hide the emacsness of command line headers.
-
-===============================================================
-Lynn Slater -- lrs@indetech.com or {sun, ames, pacbell}!indetech!lrs
-42075 Lawrence Place, Fremont Ca 94538
-Office (415) 438-2048; Home (415) 796-4149; Fax (415) 438-2034
-===============================================================
-
--*- File: ~/local/header.el
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; header.el --- Support for creation and automatic update of file headers
-;; Author          : Lynn Slater
-;; Created On      : Tue Aug  4 17:06:46 1987
-;; Last Modified By: Lynn Slater
-;; Last Modified On: Wed Nov  1 09:02:18 1989
-;; Update Count    : 126
-;; Status          : OK
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; Copyright (C) 1988 Lynn Randolph Slater, Jr.
-;; Copyright (C) 1989 Free Software Foundation, Inc.
-;; This file is compatable with GNU Emacs but is not part of the official
-;; distribution (yet).
-;;
-;; This file is distributed in the hope that it will be useful,
-;; but without any warranty.  No author or distributor
-;; accepts responsibility to anyone for the consequences of using it
-;; or for whether it serves any particular purpose or works at all,
-;; unless he says so in writing.
-;;
-;; Everyone is granted permission to copy, modify and redistribute
-;; this file, but only under the conditions described in the
-;; document "GNU Emacs copying permission notice".   An exact copy
-;; of the document is supposed to have been given to you along with
-;; this file so that you can know how you may redistribute it all.
-;; It should be in a file named COPYING.  Among other things, the
-;; copyright notice and this notice must be preserved on all copies.
-
-;; This file adds support for the creation and automatic maintenence of file
-;; headers such as the one above.
-;;  User Commands:
-;;   M-x make-header
-;;   M-x make-revision
-;;   M-x make-divisor
-;;   M-x make-box-comment
-;; Customizer commands
-;;   register-file-header-action
-;; Customizer variables
-;;   header-copyright-notice
-;;   make-header-hooks
-;;
-;; This file is particularly useful with the file-declarations package also
-;;   by Lynn Slater.
-;; Make this file header.el, byte-compile it in your path
-;;
-;; Read the first 20% of this file to learn how to customize.
-
-;; History 		
-;; 25-Sep-1989		Lynn Slater	
-;;    Last Modified: Mon Sep 25 15:12:16 1989 #119 (Lynn Slater)
-;;    added -default-mode ahd headerable-file-p
-;; 10-Sep-1989		Lynn Slater	
-;;    Last Modified: Wed Sep  6 17:36:00 1989 #110 (Lynn Slater)
-;;    Seperated out header-mode-line and header-end. Headers are now really
-;;    easy to modify.
-;;    Added instructions for mode-specific headers.
-;; 8-Aug-1989		Lynn Slater	
-;;    Last Modified: Thu Aug  3 08:04:06 1989 #88 (Lynn Slater)
-;;    Changed structure to allow site/user customized headers
-;; 24-Jun-1989		Lynn Slater	
-;;    Last Modified: Thu Jun 22 12:52:24 1989 #84 (Lynn Slater)
-;;    restructured file, made the order of header actions not be significant.
-;; 22-Jun-1989		Lynn Slater	
-;;    Last Modified: Thu Jun 22 11:40:53 1989 #82 (Lynn Slater)
-;;    Made file header actions easier to declare
-;;    Made sccs and rcs support be user settable.
-;;    Added c-style support
-;; 25-Jan-1989		Lynn Slater	
-;;    Last Modified: Wed Jan 25 12:03:23 1989 #78 (Lynn Slater)
-;;    Added make-doc command
-;; 25-Jan-1989		Lynn Slater	
-;;    Last Modified: Tue Sep  6 07:57:22 1988 #77 (Lynn Slater)
-;;    made the make-revision command include the last-modified data
-;; 31-Aug-1988		Lynn Slater	
-;;    Made the make-revision work in most modes
-;;    Added the update-file-name command
-;; 1-Mar-1988		Lynn Slater
-;;   made the headers be as sensitive as possible to the proper
-;;   comment chars.
-;; 1-Mar-1988		Lynn Slater
-;;   Made the mode be declared in each header
-;; 26-Feb-1988		Lynn Slater
-;;   added the make-revision call
-(provide 'header)
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; This file has two major divisions: header creation and automatic header
-;; maintenance.
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; User/Site Customizable Variables
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(defvar header-max 2000
-  "Is the number of characters at the start of a buffer that will be
-   searched for header info to automatically update.")
-
-(defvar header-copyright-notice nil
-  "A string containing a copyright disclaimer to be inserted into all headers.
-   This string needs no leading blanks and may contain any number of lines.
-   May be nil.")
-
-(defvar make-header-hooks '(
-			    header-file-name
-			    header-copyright
-			    ;;header-sccs
-			    header-AFS
-			    header-author
-			    header-creation-date
-			    header-modification-author
-			    header-modification-date
-			    header-update-count
-			    header-status
-			    ;; Re-enable the following lines if you wish
-			    ;;header-blank
-			    ;;header-history
-			    ;;header-purpose
-			    ;;header-toc
-			    )
-
-  "A list of functions which will insert the various header elements.
-   Each function is started on a new line and is expected to end in a new line.
-   Each function may insert any number of lines, but each line, including
-   the first, must be started with the value of the header-prefix-string
-   variable. (This variable holds the same value as would be returned by
-   calling 'header-prefix-string but is faster to access.)
-   Each function may set the following dynamically bound values:
-     header-prefix-string -- mode specific comment sequence
-     return-to        -- character position to which point will be moved
-                         after all header functions are processed. Any
-                         header function may set this, but only the last
-                         set will take effect.
-
-   It is reasonable to locally set these hooks according to certain
-   modes. For example, a table of contents may only apply to code development
-   modes and 'header-shell should only apply to shell scripts. See the
-   instructions in header.el to do this.")
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; Register the automatic actions to take for file headers during a save
-;; See the second part of the file for explinations.
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(progn
-  (register-file-header-action "[ \t]Update Count[ \t]*: "  'update-write-count)
-  (register-file-header-action "[ \t]Last Modified By[ \t]*: "  'update-last-modifier)
-  (register-file-header-action "[ \t]Last Modified On[ \t]*: "  'update-last-modified-date)
-  ;;(register-file-header-action "^.* *\\(.*\\) *\\-\\-" 'update-file-name)
-  )
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; Mode specific headers:
-;;  Not all headers should look alike. Suppose that you have a unix script
-;;  mode and want it to have a shell specifier line that all other headers
-;;  do not have. To do this, Place the following lines
-;;     (make-local-variable 'make-header-hooks)
-;;     (setq make-header-hooks (cons 'header-shell 
-;;                                    (default-value 'make-header-hooks)))  
-;;  either in a hook called when the mode is invoked or in the code that
-;;  establishes the mode.
-;;
-;;  Note that the header building blocks are automatically sensitive to the
-;;  different comment characters in different modes.
-;;
-;; Mode specific update actions:
-;;  Suppose something needs to be automatically maintained only in certian
-;;  modes. An example is the .TH macro in man pages.  You can create mode
-;;  specific update actions by placing lines such as the following in the
-;;  mode creation function of in the mode hook.
-;;    (make-local-variable 'file-header-update-alist)
-;;    (register-file-header-action
-;;      "^\.TH[ \t]+[^\" \t]+[ \t]+[^\" \t]+[ \t]+\"\\([^\"]*\\)\"" 
-;;     'update-last-modified-date-macro)
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; Define the individual header elements.  THESE ARE THE BUILDING BLOCKS
-;; used to construct a site specific header.  You may add your own
-;; functions either in this file or in your .emacs file.  The variable
-;; make-header-hooks specifies the functions that will actually be called.
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(defun header-blank ()
-  "Places a blank line into a file header"
-  (insert header-prefix-string  "\n"))
-
-(defun header-file-name ()
-  "Places the buffer's file name and leaves room for a description."
-  (insert header-prefix-string (buffer-name) " -- \n")
-  (setq return-to (1- (point))))
-
-(defun header-author ()
-  "Inserts the current user's name as the module's author."
-  (insert header-prefix-string "Author          : " (user-full-name) "\n"))
-
-(defun header-creation-date ()
-  "Places today's data as the file creation date."
-  (insert header-prefix-string "Created On      : "  (current-time-string) "\n"))
-
-(defun header-modification-author ()
-  "Inserts the current user's name as the one who last modified the module.
-   This will be overwritten with each file save if all the
-   file-header-actions in the default header.el file are registered."
-  (insert header-prefix-string  "Last Modified By: \n"))
-
-(defun header-modification-date ()
-  "Inserts todays date as the time of last modification.
-   This will be overwritten with each file save if all the
-   file-header-actions in the default header.el file are registered."
-  (insert header-prefix-string  "Last Modified On: \n"))
-
-(defun header-update-count ()
-  "Inserts a count of the number of times the file has been saved.  This is
-  often a more useful measure of 'age' and 'modifications' than dates
-  recorded in the file system.  It is a handy code metric that is a
-  surprizingly good indication of file complexity and can often help
-  indicate which modules have been changed so much that they need a rethink.
-  It also assist recovery from source control mixups."  
-  (insert header-prefix-string  "Update Count    : 0\n"))
-
-(defun header-status ()
-  "Inserts a status line that should be manually edited to reflect the
-   general condition of the entire module."
-  (insert header-prefix-string
-	  "Status          : Unknown, Use with caution!\n"))
-
-(defun header-history ()
-  "Inserts HISTORY line into header for later use by make-revision.
-   Without this, make history will insert after the header."
-  (insert header-prefix-string  "HISTORY\n"))
-
-(defun header-purpose ()
-  "Inserts a line that starts a section that should describe the purpose of
-   the file/module."
-  (insert header-prefix-string  "PURPOSE\n"
-	  header-prefix-string "	|>Description of modules purpose<|\n"))
-
-(defun header-toc ()
-  "Inserts a line that starts a section that should describe each function
-   defined in the module that is significant to external users."
-  (insert header-prefix-string  "TABLE OF CONTENTS\n" header-prefix-string "\n"))
-
-(defun header-rcs ()
-  "Inserts lines to record rcs information."
-  (insert header-prefix-string
-	  "$Locker$\n"	
-	  header-prefix-string
-	  "$Log$\n"))
-
-(defun header-sccs ()
-  "Inserts a line to record sccs information."
-  (insert header-prefix-string "SCCS Status     : %W%\t%G%\n"))
-
-(defun header-AFS ()
-  "Inserts a line to record SHAPE information."
-  (insert header-prefix-string "AFSID           : $__Header$\n"))
-
-(defun header-copyright ()
-  "Inserts the copyright notice stored in the variable header-copyright-notice.
-   This value may be nil."
-  (if header-copyright-notice
-      (let ((start (point)))
-	(insert header-copyright-notice)
-	(save-restriction
-	  (narrow-to-region start (point))
-	  (goto-char (point-min))
-	  ;; I must now insert the header prefix.  I cannot just do a
-	  ;; replace string because that would cause too many undo boundries.
-	  (insert header-prefix-string)
-	  (while (progn (skip-chars-forward "^\n") (looking-at "\n"))
-	    (forward-char 1)
-	    (insert header-prefix-string))
-	  (goto-char (point-max)))
-	(insert "\n"))))
-
-(defun header-shell ()
-  "Inserts a kernal shell specifier line. Uses the same shell named in
-   explicit-shell-file-name, the ESHELL environment variable, the SHELL
-    environment variable, or '/bin/sh'. (This is the same shell that the
-   shell command uses."
-  (insert "#!" (or (and (boundp 'explicit-shell-file-name)
-			 explicit-shell-file-name)
-		   (getenv "ESHELL")
-		   (getenv "SHELL")
-		   "/bin/sh")
-	  "\n"))
-
-(defun header-mode-line ()
-  "Inserts the mode line into the buffer."
-  (let* ((mode-declaration
-	  (concat " -*- Mode: " (true-mode-name)
-		  (if (assoc 'c-style (buffer-local-variables))
-		      (concat "; C-Style: " (symbol-name c-style))
-		    "")
-		  " -*- "))
-	 (md-length (length mode-declaration)))
-    (insert (cond
-	     ((and comment-start (= (length comment-start) 1))
-	      ;; I will presume that the comment start character is
-	      ;; the filler character.
-	      (concat comment-start comment-start
-		      (make-string (/ (- 77 md-length) 2)
-				   (aref comment-start 0))
-		      mode-declaration
-		      (make-string (/ (- 78 md-length) 2)
-				   (aref comment-start 0))
-		      ))
-	     (comment-start-p
-	      ;; I will presume that spaces will fill the gaps
-	      (concat comment-start
-		      (make-string (/ (- 79 md-length (length comment-start))
-				      2) ?\ )
-		      mode-declaration))
-	     (t;; there is no known comment-start. Presume lisp
-	      (concat ";;"
-		      (make-string (/ (- 77 md-length) 2) ?\;)
-		      mode-declaration
-		      (make-string (/ (- 78 md-length) 2) ?\;))))
-	    "\n"))
-  )
-
-(defun header-end-line ()
-  "Inserts a trailing divisor line for headers."
-  (insert (cond (comment-end-p comment-end)
-		((and comment-start (= (length comment-start) 1))
-		 (make-string 79 (aref comment-start 0)))
-		(comment-start-p comment-start)
-		(t       (make-string 79 ?\;)))
-	  "\n\n"))
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; System Variables -- Do not modify. Instead, call the functions that modify.
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(defvar file-header-update-alist ()
-  "Used by update file header to know what to do in the file. Is a list of
-   sets of cons cells where the car is a regexp string and the cdr is the
-   fcn to call if the string is found near the start of the file.")  
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; User function to declare header actions on a save file.
-;;   See examples at the end of this file.
-;; Invoke from site-init.el or in .emacs.
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(defun register-file-header-action (regexp function-to-call)
-  "Accepts REGEXP and FUNCTION-TO-CALL. Records 
-   FUNCTION-TO-CALL as the appropiate action to take if the REGEXP is
-   found in the file header when a file is written.  The function will be
-   called with the cursor located just after the matched regexp.
-
-   Calling this fcn twice with the same arguments overwrites
-   the previous FUNCTION-TO-CALL"
-  (let ((ml (assoc regexp file-header-update-alist)))
-    (if ml
-	(setcdr ml function-to-call);; overwrite old defn
-      ;; This entry is new to us. Add to the master alist
-      (setq file-header-update-alist
-	    (cons (cons regexp function-to-call)
-		  file-header-update-alist)))))
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; Header and file division header creation code
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(defun true-mode-name ()
-  "Returns the name of the mode in such a form that the mode may be
-  re-established by calling the function named by appending '-name' to
-  this string.  This differs from the variable called mode-name in that
-  this is guaranteed to work while the values held by the variable may
-  have embedded spaces or other junk.
-
-  THIS MODE NAME IS GUARANTEED OK TO USE IN THE MODE LINE."
-  (let ((major-mode-name (symbol-name major-mode)))
-    (capitalize (substring major-mode-name 0
-			   (or   (string-match "-mode" major-mode-name)
-				 (length major-mode-name))))))
-
-
-(defun header-prefix-string ()
-  "Returns a mode specific prefix string for use in headers. Is sensitive
-   to the various language dependent comment coventions."
-  (let ((comment-end-p (and comment-end
-			    (not (string-equal comment-end "")))))
-    (cond
-     ((and comment-start (= (length comment-start) 1))
-      (concat comment-start comment-start " "))
-     ;; Special case, three letter comment starts where the first and
-     ;; second letters are the same. (i.e. c++ and ada)
-     ((and comment-start (= (length comment-start) 3)
-	   (equal (aref comment-start 1) (aref comment-start 0)))
-      comment-start)
-     ;; Other three letter comment starts -> grab the middle character
-     ((and comment-start (= (length comment-start) 3))
-      (concat " " (list (aref comment-start 1)) " "))
-     ;; 
-     ((and comment-start (not comment-end-p))
-      ;; Note: no comment end implies that the full comment start must be
-      ;; used on each line.
-      comment-start)
-     (t					; I have no idea what is a good block 
-					; start character and will use lisp
-					; as a default.
-      ";; "))
-    ))
-
-(defun make-header ()
-  "Makes a standard file header at the top of the buffer. A header is
-   composed of a mode line, a body, and an end line.  The body is
-   constructed by calling the functions in make-header-hooks.
-   The mode line and end lines start and terminate block comments while the
-   body lines just have to continue the comment. "
-  (interactive)
-  (beginning-of-buffer)       ;; leave the mark at the old location
-  ;; Dynamically bound some handy variables
-  (let ((return-to nil)       ;;; to be set by make-header-hooks functions
-	(header-prefix-string (header-prefix-string)) ;;; cache the result
-	(comment-start-p
-	 (and comment-start (not (string-equal comment-start ""))))
-	(comment-end-p (and comment-end (not (string-equal comment-end "")))))
-
-    ;; Do the header functions
-    (mapcar 'funcall make-header-hooks)
-
-    ;; Move to wherever return-to was set
-    (if return-to (goto-char return-to))
-    ))
-
-(defun make-revision ()
-  "Inserts a revision marker after the history line.  Makes the history
-   line if it does not already exist."
-  (interactive)
-  (let ((header-prefix-string (header-prefix-string))
-	(logical-comment-start
-	 (if (= (length comment-start) 1)
-	     (concat comment-start comment-start " ")
-	   comment-start)))
-
-    ;; Look for the History line
-    (beginning-of-buffer)         ;;; leave a mark where we were
-    (if (re-search-forward (concat "^\\("
-				   (regexp-quote (header-prefix-string))
-				   "\\|"
-				   (if (and comment-start
-					    (not (string-equal comment-start "")))
-				       (concat
-					"\\|" (regexp-quote comment-start))
-				     "")
-				   "\\)"
-				   " *History")
-			   header-max t)
-	(progn (end-of-line))
-      (progn
-	;; We did not find a history line, add one
-	(goto-char (point-min))
-	;; find the first line that is not part of the header
-	(while (and (< (point) header-max)
-		    (looking-at
-		     (concat "[ \t]*\\("
-			     (regexp-quote (header-prefix-string))
-			     (if (and comment-start
-				      (not (string-equal comment-start "")))
-				 (concat
-				  "\\|" (regexp-quote comment-start))
-			       "")
-			     (if (and comment-end
-				      (not (string-equal comment-end "")))
-				 (concat "\\|" (regexp-quote comment-end))
-			       "")
-			     "\\)")))
-	  (forward-line 1))
-	(insert "\n" logical-comment-start
-		"HISTORY ")
-	(save-excursion (insert "\n" comment-end))))
-
-    ;; We are now on the line with the history marker
-    
-    (insert "\n"
-	    header-prefix-string
-	    (current-d-m-y-string)
-	    "\t\t"
-	    (user-full-name)
-	    ;;"\t|>Ident<|\n"
-	    "\t\n"
-	    header-prefix-string
-	    "   "
-	    )
-    ;; Now, add details about the history of the file before its modification
-    (if (save-excursion
-	  (re-search-backward "Last Modified On[\t]*: \\(.+\\)$" nil t))
-	(progn
-	  (insert "Last Modified: " (buffer-substring (match-beginning 1)
-						      (match-end 1)))
-	  (if (save-excursion
-		(re-search-backward "Update Count[ \t]*: \\([0-9]+\\)$" nil t))
-	      (insert " #" (buffer-substring (match-beginning 1)
-					     (match-end 1))))
-	  (if (save-excursion
-		(re-search-backward "Last Modified By[ \t]*: \\(.+\\)$" nil t))
-	      (insert " (" (buffer-substring (match-beginning 1)
-					     (match-end 1))
-		      ")"))
-	  (insert "\n" header-prefix-string "   ")))
-    ))
-
-(defun make-divisor (&optional end-col)
-  "A divisor line is the comment start, filler, and the comment end"
-  (interactive)
-  (insert comment-start)
-  (if (= 1 (length comment-start))
-      (insert comment-start))
-  (insert (make-string (max 2
-			    (- (or end-col (- fill-column 2)) (length
-							       comment-end)
-			       2 (current-column)))
-                       (aref comment-start
-			     (if (= 1 (length comment-start)) 0 1))
-		       ))
-  (insert comment-end)
-  )
-
-
-(defun make-box-comment (&optional end-col)
-  "Inserts a box comment that is built using mode specific comment characters."
-  (interactive)
-  (if (not (= 0 (current-column))) (forward-line 1))
-  (insert comment-start)
-  (if (= 1 (length comment-start))
-      (insert comment-start))
-  (if (not (char-equal (preceding-char) ? )) (insert ? )) 
-  (insert (make-string (max 2
-			    (- (or end-col fill-column ) (length
-							       comment-end)
-			       2 (current-column)))
-                       (aref comment-start
-			     (if (= 1 (length comment-start)) 0 1))
-		       ))
-  (insert "\n" (header-prefix-string) )
-  (save-excursion
-    (insert "\n" (header-prefix-string)
-	    (make-string (max 2
-			      (- (or end-col fill-column) (length
-								 comment-end)
-				 2 (current-column)))
-			 (aref comment-start
-			       (if (= 1 (length comment-start)) 0 1))
-			 )
-	    comment-end "\n")))
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-(defun current-d-m-y-string ()
-  (let ((str (current-time-string)))
-    (concat (if (equal ?\  (aref str 8))
-		       (substring str 9 10)
-		       (substring str 8 10))
-	    "-"
-	    (substring str 4 7)
-	    "-"
-	    (substring str 20 24))))
-
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; Automatic Header update code
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(defun update-file-header ()
-  "If the file has been modified, searches the first header-max chars in the
-   buffer using the regexps in file-header-update-alist. When a match is
-   found, it applies the corresponding function with the point located just
-   after the match.  The functions can use (match-beginning) and
-   (match-end) calls to find out the strings that causes them to be invoked." 
-  (interactive)
-  (if (and (> (buffer-size) 100) (buffer-modified-p) (not buffer-read-only))
-      (save-excursion
-	(save-restriction ;; only search the header-max number of characters
-	  (narrow-to-region 1 (min header-max (- (buffer-size) 1)))
-	  (let ((patterns file-header-update-alist))
-	    ;; do not record this call as a command in the command history
-	    (setq last-command nil)
-	    (while patterns
-	      (goto-char (point-min))
-	      (if (re-search-forward (car (car patterns)) nil t)
-		  (progn
-		    ;; position the cursor at the end of the match
-		    (goto-char (match-end 0))
-		    ;;(message "do		    (funcall (cdr (car patterns)))))
-	      (setq patterns (cdr patterns))
-	      )
-	    )))))
-
-;; Place the header update function as a write file action
-(if (not (memq 'update-file-header write-file-hooks))
-    (setq write-file-hooks (cons 'update-file-header write-file-hooks)))
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; Now, define the individual file header actions.  These are the building
-;; blocks of automatic header maintenance.
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(defun delete-and-forget-line ()
-  ;; does not place the line in the kill-ring
-  (let* ((start (point))
-	 (stop  (progn (end-of-line) (point)))
-	 (str   (buffer-substring start stop))
-	 )
-  (delete-region start stop)
-  str))
-
-(defun update-write-count ()
-  (let ((num)
-	(str  (delete-and-forget-line)))
-    (setq num (car (read-from-string str)))
-    (if (not (numberp num))
-	(progn
-	  (insert str)
-	  (error "invalid number for update count '%s'" str))
-      (progn
-	;;(message "New write count=%s" num)
-	(insert (format "%s" (+ 1 num)))))
-    ))
-
-(defun update-last-modifier ()
-  (delete-and-forget-line)
-  (insert (format "%s" (user-full-name)))
-  )
-
-(defun update-last-modified-date ()
-  (delete-and-forget-line)
-  (insert (format "%s" (current-time-string)))
-  )
-
-(defun update-file-name ()
-  (beginning-of-line)
-  ;; verify that we are looking at a file name for this mode
-  (if (looking-at
-       (concat (regexp-quote (header-prefix-string)) " *\\(.*\\) *\\-\\-"))
-      (progn
-	(goto-char (match-beginning 1))
-	(delete-region (match-beginning 1) (match-end 1))
-	(insert (file-name-nondirectory (buffer-file-name))" -")
-	)))
-
-
-;;(setq file-header-update-alist nil)
-;;(setq file-header-update-alist (cdr file-header-update-alist))
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; Stand Alone Headers
-;;
-;; These functions give the ability to invoke headers from the command line.
-;;   This if if yor site has non-productive vi users and you want them to
-;;   be able to use headers as well.
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(defun headerable-file-p (file)
-  (not (if (not (file-exists-p file))
-	   (message "\"%s\" does not exist!." file)
-	 (if (file-symlink-p file)
-	     (message "\"%s\" is a symolic link." file)
-	   (if (file-directory-p file)
-	       (message "\"%s\" is a directory." file)
-	     )))))
-
-(defun uniqueify-list (list)
-  (let ((rest list))
-    (while rest
-      (setcdr rest (delq (car rest) (cdr rest)))
-      (setq rest (cdr rest)))
-    list))
-
-;;(headerable-file-p "AFS")
-;;(headerable-file-p "dbiogen.el")
-;;(headerable-file-p "dbiogen.elc")
-
-(defvar header-required-mode nil
-  "The mode we will force files to be in, irregareless of file suffix.")
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; Define a touch-headers command. This depends upon Lynn Slater's
-;; customizations to startup.el to allow command-line-hooks.
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(setq command-line-hooks (cons 'touch-headers command-line-hooks))
-(defun touch-headers ()
-  (if (or (string= argi "-touch") (string= argi "-touch-headers"))
-      (let ((trim-versions-without-asking t)
-	    (executing-macro "true"));; suppress "Mark Set" messages
-	;; Consume all following arguments until one starts with a "-"
-	(while (and command-line-args-left
-		    (not (char-equal ?- (aref (car command-line-args-left) 0))))
-	  (if (headerable-file-p (car command-line-args-left))
-	      (progn
-		(find-file (car command-line-args-left))
-		(make-revision)
-		(write-file nil)
-		(kill-buffer (current-buffer))))
-	  (setq command-line-args-left (cdr command-line-args-left))
-	  ))))
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; Define a make-headers command line option.
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(setq command-line-hooks (cons 'make-headers command-line-hooks))
-(defun make-headers ()
-  (if (or (string= argi "-make-headers") (string= argi "-make"))
-      (let ((trim-versions-without-asking t)
-	    (executing-macro "true"));; suppress "Mark Set" messages
-	;; Consume all following arguments until one starts with a "-"
-	(while (and command-line-args-left
-		    (not (char-equal ?- (aref (car command-line-args-left) 0))))
-     
-	  (if (headerable-file-p (car command-line-args-left))
-	      (progn
-		(find-file (car command-line-args-left))
-		(if header-required-mode
-		    (funcall header-required-mode))
-		(make-header)
-		(write-file nil)
-		(message "\tMode was %s" major-mode)
-		(kill-buffer (current-buffer))))
-	  (setq command-line-args-left (cdr command-line-args-left))
-	  ))))
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; Define a -default-mode command line option.
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(setq command-line-hooks (cons 'set-header-mode command-line-hooks))
-(defun set-header-mode ()
-  (if (or (string= argi "-default-mode")
-	  (string= argi "-default"))
-      (let ((trim-versions-without-asking t)
-	    (executing-macro "true");; suppress "Mark Set" messages
-	    (mode (intern (car command-line-args-left))))
-	(if (memq mode (mapcar 'cdr auto-mode-alist))
-	    (progn
-	      (setq default-major-mode mode)
-	      (message "Default mode is %s" default-major-mode)
-	      (setq command-line-args-left (cdr command-line-args-left)))
-	  (message "Mode \"%s\" is invalid. Try one of %s" mode
-		   (uniqueify-list (mapcar 'cdr auto-mode-alist)))
-	  (kill-emacs 1))
-	)))
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; Define a -required-mode command line option.
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(setq command-line-hooks (cons 'set-header-required-mode command-line-hooks))
-(defun set-header-required-mode ()
-  (if (or (string= argi "-required-mode")
-	  (string= argi "-mode"))
-      (let ((trim-versions-without-asking t)
-	    (executing-macro "true");; suppress "Mark Set" messages
-	    (mode (intern (car command-line-args-left))))
-	(if (memq mode (mapcar 'cdr auto-mode-alist))
-	    (progn
-	      (setq header-required-mode mode)
-	      (message "Required mode is %s" header-required-mode)
-	      (setq command-line-args-left (cdr command-line-args-left)))
-	  (message "Mode \"%s\" is invalid. Try one of %s" mode
-		   (uniqueify-list (mapcar 'cdr auto-mode-alist)))
-	  (kill-emacs 1))
-	)))
-
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; Things in the works or still to do.
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; effort.el -- allows an "effort" to be resgistered in the mode line much
-;; like the mode is. The effort then determines some header characteristics
-;; such as copyright.  Typical efforts would be 'gdb 'gcc, 'g++, 'emacs, etc.
-;; This would let the copyright (and c-style) be adjusted even within
-;; common modes.
-;;
-;; need ez access to values in the header 
-;; need a headerp fcn
-;;
-;; auto make-revision if current user is not same as last modifier
-;;   this would give a history of who touched what.
-
--*- End File: ~/local/header.el
-
--*- File: ~/local/headers.1
-.\"                             -*- Mode: Nroff -*- 
-.\" headers.1 -- Man page for headers
-.\" 
-.\" Copyright (c) 1989, Independence Technologies Inc. (ITI)
-.\" All Rights Reserved.
-.\" 
-.\" This is an unpublished work of ITI which is protected under 
-.\" the copyright laws of the United States and a trade secret
-.\" of ITI. It may not be used, copied, disclosed or transferred
-.\" other than in accordance with the written permission of ITI.
-.\" 
-.\" Shape           : $__Header$
-.\" Author          : Lynn Slater
-.\" Created On      : Wed Sep  6 14:55:42 1989
-.\" Last Modified By: Lynn Slater
-.\" Last Modified On: Mon Sep 25 16:23:12 1989
-.\" Update Count    : 21
-.\" Status          : Unknown, Use with caution!
-.\" 
-.\" HISTORY
-.\" 25-Sep-1989		Lynn Slater	
-.\"    Last Modified: Mon Sep 25 15:28:43 1989 #19 (Lynn Slater)
-.\"    Mask mode
-.\"    Brought doc up to date. -default-mode,  make-mode
-.\" 
-.\" 
-.TH HEADERS 1 "Mon Sep 25 16:23:11 1989" "ITI/Emacs"
-.SH NAME
-headers \- Automatic Header Maintenance in conformance to ITI standards
-.SH SYNOPSIS
-.B headers
-[
-.B -mode
-.IR mode
-] [
-.B -default-mode
-.IR mode
-] [
-.B -make
-.IR datafile .\|.\|.
-] [
-.B -touch
-.IR datafile .\|.\|.
-] [
-.B -TOC
-.IR datafile .\|.\|.
-] [
-.B -SYNOPSIS
-.IR datafile .\|.\|.
-]
-.LP
-.B emacs -batch -l headers
-[
-.B -mode
-.IR mode
-] [
-.B -default-mode
-.IR mode
-] [
-.B -make
-.IR datafile .\|.\|.
-] [
-.B -touch
-.IR datafile .\|.\|.
-] [
-.B -TOC
-.IR datafile .\|.\|.
-] [
-.B -SYNOPSIS
-.IR datafile .\|.\|.
-]
-.LP
-.SH DESCRIPTION
-.LP
-This processor adds ITI standard headers into 
-.I existing
-non-directory non-linked files. It can
-also insert ITI standard revision markings.
-.RE
-.LP
-.SH OPTIONS
-.TP
-.B "\-default-mode"
-Sets the 
-.I default 
-editing mode and header style for those files without a
-standard suffix.
-Normally, the mode is determined by the file suffix. Suffixes map to modes
-as described below.
-.TP
-.B "\-mode"
-Sets the 
-editing mode and header style for all remaining files processed by the make option, irregardless of
-their file suffix or existing file header.
-.TP
-.B "\-make"
-Load or create all the listed data files in either the mode implied by
-their suffix or in the default mode. Make and insert a ITI standard header
-into the file and save it.
-
-.TP
-.B "\-touch"
-Load or create all the listed data files and add a ITI standard revision
-marker. If the file has a header, the mode in the mode line will take
-precidence over the default mode or the mode implied by the file suffix. 
-Save the file after updating all other present header fields.
-
-.TP
-.B "-TOC"
-Load or create all the listed files and replace the table of contents with
-a new one extracted from the function headers. The extraction will only
-work if file has existing headers in conformance with ITI coding standards.
-
-This option also updates the header information before saving the file.
-
-.TP
-.B "\-SYNOPSIS"
-Load or create all the listed files. Scan each one for standard function
-headers. Delete the synopsis section and replace it with the function
-declaration (indented following comment marks). If you have done your
-function declarations properly, they should be acceptable as a synopsis. 
-
-In C++ mode, a function declaration begins just after the function header
-and ends with the close paren of the argument list.
-
-In C mode, a function declaration begins just after the function header
-and ends with the next blank line.  This should work fine if you seperate
-the argument declarations from internal variable declarations.
-
-Comments are converted to a slightly different syntax when the
-function declaration is moved; this prevents nested comments.
-
-.TP
-.B "Mode and Suffix map"
-.RS
-.TP15
-ada-mode
-(.ada .a)
-Ada Mode is the major mode for editing Ada code.  
-.TP15
-awk-mode
-(no suffixes)
-Set up for editing awk code (a minor variation on C mode).
-.TP15
-c-mode
-(.c .h .y .l .tcl .tcl-script) (but not .cc )
-Major mode for editing C code.
-.TP15
-c++-mode
-(.cc .hxx .cxx)
-Major mode for editing C++ code.  Very much like editing C code, but
-understands more constructs and uses
-different comments.
-.TP15
-emacs-lisp-mode
-(.el)
-Major mode for editing Lisp code to run in Emacs.
-.TP15
-fortran-mode
-(.f)
-Major mode for editing fortran code.
-.TP15
-Fundamental-mode
-(no suffixes)
-A generic editing mode
-.TP15
-LaTeX-mode
-(.sty .bbl)
-Major mode for editing files of input for TeX or LaTeX.
-.TP15
-lisp-mode
-(.lisp .lsp .ml)
-Major mode for editing Lisp code for Lisps other than GNU Emacs Lisp.
-.TP15
-make-mode
-(.mk)
-Mode for eciting of make scripts.
-.TP15
-mask-mode
-(.m)
-Mode for eciting of mask files.
-.TP15
-nroff-mode
-(no suffixes)
-Major mode for editing text intended for nroff to format.
-.TP15
-prolog-mode
-(.pl .prolog)
-Major mode for editing Prolog code for Prologs.
-.TP15
-scheme-mode
-(.scm)
-Major mode for editing Scheme code.
-.TP15
-scribe-mode
-(.mss)
-Major mode for editing scribe (a document processor) files.
-.TP15
-script-mode
-(no suffixes)
-Mode for eciting of shell scripts.
-.TP15
-sql-mode
-(.sql .isql)
-Mode for editing sql scripts and sending them to other processes.
-.TP15
-TeX-mode
-(.tex .TeX)
-Major mode for editing files of input for TeX or LaTeX.
-.TP15
-texinfo-mode 
-(.texinfo)
-Major mode for editing texinfo files.
-.TP15
-text-mode
-(.text .bib .article .letter )
-Major mode for editing text intended for humans to read. 
-.RE
-.LP
-The initial default mode is fundemental-mode
-.LP
-.SH FILES
-.SH DIAGNOSTICS
-Hopefully self-explainatory.
-.IP
-.SH EXAMPLES
-.PD 0
-To add some headers to non-headed existing c files
-.nf
-  headers -make *.c
-.fi
-
-To insert some revison notifications
-.nf
-  headers -touch t1.c t2.h
-.fi
-
-To start some script mode files
-.nf
-  headers -mode script-mode -make script1 script2
-.fi
-
-To do all of the above
-.nf
-  headers -make *.c -touch t1.c t2.h \\ 
-    -mode script-mode -make script1 script2
-.fi
-
-To bring the file and function headers of a set of files up to date. Also
-record last modifier and other useful information.
-.nf
-  headers -TOC *.c -SYNOPSIS *.c
-.fi
-
-.SH BUGS 
-The synopsis extraction is not very robust and can be confused by
-comment characters in strings or by unusual styles.
-
-.LP
-.PD
-.SH SEE ALSO
-.BR emacs (1)
-.LP
-
--*- End File: ~/local/headers.1
-
-
--*- File: /usr/local/bin/headers
-#!/bin/sh
-emacs -batch -l headers $*
-
--*- End File: /usr/local/bin/headers
-
-
+#FILE text/plain
+RnJvbSBhcmsxIW5lbXMhbWltc3khaGF2ZW4hcHVyZHVlIXR1dC5jaXMub2hpby1zdGF0ZS5lZHUh
+aW5kZXRlY2guY29tIWxycyBUaHUgTm92ICAyIDEwOjI4OjAyIDE5ODkKQXJ0aWNsZSA2NDIgb2Yg
+Z251LmVtYWNzClBhdGg6IGFyazEhbmVtcyFtaW1zeSFoYXZlbiFwdXJkdWUhdHV0LmNpcy5vaGlv
+LXN0YXRlLmVkdSFpbmRldGVjaC5jb20hbHJzCj5Gcm9tIGxyc0BpbmRldGVjaC5jb20gKEx5bm4g
+U2xhdGVyKQpOZXdzZ3JvdXBzOiBnbnUuZW1hY3MKU3ViamVjdDogQXV0b21hdGljIGhlYWRlciBj
+cmVhdGlvbiBhbmQgbWFpbnRlbmFuY2UKTWVzc2FnZS1JRDogPG0wZ01PcTEtMDAwMEY3Q0BmaXJl
+LmluZGV0ZWNoLmNvbT4KRGF0ZTogMSBOb3YgODkgMTc6MzM6MDAgR01UClNlbmRlcjogZGFlbW9u
+QHR1dC5jaXMub2hpby1zdGF0ZS5lZHUKRGlzdHJpYnV0aW9uOiBnbnUKT3JnYW5pemF0aW9uOiBH
+TlVzIE5vdCBVc2VuZXQKTGluZXM6IDEwODUKCkVuY2xvc2VkIGlzIGNvZGUgdG8gYXV0b21hdGlj
+YWxseSBjcmVhdGUgYW5kIG1haW50YWluIGZpbGUgaGVhZGVycy4gIFRoaXMKY29kZSBpcyBjbGVh
+bmVyIGFuZCBtdXNoIG1vcmUgZWFzaWx5IGN1c3RvbWl6ZWQgdGhhbiBhbnkgb2YgbXkgcHJldmlv
+dXMKaGVhZGVyIHBvc3RpbmdzLgoKTmV3IGluIHRoaXMgcmVsZWFzZSBpcyBhIHNldCBvZiBjdXN0
+b21pemF0aW9ucyB0aGF0IGFsbG93IGhlYWRlcnMgdG8gYmUKY3JlYXRlZCBhbmQgbWFpbnRhaW5l
+ZCBmcm9tIHRoZSBjb21tYW5kIGxpbmUuICBUaGlzIGlzIGdvb2QgZm9yIHByb2plY3RzCndpdGgg
+c29tZSB2aSBkaWUtaGFyZHMgb3Igd2hlbiBoZWFkZXJzIGFyZSBiZWluZyBhZGRlZCBpbiBtYXNz
+IGZvciB0aGUKZmlyc3QgdGltZS4gIEV4YW1wbGU6CiAgIGNkICRFTUFDUy9saXNwCiAgIGhlYWRl
+cnMgLW1ha2UgKi5lbAoKSSBoYXZlIGZvdW5kIGZpbGUgaGVhZGVycyB0byBiZSB2ZXJ5IHZhbHVh
+YmxlIGluIHByb2plY3QgZGV2ZWxvcG1lbnQuIEkKYWx3YXlzIGtub3cgd2hvIGhhcyBiZWVuIHdo
+ZXJlIGFuZCBob3cgbWFueSB0aW1lcyB0aGV5IHdlcmUgdGhlcmUuIE1vc3QKb2Z0ZW4sIEkgYWxz
+byBrbm93IHdoYXQgdGhleSBkaWQuICBUaGUgdXBkYXRlIGNvdW50IGFuZCBsYXN0IG1vZGlmaWVk
+IGRhdGUKYXJlIHZlcnkgdXNlZnVsIGluIGRldGVybWluaW5nIHRoZSBwcm9wZXIgdmVyc2lvbiBv
+ZiBhIGZpbGUgdG8gdXNlLiAgSSBoYXZlCm9mdGVuIHRob3VnaHQgdGhhdCBpdCB3b3VsZCBiZSBl
+YXNpZXIgdG8gaW50ZWdyYXRlIHBhdGNoZXMgZnJvbSBpbmRpdmlkdWFscwp0byBnbnUgdG9vbHMg
+c3VjaCBhcyBnY2MgYW5kIGcrKyBpZiBJIGtuZXcgZm9yIGNlcnRhaW4gd2hhdCB2ZXJzaW9uIG9m
+IGEKcGFydGljdWxhciBmaWxlIHRoZXkgd2VyZSB3b3JraW5nIGZyb20uICBJZiBhbGwgaGFkIGhl
+YWRlcnMsIEkgd291bGQgc2VlCnRoZSB1cGRhdGUgY291bnQgYW5kIGRhdGUgaW4gdGhlICJkaWZm
+IC1jIiBvdXRwdXQgYW5kIHdvdWxkIGJlIGFibGUgdG8gZmluZApvciByZWNyZWF0ZSB0aGUgZmls
+ZSB0byBwYXRjaCBhY2NvcmRpbmdseS4KCkluIHRoaXMgbWVzc2FnZSBhcmUgdGhyZWUgZmlsZXM6
+CiAgaGVhZGVyLmVsICAtLSBFbWFjcyBoZWFkZXIgZnVuY3Rpb25zIGFuZCBjdXN0b21pemF0aW9u
+IGluc3RydWN0aW9ucwogIGhlYWRlcnMuMSAgLS0gTWFuIHBhZ2UgZm9yIGNvbW1hbmQgbGluZSBo
+ZWFkZXJzIHVzZWFnZQogIGhlYWRlcnMgICAgLS0gU2hlbGwgc2NyaXB0IHRvIGhpZGUgdGhlIGVt
+YWNzbmVzcyBvZiBjb21tYW5kIGxpbmUgaGVhZGVycy4KCj09PT09PT09PT09PT09PT09PT09PT09
+PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PQpMeW5uIFNsYXRlciAtLSBs
+cnNAaW5kZXRlY2guY29tIG9yIHtzdW4sIGFtZXMsIHBhY2JlbGx9IWluZGV0ZWNoIWxycwo0MjA3
+NSBMYXdyZW5jZSBQbGFjZSwgRnJlbW9udCBDYSA5NDUzOApPZmZpY2UgKDQxNSkgNDM4LTIwNDg7
+IEhvbWUgKDQxNSkgNzk2LTQxNDk7IEZheCAoNDE1KSA0MzgtMjAzNAo9PT09PT09PT09PT09PT09
+PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT0KCi0qLSBGaWxl
+OiB+L2xvY2FsL2hlYWRlci5lbAo7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7
+Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7OzsKOzsgaGVhZGVyLmVsIC0t
+LSBTdXBwb3J0IGZvciBjcmVhdGlvbiBhbmQgYXV0b21hdGljIHVwZGF0ZSBvZiBmaWxlIGhlYWRl
+cnMKOzsgQXV0aG9yICAgICAgICAgIDogTHlubiBTbGF0ZXIKOzsgQ3JlYXRlZCBPbiAgICAgIDog
+VHVlIEF1ZyAgNCAxNzowNjo0NiAxOTg3Cjs7IExhc3QgTW9kaWZpZWQgQnk6IEx5bm4gU2xhdGVy
+Cjs7IExhc3QgTW9kaWZpZWQgT246IFdlZCBOb3YgIDEgMDk6MDI6MTggMTk4OQo7OyBVcGRhdGUg
+Q291bnQgICAgOiAxMjYKOzsgU3RhdHVzICAgICAgICAgIDogT0sKOzs7Ozs7Ozs7Ozs7Ozs7Ozs7
+Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7
+Ozs7Cjs7IENvcHlyaWdodCAoQykgMTk4OCBMeW5uIFJhbmRvbHBoIFNsYXRlciwgSnIuCjs7IENv
+cHlyaWdodCAoQykgMTk4OSBGcmVlIFNvZnR3YXJlIEZvdW5kYXRpb24sIEluYy4KOzsgVGhpcyBm
+aWxlIGlzIGNvbXBhdGFibGUgd2l0aCBHTlUgRW1hY3MgYnV0IGlzIG5vdCBwYXJ0IG9mIHRoZSBv
+ZmZpY2lhbAo7OyBkaXN0cmlidXRpb24gKHlldCkuCjs7Cjs7IFRoaXMgZmlsZSBpcyBkaXN0cmli
+dXRlZCBpbiB0aGUgaG9wZSB0aGF0IGl0IHdpbGwgYmUgdXNlZnVsLAo7OyBidXQgd2l0aG91dCBh
+bnkgd2FycmFudHkuICBObyBhdXRob3Igb3IgZGlzdHJpYnV0b3IKOzsgYWNjZXB0cyByZXNwb25z
+aWJpbGl0eSB0byBhbnlvbmUgZm9yIHRoZSBjb25zZXF1ZW5jZXMgb2YgdXNpbmcgaXQKOzsgb3Ig
+Zm9yIHdoZXRoZXIgaXQgc2VydmVzIGFueSBwYXJ0aWN1bGFyIHB1cnBvc2Ugb3Igd29ya3MgYXQg
+YWxsLAo7OyB1bmxlc3MgaGUgc2F5cyBzbyBpbiB3cml0aW5nLgo7Owo7OyBFdmVyeW9uZSBpcyBn
+cmFudGVkIHBlcm1pc3Npb24gdG8gY29weSwgbW9kaWZ5IGFuZCByZWRpc3RyaWJ1dGUKOzsgdGhp
+cyBmaWxlLCBidXQgb25seSB1bmRlciB0aGUgY29uZGl0aW9ucyBkZXNjcmliZWQgaW4gdGhlCjs7
+IGRvY3VtZW50ICJHTlUgRW1hY3MgY29weWluZyBwZXJtaXNzaW9uIG5vdGljZSIuICAgQW4gZXhh
+Y3QgY29weQo7OyBvZiB0aGUgZG9jdW1lbnQgaXMgc3VwcG9zZWQgdG8gaGF2ZSBiZWVuIGdpdmVu
+IHRvIHlvdSBhbG9uZyB3aXRoCjs7IHRoaXMgZmlsZSBzbyB0aGF0IHlvdSBjYW4ga25vdyBob3cg
+eW91IG1heSByZWRpc3RyaWJ1dGUgaXQgYWxsLgo7OyBJdCBzaG91bGQgYmUgaW4gYSBmaWxlIG5h
+bWVkIENPUFlJTkcuICBBbW9uZyBvdGhlciB0aGluZ3MsIHRoZQo7OyBjb3B5cmlnaHQgbm90aWNl
+IGFuZCB0aGlzIG5vdGljZSBtdXN0IGJlIHByZXNlcnZlZCBvbiBhbGwgY29waWVzLgoKOzsgVGhp
+cyBmaWxlIGFkZHMgc3VwcG9ydCBmb3IgdGhlIGNyZWF0aW9uIGFuZCBhdXRvbWF0aWMgbWFpbnRl
+bmVuY2Ugb2YgZmlsZQo7OyBoZWFkZXJzIHN1Y2ggYXMgdGhlIG9uZSBhYm92ZS4KOzsgIFVzZXIg
+Q29tbWFuZHM6Cjs7ICAgTS14IG1ha2UtaGVhZGVyCjs7ICAgTS14IG1ha2UtcmV2aXNpb24KOzsg
+ICBNLXggbWFrZS1kaXZpc29yCjs7ICAgTS14IG1ha2UtYm94LWNvbW1lbnQKOzsgQ3VzdG9taXpl
+ciBjb21tYW5kcwo7OyAgIHJlZ2lzdGVyLWZpbGUtaGVhZGVyLWFjdGlvbgo7OyBDdXN0b21pemVy
+IHZhcmlhYmxlcwo7OyAgIGhlYWRlci1jb3B5cmlnaHQtbm90aWNlCjs7ICAgbWFrZS1oZWFkZXIt
+aG9va3MKOzsKOzsgVGhpcyBmaWxlIGlzIHBhcnRpY3VsYXJseSB1c2VmdWwgd2l0aCB0aGUgZmls
+ZS1kZWNsYXJhdGlvbnMgcGFja2FnZSBhbHNvCjs7ICAgYnkgTHlubiBTbGF0ZXIuCjs7IE1ha2Ug
+dGhpcyBmaWxlIGhlYWRlci5lbCwgYnl0ZS1jb21waWxlIGl0IGluIHlvdXIgcGF0aAo7Owo7OyBS
+ZWFkIHRoZSBmaXJzdCAyMCUgb2YgdGhpcyBmaWxlIHRvIGxlYXJuIGhvdyB0byBjdXN0b21pemUu
+Cgo7OyBIaXN0b3J5IAkJCjs7IDI1LVNlcC0xOTg5CQlMeW5uIFNsYXRlcgkKOzsgICAgTGFzdCBN
+b2RpZmllZDogTW9uIFNlcCAyNSAxNToxMjoxNiAxOTg5ICMxMTkgKEx5bm4gU2xhdGVyKQo7OyAg
+ICBhZGRlZCAtZGVmYXVsdC1tb2RlIGFoZCBoZWFkZXJhYmxlLWZpbGUtcAo7OyAxMC1TZXAtMTk4
+OQkJTHlubiBTbGF0ZXIJCjs7ICAgIExhc3QgTW9kaWZpZWQ6IFdlZCBTZXAgIDYgMTc6MzY6MDAg
+MTk4OSAjMTEwIChMeW5uIFNsYXRlcikKOzsgICAgU2VwZXJhdGVkIG91dCBoZWFkZXItbW9kZS1s
+aW5lIGFuZCBoZWFkZXItZW5kLiBIZWFkZXJzIGFyZSBub3cgcmVhbGx5Cjs7ICAgIGVhc3kgdG8g
+bW9kaWZ5Lgo7OyAgICBBZGRlZCBpbnN0cnVjdGlvbnMgZm9yIG1vZGUtc3BlY2lmaWMgaGVhZGVy
+cy4KOzsgOC1BdWctMTk4OQkJTHlubiBTbGF0ZXIJCjs7ICAgIExhc3QgTW9kaWZpZWQ6IFRodSBB
+dWcgIDMgMDg6MDQ6MDYgMTk4OSAjODggKEx5bm4gU2xhdGVyKQo7OyAgICBDaGFuZ2VkIHN0cnVj
+dHVyZSB0byBhbGxvdyBzaXRlL3VzZXIgY3VzdG9taXplZCBoZWFkZXJzCjs7IDI0LUp1bi0xOTg5
+CQlMeW5uIFNsYXRlcgkKOzsgICAgTGFzdCBNb2RpZmllZDogVGh1IEp1biAyMiAxMjo1MjoyNCAx
+OTg5ICM4NCAoTHlubiBTbGF0ZXIpCjs7ICAgIHJlc3RydWN0dXJlZCBmaWxlLCBtYWRlIHRoZSBv
+cmRlciBvZiBoZWFkZXIgYWN0aW9ucyBub3QgYmUgc2lnbmlmaWNhbnQuCjs7IDIyLUp1bi0xOTg5
+CQlMeW5uIFNsYXRlcgkKOzsgICAgTGFzdCBNb2RpZmllZDogVGh1IEp1biAyMiAxMTo0MDo1MyAx
+OTg5ICM4MiAoTHlubiBTbGF0ZXIpCjs7ICAgIE1hZGUgZmlsZSBoZWFkZXIgYWN0aW9ucyBlYXNp
+ZXIgdG8gZGVjbGFyZQo7OyAgICBNYWRlIHNjY3MgYW5kIHJjcyBzdXBwb3J0IGJlIHVzZXIgc2V0
+dGFibGUuCjs7ICAgIEFkZGVkIGMtc3R5bGUgc3VwcG9ydAo7OyAyNS1KYW4tMTk4OQkJTHlubiBT
+bGF0ZXIJCjs7ICAgIExhc3QgTW9kaWZpZWQ6IFdlZCBKYW4gMjUgMTI6MDM6MjMgMTk4OSAjNzgg
+KEx5bm4gU2xhdGVyKQo7OyAgICBBZGRlZCBtYWtlLWRvYyBjb21tYW5kCjs7IDI1LUphbi0xOTg5
+CQlMeW5uIFNsYXRlcgkKOzsgICAgTGFzdCBNb2RpZmllZDogVHVlIFNlcCAgNiAwNzo1NzoyMiAx
+OTg4ICM3NyAoTHlubiBTbGF0ZXIpCjs7ICAgIG1hZGUgdGhlIG1ha2UtcmV2aXNpb24gY29tbWFu
+ZCBpbmNsdWRlIHRoZSBsYXN0LW1vZGlmaWVkIGRhdGEKOzsgMzEtQXVnLTE5ODgJCUx5bm4gU2xh
+dGVyCQo7OyAgICBNYWRlIHRoZSBtYWtlLXJldmlzaW9uIHdvcmsgaW4gbW9zdCBtb2Rlcwo7OyAg
+ICBBZGRlZCB0aGUgdXBkYXRlLWZpbGUtbmFtZSBjb21tYW5kCjs7IDEtTWFyLTE5ODgJCUx5bm4g
+U2xhdGVyCjs7ICAgbWFkZSB0aGUgaGVhZGVycyBiZSBhcyBzZW5zaXRpdmUgYXMgcG9zc2libGUg
+dG8gdGhlIHByb3Blcgo7OyAgIGNvbW1lbnQgY2hhcnMuCjs7IDEtTWFyLTE5ODgJCUx5bm4gU2xh
+dGVyCjs7ICAgTWFkZSB0aGUgbW9kZSBiZSBkZWNsYXJlZCBpbiBlYWNoIGhlYWRlcgo7OyAyNi1G
+ZWItMTk4OAkJTHlubiBTbGF0ZXIKOzsgICBhZGRlZCB0aGUgbWFrZS1yZXZpc2lvbiBjYWxsCihw
+cm92aWRlICdoZWFkZXIpCgo7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7
+Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7OzsKOzsgVGhpcyBmaWxlIGhhcyB0d28gbWFq
+b3IgZGl2aXNpb25zOiBoZWFkZXIgY3JlYXRpb24gYW5kIGF1dG9tYXRpYyBoZWFkZXIKOzsgbWFp
+bnRlbmFuY2UuCjs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7
+Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7OwoKOzs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7
+Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Cjs7IFVzZXIvU2l0ZSBD
+dXN0b21pemFibGUgVmFyaWFibGVzCjs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7
+Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7OwooZGVmdmFyIGhlYWRlci1tYXgg
+MjAwMAogICJJcyB0aGUgbnVtYmVyIG9mIGNoYXJhY3RlcnMgYXQgdGhlIHN0YXJ0IG9mIGEgYnVm
+ZmVyIHRoYXQgd2lsbCBiZQogICBzZWFyY2hlZCBmb3IgaGVhZGVyIGluZm8gdG8gYXV0b21hdGlj
+YWxseSB1cGRhdGUuIikKCihkZWZ2YXIgaGVhZGVyLWNvcHlyaWdodC1ub3RpY2UgbmlsCiAgIkEg
+c3RyaW5nIGNvbnRhaW5pbmcgYSBjb3B5cmlnaHQgZGlzY2xhaW1lciB0byBiZSBpbnNlcnRlZCBp
+bnRvIGFsbCBoZWFkZXJzLgogICBUaGlzIHN0cmluZyBuZWVkcyBubyBsZWFkaW5nIGJsYW5rcyBh
+bmQgbWF5IGNvbnRhaW4gYW55IG51bWJlciBvZiBsaW5lcy4KICAgTWF5IGJlIG5pbC4iKQoKKGRl
+ZnZhciBtYWtlLWhlYWRlci1ob29rcyAnKAoJCQkgICAgaGVhZGVyLWZpbGUtbmFtZQoJCQkgICAg
+aGVhZGVyLWNvcHlyaWdodAoJCQkgICAgOztoZWFkZXItc2NjcwoJCQkgICAgaGVhZGVyLUFGUwoJ
+CQkgICAgaGVhZGVyLWF1dGhvcgoJCQkgICAgaGVhZGVyLWNyZWF0aW9uLWRhdGUKCQkJICAgIGhl
+YWRlci1tb2RpZmljYXRpb24tYXV0aG9yCgkJCSAgICBoZWFkZXItbW9kaWZpY2F0aW9uLWRhdGUK
+CQkJICAgIGhlYWRlci11cGRhdGUtY291bnQKCQkJICAgIGhlYWRlci1zdGF0dXMKCQkJICAgIDs7
+IFJlLWVuYWJsZSB0aGUgZm9sbG93aW5nIGxpbmVzIGlmIHlvdSB3aXNoCgkJCSAgICA7O2hlYWRl
+ci1ibGFuawoJCQkgICAgOztoZWFkZXItaGlzdG9yeQoJCQkgICAgOztoZWFkZXItcHVycG9zZQoJ
+CQkgICAgOztoZWFkZXItdG9jCgkJCSAgICApCgogICJBIGxpc3Qgb2YgZnVuY3Rpb25zIHdoaWNo
+IHdpbGwgaW5zZXJ0IHRoZSB2YXJpb3VzIGhlYWRlciBlbGVtZW50cy4KICAgRWFjaCBmdW5jdGlv
+biBpcyBzdGFydGVkIG9uIGEgbmV3IGxpbmUgYW5kIGlzIGV4cGVjdGVkIHRvIGVuZCBpbiBhIG5l
+dyBsaW5lLgogICBFYWNoIGZ1bmN0aW9uIG1heSBpbnNlcnQgYW55IG51bWJlciBvZiBsaW5lcywg
+YnV0IGVhY2ggbGluZSwgaW5jbHVkaW5nCiAgIHRoZSBmaXJzdCwgbXVzdCBiZSBzdGFydGVkIHdp
+dGggdGhlIHZhbHVlIG9mIHRoZSBoZWFkZXItcHJlZml4LXN0cmluZwogICB2YXJpYWJsZS4gKFRo
+aXMgdmFyaWFibGUgaG9sZHMgdGhlIHNhbWUgdmFsdWUgYXMgd291bGQgYmUgcmV0dXJuZWQgYnkK
+ICAgY2FsbGluZyAnaGVhZGVyLXByZWZpeC1zdHJpbmcgYnV0IGlzIGZhc3RlciB0byBhY2Nlc3Mu
+KQogICBFYWNoIGZ1bmN0aW9uIG1heSBzZXQgdGhlIGZvbGxvd2luZyBkeW5hbWljYWxseSBib3Vu
+ZCB2YWx1ZXM6CiAgICAgaGVhZGVyLXByZWZpeC1zdHJpbmcgLS0gbW9kZSBzcGVjaWZpYyBjb21t
+ZW50IHNlcXVlbmNlCiAgICAgcmV0dXJuLXRvICAgICAgICAtLSBjaGFyYWN0ZXIgcG9zaXRpb24g
+dG8gd2hpY2ggcG9pbnQgd2lsbCBiZSBtb3ZlZAogICAgICAgICAgICAgICAgICAgICAgICAgYWZ0
+ZXIgYWxsIGhlYWRlciBmdW5jdGlvbnMgYXJlIHByb2Nlc3NlZC4gQW55CiAgICAgICAgICAgICAg
+ICAgICAgICAgICBoZWFkZXIgZnVuY3Rpb24gbWF5IHNldCB0aGlzLCBidXQgb25seSB0aGUgbGFz
+dAogICAgICAgICAgICAgICAgICAgICAgICAgc2V0IHdpbGwgdGFrZSBlZmZlY3QuCgogICBJdCBp
+cyByZWFzb25hYmxlIHRvIGxvY2FsbHkgc2V0IHRoZXNlIGhvb2tzIGFjY29yZGluZyB0byBjZXJ0
+YWluCiAgIG1vZGVzLiBGb3IgZXhhbXBsZSwgYSB0YWJsZSBvZiBjb250ZW50cyBtYXkgb25seSBh
+cHBseSB0byBjb2RlIGRldmVsb3BtZW50CiAgIG1vZGVzIGFuZCAnaGVhZGVyLXNoZWxsIHNob3Vs
+ZCBvbmx5IGFwcGx5IHRvIHNoZWxsIHNjcmlwdHMuIFNlZSB0aGUKICAgaW5zdHJ1Y3Rpb25zIGlu
+IGhlYWRlci5lbCB0byBkbyB0aGlzLiIpCgo7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7
+Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7OzsKOzsgUmVnaXN0ZXIgdGhl
+IGF1dG9tYXRpYyBhY3Rpb25zIHRvIHRha2UgZm9yIGZpbGUgaGVhZGVycyBkdXJpbmcgYSBzYXZl
+Cjs7IFNlZSB0aGUgc2Vjb25kIHBhcnQgb2YgdGhlIGZpbGUgZm9yIGV4cGxpbmF0aW9ucy4KOzs7
+Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7
+Ozs7Ozs7Ozs7Ozs7Cihwcm9nbgogIChyZWdpc3Rlci1maWxlLWhlYWRlci1hY3Rpb24gIlsgXHRd
+VXBkYXRlIENvdW50WyBcdF0qOiAiICAndXBkYXRlLXdyaXRlLWNvdW50KQogIChyZWdpc3Rlci1m
+aWxlLWhlYWRlci1hY3Rpb24gIlsgXHRdTGFzdCBNb2RpZmllZCBCeVsgXHRdKjogIiAgJ3VwZGF0
+ZS1sYXN0LW1vZGlmaWVyKQogIChyZWdpc3Rlci1maWxlLWhlYWRlci1hY3Rpb24gIlsgXHRdTGFz
+dCBNb2RpZmllZCBPblsgXHRdKjogIiAgJ3VwZGF0ZS1sYXN0LW1vZGlmaWVkLWRhdGUpCiAgOzso
+cmVnaXN0ZXItZmlsZS1oZWFkZXItYWN0aW9uICJeLiogKlxcKC4qXFwpICpcXC1cXC0iICd1cGRh
+dGUtZmlsZS1uYW1lKQogICkKCjs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7
+Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Owo7OyBNb2RlIHNwZWNpZmljIGhlYWRl
+cnM6Cjs7ICBOb3QgYWxsIGhlYWRlcnMgc2hvdWxkIGxvb2sgYWxpa2UuIFN1cHBvc2UgdGhhdCB5
+b3UgaGF2ZSBhIHVuaXggc2NyaXB0Cjs7ICBtb2RlIGFuZCB3YW50IGl0IHRvIGhhdmUgYSBzaGVs
+bCBzcGVjaWZpZXIgbGluZSB0aGF0IGFsbCBvdGhlciBoZWFkZXJzCjs7ICBkbyBub3QgaGF2ZS4g
+VG8gZG8gdGhpcywgUGxhY2UgdGhlIGZvbGxvd2luZyBsaW5lcwo7OyAgICAgKG1ha2UtbG9jYWwt
+dmFyaWFibGUgJ21ha2UtaGVhZGVyLWhvb2tzKQo7OyAgICAgKHNldHEgbWFrZS1oZWFkZXItaG9v
+a3MgKGNvbnMgJ2hlYWRlci1zaGVsbCAKOzsgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAoZGVmYXVsdC12YWx1ZSAnbWFrZS1oZWFkZXItaG9va3MpKSkgIAo7OyAgZWl0aGVyIGlu
+IGEgaG9vayBjYWxsZWQgd2hlbiB0aGUgbW9kZSBpcyBpbnZva2VkIG9yIGluIHRoZSBjb2RlIHRo
+YXQKOzsgIGVzdGFibGlzaGVzIHRoZSBtb2RlLgo7Owo7OyAgTm90ZSB0aGF0IHRoZSBoZWFkZXIg
+YnVpbGRpbmcgYmxvY2tzIGFyZSBhdXRvbWF0aWNhbGx5IHNlbnNpdGl2ZSB0byB0aGUKOzsgIGRp
+ZmZlcmVudCBjb21tZW50IGNoYXJhY3RlcnMgaW4gZGlmZmVyZW50IG1vZGVzLgo7Owo7OyBNb2Rl
+IHNwZWNpZmljIHVwZGF0ZSBhY3Rpb25zOgo7OyAgU3VwcG9zZSBzb21ldGhpbmcgbmVlZHMgdG8g
+YmUgYXV0b21hdGljYWxseSBtYWludGFpbmVkIG9ubHkgaW4gY2VydGlhbgo7OyAgbW9kZXMuIEFu
+IGV4YW1wbGUgaXMgdGhlIC5USCBtYWNybyBpbiBtYW4gcGFnZXMuICBZb3UgY2FuIGNyZWF0ZSBt
+b2RlCjs7ICBzcGVjaWZpYyB1cGRhdGUgYWN0aW9ucyBieSBwbGFjaW5nIGxpbmVzIHN1Y2ggYXMg
+dGhlIGZvbGxvd2luZyBpbiB0aGUKOzsgIG1vZGUgY3JlYXRpb24gZnVuY3Rpb24gb2YgaW4gdGhl
+IG1vZGUgaG9vay4KOzsgICAgKG1ha2UtbG9jYWwtdmFyaWFibGUgJ2ZpbGUtaGVhZGVyLXVwZGF0
+ZS1hbGlzdCkKOzsgICAgKHJlZ2lzdGVyLWZpbGUtaGVhZGVyLWFjdGlvbgo7OyAgICAgICJeXC5U
+SFsgXHRdK1teXCIgXHRdK1sgXHRdK1teXCIgXHRdK1sgXHRdK1wiXFwoW15cIl0qXFwpXCIiIAo7
+OyAgICAgJ3VwZGF0ZS1sYXN0LW1vZGlmaWVkLWRhdGUtbWFjcm8pCjs7Ozs7Ozs7Ozs7Ozs7Ozs7
+Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7OwoK
+Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7
+Ozs7Ozs7Ozs7Ozs7Ozs7Cjs7IERlZmluZSB0aGUgaW5kaXZpZHVhbCBoZWFkZXIgZWxlbWVudHMu
+ICBUSEVTRSBBUkUgVEhFIEJVSUxESU5HIEJMT0NLUwo7OyB1c2VkIHRvIGNvbnN0cnVjdCBhIHNp
+dGUgc3BlY2lmaWMgaGVhZGVyLiAgWW91IG1heSBhZGQgeW91ciBvd24KOzsgZnVuY3Rpb25zIGVp
+dGhlciBpbiB0aGlzIGZpbGUgb3IgaW4geW91ciAuZW1hY3MgZmlsZS4gIFRoZSB2YXJpYWJsZQo7
+OyBtYWtlLWhlYWRlci1ob29rcyBzcGVjaWZpZXMgdGhlIGZ1bmN0aW9ucyB0aGF0IHdpbGwgYWN0
+dWFsbHkgYmUgY2FsbGVkLgo7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7
+Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7OzsKKGRlZnVuIGhlYWRlci1ibGFuayAoKQog
+ICJQbGFjZXMgYSBibGFuayBsaW5lIGludG8gYSBmaWxlIGhlYWRlciIKICAoaW5zZXJ0IGhlYWRl
+ci1wcmVmaXgtc3RyaW5nICAiXG4iKSkKCihkZWZ1biBoZWFkZXItZmlsZS1uYW1lICgpCiAgIlBs
+YWNlcyB0aGUgYnVmZmVyJ3MgZmlsZSBuYW1lIGFuZCBsZWF2ZXMgcm9vbSBmb3IgYSBkZXNjcmlw
+dGlvbi4iCiAgKGluc2VydCBoZWFkZXItcHJlZml4LXN0cmluZyAoYnVmZmVyLW5hbWUpICIgLS0g
+XG4iKQogIChzZXRxIHJldHVybi10byAoMS0gKHBvaW50KSkpKQoKKGRlZnVuIGhlYWRlci1hdXRo
+b3IgKCkKICAiSW5zZXJ0cyB0aGUgY3VycmVudCB1c2VyJ3MgbmFtZSBhcyB0aGUgbW9kdWxlJ3Mg
+YXV0aG9yLiIKICAoaW5zZXJ0IGhlYWRlci1wcmVmaXgtc3RyaW5nICJBdXRob3IgICAgICAgICAg
+OiAiICh1c2VyLWZ1bGwtbmFtZSkgIlxuIikpCgooZGVmdW4gaGVhZGVyLWNyZWF0aW9uLWRhdGUg
+KCkKICAiUGxhY2VzIHRvZGF5J3MgZGF0YSBhcyB0aGUgZmlsZSBjcmVhdGlvbiBkYXRlLiIKICAo
+aW5zZXJ0IGhlYWRlci1wcmVmaXgtc3RyaW5nICJDcmVhdGVkIE9uICAgICAgOiAiICAoY3VycmVu
+dC10aW1lLXN0cmluZykgIlxuIikpCgooZGVmdW4gaGVhZGVyLW1vZGlmaWNhdGlvbi1hdXRob3Ig
+KCkKICAiSW5zZXJ0cyB0aGUgY3VycmVudCB1c2VyJ3MgbmFtZSBhcyB0aGUgb25lIHdobyBsYXN0
+IG1vZGlmaWVkIHRoZSBtb2R1bGUuCiAgIFRoaXMgd2lsbCBiZSBvdmVyd3JpdHRlbiB3aXRoIGVh
+Y2ggZmlsZSBzYXZlIGlmIGFsbCB0aGUKICAgZmlsZS1oZWFkZXItYWN0aW9ucyBpbiB0aGUgZGVm
+YXVsdCBoZWFkZXIuZWwgZmlsZSBhcmUgcmVnaXN0ZXJlZC4iCiAgKGluc2VydCBoZWFkZXItcHJl
+Zml4LXN0cmluZyAgIkxhc3QgTW9kaWZpZWQgQnk6IFxuIikpCgooZGVmdW4gaGVhZGVyLW1vZGlm
+aWNhdGlvbi1kYXRlICgpCiAgIkluc2VydHMgdG9kYXlzIGRhdGUgYXMgdGhlIHRpbWUgb2YgbGFz
+dCBtb2RpZmljYXRpb24uCiAgIFRoaXMgd2lsbCBiZSBvdmVyd3JpdHRlbiB3aXRoIGVhY2ggZmls
+ZSBzYXZlIGlmIGFsbCB0aGUKICAgZmlsZS1oZWFkZXItYWN0aW9ucyBpbiB0aGUgZGVmYXVsdCBo
+ZWFkZXIuZWwgZmlsZSBhcmUgcmVnaXN0ZXJlZC4iCiAgKGluc2VydCBoZWFkZXItcHJlZml4LXN0
+cmluZyAgIkxhc3QgTW9kaWZpZWQgT246IFxuIikpCgooZGVmdW4gaGVhZGVyLXVwZGF0ZS1jb3Vu
+dCAoKQogICJJbnNlcnRzIGEgY291bnQgb2YgdGhlIG51bWJlciBvZiB0aW1lcyB0aGUgZmlsZSBo
+YXMgYmVlbiBzYXZlZC4gIFRoaXMgaXMKICBvZnRlbiBhIG1vcmUgdXNlZnVsIG1lYXN1cmUgb2Yg
+J2FnZScgYW5kICdtb2RpZmljYXRpb25zJyB0aGFuIGRhdGVzCiAgcmVjb3JkZWQgaW4gdGhlIGZp
+bGUgc3lzdGVtLiAgSXQgaXMgYSBoYW5keSBjb2RlIG1ldHJpYyB0aGF0IGlzIGEKICBzdXJwcml6
+aW5nbHkgZ29vZCBpbmRpY2F0aW9uIG9mIGZpbGUgY29tcGxleGl0eSBhbmQgY2FuIG9mdGVuIGhl
+bHAKICBpbmRpY2F0ZSB3aGljaCBtb2R1bGVzIGhhdmUgYmVlbiBjaGFuZ2VkIHNvIG11Y2ggdGhh
+dCB0aGV5IG5lZWQgYSByZXRoaW5rLgogIEl0IGFsc28gYXNzaXN0IHJlY292ZXJ5IGZyb20gc291
+cmNlIGNvbnRyb2wgbWl4dXBzLiIgIAogIChpbnNlcnQgaGVhZGVyLXByZWZpeC1zdHJpbmcgICJV
+cGRhdGUgQ291bnQgICAgOiAwXG4iKSkKCihkZWZ1biBoZWFkZXItc3RhdHVzICgpCiAgIkluc2Vy
+dHMgYSBzdGF0dXMgbGluZSB0aGF0IHNob3VsZCBiZSBtYW51YWxseSBlZGl0ZWQgdG8gcmVmbGVj
+dCB0aGUKICAgZ2VuZXJhbCBjb25kaXRpb24gb2YgdGhlIGVudGlyZSBtb2R1bGUuIgogIChpbnNl
+cnQgaGVhZGVyLXByZWZpeC1zdHJpbmcKCSAgIlN0YXR1cyAgICAgICAgICA6IFVua25vd24sIFVz
+ZSB3aXRoIGNhdXRpb24hXG4iKSkKCihkZWZ1biBoZWFkZXItaGlzdG9yeSAoKQogICJJbnNlcnRz
+IEhJU1RPUlkgbGluZSBpbnRvIGhlYWRlciBmb3IgbGF0ZXIgdXNlIGJ5IG1ha2UtcmV2aXNpb24u
+CiAgIFdpdGhvdXQgdGhpcywgbWFrZSBoaXN0b3J5IHdpbGwgaW5zZXJ0IGFmdGVyIHRoZSBoZWFk
+ZXIuIgogIChpbnNlcnQgaGVhZGVyLXByZWZpeC1zdHJpbmcgICJISVNUT1JZXG4iKSkKCihkZWZ1
+biBoZWFkZXItcHVycG9zZSAoKQogICJJbnNlcnRzIGEgbGluZSB0aGF0IHN0YXJ0cyBhIHNlY3Rp
+b24gdGhhdCBzaG91bGQgZGVzY3JpYmUgdGhlIHB1cnBvc2Ugb2YKICAgdGhlIGZpbGUvbW9kdWxl
+LiIKICAoaW5zZXJ0IGhlYWRlci1wcmVmaXgtc3RyaW5nICAiUFVSUE9TRVxuIgoJICBoZWFkZXIt
+cHJlZml4LXN0cmluZyAiCXw+RGVzY3JpcHRpb24gb2YgbW9kdWxlcyBwdXJwb3NlPHxcbiIpKQoK
+KGRlZnVuIGhlYWRlci10b2MgKCkKICAiSW5zZXJ0cyBhIGxpbmUgdGhhdCBzdGFydHMgYSBzZWN0
+aW9uIHRoYXQgc2hvdWxkIGRlc2NyaWJlIGVhY2ggZnVuY3Rpb24KICAgZGVmaW5lZCBpbiB0aGUg
+bW9kdWxlIHRoYXQgaXMgc2lnbmlmaWNhbnQgdG8gZXh0ZXJuYWwgdXNlcnMuIgogIChpbnNlcnQg
+aGVhZGVyLXByZWZpeC1zdHJpbmcgICJUQUJMRSBPRiBDT05URU5UU1xuIiBoZWFkZXItcHJlZml4
+LXN0cmluZyAiXG4iKSkKCihkZWZ1biBoZWFkZXItcmNzICgpCiAgIkluc2VydHMgbGluZXMgdG8g
+cmVjb3JkIHJjcyBpbmZvcm1hdGlvbi4iCiAgKGluc2VydCBoZWFkZXItcHJlZml4LXN0cmluZwoJ
+ICAiJExvY2tlciRcbiIJCgkgIGhlYWRlci1wcmVmaXgtc3RyaW5nCgkgICIkTG9nJFxuIikpCgoo
+ZGVmdW4gaGVhZGVyLXNjY3MgKCkKICAiSW5zZXJ0cyBhIGxpbmUgdG8gcmVjb3JkIHNjY3MgaW5m
+b3JtYXRpb24uIgogIChpbnNlcnQgaGVhZGVyLXByZWZpeC1zdHJpbmcgIlNDQ1MgU3RhdHVzICAg
+ICA6ICVXJVx0JUclXG4iKSkKCihkZWZ1biBoZWFkZXItQUZTICgpCiAgIkluc2VydHMgYSBsaW5l
+IHRvIHJlY29yZCBTSEFQRSBpbmZvcm1hdGlvbi4iCiAgKGluc2VydCBoZWFkZXItcHJlZml4LXN0
+cmluZyAiQUZTSUQgICAgICAgICAgIDogJF9fSGVhZGVyJFxuIikpCgooZGVmdW4gaGVhZGVyLWNv
+cHlyaWdodCAoKQogICJJbnNlcnRzIHRoZSBjb3B5cmlnaHQgbm90aWNlIHN0b3JlZCBpbiB0aGUg
+dmFyaWFibGUgaGVhZGVyLWNvcHlyaWdodC1ub3RpY2UuCiAgIFRoaXMgdmFsdWUgbWF5IGJlIG5p
+bC4iCiAgKGlmIGhlYWRlci1jb3B5cmlnaHQtbm90aWNlCiAgICAgIChsZXQgKChzdGFydCAocG9p
+bnQpKSkKCShpbnNlcnQgaGVhZGVyLWNvcHlyaWdodC1ub3RpY2UpCgkoc2F2ZS1yZXN0cmljdGlv
+bgoJICAobmFycm93LXRvLXJlZ2lvbiBzdGFydCAocG9pbnQpKQoJICAoZ290by1jaGFyIChwb2lu
+dC1taW4pKQoJICA7OyBJIG11c3Qgbm93IGluc2VydCB0aGUgaGVhZGVyIHByZWZpeC4gIEkgY2Fu
+bm90IGp1c3QgZG8gYQoJICA7OyByZXBsYWNlIHN0cmluZyBiZWNhdXNlIHRoYXQgd291bGQgY2F1
+c2UgdG9vIG1hbnkgdW5kbyBib3VuZHJpZXMuCgkgIChpbnNlcnQgaGVhZGVyLXByZWZpeC1zdHJp
+bmcpCgkgICh3aGlsZSAocHJvZ24gKHNraXAtY2hhcnMtZm9yd2FyZCAiXlxuIikgKGxvb2tpbmct
+YXQgIlxuIikpCgkgICAgKGZvcndhcmQtY2hhciAxKQoJICAgIChpbnNlcnQgaGVhZGVyLXByZWZp
+eC1zdHJpbmcpKQoJICAoZ290by1jaGFyIChwb2ludC1tYXgpKSkKCShpbnNlcnQgIlxuIikpKSkK
+CihkZWZ1biBoZWFkZXItc2hlbGwgKCkKICAiSW5zZXJ0cyBhIGtlcm5hbCBzaGVsbCBzcGVjaWZp
+ZXIgbGluZS4gVXNlcyB0aGUgc2FtZSBzaGVsbCBuYW1lZCBpbgogICBleHBsaWNpdC1zaGVsbC1m
+aWxlLW5hbWUsIHRoZSBFU0hFTEwgZW52aXJvbm1lbnQgdmFyaWFibGUsIHRoZSBTSEVMTAogICAg
+ZW52aXJvbm1lbnQgdmFyaWFibGUsIG9yICcvYmluL3NoJy4gKFRoaXMgaXMgdGhlIHNhbWUgc2hl
+bGwgdGhhdCB0aGUKICAgc2hlbGwgY29tbWFuZCB1c2VzLiIKICAoaW5zZXJ0ICIjISIgKG9yIChh
+bmQgKGJvdW5kcCAnZXhwbGljaXQtc2hlbGwtZmlsZS1uYW1lKQoJCQkgZXhwbGljaXQtc2hlbGwt
+ZmlsZS1uYW1lKQoJCSAgIChnZXRlbnYgIkVTSEVMTCIpCgkJICAgKGdldGVudiAiU0hFTEwiKQoJ
+CSAgICIvYmluL3NoIikKCSAgIlxuIikpCgooZGVmdW4gaGVhZGVyLW1vZGUtbGluZSAoKQogICJJ
+bnNlcnRzIHRoZSBtb2RlIGxpbmUgaW50byB0aGUgYnVmZmVyLiIKICAobGV0KiAoKG1vZGUtZGVj
+bGFyYXRpb24KCSAgKGNvbmNhdCAiIC0qLSBNb2RlOiAiICh0cnVlLW1vZGUtbmFtZSkKCQkgIChp
+ZiAoYXNzb2MgJ2Mtc3R5bGUgKGJ1ZmZlci1sb2NhbC12YXJpYWJsZXMpKQoJCSAgICAgIChjb25j
+YXQgIjsgQy1TdHlsZTogIiAoc3ltYm9sLW5hbWUgYy1zdHlsZSkpCgkJICAgICIiKQoJCSAgIiAt
+Ki0gIikpCgkgKG1kLWxlbmd0aCAobGVuZ3RoIG1vZGUtZGVjbGFyYXRpb24pKSkKICAgIChpbnNl
+cnQgKGNvbmQKCSAgICAgKChhbmQgY29tbWVudC1zdGFydCAoPSAobGVuZ3RoIGNvbW1lbnQtc3Rh
+cnQpIDEpKQoJICAgICAgOzsgSSB3aWxsIHByZXN1bWUgdGhhdCB0aGUgY29tbWVudCBzdGFydCBj
+aGFyYWN0ZXIgaXMKCSAgICAgIDs7IHRoZSBmaWxsZXIgY2hhcmFjdGVyLgoJICAgICAgKGNvbmNh
+dCBjb21tZW50LXN0YXJ0IGNvbW1lbnQtc3RhcnQKCQkgICAgICAobWFrZS1zdHJpbmcgKC8gKC0g
+NzcgbWQtbGVuZ3RoKSAyKQoJCQkJICAgKGFyZWYgY29tbWVudC1zdGFydCAwKSkKCQkgICAgICBt
+b2RlLWRlY2xhcmF0aW9uCgkJICAgICAgKG1ha2Utc3RyaW5nICgvICgtIDc4IG1kLWxlbmd0aCkg
+MikKCQkJCSAgIChhcmVmIGNvbW1lbnQtc3RhcnQgMCkpCgkJICAgICAgKSkKCSAgICAgKGNvbW1l
+bnQtc3RhcnQtcAoJICAgICAgOzsgSSB3aWxsIHByZXN1bWUgdGhhdCBzcGFjZXMgd2lsbCBmaWxs
+IHRoZSBnYXBzCgkgICAgICAoY29uY2F0IGNvbW1lbnQtc3RhcnQKCQkgICAgICAobWFrZS1zdHJp
+bmcgKC8gKC0gNzkgbWQtbGVuZ3RoIChsZW5ndGggY29tbWVudC1zdGFydCkpCgkJCQkgICAgICAy
+KSA/XCApCgkJICAgICAgbW9kZS1kZWNsYXJhdGlvbikpCgkgICAgICh0OzsgdGhlcmUgaXMgbm8g
+a25vd24gY29tbWVudC1zdGFydC4gUHJlc3VtZSBsaXNwCgkgICAgICAoY29uY2F0ICI7OyIKCQkg
+ICAgICAobWFrZS1zdHJpbmcgKC8gKC0gNzcgbWQtbGVuZ3RoKSAyKSA/XDspCgkJICAgICAgbW9k
+ZS1kZWNsYXJhdGlvbgoJCSAgICAgIChtYWtlLXN0cmluZyAoLyAoLSA3OCBtZC1sZW5ndGgpIDIp
+ID9cOykpKSkKCSAgICAiXG4iKSkKICApCgooZGVmdW4gaGVhZGVyLWVuZC1saW5lICgpCiAgIklu
+c2VydHMgYSB0cmFpbGluZyBkaXZpc29yIGxpbmUgZm9yIGhlYWRlcnMuIgogIChpbnNlcnQgKGNv
+bmQgKGNvbW1lbnQtZW5kLXAgY29tbWVudC1lbmQpCgkJKChhbmQgY29tbWVudC1zdGFydCAoPSAo
+bGVuZ3RoIGNvbW1lbnQtc3RhcnQpIDEpKQoJCSAobWFrZS1zdHJpbmcgNzkgKGFyZWYgY29tbWVu
+dC1zdGFydCAwKSkpCgkJKGNvbW1lbnQtc3RhcnQtcCBjb21tZW50LXN0YXJ0KQoJCSh0ICAgICAg
+IChtYWtlLXN0cmluZyA3OSA/XDspKSkKCSAgIlxuXG4iKSkKCjs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7
+Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Owo7OyBT
+eXN0ZW0gVmFyaWFibGVzIC0tIERvIG5vdCBtb2RpZnkuIEluc3RlYWQsIGNhbGwgdGhlIGZ1bmN0
+aW9ucyB0aGF0IG1vZGlmeS4KOzs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7
+Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7CihkZWZ2YXIgZmlsZS1oZWFkZXItdXBk
+YXRlLWFsaXN0ICgpCiAgIlVzZWQgYnkgdXBkYXRlIGZpbGUgaGVhZGVyIHRvIGtub3cgd2hhdCB0
+byBkbyBpbiB0aGUgZmlsZS4gSXMgYSBsaXN0IG9mCiAgIHNldHMgb2YgY29ucyBjZWxscyB3aGVy
+ZSB0aGUgY2FyIGlzIGEgcmVnZXhwIHN0cmluZyBhbmQgdGhlIGNkciBpcyB0aGUKICAgZmNuIHRv
+IGNhbGwgaWYgdGhlIHN0cmluZyBpcyBmb3VuZCBuZWFyIHRoZSBzdGFydCBvZiB0aGUgZmlsZS4i
+KSAgCgo7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7
+Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7OzsKOzsgVXNlciBmdW5jdGlvbiB0byBkZWNsYXJlIGhlYWRlciBh
+Y3Rpb25zIG9uIGEgc2F2ZSBmaWxlLgo7OyAgIFNlZSBleGFtcGxlcyBhdCB0aGUgZW5kIG9mIHRo
+aXMgZmlsZS4KOzsgSW52b2tlIGZyb20gc2l0ZS1pbml0LmVsIG9yIGluIC5lbWFjcy4KOzs7Ozs7
+Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7
+Ozs7Ozs7Ozs7CihkZWZ1biByZWdpc3Rlci1maWxlLWhlYWRlci1hY3Rpb24gKHJlZ2V4cCBmdW5j
+dGlvbi10by1jYWxsKQogICJBY2NlcHRzIFJFR0VYUCBhbmQgRlVOQ1RJT04tVE8tQ0FMTC4gUmVj
+b3JkcyAKICAgRlVOQ1RJT04tVE8tQ0FMTCBhcyB0aGUgYXBwcm9waWF0ZSBhY3Rpb24gdG8gdGFr
+ZSBpZiB0aGUgUkVHRVhQIGlzCiAgIGZvdW5kIGluIHRoZSBmaWxlIGhlYWRlciB3aGVuIGEgZmls
+ZSBpcyB3cml0dGVuLiAgVGhlIGZ1bmN0aW9uIHdpbGwgYmUKICAgY2FsbGVkIHdpdGggdGhlIGN1
+cnNvciBsb2NhdGVkIGp1c3QgYWZ0ZXIgdGhlIG1hdGNoZWQgcmVnZXhwLgoKICAgQ2FsbGluZyB0
+aGlzIGZjbiB0d2ljZSB3aXRoIHRoZSBzYW1lIGFyZ3VtZW50cyBvdmVyd3JpdGVzCiAgIHRoZSBw
+cmV2aW91cyBGVU5DVElPTi1UTy1DQUxMIgogIChsZXQgKChtbCAoYXNzb2MgcmVnZXhwIGZpbGUt
+aGVhZGVyLXVwZGF0ZS1hbGlzdCkpKQogICAgKGlmIG1sCgkoc2V0Y2RyIG1sIGZ1bmN0aW9uLXRv
+LWNhbGwpOzsgb3ZlcndyaXRlIG9sZCBkZWZuCiAgICAgIDs7IFRoaXMgZW50cnkgaXMgbmV3IHRv
+IHVzLiBBZGQgdG8gdGhlIG1hc3RlciBhbGlzdAogICAgICAoc2V0cSBmaWxlLWhlYWRlci11cGRh
+dGUtYWxpc3QKCSAgICAoY29ucyAoY29ucyByZWdleHAgZnVuY3Rpb24tdG8tY2FsbCkKCQkgIGZp
+bGUtaGVhZGVyLXVwZGF0ZS1hbGlzdCkpKSkpCgo7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7
+Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7OzsKOzs7Ozs7Ozs7Ozs7
+Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7
+Ozs7Cjs7IEhlYWRlciBhbmQgZmlsZSBkaXZpc2lvbiBoZWFkZXIgY3JlYXRpb24gY29kZQo7Ozs7
+Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7
+Ozs7Ozs7Ozs7OzsKOzs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7
+Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7CihkZWZ1biB0cnVlLW1vZGUtbmFtZSAoKQogICJS
+ZXR1cm5zIHRoZSBuYW1lIG9mIHRoZSBtb2RlIGluIHN1Y2ggYSBmb3JtIHRoYXQgdGhlIG1vZGUg
+bWF5IGJlCiAgcmUtZXN0YWJsaXNoZWQgYnkgY2FsbGluZyB0aGUgZnVuY3Rpb24gbmFtZWQgYnkg
+YXBwZW5kaW5nICctbmFtZScgdG8KICB0aGlzIHN0cmluZy4gIFRoaXMgZGlmZmVycyBmcm9tIHRo
+ZSB2YXJpYWJsZSBjYWxsZWQgbW9kZS1uYW1lIGluIHRoYXQKICB0aGlzIGlzIGd1YXJhbnRlZWQg
+dG8gd29yayB3aGlsZSB0aGUgdmFsdWVzIGhlbGQgYnkgdGhlIHZhcmlhYmxlIG1heQogIGhhdmUg
+ZW1iZWRkZWQgc3BhY2VzIG9yIG90aGVyIGp1bmsuCgogIFRISVMgTU9ERSBOQU1FIElTIEdVQVJB
+TlRFRUQgT0sgVE8gVVNFIElOIFRIRSBNT0RFIExJTkUuIgogIChsZXQgKChtYWpvci1tb2RlLW5h
+bWUgKHN5bWJvbC1uYW1lIG1ham9yLW1vZGUpKSkKICAgIChjYXBpdGFsaXplIChzdWJzdHJpbmcg
+bWFqb3ItbW9kZS1uYW1lIDAKCQkJICAgKG9yICAgKHN0cmluZy1tYXRjaCAiLW1vZGUiIG1ham9y
+LW1vZGUtbmFtZSkKCQkJCSAobGVuZ3RoIG1ham9yLW1vZGUtbmFtZSkpKSkpKQoKCihkZWZ1biBo
+ZWFkZXItcHJlZml4LXN0cmluZyAoKQogICJSZXR1cm5zIGEgbW9kZSBzcGVjaWZpYyBwcmVmaXgg
+c3RyaW5nIGZvciB1c2UgaW4gaGVhZGVycy4gSXMgc2Vuc2l0aXZlCiAgIHRvIHRoZSB2YXJpb3Vz
+IGxhbmd1YWdlIGRlcGVuZGVudCBjb21tZW50IGNvdmVudGlvbnMuIgogIChsZXQgKChjb21tZW50
+LWVuZC1wIChhbmQgY29tbWVudC1lbmQKCQkJICAgIChub3QgKHN0cmluZy1lcXVhbCBjb21tZW50
+LWVuZCAiIikpKSkpCiAgICAoY29uZAogICAgICgoYW5kIGNvbW1lbnQtc3RhcnQgKD0gKGxlbmd0
+aCBjb21tZW50LXN0YXJ0KSAxKSkKICAgICAgKGNvbmNhdCBjb21tZW50LXN0YXJ0IGNvbW1lbnQt
+c3RhcnQgIiAiKSkKICAgICA7OyBTcGVjaWFsIGNhc2UsIHRocmVlIGxldHRlciBjb21tZW50IHN0
+YXJ0cyB3aGVyZSB0aGUgZmlyc3QgYW5kCiAgICAgOzsgc2Vjb25kIGxldHRlcnMgYXJlIHRoZSBz
+YW1lLiAoaS5lLiBjKysgYW5kIGFkYSkKICAgICAoKGFuZCBjb21tZW50LXN0YXJ0ICg9IChsZW5n
+dGggY29tbWVudC1zdGFydCkgMykKCSAgIChlcXVhbCAoYXJlZiBjb21tZW50LXN0YXJ0IDEpIChh
+cmVmIGNvbW1lbnQtc3RhcnQgMCkpKQogICAgICBjb21tZW50LXN0YXJ0KQogICAgIDs7IE90aGVy
+IHRocmVlIGxldHRlciBjb21tZW50IHN0YXJ0cyAtPiBncmFiIHRoZSBtaWRkbGUgY2hhcmFjdGVy
+CiAgICAgKChhbmQgY29tbWVudC1zdGFydCAoPSAobGVuZ3RoIGNvbW1lbnQtc3RhcnQpIDMpKQog
+ICAgICAoY29uY2F0ICIgIiAobGlzdCAoYXJlZiBjb21tZW50LXN0YXJ0IDEpKSAiICIpKQogICAg
+IDs7IAogICAgICgoYW5kIGNvbW1lbnQtc3RhcnQgKG5vdCBjb21tZW50LWVuZC1wKSkKICAgICAg
+OzsgTm90ZTogbm8gY29tbWVudCBlbmQgaW1wbGllcyB0aGF0IHRoZSBmdWxsIGNvbW1lbnQgc3Rh
+cnQgbXVzdCBiZQogICAgICA7OyB1c2VkIG9uIGVhY2ggbGluZS4KICAgICAgY29tbWVudC1zdGFy
+dCkKICAgICAodAkJCQkJOyBJIGhhdmUgbm8gaWRlYSB3aGF0IGlzIGEgZ29vZCBibG9jayAKCQkJ
+CQk7IHN0YXJ0IGNoYXJhY3RlciBhbmQgd2lsbCB1c2UgbGlzcAoJCQkJCTsgYXMgYSBkZWZhdWx0
+LgogICAgICAiOzsgIikpCiAgICApKQoKKGRlZnVuIG1ha2UtaGVhZGVyICgpCiAgIk1ha2VzIGEg
+c3RhbmRhcmQgZmlsZSBoZWFkZXIgYXQgdGhlIHRvcCBvZiB0aGUgYnVmZmVyLiBBIGhlYWRlciBp
+cwogICBjb21wb3NlZCBvZiBhIG1vZGUgbGluZSwgYSBib2R5LCBhbmQgYW4gZW5kIGxpbmUuICBU
+aGUgYm9keSBpcwogICBjb25zdHJ1Y3RlZCBieSBjYWxsaW5nIHRoZSBmdW5jdGlvbnMgaW4gbWFr
+ZS1oZWFkZXItaG9va3MuCiAgIFRoZSBtb2RlIGxpbmUgYW5kIGVuZCBsaW5lcyBzdGFydCBhbmQg
+dGVybWluYXRlIGJsb2NrIGNvbW1lbnRzIHdoaWxlIHRoZQogICBib2R5IGxpbmVzIGp1c3QgaGF2
+ZSB0byBjb250aW51ZSB0aGUgY29tbWVudC4gIgogIChpbnRlcmFjdGl2ZSkKICAoYmVnaW5uaW5n
+LW9mLWJ1ZmZlcikgICAgICAgOzsgbGVhdmUgdGhlIG1hcmsgYXQgdGhlIG9sZCBsb2NhdGlvbgog
+IDs7IER5bmFtaWNhbGx5IGJvdW5kIHNvbWUgaGFuZHkgdmFyaWFibGVzCiAgKGxldCAoKHJldHVy
+bi10byBuaWwpICAgICAgIDs7OyB0byBiZSBzZXQgYnkgbWFrZS1oZWFkZXItaG9va3MgZnVuY3Rp
+b25zCgkoaGVhZGVyLXByZWZpeC1zdHJpbmcgKGhlYWRlci1wcmVmaXgtc3RyaW5nKSkgOzs7IGNh
+Y2hlIHRoZSByZXN1bHQKCShjb21tZW50LXN0YXJ0LXAKCSAoYW5kIGNvbW1lbnQtc3RhcnQgKG5v
+dCAoc3RyaW5nLWVxdWFsIGNvbW1lbnQtc3RhcnQgIiIpKSkpCgkoY29tbWVudC1lbmQtcCAoYW5k
+IGNvbW1lbnQtZW5kIChub3QgKHN0cmluZy1lcXVhbCBjb21tZW50LWVuZCAiIikpKSkpCgogICAg
+OzsgRG8gdGhlIGhlYWRlciBmdW5jdGlvbnMKICAgIChtYXBjYXIgJ2Z1bmNhbGwgbWFrZS1oZWFk
+ZXItaG9va3MpCgogICAgOzsgTW92ZSB0byB3aGVyZXZlciByZXR1cm4tdG8gd2FzIHNldAogICAg
+KGlmIHJldHVybi10byAoZ290by1jaGFyIHJldHVybi10bykpCiAgICApKQoKKGRlZnVuIG1ha2Ut
+cmV2aXNpb24gKCkKICAiSW5zZXJ0cyBhIHJldmlzaW9uIG1hcmtlciBhZnRlciB0aGUgaGlzdG9y
+eSBsaW5lLiAgTWFrZXMgdGhlIGhpc3RvcnkKICAgbGluZSBpZiBpdCBkb2VzIG5vdCBhbHJlYWR5
+IGV4aXN0LiIKICAoaW50ZXJhY3RpdmUpCiAgKGxldCAoKGhlYWRlci1wcmVmaXgtc3RyaW5nICho
+ZWFkZXItcHJlZml4LXN0cmluZykpCgkobG9naWNhbC1jb21tZW50LXN0YXJ0CgkgKGlmICg9IChs
+ZW5ndGggY29tbWVudC1zdGFydCkgMSkKCSAgICAgKGNvbmNhdCBjb21tZW50LXN0YXJ0IGNvbW1l
+bnQtc3RhcnQgIiAiKQoJICAgY29tbWVudC1zdGFydCkpKQoKICAgIDs7IExvb2sgZm9yIHRoZSBI
+aXN0b3J5IGxpbmUKICAgIChiZWdpbm5pbmctb2YtYnVmZmVyKSAgICAgICAgIDs7OyBsZWF2ZSBh
+IG1hcmsgd2hlcmUgd2Ugd2VyZQogICAgKGlmIChyZS1zZWFyY2gtZm9yd2FyZCAoY29uY2F0ICJe
+XFwoIgoJCQkJICAgKHJlZ2V4cC1xdW90ZSAoaGVhZGVyLXByZWZpeC1zdHJpbmcpKQoJCQkJICAg
+IlxcfCIKCQkJCSAgIChpZiAoYW5kIGNvbW1lbnQtc3RhcnQKCQkJCQkgICAgKG5vdCAoc3RyaW5n
+LWVxdWFsIGNvbW1lbnQtc3RhcnQgIiIpKSkKCQkJCSAgICAgICAoY29uY2F0CgkJCQkJIlxcfCIg
+KHJlZ2V4cC1xdW90ZSBjb21tZW50LXN0YXJ0KSkKCQkJCSAgICAgIiIpCgkJCQkgICAiXFwpIgoJ
+CQkJICAgIiAqSGlzdG9yeSIpCgkJCSAgIGhlYWRlci1tYXggdCkKCShwcm9nbiAoZW5kLW9mLWxp
+bmUpKQogICAgICAocHJvZ24KCTs7IFdlIGRpZCBub3QgZmluZCBhIGhpc3RvcnkgbGluZSwgYWRk
+IG9uZQoJKGdvdG8tY2hhciAocG9pbnQtbWluKSkKCTs7IGZpbmQgdGhlIGZpcnN0IGxpbmUgdGhh
+dCBpcyBub3QgcGFydCBvZiB0aGUgaGVhZGVyCgkod2hpbGUgKGFuZCAoPCAocG9pbnQpIGhlYWRl
+ci1tYXgpCgkJICAgIChsb29raW5nLWF0CgkJICAgICAoY29uY2F0ICJbIFx0XSpcXCgiCgkJCSAg
+ICAgKHJlZ2V4cC1xdW90ZSAoaGVhZGVyLXByZWZpeC1zdHJpbmcpKQoJCQkgICAgIChpZiAoYW5k
+IGNvbW1lbnQtc3RhcnQKCQkJCSAgICAgIChub3QgKHN0cmluZy1lcXVhbCBjb21tZW50LXN0YXJ0
+ICIiKSkpCgkJCQkgKGNvbmNhdAoJCQkJICAiXFx8IiAocmVnZXhwLXF1b3RlIGNvbW1lbnQtc3Rh
+cnQpKQoJCQkgICAgICAgIiIpCgkJCSAgICAgKGlmIChhbmQgY29tbWVudC1lbmQKCQkJCSAgICAg
+IChub3QgKHN0cmluZy1lcXVhbCBjb21tZW50LWVuZCAiIikpKQoJCQkJIChjb25jYXQgIlxcfCIg
+KHJlZ2V4cC1xdW90ZSBjb21tZW50LWVuZCkpCgkJCSAgICAgICAiIikKCQkJICAgICAiXFwpIikp
+KQoJICAoZm9yd2FyZC1saW5lIDEpKQoJKGluc2VydCAiXG4iIGxvZ2ljYWwtY29tbWVudC1zdGFy
+dAoJCSJISVNUT1JZICIpCgkoc2F2ZS1leGN1cnNpb24gKGluc2VydCAiXG4iIGNvbW1lbnQtZW5k
+KSkpKQoKICAgIDs7IFdlIGFyZSBub3cgb24gdGhlIGxpbmUgd2l0aCB0aGUgaGlzdG9yeSBtYXJr
+ZXIKICAgIAogICAgKGluc2VydCAiXG4iCgkgICAgaGVhZGVyLXByZWZpeC1zdHJpbmcKCSAgICAo
+Y3VycmVudC1kLW0teS1zdHJpbmcpCgkgICAgIlx0XHQiCgkgICAgKHVzZXItZnVsbC1uYW1lKQoJ
+ICAgIDs7Ilx0fD5JZGVudDx8XG4iCgkgICAgIlx0XG4iCgkgICAgaGVhZGVyLXByZWZpeC1zdHJp
+bmcKCSAgICAiICAgIgoJICAgICkKICAgIDs7IE5vdywgYWRkIGRldGFpbHMgYWJvdXQgdGhlIGhp
+c3Rvcnkgb2YgdGhlIGZpbGUgYmVmb3JlIGl0cyBtb2RpZmljYXRpb24KICAgIChpZiAoc2F2ZS1l
+eGN1cnNpb24KCSAgKHJlLXNlYXJjaC1iYWNrd2FyZCAiTGFzdCBNb2RpZmllZCBPbltcdF0qOiBc
+XCguK1xcKSQiIG5pbCB0KSkKCShwcm9nbgoJICAoaW5zZXJ0ICJMYXN0IE1vZGlmaWVkOiAiIChi
+dWZmZXItc3Vic3RyaW5nIChtYXRjaC1iZWdpbm5pbmcgMSkKCQkJCQkJICAgICAgKG1hdGNoLWVu
+ZCAxKSkpCgkgIChpZiAoc2F2ZS1leGN1cnNpb24KCQkocmUtc2VhcmNoLWJhY2t3YXJkICJVcGRh
+dGUgQ291bnRbIFx0XSo6IFxcKFswLTldK1xcKSQiIG5pbCB0KSkKCSAgICAgIChpbnNlcnQgIiAj
+IiAoYnVmZmVyLXN1YnN0cmluZyAobWF0Y2gtYmVnaW5uaW5nIDEpCgkJCQkJICAgICAobWF0Y2gt
+ZW5kIDEpKSkpCgkgIChpZiAoc2F2ZS1leGN1cnNpb24KCQkocmUtc2VhcmNoLWJhY2t3YXJkICJM
+YXN0IE1vZGlmaWVkIEJ5WyBcdF0qOiBcXCguK1xcKSQiIG5pbCB0KSkKCSAgICAgIChpbnNlcnQg
+IiAoIiAoYnVmZmVyLXN1YnN0cmluZyAobWF0Y2gtYmVnaW5uaW5nIDEpCgkJCQkJICAgICAobWF0
+Y2gtZW5kIDEpKQoJCSAgICAgICIpIikpCgkgIChpbnNlcnQgIlxuIiBoZWFkZXItcHJlZml4LXN0
+cmluZyAiICAgIikpKQogICAgKSkKCihkZWZ1biBtYWtlLWRpdmlzb3IgKCZvcHRpb25hbCBlbmQt
+Y29sKQogICJBIGRpdmlzb3IgbGluZSBpcyB0aGUgY29tbWVudCBzdGFydCwgZmlsbGVyLCBhbmQg
+dGhlIGNvbW1lbnQgZW5kIgogIChpbnRlcmFjdGl2ZSkKICAoaW5zZXJ0IGNvbW1lbnQtc3RhcnQp
+CiAgKGlmICg9IDEgKGxlbmd0aCBjb21tZW50LXN0YXJ0KSkKICAgICAgKGluc2VydCBjb21tZW50
+LXN0YXJ0KSkKICAoaW5zZXJ0IChtYWtlLXN0cmluZyAobWF4IDIKCQkJICAgICgtIChvciBlbmQt
+Y29sICgtIGZpbGwtY29sdW1uIDIpKSAobGVuZ3RoCgkJCQkJCQkgICAgICAgY29tbWVudC1lbmQp
+CgkJCSAgICAgICAyIChjdXJyZW50LWNvbHVtbikpKQogICAgICAgICAgICAgICAgICAgICAgIChh
+cmVmIGNvbW1lbnQtc3RhcnQKCQkJICAgICAoaWYgKD0gMSAobGVuZ3RoIGNvbW1lbnQtc3RhcnQp
+KSAwIDEpKQoJCSAgICAgICApKQogIChpbnNlcnQgY29tbWVudC1lbmQpCiAgKQoKCihkZWZ1biBt
+YWtlLWJveC1jb21tZW50ICgmb3B0aW9uYWwgZW5kLWNvbCkKICAiSW5zZXJ0cyBhIGJveCBjb21t
+ZW50IHRoYXQgaXMgYnVpbHQgdXNpbmcgbW9kZSBzcGVjaWZpYyBjb21tZW50IGNoYXJhY3RlcnMu
+IgogIChpbnRlcmFjdGl2ZSkKICAoaWYgKG5vdCAoPSAwIChjdXJyZW50LWNvbHVtbikpKSAoZm9y
+d2FyZC1saW5lIDEpKQogIChpbnNlcnQgY29tbWVudC1zdGFydCkKICAoaWYgKD0gMSAobGVuZ3Ro
+IGNvbW1lbnQtc3RhcnQpKQogICAgICAoaW5zZXJ0IGNvbW1lbnQtc3RhcnQpKQogIChpZiAobm90
+IChjaGFyLWVxdWFsIChwcmVjZWRpbmctY2hhcikgPyApKSAoaW5zZXJ0ID8gKSkgCiAgKGluc2Vy
+dCAobWFrZS1zdHJpbmcgKG1heCAyCgkJCSAgICAoLSAob3IgZW5kLWNvbCBmaWxsLWNvbHVtbiAp
+IChsZW5ndGgKCQkJCQkJCSAgICAgICBjb21tZW50LWVuZCkKCQkJICAgICAgIDIgKGN1cnJlbnQt
+Y29sdW1uKSkpCiAgICAgICAgICAgICAgICAgICAgICAgKGFyZWYgY29tbWVudC1zdGFydAoJCQkg
+ICAgIChpZiAoPSAxIChsZW5ndGggY29tbWVudC1zdGFydCkpIDAgMSkpCgkJICAgICAgICkpCiAg
+KGluc2VydCAiXG4iIChoZWFkZXItcHJlZml4LXN0cmluZykgKQogIChzYXZlLWV4Y3Vyc2lvbgog
+ICAgKGluc2VydCAiXG4iIChoZWFkZXItcHJlZml4LXN0cmluZykKCSAgICAobWFrZS1zdHJpbmcg
+KG1heCAyCgkJCSAgICAgICgtIChvciBlbmQtY29sIGZpbGwtY29sdW1uKSAobGVuZ3RoCgkJCQkJ
+CQkJIGNvbW1lbnQtZW5kKQoJCQkJIDIgKGN1cnJlbnQtY29sdW1uKSkpCgkJCSAoYXJlZiBjb21t
+ZW50LXN0YXJ0CgkJCSAgICAgICAoaWYgKD0gMSAobGVuZ3RoIGNvbW1lbnQtc3RhcnQpKSAwIDEp
+KQoJCQkgKQoJICAgIGNvbW1lbnQtZW5kICJcbiIpKSkKCjs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7
+Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7OwoKKGRlZnVu
+IGN1cnJlbnQtZC1tLXktc3RyaW5nICgpCiAgKGxldCAoKHN0ciAoY3VycmVudC10aW1lLXN0cmlu
+ZykpKQogICAgKGNvbmNhdCAoaWYgKGVxdWFsID9cICAoYXJlZiBzdHIgOCkpCgkJICAgICAgIChz
+dWJzdHJpbmcgc3RyIDkgMTApCgkJICAgICAgIChzdWJzdHJpbmcgc3RyIDggMTApKQoJICAgICIt
+IgoJICAgIChzdWJzdHJpbmcgc3RyIDQgNykKCSAgICAiLSIKCSAgICAoc3Vic3RyaW5nIHN0ciAy
+MCAyNCkpKSkKCgo7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7
+Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7OzsKOzs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7
+Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Cjs7IEF1dG9tYXRpYyBI
+ZWFkZXIgdXBkYXRlIGNvZGUKOzs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7
+Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Cjs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7
+Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7OwooZGVmdW4g
+dXBkYXRlLWZpbGUtaGVhZGVyICgpCiAgIklmIHRoZSBmaWxlIGhhcyBiZWVuIG1vZGlmaWVkLCBz
+ZWFyY2hlcyB0aGUgZmlyc3QgaGVhZGVyLW1heCBjaGFycyBpbiB0aGUKICAgYnVmZmVyIHVzaW5n
+IHRoZSByZWdleHBzIGluIGZpbGUtaGVhZGVyLXVwZGF0ZS1hbGlzdC4gV2hlbiBhIG1hdGNoIGlz
+CiAgIGZvdW5kLCBpdCBhcHBsaWVzIHRoZSBjb3JyZXNwb25kaW5nIGZ1bmN0aW9uIHdpdGggdGhl
+IHBvaW50IGxvY2F0ZWQganVzdAogICBhZnRlciB0aGUgbWF0Y2guICBUaGUgZnVuY3Rpb25zIGNh
+biB1c2UgKG1hdGNoLWJlZ2lubmluZykgYW5kCiAgIChtYXRjaC1lbmQpIGNhbGxzIHRvIGZpbmQg
+b3V0IHRoZSBzdHJpbmdzIHRoYXQgY2F1c2VzIHRoZW0gdG8gYmUgaW52b2tlZC4iIAogIChpbnRl
+cmFjdGl2ZSkKICAoaWYgKGFuZCAoPiAoYnVmZmVyLXNpemUpIDEwMCkgKGJ1ZmZlci1tb2RpZmll
+ZC1wKSAobm90IGJ1ZmZlci1yZWFkLW9ubHkpKQogICAgICAoc2F2ZS1leGN1cnNpb24KCShzYXZl
+LXJlc3RyaWN0aW9uIDs7IG9ubHkgc2VhcmNoIHRoZSBoZWFkZXItbWF4IG51bWJlciBvZiBjaGFy
+YWN0ZXJzCgkgIChuYXJyb3ctdG8tcmVnaW9uIDEgKG1pbiBoZWFkZXItbWF4ICgtIChidWZmZXIt
+c2l6ZSkgMSkpKQoJICAobGV0ICgocGF0dGVybnMgZmlsZS1oZWFkZXItdXBkYXRlLWFsaXN0KSkK
+CSAgICA7OyBkbyBub3QgcmVjb3JkIHRoaXMgY2FsbCBhcyBhIGNvbW1hbmQgaW4gdGhlIGNvbW1h
+bmQgaGlzdG9yeQoJICAgIChzZXRxIGxhc3QtY29tbWFuZCBuaWwpCgkgICAgKHdoaWxlIHBhdHRl
+cm5zCgkgICAgICAoZ290by1jaGFyIChwb2ludC1taW4pKQoJICAgICAgKGlmIChyZS1zZWFyY2gt
+Zm9yd2FyZCAoY2FyIChjYXIgcGF0dGVybnMpKSBuaWwgdCkKCQkgIChwcm9nbgoJCSAgICA7OyBw
+b3NpdGlvbiB0aGUgY3Vyc29yIGF0IHRoZSBlbmQgb2YgdGhlIG1hdGNoCgkJICAgIChnb3RvLWNo
+YXIgKG1hdGNoLWVuZCAwKSkKCQkgICAgOzsobWVzc2FnZSAiZG8JCSAgICAoZnVuY2FsbCAoY2Ry
+IChjYXIgcGF0dGVybnMpKSkpKQoJICAgICAgKHNldHEgcGF0dGVybnMgKGNkciBwYXR0ZXJucykp
+CgkgICAgICApCgkgICAgKSkpKSkKCjs7IFBsYWNlIHRoZSBoZWFkZXIgdXBkYXRlIGZ1bmN0aW9u
+IGFzIGEgd3JpdGUgZmlsZSBhY3Rpb24KKGlmIChub3QgKG1lbXEgJ3VwZGF0ZS1maWxlLWhlYWRl
+ciB3cml0ZS1maWxlLWhvb2tzKSkKICAgIChzZXRxIHdyaXRlLWZpbGUtaG9va3MgKGNvbnMgJ3Vw
+ZGF0ZS1maWxlLWhlYWRlciB3cml0ZS1maWxlLWhvb2tzKSkpCgo7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7
+Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Owo7OyBO
+b3csIGRlZmluZSB0aGUgaW5kaXZpZHVhbCBmaWxlIGhlYWRlciBhY3Rpb25zLiAgVGhlc2UgYXJl
+IHRoZSBidWlsZGluZwo7OyBibG9ja3Mgb2YgYXV0b21hdGljIGhlYWRlciBtYWludGVuYW5jZS4K
+Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7
+Ozs7Ozs7Ozs7Ozs7OzsKKGRlZnVuIGRlbGV0ZS1hbmQtZm9yZ2V0LWxpbmUgKCkKICA7OyBkb2Vz
+IG5vdCBwbGFjZSB0aGUgbGluZSBpbiB0aGUga2lsbC1yaW5nCiAgKGxldCogKChzdGFydCAocG9p
+bnQpKQoJIChzdG9wICAocHJvZ24gKGVuZC1vZi1saW5lKSAocG9pbnQpKSkKCSAoc3RyICAgKGJ1
+ZmZlci1zdWJzdHJpbmcgc3RhcnQgc3RvcCkpCgkgKQogIChkZWxldGUtcmVnaW9uIHN0YXJ0IHN0
+b3ApCiAgc3RyKSkKCihkZWZ1biB1cGRhdGUtd3JpdGUtY291bnQgKCkKICAobGV0ICgobnVtKQoJ
+KHN0ciAgKGRlbGV0ZS1hbmQtZm9yZ2V0LWxpbmUpKSkKICAgIChzZXRxIG51bSAoY2FyIChyZWFk
+LWZyb20tc3RyaW5nIHN0cikpKQogICAgKGlmIChub3QgKG51bWJlcnAgbnVtKSkKCShwcm9nbgoJ
+ICAoaW5zZXJ0IHN0cikKCSAgKGVycm9yICJpbnZhbGlkIG51bWJlciBmb3IgdXBkYXRlIGNvdW50
+ICclcyciIHN0cikpCiAgICAgIChwcm9nbgoJOzsobWVzc2FnZSAiTmV3IHdyaXRlIGNvdW50PSVz
+IiBudW0pCgkoaW5zZXJ0IChmb3JtYXQgIiVzIiAoKyAxIG51bSkpKSkpCiAgICApKQoKKGRlZnVu
+IHVwZGF0ZS1sYXN0LW1vZGlmaWVyICgpCiAgKGRlbGV0ZS1hbmQtZm9yZ2V0LWxpbmUpCiAgKGlu
+c2VydCAoZm9ybWF0ICIlcyIgKHVzZXItZnVsbC1uYW1lKSkpCiAgKQoKKGRlZnVuIHVwZGF0ZS1s
+YXN0LW1vZGlmaWVkLWRhdGUgKCkKICAoZGVsZXRlLWFuZC1mb3JnZXQtbGluZSkKICAoaW5zZXJ0
+IChmb3JtYXQgIiVzIiAoY3VycmVudC10aW1lLXN0cmluZykpKQogICkKCihkZWZ1biB1cGRhdGUt
+ZmlsZS1uYW1lICgpCiAgKGJlZ2lubmluZy1vZi1saW5lKQogIDs7IHZlcmlmeSB0aGF0IHdlIGFy
+ZSBsb29raW5nIGF0IGEgZmlsZSBuYW1lIGZvciB0aGlzIG1vZGUKICAoaWYgKGxvb2tpbmctYXQK
+ICAgICAgIChjb25jYXQgKHJlZ2V4cC1xdW90ZSAoaGVhZGVyLXByZWZpeC1zdHJpbmcpKSAiICpc
+XCguKlxcKSAqXFwtXFwtIikpCiAgICAgIChwcm9nbgoJKGdvdG8tY2hhciAobWF0Y2gtYmVnaW5u
+aW5nIDEpKQoJKGRlbGV0ZS1yZWdpb24gKG1hdGNoLWJlZ2lubmluZyAxKSAobWF0Y2gtZW5kIDEp
+KQoJKGluc2VydCAoZmlsZS1uYW1lLW5vbmRpcmVjdG9yeSAoYnVmZmVyLWZpbGUtbmFtZSkpIiAt
+IikKCSkpKQoKCjs7KHNldHEgZmlsZS1oZWFkZXItdXBkYXRlLWFsaXN0IG5pbCkKOzsoc2V0cSBm
+aWxlLWhlYWRlci11cGRhdGUtYWxpc3QgKGNkciBmaWxlLWhlYWRlci11cGRhdGUtYWxpc3QpKQoK
+Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7
+Ozs7Ozs7Ozs7Ozs7Ozs7Cjs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7
+Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Owo7OyBTdGFuZCBBbG9uZSBIZWFkZXJzCjs7
+Cjs7IFRoZXNlIGZ1bmN0aW9ucyBnaXZlIHRoZSBhYmlsaXR5IHRvIGludm9rZSBoZWFkZXJzIGZy
+b20gdGhlIGNvbW1hbmQgbGluZS4KOzsgICBUaGlzIGlmIGlmIHlvciBzaXRlIGhhcyBub24tcHJv
+ZHVjdGl2ZSB2aSB1c2VycyBhbmQgeW91IHdhbnQgdGhlbSB0bwo7OyAgIGJlIGFibGUgdG8gdXNl
+IGhlYWRlcnMgYXMgd2VsbC4KOzs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7
+Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Cjs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7
+Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7OwooZGVmdW4g
+aGVhZGVyYWJsZS1maWxlLXAgKGZpbGUpCiAgKG5vdCAoaWYgKG5vdCAoZmlsZS1leGlzdHMtcCBm
+aWxlKSkKCSAgIChtZXNzYWdlICJcIiVzXCIgZG9lcyBub3QgZXhpc3QhLiIgZmlsZSkKCSAoaWYg
+KGZpbGUtc3ltbGluay1wIGZpbGUpCgkgICAgIChtZXNzYWdlICJcIiVzXCIgaXMgYSBzeW1vbGlj
+IGxpbmsuIiBmaWxlKQoJICAgKGlmIChmaWxlLWRpcmVjdG9yeS1wIGZpbGUpCgkgICAgICAgKG1l
+c3NhZ2UgIlwiJXNcIiBpcyBhIGRpcmVjdG9yeS4iIGZpbGUpCgkgICAgICkpKSkpCgooZGVmdW4g
+dW5pcXVlaWZ5LWxpc3QgKGxpc3QpCiAgKGxldCAoKHJlc3QgbGlzdCkpCiAgICAod2hpbGUgcmVz
+dAogICAgICAoc2V0Y2RyIHJlc3QgKGRlbHEgKGNhciByZXN0KSAoY2RyIHJlc3QpKSkKICAgICAg
+KHNldHEgcmVzdCAoY2RyIHJlc3QpKSkKICAgIGxpc3QpKQoKOzsoaGVhZGVyYWJsZS1maWxlLXAg
+IkFGUyIpCjs7KGhlYWRlcmFibGUtZmlsZS1wICJkYmlvZ2VuLmVsIikKOzsoaGVhZGVyYWJsZS1m
+aWxlLXAgImRiaW9nZW4uZWxjIikKCihkZWZ2YXIgaGVhZGVyLXJlcXVpcmVkLW1vZGUgbmlsCiAg
+IlRoZSBtb2RlIHdlIHdpbGwgZm9yY2UgZmlsZXMgdG8gYmUgaW4sIGlycmVnYXJlbGVzcyBvZiBm
+aWxlIHN1ZmZpeC4iKQoKOzs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7
+Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Cjs7IERlZmluZSBhIHRvdWNoLWhlYWRlcnMg
+Y29tbWFuZC4gVGhpcyBkZXBlbmRzIHVwb24gTHlubiBTbGF0ZXIncwo7OyBjdXN0b21pemF0aW9u
+cyB0byBzdGFydHVwLmVsIHRvIGFsbG93IGNvbW1hbmQtbGluZS1ob29rcy4KOzs7Ozs7Ozs7Ozs7
+Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7
+Ozs7CihzZXRxIGNvbW1hbmQtbGluZS1ob29rcyAoY29ucyAndG91Y2gtaGVhZGVycyBjb21tYW5k
+LWxpbmUtaG9va3MpKQooZGVmdW4gdG91Y2gtaGVhZGVycyAoKQogIChpZiAob3IgKHN0cmluZz0g
+YXJnaSAiLXRvdWNoIikgKHN0cmluZz0gYXJnaSAiLXRvdWNoLWhlYWRlcnMiKSkKICAgICAgKGxl
+dCAoKHRyaW0tdmVyc2lvbnMtd2l0aG91dC1hc2tpbmcgdCkKCSAgICAoZXhlY3V0aW5nLW1hY3Jv
+ICJ0cnVlIikpOzsgc3VwcHJlc3MgIk1hcmsgU2V0IiBtZXNzYWdlcwoJOzsgQ29uc3VtZSBhbGwg
+Zm9sbG93aW5nIGFyZ3VtZW50cyB1bnRpbCBvbmUgc3RhcnRzIHdpdGggYSAiLSIKCSh3aGlsZSAo
+YW5kIGNvbW1hbmQtbGluZS1hcmdzLWxlZnQKCQkgICAgKG5vdCAoY2hhci1lcXVhbCA/LSAoYXJl
+ZiAoY2FyIGNvbW1hbmQtbGluZS1hcmdzLWxlZnQpIDApKSkpCgkgIChpZiAoaGVhZGVyYWJsZS1m
+aWxlLXAgKGNhciBjb21tYW5kLWxpbmUtYXJncy1sZWZ0KSkKCSAgICAgIChwcm9nbgoJCShmaW5k
+LWZpbGUgKGNhciBjb21tYW5kLWxpbmUtYXJncy1sZWZ0KSkKCQkobWFrZS1yZXZpc2lvbikKCQko
+d3JpdGUtZmlsZSBuaWwpCgkJKGtpbGwtYnVmZmVyIChjdXJyZW50LWJ1ZmZlcikpKSkKCSAgKHNl
+dHEgY29tbWFuZC1saW5lLWFyZ3MtbGVmdCAoY2RyIGNvbW1hbmQtbGluZS1hcmdzLWxlZnQpKQoJ
+ICApKSkpCgo7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7
+Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7OzsKOzsgRGVmaW5lIGEgbWFrZS1oZWFkZXJzIGNvbW1hbmQg
+bGluZSBvcHRpb24uCjs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7
+Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Owooc2V0cSBjb21tYW5kLWxpbmUtaG9va3MgKGNv
+bnMgJ21ha2UtaGVhZGVycyBjb21tYW5kLWxpbmUtaG9va3MpKQooZGVmdW4gbWFrZS1oZWFkZXJz
+ICgpCiAgKGlmIChvciAoc3RyaW5nPSBhcmdpICItbWFrZS1oZWFkZXJzIikgKHN0cmluZz0gYXJn
+aSAiLW1ha2UiKSkKICAgICAgKGxldCAoKHRyaW0tdmVyc2lvbnMtd2l0aG91dC1hc2tpbmcgdCkK
+CSAgICAoZXhlY3V0aW5nLW1hY3JvICJ0cnVlIikpOzsgc3VwcHJlc3MgIk1hcmsgU2V0IiBtZXNz
+YWdlcwoJOzsgQ29uc3VtZSBhbGwgZm9sbG93aW5nIGFyZ3VtZW50cyB1bnRpbCBvbmUgc3RhcnRz
+IHdpdGggYSAiLSIKCSh3aGlsZSAoYW5kIGNvbW1hbmQtbGluZS1hcmdzLWxlZnQKCQkgICAgKG5v
+dCAoY2hhci1lcXVhbCA/LSAoYXJlZiAoY2FyIGNvbW1hbmQtbGluZS1hcmdzLWxlZnQpIDApKSkp
+CiAgICAgCgkgIChpZiAoaGVhZGVyYWJsZS1maWxlLXAgKGNhciBjb21tYW5kLWxpbmUtYXJncy1s
+ZWZ0KSkKCSAgICAgIChwcm9nbgoJCShmaW5kLWZpbGUgKGNhciBjb21tYW5kLWxpbmUtYXJncy1s
+ZWZ0KSkKCQkoaWYgaGVhZGVyLXJlcXVpcmVkLW1vZGUKCQkgICAgKGZ1bmNhbGwgaGVhZGVyLXJl
+cXVpcmVkLW1vZGUpKQoJCShtYWtlLWhlYWRlcikKCQkod3JpdGUtZmlsZSBuaWwpCgkJKG1lc3Nh
+Z2UgIlx0TW9kZSB3YXMgJXMiIG1ham9yLW1vZGUpCgkJKGtpbGwtYnVmZmVyIChjdXJyZW50LWJ1
+ZmZlcikpKSkKCSAgKHNldHEgY29tbWFuZC1saW5lLWFyZ3MtbGVmdCAoY2RyIGNvbW1hbmQtbGlu
+ZS1hcmdzLWxlZnQpKQoJICApKSkpCgo7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7
+Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7OzsKOzsgRGVmaW5lIGEgLWRlZmF1
+bHQtbW9kZSBjb21tYW5kIGxpbmUgb3B0aW9uLgo7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7
+Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7OzsKKHNldHEgY29tbWFu
+ZC1saW5lLWhvb2tzIChjb25zICdzZXQtaGVhZGVyLW1vZGUgY29tbWFuZC1saW5lLWhvb2tzKSkK
+KGRlZnVuIHNldC1oZWFkZXItbW9kZSAoKQogIChpZiAob3IgKHN0cmluZz0gYXJnaSAiLWRlZmF1
+bHQtbW9kZSIpCgkgIChzdHJpbmc9IGFyZ2kgIi1kZWZhdWx0IikpCiAgICAgIChsZXQgKCh0cmlt
+LXZlcnNpb25zLXdpdGhvdXQtYXNraW5nIHQpCgkgICAgKGV4ZWN1dGluZy1tYWNybyAidHJ1ZSIp
+Ozsgc3VwcHJlc3MgIk1hcmsgU2V0IiBtZXNzYWdlcwoJICAgIChtb2RlIChpbnRlcm4gKGNhciBj
+b21tYW5kLWxpbmUtYXJncy1sZWZ0KSkpKQoJKGlmIChtZW1xIG1vZGUgKG1hcGNhciAnY2RyIGF1
+dG8tbW9kZS1hbGlzdCkpCgkgICAgKHByb2duCgkgICAgICAoc2V0cSBkZWZhdWx0LW1ham9yLW1v
+ZGUgbW9kZSkKCSAgICAgIChtZXNzYWdlICJEZWZhdWx0IG1vZGUgaXMgJXMiIGRlZmF1bHQtbWFq
+b3ItbW9kZSkKCSAgICAgIChzZXRxIGNvbW1hbmQtbGluZS1hcmdzLWxlZnQgKGNkciBjb21tYW5k
+LWxpbmUtYXJncy1sZWZ0KSkpCgkgIChtZXNzYWdlICJNb2RlIFwiJXNcIiBpcyBpbnZhbGlkLiBU
+cnkgb25lIG9mICVzIiBtb2RlCgkJICAgKHVuaXF1ZWlmeS1saXN0IChtYXBjYXIgJ2NkciBhdXRv
+LW1vZGUtYWxpc3QpKSkKCSAgKGtpbGwtZW1hY3MgMSkpCgkpKSkKCjs7Ozs7Ozs7Ozs7Ozs7Ozs7
+Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Owo7
+OyBEZWZpbmUgYSAtcmVxdWlyZWQtbW9kZSBjb21tYW5kIGxpbmUgb3B0aW9uLgo7Ozs7Ozs7Ozs7
+Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7
+Ozs7OzsKKHNldHEgY29tbWFuZC1saW5lLWhvb2tzIChjb25zICdzZXQtaGVhZGVyLXJlcXVpcmVk
+LW1vZGUgY29tbWFuZC1saW5lLWhvb2tzKSkKKGRlZnVuIHNldC1oZWFkZXItcmVxdWlyZWQtbW9k
+ZSAoKQogIChpZiAob3IgKHN0cmluZz0gYXJnaSAiLXJlcXVpcmVkLW1vZGUiKQoJICAoc3RyaW5n
+PSBhcmdpICItbW9kZSIpKQogICAgICAobGV0ICgodHJpbS12ZXJzaW9ucy13aXRob3V0LWFza2lu
+ZyB0KQoJICAgIChleGVjdXRpbmctbWFjcm8gInRydWUiKTs7IHN1cHByZXNzICJNYXJrIFNldCIg
+bWVzc2FnZXMKCSAgICAobW9kZSAoaW50ZXJuIChjYXIgY29tbWFuZC1saW5lLWFyZ3MtbGVmdCkp
+KSkKCShpZiAobWVtcSBtb2RlIChtYXBjYXIgJ2NkciBhdXRvLW1vZGUtYWxpc3QpKQoJICAgIChw
+cm9nbgoJICAgICAgKHNldHEgaGVhZGVyLXJlcXVpcmVkLW1vZGUgbW9kZSkKCSAgICAgIChtZXNz
+YWdlICJSZXF1aXJlZCBtb2RlIGlzICVzIiBoZWFkZXItcmVxdWlyZWQtbW9kZSkKCSAgICAgIChz
+ZXRxIGNvbW1hbmQtbGluZS1hcmdzLWxlZnQgKGNkciBjb21tYW5kLWxpbmUtYXJncy1sZWZ0KSkp
+CgkgIChtZXNzYWdlICJNb2RlIFwiJXNcIiBpcyBpbnZhbGlkLiBUcnkgb25lIG9mICVzIiBtb2Rl
+CgkJICAgKHVuaXF1ZWlmeS1saXN0IChtYXBjYXIgJ2NkciBhdXRvLW1vZGUtYWxpc3QpKSkKCSAg
+KGtpbGwtZW1hY3MgMSkpCgkpKSkKCgo7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7
+Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7OzsKOzsgVGhpbmdzIGluIHRoZSB3
+b3JrcyBvciBzdGlsbCB0byBkby4KOzs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7
+Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Cjs7IGVmZm9ydC5lbCAtLSBhbGxv
+d3MgYW4gImVmZm9ydCIgdG8gYmUgcmVzZ2lzdGVyZWQgaW4gdGhlIG1vZGUgbGluZSBtdWNoCjs7
+IGxpa2UgdGhlIG1vZGUgaXMuIFRoZSBlZmZvcnQgdGhlbiBkZXRlcm1pbmVzIHNvbWUgaGVhZGVy
+IGNoYXJhY3RlcmlzdGljcwo7OyBzdWNoIGFzIGNvcHlyaWdodC4gIFR5cGljYWwgZWZmb3J0cyB3
+b3VsZCBiZSAnZ2RiICdnY2MsICdnKyssICdlbWFjcywgZXRjLgo7OyBUaGlzIHdvdWxkIGxldCB0
+aGUgY29weXJpZ2h0IChhbmQgYy1zdHlsZSkgYmUgYWRqdXN0ZWQgZXZlbiB3aXRoaW4KOzsgY29t
+bW9uIG1vZGVzLgo7Owo7OyBuZWVkIGV6IGFjY2VzcyB0byB2YWx1ZXMgaW4gdGhlIGhlYWRlciAK
+OzsgbmVlZCBhIGhlYWRlcnAgZmNuCjs7Cjs7IGF1dG8gbWFrZS1yZXZpc2lvbiBpZiBjdXJyZW50
+IHVzZXIgaXMgbm90IHNhbWUgYXMgbGFzdCBtb2RpZmllcgo7OyAgIHRoaXMgd291bGQgZ2l2ZSBh
+IGhpc3Rvcnkgb2Ygd2hvIHRvdWNoZWQgd2hhdC4KCi0qLSBFbmQgRmlsZTogfi9sb2NhbC9oZWFk
+ZXIuZWwKCi0qLSBGaWxlOiB+L2xvY2FsL2hlYWRlcnMuMQouXCIgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgIC0qLSBNb2RlOiBOcm9mZiAtKi0gCi5cIiBoZWFkZXJzLjEgLS0gTWFuIHBhZ2Ug
+Zm9yIGhlYWRlcnMKLlwiIAouXCIgQ29weXJpZ2h0IChjKSAxOTg5LCBJbmRlcGVuZGVuY2UgVGVj
+aG5vbG9naWVzIEluYy4gKElUSSkKLlwiIEFsbCBSaWdodHMgUmVzZXJ2ZWQuCi5cIiAKLlwiIFRo
+aXMgaXMgYW4gdW5wdWJsaXNoZWQgd29yayBvZiBJVEkgd2hpY2ggaXMgcHJvdGVjdGVkIHVuZGVy
+IAouXCIgdGhlIGNvcHlyaWdodCBsYXdzIG9mIHRoZSBVbml0ZWQgU3RhdGVzIGFuZCBhIHRyYWRl
+IHNlY3JldAouXCIgb2YgSVRJLiBJdCBtYXkgbm90IGJlIHVzZWQsIGNvcGllZCwgZGlzY2xvc2Vk
+IG9yIHRyYW5zZmVycmVkCi5cIiBvdGhlciB0aGFuIGluIGFjY29yZGFuY2Ugd2l0aCB0aGUgd3Jp
+dHRlbiBwZXJtaXNzaW9uIG9mIElUSS4KLlwiIAouXCIgU2hhcGUgICAgICAgICAgIDogJF9fSGVh
+ZGVyJAouXCIgQXV0aG9yICAgICAgICAgIDogTHlubiBTbGF0ZXIKLlwiIENyZWF0ZWQgT24gICAg
+ICA6IFdlZCBTZXAgIDYgMTQ6NTU6NDIgMTk4OQouXCIgTGFzdCBNb2RpZmllZCBCeTogTHlubiBT
+bGF0ZXIKLlwiIExhc3QgTW9kaWZpZWQgT246IE1vbiBTZXAgMjUgMTY6MjM6MTIgMTk4OQouXCIg
+VXBkYXRlIENvdW50ICAgIDogMjEKLlwiIFN0YXR1cyAgICAgICAgICA6IFVua25vd24sIFVzZSB3
+aXRoIGNhdXRpb24hCi5cIiAKLlwiIEhJU1RPUlkKLlwiIDI1LVNlcC0xOTg5CQlMeW5uIFNsYXRl
+cgkKLlwiICAgIExhc3QgTW9kaWZpZWQ6IE1vbiBTZXAgMjUgMTU6Mjg6NDMgMTk4OSAjMTkgKEx5
+bm4gU2xhdGVyKQouXCIgICAgTWFzayBtb2RlCi5cIiAgICBCcm91Z2h0IGRvYyB1cCB0byBkYXRl
+LiAtZGVmYXVsdC1tb2RlLCAgbWFrZS1tb2RlCi5cIiAKLlwiIAouVEggSEVBREVSUyAxICJNb24g
+U2VwIDI1IDE2OjIzOjExIDE5ODkiICJJVEkvRW1hY3MiCi5TSCBOQU1FCmhlYWRlcnMgXC0gQXV0
+b21hdGljIEhlYWRlciBNYWludGVuYW5jZSBpbiBjb25mb3JtYW5jZSB0byBJVEkgc3RhbmRhcmRz
+Ci5TSCBTWU5PUFNJUwouQiBoZWFkZXJzClsKLkIgLW1vZGUKLklSIG1vZGUKXSBbCi5CIC1kZWZh
+dWx0LW1vZGUKLklSIG1vZGUKXSBbCi5CIC1tYWtlCi5JUiBkYXRhZmlsZSAuXHwuXHwuCl0gWwou
+QiAtdG91Y2gKLklSIGRhdGFmaWxlIC5cfC5cfC4KXSBbCi5CIC1UT0MKLklSIGRhdGFmaWxlIC5c
+fC5cfC4KXSBbCi5CIC1TWU5PUFNJUwouSVIgZGF0YWZpbGUgLlx8Llx8LgpdCi5MUAouQiBlbWFj
+cyAtYmF0Y2ggLWwgaGVhZGVycwpbCi5CIC1tb2RlCi5JUiBtb2RlCl0gWwouQiAtZGVmYXVsdC1t
+b2RlCi5JUiBtb2RlCl0gWwouQiAtbWFrZQouSVIgZGF0YWZpbGUgLlx8Llx8LgpdIFsKLkIgLXRv
+dWNoCi5JUiBkYXRhZmlsZSAuXHwuXHwuCl0gWwouQiAtVE9DCi5JUiBkYXRhZmlsZSAuXHwuXHwu
+Cl0gWwouQiAtU1lOT1BTSVMKLklSIGRhdGFmaWxlIC5cfC5cfC4KXQouTFAKLlNIIERFU0NSSVBU
+SU9OCi5MUApUaGlzIHByb2Nlc3NvciBhZGRzIElUSSBzdGFuZGFyZCBoZWFkZXJzIGludG8gCi5J
+IGV4aXN0aW5nCm5vbi1kaXJlY3Rvcnkgbm9uLWxpbmtlZCBmaWxlcy4gSXQgY2FuCmFsc28gaW5z
+ZXJ0IElUSSBzdGFuZGFyZCByZXZpc2lvbiBtYXJraW5ncy4KLlJFCi5MUAouU0ggT1BUSU9OUwou
+VFAKLkIgIlwtZGVmYXVsdC1tb2RlIgpTZXRzIHRoZSAKLkkgZGVmYXVsdCAKZWRpdGluZyBtb2Rl
+IGFuZCBoZWFkZXIgc3R5bGUgZm9yIHRob3NlIGZpbGVzIHdpdGhvdXQgYQpzdGFuZGFyZCBzdWZm
+aXguCk5vcm1hbGx5LCB0aGUgbW9kZSBpcyBkZXRlcm1pbmVkIGJ5IHRoZSBmaWxlIHN1ZmZpeC4g
+U3VmZml4ZXMgbWFwIHRvIG1vZGVzCmFzIGRlc2NyaWJlZCBiZWxvdy4KLlRQCi5CICJcLW1vZGUi
+ClNldHMgdGhlIAplZGl0aW5nIG1vZGUgYW5kIGhlYWRlciBzdHlsZSBmb3IgYWxsIHJlbWFpbmlu
+ZyBmaWxlcyBwcm9jZXNzZWQgYnkgdGhlIG1ha2Ugb3B0aW9uLCBpcnJlZ2FyZGxlc3Mgb2YKdGhl
+aXIgZmlsZSBzdWZmaXggb3IgZXhpc3RpbmcgZmlsZSBoZWFkZXIuCi5UUAouQiAiXC1tYWtlIgpM
+b2FkIG9yIGNyZWF0ZSBhbGwgdGhlIGxpc3RlZCBkYXRhIGZpbGVzIGluIGVpdGhlciB0aGUgbW9k
+ZSBpbXBsaWVkIGJ5CnRoZWlyIHN1ZmZpeCBvciBpbiB0aGUgZGVmYXVsdCBtb2RlLiBNYWtlIGFu
+ZCBpbnNlcnQgYSBJVEkgc3RhbmRhcmQgaGVhZGVyCmludG8gdGhlIGZpbGUgYW5kIHNhdmUgaXQu
+CgouVFAKLkIgIlwtdG91Y2giCkxvYWQgb3IgY3JlYXRlIGFsbCB0aGUgbGlzdGVkIGRhdGEgZmls
+ZXMgYW5kIGFkZCBhIElUSSBzdGFuZGFyZCByZXZpc2lvbgptYXJrZXIuIElmIHRoZSBmaWxlIGhh
+cyBhIGhlYWRlciwgdGhlIG1vZGUgaW4gdGhlIG1vZGUgbGluZSB3aWxsIHRha2UKcHJlY2lkZW5j
+ZSBvdmVyIHRoZSBkZWZhdWx0IG1vZGUgb3IgdGhlIG1vZGUgaW1wbGllZCBieSB0aGUgZmlsZSBz
+dWZmaXguIApTYXZlIHRoZSBmaWxlIGFmdGVyIHVwZGF0aW5nIGFsbCBvdGhlciBwcmVzZW50IGhl
+YWRlciBmaWVsZHMuCgouVFAKLkIgIi1UT0MiCkxvYWQgb3IgY3JlYXRlIGFsbCB0aGUgbGlzdGVk
+IGZpbGVzIGFuZCByZXBsYWNlIHRoZSB0YWJsZSBvZiBjb250ZW50cyB3aXRoCmEgbmV3IG9uZSBl
+eHRyYWN0ZWQgZnJvbSB0aGUgZnVuY3Rpb24gaGVhZGVycy4gVGhlIGV4dHJhY3Rpb24gd2lsbCBv
+bmx5CndvcmsgaWYgZmlsZSBoYXMgZXhpc3RpbmcgaGVhZGVycyBpbiBjb25mb3JtYW5jZSB3aXRo
+IElUSSBjb2Rpbmcgc3RhbmRhcmRzLgoKVGhpcyBvcHRpb24gYWxzbyB1cGRhdGVzIHRoZSBoZWFk
+ZXIgaW5mb3JtYXRpb24gYmVmb3JlIHNhdmluZyB0aGUgZmlsZS4KCi5UUAouQiAiXC1TWU5PUFNJ
+UyIKTG9hZCBvciBjcmVhdGUgYWxsIHRoZSBsaXN0ZWQgZmlsZXMuIFNjYW4gZWFjaCBvbmUgZm9y
+IHN0YW5kYXJkIGZ1bmN0aW9uCmhlYWRlcnMuIERlbGV0ZSB0aGUgc3lub3BzaXMgc2VjdGlvbiBh
+bmQgcmVwbGFjZSBpdCB3aXRoIHRoZSBmdW5jdGlvbgpkZWNsYXJhdGlvbiAoaW5kZW50ZWQgZm9s
+bG93aW5nIGNvbW1lbnQgbWFya3MpLiBJZiB5b3UgaGF2ZSBkb25lIHlvdXIKZnVuY3Rpb24gZGVj
+bGFyYXRpb25zIHByb3Blcmx5LCB0aGV5IHNob3VsZCBiZSBhY2NlcHRhYmxlIGFzIGEgc3lub3Bz
+aXMuIAoKSW4gQysrIG1vZGUsIGEgZnVuY3Rpb24gZGVjbGFyYXRpb24gYmVnaW5zIGp1c3QgYWZ0
+ZXIgdGhlIGZ1bmN0aW9uIGhlYWRlcgphbmQgZW5kcyB3aXRoIHRoZSBjbG9zZSBwYXJlbiBvZiB0
+aGUgYXJndW1lbnQgbGlzdC4KCkluIEMgbW9kZSwgYSBmdW5jdGlvbiBkZWNsYXJhdGlvbiBiZWdp
+bnMganVzdCBhZnRlciB0aGUgZnVuY3Rpb24gaGVhZGVyCmFuZCBlbmRzIHdpdGggdGhlIG5leHQg
+YmxhbmsgbGluZS4gIFRoaXMgc2hvdWxkIHdvcmsgZmluZSBpZiB5b3Ugc2VwZXJhdGUKdGhlIGFy
+Z3VtZW50IGRlY2xhcmF0aW9ucyBmcm9tIGludGVybmFsIHZhcmlhYmxlIGRlY2xhcmF0aW9ucy4K
+CkNvbW1lbnRzIGFyZSBjb252ZXJ0ZWQgdG8gYSBzbGlnaHRseSBkaWZmZXJlbnQgc3ludGF4IHdo
+ZW4gdGhlCmZ1bmN0aW9uIGRlY2xhcmF0aW9uIGlzIG1vdmVkOyB0aGlzIHByZXZlbnRzIG5lc3Rl
+ZCBjb21tZW50cy4KCi5UUAouQiAiTW9kZSBhbmQgU3VmZml4IG1hcCIKLlJTCi5UUDE1CmFkYS1t
+b2RlCiguYWRhIC5hKQpBZGEgTW9kZSBpcyB0aGUgbWFqb3IgbW9kZSBmb3IgZWRpdGluZyBBZGEg
+Y29kZS4gIAouVFAxNQphd2stbW9kZQoobm8gc3VmZml4ZXMpClNldCB1cCBmb3IgZWRpdGluZyBh
+d2sgY29kZSAoYSBtaW5vciB2YXJpYXRpb24gb24gQyBtb2RlKS4KLlRQMTUKYy1tb2RlCiguYyAu
+aCAueSAubCAudGNsIC50Y2wtc2NyaXB0KSAoYnV0IG5vdCAuY2MgKQpNYWpvciBtb2RlIGZvciBl
+ZGl0aW5nIEMgY29kZS4KLlRQMTUKYysrLW1vZGUKKC5jYyAuaHh4IC5jeHgpCk1ham9yIG1vZGUg
+Zm9yIGVkaXRpbmcgQysrIGNvZGUuICBWZXJ5IG11Y2ggbGlrZSBlZGl0aW5nIEMgY29kZSwgYnV0
+CnVuZGVyc3RhbmRzIG1vcmUgY29uc3RydWN0cyBhbmQgdXNlcwpkaWZmZXJlbnQgY29tbWVudHMu
+Ci5UUDE1CmVtYWNzLWxpc3AtbW9kZQooLmVsKQpNYWpvciBtb2RlIGZvciBlZGl0aW5nIExpc3Ag
+Y29kZSB0byBydW4gaW4gRW1hY3MuCi5UUDE1CmZvcnRyYW4tbW9kZQooLmYpCk1ham9yIG1vZGUg
+Zm9yIGVkaXRpbmcgZm9ydHJhbiBjb2RlLgouVFAxNQpGdW5kYW1lbnRhbC1tb2RlCihubyBzdWZm
+aXhlcykKQSBnZW5lcmljIGVkaXRpbmcgbW9kZQouVFAxNQpMYVRlWC1tb2RlCiguc3R5IC5iYmwp
+Ck1ham9yIG1vZGUgZm9yIGVkaXRpbmcgZmlsZXMgb2YgaW5wdXQgZm9yIFRlWCBvciBMYVRlWC4K
+LlRQMTUKbGlzcC1tb2RlCigubGlzcCAubHNwIC5tbCkKTWFqb3IgbW9kZSBmb3IgZWRpdGluZyBM
+aXNwIGNvZGUgZm9yIExpc3BzIG90aGVyIHRoYW4gR05VIEVtYWNzIExpc3AuCi5UUDE1Cm1ha2Ut
+bW9kZQooLm1rKQpNb2RlIGZvciBlY2l0aW5nIG9mIG1ha2Ugc2NyaXB0cy4KLlRQMTUKbWFzay1t
+b2RlCigubSkKTW9kZSBmb3IgZWNpdGluZyBvZiBtYXNrIGZpbGVzLgouVFAxNQpucm9mZi1tb2Rl
+CihubyBzdWZmaXhlcykKTWFqb3IgbW9kZSBmb3IgZWRpdGluZyB0ZXh0IGludGVuZGVkIGZvciBu
+cm9mZiB0byBmb3JtYXQuCi5UUDE1CnByb2xvZy1tb2RlCigucGwgLnByb2xvZykKTWFqb3IgbW9k
+ZSBmb3IgZWRpdGluZyBQcm9sb2cgY29kZSBmb3IgUHJvbG9ncy4KLlRQMTUKc2NoZW1lLW1vZGUK
+KC5zY20pCk1ham9yIG1vZGUgZm9yIGVkaXRpbmcgU2NoZW1lIGNvZGUuCi5UUDE1CnNjcmliZS1t
+b2RlCigubXNzKQpNYWpvciBtb2RlIGZvciBlZGl0aW5nIHNjcmliZSAoYSBkb2N1bWVudCBwcm9j
+ZXNzb3IpIGZpbGVzLgouVFAxNQpzY3JpcHQtbW9kZQoobm8gc3VmZml4ZXMpCk1vZGUgZm9yIGVj
+aXRpbmcgb2Ygc2hlbGwgc2NyaXB0cy4KLlRQMTUKc3FsLW1vZGUKKC5zcWwgLmlzcWwpCk1vZGUg
+Zm9yIGVkaXRpbmcgc3FsIHNjcmlwdHMgYW5kIHNlbmRpbmcgdGhlbSB0byBvdGhlciBwcm9jZXNz
+ZXMuCi5UUDE1ClRlWC1tb2RlCigudGV4IC5UZVgpCk1ham9yIG1vZGUgZm9yIGVkaXRpbmcgZmls
+ZXMgb2YgaW5wdXQgZm9yIFRlWCBvciBMYVRlWC4KLlRQMTUKdGV4aW5mby1tb2RlIAooLnRleGlu
+Zm8pCk1ham9yIG1vZGUgZm9yIGVkaXRpbmcgdGV4aW5mbyBmaWxlcy4KLlRQMTUKdGV4dC1tb2Rl
+CigudGV4dCAuYmliIC5hcnRpY2xlIC5sZXR0ZXIgKQpNYWpvciBtb2RlIGZvciBlZGl0aW5nIHRl
+eHQgaW50ZW5kZWQgZm9yIGh1bWFucyB0byByZWFkLiAKLlJFCi5MUApUaGUgaW5pdGlhbCBkZWZh
+dWx0IG1vZGUgaXMgZnVuZGVtZW50YWwtbW9kZQouTFAKLlNIIEZJTEVTCi5TSCBESUFHTk9TVElD
+UwpIb3BlZnVsbHkgc2VsZi1leHBsYWluYXRvcnkuCi5JUAouU0ggRVhBTVBMRVMKLlBEIDAKVG8g
+YWRkIHNvbWUgaGVhZGVycyB0byBub24taGVhZGVkIGV4aXN0aW5nIGMgZmlsZXMKLm5mCiAgaGVh
+ZGVycyAtbWFrZSAqLmMKLmZpCgpUbyBpbnNlcnQgc29tZSByZXZpc29uIG5vdGlmaWNhdGlvbnMK
+Lm5mCiAgaGVhZGVycyAtdG91Y2ggdDEuYyB0Mi5oCi5maQoKVG8gc3RhcnQgc29tZSBzY3JpcHQg
+bW9kZSBmaWxlcwoubmYKICBoZWFkZXJzIC1tb2RlIHNjcmlwdC1tb2RlIC1tYWtlIHNjcmlwdDEg
+c2NyaXB0MgouZmkKClRvIGRvIGFsbCBvZiB0aGUgYWJvdmUKLm5mCiAgaGVhZGVycyAtbWFrZSAq
+LmMgLXRvdWNoIHQxLmMgdDIuaCBcXCAKICAgIC1tb2RlIHNjcmlwdC1tb2RlIC1tYWtlIHNjcmlw
+dDEgc2NyaXB0MgouZmkKClRvIGJyaW5nIHRoZSBmaWxlIGFuZCBmdW5jdGlvbiBoZWFkZXJzIG9m
+IGEgc2V0IG9mIGZpbGVzIHVwIHRvIGRhdGUuIEFsc28KcmVjb3JkIGxhc3QgbW9kaWZpZXIgYW5k
+IG90aGVyIHVzZWZ1bCBpbmZvcm1hdGlvbi4KLm5mCiAgaGVhZGVycyAtVE9DICouYyAtU1lOT1BT
+SVMgKi5jCi5maQoKLlNIIEJVR1MgClRoZSBzeW5vcHNpcyBleHRyYWN0aW9uIGlzIG5vdCB2ZXJ5
+IHJvYnVzdCBhbmQgY2FuIGJlIGNvbmZ1c2VkIGJ5CmNvbW1lbnQgY2hhcmFjdGVycyBpbiBzdHJp
+bmdzIG9yIGJ5IHVudXN1YWwgc3R5bGVzLgoKLkxQCi5QRAouU0ggU0VFIEFMU08KLkJSIGVtYWNz
+ICgxKQouTFAKCi0qLSBFbmQgRmlsZTogfi9sb2NhbC9oZWFkZXJzLjEKCgotKi0gRmlsZTogL3Vz
+ci9sb2NhbC9iaW4vaGVhZGVycwojIS9iaW4vc2gKZW1hY3MgLWJhdGNoIC1sIGhlYWRlcnMgJCoK
+Ci0qLSBFbmQgRmlsZTogL3Vzci9sb2NhbC9iaW4vaGVhZGVycwoKCg==

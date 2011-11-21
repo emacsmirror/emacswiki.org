@@ -1,24 +1,9 @@
-/* XPM */
-static char * close_tab_xpm[] = {
-"14 11 10 1",
-" 	c None",
-".	c #979797",
-"+	c #CBCBCB",
-"@	c #A4A4A4",
-"#	c #A2A2A2",
-"$	c #D7D7D7",
-"%	c #AFAFAF",
-"&	c #A5A5A5",
-"*	c #E6E6E6",
-"=	c #B1B1B1",
-"     .....    ",
-"    .......   ",
-"   .........  ",
-"  ...+@.#+... ",
-"  ...@$%$&... ",
-"  ....%*=.... ",
-"  ...#$=$@... ",
-"  ...+&.@+... ",
-"   .........  ",
-"    .......   ",
-"     .....    "};
+#FILE text/plain
+LyogWFBNICovDQpzdGF0aWMgY2hhciAqIGNsb3NlX3RhYl94cG1bXSA9IHsNCiIxNCAxMSAxMCAx
+IiwNCiIgCWMgTm9uZSIsDQoiLgljICM5Nzk3OTciLA0KIisJYyAjQ0JDQkNCIiwNCiJACWMgI0E0
+QTRBNCIsDQoiIwljICNBMkEyQTIiLA0KIiQJYyAjRDdEN0Q3IiwNCiIlCWMgI0FGQUZBRiIsDQoi
+JgljICNBNUE1QTUiLA0KIioJYyAjRTZFNkU2IiwNCiI9CWMgI0IxQjFCMSIsDQoiICAgICAuLi4u
+LiAgICAiLA0KIiAgICAuLi4uLi4uICAgIiwNCiIgICAuLi4uLi4uLi4gICIsDQoiICAuLi4rQC4j
+Ky4uLiAiLA0KIiAgLi4uQCQlJCYuLi4gIiwNCiIgIC4uLi4lKj0uLi4uICIsDQoiICAuLi4jJD0k
+QC4uLiAiLA0KIiAgLi4uKyYuQCsuLi4gIiwNCiIgICAuLi4uLi4uLi4gICIsDQoiICAgIC4uLi4u
+Li4gICAiLA0KIiAgICAgLi4uLi4gICAgIn07DQo=

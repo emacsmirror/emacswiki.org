@@ -1,114 +1,55 @@
-;;; -*- lexical-binding: t -*-
-
-;; Lisp streams
-;;
-;; Copyright (C) 2011 by Nic Ferrier
-
-
-;; Helpers
-
-
-(defun sweat--stream-from-list (func lst)
-  "Make a stream from the lst.
-
-For example:
-
- (let ((s (sweat--stream-from-list 
-           (lambda (x) (list :name (car x) :value (cdr x)))
-     	   '((\"name\" . \"nic\") (\"age\" . 30)))))
-   (list (funcall s) (funcall s)))
-
-Although this is included in sweat it's a lisp fundamental and
-seems like it should be generally included somewhere. It requires
-lexical scope though.
-"
-  (let ((list-to-stream lst))
-    (lambda ()
-      (if list-to-stream
-          (let* ((retval (funcall func (car list-to-stream))))
-            (setq list-to-stream (cdr-safe list-to-stream))
-            retval)
-        (throw 'stream-empty nil)
-        )
-      )
-    )
-  )
-
-(defun sweat--assoc (template binding-list)
-  "Top level worker function for sweat templates"
-  (let ((tmpl template))
-    (replace-regexp-in-string
-     "::\\(.*?\\)::" 
-     (lambda (r)
-       ;; Needs improving - need error checking etc..
-       (let ((a (assoc (intern (match-string 1 r)) binding-list)))
-         (cond
-          ((atom (cdr-safe a))
-           (cdr-safe a))
-          ((listp a)
-           (cadr a)))))
-     tmpl
-     )
-    )
-  )
-
-
-
-;; Interface functions/macros
-
-(defmacro sweat-* (stream template)
-  "Iterate over a stream defined in the bindings of sweat-let.
-
-At the moment we return a single concat value of everything
-generated. In the future I'd like to make an optional function to
-handle the result (so, for example, the result can be sent by
-elnode as an HTTP chunk)."
-  `(let ((result '())) ;; need gensym here
-     (catch 'stream-empty
-       (while 't
-         (let ((_ (funcall ,stream))) ;; and gensym here as well
-           ;; setting the result... could be replaced by calling a function with the result
-           ;; (funcall receiver (append result (list (sweat--assoc ,template _))))
-           ;; where receiver is:
-           ;;   (lambda (v)
-           ;;     (setq result (concat result v)))
-           (setq result (append result (list (sweat--assoc ,template _))))
-           )
-         )
-       )
-     (apply 'concat result) ;; 
-     )
-  )
-
-(defmacro sweat-let (bindings &rest forms)
-  `(let ,bindings
-     (let ((_ (quote ,bindings)))
-       (mapconcat 
-        (lambda (form)
-          (cond
-           ((stringp form)
-            (sweat--assoc form _))
-           ((functionp form)
-            (funcall form))
-           ('t
-            (message "whoops!")
-            "")))
-        (list ,@forms)
-        "")
-       )
-     )
-  )
-
-;; Demo
-(sweat-let ((title "nic's demo")
-            (items (stream-from-list
-                    (lambda (item)
-                      `((name . ,(car item))
-                        (value . ,(cdr item))))
-                    '(("username" . "nicferrier")
-                      ("firstname" . "nic")))))
-           "<html><head><title>::title::</title><head><body><ul>"
-           (sweat-* items "<li>::name:: - ::value::</li>")
-           "</ul></body></html>")
-
-;; End
+#FILE text/x-emacs-lisp
+Ozs7IC0qLSBsZXhpY2FsLWJpbmRpbmc6IHQgLSotCgo7OyBMaXNwIHN0cmVhbXMKOzsKOzsgQ29w
+eXJpZ2h0IChDKSAyMDExIGJ5IE5pYyBGZXJyaWVyCgoKOzsgSGVscGVycwoKCihkZWZ1biBzd2Vh
+dC0tc3RyZWFtLWZyb20tbGlzdCAoZnVuYyBsc3QpCiAgIk1ha2UgYSBzdHJlYW0gZnJvbSB0aGUg
+bHN0LgoKRm9yIGV4YW1wbGU6CgogKGxldCAoKHMgKHN3ZWF0LS1zdHJlYW0tZnJvbS1saXN0IAog
+ICAgICAgICAgIChsYW1iZGEgKHgpIChsaXN0IDpuYW1lIChjYXIgeCkgOnZhbHVlIChjZHIgeCkp
+KQogICAgIAkgICAnKChcIm5hbWVcIiAuIFwibmljXCIpIChcImFnZVwiIC4gMzApKSkpKQogICAo
+bGlzdCAoZnVuY2FsbCBzKSAoZnVuY2FsbCBzKSkpCgpBbHRob3VnaCB0aGlzIGlzIGluY2x1ZGVk
+IGluIHN3ZWF0IGl0J3MgYSBsaXNwIGZ1bmRhbWVudGFsIGFuZApzZWVtcyBsaWtlIGl0IHNob3Vs
+ZCBiZSBnZW5lcmFsbHkgaW5jbHVkZWQgc29tZXdoZXJlLiBJdCByZXF1aXJlcwpsZXhpY2FsIHNj
+b3BlIHRob3VnaC4KIgogIChsZXQgKChsaXN0LXRvLXN0cmVhbSBsc3QpKQogICAgKGxhbWJkYSAo
+KQogICAgICAoaWYgbGlzdC10by1zdHJlYW0KICAgICAgICAgIChsZXQqICgocmV0dmFsIChmdW5j
+YWxsIGZ1bmMgKGNhciBsaXN0LXRvLXN0cmVhbSkpKSkKICAgICAgICAgICAgKHNldHEgbGlzdC10
+by1zdHJlYW0gKGNkci1zYWZlIGxpc3QtdG8tc3RyZWFtKSkKICAgICAgICAgICAgcmV0dmFsKQog
+ICAgICAgICh0aHJvdyAnc3RyZWFtLWVtcHR5IG5pbCkKICAgICAgICApCiAgICAgICkKICAgICkK
+ICApCgooZGVmdW4gc3dlYXQtLWFzc29jICh0ZW1wbGF0ZSBiaW5kaW5nLWxpc3QpCiAgIlRvcCBs
+ZXZlbCB3b3JrZXIgZnVuY3Rpb24gZm9yIHN3ZWF0IHRlbXBsYXRlcyIKICAobGV0ICgodG1wbCB0
+ZW1wbGF0ZSkpCiAgICAocmVwbGFjZS1yZWdleHAtaW4tc3RyaW5nCiAgICAgIjo6XFwoLio/XFwp
+OjoiIAogICAgIChsYW1iZGEgKHIpCiAgICAgICA7OyBOZWVkcyBpbXByb3ZpbmcgLSBuZWVkIGVy
+cm9yIGNoZWNraW5nIGV0Yy4uCiAgICAgICAobGV0ICgoYSAoYXNzb2MgKGludGVybiAobWF0Y2gt
+c3RyaW5nIDEgcikpIGJpbmRpbmctbGlzdCkpKQogICAgICAgICAoY29uZAogICAgICAgICAgKChh
+dG9tIChjZHItc2FmZSBhKSkKICAgICAgICAgICAoY2RyLXNhZmUgYSkpCiAgICAgICAgICAoKGxp
+c3RwIGEpCiAgICAgICAgICAgKGNhZHIgYSkpKSkpCiAgICAgdG1wbAogICAgICkKICAgICkKICAp
+CgoKCjs7IEludGVyZmFjZSBmdW5jdGlvbnMvbWFjcm9zCgooZGVmbWFjcm8gc3dlYXQtKiAoc3Ry
+ZWFtIHRlbXBsYXRlKQogICJJdGVyYXRlIG92ZXIgYSBzdHJlYW0gZGVmaW5lZCBpbiB0aGUgYmlu
+ZGluZ3Mgb2Ygc3dlYXQtbGV0LgoKQXQgdGhlIG1vbWVudCB3ZSByZXR1cm4gYSBzaW5nbGUgY29u
+Y2F0IHZhbHVlIG9mIGV2ZXJ5dGhpbmcKZ2VuZXJhdGVkLiBJbiB0aGUgZnV0dXJlIEknZCBsaWtl
+IHRvIG1ha2UgYW4gb3B0aW9uYWwgZnVuY3Rpb24gdG8KaGFuZGxlIHRoZSByZXN1bHQgKHNvLCBm
+b3IgZXhhbXBsZSwgdGhlIHJlc3VsdCBjYW4gYmUgc2VudCBieQplbG5vZGUgYXMgYW4gSFRUUCBj
+aHVuaykuIgogIGAobGV0ICgocmVzdWx0ICcoKSkpIDs7IG5lZWQgZ2Vuc3ltIGhlcmUKICAgICAo
+Y2F0Y2ggJ3N0cmVhbS1lbXB0eQogICAgICAgKHdoaWxlICd0CiAgICAgICAgIChsZXQgKChfIChm
+dW5jYWxsICxzdHJlYW0pKSkgOzsgYW5kIGdlbnN5bSBoZXJlIGFzIHdlbGwKICAgICAgICAgICA7
+OyBzZXR0aW5nIHRoZSByZXN1bHQuLi4gY291bGQgYmUgcmVwbGFjZWQgYnkgY2FsbGluZyBhIGZ1
+bmN0aW9uIHdpdGggdGhlIHJlc3VsdAogICAgICAgICAgIDs7IChmdW5jYWxsIHJlY2VpdmVyIChh
+cHBlbmQgcmVzdWx0IChsaXN0IChzd2VhdC0tYXNzb2MgLHRlbXBsYXRlIF8pKSkpCiAgICAgICAg
+ICAgOzsgd2hlcmUgcmVjZWl2ZXIgaXM6CiAgICAgICAgICAgOzsgICAobGFtYmRhICh2KQogICAg
+ICAgICAgIDs7ICAgICAoc2V0cSByZXN1bHQgKGNvbmNhdCByZXN1bHQgdikpKQogICAgICAgICAg
+IChzZXRxIHJlc3VsdCAoYXBwZW5kIHJlc3VsdCAobGlzdCAoc3dlYXQtLWFzc29jICx0ZW1wbGF0
+ZSBfKSkpKQogICAgICAgICAgICkKICAgICAgICAgKQogICAgICAgKQogICAgIChhcHBseSAnY29u
+Y2F0IHJlc3VsdCkgOzsgCiAgICAgKQogICkKCihkZWZtYWNybyBzd2VhdC1sZXQgKGJpbmRpbmdz
+ICZyZXN0IGZvcm1zKQogIGAobGV0ICxiaW5kaW5ncwogICAgIChsZXQgKChfIChxdW90ZSAsYmlu
+ZGluZ3MpKSkKICAgICAgIChtYXBjb25jYXQgCiAgICAgICAgKGxhbWJkYSAoZm9ybSkKICAgICAg
+ICAgIChjb25kCiAgICAgICAgICAgKChzdHJpbmdwIGZvcm0pCiAgICAgICAgICAgIChzd2VhdC0t
+YXNzb2MgZm9ybSBfKSkKICAgICAgICAgICAoKGZ1bmN0aW9ucCBmb3JtKQogICAgICAgICAgICAo
+ZnVuY2FsbCBmb3JtKSkKICAgICAgICAgICAoJ3QKICAgICAgICAgICAgKG1lc3NhZ2UgIndob29w
+cyEiKQogICAgICAgICAgICAiIikpKQogICAgICAgIChsaXN0ICxAZm9ybXMpCiAgICAgICAgIiIp
+CiAgICAgICApCiAgICAgKQogICkKCjs7IERlbW8KKHN3ZWF0LWxldCAoKHRpdGxlICJuaWMncyBk
+ZW1vIikKICAgICAgICAgICAgKGl0ZW1zIChzdHJlYW0tZnJvbS1saXN0CiAgICAgICAgICAgICAg
+ICAgICAgKGxhbWJkYSAoaXRlbSkKICAgICAgICAgICAgICAgICAgICAgIGAoKG5hbWUgLiAsKGNh
+ciBpdGVtKSkKICAgICAgICAgICAgICAgICAgICAgICAgKHZhbHVlIC4gLChjZHIgaXRlbSkpKSkK
+ICAgICAgICAgICAgICAgICAgICAnKCgidXNlcm5hbWUiIC4gIm5pY2ZlcnJpZXIiKQogICAgICAg
+ICAgICAgICAgICAgICAgKCJmaXJzdG5hbWUiIC4gIm5pYyIpKSkpKQogICAgICAgICAgICI8aHRt
+bD48aGVhZD48dGl0bGU+Ojp0aXRsZTo6PC90aXRsZT48aGVhZD48Ym9keT48dWw+IgogICAgICAg
+ICAgIChzd2VhdC0qIGl0ZW1zICI8bGk+OjpuYW1lOjogLSA6OnZhbHVlOjo8L2xpPiIpCiAgICAg
+ICAgICAgIjwvdWw+PC9ib2R5PjwvaHRtbD4iKQoKOzsgRW5kCg==

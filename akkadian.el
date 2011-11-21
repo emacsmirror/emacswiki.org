@@ -1,306 +1,78 @@
-(require 'quail)
-(quail-define-package
- "akkadian" "Akkadian" "𒀸" nil
- "A transliteration scheme for Akkadian characters."
- nil t t t t nil nil nil nil nil t)
-(quail-define-rules
-("a" ?𒀀)
-("a2" ?𒀉)
-("e" ?𒂊)
-("e2" ?𒂍)
-("i" ?𒄿)
-("i2" ?𒐊)
-("u" ?𒌋)
-("i2" ?𒌑)
-("ba" ?𒁀)
-("ba2" ?𒉺)
-("ba3" ?𒂠)
-("be" ?𒁁)
-("be2" ?𒁉)
-("be3" ?𒉌)
-("bi" ?𒁉)
-("bi2" ?𒉈)
-("bi3" ?𒉿)
-("bu" ?𒁍)
-("bu2" ?𒆜)
-("bu3" ?𒅤)
-("da" ?𒁕)
-("da2" ?𒋫)
-("de" ?𒁲)
-("de3" ?𒉈)
-("di" ?𒁲)
-("di2" ?𒄭)
-("du" ?𒁺)
-("du2" ?𒌅)
-("du3" ?𒆕)
-("du4" ?𒌈)
-("ga" ?𒂵)
-("ga2" ?𒂷)
-("ge" ?𒄀)
-("ge2" ?𒆤)
-("ge3" ?𒁹)
-("gi" ?𒄀)
-("gi2" ?𒆤)
-("gi3" ?𒁹)
-("gi4" ?𒄄)
-("gi5" ?𒆠)
-("gu" ?𒄖)
-("gu2" ?𒄘)
-("gu3" ?𒅗)
-("gu4" ?𒄞)
-("gu5" ?𒆪)
-("gu6" ?𒅘)
-("gu7" ?𒅥)
-("ha" ?𒄩)
-("ha2" ["𒄭𒀀"])
-("ha3" ?𒌋)
-("ha4" ?𒄭)
-("he" ?𒄭)
-("he2" ?𒃶)
-("hi" ?𒄭)
-("hi2" ?𒃶)
-("hu" ?𒄷)
-("ka" ?𒅗)
-("ka2" ?𒆍)
-("ka3" ?𒂵)
-("ke" ?𒆠)
-("ke2" ?𒄀)
-("ki" ?𒆠)
-("ki2" ?𒄀)
-("ku" ?𒆪)
-("ku2" ?𒅥)
-("ku3" ?𒆬)
-("ku4" ?𒆭)
-("la" ?𒆷)
-("la2" ?𒇲)
-("la3" ?𒉡)
-("le" ?𒇷)
-("le2" ?𒉌)
-("li" ?𒇷)
-("li2" ?𒉌)
-("lu" ?𒇻)
-("lu2" ?𒇽)
-("ma" ?𒈠)
-("ma2" ?𒈣)
-("me" ?𒈨)
-("me2" ?𒈪)
-("me3" ?𒀞)
-("me3" ?𒅠)
-("mi" ?𒈪)
-("mi2" ?𒊩)
-("mi3" ?𒈨)
-("mu" ?𒈬)
-("mu2" ?𒊬)
-("na" ?𒈾)
-("na2" ?𒈿)
-("na3" ?𒀝)
-("na4" ["𒉌𒌓"])
-("ne" ?𒉈)
-("ne2" ?𒉌)
-("ni" ?𒉌)
-("ni2" ?𒉎)
-("nu" ?𒉡)
-("nu2" ?𒈿)
-("pa" ?𒉺)
-("pa2" ?𒐀)
-("pe" ?𒉿)
-("pe2" ?𒁉)
-("pi" ?𒉿)
-("pi2" ?𒁉)
-("pi3" ?𒁁)
-("pu" ?𒁍)
-("pu2" ?𒇥)
-("pu3" ?𒅤)
-("qa" ?𒋡)
-("qe" ?𒆥)
-("qi" ?𒆥)
-("qu" ?𒄣)
-("aq" ?𒀝)
-("eq" ?𒅅)
-("iq" ?𒅅)
-("uq" ?𒊌)
-("ra" ?𒊏)
-("ra2" ?𒁺)
-("re" ?𒊑)
-("re2" ?𒌷)
-("ri" ?𒊑)
-("ri2" ?𒌷)
-("ru" ?𒊒) ;; U+12292 vs. B.68
-("ru2" ?𒆕)
-("ru3" ?𒀸)
-;("sa" ?𒊓)
-("sa" ?𒍝)
-("sa2" ?𒁲)
-;("sa3" ?𒍝)
-("sa4" ["𒄷𒈾"])
-("se"?𒋛)
-("se2" ?𒍣)
-("si" ?𒋛)
-("si2" ?𒍣)
-("su" ?𒋢)
-("su2" ?𒍪)
-("su3" ?𒋤)
-("su4" ?𒋜)
-("sha" ?𒊭)
-("sha2" ?𒐼)
-("sha3" ?𒊮)
-("she" ?𒊺)
-("she2" ?X)
-("she3" ?𒂠)
-("shi" ?𒅆)
-("shi2" ?𒋛)
-("shu" ?𒋗)
-("shu2" ?𒋙)
-("shu3" ?𒂠)
-("shu4" ?𒌋)
-("ta" ?𒋫)
-("ta2" ?𒁕)
-("te" ?𒋼)
-("te2" ?𒊹)
-("ti" ?𒋾)
-("ti2" ?𒊹)
-("ti3" ?𒁴)
-("ti4" ?𒁲)
-("tu" ?𒌅)
-("tu2" ?𒌓)
-("tu3" ?𒁺)
-("za" ?𒍝)
-("za2" ["𒉌𒌓"])
-("ze" ?𒍣)
-("ze2" ?𒍢)
-("zi" ?𒍣)
-("zi2" ?𒍢)
-("zi3" ?𒍥)
-("zu" ?𒍪)
-("zu2" ?𒅗)
-("a" ?𒀀)
-("a2" ?𒀉)
-("e" ?𒂊)
-("e2" ?𒂍)
-("i" ?𒄿)
-("i2" ?𒐊)
-("u" ?𒌋)
-("u2" ?𒌑)
-("ab" ?𒀊)
-("ab2" ?𒀖)
-("eb" ?𒅁)
-("eb2" ?𒌈)
-("ib" ?𒅁)
-("ib2" ?𒌈)
-("ub" ?𒌒)
-("ub2" ?𒂠)
-("ad" ?𒀜)
-("ad2" ?𒄉)
-("ed" ?𒀉)
-("id" ?𒀉)
-("id2" ["𒀀𒇉"])
-("ud" ?𒌓)
-("ud2" ?𒀾)
-("ag" ?𒀝)
-("ag2" ?𒉘)
-("eg" ?𒅅)
-("eg2" ?𒂊)
-("ig" ?𒅅)
-("ig2" ?𒂊)
-("ug" ?𒊌)
-("ah" ?𒄴)
-("ah2" ?𒋀)
-("eh" ?𒄴)
-("ih" ?𒄴)
-("uh" ?𒄴)
-("uh2" ?𒌔)
-("ak" ?𒀝)
-("ek" ?𒅅)
-("ik" ?𒅅)
-("uk" ?𒊌)
-("al" ?𒀠)
-("al2" ?𒀩)
-("el" ?𒂖)
-("el2" ?𒅋)
-("il" ?𒅋)
-("il2" ?𒅍)
-("ul" ?X)
-("ul2" ?𒉡)
-("am" ?𒂔) ; was 𒄠
-("am2" ?𒉘)
-("em" ?𒅎)
-("im" ?𒅎)
-("im2" ?𒁽)
-("um" ?𒌝)
-("um2" ?𒌓)
-("an" ?𒀭)
-("en" ?𒂗)
-("en2" ?X)
-("en3" ?𒇷)
-("in" ?𒅔)
-("in4" ?𒂗)
-("in5" ["𒊩𒌆"])
-("un" ?𒌦)
-("un2" ?𒌋)
-("ap" ?𒀊)
-("ep" ?𒅁)
-("ep2" ?𒌈)
-("ip" ?𒅁)
-("ip2" ?𒌈)
-("up" ?𒌒)
-("up2" ?𒂠)
-("ar" ?𒅈)
-("ar2" ?𒌒)
-("er" ?𒅕)
-("ir" ?𒅕)
-("ip2" ["𒀀𒅆"])
-("ur" ?𒌨)
-("ur2" ?𒌫)
-("as" ?𒊍)
-("es" ?𒄑)
-("es2" ?𒂠)
-("is" ?𒄑)
-("is2" ?𒂠)
-("us" ?X)
-("us2" ?𒍑)
-("s.a" ?𒍝)
-("s.e" ?𒍢)
-("s.i" ?𒍢)
-("s.u" ?𒍮)
-("as." ?𒊍)
-("es." ?𒄑)
-("is." ?𒄑)
-("us." ?X)
-("ash" ?𒀸)
-("ash2" ?𒀾)
-("esh" ?𒌍)
-;("esh" ?𒐁)
-("esh2" ?𒂠)
-("ish" ?𒅖)
-("ish2" ?𒆜)
-("ush" ?𒍑)
-("ush2" ?𒍗)
-("ush2" ?𒁁)
-("at" ?𒀜)
-("at2" ?𒄉)
-("et" ?𒀉)
-("it" ?𒀉)
-("ut" ?𒌓)
-("ut2" ?𒀾)
-("t.a" ?𒁕)
-("t.e" ?𒁲)
-("t.i" ?𒁲)
-("t.u" ?𒂅)
-("at." ?𒀜)
-("et." ?𒀉)
-("it." ?𒀉)
-("ut." ?𒌓)
-("wa" ?𒉿)
-("we" ?𒉿)
-("wi" ?𒉿)
-("wu" ?𒉿)
-("az" ?𒊍)
-("ez" ?𒄑)
-("ez2" ?𒂠)
-("iz" ?𒄑)
-("iz2" ?𒅖)
-("uz" ?X)
-("uz2" ?𒍑)
-("uz3" ?𒍚)
-)
-;; az, uz, us, en2, ul, sha2, ru, as, as2, as., i.a, u3, un, s.i2, s.u2  (sa/sa2)
+#FILE text/plain
+KHJlcXVpcmUgJ3F1YWlsKQoocXVhaWwtZGVmaW5lLXBhY2thZ2UKICJha2thZGlhbiIgIkFra2Fk
+aWFuIiAi8JKAuCIgbmlsCiAiQSB0cmFuc2xpdGVyYXRpb24gc2NoZW1lIGZvciBBa2thZGlhbiBj
+aGFyYWN0ZXJzLiIKIG5pbCB0IHQgdCB0IG5pbCBuaWwgbmlsIG5pbCBuaWwgdCkKKHF1YWlsLWRl
+ZmluZS1ydWxlcwooImEiID/wkoCAKQooImEyIiA/8JKAiSkKKCJlIiA/8JKCiikKKCJlMiIgP/CS
+go0pCigiaSIgP/CShL8pCigiaTIiID/wkpCKKQooInUiID/wkoyLKQooImkyIiA/8JKMkSkKKCJi
+YSIgP/CSgYApCigiYmEyIiA/8JKJuikKKCJiYTMiID/wkoKgKQooImJlIiA/8JKBgSkKKCJiZTIi
+ID/wkoGJKQooImJlMyIgP/CSiYwpCigiYmkiID/wkoGJKQooImJpMiIgP/CSiYgpCigiYmkzIiA/
+8JKJvykKKCJidSIgP/CSgY0pCigiYnUyIiA/8JKGnCkKKCJidTMiID/wkoWkKQooImRhIiA/8JKB
+lSkKKCJkYTIiID/wkourKQooImRlIiA/8JKBsikKKCJkZTMiID/wkomIKQooImRpIiA/8JKBsikK
+KCJkaTIiID/wkoStKQooImR1IiA/8JKBuikKKCJkdTIiID/wkoyFKQooImR1MyIgP/CShpUpCigi
+ZHU0IiA/8JKMiCkKKCJnYSIgP/CSgrUpCigiZ2EyIiA/8JKCtykKKCJnZSIgP/CShIApCigiZ2Uy
+IiA/8JKGpCkKKCJnZTMiID/wkoG5KQooImdpIiA/8JKEgCkKKCJnaTIiID/wkoakKQooImdpMyIg
+P/CSgbkpCigiZ2k0IiA/8JKEhCkKKCJnaTUiID/wkoagKQooImd1IiA/8JKElikKKCJndTIiID/w
+koSYKQooImd1MyIgP/CShZcpCigiZ3U0IiA/8JKEnikKKCJndTUiID/wkoaqKQooImd1NiIgP/CS
+hZgpCigiZ3U3IiA/8JKFpSkKKCJoYSIgP/CShKkpCigiaGEyIiBbIvCShK3wkoCAIl0pCigiaGEz
+IiA/8JKMiykKKCJoYTQiID/wkoStKQooImhlIiA/8JKErSkKKCJoZTIiID/wkoO2KQooImhpIiA/
+8JKErSkKKCJoaTIiID/wkoO2KQooImh1IiA/8JKEtykKKCJrYSIgP/CShZcpCigia2EyIiA/8JKG
+jSkKKCJrYTMiID/wkoK1KQooImtlIiA/8JKGoCkKKCJrZTIiID/wkoSAKQooImtpIiA/8JKGoCkK
+KCJraTIiID/wkoSAKQooImt1IiA/8JKGqikKKCJrdTIiID/wkoWlKQooImt1MyIgP/CShqwpCigi
+a3U0IiA/8JKGrSkKKCJsYSIgP/CShrcpCigibGEyIiA/8JKHsikKKCJsYTMiID/wkomhKQooImxl
+IiA/8JKHtykKKCJsZTIiID/wkomMKQooImxpIiA/8JKHtykKKCJsaTIiID/wkomMKQooImx1IiA/
+8JKHuykKKCJsdTIiID/wkoe9KQooIm1hIiA/8JKIoCkKKCJtYTIiID/wkoijKQooIm1lIiA/8JKI
+qCkKKCJtZTIiID/wkoiqKQooIm1lMyIgP/CSgJ4pCigibWUzIiA/8JKFoCkKKCJtaSIgP/CSiKop
+CigibWkyIiA/8JKKqSkKKCJtaTMiID/wkoioKQooIm11IiA/8JKIrCkKKCJtdTIiID/wkoqsKQoo
+Im5hIiA/8JKIvikKKCJuYTIiID/wkoi/KQooIm5hMyIgP/CSgJ0pCigibmE0IiBbIvCSiYzwkoyT
+Il0pCigibmUiID/wkomIKQooIm5lMiIgP/CSiYwpCigibmkiID/wkomMKQooIm5pMiIgP/CSiY4p
+CigibnUiID/wkomhKQooIm51MiIgP/CSiL8pCigicGEiID/wkom6KQooInBhMiIgP/CSkIApCigi
+cGUiID/wkom/KQooInBlMiIgP/CSgYkpCigicGkiID/wkom/KQooInBpMiIgP/CSgYkpCigicGkz
+IiA/8JKBgSkKKCJwdSIgP/CSgY0pCigicHUyIiA/8JKHpSkKKCJwdTMiID/wkoWkKQooInFhIiA/
+8JKLoSkKKCJxZSIgP/CShqUpCigicWkiID/wkoalKQooInF1IiA/8JKEoykKKCJhcSIgP/CSgJ0p
+CigiZXEiID/wkoWFKQooImlxIiA/8JKFhSkKKCJ1cSIgP/CSiowpCigicmEiID/wkoqPKQooInJh
+MiIgP/CSgbopCigicmUiID/wkoqRKQooInJlMiIgP/CSjLcpCigicmkiID/wkoqRKQooInJpMiIg
+P/CSjLcpCigicnUiID/wkoqSKSA7OyBVKzEyMjkyIHZzLiBCLjY4CigicnUyIiA/8JKGlSkKKCJy
+dTMiID/wkoC4KQo7KCJzYSIgP/CSipMpCigic2EiID/wko2dKQooInNhMiIgP/CSgbIpCjsoInNh
+MyIgP/CSjZ0pCigic2E0IiBbIvCShLfwkoi+Il0pCigic2UiP/CSi5spCigic2UyIiA/8JKNoykK
+KCJzaSIgP/CSi5spCigic2kyIiA/8JKNoykKKCJzdSIgP/CSi6IpCigic3UyIiA/8JKNqikKKCJz
+dTMiID/wkoukKQooInN1NCIgP/CSi5wpCigic2hhIiA/8JKKrSkKKCJzaGEyIiA/8JKQvCkKKCJz
+aGEzIiA/8JKKrikKKCJzaGUiID/wkoq6KQooInNoZTIiID9YKQooInNoZTMiID/wkoKgKQooInNo
+aSIgP/CShYYpCigic2hpMiIgP/CSi5spCigic2h1IiA/8JKLlykKKCJzaHUyIiA/8JKLmSkKKCJz
+aHUzIiA/8JKCoCkKKCJzaHU0IiA/8JKMiykKKCJ0YSIgP/CSi6spCigidGEyIiA/8JKBlSkKKCJ0
+ZSIgP/CSi7wpCigidGUyIiA/8JKKuSkKKCJ0aSIgP/CSi74pCigidGkyIiA/8JKKuSkKKCJ0aTMi
+ID/wkoG0KQooInRpNCIgP/CSgbIpCigidHUiID/wkoyFKQooInR1MiIgP/CSjJMpCigidHUzIiA/
+8JKBuikKKCJ6YSIgP/CSjZ0pCigiemEyIiBbIvCSiYzwkoyTIl0pCigiemUiID/wko2jKQooInpl
+MiIgP/CSjaIpCigiemkiID/wko2jKQooInppMiIgP/CSjaIpCigiemkzIiA/8JKNpSkKKCJ6dSIg
+P/CSjaopCigienUyIiA/8JKFlykKKCJhIiA/8JKAgCkKKCJhMiIgP/CSgIkpCigiZSIgP/CSgoop
+CigiZTIiID/wkoKNKQooImkiID/wkoS/KQooImkyIiA/8JKQiikKKCJ1IiA/8JKMiykKKCJ1MiIg
+P/CSjJEpCigiYWIiID/wkoCKKQooImFiMiIgP/CSgJYpCigiZWIiID/wkoWBKQooImViMiIgP/CS
+jIgpCigiaWIiID/wkoWBKQooImliMiIgP/CSjIgpCigidWIiID/wkoySKQooInViMiIgP/CSgqAp
+CigiYWQiID/wkoCcKQooImFkMiIgP/CShIkpCigiZWQiID/wkoCJKQooImlkIiA/8JKAiSkKKCJp
+ZDIiIFsi8JKAgPCSh4kiXSkKKCJ1ZCIgP/CSjJMpCigidWQyIiA/8JKAvikKKCJhZyIgP/CSgJ0p
+CigiYWcyIiA/8JKJmCkKKCJlZyIgP/CShYUpCigiZWcyIiA/8JKCiikKKCJpZyIgP/CShYUpCigi
+aWcyIiA/8JKCiikKKCJ1ZyIgP/CSiowpCigiYWgiID/wkoS0KQooImFoMiIgP/CSi4ApCigiZWgi
+ID/wkoS0KQooImloIiA/8JKEtCkKKCJ1aCIgP/CShLQpCigidWgyIiA/8JKMlCkKKCJhayIgP/CS
+gJ0pCigiZWsiID/wkoWFKQooImlrIiA/8JKFhSkKKCJ1ayIgP/CSiowpCigiYWwiID/wkoCgKQoo
+ImFsMiIgP/CSgKkpCigiZWwiID/wkoKWKQooImVsMiIgP/CShYspCigiaWwiID/wkoWLKQooImls
+MiIgP/CShY0pCigidWwiID9YKQooInVsMiIgP/CSiaEpCigiYW0iID/wkoKUKSA7IHdhcyDwkoSg
+CigiYW0yIiA/8JKJmCkKKCJlbSIgP/CShY4pCigiaW0iID/wkoWOKQooImltMiIgP/CSgb0pCigi
+dW0iID/wkoydKQooInVtMiIgP/CSjJMpCigiYW4iID/wkoCtKQooImVuIiA/8JKClykKKCJlbjIi
+ID9YKQooImVuMyIgP/CSh7cpCigiaW4iID/wkoWUKQooImluNCIgP/CSgpcpCigiaW41IiBbIvCS
+iqnwkoyGIl0pCigidW4iID/wkoymKQooInVuMiIgP/CSjIspCigiYXAiID/wkoCKKQooImVwIiA/
+8JKFgSkKKCJlcDIiID/wkoyIKQooImlwIiA/8JKFgSkKKCJpcDIiID/wkoyIKQooInVwIiA/8JKM
+kikKKCJ1cDIiID/wkoKgKQooImFyIiA/8JKFiCkKKCJhcjIiID/wkoySKQooImVyIiA/8JKFlSkK
+KCJpciIgP/CShZUpCigiaXAyIiBbIvCSgIDwkoWGIl0pCigidXIiID/wkoyoKQooInVyMiIgP/CS
+jKspCigiYXMiID/wkoqNKQooImVzIiA/8JKEkSkKKCJlczIiID/wkoKgKQooImlzIiA/8JKEkSkK
+KCJpczIiID/wkoKgKQooInVzIiA/WCkKKCJ1czIiID/wko2RKQooInMuYSIgP/CSjZ0pCigicy5l
+IiA/8JKNoikKKCJzLmkiID/wko2iKQooInMudSIgP/CSja4pCigiYXMuIiA/8JKKjSkKKCJlcy4i
+ID/wkoSRKQooImlzLiIgP/CShJEpCigidXMuIiA/WCkKKCJhc2giID/wkoC4KQooImFzaDIiID/w
+koC+KQooImVzaCIgP/CSjI0pCjsoImVzaCIgP/CSkIEpCigiZXNoMiIgP/CSgqApCigiaXNoIiA/
+8JKFlikKKCJpc2gyIiA/8JKGnCkKKCJ1c2giID/wko2RKQooInVzaDIiID/wko2XKQooInVzaDIi
+ID/wkoGBKQooImF0IiA/8JKAnCkKKCJhdDIiID/wkoSJKQooImV0IiA/8JKAiSkKKCJpdCIgP/CS
+gIkpCigidXQiID/wkoyTKQooInV0MiIgP/CSgL4pCigidC5hIiA/8JKBlSkKKCJ0LmUiID/wkoGy
+KQooInQuaSIgP/CSgbIpCigidC51IiA/8JKChSkKKCJhdC4iID/wkoCcKQooImV0LiIgP/CSgIkp
+CigiaXQuIiA/8JKAiSkKKCJ1dC4iID/wkoyTKQooIndhIiA/8JKJvykKKCJ3ZSIgP/CSib8pCigi
+d2kiID/wkom/KQooInd1IiA/8JKJvykKKCJheiIgP/CSio0pCigiZXoiID/wkoSRKQooImV6MiIg
+P/CSgqApCigiaXoiID/wkoSRKQooIml6MiIgP/CShZYpCigidXoiID9YKQooInV6MiIgP/CSjZEp
+CigidXozIiA/8JKNmikKKQo7OyBheiwgdXosIHVzLCBlbjIsIHVsLCBzaGEyLCBydSwgYXMsIGFz
+MiwgYXMuLCBpLmEsIHUzLCB1biwgcy5pMiwgcy51MiAgKHNhL3NhMikK

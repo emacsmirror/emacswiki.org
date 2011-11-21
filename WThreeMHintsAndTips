@@ -516,19 +516,24 @@ link to be copied by entering number, where entering letters will
 filter currently visible links on their text part (<ctrl>+<number>
 will add <number> to the search string and <ctrl>+<space> adds space).
 
-The swiss-army knife is w3m-lnum-follow which depending on selected
-element may visit link, activate form field, toggle image or push a
-button.  With prefix arguments its behaviour may be further
-controlled.
+The swiss-army knives are w3m-lnum-universal and w3m-lnum-follow.
+w3m-lnum-universal: select whatever element and get a list of
+applicable actions over it.
+w3m-lnum-follow: depending on selected element may visit link,
+activate form field, toggle image or push a button.  With prefix
+arguments its behaviour may be further controlled.
 
 For full list of such commands try `L C-h' within emacs-w3m buffer.
 
+To customize some lnum options, just search for `w3m lnum' within the
+Emacs customization interface.
+
 You may replace original point commands with their enhanced versions
-(and also put w3m-lnum-follow at `f' as in Conkeror and
-w3m-linknum-goto at `F' for quickly moving cursor to some link, image,
-form field or button) by activating the w3m-lnum-mode minor mode (`M-x
-w3m-lnum-mode' toggles it).  You can automatically activate it by
-adding
+(and also put w3m-lnum-universal at `w', w3m-lnum-follow at `f' as in
+Conkeror and w3m-linknum-goto at `F' for quickly moving cursor to some
+link, image, form field or button) by activating the w3m-lnum-mode
+minor mode (`M-x w3m-lnum-mode' toggles it).  You can automatically
+activate it by adding
 
 (w3m-lnum-mode 1)
 

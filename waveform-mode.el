@@ -1,276 +1,182 @@
-;;; 
-;-*- coding: utf-8 -*-
-; http://www.emacswiki.org/emacs/WaveformMode
-; waveform-mode by Zhu, Shenli
-; 
-; (l)ow, m(i)ddle, (h)igh, repea(t), (s)pace, s(p)lit
-
-; auto style (for synchronized digital circuit)
-; Text according to marker, marker($m) will put text center align
-; (m)arker, l(e)ft, (r)ight
-
-;; TODO list
-; make current buffer back to .wf buffer instead of *Waveform*
-; make "Waveform" buffer read only
-
-(defconst wf_display_buffer "*Waveform*"
-  "Buffer to display generated waveform.")
-
-(defvar wf_input_buffer nil)
-(defvar wf_clk_name nil)
-(defvar wf_marker_name "M")
-(defvar wf_marker_pos nil)
-(defvar wf_marker_nr nil)
-(defvar wf_clk_width nil)
-
-(defvar wf-mode-map
-       (let ((map (make-sparse-keymap))
-             (menu-map (make-sparse-keymap)))
-         (define-key map (kbd "C-M-u") 'wf-update)
-         (define-key map [menu-bar waveform-mode] (cons "Waveform" menu-map))
-         (define-key menu-map [wu]
-           '(menu-item "Generate waveform" wf-update
-                       :help "update and generate waveform"))
-         map)
-       "Keymap for `waveform-mode'")
-
-; (describe-face)
-(setq wf-font-lock-defaults
-      '(("^[a-zA-Z][0-9a-zA-Z_-]*\\(\\[[0-9]+:?[0-9]*\\]\\)?"
-         . font-lock-function-name-face)
-        ("\\$[0-9]*[lhtsp]" . font-lock-type-face)
-        ("\\$[0-9]*i" . font-lock-variable-name-face)
-        ("@[ ]*([ ]*posedge[ ]*\\(.*?\\))[ ]*$" . font-lock-keyword-face)
-        ("\\$[0-9]+[mer]" . font-lock-keyword-face)
-        (" [_⎺\\\/]+" . font-lock-type-face)
-        ("⎼" . font-lock-variable-name-face)
-        ("<\\(.*?>\\)" . (1 highlight))))
-
-(define-derived-mode waveform-mode fundamental-mode 
-  "A major mode for drawing digital circuit waveform"
-  (use-local-map wf-mode-map)
-  (set (make-local-variable 'comment-start) "# ")
-  (make-local-variable 'wf_input_buffer)
-  (setq font-lock-defaults '(wf-font-lock-defaults))
-  (setq mode-name "Waveform")
-  ;(flyspell-mode -1)
-  (auto-fill-mode nil)
-  ;; perl style comment: “# …” 
-  (modify-syntax-entry ?# "< b" waveform-mode-syntax-table)
-  (modify-syntax-entry ?\n "> b" waveform-mode-syntax-table)
-   )
-
-;;;###autoload
-(defalias 'wfu 'wf-update)
-
-;;;###autoload
-(defun wf-update ()
-  "update waveform to reflect outside changes to waveform source"
-  (interactive)
-  
-  (assert (eq major-mode 'waveform-mode))
-  (setq wf_input_buffer (current-buffer)) ; don't work?
-  (let ((wf_input_buffer1 (current-buffer)))
-    (when (one-window-p) (split-window))
-    (kill-buffer wf_display_buffer)
-    (set-buffer (get-buffer-create wf_display_buffer))
-    (waveform-mode)
-    (barf-if-buffer-read-only)
-    (erase-buffer)
-    (insert-buffer-substring wf_input_buffer1)
-    (when (wf-auto-mode-p wf_display_buffer)
-      (progn
-        (wf-translate-clk-line wf_display_buffer)
-        (wf-gen-mark-line wf_display_buffer)
-        (wf-translate-mark wf_display_buffer)
-    ;;     (wf-translate-other-auto wf_display_buffer))
-    ))
-    ;(wf-translate-buf wf_display_buffer)
-    ;(setq buffer-read-only t) 
-    ;(next-window) ; don't work
-    ))  
-
-(defun wf-auto-mode-p (buf)
-  "check whether it has @posedge clk, if no, return nil, if yes return
-clk"
-  (progn
-    (beginning-of-buffer)
-    (if (re-search-forward "^\\(.+?\\)@[ ]*([ ]*posedge[ ]*\\(.*?\\))[ ]*$")
-        (progn
-          (setq wf_marker_name (substring-no-properties (match-string 1)))
-          (setq wf_clk_name (substring-no-properties (match-string 2)))
-          t)
-      nil)))
-
-(defun wf-translate-clk-line (buf)
-  (set-buffer buf)
-  (goto-char (point-min))
-  (re-search-forward (concat "^" wf_clk_name))
-  (let* ((clk_begin (progn (beginning-of-line) (point)))
-         (clk_end (progn (end-of-line) (point)))
-         (clk_line (delete-and-extract-region clk_begin clk_end))
-         (clk_expand_line 
-          (with-temp-buffer
-            (insert clk_line)
-            (wf-translate-buf (current-buffer))
-            ; generate column number of clock edge
-            (beginning-of-line)
-            (setq wf_marker_pos nil)
-            (while (re-search-forward "\/" nil t)
-              (if wf_marker_pos
-                  ; non-nil
-                  (setq wf_marker_pos (append wf_marker_pos (list (-
-                                                                   (point) 1))))
-                ;nil
-                (setq wf_marker_pos (list (- (point) 1)))))
-            (buffer-string))))
-    (insert clk_expand_line)))  
-
-(defun wf-gen-mark-line (buf)
-  (set-buffer buf)
-  (goto-char (point-min))
-  (re-search-forward (concat "^" wf_marker_name))
-  (delete-region (point) (progn (end-of-line) (point)))  
-  (let* ((marker_begin (progn (beginning-of-line) (point)))
-        (marker_end (progn (end-of-line) (point)))
-        (marker_line (delete-and-extract-region marker_begin marker_end))
-        (marker_expand_line 
-         (with-temp-buffer
-           (insert marker_line)
-           (setq wf_marker_nr (length wf_marker_pos))
-           (let ((n 0))
-             (while (< n wf_marker_nr)
-               (progn
-                 (wf-translate-char "s" (- (elt wf_marker_pos n) (point)))
-                 (insert (number-to-string n))
-                 (setq n (+ n 1)))))
-           (buffer-string))))
-    (insert marker_expand_line)))
-
-
-; case 1: $i$0m
-(defconst wf_marker_1 " \\$\\(?1:[hil]\\)\\$\\(?2:[0-9]+\\)\\(?3:m\\)")
-; case 2: $0m<pc>$1m
-(defconst wf_marker_2 "\\(?:7\\$\\(?1:[0-9]+\\)\\(?2:m\\)\\(?:\\(?:$\\(?3:[hil]\\)\\)\\|\\(?:<\\(?4:.+?\\)>\\)\\)\\$\\(?5:[0-9]+\\)\\(?6:m\\)\\)")
-; case 3: $4m$i 
-(defconst wf_marker_3 "\\$\\(?1:[0-9]+\\)\\(?2:m\\)\\$\\(?3:[hil]?\\) *?$")
-
-(defconst wf_marker_all (concat "\\(?:" wf_marker_1 "\\)" "\\|"
-                                "\\(?:" wf_marker_2 "\\)" "\\|"
-                                "\\(?:" wf_marker_3 "\\)"))
-(defun wf-translate-mark (buf)
-  (set-buffer buf)
-  (setq wf_clk_width (- (elt wf_marker_pos 1) (elt wf_marker_pos 0)))
-  ; case 1
-  (goto-char (point-min))
-  (while (re-search-forward wf_marker_1 nil t)
-    (let* ((char (match-string 1))
-           (marker_nr (match-string 2))
-           (str_len (+ (length marker_nr) 4))
-           (marker_len (+ (length marker_nr) 2))
-           (char_begin (- (point) str_len))
-           (char_end (+ char_begin 2)))
-      (progn
-          ; remove $i
-          (delete-region char_begin char_end)
-          ; insert char
-          (backward-char marker_len)
-          (wf-translate-char char (- (- (elt wf_marker_pos
-                                (string-to-number marker_nr))
-                                (current-column)) 1)))))
-  ; case 2
-  (goto-char (point-min))
-  (while (re-search-forward wf_marker_2 nil t)
-    (let* ((left_marker_nr (match-string 1))
-           (right_marker_nr (match-string 5))
-           (left_marker_len (+ (length left_marker_nr) 2))
-           (right_marker_len (+ (length right_marker_nr) 2))
-           (marker_distance (- (string-to-number right_marker_nr)
-                                (string-to-number left_marker_nr)))
-           (char (match-string 3))
-           (content (match-string 4))
-           (content_len (length content))
-           (str_len (if char (+ left_marker_len right_marker_len 2)
-                      (+ left_marker_len right_marker_len content_len
-                                2))))
-      (progn
-        ; remove $m
-        (backward-char str_len)
-        (delete-region (point) (+ (point) left_marker_len))
-        ; case <content>
-        (when content 
-          (let* ((all_spaces (- (* wf_clk_width marker_distance) content_len 2))
-                 (left_spaces (/ all_spaces 2))
-                 (right_spaces (- all_spaces left_spaces)))
-            (progn
-              (forward-char 1)
-              (wf-translate-char "s" left_spaces)
-              (forward-char content_len)
-              (wf-translate-char "s" right_spaces))))
-        ; case $[hil]
-        (when char 
-          (progn
-            ; remove $[hil]
-            (delete-region (point) (+ (point) 2))
-            (cond ((string= char "h") (insert 47)) ;/
-                  ((string= char "l") (insert 92)) ;\
-                  ((string= char "i") (wf-translate-char "i" 1)))
-            (wf-translate-char char (- (* wf_clk_width marker_distance) 1))
-            )
-        ))))
-  ; case 3
-  (goto-char (point-min))
-  (while (re-search-forward wf_marker_3 nil t)
-    (let* ((left_marker_nr (string-to-number (match-string 1)))
-           (char (match-string 3))
-           (end_marker_nr (- (length wf_marker_pos) 1))
-           (marker_distance (- end_marker_nr left_marker_nr)))
-      (progn
-        (backward-char 5)
-        (delete-region (point) (+ (point) 5)) ; remove $5m$l
-        (cond ((string= char "h") (insert 47)) ;/
-              ((string= char "l") (insert 92)) ;\
-              ((string= char "i") (wf-translate-char "i" 1)))
-        (wf-translate-char char (- (* wf_clk_width marker_distance) 1)))))
-  )
-
-       
-
-(defun wf-translate-buf (buf)
-  "translate waveform string, normally one per line"
-  (progn
-    (pop-to-buffer buf)
-    (beginning-of-buffer)
-    (while
-        (re-search-forward "\$\\([0-9]+\\)\\([hmltsp]\\)" nil t)
-      (setq times (string-to-number (match-string 1)))
-      (setq char (match-string 2))
-      (if (string= char "t") ; repeat
-          (let ((r_begin (match-beginning 0))
-                (r_end (match-end 0)))
-            (progn
-             (re-search-backward " ")
-             (goto-char r_end)
-             (dotimes (i (- times 1))
-               (insert-buffer-substring (current-buffer)
-                                        (+ (match-beginning 0) 1) r_begin))
-             (delete-region r_begin r_end)
-             ))
-        (progn
-          (wf-translate-char char times) ; insert replace
-          (delete-region (match-beginning 0) (match-end 0)))))))
-
-(defun wf-translate-char (char times)
-  "char is h,i,l,p"
-  (if (string= char "l") ; low
-      (dotimes (i times) (insert "_"))
-    (if (string= char "s") ; space
-        (dotimes (i times) (insert " "))
-      (progn  
-        (setq ucode (cond ((string= char "h") "23BA") ; high
-                          ((string= char "i") "23BC") ; middle
-                          ((string= char "p") "222C"))) ; split
-        (ucs-insert ucode times)))))
-
-    
-(provide 'waveform-mode)
+#FILE text/x-emacs-lisp
+Ozs7IAo7LSotIGNvZGluZzogdXRmLTggLSotCjsgaHR0cDovL3d3dy5lbWFjc3dpa2kub3JnL2Vt
+YWNzL1dhdmVmb3JtTW9kZQo7IHdhdmVmb3JtLW1vZGUgYnkgWmh1LCBTaGVubGkKOyAKOyAobClv
+dywgbShpKWRkbGUsIChoKWlnaCwgcmVwZWEodCksIChzKXBhY2UsIHMocClsaXQKCjsgYXV0byBz
+dHlsZSAoZm9yIHN5bmNocm9uaXplZCBkaWdpdGFsIGNpcmN1aXQpCjsgVGV4dCBhY2NvcmRpbmcg
+dG8gbWFya2VyLCBtYXJrZXIoJG0pIHdpbGwgcHV0IHRleHQgY2VudGVyIGFsaWduCjsgKG0pYXJr
+ZXIsIGwoZSlmdCwgKHIpaWdodAoKOzsgVE9ETyBsaXN0CjsgbWFrZSBjdXJyZW50IGJ1ZmZlciBi
+YWNrIHRvIC53ZiBidWZmZXIgaW5zdGVhZCBvZiAqV2F2ZWZvcm0qCjsgbWFrZSAiV2F2ZWZvcm0i
+IGJ1ZmZlciByZWFkIG9ubHkKCihkZWZjb25zdCB3Zl9kaXNwbGF5X2J1ZmZlciAiKldhdmVmb3Jt
+KiIKICAiQnVmZmVyIHRvIGRpc3BsYXkgZ2VuZXJhdGVkIHdhdmVmb3JtLiIpCgooZGVmdmFyIHdm
+X2lucHV0X2J1ZmZlciBuaWwpCihkZWZ2YXIgd2ZfY2xrX25hbWUgbmlsKQooZGVmdmFyIHdmX21h
+cmtlcl9uYW1lICJNIikKKGRlZnZhciB3Zl9tYXJrZXJfcG9zIG5pbCkKKGRlZnZhciB3Zl9tYXJr
+ZXJfbnIgbmlsKQooZGVmdmFyIHdmX2Nsa193aWR0aCBuaWwpCgooZGVmdmFyIHdmLW1vZGUtbWFw
+CiAgICAgICAobGV0ICgobWFwIChtYWtlLXNwYXJzZS1rZXltYXApKQogICAgICAgICAgICAgKG1l
+bnUtbWFwIChtYWtlLXNwYXJzZS1rZXltYXApKSkKICAgICAgICAgKGRlZmluZS1rZXkgbWFwIChr
+YmQgIkMtTS11IikgJ3dmLXVwZGF0ZSkKICAgICAgICAgKGRlZmluZS1rZXkgbWFwIFttZW51LWJh
+ciB3YXZlZm9ybS1tb2RlXSAoY29ucyAiV2F2ZWZvcm0iIG1lbnUtbWFwKSkKICAgICAgICAgKGRl
+ZmluZS1rZXkgbWVudS1tYXAgW3d1XQogICAgICAgICAgICcobWVudS1pdGVtICJHZW5lcmF0ZSB3
+YXZlZm9ybSIgd2YtdXBkYXRlCiAgICAgICAgICAgICAgICAgICAgICAgOmhlbHAgInVwZGF0ZSBh
+bmQgZ2VuZXJhdGUgd2F2ZWZvcm0iKSkKICAgICAgICAgbWFwKQogICAgICAgIktleW1hcCBmb3Ig
+YHdhdmVmb3JtLW1vZGUnIikKCjsgKGRlc2NyaWJlLWZhY2UpCihzZXRxIHdmLWZvbnQtbG9jay1k
+ZWZhdWx0cwogICAgICAnKCgiXlthLXpBLVpdWzAtOWEtekEtWl8tXSpcXChcXFtbMC05XSs6P1sw
+LTldKlxcXVxcKT8iCiAgICAgICAgIC4gZm9udC1sb2NrLWZ1bmN0aW9uLW5hbWUtZmFjZSkKICAg
+ICAgICAoIlxcJFswLTldKltsaHRzcF0iIC4gZm9udC1sb2NrLXR5cGUtZmFjZSkKICAgICAgICAo
+IlxcJFswLTldKmkiIC4gZm9udC1sb2NrLXZhcmlhYmxlLW5hbWUtZmFjZSkKICAgICAgICAoIkBb
+IF0qKFsgXSpwb3NlZGdlWyBdKlxcKC4qP1xcKSlbIF0qJCIgLiBmb250LWxvY2sta2V5d29yZC1m
+YWNlKQogICAgICAgICgiXFwkWzAtOV0rW21lcl0iIC4gZm9udC1sb2NrLWtleXdvcmQtZmFjZSkK
+ICAgICAgICAoIiBbX+KOulxcXC9dKyIgLiBmb250LWxvY2stdHlwZS1mYWNlKQogICAgICAgICgi
+4o68IiAuIGZvbnQtbG9jay12YXJpYWJsZS1uYW1lLWZhY2UpCiAgICAgICAgKCI8XFwoLio/Plxc
+KSIgLiAoMSBoaWdobGlnaHQpKSkpCgooZGVmaW5lLWRlcml2ZWQtbW9kZSB3YXZlZm9ybS1tb2Rl
+IGZ1bmRhbWVudGFsLW1vZGUgCiAgIkEgbWFqb3IgbW9kZSBmb3IgZHJhd2luZyBkaWdpdGFsIGNp
+cmN1aXQgd2F2ZWZvcm0iCiAgKHVzZS1sb2NhbC1tYXAgd2YtbW9kZS1tYXApCiAgKHNldCAobWFr
+ZS1sb2NhbC12YXJpYWJsZSAnY29tbWVudC1zdGFydCkgIiMgIikKICAobWFrZS1sb2NhbC12YXJp
+YWJsZSAnd2ZfaW5wdXRfYnVmZmVyKQogIChzZXRxIGZvbnQtbG9jay1kZWZhdWx0cyAnKHdmLWZv
+bnQtbG9jay1kZWZhdWx0cykpCiAgKHNldHEgbW9kZS1uYW1lICJXYXZlZm9ybSIpCiAgOyhmbHlz
+cGVsbC1tb2RlIC0xKQogIChhdXRvLWZpbGwtbW9kZSBuaWwpCiAgOzsgcGVybCBzdHlsZSBjb21t
+ZW50OiDigJwjIOKApuKAnSAKICAobW9kaWZ5LXN5bnRheC1lbnRyeSA/IyAiPCBiIiB3YXZlZm9y
+bS1tb2RlLXN5bnRheC10YWJsZSkKICAobW9kaWZ5LXN5bnRheC1lbnRyeSA/XG4gIj4gYiIgd2F2
+ZWZvcm0tbW9kZS1zeW50YXgtdGFibGUpCiAgICkKCjs7OyMjI2F1dG9sb2FkCihkZWZhbGlhcyAn
+d2Z1ICd3Zi11cGRhdGUpCgo7OzsjIyNhdXRvbG9hZAooZGVmdW4gd2YtdXBkYXRlICgpCiAgInVw
+ZGF0ZSB3YXZlZm9ybSB0byByZWZsZWN0IG91dHNpZGUgY2hhbmdlcyB0byB3YXZlZm9ybSBzb3Vy
+Y2UiCiAgKGludGVyYWN0aXZlKQogIAogIChhc3NlcnQgKGVxIG1ham9yLW1vZGUgJ3dhdmVmb3Jt
+LW1vZGUpKQogIChzZXRxIHdmX2lucHV0X2J1ZmZlciAoY3VycmVudC1idWZmZXIpKSA7IGRvbid0
+IHdvcms/CiAgKGxldCAoKHdmX2lucHV0X2J1ZmZlcjEgKGN1cnJlbnQtYnVmZmVyKSkpCiAgICAo
+d2hlbiAob25lLXdpbmRvdy1wKSAoc3BsaXQtd2luZG93KSkKICAgIChraWxsLWJ1ZmZlciB3Zl9k
+aXNwbGF5X2J1ZmZlcikKICAgIChzZXQtYnVmZmVyIChnZXQtYnVmZmVyLWNyZWF0ZSB3Zl9kaXNw
+bGF5X2J1ZmZlcikpCiAgICAod2F2ZWZvcm0tbW9kZSkKICAgIChiYXJmLWlmLWJ1ZmZlci1yZWFk
+LW9ubHkpCiAgICAoZXJhc2UtYnVmZmVyKQogICAgKGluc2VydC1idWZmZXItc3Vic3RyaW5nIHdm
+X2lucHV0X2J1ZmZlcjEpCiAgICAod2hlbiAod2YtYXV0by1tb2RlLXAgd2ZfZGlzcGxheV9idWZm
+ZXIpCiAgICAgIChwcm9nbgogICAgICAgICh3Zi10cmFuc2xhdGUtY2xrLWxpbmUgd2ZfZGlzcGxh
+eV9idWZmZXIpCiAgICAgICAgKHdmLWdlbi1tYXJrLWxpbmUgd2ZfZGlzcGxheV9idWZmZXIpCiAg
+ICAgICAgKHdmLXRyYW5zbGF0ZS1tYXJrIHdmX2Rpc3BsYXlfYnVmZmVyKQogICAgOzsgICAgICh3
+Zi10cmFuc2xhdGUtb3RoZXItYXV0byB3Zl9kaXNwbGF5X2J1ZmZlcikpCiAgICApKQogICAgOyh3
+Zi10cmFuc2xhdGUtYnVmIHdmX2Rpc3BsYXlfYnVmZmVyKQogICAgOyhzZXRxIGJ1ZmZlci1yZWFk
+LW9ubHkgdCkgCiAgICA7KG5leHQtd2luZG93KSA7IGRvbid0IHdvcmsKICAgICkpICAKCihkZWZ1
+biB3Zi1hdXRvLW1vZGUtcCAoYnVmKQogICJjaGVjayB3aGV0aGVyIGl0IGhhcyBAcG9zZWRnZSBj
+bGssIGlmIG5vLCByZXR1cm4gbmlsLCBpZiB5ZXMgcmV0dXJuCmNsayIKICAocHJvZ24KICAgIChi
+ZWdpbm5pbmctb2YtYnVmZmVyKQogICAgKGlmIChyZS1zZWFyY2gtZm9yd2FyZCAiXlxcKC4rP1xc
+KUBbIF0qKFsgXSpwb3NlZGdlWyBdKlxcKC4qP1xcKSlbIF0qJCIpCiAgICAgICAgKHByb2duCiAg
+ICAgICAgICAoc2V0cSB3Zl9tYXJrZXJfbmFtZSAoc3Vic3RyaW5nLW5vLXByb3BlcnRpZXMgKG1h
+dGNoLXN0cmluZyAxKSkpCiAgICAgICAgICAoc2V0cSB3Zl9jbGtfbmFtZSAoc3Vic3RyaW5nLW5v
+LXByb3BlcnRpZXMgKG1hdGNoLXN0cmluZyAyKSkpCiAgICAgICAgICB0KQogICAgICBuaWwpKSkK
+CihkZWZ1biB3Zi10cmFuc2xhdGUtY2xrLWxpbmUgKGJ1ZikKICAoc2V0LWJ1ZmZlciBidWYpCiAg
+KGdvdG8tY2hhciAocG9pbnQtbWluKSkKICAocmUtc2VhcmNoLWZvcndhcmQgKGNvbmNhdCAiXiIg
+d2ZfY2xrX25hbWUpKQogIChsZXQqICgoY2xrX2JlZ2luIChwcm9nbiAoYmVnaW5uaW5nLW9mLWxp
+bmUpIChwb2ludCkpKQogICAgICAgICAoY2xrX2VuZCAocHJvZ24gKGVuZC1vZi1saW5lKSAocG9p
+bnQpKSkKICAgICAgICAgKGNsa19saW5lIChkZWxldGUtYW5kLWV4dHJhY3QtcmVnaW9uIGNsa19i
+ZWdpbiBjbGtfZW5kKSkKICAgICAgICAgKGNsa19leHBhbmRfbGluZSAKICAgICAgICAgICh3aXRo
+LXRlbXAtYnVmZmVyCiAgICAgICAgICAgIChpbnNlcnQgY2xrX2xpbmUpCiAgICAgICAgICAgICh3
+Zi10cmFuc2xhdGUtYnVmIChjdXJyZW50LWJ1ZmZlcikpCiAgICAgICAgICAgIDsgZ2VuZXJhdGUg
+Y29sdW1uIG51bWJlciBvZiBjbG9jayBlZGdlCiAgICAgICAgICAgIChiZWdpbm5pbmctb2YtbGlu
+ZSkKICAgICAgICAgICAgKHNldHEgd2ZfbWFya2VyX3BvcyBuaWwpCiAgICAgICAgICAgICh3aGls
+ZSAocmUtc2VhcmNoLWZvcndhcmQgIlwvIiBuaWwgdCkKICAgICAgICAgICAgICAoaWYgd2ZfbWFy
+a2VyX3BvcwogICAgICAgICAgICAgICAgICA7IG5vbi1uaWwKICAgICAgICAgICAgICAgICAgKHNl
+dHEgd2ZfbWFya2VyX3BvcyAoYXBwZW5kIHdmX21hcmtlcl9wb3MgKGxpc3QgKC0KICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+IChwb2ludCkgMSkpKSkKICAgICAgICAgICAgICAgIDtuaWwKICAgICAgICAgICAgICAgIChzZXRx
+IHdmX21hcmtlcl9wb3MgKGxpc3QgKC0gKHBvaW50KSAxKSkpKSkKICAgICAgICAgICAgKGJ1ZmZl
+ci1zdHJpbmcpKSkpCiAgICAoaW5zZXJ0IGNsa19leHBhbmRfbGluZSkpKSAgCgooZGVmdW4gd2Yt
+Z2VuLW1hcmstbGluZSAoYnVmKQogIChzZXQtYnVmZmVyIGJ1ZikKICAoZ290by1jaGFyIChwb2lu
+dC1taW4pKQogIChyZS1zZWFyY2gtZm9yd2FyZCAoY29uY2F0ICJeIiB3Zl9tYXJrZXJfbmFtZSkp
+CiAgKGRlbGV0ZS1yZWdpb24gKHBvaW50KSAocHJvZ24gKGVuZC1vZi1saW5lKSAocG9pbnQpKSkg
+IAogIChsZXQqICgobWFya2VyX2JlZ2luIChwcm9nbiAoYmVnaW5uaW5nLW9mLWxpbmUpIChwb2lu
+dCkpKQogICAgICAgIChtYXJrZXJfZW5kIChwcm9nbiAoZW5kLW9mLWxpbmUpIChwb2ludCkpKQog
+ICAgICAgIChtYXJrZXJfbGluZSAoZGVsZXRlLWFuZC1leHRyYWN0LXJlZ2lvbiBtYXJrZXJfYmVn
+aW4gbWFya2VyX2VuZCkpCiAgICAgICAgKG1hcmtlcl9leHBhbmRfbGluZSAKICAgICAgICAgKHdp
+dGgtdGVtcC1idWZmZXIKICAgICAgICAgICAoaW5zZXJ0IG1hcmtlcl9saW5lKQogICAgICAgICAg
+IChzZXRxIHdmX21hcmtlcl9uciAobGVuZ3RoIHdmX21hcmtlcl9wb3MpKQogICAgICAgICAgIChs
+ZXQgKChuIDApKQogICAgICAgICAgICAgKHdoaWxlICg8IG4gd2ZfbWFya2VyX25yKQogICAgICAg
+ICAgICAgICAocHJvZ24KICAgICAgICAgICAgICAgICAod2YtdHJhbnNsYXRlLWNoYXIgInMiICgt
+IChlbHQgd2ZfbWFya2VyX3BvcyBuKSAocG9pbnQpKSkKICAgICAgICAgICAgICAgICAoaW5zZXJ0
+IChudW1iZXItdG8tc3RyaW5nIG4pKQogICAgICAgICAgICAgICAgIChzZXRxIG4gKCsgbiAxKSkp
+KSkKICAgICAgICAgICAoYnVmZmVyLXN0cmluZykpKSkKICAgIChpbnNlcnQgbWFya2VyX2V4cGFu
+ZF9saW5lKSkpCgoKOyBjYXNlIDE6ICRpJDBtCihkZWZjb25zdCB3Zl9tYXJrZXJfMSAiIFxcJFxc
+KD8xOltoaWxdXFwpXFwkXFwoPzI6WzAtOV0rXFwpXFwoPzM6bVxcKSIpCjsgY2FzZSAyOiAkMG08
+cGM+JDFtCihkZWZjb25zdCB3Zl9tYXJrZXJfMiAiXFwoPzo3XFwkXFwoPzE6WzAtOV0rXFwpXFwo
+PzI6bVxcKVxcKD86XFwoPzokXFwoPzM6W2hpbF1cXClcXClcXHxcXCg/OjxcXCg/NDouKz9cXCk+
+XFwpXFwpXFwkXFwoPzU6WzAtOV0rXFwpXFwoPzY6bVxcKVxcKSIpCjsgY2FzZSAzOiAkNG0kaSAK
+KGRlZmNvbnN0IHdmX21hcmtlcl8zICJcXCRcXCg/MTpbMC05XStcXClcXCg/MjptXFwpXFwkXFwo
+PzM6W2hpbF0/XFwpICo/JCIpCgooZGVmY29uc3Qgd2ZfbWFya2VyX2FsbCAoY29uY2F0ICJcXCg/
+OiIgd2ZfbWFya2VyXzEgIlxcKSIgIlxcfCIKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAiXFwoPzoiIHdmX21hcmtlcl8yICJcXCkiICJcXHwiCiAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgIlxcKD86IiB3Zl9tYXJrZXJfMyAiXFwpIikpCihkZWZ1biB3Zi10cmFuc2xhdGUt
+bWFyayAoYnVmKQogIChzZXQtYnVmZmVyIGJ1ZikKICAoc2V0cSB3Zl9jbGtfd2lkdGggKC0gKGVs
+dCB3Zl9tYXJrZXJfcG9zIDEpIChlbHQgd2ZfbWFya2VyX3BvcyAwKSkpCiAgOyBjYXNlIDEKICAo
+Z290by1jaGFyIChwb2ludC1taW4pKQogICh3aGlsZSAocmUtc2VhcmNoLWZvcndhcmQgd2ZfbWFy
+a2VyXzEgbmlsIHQpCiAgICAobGV0KiAoKGNoYXIgKG1hdGNoLXN0cmluZyAxKSkKICAgICAgICAg
+ICAobWFya2VyX25yIChtYXRjaC1zdHJpbmcgMikpCiAgICAgICAgICAgKHN0cl9sZW4gKCsgKGxl
+bmd0aCBtYXJrZXJfbnIpIDQpKQogICAgICAgICAgIChtYXJrZXJfbGVuICgrIChsZW5ndGggbWFy
+a2VyX25yKSAyKSkKICAgICAgICAgICAoY2hhcl9iZWdpbiAoLSAocG9pbnQpIHN0cl9sZW4pKQog
+ICAgICAgICAgIChjaGFyX2VuZCAoKyBjaGFyX2JlZ2luIDIpKSkKICAgICAgKHByb2duCiAgICAg
+ICAgICA7IHJlbW92ZSAkaQogICAgICAgICAgKGRlbGV0ZS1yZWdpb24gY2hhcl9iZWdpbiBjaGFy
+X2VuZCkKICAgICAgICAgIDsgaW5zZXJ0IGNoYXIKICAgICAgICAgIChiYWNrd2FyZC1jaGFyIG1h
+cmtlcl9sZW4pCiAgICAgICAgICAod2YtdHJhbnNsYXRlLWNoYXIgY2hhciAoLSAoLSAoZWx0IHdm
+X21hcmtlcl9wb3MKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAoc3RyaW5nLXRvLW51
+bWJlciBtYXJrZXJfbnIpKQogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIChjdXJyZW50
+LWNvbHVtbikpIDEpKSkpKQogIDsgY2FzZSAyCiAgKGdvdG8tY2hhciAocG9pbnQtbWluKSkKICAo
+d2hpbGUgKHJlLXNlYXJjaC1mb3J3YXJkIHdmX21hcmtlcl8yIG5pbCB0KQogICAgKGxldCogKChs
+ZWZ0X21hcmtlcl9uciAobWF0Y2gtc3RyaW5nIDEpKQogICAgICAgICAgIChyaWdodF9tYXJrZXJf
+bnIgKG1hdGNoLXN0cmluZyA1KSkKICAgICAgICAgICAobGVmdF9tYXJrZXJfbGVuICgrIChsZW5n
+dGggbGVmdF9tYXJrZXJfbnIpIDIpKQogICAgICAgICAgIChyaWdodF9tYXJrZXJfbGVuICgrIChs
+ZW5ndGggcmlnaHRfbWFya2VyX25yKSAyKSkKICAgICAgICAgICAobWFya2VyX2Rpc3RhbmNlICgt
+IChzdHJpbmctdG8tbnVtYmVyIHJpZ2h0X21hcmtlcl9ucikKICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAoc3RyaW5nLXRvLW51bWJlciBsZWZ0X21hcmtlcl9ucikpKQogICAgICAgICAg
+IChjaGFyIChtYXRjaC1zdHJpbmcgMykpCiAgICAgICAgICAgKGNvbnRlbnQgKG1hdGNoLXN0cmlu
+ZyA0KSkKICAgICAgICAgICAoY29udGVudF9sZW4gKGxlbmd0aCBjb250ZW50KSkKICAgICAgICAg
+ICAoc3RyX2xlbiAoaWYgY2hhciAoKyBsZWZ0X21hcmtlcl9sZW4gcmlnaHRfbWFya2VyX2xlbiAy
+KQogICAgICAgICAgICAgICAgICAgICAgKCsgbGVmdF9tYXJrZXJfbGVuIHJpZ2h0X21hcmtlcl9s
+ZW4gY29udGVudF9sZW4KICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAyKSkpKQogICAg
+ICAocHJvZ24KICAgICAgICA7IHJlbW92ZSAkbQogICAgICAgIChiYWNrd2FyZC1jaGFyIHN0cl9s
+ZW4pCiAgICAgICAgKGRlbGV0ZS1yZWdpb24gKHBvaW50KSAoKyAocG9pbnQpIGxlZnRfbWFya2Vy
+X2xlbikpCiAgICAgICAgOyBjYXNlIDxjb250ZW50PgogICAgICAgICh3aGVuIGNvbnRlbnQgCiAg
+ICAgICAgICAobGV0KiAoKGFsbF9zcGFjZXMgKC0gKCogd2ZfY2xrX3dpZHRoIG1hcmtlcl9kaXN0
+YW5jZSkgY29udGVudF9sZW4gMikpCiAgICAgICAgICAgICAgICAgKGxlZnRfc3BhY2VzICgvIGFs
+bF9zcGFjZXMgMikpCiAgICAgICAgICAgICAgICAgKHJpZ2h0X3NwYWNlcyAoLSBhbGxfc3BhY2Vz
+IGxlZnRfc3BhY2VzKSkpCiAgICAgICAgICAgIChwcm9nbgogICAgICAgICAgICAgIChmb3J3YXJk
+LWNoYXIgMSkKICAgICAgICAgICAgICAod2YtdHJhbnNsYXRlLWNoYXIgInMiIGxlZnRfc3BhY2Vz
+KQogICAgICAgICAgICAgIChmb3J3YXJkLWNoYXIgY29udGVudF9sZW4pCiAgICAgICAgICAgICAg
+KHdmLXRyYW5zbGF0ZS1jaGFyICJzIiByaWdodF9zcGFjZXMpKSkpCiAgICAgICAgOyBjYXNlICRb
+aGlsXQogICAgICAgICh3aGVuIGNoYXIgCiAgICAgICAgICAocHJvZ24KICAgICAgICAgICAgOyBy
+ZW1vdmUgJFtoaWxdCiAgICAgICAgICAgIChkZWxldGUtcmVnaW9uIChwb2ludCkgKCsgKHBvaW50
+KSAyKSkKICAgICAgICAgICAgKGNvbmQgKChzdHJpbmc9IGNoYXIgImgiKSAoaW5zZXJ0IDQ3KSkg
+Oy8KICAgICAgICAgICAgICAgICAgKChzdHJpbmc9IGNoYXIgImwiKSAoaW5zZXJ0IDkyKSkgO1wK
+ICAgICAgICAgICAgICAgICAgKChzdHJpbmc9IGNoYXIgImkiKSAod2YtdHJhbnNsYXRlLWNoYXIg
+ImkiIDEpKSkKICAgICAgICAgICAgKHdmLXRyYW5zbGF0ZS1jaGFyIGNoYXIgKC0gKCogd2ZfY2xr
+X3dpZHRoIG1hcmtlcl9kaXN0YW5jZSkgMSkpCiAgICAgICAgICAgICkKICAgICAgICApKSkpCiAg
+OyBjYXNlIDMKICAoZ290by1jaGFyIChwb2ludC1taW4pKQogICh3aGlsZSAocmUtc2VhcmNoLWZv
+cndhcmQgd2ZfbWFya2VyXzMgbmlsIHQpCiAgICAobGV0KiAoKGxlZnRfbWFya2VyX25yIChzdHJp
+bmctdG8tbnVtYmVyIChtYXRjaC1zdHJpbmcgMSkpKQogICAgICAgICAgIChjaGFyIChtYXRjaC1z
+dHJpbmcgMykpCiAgICAgICAgICAgKGVuZF9tYXJrZXJfbnIgKC0gKGxlbmd0aCB3Zl9tYXJrZXJf
+cG9zKSAxKSkKICAgICAgICAgICAobWFya2VyX2Rpc3RhbmNlICgtIGVuZF9tYXJrZXJfbnIgbGVm
+dF9tYXJrZXJfbnIpKSkKICAgICAgKHByb2duCiAgICAgICAgKGJhY2t3YXJkLWNoYXIgNSkKICAg
+ICAgICAoZGVsZXRlLXJlZ2lvbiAocG9pbnQpICgrIChwb2ludCkgNSkpIDsgcmVtb3ZlICQ1bSRs
+CiAgICAgICAgKGNvbmQgKChzdHJpbmc9IGNoYXIgImgiKSAoaW5zZXJ0IDQ3KSkgOy8KICAgICAg
+ICAgICAgICAoKHN0cmluZz0gY2hhciAibCIpIChpbnNlcnQgOTIpKSA7XAogICAgICAgICAgICAg
+ICgoc3RyaW5nPSBjaGFyICJpIikgKHdmLXRyYW5zbGF0ZS1jaGFyICJpIiAxKSkpCiAgICAgICAg
+KHdmLXRyYW5zbGF0ZS1jaGFyIGNoYXIgKC0gKCogd2ZfY2xrX3dpZHRoIG1hcmtlcl9kaXN0YW5j
+ZSkgMSkpKSkpCiAgKQoKICAgICAgIAoKKGRlZnVuIHdmLXRyYW5zbGF0ZS1idWYgKGJ1ZikKICAi
+dHJhbnNsYXRlIHdhdmVmb3JtIHN0cmluZywgbm9ybWFsbHkgb25lIHBlciBsaW5lIgogIChwcm9n
+bgogICAgKHBvcC10by1idWZmZXIgYnVmKQogICAgKGJlZ2lubmluZy1vZi1idWZmZXIpCiAgICAo
+d2hpbGUKICAgICAgICAocmUtc2VhcmNoLWZvcndhcmQgIlwkXFwoWzAtOV0rXFwpXFwoW2htbHRz
+cF1cXCkiIG5pbCB0KQogICAgICAoc2V0cSB0aW1lcyAoc3RyaW5nLXRvLW51bWJlciAobWF0Y2gt
+c3RyaW5nIDEpKSkKICAgICAgKHNldHEgY2hhciAobWF0Y2gtc3RyaW5nIDIpKQogICAgICAoaWYg
+KHN0cmluZz0gY2hhciAidCIpIDsgcmVwZWF0CiAgICAgICAgICAobGV0ICgocl9iZWdpbiAobWF0
+Y2gtYmVnaW5uaW5nIDApKQogICAgICAgICAgICAgICAgKHJfZW5kIChtYXRjaC1lbmQgMCkpKQog
+ICAgICAgICAgICAocHJvZ24KICAgICAgICAgICAgIChyZS1zZWFyY2gtYmFja3dhcmQgIiAiKQog
+ICAgICAgICAgICAgKGdvdG8tY2hhciByX2VuZCkKICAgICAgICAgICAgIChkb3RpbWVzIChpICgt
+IHRpbWVzIDEpKQogICAgICAgICAgICAgICAoaW5zZXJ0LWJ1ZmZlci1zdWJzdHJpbmcgKGN1cnJl
+bnQtYnVmZmVyKQogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgKCsgKG1h
+dGNoLWJlZ2lubmluZyAwKSAxKSByX2JlZ2luKSkKICAgICAgICAgICAgIChkZWxldGUtcmVnaW9u
+IHJfYmVnaW4gcl9lbmQpCiAgICAgICAgICAgICApKQogICAgICAgIChwcm9nbgogICAgICAgICAg
+KHdmLXRyYW5zbGF0ZS1jaGFyIGNoYXIgdGltZXMpIDsgaW5zZXJ0IHJlcGxhY2UKICAgICAgICAg
+IChkZWxldGUtcmVnaW9uIChtYXRjaC1iZWdpbm5pbmcgMCkgKG1hdGNoLWVuZCAwKSkpKSkpKQoK
+KGRlZnVuIHdmLXRyYW5zbGF0ZS1jaGFyIChjaGFyIHRpbWVzKQogICJjaGFyIGlzIGgsaSxsLHAi
+CiAgKGlmIChzdHJpbmc9IGNoYXIgImwiKSA7IGxvdwogICAgICAoZG90aW1lcyAoaSB0aW1lcykg
+KGluc2VydCAiXyIpKQogICAgKGlmIChzdHJpbmc9IGNoYXIgInMiKSA7IHNwYWNlCiAgICAgICAg
+KGRvdGltZXMgKGkgdGltZXMpIChpbnNlcnQgIiAiKSkKICAgICAgKHByb2duICAKICAgICAgICAo
+c2V0cSB1Y29kZSAoY29uZCAoKHN0cmluZz0gY2hhciAiaCIpICIyM0JBIikgOyBoaWdoCiAgICAg
+ICAgICAgICAgICAgICAgICAgICAgKChzdHJpbmc9IGNoYXIgImkiKSAiMjNCQyIpIDsgbWlkZGxl
+CiAgICAgICAgICAgICAgICAgICAgICAgICAgKChzdHJpbmc9IGNoYXIgInAiKSAiMjIyQyIpKSkg
+OyBzcGxpdAogICAgICAgICh1Y3MtaW5zZXJ0IHVjb2RlIHRpbWVzKSkpKSkKCiAgICAKKHByb3Zp
+ZGUgJ3dhdmVmb3JtLW1vZGUpCg==

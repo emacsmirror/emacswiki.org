@@ -1,1283 +1,734 @@
-;;;
-;;;  ruby-mode.el -
-;;;
-;;;  $Author: nobu $
-;;;  created at: Fri Feb  4 14:49:13 JST 1994
-;;;
-
-(defconst ruby-mode-revision "$Revision: 16028 $"
-  "Ruby mode revision string.")
-
-(defconst ruby-mode-version
-  (progn
-   (string-match "[0-9.]+" ruby-mode-revision)
-   (substring ruby-mode-revision (match-beginning 0) (match-end 0)))
-  "Ruby mode version number.")
-
-(defconst ruby-block-beg-re
-  "class\\|module\\|def\\|if\\|unless\\|case\\|while\\|until\\|for\\|begin\\|do"
-  "Regexp to match the beginning of blocks in ruby-mode.")
-
-(defconst ruby-non-block-do-re
-  "\\(while\\|until\\|for\\|rescue\\)\\>[^_]"
-  "Regexp to match")
-
-(defconst ruby-indent-beg-re
-  "\\(\\s *\\(class\\|module\\|def\\)\\)\\|if\\|unless\\|case\\|while\\|until\\|for\\|begin"
-  "Regexp to match where the indentation gets deeper.")
-
-(defconst ruby-modifier-beg-re
-  "if\\|unless\\|while\\|until"
-  "Regexp to match modifiers same as the beginning of blocks.")
-
-(defconst ruby-modifier-re
-  (concat ruby-modifier-beg-re "\\|rescue")
-  "Regexp to match modifiers.")
-
-(defconst ruby-block-mid-re
-  "then\\|else\\|elsif\\|when\\|rescue\\|ensure"
-  "Regexp to match where the indentation gets shallower in middle of block statements.")
-
-(defconst ruby-block-op-re
-  "and\\|or\\|not"
-  "Regexp to match ")
-
-(defconst ruby-block-hanging-re
-  (concat ruby-modifier-beg-re "\\|" ruby-block-op-re)
-  )
-
-(defconst ruby-block-end-re "\\<end\\>")
-
-(defconst ruby-here-doc-beg-re
-  "<<\\(-\\)?\\(\\([a-zA-Z0-9_]+\\)\\|[\"]\\([^\"]+\\)[\"]\\|[']\\([^']+\\)[']\\)")
-
-(defun ruby-here-doc-end-match ()
-  (concat "^"
-	  (if (match-string 1) "[ \t]*" nil)
-	  (regexp-quote
-	   (or (match-string 3)
-	       (match-string 4)
-	       (match-string 5)))))
-
-(defconst ruby-delimiter
-  (concat "[?$/%(){}#\"'`.:]\\|<<\\|\\[\\|\\]\\|\\<\\("
-	  ruby-block-beg-re
-	  "\\)\\>\\|" ruby-block-end-re
-	  "\\|^=begin\\|" ruby-here-doc-beg-re)
-  )
-
-(defconst ruby-negative
-  (concat "^[ \t]*\\(\\(" ruby-block-mid-re "\\)\\>\\|"
-	    ruby-block-end-re "\\|}\\|\\]\\)")
-  "Regexp to match where the indentation gets shallower.")
-
-(defconst ruby-operator-chars "-,.+*/%&|^~=<>:")
-(defconst ruby-operator-re (concat "[" ruby-operator-chars "]"))
-
-(defconst ruby-symbol-chars "a-zA-Z0-9_")
-(defconst ruby-symbol-re (concat "[" ruby-symbol-chars "]"))
-
-(defvar ruby-mode-abbrev-table nil
-  "Abbrev table in use in ruby-mode buffers.")
-
-(define-abbrev-table 'ruby-mode-abbrev-table ())
-
-(defvar ruby-mode-map nil "Keymap used in ruby mode.")
-
-(if ruby-mode-map
-    nil
-  (setq ruby-mode-map (make-sparse-keymap))
-  (define-key ruby-mode-map "{" 'ruby-electric-brace)
-  (define-key ruby-mode-map "}" 'ruby-electric-brace)
-  (define-key ruby-mode-map "\e\C-a" 'ruby-beginning-of-defun)
-  (define-key ruby-mode-map "\e\C-e" 'ruby-end-of-defun)
-  (define-key ruby-mode-map "\e\C-b" 'ruby-backward-sexp)
-  (define-key ruby-mode-map "\e\C-f" 'ruby-forward-sexp)
-  (define-key ruby-mode-map "\e\C-p" 'ruby-beginning-of-block)
-  (define-key ruby-mode-map "\e\C-n" 'ruby-end-of-block)
-  (define-key ruby-mode-map "\e\C-h" 'ruby-mark-defun)
-  (define-key ruby-mode-map "\e\C-q" 'ruby-indent-exp)
-  (define-key ruby-mode-map "\t" 'ruby-indent-command)
-  (define-key ruby-mode-map "\C-c\C-e" 'ruby-insert-end)
-  (define-key ruby-mode-map "\C-j" 'ruby-reindent-then-newline-and-indent)
-  (define-key ruby-mode-map "\C-m" 'newline))
-
-(defvar ruby-mode-syntax-table nil
-  "Syntax table in use in ruby-mode buffers.")
-
-(if ruby-mode-syntax-table
-    ()
-  (setq ruby-mode-syntax-table (make-syntax-table))
-  (modify-syntax-entry ?\' "\"" ruby-mode-syntax-table)
-  (modify-syntax-entry ?\" "\"" ruby-mode-syntax-table)
-  (modify-syntax-entry ?\` "\"" ruby-mode-syntax-table)
-  (modify-syntax-entry ?# "<" ruby-mode-syntax-table)
-  (modify-syntax-entry ?\n ">" ruby-mode-syntax-table)
-  (modify-syntax-entry ?\\ "\\" ruby-mode-syntax-table)
-  (modify-syntax-entry ?$ "." ruby-mode-syntax-table)
-  (modify-syntax-entry ?? "_" ruby-mode-syntax-table)
-  (modify-syntax-entry ?_ "_" ruby-mode-syntax-table)
-  (modify-syntax-entry ?< "." ruby-mode-syntax-table)
-  (modify-syntax-entry ?> "." ruby-mode-syntax-table)
-  (modify-syntax-entry ?& "." ruby-mode-syntax-table)
-  (modify-syntax-entry ?| "." ruby-mode-syntax-table)
-  (modify-syntax-entry ?% "." ruby-mode-syntax-table)
-  (modify-syntax-entry ?= "." ruby-mode-syntax-table)
-  (modify-syntax-entry ?/ "." ruby-mode-syntax-table)
-  (modify-syntax-entry ?+ "." ruby-mode-syntax-table)
-  (modify-syntax-entry ?* "." ruby-mode-syntax-table)
-  (modify-syntax-entry ?- "." ruby-mode-syntax-table)
-  (modify-syntax-entry ?\; "." ruby-mode-syntax-table)
-  (modify-syntax-entry ?\( "()" ruby-mode-syntax-table)
-  (modify-syntax-entry ?\) ")(" ruby-mode-syntax-table)
-  (modify-syntax-entry ?\{ "(}" ruby-mode-syntax-table)
-  (modify-syntax-entry ?\} "){" ruby-mode-syntax-table)
-  (modify-syntax-entry ?\[ "(]" ruby-mode-syntax-table)
-  (modify-syntax-entry ?\] ")[" ruby-mode-syntax-table)
-  )
-
-(defcustom ruby-indent-tabs-mode nil
-  "*Indentation can insert tabs in ruby mode if this is non-nil."
-  :type 'boolean :group 'ruby)
-
-(defcustom ruby-indent-level 2
-  "*Indentation of ruby statements."
-  :type 'integer :group 'ruby)
-
-(defcustom ruby-comment-column 32
-  "*Indentation column of comments."
-  :type 'integer :group 'ruby)
-
-(defcustom ruby-deep-arglist t
-  "*Deep indent lists in parenthesis when non-nil.
-Also ignores spaces after parenthesis when 'space."
-  :group 'ruby)
-
-(defcustom ruby-deep-indent-paren '(?\( ?\[ ?\] t)
-  "*Deep indent lists in parenthesis when non-nil. t means continuous line.
-Also ignores spaces after parenthesis when 'space."
-  :group 'ruby)
-
-(defcustom ruby-deep-indent-paren-style 'space
-  "Default deep indent style."
-  :options '(t nil space) :group 'ruby)
-
-(defcustom ruby-encoding-map '((shift_jis . cp932) (shift-jis . cp932))
-  "Alist to map encoding name from emacs to ruby."
-  :group 'ruby)
-
-(defcustom ruby-use-encoding-map t
-  "*Use `ruby-encoding-map' to set encoding magic comment if this is non-nil."
-  :type 'boolean :group 'ruby)
-
-(eval-when-compile (require 'cl))
-(defun ruby-imenu-create-index-in-block (prefix beg end)
-  (let ((index-alist '()) (case-fold-search nil)
-	name next pos decl sing)
-    (goto-char beg)
-    (while (re-search-forward "^\\s *\\(\\(class\\>\\(\\s *<<\\)?\\|module\\>\\)\\s *\\([^\(<\n ]+\\)\\|\\(def\\|alias\\)\\>\\s *\\([^\(\n ]+\\)\\)" end t)
-      (setq sing (match-beginning 3))
-      (setq decl (match-string 5))
-      (setq next (match-end 0))
-      (setq name (or (match-string 4) (match-string 6)))
-      (setq pos (match-beginning 0))
-      (cond
-       ((string= "alias" decl)
-	(if prefix (setq name (concat prefix name)))
-	(push (cons name pos) index-alist))
-       ((string= "def" decl)
-	(if prefix
-	    (setq name
-		  (cond
-		   ((string-match "^self\." name)
-		    (concat (substring prefix 0 -1) (substring name 4)))
-		  (t (concat prefix name)))))
-	(push (cons name pos) index-alist)
-	(ruby-accurate-end-of-block end))
-       (t
-	(if (string= "self" name)
-	    (if prefix (setq name (substring prefix 0 -1)))
-	  (if prefix (setq name (concat (substring prefix 0 -1) "::" name)))
-	  (push (cons name pos) index-alist))
-	(ruby-accurate-end-of-block end)
-	(setq beg (point))
-	(setq index-alist
-	      (nconc (ruby-imenu-create-index-in-block
-		      (concat name (if sing "." "#"))
-		      next beg) index-alist))
-	(goto-char beg))))
-    index-alist))
-
-(defun ruby-imenu-create-index ()
-  (nreverse (ruby-imenu-create-index-in-block nil (point-min) nil)))
-
-(defun ruby-accurate-end-of-block (&optional end)
-  (let (state)
-    (or end (setq end (point-max)))
-    (while (and (setq state (apply 'ruby-parse-partial end state))
-		(>= (nth 2 state) 0) (< (point) end)))))
-
-(defun ruby-mode-variables ()
-  (set-syntax-table ruby-mode-syntax-table)
-  (setq local-abbrev-table ruby-mode-abbrev-table)
-  (make-local-variable 'indent-line-function)
-  (setq indent-line-function 'ruby-indent-line)
-  (make-local-variable 'require-final-newline)
-  (setq require-final-newline t)
-  (make-variable-buffer-local 'comment-start)
-  (setq comment-start "# ")
-  (make-variable-buffer-local 'comment-end)
-  (setq comment-end "")
-  (make-variable-buffer-local 'comment-column)
-  (setq comment-column ruby-comment-column)
-  (make-variable-buffer-local 'comment-start-skip)
-  (setq comment-start-skip "#+ *")
-  (setq indent-tabs-mode ruby-indent-tabs-mode)
-  (make-local-variable 'parse-sexp-ignore-comments)
-  (setq parse-sexp-ignore-comments t)
-  (make-local-variable 'paragraph-start)
-  (setq paragraph-start (concat "$\\|" page-delimiter))
-  (make-local-variable 'paragraph-separate)
-  (setq paragraph-separate paragraph-start)
-  (make-local-variable 'paragraph-ignore-fill-prefix)
-  (setq paragraph-ignore-fill-prefix t))
-
-(defun ruby-mode-set-encoding ()
-  (save-excursion
-    (widen)
-    (goto-char (point-min))
-    (when (re-search-forward "[^\0-\177]" nil t)
-      (goto-char (point-min))
-      (let ((coding-system
-	     (or coding-system-for-write
-		 buffer-file-coding-system)))
-	(if coding-system
-	    (setq coding-system
-		  (or (coding-system-get coding-system 'mime-charset)
-		      (coding-system-change-eol-conversion coding-system nil))))
-	(setq coding-system
-	      (if coding-system
-		  (symbol-name
-		   (or (and ruby-use-encoding-map
-			    (cdr (assq coding-system ruby-encoding-map)))
-		       coding-system))
-		"ascii-8bit"))
-	(if (looking-at "^#![^\n]*ruby") (beginning-of-line 2))
-	(cond ((looking-at "\\s *#.*-\*-\\s *\\(en\\)?coding\\s *:\\s *\\([-a-z0-9_]*\\)\\s *\\(;\\|-\*-\\)")
-	       (unless (string= (match-string 2) coding-system)
-		 (goto-char (match-beginning 2))
-		 (delete-region (point) (match-end 2))
-		 (and (looking-at "-\*-")
-		      (let ((n (skip-chars-backward " ")))
-			(cond ((= n 0) (insert "  ") (backward-char))
-			      ((= n -1) (insert " "))
-			      ((forward-char)))))
-		 (insert coding-system)))
-	      ((looking-at "\\s *#.*coding\\s *[:=]"))
-	      (t (insert "# -*- coding: " coding-system " -*-\n"))
-	      )))))
-
-;;;###autoload
-(defun ruby-mode ()
-  "Major mode for editing ruby scripts.
-\\[ruby-indent-command] properly indents subexpressions of multi-line
-class, module, def, if, while, for, do, and case statements, taking
-nesting into account.
-
-The variable ruby-indent-level controls the amount of indentation.
-\\{ruby-mode-map}"
-  (interactive)
-  (kill-all-local-variables)
-  (use-local-map ruby-mode-map)
-  (setq mode-name "Ruby")
-  (setq major-mode 'ruby-mode)
-  (ruby-mode-variables)
-
-  (make-local-variable 'imenu-create-index-function)
-  (setq imenu-create-index-function 'ruby-imenu-create-index)
-
-  (make-local-variable 'add-log-current-defun-function)
-  (setq add-log-current-defun-function 'ruby-add-log-current-method)
-
-  (add-hook
-   (cond ((boundp 'before-save-hook)
-	  (make-local-variable 'before-save-hook)
-	  'before-save-hook)
-	 ((boundp 'write-contents-functions) 'write-contents-functions)
-	 ((boundp 'write-contents-hooks) 'write-contents-hooks))
-   'ruby-mode-set-encoding)
-
-  (set (make-local-variable 'font-lock-defaults) '((ruby-font-lock-keywords) nil nil))
-  (set (make-local-variable 'font-lock-keywords) ruby-font-lock-keywords)
-  (set (make-local-variable 'font-lock-syntax-table) ruby-font-lock-syntax-table)
-  (set (make-local-variable 'font-lock-syntactic-keywords) ruby-font-lock-syntactic-keywords)
-
-  (run-mode-hooks 'ruby-mode-hook))
-
-(defun ruby-current-indentation ()
-  (save-excursion
-    (beginning-of-line)
-    (back-to-indentation)
-    (current-column)))
-
-(defun ruby-indent-line (&optional flag)
-  "Correct indentation of the current ruby line."
-  (ruby-indent-to (ruby-calculate-indent)))
-
-(defun ruby-indent-command ()
-  (interactive)
-  (ruby-indent-line t))
-
-(defun ruby-indent-to (x)
-  (if x
-      (let (shift top beg)
-	(and (< x 0) (error "invalid nest"))
-	(setq shift (current-column))
-	(beginning-of-line)
-	(setq beg (point))
-	(back-to-indentation)
-	(setq top (current-column))
-	(skip-chars-backward " \t")
-	(if (>= shift top) (setq shift (- shift top))
-	  (setq shift 0))
-	(if (and (bolp)
-		 (= x top))
-	    (move-to-column (+ x shift))
-	  (move-to-column top)
-	  (delete-region beg (point))
-	  (beginning-of-line)
-	  (indent-to x)
-	  (move-to-column (+ x shift))))))
-
-(defun ruby-special-char-p (&optional pnt)
-  (setq pnt (or pnt (point)))
-  (let ((c (char-before pnt)) (b (and (< (point-min) pnt) (char-before (1- pnt)))))
-    (cond ((or (eq c ??) (eq c ?$)))
-	  ((and (eq c ?:) (or (not b) (eq (char-syntax b) ? ))))
-	  ((eq c ?\\) (eq b ??)))))
-
-(defun ruby-expr-beg (&optional option)
-  (save-excursion
-    (store-match-data nil)
-    (let ((space (skip-chars-backward " \t"))
-	  (start (point)))
-      (cond
-       ((bolp) t)
-       ((progn
-	  (forward-char -1)
-	  (and (looking-at "\\?")
-	       (or (eq (char-syntax (char-before (point))) ?w)
-		   (ruby-special-char-p))))
-	nil)
-       ((and (eq option 'heredoc) (< space 0)) t)
-       ((or (looking-at ruby-operator-re)
-	    (looking-at "[\\[({,;]")
-	    (and (looking-at "[!?]")
-		 (or (not (eq option 'modifier))
-		     (bolp)
-		     (save-excursion (forward-char -1) (looking-at "\\Sw$"))))
-	    (and (looking-at ruby-symbol-re)
-		 (skip-chars-backward ruby-symbol-chars)
-		 (cond
-		  ((or (looking-at (concat "\\<\\(" ruby-block-beg-re
-					   "|" ruby-block-op-re
-					   "|" ruby-block-mid-re "\\)\\>")))
-		   (goto-char (match-end 0))
-		   (not (looking-at "\\s_")))
-		  ((eq option 'expr-qstr)
-		   (looking-at "[a-zA-Z][a-zA-z0-9_]* +%[^ \t]"))
-		  ((eq option 'expr-re)
-		   (looking-at "[a-zA-Z][a-zA-z0-9_]* +/[^ \t]"))
-		  (t nil)))))))))
-
-(defun ruby-forward-string (term &optional end no-error expand)
-  (let ((n 1) (c (string-to-char term))
-	(re (if expand
-		(concat "[^\\]\\(\\\\\\\\\\)*\\([" term "]\\|\\(#{\\)\\)")
-	      (concat "[^\\]\\(\\\\\\\\\\)*[" term "]"))))
-    (while (and (re-search-forward re end no-error)
-		(if (match-beginning 3)
-		    (ruby-forward-string "}{" end no-error nil)
-		  (> (setq n (if (eq (char-before (point)) c)
-				     (1- n) (1+ n))) 0)))
-      (forward-char -1))
-    (cond ((zerop n))
-	  (no-error nil)
-	  ((error "unterminated string")))))
-
-(defun ruby-deep-indent-paren-p (c)
-  (cond ((listp ruby-deep-indent-paren)
-	 (let ((deep (assoc c ruby-deep-indent-paren)))
-	   (cond (deep
-		  (or (cdr deep) ruby-deep-indent-paren-style))
-		 ((memq c ruby-deep-indent-paren)
-		  ruby-deep-indent-paren-style))))
-	((eq c ruby-deep-indent-paren) ruby-deep-indent-paren-style)
-	((eq c ?\( ) ruby-deep-arglist)))
-
-(defun ruby-parse-partial (&optional end in-string nest depth pcol indent)
-  (or depth (setq depth 0))
-  (or indent (setq indent 0))
-  (when (re-search-forward ruby-delimiter end 'move)
-    (let ((pnt (point)) w re expand)
-      (goto-char (match-beginning 0))
-      (cond
-       ((and (memq (char-before) '(?@ ?$)) (looking-at "\\sw"))
-	(goto-char pnt))
-       ((looking-at "[\"`]")		;skip string
-	(cond
-	 ((and (not (eobp))
-	       (ruby-forward-string (buffer-substring (point) (1+ (point))) end t t))
-	  nil)
-	 (t
-	  (setq in-string (point))
-	  (goto-char end))))
-       ((looking-at "'")
-	(cond
-	 ((and (not (eobp))
-	       (re-search-forward "[^\\]\\(\\\\\\\\\\)*'" end t))
-	  nil)
-	 (t
-	  (setq in-string (point))
-	  (goto-char end))))
-       ((looking-at "/=") 
-	(goto-char pnt))
-       ((looking-at "/")
-	(cond
-	 ((and (not (eobp)) (ruby-expr-beg 'expr-re))
-	  (if (ruby-forward-string "/" end t t)
-	      nil
-	    (setq in-string (point))
-	    (goto-char end)))
-	 (t
-	  (goto-char pnt))))
-       ((looking-at "%")
-	(cond
-	 ((and (not (eobp))
-	       (ruby-expr-beg 'expr-qstr)
-	       (not (looking-at "%="))
-	       (looking-at "%[QqrxWw]?\\([^a-zA-Z0-9 \t\n]\\)"))
-	  (goto-char (match-beginning 1))
-	  (setq expand (not (memq (char-before) '(?q ?w))))
-	  (setq w (match-string 1))
-	  (cond
-	   ((string= w "[") (setq re "]["))
-	   ((string= w "{") (setq re "}{"))
-	   ((string= w "(") (setq re ")("))
-	   ((string= w "<") (setq re "><"))
-	   ((and expand (string= w "\\"))
-	    (setq w (concat "\\" w))))
-	  (unless (cond (re (ruby-forward-string re end t expand))
-			(expand (ruby-forward-string w end t t))
-			(t (re-search-forward
-			    (if (string= w "\\")
-				"\\\\[^\\]*\\\\"
-			      (concat "[^\\]\\(\\\\\\\\\\)*" w))
-			    end t)))
-	    (setq in-string (point))
-	    (goto-char end)))
-	 (t
-	  (goto-char pnt))))
-       ((looking-at "\\?")		;skip ?char
-	(cond
-	 ((and (ruby-expr-beg)
-	       (looking-at "?\\(\\\\C-\\|\\\\M-\\)*\\\\?."))
-	  (goto-char (match-end 0)))
-	 (t
-	  (goto-char pnt))))
-       ((looking-at "\\$")		;skip $char
-	(goto-char pnt)
-	(forward-char 1))
-       ((looking-at "#")		;skip comment
-	(forward-line 1)
-	(goto-char (point))
-	)
-       ((looking-at "[\\[{(]")
-	(let ((deep (ruby-deep-indent-paren-p (char-after))))
-	  (if (and deep (or (not (eq (char-after) ?\{)) (ruby-expr-beg)))
-	      (progn
-		(and (eq deep 'space) (looking-at ".\\s +[^# \t\n]")
-		     (setq pnt (1- (match-end 0))))
-		(setq nest (cons (cons (char-after (point)) pnt) nest))
-		(setq pcol (cons (cons pnt depth) pcol))
-		(setq depth 0))
-	    (setq nest (cons (cons (char-after (point)) pnt) nest))
-	    (setq depth (1+ depth))))
-	(goto-char pnt)
-	)
-       ((looking-at "[])}]")
-	(if (ruby-deep-indent-paren-p (matching-paren (char-after)))
-	    (setq depth (cdr (car pcol)) pcol (cdr pcol))
-	  (setq depth (1- depth)))
-	(setq nest (cdr nest))
-	(goto-char pnt))
-       ((looking-at ruby-block-end-re)
-	(if (or (and (not (bolp))
-		     (progn
-		       (forward-char -1)
-		       (setq w (char-after (point)))
-		       (or (eq ?_ w)
-			   (eq ?. w))))
-		(progn
-		  (goto-char pnt)
-		  (setq w (char-after (point)))
-		  (or (eq ?_ w)
-		      (eq ?! w)
-		      (eq ?? w))))
-	    nil
-	  (setq nest (cdr nest))
-	  (setq depth (1- depth)))
-	(goto-char pnt))
-       ((looking-at "def\\s +[^(\n;]*")
-	(if (or (bolp)
-		(progn
-		  (forward-char -1)
-		  (not (eq ?_ (char-after (point))))))
-	    (progn
-	      (setq nest (cons (cons nil pnt) nest))
-	      (setq depth (1+ depth))))
-	(goto-char (match-end 0)))
-       ((looking-at (concat "\\<\\(" ruby-block-beg-re "\\)\\>"))
-	(and
-	 (save-match-data
-	   (or (not (looking-at "do\\>[^_]"))
-	       (save-excursion
-		 (back-to-indentation)
-		 (not (looking-at ruby-non-block-do-re)))))
-	 (or (bolp)
-	     (progn
-	       (forward-char -1)
-	       (setq w (char-after (point)))
-	       (not (or (eq ?_ w)
-			(eq ?. w)))))
-	 (goto-char pnt)
-	 (setq w (char-after (point)))
-	 (not (eq ?_ w))
-	 (not (eq ?! w))
-	 (not (eq ?? w))
-	 (skip-chars-forward " \t")
-	 (goto-char (match-beginning 0))
-	 (or (not (looking-at ruby-modifier-re))
-	     (ruby-expr-beg 'modifier))
-	 (goto-char pnt)
-	 (setq nest (cons (cons nil pnt) nest))
-	 (setq depth (1+ depth)))
-	(goto-char pnt))
-       ((looking-at ":\\(['\"]\\)")
-	(goto-char (match-beginning 1))
-	(ruby-forward-string (buffer-substring (match-beginning 1) (match-end 1)) end))
-       ((looking-at ":\\([-,.+*/%&|^~<>]=?\\|===?\\|<=>\\)")
-	(goto-char (match-end 0)))
-       ((looking-at ":\\([a-zA-Z_][a-zA-Z_0-9]*[!?=]?\\)?")
-	(goto-char (match-end 0)))
-       ((or (looking-at "\\.\\.\\.?")
-	    (looking-at "\\.[0-9]+")
-	    (looking-at "\\.[a-zA-Z_0-9]+")
-	    (looking-at "\\."))
-	(goto-char (match-end 0)))
-       ((looking-at "^=begin")
-	(if (re-search-forward "^=end" end t)
-	    (forward-line 1)
-	  (setq in-string (match-end 0))
-	  (goto-char end)))
-       ((looking-at "<<")
-	(cond
-	 ((and (ruby-expr-beg 'heredoc)
-	       (looking-at "<<\\(-\\)?\\(\\([\"'`]\\)\\([^\n]+?\\)\\3\\|\\(?:\\sw\\|\\s_\\)+\\)"))
-	  (setq re (regexp-quote (or (match-string 4) (match-string 2))))
-	  (if (match-beginning 1) (setq re (concat "\\s *" re)))
-	  (let* ((id-end (goto-char (match-end 0)))
-		 (line-end-position (save-excursion (end-of-line) (point)))
-		 (state (list in-string nest depth pcol indent)))
-	    ;; parse the rest of the line
-	    (while (and (> line-end-position (point))
-			(setq state (apply 'ruby-parse-partial
-					   line-end-position state))))
-	    (setq in-string (car state)
-		  nest (nth 1 state)
-		  depth (nth 2 state)
-		  pcol (nth 3 state)
-		  indent (nth 4 state))
-	    ;; skip heredoc section
-	    (if (re-search-forward (concat "^" re "$") end 'move)
-		(forward-line 1)
-	      (setq in-string id-end)
-	      (goto-char end))))
-	 (t
-	  (goto-char pnt))))
-       ((looking-at "^__END__$")
-	(goto-char pnt))
-       ((looking-at ruby-here-doc-beg-re)
-	(if (re-search-forward (ruby-here-doc-end-match)
-			       indent-point t)
-	    (forward-line 1)
-	  (setq in-string (match-end 0))
-	  (goto-char indent-point)))
-       (t
-	(error (format "bad string %s"
-		       (buffer-substring (point) pnt)
-		       ))))))
-  (list in-string nest depth pcol))
-
-(defun ruby-parse-region (start end)
-  (let (state)
-    (save-excursion
-      (if start
-	  (goto-char start)
-	(ruby-beginning-of-indent))
-      (save-restriction
-	(narrow-to-region (point) end)
-	(while (and (> end (point))
-		    (setq state (apply 'ruby-parse-partial end state))))))
-    (list (nth 0 state)			; in-string
-	  (car (nth 1 state))		; nest
-	  (nth 2 state)			; depth
-	  (car (car (nth 3 state)))	; pcol
-	  ;(car (nth 5 state))		; indent
-	  )))
-
-(defun ruby-indent-size (pos nest)
-  (+ pos (* (or nest 1) ruby-indent-level)))
-
-(defun ruby-calculate-indent (&optional parse-start)
-  (save-excursion
-    (beginning-of-line)
-    (let ((indent-point (point))
-	  (case-fold-search nil)
-	  state bol eol begin op-end
-	  (paren (progn (skip-syntax-forward " ")
-			(and (char-after) (matching-paren (char-after)))))
-	  (indent 0))
-      (if parse-start
-	  (goto-char parse-start)
-	(ruby-beginning-of-indent)
-	(setq parse-start (point)))
-      (back-to-indentation)
-      (setq indent (current-column))
-      (setq state (ruby-parse-region parse-start indent-point))
-      (cond
-       ((nth 0 state)			; within string
-	(setq indent nil))		;  do nothing
-       ((car (nth 1 state))		; in paren
-	(goto-char (setq begin (cdr (nth 1 state))))
-	(let ((deep (ruby-deep-indent-paren-p (car (nth 1 state)))))
-	  (if deep
-	      (cond ((and (eq deep t) (eq (car (nth 1 state)) paren))
-		     (skip-syntax-backward " ")
-		     (setq indent (1- (current-column))))
-		    ((let ((s (ruby-parse-region (point) indent-point)))
-		       (and (nth 2 s) (> (nth 2 s) 0)
-			    (or (goto-char (cdr (nth 1 s))) t)))
-		     (forward-word -1)
-		     (setq indent (ruby-indent-size (current-column) (nth 2 state))))
-		    (t
-		     (setq indent (current-column))
-		     (cond ((eq deep 'space))
-			   (paren (setq indent (1- indent)))
-			   (t (setq indent (ruby-indent-size (1- indent) 1))))))
-	    (if (nth 3 state) (goto-char (nth 3 state))
-	      (goto-char parse-start) (back-to-indentation))
-	    (setq indent (ruby-indent-size (current-column) (nth 2 state))))
-	  (and (eq (car (nth 1 state)) paren)
-	       (ruby-deep-indent-paren-p (matching-paren paren))
-	       (search-backward (char-to-string paren))
-	       (setq indent (current-column)))))
-       ((and (nth 2 state) (> (nth 2 state) 0)) ; in nest
-	(if (null (cdr (nth 1 state)))
-	    (error "invalid nest"))
-	(goto-char (cdr (nth 1 state)))
-	(forward-word -1)		; skip back a keyword
-	(setq begin (point))
-	(cond
-	 ((looking-at "do\\>[^_]")	; iter block is a special case
-	  (if (nth 3 state) (goto-char (nth 3 state))
-	    (goto-char parse-start) (back-to-indentation))
-	  (setq indent (ruby-indent-size (current-column) (nth 2 state))))
-	 (t
-	  (setq indent (+ (current-column) ruby-indent-level)))))
-       
-       ((and (nth 2 state) (< (nth 2 state) 0)) ; in negative nest
-	(setq indent (ruby-indent-size (current-column) (nth 2 state)))))
-      (when indent
-	(goto-char indent-point)
-	(end-of-line)
-	(setq eol (point))
-	(beginning-of-line)
-	(cond
-	 ((and (not (ruby-deep-indent-paren-p paren))
-	       (re-search-forward ruby-negative eol t))
-	  (and (not (eq ?_ (char-after (match-end 0))))
-	       (setq indent (- indent ruby-indent-level))))
-	 ((and
-	   (save-excursion
-	     (beginning-of-line)
-	     (not (bobp)))
-	   (or (ruby-deep-indent-paren-p t)
-	       (null (car (nth 1 state)))))
-	  ;; goto beginning of non-empty no-comment line
-	  (let (end done)
-	    (while (not done)
-	      (skip-chars-backward " \t\n")
-	      (setq end (point))
-	      (beginning-of-line)
-	      (if (re-search-forward "^\\s *#" end t)
-		  (beginning-of-line)
-		(setq done t))))
-	  (setq bol (point))
-	  (end-of-line)
-	  ;; skip the comment at the end
-	  (skip-chars-backward " \t")
-	  (let (end (pos (point)))
-	    (beginning-of-line)
-	    (while (and (re-search-forward "#" pos t)
-			(setq end (1- (point)))
-			(or (ruby-special-char-p end)
-			    (and (setq state (ruby-parse-region parse-start end))
-				 (nth 0 state))))
-	      (setq end nil))
-	    (goto-char (or end pos))
-	    (skip-chars-backward " \t")
-	    (setq begin (if (and end (nth 0 state)) pos (cdr (nth 1 state))))
-	    (setq state (ruby-parse-region parse-start (point))))
-	  (or (bobp) (forward-char -1))
-	  (and
-	   (or (and (looking-at ruby-symbol-re)
-		    (skip-chars-backward ruby-symbol-chars)
-		    (looking-at (concat "\\<\\(" ruby-block-hanging-re "\\)\\>"))
-		    (not (eq (point) (nth 3 state)))
-		    (save-excursion
-		      (goto-char (match-end 0))
-		      (not (looking-at "[a-z_]"))))
-	       (and (looking-at ruby-operator-re)
-		    (not (ruby-special-char-p))
-		    ;; operator at the end of line
-		    (let ((c (char-after (point))))
-		      (and
-;; 		       (or (null begin)
-;; 			   (save-excursion
-;; 			     (goto-char begin)
-;; 			     (skip-chars-forward " \t")
-;; 			     (not (or (eolp) (looking-at "#")
-;; 				      (and (eq (car (nth 1 state)) ?{)
-;; 					   (looking-at "|"))))))
-		       (or (not (eq ?/ c))
-			   (null (nth 0 (ruby-parse-region (or begin parse-start) (point)))))
-		       (or (not (eq ?| (char-after (point))))
-			   (save-excursion
-			     (or (eolp) (forward-char -1))
-			     (cond
-			      ((search-backward "|" nil t)
-			       (skip-chars-backward " \t\n")
-			       (and (not (eolp))
-				    (progn
-				      (forward-char -1)
-				      (not (looking-at "{")))
-				    (progn
-				      (forward-word -1)
-				      (not (looking-at "do\\>[^_]")))))
-			      (t t))))
-		       (not (eq ?, c))
-		       (setq op-end t)))))
-	   (setq indent
-		 (cond
-		  ((and
-		    (null op-end)
-		    (not (looking-at (concat "\\<\\(" ruby-block-hanging-re "\\)\\>")))
-		    (eq (ruby-deep-indent-paren-p t) 'space)
-		    (not (bobp)))
-		   (widen)
-		   (goto-char (or begin parse-start))
-		   (skip-syntax-forward " ")
-		   (current-column))
-		  ((car (nth 1 state)) indent)
-		  (t
-		   (+ indent ruby-indent-level))))))))
-      (goto-char indent-point)
-      (beginning-of-line)
-      (skip-syntax-forward " ")
-      (if (looking-at "\\.[^.]")
-	  (+ indent ruby-indent-level)
-	indent))))
-
-(defun ruby-electric-brace (arg)
-  (interactive "P")
-  (insert-char last-command-char 1)
-  (ruby-indent-line t)
-  (delete-char -1)
-  (self-insert-command (prefix-numeric-value arg)))
-
-(eval-when-compile
-  (defmacro defun-region-command (func args &rest body)
-    (let ((intr (car body)))
-      (when (featurep 'xemacs)
-	(if (stringp intr) (setq intr (cadr body)))
-	(and (eq (car intr) 'interactive)
-	     (setq intr (cdr intr))
-	     (setcar intr (concat "_" (car intr)))))
-      (cons 'defun (cons func (cons args body))))))
-
-(defun-region-command ruby-beginning-of-defun (&optional arg)
-  "Move backward to next beginning-of-defun.
-With argument, do this that many times.
-Returns t unless search stops due to end of buffer."
-  (interactive "p")
-  (and (re-search-backward (concat "^\\(" ruby-block-beg-re "\\)\\b")
-			   nil 'move (or arg 1))
-       (progn (beginning-of-line) t)))
-
-(defun ruby-beginning-of-indent ()
-  (and (re-search-backward (concat "^\\(" ruby-indent-beg-re "\\)\\b")
-			   nil 'move)
-       (progn
-	 (beginning-of-line)
-	 t)))
-
-(defun-region-command ruby-end-of-defun (&optional arg)
-  "Move forward to next end of defun.
-An end of a defun is found by moving forward from the beginning of one."
-  (interactive "p")
-  (and (re-search-forward (concat "^\\(" ruby-block-end-re "\\)\\($\\|\\b[^_]\\)")
-			  nil 'move (or arg 1))
-       (progn (beginning-of-line) t))
-  (forward-line 1))
-
-(defun ruby-move-to-block (n)
-  (let (start pos done down)
-    (setq start (ruby-calculate-indent))
-    (setq down (looking-at (if (< n 0) ruby-block-end-re
-			     (concat "\\<\\(" ruby-block-beg-re "\\)\\>"))))
-    (while (and (not done) (not (if (< n 0) (bobp) (eobp))))
-      (forward-line n)
-      (cond
-       ((looking-at "^\\s *$"))
-       ((looking-at "^\\s *#"))
-       ((and (> n 0) (looking-at "^=begin\\>"))
-	(re-search-forward "^=end\\>"))
-       ((and (< n 0) (looking-at "^=end\\>"))
-	(re-search-backward "^=begin\\>"))
-       (t
-	(setq pos (current-indentation))
-	(cond
-	 ((< start pos)
-	  (setq down t))
-	 ((and down (= pos start))
-	  (setq done t))
-	 ((> start pos)
-	  (setq done t)))))
-      (if done
-	  (save-excursion
-	    (back-to-indentation)
-	    (if (looking-at (concat "\\<\\(" ruby-block-mid-re "\\)\\>"))
-		(setq done nil))))))
-  (back-to-indentation))
-
-(defun-region-command ruby-beginning-of-block (&optional arg)
-  "Move backward to next beginning-of-block"
-  (interactive "p")
-  (ruby-move-to-block (- (or arg 1))))
-
-(defun-region-command ruby-end-of-block (&optional arg)
-  "Move forward to next beginning-of-block"
-  (interactive "p")
-  (ruby-move-to-block (or arg 1)))
-
-(defun-region-command ruby-forward-sexp (&optional cnt)
-  (interactive "p")
-  (if (and (numberp cnt) (< cnt 0))
-      (ruby-backward-sexp (- cnt))
-    (let ((i (or cnt 1)))
-      (condition-case nil
-	  (while (> i 0)
-	    (skip-syntax-forward " ")
-	    (cond ((looking-at "\\?\\(\\\\[CM]-\\)*\\\\?\\S ")
-		   (goto-char (match-end 0)))
-		  ((progn
-		     (skip-chars-forward ",.:;|&^~=!?\\+\\-\\*")
-		     (looking-at "\\s("))
-		   (goto-char (scan-sexps (point) 1)))
-		  ((and (looking-at (concat "\\<\\(" ruby-block-beg-re "\\)\\>"))
-			(not (eq (char-before (point)) ?.))
-			(not (eq (char-before (point)) ?:)))
-		   (ruby-end-of-block)
-		   (forward-word 1))
-		  ((looking-at "\\(\\$\\|@@?\\)?\\sw")
-		   (while (progn
-			    (while (progn (forward-word 1) (looking-at "_")))
-			    (cond ((looking-at "::") (forward-char 2) t)
-				  ((> (skip-chars-forward ".") 0))
-				  ((looking-at "\\?\\|!\\(=[~=>]\\|[^~=]\\)")
-				   (forward-char 1) nil)))))
-		  ((let (state expr)
-		     (while
-			 (progn
-			   (setq expr (or expr (ruby-expr-beg)
-					  (looking-at "%\\sw?\\Sw\\|[\"'`/]")))
-			   (nth 1 (setq state (apply 'ruby-parse-partial nil state))))
-		       (setq expr t)
-		       (skip-chars-forward "<"))
-		     (not expr))))
-	    (setq i (1- i)))
-	((error) (forward-word 1)))
-      i)))
-
-(defun-region-command ruby-backward-sexp (&optional cnt)
-  (interactive "p")
-  (if (and (numberp cnt) (< cnt 0))
-      (ruby-forward-sexp (- cnt))
-    (let ((i (or cnt 1)))
-      (condition-case nil
-	  (while (> i 0)
-	    (skip-chars-backward " \t\n,.:;|&^~=!?\\+\\-\\*")
-	    (forward-char -1)
-	    (cond ((looking-at "\\s)")
-		   (goto-char (scan-sexps (1+ (point)) -1))
-		   (case (char-before)
-		     (?% (forward-char -1))
-		     ('(?q ?Q ?w ?W ?r ?x)
-		      (if (eq (char-before (1- (point))) ?%) (forward-char -2))))
-		   nil)
-		  ((looking-at "\\s\"\\|\\\\\\S_")
-		   (let ((c (char-to-string (char-before (match-end 0)))))
-		     (while (and (search-backward c)
-				 (oddp (skip-chars-backward "\\")))))
-		   nil)
-		  ((looking-at "\\s.\\|\\s\\")
-		   (if (ruby-special-char-p) (forward-char -1)))
-		  ((looking-at "\\s(") nil)
-		  (t
-		   (forward-char 1)
-		   (while (progn (forward-word -1)
-				 (case (char-before)
-				   (?_ t)
-				   (?. (forward-char -1) t)
-				   ((?$ ?@)
-				    (forward-char -1)
-				    (and (eq (char-before) (char-after)) (forward-char -1)))
-				   (?:
-				    (forward-char -1)
-				    (eq (char-before) :)))))
-		   (if (looking-at ruby-block-end-re)
-		       (ruby-beginning-of-block))
-		   nil))
-	    (setq i (1- i)))
-	((error)))
-      i)))
-
-(defun ruby-reindent-then-newline-and-indent ()
-  (interactive "*")
-  (newline)
-  (save-excursion
-    (end-of-line 0)
-    (indent-according-to-mode)
-    (delete-region (point) (progn (skip-chars-backward " \t") (point))))
-  (indent-according-to-mode))
-
-(fset 'ruby-encomment-region (symbol-function 'comment-region))
-
-(defun ruby-decomment-region (beg end)
-  (interactive "r")
-  (save-excursion
-    (goto-char beg)
-    (while (re-search-forward "^\\([ \t]*\\)#" end t)
-      (replace-match "\\1" nil nil)
-      (save-excursion
-	(ruby-indent-line)))))
-
-(defun ruby-insert-end ()
-  (interactive)
-  (insert "end")
-  (ruby-indent-line t)
-  (end-of-line))
-
-(defun ruby-mark-defun ()
-  "Put mark at end of this Ruby function, point at beginning."
-  (interactive)
-  (push-mark (point))
-  (ruby-end-of-defun)
-  (push-mark (point) nil t)
-  (ruby-beginning-of-defun)
-  (re-search-backward "^\n" (- (point) 1) t))
-
-(defun ruby-indent-exp (&optional shutup-p)
-  "Indent each line in the balanced expression following point syntactically.
-If optional SHUTUP-P is non-nil, no errors are signalled if no
-balanced expression is found."
-  (interactive "*P")
-  (let ((here (point-marker)) start top column (nest t))
-    (set-marker-insertion-type here t)
-    (unwind-protect
-	(progn
-	  (beginning-of-line)
-	  (setq start (point) top (current-indentation))
-	  (while (and (not (eobp))
-		      (progn
-			(setq column (ruby-calculate-indent start))
-			(cond ((> column top)
-			       (setq nest t))
-			      ((and (= column top) nest)
-			       (setq nest nil) t))))
-	    (ruby-indent-to column)
-	    (beginning-of-line 2)))
-      (goto-char here)
-      (set-marker here nil))))
-
-(defun ruby-add-log-current-method ()
-  "Return current method string."
-  (condition-case nil
-      (save-excursion
-	(let (mname mlist (indent 0))
-	  ;; get current method (or class/module)
-	  (if (re-search-backward
-	       (concat "^[ \t]*\\(def\\|class\\|module\\)[ \t]+"
-		       "\\("
-		       ;; \\. and :: for class method
-			"\\([A-Za-z_]" ruby-symbol-re "*\\|\\.\\|::" "\\)" 
-			"+\\)")
-	       nil t)
-	      (progn
-		(setq mname (match-string 2))
-		(unless (string-equal "def" (match-string 1))
-		  (setq mlist (list mname) mname nil))
-		(goto-char (match-beginning 1))
-		(setq indent (current-column))
-		(beginning-of-line)))
-	  ;; nest class/module
-	  (while (and (> indent 0)
-		      (re-search-backward
-		       (concat
-			"^[ \t]*\\(class\\|module\\)[ \t]+"
-			"\\([A-Z]" ruby-symbol-re "*\\)")
-		       nil t))
-	    (goto-char (match-beginning 1))
-	    (if (< (current-column) indent)
-		(progn
-		  (setq mlist (cons (match-string 2) mlist))
-		  (setq indent (current-column))
-		  (beginning-of-line))))
-	  (when mname
-	    (let ((mn (split-string mname "\\.\\|::")))
-	      (if (cdr mn)
-		  (progn
-		    (cond
-		     ((string-equal "" (car mn))
-		      (setq mn (cdr mn) mlist nil))
-		     ((string-equal "self" (car mn))
-		      (setq mn (cdr mn)))
-		     ((let ((ml (nreverse mlist)))
-			(while ml
-			  (if (string-equal (car ml) (car mn))
-			      (setq mlist (nreverse (cdr ml)) ml nil))
-			  (or (setq ml (cdr ml)) (nreverse mlist))))))
-		    (if mlist
-			(setcdr (last mlist) mn)
-		      (setq mlist mn))
-		    (setq mn (last mn 2))
-		    (setq mname (concat "." (cadr mn)))
-		    (setcdr mn nil))
-		(setq mname (concat "#" mname)))))
-	  ;; generate string
-	  (if (consp mlist)
-	      (setq mlist (mapconcat (function identity) mlist "::")))
-	  (if mname
-	      (if mlist (concat mlist mname) mname)
-	    mlist)))))
-
-(cond
- ((featurep 'font-lock)
-  (or (boundp 'font-lock-variable-name-face)
-      (setq font-lock-variable-name-face font-lock-type-face))
-
-  (setq ruby-font-lock-syntactic-keywords
-	'(
-	  ;; #{ }, #$hoge, #@foo are not comments
-	  ("\\(#\\)[{$@]" 1 (1 . nil))
-	  ;; the last $', $", $` in the respective string is not variable
-	  ;; the last ?', ?", ?` in the respective string is not ascii code
-	  ("\\(^\\|[\[ \t\n<+\(,=]\\)\\(['\"`]\\)\\(\\\\.\\|\\2\\|[^'\"`\n\\\\]\\)*?\\\\?[?$]\\(\\2\\)"
-	   (2 (7 . nil))
-	   (4 (7 . nil)))
-	  ;; $' $" $` .... are variables
-	  ;; ?' ?" ?` are ascii codes
-	  ("\\(^\\|[^\\\\]\\)\\(\\\\\\\\\\)*[?$]\\([#\"'`]\\)" 3 (1 . nil))
-	  ;; regexps
-	  ("\\(^\\|[=(,~?:;<>]\\|\\(^\\|\\s \\)\\(if\\|elsif\\|unless\\|while\\|until\\|when\\|and\\|or\\|&&\\|||\\)\\|g?sub!?\\|scan\\|split!?\\)\\s *\\(/\\)[^/\n\\\\]*\\(\\\\.[^/\n\\\\]*\\)*\\(/\\)"
-	   (4 (7 . ?/))
-	   (6 (7 . ?/)))
-	  ("^\\(=\\)begin\\(\\s \\|$\\)" 1 (7 . nil))
-	  ("^\\(=\\)end\\(\\s \\|$\\)" 1 (7 . nil))))
-
-  (if (featurep 'xemacs)
-      (put 'ruby-mode 'font-lock-defaults
-	   '((ruby-font-lock-keywords)
-	     nil nil nil
-	     beginning-of-line
-	     (font-lock-syntactic-keywords
-	      . ruby-font-lock-syntactic-keywords))))
-
-  (defun ruby-font-lock-docs (limit)
-    (if (re-search-forward "^=begin\\(\\s \\|$\\)" limit t)
-	(let (beg)
-	  (beginning-of-line)
-	  (setq beg (point))
-	  (forward-line 1)
-	  (if (re-search-forward "^=end\\(\\s \\|$\\)" limit t)
-	      (progn
-		(set-match-data (list beg (point)))
-		t)))))
-
-  (defun ruby-font-lock-maybe-docs (limit)
-    (let (beg)
-      (save-excursion
-	(if (and (re-search-backward "^=\\(begin\\|end\\)\\(\\s \\|$\\)" nil t)
-		 (string= (match-string 1) "begin"))
-	    (progn
-	      (beginning-of-line)
-	      (setq beg (point)))))
-      (if (and beg (and (re-search-forward "^=\\(begin\\|end\\)\\(\\s \\|$\\)" nil t)
-			(string= (match-string 1) "end")))
-	  (progn
-	    (set-match-data (list beg (point)))
-	    t)
-	nil)))
-
-  (defvar ruby-font-lock-syntax-table
-    (let* ((tbl (copy-syntax-table ruby-mode-syntax-table)))
-      (modify-syntax-entry ?_ "w" tbl)
-      tbl))
-
-  (defun ruby-font-lock-here-docs (limit)
-    (if (re-search-forward ruby-here-doc-beg-re limit t)
-	(let (beg)
-	  (beginning-of-line)
-          (forward-line)
-	  (setq beg (point))
-	  (if (re-search-forward (ruby-here-doc-end-match) nil t)
-	      (progn
-		(set-match-data (list beg (point)))
-		t)))))
-
-  (defun ruby-font-lock-maybe-here-docs (limit)
-    (let (beg)
-      (save-excursion
-	(if (re-search-backward ruby-here-doc-beg-re nil t)
-	    (progn
-	      (beginning-of-line)
-              (forward-line)
-	      (setq beg (point)))))
-      (if (and beg
-	       (let ((end-match (ruby-here-doc-end-match)))
-                 (and (not (re-search-backward end-match beg t))
-		      (re-search-forward end-match nil t))))
-	  (progn
-	    (set-match-data (list beg (point)))
-	    t)
-          nil)))
-
-  (defvar ruby-font-lock-keywords
-    (list
-     ;; functions
-     '("^\\s *def\\s +\\([^( \t\n]+\\)"
-       1 font-lock-function-name-face)
-     ;; keywords
-     (cons (concat
-	    "\\(^\\|[^_:.@$]\\|\\.\\.\\)\\b\\(defined\\?\\|\\("
-	    (mapconcat
-	     'identity
-	     '("alias"
-	       "and"
-	       "begin"
-	       "break"
-	       "case"
-	       "catch"
-	       "class"
-	       "def"
-	       "do"
-	       "elsif"
-	       "else"
-	       "fail"
-	       "ensure"
-	       "for"
-	       "end"
-	       "if"
-	       "in"
-	       "module"
-	       "next"
-	       "not"
-	       "or"
-	       "raise"
-	       "redo"
-	       "rescue"
-	       "retry"
-	       "return"
-	       "then"
-	       "throw"
-	       "super"
-	       "unless"
-	       "undef"
-	       "until"
-	       "when"
-	       "while"
-	       "yield"
-	       )
-	     "\\|")
-	    "\\)\\>\\)")
-	   2)
-     ;; variables
-     '("\\(^\\|[^_:.@$]\\|\\.\\.\\)\\b\\(nil\\|self\\|true\\|false\\)\\>"
-       2 font-lock-variable-name-face)
-     ;; variables
-     '("\\(\\$\\([^a-zA-Z0-9 \n]\\|[0-9]\\)\\)\\W"
-       1 font-lock-variable-name-face)
-     '("\\(\\$\\|@\\|@@\\)\\(\\w\\|_\\)+"
-       0 font-lock-variable-name-face)
-     ;; embedded document
-     '(ruby-font-lock-docs
-       0 font-lock-comment-face t)
-     '(ruby-font-lock-maybe-docs
-       0 font-lock-comment-face t)
-     ;; "here" document
-     '(ruby-font-lock-here-docs
-       0 font-lock-string-face t)
-     '(ruby-font-lock-maybe-here-docs
-       0 font-lock-string-face t)
-     `(,ruby-here-doc-beg-re
-       0 font-lock-string-face t)
-     ;; general delimited string
-     '("\\(^\\|[[ \t\n<+(,=]\\)\\(%[xrqQwW]?\\([^<[{(a-zA-Z0-9 \n]\\)[^\n\\\\]*\\(\\\\.[^\n\\\\]*\\)*\\(\\3\\)\\)"
-       (2 font-lock-string-face))
-     ;; constants
-     '("\\(^\\|[^_]\\)\\b\\([A-Z]+\\(\\w\\|_\\)*\\)"
-       2 font-lock-type-face)
-     ;; symbols
-     '("\\(^\\|[^:]\\)\\(:\\([-+~]@?\\|[/%&|^`]\\|\\*\\*?\\|<\\(<\\|=>?\\)?\\|>[>=]?\\|===?\\|=~\\|\\[\\]=?\\|\\(\\w\\|_\\)+\\([!?=]\\|\\b_*\\)\\|#{[^}\n\\\\]*\\(\\\\.[^}\n\\\\]*\\)*}\\)\\)"
-       2 font-lock-reference-face)
-     ;; expression expansion
-     '("#\\({[^}\n\\\\]*\\(\\\\.[^}\n\\\\]*\\)*}\\|\\(\\$\\|@\\|@@\\)\\(\\w\\|_\\)+\\)"
-       0 font-lock-variable-name-face t)
-     ;; warn lower camel case
-     ;'("\\<[a-z]+[a-z0-9]*[A-Z][A-Za-z0-9]*\\([!?]?\\|\\>\\)"
-     ;  0 font-lock-warning-face)
-     )
-    "*Additional expressions to highlight in ruby mode."))
-
- ((featurep 'hilit19)
-  (hilit-set-mode-patterns
-   'ruby-mode
-   '(("[^$\\?]\\(\"[^\\\"]*\\(\\\\\\(.\\|\n\\)[^\\\"]*\\)*\"\\)" 1 string)
-     ("[^$\\?]\\('[^\\']*\\(\\\\\\(.\\|\n\\)[^\\']*\\)*'\\)" 1 string)
-     ("[^$\\?]\\(`[^\\`]*\\(\\\\\\(.\\|\n\\)[^\\`]*\\)*`\\)" 1 string)
-     ("^\\s *#.*$" nil comment)
-     ("[^$@?\\]\\(#[^$@{\n].*$\\)" 1 comment)
-     ("[^a-zA-Z_]\\(\\?\\(\\\\[CM]-\\)*.\\)" 1 string)
-     ("^\\s *\\(require\\|load\\).*$" nil include)
-     ("^\\s *\\(include\\|alias\\|undef\\).*$" nil decl)
-     ("^\\s *\\<\\(class\\|def\\|module\\)\\>" "[)\n;]" defun)
-     ("[^_]\\<\\(begin\\|case\\|else\\|elsif\\|end\\|ensure\\|for\\|if\\|unless\\|rescue\\|then\\|when\\|while\\|until\\|do\\|yield\\)\\>\\([^_]\\|$\\)" 1 defun)
-     ("[^_]\\<\\(and\\|break\\|next\\|raise\\|fail\\|in\\|not\\|or\\|redo\\|retry\\|return\\|super\\|yield\\|catch\\|throw\\|self\\|nil\\)\\>\\([^_]\\|$\\)" 1 keyword)
-     ("\\$\\(.\\|\\sw+\\)" nil type)
-     ("[$@].[a-zA-Z_0-9]*" nil struct)
-     ("^__END__" nil label))))
- )
-
-
-(provide 'ruby-mode)
+#FILE text/plain
+Ozs7Cjs7OyAgcnVieS1tb2RlLmVsIC0KOzs7Cjs7OyAgJEF1dGhvcjogbm9idSAkCjs7OyAgY3Jl
+YXRlZCBhdDogRnJpIEZlYiAgNCAxNDo0OToxMyBKU1QgMTk5NAo7OzsKCihkZWZjb25zdCBydWJ5
+LW1vZGUtcmV2aXNpb24gIiRSZXZpc2lvbjogMTYwMjggJCIKICAiUnVieSBtb2RlIHJldmlzaW9u
+IHN0cmluZy4iKQoKKGRlZmNvbnN0IHJ1YnktbW9kZS12ZXJzaW9uCiAgKHByb2duCiAgIChzdHJp
+bmctbWF0Y2ggIlswLTkuXSsiIHJ1YnktbW9kZS1yZXZpc2lvbikKICAgKHN1YnN0cmluZyBydWJ5
+LW1vZGUtcmV2aXNpb24gKG1hdGNoLWJlZ2lubmluZyAwKSAobWF0Y2gtZW5kIDApKSkKICAiUnVi
+eSBtb2RlIHZlcnNpb24gbnVtYmVyLiIpCgooZGVmY29uc3QgcnVieS1ibG9jay1iZWctcmUKICAi
+Y2xhc3NcXHxtb2R1bGVcXHxkZWZcXHxpZlxcfHVubGVzc1xcfGNhc2VcXHx3aGlsZVxcfHVudGls
+XFx8Zm9yXFx8YmVnaW5cXHxkbyIKICAiUmVnZXhwIHRvIG1hdGNoIHRoZSBiZWdpbm5pbmcgb2Yg
+YmxvY2tzIGluIHJ1YnktbW9kZS4iKQoKKGRlZmNvbnN0IHJ1Ynktbm9uLWJsb2NrLWRvLXJlCiAg
+IlxcKHdoaWxlXFx8dW50aWxcXHxmb3JcXHxyZXNjdWVcXClcXD5bXl9dIgogICJSZWdleHAgdG8g
+bWF0Y2giKQoKKGRlZmNvbnN0IHJ1YnktaW5kZW50LWJlZy1yZQogICJcXChcXHMgKlxcKGNsYXNz
+XFx8bW9kdWxlXFx8ZGVmXFwpXFwpXFx8aWZcXHx1bmxlc3NcXHxjYXNlXFx8d2hpbGVcXHx1bnRp
+bFxcfGZvclxcfGJlZ2luIgogICJSZWdleHAgdG8gbWF0Y2ggd2hlcmUgdGhlIGluZGVudGF0aW9u
+IGdldHMgZGVlcGVyLiIpCgooZGVmY29uc3QgcnVieS1tb2RpZmllci1iZWctcmUKICAiaWZcXHx1
+bmxlc3NcXHx3aGlsZVxcfHVudGlsIgogICJSZWdleHAgdG8gbWF0Y2ggbW9kaWZpZXJzIHNhbWUg
+YXMgdGhlIGJlZ2lubmluZyBvZiBibG9ja3MuIikKCihkZWZjb25zdCBydWJ5LW1vZGlmaWVyLXJl
+CiAgKGNvbmNhdCBydWJ5LW1vZGlmaWVyLWJlZy1yZSAiXFx8cmVzY3VlIikKICAiUmVnZXhwIHRv
+IG1hdGNoIG1vZGlmaWVycy4iKQoKKGRlZmNvbnN0IHJ1YnktYmxvY2stbWlkLXJlCiAgInRoZW5c
+XHxlbHNlXFx8ZWxzaWZcXHx3aGVuXFx8cmVzY3VlXFx8ZW5zdXJlIgogICJSZWdleHAgdG8gbWF0
+Y2ggd2hlcmUgdGhlIGluZGVudGF0aW9uIGdldHMgc2hhbGxvd2VyIGluIG1pZGRsZSBvZiBibG9j
+ayBzdGF0ZW1lbnRzLiIpCgooZGVmY29uc3QgcnVieS1ibG9jay1vcC1yZQogICJhbmRcXHxvclxc
+fG5vdCIKICAiUmVnZXhwIHRvIG1hdGNoICIpCgooZGVmY29uc3QgcnVieS1ibG9jay1oYW5naW5n
+LXJlCiAgKGNvbmNhdCBydWJ5LW1vZGlmaWVyLWJlZy1yZSAiXFx8IiBydWJ5LWJsb2NrLW9wLXJl
+KQogICkKCihkZWZjb25zdCBydWJ5LWJsb2NrLWVuZC1yZSAiXFw8ZW5kXFw+IikKCihkZWZjb25z
+dCBydWJ5LWhlcmUtZG9jLWJlZy1yZQogICI8PFxcKC1cXCk/XFwoXFwoW2EtekEtWjAtOV9dK1xc
+KVxcfFtcIl1cXChbXlwiXStcXClbXCJdXFx8WyddXFwoW14nXStcXClbJ11cXCkiKQoKKGRlZnVu
+IHJ1YnktaGVyZS1kb2MtZW5kLW1hdGNoICgpCiAgKGNvbmNhdCAiXiIKCSAgKGlmIChtYXRjaC1z
+dHJpbmcgMSkgIlsgXHRdKiIgbmlsKQoJICAocmVnZXhwLXF1b3RlCgkgICAob3IgKG1hdGNoLXN0
+cmluZyAzKQoJICAgICAgIChtYXRjaC1zdHJpbmcgNCkKCSAgICAgICAobWF0Y2gtc3RyaW5nIDUp
+KSkpKQoKKGRlZmNvbnN0IHJ1YnktZGVsaW1pdGVyCiAgKGNvbmNhdCAiWz8kLyUoKXt9I1wiJ2Au
+Ol1cXHw8PFxcfFxcW1xcfFxcXVxcfFxcPFxcKCIKCSAgcnVieS1ibG9jay1iZWctcmUKCSAgIlxc
+KVxcPlxcfCIgcnVieS1ibG9jay1lbmQtcmUKCSAgIlxcfF49YmVnaW5cXHwiIHJ1YnktaGVyZS1k
+b2MtYmVnLXJlKQogICkKCihkZWZjb25zdCBydWJ5LW5lZ2F0aXZlCiAgKGNvbmNhdCAiXlsgXHRd
+KlxcKFxcKCIgcnVieS1ibG9jay1taWQtcmUgIlxcKVxcPlxcfCIKCSAgICBydWJ5LWJsb2NrLWVu
+ZC1yZSAiXFx8fVxcfFxcXVxcKSIpCiAgIlJlZ2V4cCB0byBtYXRjaCB3aGVyZSB0aGUgaW5kZW50
+YXRpb24gZ2V0cyBzaGFsbG93ZXIuIikKCihkZWZjb25zdCBydWJ5LW9wZXJhdG9yLWNoYXJzICIt
+LC4rKi8lJnxefj08PjoiKQooZGVmY29uc3QgcnVieS1vcGVyYXRvci1yZSAoY29uY2F0ICJbIiBy
+dWJ5LW9wZXJhdG9yLWNoYXJzICJdIikpCgooZGVmY29uc3QgcnVieS1zeW1ib2wtY2hhcnMgImEt
+ekEtWjAtOV8iKQooZGVmY29uc3QgcnVieS1zeW1ib2wtcmUgKGNvbmNhdCAiWyIgcnVieS1zeW1i
+b2wtY2hhcnMgIl0iKSkKCihkZWZ2YXIgcnVieS1tb2RlLWFiYnJldi10YWJsZSBuaWwKICAiQWJi
+cmV2IHRhYmxlIGluIHVzZSBpbiBydWJ5LW1vZGUgYnVmZmVycy4iKQoKKGRlZmluZS1hYmJyZXYt
+dGFibGUgJ3J1YnktbW9kZS1hYmJyZXYtdGFibGUgKCkpCgooZGVmdmFyIHJ1YnktbW9kZS1tYXAg
+bmlsICJLZXltYXAgdXNlZCBpbiBydWJ5IG1vZGUuIikKCihpZiBydWJ5LW1vZGUtbWFwCiAgICBu
+aWwKICAoc2V0cSBydWJ5LW1vZGUtbWFwIChtYWtlLXNwYXJzZS1rZXltYXApKQogIChkZWZpbmUt
+a2V5IHJ1YnktbW9kZS1tYXAgInsiICdydWJ5LWVsZWN0cmljLWJyYWNlKQogIChkZWZpbmUta2V5
+IHJ1YnktbW9kZS1tYXAgIn0iICdydWJ5LWVsZWN0cmljLWJyYWNlKQogIChkZWZpbmUta2V5IHJ1
+YnktbW9kZS1tYXAgIlxlXEMtYSIgJ3J1YnktYmVnaW5uaW5nLW9mLWRlZnVuKQogIChkZWZpbmUt
+a2V5IHJ1YnktbW9kZS1tYXAgIlxlXEMtZSIgJ3J1YnktZW5kLW9mLWRlZnVuKQogIChkZWZpbmUt
+a2V5IHJ1YnktbW9kZS1tYXAgIlxlXEMtYiIgJ3J1YnktYmFja3dhcmQtc2V4cCkKICAoZGVmaW5l
+LWtleSBydWJ5LW1vZGUtbWFwICJcZVxDLWYiICdydWJ5LWZvcndhcmQtc2V4cCkKICAoZGVmaW5l
+LWtleSBydWJ5LW1vZGUtbWFwICJcZVxDLXAiICdydWJ5LWJlZ2lubmluZy1vZi1ibG9jaykKICAo
+ZGVmaW5lLWtleSBydWJ5LW1vZGUtbWFwICJcZVxDLW4iICdydWJ5LWVuZC1vZi1ibG9jaykKICAo
+ZGVmaW5lLWtleSBydWJ5LW1vZGUtbWFwICJcZVxDLWgiICdydWJ5LW1hcmstZGVmdW4pCiAgKGRl
+ZmluZS1rZXkgcnVieS1tb2RlLW1hcCAiXGVcQy1xIiAncnVieS1pbmRlbnQtZXhwKQogIChkZWZp
+bmUta2V5IHJ1YnktbW9kZS1tYXAgIlx0IiAncnVieS1pbmRlbnQtY29tbWFuZCkKICAoZGVmaW5l
+LWtleSBydWJ5LW1vZGUtbWFwICJcQy1jXEMtZSIgJ3J1YnktaW5zZXJ0LWVuZCkKICAoZGVmaW5l
+LWtleSBydWJ5LW1vZGUtbWFwICJcQy1qIiAncnVieS1yZWluZGVudC10aGVuLW5ld2xpbmUtYW5k
+LWluZGVudCkKICAoZGVmaW5lLWtleSBydWJ5LW1vZGUtbWFwICJcQy1tIiAnbmV3bGluZSkpCgoo
+ZGVmdmFyIHJ1YnktbW9kZS1zeW50YXgtdGFibGUgbmlsCiAgIlN5bnRheCB0YWJsZSBpbiB1c2Ug
+aW4gcnVieS1tb2RlIGJ1ZmZlcnMuIikKCihpZiBydWJ5LW1vZGUtc3ludGF4LXRhYmxlCiAgICAo
+KQogIChzZXRxIHJ1YnktbW9kZS1zeW50YXgtdGFibGUgKG1ha2Utc3ludGF4LXRhYmxlKSkKICAo
+bW9kaWZ5LXN5bnRheC1lbnRyeSA/XCcgIlwiIiBydWJ5LW1vZGUtc3ludGF4LXRhYmxlKQogICht
+b2RpZnktc3ludGF4LWVudHJ5ID9cIiAiXCIiIHJ1YnktbW9kZS1zeW50YXgtdGFibGUpCiAgKG1v
+ZGlmeS1zeW50YXgtZW50cnkgP1xgICJcIiIgcnVieS1tb2RlLXN5bnRheC10YWJsZSkKICAobW9k
+aWZ5LXN5bnRheC1lbnRyeSA/IyAiPCIgcnVieS1tb2RlLXN5bnRheC10YWJsZSkKICAobW9kaWZ5
+LXN5bnRheC1lbnRyeSA/XG4gIj4iIHJ1YnktbW9kZS1zeW50YXgtdGFibGUpCiAgKG1vZGlmeS1z
+eW50YXgtZW50cnkgP1xcICJcXCIgcnVieS1tb2RlLXN5bnRheC10YWJsZSkKICAobW9kaWZ5LXN5
+bnRheC1lbnRyeSA/JCAiLiIgcnVieS1tb2RlLXN5bnRheC10YWJsZSkKICAobW9kaWZ5LXN5bnRh
+eC1lbnRyeSA/PyAiXyIgcnVieS1tb2RlLXN5bnRheC10YWJsZSkKICAobW9kaWZ5LXN5bnRheC1l
+bnRyeSA/XyAiXyIgcnVieS1tb2RlLXN5bnRheC10YWJsZSkKICAobW9kaWZ5LXN5bnRheC1lbnRy
+eSA/PCAiLiIgcnVieS1tb2RlLXN5bnRheC10YWJsZSkKICAobW9kaWZ5LXN5bnRheC1lbnRyeSA/
+PiAiLiIgcnVieS1tb2RlLXN5bnRheC10YWJsZSkKICAobW9kaWZ5LXN5bnRheC1lbnRyeSA/JiAi
+LiIgcnVieS1tb2RlLXN5bnRheC10YWJsZSkKICAobW9kaWZ5LXN5bnRheC1lbnRyeSA/fCAiLiIg
+cnVieS1tb2RlLXN5bnRheC10YWJsZSkKICAobW9kaWZ5LXN5bnRheC1lbnRyeSA/JSAiLiIgcnVi
+eS1tb2RlLXN5bnRheC10YWJsZSkKICAobW9kaWZ5LXN5bnRheC1lbnRyeSA/PSAiLiIgcnVieS1t
+b2RlLXN5bnRheC10YWJsZSkKICAobW9kaWZ5LXN5bnRheC1lbnRyeSA/LyAiLiIgcnVieS1tb2Rl
+LXN5bnRheC10YWJsZSkKICAobW9kaWZ5LXN5bnRheC1lbnRyeSA/KyAiLiIgcnVieS1tb2RlLXN5
+bnRheC10YWJsZSkKICAobW9kaWZ5LXN5bnRheC1lbnRyeSA/KiAiLiIgcnVieS1tb2RlLXN5bnRh
+eC10YWJsZSkKICAobW9kaWZ5LXN5bnRheC1lbnRyeSA/LSAiLiIgcnVieS1tb2RlLXN5bnRheC10
+YWJsZSkKICAobW9kaWZ5LXN5bnRheC1lbnRyeSA/XDsgIi4iIHJ1YnktbW9kZS1zeW50YXgtdGFi
+bGUpCiAgKG1vZGlmeS1zeW50YXgtZW50cnkgP1woICIoKSIgcnVieS1tb2RlLXN5bnRheC10YWJs
+ZSkKICAobW9kaWZ5LXN5bnRheC1lbnRyeSA/XCkgIikoIiBydWJ5LW1vZGUtc3ludGF4LXRhYmxl
+KQogIChtb2RpZnktc3ludGF4LWVudHJ5ID9ceyAiKH0iIHJ1YnktbW9kZS1zeW50YXgtdGFibGUp
+CiAgKG1vZGlmeS1zeW50YXgtZW50cnkgP1x9ICIpeyIgcnVieS1tb2RlLXN5bnRheC10YWJsZSkK
+ICAobW9kaWZ5LXN5bnRheC1lbnRyeSA/XFsgIihdIiBydWJ5LW1vZGUtc3ludGF4LXRhYmxlKQog
+IChtb2RpZnktc3ludGF4LWVudHJ5ID9cXSAiKVsiIHJ1YnktbW9kZS1zeW50YXgtdGFibGUpCiAg
+KQoKKGRlZmN1c3RvbSBydWJ5LWluZGVudC10YWJzLW1vZGUgbmlsCiAgIipJbmRlbnRhdGlvbiBj
+YW4gaW5zZXJ0IHRhYnMgaW4gcnVieSBtb2RlIGlmIHRoaXMgaXMgbm9uLW5pbC4iCiAgOnR5cGUg
+J2Jvb2xlYW4gOmdyb3VwICdydWJ5KQoKKGRlZmN1c3RvbSBydWJ5LWluZGVudC1sZXZlbCAyCiAg
+IipJbmRlbnRhdGlvbiBvZiBydWJ5IHN0YXRlbWVudHMuIgogIDp0eXBlICdpbnRlZ2VyIDpncm91
+cCAncnVieSkKCihkZWZjdXN0b20gcnVieS1jb21tZW50LWNvbHVtbiAzMgogICIqSW5kZW50YXRp
+b24gY29sdW1uIG9mIGNvbW1lbnRzLiIKICA6dHlwZSAnaW50ZWdlciA6Z3JvdXAgJ3J1YnkpCgoo
+ZGVmY3VzdG9tIHJ1YnktZGVlcC1hcmdsaXN0IHQKICAiKkRlZXAgaW5kZW50IGxpc3RzIGluIHBh
+cmVudGhlc2lzIHdoZW4gbm9uLW5pbC4KQWxzbyBpZ25vcmVzIHNwYWNlcyBhZnRlciBwYXJlbnRo
+ZXNpcyB3aGVuICdzcGFjZS4iCiAgOmdyb3VwICdydWJ5KQoKKGRlZmN1c3RvbSBydWJ5LWRlZXAt
+aW5kZW50LXBhcmVuICcoP1woID9cWyA/XF0gdCkKICAiKkRlZXAgaW5kZW50IGxpc3RzIGluIHBh
+cmVudGhlc2lzIHdoZW4gbm9uLW5pbC4gdCBtZWFucyBjb250aW51b3VzIGxpbmUuCkFsc28gaWdu
+b3JlcyBzcGFjZXMgYWZ0ZXIgcGFyZW50aGVzaXMgd2hlbiAnc3BhY2UuIgogIDpncm91cCAncnVi
+eSkKCihkZWZjdXN0b20gcnVieS1kZWVwLWluZGVudC1wYXJlbi1zdHlsZSAnc3BhY2UKICAiRGVm
+YXVsdCBkZWVwIGluZGVudCBzdHlsZS4iCiAgOm9wdGlvbnMgJyh0IG5pbCBzcGFjZSkgOmdyb3Vw
+ICdydWJ5KQoKKGRlZmN1c3RvbSBydWJ5LWVuY29kaW5nLW1hcCAnKChzaGlmdF9qaXMgLiBjcDkz
+MikgKHNoaWZ0LWppcyAuIGNwOTMyKSkKICAiQWxpc3QgdG8gbWFwIGVuY29kaW5nIG5hbWUgZnJv
+bSBlbWFjcyB0byBydWJ5LiIKICA6Z3JvdXAgJ3J1YnkpCgooZGVmY3VzdG9tIHJ1YnktdXNlLWVu
+Y29kaW5nLW1hcCB0CiAgIipVc2UgYHJ1YnktZW5jb2RpbmctbWFwJyB0byBzZXQgZW5jb2Rpbmcg
+bWFnaWMgY29tbWVudCBpZiB0aGlzIGlzIG5vbi1uaWwuIgogIDp0eXBlICdib29sZWFuIDpncm91
+cCAncnVieSkKCihldmFsLXdoZW4tY29tcGlsZSAocmVxdWlyZSAnY2wpKQooZGVmdW4gcnVieS1p
+bWVudS1jcmVhdGUtaW5kZXgtaW4tYmxvY2sgKHByZWZpeCBiZWcgZW5kKQogIChsZXQgKChpbmRl
+eC1hbGlzdCAnKCkpIChjYXNlLWZvbGQtc2VhcmNoIG5pbCkKCW5hbWUgbmV4dCBwb3MgZGVjbCBz
+aW5nKQogICAgKGdvdG8tY2hhciBiZWcpCiAgICAod2hpbGUgKHJlLXNlYXJjaC1mb3J3YXJkICJe
+XFxzICpcXChcXChjbGFzc1xcPlxcKFxccyAqPDxcXCk/XFx8bW9kdWxlXFw+XFwpXFxzICpcXChb
+XlwoPFxuIF0rXFwpXFx8XFwoZGVmXFx8YWxpYXNcXClcXD5cXHMgKlxcKFteXChcbiBdK1xcKVxc
+KSIgZW5kIHQpCiAgICAgIChzZXRxIHNpbmcgKG1hdGNoLWJlZ2lubmluZyAzKSkKICAgICAgKHNl
+dHEgZGVjbCAobWF0Y2gtc3RyaW5nIDUpKQogICAgICAoc2V0cSBuZXh0IChtYXRjaC1lbmQgMCkp
+CiAgICAgIChzZXRxIG5hbWUgKG9yIChtYXRjaC1zdHJpbmcgNCkgKG1hdGNoLXN0cmluZyA2KSkp
+CiAgICAgIChzZXRxIHBvcyAobWF0Y2gtYmVnaW5uaW5nIDApKQogICAgICAoY29uZAogICAgICAg
+KChzdHJpbmc9ICJhbGlhcyIgZGVjbCkKCShpZiBwcmVmaXggKHNldHEgbmFtZSAoY29uY2F0IHBy
+ZWZpeCBuYW1lKSkpCgkocHVzaCAoY29ucyBuYW1lIHBvcykgaW5kZXgtYWxpc3QpKQogICAgICAg
+KChzdHJpbmc9ICJkZWYiIGRlY2wpCgkoaWYgcHJlZml4CgkgICAgKHNldHEgbmFtZQoJCSAgKGNv
+bmQKCQkgICAoKHN0cmluZy1tYXRjaCAiXnNlbGZcLiIgbmFtZSkKCQkgICAgKGNvbmNhdCAoc3Vi
+c3RyaW5nIHByZWZpeCAwIC0xKSAoc3Vic3RyaW5nIG5hbWUgNCkpKQoJCSAgKHQgKGNvbmNhdCBw
+cmVmaXggbmFtZSkpKSkpCgkocHVzaCAoY29ucyBuYW1lIHBvcykgaW5kZXgtYWxpc3QpCgkocnVi
+eS1hY2N1cmF0ZS1lbmQtb2YtYmxvY2sgZW5kKSkKICAgICAgICh0CgkoaWYgKHN0cmluZz0gInNl
+bGYiIG5hbWUpCgkgICAgKGlmIHByZWZpeCAoc2V0cSBuYW1lIChzdWJzdHJpbmcgcHJlZml4IDAg
+LTEpKSkKCSAgKGlmIHByZWZpeCAoc2V0cSBuYW1lIChjb25jYXQgKHN1YnN0cmluZyBwcmVmaXgg
+MCAtMSkgIjo6IiBuYW1lKSkpCgkgIChwdXNoIChjb25zIG5hbWUgcG9zKSBpbmRleC1hbGlzdCkp
+CgkocnVieS1hY2N1cmF0ZS1lbmQtb2YtYmxvY2sgZW5kKQoJKHNldHEgYmVnIChwb2ludCkpCgko
+c2V0cSBpbmRleC1hbGlzdAoJICAgICAgKG5jb25jIChydWJ5LWltZW51LWNyZWF0ZS1pbmRleC1p
+bi1ibG9jawoJCSAgICAgIChjb25jYXQgbmFtZSAoaWYgc2luZyAiLiIgIiMiKSkKCQkgICAgICBu
+ZXh0IGJlZykgaW5kZXgtYWxpc3QpKQoJKGdvdG8tY2hhciBiZWcpKSkpCiAgICBpbmRleC1hbGlz
+dCkpCgooZGVmdW4gcnVieS1pbWVudS1jcmVhdGUtaW5kZXggKCkKICAobnJldmVyc2UgKHJ1Ynkt
+aW1lbnUtY3JlYXRlLWluZGV4LWluLWJsb2NrIG5pbCAocG9pbnQtbWluKSBuaWwpKSkKCihkZWZ1
+biBydWJ5LWFjY3VyYXRlLWVuZC1vZi1ibG9jayAoJm9wdGlvbmFsIGVuZCkKICAobGV0IChzdGF0
+ZSkKICAgIChvciBlbmQgKHNldHEgZW5kIChwb2ludC1tYXgpKSkKICAgICh3aGlsZSAoYW5kIChz
+ZXRxIHN0YXRlIChhcHBseSAncnVieS1wYXJzZS1wYXJ0aWFsIGVuZCBzdGF0ZSkpCgkJKD49IChu
+dGggMiBzdGF0ZSkgMCkgKDwgKHBvaW50KSBlbmQpKSkpKQoKKGRlZnVuIHJ1YnktbW9kZS12YXJp
+YWJsZXMgKCkKICAoc2V0LXN5bnRheC10YWJsZSBydWJ5LW1vZGUtc3ludGF4LXRhYmxlKQogIChz
+ZXRxIGxvY2FsLWFiYnJldi10YWJsZSBydWJ5LW1vZGUtYWJicmV2LXRhYmxlKQogIChtYWtlLWxv
+Y2FsLXZhcmlhYmxlICdpbmRlbnQtbGluZS1mdW5jdGlvbikKICAoc2V0cSBpbmRlbnQtbGluZS1m
+dW5jdGlvbiAncnVieS1pbmRlbnQtbGluZSkKICAobWFrZS1sb2NhbC12YXJpYWJsZSAncmVxdWly
+ZS1maW5hbC1uZXdsaW5lKQogIChzZXRxIHJlcXVpcmUtZmluYWwtbmV3bGluZSB0KQogIChtYWtl
+LXZhcmlhYmxlLWJ1ZmZlci1sb2NhbCAnY29tbWVudC1zdGFydCkKICAoc2V0cSBjb21tZW50LXN0
+YXJ0ICIjICIpCiAgKG1ha2UtdmFyaWFibGUtYnVmZmVyLWxvY2FsICdjb21tZW50LWVuZCkKICAo
+c2V0cSBjb21tZW50LWVuZCAiIikKICAobWFrZS12YXJpYWJsZS1idWZmZXItbG9jYWwgJ2NvbW1l
+bnQtY29sdW1uKQogIChzZXRxIGNvbW1lbnQtY29sdW1uIHJ1YnktY29tbWVudC1jb2x1bW4pCiAg
+KG1ha2UtdmFyaWFibGUtYnVmZmVyLWxvY2FsICdjb21tZW50LXN0YXJ0LXNraXApCiAgKHNldHEg
+Y29tbWVudC1zdGFydC1za2lwICIjKyAqIikKICAoc2V0cSBpbmRlbnQtdGFicy1tb2RlIHJ1Ynkt
+aW5kZW50LXRhYnMtbW9kZSkKICAobWFrZS1sb2NhbC12YXJpYWJsZSAncGFyc2Utc2V4cC1pZ25v
+cmUtY29tbWVudHMpCiAgKHNldHEgcGFyc2Utc2V4cC1pZ25vcmUtY29tbWVudHMgdCkKICAobWFr
+ZS1sb2NhbC12YXJpYWJsZSAncGFyYWdyYXBoLXN0YXJ0KQogIChzZXRxIHBhcmFncmFwaC1zdGFy
+dCAoY29uY2F0ICIkXFx8IiBwYWdlLWRlbGltaXRlcikpCiAgKG1ha2UtbG9jYWwtdmFyaWFibGUg
+J3BhcmFncmFwaC1zZXBhcmF0ZSkKICAoc2V0cSBwYXJhZ3JhcGgtc2VwYXJhdGUgcGFyYWdyYXBo
+LXN0YXJ0KQogIChtYWtlLWxvY2FsLXZhcmlhYmxlICdwYXJhZ3JhcGgtaWdub3JlLWZpbGwtcHJl
+Zml4KQogIChzZXRxIHBhcmFncmFwaC1pZ25vcmUtZmlsbC1wcmVmaXggdCkpCgooZGVmdW4gcnVi
+eS1tb2RlLXNldC1lbmNvZGluZyAoKQogIChzYXZlLWV4Y3Vyc2lvbgogICAgKHdpZGVuKQogICAg
+KGdvdG8tY2hhciAocG9pbnQtbWluKSkKICAgICh3aGVuIChyZS1zZWFyY2gtZm9yd2FyZCAiW15c
+MC1cMTc3XSIgbmlsIHQpCiAgICAgIChnb3RvLWNoYXIgKHBvaW50LW1pbikpCiAgICAgIChsZXQg
+KChjb2Rpbmctc3lzdGVtCgkgICAgIChvciBjb2Rpbmctc3lzdGVtLWZvci13cml0ZQoJCSBidWZm
+ZXItZmlsZS1jb2Rpbmctc3lzdGVtKSkpCgkoaWYgY29kaW5nLXN5c3RlbQoJICAgIChzZXRxIGNv
+ZGluZy1zeXN0ZW0KCQkgIChvciAoY29kaW5nLXN5c3RlbS1nZXQgY29kaW5nLXN5c3RlbSAnbWlt
+ZS1jaGFyc2V0KQoJCSAgICAgIChjb2Rpbmctc3lzdGVtLWNoYW5nZS1lb2wtY29udmVyc2lvbiBj
+b2Rpbmctc3lzdGVtIG5pbCkpKSkKCShzZXRxIGNvZGluZy1zeXN0ZW0KCSAgICAgIChpZiBjb2Rp
+bmctc3lzdGVtCgkJICAoc3ltYm9sLW5hbWUKCQkgICAob3IgKGFuZCBydWJ5LXVzZS1lbmNvZGlu
+Zy1tYXAKCQkJICAgIChjZHIgKGFzc3EgY29kaW5nLXN5c3RlbSBydWJ5LWVuY29kaW5nLW1hcCkp
+KQoJCSAgICAgICBjb2Rpbmctc3lzdGVtKSkKCQkiYXNjaWktOGJpdCIpKQoJKGlmIChsb29raW5n
+LWF0ICJeIyFbXlxuXSpydWJ5IikgKGJlZ2lubmluZy1vZi1saW5lIDIpKQoJKGNvbmQgKChsb29r
+aW5nLWF0ICJcXHMgKiMuKi1cKi1cXHMgKlxcKGVuXFwpP2NvZGluZ1xccyAqOlxccyAqXFwoWy1h
+LXowLTlfXSpcXClcXHMgKlxcKDtcXHwtXCotXFwpIikKCSAgICAgICAodW5sZXNzIChzdHJpbmc9
+IChtYXRjaC1zdHJpbmcgMikgY29kaW5nLXN5c3RlbSkKCQkgKGdvdG8tY2hhciAobWF0Y2gtYmVn
+aW5uaW5nIDIpKQoJCSAoZGVsZXRlLXJlZ2lvbiAocG9pbnQpIChtYXRjaC1lbmQgMikpCgkJIChh
+bmQgKGxvb2tpbmctYXQgIi1cKi0iKQoJCSAgICAgIChsZXQgKChuIChza2lwLWNoYXJzLWJhY2t3
+YXJkICIgIikpKQoJCQkoY29uZCAoKD0gbiAwKSAoaW5zZXJ0ICIgICIpIChiYWNrd2FyZC1jaGFy
+KSkKCQkJICAgICAgKCg9IG4gLTEpIChpbnNlcnQgIiAiKSkKCQkJICAgICAgKChmb3J3YXJkLWNo
+YXIpKSkpKQoJCSAoaW5zZXJ0IGNvZGluZy1zeXN0ZW0pKSkKCSAgICAgICgobG9va2luZy1hdCAi
+XFxzICojLipjb2RpbmdcXHMgKls6PV0iKSkKCSAgICAgICh0IChpbnNlcnQgIiMgLSotIGNvZGlu
+ZzogIiBjb2Rpbmctc3lzdGVtICIgLSotXG4iKSkKCSAgICAgICkpKSkpCgo7OzsjIyNhdXRvbG9h
+ZAooZGVmdW4gcnVieS1tb2RlICgpCiAgIk1ham9yIG1vZGUgZm9yIGVkaXRpbmcgcnVieSBzY3Jp
+cHRzLgpcXFtydWJ5LWluZGVudC1jb21tYW5kXSBwcm9wZXJseSBpbmRlbnRzIHN1YmV4cHJlc3Np
+b25zIG9mIG11bHRpLWxpbmUKY2xhc3MsIG1vZHVsZSwgZGVmLCBpZiwgd2hpbGUsIGZvciwgZG8s
+IGFuZCBjYXNlIHN0YXRlbWVudHMsIHRha2luZwpuZXN0aW5nIGludG8gYWNjb3VudC4KClRoZSB2
+YXJpYWJsZSBydWJ5LWluZGVudC1sZXZlbCBjb250cm9scyB0aGUgYW1vdW50IG9mIGluZGVudGF0
+aW9uLgpcXHtydWJ5LW1vZGUtbWFwfSIKICAoaW50ZXJhY3RpdmUpCiAgKGtpbGwtYWxsLWxvY2Fs
+LXZhcmlhYmxlcykKICAodXNlLWxvY2FsLW1hcCBydWJ5LW1vZGUtbWFwKQogIChzZXRxIG1vZGUt
+bmFtZSAiUnVieSIpCiAgKHNldHEgbWFqb3ItbW9kZSAncnVieS1tb2RlKQogIChydWJ5LW1vZGUt
+dmFyaWFibGVzKQoKICAobWFrZS1sb2NhbC12YXJpYWJsZSAnaW1lbnUtY3JlYXRlLWluZGV4LWZ1
+bmN0aW9uKQogIChzZXRxIGltZW51LWNyZWF0ZS1pbmRleC1mdW5jdGlvbiAncnVieS1pbWVudS1j
+cmVhdGUtaW5kZXgpCgogIChtYWtlLWxvY2FsLXZhcmlhYmxlICdhZGQtbG9nLWN1cnJlbnQtZGVm
+dW4tZnVuY3Rpb24pCiAgKHNldHEgYWRkLWxvZy1jdXJyZW50LWRlZnVuLWZ1bmN0aW9uICdydWJ5
+LWFkZC1sb2ctY3VycmVudC1tZXRob2QpCgogIChhZGQtaG9vawogICAoY29uZCAoKGJvdW5kcCAn
+YmVmb3JlLXNhdmUtaG9vaykKCSAgKG1ha2UtbG9jYWwtdmFyaWFibGUgJ2JlZm9yZS1zYXZlLWhv
+b2spCgkgICdiZWZvcmUtc2F2ZS1ob29rKQoJICgoYm91bmRwICd3cml0ZS1jb250ZW50cy1mdW5j
+dGlvbnMpICd3cml0ZS1jb250ZW50cy1mdW5jdGlvbnMpCgkgKChib3VuZHAgJ3dyaXRlLWNvbnRl
+bnRzLWhvb2tzKSAnd3JpdGUtY29udGVudHMtaG9va3MpKQogICAncnVieS1tb2RlLXNldC1lbmNv
+ZGluZykKCiAgKHNldCAobWFrZS1sb2NhbC12YXJpYWJsZSAnZm9udC1sb2NrLWRlZmF1bHRzKSAn
+KChydWJ5LWZvbnQtbG9jay1rZXl3b3JkcykgbmlsIG5pbCkpCiAgKHNldCAobWFrZS1sb2NhbC12
+YXJpYWJsZSAnZm9udC1sb2NrLWtleXdvcmRzKSBydWJ5LWZvbnQtbG9jay1rZXl3b3JkcykKICAo
+c2V0IChtYWtlLWxvY2FsLXZhcmlhYmxlICdmb250LWxvY2stc3ludGF4LXRhYmxlKSBydWJ5LWZv
+bnQtbG9jay1zeW50YXgtdGFibGUpCiAgKHNldCAobWFrZS1sb2NhbC12YXJpYWJsZSAnZm9udC1s
+b2NrLXN5bnRhY3RpYy1rZXl3b3JkcykgcnVieS1mb250LWxvY2stc3ludGFjdGljLWtleXdvcmRz
+KQoKICAocnVuLW1vZGUtaG9va3MgJ3J1YnktbW9kZS1ob29rKSkKCihkZWZ1biBydWJ5LWN1cnJl
+bnQtaW5kZW50YXRpb24gKCkKICAoc2F2ZS1leGN1cnNpb24KICAgIChiZWdpbm5pbmctb2YtbGlu
+ZSkKICAgIChiYWNrLXRvLWluZGVudGF0aW9uKQogICAgKGN1cnJlbnQtY29sdW1uKSkpCgooZGVm
+dW4gcnVieS1pbmRlbnQtbGluZSAoJm9wdGlvbmFsIGZsYWcpCiAgIkNvcnJlY3QgaW5kZW50YXRp
+b24gb2YgdGhlIGN1cnJlbnQgcnVieSBsaW5lLiIKICAocnVieS1pbmRlbnQtdG8gKHJ1YnktY2Fs
+Y3VsYXRlLWluZGVudCkpKQoKKGRlZnVuIHJ1YnktaW5kZW50LWNvbW1hbmQgKCkKICAoaW50ZXJh
+Y3RpdmUpCiAgKHJ1YnktaW5kZW50LWxpbmUgdCkpCgooZGVmdW4gcnVieS1pbmRlbnQtdG8gKHgp
+CiAgKGlmIHgKICAgICAgKGxldCAoc2hpZnQgdG9wIGJlZykKCShhbmQgKDwgeCAwKSAoZXJyb3Ig
+ImludmFsaWQgbmVzdCIpKQoJKHNldHEgc2hpZnQgKGN1cnJlbnQtY29sdW1uKSkKCShiZWdpbm5p
+bmctb2YtbGluZSkKCShzZXRxIGJlZyAocG9pbnQpKQoJKGJhY2stdG8taW5kZW50YXRpb24pCgko
+c2V0cSB0b3AgKGN1cnJlbnQtY29sdW1uKSkKCShza2lwLWNoYXJzLWJhY2t3YXJkICIgXHQiKQoJ
+KGlmICg+PSBzaGlmdCB0b3ApIChzZXRxIHNoaWZ0ICgtIHNoaWZ0IHRvcCkpCgkgIChzZXRxIHNo
+aWZ0IDApKQoJKGlmIChhbmQgKGJvbHApCgkJICg9IHggdG9wKSkKCSAgICAobW92ZS10by1jb2x1
+bW4gKCsgeCBzaGlmdCkpCgkgIChtb3ZlLXRvLWNvbHVtbiB0b3ApCgkgIChkZWxldGUtcmVnaW9u
+IGJlZyAocG9pbnQpKQoJICAoYmVnaW5uaW5nLW9mLWxpbmUpCgkgIChpbmRlbnQtdG8geCkKCSAg
+KG1vdmUtdG8tY29sdW1uICgrIHggc2hpZnQpKSkpKSkKCihkZWZ1biBydWJ5LXNwZWNpYWwtY2hh
+ci1wICgmb3B0aW9uYWwgcG50KQogIChzZXRxIHBudCAob3IgcG50IChwb2ludCkpKQogIChsZXQg
+KChjIChjaGFyLWJlZm9yZSBwbnQpKSAoYiAoYW5kICg8IChwb2ludC1taW4pIHBudCkgKGNoYXIt
+YmVmb3JlICgxLSBwbnQpKSkpKQogICAgKGNvbmQgKChvciAoZXEgYyA/PykgKGVxIGMgPyQpKSkK
+CSAgKChhbmQgKGVxIGMgPzopIChvciAobm90IGIpIChlcSAoY2hhci1zeW50YXggYikgPyApKSkp
+CgkgICgoZXEgYyA/XFwpIChlcSBiID8/KSkpKSkKCihkZWZ1biBydWJ5LWV4cHItYmVnICgmb3B0
+aW9uYWwgb3B0aW9uKQogIChzYXZlLWV4Y3Vyc2lvbgogICAgKHN0b3JlLW1hdGNoLWRhdGEgbmls
+KQogICAgKGxldCAoKHNwYWNlIChza2lwLWNoYXJzLWJhY2t3YXJkICIgXHQiKSkKCSAgKHN0YXJ0
+IChwb2ludCkpKQogICAgICAoY29uZAogICAgICAgKChib2xwKSB0KQogICAgICAgKChwcm9nbgoJ
+ICAoZm9yd2FyZC1jaGFyIC0xKQoJICAoYW5kIChsb29raW5nLWF0ICJcXD8iKQoJICAgICAgIChv
+ciAoZXEgKGNoYXItc3ludGF4IChjaGFyLWJlZm9yZSAocG9pbnQpKSkgP3cpCgkJICAgKHJ1Ynkt
+c3BlY2lhbC1jaGFyLXApKSkpCgluaWwpCiAgICAgICAoKGFuZCAoZXEgb3B0aW9uICdoZXJlZG9j
+KSAoPCBzcGFjZSAwKSkgdCkKICAgICAgICgob3IgKGxvb2tpbmctYXQgcnVieS1vcGVyYXRvci1y
+ZSkKCSAgICAobG9va2luZy1hdCAiW1xcWyh7LDtdIikKCSAgICAoYW5kIChsb29raW5nLWF0ICJb
+IT9dIikKCQkgKG9yIChub3QgKGVxIG9wdGlvbiAnbW9kaWZpZXIpKQoJCSAgICAgKGJvbHApCgkJ
+ICAgICAoc2F2ZS1leGN1cnNpb24gKGZvcndhcmQtY2hhciAtMSkgKGxvb2tpbmctYXQgIlxcU3ck
+IikpKSkKCSAgICAoYW5kIChsb29raW5nLWF0IHJ1Ynktc3ltYm9sLXJlKQoJCSAoc2tpcC1jaGFy
+cy1iYWNrd2FyZCBydWJ5LXN5bWJvbC1jaGFycykKCQkgKGNvbmQKCQkgICgob3IgKGxvb2tpbmct
+YXQgKGNvbmNhdCAiXFw8XFwoIiBydWJ5LWJsb2NrLWJlZy1yZQoJCQkJCSAgICJ8IiBydWJ5LWJs
+b2NrLW9wLXJlCgkJCQkJICAgInwiIHJ1YnktYmxvY2stbWlkLXJlICJcXClcXD4iKSkpCgkJICAg
+KGdvdG8tY2hhciAobWF0Y2gtZW5kIDApKQoJCSAgIChub3QgKGxvb2tpbmctYXQgIlxcc18iKSkp
+CgkJICAoKGVxIG9wdGlvbiAnZXhwci1xc3RyKQoJCSAgIChsb29raW5nLWF0ICJbYS16QS1aXVth
+LXpBLXowLTlfXSogKyVbXiBcdF0iKSkKCQkgICgoZXEgb3B0aW9uICdleHByLXJlKQoJCSAgIChs
+b29raW5nLWF0ICJbYS16QS1aXVthLXpBLXowLTlfXSogKy9bXiBcdF0iKSkKCQkgICh0IG5pbCkp
+KSkpKSkpKQoKKGRlZnVuIHJ1YnktZm9yd2FyZC1zdHJpbmcgKHRlcm0gJm9wdGlvbmFsIGVuZCBu
+by1lcnJvciBleHBhbmQpCiAgKGxldCAoKG4gMSkgKGMgKHN0cmluZy10by1jaGFyIHRlcm0pKQoJ
+KHJlIChpZiBleHBhbmQKCQkoY29uY2F0ICJbXlxcXVxcKFxcXFxcXFxcXFwpKlxcKFsiIHRlcm0g
+Il1cXHxcXCgje1xcKVxcKSIpCgkgICAgICAoY29uY2F0ICJbXlxcXVxcKFxcXFxcXFxcXFwpKlsi
+IHRlcm0gIl0iKSkpKQogICAgKHdoaWxlIChhbmQgKHJlLXNlYXJjaC1mb3J3YXJkIHJlIGVuZCBu
+by1lcnJvcikKCQkoaWYgKG1hdGNoLWJlZ2lubmluZyAzKQoJCSAgICAocnVieS1mb3J3YXJkLXN0
+cmluZyAifXsiIGVuZCBuby1lcnJvciBuaWwpCgkJICAoPiAoc2V0cSBuIChpZiAoZXEgKGNoYXIt
+YmVmb3JlIChwb2ludCkpIGMpCgkJCQkgICAgICgxLSBuKSAoMSsgbikpKSAwKSkpCiAgICAgIChm
+b3J3YXJkLWNoYXIgLTEpKQogICAgKGNvbmQgKCh6ZXJvcCBuKSkKCSAgKG5vLWVycm9yIG5pbCkK
+CSAgKChlcnJvciAidW50ZXJtaW5hdGVkIHN0cmluZyIpKSkpKQoKKGRlZnVuIHJ1YnktZGVlcC1p
+bmRlbnQtcGFyZW4tcCAoYykKICAoY29uZCAoKGxpc3RwIHJ1YnktZGVlcC1pbmRlbnQtcGFyZW4p
+CgkgKGxldCAoKGRlZXAgKGFzc29jIGMgcnVieS1kZWVwLWluZGVudC1wYXJlbikpKQoJICAgKGNv
+bmQgKGRlZXAKCQkgIChvciAoY2RyIGRlZXApIHJ1YnktZGVlcC1pbmRlbnQtcGFyZW4tc3R5bGUp
+KQoJCSAoKG1lbXEgYyBydWJ5LWRlZXAtaW5kZW50LXBhcmVuKQoJCSAgcnVieS1kZWVwLWluZGVu
+dC1wYXJlbi1zdHlsZSkpKSkKCSgoZXEgYyBydWJ5LWRlZXAtaW5kZW50LXBhcmVuKSBydWJ5LWRl
+ZXAtaW5kZW50LXBhcmVuLXN0eWxlKQoJKChlcSBjID9cKCApIHJ1YnktZGVlcC1hcmdsaXN0KSkp
+CgooZGVmdW4gcnVieS1wYXJzZS1wYXJ0aWFsICgmb3B0aW9uYWwgZW5kIGluLXN0cmluZyBuZXN0
+IGRlcHRoIHBjb2wgaW5kZW50KQogIChvciBkZXB0aCAoc2V0cSBkZXB0aCAwKSkKICAob3IgaW5k
+ZW50IChzZXRxIGluZGVudCAwKSkKICAod2hlbiAocmUtc2VhcmNoLWZvcndhcmQgcnVieS1kZWxp
+bWl0ZXIgZW5kICdtb3ZlKQogICAgKGxldCAoKHBudCAocG9pbnQpKSB3IHJlIGV4cGFuZCkKICAg
+ICAgKGdvdG8tY2hhciAobWF0Y2gtYmVnaW5uaW5nIDApKQogICAgICAoY29uZAogICAgICAgKChh
+bmQgKG1lbXEgKGNoYXItYmVmb3JlKSAnKD9AID8kKSkgKGxvb2tpbmctYXQgIlxcc3ciKSkKCShn
+b3RvLWNoYXIgcG50KSkKICAgICAgICgobG9va2luZy1hdCAiW1wiYF0iKQkJO3NraXAgc3RyaW5n
+CgkoY29uZAoJICgoYW5kIChub3QgKGVvYnApKQoJICAgICAgIChydWJ5LWZvcndhcmQtc3RyaW5n
+IChidWZmZXItc3Vic3RyaW5nIChwb2ludCkgKDErIChwb2ludCkpKSBlbmQgdCB0KSkKCSAgbmls
+KQoJICh0CgkgIChzZXRxIGluLXN0cmluZyAocG9pbnQpKQoJICAoZ290by1jaGFyIGVuZCkpKSkK
+ICAgICAgICgobG9va2luZy1hdCAiJyIpCgkoY29uZAoJICgoYW5kIChub3QgKGVvYnApKQoJICAg
+ICAgIChyZS1zZWFyY2gtZm9yd2FyZCAiW15cXF1cXChcXFxcXFxcXFxcKSonIiBlbmQgdCkpCgkg
+IG5pbCkKCSAodAoJICAoc2V0cSBpbi1zdHJpbmcgKHBvaW50KSkKCSAgKGdvdG8tY2hhciBlbmQp
+KSkpCiAgICAgICAoKGxvb2tpbmctYXQgIi89IikgCgkoZ290by1jaGFyIHBudCkpCiAgICAgICAo
+KGxvb2tpbmctYXQgIi8iKQoJKGNvbmQKCSAoKGFuZCAobm90IChlb2JwKSkgKHJ1YnktZXhwci1i
+ZWcgJ2V4cHItcmUpKQoJICAoaWYgKHJ1YnktZm9yd2FyZC1zdHJpbmcgIi8iIGVuZCB0IHQpCgkg
+ICAgICBuaWwKCSAgICAoc2V0cSBpbi1zdHJpbmcgKHBvaW50KSkKCSAgICAoZ290by1jaGFyIGVu
+ZCkpKQoJICh0CgkgIChnb3RvLWNoYXIgcG50KSkpKQogICAgICAgKChsb29raW5nLWF0ICIlIikK
+CShjb25kCgkgKChhbmQgKG5vdCAoZW9icCkpCgkgICAgICAgKHJ1YnktZXhwci1iZWcgJ2V4cHIt
+cXN0cikKCSAgICAgICAobm90IChsb29raW5nLWF0ICIlPSIpKQoJICAgICAgIChsb29raW5nLWF0
+ICIlW1FxcnhXd10/XFwoW15hLXpBLVowLTkgXHRcbl1cXCkiKSkKCSAgKGdvdG8tY2hhciAobWF0
+Y2gtYmVnaW5uaW5nIDEpKQoJICAoc2V0cSBleHBhbmQgKG5vdCAobWVtcSAoY2hhci1iZWZvcmUp
+ICcoP3EgP3cpKSkpCgkgIChzZXRxIHcgKG1hdGNoLXN0cmluZyAxKSkKCSAgKGNvbmQKCSAgICgo
+c3RyaW5nPSB3ICJbIikgKHNldHEgcmUgIl1bIikpCgkgICAoKHN0cmluZz0gdyAieyIpIChzZXRx
+IHJlICJ9eyIpKQoJICAgKChzdHJpbmc9IHcgIigiKSAoc2V0cSByZSAiKSgiKSkKCSAgICgoc3Ry
+aW5nPSB3ICI8IikgKHNldHEgcmUgIj48IikpCgkgICAoKGFuZCBleHBhbmQgKHN0cmluZz0gdyAi
+XFwiKSkKCSAgICAoc2V0cSB3IChjb25jYXQgIlxcIiB3KSkpKQoJICAodW5sZXNzIChjb25kIChy
+ZSAocnVieS1mb3J3YXJkLXN0cmluZyByZSBlbmQgdCBleHBhbmQpKQoJCQkoZXhwYW5kIChydWJ5
+LWZvcndhcmQtc3RyaW5nIHcgZW5kIHQgdCkpCgkJCSh0IChyZS1zZWFyY2gtZm9yd2FyZAoJCQkg
+ICAgKGlmIChzdHJpbmc9IHcgIlxcIikKCQkJCSJcXFxcW15cXF0qXFxcXCIKCQkJICAgICAgKGNv
+bmNhdCAiW15cXF1cXChcXFxcXFxcXFxcKSoiIHcpKQoJCQkgICAgZW5kIHQpKSkKCSAgICAoc2V0
+cSBpbi1zdHJpbmcgKHBvaW50KSkKCSAgICAoZ290by1jaGFyIGVuZCkpKQoJICh0CgkgIChnb3Rv
+LWNoYXIgcG50KSkpKQogICAgICAgKChsb29raW5nLWF0ICJcXD8iKQkJO3NraXAgP2NoYXIKCShj
+b25kCgkgKChhbmQgKHJ1YnktZXhwci1iZWcpCgkgICAgICAgKGxvb2tpbmctYXQgIj9cXChcXFxc
+Qy1cXHxcXFxcTS1cXCkqXFxcXD8uIikpCgkgIChnb3RvLWNoYXIgKG1hdGNoLWVuZCAwKSkpCgkg
+KHQKCSAgKGdvdG8tY2hhciBwbnQpKSkpCiAgICAgICAoKGxvb2tpbmctYXQgIlxcJCIpCQk7c2tp
+cCAkY2hhcgoJKGdvdG8tY2hhciBwbnQpCgkoZm9yd2FyZC1jaGFyIDEpKQogICAgICAgKChsb29r
+aW5nLWF0ICIjIikJCTtza2lwIGNvbW1lbnQKCShmb3J3YXJkLWxpbmUgMSkKCShnb3RvLWNoYXIg
+KHBvaW50KSkKCSkKICAgICAgICgobG9va2luZy1hdCAiW1xcW3soXSIpCgkobGV0ICgoZGVlcCAo
+cnVieS1kZWVwLWluZGVudC1wYXJlbi1wIChjaGFyLWFmdGVyKSkpKQoJICAoaWYgKGFuZCBkZWVw
+IChvciAobm90IChlcSAoY2hhci1hZnRlcikgP1x7KSkgKHJ1YnktZXhwci1iZWcpKSkKCSAgICAg
+IChwcm9nbgoJCShhbmQgKGVxIGRlZXAgJ3NwYWNlKSAobG9va2luZy1hdCAiLlxccyArW14jIFx0
+XG5dIikKCQkgICAgIChzZXRxIHBudCAoMS0gKG1hdGNoLWVuZCAwKSkpKQoJCShzZXRxIG5lc3Qg
+KGNvbnMgKGNvbnMgKGNoYXItYWZ0ZXIgKHBvaW50KSkgcG50KSBuZXN0KSkKCQkoc2V0cSBwY29s
+IChjb25zIChjb25zIHBudCBkZXB0aCkgcGNvbCkpCgkJKHNldHEgZGVwdGggMCkpCgkgICAgKHNl
+dHEgbmVzdCAoY29ucyAoY29ucyAoY2hhci1hZnRlciAocG9pbnQpKSBwbnQpIG5lc3QpKQoJICAg
+IChzZXRxIGRlcHRoICgxKyBkZXB0aCkpKSkKCShnb3RvLWNoYXIgcG50KQoJKQogICAgICAgKChs
+b29raW5nLWF0ICJbXSl9XSIpCgkoaWYgKHJ1YnktZGVlcC1pbmRlbnQtcGFyZW4tcCAobWF0Y2hp
+bmctcGFyZW4gKGNoYXItYWZ0ZXIpKSkKCSAgICAoc2V0cSBkZXB0aCAoY2RyIChjYXIgcGNvbCkp
+IHBjb2wgKGNkciBwY29sKSkKCSAgKHNldHEgZGVwdGggKDEtIGRlcHRoKSkpCgkoc2V0cSBuZXN0
+IChjZHIgbmVzdCkpCgkoZ290by1jaGFyIHBudCkpCiAgICAgICAoKGxvb2tpbmctYXQgcnVieS1i
+bG9jay1lbmQtcmUpCgkoaWYgKG9yIChhbmQgKG5vdCAoYm9scCkpCgkJICAgICAocHJvZ24KCQkg
+ICAgICAgKGZvcndhcmQtY2hhciAtMSkKCQkgICAgICAgKHNldHEgdyAoY2hhci1hZnRlciAocG9p
+bnQpKSkKCQkgICAgICAgKG9yIChlcSA/XyB3KQoJCQkgICAoZXEgPy4gdykpKSkKCQkocHJvZ24K
+CQkgIChnb3RvLWNoYXIgcG50KQoJCSAgKHNldHEgdyAoY2hhci1hZnRlciAocG9pbnQpKSkKCQkg
+IChvciAoZXEgP18gdykKCQkgICAgICAoZXEgPyEgdykKCQkgICAgICAoZXEgPz8gdykpKSkKCSAg
+ICBuaWwKCSAgKHNldHEgbmVzdCAoY2RyIG5lc3QpKQoJICAoc2V0cSBkZXB0aCAoMS0gZGVwdGgp
+KSkKCShnb3RvLWNoYXIgcG50KSkKICAgICAgICgobG9va2luZy1hdCAiZGVmXFxzICtbXihcbjtd
+KiIpCgkoaWYgKG9yIChib2xwKQoJCShwcm9nbgoJCSAgKGZvcndhcmQtY2hhciAtMSkKCQkgIChu
+b3QgKGVxID9fIChjaGFyLWFmdGVyIChwb2ludCkpKSkpKQoJICAgIChwcm9nbgoJICAgICAgKHNl
+dHEgbmVzdCAoY29ucyAoY29ucyBuaWwgcG50KSBuZXN0KSkKCSAgICAgIChzZXRxIGRlcHRoICgx
+KyBkZXB0aCkpKSkKCShnb3RvLWNoYXIgKG1hdGNoLWVuZCAwKSkpCiAgICAgICAoKGxvb2tpbmct
+YXQgKGNvbmNhdCAiXFw8XFwoIiBydWJ5LWJsb2NrLWJlZy1yZSAiXFwpXFw+IikpCgkoYW5kCgkg
+KHNhdmUtbWF0Y2gtZGF0YQoJICAgKG9yIChub3QgKGxvb2tpbmctYXQgImRvXFw+W15fXSIpKQoJ
+ICAgICAgIChzYXZlLWV4Y3Vyc2lvbgoJCSAoYmFjay10by1pbmRlbnRhdGlvbikKCQkgKG5vdCAo
+bG9va2luZy1hdCBydWJ5LW5vbi1ibG9jay1kby1yZSkpKSkpCgkgKG9yIChib2xwKQoJICAgICAo
+cHJvZ24KCSAgICAgICAoZm9yd2FyZC1jaGFyIC0xKQoJICAgICAgIChzZXRxIHcgKGNoYXItYWZ0
+ZXIgKHBvaW50KSkpCgkgICAgICAgKG5vdCAob3IgKGVxID9fIHcpCgkJCShlcSA/LiB3KSkpKSkK
+CSAoZ290by1jaGFyIHBudCkKCSAoc2V0cSB3IChjaGFyLWFmdGVyIChwb2ludCkpKQoJIChub3Qg
+KGVxID9fIHcpKQoJIChub3QgKGVxID8hIHcpKQoJIChub3QgKGVxID8/IHcpKQoJIChza2lwLWNo
+YXJzLWZvcndhcmQgIiBcdCIpCgkgKGdvdG8tY2hhciAobWF0Y2gtYmVnaW5uaW5nIDApKQoJIChv
+ciAobm90IChsb29raW5nLWF0IHJ1YnktbW9kaWZpZXItcmUpKQoJICAgICAocnVieS1leHByLWJl
+ZyAnbW9kaWZpZXIpKQoJIChnb3RvLWNoYXIgcG50KQoJIChzZXRxIG5lc3QgKGNvbnMgKGNvbnMg
+bmlsIHBudCkgbmVzdCkpCgkgKHNldHEgZGVwdGggKDErIGRlcHRoKSkpCgkoZ290by1jaGFyIHBu
+dCkpCiAgICAgICAoKGxvb2tpbmctYXQgIjpcXChbJ1wiXVxcKSIpCgkoZ290by1jaGFyIChtYXRj
+aC1iZWdpbm5pbmcgMSkpCgkocnVieS1mb3J3YXJkLXN0cmluZyAoYnVmZmVyLXN1YnN0cmluZyAo
+bWF0Y2gtYmVnaW5uaW5nIDEpIChtYXRjaC1lbmQgMSkpIGVuZCkpCiAgICAgICAoKGxvb2tpbmct
+YXQgIjpcXChbLSwuKyovJSZ8Xn48Pl09P1xcfD09PT9cXHw8PT5cXCkiKQoJKGdvdG8tY2hhciAo
+bWF0Y2gtZW5kIDApKSkKICAgICAgICgobG9va2luZy1hdCAiOlxcKFthLXpBLVpfXVthLXpBLVpf
+MC05XSpbIT89XT9cXCk/IikKCShnb3RvLWNoYXIgKG1hdGNoLWVuZCAwKSkpCiAgICAgICAoKG9y
+IChsb29raW5nLWF0ICJcXC5cXC5cXC4/IikKCSAgICAobG9va2luZy1hdCAiXFwuWzAtOV0rIikK
+CSAgICAobG9va2luZy1hdCAiXFwuW2EtekEtWl8wLTldKyIpCgkgICAgKGxvb2tpbmctYXQgIlxc
+LiIpKQoJKGdvdG8tY2hhciAobWF0Y2gtZW5kIDApKSkKICAgICAgICgobG9va2luZy1hdCAiXj1i
+ZWdpbiIpCgkoaWYgKHJlLXNlYXJjaC1mb3J3YXJkICJePWVuZCIgZW5kIHQpCgkgICAgKGZvcndh
+cmQtbGluZSAxKQoJICAoc2V0cSBpbi1zdHJpbmcgKG1hdGNoLWVuZCAwKSkKCSAgKGdvdG8tY2hh
+ciBlbmQpKSkKICAgICAgICgobG9va2luZy1hdCAiPDwiKQoJKGNvbmQKCSAoKGFuZCAocnVieS1l
+eHByLWJlZyAnaGVyZWRvYykKCSAgICAgICAobG9va2luZy1hdCAiPDxcXCgtXFwpP1xcKFxcKFtc
+IidgXVxcKVxcKFteXG5dKz9cXClcXDNcXHxcXCg/Olxcc3dcXHxcXHNfXFwpK1xcKSIpKQoJICAo
+c2V0cSByZSAocmVnZXhwLXF1b3RlIChvciAobWF0Y2gtc3RyaW5nIDQpIChtYXRjaC1zdHJpbmcg
+MikpKSkKCSAgKGlmIChtYXRjaC1iZWdpbm5pbmcgMSkgKHNldHEgcmUgKGNvbmNhdCAiXFxzICoi
+IHJlKSkpCgkgIChsZXQqICgoaWQtZW5kIChnb3RvLWNoYXIgKG1hdGNoLWVuZCAwKSkpCgkJIChs
+aW5lLWVuZC1wb3NpdGlvbiAoc2F2ZS1leGN1cnNpb24gKGVuZC1vZi1saW5lKSAocG9pbnQpKSkK
+CQkgKHN0YXRlIChsaXN0IGluLXN0cmluZyBuZXN0IGRlcHRoIHBjb2wgaW5kZW50KSkpCgkgICAg
+OzsgcGFyc2UgdGhlIHJlc3Qgb2YgdGhlIGxpbmUKCSAgICAod2hpbGUgKGFuZCAoPiBsaW5lLWVu
+ZC1wb3NpdGlvbiAocG9pbnQpKQoJCQkoc2V0cSBzdGF0ZSAoYXBwbHkgJ3J1YnktcGFyc2UtcGFy
+dGlhbAoJCQkJCSAgIGxpbmUtZW5kLXBvc2l0aW9uIHN0YXRlKSkpKQoJICAgIChzZXRxIGluLXN0
+cmluZyAoY2FyIHN0YXRlKQoJCSAgbmVzdCAobnRoIDEgc3RhdGUpCgkJICBkZXB0aCAobnRoIDIg
+c3RhdGUpCgkJICBwY29sIChudGggMyBzdGF0ZSkKCQkgIGluZGVudCAobnRoIDQgc3RhdGUpKQoJ
+ICAgIDs7IHNraXAgaGVyZWRvYyBzZWN0aW9uCgkgICAgKGlmIChyZS1zZWFyY2gtZm9yd2FyZCAo
+Y29uY2F0ICJeIiByZSAiJCIpIGVuZCAnbW92ZSkKCQkoZm9yd2FyZC1saW5lIDEpCgkgICAgICAo
+c2V0cSBpbi1zdHJpbmcgaWQtZW5kKQoJICAgICAgKGdvdG8tY2hhciBlbmQpKSkpCgkgKHQKCSAg
+KGdvdG8tY2hhciBwbnQpKSkpCiAgICAgICAoKGxvb2tpbmctYXQgIl5fX0VORF9fJCIpCgkoZ290
+by1jaGFyIHBudCkpCiAgICAgICAoKGxvb2tpbmctYXQgcnVieS1oZXJlLWRvYy1iZWctcmUpCgko
+aWYgKHJlLXNlYXJjaC1mb3J3YXJkIChydWJ5LWhlcmUtZG9jLWVuZC1tYXRjaCkKCQkJICAgICAg
+IGluZGVudC1wb2ludCB0KQoJICAgIChmb3J3YXJkLWxpbmUgMSkKCSAgKHNldHEgaW4tc3RyaW5n
+IChtYXRjaC1lbmQgMCkpCgkgIChnb3RvLWNoYXIgaW5kZW50LXBvaW50KSkpCiAgICAgICAodAoJ
+KGVycm9yIChmb3JtYXQgImJhZCBzdHJpbmcgJXMiCgkJICAgICAgIChidWZmZXItc3Vic3RyaW5n
+IChwb2ludCkgcG50KQoJCSAgICAgICApKSkpKSkKICAobGlzdCBpbi1zdHJpbmcgbmVzdCBkZXB0
+aCBwY29sKSkKCihkZWZ1biBydWJ5LXBhcnNlLXJlZ2lvbiAoc3RhcnQgZW5kKQogIChsZXQgKHN0
+YXRlKQogICAgKHNhdmUtZXhjdXJzaW9uCiAgICAgIChpZiBzdGFydAoJICAoZ290by1jaGFyIHN0
+YXJ0KQoJKHJ1YnktYmVnaW5uaW5nLW9mLWluZGVudCkpCiAgICAgIChzYXZlLXJlc3RyaWN0aW9u
+CgkobmFycm93LXRvLXJlZ2lvbiAocG9pbnQpIGVuZCkKCSh3aGlsZSAoYW5kICg+IGVuZCAocG9p
+bnQpKQoJCSAgICAoc2V0cSBzdGF0ZSAoYXBwbHkgJ3J1YnktcGFyc2UtcGFydGlhbCBlbmQgc3Rh
+dGUpKSkpKSkKICAgIChsaXN0IChudGggMCBzdGF0ZSkJCQk7IGluLXN0cmluZwoJICAoY2FyIChu
+dGggMSBzdGF0ZSkpCQk7IG5lc3QKCSAgKG50aCAyIHN0YXRlKQkJCTsgZGVwdGgKCSAgKGNhciAo
+Y2FyIChudGggMyBzdGF0ZSkpKQk7IHBjb2wKCSAgOyhjYXIgKG50aCA1IHN0YXRlKSkJCTsgaW5k
+ZW50CgkgICkpKQoKKGRlZnVuIHJ1YnktaW5kZW50LXNpemUgKHBvcyBuZXN0KQogICgrIHBvcyAo
+KiAob3IgbmVzdCAxKSBydWJ5LWluZGVudC1sZXZlbCkpKQoKKGRlZnVuIHJ1YnktY2FsY3VsYXRl
+LWluZGVudCAoJm9wdGlvbmFsIHBhcnNlLXN0YXJ0KQogIChzYXZlLWV4Y3Vyc2lvbgogICAgKGJl
+Z2lubmluZy1vZi1saW5lKQogICAgKGxldCAoKGluZGVudC1wb2ludCAocG9pbnQpKQoJICAoY2Fz
+ZS1mb2xkLXNlYXJjaCBuaWwpCgkgIHN0YXRlIGJvbCBlb2wgYmVnaW4gb3AtZW5kCgkgIChwYXJl
+biAocHJvZ24gKHNraXAtc3ludGF4LWZvcndhcmQgIiAiKQoJCQkoYW5kIChjaGFyLWFmdGVyKSAo
+bWF0Y2hpbmctcGFyZW4gKGNoYXItYWZ0ZXIpKSkpKQoJICAoaW5kZW50IDApKQogICAgICAoaWYg
+cGFyc2Utc3RhcnQKCSAgKGdvdG8tY2hhciBwYXJzZS1zdGFydCkKCShydWJ5LWJlZ2lubmluZy1v
+Zi1pbmRlbnQpCgkoc2V0cSBwYXJzZS1zdGFydCAocG9pbnQpKSkKICAgICAgKGJhY2stdG8taW5k
+ZW50YXRpb24pCiAgICAgIChzZXRxIGluZGVudCAoY3VycmVudC1jb2x1bW4pKQogICAgICAoc2V0
+cSBzdGF0ZSAocnVieS1wYXJzZS1yZWdpb24gcGFyc2Utc3RhcnQgaW5kZW50LXBvaW50KSkKICAg
+ICAgKGNvbmQKICAgICAgICgobnRoIDAgc3RhdGUpCQkJOyB3aXRoaW4gc3RyaW5nCgkoc2V0cSBp
+bmRlbnQgbmlsKSkJCTsgIGRvIG5vdGhpbmcKICAgICAgICgoY2FyIChudGggMSBzdGF0ZSkpCQk7
+IGluIHBhcmVuCgkoZ290by1jaGFyIChzZXRxIGJlZ2luIChjZHIgKG50aCAxIHN0YXRlKSkpKQoJ
+KGxldCAoKGRlZXAgKHJ1YnktZGVlcC1pbmRlbnQtcGFyZW4tcCAoY2FyIChudGggMSBzdGF0ZSkp
+KSkpCgkgIChpZiBkZWVwCgkgICAgICAoY29uZCAoKGFuZCAoZXEgZGVlcCB0KSAoZXEgKGNhciAo
+bnRoIDEgc3RhdGUpKSBwYXJlbikpCgkJICAgICAoc2tpcC1zeW50YXgtYmFja3dhcmQgIiAiKQoJ
+CSAgICAgKHNldHEgaW5kZW50ICgxLSAoY3VycmVudC1jb2x1bW4pKSkpCgkJICAgICgobGV0ICgo
+cyAocnVieS1wYXJzZS1yZWdpb24gKHBvaW50KSBpbmRlbnQtcG9pbnQpKSkKCQkgICAgICAgKGFu
+ZCAobnRoIDIgcykgKD4gKG50aCAyIHMpIDApCgkJCSAgICAob3IgKGdvdG8tY2hhciAoY2RyIChu
+dGggMSBzKSkpIHQpKSkKCQkgICAgIChmb3J3YXJkLXdvcmQgLTEpCgkJICAgICAoc2V0cSBpbmRl
+bnQgKHJ1YnktaW5kZW50LXNpemUgKGN1cnJlbnQtY29sdW1uKSAobnRoIDIgc3RhdGUpKSkpCgkJ
+ICAgICh0CgkJICAgICAoc2V0cSBpbmRlbnQgKGN1cnJlbnQtY29sdW1uKSkKCQkgICAgIChjb25k
+ICgoZXEgZGVlcCAnc3BhY2UpKQoJCQkgICAocGFyZW4gKHNldHEgaW5kZW50ICgxLSBpbmRlbnQp
+KSkKCQkJICAgKHQgKHNldHEgaW5kZW50IChydWJ5LWluZGVudC1zaXplICgxLSBpbmRlbnQpIDEp
+KSkpKSkKCSAgICAoaWYgKG50aCAzIHN0YXRlKSAoZ290by1jaGFyIChudGggMyBzdGF0ZSkpCgkg
+ICAgICAoZ290by1jaGFyIHBhcnNlLXN0YXJ0KSAoYmFjay10by1pbmRlbnRhdGlvbikpCgkgICAg
+KHNldHEgaW5kZW50IChydWJ5LWluZGVudC1zaXplIChjdXJyZW50LWNvbHVtbikgKG50aCAyIHN0
+YXRlKSkpKQoJICAoYW5kIChlcSAoY2FyIChudGggMSBzdGF0ZSkpIHBhcmVuKQoJICAgICAgIChy
+dWJ5LWRlZXAtaW5kZW50LXBhcmVuLXAgKG1hdGNoaW5nLXBhcmVuIHBhcmVuKSkKCSAgICAgICAo
+c2VhcmNoLWJhY2t3YXJkIChjaGFyLXRvLXN0cmluZyBwYXJlbikpCgkgICAgICAgKHNldHEgaW5k
+ZW50IChjdXJyZW50LWNvbHVtbikpKSkpCiAgICAgICAoKGFuZCAobnRoIDIgc3RhdGUpICg+IChu
+dGggMiBzdGF0ZSkgMCkpIDsgaW4gbmVzdAoJKGlmIChudWxsIChjZHIgKG50aCAxIHN0YXRlKSkp
+CgkgICAgKGVycm9yICJpbnZhbGlkIG5lc3QiKSkKCShnb3RvLWNoYXIgKGNkciAobnRoIDEgc3Rh
+dGUpKSkKCShmb3J3YXJkLXdvcmQgLTEpCQk7IHNraXAgYmFjayBhIGtleXdvcmQKCShzZXRxIGJl
+Z2luIChwb2ludCkpCgkoY29uZAoJICgobG9va2luZy1hdCAiZG9cXD5bXl9dIikJOyBpdGVyIGJs
+b2NrIGlzIGEgc3BlY2lhbCBjYXNlCgkgIChpZiAobnRoIDMgc3RhdGUpIChnb3RvLWNoYXIgKG50
+aCAzIHN0YXRlKSkKCSAgICAoZ290by1jaGFyIHBhcnNlLXN0YXJ0KSAoYmFjay10by1pbmRlbnRh
+dGlvbikpCgkgIChzZXRxIGluZGVudCAocnVieS1pbmRlbnQtc2l6ZSAoY3VycmVudC1jb2x1bW4p
+IChudGggMiBzdGF0ZSkpKSkKCSAodAoJICAoc2V0cSBpbmRlbnQgKCsgKGN1cnJlbnQtY29sdW1u
+KSBydWJ5LWluZGVudC1sZXZlbCkpKSkpCiAgICAgICAKICAgICAgICgoYW5kIChudGggMiBzdGF0
+ZSkgKDwgKG50aCAyIHN0YXRlKSAwKSkgOyBpbiBuZWdhdGl2ZSBuZXN0Cgkoc2V0cSBpbmRlbnQg
+KHJ1YnktaW5kZW50LXNpemUgKGN1cnJlbnQtY29sdW1uKSAobnRoIDIgc3RhdGUpKSkpKQogICAg
+ICAod2hlbiBpbmRlbnQKCShnb3RvLWNoYXIgaW5kZW50LXBvaW50KQoJKGVuZC1vZi1saW5lKQoJ
+KHNldHEgZW9sIChwb2ludCkpCgkoYmVnaW5uaW5nLW9mLWxpbmUpCgkoY29uZAoJICgoYW5kIChu
+b3QgKHJ1YnktZGVlcC1pbmRlbnQtcGFyZW4tcCBwYXJlbikpCgkgICAgICAgKHJlLXNlYXJjaC1m
+b3J3YXJkIHJ1YnktbmVnYXRpdmUgZW9sIHQpKQoJICAoYW5kIChub3QgKGVxID9fIChjaGFyLWFm
+dGVyIChtYXRjaC1lbmQgMCkpKSkKCSAgICAgICAoc2V0cSBpbmRlbnQgKC0gaW5kZW50IHJ1Ynkt
+aW5kZW50LWxldmVsKSkpKQoJICgoYW5kCgkgICAoc2F2ZS1leGN1cnNpb24KCSAgICAgKGJlZ2lu
+bmluZy1vZi1saW5lKQoJICAgICAobm90IChib2JwKSkpCgkgICAob3IgKHJ1YnktZGVlcC1pbmRl
+bnQtcGFyZW4tcCB0KQoJICAgICAgIChudWxsIChjYXIgKG50aCAxIHN0YXRlKSkpKSkKCSAgOzsg
+Z290byBiZWdpbm5pbmcgb2Ygbm9uLWVtcHR5IG5vLWNvbW1lbnQgbGluZQoJICAobGV0IChlbmQg
+ZG9uZSkKCSAgICAod2hpbGUgKG5vdCBkb25lKQoJICAgICAgKHNraXAtY2hhcnMtYmFja3dhcmQg
+IiBcdFxuIikKCSAgICAgIChzZXRxIGVuZCAocG9pbnQpKQoJICAgICAgKGJlZ2lubmluZy1vZi1s
+aW5lKQoJICAgICAgKGlmIChyZS1zZWFyY2gtZm9yd2FyZCAiXlxccyAqIyIgZW5kIHQpCgkJICAo
+YmVnaW5uaW5nLW9mLWxpbmUpCgkJKHNldHEgZG9uZSB0KSkpKQoJICAoc2V0cSBib2wgKHBvaW50
+KSkKCSAgKGVuZC1vZi1saW5lKQoJICA7OyBza2lwIHRoZSBjb21tZW50IGF0IHRoZSBlbmQKCSAg
+KHNraXAtY2hhcnMtYmFja3dhcmQgIiBcdCIpCgkgIChsZXQgKGVuZCAocG9zIChwb2ludCkpKQoJ
+ICAgIChiZWdpbm5pbmctb2YtbGluZSkKCSAgICAod2hpbGUgKGFuZCAocmUtc2VhcmNoLWZvcndh
+cmQgIiMiIHBvcyB0KQoJCQkoc2V0cSBlbmQgKDEtIChwb2ludCkpKQoJCQkob3IgKHJ1Ynktc3Bl
+Y2lhbC1jaGFyLXAgZW5kKQoJCQkgICAgKGFuZCAoc2V0cSBzdGF0ZSAocnVieS1wYXJzZS1yZWdp
+b24gcGFyc2Utc3RhcnQgZW5kKSkKCQkJCSAobnRoIDAgc3RhdGUpKSkpCgkgICAgICAoc2V0cSBl
+bmQgbmlsKSkKCSAgICAoZ290by1jaGFyIChvciBlbmQgcG9zKSkKCSAgICAoc2tpcC1jaGFycy1i
+YWNrd2FyZCAiIFx0IikKCSAgICAoc2V0cSBiZWdpbiAoaWYgKGFuZCBlbmQgKG50aCAwIHN0YXRl
+KSkgcG9zIChjZHIgKG50aCAxIHN0YXRlKSkpKQoJICAgIChzZXRxIHN0YXRlIChydWJ5LXBhcnNl
+LXJlZ2lvbiBwYXJzZS1zdGFydCAocG9pbnQpKSkpCgkgIChvciAoYm9icCkgKGZvcndhcmQtY2hh
+ciAtMSkpCgkgIChhbmQKCSAgIChvciAoYW5kIChsb29raW5nLWF0IHJ1Ynktc3ltYm9sLXJlKQoJ
+CSAgICAoc2tpcC1jaGFycy1iYWNrd2FyZCBydWJ5LXN5bWJvbC1jaGFycykKCQkgICAgKGxvb2tp
+bmctYXQgKGNvbmNhdCAiXFw8XFwoIiBydWJ5LWJsb2NrLWhhbmdpbmctcmUgIlxcKVxcPiIpKQoJ
+CSAgICAobm90IChlcSAocG9pbnQpIChudGggMyBzdGF0ZSkpKQoJCSAgICAoc2F2ZS1leGN1cnNp
+b24KCQkgICAgICAoZ290by1jaGFyIChtYXRjaC1lbmQgMCkpCgkJICAgICAgKG5vdCAobG9va2lu
+Zy1hdCAiW2Etel9dIikpKSkKCSAgICAgICAoYW5kIChsb29raW5nLWF0IHJ1Ynktb3BlcmF0b3It
+cmUpCgkJICAgIChub3QgKHJ1Ynktc3BlY2lhbC1jaGFyLXApKQoJCSAgICA7OyBvcGVyYXRvciBh
+dCB0aGUgZW5kIG9mIGxpbmUKCQkgICAgKGxldCAoKGMgKGNoYXItYWZ0ZXIgKHBvaW50KSkpKQoJ
+CSAgICAgIChhbmQKOzsgCQkgICAgICAgKG9yIChudWxsIGJlZ2luKQo7OyAJCQkgICAoc2F2ZS1l
+eGN1cnNpb24KOzsgCQkJICAgICAoZ290by1jaGFyIGJlZ2luKQo7OyAJCQkgICAgIChza2lwLWNo
+YXJzLWZvcndhcmQgIiBcdCIpCjs7IAkJCSAgICAgKG5vdCAob3IgKGVvbHApIChsb29raW5nLWF0
+ICIjIikKOzsgCQkJCSAgICAgIChhbmQgKGVxIChjYXIgKG50aCAxIHN0YXRlKSkgP3spCjs7IAkJ
+CQkJICAgKGxvb2tpbmctYXQgInwiKSkpKSkpCgkJICAgICAgIChvciAobm90IChlcSA/LyBjKSkK
+CQkJICAgKG51bGwgKG50aCAwIChydWJ5LXBhcnNlLXJlZ2lvbiAob3IgYmVnaW4gcGFyc2Utc3Rh
+cnQpIChwb2ludCkpKSkpCgkJICAgICAgIChvciAobm90IChlcSA/fCAoY2hhci1hZnRlciAocG9p
+bnQpKSkpCgkJCSAgIChzYXZlLWV4Y3Vyc2lvbgoJCQkgICAgIChvciAoZW9scCkgKGZvcndhcmQt
+Y2hhciAtMSkpCgkJCSAgICAgKGNvbmQKCQkJICAgICAgKChzZWFyY2gtYmFja3dhcmQgInwiIG5p
+bCB0KQoJCQkgICAgICAgKHNraXAtY2hhcnMtYmFja3dhcmQgIiBcdFxuIikKCQkJICAgICAgIChh
+bmQgKG5vdCAoZW9scCkpCgkJCQkgICAgKHByb2duCgkJCQkgICAgICAoZm9yd2FyZC1jaGFyIC0x
+KQoJCQkJICAgICAgKG5vdCAobG9va2luZy1hdCAieyIpKSkKCQkJCSAgICAocHJvZ24KCQkJCSAg
+ICAgIChmb3J3YXJkLXdvcmQgLTEpCgkJCQkgICAgICAobm90IChsb29raW5nLWF0ICJkb1xcPlte
+X10iKSkpKSkKCQkJICAgICAgKHQgdCkpKSkKCQkgICAgICAgKG5vdCAoZXEgPywgYykpCgkJICAg
+ICAgIChzZXRxIG9wLWVuZCB0KSkpKSkKCSAgIChzZXRxIGluZGVudAoJCSAoY29uZAoJCSAgKChh
+bmQKCQkgICAgKG51bGwgb3AtZW5kKQoJCSAgICAobm90IChsb29raW5nLWF0IChjb25jYXQgIlxc
+PFxcKCIgcnVieS1ibG9jay1oYW5naW5nLXJlICJcXClcXD4iKSkpCgkJICAgIChlcSAocnVieS1k
+ZWVwLWluZGVudC1wYXJlbi1wIHQpICdzcGFjZSkKCQkgICAgKG5vdCAoYm9icCkpKQoJCSAgICh3
+aWRlbikKCQkgICAoZ290by1jaGFyIChvciBiZWdpbiBwYXJzZS1zdGFydCkpCgkJICAgKHNraXAt
+c3ludGF4LWZvcndhcmQgIiAiKQoJCSAgIChjdXJyZW50LWNvbHVtbikpCgkJICAoKGNhciAobnRo
+IDEgc3RhdGUpKSBpbmRlbnQpCgkJICAodAoJCSAgICgrIGluZGVudCBydWJ5LWluZGVudC1sZXZl
+bCkpKSkpKSkpCiAgICAgIChnb3RvLWNoYXIgaW5kZW50LXBvaW50KQogICAgICAoYmVnaW5uaW5n
+LW9mLWxpbmUpCiAgICAgIChza2lwLXN5bnRheC1mb3J3YXJkICIgIikKICAgICAgKGlmIChsb29r
+aW5nLWF0ICJcXC5bXi5dIikKCSAgKCsgaW5kZW50IHJ1YnktaW5kZW50LWxldmVsKQoJaW5kZW50
+KSkpKQoKKGRlZnVuIHJ1YnktZWxlY3RyaWMtYnJhY2UgKGFyZykKICAoaW50ZXJhY3RpdmUgIlAi
+KQogIChpbnNlcnQtY2hhciBsYXN0LWNvbW1hbmQtY2hhciAxKQogIChydWJ5LWluZGVudC1saW5l
+IHQpCiAgKGRlbGV0ZS1jaGFyIC0xKQogIChzZWxmLWluc2VydC1jb21tYW5kIChwcmVmaXgtbnVt
+ZXJpYy12YWx1ZSBhcmcpKSkKCihldmFsLXdoZW4tY29tcGlsZQogIChkZWZtYWNybyBkZWZ1bi1y
+ZWdpb24tY29tbWFuZCAoZnVuYyBhcmdzICZyZXN0IGJvZHkpCiAgICAobGV0ICgoaW50ciAoY2Fy
+IGJvZHkpKSkKICAgICAgKHdoZW4gKGZlYXR1cmVwICd4ZW1hY3MpCgkoaWYgKHN0cmluZ3AgaW50
+cikgKHNldHEgaW50ciAoY2FkciBib2R5KSkpCgkoYW5kIChlcSAoY2FyIGludHIpICdpbnRlcmFj
+dGl2ZSkKCSAgICAgKHNldHEgaW50ciAoY2RyIGludHIpKQoJICAgICAoc2V0Y2FyIGludHIgKGNv
+bmNhdCAiXyIgKGNhciBpbnRyKSkpKSkKICAgICAgKGNvbnMgJ2RlZnVuIChjb25zIGZ1bmMgKGNv
+bnMgYXJncyBib2R5KSkpKSkpCgooZGVmdW4tcmVnaW9uLWNvbW1hbmQgcnVieS1iZWdpbm5pbmct
+b2YtZGVmdW4gKCZvcHRpb25hbCBhcmcpCiAgIk1vdmUgYmFja3dhcmQgdG8gbmV4dCBiZWdpbm5p
+bmctb2YtZGVmdW4uCldpdGggYXJndW1lbnQsIGRvIHRoaXMgdGhhdCBtYW55IHRpbWVzLgpSZXR1
+cm5zIHQgdW5sZXNzIHNlYXJjaCBzdG9wcyBkdWUgdG8gZW5kIG9mIGJ1ZmZlci4iCiAgKGludGVy
+YWN0aXZlICJwIikKICAoYW5kIChyZS1zZWFyY2gtYmFja3dhcmQgKGNvbmNhdCAiXlxcKCIgcnVi
+eS1ibG9jay1iZWctcmUgIlxcKVxcYiIpCgkJCSAgIG5pbCAnbW92ZSAob3IgYXJnIDEpKQogICAg
+ICAgKHByb2duIChiZWdpbm5pbmctb2YtbGluZSkgdCkpKQoKKGRlZnVuIHJ1YnktYmVnaW5uaW5n
+LW9mLWluZGVudCAoKQogIChhbmQgKHJlLXNlYXJjaC1iYWNrd2FyZCAoY29uY2F0ICJeXFwoIiBy
+dWJ5LWluZGVudC1iZWctcmUgIlxcKVxcYiIpCgkJCSAgIG5pbCAnbW92ZSkKICAgICAgIChwcm9n
+bgoJIChiZWdpbm5pbmctb2YtbGluZSkKCSB0KSkpCgooZGVmdW4tcmVnaW9uLWNvbW1hbmQgcnVi
+eS1lbmQtb2YtZGVmdW4gKCZvcHRpb25hbCBhcmcpCiAgIk1vdmUgZm9yd2FyZCB0byBuZXh0IGVu
+ZCBvZiBkZWZ1bi4KQW4gZW5kIG9mIGEgZGVmdW4gaXMgZm91bmQgYnkgbW92aW5nIGZvcndhcmQg
+ZnJvbSB0aGUgYmVnaW5uaW5nIG9mIG9uZS4iCiAgKGludGVyYWN0aXZlICJwIikKICAoYW5kIChy
+ZS1zZWFyY2gtZm9yd2FyZCAoY29uY2F0ICJeXFwoIiBydWJ5LWJsb2NrLWVuZC1yZSAiXFwpXFwo
+JFxcfFxcYlteX11cXCkiKQoJCQkgIG5pbCAnbW92ZSAob3IgYXJnIDEpKQogICAgICAgKHByb2du
+IChiZWdpbm5pbmctb2YtbGluZSkgdCkpCiAgKGZvcndhcmQtbGluZSAxKSkKCihkZWZ1biBydWJ5
+LW1vdmUtdG8tYmxvY2sgKG4pCiAgKGxldCAoc3RhcnQgcG9zIGRvbmUgZG93bikKICAgIChzZXRx
+IHN0YXJ0IChydWJ5LWNhbGN1bGF0ZS1pbmRlbnQpKQogICAgKHNldHEgZG93biAobG9va2luZy1h
+dCAoaWYgKDwgbiAwKSBydWJ5LWJsb2NrLWVuZC1yZQoJCQkgICAgIChjb25jYXQgIlxcPFxcKCIg
+cnVieS1ibG9jay1iZWctcmUgIlxcKVxcPiIpKSkpCiAgICAod2hpbGUgKGFuZCAobm90IGRvbmUp
+IChub3QgKGlmICg8IG4gMCkgKGJvYnApIChlb2JwKSkpKQogICAgICAoZm9yd2FyZC1saW5lIG4p
+CiAgICAgIChjb25kCiAgICAgICAoKGxvb2tpbmctYXQgIl5cXHMgKiQiKSkKICAgICAgICgobG9v
+a2luZy1hdCAiXlxccyAqIyIpKQogICAgICAgKChhbmQgKD4gbiAwKSAobG9va2luZy1hdCAiXj1i
+ZWdpblxcPiIpKQoJKHJlLXNlYXJjaC1mb3J3YXJkICJePWVuZFxcPiIpKQogICAgICAgKChhbmQg
+KDwgbiAwKSAobG9va2luZy1hdCAiXj1lbmRcXD4iKSkKCShyZS1zZWFyY2gtYmFja3dhcmQgIl49
+YmVnaW5cXD4iKSkKICAgICAgICh0Cgkoc2V0cSBwb3MgKGN1cnJlbnQtaW5kZW50YXRpb24pKQoJ
+KGNvbmQKCSAoKDwgc3RhcnQgcG9zKQoJICAoc2V0cSBkb3duIHQpKQoJICgoYW5kIGRvd24gKD0g
+cG9zIHN0YXJ0KSkKCSAgKHNldHEgZG9uZSB0KSkKCSAoKD4gc3RhcnQgcG9zKQoJICAoc2V0cSBk
+b25lIHQpKSkpKQogICAgICAoaWYgZG9uZQoJICAoc2F2ZS1leGN1cnNpb24KCSAgICAoYmFjay10
+by1pbmRlbnRhdGlvbikKCSAgICAoaWYgKGxvb2tpbmctYXQgKGNvbmNhdCAiXFw8XFwoIiBydWJ5
+LWJsb2NrLW1pZC1yZSAiXFwpXFw+IikpCgkJKHNldHEgZG9uZSBuaWwpKSkpKSkKICAoYmFjay10
+by1pbmRlbnRhdGlvbikpCgooZGVmdW4tcmVnaW9uLWNvbW1hbmQgcnVieS1iZWdpbm5pbmctb2Yt
+YmxvY2sgKCZvcHRpb25hbCBhcmcpCiAgIk1vdmUgYmFja3dhcmQgdG8gbmV4dCBiZWdpbm5pbmct
+b2YtYmxvY2siCiAgKGludGVyYWN0aXZlICJwIikKICAocnVieS1tb3ZlLXRvLWJsb2NrICgtIChv
+ciBhcmcgMSkpKSkKCihkZWZ1bi1yZWdpb24tY29tbWFuZCBydWJ5LWVuZC1vZi1ibG9jayAoJm9w
+dGlvbmFsIGFyZykKICAiTW92ZSBmb3J3YXJkIHRvIG5leHQgYmVnaW5uaW5nLW9mLWJsb2NrIgog
+IChpbnRlcmFjdGl2ZSAicCIpCiAgKHJ1YnktbW92ZS10by1ibG9jayAob3IgYXJnIDEpKSkKCihk
+ZWZ1bi1yZWdpb24tY29tbWFuZCBydWJ5LWZvcndhcmQtc2V4cCAoJm9wdGlvbmFsIGNudCkKICAo
+aW50ZXJhY3RpdmUgInAiKQogIChpZiAoYW5kIChudW1iZXJwIGNudCkgKDwgY250IDApKQogICAg
+ICAocnVieS1iYWNrd2FyZC1zZXhwICgtIGNudCkpCiAgICAobGV0ICgoaSAob3IgY250IDEpKSkK
+ICAgICAgKGNvbmRpdGlvbi1jYXNlIG5pbAoJICAod2hpbGUgKD4gaSAwKQoJICAgIChza2lwLXN5
+bnRheC1mb3J3YXJkICIgIikKCSAgICAoY29uZCAoKGxvb2tpbmctYXQgIlxcP1xcKFxcXFxbQ01d
+LVxcKSpcXFxcP1xcUyAiKQoJCSAgIChnb3RvLWNoYXIgKG1hdGNoLWVuZCAwKSkpCgkJICAoKHBy
+b2duCgkJICAgICAoc2tpcC1jaGFycy1mb3J3YXJkICIsLjo7fCZefj0hP1xcK1xcLVxcKiIpCgkJ
+ICAgICAobG9va2luZy1hdCAiXFxzKCIpKQoJCSAgIChnb3RvLWNoYXIgKHNjYW4tc2V4cHMgKHBv
+aW50KSAxKSkpCgkJICAoKGFuZCAobG9va2luZy1hdCAoY29uY2F0ICJcXDxcXCgiIHJ1YnktYmxv
+Y2stYmVnLXJlICJcXClcXD4iKSkKCQkJKG5vdCAoZXEgKGNoYXItYmVmb3JlIChwb2ludCkpID8u
+KSkKCQkJKG5vdCAoZXEgKGNoYXItYmVmb3JlIChwb2ludCkpID86KSkpCgkJICAgKHJ1YnktZW5k
+LW9mLWJsb2NrKQoJCSAgIChmb3J3YXJkLXdvcmQgMSkpCgkJICAoKGxvb2tpbmctYXQgIlxcKFxc
+JFxcfEBAP1xcKT9cXHN3IikKCQkgICAod2hpbGUgKHByb2duCgkJCSAgICAod2hpbGUgKHByb2du
+IChmb3J3YXJkLXdvcmQgMSkgKGxvb2tpbmctYXQgIl8iKSkpCgkJCSAgICAoY29uZCAoKGxvb2tp
+bmctYXQgIjo6IikgKGZvcndhcmQtY2hhciAyKSB0KQoJCQkJICAoKD4gKHNraXAtY2hhcnMtZm9y
+d2FyZCAiLiIpIDApKQoJCQkJICAoKGxvb2tpbmctYXQgIlxcP1xcfCFcXCg9W349Pl1cXHxbXn49
+XVxcKSIpCgkJCQkgICAoZm9yd2FyZC1jaGFyIDEpIG5pbCkpKSkpCgkJICAoKGxldCAoc3RhdGUg
+ZXhwcikKCQkgICAgICh3aGlsZQoJCQkgKHByb2duCgkJCSAgIChzZXRxIGV4cHIgKG9yIGV4cHIg
+KHJ1YnktZXhwci1iZWcpCgkJCQkJICAobG9va2luZy1hdCAiJVxcc3c/XFxTd1xcfFtcIidgL10i
+KSkpCgkJCSAgIChudGggMSAoc2V0cSBzdGF0ZSAoYXBwbHkgJ3J1YnktcGFyc2UtcGFydGlhbCBu
+aWwgc3RhdGUpKSkpCgkJICAgICAgIChzZXRxIGV4cHIgdCkKCQkgICAgICAgKHNraXAtY2hhcnMt
+Zm9yd2FyZCAiPCIpKQoJCSAgICAgKG5vdCBleHByKSkpKQoJICAgIChzZXRxIGkgKDEtIGkpKSkK
+CSgoZXJyb3IpIChmb3J3YXJkLXdvcmQgMSkpKQogICAgICBpKSkpCgooZGVmdW4tcmVnaW9uLWNv
+bW1hbmQgcnVieS1iYWNrd2FyZC1zZXhwICgmb3B0aW9uYWwgY250KQogIChpbnRlcmFjdGl2ZSAi
+cCIpCiAgKGlmIChhbmQgKG51bWJlcnAgY250KSAoPCBjbnQgMCkpCiAgICAgIChydWJ5LWZvcndh
+cmQtc2V4cCAoLSBjbnQpKQogICAgKGxldCAoKGkgKG9yIGNudCAxKSkpCiAgICAgIChjb25kaXRp
+b24tY2FzZSBuaWwKCSAgKHdoaWxlICg+IGkgMCkKCSAgICAoc2tpcC1jaGFycy1iYWNrd2FyZCAi
+IFx0XG4sLjo7fCZefj0hP1xcK1xcLVxcKiIpCgkgICAgKGZvcndhcmQtY2hhciAtMSkKCSAgICAo
+Y29uZCAoKGxvb2tpbmctYXQgIlxccykiKQoJCSAgIChnb3RvLWNoYXIgKHNjYW4tc2V4cHMgKDEr
+IChwb2ludCkpIC0xKSkKCQkgICAoY2FzZSAoY2hhci1iZWZvcmUpCgkJICAgICAoPyUgKGZvcndh
+cmQtY2hhciAtMSkpCgkJICAgICAoJyg/cSA/USA/dyA/VyA/ciA/eCkKCQkgICAgICAoaWYgKGVx
+IChjaGFyLWJlZm9yZSAoMS0gKHBvaW50KSkpID8lKSAoZm9yd2FyZC1jaGFyIC0yKSkpKQoJCSAg
+IG5pbCkKCQkgICgobG9va2luZy1hdCAiXFxzXCJcXHxcXFxcXFxTXyIpCgkJICAgKGxldCAoKGMg
+KGNoYXItdG8tc3RyaW5nIChjaGFyLWJlZm9yZSAobWF0Y2gtZW5kIDApKSkpKQoJCSAgICAgKHdo
+aWxlIChhbmQgKHNlYXJjaC1iYWNrd2FyZCBjKQoJCQkJIChvZGRwIChza2lwLWNoYXJzLWJhY2t3
+YXJkICJcXCIpKSkpKQoJCSAgIG5pbCkKCQkgICgobG9va2luZy1hdCAiXFxzLlxcfFxcc1xcIikK
+CQkgICAoaWYgKHJ1Ynktc3BlY2lhbC1jaGFyLXApIChmb3J3YXJkLWNoYXIgLTEpKSkKCQkgICgo
+bG9va2luZy1hdCAiXFxzKCIpIG5pbCkKCQkgICh0CgkJICAgKGZvcndhcmQtY2hhciAxKQoJCSAg
+ICh3aGlsZSAocHJvZ24gKGZvcndhcmQtd29yZCAtMSkKCQkJCSAoY2FzZSAoY2hhci1iZWZvcmUp
+CgkJCQkgICAoP18gdCkKCQkJCSAgICg/LiAoZm9yd2FyZC1jaGFyIC0xKSB0KQoJCQkJICAgKCg/
+JCA/QCkKCQkJCSAgICAoZm9yd2FyZC1jaGFyIC0xKQoJCQkJICAgIChhbmQgKGVxIChjaGFyLWJl
+Zm9yZSkgKGNoYXItYWZ0ZXIpKSAoZm9yd2FyZC1jaGFyIC0xKSkpCgkJCQkgICAoPzoKCQkJCSAg
+ICAoZm9yd2FyZC1jaGFyIC0xKQoJCQkJICAgIChlcSAoY2hhci1iZWZvcmUpIDopKSkpKQoJCSAg
+IChpZiAobG9va2luZy1hdCBydWJ5LWJsb2NrLWVuZC1yZSkKCQkgICAgICAgKHJ1YnktYmVnaW5u
+aW5nLW9mLWJsb2NrKSkKCQkgICBuaWwpKQoJICAgIChzZXRxIGkgKDEtIGkpKSkKCSgoZXJyb3Ip
+KSkKICAgICAgaSkpKQoKKGRlZnVuIHJ1YnktcmVpbmRlbnQtdGhlbi1uZXdsaW5lLWFuZC1pbmRl
+bnQgKCkKICAoaW50ZXJhY3RpdmUgIioiKQogIChuZXdsaW5lKQogIChzYXZlLWV4Y3Vyc2lvbgog
+ICAgKGVuZC1vZi1saW5lIDApCiAgICAoaW5kZW50LWFjY29yZGluZy10by1tb2RlKQogICAgKGRl
+bGV0ZS1yZWdpb24gKHBvaW50KSAocHJvZ24gKHNraXAtY2hhcnMtYmFja3dhcmQgIiBcdCIpIChw
+b2ludCkpKSkKICAoaW5kZW50LWFjY29yZGluZy10by1tb2RlKSkKCihmc2V0ICdydWJ5LWVuY29t
+bWVudC1yZWdpb24gKHN5bWJvbC1mdW5jdGlvbiAnY29tbWVudC1yZWdpb24pKQoKKGRlZnVuIHJ1
+YnktZGVjb21tZW50LXJlZ2lvbiAoYmVnIGVuZCkKICAoaW50ZXJhY3RpdmUgInIiKQogIChzYXZl
+LWV4Y3Vyc2lvbgogICAgKGdvdG8tY2hhciBiZWcpCiAgICAod2hpbGUgKHJlLXNlYXJjaC1mb3J3
+YXJkICJeXFwoWyBcdF0qXFwpIyIgZW5kIHQpCiAgICAgIChyZXBsYWNlLW1hdGNoICJcXDEiIG5p
+bCBuaWwpCiAgICAgIChzYXZlLWV4Y3Vyc2lvbgoJKHJ1YnktaW5kZW50LWxpbmUpKSkpKQoKKGRl
+ZnVuIHJ1YnktaW5zZXJ0LWVuZCAoKQogIChpbnRlcmFjdGl2ZSkKICAoaW5zZXJ0ICJlbmQiKQog
+IChydWJ5LWluZGVudC1saW5lIHQpCiAgKGVuZC1vZi1saW5lKSkKCihkZWZ1biBydWJ5LW1hcmst
+ZGVmdW4gKCkKICAiUHV0IG1hcmsgYXQgZW5kIG9mIHRoaXMgUnVieSBmdW5jdGlvbiwgcG9pbnQg
+YXQgYmVnaW5uaW5nLiIKICAoaW50ZXJhY3RpdmUpCiAgKHB1c2gtbWFyayAocG9pbnQpKQogIChy
+dWJ5LWVuZC1vZi1kZWZ1bikKICAocHVzaC1tYXJrIChwb2ludCkgbmlsIHQpCiAgKHJ1YnktYmVn
+aW5uaW5nLW9mLWRlZnVuKQogIChyZS1zZWFyY2gtYmFja3dhcmQgIl5cbiIgKC0gKHBvaW50KSAx
+KSB0KSkKCihkZWZ1biBydWJ5LWluZGVudC1leHAgKCZvcHRpb25hbCBzaHV0dXAtcCkKICAiSW5k
+ZW50IGVhY2ggbGluZSBpbiB0aGUgYmFsYW5jZWQgZXhwcmVzc2lvbiBmb2xsb3dpbmcgcG9pbnQg
+c3ludGFjdGljYWxseS4KSWYgb3B0aW9uYWwgU0hVVFVQLVAgaXMgbm9uLW5pbCwgbm8gZXJyb3Jz
+IGFyZSBzaWduYWxsZWQgaWYgbm8KYmFsYW5jZWQgZXhwcmVzc2lvbiBpcyBmb3VuZC4iCiAgKGlu
+dGVyYWN0aXZlICIqUCIpCiAgKGxldCAoKGhlcmUgKHBvaW50LW1hcmtlcikpIHN0YXJ0IHRvcCBj
+b2x1bW4gKG5lc3QgdCkpCiAgICAoc2V0LW1hcmtlci1pbnNlcnRpb24tdHlwZSBoZXJlIHQpCiAg
+ICAodW53aW5kLXByb3RlY3QKCShwcm9nbgoJICAoYmVnaW5uaW5nLW9mLWxpbmUpCgkgIChzZXRx
+IHN0YXJ0IChwb2ludCkgdG9wIChjdXJyZW50LWluZGVudGF0aW9uKSkKCSAgKHdoaWxlIChhbmQg
+KG5vdCAoZW9icCkpCgkJICAgICAgKHByb2duCgkJCShzZXRxIGNvbHVtbiAocnVieS1jYWxjdWxh
+dGUtaW5kZW50IHN0YXJ0KSkKCQkJKGNvbmQgKCg+IGNvbHVtbiB0b3ApCgkJCSAgICAgICAoc2V0
+cSBuZXN0IHQpKQoJCQkgICAgICAoKGFuZCAoPSBjb2x1bW4gdG9wKSBuZXN0KQoJCQkgICAgICAg
+KHNldHEgbmVzdCBuaWwpIHQpKSkpCgkgICAgKHJ1YnktaW5kZW50LXRvIGNvbHVtbikKCSAgICAo
+YmVnaW5uaW5nLW9mLWxpbmUgMikpKQogICAgICAoZ290by1jaGFyIGhlcmUpCiAgICAgIChzZXQt
+bWFya2VyIGhlcmUgbmlsKSkpKQoKKGRlZnVuIHJ1YnktYWRkLWxvZy1jdXJyZW50LW1ldGhvZCAo
+KQogICJSZXR1cm4gY3VycmVudCBtZXRob2Qgc3RyaW5nLiIKICAoY29uZGl0aW9uLWNhc2Ugbmls
+CiAgICAgIChzYXZlLWV4Y3Vyc2lvbgoJKGxldCAobW5hbWUgbWxpc3QgKGluZGVudCAwKSkKCSAg
+OzsgZ2V0IGN1cnJlbnQgbWV0aG9kIChvciBjbGFzcy9tb2R1bGUpCgkgIChpZiAocmUtc2VhcmNo
+LWJhY2t3YXJkCgkgICAgICAgKGNvbmNhdCAiXlsgXHRdKlxcKGRlZlxcfGNsYXNzXFx8bW9kdWxl
+XFwpWyBcdF0rIgoJCSAgICAgICAiXFwoIgoJCSAgICAgICA7OyBcXC4gYW5kIDo6IGZvciBjbGFz
+cyBtZXRob2QKCQkJIlxcKFtBLVphLXpfXSIgcnVieS1zeW1ib2wtcmUgIipcXHxcXC5cXHw6OiIg
+IlxcKSIgCgkJCSIrXFwpIikKCSAgICAgICBuaWwgdCkKCSAgICAgIChwcm9nbgoJCShzZXRxIG1u
+YW1lIChtYXRjaC1zdHJpbmcgMikpCgkJKHVubGVzcyAoc3RyaW5nLWVxdWFsICJkZWYiIChtYXRj
+aC1zdHJpbmcgMSkpCgkJICAoc2V0cSBtbGlzdCAobGlzdCBtbmFtZSkgbW5hbWUgbmlsKSkKCQko
+Z290by1jaGFyIChtYXRjaC1iZWdpbm5pbmcgMSkpCgkJKHNldHEgaW5kZW50IChjdXJyZW50LWNv
+bHVtbikpCgkJKGJlZ2lubmluZy1vZi1saW5lKSkpCgkgIDs7IG5lc3QgY2xhc3MvbW9kdWxlCgkg
+ICh3aGlsZSAoYW5kICg+IGluZGVudCAwKQoJCSAgICAgIChyZS1zZWFyY2gtYmFja3dhcmQKCQkg
+ICAgICAgKGNvbmNhdAoJCQkiXlsgXHRdKlxcKGNsYXNzXFx8bW9kdWxlXFwpWyBcdF0rIgoJCQki
+XFwoW0EtWl0iIHJ1Ynktc3ltYm9sLXJlICIqXFwpIikKCQkgICAgICAgbmlsIHQpKQoJICAgIChn
+b3RvLWNoYXIgKG1hdGNoLWJlZ2lubmluZyAxKSkKCSAgICAoaWYgKDwgKGN1cnJlbnQtY29sdW1u
+KSBpbmRlbnQpCgkJKHByb2duCgkJICAoc2V0cSBtbGlzdCAoY29ucyAobWF0Y2gtc3RyaW5nIDIp
+IG1saXN0KSkKCQkgIChzZXRxIGluZGVudCAoY3VycmVudC1jb2x1bW4pKQoJCSAgKGJlZ2lubmlu
+Zy1vZi1saW5lKSkpKQoJICAod2hlbiBtbmFtZQoJICAgIChsZXQgKChtbiAoc3BsaXQtc3RyaW5n
+IG1uYW1lICJcXC5cXHw6OiIpKSkKCSAgICAgIChpZiAoY2RyIG1uKQoJCSAgKHByb2duCgkJICAg
+IChjb25kCgkJICAgICAoKHN0cmluZy1lcXVhbCAiIiAoY2FyIG1uKSkKCQkgICAgICAoc2V0cSBt
+biAoY2RyIG1uKSBtbGlzdCBuaWwpKQoJCSAgICAgKChzdHJpbmctZXF1YWwgInNlbGYiIChjYXIg
+bW4pKQoJCSAgICAgIChzZXRxIG1uIChjZHIgbW4pKSkKCQkgICAgICgobGV0ICgobWwgKG5yZXZl
+cnNlIG1saXN0KSkpCgkJCSh3aGlsZSBtbAoJCQkgIChpZiAoc3RyaW5nLWVxdWFsIChjYXIgbWwp
+IChjYXIgbW4pKQoJCQkgICAgICAoc2V0cSBtbGlzdCAobnJldmVyc2UgKGNkciBtbCkpIG1sIG5p
+bCkpCgkJCSAgKG9yIChzZXRxIG1sIChjZHIgbWwpKSAobnJldmVyc2UgbWxpc3QpKSkpKSkKCQkg
+ICAgKGlmIG1saXN0CgkJCShzZXRjZHIgKGxhc3QgbWxpc3QpIG1uKQoJCSAgICAgIChzZXRxIG1s
+aXN0IG1uKSkKCQkgICAgKHNldHEgbW4gKGxhc3QgbW4gMikpCgkJICAgIChzZXRxIG1uYW1lIChj
+b25jYXQgIi4iIChjYWRyIG1uKSkpCgkJICAgIChzZXRjZHIgbW4gbmlsKSkKCQkoc2V0cSBtbmFt
+ZSAoY29uY2F0ICIjIiBtbmFtZSkpKSkpCgkgIDs7IGdlbmVyYXRlIHN0cmluZwoJICAoaWYgKGNv
+bnNwIG1saXN0KQoJICAgICAgKHNldHEgbWxpc3QgKG1hcGNvbmNhdCAoZnVuY3Rpb24gaWRlbnRp
+dHkpIG1saXN0ICI6OiIpKSkKCSAgKGlmIG1uYW1lCgkgICAgICAoaWYgbWxpc3QgKGNvbmNhdCBt
+bGlzdCBtbmFtZSkgbW5hbWUpCgkgICAgbWxpc3QpKSkpKQoKKGNvbmQKICgoZmVhdHVyZXAgJ2Zv
+bnQtbG9jaykKICAob3IgKGJvdW5kcCAnZm9udC1sb2NrLXZhcmlhYmxlLW5hbWUtZmFjZSkKICAg
+ICAgKHNldHEgZm9udC1sb2NrLXZhcmlhYmxlLW5hbWUtZmFjZSBmb250LWxvY2stdHlwZS1mYWNl
+KSkKCiAgKHNldHEgcnVieS1mb250LWxvY2stc3ludGFjdGljLWtleXdvcmRzCgknKAoJICA7OyAj
+eyB9LCAjJGhvZ2UsICNAZm9vIGFyZSBub3QgY29tbWVudHMKCSAgKCJcXCgjXFwpW3skQF0iIDEg
+KDEgLiBuaWwpKQoJICA7OyB0aGUgbGFzdCAkJywgJCIsICRgIGluIHRoZSByZXNwZWN0aXZlIHN0
+cmluZyBpcyBub3QgdmFyaWFibGUKCSAgOzsgdGhlIGxhc3QgPycsID8iLCA/YCBpbiB0aGUgcmVz
+cGVjdGl2ZSBzdHJpbmcgaXMgbm90IGFzY2lpIGNvZGUKCSAgKCJcXCheXFx8W1xbIFx0XG48K1wo
+LD1dXFwpXFwoWydcImBdXFwpXFwoXFxcXC5cXHxcXDJcXHxbXidcImBcblxcXFxdXFwpKj9cXFxc
+P1s/JF1cXChcXDJcXCkiCgkgICAoMiAoNyAuIG5pbCkpCgkgICAoNCAoNyAuIG5pbCkpKQoJICA7
+OyAkJyAkIiAkYCAuLi4uIGFyZSB2YXJpYWJsZXMKCSAgOzsgPycgPyIgP2AgYXJlIGFzY2lpIGNv
+ZGVzCgkgICgiXFwoXlxcfFteXFxcXF1cXClcXChcXFxcXFxcXFxcKSpbPyRdXFwoWyNcIidgXVxc
+KSIgMyAoMSAuIG5pbCkpCgkgIDs7IHJlZ2V4cHMKCSAgKCJcXCheXFx8Wz0oLH4/Ojs8Pl1cXHxc
+XCheXFx8XFxzIFxcKVxcKGlmXFx8ZWxzaWZcXHx1bmxlc3NcXHx3aGlsZVxcfHVudGlsXFx8d2hl
+blxcfGFuZFxcfG9yXFx8JiZcXHx8fFxcKVxcfGc/c3ViIT9cXHxzY2FuXFx8c3BsaXQhP1xcKVxc
+cyAqXFwoL1xcKVteL1xuXFxcXF0qXFwoXFxcXC5bXi9cblxcXFxdKlxcKSpcXCgvXFwpIgoJICAg
+KDQgKDcgLiA/LykpCgkgICAoNiAoNyAuID8vKSkpCgkgICgiXlxcKD1cXCliZWdpblxcKFxccyBc
+XHwkXFwpIiAxICg3IC4gbmlsKSkKCSAgKCJeXFwoPVxcKWVuZFxcKFxccyBcXHwkXFwpIiAxICg3
+IC4gbmlsKSkpKQoKICAoaWYgKGZlYXR1cmVwICd4ZW1hY3MpCiAgICAgIChwdXQgJ3J1YnktbW9k
+ZSAnZm9udC1sb2NrLWRlZmF1bHRzCgkgICAnKChydWJ5LWZvbnQtbG9jay1rZXl3b3JkcykKCSAg
+ICAgbmlsIG5pbCBuaWwKCSAgICAgYmVnaW5uaW5nLW9mLWxpbmUKCSAgICAgKGZvbnQtbG9jay1z
+eW50YWN0aWMta2V5d29yZHMKCSAgICAgIC4gcnVieS1mb250LWxvY2stc3ludGFjdGljLWtleXdv
+cmRzKSkpKQoKICAoZGVmdW4gcnVieS1mb250LWxvY2stZG9jcyAobGltaXQpCiAgICAoaWYgKHJl
+LXNlYXJjaC1mb3J3YXJkICJePWJlZ2luXFwoXFxzIFxcfCRcXCkiIGxpbWl0IHQpCgkobGV0IChi
+ZWcpCgkgIChiZWdpbm5pbmctb2YtbGluZSkKCSAgKHNldHEgYmVnIChwb2ludCkpCgkgIChmb3J3
+YXJkLWxpbmUgMSkKCSAgKGlmIChyZS1zZWFyY2gtZm9yd2FyZCAiXj1lbmRcXChcXHMgXFx8JFxc
+KSIgbGltaXQgdCkKCSAgICAgIChwcm9nbgoJCShzZXQtbWF0Y2gtZGF0YSAobGlzdCBiZWcgKHBv
+aW50KSkpCgkJdCkpKSkpCgogIChkZWZ1biBydWJ5LWZvbnQtbG9jay1tYXliZS1kb2NzIChsaW1p
+dCkKICAgIChsZXQgKGJlZykKICAgICAgKHNhdmUtZXhjdXJzaW9uCgkoaWYgKGFuZCAocmUtc2Vh
+cmNoLWJhY2t3YXJkICJePVxcKGJlZ2luXFx8ZW5kXFwpXFwoXFxzIFxcfCRcXCkiIG5pbCB0KQoJ
+CSAoc3RyaW5nPSAobWF0Y2gtc3RyaW5nIDEpICJiZWdpbiIpKQoJICAgIChwcm9nbgoJICAgICAg
+KGJlZ2lubmluZy1vZi1saW5lKQoJICAgICAgKHNldHEgYmVnIChwb2ludCkpKSkpCiAgICAgIChp
+ZiAoYW5kIGJlZyAoYW5kIChyZS1zZWFyY2gtZm9yd2FyZCAiXj1cXChiZWdpblxcfGVuZFxcKVxc
+KFxccyBcXHwkXFwpIiBuaWwgdCkKCQkJKHN0cmluZz0gKG1hdGNoLXN0cmluZyAxKSAiZW5kIikp
+KQoJICAocHJvZ24KCSAgICAoc2V0LW1hdGNoLWRhdGEgKGxpc3QgYmVnIChwb2ludCkpKQoJICAg
+IHQpCgluaWwpKSkKCiAgKGRlZnZhciBydWJ5LWZvbnQtbG9jay1zeW50YXgtdGFibGUKICAgIChs
+ZXQqICgodGJsIChjb3B5LXN5bnRheC10YWJsZSBydWJ5LW1vZGUtc3ludGF4LXRhYmxlKSkpCiAg
+ICAgIChtb2RpZnktc3ludGF4LWVudHJ5ID9fICJ3IiB0YmwpCiAgICAgIHRibCkpCgogIChkZWZ1
+biBydWJ5LWZvbnQtbG9jay1oZXJlLWRvY3MgKGxpbWl0KQogICAgKGlmIChyZS1zZWFyY2gtZm9y
+d2FyZCBydWJ5LWhlcmUtZG9jLWJlZy1yZSBsaW1pdCB0KQoJKGxldCAoYmVnKQoJICAoYmVnaW5u
+aW5nLW9mLWxpbmUpCiAgICAgICAgICAoZm9yd2FyZC1saW5lKQoJICAoc2V0cSBiZWcgKHBvaW50
+KSkKCSAgKGlmIChyZS1zZWFyY2gtZm9yd2FyZCAocnVieS1oZXJlLWRvYy1lbmQtbWF0Y2gpIG5p
+bCB0KQoJICAgICAgKHByb2duCgkJKHNldC1tYXRjaC1kYXRhIChsaXN0IGJlZyAocG9pbnQpKSkK
+CQl0KSkpKSkKCiAgKGRlZnVuIHJ1YnktZm9udC1sb2NrLW1heWJlLWhlcmUtZG9jcyAobGltaXQp
+CiAgICAobGV0IChiZWcpCiAgICAgIChzYXZlLWV4Y3Vyc2lvbgoJKGlmIChyZS1zZWFyY2gtYmFj
+a3dhcmQgcnVieS1oZXJlLWRvYy1iZWctcmUgbmlsIHQpCgkgICAgKHByb2duCgkgICAgICAoYmVn
+aW5uaW5nLW9mLWxpbmUpCiAgICAgICAgICAgICAgKGZvcndhcmQtbGluZSkKCSAgICAgIChzZXRx
+IGJlZyAocG9pbnQpKSkpKQogICAgICAoaWYgKGFuZCBiZWcKCSAgICAgICAobGV0ICgoZW5kLW1h
+dGNoIChydWJ5LWhlcmUtZG9jLWVuZC1tYXRjaCkpKQogICAgICAgICAgICAgICAgIChhbmQgKG5v
+dCAocmUtc2VhcmNoLWJhY2t3YXJkIGVuZC1tYXRjaCBiZWcgdCkpCgkJICAgICAgKHJlLXNlYXJj
+aC1mb3J3YXJkIGVuZC1tYXRjaCBuaWwgdCkpKSkKCSAgKHByb2duCgkgICAgKHNldC1tYXRjaC1k
+YXRhIChsaXN0IGJlZyAocG9pbnQpKSkKCSAgICB0KQogICAgICAgICAgbmlsKSkpCgogIChkZWZ2
+YXIgcnVieS1mb250LWxvY2sta2V5d29yZHMKICAgIChsaXN0CiAgICAgOzsgZnVuY3Rpb25zCiAg
+ICAgJygiXlxccyAqZGVmXFxzICtcXChbXiggXHRcbl0rXFwpIgogICAgICAgMSBmb250LWxvY2st
+ZnVuY3Rpb24tbmFtZS1mYWNlKQogICAgIDs7IGtleXdvcmRzCiAgICAgKGNvbnMgKGNvbmNhdAoJ
+ICAgICJcXCheXFx8W15fOi5AJF1cXHxcXC5cXC5cXClcXGJcXChkZWZpbmVkXFw/XFx8XFwoIgoJ
+ICAgIChtYXBjb25jYXQKCSAgICAgJ2lkZW50aXR5CgkgICAgICcoImFsaWFzIgoJICAgICAgICJh
+bmQiCgkgICAgICAgImJlZ2luIgoJICAgICAgICJicmVhayIKCSAgICAgICAiY2FzZSIKCSAgICAg
+ICAiY2F0Y2giCgkgICAgICAgImNsYXNzIgoJICAgICAgICJkZWYiCgkgICAgICAgImRvIgoJICAg
+ICAgICJlbHNpZiIKCSAgICAgICAiZWxzZSIKCSAgICAgICAiZmFpbCIKCSAgICAgICAiZW5zdXJl
+IgoJICAgICAgICJmb3IiCgkgICAgICAgImVuZCIKCSAgICAgICAiaWYiCgkgICAgICAgImluIgoJ
+ICAgICAgICJtb2R1bGUiCgkgICAgICAgIm5leHQiCgkgICAgICAgIm5vdCIKCSAgICAgICAib3Ii
+CgkgICAgICAgInJhaXNlIgoJICAgICAgICJyZWRvIgoJICAgICAgICJyZXNjdWUiCgkgICAgICAg
+InJldHJ5IgoJICAgICAgICJyZXR1cm4iCgkgICAgICAgInRoZW4iCgkgICAgICAgInRocm93IgoJ
+ICAgICAgICJzdXBlciIKCSAgICAgICAidW5sZXNzIgoJICAgICAgICJ1bmRlZiIKCSAgICAgICAi
+dW50aWwiCgkgICAgICAgIndoZW4iCgkgICAgICAgIndoaWxlIgoJICAgICAgICJ5aWVsZCIKCSAg
+ICAgICApCgkgICAgICJcXHwiKQoJICAgICJcXClcXD5cXCkiKQoJICAgMikKICAgICA7OyB2YXJp
+YWJsZXMKICAgICAnKCJcXCheXFx8W15fOi5AJF1cXHxcXC5cXC5cXClcXGJcXChuaWxcXHxzZWxm
+XFx8dHJ1ZVxcfGZhbHNlXFwpXFw+IgogICAgICAgMiBmb250LWxvY2stdmFyaWFibGUtbmFtZS1m
+YWNlKQogICAgIDs7IHZhcmlhYmxlcwogICAgICcoIlxcKFxcJFxcKFteYS16QS1aMC05IFxuXVxc
+fFswLTldXFwpXFwpXFxXIgogICAgICAgMSBmb250LWxvY2stdmFyaWFibGUtbmFtZS1mYWNlKQog
+ICAgICcoIlxcKFxcJFxcfEBcXHxAQFxcKVxcKFxcd1xcfF9cXCkrIgogICAgICAgMCBmb250LWxv
+Y2stdmFyaWFibGUtbmFtZS1mYWNlKQogICAgIDs7IGVtYmVkZGVkIGRvY3VtZW50CiAgICAgJyhy
+dWJ5LWZvbnQtbG9jay1kb2NzCiAgICAgICAwIGZvbnQtbG9jay1jb21tZW50LWZhY2UgdCkKICAg
+ICAnKHJ1YnktZm9udC1sb2NrLW1heWJlLWRvY3MKICAgICAgIDAgZm9udC1sb2NrLWNvbW1lbnQt
+ZmFjZSB0KQogICAgIDs7ICJoZXJlIiBkb2N1bWVudAogICAgICcocnVieS1mb250LWxvY2staGVy
+ZS1kb2NzCiAgICAgICAwIGZvbnQtbG9jay1zdHJpbmctZmFjZSB0KQogICAgICcocnVieS1mb250
+LWxvY2stbWF5YmUtaGVyZS1kb2NzCiAgICAgICAwIGZvbnQtbG9jay1zdHJpbmctZmFjZSB0KQog
+ICAgIGAoLHJ1YnktaGVyZS1kb2MtYmVnLXJlCiAgICAgICAwIGZvbnQtbG9jay1zdHJpbmctZmFj
+ZSB0KQogICAgIDs7IGdlbmVyYWwgZGVsaW1pdGVkIHN0cmluZwogICAgICcoIlxcKF5cXHxbWyBc
+dFxuPCsoLD1dXFwpXFwoJVt4cnFRd1ddP1xcKFtePFt7KGEtekEtWjAtOSBcbl1cXClbXlxuXFxc
+XF0qXFwoXFxcXC5bXlxuXFxcXF0qXFwpKlxcKFxcM1xcKVxcKSIKICAgICAgICgyIGZvbnQtbG9j
+ay1zdHJpbmctZmFjZSkpCiAgICAgOzsgY29uc3RhbnRzCiAgICAgJygiXFwoXlxcfFteX11cXClc
+XGJcXChbQS1aXStcXChcXHdcXHxfXFwpKlxcKSIKICAgICAgIDIgZm9udC1sb2NrLXR5cGUtZmFj
+ZSkKICAgICA7OyBzeW1ib2xzCiAgICAgJygiXFwoXlxcfFteOl1cXClcXCg6XFwoWy0rfl1AP1xc
+fFsvJSZ8XmBdXFx8XFwqXFwqP1xcfDxcXCg8XFx8PT4/XFwpP1xcfD5bPj1dP1xcfD09PT9cXHw9
+flxcfFxcW1xcXT0/XFx8XFwoXFx3XFx8X1xcKStcXChbIT89XVxcfFxcYl8qXFwpXFx8I3tbXn1c
+blxcXFxdKlxcKFxcXFwuW159XG5cXFxcXSpcXCkqfVxcKVxcKSIKICAgICAgIDIgZm9udC1sb2Nr
+LXJlZmVyZW5jZS1mYWNlKQogICAgIDs7IGV4cHJlc3Npb24gZXhwYW5zaW9uCiAgICAgJygiI1xc
+KHtbXn1cblxcXFxdKlxcKFxcXFwuW159XG5cXFxcXSpcXCkqfVxcfFxcKFxcJFxcfEBcXHxAQFxc
+KVxcKFxcd1xcfF9cXCkrXFwpIgogICAgICAgMCBmb250LWxvY2stdmFyaWFibGUtbmFtZS1mYWNl
+IHQpCiAgICAgOzsgd2FybiBsb3dlciBjYW1lbCBjYXNlCiAgICAgOycoIlxcPFthLXpdK1thLXow
+LTldKltBLVpdW0EtWmEtejAtOV0qXFwoWyE/XT9cXHxcXD5cXCkiCiAgICAgOyAgMCBmb250LWxv
+Y2std2FybmluZy1mYWNlKQogICAgICkKICAgICIqQWRkaXRpb25hbCBleHByZXNzaW9ucyB0byBo
+aWdobGlnaHQgaW4gcnVieSBtb2RlLiIpKQoKICgoZmVhdHVyZXAgJ2hpbGl0MTkpCiAgKGhpbGl0
+LXNldC1tb2RlLXBhdHRlcm5zCiAgICdydWJ5LW1vZGUKICAgJygoIlteJFxcP11cXChcIlteXFxc
+Il0qXFwoXFxcXFxcKC5cXHxcblxcKVteXFxcIl0qXFwpKlwiXFwpIiAxIHN0cmluZykKICAgICAo
+IlteJFxcP11cXCgnW15cXCddKlxcKFxcXFxcXCguXFx8XG5cXClbXlxcJ10qXFwpKidcXCkiIDEg
+c3RyaW5nKQogICAgICgiW14kXFw/XVxcKGBbXlxcYF0qXFwoXFxcXFxcKC5cXHxcblxcKVteXFxg
+XSpcXCkqYFxcKSIgMSBzdHJpbmcpCiAgICAgKCJeXFxzICojLiokIiBuaWwgY29tbWVudCkKICAg
+ICAoIlteJEA/XFxdXFwoI1teJEB7XG5dLiokXFwpIiAxIGNvbW1lbnQpCiAgICAgKCJbXmEtekEt
+Wl9dXFwoXFw/XFwoXFxcXFtDTV0tXFwpKi5cXCkiIDEgc3RyaW5nKQogICAgICgiXlxccyAqXFwo
+cmVxdWlyZVxcfGxvYWRcXCkuKiQiIG5pbCBpbmNsdWRlKQogICAgICgiXlxccyAqXFwoaW5jbHVk
+ZVxcfGFsaWFzXFx8dW5kZWZcXCkuKiQiIG5pbCBkZWNsKQogICAgICgiXlxccyAqXFw8XFwoY2xh
+c3NcXHxkZWZcXHxtb2R1bGVcXClcXD4iICJbKVxuO10iIGRlZnVuKQogICAgICgiW15fXVxcPFxc
+KGJlZ2luXFx8Y2FzZVxcfGVsc2VcXHxlbHNpZlxcfGVuZFxcfGVuc3VyZVxcfGZvclxcfGlmXFx8
+dW5sZXNzXFx8cmVzY3VlXFx8dGhlblxcfHdoZW5cXHx3aGlsZVxcfHVudGlsXFx8ZG9cXHx5aWVs
+ZFxcKVxcPlxcKFteX11cXHwkXFwpIiAxIGRlZnVuKQogICAgICgiW15fXVxcPFxcKGFuZFxcfGJy
+ZWFrXFx8bmV4dFxcfHJhaXNlXFx8ZmFpbFxcfGluXFx8bm90XFx8b3JcXHxyZWRvXFx8cmV0cnlc
+XHxyZXR1cm5cXHxzdXBlclxcfHlpZWxkXFx8Y2F0Y2hcXHx0aHJvd1xcfHNlbGZcXHxuaWxcXClc
+XD5cXChbXl9dXFx8JFxcKSIgMSBrZXl3b3JkKQogICAgICgiXFwkXFwoLlxcfFxcc3crXFwpIiBu
+aWwgdHlwZSkKICAgICAoIlskQF0uW2EtekEtWl8wLTldKiIgbmlsIHN0cnVjdCkKICAgICAoIl5f
+X0VORF9fIiBuaWwgbGFiZWwpKSkpCiApCgoKKHByb3ZpZGUgJ3J1YnktbW9kZSkK

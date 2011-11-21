@@ -1,128 +1,88 @@
-;; Copyright 2008, 2009  Neil Roberts, 2010 Chris Done
-;;
-;; PURPOSE: Load Haskell files using normal
-;; inferior-haskell-load-file, but detect when there is an error, grab
-;; it, format it, and tweet it.
-;; 
-;; Stole some code from here:
-;;  http://git.busydoingnothing.co.uk/cgit.cgi/twitter.git/plain/twitter.el?id=HEAD
-;; So I have to include the GPL license. Grumble.
-;;
-;; This program is free software; you can redistribute it and/or modify
-;; it under the terms of the GNU General Public License as published by
-;; the Free Software Foundation; either version 2, or (at your option)
-;; any later version.
-;;
-;; This program is distributed in the hope that it will be useful,
-;; but WITHOUT ANY WARRANTY; without even the implied warranty of
-;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-;; GNU General Public License for more details.
-;;
-;; You should have received a copy of the GNU General Public License
-;; along with this program; if not, write to the Free Software
-;; Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
-;; 02110-1301, USA.
-;;
-
-;; USAGE:
-;; 
-;; Like so:
-;;   (inferior-haskell-load-file-tweet-errors "<email/username>" "<password>")
-;; 
-;; I tend to bind inferior-haskell-load-file to F5 (rather than C-c C-l), so:
-;;
-;; (add-hook 'haskell-mode-hook
-;;           '(lambda ()
-;;              (load "haskell-tweet-errors.el")
-;;              (define-key haskell-mode-map [f5]
-;;                (lambda ()
-;;                  (interactive)
-;;                  (inferior-haskell-load-file-tweet-errors
-;;                   "<username>" "<password>")))))
-
-(require 'url)
-(require 'url-http)
-
-(defun inferior-haskell-load-file-tweet-errors (username password)
-  (interactive)
-  (save-excursion
-    (inferior-haskell-load-file)
-    (inferior-haskell-wait-for-prompt (inferior-haskell-process))
-    (set-buffer (process-buffer (inferior-haskell-process)))
-    (let ((msg (inferior-haskell-ghc-type-error)))
-      (if msg
-          (let ((type-error (twitter-limit-string
-                             (inferior-haskell-clean-error-msg msg))))
-            (twitter-status-post username password type-error))))))
-
-(defun twitter-limit-string (str)
-  (if (> (length str) 140)
-      (substring str 0 140)
-    str))
-
-(defun inferior-haskell-ghc-type-error ()
-  "Grab the type error from GHC's error messages."
-  ;; Example below. Annotated with the places Emacs jumps to in order to
-  ;; find the last error. Code is annotated with numbers to match up
-  ;; this order of navigation.
-
-  ;; Haskell>(1)(3) :load \"Foo.hs\"
-  ;; [1 of 1] Compiling Main             ( /home/chris/Foo.hs, interpreted )
-
-  ;; /home/chris/Foo.hs:74:15:
-  ;; (4)    Kind mis-match
-  ;;     Expected kind `* -> *', but `Char' has kind `*'
-  ;;     In the instance declaration for `Monad Char'
-  ;; Failed(2)(5), modules loaded: none.
-  ;; (0.01 secs, 4787872 bytes)
-  (when (and (search-backward-regexp "^[a-zA-Z0-9][^>]+>" nil t)     ;; (1)
-             (search-forward-regexp "Failed" nil t)                  ;; (2)
-             (search-backward-regexp "^[a-zA-Z0-9][^>]+>" nil t)     ;; (3)
-             (search-forward-regexp "[^:]+:[0-9]+:[0-9]+:\n" nil t)) ;; (4)
-    (let ((start-point (point)))
-      (when (search-forward-regexp "^Failed" nil t)                  ;; (5)
-        (backward-word)
-        (buffer-substring-no-properties start-point (point))))))
-
-(defun inferior-haskell-clean-error-msg (msg)
-  (replace-regexp-in-string
-   "[ ]+" " " 
-   (replace-regexp-in-string
-    "^[ \r\n]*\\(.*\\)[ \r\n]*" "\\1"
-    (replace-regexp-in-string
-     "[\r\n]+\\(.+\\)" "; \\1"
-     msg))))
-
-;;; Code below stolen and mangled from twitter.el.
-
-(defun twitter-retrieve-url (twitter-username twitter-password url cb)
-  (when (and twitter-username twitter-password)
-    (let ((server-cons
-           (or (assoc "twitter.com:80" url-http-real-basic-auth-storage)
-               (car (push (cons "twitter.com:80" nil)
-                          url-http-real-basic-auth-storage)))))
-      (unless (assoc "Twitter API" server-cons)
-        (setcdr server-cons
-                (cons (cons "Twitter API"
-                            (base64-encode-string
-                             (concat twitter-username
-                                     ":" twitter-password)))
-                      (cdr server-cons))))))
-  (url-retrieve url cb nil))
-
-(defun twitter-status-post (username password status)
-  (interactive)
-  (let ((url-request-method "POST")
-        (url-request-data (concat "status="
-                                  (url-hexify-string status))))
-    (twitter-retrieve-url
-     username
-     password
-     "http://twitter.com/statuses/update.xml"
-     'twitter-status-callback)))
-
-(defun twitter-status-callback (status)
-  (let ((errmsg (plist-get status :error)))
-    (when errmsg
-      (signal (car errmsg) (cdr errmsg)))
-    (message "Tweeted. Now the world knows about your type error!")))
+#FILE text/x-emacs-lisp
+OzsgQ29weXJpZ2h0IDIwMDgsIDIwMDkgIE5laWwgUm9iZXJ0cywgMjAxMCBDaHJpcyBEb25lCjs7
+Cjs7IFBVUlBPU0U6IExvYWQgSGFza2VsbCBmaWxlcyB1c2luZyBub3JtYWwKOzsgaW5mZXJpb3It
+aGFza2VsbC1sb2FkLWZpbGUsIGJ1dCBkZXRlY3Qgd2hlbiB0aGVyZSBpcyBhbiBlcnJvciwgZ3Jh
+Ygo7OyBpdCwgZm9ybWF0IGl0LCBhbmQgdHdlZXQgaXQuCjs7IAo7OyBTdG9sZSBzb21lIGNvZGUg
+ZnJvbSBoZXJlOgo7OyAgaHR0cDovL2dpdC5idXN5ZG9pbmdub3RoaW5nLmNvLnVrL2NnaXQuY2dp
+L3R3aXR0ZXIuZ2l0L3BsYWluL3R3aXR0ZXIuZWw/aWQ9SEVBRAo7OyBTbyBJIGhhdmUgdG8gaW5j
+bHVkZSB0aGUgR1BMIGxpY2Vuc2UuIEdydW1ibGUuCjs7Cjs7IFRoaXMgcHJvZ3JhbSBpcyBmcmVl
+IHNvZnR3YXJlOyB5b3UgY2FuIHJlZGlzdHJpYnV0ZSBpdCBhbmQvb3IgbW9kaWZ5Cjs7IGl0IHVu
+ZGVyIHRoZSB0ZXJtcyBvZiB0aGUgR05VIEdlbmVyYWwgUHVibGljIExpY2Vuc2UgYXMgcHVibGlz
+aGVkIGJ5Cjs7IHRoZSBGcmVlIFNvZnR3YXJlIEZvdW5kYXRpb247IGVpdGhlciB2ZXJzaW9uIDIs
+IG9yIChhdCB5b3VyIG9wdGlvbikKOzsgYW55IGxhdGVyIHZlcnNpb24uCjs7Cjs7IFRoaXMgcHJv
+Z3JhbSBpcyBkaXN0cmlidXRlZCBpbiB0aGUgaG9wZSB0aGF0IGl0IHdpbGwgYmUgdXNlZnVsLAo7
+OyBidXQgV0lUSE9VVCBBTlkgV0FSUkFOVFk7IHdpdGhvdXQgZXZlbiB0aGUgaW1wbGllZCB3YXJy
+YW50eSBvZgo7OyBNRVJDSEFOVEFCSUxJVFkgb3IgRklUTkVTUyBGT1IgQSBQQVJUSUNVTEFSIFBV
+UlBPU0UuICBTZWUgdGhlCjs7IEdOVSBHZW5lcmFsIFB1YmxpYyBMaWNlbnNlIGZvciBtb3JlIGRl
+dGFpbHMuCjs7Cjs7IFlvdSBzaG91bGQgaGF2ZSByZWNlaXZlZCBhIGNvcHkgb2YgdGhlIEdOVSBH
+ZW5lcmFsIFB1YmxpYyBMaWNlbnNlCjs7IGFsb25nIHdpdGggdGhpcyBwcm9ncmFtOyBpZiBub3Qs
+IHdyaXRlIHRvIHRoZSBGcmVlIFNvZnR3YXJlCjs7IEZvdW5kYXRpb24sIEluYy4sIDUxIEZyYW5r
+bGluIFN0cmVldCwgRmlmdGggRmxvb3IsIEJvc3RvbiwgTUEKOzsgMDIxMTAtMTMwMSwgVVNBLgo7
+OwoKOzsgVVNBR0U6Cjs7IAo7OyBMaWtlIHNvOgo7OyAgIChpbmZlcmlvci1oYXNrZWxsLWxvYWQt
+ZmlsZS10d2VldC1lcnJvcnMgIjxlbWFpbC91c2VybmFtZT4iICI8cGFzc3dvcmQ+IikKOzsgCjs7
+IEkgdGVuZCB0byBiaW5kIGluZmVyaW9yLWhhc2tlbGwtbG9hZC1maWxlIHRvIEY1IChyYXRoZXIg
+dGhhbiBDLWMgQy1sKSwgc286Cjs7Cjs7IChhZGQtaG9vayAnaGFza2VsbC1tb2RlLWhvb2sKOzsg
+ICAgICAgICAgICcobGFtYmRhICgpCjs7ICAgICAgICAgICAgICAobG9hZCAiaGFza2VsbC10d2Vl
+dC1lcnJvcnMuZWwiKQo7OyAgICAgICAgICAgICAgKGRlZmluZS1rZXkgaGFza2VsbC1tb2RlLW1h
+cCBbZjVdCjs7ICAgICAgICAgICAgICAgIChsYW1iZGEgKCkKOzsgICAgICAgICAgICAgICAgICAo
+aW50ZXJhY3RpdmUpCjs7ICAgICAgICAgICAgICAgICAgKGluZmVyaW9yLWhhc2tlbGwtbG9hZC1m
+aWxlLXR3ZWV0LWVycm9ycwo7OyAgICAgICAgICAgICAgICAgICAiPHVzZXJuYW1lPiIgIjxwYXNz
+d29yZD4iKSkpKSkKCihyZXF1aXJlICd1cmwpCihyZXF1aXJlICd1cmwtaHR0cCkKCihkZWZ1biBp
+bmZlcmlvci1oYXNrZWxsLWxvYWQtZmlsZS10d2VldC1lcnJvcnMgKHVzZXJuYW1lIHBhc3N3b3Jk
+KQogIChpbnRlcmFjdGl2ZSkKICAoc2F2ZS1leGN1cnNpb24KICAgIChpbmZlcmlvci1oYXNrZWxs
+LWxvYWQtZmlsZSkKICAgIChpbmZlcmlvci1oYXNrZWxsLXdhaXQtZm9yLXByb21wdCAoaW5mZXJp
+b3ItaGFza2VsbC1wcm9jZXNzKSkKICAgIChzZXQtYnVmZmVyIChwcm9jZXNzLWJ1ZmZlciAoaW5m
+ZXJpb3ItaGFza2VsbC1wcm9jZXNzKSkpCiAgICAobGV0ICgobXNnIChpbmZlcmlvci1oYXNrZWxs
+LWdoYy10eXBlLWVycm9yKSkpCiAgICAgIChpZiBtc2cKICAgICAgICAgIChsZXQgKCh0eXBlLWVy
+cm9yICh0d2l0dGVyLWxpbWl0LXN0cmluZwogICAgICAgICAgICAgICAgICAgICAgICAgICAgIChp
+bmZlcmlvci1oYXNrZWxsLWNsZWFuLWVycm9yLW1zZyBtc2cpKSkpCiAgICAgICAgICAgICh0d2l0
+dGVyLXN0YXR1cy1wb3N0IHVzZXJuYW1lIHBhc3N3b3JkIHR5cGUtZXJyb3IpKSkpKSkKCihkZWZ1
+biB0d2l0dGVyLWxpbWl0LXN0cmluZyAoc3RyKQogIChpZiAoPiAobGVuZ3RoIHN0cikgMTQwKQog
+ICAgICAoc3Vic3RyaW5nIHN0ciAwIDE0MCkKICAgIHN0cikpCgooZGVmdW4gaW5mZXJpb3ItaGFz
+a2VsbC1naGMtdHlwZS1lcnJvciAoKQogICJHcmFiIHRoZSB0eXBlIGVycm9yIGZyb20gR0hDJ3Mg
+ZXJyb3IgbWVzc2FnZXMuIgogIDs7IEV4YW1wbGUgYmVsb3cuIEFubm90YXRlZCB3aXRoIHRoZSBw
+bGFjZXMgRW1hY3MganVtcHMgdG8gaW4gb3JkZXIgdG8KICA7OyBmaW5kIHRoZSBsYXN0IGVycm9y
+LiBDb2RlIGlzIGFubm90YXRlZCB3aXRoIG51bWJlcnMgdG8gbWF0Y2ggdXAKICA7OyB0aGlzIG9y
+ZGVyIG9mIG5hdmlnYXRpb24uCgogIDs7IEhhc2tlbGw+KDEpKDMpIDpsb2FkIFwiRm9vLmhzXCIK
+ICA7OyBbMSBvZiAxXSBDb21waWxpbmcgTWFpbiAgICAgICAgICAgICAoIC9ob21lL2NocmlzL0Zv
+by5ocywgaW50ZXJwcmV0ZWQgKQoKICA7OyAvaG9tZS9jaHJpcy9Gb28uaHM6NzQ6MTU6CiAgOzsg
+KDQpICAgIEtpbmQgbWlzLW1hdGNoCiAgOzsgICAgIEV4cGVjdGVkIGtpbmQgYCogLT4gKicsIGJ1
+dCBgQ2hhcicgaGFzIGtpbmQgYConCiAgOzsgICAgIEluIHRoZSBpbnN0YW5jZSBkZWNsYXJhdGlv
+biBmb3IgYE1vbmFkIENoYXInCiAgOzsgRmFpbGVkKDIpKDUpLCBtb2R1bGVzIGxvYWRlZDogbm9u
+ZS4KICA7OyAoMC4wMSBzZWNzLCA0Nzg3ODcyIGJ5dGVzKQogICh3aGVuIChhbmQgKHNlYXJjaC1i
+YWNrd2FyZC1yZWdleHAgIl5bYS16QS1aMC05XVtePl0rPiIgbmlsIHQpICAgICA7OyAoMSkKICAg
+ICAgICAgICAgIChzZWFyY2gtZm9yd2FyZC1yZWdleHAgIkZhaWxlZCIgbmlsIHQpICAgICAgICAg
+ICAgICAgICAgOzsgKDIpCiAgICAgICAgICAgICAoc2VhcmNoLWJhY2t3YXJkLXJlZ2V4cCAiXlth
+LXpBLVowLTldW14+XSs+IiBuaWwgdCkgICAgIDs7ICgzKQogICAgICAgICAgICAgKHNlYXJjaC1m
+b3J3YXJkLXJlZ2V4cCAiW146XSs6WzAtOV0rOlswLTldKzpcbiIgbmlsIHQpKSA7OyAoNCkKICAg
+IChsZXQgKChzdGFydC1wb2ludCAocG9pbnQpKSkKICAgICAgKHdoZW4gKHNlYXJjaC1mb3J3YXJk
+LXJlZ2V4cCAiXkZhaWxlZCIgbmlsIHQpICAgICAgICAgICAgICAgICAgOzsgKDUpCiAgICAgICAg
+KGJhY2t3YXJkLXdvcmQpCiAgICAgICAgKGJ1ZmZlci1zdWJzdHJpbmctbm8tcHJvcGVydGllcyBz
+dGFydC1wb2ludCAocG9pbnQpKSkpKSkKCihkZWZ1biBpbmZlcmlvci1oYXNrZWxsLWNsZWFuLWVy
+cm9yLW1zZyAobXNnKQogIChyZXBsYWNlLXJlZ2V4cC1pbi1zdHJpbmcKICAgIlsgXSsiICIgIiAK
+ICAgKHJlcGxhY2UtcmVnZXhwLWluLXN0cmluZwogICAgIl5bIFxyXG5dKlxcKC4qXFwpWyBcclxu
+XSoiICJcXDEiCiAgICAocmVwbGFjZS1yZWdleHAtaW4tc3RyaW5nCiAgICAgIltcclxuXStcXCgu
+K1xcKSIgIjsgXFwxIgogICAgIG1zZykpKSkKCjs7OyBDb2RlIGJlbG93IHN0b2xlbiBhbmQgbWFu
+Z2xlZCBmcm9tIHR3aXR0ZXIuZWwuCgooZGVmdW4gdHdpdHRlci1yZXRyaWV2ZS11cmwgKHR3aXR0
+ZXItdXNlcm5hbWUgdHdpdHRlci1wYXNzd29yZCB1cmwgY2IpCiAgKHdoZW4gKGFuZCB0d2l0dGVy
+LXVzZXJuYW1lIHR3aXR0ZXItcGFzc3dvcmQpCiAgICAobGV0ICgoc2VydmVyLWNvbnMKICAgICAg
+ICAgICAob3IgKGFzc29jICJ0d2l0dGVyLmNvbTo4MCIgdXJsLWh0dHAtcmVhbC1iYXNpYy1hdXRo
+LXN0b3JhZ2UpCiAgICAgICAgICAgICAgIChjYXIgKHB1c2ggKGNvbnMgInR3aXR0ZXIuY29tOjgw
+IiBuaWwpCiAgICAgICAgICAgICAgICAgICAgICAgICAgdXJsLWh0dHAtcmVhbC1iYXNpYy1hdXRo
+LXN0b3JhZ2UpKSkpKQogICAgICAodW5sZXNzIChhc3NvYyAiVHdpdHRlciBBUEkiIHNlcnZlci1j
+b25zKQogICAgICAgIChzZXRjZHIgc2VydmVyLWNvbnMKICAgICAgICAgICAgICAgIChjb25zIChj
+b25zICJUd2l0dGVyIEFQSSIKICAgICAgICAgICAgICAgICAgICAgICAgICAgIChiYXNlNjQtZW5j
+b2RlLXN0cmluZwogICAgICAgICAgICAgICAgICAgICAgICAgICAgIChjb25jYXQgdHdpdHRlci11
+c2VybmFtZQogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIjoiIHR3aXR0ZXIt
+cGFzc3dvcmQpKSkKICAgICAgICAgICAgICAgICAgICAgIChjZHIgc2VydmVyLWNvbnMpKSkpKSkK
+ICAodXJsLXJldHJpZXZlIHVybCBjYiBuaWwpKQoKKGRlZnVuIHR3aXR0ZXItc3RhdHVzLXBvc3Qg
+KHVzZXJuYW1lIHBhc3N3b3JkIHN0YXR1cykKICAoaW50ZXJhY3RpdmUpCiAgKGxldCAoKHVybC1y
+ZXF1ZXN0LW1ldGhvZCAiUE9TVCIpCiAgICAgICAgKHVybC1yZXF1ZXN0LWRhdGEgKGNvbmNhdCAi
+c3RhdHVzPSIKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICh1cmwtaGV4aWZ5LXN0
+cmluZyBzdGF0dXMpKSkpCiAgICAodHdpdHRlci1yZXRyaWV2ZS11cmwKICAgICB1c2VybmFtZQog
+ICAgIHBhc3N3b3JkCiAgICAgImh0dHA6Ly90d2l0dGVyLmNvbS9zdGF0dXNlcy91cGRhdGUueG1s
+IgogICAgICd0d2l0dGVyLXN0YXR1cy1jYWxsYmFjaykpKQoKKGRlZnVuIHR3aXR0ZXItc3RhdHVz
+LWNhbGxiYWNrIChzdGF0dXMpCiAgKGxldCAoKGVycm1zZyAocGxpc3QtZ2V0IHN0YXR1cyA6ZXJy
+b3IpKSkKICAgICh3aGVuIGVycm1zZwogICAgICAoc2lnbmFsIChjYXIgZXJybXNnKSAoY2RyIGVy
+cm1zZykpKQogICAgKG1lc3NhZ2UgIlR3ZWV0ZWQuIE5vdyB0aGUgd29ybGQga25vd3MgYWJvdXQg
+eW91ciB0eXBlIGVycm9yISIpKSkK

@@ -1,428 +1,382 @@
-;;; zenburn.el --- A low contrast colour theme for Emacs
-
-;; Copyright (C) 2011 Bozhidar Batsov
-
-;; Author: Bozhidar Batsov <bozhidar.batsov [at] gmail.com>
-;; Keywords: color, theme, zenburn
-;; X-URL: http://github.com/bbatsov/zenburn-emacs
-;; URL: http://github.com/bbatsov/zenburn-emacs
-;; EmacsWiki: ColorThemeZenburn
-;; Version: 0.1
-;; Revision: $Rev$ ($LastChangedDate$)
-
-;; This program is free software; you can redistribute it and/or modify
-;; it under the terms of the GNU General Public License as published by
-;; the Free Software Foundation, either version 3 of the License, or
-;; (at your option) any later version.
-
-;; This program is distributed in the hope that it will be useful,
-;; but WITHOUT ANY WARRANTY; without even the implied warranty of
-;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-;; GNU General Public License for more details.
-
-;; You should have received a copy of the GNU General Public License
-;; along with this program.  If not, see <http://www.gnu.org/licenses/>.
-
-;;; Commentary:
-;;
-;; A port of the popular Vim theme Zenburn for Emacs, built on top of
-;; the color-theme package. There exists one other version of the
-;; theme by Daniel Brockman. Mine version was originally based on it,
-;; but it was in such a disarray that I decided to rewrite it from
-;; scratch in a more maintainable manner (hopefully).
-;;
-;;; Installation:
-;;
-;;   (require 'zenburn)
-;;   (zenburn)
-;;
-;; Don't forget that the theme requires the presence of the
-;; color-theme package in your Emacs load-path.
-;;; Bugs
-;;
-;; None that I'm aware of.
-;;
-;;; Credits
-;;
-;; Jani Nurminen created the original theme for vim on such this port
-;; is based.
-;;
-;;; Code
-
-;; requires
-(require 'color-theme)
-
-;; colour definitions
-;; colours with +x are lighter, colours with -x are darker
-(defvar zenburn-fg "#dcdccc")
-(defvar zenburn-bg-1 "#2b2b2b")
-(defvar zenburn-bg "#3f3f3f")
-(defvar zenburn-bg+1 "#4f4f4f")
-(defvar zenburn-bg+2 "#5f5f5f")
-(defvar zenburn-red+1 "#dca3a3")
-(defvar zenburn-red "#cc9393")
-(defvar zenburn-red-1 "#bc8383")
-(defvar zenburn-red-2 "#ac7373")
-(defvar zenburn-red-3 "#9c6363")
-(defvar zenburn-red-4 "#8c5353")
-(defvar zenburn-orange "#dfaf8f")
-(defvar zenburn-yellow "#f0dfaf")
-(defvar zenburn-yellow-1 "#e0cf9f")
-(defvar zenburn-yellow-2 "#d0bf8f")
-(defvar zenburn-green-1 "#5f7f5f")
-(defvar zenburn-green "#7f9f7f")
-(defvar zenburn-green+1 "#8fb28f")
-(defvar zenburn-green+2 "#9fc59f")
-(defvar zenburn-green+3 "#afd8af")
-(defvar zenburn-green+4 "#bfebbf")
-(defvar zenburn-cyan "#93e0e3")
-(defvar zenburn-blue+1 "#94bff3")
-(defvar zenburn-blue "#8cd0d3")
-(defvar zenburn-blue-1 "#7cb8bb")
-(defvar zenburn-blue-2 "#6ca0a3")
-(defvar zenburn-blue-3 "#5c888b")
-(defvar zenburn-blue-4 "#4c7073")
-(defvar zenburn-blue-5 "#366060")
-(defvar zenburn-magenta "#dc8cc3")
-
-(eval-after-load 'term
-  '(setq ansi-term-color-vector
-         (vector 'unspecified zenburn-bg
-                 zenburn-red zenburn-green
-                 zenburn-yellow zenburn-blue+1
-                 zenburn-magenta zenburn-cyan
-                 ;; dirty fix
-                 "white")))
-
-(defun color-theme-zenburn ()
-  (interactive)
-  (color-theme-install
-   `(color-theme-zenburn
-     ;;; color-theme mapping
-     ((foreground-color . ,zenburn-fg)
-      (background-color . ,zenburn-bg)
-      (background-mode . dark)
-      (cursor-color . ,zenburn-fg))
-
-     ;;; define some reusable zenburn faces that we can inherit from afterwards
-     (zenburn-strong-1-face ((t (:foreground ,zenburn-yellow :weight bold))))
-     (zenburn-strong-2-face ((t (:foreground ,zenburn-orange :weight bold))))
-     (zenburn-warning-face ((t (:foreground ,zenburn-yellow-1 :weight bold :underline t))))
-     (zenburn-error-face ((t (:foreground ,zenburn-red-1 :weight bold :underline t))))
-
-     ;;; basic colouring
-     (default ((t (:foreground ,zenburn-fg))))
-     (cursor
-      ((t (:foreground ,zenburn-fg))))
-     (escape-glyph-face ((t (:foreground ,zenburn-red))))
-     (fringe ((t (:foreground ,zenburn-fg :background ,zenburn-bg))))
-     (header-line ((t (:foreground ,zenburn-yellow :background ,zenburn-bg-1
-                                   :box (:color ,zenburn-green :line-width 2)))))
-     (highlight ((t (:background ,zenburn-bg+1))))
-
-     ;; faces used by isearch
-     (isearch ((t (:foreground ,zenburn-yellow :background ,zenburn-bg-1))))
-     (isearch-fail ((t (:foreground ,zenburn-fg :background ,zenburn-red-4))))
-     (lazy-highlight ((t (:foreground ,zenburn-yellow :background ,zenburn-bg+2))))
-
-     (menu ((t (:foreground ,zenburn-fg :background ,zenburn-bg))))
-     (minibuffer-prompt ((t (:foreground ,zenburn-yellow))))
-     (mode-line
-      ((t (:foreground ,zenburn-green+1 :background ,zenburn-bg-1))))
-     (mode-line-buffer-id ((t (:inherit zenburn-strong-1-face))))
-     (mode-line-inactive
-      ((t (:foreground ,zenburn-green-1  :background ,zenburn-bg-1))))
-     (region ((t (:background ,zenburn-bg-1))))
-     (secondary-selection ((t (:background ,zenburn-bg+2))))
-     (trailing-whitespace ((t (:background ,zenburn-red))))
-     (vertical-border ((t (:foreground ,zenburn-fg))))
-
-     ;;; font lock
-     (font-lock-builtin-face ((t (:foreground ,zenburn-blue))))
-     (font-lock-comment-face ((t (:foreground ,zenburn-green))))
-     (font-lock-comment-delimiter-face ((t (:foreground ,zenburn-green))))
-     (font-lock-constant-face ((t (:foreground ,zenburn-fg))))
-     (font-lock-doc-face ((t (:foreground ,zenburn-green+1))))
-     (font-lock-doc-string-face ((t (:foreground ,zenburn-blue+1))))
-     (font-lock-function-name-face ((t (:foreground ,zenburn-blue))))
-     (font-lock-keyword-face ((t (:inherit zenburn-strong-1-face))))
-     (font-lock-negation-char-face ((t (:foreground ,zenburn-fg))))
-     (font-lock-preprocessor-face ((t (:foreground ,zenburn-blue))))
-     (font-lock-string-face ((t (:foreground ,zenburn-red))))
-     (font-lock-type-face ((t (:foreground ,zenburn-yellow))))
-     (font-lock-variable-name-face ((t (:foreground ,zenburn-yellow))))
-     (font-lock-warning-face ((t (:inherit zenburn-warning-face))))
-
-     ;;; external
-
-     ;; diff
-     (diff-added ((t (:foreground ,zenburn-green+4))))
-     (diff-changed ((t (:foreground ,zenburn-yellow))))
-     (diff-removed ((t (:foreground ,zenburn-red))))
-     (diff-header ((t (:background ,zenburn-bg+1))))
-     (diff-file-header
-      ((t (:background ,zenburn-bg+2 :foreground ,zenburn-fg :bold t))))
-
-     ;; eshell
-     (eshell-prompt ((t (:inherit zenburn-strong-1-face))))
-     (eshell-ls-archive ((t (:foreground ,zenburn-red-1 :weight bold))))
-     (eshell-ls-backup ((t (:inherit font-lock-comment))))
-     (eshell-ls-clutter ((t (:inherit font-lock-comment))))
-     (eshell-ls-directory ((t (:foreground ,zenburn-blue+1 :weight bold))))
-     (eshell-ls-executable ((t (:foreground ,zenburn-red+1 :weight bold))))
-     (eshell-ls-unreadable ((t (:foreground ,zenburn-fg))))
-     (eshell-ls-missing ((t (:inherit font-lock-warning))))
-     (eshell-ls-product ((t (:inherit font-lock-doc))))
-     (eshell-ls-special ((t (:inherit zenburn-strong-1-face))))
-     (eshell-ls-symlink ((t (:foreground ,zenburn-cyan :weight bold))))
-
-     ;; flymake
-     (flymake-errline ((t (:inherit zenburn-error-face))))
-     (flymake-warnline ((t (:inherit zenburn-warning-face))))
-
-     ;; flyspell
-     (flyspell-duplicate ((t (:inherit zenburn-warning-face))))
-     (flyspell-incorrect ((t (:inherit zenburn-error-face))))
-
-     ;; erc
-     (erc-action-face ((t (:inherit erc-default))))
-     (erc-bold-face ((t (:weight bold))))
-     (erc-current-nick-face ((t (:inherit zenburn-strong-1-face))))
-     (erc-dangerous-host-face ((t (:inherit font-lock-warning))))
-     (erc-default-face ((t (:foreground ,zenburn-fg))))
-     (erc-direct-msg-face ((t (:inherit erc-default))))
-     (erc-error-face ((t (:inherit font-lock-warning))))
-     (erc-fool-face ((t (:inherit erc-default))))
-     (erc-highlight-face ((t (:inherit hover-highlight))))
-     (erc-input-face ((t (:foreground ,zenburn-yellow))))
-     (erc-keyword-face ((t (:inherit zenburn-strong-1-face))))
-     (erc-nick-default-face ((t (:weigth bold))))
-     (erc-nick-msg-face ((t (:inherit erc-default))))
-     (erc-notice-face ((t (:foreground ,zenburn-green))))
-     (erc-pal-face ((t (:foreground ,zenburn-orange :weight bold))))
-     (erc-prompt-face ((t (:inherit zenburn-strong-2-face))))
-     (erc-timestamp-face ((t (:foreground ,zenburn-green+1))))
-     (erc-underline-face ((t (:underline t))))
-
-     ;; gnus
-     (gnus-group-mail-1-face ((t (:bold t :inherit gnus-group-mail-1-empty))))
-     (gnus-group-mail-1-empty-face ((t (:inherit gnus-group-news-1-empty))))
-     (gnus-group-mail-2-face ((t (:bold t :inherit gnus-group-mail-2-empty))))
-     (gnus-group-mail-2-empty-face ((t (:inherit gnus-group-news-2-empty))))
-     (gnus-group-mail-3-face ((t (:bold t :inherit gnus-group-mail-3-empty))))
-     (gnus-group-mail-3-empty-face ((t (:inherit gnus-group-news-3-empty))))
-     (gnus-group-mail-4-face ((t (:bold t :inherit gnus-group-mail-4-empty))))
-     (gnus-group-mail-4-empty-face ((t (:inherit gnus-group-news-4-empty))))
-     (gnus-group-mail-5-face ((t (:bold t :inherit gnus-group-mail-5-empty))))
-     (gnus-group-mail-5-empty-face ((t (:inherit gnus-group-news-5-empty))))
-     (gnus-group-mail-6-face ((t (:bold t :inherit gnus-group-mail-6-empty))))
-     (gnus-group-mail-6-empty-face ((t (:inherit gnus-group-news-6-empty))))
-     (gnus-group-mail-low-face ((t (:bold t :inherit gnus-group-mail-low-empty))))
-     (gnus-group-mail-low-empty-face ((t (:inherit gnus-group-news-low-empty))))
-     (gnus-group-news-1-face ((t (:bold t :inherit gnus-group-news-1-empty))))
-     (gnus-group-news-2-face ((t (:bold t :inherit gnus-group-news-2-empty))))
-     (gnus-group-news-3-face ((t (:bold t :inherit gnus-group-news-3-empty))))
-     (gnus-group-news-4-face ((t (:bold t :inherit gnus-group-news-4-empty))))
-     (gnus-group-news-5-face ((t (:bold t :inherit gnus-group-news-5-empty))))
-     (gnus-group-news-6-face ((t (:bold t :inherit gnus-group-news-6-empty))))
-     (gnus-group-news-low-face ((t (:bold t :inherit gnus-group-news-low-empty))))
-     (gnus-header-content-face ((t (:inherit message-header-other))))
-     (gnus-header-from-face ((t (:inherit message-header-from))))
-     (gnus-header-name-face ((t (:inherit message-header-name))))
-     (gnus-header-newsgroups-face ((t (:inherit message-header-other))))
-     (gnus-header-subject-face ((t (:inherit message-header-subject))))
-     (gnus-summary-cancelled-face ((t (:foreground ,zenburn-orange))))
-     (gnus-summary-high-ancient-face ((t (:foreground ,zenburn-blue))))
-     (gnus-summary-high-read-face ((t (:foreground ,zenburn-green :weight bold))))
-     (gnus-summary-high-ticked-face ((t (:inherit zenburn-strong-2-face))))
-     (gnus-summary-high-unread-face ((t (:foreground ,zenburn-fg :weight bold))))
-     (gnus-summary-low-ancient-face ((t (:foreground ,zenburn-blue))))
-     (gnus-summary-low-read-face ((t (:foreground ,zenburn-green))))
-     (gnus-summary-low-ticked-face ((t (:inherit zenburn-strong-2-face))))
-     (gnus-summary-low-unread-face ((t (:foreground ,zenburn-fg))))
-     (gnus-summary-normal-ancient-face ((t (:foreground ,zenburn-blue))))
-     (gnus-summary-normal-read-face ((t (:foreground ,zenburn-green))))
-     (gnus-summary-normal-ticked-face ((t (:inherit zenburn-strong-2-face))))
-     (gnus-summary-normal-unread-face ((t (:foreground ,zenburn-fg))))
-     (gnus-summary-selected-face ((t (:inherit zenburn-strong-1-face))))
-     (gnus-cite-1-face ((t (:foreground ,zenburn-blue))))
-     (gnus-cite-10-face ((t (:foreground ,zenburn-yellow-1))))
-     (gnus-cite-11-face ((t (:foreground ,zenburn-yellow))))
-     (gnus-cite-2-face ((t (:foreground ,zenburn-blue-1))))
-     (gnus-cite-3-face ((t (:foreground ,zenburn-blue-2))))
-     (gnus-cite-4-face ((t (:foreground ,zenburn-green+2))))
-     (gnus-cite-5-face ((t (:foreground ,zenburn-green+1))))
-     (gnus-cite-6-face ((t (:foreground ,zenburn-green))))
-     (gnus-cite-7-face ((t (:foreground ,zenburn-red))))
-     (gnus-cite-8-face ((t (:foreground ,zenburn-red-1))))
-     (gnus-cite-9-face ((t (:foreground ,zenburn-red-2))))
-     (gnus-group-news-1-empty-face ((t (:foreground ,zenburn-yellow))))
-     (gnus-group-news-2-empty-face ((t (:foreground ,zenburn-green+3))))
-     (gnus-group-news-3-empty-face ((t (:foreground ,zenburn-green+1))))
-     (gnus-group-news-4-empty-face ((t (:foreground ,zenburn-blue-2))))
-     (gnus-group-news-5-empty-face ((t (:foreground ,zenburn-blue-3))))
-     (gnus-group-news-6-empty-face ((t (:foreground ,zenburn-bg+2))))
-     (gnus-group-news-low-empty-face ((t (:foreground ,zenburn-bg+2))))
-     (gnus-signature-face ((t (:foreground ,zenburn-yellow))))
-     (gnus-x-face ((t (:background ,zenburn-fg :foreground ,zenburn-bg))))
-
-     ;; hl-line-mode
-     (hl-line-face ((t (:background ,zenburn-bg-1))))
-
-     ;; ido-mode
-     (ido-first-match ((t (:inherit zenburn-strong-1-face))))
-     (ido-only-match ((t (:inherit zenburn-strong-2-face))))
-     (ido-subdir ((t (:foreground ,zenburn-yellow))))
-
-     ;; magit
-     (magit-section-title ((t (:inherit zenburn-strong-1-face))))
-     (magit-branch ((t (:inherit zenburn-strong-2-face))))
-
-     ;; message-mode
-     (message-cited-text-face ((t (:inherit font-lock-comment))))
-     (message-header-name-face ((t (:foreground ,zenburn-green+1))))
-     (message-header-other-face ((t (:foreground ,zenburn-green))))
-     (message-header-to-face ((t (:inherit zenburn-strong-1-face))))
-     (message-header-from-face ((t (:inherit zenburn-strong-1-face))))
-     (message-header-cc-face ((t (:inherit zenburn-strong-1-face))))
-     (message-header-newsgroups-face ((t (:inherit zenburn-strong-1-face))))
-     (message-header-subject-face ((t (:inherit zenburn-strong-2-face))))
-     (message-header-xheader-face ((t (:foreground ,zenburn-green))))
-     (message-mml-face ((t (:inherit zenburn-strong-1-face))))
-     (message-separator-face ((t (:inherit font-lock-comment))))
-
-     ;; mew
-     (mew-face-header-subject ((t (:foreground ,zenburn-orange))))
-     (mew-face-header-from ((t (:foreground ,zenburn-yellow))))
-     (mew-face-header-date ((t (:foreground ,zenburn-green))))
-     (mew-face-header-to ((t (:foreground ,zenburn-red))))
-     (mew-face-header-key ((t (:foreground ,zenburn-green))))
-     (mew-face-header-private ((t (:foreground ,zenburn-green))))
-     (mew-face-header-important ((t (:foreground ,zenburn-blue))))
-     (mew-face-header-marginal ((t (:foreground ,zenburn-fg :weight bold))))
-     (mew-face-header-warning ((t (:foreground ,zenburn-red))))
-     (mew-face-header-xmew ((t (:foreground ,zenburn-green))))
-     (mew-face-header-xmew-bad ((t (:foreground ,zenburn-red))))
-     (mew-face-body-url ((t (:foreground ,zenburn-orange))))
-     (mew-face-body-comment ((t (:foreground ,zenburn-fg :slant italic))))
-     (mew-face-body-cite1 ((t (:foreground ,zenburn-green))))
-     (mew-face-body-cite2 ((t (:foreground ,zenburn-blue))))
-     (mew-face-body-cite3 ((t (:foreground ,zenburn-orange))))
-     (mew-face-body-cite4 ((t (:foreground ,zenburn-yellow))))
-     (mew-face-body-cite5 ((t (:foreground ,zenburn-red))))
-     (mew-face-mark-review ((t (:foreground ,zenburn-blue))))
-     (mew-face-mark-escape ((t (:foreground ,zenburn-green))))
-     (mew-face-mark-delete ((t (:foreground ,zenburn-red))))
-     (mew-face-mark-unlink ((t (:foreground ,zenburn-yellow))))
-     (mew-face-mark-refile ((t (:foreground ,zenburn-green))))
-     (mew-face-mark-unread ((t (:foreground ,zenburn-red-2))))
-     (mew-face-eof-message ((t (:foreground ,zenburn-green))))
-     (mew-face-eof-part ((t (:foreground ,zenburn-yellow))))
-
-     ;; nav
-     (nav-face-heading ((t (:foreground ,zenburn-yellow))))
-     (nav-face-button-num ((t (:foreground ,zenburn-cyan))))
-     (nav-face-dir ((t (:foreground ,zenburn-green))))
-     (nav-face-hdir ((t (:foreground ,zenburn-red))))
-     (nav-face-file ((t (:foreground ,zenburn-fg))))
-     (nav-face-hfile ((t (:foreground ,zenburn-red-4))))
-
-     ;; org-mode
-     (org-agenda-date-today-face
-      ((t (:foreground "white" :slant italic :weight bold))) t)
-     (org-agenda-structure-face
-      ((t (:inherit font-lock-comment-face))))
-     (org-archived-face ((t (:foreground ,zenburn-fg :weight bold))))
-     (org-checkbox-face ((t (:background ,zenburn-bg+2 :foreground "white"
-                                         :box (:line-width 1 :style released-button)))))
-     (org-date-face ((t (:foreground ,zenburn-blue :underline t))))
-     (org-deadline-announce-face ((t (:foreground ,zenburn-red-1))))
-     (org-done-face ((t (:bold t :weight bold :foreground ,zenburn-green+3))))
-     (org-formula-face ((t (:foreground ,zenburn-yellow-2))))
-     (org-headline-done-face ((t (:foreground ,zenburn-green+3))))
-     (org-hide-face ((t (:foreground ,zenburn-bg-1))))
-     (org-level-1-face ((t (:foreground ,zenburn-orange))))
-     (org-level-2-face ((t (:foreground ,zenburn-yellow))))
-     (org-level-3-face ((t (:foreground ,zenburn-blue))))
-     (org-level-4-face  ((t (:foreground ,zenburn-cyan))))
-     (org-level-5-face  ((t (:foreground ,zenburn-blue-1))))
-     (org-level-6-face  ((t (:foreground ,zenburn-blue-2))))
-     (org-level-7-face  ((t (:foreground ,zenburn-blue-3))))
-     (org-level-8-face ((t (:foreground ,zenburn-blue-4))))
-     (org-link-face ((t (:foreground ,zenburn-yellow-2 :underline t))))
-     (org-scheduled-face ((t (:foreground ,zenburn-green+4))))
-     (org-scheduled-previously-face ((t (:foreground ,zenburn-red-4))))
-     (org-scheduled-today-face ((t (:foreground ,zenburn-blue+1))))
-     (org-special-keyword-face ((t (:foreground ,zenburn-yellow-1))))
-     (org-table-face ((t (:foreground ,zenburn-green+2))))
-     (org-tag-face ((t (:bold t :weight bold))))
-     (org-time-grid-face ((t (:foreground ,zenburn-orange))))
-     (org-todo-face ((t (:bold t :foreground ,zenburn-red :weight bold))))
-     (org-upcoming-deadline-face ((t (:inherit font-lock-keyword-face))))
-     (org-warning-face ((t (:bold t :foreground ,zenburn-red :weight bold))))
-
-     ;; outline
-     (outline-8-face ((t (:inherit default))))
-     (outline-7-face ((t (:inherit outline-8 :height 1.0))))
-     (outline-6-face ((t (:inherit outline-7 :height 1.0))))
-     (outline-5-face ((t (:inherit outline-6 :height 1.0))))
-     (outline-4-face ((t (:inherit outline-5 :height 1.0))))
-     (outline-3-face ((t (:inherit outline-4 :height 1.0))))
-     (outline-2-face ((t (:inherit outline-3 :height 1.0))))
-     (outline-1-face ((t (:inherit outline-2 :height 1.0))))
-
-     ;; rpm-mode
-     (rpm-spec-dir-face ((t (:foreground ,zenburn-green))))
-     (rpm-spec-doc-face ((t (:foreground ,zenburn-green))))
-     (rpm-spec-ghost-face ((t (:foreground ,zenburn-red))))
-     (rpm-spec-macro-face ((t (:foreground ,zenburn-yellow))))
-     (rpm-spec-obsolete-tag-face ((t (:foreground ,zenburn-red))))
-     (rpm-spec-package-face ((t (:foreground ,zenburn-red))))
-     (rpm-spec-section-face ((t (:foreground ,zenburn-yellow))))
-     (rpm-spec-tag-face ((t (:foreground ,zenburn-blue))))
-     (rpm-spec-var-face ((t (:foreground ,zenburn-red))))
-
-     ;; show-paren
-     (show-paren-mismatch ((t (:inherit font-lock-warning))))
-     (show-paren-match ((t (:foreground ,zenburn-blue-1 :weight bold))))
-
-     ;; wanderlust
-     (wl-highlight-folder-few-face ((t (:foreground ,zenburn-red-2))))
-     (wl-highlight-folder-many-face ((t (:foreground ,zenburn-red-1))))
-     (wl-highlight-folder-path-face ((t (:foreground ,zenburn-orange))))
-     (wl-highlight-folder-unread-face ((t (:foreground ,zenburn-blue))))
-     (wl-highlight-folder-zero-face ((t (:foreground ,zenburn-fg))))
-     (wl-highlight-folder-unknown-face ((t (:foreground ,zenburn-blue))))
-     (wl-highlight-message-citation-header ((t (:foreground ,zenburn-red-1))))
-     (wl-highlight-message-cited-text-1 ((t (:foreground ,zenburn-red))))
-     (wl-highlight-message-cited-text-2 ((t (:foreground ,zenburn-green+2))))
-     (wl-highlight-message-cited-text-3 ((t (:foreground ,zenburn-blue))))
-     (wl-highlight-message-cited-text-4 ((t (:foreground ,zenburn-blue+1))))
-     (wl-highlight-message-header-contents-face ((t (:foreground ,zenburn-green))))
-     (wl-highlight-message-headers-face ((t (:foreground ,zenburn-red+1))))
-     (wl-highlight-message-important-header-contents ((t (:foreground ,zenburn-green+2))))
-     (wl-highlight-message-header-contents ((t (:foreground ,zenburn-green+1))))
-     (wl-highlight-message-important-header-contents2 ((t (:foreground ,zenburn-green+2))))
-     (wl-highlight-message-signature ((t (:foreground ,zenburn-green))))
-     (wl-highlight-message-unimportant-header-contents ((t (:foreground ,zenburn-fg))))
-     (wl-highlight-summary-answered-face ((t (:foreground ,zenburn-blue))))
-     (wl-highlight-summary-disposed-face ((t (:foreground ,zenburn-fg
-                                                          :slant italic))))
-     (wl-highlight-summary-new-face ((t (:foreground ,zenburn-blue))))
-     (wl-highlight-summary-normal-face ((t (:foreground ,zenburn-fg))))
-     (wl-highlight-summary-thread-top-face ((t (:foreground ,zenburn-yellow))))
-     (wl-highlight-thread-indent-face ((t (:foreground ,zenburn-magenta))))
-     (wl-highlight-summary-refiled-face ((t (:foreground ,zenburn-fg))))
-     (wl-highlight-summary-displaying-face ((t (:underline t :weight bold))))
-
-     )))
-
-(defalias 'zenburn #'color-theme-zenburn)
-
-(add-to-list 'color-themes '(color-theme-zenburn
-                             "Zenburn"
-                             "Bozhidar Batsov <bozhidar.batsov@gmail.com"))
-
-(provide 'zenburn)
-
-;;; zenburn.el ends here.
+#FILE text/x-emacs-lisp
+Ozs7IHplbmJ1cm4uZWwgLS0tIEEgbG93IGNvbnRyYXN0IGNvbG91ciB0aGVtZSBmb3IgRW1hY3MK
+Cjs7IENvcHlyaWdodCAoQykgMjAxMSBCb3poaWRhciBCYXRzb3YKCjs7IEF1dGhvcjogQm96aGlk
+YXIgQmF0c292IDxib3poaWRhci5iYXRzb3YgW2F0XSBnbWFpbC5jb20+Cjs7IEtleXdvcmRzOiBj
+b2xvciwgdGhlbWUsIHplbmJ1cm4KOzsgWC1VUkw6IGh0dHA6Ly9naXRodWIuY29tL2JiYXRzb3Yv
+emVuYnVybi1lbWFjcwo7OyBVUkw6IGh0dHA6Ly9naXRodWIuY29tL2JiYXRzb3YvemVuYnVybi1l
+bWFjcwo7OyBFbWFjc1dpa2k6IENvbG9yVGhlbWVaZW5idXJuCjs7IFZlcnNpb246IDAuMQo7OyBS
+ZXZpc2lvbjogJFJldiQgKCRMYXN0Q2hhbmdlZERhdGUkKQoKOzsgVGhpcyBwcm9ncmFtIGlzIGZy
+ZWUgc29mdHdhcmU7IHlvdSBjYW4gcmVkaXN0cmlidXRlIGl0IGFuZC9vciBtb2RpZnkKOzsgaXQg
+dW5kZXIgdGhlIHRlcm1zIG9mIHRoZSBHTlUgR2VuZXJhbCBQdWJsaWMgTGljZW5zZSBhcyBwdWJs
+aXNoZWQgYnkKOzsgdGhlIEZyZWUgU29mdHdhcmUgRm91bmRhdGlvbiwgZWl0aGVyIHZlcnNpb24g
+MyBvZiB0aGUgTGljZW5zZSwgb3IKOzsgKGF0IHlvdXIgb3B0aW9uKSBhbnkgbGF0ZXIgdmVyc2lv
+bi4KCjs7IFRoaXMgcHJvZ3JhbSBpcyBkaXN0cmlidXRlZCBpbiB0aGUgaG9wZSB0aGF0IGl0IHdp
+bGwgYmUgdXNlZnVsLAo7OyBidXQgV0lUSE9VVCBBTlkgV0FSUkFOVFk7IHdpdGhvdXQgZXZlbiB0
+aGUgaW1wbGllZCB3YXJyYW50eSBvZgo7OyBNRVJDSEFOVEFCSUxJVFkgb3IgRklUTkVTUyBGT1Ig
+QSBQQVJUSUNVTEFSIFBVUlBPU0UuICBTZWUgdGhlCjs7IEdOVSBHZW5lcmFsIFB1YmxpYyBMaWNl
+bnNlIGZvciBtb3JlIGRldGFpbHMuCgo7OyBZb3Ugc2hvdWxkIGhhdmUgcmVjZWl2ZWQgYSBjb3B5
+IG9mIHRoZSBHTlUgR2VuZXJhbCBQdWJsaWMgTGljZW5zZQo7OyBhbG9uZyB3aXRoIHRoaXMgcHJv
+Z3JhbS4gIElmIG5vdCwgc2VlIDxodHRwOi8vd3d3LmdudS5vcmcvbGljZW5zZXMvPi4KCjs7OyBD
+b21tZW50YXJ5Ogo7Owo7OyBBIHBvcnQgb2YgdGhlIHBvcHVsYXIgVmltIHRoZW1lIFplbmJ1cm4g
+Zm9yIEVtYWNzLCBidWlsdCBvbiB0b3Agb2YKOzsgdGhlIGNvbG9yLXRoZW1lIHBhY2thZ2UuIFRo
+ZXJlIGV4aXN0cyBvbmUgb3RoZXIgdmVyc2lvbiBvZiB0aGUKOzsgdGhlbWUgYnkgRGFuaWVsIEJy
+b2NrbWFuLiBNaW5lIHZlcnNpb24gd2FzIG9yaWdpbmFsbHkgYmFzZWQgb24gaXQsCjs7IGJ1dCBp
+dCB3YXMgaW4gc3VjaCBhIGRpc2FycmF5IHRoYXQgSSBkZWNpZGVkIHRvIHJld3JpdGUgaXQgZnJv
+bQo7OyBzY3JhdGNoIGluIGEgbW9yZSBtYWludGFpbmFibGUgbWFubmVyIChob3BlZnVsbHkpLgo7
+Owo7OzsgSW5zdGFsbGF0aW9uOgo7Owo7OyAgIChyZXF1aXJlICd6ZW5idXJuKQo7OyAgICh6ZW5i
+dXJuKQo7Owo7OyBEb24ndCBmb3JnZXQgdGhhdCB0aGUgdGhlbWUgcmVxdWlyZXMgdGhlIHByZXNl
+bmNlIG9mIHRoZQo7OyBjb2xvci10aGVtZSBwYWNrYWdlIGluIHlvdXIgRW1hY3MgbG9hZC1wYXRo
+Lgo7OzsgQnVncwo7Owo7OyBOb25lIHRoYXQgSSdtIGF3YXJlIG9mLgo7Owo7OzsgQ3JlZGl0cwo7
+Owo7OyBKYW5pIE51cm1pbmVuIGNyZWF0ZWQgdGhlIG9yaWdpbmFsIHRoZW1lIGZvciB2aW0gb24g
+c3VjaCB0aGlzIHBvcnQKOzsgaXMgYmFzZWQuCjs7Cjs7OyBDb2RlCgo7OyByZXF1aXJlcwoocmVx
+dWlyZSAnY29sb3ItdGhlbWUpCgo7OyBjb2xvdXIgZGVmaW5pdGlvbnMKOzsgY29sb3VycyB3aXRo
+ICt4IGFyZSBsaWdodGVyLCBjb2xvdXJzIHdpdGggLXggYXJlIGRhcmtlcgooZGVmdmFyIHplbmJ1
+cm4tZmcgIiNkY2RjY2MiKQooZGVmdmFyIHplbmJ1cm4tYmctMSAiIzJiMmIyYiIpCihkZWZ2YXIg
+emVuYnVybi1iZyAiIzNmM2YzZiIpCihkZWZ2YXIgemVuYnVybi1iZysxICIjNGY0ZjRmIikKKGRl
+ZnZhciB6ZW5idXJuLWJnKzIgIiM1ZjVmNWYiKQooZGVmdmFyIHplbmJ1cm4tcmVkKzEgIiNkY2Ez
+YTMiKQooZGVmdmFyIHplbmJ1cm4tcmVkICIjY2M5MzkzIikKKGRlZnZhciB6ZW5idXJuLXJlZC0x
+ICIjYmM4MzgzIikKKGRlZnZhciB6ZW5idXJuLXJlZC0yICIjYWM3MzczIikKKGRlZnZhciB6ZW5i
+dXJuLXJlZC0zICIjOWM2MzYzIikKKGRlZnZhciB6ZW5idXJuLXJlZC00ICIjOGM1MzUzIikKKGRl
+ZnZhciB6ZW5idXJuLW9yYW5nZSAiI2RmYWY4ZiIpCihkZWZ2YXIgemVuYnVybi15ZWxsb3cgIiNm
+MGRmYWYiKQooZGVmdmFyIHplbmJ1cm4teWVsbG93LTEgIiNlMGNmOWYiKQooZGVmdmFyIHplbmJ1
+cm4teWVsbG93LTIgIiNkMGJmOGYiKQooZGVmdmFyIHplbmJ1cm4tZ3JlZW4tMSAiIzVmN2Y1ZiIp
+CihkZWZ2YXIgemVuYnVybi1ncmVlbiAiIzdmOWY3ZiIpCihkZWZ2YXIgemVuYnVybi1ncmVlbisx
+ICIjOGZiMjhmIikKKGRlZnZhciB6ZW5idXJuLWdyZWVuKzIgIiM5ZmM1OWYiKQooZGVmdmFyIHpl
+bmJ1cm4tZ3JlZW4rMyAiI2FmZDhhZiIpCihkZWZ2YXIgemVuYnVybi1ncmVlbis0ICIjYmZlYmJm
+IikKKGRlZnZhciB6ZW5idXJuLWN5YW4gIiM5M2UwZTMiKQooZGVmdmFyIHplbmJ1cm4tYmx1ZSsx
+ICIjOTRiZmYzIikKKGRlZnZhciB6ZW5idXJuLWJsdWUgIiM4Y2QwZDMiKQooZGVmdmFyIHplbmJ1
+cm4tYmx1ZS0xICIjN2NiOGJiIikKKGRlZnZhciB6ZW5idXJuLWJsdWUtMiAiIzZjYTBhMyIpCihk
+ZWZ2YXIgemVuYnVybi1ibHVlLTMgIiM1Yzg4OGIiKQooZGVmdmFyIHplbmJ1cm4tYmx1ZS00ICIj
+NGM3MDczIikKKGRlZnZhciB6ZW5idXJuLWJsdWUtNSAiIzM2NjA2MCIpCihkZWZ2YXIgemVuYnVy
+bi1tYWdlbnRhICIjZGM4Y2MzIikKCihldmFsLWFmdGVyLWxvYWQgJ3Rlcm0KICAnKHNldHEgYW5z
+aS10ZXJtLWNvbG9yLXZlY3RvcgogICAgICAgICAodmVjdG9yICd1bnNwZWNpZmllZCB6ZW5idXJu
+LWJnCiAgICAgICAgICAgICAgICAgemVuYnVybi1yZWQgemVuYnVybi1ncmVlbgogICAgICAgICAg
+ICAgICAgIHplbmJ1cm4teWVsbG93IHplbmJ1cm4tYmx1ZSsxCiAgICAgICAgICAgICAgICAgemVu
+YnVybi1tYWdlbnRhIHplbmJ1cm4tY3lhbgogICAgICAgICAgICAgICAgIDs7IGRpcnR5IGZpeAog
+ICAgICAgICAgICAgICAgICJ3aGl0ZSIpKSkKCihkZWZ1biBjb2xvci10aGVtZS16ZW5idXJuICgp
+CiAgKGludGVyYWN0aXZlKQogIChjb2xvci10aGVtZS1pbnN0YWxsCiAgIGAoY29sb3ItdGhlbWUt
+emVuYnVybgogICAgIDs7OyBjb2xvci10aGVtZSBtYXBwaW5nCiAgICAgKChmb3JlZ3JvdW5kLWNv
+bG9yIC4gLHplbmJ1cm4tZmcpCiAgICAgIChiYWNrZ3JvdW5kLWNvbG9yIC4gLHplbmJ1cm4tYmcp
+CiAgICAgIChiYWNrZ3JvdW5kLW1vZGUgLiBkYXJrKQogICAgICAoY3Vyc29yLWNvbG9yIC4gLHpl
+bmJ1cm4tZmcpKQoKICAgICA7OzsgZGVmaW5lIHNvbWUgcmV1c2FibGUgemVuYnVybiBmYWNlcyB0
+aGF0IHdlIGNhbiBpbmhlcml0IGZyb20gYWZ0ZXJ3YXJkcwogICAgICh6ZW5idXJuLXN0cm9uZy0x
+LWZhY2UgKCh0ICg6Zm9yZWdyb3VuZCAsemVuYnVybi15ZWxsb3cgOndlaWdodCBib2xkKSkpKQog
+ICAgICh6ZW5idXJuLXN0cm9uZy0yLWZhY2UgKCh0ICg6Zm9yZWdyb3VuZCAsemVuYnVybi1vcmFu
+Z2UgOndlaWdodCBib2xkKSkpKQogICAgICh6ZW5idXJuLXdhcm5pbmctZmFjZSAoKHQgKDpmb3Jl
+Z3JvdW5kICx6ZW5idXJuLXllbGxvdy0xIDp3ZWlnaHQgYm9sZCA6dW5kZXJsaW5lIHQpKSkpCiAg
+ICAgKHplbmJ1cm4tZXJyb3ItZmFjZSAoKHQgKDpmb3JlZ3JvdW5kICx6ZW5idXJuLXJlZC0xIDp3
+ZWlnaHQgYm9sZCA6dW5kZXJsaW5lIHQpKSkpCgogICAgIDs7OyBiYXNpYyBjb2xvdXJpbmcKICAg
+ICAoZGVmYXVsdCAoKHQgKDpmb3JlZ3JvdW5kICx6ZW5idXJuLWZnKSkpKQogICAgIChjdXJzb3IK
+ICAgICAgKCh0ICg6Zm9yZWdyb3VuZCAsemVuYnVybi1mZykpKSkKICAgICAoZXNjYXBlLWdseXBo
+LWZhY2UgKCh0ICg6Zm9yZWdyb3VuZCAsemVuYnVybi1yZWQpKSkpCiAgICAgKGZyaW5nZSAoKHQg
+KDpmb3JlZ3JvdW5kICx6ZW5idXJuLWZnIDpiYWNrZ3JvdW5kICx6ZW5idXJuLWJnKSkpKQogICAg
+IChoZWFkZXItbGluZSAoKHQgKDpmb3JlZ3JvdW5kICx6ZW5idXJuLXllbGxvdyA6YmFja2dyb3Vu
+ZCAsemVuYnVybi1iZy0xCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgOmJveCAo
+OmNvbG9yICx6ZW5idXJuLWdyZWVuIDpsaW5lLXdpZHRoIDIpKSkpKQogICAgIChoaWdobGlnaHQg
+KCh0ICg6YmFja2dyb3VuZCAsemVuYnVybi1iZysxKSkpKQoKICAgICA7OyBmYWNlcyB1c2VkIGJ5
+IGlzZWFyY2gKICAgICAoaXNlYXJjaCAoKHQgKDpmb3JlZ3JvdW5kICx6ZW5idXJuLXllbGxvdyA6
+YmFja2dyb3VuZCAsemVuYnVybi1iZy0xKSkpKQogICAgIChpc2VhcmNoLWZhaWwgKCh0ICg6Zm9y
+ZWdyb3VuZCAsemVuYnVybi1mZyA6YmFja2dyb3VuZCAsemVuYnVybi1yZWQtNCkpKSkKICAgICAo
+bGF6eS1oaWdobGlnaHQgKCh0ICg6Zm9yZWdyb3VuZCAsemVuYnVybi15ZWxsb3cgOmJhY2tncm91
+bmQgLHplbmJ1cm4tYmcrMikpKSkKCiAgICAgKG1lbnUgKCh0ICg6Zm9yZWdyb3VuZCAsemVuYnVy
+bi1mZyA6YmFja2dyb3VuZCAsemVuYnVybi1iZykpKSkKICAgICAobWluaWJ1ZmZlci1wcm9tcHQg
+KCh0ICg6Zm9yZWdyb3VuZCAsemVuYnVybi15ZWxsb3cpKSkpCiAgICAgKG1vZGUtbGluZQogICAg
+ICAoKHQgKDpmb3JlZ3JvdW5kICx6ZW5idXJuLWdyZWVuKzEgOmJhY2tncm91bmQgLHplbmJ1cm4t
+YmctMSkpKSkKICAgICAobW9kZS1saW5lLWJ1ZmZlci1pZCAoKHQgKDppbmhlcml0IHplbmJ1cm4t
+c3Ryb25nLTEtZmFjZSkpKSkKICAgICAobW9kZS1saW5lLWluYWN0aXZlCiAgICAgICgodCAoOmZv
+cmVncm91bmQgLHplbmJ1cm4tZ3JlZW4tMSAgOmJhY2tncm91bmQgLHplbmJ1cm4tYmctMSkpKSkK
+ICAgICAocmVnaW9uICgodCAoOmJhY2tncm91bmQgLHplbmJ1cm4tYmctMSkpKSkKICAgICAoc2Vj
+b25kYXJ5LXNlbGVjdGlvbiAoKHQgKDpiYWNrZ3JvdW5kICx6ZW5idXJuLWJnKzIpKSkpCiAgICAg
+KHRyYWlsaW5nLXdoaXRlc3BhY2UgKCh0ICg6YmFja2dyb3VuZCAsemVuYnVybi1yZWQpKSkpCiAg
+ICAgKHZlcnRpY2FsLWJvcmRlciAoKHQgKDpmb3JlZ3JvdW5kICx6ZW5idXJuLWZnKSkpKQoKICAg
+ICA7OzsgZm9udCBsb2NrCiAgICAgKGZvbnQtbG9jay1idWlsdGluLWZhY2UgKCh0ICg6Zm9yZWdy
+b3VuZCAsemVuYnVybi1ibHVlKSkpKQogICAgIChmb250LWxvY2stY29tbWVudC1mYWNlICgodCAo
+OmZvcmVncm91bmQgLHplbmJ1cm4tZ3JlZW4pKSkpCiAgICAgKGZvbnQtbG9jay1jb21tZW50LWRl
+bGltaXRlci1mYWNlICgodCAoOmZvcmVncm91bmQgLHplbmJ1cm4tZ3JlZW4pKSkpCiAgICAgKGZv
+bnQtbG9jay1jb25zdGFudC1mYWNlICgodCAoOmZvcmVncm91bmQgLHplbmJ1cm4tZmcpKSkpCiAg
+ICAgKGZvbnQtbG9jay1kb2MtZmFjZSAoKHQgKDpmb3JlZ3JvdW5kICx6ZW5idXJuLWdyZWVuKzEp
+KSkpCiAgICAgKGZvbnQtbG9jay1kb2Mtc3RyaW5nLWZhY2UgKCh0ICg6Zm9yZWdyb3VuZCAsemVu
+YnVybi1ibHVlKzEpKSkpCiAgICAgKGZvbnQtbG9jay1mdW5jdGlvbi1uYW1lLWZhY2UgKCh0ICg6
+Zm9yZWdyb3VuZCAsemVuYnVybi1ibHVlKSkpKQogICAgIChmb250LWxvY2sta2V5d29yZC1mYWNl
+ICgodCAoOmluaGVyaXQgemVuYnVybi1zdHJvbmctMS1mYWNlKSkpKQogICAgIChmb250LWxvY2st
+bmVnYXRpb24tY2hhci1mYWNlICgodCAoOmZvcmVncm91bmQgLHplbmJ1cm4tZmcpKSkpCiAgICAg
+KGZvbnQtbG9jay1wcmVwcm9jZXNzb3ItZmFjZSAoKHQgKDpmb3JlZ3JvdW5kICx6ZW5idXJuLWJs
+dWUpKSkpCiAgICAgKGZvbnQtbG9jay1zdHJpbmctZmFjZSAoKHQgKDpmb3JlZ3JvdW5kICx6ZW5i
+dXJuLXJlZCkpKSkKICAgICAoZm9udC1sb2NrLXR5cGUtZmFjZSAoKHQgKDpmb3JlZ3JvdW5kICx6
+ZW5idXJuLXllbGxvdykpKSkKICAgICAoZm9udC1sb2NrLXZhcmlhYmxlLW5hbWUtZmFjZSAoKHQg
+KDpmb3JlZ3JvdW5kICx6ZW5idXJuLXllbGxvdykpKSkKICAgICAoZm9udC1sb2NrLXdhcm5pbmct
+ZmFjZSAoKHQgKDppbmhlcml0IHplbmJ1cm4td2FybmluZy1mYWNlKSkpKQoKICAgICA7OzsgZXh0
+ZXJuYWwKCiAgICAgOzsgZGlmZgogICAgIChkaWZmLWFkZGVkICgodCAoOmZvcmVncm91bmQgLHpl
+bmJ1cm4tZ3JlZW4rNCkpKSkKICAgICAoZGlmZi1jaGFuZ2VkICgodCAoOmZvcmVncm91bmQgLHpl
+bmJ1cm4teWVsbG93KSkpKQogICAgIChkaWZmLXJlbW92ZWQgKCh0ICg6Zm9yZWdyb3VuZCAsemVu
+YnVybi1yZWQpKSkpCiAgICAgKGRpZmYtaGVhZGVyICgodCAoOmJhY2tncm91bmQgLHplbmJ1cm4t
+YmcrMSkpKSkKICAgICAoZGlmZi1maWxlLWhlYWRlcgogICAgICAoKHQgKDpiYWNrZ3JvdW5kICx6
+ZW5idXJuLWJnKzIgOmZvcmVncm91bmQgLHplbmJ1cm4tZmcgOmJvbGQgdCkpKSkKCiAgICAgOzsg
+ZXNoZWxsCiAgICAgKGVzaGVsbC1wcm9tcHQgKCh0ICg6aW5oZXJpdCB6ZW5idXJuLXN0cm9uZy0x
+LWZhY2UpKSkpCiAgICAgKGVzaGVsbC1scy1hcmNoaXZlICgodCAoOmZvcmVncm91bmQgLHplbmJ1
+cm4tcmVkLTEgOndlaWdodCBib2xkKSkpKQogICAgIChlc2hlbGwtbHMtYmFja3VwICgodCAoOmlu
+aGVyaXQgZm9udC1sb2NrLWNvbW1lbnQpKSkpCiAgICAgKGVzaGVsbC1scy1jbHV0dGVyICgodCAo
+OmluaGVyaXQgZm9udC1sb2NrLWNvbW1lbnQpKSkpCiAgICAgKGVzaGVsbC1scy1kaXJlY3Rvcnkg
+KCh0ICg6Zm9yZWdyb3VuZCAsemVuYnVybi1ibHVlKzEgOndlaWdodCBib2xkKSkpKQogICAgIChl
+c2hlbGwtbHMtZXhlY3V0YWJsZSAoKHQgKDpmb3JlZ3JvdW5kICx6ZW5idXJuLXJlZCsxIDp3ZWln
+aHQgYm9sZCkpKSkKICAgICAoZXNoZWxsLWxzLXVucmVhZGFibGUgKCh0ICg6Zm9yZWdyb3VuZCAs
+emVuYnVybi1mZykpKSkKICAgICAoZXNoZWxsLWxzLW1pc3NpbmcgKCh0ICg6aW5oZXJpdCBmb250
+LWxvY2std2FybmluZykpKSkKICAgICAoZXNoZWxsLWxzLXByb2R1Y3QgKCh0ICg6aW5oZXJpdCBm
+b250LWxvY2stZG9jKSkpKQogICAgIChlc2hlbGwtbHMtc3BlY2lhbCAoKHQgKDppbmhlcml0IHpl
+bmJ1cm4tc3Ryb25nLTEtZmFjZSkpKSkKICAgICAoZXNoZWxsLWxzLXN5bWxpbmsgKCh0ICg6Zm9y
+ZWdyb3VuZCAsemVuYnVybi1jeWFuIDp3ZWlnaHQgYm9sZCkpKSkKCiAgICAgOzsgZmx5bWFrZQog
+ICAgIChmbHltYWtlLWVycmxpbmUgKCh0ICg6aW5oZXJpdCB6ZW5idXJuLWVycm9yLWZhY2UpKSkp
+CiAgICAgKGZseW1ha2Utd2FybmxpbmUgKCh0ICg6aW5oZXJpdCB6ZW5idXJuLXdhcm5pbmctZmFj
+ZSkpKSkKCiAgICAgOzsgZmx5c3BlbGwKICAgICAoZmx5c3BlbGwtZHVwbGljYXRlICgodCAoOmlu
+aGVyaXQgemVuYnVybi13YXJuaW5nLWZhY2UpKSkpCiAgICAgKGZseXNwZWxsLWluY29ycmVjdCAo
+KHQgKDppbmhlcml0IHplbmJ1cm4tZXJyb3ItZmFjZSkpKSkKCiAgICAgOzsgZXJjCiAgICAgKGVy
+Yy1hY3Rpb24tZmFjZSAoKHQgKDppbmhlcml0IGVyYy1kZWZhdWx0KSkpKQogICAgIChlcmMtYm9s
+ZC1mYWNlICgodCAoOndlaWdodCBib2xkKSkpKQogICAgIChlcmMtY3VycmVudC1uaWNrLWZhY2Ug
+KCh0ICg6aW5oZXJpdCB6ZW5idXJuLXN0cm9uZy0xLWZhY2UpKSkpCiAgICAgKGVyYy1kYW5nZXJv
+dXMtaG9zdC1mYWNlICgodCAoOmluaGVyaXQgZm9udC1sb2NrLXdhcm5pbmcpKSkpCiAgICAgKGVy
+Yy1kZWZhdWx0LWZhY2UgKCh0ICg6Zm9yZWdyb3VuZCAsemVuYnVybi1mZykpKSkKICAgICAoZXJj
+LWRpcmVjdC1tc2ctZmFjZSAoKHQgKDppbmhlcml0IGVyYy1kZWZhdWx0KSkpKQogICAgIChlcmMt
+ZXJyb3ItZmFjZSAoKHQgKDppbmhlcml0IGZvbnQtbG9jay13YXJuaW5nKSkpKQogICAgIChlcmMt
+Zm9vbC1mYWNlICgodCAoOmluaGVyaXQgZXJjLWRlZmF1bHQpKSkpCiAgICAgKGVyYy1oaWdobGln
+aHQtZmFjZSAoKHQgKDppbmhlcml0IGhvdmVyLWhpZ2hsaWdodCkpKSkKICAgICAoZXJjLWlucHV0
+LWZhY2UgKCh0ICg6Zm9yZWdyb3VuZCAsemVuYnVybi15ZWxsb3cpKSkpCiAgICAgKGVyYy1rZXl3
+b3JkLWZhY2UgKCh0ICg6aW5oZXJpdCB6ZW5idXJuLXN0cm9uZy0xLWZhY2UpKSkpCiAgICAgKGVy
+Yy1uaWNrLWRlZmF1bHQtZmFjZSAoKHQgKDp3ZWlndGggYm9sZCkpKSkKICAgICAoZXJjLW5pY2st
+bXNnLWZhY2UgKCh0ICg6aW5oZXJpdCBlcmMtZGVmYXVsdCkpKSkKICAgICAoZXJjLW5vdGljZS1m
+YWNlICgodCAoOmZvcmVncm91bmQgLHplbmJ1cm4tZ3JlZW4pKSkpCiAgICAgKGVyYy1wYWwtZmFj
+ZSAoKHQgKDpmb3JlZ3JvdW5kICx6ZW5idXJuLW9yYW5nZSA6d2VpZ2h0IGJvbGQpKSkpCiAgICAg
+KGVyYy1wcm9tcHQtZmFjZSAoKHQgKDppbmhlcml0IHplbmJ1cm4tc3Ryb25nLTItZmFjZSkpKSkK
+ICAgICAoZXJjLXRpbWVzdGFtcC1mYWNlICgodCAoOmZvcmVncm91bmQgLHplbmJ1cm4tZ3JlZW4r
+MSkpKSkKICAgICAoZXJjLXVuZGVybGluZS1mYWNlICgodCAoOnVuZGVybGluZSB0KSkpKQoKICAg
+ICA7OyBnbnVzCiAgICAgKGdudXMtZ3JvdXAtbWFpbC0xLWZhY2UgKCh0ICg6Ym9sZCB0IDppbmhl
+cml0IGdudXMtZ3JvdXAtbWFpbC0xLWVtcHR5KSkpKQogICAgIChnbnVzLWdyb3VwLW1haWwtMS1l
+bXB0eS1mYWNlICgodCAoOmluaGVyaXQgZ251cy1ncm91cC1uZXdzLTEtZW1wdHkpKSkpCiAgICAg
+KGdudXMtZ3JvdXAtbWFpbC0yLWZhY2UgKCh0ICg6Ym9sZCB0IDppbmhlcml0IGdudXMtZ3JvdXAt
+bWFpbC0yLWVtcHR5KSkpKQogICAgIChnbnVzLWdyb3VwLW1haWwtMi1lbXB0eS1mYWNlICgodCAo
+OmluaGVyaXQgZ251cy1ncm91cC1uZXdzLTItZW1wdHkpKSkpCiAgICAgKGdudXMtZ3JvdXAtbWFp
+bC0zLWZhY2UgKCh0ICg6Ym9sZCB0IDppbmhlcml0IGdudXMtZ3JvdXAtbWFpbC0zLWVtcHR5KSkp
+KQogICAgIChnbnVzLWdyb3VwLW1haWwtMy1lbXB0eS1mYWNlICgodCAoOmluaGVyaXQgZ251cy1n
+cm91cC1uZXdzLTMtZW1wdHkpKSkpCiAgICAgKGdudXMtZ3JvdXAtbWFpbC00LWZhY2UgKCh0ICg6
+Ym9sZCB0IDppbmhlcml0IGdudXMtZ3JvdXAtbWFpbC00LWVtcHR5KSkpKQogICAgIChnbnVzLWdy
+b3VwLW1haWwtNC1lbXB0eS1mYWNlICgodCAoOmluaGVyaXQgZ251cy1ncm91cC1uZXdzLTQtZW1w
+dHkpKSkpCiAgICAgKGdudXMtZ3JvdXAtbWFpbC01LWZhY2UgKCh0ICg6Ym9sZCB0IDppbmhlcml0
+IGdudXMtZ3JvdXAtbWFpbC01LWVtcHR5KSkpKQogICAgIChnbnVzLWdyb3VwLW1haWwtNS1lbXB0
+eS1mYWNlICgodCAoOmluaGVyaXQgZ251cy1ncm91cC1uZXdzLTUtZW1wdHkpKSkpCiAgICAgKGdu
+dXMtZ3JvdXAtbWFpbC02LWZhY2UgKCh0ICg6Ym9sZCB0IDppbmhlcml0IGdudXMtZ3JvdXAtbWFp
+bC02LWVtcHR5KSkpKQogICAgIChnbnVzLWdyb3VwLW1haWwtNi1lbXB0eS1mYWNlICgodCAoOmlu
+aGVyaXQgZ251cy1ncm91cC1uZXdzLTYtZW1wdHkpKSkpCiAgICAgKGdudXMtZ3JvdXAtbWFpbC1s
+b3ctZmFjZSAoKHQgKDpib2xkIHQgOmluaGVyaXQgZ251cy1ncm91cC1tYWlsLWxvdy1lbXB0eSkp
+KSkKICAgICAoZ251cy1ncm91cC1tYWlsLWxvdy1lbXB0eS1mYWNlICgodCAoOmluaGVyaXQgZ251
+cy1ncm91cC1uZXdzLWxvdy1lbXB0eSkpKSkKICAgICAoZ251cy1ncm91cC1uZXdzLTEtZmFjZSAo
+KHQgKDpib2xkIHQgOmluaGVyaXQgZ251cy1ncm91cC1uZXdzLTEtZW1wdHkpKSkpCiAgICAgKGdu
+dXMtZ3JvdXAtbmV3cy0yLWZhY2UgKCh0ICg6Ym9sZCB0IDppbmhlcml0IGdudXMtZ3JvdXAtbmV3
+cy0yLWVtcHR5KSkpKQogICAgIChnbnVzLWdyb3VwLW5ld3MtMy1mYWNlICgodCAoOmJvbGQgdCA6
+aW5oZXJpdCBnbnVzLWdyb3VwLW5ld3MtMy1lbXB0eSkpKSkKICAgICAoZ251cy1ncm91cC1uZXdz
+LTQtZmFjZSAoKHQgKDpib2xkIHQgOmluaGVyaXQgZ251cy1ncm91cC1uZXdzLTQtZW1wdHkpKSkp
+CiAgICAgKGdudXMtZ3JvdXAtbmV3cy01LWZhY2UgKCh0ICg6Ym9sZCB0IDppbmhlcml0IGdudXMt
+Z3JvdXAtbmV3cy01LWVtcHR5KSkpKQogICAgIChnbnVzLWdyb3VwLW5ld3MtNi1mYWNlICgodCAo
+OmJvbGQgdCA6aW5oZXJpdCBnbnVzLWdyb3VwLW5ld3MtNi1lbXB0eSkpKSkKICAgICAoZ251cy1n
+cm91cC1uZXdzLWxvdy1mYWNlICgodCAoOmJvbGQgdCA6aW5oZXJpdCBnbnVzLWdyb3VwLW5ld3Mt
+bG93LWVtcHR5KSkpKQogICAgIChnbnVzLWhlYWRlci1jb250ZW50LWZhY2UgKCh0ICg6aW5oZXJp
+dCBtZXNzYWdlLWhlYWRlci1vdGhlcikpKSkKICAgICAoZ251cy1oZWFkZXItZnJvbS1mYWNlICgo
+dCAoOmluaGVyaXQgbWVzc2FnZS1oZWFkZXItZnJvbSkpKSkKICAgICAoZ251cy1oZWFkZXItbmFt
+ZS1mYWNlICgodCAoOmluaGVyaXQgbWVzc2FnZS1oZWFkZXItbmFtZSkpKSkKICAgICAoZ251cy1o
+ZWFkZXItbmV3c2dyb3Vwcy1mYWNlICgodCAoOmluaGVyaXQgbWVzc2FnZS1oZWFkZXItb3RoZXIp
+KSkpCiAgICAgKGdudXMtaGVhZGVyLXN1YmplY3QtZmFjZSAoKHQgKDppbmhlcml0IG1lc3NhZ2Ut
+aGVhZGVyLXN1YmplY3QpKSkpCiAgICAgKGdudXMtc3VtbWFyeS1jYW5jZWxsZWQtZmFjZSAoKHQg
+KDpmb3JlZ3JvdW5kICx6ZW5idXJuLW9yYW5nZSkpKSkKICAgICAoZ251cy1zdW1tYXJ5LWhpZ2gt
+YW5jaWVudC1mYWNlICgodCAoOmZvcmVncm91bmQgLHplbmJ1cm4tYmx1ZSkpKSkKICAgICAoZ251
+cy1zdW1tYXJ5LWhpZ2gtcmVhZC1mYWNlICgodCAoOmZvcmVncm91bmQgLHplbmJ1cm4tZ3JlZW4g
+OndlaWdodCBib2xkKSkpKQogICAgIChnbnVzLXN1bW1hcnktaGlnaC10aWNrZWQtZmFjZSAoKHQg
+KDppbmhlcml0IHplbmJ1cm4tc3Ryb25nLTItZmFjZSkpKSkKICAgICAoZ251cy1zdW1tYXJ5LWhp
+Z2gtdW5yZWFkLWZhY2UgKCh0ICg6Zm9yZWdyb3VuZCAsemVuYnVybi1mZyA6d2VpZ2h0IGJvbGQp
+KSkpCiAgICAgKGdudXMtc3VtbWFyeS1sb3ctYW5jaWVudC1mYWNlICgodCAoOmZvcmVncm91bmQg
+LHplbmJ1cm4tYmx1ZSkpKSkKICAgICAoZ251cy1zdW1tYXJ5LWxvdy1yZWFkLWZhY2UgKCh0ICg6
+Zm9yZWdyb3VuZCAsemVuYnVybi1ncmVlbikpKSkKICAgICAoZ251cy1zdW1tYXJ5LWxvdy10aWNr
+ZWQtZmFjZSAoKHQgKDppbmhlcml0IHplbmJ1cm4tc3Ryb25nLTItZmFjZSkpKSkKICAgICAoZ251
+cy1zdW1tYXJ5LWxvdy11bnJlYWQtZmFjZSAoKHQgKDpmb3JlZ3JvdW5kICx6ZW5idXJuLWZnKSkp
+KQogICAgIChnbnVzLXN1bW1hcnktbm9ybWFsLWFuY2llbnQtZmFjZSAoKHQgKDpmb3JlZ3JvdW5k
+ICx6ZW5idXJuLWJsdWUpKSkpCiAgICAgKGdudXMtc3VtbWFyeS1ub3JtYWwtcmVhZC1mYWNlICgo
+dCAoOmZvcmVncm91bmQgLHplbmJ1cm4tZ3JlZW4pKSkpCiAgICAgKGdudXMtc3VtbWFyeS1ub3Jt
+YWwtdGlja2VkLWZhY2UgKCh0ICg6aW5oZXJpdCB6ZW5idXJuLXN0cm9uZy0yLWZhY2UpKSkpCiAg
+ICAgKGdudXMtc3VtbWFyeS1ub3JtYWwtdW5yZWFkLWZhY2UgKCh0ICg6Zm9yZWdyb3VuZCAsemVu
+YnVybi1mZykpKSkKICAgICAoZ251cy1zdW1tYXJ5LXNlbGVjdGVkLWZhY2UgKCh0ICg6aW5oZXJp
+dCB6ZW5idXJuLXN0cm9uZy0xLWZhY2UpKSkpCiAgICAgKGdudXMtY2l0ZS0xLWZhY2UgKCh0ICg6
+Zm9yZWdyb3VuZCAsemVuYnVybi1ibHVlKSkpKQogICAgIChnbnVzLWNpdGUtMTAtZmFjZSAoKHQg
+KDpmb3JlZ3JvdW5kICx6ZW5idXJuLXllbGxvdy0xKSkpKQogICAgIChnbnVzLWNpdGUtMTEtZmFj
+ZSAoKHQgKDpmb3JlZ3JvdW5kICx6ZW5idXJuLXllbGxvdykpKSkKICAgICAoZ251cy1jaXRlLTIt
+ZmFjZSAoKHQgKDpmb3JlZ3JvdW5kICx6ZW5idXJuLWJsdWUtMSkpKSkKICAgICAoZ251cy1jaXRl
+LTMtZmFjZSAoKHQgKDpmb3JlZ3JvdW5kICx6ZW5idXJuLWJsdWUtMikpKSkKICAgICAoZ251cy1j
+aXRlLTQtZmFjZSAoKHQgKDpmb3JlZ3JvdW5kICx6ZW5idXJuLWdyZWVuKzIpKSkpCiAgICAgKGdu
+dXMtY2l0ZS01LWZhY2UgKCh0ICg6Zm9yZWdyb3VuZCAsemVuYnVybi1ncmVlbisxKSkpKQogICAg
+IChnbnVzLWNpdGUtNi1mYWNlICgodCAoOmZvcmVncm91bmQgLHplbmJ1cm4tZ3JlZW4pKSkpCiAg
+ICAgKGdudXMtY2l0ZS03LWZhY2UgKCh0ICg6Zm9yZWdyb3VuZCAsemVuYnVybi1yZWQpKSkpCiAg
+ICAgKGdudXMtY2l0ZS04LWZhY2UgKCh0ICg6Zm9yZWdyb3VuZCAsemVuYnVybi1yZWQtMSkpKSkK
+ICAgICAoZ251cy1jaXRlLTktZmFjZSAoKHQgKDpmb3JlZ3JvdW5kICx6ZW5idXJuLXJlZC0yKSkp
+KQogICAgIChnbnVzLWdyb3VwLW5ld3MtMS1lbXB0eS1mYWNlICgodCAoOmZvcmVncm91bmQgLHpl
+bmJ1cm4teWVsbG93KSkpKQogICAgIChnbnVzLWdyb3VwLW5ld3MtMi1lbXB0eS1mYWNlICgodCAo
+OmZvcmVncm91bmQgLHplbmJ1cm4tZ3JlZW4rMykpKSkKICAgICAoZ251cy1ncm91cC1uZXdzLTMt
+ZW1wdHktZmFjZSAoKHQgKDpmb3JlZ3JvdW5kICx6ZW5idXJuLWdyZWVuKzEpKSkpCiAgICAgKGdu
+dXMtZ3JvdXAtbmV3cy00LWVtcHR5LWZhY2UgKCh0ICg6Zm9yZWdyb3VuZCAsemVuYnVybi1ibHVl
+LTIpKSkpCiAgICAgKGdudXMtZ3JvdXAtbmV3cy01LWVtcHR5LWZhY2UgKCh0ICg6Zm9yZWdyb3Vu
+ZCAsemVuYnVybi1ibHVlLTMpKSkpCiAgICAgKGdudXMtZ3JvdXAtbmV3cy02LWVtcHR5LWZhY2Ug
+KCh0ICg6Zm9yZWdyb3VuZCAsemVuYnVybi1iZysyKSkpKQogICAgIChnbnVzLWdyb3VwLW5ld3Mt
+bG93LWVtcHR5LWZhY2UgKCh0ICg6Zm9yZWdyb3VuZCAsemVuYnVybi1iZysyKSkpKQogICAgIChn
+bnVzLXNpZ25hdHVyZS1mYWNlICgodCAoOmZvcmVncm91bmQgLHplbmJ1cm4teWVsbG93KSkpKQog
+ICAgIChnbnVzLXgtZmFjZSAoKHQgKDpiYWNrZ3JvdW5kICx6ZW5idXJuLWZnIDpmb3JlZ3JvdW5k
+ICx6ZW5idXJuLWJnKSkpKQoKICAgICA7OyBobC1saW5lLW1vZGUKICAgICAoaGwtbGluZS1mYWNl
+ICgodCAoOmJhY2tncm91bmQgLHplbmJ1cm4tYmctMSkpKSkKCiAgICAgOzsgaWRvLW1vZGUKICAg
+ICAoaWRvLWZpcnN0LW1hdGNoICgodCAoOmluaGVyaXQgemVuYnVybi1zdHJvbmctMS1mYWNlKSkp
+KQogICAgIChpZG8tb25seS1tYXRjaCAoKHQgKDppbmhlcml0IHplbmJ1cm4tc3Ryb25nLTItZmFj
+ZSkpKSkKICAgICAoaWRvLXN1YmRpciAoKHQgKDpmb3JlZ3JvdW5kICx6ZW5idXJuLXllbGxvdykp
+KSkKCiAgICAgOzsgbWFnaXQKICAgICAobWFnaXQtc2VjdGlvbi10aXRsZSAoKHQgKDppbmhlcml0
+IHplbmJ1cm4tc3Ryb25nLTEtZmFjZSkpKSkKICAgICAobWFnaXQtYnJhbmNoICgodCAoOmluaGVy
+aXQgemVuYnVybi1zdHJvbmctMi1mYWNlKSkpKQoKICAgICA7OyBtZXNzYWdlLW1vZGUKICAgICAo
+bWVzc2FnZS1jaXRlZC10ZXh0LWZhY2UgKCh0ICg6aW5oZXJpdCBmb250LWxvY2stY29tbWVudCkp
+KSkKICAgICAobWVzc2FnZS1oZWFkZXItbmFtZS1mYWNlICgodCAoOmZvcmVncm91bmQgLHplbmJ1
+cm4tZ3JlZW4rMSkpKSkKICAgICAobWVzc2FnZS1oZWFkZXItb3RoZXItZmFjZSAoKHQgKDpmb3Jl
+Z3JvdW5kICx6ZW5idXJuLWdyZWVuKSkpKQogICAgIChtZXNzYWdlLWhlYWRlci10by1mYWNlICgo
+dCAoOmluaGVyaXQgemVuYnVybi1zdHJvbmctMS1mYWNlKSkpKQogICAgIChtZXNzYWdlLWhlYWRl
+ci1mcm9tLWZhY2UgKCh0ICg6aW5oZXJpdCB6ZW5idXJuLXN0cm9uZy0xLWZhY2UpKSkpCiAgICAg
+KG1lc3NhZ2UtaGVhZGVyLWNjLWZhY2UgKCh0ICg6aW5oZXJpdCB6ZW5idXJuLXN0cm9uZy0xLWZh
+Y2UpKSkpCiAgICAgKG1lc3NhZ2UtaGVhZGVyLW5ld3Nncm91cHMtZmFjZSAoKHQgKDppbmhlcml0
+IHplbmJ1cm4tc3Ryb25nLTEtZmFjZSkpKSkKICAgICAobWVzc2FnZS1oZWFkZXItc3ViamVjdC1m
+YWNlICgodCAoOmluaGVyaXQgemVuYnVybi1zdHJvbmctMi1mYWNlKSkpKQogICAgIChtZXNzYWdl
+LWhlYWRlci14aGVhZGVyLWZhY2UgKCh0ICg6Zm9yZWdyb3VuZCAsemVuYnVybi1ncmVlbikpKSkK
+ICAgICAobWVzc2FnZS1tbWwtZmFjZSAoKHQgKDppbmhlcml0IHplbmJ1cm4tc3Ryb25nLTEtZmFj
+ZSkpKSkKICAgICAobWVzc2FnZS1zZXBhcmF0b3ItZmFjZSAoKHQgKDppbmhlcml0IGZvbnQtbG9j
+ay1jb21tZW50KSkpKQoKICAgICA7OyBtZXcKICAgICAobWV3LWZhY2UtaGVhZGVyLXN1YmplY3Qg
+KCh0ICg6Zm9yZWdyb3VuZCAsemVuYnVybi1vcmFuZ2UpKSkpCiAgICAgKG1ldy1mYWNlLWhlYWRl
+ci1mcm9tICgodCAoOmZvcmVncm91bmQgLHplbmJ1cm4teWVsbG93KSkpKQogICAgIChtZXctZmFj
+ZS1oZWFkZXItZGF0ZSAoKHQgKDpmb3JlZ3JvdW5kICx6ZW5idXJuLWdyZWVuKSkpKQogICAgICht
+ZXctZmFjZS1oZWFkZXItdG8gKCh0ICg6Zm9yZWdyb3VuZCAsemVuYnVybi1yZWQpKSkpCiAgICAg
+KG1ldy1mYWNlLWhlYWRlci1rZXkgKCh0ICg6Zm9yZWdyb3VuZCAsemVuYnVybi1ncmVlbikpKSkK
+ICAgICAobWV3LWZhY2UtaGVhZGVyLXByaXZhdGUgKCh0ICg6Zm9yZWdyb3VuZCAsemVuYnVybi1n
+cmVlbikpKSkKICAgICAobWV3LWZhY2UtaGVhZGVyLWltcG9ydGFudCAoKHQgKDpmb3JlZ3JvdW5k
+ICx6ZW5idXJuLWJsdWUpKSkpCiAgICAgKG1ldy1mYWNlLWhlYWRlci1tYXJnaW5hbCAoKHQgKDpm
+b3JlZ3JvdW5kICx6ZW5idXJuLWZnIDp3ZWlnaHQgYm9sZCkpKSkKICAgICAobWV3LWZhY2UtaGVh
+ZGVyLXdhcm5pbmcgKCh0ICg6Zm9yZWdyb3VuZCAsemVuYnVybi1yZWQpKSkpCiAgICAgKG1ldy1m
+YWNlLWhlYWRlci14bWV3ICgodCAoOmZvcmVncm91bmQgLHplbmJ1cm4tZ3JlZW4pKSkpCiAgICAg
+KG1ldy1mYWNlLWhlYWRlci14bWV3LWJhZCAoKHQgKDpmb3JlZ3JvdW5kICx6ZW5idXJuLXJlZCkp
+KSkKICAgICAobWV3LWZhY2UtYm9keS11cmwgKCh0ICg6Zm9yZWdyb3VuZCAsemVuYnVybi1vcmFu
+Z2UpKSkpCiAgICAgKG1ldy1mYWNlLWJvZHktY29tbWVudCAoKHQgKDpmb3JlZ3JvdW5kICx6ZW5i
+dXJuLWZnIDpzbGFudCBpdGFsaWMpKSkpCiAgICAgKG1ldy1mYWNlLWJvZHktY2l0ZTEgKCh0ICg6
+Zm9yZWdyb3VuZCAsemVuYnVybi1ncmVlbikpKSkKICAgICAobWV3LWZhY2UtYm9keS1jaXRlMiAo
+KHQgKDpmb3JlZ3JvdW5kICx6ZW5idXJuLWJsdWUpKSkpCiAgICAgKG1ldy1mYWNlLWJvZHktY2l0
+ZTMgKCh0ICg6Zm9yZWdyb3VuZCAsemVuYnVybi1vcmFuZ2UpKSkpCiAgICAgKG1ldy1mYWNlLWJv
+ZHktY2l0ZTQgKCh0ICg6Zm9yZWdyb3VuZCAsemVuYnVybi15ZWxsb3cpKSkpCiAgICAgKG1ldy1m
+YWNlLWJvZHktY2l0ZTUgKCh0ICg6Zm9yZWdyb3VuZCAsemVuYnVybi1yZWQpKSkpCiAgICAgKG1l
+dy1mYWNlLW1hcmstcmV2aWV3ICgodCAoOmZvcmVncm91bmQgLHplbmJ1cm4tYmx1ZSkpKSkKICAg
+ICAobWV3LWZhY2UtbWFyay1lc2NhcGUgKCh0ICg6Zm9yZWdyb3VuZCAsemVuYnVybi1ncmVlbikp
+KSkKICAgICAobWV3LWZhY2UtbWFyay1kZWxldGUgKCh0ICg6Zm9yZWdyb3VuZCAsemVuYnVybi1y
+ZWQpKSkpCiAgICAgKG1ldy1mYWNlLW1hcmstdW5saW5rICgodCAoOmZvcmVncm91bmQgLHplbmJ1
+cm4teWVsbG93KSkpKQogICAgIChtZXctZmFjZS1tYXJrLXJlZmlsZSAoKHQgKDpmb3JlZ3JvdW5k
+ICx6ZW5idXJuLWdyZWVuKSkpKQogICAgIChtZXctZmFjZS1tYXJrLXVucmVhZCAoKHQgKDpmb3Jl
+Z3JvdW5kICx6ZW5idXJuLXJlZC0yKSkpKQogICAgIChtZXctZmFjZS1lb2YtbWVzc2FnZSAoKHQg
+KDpmb3JlZ3JvdW5kICx6ZW5idXJuLWdyZWVuKSkpKQogICAgIChtZXctZmFjZS1lb2YtcGFydCAo
+KHQgKDpmb3JlZ3JvdW5kICx6ZW5idXJuLXllbGxvdykpKSkKCiAgICAgOzsgbmF2CiAgICAgKG5h
+di1mYWNlLWhlYWRpbmcgKCh0ICg6Zm9yZWdyb3VuZCAsemVuYnVybi15ZWxsb3cpKSkpCiAgICAg
+KG5hdi1mYWNlLWJ1dHRvbi1udW0gKCh0ICg6Zm9yZWdyb3VuZCAsemVuYnVybi1jeWFuKSkpKQog
+ICAgIChuYXYtZmFjZS1kaXIgKCh0ICg6Zm9yZWdyb3VuZCAsemVuYnVybi1ncmVlbikpKSkKICAg
+ICAobmF2LWZhY2UtaGRpciAoKHQgKDpmb3JlZ3JvdW5kICx6ZW5idXJuLXJlZCkpKSkKICAgICAo
+bmF2LWZhY2UtZmlsZSAoKHQgKDpmb3JlZ3JvdW5kICx6ZW5idXJuLWZnKSkpKQogICAgIChuYXYt
+ZmFjZS1oZmlsZSAoKHQgKDpmb3JlZ3JvdW5kICx6ZW5idXJuLXJlZC00KSkpKQoKICAgICA7OyBv
+cmctbW9kZQogICAgIChvcmctYWdlbmRhLWRhdGUtdG9kYXktZmFjZQogICAgICAoKHQgKDpmb3Jl
+Z3JvdW5kICJ3aGl0ZSIgOnNsYW50IGl0YWxpYyA6d2VpZ2h0IGJvbGQpKSkgdCkKICAgICAob3Jn
+LWFnZW5kYS1zdHJ1Y3R1cmUtZmFjZQogICAgICAoKHQgKDppbmhlcml0IGZvbnQtbG9jay1jb21t
+ZW50LWZhY2UpKSkpCiAgICAgKG9yZy1hcmNoaXZlZC1mYWNlICgodCAoOmZvcmVncm91bmQgLHpl
+bmJ1cm4tZmcgOndlaWdodCBib2xkKSkpKQogICAgIChvcmctY2hlY2tib3gtZmFjZSAoKHQgKDpi
+YWNrZ3JvdW5kICx6ZW5idXJuLWJnKzIgOmZvcmVncm91bmQgIndoaXRlIgogICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgIDpib3ggKDpsaW5lLXdpZHRoIDEgOnN0eWxlIHJl
+bGVhc2VkLWJ1dHRvbikpKSkpCiAgICAgKG9yZy1kYXRlLWZhY2UgKCh0ICg6Zm9yZWdyb3VuZCAs
+emVuYnVybi1ibHVlIDp1bmRlcmxpbmUgdCkpKSkKICAgICAob3JnLWRlYWRsaW5lLWFubm91bmNl
+LWZhY2UgKCh0ICg6Zm9yZWdyb3VuZCAsemVuYnVybi1yZWQtMSkpKSkKICAgICAob3JnLWRvbmUt
+ZmFjZSAoKHQgKDpib2xkIHQgOndlaWdodCBib2xkIDpmb3JlZ3JvdW5kICx6ZW5idXJuLWdyZWVu
+KzMpKSkpCiAgICAgKG9yZy1mb3JtdWxhLWZhY2UgKCh0ICg6Zm9yZWdyb3VuZCAsemVuYnVybi15
+ZWxsb3ctMikpKSkKICAgICAob3JnLWhlYWRsaW5lLWRvbmUtZmFjZSAoKHQgKDpmb3JlZ3JvdW5k
+ICx6ZW5idXJuLWdyZWVuKzMpKSkpCiAgICAgKG9yZy1oaWRlLWZhY2UgKCh0ICg6Zm9yZWdyb3Vu
+ZCAsemVuYnVybi1iZy0xKSkpKQogICAgIChvcmctbGV2ZWwtMS1mYWNlICgodCAoOmZvcmVncm91
+bmQgLHplbmJ1cm4tb3JhbmdlKSkpKQogICAgIChvcmctbGV2ZWwtMi1mYWNlICgodCAoOmZvcmVn
+cm91bmQgLHplbmJ1cm4teWVsbG93KSkpKQogICAgIChvcmctbGV2ZWwtMy1mYWNlICgodCAoOmZv
+cmVncm91bmQgLHplbmJ1cm4tYmx1ZSkpKSkKICAgICAob3JnLWxldmVsLTQtZmFjZSAgKCh0ICg6
+Zm9yZWdyb3VuZCAsemVuYnVybi1jeWFuKSkpKQogICAgIChvcmctbGV2ZWwtNS1mYWNlICAoKHQg
+KDpmb3JlZ3JvdW5kICx6ZW5idXJuLWJsdWUtMSkpKSkKICAgICAob3JnLWxldmVsLTYtZmFjZSAg
+KCh0ICg6Zm9yZWdyb3VuZCAsemVuYnVybi1ibHVlLTIpKSkpCiAgICAgKG9yZy1sZXZlbC03LWZh
+Y2UgICgodCAoOmZvcmVncm91bmQgLHplbmJ1cm4tYmx1ZS0zKSkpKQogICAgIChvcmctbGV2ZWwt
+OC1mYWNlICgodCAoOmZvcmVncm91bmQgLHplbmJ1cm4tYmx1ZS00KSkpKQogICAgIChvcmctbGlu
+ay1mYWNlICgodCAoOmZvcmVncm91bmQgLHplbmJ1cm4teWVsbG93LTIgOnVuZGVybGluZSB0KSkp
+KQogICAgIChvcmctc2NoZWR1bGVkLWZhY2UgKCh0ICg6Zm9yZWdyb3VuZCAsemVuYnVybi1ncmVl
+bis0KSkpKQogICAgIChvcmctc2NoZWR1bGVkLXByZXZpb3VzbHktZmFjZSAoKHQgKDpmb3JlZ3Jv
+dW5kICx6ZW5idXJuLXJlZC00KSkpKQogICAgIChvcmctc2NoZWR1bGVkLXRvZGF5LWZhY2UgKCh0
+ICg6Zm9yZWdyb3VuZCAsemVuYnVybi1ibHVlKzEpKSkpCiAgICAgKG9yZy1zcGVjaWFsLWtleXdv
+cmQtZmFjZSAoKHQgKDpmb3JlZ3JvdW5kICx6ZW5idXJuLXllbGxvdy0xKSkpKQogICAgIChvcmct
+dGFibGUtZmFjZSAoKHQgKDpmb3JlZ3JvdW5kICx6ZW5idXJuLWdyZWVuKzIpKSkpCiAgICAgKG9y
+Zy10YWctZmFjZSAoKHQgKDpib2xkIHQgOndlaWdodCBib2xkKSkpKQogICAgIChvcmctdGltZS1n
+cmlkLWZhY2UgKCh0ICg6Zm9yZWdyb3VuZCAsemVuYnVybi1vcmFuZ2UpKSkpCiAgICAgKG9yZy10
+b2RvLWZhY2UgKCh0ICg6Ym9sZCB0IDpmb3JlZ3JvdW5kICx6ZW5idXJuLXJlZCA6d2VpZ2h0IGJv
+bGQpKSkpCiAgICAgKG9yZy11cGNvbWluZy1kZWFkbGluZS1mYWNlICgodCAoOmluaGVyaXQgZm9u
+dC1sb2NrLWtleXdvcmQtZmFjZSkpKSkKICAgICAob3JnLXdhcm5pbmctZmFjZSAoKHQgKDpib2xk
+IHQgOmZvcmVncm91bmQgLHplbmJ1cm4tcmVkIDp3ZWlnaHQgYm9sZCkpKSkKCiAgICAgOzsgb3V0
+bGluZQogICAgIChvdXRsaW5lLTgtZmFjZSAoKHQgKDppbmhlcml0IGRlZmF1bHQpKSkpCiAgICAg
+KG91dGxpbmUtNy1mYWNlICgodCAoOmluaGVyaXQgb3V0bGluZS04IDpoZWlnaHQgMS4wKSkpKQog
+ICAgIChvdXRsaW5lLTYtZmFjZSAoKHQgKDppbmhlcml0IG91dGxpbmUtNyA6aGVpZ2h0IDEuMCkp
+KSkKICAgICAob3V0bGluZS01LWZhY2UgKCh0ICg6aW5oZXJpdCBvdXRsaW5lLTYgOmhlaWdodCAx
+LjApKSkpCiAgICAgKG91dGxpbmUtNC1mYWNlICgodCAoOmluaGVyaXQgb3V0bGluZS01IDpoZWln
+aHQgMS4wKSkpKQogICAgIChvdXRsaW5lLTMtZmFjZSAoKHQgKDppbmhlcml0IG91dGxpbmUtNCA6
+aGVpZ2h0IDEuMCkpKSkKICAgICAob3V0bGluZS0yLWZhY2UgKCh0ICg6aW5oZXJpdCBvdXRsaW5l
+LTMgOmhlaWdodCAxLjApKSkpCiAgICAgKG91dGxpbmUtMS1mYWNlICgodCAoOmluaGVyaXQgb3V0
+bGluZS0yIDpoZWlnaHQgMS4wKSkpKQoKICAgICA7OyBycG0tbW9kZQogICAgIChycG0tc3BlYy1k
+aXItZmFjZSAoKHQgKDpmb3JlZ3JvdW5kICx6ZW5idXJuLWdyZWVuKSkpKQogICAgIChycG0tc3Bl
+Yy1kb2MtZmFjZSAoKHQgKDpmb3JlZ3JvdW5kICx6ZW5idXJuLWdyZWVuKSkpKQogICAgIChycG0t
+c3BlYy1naG9zdC1mYWNlICgodCAoOmZvcmVncm91bmQgLHplbmJ1cm4tcmVkKSkpKQogICAgIChy
+cG0tc3BlYy1tYWNyby1mYWNlICgodCAoOmZvcmVncm91bmQgLHplbmJ1cm4teWVsbG93KSkpKQog
+ICAgIChycG0tc3BlYy1vYnNvbGV0ZS10YWctZmFjZSAoKHQgKDpmb3JlZ3JvdW5kICx6ZW5idXJu
+LXJlZCkpKSkKICAgICAocnBtLXNwZWMtcGFja2FnZS1mYWNlICgodCAoOmZvcmVncm91bmQgLHpl
+bmJ1cm4tcmVkKSkpKQogICAgIChycG0tc3BlYy1zZWN0aW9uLWZhY2UgKCh0ICg6Zm9yZWdyb3Vu
+ZCAsemVuYnVybi15ZWxsb3cpKSkpCiAgICAgKHJwbS1zcGVjLXRhZy1mYWNlICgodCAoOmZvcmVn
+cm91bmQgLHplbmJ1cm4tYmx1ZSkpKSkKICAgICAocnBtLXNwZWMtdmFyLWZhY2UgKCh0ICg6Zm9y
+ZWdyb3VuZCAsemVuYnVybi1yZWQpKSkpCgogICAgIDs7IHNob3ctcGFyZW4KICAgICAoc2hvdy1w
+YXJlbi1taXNtYXRjaCAoKHQgKDppbmhlcml0IGZvbnQtbG9jay13YXJuaW5nKSkpKQogICAgIChz
+aG93LXBhcmVuLW1hdGNoICgodCAoOmZvcmVncm91bmQgLHplbmJ1cm4tYmx1ZS0xIDp3ZWlnaHQg
+Ym9sZCkpKSkKCiAgICAgOzsgd2FuZGVybHVzdAogICAgICh3bC1oaWdobGlnaHQtZm9sZGVyLWZl
+dy1mYWNlICgodCAoOmZvcmVncm91bmQgLHplbmJ1cm4tcmVkLTIpKSkpCiAgICAgKHdsLWhpZ2hs
+aWdodC1mb2xkZXItbWFueS1mYWNlICgodCAoOmZvcmVncm91bmQgLHplbmJ1cm4tcmVkLTEpKSkp
+CiAgICAgKHdsLWhpZ2hsaWdodC1mb2xkZXItcGF0aC1mYWNlICgodCAoOmZvcmVncm91bmQgLHpl
+bmJ1cm4tb3JhbmdlKSkpKQogICAgICh3bC1oaWdobGlnaHQtZm9sZGVyLXVucmVhZC1mYWNlICgo
+dCAoOmZvcmVncm91bmQgLHplbmJ1cm4tYmx1ZSkpKSkKICAgICAod2wtaGlnaGxpZ2h0LWZvbGRl
+ci16ZXJvLWZhY2UgKCh0ICg6Zm9yZWdyb3VuZCAsemVuYnVybi1mZykpKSkKICAgICAod2wtaGln
+aGxpZ2h0LWZvbGRlci11bmtub3duLWZhY2UgKCh0ICg6Zm9yZWdyb3VuZCAsemVuYnVybi1ibHVl
+KSkpKQogICAgICh3bC1oaWdobGlnaHQtbWVzc2FnZS1jaXRhdGlvbi1oZWFkZXIgKCh0ICg6Zm9y
+ZWdyb3VuZCAsemVuYnVybi1yZWQtMSkpKSkKICAgICAod2wtaGlnaGxpZ2h0LW1lc3NhZ2UtY2l0
+ZWQtdGV4dC0xICgodCAoOmZvcmVncm91bmQgLHplbmJ1cm4tcmVkKSkpKQogICAgICh3bC1oaWdo
+bGlnaHQtbWVzc2FnZS1jaXRlZC10ZXh0LTIgKCh0ICg6Zm9yZWdyb3VuZCAsemVuYnVybi1ncmVl
+bisyKSkpKQogICAgICh3bC1oaWdobGlnaHQtbWVzc2FnZS1jaXRlZC10ZXh0LTMgKCh0ICg6Zm9y
+ZWdyb3VuZCAsemVuYnVybi1ibHVlKSkpKQogICAgICh3bC1oaWdobGlnaHQtbWVzc2FnZS1jaXRl
+ZC10ZXh0LTQgKCh0ICg6Zm9yZWdyb3VuZCAsemVuYnVybi1ibHVlKzEpKSkpCiAgICAgKHdsLWhp
+Z2hsaWdodC1tZXNzYWdlLWhlYWRlci1jb250ZW50cy1mYWNlICgodCAoOmZvcmVncm91bmQgLHpl
+bmJ1cm4tZ3JlZW4pKSkpCiAgICAgKHdsLWhpZ2hsaWdodC1tZXNzYWdlLWhlYWRlcnMtZmFjZSAo
+KHQgKDpmb3JlZ3JvdW5kICx6ZW5idXJuLXJlZCsxKSkpKQogICAgICh3bC1oaWdobGlnaHQtbWVz
+c2FnZS1pbXBvcnRhbnQtaGVhZGVyLWNvbnRlbnRzICgodCAoOmZvcmVncm91bmQgLHplbmJ1cm4t
+Z3JlZW4rMikpKSkKICAgICAod2wtaGlnaGxpZ2h0LW1lc3NhZ2UtaGVhZGVyLWNvbnRlbnRzICgo
+dCAoOmZvcmVncm91bmQgLHplbmJ1cm4tZ3JlZW4rMSkpKSkKICAgICAod2wtaGlnaGxpZ2h0LW1l
+c3NhZ2UtaW1wb3J0YW50LWhlYWRlci1jb250ZW50czIgKCh0ICg6Zm9yZWdyb3VuZCAsemVuYnVy
+bi1ncmVlbisyKSkpKQogICAgICh3bC1oaWdobGlnaHQtbWVzc2FnZS1zaWduYXR1cmUgKCh0ICg6
+Zm9yZWdyb3VuZCAsemVuYnVybi1ncmVlbikpKSkKICAgICAod2wtaGlnaGxpZ2h0LW1lc3NhZ2Ut
+dW5pbXBvcnRhbnQtaGVhZGVyLWNvbnRlbnRzICgodCAoOmZvcmVncm91bmQgLHplbmJ1cm4tZmcp
+KSkpCiAgICAgKHdsLWhpZ2hsaWdodC1zdW1tYXJ5LWFuc3dlcmVkLWZhY2UgKCh0ICg6Zm9yZWdy
+b3VuZCAsemVuYnVybi1ibHVlKSkpKQogICAgICh3bC1oaWdobGlnaHQtc3VtbWFyeS1kaXNwb3Nl
+ZC1mYWNlICgodCAoOmZvcmVncm91bmQgLHplbmJ1cm4tZmcKICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIDpzbGFudCBpdGFsaWMpKSkpCiAg
+ICAgKHdsLWhpZ2hsaWdodC1zdW1tYXJ5LW5ldy1mYWNlICgodCAoOmZvcmVncm91bmQgLHplbmJ1
+cm4tYmx1ZSkpKSkKICAgICAod2wtaGlnaGxpZ2h0LXN1bW1hcnktbm9ybWFsLWZhY2UgKCh0ICg6
+Zm9yZWdyb3VuZCAsemVuYnVybi1mZykpKSkKICAgICAod2wtaGlnaGxpZ2h0LXN1bW1hcnktdGhy
+ZWFkLXRvcC1mYWNlICgodCAoOmZvcmVncm91bmQgLHplbmJ1cm4teWVsbG93KSkpKQogICAgICh3
+bC1oaWdobGlnaHQtdGhyZWFkLWluZGVudC1mYWNlICgodCAoOmZvcmVncm91bmQgLHplbmJ1cm4t
+bWFnZW50YSkpKSkKICAgICAod2wtaGlnaGxpZ2h0LXN1bW1hcnktcmVmaWxlZC1mYWNlICgodCAo
+OmZvcmVncm91bmQgLHplbmJ1cm4tZmcpKSkpCiAgICAgKHdsLWhpZ2hsaWdodC1zdW1tYXJ5LWRp
+c3BsYXlpbmctZmFjZSAoKHQgKDp1bmRlcmxpbmUgdCA6d2VpZ2h0IGJvbGQpKSkpCgogICAgICkp
+KQoKKGRlZmFsaWFzICd6ZW5idXJuICMnY29sb3ItdGhlbWUtemVuYnVybikKCihhZGQtdG8tbGlz
+dCAnY29sb3ItdGhlbWVzICcoY29sb3ItdGhlbWUtemVuYnVybgogICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICJaZW5idXJuIgogICAgICAgICAgICAgICAgICAgICAgICAgICAgICJCb3poaWRh
+ciBCYXRzb3YgPGJvemhpZGFyLmJhdHNvdkBnbWFpbC5jb20iKSkKCihwcm92aWRlICd6ZW5idXJu
+KQoKOzs7IHplbmJ1cm4uZWwgZW5kcyBoZXJlLgo=

@@ -1,54 +1,15 @@
-;;; georgian input method
-(require 'quail)
-(quail-define-package
- "georgian-translit" "Georgian" "ქ" nil
- "A transliteration scheme for Georgian characters."
- nil t t t t nil nil nil nil nil t)
-(quail-define-rules
- ("a" ?ა)
- ("b" ?ბ)
- ("g" ?გ)
- ("d" ?დ)
- ("e" ?ე)
- ("v" ?ვ)
- ("z" ?ზ)
- ("t" ?თ)
- ("i" ?ი)
- ("k'" ?კ)
- ("K" ?კ)
- ("l" ?ლ)
- ("m" ?მ)
- ("n" ?ნ)
- ("o" ?ო)
- ("p'" ?პ)
- ("P" ?პ)
- ("rh" ?ჟ)
- ("r" ?რ)
- ("s" ?ს)
- ("t'" ?ტ)
- ("T" ?ტ)
- ("u" ?უ)
- ("p" ?ფ)
- ("k" ?ქ)
- ("gh" ?ღ)
- ("q'" ?ყ)
- ("Q" ?ყ)
- ("sh" ?შ)
- ("ch" ?ჩ)
- ("c" ?ც)
- ("j" ?ძ)
- ("c'" ?წ)
- ("C" ?წ)
- ("ch'" ?ჭ)
- ("CH" ?ჭ)
- ("Ch" ?ჭ)
- ("x" ?ხ)
- ("jh" ?ჯ)
- ("h" ?ჰ)
- ("q1" ?ჴ)
- ("E" ?ჱ)
- ("O" ?ჵ)
- ("I" ?ჲ)
- ("W" ?ჳ)
- ("F" ?ჶ)
-)
+#FILE text/plain
+Ozs7IGdlb3JnaWFuIGlucHV0IG1ldGhvZAoocmVxdWlyZSAncXVhaWwpCihxdWFpbC1kZWZpbmUt
+cGFja2FnZQogImdlb3JnaWFuLXRyYW5zbGl0IiAiR2VvcmdpYW4iICLhg6UiIG5pbAogIkEgdHJh
+bnNsaXRlcmF0aW9uIHNjaGVtZSBmb3IgR2VvcmdpYW4gY2hhcmFjdGVycy4iCiBuaWwgdCB0IHQg
+dCBuaWwgbmlsIG5pbCBuaWwgbmlsIHQpCihxdWFpbC1kZWZpbmUtcnVsZXMKICgiYSIgP+GDkCkK
+ICgiYiIgP+GDkSkKICgiZyIgP+GDkikKICgiZCIgP+GDkykKICgiZSIgP+GDlCkKICgidiIgP+GD
+lSkKICgieiIgP+GDlikKICgidCIgP+GDlykKICgiaSIgP+GDmCkKICgiayciID/hg5kpCiAoIksi
+ID/hg5kpCiAoImwiID/hg5opCiAoIm0iID/hg5spCiAoIm4iID/hg5wpCiAoIm8iID/hg50pCiAo
+InAnIiA/4YOeKQogKCJQIiA/4YOeKQogKCJyaCIgP+GDnykKICgiciIgP+GDoCkKICgicyIgP+GD
+oSkKICgidCciID/hg6IpCiAoIlQiID/hg6IpCiAoInUiID/hg6MpCiAoInAiID/hg6QpCiAoImsi
+ID/hg6UpCiAoImdoIiA/4YOmKQogKCJxJyIgP+GDpykKICgiUSIgP+GDpykKICgic2giID/hg6gp
+CiAoImNoIiA/4YOpKQogKCJjIiA/4YOqKQogKCJqIiA/4YOrKQogKCJjJyIgP+GDrCkKICgiQyIg
+P+GDrCkKICgiY2gnIiA/4YOtKQogKCJDSCIgP+GDrSkKICgiQ2giID/hg60pCiAoIngiID/hg64p
+CiAoImpoIiA/4YOvKQogKCJoIiA/4YOwKQogKCJxMSIgP+GDtCkKICgiRSIgP+GDsSkKICgiTyIg
+P+GDtSkKICgiSSIgP+GDsikKICgiVyIgP+GDsykKICgiRiIgP+GDtikKKQo=

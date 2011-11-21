@@ -1,3009 +1,1856 @@
-;;; imap.el --- imap library
-
-;; Copyright (C) 1998, 1999, 2000, 2001, 2002, 2003, 2004,
-;;   2005, 2006, 2007, 2008 Free Software Foundation, Inc.
-
-;; Author: Simon Josefsson <jas@pdc.kth.se>
-;; Keywords: mail
-
-;; This file is part of GNU Emacs.
-
-;; GNU Emacs is free software; you can redistribute it and/or modify
-;; it under the terms of the GNU General Public License as published by
-;; the Free Software Foundation; either version 3, or (at your option)
-;; any later version.
-
-;; GNU Emacs is distributed in the hope that it will be useful,
-;; but WITHOUT ANY WARRANTY; without even the implied warranty of
-;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.	 See the
-;; GNU General Public License for more details.
-
-;; You should have received a copy of the GNU General Public License
-;; along with GNU Emacs; see the file COPYING.  If not, write to the
-;; Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
-;; Boston, MA 02110-1301, USA.
-
-;;; Commentary:
-
-;; imap.el is a elisp library providing an interface for talking to
-;; IMAP servers.
-;;
-;; imap.el is roughly divided in two parts, one that parses IMAP
-;; responses from the server and storing data into buffer-local
-;; variables, and one for utility functions which send commands to
-;; server, waits for an answer, and return information.  The latter
-;; part is layered on top of the previous.
-;;
-;; The imap.el API consist of the following functions, other functions
-;; in this file should not be called directly and the result of doing
-;; so are at best undefined.
-;;
-;; Global commands:
-;;
-;; imap-open,       imap-opened,    imap-authenticate, imap-close,
-;; imap-capability, imap-namespace, imap-error-text
-;;
-;; Mailbox commands:
-;;
-;; imap-mailbox-get,       imap-mailbox-map,         imap-current-mailbox,
-;; imap-current-mailbox-p, imap-search,              imap-mailbox-select,
-;; imap-mailbox-examine,   imap-mailbox-unselect,    imap-mailbox-expunge
-;; imap-mailbox-close,     imap-mailbox-create,      imap-mailbox-delete
-;; imap-mailbox-rename,    imap-mailbox-lsub,        imap-mailbox-list
-;; imap-mailbox-subscribe, imap-mailbox-unsubscribe, imap-mailbox-status
-;; imap-mailbox-acl-get,   imap-mailbox-acl-set,     imap-mailbox-acl-delete
-;;
-;; Message commands:
-;;
-;; imap-fetch-asynch,                 imap-fetch,
-;; imap-current-message,              imap-list-to-message-set,
-;; imap-message-get,                  imap-message-map
-;; imap-message-envelope-date,        imap-message-envelope-subject,
-;; imap-message-envelope-from,        imap-message-envelope-sender,
-;; imap-message-envelope-reply-to,    imap-message-envelope-to,
-;; imap-message-envelope-cc,          imap-message-envelope-bcc
-;; imap-message-envelope-in-reply-to, imap-message-envelope-message-id
-;; imap-message-body,                 imap-message-flag-permanent-p
-;; imap-message-flags-set,            imap-message-flags-del
-;; imap-message-flags-add,            imap-message-copyuid
-;; imap-message-copy,                 imap-message-appenduid
-;; imap-message-append,               imap-envelope-from
-;; imap-body-lines
-;;
-;; It is my hope that these commands should be pretty self
-;; explanatory for someone that know IMAP.  All functions have
-;; additional documentation on how to invoke them.
-;;
-;; imap.el support RFC1730/2060/RFC3501 (IMAP4/IMAP4rev1), implemented
-;; IMAP extensions are RFC2195 (CRAM-MD5), RFC2086 (ACL), RFC2342
-;; (NAMESPACE), RFC2359 (UIDPLUS), the IMAP-part of RFC2595 (STARTTLS,
-;; LOGINDISABLED) (with use of external library starttls.el and
-;; program starttls), and the GSSAPI / kerberos V4 sections of RFC1731
-;; (with use of external program `imtest'), RFC2971 (ID).  It also
-;; takes advantage of the UNSELECT extension in Cyrus IMAPD.
-;;
-;; Without the work of John McClary Prevost and Jim Radford this library
-;; would not have seen the light of day.  Many thanks.
-;;
-;; This is a transcript of short interactive session for demonstration
-;; purposes.
-;;
-;; (imap-open "my.mail.server")
-;; => " *imap* my.mail.server:0"
-;;
-;; The rest are invoked with current buffer as the buffer returned by
-;; `imap-open'.  It is possible to do all without this, but it would
-;; look ugly here since `buffer' is always the last argument for all
-;; imap.el API functions.
-;;
-;; (imap-authenticate "myusername" "mypassword")
-;; => auth
-;;
-;; (imap-mailbox-lsub "*")
-;; => ("INBOX.sentmail" "INBOX.private" "INBOX.draft" "INBOX.spam")
-;;
-;; (imap-mailbox-list "INBOX.n%")
-;; => ("INBOX.namedroppers" "INBOX.nnimap" "INBOX.ntbugtraq")
-;;
-;; (imap-mailbox-select "INBOX.nnimap")
-;; => "INBOX.nnimap"
-;;
-;; (imap-mailbox-get 'exists)
-;; => 166
-;;
-;; (imap-mailbox-get 'uidvalidity)
-;; => "908992622"
-;;
-;; (imap-search "FLAGGED SINCE 18-DEC-98")
-;; => (235 236)
-;;
-;; (imap-fetch 235 "RFC822.PEEK" 'RFC822)
-;; => "X-Sieve: cmu-sieve 1.3^M\nX-Username: <jas@pdc.kth.se>^M\r...."
-;;
-;; Todo:
-;;
-;; o Parse UIDs as strings? We need to overcome the 28 bit limit somehow.
-;; o Don't use `read' at all (important places already fixed)
-;; o Accept list of articles instead of message set string in most
-;;   imap-message-* functions.
-;; o Send strings as literal if they contain, e.g., ".
-;;
-;; Revision history:
-;;
-;;  - 19991218 added starttls/digest-md5 patch,
-;;             by Daiki Ueno <ueno@ueda.info.waseda.ac.jp>
-;;             NB! you need SLIM for starttls.el and digest-md5.el
-;;  - 19991023 commited to pgnus
-;;
-
-;;; Code:
-
-(eval-when-compile (require 'cl))
-(eval-and-compile
-  (unless (fboundp 'declare-function) (defmacro declare-function (&rest r)))
-  (autoload 'starttls-open-stream "starttls")
-  (autoload 'starttls-negotiate "starttls")
-  (autoload 'sasl-find-mechanism "sasl")
-  (autoload 'digest-md5-parse-digest-challenge "digest-md5")
-  (autoload 'digest-md5-digest-response "digest-md5")
-  (autoload 'digest-md5-digest-uri "digest-md5")
-  (autoload 'digest-md5-challenge "digest-md5")
-  (autoload 'rfc2104-hash "rfc2104")
-  (autoload 'utf7-encode "utf7")
-  (autoload 'utf7-decode "utf7")
-  (autoload 'format-spec "format-spec")
-  (autoload 'format-spec-make "format-spec")
-  (autoload 'open-tls-stream "tls"))
-
-;; User variables.
-
-(defgroup imap nil
-  "Low-level IMAP issues."
-  :version "21.1"
-  :group 'mail)
-
-(defcustom imap-kerberos4-program '("imtest -m kerberos_v4 -u %l -p %p %s"
-				    "imtest -kp %s %p")
-  "List of strings containing commands for Kerberos 4 authentication.
-%s is replaced with server hostname, %p with port to connect to, and
-%l with the value of `imap-default-user'.  The program should accept
-IMAP commands on stdin and return responses to stdout.  Each entry in
-the list is tried until a successful connection is made."
-  :group 'imap
-  :type '(repeat string))
-
-(defcustom imap-gssapi-program (list
-				(concat "gsasl %s %p "
-					"--mechanism GSSAPI "
-					"--authentication-id %l")
-				"imtest -m gssapi -u %l -p %p %s")
-  "List of strings containing commands for GSSAPI (krb5) authentication.
-%s is replaced with server hostname, %p with port to connect to, and
-%l with the value of `imap-default-user'.  The program should accept
-IMAP commands on stdin and return responses to stdout.  Each entry in
-the list is tried until a successful connection is made."
-  :group 'imap
-  :type '(repeat string))
-
-(defcustom imap-ssl-program '("openssl s_client -quiet -ssl3 -connect %s:%p"
-			      "openssl s_client -quiet -ssl2 -connect %s:%p"
-			      "s_client -quiet -ssl3 -connect %s:%p"
-			      "s_client -quiet -ssl2 -connect %s:%p")
-  "A string, or list of strings, containing commands for SSL connections.
-Within a string, %s is replaced with the server address and %p with
-port number on server.  The program should accept IMAP commands on
-stdin and return responses to stdout.  Each entry in the list is tried
-until a successful connection is made."
-  :group 'imap
-  :type '(choice string
-		 (repeat string)))
-
-(defcustom imap-shell-program '("ssh %s imapd"
-				"rsh %s imapd"
-				"ssh %g ssh %s imapd"
-				"rsh %g rsh %s imapd")
-  "A list of strings, containing commands for IMAP connection.
-Within a string, %s is replaced with the server address, %p with port
-number on server, %g with `imap-shell-host', and %l with
-`imap-default-user'.  The program should read IMAP commands from stdin
-and write IMAP response to stdout. Each entry in the list is tried
-until a successful connection is made."
-  :group 'imap
-  :type '(repeat string))
-
-(defcustom imap-process-connection-type nil
-  "*Value for `process-connection-type' to use for Kerberos4, GSSAPI and SSL.
-The `process-connection-type' variable control type of device
-used to communicate with subprocesses.  Values are nil to use a
-pipe, or t or `pty' to use a pty.  The value has no effect if the
-system has no ptys or if all ptys are busy: then a pipe is used
-in any case.  The value takes effect when a IMAP server is
-opened, changing it after that has no effect."
-  :version "22.1"
-  :group 'imap
-  :type 'boolean)
-
-(defcustom imap-use-utf7 t
-  "If non-nil, do utf7 encoding/decoding of mailbox names.
-Since the UTF7 decoding currently only decodes into ISO-8859-1
-characters, you may disable this decoding if you need to access UTF7
-encoded mailboxes which doesn't translate into ISO-8859-1."
-  :group 'imap
-  :type 'boolean)
-
-(defcustom imap-log nil
-  "If non-nil, a imap session trace is placed in *imap-log* buffer.
-Note that username, passwords and other privacy sensitive
-information (such as e-mail) may be stored in the *imap-log*
-buffer.  It is not written to disk, however.  Do not enable this
-variable unless you are comfortable with that."
-  :group 'imap
-  :type 'boolean)
-
-(defcustom imap-debug nil
-  "If non-nil, random debug spews are placed in *imap-debug* buffer.
-Note that username, passwords and other privacy sensitive
-information (such as e-mail) may be stored in the *imap-debug*
-buffer.  It is not written to disk, however.  Do not enable this
-variable unless you are comfortable with that."
-  :group 'imap
-  :type 'boolean)
-
-(defcustom imap-shell-host "gateway"
-  "Hostname of rlogin proxy."
-  :group 'imap
-  :type 'string)
-
-(defcustom imap-default-user (user-login-name)
-  "Default username to use."
-  :group 'imap
-  :type 'string)
-
-(defcustom imap-read-timeout (if (string-match
-				  "windows-nt\\|os/2\\|emx\\|cygwin"
-				  (symbol-name system-type))
-				 1.0
-			       0.1)
-  "*How long to wait between checking for the end of output.
-Shorter values mean quicker response, but is more CPU intensive."
-  :type 'number
-  :group 'imap)
-
-(defcustom imap-store-password nil
-  "If non-nil, store session password without promting."
-  :group 'imap
-  :type 'boolean)
-
-;; Various variables.
-
-(defvar imap-fetch-data-hook nil
-  "Hooks called after receiving each FETCH response.")
-
-(defvar imap-streams '(gssapi kerberos4 starttls tls ssl network shell)
-  "Priority of streams to consider when opening connection to server.")
-
-(defvar imap-stream-alist
-  '((gssapi    imap-gssapi-stream-p    imap-gssapi-open)
-    (kerberos4 imap-kerberos4-stream-p imap-kerberos4-open)
-    (tls       imap-tls-p              imap-tls-open)
-    (ssl       imap-ssl-p              imap-ssl-open)
-    (network   imap-network-p          imap-network-open)
-    (shell     imap-shell-p            imap-shell-open)
-    (starttls  imap-starttls-p         imap-starttls-open))
-  "Definition of network streams.
-
-\(NAME CHECK OPEN)
-
-NAME names the stream, CHECK is a function returning non-nil if the
-server support the stream and OPEN is a function for opening the
-stream.")
-
-(defvar imap-authenticators '(gssapi
-			      kerberos4
-			      digest-md5
-			      cram-md5
-			      ;;sasl
-			      login
-			      anonymous)
-  "Priority of authenticators to consider when authenticating to server.")
-
-(defvar imap-authenticator-alist
-  '((gssapi     imap-gssapi-auth-p    imap-gssapi-auth)
-    (kerberos4  imap-kerberos4-auth-p imap-kerberos4-auth)
-    (sasl	imap-sasl-auth-p      imap-sasl-auth)
-    (cram-md5   imap-cram-md5-p       imap-cram-md5-auth)
-    (login      imap-login-p          imap-login-auth)
-    (anonymous  imap-anonymous-p      imap-anonymous-auth)
-    (digest-md5 imap-digest-md5-p     imap-digest-md5-auth))
-  "Definition of authenticators.
-
-\(NAME CHECK AUTHENTICATE)
-
-NAME names the authenticator.  CHECK is a function returning non-nil if
-the server support the authenticator and AUTHENTICATE is a function
-for doing the actual authentication.")
-
-(defvar imap-error nil
-  "Error codes from the last command.")
-
-(defvar imap-logout-timeout nil
-  "Close server immediately if it can't logout in this number of seconds.
-If it is nil, never close server until logout completes.  Normally,
-the value of this variable will be bound to a certain value to which
-an application program that uses this module specifies on a per-server
-basis.")
-
-;; Internal constants.  Change these and die.
-
-(defconst imap-default-port 143)
-(defconst imap-default-ssl-port 993)
-(defconst imap-default-tls-port 993)
-(defconst imap-default-stream 'network)
-(defconst imap-coding-system-for-read 'binary)
-(defconst imap-coding-system-for-write 'binary)
-(defconst imap-local-variables '(imap-server
-				 imap-port
-				 imap-client-eol
-				 imap-server-eol
-				 imap-auth
-				 imap-stream
-				 imap-username
-				 imap-password
-				 imap-current-mailbox
-				 imap-current-target-mailbox
-				 imap-message-data
-				 imap-capability
-				 imap-id
-				 imap-namespace
-				 imap-state
-				 imap-reached-tag
-				 imap-failed-tags
-				 imap-tag
-				 imap-process
-				 imap-calculate-literal-size-first
-				 imap-mailbox-data))
-(defconst imap-log-buffer "*imap-log*")
-(defconst imap-debug-buffer "*imap-debug*")
-
-;; Internal variables.
-
-(defvar imap-stream nil)
-(defvar imap-auth nil)
-(defvar imap-server nil)
-(defvar imap-port nil)
-(defvar imap-username nil)
-(defvar imap-password nil)
-(defvar imap-calculate-literal-size-first nil)
-(defvar imap-state 'closed
-  "IMAP state.
-Valid states are `closed', `initial', `nonauth', `auth', `selected'
-and `examine'.")
-
-(defvar imap-server-eol "\r\n"
-  "The EOL string sent from the server.")
-
-(defvar imap-client-eol "\r\n"
-  "The EOL string we send to the server.")
-
-(defvar imap-current-mailbox nil
-  "Current mailbox name.")
-
-(defvar imap-current-target-mailbox nil
-  "Current target mailbox for COPY and APPEND commands.")
-
-(defvar imap-mailbox-data nil
-  "Obarray with mailbox data.")
-
-(defvar imap-mailbox-prime 997
-  "Length of imap-mailbox-data.")
-
-(defvar imap-current-message nil
-  "Current message number.")
-
-(defvar imap-message-data nil
-  "Obarray with message data.")
-
-(defvar imap-message-prime 997
-  "Length of imap-message-data.")
-
-(defvar imap-capability nil
-  "Capability for server.")
-
-(defvar imap-id nil
-  "Identity of server.
-See RFC 2971.")
-
-(defvar imap-namespace nil
-  "Namespace for current server.")
-
-(defvar imap-reached-tag 0
-  "Lower limit on command tags that have been parsed.")
-
-(defvar imap-failed-tags nil
-  "Alist of tags that failed.
-Each element is a list with four elements; tag (a integer), response
-state (a symbol, `OK', `NO' or `BAD'), response code (a string), and
-human readable response text (a string).")
-
-(defvar imap-tag 0
-  "Command tag number.")
-
-(defvar imap-process nil
-  "Process.")
-
-(defvar imap-continuation nil
-  "Non-nil indicates that the server emitted a continuation request.
-The actual value is really the text on the continuation line.")
-
-(defvar imap-callbacks nil
-  "List of response tags and callbacks, on the form `(number . function)'.
-The function should take two arguments, the first the IMAP tag and the
-second the status (OK, NO, BAD etc) of the command.")
-
-(defvar imap-enable-exchange-bug-workaround nil
-  "Send FETCH UID commands as *:* instead of *.
-Enabling this appears to be required for some servers (e.g.,
-Microsoft Exchange) which otherwise would trigger a response 'BAD
-The specified message set is invalid.'.")
-
-
-;; Utility functions:
-
-(defun imap-remassoc (key alist)
-  "Delete by side effect any elements of LIST whose car is `equal' to KEY.
-The modified LIST is returned.  If the first member
-of LIST has a car that is `equal' to KEY, there is no way to remove it
-by side effect; therefore, write `(setq foo (remassoc key foo))' to be
-sure of changing the value of `foo'."
-  (when alist
-    (if (equal key (caar alist))
-	(cdr alist)
-      (setcdr alist (imap-remassoc key (cdr alist)))
-      alist)))
-
-(defsubst imap-disable-multibyte ()
-  "Enable multibyte in the current buffer."
-  (when (fboundp 'set-buffer-multibyte)
-    (set-buffer-multibyte nil)))
-
-(defsubst imap-utf7-encode (string)
-  (if imap-use-utf7
-      (and string
-	   (condition-case ()
-	       (utf7-encode string t)
-	     (error (message
-		     "imap: Could not UTF7 encode `%s', using it unencoded..."
-		     string)
-		    string)))
-    string))
-
-(defsubst imap-utf7-decode (string)
-  (if imap-use-utf7
-      (and string
-	   (condition-case ()
-	       (utf7-decode string t)
-	     (error (message
-		     "imap: Could not UTF7 decode `%s', using it undecoded..."
-		     string)
-		    string)))
-    string))
-
-(defsubst imap-ok-p (status)
-  (if (eq status 'OK)
-      t
-    (setq imap-error status)
-    nil))
-
-(defun imap-error-text (&optional buffer)
-  (with-current-buffer (or buffer (current-buffer))
-    (nth 3 (car imap-failed-tags))))
-
-
-;; Server functions; stream stuff:
-
-(defun imap-kerberos4-stream-p (buffer)
-  (imap-capability 'AUTH=KERBEROS_V4 buffer))
-
-(defun imap-kerberos4-open (name buffer server port)
-  (let ((cmds imap-kerberos4-program)
-	cmd done)
-    (while (and (not done) (setq cmd (pop cmds)))
-      (message "Opening Kerberos 4 IMAP connection with `%s'..." cmd)
-      (erase-buffer)
-      (let* ((port (or port imap-default-port))
-	     (coding-system-for-read imap-coding-system-for-read)
-	     (coding-system-for-write imap-coding-system-for-write)
-	     (process-connection-type imap-process-connection-type)
-	     (process (start-process
-		       name buffer shell-file-name shell-command-switch
-		       (format-spec
-			cmd
-			(format-spec-make
-			 ?s server
-			 ?p (number-to-string port)
-			 ?l imap-default-user))))
-	     response)
-	(when process
-	  (with-current-buffer buffer
-	    (setq imap-client-eol "\n"
-		  imap-calculate-literal-size-first t)
-	    (while (and (memq (process-status process) '(open run))
-			(set-buffer buffer) ;; XXX "blue moon" nntp.el bug
-			(goto-char (point-min))
-			;; Athena IMTEST can output SSL verify errors
-			(or (while (looking-at "^verify error:num=")
-			      (forward-line))
-			    t)
-			(or (while (looking-at "^TLS connection established")
-			      (forward-line))
-			    t)
-			;; cyrus 1.6.x (13? < x <= 22) queries capabilities
-			(or (while (looking-at "^C:")
-			      (forward-line))
-			    t)
-			;; cyrus 1.6 imtest print "S: " before server greeting
-			(or (not (looking-at "S: "))
-			    (forward-char 3)
-			    t)
-			(not (and (imap-parse-greeting)
-				  ;; success in imtest < 1.6:
-				  (or (re-search-forward
-				       "^__\\(.*\\)__\n" nil t)
-				      ;; success in imtest 1.6:
-				      (re-search-forward
-				       "^\\(Authenticat.*\\)" nil t))
-				  (setq response (match-string 1)))))
-	      (accept-process-output process 1)
-	      (sit-for 1))
-	    (and imap-log
-		 (with-current-buffer (get-buffer-create imap-log-buffer)
-		   (imap-disable-multibyte)
-		   (buffer-disable-undo)
-		   (goto-char (point-max))
-		   (insert-buffer-substring buffer)))
-	    (erase-buffer)
-	    (message "Opening Kerberos 4 IMAP connection with `%s'...%s" cmd
-		     (if response (concat "done, " response) "failed"))
-	    (if (and response (let ((case-fold-search nil))
-				(not (string-match "failed" response))))
-		(setq done process)
-	      (if (memq (process-status process) '(open run))
-		  (imap-logout))
-	      (delete-process process)
-	      nil)))))
-    done))
-
-(defun imap-gssapi-stream-p (buffer)
-  (imap-capability 'AUTH=GSSAPI buffer))
-
-(defun imap-gssapi-open (name buffer server port)
-  (let ((cmds imap-gssapi-program)
-	cmd done)
-    (while (and (not done) (setq cmd (pop cmds)))
-      (message "Opening GSSAPI IMAP connection with `%s'..." cmd)
-      (erase-buffer)
-      (let* ((port (or port imap-default-port))
-	     (coding-system-for-read imap-coding-system-for-read)
-	     (coding-system-for-write imap-coding-system-for-write)
-	     (process-connection-type imap-process-connection-type)
-	     (process (start-process
-		       name buffer shell-file-name shell-command-switch
-		       (format-spec
-			cmd
-			(format-spec-make
-			 ?s server
-			 ?p (number-to-string port)
-			 ?l imap-default-user))))
-	     response)
-	(when process
-	  (with-current-buffer buffer
-	    (setq imap-client-eol "\n"
-		  imap-calculate-literal-size-first t)
-	    (while (and (memq (process-status process) '(open run))
-			(set-buffer buffer) ;; XXX "blue moon" nntp.el bug
-			(goto-char (point-min))
-			;; Athena IMTEST can output SSL verify errors
-			(or (while (looking-at "^verify error:num=")
-			      (forward-line))
-			    t)
-			(or (while (looking-at "^TLS connection established")
-			      (forward-line))
-			    t)
-			;; cyrus 1.6.x (13? < x <= 22) queries capabilities
-			(or (while (looking-at "^C:")
-			      (forward-line))
-			    t)
-			;; cyrus 1.6 imtest print "S: " before server greeting
-			(or (not (looking-at "S: "))
-			    (forward-char 3)
-			    t)
-			;; GNU SASL may print 'Trying ...' first.
-			(or (not (looking-at "Trying "))
-			    (forward-line)
-			    t)
-			(not (and (imap-parse-greeting)
-				  ;; success in imtest 1.6:
-				  (re-search-forward
-				   (concat "^\\(\\(Authenticat.*\\)\\|\\("
-					   "Client authentication "
-					   "finished.*\\)\\)")
-				   nil t)
-				  (setq response (match-string 1)))))
-	      (accept-process-output process 1)
-	      (sit-for 1))
-	    (and imap-log
-		 (with-current-buffer (get-buffer-create imap-log-buffer)
-		   (imap-disable-multibyte)
-		   (buffer-disable-undo)
-		   (goto-char (point-max))
-		   (insert-buffer-substring buffer)))
-	    (erase-buffer)
-	    (message "GSSAPI IMAP connection: %s" (or response "failed"))
-	    (if (and response (let ((case-fold-search nil))
-				(not (string-match "failed" response))))
-		(setq done process)
-	      (if (memq (process-status process) '(open run))
-		  (imap-logout))
-	      (delete-process process)
-	      nil)))))
-    done))
-
-(defun imap-ssl-p (buffer)
-  nil)
-
-(defun imap-ssl-open (name buffer server port)
-  "Open a SSL connection to server."
-  (let ((cmds (if (listp imap-ssl-program) imap-ssl-program
-		(list imap-ssl-program)))
-	cmd done)
-    (while (and (not done) (setq cmd (pop cmds)))
-      (message "imap: Opening SSL connection with `%s'..." cmd)
-      (erase-buffer)
-      (let* ((port (or port imap-default-ssl-port))
-	     (coding-system-for-read imap-coding-system-for-read)
-	     (coding-system-for-write imap-coding-system-for-write)
-	     (process-connection-type imap-process-connection-type)
-	     (set-process-query-on-exit-flag
-	      (if (fboundp 'set-process-query-on-exit-flag)
-		  'set-process-query-on-exit-flag
-		'process-kill-without-query))
-	     process)
-	(when (progn
-		(setq process (start-process
-			       name buffer shell-file-name
-			       shell-command-switch
-			       (format-spec cmd
-					    (format-spec-make
-					     ?s server
-					     ?p (number-to-string port)))))
-		(funcall set-process-query-on-exit-flag process nil)
-		process)
-	  (with-current-buffer buffer
-	    (goto-char (point-min))
-	    (while (and (memq (process-status process) '(open run))
-			(set-buffer buffer) ;; XXX "blue moon" nntp.el bug
-			(goto-char (point-max))
-			(forward-line -1)
-			(not (imap-parse-greeting)))
-	      (accept-process-output process 1)
-	      (sit-for 1))
-	    (and imap-log
-		 (with-current-buffer (get-buffer-create imap-log-buffer)
-		   (imap-disable-multibyte)
-		   (buffer-disable-undo)
-		   (goto-char (point-max))
-		   (insert-buffer-substring buffer)))
-	    (erase-buffer)
-	    (when (memq (process-status process) '(open run))
-	      (setq done process))))))
-    (if done
-	(progn
-	  (message "imap: Opening SSL connection with `%s'...done" cmd)
-	  done)
-      (message "imap: Opening SSL connection with `%s'...failed" cmd)
-      nil)))
-
-(defun imap-tls-p (buffer)
-  nil)
-
-(defun imap-tls-open (name buffer server port)
-  (let* ((port (or port imap-default-tls-port))
-	 (coding-system-for-read imap-coding-system-for-read)
-	 (coding-system-for-write imap-coding-system-for-write)
-	 (process (open-tls-stream name buffer server port)))
-    (when process
-      (while (and (memq (process-status process) '(open run))
-		  (set-buffer buffer) ;; XXX "blue moon" nntp.el bug
-		  (goto-char (point-max))
-		  (forward-line -1)
-		  (not (imap-parse-greeting)))
-	(accept-process-output process 1)
-	(sit-for 1))
-      (and imap-log
-	   (with-current-buffer (get-buffer-create imap-log-buffer)
-	     (imap-disable-multibyte)
-	     (buffer-disable-undo)
-	     (goto-char (point-max))
-	     (insert-buffer-substring buffer)))
-      (when (memq (process-status process) '(open run))
-	process))))
-
-(defun imap-network-p (buffer)
-  t)
-
-(defun imap-network-open (name buffer server port)
-  (let* ((port (or port imap-default-port))
-	 (coding-system-for-read imap-coding-system-for-read)
-	 (coding-system-for-write imap-coding-system-for-write)
-	 (process (open-network-stream name buffer server port)))
-    (when process
-      (while (and (memq (process-status process) '(open run))
-		  (set-buffer buffer) ;; XXX "blue moon" nntp.el bug
-		  (goto-char (point-min))
-		  (not (imap-parse-greeting)))
-	(accept-process-output process 1)
-	(sit-for 1))
-      (and imap-log
-	   (with-current-buffer (get-buffer-create imap-log-buffer)
-	     (imap-disable-multibyte)
-	     (buffer-disable-undo)
-	     (goto-char (point-max))
-	     (insert-buffer-substring buffer)))
-      (when (memq (process-status process) '(open run))
-	process))))
-
-(defun imap-shell-p (buffer)
-  nil)
-
-(defun imap-shell-open (name buffer server port)
-  (let ((cmds (if (listp imap-shell-program) imap-shell-program
-		(list imap-shell-program)))
-	cmd done)
-    (while (and (not done) (setq cmd (pop cmds)))
-      (message "imap: Opening IMAP connection with `%s'..." cmd)
-      (setq imap-client-eol "\n")
-      (let* ((port (or port imap-default-port))
-	     (coding-system-for-read imap-coding-system-for-read)
-	     (coding-system-for-write imap-coding-system-for-write)
-	     (process (start-process
-		       name buffer shell-file-name shell-command-switch
-		       (format-spec
-			cmd
-			(format-spec-make
-			 ?s server
-			 ?g imap-shell-host
-			 ?p (number-to-string port)
-			 ?l imap-default-user)))))
-	(when process
-	  (while (and (memq (process-status process) '(open run))
-		      (set-buffer buffer) ;; XXX "blue moon" nntp.el bug
-		      (goto-char (point-max))
-		      (forward-line -1)
-		      (not (imap-parse-greeting)))
-	    (accept-process-output process 1)
-	    (sit-for 1))
-	  (and imap-log
-	       (with-current-buffer (get-buffer-create imap-log-buffer)
-		 (imap-disable-multibyte)
-		 (buffer-disable-undo)
-		 (goto-char (point-max))
-		 (insert-buffer-substring buffer)))
-	  (erase-buffer)
-	  (when (memq (process-status process) '(open run))
-	    (setq done process)))))
-    (if done
-	(progn
-	  (message "imap: Opening IMAP connection with `%s'...done" cmd)
-	  done)
-      (message "imap: Opening IMAP connection with `%s'...failed" cmd)
-      nil)))
-
-(defun imap-starttls-p (buffer)
-  (imap-capability 'STARTTLS buffer))
-
-(defun imap-starttls-open (name buffer server port)
-  (let* ((port (or port imap-default-port))
-	 (coding-system-for-read imap-coding-system-for-read)
-	 (coding-system-for-write imap-coding-system-for-write)
-	 (process (starttls-open-stream name buffer server port))
-	 done tls-info)
-    (message "imap: Connecting with STARTTLS...")
-    (when process
-      (while (and (memq (process-status process) '(open run))
-		  (set-buffer buffer) ;; XXX "blue moon" nntp.el bug
-		  (goto-char (point-max))
-		  (forward-line -1)
-		  (not (imap-parse-greeting)))
-	(accept-process-output process 1)
-	(sit-for 1))
-      (imap-send-command "STARTTLS")
-      (while (and (memq (process-status process) '(open run))
-		  (set-buffer buffer) ;; XXX "blue moon" nntp.el bug
-		  (goto-char (point-max))
-		  (forward-line -1)
-		  (not (re-search-forward "[0-9]+ OK.*\r?\n" nil t)))
-	(accept-process-output process 1)
-	(sit-for 1))
-      (and imap-log
-	   (with-current-buffer (get-buffer-create imap-log-buffer)
-	     (buffer-disable-undo)
-	     (goto-char (point-max))
-	     (insert-buffer-substring buffer)))
-      (when (and (setq tls-info (starttls-negotiate process))
-		 (memq (process-status process) '(open run)))
-	(setq done process)))
-    (if (stringp tls-info)
-	(message "imap: STARTTLS info: %s" tls-info))
-    (message "imap: Connecting with STARTTLS...%s" (if done "done" "failed"))
-    done))
-
-;; Server functions; authenticator stuff:
-
-(defun imap-interactive-login (buffer loginfunc)
-  "Login to server in BUFFER.
-LOGINFUNC is passed a username and a password, it should return t if
-it where successful authenticating itself to the server, nil otherwise.
-Returns t if login was successful, nil otherwise."
-  (with-current-buffer buffer
-    (make-local-variable 'imap-username)
-    (make-local-variable 'imap-password)
-    (let (user passwd ret)
-      ;;      (condition-case ()
-      (while (or (not user) (not passwd))
-	(setq user (or imap-username
-		       (read-from-minibuffer
-			(concat "IMAP username for " imap-server
-				" (using stream `" (symbol-name imap-stream)
-				"'): ")
-			(or user imap-default-user))))
-	(setq passwd (or imap-password
-			 (read-passwd
-			  (concat "IMAP password for " user "@"
-				  imap-server " (using authenticator `"
-				  (symbol-name imap-auth) "'): "))))
-	(when (and user passwd)
-	  (if (funcall loginfunc user passwd)
-	      (progn
-		(setq ret t
-		      imap-username user)
-		(when (and (not imap-password)
-			   (or imap-store-password
-			       (y-or-n-p "Store password for this session? ")))
-		  (setq imap-password passwd)))
-	    (message "Login failed...")
-	    (setq passwd nil)
-	    (setq imap-password nil)
-	    (sit-for 1))))
-      ;;	(quit (with-current-buffer buffer
-      ;;		(setq user nil
-      ;;		      passwd nil)))
-      ;;	(error (with-current-buffer buffer
-      ;;		 (setq user nil
-      ;;		       passwd nil))))
-      ret)))
-
-(defun imap-gssapi-auth-p (buffer)
-  (eq imap-stream 'gssapi))
-
-(defun imap-gssapi-auth (buffer)
-  (message "imap: Authenticating using GSSAPI...%s"
-	   (if (eq imap-stream 'gssapi) "done" "failed"))
-  (eq imap-stream 'gssapi))
-
-(defun imap-kerberos4-auth-p (buffer)
-  (and (imap-capability 'AUTH=KERBEROS_V4 buffer)
-       (eq imap-stream 'kerberos4)))
-
-(defun imap-kerberos4-auth (buffer)
-  (message "imap: Authenticating using Kerberos 4...%s"
-	   (if (eq imap-stream 'kerberos4) "done" "failed"))
-  (eq imap-stream 'kerberos4))
-
-(defun imap-cram-md5-p (buffer)
-  (imap-capability 'AUTH=CRAM-MD5 buffer))
-
-(defun imap-cram-md5-auth (buffer)
-  "Login to server using the AUTH CRAM-MD5 method."
-  (message "imap: Authenticating using CRAM-MD5...")
-  (let ((done (imap-interactive-login
-	       buffer
-	       (lambda (user passwd)
-		 (imap-ok-p
-		  (imap-send-command-wait
-		   (list
-		    "AUTHENTICATE CRAM-MD5"
-		    (lambda (challenge)
-		      (let* ((decoded (base64-decode-string challenge))
-			     (hash (rfc2104-hash 'md5 64 16 passwd decoded))
-			     (response (concat user " " hash))
-			     (encoded (base64-encode-string response)))
-			encoded)))))))))
-    (if done
-	(message "imap: Authenticating using CRAM-MD5...done")
-      (message "imap: Authenticating using CRAM-MD5...failed"))))
-
-(defun imap-login-p (buffer)
-  (and (not (imap-capability 'LOGINDISABLED buffer))
-       (not (imap-capability 'X-LOGIN-CMD-DISABLED buffer))))
-
-(defun imap-quote-specials (string)
-  (with-temp-buffer
-    (insert string)
-    (goto-char (point-min))
-    (while (re-search-forward "[\\\"]" nil t)
-      (forward-char -1)
-      (insert "\\")
-      (forward-char 1))
-    (buffer-string)))
-
-(defun imap-login-auth (buffer)
-  "Login to server using the LOGIN command."
-  (message "imap: Plaintext authentication...")
-  (imap-interactive-login buffer
-			  (lambda (user passwd)
-			    (imap-ok-p (imap-send-command-wait
-					(concat "LOGIN \""
-						(imap-quote-specials user)
-						"\" \""
-						(imap-quote-specials passwd)
-						"\""))))))
-
-(defun imap-anonymous-p (buffer)
-  t)
-
-(defun imap-anonymous-auth (buffer)
-  (message "imap: Logging in anonymously...")
-  (with-current-buffer buffer
-    (imap-ok-p (imap-send-command-wait
-		(concat "LOGIN anonymous \"" (concat (user-login-name) "@"
-						     (system-name)) "\"")))))
-
-;;; Compiler directives.
-
-(defvar imap-sasl-client)
-(defvar imap-sasl-step)
-
-(defun imap-sasl-make-mechanisms (buffer)
-  (let ((mecs '()))
-    (mapc (lambda (sym)
-	    (let ((name (symbol-name sym)))
-	      (if (and (> (length name) 5)
-		       (string-equal "AUTH=" (substring name 0 5 )))
-		  (setq mecs (cons (substring name 5) mecs)))))
-	  (imap-capability nil buffer))
-    mecs))
-
-(declare-function sasl-find-mechanism "sasl" (mechanism))
-(declare-function sasl-mechanism-name "sasl" (mechanism))
-(declare-function sasl-make-client    "sasl" (mechanism name service server))
-(declare-function sasl-next-step      "sasl" (client step))
-(declare-function sasl-step-data      "sasl" (step))
-(declare-function sasl-step-set-data  "sasl" (step data))
-
-(defun imap-sasl-auth-p (buffer)
-  (and (condition-case ()
-	   (require 'sasl)
-	 (error nil))
-       (sasl-find-mechanism (imap-sasl-make-mechanisms buffer))))
-
-(defun imap-sasl-auth (buffer)
-  "Login to server using the SASL method."
-  (message "imap: Authenticating using SASL...")
-  (with-current-buffer buffer
-    (make-local-variable 'imap-username)
-    (make-local-variable 'imap-sasl-client)
-    (make-local-variable 'imap-sasl-step)
-    (let ((mechanism (sasl-find-mechanism (imap-sasl-make-mechanisms buffer)))
-	  logged user)
-      (while (not logged)
-	(setq user (or imap-username
-		       (read-from-minibuffer
-			(concat "IMAP username for " imap-server " using SASL "
-				(sasl-mechanism-name mechanism) ": ")
-			(or user imap-default-user))))
-	(when user
-	  (setq imap-sasl-client (sasl-make-client mechanism user "imap2" imap-server)
-		imap-sasl-step (sasl-next-step imap-sasl-client nil))
-	  (let ((tag (imap-send-command
-		      (if (sasl-step-data imap-sasl-step)
-			  (format "AUTHENTICATE %s %s"
-				  (sasl-mechanism-name mechanism)
-				  (sasl-step-data imap-sasl-step))
-			(format "AUTHENTICATE %s" (sasl-mechanism-name mechanism)))
-		      buffer)))
-	    (while (eq (imap-wait-for-tag tag) 'INCOMPLETE)
-	      (sasl-step-set-data imap-sasl-step (base64-decode-string imap-continuation))
-	      (setq imap-continuation nil
-		    imap-sasl-step (sasl-next-step imap-sasl-client imap-sasl-step))
-	      (imap-send-command-1 (if (sasl-step-data imap-sasl-step)
-				       (base64-encode-string (sasl-step-data imap-sasl-step) t)
-				     "")))
-	    (if (imap-ok-p (imap-wait-for-tag tag))
-		(setq imap-username user
-		      logged t)
-	      (message "Login failed...")
-	      (sit-for 1)))))
-      logged)))
-
-(defun imap-digest-md5-p (buffer)
-  (and (imap-capability 'AUTH=DIGEST-MD5 buffer)
-       (condition-case ()
-	   (require 'digest-md5)
-	 (error nil))))
-
-(defun imap-digest-md5-auth (buffer)
-  "Login to server using the AUTH DIGEST-MD5 method."
-  (message "imap: Authenticating using DIGEST-MD5...")
-  (imap-interactive-login
-   buffer
-   (lambda (user passwd)
-     (let ((tag
-	    (imap-send-command
-	     (list
-	      "AUTHENTICATE DIGEST-MD5"
-	      (lambda (challenge)
-		(digest-md5-parse-digest-challenge
-		 (base64-decode-string challenge))
-		(let* ((digest-uri
-			(digest-md5-digest-uri
-			 "imap" (digest-md5-challenge 'realm)))
-		       (response
-			(digest-md5-digest-response
-			 user passwd digest-uri)))
-		  (base64-encode-string response 'no-line-break))))
-	     )))
-       (if (not (eq (imap-wait-for-tag tag) 'INCOMPLETE))
-	   nil
-	 (setq imap-continuation nil)
-	 (imap-send-command-1 "")
-	 (imap-ok-p (imap-wait-for-tag tag)))))))
-
-;; Server functions:
-
-(defun imap-open-1 (buffer)
-  (with-current-buffer buffer
-    (erase-buffer)
-    (setq imap-current-mailbox nil
-	  imap-current-message nil
-	  imap-state 'initial
-	  imap-process (condition-case ()
-			   (funcall (nth 2 (assq imap-stream
-						 imap-stream-alist))
-				    "imap" buffer imap-server imap-port)
-			 ((error quit) nil)))
-    (when imap-process
-      (set-process-filter imap-process 'imap-arrival-filter)
-      (set-process-sentinel imap-process 'imap-sentinel)
-      (while (and (eq imap-state 'initial)
-		  (memq (process-status imap-process) '(open run)))
-	(message "Waiting for response from %s..." imap-server)
-	(accept-process-output imap-process 1))
-      (message "Waiting for response from %s...done" imap-server)
-      (and (memq (process-status imap-process) '(open run))
-	   imap-process))))
-
-(defun imap-open (server &optional port stream auth buffer)
-  "Open a IMAP connection to host SERVER at PORT returning a buffer.
-If PORT is unspecified, a default value is used (143 except
-for SSL which use 993).
-STREAM indicates the stream to use, see `imap-streams' for available
-streams.  If nil, it choices the best stream the server is capable of.
-AUTH indicates authenticator to use, see `imap-authenticators' for
-available authenticators.  If nil, it choices the best stream the
-server is capable of.
-BUFFER can be a buffer or a name of a buffer, which is created if
-necessary.  If nil, the buffer name is generated."
-  (setq buffer (or buffer (format " *imap* %s:%d" server (or port 0))))
-  (with-current-buffer (get-buffer-create buffer)
-    (if (imap-opened buffer)
-	(imap-close buffer))
-    (mapc 'make-local-variable imap-local-variables)
-    (imap-disable-multibyte)
-    (buffer-disable-undo)
-    (setq imap-server (or server imap-server))
-    (setq imap-port (or port imap-port))
-    (setq imap-auth (or auth imap-auth))
-    (setq imap-stream (or stream imap-stream))
-    (message "imap: Connecting to %s..." imap-server)
-    (if (null (let ((imap-stream (or imap-stream imap-default-stream)))
-		(imap-open-1 buffer)))
-	(progn
-	  (message "imap: Connecting to %s...failed" imap-server)
-	  nil)
-      (when (null imap-stream)
-	;; Need to choose stream.
-	(let ((streams imap-streams))
-	  (while (setq stream (pop streams))
-	    ;; OK to use this stream?
-	    (when (funcall (nth 1 (assq stream imap-stream-alist)) buffer)
-	      ;; Stream changed?
-	      (if (not (eq imap-default-stream stream))
-		  (with-current-buffer (get-buffer-create
-					(generate-new-buffer-name " *temp*"))
-		    (mapc 'make-local-variable imap-local-variables)
-		    (imap-disable-multibyte)
-		    (buffer-disable-undo)
-		    (setq imap-server (or server imap-server))
-		    (setq imap-port (or port imap-port))
-		    (setq imap-auth (or auth imap-auth))
-		    (message "imap: Reconnecting with stream `%s'..." stream)
-		    (if (null (let ((imap-stream stream))
-				(imap-open-1 (current-buffer))))
-			(progn
-			  (kill-buffer (current-buffer))
-			  (message
-			   "imap: Reconnecting with stream `%s'...failed"
-			   stream))
-		      ;; We're done, kill the first connection
-		      (imap-close buffer)
-		      (let ((name (if (stringp buffer)
-				      buffer
-				    (buffer-name buffer))))
-			(kill-buffer buffer)
-			(rename-buffer name))
-		      (message "imap: Reconnecting with stream `%s'...done"
-			       stream)
-		      (setq imap-stream stream)
-		      (setq imap-capability nil)
-		      (setq streams nil)))
-		;; We're done
-		(message "imap: Connecting to %s...done" imap-server)
-		(setq imap-stream stream)
-		(setq imap-capability nil)
-		(setq streams nil))))))
-      (when (imap-opened buffer)
-	(setq imap-mailbox-data (make-vector imap-mailbox-prime 0)))
-      (when imap-stream
-	buffer))))
-
-(defcustom imap-ping-server t
-  "If non-nil, check if IMAP is open.
-See the function `imap-ping-server'."
-  :version "23.1" ;; No Gnus
-  :group 'imap
-  :type 'boolean)
-
-(defun imap-opened (&optional buffer)
-  "Return non-nil if connection to imap server in BUFFER is open.
-If BUFFER is nil then the current buffer is used."
-  (and (setq buffer (get-buffer (or buffer (current-buffer))))
-       (buffer-live-p buffer)
-       (with-current-buffer buffer
-	 (and imap-process
-	      (memq (process-status imap-process) '(open run))
-	      (if imap-ping-server
-		  (imap-ping-server)
-		t)))))
-
-(defun imap-ping-server (&optional buffer)
-  "Ping the IMAP server in BUFFER with a \"NOOP\" command.
-Return non-nil if the server responds, and nil if it does not
-respond.  If BUFFER is nil, the current buffer is used."
-  (condition-case ()
-      (imap-ok-p (imap-send-command-wait "NOOP" buffer))
-    (error nil)))
-
-(defun imap-authenticate (&optional user passwd buffer)
-  "Authenticate to server in BUFFER, using current buffer if nil.
-It uses the authenticator specified when opening the server.  If the
-authenticator requires username/passwords, they are queried from the
-user and optionally stored in the buffer.  If USER and/or PASSWD is
-specified, the user will not be questioned and the username and/or
-password is remembered in the buffer."
-  (with-current-buffer (or buffer (current-buffer))
-    (if (not (eq imap-state 'nonauth))
-	(or (eq imap-state 'auth)
-	    (eq imap-state 'selected)
-	    (eq imap-state 'examine))
-      (make-local-variable 'imap-username)
-      (make-local-variable 'imap-password)
-      (if user (setq imap-username user))
-      (if passwd (setq imap-password passwd))
-      (if imap-auth
-	  (and (funcall (nth 2 (assq imap-auth
-				     imap-authenticator-alist)) (current-buffer))
-	       (setq imap-state 'auth))
-	;; Choose authenticator.
-	(let ((auths imap-authenticators)
-	      auth)
-	  (while (setq auth (pop auths))
-	    ;; OK to use authenticator?
-	    (when (funcall (nth 1 (assq auth imap-authenticator-alist)) (current-buffer))
-	      (message "imap: Authenticating to `%s' using `%s'..."
-		       imap-server auth)
-	      (setq imap-auth auth)
-	      (if (funcall (nth 2 (assq auth imap-authenticator-alist)) (current-buffer))
-		  (progn
-		    (message "imap: Authenticating to `%s' using `%s'...done"
-			     imap-server auth)
-		    (setq auths nil))
-		(message "imap: Authenticating to `%s' using `%s'...failed"
-			 imap-server auth)))))
-	imap-state))))
-
-(defun imap-close (&optional buffer)
-  "Close connection to server in BUFFER.
-If BUFFER is nil, the current buffer is used."
-  (with-current-buffer (or buffer (current-buffer))
-    (when (imap-opened)
-      (condition-case nil
-	  (imap-logout-wait)
-	(quit nil)))
-    (when (and imap-process
-	       (memq (process-status imap-process) '(open run)))
-      (delete-process imap-process))
-    (setq imap-current-mailbox nil
-	  imap-current-message nil
-	  imap-process nil)
-    (erase-buffer)
-    t))
-
-(defun imap-capability (&optional identifier buffer)
-  "Return a list of identifiers which server in BUFFER support.
-If IDENTIFIER, return non-nil if it's among the servers capabilities.
-If BUFFER is nil, the current buffer is assumed."
-  (with-current-buffer (or buffer (current-buffer))
-    (unless imap-capability
-      (unless (imap-ok-p (imap-send-command-wait "CAPABILITY"))
-	(setq imap-capability '(IMAP2))))
-    (if identifier
-	(memq (intern (upcase (symbol-name identifier))) imap-capability)
-      imap-capability)))
-
-(defun imap-id (&optional list-of-values buffer)
-  "Identify client to server in BUFFER, and return server identity.
-LIST-OF-VALUES is nil, or a plist with identifier and value
-strings to send to the server to identify the client.
-
-Return a list of identifiers which server in BUFFER support, or
-nil if it doesn't support ID or returns no information.
-
-If BUFFER is nil, the current buffer is assumed."
-  (with-current-buffer (or buffer (current-buffer))
-    (when (and (imap-capability 'ID)
-	       (imap-ok-p (imap-send-command-wait
-			   (if (null list-of-values)
-			       "ID NIL"
-			     (concat "ID (" (mapconcat (lambda (el)
-							 (concat "\"" el "\""))
-						       list-of-values
-						       " ") ")")))))
-      imap-id)))
-
-(defun imap-namespace (&optional buffer)
-  "Return a namespace hierarchy at server in BUFFER.
-If BUFFER is nil, the current buffer is assumed."
-  (with-current-buffer (or buffer (current-buffer))
-    (unless imap-namespace
-      (when (imap-capability 'NAMESPACE)
-	(imap-send-command-wait "NAMESPACE")))
-    imap-namespace))
-
-(defun imap-send-command-wait (command &optional buffer)
-  (imap-wait-for-tag (imap-send-command command buffer) buffer))
-
-(defun imap-logout (&optional buffer)
-  (or buffer (setq buffer (current-buffer)))
-  (if imap-logout-timeout
-      (with-timeout (imap-logout-timeout
-		     (condition-case nil
-			 (with-current-buffer buffer
-			   (delete-process imap-process))
-		       (error)))
-	(imap-send-command "LOGOUT" buffer))
-    (imap-send-command "LOGOUT" buffer)))
-
-(defun imap-logout-wait (&optional buffer)
-  (or buffer (setq buffer (current-buffer)))
-  (if imap-logout-timeout
-      (with-timeout (imap-logout-timeout
-		     (condition-case nil
-			 (with-current-buffer buffer
-			   (delete-process imap-process))
-		       (error)))
-	(imap-send-command-wait "LOGOUT" buffer))
-    (imap-send-command-wait "LOGOUT" buffer)))
-
-
-;; Mailbox functions:
-
-(defun imap-mailbox-put (propname value &optional mailbox buffer)
-  (with-current-buffer (or buffer (current-buffer))
-    (if imap-mailbox-data
-	(put (intern (or mailbox imap-current-mailbox) imap-mailbox-data)
-	     propname value)
-      (error "Imap-mailbox-data is nil, prop %s value %s mailbox %s buffer %s"
-	     propname value mailbox (current-buffer)))
-    t))
-
-(defsubst imap-mailbox-get-1 (propname &optional mailbox)
-  (get (intern-soft (or mailbox imap-current-mailbox) imap-mailbox-data)
-       propname))
-
-(defun imap-mailbox-get (propname &optional mailbox buffer)
-  (let ((mailbox (imap-utf7-encode mailbox)))
-    (with-current-buffer (or buffer (current-buffer))
-      (imap-mailbox-get-1 propname (or mailbox imap-current-mailbox)))))
-
-(defun imap-mailbox-map-1 (func &optional mailbox-decoder buffer)
-  (with-current-buffer (or buffer (current-buffer))
-    (let (result)
-      (mapatoms
-       (lambda (s)
-	 (push (funcall func (if mailbox-decoder
-				 (funcall mailbox-decoder (symbol-name s))
-			       (symbol-name s))) result))
-       imap-mailbox-data)
-      result)))
-
-(defun imap-mailbox-map (func &optional buffer)
-  "Map a function across each mailbox in `imap-mailbox-data', returning a list.
-Function should take a mailbox name (a string) as
-the only argument."
-  (imap-mailbox-map-1 func 'imap-utf7-decode buffer))
-
-(defun imap-current-mailbox (&optional buffer)
-  (with-current-buffer (or buffer (current-buffer))
-    (imap-utf7-decode imap-current-mailbox)))
-
-(defun imap-current-mailbox-p-1 (mailbox &optional examine)
-  (and (string= mailbox imap-current-mailbox)
-       (or (and examine
-		(eq imap-state 'examine))
-	   (and (not examine)
-		(eq imap-state 'selected)))))
-
-(defun imap-current-mailbox-p (mailbox &optional examine buffer)
-  (with-current-buffer (or buffer (current-buffer))
-    (imap-current-mailbox-p-1 (imap-utf7-encode mailbox) examine)))
-
-(defun imap-mailbox-select-1 (mailbox &optional examine)
-  "Select MAILBOX on server in BUFFER.
-If EXAMINE is non-nil, do a read-only select."
-  (if (imap-current-mailbox-p-1 mailbox examine)
-      imap-current-mailbox
-    (setq imap-current-mailbox mailbox)
-    (if (imap-ok-p (imap-send-command-wait
-		    (concat (if examine "EXAMINE" "SELECT") " \""
-			    mailbox "\"")))
-	(progn
-	  (setq imap-message-data (make-vector imap-message-prime 0)
-		imap-state (if examine 'examine 'selected))
-	  imap-current-mailbox)
-      ;; Failed SELECT/EXAMINE unselects current mailbox
-      (setq imap-current-mailbox nil))))
-
-(defun imap-mailbox-select (mailbox &optional examine buffer)
-  (with-current-buffer (or buffer (current-buffer))
-    (imap-utf7-decode
-     (imap-mailbox-select-1 (imap-utf7-encode mailbox) examine))))
-
-(defun imap-mailbox-examine-1 (mailbox &optional buffer)
-  (with-current-buffer (or buffer (current-buffer))
-    (imap-mailbox-select-1 mailbox 'examine)))
-
-(defun imap-mailbox-examine (mailbox &optional buffer)
-  "Examine MAILBOX on server in BUFFER."
-  (imap-mailbox-select mailbox 'examine buffer))
-
-(defun imap-mailbox-unselect (&optional buffer)
-  "Close current folder in BUFFER, without expunging articles."
-  (with-current-buffer (or buffer (current-buffer))
-    (when (or (eq imap-state 'auth)
-	      (and (imap-capability 'UNSELECT)
-		   (imap-ok-p (imap-send-command-wait "UNSELECT")))
-	      (and (imap-ok-p
-		    (imap-send-command-wait (concat "EXAMINE \""
-						    imap-current-mailbox
-						    "\"")))
-		   (imap-ok-p (imap-send-command-wait "CLOSE"))))
-      (setq imap-current-mailbox nil
-	    imap-message-data nil
-	    imap-state 'auth)
-      t)))
-
-(defun imap-mailbox-expunge (&optional asynch buffer)
-  "Expunge articles in current folder in BUFFER.
-If ASYNCH, do not wait for succesful completion of the command.
-If BUFFER is nil the current buffer is assumed."
-  (with-current-buffer (or buffer (current-buffer))
-    (when (and imap-current-mailbox (not (eq imap-state 'examine)))
-      (if asynch
-	  (imap-send-command "EXPUNGE")
-      (imap-ok-p (imap-send-command-wait "EXPUNGE"))))))
-
-(defun imap-mailbox-close (&optional asynch buffer)
-  "Expunge articles and close current folder in BUFFER.
-If ASYNCH, do not wait for succesful completion of the command.
-If BUFFER is nil the current buffer is assumed."
-  (with-current-buffer (or buffer (current-buffer))
-    (when imap-current-mailbox
-      (if asynch
-	  (imap-add-callback (imap-send-command "CLOSE")
-			     `(lambda (tag status)
-				(message "IMAP mailbox `%s' closed... %s"
-					 imap-current-mailbox status)
-				(when (eq ,imap-current-mailbox
-					  imap-current-mailbox)
-				  ;; Don't wipe out data if another mailbox
-				  ;; was selected...
-				  (setq imap-current-mailbox nil
-					imap-message-data nil
-					imap-state 'auth))))
-	(when (imap-ok-p (imap-send-command-wait "CLOSE"))
-	  (setq imap-current-mailbox nil
-		imap-message-data nil
-		imap-state 'auth)))
-      t)))
-
-(defun imap-mailbox-create-1 (mailbox)
-  (imap-ok-p (imap-send-command-wait (list "CREATE \"" mailbox "\""))))
-
-(defun imap-mailbox-create (mailbox &optional buffer)
-  "Create MAILBOX on server in BUFFER.
-If BUFFER is nil the current buffer is assumed."
-  (with-current-buffer (or buffer (current-buffer))
-    (imap-mailbox-create-1 (imap-utf7-encode mailbox))))
-
-(defun imap-mailbox-delete (mailbox &optional buffer)
-  "Delete MAILBOX on server in BUFFER.
-If BUFFER is nil the current buffer is assumed."
-  (let ((mailbox (imap-utf7-encode mailbox)))
-    (with-current-buffer (or buffer (current-buffer))
-      (imap-ok-p
-       (imap-send-command-wait (list "DELETE \"" mailbox "\""))))))
-
-(defun imap-mailbox-rename (oldname newname &optional buffer)
-  "Rename mailbox OLDNAME to NEWNAME on server in BUFFER.
-If BUFFER is nil the current buffer is assumed."
-  (let ((oldname (imap-utf7-encode oldname))
-	(newname (imap-utf7-encode newname)))
-    (with-current-buffer (or buffer (current-buffer))
-      (imap-ok-p
-       (imap-send-command-wait (list "RENAME \"" oldname "\" "
-				     "\"" newname "\""))))))
-
-(defun imap-mailbox-lsub (&optional root reference add-delimiter buffer)
-  "Return a list of subscribed mailboxes on server in BUFFER.
-If ROOT is non-nil, only list matching mailboxes.  If ADD-DELIMITER is
-non-nil, a hierarchy delimiter is added to root.  REFERENCE is a
-implementation-specific string that has to be passed to lsub command."
-  (with-current-buffer (or buffer (current-buffer))
-    ;; Make sure we know the hierarchy separator for root's hierarchy
-    (when (and add-delimiter (null (imap-mailbox-get-1 'delimiter root)))
-      (imap-send-command-wait (concat "LIST \"" reference "\" \""
-				      (imap-utf7-encode root) "\"")))
-    ;; clear list data (NB not delimiter and other stuff)
-    (imap-mailbox-map-1 (lambda (mailbox)
-			  (imap-mailbox-put 'lsub nil mailbox)))
-    (when (imap-ok-p
-	   (imap-send-command-wait
-	    (concat "LSUB \"" reference "\" \"" (imap-utf7-encode root)
-		    (and add-delimiter (imap-mailbox-get-1 'delimiter root))
-		    "%\"")))
-      (let (out)
-	(imap-mailbox-map-1 (lambda (mailbox)
-			      (when (imap-mailbox-get-1 'lsub mailbox)
-				(push (imap-utf7-decode mailbox) out))))
-	(nreverse out)))))
-
-(defun imap-mailbox-list (root &optional reference add-delimiter buffer)
-  "Return a list of mailboxes matching ROOT on server in BUFFER.
-If ADD-DELIMITER is non-nil, a hierarchy delimiter is added to
-root.  REFERENCE is a implementation-specific string that has to be
-passed to list command."
-  (with-current-buffer (or buffer (current-buffer))
-    ;; Make sure we know the hierarchy separator for root's hierarchy
-    (when (and add-delimiter (null (imap-mailbox-get-1 'delimiter root)))
-      (imap-send-command-wait (concat "LIST \"" reference "\" \""
-				      (imap-utf7-encode root) "\"")))
-    ;; clear list data (NB not delimiter and other stuff)
-    (imap-mailbox-map-1 (lambda (mailbox)
-			  (imap-mailbox-put 'list nil mailbox)))
-    (when (imap-ok-p
-	   (imap-send-command-wait
-	    (concat "LIST \"" reference "\" \"" (imap-utf7-encode root)
-		    (and add-delimiter (imap-mailbox-get-1 'delimiter root))
-		    "%\"")))
-      (let (out)
-	(imap-mailbox-map-1 (lambda (mailbox)
-			      (when (imap-mailbox-get-1 'list mailbox)
-				(push (imap-utf7-decode mailbox) out))))
-	(nreverse out)))))
-
-(defun imap-mailbox-subscribe (mailbox &optional buffer)
-  "Send the SUBSCRIBE command on the mailbox to server in BUFFER.
-Returns non-nil if successful."
-  (with-current-buffer (or buffer (current-buffer))
-    (imap-ok-p (imap-send-command-wait (concat "SUBSCRIBE \""
-					       (imap-utf7-encode mailbox)
-					       "\"")))))
-
-(defun imap-mailbox-unsubscribe (mailbox &optional buffer)
-  "Send the SUBSCRIBE command on the mailbox to server in BUFFER.
-Returns non-nil if successful."
-  (with-current-buffer (or buffer (current-buffer))
-    (imap-ok-p (imap-send-command-wait (concat "UNSUBSCRIBE "
-					       (imap-utf7-encode mailbox)
-					       "\"")))))
-
-(defun imap-mailbox-status (mailbox items &optional buffer)
-  "Get status items ITEM in MAILBOX from server in BUFFER.
-ITEMS can be a symbol or a list of symbols, valid symbols are one of
-the STATUS data items -- ie 'messages, 'recent, 'uidnext, 'uidvalidity
-or 'unseen.  If ITEMS is a list of symbols, a list of values is
-returned, if ITEMS is a symbol only its value is returned."
-  (with-current-buffer (or buffer (current-buffer))
-    (when (imap-ok-p
-	   (imap-send-command-wait (list "STATUS \""
-					 (imap-utf7-encode mailbox)
-					 "\" "
-					 (upcase
-					  (format "%s"
-						  (if (listp items)
-						      items
-						    (list items)))))))
-      (if (listp items)
-	  (mapcar (lambda (item)
-		    (imap-mailbox-get item mailbox))
-		  items)
-	(imap-mailbox-get items mailbox)))))
-
-(defun imap-mailbox-status-asynch (mailbox items &optional buffer)
-  "Send status item request ITEM on MAILBOX to server in BUFFER.
-ITEMS can be a symbol or a list of symbols, valid symbols are one of
-the STATUS data items -- ie 'messages, 'recent, 'uidnext, 'uidvalidity
-or 'unseen.  The IMAP command tag is returned."
-  (with-current-buffer (or buffer (current-buffer))
-    (imap-send-command (list "STATUS \""
-			     (imap-utf7-encode mailbox)
-			     "\" "
-			     (upcase
-			      (format "%s"
-				      (if (listp items)
-					  items
-					(list items))))))))
-
-(defun imap-mailbox-acl-get (&optional mailbox buffer)
-  "Get ACL on mailbox from server in BUFFER."
-  (let ((mailbox (imap-utf7-encode mailbox)))
-    (with-current-buffer (or buffer (current-buffer))
-      (when (imap-ok-p
-	     (imap-send-command-wait (list "GETACL \""
-					   (or mailbox imap-current-mailbox)
-					   "\"")))
-	(imap-mailbox-get-1 'acl (or mailbox imap-current-mailbox))))))
-
-(defun imap-mailbox-acl-set (identifier rights &optional mailbox buffer)
-  "Change/set ACL for IDENTIFIER to RIGHTS in MAILBOX from server in BUFFER."
-  (let ((mailbox (imap-utf7-encode mailbox)))
-    (with-current-buffer (or buffer (current-buffer))
-      (imap-ok-p
-       (imap-send-command-wait (list "SETACL \""
-				     (or mailbox imap-current-mailbox)
-				     "\" "
-				     identifier
-				     " "
-				     rights))))))
-
-(defun imap-mailbox-acl-delete (identifier &optional mailbox buffer)
-  "Removes any <identifier,rights> pair for IDENTIFIER in MAILBOX from server in BUFFER."
-  (let ((mailbox (imap-utf7-encode mailbox)))
-    (with-current-buffer (or buffer (current-buffer))
-      (imap-ok-p
-       (imap-send-command-wait (list "DELETEACL \""
-				     (or mailbox imap-current-mailbox)
-				     "\" "
-				     identifier))))))
-
-
-;; Message functions:
-
-(defun imap-current-message (&optional buffer)
-  (with-current-buffer (or buffer (current-buffer))
-    imap-current-message))
-
-(defun imap-list-to-message-set (list)
-  (mapconcat (lambda (item)
-	       (number-to-string item))
-	     (if (listp list)
-		 list
-	       (list list))
-	     ","))
-
-(defun imap-range-to-message-set (range)
-  (mapconcat
-   (lambda (item)
-     (if (consp item)
-	 (format "%d:%d"
-		 (car item) (cdr item))
-       (format "%d" item)))
-   (if (and (listp range) (not (listp (cdr range))))
-       (list range) ;; make (1 . 2) into ((1 . 2))
-     range)
-   ","))
-
-(defun imap-fetch-asynch (uids props &optional nouidfetch buffer)
-  (with-current-buffer (or buffer (current-buffer))
-    (imap-send-command (format "%sFETCH %s %s" (if nouidfetch "" "UID ")
-			       (if (listp uids)
-				   (imap-list-to-message-set uids)
-				 uids)
-			       props))))
-
-(defun imap-fetch (uids props &optional receive nouidfetch buffer)
-  "Fetch properties PROPS from message set UIDS from server in BUFFER.
-UIDS can be a string, number or a list of numbers.  If RECEIVE
-is non-nil return these properties."
-  (with-current-buffer (or buffer (current-buffer))
-    (when (imap-ok-p (imap-send-command-wait
-		      (format "%sFETCH %s %s" (if nouidfetch "" "UID ")
-			      (if (listp uids)
-				  (imap-list-to-message-set uids)
-				uids)
-			      props)))
-      (if (or (null receive) (stringp uids))
-	  t
-	(if (listp uids)
-	    (mapcar (lambda (uid)
-		      (if (listp receive)
-			  (mapcar (lambda (prop)
-				    (imap-message-get uid prop))
-				  receive)
-			(imap-message-get uid receive)))
-		    uids)
-	  (imap-message-get uids receive))))))
-
-(defun imap-message-put (uid propname value &optional buffer)
-  (with-current-buffer (or buffer (current-buffer))
-    (if imap-message-data
-	(put (intern (number-to-string uid) imap-message-data)
-	     propname value)
-      (error "Imap-message-data is nil, uid %s prop %s value %s buffer %s"
-	     uid propname value (current-buffer)))
-    t))
-
-(defun imap-message-get (uid propname &optional buffer)
-  (with-current-buffer (or buffer (current-buffer))
-    (get (intern-soft (number-to-string uid) imap-message-data)
-	 propname)))
-
-(defun imap-message-map (func propname &optional buffer)
-  "Map a function across each mailbox in `imap-message-data', returning a list."
-  (with-current-buffer (or buffer (current-buffer))
-    (let (result)
-      (mapatoms
-       (lambda (s)
-	 (push (funcall func (get s 'UID) (get s propname)) result))
-       imap-message-data)
-      result)))
-
-(defmacro imap-message-envelope-date (uid &optional buffer)
-  `(with-current-buffer (or ,buffer (current-buffer))
-     (elt (imap-message-get ,uid 'ENVELOPE) 0)))
-
-(defmacro imap-message-envelope-subject (uid &optional buffer)
-  `(with-current-buffer (or ,buffer (current-buffer))
-     (elt (imap-message-get ,uid 'ENVELOPE) 1)))
-
-(defmacro imap-message-envelope-from (uid &optional buffer)
-  `(with-current-buffer (or ,buffer (current-buffer))
-     (elt (imap-message-get ,uid 'ENVELOPE) 2)))
-
-(defmacro imap-message-envelope-sender (uid &optional buffer)
-  `(with-current-buffer (or ,buffer (current-buffer))
-     (elt (imap-message-get ,uid 'ENVELOPE) 3)))
-
-(defmacro imap-message-envelope-reply-to (uid &optional buffer)
-  `(with-current-buffer (or ,buffer (current-buffer))
-     (elt (imap-message-get ,uid 'ENVELOPE) 4)))
-
-(defmacro imap-message-envelope-to (uid &optional buffer)
-  `(with-current-buffer (or ,buffer (current-buffer))
-     (elt (imap-message-get ,uid 'ENVELOPE) 5)))
-
-(defmacro imap-message-envelope-cc (uid &optional buffer)
-  `(with-current-buffer (or ,buffer (current-buffer))
-     (elt (imap-message-get ,uid 'ENVELOPE) 6)))
-
-(defmacro imap-message-envelope-bcc (uid &optional buffer)
-  `(with-current-buffer (or ,buffer (current-buffer))
-     (elt (imap-message-get ,uid 'ENVELOPE) 7)))
-
-(defmacro imap-message-envelope-in-reply-to (uid &optional buffer)
-  `(with-current-buffer (or ,buffer (current-buffer))
-     (elt (imap-message-get ,uid 'ENVELOPE) 8)))
-
-(defmacro imap-message-envelope-message-id (uid &optional buffer)
-  `(with-current-buffer (or ,buffer (current-buffer))
-     (elt (imap-message-get ,uid 'ENVELOPE) 9)))
-
-(defmacro imap-message-body (uid &optional buffer)
-  `(with-current-buffer (or ,buffer (current-buffer))
-     (imap-message-get ,uid 'BODY)))
-
-(defun imap-search (predicate &optional buffer)
-  (with-current-buffer (or buffer (current-buffer))
-    (imap-mailbox-put 'search 'dummy)
-    (when (imap-ok-p (imap-send-command-wait (concat "UID SEARCH " predicate)))
-      (if (eq (imap-mailbox-get-1 'search imap-current-mailbox) 'dummy)
-	  (progn
-	    (message "Missing SEARCH response to a SEARCH command (server not RFC compliant)...")
-	    nil)
-	(imap-mailbox-get-1 'search imap-current-mailbox)))))
-
-(defun imap-message-flag-permanent-p (flag &optional mailbox buffer)
-  "Return t if FLAG can be permanently (between IMAP sessions) saved on articles, in MAILBOX on server in BUFFER."
-  (with-current-buffer (or buffer (current-buffer))
-    (or (member "\\*" (imap-mailbox-get 'permanentflags mailbox))
-	(member flag (imap-mailbox-get 'permanentflags mailbox)))))
-
-(defun imap-message-flags-set (articles flags &optional silent buffer)
-  (when (and articles flags)
-    (with-current-buffer (or buffer (current-buffer))
-      (imap-ok-p (imap-send-command-wait
-		  (concat "UID STORE " articles
-			  " FLAGS" (if silent ".SILENT") " (" flags ")"))))))
-
-(defun imap-message-flags-del (articles flags &optional silent buffer)
-  (when (and articles flags)
-    (with-current-buffer (or buffer (current-buffer))
-      (imap-ok-p (imap-send-command-wait
-		  (concat "UID STORE " articles
-			  " -FLAGS" (if silent ".SILENT") " (" flags ")"))))))
-
-(defun imap-message-flags-add (articles flags &optional silent buffer)
-  (when (and articles flags)
-    (with-current-buffer (or buffer (current-buffer))
-      (imap-ok-p (imap-send-command-wait
-		  (concat "UID STORE " articles
-			  " +FLAGS" (if silent ".SILENT") " (" flags ")"))))))
-
-;; Cf. http://thread.gmane.org/gmane.emacs.gnus.general/65317/focus=65343
-;; Signal an error if we'd get an integer overflow.
-;;
-;; FIXME: Identify relevant calls to `string-to-number' and replace them with
-;; `imap-string-to-integer'.
-(defun imap-string-to-integer (string &optional base)
-  (let ((number (string-to-number string base)))
-    (if (> number most-positive-fixnum)
-	(error
-	 (format "String %s cannot be converted to a lisp integer" number))
-      number)))
-
-(defun imap-message-copyuid-1 (mailbox)
-  (if (imap-capability 'UIDPLUS)
-      (list (nth 0 (imap-mailbox-get-1 'copyuid mailbox))
-	    (string-to-number (nth 2 (imap-mailbox-get-1 'copyuid mailbox))))
-    (let ((old-mailbox imap-current-mailbox)
-	  (state imap-state)
-	  (imap-message-data (make-vector 2 0)))
-      (when (imap-mailbox-examine-1 mailbox)
-	(prog1
-	    (and (imap-fetch
-		  (if imap-enable-exchange-bug-workaround "*:*" "*") "UID")
-		 (list (imap-mailbox-get-1 'uidvalidity mailbox)
-		       (apply 'max (imap-message-map
-				    (lambda (uid prop) uid) 'UID))))
-	  (if old-mailbox
-	      (imap-mailbox-select old-mailbox (eq state 'examine))
-	    (imap-mailbox-unselect)))))))
-
-(defun imap-message-copyuid (mailbox &optional buffer)
-  (with-current-buffer (or buffer (current-buffer))
-    (imap-message-copyuid-1 (imap-utf7-decode mailbox))))
-
-(defun imap-message-copy (articles mailbox
-				   &optional dont-create no-copyuid buffer)
-  "Copy ARTICLES (a string message set) to MAILBOX on server in
-BUFFER, creating mailbox if it doesn't exist.  If dont-create is
-non-nil, it will not create a mailbox.  On success, return a list with
-the UIDVALIDITY of the mailbox the article(s) was copied to as the
-first element, rest of list contain the saved articles' UIDs."
-  (when articles
-    (with-current-buffer (or buffer (current-buffer))
-      (let ((mailbox (imap-utf7-encode mailbox)))
-	(if (let ((cmd (concat "UID COPY " articles " \"" mailbox "\""))
-		  (imap-current-target-mailbox mailbox))
-	      (if (imap-ok-p (imap-send-command-wait cmd))
-		  t
-		(when (and (not dont-create)
-			   ;; removed because of buggy Oracle server
-			   ;; that doesn't send TRYCREATE tags (which
-			   ;; is a MUST according to specifications):
-			   ;;(imap-mailbox-get-1 'trycreate mailbox)
-			   (imap-mailbox-create-1 mailbox))
-		  (imap-ok-p (imap-send-command-wait cmd)))))
-	    (or no-copyuid
-		(imap-message-copyuid-1 mailbox)))))))
-
-(defun imap-message-appenduid-1 (mailbox)
-  (if (imap-capability 'UIDPLUS)
-      (imap-mailbox-get-1 'appenduid mailbox)
-    (let ((old-mailbox imap-current-mailbox)
-	  (state imap-state)
-	  (imap-message-data (make-vector 2 0)))
-      (when (imap-mailbox-examine-1 mailbox)
-	(prog1
-	    (and (imap-fetch
-		  (if imap-enable-exchange-bug-workaround "*:*" "*") "UID")
-		 (list (imap-mailbox-get-1 'uidvalidity mailbox)
-		       (apply 'max (imap-message-map
-				    (lambda (uid prop) uid) 'UID))))
-	  (if old-mailbox
-	      (imap-mailbox-select old-mailbox (eq state 'examine))
-	    (imap-mailbox-unselect)))))))
-
-(defun imap-message-appenduid (mailbox &optional buffer)
-  (with-current-buffer (or buffer (current-buffer))
-    (imap-message-appenduid-1 (imap-utf7-encode mailbox))))
-
-(defun imap-message-append (mailbox article &optional flags date-time buffer)
-  "Append ARTICLE (a buffer) to MAILBOX on server in BUFFER.
-FLAGS and DATE-TIME is currently not used.  Return a cons holding
-uidvalidity of MAILBOX and UID the newly created article got, or nil
-on failure."
-  (let ((mailbox (imap-utf7-encode mailbox)))
-    (with-current-buffer (or buffer (current-buffer))
-      (and (let ((imap-current-target-mailbox mailbox))
-	     (imap-ok-p
-	      (imap-send-command-wait
-	       (list "APPEND \"" mailbox "\" "  article))))
-	   (imap-message-appenduid-1 mailbox)))))
-
-(defun imap-body-lines (body)
-  "Return number of lines in article by looking at the mime bodystructure BODY."
-  (if (listp body)
-      (if (stringp (car body))
-	  (cond ((and (string= (upcase (car body)) "TEXT")
-		      (numberp (nth 7 body)))
-		 (nth 7 body))
-		((and (string= (upcase (car body)) "MESSAGE")
-		      (numberp (nth 9 body)))
-		 (nth 9 body))
-		(t 0))
-	(apply '+ (mapcar 'imap-body-lines body)))
-    0))
-
-(defun imap-envelope-from (from)
-  "Return a from string line."
-  (and from
-       (concat (aref from 0)
-	       (if (aref from 0) " <")
-	       (aref from 2)
-	       "@"
-	       (aref from 3)
-	       (if (aref from 0) ">"))))
-
-
-;; Internal functions.
-
-(defun imap-add-callback (tag func)
-  (setq imap-callbacks (append (list (cons tag func)) imap-callbacks)))
-
-(defun imap-send-command-1 (cmdstr)
-  (setq cmdstr (concat cmdstr imap-client-eol))
-  (and imap-log
-       (with-current-buffer (get-buffer-create imap-log-buffer)
-	 (imap-disable-multibyte)
-	 (buffer-disable-undo)
-	 (goto-char (point-max))
-	 (insert cmdstr)))
-  (process-send-string imap-process cmdstr))
-
-(defun imap-send-command (command &optional buffer)
-  (with-current-buffer (or buffer (current-buffer))
-    (if (not (listp command)) (setq command (list command)))
-    (let ((tag (setq imap-tag (1+ imap-tag)))
-	  cmd cmdstr)
-      (setq cmdstr (concat (number-to-string imap-tag) " "))
-      (while (setq cmd (pop command))
-	(cond ((stringp cmd)
-	       (setq cmdstr (concat cmdstr cmd)))
-	      ((bufferp cmd)
-	       (let ((eol imap-client-eol)
-		     (calcfirst imap-calculate-literal-size-first)
-		     size)
-		 (with-current-buffer cmd
-		   (if calcfirst
-		       (setq size (buffer-size)))
-		   (when (not (equal eol "\r\n"))
-		     ;; XXX modifies buffer!
-		     (goto-char (point-min))
-		     (while (search-forward "\r\n" nil t)
-		       (replace-match eol)))
-		   (if (not calcfirst)
-		       (setq size (buffer-size))))
-		 (setq cmdstr
-		       (concat cmdstr (format "{%d}" size))))
-	       (unwind-protect
-		   (progn
-		     (imap-send-command-1 cmdstr)
-		     (setq cmdstr nil)
-		     (if (not (eq (imap-wait-for-tag tag) 'INCOMPLETE))
-			 (setq command nil) ;; abort command if no cont-req
-		       (let ((process imap-process)
-			     (stream imap-stream)
-			     (eol imap-client-eol))
-			 (with-current-buffer cmd
-			   (and imap-log
-				(with-current-buffer (get-buffer-create
-						      imap-log-buffer)
-				  (imap-disable-multibyte)
-				  (buffer-disable-undo)
-				  (goto-char (point-max))
-				  (insert-buffer-substring cmd)))
-			   (process-send-region process (point-min)
-						(point-max)))
-			 (process-send-string process imap-client-eol))))
-		 (setq imap-continuation nil)))
-	      ((functionp cmd)
-	       (imap-send-command-1 cmdstr)
-	       (setq cmdstr nil)
-	       (unwind-protect
-		   (if (not (eq (imap-wait-for-tag tag) 'INCOMPLETE))
-		       (setq command nil) ;; abort command if no cont-req
-		     (setq command (cons (funcall cmd imap-continuation)
-					 command)))
-		 (setq imap-continuation nil)))
-	      (t
-	       (error "Unknown command type"))))
-      (if cmdstr
-	  (imap-send-command-1 cmdstr))
-      tag)))
-
-(defun imap-wait-for-tag (tag &optional buffer)
-  (with-current-buffer (or buffer (current-buffer))
-    (let (imap-have-messaged)
-      (while (and (null imap-continuation)
-		  (memq (process-status imap-process) '(open run))
-		  (< imap-reached-tag tag))
-	(let ((len (/ (point-max) 1024))
-	      message-log-max)
-	  (unless (< len 10)
-	    (setq imap-have-messaged t)
-	    (message "imap read: %dk" len))
-	  (accept-process-output imap-process
-				 (truncate imap-read-timeout)
-				 (truncate (* (- imap-read-timeout
-						 (truncate imap-read-timeout))
-					      1000)))))
-      ;; A process can die _before_ we have processed everything it
-      ;; has to say.  Moreover, this can happen in between the call to
-      ;; accept-process-output and the call to process-status in an
-      ;; iteration of the loop above.
-      (when (and (null imap-continuation)
-		 (< imap-reached-tag tag))
-	(accept-process-output imap-process 0 0))
-      (when imap-have-messaged
-	(message ""))
-      (and (memq (process-status imap-process) '(open run))
-	   (or (assq tag imap-failed-tags)
-	       (if imap-continuation
-		   'INCOMPLETE
-		 'OK))))))
-
-(defun imap-sentinel (process string)
-  (delete-process process))
-
-(defun imap-find-next-line ()
-  "Return point at end of current line, taking into account literals.
-Return nil if no complete line has arrived."
-  (when (re-search-forward (concat imap-server-eol "\\|{\\([0-9]+\\)}"
-				   imap-server-eol)
-			   nil t)
-    (if (match-string 1)
-	(if (< (point-max) (+ (point) (string-to-number (match-string 1))))
-	    nil
-	  (goto-char (+ (point) (string-to-number (match-string 1))))
-	  (imap-find-next-line))
-      (point))))
-
-(defun imap-arrival-filter (proc string)
-  "IMAP process filter."
-  ;; Sometimes, we are called even though the process has died.
-  ;; Better abstain from doing stuff in that case.
-  (when (buffer-name (process-buffer proc))
-    (with-current-buffer (process-buffer proc)
-      (goto-char (point-max))
-      (insert string)
-      (and imap-log
-	   (with-current-buffer (get-buffer-create imap-log-buffer)
-	     (imap-disable-multibyte)
-	     (buffer-disable-undo)
-	     (goto-char (point-max))
-	     (insert string)))
-      (let (end)
-	(goto-char (point-min))
-	(while (setq end (imap-find-next-line))
-	  (save-restriction
-	    (narrow-to-region (point-min) end)
-	    (delete-backward-char (length imap-server-eol))
-	    (goto-char (point-min))
-	    (unwind-protect
-		(cond ((eq imap-state 'initial)
-		       (imap-parse-greeting))
-		      ((or (eq imap-state 'auth)
-			   (eq imap-state 'nonauth)
-			   (eq imap-state 'selected)
-			   (eq imap-state 'examine))
-		       (imap-parse-response))
-		      (t
-		       (message "Unknown state %s in arrival filter"
-				imap-state)))
-	      (delete-region (point-min) (point-max)))))))))
-
-
-;; Imap parser.
-
-(defsubst imap-forward ()
-  (or (eobp) (forward-char)))
-
-;;   number          = 1*DIGIT
-;;                       ; Unsigned 32-bit integer
-;;                       ; (0 <= n < 4,294,967,296)
-
-(defsubst imap-parse-number ()
-  (when (looking-at "[0-9]+")
-    (prog1
-	(string-to-number (match-string 0))
-      (goto-char (match-end 0)))))
-
-;;   literal         = "{" number "}" CRLF *CHAR8
-;;                       ; Number represents the number of CHAR8s
-
-(defsubst imap-parse-literal ()
-  (when (looking-at "{\\([0-9]+\\)}\r\n")
-    (let ((pos (match-end 0))
-	  (len (string-to-number (match-string 1))))
-      (if (< (point-max) (+ pos len))
-	  nil
-	(goto-char (+ pos len))
-	(buffer-substring pos (+ pos len))))))
-
-;;   string          = quoted / literal
-;;
-;;   quoted          = DQUOTE *QUOTED-CHAR DQUOTE
-;;
-;;   QUOTED-CHAR     = <any TEXT-CHAR except quoted-specials> /
-;;                     "\" quoted-specials
-;;
-;;   quoted-specials = DQUOTE / "\"
-;;
-;;   TEXT-CHAR       = <any CHAR except CR and LF>
-
-(defsubst imap-parse-string ()
-  (cond ((eq (char-after) ?\")
-	 (forward-char 1)
-	 (let ((p (point)) (name ""))
-	   (skip-chars-forward "^\"\\\\")
-	   (setq name (buffer-substring p (point)))
-	   (while (eq (char-after) ?\\)
-	     (setq p (1+ (point)))
-	     (forward-char 2)
-	     (skip-chars-forward "^\"\\\\")
-	     (setq name (concat name (buffer-substring p (point)))))
-	   (forward-char 1)
-	   name))
-	((eq (char-after) ?{)
-	 (imap-parse-literal))))
-
-;;   nil             = "NIL"
-
-(defsubst imap-parse-nil ()
-  (if (looking-at "NIL")
-      (goto-char (match-end 0))))
-
-;;   nstring         = string / nil
-
-(defsubst imap-parse-nstring ()
-  (or (imap-parse-string)
-      (and (imap-parse-nil)
-	   nil)))
-
-;;   astring         = atom / string
-;;
-;;   atom            = 1*ATOM-CHAR
-;;
-;;   ATOM-CHAR       = <any CHAR except atom-specials>
-;;
-;;   atom-specials   = "(" / ")" / "{" / SP / CTL / list-wildcards /
-;;                     quoted-specials
-;;
-;;   list-wildcards  = "%" / "*"
-;;
-;;   quoted-specials = DQUOTE / "\"
-
-(defsubst imap-parse-astring ()
-  (or (imap-parse-string)
-      (buffer-substring (point)
-			(if (re-search-forward "[(){ \r\n%*\"\\]" nil t)
-			    (goto-char (1- (match-end 0)))
-			  (end-of-line)
-			  (point)))))
-
-;;   address         = "(" addr-name SP addr-adl SP addr-mailbox SP
-;;                      addr-host ")"
-;;
-;;   addr-adl        = nstring
-;;                       ; Holds route from [RFC-822] route-addr if
-;;                       ; non-nil
-;;
-;;   addr-host       = nstring
-;;                       ; nil indicates [RFC-822] group syntax.
-;;                       ; Otherwise, holds [RFC-822] domain name
-;;
-;;   addr-mailbox    = nstring
-;;                       ; nil indicates end of [RFC-822] group; if
-;;                       ; non-nil and addr-host is nil, holds
-;;                       ; [RFC-822] group name.
-;;                       ; Otherwise, holds [RFC-822] local-part
-;;                       ; after removing [RFC-822] quoting
-;;
-;;   addr-name       = nstring
-;;                       ; If non-nil, holds phrase from [RFC-822]
-;;                       ; mailbox after removing [RFC-822] quoting
-;;
-
-(defsubst imap-parse-address ()
-  (let (address)
-    (when (eq (char-after) ?\()
-      (imap-forward)
-      (setq address (vector (prog1 (imap-parse-nstring)
-			      (imap-forward))
-			    (prog1 (imap-parse-nstring)
-			      (imap-forward))
-			    (prog1 (imap-parse-nstring)
-			      (imap-forward))
-			    (imap-parse-nstring)))
-      (when (eq (char-after) ?\))
-	(imap-forward)
-	address))))
-
-;;   address-list    = "(" 1*address ")" / nil
-;;
-;;   nil             = "NIL"
-
-(defsubst imap-parse-address-list ()
-  (if (eq (char-after) ?\()
-      (let (address addresses)
-	(imap-forward)
-	(while (and (not (eq (char-after) ?\)))
-		    ;; next line for MS Exchange bug
-		    (progn (and (eq (char-after) ? ) (imap-forward)) t)
-		    (setq address (imap-parse-address)))
-	  (setq addresses (cons address addresses)))
-	(when (eq (char-after) ?\))
-	  (imap-forward)
-	  (nreverse addresses)))
-    ;; With assert, the code might not be eval'd.
-    ;; (assert (imap-parse-nil) t "In imap-parse-address-list")
-    (imap-parse-nil)))
-
-;;   mailbox         = "INBOX" / astring
-;;                       ; INBOX is case-insensitive.  All case variants of
-;;                       ; INBOX (e.g. "iNbOx") MUST be interpreted as INBOX
-;;                       ; not as an astring.  An astring which consists of
-;;                       ; the case-insensitive sequence "I" "N" "B" "O" "X"
-;;                       ; is considered to be INBOX and not an astring.
-;;                       ;  Refer to section 5.1 for further
-;;                       ; semantic details of mailbox names.
-
-(defsubst imap-parse-mailbox ()
-  (let ((mailbox (imap-parse-astring)))
-    (if (string-equal "INBOX" (upcase mailbox))
-	"INBOX"
-      mailbox)))
-
-;;   greeting        = "*" SP (resp-cond-auth / resp-cond-bye) CRLF
-;;
-;;   resp-cond-auth  = ("OK" / "PREAUTH") SP resp-text
-;;                       ; Authentication condition
-;;
-;;   resp-cond-bye   = "BYE" SP resp-text
-
-(defun imap-parse-greeting ()
-  "Parse a IMAP greeting."
-  (cond ((looking-at "\\* OK ")
-	 (setq imap-state 'nonauth))
-	((looking-at "\\* PREAUTH ")
-	 (setq imap-state 'auth))
-	((looking-at "\\* BYE ")
-	 (setq imap-state 'closed))))
-
-;;   response        = *(continue-req / response-data) response-done
-;;
-;;   continue-req    = "+" SP (resp-text / base64) CRLF
-;;
-;;   response-data   = "*" SP (resp-cond-state / resp-cond-bye /
-;;                     mailbox-data / message-data / capability-data) CRLF
-;;
-;;   response-done   = response-tagged / response-fatal
-;;
-;;   response-fatal  = "*" SP resp-cond-bye CRLF
-;;                       ; Server closes connection immediately
-;;
-;;   response-tagged = tag SP resp-cond-state CRLF
-;;
-;;   resp-cond-state = ("OK" / "NO" / "BAD") SP resp-text
-;;                       ; Status condition
-;;
-;;   resp-cond-bye   = "BYE" SP resp-text
-;;
-;;   mailbox-data    =  "FLAGS" SP flag-list /
-;;		        "LIST" SP mailbox-list /
-;;                      "LSUB" SP mailbox-list /
-;;		        "SEARCH" *(SP nz-number) /
-;;                      "STATUS" SP mailbox SP "("
-;;	                      [status-att SP number *(SP status-att SP number)] ")" /
-;;                      number SP "EXISTS" /
-;;		        number SP "RECENT"
-;;
-;;   message-data    = nz-number SP ("EXPUNGE" / ("FETCH" SP msg-att))
-;;
-;;   capability-data = "CAPABILITY" *(SP capability) SP "IMAP4rev1"
-;;                     *(SP capability)
-;;                       ; IMAP4rev1 servers which offer RFC 1730
-;;                       ; compatibility MUST list "IMAP4" as the first
-;;                       ; capability.
-
-(defun imap-parse-response ()
-  "Parse a IMAP command response."
-  (let (token)
-    (case (setq token (read (current-buffer)))
-      (+ (setq imap-continuation
-	       (or (buffer-substring (min (point-max) (1+ (point)))
-				     (point-max))
-		   t)))
-      (* (case (prog1 (setq token (read (current-buffer)))
-		 (imap-forward))
-	   (OK         (imap-parse-resp-text))
-	   (NO         (imap-parse-resp-text))
-	   (BAD        (imap-parse-resp-text))
-	   (BYE        (imap-parse-resp-text))
-	   (FLAGS      (imap-mailbox-put 'flags (imap-parse-flag-list)))
-	   (LIST       (imap-parse-data-list 'list))
-	   (LSUB       (imap-parse-data-list 'lsub))
-	   (SEARCH     (imap-mailbox-put
-			'search
-			(read (concat "(" (buffer-substring (point) (point-max)) ")"))))
-	   (STATUS     (imap-parse-status))
-	   (CAPABILITY (setq imap-capability
-			       (read (concat "(" (upcase (buffer-substring
-							  (point) (point-max)))
-					     ")"))))
-	   (ID	       (setq imap-id (read (buffer-substring (point)
-							     (point-max)))))
-	   (ACL        (imap-parse-acl))
-	   (t       (case (prog1 (read (current-buffer))
-			    (imap-forward))
-		      (EXISTS  (imap-mailbox-put 'exists token))
-		      (RECENT  (imap-mailbox-put 'recent token))
-		      (EXPUNGE t)
-		      (FETCH   (imap-parse-fetch token))
-		      (t       (message "Garbage: %s" (buffer-string)))))))
-      (t (let (status)
-	   (if (not (integerp token))
-	       (message "Garbage: %s" (buffer-string))
-	     (case (prog1 (setq status (read (current-buffer)))
-		     (imap-forward))
-	       (OK  (progn
-		      (setq imap-reached-tag (max imap-reached-tag token))
-		      (imap-parse-resp-text)))
-	       (NO  (progn
-		      (setq imap-reached-tag (max imap-reached-tag token))
-		      (save-excursion
-			(imap-parse-resp-text))
-		      (let (code text)
-			(when (eq (char-after) ?\[)
-			  (setq code (buffer-substring (point)
-						       (search-forward "]")))
-			  (imap-forward))
-			(setq text (buffer-substring (point) (point-max)))
-			(push (list token status code text)
-			      imap-failed-tags))))
-	       (BAD (progn
-		      (setq imap-reached-tag (max imap-reached-tag token))
-		      (save-excursion
-			(imap-parse-resp-text))
-		      (let (code text)
-			(when (eq (char-after) ?\[)
-			  (setq code (buffer-substring (point)
-						       (search-forward "]")))
-			  (imap-forward))
-			(setq text (buffer-substring (point) (point-max)))
-			(push (list token status code text) imap-failed-tags)
-			(error "Internal error, tag %s status %s code %s text %s"
-			       token status code text))))
-	       (t   (message "Garbage: %s" (buffer-string))))
-	     (when (assq token imap-callbacks)
-	       (funcall (cdr (assq token imap-callbacks)) token status)
-	       (setq imap-callbacks
-		     (imap-remassoc token imap-callbacks)))))))))
-
-;;   resp-text       = ["[" resp-text-code "]" SP] text
-;;
-;;   text            = 1*TEXT-CHAR
-;;
-;;   TEXT-CHAR       = <any CHAR except CR and LF>
-
-(defun imap-parse-resp-text ()
-  (imap-parse-resp-text-code))
-
-;;   resp-text-code  = "ALERT" /
-;;                     "BADCHARSET [SP "(" astring *(SP astring) ")" ] /
-;;                     "NEWNAME" SP string SP string /
-;;		       "PARSE" /
-;;                     "PERMANENTFLAGS" SP "("
-;;                               [flag-perm *(SP flag-perm)] ")" /
-;;                     "READ-ONLY" /
-;;		       "READ-WRITE" /
-;;		       "TRYCREATE" /
-;;                     "UIDNEXT" SP nz-number /
-;;		       "UIDVALIDITY" SP nz-number /
-;;                     "UNSEEN" SP nz-number /
-;;                     resp-text-atom [SP 1*<any TEXT-CHAR except "]">]
-;;
-;;   resp_code_apnd  = "APPENDUID" SPACE nz_number SPACE uniqueid
-;;
-;;   resp_code_copy  = "COPYUID" SPACE nz_number SPACE set SPACE set
-;;
-;;   set             = sequence-num / (sequence-num ":" sequence-num) /
-;;                        (set "," set)
-;;                          ; Identifies a set of messages.  For message
-;;                          ; sequence numbers, these are consecutive
-;;                          ; numbers from 1 to the number of messages in
-;;                          ; the mailbox
-;;                          ; Comma delimits individual numbers, colon
-;;                          ; delimits between two numbers inclusive.
-;;                          ; Example: 2,4:7,9,12:* is 2,4,5,6,7,9,12,13,
-;;                          ; 14,15 for a mailbox with 15 messages.
-;;
-;;   sequence-num    = nz-number / "*"
-;;                          ; * is the largest number in use.  For message
-;;                          ; sequence numbers, it is the number of messages
-;;                          ; in the mailbox.  For unique identifiers, it is
-;;                          ; the unique identifier of the last message in
-;;                          ; the mailbox.
-;;
-;;   flag-perm       = flag / "\*"
-;;
-;;   flag            = "\Answered" / "\Flagged" / "\Deleted" /
-;;                     "\Seen" / "\Draft" / flag-keyword / flag-extension
-;;                       ; Does not include "\Recent"
-;;
-;;   flag-extension  = "\" atom
-;;                       ; Future expansion.  Client implementations
-;;                       ; MUST accept flag-extension flags.  Server
-;;                       ; implementations MUST NOT generate
-;;                       ; flag-extension flags except as defined by
-;;                       ; future standard or standards-track
-;;                       ; revisions of this specification.
-;;
-;;   flag-keyword    = atom
-;;
-;;   resp-text-atom  = 1*<any ATOM-CHAR except "]">
-
-(defun imap-parse-resp-text-code ()
-  ;; xxx next line for stalker communigate pro 3.3.1 bug
-  (when (looking-at " \\[")
-    (imap-forward))
-  (when (eq (char-after) ?\[)
-    (imap-forward)
-    (cond ((search-forward "PERMANENTFLAGS " nil t)
-	   (imap-mailbox-put 'permanentflags (imap-parse-flag-list)))
-	  ((search-forward "UIDNEXT \\([0-9]+\\)" nil t)
-	   (imap-mailbox-put 'uidnext (match-string 1)))
-	  ((search-forward "UNSEEN " nil t)
-	   (imap-mailbox-put 'first-unseen (read (current-buffer))))
-	  ((looking-at "UIDVALIDITY \\([0-9]+\\)")
-	   (imap-mailbox-put 'uidvalidity (match-string 1)))
-	  ((search-forward "READ-ONLY" nil t)
-	   (imap-mailbox-put 'read-only t))
-	  ((search-forward "NEWNAME " nil t)
-	   (let (oldname newname)
-	     (setq oldname (imap-parse-string))
-	     (imap-forward)
-	     (setq newname (imap-parse-string))
-	     (imap-mailbox-put 'newname newname oldname)))
-	  ((search-forward "TRYCREATE" nil t)
-	   (imap-mailbox-put 'trycreate t imap-current-target-mailbox))
-	  ((looking-at "APPENDUID \\([0-9]+\\) \\([0-9]+\\)")
-	   (imap-mailbox-put 'appenduid
-			     (list (match-string 1)
-				   (string-to-number (match-string 2)))
-			     imap-current-target-mailbox))
-	  ((looking-at "COPYUID \\([0-9]+\\) \\([0-9,:]+\\) \\([0-9,:]+\\)")
-	   (imap-mailbox-put 'copyuid (list (match-string 1)
-					    (match-string 2)
-					    (match-string 3))
-			     imap-current-target-mailbox))
-	  ((search-forward "ALERT] " nil t)
-	   (message "Imap server %s information: %s" imap-server
-		    (buffer-substring (point) (point-max)))))))
-
-;;   mailbox-list    = "(" [mbx-list-flags] ")" SP
-;;                      (DQUOTE QUOTED-CHAR DQUOTE / nil) SP mailbox
-;;
-;;   mbx-list-flags  = *(mbx-list-oflag SP) mbx-list-sflag
-;;                     *(SP mbx-list-oflag) /
-;;                     mbx-list-oflag *(SP mbx-list-oflag)
-;;
-;;   mbx-list-oflag  = "\Noinferiors" / flag-extension
-;;                       ; Other flags; multiple possible per LIST response
-;;
-;;   mbx-list-sflag  = "\Noselect" / "\Marked" / "\Unmarked"
-;;                       ; Selectability flags; only one per LIST response
-;;
-;;   QUOTED-CHAR     = <any TEXT-CHAR except quoted-specials> /
-;;                     "\" quoted-specials
-;;
-;;   quoted-specials = DQUOTE / "\"
-
-(defun imap-parse-data-list (type)
-  (let (flags delimiter mailbox)
-    (setq flags (imap-parse-flag-list))
-    (when (looking-at " NIL\\| \"\\\\?\\(.\\)\"")
-      (setq delimiter (match-string 1))
-      (goto-char (1+ (match-end 0)))
-      (when (setq mailbox (imap-parse-mailbox))
-	(imap-mailbox-put type t mailbox)
-	(imap-mailbox-put 'list-flags flags mailbox)
-	(imap-mailbox-put 'delimiter delimiter mailbox)))))
-
-;;  msg_att         ::= "(" 1#("ENVELOPE" SPACE envelope /
-;;                      "FLAGS" SPACE "(" #(flag / "\Recent") ")" /
-;;                      "INTERNALDATE" SPACE date_time /
-;;                      "RFC822" [".HEADER" / ".TEXT"] SPACE nstring /
-;;                      "RFC822.SIZE" SPACE number /
-;;                      "BODY" ["STRUCTURE"] SPACE body /
-;;                      "BODY" section ["<" number ">"] SPACE nstring /
-;;                      "UID" SPACE uniqueid) ")"
-;;
-;;  date_time       ::= <"> date_day_fixed "-" date_month "-" date_year
-;;                      SPACE time SPACE zone <">
-;;
-;;  section         ::= "[" [section_text / (nz_number *["." nz_number]
-;;                      ["." (section_text / "MIME")])] "]"
-;;
-;;  section_text    ::= "HEADER" / "HEADER.FIELDS" [".NOT"]
-;;                      SPACE header_list / "TEXT"
-;;
-;;  header_fld_name ::= astring
-;;
-;;  header_list     ::= "(" 1#header_fld_name ")"
-
-(defsubst imap-parse-header-list ()
-  (when (eq (char-after) ?\()
-    (let (strlist)
-      (while (not (eq (char-after) ?\)))
-	(imap-forward)
-	(push (imap-parse-astring) strlist))
-      (imap-forward)
-      (nreverse strlist))))
-
-(defsubst imap-parse-fetch-body-section ()
-  (let ((section
-	 (buffer-substring (point) (1- (re-search-forward "[] ]" nil t)))))
-    (if (eq (char-before) ? )
-	(prog1
-	    (mapconcat 'identity (cons section (imap-parse-header-list)) " ")
-	  (search-forward "]" nil t))
-      section)))
-
-(defun imap-parse-fetch (response)
-  (when (eq (char-after) ?\()
-    (let (uid flags envelope internaldate rfc822 rfc822header rfc822text
-	      rfc822size body bodydetail bodystructure flags-empty)
-      (while (not (eq (char-after) ?\)))
-	(imap-forward)
-	(let ((token (read (current-buffer))))
-	  (imap-forward)
-	  (cond ((eq token 'UID)
-		 (setq uid (condition-case ()
-			       (read (current-buffer))
-			     (error))))
-		((eq token 'FLAGS)
-		 (setq flags (imap-parse-flag-list))
-		 (if (not flags)
-		     (setq flags-empty 't)))
-		((eq token 'ENVELOPE)
-		 (setq envelope (imap-parse-envelope)))
-		((eq token 'INTERNALDATE)
-		 (setq internaldate (imap-parse-string)))
-		((eq token 'RFC822)
-		 (setq rfc822 (imap-parse-nstring)))
-		((eq token 'RFC822.HEADER)
-		 (setq rfc822header (imap-parse-nstring)))
-		((eq token 'RFC822.TEXT)
-		 (setq rfc822text (imap-parse-nstring)))
-		((eq token 'RFC822.SIZE)
-		 (setq rfc822size (read (current-buffer))))
-		((eq token 'BODY)
-		 (if (eq (char-before) ?\[)
-		     (push (list
-			    (upcase (imap-parse-fetch-body-section))
-			    (and (eq (char-after) ?<)
-				 (buffer-substring (1+ (point))
-						   (search-forward ">" nil t)))
-			    (progn (imap-forward)
-				   (imap-parse-nstring)))
-			   bodydetail)
-		   (setq body (imap-parse-body))))
-		((eq token 'BODYSTRUCTURE)
-		 (setq bodystructure (imap-parse-body))))))
-      (when uid
-	(setq imap-current-message uid)
-	(imap-message-put uid 'UID uid)
-	(and (or flags flags-empty) (imap-message-put uid 'FLAGS flags))
-	(and envelope (imap-message-put uid 'ENVELOPE envelope))
-	(and internaldate (imap-message-put uid 'INTERNALDATE internaldate))
-	(and rfc822 (imap-message-put uid 'RFC822 rfc822))
-	(and rfc822header (imap-message-put uid 'RFC822.HEADER rfc822header))
-	(and rfc822text (imap-message-put uid 'RFC822.TEXT rfc822text))
-	(and rfc822size (imap-message-put uid 'RFC822.SIZE rfc822size))
-	(and body (imap-message-put uid 'BODY body))
-	(and bodydetail (imap-message-put uid 'BODYDETAIL bodydetail))
-	(and bodystructure (imap-message-put uid 'BODYSTRUCTURE bodystructure))
-	(run-hooks 'imap-fetch-data-hook)))))
-
-;;   mailbox-data    =  ...
-;;                      "STATUS" SP mailbox SP "("
-;;	                      [status-att SP number
-;;                            *(SP status-att SP number)] ")"
-;;                      ...
-;;
-;;   status-att      = "MESSAGES" / "RECENT" / "UIDNEXT" / "UIDVALIDITY" /
-;;                     "UNSEEN"
-
-(defun imap-parse-status ()
-  (let ((mailbox (imap-parse-mailbox)))
-    (if (eq (char-after) ? )
-	(forward-char))
-    (when (and mailbox (eq (char-after) ?\())
-      (while (and (not (eq (char-after) ?\)))
-		  (or (forward-char) t)
-		  (looking-at "\\([A-Za-z]+\\) "))
-	(let ((token (upcase (match-string 1))))
-	  (goto-char (match-end 0))
-	  (cond ((string= token "MESSAGES")
-		 (imap-mailbox-put 'messages (read (current-buffer)) mailbox))
-		((string= token "RECENT")
-		 (imap-mailbox-put 'recent (read (current-buffer)) mailbox))
-		((string= token "UIDNEXT")
-		 (and (looking-at "[0-9]+")
-		      (imap-mailbox-put 'uidnext (match-string 0) mailbox)
-		      (goto-char (match-end 0))))
-		((string= token "UIDVALIDITY")
-		 (and (looking-at "[0-9]+")
-		      (imap-mailbox-put 'uidvalidity (match-string 0) mailbox)
-		      (goto-char (match-end 0))))
-		((string= token "UNSEEN")
-		 (imap-mailbox-put 'unseen (read (current-buffer)) mailbox))
-		(t
-		 (message "Unknown status data %s in mailbox %s ignored"
-			  token mailbox)
-		 (read (current-buffer)))))))))
-
-;;   acl_data        ::= "ACL" SPACE mailbox *(SPACE identifier SPACE
-;;                        rights)
-;;
-;;   identifier      ::= astring
-;;
-;;   rights          ::= astring
-
-(defun imap-parse-acl ()
-  (let ((mailbox (imap-parse-mailbox))
-	identifier rights acl)
-    (while (eq (char-after) ?\ )
-      (imap-forward)
-      (setq identifier (imap-parse-astring))
-      (imap-forward)
-      (setq rights (imap-parse-astring))
-      (setq acl (append acl (list (cons identifier rights)))))
-    (imap-mailbox-put 'acl acl mailbox)))
-
-;;   flag-list       = "(" [flag *(SP flag)] ")"
-;;
-;;   flag            = "\Answered" / "\Flagged" / "\Deleted" /
-;;                     "\Seen" / "\Draft" / flag-keyword / flag-extension
-;;                       ; Does not include "\Recent"
-;;
-;;   flag-keyword    = atom
-;;
-;;   flag-extension  = "\" atom
-;;                       ; Future expansion.  Client implementations
-;;                       ; MUST accept flag-extension flags.  Server
-;;                       ; implementations MUST NOT generate
-;;                       ; flag-extension flags except as defined by
-;;                       ; future standard or standards-track
-;;                       ; revisions of this specification.
-
-(defun imap-parse-flag-list ()
-  (let (flag-list start)
-    (assert (eq (char-after) ?\() nil "In imap-parse-flag-list")
-    (while (and (not (eq (char-after) ?\)))
-		(setq start (progn
-			      (imap-forward)
-			      ;; next line for Courier IMAP bug.
-			      (skip-chars-forward " ")
-			      (point)))
-		(> (skip-chars-forward "^ )" (point-at-eol)) 0))
-      (push (buffer-substring start (point)) flag-list))
-    (assert (eq (char-after) ?\)) nil "In imap-parse-flag-list")
-    (imap-forward)
-    (nreverse flag-list)))
-
-;;   envelope        = "(" env-date SP env-subject SP env-from SP env-sender SP
-;;                     env-reply-to SP env-to SP env-cc SP env-bcc SP
-;;                     env-in-reply-to SP env-message-id ")"
-;;
-;;   env-bcc         = "(" 1*address ")" / nil
-;;
-;;   env-cc          = "(" 1*address ")" / nil
-;;
-;;   env-date        = nstring
-;;
-;;   env-from        = "(" 1*address ")" / nil
-;;
-;;   env-in-reply-to = nstring
-;;
-;;   env-message-id  = nstring
-;;
-;;   env-reply-to    = "(" 1*address ")" / nil
-;;
-;;   env-sender      = "(" 1*address ")" / nil
-;;
-;;   env-subject     = nstring
-;;
-;;   env-to          = "(" 1*address ")" / nil
-
-(defun imap-parse-envelope ()
-  (when (eq (char-after) ?\()
-    (imap-forward)
-    (vector (prog1 (imap-parse-nstring)	;; date
-	      (imap-forward))
-	    (prog1 (imap-parse-nstring)	;; subject
-	      (imap-forward))
-	    (prog1 (imap-parse-address-list) ;; from
-	      (imap-forward))
-	    (prog1 (imap-parse-address-list) ;; sender
-	      (imap-forward))
-	    (prog1 (imap-parse-address-list) ;; reply-to
-	      (imap-forward))
-	    (prog1 (imap-parse-address-list) ;; to
-	      (imap-forward))
-	    (prog1 (imap-parse-address-list) ;; cc
-	      (imap-forward))
-	    (prog1 (imap-parse-address-list) ;; bcc
-	      (imap-forward))
-	    (prog1 (imap-parse-nstring)	;; in-reply-to
-	      (imap-forward))
-	    (prog1 (imap-parse-nstring)	;; message-id
-	      (imap-forward)))))
-
-;;   body-fld-param  = "(" string SP string *(SP string SP string) ")" / nil
-
-(defsubst imap-parse-string-list ()
-  (cond ((eq (char-after) ?\() ;; body-fld-param
-	 (let (strlist str)
-	   (imap-forward)
-	   (while (setq str (imap-parse-string))
-	     (push str strlist)
-	     ;; buggy stalker communigate pro 3.0 doesn't print SPC
-	     ;; between body-fld-param's sometimes
-	     (or (eq (char-after) ?\")
-		 (imap-forward)))
-	   (nreverse strlist)))
-	((imap-parse-nil)
-	 nil)))
-
-;;   body-extension  = nstring / number /
-;;                      "(" body-extension *(SP body-extension) ")"
-;;                       ; Future expansion.  Client implementations
-;;                       ; MUST accept body-extension fields.  Server
-;;                       ; implementations MUST NOT generate
-;;                       ; body-extension fields except as defined by
-;;                       ; future standard or standards-track
-;;                       ; revisions of this specification.
-
-(defun imap-parse-body-extension ()
-  (if (eq (char-after) ?\()
-      (let (b-e)
-	(imap-forward)
-	(push (imap-parse-body-extension) b-e)
-	(while (eq (char-after) ?\ )
-	  (imap-forward)
-	  (push (imap-parse-body-extension) b-e))
-	(assert (eq (char-after) ?\)) nil "In imap-parse-body-extension")
-	(imap-forward)
-	(nreverse b-e))
-    (or (imap-parse-number)
-	(imap-parse-nstring))))
-
-;;   body-ext-1part  = body-fld-md5 [SP body-fld-dsp [SP body-fld-lang
-;;                     *(SP body-extension)]]
-;;                       ; MUST NOT be returned on non-extensible
-;;                       ; "BODY" fetch
-;;
-;;   body-ext-mpart  = body-fld-param [SP body-fld-dsp [SP body-fld-lang
-;;                     *(SP body-extension)]]
-;;                       ; MUST NOT be returned on non-extensible
-;;                       ; "BODY" fetch
-
-(defsubst imap-parse-body-ext ()
-  (let (ext)
-    (when (eq (char-after) ?\ )	;; body-fld-dsp
-      (imap-forward)
-      (let (dsp)
-	(if (eq (char-after) ?\()
-	    (progn
-	      (imap-forward)
-	      (push (imap-parse-string) dsp)
-	      (imap-forward)
-	      (push (imap-parse-string-list) dsp)
-	      (imap-forward))
-	  ;; With assert, the code might not be eval'd.
-	  ;; (assert (imap-parse-nil) t "In imap-parse-body-ext")
-	  (imap-parse-nil))
-	(push (nreverse dsp) ext))
-      (when (eq (char-after) ?\ ) ;; body-fld-lang
-	(imap-forward)
-	(if (eq (char-after) ?\()
-	    (push (imap-parse-string-list) ext)
-	  (push (imap-parse-nstring) ext))
-	(while (eq (char-after) ?\ ) ;; body-extension
-	  (imap-forward)
-	  (setq ext (append (imap-parse-body-extension) ext)))))
-    ext))
-
-;;   body            = "(" body-type-1part / body-type-mpart ")"
-;;
-;;   body-ext-1part  = body-fld-md5 [SP body-fld-dsp [SP body-fld-lang
-;;                     *(SP body-extension)]]
-;;                       ; MUST NOT be returned on non-extensible
-;;                       ; "BODY" fetch
-;;
-;;   body-ext-mpart  = body-fld-param [SP body-fld-dsp [SP body-fld-lang
-;;                     *(SP body-extension)]]
-;;                       ; MUST NOT be returned on non-extensible
-;;                       ; "BODY" fetch
-;;
-;;   body-fields     = body-fld-param SP body-fld-id SP body-fld-desc SP
-;;                     body-fld-enc SP body-fld-octets
-;;
-;;   body-fld-desc   = nstring
-;;
-;;   body-fld-dsp    = "(" string SP body-fld-param ")" / nil
-;;
-;;   body-fld-enc    = (DQUOTE ("7BIT" / "8BIT" / "BINARY" / "BASE64"/
-;;                     "QUOTED-PRINTABLE") DQUOTE) / string
-;;
-;;   body-fld-id     = nstring
-;;
-;;   body-fld-lang   = nstring / "(" string *(SP string) ")"
-;;
-;;   body-fld-lines  = number
-;;
-;;   body-fld-md5    = nstring
-;;
-;;   body-fld-octets = number
-;;
-;;   body-fld-param  = "(" string SP string *(SP string SP string) ")" / nil
-;;
-;;   body-type-1part = (body-type-basic / body-type-msg / body-type-text)
-;;                     [SP body-ext-1part]
-;;
-;;   body-type-basic = media-basic SP body-fields
-;;                       ; MESSAGE subtype MUST NOT be "RFC822"
-;;
-;;   body-type-msg   = media-message SP body-fields SP envelope
-;;                     SP body SP body-fld-lines
-;;
-;;   body-type-text  = media-text SP body-fields SP body-fld-lines
-;;
-;;   body-type-mpart = 1*body SP media-subtype
-;;                     [SP body-ext-mpart]
-;;
-;;   media-basic     = ((DQUOTE ("APPLICATION" / "AUDIO" / "IMAGE" /
-;;                     "MESSAGE" / "VIDEO") DQUOTE) / string) SP media-subtype
-;;                       ; Defined in [MIME-IMT]
-;;
-;;   media-message   = DQUOTE "MESSAGE" DQUOTE SP DQUOTE "RFC822" DQUOTE
-;;                      ; Defined in [MIME-IMT]
-;;
-;;   media-subtype   = string
-;;                       ; Defined in [MIME-IMT]
-;;
-;;   media-text      = DQUOTE "TEXT" DQUOTE SP media-subtype
-;;                       ; Defined in [MIME-IMT]
-
-(defun imap-parse-body ()
-  (let (body)
-    (when (eq (char-after) ?\()
-      (imap-forward)
-      (if (eq (char-after) ?\()
-	  (let (subbody)
-	    (while (and (eq (char-after) ?\()
-			(setq subbody (imap-parse-body)))
-	     ;; buggy stalker communigate pro 3.0 insert a SPC between
-	      ;; parts in multiparts
-	      (when (and (eq (char-after) ?\ )
-			 (eq (char-after (1+ (point))) ?\())
-		(imap-forward))
-	      (push subbody body))
-	    (imap-forward)
-	    (push (imap-parse-string) body) ;; media-subtype
-	    (when (eq (char-after) ?\ )	;; body-ext-mpart:
-	      (imap-forward)
-	      (if (eq (char-after) ?\()	;; body-fld-param
-		  (push (imap-parse-string-list) body)
-		(push (and (imap-parse-nil) nil) body))
-	      (setq body
-		    (append (imap-parse-body-ext) body))) ;; body-ext-...
-	    (assert (eq (char-after) ?\)) nil "In imap-parse-body")
-	    (imap-forward)
-	    (nreverse body))
-
-	(push (imap-parse-string) body)	;; media-type
-	(imap-forward)
-	(push (imap-parse-string) body)	;; media-subtype
-	(imap-forward)
-	;; next line for Sun SIMS bug
-	(and (eq (char-after) ? ) (imap-forward))
-	(if (eq (char-after) ?\() ;; body-fld-param
-	    (push (imap-parse-string-list) body)
-	  (push (and (imap-parse-nil) nil) body))
-	(imap-forward)
-	(push (imap-parse-nstring) body) ;; body-fld-id
-	(imap-forward)
-	(push (imap-parse-nstring) body) ;; body-fld-desc
-	(imap-forward)
-	;; next `or' for Sun SIMS bug, it regard body-fld-enc as a
-	;; nstring and return nil instead of defaulting back to 7BIT
-	;; as the standard says.
-	(push (or (imap-parse-nstring) "7BIT") body) ;; body-fld-enc
-	(imap-forward)
-	(push (imap-parse-number) body)	;; body-fld-octets
-
-   ;; ok, we're done parsing the required parts, what comes now is one
-	;; of three things:
-	;;
-	;; envelope       (then we're parsing body-type-msg)
-	;; body-fld-lines (then we're parsing body-type-text)
-	;; body-ext-1part (then we're parsing body-type-basic)
-	;;
-  ;; the problem is that the two first are in turn optionally followed
-;; by the third.  So we parse the first two here (if there are any)...
-
-	(when (eq (char-after) ?\ )
-	  (imap-forward)
-	  (let (lines)
-	    (cond ((eq (char-after) ?\() ;; body-type-msg:
-		   (push (imap-parse-envelope) body) ;; envelope
-		   (imap-forward)
-		   (push (imap-parse-body) body) ;; body
-		   ;; buggy stalker communigate pro 3.0 doesn't print
-		   ;; number of lines in message/rfc822 attachment
-		   (if (eq (char-after) ?\))
-		       (push 0 body)
-		     (imap-forward)
-		     (push (imap-parse-number) body))) ;; body-fld-lines
-		  ((setq lines (imap-parse-number)) ;; body-type-text:
-		   (push lines body)) ;; body-fld-lines
-		  (t
-		   (backward-char))))) ;; no match...
-
-	;; ...and then parse the third one here...
-
-	(when (eq (char-after) ?\ ) ;; body-ext-1part:
-	  (imap-forward)
-	  (push (imap-parse-nstring) body) ;; body-fld-md5
-	  (setq body (append (imap-parse-body-ext) body))) ;; body-ext-1part..
-
-	(assert (eq (char-after) ?\)) nil "In imap-parse-body 2")
-	(imap-forward)
-	(nreverse body)))))
-
-(when imap-debug			; (untrace-all)
-  (require 'trace)
-  (buffer-disable-undo (get-buffer-create imap-debug-buffer))
-  (mapc (lambda (f) (trace-function-background f imap-debug-buffer))
-	'(
-	  imap-utf7-encode
-	  imap-utf7-decode
-	  imap-error-text
-	  imap-kerberos4s-p
-	  imap-kerberos4-open
-	  imap-ssl-p
-	  imap-ssl-open
-	  imap-network-p
-	  imap-network-open
-	  imap-interactive-login
-	  imap-kerberos4a-p
-	  imap-kerberos4-auth
-	  imap-cram-md5-p
-	  imap-cram-md5-auth
-	  imap-login-p
-	  imap-login-auth
-	  imap-anonymous-p
-	  imap-anonymous-auth
-	  imap-open-1
-	  imap-open
-	  imap-opened
-	  imap-ping-server
-	  imap-authenticate
-	  imap-close
-	  imap-capability
-	  imap-namespace
-	  imap-send-command-wait
-	  imap-mailbox-put
-	  imap-mailbox-get
-	  imap-mailbox-map-1
-	  imap-mailbox-map
-	  imap-current-mailbox
-	  imap-current-mailbox-p-1
-	  imap-current-mailbox-p
-	  imap-mailbox-select-1
-	  imap-mailbox-select
-	  imap-mailbox-examine-1
-	  imap-mailbox-examine
-	  imap-mailbox-unselect
-	  imap-mailbox-expunge
-	  imap-mailbox-close
-	  imap-mailbox-create-1
-	  imap-mailbox-create
-	  imap-mailbox-delete
-	  imap-mailbox-rename
-	  imap-mailbox-lsub
-	  imap-mailbox-list
-	  imap-mailbox-subscribe
-	  imap-mailbox-unsubscribe
-	  imap-mailbox-status
-	  imap-mailbox-acl-get
-	  imap-mailbox-acl-set
-	  imap-mailbox-acl-delete
-	  imap-current-message
-	  imap-list-to-message-set
-	  imap-fetch-asynch
-	  imap-fetch
-	  imap-message-put
-	  imap-message-get
-	  imap-message-map
-	  imap-search
-	  imap-message-flag-permanent-p
-	  imap-message-flags-set
-	  imap-message-flags-del
-	  imap-message-flags-add
-	  imap-message-copyuid-1
-	  imap-message-copyuid
-	  imap-message-copy
-	  imap-message-appenduid-1
-	  imap-message-appenduid
-	  imap-message-append
-	  imap-body-lines
-	  imap-envelope-from
-	  imap-send-command-1
-	  imap-send-command
-	  imap-wait-for-tag
-	  imap-sentinel
-	  imap-find-next-line
-	  imap-arrival-filter
-	  imap-parse-greeting
-	  imap-parse-response
-	  imap-parse-resp-text
-	  imap-parse-resp-text-code
-	  imap-parse-data-list
-	  imap-parse-fetch
-	  imap-parse-status
-	  imap-parse-acl
-	  imap-parse-flag-list
-	  imap-parse-envelope
-	  imap-parse-body-extension
-	  imap-parse-body
-	  )))
-
-(provide 'imap)
-
-;; arch-tag: 27369ed6-33e4-482f-96f1-8bb906ba70f7
-;;; imap.el ends here
+#FILE text/x-emacs-lisp
+Ozs7IGltYXAuZWwgLS0tIGltYXAgbGlicmFyeQoKOzsgQ29weXJpZ2h0IChDKSAxOTk4LCAxOTk5
+LCAyMDAwLCAyMDAxLCAyMDAyLCAyMDAzLCAyMDA0LAo7OyAgIDIwMDUsIDIwMDYsIDIwMDcsIDIw
+MDggRnJlZSBTb2Z0d2FyZSBGb3VuZGF0aW9uLCBJbmMuCgo7OyBBdXRob3I6IFNpbW9uIEpvc2Vm
+c3NvbiA8amFzQHBkYy5rdGguc2U+Cjs7IEtleXdvcmRzOiBtYWlsCgo7OyBUaGlzIGZpbGUgaXMg
+cGFydCBvZiBHTlUgRW1hY3MuCgo7OyBHTlUgRW1hY3MgaXMgZnJlZSBzb2Z0d2FyZTsgeW91IGNh
+biByZWRpc3RyaWJ1dGUgaXQgYW5kL29yIG1vZGlmeQo7OyBpdCB1bmRlciB0aGUgdGVybXMgb2Yg
+dGhlIEdOVSBHZW5lcmFsIFB1YmxpYyBMaWNlbnNlIGFzIHB1Ymxpc2hlZCBieQo7OyB0aGUgRnJl
+ZSBTb2Z0d2FyZSBGb3VuZGF0aW9uOyBlaXRoZXIgdmVyc2lvbiAzLCBvciAoYXQgeW91ciBvcHRp
+b24pCjs7IGFueSBsYXRlciB2ZXJzaW9uLgoKOzsgR05VIEVtYWNzIGlzIGRpc3RyaWJ1dGVkIGlu
+IHRoZSBob3BlIHRoYXQgaXQgd2lsbCBiZSB1c2VmdWwsCjs7IGJ1dCBXSVRIT1VUIEFOWSBXQVJS
+QU5UWTsgd2l0aG91dCBldmVuIHRoZSBpbXBsaWVkIHdhcnJhbnR5IG9mCjs7IE1FUkNIQU5UQUJJ
+TElUWSBvciBGSVRORVNTIEZPUiBBIFBBUlRJQ1VMQVIgUFVSUE9TRS4JIFNlZSB0aGUKOzsgR05V
+IEdlbmVyYWwgUHVibGljIExpY2Vuc2UgZm9yIG1vcmUgZGV0YWlscy4KCjs7IFlvdSBzaG91bGQg
+aGF2ZSByZWNlaXZlZCBhIGNvcHkgb2YgdGhlIEdOVSBHZW5lcmFsIFB1YmxpYyBMaWNlbnNlCjs7
+IGFsb25nIHdpdGggR05VIEVtYWNzOyBzZWUgdGhlIGZpbGUgQ09QWUlORy4gIElmIG5vdCwgd3Jp
+dGUgdG8gdGhlCjs7IEZyZWUgU29mdHdhcmUgRm91bmRhdGlvbiwgSW5jLiwgNTEgRnJhbmtsaW4g
+U3RyZWV0LCBGaWZ0aCBGbG9vciwKOzsgQm9zdG9uLCBNQSAwMjExMC0xMzAxLCBVU0EuCgo7Ozsg
+Q29tbWVudGFyeToKCjs7IGltYXAuZWwgaXMgYSBlbGlzcCBsaWJyYXJ5IHByb3ZpZGluZyBhbiBp
+bnRlcmZhY2UgZm9yIHRhbGtpbmcgdG8KOzsgSU1BUCBzZXJ2ZXJzLgo7Owo7OyBpbWFwLmVsIGlz
+IHJvdWdobHkgZGl2aWRlZCBpbiB0d28gcGFydHMsIG9uZSB0aGF0IHBhcnNlcyBJTUFQCjs7IHJl
+c3BvbnNlcyBmcm9tIHRoZSBzZXJ2ZXIgYW5kIHN0b3JpbmcgZGF0YSBpbnRvIGJ1ZmZlci1sb2Nh
+bAo7OyB2YXJpYWJsZXMsIGFuZCBvbmUgZm9yIHV0aWxpdHkgZnVuY3Rpb25zIHdoaWNoIHNlbmQg
+Y29tbWFuZHMgdG8KOzsgc2VydmVyLCB3YWl0cyBmb3IgYW4gYW5zd2VyLCBhbmQgcmV0dXJuIGlu
+Zm9ybWF0aW9uLiAgVGhlIGxhdHRlcgo7OyBwYXJ0IGlzIGxheWVyZWQgb24gdG9wIG9mIHRoZSBw
+cmV2aW91cy4KOzsKOzsgVGhlIGltYXAuZWwgQVBJIGNvbnNpc3Qgb2YgdGhlIGZvbGxvd2luZyBm
+dW5jdGlvbnMsIG90aGVyIGZ1bmN0aW9ucwo7OyBpbiB0aGlzIGZpbGUgc2hvdWxkIG5vdCBiZSBj
+YWxsZWQgZGlyZWN0bHkgYW5kIHRoZSByZXN1bHQgb2YgZG9pbmcKOzsgc28gYXJlIGF0IGJlc3Qg
+dW5kZWZpbmVkLgo7Owo7OyBHbG9iYWwgY29tbWFuZHM6Cjs7Cjs7IGltYXAtb3BlbiwgICAgICAg
+aW1hcC1vcGVuZWQsICAgIGltYXAtYXV0aGVudGljYXRlLCBpbWFwLWNsb3NlLAo7OyBpbWFwLWNh
+cGFiaWxpdHksIGltYXAtbmFtZXNwYWNlLCBpbWFwLWVycm9yLXRleHQKOzsKOzsgTWFpbGJveCBj
+b21tYW5kczoKOzsKOzsgaW1hcC1tYWlsYm94LWdldCwgICAgICAgaW1hcC1tYWlsYm94LW1hcCwg
+ICAgICAgICBpbWFwLWN1cnJlbnQtbWFpbGJveCwKOzsgaW1hcC1jdXJyZW50LW1haWxib3gtcCwg
+aW1hcC1zZWFyY2gsICAgICAgICAgICAgICBpbWFwLW1haWxib3gtc2VsZWN0LAo7OyBpbWFwLW1h
+aWxib3gtZXhhbWluZSwgICBpbWFwLW1haWxib3gtdW5zZWxlY3QsICAgIGltYXAtbWFpbGJveC1l
+eHB1bmdlCjs7IGltYXAtbWFpbGJveC1jbG9zZSwgICAgIGltYXAtbWFpbGJveC1jcmVhdGUsICAg
+ICAgaW1hcC1tYWlsYm94LWRlbGV0ZQo7OyBpbWFwLW1haWxib3gtcmVuYW1lLCAgICBpbWFwLW1h
+aWxib3gtbHN1YiwgICAgICAgIGltYXAtbWFpbGJveC1saXN0Cjs7IGltYXAtbWFpbGJveC1zdWJz
+Y3JpYmUsIGltYXAtbWFpbGJveC11bnN1YnNjcmliZSwgaW1hcC1tYWlsYm94LXN0YXR1cwo7OyBp
+bWFwLW1haWxib3gtYWNsLWdldCwgICBpbWFwLW1haWxib3gtYWNsLXNldCwgICAgIGltYXAtbWFp
+bGJveC1hY2wtZGVsZXRlCjs7Cjs7IE1lc3NhZ2UgY29tbWFuZHM6Cjs7Cjs7IGltYXAtZmV0Y2gt
+YXN5bmNoLCAgICAgICAgICAgICAgICAgaW1hcC1mZXRjaCwKOzsgaW1hcC1jdXJyZW50LW1lc3Nh
+Z2UsICAgICAgICAgICAgICBpbWFwLWxpc3QtdG8tbWVzc2FnZS1zZXQsCjs7IGltYXAtbWVzc2Fn
+ZS1nZXQsICAgICAgICAgICAgICAgICAgaW1hcC1tZXNzYWdlLW1hcAo7OyBpbWFwLW1lc3NhZ2Ut
+ZW52ZWxvcGUtZGF0ZSwgICAgICAgIGltYXAtbWVzc2FnZS1lbnZlbG9wZS1zdWJqZWN0LAo7OyBp
+bWFwLW1lc3NhZ2UtZW52ZWxvcGUtZnJvbSwgICAgICAgIGltYXAtbWVzc2FnZS1lbnZlbG9wZS1z
+ZW5kZXIsCjs7IGltYXAtbWVzc2FnZS1lbnZlbG9wZS1yZXBseS10bywgICAgaW1hcC1tZXNzYWdl
+LWVudmVsb3BlLXRvLAo7OyBpbWFwLW1lc3NhZ2UtZW52ZWxvcGUtY2MsICAgICAgICAgIGltYXAt
+bWVzc2FnZS1lbnZlbG9wZS1iY2MKOzsgaW1hcC1tZXNzYWdlLWVudmVsb3BlLWluLXJlcGx5LXRv
+LCBpbWFwLW1lc3NhZ2UtZW52ZWxvcGUtbWVzc2FnZS1pZAo7OyBpbWFwLW1lc3NhZ2UtYm9keSwg
+ICAgICAgICAgICAgICAgIGltYXAtbWVzc2FnZS1mbGFnLXBlcm1hbmVudC1wCjs7IGltYXAtbWVz
+c2FnZS1mbGFncy1zZXQsICAgICAgICAgICAgaW1hcC1tZXNzYWdlLWZsYWdzLWRlbAo7OyBpbWFw
+LW1lc3NhZ2UtZmxhZ3MtYWRkLCAgICAgICAgICAgIGltYXAtbWVzc2FnZS1jb3B5dWlkCjs7IGlt
+YXAtbWVzc2FnZS1jb3B5LCAgICAgICAgICAgICAgICAgaW1hcC1tZXNzYWdlLWFwcGVuZHVpZAo7
+OyBpbWFwLW1lc3NhZ2UtYXBwZW5kLCAgICAgICAgICAgICAgIGltYXAtZW52ZWxvcGUtZnJvbQo7
+OyBpbWFwLWJvZHktbGluZXMKOzsKOzsgSXQgaXMgbXkgaG9wZSB0aGF0IHRoZXNlIGNvbW1hbmRz
+IHNob3VsZCBiZSBwcmV0dHkgc2VsZgo7OyBleHBsYW5hdG9yeSBmb3Igc29tZW9uZSB0aGF0IGtu
+b3cgSU1BUC4gIEFsbCBmdW5jdGlvbnMgaGF2ZQo7OyBhZGRpdGlvbmFsIGRvY3VtZW50YXRpb24g
+b24gaG93IHRvIGludm9rZSB0aGVtLgo7Owo7OyBpbWFwLmVsIHN1cHBvcnQgUkZDMTczMC8yMDYw
+L1JGQzM1MDEgKElNQVA0L0lNQVA0cmV2MSksIGltcGxlbWVudGVkCjs7IElNQVAgZXh0ZW5zaW9u
+cyBhcmUgUkZDMjE5NSAoQ1JBTS1NRDUpLCBSRkMyMDg2IChBQ0wpLCBSRkMyMzQyCjs7IChOQU1F
+U1BBQ0UpLCBSRkMyMzU5IChVSURQTFVTKSwgdGhlIElNQVAtcGFydCBvZiBSRkMyNTk1IChTVEFS
+VFRMUywKOzsgTE9HSU5ESVNBQkxFRCkgKHdpdGggdXNlIG9mIGV4dGVybmFsIGxpYnJhcnkgc3Rh
+cnR0bHMuZWwgYW5kCjs7IHByb2dyYW0gc3RhcnR0bHMpLCBhbmQgdGhlIEdTU0FQSSAvIGtlcmJl
+cm9zIFY0IHNlY3Rpb25zIG9mIFJGQzE3MzEKOzsgKHdpdGggdXNlIG9mIGV4dGVybmFsIHByb2dy
+YW0gYGltdGVzdCcpLCBSRkMyOTcxIChJRCkuICBJdCBhbHNvCjs7IHRha2VzIGFkdmFudGFnZSBv
+ZiB0aGUgVU5TRUxFQ1QgZXh0ZW5zaW9uIGluIEN5cnVzIElNQVBELgo7Owo7OyBXaXRob3V0IHRo
+ZSB3b3JrIG9mIEpvaG4gTWNDbGFyeSBQcmV2b3N0IGFuZCBKaW0gUmFkZm9yZCB0aGlzIGxpYnJh
+cnkKOzsgd291bGQgbm90IGhhdmUgc2VlbiB0aGUgbGlnaHQgb2YgZGF5LiAgTWFueSB0aGFua3Mu
+Cjs7Cjs7IFRoaXMgaXMgYSB0cmFuc2NyaXB0IG9mIHNob3J0IGludGVyYWN0aXZlIHNlc3Npb24g
+Zm9yIGRlbW9uc3RyYXRpb24KOzsgcHVycG9zZXMuCjs7Cjs7IChpbWFwLW9wZW4gIm15Lm1haWwu
+c2VydmVyIikKOzsgPT4gIiAqaW1hcCogbXkubWFpbC5zZXJ2ZXI6MCIKOzsKOzsgVGhlIHJlc3Qg
+YXJlIGludm9rZWQgd2l0aCBjdXJyZW50IGJ1ZmZlciBhcyB0aGUgYnVmZmVyIHJldHVybmVkIGJ5
+Cjs7IGBpbWFwLW9wZW4nLiAgSXQgaXMgcG9zc2libGUgdG8gZG8gYWxsIHdpdGhvdXQgdGhpcywg
+YnV0IGl0IHdvdWxkCjs7IGxvb2sgdWdseSBoZXJlIHNpbmNlIGBidWZmZXInIGlzIGFsd2F5cyB0
+aGUgbGFzdCBhcmd1bWVudCBmb3IgYWxsCjs7IGltYXAuZWwgQVBJIGZ1bmN0aW9ucy4KOzsKOzsg
+KGltYXAtYXV0aGVudGljYXRlICJteXVzZXJuYW1lIiAibXlwYXNzd29yZCIpCjs7ID0+IGF1dGgK
+OzsKOzsgKGltYXAtbWFpbGJveC1sc3ViICIqIikKOzsgPT4gKCJJTkJPWC5zZW50bWFpbCIgIklO
+Qk9YLnByaXZhdGUiICJJTkJPWC5kcmFmdCIgIklOQk9YLnNwYW0iKQo7Owo7OyAoaW1hcC1tYWls
+Ym94LWxpc3QgIklOQk9YLm4lIikKOzsgPT4gKCJJTkJPWC5uYW1lZHJvcHBlcnMiICJJTkJPWC5u
+bmltYXAiICJJTkJPWC5udGJ1Z3RyYXEiKQo7Owo7OyAoaW1hcC1tYWlsYm94LXNlbGVjdCAiSU5C
+T1gubm5pbWFwIikKOzsgPT4gIklOQk9YLm5uaW1hcCIKOzsKOzsgKGltYXAtbWFpbGJveC1nZXQg
+J2V4aXN0cykKOzsgPT4gMTY2Cjs7Cjs7IChpbWFwLW1haWxib3gtZ2V0ICd1aWR2YWxpZGl0eSkK
+OzsgPT4gIjkwODk5MjYyMiIKOzsKOzsgKGltYXAtc2VhcmNoICJGTEFHR0VEIFNJTkNFIDE4LURF
+Qy05OCIpCjs7ID0+ICgyMzUgMjM2KQo7Owo7OyAoaW1hcC1mZXRjaCAyMzUgIlJGQzgyMi5QRUVL
+IiAnUkZDODIyKQo7OyA9PiAiWC1TaWV2ZTogY211LXNpZXZlIDEuM15NXG5YLVVzZXJuYW1lOiA8
+amFzQHBkYy5rdGguc2U+Xk1cci4uLi4iCjs7Cjs7IFRvZG86Cjs7Cjs7IG8gUGFyc2UgVUlEcyBh
+cyBzdHJpbmdzPyBXZSBuZWVkIHRvIG92ZXJjb21lIHRoZSAyOCBiaXQgbGltaXQgc29tZWhvdy4K
+OzsgbyBEb24ndCB1c2UgYHJlYWQnIGF0IGFsbCAoaW1wb3J0YW50IHBsYWNlcyBhbHJlYWR5IGZp
+eGVkKQo7OyBvIEFjY2VwdCBsaXN0IG9mIGFydGljbGVzIGluc3RlYWQgb2YgbWVzc2FnZSBzZXQg
+c3RyaW5nIGluIG1vc3QKOzsgICBpbWFwLW1lc3NhZ2UtKiBmdW5jdGlvbnMuCjs7IG8gU2VuZCBz
+dHJpbmdzIGFzIGxpdGVyYWwgaWYgdGhleSBjb250YWluLCBlLmcuLCAiLgo7Owo7OyBSZXZpc2lv
+biBoaXN0b3J5Ogo7Owo7OyAgLSAxOTk5MTIxOCBhZGRlZCBzdGFydHRscy9kaWdlc3QtbWQ1IHBh
+dGNoLAo7OyAgICAgICAgICAgICBieSBEYWlraSBVZW5vIDx1ZW5vQHVlZGEuaW5mby53YXNlZGEu
+YWMuanA+Cjs7ICAgICAgICAgICAgIE5CISB5b3UgbmVlZCBTTElNIGZvciBzdGFydHRscy5lbCBh
+bmQgZGlnZXN0LW1kNS5lbAo7OyAgLSAxOTk5MTAyMyBjb21taXRlZCB0byBwZ251cwo7OwoKOzs7
+IENvZGU6CgooZXZhbC13aGVuLWNvbXBpbGUgKHJlcXVpcmUgJ2NsKSkKKGV2YWwtYW5kLWNvbXBp
+bGUKICAodW5sZXNzIChmYm91bmRwICdkZWNsYXJlLWZ1bmN0aW9uKSAoZGVmbWFjcm8gZGVjbGFy
+ZS1mdW5jdGlvbiAoJnJlc3QgcikpKQogIChhdXRvbG9hZCAnc3RhcnR0bHMtb3Blbi1zdHJlYW0g
+InN0YXJ0dGxzIikKICAoYXV0b2xvYWQgJ3N0YXJ0dGxzLW5lZ290aWF0ZSAic3RhcnR0bHMiKQog
+IChhdXRvbG9hZCAnc2FzbC1maW5kLW1lY2hhbmlzbSAic2FzbCIpCiAgKGF1dG9sb2FkICdkaWdl
+c3QtbWQ1LXBhcnNlLWRpZ2VzdC1jaGFsbGVuZ2UgImRpZ2VzdC1tZDUiKQogIChhdXRvbG9hZCAn
+ZGlnZXN0LW1kNS1kaWdlc3QtcmVzcG9uc2UgImRpZ2VzdC1tZDUiKQogIChhdXRvbG9hZCAnZGln
+ZXN0LW1kNS1kaWdlc3QtdXJpICJkaWdlc3QtbWQ1IikKICAoYXV0b2xvYWQgJ2RpZ2VzdC1tZDUt
+Y2hhbGxlbmdlICJkaWdlc3QtbWQ1IikKICAoYXV0b2xvYWQgJ3JmYzIxMDQtaGFzaCAicmZjMjEw
+NCIpCiAgKGF1dG9sb2FkICd1dGY3LWVuY29kZSAidXRmNyIpCiAgKGF1dG9sb2FkICd1dGY3LWRl
+Y29kZSAidXRmNyIpCiAgKGF1dG9sb2FkICdmb3JtYXQtc3BlYyAiZm9ybWF0LXNwZWMiKQogIChh
+dXRvbG9hZCAnZm9ybWF0LXNwZWMtbWFrZSAiZm9ybWF0LXNwZWMiKQogIChhdXRvbG9hZCAnb3Bl
+bi10bHMtc3RyZWFtICJ0bHMiKSkKCjs7IFVzZXIgdmFyaWFibGVzLgoKKGRlZmdyb3VwIGltYXAg
+bmlsCiAgIkxvdy1sZXZlbCBJTUFQIGlzc3Vlcy4iCiAgOnZlcnNpb24gIjIxLjEiCiAgOmdyb3Vw
+ICdtYWlsKQoKKGRlZmN1c3RvbSBpbWFwLWtlcmJlcm9zNC1wcm9ncmFtICcoImltdGVzdCAtbSBr
+ZXJiZXJvc192NCAtdSAlbCAtcCAlcCAlcyIKCQkJCSAgICAiaW10ZXN0IC1rcCAlcyAlcCIpCiAg
+Ikxpc3Qgb2Ygc3RyaW5ncyBjb250YWluaW5nIGNvbW1hbmRzIGZvciBLZXJiZXJvcyA0IGF1dGhl
+bnRpY2F0aW9uLgolcyBpcyByZXBsYWNlZCB3aXRoIHNlcnZlciBob3N0bmFtZSwgJXAgd2l0aCBw
+b3J0IHRvIGNvbm5lY3QgdG8sIGFuZAolbCB3aXRoIHRoZSB2YWx1ZSBvZiBgaW1hcC1kZWZhdWx0
+LXVzZXInLiAgVGhlIHByb2dyYW0gc2hvdWxkIGFjY2VwdApJTUFQIGNvbW1hbmRzIG9uIHN0ZGlu
+IGFuZCByZXR1cm4gcmVzcG9uc2VzIHRvIHN0ZG91dC4gIEVhY2ggZW50cnkgaW4KdGhlIGxpc3Qg
+aXMgdHJpZWQgdW50aWwgYSBzdWNjZXNzZnVsIGNvbm5lY3Rpb24gaXMgbWFkZS4iCiAgOmdyb3Vw
+ICdpbWFwCiAgOnR5cGUgJyhyZXBlYXQgc3RyaW5nKSkKCihkZWZjdXN0b20gaW1hcC1nc3NhcGkt
+cHJvZ3JhbSAobGlzdAoJCQkJKGNvbmNhdCAiZ3Nhc2wgJXMgJXAgIgoJCQkJCSItLW1lY2hhbmlz
+bSBHU1NBUEkgIgoJCQkJCSItLWF1dGhlbnRpY2F0aW9uLWlkICVsIikKCQkJCSJpbXRlc3QgLW0g
+Z3NzYXBpIC11ICVsIC1wICVwICVzIikKICAiTGlzdCBvZiBzdHJpbmdzIGNvbnRhaW5pbmcgY29t
+bWFuZHMgZm9yIEdTU0FQSSAoa3JiNSkgYXV0aGVudGljYXRpb24uCiVzIGlzIHJlcGxhY2VkIHdp
+dGggc2VydmVyIGhvc3RuYW1lLCAlcCB3aXRoIHBvcnQgdG8gY29ubmVjdCB0bywgYW5kCiVsIHdp
+dGggdGhlIHZhbHVlIG9mIGBpbWFwLWRlZmF1bHQtdXNlcicuICBUaGUgcHJvZ3JhbSBzaG91bGQg
+YWNjZXB0CklNQVAgY29tbWFuZHMgb24gc3RkaW4gYW5kIHJldHVybiByZXNwb25zZXMgdG8gc3Rk
+b3V0LiAgRWFjaCBlbnRyeSBpbgp0aGUgbGlzdCBpcyB0cmllZCB1bnRpbCBhIHN1Y2Nlc3NmdWwg
+Y29ubmVjdGlvbiBpcyBtYWRlLiIKICA6Z3JvdXAgJ2ltYXAKICA6dHlwZSAnKHJlcGVhdCBzdHJp
+bmcpKQoKKGRlZmN1c3RvbSBpbWFwLXNzbC1wcm9ncmFtICcoIm9wZW5zc2wgc19jbGllbnQgLXF1
+aWV0IC1zc2wzIC1jb25uZWN0ICVzOiVwIgoJCQkgICAgICAib3BlbnNzbCBzX2NsaWVudCAtcXVp
+ZXQgLXNzbDIgLWNvbm5lY3QgJXM6JXAiCgkJCSAgICAgICJzX2NsaWVudCAtcXVpZXQgLXNzbDMg
+LWNvbm5lY3QgJXM6JXAiCgkJCSAgICAgICJzX2NsaWVudCAtcXVpZXQgLXNzbDIgLWNvbm5lY3Qg
+JXM6JXAiKQogICJBIHN0cmluZywgb3IgbGlzdCBvZiBzdHJpbmdzLCBjb250YWluaW5nIGNvbW1h
+bmRzIGZvciBTU0wgY29ubmVjdGlvbnMuCldpdGhpbiBhIHN0cmluZywgJXMgaXMgcmVwbGFjZWQg
+d2l0aCB0aGUgc2VydmVyIGFkZHJlc3MgYW5kICVwIHdpdGgKcG9ydCBudW1iZXIgb24gc2VydmVy
+LiAgVGhlIHByb2dyYW0gc2hvdWxkIGFjY2VwdCBJTUFQIGNvbW1hbmRzIG9uCnN0ZGluIGFuZCBy
+ZXR1cm4gcmVzcG9uc2VzIHRvIHN0ZG91dC4gIEVhY2ggZW50cnkgaW4gdGhlIGxpc3QgaXMgdHJp
+ZWQKdW50aWwgYSBzdWNjZXNzZnVsIGNvbm5lY3Rpb24gaXMgbWFkZS4iCiAgOmdyb3VwICdpbWFw
+CiAgOnR5cGUgJyhjaG9pY2Ugc3RyaW5nCgkJIChyZXBlYXQgc3RyaW5nKSkpCgooZGVmY3VzdG9t
+IGltYXAtc2hlbGwtcHJvZ3JhbSAnKCJzc2ggJXMgaW1hcGQiCgkJCQkicnNoICVzIGltYXBkIgoJ
+CQkJInNzaCAlZyBzc2ggJXMgaW1hcGQiCgkJCQkicnNoICVnIHJzaCAlcyBpbWFwZCIpCiAgIkEg
+bGlzdCBvZiBzdHJpbmdzLCBjb250YWluaW5nIGNvbW1hbmRzIGZvciBJTUFQIGNvbm5lY3Rpb24u
+CldpdGhpbiBhIHN0cmluZywgJXMgaXMgcmVwbGFjZWQgd2l0aCB0aGUgc2VydmVyIGFkZHJlc3Ms
+ICVwIHdpdGggcG9ydApudW1iZXIgb24gc2VydmVyLCAlZyB3aXRoIGBpbWFwLXNoZWxsLWhvc3Qn
+LCBhbmQgJWwgd2l0aApgaW1hcC1kZWZhdWx0LXVzZXInLiAgVGhlIHByb2dyYW0gc2hvdWxkIHJl
+YWQgSU1BUCBjb21tYW5kcyBmcm9tIHN0ZGluCmFuZCB3cml0ZSBJTUFQIHJlc3BvbnNlIHRvIHN0
+ZG91dC4gRWFjaCBlbnRyeSBpbiB0aGUgbGlzdCBpcyB0cmllZAp1bnRpbCBhIHN1Y2Nlc3NmdWwg
+Y29ubmVjdGlvbiBpcyBtYWRlLiIKICA6Z3JvdXAgJ2ltYXAKICA6dHlwZSAnKHJlcGVhdCBzdHJp
+bmcpKQoKKGRlZmN1c3RvbSBpbWFwLXByb2Nlc3MtY29ubmVjdGlvbi10eXBlIG5pbAogICIqVmFs
+dWUgZm9yIGBwcm9jZXNzLWNvbm5lY3Rpb24tdHlwZScgdG8gdXNlIGZvciBLZXJiZXJvczQsIEdT
+U0FQSSBhbmQgU1NMLgpUaGUgYHByb2Nlc3MtY29ubmVjdGlvbi10eXBlJyB2YXJpYWJsZSBjb250
+cm9sIHR5cGUgb2YgZGV2aWNlCnVzZWQgdG8gY29tbXVuaWNhdGUgd2l0aCBzdWJwcm9jZXNzZXMu
+ICBWYWx1ZXMgYXJlIG5pbCB0byB1c2UgYQpwaXBlLCBvciB0IG9yIGBwdHknIHRvIHVzZSBhIHB0
+eS4gIFRoZSB2YWx1ZSBoYXMgbm8gZWZmZWN0IGlmIHRoZQpzeXN0ZW0gaGFzIG5vIHB0eXMgb3Ig
+aWYgYWxsIHB0eXMgYXJlIGJ1c3k6IHRoZW4gYSBwaXBlIGlzIHVzZWQKaW4gYW55IGNhc2UuICBU
+aGUgdmFsdWUgdGFrZXMgZWZmZWN0IHdoZW4gYSBJTUFQIHNlcnZlciBpcwpvcGVuZWQsIGNoYW5n
+aW5nIGl0IGFmdGVyIHRoYXQgaGFzIG5vIGVmZmVjdC4iCiAgOnZlcnNpb24gIjIyLjEiCiAgOmdy
+b3VwICdpbWFwCiAgOnR5cGUgJ2Jvb2xlYW4pCgooZGVmY3VzdG9tIGltYXAtdXNlLXV0ZjcgdAog
+ICJJZiBub24tbmlsLCBkbyB1dGY3IGVuY29kaW5nL2RlY29kaW5nIG9mIG1haWxib3ggbmFtZXMu
+ClNpbmNlIHRoZSBVVEY3IGRlY29kaW5nIGN1cnJlbnRseSBvbmx5IGRlY29kZXMgaW50byBJU08t
+ODg1OS0xCmNoYXJhY3RlcnMsIHlvdSBtYXkgZGlzYWJsZSB0aGlzIGRlY29kaW5nIGlmIHlvdSBu
+ZWVkIHRvIGFjY2VzcyBVVEY3CmVuY29kZWQgbWFpbGJveGVzIHdoaWNoIGRvZXNuJ3QgdHJhbnNs
+YXRlIGludG8gSVNPLTg4NTktMS4iCiAgOmdyb3VwICdpbWFwCiAgOnR5cGUgJ2Jvb2xlYW4pCgoo
+ZGVmY3VzdG9tIGltYXAtbG9nIG5pbAogICJJZiBub24tbmlsLCBhIGltYXAgc2Vzc2lvbiB0cmFj
+ZSBpcyBwbGFjZWQgaW4gKmltYXAtbG9nKiBidWZmZXIuCk5vdGUgdGhhdCB1c2VybmFtZSwgcGFz
+c3dvcmRzIGFuZCBvdGhlciBwcml2YWN5IHNlbnNpdGl2ZQppbmZvcm1hdGlvbiAoc3VjaCBhcyBl
+LW1haWwpIG1heSBiZSBzdG9yZWQgaW4gdGhlICppbWFwLWxvZyoKYnVmZmVyLiAgSXQgaXMgbm90
+IHdyaXR0ZW4gdG8gZGlzaywgaG93ZXZlci4gIERvIG5vdCBlbmFibGUgdGhpcwp2YXJpYWJsZSB1
+bmxlc3MgeW91IGFyZSBjb21mb3J0YWJsZSB3aXRoIHRoYXQuIgogIDpncm91cCAnaW1hcAogIDp0
+eXBlICdib29sZWFuKQoKKGRlZmN1c3RvbSBpbWFwLWRlYnVnIG5pbAogICJJZiBub24tbmlsLCBy
+YW5kb20gZGVidWcgc3Bld3MgYXJlIHBsYWNlZCBpbiAqaW1hcC1kZWJ1ZyogYnVmZmVyLgpOb3Rl
+IHRoYXQgdXNlcm5hbWUsIHBhc3N3b3JkcyBhbmQgb3RoZXIgcHJpdmFjeSBzZW5zaXRpdmUKaW5m
+b3JtYXRpb24gKHN1Y2ggYXMgZS1tYWlsKSBtYXkgYmUgc3RvcmVkIGluIHRoZSAqaW1hcC1kZWJ1
+ZyoKYnVmZmVyLiAgSXQgaXMgbm90IHdyaXR0ZW4gdG8gZGlzaywgaG93ZXZlci4gIERvIG5vdCBl
+bmFibGUgdGhpcwp2YXJpYWJsZSB1bmxlc3MgeW91IGFyZSBjb21mb3J0YWJsZSB3aXRoIHRoYXQu
+IgogIDpncm91cCAnaW1hcAogIDp0eXBlICdib29sZWFuKQoKKGRlZmN1c3RvbSBpbWFwLXNoZWxs
+LWhvc3QgImdhdGV3YXkiCiAgIkhvc3RuYW1lIG9mIHJsb2dpbiBwcm94eS4iCiAgOmdyb3VwICdp
+bWFwCiAgOnR5cGUgJ3N0cmluZykKCihkZWZjdXN0b20gaW1hcC1kZWZhdWx0LXVzZXIgKHVzZXIt
+bG9naW4tbmFtZSkKICAiRGVmYXVsdCB1c2VybmFtZSB0byB1c2UuIgogIDpncm91cCAnaW1hcAog
+IDp0eXBlICdzdHJpbmcpCgooZGVmY3VzdG9tIGltYXAtcmVhZC10aW1lb3V0IChpZiAoc3RyaW5n
+LW1hdGNoCgkJCQkgICJ3aW5kb3dzLW50XFx8b3MvMlxcfGVteFxcfGN5Z3dpbiIKCQkJCSAgKHN5
+bWJvbC1uYW1lIHN5c3RlbS10eXBlKSkKCQkJCSAxLjAKCQkJICAgICAgIDAuMSkKICAiKkhvdyBs
+b25nIHRvIHdhaXQgYmV0d2VlbiBjaGVja2luZyBmb3IgdGhlIGVuZCBvZiBvdXRwdXQuClNob3J0
+ZXIgdmFsdWVzIG1lYW4gcXVpY2tlciByZXNwb25zZSwgYnV0IGlzIG1vcmUgQ1BVIGludGVuc2l2
+ZS4iCiAgOnR5cGUgJ251bWJlcgogIDpncm91cCAnaW1hcCkKCihkZWZjdXN0b20gaW1hcC1zdG9y
+ZS1wYXNzd29yZCBuaWwKICAiSWYgbm9uLW5pbCwgc3RvcmUgc2Vzc2lvbiBwYXNzd29yZCB3aXRo
+b3V0IHByb210aW5nLiIKICA6Z3JvdXAgJ2ltYXAKICA6dHlwZSAnYm9vbGVhbikKCjs7IFZhcmlv
+dXMgdmFyaWFibGVzLgoKKGRlZnZhciBpbWFwLWZldGNoLWRhdGEtaG9vayBuaWwKICAiSG9va3Mg
+Y2FsbGVkIGFmdGVyIHJlY2VpdmluZyBlYWNoIEZFVENIIHJlc3BvbnNlLiIpCgooZGVmdmFyIGlt
+YXAtc3RyZWFtcyAnKGdzc2FwaSBrZXJiZXJvczQgc3RhcnR0bHMgdGxzIHNzbCBuZXR3b3JrIHNo
+ZWxsKQogICJQcmlvcml0eSBvZiBzdHJlYW1zIHRvIGNvbnNpZGVyIHdoZW4gb3BlbmluZyBjb25u
+ZWN0aW9uIHRvIHNlcnZlci4iKQoKKGRlZnZhciBpbWFwLXN0cmVhbS1hbGlzdAogICcoKGdzc2Fw
+aSAgICBpbWFwLWdzc2FwaS1zdHJlYW0tcCAgICBpbWFwLWdzc2FwaS1vcGVuKQogICAgKGtlcmJl
+cm9zNCBpbWFwLWtlcmJlcm9zNC1zdHJlYW0tcCBpbWFwLWtlcmJlcm9zNC1vcGVuKQogICAgKHRs
+cyAgICAgICBpbWFwLXRscy1wICAgICAgICAgICAgICBpbWFwLXRscy1vcGVuKQogICAgKHNzbCAg
+ICAgICBpbWFwLXNzbC1wICAgICAgICAgICAgICBpbWFwLXNzbC1vcGVuKQogICAgKG5ldHdvcmsg
+ICBpbWFwLW5ldHdvcmstcCAgICAgICAgICBpbWFwLW5ldHdvcmstb3BlbikKICAgIChzaGVsbCAg
+ICAgaW1hcC1zaGVsbC1wICAgICAgICAgICAgaW1hcC1zaGVsbC1vcGVuKQogICAgKHN0YXJ0dGxz
+ICBpbWFwLXN0YXJ0dGxzLXAgICAgICAgICBpbWFwLXN0YXJ0dGxzLW9wZW4pKQogICJEZWZpbml0
+aW9uIG9mIG5ldHdvcmsgc3RyZWFtcy4KClwoTkFNRSBDSEVDSyBPUEVOKQoKTkFNRSBuYW1lcyB0
+aGUgc3RyZWFtLCBDSEVDSyBpcyBhIGZ1bmN0aW9uIHJldHVybmluZyBub24tbmlsIGlmIHRoZQpz
+ZXJ2ZXIgc3VwcG9ydCB0aGUgc3RyZWFtIGFuZCBPUEVOIGlzIGEgZnVuY3Rpb24gZm9yIG9wZW5p
+bmcgdGhlCnN0cmVhbS4iKQoKKGRlZnZhciBpbWFwLWF1dGhlbnRpY2F0b3JzICcoZ3NzYXBpCgkJ
+CSAgICAgIGtlcmJlcm9zNAoJCQkgICAgICBkaWdlc3QtbWQ1CgkJCSAgICAgIGNyYW0tbWQ1CgkJ
+CSAgICAgIDs7c2FzbAoJCQkgICAgICBsb2dpbgoJCQkgICAgICBhbm9ueW1vdXMpCiAgIlByaW9y
+aXR5IG9mIGF1dGhlbnRpY2F0b3JzIHRvIGNvbnNpZGVyIHdoZW4gYXV0aGVudGljYXRpbmcgdG8g
+c2VydmVyLiIpCgooZGVmdmFyIGltYXAtYXV0aGVudGljYXRvci1hbGlzdAogICcoKGdzc2FwaSAg
+ICAgaW1hcC1nc3NhcGktYXV0aC1wICAgIGltYXAtZ3NzYXBpLWF1dGgpCiAgICAoa2VyYmVyb3M0
+ICBpbWFwLWtlcmJlcm9zNC1hdXRoLXAgaW1hcC1rZXJiZXJvczQtYXV0aCkKICAgIChzYXNsCWlt
+YXAtc2FzbC1hdXRoLXAgICAgICBpbWFwLXNhc2wtYXV0aCkKICAgIChjcmFtLW1kNSAgIGltYXAt
+Y3JhbS1tZDUtcCAgICAgICBpbWFwLWNyYW0tbWQ1LWF1dGgpCiAgICAobG9naW4gICAgICBpbWFw
+LWxvZ2luLXAgICAgICAgICAgaW1hcC1sb2dpbi1hdXRoKQogICAgKGFub255bW91cyAgaW1hcC1h
+bm9ueW1vdXMtcCAgICAgIGltYXAtYW5vbnltb3VzLWF1dGgpCiAgICAoZGlnZXN0LW1kNSBpbWFw
+LWRpZ2VzdC1tZDUtcCAgICAgaW1hcC1kaWdlc3QtbWQ1LWF1dGgpKQogICJEZWZpbml0aW9uIG9m
+IGF1dGhlbnRpY2F0b3JzLgoKXChOQU1FIENIRUNLIEFVVEhFTlRJQ0FURSkKCk5BTUUgbmFtZXMg
+dGhlIGF1dGhlbnRpY2F0b3IuICBDSEVDSyBpcyBhIGZ1bmN0aW9uIHJldHVybmluZyBub24tbmls
+IGlmCnRoZSBzZXJ2ZXIgc3VwcG9ydCB0aGUgYXV0aGVudGljYXRvciBhbmQgQVVUSEVOVElDQVRF
+IGlzIGEgZnVuY3Rpb24KZm9yIGRvaW5nIHRoZSBhY3R1YWwgYXV0aGVudGljYXRpb24uIikKCihk
+ZWZ2YXIgaW1hcC1lcnJvciBuaWwKICAiRXJyb3IgY29kZXMgZnJvbSB0aGUgbGFzdCBjb21tYW5k
+LiIpCgooZGVmdmFyIGltYXAtbG9nb3V0LXRpbWVvdXQgbmlsCiAgIkNsb3NlIHNlcnZlciBpbW1l
+ZGlhdGVseSBpZiBpdCBjYW4ndCBsb2dvdXQgaW4gdGhpcyBudW1iZXIgb2Ygc2Vjb25kcy4KSWYg
+aXQgaXMgbmlsLCBuZXZlciBjbG9zZSBzZXJ2ZXIgdW50aWwgbG9nb3V0IGNvbXBsZXRlcy4gIE5v
+cm1hbGx5LAp0aGUgdmFsdWUgb2YgdGhpcyB2YXJpYWJsZSB3aWxsIGJlIGJvdW5kIHRvIGEgY2Vy
+dGFpbiB2YWx1ZSB0byB3aGljaAphbiBhcHBsaWNhdGlvbiBwcm9ncmFtIHRoYXQgdXNlcyB0aGlz
+IG1vZHVsZSBzcGVjaWZpZXMgb24gYSBwZXItc2VydmVyCmJhc2lzLiIpCgo7OyBJbnRlcm5hbCBj
+b25zdGFudHMuICBDaGFuZ2UgdGhlc2UgYW5kIGRpZS4KCihkZWZjb25zdCBpbWFwLWRlZmF1bHQt
+cG9ydCAxNDMpCihkZWZjb25zdCBpbWFwLWRlZmF1bHQtc3NsLXBvcnQgOTkzKQooZGVmY29uc3Qg
+aW1hcC1kZWZhdWx0LXRscy1wb3J0IDk5MykKKGRlZmNvbnN0IGltYXAtZGVmYXVsdC1zdHJlYW0g
+J25ldHdvcmspCihkZWZjb25zdCBpbWFwLWNvZGluZy1zeXN0ZW0tZm9yLXJlYWQgJ2JpbmFyeSkK
+KGRlZmNvbnN0IGltYXAtY29kaW5nLXN5c3RlbS1mb3Itd3JpdGUgJ2JpbmFyeSkKKGRlZmNvbnN0
+IGltYXAtbG9jYWwtdmFyaWFibGVzICcoaW1hcC1zZXJ2ZXIKCQkJCSBpbWFwLXBvcnQKCQkJCSBp
+bWFwLWNsaWVudC1lb2wKCQkJCSBpbWFwLXNlcnZlci1lb2wKCQkJCSBpbWFwLWF1dGgKCQkJCSBp
+bWFwLXN0cmVhbQoJCQkJIGltYXAtdXNlcm5hbWUKCQkJCSBpbWFwLXBhc3N3b3JkCgkJCQkgaW1h
+cC1jdXJyZW50LW1haWxib3gKCQkJCSBpbWFwLWN1cnJlbnQtdGFyZ2V0LW1haWxib3gKCQkJCSBp
+bWFwLW1lc3NhZ2UtZGF0YQoJCQkJIGltYXAtY2FwYWJpbGl0eQoJCQkJIGltYXAtaWQKCQkJCSBp
+bWFwLW5hbWVzcGFjZQoJCQkJIGltYXAtc3RhdGUKCQkJCSBpbWFwLXJlYWNoZWQtdGFnCgkJCQkg
+aW1hcC1mYWlsZWQtdGFncwoJCQkJIGltYXAtdGFnCgkJCQkgaW1hcC1wcm9jZXNzCgkJCQkgaW1h
+cC1jYWxjdWxhdGUtbGl0ZXJhbC1zaXplLWZpcnN0CgkJCQkgaW1hcC1tYWlsYm94LWRhdGEpKQoo
+ZGVmY29uc3QgaW1hcC1sb2ctYnVmZmVyICIqaW1hcC1sb2cqIikKKGRlZmNvbnN0IGltYXAtZGVi
+dWctYnVmZmVyICIqaW1hcC1kZWJ1ZyoiKQoKOzsgSW50ZXJuYWwgdmFyaWFibGVzLgoKKGRlZnZh
+ciBpbWFwLXN0cmVhbSBuaWwpCihkZWZ2YXIgaW1hcC1hdXRoIG5pbCkKKGRlZnZhciBpbWFwLXNl
+cnZlciBuaWwpCihkZWZ2YXIgaW1hcC1wb3J0IG5pbCkKKGRlZnZhciBpbWFwLXVzZXJuYW1lIG5p
+bCkKKGRlZnZhciBpbWFwLXBhc3N3b3JkIG5pbCkKKGRlZnZhciBpbWFwLWNhbGN1bGF0ZS1saXRl
+cmFsLXNpemUtZmlyc3QgbmlsKQooZGVmdmFyIGltYXAtc3RhdGUgJ2Nsb3NlZAogICJJTUFQIHN0
+YXRlLgpWYWxpZCBzdGF0ZXMgYXJlIGBjbG9zZWQnLCBgaW5pdGlhbCcsIGBub25hdXRoJywgYGF1
+dGgnLCBgc2VsZWN0ZWQnCmFuZCBgZXhhbWluZScuIikKCihkZWZ2YXIgaW1hcC1zZXJ2ZXItZW9s
+ICJcclxuIgogICJUaGUgRU9MIHN0cmluZyBzZW50IGZyb20gdGhlIHNlcnZlci4iKQoKKGRlZnZh
+ciBpbWFwLWNsaWVudC1lb2wgIlxyXG4iCiAgIlRoZSBFT0wgc3RyaW5nIHdlIHNlbmQgdG8gdGhl
+IHNlcnZlci4iKQoKKGRlZnZhciBpbWFwLWN1cnJlbnQtbWFpbGJveCBuaWwKICAiQ3VycmVudCBt
+YWlsYm94IG5hbWUuIikKCihkZWZ2YXIgaW1hcC1jdXJyZW50LXRhcmdldC1tYWlsYm94IG5pbAog
+ICJDdXJyZW50IHRhcmdldCBtYWlsYm94IGZvciBDT1BZIGFuZCBBUFBFTkQgY29tbWFuZHMuIikK
+CihkZWZ2YXIgaW1hcC1tYWlsYm94LWRhdGEgbmlsCiAgIk9iYXJyYXkgd2l0aCBtYWlsYm94IGRh
+dGEuIikKCihkZWZ2YXIgaW1hcC1tYWlsYm94LXByaW1lIDk5NwogICJMZW5ndGggb2YgaW1hcC1t
+YWlsYm94LWRhdGEuIikKCihkZWZ2YXIgaW1hcC1jdXJyZW50LW1lc3NhZ2UgbmlsCiAgIkN1cnJl
+bnQgbWVzc2FnZSBudW1iZXIuIikKCihkZWZ2YXIgaW1hcC1tZXNzYWdlLWRhdGEgbmlsCiAgIk9i
+YXJyYXkgd2l0aCBtZXNzYWdlIGRhdGEuIikKCihkZWZ2YXIgaW1hcC1tZXNzYWdlLXByaW1lIDk5
+NwogICJMZW5ndGggb2YgaW1hcC1tZXNzYWdlLWRhdGEuIikKCihkZWZ2YXIgaW1hcC1jYXBhYmls
+aXR5IG5pbAogICJDYXBhYmlsaXR5IGZvciBzZXJ2ZXIuIikKCihkZWZ2YXIgaW1hcC1pZCBuaWwK
+ICAiSWRlbnRpdHkgb2Ygc2VydmVyLgpTZWUgUkZDIDI5NzEuIikKCihkZWZ2YXIgaW1hcC1uYW1l
+c3BhY2UgbmlsCiAgIk5hbWVzcGFjZSBmb3IgY3VycmVudCBzZXJ2ZXIuIikKCihkZWZ2YXIgaW1h
+cC1yZWFjaGVkLXRhZyAwCiAgIkxvd2VyIGxpbWl0IG9uIGNvbW1hbmQgdGFncyB0aGF0IGhhdmUg
+YmVlbiBwYXJzZWQuIikKCihkZWZ2YXIgaW1hcC1mYWlsZWQtdGFncyBuaWwKICAiQWxpc3Qgb2Yg
+dGFncyB0aGF0IGZhaWxlZC4KRWFjaCBlbGVtZW50IGlzIGEgbGlzdCB3aXRoIGZvdXIgZWxlbWVu
+dHM7IHRhZyAoYSBpbnRlZ2VyKSwgcmVzcG9uc2UKc3RhdGUgKGEgc3ltYm9sLCBgT0snLCBgTk8n
+IG9yIGBCQUQnKSwgcmVzcG9uc2UgY29kZSAoYSBzdHJpbmcpLCBhbmQKaHVtYW4gcmVhZGFibGUg
+cmVzcG9uc2UgdGV4dCAoYSBzdHJpbmcpLiIpCgooZGVmdmFyIGltYXAtdGFnIDAKICAiQ29tbWFu
+ZCB0YWcgbnVtYmVyLiIpCgooZGVmdmFyIGltYXAtcHJvY2VzcyBuaWwKICAiUHJvY2Vzcy4iKQoK
+KGRlZnZhciBpbWFwLWNvbnRpbnVhdGlvbiBuaWwKICAiTm9uLW5pbCBpbmRpY2F0ZXMgdGhhdCB0
+aGUgc2VydmVyIGVtaXR0ZWQgYSBjb250aW51YXRpb24gcmVxdWVzdC4KVGhlIGFjdHVhbCB2YWx1
+ZSBpcyByZWFsbHkgdGhlIHRleHQgb24gdGhlIGNvbnRpbnVhdGlvbiBsaW5lLiIpCgooZGVmdmFy
+IGltYXAtY2FsbGJhY2tzIG5pbAogICJMaXN0IG9mIHJlc3BvbnNlIHRhZ3MgYW5kIGNhbGxiYWNr
+cywgb24gdGhlIGZvcm0gYChudW1iZXIgLiBmdW5jdGlvbiknLgpUaGUgZnVuY3Rpb24gc2hvdWxk
+IHRha2UgdHdvIGFyZ3VtZW50cywgdGhlIGZpcnN0IHRoZSBJTUFQIHRhZyBhbmQgdGhlCnNlY29u
+ZCB0aGUgc3RhdHVzIChPSywgTk8sIEJBRCBldGMpIG9mIHRoZSBjb21tYW5kLiIpCgooZGVmdmFy
+IGltYXAtZW5hYmxlLWV4Y2hhbmdlLWJ1Zy13b3JrYXJvdW5kIG5pbAogICJTZW5kIEZFVENIIFVJ
+RCBjb21tYW5kcyBhcyAqOiogaW5zdGVhZCBvZiAqLgpFbmFibGluZyB0aGlzIGFwcGVhcnMgdG8g
+YmUgcmVxdWlyZWQgZm9yIHNvbWUgc2VydmVycyAoZS5nLiwKTWljcm9zb2Z0IEV4Y2hhbmdlKSB3
+aGljaCBvdGhlcndpc2Ugd291bGQgdHJpZ2dlciBhIHJlc3BvbnNlICdCQUQKVGhlIHNwZWNpZmll
+ZCBtZXNzYWdlIHNldCBpcyBpbnZhbGlkLicuIikKCgwKOzsgVXRpbGl0eSBmdW5jdGlvbnM6Cgoo
+ZGVmdW4gaW1hcC1yZW1hc3NvYyAoa2V5IGFsaXN0KQogICJEZWxldGUgYnkgc2lkZSBlZmZlY3Qg
+YW55IGVsZW1lbnRzIG9mIExJU1Qgd2hvc2UgY2FyIGlzIGBlcXVhbCcgdG8gS0VZLgpUaGUgbW9k
+aWZpZWQgTElTVCBpcyByZXR1cm5lZC4gIElmIHRoZSBmaXJzdCBtZW1iZXIKb2YgTElTVCBoYXMg
+YSBjYXIgdGhhdCBpcyBgZXF1YWwnIHRvIEtFWSwgdGhlcmUgaXMgbm8gd2F5IHRvIHJlbW92ZSBp
+dApieSBzaWRlIGVmZmVjdDsgdGhlcmVmb3JlLCB3cml0ZSBgKHNldHEgZm9vIChyZW1hc3NvYyBr
+ZXkgZm9vKSknIHRvIGJlCnN1cmUgb2YgY2hhbmdpbmcgdGhlIHZhbHVlIG9mIGBmb28nLiIKICAo
+d2hlbiBhbGlzdAogICAgKGlmIChlcXVhbCBrZXkgKGNhYXIgYWxpc3QpKQoJKGNkciBhbGlzdCkK
+ICAgICAgKHNldGNkciBhbGlzdCAoaW1hcC1yZW1hc3NvYyBrZXkgKGNkciBhbGlzdCkpKQogICAg
+ICBhbGlzdCkpKQoKKGRlZnN1YnN0IGltYXAtZGlzYWJsZS1tdWx0aWJ5dGUgKCkKICAiRW5hYmxl
+IG11bHRpYnl0ZSBpbiB0aGUgY3VycmVudCBidWZmZXIuIgogICh3aGVuIChmYm91bmRwICdzZXQt
+YnVmZmVyLW11bHRpYnl0ZSkKICAgIChzZXQtYnVmZmVyLW11bHRpYnl0ZSBuaWwpKSkKCihkZWZz
+dWJzdCBpbWFwLXV0ZjctZW5jb2RlIChzdHJpbmcpCiAgKGlmIGltYXAtdXNlLXV0ZjcKICAgICAg
+KGFuZCBzdHJpbmcKCSAgIChjb25kaXRpb24tY2FzZSAoKQoJICAgICAgICh1dGY3LWVuY29kZSBz
+dHJpbmcgdCkKCSAgICAgKGVycm9yIChtZXNzYWdlCgkJICAgICAiaW1hcDogQ291bGQgbm90IFVU
+RjcgZW5jb2RlIGAlcycsIHVzaW5nIGl0IHVuZW5jb2RlZC4uLiIKCQkgICAgIHN0cmluZykKCQkg
+ICAgc3RyaW5nKSkpCiAgICBzdHJpbmcpKQoKKGRlZnN1YnN0IGltYXAtdXRmNy1kZWNvZGUgKHN0
+cmluZykKICAoaWYgaW1hcC11c2UtdXRmNwogICAgICAoYW5kIHN0cmluZwoJICAgKGNvbmRpdGlv
+bi1jYXNlICgpCgkgICAgICAgKHV0ZjctZGVjb2RlIHN0cmluZyB0KQoJICAgICAoZXJyb3IgKG1l
+c3NhZ2UKCQkgICAgICJpbWFwOiBDb3VsZCBub3QgVVRGNyBkZWNvZGUgYCVzJywgdXNpbmcgaXQg
+dW5kZWNvZGVkLi4uIgoJCSAgICAgc3RyaW5nKQoJCSAgICBzdHJpbmcpKSkKICAgIHN0cmluZykp
+CgooZGVmc3Vic3QgaW1hcC1vay1wIChzdGF0dXMpCiAgKGlmIChlcSBzdGF0dXMgJ09LKQogICAg
+ICB0CiAgICAoc2V0cSBpbWFwLWVycm9yIHN0YXR1cykKICAgIG5pbCkpCgooZGVmdW4gaW1hcC1l
+cnJvci10ZXh0ICgmb3B0aW9uYWwgYnVmZmVyKQogICh3aXRoLWN1cnJlbnQtYnVmZmVyIChvciBi
+dWZmZXIgKGN1cnJlbnQtYnVmZmVyKSkKICAgIChudGggMyAoY2FyIGltYXAtZmFpbGVkLXRhZ3Mp
+KSkpCgoMCjs7IFNlcnZlciBmdW5jdGlvbnM7IHN0cmVhbSBzdHVmZjoKCihkZWZ1biBpbWFwLWtl
+cmJlcm9zNC1zdHJlYW0tcCAoYnVmZmVyKQogIChpbWFwLWNhcGFiaWxpdHkgJ0FVVEg9S0VSQkVS
+T1NfVjQgYnVmZmVyKSkKCihkZWZ1biBpbWFwLWtlcmJlcm9zNC1vcGVuIChuYW1lIGJ1ZmZlciBz
+ZXJ2ZXIgcG9ydCkKICAobGV0ICgoY21kcyBpbWFwLWtlcmJlcm9zNC1wcm9ncmFtKQoJY21kIGRv
+bmUpCiAgICAod2hpbGUgKGFuZCAobm90IGRvbmUpIChzZXRxIGNtZCAocG9wIGNtZHMpKSkKICAg
+ICAgKG1lc3NhZ2UgIk9wZW5pbmcgS2VyYmVyb3MgNCBJTUFQIGNvbm5lY3Rpb24gd2l0aCBgJXMn
+Li4uIiBjbWQpCiAgICAgIChlcmFzZS1idWZmZXIpCiAgICAgIChsZXQqICgocG9ydCAob3IgcG9y
+dCBpbWFwLWRlZmF1bHQtcG9ydCkpCgkgICAgIChjb2Rpbmctc3lzdGVtLWZvci1yZWFkIGltYXAt
+Y29kaW5nLXN5c3RlbS1mb3ItcmVhZCkKCSAgICAgKGNvZGluZy1zeXN0ZW0tZm9yLXdyaXRlIGlt
+YXAtY29kaW5nLXN5c3RlbS1mb3Itd3JpdGUpCgkgICAgIChwcm9jZXNzLWNvbm5lY3Rpb24tdHlw
+ZSBpbWFwLXByb2Nlc3MtY29ubmVjdGlvbi10eXBlKQoJICAgICAocHJvY2VzcyAoc3RhcnQtcHJv
+Y2VzcwoJCSAgICAgICBuYW1lIGJ1ZmZlciBzaGVsbC1maWxlLW5hbWUgc2hlbGwtY29tbWFuZC1z
+d2l0Y2gKCQkgICAgICAgKGZvcm1hdC1zcGVjCgkJCWNtZAoJCQkoZm9ybWF0LXNwZWMtbWFrZQoJ
+CQkgP3Mgc2VydmVyCgkJCSA/cCAobnVtYmVyLXRvLXN0cmluZyBwb3J0KQoJCQkgP2wgaW1hcC1k
+ZWZhdWx0LXVzZXIpKSkpCgkgICAgIHJlc3BvbnNlKQoJKHdoZW4gcHJvY2VzcwoJICAod2l0aC1j
+dXJyZW50LWJ1ZmZlciBidWZmZXIKCSAgICAoc2V0cSBpbWFwLWNsaWVudC1lb2wgIlxuIgoJCSAg
+aW1hcC1jYWxjdWxhdGUtbGl0ZXJhbC1zaXplLWZpcnN0IHQpCgkgICAgKHdoaWxlIChhbmQgKG1l
+bXEgKHByb2Nlc3Mtc3RhdHVzIHByb2Nlc3MpICcob3BlbiBydW4pKQoJCQkoc2V0LWJ1ZmZlciBi
+dWZmZXIpIDs7IFhYWCAiYmx1ZSBtb29uIiBubnRwLmVsIGJ1ZwoJCQkoZ290by1jaGFyIChwb2lu
+dC1taW4pKQoJCQk7OyBBdGhlbmEgSU1URVNUIGNhbiBvdXRwdXQgU1NMIHZlcmlmeSBlcnJvcnMK
+CQkJKG9yICh3aGlsZSAobG9va2luZy1hdCAiXnZlcmlmeSBlcnJvcjpudW09IikKCQkJICAgICAg
+KGZvcndhcmQtbGluZSkpCgkJCSAgICB0KQoJCQkob3IgKHdoaWxlIChsb29raW5nLWF0ICJeVExT
+IGNvbm5lY3Rpb24gZXN0YWJsaXNoZWQiKQoJCQkgICAgICAoZm9yd2FyZC1saW5lKSkKCQkJICAg
+IHQpCgkJCTs7IGN5cnVzIDEuNi54ICgxMz8gPCB4IDw9IDIyKSBxdWVyaWVzIGNhcGFiaWxpdGll
+cwoJCQkob3IgKHdoaWxlIChsb29raW5nLWF0ICJeQzoiKQoJCQkgICAgICAoZm9yd2FyZC1saW5l
+KSkKCQkJICAgIHQpCgkJCTs7IGN5cnVzIDEuNiBpbXRlc3QgcHJpbnQgIlM6ICIgYmVmb3JlIHNl
+cnZlciBncmVldGluZwoJCQkob3IgKG5vdCAobG9va2luZy1hdCAiUzogIikpCgkJCSAgICAoZm9y
+d2FyZC1jaGFyIDMpCgkJCSAgICB0KQoJCQkobm90IChhbmQgKGltYXAtcGFyc2UtZ3JlZXRpbmcp
+CgkJCQkgIDs7IHN1Y2Nlc3MgaW4gaW10ZXN0IDwgMS42OgoJCQkJICAob3IgKHJlLXNlYXJjaC1m
+b3J3YXJkCgkJCQkgICAgICAgIl5fX1xcKC4qXFwpX19cbiIgbmlsIHQpCgkJCQkgICAgICA7OyBz
+dWNjZXNzIGluIGltdGVzdCAxLjY6CgkJCQkgICAgICAocmUtc2VhcmNoLWZvcndhcmQKCQkJCSAg
+ICAgICAiXlxcKEF1dGhlbnRpY2F0LipcXCkiIG5pbCB0KSkKCQkJCSAgKHNldHEgcmVzcG9uc2Ug
+KG1hdGNoLXN0cmluZyAxKSkpKSkKCSAgICAgIChhY2NlcHQtcHJvY2Vzcy1vdXRwdXQgcHJvY2Vz
+cyAxKQoJICAgICAgKHNpdC1mb3IgMSkpCgkgICAgKGFuZCBpbWFwLWxvZwoJCSAod2l0aC1jdXJy
+ZW50LWJ1ZmZlciAoZ2V0LWJ1ZmZlci1jcmVhdGUgaW1hcC1sb2ctYnVmZmVyKQoJCSAgIChpbWFw
+LWRpc2FibGUtbXVsdGlieXRlKQoJCSAgIChidWZmZXItZGlzYWJsZS11bmRvKQoJCSAgIChnb3Rv
+LWNoYXIgKHBvaW50LW1heCkpCgkJICAgKGluc2VydC1idWZmZXItc3Vic3RyaW5nIGJ1ZmZlcikp
+KQoJICAgIChlcmFzZS1idWZmZXIpCgkgICAgKG1lc3NhZ2UgIk9wZW5pbmcgS2VyYmVyb3MgNCBJ
+TUFQIGNvbm5lY3Rpb24gd2l0aCBgJXMnLi4uJXMiIGNtZAoJCSAgICAgKGlmIHJlc3BvbnNlIChj
+b25jYXQgImRvbmUsICIgcmVzcG9uc2UpICJmYWlsZWQiKSkKCSAgICAoaWYgKGFuZCByZXNwb25z
+ZSAobGV0ICgoY2FzZS1mb2xkLXNlYXJjaCBuaWwpKQoJCQkJKG5vdCAoc3RyaW5nLW1hdGNoICJm
+YWlsZWQiIHJlc3BvbnNlKSkpKQoJCShzZXRxIGRvbmUgcHJvY2VzcykKCSAgICAgIChpZiAobWVt
+cSAocHJvY2Vzcy1zdGF0dXMgcHJvY2VzcykgJyhvcGVuIHJ1bikpCgkJICAoaW1hcC1sb2dvdXQp
+KQoJICAgICAgKGRlbGV0ZS1wcm9jZXNzIHByb2Nlc3MpCgkgICAgICBuaWwpKSkpKQogICAgZG9u
+ZSkpCgooZGVmdW4gaW1hcC1nc3NhcGktc3RyZWFtLXAgKGJ1ZmZlcikKICAoaW1hcC1jYXBhYmls
+aXR5ICdBVVRIPUdTU0FQSSBidWZmZXIpKQoKKGRlZnVuIGltYXAtZ3NzYXBpLW9wZW4gKG5hbWUg
+YnVmZmVyIHNlcnZlciBwb3J0KQogIChsZXQgKChjbWRzIGltYXAtZ3NzYXBpLXByb2dyYW0pCglj
+bWQgZG9uZSkKICAgICh3aGlsZSAoYW5kIChub3QgZG9uZSkgKHNldHEgY21kIChwb3AgY21kcykp
+KQogICAgICAobWVzc2FnZSAiT3BlbmluZyBHU1NBUEkgSU1BUCBjb25uZWN0aW9uIHdpdGggYCVz
+Jy4uLiIgY21kKQogICAgICAoZXJhc2UtYnVmZmVyKQogICAgICAobGV0KiAoKHBvcnQgKG9yIHBv
+cnQgaW1hcC1kZWZhdWx0LXBvcnQpKQoJICAgICAoY29kaW5nLXN5c3RlbS1mb3ItcmVhZCBpbWFw
+LWNvZGluZy1zeXN0ZW0tZm9yLXJlYWQpCgkgICAgIChjb2Rpbmctc3lzdGVtLWZvci13cml0ZSBp
+bWFwLWNvZGluZy1zeXN0ZW0tZm9yLXdyaXRlKQoJICAgICAocHJvY2Vzcy1jb25uZWN0aW9uLXR5
+cGUgaW1hcC1wcm9jZXNzLWNvbm5lY3Rpb24tdHlwZSkKCSAgICAgKHByb2Nlc3MgKHN0YXJ0LXBy
+b2Nlc3MKCQkgICAgICAgbmFtZSBidWZmZXIgc2hlbGwtZmlsZS1uYW1lIHNoZWxsLWNvbW1hbmQt
+c3dpdGNoCgkJICAgICAgIChmb3JtYXQtc3BlYwoJCQljbWQKCQkJKGZvcm1hdC1zcGVjLW1ha2UK
+CQkJID9zIHNlcnZlcgoJCQkgP3AgKG51bWJlci10by1zdHJpbmcgcG9ydCkKCQkJID9sIGltYXAt
+ZGVmYXVsdC11c2VyKSkpKQoJICAgICByZXNwb25zZSkKCSh3aGVuIHByb2Nlc3MKCSAgKHdpdGgt
+Y3VycmVudC1idWZmZXIgYnVmZmVyCgkgICAgKHNldHEgaW1hcC1jbGllbnQtZW9sICJcbiIKCQkg
+IGltYXAtY2FsY3VsYXRlLWxpdGVyYWwtc2l6ZS1maXJzdCB0KQoJICAgICh3aGlsZSAoYW5kICht
+ZW1xIChwcm9jZXNzLXN0YXR1cyBwcm9jZXNzKSAnKG9wZW4gcnVuKSkKCQkJKHNldC1idWZmZXIg
+YnVmZmVyKSA7OyBYWFggImJsdWUgbW9vbiIgbm50cC5lbCBidWcKCQkJKGdvdG8tY2hhciAocG9p
+bnQtbWluKSkKCQkJOzsgQXRoZW5hIElNVEVTVCBjYW4gb3V0cHV0IFNTTCB2ZXJpZnkgZXJyb3Jz
+CgkJCShvciAod2hpbGUgKGxvb2tpbmctYXQgIl52ZXJpZnkgZXJyb3I6bnVtPSIpCgkJCSAgICAg
+IChmb3J3YXJkLWxpbmUpKQoJCQkgICAgdCkKCQkJKG9yICh3aGlsZSAobG9va2luZy1hdCAiXlRM
+UyBjb25uZWN0aW9uIGVzdGFibGlzaGVkIikKCQkJICAgICAgKGZvcndhcmQtbGluZSkpCgkJCSAg
+ICB0KQoJCQk7OyBjeXJ1cyAxLjYueCAoMTM/IDwgeCA8PSAyMikgcXVlcmllcyBjYXBhYmlsaXRp
+ZXMKCQkJKG9yICh3aGlsZSAobG9va2luZy1hdCAiXkM6IikKCQkJICAgICAgKGZvcndhcmQtbGlu
+ZSkpCgkJCSAgICB0KQoJCQk7OyBjeXJ1cyAxLjYgaW10ZXN0IHByaW50ICJTOiAiIGJlZm9yZSBz
+ZXJ2ZXIgZ3JlZXRpbmcKCQkJKG9yIChub3QgKGxvb2tpbmctYXQgIlM6ICIpKQoJCQkgICAgKGZv
+cndhcmQtY2hhciAzKQoJCQkgICAgdCkKCQkJOzsgR05VIFNBU0wgbWF5IHByaW50ICdUcnlpbmcg
+Li4uJyBmaXJzdC4KCQkJKG9yIChub3QgKGxvb2tpbmctYXQgIlRyeWluZyAiKSkKCQkJICAgIChm
+b3J3YXJkLWxpbmUpCgkJCSAgICB0KQoJCQkobm90IChhbmQgKGltYXAtcGFyc2UtZ3JlZXRpbmcp
+CgkJCQkgIDs7IHN1Y2Nlc3MgaW4gaW10ZXN0IDEuNjoKCQkJCSAgKHJlLXNlYXJjaC1mb3J3YXJk
+CgkJCQkgICAoY29uY2F0ICJeXFwoXFwoQXV0aGVudGljYXQuKlxcKVxcfFxcKCIKCQkJCQkgICAi
+Q2xpZW50IGF1dGhlbnRpY2F0aW9uICIKCQkJCQkgICAiZmluaXNoZWQuKlxcKVxcKSIpCgkJCQkg
+ICBuaWwgdCkKCQkJCSAgKHNldHEgcmVzcG9uc2UgKG1hdGNoLXN0cmluZyAxKSkpKSkKCSAgICAg
+IChhY2NlcHQtcHJvY2Vzcy1vdXRwdXQgcHJvY2VzcyAxKQoJICAgICAgKHNpdC1mb3IgMSkpCgkg
+ICAgKGFuZCBpbWFwLWxvZwoJCSAod2l0aC1jdXJyZW50LWJ1ZmZlciAoZ2V0LWJ1ZmZlci1jcmVh
+dGUgaW1hcC1sb2ctYnVmZmVyKQoJCSAgIChpbWFwLWRpc2FibGUtbXVsdGlieXRlKQoJCSAgIChi
+dWZmZXItZGlzYWJsZS11bmRvKQoJCSAgIChnb3RvLWNoYXIgKHBvaW50LW1heCkpCgkJICAgKGlu
+c2VydC1idWZmZXItc3Vic3RyaW5nIGJ1ZmZlcikpKQoJICAgIChlcmFzZS1idWZmZXIpCgkgICAg
+KG1lc3NhZ2UgIkdTU0FQSSBJTUFQIGNvbm5lY3Rpb246ICVzIiAob3IgcmVzcG9uc2UgImZhaWxl
+ZCIpKQoJICAgIChpZiAoYW5kIHJlc3BvbnNlIChsZXQgKChjYXNlLWZvbGQtc2VhcmNoIG5pbCkp
+CgkJCQkobm90IChzdHJpbmctbWF0Y2ggImZhaWxlZCIgcmVzcG9uc2UpKSkpCgkJKHNldHEgZG9u
+ZSBwcm9jZXNzKQoJICAgICAgKGlmIChtZW1xIChwcm9jZXNzLXN0YXR1cyBwcm9jZXNzKSAnKG9w
+ZW4gcnVuKSkKCQkgIChpbWFwLWxvZ291dCkpCgkgICAgICAoZGVsZXRlLXByb2Nlc3MgcHJvY2Vz
+cykKCSAgICAgIG5pbCkpKSkpCiAgICBkb25lKSkKCihkZWZ1biBpbWFwLXNzbC1wIChidWZmZXIp
+CiAgbmlsKQoKKGRlZnVuIGltYXAtc3NsLW9wZW4gKG5hbWUgYnVmZmVyIHNlcnZlciBwb3J0KQog
+ICJPcGVuIGEgU1NMIGNvbm5lY3Rpb24gdG8gc2VydmVyLiIKICAobGV0ICgoY21kcyAoaWYgKGxp
+c3RwIGltYXAtc3NsLXByb2dyYW0pIGltYXAtc3NsLXByb2dyYW0KCQkobGlzdCBpbWFwLXNzbC1w
+cm9ncmFtKSkpCgljbWQgZG9uZSkKICAgICh3aGlsZSAoYW5kIChub3QgZG9uZSkgKHNldHEgY21k
+IChwb3AgY21kcykpKQogICAgICAobWVzc2FnZSAiaW1hcDogT3BlbmluZyBTU0wgY29ubmVjdGlv
+biB3aXRoIGAlcycuLi4iIGNtZCkKICAgICAgKGVyYXNlLWJ1ZmZlcikKICAgICAgKGxldCogKChw
+b3J0IChvciBwb3J0IGltYXAtZGVmYXVsdC1zc2wtcG9ydCkpCgkgICAgIChjb2Rpbmctc3lzdGVt
+LWZvci1yZWFkIGltYXAtY29kaW5nLXN5c3RlbS1mb3ItcmVhZCkKCSAgICAgKGNvZGluZy1zeXN0
+ZW0tZm9yLXdyaXRlIGltYXAtY29kaW5nLXN5c3RlbS1mb3Itd3JpdGUpCgkgICAgIChwcm9jZXNz
+LWNvbm5lY3Rpb24tdHlwZSBpbWFwLXByb2Nlc3MtY29ubmVjdGlvbi10eXBlKQoJICAgICAoc2V0
+LXByb2Nlc3MtcXVlcnktb24tZXhpdC1mbGFnCgkgICAgICAoaWYgKGZib3VuZHAgJ3NldC1wcm9j
+ZXNzLXF1ZXJ5LW9uLWV4aXQtZmxhZykKCQkgICdzZXQtcHJvY2Vzcy1xdWVyeS1vbi1leGl0LWZs
+YWcKCQkncHJvY2Vzcy1raWxsLXdpdGhvdXQtcXVlcnkpKQoJICAgICBwcm9jZXNzKQoJKHdoZW4g
+KHByb2duCgkJKHNldHEgcHJvY2VzcyAoc3RhcnQtcHJvY2VzcwoJCQkgICAgICAgbmFtZSBidWZm
+ZXIgc2hlbGwtZmlsZS1uYW1lCgkJCSAgICAgICBzaGVsbC1jb21tYW5kLXN3aXRjaAoJCQkgICAg
+ICAgKGZvcm1hdC1zcGVjIGNtZAoJCQkJCSAgICAoZm9ybWF0LXNwZWMtbWFrZQoJCQkJCSAgICAg
+P3Mgc2VydmVyCgkJCQkJICAgICA/cCAobnVtYmVyLXRvLXN0cmluZyBwb3J0KSkpKSkKCQkoZnVu
+Y2FsbCBzZXQtcHJvY2Vzcy1xdWVyeS1vbi1leGl0LWZsYWcgcHJvY2VzcyBuaWwpCgkJcHJvY2Vz
+cykKCSAgKHdpdGgtY3VycmVudC1idWZmZXIgYnVmZmVyCgkgICAgKGdvdG8tY2hhciAocG9pbnQt
+bWluKSkKCSAgICAod2hpbGUgKGFuZCAobWVtcSAocHJvY2Vzcy1zdGF0dXMgcHJvY2VzcykgJyhv
+cGVuIHJ1bikpCgkJCShzZXQtYnVmZmVyIGJ1ZmZlcikgOzsgWFhYICJibHVlIG1vb24iIG5udHAu
+ZWwgYnVnCgkJCShnb3RvLWNoYXIgKHBvaW50LW1heCkpCgkJCShmb3J3YXJkLWxpbmUgLTEpCgkJ
+CShub3QgKGltYXAtcGFyc2UtZ3JlZXRpbmcpKSkKCSAgICAgIChhY2NlcHQtcHJvY2Vzcy1vdXRw
+dXQgcHJvY2VzcyAxKQoJICAgICAgKHNpdC1mb3IgMSkpCgkgICAgKGFuZCBpbWFwLWxvZwoJCSAo
+d2l0aC1jdXJyZW50LWJ1ZmZlciAoZ2V0LWJ1ZmZlci1jcmVhdGUgaW1hcC1sb2ctYnVmZmVyKQoJ
+CSAgIChpbWFwLWRpc2FibGUtbXVsdGlieXRlKQoJCSAgIChidWZmZXItZGlzYWJsZS11bmRvKQoJ
+CSAgIChnb3RvLWNoYXIgKHBvaW50LW1heCkpCgkJICAgKGluc2VydC1idWZmZXItc3Vic3RyaW5n
+IGJ1ZmZlcikpKQoJICAgIChlcmFzZS1idWZmZXIpCgkgICAgKHdoZW4gKG1lbXEgKHByb2Nlc3Mt
+c3RhdHVzIHByb2Nlc3MpICcob3BlbiBydW4pKQoJICAgICAgKHNldHEgZG9uZSBwcm9jZXNzKSkp
+KSkpCiAgICAoaWYgZG9uZQoJKHByb2duCgkgIChtZXNzYWdlICJpbWFwOiBPcGVuaW5nIFNTTCBj
+b25uZWN0aW9uIHdpdGggYCVzJy4uLmRvbmUiIGNtZCkKCSAgZG9uZSkKICAgICAgKG1lc3NhZ2Ug
+ImltYXA6IE9wZW5pbmcgU1NMIGNvbm5lY3Rpb24gd2l0aCBgJXMnLi4uZmFpbGVkIiBjbWQpCiAg
+ICAgIG5pbCkpKQoKKGRlZnVuIGltYXAtdGxzLXAgKGJ1ZmZlcikKICBuaWwpCgooZGVmdW4gaW1h
+cC10bHMtb3BlbiAobmFtZSBidWZmZXIgc2VydmVyIHBvcnQpCiAgKGxldCogKChwb3J0IChvciBw
+b3J0IGltYXAtZGVmYXVsdC10bHMtcG9ydCkpCgkgKGNvZGluZy1zeXN0ZW0tZm9yLXJlYWQgaW1h
+cC1jb2Rpbmctc3lzdGVtLWZvci1yZWFkKQoJIChjb2Rpbmctc3lzdGVtLWZvci13cml0ZSBpbWFw
+LWNvZGluZy1zeXN0ZW0tZm9yLXdyaXRlKQoJIChwcm9jZXNzIChvcGVuLXRscy1zdHJlYW0gbmFt
+ZSBidWZmZXIgc2VydmVyIHBvcnQpKSkKICAgICh3aGVuIHByb2Nlc3MKICAgICAgKHdoaWxlIChh
+bmQgKG1lbXEgKHByb2Nlc3Mtc3RhdHVzIHByb2Nlc3MpICcob3BlbiBydW4pKQoJCSAgKHNldC1i
+dWZmZXIgYnVmZmVyKSA7OyBYWFggImJsdWUgbW9vbiIgbm50cC5lbCBidWcKCQkgIChnb3RvLWNo
+YXIgKHBvaW50LW1heCkpCgkJICAoZm9yd2FyZC1saW5lIC0xKQoJCSAgKG5vdCAoaW1hcC1wYXJz
+ZS1ncmVldGluZykpKQoJKGFjY2VwdC1wcm9jZXNzLW91dHB1dCBwcm9jZXNzIDEpCgkoc2l0LWZv
+ciAxKSkKICAgICAgKGFuZCBpbWFwLWxvZwoJICAgKHdpdGgtY3VycmVudC1idWZmZXIgKGdldC1i
+dWZmZXItY3JlYXRlIGltYXAtbG9nLWJ1ZmZlcikKCSAgICAgKGltYXAtZGlzYWJsZS1tdWx0aWJ5
+dGUpCgkgICAgIChidWZmZXItZGlzYWJsZS11bmRvKQoJICAgICAoZ290by1jaGFyIChwb2ludC1t
+YXgpKQoJICAgICAoaW5zZXJ0LWJ1ZmZlci1zdWJzdHJpbmcgYnVmZmVyKSkpCiAgICAgICh3aGVu
+IChtZW1xIChwcm9jZXNzLXN0YXR1cyBwcm9jZXNzKSAnKG9wZW4gcnVuKSkKCXByb2Nlc3MpKSkp
+CgooZGVmdW4gaW1hcC1uZXR3b3JrLXAgKGJ1ZmZlcikKICB0KQoKKGRlZnVuIGltYXAtbmV0d29y
+ay1vcGVuIChuYW1lIGJ1ZmZlciBzZXJ2ZXIgcG9ydCkKICAobGV0KiAoKHBvcnQgKG9yIHBvcnQg
+aW1hcC1kZWZhdWx0LXBvcnQpKQoJIChjb2Rpbmctc3lzdGVtLWZvci1yZWFkIGltYXAtY29kaW5n
+LXN5c3RlbS1mb3ItcmVhZCkKCSAoY29kaW5nLXN5c3RlbS1mb3Itd3JpdGUgaW1hcC1jb2Rpbmct
+c3lzdGVtLWZvci13cml0ZSkKCSAocHJvY2VzcyAob3Blbi1uZXR3b3JrLXN0cmVhbSBuYW1lIGJ1
+ZmZlciBzZXJ2ZXIgcG9ydCkpKQogICAgKHdoZW4gcHJvY2VzcwogICAgICAod2hpbGUgKGFuZCAo
+bWVtcSAocHJvY2Vzcy1zdGF0dXMgcHJvY2VzcykgJyhvcGVuIHJ1bikpCgkJICAoc2V0LWJ1ZmZl
+ciBidWZmZXIpIDs7IFhYWCAiYmx1ZSBtb29uIiBubnRwLmVsIGJ1ZwoJCSAgKGdvdG8tY2hhciAo
+cG9pbnQtbWluKSkKCQkgIChub3QgKGltYXAtcGFyc2UtZ3JlZXRpbmcpKSkKCShhY2NlcHQtcHJv
+Y2Vzcy1vdXRwdXQgcHJvY2VzcyAxKQoJKHNpdC1mb3IgMSkpCiAgICAgIChhbmQgaW1hcC1sb2cK
+CSAgICh3aXRoLWN1cnJlbnQtYnVmZmVyIChnZXQtYnVmZmVyLWNyZWF0ZSBpbWFwLWxvZy1idWZm
+ZXIpCgkgICAgIChpbWFwLWRpc2FibGUtbXVsdGlieXRlKQoJICAgICAoYnVmZmVyLWRpc2FibGUt
+dW5kbykKCSAgICAgKGdvdG8tY2hhciAocG9pbnQtbWF4KSkKCSAgICAgKGluc2VydC1idWZmZXIt
+c3Vic3RyaW5nIGJ1ZmZlcikpKQogICAgICAod2hlbiAobWVtcSAocHJvY2Vzcy1zdGF0dXMgcHJv
+Y2VzcykgJyhvcGVuIHJ1bikpCglwcm9jZXNzKSkpKQoKKGRlZnVuIGltYXAtc2hlbGwtcCAoYnVm
+ZmVyKQogIG5pbCkKCihkZWZ1biBpbWFwLXNoZWxsLW9wZW4gKG5hbWUgYnVmZmVyIHNlcnZlciBw
+b3J0KQogIChsZXQgKChjbWRzIChpZiAobGlzdHAgaW1hcC1zaGVsbC1wcm9ncmFtKSBpbWFwLXNo
+ZWxsLXByb2dyYW0KCQkobGlzdCBpbWFwLXNoZWxsLXByb2dyYW0pKSkKCWNtZCBkb25lKQogICAg
+KHdoaWxlIChhbmQgKG5vdCBkb25lKSAoc2V0cSBjbWQgKHBvcCBjbWRzKSkpCiAgICAgIChtZXNz
+YWdlICJpbWFwOiBPcGVuaW5nIElNQVAgY29ubmVjdGlvbiB3aXRoIGAlcycuLi4iIGNtZCkKICAg
+ICAgKHNldHEgaW1hcC1jbGllbnQtZW9sICJcbiIpCiAgICAgIChsZXQqICgocG9ydCAob3IgcG9y
+dCBpbWFwLWRlZmF1bHQtcG9ydCkpCgkgICAgIChjb2Rpbmctc3lzdGVtLWZvci1yZWFkIGltYXAt
+Y29kaW5nLXN5c3RlbS1mb3ItcmVhZCkKCSAgICAgKGNvZGluZy1zeXN0ZW0tZm9yLXdyaXRlIGlt
+YXAtY29kaW5nLXN5c3RlbS1mb3Itd3JpdGUpCgkgICAgIChwcm9jZXNzIChzdGFydC1wcm9jZXNz
+CgkJICAgICAgIG5hbWUgYnVmZmVyIHNoZWxsLWZpbGUtbmFtZSBzaGVsbC1jb21tYW5kLXN3aXRj
+aAoJCSAgICAgICAoZm9ybWF0LXNwZWMKCQkJY21kCgkJCShmb3JtYXQtc3BlYy1tYWtlCgkJCSA/
+cyBzZXJ2ZXIKCQkJID9nIGltYXAtc2hlbGwtaG9zdAoJCQkgP3AgKG51bWJlci10by1zdHJpbmcg
+cG9ydCkKCQkJID9sIGltYXAtZGVmYXVsdC11c2VyKSkpKSkKCSh3aGVuIHByb2Nlc3MKCSAgKHdo
+aWxlIChhbmQgKG1lbXEgKHByb2Nlc3Mtc3RhdHVzIHByb2Nlc3MpICcob3BlbiBydW4pKQoJCSAg
+ICAgIChzZXQtYnVmZmVyIGJ1ZmZlcikgOzsgWFhYICJibHVlIG1vb24iIG5udHAuZWwgYnVnCgkJ
+ICAgICAgKGdvdG8tY2hhciAocG9pbnQtbWF4KSkKCQkgICAgICAoZm9yd2FyZC1saW5lIC0xKQoJ
+CSAgICAgIChub3QgKGltYXAtcGFyc2UtZ3JlZXRpbmcpKSkKCSAgICAoYWNjZXB0LXByb2Nlc3Mt
+b3V0cHV0IHByb2Nlc3MgMSkKCSAgICAoc2l0LWZvciAxKSkKCSAgKGFuZCBpbWFwLWxvZwoJICAg
+ICAgICh3aXRoLWN1cnJlbnQtYnVmZmVyIChnZXQtYnVmZmVyLWNyZWF0ZSBpbWFwLWxvZy1idWZm
+ZXIpCgkJIChpbWFwLWRpc2FibGUtbXVsdGlieXRlKQoJCSAoYnVmZmVyLWRpc2FibGUtdW5kbykK
+CQkgKGdvdG8tY2hhciAocG9pbnQtbWF4KSkKCQkgKGluc2VydC1idWZmZXItc3Vic3RyaW5nIGJ1
+ZmZlcikpKQoJICAoZXJhc2UtYnVmZmVyKQoJICAod2hlbiAobWVtcSAocHJvY2Vzcy1zdGF0dXMg
+cHJvY2VzcykgJyhvcGVuIHJ1bikpCgkgICAgKHNldHEgZG9uZSBwcm9jZXNzKSkpKSkKICAgIChp
+ZiBkb25lCgkocHJvZ24KCSAgKG1lc3NhZ2UgImltYXA6IE9wZW5pbmcgSU1BUCBjb25uZWN0aW9u
+IHdpdGggYCVzJy4uLmRvbmUiIGNtZCkKCSAgZG9uZSkKICAgICAgKG1lc3NhZ2UgImltYXA6IE9w
+ZW5pbmcgSU1BUCBjb25uZWN0aW9uIHdpdGggYCVzJy4uLmZhaWxlZCIgY21kKQogICAgICBuaWwp
+KSkKCihkZWZ1biBpbWFwLXN0YXJ0dGxzLXAgKGJ1ZmZlcikKICAoaW1hcC1jYXBhYmlsaXR5ICdT
+VEFSVFRMUyBidWZmZXIpKQoKKGRlZnVuIGltYXAtc3RhcnR0bHMtb3BlbiAobmFtZSBidWZmZXIg
+c2VydmVyIHBvcnQpCiAgKGxldCogKChwb3J0IChvciBwb3J0IGltYXAtZGVmYXVsdC1wb3J0KSkK
+CSAoY29kaW5nLXN5c3RlbS1mb3ItcmVhZCBpbWFwLWNvZGluZy1zeXN0ZW0tZm9yLXJlYWQpCgkg
+KGNvZGluZy1zeXN0ZW0tZm9yLXdyaXRlIGltYXAtY29kaW5nLXN5c3RlbS1mb3Itd3JpdGUpCgkg
+KHByb2Nlc3MgKHN0YXJ0dGxzLW9wZW4tc3RyZWFtIG5hbWUgYnVmZmVyIHNlcnZlciBwb3J0KSkK
+CSBkb25lIHRscy1pbmZvKQogICAgKG1lc3NhZ2UgImltYXA6IENvbm5lY3Rpbmcgd2l0aCBTVEFS
+VFRMUy4uLiIpCiAgICAod2hlbiBwcm9jZXNzCiAgICAgICh3aGlsZSAoYW5kIChtZW1xIChwcm9j
+ZXNzLXN0YXR1cyBwcm9jZXNzKSAnKG9wZW4gcnVuKSkKCQkgIChzZXQtYnVmZmVyIGJ1ZmZlcikg
+OzsgWFhYICJibHVlIG1vb24iIG5udHAuZWwgYnVnCgkJICAoZ290by1jaGFyIChwb2ludC1tYXgp
+KQoJCSAgKGZvcndhcmQtbGluZSAtMSkKCQkgIChub3QgKGltYXAtcGFyc2UtZ3JlZXRpbmcpKSkK
+CShhY2NlcHQtcHJvY2Vzcy1vdXRwdXQgcHJvY2VzcyAxKQoJKHNpdC1mb3IgMSkpCiAgICAgIChp
+bWFwLXNlbmQtY29tbWFuZCAiU1RBUlRUTFMiKQogICAgICAod2hpbGUgKGFuZCAobWVtcSAocHJv
+Y2Vzcy1zdGF0dXMgcHJvY2VzcykgJyhvcGVuIHJ1bikpCgkJICAoc2V0LWJ1ZmZlciBidWZmZXIp
+IDs7IFhYWCAiYmx1ZSBtb29uIiBubnRwLmVsIGJ1ZwoJCSAgKGdvdG8tY2hhciAocG9pbnQtbWF4
+KSkKCQkgIChmb3J3YXJkLWxpbmUgLTEpCgkJICAobm90IChyZS1zZWFyY2gtZm9yd2FyZCAiWzAt
+OV0rIE9LLipccj9cbiIgbmlsIHQpKSkKCShhY2NlcHQtcHJvY2Vzcy1vdXRwdXQgcHJvY2VzcyAx
+KQoJKHNpdC1mb3IgMSkpCiAgICAgIChhbmQgaW1hcC1sb2cKCSAgICh3aXRoLWN1cnJlbnQtYnVm
+ZmVyIChnZXQtYnVmZmVyLWNyZWF0ZSBpbWFwLWxvZy1idWZmZXIpCgkgICAgIChidWZmZXItZGlz
+YWJsZS11bmRvKQoJICAgICAoZ290by1jaGFyIChwb2ludC1tYXgpKQoJICAgICAoaW5zZXJ0LWJ1
+ZmZlci1zdWJzdHJpbmcgYnVmZmVyKSkpCiAgICAgICh3aGVuIChhbmQgKHNldHEgdGxzLWluZm8g
+KHN0YXJ0dGxzLW5lZ290aWF0ZSBwcm9jZXNzKSkKCQkgKG1lbXEgKHByb2Nlc3Mtc3RhdHVzIHBy
+b2Nlc3MpICcob3BlbiBydW4pKSkKCShzZXRxIGRvbmUgcHJvY2VzcykpKQogICAgKGlmIChzdHJp
+bmdwIHRscy1pbmZvKQoJKG1lc3NhZ2UgImltYXA6IFNUQVJUVExTIGluZm86ICVzIiB0bHMtaW5m
+bykpCiAgICAobWVzc2FnZSAiaW1hcDogQ29ubmVjdGluZyB3aXRoIFNUQVJUVExTLi4uJXMiIChp
+ZiBkb25lICJkb25lIiAiZmFpbGVkIikpCiAgICBkb25lKSkKCjs7IFNlcnZlciBmdW5jdGlvbnM7
+IGF1dGhlbnRpY2F0b3Igc3R1ZmY6CgooZGVmdW4gaW1hcC1pbnRlcmFjdGl2ZS1sb2dpbiAoYnVm
+ZmVyIGxvZ2luZnVuYykKICAiTG9naW4gdG8gc2VydmVyIGluIEJVRkZFUi4KTE9HSU5GVU5DIGlz
+IHBhc3NlZCBhIHVzZXJuYW1lIGFuZCBhIHBhc3N3b3JkLCBpdCBzaG91bGQgcmV0dXJuIHQgaWYK
+aXQgd2hlcmUgc3VjY2Vzc2Z1bCBhdXRoZW50aWNhdGluZyBpdHNlbGYgdG8gdGhlIHNlcnZlciwg
+bmlsIG90aGVyd2lzZS4KUmV0dXJucyB0IGlmIGxvZ2luIHdhcyBzdWNjZXNzZnVsLCBuaWwgb3Ro
+ZXJ3aXNlLiIKICAod2l0aC1jdXJyZW50LWJ1ZmZlciBidWZmZXIKICAgIChtYWtlLWxvY2FsLXZh
+cmlhYmxlICdpbWFwLXVzZXJuYW1lKQogICAgKG1ha2UtbG9jYWwtdmFyaWFibGUgJ2ltYXAtcGFz
+c3dvcmQpCiAgICAobGV0ICh1c2VyIHBhc3N3ZCByZXQpCiAgICAgIDs7ICAgICAgKGNvbmRpdGlv
+bi1jYXNlICgpCiAgICAgICh3aGlsZSAob3IgKG5vdCB1c2VyKSAobm90IHBhc3N3ZCkpCgkoc2V0
+cSB1c2VyIChvciBpbWFwLXVzZXJuYW1lCgkJICAgICAgIChyZWFkLWZyb20tbWluaWJ1ZmZlcgoJ
+CQkoY29uY2F0ICJJTUFQIHVzZXJuYW1lIGZvciAiIGltYXAtc2VydmVyCgkJCQkiICh1c2luZyBz
+dHJlYW0gYCIgKHN5bWJvbC1uYW1lIGltYXAtc3RyZWFtKQoJCQkJIicpOiAiKQoJCQkob3IgdXNl
+ciBpbWFwLWRlZmF1bHQtdXNlcikpKSkKCShzZXRxIHBhc3N3ZCAob3IgaW1hcC1wYXNzd29yZAoJ
+CQkgKHJlYWQtcGFzc3dkCgkJCSAgKGNvbmNhdCAiSU1BUCBwYXNzd29yZCBmb3IgIiB1c2VyICJA
+IgoJCQkJICBpbWFwLXNlcnZlciAiICh1c2luZyBhdXRoZW50aWNhdG9yIGAiCgkJCQkgIChzeW1i
+b2wtbmFtZSBpbWFwLWF1dGgpICInKTogIikpKSkKCSh3aGVuIChhbmQgdXNlciBwYXNzd2QpCgkg
+IChpZiAoZnVuY2FsbCBsb2dpbmZ1bmMgdXNlciBwYXNzd2QpCgkgICAgICAocHJvZ24KCQkoc2V0
+cSByZXQgdAoJCSAgICAgIGltYXAtdXNlcm5hbWUgdXNlcikKCQkod2hlbiAoYW5kIChub3QgaW1h
+cC1wYXNzd29yZCkKCQkJICAgKG9yIGltYXAtc3RvcmUtcGFzc3dvcmQKCQkJICAgICAgICh5LW9y
+LW4tcCAiU3RvcmUgcGFzc3dvcmQgZm9yIHRoaXMgc2Vzc2lvbj8gIikpKQoJCSAgKHNldHEgaW1h
+cC1wYXNzd29yZCBwYXNzd2QpKSkKCSAgICAobWVzc2FnZSAiTG9naW4gZmFpbGVkLi4uIikKCSAg
+ICAoc2V0cSBwYXNzd2QgbmlsKQoJICAgIChzZXRxIGltYXAtcGFzc3dvcmQgbmlsKQoJICAgIChz
+aXQtZm9yIDEpKSkpCiAgICAgIDs7CShxdWl0ICh3aXRoLWN1cnJlbnQtYnVmZmVyIGJ1ZmZlcgog
+ICAgICA7OwkJKHNldHEgdXNlciBuaWwKICAgICAgOzsJCSAgICAgIHBhc3N3ZCBuaWwpKSkKICAg
+ICAgOzsJKGVycm9yICh3aXRoLWN1cnJlbnQtYnVmZmVyIGJ1ZmZlcgogICAgICA7OwkJIChzZXRx
+IHVzZXIgbmlsCiAgICAgIDs7CQkgICAgICAgcGFzc3dkIG5pbCkpKSkKICAgICAgcmV0KSkpCgoo
+ZGVmdW4gaW1hcC1nc3NhcGktYXV0aC1wIChidWZmZXIpCiAgKGVxIGltYXAtc3RyZWFtICdnc3Nh
+cGkpKQoKKGRlZnVuIGltYXAtZ3NzYXBpLWF1dGggKGJ1ZmZlcikKICAobWVzc2FnZSAiaW1hcDog
+QXV0aGVudGljYXRpbmcgdXNpbmcgR1NTQVBJLi4uJXMiCgkgICAoaWYgKGVxIGltYXAtc3RyZWFt
+ICdnc3NhcGkpICJkb25lIiAiZmFpbGVkIikpCiAgKGVxIGltYXAtc3RyZWFtICdnc3NhcGkpKQoK
+KGRlZnVuIGltYXAta2VyYmVyb3M0LWF1dGgtcCAoYnVmZmVyKQogIChhbmQgKGltYXAtY2FwYWJp
+bGl0eSAnQVVUSD1LRVJCRVJPU19WNCBidWZmZXIpCiAgICAgICAoZXEgaW1hcC1zdHJlYW0gJ2tl
+cmJlcm9zNCkpKQoKKGRlZnVuIGltYXAta2VyYmVyb3M0LWF1dGggKGJ1ZmZlcikKICAobWVzc2Fn
+ZSAiaW1hcDogQXV0aGVudGljYXRpbmcgdXNpbmcgS2VyYmVyb3MgNC4uLiVzIgoJICAgKGlmIChl
+cSBpbWFwLXN0cmVhbSAna2VyYmVyb3M0KSAiZG9uZSIgImZhaWxlZCIpKQogIChlcSBpbWFwLXN0
+cmVhbSAna2VyYmVyb3M0KSkKCihkZWZ1biBpbWFwLWNyYW0tbWQ1LXAgKGJ1ZmZlcikKICAoaW1h
+cC1jYXBhYmlsaXR5ICdBVVRIPUNSQU0tTUQ1IGJ1ZmZlcikpCgooZGVmdW4gaW1hcC1jcmFtLW1k
+NS1hdXRoIChidWZmZXIpCiAgIkxvZ2luIHRvIHNlcnZlciB1c2luZyB0aGUgQVVUSCBDUkFNLU1E
+NSBtZXRob2QuIgogIChtZXNzYWdlICJpbWFwOiBBdXRoZW50aWNhdGluZyB1c2luZyBDUkFNLU1E
+NS4uLiIpCiAgKGxldCAoKGRvbmUgKGltYXAtaW50ZXJhY3RpdmUtbG9naW4KCSAgICAgICBidWZm
+ZXIKCSAgICAgICAobGFtYmRhICh1c2VyIHBhc3N3ZCkKCQkgKGltYXAtb2stcAoJCSAgKGltYXAt
+c2VuZC1jb21tYW5kLXdhaXQKCQkgICAobGlzdAoJCSAgICAiQVVUSEVOVElDQVRFIENSQU0tTUQ1
+IgoJCSAgICAobGFtYmRhIChjaGFsbGVuZ2UpCgkJICAgICAgKGxldCogKChkZWNvZGVkIChiYXNl
+NjQtZGVjb2RlLXN0cmluZyBjaGFsbGVuZ2UpKQoJCQkgICAgIChoYXNoIChyZmMyMTA0LWhhc2gg
+J21kNSA2NCAxNiBwYXNzd2QgZGVjb2RlZCkpCgkJCSAgICAgKHJlc3BvbnNlIChjb25jYXQgdXNl
+ciAiICIgaGFzaCkpCgkJCSAgICAgKGVuY29kZWQgKGJhc2U2NC1lbmNvZGUtc3RyaW5nIHJlc3Bv
+bnNlKSkpCgkJCWVuY29kZWQpKSkpKSkpKSkKICAgIChpZiBkb25lCgkobWVzc2FnZSAiaW1hcDog
+QXV0aGVudGljYXRpbmcgdXNpbmcgQ1JBTS1NRDUuLi5kb25lIikKICAgICAgKG1lc3NhZ2UgImlt
+YXA6IEF1dGhlbnRpY2F0aW5nIHVzaW5nIENSQU0tTUQ1Li4uZmFpbGVkIikpKSkKCihkZWZ1biBp
+bWFwLWxvZ2luLXAgKGJ1ZmZlcikKICAoYW5kIChub3QgKGltYXAtY2FwYWJpbGl0eSAnTE9HSU5E
+SVNBQkxFRCBidWZmZXIpKQogICAgICAgKG5vdCAoaW1hcC1jYXBhYmlsaXR5ICdYLUxPR0lOLUNN
+RC1ESVNBQkxFRCBidWZmZXIpKSkpCgooZGVmdW4gaW1hcC1xdW90ZS1zcGVjaWFscyAoc3RyaW5n
+KQogICh3aXRoLXRlbXAtYnVmZmVyCiAgICAoaW5zZXJ0IHN0cmluZykKICAgIChnb3RvLWNoYXIg
+KHBvaW50LW1pbikpCiAgICAod2hpbGUgKHJlLXNlYXJjaC1mb3J3YXJkICJbXFxcIl0iIG5pbCB0
+KQogICAgICAoZm9yd2FyZC1jaGFyIC0xKQogICAgICAoaW5zZXJ0ICJcXCIpCiAgICAgIChmb3J3
+YXJkLWNoYXIgMSkpCiAgICAoYnVmZmVyLXN0cmluZykpKQoKKGRlZnVuIGltYXAtbG9naW4tYXV0
+aCAoYnVmZmVyKQogICJMb2dpbiB0byBzZXJ2ZXIgdXNpbmcgdGhlIExPR0lOIGNvbW1hbmQuIgog
+IChtZXNzYWdlICJpbWFwOiBQbGFpbnRleHQgYXV0aGVudGljYXRpb24uLi4iKQogIChpbWFwLWlu
+dGVyYWN0aXZlLWxvZ2luIGJ1ZmZlcgoJCQkgIChsYW1iZGEgKHVzZXIgcGFzc3dkKQoJCQkgICAg
+KGltYXAtb2stcCAoaW1hcC1zZW5kLWNvbW1hbmQtd2FpdAoJCQkJCShjb25jYXQgIkxPR0lOIFwi
+IgoJCQkJCQkoaW1hcC1xdW90ZS1zcGVjaWFscyB1c2VyKQoJCQkJCQkiXCIgXCIiCgkJCQkJCShp
+bWFwLXF1b3RlLXNwZWNpYWxzIHBhc3N3ZCkKCQkJCQkJIlwiIikpKSkpKQoKKGRlZnVuIGltYXAt
+YW5vbnltb3VzLXAgKGJ1ZmZlcikKICB0KQoKKGRlZnVuIGltYXAtYW5vbnltb3VzLWF1dGggKGJ1
+ZmZlcikKICAobWVzc2FnZSAiaW1hcDogTG9nZ2luZyBpbiBhbm9ueW1vdXNseS4uLiIpCiAgKHdp
+dGgtY3VycmVudC1idWZmZXIgYnVmZmVyCiAgICAoaW1hcC1vay1wIChpbWFwLXNlbmQtY29tbWFu
+ZC13YWl0CgkJKGNvbmNhdCAiTE9HSU4gYW5vbnltb3VzIFwiIiAoY29uY2F0ICh1c2VyLWxvZ2lu
+LW5hbWUpICJAIgoJCQkJCQkgICAgIChzeXN0ZW0tbmFtZSkpICJcIiIpKSkpKQoKOzs7IENvbXBp
+bGVyIGRpcmVjdGl2ZXMuCgooZGVmdmFyIGltYXAtc2FzbC1jbGllbnQpCihkZWZ2YXIgaW1hcC1z
+YXNsLXN0ZXApCgooZGVmdW4gaW1hcC1zYXNsLW1ha2UtbWVjaGFuaXNtcyAoYnVmZmVyKQogIChs
+ZXQgKChtZWNzICcoKSkpCiAgICAobWFwYyAobGFtYmRhIChzeW0pCgkgICAgKGxldCAoKG5hbWUg
+KHN5bWJvbC1uYW1lIHN5bSkpKQoJICAgICAgKGlmIChhbmQgKD4gKGxlbmd0aCBuYW1lKSA1KQoJ
+CSAgICAgICAoc3RyaW5nLWVxdWFsICJBVVRIPSIgKHN1YnN0cmluZyBuYW1lIDAgNSApKSkKCQkg
+IChzZXRxIG1lY3MgKGNvbnMgKHN1YnN0cmluZyBuYW1lIDUpIG1lY3MpKSkpKQoJICAoaW1hcC1j
+YXBhYmlsaXR5IG5pbCBidWZmZXIpKQogICAgbWVjcykpCgooZGVjbGFyZS1mdW5jdGlvbiBzYXNs
+LWZpbmQtbWVjaGFuaXNtICJzYXNsIiAobWVjaGFuaXNtKSkKKGRlY2xhcmUtZnVuY3Rpb24gc2Fz
+bC1tZWNoYW5pc20tbmFtZSAic2FzbCIgKG1lY2hhbmlzbSkpCihkZWNsYXJlLWZ1bmN0aW9uIHNh
+c2wtbWFrZS1jbGllbnQgICAgInNhc2wiIChtZWNoYW5pc20gbmFtZSBzZXJ2aWNlIHNlcnZlcikp
+CihkZWNsYXJlLWZ1bmN0aW9uIHNhc2wtbmV4dC1zdGVwICAgICAgInNhc2wiIChjbGllbnQgc3Rl
+cCkpCihkZWNsYXJlLWZ1bmN0aW9uIHNhc2wtc3RlcC1kYXRhICAgICAgInNhc2wiIChzdGVwKSkK
+KGRlY2xhcmUtZnVuY3Rpb24gc2FzbC1zdGVwLXNldC1kYXRhICAic2FzbCIgKHN0ZXAgZGF0YSkp
+CgooZGVmdW4gaW1hcC1zYXNsLWF1dGgtcCAoYnVmZmVyKQogIChhbmQgKGNvbmRpdGlvbi1jYXNl
+ICgpCgkgICAocmVxdWlyZSAnc2FzbCkKCSAoZXJyb3IgbmlsKSkKICAgICAgIChzYXNsLWZpbmQt
+bWVjaGFuaXNtIChpbWFwLXNhc2wtbWFrZS1tZWNoYW5pc21zIGJ1ZmZlcikpKSkKCihkZWZ1biBp
+bWFwLXNhc2wtYXV0aCAoYnVmZmVyKQogICJMb2dpbiB0byBzZXJ2ZXIgdXNpbmcgdGhlIFNBU0wg
+bWV0aG9kLiIKICAobWVzc2FnZSAiaW1hcDogQXV0aGVudGljYXRpbmcgdXNpbmcgU0FTTC4uLiIp
+CiAgKHdpdGgtY3VycmVudC1idWZmZXIgYnVmZmVyCiAgICAobWFrZS1sb2NhbC12YXJpYWJsZSAn
+aW1hcC11c2VybmFtZSkKICAgIChtYWtlLWxvY2FsLXZhcmlhYmxlICdpbWFwLXNhc2wtY2xpZW50
+KQogICAgKG1ha2UtbG9jYWwtdmFyaWFibGUgJ2ltYXAtc2FzbC1zdGVwKQogICAgKGxldCAoKG1l
+Y2hhbmlzbSAoc2FzbC1maW5kLW1lY2hhbmlzbSAoaW1hcC1zYXNsLW1ha2UtbWVjaGFuaXNtcyBi
+dWZmZXIpKSkKCSAgbG9nZ2VkIHVzZXIpCiAgICAgICh3aGlsZSAobm90IGxvZ2dlZCkKCShzZXRx
+IHVzZXIgKG9yIGltYXAtdXNlcm5hbWUKCQkgICAgICAgKHJlYWQtZnJvbS1taW5pYnVmZmVyCgkJ
+CShjb25jYXQgIklNQVAgdXNlcm5hbWUgZm9yICIgaW1hcC1zZXJ2ZXIgIiB1c2luZyBTQVNMICIK
+CQkJCShzYXNsLW1lY2hhbmlzbS1uYW1lIG1lY2hhbmlzbSkgIjogIikKCQkJKG9yIHVzZXIgaW1h
+cC1kZWZhdWx0LXVzZXIpKSkpCgkod2hlbiB1c2VyCgkgIChzZXRxIGltYXAtc2FzbC1jbGllbnQg
+KHNhc2wtbWFrZS1jbGllbnQgbWVjaGFuaXNtIHVzZXIgImltYXAyIiBpbWFwLXNlcnZlcikKCQlp
+bWFwLXNhc2wtc3RlcCAoc2FzbC1uZXh0LXN0ZXAgaW1hcC1zYXNsLWNsaWVudCBuaWwpKQoJICAo
+bGV0ICgodGFnIChpbWFwLXNlbmQtY29tbWFuZAoJCSAgICAgIChpZiAoc2FzbC1zdGVwLWRhdGEg
+aW1hcC1zYXNsLXN0ZXApCgkJCSAgKGZvcm1hdCAiQVVUSEVOVElDQVRFICVzICVzIgoJCQkJICAo
+c2FzbC1tZWNoYW5pc20tbmFtZSBtZWNoYW5pc20pCgkJCQkgIChzYXNsLXN0ZXAtZGF0YSBpbWFw
+LXNhc2wtc3RlcCkpCgkJCShmb3JtYXQgIkFVVEhFTlRJQ0FURSAlcyIgKHNhc2wtbWVjaGFuaXNt
+LW5hbWUgbWVjaGFuaXNtKSkpCgkJICAgICAgYnVmZmVyKSkpCgkgICAgKHdoaWxlIChlcSAoaW1h
+cC13YWl0LWZvci10YWcgdGFnKSAnSU5DT01QTEVURSkKCSAgICAgIChzYXNsLXN0ZXAtc2V0LWRh
+dGEgaW1hcC1zYXNsLXN0ZXAgKGJhc2U2NC1kZWNvZGUtc3RyaW5nIGltYXAtY29udGludWF0aW9u
+KSkKCSAgICAgIChzZXRxIGltYXAtY29udGludWF0aW9uIG5pbAoJCSAgICBpbWFwLXNhc2wtc3Rl
+cCAoc2FzbC1uZXh0LXN0ZXAgaW1hcC1zYXNsLWNsaWVudCBpbWFwLXNhc2wtc3RlcCkpCgkgICAg
+ICAoaW1hcC1zZW5kLWNvbW1hbmQtMSAoaWYgKHNhc2wtc3RlcC1kYXRhIGltYXAtc2FzbC1zdGVw
+KQoJCQkJICAgICAgIChiYXNlNjQtZW5jb2RlLXN0cmluZyAoc2FzbC1zdGVwLWRhdGEgaW1hcC1z
+YXNsLXN0ZXApIHQpCgkJCQkgICAgICIiKSkpCgkgICAgKGlmIChpbWFwLW9rLXAgKGltYXAtd2Fp
+dC1mb3ItdGFnIHRhZykpCgkJKHNldHEgaW1hcC11c2VybmFtZSB1c2VyCgkJICAgICAgbG9nZ2Vk
+IHQpCgkgICAgICAobWVzc2FnZSAiTG9naW4gZmFpbGVkLi4uIikKCSAgICAgIChzaXQtZm9yIDEp
+KSkpKQogICAgICBsb2dnZWQpKSkKCihkZWZ1biBpbWFwLWRpZ2VzdC1tZDUtcCAoYnVmZmVyKQog
+IChhbmQgKGltYXAtY2FwYWJpbGl0eSAnQVVUSD1ESUdFU1QtTUQ1IGJ1ZmZlcikKICAgICAgIChj
+b25kaXRpb24tY2FzZSAoKQoJICAgKHJlcXVpcmUgJ2RpZ2VzdC1tZDUpCgkgKGVycm9yIG5pbCkp
+KSkKCihkZWZ1biBpbWFwLWRpZ2VzdC1tZDUtYXV0aCAoYnVmZmVyKQogICJMb2dpbiB0byBzZXJ2
+ZXIgdXNpbmcgdGhlIEFVVEggRElHRVNULU1ENSBtZXRob2QuIgogIChtZXNzYWdlICJpbWFwOiBB
+dXRoZW50aWNhdGluZyB1c2luZyBESUdFU1QtTUQ1Li4uIikKICAoaW1hcC1pbnRlcmFjdGl2ZS1s
+b2dpbgogICBidWZmZXIKICAgKGxhbWJkYSAodXNlciBwYXNzd2QpCiAgICAgKGxldCAoKHRhZwoJ
+ICAgIChpbWFwLXNlbmQtY29tbWFuZAoJICAgICAobGlzdAoJICAgICAgIkFVVEhFTlRJQ0FURSBE
+SUdFU1QtTUQ1IgoJICAgICAgKGxhbWJkYSAoY2hhbGxlbmdlKQoJCShkaWdlc3QtbWQ1LXBhcnNl
+LWRpZ2VzdC1jaGFsbGVuZ2UKCQkgKGJhc2U2NC1kZWNvZGUtc3RyaW5nIGNoYWxsZW5nZSkpCgkJ
+KGxldCogKChkaWdlc3QtdXJpCgkJCShkaWdlc3QtbWQ1LWRpZ2VzdC11cmkKCQkJICJpbWFwIiAo
+ZGlnZXN0LW1kNS1jaGFsbGVuZ2UgJ3JlYWxtKSkpCgkJICAgICAgIChyZXNwb25zZQoJCQkoZGln
+ZXN0LW1kNS1kaWdlc3QtcmVzcG9uc2UKCQkJIHVzZXIgcGFzc3dkIGRpZ2VzdC11cmkpKSkKCQkg
+IChiYXNlNjQtZW5jb2RlLXN0cmluZyByZXNwb25zZSAnbm8tbGluZS1icmVhaykpKSkKCSAgICAg
+KSkpCiAgICAgICAoaWYgKG5vdCAoZXEgKGltYXAtd2FpdC1mb3ItdGFnIHRhZykgJ0lOQ09NUExF
+VEUpKQoJICAgbmlsCgkgKHNldHEgaW1hcC1jb250aW51YXRpb24gbmlsKQoJIChpbWFwLXNlbmQt
+Y29tbWFuZC0xICIiKQoJIChpbWFwLW9rLXAgKGltYXAtd2FpdC1mb3ItdGFnIHRhZykpKSkpKSkK
+Cjs7IFNlcnZlciBmdW5jdGlvbnM6CgooZGVmdW4gaW1hcC1vcGVuLTEgKGJ1ZmZlcikKICAod2l0
+aC1jdXJyZW50LWJ1ZmZlciBidWZmZXIKICAgIChlcmFzZS1idWZmZXIpCiAgICAoc2V0cSBpbWFw
+LWN1cnJlbnQtbWFpbGJveCBuaWwKCSAgaW1hcC1jdXJyZW50LW1lc3NhZ2UgbmlsCgkgIGltYXAt
+c3RhdGUgJ2luaXRpYWwKCSAgaW1hcC1wcm9jZXNzIChjb25kaXRpb24tY2FzZSAoKQoJCQkgICAo
+ZnVuY2FsbCAobnRoIDIgKGFzc3EgaW1hcC1zdHJlYW0KCQkJCQkJIGltYXAtc3RyZWFtLWFsaXN0
+KSkKCQkJCSAgICAiaW1hcCIgYnVmZmVyIGltYXAtc2VydmVyIGltYXAtcG9ydCkKCQkJICgoZXJy
+b3IgcXVpdCkgbmlsKSkpCiAgICAod2hlbiBpbWFwLXByb2Nlc3MKICAgICAgKHNldC1wcm9jZXNz
+LWZpbHRlciBpbWFwLXByb2Nlc3MgJ2ltYXAtYXJyaXZhbC1maWx0ZXIpCiAgICAgIChzZXQtcHJv
+Y2Vzcy1zZW50aW5lbCBpbWFwLXByb2Nlc3MgJ2ltYXAtc2VudGluZWwpCiAgICAgICh3aGlsZSAo
+YW5kIChlcSBpbWFwLXN0YXRlICdpbml0aWFsKQoJCSAgKG1lbXEgKHByb2Nlc3Mtc3RhdHVzIGlt
+YXAtcHJvY2VzcykgJyhvcGVuIHJ1bikpKQoJKG1lc3NhZ2UgIldhaXRpbmcgZm9yIHJlc3BvbnNl
+IGZyb20gJXMuLi4iIGltYXAtc2VydmVyKQoJKGFjY2VwdC1wcm9jZXNzLW91dHB1dCBpbWFwLXBy
+b2Nlc3MgMSkpCiAgICAgIChtZXNzYWdlICJXYWl0aW5nIGZvciByZXNwb25zZSBmcm9tICVzLi4u
+ZG9uZSIgaW1hcC1zZXJ2ZXIpCiAgICAgIChhbmQgKG1lbXEgKHByb2Nlc3Mtc3RhdHVzIGltYXAt
+cHJvY2VzcykgJyhvcGVuIHJ1bikpCgkgICBpbWFwLXByb2Nlc3MpKSkpCgooZGVmdW4gaW1hcC1v
+cGVuIChzZXJ2ZXIgJm9wdGlvbmFsIHBvcnQgc3RyZWFtIGF1dGggYnVmZmVyKQogICJPcGVuIGEg
+SU1BUCBjb25uZWN0aW9uIHRvIGhvc3QgU0VSVkVSIGF0IFBPUlQgcmV0dXJuaW5nIGEgYnVmZmVy
+LgpJZiBQT1JUIGlzIHVuc3BlY2lmaWVkLCBhIGRlZmF1bHQgdmFsdWUgaXMgdXNlZCAoMTQzIGV4
+Y2VwdApmb3IgU1NMIHdoaWNoIHVzZSA5OTMpLgpTVFJFQU0gaW5kaWNhdGVzIHRoZSBzdHJlYW0g
+dG8gdXNlLCBzZWUgYGltYXAtc3RyZWFtcycgZm9yIGF2YWlsYWJsZQpzdHJlYW1zLiAgSWYgbmls
+LCBpdCBjaG9pY2VzIHRoZSBiZXN0IHN0cmVhbSB0aGUgc2VydmVyIGlzIGNhcGFibGUgb2YuCkFV
+VEggaW5kaWNhdGVzIGF1dGhlbnRpY2F0b3IgdG8gdXNlLCBzZWUgYGltYXAtYXV0aGVudGljYXRv
+cnMnIGZvcgphdmFpbGFibGUgYXV0aGVudGljYXRvcnMuICBJZiBuaWwsIGl0IGNob2ljZXMgdGhl
+IGJlc3Qgc3RyZWFtIHRoZQpzZXJ2ZXIgaXMgY2FwYWJsZSBvZi4KQlVGRkVSIGNhbiBiZSBhIGJ1
+ZmZlciBvciBhIG5hbWUgb2YgYSBidWZmZXIsIHdoaWNoIGlzIGNyZWF0ZWQgaWYKbmVjZXNzYXJ5
+LiAgSWYgbmlsLCB0aGUgYnVmZmVyIG5hbWUgaXMgZ2VuZXJhdGVkLiIKICAoc2V0cSBidWZmZXIg
+KG9yIGJ1ZmZlciAoZm9ybWF0ICIgKmltYXAqICVzOiVkIiBzZXJ2ZXIgKG9yIHBvcnQgMCkpKSkK
+ICAod2l0aC1jdXJyZW50LWJ1ZmZlciAoZ2V0LWJ1ZmZlci1jcmVhdGUgYnVmZmVyKQogICAgKGlm
+IChpbWFwLW9wZW5lZCBidWZmZXIpCgkoaW1hcC1jbG9zZSBidWZmZXIpKQogICAgKG1hcGMgJ21h
+a2UtbG9jYWwtdmFyaWFibGUgaW1hcC1sb2NhbC12YXJpYWJsZXMpCiAgICAoaW1hcC1kaXNhYmxl
+LW11bHRpYnl0ZSkKICAgIChidWZmZXItZGlzYWJsZS11bmRvKQogICAgKHNldHEgaW1hcC1zZXJ2
+ZXIgKG9yIHNlcnZlciBpbWFwLXNlcnZlcikpCiAgICAoc2V0cSBpbWFwLXBvcnQgKG9yIHBvcnQg
+aW1hcC1wb3J0KSkKICAgIChzZXRxIGltYXAtYXV0aCAob3IgYXV0aCBpbWFwLWF1dGgpKQogICAg
+KHNldHEgaW1hcC1zdHJlYW0gKG9yIHN0cmVhbSBpbWFwLXN0cmVhbSkpCiAgICAobWVzc2FnZSAi
+aW1hcDogQ29ubmVjdGluZyB0byAlcy4uLiIgaW1hcC1zZXJ2ZXIpCiAgICAoaWYgKG51bGwgKGxl
+dCAoKGltYXAtc3RyZWFtIChvciBpbWFwLXN0cmVhbSBpbWFwLWRlZmF1bHQtc3RyZWFtKSkpCgkJ
+KGltYXAtb3Blbi0xIGJ1ZmZlcikpKQoJKHByb2duCgkgIChtZXNzYWdlICJpbWFwOiBDb25uZWN0
+aW5nIHRvICVzLi4uZmFpbGVkIiBpbWFwLXNlcnZlcikKCSAgbmlsKQogICAgICAod2hlbiAobnVs
+bCBpbWFwLXN0cmVhbSkKCTs7IE5lZWQgdG8gY2hvb3NlIHN0cmVhbS4KCShsZXQgKChzdHJlYW1z
+IGltYXAtc3RyZWFtcykpCgkgICh3aGlsZSAoc2V0cSBzdHJlYW0gKHBvcCBzdHJlYW1zKSkKCSAg
+ICA7OyBPSyB0byB1c2UgdGhpcyBzdHJlYW0/CgkgICAgKHdoZW4gKGZ1bmNhbGwgKG50aCAxIChh
+c3NxIHN0cmVhbSBpbWFwLXN0cmVhbS1hbGlzdCkpIGJ1ZmZlcikKCSAgICAgIDs7IFN0cmVhbSBj
+aGFuZ2VkPwoJICAgICAgKGlmIChub3QgKGVxIGltYXAtZGVmYXVsdC1zdHJlYW0gc3RyZWFtKSkK
+CQkgICh3aXRoLWN1cnJlbnQtYnVmZmVyIChnZXQtYnVmZmVyLWNyZWF0ZQoJCQkJCShnZW5lcmF0
+ZS1uZXctYnVmZmVyLW5hbWUgIiAqdGVtcCoiKSkKCQkgICAgKG1hcGMgJ21ha2UtbG9jYWwtdmFy
+aWFibGUgaW1hcC1sb2NhbC12YXJpYWJsZXMpCgkJICAgIChpbWFwLWRpc2FibGUtbXVsdGlieXRl
+KQoJCSAgICAoYnVmZmVyLWRpc2FibGUtdW5kbykKCQkgICAgKHNldHEgaW1hcC1zZXJ2ZXIgKG9y
+IHNlcnZlciBpbWFwLXNlcnZlcikpCgkJICAgIChzZXRxIGltYXAtcG9ydCAob3IgcG9ydCBpbWFw
+LXBvcnQpKQoJCSAgICAoc2V0cSBpbWFwLWF1dGggKG9yIGF1dGggaW1hcC1hdXRoKSkKCQkgICAg
+KG1lc3NhZ2UgImltYXA6IFJlY29ubmVjdGluZyB3aXRoIHN0cmVhbSBgJXMnLi4uIiBzdHJlYW0p
+CgkJICAgIChpZiAobnVsbCAobGV0ICgoaW1hcC1zdHJlYW0gc3RyZWFtKSkKCQkJCShpbWFwLW9w
+ZW4tMSAoY3VycmVudC1idWZmZXIpKSkpCgkJCShwcm9nbgoJCQkgIChraWxsLWJ1ZmZlciAoY3Vy
+cmVudC1idWZmZXIpKQoJCQkgIChtZXNzYWdlCgkJCSAgICJpbWFwOiBSZWNvbm5lY3Rpbmcgd2l0
+aCBzdHJlYW0gYCVzJy4uLmZhaWxlZCIKCQkJICAgc3RyZWFtKSkKCQkgICAgICA7OyBXZSdyZSBk
+b25lLCBraWxsIHRoZSBmaXJzdCBjb25uZWN0aW9uCgkJICAgICAgKGltYXAtY2xvc2UgYnVmZmVy
+KQoJCSAgICAgIChsZXQgKChuYW1lIChpZiAoc3RyaW5ncCBidWZmZXIpCgkJCQkgICAgICBidWZm
+ZXIKCQkJCSAgICAoYnVmZmVyLW5hbWUgYnVmZmVyKSkpKQoJCQkoa2lsbC1idWZmZXIgYnVmZmVy
+KQoJCQkocmVuYW1lLWJ1ZmZlciBuYW1lKSkKCQkgICAgICAobWVzc2FnZSAiaW1hcDogUmVjb25u
+ZWN0aW5nIHdpdGggc3RyZWFtIGAlcycuLi5kb25lIgoJCQkgICAgICAgc3RyZWFtKQoJCSAgICAg
+IChzZXRxIGltYXAtc3RyZWFtIHN0cmVhbSkKCQkgICAgICAoc2V0cSBpbWFwLWNhcGFiaWxpdHkg
+bmlsKQoJCSAgICAgIChzZXRxIHN0cmVhbXMgbmlsKSkpCgkJOzsgV2UncmUgZG9uZQoJCShtZXNz
+YWdlICJpbWFwOiBDb25uZWN0aW5nIHRvICVzLi4uZG9uZSIgaW1hcC1zZXJ2ZXIpCgkJKHNldHEg
+aW1hcC1zdHJlYW0gc3RyZWFtKQoJCShzZXRxIGltYXAtY2FwYWJpbGl0eSBuaWwpCgkJKHNldHEg
+c3RyZWFtcyBuaWwpKSkpKSkKICAgICAgKHdoZW4gKGltYXAtb3BlbmVkIGJ1ZmZlcikKCShzZXRx
+IGltYXAtbWFpbGJveC1kYXRhIChtYWtlLXZlY3RvciBpbWFwLW1haWxib3gtcHJpbWUgMCkpKQog
+ICAgICAod2hlbiBpbWFwLXN0cmVhbQoJYnVmZmVyKSkpKQoKKGRlZmN1c3RvbSBpbWFwLXBpbmct
+c2VydmVyIHQKICAiSWYgbm9uLW5pbCwgY2hlY2sgaWYgSU1BUCBpcyBvcGVuLgpTZWUgdGhlIGZ1
+bmN0aW9uIGBpbWFwLXBpbmctc2VydmVyJy4iCiAgOnZlcnNpb24gIjIzLjEiIDs7IE5vIEdudXMK
+ICA6Z3JvdXAgJ2ltYXAKICA6dHlwZSAnYm9vbGVhbikKCihkZWZ1biBpbWFwLW9wZW5lZCAoJm9w
+dGlvbmFsIGJ1ZmZlcikKICAiUmV0dXJuIG5vbi1uaWwgaWYgY29ubmVjdGlvbiB0byBpbWFwIHNl
+cnZlciBpbiBCVUZGRVIgaXMgb3Blbi4KSWYgQlVGRkVSIGlzIG5pbCB0aGVuIHRoZSBjdXJyZW50
+IGJ1ZmZlciBpcyB1c2VkLiIKICAoYW5kIChzZXRxIGJ1ZmZlciAoZ2V0LWJ1ZmZlciAob3IgYnVm
+ZmVyIChjdXJyZW50LWJ1ZmZlcikpKSkKICAgICAgIChidWZmZXItbGl2ZS1wIGJ1ZmZlcikKICAg
+ICAgICh3aXRoLWN1cnJlbnQtYnVmZmVyIGJ1ZmZlcgoJIChhbmQgaW1hcC1wcm9jZXNzCgkgICAg
+ICAobWVtcSAocHJvY2Vzcy1zdGF0dXMgaW1hcC1wcm9jZXNzKSAnKG9wZW4gcnVuKSkKCSAgICAg
+IChpZiBpbWFwLXBpbmctc2VydmVyCgkJICAoaW1hcC1waW5nLXNlcnZlcikKCQl0KSkpKSkKCihk
+ZWZ1biBpbWFwLXBpbmctc2VydmVyICgmb3B0aW9uYWwgYnVmZmVyKQogICJQaW5nIHRoZSBJTUFQ
+IHNlcnZlciBpbiBCVUZGRVIgd2l0aCBhIFwiTk9PUFwiIGNvbW1hbmQuClJldHVybiBub24tbmls
+IGlmIHRoZSBzZXJ2ZXIgcmVzcG9uZHMsIGFuZCBuaWwgaWYgaXQgZG9lcyBub3QKcmVzcG9uZC4g
+IElmIEJVRkZFUiBpcyBuaWwsIHRoZSBjdXJyZW50IGJ1ZmZlciBpcyB1c2VkLiIKICAoY29uZGl0
+aW9uLWNhc2UgKCkKICAgICAgKGltYXAtb2stcCAoaW1hcC1zZW5kLWNvbW1hbmQtd2FpdCAiTk9P
+UCIgYnVmZmVyKSkKICAgIChlcnJvciBuaWwpKSkKCihkZWZ1biBpbWFwLWF1dGhlbnRpY2F0ZSAo
+Jm9wdGlvbmFsIHVzZXIgcGFzc3dkIGJ1ZmZlcikKICAiQXV0aGVudGljYXRlIHRvIHNlcnZlciBp
+biBCVUZGRVIsIHVzaW5nIGN1cnJlbnQgYnVmZmVyIGlmIG5pbC4KSXQgdXNlcyB0aGUgYXV0aGVu
+dGljYXRvciBzcGVjaWZpZWQgd2hlbiBvcGVuaW5nIHRoZSBzZXJ2ZXIuICBJZiB0aGUKYXV0aGVu
+dGljYXRvciByZXF1aXJlcyB1c2VybmFtZS9wYXNzd29yZHMsIHRoZXkgYXJlIHF1ZXJpZWQgZnJv
+bSB0aGUKdXNlciBhbmQgb3B0aW9uYWxseSBzdG9yZWQgaW4gdGhlIGJ1ZmZlci4gIElmIFVTRVIg
+YW5kL29yIFBBU1NXRCBpcwpzcGVjaWZpZWQsIHRoZSB1c2VyIHdpbGwgbm90IGJlIHF1ZXN0aW9u
+ZWQgYW5kIHRoZSB1c2VybmFtZSBhbmQvb3IKcGFzc3dvcmQgaXMgcmVtZW1iZXJlZCBpbiB0aGUg
+YnVmZmVyLiIKICAod2l0aC1jdXJyZW50LWJ1ZmZlciAob3IgYnVmZmVyIChjdXJyZW50LWJ1ZmZl
+cikpCiAgICAoaWYgKG5vdCAoZXEgaW1hcC1zdGF0ZSAnbm9uYXV0aCkpCgkob3IgKGVxIGltYXAt
+c3RhdGUgJ2F1dGgpCgkgICAgKGVxIGltYXAtc3RhdGUgJ3NlbGVjdGVkKQoJICAgIChlcSBpbWFw
+LXN0YXRlICdleGFtaW5lKSkKICAgICAgKG1ha2UtbG9jYWwtdmFyaWFibGUgJ2ltYXAtdXNlcm5h
+bWUpCiAgICAgIChtYWtlLWxvY2FsLXZhcmlhYmxlICdpbWFwLXBhc3N3b3JkKQogICAgICAoaWYg
+dXNlciAoc2V0cSBpbWFwLXVzZXJuYW1lIHVzZXIpKQogICAgICAoaWYgcGFzc3dkIChzZXRxIGlt
+YXAtcGFzc3dvcmQgcGFzc3dkKSkKICAgICAgKGlmIGltYXAtYXV0aAoJICAoYW5kIChmdW5jYWxs
+IChudGggMiAoYXNzcSBpbWFwLWF1dGgKCQkJCSAgICAgaW1hcC1hdXRoZW50aWNhdG9yLWFsaXN0
+KSkgKGN1cnJlbnQtYnVmZmVyKSkKCSAgICAgICAoc2V0cSBpbWFwLXN0YXRlICdhdXRoKSkKCTs7
+IENob29zZSBhdXRoZW50aWNhdG9yLgoJKGxldCAoKGF1dGhzIGltYXAtYXV0aGVudGljYXRvcnMp
+CgkgICAgICBhdXRoKQoJICAod2hpbGUgKHNldHEgYXV0aCAocG9wIGF1dGhzKSkKCSAgICA7OyBP
+SyB0byB1c2UgYXV0aGVudGljYXRvcj8KCSAgICAod2hlbiAoZnVuY2FsbCAobnRoIDEgKGFzc3Eg
+YXV0aCBpbWFwLWF1dGhlbnRpY2F0b3ItYWxpc3QpKSAoY3VycmVudC1idWZmZXIpKQoJICAgICAg
+KG1lc3NhZ2UgImltYXA6IEF1dGhlbnRpY2F0aW5nIHRvIGAlcycgdXNpbmcgYCVzJy4uLiIKCQkg
+ICAgICAgaW1hcC1zZXJ2ZXIgYXV0aCkKCSAgICAgIChzZXRxIGltYXAtYXV0aCBhdXRoKQoJICAg
+ICAgKGlmIChmdW5jYWxsIChudGggMiAoYXNzcSBhdXRoIGltYXAtYXV0aGVudGljYXRvci1hbGlz
+dCkpIChjdXJyZW50LWJ1ZmZlcikpCgkJICAocHJvZ24KCQkgICAgKG1lc3NhZ2UgImltYXA6IEF1
+dGhlbnRpY2F0aW5nIHRvIGAlcycgdXNpbmcgYCVzJy4uLmRvbmUiCgkJCSAgICAgaW1hcC1zZXJ2
+ZXIgYXV0aCkKCQkgICAgKHNldHEgYXV0aHMgbmlsKSkKCQkobWVzc2FnZSAiaW1hcDogQXV0aGVu
+dGljYXRpbmcgdG8gYCVzJyB1c2luZyBgJXMnLi4uZmFpbGVkIgoJCQkgaW1hcC1zZXJ2ZXIgYXV0
+aCkpKSkpCglpbWFwLXN0YXRlKSkpKQoKKGRlZnVuIGltYXAtY2xvc2UgKCZvcHRpb25hbCBidWZm
+ZXIpCiAgIkNsb3NlIGNvbm5lY3Rpb24gdG8gc2VydmVyIGluIEJVRkZFUi4KSWYgQlVGRkVSIGlz
+IG5pbCwgdGhlIGN1cnJlbnQgYnVmZmVyIGlzIHVzZWQuIgogICh3aXRoLWN1cnJlbnQtYnVmZmVy
+IChvciBidWZmZXIgKGN1cnJlbnQtYnVmZmVyKSkKICAgICh3aGVuIChpbWFwLW9wZW5lZCkKICAg
+ICAgKGNvbmRpdGlvbi1jYXNlIG5pbAoJICAoaW1hcC1sb2dvdXQtd2FpdCkKCShxdWl0IG5pbCkp
+KQogICAgKHdoZW4gKGFuZCBpbWFwLXByb2Nlc3MKCSAgICAgICAobWVtcSAocHJvY2Vzcy1zdGF0
+dXMgaW1hcC1wcm9jZXNzKSAnKG9wZW4gcnVuKSkpCiAgICAgIChkZWxldGUtcHJvY2VzcyBpbWFw
+LXByb2Nlc3MpKQogICAgKHNldHEgaW1hcC1jdXJyZW50LW1haWxib3ggbmlsCgkgIGltYXAtY3Vy
+cmVudC1tZXNzYWdlIG5pbAoJICBpbWFwLXByb2Nlc3MgbmlsKQogICAgKGVyYXNlLWJ1ZmZlcikK
+ICAgIHQpKQoKKGRlZnVuIGltYXAtY2FwYWJpbGl0eSAoJm9wdGlvbmFsIGlkZW50aWZpZXIgYnVm
+ZmVyKQogICJSZXR1cm4gYSBsaXN0IG9mIGlkZW50aWZpZXJzIHdoaWNoIHNlcnZlciBpbiBCVUZG
+RVIgc3VwcG9ydC4KSWYgSURFTlRJRklFUiwgcmV0dXJuIG5vbi1uaWwgaWYgaXQncyBhbW9uZyB0
+aGUgc2VydmVycyBjYXBhYmlsaXRpZXMuCklmIEJVRkZFUiBpcyBuaWwsIHRoZSBjdXJyZW50IGJ1
+ZmZlciBpcyBhc3N1bWVkLiIKICAod2l0aC1jdXJyZW50LWJ1ZmZlciAob3IgYnVmZmVyIChjdXJy
+ZW50LWJ1ZmZlcikpCiAgICAodW5sZXNzIGltYXAtY2FwYWJpbGl0eQogICAgICAodW5sZXNzIChp
+bWFwLW9rLXAgKGltYXAtc2VuZC1jb21tYW5kLXdhaXQgIkNBUEFCSUxJVFkiKSkKCShzZXRxIGlt
+YXAtY2FwYWJpbGl0eSAnKElNQVAyKSkpKQogICAgKGlmIGlkZW50aWZpZXIKCShtZW1xIChpbnRl
+cm4gKHVwY2FzZSAoc3ltYm9sLW5hbWUgaWRlbnRpZmllcikpKSBpbWFwLWNhcGFiaWxpdHkpCiAg
+ICAgIGltYXAtY2FwYWJpbGl0eSkpKQoKKGRlZnVuIGltYXAtaWQgKCZvcHRpb25hbCBsaXN0LW9m
+LXZhbHVlcyBidWZmZXIpCiAgIklkZW50aWZ5IGNsaWVudCB0byBzZXJ2ZXIgaW4gQlVGRkVSLCBh
+bmQgcmV0dXJuIHNlcnZlciBpZGVudGl0eS4KTElTVC1PRi1WQUxVRVMgaXMgbmlsLCBvciBhIHBs
+aXN0IHdpdGggaWRlbnRpZmllciBhbmQgdmFsdWUKc3RyaW5ncyB0byBzZW5kIHRvIHRoZSBzZXJ2
+ZXIgdG8gaWRlbnRpZnkgdGhlIGNsaWVudC4KClJldHVybiBhIGxpc3Qgb2YgaWRlbnRpZmllcnMg
+d2hpY2ggc2VydmVyIGluIEJVRkZFUiBzdXBwb3J0LCBvcgpuaWwgaWYgaXQgZG9lc24ndCBzdXBw
+b3J0IElEIG9yIHJldHVybnMgbm8gaW5mb3JtYXRpb24uCgpJZiBCVUZGRVIgaXMgbmlsLCB0aGUg
+Y3VycmVudCBidWZmZXIgaXMgYXNzdW1lZC4iCiAgKHdpdGgtY3VycmVudC1idWZmZXIgKG9yIGJ1
+ZmZlciAoY3VycmVudC1idWZmZXIpKQogICAgKHdoZW4gKGFuZCAoaW1hcC1jYXBhYmlsaXR5ICdJ
+RCkKCSAgICAgICAoaW1hcC1vay1wIChpbWFwLXNlbmQtY29tbWFuZC13YWl0CgkJCSAgIChpZiAo
+bnVsbCBsaXN0LW9mLXZhbHVlcykKCQkJICAgICAgICJJRCBOSUwiCgkJCSAgICAgKGNvbmNhdCAi
+SUQgKCIgKG1hcGNvbmNhdCAobGFtYmRhIChlbCkKCQkJCQkJCSAoY29uY2F0ICJcIiIgZWwgIlwi
+IikpCgkJCQkJCSAgICAgICBsaXN0LW9mLXZhbHVlcwoJCQkJCQkgICAgICAgIiAiKSAiKSIpKSkp
+KQogICAgICBpbWFwLWlkKSkpCgooZGVmdW4gaW1hcC1uYW1lc3BhY2UgKCZvcHRpb25hbCBidWZm
+ZXIpCiAgIlJldHVybiBhIG5hbWVzcGFjZSBoaWVyYXJjaHkgYXQgc2VydmVyIGluIEJVRkZFUi4K
+SWYgQlVGRkVSIGlzIG5pbCwgdGhlIGN1cnJlbnQgYnVmZmVyIGlzIGFzc3VtZWQuIgogICh3aXRo
+LWN1cnJlbnQtYnVmZmVyIChvciBidWZmZXIgKGN1cnJlbnQtYnVmZmVyKSkKICAgICh1bmxlc3Mg
+aW1hcC1uYW1lc3BhY2UKICAgICAgKHdoZW4gKGltYXAtY2FwYWJpbGl0eSAnTkFNRVNQQUNFKQoJ
+KGltYXAtc2VuZC1jb21tYW5kLXdhaXQgIk5BTUVTUEFDRSIpKSkKICAgIGltYXAtbmFtZXNwYWNl
+KSkKCihkZWZ1biBpbWFwLXNlbmQtY29tbWFuZC13YWl0IChjb21tYW5kICZvcHRpb25hbCBidWZm
+ZXIpCiAgKGltYXAtd2FpdC1mb3ItdGFnIChpbWFwLXNlbmQtY29tbWFuZCBjb21tYW5kIGJ1ZmZl
+cikgYnVmZmVyKSkKCihkZWZ1biBpbWFwLWxvZ291dCAoJm9wdGlvbmFsIGJ1ZmZlcikKICAob3Ig
+YnVmZmVyIChzZXRxIGJ1ZmZlciAoY3VycmVudC1idWZmZXIpKSkKICAoaWYgaW1hcC1sb2dvdXQt
+dGltZW91dAogICAgICAod2l0aC10aW1lb3V0IChpbWFwLWxvZ291dC10aW1lb3V0CgkJICAgICAo
+Y29uZGl0aW9uLWNhc2UgbmlsCgkJCSAod2l0aC1jdXJyZW50LWJ1ZmZlciBidWZmZXIKCQkJICAg
+KGRlbGV0ZS1wcm9jZXNzIGltYXAtcHJvY2VzcykpCgkJICAgICAgIChlcnJvcikpKQoJKGltYXAt
+c2VuZC1jb21tYW5kICJMT0dPVVQiIGJ1ZmZlcikpCiAgICAoaW1hcC1zZW5kLWNvbW1hbmQgIkxP
+R09VVCIgYnVmZmVyKSkpCgooZGVmdW4gaW1hcC1sb2dvdXQtd2FpdCAoJm9wdGlvbmFsIGJ1ZmZl
+cikKICAob3IgYnVmZmVyIChzZXRxIGJ1ZmZlciAoY3VycmVudC1idWZmZXIpKSkKICAoaWYgaW1h
+cC1sb2dvdXQtdGltZW91dAogICAgICAod2l0aC10aW1lb3V0IChpbWFwLWxvZ291dC10aW1lb3V0
+CgkJICAgICAoY29uZGl0aW9uLWNhc2UgbmlsCgkJCSAod2l0aC1jdXJyZW50LWJ1ZmZlciBidWZm
+ZXIKCQkJICAgKGRlbGV0ZS1wcm9jZXNzIGltYXAtcHJvY2VzcykpCgkJICAgICAgIChlcnJvcikp
+KQoJKGltYXAtc2VuZC1jb21tYW5kLXdhaXQgIkxPR09VVCIgYnVmZmVyKSkKICAgIChpbWFwLXNl
+bmQtY29tbWFuZC13YWl0ICJMT0dPVVQiIGJ1ZmZlcikpKQoKDAo7OyBNYWlsYm94IGZ1bmN0aW9u
+czoKCihkZWZ1biBpbWFwLW1haWxib3gtcHV0IChwcm9wbmFtZSB2YWx1ZSAmb3B0aW9uYWwgbWFp
+bGJveCBidWZmZXIpCiAgKHdpdGgtY3VycmVudC1idWZmZXIgKG9yIGJ1ZmZlciAoY3VycmVudC1i
+dWZmZXIpKQogICAgKGlmIGltYXAtbWFpbGJveC1kYXRhCgkocHV0IChpbnRlcm4gKG9yIG1haWxi
+b3ggaW1hcC1jdXJyZW50LW1haWxib3gpIGltYXAtbWFpbGJveC1kYXRhKQoJICAgICBwcm9wbmFt
+ZSB2YWx1ZSkKICAgICAgKGVycm9yICJJbWFwLW1haWxib3gtZGF0YSBpcyBuaWwsIHByb3AgJXMg
+dmFsdWUgJXMgbWFpbGJveCAlcyBidWZmZXIgJXMiCgkgICAgIHByb3BuYW1lIHZhbHVlIG1haWxi
+b3ggKGN1cnJlbnQtYnVmZmVyKSkpCiAgICB0KSkKCihkZWZzdWJzdCBpbWFwLW1haWxib3gtZ2V0
+LTEgKHByb3BuYW1lICZvcHRpb25hbCBtYWlsYm94KQogIChnZXQgKGludGVybi1zb2Z0IChvciBt
+YWlsYm94IGltYXAtY3VycmVudC1tYWlsYm94KSBpbWFwLW1haWxib3gtZGF0YSkKICAgICAgIHBy
+b3BuYW1lKSkKCihkZWZ1biBpbWFwLW1haWxib3gtZ2V0IChwcm9wbmFtZSAmb3B0aW9uYWwgbWFp
+bGJveCBidWZmZXIpCiAgKGxldCAoKG1haWxib3ggKGltYXAtdXRmNy1lbmNvZGUgbWFpbGJveCkp
+KQogICAgKHdpdGgtY3VycmVudC1idWZmZXIgKG9yIGJ1ZmZlciAoY3VycmVudC1idWZmZXIpKQog
+ICAgICAoaW1hcC1tYWlsYm94LWdldC0xIHByb3BuYW1lIChvciBtYWlsYm94IGltYXAtY3VycmVu
+dC1tYWlsYm94KSkpKSkKCihkZWZ1biBpbWFwLW1haWxib3gtbWFwLTEgKGZ1bmMgJm9wdGlvbmFs
+IG1haWxib3gtZGVjb2RlciBidWZmZXIpCiAgKHdpdGgtY3VycmVudC1idWZmZXIgKG9yIGJ1ZmZl
+ciAoY3VycmVudC1idWZmZXIpKQogICAgKGxldCAocmVzdWx0KQogICAgICAobWFwYXRvbXMKICAg
+ICAgIChsYW1iZGEgKHMpCgkgKHB1c2ggKGZ1bmNhbGwgZnVuYyAoaWYgbWFpbGJveC1kZWNvZGVy
+CgkJCQkgKGZ1bmNhbGwgbWFpbGJveC1kZWNvZGVyIChzeW1ib2wtbmFtZSBzKSkKCQkJICAgICAg
+IChzeW1ib2wtbmFtZSBzKSkpIHJlc3VsdCkpCiAgICAgICBpbWFwLW1haWxib3gtZGF0YSkKICAg
+ICAgcmVzdWx0KSkpCgooZGVmdW4gaW1hcC1tYWlsYm94LW1hcCAoZnVuYyAmb3B0aW9uYWwgYnVm
+ZmVyKQogICJNYXAgYSBmdW5jdGlvbiBhY3Jvc3MgZWFjaCBtYWlsYm94IGluIGBpbWFwLW1haWxi
+b3gtZGF0YScsIHJldHVybmluZyBhIGxpc3QuCkZ1bmN0aW9uIHNob3VsZCB0YWtlIGEgbWFpbGJv
+eCBuYW1lIChhIHN0cmluZykgYXMKdGhlIG9ubHkgYXJndW1lbnQuIgogIChpbWFwLW1haWxib3gt
+bWFwLTEgZnVuYyAnaW1hcC11dGY3LWRlY29kZSBidWZmZXIpKQoKKGRlZnVuIGltYXAtY3VycmVu
+dC1tYWlsYm94ICgmb3B0aW9uYWwgYnVmZmVyKQogICh3aXRoLWN1cnJlbnQtYnVmZmVyIChvciBi
+dWZmZXIgKGN1cnJlbnQtYnVmZmVyKSkKICAgIChpbWFwLXV0ZjctZGVjb2RlIGltYXAtY3VycmVu
+dC1tYWlsYm94KSkpCgooZGVmdW4gaW1hcC1jdXJyZW50LW1haWxib3gtcC0xIChtYWlsYm94ICZv
+cHRpb25hbCBleGFtaW5lKQogIChhbmQgKHN0cmluZz0gbWFpbGJveCBpbWFwLWN1cnJlbnQtbWFp
+bGJveCkKICAgICAgIChvciAoYW5kIGV4YW1pbmUKCQkoZXEgaW1hcC1zdGF0ZSAnZXhhbWluZSkp
+CgkgICAoYW5kIChub3QgZXhhbWluZSkKCQkoZXEgaW1hcC1zdGF0ZSAnc2VsZWN0ZWQpKSkpKQoK
+KGRlZnVuIGltYXAtY3VycmVudC1tYWlsYm94LXAgKG1haWxib3ggJm9wdGlvbmFsIGV4YW1pbmUg
+YnVmZmVyKQogICh3aXRoLWN1cnJlbnQtYnVmZmVyIChvciBidWZmZXIgKGN1cnJlbnQtYnVmZmVy
+KSkKICAgIChpbWFwLWN1cnJlbnQtbWFpbGJveC1wLTEgKGltYXAtdXRmNy1lbmNvZGUgbWFpbGJv
+eCkgZXhhbWluZSkpKQoKKGRlZnVuIGltYXAtbWFpbGJveC1zZWxlY3QtMSAobWFpbGJveCAmb3B0
+aW9uYWwgZXhhbWluZSkKICAiU2VsZWN0IE1BSUxCT1ggb24gc2VydmVyIGluIEJVRkZFUi4KSWYg
+RVhBTUlORSBpcyBub24tbmlsLCBkbyBhIHJlYWQtb25seSBzZWxlY3QuIgogIChpZiAoaW1hcC1j
+dXJyZW50LW1haWxib3gtcC0xIG1haWxib3ggZXhhbWluZSkKICAgICAgaW1hcC1jdXJyZW50LW1h
+aWxib3gKICAgIChzZXRxIGltYXAtY3VycmVudC1tYWlsYm94IG1haWxib3gpCiAgICAoaWYgKGlt
+YXAtb2stcCAoaW1hcC1zZW5kLWNvbW1hbmQtd2FpdAoJCSAgICAoY29uY2F0IChpZiBleGFtaW5l
+ICJFWEFNSU5FIiAiU0VMRUNUIikgIiBcIiIKCQkJICAgIG1haWxib3ggIlwiIikpKQoJKHByb2du
+CgkgIChzZXRxIGltYXAtbWVzc2FnZS1kYXRhIChtYWtlLXZlY3RvciBpbWFwLW1lc3NhZ2UtcHJp
+bWUgMCkKCQlpbWFwLXN0YXRlIChpZiBleGFtaW5lICdleGFtaW5lICdzZWxlY3RlZCkpCgkgIGlt
+YXAtY3VycmVudC1tYWlsYm94KQogICAgICA7OyBGYWlsZWQgU0VMRUNUL0VYQU1JTkUgdW5zZWxl
+Y3RzIGN1cnJlbnQgbWFpbGJveAogICAgICAoc2V0cSBpbWFwLWN1cnJlbnQtbWFpbGJveCBuaWwp
+KSkpCgooZGVmdW4gaW1hcC1tYWlsYm94LXNlbGVjdCAobWFpbGJveCAmb3B0aW9uYWwgZXhhbWlu
+ZSBidWZmZXIpCiAgKHdpdGgtY3VycmVudC1idWZmZXIgKG9yIGJ1ZmZlciAoY3VycmVudC1idWZm
+ZXIpKQogICAgKGltYXAtdXRmNy1kZWNvZGUKICAgICAoaW1hcC1tYWlsYm94LXNlbGVjdC0xIChp
+bWFwLXV0ZjctZW5jb2RlIG1haWxib3gpIGV4YW1pbmUpKSkpCgooZGVmdW4gaW1hcC1tYWlsYm94
+LWV4YW1pbmUtMSAobWFpbGJveCAmb3B0aW9uYWwgYnVmZmVyKQogICh3aXRoLWN1cnJlbnQtYnVm
+ZmVyIChvciBidWZmZXIgKGN1cnJlbnQtYnVmZmVyKSkKICAgIChpbWFwLW1haWxib3gtc2VsZWN0
+LTEgbWFpbGJveCAnZXhhbWluZSkpKQoKKGRlZnVuIGltYXAtbWFpbGJveC1leGFtaW5lIChtYWls
+Ym94ICZvcHRpb25hbCBidWZmZXIpCiAgIkV4YW1pbmUgTUFJTEJPWCBvbiBzZXJ2ZXIgaW4gQlVG
+RkVSLiIKICAoaW1hcC1tYWlsYm94LXNlbGVjdCBtYWlsYm94ICdleGFtaW5lIGJ1ZmZlcikpCgoo
+ZGVmdW4gaW1hcC1tYWlsYm94LXVuc2VsZWN0ICgmb3B0aW9uYWwgYnVmZmVyKQogICJDbG9zZSBj
+dXJyZW50IGZvbGRlciBpbiBCVUZGRVIsIHdpdGhvdXQgZXhwdW5naW5nIGFydGljbGVzLiIKICAo
+d2l0aC1jdXJyZW50LWJ1ZmZlciAob3IgYnVmZmVyIChjdXJyZW50LWJ1ZmZlcikpCiAgICAod2hl
+biAob3IgKGVxIGltYXAtc3RhdGUgJ2F1dGgpCgkgICAgICAoYW5kIChpbWFwLWNhcGFiaWxpdHkg
+J1VOU0VMRUNUKQoJCSAgIChpbWFwLW9rLXAgKGltYXAtc2VuZC1jb21tYW5kLXdhaXQgIlVOU0VM
+RUNUIikpKQoJICAgICAgKGFuZCAoaW1hcC1vay1wCgkJICAgIChpbWFwLXNlbmQtY29tbWFuZC13
+YWl0IChjb25jYXQgIkVYQU1JTkUgXCIiCgkJCQkJCSAgICBpbWFwLWN1cnJlbnQtbWFpbGJveAoJ
+CQkJCQkgICAgIlwiIikpKQoJCSAgIChpbWFwLW9rLXAgKGltYXAtc2VuZC1jb21tYW5kLXdhaXQg
+IkNMT1NFIikpKSkKICAgICAgKHNldHEgaW1hcC1jdXJyZW50LW1haWxib3ggbmlsCgkgICAgaW1h
+cC1tZXNzYWdlLWRhdGEgbmlsCgkgICAgaW1hcC1zdGF0ZSAnYXV0aCkKICAgICAgdCkpKQoKKGRl
+ZnVuIGltYXAtbWFpbGJveC1leHB1bmdlICgmb3B0aW9uYWwgYXN5bmNoIGJ1ZmZlcikKICAiRXhw
+dW5nZSBhcnRpY2xlcyBpbiBjdXJyZW50IGZvbGRlciBpbiBCVUZGRVIuCklmIEFTWU5DSCwgZG8g
+bm90IHdhaXQgZm9yIHN1Y2Nlc2Z1bCBjb21wbGV0aW9uIG9mIHRoZSBjb21tYW5kLgpJZiBCVUZG
+RVIgaXMgbmlsIHRoZSBjdXJyZW50IGJ1ZmZlciBpcyBhc3N1bWVkLiIKICAod2l0aC1jdXJyZW50
+LWJ1ZmZlciAob3IgYnVmZmVyIChjdXJyZW50LWJ1ZmZlcikpCiAgICAod2hlbiAoYW5kIGltYXAt
+Y3VycmVudC1tYWlsYm94IChub3QgKGVxIGltYXAtc3RhdGUgJ2V4YW1pbmUpKSkKICAgICAgKGlm
+IGFzeW5jaAoJICAoaW1hcC1zZW5kLWNvbW1hbmQgIkVYUFVOR0UiKQogICAgICAoaW1hcC1vay1w
+IChpbWFwLXNlbmQtY29tbWFuZC13YWl0ICJFWFBVTkdFIikpKSkpKQoKKGRlZnVuIGltYXAtbWFp
+bGJveC1jbG9zZSAoJm9wdGlvbmFsIGFzeW5jaCBidWZmZXIpCiAgIkV4cHVuZ2UgYXJ0aWNsZXMg
+YW5kIGNsb3NlIGN1cnJlbnQgZm9sZGVyIGluIEJVRkZFUi4KSWYgQVNZTkNILCBkbyBub3Qgd2Fp
+dCBmb3Igc3VjY2VzZnVsIGNvbXBsZXRpb24gb2YgdGhlIGNvbW1hbmQuCklmIEJVRkZFUiBpcyBu
+aWwgdGhlIGN1cnJlbnQgYnVmZmVyIGlzIGFzc3VtZWQuIgogICh3aXRoLWN1cnJlbnQtYnVmZmVy
+IChvciBidWZmZXIgKGN1cnJlbnQtYnVmZmVyKSkKICAgICh3aGVuIGltYXAtY3VycmVudC1tYWls
+Ym94CiAgICAgIChpZiBhc3luY2gKCSAgKGltYXAtYWRkLWNhbGxiYWNrIChpbWFwLXNlbmQtY29t
+bWFuZCAiQ0xPU0UiKQoJCQkgICAgIGAobGFtYmRhICh0YWcgc3RhdHVzKQoJCQkJKG1lc3NhZ2Ug
+IklNQVAgbWFpbGJveCBgJXMnIGNsb3NlZC4uLiAlcyIKCQkJCQkgaW1hcC1jdXJyZW50LW1haWxi
+b3ggc3RhdHVzKQoJCQkJKHdoZW4gKGVxICxpbWFwLWN1cnJlbnQtbWFpbGJveAoJCQkJCSAgaW1h
+cC1jdXJyZW50LW1haWxib3gpCgkJCQkgIDs7IERvbid0IHdpcGUgb3V0IGRhdGEgaWYgYW5vdGhl
+ciBtYWlsYm94CgkJCQkgIDs7IHdhcyBzZWxlY3RlZC4uLgoJCQkJICAoc2V0cSBpbWFwLWN1cnJl
+bnQtbWFpbGJveCBuaWwKCQkJCQlpbWFwLW1lc3NhZ2UtZGF0YSBuaWwKCQkJCQlpbWFwLXN0YXRl
+ICdhdXRoKSkpKQoJKHdoZW4gKGltYXAtb2stcCAoaW1hcC1zZW5kLWNvbW1hbmQtd2FpdCAiQ0xP
+U0UiKSkKCSAgKHNldHEgaW1hcC1jdXJyZW50LW1haWxib3ggbmlsCgkJaW1hcC1tZXNzYWdlLWRh
+dGEgbmlsCgkJaW1hcC1zdGF0ZSAnYXV0aCkpKQogICAgICB0KSkpCgooZGVmdW4gaW1hcC1tYWls
+Ym94LWNyZWF0ZS0xIChtYWlsYm94KQogIChpbWFwLW9rLXAgKGltYXAtc2VuZC1jb21tYW5kLXdh
+aXQgKGxpc3QgIkNSRUFURSBcIiIgbWFpbGJveCAiXCIiKSkpKQoKKGRlZnVuIGltYXAtbWFpbGJv
+eC1jcmVhdGUgKG1haWxib3ggJm9wdGlvbmFsIGJ1ZmZlcikKICAiQ3JlYXRlIE1BSUxCT1ggb24g
+c2VydmVyIGluIEJVRkZFUi4KSWYgQlVGRkVSIGlzIG5pbCB0aGUgY3VycmVudCBidWZmZXIgaXMg
+YXNzdW1lZC4iCiAgKHdpdGgtY3VycmVudC1idWZmZXIgKG9yIGJ1ZmZlciAoY3VycmVudC1idWZm
+ZXIpKQogICAgKGltYXAtbWFpbGJveC1jcmVhdGUtMSAoaW1hcC11dGY3LWVuY29kZSBtYWlsYm94
+KSkpKQoKKGRlZnVuIGltYXAtbWFpbGJveC1kZWxldGUgKG1haWxib3ggJm9wdGlvbmFsIGJ1ZmZl
+cikKICAiRGVsZXRlIE1BSUxCT1ggb24gc2VydmVyIGluIEJVRkZFUi4KSWYgQlVGRkVSIGlzIG5p
+bCB0aGUgY3VycmVudCBidWZmZXIgaXMgYXNzdW1lZC4iCiAgKGxldCAoKG1haWxib3ggKGltYXAt
+dXRmNy1lbmNvZGUgbWFpbGJveCkpKQogICAgKHdpdGgtY3VycmVudC1idWZmZXIgKG9yIGJ1ZmZl
+ciAoY3VycmVudC1idWZmZXIpKQogICAgICAoaW1hcC1vay1wCiAgICAgICAoaW1hcC1zZW5kLWNv
+bW1hbmQtd2FpdCAobGlzdCAiREVMRVRFIFwiIiBtYWlsYm94ICJcIiIpKSkpKSkKCihkZWZ1biBp
+bWFwLW1haWxib3gtcmVuYW1lIChvbGRuYW1lIG5ld25hbWUgJm9wdGlvbmFsIGJ1ZmZlcikKICAi
+UmVuYW1lIG1haWxib3ggT0xETkFNRSB0byBORVdOQU1FIG9uIHNlcnZlciBpbiBCVUZGRVIuCklm
+IEJVRkZFUiBpcyBuaWwgdGhlIGN1cnJlbnQgYnVmZmVyIGlzIGFzc3VtZWQuIgogIChsZXQgKChv
+bGRuYW1lIChpbWFwLXV0ZjctZW5jb2RlIG9sZG5hbWUpKQoJKG5ld25hbWUgKGltYXAtdXRmNy1l
+bmNvZGUgbmV3bmFtZSkpKQogICAgKHdpdGgtY3VycmVudC1idWZmZXIgKG9yIGJ1ZmZlciAoY3Vy
+cmVudC1idWZmZXIpKQogICAgICAoaW1hcC1vay1wCiAgICAgICAoaW1hcC1zZW5kLWNvbW1hbmQt
+d2FpdCAobGlzdCAiUkVOQU1FIFwiIiBvbGRuYW1lICJcIiAiCgkJCQkgICAgICJcIiIgbmV3bmFt
+ZSAiXCIiKSkpKSkpCgooZGVmdW4gaW1hcC1tYWlsYm94LWxzdWIgKCZvcHRpb25hbCByb290IHJl
+ZmVyZW5jZSBhZGQtZGVsaW1pdGVyIGJ1ZmZlcikKICAiUmV0dXJuIGEgbGlzdCBvZiBzdWJzY3Jp
+YmVkIG1haWxib3hlcyBvbiBzZXJ2ZXIgaW4gQlVGRkVSLgpJZiBST09UIGlzIG5vbi1uaWwsIG9u
+bHkgbGlzdCBtYXRjaGluZyBtYWlsYm94ZXMuICBJZiBBREQtREVMSU1JVEVSIGlzCm5vbi1uaWws
+IGEgaGllcmFyY2h5IGRlbGltaXRlciBpcyBhZGRlZCB0byByb290LiAgUkVGRVJFTkNFIGlzIGEK
+aW1wbGVtZW50YXRpb24tc3BlY2lmaWMgc3RyaW5nIHRoYXQgaGFzIHRvIGJlIHBhc3NlZCB0byBs
+c3ViIGNvbW1hbmQuIgogICh3aXRoLWN1cnJlbnQtYnVmZmVyIChvciBidWZmZXIgKGN1cnJlbnQt
+YnVmZmVyKSkKICAgIDs7IE1ha2Ugc3VyZSB3ZSBrbm93IHRoZSBoaWVyYXJjaHkgc2VwYXJhdG9y
+IGZvciByb290J3MgaGllcmFyY2h5CiAgICAod2hlbiAoYW5kIGFkZC1kZWxpbWl0ZXIgKG51bGwg
+KGltYXAtbWFpbGJveC1nZXQtMSAnZGVsaW1pdGVyIHJvb3QpKSkKICAgICAgKGltYXAtc2VuZC1j
+b21tYW5kLXdhaXQgKGNvbmNhdCAiTElTVCBcIiIgcmVmZXJlbmNlICJcIiBcIiIKCQkJCSAgICAg
+IChpbWFwLXV0ZjctZW5jb2RlIHJvb3QpICJcIiIpKSkKICAgIDs7IGNsZWFyIGxpc3QgZGF0YSAo
+TkIgbm90IGRlbGltaXRlciBhbmQgb3RoZXIgc3R1ZmYpCiAgICAoaW1hcC1tYWlsYm94LW1hcC0x
+IChsYW1iZGEgKG1haWxib3gpCgkJCSAgKGltYXAtbWFpbGJveC1wdXQgJ2xzdWIgbmlsIG1haWxi
+b3gpKSkKICAgICh3aGVuIChpbWFwLW9rLXAKCSAgIChpbWFwLXNlbmQtY29tbWFuZC13YWl0Cgkg
+ICAgKGNvbmNhdCAiTFNVQiBcIiIgcmVmZXJlbmNlICJcIiBcIiIgKGltYXAtdXRmNy1lbmNvZGUg
+cm9vdCkKCQkgICAgKGFuZCBhZGQtZGVsaW1pdGVyIChpbWFwLW1haWxib3gtZ2V0LTEgJ2RlbGlt
+aXRlciByb290KSkKCQkgICAgIiVcIiIpKSkKICAgICAgKGxldCAob3V0KQoJKGltYXAtbWFpbGJv
+eC1tYXAtMSAobGFtYmRhIChtYWlsYm94KQoJCQkgICAgICAod2hlbiAoaW1hcC1tYWlsYm94LWdl
+dC0xICdsc3ViIG1haWxib3gpCgkJCQkocHVzaCAoaW1hcC11dGY3LWRlY29kZSBtYWlsYm94KSBv
+dXQpKSkpCgkobnJldmVyc2Ugb3V0KSkpKSkKCihkZWZ1biBpbWFwLW1haWxib3gtbGlzdCAocm9v
+dCAmb3B0aW9uYWwgcmVmZXJlbmNlIGFkZC1kZWxpbWl0ZXIgYnVmZmVyKQogICJSZXR1cm4gYSBs
+aXN0IG9mIG1haWxib3hlcyBtYXRjaGluZyBST09UIG9uIHNlcnZlciBpbiBCVUZGRVIuCklmIEFE
+RC1ERUxJTUlURVIgaXMgbm9uLW5pbCwgYSBoaWVyYXJjaHkgZGVsaW1pdGVyIGlzIGFkZGVkIHRv
+CnJvb3QuICBSRUZFUkVOQ0UgaXMgYSBpbXBsZW1lbnRhdGlvbi1zcGVjaWZpYyBzdHJpbmcgdGhh
+dCBoYXMgdG8gYmUKcGFzc2VkIHRvIGxpc3QgY29tbWFuZC4iCiAgKHdpdGgtY3VycmVudC1idWZm
+ZXIgKG9yIGJ1ZmZlciAoY3VycmVudC1idWZmZXIpKQogICAgOzsgTWFrZSBzdXJlIHdlIGtub3cg
+dGhlIGhpZXJhcmNoeSBzZXBhcmF0b3IgZm9yIHJvb3QncyBoaWVyYXJjaHkKICAgICh3aGVuIChh
+bmQgYWRkLWRlbGltaXRlciAobnVsbCAoaW1hcC1tYWlsYm94LWdldC0xICdkZWxpbWl0ZXIgcm9v
+dCkpKQogICAgICAoaW1hcC1zZW5kLWNvbW1hbmQtd2FpdCAoY29uY2F0ICJMSVNUIFwiIiByZWZl
+cmVuY2UgIlwiIFwiIgoJCQkJICAgICAgKGltYXAtdXRmNy1lbmNvZGUgcm9vdCkgIlwiIikpKQog
+ICAgOzsgY2xlYXIgbGlzdCBkYXRhIChOQiBub3QgZGVsaW1pdGVyIGFuZCBvdGhlciBzdHVmZikK
+ICAgIChpbWFwLW1haWxib3gtbWFwLTEgKGxhbWJkYSAobWFpbGJveCkKCQkJICAoaW1hcC1tYWls
+Ym94LXB1dCAnbGlzdCBuaWwgbWFpbGJveCkpKQogICAgKHdoZW4gKGltYXAtb2stcAoJICAgKGlt
+YXAtc2VuZC1jb21tYW5kLXdhaXQKCSAgICAoY29uY2F0ICJMSVNUIFwiIiByZWZlcmVuY2UgIlwi
+IFwiIiAoaW1hcC11dGY3LWVuY29kZSByb290KQoJCSAgICAoYW5kIGFkZC1kZWxpbWl0ZXIgKGlt
+YXAtbWFpbGJveC1nZXQtMSAnZGVsaW1pdGVyIHJvb3QpKQoJCSAgICAiJVwiIikpKQogICAgICAo
+bGV0IChvdXQpCgkoaW1hcC1tYWlsYm94LW1hcC0xIChsYW1iZGEgKG1haWxib3gpCgkJCSAgICAg
+ICh3aGVuIChpbWFwLW1haWxib3gtZ2V0LTEgJ2xpc3QgbWFpbGJveCkKCQkJCShwdXNoIChpbWFw
+LXV0ZjctZGVjb2RlIG1haWxib3gpIG91dCkpKSkKCShucmV2ZXJzZSBvdXQpKSkpKQoKKGRlZnVu
+IGltYXAtbWFpbGJveC1zdWJzY3JpYmUgKG1haWxib3ggJm9wdGlvbmFsIGJ1ZmZlcikKICAiU2Vu
+ZCB0aGUgU1VCU0NSSUJFIGNvbW1hbmQgb24gdGhlIG1haWxib3ggdG8gc2VydmVyIGluIEJVRkZF
+Ui4KUmV0dXJucyBub24tbmlsIGlmIHN1Y2Nlc3NmdWwuIgogICh3aXRoLWN1cnJlbnQtYnVmZmVy
+IChvciBidWZmZXIgKGN1cnJlbnQtYnVmZmVyKSkKICAgIChpbWFwLW9rLXAgKGltYXAtc2VuZC1j
+b21tYW5kLXdhaXQgKGNvbmNhdCAiU1VCU0NSSUJFIFwiIgoJCQkJCSAgICAgICAoaW1hcC11dGY3
+LWVuY29kZSBtYWlsYm94KQoJCQkJCSAgICAgICAiXCIiKSkpKSkKCihkZWZ1biBpbWFwLW1haWxi
+b3gtdW5zdWJzY3JpYmUgKG1haWxib3ggJm9wdGlvbmFsIGJ1ZmZlcikKICAiU2VuZCB0aGUgU1VC
+U0NSSUJFIGNvbW1hbmQgb24gdGhlIG1haWxib3ggdG8gc2VydmVyIGluIEJVRkZFUi4KUmV0dXJu
+cyBub24tbmlsIGlmIHN1Y2Nlc3NmdWwuIgogICh3aXRoLWN1cnJlbnQtYnVmZmVyIChvciBidWZm
+ZXIgKGN1cnJlbnQtYnVmZmVyKSkKICAgIChpbWFwLW9rLXAgKGltYXAtc2VuZC1jb21tYW5kLXdh
+aXQgKGNvbmNhdCAiVU5TVUJTQ1JJQkUgIgoJCQkJCSAgICAgICAoaW1hcC11dGY3LWVuY29kZSBt
+YWlsYm94KQoJCQkJCSAgICAgICAiXCIiKSkpKSkKCihkZWZ1biBpbWFwLW1haWxib3gtc3RhdHVz
+IChtYWlsYm94IGl0ZW1zICZvcHRpb25hbCBidWZmZXIpCiAgIkdldCBzdGF0dXMgaXRlbXMgSVRF
+TSBpbiBNQUlMQk9YIGZyb20gc2VydmVyIGluIEJVRkZFUi4KSVRFTVMgY2FuIGJlIGEgc3ltYm9s
+IG9yIGEgbGlzdCBvZiBzeW1ib2xzLCB2YWxpZCBzeW1ib2xzIGFyZSBvbmUgb2YKdGhlIFNUQVRV
+UyBkYXRhIGl0ZW1zIC0tIGllICdtZXNzYWdlcywgJ3JlY2VudCwgJ3VpZG5leHQsICd1aWR2YWxp
+ZGl0eQpvciAndW5zZWVuLiAgSWYgSVRFTVMgaXMgYSBsaXN0IG9mIHN5bWJvbHMsIGEgbGlzdCBv
+ZiB2YWx1ZXMgaXMKcmV0dXJuZWQsIGlmIElURU1TIGlzIGEgc3ltYm9sIG9ubHkgaXRzIHZhbHVl
+IGlzIHJldHVybmVkLiIKICAod2l0aC1jdXJyZW50LWJ1ZmZlciAob3IgYnVmZmVyIChjdXJyZW50
+LWJ1ZmZlcikpCiAgICAod2hlbiAoaW1hcC1vay1wCgkgICAoaW1hcC1zZW5kLWNvbW1hbmQtd2Fp
+dCAobGlzdCAiU1RBVFVTIFwiIgoJCQkJCSAoaW1hcC11dGY3LWVuY29kZSBtYWlsYm94KQoJCQkJ
+CSAiXCIgIgoJCQkJCSAodXBjYXNlCgkJCQkJICAoZm9ybWF0ICIlcyIKCQkJCQkJICAoaWYgKGxp
+c3RwIGl0ZW1zKQoJCQkJCQkgICAgICBpdGVtcwoJCQkJCQkgICAgKGxpc3QgaXRlbXMpKSkpKSkp
+CiAgICAgIChpZiAobGlzdHAgaXRlbXMpCgkgIChtYXBjYXIgKGxhbWJkYSAoaXRlbSkKCQkgICAg
+KGltYXAtbWFpbGJveC1nZXQgaXRlbSBtYWlsYm94KSkKCQkgIGl0ZW1zKQoJKGltYXAtbWFpbGJv
+eC1nZXQgaXRlbXMgbWFpbGJveCkpKSkpCgooZGVmdW4gaW1hcC1tYWlsYm94LXN0YXR1cy1hc3lu
+Y2ggKG1haWxib3ggaXRlbXMgJm9wdGlvbmFsIGJ1ZmZlcikKICAiU2VuZCBzdGF0dXMgaXRlbSBy
+ZXF1ZXN0IElURU0gb24gTUFJTEJPWCB0byBzZXJ2ZXIgaW4gQlVGRkVSLgpJVEVNUyBjYW4gYmUg
+YSBzeW1ib2wgb3IgYSBsaXN0IG9mIHN5bWJvbHMsIHZhbGlkIHN5bWJvbHMgYXJlIG9uZSBvZgp0
+aGUgU1RBVFVTIGRhdGEgaXRlbXMgLS0gaWUgJ21lc3NhZ2VzLCAncmVjZW50LCAndWlkbmV4dCwg
+J3VpZHZhbGlkaXR5Cm9yICd1bnNlZW4uICBUaGUgSU1BUCBjb21tYW5kIHRhZyBpcyByZXR1cm5l
+ZC4iCiAgKHdpdGgtY3VycmVudC1idWZmZXIgKG9yIGJ1ZmZlciAoY3VycmVudC1idWZmZXIpKQog
+ICAgKGltYXAtc2VuZC1jb21tYW5kIChsaXN0ICJTVEFUVVMgXCIiCgkJCSAgICAgKGltYXAtdXRm
+Ny1lbmNvZGUgbWFpbGJveCkKCQkJICAgICAiXCIgIgoJCQkgICAgICh1cGNhc2UKCQkJICAgICAg
+KGZvcm1hdCAiJXMiCgkJCQkgICAgICAoaWYgKGxpc3RwIGl0ZW1zKQoJCQkJCSAgaXRlbXMKCQkJ
+CQkobGlzdCBpdGVtcykpKSkpKSkpCgooZGVmdW4gaW1hcC1tYWlsYm94LWFjbC1nZXQgKCZvcHRp
+b25hbCBtYWlsYm94IGJ1ZmZlcikKICAiR2V0IEFDTCBvbiBtYWlsYm94IGZyb20gc2VydmVyIGlu
+IEJVRkZFUi4iCiAgKGxldCAoKG1haWxib3ggKGltYXAtdXRmNy1lbmNvZGUgbWFpbGJveCkpKQog
+ICAgKHdpdGgtY3VycmVudC1idWZmZXIgKG9yIGJ1ZmZlciAoY3VycmVudC1idWZmZXIpKQogICAg
+ICAod2hlbiAoaW1hcC1vay1wCgkgICAgIChpbWFwLXNlbmQtY29tbWFuZC13YWl0IChsaXN0ICJH
+RVRBQ0wgXCIiCgkJCQkJICAgKG9yIG1haWxib3ggaW1hcC1jdXJyZW50LW1haWxib3gpCgkJCQkJ
+ICAgIlwiIikpKQoJKGltYXAtbWFpbGJveC1nZXQtMSAnYWNsIChvciBtYWlsYm94IGltYXAtY3Vy
+cmVudC1tYWlsYm94KSkpKSkpCgooZGVmdW4gaW1hcC1tYWlsYm94LWFjbC1zZXQgKGlkZW50aWZp
+ZXIgcmlnaHRzICZvcHRpb25hbCBtYWlsYm94IGJ1ZmZlcikKICAiQ2hhbmdlL3NldCBBQ0wgZm9y
+IElERU5USUZJRVIgdG8gUklHSFRTIGluIE1BSUxCT1ggZnJvbSBzZXJ2ZXIgaW4gQlVGRkVSLiIK
+ICAobGV0ICgobWFpbGJveCAoaW1hcC11dGY3LWVuY29kZSBtYWlsYm94KSkpCiAgICAod2l0aC1j
+dXJyZW50LWJ1ZmZlciAob3IgYnVmZmVyIChjdXJyZW50LWJ1ZmZlcikpCiAgICAgIChpbWFwLW9r
+LXAKICAgICAgIChpbWFwLXNlbmQtY29tbWFuZC13YWl0IChsaXN0ICJTRVRBQ0wgXCIiCgkJCQkg
+ICAgIChvciBtYWlsYm94IGltYXAtY3VycmVudC1tYWlsYm94KQoJCQkJICAgICAiXCIgIgoJCQkJ
+ICAgICBpZGVudGlmaWVyCgkJCQkgICAgICIgIgoJCQkJICAgICByaWdodHMpKSkpKSkKCihkZWZ1
+biBpbWFwLW1haWxib3gtYWNsLWRlbGV0ZSAoaWRlbnRpZmllciAmb3B0aW9uYWwgbWFpbGJveCBi
+dWZmZXIpCiAgIlJlbW92ZXMgYW55IDxpZGVudGlmaWVyLHJpZ2h0cz4gcGFpciBmb3IgSURFTlRJ
+RklFUiBpbiBNQUlMQk9YIGZyb20gc2VydmVyIGluIEJVRkZFUi4iCiAgKGxldCAoKG1haWxib3gg
+KGltYXAtdXRmNy1lbmNvZGUgbWFpbGJveCkpKQogICAgKHdpdGgtY3VycmVudC1idWZmZXIgKG9y
+IGJ1ZmZlciAoY3VycmVudC1idWZmZXIpKQogICAgICAoaW1hcC1vay1wCiAgICAgICAoaW1hcC1z
+ZW5kLWNvbW1hbmQtd2FpdCAobGlzdCAiREVMRVRFQUNMIFwiIgoJCQkJICAgICAob3IgbWFpbGJv
+eCBpbWFwLWN1cnJlbnQtbWFpbGJveCkKCQkJCSAgICAgIlwiICIKCQkJCSAgICAgaWRlbnRpZmll
+cikpKSkpKQoKDAo7OyBNZXNzYWdlIGZ1bmN0aW9uczoKCihkZWZ1biBpbWFwLWN1cnJlbnQtbWVz
+c2FnZSAoJm9wdGlvbmFsIGJ1ZmZlcikKICAod2l0aC1jdXJyZW50LWJ1ZmZlciAob3IgYnVmZmVy
+IChjdXJyZW50LWJ1ZmZlcikpCiAgICBpbWFwLWN1cnJlbnQtbWVzc2FnZSkpCgooZGVmdW4gaW1h
+cC1saXN0LXRvLW1lc3NhZ2Utc2V0IChsaXN0KQogIChtYXBjb25jYXQgKGxhbWJkYSAoaXRlbSkK
+CSAgICAgICAobnVtYmVyLXRvLXN0cmluZyBpdGVtKSkKCSAgICAgKGlmIChsaXN0cCBsaXN0KQoJ
+CSBsaXN0CgkgICAgICAgKGxpc3QgbGlzdCkpCgkgICAgICIsIikpCgooZGVmdW4gaW1hcC1yYW5n
+ZS10by1tZXNzYWdlLXNldCAocmFuZ2UpCiAgKG1hcGNvbmNhdAogICAobGFtYmRhIChpdGVtKQog
+ICAgIChpZiAoY29uc3AgaXRlbSkKCSAoZm9ybWF0ICIlZDolZCIKCQkgKGNhciBpdGVtKSAoY2Ry
+IGl0ZW0pKQogICAgICAgKGZvcm1hdCAiJWQiIGl0ZW0pKSkKICAgKGlmIChhbmQgKGxpc3RwIHJh
+bmdlKSAobm90IChsaXN0cCAoY2RyIHJhbmdlKSkpKQogICAgICAgKGxpc3QgcmFuZ2UpIDs7IG1h
+a2UgKDEgLiAyKSBpbnRvICgoMSAuIDIpKQogICAgIHJhbmdlKQogICAiLCIpKQoKKGRlZnVuIGlt
+YXAtZmV0Y2gtYXN5bmNoICh1aWRzIHByb3BzICZvcHRpb25hbCBub3VpZGZldGNoIGJ1ZmZlcikK
+ICAod2l0aC1jdXJyZW50LWJ1ZmZlciAob3IgYnVmZmVyIChjdXJyZW50LWJ1ZmZlcikpCiAgICAo
+aW1hcC1zZW5kLWNvbW1hbmQgKGZvcm1hdCAiJXNGRVRDSCAlcyAlcyIgKGlmIG5vdWlkZmV0Y2gg
+IiIgIlVJRCAiKQoJCQkgICAgICAgKGlmIChsaXN0cCB1aWRzKQoJCQkJICAgKGltYXAtbGlzdC10
+by1tZXNzYWdlLXNldCB1aWRzKQoJCQkJIHVpZHMpCgkJCSAgICAgICBwcm9wcykpKSkKCihkZWZ1
+biBpbWFwLWZldGNoICh1aWRzIHByb3BzICZvcHRpb25hbCByZWNlaXZlIG5vdWlkZmV0Y2ggYnVm
+ZmVyKQogICJGZXRjaCBwcm9wZXJ0aWVzIFBST1BTIGZyb20gbWVzc2FnZSBzZXQgVUlEUyBmcm9t
+IHNlcnZlciBpbiBCVUZGRVIuClVJRFMgY2FuIGJlIGEgc3RyaW5nLCBudW1iZXIgb3IgYSBsaXN0
+IG9mIG51bWJlcnMuICBJZiBSRUNFSVZFCmlzIG5vbi1uaWwgcmV0dXJuIHRoZXNlIHByb3BlcnRp
+ZXMuIgogICh3aXRoLWN1cnJlbnQtYnVmZmVyIChvciBidWZmZXIgKGN1cnJlbnQtYnVmZmVyKSkK
+ICAgICh3aGVuIChpbWFwLW9rLXAgKGltYXAtc2VuZC1jb21tYW5kLXdhaXQKCQkgICAgICAoZm9y
+bWF0ICIlc0ZFVENIICVzICVzIiAoaWYgbm91aWRmZXRjaCAiIiAiVUlEICIpCgkJCSAgICAgIChp
+ZiAobGlzdHAgdWlkcykKCQkJCSAgKGltYXAtbGlzdC10by1tZXNzYWdlLXNldCB1aWRzKQoJCQkJ
+dWlkcykKCQkJICAgICAgcHJvcHMpKSkKICAgICAgKGlmIChvciAobnVsbCByZWNlaXZlKSAoc3Ry
+aW5ncCB1aWRzKSkKCSAgdAoJKGlmIChsaXN0cCB1aWRzKQoJICAgIChtYXBjYXIgKGxhbWJkYSAo
+dWlkKQoJCSAgICAgIChpZiAobGlzdHAgcmVjZWl2ZSkKCQkJICAobWFwY2FyIChsYW1iZGEgKHBy
+b3ApCgkJCQkgICAgKGltYXAtbWVzc2FnZS1nZXQgdWlkIHByb3ApKQoJCQkJICByZWNlaXZlKQoJ
+CQkoaW1hcC1tZXNzYWdlLWdldCB1aWQgcmVjZWl2ZSkpKQoJCSAgICB1aWRzKQoJICAoaW1hcC1t
+ZXNzYWdlLWdldCB1aWRzIHJlY2VpdmUpKSkpKSkKCihkZWZ1biBpbWFwLW1lc3NhZ2UtcHV0ICh1
+aWQgcHJvcG5hbWUgdmFsdWUgJm9wdGlvbmFsIGJ1ZmZlcikKICAod2l0aC1jdXJyZW50LWJ1ZmZl
+ciAob3IgYnVmZmVyIChjdXJyZW50LWJ1ZmZlcikpCiAgICAoaWYgaW1hcC1tZXNzYWdlLWRhdGEK
+CShwdXQgKGludGVybiAobnVtYmVyLXRvLXN0cmluZyB1aWQpIGltYXAtbWVzc2FnZS1kYXRhKQoJ
+ICAgICBwcm9wbmFtZSB2YWx1ZSkKICAgICAgKGVycm9yICJJbWFwLW1lc3NhZ2UtZGF0YSBpcyBu
+aWwsIHVpZCAlcyBwcm9wICVzIHZhbHVlICVzIGJ1ZmZlciAlcyIKCSAgICAgdWlkIHByb3BuYW1l
+IHZhbHVlIChjdXJyZW50LWJ1ZmZlcikpKQogICAgdCkpCgooZGVmdW4gaW1hcC1tZXNzYWdlLWdl
+dCAodWlkIHByb3BuYW1lICZvcHRpb25hbCBidWZmZXIpCiAgKHdpdGgtY3VycmVudC1idWZmZXIg
+KG9yIGJ1ZmZlciAoY3VycmVudC1idWZmZXIpKQogICAgKGdldCAoaW50ZXJuLXNvZnQgKG51bWJl
+ci10by1zdHJpbmcgdWlkKSBpbWFwLW1lc3NhZ2UtZGF0YSkKCSBwcm9wbmFtZSkpKQoKKGRlZnVu
+IGltYXAtbWVzc2FnZS1tYXAgKGZ1bmMgcHJvcG5hbWUgJm9wdGlvbmFsIGJ1ZmZlcikKICAiTWFw
+IGEgZnVuY3Rpb24gYWNyb3NzIGVhY2ggbWFpbGJveCBpbiBgaW1hcC1tZXNzYWdlLWRhdGEnLCBy
+ZXR1cm5pbmcgYSBsaXN0LiIKICAod2l0aC1jdXJyZW50LWJ1ZmZlciAob3IgYnVmZmVyIChjdXJy
+ZW50LWJ1ZmZlcikpCiAgICAobGV0IChyZXN1bHQpCiAgICAgIChtYXBhdG9tcwogICAgICAgKGxh
+bWJkYSAocykKCSAocHVzaCAoZnVuY2FsbCBmdW5jIChnZXQgcyAnVUlEKSAoZ2V0IHMgcHJvcG5h
+bWUpKSByZXN1bHQpKQogICAgICAgaW1hcC1tZXNzYWdlLWRhdGEpCiAgICAgIHJlc3VsdCkpKQoK
+KGRlZm1hY3JvIGltYXAtbWVzc2FnZS1lbnZlbG9wZS1kYXRlICh1aWQgJm9wdGlvbmFsIGJ1ZmZl
+cikKICBgKHdpdGgtY3VycmVudC1idWZmZXIgKG9yICxidWZmZXIgKGN1cnJlbnQtYnVmZmVyKSkK
+ICAgICAoZWx0IChpbWFwLW1lc3NhZ2UtZ2V0ICx1aWQgJ0VOVkVMT1BFKSAwKSkpCgooZGVmbWFj
+cm8gaW1hcC1tZXNzYWdlLWVudmVsb3BlLXN1YmplY3QgKHVpZCAmb3B0aW9uYWwgYnVmZmVyKQog
+IGAod2l0aC1jdXJyZW50LWJ1ZmZlciAob3IgLGJ1ZmZlciAoY3VycmVudC1idWZmZXIpKQogICAg
+IChlbHQgKGltYXAtbWVzc2FnZS1nZXQgLHVpZCAnRU5WRUxPUEUpIDEpKSkKCihkZWZtYWNybyBp
+bWFwLW1lc3NhZ2UtZW52ZWxvcGUtZnJvbSAodWlkICZvcHRpb25hbCBidWZmZXIpCiAgYCh3aXRo
+LWN1cnJlbnQtYnVmZmVyIChvciAsYnVmZmVyIChjdXJyZW50LWJ1ZmZlcikpCiAgICAgKGVsdCAo
+aW1hcC1tZXNzYWdlLWdldCAsdWlkICdFTlZFTE9QRSkgMikpKQoKKGRlZm1hY3JvIGltYXAtbWVz
+c2FnZS1lbnZlbG9wZS1zZW5kZXIgKHVpZCAmb3B0aW9uYWwgYnVmZmVyKQogIGAod2l0aC1jdXJy
+ZW50LWJ1ZmZlciAob3IgLGJ1ZmZlciAoY3VycmVudC1idWZmZXIpKQogICAgIChlbHQgKGltYXAt
+bWVzc2FnZS1nZXQgLHVpZCAnRU5WRUxPUEUpIDMpKSkKCihkZWZtYWNybyBpbWFwLW1lc3NhZ2Ut
+ZW52ZWxvcGUtcmVwbHktdG8gKHVpZCAmb3B0aW9uYWwgYnVmZmVyKQogIGAod2l0aC1jdXJyZW50
+LWJ1ZmZlciAob3IgLGJ1ZmZlciAoY3VycmVudC1idWZmZXIpKQogICAgIChlbHQgKGltYXAtbWVz
+c2FnZS1nZXQgLHVpZCAnRU5WRUxPUEUpIDQpKSkKCihkZWZtYWNybyBpbWFwLW1lc3NhZ2UtZW52
+ZWxvcGUtdG8gKHVpZCAmb3B0aW9uYWwgYnVmZmVyKQogIGAod2l0aC1jdXJyZW50LWJ1ZmZlciAo
+b3IgLGJ1ZmZlciAoY3VycmVudC1idWZmZXIpKQogICAgIChlbHQgKGltYXAtbWVzc2FnZS1nZXQg
+LHVpZCAnRU5WRUxPUEUpIDUpKSkKCihkZWZtYWNybyBpbWFwLW1lc3NhZ2UtZW52ZWxvcGUtY2Mg
+KHVpZCAmb3B0aW9uYWwgYnVmZmVyKQogIGAod2l0aC1jdXJyZW50LWJ1ZmZlciAob3IgLGJ1ZmZl
+ciAoY3VycmVudC1idWZmZXIpKQogICAgIChlbHQgKGltYXAtbWVzc2FnZS1nZXQgLHVpZCAnRU5W
+RUxPUEUpIDYpKSkKCihkZWZtYWNybyBpbWFwLW1lc3NhZ2UtZW52ZWxvcGUtYmNjICh1aWQgJm9w
+dGlvbmFsIGJ1ZmZlcikKICBgKHdpdGgtY3VycmVudC1idWZmZXIgKG9yICxidWZmZXIgKGN1cnJl
+bnQtYnVmZmVyKSkKICAgICAoZWx0IChpbWFwLW1lc3NhZ2UtZ2V0ICx1aWQgJ0VOVkVMT1BFKSA3
+KSkpCgooZGVmbWFjcm8gaW1hcC1tZXNzYWdlLWVudmVsb3BlLWluLXJlcGx5LXRvICh1aWQgJm9w
+dGlvbmFsIGJ1ZmZlcikKICBgKHdpdGgtY3VycmVudC1idWZmZXIgKG9yICxidWZmZXIgKGN1cnJl
+bnQtYnVmZmVyKSkKICAgICAoZWx0IChpbWFwLW1lc3NhZ2UtZ2V0ICx1aWQgJ0VOVkVMT1BFKSA4
+KSkpCgooZGVmbWFjcm8gaW1hcC1tZXNzYWdlLWVudmVsb3BlLW1lc3NhZ2UtaWQgKHVpZCAmb3B0
+aW9uYWwgYnVmZmVyKQogIGAod2l0aC1jdXJyZW50LWJ1ZmZlciAob3IgLGJ1ZmZlciAoY3VycmVu
+dC1idWZmZXIpKQogICAgIChlbHQgKGltYXAtbWVzc2FnZS1nZXQgLHVpZCAnRU5WRUxPUEUpIDkp
+KSkKCihkZWZtYWNybyBpbWFwLW1lc3NhZ2UtYm9keSAodWlkICZvcHRpb25hbCBidWZmZXIpCiAg
+YCh3aXRoLWN1cnJlbnQtYnVmZmVyIChvciAsYnVmZmVyIChjdXJyZW50LWJ1ZmZlcikpCiAgICAg
+KGltYXAtbWVzc2FnZS1nZXQgLHVpZCAnQk9EWSkpKQoKKGRlZnVuIGltYXAtc2VhcmNoIChwcmVk
+aWNhdGUgJm9wdGlvbmFsIGJ1ZmZlcikKICAod2l0aC1jdXJyZW50LWJ1ZmZlciAob3IgYnVmZmVy
+IChjdXJyZW50LWJ1ZmZlcikpCiAgICAoaW1hcC1tYWlsYm94LXB1dCAnc2VhcmNoICdkdW1teSkK
+ICAgICh3aGVuIChpbWFwLW9rLXAgKGltYXAtc2VuZC1jb21tYW5kLXdhaXQgKGNvbmNhdCAiVUlE
+IFNFQVJDSCAiIHByZWRpY2F0ZSkpKQogICAgICAoaWYgKGVxIChpbWFwLW1haWxib3gtZ2V0LTEg
+J3NlYXJjaCBpbWFwLWN1cnJlbnQtbWFpbGJveCkgJ2R1bW15KQoJICAocHJvZ24KCSAgICAobWVz
+c2FnZSAiTWlzc2luZyBTRUFSQ0ggcmVzcG9uc2UgdG8gYSBTRUFSQ0ggY29tbWFuZCAoc2VydmVy
+IG5vdCBSRkMgY29tcGxpYW50KS4uLiIpCgkgICAgbmlsKQoJKGltYXAtbWFpbGJveC1nZXQtMSAn
+c2VhcmNoIGltYXAtY3VycmVudC1tYWlsYm94KSkpKSkKCihkZWZ1biBpbWFwLW1lc3NhZ2UtZmxh
+Zy1wZXJtYW5lbnQtcCAoZmxhZyAmb3B0aW9uYWwgbWFpbGJveCBidWZmZXIpCiAgIlJldHVybiB0
+IGlmIEZMQUcgY2FuIGJlIHBlcm1hbmVudGx5IChiZXR3ZWVuIElNQVAgc2Vzc2lvbnMpIHNhdmVk
+IG9uIGFydGljbGVzLCBpbiBNQUlMQk9YIG9uIHNlcnZlciBpbiBCVUZGRVIuIgogICh3aXRoLWN1
+cnJlbnQtYnVmZmVyIChvciBidWZmZXIgKGN1cnJlbnQtYnVmZmVyKSkKICAgIChvciAobWVtYmVy
+ICJcXCoiIChpbWFwLW1haWxib3gtZ2V0ICdwZXJtYW5lbnRmbGFncyBtYWlsYm94KSkKCShtZW1i
+ZXIgZmxhZyAoaW1hcC1tYWlsYm94LWdldCAncGVybWFuZW50ZmxhZ3MgbWFpbGJveCkpKSkpCgoo
+ZGVmdW4gaW1hcC1tZXNzYWdlLWZsYWdzLXNldCAoYXJ0aWNsZXMgZmxhZ3MgJm9wdGlvbmFsIHNp
+bGVudCBidWZmZXIpCiAgKHdoZW4gKGFuZCBhcnRpY2xlcyBmbGFncykKICAgICh3aXRoLWN1cnJl
+bnQtYnVmZmVyIChvciBidWZmZXIgKGN1cnJlbnQtYnVmZmVyKSkKICAgICAgKGltYXAtb2stcCAo
+aW1hcC1zZW5kLWNvbW1hbmQtd2FpdAoJCSAgKGNvbmNhdCAiVUlEIFNUT1JFICIgYXJ0aWNsZXMK
+CQkJICAiIEZMQUdTIiAoaWYgc2lsZW50ICIuU0lMRU5UIikgIiAoIiBmbGFncyAiKSIpKSkpKSkK
+CihkZWZ1biBpbWFwLW1lc3NhZ2UtZmxhZ3MtZGVsIChhcnRpY2xlcyBmbGFncyAmb3B0aW9uYWwg
+c2lsZW50IGJ1ZmZlcikKICAod2hlbiAoYW5kIGFydGljbGVzIGZsYWdzKQogICAgKHdpdGgtY3Vy
+cmVudC1idWZmZXIgKG9yIGJ1ZmZlciAoY3VycmVudC1idWZmZXIpKQogICAgICAoaW1hcC1vay1w
+IChpbWFwLXNlbmQtY29tbWFuZC13YWl0CgkJICAoY29uY2F0ICJVSUQgU1RPUkUgIiBhcnRpY2xl
+cwoJCQkgICIgLUZMQUdTIiAoaWYgc2lsZW50ICIuU0lMRU5UIikgIiAoIiBmbGFncyAiKSIpKSkp
+KSkKCihkZWZ1biBpbWFwLW1lc3NhZ2UtZmxhZ3MtYWRkIChhcnRpY2xlcyBmbGFncyAmb3B0aW9u
+YWwgc2lsZW50IGJ1ZmZlcikKICAod2hlbiAoYW5kIGFydGljbGVzIGZsYWdzKQogICAgKHdpdGgt
+Y3VycmVudC1idWZmZXIgKG9yIGJ1ZmZlciAoY3VycmVudC1idWZmZXIpKQogICAgICAoaW1hcC1v
+ay1wIChpbWFwLXNlbmQtY29tbWFuZC13YWl0CgkJICAoY29uY2F0ICJVSUQgU1RPUkUgIiBhcnRp
+Y2xlcwoJCQkgICIgK0ZMQUdTIiAoaWYgc2lsZW50ICIuU0lMRU5UIikgIiAoIiBmbGFncyAiKSIp
+KSkpKSkKCjs7IENmLiBodHRwOi8vdGhyZWFkLmdtYW5lLm9yZy9nbWFuZS5lbWFjcy5nbnVzLmdl
+bmVyYWwvNjUzMTcvZm9jdXM9NjUzNDMKOzsgU2lnbmFsIGFuIGVycm9yIGlmIHdlJ2QgZ2V0IGFu
+IGludGVnZXIgb3ZlcmZsb3cuCjs7Cjs7IEZJWE1FOiBJZGVudGlmeSByZWxldmFudCBjYWxscyB0
+byBgc3RyaW5nLXRvLW51bWJlcicgYW5kIHJlcGxhY2UgdGhlbSB3aXRoCjs7IGBpbWFwLXN0cmlu
+Zy10by1pbnRlZ2VyJy4KKGRlZnVuIGltYXAtc3RyaW5nLXRvLWludGVnZXIgKHN0cmluZyAmb3B0
+aW9uYWwgYmFzZSkKICAobGV0ICgobnVtYmVyIChzdHJpbmctdG8tbnVtYmVyIHN0cmluZyBiYXNl
+KSkpCiAgICAoaWYgKD4gbnVtYmVyIG1vc3QtcG9zaXRpdmUtZml4bnVtKQoJKGVycm9yCgkgKGZv
+cm1hdCAiU3RyaW5nICVzIGNhbm5vdCBiZSBjb252ZXJ0ZWQgdG8gYSBsaXNwIGludGVnZXIiIG51
+bWJlcikpCiAgICAgIG51bWJlcikpKQoKKGRlZnVuIGltYXAtbWVzc2FnZS1jb3B5dWlkLTEgKG1h
+aWxib3gpCiAgKGlmIChpbWFwLWNhcGFiaWxpdHkgJ1VJRFBMVVMpCiAgICAgIChsaXN0IChudGgg
+MCAoaW1hcC1tYWlsYm94LWdldC0xICdjb3B5dWlkIG1haWxib3gpKQoJICAgIChzdHJpbmctdG8t
+bnVtYmVyIChudGggMiAoaW1hcC1tYWlsYm94LWdldC0xICdjb3B5dWlkIG1haWxib3gpKSkpCiAg
+ICAobGV0ICgob2xkLW1haWxib3ggaW1hcC1jdXJyZW50LW1haWxib3gpCgkgIChzdGF0ZSBpbWFw
+LXN0YXRlKQoJICAoaW1hcC1tZXNzYWdlLWRhdGEgKG1ha2UtdmVjdG9yIDIgMCkpKQogICAgICAo
+d2hlbiAoaW1hcC1tYWlsYm94LWV4YW1pbmUtMSBtYWlsYm94KQoJKHByb2cxCgkgICAgKGFuZCAo
+aW1hcC1mZXRjaAoJCSAgKGlmIGltYXAtZW5hYmxlLWV4Y2hhbmdlLWJ1Zy13b3JrYXJvdW5kICIq
+OioiICIqIikgIlVJRCIpCgkJIChsaXN0IChpbWFwLW1haWxib3gtZ2V0LTEgJ3VpZHZhbGlkaXR5
+IG1haWxib3gpCgkJICAgICAgIChhcHBseSAnbWF4IChpbWFwLW1lc3NhZ2UtbWFwCgkJCQkgICAg
+KGxhbWJkYSAodWlkIHByb3ApIHVpZCkgJ1VJRCkpKSkKCSAgKGlmIG9sZC1tYWlsYm94CgkgICAg
+ICAoaW1hcC1tYWlsYm94LXNlbGVjdCBvbGQtbWFpbGJveCAoZXEgc3RhdGUgJ2V4YW1pbmUpKQoJ
+ICAgIChpbWFwLW1haWxib3gtdW5zZWxlY3QpKSkpKSkpCgooZGVmdW4gaW1hcC1tZXNzYWdlLWNv
+cHl1aWQgKG1haWxib3ggJm9wdGlvbmFsIGJ1ZmZlcikKICAod2l0aC1jdXJyZW50LWJ1ZmZlciAo
+b3IgYnVmZmVyIChjdXJyZW50LWJ1ZmZlcikpCiAgICAoaW1hcC1tZXNzYWdlLWNvcHl1aWQtMSAo
+aW1hcC11dGY3LWRlY29kZSBtYWlsYm94KSkpKQoKKGRlZnVuIGltYXAtbWVzc2FnZS1jb3B5IChh
+cnRpY2xlcyBtYWlsYm94CgkJCQkgICAmb3B0aW9uYWwgZG9udC1jcmVhdGUgbm8tY29weXVpZCBi
+dWZmZXIpCiAgIkNvcHkgQVJUSUNMRVMgKGEgc3RyaW5nIG1lc3NhZ2Ugc2V0KSB0byBNQUlMQk9Y
+IG9uIHNlcnZlciBpbgpCVUZGRVIsIGNyZWF0aW5nIG1haWxib3ggaWYgaXQgZG9lc24ndCBleGlz
+dC4gIElmIGRvbnQtY3JlYXRlIGlzCm5vbi1uaWwsIGl0IHdpbGwgbm90IGNyZWF0ZSBhIG1haWxi
+b3guICBPbiBzdWNjZXNzLCByZXR1cm4gYSBsaXN0IHdpdGgKdGhlIFVJRFZBTElESVRZIG9mIHRo
+ZSBtYWlsYm94IHRoZSBhcnRpY2xlKHMpIHdhcyBjb3BpZWQgdG8gYXMgdGhlCmZpcnN0IGVsZW1l
+bnQsIHJlc3Qgb2YgbGlzdCBjb250YWluIHRoZSBzYXZlZCBhcnRpY2xlcycgVUlEcy4iCiAgKHdo
+ZW4gYXJ0aWNsZXMKICAgICh3aXRoLWN1cnJlbnQtYnVmZmVyIChvciBidWZmZXIgKGN1cnJlbnQt
+YnVmZmVyKSkKICAgICAgKGxldCAoKG1haWxib3ggKGltYXAtdXRmNy1lbmNvZGUgbWFpbGJveCkp
+KQoJKGlmIChsZXQgKChjbWQgKGNvbmNhdCAiVUlEIENPUFkgIiBhcnRpY2xlcyAiIFwiIiBtYWls
+Ym94ICJcIiIpKQoJCSAgKGltYXAtY3VycmVudC10YXJnZXQtbWFpbGJveCBtYWlsYm94KSkKCSAg
+ICAgIChpZiAoaW1hcC1vay1wIChpbWFwLXNlbmQtY29tbWFuZC13YWl0IGNtZCkpCgkJICB0CgkJ
+KHdoZW4gKGFuZCAobm90IGRvbnQtY3JlYXRlKQoJCQkgICA7OyByZW1vdmVkIGJlY2F1c2Ugb2Yg
+YnVnZ3kgT3JhY2xlIHNlcnZlcgoJCQkgICA7OyB0aGF0IGRvZXNuJ3Qgc2VuZCBUUllDUkVBVEUg
+dGFncyAod2hpY2gKCQkJICAgOzsgaXMgYSBNVVNUIGFjY29yZGluZyB0byBzcGVjaWZpY2F0aW9u
+cyk6CgkJCSAgIDs7KGltYXAtbWFpbGJveC1nZXQtMSAndHJ5Y3JlYXRlIG1haWxib3gpCgkJCSAg
+IChpbWFwLW1haWxib3gtY3JlYXRlLTEgbWFpbGJveCkpCgkJICAoaW1hcC1vay1wIChpbWFwLXNl
+bmQtY29tbWFuZC13YWl0IGNtZCkpKSkpCgkgICAgKG9yIG5vLWNvcHl1aWQKCQkoaW1hcC1tZXNz
+YWdlLWNvcHl1aWQtMSBtYWlsYm94KSkpKSkpKQoKKGRlZnVuIGltYXAtbWVzc2FnZS1hcHBlbmR1
+aWQtMSAobWFpbGJveCkKICAoaWYgKGltYXAtY2FwYWJpbGl0eSAnVUlEUExVUykKICAgICAgKGlt
+YXAtbWFpbGJveC1nZXQtMSAnYXBwZW5kdWlkIG1haWxib3gpCiAgICAobGV0ICgob2xkLW1haWxi
+b3ggaW1hcC1jdXJyZW50LW1haWxib3gpCgkgIChzdGF0ZSBpbWFwLXN0YXRlKQoJICAoaW1hcC1t
+ZXNzYWdlLWRhdGEgKG1ha2UtdmVjdG9yIDIgMCkpKQogICAgICAod2hlbiAoaW1hcC1tYWlsYm94
+LWV4YW1pbmUtMSBtYWlsYm94KQoJKHByb2cxCgkgICAgKGFuZCAoaW1hcC1mZXRjaAoJCSAgKGlm
+IGltYXAtZW5hYmxlLWV4Y2hhbmdlLWJ1Zy13b3JrYXJvdW5kICIqOioiICIqIikgIlVJRCIpCgkJ
+IChsaXN0IChpbWFwLW1haWxib3gtZ2V0LTEgJ3VpZHZhbGlkaXR5IG1haWxib3gpCgkJICAgICAg
+IChhcHBseSAnbWF4IChpbWFwLW1lc3NhZ2UtbWFwCgkJCQkgICAgKGxhbWJkYSAodWlkIHByb3Ap
+IHVpZCkgJ1VJRCkpKSkKCSAgKGlmIG9sZC1tYWlsYm94CgkgICAgICAoaW1hcC1tYWlsYm94LXNl
+bGVjdCBvbGQtbWFpbGJveCAoZXEgc3RhdGUgJ2V4YW1pbmUpKQoJICAgIChpbWFwLW1haWxib3gt
+dW5zZWxlY3QpKSkpKSkpCgooZGVmdW4gaW1hcC1tZXNzYWdlLWFwcGVuZHVpZCAobWFpbGJveCAm
+b3B0aW9uYWwgYnVmZmVyKQogICh3aXRoLWN1cnJlbnQtYnVmZmVyIChvciBidWZmZXIgKGN1cnJl
+bnQtYnVmZmVyKSkKICAgIChpbWFwLW1lc3NhZ2UtYXBwZW5kdWlkLTEgKGltYXAtdXRmNy1lbmNv
+ZGUgbWFpbGJveCkpKSkKCihkZWZ1biBpbWFwLW1lc3NhZ2UtYXBwZW5kIChtYWlsYm94IGFydGlj
+bGUgJm9wdGlvbmFsIGZsYWdzIGRhdGUtdGltZSBidWZmZXIpCiAgIkFwcGVuZCBBUlRJQ0xFIChh
+IGJ1ZmZlcikgdG8gTUFJTEJPWCBvbiBzZXJ2ZXIgaW4gQlVGRkVSLgpGTEFHUyBhbmQgREFURS1U
+SU1FIGlzIGN1cnJlbnRseSBub3QgdXNlZC4gIFJldHVybiBhIGNvbnMgaG9sZGluZwp1aWR2YWxp
+ZGl0eSBvZiBNQUlMQk9YIGFuZCBVSUQgdGhlIG5ld2x5IGNyZWF0ZWQgYXJ0aWNsZSBnb3QsIG9y
+IG5pbApvbiBmYWlsdXJlLiIKICAobGV0ICgobWFpbGJveCAoaW1hcC11dGY3LWVuY29kZSBtYWls
+Ym94KSkpCiAgICAod2l0aC1jdXJyZW50LWJ1ZmZlciAob3IgYnVmZmVyIChjdXJyZW50LWJ1ZmZl
+cikpCiAgICAgIChhbmQgKGxldCAoKGltYXAtY3VycmVudC10YXJnZXQtbWFpbGJveCBtYWlsYm94
+KSkKCSAgICAgKGltYXAtb2stcAoJICAgICAgKGltYXAtc2VuZC1jb21tYW5kLXdhaXQKCSAgICAg
+ICAobGlzdCAiQVBQRU5EIFwiIiBtYWlsYm94ICJcIiAiICBhcnRpY2xlKSkpKQoJICAgKGltYXAt
+bWVzc2FnZS1hcHBlbmR1aWQtMSBtYWlsYm94KSkpKSkKCihkZWZ1biBpbWFwLWJvZHktbGluZXMg
+KGJvZHkpCiAgIlJldHVybiBudW1iZXIgb2YgbGluZXMgaW4gYXJ0aWNsZSBieSBsb29raW5nIGF0
+IHRoZSBtaW1lIGJvZHlzdHJ1Y3R1cmUgQk9EWS4iCiAgKGlmIChsaXN0cCBib2R5KQogICAgICAo
+aWYgKHN0cmluZ3AgKGNhciBib2R5KSkKCSAgKGNvbmQgKChhbmQgKHN0cmluZz0gKHVwY2FzZSAo
+Y2FyIGJvZHkpKSAiVEVYVCIpCgkJICAgICAgKG51bWJlcnAgKG50aCA3IGJvZHkpKSkKCQkgKG50
+aCA3IGJvZHkpKQoJCSgoYW5kIChzdHJpbmc9ICh1cGNhc2UgKGNhciBib2R5KSkgIk1FU1NBR0Ui
+KQoJCSAgICAgIChudW1iZXJwIChudGggOSBib2R5KSkpCgkJIChudGggOSBib2R5KSkKCQkodCAw
+KSkKCShhcHBseSAnKyAobWFwY2FyICdpbWFwLWJvZHktbGluZXMgYm9keSkpKQogICAgMCkpCgoo
+ZGVmdW4gaW1hcC1lbnZlbG9wZS1mcm9tIChmcm9tKQogICJSZXR1cm4gYSBmcm9tIHN0cmluZyBs
+aW5lLiIKICAoYW5kIGZyb20KICAgICAgIChjb25jYXQgKGFyZWYgZnJvbSAwKQoJICAgICAgIChp
+ZiAoYXJlZiBmcm9tIDApICIgPCIpCgkgICAgICAgKGFyZWYgZnJvbSAyKQoJICAgICAgICJAIgoJ
+ICAgICAgIChhcmVmIGZyb20gMykKCSAgICAgICAoaWYgKGFyZWYgZnJvbSAwKSAiPiIpKSkpCgoM
+Cjs7IEludGVybmFsIGZ1bmN0aW9ucy4KCihkZWZ1biBpbWFwLWFkZC1jYWxsYmFjayAodGFnIGZ1
+bmMpCiAgKHNldHEgaW1hcC1jYWxsYmFja3MgKGFwcGVuZCAobGlzdCAoY29ucyB0YWcgZnVuYykp
+IGltYXAtY2FsbGJhY2tzKSkpCgooZGVmdW4gaW1hcC1zZW5kLWNvbW1hbmQtMSAoY21kc3RyKQog
+IChzZXRxIGNtZHN0ciAoY29uY2F0IGNtZHN0ciBpbWFwLWNsaWVudC1lb2wpKQogIChhbmQgaW1h
+cC1sb2cKICAgICAgICh3aXRoLWN1cnJlbnQtYnVmZmVyIChnZXQtYnVmZmVyLWNyZWF0ZSBpbWFw
+LWxvZy1idWZmZXIpCgkgKGltYXAtZGlzYWJsZS1tdWx0aWJ5dGUpCgkgKGJ1ZmZlci1kaXNhYmxl
+LXVuZG8pCgkgKGdvdG8tY2hhciAocG9pbnQtbWF4KSkKCSAoaW5zZXJ0IGNtZHN0cikpKQogIChw
+cm9jZXNzLXNlbmQtc3RyaW5nIGltYXAtcHJvY2VzcyBjbWRzdHIpKQoKKGRlZnVuIGltYXAtc2Vu
+ZC1jb21tYW5kIChjb21tYW5kICZvcHRpb25hbCBidWZmZXIpCiAgKHdpdGgtY3VycmVudC1idWZm
+ZXIgKG9yIGJ1ZmZlciAoY3VycmVudC1idWZmZXIpKQogICAgKGlmIChub3QgKGxpc3RwIGNvbW1h
+bmQpKSAoc2V0cSBjb21tYW5kIChsaXN0IGNvbW1hbmQpKSkKICAgIChsZXQgKCh0YWcgKHNldHEg
+aW1hcC10YWcgKDErIGltYXAtdGFnKSkpCgkgIGNtZCBjbWRzdHIpCiAgICAgIChzZXRxIGNtZHN0
+ciAoY29uY2F0IChudW1iZXItdG8tc3RyaW5nIGltYXAtdGFnKSAiICIpKQogICAgICAod2hpbGUg
+KHNldHEgY21kIChwb3AgY29tbWFuZCkpCgkoY29uZCAoKHN0cmluZ3AgY21kKQoJICAgICAgIChz
+ZXRxIGNtZHN0ciAoY29uY2F0IGNtZHN0ciBjbWQpKSkKCSAgICAgICgoYnVmZmVycCBjbWQpCgkg
+ICAgICAgKGxldCAoKGVvbCBpbWFwLWNsaWVudC1lb2wpCgkJICAgICAoY2FsY2ZpcnN0IGltYXAt
+Y2FsY3VsYXRlLWxpdGVyYWwtc2l6ZS1maXJzdCkKCQkgICAgIHNpemUpCgkJICh3aXRoLWN1cnJl
+bnQtYnVmZmVyIGNtZAoJCSAgIChpZiBjYWxjZmlyc3QKCQkgICAgICAgKHNldHEgc2l6ZSAoYnVm
+ZmVyLXNpemUpKSkKCQkgICAod2hlbiAobm90IChlcXVhbCBlb2wgIlxyXG4iKSkKCQkgICAgIDs7
+IFhYWCBtb2RpZmllcyBidWZmZXIhCgkJICAgICAoZ290by1jaGFyIChwb2ludC1taW4pKQoJCSAg
+ICAgKHdoaWxlIChzZWFyY2gtZm9yd2FyZCAiXHJcbiIgbmlsIHQpCgkJICAgICAgIChyZXBsYWNl
+LW1hdGNoIGVvbCkpKQoJCSAgIChpZiAobm90IGNhbGNmaXJzdCkKCQkgICAgICAgKHNldHEgc2l6
+ZSAoYnVmZmVyLXNpemUpKSkpCgkJIChzZXRxIGNtZHN0cgoJCSAgICAgICAoY29uY2F0IGNtZHN0
+ciAoZm9ybWF0ICJ7JWR9IiBzaXplKSkpKQoJICAgICAgICh1bndpbmQtcHJvdGVjdAoJCSAgIChw
+cm9nbgoJCSAgICAgKGltYXAtc2VuZC1jb21tYW5kLTEgY21kc3RyKQoJCSAgICAgKHNldHEgY21k
+c3RyIG5pbCkKCQkgICAgIChpZiAobm90IChlcSAoaW1hcC13YWl0LWZvci10YWcgdGFnKSAnSU5D
+T01QTEVURSkpCgkJCSAoc2V0cSBjb21tYW5kIG5pbCkgOzsgYWJvcnQgY29tbWFuZCBpZiBubyBj
+b250LXJlcQoJCSAgICAgICAobGV0ICgocHJvY2VzcyBpbWFwLXByb2Nlc3MpCgkJCSAgICAgKHN0
+cmVhbSBpbWFwLXN0cmVhbSkKCQkJICAgICAoZW9sIGltYXAtY2xpZW50LWVvbCkpCgkJCSAod2l0
+aC1jdXJyZW50LWJ1ZmZlciBjbWQKCQkJICAgKGFuZCBpbWFwLWxvZwoJCQkJKHdpdGgtY3VycmVu
+dC1idWZmZXIgKGdldC1idWZmZXItY3JlYXRlCgkJCQkJCSAgICAgIGltYXAtbG9nLWJ1ZmZlcikK
+CQkJCSAgKGltYXAtZGlzYWJsZS1tdWx0aWJ5dGUpCgkJCQkgIChidWZmZXItZGlzYWJsZS11bmRv
+KQoJCQkJICAoZ290by1jaGFyIChwb2ludC1tYXgpKQoJCQkJICAoaW5zZXJ0LWJ1ZmZlci1zdWJz
+dHJpbmcgY21kKSkpCgkJCSAgIChwcm9jZXNzLXNlbmQtcmVnaW9uIHByb2Nlc3MgKHBvaW50LW1p
+bikKCQkJCQkJKHBvaW50LW1heCkpKQoJCQkgKHByb2Nlc3Mtc2VuZC1zdHJpbmcgcHJvY2VzcyBp
+bWFwLWNsaWVudC1lb2wpKSkpCgkJIChzZXRxIGltYXAtY29udGludWF0aW9uIG5pbCkpKQoJICAg
+ICAgKChmdW5jdGlvbnAgY21kKQoJICAgICAgIChpbWFwLXNlbmQtY29tbWFuZC0xIGNtZHN0cikK
+CSAgICAgICAoc2V0cSBjbWRzdHIgbmlsKQoJICAgICAgICh1bndpbmQtcHJvdGVjdAoJCSAgIChp
+ZiAobm90IChlcSAoaW1hcC13YWl0LWZvci10YWcgdGFnKSAnSU5DT01QTEVURSkpCgkJICAgICAg
+IChzZXRxIGNvbW1hbmQgbmlsKSA7OyBhYm9ydCBjb21tYW5kIGlmIG5vIGNvbnQtcmVxCgkJICAg
+ICAoc2V0cSBjb21tYW5kIChjb25zIChmdW5jYWxsIGNtZCBpbWFwLWNvbnRpbnVhdGlvbikKCQkJ
+CQkgY29tbWFuZCkpKQoJCSAoc2V0cSBpbWFwLWNvbnRpbnVhdGlvbiBuaWwpKSkKCSAgICAgICh0
+CgkgICAgICAgKGVycm9yICJVbmtub3duIGNvbW1hbmQgdHlwZSIpKSkpCiAgICAgIChpZiBjbWRz
+dHIKCSAgKGltYXAtc2VuZC1jb21tYW5kLTEgY21kc3RyKSkKICAgICAgdGFnKSkpCgooZGVmdW4g
+aW1hcC13YWl0LWZvci10YWcgKHRhZyAmb3B0aW9uYWwgYnVmZmVyKQogICh3aXRoLWN1cnJlbnQt
+YnVmZmVyIChvciBidWZmZXIgKGN1cnJlbnQtYnVmZmVyKSkKICAgIChsZXQgKGltYXAtaGF2ZS1t
+ZXNzYWdlZCkKICAgICAgKHdoaWxlIChhbmQgKG51bGwgaW1hcC1jb250aW51YXRpb24pCgkJICAo
+bWVtcSAocHJvY2Vzcy1zdGF0dXMgaW1hcC1wcm9jZXNzKSAnKG9wZW4gcnVuKSkKCQkgICg8IGlt
+YXAtcmVhY2hlZC10YWcgdGFnKSkKCShsZXQgKChsZW4gKC8gKHBvaW50LW1heCkgMTAyNCkpCgkg
+ICAgICBtZXNzYWdlLWxvZy1tYXgpCgkgICh1bmxlc3MgKDwgbGVuIDEwKQoJICAgIChzZXRxIGlt
+YXAtaGF2ZS1tZXNzYWdlZCB0KQoJICAgIChtZXNzYWdlICJpbWFwIHJlYWQ6ICVkayIgbGVuKSkK
+CSAgKGFjY2VwdC1wcm9jZXNzLW91dHB1dCBpbWFwLXByb2Nlc3MKCQkJCSAodHJ1bmNhdGUgaW1h
+cC1yZWFkLXRpbWVvdXQpCgkJCQkgKHRydW5jYXRlICgqICgtIGltYXAtcmVhZC10aW1lb3V0CgkJ
+CQkJCSAodHJ1bmNhdGUgaW1hcC1yZWFkLXRpbWVvdXQpKQoJCQkJCSAgICAgIDEwMDApKSkpKQog
+ICAgICA7OyBBIHByb2Nlc3MgY2FuIGRpZSBfYmVmb3JlXyB3ZSBoYXZlIHByb2Nlc3NlZCBldmVy
+eXRoaW5nIGl0CiAgICAgIDs7IGhhcyB0byBzYXkuICBNb3Jlb3ZlciwgdGhpcyBjYW4gaGFwcGVu
+IGluIGJldHdlZW4gdGhlIGNhbGwgdG8KICAgICAgOzsgYWNjZXB0LXByb2Nlc3Mtb3V0cHV0IGFu
+ZCB0aGUgY2FsbCB0byBwcm9jZXNzLXN0YXR1cyBpbiBhbgogICAgICA7OyBpdGVyYXRpb24gb2Yg
+dGhlIGxvb3AgYWJvdmUuCiAgICAgICh3aGVuIChhbmQgKG51bGwgaW1hcC1jb250aW51YXRpb24p
+CgkJICg8IGltYXAtcmVhY2hlZC10YWcgdGFnKSkKCShhY2NlcHQtcHJvY2Vzcy1vdXRwdXQgaW1h
+cC1wcm9jZXNzIDAgMCkpCiAgICAgICh3aGVuIGltYXAtaGF2ZS1tZXNzYWdlZAoJKG1lc3NhZ2Ug
+IiIpKQogICAgICAoYW5kIChtZW1xIChwcm9jZXNzLXN0YXR1cyBpbWFwLXByb2Nlc3MpICcob3Bl
+biBydW4pKQoJICAgKG9yIChhc3NxIHRhZyBpbWFwLWZhaWxlZC10YWdzKQoJICAgICAgIChpZiBp
+bWFwLWNvbnRpbnVhdGlvbgoJCSAgICdJTkNPTVBMRVRFCgkJICdPSykpKSkpKQoKKGRlZnVuIGlt
+YXAtc2VudGluZWwgKHByb2Nlc3Mgc3RyaW5nKQogIChkZWxldGUtcHJvY2VzcyBwcm9jZXNzKSkK
+CihkZWZ1biBpbWFwLWZpbmQtbmV4dC1saW5lICgpCiAgIlJldHVybiBwb2ludCBhdCBlbmQgb2Yg
+Y3VycmVudCBsaW5lLCB0YWtpbmcgaW50byBhY2NvdW50IGxpdGVyYWxzLgpSZXR1cm4gbmlsIGlm
+IG5vIGNvbXBsZXRlIGxpbmUgaGFzIGFycml2ZWQuIgogICh3aGVuIChyZS1zZWFyY2gtZm9yd2Fy
+ZCAoY29uY2F0IGltYXAtc2VydmVyLWVvbCAiXFx8e1xcKFswLTldK1xcKX0iCgkJCQkgICBpbWFw
+LXNlcnZlci1lb2wpCgkJCSAgIG5pbCB0KQogICAgKGlmIChtYXRjaC1zdHJpbmcgMSkKCShpZiAo
+PCAocG9pbnQtbWF4KSAoKyAocG9pbnQpIChzdHJpbmctdG8tbnVtYmVyIChtYXRjaC1zdHJpbmcg
+MSkpKSkKCSAgICBuaWwKCSAgKGdvdG8tY2hhciAoKyAocG9pbnQpIChzdHJpbmctdG8tbnVtYmVy
+IChtYXRjaC1zdHJpbmcgMSkpKSkKCSAgKGltYXAtZmluZC1uZXh0LWxpbmUpKQogICAgICAocG9p
+bnQpKSkpCgooZGVmdW4gaW1hcC1hcnJpdmFsLWZpbHRlciAocHJvYyBzdHJpbmcpCiAgIklNQVAg
+cHJvY2VzcyBmaWx0ZXIuIgogIDs7IFNvbWV0aW1lcywgd2UgYXJlIGNhbGxlZCBldmVuIHRob3Vn
+aCB0aGUgcHJvY2VzcyBoYXMgZGllZC4KICA7OyBCZXR0ZXIgYWJzdGFpbiBmcm9tIGRvaW5nIHN0
+dWZmIGluIHRoYXQgY2FzZS4KICAod2hlbiAoYnVmZmVyLW5hbWUgKHByb2Nlc3MtYnVmZmVyIHBy
+b2MpKQogICAgKHdpdGgtY3VycmVudC1idWZmZXIgKHByb2Nlc3MtYnVmZmVyIHByb2MpCiAgICAg
+IChnb3RvLWNoYXIgKHBvaW50LW1heCkpCiAgICAgIChpbnNlcnQgc3RyaW5nKQogICAgICAoYW5k
+IGltYXAtbG9nCgkgICAod2l0aC1jdXJyZW50LWJ1ZmZlciAoZ2V0LWJ1ZmZlci1jcmVhdGUgaW1h
+cC1sb2ctYnVmZmVyKQoJICAgICAoaW1hcC1kaXNhYmxlLW11bHRpYnl0ZSkKCSAgICAgKGJ1ZmZl
+ci1kaXNhYmxlLXVuZG8pCgkgICAgIChnb3RvLWNoYXIgKHBvaW50LW1heCkpCgkgICAgIChpbnNl
+cnQgc3RyaW5nKSkpCiAgICAgIChsZXQgKGVuZCkKCShnb3RvLWNoYXIgKHBvaW50LW1pbikpCgko
+d2hpbGUgKHNldHEgZW5kIChpbWFwLWZpbmQtbmV4dC1saW5lKSkKCSAgKHNhdmUtcmVzdHJpY3Rp
+b24KCSAgICAobmFycm93LXRvLXJlZ2lvbiAocG9pbnQtbWluKSBlbmQpCgkgICAgKGRlbGV0ZS1i
+YWNrd2FyZC1jaGFyIChsZW5ndGggaW1hcC1zZXJ2ZXItZW9sKSkKCSAgICAoZ290by1jaGFyIChw
+b2ludC1taW4pKQoJICAgICh1bndpbmQtcHJvdGVjdAoJCShjb25kICgoZXEgaW1hcC1zdGF0ZSAn
+aW5pdGlhbCkKCQkgICAgICAgKGltYXAtcGFyc2UtZ3JlZXRpbmcpKQoJCSAgICAgICgob3IgKGVx
+IGltYXAtc3RhdGUgJ2F1dGgpCgkJCSAgIChlcSBpbWFwLXN0YXRlICdub25hdXRoKQoJCQkgICAo
+ZXEgaW1hcC1zdGF0ZSAnc2VsZWN0ZWQpCgkJCSAgIChlcSBpbWFwLXN0YXRlICdleGFtaW5lKSkK
+CQkgICAgICAgKGltYXAtcGFyc2UtcmVzcG9uc2UpKQoJCSAgICAgICh0CgkJICAgICAgIChtZXNz
+YWdlICJVbmtub3duIHN0YXRlICVzIGluIGFycml2YWwgZmlsdGVyIgoJCQkJaW1hcC1zdGF0ZSkp
+KQoJICAgICAgKGRlbGV0ZS1yZWdpb24gKHBvaW50LW1pbikgKHBvaW50LW1heCkpKSkpKSkpKQoK
+DAo7OyBJbWFwIHBhcnNlci4KCihkZWZzdWJzdCBpbWFwLWZvcndhcmQgKCkKICAob3IgKGVvYnAp
+IChmb3J3YXJkLWNoYXIpKSkKCjs7ICAgbnVtYmVyICAgICAgICAgID0gMSpESUdJVAo7OyAgICAg
+ICAgICAgICAgICAgICAgICAgOyBVbnNpZ25lZCAzMi1iaXQgaW50ZWdlcgo7OyAgICAgICAgICAg
+ICAgICAgICAgICAgOyAoMCA8PSBuIDwgNCwyOTQsOTY3LDI5NikKCihkZWZzdWJzdCBpbWFwLXBh
+cnNlLW51bWJlciAoKQogICh3aGVuIChsb29raW5nLWF0ICJbMC05XSsiKQogICAgKHByb2cxCgko
+c3RyaW5nLXRvLW51bWJlciAobWF0Y2gtc3RyaW5nIDApKQogICAgICAoZ290by1jaGFyIChtYXRj
+aC1lbmQgMCkpKSkpCgo7OyAgIGxpdGVyYWwgICAgICAgICA9ICJ7IiBudW1iZXIgIn0iIENSTEYg
+KkNIQVI4Cjs7ICAgICAgICAgICAgICAgICAgICAgICA7IE51bWJlciByZXByZXNlbnRzIHRoZSBu
+dW1iZXIgb2YgQ0hBUjhzCgooZGVmc3Vic3QgaW1hcC1wYXJzZS1saXRlcmFsICgpCiAgKHdoZW4g
+KGxvb2tpbmctYXQgIntcXChbMC05XStcXCl9XHJcbiIpCiAgICAobGV0ICgocG9zIChtYXRjaC1l
+bmQgMCkpCgkgIChsZW4gKHN0cmluZy10by1udW1iZXIgKG1hdGNoLXN0cmluZyAxKSkpKQogICAg
+ICAoaWYgKDwgKHBvaW50LW1heCkgKCsgcG9zIGxlbikpCgkgIG5pbAoJKGdvdG8tY2hhciAoKyBw
+b3MgbGVuKSkKCShidWZmZXItc3Vic3RyaW5nIHBvcyAoKyBwb3MgbGVuKSkpKSkpCgo7OyAgIHN0
+cmluZyAgICAgICAgICA9IHF1b3RlZCAvIGxpdGVyYWwKOzsKOzsgICBxdW90ZWQgICAgICAgICAg
+PSBEUVVPVEUgKlFVT1RFRC1DSEFSIERRVU9URQo7Owo7OyAgIFFVT1RFRC1DSEFSICAgICA9IDxh
+bnkgVEVYVC1DSEFSIGV4Y2VwdCBxdW90ZWQtc3BlY2lhbHM+IC8KOzsgICAgICAgICAgICAgICAg
+ICAgICAiXCIgcXVvdGVkLXNwZWNpYWxzCjs7Cjs7ICAgcXVvdGVkLXNwZWNpYWxzID0gRFFVT1RF
+IC8gIlwiCjs7Cjs7ICAgVEVYVC1DSEFSICAgICAgID0gPGFueSBDSEFSIGV4Y2VwdCBDUiBhbmQg
+TEY+CgooZGVmc3Vic3QgaW1hcC1wYXJzZS1zdHJpbmcgKCkKICAoY29uZCAoKGVxIChjaGFyLWFm
+dGVyKSA/XCIpCgkgKGZvcndhcmQtY2hhciAxKQoJIChsZXQgKChwIChwb2ludCkpIChuYW1lICIi
+KSkKCSAgIChza2lwLWNoYXJzLWZvcndhcmQgIl5cIlxcXFwiKQoJICAgKHNldHEgbmFtZSAoYnVm
+ZmVyLXN1YnN0cmluZyBwIChwb2ludCkpKQoJICAgKHdoaWxlIChlcSAoY2hhci1hZnRlcikgP1xc
+KQoJICAgICAoc2V0cSBwICgxKyAocG9pbnQpKSkKCSAgICAgKGZvcndhcmQtY2hhciAyKQoJICAg
+ICAoc2tpcC1jaGFycy1mb3J3YXJkICJeXCJcXFxcIikKCSAgICAgKHNldHEgbmFtZSAoY29uY2F0
+IG5hbWUgKGJ1ZmZlci1zdWJzdHJpbmcgcCAocG9pbnQpKSkpKQoJICAgKGZvcndhcmQtY2hhciAx
+KQoJICAgbmFtZSkpCgkoKGVxIChjaGFyLWFmdGVyKSA/eykKCSAoaW1hcC1wYXJzZS1saXRlcmFs
+KSkpKQoKOzsgICBuaWwgICAgICAgICAgICAgPSAiTklMIgoKKGRlZnN1YnN0IGltYXAtcGFyc2Ut
+bmlsICgpCiAgKGlmIChsb29raW5nLWF0ICJOSUwiKQogICAgICAoZ290by1jaGFyIChtYXRjaC1l
+bmQgMCkpKSkKCjs7ICAgbnN0cmluZyAgICAgICAgID0gc3RyaW5nIC8gbmlsCgooZGVmc3Vic3Qg
+aW1hcC1wYXJzZS1uc3RyaW5nICgpCiAgKG9yIChpbWFwLXBhcnNlLXN0cmluZykKICAgICAgKGFu
+ZCAoaW1hcC1wYXJzZS1uaWwpCgkgICBuaWwpKSkKCjs7ICAgYXN0cmluZyAgICAgICAgID0gYXRv
+bSAvIHN0cmluZwo7Owo7OyAgIGF0b20gICAgICAgICAgICA9IDEqQVRPTS1DSEFSCjs7Cjs7ICAg
+QVRPTS1DSEFSICAgICAgID0gPGFueSBDSEFSIGV4Y2VwdCBhdG9tLXNwZWNpYWxzPgo7Owo7OyAg
+IGF0b20tc3BlY2lhbHMgICA9ICIoIiAvICIpIiAvICJ7IiAvIFNQIC8gQ1RMIC8gbGlzdC13aWxk
+Y2FyZHMgLwo7OyAgICAgICAgICAgICAgICAgICAgIHF1b3RlZC1zcGVjaWFscwo7Owo7OyAgIGxp
+c3Qtd2lsZGNhcmRzICA9ICIlIiAvICIqIgo7Owo7OyAgIHF1b3RlZC1zcGVjaWFscyA9IERRVU9U
+RSAvICJcIgoKKGRlZnN1YnN0IGltYXAtcGFyc2UtYXN0cmluZyAoKQogIChvciAoaW1hcC1wYXJz
+ZS1zdHJpbmcpCiAgICAgIChidWZmZXItc3Vic3RyaW5nIChwb2ludCkKCQkJKGlmIChyZS1zZWFy
+Y2gtZm9yd2FyZCAiWygpeyBcclxuJSpcIlxcXSIgbmlsIHQpCgkJCSAgICAoZ290by1jaGFyICgx
+LSAobWF0Y2gtZW5kIDApKSkKCQkJICAoZW5kLW9mLWxpbmUpCgkJCSAgKHBvaW50KSkpKSkKCjs7
+ICAgYWRkcmVzcyAgICAgICAgID0gIigiIGFkZHItbmFtZSBTUCBhZGRyLWFkbCBTUCBhZGRyLW1h
+aWxib3ggU1AKOzsgICAgICAgICAgICAgICAgICAgICAgYWRkci1ob3N0ICIpIgo7Owo7OyAgIGFk
+ZHItYWRsICAgICAgICA9IG5zdHJpbmcKOzsgICAgICAgICAgICAgICAgICAgICAgIDsgSG9sZHMg
+cm91dGUgZnJvbSBbUkZDLTgyMl0gcm91dGUtYWRkciBpZgo7OyAgICAgICAgICAgICAgICAgICAg
+ICAgOyBub24tbmlsCjs7Cjs7ICAgYWRkci1ob3N0ICAgICAgID0gbnN0cmluZwo7OyAgICAgICAg
+ICAgICAgICAgICAgICAgOyBuaWwgaW5kaWNhdGVzIFtSRkMtODIyXSBncm91cCBzeW50YXguCjs7
+ICAgICAgICAgICAgICAgICAgICAgICA7IE90aGVyd2lzZSwgaG9sZHMgW1JGQy04MjJdIGRvbWFp
+biBuYW1lCjs7Cjs7ICAgYWRkci1tYWlsYm94ICAgID0gbnN0cmluZwo7OyAgICAgICAgICAgICAg
+ICAgICAgICAgOyBuaWwgaW5kaWNhdGVzIGVuZCBvZiBbUkZDLTgyMl0gZ3JvdXA7IGlmCjs7ICAg
+ICAgICAgICAgICAgICAgICAgICA7IG5vbi1uaWwgYW5kIGFkZHItaG9zdCBpcyBuaWwsIGhvbGRz
+Cjs7ICAgICAgICAgICAgICAgICAgICAgICA7IFtSRkMtODIyXSBncm91cCBuYW1lLgo7OyAgICAg
+ICAgICAgICAgICAgICAgICAgOyBPdGhlcndpc2UsIGhvbGRzIFtSRkMtODIyXSBsb2NhbC1wYXJ0
+Cjs7ICAgICAgICAgICAgICAgICAgICAgICA7IGFmdGVyIHJlbW92aW5nIFtSRkMtODIyXSBxdW90
+aW5nCjs7Cjs7ICAgYWRkci1uYW1lICAgICAgID0gbnN0cmluZwo7OyAgICAgICAgICAgICAgICAg
+ICAgICAgOyBJZiBub24tbmlsLCBob2xkcyBwaHJhc2UgZnJvbSBbUkZDLTgyMl0KOzsgICAgICAg
+ICAgICAgICAgICAgICAgIDsgbWFpbGJveCBhZnRlciByZW1vdmluZyBbUkZDLTgyMl0gcXVvdGlu
+Zwo7OwoKKGRlZnN1YnN0IGltYXAtcGFyc2UtYWRkcmVzcyAoKQogIChsZXQgKGFkZHJlc3MpCiAg
+ICAod2hlbiAoZXEgKGNoYXItYWZ0ZXIpID9cKCkKICAgICAgKGltYXAtZm9yd2FyZCkKICAgICAg
+KHNldHEgYWRkcmVzcyAodmVjdG9yIChwcm9nMSAoaW1hcC1wYXJzZS1uc3RyaW5nKQoJCQkgICAg
+ICAoaW1hcC1mb3J3YXJkKSkKCQkJICAgIChwcm9nMSAoaW1hcC1wYXJzZS1uc3RyaW5nKQoJCQkg
+ICAgICAoaW1hcC1mb3J3YXJkKSkKCQkJICAgIChwcm9nMSAoaW1hcC1wYXJzZS1uc3RyaW5nKQoJ
+CQkgICAgICAoaW1hcC1mb3J3YXJkKSkKCQkJICAgIChpbWFwLXBhcnNlLW5zdHJpbmcpKSkKICAg
+ICAgKHdoZW4gKGVxIChjaGFyLWFmdGVyKSA/XCkpCgkoaW1hcC1mb3J3YXJkKQoJYWRkcmVzcykp
+KSkKCjs7ICAgYWRkcmVzcy1saXN0ICAgID0gIigiIDEqYWRkcmVzcyAiKSIgLyBuaWwKOzsKOzsg
+ICBuaWwgICAgICAgICAgICAgPSAiTklMIgoKKGRlZnN1YnN0IGltYXAtcGFyc2UtYWRkcmVzcy1s
+aXN0ICgpCiAgKGlmIChlcSAoY2hhci1hZnRlcikgP1woKQogICAgICAobGV0IChhZGRyZXNzIGFk
+ZHJlc3NlcykKCShpbWFwLWZvcndhcmQpCgkod2hpbGUgKGFuZCAobm90IChlcSAoY2hhci1hZnRl
+cikgP1wpKSkKCQkgICAgOzsgbmV4dCBsaW5lIGZvciBNUyBFeGNoYW5nZSBidWcKCQkgICAgKHBy
+b2duIChhbmQgKGVxIChjaGFyLWFmdGVyKSA/ICkgKGltYXAtZm9yd2FyZCkpIHQpCgkJICAgIChz
+ZXRxIGFkZHJlc3MgKGltYXAtcGFyc2UtYWRkcmVzcykpKQoJICAoc2V0cSBhZGRyZXNzZXMgKGNv
+bnMgYWRkcmVzcyBhZGRyZXNzZXMpKSkKCSh3aGVuIChlcSAoY2hhci1hZnRlcikgP1wpKQoJICAo
+aW1hcC1mb3J3YXJkKQoJICAobnJldmVyc2UgYWRkcmVzc2VzKSkpCiAgICA7OyBXaXRoIGFzc2Vy
+dCwgdGhlIGNvZGUgbWlnaHQgbm90IGJlIGV2YWwnZC4KICAgIDs7IChhc3NlcnQgKGltYXAtcGFy
+c2UtbmlsKSB0ICJJbiBpbWFwLXBhcnNlLWFkZHJlc3MtbGlzdCIpCiAgICAoaW1hcC1wYXJzZS1u
+aWwpKSkKCjs7ICAgbWFpbGJveCAgICAgICAgID0gIklOQk9YIiAvIGFzdHJpbmcKOzsgICAgICAg
+ICAgICAgICAgICAgICAgIDsgSU5CT1ggaXMgY2FzZS1pbnNlbnNpdGl2ZS4gIEFsbCBjYXNlIHZh
+cmlhbnRzIG9mCjs7ICAgICAgICAgICAgICAgICAgICAgICA7IElOQk9YIChlLmcuICJpTmJPeCIp
+IE1VU1QgYmUgaW50ZXJwcmV0ZWQgYXMgSU5CT1gKOzsgICAgICAgICAgICAgICAgICAgICAgIDsg
+bm90IGFzIGFuIGFzdHJpbmcuICBBbiBhc3RyaW5nIHdoaWNoIGNvbnNpc3RzIG9mCjs7ICAgICAg
+ICAgICAgICAgICAgICAgICA7IHRoZSBjYXNlLWluc2Vuc2l0aXZlIHNlcXVlbmNlICJJIiAiTiIg
+IkIiICJPIiAiWCIKOzsgICAgICAgICAgICAgICAgICAgICAgIDsgaXMgY29uc2lkZXJlZCB0byBi
+ZSBJTkJPWCBhbmQgbm90IGFuIGFzdHJpbmcuCjs7ICAgICAgICAgICAgICAgICAgICAgICA7ICBS
+ZWZlciB0byBzZWN0aW9uIDUuMSBmb3IgZnVydGhlcgo7OyAgICAgICAgICAgICAgICAgICAgICAg
+OyBzZW1hbnRpYyBkZXRhaWxzIG9mIG1haWxib3ggbmFtZXMuCgooZGVmc3Vic3QgaW1hcC1wYXJz
+ZS1tYWlsYm94ICgpCiAgKGxldCAoKG1haWxib3ggKGltYXAtcGFyc2UtYXN0cmluZykpKQogICAg
+KGlmIChzdHJpbmctZXF1YWwgIklOQk9YIiAodXBjYXNlIG1haWxib3gpKQoJIklOQk9YIgogICAg
+ICBtYWlsYm94KSkpCgo7OyAgIGdyZWV0aW5nICAgICAgICA9ICIqIiBTUCAocmVzcC1jb25kLWF1
+dGggLyByZXNwLWNvbmQtYnllKSBDUkxGCjs7Cjs7ICAgcmVzcC1jb25kLWF1dGggID0gKCJPSyIg
+LyAiUFJFQVVUSCIpIFNQIHJlc3AtdGV4dAo7OyAgICAgICAgICAgICAgICAgICAgICAgOyBBdXRo
+ZW50aWNhdGlvbiBjb25kaXRpb24KOzsKOzsgICByZXNwLWNvbmQtYnllICAgPSAiQllFIiBTUCBy
+ZXNwLXRleHQKCihkZWZ1biBpbWFwLXBhcnNlLWdyZWV0aW5nICgpCiAgIlBhcnNlIGEgSU1BUCBn
+cmVldGluZy4iCiAgKGNvbmQgKChsb29raW5nLWF0ICJcXCogT0sgIikKCSAoc2V0cSBpbWFwLXN0
+YXRlICdub25hdXRoKSkKCSgobG9va2luZy1hdCAiXFwqIFBSRUFVVEggIikKCSAoc2V0cSBpbWFw
+LXN0YXRlICdhdXRoKSkKCSgobG9va2luZy1hdCAiXFwqIEJZRSAiKQoJIChzZXRxIGltYXAtc3Rh
+dGUgJ2Nsb3NlZCkpKSkKCjs7ICAgcmVzcG9uc2UgICAgICAgID0gKihjb250aW51ZS1yZXEgLyBy
+ZXNwb25zZS1kYXRhKSByZXNwb25zZS1kb25lCjs7Cjs7ICAgY29udGludWUtcmVxICAgID0gIisi
+IFNQIChyZXNwLXRleHQgLyBiYXNlNjQpIENSTEYKOzsKOzsgICByZXNwb25zZS1kYXRhICAgPSAi
+KiIgU1AgKHJlc3AtY29uZC1zdGF0ZSAvIHJlc3AtY29uZC1ieWUgLwo7OyAgICAgICAgICAgICAg
+ICAgICAgIG1haWxib3gtZGF0YSAvIG1lc3NhZ2UtZGF0YSAvIGNhcGFiaWxpdHktZGF0YSkgQ1JM
+Rgo7Owo7OyAgIHJlc3BvbnNlLWRvbmUgICA9IHJlc3BvbnNlLXRhZ2dlZCAvIHJlc3BvbnNlLWZh
+dGFsCjs7Cjs7ICAgcmVzcG9uc2UtZmF0YWwgID0gIioiIFNQIHJlc3AtY29uZC1ieWUgQ1JMRgo7
+OyAgICAgICAgICAgICAgICAgICAgICAgOyBTZXJ2ZXIgY2xvc2VzIGNvbm5lY3Rpb24gaW1tZWRp
+YXRlbHkKOzsKOzsgICByZXNwb25zZS10YWdnZWQgPSB0YWcgU1AgcmVzcC1jb25kLXN0YXRlIENS
+TEYKOzsKOzsgICByZXNwLWNvbmQtc3RhdGUgPSAoIk9LIiAvICJOTyIgLyAiQkFEIikgU1AgcmVz
+cC10ZXh0Cjs7ICAgICAgICAgICAgICAgICAgICAgICA7IFN0YXR1cyBjb25kaXRpb24KOzsKOzsg
+ICByZXNwLWNvbmQtYnllICAgPSAiQllFIiBTUCByZXNwLXRleHQKOzsKOzsgICBtYWlsYm94LWRh
+dGEgICAgPSAgIkZMQUdTIiBTUCBmbGFnLWxpc3QgLwo7OwkJICAgICAgICAiTElTVCIgU1AgbWFp
+bGJveC1saXN0IC8KOzsgICAgICAgICAgICAgICAgICAgICAgIkxTVUIiIFNQIG1haWxib3gtbGlz
+dCAvCjs7CQkgICAgICAgICJTRUFSQ0giICooU1AgbnotbnVtYmVyKSAvCjs7ICAgICAgICAgICAg
+ICAgICAgICAgICJTVEFUVVMiIFNQIG1haWxib3ggU1AgIigiCjs7CSAgICAgICAgICAgICAgICAg
+ICAgICBbc3RhdHVzLWF0dCBTUCBudW1iZXIgKihTUCBzdGF0dXMtYXR0IFNQIG51bWJlcildICIp
+IiAvCjs7ICAgICAgICAgICAgICAgICAgICAgIG51bWJlciBTUCAiRVhJU1RTIiAvCjs7CQkgICAg
+ICAgIG51bWJlciBTUCAiUkVDRU5UIgo7Owo7OyAgIG1lc3NhZ2UtZGF0YSAgICA9IG56LW51bWJl
+ciBTUCAoIkVYUFVOR0UiIC8gKCJGRVRDSCIgU1AgbXNnLWF0dCkpCjs7Cjs7ICAgY2FwYWJpbGl0
+eS1kYXRhID0gIkNBUEFCSUxJVFkiICooU1AgY2FwYWJpbGl0eSkgU1AgIklNQVA0cmV2MSIKOzsg
+ICAgICAgICAgICAgICAgICAgICAqKFNQIGNhcGFiaWxpdHkpCjs7ICAgICAgICAgICAgICAgICAg
+ICAgICA7IElNQVA0cmV2MSBzZXJ2ZXJzIHdoaWNoIG9mZmVyIFJGQyAxNzMwCjs7ICAgICAgICAg
+ICAgICAgICAgICAgICA7IGNvbXBhdGliaWxpdHkgTVVTVCBsaXN0ICJJTUFQNCIgYXMgdGhlIGZp
+cnN0Cjs7ICAgICAgICAgICAgICAgICAgICAgICA7IGNhcGFiaWxpdHkuCgooZGVmdW4gaW1hcC1w
+YXJzZS1yZXNwb25zZSAoKQogICJQYXJzZSBhIElNQVAgY29tbWFuZCByZXNwb25zZS4iCiAgKGxl
+dCAodG9rZW4pCiAgICAoY2FzZSAoc2V0cSB0b2tlbiAocmVhZCAoY3VycmVudC1idWZmZXIpKSkK
+ICAgICAgKCsgKHNldHEgaW1hcC1jb250aW51YXRpb24KCSAgICAgICAob3IgKGJ1ZmZlci1zdWJz
+dHJpbmcgKG1pbiAocG9pbnQtbWF4KSAoMSsgKHBvaW50KSkpCgkJCQkgICAgIChwb2ludC1tYXgp
+KQoJCSAgIHQpKSkKICAgICAgKCogKGNhc2UgKHByb2cxIChzZXRxIHRva2VuIChyZWFkIChjdXJy
+ZW50LWJ1ZmZlcikpKQoJCSAoaW1hcC1mb3J3YXJkKSkKCSAgIChPSyAgICAgICAgIChpbWFwLXBh
+cnNlLXJlc3AtdGV4dCkpCgkgICAoTk8gICAgICAgICAoaW1hcC1wYXJzZS1yZXNwLXRleHQpKQoJ
+ICAgKEJBRCAgICAgICAgKGltYXAtcGFyc2UtcmVzcC10ZXh0KSkKCSAgIChCWUUgICAgICAgIChp
+bWFwLXBhcnNlLXJlc3AtdGV4dCkpCgkgICAoRkxBR1MgICAgICAoaW1hcC1tYWlsYm94LXB1dCAn
+ZmxhZ3MgKGltYXAtcGFyc2UtZmxhZy1saXN0KSkpCgkgICAoTElTVCAgICAgICAoaW1hcC1wYXJz
+ZS1kYXRhLWxpc3QgJ2xpc3QpKQoJICAgKExTVUIgICAgICAgKGltYXAtcGFyc2UtZGF0YS1saXN0
+ICdsc3ViKSkKCSAgIChTRUFSQ0ggICAgIChpbWFwLW1haWxib3gtcHV0CgkJCSdzZWFyY2gKCQkJ
+KHJlYWQgKGNvbmNhdCAiKCIgKGJ1ZmZlci1zdWJzdHJpbmcgKHBvaW50KSAocG9pbnQtbWF4KSkg
+IikiKSkpKQoJICAgKFNUQVRVUyAgICAgKGltYXAtcGFyc2Utc3RhdHVzKSkKCSAgIChDQVBBQklM
+SVRZIChzZXRxIGltYXAtY2FwYWJpbGl0eQoJCQkgICAgICAgKHJlYWQgKGNvbmNhdCAiKCIgKHVw
+Y2FzZSAoYnVmZmVyLXN1YnN0cmluZwoJCQkJCQkJICAocG9pbnQpIChwb2ludC1tYXgpKSkKCQkJ
+CQkgICAgICIpIikpKSkKCSAgIChJRAkgICAgICAgKHNldHEgaW1hcC1pZCAocmVhZCAoYnVmZmVy
+LXN1YnN0cmluZyAocG9pbnQpCgkJCQkJCQkgICAgIChwb2ludC1tYXgpKSkpKQoJICAgKEFDTCAg
+ICAgICAgKGltYXAtcGFyc2UtYWNsKSkKCSAgICh0ICAgICAgIChjYXNlIChwcm9nMSAocmVhZCAo
+Y3VycmVudC1idWZmZXIpKQoJCQkgICAgKGltYXAtZm9yd2FyZCkpCgkJICAgICAgKEVYSVNUUyAg
+KGltYXAtbWFpbGJveC1wdXQgJ2V4aXN0cyB0b2tlbikpCgkJICAgICAgKFJFQ0VOVCAgKGltYXAt
+bWFpbGJveC1wdXQgJ3JlY2VudCB0b2tlbikpCgkJICAgICAgKEVYUFVOR0UgdCkKCQkgICAgICAo
+RkVUQ0ggICAoaW1hcC1wYXJzZS1mZXRjaCB0b2tlbikpCgkJICAgICAgKHQgICAgICAgKG1lc3Nh
+Z2UgIkdhcmJhZ2U6ICVzIiAoYnVmZmVyLXN0cmluZykpKSkpKSkKICAgICAgKHQgKGxldCAoc3Rh
+dHVzKQoJICAgKGlmIChub3QgKGludGVnZXJwIHRva2VuKSkKCSAgICAgICAobWVzc2FnZSAiR2Fy
+YmFnZTogJXMiIChidWZmZXItc3RyaW5nKSkKCSAgICAgKGNhc2UgKHByb2cxIChzZXRxIHN0YXR1
+cyAocmVhZCAoY3VycmVudC1idWZmZXIpKSkKCQkgICAgIChpbWFwLWZvcndhcmQpKQoJICAgICAg
+IChPSyAgKHByb2duCgkJICAgICAgKHNldHEgaW1hcC1yZWFjaGVkLXRhZyAobWF4IGltYXAtcmVh
+Y2hlZC10YWcgdG9rZW4pKQoJCSAgICAgIChpbWFwLXBhcnNlLXJlc3AtdGV4dCkpKQoJICAgICAg
+IChOTyAgKHByb2duCgkJICAgICAgKHNldHEgaW1hcC1yZWFjaGVkLXRhZyAobWF4IGltYXAtcmVh
+Y2hlZC10YWcgdG9rZW4pKQoJCSAgICAgIChzYXZlLWV4Y3Vyc2lvbgoJCQkoaW1hcC1wYXJzZS1y
+ZXNwLXRleHQpKQoJCSAgICAgIChsZXQgKGNvZGUgdGV4dCkKCQkJKHdoZW4gKGVxIChjaGFyLWFm
+dGVyKSA/XFspCgkJCSAgKHNldHEgY29kZSAoYnVmZmVyLXN1YnN0cmluZyAocG9pbnQpCgkJCQkJ
+CSAgICAgICAoc2VhcmNoLWZvcndhcmQgIl0iKSkpCgkJCSAgKGltYXAtZm9yd2FyZCkpCgkJCShz
+ZXRxIHRleHQgKGJ1ZmZlci1zdWJzdHJpbmcgKHBvaW50KSAocG9pbnQtbWF4KSkpCgkJCShwdXNo
+IChsaXN0IHRva2VuIHN0YXR1cyBjb2RlIHRleHQpCgkJCSAgICAgIGltYXAtZmFpbGVkLXRhZ3Mp
+KSkpCgkgICAgICAgKEJBRCAocHJvZ24KCQkgICAgICAoc2V0cSBpbWFwLXJlYWNoZWQtdGFnICht
+YXggaW1hcC1yZWFjaGVkLXRhZyB0b2tlbikpCgkJICAgICAgKHNhdmUtZXhjdXJzaW9uCgkJCShp
+bWFwLXBhcnNlLXJlc3AtdGV4dCkpCgkJICAgICAgKGxldCAoY29kZSB0ZXh0KQoJCQkod2hlbiAo
+ZXEgKGNoYXItYWZ0ZXIpID9cWykKCQkJICAoc2V0cSBjb2RlIChidWZmZXItc3Vic3RyaW5nIChw
+b2ludCkKCQkJCQkJICAgICAgIChzZWFyY2gtZm9yd2FyZCAiXSIpKSkKCQkJICAoaW1hcC1mb3J3
+YXJkKSkKCQkJKHNldHEgdGV4dCAoYnVmZmVyLXN1YnN0cmluZyAocG9pbnQpIChwb2ludC1tYXgp
+KSkKCQkJKHB1c2ggKGxpc3QgdG9rZW4gc3RhdHVzIGNvZGUgdGV4dCkgaW1hcC1mYWlsZWQtdGFn
+cykKCQkJKGVycm9yICJJbnRlcm5hbCBlcnJvciwgdGFnICVzIHN0YXR1cyAlcyBjb2RlICVzIHRl
+eHQgJXMiCgkJCSAgICAgICB0b2tlbiBzdGF0dXMgY29kZSB0ZXh0KSkpKQoJICAgICAgICh0ICAg
+KG1lc3NhZ2UgIkdhcmJhZ2U6ICVzIiAoYnVmZmVyLXN0cmluZykpKSkKCSAgICAgKHdoZW4gKGFz
+c3EgdG9rZW4gaW1hcC1jYWxsYmFja3MpCgkgICAgICAgKGZ1bmNhbGwgKGNkciAoYXNzcSB0b2tl
+biBpbWFwLWNhbGxiYWNrcykpIHRva2VuIHN0YXR1cykKCSAgICAgICAoc2V0cSBpbWFwLWNhbGxi
+YWNrcwoJCSAgICAgKGltYXAtcmVtYXNzb2MgdG9rZW4gaW1hcC1jYWxsYmFja3MpKSkpKSkpKSkK
+Cjs7ICAgcmVzcC10ZXh0ICAgICAgID0gWyJbIiByZXNwLXRleHQtY29kZSAiXSIgU1BdIHRleHQK
+OzsKOzsgICB0ZXh0ICAgICAgICAgICAgPSAxKlRFWFQtQ0hBUgo7Owo7OyAgIFRFWFQtQ0hBUiAg
+ICAgICA9IDxhbnkgQ0hBUiBleGNlcHQgQ1IgYW5kIExGPgoKKGRlZnVuIGltYXAtcGFyc2UtcmVz
+cC10ZXh0ICgpCiAgKGltYXAtcGFyc2UtcmVzcC10ZXh0LWNvZGUpKQoKOzsgICByZXNwLXRleHQt
+Y29kZSAgPSAiQUxFUlQiIC8KOzsgICAgICAgICAgICAgICAgICAgICAiQkFEQ0hBUlNFVCBbU1Ag
+IigiIGFzdHJpbmcgKihTUCBhc3RyaW5nKSAiKSIgXSAvCjs7ICAgICAgICAgICAgICAgICAgICAg
+Ik5FV05BTUUiIFNQIHN0cmluZyBTUCBzdHJpbmcgLwo7OwkJICAgICAgICJQQVJTRSIgLwo7OyAg
+ICAgICAgICAgICAgICAgICAgICJQRVJNQU5FTlRGTEFHUyIgU1AgIigiCjs7ICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgIFtmbGFnLXBlcm0gKihTUCBmbGFnLXBlcm0pXSAiKSIgLwo7OyAg
+ICAgICAgICAgICAgICAgICAgICJSRUFELU9OTFkiIC8KOzsJCSAgICAgICAiUkVBRC1XUklURSIg
+Lwo7OwkJICAgICAgICJUUllDUkVBVEUiIC8KOzsgICAgICAgICAgICAgICAgICAgICAiVUlETkVY
+VCIgU1AgbnotbnVtYmVyIC8KOzsJCSAgICAgICAiVUlEVkFMSURJVFkiIFNQIG56LW51bWJlciAv
+Cjs7ICAgICAgICAgICAgICAgICAgICAgIlVOU0VFTiIgU1AgbnotbnVtYmVyIC8KOzsgICAgICAg
+ICAgICAgICAgICAgICByZXNwLXRleHQtYXRvbSBbU1AgMSo8YW55IFRFWFQtQ0hBUiBleGNlcHQg
+Il0iPl0KOzsKOzsgICByZXNwX2NvZGVfYXBuZCAgPSAiQVBQRU5EVUlEIiBTUEFDRSBuel9udW1i
+ZXIgU1BBQ0UgdW5pcXVlaWQKOzsKOzsgICByZXNwX2NvZGVfY29weSAgPSAiQ09QWVVJRCIgU1BB
+Q0UgbnpfbnVtYmVyIFNQQUNFIHNldCBTUEFDRSBzZXQKOzsKOzsgICBzZXQgICAgICAgICAgICAg
+PSBzZXF1ZW5jZS1udW0gLyAoc2VxdWVuY2UtbnVtICI6IiBzZXF1ZW5jZS1udW0pIC8KOzsgICAg
+ICAgICAgICAgICAgICAgICAgICAoc2V0ICIsIiBzZXQpCjs7ICAgICAgICAgICAgICAgICAgICAg
+ICAgICA7IElkZW50aWZpZXMgYSBzZXQgb2YgbWVzc2FnZXMuICBGb3IgbWVzc2FnZQo7OyAgICAg
+ICAgICAgICAgICAgICAgICAgICAgOyBzZXF1ZW5jZSBudW1iZXJzLCB0aGVzZSBhcmUgY29uc2Vj
+dXRpdmUKOzsgICAgICAgICAgICAgICAgICAgICAgICAgIDsgbnVtYmVycyBmcm9tIDEgdG8gdGhl
+IG51bWJlciBvZiBtZXNzYWdlcyBpbgo7OyAgICAgICAgICAgICAgICAgICAgICAgICAgOyB0aGUg
+bWFpbGJveAo7OyAgICAgICAgICAgICAgICAgICAgICAgICAgOyBDb21tYSBkZWxpbWl0cyBpbmRp
+dmlkdWFsIG51bWJlcnMsIGNvbG9uCjs7ICAgICAgICAgICAgICAgICAgICAgICAgICA7IGRlbGlt
+aXRzIGJldHdlZW4gdHdvIG51bWJlcnMgaW5jbHVzaXZlLgo7OyAgICAgICAgICAgICAgICAgICAg
+ICAgICAgOyBFeGFtcGxlOiAyLDQ6Nyw5LDEyOiogaXMgMiw0LDUsNiw3LDksMTIsMTMsCjs7ICAg
+ICAgICAgICAgICAgICAgICAgICAgICA7IDE0LDE1IGZvciBhIG1haWxib3ggd2l0aCAxNSBtZXNz
+YWdlcy4KOzsKOzsgICBzZXF1ZW5jZS1udW0gICAgPSBuei1udW1iZXIgLyAiKiIKOzsgICAgICAg
+ICAgICAgICAgICAgICAgICAgIDsgKiBpcyB0aGUgbGFyZ2VzdCBudW1iZXIgaW4gdXNlLiAgRm9y
+IG1lc3NhZ2UKOzsgICAgICAgICAgICAgICAgICAgICAgICAgIDsgc2VxdWVuY2UgbnVtYmVycywg
+aXQgaXMgdGhlIG51bWJlciBvZiBtZXNzYWdlcwo7OyAgICAgICAgICAgICAgICAgICAgICAgICAg
+OyBpbiB0aGUgbWFpbGJveC4gIEZvciB1bmlxdWUgaWRlbnRpZmllcnMsIGl0IGlzCjs7ICAgICAg
+ICAgICAgICAgICAgICAgICAgICA7IHRoZSB1bmlxdWUgaWRlbnRpZmllciBvZiB0aGUgbGFzdCBt
+ZXNzYWdlIGluCjs7ICAgICAgICAgICAgICAgICAgICAgICAgICA7IHRoZSBtYWlsYm94Lgo7Owo7
+OyAgIGZsYWctcGVybSAgICAgICA9IGZsYWcgLyAiXCoiCjs7Cjs7ICAgZmxhZyAgICAgICAgICAg
+ID0gIlxBbnN3ZXJlZCIgLyAiXEZsYWdnZWQiIC8gIlxEZWxldGVkIiAvCjs7ICAgICAgICAgICAg
+ICAgICAgICAgIlxTZWVuIiAvICJcRHJhZnQiIC8gZmxhZy1rZXl3b3JkIC8gZmxhZy1leHRlbnNp
+b24KOzsgICAgICAgICAgICAgICAgICAgICAgIDsgRG9lcyBub3QgaW5jbHVkZSAiXFJlY2VudCIK
+OzsKOzsgICBmbGFnLWV4dGVuc2lvbiAgPSAiXCIgYXRvbQo7OyAgICAgICAgICAgICAgICAgICAg
+ICAgOyBGdXR1cmUgZXhwYW5zaW9uLiAgQ2xpZW50IGltcGxlbWVudGF0aW9ucwo7OyAgICAgICAg
+ICAgICAgICAgICAgICAgOyBNVVNUIGFjY2VwdCBmbGFnLWV4dGVuc2lvbiBmbGFncy4gIFNlcnZl
+cgo7OyAgICAgICAgICAgICAgICAgICAgICAgOyBpbXBsZW1lbnRhdGlvbnMgTVVTVCBOT1QgZ2Vu
+ZXJhdGUKOzsgICAgICAgICAgICAgICAgICAgICAgIDsgZmxhZy1leHRlbnNpb24gZmxhZ3MgZXhj
+ZXB0IGFzIGRlZmluZWQgYnkKOzsgICAgICAgICAgICAgICAgICAgICAgIDsgZnV0dXJlIHN0YW5k
+YXJkIG9yIHN0YW5kYXJkcy10cmFjawo7OyAgICAgICAgICAgICAgICAgICAgICAgOyByZXZpc2lv
+bnMgb2YgdGhpcyBzcGVjaWZpY2F0aW9uLgo7Owo7OyAgIGZsYWcta2V5d29yZCAgICA9IGF0b20K
+OzsKOzsgICByZXNwLXRleHQtYXRvbSAgPSAxKjxhbnkgQVRPTS1DSEFSIGV4Y2VwdCAiXSI+Cgoo
+ZGVmdW4gaW1hcC1wYXJzZS1yZXNwLXRleHQtY29kZSAoKQogIDs7IHh4eCBuZXh0IGxpbmUgZm9y
+IHN0YWxrZXIgY29tbXVuaWdhdGUgcHJvIDMuMy4xIGJ1ZwogICh3aGVuIChsb29raW5nLWF0ICIg
+XFxbIikKICAgIChpbWFwLWZvcndhcmQpKQogICh3aGVuIChlcSAoY2hhci1hZnRlcikgP1xbKQog
+ICAgKGltYXAtZm9yd2FyZCkKICAgIChjb25kICgoc2VhcmNoLWZvcndhcmQgIlBFUk1BTkVOVEZM
+QUdTICIgbmlsIHQpCgkgICAoaW1hcC1tYWlsYm94LXB1dCAncGVybWFuZW50ZmxhZ3MgKGltYXAt
+cGFyc2UtZmxhZy1saXN0KSkpCgkgICgoc2VhcmNoLWZvcndhcmQgIlVJRE5FWFQgXFwoWzAtOV0r
+XFwpIiBuaWwgdCkKCSAgIChpbWFwLW1haWxib3gtcHV0ICd1aWRuZXh0IChtYXRjaC1zdHJpbmcg
+MSkpKQoJICAoKHNlYXJjaC1mb3J3YXJkICJVTlNFRU4gIiBuaWwgdCkKCSAgIChpbWFwLW1haWxi
+b3gtcHV0ICdmaXJzdC11bnNlZW4gKHJlYWQgKGN1cnJlbnQtYnVmZmVyKSkpKQoJICAoKGxvb2tp
+bmctYXQgIlVJRFZBTElESVRZIFxcKFswLTldK1xcKSIpCgkgICAoaW1hcC1tYWlsYm94LXB1dCAn
+dWlkdmFsaWRpdHkgKG1hdGNoLXN0cmluZyAxKSkpCgkgICgoc2VhcmNoLWZvcndhcmQgIlJFQUQt
+T05MWSIgbmlsIHQpCgkgICAoaW1hcC1tYWlsYm94LXB1dCAncmVhZC1vbmx5IHQpKQoJICAoKHNl
+YXJjaC1mb3J3YXJkICJORVdOQU1FICIgbmlsIHQpCgkgICAobGV0IChvbGRuYW1lIG5ld25hbWUp
+CgkgICAgIChzZXRxIG9sZG5hbWUgKGltYXAtcGFyc2Utc3RyaW5nKSkKCSAgICAgKGltYXAtZm9y
+d2FyZCkKCSAgICAgKHNldHEgbmV3bmFtZSAoaW1hcC1wYXJzZS1zdHJpbmcpKQoJICAgICAoaW1h
+cC1tYWlsYm94LXB1dCAnbmV3bmFtZSBuZXduYW1lIG9sZG5hbWUpKSkKCSAgKChzZWFyY2gtZm9y
+d2FyZCAiVFJZQ1JFQVRFIiBuaWwgdCkKCSAgIChpbWFwLW1haWxib3gtcHV0ICd0cnljcmVhdGUg
+dCBpbWFwLWN1cnJlbnQtdGFyZ2V0LW1haWxib3gpKQoJICAoKGxvb2tpbmctYXQgIkFQUEVORFVJ
+RCBcXChbMC05XStcXCkgXFwoWzAtOV0rXFwpIikKCSAgIChpbWFwLW1haWxib3gtcHV0ICdhcHBl
+bmR1aWQKCQkJICAgICAobGlzdCAobWF0Y2gtc3RyaW5nIDEpCgkJCQkgICAoc3RyaW5nLXRvLW51
+bWJlciAobWF0Y2gtc3RyaW5nIDIpKSkKCQkJICAgICBpbWFwLWN1cnJlbnQtdGFyZ2V0LW1haWxi
+b3gpKQoJICAoKGxvb2tpbmctYXQgIkNPUFlVSUQgXFwoWzAtOV0rXFwpIFxcKFswLTksOl0rXFwp
+IFxcKFswLTksOl0rXFwpIikKCSAgIChpbWFwLW1haWxib3gtcHV0ICdjb3B5dWlkIChsaXN0ICht
+YXRjaC1zdHJpbmcgMSkKCQkJCQkgICAgKG1hdGNoLXN0cmluZyAyKQoJCQkJCSAgICAobWF0Y2gt
+c3RyaW5nIDMpKQoJCQkgICAgIGltYXAtY3VycmVudC10YXJnZXQtbWFpbGJveCkpCgkgICgoc2Vh
+cmNoLWZvcndhcmQgIkFMRVJUXSAiIG5pbCB0KQoJICAgKG1lc3NhZ2UgIkltYXAgc2VydmVyICVz
+IGluZm9ybWF0aW9uOiAlcyIgaW1hcC1zZXJ2ZXIKCQkgICAgKGJ1ZmZlci1zdWJzdHJpbmcgKHBv
+aW50KSAocG9pbnQtbWF4KSkpKSkpKQoKOzsgICBtYWlsYm94LWxpc3QgICAgPSAiKCIgW21ieC1s
+aXN0LWZsYWdzXSAiKSIgU1AKOzsgICAgICAgICAgICAgICAgICAgICAgKERRVU9URSBRVU9URUQt
+Q0hBUiBEUVVPVEUgLyBuaWwpIFNQIG1haWxib3gKOzsKOzsgICBtYngtbGlzdC1mbGFncyAgPSAq
+KG1ieC1saXN0LW9mbGFnIFNQKSBtYngtbGlzdC1zZmxhZwo7OyAgICAgICAgICAgICAgICAgICAg
+ICooU1AgbWJ4LWxpc3Qtb2ZsYWcpIC8KOzsgICAgICAgICAgICAgICAgICAgICBtYngtbGlzdC1v
+ZmxhZyAqKFNQIG1ieC1saXN0LW9mbGFnKQo7Owo7OyAgIG1ieC1saXN0LW9mbGFnICA9ICJcTm9p
+bmZlcmlvcnMiIC8gZmxhZy1leHRlbnNpb24KOzsgICAgICAgICAgICAgICAgICAgICAgIDsgT3Ro
+ZXIgZmxhZ3M7IG11bHRpcGxlIHBvc3NpYmxlIHBlciBMSVNUIHJlc3BvbnNlCjs7Cjs7ICAgbWJ4
+LWxpc3Qtc2ZsYWcgID0gIlxOb3NlbGVjdCIgLyAiXE1hcmtlZCIgLyAiXFVubWFya2VkIgo7OyAg
+ICAgICAgICAgICAgICAgICAgICAgOyBTZWxlY3RhYmlsaXR5IGZsYWdzOyBvbmx5IG9uZSBwZXIg
+TElTVCByZXNwb25zZQo7Owo7OyAgIFFVT1RFRC1DSEFSICAgICA9IDxhbnkgVEVYVC1DSEFSIGV4
+Y2VwdCBxdW90ZWQtc3BlY2lhbHM+IC8KOzsgICAgICAgICAgICAgICAgICAgICAiXCIgcXVvdGVk
+LXNwZWNpYWxzCjs7Cjs7ICAgcXVvdGVkLXNwZWNpYWxzID0gRFFVT1RFIC8gIlwiCgooZGVmdW4g
+aW1hcC1wYXJzZS1kYXRhLWxpc3QgKHR5cGUpCiAgKGxldCAoZmxhZ3MgZGVsaW1pdGVyIG1haWxi
+b3gpCiAgICAoc2V0cSBmbGFncyAoaW1hcC1wYXJzZS1mbGFnLWxpc3QpKQogICAgKHdoZW4gKGxv
+b2tpbmctYXQgIiBOSUxcXHwgXCJcXFxcP1xcKC5cXClcIiIpCiAgICAgIChzZXRxIGRlbGltaXRl
+ciAobWF0Y2gtc3RyaW5nIDEpKQogICAgICAoZ290by1jaGFyICgxKyAobWF0Y2gtZW5kIDApKSkK
+ICAgICAgKHdoZW4gKHNldHEgbWFpbGJveCAoaW1hcC1wYXJzZS1tYWlsYm94KSkKCShpbWFwLW1h
+aWxib3gtcHV0IHR5cGUgdCBtYWlsYm94KQoJKGltYXAtbWFpbGJveC1wdXQgJ2xpc3QtZmxhZ3Mg
+ZmxhZ3MgbWFpbGJveCkKCShpbWFwLW1haWxib3gtcHV0ICdkZWxpbWl0ZXIgZGVsaW1pdGVyIG1h
+aWxib3gpKSkpKQoKOzsgIG1zZ19hdHQgICAgICAgICA6Oj0gIigiIDEjKCJFTlZFTE9QRSIgU1BB
+Q0UgZW52ZWxvcGUgLwo7OyAgICAgICAgICAgICAgICAgICAgICAiRkxBR1MiIFNQQUNFICIoIiAj
+KGZsYWcgLyAiXFJlY2VudCIpICIpIiAvCjs7ICAgICAgICAgICAgICAgICAgICAgICJJTlRFUk5B
+TERBVEUiIFNQQUNFIGRhdGVfdGltZSAvCjs7ICAgICAgICAgICAgICAgICAgICAgICJSRkM4MjIi
+IFsiLkhFQURFUiIgLyAiLlRFWFQiXSBTUEFDRSBuc3RyaW5nIC8KOzsgICAgICAgICAgICAgICAg
+ICAgICAgIlJGQzgyMi5TSVpFIiBTUEFDRSBudW1iZXIgLwo7OyAgICAgICAgICAgICAgICAgICAg
+ICAiQk9EWSIgWyJTVFJVQ1RVUkUiXSBTUEFDRSBib2R5IC8KOzsgICAgICAgICAgICAgICAgICAg
+ICAgIkJPRFkiIHNlY3Rpb24gWyI8IiBudW1iZXIgIj4iXSBTUEFDRSBuc3RyaW5nIC8KOzsgICAg
+ICAgICAgICAgICAgICAgICAgIlVJRCIgU1BBQ0UgdW5pcXVlaWQpICIpIgo7Owo7OyAgZGF0ZV90
+aW1lICAgICAgIDo6PSA8Ij4gZGF0ZV9kYXlfZml4ZWQgIi0iIGRhdGVfbW9udGggIi0iIGRhdGVf
+eWVhcgo7OyAgICAgICAgICAgICAgICAgICAgICBTUEFDRSB0aW1lIFNQQUNFIHpvbmUgPCI+Cjs7
+Cjs7ICBzZWN0aW9uICAgICAgICAgOjo9ICJbIiBbc2VjdGlvbl90ZXh0IC8gKG56X251bWJlciAq
+WyIuIiBuel9udW1iZXJdCjs7ICAgICAgICAgICAgICAgICAgICAgIFsiLiIgKHNlY3Rpb25fdGV4
+dCAvICJNSU1FIildKV0gIl0iCjs7Cjs7ICBzZWN0aW9uX3RleHQgICAgOjo9ICJIRUFERVIiIC8g
+IkhFQURFUi5GSUVMRFMiIFsiLk5PVCJdCjs7ICAgICAgICAgICAgICAgICAgICAgIFNQQUNFIGhl
+YWRlcl9saXN0IC8gIlRFWFQiCjs7Cjs7ICBoZWFkZXJfZmxkX25hbWUgOjo9IGFzdHJpbmcKOzsK
+OzsgIGhlYWRlcl9saXN0ICAgICA6Oj0gIigiIDEjaGVhZGVyX2ZsZF9uYW1lICIpIgoKKGRlZnN1
+YnN0IGltYXAtcGFyc2UtaGVhZGVyLWxpc3QgKCkKICAod2hlbiAoZXEgKGNoYXItYWZ0ZXIpID9c
+KCkKICAgIChsZXQgKHN0cmxpc3QpCiAgICAgICh3aGlsZSAobm90IChlcSAoY2hhci1hZnRlcikg
+P1wpKSkKCShpbWFwLWZvcndhcmQpCgkocHVzaCAoaW1hcC1wYXJzZS1hc3RyaW5nKSBzdHJsaXN0
+KSkKICAgICAgKGltYXAtZm9yd2FyZCkKICAgICAgKG5yZXZlcnNlIHN0cmxpc3QpKSkpCgooZGVm
+c3Vic3QgaW1hcC1wYXJzZS1mZXRjaC1ib2R5LXNlY3Rpb24gKCkKICAobGV0ICgoc2VjdGlvbgoJ
+IChidWZmZXItc3Vic3RyaW5nIChwb2ludCkgKDEtIChyZS1zZWFyY2gtZm9yd2FyZCAiW10gXSIg
+bmlsIHQpKSkpKQogICAgKGlmIChlcSAoY2hhci1iZWZvcmUpID8gKQoJKHByb2cxCgkgICAgKG1h
+cGNvbmNhdCAnaWRlbnRpdHkgKGNvbnMgc2VjdGlvbiAoaW1hcC1wYXJzZS1oZWFkZXItbGlzdCkp
+ICIgIikKCSAgKHNlYXJjaC1mb3J3YXJkICJdIiBuaWwgdCkpCiAgICAgIHNlY3Rpb24pKSkKCihk
+ZWZ1biBpbWFwLXBhcnNlLWZldGNoIChyZXNwb25zZSkKICAod2hlbiAoZXEgKGNoYXItYWZ0ZXIp
+ID9cKCkKICAgIChsZXQgKHVpZCBmbGFncyBlbnZlbG9wZSBpbnRlcm5hbGRhdGUgcmZjODIyIHJm
+YzgyMmhlYWRlciByZmM4MjJ0ZXh0CgkgICAgICByZmM4MjJzaXplIGJvZHkgYm9keWRldGFpbCBi
+b2R5c3RydWN0dXJlIGZsYWdzLWVtcHR5KQogICAgICAod2hpbGUgKG5vdCAoZXEgKGNoYXItYWZ0
+ZXIpID9cKSkpCgkoaW1hcC1mb3J3YXJkKQoJKGxldCAoKHRva2VuIChyZWFkIChjdXJyZW50LWJ1
+ZmZlcikpKSkKCSAgKGltYXAtZm9yd2FyZCkKCSAgKGNvbmQgKChlcSB0b2tlbiAnVUlEKQoJCSAo
+c2V0cSB1aWQgKGNvbmRpdGlvbi1jYXNlICgpCgkJCSAgICAgICAocmVhZCAoY3VycmVudC1idWZm
+ZXIpKQoJCQkgICAgIChlcnJvcikpKSkKCQkoKGVxIHRva2VuICdGTEFHUykKCQkgKHNldHEgZmxh
+Z3MgKGltYXAtcGFyc2UtZmxhZy1saXN0KSkKCQkgKGlmIChub3QgZmxhZ3MpCgkJICAgICAoc2V0
+cSBmbGFncy1lbXB0eSAndCkpKQoJCSgoZXEgdG9rZW4gJ0VOVkVMT1BFKQoJCSAoc2V0cSBlbnZl
+bG9wZSAoaW1hcC1wYXJzZS1lbnZlbG9wZSkpKQoJCSgoZXEgdG9rZW4gJ0lOVEVSTkFMREFURSkK
+CQkgKHNldHEgaW50ZXJuYWxkYXRlIChpbWFwLXBhcnNlLXN0cmluZykpKQoJCSgoZXEgdG9rZW4g
+J1JGQzgyMikKCQkgKHNldHEgcmZjODIyIChpbWFwLXBhcnNlLW5zdHJpbmcpKSkKCQkoKGVxIHRv
+a2VuICdSRkM4MjIuSEVBREVSKQoJCSAoc2V0cSByZmM4MjJoZWFkZXIgKGltYXAtcGFyc2UtbnN0
+cmluZykpKQoJCSgoZXEgdG9rZW4gJ1JGQzgyMi5URVhUKQoJCSAoc2V0cSByZmM4MjJ0ZXh0IChp
+bWFwLXBhcnNlLW5zdHJpbmcpKSkKCQkoKGVxIHRva2VuICdSRkM4MjIuU0laRSkKCQkgKHNldHEg
+cmZjODIyc2l6ZSAocmVhZCAoY3VycmVudC1idWZmZXIpKSkpCgkJKChlcSB0b2tlbiAnQk9EWSkK
+CQkgKGlmIChlcSAoY2hhci1iZWZvcmUpID9cWykKCQkgICAgIChwdXNoIChsaXN0CgkJCSAgICAo
+dXBjYXNlIChpbWFwLXBhcnNlLWZldGNoLWJvZHktc2VjdGlvbikpCgkJCSAgICAoYW5kIChlcSAo
+Y2hhci1hZnRlcikgPzwpCgkJCQkgKGJ1ZmZlci1zdWJzdHJpbmcgKDErIChwb2ludCkpCgkJCQkJ
+CSAgIChzZWFyY2gtZm9yd2FyZCAiPiIgbmlsIHQpKSkKCQkJICAgIChwcm9nbiAoaW1hcC1mb3J3
+YXJkKQoJCQkJICAgKGltYXAtcGFyc2UtbnN0cmluZykpKQoJCQkgICBib2R5ZGV0YWlsKQoJCSAg
+IChzZXRxIGJvZHkgKGltYXAtcGFyc2UtYm9keSkpKSkKCQkoKGVxIHRva2VuICdCT0RZU1RSVUNU
+VVJFKQoJCSAoc2V0cSBib2R5c3RydWN0dXJlIChpbWFwLXBhcnNlLWJvZHkpKSkpKSkKICAgICAg
+KHdoZW4gdWlkCgkoc2V0cSBpbWFwLWN1cnJlbnQtbWVzc2FnZSB1aWQpCgkoaW1hcC1tZXNzYWdl
+LXB1dCB1aWQgJ1VJRCB1aWQpCgkoYW5kIChvciBmbGFncyBmbGFncy1lbXB0eSkgKGltYXAtbWVz
+c2FnZS1wdXQgdWlkICdGTEFHUyBmbGFncykpCgkoYW5kIGVudmVsb3BlIChpbWFwLW1lc3NhZ2Ut
+cHV0IHVpZCAnRU5WRUxPUEUgZW52ZWxvcGUpKQoJKGFuZCBpbnRlcm5hbGRhdGUgKGltYXAtbWVz
+c2FnZS1wdXQgdWlkICdJTlRFUk5BTERBVEUgaW50ZXJuYWxkYXRlKSkKCShhbmQgcmZjODIyIChp
+bWFwLW1lc3NhZ2UtcHV0IHVpZCAnUkZDODIyIHJmYzgyMikpCgkoYW5kIHJmYzgyMmhlYWRlciAo
+aW1hcC1tZXNzYWdlLXB1dCB1aWQgJ1JGQzgyMi5IRUFERVIgcmZjODIyaGVhZGVyKSkKCShhbmQg
+cmZjODIydGV4dCAoaW1hcC1tZXNzYWdlLXB1dCB1aWQgJ1JGQzgyMi5URVhUIHJmYzgyMnRleHQp
+KQoJKGFuZCByZmM4MjJzaXplIChpbWFwLW1lc3NhZ2UtcHV0IHVpZCAnUkZDODIyLlNJWkUgcmZj
+ODIyc2l6ZSkpCgkoYW5kIGJvZHkgKGltYXAtbWVzc2FnZS1wdXQgdWlkICdCT0RZIGJvZHkpKQoJ
+KGFuZCBib2R5ZGV0YWlsIChpbWFwLW1lc3NhZ2UtcHV0IHVpZCAnQk9EWURFVEFJTCBib2R5ZGV0
+YWlsKSkKCShhbmQgYm9keXN0cnVjdHVyZSAoaW1hcC1tZXNzYWdlLXB1dCB1aWQgJ0JPRFlTVFJV
+Q1RVUkUgYm9keXN0cnVjdHVyZSkpCgkocnVuLWhvb2tzICdpbWFwLWZldGNoLWRhdGEtaG9vaykp
+KSkpCgo7OyAgIG1haWxib3gtZGF0YSAgICA9ICAuLi4KOzsgICAgICAgICAgICAgICAgICAgICAg
+IlNUQVRVUyIgU1AgbWFpbGJveCBTUCAiKCIKOzsJICAgICAgICAgICAgICAgICAgICAgIFtzdGF0
+dXMtYXR0IFNQIG51bWJlcgo7OyAgICAgICAgICAgICAgICAgICAgICAgICAgICAqKFNQIHN0YXR1
+cy1hdHQgU1AgbnVtYmVyKV0gIikiCjs7ICAgICAgICAgICAgICAgICAgICAgIC4uLgo7Owo7OyAg
+IHN0YXR1cy1hdHQgICAgICA9ICJNRVNTQUdFUyIgLyAiUkVDRU5UIiAvICJVSURORVhUIiAvICJV
+SURWQUxJRElUWSIgLwo7OyAgICAgICAgICAgICAgICAgICAgICJVTlNFRU4iCgooZGVmdW4gaW1h
+cC1wYXJzZS1zdGF0dXMgKCkKICAobGV0ICgobWFpbGJveCAoaW1hcC1wYXJzZS1tYWlsYm94KSkp
+CiAgICAoaWYgKGVxIChjaGFyLWFmdGVyKSA/ICkKCShmb3J3YXJkLWNoYXIpKQogICAgKHdoZW4g
+KGFuZCBtYWlsYm94IChlcSAoY2hhci1hZnRlcikgP1woKSkKICAgICAgKHdoaWxlIChhbmQgKG5v
+dCAoZXEgKGNoYXItYWZ0ZXIpID9cKSkpCgkJICAob3IgKGZvcndhcmQtY2hhcikgdCkKCQkgIChs
+b29raW5nLWF0ICJcXChbQS1aYS16XStcXCkgIikpCgkobGV0ICgodG9rZW4gKHVwY2FzZSAobWF0
+Y2gtc3RyaW5nIDEpKSkpCgkgIChnb3RvLWNoYXIgKG1hdGNoLWVuZCAwKSkKCSAgKGNvbmQgKChz
+dHJpbmc9IHRva2VuICJNRVNTQUdFUyIpCgkJIChpbWFwLW1haWxib3gtcHV0ICdtZXNzYWdlcyAo
+cmVhZCAoY3VycmVudC1idWZmZXIpKSBtYWlsYm94KSkKCQkoKHN0cmluZz0gdG9rZW4gIlJFQ0VO
+VCIpCgkJIChpbWFwLW1haWxib3gtcHV0ICdyZWNlbnQgKHJlYWQgKGN1cnJlbnQtYnVmZmVyKSkg
+bWFpbGJveCkpCgkJKChzdHJpbmc9IHRva2VuICJVSURORVhUIikKCQkgKGFuZCAobG9va2luZy1h
+dCAiWzAtOV0rIikKCQkgICAgICAoaW1hcC1tYWlsYm94LXB1dCAndWlkbmV4dCAobWF0Y2gtc3Ry
+aW5nIDApIG1haWxib3gpCgkJICAgICAgKGdvdG8tY2hhciAobWF0Y2gtZW5kIDApKSkpCgkJKChz
+dHJpbmc9IHRva2VuICJVSURWQUxJRElUWSIpCgkJIChhbmQgKGxvb2tpbmctYXQgIlswLTldKyIp
+CgkJICAgICAgKGltYXAtbWFpbGJveC1wdXQgJ3VpZHZhbGlkaXR5IChtYXRjaC1zdHJpbmcgMCkg
+bWFpbGJveCkKCQkgICAgICAoZ290by1jaGFyIChtYXRjaC1lbmQgMCkpKSkKCQkoKHN0cmluZz0g
+dG9rZW4gIlVOU0VFTiIpCgkJIChpbWFwLW1haWxib3gtcHV0ICd1bnNlZW4gKHJlYWQgKGN1cnJl
+bnQtYnVmZmVyKSkgbWFpbGJveCkpCgkJKHQKCQkgKG1lc3NhZ2UgIlVua25vd24gc3RhdHVzIGRh
+dGEgJXMgaW4gbWFpbGJveCAlcyBpZ25vcmVkIgoJCQkgIHRva2VuIG1haWxib3gpCgkJIChyZWFk
+IChjdXJyZW50LWJ1ZmZlcikpKSkpKSkpKQoKOzsgICBhY2xfZGF0YSAgICAgICAgOjo9ICJBQ0wi
+IFNQQUNFIG1haWxib3ggKihTUEFDRSBpZGVudGlmaWVyIFNQQUNFCjs7ICAgICAgICAgICAgICAg
+ICAgICAgICAgcmlnaHRzKQo7Owo7OyAgIGlkZW50aWZpZXIgICAgICA6Oj0gYXN0cmluZwo7Owo7
+OyAgIHJpZ2h0cyAgICAgICAgICA6Oj0gYXN0cmluZwoKKGRlZnVuIGltYXAtcGFyc2UtYWNsICgp
+CiAgKGxldCAoKG1haWxib3ggKGltYXAtcGFyc2UtbWFpbGJveCkpCglpZGVudGlmaWVyIHJpZ2h0
+cyBhY2wpCiAgICAod2hpbGUgKGVxIChjaGFyLWFmdGVyKSA/XCApCiAgICAgIChpbWFwLWZvcndh
+cmQpCiAgICAgIChzZXRxIGlkZW50aWZpZXIgKGltYXAtcGFyc2UtYXN0cmluZykpCiAgICAgIChp
+bWFwLWZvcndhcmQpCiAgICAgIChzZXRxIHJpZ2h0cyAoaW1hcC1wYXJzZS1hc3RyaW5nKSkKICAg
+ICAgKHNldHEgYWNsIChhcHBlbmQgYWNsIChsaXN0IChjb25zIGlkZW50aWZpZXIgcmlnaHRzKSkp
+KSkKICAgIChpbWFwLW1haWxib3gtcHV0ICdhY2wgYWNsIG1haWxib3gpKSkKCjs7ICAgZmxhZy1s
+aXN0ICAgICAgID0gIigiIFtmbGFnICooU1AgZmxhZyldICIpIgo7Owo7OyAgIGZsYWcgICAgICAg
+ICAgICA9ICJcQW5zd2VyZWQiIC8gIlxGbGFnZ2VkIiAvICJcRGVsZXRlZCIgLwo7OyAgICAgICAg
+ICAgICAgICAgICAgICJcU2VlbiIgLyAiXERyYWZ0IiAvIGZsYWcta2V5d29yZCAvIGZsYWctZXh0
+ZW5zaW9uCjs7ICAgICAgICAgICAgICAgICAgICAgICA7IERvZXMgbm90IGluY2x1ZGUgIlxSZWNl
+bnQiCjs7Cjs7ICAgZmxhZy1rZXl3b3JkICAgID0gYXRvbQo7Owo7OyAgIGZsYWctZXh0ZW5zaW9u
+ICA9ICJcIiBhdG9tCjs7ICAgICAgICAgICAgICAgICAgICAgICA7IEZ1dHVyZSBleHBhbnNpb24u
+ICBDbGllbnQgaW1wbGVtZW50YXRpb25zCjs7ICAgICAgICAgICAgICAgICAgICAgICA7IE1VU1Qg
+YWNjZXB0IGZsYWctZXh0ZW5zaW9uIGZsYWdzLiAgU2VydmVyCjs7ICAgICAgICAgICAgICAgICAg
+ICAgICA7IGltcGxlbWVudGF0aW9ucyBNVVNUIE5PVCBnZW5lcmF0ZQo7OyAgICAgICAgICAgICAg
+ICAgICAgICAgOyBmbGFnLWV4dGVuc2lvbiBmbGFncyBleGNlcHQgYXMgZGVmaW5lZCBieQo7OyAg
+ICAgICAgICAgICAgICAgICAgICAgOyBmdXR1cmUgc3RhbmRhcmQgb3Igc3RhbmRhcmRzLXRyYWNr
+Cjs7ICAgICAgICAgICAgICAgICAgICAgICA7IHJldmlzaW9ucyBvZiB0aGlzIHNwZWNpZmljYXRp
+b24uCgooZGVmdW4gaW1hcC1wYXJzZS1mbGFnLWxpc3QgKCkKICAobGV0IChmbGFnLWxpc3Qgc3Rh
+cnQpCiAgICAoYXNzZXJ0IChlcSAoY2hhci1hZnRlcikgP1woKSBuaWwgIkluIGltYXAtcGFyc2Ut
+ZmxhZy1saXN0IikKICAgICh3aGlsZSAoYW5kIChub3QgKGVxIChjaGFyLWFmdGVyKSA/XCkpKQoJ
+CShzZXRxIHN0YXJ0IChwcm9nbgoJCQkgICAgICAoaW1hcC1mb3J3YXJkKQoJCQkgICAgICA7OyBu
+ZXh0IGxpbmUgZm9yIENvdXJpZXIgSU1BUCBidWcuCgkJCSAgICAgIChza2lwLWNoYXJzLWZvcndh
+cmQgIiAiKQoJCQkgICAgICAocG9pbnQpKSkKCQkoPiAoc2tpcC1jaGFycy1mb3J3YXJkICJeICki
+IChwb2ludC1hdC1lb2wpKSAwKSkKICAgICAgKHB1c2ggKGJ1ZmZlci1zdWJzdHJpbmcgc3RhcnQg
+KHBvaW50KSkgZmxhZy1saXN0KSkKICAgIChhc3NlcnQgKGVxIChjaGFyLWFmdGVyKSA/XCkpIG5p
+bCAiSW4gaW1hcC1wYXJzZS1mbGFnLWxpc3QiKQogICAgKGltYXAtZm9yd2FyZCkKICAgIChucmV2
+ZXJzZSBmbGFnLWxpc3QpKSkKCjs7ICAgZW52ZWxvcGUgICAgICAgID0gIigiIGVudi1kYXRlIFNQ
+IGVudi1zdWJqZWN0IFNQIGVudi1mcm9tIFNQIGVudi1zZW5kZXIgU1AKOzsgICAgICAgICAgICAg
+ICAgICAgICBlbnYtcmVwbHktdG8gU1AgZW52LXRvIFNQIGVudi1jYyBTUCBlbnYtYmNjIFNQCjs7
+ICAgICAgICAgICAgICAgICAgICAgZW52LWluLXJlcGx5LXRvIFNQIGVudi1tZXNzYWdlLWlkICIp
+Igo7Owo7OyAgIGVudi1iY2MgICAgICAgICA9ICIoIiAxKmFkZHJlc3MgIikiIC8gbmlsCjs7Cjs7
+ICAgZW52LWNjICAgICAgICAgID0gIigiIDEqYWRkcmVzcyAiKSIgLyBuaWwKOzsKOzsgICBlbnYt
+ZGF0ZSAgICAgICAgPSBuc3RyaW5nCjs7Cjs7ICAgZW52LWZyb20gICAgICAgID0gIigiIDEqYWRk
+cmVzcyAiKSIgLyBuaWwKOzsKOzsgICBlbnYtaW4tcmVwbHktdG8gPSBuc3RyaW5nCjs7Cjs7ICAg
+ZW52LW1lc3NhZ2UtaWQgID0gbnN0cmluZwo7Owo7OyAgIGVudi1yZXBseS10byAgICA9ICIoIiAx
+KmFkZHJlc3MgIikiIC8gbmlsCjs7Cjs7ICAgZW52LXNlbmRlciAgICAgID0gIigiIDEqYWRkcmVz
+cyAiKSIgLyBuaWwKOzsKOzsgICBlbnYtc3ViamVjdCAgICAgPSBuc3RyaW5nCjs7Cjs7ICAgZW52
+LXRvICAgICAgICAgID0gIigiIDEqYWRkcmVzcyAiKSIgLyBuaWwKCihkZWZ1biBpbWFwLXBhcnNl
+LWVudmVsb3BlICgpCiAgKHdoZW4gKGVxIChjaGFyLWFmdGVyKSA/XCgpCiAgICAoaW1hcC1mb3J3
+YXJkKQogICAgKHZlY3RvciAocHJvZzEgKGltYXAtcGFyc2UtbnN0cmluZykJOzsgZGF0ZQoJICAg
+ICAgKGltYXAtZm9yd2FyZCkpCgkgICAgKHByb2cxIChpbWFwLXBhcnNlLW5zdHJpbmcpCTs7IHN1
+YmplY3QKCSAgICAgIChpbWFwLWZvcndhcmQpKQoJICAgIChwcm9nMSAoaW1hcC1wYXJzZS1hZGRy
+ZXNzLWxpc3QpIDs7IGZyb20KCSAgICAgIChpbWFwLWZvcndhcmQpKQoJICAgIChwcm9nMSAoaW1h
+cC1wYXJzZS1hZGRyZXNzLWxpc3QpIDs7IHNlbmRlcgoJICAgICAgKGltYXAtZm9yd2FyZCkpCgkg
+ICAgKHByb2cxIChpbWFwLXBhcnNlLWFkZHJlc3MtbGlzdCkgOzsgcmVwbHktdG8KCSAgICAgIChp
+bWFwLWZvcndhcmQpKQoJICAgIChwcm9nMSAoaW1hcC1wYXJzZS1hZGRyZXNzLWxpc3QpIDs7IHRv
+CgkgICAgICAoaW1hcC1mb3J3YXJkKSkKCSAgICAocHJvZzEgKGltYXAtcGFyc2UtYWRkcmVzcy1s
+aXN0KSA7OyBjYwoJICAgICAgKGltYXAtZm9yd2FyZCkpCgkgICAgKHByb2cxIChpbWFwLXBhcnNl
+LWFkZHJlc3MtbGlzdCkgOzsgYmNjCgkgICAgICAoaW1hcC1mb3J3YXJkKSkKCSAgICAocHJvZzEg
+KGltYXAtcGFyc2UtbnN0cmluZykJOzsgaW4tcmVwbHktdG8KCSAgICAgIChpbWFwLWZvcndhcmQp
+KQoJICAgIChwcm9nMSAoaW1hcC1wYXJzZS1uc3RyaW5nKQk7OyBtZXNzYWdlLWlkCgkgICAgICAo
+aW1hcC1mb3J3YXJkKSkpKSkKCjs7ICAgYm9keS1mbGQtcGFyYW0gID0gIigiIHN0cmluZyBTUCBz
+dHJpbmcgKihTUCBzdHJpbmcgU1Agc3RyaW5nKSAiKSIgLyBuaWwKCihkZWZzdWJzdCBpbWFwLXBh
+cnNlLXN0cmluZy1saXN0ICgpCiAgKGNvbmQgKChlcSAoY2hhci1hZnRlcikgP1woKSA7OyBib2R5
+LWZsZC1wYXJhbQoJIChsZXQgKHN0cmxpc3Qgc3RyKQoJICAgKGltYXAtZm9yd2FyZCkKCSAgICh3
+aGlsZSAoc2V0cSBzdHIgKGltYXAtcGFyc2Utc3RyaW5nKSkKCSAgICAgKHB1c2ggc3RyIHN0cmxp
+c3QpCgkgICAgIDs7IGJ1Z2d5IHN0YWxrZXIgY29tbXVuaWdhdGUgcHJvIDMuMCBkb2Vzbid0IHBy
+aW50IFNQQwoJICAgICA7OyBiZXR3ZWVuIGJvZHktZmxkLXBhcmFtJ3Mgc29tZXRpbWVzCgkgICAg
+IChvciAoZXEgKGNoYXItYWZ0ZXIpID9cIikKCQkgKGltYXAtZm9yd2FyZCkpKQoJICAgKG5yZXZl
+cnNlIHN0cmxpc3QpKSkKCSgoaW1hcC1wYXJzZS1uaWwpCgkgbmlsKSkpCgo7OyAgIGJvZHktZXh0
+ZW5zaW9uICA9IG5zdHJpbmcgLyBudW1iZXIgLwo7OyAgICAgICAgICAgICAgICAgICAgICAiKCIg
+Ym9keS1leHRlbnNpb24gKihTUCBib2R5LWV4dGVuc2lvbikgIikiCjs7ICAgICAgICAgICAgICAg
+ICAgICAgICA7IEZ1dHVyZSBleHBhbnNpb24uICBDbGllbnQgaW1wbGVtZW50YXRpb25zCjs7ICAg
+ICAgICAgICAgICAgICAgICAgICA7IE1VU1QgYWNjZXB0IGJvZHktZXh0ZW5zaW9uIGZpZWxkcy4g
+IFNlcnZlcgo7OyAgICAgICAgICAgICAgICAgICAgICAgOyBpbXBsZW1lbnRhdGlvbnMgTVVTVCBO
+T1QgZ2VuZXJhdGUKOzsgICAgICAgICAgICAgICAgICAgICAgIDsgYm9keS1leHRlbnNpb24gZmll
+bGRzIGV4Y2VwdCBhcyBkZWZpbmVkIGJ5Cjs7ICAgICAgICAgICAgICAgICAgICAgICA7IGZ1dHVy
+ZSBzdGFuZGFyZCBvciBzdGFuZGFyZHMtdHJhY2sKOzsgICAgICAgICAgICAgICAgICAgICAgIDsg
+cmV2aXNpb25zIG9mIHRoaXMgc3BlY2lmaWNhdGlvbi4KCihkZWZ1biBpbWFwLXBhcnNlLWJvZHkt
+ZXh0ZW5zaW9uICgpCiAgKGlmIChlcSAoY2hhci1hZnRlcikgP1woKQogICAgICAobGV0IChiLWUp
+CgkoaW1hcC1mb3J3YXJkKQoJKHB1c2ggKGltYXAtcGFyc2UtYm9keS1leHRlbnNpb24pIGItZSkK
+CSh3aGlsZSAoZXEgKGNoYXItYWZ0ZXIpID9cICkKCSAgKGltYXAtZm9yd2FyZCkKCSAgKHB1c2gg
+KGltYXAtcGFyc2UtYm9keS1leHRlbnNpb24pIGItZSkpCgkoYXNzZXJ0IChlcSAoY2hhci1hZnRl
+cikgP1wpKSBuaWwgIkluIGltYXAtcGFyc2UtYm9keS1leHRlbnNpb24iKQoJKGltYXAtZm9yd2Fy
+ZCkKCShucmV2ZXJzZSBiLWUpKQogICAgKG9yIChpbWFwLXBhcnNlLW51bWJlcikKCShpbWFwLXBh
+cnNlLW5zdHJpbmcpKSkpCgo7OyAgIGJvZHktZXh0LTFwYXJ0ICA9IGJvZHktZmxkLW1kNSBbU1Ag
+Ym9keS1mbGQtZHNwIFtTUCBib2R5LWZsZC1sYW5nCjs7ICAgICAgICAgICAgICAgICAgICAgKihT
+UCBib2R5LWV4dGVuc2lvbildXQo7OyAgICAgICAgICAgICAgICAgICAgICAgOyBNVVNUIE5PVCBi
+ZSByZXR1cm5lZCBvbiBub24tZXh0ZW5zaWJsZQo7OyAgICAgICAgICAgICAgICAgICAgICAgOyAi
+Qk9EWSIgZmV0Y2gKOzsKOzsgICBib2R5LWV4dC1tcGFydCAgPSBib2R5LWZsZC1wYXJhbSBbU1Ag
+Ym9keS1mbGQtZHNwIFtTUCBib2R5LWZsZC1sYW5nCjs7ICAgICAgICAgICAgICAgICAgICAgKihT
+UCBib2R5LWV4dGVuc2lvbildXQo7OyAgICAgICAgICAgICAgICAgICAgICAgOyBNVVNUIE5PVCBi
+ZSByZXR1cm5lZCBvbiBub24tZXh0ZW5zaWJsZQo7OyAgICAgICAgICAgICAgICAgICAgICAgOyAi
+Qk9EWSIgZmV0Y2gKCihkZWZzdWJzdCBpbWFwLXBhcnNlLWJvZHktZXh0ICgpCiAgKGxldCAoZXh0
+KQogICAgKHdoZW4gKGVxIChjaGFyLWFmdGVyKSA/XCApCTs7IGJvZHktZmxkLWRzcAogICAgICAo
+aW1hcC1mb3J3YXJkKQogICAgICAobGV0IChkc3ApCgkoaWYgKGVxIChjaGFyLWFmdGVyKSA/XCgp
+CgkgICAgKHByb2duCgkgICAgICAoaW1hcC1mb3J3YXJkKQoJICAgICAgKHB1c2ggKGltYXAtcGFy
+c2Utc3RyaW5nKSBkc3ApCgkgICAgICAoaW1hcC1mb3J3YXJkKQoJICAgICAgKHB1c2ggKGltYXAt
+cGFyc2Utc3RyaW5nLWxpc3QpIGRzcCkKCSAgICAgIChpbWFwLWZvcndhcmQpKQoJICA7OyBXaXRo
+IGFzc2VydCwgdGhlIGNvZGUgbWlnaHQgbm90IGJlIGV2YWwnZC4KCSAgOzsgKGFzc2VydCAoaW1h
+cC1wYXJzZS1uaWwpIHQgIkluIGltYXAtcGFyc2UtYm9keS1leHQiKQoJICAoaW1hcC1wYXJzZS1u
+aWwpKQoJKHB1c2ggKG5yZXZlcnNlIGRzcCkgZXh0KSkKICAgICAgKHdoZW4gKGVxIChjaGFyLWFm
+dGVyKSA/XCApIDs7IGJvZHktZmxkLWxhbmcKCShpbWFwLWZvcndhcmQpCgkoaWYgKGVxIChjaGFy
+LWFmdGVyKSA/XCgpCgkgICAgKHB1c2ggKGltYXAtcGFyc2Utc3RyaW5nLWxpc3QpIGV4dCkKCSAg
+KHB1c2ggKGltYXAtcGFyc2UtbnN0cmluZykgZXh0KSkKCSh3aGlsZSAoZXEgKGNoYXItYWZ0ZXIp
+ID9cICkgOzsgYm9keS1leHRlbnNpb24KCSAgKGltYXAtZm9yd2FyZCkKCSAgKHNldHEgZXh0IChh
+cHBlbmQgKGltYXAtcGFyc2UtYm9keS1leHRlbnNpb24pIGV4dCkpKSkpCiAgICBleHQpKQoKOzsg
+ICBib2R5ICAgICAgICAgICAgPSAiKCIgYm9keS10eXBlLTFwYXJ0IC8gYm9keS10eXBlLW1wYXJ0
+ICIpIgo7Owo7OyAgIGJvZHktZXh0LTFwYXJ0ICA9IGJvZHktZmxkLW1kNSBbU1AgYm9keS1mbGQt
+ZHNwIFtTUCBib2R5LWZsZC1sYW5nCjs7ICAgICAgICAgICAgICAgICAgICAgKihTUCBib2R5LWV4
+dGVuc2lvbildXQo7OyAgICAgICAgICAgICAgICAgICAgICAgOyBNVVNUIE5PVCBiZSByZXR1cm5l
+ZCBvbiBub24tZXh0ZW5zaWJsZQo7OyAgICAgICAgICAgICAgICAgICAgICAgOyAiQk9EWSIgZmV0
+Y2gKOzsKOzsgICBib2R5LWV4dC1tcGFydCAgPSBib2R5LWZsZC1wYXJhbSBbU1AgYm9keS1mbGQt
+ZHNwIFtTUCBib2R5LWZsZC1sYW5nCjs7ICAgICAgICAgICAgICAgICAgICAgKihTUCBib2R5LWV4
+dGVuc2lvbildXQo7OyAgICAgICAgICAgICAgICAgICAgICAgOyBNVVNUIE5PVCBiZSByZXR1cm5l
+ZCBvbiBub24tZXh0ZW5zaWJsZQo7OyAgICAgICAgICAgICAgICAgICAgICAgOyAiQk9EWSIgZmV0
+Y2gKOzsKOzsgICBib2R5LWZpZWxkcyAgICAgPSBib2R5LWZsZC1wYXJhbSBTUCBib2R5LWZsZC1p
+ZCBTUCBib2R5LWZsZC1kZXNjIFNQCjs7ICAgICAgICAgICAgICAgICAgICAgYm9keS1mbGQtZW5j
+IFNQIGJvZHktZmxkLW9jdGV0cwo7Owo7OyAgIGJvZHktZmxkLWRlc2MgICA9IG5zdHJpbmcKOzsK
+OzsgICBib2R5LWZsZC1kc3AgICAgPSAiKCIgc3RyaW5nIFNQIGJvZHktZmxkLXBhcmFtICIpIiAv
+IG5pbAo7Owo7OyAgIGJvZHktZmxkLWVuYyAgICA9IChEUVVPVEUgKCI3QklUIiAvICI4QklUIiAv
+ICJCSU5BUlkiIC8gIkJBU0U2NCIvCjs7ICAgICAgICAgICAgICAgICAgICAgIlFVT1RFRC1QUklO
+VEFCTEUiKSBEUVVPVEUpIC8gc3RyaW5nCjs7Cjs7ICAgYm9keS1mbGQtaWQgICAgID0gbnN0cmlu
+Zwo7Owo7OyAgIGJvZHktZmxkLWxhbmcgICA9IG5zdHJpbmcgLyAiKCIgc3RyaW5nICooU1Agc3Ry
+aW5nKSAiKSIKOzsKOzsgICBib2R5LWZsZC1saW5lcyAgPSBudW1iZXIKOzsKOzsgICBib2R5LWZs
+ZC1tZDUgICAgPSBuc3RyaW5nCjs7Cjs7ICAgYm9keS1mbGQtb2N0ZXRzID0gbnVtYmVyCjs7Cjs7
+ICAgYm9keS1mbGQtcGFyYW0gID0gIigiIHN0cmluZyBTUCBzdHJpbmcgKihTUCBzdHJpbmcgU1Ag
+c3RyaW5nKSAiKSIgLyBuaWwKOzsKOzsgICBib2R5LXR5cGUtMXBhcnQgPSAoYm9keS10eXBlLWJh
+c2ljIC8gYm9keS10eXBlLW1zZyAvIGJvZHktdHlwZS10ZXh0KQo7OyAgICAgICAgICAgICAgICAg
+ICAgIFtTUCBib2R5LWV4dC0xcGFydF0KOzsKOzsgICBib2R5LXR5cGUtYmFzaWMgPSBtZWRpYS1i
+YXNpYyBTUCBib2R5LWZpZWxkcwo7OyAgICAgICAgICAgICAgICAgICAgICAgOyBNRVNTQUdFIHN1
+YnR5cGUgTVVTVCBOT1QgYmUgIlJGQzgyMiIKOzsKOzsgICBib2R5LXR5cGUtbXNnICAgPSBtZWRp
+YS1tZXNzYWdlIFNQIGJvZHktZmllbGRzIFNQIGVudmVsb3BlCjs7ICAgICAgICAgICAgICAgICAg
+ICAgU1AgYm9keSBTUCBib2R5LWZsZC1saW5lcwo7Owo7OyAgIGJvZHktdHlwZS10ZXh0ICA9IG1l
+ZGlhLXRleHQgU1AgYm9keS1maWVsZHMgU1AgYm9keS1mbGQtbGluZXMKOzsKOzsgICBib2R5LXR5
+cGUtbXBhcnQgPSAxKmJvZHkgU1AgbWVkaWEtc3VidHlwZQo7OyAgICAgICAgICAgICAgICAgICAg
+IFtTUCBib2R5LWV4dC1tcGFydF0KOzsKOzsgICBtZWRpYS1iYXNpYyAgICAgPSAoKERRVU9URSAo
+IkFQUExJQ0FUSU9OIiAvICJBVURJTyIgLyAiSU1BR0UiIC8KOzsgICAgICAgICAgICAgICAgICAg
+ICAiTUVTU0FHRSIgLyAiVklERU8iKSBEUVVPVEUpIC8gc3RyaW5nKSBTUCBtZWRpYS1zdWJ0eXBl
+Cjs7ICAgICAgICAgICAgICAgICAgICAgICA7IERlZmluZWQgaW4gW01JTUUtSU1UXQo7Owo7OyAg
+IG1lZGlhLW1lc3NhZ2UgICA9IERRVU9URSAiTUVTU0FHRSIgRFFVT1RFIFNQIERRVU9URSAiUkZD
+ODIyIiBEUVVPVEUKOzsgICAgICAgICAgICAgICAgICAgICAgOyBEZWZpbmVkIGluIFtNSU1FLUlN
+VF0KOzsKOzsgICBtZWRpYS1zdWJ0eXBlICAgPSBzdHJpbmcKOzsgICAgICAgICAgICAgICAgICAg
+ICAgIDsgRGVmaW5lZCBpbiBbTUlNRS1JTVRdCjs7Cjs7ICAgbWVkaWEtdGV4dCAgICAgID0gRFFV
+T1RFICJURVhUIiBEUVVPVEUgU1AgbWVkaWEtc3VidHlwZQo7OyAgICAgICAgICAgICAgICAgICAg
+ICAgOyBEZWZpbmVkIGluIFtNSU1FLUlNVF0KCihkZWZ1biBpbWFwLXBhcnNlLWJvZHkgKCkKICAo
+bGV0IChib2R5KQogICAgKHdoZW4gKGVxIChjaGFyLWFmdGVyKSA/XCgpCiAgICAgIChpbWFwLWZv
+cndhcmQpCiAgICAgIChpZiAoZXEgKGNoYXItYWZ0ZXIpID9cKCkKCSAgKGxldCAoc3ViYm9keSkK
+CSAgICAod2hpbGUgKGFuZCAoZXEgKGNoYXItYWZ0ZXIpID9cKCkKCQkJKHNldHEgc3ViYm9keSAo
+aW1hcC1wYXJzZS1ib2R5KSkpCgkgICAgIDs7IGJ1Z2d5IHN0YWxrZXIgY29tbXVuaWdhdGUgcHJv
+IDMuMCBpbnNlcnQgYSBTUEMgYmV0d2VlbgoJICAgICAgOzsgcGFydHMgaW4gbXVsdGlwYXJ0cwoJ
+ICAgICAgKHdoZW4gKGFuZCAoZXEgKGNoYXItYWZ0ZXIpID9cICkKCQkJIChlcSAoY2hhci1hZnRl
+ciAoMSsgKHBvaW50KSkpID9cKCkpCgkJKGltYXAtZm9yd2FyZCkpCgkgICAgICAocHVzaCBzdWJi
+b2R5IGJvZHkpKQoJICAgIChpbWFwLWZvcndhcmQpCgkgICAgKHB1c2ggKGltYXAtcGFyc2Utc3Ry
+aW5nKSBib2R5KSA7OyBtZWRpYS1zdWJ0eXBlCgkgICAgKHdoZW4gKGVxIChjaGFyLWFmdGVyKSA/
+XCApCTs7IGJvZHktZXh0LW1wYXJ0OgoJICAgICAgKGltYXAtZm9yd2FyZCkKCSAgICAgIChpZiAo
+ZXEgKGNoYXItYWZ0ZXIpID9cKCkJOzsgYm9keS1mbGQtcGFyYW0KCQkgIChwdXNoIChpbWFwLXBh
+cnNlLXN0cmluZy1saXN0KSBib2R5KQoJCShwdXNoIChhbmQgKGltYXAtcGFyc2UtbmlsKSBuaWwp
+IGJvZHkpKQoJICAgICAgKHNldHEgYm9keQoJCSAgICAoYXBwZW5kIChpbWFwLXBhcnNlLWJvZHkt
+ZXh0KSBib2R5KSkpIDs7IGJvZHktZXh0LS4uLgoJICAgIChhc3NlcnQgKGVxIChjaGFyLWFmdGVy
+KSA/XCkpIG5pbCAiSW4gaW1hcC1wYXJzZS1ib2R5IikKCSAgICAoaW1hcC1mb3J3YXJkKQoJICAg
+IChucmV2ZXJzZSBib2R5KSkKCgkocHVzaCAoaW1hcC1wYXJzZS1zdHJpbmcpIGJvZHkpCTs7IG1l
+ZGlhLXR5cGUKCShpbWFwLWZvcndhcmQpCgkocHVzaCAoaW1hcC1wYXJzZS1zdHJpbmcpIGJvZHkp
+CTs7IG1lZGlhLXN1YnR5cGUKCShpbWFwLWZvcndhcmQpCgk7OyBuZXh0IGxpbmUgZm9yIFN1biBT
+SU1TIGJ1ZwoJKGFuZCAoZXEgKGNoYXItYWZ0ZXIpID8gKSAoaW1hcC1mb3J3YXJkKSkKCShpZiAo
+ZXEgKGNoYXItYWZ0ZXIpID9cKCkgOzsgYm9keS1mbGQtcGFyYW0KCSAgICAocHVzaCAoaW1hcC1w
+YXJzZS1zdHJpbmctbGlzdCkgYm9keSkKCSAgKHB1c2ggKGFuZCAoaW1hcC1wYXJzZS1uaWwpIG5p
+bCkgYm9keSkpCgkoaW1hcC1mb3J3YXJkKQoJKHB1c2ggKGltYXAtcGFyc2UtbnN0cmluZykgYm9k
+eSkgOzsgYm9keS1mbGQtaWQKCShpbWFwLWZvcndhcmQpCgkocHVzaCAoaW1hcC1wYXJzZS1uc3Ry
+aW5nKSBib2R5KSA7OyBib2R5LWZsZC1kZXNjCgkoaW1hcC1mb3J3YXJkKQoJOzsgbmV4dCBgb3In
+IGZvciBTdW4gU0lNUyBidWcsIGl0IHJlZ2FyZCBib2R5LWZsZC1lbmMgYXMgYQoJOzsgbnN0cmlu
+ZyBhbmQgcmV0dXJuIG5pbCBpbnN0ZWFkIG9mIGRlZmF1bHRpbmcgYmFjayB0byA3QklUCgk7OyBh
+cyB0aGUgc3RhbmRhcmQgc2F5cy4KCShwdXNoIChvciAoaW1hcC1wYXJzZS1uc3RyaW5nKSAiN0JJ
+VCIpIGJvZHkpIDs7IGJvZHktZmxkLWVuYwoJKGltYXAtZm9yd2FyZCkKCShwdXNoIChpbWFwLXBh
+cnNlLW51bWJlcikgYm9keSkJOzsgYm9keS1mbGQtb2N0ZXRzCgogICA7OyBvaywgd2UncmUgZG9u
+ZSBwYXJzaW5nIHRoZSByZXF1aXJlZCBwYXJ0cywgd2hhdCBjb21lcyBub3cgaXMgb25lCgk7OyBv
+ZiB0aHJlZSB0aGluZ3M6Cgk7OwoJOzsgZW52ZWxvcGUgICAgICAgKHRoZW4gd2UncmUgcGFyc2lu
+ZyBib2R5LXR5cGUtbXNnKQoJOzsgYm9keS1mbGQtbGluZXMgKHRoZW4gd2UncmUgcGFyc2luZyBi
+b2R5LXR5cGUtdGV4dCkKCTs7IGJvZHktZXh0LTFwYXJ0ICh0aGVuIHdlJ3JlIHBhcnNpbmcgYm9k
+eS10eXBlLWJhc2ljKQoJOzsKICA7OyB0aGUgcHJvYmxlbSBpcyB0aGF0IHRoZSB0d28gZmlyc3Qg
+YXJlIGluIHR1cm4gb3B0aW9uYWxseSBmb2xsb3dlZAo7OyBieSB0aGUgdGhpcmQuICBTbyB3ZSBw
+YXJzZSB0aGUgZmlyc3QgdHdvIGhlcmUgKGlmIHRoZXJlIGFyZSBhbnkpLi4uCgoJKHdoZW4gKGVx
+IChjaGFyLWFmdGVyKSA/XCApCgkgIChpbWFwLWZvcndhcmQpCgkgIChsZXQgKGxpbmVzKQoJICAg
+IChjb25kICgoZXEgKGNoYXItYWZ0ZXIpID9cKCkgOzsgYm9keS10eXBlLW1zZzoKCQkgICAocHVz
+aCAoaW1hcC1wYXJzZS1lbnZlbG9wZSkgYm9keSkgOzsgZW52ZWxvcGUKCQkgICAoaW1hcC1mb3J3
+YXJkKQoJCSAgIChwdXNoIChpbWFwLXBhcnNlLWJvZHkpIGJvZHkpIDs7IGJvZHkKCQkgICA7OyBi
+dWdneSBzdGFsa2VyIGNvbW11bmlnYXRlIHBybyAzLjAgZG9lc24ndCBwcmludAoJCSAgIDs7IG51
+bWJlciBvZiBsaW5lcyBpbiBtZXNzYWdlL3JmYzgyMiBhdHRhY2htZW50CgkJICAgKGlmIChlcSAo
+Y2hhci1hZnRlcikgP1wpKQoJCSAgICAgICAocHVzaCAwIGJvZHkpCgkJICAgICAoaW1hcC1mb3J3
+YXJkKQoJCSAgICAgKHB1c2ggKGltYXAtcGFyc2UtbnVtYmVyKSBib2R5KSkpIDs7IGJvZHktZmxk
+LWxpbmVzCgkJICAoKHNldHEgbGluZXMgKGltYXAtcGFyc2UtbnVtYmVyKSkgOzsgYm9keS10eXBl
+LXRleHQ6CgkJICAgKHB1c2ggbGluZXMgYm9keSkpIDs7IGJvZHktZmxkLWxpbmVzCgkJICAodAoJ
+CSAgIChiYWNrd2FyZC1jaGFyKSkpKSkgOzsgbm8gbWF0Y2guLi4KCgk7OyAuLi5hbmQgdGhlbiBw
+YXJzZSB0aGUgdGhpcmQgb25lIGhlcmUuLi4KCgkod2hlbiAoZXEgKGNoYXItYWZ0ZXIpID9cICkg
+OzsgYm9keS1leHQtMXBhcnQ6CgkgIChpbWFwLWZvcndhcmQpCgkgIChwdXNoIChpbWFwLXBhcnNl
+LW5zdHJpbmcpIGJvZHkpIDs7IGJvZHktZmxkLW1kNQoJICAoc2V0cSBib2R5IChhcHBlbmQgKGlt
+YXAtcGFyc2UtYm9keS1leHQpIGJvZHkpKSkgOzsgYm9keS1leHQtMXBhcnQuLgoKCShhc3NlcnQg
+KGVxIChjaGFyLWFmdGVyKSA/XCkpIG5pbCAiSW4gaW1hcC1wYXJzZS1ib2R5IDIiKQoJKGltYXAt
+Zm9yd2FyZCkKCShucmV2ZXJzZSBib2R5KSkpKSkKCih3aGVuIGltYXAtZGVidWcJCQk7ICh1bnRy
+YWNlLWFsbCkKICAocmVxdWlyZSAndHJhY2UpCiAgKGJ1ZmZlci1kaXNhYmxlLXVuZG8gKGdldC1i
+dWZmZXItY3JlYXRlIGltYXAtZGVidWctYnVmZmVyKSkKICAobWFwYyAobGFtYmRhIChmKSAodHJh
+Y2UtZnVuY3Rpb24tYmFja2dyb3VuZCBmIGltYXAtZGVidWctYnVmZmVyKSkKCScoCgkgIGltYXAt
+dXRmNy1lbmNvZGUKCSAgaW1hcC11dGY3LWRlY29kZQoJICBpbWFwLWVycm9yLXRleHQKCSAgaW1h
+cC1rZXJiZXJvczRzLXAKCSAgaW1hcC1rZXJiZXJvczQtb3BlbgoJICBpbWFwLXNzbC1wCgkgIGlt
+YXAtc3NsLW9wZW4KCSAgaW1hcC1uZXR3b3JrLXAKCSAgaW1hcC1uZXR3b3JrLW9wZW4KCSAgaW1h
+cC1pbnRlcmFjdGl2ZS1sb2dpbgoJICBpbWFwLWtlcmJlcm9zNGEtcAoJICBpbWFwLWtlcmJlcm9z
+NC1hdXRoCgkgIGltYXAtY3JhbS1tZDUtcAoJICBpbWFwLWNyYW0tbWQ1LWF1dGgKCSAgaW1hcC1s
+b2dpbi1wCgkgIGltYXAtbG9naW4tYXV0aAoJICBpbWFwLWFub255bW91cy1wCgkgIGltYXAtYW5v
+bnltb3VzLWF1dGgKCSAgaW1hcC1vcGVuLTEKCSAgaW1hcC1vcGVuCgkgIGltYXAtb3BlbmVkCgkg
+IGltYXAtcGluZy1zZXJ2ZXIKCSAgaW1hcC1hdXRoZW50aWNhdGUKCSAgaW1hcC1jbG9zZQoJICBp
+bWFwLWNhcGFiaWxpdHkKCSAgaW1hcC1uYW1lc3BhY2UKCSAgaW1hcC1zZW5kLWNvbW1hbmQtd2Fp
+dAoJICBpbWFwLW1haWxib3gtcHV0CgkgIGltYXAtbWFpbGJveC1nZXQKCSAgaW1hcC1tYWlsYm94
+LW1hcC0xCgkgIGltYXAtbWFpbGJveC1tYXAKCSAgaW1hcC1jdXJyZW50LW1haWxib3gKCSAgaW1h
+cC1jdXJyZW50LW1haWxib3gtcC0xCgkgIGltYXAtY3VycmVudC1tYWlsYm94LXAKCSAgaW1hcC1t
+YWlsYm94LXNlbGVjdC0xCgkgIGltYXAtbWFpbGJveC1zZWxlY3QKCSAgaW1hcC1tYWlsYm94LWV4
+YW1pbmUtMQoJICBpbWFwLW1haWxib3gtZXhhbWluZQoJICBpbWFwLW1haWxib3gtdW5zZWxlY3QK
+CSAgaW1hcC1tYWlsYm94LWV4cHVuZ2UKCSAgaW1hcC1tYWlsYm94LWNsb3NlCgkgIGltYXAtbWFp
+bGJveC1jcmVhdGUtMQoJICBpbWFwLW1haWxib3gtY3JlYXRlCgkgIGltYXAtbWFpbGJveC1kZWxl
+dGUKCSAgaW1hcC1tYWlsYm94LXJlbmFtZQoJICBpbWFwLW1haWxib3gtbHN1YgoJICBpbWFwLW1h
+aWxib3gtbGlzdAoJICBpbWFwLW1haWxib3gtc3Vic2NyaWJlCgkgIGltYXAtbWFpbGJveC11bnN1
+YnNjcmliZQoJICBpbWFwLW1haWxib3gtc3RhdHVzCgkgIGltYXAtbWFpbGJveC1hY2wtZ2V0Cgkg
+IGltYXAtbWFpbGJveC1hY2wtc2V0CgkgIGltYXAtbWFpbGJveC1hY2wtZGVsZXRlCgkgIGltYXAt
+Y3VycmVudC1tZXNzYWdlCgkgIGltYXAtbGlzdC10by1tZXNzYWdlLXNldAoJICBpbWFwLWZldGNo
+LWFzeW5jaAoJICBpbWFwLWZldGNoCgkgIGltYXAtbWVzc2FnZS1wdXQKCSAgaW1hcC1tZXNzYWdl
+LWdldAoJICBpbWFwLW1lc3NhZ2UtbWFwCgkgIGltYXAtc2VhcmNoCgkgIGltYXAtbWVzc2FnZS1m
+bGFnLXBlcm1hbmVudC1wCgkgIGltYXAtbWVzc2FnZS1mbGFncy1zZXQKCSAgaW1hcC1tZXNzYWdl
+LWZsYWdzLWRlbAoJICBpbWFwLW1lc3NhZ2UtZmxhZ3MtYWRkCgkgIGltYXAtbWVzc2FnZS1jb3B5
+dWlkLTEKCSAgaW1hcC1tZXNzYWdlLWNvcHl1aWQKCSAgaW1hcC1tZXNzYWdlLWNvcHkKCSAgaW1h
+cC1tZXNzYWdlLWFwcGVuZHVpZC0xCgkgIGltYXAtbWVzc2FnZS1hcHBlbmR1aWQKCSAgaW1hcC1t
+ZXNzYWdlLWFwcGVuZAoJICBpbWFwLWJvZHktbGluZXMKCSAgaW1hcC1lbnZlbG9wZS1mcm9tCgkg
+IGltYXAtc2VuZC1jb21tYW5kLTEKCSAgaW1hcC1zZW5kLWNvbW1hbmQKCSAgaW1hcC13YWl0LWZv
+ci10YWcKCSAgaW1hcC1zZW50aW5lbAoJICBpbWFwLWZpbmQtbmV4dC1saW5lCgkgIGltYXAtYXJy
+aXZhbC1maWx0ZXIKCSAgaW1hcC1wYXJzZS1ncmVldGluZwoJICBpbWFwLXBhcnNlLXJlc3BvbnNl
+CgkgIGltYXAtcGFyc2UtcmVzcC10ZXh0CgkgIGltYXAtcGFyc2UtcmVzcC10ZXh0LWNvZGUKCSAg
+aW1hcC1wYXJzZS1kYXRhLWxpc3QKCSAgaW1hcC1wYXJzZS1mZXRjaAoJICBpbWFwLXBhcnNlLXN0
+YXR1cwoJICBpbWFwLXBhcnNlLWFjbAoJICBpbWFwLXBhcnNlLWZsYWctbGlzdAoJICBpbWFwLXBh
+cnNlLWVudmVsb3BlCgkgIGltYXAtcGFyc2UtYm9keS1leHRlbnNpb24KCSAgaW1hcC1wYXJzZS1i
+b2R5CgkgICkpKQoKKHByb3ZpZGUgJ2ltYXApCgo7OyBhcmNoLXRhZzogMjczNjllZDYtMzNlNC00
+ODJmLTk2ZjEtOGJiOTA2YmE3MGY3Cjs7OyBpbWFwLmVsIGVuZHMgaGVyZQo=

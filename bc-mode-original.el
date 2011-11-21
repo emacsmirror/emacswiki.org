@@ -1,6750 +1,4485 @@
-;;; bc-mode.el --- Minor mode for formatting right-margin block comments.
-;;;_@ 
-;;
-;; Copyright (C) 1991-1996 Steve Burgett <burgett@eecs.berkeley.edu>
-;; $Id: bc-mode.el,v 1.1 1996/10/19 18:54:00 burgett Exp burgett $
-;;
-;; Author: Steve Burgett <burgett@eecs.berkeley.edu>
-;; Created: July 1992
-;; Version: 1.1
-;; Keywords: comment minor-mode programming editing
-;; HTTP: http://robotics.eecs.berkeley.edu/~burgett/
-
-(defconst bc-mode-version "1.1" "The current version of bc-mode")
-(defconst bc-mode-date "October 1996" "Date of last update")  
-(defconst bc-mode-maintainer-address "burgett@eecs.berkeley.edu")
-
-;; Get the latest version of this package from:
-;; http://robotics.eecs.berkeley.edu/~burgett/elisp.html
-;;
-;; LCD Archive Entry:
-;; bc-mode|Steve Burgett|burgett@eecs.berkeley.edu|
-;; Minor mode for formatting right-margin block comments in source code.|
-;; October 1996|1.1||
-;;
-;; This file is not part of GNU emacs
-;;
-;; This program is free software; you can redistribute it and/or
-;; modify it under the terms of the GNU General Public License as
-;; published by the Free Software Foundation; either version 2 of the
-;; License, or (at your option) any later version.
-;;
-;; This program is distributed in the hope that it will be useful, but
-;; WITHOUT ANY WARRANTY; without even the implied warranty of
-;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-;; General Public License for more details.
-;;
-;; You should have received a copy of the GNU General Public License
-;; along with GNU Emacs.  If you did not, write to the Free Software
-;; Foundation, Inc., 675 Mass Ave., Cambridge, MA 02139, USA.
-;;
-;;
-;; Steve Burgett
-;; University of California, Berkeley
-;; Department of Electrical Engineering and Computer Sciences
-;; Robotics and Intelligent Machines Laboratory
-;;
-;;
-;;; Advice:
-;;; -------
-;; This package advises the following function: `do-auto-fill'. You
-;; can disable this advice by setting the variable
-;; `bc-enable-auto-fill-advice' to nil.
- 
-;;;_ & Commentary:
-;;;  ----------
-;;
-;;;_  * Description:
-;;;   ------------
-;;
-;; This package provides commands that format right-margin block-style
-;; comments in source code.  These are comments that appear to the
-;; right of the code, and often span several consecutive lines.  On
-;; each line, the comment is delimited by start and end delimiters,
-;; and these are lined up with the delimiters on adjacent lines to
-;; form a rectangular block. For example, in Emacs Lisp:
-;;
-;;   (if narrow-failure
-;;      (progn                             ; If failure, move `top' down  
-;;        (set-buffer code-buffer)         ; and repeat the process. If   
-;;        (goto-char top)                  ; success, this `if' returns   
-;;        (forward-line 1)                 ; nil so the `while' terminates.
-;;        (setq top (point))))
-;;  
-;; Or, in C:
-;;                                          /* If the leading char of the */
-;;   if((String[0] != '0') ||               /* string is '0', then the    */
-;;      (tolower(String[1]) != 'x' &&       /* number is probably in hex  */
-;;       !isdigit(String[1]))){             /* or octal; that is, unless  */
-;;     iRes = sscanf(String, "%ld", &Temp); /* the number is just zero.   */
-;;
-;; You can even format banner comments, like this:
-;;
-;;                                          /******************************/
-;;                                          /* If the leading char of the */
-;;   if((String[0] != '0') ||               /* string is '0', then the    */
-;;      (tolower(String[1]) != 'x' &&       /* number is probably in hex  */
-;;       !isdigit(String[1]))){             /* or octal; that is, unless  */
-;;     iRes = sscanf(String, "%ld", &Temp); /* the number is just zero.   */
-;;                                          /******************************/
-;;
-;; This minor mode provides 25 commands for formatting and
-;; manipulating comments of this style.  See the documentation of
-;; `bc-mode-doc' for a description.
-;;
-;; To submit bug reports, hit `C-c r C-b'.  See the documentation for
-;; `bc-submit-bug-report' for more information.  Suggestions,
-;; comments, etc., to <burgett@eecs.berkeley.edu>
-;;
-;;
-;;;_  * Installation:
-;;;   -------------
-;; 
-;; Put this file somewhere where Emacs can find it (i.e., in one of
-;; the paths in your `load-path'), `byte-compile-file' it, and add the
-;; following to your ~/.emacs:
-;; 
-;;   (autoload 'bc-mode "bc-mode"
-;;   "Minor-mode for formatting right-margin block-style comments in
-;;   source code." t)
-;;
-;;   (autoload 'bc-make-regexp "bc-mode"
-;;   "Make a regular expression defining the comment syntax to use 
-;;   with bc-mode." t)
-;;
-;;   (autoload 'turn-on-bc-mode "bc-mode" "Turn on bc-mode unconditionally.")
-;;
-;;   (global-set-key "\C-xr;" 'bc-mode)
-;;
-;; To use bc-mode, you call the function `bc-mode'.  See the
-;; documentation strings for the function `bc-mode' and for the
-;; variable `bc-mode-doc'.
-;;
-;; There isn't much to customize.  See `User Variables', below.
-;;
-;;
-;;;_  * Compatibility:
-;;;   --------------
-;;
-;; This package is known to work with Emacs 19.28, through 19.34, and
-;; XEmacs 19.14.  It may work with others, I haven't tried it.
-;;
-;; This package has been used succesfully with the following major
-;; modes: cc-mode (c and c++), emacs-lisp-mode, and text-mode (using
-;; file-local variables).
-;;
-;; This package is compatible with ksh-mode, but has the same problems
-;; with the shell pattern matching operator that other functions do.
-;; See the Bugs section below.
-;;
-;; This package also is known to work with perl-mode, and cperl-mode,
-;; but older versions of those may trigger some bugs.  See the Bugs
-;; section below for some workarounds.
-;;
-;; This package has been used succesfully with the following minor
-;; modes: font-lock, auto-fill, filladapt, outline.  Compatibility
-;; with other minor modes has not been tested.  If you use Kyle Jones'
-;; filladapt.el, you must `require' that BEFORE bc-mode gets loaded.
-;;
-;;
-;;;_  * Commands:
-;;;   ---------
-;;
-;; NOTE: COMMENTS THAT BEGIN IN THE FIRST COLUMN ARE NOT RECOGNIZED BY
-;; BC-MODE COMMANDS AS BLOCK COMMENTS.
-;;
-;; This is so you can comment out lines of code without bc-mode
-;; thinking you want them formatted as block comments.  You can even
-;; have comments in the right margin of such code and still format
-;; them with BC commands.
-;;
-;; For a summary of commands and key bindings, see the documentation
-;; string for `bc-mode' (do a `C-h m' or M-x describe-mode when
-;; bc-mode is turned on, or do `C-h f bc-mode').  For more
-;; information, see the documentation for the variable `bc-mode-doc'
-;; (do `C-h v bc-mode-doc').
-;;
-;;
-;;;========================================================================
-;;
-;;;_  * Wish List:
-;;;   ----------
-;;
-;;; Complete Rewrite?
-;;
-;; Well, maybe not a complete rewrite.  But, like any program that has
-;; some history, BC has built up a lot of vestigial organs (and
-;; behaviors).  For a very long time, the main set of BC commands were
-;; `squeeze', `shorter', `taller', `lower-flow', and `raise-flow'.
-;; These are the commands that do lots of searching and computing to
-;; try to find some "optimal" formatting and placement for the
-;; comment.  More recently, the tab-oriented commands, `fill',
-;; `wider', `narrower', and the non-reshaping movement commands, `up'
-;; and `down', were added.  These commands do less computing and give
-;; more control to the user.
-;;
-;; It has become clear that in practice these "dumber" commands are
-;; the more useful.  The "smart" commands don't get used nearly as
-;; often.  A rewrite of BC would start with a core functionality to
-;; support the dumb commands, and could potentially simplify the code
-;; significantly.  This is because the present code is based on
-;; routines that were originally written to support the smart
-;; commands.  When the dumb commands were added, many routines were
-;; further *generalized* to support them as well.
-;;
-;;
-;;; Commands
-;;
-;; Versions of `wider' and `narrower' with finer control, i.e., only
-;; change the width by one column.  This could well obviate the more
-;; complex commands `shorter' and `taller'.
-;;
-;; Additional editing and motion functions that treat comments like
-;; little windows, ala `bc-beginning-of-line', `bc-kill-line', etc.
-;;
-;; bc-splice-comments: Find the bc-comment on or below point and join
-;; it with the one above.
-;;
-;; bc-delete-indentation, bc-split-line.
-;;
-;;
-;;; More General Comment Parsing
-;;
-;; It is clear that we want to be able to recognize more than one
-;; comment syntax in a buffer.  C++ is the prime example of a language
-;; with more than one comment syntax.  That feature has been copied
-;; by Java and JavaScript as well.  In fact, a buffer containing
-;; JavaScript always contains HTML as well, so there may be three
-;; syntaxes to deal with.
-;;
-;;
-;;; Generalized Ignoring
-;;
-;; Presently, BC ignores comments that start in the first column so
-;; that it doesn't try to format commented-out code.  This could be
-;; generalized to ignore any comment starting in `bc-ignore-column' or
-;; before.  Setting this to -1 would allow BC to format all comments.
-;;
-;; I now feel that it would be much better if BC were able to format
-;; comments that start in the leftmost column just like any others.  I
-;; refuse, however, to give up the ability to preserve commented-out
-;; code.  I do think it is possible to have both, it is just going to
-;; be work to implement it.
-;;
-;; 
-;;; Membership Tags
-;;
-;; Sometimes you would like to have block comments on consecutive
-;; lines, but currently bc-mode determines the extent of a comment by
-;; looking for lines that have no comments.  Another way could be to
-;; allow a `tag-character' to come immediately after the starting
-;; delimiter.  Only comments with matching tag charaters would be
-;; considered to comprise a block comment.  For example:
-;;
-;;  int index = 1;			    //@ Start at one because that is
-;;					    //@ what Numerical Recipes does.
-;;  TWVertexNodeIterator iterN(rG);		   //| Go through every node
-;;  while (iterN)				   //| in the Edit graph.   
-;;  {				     //- If it's white it's a Steiner node so 
-;;    TWVertexNode *pN = iterN++;    //- it's moveable. However, don't pull it
-;;    if ((pN->Color() == gr::White) //- if it only has one edge because it   
-;;				     //- will just get pulled on top of the   
-;;	   && (pN->Degree() > 1))    //- node at the other end of that edge.  
-;;
-;; An alternative might be a comment-beginning char to indicate the
-;; first line of each block comment.  For example:
-;;
-;;  int index = 1;			    //> Start at one because that is
-;;					    //  what Numerical Recipes does.
-;;  TWVertexNodeIterator iterN(rG);		   //> Go through every node
-;;  while (iterN)				   //  in the Edit graph.   
-;;  {				     //> If it's white it's a Steiner node so 
-;;    TWVertexNode *pN = iterN++;    //  it's moveable. However, don't pull it
-;;    if ((pN->Color() == gr::White) //  if it only has one edge because it   
-;;				     //  will just get pulled on top of the   
-;;	   && (pN->Degree() > 1))    //  node at the other end of that edge.  
-;;
-;; Both of these seem pretty hard to read.  A blank line to separate
-;; comments is desirable if space permits.  Still, there are times when
-;; tighter spacing would be nice.
-;;
-;;
-;;;_  * To Do:
-;;;   ------
-;;
-;; Make `do-auto-fill' context sensitive.  If the comment has any code
-;; to its left (for any line of the commment), assume it is a
-;; right-margin comment and don't auto-fill until text exceeds
-;; bc-G-rm-minus-stuff.
-;;
-;; `bc-moveit' should call `bc-cleanup-newlines' after deleting the
-;; old comment and *before* inserting the newly formatted one.  To
-;; this end, `bc-find-room' should ignore lines that contain no code
-;; and are marked with the `bc-added-newline' property.
-;;
-;;
-;;;_  * Could Do:
-;;;   ---------
-;;
-;; It wouldn't be too hard to support center and right-justification.
-;; Maybe this would be useful for banner comments.  `bc-put-text'
-;; could run through the scratch buffer just before copying it to the
-;; code buffer and look for the `justification' text property.  If
-;; present, call the real `fill-individual-paragraphs'.
-;;
-;; Support for adaptive fill would be nice too.  It would probably
-;; mean not using bc-fill-buffer and just using fill-buffer instead.
-;; That in turn would require a post-scan of the buffer to collect the
-;; various metrics about the fill.  Might take a performance hit.
-;;
-;;;_  * Bugs:
-;;;   -----
-;;
-;;; Formatting Bugs:
-;;
-;; Like all Emacs' comment-handling commands, BC is confused by
-;; comment characters that appear in strings.  The problem appears
-;; worse in when using BC because it means that a block comment cannot
-;; span any such line.  For example:
-;;
-;;  if (!os)				    // The string contains the C++
-;;  {					    // comment starter (double
-;;    cerr << "Error: //comment starter.";  // slash), so BC cannot properly
-;;    return;				    // format this block comment. It
-;;  }					    // will assume that the comment
-;;					    // starts inside the string.
-;;
-;; You'll have the same problem with Emacs' built in commenting
-;; commands, e.g., `indent-for-comment' (M-;).
-;;
-;;
-;;; Compatibility Bugs:
-;;
-;; Auto-filling does not work with cperl-mode because that mode
-;; defines its own auto-fill-function.  A workaround is to set
-;; `auto-fill-function' in the mode hook.  This seems to work okay,
-;; your mileage may vary:
-;;
-;;  (add-hook 'cperl-mode-hook
-;;  	      (function (lambda ()
-;;  			  (turn-on-bc-mode)
-;;  			  (setq auto-fill-function 'do-auto-fill))))
-;;
-;;
-;; With older versions of perl-mode, indenting does not work properly
-;; when bc-keymap-level is non-nil.  You can fix this by placing the
-;; following in your .emacs:
-;;
-;; (add-hook 'perl-mode-hook 
-;;	     (function (lambda ()
-;;			(setq indent-line-function 'perl-indent-command))))
-;;
-;; BC is compatible with ksh-mode, but has the same problems
-;; with the shell # and ## pattern matching operators that other
-;; functions do (comment functions, font-lock, etc.).  It will confuse
-;; these operators for comment starters.  The behavior is at times
-;; quite baffling.
-;;
-;;
-;;; Other Bugs:
-;;
-;; Lots of non-serious but ugly behavior when formatting empty
-;; comments.
-;; 
-;; Not really a bug, but it seems to be impossible to define the rules
-;; of reformatting so that narrowing, widening, raising, lowering,
-;; etc., always do what you expect.  This is because there are usually
-;; a huge number of ways that a comment could be fit into the space to
-;; the right of the code.
-;;
-;; BC-mode is not very integrated with built-in emacs comment support
-;; functions.  It isn't clear to me just what form this should take
-;; -- I'm open to suggestions.
-;;
-;; In particular, `indent-sexp' messes up all right margin block
-;; comments.  This doesn't look easy to fix, because the comments get
-;; messed up deep in the bowels of `indent-sexp'.  One way I can see
-;; of fixing this is to store the starting column of each comment in a
-;; text property and then advise `indent-for-comment' to use that.
-;; Additional hackery would be necessary to remove the text property
-;; when you really do want the standard indentation.  Further, if the
-;; user doesn't store the text properties with the file, `indent-sexp'
-;; will mess up the comments next time the file is loaded.
-;;
-;;
-;;; Thanks:
-;;; ------
-;;
-;; Hearty thanks are due to several authors for their high-quality
-;; software tools for Emacs Lisp:
-;;
-;; To Daniel LaLiberte for edebug.el, the Emacs Lisp source-level debugger.
-;; To Barry Warsaw for elp.el, the Emacs Lisp Profiler.
-;; To Jamie Zawinski and Hallvard Furuseth for Emacs Lisp byte compiler.
-;;
-;; 
-;;;_ & Change Log:
-;;;   -----------
-;;  1.1  21 Oct 1996 (burgett)
-;;      Redefined the keymaps to conform to Emacs' convention.
-;;      Added bc-fill-paragraph and code to put it in
-;;        `fill-paragraph-function'.
-;;      Added faux-end-delimiter capability.
-;;      Updated BUGS section in documentation.
-;;      Updated bc-mode-doc.
-;;
-;;  1.0  19 Oct 1996 (burgett)
-;;      Initial release.
-;;
- 
-;;;_ & Code:
-;;;  -----
-
-(require 'advice)
-(require 'cl)
-
-;;;========================================================================
-;;;_  * For debugging 
-
-; (setq elp-function-list '(1+ add-text-properties bc-count-lines-1
-; bc-delete-text bc-get-buffer-create bc-put-text goto-line message))
-
-; (setq elp-function-list '(1+ add-text-properties bc-count-lines-1
-; bc-delete-text bc-get-buffer-create bc-put-text current-buffer
-; end-of-line fboundp funcall goto-char goto-line insert integerp
-; length let list listp make-marker marker-position max message point
-; progn save-excursion set-buffer set-marker setq while))
-
-
-;;;;========================================================================
-;;;_  * Documentation:
-
-(defconst bc-mode-doc "Hi there!"
-  "This is a dummy variable.  Its purpose is to provide more
-information on bc-mode.  See also the documentation for the function
-`bc-mode' \(Do `\\[describe-mode]' when bc-mode is active, or `\\[describe-function] bc-mode'\).
-
-USING THE MINOR MODE:
-=====================
-
-  BC-mode is a minor mode for editing right-margin block-style
-  comments in source code.  These are comments that appear to the
-  right of the code, and often span several consecutive lines.  On
-  each line, the comment is delimited by start and end delimiters, and
-  these are lined up with the delimiters on adjacent lines to form a
-  rectangular block. For example, in C:
-
-                                       /* If the leading char of the */
-   if\(\(String[0] != '0'\) ||            /* string is '0', then the    */
-      \(tolower\(String[1]\) != 'x' &&    /* number is probably in hex  */
-       !isdigit\(String[1]\)\)\){          /* or octal; that is, unless  */
-     iRes = sscanf\(String, \"%ld\", &T\); /* the number is just zero.   */
-
-
-  Commands provided by bc-mode fall roughly into three groups:
-  formatting, editing, and motion:
-
-  Formatting commands include
-  ---------------------------
-    `bc-fill' and `bc-squeeze'          Block fill the comment.
-    `bc-raise' and `bc-lower'           Move the comment up or down
-					   one or more lines.
-    `bc-raise-flow' and                 Move the comment up or down,
-    `bc-lower-flow'                        reformatting it if necessary.
-    `bc-narrower' and `bc-wider'        Reformat the comment narrower
-					   or wider.
-    `bc-taller' and `bc-shorter'        Reformat the comment taller
-                                           or shorter.
-
-   Editing commands include
-  ---------------------------
-    `bc-kill-comment'                   Kill the text of the comment.
-    `bc-copy-comment-as-kill'           Save the comment as if killed,
-					   but don't kill it. 
-    `bc-yank' and `bc-yank-pop'         Yank from kill-ring and format
-					   as comment. 
-    `bc-kill-line'                      Comment-sensitive version of
-					   `kill-line'.
-    `bc-open-line', `bc-newline',
-    `bc-indent-new-comment-line',       Comment-sensitive versions of
-    `bc-indent-according-to-mode'          their namesakes.
-
-  Motion commands include
-  ---------------------------
-    `bc-beginning-of-line' and          Move to beginning or end of
-    `bc-end-of-line'                       comment or code.
-    `bc-backward-comment' and           Move one or more block comments
-    `bc-forward-comment'                   backward or forward.
-
-
-
-How BC-mode Formats Block Comments:
------------------------------------
-  BC's formatting commands move and reshape block comments.  BC
-  considers a block comment to consist of all the comment text on
-  consecutive lines that contain comments.  Two block comments must be
-  separated by at least one line that contains no comment, or contains
-  only a comment that starts in the first column.
-
-  COMMENTS THAT BEGIN IN THE FIRST COLUMN ARE NOT RECOGNIZED BY
-  BC-MODE COMMANDS AS BLOCK COMMENTS.
-
-  This is so you can comment out lines of code without bc-mode
-  thinking you want them formatted as block comments.  You can even
-  have comments in the right margin of such code and still format them
-  with BC commands.
-
-  The current implementation of BC can only recognize one comment
-  style at a time.  In languages like C++ and Pascal, BC can only
-  format comments having the syntax with which bc-mode was turned on.
-  To switch to another syntax, use the command `bc-mode' with a prefix
-  argument \(C-u \\[bc-mode]\) and select the desired syntax.
-
-  BC formatting commands reshape block comments \(while keeping them
-  blocked\), subject to the space available to the right of the code.
-  In some cases, BC adds blank lines in order to be able to fulfill a
-  formatting request.
-
-  BC commands decide how to format by examining the comment.  Much of
-  the format of a block comment is determined by its first few lines.
-  For example, a C++ comment can begin with any number of slashes.  BC
-  commands will examine the first line of the comment \(unless it is a
-  banner comment\) to decide how many slashes to use when reformatting
-  the comment.  If it is a banner comment, the first line containing
-  the text of the comment is used.
-
-  Thus, if you decide your comment would look better with three
-  slashes instead of two, add one to the beginning of the first line
-  of the comment and type `\\[bc-fill]' \(bc-fill, or any other BC
-  formatting command\).  The comment will be reformatted so that the
-  start and end delimiters on each line match those on the first line.
-  This works in other languages as well.  For example, in C your start
-  and end delimiters may include any number of `*' characters,
-  e.g. `/*** ***/'
-
-  BC-mode determines the following things by examining the comment:
-
-    If the first line of the comment meets the criteria of being a
-    banner border, the comment is considered to be a banner comment
-    and the border character is determined from this line.
-
-    If the second line of a banner comment contains only whitespace
-    inside the delimiters, a single whitespace-only line will be
-    preserved at the top of the formatted comment.
-
-    The effective start delimiter is taken from the first line of a
-    non-banner comment, or the first text line of a banner comment.
-
-    If that line has whitespace between the start delimiter and the
-    text, that is considered part of the effective delimiter.
-
-    The effective end delimiter is determined in the same way, but
-    unfortunately, it is not possible to accurately preserve
-    whitespace before the end delimiter.  Instead, the effective end
-    delimiter will contain the same amount of whitespace as the
-    effective start delimiter.  Additional spaces are added as
-    necessary to align the end delimiters to `bc-right-margin'.
-
-    In languages that have no comment end delimiter, the first line is
-    checked for a faux end delimiter.  To qualify, the line must end
-    with a string of characters that is the mirror image of the start
-    delimiter (see below).  If one is recognized, it becomes the
-    effective end delimiter.
-
-    If a banner comment has a blank line at the bottom \(above the
-    bottom border\), a single whitespace-only line will be preserved at
-    the bottom of the formatted comment.
-
-    A comment can have multiple paragraphs.  The paragraph separator
-    is a \"blank line,\" meaning a line with a comment that contains
-    only delimiters and whitespace.  Note the difference between this
-    and a line that contains no comment at all, which is used to
-    separate two block comments.  Multiple paragraphs within a block
-    comment are filled individually, and a single \"blank line\" will
-    be preserved to separate them.
-
-
-Squeezing and Tabbing:
-----------------------
-  BC's formatting commands can be further divided into three
-  subgroups: tabbing, squeezing, and moving.  Tabbing commands place
-  the formatted comment at at \"tab-stop\".  Tabbing commands include
-  `bc-fill', `bc-wider', and `bc-narrower'.
-
-  Squeezing commands square up the comment to make it take up the
-  fewest number of columns for a given number of lines, then place the
-  comment as far to the right as possible.  Squeezing commands include
-  `bc-squeeze', `bc-shorter', and `bc-taller'.
-
-  Moving commands don't squeeze or tab, they format the comment as
-  close as possible to its current shape and place it as close as
-  possible to its current horizontal position.  Moving commands
-  include `bc-raise', `bc-raise-flow', `bc-lower' and `bc-lower-flow'.
-
-  Probably you will use the tabbing commands most often.  These tend
-  to give comments a more formal appearance because the comments can
-  be horizontally aligned with others above and below.  You can set
-  tab stops individually (in lisp), or you can set them to a uniform
-  spacing with the command `bc-set-tab-spacing'.  Large values of tab
-  spacing force block comments into a smaller selection of horizontal
-  positions make them more visually aligned.  Large values also make
-  it more difficult to format a comment in a tight space.
-
-  Use the squeezing commands to fit a comment into a tight
-  right-margin space or to get the maximum amount of white space
-  between the code and the comment.  For example, if you need to fit a
-  comment into a right-margin space of 20 columns, the default tab
-  spacing of 8 is generally too coarse for the kind of fine-tuning you
-  need.  The answer is not to set the tab spacing to a very small
-  value (though this would work), but to adjust the comment by
-  increments of one line taller or shorter.
-
-  Moving commands preserve the horizontal placement of the comment as
-  much as they can.  Two of these commands, `bc-raise-flow' and
-  `bc-lower-flow', do it without disturbing the code to the left.
-  Sometimes they may hit a line of code that is too wide to allow the
-  same horizontal placement.  When this happens they will place the
-  comment just after the end of that line.  The result is that the
-  comment is neither squeeezed nor tabbed.  (When called with a prefix
-  argument `bc-fill' has a similar behavior.  It just doesn't move the
-  comment vertically).  Usually you will want to finish a sequence of
-  such commands with a `bc-fill' (no prefix argument) or `bc-squeeze'.
-  The other two moving commands `bc-raise-flow' and `bc-lower-flow',
-  always preserve the horizontal position of the comment, and
-  sometimes insert blank lines to permit them to do so.
-
-  Note that a comment can be forced to any column (if there is room)
-  by adding or deleting spaces before the start delimiter of the first
-  line of text.  When that line of the comment begins in the desired
-  column, do `bc-fill' with a prefix argument \(C-u \\[bc-fill]\) to
-  align the rest of the comment.
-
-
-Banner comments:
-----------------
-  Banner comments are those that include a border comment line for the
-  first and last lines of the block comment. For example, in C:
-
-  if\(*pId\){                          /**===========================**/
-    return pId;                      /**                           **/
-  } else {                           /** This is a banner comment. **/
-    return 0;                        /**                           **/
-  }                                  /**===========================**/
-
-  Banner comments may optionally include blank lines above and below
-  the text, as the one above does.  Note also that effective
-  delimiters with an extra `*' character were used.  
-
-  A comment on a line is considered to be a banner border if it
-  consists entirely of the same character \(like the equal sign above\),
-  and contains no whitespace anywhere inside the delimiters.  The
-  character may be one that is found in the delimiters \(e.g. a `*' in
-  C\) if desired.
-
-  If a block comment has a top banner it is considered a banner
-  comment.  It will be formatted with both top and bottom banners,
-  whether or not the bottom border is initially present.  Either or
-  both blank lines may be present, and they will be preserved
-  independently.  Note that if a banner comment has a blank line above
-  the bottom border, the bottom border must be initially present for
-  it to be preserved.
-
-  In languages that use only start delimiters , faux end delimiters
-  may be added if desired.  For example, in Lisp, a comment begins
-  with a semicolon and continues to the end of the line.  Semicolons
-  may be added at the end of each line to provide a border:
-
-     \(setq bc-mode t\)                ;;=============================;;
-     \(bc-select-keymap t\)            ;;  This is a Banner comment   ;;
-     \(bc-install-menubar\)            ;;  with faux end delimiters   ;;
-     \(bc-sync-advice-enable\)         ;;=============================;;
-  
-  Faux end delimiters may be added independently of top and bottom
-  banner borders.  When the comment is reformatted, the faux end
-  delimiters will be maintained at the end of the line, rather than
-  getting mixed in with the text of the comment.
-
-  To qualify as a faux end delimiter, the string that ends the line
-  must be an exact mirror of the start delimiter.  For example,
-  suppose a language has comments that begin with `rem<' and continue
-  to the end of the line.  The string `>mer' at the end of the line
-  will be recognized as a faux end delimiter:
-
-     \(setq bc-mode t\)       		rem<  Here is a comment	   >mer
-     \(bc-select-keymap t\)   		rem<  with faux end	   >mer
-     \(bc-install-menubar\)   		rem<  delimiters.	   >mer
-
-  Optionally, the last character of the start delimiter and the first
-  character of the faux end delimiter may be repeated any numbers of
-  times: 
-
-     \(setq bc-mode t\)       		rem<<  Here is a comment >>>mer
-     \(bc-select-keymap t\)   		rem<<  with faux end	 >>>mer
-     \(bc-install-menubar\)   		rem<<  delimiters.	 >>>mer
-
-
-Line Killing and Insertion:
----------------------------
-  Several of bc-mode's editing commands provide comment-sensitive line
-  killing and insertion.  These include `bc-kill-line',
-  `bc-open-line', `bc-newline', and `bc-indent-new-comment-line'.  If
-  point is in the code, these commands apply to the code and attempt
-  to preserve the integrity of any block comment.  If point is in the
-  comment, these commands attempt to minimally affect the code.
-
-  When adding a new line to a block comment, The line insertion
-  commands try to move following lines of the block comment down onto
-  subsequent lines of code, without adding blank lines.  For example,
-  suppose point is at the location denoted by `@':
-
-    } else {			   /* Handle bit-valued i/o point.@*/
-      if(iValue){
-        gaIo_shadows[iShadow].iData |= 1;
-
-  If the user types `bc-indent-new-comment-line' (\\[bc-indent-new-comment-line]), the new
-  comment line will be inserted like this:
-
-    } else {			   /* Handle bit-valued i/o point. */
-      if(iValue){		   /* @*/
-        gaIo_shadows[iShadow].iData |= 1;
-
-  However, if the user types `bc-indent-new-comment-line' a second
-  time, the line will be inserted like this:
-
-    } else {			   /* Handle bit-valued i/o point. */
-      if(iValue){		   /*  */
-                                   /* @*/
-        gaIo_shadows[iShadow].iData |= 1;
-
-  This is because the third line of code extended past the starting
-  column of the block comment.  
-
-  Suppose, however, that you would have preferred the third line of
-  the comment to be appended to the third line of code in such a case.
-  This is controlled by the variable `bc-code-width-threshold'.  The
-  above example assumes the default value of zero.  Setting this
-  variable to a value of six or more would have caused the comment to
-  be appended to the code on the third line, because the code is six
-  columns wider than the comment's starting column.  Had the line
-  exceeded this threshold, a blank line would still have been
-  inserted.
-
-  A small value (like six) allows appending comments to lines that are
-  just a little too wide, and forces a blank line to be inserted for
-  lines of code that are very wide.  A small negative value causes BC
-  to maintain some separation between the code and the comment.  In
-  practice, the setting of this variable is not terribly important,
-  because you will probably clean up your comments with a BC
-  formatting command after editing them.
-
-
-Auto Fill:
-----------
-  BC has some rudimentary support for `auto-fill-mode'.  If you turn
-  on both bc-mode and auto-fill-mode, auto-filling is modified so that
-  comments and code disrupt each other as little as possible.  
-
-  If you use this, you will probably want to set `fill-column' to just
-  a few less than `bc-right-margin'.  For example, in C the comment
-  end delimiter is `*/'.  If you use the default value of
-  `bc-right-margin' \(79\), and if you like a space before the end
-  delimiter, set `fill-column' to 79 - 3 = 76.  You can do this by
-  typing `M-7 M-6 \\[set-fill-column]'.  Or you may want to use a major-mode hook
-  to set this from Lisp.
-
-  If you want to use both bc-mode and auto-fill-mode, but do *not*
-  want this behavior, set the variable `bc-enable-auto-fill-advice' to
-  nil.  You can toggle this variable interactively with the function
-  `bc-toggle-advice-enable'. 
-
-Keymaps:
---------
-  You can select from two keymaps for bc-mode to use.
-  `bc-mode-basic-map' is a minimally intrusive set of bindings for
-  BC's most powerful functions.  `bc-mode-extended-map' adds
-  additional bindings for cursor motion commands.  These commands
-  override some standard commands, such as `beginning-of-line' \(bound
-  to C-a, Home, etc\).  BC's versions of these commands behave like the
-  standard ones when point is outside a block comment, and move within
-  the comment otherwise.
-
-  To select a keymap interactively, use the function
-  `bc-toggle-keymap-level'.  This sets the value of the variable
-  `bc-keymap-level' and updates the current keymap.  Alternatively you
-  can set the value of `bc-keymap-level' in lisp.  A value of nil
-  selects `bc-mode-basic-map'; non-nil selects `bc-mode-extended-map'.
-
-Variables controlling bc-mode:
-------------------------------
-  `bc-right-margin'
-     Right-margin for block comments.
-     Default: 79
-  `bc-keymap-level'
-     Select keymap level to use with BC minor mode.
-     Default: nil
-  `bc-code-width-threshold'
-     Amount by which the width of a line of code may exceed the
-     current line's for line-insertion commands to move comments onto
-     it.
-     Default: 0
-  `bc-tab-stops'
-     List of tab stops to use in each buffer.
-     Default: (1 8 16 24 32 40 48 56 64 72)
-
-  Other variables:
-  ----------------
-  `bc-enable-auto-fill-advice'
-  `bc-enable-fill-paragraph-function'
-
-
-  For convenience `bc-mode' sets the following variables if they are
-  unbound.  BC does not otherwise use these because it has its own
-  internal equivalents:
-
-  `comment-start'
-     String to insert to start a new comment.
-  `comment-end'
-     String to insert to end a new comment.
-  `comment-start-skip'
-     Regexp to match the start of a comment plus everything up to its body.
-
-
-Hints:
-------
-  `bc-wider'  \(\\[bc-wider]\) and `bc-narrower' \(\\[bc-narrower]\) are conceptually the
-  inverse of each other, but sometimes leave extra blank (except for
-  the comment) lines.  Use `bc-lower' \(\\[bc-lower]\) to suck the code back from
-  down below.
-
-  If you can't get a comment moved to where you want with `bc-raise'
-  \(\\[bc-raise]\) and `bc-lower' \(\\[bc-lower]\), try `bc-kill-comment' \(\\[bc-kill-comment]\) and
-  `bc-yank' \(\\[bc-yank]\).
-
-  If you can't make a comment narrow enough with `bc-narrower' \(\\[bc-narrower]\),
-  try `bc-taller' \(\\[bc-taller]\), or `bc-squeeze' \(\\[bc-squeeze]\).
-
-  To join two comments into one, go to the comment-free line that
-  separates them and do `indent-for-comment' \(\\[indent-for-comment]\), which will add
-  comment delimiters to the end of that line and move point just
-  inside.  Then do `bc-kill-line' \(\\[bc-kill-line]\) to suck the lower comment
-  up into the newly created line.
-
-  To separate a comment into two, go to the beginning of the comment
-  text on the line where you want to split and do `bc-open-line'
-  \(\\[bc-open-line]\). This will leave a line with only delimiters, which can
-  then be deleted with `kill-comment' \(\\[kill-comment]\).
-
-  To add a banner to a comment, go to the line just above it and do
-  `indent-for-comment' \(\\[indent-for-comment]\). \(Be careful not to inadvertently glue
-  two comments together\).  Delete any whitespace between the comment
-  delimiters \(not necessary if there is no end delimiter\).  If you now
-  do a formatting command \(e.g. `bc-fill'\) a banner will be
-  constructed of characters from the delimiters \(e.g the semicolon in
-  Lisp\).  If you want a different character \(e.g. an equal sign\),
-  first type that between the delimiters, with no whitespace.
-
-  To remove a banner from a comment, delete the top banner and its
-  delimiters.  Then do a BC formatting command, like `bc-fill' \(\\[bc-fill]\).
-
-  To add a right-hand border of faux end delimiters, go to the first
-  line of text in the comment and add a faux delimiter at the end.  Do
-  a BC formatting command, and faux delimiters will be added to the
-  end of each line in the comment.
-
-
-CALLING THE FUNCTION BC-MODE:
-=============================
-
-  The function `bc-mode' toggles bc-mode.  Behavior of that function
-  depends on whether it is called interactively or from Lisp.  
-
-Interactive Command:
---------------------
-  If called interactively, the user may turn bc-mode on or off, and
-  optionally select a comment syntax.
-
-  With no prefix argument, calling `bc-mode' toggles bc-mode.  If the
-  minor mode has never been on in the current buffer, calling with no
-  argument is equivalent to calling with a non-negative prefix
-  argument.
-
-  With a non-negative prefix argument, the user is prompted to choose
-  a language to define the desired comment syntax.  An initial guess
-  is placed in the minibuffer, based either on the current major mode
-  \(if bc-mode has never been turned on in this buffer\), or the value
-  from the last time bc-mode was on in the buffer.
-
-  With a negative prefix argument, bc-mode is turned off.
-
-
-Lisp Function:
---------------
-  From Lisp, `bc-mode' is called as follows:
-
-    \(bc-mode &optional ARG\)
-
-  The simplest way to invoke `bc-mode' from Lisp is to call it with no
-  arguments.  The minor mode will be toggled.  If the minor mode has
-  never been on in the buffer, a comment syntax will be guessed from
-  the major mode and bc-mode will be turned on.  If a guess cannot be
-  made, an error is signalled.  If the minor mode has previously been
-  on in the buffer, it will use the same comment syntax as before.
-
-  For convenience, the function `turn-on-bc-mode' turns on bc-mode
-  unconditionally.
-
-  The argument ARG can be supplied to exert more control.  It may be a
-  number, a string, or a symbol.
-
-    If a number, non-negative turns bc-mode on, negative turns it off.
-    When the mode is turned on, the comment syntax is guessed if this
-    is the first time, otherwise the previous syntax is used.
-
-    If ARG is a string, it must be a regular expression describing the
-    comment syntax.  BC-mode is turned on.  For most languages, this
-    regular expression can be generated automatically by the function
-    `bc-make-regexp'.  Also see the documentation for the variable
-    `bc-comment-regexp'.
-
-    If ARG is a symbol, it must be one of the keys in
-    `bc-languages-alist'.  BC-mode is turned on and the corresponding
-    comment syntax is used.
-
-  If either `comment-start' or `comment-end' is not a string, an
-  attempt is made to set them appropriately.
-
-
-Examples:
----------
-  The following might be put in your ~/.emacs:
-
-  \(add-hook 'c++-mode-hook 'turn-on-bc-mode\)    ; Syntax will be guessed
-						; from major mode.
-
-  \(add-hook 'c++-mode-hook		        ; Turn on bc-mode but
-	    \(function \(lambda \('bc-mode 'c\)\)\)\)	; use C style comments.
-
-
-  If you program in a language that bc-mode does not know, you can
-  call `bc-make-regexp' to build a comment syntax for you.  Suppose
-  your language begins comments with \"<*\" and ends them with \"*>\".
-  You could add the following to your ~/.emacs:
-
-  \(add-hook 'my-lang-mode-hook
-	    \(function \(lambda \(\)
-			\(bc-mode \(bc-make-regexp \"<*\" \"*>\"\)\)\)\)\)
-
-  You can also turn on bc-mode using File Local Variables.  If the
-  language is known to BC, you can use the following format.  For
-  example, at the end of a shell script, the following lines invoke
-  bc-mode whenever the file is loaded:
-
-    # Local Variables:
-    # bc-language: csh
-    # mode: bc
-    # End:
-
-  Note that the line for `bc-language' must come before the `mode'
-  line.
-
-  In the case that the language in the file is not known to BC, you
-  must use the `eval' construct:
-
-    # Local Variables:
-    # eval: \(bc-mode  \(bc-make-regexp \"<*\" \"*>\"\)\)
-    # End:
-
-  If your language has no comment-end string, i.e., comments continue
-  to end-of-line, pass only the comment-start string to
-  `bc-make-regexp'.
-
-  Note that `bc-make-regexp' will set up `comment-start' and
-  `comment-end' if they are not already strings.  It does this by
-  appending a space to its first argument and prepending a space to
-  its \(optional\) second argument.")
-
-;;;;========================================================================
-;;;_  * To quiet the byte compiler
-
- ; Quiet the byte-compiler. Yes, I know these are obsolete, but other
- ; packages don't. Some functions need to `let' these to nil to
- ; improve speed.
-(eval-when-compile
-  (put 'after-change-function 'byte-obsolete-variable nil)
-  (put 'before-change-function 'byte-obsolete-variable nil))
-  ; Quiet `reference to free variable' complaints
-
-(if (not (boundp 'filladapt-mode)) (defvar filladapt-mode nil))
-
-(defsubst bc-dummy (&rest args))
-(defsubst bc-funcall (func &rest args) (apply func args))
-
-;;;;========================================================================
-;;;_  * User Variables
-
-(defvar bc-mode-prefix "\C-c,"
-  "Prefix key sequence for most bindings in `bc-mode-basic-map'.
-This is the keymap bc-mode uses unless `bc-keymap-level' is non-nil.")
-
-(defvar bc-mode-ext-prefix "\C-\\"
-  "Prefix key sequence for certain bindings in `bc-mode-extended-map'.
-This is the keymap bc-mode uses when `bc-keymap-level' is non-nil.")
-
-(defvar bc-enable-auto-fill-advice t
-  "*Whether to enable advice on `do-auto-fill'.
-
-Bc-mode defines advice on this function to assist correct auto-filling of
-block-comments.  If you don't like this, set the value of this variable to
-nil.  To toggle this interactively, use the command
-`bc-toggle-auto-fill-advice' \(\\[bc-toggle-auto-fill-advice]\)")
-
-(defvar bc-enable-fill-paragraph-function t
-  "*If non-nil, enable `bc-fill-paragraph' as a fill-paragraph-function.
-This will cause `\\[fill-paragraph]' to fill comments as right-margin
-comments whenever it sees them, if bc-mode is turned on.
-
-If this variable is nil, `\\[fill-paragraph]' maintains is traditional
-behavior even when bc-mode is on.
-
-For changes to this variable to take effect, bc-mode must be turned
-off and back on.")
-
-(defvar bc-right-margin 79
-  "*Right margin for block comments.
-In a language with no end delimiters, comment text will be formatted
-so as not to exceed this column.  In a language with end delimiters,
-comment text will be padded with spaces so that all end delimiters end
-in this column.
-
-You can set this interactively by typing `\\[bc-set-margin]'
-\(`bc-set-margin'\).
-
-For more information, type `\\[describe-variable] bc-mode-doc'.")
-(make-variable-buffer-local 'bc-right-margin)
-
-(defvar bc-keymap-level nil
-  "*Selects keymap level to use with BC minor mode.  
-Nil causes bc-mode to use `bc-mode-basic-map'.  Non-nil causes bc-mode
-to use `bc-mode-extended-map', which overrides some basic global keys
-like C-a with versions defined by BC.  Most of these behave similarly
-to the functions they shadow, but are context-sensitive to
-right-margin comments.
-
-You can set this interactively by typing `\\[bc-toggle-keymap-level]'
-\(`bc-toggle-keymap-level'\).
-
-For more information, type `\\[describe-variable] bc-mode-doc'.")
-
-(defvar bc-tab-stops nil
-  "*Tab stops for BC formatting commands.
-
-This should be a list of integers in ascending order.  Each denotes a
-column for BC to use as a tab stop.  A tab stop of zero will be
-ignored.
-
-You can set tab stops to a uniform spacing with the function
-`bc-set-tab-spacing'.")
-(make-variable-buffer-local 'bc-tab-stops)
-
-(defvar bc-languages-alist ; NOCOLLECT
-;(defconst bc-languages-alist ; for debugging
-
-  ;; Must specify regexps for long delimiters explicitly because
-  ;; bc-make-regexp can't handle more than two chars per delim.
-  '(
-    (ada                                         (delim "--"))
-    (asm                                         (delim ";"))
-    (awk                                         (delim "#"))
-    (bash                                        (delim "#"))
-    (bib                                         (delim "%"))
-    (c                                           (delim "/*" "*/"))
-    (c++                                         (delim "//"))
-    (cperl                                       (delim "#"))
-    (csh                                         (delim "#"))
-    (eifel                                       (delim "--"))
-    (emacs-lisp                                  (delim ";"))
-    (f90                                         (delim "!"))
-    (html (regexp "[^<]<!-+[ \t]*\\(.*\\)-+>")   (delim "<!--" "-->"))
-    (java                                        (delim "//"))
-    (ksh                                         (delim "#"))
-    (latex                                       (delim "%"))
-    (lisp                                        (delim ";"))
-    (makefile                                    (delim "#"))
-    (mim                                         (delim ";\"" "\"") )
-    (modula-2                                    (delim "(*" "*)"))
-    (nroff                                       (delim "\\\""))
-    (pascal                                      (delim "(*" "*)"))
-    (pascal-brace                                (delim "{" "}"))
-    (pascal-paren                                (delim "(*" "*)"))
-    (perl                                        (delim "#"))
-    (postscript                                  (delim "%"))
-    (rexx                                        (delim "/*" "*/"))
-    (scheme                                      (delim ";"))
-    (sgml (regexp "[^<]<!-+[ \t]*\\(.*\\)-+>")   (delim "<!--" "-->"))
-    (tcl                                         (delim "#"))
-    (tex                                         (delim "%"))
-    (vrml                                        (delim "#"))
-    )
-
-  "Alist mapping languages to comment syntax information.  
-
-The keys are symbols denoting languages; the values are alists
-containing language information.  Each of these alists may contain the
-following keys:
-
-    `delim'         The value is a list of strings.  The first
-                    string contains the comment start delimiter
-                    \(without any whitespace\).  An optional second
-                    string contains the comment end delimiter, if the
-                    language has one.
-
-    `regexp'        The value is a list of one string.  It is an
-                    explicit regular expression defining the comment
-                    syntax.  It is only necessary in special
-                    circumstances.  In most cases, a regular
-                    expression can be computed from the `delim' field.")
-
-(defvar bc-code-width-threshold 0
-  "*Used by line-inserting commands such as `bc-open-line' to decide
-whether a new comment line can be added to the left of the code on a
-line below, or if a blank line must be inserted.  If the width of the
-code on a subsequent line is less than the starting column of this
-comment plus `bc-code-width-threshold', no blank line is inserted.
-Otherwise blank lines are inserted before the too-wide line.
-
-Setting this to a large negative value, like -999, causes blank lines
-to always be inserted, in the manner of the standard
-`indent-new-comment-line' (\\[indent-new-comment-line]) command.
-Setting this to a large positive value, like 999, causes blank lines
-to never be inserted.
-
-Good choices for this variable are zero and small positive and
-negative integers.  In particular, a value of zero will cause blank
-lines to be inserted only when necessary to allow the new comment line
-to line up under the previous one.
-
-For more information, type `\\[describe-variable] bc-mode-doc'.")
-
-;;;;========================================================================
-;;;_  * Menus
-
-(defvar bc-mode-menu
-  '("Comments"
-    ("Options"
-     ["Extended Keymap"   bc-toggle-keymap-level
-      :style toggle
-      :selected bc-keymap-level]
-     ["Comment-Oriented Auto-Filling"  bc-toggle-auto-fill-advice
-      :style toggle
-      :selected bc-enable-auto-fill-advice]
-     ["Set Tab Spacing..."  bc-set-tab-spacing t]
-     ["Set Margin..."  bc-set-margin t]
-     )
-    "---"
-    ["Fill"              bc-fill                         t]
-    ["Wider"             bc-wider                        t]
-    ["Narrower"          bc-narrower                     t]
-    "---"
-    ["Squeeze"           bc-squeeze                      t]
-    ["Shorter"           bc-shorter                      t]
-    ["Taller"            bc-taller                       t]
-    "---"
-    ["Raise"             bc-raise                        t]
-    ["Raise/Flow"        bc-raise-flow                   t]
-    ["Lower"             bc-lower                        t]
-    ["Lower/Flow"        bc-lower-flow                   t]
-    "---"
-    ["Cut"               bc-kill-comment                 t]
-    ["Copy"              bc-copy-comment-comment-as-kill t]
-    ["Paste Most Recent" bc-yank                         t]
-    "---"
-    ["Open Line"         bc-open-line                    t]
-    ["Newline"           bc-newline                      t]
-    ["Indent New Line"   bc-indent-new-comment-line      t]
-    ["Kill Line"         bc-kill-line                    t]
-    "---"
-    ["Next Comment"      bc-forward-comment              t]
-    ["Previous Comment"  bc-backward-comment             t]
-    )
-  "XEmacs 19 menu for bc-mode.")
-
-(defun bc-install-menubar (&optional remove)
-  ;; install or remove the menu
-  (let ((path '("Comments")))
-    (condition-case nil
-	(cond
-	 (remove
-	  (bc-funcall 'delete-menu-item path))
-	 (t
-	  (bc-funcall 'set-buffer-menubar
-		      (copy-sequence (symbol-value 'current-menubar)))
-	  (bc-funcall 'add-submenu nil bc-mode-menu)))
-      (error nil))))
-
-;;;(defvar bc-mode-menu-bar-map nil)
-
-(defun bc-mode-fsf-menu (name map)
-  ;; Add menu to a keymap.  Don't add them for XEmacs. This feature
-  ;; test will fail on other than Emacs 19.  Borrowed from cc-mode.el
-  (condition-case nil
-      (progn
-	(define-key map [menu-bar] (make-sparse-keymap))
-	(define-key map [menu-bar bc] (cons name (make-sparse-keymap name)))
-
-	(define-key map [menu-bar bc bc-backward-comment]
-	  '("Previous Comment" . bc-backward-comment))
-	(define-key map [menu-bar bc bc-forward-comment]
-	  '("Next Comment" . bc-forward-comment))
-	
-	(define-key map [menu-bar bc separator-edit-line] '("--"))
-	(define-key map [menu-bar bc bc-kill-line]
-	  '("Cut Line" . bc-kill-line))
-	(define-key map [menu-bar bc bc-indent-new-comment-line]
-	  '("Indent New Line" . bc-indent-new-comment-line))
-	(define-key map [menu-bar bc bc-newline]
-	  '("Newline" . bc-newline))
-	(define-key map [menu-bar bc bc-open-line]
-	  '("Open Line" . bc-open-line))
-
-	(define-key map [menu-bar bc separator-xcp] '("--"))
-	(define-key map [menu-bar bc bc-yank]
-	  '("Paste Most Recent" . bc-yank))
-	(define-key map [menu-bar bc bc-copy-comment-comment-as-kill]
-	  '("Copy" . bc-copy-comment-comment-as-kill))
-	(define-key map [menu-bar bc bc-kill-comment]
-	  '("Cut" . bc-kill-comment))
-	
-	(define-key map [menu-bar bc separator-edit-comment] '("--"))
-	(define-key map [menu-bar bc bc-lower-flow]
-	  '("Lower/Flow" . bc-lower-flow))
-	(define-key map [menu-bar bc bc-lower]
-	  '("Lower" . bc-lower))
-	(define-key map [menu-bar bc bc-raise-flow]
-	  '("Raise/Flow" . bc-raise-flow))
-	(define-key map [menu-bar bc bc-raise]
-	  '("Raise" . bc-raise))
-	
-	(define-key map [menu-bar bc separator-squeeze] '("--"))
-	(define-key map [menu-bar bc bc-taller]
-	  '("Taller" . bc-taller))
-	(define-key map [menu-bar bc bc-shorter]
-	  '("Shorter" . bc-shorter))
-	(define-key map [menu-bar bc bc-squeeze]
-	  '("Squeeze" . bc-squeeze))
-	
-	(define-key map [menu-bar bc separator-fill] '("--"))
-	(define-key map [menu-bar bc bc-narrower]
-	  '("Narrower" . bc-narrower))
-	(define-key map [menu-bar bc bc-wider]
-	  '("Wider" . bc-wider))
-	(define-key map [menu-bar bc bc-fill]
-	  '("Fill" . bc-fill))
-
-							; The Options submenu
-
-	(define-key map [menu-bar bc separator-options] '("--"))
-	(define-key map [menu-bar bc options]
-	  (cons "Options" (make-sparse-keymap "Options")))
-	(define-key map [menu-bar bc options bc-set-margin]
-	  '("Set Margin..." . bc-set-margin))
-	(define-key map [menu-bar bc options bc-set-tab-spacing]
-	  '("Set Tab Spacing..." . bc-set-tab-spacing))
-	(define-key map [menu-bar bc options bc-toggle-auto-fill-advice]
-	  (if bc-enable-auto-fill-advice
-	      '("Normal Auto-Filling" . bc-toggle-auto-fill-advice)
-	    '("Comment-Oriented Auto-Filling" . bc-toggle-auto-fill-advice)))
-	(define-key map [menu-bar bc options bc-toggle-keymap-level]
-	  (if bc-keymap-level
-	      '("Basic Keymap" . bc-toggle-keymap-level)
-	    '("Extended Keymap" . bc-toggle-keymap-level)))
-	t)
-    (error nil)))
-
-;;;;========================================================================
-;;;_  * Keymaps
-
-(defvar bc-mode-map nil ; NOCOLLECT
-  "Keymap for BC minor mode.")
-
-(defvar bc-mode-prefix-map nil) ; NOCOLLECT
-(if bc-mode-prefix-map
-    nil
-  (setq bc-mode-prefix-map (make-sparse-keymap))
-  (define-key bc-mode-prefix-map ";"    'bc-mode)
-  (define-key bc-mode-prefix-map "[" 'bc-toggle-keymap-level)
-  (define-key bc-mode-prefix-map "\C-a" 'bc-beginning-of-line)
-  (define-key bc-mode-prefix-map "\C-b" 'bc-submit-bug-report)
-  (define-key bc-mode-prefix-map "\C-e" 'bc-end-of-line)
-  (define-key bc-mode-prefix-map "\C-f" 'bc-set-margin)
-  (define-key bc-mode-prefix-map "\C-j" 'bc-indent-new-comment-line)
-  (define-key bc-mode-prefix-map "\C-k" 'bc-kill-line)
-  (define-key bc-mode-prefix-map "\C-m" 'bc-newline)
-  (define-key bc-mode-prefix-map "\C-o" 'bc-open-line)
-  (define-key bc-mode-prefix-map "\C-p" 'bc-yank-pop)
-  (define-key bc-mode-prefix-map "\C-w" 'bc-kill-comment)
-  (define-key bc-mode-prefix-map "\C-y" 'bc-yank)
-  (define-key bc-mode-prefix-map "\M-q" 'bc-fill)
-  (define-key bc-mode-prefix-map "\M-w" 'bc-copy-comment-comment-as-kill)
-  (define-key bc-mode-prefix-map "\M-y" 'bc-yank-pop)
-  (define-key bc-mode-prefix-map "\t" 'bc-indent-according-to-mode)
-  (define-key bc-mode-prefix-map "a"    'bc-beginning-of-line)
-  (define-key bc-mode-prefix-map "b"    'bc-backward-comment)
-  (define-key bc-mode-prefix-map "d"    'bc-lower)
-  (define-key bc-mode-prefix-map "e"    'bc-end-of-line)
-  (define-key bc-mode-prefix-map "f"    'bc-forward-comment)
-  (define-key bc-mode-prefix-map "i"    'bc-set-tab-spacing)
-  (define-key bc-mode-prefix-map "j"    'bc-indent-new-comment-line)
-  (define-key bc-mode-prefix-map "k"    'bc-kill-line)
-  (define-key bc-mode-prefix-map "l"    'bc-lower-flow)
-  (define-key bc-mode-prefix-map "n"    'bc-narrower)
-  (define-key bc-mode-prefix-map "o"    'bc-open-line)
-  (define-key bc-mode-prefix-map "q"    'bc-fill)
-  (define-key bc-mode-prefix-map "r"    'bc-raise-flow)
-  (define-key bc-mode-prefix-map "s"    'bc-shorter)
-  (define-key bc-mode-prefix-map "t"    'bc-taller)
-  (define-key bc-mode-prefix-map "u"    'bc-raise)
-  (define-key bc-mode-prefix-map "w"    'bc-wider)
-  (define-key bc-mode-prefix-map "y"    'bc-yank)
-  (define-key bc-mode-prefix-map "z"    'bc-squeeze))
-
-(defvar bc-mode-basic-map nil ; NOCOLLECT
-  "Basic keymap for BC minor mode.")
-(if bc-mode-basic-map
-    nil
-  (setq bc-mode-basic-map (make-sparse-keymap))
-  (define-key bc-mode-basic-map bc-mode-prefix bc-mode-prefix-map)
-  (define-key bc-mode-basic-map "\C-xr;" 'bc-mode)
-  (define-key bc-mode-basic-map [(meta return)] 'bc-fill)
-;;;  (bc-mode-fsf-menu "Comments" bc-mode-basic-map)
-  )
-
-(defvar bc-mode-ext-prefix-map nil) ; NOCOLLECT
-(if bc-mode-ext-prefix-map
-    nil
-  (setq bc-mode-ext-prefix-map (make-sparse-keymap))
-  (define-key bc-mode-ext-prefix-map "\C-j" 'bc-indent-new-comment-line)
-  (define-key bc-mode-ext-prefix-map "\C-k" 'bc-kill-line)
-  (define-key bc-mode-ext-prefix-map "\C-m" 'bc-newline)
-  (define-key bc-mode-ext-prefix-map "\C-o" 'bc-open-line)
-  (define-key bc-mode-ext-prefix-map "\C-p" 'bc-yank-pop)
-  (define-key bc-mode-ext-prefix-map "\C-w" 'bc-kill-comment)
-  (define-key bc-mode-ext-prefix-map "\C-y" 'bc-yank)
-  (define-key bc-mode-ext-prefix-map "\M-w" 'bc-copy-comment-comment-as-kill)
-  (define-key bc-mode-ext-prefix-map "\M-y" 'bc-yank-pop)
-  (define-key bc-mode-ext-prefix-map "\M-j" 'indent-new-comment-line)
-  (define-key bc-mode-ext-prefix-map "\t"   'indent-according-to-mode))
-
-;(setq bc-mode-extended-map nil) ; for debugging
-(defvar bc-mode-extended-map nil ; NOCOLLECT
-  "Extended keymap for BC minor mode.")
-(if bc-mode-extended-map
-    ()
-  ;; XEmacs and Emacs 19 do this differently
-  ;; Use `bc-funcall' to quiet the byte compiler about obsolete/unknown
-  ;; functions.
-  (cond
-   ;; 				; Inherit from bc-mode-basic-map.
-   ((fboundp 'set-keymap-parents)
-    (setq bc-mode-extended-map (make-sparse-keymap))
-    (bc-funcall 'set-keymap-parents bc-mode-extended-map bc-mode-basic-map))
-   ((fboundp 'set-keymap-parent)
-    (setq bc-mode-extended-map (make-sparse-keymap))
-    (bc-funcall 'set-keymap-parent bc-mode-extended-map bc-mode-basic-map))
-   (t (setq bc-mode-extended-map (cons 'keymap bc-mode-basic-map))))
-  ;; add bindings
-  (substitute-key-definition 'beginning-of-line 'bc-beginning-of-line
-			     bc-mode-extended-map global-map)
-  (substitute-key-definition 'end-of-line 'bc-end-of-line
-			     bc-mode-extended-map global-map)
-  (substitute-key-definition 'indent-new-comment-line
-			     'bc-indent-new-comment-line
-			     bc-mode-extended-map global-map)
-  (define-key bc-mode-extended-map bc-mode-ext-prefix bc-mode-ext-prefix-map)
-  (define-key bc-mode-extended-map "\M-B" 'bc-backward-comment)
-  (define-key bc-mode-extended-map "\M-D" 'bc-lower)
-  (define-key bc-mode-extended-map "\M-E" 'bc-forward-comment)
-  (define-key bc-mode-extended-map "\M-F" 'bc-forward-comment)
-  (define-key bc-mode-extended-map "\M-K" 'bc-lower-flow)
-  (define-key bc-mode-extended-map "\M-L" 'bc-lower-flow)
-  (define-key bc-mode-extended-map "\M-N" 'bc-narrower)
-  (define-key bc-mode-extended-map "\M-Q" 'bc-fill)
-  (define-key bc-mode-extended-map "\M-R" 'bc-raise-flow)
-  (define-key bc-mode-extended-map "\M-S" 'bc-shorter)
-  (define-key bc-mode-extended-map "\M-T" 'bc-taller)
-  (define-key bc-mode-extended-map "\M-U" 'bc-raise)
-  (define-key bc-mode-extended-map "\M-W" 'bc-wider)
-  (define-key bc-mode-extended-map "\M-Z" 'bc-squeeze)
-
-  (define-key bc-mode-extended-map "\M-y" 'bc-yank-pop)
-  (define-key bc-mode-extended-map "\t" 'bc-indent-according-to-mode))
-
-
-;;;;========================================================================
-;;;_  * Bug Reporting:
-
-(eval-when-compile (require 'reporter))
-
-(defvar bc-bug-reporting nil
-  "Non-nil during bc-submit-bug-report.")
-;;;_    | bc-submit-bug-report
-(defun bc-submit-bug-report ()
-  "Submit, via mail, a bug report on bc-mode."
-  (interactive)
-  (let ((reporter-prompt-for-summary-p t)
-	varlist salutation
-	(bc-bug-reporting t))
-    (setq varlist '(major-mode
-		    kill-whole-line
-		    fill-column
-		    auto-fill-function
-
-		    bc-added-newlines-counter
-		    bc-banner-bottom-border
-		    bc-banner-bottom-space
-		    bc-banner-top-border
-		    bc-banner-top-space
-		    bc-bug-last-command
-		    bc-bug-reporting
-		    bc-bug-save-column
-		    bc-bug-save-line
-		    bc-bug-save-point
-		    bc-code-width-threshold
-		    bc-comment-end
-		    bc-comment-looking-at-regexp
-		    bc-comment-regexp
-		    bc-comment-start
-		    bc-delims-length
-		    bc-effective-end
-		    bc-effective-start
-		    bc-enable-auto-fill-advice
-		    bc-extra-lines
-		    bc-fb-debug
-		    bc-fb-lines
-		    bc-fb-next-width
-		    bc-fb-prev-fill-column
-		    bc-fb-widest-is-one
-		    bc-fb-width
-		    bc-fill-buffer-cache
-		    bc-fill-count
-		    bc-format-commands
-		    bc-keymap-level
-		    bc-language
-		    bc-mode
-		    bc-mode-date
-		    bc-mode-doc
-		    bc-mode-maintainer-address
-		    bc-mode-version
-		    bc-parse-line-cache
-		    bc-phantom-column
-		    bc-pref-first-line
-		    bc-right-margin
-		    bc-G-rm-minus-stuff
-		    bc-saved-delims
-		    bc-scratch-buffer
-		    bc-show-fill-count
-		    bc-start-first-char
-		    bc-start-marker
-		    bc-tab-stops
-		    filladapt-mode
-
-		    (t . bc-bug-get-user-buffer)
-		    ))
-    (setq salutation "
-Congratulations! You are about to report a bug in BC!
-
-Please check the end of this message to see that it contains the
-text you were editing.  Then make a concise and accurate summary
-of what happened and mail it to the address above.
------------------------------------------------------------ ")
-
-    (require 'reporter)
-    (switch-to-buffer (get-buffer-create " bc-msg-buffer"))
-    (erase-buffer)
-    (fundamental-mode)
-    (delete-other-windows)
-    (insert "
-Please read this first:
-----------------------
-
-BC-mode is very sensitive to the text you are editing.  For this
-reason, `bc-submit-bug-report' tries to copy a bit of the buffer near
-where you were editing.  For this to be useful, before submitting a
-bug report you must 
-
-  (1)  Position the cursor inside the comment where you experienced
-       the error.
-  (2)  Run the BC command that failed.
-  (3)  If that altered the buffer, type `"
-	    (substitute-command-keys "\\[advertised-undo]") "' \(`undo'\).")
-      
-    (if (y-or-n-p "I have done all that and I'm ready to mail! ")
-	(progn
-	  (bury-buffer)
-	  (let ((emacs-lisp-mode-hooks nil)
-		(orig-filladapt (default-value filladapt-mode)))
-	    (bc-dummy emacs-lisp-mode-hooks)	      ; quiet the byte compiler
-	    (setq-default filladapt-mode nil)
-	    (reporter-submit-bug-report bc-mode-maintainer-address
-					(concat "bc-mode.el " bc-mode-version)
-					varlist
-					'bc-bug-save-point nil
-					salutation)
-	    (setq-default filladapt-mode orig-filladapt)))
-      (bury-buffer)
-      (error "Bug report aborted"))
-    ))
-
-(defvar bc-bug-save-point nil
-  "Gets value of (point) to pass to reporter-submit-bug-report.")
-(defvar bc-bug-save-column nil
-  "Gets column at (point) to pass to reporter-submit-bug-report.")
-(defvar bc-bug-save-line nil
-  "Gets a copy of the line containing point to pass to
-reporter-submit-bug-report." )
-(defvar bc-bug-last-command nil
-  "Contains the most recent BC command to pass to reporter-submit-bug-report.")
-
-(defsubst bc-bug-save-command ()
-  (if (not bc-bug-reporting)
-      (setq bc-bug-last-command this-command)))
-;
-;;;_    | bc-bug-save-point
-(defun bc-bug-save-point ()
-  (save-excursion
-    (set-buffer reporter-eval-buffer)
-    (setq bc-bug-save-point (point)
-	  bc-bug-save-column (current-column)
-	  bc-bug-save-line (buffer-substring 
-			    (save-excursion (beginning-of-line) (point))
-			    (save-excursion (end-of-line) (point))))
-    (set-text-properties 0 (length bc-bug-save-line) nil bc-bug-save-line)))
-;;;_    | bc-bug-get-user-buffer
-(defun bc-bug-get-user-buffer (sym &optional mail-buffer)
-  (or mail-buffer (setq mail-buffer		; Old versions of reporter
-			(current-buffer)))	; don't supply mail-buffer.
-  (let (nocomment range beg end)
-    (save-excursion
-      (setq nocomment
-	    (catch 'failure
-	      (save-excursion
-		(set-buffer reporter-eval-buffer)
-		(setq range (bc-find-range))	; See if point is in a comment.
-		(goto-char (car (car range)))	; If so, get buffer contents in
-		(forward-line -10)		; the vicinity.
-		(setq beg (point))		; 
-		(goto-char (car (cdr range)))	; If there are other comments
-		(forward-line -2)		; nearby, just copy to those,
-		(setq beg (max beg (point)))	; otherwise ten lines in either
-		(goto-char (cdr (car range)))	; direction.
-		(forward-line 10)
-		(setq end (point))
-		(goto-char (cdr (cdr range)))
-		(forward-line 2)
-		(setq end (min end (point))))
-	      nil))
-      (if (not nocomment) nil			; If there was no comment, just
-	(save-excursion				; grab 20 lines around point.
-	  (set-buffer reporter-eval-buffer)
-	  (save-excursion
-	    (forward-line -10)
-	    (setq beg (point)))
-	  (save-excursion
-	    (forward-line 10)
-	    (setq end (point)))))
-
-      (set-buffer mail-buffer)
-      (insert (make-string 64 ?=) ?\n)
-      (insert "Code Buffer:\n" (make-string 64 ?-) ?\n)
-      (insert
-       (save-excursion
-	 (set-buffer reporter-eval-buffer)
-	 (buffer-substring beg end)))
-      (if (bolp) nil (insert "<EOB>\n"))
-      (insert (make-string 64 ?=) ?\n)
-      (insert "Scratch Buffer:\n" (make-string 64 ?-) ?\n)
-      (insert-buffer (bc-get-buffer-create))
-      (goto-char (point-max))
-      (insert (make-string 64 ?=) ?\n)
-      )))
- 
-;;;;========================================================================
-;;;_  * Internal variables:
-
-(defconst bc-format-commands
-  '(bc-fill bc-raise bc-raise-flow bc-lower bc-lower-flow bc-taller
-	    bc-shorter bc-narrower bc-wider))
-
-(defvar bc-comment-start nil
-  "Default comment-start string.")
-(make-variable-buffer-local 'bc-comment-start)
-
-(defvar bc-comment-end nil
-  "Default comment-end string.")
-(make-variable-buffer-local 'bc-comment-end)
-
-(defvar bc-faux-comment-end nil)
-(make-variable-buffer-local 'bc-faux-comment-end)
-
-(defvar bc-start-first-char nil
-  "The first character of `comment-start'.
-
-This is necessary for two reasons.  The first is that
-`bc-comment-regexp' matches one character before the start delimiter,
-and it must be different than the first character of that.  Therefore,
-we must be careful not to move a comment to a line where the code ends
-in that character.
-
-It is further neccessary because if the comment-start string is all
-the same character, you can add another and the whole string still
-begins with comment-start.  If a line of code were to end with this
-character, we must be sure not to jamb a comment up against it, or
-that character would become part of the start delimiter.")
-(make-variable-buffer-local 'bc-start-first-char)
-
-(defvar bc-comment-regexp nil
-  "*Regular expression matching a comment in the language being
-edited. It must match the entire comment including starting and ending
-delimiters, plus the single character before the starting delimiter.
-This extra char is to force `re-search-forward' to match all of the
-delimiter, in cases where a delimiter char is repeated (e.g. more than
-one semicolon in Lisp).  It can be assumed that all searches based on
-this regexp will be confined to one line, so the regexp itself does
-not need to be concerned with matching newline characters. (e.g. in
-Lisp, the comment-end delimiter is a newline, but `bc-comment-regexp'
-needn't try to match it.)  In addition, `bc-comment-regexp' must
-contain a substring match which matches only the text of the comment,
-excluding delimiters and leading whitespace.
-
-This variable is normally set on entry to bc-mode to a value
-appropriate to the current major mode.
-
-For more information, type `\\[describe-variable] bc-mode-doc'.")
-(make-variable-buffer-local 'bc-comment-regexp)
-
-(defvar bc-comment-looking-at-regexp nil
- "*Regular expression matching a comment in the language being
-edited.  It must match enough of the comment to determine if we are
-looking at a right-margin comment.  
-
-The reason this regexp is necessary is because `bc-comment-regexp'
-matches more than just the comment.  Specifically, it matches one
-character before the start delimiter.  In some cases, at the beginning
-of a line for example, it isn't practical to match the previous
-character, so this regexp is needed.
-
-The simplest is for this regexp to be the same as `bc-comment-regexp'
-minus the match for the character before the start delimiter.
-This variable is normally set on entry to `bc-mode' to a value
-appropriate to the current major mode.
-
-For more information, type `\\[describe-variable] bc-mode-doc'.")
-(make-variable-buffer-local 'bc-comment-looking-at-regexp)
-
-(defvar bc-language nil 
-  "Symbol indicating if `bc-mode' has ever been turned on in the
-buffer.  If not, `bc-language' is nil, otherwise it is a symbol
-denoting the language selected by the user from `bc-languages-alist'
-OR t if the user supplied `bc-comment-regexp' explicitly.
-
-For more information, type `\\[describe-variable] bc-mode-doc'.")
-(make-variable-buffer-local 'bc-language)
-(setq-default bc-language nil)
-
-(defvar bc-mode nil
-  "Non-nil if bc-mode is active.
-
-For more information, type `\\[describe-variable] bc-mode-doc'.")
-(make-variable-buffer-local 'bc-mode)
-;;;(put 'bc-mode 'permanent-local t)
-
-(condition-case nil				; bc-funcall to quiet
-    (bc-funcall 'add-minor-mode 'bc-mode " BC")	; byte-compiler
-    (error
-     (or (assq 'bc-mode minor-mode-alist)
-	 (setq minor-mode-alist (append minor-mode-alist
-					(list '(bc-mode " BC")))))))
-(setq-default bc-mode nil)
-
-(defvar bc-scratch-buffer " *bc-scratch*"
-  "Scratch buffer in which to do text filling for block comments.")
-
-(defvar bc-show-fill-count nil
-  "*Non-nil means display `bc-fill-count' after each BC command.")
-
-(defvar bc-start-marker nil)
-(setq bc-start-marker (make-marker))
-(set-marker bc-start-marker nil)
-
-(defvar bc-saved-fill-paragraph-function nil)
-(make-variable-buffer-local 'bc-saved-fill-paragraph-function)
-
-;;;;========================================================================
-;;;_   o Persistent variables.
-;;
-;; These variables are used to save info between calls to BC commands.
-
-(defvar bc-phantom-column nil
-  "Phantom comment column.
-Used by BC formatting commands when the previous command was also a BC
-formatting command.")
-(make-variable-buffer-local 'bc-phantom-column)
-
-(defvar bc-pref-first-line nil
-  "Line number of preferred top line of the current comment.  Used by
-bc-shorter and bc-taller commands to preserve the original top of the
-comment whenever the previous command was a BC command.")
-(make-variable-buffer-local 'bc-pref-first-line)
-
-(defvar bc-parse-line-cache nil
-  "Cache for `bc-parse-line'.  This is an alist with keys the
-buffer positions of the beginnings of lines that `bc-parse-line'
-has previously scanned.  Values are character positions of code-end,
-comment-start, etc.")
-
-(defvar bc-fill-buffer-cache nil 
- "Cache for `bc-fill-buffer'.
-This caches the results of each call to `bc-fill-buffer' so that
-`bc-query-fill' can retrieve them later.  The structure is an array of
-lists.  It is indexed by `fill-column', so the array size is chosen to
-accomodate the widest forseable fill column (2 times `bc-right-margin')
-
-If an element is nil, it means the buffer has not yet been filled at
-that width.  Otherwise it is a list of the values of `bc-fb-lines',
-`bc-fb-width', `bc-fb-widest-is-one', and `bc-fb-next-width' for that
-value of `fill-column'.")
-
-(defvar bc-added-newlines-counter 0
-  "Used by `bc-cleanup-newlines' to decide whether newlines were added
-on the current or a previous command.  This counter must be incremented
-once at entry to any function that will call `bc-cleanup-newlines'.
-This is usually done by calling `bc-bump-counters'.")
-
-;;;;========================================================================
-;;;_   o The Back Alley.
-;;
-;;;_    | Buffer local
-;; These global variables get assigned copies of buffer-local
-;; variables so that they will be available when we switch to the
-;; scratch buffer
-
-(defvar bc-G-code-buffer nil
-  "The current buffer in which a BC command is operating.")
-
-(defvar bc-G-tab-stops nil
-  "A copy of the value of the buffer-local variable `bc-tab-stops'.")
-
-;
-;;;_    | Low level
-;; These global variables are used to pass info around between low
-;; level functions during a single command invocation.
-
-(defvar bc-G-scratch-buffer nil
-  "Scratch buffer in which to do text filling for block comments.")
-
-(defvar bc-delims-length nil
-  "Total width of the effective delimiters for the comment currently
-being formatted.  Set by `bc-analyze-comment'.")
-
-(defvar bc-G-rm-minus-stuff nil
-  "Number of columns available for code and comment.  This is
-`bc-right-margin' minus `bc-delims-length' for the comment currently
-being formatted.  Set by `bc-analyze-comment'.")
-
-(defvar bc-fill-count nil
-  "Number of times a BC formatting command calls `bc-fill-buffer'
-during a single invocation.  Used only for display of this expense.")
-
-(defvar bc-fb-lines nil 
-  "Number of lines resulting from last call to `bc-fill-buffer'.")
-
-(defvar bc-fb-width nil 
-  "Width of widest line resulting from last call to `bc-fill-buffer'.")
-
-(defvar bc-fb-widest-is-one nil 
-  "Non-nil means widest line resulting from last call to `bc-fill-buffer' 
-contains no whitespace.")
-
-(defvar bc-fb-next-width nil 
-  "Set by `bc-fill-buffer'.  This is the next-wider value that
-`fill-column' would have to be for another call of `bc-fill-buffer' to
-have an effect (on the same text).")
-
-(defvar bc-fb-prev-fill-column nil
-  "Most recent value of `fill-column' to which `bc-fill-buffer' filled.
-Used by `bc-fill-buffer-maybe'.")
-
-(defvar bc-fb-debug nil
-  "*Non-nil forces `bc-query-fill' to always call `bc-fill-buffer'.
-For debugging.")
-
-(defvar bc-effective-start nil
-  "Effective comment-start string for the comment currently being formatted.")
-
-(defvar bc-effective-end nil
-  "Effective comment-end string for the comment currently being formatted.")
-
-(defvar bc-banner-top-border nil
-  "Non-nil means the comment currently being formatted is a banner
-comment.  In this case, it is a list.  The car is a single char that
-will be repeated to form the top and bottom banners.  The cdr is
-non-nil if this is a `hard' border.")
-
-(defvar bc-banner-top-space 0
-  "Non-zero means the banner comment currently being formatted has an
-initial blank line.")
-
-(defvar bc-banner-bottom-space 0
-  "Non-zero means the banner comment currently being formatted has a
-final blank line.")
-
-(defvar bc-banner-bottom-border nil
-  "Non-nil means the banner comment currently being formatted has a
-bottom border.  Format is that of `bc-banner-top-borde'.")
-
-(defvar bc-extra-lines 0
-  "Number of extra lines the current comment needs to allow for banner
-borders, etc.")
-
-(defvar bc-saved-delims nil
-  "List of delimiters from the comment currently being edited.
-Set by `bc-analyze-comment'. Used by BC editing commands.")
- 
-;;;;======================================================================
-;;;_  * Macros and Inlines:
-
-(defsubst bc-do-command-init ()
-  (bc-bug-save-command)
-  (setq bc-G-code-buffer (current-buffer)
-	bc-G-tab-stops bc-tab-stops
-	bc-G-scratch-buffer (bc-get-buffer-create)))
-
-(defsubst bc-count-columns (start end)
-  "Count the number of columns between buffer positions START and END.
-Returns the difference between the respective columns at START and
-END.  \(If START and END are on the same line and have no tabs between
-them, this is just their difference.\)"
-  (save-excursion
-    (- (progn (goto-char end) (current-column))
-       (progn (goto-char start) (current-column)))))
-
-(defsubst bc-code-width-this-line ()
-  "Measures the length of the code on the current line, ignoring comments.
-If a comment starts in the first column, it is treated as code."
-  (let (code-width)
-    (bc-oparse-line nil nil nil nil nil 'code-width)
-    code-width))
-
-(defsubst bc-bump-counters ()
-  (setq
-   bc-fill-count 0
-   bc-added-newlines-counter (1+ bc-added-newlines-counter)))
-
-(defsubst bc-flush-parse-cache ()
-    (setq bc-parse-line-cache nil))
-
-(defsubst bc-flush-caches ()
-  (setq bc-parse-line-cache nil
-	bc-fb-prev-fill-column nil)
-  (if (memq last-command bc-format-commands) nil
-    (setq bc-fill-buffer-cache nil)))
-
-(defsubst bc-count-lines-1-fast (start end)
-  "This function is like `count-lines' only it counts lines inclusively.
-So, if START == END, or if END is at the beginning of the line, this
-function returns one more than `count-lines' would.  
-
-This function is also specialized to ignore `selective-display'.  The
-return value is only useful for `bc-goto-line-fast'."
-  (save-excursion
-    (save-restriction
-      (widen)
-      (let ((new-start (progn (goto-char start) (beginning-of-line) (point)))
-	    (new-end (progn (goto-char end) (beginning-of-line) (point)))
-	    )
-        (narrow-to-region new-start new-end)
-        (goto-char (point-min))
-        (- (buffer-size) (forward-line (buffer-size)) -1)))))
-
-(defsubst bc-goto-line-fast (arg)
-  "Goto line ARG, counting from line 1 at beginning of buffer.
-
-This function is specialized to ignore  `selective-display'.  It is
-for use with counts returned by `bc-count-lines-1-fast'."
-  (save-restriction
-    (widen)
-    (goto-char 1)
-    (forward-line (1- arg))))
-
-(defsubst bc-remassq (key list)
-  (delq nil (mapcar
-	     (function (lambda (element)
-			 (if (eq key (car element)) nil element))) list)))
-
-(defmacro bc-pop (place)
-  (list 'car (list 'prog1 place (list 'setq place (list 'cdr place)))))
-
-;;; This is adapted from multiple-value-setq, stolen from cl-macs.el  
-(defmacro bc-msetq (vars form)
-  "(bc-msetq (SYM SYM...) FORM): collect multiple return values.  
-
-FORM must return a list; the first N elements of this list are stored
-in each of the symbols SYM in turn.  If any of the SYMs are nil, they
-are ignored and the corresponding element of FORM is skipped.  This
-allows selection of just the needed values in FORM.
-
-Returns \(car FORM\).
-
-This is analogous to the `multiple-value-setq' macro defined in
-cl-macs.el, except that macro does not allow for nil symbols."
-  (cond ((null vars) (list 'progn form nil))
-	((null (cdr vars))
-	 (if (car vars)
-	     (list 'setq (car vars) (list 'car form))
-	   (list 'car form)))
-	(t
-	 (let* ((temp 'bc-msetq-temp-symbol) (n 0) (firstvar (bc-pop vars)))
-	   (list 'let (list (list temp form))
-		 (list 'prog1
-		       (if firstvar
-			   (list 'setq firstvar (list 'car temp))
-			 (list 'car temp))
-		       (cons
-			'setq
-			(apply 'nconc
-			       (mapcar (function
-					(lambda (v)
-					  (if v
-					      (list v (list
-						       'nth
-						       (setq n (1+ n))
-						       temp))
-					    (setq n (1+ n))
-					    nil)))
-				       vars)))))))))
-
-(defmacro bc-parse-comment () '(car (bc-parse-line)))
-
-(defmacro bc-parse-code () '(nth 1 (bc-parse-line)))
-
-(defmacro bc-comment-msetq (&rest vars)
-  "Parse the current line for a comment and return positions of delimiters, etc.
-
-\(bc-comment-msetq BODY-B BODY-E S-DELIM-B E-DELIM-E S-DELIM-E E-DELIM-B\)
-
-SETs values into the symbols according to their position in the
-argument list.  Arguments are not evaluated, so unquoted symbols
-should be passed.  Nil arguments may be used as placeholders when some
-values are unneeded.
-
-For example, the form
-
-  \(bc-comment-msetq nil nil myvar1 myvar2\)
-
-setq's myvar1 to the character position of the first character of the
-comment start delimiter on the current line.  It also setq's the
-position of the last character of the comment end delimiter into myvar2.
-
-Returns BODY-B, the character position of the first nonwhite character
-in the text of the comment on this line, or nil if there is no comment
-on this line."
-  (` (bc-msetq (, vars) (bc-parse-comment))))
-
-(defmacro bc-comment-p () '(car (bc-parse-comment)))
-
-(defmacro bc-code-msetq (&rest vars)
-  "Parse the current line and return information about non-comment text.
-
-\(bc-code-msetq CODE-P CODE-END CODE-WIDTH\)
-
-SETs values into the symbols according to their position in the
-argument list.  Arguments are not evaluated, so unquoted symbols
-should be passed.  Nil arguments may be used as placeholders when some
-values are unneeded.
-
-For example, the form
-
-  \(bc-code-msetq nil myvar1 myvar2\)
-
-setq's myvar1 to the character position of the end of the
-(non-comment) code on the current line.  It also setq's the width in
-columns of the code into myvar2.
-
-Returns non-nil if the current line contains code, nil otherwise."
-  (` (bc-msetq (, vars) (bc-parse-code))))
-
-(defmacro bc-code-width () '(nth 2 (bc-parse-code)))
-
-(defmacro bc-code-p () (car (bc-parse-code)))
-
-;;;;========================================================================
-;;;_  * Advice:
-
-; (defadvice indent-new-comment-line (around bc-indent-new-comment-line
-;            activate)
-;   "When called from `do-auto-fill' run `bc-indent-new-comment-line' if
-; bc-mode is active, otherwise run the standard function."
-;   (setq bc-bug-last-command 'do-indent-new-comment-line-advice)
-;   (if (and bc-mode
-; 	   (eq this-command 'self-insert-command))
-;       (bc-indent-new-comment-line)
-;     ad-do-it))
-
-;;;;======================================================================
-
-(defadvice do-auto-fill (around bc-do-auto-fill preactivate)
-  "When bc-mode is on and the current line contains a comment, do
-block-comment-sensitive filling using `bc-indent-new-comment-line'.
-Otherwise do normal filling."
-
-  (setq bc-bug-last-command 'do-auto-fill-advice)
-  (cond
-   ((or (not bc-mode) (< (current-column) fill-column))
-      ad-do-it)
-   ((eq this-command 'newline)
-    nil)
-   (t
-    (bc-flush-caches)
-    (bc-bump-counters)
-
-    (let* ((current-point (point))
-	   delim-b body-b delim-e
-	   (comment-p (bc-oparse-line nil 'delim-b 'body-b nil 'delim-e))
-	   first-line last-line
-	   )
-
-      (if (not comment-p)
-	  ad-do-it
- 
-	(bc-msetq (first-line last-line) (bc-find-comment))
-	(let*
-	    ((past-comment (and (<= delim-e current-point) 
-				(not (equal bc-comment-end ""))))
-	     (in-comment (<= delim-b current-point))
-	     
-	     (first-line-line (bc-count-lines-1 1 first-line))
-	     (last-line-line (bc-count-lines-1 1 last-line))
-	     body-range body-last body-first extra-white white-point
-	     unbreakable save-point
-	     )
-
-	  (cond					; If past the end delimiter
-	   (past-comment			; just punt.
-	    (message "Cannot auto-fill beyond comment."))
-
-						;==============================
-	   (in-comment				;          In comment.
-	    (setq				;==============================
-	     body-range (bc-analyze-comment first-line last-line)
-	     body-first (nth 3 body-range)
-	     body-last (nth 4 body-range)
-	     extra-white (- (skip-chars-backward " \t"))
-	     white-point (point)
-	     save-point (bc-save-excursion current-point first-line
-					   body-first body-last
-					   last-line 'stick-to-delims)
-	     )
-	    (goto-char current-point)			; This is really
-							; minimal. It only
-							; tries once, not
-	    (if (> (current-column) fill-column)	; repeatedly like
-							; do-auto-fill.
-
-		(let ((fill-point			; Determine where to
-		       (let ((opoint (point)))		; split the line.
-			 (save-excursion
-			   (move-to-column (1+ fill-column))
-			   (skip-chars-backward "^ \t\n")	; Move back to
-			   (if (< body-b (point)) nil		; a word
-			     (goto-char body-b)			; boundary.
-			     (re-search-forward "[ \t]" opoint t)
-			     (if (< (point) white-point) nil
-			       (setq unbreakable t)))
-			   (skip-chars-backward " \t")
-			   (if (= (point) white-point)
-			       (setq unbreakable t))	; Let fill-point be set
-			   (point)))))			; to the place where we
-							; end up.
-		  (if (save-excursion
-			(goto-char fill-point)		; If that place is not
-			(not (<= (point) body-b)))	; the beginning of the
-		      (progn				; line, break the line
-			(goto-char fill-point)		; there.
-			(bc-indent-new-comment-line)))))
-
-	    (if unbreakable nil
-	      (goto-line first-line-line)
-	      (setq first-line (point))
-	      (goto-line last-line-line)
-	      (forward-line 1)
-	      (setq last-line (point))			  ; bc-restore-
-	      (bc-restore-excursion save-point first-line ; excursion doesn't
-				    last-line)		  ; account for
-	      (if (and (eq (car save-point) 'in-comment)  ; multiple whitespace
-		       (eq (nth 1 save-point) 'in-text)	  ; chars, so we have
-		       (not (cdr (nth 2 save-point))))	  ; to do that here.
-		  (if (not (eolp))
-		      (forward-char extra-white)
-		    (insert (make-string extra-white ?\ ))
-		    (end-of-line))))
-	    );; end 'in-comment
-
-	   (t					;==============================
-	    ad-do-it				;          In code.
-	    ))))))))				;==============================
-
-;;;;==================================================================
-;;;_  * Commands:
-;;;_   o The mode
-;;;_    | turn-on-bc-mode
-
-;;;###autoload;_   : turn-on-bc-mode
-(defun turn-on-bc-mode ()
-  "Turn on bc-mode unconditionally.
-
-For more information, type `\\[describe-variable] bc-mode-doc'."
-  (interactive)
-  (bc-do-command-init)
-  (bc-mode 1))
-
-;;;;==================================================================
-;;;_    | bc-mode
-;;;###autoload;_   : bc-mode
-(defun bc-mode (&optional arg)
-  "Minor mode for editing right-margin block-style comments.
-bc-mode version: 1.1
-
-To submit a problem report, type `\\[bc-submit-bug-report]'.  This automatically 
-sets up a mail buffer with version information already added.  You
-just need to add a description of the problem and send the message.
-
-This minor mode provides commands that format right-margin block-style
-comments in source code.  
-
-COMMENTS THAT BEGIN IN THE FIRST COLUMN ARE NOT RECOGNIZED AS BLOCK COMMENTS.
-
-See the documentation for the variable `bc-mode-doc' for more
-information and on using the function `bc-mode' 
-\(Do `\\[describe-variable] bc-mode-doc'\).
-
-Commands:
-\\{bc-mode-map}
-Entry to this mode calls the value of `bc-mode-hook' if that value is
-non-nil."
-
-  (interactive "P")
-  (bc-do-command-init)
-  (make-local-variable 'bc-language)
-  (let ((first-time (not (and (boundp 'bc-language) 
-			      (symbolp bc-language)
-			      bc-language)))
-	prev-name
-	language-names
-	selected-name
-	language-sym
-	)					;==============================
-    (cond					; ------ Called interactively.
-						;==============================
-     ((interactive-p)
-      (cond					; If no prefix arg and bc has
-       ((and (not arg) (not first-time))	; run before in this buffer
-	(if bc-mode (bc-internal-turn-mode-off) ; then we don't need to prompt.
-	  (cond
-	   ((eq bc-language t)			; Use bc-comment-regexp.
-	    (bc-internal-turn-mode-on bc-comment-regexp t))
-	  
-	   ((and bc-language (symbolp bc-language))
-	    (bc-internal-turn-mode-on bc-language t)))))     ; Use bc-language.
-
-
-       ((< (prefix-numeric-value arg) 0)	; Negative prefix: turn off.
-	(bc-internal-turn-mode-off))
-
-       (t					; If called with prefix arg, or
-	(if (not (boundp 'bc-language))		; if this is first time, prompt
-	    (setq bc-language nil))		; for syntax.
-	(setq prev-name (if bc-language (symbol-name bc-language) 
-			  (bc-guess-language)))
-	(setq language-names (mapcar
-			      (function (lambda (list) 
-					  (cons (symbol-name (car list)) nil)))
-			      bc-languages-alist))
-	(setq language-names (cons '("TURN OFF BC-MODE") language-names))
-	(setq selected-name
-	      (completing-read (concat "Comment syntax ("
-				       prev-name
-				       "): ")
-			       language-names nil t))
-	(if (equal "" selected-name)
-	    (if prev-name (setq selected-name prev-name)
-	      (error "Please choose a comment syntax for BC to use.")))
-	(cond
-	 ((equal selected-name "TURN OFF BC-MODE")
-	  (bc-internal-turn-mode-off))
-	 (t
-	  (setq language-sym (intern selected-name))
-	  (bc-internal-turn-mode-on language-sym t)))
-	)))
-						;==============================
-						; ------ Called from Lisp.
-     (t						;==============================
-      (cond
-       ((or (stringp arg)			; Setting bc-comment-regexp
-	    (and arg (symbolp arg)))		; explicitly. A symbol from
-	(bc-internal-turn-mode-on arg))		; bc-languages-alist.
-
-       ((< (prefix-numeric-value arg) 0)	; Negative prefix: turn off.
-	(bc-internal-turn-mode-off))
-
-       (t					; Arg is positive or nil, get
-	(cond					; language from bc-language or
-	 (first-time				; guess.
-	  (if (setq selected-name (bc-guess-language))
-	      (progn
-		(setq language-sym (intern selected-name))
-		(bc-internal-turn-mode-on language-sym))
-	    (error "bc-mode: Cannot determine language syntax.")))
-	 
-	 ((eq bc-language t)			; Use bc-comment-regexp.
-	  (bc-internal-turn-mode-on bc-comment-regexp))
-
-	 ((and bc-language (symbolp bc-language))
-	  (bc-internal-turn-mode-on bc-language))	; Use bc-language.
-
-	 (t
-	  (error 
-	   "bc-mode Internal error 002.  Please submit a full bug report."))
-	 ))))))
-
-  (if bc-mode
-      (run-hooks 'bc-mode-hook))
-					; Use `bc-funcall' to quiet the byte
-  (bc-funcall 'force-mode-line-update)	; compiler about obsolete functions in
-  )					; XEmacs
-
-;;;;======================================================================
-;;;_   o Formatting
-;;;_    | bc-fill
-(defun bc-fill (&optional arg)
-  "Block-fill the block comment surrounding the current line.  
-The comment is taken to consist of all the text in the right-margin
-comments on concecutive lines adjacent to the current line.  
-
-COMMENTS THAT BEGIN IN THE FIRST COLUMN ARE NOT RECOGNIZED AS BLOCK COMMENTS.
-
-The formatted comment is placed at the nearest tab stop unless a
-prefix argument is given.  In that case, the comment is placed as near
-as possible to its current location.
-
-For more information, type `\\[describe-variable] bc-mode-doc'."
-
-  (interactive "*P")
-  (bc-do-command-init)
-  (bc-fill-engine 0 nil arg)
-  )
-
-;;;;======================================================================
-;;;_    | bc-fill-paragraph
-(defun bc-fill-paragraph (&optional justify)
-"Like M-q, but handle right-margin block comments.
-If any of the current contains part of a block comment, fill the block
-comment on this and surrounding lines.  The comment is taken to
-consist of all the text in the right-margin comments on concecutive
-lines adjacent to the current line.
-
-COMMENTS THAT BEGIN IN THE FIRST COLUMN ARE NOT RECOGNIZED AS BLOCK COMMENTS.
-
-If no block comment is on the current line, return nil.  Optional arg
-JUSTIFY is ignored.
-
-For further information, type 
-`\\[describe-variable] bc-enable-fill-paragraph-function' or `\\[describe-variable] bc-mode-doc'."
-
-  (interactive "*P")
-  (bc-do-command-init)
-  (if (bc-oparse-line)
-      (progn (bc-fill-engine 0) t)))
-
-;;;;======================================================================
-;;;_    | bc-squeeze
-(defun bc-squeeze ()
-  "Block-fill the block comment surrounding the current line.  
-The comment is squeezed to occupy the fewest columns as possible for
-its height.
-
-COMMENTS THAT BEGIN IN THE FIRST COLUMN ARE NOT RECOGNIZED AS BLOCK COMMENTS.
-
-For more information, type `\\[describe-variable] bc-mode-doc'."
-
-  (interactive "*")
-  (bc-do-command-init)
-  (bc-narrow-engine 0 t)
-  )
-
-;;;;======================================================================
-;;;_    | bc-raise
-(defun bc-raise (motion)
-  "Raise the comment surrounding the current line by one or more lines.
-The comment is not reformatted.  If necessary, blank lines are added
-to host the comment lines.
-
-COMMENTS THAT BEGIN IN THE FIRST COLUMN ARE NOT RECOGNIZED AS BLOCK COMMENTS.
-
-With a prefix argument, raise the comment that many lines.
-
-For more information, type `\\[describe-variable] bc-mode-doc'."
-
-  (interactive "*p")
-  (bc-do-command-init)
-  (bc-fill-engine (- motion) nil t t)
-  )
-
-;;;;======================================================================
-;;;_    | bc-raise-flow
-(defun bc-raise-flow (motion)
-  "Raise the comment surrounding the current line by one or more lines.
-The comment is reformatted if necessary to fit in available space.
-See the command `bc-fill'.
-
-COMMENTS THAT BEGIN IN THE FIRST COLUMN ARE NOT RECOGNIZED AS BLOCK COMMENTS.
-
-With a prefix argument, raise the comment that many lines.
-
-For more information, type `\\[describe-variable] bc-mode-doc'."
-
-  (interactive "*p")
-  (bc-do-command-init)
-  (bc-fill-engine (- motion) nil t)
-  )
-
-;;;;======================================================================
-;;;_    | bc-lower
-(defun bc-lower (motion)
-  "Lower the comment surrounding the current line by one or more lines.
-The comment is not reformatted.  If necessary blank lines are added
-to host the comment lines.
-
-COMMENTS THAT BEGIN IN THE FIRST COLUMN ARE NOT RECOGNIZED AS BLOCK COMMENTS.
-
-With a prefix argument, lower the comment that many lines.
-
-For more information, type `\\[describe-variable] bc-mode-doc'."
-
-;;;Bound to keys: \"\\[bc-lower]\"."
-
-  (interactive "*p")
-  (bc-do-command-init)
-  (bc-fill-engine motion nil t t)
-  )
-
-;;;;======================================================================
-;;;_    | bc-lower-flow
-(defun bc-lower-flow (motion)
-  "Lower the comment surrounding the current line by one or more lines.
-The comment is reformatted if necessary to fit in available space.
-See the command `bc-fill'.
-
-COMMENTS THAT BEGIN IN THE FIRST COLUMN ARE NOT RECOGNIZED AS BLOCK COMMENTS.
-
-With a prefix argument, lower the comment that many lines.
-
-For more information, type `\\[describe-variable] bc-mode-doc'."
-
-;;;Bound to keys: \"\\[bc-lower]\"."
-
-  (interactive "*p")
-  (bc-do-command-init)
-  (bc-fill-engine motion nil t)
-  )
-
-;;;;======================================================================
-;;;_    | bc-taller
-(defun bc-taller ()
-  "Reformat the comment surrounding the current line so that it
-occupies one less line if possible.  The comment will be raised or
-lowered if necessary to fit in available space.  See the command
-`bc-fill'.
-
-COMMENTS THAT BEGIN IN THE FIRST COLUMN ARE NOT RECOGNIZED AS BLOCK COMMENTS.
-
-For more information, type `\\[describe-variable] bc-mode-doc'."
-
-  (interactive "*")
-  (bc-do-command-init)
-  (bc-narrow-engine 1 t)
-  )
-
-;;;;======================================================================
-;;;_    | bc-shorter
-(defun bc-shorter ()
-  "Reformat the comment surrounding the current line so that it
-occupies one more line if possible.  The comment will be raised or
-lowered if necessary to fit in available space.  See the command
-`bc-fill'.
-
-COMMENTS THAT BEGIN IN THE FIRST COLUMN ARE NOT RECOGNIZED AS BLOCK COMMENTS.
-
-For more information, type `\\[describe-variable] bc-mode-doc'."
-
-  (interactive "*")
-  (bc-do-command-init)
-  (bc-narrow-engine -1 t)
-  )
-
-;;;;======================================================================
-;;;_    | bc-narrower
-(defun bc-narrower ()
-  "Reformat the comment surrounding the current line so that it
-occupies one less line if possible.  The comment will be raised or
-lowered if necessary to fit in available space.  See the command
-`bc-fill'.
-
-COMMENTS THAT BEGIN IN THE FIRST COLUMN ARE NOT RECOGNIZED AS BLOCK COMMENTS.
-
-For more information, type `\\[describe-variable] bc-mode-doc'."
-
-  (interactive "*")
-  (bc-do-command-init)
-  (bc-narrow-engine 1 nil)
-  )
-
-;;;;======================================================================
-;;;_    | bc-wider
-(defun bc-wider ()
-  "Reformat the comment surrounding the current line so that it
-occupies one more line if possible.  The comment will be raised or
-lowered if necessary to fit in available space.  See the command
-`bc-fill'.
-
-COMMENTS THAT BEGIN IN THE FIRST COLUMN ARE NOT RECOGNIZED AS BLOCK COMMENTS.
-
-For more information, type `\\[describe-variable] bc-mode-doc'."
-
-  (interactive "*")
-  (bc-do-command-init)
-  (bc-narrow-engine -1 nil)
-  )
-
-;;;;======================================================================
-;;;_   o Editing
-;
-;;;_    | bc-kill-comment
-(defun bc-kill-comment ()
-  "Kills the text of the block comment on lines around point,
-including delimiters.  Text of the comment (without delimiters) is
-appended to the kill-ring.
-
-For more information, type `\\[describe-variable] bc-mode-doc'."
-
-  (interactive "*")
-  (bc-do-command-init)
-  (let (
-	(save-column (current-column))
-	(save-line (bc-count-lines-1-fast 1 (point)))
-	first-line last-line
-;	body-range
-	body-first-line body-last-line
-	result
-	)
-    (bc-flush-caches)
-    (setq 
-     bc-added-newlines-counter (1+ bc-added-newlines-counter)
-     result
-     (catch 'failure
-       (unwind-protect
-	   (progn
-	     (bc-msetq (first-line last-line) (bc-find-comment))
-	     (bc-msetq (body-first-line body-last-line)
-		       (bc-analyze-comment first-line last-line))
-; 	     (setq ;range (bc-find-comment)
-; 		   ;first-line (car range)
-; 		   ;last-line (cdr range)
-; 		   body-range (bc-analyze-comment first-line last-line)
-; 		   body-first-line (car body-range)
-; 		   body-last-line (nth 1 body-range))
-;;;		   last-line-line (bc-count-lines-1 (point-min) last-line))
-	     (bc-get-text body-first-line body-last-line)
-	     (set-buffer bc-G-scratch-buffer)
-	     (kill-region 1 (point-max))
-	     (set-buffer bc-G-code-buffer)
-	     (bc-delete-text first-line last-line))
-	 
-	 (set-buffer bc-G-code-buffer);; cleanup
-	 (bc-goto-line-fast save-line)
-; 	 (goto-char (point-min))
-; 	 (forward-line (1- save-line))
-;;;	 (goto-line save-line)
-	 (move-to-column save-column));; end unwind-protect
-       nil));; end setq
-    
-    (if result					; was there a problem?
-	(progn (beep t) (message "%s" result))
-      (save-excursion
-	(bc-cleanup-newlines first-line (progn (goto-line last-line) 
-					       (end-of-line) (point)))))))
-
-;;;;======================================================================
-;;;_    | bc-copy-comment-comment-as-kill
-(defun bc-copy-comment-comment-as-kill ()
-  "Copy the text of the block comment on lines around point.
-Text of the comment \(without delimiters\) is appended to the kill-ring.
-
-For more information, type `\\[describe-variable] bc-mode-doc'."
-
-  (interactive "*")
-  (bc-do-command-init)
-  (let (
-;;;	(scratch-buffer (bc-get-buffer-create))
-;;;	range
-	body-range first-line last-line
-	result
-	)
-
-    (setq 
-     result
-     (catch 'failure
-       (save-excursion
-	 (bc-flush-caches)
-	 (bc-msetq (first-line last-line) (bc-find-comment))
-	 (setq ;range (bc-find-comment)
-	       body-range (bc-analyze-comment first-line last-line))
-	 (bc-get-text (car body-range) (nth 1 body-range))
-	 (set-buffer bc-G-scratch-buffer)
-	    (kill-region 1 (point-max)))
-	nil)) ; end setq result
-    
-    (if result ; was there a problem?
-	(progn
-	  (beep t)			; signal failure
-	  (message "%s" result)
-	  )
-      )))
-    
-;;;;======================================================================
-;;;_    | bc-yank
-(defun bc-yank ()
-  "Yanks the most recently killed text and formats it as a right-margin
-block comment on and around the current line.
-
-For more information, type `\\[describe-variable] bc-mode-doc'."
-
-  (interactive "*")
-  (bc-do-command-init)
-  (let*
-      (
-;;;       (code-buffer (current-buffer))
-;;;       (current-point (point))
-       (save-column (current-column))
-       (save-line (bc-count-lines-1-fast (point-min) (point)))
-;;;       (scratch-buffer (bc-get-buffer-create))
-       column top
-;;;       lim-top lim-bottom
-       fit-area
-       result
-       )
-
-    (save-excursion
-      (bc-default-analysis-vars)
-      (bc-flush-caches)
-      (bc-bump-counters)
-      (setq
-       result
-       (catch 'failure
-	 (set-buffer bc-G-scratch-buffer)
-	 (erase-buffer)
-	 (insert (car kill-ring-yank-pointer))
-	 (set-buffer bc-G-code-buffer)
-	 (setq  bc-parse-line-cache nil
-		bc-pref-first-line save-line)
-	 
-	 (setq fit-area (bc-fit-move 1))
-	 (setq column (car fit-area))
-	 (setq top (car (cdr fit-area)))
-	 
-	 (setq bc-phantom-column column)
-	 (bc-moveit top nil nil column (nth 2 fit-area)  
-		    (nth 3 fit-area) t)
-	 (bc-set-pref-first-line)
-	 (bc-goto-line-fast save-line)
-	 (move-to-column save-column)
-	 nil)))
-    
-    (if result						; was there a problem?
-	(progn
-	  (beep t)					; signal failure
-	  (message "%s" result)
-	  )
-      (if bc-show-fill-count (message "Fill count: %d" bc-fill-count)))
-    ))
-
-;;;;======================================================================
-;;;_    | bc-yank-pop
-(defun bc-yank-pop (arg) 
-  "Replace just-yanked block comment with the next chunk of text in
-the kill ring.  This command is allowed only immediately after a
-`bc-yank', `bc-yank-pop', `yank', or `yank-pop'.  If one of the latter
-two, this just calls `yank-pop'.
-
-With no argument, the previous kill is inserted.
-With argument n, the n'th previous kill is inserted.
-If n is negative, this is a more recent kill.
-
-The sequence of kills wraps around, so that after the oldest one
-comes the newest one.
-
-For more information, type `\\[describe-variable] bc-mode-doc'."
-
-  (interactive "*p")
-  (bc-do-command-init)
-  (let* (
-;;;	 (code-buffer (current-buffer))
-;;;	 (current-point (point))
-	 (save-column (current-column))
-	 (save-line (bc-count-lines-1-fast (point-min) (point)))
-;;;	 (scratch-buffer (bc-get-buffer-create))
-	 column top first-line last-line fit-area result new-range
-;;;	 range 
-	 )
-
-    (bc-default-analysis-vars)
-    (bc-flush-caches)
-    (bc-bump-counters)
-    
-    (if (not (eq last-command 'bc-yank))	; This will barf if
-	(yank-pop arg)				; last-command not yank.
-      (save-excursion
-	(setq
-	 result
-	 (catch 'failure
-	   (setq this-command 'bc-yank)
-	   (rotate-yank-pointer arg)
-	   (bc-msetq (first-line last-line) (bc-find-comment))
-;;	   (setq range (bc-find-comment))
-	   (set-buffer bc-G-scratch-buffer)
-	   (erase-buffer)
-	   (insert (car kill-ring-yank-pointer))
-	   (set-buffer bc-G-code-buffer)
-	   (setq bc-pref-first-line save-line)
-;;		   first-line (car range)
-;;		   last-line (cdr range))
-
-	   (bc-goto-line-fast bc-pref-first-line)
-	   (setq fit-area (bc-fit-move 1 first-line last-line))
-	   (setq column (car fit-area))
-	   (setq bc-phantom-column column)
-	   (setq top (car (cdr fit-area)))
-	   
-	   (set-buffer bc-G-code-buffer)
-	   (setq new-range (bc-moveit top first-line last-line column
-				      (nth 2 fit-area) (nth 3 fit-area) t))
-	   (bc-goto-line-fast save-line)
-	   (move-to-column save-column)
-	   nil)) ;; end setq result
-	
-	(if result			; was there a problem?
-	    (progn (beep t) (message "%s" result))
-	  (save-excursion
-	    (bc-cleanup-newlines (nth 2 new-range) (nth 3 new-range))
-	    (bc-set-pref-first-line))
-	  (if bc-show-fill-count (message "Fill count: %d" bc-fill-count)))
-	))))
-
-;;;;======================================================================
-;;;_    | bc-newline
-(defun bc-newline (&optional arg)
-  "Insert a newline in either the code or the comment.
-Break line at point and indent, continuing comment if within one.
-This function is like `indent-new-comment-line' but  but is
-context-sensitive to block comments.
-
-With prefix argument, insert that many newlines. \(Negative
-argument is not yet supported.\)
-
-For more information, type `\\[describe-variable] bc-mode-doc'."
-
-  (interactive "*P")
-  (bc-do-command-init)
-  (bc-insert-line arg '(newline) 'newline 'newline 'trim))
-
-;;;;======================================================================
-;;;_    | bc-indent-new-comment-line
-(defun bc-indent-new-comment-line (&optional arg)
-  "Break line at point and indent, continuing comment if within one.
-This function is like `indent-new-comment-line' but  but is
-context-sensitive to block comments.
-
-With prefix argument, insert that many newlines before point. \(Negative
-argument is not yet supported.\)
-
-For more information, type `\\[describe-variable] bc-mode-doc'."
-
-  (interactive "*P")
-  (bc-do-command-init)
-  (bc-insert-line arg 'indent-new-comment-line
-		  '(newline indent-according-to-mode) 
-		  '(newline delete-horizontal-space)))
-
-;;;;======================================================================
-;;;_    | bc-open-line
-(defun bc-open-line (&optional arg)
-  "Insert a newline in the code or comment and leave point before it.
-This function is like `open-line' but is context-sensitive to
-right-margin comments, depending on the current location of point.
-
-With prefix argument, insert that many newlines from point. \(Negative
-argument is not yet supported.\)
-
-For more information, type `\\[describe-variable] bc-mode-doc'."
-
-  (interactive "*p")
-  (bc-do-command-init)
-  (bc-insert-line arg '(open-line) 'open-line 'open-line 'trim))
-
-;;;;======================================================================
-;;;_    | bc-insert-line
-(defun bc-insert-line (arg normal-command code-command comment-command
-			   &optional trim-whitespace)
-  "Insert a newline in the code or comment.  This does the actual work
-for `bc-open-line', `bc-newline' `bc-indent-new-comment-line' and
-`bc-split-line'."
-
-  (if (< (prefix-numeric-value arg) 0)
-      (error "Negative argument not supported yet."))
-       
-  (bc-flush-caches)
-  (bc-bump-counters)
-
-  (let* ((point (point))
-	 delim-b body-b delim-e new-range first-line last-line
-	 (save-line (bc-count-lines-1-fast 1 (point)))
-	 (save-column (current-column))
-	 (comment-p (bc-oparse-line nil 'delim-b 'body-b 'body-e 'delim-e))
-	 )
-
-    (setq this-command 'bc-insert-line)
-						; If no comment on this line
-    (if (not comment-p)				; then just do the regular
-	(if (listp normal-command)		; command.
-	    (funcall (car normal-command) arg)
-	  (funcall normal-command))
-
-      (unwind-protect				; Otherwise crank up the magic.
-	  (progn
-
-	    ; Should be able to use `below-only here for better
-	    ; efficiency, but there is a bug when on the bottom banner
-	    ; of a banner comment.
-	       
-	    (bc-msetq (first-line last-line) (bc-find-comment))
-	    (let*
-		(
-		 (past-comment (and (<= delim-e point) 
-				    (not (equal bc-comment-end ""))))
-		 (in-comment (and (<= delim-b point)))
-
-		 body-range body-last body-first
-		 (current-line (progn (beginning-of-line) (point)))
-		 (comment-lines-above (1- (bc-count-lines-1 first-line 
-							    current-line)))
-		 (comment-lines-below
-		  (bc-count-lines-1 current-line last-line))
-		 comment-point-column comment-point-line
-		 new-delims saved-delims current-start-column max-code-width
-		 current-start-delim current-start-delim-sans-white
-		 current-end-delim current-end-delim-sans-white
-		 (repeat (eq last-command 'bc-insert-line))
-		 (counter -1)
-		 (lines-needed nil)
-		 (where nil) (extra 0)
-		 )
-	       
-	      (setq arg (or arg 1))
-	      (cond
-	       (past-comment
-		(error "Past comment"))		;==============================
-	       (in-comment			;          In comment.
-		(save-excursion			;==============================
-		  (setq 
-		   body-range (bc-analyze-comment first-line last-line t)
-		   saved-delims (nthcdr comment-lines-above bc-saved-delims)
-		   comment-point-column (bc-count-columns body-b point)
-		   body-first (nth 3 body-range)
-		   body-last (nth 4 body-range)
-		   current-start-delim (if (< point body-b) 
-					   (buffer-substring delim-b point)
-					 (nth 1 (car saved-delims)))
-		   current-start-delim-sans-white 
-		   (if (string-match "[ \t]" current-start-delim)
-		       (concat (substring current-start-delim 0
-					  (match-beginning 0)) " ")
-		     current-start-delim)
-		   current-end-delim (nth 2 (car saved-delims))
-		   current-end-delim-sans-white
-		   (if (string-match "[^ \t]" current-end-delim)
-		       (concat " " (substring current-end-delim
-					      (match-beginning 0)))
-		     "")
-		   current-start-column (car (car saved-delims))
-		   max-code-width (+ current-start-column 
-				     bc-code-width-threshold) 
-		   new-delims
-		   (if trim-whitespace
-		       (list current-start-column current-start-delim-sans-white
-			     current-end-delim-sans-white)
-		     (list current-start-column current-start-delim
-			   current-end-delim)))
-							; Fix up the
-		  (setcar (cdr (car saved-delims))	; delimiters.
-			  current-start-delim-sans-white)
-		  (setq saved-delims (nconc (make-list arg new-delims)
-					    saved-delims))
-		
-		  (setcar (cdr (car saved-delims)) current-start-delim)
-		
-		  (if (and (/= first-line body-first)	; Disallow insertion
-			   (= current-line first-line))	; the top banner.
-		      (error "Beginning of comment"))
-		
-		  ;; Here is kind of a kludge for a sticky problem. If we allow
-		  ;; insertion in the bottom banner we get a mess. The bottom
-		  ;; banner chars become part of the text, etc. But in
-		  ;; languages with no comment-end (like Lisp), a blank comment
-		  ;; line at the bottom looks like a bottom banner (one made up
-		  ;; of repeated comment-start chars.) Worse, a single (or
-		  ;; repeated) char after the start delimiter (no whitespace)
-		  ;; looks like a bottom banner, though it may be part of the
-		  ;; text.
-		  ;; 
-		  ;; We would like to be able to start a new paragraph in the
-		  ;; comment with a command like M-j or C-c RET, so we need to
-		  ;; allow those cases. The solution for now is to allow
-		  ;; insertion in the bottom banner if it is a soft border.
-		  ;; Perhaps someday we can clean up the delimiters for the
-		  ;; ugly cases.
-
-		  (if (and bc-banner-bottom-border	
-			   (= current-line last-line)
-			   (nth 1 bc-banner-bottom-border))
-		      (error "End of comment"))
-		
-		  (bc-get-text current-line body-last)
-		  (set-buffer bc-G-scratch-buffer)
-		  (goto-char 1)
-		  (move-to-column (max 0 comment-point-column))
-		  (if (atom comment-command)
-		      (funcall comment-command arg)
-		    (funcall (car comment-command) arg)
-		    (funcall (nth 1 comment-command)))
-		  (setq 
-		   comment-point-line (1- (bc-count-lines-1 1 (point)))
-		   comment-point-column (current-column))
-						; Make sure there is enough
-		  (set-buffer bc-G-code-buffer)	; room below so that we don't
-		  (save-excursion		; jam into another comment or a
-		    (goto-char last-line)	; line of code that is too
-		    (forward-line 1)		; wide.
-		    (while (and (< counter arg)
-				(not (bc-oparse-line))
-				(not (< max-code-width
-					(bc-code-width-this-line)))
-				(not (eobp)))
-		      (setq counter (1+ counter))
-		      (forward-line 1))
-						; Account for comment-free line
-						; needed if we ran into another
-		    (if (and (< counter arg)	; comment.
-			     (not (bc-oparse-line)))
-			(setq counter (1+ counter))
-		      (setq extra 1)))
-		  (if (= counter arg) nil
-		    (setq lines-needed (- arg counter)
-			  where (+ counter extra comment-lines-below)))
-		  (setq
-		   new-range
-		   (bc-moveit current-line current-line last-line saved-delims
-			      lines-needed where))
-		  (goto-char current-line)
-		  (while (< 0 comment-point-line)
-		    (setq 
-		     comment-point-line (1- comment-point-line)
-		     saved-delims (cdr saved-delims))
-		    (forward-line 1))
-		  (setq save-line (bc-count-lines-1-fast 1 (point))
-			saved-delims (car saved-delims))
-		  (move-to-column (+ (car saved-delims)
-				     (length (nth 1 saved-delims))
-				     comment-point-column))
-		  (setq save-column (current-column))
-		  ))
-
-						;==============================
-						;          In code.
-	       (t				;==============================
-		(setq
-		 body-range (bc-analyze-comment 
-			     first-line last-line (not repeat))
-		 saved-delims (nthcdr comment-lines-above bc-saved-delims)
-		 body-first (nth 3 body-range)
-		 body-last (nth 4 body-range))
-		(bc-get-text current-line body-last)
-
-		; If we are on the same line as the top banner, we will end up
-		; duplicating it in saved-delims and scratch-buffer, so delete
-		; it from scratch-buffer.
-
-		(if (not (and (/= first-line body-first)
-			      (= current-line first-line)))
-		    nil
-		  (set-buffer bc-G-scratch-buffer)
-		  (goto-char 1)
-		  (end-of-line)
-		  (delete-region 1 (point))
-		  (set-buffer bc-G-code-buffer))
-		(bc-delete-text current-line last-line)
-		(move-to-column save-column)
-						; Commands like
-						; newline-and-indent don't
-						; support prefix arg, so we
-		(if (atom code-command)		; will fake it.
-		    (funcall code-command arg)
-		  (funcall (car code-command) arg)
-		  (funcall (nth 1 code-command)))
-		(setq save-column (current-column)
-		      save-line (bc-count-lines-1-fast 1 (point))
-		      new-range (bc-moveit current-line nil nil saved-delims))
-		))))
-	(set-buffer bc-G-code-buffer)
-	(bc-goto-line-fast save-line)
-	(move-to-column save-column 'force))
-      
-      (save-excursion
-	(bc-cleanup-newlines (nth 2 new-range) (nth 3 new-range))
-	))))
-
-;;;;======================================================================
-;;;_    | bc-kill-line
-(defun bc-kill-line (&optional arg)
-  "Kill the rest of the code or comment on the current line.
-This function is like `kill-line' but limits killing to either the
-code or the comment, depending on the current location of point.
-
-With prefix argument, kill that many lines from point. \(Negative
-argument is not yet supported.\)
-
-For more information, type `\\[describe-variable] bc-mode-doc'."
-
-  (interactive "*P")
-  (bc-do-command-init)
-  (if (< (prefix-numeric-value arg) 0)
-      (error "Negative argument not supported yet."))
-  
-  (bc-flush-caches)
-  (bc-bump-counters)
-
-  (let* ((point (point))
-;;;	 (code-buffer (current-buffer))
-	 delim-b body-b
-;;;	 body-e
-	 delim-e code-end first-line last-line
-;;;	 (save-line (bc-count-lines-1 1 (point)))
-	 (save-column (current-column))
-	 (comment-p (bc-oparse-line 'code-end 'delim-b 'body-b nil 'delim-e))
-	 new-range
-	 )
-    
-    (if (not comment-p) 
-	(progn
-	  (kill-line arg)
-	  (setq this-command 'bc-kill-line-plain))
-      (unwind-protect
-	  (progn
-	    (bc-msetq (first-line last-line) (bc-find-comment))
-	    (let* 
-		(
-;;;	       (scratch-buffer (bc-get-buffer-create))
-		 (past-comment (and (<= delim-e point)
-				    (not (equal bc-comment-end ""))))
-		 (in-comment (and comment-p (<= delim-b point)))
-		 ;;	       (range (bc-find-comment))
-		 ;;		 (first-line (car range))
-		 ;;		 (last-line (cdr range))
-		 body-range body-last body-first
-		 (current-line (progn (beginning-of-line) (point)))
-		 (comment-lines-above (1- (bc-count-lines-1 first-line 
-							    current-line)))
-		 (comment-lines-below (bc-count-lines-1 current-line last-line))
-		 comment-point-column
-		 scratch-lines
-		 saved-delims current-start-column current-start-delim
-		 (last-was-kill (memq last-command '(bc-kill-line 
-						     'bc-kill-line-plain)))
-		 (repeat (eq last-command 'bc-kill-line))
-		 (counter -1) 
-		 (lines-needed nil) killable-lines
-		 (where nil)
-		 )
-	    
-	      (cond
-	       (past-comment
-		(error "Past comment"))		;==============================
-	       (in-comment			;          In comment.
-		(save-excursion			;==============================
-		  (setq 
-		   body-range (bc-analyze-comment first-line last-line t)
-		   saved-delims (nthcdr comment-lines-above bc-saved-delims)
-		   comment-point-column (bc-count-columns body-b point)
-		   body-first (nth 3 body-range)
-		   body-last (nth 4 body-range)
-		   current-start-delim (if (< point body-b) 
-					   (buffer-substring delim-b point)
-					 (nth 1 (car saved-delims))))
-		  (if (and bc-banner-top-border
-			   (= current-line first-line))	; Disallow killing the
-		      (error "Beginning of comment"))	; top banner.
-		  (if (and bc-banner-bottom-border	
-			   (= current-line last-line))	; Disallow killing the
-		      (error "End of comment"))		; bottom banner.
-
-		  (bc-get-text current-line body-last)
-		  (set-buffer bc-G-scratch-buffer)
-		  (setq scratch-lines (bc-count-lines-1 1 (point-max)))
-		  (goto-char 1)
-		  (move-to-column (max 0 comment-point-column))
-
-		  ;; Bug fix: If point is after white in the comment,
-		  ;; the white doesn't get preserved because
-		  ;; bc-get-text does not bring trailing white to the
-		  ;; scratch buffer. Fix this by intent-to-column'ing
-		  ;; if current-column not equal to
-		  ;; comment-point-column. Is this robust? Time will
-		  ;; tell.
-
-		  (if (< (current-column) comment-point-column)
-		      (indent-to-column comment-point-column))
-		  (let ((last-command (if last-was-kill 'kill-region nil)))
-		    (kill-line arg))
-		  (goto-char (point-max))
-		  (if (not (bolp)) (insert ?\n))	; Since we have killed
-		  (setq					; lines in the comment,
-		   current-start-column			; we want the start
-		   (car (car saved-delims))		; delimiter from this
-		   saved-delims				; line but the end
-		   (nthcdr (min				; delimiter from the
-			    (- scratch-lines		; next unkilled line.
-			       (bc-count-lines-1	; That is, unless the
-				1 (point-max)))		; remaining line is the
-			    (1- (length saved-delims)))	; bottom banner.
-			   saved-delims))
-		  (setcar (car saved-delims) current-start-column)
-		  (if (and (= (length saved-delims) 1) bc-banner-bottom-border)
-		      nil
-		    (setcar (cdr (car saved-delims)) current-start-delim)))
-		(setq
-		 new-range (bc-moveit current-line current-line last-line 
-				      saved-delims)))
-	     
-						;==============================
-						;          In code.
-	       (t				;==============================
-		(setq body-range (bc-analyze-comment
-				  first-line last-line (not repeat))
-		      saved-delims (nthcdr comment-lines-above bc-saved-delims)
-		      body-first (nth 3 body-range)
-		      body-last (nth 4 body-range))
-		(bc-get-text current-line body-last)
-		(if (not (and (/= first-line body-first)
-			      (= current-line first-line)))
-							; If we are on the same
-		    nil					; line as the top
-		  (set-buffer bc-G-scratch-buffer)	; banner, we will end
-		  (goto-char 1)				; up duplicating it in
-		  (end-of-line)				; saved-delims and
-		  (delete-region 1 (point))		; scratch-buffer, so
-		  (set-buffer bc-G-code-buffer))	; delete it from
-							; scratch-buffer.
-
-		(if (and (not arg) (or (and kill-whole-line (bolp))
-				       (<= code-end point))) (setq arg 1))
-		(if (and arg (< 0 (prefix-numeric-value arg)))
-		    (save-excursion
-		      (goto-char last-line)		; Make sure there are
-		      (forward-line 1)			; enough lines of code
-		      (while (and (< counter arg)	; below so that we
-				  (not (bc-oparse-line))	; don't suck the next
-				  (not (eobp)))		; comment onto the
-			(setq counter (1+ counter))	; bottom of this one.
-			(forward-line 1))
-		      (if (and (< counter arg)		; Account for
-			       (not (bc-oparse-line)))	; comment-free line
-			  (setq counter (1+ counter)))	; needed if we ran into
-		      (if (= counter arg)		; another comment.
-			  (setq killable-lines arg)
-			(setq killable-lines
-			      (min arg
-				   (+ counter comment-lines-below))
-			      lines-needed (- killable-lines counter)
-			      where (- (+ counter comment-lines-below 1)
-				       killable-lines)))))
-
-		(bc-delete-text current-line last-line)
-		(move-to-column save-column)
-		(let ((last-command (if last-was-kill 'kill-region nil)))
-		  (if arg (kill-line killable-lines)
-		    (kill-line)))
-		(setq 
-		 save-column (current-column)
-		 new-range (bc-moveit current-line nil nil saved-delims 
-				      lines-needed where))
-		))))
-	(set-buffer bc-G-code-buffer)
-	(move-to-column save-column)
-	(setq this-command 'bc-kill-line))
-
-      (save-excursion
-	(bc-cleanup-newlines (nth 2 new-range) (nth 3 new-range))
-	))))
-
-;;;;======================================================================
-;;;_    | bc-indent-according-to-mode
-(defun bc-indent-according-to-mode ()
-  "Indent line like `indent-according-to-mode' without disturbing comments.
-
-For more information, type `\\[describe-variable] bc-mode-doc'."
-
-  ;; This function has to do a surprising amount of struggling to
-  ;; achieve a seemingly simple thing.  The idea is that we want to
-  ;; have an indent-according-to-mode behavior, except that any
-  ;; comment is left where it was.  In addition, the indentation
-  ;; should be as though there is no comment present.  This is to
-  ;; support cases where the user wants to add some code on lines
-  ;; already containing comments.
-
-  ;; The difficulty arises because the only indenting function we can
-  ;; count on having is `indent-line-funtion'.  This typically indents
-  ;; differently when the only thing on the line is a comment, and it
-  ;; almost always messes up comment positions.
-
-  ;; On top of all that, we want the cursor to end up in a reasonable
-  ;; position, as it does with `indent-according-to-mode', but as
-  ;; though there were no comment on the line.
-
-  (interactive "*")
-  (bc-do-command-init)
-  (bc-flush-caches)
-  (let* (code-end start-delim no-code temp
-	 (copy-line "")
-	 (current-column (current-column))
-	 (mpoint (make-marker))
-	 (mstart (make-marker))
-	 (mend (make-marker))
-	 (comment-p
-	  (bc-oparse-line 'code-end 'start-delim nil nil nil nil 'no-code))
-	 comment-column new-indent-column old-indent-column
-	 )
-    (unwind-protect
-	(if (not comment-p)				 ; If this is a comment
-	    (if (looking-at bc-comment-looking-at-regexp); that starts at bol,
-		nil					 ; leave it alone.
-	      (funcall indent-line-function))
-	  
-	  (set-marker mpoint (point))
-	  (goto-char start-delim)
-	  (setq comment-column (current-column))
-	  (beginning-of-line)
-	  (if no-code nil
-	    (setq copy-line (buffer-substring (point) code-end)))
-	  (skip-chars-forward " \t")
-	  (setq old-indent-column (current-column))
-	  (beginning-of-line)
-	  (set-marker mstart (point))
-	  (insert "\n")
-	  (set-marker mend (point))
-	  (forward-char -1)
-	  (insert copy-line)
-	  (beginning-of-line)
-	  (funcall indent-line-function)
-	  (setq new-indent-column (current-column))
-	  (delete-region mstart mend)
-	  
-	  (if no-code
-	      (if (< new-indent-column comment-column)	; Don't need to insert
-		  (if (< current-column comment-column)	; any whitespace
-		      (move-to-column new-indent-column 'force)
-		    (goto-char mpoint))
-		(beginning-of-line)			; Else move comment
-		(delete-horizontal-space)		; enough to accomodate
-		(indent-to-column new-indent-column)	; indentation.
-		(if (< comment-column current-column)
-		    (goto-char mpoint)))
-	    
-	    (beginning-of-line)		; If there is code
-;	    (delete-horizontal-space)
-	    (indent-to-column new-indent-column)
-	    (setq temp (point))
-	    (skip-chars-forward " \t")
-	    (delete-region temp (point))
-	    (bc-flush-parse-cache)			; The line has been
-	    (bc-oparse-line nil 'start-delim)		; changed so flush
-	    (goto-char start-delim)			; caches.
-	    (delete-horizontal-space)
-	    (indent-to-column comment-column)
-	    (if (< current-column old-indent-column)
-		(move-to-column new-indent-column 'force)
-	      (goto-char mpoint))))
-      
-      (set-marker mpoint nil)
-      (set-marker mstart nil)
-      (set-marker mend nil))))
-
-;;;;======================================================================
-;;;_   o Motion
-;;;_    | bc-beginning-of-line
-(defun bc-beginning-of-line ()
-  "Move to the beginning of the current comment or line.  
-
-If point is in a right-margin comment, move to the beginning of its
-text on the current line.  If point is outside a comment (or no
-comment on the line), move to beginning of current line.
-
-If this command is invoked twice in succession, point is moved to the
-beginning of the current line.
-
-For more information, type `\\[describe-variable] bc-mode-doc'."
-
-  (interactive)
-  (bc-do-command-init)
-  (let ((point (point))
-	delim-b comment-b 
-	)
-		
-    (if (eq last-command 'bc-beginning-of-line)
-	(beginning-of-line)
-      (bc-flush-parse-cache)
-      (if (bc-oparse-line nil 'delim-b 'comment-b)
-	  (cond
-	   ((< point delim-b)
-	    (beginning-of-line))
-	   (t
-	    (goto-char comment-b)))
-	(beginning-of-line)
-	))))
-
-;;;;======================================================================
-;;;_    | bc-end-of-line
-(defun bc-end-of-line ()
-  "Move point to the end of the current comment or line.
-If point is in a right-margin comment, move to the end of its text on
-the current line.  If point is in code to the left of a comment, move
-to end of the code.  If no comment on the current line, move to end of
-line.
-
-If this command is invoked twice in succession, point is moved to the
-end of the current line.
-
-For more information, type `\\[describe-variable] bc-mode-doc'."
-
-  (interactive)
-  (bc-do-command-init)
-  (let ((point (point))
-	code-e delim-b comment-e
-;;;	comment-b delim-e
-	)
-		
-    (if (eq last-command 'bc-end-of-line)
-	(end-of-line)
-      (bc-flush-parse-cache)
-      (if (bc-oparse-line 'code-e 'delim-b nil 'comment-e)
-	  (cond
-	   ((< point delim-b)
-	    (goto-char code-e))
-	   (t
-	    (goto-char comment-e)))
-	(end-of-line)))))
-
-;;;;======================================================================
-;;;_    | bc-forward-comment
-(defun bc-forward-comment (&optional count)
-  "Move point forward ARG block comments (backward if ARG is negative).
-Normally returns t.
-If an end of the buffer is reached, point is left there
-and nil is returned.
-
-For more information, type `\\[describe-variable] bc-mode-doc'."
-
-  (interactive "p")
-  (bc-do-command-init)
-
-  (bc-flush-parse-cache)
-  (let* ((point (point))
-	 body-b body-e
-	 (comment-p (bc-oparse-line nil nil 'body-b 'body-e))
-	 (before-comment-p (and comment-p (<= point body-b)))
-	 (past-comment-p (and comment-p (<= body-e point)))
-	 (range (and comment-p (bc-find-comment)))
-	 (this-line (progn (beginning-of-line) (point)))
-	 (forward (<= 0 count))
-	 (direction (if forward 1 -1))
-	 delim-start
-	 first-line last-line in-first-line-p in-last-line-p move-on
-	 )
-
-    (setq count (abs count))
-
-    (if range (setq first-line (nth 0 range)
-		    last-line (nth 1 range)
-		    in-first-line-p (= first-line this-line)
-		    in-last-line-p (= last-line this-line)
-		    move-on (if forward (and in-last-line-p past-comment-p)
-			      (and in-first-line-p before-comment-p))))
-
-    (if range
-	(progn
-	  (goto-char (if forward last-line first-line))
-	  (if move-on nil
-	    (bc-oparse-line nil nil 'body-b 'body-e)
-	    (goto-char (if forward body-e body-b))
-	    (setq count (1- count)))))
-
-    (while (not (or (and (= direction 1) (eobp))
-		    (and (= direction -1) (bobp))
-		    (<= count 0)))
-      (forward-line direction)
-      (while (not (or (eobp) (bobp) (bc-oparse-line)))
-	(forward-line direction))
-      (if (or (eobp) (bobp)) nil
-	(bc-msetq (first-line last-line) (bc-find-comment))
-;;	  (setq range (bc-find-comment)
-;;		first-line (car range)
-;;		last-line (cdr range))
-	(goto-char (if forward last-line first-line))
-	(bc-oparse-line nil nil 'body-b 'body-e)
-	(goto-char (if forward body-e body-b)))
-      (setq count (1- count)))
-    (if (or (eobp) (bobp)) nil
-      (save-excursion
-	(goto-char first-line)
-	(bc-oparse-line nil 'delim-start)
-	(goto-char delim-start)
-	(message "Column: %d" (current-column))))))
-
-;;;;======================================================================
-;;;_    | bc-backward-comment
-(defun bc-backward-comment (&optional count)
-  "Move point backward ARG block comments (forward if ARG is negative).
-Normally returns t.
-If an end of the buffer is reached, point is left there
-and nil is returned.
-
-For more information, type `\\[describe-variable] bc-mode-doc'."
-
-  (interactive "p")
-  (bc-do-command-init)
-  (bc-forward-comment (- count)))
-
-;;;;======================================================================
-;;;_   o Options
-;;;_    | bc-set-tab-spacing
-(defun bc-set-tab-spacing (&optional spacing quiet)
-  "Set the tab spacing for BC formatting commands.
-With prefix argument, set tab spacing to that.  Otherwise prompt.
-
-BC-mode's tabbing commands use tab stops to position the comment.
-These tab stops are kept in the variable `bc-tab-stops'.  To set
-individual tab stops you have to use Emacs Lisp, but you can set all
-tab stops to a uniform spacing with this function.  The previous list
-of tab stops is lost.  The spacing size will be determined by SPACING,
-except that a tab stop will be placed at column 1 instead of column
-zero.
-
-See the documentation for the variables `bc-tab-stops'
-\(\\[describe-variable] bc-tab-stops\).
-For more information, type `\\[describe-variable] bc-mode-doc'."
-
-  (interactive "NTab Spacing: ")
-  (bc-bug-save-command)
-  (if (<= spacing 0) (error "Tab spacing must be positive."))
-  (if (< bc-right-margin spacing)
-      (error "Tab spacing must be less then the right-margin."))
-
-  (let ((stoplist nil) (stop spacing))
-    (while (<= stop bc-right-margin)
-      (setq stoplist (cons stop stoplist))
-      (setq stop (+ stop spacing)))
-    (setq bc-tab-stops (cons 1 (nreverse stoplist))))
-
-  (if (not quiet)
-      (message "Tab stops in this buffer now = %s"
-	       bc-tab-stops)))
-
-;;;;========================================================================
-;;;_    | bc-toggle-keymap-level
-(defun bc-toggle-keymap-level (&optional on-off)
-  "Toggle between BC's basic and extended keymaps.
-With arg, turn extended keymap on if arg is positive, off otherwise.
-
-You can select from two keymaps for bc-mode to use.
-The `basic' map is a minimally intrusive set of bindings for BC's
-most powerful functions.  The `extended' map adds additional
-bindings for cursor motion commands.  These commands override some
-standard commands, such as `beginning-of-line' \(bound to C-a, Home,
-etc\).  BC's versions of these commands behave like the standard ones
-when point is outside a block comment, and move within the comment
-otherwise.
-
-BC-mode's basic keymap binds these keys:
-\\{bc-mode-basic-map}
-
-BC-mode's extended keymap binds these keys:
-\\{bc-mode-extended-map}"
-
-  (interactive "P")
-  (bc-bug-save-command)
-  (setq bc-keymap-level
-	(if (null on-off) (not bc-keymap-level)
-	  (> (prefix-numeric-value on-off) 0)))
-
-  (bc-select-keymap)
-  (message "bc-mode now using %s keymap."
-	   (if bc-keymap-level "extended" "basic")))
-
-;;;;========================================================================
-;;;_    | bc-toggle-auto-fill-advice
-(defun bc-toggle-auto-fill-advice (&optional on-off)
-  "Toggle block-comment-oriented auto-fill.
-With arg, turn on if arg is positive, off otherwise.
-
-Bc-mode can provide block-comment-oriented auto filling when
-`auto-fill-mode' is turned on.  When it does, comments are filled with
-as little disturbance to the source code as possible.  To use Emacs'
-normal auto-filling, turn this option off.
-
-Technical note: Bc-mode implements block-comment-oriented auto-filling
-by way of advising the function `do-auto-fill'.  The variable
-`bc-enable-auto-fill-advice' controls whether this advice is enabled.
-This function first toggles that varible, then calls
-`bc-sync-advice-enable' to update the state of the advice."
-
-  (interactive "P")
-  (bc-bug-save-command)
-  (setq bc-enable-auto-fill-advice
-	(if (null on-off) (not bc-enable-auto-fill-advice)
-	  (> (prefix-numeric-value on-off) 0)))
-  (bc-sync-advice-enable)
-  (bc-select-keymap)			; To update the menu
-  (message "Advice on `do-auto-fill' is now %s."
-	   (if bc-enable-auto-fill-advice "enabled" "disabled")))
-
-;;;;======================================================================
-;;;_    | bc-set-margin
-(defun bc-set-margin (arg)
-  "Set `bc-right-margin' to current column, or to argument if given.
-The variable `bc-right-margin' has a separate value for each buffer."
-  (interactive "P")
-  (bc-bug-save-command)
-  (setq bc-right-margin (if (integerp arg) arg (current-column)))
-  (message "bc-right-margin set to %d in this buffer" bc-right-margin))
-
-;
- 
-;;;;======================================================================
-;;;_  * Functions:
-;;;_   o Utilities for turning on the mode
-;;;_    | bc-guess-language
-(defun bc-guess-language ()
-  "Try to guess the language being edited by examining `major-mode'.
-If the prefix of `major-mode' is one of the language symbols in
-`bc-languages-alist, that name (a string) is returned, otherwise nil."
-  (let* ((mode-name (symbol-name major-mode))
-	 (lang-name (substring mode-name 0 (string-match "-mode" mode-name)))
-	 (lang-sym (intern-soft lang-name))
-	 (alt-lang-name (substring mode-name 0 (string-match "-" mode-name)))
-	 (alt-lang-sym (intern-soft alt-lang-name))
-	 )
-    (or
-     (if (assq lang-sym bc-languages-alist) lang-name)
-     (if (assq alt-lang-sym bc-languages-alist) alt-lang-name))
-    ))
-
-;;;;========================================================================
-;;;_    | bc-select-keymap
-(defun bc-select-keymap ()
-  "Select a minor mode map according to the value of `bc-keymap-level'.
-Also rebuilds the menu to reflect the state of option variables, and to 
-force the correct display of key bindings."
-  (let ((alist-entry (assq 'bc-mode minor-mode-map-alist))
-	)
-    (if (fboundp 'set-buffer-menubar)
-	;; For XEmacs, set the mode map to either the basic or the extended
-	;; map.
-	(setq
-	 bc-mode-map
-	 (if bc-keymap-level bc-mode-extended-map bc-mode-basic-map))
-; 	 minor-mode-map-alist (bc-remassq 'bc-mode minor-mode-map-alist)
-; 	 minor-mode-map-alist
-; 	 (cons (cons 'bc-mode bc-mode-map) minor-mode-map-alist))
-
-
-      ;; For FSF, make a fresh copy of the keymap without the menu, then add
-      ;; the menu. This is a kludge to force the menu to update its list of key
-      ;; bindings.
-
-      (setq bc-mode-map
-	    (copy-keymap (if bc-keymap-level bc-mode-extended-map
-			   bc-mode-basic-map)))
-      (bc-mode-fsf-menu "Comments" bc-mode-map)
-      )
-      (if alist-entry
-	  (setcdr alist-entry bc-mode-map)
-	(setq minor-mode-map-alist (cons (cons 'bc-mode bc-mode-map)
-					 minor-mode-map-alist)))
-
-    (bc-funcall 'force-mode-line-update)))
-
-;;;;========================================================================
-;;;_    | bc-sync-advice-enable
-(defun bc-sync-advice-enable ()
-  "Synchronize the enabled state of BC's advice on `do-auto-fill'.
-
-Bc-mode defines advice on `do-auto-fill' to assist correct auto-filling of
-block-comments.  This advice is enabled whenever the variable
-`bc-enable-auto-fill-advice' is non-nil.  Use this function to update the state
-of that advice to conform to the variable's current value."
-
-  (if bc-enable-auto-fill-advice
-      (ad-enable-regexp "^bc-")
-    (ad-disable-regexp "^bc-"))
-  (ad-activate-regexp "^bc-" 'compile))
-
-;;;;========================================================================
-;;;_    | bc-internal-turn-mode-off
-(defun bc-internal-turn-mode-off ()
-;;;  (bc-select-keymap)
-  (setq bc-mode nil)
-  (bc-install-menubar 'remove)
-  (setq fill-paragraph-function bc-saved-fill-paragraph-function))
-
-;;;;========================================================================
-;;;_    | bc-internal-turn-mode-on
-(defun bc-internal-turn-mode-on (symbol-or-regexp &optional show-message)
-  "Turn on bc-mode in this buffer, using SYMBOL-OR-REGEXP as the syntax.
-
-Variables `bc-comment-regexp', `bc-comment-start', and `bc-comment-end' are
-initialized.
-
-SYMBOL-OR-REGEXP must be either a symbol or a string.  If a symbol, it
-should be one of the language keys in `bc-languages-alist'.  If a
-string, it should contain a regular expression to be used for
-`bc-comment-regexp'.
-
-If SHOW-MESSAGE is non-nil, a message is displayed in the echo area.
-This is useful when servicing an interactive call.
-
-The buffer-local variables `comment-start' and `comment-end' are also
-set to appropriate values, if possible.  If SYMBOL-OR-REGEXP is a
-symbol, `comment-start' and `comment-end' are generated from the
-`delim' strings in `bc-languages-alist'.  If SYMBOL-OR-REGEXP is a
-string, `comment-start' and `comment-end' are left untouched and must
-be set by the user."
-
-  (let ((lang-info (if (symbolp symbol-or-regexp)
-		       (or (assq symbol-or-regexp bc-languages-alist)
-			   (error "bc-mode: Unknown language: %s" 
-				  symbol-or-regexp))))
-	delims
-	regexp
-	)
-
-    (if (and (not lang-info) (not (stringp symbol-or-regexp)))
-	(signal 'wrong-type-argument 
-		(list '(or symbolp stringp) symbol-or-regexp)))
-
-	; At this point, lang-info is either a symbol from bc-languages-alist,
-	; or nil to indicate that a regexp was passed.
-
-    (if lang-info
-	(progn
-	  (setq delims (assq 'delim (cdr lang-info))
-		regexp (assq 'regexp (cdr lang-info)))
-	  (if regexp (setq regexp (nth 1 regexp)))
-	  (if (and delims (not regexp))
-	      (setq regexp (bc-make-regexp (nth 1 delims) (nth 2 delims)))))
-      (setq regexp symbol-or-regexp))
-
-    (if (not (stringp regexp))
-	(error "bc-mode: Unknown language: `%s'" symbol-or-regexp))
-
-    (setq bc-comment-regexp regexp)
-    (setq bc-comment-looking-at-regexp (bc-make-looking-at-regexp regexp))
-
-    (if show-message
-	(message "bc-mode set to `%s'." (car lang-info)))
-
-    (set (make-local-variable 'bc-language) (if lang-info symbol-or-regexp t))
-    (setq bc-mode t)
-    (bc-select-keymap)
-    (bc-install-menubar)
-    (bc-sync-advice-enable)
-    (if bc-tab-stops nil (bc-set-tab-spacing 8 'quiet))
-
-					;======================================
-					;   Set up `comment-start' and
-					;   `comment-end' if not already set.
-    (make-local-variable 'comment-start);======================================
-    (make-local-variable 'comment-end)
-    (if (not delims) nil			; These are redundant if
-      (setq bc-comment-start			; bc-make-regexp was called,
-	    (concat (nth 1 delims ) " ")	; but they don't hurt.
-	    bc-comment-end
-	    (if (nth 2 delims) (concat " " (nth 2 delims)) "")
-	    bc-start-first-char (bc-analyze-comment-start))
-      (if (and (boundp 'comment-start) (stringp comment-start))
-	  nil
-	(setq comment-start bc-comment-start 
-	      comment-end bc-comment-end))
-      (if (and (boundp 'comment-start-skip) (stringp comment-start-skip))
-	  nil
-	(setq comment-start-skip (bc-make-start-skip (nth 1 delims)))))
-
-    (if (eq bc-saved-fill-paragraph-function 'bc-fill-paragraph)
-	nil
-      (setq bc-saved-fill-paragraph-function fill-paragraph-function))
-    (if bc-enable-fill-paragraph-function
-	(setq fill-paragraph-function 'bc-fill-paragraph))
-    ))
-
-;;;;========================================================================
-;;;_    | bc-make-start-skip
-(defun bc-make-start-skip (string)
-  "Make a string suitable for `comment-start-skip'.
-This is not used by BC itself, but for modes that do not set it, BC
-will try to set it to something useful."
-
-  (concat string "+[ \t]*"))
-
-;;;;========================================================================
-;;;_    | bc-make-regexp
-;;;###autoload
-(defun bc-mirror-char (char)
-  (or (cdr (assq char '((?< . ?>) (?> . ?<)
-			(?[ . ?]) (?] . ?[)
-			(?{ . ?}) (?} . ?{)
-			(?( . ?)) (?) . ?() )))
-      char))
-
-(defun bc-make-regexp (start &optional end)
-  "Make a regular expression suitable for `bc-comment-regexp'.
-Also sets `comment-start' and `comment-end' if they are unbound.
-
-START must be a string containing the comment start delimiter
-characters for the language being edited.  It should not contain any
-whitespace.
-
-END must be a string containing the comment end delimiter.  It should
-not contain any whitespace.  If there are no special characters that
-end a comment \(i.e., comments continue to end-of-line\), END need not
-be supplied."
-
-  (let* (
-	 (startfirstchar (substring start 0 1))
-	 (start-re (regexp-quote start))
-	 end-re
-	 )
-
-    (setq bc-comment-start (concat start " ") 
-	  bc-comment-end (if (and end (not (equal end ""))) (concat " " end) "")
-	  bc-start-first-char (aref start 0))
-
-    (make-local-variable 'comment-start)
-    (make-local-variable 'comment-end)
-    (if (and (boundp 'comment-start) (stringp comment-start))
-	nil
-      (setq comment-start bc-comment-start 
-	    comment-end bc-comment-end))
-    (if (and (boundp 'comment-start-skip) (stringp comment-start-skip))
-	nil
-      (setq comment-start-skip (bc-make-start-skip start)))
-
-
-    (if (and end (> (length end) 0))
-	(setq end-re (concat (regexp-quote (substring end 0 1))
-			     "+"
-			     (regexp-quote (substring end 1)))
-	      bc-faux-comment-end nil)
-      (setq bc-faux-comment-end
-	    (regexp-quote (concat (reverse (mapcar 'bc-mirror-char start))))))
-
-
-    (concat "[^" startfirstchar "]" start-re "+[ 	]*\\(.*\\)" end-re)))
-		     
-
-(defun bc-old-make-regexp (start &optional end)
-  "Make a regular expression suitable for `bc-comment-regexp'.
-Also sets `comment-start' and `comment-end' if they are unbound.
-
-START must be a string containing the comment start delimiter
-characters for the language being edited.  It should not contain any
-whitespace.
-
-END must be a string containing the comment end delimiter.  It should
-not contain any whitespace.  If there are no special characters that
-end a comment \(i.e., comments continue to end-of-line\), END need not
-be supplied.
-
-This currently will not work if either argument is longer than two
-characters. \(Sure wish Emacs Lisp had the Perl substitution
-operator!\)"
-
-  (let* ((startlen (length start))
-	 (endlen (length end))
-	 (startstartchar (aref start 0))
-	 (startstart (bc-protect-char startstartchar))
-	 (startend (bc-protect-char (if (> startlen 1) 
-					(aref start (1- startlen)))))
-	 (endstart (if (> endlen 0) 
-		       (concat (bc-protect-char (aref end 0)) "+")
-		     ""))
-	 (endend (bc-protect-char (if (> endlen 1)
-				      (aref end (1- endlen)))))
-	 )
-
-    (setq bc-comment-start (concat start " ") 
-	  bc-comment-end (concat " " end)
-	  bc-start-first-char (bc-analyze-comment-start))
-
-    (make-local-variable 'comment-start)
-    (make-local-variable 'comment-end)
-    (if (and (boundp 'comment-start) (stringp comment-start))
-	nil
-      (setq comment-start bc-comment-start 
-	    comment-end bc-comment-end))
-    (if (and (boundp 'comment-start-skip) (stringp comment-start-skip))
-	nil
-      (setq comment-start-skip (bc-make-start-skip start)))
-
-
-    (concat "[^" (char-to-string startstartchar) "]" 
-	    startstart startend 
-	    "+[ \t]*\\(.*\\)" 
-	    endstart endend)))
-;
-;;;_    | bc-protect-char
-(defun bc-protect-char (char)
-  (if (null char)
-      ""
-    (if (memq char '(?. ?* ?+ ?[ ?] ?^ ?$ ?\\ ))
-	(concat "\\" (char-to-string char))
-      (char-to-string char))))
-
-;;;;======================================================================
-;;;_    | bc-analyze-comment-start
-(defun bc-analyze-comment-start ()
-  "Return the first character of `bc-comment-start'.
-This used to be more complex.  It doesn't really need to be a separate
-function now."
-  (aref bc-comment-start 0))
-
-;;;;========================================================================
-;;;_    | bc-make-looking-at-regexp
-(defun bc-make-looking-at-regexp (string)
-
-  "Return a regular expression suitable for `bc-comment-looking-at-regexp'.  
-
-STRING should contain a regular expression appropriate for
-`bc-comment-regexp'.  It will be parsed to remove the pattern at the
-beginning that matches a character before the comment delimiter."
-
-; Have you ever tried to parse a regexp with another regexp?
-; Kids, don't try this at home!  
-
-; This regexp (the first arg to `string-match') merits some
-; explanation: It looks for a left-bracket followed by one or more
-; non-right-bracket characters followed by a right bracket.  The whole
-; pattern is anchored to the beginning of the string.
-
-  (if (string-match "^\\[[^]]+\\]" string)
-      (substring string (match-end 0))))
-
-;;;;======================================================================
-;;;_   o The engines
-;;;_    | bc-fill-engine
-(defun bc-fill-engine (motion &optional squeeze no-tab no-reshape)
-  "Block-fill the block comment surrounding the current line, with
-optional movement up or down in the buffer.  The comment is taken to
-consist of all the text in the right-margin comments on concecutive
-lines adjacent to the current line.  If 'motion' is zero, text is
-paragraph filled to width (columns) nearest its present width that
-will fit in the space available to the right of the code.  If 'motion'
-is nonzero, attempt to move the comment down by that many lines (up if
-negative)."
-
-  (let*
-      (
-       (current-point (point))
-       top lim-top save-point no-code
-       first-line last-line 
-       body-first-line body-last-line
-       column initial-width initial-column
-       lines-needed where why result
-       (old-first-marker (make-marker))
-       (new-first-marker (make-marker))
-       new-first new-last change-beginning change-end
-       )
-    
-    (unwind-protect
-	(progn
-	  (setq 
-	   result
-	   (catch 'failure
-	     (bc-flush-caches)
-	     (bc-bump-counters)
-	     (bc-msetq (first-line last-line no-code) (bc-find-comment))
-	     (setq 
-;;;		range (bc-find-comment)
-;;;		first-line (car range)
-;;;	      first-line-char first-line 
-	      new-first first-line
-;;;	      last-line (cdr range)
-;;;	      last-line-char last-line)
-	      new-last last-line)
-	     (bc-msetq (body-first-line body-last-line initial-width
-					nil nil initial-column)
-		       (bc-analyze-comment first-line last-line))
-;;;		 body-range (bc-analyze-comment first-line last-line)
-;;;		 body-first-line (car body-range)
-;;;		 body-last-line (car (cdr body-range))
-	     (setq
-	      save-point (bc-save-excursion current-point first-line 
-					    body-first-line body-last-line
-					    last-line)
-	      initial-width (min bc-right-margin initial-width))
-	     
-	     (cond
-	      ((or no-tab no-reshape)
-	       (setq
-		initial-column (max 1 initial-column)))
-	      (t
-	       (setq
-		initial-column (max 1 (min initial-column
-					   (- bc-G-rm-minus-stuff 
-					      (max 1 initial-width))))
-;;;		initial-delta (mod initial-column bc-tab-spacing)
-		initial-column
-		(or (bc-next-tab-stop 'left initial-column 'maybe) 1)
-;;;		initial-column (max 1 (- initial-column initial-delta))
-		)))
-	     
-	     (set-marker old-first-marker first-line)
-	     (bc-get-text body-first-line body-last-line)
-	     (unwind-protect
-		 (progn
-		   (cond
-		    ((eq this-command 'bc-fill) nil)
-		    ((memq last-command bc-format-commands)
-		     (setq initial-column bc-phantom-column))
-		    ((memq this-command
-			   '(bc-raise bc-raise-flow bc-lower bc-lower-flow))
-		     (setq bc-phantom-column initial-column)))
-
-		   ;; The first-line of a comment must sometimes be preserved
-		   ;; across invocations. For example, if a comment is
-		   ;; narrowed, then immediately widened, it should return to
-		   ;; its original location. Since the narrowing could have
-		   ;; raised the first line, we must save the inital first
-		   ;; line as bc-pref-first-line.  Since lines will get
-		   ;; screwed up when we clean up inserted newlines, use a
-		   ;; marker.  We will convert this to a line number at the
-		   ;; end of the function.
-
-		   (set-marker bc-start-marker	; This will get changed set by
-			       first-line)	; bc-moveit if successful.
-
-		   (goto-char first-line)
-		   (if (and (bobp) (< motion 0))
-		       (throw 'failure "Beginning of buffer"))
-		   (forward-line motion)	
-		   (setq lim-top (if (> motion 0) (point)))
-		   (bc-msetq (column top lines-needed where why)
-			     (bc-fit-move initial-column 
-					  first-line last-line
-					  lim-top squeeze no-tab no-reshape
-					  (if (> motion 0) 
-					      no-code ; down
-					    (not no-code)))) ; up
-		   
-		   ;; The treadmill problem when motion is down: If the line
-		   ;; of code just below the comment is very wide (e.g. all
-		   ;; the way to the right margin), `bc-fit-move' will
-		   ;; determine that we must push that line down (i.e. we
-		   ;; must insert blank lines before it).  The number of
-		   ;; blank lines to insert will be the same as the number of
-		   ;; lines we are trying to move down, because in such cases
-		   ;; we never reshape the comment.
-		   ;;
-		   ;; As `bc-lower' or `bc-lower-flow' is called repeatedly,
-		   ;; the comment eventually sits on lines by itself, with
-		   ;; no code to its left anywhere.  The very wide line has
-		   ;; been pushed down the number of lines equal to the
-		   ;; height of the comment.  
-		   ;; 
-		   ;; A subsequent `lower' operation would push the wide line
-		   ;; down further if we took the advice of `bc-fit-move',
-		   ;; but this is not the behavior we want.  At this point,
-		   ;; we want to jump over the wide line so that we can
-		   ;; continue moving the comment down.
-		   ;; 
-		   ;; We handle this as a special case: when the comment is
-		   ;; initially on lines by itself (i.e. no-code is t) and
-		   ;; the number of lines-needed returned by `bc-fit-move'
-		   ;; equals the number of lines we are trying to move down. 
-
-		   (cond
-		    ((and no-code (> motion 0) (= lines-needed motion))
-		     (cond
-		      ((eq why 'comment-below)
-		       (error "There is another comment in the way."))
-		      ((eq why 'line-too-wide)
-		       (goto-char last-line)
-		       (forward-line 2)
-		       (setq top (point)
-			     lines-needed (bc-count-lines-1 first-line
-							    last-line)
-			     where 0)
-		       (if (bc-oparse-line)
-			   (setq lines-needed (1+ lines-needed))))
-		      ((eq why 'bottom-of-buffer)
-		       (error "End of buffer."))
-		      (t
-		       (error "Here's one: %s" why)))))
-
-		   (if (eq this-command 'bc-fill)
-		       (setq bc-phantom-column column))
-		   
-		   (bc-msetq
-		    (new-first new-last change-beginning change-end)
-		    (bc-moveit top first-line last-line column
-			       lines-needed where t))
-;;;		    first-line-char (car new-range)
-;;;		    last-line-char (nth 1 new-range))
-		   nil);; end progn
-	       
-	       (set-buffer bc-G-code-buffer);; cleanup
-	       (bc-restore-excursion save-point new-first new-last)
-	       (set-marker new-first-marker new-first)
-	       )));; end setq result
-
-	  (if result				; was there a problem?
-	      (progn
-		(beep t)			; signal failure
-		(message "%s%s" result
-			 (if bc-show-fill-count 
-			     (format " (Fill count: %d)" bc-fill-count) "")))
-	    (save-excursion
-	      (bc-cleanup-newlines change-beginning change-end)
-	      (bc-set-pref-first-line))
-	    (if bc-show-fill-count (message "Fill count: %d" bc-fill-count)
-	      (message "Column: %d" column))
-	    ))
-      (set-marker old-first-marker nil)
-      (set-marker new-first-marker nil)
-      (set-marker bc-start-marker nil))))
-
-;;;;======================================================================
-;;;_    | bc-narrow-engine
-(defun bc-narrow-engine (narrow squeeze)
-  "Block-fill the block comment surrounding the current line, and
-either narrow (if NARROW is positive) or widen the number of columns
-that the comment text occupies.  The comment is taken to consist of
-all the text in the right-margin comments on concecutive lines
-adjacent to the current line.  Narrowing or widening attempts to
-anchor the first line of the comment to its current line in the
-buffer, with the rest of the comment moving up or down to accomodate
-the change.  If this is not possible, the comment may be moved up some
-lines.  If a series of bc-taller and bc-shorter commands are executed
-sequentially, the original first line of the comment is remembered and
-the comment will be placed as close as possible to there each time.
-
-If SQUEEZE is non-nil, squeeze the resulting text to a rectangle,
-otherwise place it at the nearest tab stop."
-
-  (unwind-protect
-      (let*
-	  (
-;;;	   (code-buffer (current-buffer))
-	   (current-point (point))
-	   save-point
-	   first-line last-line first-line-char last-line-char
-	   first-line-line
-	   body-range body-first-line body-last-line
-	   initial-width initial-column column indent
-	   narrowed-area result new-range 
-;;;	   no-code range lim-top 
-	   )
-
-	(setq 
-	 result
-	 (catch 'failure
-	   (bc-flush-caches)
-	   (bc-bump-counters)
-	   (bc-msetq (first-line last-line) (bc-find-comment))
-	   (setq indent (bc-compute-indent first-line))
-;;;	   (if no-code (setq indent 20))
-	   (setq 
-	    ;;	range (bc-find-comment)
-            ;;;	narrow (if (> narrow 0) 1 -1)
-	    ;;	first-line (car range)
-	    first-line-char first-line
-	    ;;	last-line (cdr range)
-	    last-line-char last-line
-	    body-range (bc-analyze-comment first-line last-line)
-	    body-first-line (car body-range)
-	    body-last-line (car (cdr body-range))
-	    save-point (bc-save-excursion current-point first-line
-					  body-first-line
-					  body-last-line last-line)
-	    initial-width (min bc-right-margin (nth 2 body-range))
-	    initial-column (nth 5 body-range))
-
-	   (unwind-protect
-	       (progn
-
-		 (bc-get-text body-first-line body-last-line)
-
-		 ;; With the current version of `bc-fit-narrow', I'm not sure
-		 ;; if `bc-pref-first-line' does anything anymore. This
-		 ;; function will not relocate the comment's first line under
-		 ;; any circumstances, so `first-line' should always equal
-		 ;; pref-first-line anyway.
-		 (setq first-line-line (bc-count-lines-1-fast 1 first-line))
-		 (if (memq last-command bc-format-commands)
-		     (if (= bc-pref-first-line first-line-line) nil
-		       (ding)
-		       (message "bc-pref-first-line != first-line"))
-		   (setq bc-pref-first-line first-line-line))
-
-		 (set-buffer bc-G-code-buffer)
-		 (bc-goto-line-fast bc-pref-first-line)
-		 (set-marker bc-start-marker (point))
-		 (beginning-of-line)
-		 (setq 
-		  narrowed-area 
-		  (bc-fit-narrow 
-		   narrow last-line initial-column first-line last-line
-		   squeeze indent)
-		  column (car narrowed-area)
-		  
-		  ;; The width of a block comment must sometimes be
-		  ;; preserved. For example, if a comment is narrowed, then
-		  ;; immediately raised, the user probably wants the width
-		  ;; preserved. On the other hand, if a comment is simply
-		  ;; filled, then subsequently raised, the width should not
-		  ;; be restricted, except by comment-column. Thus we need a
-		  ;; phantom comment column which manifests itself anytime we
-		  ;; are making a series of sequential raises, lowers,
-		  ;; narrows, and widens. The phantom column comes into
-		  ;; existance when narrow or widen is executed, and
-		  ;; dissapears when a command is executed that is not one of
-		  ;; the four.
-
-		  bc-phantom-column column
-		  
-		  new-range (bc-moveit 
-			     (nth 1 narrowed-area) first-line last-line 
-			     column (nth 2 narrowed-area)
-			     (nth 3 narrowed-area))
-		  first-line-char (car new-range)
-		  last-line-char (nth 1 new-range))
-		 nil);; end progn
-	     (set-buffer bc-G-code-buffer);; cleanup
-	     (bc-restore-excursion save-point first-line-char
-				   last-line-char)
-	     )));; end setq result
-	
-	(if result			; was there a problem?
-	    (progn
-	      (set-buffer bc-G-code-buffer)
-	      (if initial-width
-		  (setq bc-phantom-column
-			(- bc-G-rm-minus-stuff (max 1 initial-width))))
-	      (goto-char current-point)
-	      (beep t)			; signal failure
-	      (message "%s%s" result
-		       (if bc-show-fill-count 
-			   (format " (Fill count: %d)" bc-fill-count) "")))
-	  (save-excursion
-	    (bc-cleanup-newlines (nth 2 new-range) (nth 3 new-range))
-	    (bc-set-pref-first-line))
-	  (if bc-show-fill-count (message "Fill count: %d" bc-fill-count)
-	    (message "Column: %d" column))
-	  ))
-    (set-marker bc-start-marker nil)))
-
-;;;;======================================================================
-;;;_   o Moving comment to/from scratch buffer or new position
-;;;_    | bc-moveit
-(defun bc-moveit (new-comment-beg-char old-comment-beg-char 
-		  old-comment-end-char column &optional lines-needed
-		  where set-start-marker)
-  "Remove the right-margin comments from the lines between
-OLD-COMMENT-BEG-CHAR and OLD-COMMENT-END-CHAR inclusive, including the
-comment delimiters.  Then insert the contents of `bc-G-scratch-buffer' as
-right-margin comments beginning on the line containing
-NEW-COMMENT-BEG-CHAR.  \(All are buffer positions.\)  Pass nil for
-OLD-COMMENT-BEG-CHAR if no comments to be removed.
-
-If COLUMN is an integer, it is the column at which to place the newly
-formatted comment.  If it is a list, use delimiter and column
-information from that \(See `bc-analyze-comment' for format\).
-
-If LINES-NEEDED is an integer, that many blank lines are added to
-accomodate the bottom of the comment at a location WHERE lines from
-the new beginning.  If WHERE is negative, the blank lines are added at
-NEW-COMMENT-BEG-CHAR, and the comment is placed -WHERE lines below
-that. 
-
-Returns \(new-first new-last change-beginning change-end\), all buffer
-positions."
-
-  (let (;new-comment-beg-line			; Cannot use positions to
-;	new-comment-end-line			; indicate lines now, because
-;;; old-comment-beg-line old-comment-end-line	; we are about to delete some
-	change-beg-char change-end-char		; text.
-	(before-change-funs before-change-functions)
-	(before-change-fun nil);jkh before-change-function)
-	(after-change-funs after-change-functions)
-	(after-change-fun nil);jkh after-change-function)
-;;;	(code-buffer (current-buffer))
-;;;	(scratch-buffer (bc-get-buffer-create))
-;;;     (old-beg-marker (make-marker))
-	(old-end-marker (make-marker))
-	comment-rows
-	(new-beg-marker (make-marker))
-	(new-end-marker (make-marker))
-	)
-    (if (not where) (setq where 0))
-    (unwind-protect
-	(save-excursion
-	  (set-buffer bc-G-scratch-buffer)
-	  (setq
-	   comment-rows
-	   (if (listp column) (length column)
-					; Minus one because bc-scratch-buffer
-	     (+ (bc-count-lines-1-fast	; has an extra newline at the end.
-		 1 (point-max))		; Minus another because we want the
-		-2 bc-extra-lines)))	; beginning of the last line of the new
-					; comment, not the following line.
-
-	  (set-buffer bc-G-code-buffer)
-;	   (setq new-comment-beg-line (bc-count-lines-1-fast
-;				       1 new-comment-beg-char))
-      
-	  (if old-comment-beg-char
-;;;	    (set-marker old-beg-marker old-comment-beg-char)
-	      (set-marker 
-	       old-end-marker
-	       (progn (goto-char old-comment-end-char) (end-of-line) (point))))
-
-	  (goto-char new-comment-beg-char)
-	  (set-marker new-beg-marker (point))
-	  (forward-line comment-rows)
-	  (set-marker new-end-marker (point))
-
-;	   (cond
-;	    ((listp column)
-;	     (setq new-comment-end-line (+ new-comment-beg-line
-;					   (length column))))
-;	    (t
-;	     (setq new-comment-end-line		; Minus one because
-;		   (+ new-comment-beg-line	; bc-scratch-buffer has an
-;		      (bc-count-lines-1-fast	; extra newline at the end.
-;		       1 (point-max))		; Minus another because we want
-;		      -2			; the beginning of the last
-;		      bc-extra-lines))))	; line of the new comment, not
-;						; the following line.
-;	   (set-buffer bc-G-code-buffer)
-
-	  (setq change-beg-char			; Now figure out the minimum
-		(if old-comment-beg-char	; buff pos that is about to be
-		    (min old-comment-beg-char	; changed.
-			 new-comment-beg-char)
-		  new-comment-beg-char))
-	  
-	  (setq change-end-char
-		(progn (goto-char new-end-marker)
-		       (end-of-line) (point)))
-	  (if old-comment-beg-char		; Likewise for the max buff
-	      (setq change-end-char		; pos.
-		    (max change-end-char
-			 (progn (goto-char old-comment-end-char) 
-				(end-of-line) (point)))))
-      
-	  (let (
-		(after-change-function nil)	; Leaving these on makes
-		(after-change-functions nil)	; comment formatting crawl.
-		(before-change-function nil)
-		(before-change-functions nil))
-
-	    (if (and before-change-fun
-		     (fboundp before-change-fun))
-		(funcall before-change-fun
-			 change-beg-char change-end-char))
-
-							; Instead we will call
-							; these hooks once for
-	    (while before-change-funs			; the whole changed
-	      (if (fboundp (car before-change-funs))	; region.
-		  (funcall (car before-change-funs)
-			   change-beg-char change-end-char))
-	      (setq before-change-funs (cdr before-change-funs)))
-	
-	    (if old-comment-beg-char			; Now actually cut the
-		(bc-delete-text old-comment-beg-char	; old comment.
-				old-comment-end-char))	
-
-	    (if (and lines-needed (< 0 lines-needed))	; Add blank lines if
-		(let (newlines)				; needed.
-		  (goto-char new-beg-marker)
-		  (if (> where 0) (forward-line where))
-		  (setq newlines (make-string lines-needed ?\n))
-		  (add-text-properties
-		   0 lines-needed
-		   (list 'bc-added-newline bc-added-newlines-counter
-			 'rear-nonsticky '(bc-added-newline))
-		   newlines)
-		  (insert newlines)))
-
-	    (goto-char new-beg-marker)
-	    (if (>= where 0) nil
-	      (forward-line (- where))
-	      (set-marker new-beg-marker (point))
-;;;	      (forward-line (- where 1))
-	      )
-;	      (setq new-comment-beg-line (1+ new-comment-beg-line))))
-	    (if set-start-marker (set-marker bc-start-marker (point)))
-
-	    (bc-put-text (point) column)	; Insert the new comment.
-
-	    (setq change-end-char
-		  (progn (goto-char new-end-marker) (end-of-line) (point)))
-
-	    (if old-comment-beg-char		; The end-of-line is different
-		(setq change-end-char		; now, so measure it again.
-		      (max change-end-char
-			   (marker-position old-end-marker))))
-	    
-	    (if (and after-change-fun
-		     (fboundp after-change-fun))
-		(funcall after-change-fun
-			 change-beg-char change-end-char 0))
-	    
-	    				; Now call the after-change-hooks.
-	    (while after-change-funs	; Since this is a discontinuous change,
-	      				; send zero for the before- length to
-	      				; make it look like an insertion.
-	      
-	      (if (fboundp (car after-change-funs))
-		  (funcall (car after-change-funs)
-			   change-beg-char change-end-char 0))
-	      
-	      (setq after-change-funs (cdr after-change-funs)))
-	    )
-	  
-	  (if bc-show-fill-count (message "Fill count: %d" bc-fill-count)
-	    (if (integerp column) (message "Column: %d" column)))
-	  
-	  (list
-	   (progn
-	     (goto-char new-beg-marker)
-	     (point))				; Return the char pos of the
-	   (progn				; beginnings of the new first
-	     (goto-char new-end-marker)		; and last lines and the change
-	     (point))				; region.
-	   change-beg-char change-end-char)
-	  );; end save-excursion
-      (set-marker old-end-marker nil)  ;; cleanup
-      (set-marker new-beg-marker nil)
-      (set-marker new-end-marker nil))
-    ))
-
-
-;;;;======================================================================
-;;;_    | bc-cleanup-newlines
-(defun bc-cleanup-newlines (start end)
-  "Delete any blank lines we inserted that are no longer needed."
- 
-  (save-excursion
-    (save-restriction
-      (goto-char start)
-      (forward-line -3)
-      (setq start (point))
-      (goto-char end)
-      (forward-line 2)
-      (end-of-line)
-      (narrow-to-region start (point))
-      (goto-char (point-min))
-      (forward-line 1)
-	
-      (while (not (eobp))
-	(let ((plist (memq 'bc-added-newline (text-properties-at (point))))
-	      (next-change
-	       (or (next-single-property-change 
-		    (point) 'bc-added-newline (current-buffer))
-		   (point-max)))
-	      del-beg del-end
-	      prior-is-comment next-is-comment ;;; current-is-blank
-	      )
-	  (if (and plist (/= (nth 1 plist)
-			     bc-added-newlines-counter))
-	      (progn
-		(beginning-of-line)			; This text was added
-		(while (and (< (point) next-change)	; by BC on a previous
-			    (not (eobp)))		; command.
-		  (setq
-		   del-beg (point)
-		   prior-is-comment (save-excursion
-				      (forward-line -1) (bc-oparse-line))
-		   next-is-comment (save-excursion
-				     (forward-line 1) (bc-oparse-line)))
-
-		  (if (or (and prior-is-comment next-is-comment)
-			  (not (looking-at "[ \t]*$")))
-		      (forward-line 1)
-		    (forward-line 1)
-		    (setq del-end (point))
-		    (delete-region del-beg del-end)
-		    (bc-flush-parse-cache)
-		    (setq next-change 
-			  (- next-change (- del-end del-beg)))))))
-	  (goto-char next-change))))))
-
-;;;;======================================================================
-;;;_    | bc-get-text
-(defun bc-get-text (first-line last-line)
-  "Extracts the text of a block comment from the lines between
-FIRST-LINE and LAST-LINE inclusive.  Both args should be buffer
-positions of the beginnings of lines.  Text is copied to the buffer
-indicated by 'bc-G-scratch-buffer'.
-
-The text copied has no whitespace at the beginning or end of any line.
-This is a consequence of using `bc-parse-line' to find the extents of
-the text on the line."
-
-  (let (
-;;;	(code-buffer (current-buffer))
-;;;	(scratch-buffer (bc-get-buffer-create))
-	com-body-start com-body-end 
-;;;	com-delim-end comment-start-col comment-end-col
-	)
-
-    (save-excursion
-      (set-buffer bc-G-scratch-buffer)
-      (erase-buffer)					; erase any old stuff
-      (set-buffer bc-G-code-buffer)
-
-      (goto-char first-line)				; copy all the text to
-							; the scratch
-      (while (<= (point) last-line)
-	(bc-oparse-line nil nil 'com-body-start 'com-body-end
-		       'com-delim-end)
-
-	(set-buffer bc-G-scratch-buffer)
-	(insert-buffer-substring
-	 bc-G-code-buffer com-body-start com-body-end)
-	(insert "\n")
-	(set-buffer bc-G-code-buffer)
-	(forward-line 1))
-
-;;;      (set-buffer scratch-buffer)
-;;;      (set-text-properties 1 (point-max) nil)
-;;;      (set-buffer bc-G-code-buffer)
-      nil)))
-
-;;;;======================================================================
-;;;_    | bc-put-text
-
-;;; For profiling:  elp can't profile builtins, so a lisp wrapper is
-;;; needed.  For release code these should all be `defsubst's.  For
-;;; profiling make them `defun's
-
-(defsubst bc-insert-buffer-substring (buffer bosl eosl)
-  (insert-buffer-substring buffer bosl eosl))
-
-(defsubst bc-set-buffer (buffer)
-  (set-buffer buffer))
-
-(defsubst bc-indent-to (col)
-  (indent-to col))
-
-(defsubst bc-delete-region (b e)
-  (delete-region b e))
-
-(defsubst bc-internal-end-of-line ()
-  (end-of-line))
-
-(defsubst bc-forward-line (&optional arg)
-  (forward-line arg))
-
-;;;------------------------------------------------------------------
-(defun bc-put-text (first-line column-or-delims)
-  "Copies the text of a block comment from the scratch buffer to the
-current buffer at the location specified by FIRST-LINE and COLUMN.
-The scratch buffer is the buffer pointed to by bc-G-scratch-buffer.
-
-If COLUMN-OR-DELIMS is an integer, use delimiters `bc-effective-start'
-and `bc-effective-end', and align entire comment to that column.  If it
-is a list, use delimiter and column information from that \(See
-`bc-analyze-comment' for format\).
-
-Returns the buffer position of the last char inserted."
-
-  (let (
-;;;	(code-buffer (current-buffer))
-;;;	(scratch-buffer (bc-get-buffer-create))
-	bosl eosl
-	
-	(right-end (- bc-right-margin (length bc-effective-end)))
-	banner-width banner-start banner-end
-	delims delim-whitespace
-;;;	eocl com-start-len com-end-len
-	)
-						;==============================
-    (save-excursion				;  If this is to be a banner
-      (goto-char first-line)			;  comment, insert the top
-						;  banner.
-      (if (and (not (listp column-or-delims))	;==============================
-	       bc-banner-top-border)
-	  (progn
-	    (setq
-	     delim-whitespace (string-match "[ \t]" bc-effective-start)
-	     banner-start (if delim-whitespace (substring bc-effective-start 0 
-							  delim-whitespace)
-			    bc-effective-start)
-	     delim-whitespace (string-match "[^ \t]" bc-effective-end)
-	     banner-end (if (equal bc-effective-end "") ""
-			  (if delim-whitespace (substring bc-effective-end 
-							  delim-whitespace)
-			    bc-effective-end))
-	     banner-width (- bc-right-margin column-or-delims
-			     (length banner-start) (length banner-end)))
-	    (bc-internal-end-of-line)
-	    (delete-horizontal-space)
-	    (bc-indent-to column-or-delims)
-	    (insert banner-start)
-	    (insert (make-string banner-width (car bc-banner-top-border)))
-	    (insert banner-end)
-	    (bc-forward-line 1)
-	
-	    (if (> bc-banner-top-space 0)	; If this is a banner, it may
-		(progn				; need a blank line at the top.
-		  (bc-internal-end-of-line)
-		  (delete-horizontal-space)
-		  (bc-indent-to column-or-delims)
-		  (insert banner-start)
-		  (if (equal bc-effective-end "")
-		      nil
-		    (bc-indent-to right-end)
-		    (insert bc-effective-end))
-		  (bc-forward-line 1)))))
-
-						;==============================
-      (bc-set-buffer bc-G-scratch-buffer)	;  Now actually insert the text
-      (goto-char 1)				;  of the comment.
-      (if (eobp)				;==============================
-	  (progn
-	    (insert ?\n)			; Hack to prevent obliterating
-	    (goto-char 1)))			; empty comments.
-      (while (not (eobp))
-	(setq bosl (point))
-	(bc-internal-end-of-line)		; Find the extent of the line
-	(setq eosl (point))			; in the scratch buffer.
-	(bc-set-buffer bc-G-code-buffer)
-	(bc-internal-end-of-line)
-	(delete-horizontal-space)
-	(cond
-	 ((listp column-or-delims)
-	  (setq delims (car column-or-delims)
-		column-or-delims (cdr column-or-delims))
-	  (bc-indent-to (car delims))
-	  (insert (nth 1 delims))
-	  (bc-insert-buffer-substring bc-G-scratch-buffer bosl eosl)
-	  (insert (nth 2 delims)))
-	 (t
-	  (bc-indent-to column-or-delims)
-	  (insert bc-effective-start)
-	  (bc-insert-buffer-substring bc-G-scratch-buffer bosl eosl)
-	  (if (equal bc-effective-end "")
-	      nil
-	    (bc-indent-to right-end)
-	    (insert bc-effective-end))))
-	
-	(bc-forward-line 1)
-	(bc-set-buffer bc-G-scratch-buffer)
-	(bc-forward-line 1));; end while
-
-      (bc-set-buffer bc-G-code-buffer)		;==============================
-      (cond					;  If this is to be a banner
-       ((listp column-or-delims)		;  comment, insert the bottom
-	(while column-or-delims			;  banner.
-	  (setq delims (car column-or-delims)	;==============================
-		column-or-delims (cdr column-or-delims))
-	  (bc-internal-end-of-line)
-	  (delete-horizontal-space)
-	  (bc-indent-to (car delims))
-	  (insert (nth 1 delims) (nth 2 delims))
-	  (bc-forward-line 1)
-	  ))
-       (bc-banner-top-border
-	(if (> bc-banner-bottom-space 0)
-
-	    (progn
-	      (bc-internal-end-of-line)
-	      (delete-horizontal-space)
-	      (bc-indent-to column-or-delims)	; If this is a banner, it may
-	      (insert bc-effective-start)	; need a blank line at the
-	      (if (equal bc-effective-end "")	; bottom.
-		  nil
-		(bc-indent-to right-end)
-		(insert bc-effective-end))
-	      (bc-forward-line 1)))
-	
-	(bc-internal-end-of-line)
-	(delete-horizontal-space)
-	(bc-indent-to column-or-delims)
-	(insert banner-start)
-	(insert (make-string banner-width (car bc-banner-top-border)))
-	(insert banner-end)))
-
-      (setq bc-parse-line-cache nil)
-      (point) ; return position of last char
-      ) ; end save-excursion
-    ))
-
-;;;;======================================================================
-;;;_    | bc-delete-text
-(defun bc-delete-text (first-line last-line)
-  "Deletes the text of a block comment from the lines specified by 'range'.
-
-The comment is taken to consist of all the text and comment characters of
-the right-margin comments on the lines in 'range'.  Whitespace to the left
-of the comments, and everything to the right of them is also removed.
-
-Unlike 'kill-comment' this function only deletes the rightmost comment
-on each line."
-  
-  (let* ((num-lines (bc-count-lines-1 first-line last-line))
-	 code-end-pos delim-e
-;;;	 eol 
-	 )
-
-  (save-excursion
-    (goto-char last-line)			; Go backwards so we can still
-						; use bc-parse-line-cache
-    (beginning-of-line)
-    (while (> num-lines 0)
-      (setq num-lines (1- num-lines))
-      (bc-internal-end-of-line)
-;;;      (setq eol (point))
-      (bc-oparse-line 'code-end-pos nil nil nil 'delim-e)
-      (bc-delete-region code-end-pos delim-e)
-      (bc-forward-line -1))
-    (bc-flush-parse-cache)
-    )))
-
-;;;;======================================================================
-
-; (defmacro bc-fill-or-tab-macro ()
-;   `(progn
-;      (set-buffer scratch-buffer)
-;      (cond
-;       (no-reshape)				; do nothing if no reshape
-;       (squeeze
-;        (setq fill-column orig-avail-width)
-;        (bc-query-fill)
-;        (setq column (- bc-G-rm-minus-stuff bc-fb-width)))
-;       (no-tab
-;        (setq fill-column orig-avail-width)
-;        (bc-query-fill)
-;        (setq column (- bc-G-rm-minus-stuff orig-avail-width)))
-;       (t
-;        (setq
-; 	column
-; 	(car
-; 	 (bc-tab-buffer 0
-; 			(- bc-G-rm-minus-stuff orig-avail-width))))))))
-
-;;;;======================================================================
-;;;_   o Fitting
-;;;_    | bc-fit-move
-(defun bc-fit-move (initial-column &optional comm-range-beg comm-range-end
-		    lim-top squeeze no-tab no-reshape insert-after)
-
-  "Find a comment shape and a place it will fit.
-
-INITIAL-COLUMN specifies the placement (and therefore width) of the
-first try.  If this is less than the width of the code on the current
-line, the first attempt places the comment just past the code.
-
-COMM-RANGE-BEG and COMM-RANGE-END should specify the extent of any
-comment presently in the search range.  These are passed to
-`bc-find-room'. 
-
-If LIM-TOP is non-nil, it should be a buffer position of the beginning
-of the line limiting the upper range of the search.  (The comment may
-be placed on this line but not above.)
-
-The value of INSERT-AFTER is used only if we are forced to insert a
-blank line to support the first line of the comment.  If non-nil, that
-blank line will be inserted after the line containing point, otherwise
-before it.  Additional blank lines will be inserted as needed,
-adjacent to the first one.
-
-Returns '\(comment-column top lines-needed where why\)."
-
-  ;; Let me start by saying that this particular function is a
-  ;; God-awful beast.  It's complexity has gotten *way* out of hand
-  ;; and even I don't really know how it works anymore.  I would love
-  ;; to rewrite it.  I think that one reason for its complexity is
-  ;; that it tries to be exhaustive in its search for a place to put
-  ;; the comment.  This is partly a holdover from the days before BC
-  ;; acquired the ability to insert blank lines to make room for the
-  ;; comment.
-
-  ;; The algorithm is as follows. A series of trials are performed. On each
-  ;; trial, the comment is filled to a given fill-column and its height is
-  ;; taken. bc-find-room is then called to find that many lines and returns
-  ;; the width of the available right-margin space in those lines. If this
-  ;; is wide enough for the fill-column of the comment text, we are
-  ;; done. If not, the comment is re-filled at that width and the process
-  ;; is repeated. Thus, in this series of trials the comment is repeatedly
-  ;; narrowed to see if a fit can be found.
-  ;;
-  ;; During these trials no minimum required width is passed to
-  ;; bc-find-room. At some point in these trials (unless we have
-  ;; success), the comment will eventually reach its minimum fillable
-  ;; width. When this occurs, max-code-width is set and a new set of
-  ;; trials is begun. On each of these, max-code-width is repeatedly
-  ;; reduced which allows the comment fill-column to increase and its
-  ;; height to decrease. If max-code-width drops below the width of
-  ;; the code on the current line, an exception is thrown to 'failure.
-
-  (let* (
-;;;	 (code-buffer (current-buffer))
-;;;	 (local-tab-stops bc-tab-stops)
-;;;	 (scratch-buffer (bc-get-buffer-create))
-	 (orig-top (point))
-	 (top (point))
-	 (bottom nil)
-	 (column initial-column)
-;;;	 (bc-G-rm-minus-stuff-1 (1- bc-G-rm-minus-stuff))
-	 (max-code-width
-	  (if no-reshape initial-column (1- bc-G-rm-minus-stuff)))
-;;;	    bc-G-rm-minus-stuff-1))
-;;;	    (orig-max-code-width
-;;;	     (if no-reshape initial-column
-;;;	       (min
-;;;		bc-G-rm-minus-stuff-1
-;;;		(max (bc-code-width-this-line) initial-column))))
-	 (orig-max-code-width (min
-			       max-code-width
-			       (max (bc-code-width-this-line) initial-column)))
-	 (avail-width (- bc-G-rm-minus-stuff orig-max-code-width))
-	 (orig-avail-width avail-width)
-	 avail-area try-again try-adding-lines need-blank-line
-	 lines-needed where why no-code-this-line
-	 comment-width comment-height failure new-column
-;;;	 delta
-	 )
-    
-    (setq 
-     need-blank-line
-     (catch 'failure
-
-       (if (< avail-width 2)
-	   (throw 'failure 'line-too-wide))
-    
-       (save-excursion
-	 (bc-prepare-text)
-	 (beginning-of-line)
-      
-	 (setq 
-	  try-adding-lines
-	  (catch 'try-adding-lines
-	    (while
-		(progn
-		  (setq comment-width (- bc-G-rm-minus-stuff column))
-		  (set-buffer bc-G-scratch-buffer)
-		  (setq
-		   try-again
-		   (catch 'try-again			; Fill the comment to
-							; the new width.
-		     (cond
-		      ((or squeeze no-tab no-reshape)	; ** Just filling.
-		       (setq fill-column comment-width)
-		       (bc-query-fill)
-		       (if (<= bc-fb-width comment-width)
-			   (setq comment-width bc-fb-width)
-			 (setq max-code-width		; If we have reached
-			       (- bc-G-rm-minus-stuff	; the narrowest this
-				  bc-fb-width)		; comment can go, start
-			       column			; over using its min
-			       (min max-code-width	; width.
-				    orig-max-code-width))
-			 (throw 'try-again t)))
-		      (t
-		       (setq				; ** Tabbing
-			failure (catch 'failure
-				  (setq column
-					(car (bc-tab-buffer 0 column)))
-				  nil))
-		       (if (not failure)
-			   (setq comment-width (- bc-G-rm-minus-stuff column))
-			 (setq max-code-width (bc-next-tab-stop 'left column))
-			 (if (not max-code-width)
-			     (throw 'failure 'comment-wider-than-margins))
-			       
-
-; 			  delta (mod column		 ; If we have reached
-; 				     bc-tab-spacing)	 ; the rightmost tab at
-; 			  delta (if (zerop delta)	 ; which this comment
-; 				    bc-tab-spacing delta); can fit, start over
-; 			  max-code-width		 ; using the tab stop
-; 			  (max 1 (- column delta))	 ; to the left of that.
-			 (setq column
-			       (min max-code-width orig-max-code-width))
-			 (throw 'try-again t))))
-	       
-		     (setq comment-height (+ bc-fb-lines bc-extra-lines))
-		     (set-buffer bc-G-code-buffer)
-		     (setq				; See if it will fit
-		      avail-area			; now.
-		      (bc-find-room
-		       comment-height column max-code-width top bottom
-		       comm-range-beg comm-range-end lim-top))
-
-		     (if (not (eq (car avail-area) 'failure)) nil
-		       (cond
-			(no-reshape			; If not enough lines
-			 (throw 'try-adding-lines t))	; with required space,
-							; try to reduce the
-			((or squeeze no-tab)		; number of lines
-			 (setq				; needed by widening
-			  max-code-width		; the comment.
-			  (1- (min max-code-width column))
-			  avail-width orig-avail-width
-			  column (min max-code-width
-				      orig-max-code-width)))
-			(t
-			 (if (and (eq max-code-width 1)
-				  (eq column 1))		; Same, but
-			     (throw 'try-adding-lines t))	; reduce by tab
-			 (setq					; stops.
-			  column (min max-code-width column)
-			  max-code-width (or (bc-next-tab-stop 'left column) 1)
-; 			  delta (mod column bc-tab-spacing)
-; 			  delta (if (zerop delta)
-; 				    bc-tab-spacing delta)
-; 			  max-code-width (max 1 (- column delta))
-			  column (min max-code-width orig-max-code-width))))
-
-		       (if (< max-code-width
-			      orig-max-code-width)
-			   (throw 'try-adding-lines t)
-			 (throw 'try-again t)))
-		  
-		     (setq column (nth 2 avail-area)
-			   avail-width (- bc-G-rm-minus-stuff column))
-
-		     (if (< 1 avail-width)		; If we have run into a
-			 nil				; very wide code line,
-		       (set-buffer bc-G-scratch-buffer)	; start over using the
-		       (setq fill-column 1)		; comment's min width
-		       (bc-query-fill)			; to dictate
-		       (setq max-code-width		; max-code-width.
-			     (- bc-G-rm-minus-stuff bc-fb-width)
-			     column max-code-width)
-		       (throw 'try-again t))
-		  
-		     (setq top (car avail-area)
-			   bottom (nth 1 avail-area))
-		     nil));; end setq try-again
-		  (if try-again
-		      (setq bottom nil
-			    top orig-top);; `while' condition
-		    (< avail-width comment-width))))
-	    ));; end setq try-adding-lines
-      
-	 (cond
-	  (try-adding-lines
-;	   (bc-fill-or-tab-macro)
-	   (set-buffer bc-G-scratch-buffer)
-	   (cond
-	    (no-reshape)			; Do nothing if no reshape.
-	    (squeeze
-	     (setq fill-column orig-avail-width)
-	     (bc-query-fill)
-	     (setq column (- bc-G-rm-minus-stuff bc-fb-width)))
-	    (no-tab
-	     (setq fill-column orig-avail-width)
-	     (bc-query-fill)
-	     (setq column (- bc-G-rm-minus-stuff orig-avail-width)))
-	    (t
-	     (setq
-	      column
-	      (car
-	       (bc-tab-buffer 0 (- bc-G-rm-minus-stuff orig-avail-width))))))
-
-	   (if (<= bc-fb-width fill-column) nil
-	     (throw 'failure "No room there.."))
-	
-	   (setq comment-height (+ bc-fb-lines bc-extra-lines))
-	   (set-buffer bc-G-code-buffer)
-	   (setq avail-area (bc-find-room comment-height column column
-					  orig-top nil comm-range-beg 
-					  comm-range-end lim-top))
-	
-	   (if (eq (car avail-area) 'failure)
-	       (setq
-		why (nth 1 avail-area)
-		lines-needed (- comment-height (nth 2 avail-area))
-		top (nth 3 avail-area)
-		column (nth 4 avail-area)
-		where 
-		(cond
-		 ((memq why '(comment-on-first-line comment-above))
-		  (throw 'failure why))
-			   ;"There is another comment in the way."))
-		 ((eq why 'comment-below) 
-		  (- comment-height -1 lines-needed))
-		 ((zerop (nth 2 avail-area))
-		  (throw 'failure "No room there"))
-		 ((memq why '(bottom-of-buffer line-too-wide top-reached))
-		  (- comment-height lines-needed))
-		 ))
-	     (error 
-	      "bc-mode internal error 003.  Please submit a full bug report."))
-	   )
-	  (t
-	   (setq lines-needed 0)
-	   ))
-	 ) nil)) ; end setq need-blank-line
-
-    (cond
-     ((eq need-blank-line 'comment-wider-than-margins)
-      (error "That comment is too wide for the margins."))
-     ((eq need-blank-line 'line-too-wide)
-      (goto-char orig-top)
-      (forward-line -1)
-      (if (bc-oparse-line) (setq need-blank-line 'comment-above)))
-     )
-
-    (cond
-     ;; If need-blank-line is set, all above attemts at finding space
-     ;; have failed.  This means either that the first line of the
-     ;; destination is too wide, or that there is another comment in
-     ;; the way.
-
-     ((eq need-blank-line 'comment-on-first-line)
-      (throw 'failure "There is another comment on the first line."))
-
-     (need-blank-line
-      ;; In this case, we will add a blank line before or after the
-      ;; first line of the destination, then try again to find space. 
-
-      (set-buffer bc-G-scratch-buffer)
-      (setq fill-column (- bc-G-rm-minus-stuff initial-column))
-      (bc-query-fill)
-      (setq column (- bc-G-rm-minus-stuff (max bc-fb-width orig-avail-width))
-	    comment-height (+ bc-fb-lines bc-extra-lines)
-	    lines-needed comment-height
-	    top orig-top
-	    where 0)
-
-      (set-buffer bc-G-code-buffer)
-      (cond
-
-       ;; If inserting lines after the destination, we may not need to add
-       ;; `comment-height' of them, because there may be some room after the
-       ;; first line.  We must look for room again, this time starting on the
-       ;; second line, and assuming that we already have one of the lines we
-       ;; need.
-
-       (insert-after
-	(setq top
-	      (save-excursion (goto-char orig-top) (forward-line 1) (point))
-	      avail-area
-	      (bc-find-room (1- comment-height) initial-column column top nil
-			    comm-range-beg comm-range-end top))
-	(if (eq (car avail-area) 'failure)
-	    (setq 
-	     why (nth 1 avail-area)
-	     lines-needed (- comment-height (nth 2 avail-area))
-	     new-column (nth 4 avail-area)
-	     )
-	  (setq lines-needed 1
-		new-column (nth 2 avail-area)))
-	(cond
-	 ((eq need-blank-line 'comment-above)
-	  (goto-char orig-top)
-	  (if (<= (bc-code-width-this-line) column)
-	      (setq
-	       top orig-top
-	       where -1
-	       column (max new-column (bc-code-width-this-line)))
-	    (setq column new-column)))))
-
-       ;; If inserting a blank line before the destination, we will
-       ;; have to insert as many blank lines as comment-height if the
-       ;; destination line is too wide.  Those values are already set by now
-       ;; so do nothing.  If the reason is because there is a comment above,
-       ;; then we may not have to insert that many lines.
-
-       ((eq need-blank-line 'comment-above)
-	(setq where -1)
-	(goto-char orig-top)
-	(bc-oparse-line nil nil nil nil nil nil 'no-code-this-line)
-	(if no-code-this-line
-	    (throw 'failure "There is another comment above."))
-	(if (> (bc-code-width-this-line) column)
-	    (setq
-	     lines-needed (1+ comment-height)
-	     column initial-column)
-	  (setq top
-		(save-excursion (goto-char orig-top) (forward-line 1) (point))
-		avail-area
-		(bc-find-room (1- comment-height) column column top nil
-			      comm-range-beg comm-range-end top))
-	  (if (eq (car avail-area) 'failure)
-	      (setq 
-	       why (nth 1 avail-area)
-	       lines-needed (- comment-height (nth 2 avail-area) -2)
-	       )
-	    (setq lines-needed 1)))
-	(setq top orig-top))
-;;;	(throw 'failure "There is another comment above."))
-       )))    ; end cond
-
-    (set-buffer bc-G-scratch-buffer)			; If we are supposed to
-    (if squeeze						; squeeze, do it now.
-	(setq avail-area
-	      (bc-squeeze-buffer
-	       0 column (1- bc-G-rm-minus-stuff))
-	      column (car avail-area)))
-    
-    (setq fill-column (- bc-G-rm-minus-stuff column))
-    (bc-fill-buffer-maybe)
-    
-    (set-buffer bc-G-code-buffer)
-;;    (setq bc-pref-first-line (bc-count-lines-1 1 top))
-    (list column top lines-needed where why)
-    ))
-
-;;;;======================================================================
-;;;_    | bc-fit-narrow
-(defun bc-fit-narrow (narrow last-line initial-column
-		      comm-range-beg comm-range-end squeeze indent)
-  "Find a new width for the comment and a place it will fit. 
-The width will be one stop wider or narrower, depending on the values
-of NARROW and SQUEEZE.  If narrow is 1, narrowing is performed, if -1,
-widening.  If SQUEEZE is non-nil, the comment is narrowed or widened
-to make it one line taller or shorter, and squeezed as narrow as
-possible at that height.  If SQUEEZE is nil, the comment is narrowed
-or widened to the next tab stop.
-
-Also calls `bc-fill-buffer-maybe' to make sure scratch buffer is
-filled and ready to be used.
-
-Returns '\(comment-column top lines-needed where\)."
-  (let (
-;;;	(scratch-buffer (bc-get-buffer-create))
-;;;	(code-buffer (current-buffer))
-;;;	(local-tab-stops bc-tab-stops)
-	(top (point))
-	column lines-needed narrowed-area avail-area comment-height
-;;;	where
-	)
-    (save-excursion
-      (bc-prepare-text)
-
-      (setq column initial-column)
-      (set-buffer bc-G-scratch-buffer)
-      (setq narrowed-area
-	    (if squeeze
-		(bc-squeeze-buffer narrow column (1- bc-G-rm-minus-stuff))
-	      (bc-tab-buffer narrow column indent))
-	    column (car narrowed-area)
-	    comment-height (+ (car (cdr narrowed-area)) bc-extra-lines))
-
-      (setq fill-column (- bc-G-rm-minus-stuff column))
-      (bc-fill-buffer-maybe)
-
-      (set-buffer bc-G-code-buffer)
-      (setq
-       avail-area (bc-find-room comment-height 0 column top nil
-				comm-range-beg comm-range-end top))
-      (if (eq (car avail-area) 'failure)
-	  (setq lines-needed (- comment-height (nth 2 avail-area)))
-;;;		where (- comment-height lines-needed))
-	(setq lines-needed nil))
-
-      ;; Return 0 for `where'. This causes blank lines to be added at the
-      ;; beginning rather than at the end. When the user does a widen followed
-      ;; immediately by a narrow, these blank lines remain. Because of this,
-      ;; the two operations are not inverses of each other. With these lines at
-      ;; the beginning of the comment rather than at the end, it is possible to
-      ;; restore the buffer easily by doing `bc-lower' a few times.
-      (list column top lines-needed 0))))
-;;;      (list column top lines-needed where))))
-      
-;;;;======================================================================
-;;;_    | bc-find-room
-(defmacro bc-check-adj-comment (catch-tag exception)
-  "Check the results of a call to `bc-parse-line'. 
-If the line contains a comment, we need to decide if this is the
-comment begin processed or an adjacent one.  In the latter case, we
-need to throw an exception.
-
-Point must be in the same line as when `bc-parse-line' was called.
-
-Uses free variables `comment-p', `comm-range-beg' and `comm-range-end'."
-  (`
-   (if (or (not comment-p)
-	   (and comm-range-beg
-		(or (beginning-of-line) 1)
-		(<= comm-range-beg (point))
-		(<= (point) comm-range-end)))
-		 nil
-	       (throw (, catch-tag) (, exception)))))
-
-;;;;======================================================================
-(defun bc-find-room (lines-needed code-width max-code-width 
-				  first-line last-line
-				  &optional comm-range-beg comm-range-end
-				  lim-top)
-  "Finds available space for right-margin comments in the neighborhood
-of 'first-line'.
-
-The function tries to expand the range of lines from FIRST-LINE to
-LAST-LINE to include LINES-NEEDED lines such that the widths of
-those lines are all less than or equal MAX-CODE-WIDTH.  LAST-LINE
-may be nil to indicate that no range has been acquired yet.
-
-If successful, function returns \(first-line last-line code-width\), where
-`first-line' and `last-line' indicate the new range, and `code-width'
-indicates the width of the widest line of code in the range.
-
-If the search area contains a comment that is currently being
-formatted, we don't want this to be mistaken as being in the way.  
-COMM-RANGE-BEG COMM-RANGE-END must be supplied to indicate where the
-comment currently lies.  Both are buffer positions of beginnings of
-lines.
-
-If there is not enough room (because of buffer limits, wide code, or
-adjacent comments), function returns ('failure reason lines-avail
-first-line code-width), where 'lines-avail' is a count of how many
-lines did fit."
-
-  (let ((num-lines (if last-line (bc-count-lines-1 first-line last-line) 0))
-	(new-first first-line)
-	(new-last last-line)
-	result
-	code-width-this-line code-end-pos no-more-down
-	comment-p 
-;;;	(no-more-up nil) current-line
-	)
-
-    (setq lim-top (or lim-top (point-min)))
-    (save-restriction
-      (setq
-       result					;==============================
-       (catch 'failure				; If no range exists yet,
-	 (goto-char first-line)			; examine the first line.
-	 (if last-line nil			;==============================
-	   (setq comment-p (bc-oparse-line 'code-end-pos))
-	   (bc-check-adj-comment 'failure 'comment-on-first-line)
-	   (if (bobp) nil
-	     (forward-line -1)			; Make sure there is a
-	     (setq comment-p (bc-oparse-line))	; comment-free line above.
-	     (bc-check-adj-comment 'failure 'comment-above))
-	   (goto-char first-line)
-	   (if (eobp) nil
-	     (forward-line 1)
-	     (setq comment-p (bc-oparse-line))
-	     (bc-check-adj-comment 'failure 'comment-below))
-	   (goto-char first-line)
-	   (setq code-width-this-line (bc-code-width-this-line))
-	   (if (> code-width-this-line max-code-width)
-	       (throw 'failure 'line-too-wide))
-	   (setq code-width (max code-width-this-line code-width))
-	   (setq num-lines 1)
-	   (setq new-last first-line))
-
-	 ;; There are three things that make us stop searching in a particular
-	 ;; direction: end-of-buffer, a line with too-wide code, or a line with
-	 ;; another comment. The last one is special because we must have an
-	 ;; extra line to separate that comment from the one being formatted.
-
-	 (setq
-	  no-more-down
-					;;===================================;;
-					;; First search downward to see if   ;;
-	  (catch 'no-more-down		;; there is enough space in that     ;;
-	    (goto-char new-last)	;; direction.			     ;;
-					;;===================================;;
-	    (while (< num-lines lines-needed)
-	      (save-excursion
-		(end-of-line)
-		(if (eobp) (throw 'no-more-down 'bottom-of-buffer)))
-
-	      (forward-line 1)
-	      (bc-oparse-line 'code-end-pos nil nil nil nil 
-			     'code-width-this-line)
-
-					; This check must be made before the
-					; next one because if we end up adding
-					; lines we need to know why so we can
-					; add them in the right place.
-	      (if (<= code-width-this-line max-code-width) nil
-		(throw 'no-more-down 'line-too-wide))
-
-	      (if (eobp) nil			; Make sure there is a
-		(forward-line 1)		; comment-free line below.
-		(setq comment-p (bc-oparse-line))
-		(bc-check-adj-comment 'no-more-down 'comment-below))
-
-	      (goto-char code-end-pos)
-	      (setq code-width (max code-width-this-line code-width))
-	      (beginning-of-line)
-	      (setq new-last (point))
-	      (setq num-lines (1+ num-lines)))))
-
-
-	 (if (or (= num-lines lines-needed)	;;=============================
-		 (eq no-more-down		;; If we still need more room,
-		     'bottom-of-buffer))	;; try looking up.
-	     nil				;;=============================
-;;;	   (setq
-;;;	    no-more-up
-	    (catch 'no-more-up 
-	      (goto-char new-first)
-	      (while (< num-lines lines-needed)
-		(if (or (<= new-first lim-top) (bobp))
-		    (progn
-		      (throw 'no-more-up 'top-reached)))
-		(forward-line -1)
-;;;		(setq current-line (point))
-
-		(bc-oparse-line 'code-end-pos nil nil nil nil 
-			       'code-width-this-line)
-;;;		(goto-char code-end-pos)
-;;;		(setq code-width-this-line (bc-code-width-this-line))
-		(if (<= code-width-this-line max-code-width) nil
-		  (throw 'no-more-up 'line-too-wide))
-
-		(if (bobp) nil
-		  (forward-line -1)
-		  (setq comment-p (bc-oparse-line))
-		  (bc-check-adj-comment 'no-more-up 'comment-before))
-		 
-		(goto-char code-end-pos)
-		(setq code-width (max code-width-this-line code-width))
-		(beginning-of-line)
-		(setq new-first (point))
-		(setq num-lines (1+ num-lines))) nil))
-
-	 (if (<= lines-needed num-lines) nil
-	   (throw 'failure no-more-down))
-;;;	      (if (or (not no-more-up) (eq no-more-up 'top-reached))
-;;;		  (throw 'failure no-more-down)	; Use reason at bottom.
-;;;	      (throw 'failure no-more-up)))
-	 ));; end setq result
-      ) ; end save-restriction
-    (if result
-	(list 'failure result num-lines new-first code-width)
-      (list new-first new-last code-width))
-    ) ; end let
-  )
-
-;;;;======================================================================
-;;;_   o Filling
-;;;_    | bc-squeeze-buffer
-(defun bc-squeeze-buffer (narrow current-column max-width)
-  "Adjust the fill-width of the buffer so the text is as close to a 
-rectangular block as possible, and optionally narrow or widen the 
-rectangle so that the block becomes one line more or less than before.
-
-A zero NARROW argument causes only rectangular blocking.  Negative
-values cause the fill-column to be increased to make the text occupy
-one less line.  Positive values cause the fill-column to be reduced,
-and, if the text was initially rectangular-blocked, the text will
-subsequently occupy one more line, otherwise it will only be
-rectangular-blocked.
-
-CURRENT-COLUMN is the column in the code buffer to which the text in
-the scratch buffer is currently fit.  This means that the text in the
-scratch buffer is filled to \(- bc-G-rm-minus-stuff CURRENT-COLUMN\).
-
-Returns \(column height\).
-
-Throws to 'failure if narrowing or widening cannot be done within
-allowable margins."
-
- ; Note: calling functions depend on this function to either modify the buffer
- ; or throw an exception. If this function were to decide that it must leave
- ; the buffer as is, but return without throwing, a calling function will
- ; probably get stuck in an infinite loop.
-
-  (let (height orig-height 
-	width old-width
-	new-height
-	(just-blocking-p nil)
-	fill-width fill-next-width
-	at-max-width 
-;;;	fill-lines widest-is-one current-width
-	)
-
-    (setq fill-column (- bc-G-rm-minus-stuff current-column))
-    (bc-query-fill)
-    (setq ;;; current-width bc-fb-width
-	  width bc-fb-width
-	  height bc-fb-lines
-	  fill-next-width bc-fb-next-width
-	  orig-height bc-fb-lines
-	  new-height bc-fb-lines
-	  old-width bc-fb-width)		; Can't use forward-word
-						; because `fill-region' won't
-;;;    (goto-char (point-min))			; break on characters like `-',
-;;;    (skip-chars-forward "^ \t\n")		; thus we define a `word' as
-;;;    (skip-chars-forward " \t\n")		; something delimited by
-;;;    (cond					; whitespace.
-;;;	((eobp)
-;;;	 (goto-char (point-min))		; This comment is only one
-;;;	 (skip-chars-forward "^ \t\n")		; word, so it can't be widened
-;;;	 (setq width (current-column))		; or narrowed.
-;;;	 (setq new-height 1)
-;;;	 )
-
-    (cond					; If widening, set the
-     ((< narrow 0)				; fill-column progressively
-      (while (and (= new-height height)		; wider and wider until the
-		  (not at-max-width))		; height decreases, then we are
-	(if (and (< fill-next-width max-width)	; done.
-		 (not (= 1 height)))
-	    (setq fill-column fill-next-width)
-	  (setq fill-column max-width)		; If we reach full-page width,
-	  (setq at-max-width t))		; don't require rectangular
-						; blocking.
-	(bc-query-fill)
-	(setq fill-width bc-fb-width
-	      new-height bc-fb-lines
-	      fill-next-width bc-fb-next-width));; end while
-      (if (and at-max-width (= fill-width old-width))
-	  (throw 'failure "No room to widen."))
-      (setq width
-	    (if at-max-width max-width fill-width))
-      )
-
-     (t						; If narrowing or blocking, set
-      (while (and (= new-height height)		; the fill-column progressively
-		  (not bc-fb-widest-is-one))	; narrower until the height
-	(if (< width 1)				; increases.
-	    (throw 'failure "No room to narrow"))
-	(setq fill-column (1- width))
-	(setq old-width width)
-	(bc-query-fill)
-	(setq width bc-fb-width)
-	(setq new-height bc-fb-lines)
-	(setq fill-next-width bc-fb-next-width))
-
-						; At this point, we have either
-      (if (and bc-fb-widest-is-one		; succeeded in increasing the
-	       (not (= narrow 0)))		; number of lines or gotten
-	  (setq fill-next-width width))		; stuck on a long one-word
-						; line.
-
-      (if (or (= narrow 0))			; If we were asked to narrow,
-;;;(not (= current-width old-width)))		; and the text was already
-	  (setq just-blocking-p t)		; blocked, then we need
-	(setq height new-height)		; continue narrowing until the
-	(while (and (= new-height height)	; height increases by one more.
-		    (not bc-fb-widest-is-one))
-	  (if (< width 1)
-	      (throw 'failure "No room to narrow."))
-	  (setq fill-column (1- width))
-	  (bc-query-fill)
-	  (setq width bc-fb-width)
-	  (setq new-height bc-fb-lines)
-	  (setq fill-next-width bc-fb-next-width)))
-
-						; Again, we have either
-						; succeeded in increasing the
-						; number of lines or gotten
-						; stuck on a long one-word
-      (setq fill-column				; line.
-	    (if just-blocking-p
-		(if (= orig-height new-height) width fill-next-width)
-	      (cond
-	       ((= new-height orig-height)
-		(throw 'failure "That is as narrow as it goes."))
-	       ((= new-height (1+ orig-height))
-		width)
-	       (t
-		fill-next-width))))
-
-      (bc-query-fill)
-      (if just-blocking-p nil
-	(if (= orig-height bc-fb-lines)
-	    (throw 'failure "No room to narrow...")))
-
-      (setq width bc-fb-width)
-      (setq new-height bc-fb-lines)
-      )
-     );; end cond
-    
-    (list (- bc-G-rm-minus-stuff width) new-height)
-    );; end let
-  )
-
-;;;;======================================================================
-;;;_    | bc-next-tab-stop
-(defun bc-next-tab-stop (direction column &optional maybe indent)
-  "Find the next tab stop to the right or left of COLUMN.
-DIRECTION should be either of the symbols `right' or `left'.  
-
-If COLUMN happens to already be at a tab stop, the return value can be
-controlled by the optional argument MAYBE.  If this is the symbol
-`maybe', then the same column is returned.  If it is nil or the symbol
-`force', the next tab stop in the appropriate direction is returned.
-
-The global variable `bc-G-tab-stops' will be used as the list of tab
-stops.  The optional argument INDENT can specify an additional tab
-stop.
-
-Returns nil if there is no stop in the desired direction."
-
-  (let (stop
-	(stoplist bc-G-tab-stops)
-	new-column delta thresh
-	(min-delta 9999)
-	)
-    (if (eq maybe 'force) (setq maybe nil))
-    (setq thresh (if maybe -1 0))
-
-    (if (or (not indent) (zerop indent)) nil	;; First check the optional
-      (setq delta (if (eq direction 'left)	;; stop. We do this here
-		      (- column indent)		;; because someday we may take
-		    (- indent column)))		;; advantage of the fact that
-      (if (< thresh delta)			;; STOPLIST is ordered.
-	  (setq new-column indent
-		min-delta delta)))
-
-    (while stoplist				;; Now check the stoplist.
-      (setq stop (bc-pop stoplist)		;; Someday the stoplist should
-	    delta (if (eq direction 'left)	;; probably be an arry and this
-		      (- column stop)		;; should do a binary search.
-		    (- stop column)))
-      (if (and (< thresh delta)
-	       (< delta min-delta)
-	       (< stop bc-G-rm-minus-stuff)
-	       (not (zerop stop)))
-	  (setq new-column stop min-delta delta)))
-    new-column))
-
-;;;;======================================================================
-;;;_    | bc-tab-buffer
-(defun bc-tab-buffer (narrow current-column &optional indent) 
-
-  "Fill `bc-G-scratch-buffer' to the next nearest tab stop.  Tab stops
-are those of the code buffer -- tab stops farther to the right mean
-fill the scratch buffer narrower.
-
-If NARROW is zero, do nothing if CURRENT-COLUMN is on a tab stop.
-Otherwise fill to next tab stop to right.
-
-If NARROW is positive, fill to next tab stop to right.  If negative,
-fill to next tab stop to left.
-
-Optional INDENT can specify an additional tab stop.
-
-Returns \(column height\)."
-
-  (let* (;;(mod-delta (- (mod current-column bc-tab-spacing)))
-	 ;;(on-tab-stop (or (= current-column 1)
-	;;		  (= mod-delta 0)))
-;	 (stops (append tab-stops (list indent)))
-	 new-column new-height
-;;;	 (prev-stop-delta 9999) stop-column stop-delta
-	 )
-    
-    (cond
-     ((< narrow 0)				; Widening the comment.
-
-      (setq new-column (bc-next-tab-stop 'left current-column 'force indent))
-;       (while stops
-; 	(setq stop-column (car stops)
-; 	      stops (cdr stops))
-; 	(if (not stop-column) nil
-; 	  (setq stop-delta (- current-column stop-column))	; Search for
-; 	  (if (and (< 0 stop-delta)				; the nearest
-; 		   (< stop-delta prev-stop-delta)		; stop to the
-; 		   (not (= stop-column 0)))			; left.
-; 	      (progn (setq new-column stop-column)
-; 		     (setq prev-stop-delta stop-delta)))))
-
-      (if (not new-column) 
-	  (throw 'failure "Can't widen that."))
-      )
-
-     (t					; Narrowing the comment.
-      (setq new-column (bc-next-tab-stop 'right current-column
-					 (if (zerop narrow) 'maybe 'force)
-					 indent))
-
-;       (while stops
-; 	(setq stop-column (car stops)
-; 	      stops (cdr stops))				; Search for
-; 	(if (not stop-column) nil				; the nearest
-; 	  (setq stop-delta (- stop-column current-column))	; stop to the
-; 	  (if (and (or (and (zerop narrow) (zerop stop-delta))	; right.
-; 		       (< 0 stop-delta))
-; 		   (< stop-delta prev-stop-delta)
-; 		   (not (= stop-column 0)))
-; 	      (setq new-column stop-column
-; 		    prev-stop-delta stop-delta))))
-      (if (not new-column)
-	  (throw 'failure "Can't narrow that."))
-      )
-     ) ; cond
-
-     (cond
-      ((< narrow 0)				; Widening
-       (if (<= current-column 1)
-	   (throw 'failure "Can't widen that.")))
-      ((<= 0 narrow)				; Narrowing
-       (if (< bc-G-rm-minus-stuff new-column)
-	   (throw 'failure "Can't narrow that."))))
-
-;     (setq fill-column (- bc-G-rm-minus-stuff current-column))
-;     (bc-query-fill)
-;     (setq orig-height bc-fb-lines)
-
-    (setq new-column (max 1 new-column))	; Don't use column zero.
-    (setq fill-column (- bc-G-rm-minus-stuff new-column))
-    (bc-query-fill)
-    (setq new-height bc-fb-lines)
-
-    (if (and (<= 0 narrow) (< bc-G-rm-minus-stuff (+ new-column bc-fb-width)))
-	(throw 'failure "Can't narrow that"))
-    
-    (list new-column new-height)))
-
-;;;;======================================================================
-;;;_    | bc-query-fill
-(defun bc-query-fill ()
-  "Retrieve fill information for current value of `fill-column'.
-If `bc-fill-buffer' has been called with the same value of
-`fill-column' on the same text before, the shape information will be
-in `bc-fill-buffer-cache'.  If not, `bc-fill-buffer' is called to
-fill the buffer and compute shape info.
-
-If `bc-fb-debug' is non-nil, always call `bc-fill-buffer'.
-
-Sets global variables: `bc-fb-lines', `bc-fb-width', `bc-fb-widest-is-one',
-`bc-fb-next-width'."
-
-  (let (fill-info 
-	(column fill-column)
-	)
-    (if (not bc-fill-buffer-cache)
-	(setq bc-fill-buffer-cache (make-vector
-				    (* 2 bc-G-rm-minus-stuff) nil)))
-    (setq fill-info (aref bc-fill-buffer-cache column))
-    (if (and fill-info (not bc-fb-debug))
-	(progn
-	  (setq bc-fb-lines (nth 0 fill-info)
-		bc-fb-width (nth 1 fill-info)
-		bc-fb-widest-is-one (nth 2 fill-info)
-		bc-fb-next-width (nth 3 fill-info)))
-      (bc-fill-buffer)
-      (setq fill-info
-	    (list bc-fb-lines bc-fb-width bc-fb-widest-is-one
-		  bc-fb-next-width))
-      (aset bc-fill-buffer-cache column fill-info)
-      (setq column (1- column))
-      (while (<= bc-fb-width column)	; If the result was actually narrower
-	(aset bc-fill-buffer-cache	; than fill-column, set all array
-	      column fill-info)		; elements in between because they will
-	(setq column (1- column))))))	; have the same results.
-
-;;;;======================================================================
-;;;_    | bc-prepare-text
-(defun bc-prepare-text ()
-  "Clean up the text in the scratch buffer in preparation for
-formatting.  This is stuff that could be done in `bc-fill-buffer', but
-it only needs to be done once, so doing it here streamlines multiple
-calls to `bc-fill-buffer'."
-
-  (save-excursion					; tabs in the text will
-    (set-buffer bc-G-scratch-buffer)			; screw things up when
-							; its copied back to
-    (subst-char-in-region 1 (point-max) ?\t ?\  )	; the code
-
-    (goto-char 1)					; Delete all whitespace
-    (skip-chars-forward " \t\n")			; at beginning of
-    (delete-region 1 (point))				; buffer.
-
-    (while (not (eobp))
-      (forward-paragraph)				; Delete paragraph
-      (insert ?\n)					; indentations and
-      (delete-blank-lines)				; preserve only a
-      (skip-chars-forward " \t\n\r")			; single blank line
-      (delete-horizontal-space))			; between paragraphs.
-
-    (goto-char (point-max))				; Make sure the scratch
-    (insert ?\n)					; buffer ends with a
-    (goto-char (point-max))				; single newline.
-    (delete-blank-lines)
-    ))
-
-;;;;======================================================================
-;;;_    | bc-fill-buffer-maybe
-(defun bc-fill-buffer-maybe ()
-  (if (and bc-fb-prev-fill-column (= bc-fb-prev-fill-column fill-column))
-      nil
-    (bc-fill-buffer)))
-
-;;;;======================================================================
-;;;_    | bc-fill-buffer
-(defun bc-fill-buffer ()
-  "Fill each of the paragraphs in the buffer.
-Addapted from `fill-region' from fill.el
-
-This does a minimum of cleanup, so usually `bc-prepare-text' should be
-called once on the text before the first call to this function.  Only
-one call to that function is necessary prior to multiple calls to this
-function. 
-
-Sets global vars: `bc-fb-lines', `bc-fb-width', `bc-fb-widest-is-one',
-`bc-fb-next-width', `bc-fill-count', `bc-fb-prev-fill-column'.
-
-`bc-fb-next-width' is set with the next value of fill-column greater
-than the current that would cause the region to be filled differently
-\(i.e. wider\).  This is found by looking at the width of each
-resulting line, plus the length of the first word on the next line.
-The minimum of these sums is the value of next-width."  
-
-  (setq bc-fill-count (1+ bc-fill-count)
-	bc-fb-prev-fill-column fill-column
-
-	bc-fb-lines 0
-	bc-fb-width 0
-	bc-fb-widest-is-one nil
-	bc-fb-next-width 65535)
-
-  (goto-char (point-min))
-  (while (not (eobp))
-    (let ((initial (point))
-	  (end (progn
-		 (forward-paragraph 1) (point))))
-      (forward-paragraph -1)				; Preserve the blank
-      (skip-chars-forward " \t\n")			; line between
-      (if (< (point) initial)				; paragraphs
-	  (goto-char end)
-	
-;;; fill-paragraph
-	(save-restriction 
-	  (narrow-to-region (point) end)
-	  
-	  (subst-char-in-region (point-min)		; Change all newlines
-				(point-max) ?\n ?\ )	; to spaces.
-	    
-	  (goto-char (point-min))			; Flush excess spaces.
-	  (while (re-search-forward "   *" nil t)
-	    (delete-region
-	     (+ (match-beginning 0) 1)
-	     (match-end 0)))
-	  (goto-char (point-max))
-	  (delete-horizontal-space)
-	  (insert " ")
-	  (goto-char (point-min))
-	    
-	  ;; This is the actual filling loop.
-	  (let (linebeg)
-	    (while (not (eobp))
-	      (setq linebeg (point))
-	      (move-to-column (1+ fill-column))
-	      ;; Move back to start of word.
-	      (skip-chars-backward "^ \n" linebeg)
-
-	      (if (save-excursion			; Keep at least one
-		    (skip-chars-backward " " linebeg)	; word even if fill
-		    (bolp))				; prefix exceeds
-		  (progn				; margin.
-		    (beginning-of-line)
-		    (delete-horizontal-space)
-		    (skip-chars-forward "^ \n"))
-							; Normally, move back
-							; over the single space
-		(forward-char -1))			; between the words.
-	
-	      (skip-chars-backward " ")			; Check for widest
-	      (cond					; line. If this is,
-	       ((= bc-fb-width (current-column))	; also check if it is
-		(if (save-excursion			; unbreakable.
-		    (skip-chars-backward "^ " linebeg)
-		    (bolp))
-		    (setq bc-fb-widest-is-one t)))
-	       ((<= bc-fb-width (current-column))
-		(setq bc-fb-widest-is-one 
-		      (save-excursion
-			(skip-chars-backward "^ " linebeg) (bolp)))
-		(setq bc-fb-width (current-column))))
-	      
-	      (save-excursion				; Find out what
-		(skip-chars-forward " " (point-max))	; fill-column would
-		(if (eobp)				; have to be to make
-		    nil					; this line wider.
-		  (skip-chars-forward "^ " (point-max))
-		  (setq bc-fb-next-width (min bc-fb-next-width
-					      (current-column)))))
-
-	      (insert ?\n)				; Replace all
-	      (setq bc-fb-lines (1+ bc-fb-lines))	; whitespace here with
-	      (delete-horizontal-space))		; one newline.
-
-	    );; end let (linebeg)
-  
-;;; end fill-paragraph
-	  
-	  (setq bc-fb-lines (1+ bc-fb-lines)))
-	)));; end while
-  (setq bc-fb-lines (1- bc-fb-lines));; end let
-  bc-fb-lines) 
-
-;
-;;;_   o Scanning
-;;;_    | bc-find-comment
-(defun bc-find-comment (&optional below-only)
-  "Finds the number of lines adjacent to the current one which contain
-right- margin comments.
-
-Returns (comment-top comment-bottom no-code) where the first two
-values each indicate the character position of the beginning of that
-line.  `no-code' is non-nil if no line of the comment contains any
-code to its left, i.e., this is not a right-margin-comment.
-
-If BELOW-ONLY is non-nil, the current line will be considered the top
-line of the comment.
-
-Comments which start in column 1, and comments which span more than one line
-are not considered to be right-margin comments.
-
-Throws to 'failure if no block comment found."
-
-  (let  (
-	 first-line last-line
-	 range-bottom
-;;;	 code-end-pos com-delim-start-pos
-;;;	 com-body-start-pos com-body-end-pos 
-;;;	 com-delim-end-pos
-	 no-code-this-line (no-code t)
-;;;	 range-top top-is-comment bottom-is-comment 
-	 )
-
-    (if selective-display				; Is an outline mode
-	(save-excursion					; on?
-	  (end-of-line)
-	  (setq range-bottom (point))
-	  (beginning-of-line)
-	  (if (search-forward "\C-M" range-bottom 'noerror)
-	      (throw 'failure
-		     "Can't format comments inside closed outline body."))))
-
-    (if (not (bc-oparse-line nil nil nil nil nil nil	; Is there a comment on
-			    'no-code-this-line))	; this line?
-
-	(save-excursion
-	  (beginning-of-line)
-	  (if (looking-at bc-comment-looking-at-regexp)
-	      (throw 'failure 
-"No block comment found. (Because the comment starts at the left margin.)")
-	    (throw 'failure "No block comment found."))))
-
-    (setq no-code (and no-code no-code-this-line))
-
-    (save-excursion
-      (if below-only
-	  (setq first-line (point))	; find the first line of this  	       
-	(while (and			; block			       	       
-		(setq first-line (point))
-		(= (forward-line -1) 0)	; watch for beginning of buffer
-		(bc-oparse-line nil nil nil nil nil nil 'no-code-this-line)
-		(or (setq no-code (and no-code no-code-this-line)) 1)
-		)))
-      (goto-char first-line)
-      (beginning-of-line)		; find the beginning of that line
-      (setq first-line (point)))
-
-    (save-excursion
-      (while (and			; find the last line of this block
-	      (setq last-line (point))
-	      (forward-line 1)
-	      (not (eobp))		; watch for end of buffer
-	      (bc-oparse-line nil nil nil nil nil nil 'no-code-this-line)
-	      (or (setq no-code (and no-code no-code-this-line)) 1)
-	      ))
-      (goto-char last-line)
-      (beginning-of-line)		; find the beginning of that line
-      (setq last-line (point)))
-
-    (list first-line last-line no-code)))	; return range
-
-;;;;======================================================================
-;;;_    | bc-find-just-range
-(defun bc-find-just-range ()
-  "Finds the number of lines adjacent to the current one which do not
-contain right-margin comments.  
-
-Returns (range-top . range-bottom), where each value indicates the
-character position of the beginning of that line.  Note that
-range-bottom is really the beginning of the line just below the actual
-range.  This is so that if you narrow-to-region on this range, you
-will have all the allowable lines.
-
-Comments which start in column 1, and comments which span more than
-one line are not considered to be right-margin comments.
-
-Throws to 'failure if either the current line, the line above, or the
-line below contains a block comment."
-
-  (let  (
-;;;	 first-line last-line this-line
-	 range-top range-bottom
-	 top-is-comment 
-;;;	 com-body-start-pos com-body-end-pos 
-;;;	 com-delim-end-pos
-;;;	 bottom-is-comment code-end-pos com-delim-start-pos 
-	 )
-    
-    (if (bc-oparse-line)	  
-	(throw 'failure "No room."))	; Already a comment on this line.
-
-    (save-excursion
-      (while (and
-	      (setq range-top (point))	; watch for beginning
-	      (= (forward-line -1) 0)	; of buffer	       
-	      (not (setq top-is-comment (bc-oparse-line)))))
-      (goto-char range-top)
-      (if top-is-comment (forward-line 1))
-      (beginning-of-line)		; find the beginning of that line
-      (setq range-top (point)))
-
-    ;;      (if (= range-top this-line) (throw 'failure "No room."))
-
-    (save-excursion			; find the top line of the
-      (while (and			; range below containing a
-	      (setq range-bottom (point)) ; rt-margin comment       
-	      (forward-line 1)
-	      (not (eobp))		; watch for end
-	      (not (bc-oparse-line)))) ; of buffer    
-      (goto-char range-bottom)
-      (beginning-of-line)		; find the beginning of that line
-      (setq range-bottom (point)))
-
-    (if (<= range-bottom range-top) (throw 'failure "No room."))
-
-    (cons range-top range-bottom)))	; return list
-
-;;;;======================================================================
-;;;_    | bc-find-range
-(defun bc-find-range ()
-  "Finds the number of lines adjacent to the current one which contain right-
-margin comments.  Additionally, the function finds the local range of lines
-which contain no other right-margin comments.
-
-Returns ((comment-top . comment-bottom) . (range-top . range-bottom)),
-where each value indicates the character position of the beginning of
-that line.  Note that range-bottom is really the beginning of the line
-just below the actual range.  This is so that if you narrow-to-region
-on this range, you will have all the allowable lines.
-
-Comments which start in column 1, and comments which span more than one line
-are not considered to be right-margin comments.
-
-Throws to 'failure if no block comment found."
-
-  (let (
-;;;	(current-point (point))
-	first-line last-line
-	range-top range-bottom
-	top-is-comment 
-;;;	bol bottom-is-comment
-	)
-
-    (if (not (bc-oparse-line))		     ; Is there a comment on this line?
-	(throw 'failure "No block comment found."))
-
-    (save-excursion				; Find the first line of this
-      (while (and				; block.
-	      (setq first-line (point))
-	      (= (forward-line -1) 0)		; Watch for beginning of buffer.
-	      (bc-oparse-line)))
-      (goto-char first-line)			; Find the beginning of that
-      (beginning-of-line)			; line.
-      (setq first-line (point))
-						; Find the last line of the
-      (while (and				; range above containing a
-	      (setq range-top (point))		; rt-margin comment.
-
-	      (= (forward-line -1) 0)		; Watch for beginning of buffer.
-	      (not (setq top-is-comment (bc-oparse-line)))))
-      (goto-char range-top)
-      (if top-is-comment (forward-line 1))
-      (beginning-of-line)			; Find the beginning of that
-      (setq range-top (point)))			; line.
-
-    (save-excursion
-      (while (and				; Find the last line of this
-	      (setq last-line (point))		; block.
-	      (forward-line 1)
-	      (not (eobp))			; Watch for end of buffer.
-	      (bc-oparse-line)))
-      (goto-char last-line)			; Find the beginning of that
-      (beginning-of-line)			; line.
-      (setq last-line (point))
-						; Find the top line of the
-      (while (and				; range below containing a
-	      (setq range-bottom (point))	; rt-margin comment.
-	      (forward-line 1)
-	      (not (eobp))			; Watch for end of buffer.
-	      (not (bc-oparse-line))))
-      (goto-char range-bottom)
-      (beginning-of-line)			; Find the beginning of that
-      (setq range-bottom (point)))		; line.
-
-    (cons (cons first-line last-line)
-	  (cons range-top range-bottom))))	; Return list.
-
-;;;;======================================================================
-;;;_    | bc-analyze-line
-(defmacro bc-analyze-line ()
-  (`
-   (save-excursion 
-     (bc-oparse-line nil 'start-delim-b 'body-b 'body-e 'end-delim-e)
-     (goto-char body-b)
-     (skip-chars-backward " \t")
-     (setq start-delim-e (point))
-     (goto-char body-e)
-     (skip-chars-forward " \t" end-delim-e)
-     (setq end-delim-b (point)))))
-
-;;;;======================================================================
-;;;_    | bc-analyze-banner
-(defmacro bc-analyze-banner ()
-  "Analyze comment on current line to see if it is a banner.
-Returns the banner character if so, nil if not.
-
-`bc-analyze-line' must be called on the current line first."
-  (`
-   (save-excursion 
-     (cond
-      ((or				 ; Soft borders made of delimiter chars
-	(= start-delim-e end-delim-b)	 ; /**/ 
-	(progn (goto-char start-delim-e) ; /*****/
-	       (looking-at "[ \t]*$")))	 ; ;;;;;;;;;;
-       (list (char-after (1- start-delim-e)) nil))
-    
-					 ; These are not banners because of
-      ((or (/= start-delim-e body-b)	 ; spaces:
-	   (/= body-e end-delim-b))	 ; ;;;;; ======
-       nil)				 ; /*======= */
-
-					 ; Hard borders made of other chars
-      ((progn				 ; /*======*/
-	 (goto-char body-b)		 ; ;;=======
-	 (skip-chars-forward 
-	  (buffer-substring body-b (1+ body-b))
-	  (save-excursion (end-of-line) (point)))
-	 (= (point) body-e))
-       (list (char-after body-b) 'hard))
-    
-      (t nil)))				 ; Not a banner after all.
-   ))
-
-;;;;======================================================================
-;;;_    | bc-save-delims
-(defmacro bc-save-delims ()
-  (`
-   (let ((start-delim-string (buffer-substring start-delim-b body-b))
-	 (end-delim-string (buffer-substring body-e end-delim-e))
-	 )
-     (setq 
-      bc-saved-delims (cons 
-		       (list (progn (goto-char start-delim-b) (current-column))
-			     start-delim-string end-delim-string)
-		       bc-saved-delims))
-     (set-text-properties 0 (length start-delim-string) nil start-delim-string)
-     (set-text-properties 0 (length end-delim-string) nil end-delim-string)
-     )))
-
-;;;;======================================================================
-;;;_    | bc-save-banners
-(defmacro bc-save-banners ()
-  (`
-   (let ((start-delim-string (buffer-substring start-delim-b body-e))
-	 (end-delim-string (buffer-substring body-e end-delim-e))
-	 )
-     (setq 
-      bc-saved-delims (cons 
-		       (list (progn (goto-char start-delim-b) (current-column))
-			     start-delim-string end-delim-string)
-		       bc-saved-delims))
-     (set-text-properties 0 (length start-delim-string) nil start-delim-string)
-     (set-text-properties 0 (length end-delim-string) nil end-delim-string)
-     )))
-
-;;;;======================================================================
-;;;_    | bc-analyze-comment
-(defun bc-analyze-comment (start end &optional save-delims)
-  "Examine the right-margin comment on the lines between START and END.
-Determines the effective comment delimiters.  For example, in Lisp the
-comment-start string is a single semicolon, but a comment may start
-with more than one.  If so we want the effective comment-start string
-to have that many semis.
-
-This function also determines whether the comment has a banner.
-
-Returns \(new-start new-end width new-first new-last column\), where
-`new-start' and `new-end' indicate the range of the comment minus
-banner and empty lines.  `width' indicates the width of the comment,
-defined to be maximum of the widths of the text \(excluding
-delimiters\) on each line.  `new-first' and `new-last' indicate the
-range of the comment minus banner lines.  `column' indicates the
-starting column of the comment, as determined by the start delimiter
-of the first text line of the comment.
-
-If SAVE-DELIMS is non-nil, delimiters and their column positions are
-recorded in the global variable `bc-saved-delims'.  The format is a
-list of elements, each recording delimiter information for one line.
-The first element of the list corresponds to START.  
-
-Two types of elements are used: one for banners and one for the rest
-of the comment.  For banners, each element has the form \(column
-banner\),where `column' indicates the column in which the start
-delimiter begins on that line, and `banner' contains all of the
-comment on that line, including delimiters.  
-
-For the rest of the comment, each element has the format \(column
-start end\), where `start' and `end' are the effective delimiters,
-including whitespace.
-
-Sets global variables: `bc-effective-start', `bc-effective-end',
-`bc-G-rm-minus-stuff', `bc-banner-top-border', `bc-banner-top-space',
-`bc-banner-bottom-space', `bc-banner-bottom-border', `bc-extra-lines', 
-`bc-saved-delims', `bc-delims-length'."
-
-  (let (start-delim-b 
-	start-delim-e
-	body-b body-e
-	end-delim-b end-delim-e
-	new-start new-end 
-	(new-first start)
-	(new-last end)
-	this-width (max-width 0)
-	column first-line-column
-	)
-    (save-excursion
-      (setq bc-banner-top-space 0
-	    bc-banner-bottom-space 0)
-      
-      (goto-char start)
-      (bc-analyze-line)
-      (setq first-line-column (save-excursion
-				(goto-char start-delim-b)
-				(current-column))	; First decide if this
-	    bc-banner-top-border (bc-analyze-banner))	; is a banner comment.
-      (if (not bc-banner-top-border) nil
-	(forward-line 1)				
-	(setq new-first (point))			; If so, check for
-	(if (< end (point)) nil				; initial blank line.
-	  (bc-oparse-line nil nil 'body-b 'body-e)
-	  (if (/= body-b body-e) nil
-	    (setq bc-banner-top-space 1)
-	    (forward-line 1))))
-      
-      (bc-oparse-line nil nil 'body-b 'body-e)
-      (while (and (<= (point) end) (= body-b body-e))	; Skip blank lines.
-	(forward-line 1)
-	(bc-oparse-line nil nil 'body-b 'body-e))
-      (setq new-start (min (point) end))
-      
-      (if (not (bc-oparse-line nil 'start-delim-b 'body-b))
-	  (progn
-	    (setq new-end end
-		  new-last end				; If we fell off the
-		  max-width 0				; end of the comment,
-		  bc-effective-start bc-comment-start	; then it contained
-		  bc-effective-end bc-comment-end	; only blank lines.
-		  bc-banner-bottom-border nil
-		  bc-banner-bottom-space 0
-		  column first-line-column
-		)					; If top border was
-	    (if (nth 1 bc-banner-top-border) nil	; soft, then it
-	      (setq bc-banner-top-border nil))		; probably wasn't a
-	    (goto-char end))				; banner after all.
-
-	(bc-analyze-line)				; Figure out the
-	(setq						; effective start and
-	 bc-effective-start (buffer-substring		; end delimiters.
-			     start-delim-b body-b) 
-	 bc-effective-end (if (and (equal bc-comment-end "")
-				   (not bc-faux-comment-end)) ""
-			    (save-excursion
-			      (goto-char body-b)
-			      (skip-chars-backward "\t ")
-			      (concat (buffer-substring (point) body-b)
-				      (buffer-substring
-				       end-delim-b  end-delim-e)))))
-	(if (string-match "^[ \t]+$" bc-effective-end)
-	    (setq bc-effective-end ""))
-
-	(goto-char start-delim-b)                   
-	(setq column (current-column))
-
-	(goto-char end)					; See if bottom line is
-	(bc-analyze-line)				; a banner border.
-	(if (not (setq bc-banner-bottom-border (bc-analyze-banner)))
-	    (setq new-last (point))
-	  (forward-line -1)
-	  (setq new-last (point)		; If the comment was entirely
-						; empty, new-start will have
-		new-start			; snagged on the bottom banner.
-		(min new-start new-last))	; This isn't comment text,
-						; though, so back it up.
-	  (if (< (point) new-start) nil
-	    (bc-oparse-line nil nil 'body-b 'body-e)
-	    (if (/= body-b body-e) nil			; If so, is there a
-	      (setq bc-banner-bottom-space 1)		; final blank line?
-	      (forward-line -1))))
-	
-	(bc-oparse-line nil nil 'body-b 'body-e)
-	(while (and (< new-start (point)) (= body-b body-e))
-	  (forward-line -1)
-	  (bc-oparse-line nil nil 'body-b 'body-e))	; Skip blank lines at
-	(setq new-end (max (point) new-start))		; bottom.
-
-	);; end (if (not (bc-oparse-line)
-      
-      (setq bc-extra-lines				; Scan the comment
-	    (+ (if bc-banner-top-border 2 0)		; bottom-up, so that
-	       bc-banner-top-space			; saved-delims will be
-	       bc-banner-bottom-space))			; in order.
-      
-      (if (not save-delims) nil				; Save delims in the
-	(setq bc-saved-delims nil)			; bottom banner border.
-	(goto-char end)
-	(while (< new-end (point))
-	  (bc-oparse-line nil 'start-delim-b 'body-b 'body-e 'end-delim-e)
-	  (bc-save-banners)
-	  (forward-line -1)))
-
-      (while						; Figure out comment
-	  (and						; width.
-	   (<= new-start (point))
-	   (progn
-	     (bc-oparse-line nil 'start-delim-b 'body-b 'body-e 'end-delim-e)
-	     (setq this-width (- (progn (goto-char body-e) (current-column))
-				 (progn (goto-char body-b) (current-column))))
-	     (if (< this-width max-width) nil
-	       (setq max-width this-width))
-	     (if save-delims (bc-save-delims))
-	     (= 0 (forward-line -1)))))
-
-
-;;;	 (and (= new-start new-end)			; If text is only one
-;;;	      (setq					; line, we mustn't use
-;;;	       nonwhite					; all the trailing
-;;;	       (string-match "[^ \t]" bc-effective-end)); whitespace as part of
-;;;	      (setq					; the end delim.
-;;;	       bc-effective-end
-;;;	       (concat " " (substring bc-effective-end nonwhite))))
-;;;
-;       (while (and save-delims (<= start (point)))
-; 	(bc-oparse-line nil 'start-delim-b 'body-b
-; 		       'body-e 'end-delim-e)
-; 	(bc-save-banners)
-; 	(forward-line -1))
-
-      (if (and save-delims		; Save delims in the top banner border.
-
-					; Make sure the code to figure out the
-	       (< (point) new-start))	; comment width didn't bump into the
-					; top of the buffer.
-	  (while (and (<= start (point))
-		      (progn	       
-			(bc-oparse-line nil 'start-delim-b 'body-b
-				       'body-e 'end-delim-e)
-			(bc-save-banners)
-			(= 0 (forward-line -1))))))	; Stop if we bump into
-							; top of buffer.
-
-      
-      (setq bc-delims-length (+ (length bc-effective-start)
-				(length bc-effective-end))
-	    bc-G-rm-minus-stuff (- bc-right-margin bc-delims-length))
-      
-      (list new-start new-end max-width new-first new-last column)
-      )))
-
-;;;;======================================================================
-;;;_    | bc-default-analysis-vars
-(defun bc-default-analysis-vars ()
-
-  "Initialize global variables set by `bc-analyze-comment' to defaults
-for formatting commands that don't call that function."
-
-  (setq bc-banner-top-border nil
-	bc-banner-top-space 0
-	bc-banner-bottom-space 0
-	bc-extra-lines 0
-	bc-effective-start bc-comment-start
-	bc-effective-end bc-comment-end
-	bc-G-rm-minus-stuff (- bc-right-margin (length bc-effective-start)
-			     (length bc-effective-end))
-	))
-
-;;;;======================================================================
-;;;_    | bc-parse-line
-(defun bc-parse-line (&rest args)
-  (error "The function bc-parse-line is just a placeholder right now."))
-
-(defun bc-oparse-line (&optional bpl-code-end bpl-delimiter-start 
-				 bpl-body-start bpl-body-end 
-				 bpl-delimiter-end
-				 bpl-code-width bpl-no-code)
-  "Parse the current line to find buffer positions of beginnings and
-endings of code, comment and delimiters.
-
-ARGS should all be symbols, values will be set into them  Pass nil for
-args you don't need.
-
-Returns non-nil if line contains a block-comment."
-
-  ;; The bpl- and bpli- prefixes are necessary because this function
-  ;; `set's values into arguments (which must be symbols).  All the
-  ;; local variables must have wierd names so as not to match any
-  ;; symbols that the caller may pass.
-  ;; 
-  ;; This is horrible!  I will never do this again!  This should just
-  ;; return a list and let callers assign with `bc-msetq'
-
-  (save-excursion 
-    (let* (
-	   (bpli-eol (progn (end-of-line) (point)))
-	   (bpli-bol (progn (beginning-of-line) (point)))
-	   (bpli-line-info (assq bpli-bol bc-parse-line-cache))
-	   bpli-commentp bpli-danger
-	   bpli-code-end bpli-delim-start bpli-body-start
-	   bpli-body-end bpli-delim-end bpli-code-width bpli-no-code
-	   )
-      
-      (if bpli-line-info		; Cache hit? If not, scan the line.
-	  nil
-	(setq bpli-commentp
-	      (if (eolp)		; Is this a blank line?
-		  nil
-		(re-search-forward bc-comment-regexp bpli-eol 'move))
-
-	      ;; We won't match comments starting in column zero
-	      ;; because bc-comment-regexp must match one
-	      ;; character preceding the start-comment delimiter.
-	      ;; Therefore, we do not need to test for column zero.
-
-					; Add one because regexp matches one
-	      bpli-delim-start (and	; char before the delimiter.
-				bpli-commentp
-				(1+ (match-beginning 0)))
-	      bpli-body-start (and bpli-commentp (match-beginning 1))
-
-	      bpli-body-end
-	      (and
-	       bpli-commentp
-	       (progn
-		 (cond
-		  (bc-faux-comment-end
-		   (goto-char (match-end 0))
-		   (save-match-data
-		     (re-search-backward bc-faux-comment-end
-					 bpli-body-start t)))
-		  (t
-		   (goto-char (match-end 1))))
-		 (skip-chars-backward (char-to-string	     ; Might be extra
-				       (following-char)))    ; end delim chars
-		 (skip-chars-backward " \t")		     ; that got matched
-		 (max (point) (match-beginning 1))))	     ; by the .*
-
-	      bpli-delim-end (and bpli-commentp
-				  (progn
-				    (goto-char (match-end 0))
-				    (skip-chars-backward " \t")
-				    (max (point) bpli-body-end)))
-	      bpli-code-end (progn
-			      (if (not bpli-commentp) (end-of-line)
-				(goto-char (1+ (match-beginning 0))))
-			      (skip-chars-backward " \t")
-			      (if (and bc-start-first-char
-				       (eq (preceding-char)	; Check for
-					   bc-start-first-char)); code ending
-				  (setq bpli-danger t)		; in dangerous
-				(setq bpli-danger nil))		; characters.
-			      (point))
-	      bpli-code-width (if bpli-danger (1+ (current-column))
-				(max 1 (current-column)))
-
-	      bpli-no-code (= (current-column) 0)
-
-
-	      bpli-line-info (list bpli-bol bpli-delim-start bpli-body-start
-				   bpli-body-end bpli-delim-end
-				   bpli-code-end bpli-code-width
-				   bpli-no-code)
-
-	      bc-parse-line-cache (cons bpli-line-info bc-parse-line-cache)))
-					     
-      (if bpl-delimiter-start
-	  (set bpl-delimiter-start (nth 1 bpli-line-info)))
-      (if bpl-body-start
-	  (set bpl-body-start (nth 2 bpli-line-info)))
-      (if bpl-body-end
-	  (set bpl-body-end (nth 3 bpli-line-info)))
-      (if bpl-delimiter-end
-	  (set bpl-delimiter-end (nth 4 bpli-line-info)))
-      (if bpl-code-end 
-	  (set bpl-code-end (nth 5 bpli-line-info)))
-      (if bpl-code-width
-	  (set bpl-code-width (nth 6 bpli-line-info)))
-      (if bpl-no-code
-	  (set bpl-no-code (nth 7 bpli-line-info)))
-
-      (nth 1 bpli-line-info))))		; return comment-p
-    
-;;;;======================================================================
-;;;_    | bc-compute-indent
-(defun bc-new-compute-indent (bufpos)
-  "Return an appropriate indentation for the line containing BUFPOS.
-Calls the function designated by `indent-line-function', if that is
-non-nil.  In this way, the indentation is computed by the major mode.
-
-Returns the column of the indentation, not a buffer position."
-  (if (and (boundp 'indent-line-function)
-	   (fboundp indent-line-function))
-      (let (
-	    (mstart (make-marker))
-	    (mend (make-marker))
-	    column save-line
-	    before-change-function before-change-functions
-	    after-change-function after-change-functions
-	    )
-	;; We must calculate the correct indentation for the current
-	;; line.  Unfortunately, the only function we can count on
-	;; having is `indent-line-function', which will actually
-	;; intent the the line.  So, we will first save the current
-	;; line in a string, call `indent-line-function', then put the
-	;; line back the way it was.
-	(save-excursion
-	  (unwind-protect
-	      (progn
-		(goto-char bufpos)
-		(end-of-line)
-		(set-marker mend (point))
-		(beginning-of-line)
-		(set-marker mstart (point))
-		(setq save-line (buffer-substring mstart mend))
-		(funcall indent-line-function)
-		(back-to-indentation)
-		(setq column (current-column))
-		(delete-region mstart mend)
-		(goto-char mstart)
-		(insert save-line))
-	    (set-marker mstart nil)
-	    (set-marker mend nil))
-	  column))))
-
-
-(defun bc-compute-indent (bufpos)
-  "Return an appropriate indentation for the line containing BUFPOS.
-Calls the function designated by `indent-line-function', if that is
-non-nil.  In this way, the indentation is computed by the major mode.
-
-Returns the column of the indentation, not a buffer position."
-  (if (and (boundp 'indent-line-function)
-	   (fboundp indent-line-function))
-      (let (
-	    (mstart (make-marker))
-	    (mend (make-marker))
-	    column
-	    before-change-function before-change-functions
-	    after-change-function after-change-functions
-	    )
-	(save-excursion
-	  (unwind-protect
-	      (progn
-		(goto-char bufpos)
-		(beginning-of-line)
-		(set-marker mstart (point))
-		(insert "\n")
-		(set-marker mend (point))
-		(forward-char -1)
-		(funcall indent-line-function)
-		(setq column (current-column))
-		(delete-region mstart mend))
-	    (set-marker mstart nil)
-	    (set-marker mend nil))
-	  column))))
-
-
-;;;;======================================================================
-;;;_    | bc-save-excursion
-(defun bc-save-excursion (current-point first-line body-first body-last
-					last-line &optional
-					stick-to-delims)
-  "Saves the location of point so that it can be put back in a sensible fasion
-after a bc formatting command.  If point is not inside the comment
-when the command is called (i.e. it is in the code), we want point to end up
-in exactly that place in the code afterward.  If, on the other hand, point is
-inside the comment, then we want it to end up at the same place in the comment
-afterward.  Both of these will be, in general, quite different from simply
-returning point to the same character position in the buffer \(as with
-save-excursion\).
-
-CURRENT-POINT is the buffer position to be saved.  The other four
-arguments are the buffer positions of the beginnings of lines.
-
-If STICK-TO-DELIMS is non-nil, it effects the count of non-whitespace
-characters returned when the result is ('in-comment 'in-end-delimiter
-count).  Normally the characters are counted to the center of the
-comment text on the line.  If this argument is non-nil they are
-counted to the end of the comment text on the line.
-
-This function returns a structure which can be used by
-`bc-restore-excursion'.  Its structure is a list of three elements:
-\(`vert' `horiz' `pos'\).
-
-`vert' will be one of the following: 'in-top-banner, 'in-bottom-banner
-'in-top-space, 'in-bottom-space, 'in-comment, 'in-code, or
-'past-comment.
-
-If `vert' is 'in-code, `horiz' is the line number and `pos' is the
-column. If `vert' is 'past-comment, `horiz' is the line number and
-`pos' is nil.
-
-Otherwise, `horiz' will be one of the following: 'in-start-delimiter,
-'in-text, 'in-end-delimiter, or 'past-end.
-
-If `vert' is one of 'in-top-banner, 'in-bottom-banner 'in-top-space,
-or 'in-bottom-space, `pos' has a value depending on `horiz':
-
-       HORIZ                                  POS
--------------------	----------------------------------------------------
-'in-start-delimiter	Count of character columns from beginning of start
-'in-text		delimiter to point.
-
-'in-end-delimiter	Count of columns from beginning of end delimiter.
-
-
-If `vert' is 'in-comment, `pos' has a value depending on `horiz':
-
-       HORIZ                                  POS
--------------------	----------------------------------------------------
-'in-start-delimiter	\(`count'. `column'\), where `count' indicates how far
-'in-end-delimiter	point is into the comment as a count of non-whitespace
-			characters, and `column' indicates in which column of
-			the delimiter point is.
-
-			\(`count' . `whitep'\) where `count' indicates how far
-'in-text		point is into the comment as a count of non-whitespace
-			characters, and `whitep' is non-nil if point is before
-                        the first nonwhite char following whitespace."
-
-  ;; TODO: I should be able to simplify this by using a couple of
-  ;; markers rather than character counts. bc-get-text, bc-put-text,
-  ;; etc. would have to be updated to duplicate the marker to and from
-  ;; the scratch buffer.
-
-  (let
-      (vert horiz pos point-column count
-	    start-delim-b start-delim-e body-b body-e end-delim-b end-delim-e
-	    (first-line-e (progn (goto-char first-line) (end-of-line) (point)))
-	    (body-last-e (progn (goto-char body-last) (end-of-line) (point)))
-;;;	    code-end-pos 
-	    )
-    (bc-dummy start-delim-e) ; quiet the byte compiler
-
-						; Make sure we are not stranded
-    (save-excursion				; in that no-man's-land of
-						; extra space to the right of
-      (goto-char current-point)			; the comment body. We want to
-      (if (looking-at "[ \t]*$")		; treat such cases as though
-	  (skip-chars-backward " \t"))		; point is `in-comment, so move
-      (setq current-point (point))		; to just past the rightmost
-      (setq point-column (current-column))	; nonwhite.
-      
-						;==============================
-						; Point is outside the comment.
-      (bc-analyze-line)				;==============================
-      (cond
-       ((< current-point start-delim-b)		; Point is in the code.
-	(setq vert 'in-code
-	      horiz (bc-count-lines-1-fast 1 current-point)
-	      pos point-column))
-						  
-       ((< end-delim-e current-point)		; Point is past the comment.
-	(setq vert 'past-comment
-	      horiz (bc-count-lines-1-fast 1 current-point)	
-	      pos nil))
-       
-       (t	; Point is somewhere in the comment. Figure out on what line of
-		; the comment we are. If this is not a banner comment then
-		; first-line == body-first and last-line == body-last
-
-	(setq vert 'in-top-banner)
-	(if (< first-line-e current-point) (setq vert 'in-top-space))
-	(if (<= body-first current-point)  (setq vert 'in-comment))
-	(if (= body-last last-line)
-	    nil
-	  (if (< body-last-e current-point)  (setq vert 'in-bottom-space))
-	  (if (<= last-line current-point)   (setq vert 'in-bottom-banner)))
-
-						;==============================
-	(cond					; Point is in the body of the
-	 ((eq vert 'in-comment)			; comment.
-	  (cond					;==============================
-	   
-	   ((< current-point body-b)		; Point in start delimiter.
-	    (goto-char start-delim-b)
-	    (setq horiz 'in-start-delimiter
-		  count (car (bc-count-nonwhite
-			      body-first		; Stick to the middle
-			      (/ (+ start-delim-b	; of the text.
-				    end-delim-e) 2)))
-		  pos (cons count (- point-column (current-column)))))
-	   
-	   ((or (< current-point end-delim-b)	; Point in text of comment.
-		
-						; If the language uses newline
-						; as the ending delimiter, then
-		(equal bc-comment-end ""))	; anything to the right of the
-						; comment text should be
-						; considered to be in the body
-						; of the comment.
-	    (if (< body-e current-point) (setq current-point body-e))
-	    (setq horiz 'in-text
-		  count (bc-count-nonwhite body-first current-point)
-		  pos 
-		  (cons (car count)				  ; Is point on
-			(or (= current-point body-b)		  ; the first
-			    (and (not (cdr count))		  ; nonwhite
-				 (progn (goto-char current-point) ; char after
-					(backward-char)		  ; some white?
-					(looking-at "[ \t]")))))))
-	   
-	   (t					; Point in end delimiter.
-	    (goto-char end-delim-e)
-	    (setq horiz 'in-end-delimiter	; Normally the characters are
-						; counted to the center of the
-						; comment text on the line.
-		  count (car			; This is so that point will
-			 (bc-count-nonwhite	; appear to stay in roughly the
-			  body-first		; same place in the comment
-			  (if stick-to-delims	; after a series of formatting
-			      end-delim-e	; commands. This is
-			    (/			; undesirable, however, when
-			     (+			; processing `do-auto-fill'. If
-			      start-delim-b	; STICK-TO-DELIMS is non-nil,
-			      end-delim-e)	; count non-whitespace
-			     2))))		; characters to the end of the
-						; comment text on the line.
-
-		  pos (cons count (- (current-column) point-column))))))
-	 
-						;==============================
-						; Point is in the banner.
-	 (t					;==============================
-	  (cond	
-	   ((or (< current-point body-e)	; Point in start or text.
-		(equal bc-comment-end ""))
-	    (goto-char start-delim-b)
-	    (setq horiz 'in-text
-		  pos (- point-column (current-column))))
-	   
-	   (t					; Point in end delimiter.
-	    (goto-char end-delim-e)
-	    (setq horiz 'in-end-delimiter
-		  pos (- (current-column) point-column))))))))
-      
-      
-      (list vert horiz pos))))			; return value
-
-;;;;======================================================================
-;;;_    | bc-restore-excursion
-(defun bc-restore-excursion (save-point first-line last-line)
-  "Takes a structure, SAVE-POINT created by bc-save-excursion
-and places point at the position indicated in the structure.  
-
-FIRST-LINE is the character position of the first line of the new
-location of the comment.
-
-LAST-LINE is the character position of the last line of the new
-location of the comment."
-
-  (let ((vert (car save-point))
-	(horiz (nth 1 save-point))
-	(pos (nth 2 save-point))
-	com-delim-start-pos com-delim-end-pos com-body-start-pos
-	com-body-end-pos body-first
-	)
-
-    (goto-char first-line)
-    (if bc-banner-top-border (forward-line (+ 1 bc-banner-top-space)))
-    (setq body-first (point))
-						;==============================
-						; Point is outside the comment.
-    (cond					;==============================
-     ((eq vert 'in-code)
-      (bc-goto-line-fast horiz)				; Point is in the code.
-      (move-to-column pos))
-     
-     ((eq vert 'past-comment)			; Point is past the comment.
-      (bc-goto-line-fast horiz)
-      (end-of-line))
-						;==============================
-     (t						; Point is in the body of the
-      (cond					; comment.
-       ((eq vert 'in-comment)			;==============================
-	(cond
-	 ((eq horiz 'in-start-delimiter)	; Point in start delimiter.
-	  (if (bc-forward-nonwhite body-first (car pos)) nil
-	    (bc-oparse-line nil 'com-delim-start-pos 'com-body-start-pos)
-	    (goto-char com-delim-start-pos)
-	    (forward-char (cdr pos))
-	    (if (< com-body-start-pos (point))
-		(goto-char com-body-start-pos))))
-
-	 ((eq horiz 'in-text)			; Point in comment text.
-	  (bc-forward-nonwhite body-first (+ (car pos) (if (cdr pos) 1 0)))
-	  (if (cdr pos) (backward-char)))
-
-	 (t					; Point in end delimiter.
-	  (bc-forward-nonwhite body-first (car pos))
-	  (bc-oparse-line nil nil nil nil 'com-delim-end-pos)
-	  (goto-char com-delim-end-pos)
-	  (backward-char (cdr pos)))))
-
-       (t					;==============================
-	(cond					; Point is in the banner.
-	 ((eq vert 'in-top-banner)		;==============================
-	  (goto-char first-line))
-	 ((eq vert 'in-top-space)
-	  (goto-char first-line)
-	  (forward-line 1))
-	 ((eq vert 'in-bottom-banner)
-	  (goto-char last-line))
-	 ((eq vert 'in-bottom-space)
-	  (goto-char last-line)
-	  (forward-line -1)))
-	  
-	(bc-oparse-line nil 'com-delim-start-pos nil 'com-body-end-pos
-		       'com-delim-end-pos)
-	(cond
-	 ((memq horiz '(in-start-delimiter in-text))
-	  (goto-char com-delim-start-pos)
-	  (move-to-column (+ (current-column) pos))
-	  (goto-char (min (point) com-body-end-pos)))
-	 (t						; 'in-end-delimiter
-	  (goto-char com-delim-end-pos)
-	  (move-to-column (- (current-column) pos))
-	  (goto-char (min (point) com-delim-end-pos))))))))
-    ))
-   
-;;;;======================================================================
-;;;_    | bc-count-lines-1
-(defun bc-count-lines-1 (start end)
-  "This function is like `count-lines' only it counts lines inclusively.
-So, if START == END, or if END is at the beginning of the line, this
-function returns one more than `count-lines' would."
-
-  (save-excursion
-    (save-restriction
-      (widen)
-      (1+ (count-lines
-	   (progn (goto-char start) (beginning-of-line) (point))
-	   (progn (goto-char end) (beginning-of-line) (point)))))))
-
-;  (save-excursion
-;    (save-restriction
-;      (widen)
-;      (let ((new-start (progn (goto-char start) (beginning-of-line) (point)))
-; 	   (new-end (progn (goto-char end) (beginning-of-line) (point)))
-; 	   )
-;        (narrow-to-region new-start new-end)
-;        (goto-char (point-min))
-;        (- (buffer-size) (forward-line (buffer-size)) -1)))))
-
-;;;;======================================================================
-;;;_    | bc-count-nonwhite
-(defun bc-count-nonwhite (first-line target-point)
-  "Counts the number of non-whitespace characters contained in the
-block comment starting on FIRST-LINE up to TARGET-POINT.  TARGET-POINT
-is assumed to be in the block comment.
-
-Returns \(count . end-is-whitespace-p\)
-
-  *** Moves point ***"
-
-  (let
-      ((sum 0)
-       limit
-       (done nil)
-       count-this-line
-;;;       code-end-pos 
-       com-body-start-pos com-body-end-pos 
-       )
-
-    (save-excursion
-      (goto-char first-line)
-      (while (not done)
-	(bc-oparse-line nil nil 'com-body-start-pos 'com-body-end-pos)
-	(if (< com-body-end-pos target-point)
-	    (setq limit com-body-end-pos)
-	  (setq done t)
-	  (setq limit target-point))
-	(setq count-this-line (bc-count-nonwhite-chars 
-			       com-body-start-pos limit)
-	      sum (+ sum (car count-this-line)))
-	(forward-line 1)))
-
-    (cons sum (cdr count-this-line))))		; return the total
-
-;;;;======================================================================
-;;;_    | bc-forward-nonwhite
-(defun bc-forward-nonwhite (first-line count)
-  "Moves point forward by COUNT non-whitespace characters contained in the
-block comment starting on FIRST-LINE."
-
-  (let
-      (done
-;;;       code-end-pos com-delim-start-pos com-delim-end-pos
-       com-body-start-pos
-       com-body-end-pos
-       (last (point)) failure
-       )
-    (goto-char first-line)
-    (while (not done)
-      (if (not (bc-oparse-line nil nil 'com-body-start-pos 'com-body-end-pos))
-	  (progn
-	    (setq done t
-		  failure t)
-	    (goto-char last))
-	(setq count (- count (bc-forward-nonwhite-chars
-			      com-body-start-pos count com-body-end-pos))))
-      (setq last (point))
-      (if (= count 0)
-	  (setq done t)
-	(forward-line 1)))
-    failure))
-
-;;;;======================================================================
-;;;_    | bc-count-nonwhite-chars
-(defun bc-count-nonwhite-chars (begin end)
-  "Counts the number of non-whitespace characters between BEGIN and END.
-
-Returns \(count> . <end-is-whitespace-p\)
-
-  *** Moves point ***"
-
-  (let ((counter 0) prev done)
-    (goto-char begin)
-
-    (while (and (not done) (not (eolp)))
-      (skip-chars-forward " \t")
-      (if (< end (point))
-	  (setq done t)
-	(setq prev (point)) 
-	(skip-chars-forward "^ \t\n")
-	(if (< end (point))
-	    (setq done t
-		  counter (+ counter (- end prev)))
-	  (setq counter (+ counter (- (point) prev))))))
-    (cons counter (looking-at "[ \t\n]"))
-    ))
-;;;	
-;;;    (while (< (point) end)			; if point is before whitespace
-;;;	 (if (looking-at "[ \t\n]")		; don't increment counter
-;;;	     nil
-;;;	   (setq counter (1+ counter)))		; otherwise count this as
-;;;	 (forward-char 1))				; nonwhite
-;;;    (cons counter (looking-at "[ \t\n]"))))
-
-;;;;======================================================================
-;;;_    | bc-forward-nonwhite-chars
-(defun bc-forward-nonwhite-chars (begin count end)
-  "Moves point to BEGIN and then forward by COUNT non-whitespace
-characters, but never past END.  
-
-Returns the distance actually moved.
-
-  *** Moves point ***"
-
-  (let ((counter 0) prev done)
-    (goto-char begin)
-
-    (while (and (not done) (not (eolp)))
-      (skip-chars-forward " \t")
-      (if (< end (point))
-	  (progn (setq done t) (goto-char end))
-	(setq prev (point)) 
-	(skip-chars-forward "^ \t\n")
-	(setq counter (+ counter (- (point) prev)))
-	(cond
-	 ((< end (point))
-	  (setq done t) (goto-char end))
-	 ((<= count counter)
-	  (setq done t)
-	  (forward-char (- count counter))
-	  (setq counter count)))))
-    counter))
-
-;;;    (while (and (< counter count)
-;;;		   (< (point) limit))		; if point is before whitespace
-;;;	 (if (looking-at "[ \t\n]")		; don't increment counter
-;;;	     nil
-;;;	   (setq counter (1+ counter)))		; otherwise count this as
-;;;	 (forward-char 1))				; nonwhite
-;;;    counter))
-
-;;;;======================================================================
-;;;_   o Miscellaneous
-;;;_    | bc-get-buffer-create
-(defun bc-get-buffer-create ()
-   (let ((scratch-buffer (get-buffer-create bc-scratch-buffer)))
-     (buffer-disable-undo scratch-buffer)
-     scratch-buffer))
-
-;;;;======================================================================
-;;;_    | bc-set-pref-first-line
-(defun bc-set-pref-first-line ()
-  (setq bc-pref-first-line (bc-count-lines-1-fast
-			    1 
-			    (marker-position bc-start-marker)))
-  (set-marker bc-start-marker nil))
-
-;;;;======================================================================
-
-(provide 'bc-mode)
-
-;;;_ & 
-
-;;; Local Variables:
-;;; kept-new-versions: 999
-;;; oe-header-prefix: ";;;_"
-;;; mode: outline-minor
-;;; End:
-
-;;; bc-mode.el ends here
+#FILE text/x-emacs-lisp
+Ozs7IGJjLW1vZGUuZWwgLS0tIE1pbm9yIG1vZGUgZm9yIGZvcm1hdHRpbmcgcmlnaHQtbWFyZ2lu
+IGJsb2NrIGNvbW1lbnRzLg0KOzs7X0AgDQo7Ow0KOzsgQ29weXJpZ2h0IChDKSAxOTkxLTE5OTYg
+U3RldmUgQnVyZ2V0dCA8YnVyZ2V0dEBlZWNzLmJlcmtlbGV5LmVkdT4NCjs7ICRJZDogYmMtbW9k
+ZS5lbCx2IDEuMSAxOTk2LzEwLzE5IDE4OjU0OjAwIGJ1cmdldHQgRXhwIGJ1cmdldHQgJA0KOzsN
+Cjs7IEF1dGhvcjogU3RldmUgQnVyZ2V0dCA8YnVyZ2V0dEBlZWNzLmJlcmtlbGV5LmVkdT4NCjs7
+IENyZWF0ZWQ6IEp1bHkgMTk5Mg0KOzsgVmVyc2lvbjogMS4xDQo7OyBLZXl3b3JkczogY29tbWVu
+dCBtaW5vci1tb2RlIHByb2dyYW1taW5nIGVkaXRpbmcNCjs7IEhUVFA6IGh0dHA6Ly9yb2JvdGlj
+cy5lZWNzLmJlcmtlbGV5LmVkdS9+YnVyZ2V0dC8NCg0KKGRlZmNvbnN0IGJjLW1vZGUtdmVyc2lv
+biAiMS4xIiAiVGhlIGN1cnJlbnQgdmVyc2lvbiBvZiBiYy1tb2RlIikNCihkZWZjb25zdCBiYy1t
+b2RlLWRhdGUgIk9jdG9iZXIgMTk5NiIgIkRhdGUgb2YgbGFzdCB1cGRhdGUiKSAgDQooZGVmY29u
+c3QgYmMtbW9kZS1tYWludGFpbmVyLWFkZHJlc3MgImJ1cmdldHRAZWVjcy5iZXJrZWxleS5lZHUi
+KQ0KDQo7OyBHZXQgdGhlIGxhdGVzdCB2ZXJzaW9uIG9mIHRoaXMgcGFja2FnZSBmcm9tOg0KOzsg
+aHR0cDovL3JvYm90aWNzLmVlY3MuYmVya2VsZXkuZWR1L35idXJnZXR0L2VsaXNwLmh0bWwNCjs7
+DQo7OyBMQ0QgQXJjaGl2ZSBFbnRyeToNCjs7IGJjLW1vZGV8U3RldmUgQnVyZ2V0dHxidXJnZXR0
+QGVlY3MuYmVya2VsZXkuZWR1fA0KOzsgTWlub3IgbW9kZSBmb3IgZm9ybWF0dGluZyByaWdodC1t
+YXJnaW4gYmxvY2sgY29tbWVudHMgaW4gc291cmNlIGNvZGUufA0KOzsgT2N0b2JlciAxOTk2fDEu
+MXx8DQo7Ow0KOzsgVGhpcyBmaWxlIGlzIG5vdCBwYXJ0IG9mIEdOVSBlbWFjcw0KOzsNCjs7IFRo
+aXMgcHJvZ3JhbSBpcyBmcmVlIHNvZnR3YXJlOyB5b3UgY2FuIHJlZGlzdHJpYnV0ZSBpdCBhbmQv
+b3INCjs7IG1vZGlmeSBpdCB1bmRlciB0aGUgdGVybXMgb2YgdGhlIEdOVSBHZW5lcmFsIFB1Ymxp
+YyBMaWNlbnNlIGFzDQo7OyBwdWJsaXNoZWQgYnkgdGhlIEZyZWUgU29mdHdhcmUgRm91bmRhdGlv
+bjsgZWl0aGVyIHZlcnNpb24gMiBvZiB0aGUNCjs7IExpY2Vuc2UsIG9yIChhdCB5b3VyIG9wdGlv
+bikgYW55IGxhdGVyIHZlcnNpb24uDQo7Ow0KOzsgVGhpcyBwcm9ncmFtIGlzIGRpc3RyaWJ1dGVk
+IGluIHRoZSBob3BlIHRoYXQgaXQgd2lsbCBiZSB1c2VmdWwsIGJ1dA0KOzsgV0lUSE9VVCBBTlkg
+V0FSUkFOVFk7IHdpdGhvdXQgZXZlbiB0aGUgaW1wbGllZCB3YXJyYW50eSBvZg0KOzsgTUVSQ0hB
+TlRBQklMSVRZIG9yIEZJVE5FU1MgRk9SIEEgUEFSVElDVUxBUiBQVVJQT1NFLiAgU2VlIHRoZSBH
+TlUNCjs7IEdlbmVyYWwgUHVibGljIExpY2Vuc2UgZm9yIG1vcmUgZGV0YWlscy4NCjs7DQo7OyBZ
+b3Ugc2hvdWxkIGhhdmUgcmVjZWl2ZWQgYSBjb3B5IG9mIHRoZSBHTlUgR2VuZXJhbCBQdWJsaWMg
+TGljZW5zZQ0KOzsgYWxvbmcgd2l0aCBHTlUgRW1hY3MuICBJZiB5b3UgZGlkIG5vdCwgd3JpdGUg
+dG8gdGhlIEZyZWUgU29mdHdhcmUNCjs7IEZvdW5kYXRpb24sIEluYy4sIDY3NSBNYXNzIEF2ZS4s
+IENhbWJyaWRnZSwgTUEgMDIxMzksIFVTQS4NCjs7DQo7Ow0KOzsgU3RldmUgQnVyZ2V0dA0KOzsg
+VW5pdmVyc2l0eSBvZiBDYWxpZm9ybmlhLCBCZXJrZWxleQ0KOzsgRGVwYXJ0bWVudCBvZiBFbGVj
+dHJpY2FsIEVuZ2luZWVyaW5nIGFuZCBDb21wdXRlciBTY2llbmNlcw0KOzsgUm9ib3RpY3MgYW5k
+IEludGVsbGlnZW50IE1hY2hpbmVzIExhYm9yYXRvcnkNCjs7DQo7Ow0KOzs7IEFkdmljZToNCjs7
+OyAtLS0tLS0tDQo7OyBUaGlzIHBhY2thZ2UgYWR2aXNlcyB0aGUgZm9sbG93aW5nIGZ1bmN0aW9u
+OiBgZG8tYXV0by1maWxsJy4gWW91DQo7OyBjYW4gZGlzYWJsZSB0aGlzIGFkdmljZSBieSBzZXR0
+aW5nIHRoZSB2YXJpYWJsZQ0KOzsgYGJjLWVuYWJsZS1hdXRvLWZpbGwtYWR2aWNlJyB0byBuaWwu
+DQogDA0KOzs7XyAmIENvbW1lbnRhcnk6DQo7OzsgIC0tLS0tLS0tLS0NCjs7DQo7OztfICAqIERl
+c2NyaXB0aW9uOg0KOzs7ICAgLS0tLS0tLS0tLS0tDQo7Ow0KOzsgVGhpcyBwYWNrYWdlIHByb3Zp
+ZGVzIGNvbW1hbmRzIHRoYXQgZm9ybWF0IHJpZ2h0LW1hcmdpbiBibG9jay1zdHlsZQ0KOzsgY29t
+bWVudHMgaW4gc291cmNlIGNvZGUuICBUaGVzZSBhcmUgY29tbWVudHMgdGhhdCBhcHBlYXIgdG8g
+dGhlDQo7OyByaWdodCBvZiB0aGUgY29kZSwgYW5kIG9mdGVuIHNwYW4gc2V2ZXJhbCBjb25zZWN1
+dGl2ZSBsaW5lcy4gIE9uDQo7OyBlYWNoIGxpbmUsIHRoZSBjb21tZW50IGlzIGRlbGltaXRlZCBi
+eSBzdGFydCBhbmQgZW5kIGRlbGltaXRlcnMsDQo7OyBhbmQgdGhlc2UgYXJlIGxpbmVkIHVwIHdp
+dGggdGhlIGRlbGltaXRlcnMgb24gYWRqYWNlbnQgbGluZXMgdG8NCjs7IGZvcm0gYSByZWN0YW5n
+dWxhciBibG9jay4gRm9yIGV4YW1wbGUsIGluIEVtYWNzIExpc3A6DQo7Ow0KOzsgICAoaWYgbmFy
+cm93LWZhaWx1cmUNCjs7ICAgICAgKHByb2duICAgICAgICAgICAgICAgICAgICAgICAgICAgICA7
+IElmIGZhaWx1cmUsIG1vdmUgYHRvcCcgZG93biAgDQo7OyAgICAgICAgKHNldC1idWZmZXIgY29k
+ZS1idWZmZXIpICAgICAgICAgOyBhbmQgcmVwZWF0IHRoZSBwcm9jZXNzLiBJZiAgIA0KOzsgICAg
+ICAgIChnb3RvLWNoYXIgdG9wKSAgICAgICAgICAgICAgICAgIDsgc3VjY2VzcywgdGhpcyBgaWYn
+IHJldHVybnMgICANCjs7ICAgICAgICAoZm9yd2FyZC1saW5lIDEpICAgICAgICAgICAgICAgICA7
+IG5pbCBzbyB0aGUgYHdoaWxlJyB0ZXJtaW5hdGVzLg0KOzsgICAgICAgIChzZXRxIHRvcCAocG9p
+bnQpKSkpDQo7OyAgDQo7OyBPciwgaW4gQzoNCjs7ICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgLyogSWYgdGhlIGxlYWRpbmcgY2hhciBvZiB0aGUgKi8NCjs7ICAgaWYo
+KFN0cmluZ1swXSAhPSAnMCcpIHx8ICAgICAgICAgICAgICAgLyogc3RyaW5nIGlzICcwJywgdGhl
+biB0aGUgICAgKi8NCjs7ICAgICAgKHRvbG93ZXIoU3RyaW5nWzFdKSAhPSAneCcgJiYgICAgICAg
+LyogbnVtYmVyIGlzIHByb2JhYmx5IGluIGhleCAgKi8NCjs7ICAgICAgICFpc2RpZ2l0KFN0cmlu
+Z1sxXSkpKXsgICAgICAgICAgICAgLyogb3Igb2N0YWw7IHRoYXQgaXMsIHVubGVzcyAgKi8NCjs7
+ICAgICBpUmVzID0gc3NjYW5mKFN0cmluZywgIiVsZCIsICZUZW1wKTsgLyogdGhlIG51bWJlciBp
+cyBqdXN0IHplcm8uICAgKi8NCjs7DQo7OyBZb3UgY2FuIGV2ZW4gZm9ybWF0IGJhbm5lciBjb21t
+ZW50cywgbGlrZSB0aGlzOg0KOzsNCjs7ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgLyoqKioqKioqKioqKioqKioqKioqKioqKioqKioqKi8NCjs7ICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgLyogSWYgdGhlIGxlYWRpbmcgY2hhciBvZiB0
+aGUgKi8NCjs7ICAgaWYoKFN0cmluZ1swXSAhPSAnMCcpIHx8ICAgICAgICAgICAgICAgLyogc3Ry
+aW5nIGlzICcwJywgdGhlbiB0aGUgICAgKi8NCjs7ICAgICAgKHRvbG93ZXIoU3RyaW5nWzFdKSAh
+PSAneCcgJiYgICAgICAgLyogbnVtYmVyIGlzIHByb2JhYmx5IGluIGhleCAgKi8NCjs7ICAgICAg
+ICFpc2RpZ2l0KFN0cmluZ1sxXSkpKXsgICAgICAgICAgICAgLyogb3Igb2N0YWw7IHRoYXQgaXMs
+IHVubGVzcyAgKi8NCjs7ICAgICBpUmVzID0gc3NjYW5mKFN0cmluZywgIiVsZCIsICZUZW1wKTsg
+LyogdGhlIG51bWJlciBpcyBqdXN0IHplcm8uICAgKi8NCjs7ICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgLyoqKioqKioqKioqKioqKioqKioqKioqKioqKioqKi8NCjs7
+DQo7OyBUaGlzIG1pbm9yIG1vZGUgcHJvdmlkZXMgMjUgY29tbWFuZHMgZm9yIGZvcm1hdHRpbmcg
+YW5kDQo7OyBtYW5pcHVsYXRpbmcgY29tbWVudHMgb2YgdGhpcyBzdHlsZS4gIFNlZSB0aGUgZG9j
+dW1lbnRhdGlvbiBvZg0KOzsgYGJjLW1vZGUtZG9jJyBmb3IgYSBkZXNjcmlwdGlvbi4NCjs7DQo7
+OyBUbyBzdWJtaXQgYnVnIHJlcG9ydHMsIGhpdCBgQy1jIHIgQy1iJy4gIFNlZSB0aGUgZG9jdW1l
+bnRhdGlvbiBmb3INCjs7IGBiYy1zdWJtaXQtYnVnLXJlcG9ydCcgZm9yIG1vcmUgaW5mb3JtYXRp
+b24uICBTdWdnZXN0aW9ucywNCjs7IGNvbW1lbnRzLCBldGMuLCB0byA8YnVyZ2V0dEBlZWNzLmJl
+cmtlbGV5LmVkdT4NCjs7DQo7Ow0KOzs7XyAgKiBJbnN0YWxsYXRpb246DQo7OzsgICAtLS0tLS0t
+LS0tLS0tDQo7OyANCjs7IFB1dCB0aGlzIGZpbGUgc29tZXdoZXJlIHdoZXJlIEVtYWNzIGNhbiBm
+aW5kIGl0IChpLmUuLCBpbiBvbmUgb2YNCjs7IHRoZSBwYXRocyBpbiB5b3VyIGBsb2FkLXBhdGgn
+KSwgYGJ5dGUtY29tcGlsZS1maWxlJyBpdCwgYW5kIGFkZCB0aGUNCjs7IGZvbGxvd2luZyB0byB5
+b3VyIH4vLmVtYWNzOg0KOzsgDQo7OyAgIChhdXRvbG9hZCAnYmMtbW9kZSAiYmMtbW9kZSINCjs7
+ICAgIk1pbm9yLW1vZGUgZm9yIGZvcm1hdHRpbmcgcmlnaHQtbWFyZ2luIGJsb2NrLXN0eWxlIGNv
+bW1lbnRzIGluDQo7OyAgIHNvdXJjZSBjb2RlLiIgdCkNCjs7DQo7OyAgIChhdXRvbG9hZCAnYmMt
+bWFrZS1yZWdleHAgImJjLW1vZGUiDQo7OyAgICJNYWtlIGEgcmVndWxhciBleHByZXNzaW9uIGRl
+ZmluaW5nIHRoZSBjb21tZW50IHN5bnRheCB0byB1c2UgDQo7OyAgIHdpdGggYmMtbW9kZS4iIHQp
+DQo7Ow0KOzsgICAoYXV0b2xvYWQgJ3R1cm4tb24tYmMtbW9kZSAiYmMtbW9kZSIgIlR1cm4gb24g
+YmMtbW9kZSB1bmNvbmRpdGlvbmFsbHkuIikNCjs7DQo7OyAgIChnbG9iYWwtc2V0LWtleSAiXEMt
+eHI7IiAnYmMtbW9kZSkNCjs7DQo7OyBUbyB1c2UgYmMtbW9kZSwgeW91IGNhbGwgdGhlIGZ1bmN0
+aW9uIGBiYy1tb2RlJy4gIFNlZSB0aGUNCjs7IGRvY3VtZW50YXRpb24gc3RyaW5ncyBmb3IgdGhl
+IGZ1bmN0aW9uIGBiYy1tb2RlJyBhbmQgZm9yIHRoZQ0KOzsgdmFyaWFibGUgYGJjLW1vZGUtZG9j
+Jy4NCjs7DQo7OyBUaGVyZSBpc24ndCBtdWNoIHRvIGN1c3RvbWl6ZS4gIFNlZSBgVXNlciBWYXJp
+YWJsZXMnLCBiZWxvdy4NCjs7DQo7Ow0KOzs7XyAgKiBDb21wYXRpYmlsaXR5Og0KOzs7ICAgLS0t
+LS0tLS0tLS0tLS0NCjs7DQo7OyBUaGlzIHBhY2thZ2UgaXMga25vd24gdG8gd29yayB3aXRoIEVt
+YWNzIDE5LjI4LCB0aHJvdWdoIDE5LjM0LCBhbmQNCjs7IFhFbWFjcyAxOS4xNC4gIEl0IG1heSB3
+b3JrIHdpdGggb3RoZXJzLCBJIGhhdmVuJ3QgdHJpZWQgaXQuDQo7Ow0KOzsgVGhpcyBwYWNrYWdl
+IGhhcyBiZWVuIHVzZWQgc3VjY2VzZnVsbHkgd2l0aCB0aGUgZm9sbG93aW5nIG1ham9yDQo7OyBt
+b2RlczogY2MtbW9kZSAoYyBhbmQgYysrKSwgZW1hY3MtbGlzcC1tb2RlLCBhbmQgdGV4dC1tb2Rl
+ICh1c2luZw0KOzsgZmlsZS1sb2NhbCB2YXJpYWJsZXMpLg0KOzsNCjs7IFRoaXMgcGFja2FnZSBp
+cyBjb21wYXRpYmxlIHdpdGgga3NoLW1vZGUsIGJ1dCBoYXMgdGhlIHNhbWUgcHJvYmxlbXMNCjs7
+IHdpdGggdGhlIHNoZWxsIHBhdHRlcm4gbWF0Y2hpbmcgb3BlcmF0b3IgdGhhdCBvdGhlciBmdW5j
+dGlvbnMgZG8uDQo7OyBTZWUgdGhlIEJ1Z3Mgc2VjdGlvbiBiZWxvdy4NCjs7DQo7OyBUaGlzIHBh
+Y2thZ2UgYWxzbyBpcyBrbm93biB0byB3b3JrIHdpdGggcGVybC1tb2RlLCBhbmQgY3BlcmwtbW9k
+ZSwNCjs7IGJ1dCBvbGRlciB2ZXJzaW9ucyBvZiB0aG9zZSBtYXkgdHJpZ2dlciBzb21lIGJ1Z3Mu
+ICBTZWUgdGhlIEJ1Z3MNCjs7IHNlY3Rpb24gYmVsb3cgZm9yIHNvbWUgd29ya2Fyb3VuZHMuDQo7
+Ow0KOzsgVGhpcyBwYWNrYWdlIGhhcyBiZWVuIHVzZWQgc3VjY2VzZnVsbHkgd2l0aCB0aGUgZm9s
+bG93aW5nIG1pbm9yDQo7OyBtb2RlczogZm9udC1sb2NrLCBhdXRvLWZpbGwsIGZpbGxhZGFwdCwg
+b3V0bGluZS4gIENvbXBhdGliaWxpdHkNCjs7IHdpdGggb3RoZXIgbWlub3IgbW9kZXMgaGFzIG5v
+dCBiZWVuIHRlc3RlZC4gIElmIHlvdSB1c2UgS3lsZSBKb25lcycNCjs7IGZpbGxhZGFwdC5lbCwg
+eW91IG11c3QgYHJlcXVpcmUnIHRoYXQgQkVGT1JFIGJjLW1vZGUgZ2V0cyBsb2FkZWQuDQo7Ow0K
+OzsNCjs7O18gICogQ29tbWFuZHM6DQo7OzsgICAtLS0tLS0tLS0NCjs7DQo7OyBOT1RFOiBDT01N
+RU5UUyBUSEFUIEJFR0lOIElOIFRIRSBGSVJTVCBDT0xVTU4gQVJFIE5PVCBSRUNPR05JWkVEIEJZ
+DQo7OyBCQy1NT0RFIENPTU1BTkRTIEFTIEJMT0NLIENPTU1FTlRTLg0KOzsNCjs7IFRoaXMgaXMg
+c28geW91IGNhbiBjb21tZW50IG91dCBsaW5lcyBvZiBjb2RlIHdpdGhvdXQgYmMtbW9kZQ0KOzsg
+dGhpbmtpbmcgeW91IHdhbnQgdGhlbSBmb3JtYXR0ZWQgYXMgYmxvY2sgY29tbWVudHMuICBZb3Ug
+Y2FuIGV2ZW4NCjs7IGhhdmUgY29tbWVudHMgaW4gdGhlIHJpZ2h0IG1hcmdpbiBvZiBzdWNoIGNv
+ZGUgYW5kIHN0aWxsIGZvcm1hdA0KOzsgdGhlbSB3aXRoIEJDIGNvbW1hbmRzLg0KOzsNCjs7IEZv
+ciBhIHN1bW1hcnkgb2YgY29tbWFuZHMgYW5kIGtleSBiaW5kaW5ncywgc2VlIHRoZSBkb2N1bWVu
+dGF0aW9uDQo7OyBzdHJpbmcgZm9yIGBiYy1tb2RlJyAoZG8gYSBgQy1oIG0nIG9yIE0teCBkZXNj
+cmliZS1tb2RlIHdoZW4NCjs7IGJjLW1vZGUgaXMgdHVybmVkIG9uLCBvciBkbyBgQy1oIGYgYmMt
+bW9kZScpLiAgRm9yIG1vcmUNCjs7IGluZm9ybWF0aW9uLCBzZWUgdGhlIGRvY3VtZW50YXRpb24g
+Zm9yIHRoZSB2YXJpYWJsZSBgYmMtbW9kZS1kb2MnDQo7OyAoZG8gYEMtaCB2IGJjLW1vZGUtZG9j
+JykuDQo7Ow0KOzsNCjs7Oz09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09
+PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PQ0KOzsNCjs7O18gICogV2lzaCBMaXN0Og0K
+Ozs7ICAgLS0tLS0tLS0tLQ0KOzsNCjs7OyBDb21wbGV0ZSBSZXdyaXRlPw0KOzsNCjs7IFdlbGws
+IG1heWJlIG5vdCBhIGNvbXBsZXRlIHJld3JpdGUuICBCdXQsIGxpa2UgYW55IHByb2dyYW0gdGhh
+dCBoYXMNCjs7IHNvbWUgaGlzdG9yeSwgQkMgaGFzIGJ1aWx0IHVwIGEgbG90IG9mIHZlc3RpZ2lh
+bCBvcmdhbnMgKGFuZA0KOzsgYmVoYXZpb3JzKS4gIEZvciBhIHZlcnkgbG9uZyB0aW1lLCB0aGUg
+bWFpbiBzZXQgb2YgQkMgY29tbWFuZHMgd2VyZQ0KOzsgYHNxdWVlemUnLCBgc2hvcnRlcicsIGB0
+YWxsZXInLCBgbG93ZXItZmxvdycsIGFuZCBgcmFpc2UtZmxvdycuDQo7OyBUaGVzZSBhcmUgdGhl
+IGNvbW1hbmRzIHRoYXQgZG8gbG90cyBvZiBzZWFyY2hpbmcgYW5kIGNvbXB1dGluZyB0bw0KOzsg
+dHJ5IHRvIGZpbmQgc29tZSAib3B0aW1hbCIgZm9ybWF0dGluZyBhbmQgcGxhY2VtZW50IGZvciB0
+aGUNCjs7IGNvbW1lbnQuICBNb3JlIHJlY2VudGx5LCB0aGUgdGFiLW9yaWVudGVkIGNvbW1hbmRz
+LCBgZmlsbCcsDQo7OyBgd2lkZXInLCBgbmFycm93ZXInLCBhbmQgdGhlIG5vbi1yZXNoYXBpbmcg
+bW92ZW1lbnQgY29tbWFuZHMsIGB1cCcNCjs7IGFuZCBgZG93bicsIHdlcmUgYWRkZWQuICBUaGVz
+ZSBjb21tYW5kcyBkbyBsZXNzIGNvbXB1dGluZyBhbmQgZ2l2ZQ0KOzsgbW9yZSBjb250cm9sIHRv
+IHRoZSB1c2VyLg0KOzsNCjs7IEl0IGhhcyBiZWNvbWUgY2xlYXIgdGhhdCBpbiBwcmFjdGljZSB0
+aGVzZSAiZHVtYmVyIiBjb21tYW5kcyBhcmUNCjs7IHRoZSBtb3JlIHVzZWZ1bC4gIFRoZSAic21h
+cnQiIGNvbW1hbmRzIGRvbid0IGdldCB1c2VkIG5lYXJseSBhcw0KOzsgb2Z0ZW4uICBBIHJld3Jp
+dGUgb2YgQkMgd291bGQgc3RhcnQgd2l0aCBhIGNvcmUgZnVuY3Rpb25hbGl0eSB0bw0KOzsgc3Vw
+cG9ydCB0aGUgZHVtYiBjb21tYW5kcywgYW5kIGNvdWxkIHBvdGVudGlhbGx5IHNpbXBsaWZ5IHRo
+ZSBjb2RlDQo7OyBzaWduaWZpY2FudGx5LiAgVGhpcyBpcyBiZWNhdXNlIHRoZSBwcmVzZW50IGNv
+ZGUgaXMgYmFzZWQgb24NCjs7IHJvdXRpbmVzIHRoYXQgd2VyZSBvcmlnaW5hbGx5IHdyaXR0ZW4g
+dG8gc3VwcG9ydCB0aGUgc21hcnQNCjs7IGNvbW1hbmRzLiAgV2hlbiB0aGUgZHVtYiBjb21tYW5k
+cyB3ZXJlIGFkZGVkLCBtYW55IHJvdXRpbmVzIHdlcmUNCjs7IGZ1cnRoZXIgKmdlbmVyYWxpemVk
+KiB0byBzdXBwb3J0IHRoZW0gYXMgd2VsbC4NCjs7DQo7Ow0KOzs7IENvbW1hbmRzDQo7Ow0KOzsg
+VmVyc2lvbnMgb2YgYHdpZGVyJyBhbmQgYG5hcnJvd2VyJyB3aXRoIGZpbmVyIGNvbnRyb2wsIGku
+ZS4sIG9ubHkNCjs7IGNoYW5nZSB0aGUgd2lkdGggYnkgb25lIGNvbHVtbi4gIFRoaXMgY291bGQg
+d2VsbCBvYnZpYXRlIHRoZSBtb3JlDQo7OyBjb21wbGV4IGNvbW1hbmRzIGBzaG9ydGVyJyBhbmQg
+YHRhbGxlcicuDQo7Ow0KOzsgQWRkaXRpb25hbCBlZGl0aW5nIGFuZCBtb3Rpb24gZnVuY3Rpb25z
+IHRoYXQgdHJlYXQgY29tbWVudHMgbGlrZQ0KOzsgbGl0dGxlIHdpbmRvd3MsIGFsYSBgYmMtYmVn
+aW5uaW5nLW9mLWxpbmUnLCBgYmMta2lsbC1saW5lJywgZXRjLg0KOzsNCjs7IGJjLXNwbGljZS1j
+b21tZW50czogRmluZCB0aGUgYmMtY29tbWVudCBvbiBvciBiZWxvdyBwb2ludCBhbmQgam9pbg0K
+OzsgaXQgd2l0aCB0aGUgb25lIGFib3ZlLg0KOzsNCjs7IGJjLWRlbGV0ZS1pbmRlbnRhdGlvbiwg
+YmMtc3BsaXQtbGluZS4NCjs7DQo7Ow0KOzs7IE1vcmUgR2VuZXJhbCBDb21tZW50IFBhcnNpbmcN
+Cjs7DQo7OyBJdCBpcyBjbGVhciB0aGF0IHdlIHdhbnQgdG8gYmUgYWJsZSB0byByZWNvZ25pemUg
+bW9yZSB0aGFuIG9uZQ0KOzsgY29tbWVudCBzeW50YXggaW4gYSBidWZmZXIuICBDKysgaXMgdGhl
+IHByaW1lIGV4YW1wbGUgb2YgYSBsYW5ndWFnZQ0KOzsgd2l0aCBtb3JlIHRoYW4gb25lIGNvbW1l
+bnQgc3ludGF4LiAgVGhhdCBmZWF0dXJlIGhhcyBiZWVuIGNvcGllZA0KOzsgYnkgSmF2YSBhbmQg
+SmF2YVNjcmlwdCBhcyB3ZWxsLiAgSW4gZmFjdCwgYSBidWZmZXIgY29udGFpbmluZw0KOzsgSmF2
+YVNjcmlwdCBhbHdheXMgY29udGFpbnMgSFRNTCBhcyB3ZWxsLCBzbyB0aGVyZSBtYXkgYmUgdGhy
+ZWUNCjs7IHN5bnRheGVzIHRvIGRlYWwgd2l0aC4NCjs7DQo7Ow0KOzs7IEdlbmVyYWxpemVkIEln
+bm9yaW5nDQo7Ow0KOzsgUHJlc2VudGx5LCBCQyBpZ25vcmVzIGNvbW1lbnRzIHRoYXQgc3RhcnQg
+aW4gdGhlIGZpcnN0IGNvbHVtbiBzbw0KOzsgdGhhdCBpdCBkb2Vzbid0IHRyeSB0byBmb3JtYXQg
+Y29tbWVudGVkLW91dCBjb2RlLiAgVGhpcyBjb3VsZCBiZQ0KOzsgZ2VuZXJhbGl6ZWQgdG8gaWdu
+b3JlIGFueSBjb21tZW50IHN0YXJ0aW5nIGluIGBiYy1pZ25vcmUtY29sdW1uJyBvcg0KOzsgYmVm
+b3JlLiAgU2V0dGluZyB0aGlzIHRvIC0xIHdvdWxkIGFsbG93IEJDIHRvIGZvcm1hdCBhbGwgY29t
+bWVudHMuDQo7Ow0KOzsgSSBub3cgZmVlbCB0aGF0IGl0IHdvdWxkIGJlIG11Y2ggYmV0dGVyIGlm
+IEJDIHdlcmUgYWJsZSB0byBmb3JtYXQNCjs7IGNvbW1lbnRzIHRoYXQgc3RhcnQgaW4gdGhlIGxl
+ZnRtb3N0IGNvbHVtbiBqdXN0IGxpa2UgYW55IG90aGVycy4gIEkNCjs7IHJlZnVzZSwgaG93ZXZl
+ciwgdG8gZ2l2ZSB1cCB0aGUgYWJpbGl0eSB0byBwcmVzZXJ2ZSBjb21tZW50ZWQtb3V0DQo7OyBj
+b2RlLiAgSSBkbyB0aGluayBpdCBpcyBwb3NzaWJsZSB0byBoYXZlIGJvdGgsIGl0IGlzIGp1c3Qg
+Z29pbmcgdG8NCjs7IGJlIHdvcmsgdG8gaW1wbGVtZW50IGl0Lg0KOzsNCjs7IA0KOzs7IE1lbWJl
+cnNoaXAgVGFncw0KOzsNCjs7IFNvbWV0aW1lcyB5b3Ugd291bGQgbGlrZSB0byBoYXZlIGJsb2Nr
+IGNvbW1lbnRzIG9uIGNvbnNlY3V0aXZlDQo7OyBsaW5lcywgYnV0IGN1cnJlbnRseSBiYy1tb2Rl
+IGRldGVybWluZXMgdGhlIGV4dGVudCBvZiBhIGNvbW1lbnQgYnkNCjs7IGxvb2tpbmcgZm9yIGxp
+bmVzIHRoYXQgaGF2ZSBubyBjb21tZW50cy4gIEFub3RoZXIgd2F5IGNvdWxkIGJlIHRvDQo7OyBh
+bGxvdyBhIGB0YWctY2hhcmFjdGVyJyB0byBjb21lIGltbWVkaWF0ZWx5IGFmdGVyIHRoZSBzdGFy
+dGluZw0KOzsgZGVsaW1pdGVyLiAgT25seSBjb21tZW50cyB3aXRoIG1hdGNoaW5nIHRhZyBjaGFy
+YXRlcnMgd291bGQgYmUNCjs7IGNvbnNpZGVyZWQgdG8gY29tcHJpc2UgYSBibG9jayBjb21tZW50
+LiAgRm9yIGV4YW1wbGU6DQo7Ow0KOzsgIGludCBpbmRleCA9IDE7CQkJICAgIC8vQCBTdGFydCBh
+dCBvbmUgYmVjYXVzZSB0aGF0IGlzDQo7OwkJCQkJICAgIC8vQCB3aGF0IE51bWVyaWNhbCBSZWNp
+cGVzIGRvZXMuDQo7OyAgVFdWZXJ0ZXhOb2RlSXRlcmF0b3IgaXRlck4ockcpOwkJICAgLy98IEdv
+IHRocm91Z2ggZXZlcnkgbm9kZQ0KOzsgIHdoaWxlIChpdGVyTikJCQkJICAgLy98IGluIHRoZSBF
+ZGl0IGdyYXBoLiAgIA0KOzsgIHsJCQkJICAgICAvLy0gSWYgaXQncyB3aGl0ZSBpdCdzIGEgU3Rl
+aW5lciBub2RlIHNvIA0KOzsgICAgVFdWZXJ0ZXhOb2RlICpwTiA9IGl0ZXJOKys7ICAgIC8vLSBp
+dCdzIG1vdmVhYmxlLiBIb3dldmVyLCBkb24ndCBwdWxsIGl0DQo7OyAgICBpZiAoKHBOLT5Db2xv
+cigpID09IGdyOjpXaGl0ZSkgLy8tIGlmIGl0IG9ubHkgaGFzIG9uZSBlZGdlIGJlY2F1c2UgaXQg
+ICANCjs7CQkJCSAgICAgLy8tIHdpbGwganVzdCBnZXQgcHVsbGVkIG9uIHRvcCBvZiB0aGUgICAN
+Cjs7CSAgICYmIChwTi0+RGVncmVlKCkgPiAxKSkgICAgLy8tIG5vZGUgYXQgdGhlIG90aGVyIGVu
+ZCBvZiB0aGF0IGVkZ2UuICANCjs7DQo7OyBBbiBhbHRlcm5hdGl2ZSBtaWdodCBiZSBhIGNvbW1l
+bnQtYmVnaW5uaW5nIGNoYXIgdG8gaW5kaWNhdGUgdGhlDQo7OyBmaXJzdCBsaW5lIG9mIGVhY2gg
+YmxvY2sgY29tbWVudC4gIEZvciBleGFtcGxlOg0KOzsNCjs7ICBpbnQgaW5kZXggPSAxOwkJCSAg
+ICAvLz4gU3RhcnQgYXQgb25lIGJlY2F1c2UgdGhhdCBpcw0KOzsJCQkJCSAgICAvLyAgd2hhdCBO
+dW1lcmljYWwgUmVjaXBlcyBkb2VzLg0KOzsgIFRXVmVydGV4Tm9kZUl0ZXJhdG9yIGl0ZXJOKHJH
+KTsJCSAgIC8vPiBHbyB0aHJvdWdoIGV2ZXJ5IG5vZGUNCjs7ICB3aGlsZSAoaXRlck4pCQkJCSAg
+IC8vICBpbiB0aGUgRWRpdCBncmFwaC4gICANCjs7ICB7CQkJCSAgICAgLy8+IElmIGl0J3Mgd2hp
+dGUgaXQncyBhIFN0ZWluZXIgbm9kZSBzbyANCjs7ICAgIFRXVmVydGV4Tm9kZSAqcE4gPSBpdGVy
+TisrOyAgICAvLyAgaXQncyBtb3ZlYWJsZS4gSG93ZXZlciwgZG9uJ3QgcHVsbCBpdA0KOzsgICAg
+aWYgKChwTi0+Q29sb3IoKSA9PSBncjo6V2hpdGUpIC8vICBpZiBpdCBvbmx5IGhhcyBvbmUgZWRn
+ZSBiZWNhdXNlIGl0ICAgDQo7OwkJCQkgICAgIC8vICB3aWxsIGp1c3QgZ2V0IHB1bGxlZCBvbiB0
+b3Agb2YgdGhlICAgDQo7OwkgICAmJiAocE4tPkRlZ3JlZSgpID4gMSkpICAgIC8vICBub2RlIGF0
+IHRoZSBvdGhlciBlbmQgb2YgdGhhdCBlZGdlLiAgDQo7Ow0KOzsgQm90aCBvZiB0aGVzZSBzZWVt
+IHByZXR0eSBoYXJkIHRvIHJlYWQuICBBIGJsYW5rIGxpbmUgdG8gc2VwYXJhdGUNCjs7IGNvbW1l
+bnRzIGlzIGRlc2lyYWJsZSBpZiBzcGFjZSBwZXJtaXRzLiAgU3RpbGwsIHRoZXJlIGFyZSB0aW1l
+cyB3aGVuDQo7OyB0aWdodGVyIHNwYWNpbmcgd291bGQgYmUgbmljZS4NCjs7DQo7Ow0KOzs7XyAg
+KiBUbyBEbzoNCjs7OyAgIC0tLS0tLQ0KOzsNCjs7IE1ha2UgYGRvLWF1dG8tZmlsbCcgY29udGV4
+dCBzZW5zaXRpdmUuICBJZiB0aGUgY29tbWVudCBoYXMgYW55IGNvZGUNCjs7IHRvIGl0cyBsZWZ0
+IChmb3IgYW55IGxpbmUgb2YgdGhlIGNvbW1tZW50KSwgYXNzdW1lIGl0IGlzIGENCjs7IHJpZ2h0
+LW1hcmdpbiBjb21tZW50IGFuZCBkb24ndCBhdXRvLWZpbGwgdW50aWwgdGV4dCBleGNlZWRzDQo7
+OyBiYy1HLXJtLW1pbnVzLXN0dWZmLg0KOzsNCjs7IGBiYy1tb3ZlaXQnIHNob3VsZCBjYWxsIGBi
+Yy1jbGVhbnVwLW5ld2xpbmVzJyBhZnRlciBkZWxldGluZyB0aGUNCjs7IG9sZCBjb21tZW50IGFu
+ZCAqYmVmb3JlKiBpbnNlcnRpbmcgdGhlIG5ld2x5IGZvcm1hdHRlZCBvbmUuICBUbw0KOzsgdGhp
+cyBlbmQsIGBiYy1maW5kLXJvb20nIHNob3VsZCBpZ25vcmUgbGluZXMgdGhhdCBjb250YWluIG5v
+IGNvZGUNCjs7IGFuZCBhcmUgbWFya2VkIHdpdGggdGhlIGBiYy1hZGRlZC1uZXdsaW5lJyBwcm9w
+ZXJ0eS4NCjs7DQo7Ow0KOzs7XyAgKiBDb3VsZCBEbzoNCjs7OyAgIC0tLS0tLS0tLQ0KOzsNCjs7
+IEl0IHdvdWxkbid0IGJlIHRvbyBoYXJkIHRvIHN1cHBvcnQgY2VudGVyIGFuZCByaWdodC1qdXN0
+aWZpY2F0aW9uLg0KOzsgTWF5YmUgdGhpcyB3b3VsZCBiZSB1c2VmdWwgZm9yIGJhbm5lciBjb21t
+ZW50cy4gIGBiYy1wdXQtdGV4dCcNCjs7IGNvdWxkIHJ1biB0aHJvdWdoIHRoZSBzY3JhdGNoIGJ1
+ZmZlciBqdXN0IGJlZm9yZSBjb3B5aW5nIGl0IHRvIHRoZQ0KOzsgY29kZSBidWZmZXIgYW5kIGxv
+b2sgZm9yIHRoZSBganVzdGlmaWNhdGlvbicgdGV4dCBwcm9wZXJ0eS4gIElmDQo7OyBwcmVzZW50
+LCBjYWxsIHRoZSByZWFsIGBmaWxsLWluZGl2aWR1YWwtcGFyYWdyYXBocycuDQo7Ow0KOzsgU3Vw
+cG9ydCBmb3IgYWRhcHRpdmUgZmlsbCB3b3VsZCBiZSBuaWNlIHRvby4gIEl0IHdvdWxkIHByb2Jh
+Ymx5DQo7OyBtZWFuIG5vdCB1c2luZyBiYy1maWxsLWJ1ZmZlciBhbmQganVzdCB1c2luZyBmaWxs
+LWJ1ZmZlciBpbnN0ZWFkLg0KOzsgVGhhdCBpbiB0dXJuIHdvdWxkIHJlcXVpcmUgYSBwb3N0LXNj
+YW4gb2YgdGhlIGJ1ZmZlciB0byBjb2xsZWN0IHRoZQ0KOzsgdmFyaW91cyBtZXRyaWNzIGFib3V0
+IHRoZSBmaWxsLiAgTWlnaHQgdGFrZSBhIHBlcmZvcm1hbmNlIGhpdC4NCjs7DQo7OztfICAqIEJ1
+Z3M6DQo7OzsgICAtLS0tLQ0KOzsNCjs7OyBGb3JtYXR0aW5nIEJ1Z3M6DQo7Ow0KOzsgTGlrZSBh
+bGwgRW1hY3MnIGNvbW1lbnQtaGFuZGxpbmcgY29tbWFuZHMsIEJDIGlzIGNvbmZ1c2VkIGJ5DQo7
+OyBjb21tZW50IGNoYXJhY3RlcnMgdGhhdCBhcHBlYXIgaW4gc3RyaW5ncy4gIFRoZSBwcm9ibGVt
+IGFwcGVhcnMNCjs7IHdvcnNlIGluIHdoZW4gdXNpbmcgQkMgYmVjYXVzZSBpdCBtZWFucyB0aGF0
+IGEgYmxvY2sgY29tbWVudCBjYW5ub3QNCjs7IHNwYW4gYW55IHN1Y2ggbGluZS4gIEZvciBleGFt
+cGxlOg0KOzsNCjs7ICBpZiAoIW9zKQkJCQkgICAgLy8gVGhlIHN0cmluZyBjb250YWlucyB0aGUg
+QysrDQo7OyAgewkJCQkJICAgIC8vIGNvbW1lbnQgc3RhcnRlciAoZG91YmxlDQo7OyAgICBjZXJy
+IDw8ICJFcnJvcjogLy9jb21tZW50IHN0YXJ0ZXIuIjsgIC8vIHNsYXNoKSwgc28gQkMgY2Fubm90
+IHByb3Blcmx5DQo7OyAgICByZXR1cm47CQkJCSAgICAvLyBmb3JtYXQgdGhpcyBibG9jayBjb21t
+ZW50LiBJdA0KOzsgIH0JCQkJCSAgICAvLyB3aWxsIGFzc3VtZSB0aGF0IHRoZSBjb21tZW50DQo7
+OwkJCQkJICAgIC8vIHN0YXJ0cyBpbnNpZGUgdGhlIHN0cmluZy4NCjs7DQo7OyBZb3UnbGwgaGF2
+ZSB0aGUgc2FtZSBwcm9ibGVtIHdpdGggRW1hY3MnIGJ1aWx0IGluIGNvbW1lbnRpbmcNCjs7IGNv
+bW1hbmRzLCBlLmcuLCBgaW5kZW50LWZvci1jb21tZW50JyAoTS07KS4NCjs7DQo7Ow0KOzs7IENv
+bXBhdGliaWxpdHkgQnVnczoNCjs7DQo7OyBBdXRvLWZpbGxpbmcgZG9lcyBub3Qgd29yayB3aXRo
+IGNwZXJsLW1vZGUgYmVjYXVzZSB0aGF0IG1vZGUNCjs7IGRlZmluZXMgaXRzIG93biBhdXRvLWZp
+bGwtZnVuY3Rpb24uICBBIHdvcmthcm91bmQgaXMgdG8gc2V0DQo7OyBgYXV0by1maWxsLWZ1bmN0
+aW9uJyBpbiB0aGUgbW9kZSBob29rLiAgVGhpcyBzZWVtcyB0byB3b3JrIG9rYXksDQo7OyB5b3Vy
+IG1pbGVhZ2UgbWF5IHZhcnk6DQo7Ow0KOzsgIChhZGQtaG9vayAnY3BlcmwtbW9kZS1ob29rDQo7
+OyAgCSAgICAgIChmdW5jdGlvbiAobGFtYmRhICgpDQo7OyAgCQkJICAodHVybi1vbi1iYy1tb2Rl
+KQ0KOzsgIAkJCSAgKHNldHEgYXV0by1maWxsLWZ1bmN0aW9uICdkby1hdXRvLWZpbGwpKSkpDQo7
+Ow0KOzsNCjs7IFdpdGggb2xkZXIgdmVyc2lvbnMgb2YgcGVybC1tb2RlLCBpbmRlbnRpbmcgZG9l
+cyBub3Qgd29yayBwcm9wZXJseQ0KOzsgd2hlbiBiYy1rZXltYXAtbGV2ZWwgaXMgbm9uLW5pbC4g
+IFlvdSBjYW4gZml4IHRoaXMgYnkgcGxhY2luZyB0aGUNCjs7IGZvbGxvd2luZyBpbiB5b3VyIC5l
+bWFjczoNCjs7DQo7OyAoYWRkLWhvb2sgJ3BlcmwtbW9kZS1ob29rIA0KOzsJICAgICAoZnVuY3Rp
+b24gKGxhbWJkYSAoKQ0KOzsJCQkoc2V0cSBpbmRlbnQtbGluZS1mdW5jdGlvbiAncGVybC1pbmRl
+bnQtY29tbWFuZCkpKSkNCjs7DQo7OyBCQyBpcyBjb21wYXRpYmxlIHdpdGgga3NoLW1vZGUsIGJ1
+dCBoYXMgdGhlIHNhbWUgcHJvYmxlbXMNCjs7IHdpdGggdGhlIHNoZWxsICMgYW5kICMjIHBhdHRl
+cm4gbWF0Y2hpbmcgb3BlcmF0b3JzIHRoYXQgb3RoZXINCjs7IGZ1bmN0aW9ucyBkbyAoY29tbWVu
+dCBmdW5jdGlvbnMsIGZvbnQtbG9jaywgZXRjLikuICBJdCB3aWxsIGNvbmZ1c2UNCjs7IHRoZXNl
+IG9wZXJhdG9ycyBmb3IgY29tbWVudCBzdGFydGVycy4gIFRoZSBiZWhhdmlvciBpcyBhdCB0aW1l
+cw0KOzsgcXVpdGUgYmFmZmxpbmcuDQo7Ow0KOzsNCjs7OyBPdGhlciBCdWdzOg0KOzsNCjs7IExv
+dHMgb2Ygbm9uLXNlcmlvdXMgYnV0IHVnbHkgYmVoYXZpb3Igd2hlbiBmb3JtYXR0aW5nIGVtcHR5
+DQo7OyBjb21tZW50cy4NCjs7IA0KOzsgTm90IHJlYWxseSBhIGJ1ZywgYnV0IGl0IHNlZW1zIHRv
+IGJlIGltcG9zc2libGUgdG8gZGVmaW5lIHRoZSBydWxlcw0KOzsgb2YgcmVmb3JtYXR0aW5nIHNv
+IHRoYXQgbmFycm93aW5nLCB3aWRlbmluZywgcmFpc2luZywgbG93ZXJpbmcsDQo7OyBldGMuLCBh
+bHdheXMgZG8gd2hhdCB5b3UgZXhwZWN0LiAgVGhpcyBpcyBiZWNhdXNlIHRoZXJlIGFyZSB1c3Vh
+bGx5DQo7OyBhIGh1Z2UgbnVtYmVyIG9mIHdheXMgdGhhdCBhIGNvbW1lbnQgY291bGQgYmUgZml0
+IGludG8gdGhlIHNwYWNlIHRvDQo7OyB0aGUgcmlnaHQgb2YgdGhlIGNvZGUuDQo7Ow0KOzsgQkMt
+bW9kZSBpcyBub3QgdmVyeSBpbnRlZ3JhdGVkIHdpdGggYnVpbHQtaW4gZW1hY3MgY29tbWVudCBz
+dXBwb3J0DQo7OyBmdW5jdGlvbnMuICBJdCBpc24ndCBjbGVhciB0byBtZSBqdXN0IHdoYXQgZm9y
+bSB0aGlzIHNob3VsZCB0YWtlDQo7OyAtLSBJJ20gb3BlbiB0byBzdWdnZXN0aW9ucy4NCjs7DQo7
+OyBJbiBwYXJ0aWN1bGFyLCBgaW5kZW50LXNleHAnIG1lc3NlcyB1cCBhbGwgcmlnaHQgbWFyZ2lu
+IGJsb2NrDQo7OyBjb21tZW50cy4gIFRoaXMgZG9lc24ndCBsb29rIGVhc3kgdG8gZml4LCBiZWNh
+dXNlIHRoZSBjb21tZW50cyBnZXQNCjs7IG1lc3NlZCB1cCBkZWVwIGluIHRoZSBib3dlbHMgb2Yg
+YGluZGVudC1zZXhwJy4gIE9uZSB3YXkgSSBjYW4gc2VlDQo7OyBvZiBmaXhpbmcgdGhpcyBpcyB0
+byBzdG9yZSB0aGUgc3RhcnRpbmcgY29sdW1uIG9mIGVhY2ggY29tbWVudCBpbiBhDQo7OyB0ZXh0
+IHByb3BlcnR5IGFuZCB0aGVuIGFkdmlzZSBgaW5kZW50LWZvci1jb21tZW50JyB0byB1c2UgdGhh
+dC4NCjs7IEFkZGl0aW9uYWwgaGFja2VyeSB3b3VsZCBiZSBuZWNlc3NhcnkgdG8gcmVtb3ZlIHRo
+ZSB0ZXh0IHByb3BlcnR5DQo7OyB3aGVuIHlvdSByZWFsbHkgZG8gd2FudCB0aGUgc3RhbmRhcmQg
+aW5kZW50YXRpb24uICBGdXJ0aGVyLCBpZiB0aGUNCjs7IHVzZXIgZG9lc24ndCBzdG9yZSB0aGUg
+dGV4dCBwcm9wZXJ0aWVzIHdpdGggdGhlIGZpbGUsIGBpbmRlbnQtc2V4cCcNCjs7IHdpbGwgbWVz
+cyB1cCB0aGUgY29tbWVudHMgbmV4dCB0aW1lIHRoZSBmaWxlIGlzIGxvYWRlZC4NCjs7DQo7Ow0K
+Ozs7IFRoYW5rczoNCjs7OyAtLS0tLS0NCjs7DQo7OyBIZWFydHkgdGhhbmtzIGFyZSBkdWUgdG8g
+c2V2ZXJhbCBhdXRob3JzIGZvciB0aGVpciBoaWdoLXF1YWxpdHkNCjs7IHNvZnR3YXJlIHRvb2xz
+IGZvciBFbWFjcyBMaXNwOg0KOzsNCjs7IFRvIERhbmllbCBMYUxpYmVydGUgZm9yIGVkZWJ1Zy5l
+bCwgdGhlIEVtYWNzIExpc3Agc291cmNlLWxldmVsIGRlYnVnZ2VyLg0KOzsgVG8gQmFycnkgV2Fy
+c2F3IGZvciBlbHAuZWwsIHRoZSBFbWFjcyBMaXNwIFByb2ZpbGVyLg0KOzsgVG8gSmFtaWUgWmF3
+aW5za2kgYW5kIEhhbGx2YXJkIEZ1cnVzZXRoIGZvciBFbWFjcyBMaXNwIGJ5dGUgY29tcGlsZXIu
+DQo7Ow0KOzsgDQo7OztfICYgQ2hhbmdlIExvZzoNCjs7OyAgIC0tLS0tLS0tLS0tDQo7OyAgMS4x
+ICAyMSBPY3QgMTk5NiAoYnVyZ2V0dCkNCjs7ICAgICAgUmVkZWZpbmVkIHRoZSBrZXltYXBzIHRv
+IGNvbmZvcm0gdG8gRW1hY3MnIGNvbnZlbnRpb24uDQo7OyAgICAgIEFkZGVkIGJjLWZpbGwtcGFy
+YWdyYXBoIGFuZCBjb2RlIHRvIHB1dCBpdCBpbg0KOzsgICAgICAgIGBmaWxsLXBhcmFncmFwaC1m
+dW5jdGlvbicuDQo7OyAgICAgIEFkZGVkIGZhdXgtZW5kLWRlbGltaXRlciBjYXBhYmlsaXR5Lg0K
+OzsgICAgICBVcGRhdGVkIEJVR1Mgc2VjdGlvbiBpbiBkb2N1bWVudGF0aW9uLg0KOzsgICAgICBV
+cGRhdGVkIGJjLW1vZGUtZG9jLg0KOzsNCjs7ICAxLjAgIDE5IE9jdCAxOTk2IChidXJnZXR0KQ0K
+OzsgICAgICBJbml0aWFsIHJlbGVhc2UuDQo7Ow0KIAwNCjs7O18gJiBDb2RlOg0KOzs7ICAtLS0t
+LQ0KDQoocmVxdWlyZSAnYWR2aWNlKQ0KKHJlcXVpcmUgJ2NsKQ0KDQo7Ozs9PT09PT09PT09PT09
+PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09
+PT0NCjs7O18gICogRm9yIGRlYnVnZ2luZyANCg0KOyAoc2V0cSBlbHAtZnVuY3Rpb24tbGlzdCAn
+KDErIGFkZC10ZXh0LXByb3BlcnRpZXMgYmMtY291bnQtbGluZXMtMQ0KOyBiYy1kZWxldGUtdGV4
+dCBiYy1nZXQtYnVmZmVyLWNyZWF0ZSBiYy1wdXQtdGV4dCBnb3RvLWxpbmUgbWVzc2FnZSkpDQoN
+CjsgKHNldHEgZWxwLWZ1bmN0aW9uLWxpc3QgJygxKyBhZGQtdGV4dC1wcm9wZXJ0aWVzIGJjLWNv
+dW50LWxpbmVzLTENCjsgYmMtZGVsZXRlLXRleHQgYmMtZ2V0LWJ1ZmZlci1jcmVhdGUgYmMtcHV0
+LXRleHQgY3VycmVudC1idWZmZXINCjsgZW5kLW9mLWxpbmUgZmJvdW5kcCBmdW5jYWxsIGdvdG8t
+Y2hhciBnb3RvLWxpbmUgaW5zZXJ0IGludGVnZXJwDQo7IGxlbmd0aCBsZXQgbGlzdCBsaXN0cCBt
+YWtlLW1hcmtlciBtYXJrZXItcG9zaXRpb24gbWF4IG1lc3NhZ2UgcG9pbnQNCjsgcHJvZ24gc2F2
+ZS1leGN1cnNpb24gc2V0LWJ1ZmZlciBzZXQtbWFya2VyIHNldHEgd2hpbGUpKQ0KDQoNCjs7Ozs9
+PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09
+PT09PT09PT09PT09PT0NCjs7O18gICogRG9jdW1lbnRhdGlvbjoNCg0KKGRlZmNvbnN0IGJjLW1v
+ZGUtZG9jICJIaSB0aGVyZSEiDQogICJUaGlzIGlzIGEgZHVtbXkgdmFyaWFibGUuICBJdHMgcHVy
+cG9zZSBpcyB0byBwcm92aWRlIG1vcmUNCmluZm9ybWF0aW9uIG9uIGJjLW1vZGUuICBTZWUgYWxz
+byB0aGUgZG9jdW1lbnRhdGlvbiBmb3IgdGhlIGZ1bmN0aW9uDQpgYmMtbW9kZScgXChEbyBgXFxb
+ZGVzY3JpYmUtbW9kZV0nIHdoZW4gYmMtbW9kZSBpcyBhY3RpdmUsIG9yIGBcXFtkZXNjcmliZS1m
+dW5jdGlvbl0gYmMtbW9kZSdcKS4NCg0KVVNJTkcgVEhFIE1JTk9SIE1PREU6DQo9PT09PT09PT09
+PT09PT09PT09PT0NCg0KICBCQy1tb2RlIGlzIGEgbWlub3IgbW9kZSBmb3IgZWRpdGluZyByaWdo
+dC1tYXJnaW4gYmxvY2stc3R5bGUNCiAgY29tbWVudHMgaW4gc291cmNlIGNvZGUuICBUaGVzZSBh
+cmUgY29tbWVudHMgdGhhdCBhcHBlYXIgdG8gdGhlDQogIHJpZ2h0IG9mIHRoZSBjb2RlLCBhbmQg
+b2Z0ZW4gc3BhbiBzZXZlcmFsIGNvbnNlY3V0aXZlIGxpbmVzLiAgT24NCiAgZWFjaCBsaW5lLCB0
+aGUgY29tbWVudCBpcyBkZWxpbWl0ZWQgYnkgc3RhcnQgYW5kIGVuZCBkZWxpbWl0ZXJzLCBhbmQN
+CiAgdGhlc2UgYXJlIGxpbmVkIHVwIHdpdGggdGhlIGRlbGltaXRlcnMgb24gYWRqYWNlbnQgbGlu
+ZXMgdG8gZm9ybSBhDQogIHJlY3Rhbmd1bGFyIGJsb2NrLiBGb3IgZXhhbXBsZSwgaW4gQzoNCg0K
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgLyogSWYgdGhlIGxlYWRpbmcg
+Y2hhciBvZiB0aGUgKi8NCiAgIGlmXChcKFN0cmluZ1swXSAhPSAnMCdcKSB8fCAgICAgICAgICAg
+IC8qIHN0cmluZyBpcyAnMCcsIHRoZW4gdGhlICAgICovDQogICAgICBcKHRvbG93ZXJcKFN0cmlu
+Z1sxXVwpICE9ICd4JyAmJiAgICAvKiBudW1iZXIgaXMgcHJvYmFibHkgaW4gaGV4ICAqLw0KICAg
+ICAgICFpc2RpZ2l0XChTdHJpbmdbMV1cKVwpXCl7ICAgICAgICAgIC8qIG9yIG9jdGFsOyB0aGF0
+IGlzLCB1bmxlc3MgICovDQogICAgIGlSZXMgPSBzc2NhbmZcKFN0cmluZywgXCIlbGRcIiwgJlRc
+KTsgLyogdGhlIG51bWJlciBpcyBqdXN0IHplcm8uICAgKi8NCg0KDQogIENvbW1hbmRzIHByb3Zp
+ZGVkIGJ5IGJjLW1vZGUgZmFsbCByb3VnaGx5IGludG8gdGhyZWUgZ3JvdXBzOg0KICBmb3JtYXR0
+aW5nLCBlZGl0aW5nLCBhbmQgbW90aW9uOg0KDQogIEZvcm1hdHRpbmcgY29tbWFuZHMgaW5jbHVk
+ZQ0KICAtLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0NCiAgICBgYmMtZmlsbCcgYW5kIGBiYy1z
+cXVlZXplJyAgICAgICAgICBCbG9jayBmaWxsIHRoZSBjb21tZW50Lg0KICAgIGBiYy1yYWlzZScg
+YW5kIGBiYy1sb3dlcicgICAgICAgICAgIE1vdmUgdGhlIGNvbW1lbnQgdXAgb3IgZG93bg0KCQkJ
+CQkgICBvbmUgb3IgbW9yZSBsaW5lcy4NCiAgICBgYmMtcmFpc2UtZmxvdycgYW5kICAgICAgICAg
+ICAgICAgICBNb3ZlIHRoZSBjb21tZW50IHVwIG9yIGRvd24sDQogICAgYGJjLWxvd2VyLWZsb3cn
+ICAgICAgICAgICAgICAgICAgICAgICAgcmVmb3JtYXR0aW5nIGl0IGlmIG5lY2Vzc2FyeS4NCiAg
+ICBgYmMtbmFycm93ZXInIGFuZCBgYmMtd2lkZXInICAgICAgICBSZWZvcm1hdCB0aGUgY29tbWVu
+dCBuYXJyb3dlcg0KCQkJCQkgICBvciB3aWRlci4NCiAgICBgYmMtdGFsbGVyJyBhbmQgYGJjLXNo
+b3J0ZXInICAgICAgICBSZWZvcm1hdCB0aGUgY29tbWVudCB0YWxsZXINCiAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICBvciBzaG9ydGVyLg0KDQogICBFZGl0aW5nIGNv
+bW1hbmRzIGluY2x1ZGUNCiAgLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tDQogICAgYGJjLWtp
+bGwtY29tbWVudCcgICAgICAgICAgICAgICAgICAgS2lsbCB0aGUgdGV4dCBvZiB0aGUgY29tbWVu
+dC4NCiAgICBgYmMtY29weS1jb21tZW50LWFzLWtpbGwnICAgICAgICAgICBTYXZlIHRoZSBjb21t
+ZW50IGFzIGlmIGtpbGxlZCwNCgkJCQkJICAgYnV0IGRvbid0IGtpbGwgaXQuIA0KICAgIGBiYy15
+YW5rJyBhbmQgYGJjLXlhbmstcG9wJyAgICAgICAgIFlhbmsgZnJvbSBraWxsLXJpbmcgYW5kIGZv
+cm1hdA0KCQkJCQkgICBhcyBjb21tZW50LiANCiAgICBgYmMta2lsbC1saW5lJyAgICAgICAgICAg
+ICAgICAgICAgICBDb21tZW50LXNlbnNpdGl2ZSB2ZXJzaW9uIG9mDQoJCQkJCSAgIGBraWxsLWxp
+bmUnLg0KICAgIGBiYy1vcGVuLWxpbmUnLCBgYmMtbmV3bGluZScsDQogICAgYGJjLWluZGVudC1u
+ZXctY29tbWVudC1saW5lJywgICAgICAgQ29tbWVudC1zZW5zaXRpdmUgdmVyc2lvbnMgb2YNCiAg
+ICBgYmMtaW5kZW50LWFjY29yZGluZy10by1tb2RlJyAgICAgICAgICB0aGVpciBuYW1lc2FrZXMu
+DQoNCiAgTW90aW9uIGNvbW1hbmRzIGluY2x1ZGUNCiAgLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tDQogICAgYGJjLWJlZ2lubmluZy1vZi1saW5lJyBhbmQgICAgICAgICAgTW92ZSB0byBiZWdp
+bm5pbmcgb3IgZW5kIG9mDQogICAgYGJjLWVuZC1vZi1saW5lJyAgICAgICAgICAgICAgICAgICAg
+ICAgY29tbWVudCBvciBjb2RlLg0KICAgIGBiYy1iYWNrd2FyZC1jb21tZW50JyBhbmQgICAgICAg
+ICAgIE1vdmUgb25lIG9yIG1vcmUgYmxvY2sgY29tbWVudHMNCiAgICBgYmMtZm9yd2FyZC1jb21t
+ZW50JyAgICAgICAgICAgICAgICAgICBiYWNrd2FyZCBvciBmb3J3YXJkLg0KDQoNCg0KSG93IEJD
+LW1vZGUgRm9ybWF0cyBCbG9jayBDb21tZW50czoNCi0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tDQogIEJDJ3MgZm9ybWF0dGluZyBjb21tYW5kcyBtb3ZlIGFuZCByZXNoYXBlIGJs
+b2NrIGNvbW1lbnRzLiAgQkMNCiAgY29uc2lkZXJzIGEgYmxvY2sgY29tbWVudCB0byBjb25zaXN0
+IG9mIGFsbCB0aGUgY29tbWVudCB0ZXh0IG9uDQogIGNvbnNlY3V0aXZlIGxpbmVzIHRoYXQgY29u
+dGFpbiBjb21tZW50cy4gIFR3byBibG9jayBjb21tZW50cyBtdXN0IGJlDQogIHNlcGFyYXRlZCBi
+eSBhdCBsZWFzdCBvbmUgbGluZSB0aGF0IGNvbnRhaW5zIG5vIGNvbW1lbnQsIG9yIGNvbnRhaW5z
+DQogIG9ubHkgYSBjb21tZW50IHRoYXQgc3RhcnRzIGluIHRoZSBmaXJzdCBjb2x1bW4uDQoNCiAg
+Q09NTUVOVFMgVEhBVCBCRUdJTiBJTiBUSEUgRklSU1QgQ09MVU1OIEFSRSBOT1QgUkVDT0dOSVpF
+RCBCWQ0KICBCQy1NT0RFIENPTU1BTkRTIEFTIEJMT0NLIENPTU1FTlRTLg0KDQogIFRoaXMgaXMg
+c28geW91IGNhbiBjb21tZW50IG91dCBsaW5lcyBvZiBjb2RlIHdpdGhvdXQgYmMtbW9kZQ0KICB0
+aGlua2luZyB5b3Ugd2FudCB0aGVtIGZvcm1hdHRlZCBhcyBibG9jayBjb21tZW50cy4gIFlvdSBj
+YW4gZXZlbg0KICBoYXZlIGNvbW1lbnRzIGluIHRoZSByaWdodCBtYXJnaW4gb2Ygc3VjaCBjb2Rl
+IGFuZCBzdGlsbCBmb3JtYXQgdGhlbQ0KICB3aXRoIEJDIGNvbW1hbmRzLg0KDQogIFRoZSBjdXJy
+ZW50IGltcGxlbWVudGF0aW9uIG9mIEJDIGNhbiBvbmx5IHJlY29nbml6ZSBvbmUgY29tbWVudA0K
+ICBzdHlsZSBhdCBhIHRpbWUuICBJbiBsYW5ndWFnZXMgbGlrZSBDKysgYW5kIFBhc2NhbCwgQkMg
+Y2FuIG9ubHkNCiAgZm9ybWF0IGNvbW1lbnRzIGhhdmluZyB0aGUgc3ludGF4IHdpdGggd2hpY2gg
+YmMtbW9kZSB3YXMgdHVybmVkIG9uLg0KICBUbyBzd2l0Y2ggdG8gYW5vdGhlciBzeW50YXgsIHVz
+ZSB0aGUgY29tbWFuZCBgYmMtbW9kZScgd2l0aCBhIHByZWZpeA0KICBhcmd1bWVudCBcKEMtdSBc
+XFtiYy1tb2RlXVwpIGFuZCBzZWxlY3QgdGhlIGRlc2lyZWQgc3ludGF4Lg0KDQogIEJDIGZvcm1h
+dHRpbmcgY29tbWFuZHMgcmVzaGFwZSBibG9jayBjb21tZW50cyBcKHdoaWxlIGtlZXBpbmcgdGhl
+bQ0KICBibG9ja2VkXCksIHN1YmplY3QgdG8gdGhlIHNwYWNlIGF2YWlsYWJsZSB0byB0aGUgcmln
+aHQgb2YgdGhlIGNvZGUuDQogIEluIHNvbWUgY2FzZXMsIEJDIGFkZHMgYmxhbmsgbGluZXMgaW4g
+b3JkZXIgdG8gYmUgYWJsZSB0byBmdWxmaWxsIGENCiAgZm9ybWF0dGluZyByZXF1ZXN0Lg0KDQog
+IEJDIGNvbW1hbmRzIGRlY2lkZSBob3cgdG8gZm9ybWF0IGJ5IGV4YW1pbmluZyB0aGUgY29tbWVu
+dC4gIE11Y2ggb2YNCiAgdGhlIGZvcm1hdCBvZiBhIGJsb2NrIGNvbW1lbnQgaXMgZGV0ZXJtaW5l
+ZCBieSBpdHMgZmlyc3QgZmV3IGxpbmVzLg0KICBGb3IgZXhhbXBsZSwgYSBDKysgY29tbWVudCBj
+YW4gYmVnaW4gd2l0aCBhbnkgbnVtYmVyIG9mIHNsYXNoZXMuICBCQw0KICBjb21tYW5kcyB3aWxs
+IGV4YW1pbmUgdGhlIGZpcnN0IGxpbmUgb2YgdGhlIGNvbW1lbnQgXCh1bmxlc3MgaXQgaXMgYQ0K
+ICBiYW5uZXIgY29tbWVudFwpIHRvIGRlY2lkZSBob3cgbWFueSBzbGFzaGVzIHRvIHVzZSB3aGVu
+IHJlZm9ybWF0dGluZw0KICB0aGUgY29tbWVudC4gIElmIGl0IGlzIGEgYmFubmVyIGNvbW1lbnQs
+IHRoZSBmaXJzdCBsaW5lIGNvbnRhaW5pbmcNCiAgdGhlIHRleHQgb2YgdGhlIGNvbW1lbnQgaXMg
+dXNlZC4NCg0KICBUaHVzLCBpZiB5b3UgZGVjaWRlIHlvdXIgY29tbWVudCB3b3VsZCBsb29rIGJl
+dHRlciB3aXRoIHRocmVlDQogIHNsYXNoZXMgaW5zdGVhZCBvZiB0d28sIGFkZCBvbmUgdG8gdGhl
+IGJlZ2lubmluZyBvZiB0aGUgZmlyc3QgbGluZQ0KICBvZiB0aGUgY29tbWVudCBhbmQgdHlwZSBg
+XFxbYmMtZmlsbF0nIFwoYmMtZmlsbCwgb3IgYW55IG90aGVyIEJDDQogIGZvcm1hdHRpbmcgY29t
+bWFuZFwpLiAgVGhlIGNvbW1lbnQgd2lsbCBiZSByZWZvcm1hdHRlZCBzbyB0aGF0IHRoZQ0KICBz
+dGFydCBhbmQgZW5kIGRlbGltaXRlcnMgb24gZWFjaCBsaW5lIG1hdGNoIHRob3NlIG9uIHRoZSBm
+aXJzdCBsaW5lLg0KICBUaGlzIHdvcmtzIGluIG90aGVyIGxhbmd1YWdlcyBhcyB3ZWxsLiAgRm9y
+IGV4YW1wbGUsIGluIEMgeW91ciBzdGFydA0KICBhbmQgZW5kIGRlbGltaXRlcnMgbWF5IGluY2x1
+ZGUgYW55IG51bWJlciBvZiBgKicgY2hhcmFjdGVycywNCiAgZS5nLiBgLyoqKiAqKiovJw0KDQog
+IEJDLW1vZGUgZGV0ZXJtaW5lcyB0aGUgZm9sbG93aW5nIHRoaW5ncyBieSBleGFtaW5pbmcgdGhl
+IGNvbW1lbnQ6DQoNCiAgICBJZiB0aGUgZmlyc3QgbGluZSBvZiB0aGUgY29tbWVudCBtZWV0cyB0
+aGUgY3JpdGVyaWEgb2YgYmVpbmcgYQ0KICAgIGJhbm5lciBib3JkZXIsIHRoZSBjb21tZW50IGlz
+IGNvbnNpZGVyZWQgdG8gYmUgYSBiYW5uZXIgY29tbWVudA0KICAgIGFuZCB0aGUgYm9yZGVyIGNo
+YXJhY3RlciBpcyBkZXRlcm1pbmVkIGZyb20gdGhpcyBsaW5lLg0KDQogICAgSWYgdGhlIHNlY29u
+ZCBsaW5lIG9mIGEgYmFubmVyIGNvbW1lbnQgY29udGFpbnMgb25seSB3aGl0ZXNwYWNlDQogICAg
+aW5zaWRlIHRoZSBkZWxpbWl0ZXJzLCBhIHNpbmdsZSB3aGl0ZXNwYWNlLW9ubHkgbGluZSB3aWxs
+IGJlDQogICAgcHJlc2VydmVkIGF0IHRoZSB0b3Agb2YgdGhlIGZvcm1hdHRlZCBjb21tZW50Lg0K
+DQogICAgVGhlIGVmZmVjdGl2ZSBzdGFydCBkZWxpbWl0ZXIgaXMgdGFrZW4gZnJvbSB0aGUgZmly
+c3QgbGluZSBvZiBhDQogICAgbm9uLWJhbm5lciBjb21tZW50LCBvciB0aGUgZmlyc3QgdGV4dCBs
+aW5lIG9mIGEgYmFubmVyIGNvbW1lbnQuDQoNCiAgICBJZiB0aGF0IGxpbmUgaGFzIHdoaXRlc3Bh
+Y2UgYmV0d2VlbiB0aGUgc3RhcnQgZGVsaW1pdGVyIGFuZCB0aGUNCiAgICB0ZXh0LCB0aGF0IGlz
+IGNvbnNpZGVyZWQgcGFydCBvZiB0aGUgZWZmZWN0aXZlIGRlbGltaXRlci4NCg0KICAgIFRoZSBl
+ZmZlY3RpdmUgZW5kIGRlbGltaXRlciBpcyBkZXRlcm1pbmVkIGluIHRoZSBzYW1lIHdheSwgYnV0
+DQogICAgdW5mb3J0dW5hdGVseSwgaXQgaXMgbm90IHBvc3NpYmxlIHRvIGFjY3VyYXRlbHkgcHJl
+c2VydmUNCiAgICB3aGl0ZXNwYWNlIGJlZm9yZSB0aGUgZW5kIGRlbGltaXRlci4gIEluc3RlYWQs
+IHRoZSBlZmZlY3RpdmUgZW5kDQogICAgZGVsaW1pdGVyIHdpbGwgY29udGFpbiB0aGUgc2FtZSBh
+bW91bnQgb2Ygd2hpdGVzcGFjZSBhcyB0aGUNCiAgICBlZmZlY3RpdmUgc3RhcnQgZGVsaW1pdGVy
+LiAgQWRkaXRpb25hbCBzcGFjZXMgYXJlIGFkZGVkIGFzDQogICAgbmVjZXNzYXJ5IHRvIGFsaWdu
+IHRoZSBlbmQgZGVsaW1pdGVycyB0byBgYmMtcmlnaHQtbWFyZ2luJy4NCg0KICAgIEluIGxhbmd1
+YWdlcyB0aGF0IGhhdmUgbm8gY29tbWVudCBlbmQgZGVsaW1pdGVyLCB0aGUgZmlyc3QgbGluZSBp
+cw0KICAgIGNoZWNrZWQgZm9yIGEgZmF1eCBlbmQgZGVsaW1pdGVyLiAgVG8gcXVhbGlmeSwgdGhl
+IGxpbmUgbXVzdCBlbmQNCiAgICB3aXRoIGEgc3RyaW5nIG9mIGNoYXJhY3RlcnMgdGhhdCBpcyB0
+aGUgbWlycm9yIGltYWdlIG9mIHRoZSBzdGFydA0KICAgIGRlbGltaXRlciAoc2VlIGJlbG93KS4g
+IElmIG9uZSBpcyByZWNvZ25pemVkLCBpdCBiZWNvbWVzIHRoZQ0KICAgIGVmZmVjdGl2ZSBlbmQg
+ZGVsaW1pdGVyLg0KDQogICAgSWYgYSBiYW5uZXIgY29tbWVudCBoYXMgYSBibGFuayBsaW5lIGF0
+IHRoZSBib3R0b20gXChhYm92ZSB0aGUNCiAgICBib3R0b20gYm9yZGVyXCksIGEgc2luZ2xlIHdo
+aXRlc3BhY2Utb25seSBsaW5lIHdpbGwgYmUgcHJlc2VydmVkIGF0DQogICAgdGhlIGJvdHRvbSBv
+ZiB0aGUgZm9ybWF0dGVkIGNvbW1lbnQuDQoNCiAgICBBIGNvbW1lbnQgY2FuIGhhdmUgbXVsdGlw
+bGUgcGFyYWdyYXBocy4gIFRoZSBwYXJhZ3JhcGggc2VwYXJhdG9yDQogICAgaXMgYSBcImJsYW5r
+IGxpbmUsXCIgbWVhbmluZyBhIGxpbmUgd2l0aCBhIGNvbW1lbnQgdGhhdCBjb250YWlucw0KICAg
+IG9ubHkgZGVsaW1pdGVycyBhbmQgd2hpdGVzcGFjZS4gIE5vdGUgdGhlIGRpZmZlcmVuY2UgYmV0
+d2VlbiB0aGlzDQogICAgYW5kIGEgbGluZSB0aGF0IGNvbnRhaW5zIG5vIGNvbW1lbnQgYXQgYWxs
+LCB3aGljaCBpcyB1c2VkIHRvDQogICAgc2VwYXJhdGUgdHdvIGJsb2NrIGNvbW1lbnRzLiAgTXVs
+dGlwbGUgcGFyYWdyYXBocyB3aXRoaW4gYSBibG9jaw0KICAgIGNvbW1lbnQgYXJlIGZpbGxlZCBp
+bmRpdmlkdWFsbHksIGFuZCBhIHNpbmdsZSBcImJsYW5rIGxpbmVcIiB3aWxsDQogICAgYmUgcHJl
+c2VydmVkIHRvIHNlcGFyYXRlIHRoZW0uDQoNCg0KU3F1ZWV6aW5nIGFuZCBUYWJiaW5nOg0KLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLQ0KICBCQydzIGZvcm1hdHRpbmcgY29tbWFuZHMgY2FuIGJlIGZ1
+cnRoZXIgZGl2aWRlZCBpbnRvIHRocmVlDQogIHN1Ymdyb3VwczogdGFiYmluZywgc3F1ZWV6aW5n
+LCBhbmQgbW92aW5nLiAgVGFiYmluZyBjb21tYW5kcyBwbGFjZQ0KICB0aGUgZm9ybWF0dGVkIGNv
+bW1lbnQgYXQgYXQgXCJ0YWItc3RvcFwiLiAgVGFiYmluZyBjb21tYW5kcyBpbmNsdWRlDQogIGBi
+Yy1maWxsJywgYGJjLXdpZGVyJywgYW5kIGBiYy1uYXJyb3dlcicuDQoNCiAgU3F1ZWV6aW5nIGNv
+bW1hbmRzIHNxdWFyZSB1cCB0aGUgY29tbWVudCB0byBtYWtlIGl0IHRha2UgdXAgdGhlDQogIGZl
+d2VzdCBudW1iZXIgb2YgY29sdW1ucyBmb3IgYSBnaXZlbiBudW1iZXIgb2YgbGluZXMsIHRoZW4g
+cGxhY2UgdGhlDQogIGNvbW1lbnQgYXMgZmFyIHRvIHRoZSByaWdodCBhcyBwb3NzaWJsZS4gIFNx
+dWVlemluZyBjb21tYW5kcyBpbmNsdWRlDQogIGBiYy1zcXVlZXplJywgYGJjLXNob3J0ZXInLCBh
+bmQgYGJjLXRhbGxlcicuDQoNCiAgTW92aW5nIGNvbW1hbmRzIGRvbid0IHNxdWVlemUgb3IgdGFi
+LCB0aGV5IGZvcm1hdCB0aGUgY29tbWVudCBhcw0KICBjbG9zZSBhcyBwb3NzaWJsZSB0byBpdHMg
+Y3VycmVudCBzaGFwZSBhbmQgcGxhY2UgaXQgYXMgY2xvc2UgYXMNCiAgcG9zc2libGUgdG8gaXRz
+IGN1cnJlbnQgaG9yaXpvbnRhbCBwb3NpdGlvbi4gIE1vdmluZyBjb21tYW5kcw0KICBpbmNsdWRl
+IGBiYy1yYWlzZScsIGBiYy1yYWlzZS1mbG93JywgYGJjLWxvd2VyJyBhbmQgYGJjLWxvd2VyLWZs
+b3cnLg0KDQogIFByb2JhYmx5IHlvdSB3aWxsIHVzZSB0aGUgdGFiYmluZyBjb21tYW5kcyBtb3N0
+IG9mdGVuLiAgVGhlc2UgdGVuZA0KICB0byBnaXZlIGNvbW1lbnRzIGEgbW9yZSBmb3JtYWwgYXBw
+ZWFyYW5jZSBiZWNhdXNlIHRoZSBjb21tZW50cyBjYW4NCiAgYmUgaG9yaXpvbnRhbGx5IGFsaWdu
+ZWQgd2l0aCBvdGhlcnMgYWJvdmUgYW5kIGJlbG93LiAgWW91IGNhbiBzZXQNCiAgdGFiIHN0b3Bz
+IGluZGl2aWR1YWxseSAoaW4gbGlzcCksIG9yIHlvdSBjYW4gc2V0IHRoZW0gdG8gYSB1bmlmb3Jt
+DQogIHNwYWNpbmcgd2l0aCB0aGUgY29tbWFuZCBgYmMtc2V0LXRhYi1zcGFjaW5nJy4gIExhcmdl
+IHZhbHVlcyBvZiB0YWINCiAgc3BhY2luZyBmb3JjZSBibG9jayBjb21tZW50cyBpbnRvIGEgc21h
+bGxlciBzZWxlY3Rpb24gb2YgaG9yaXpvbnRhbA0KICBwb3NpdGlvbnMgbWFrZSB0aGVtIG1vcmUg
+dmlzdWFsbHkgYWxpZ25lZC4gIExhcmdlIHZhbHVlcyBhbHNvIG1ha2UNCiAgaXQgbW9yZSBkaWZm
+aWN1bHQgdG8gZm9ybWF0IGEgY29tbWVudCBpbiBhIHRpZ2h0IHNwYWNlLg0KDQogIFVzZSB0aGUg
+c3F1ZWV6aW5nIGNvbW1hbmRzIHRvIGZpdCBhIGNvbW1lbnQgaW50byBhIHRpZ2h0DQogIHJpZ2h0
+LW1hcmdpbiBzcGFjZSBvciB0byBnZXQgdGhlIG1heGltdW0gYW1vdW50IG9mIHdoaXRlIHNwYWNl
+DQogIGJldHdlZW4gdGhlIGNvZGUgYW5kIHRoZSBjb21tZW50LiAgRm9yIGV4YW1wbGUsIGlmIHlv
+dSBuZWVkIHRvIGZpdCBhDQogIGNvbW1lbnQgaW50byBhIHJpZ2h0LW1hcmdpbiBzcGFjZSBvZiAy
+MCBjb2x1bW5zLCB0aGUgZGVmYXVsdCB0YWINCiAgc3BhY2luZyBvZiA4IGlzIGdlbmVyYWxseSB0
+b28gY29hcnNlIGZvciB0aGUga2luZCBvZiBmaW5lLXR1bmluZyB5b3UNCiAgbmVlZC4gIFRoZSBh
+bnN3ZXIgaXMgbm90IHRvIHNldCB0aGUgdGFiIHNwYWNpbmcgdG8gYSB2ZXJ5IHNtYWxsDQogIHZh
+bHVlICh0aG91Z2ggdGhpcyB3b3VsZCB3b3JrKSwgYnV0IHRvIGFkanVzdCB0aGUgY29tbWVudCBi
+eQ0KICBpbmNyZW1lbnRzIG9mIG9uZSBsaW5lIHRhbGxlciBvciBzaG9ydGVyLg0KDQogIE1vdmlu
+ZyBjb21tYW5kcyBwcmVzZXJ2ZSB0aGUgaG9yaXpvbnRhbCBwbGFjZW1lbnQgb2YgdGhlIGNvbW1l
+bnQgYXMNCiAgbXVjaCBhcyB0aGV5IGNhbi4gIFR3byBvZiB0aGVzZSBjb21tYW5kcywgYGJjLXJh
+aXNlLWZsb3cnIGFuZA0KICBgYmMtbG93ZXItZmxvdycsIGRvIGl0IHdpdGhvdXQgZGlzdHVyYmlu
+ZyB0aGUgY29kZSB0byB0aGUgbGVmdC4NCiAgU29tZXRpbWVzIHRoZXkgbWF5IGhpdCBhIGxpbmUg
+b2YgY29kZSB0aGF0IGlzIHRvbyB3aWRlIHRvIGFsbG93IHRoZQ0KICBzYW1lIGhvcml6b250YWwg
+cGxhY2VtZW50LiAgV2hlbiB0aGlzIGhhcHBlbnMgdGhleSB3aWxsIHBsYWNlIHRoZQ0KICBjb21t
+ZW50IGp1c3QgYWZ0ZXIgdGhlIGVuZCBvZiB0aGF0IGxpbmUuICBUaGUgcmVzdWx0IGlzIHRoYXQg
+dGhlDQogIGNvbW1lbnQgaXMgbmVpdGhlciBzcXVlZWV6ZWQgbm9yIHRhYmJlZC4gIChXaGVuIGNh
+bGxlZCB3aXRoIGEgcHJlZml4DQogIGFyZ3VtZW50IGBiYy1maWxsJyBoYXMgYSBzaW1pbGFyIGJl
+aGF2aW9yLiAgSXQganVzdCBkb2Vzbid0IG1vdmUgdGhlDQogIGNvbW1lbnQgdmVydGljYWxseSku
+ICBVc3VhbGx5IHlvdSB3aWxsIHdhbnQgdG8gZmluaXNoIGEgc2VxdWVuY2Ugb2YNCiAgc3VjaCBj
+b21tYW5kcyB3aXRoIGEgYGJjLWZpbGwnIChubyBwcmVmaXggYXJndW1lbnQpIG9yIGBiYy1zcXVl
+ZXplJy4NCiAgVGhlIG90aGVyIHR3byBtb3ZpbmcgY29tbWFuZHMgYGJjLXJhaXNlLWZsb3cnIGFu
+ZCBgYmMtbG93ZXItZmxvdycsDQogIGFsd2F5cyBwcmVzZXJ2ZSB0aGUgaG9yaXpvbnRhbCBwb3Np
+dGlvbiBvZiB0aGUgY29tbWVudCwgYW5kDQogIHNvbWV0aW1lcyBpbnNlcnQgYmxhbmsgbGluZXMg
+dG8gcGVybWl0IHRoZW0gdG8gZG8gc28uDQoNCiAgTm90ZSB0aGF0IGEgY29tbWVudCBjYW4gYmUg
+Zm9yY2VkIHRvIGFueSBjb2x1bW4gKGlmIHRoZXJlIGlzIHJvb20pDQogIGJ5IGFkZGluZyBvciBk
+ZWxldGluZyBzcGFjZXMgYmVmb3JlIHRoZSBzdGFydCBkZWxpbWl0ZXIgb2YgdGhlIGZpcnN0DQog
+IGxpbmUgb2YgdGV4dC4gIFdoZW4gdGhhdCBsaW5lIG9mIHRoZSBjb21tZW50IGJlZ2lucyBpbiB0
+aGUgZGVzaXJlZA0KICBjb2x1bW4sIGRvIGBiYy1maWxsJyB3aXRoIGEgcHJlZml4IGFyZ3VtZW50
+IFwoQy11IFxcW2JjLWZpbGxdXCkgdG8NCiAgYWxpZ24gdGhlIHJlc3Qgb2YgdGhlIGNvbW1lbnQu
+DQoNCg0KQmFubmVyIGNvbW1lbnRzOg0KLS0tLS0tLS0tLS0tLS0tLQ0KICBCYW5uZXIgY29tbWVu
+dHMgYXJlIHRob3NlIHRoYXQgaW5jbHVkZSBhIGJvcmRlciBjb21tZW50IGxpbmUgZm9yIHRoZQ0K
+ICBmaXJzdCBhbmQgbGFzdCBsaW5lcyBvZiB0aGUgYmxvY2sgY29tbWVudC4gRm9yIGV4YW1wbGUs
+IGluIEM6DQoNCiAgaWZcKCpwSWRcKXsgICAgICAgICAgICAgICAgICAgICAgICAgIC8qKj09PT09
+PT09PT09PT09PT09PT09PT09PT09PSoqLw0KICAgIHJldHVybiBwSWQ7ICAgICAgICAgICAgICAg
+ICAgICAgIC8qKiAgICAgICAgICAgICAgICAgICAgICAgICAgICoqLw0KICB9IGVsc2UgeyAgICAg
+ICAgICAgICAgICAgICAgICAgICAgIC8qKiBUaGlzIGlzIGEgYmFubmVyIGNvbW1lbnQuICoqLw0K
+ICAgIHJldHVybiAwOyAgICAgICAgICAgICAgICAgICAgICAgIC8qKiAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICoqLw0KICB9ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIC8qKj09
+PT09PT09PT09PT09PT09PT09PT09PT09PSoqLw0KDQogIEJhbm5lciBjb21tZW50cyBtYXkgb3B0
+aW9uYWxseSBpbmNsdWRlIGJsYW5rIGxpbmVzIGFib3ZlIGFuZCBiZWxvdw0KICB0aGUgdGV4dCwg
+YXMgdGhlIG9uZSBhYm92ZSBkb2VzLiAgTm90ZSBhbHNvIHRoYXQgZWZmZWN0aXZlDQogIGRlbGlt
+aXRlcnMgd2l0aCBhbiBleHRyYSBgKicgY2hhcmFjdGVyIHdlcmUgdXNlZC4gIA0KDQogIEEgY29t
+bWVudCBvbiBhIGxpbmUgaXMgY29uc2lkZXJlZCB0byBiZSBhIGJhbm5lciBib3JkZXIgaWYgaXQN
+CiAgY29uc2lzdHMgZW50aXJlbHkgb2YgdGhlIHNhbWUgY2hhcmFjdGVyIFwobGlrZSB0aGUgZXF1
+YWwgc2lnbiBhYm92ZVwpLA0KICBhbmQgY29udGFpbnMgbm8gd2hpdGVzcGFjZSBhbnl3aGVyZSBp
+bnNpZGUgdGhlIGRlbGltaXRlcnMuICBUaGUNCiAgY2hhcmFjdGVyIG1heSBiZSBvbmUgdGhhdCBp
+cyBmb3VuZCBpbiB0aGUgZGVsaW1pdGVycyBcKGUuZy4gYSBgKicgaW4NCiAgQ1wpIGlmIGRlc2ly
+ZWQuDQoNCiAgSWYgYSBibG9jayBjb21tZW50IGhhcyBhIHRvcCBiYW5uZXIgaXQgaXMgY29uc2lk
+ZXJlZCBhIGJhbm5lcg0KICBjb21tZW50LiAgSXQgd2lsbCBiZSBmb3JtYXR0ZWQgd2l0aCBib3Ro
+IHRvcCBhbmQgYm90dG9tIGJhbm5lcnMsDQogIHdoZXRoZXIgb3Igbm90IHRoZSBib3R0b20gYm9y
+ZGVyIGlzIGluaXRpYWxseSBwcmVzZW50LiAgRWl0aGVyIG9yDQogIGJvdGggYmxhbmsgbGluZXMg
+bWF5IGJlIHByZXNlbnQsIGFuZCB0aGV5IHdpbGwgYmUgcHJlc2VydmVkDQogIGluZGVwZW5kZW50
+bHkuICBOb3RlIHRoYXQgaWYgYSBiYW5uZXIgY29tbWVudCBoYXMgYSBibGFuayBsaW5lIGFib3Zl
+DQogIHRoZSBib3R0b20gYm9yZGVyLCB0aGUgYm90dG9tIGJvcmRlciBtdXN0IGJlIGluaXRpYWxs
+eSBwcmVzZW50IGZvcg0KICBpdCB0byBiZSBwcmVzZXJ2ZWQuDQoNCiAgSW4gbGFuZ3VhZ2VzIHRo
+YXQgdXNlIG9ubHkgc3RhcnQgZGVsaW1pdGVycyAsIGZhdXggZW5kIGRlbGltaXRlcnMNCiAgbWF5
+IGJlIGFkZGVkIGlmIGRlc2lyZWQuICBGb3IgZXhhbXBsZSwgaW4gTGlzcCwgYSBjb21tZW50IGJl
+Z2lucw0KICB3aXRoIGEgc2VtaWNvbG9uIGFuZCBjb250aW51ZXMgdG8gdGhlIGVuZCBvZiB0aGUg
+bGluZS4gIFNlbWljb2xvbnMNCiAgbWF5IGJlIGFkZGVkIGF0IHRoZSBlbmQgb2YgZWFjaCBsaW5l
+IHRvIHByb3ZpZGUgYSBib3JkZXI6DQoNCiAgICAgXChzZXRxIGJjLW1vZGUgdFwpICAgICAgICAg
+ICAgICAgIDs7PT09PT09PT09PT09PT09PT09PT09PT09PT09PT07Ow0KICAgICBcKGJjLXNlbGVj
+dC1rZXltYXAgdFwpICAgICAgICAgICAgOzsgIFRoaXMgaXMgYSBCYW5uZXIgY29tbWVudCAgIDs7
+DQogICAgIFwoYmMtaW5zdGFsbC1tZW51YmFyXCkgICAgICAgICAgICA7OyAgd2l0aCBmYXV4IGVu
+ZCBkZWxpbWl0ZXJzICAgOzsNCiAgICAgXChiYy1zeW5jLWFkdmljZS1lbmFibGVcKSAgICAgICAg
+IDs7PT09PT09PT09PT09PT09PT09PT09PT09PT09PT07Ow0KICANCiAgRmF1eCBlbmQgZGVsaW1p
+dGVycyBtYXkgYmUgYWRkZWQgaW5kZXBlbmRlbnRseSBvZiB0b3AgYW5kIGJvdHRvbQ0KICBiYW5u
+ZXIgYm9yZGVycy4gIFdoZW4gdGhlIGNvbW1lbnQgaXMgcmVmb3JtYXR0ZWQsIHRoZSBmYXV4IGVu
+ZA0KICBkZWxpbWl0ZXJzIHdpbGwgYmUgbWFpbnRhaW5lZCBhdCB0aGUgZW5kIG9mIHRoZSBsaW5l
+LCByYXRoZXIgdGhhbg0KICBnZXR0aW5nIG1peGVkIGluIHdpdGggdGhlIHRleHQgb2YgdGhlIGNv
+bW1lbnQuDQoNCiAgVG8gcXVhbGlmeSBhcyBhIGZhdXggZW5kIGRlbGltaXRlciwgdGhlIHN0cmlu
+ZyB0aGF0IGVuZHMgdGhlIGxpbmUNCiAgbXVzdCBiZSBhbiBleGFjdCBtaXJyb3Igb2YgdGhlIHN0
+YXJ0IGRlbGltaXRlci4gIEZvciBleGFtcGxlLA0KICBzdXBwb3NlIGEgbGFuZ3VhZ2UgaGFzIGNv
+bW1lbnRzIHRoYXQgYmVnaW4gd2l0aCBgcmVtPCcgYW5kIGNvbnRpbnVlDQogIHRvIHRoZSBlbmQg
+b2YgdGhlIGxpbmUuICBUaGUgc3RyaW5nIGA+bWVyJyBhdCB0aGUgZW5kIG9mIHRoZSBsaW5lDQog
+IHdpbGwgYmUgcmVjb2duaXplZCBhcyBhIGZhdXggZW5kIGRlbGltaXRlcjoNCg0KICAgICBcKHNl
+dHEgYmMtbW9kZSB0XCkgICAgICAgCQlyZW08ICBIZXJlIGlzIGEgY29tbWVudAkgICA+bWVyDQog
+ICAgIFwoYmMtc2VsZWN0LWtleW1hcCB0XCkgICAJCXJlbTwgIHdpdGggZmF1eCBlbmQJICAgPm1l
+cg0KICAgICBcKGJjLWluc3RhbGwtbWVudWJhclwpICAgCQlyZW08ICBkZWxpbWl0ZXJzLgkgICA+
+bWVyDQoNCiAgT3B0aW9uYWxseSwgdGhlIGxhc3QgY2hhcmFjdGVyIG9mIHRoZSBzdGFydCBkZWxp
+bWl0ZXIgYW5kIHRoZSBmaXJzdA0KICBjaGFyYWN0ZXIgb2YgdGhlIGZhdXggZW5kIGRlbGltaXRl
+ciBtYXkgYmUgcmVwZWF0ZWQgYW55IG51bWJlcnMgb2YNCiAgdGltZXM6IA0KDQogICAgIFwoc2V0
+cSBiYy1tb2RlIHRcKSAgICAgICAJCXJlbTw8ICBIZXJlIGlzIGEgY29tbWVudCA+Pj5tZXINCiAg
+ICAgXChiYy1zZWxlY3Qta2V5bWFwIHRcKSAgIAkJcmVtPDwgIHdpdGggZmF1eCBlbmQJID4+Pm1l
+cg0KICAgICBcKGJjLWluc3RhbGwtbWVudWJhclwpICAgCQlyZW08PCAgZGVsaW1pdGVycy4JID4+
+Pm1lcg0KDQoNCkxpbmUgS2lsbGluZyBhbmQgSW5zZXJ0aW9uOg0KLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tDQogIFNldmVyYWwgb2YgYmMtbW9kZSdzIGVkaXRpbmcgY29tbWFuZHMgcHJvdmlk
+ZSBjb21tZW50LXNlbnNpdGl2ZSBsaW5lDQogIGtpbGxpbmcgYW5kIGluc2VydGlvbi4gIFRoZXNl
+IGluY2x1ZGUgYGJjLWtpbGwtbGluZScsDQogIGBiYy1vcGVuLWxpbmUnLCBgYmMtbmV3bGluZScs
+IGFuZCBgYmMtaW5kZW50LW5ldy1jb21tZW50LWxpbmUnLiAgSWYNCiAgcG9pbnQgaXMgaW4gdGhl
+IGNvZGUsIHRoZXNlIGNvbW1hbmRzIGFwcGx5IHRvIHRoZSBjb2RlIGFuZCBhdHRlbXB0DQogIHRv
+IHByZXNlcnZlIHRoZSBpbnRlZ3JpdHkgb2YgYW55IGJsb2NrIGNvbW1lbnQuICBJZiBwb2ludCBp
+cyBpbiB0aGUNCiAgY29tbWVudCwgdGhlc2UgY29tbWFuZHMgYXR0ZW1wdCB0byBtaW5pbWFsbHkg
+YWZmZWN0IHRoZSBjb2RlLg0KDQogIFdoZW4gYWRkaW5nIGEgbmV3IGxpbmUgdG8gYSBibG9jayBj
+b21tZW50LCBUaGUgbGluZSBpbnNlcnRpb24NCiAgY29tbWFuZHMgdHJ5IHRvIG1vdmUgZm9sbG93
+aW5nIGxpbmVzIG9mIHRoZSBibG9jayBjb21tZW50IGRvd24gb250bw0KICBzdWJzZXF1ZW50IGxp
+bmVzIG9mIGNvZGUsIHdpdGhvdXQgYWRkaW5nIGJsYW5rIGxpbmVzLiAgRm9yIGV4YW1wbGUsDQog
+IHN1cHBvc2UgcG9pbnQgaXMgYXQgdGhlIGxvY2F0aW9uIGRlbm90ZWQgYnkgYEAnOg0KDQogICAg
+fSBlbHNlIHsJCQkgICAvKiBIYW5kbGUgYml0LXZhbHVlZCBpL28gcG9pbnQuQCovDQogICAgICBp
+ZihpVmFsdWUpew0KICAgICAgICBnYUlvX3NoYWRvd3NbaVNoYWRvd10uaURhdGEgfD0gMTsNCg0K
+ICBJZiB0aGUgdXNlciB0eXBlcyBgYmMtaW5kZW50LW5ldy1jb21tZW50LWxpbmUnIChcXFtiYy1p
+bmRlbnQtbmV3LWNvbW1lbnQtbGluZV0pLCB0aGUgbmV3DQogIGNvbW1lbnQgbGluZSB3aWxsIGJl
+IGluc2VydGVkIGxpa2UgdGhpczoNCg0KICAgIH0gZWxzZSB7CQkJICAgLyogSGFuZGxlIGJpdC12
+YWx1ZWQgaS9vIHBvaW50LiAqLw0KICAgICAgaWYoaVZhbHVlKXsJCSAgIC8qIEAqLw0KICAgICAg
+ICBnYUlvX3NoYWRvd3NbaVNoYWRvd10uaURhdGEgfD0gMTsNCg0KICBIb3dldmVyLCBpZiB0aGUg
+dXNlciB0eXBlcyBgYmMtaW5kZW50LW5ldy1jb21tZW50LWxpbmUnIGEgc2Vjb25kDQogIHRpbWUs
+IHRoZSBsaW5lIHdpbGwgYmUgaW5zZXJ0ZWQgbGlrZSB0aGlzOg0KDQogICAgfSBlbHNlIHsJCQkg
+ICAvKiBIYW5kbGUgYml0LXZhbHVlZCBpL28gcG9pbnQuICovDQogICAgICBpZihpVmFsdWUpewkJ
+ICAgLyogICovDQogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIC8qIEAqLw0KICAg
+ICAgICBnYUlvX3NoYWRvd3NbaVNoYWRvd10uaURhdGEgfD0gMTsNCg0KICBUaGlzIGlzIGJlY2F1
+c2UgdGhlIHRoaXJkIGxpbmUgb2YgY29kZSBleHRlbmRlZCBwYXN0IHRoZSBzdGFydGluZw0KICBj
+b2x1bW4gb2YgdGhlIGJsb2NrIGNvbW1lbnQuICANCg0KICBTdXBwb3NlLCBob3dldmVyLCB0aGF0
+IHlvdSB3b3VsZCBoYXZlIHByZWZlcnJlZCB0aGUgdGhpcmQgbGluZSBvZg0KICB0aGUgY29tbWVu
+dCB0byBiZSBhcHBlbmRlZCB0byB0aGUgdGhpcmQgbGluZSBvZiBjb2RlIGluIHN1Y2ggYSBjYXNl
+Lg0KICBUaGlzIGlzIGNvbnRyb2xsZWQgYnkgdGhlIHZhcmlhYmxlIGBiYy1jb2RlLXdpZHRoLXRo
+cmVzaG9sZCcuICBUaGUNCiAgYWJvdmUgZXhhbXBsZSBhc3N1bWVzIHRoZSBkZWZhdWx0IHZhbHVl
+IG9mIHplcm8uICBTZXR0aW5nIHRoaXMNCiAgdmFyaWFibGUgdG8gYSB2YWx1ZSBvZiBzaXggb3Ig
+bW9yZSB3b3VsZCBoYXZlIGNhdXNlZCB0aGUgY29tbWVudCB0bw0KICBiZSBhcHBlbmRlZCB0byB0
+aGUgY29kZSBvbiB0aGUgdGhpcmQgbGluZSwgYmVjYXVzZSB0aGUgY29kZSBpcyBzaXgNCiAgY29s
+dW1ucyB3aWRlciB0aGFuIHRoZSBjb21tZW50J3Mgc3RhcnRpbmcgY29sdW1uLiAgSGFkIHRoZSBs
+aW5lDQogIGV4Y2VlZGVkIHRoaXMgdGhyZXNob2xkLCBhIGJsYW5rIGxpbmUgd291bGQgc3RpbGwg
+aGF2ZSBiZWVuDQogIGluc2VydGVkLg0KDQogIEEgc21hbGwgdmFsdWUgKGxpa2Ugc2l4KSBhbGxv
+d3MgYXBwZW5kaW5nIGNvbW1lbnRzIHRvIGxpbmVzIHRoYXQgYXJlDQogIGp1c3QgYSBsaXR0bGUg
+dG9vIHdpZGUsIGFuZCBmb3JjZXMgYSBibGFuayBsaW5lIHRvIGJlIGluc2VydGVkIGZvcg0KICBs
+aW5lcyBvZiBjb2RlIHRoYXQgYXJlIHZlcnkgd2lkZS4gIEEgc21hbGwgbmVnYXRpdmUgdmFsdWUg
+Y2F1c2VzIEJDDQogIHRvIG1haW50YWluIHNvbWUgc2VwYXJhdGlvbiBiZXR3ZWVuIHRoZSBjb2Rl
+IGFuZCB0aGUgY29tbWVudC4gIEluDQogIHByYWN0aWNlLCB0aGUgc2V0dGluZyBvZiB0aGlzIHZh
+cmlhYmxlIGlzIG5vdCB0ZXJyaWJseSBpbXBvcnRhbnQsDQogIGJlY2F1c2UgeW91IHdpbGwgcHJv
+YmFibHkgY2xlYW4gdXAgeW91ciBjb21tZW50cyB3aXRoIGEgQkMNCiAgZm9ybWF0dGluZyBjb21t
+YW5kIGFmdGVyIGVkaXRpbmcgdGhlbS4NCg0KDQpBdXRvIEZpbGw6DQotLS0tLS0tLS0tDQogIEJD
+IGhhcyBzb21lIHJ1ZGltZW50YXJ5IHN1cHBvcnQgZm9yIGBhdXRvLWZpbGwtbW9kZScuICBJZiB5
+b3UgdHVybg0KICBvbiBib3RoIGJjLW1vZGUgYW5kIGF1dG8tZmlsbC1tb2RlLCBhdXRvLWZpbGxp
+bmcgaXMgbW9kaWZpZWQgc28gdGhhdA0KICBjb21tZW50cyBhbmQgY29kZSBkaXNydXB0IGVhY2gg
+b3RoZXIgYXMgbGl0dGxlIGFzIHBvc3NpYmxlLiAgDQoNCiAgSWYgeW91IHVzZSB0aGlzLCB5b3Ug
+d2lsbCBwcm9iYWJseSB3YW50IHRvIHNldCBgZmlsbC1jb2x1bW4nIHRvIGp1c3QNCiAgYSBmZXcg
+bGVzcyB0aGFuIGBiYy1yaWdodC1tYXJnaW4nLiAgRm9yIGV4YW1wbGUsIGluIEMgdGhlIGNvbW1l
+bnQNCiAgZW5kIGRlbGltaXRlciBpcyBgKi8nLiAgSWYgeW91IHVzZSB0aGUgZGVmYXVsdCB2YWx1
+ZSBvZg0KICBgYmMtcmlnaHQtbWFyZ2luJyBcKDc5XCksIGFuZCBpZiB5b3UgbGlrZSBhIHNwYWNl
+IGJlZm9yZSB0aGUgZW5kDQogIGRlbGltaXRlciwgc2V0IGBmaWxsLWNvbHVtbicgdG8gNzkgLSAz
+ID0gNzYuICBZb3UgY2FuIGRvIHRoaXMgYnkNCiAgdHlwaW5nIGBNLTcgTS02IFxcW3NldC1maWxs
+LWNvbHVtbl0nLiAgT3IgeW91IG1heSB3YW50IHRvIHVzZSBhIG1ham9yLW1vZGUgaG9vaw0KICB0
+byBzZXQgdGhpcyBmcm9tIExpc3AuDQoNCiAgSWYgeW91IHdhbnQgdG8gdXNlIGJvdGggYmMtbW9k
+ZSBhbmQgYXV0by1maWxsLW1vZGUsIGJ1dCBkbyAqbm90Kg0KICB3YW50IHRoaXMgYmVoYXZpb3Is
+IHNldCB0aGUgdmFyaWFibGUgYGJjLWVuYWJsZS1hdXRvLWZpbGwtYWR2aWNlJyB0bw0KICBuaWwu
+ICBZb3UgY2FuIHRvZ2dsZSB0aGlzIHZhcmlhYmxlIGludGVyYWN0aXZlbHkgd2l0aCB0aGUgZnVu
+Y3Rpb24NCiAgYGJjLXRvZ2dsZS1hZHZpY2UtZW5hYmxlJy4gDQoNCktleW1hcHM6DQotLS0tLS0t
+LQ0KICBZb3UgY2FuIHNlbGVjdCBmcm9tIHR3byBrZXltYXBzIGZvciBiYy1tb2RlIHRvIHVzZS4N
+CiAgYGJjLW1vZGUtYmFzaWMtbWFwJyBpcyBhIG1pbmltYWxseSBpbnRydXNpdmUgc2V0IG9mIGJp
+bmRpbmdzIGZvcg0KICBCQydzIG1vc3QgcG93ZXJmdWwgZnVuY3Rpb25zLiAgYGJjLW1vZGUtZXh0
+ZW5kZWQtbWFwJyBhZGRzDQogIGFkZGl0aW9uYWwgYmluZGluZ3MgZm9yIGN1cnNvciBtb3Rpb24g
+Y29tbWFuZHMuICBUaGVzZSBjb21tYW5kcw0KICBvdmVycmlkZSBzb21lIHN0YW5kYXJkIGNvbW1h
+bmRzLCBzdWNoIGFzIGBiZWdpbm5pbmctb2YtbGluZScgXChib3VuZA0KICB0byBDLWEsIEhvbWUs
+IGV0Y1wpLiAgQkMncyB2ZXJzaW9ucyBvZiB0aGVzZSBjb21tYW5kcyBiZWhhdmUgbGlrZSB0aGUN
+CiAgc3RhbmRhcmQgb25lcyB3aGVuIHBvaW50IGlzIG91dHNpZGUgYSBibG9jayBjb21tZW50LCBh
+bmQgbW92ZSB3aXRoaW4NCiAgdGhlIGNvbW1lbnQgb3RoZXJ3aXNlLg0KDQogIFRvIHNlbGVjdCBh
+IGtleW1hcCBpbnRlcmFjdGl2ZWx5LCB1c2UgdGhlIGZ1bmN0aW9uDQogIGBiYy10b2dnbGUta2V5
+bWFwLWxldmVsJy4gIFRoaXMgc2V0cyB0aGUgdmFsdWUgb2YgdGhlIHZhcmlhYmxlDQogIGBiYy1r
+ZXltYXAtbGV2ZWwnIGFuZCB1cGRhdGVzIHRoZSBjdXJyZW50IGtleW1hcC4gIEFsdGVybmF0aXZl
+bHkgeW91DQogIGNhbiBzZXQgdGhlIHZhbHVlIG9mIGBiYy1rZXltYXAtbGV2ZWwnIGluIGxpc3Au
+ICBBIHZhbHVlIG9mIG5pbA0KICBzZWxlY3RzIGBiYy1tb2RlLWJhc2ljLW1hcCc7IG5vbi1uaWwg
+c2VsZWN0cyBgYmMtbW9kZS1leHRlbmRlZC1tYXAnLg0KDQpWYXJpYWJsZXMgY29udHJvbGxpbmcg
+YmMtbW9kZToNCi0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQ0KICBgYmMtcmlnaHQtbWFy
+Z2luJw0KICAgICBSaWdodC1tYXJnaW4gZm9yIGJsb2NrIGNvbW1lbnRzLg0KICAgICBEZWZhdWx0
+OiA3OQ0KICBgYmMta2V5bWFwLWxldmVsJw0KICAgICBTZWxlY3Qga2V5bWFwIGxldmVsIHRvIHVz
+ZSB3aXRoIEJDIG1pbm9yIG1vZGUuDQogICAgIERlZmF1bHQ6IG5pbA0KICBgYmMtY29kZS13aWR0
+aC10aHJlc2hvbGQnDQogICAgIEFtb3VudCBieSB3aGljaCB0aGUgd2lkdGggb2YgYSBsaW5lIG9m
+IGNvZGUgbWF5IGV4Y2VlZCB0aGUNCiAgICAgY3VycmVudCBsaW5lJ3MgZm9yIGxpbmUtaW5zZXJ0
+aW9uIGNvbW1hbmRzIHRvIG1vdmUgY29tbWVudHMgb250bw0KICAgICBpdC4NCiAgICAgRGVmYXVs
+dDogMA0KICBgYmMtdGFiLXN0b3BzJw0KICAgICBMaXN0IG9mIHRhYiBzdG9wcyB0byB1c2UgaW4g
+ZWFjaCBidWZmZXIuDQogICAgIERlZmF1bHQ6ICgxIDggMTYgMjQgMzIgNDAgNDggNTYgNjQgNzIp
+DQoNCiAgT3RoZXIgdmFyaWFibGVzOg0KICAtLS0tLS0tLS0tLS0tLS0tDQogIGBiYy1lbmFibGUt
+YXV0by1maWxsLWFkdmljZScNCiAgYGJjLWVuYWJsZS1maWxsLXBhcmFncmFwaC1mdW5jdGlvbicN
+Cg0KDQogIEZvciBjb252ZW5pZW5jZSBgYmMtbW9kZScgc2V0cyB0aGUgZm9sbG93aW5nIHZhcmlh
+YmxlcyBpZiB0aGV5IGFyZQ0KICB1bmJvdW5kLiAgQkMgZG9lcyBub3Qgb3RoZXJ3aXNlIHVzZSB0
+aGVzZSBiZWNhdXNlIGl0IGhhcyBpdHMgb3duDQogIGludGVybmFsIGVxdWl2YWxlbnRzOg0KDQog
+IGBjb21tZW50LXN0YXJ0Jw0KICAgICBTdHJpbmcgdG8gaW5zZXJ0IHRvIHN0YXJ0IGEgbmV3IGNv
+bW1lbnQuDQogIGBjb21tZW50LWVuZCcNCiAgICAgU3RyaW5nIHRvIGluc2VydCB0byBlbmQgYSBu
+ZXcgY29tbWVudC4NCiAgYGNvbW1lbnQtc3RhcnQtc2tpcCcNCiAgICAgUmVnZXhwIHRvIG1hdGNo
+IHRoZSBzdGFydCBvZiBhIGNvbW1lbnQgcGx1cyBldmVyeXRoaW5nIHVwIHRvIGl0cyBib2R5Lg0K
+DQoNCkhpbnRzOg0KLS0tLS0tDQogIGBiYy13aWRlcicgIFwoXFxbYmMtd2lkZXJdXCkgYW5kIGBi
+Yy1uYXJyb3dlcicgXChcXFtiYy1uYXJyb3dlcl1cKSBhcmUgY29uY2VwdHVhbGx5IHRoZQ0KICBp
+bnZlcnNlIG9mIGVhY2ggb3RoZXIsIGJ1dCBzb21ldGltZXMgbGVhdmUgZXh0cmEgYmxhbmsgKGV4
+Y2VwdCBmb3INCiAgdGhlIGNvbW1lbnQpIGxpbmVzLiAgVXNlIGBiYy1sb3dlcicgXChcXFtiYy1s
+b3dlcl1cKSB0byBzdWNrIHRoZSBjb2RlIGJhY2sgZnJvbQ0KICBkb3duIGJlbG93Lg0KDQogIElm
+IHlvdSBjYW4ndCBnZXQgYSBjb21tZW50IG1vdmVkIHRvIHdoZXJlIHlvdSB3YW50IHdpdGggYGJj
+LXJhaXNlJw0KICBcKFxcW2JjLXJhaXNlXVwpIGFuZCBgYmMtbG93ZXInIFwoXFxbYmMtbG93ZXJd
+XCksIHRyeSBgYmMta2lsbC1jb21tZW50JyBcKFxcW2JjLWtpbGwtY29tbWVudF1cKSBhbmQNCiAg
+YGJjLXlhbmsnIFwoXFxbYmMteWFua11cKS4NCg0KICBJZiB5b3UgY2FuJ3QgbWFrZSBhIGNvbW1l
+bnQgbmFycm93IGVub3VnaCB3aXRoIGBiYy1uYXJyb3dlcicgXChcXFtiYy1uYXJyb3dlcl1cKSwN
+CiAgdHJ5IGBiYy10YWxsZXInIFwoXFxbYmMtdGFsbGVyXVwpLCBvciBgYmMtc3F1ZWV6ZScgXChc
+XFtiYy1zcXVlZXplXVwpLg0KDQogIFRvIGpvaW4gdHdvIGNvbW1lbnRzIGludG8gb25lLCBnbyB0
+byB0aGUgY29tbWVudC1mcmVlIGxpbmUgdGhhdA0KICBzZXBhcmF0ZXMgdGhlbSBhbmQgZG8gYGlu
+ZGVudC1mb3ItY29tbWVudCcgXChcXFtpbmRlbnQtZm9yLWNvbW1lbnRdXCksIHdoaWNoIHdpbGwg
+YWRkDQogIGNvbW1lbnQgZGVsaW1pdGVycyB0byB0aGUgZW5kIG9mIHRoYXQgbGluZSBhbmQgbW92
+ZSBwb2ludCBqdXN0DQogIGluc2lkZS4gIFRoZW4gZG8gYGJjLWtpbGwtbGluZScgXChcXFtiYy1r
+aWxsLWxpbmVdXCkgdG8gc3VjayB0aGUgbG93ZXIgY29tbWVudA0KICB1cCBpbnRvIHRoZSBuZXds
+eSBjcmVhdGVkIGxpbmUuDQoNCiAgVG8gc2VwYXJhdGUgYSBjb21tZW50IGludG8gdHdvLCBnbyB0
+byB0aGUgYmVnaW5uaW5nIG9mIHRoZSBjb21tZW50DQogIHRleHQgb24gdGhlIGxpbmUgd2hlcmUg
+eW91IHdhbnQgdG8gc3BsaXQgYW5kIGRvIGBiYy1vcGVuLWxpbmUnDQogIFwoXFxbYmMtb3Blbi1s
+aW5lXVwpLiBUaGlzIHdpbGwgbGVhdmUgYSBsaW5lIHdpdGggb25seSBkZWxpbWl0ZXJzLCB3aGlj
+aCBjYW4NCiAgdGhlbiBiZSBkZWxldGVkIHdpdGggYGtpbGwtY29tbWVudCcgXChcXFtraWxsLWNv
+bW1lbnRdXCkuDQoNCiAgVG8gYWRkIGEgYmFubmVyIHRvIGEgY29tbWVudCwgZ28gdG8gdGhlIGxp
+bmUganVzdCBhYm92ZSBpdCBhbmQgZG8NCiAgYGluZGVudC1mb3ItY29tbWVudCcgXChcXFtpbmRl
+bnQtZm9yLWNvbW1lbnRdXCkuIFwoQmUgY2FyZWZ1bCBub3QgdG8gaW5hZHZlcnRlbnRseSBnbHVl
+DQogIHR3byBjb21tZW50cyB0b2dldGhlclwpLiAgRGVsZXRlIGFueSB3aGl0ZXNwYWNlIGJldHdl
+ZW4gdGhlIGNvbW1lbnQNCiAgZGVsaW1pdGVycyBcKG5vdCBuZWNlc3NhcnkgaWYgdGhlcmUgaXMg
+bm8gZW5kIGRlbGltaXRlclwpLiAgSWYgeW91IG5vdw0KICBkbyBhIGZvcm1hdHRpbmcgY29tbWFu
+ZCBcKGUuZy4gYGJjLWZpbGwnXCkgYSBiYW5uZXIgd2lsbCBiZQ0KICBjb25zdHJ1Y3RlZCBvZiBj
+aGFyYWN0ZXJzIGZyb20gdGhlIGRlbGltaXRlcnMgXChlLmcgdGhlIHNlbWljb2xvbiBpbg0KICBM
+aXNwXCkuICBJZiB5b3Ugd2FudCBhIGRpZmZlcmVudCBjaGFyYWN0ZXIgXChlLmcuIGFuIGVxdWFs
+IHNpZ25cKSwNCiAgZmlyc3QgdHlwZSB0aGF0IGJldHdlZW4gdGhlIGRlbGltaXRlcnMsIHdpdGgg
+bm8gd2hpdGVzcGFjZS4NCg0KICBUbyByZW1vdmUgYSBiYW5uZXIgZnJvbSBhIGNvbW1lbnQsIGRl
+bGV0ZSB0aGUgdG9wIGJhbm5lciBhbmQgaXRzDQogIGRlbGltaXRlcnMuICBUaGVuIGRvIGEgQkMg
+Zm9ybWF0dGluZyBjb21tYW5kLCBsaWtlIGBiYy1maWxsJyBcKFxcW2JjLWZpbGxdXCkuDQoNCiAg
+VG8gYWRkIGEgcmlnaHQtaGFuZCBib3JkZXIgb2YgZmF1eCBlbmQgZGVsaW1pdGVycywgZ28gdG8g
+dGhlIGZpcnN0DQogIGxpbmUgb2YgdGV4dCBpbiB0aGUgY29tbWVudCBhbmQgYWRkIGEgZmF1eCBk
+ZWxpbWl0ZXIgYXQgdGhlIGVuZC4gIERvDQogIGEgQkMgZm9ybWF0dGluZyBjb21tYW5kLCBhbmQg
+ZmF1eCBkZWxpbWl0ZXJzIHdpbGwgYmUgYWRkZWQgdG8gdGhlDQogIGVuZCBvZiBlYWNoIGxpbmUg
+aW4gdGhlIGNvbW1lbnQuDQoNCg0KQ0FMTElORyBUSEUgRlVOQ1RJT04gQkMtTU9ERToNCj09PT09
+PT09PT09PT09PT09PT09PT09PT09PT09DQoNCiAgVGhlIGZ1bmN0aW9uIGBiYy1tb2RlJyB0b2dn
+bGVzIGJjLW1vZGUuICBCZWhhdmlvciBvZiB0aGF0IGZ1bmN0aW9uDQogIGRlcGVuZHMgb24gd2hl
+dGhlciBpdCBpcyBjYWxsZWQgaW50ZXJhY3RpdmVseSBvciBmcm9tIExpc3AuICANCg0KSW50ZXJh
+Y3RpdmUgQ29tbWFuZDoNCi0tLS0tLS0tLS0tLS0tLS0tLS0tDQogIElmIGNhbGxlZCBpbnRlcmFj
+dGl2ZWx5LCB0aGUgdXNlciBtYXkgdHVybiBiYy1tb2RlIG9uIG9yIG9mZiwgYW5kDQogIG9wdGlv
+bmFsbHkgc2VsZWN0IGEgY29tbWVudCBzeW50YXguDQoNCiAgV2l0aCBubyBwcmVmaXggYXJndW1l
+bnQsIGNhbGxpbmcgYGJjLW1vZGUnIHRvZ2dsZXMgYmMtbW9kZS4gIElmIHRoZQ0KICBtaW5vciBt
+b2RlIGhhcyBuZXZlciBiZWVuIG9uIGluIHRoZSBjdXJyZW50IGJ1ZmZlciwgY2FsbGluZyB3aXRo
+IG5vDQogIGFyZ3VtZW50IGlzIGVxdWl2YWxlbnQgdG8gY2FsbGluZyB3aXRoIGEgbm9uLW5lZ2F0
+aXZlIHByZWZpeA0KICBhcmd1bWVudC4NCg0KICBXaXRoIGEgbm9uLW5lZ2F0aXZlIHByZWZpeCBh
+cmd1bWVudCwgdGhlIHVzZXIgaXMgcHJvbXB0ZWQgdG8gY2hvb3NlDQogIGEgbGFuZ3VhZ2UgdG8g
+ZGVmaW5lIHRoZSBkZXNpcmVkIGNvbW1lbnQgc3ludGF4LiAgQW4gaW5pdGlhbCBndWVzcw0KICBp
+cyBwbGFjZWQgaW4gdGhlIG1pbmlidWZmZXIsIGJhc2VkIGVpdGhlciBvbiB0aGUgY3VycmVudCBt
+YWpvciBtb2RlDQogIFwoaWYgYmMtbW9kZSBoYXMgbmV2ZXIgYmVlbiB0dXJuZWQgb24gaW4gdGhp
+cyBidWZmZXJcKSwgb3IgdGhlIHZhbHVlDQogIGZyb20gdGhlIGxhc3QgdGltZSBiYy1tb2RlIHdh
+cyBvbiBpbiB0aGUgYnVmZmVyLg0KDQogIFdpdGggYSBuZWdhdGl2ZSBwcmVmaXggYXJndW1lbnQs
+IGJjLW1vZGUgaXMgdHVybmVkIG9mZi4NCg0KDQpMaXNwIEZ1bmN0aW9uOg0KLS0tLS0tLS0tLS0t
+LS0NCiAgRnJvbSBMaXNwLCBgYmMtbW9kZScgaXMgY2FsbGVkIGFzIGZvbGxvd3M6DQoNCiAgICBc
+KGJjLW1vZGUgJm9wdGlvbmFsIEFSR1wpDQoNCiAgVGhlIHNpbXBsZXN0IHdheSB0byBpbnZva2Ug
+YGJjLW1vZGUnIGZyb20gTGlzcCBpcyB0byBjYWxsIGl0IHdpdGggbm8NCiAgYXJndW1lbnRzLiAg
+VGhlIG1pbm9yIG1vZGUgd2lsbCBiZSB0b2dnbGVkLiAgSWYgdGhlIG1pbm9yIG1vZGUgaGFzDQog
+IG5ldmVyIGJlZW4gb24gaW4gdGhlIGJ1ZmZlciwgYSBjb21tZW50IHN5bnRheCB3aWxsIGJlIGd1
+ZXNzZWQgZnJvbQ0KICB0aGUgbWFqb3IgbW9kZSBhbmQgYmMtbW9kZSB3aWxsIGJlIHR1cm5lZCBv
+bi4gIElmIGEgZ3Vlc3MgY2Fubm90IGJlDQogIG1hZGUsIGFuIGVycm9yIGlzIHNpZ25hbGxlZC4g
+IElmIHRoZSBtaW5vciBtb2RlIGhhcyBwcmV2aW91c2x5IGJlZW4NCiAgb24gaW4gdGhlIGJ1ZmZl
+ciwgaXQgd2lsbCB1c2UgdGhlIHNhbWUgY29tbWVudCBzeW50YXggYXMgYmVmb3JlLg0KDQogIEZv
+ciBjb252ZW5pZW5jZSwgdGhlIGZ1bmN0aW9uIGB0dXJuLW9uLWJjLW1vZGUnIHR1cm5zIG9uIGJj
+LW1vZGUNCiAgdW5jb25kaXRpb25hbGx5Lg0KDQogIFRoZSBhcmd1bWVudCBBUkcgY2FuIGJlIHN1
+cHBsaWVkIHRvIGV4ZXJ0IG1vcmUgY29udHJvbC4gIEl0IG1heSBiZSBhDQogIG51bWJlciwgYSBz
+dHJpbmcsIG9yIGEgc3ltYm9sLg0KDQogICAgSWYgYSBudW1iZXIsIG5vbi1uZWdhdGl2ZSB0dXJu
+cyBiYy1tb2RlIG9uLCBuZWdhdGl2ZSB0dXJucyBpdCBvZmYuDQogICAgV2hlbiB0aGUgbW9kZSBp
+cyB0dXJuZWQgb24sIHRoZSBjb21tZW50IHN5bnRheCBpcyBndWVzc2VkIGlmIHRoaXMNCiAgICBp
+cyB0aGUgZmlyc3QgdGltZSwgb3RoZXJ3aXNlIHRoZSBwcmV2aW91cyBzeW50YXggaXMgdXNlZC4N
+Cg0KICAgIElmIEFSRyBpcyBhIHN0cmluZywgaXQgbXVzdCBiZSBhIHJlZ3VsYXIgZXhwcmVzc2lv
+biBkZXNjcmliaW5nIHRoZQ0KICAgIGNvbW1lbnQgc3ludGF4LiAgQkMtbW9kZSBpcyB0dXJuZWQg
+b24uICBGb3IgbW9zdCBsYW5ndWFnZXMsIHRoaXMNCiAgICByZWd1bGFyIGV4cHJlc3Npb24gY2Fu
+IGJlIGdlbmVyYXRlZCBhdXRvbWF0aWNhbGx5IGJ5IHRoZSBmdW5jdGlvbg0KICAgIGBiYy1tYWtl
+LXJlZ2V4cCcuICBBbHNvIHNlZSB0aGUgZG9jdW1lbnRhdGlvbiBmb3IgdGhlIHZhcmlhYmxlDQog
+ICAgYGJjLWNvbW1lbnQtcmVnZXhwJy4NCg0KICAgIElmIEFSRyBpcyBhIHN5bWJvbCwgaXQgbXVz
+dCBiZSBvbmUgb2YgdGhlIGtleXMgaW4NCiAgICBgYmMtbGFuZ3VhZ2VzLWFsaXN0Jy4gIEJDLW1v
+ZGUgaXMgdHVybmVkIG9uIGFuZCB0aGUgY29ycmVzcG9uZGluZw0KICAgIGNvbW1lbnQgc3ludGF4
+IGlzIHVzZWQuDQoNCiAgSWYgZWl0aGVyIGBjb21tZW50LXN0YXJ0JyBvciBgY29tbWVudC1lbmQn
+IGlzIG5vdCBhIHN0cmluZywgYW4NCiAgYXR0ZW1wdCBpcyBtYWRlIHRvIHNldCB0aGVtIGFwcHJv
+cHJpYXRlbHkuDQoNCg0KRXhhbXBsZXM6DQotLS0tLS0tLS0NCiAgVGhlIGZvbGxvd2luZyBtaWdo
+dCBiZSBwdXQgaW4geW91ciB+Ly5lbWFjczoNCg0KICBcKGFkZC1ob29rICdjKystbW9kZS1ob29r
+ICd0dXJuLW9uLWJjLW1vZGVcKSAgICA7IFN5bnRheCB3aWxsIGJlIGd1ZXNzZWQNCgkJCQkJCTsg
+ZnJvbSBtYWpvciBtb2RlLg0KDQogIFwoYWRkLWhvb2sgJ2MrKy1tb2RlLWhvb2sJCSAgICAgICAg
+OyBUdXJuIG9uIGJjLW1vZGUgYnV0DQoJICAgIFwoZnVuY3Rpb24gXChsYW1iZGEgXCgnYmMtbW9k
+ZSAnY1wpXClcKVwpCTsgdXNlIEMgc3R5bGUgY29tbWVudHMuDQoNCg0KICBJZiB5b3UgcHJvZ3Jh
+bSBpbiBhIGxhbmd1YWdlIHRoYXQgYmMtbW9kZSBkb2VzIG5vdCBrbm93LCB5b3UgY2FuDQogIGNh
+bGwgYGJjLW1ha2UtcmVnZXhwJyB0byBidWlsZCBhIGNvbW1lbnQgc3ludGF4IGZvciB5b3UuICBT
+dXBwb3NlDQogIHlvdXIgbGFuZ3VhZ2UgYmVnaW5zIGNvbW1lbnRzIHdpdGggXCI8KlwiIGFuZCBl
+bmRzIHRoZW0gd2l0aCBcIio+XCIuDQogIFlvdSBjb3VsZCBhZGQgdGhlIGZvbGxvd2luZyB0byB5
+b3VyIH4vLmVtYWNzOg0KDQogIFwoYWRkLWhvb2sgJ215LWxhbmctbW9kZS1ob29rDQoJICAgIFwo
+ZnVuY3Rpb24gXChsYW1iZGEgXChcKQ0KCQkJXChiYy1tb2RlIFwoYmMtbWFrZS1yZWdleHAgXCI8
+KlwiIFwiKj5cIlwpXClcKVwpXCkNCg0KICBZb3UgY2FuIGFsc28gdHVybiBvbiBiYy1tb2RlIHVz
+aW5nIEZpbGUgTG9jYWwgVmFyaWFibGVzLiAgSWYgdGhlDQogIGxhbmd1YWdlIGlzIGtub3duIHRv
+IEJDLCB5b3UgY2FuIHVzZSB0aGUgZm9sbG93aW5nIGZvcm1hdC4gIEZvcg0KICBleGFtcGxlLCBh
+dCB0aGUgZW5kIG9mIGEgc2hlbGwgc2NyaXB0LCB0aGUgZm9sbG93aW5nIGxpbmVzIGludm9rZQ0K
+ICBiYy1tb2RlIHdoZW5ldmVyIHRoZSBmaWxlIGlzIGxvYWRlZDoNCg0KICAgICMgTG9jYWwgVmFy
+aWFibGVzOg0KICAgICMgYmMtbGFuZ3VhZ2U6IGNzaA0KICAgICMgbW9kZTogYmMNCiAgICAjIEVu
+ZDoNCg0KICBOb3RlIHRoYXQgdGhlIGxpbmUgZm9yIGBiYy1sYW5ndWFnZScgbXVzdCBjb21lIGJl
+Zm9yZSB0aGUgYG1vZGUnDQogIGxpbmUuDQoNCiAgSW4gdGhlIGNhc2UgdGhhdCB0aGUgbGFuZ3Vh
+Z2UgaW4gdGhlIGZpbGUgaXMgbm90IGtub3duIHRvIEJDLCB5b3UNCiAgbXVzdCB1c2UgdGhlIGBl
+dmFsJyBjb25zdHJ1Y3Q6DQoNCiAgICAjIExvY2FsIFZhcmlhYmxlczoNCiAgICAjIGV2YWw6IFwo
+YmMtbW9kZSAgXChiYy1tYWtlLXJlZ2V4cCBcIjwqXCIgXCIqPlwiXClcKQ0KICAgICMgRW5kOg0K
+DQogIElmIHlvdXIgbGFuZ3VhZ2UgaGFzIG5vIGNvbW1lbnQtZW5kIHN0cmluZywgaS5lLiwgY29t
+bWVudHMgY29udGludWUNCiAgdG8gZW5kLW9mLWxpbmUsIHBhc3Mgb25seSB0aGUgY29tbWVudC1z
+dGFydCBzdHJpbmcgdG8NCiAgYGJjLW1ha2UtcmVnZXhwJy4NCg0KICBOb3RlIHRoYXQgYGJjLW1h
+a2UtcmVnZXhwJyB3aWxsIHNldCB1cCBgY29tbWVudC1zdGFydCcgYW5kDQogIGBjb21tZW50LWVu
+ZCcgaWYgdGhleSBhcmUgbm90IGFscmVhZHkgc3RyaW5ncy4gIEl0IGRvZXMgdGhpcyBieQ0KICBh
+cHBlbmRpbmcgYSBzcGFjZSB0byBpdHMgZmlyc3QgYXJndW1lbnQgYW5kIHByZXBlbmRpbmcgYSBz
+cGFjZSB0bw0KICBpdHMgXChvcHRpb25hbFwpIHNlY29uZCBhcmd1bWVudC4iKQ0KDQo7Ozs7PT09
+PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09
+PT09PT09PT09PT09DQo7OztfICAqIFRvIHF1aWV0IHRoZSBieXRlIGNvbXBpbGVyDQoNCiA7IFF1
+aWV0IHRoZSBieXRlLWNvbXBpbGVyLiBZZXMsIEkga25vdyB0aGVzZSBhcmUgb2Jzb2xldGUsIGJ1
+dCBvdGhlcg0KIDsgcGFja2FnZXMgZG9uJ3QuIFNvbWUgZnVuY3Rpb25zIG5lZWQgdG8gYGxldCcg
+dGhlc2UgdG8gbmlsIHRvDQogOyBpbXByb3ZlIHNwZWVkLg0KKGV2YWwtd2hlbi1jb21waWxlDQog
+IChwdXQgJ2FmdGVyLWNoYW5nZS1mdW5jdGlvbiAnYnl0ZS1vYnNvbGV0ZS12YXJpYWJsZSBuaWwp
+DQogIChwdXQgJ2JlZm9yZS1jaGFuZ2UtZnVuY3Rpb24gJ2J5dGUtb2Jzb2xldGUtdmFyaWFibGUg
+bmlsKSkNCiAgOyBRdWlldCBgcmVmZXJlbmNlIHRvIGZyZWUgdmFyaWFibGUnIGNvbXBsYWludHMN
+Cg0KKGlmIChub3QgKGJvdW5kcCAnZmlsbGFkYXB0LW1vZGUpKSAoZGVmdmFyIGZpbGxhZGFwdC1t
+b2RlIG5pbCkpDQoNCihkZWZzdWJzdCBiYy1kdW1teSAoJnJlc3QgYXJncykpDQooZGVmc3Vic3Qg
+YmMtZnVuY2FsbCAoZnVuYyAmcmVzdCBhcmdzKSAoYXBwbHkgZnVuYyBhcmdzKSkNCg0KOzs7Oz09
+PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09
+PT09PT09PT09PT09PQ0KOzs7XyAgKiBVc2VyIFZhcmlhYmxlcw0KDQooZGVmdmFyIGJjLW1vZGUt
+cHJlZml4ICJcQy1jLCINCiAgIlByZWZpeCBrZXkgc2VxdWVuY2UgZm9yIG1vc3QgYmluZGluZ3Mg
+aW4gYGJjLW1vZGUtYmFzaWMtbWFwJy4NClRoaXMgaXMgdGhlIGtleW1hcCBiYy1tb2RlIHVzZXMg
+dW5sZXNzIGBiYy1rZXltYXAtbGV2ZWwnIGlzIG5vbi1uaWwuIikNCg0KKGRlZnZhciBiYy1tb2Rl
+LWV4dC1wcmVmaXggIlxDLVxcIg0KICAiUHJlZml4IGtleSBzZXF1ZW5jZSBmb3IgY2VydGFpbiBi
+aW5kaW5ncyBpbiBgYmMtbW9kZS1leHRlbmRlZC1tYXAnLg0KVGhpcyBpcyB0aGUga2V5bWFwIGJj
+LW1vZGUgdXNlcyB3aGVuIGBiYy1rZXltYXAtbGV2ZWwnIGlzIG5vbi1uaWwuIikNCg0KKGRlZnZh
+ciBiYy1lbmFibGUtYXV0by1maWxsLWFkdmljZSB0DQogICIqV2hldGhlciB0byBlbmFibGUgYWR2
+aWNlIG9uIGBkby1hdXRvLWZpbGwnLg0KDQpCYy1tb2RlIGRlZmluZXMgYWR2aWNlIG9uIHRoaXMg
+ZnVuY3Rpb24gdG8gYXNzaXN0IGNvcnJlY3QgYXV0by1maWxsaW5nIG9mDQpibG9jay1jb21tZW50
+cy4gIElmIHlvdSBkb24ndCBsaWtlIHRoaXMsIHNldCB0aGUgdmFsdWUgb2YgdGhpcyB2YXJpYWJs
+ZSB0bw0KbmlsLiAgVG8gdG9nZ2xlIHRoaXMgaW50ZXJhY3RpdmVseSwgdXNlIHRoZSBjb21tYW5k
+DQpgYmMtdG9nZ2xlLWF1dG8tZmlsbC1hZHZpY2UnIFwoXFxbYmMtdG9nZ2xlLWF1dG8tZmlsbC1h
+ZHZpY2VdXCkiKQ0KDQooZGVmdmFyIGJjLWVuYWJsZS1maWxsLXBhcmFncmFwaC1mdW5jdGlvbiB0
+DQogICIqSWYgbm9uLW5pbCwgZW5hYmxlIGBiYy1maWxsLXBhcmFncmFwaCcgYXMgYSBmaWxsLXBh
+cmFncmFwaC1mdW5jdGlvbi4NClRoaXMgd2lsbCBjYXVzZSBgXFxbZmlsbC1wYXJhZ3JhcGhdJyB0
+byBmaWxsIGNvbW1lbnRzIGFzIHJpZ2h0LW1hcmdpbg0KY29tbWVudHMgd2hlbmV2ZXIgaXQgc2Vl
+cyB0aGVtLCBpZiBiYy1tb2RlIGlzIHR1cm5lZCBvbi4NCg0KSWYgdGhpcyB2YXJpYWJsZSBpcyBu
+aWwsIGBcXFtmaWxsLXBhcmFncmFwaF0nIG1haW50YWlucyBpcyB0cmFkaXRpb25hbA0KYmVoYXZp
+b3IgZXZlbiB3aGVuIGJjLW1vZGUgaXMgb24uDQoNCkZvciBjaGFuZ2VzIHRvIHRoaXMgdmFyaWFi
+bGUgdG8gdGFrZSBlZmZlY3QsIGJjLW1vZGUgbXVzdCBiZSB0dXJuZWQNCm9mZiBhbmQgYmFjayBv
+bi4iKQ0KDQooZGVmdmFyIGJjLXJpZ2h0LW1hcmdpbiA3OQ0KICAiKlJpZ2h0IG1hcmdpbiBmb3Ig
+YmxvY2sgY29tbWVudHMuDQpJbiBhIGxhbmd1YWdlIHdpdGggbm8gZW5kIGRlbGltaXRlcnMsIGNv
+bW1lbnQgdGV4dCB3aWxsIGJlIGZvcm1hdHRlZA0Kc28gYXMgbm90IHRvIGV4Y2VlZCB0aGlzIGNv
+bHVtbi4gIEluIGEgbGFuZ3VhZ2Ugd2l0aCBlbmQgZGVsaW1pdGVycywNCmNvbW1lbnQgdGV4dCB3
+aWxsIGJlIHBhZGRlZCB3aXRoIHNwYWNlcyBzbyB0aGF0IGFsbCBlbmQgZGVsaW1pdGVycyBlbmQN
+CmluIHRoaXMgY29sdW1uLg0KDQpZb3UgY2FuIHNldCB0aGlzIGludGVyYWN0aXZlbHkgYnkgdHlw
+aW5nIGBcXFtiYy1zZXQtbWFyZ2luXScNClwoYGJjLXNldC1tYXJnaW4nXCkuDQoNCkZvciBtb3Jl
+IGluZm9ybWF0aW9uLCB0eXBlIGBcXFtkZXNjcmliZS12YXJpYWJsZV0gYmMtbW9kZS1kb2MnLiIp
+DQoobWFrZS12YXJpYWJsZS1idWZmZXItbG9jYWwgJ2JjLXJpZ2h0LW1hcmdpbikNCg0KKGRlZnZh
+ciBiYy1rZXltYXAtbGV2ZWwgbmlsDQogICIqU2VsZWN0cyBrZXltYXAgbGV2ZWwgdG8gdXNlIHdp
+dGggQkMgbWlub3IgbW9kZS4gIA0KTmlsIGNhdXNlcyBiYy1tb2RlIHRvIHVzZSBgYmMtbW9kZS1i
+YXNpYy1tYXAnLiAgTm9uLW5pbCBjYXVzZXMgYmMtbW9kZQ0KdG8gdXNlIGBiYy1tb2RlLWV4dGVu
+ZGVkLW1hcCcsIHdoaWNoIG92ZXJyaWRlcyBzb21lIGJhc2ljIGdsb2JhbCBrZXlzDQpsaWtlIEMt
+YSB3aXRoIHZlcnNpb25zIGRlZmluZWQgYnkgQkMuICBNb3N0IG9mIHRoZXNlIGJlaGF2ZSBzaW1p
+bGFybHkNCnRvIHRoZSBmdW5jdGlvbnMgdGhleSBzaGFkb3csIGJ1dCBhcmUgY29udGV4dC1zZW5z
+aXRpdmUgdG8NCnJpZ2h0LW1hcmdpbiBjb21tZW50cy4NCg0KWW91IGNhbiBzZXQgdGhpcyBpbnRl
+cmFjdGl2ZWx5IGJ5IHR5cGluZyBgXFxbYmMtdG9nZ2xlLWtleW1hcC1sZXZlbF0nDQpcKGBiYy10
+b2dnbGUta2V5bWFwLWxldmVsJ1wpLg0KDQpGb3IgbW9yZSBpbmZvcm1hdGlvbiwgdHlwZSBgXFxb
+ZGVzY3JpYmUtdmFyaWFibGVdIGJjLW1vZGUtZG9jJy4iKQ0KDQooZGVmdmFyIGJjLXRhYi1zdG9w
+cyBuaWwNCiAgIipUYWIgc3RvcHMgZm9yIEJDIGZvcm1hdHRpbmcgY29tbWFuZHMuDQoNClRoaXMg
+c2hvdWxkIGJlIGEgbGlzdCBvZiBpbnRlZ2VycyBpbiBhc2NlbmRpbmcgb3JkZXIuICBFYWNoIGRl
+bm90ZXMgYQ0KY29sdW1uIGZvciBCQyB0byB1c2UgYXMgYSB0YWIgc3RvcC4gIEEgdGFiIHN0b3Ag
+b2YgemVybyB3aWxsIGJlDQppZ25vcmVkLg0KDQpZb3UgY2FuIHNldCB0YWIgc3RvcHMgdG8gYSB1
+bmlmb3JtIHNwYWNpbmcgd2l0aCB0aGUgZnVuY3Rpb24NCmBiYy1zZXQtdGFiLXNwYWNpbmcnLiIp
+DQoobWFrZS12YXJpYWJsZS1idWZmZXItbG9jYWwgJ2JjLXRhYi1zdG9wcykNCg0KKGRlZnZhciBi
+Yy1sYW5ndWFnZXMtYWxpc3QgOyBOT0NPTExFQ1QNCjsoZGVmY29uc3QgYmMtbGFuZ3VhZ2VzLWFs
+aXN0IDsgZm9yIGRlYnVnZ2luZw0KDQogIDs7IE11c3Qgc3BlY2lmeSByZWdleHBzIGZvciBsb25n
+IGRlbGltaXRlcnMgZXhwbGljaXRseSBiZWNhdXNlDQogIDs7IGJjLW1ha2UtcmVnZXhwIGNhbid0
+IGhhbmRsZSBtb3JlIHRoYW4gdHdvIGNoYXJzIHBlciBkZWxpbS4NCiAgJygNCiAgICAoYWRhICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAoZGVsaW0gIi0tIikpDQogICAg
+KGFzbSAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgKGRlbGltICI7Iikp
+DQogICAgKGF3ayAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgKGRlbGlt
+ICIjIikpDQogICAgKGJhc2ggICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+KGRlbGltICIjIikpDQogICAgKGJpYiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgKGRlbGltICIlIikpDQogICAgKGMgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgKGRlbGltICIvKiIgIiovIikpDQogICAgKGMrKyAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgKGRlbGltICIvLyIpKQ0KICAgIChjcGVybCAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIChkZWxpbSAiIyIpKQ0KICAgIChjc2ggICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIChkZWxpbSAiIyIpKQ0KICAgIChl
+aWZlbCAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIChkZWxpbSAiLS0iKSkN
+CiAgICAoZW1hY3MtbGlzcCAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAoZGVsaW0g
+IjsiKSkNCiAgICAoZjkwICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAo
+ZGVsaW0gIiEiKSkNCiAgICAoaHRtbCAocmVnZXhwICJbXjxdPCEtK1sgXHRdKlxcKC4qXFwpLSs+
+IikgICAoZGVsaW0gIjwhLS0iICItLT4iKSkNCiAgICAoamF2YSAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAoZGVsaW0gIi8vIikpDQogICAgKGtzaCAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgKGRlbGltICIjIikpDQogICAgKGxhdGV4ICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgKGRlbGltICIlIikpDQogICAgKGxpc3Ag
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgKGRlbGltICI7IikpDQogICAg
+KG1ha2VmaWxlICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgKGRlbGltICIjIikp
+DQogICAgKG1pbSAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgKGRlbGlt
+ICI7XCIiICJcIiIpICkNCiAgICAobW9kdWxhLTIgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAoZGVsaW0gIigqIiAiKikiKSkNCiAgICAobnJvZmYgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAoZGVsaW0gIlxcXCIiKSkNCiAgICAocGFzY2FsICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAoZGVsaW0gIigqIiAiKikiKSkNCiAgICAocGFz
+Y2FsLWJyYWNlICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAoZGVsaW0gInsiICJ9Iikp
+DQogICAgKHBhc2NhbC1wYXJlbiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgKGRlbGlt
+ICIoKiIgIiopIikpDQogICAgKHBlcmwgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgKGRlbGltICIjIikpDQogICAgKHBvc3RzY3JpcHQgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgKGRlbGltICIlIikpDQogICAgKHJleHggICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgKGRlbGltICIvKiIgIiovIikpDQogICAgKHNjaGVtZSAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgKGRlbGltICI7IikpDQogICAgKHNnbWwgKHJl
+Z2V4cCAiW148XTwhLStbIFx0XSpcXCguKlxcKS0rPiIpICAgKGRlbGltICI8IS0tIiAiLS0+Iikp
+DQogICAgKHRjbCAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgKGRlbGlt
+ICIjIikpDQogICAgKHRleCAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+KGRlbGltICIlIikpDQogICAgKHZybWwgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgKGRlbGltICIjIikpDQogICAgKQ0KDQogICJBbGlzdCBtYXBwaW5nIGxhbmd1YWdlcyB0
+byBjb21tZW50IHN5bnRheCBpbmZvcm1hdGlvbi4gIA0KDQpUaGUga2V5cyBhcmUgc3ltYm9scyBk
+ZW5vdGluZyBsYW5ndWFnZXM7IHRoZSB2YWx1ZXMgYXJlIGFsaXN0cw0KY29udGFpbmluZyBsYW5n
+dWFnZSBpbmZvcm1hdGlvbi4gIEVhY2ggb2YgdGhlc2UgYWxpc3RzIG1heSBjb250YWluIHRoZQ0K
+Zm9sbG93aW5nIGtleXM6DQoNCiAgICBgZGVsaW0nICAgICAgICAgVGhlIHZhbHVlIGlzIGEgbGlz
+dCBvZiBzdHJpbmdzLiAgVGhlIGZpcnN0DQogICAgICAgICAgICAgICAgICAgIHN0cmluZyBjb250
+YWlucyB0aGUgY29tbWVudCBzdGFydCBkZWxpbWl0ZXINCiAgICAgICAgICAgICAgICAgICAgXCh3
+aXRob3V0IGFueSB3aGl0ZXNwYWNlXCkuICBBbiBvcHRpb25hbCBzZWNvbmQNCiAgICAgICAgICAg
+ICAgICAgICAgc3RyaW5nIGNvbnRhaW5zIHRoZSBjb21tZW50IGVuZCBkZWxpbWl0ZXIsIGlmIHRo
+ZQ0KICAgICAgICAgICAgICAgICAgICBsYW5ndWFnZSBoYXMgb25lLg0KDQogICAgYHJlZ2V4cCcg
+ICAgICAgIFRoZSB2YWx1ZSBpcyBhIGxpc3Qgb2Ygb25lIHN0cmluZy4gIEl0IGlzIGFuDQogICAg
+ICAgICAgICAgICAgICAgIGV4cGxpY2l0IHJlZ3VsYXIgZXhwcmVzc2lvbiBkZWZpbmluZyB0aGUg
+Y29tbWVudA0KICAgICAgICAgICAgICAgICAgICBzeW50YXguICBJdCBpcyBvbmx5IG5lY2Vzc2Fy
+eSBpbiBzcGVjaWFsDQogICAgICAgICAgICAgICAgICAgIGNpcmN1bXN0YW5jZXMuICBJbiBtb3N0
+IGNhc2VzLCBhIHJlZ3VsYXINCiAgICAgICAgICAgICAgICAgICAgZXhwcmVzc2lvbiBjYW4gYmUg
+Y29tcHV0ZWQgZnJvbSB0aGUgYGRlbGltJyBmaWVsZC4iKQ0KDQooZGVmdmFyIGJjLWNvZGUtd2lk
+dGgtdGhyZXNob2xkIDANCiAgIipVc2VkIGJ5IGxpbmUtaW5zZXJ0aW5nIGNvbW1hbmRzIHN1Y2gg
+YXMgYGJjLW9wZW4tbGluZScgdG8gZGVjaWRlDQp3aGV0aGVyIGEgbmV3IGNvbW1lbnQgbGluZSBj
+YW4gYmUgYWRkZWQgdG8gdGhlIGxlZnQgb2YgdGhlIGNvZGUgb24gYQ0KbGluZSBiZWxvdywgb3Ig
+aWYgYSBibGFuayBsaW5lIG11c3QgYmUgaW5zZXJ0ZWQuICBJZiB0aGUgd2lkdGggb2YgdGhlDQpj
+b2RlIG9uIGEgc3Vic2VxdWVudCBsaW5lIGlzIGxlc3MgdGhhbiB0aGUgc3RhcnRpbmcgY29sdW1u
+IG9mIHRoaXMNCmNvbW1lbnQgcGx1cyBgYmMtY29kZS13aWR0aC10aHJlc2hvbGQnLCBubyBibGFu
+ayBsaW5lIGlzIGluc2VydGVkLg0KT3RoZXJ3aXNlIGJsYW5rIGxpbmVzIGFyZSBpbnNlcnRlZCBi
+ZWZvcmUgdGhlIHRvby13aWRlIGxpbmUuDQoNClNldHRpbmcgdGhpcyB0byBhIGxhcmdlIG5lZ2F0
+aXZlIHZhbHVlLCBsaWtlIC05OTksIGNhdXNlcyBibGFuayBsaW5lcw0KdG8gYWx3YXlzIGJlIGlu
+c2VydGVkLCBpbiB0aGUgbWFubmVyIG9mIHRoZSBzdGFuZGFyZA0KYGluZGVudC1uZXctY29tbWVu
+dC1saW5lJyAoXFxbaW5kZW50LW5ldy1jb21tZW50LWxpbmVdKSBjb21tYW5kLg0KU2V0dGluZyB0
+aGlzIHRvIGEgbGFyZ2UgcG9zaXRpdmUgdmFsdWUsIGxpa2UgOTk5LCBjYXVzZXMgYmxhbmsgbGlu
+ZXMNCnRvIG5ldmVyIGJlIGluc2VydGVkLg0KDQpHb29kIGNob2ljZXMgZm9yIHRoaXMgdmFyaWFi
+bGUgYXJlIHplcm8gYW5kIHNtYWxsIHBvc2l0aXZlIGFuZA0KbmVnYXRpdmUgaW50ZWdlcnMuICBJ
+biBwYXJ0aWN1bGFyLCBhIHZhbHVlIG9mIHplcm8gd2lsbCBjYXVzZSBibGFuaw0KbGluZXMgdG8g
+YmUgaW5zZXJ0ZWQgb25seSB3aGVuIG5lY2Vzc2FyeSB0byBhbGxvdyB0aGUgbmV3IGNvbW1lbnQg
+bGluZQ0KdG8gbGluZSB1cCB1bmRlciB0aGUgcHJldmlvdXMgb25lLg0KDQpGb3IgbW9yZSBpbmZv
+cm1hdGlvbiwgdHlwZSBgXFxbZGVzY3JpYmUtdmFyaWFibGVdIGJjLW1vZGUtZG9jJy4iKQ0KDQo7
+Ozs7PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09
+PT09PT09PT09PT09PT09PT09DQo7OztfICAqIE1lbnVzDQoNCihkZWZ2YXIgYmMtbW9kZS1tZW51
+DQogICcoIkNvbW1lbnRzIg0KICAgICgiT3B0aW9ucyINCiAgICAgWyJFeHRlbmRlZCBLZXltYXAi
+ICAgYmMtdG9nZ2xlLWtleW1hcC1sZXZlbA0KICAgICAgOnN0eWxlIHRvZ2dsZQ0KICAgICAgOnNl
+bGVjdGVkIGJjLWtleW1hcC1sZXZlbF0NCiAgICAgWyJDb21tZW50LU9yaWVudGVkIEF1dG8tRmls
+bGluZyIgIGJjLXRvZ2dsZS1hdXRvLWZpbGwtYWR2aWNlDQogICAgICA6c3R5bGUgdG9nZ2xlDQog
+ICAgICA6c2VsZWN0ZWQgYmMtZW5hYmxlLWF1dG8tZmlsbC1hZHZpY2VdDQogICAgIFsiU2V0IFRh
+YiBTcGFjaW5nLi4uIiAgYmMtc2V0LXRhYi1zcGFjaW5nIHRdDQogICAgIFsiU2V0IE1hcmdpbi4u
+LiIgIGJjLXNldC1tYXJnaW4gdF0NCiAgICAgKQ0KICAgICItLS0iDQogICAgWyJGaWxsIiAgICAg
+ICAgICAgICAgYmMtZmlsbCAgICAgICAgICAgICAgICAgICAgICAgICB0XQ0KICAgIFsiV2lkZXIi
+ICAgICAgICAgICAgIGJjLXdpZGVyICAgICAgICAgICAgICAgICAgICAgICAgdF0NCiAgICBbIk5h
+cnJvd2VyIiAgICAgICAgICBiYy1uYXJyb3dlciAgICAgICAgICAgICAgICAgICAgIHRdDQogICAg
+Ii0tLSINCiAgICBbIlNxdWVlemUiICAgICAgICAgICBiYy1zcXVlZXplICAgICAgICAgICAgICAg
+ICAgICAgIHRdDQogICAgWyJTaG9ydGVyIiAgICAgICAgICAgYmMtc2hvcnRlciAgICAgICAgICAg
+ICAgICAgICAgICB0XQ0KICAgIFsiVGFsbGVyIiAgICAgICAgICAgIGJjLXRhbGxlciAgICAgICAg
+ICAgICAgICAgICAgICAgdF0NCiAgICAiLS0tIg0KICAgIFsiUmFpc2UiICAgICAgICAgICAgIGJj
+LXJhaXNlICAgICAgICAgICAgICAgICAgICAgICAgdF0NCiAgICBbIlJhaXNlL0Zsb3ciICAgICAg
+ICBiYy1yYWlzZS1mbG93ICAgICAgICAgICAgICAgICAgIHRdDQogICAgWyJMb3dlciIgICAgICAg
+ICAgICAgYmMtbG93ZXIgICAgICAgICAgICAgICAgICAgICAgICB0XQ0KICAgIFsiTG93ZXIvRmxv
+dyIgICAgICAgIGJjLWxvd2VyLWZsb3cgICAgICAgICAgICAgICAgICAgdF0NCiAgICAiLS0tIg0K
+ICAgIFsiQ3V0IiAgICAgICAgICAgICAgIGJjLWtpbGwtY29tbWVudCAgICAgICAgICAgICAgICAg
+dF0NCiAgICBbIkNvcHkiICAgICAgICAgICAgICBiYy1jb3B5LWNvbW1lbnQtY29tbWVudC1hcy1r
+aWxsIHRdDQogICAgWyJQYXN0ZSBNb3N0IFJlY2VudCIgYmMteWFuayAgICAgICAgICAgICAgICAg
+ICAgICAgICB0XQ0KICAgICItLS0iDQogICAgWyJPcGVuIExpbmUiICAgICAgICAgYmMtb3Blbi1s
+aW5lICAgICAgICAgICAgICAgICAgICB0XQ0KICAgIFsiTmV3bGluZSIgICAgICAgICAgIGJjLW5l
+d2xpbmUgICAgICAgICAgICAgICAgICAgICAgdF0NCiAgICBbIkluZGVudCBOZXcgTGluZSIgICBi
+Yy1pbmRlbnQtbmV3LWNvbW1lbnQtbGluZSAgICAgIHRdDQogICAgWyJLaWxsIExpbmUiICAgICAg
+ICAgYmMta2lsbC1saW5lICAgICAgICAgICAgICAgICAgICB0XQ0KICAgICItLS0iDQogICAgWyJO
+ZXh0IENvbW1lbnQiICAgICAgYmMtZm9yd2FyZC1jb21tZW50ICAgICAgICAgICAgICB0XQ0KICAg
+IFsiUHJldmlvdXMgQ29tbWVudCIgIGJjLWJhY2t3YXJkLWNvbW1lbnQgICAgICAgICAgICAgdF0N
+CiAgICApDQogICJYRW1hY3MgMTkgbWVudSBmb3IgYmMtbW9kZS4iKQ0KDQooZGVmdW4gYmMtaW5z
+dGFsbC1tZW51YmFyICgmb3B0aW9uYWwgcmVtb3ZlKQ0KICA7OyBpbnN0YWxsIG9yIHJlbW92ZSB0
+aGUgbWVudQ0KICAobGV0ICgocGF0aCAnKCJDb21tZW50cyIpKSkNCiAgICAoY29uZGl0aW9uLWNh
+c2UgbmlsDQoJKGNvbmQNCgkgKHJlbW92ZQ0KCSAgKGJjLWZ1bmNhbGwgJ2RlbGV0ZS1tZW51LWl0
+ZW0gcGF0aCkpDQoJICh0DQoJICAoYmMtZnVuY2FsbCAnc2V0LWJ1ZmZlci1tZW51YmFyDQoJCSAg
+ICAgIChjb3B5LXNlcXVlbmNlIChzeW1ib2wtdmFsdWUgJ2N1cnJlbnQtbWVudWJhcikpKQ0KCSAg
+KGJjLWZ1bmNhbGwgJ2FkZC1zdWJtZW51IG5pbCBiYy1tb2RlLW1lbnUpKSkNCiAgICAgIChlcnJv
+ciBuaWwpKSkpDQoNCjs7OyhkZWZ2YXIgYmMtbW9kZS1tZW51LWJhci1tYXAgbmlsKQ0KDQooZGVm
+dW4gYmMtbW9kZS1mc2YtbWVudSAobmFtZSBtYXApDQogIDs7IEFkZCBtZW51IHRvIGEga2V5bWFw
+LiAgRG9uJ3QgYWRkIHRoZW0gZm9yIFhFbWFjcy4gVGhpcyBmZWF0dXJlDQogIDs7IHRlc3Qgd2ls
+bCBmYWlsIG9uIG90aGVyIHRoYW4gRW1hY3MgMTkuICBCb3Jyb3dlZCBmcm9tIGNjLW1vZGUuZWwN
+CiAgKGNvbmRpdGlvbi1jYXNlIG5pbA0KICAgICAgKHByb2duDQoJKGRlZmluZS1rZXkgbWFwIFtt
+ZW51LWJhcl0gKG1ha2Utc3BhcnNlLWtleW1hcCkpDQoJKGRlZmluZS1rZXkgbWFwIFttZW51LWJh
+ciBiY10gKGNvbnMgbmFtZSAobWFrZS1zcGFyc2Uta2V5bWFwIG5hbWUpKSkNCg0KCShkZWZpbmUt
+a2V5IG1hcCBbbWVudS1iYXIgYmMgYmMtYmFja3dhcmQtY29tbWVudF0NCgkgICcoIlByZXZpb3Vz
+IENvbW1lbnQiIC4gYmMtYmFja3dhcmQtY29tbWVudCkpDQoJKGRlZmluZS1rZXkgbWFwIFttZW51
+LWJhciBiYyBiYy1mb3J3YXJkLWNvbW1lbnRdDQoJICAnKCJOZXh0IENvbW1lbnQiIC4gYmMtZm9y
+d2FyZC1jb21tZW50KSkNCgkNCgkoZGVmaW5lLWtleSBtYXAgW21lbnUtYmFyIGJjIHNlcGFyYXRv
+ci1lZGl0LWxpbmVdICcoIi0tIikpDQoJKGRlZmluZS1rZXkgbWFwIFttZW51LWJhciBiYyBiYy1r
+aWxsLWxpbmVdDQoJICAnKCJDdXQgTGluZSIgLiBiYy1raWxsLWxpbmUpKQ0KCShkZWZpbmUta2V5
+IG1hcCBbbWVudS1iYXIgYmMgYmMtaW5kZW50LW5ldy1jb21tZW50LWxpbmVdDQoJICAnKCJJbmRl
+bnQgTmV3IExpbmUiIC4gYmMtaW5kZW50LW5ldy1jb21tZW50LWxpbmUpKQ0KCShkZWZpbmUta2V5
+IG1hcCBbbWVudS1iYXIgYmMgYmMtbmV3bGluZV0NCgkgICcoIk5ld2xpbmUiIC4gYmMtbmV3bGlu
+ZSkpDQoJKGRlZmluZS1rZXkgbWFwIFttZW51LWJhciBiYyBiYy1vcGVuLWxpbmVdDQoJICAnKCJP
+cGVuIExpbmUiIC4gYmMtb3Blbi1saW5lKSkNCg0KCShkZWZpbmUta2V5IG1hcCBbbWVudS1iYXIg
+YmMgc2VwYXJhdG9yLXhjcF0gJygiLS0iKSkNCgkoZGVmaW5lLWtleSBtYXAgW21lbnUtYmFyIGJj
+IGJjLXlhbmtdDQoJICAnKCJQYXN0ZSBNb3N0IFJlY2VudCIgLiBiYy15YW5rKSkNCgkoZGVmaW5l
+LWtleSBtYXAgW21lbnUtYmFyIGJjIGJjLWNvcHktY29tbWVudC1jb21tZW50LWFzLWtpbGxdDQoJ
+ICAnKCJDb3B5IiAuIGJjLWNvcHktY29tbWVudC1jb21tZW50LWFzLWtpbGwpKQ0KCShkZWZpbmUt
+a2V5IG1hcCBbbWVudS1iYXIgYmMgYmMta2lsbC1jb21tZW50XQ0KCSAgJygiQ3V0IiAuIGJjLWtp
+bGwtY29tbWVudCkpDQoJDQoJKGRlZmluZS1rZXkgbWFwIFttZW51LWJhciBiYyBzZXBhcmF0b3It
+ZWRpdC1jb21tZW50XSAnKCItLSIpKQ0KCShkZWZpbmUta2V5IG1hcCBbbWVudS1iYXIgYmMgYmMt
+bG93ZXItZmxvd10NCgkgICcoIkxvd2VyL0Zsb3ciIC4gYmMtbG93ZXItZmxvdykpDQoJKGRlZmlu
+ZS1rZXkgbWFwIFttZW51LWJhciBiYyBiYy1sb3dlcl0NCgkgICcoIkxvd2VyIiAuIGJjLWxvd2Vy
+KSkNCgkoZGVmaW5lLWtleSBtYXAgW21lbnUtYmFyIGJjIGJjLXJhaXNlLWZsb3ddDQoJICAnKCJS
+YWlzZS9GbG93IiAuIGJjLXJhaXNlLWZsb3cpKQ0KCShkZWZpbmUta2V5IG1hcCBbbWVudS1iYXIg
+YmMgYmMtcmFpc2VdDQoJICAnKCJSYWlzZSIgLiBiYy1yYWlzZSkpDQoJDQoJKGRlZmluZS1rZXkg
+bWFwIFttZW51LWJhciBiYyBzZXBhcmF0b3Itc3F1ZWV6ZV0gJygiLS0iKSkNCgkoZGVmaW5lLWtl
+eSBtYXAgW21lbnUtYmFyIGJjIGJjLXRhbGxlcl0NCgkgICcoIlRhbGxlciIgLiBiYy10YWxsZXIp
+KQ0KCShkZWZpbmUta2V5IG1hcCBbbWVudS1iYXIgYmMgYmMtc2hvcnRlcl0NCgkgICcoIlNob3J0
+ZXIiIC4gYmMtc2hvcnRlcikpDQoJKGRlZmluZS1rZXkgbWFwIFttZW51LWJhciBiYyBiYy1zcXVl
+ZXplXQ0KCSAgJygiU3F1ZWV6ZSIgLiBiYy1zcXVlZXplKSkNCgkNCgkoZGVmaW5lLWtleSBtYXAg
+W21lbnUtYmFyIGJjIHNlcGFyYXRvci1maWxsXSAnKCItLSIpKQ0KCShkZWZpbmUta2V5IG1hcCBb
+bWVudS1iYXIgYmMgYmMtbmFycm93ZXJdDQoJICAnKCJOYXJyb3dlciIgLiBiYy1uYXJyb3dlcikp
+DQoJKGRlZmluZS1rZXkgbWFwIFttZW51LWJhciBiYyBiYy13aWRlcl0NCgkgICcoIldpZGVyIiAu
+IGJjLXdpZGVyKSkNCgkoZGVmaW5lLWtleSBtYXAgW21lbnUtYmFyIGJjIGJjLWZpbGxdDQoJICAn
+KCJGaWxsIiAuIGJjLWZpbGwpKQ0KDQoJCQkJCQkJOyBUaGUgT3B0aW9ucyBzdWJtZW51DQoNCgko
+ZGVmaW5lLWtleSBtYXAgW21lbnUtYmFyIGJjIHNlcGFyYXRvci1vcHRpb25zXSAnKCItLSIpKQ0K
+CShkZWZpbmUta2V5IG1hcCBbbWVudS1iYXIgYmMgb3B0aW9uc10NCgkgIChjb25zICJPcHRpb25z
+IiAobWFrZS1zcGFyc2Uta2V5bWFwICJPcHRpb25zIikpKQ0KCShkZWZpbmUta2V5IG1hcCBbbWVu
+dS1iYXIgYmMgb3B0aW9ucyBiYy1zZXQtbWFyZ2luXQ0KCSAgJygiU2V0IE1hcmdpbi4uLiIgLiBi
+Yy1zZXQtbWFyZ2luKSkNCgkoZGVmaW5lLWtleSBtYXAgW21lbnUtYmFyIGJjIG9wdGlvbnMgYmMt
+c2V0LXRhYi1zcGFjaW5nXQ0KCSAgJygiU2V0IFRhYiBTcGFjaW5nLi4uIiAuIGJjLXNldC10YWIt
+c3BhY2luZykpDQoJKGRlZmluZS1rZXkgbWFwIFttZW51LWJhciBiYyBvcHRpb25zIGJjLXRvZ2ds
+ZS1hdXRvLWZpbGwtYWR2aWNlXQ0KCSAgKGlmIGJjLWVuYWJsZS1hdXRvLWZpbGwtYWR2aWNlDQoJ
+ICAgICAgJygiTm9ybWFsIEF1dG8tRmlsbGluZyIgLiBiYy10b2dnbGUtYXV0by1maWxsLWFkdmlj
+ZSkNCgkgICAgJygiQ29tbWVudC1PcmllbnRlZCBBdXRvLUZpbGxpbmciIC4gYmMtdG9nZ2xlLWF1
+dG8tZmlsbC1hZHZpY2UpKSkNCgkoZGVmaW5lLWtleSBtYXAgW21lbnUtYmFyIGJjIG9wdGlvbnMg
+YmMtdG9nZ2xlLWtleW1hcC1sZXZlbF0NCgkgIChpZiBiYy1rZXltYXAtbGV2ZWwNCgkgICAgICAn
+KCJCYXNpYyBLZXltYXAiIC4gYmMtdG9nZ2xlLWtleW1hcC1sZXZlbCkNCgkgICAgJygiRXh0ZW5k
+ZWQgS2V5bWFwIiAuIGJjLXRvZ2dsZS1rZXltYXAtbGV2ZWwpKSkNCgl0KQ0KICAgIChlcnJvciBu
+aWwpKSkNCg0KOzs7Oz09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09
+PT09PT09PT09PT09PT09PT09PT09PT09PT09PQ0KOzs7XyAgKiBLZXltYXBzDQoNCihkZWZ2YXIg
+YmMtbW9kZS1tYXAgbmlsIDsgTk9DT0xMRUNUDQogICJLZXltYXAgZm9yIEJDIG1pbm9yIG1vZGUu
+IikNCg0KKGRlZnZhciBiYy1tb2RlLXByZWZpeC1tYXAgbmlsKSA7IE5PQ09MTEVDVA0KKGlmIGJj
+LW1vZGUtcHJlZml4LW1hcA0KICAgIG5pbA0KICAoc2V0cSBiYy1tb2RlLXByZWZpeC1tYXAgKG1h
+a2Utc3BhcnNlLWtleW1hcCkpDQogIChkZWZpbmUta2V5IGJjLW1vZGUtcHJlZml4LW1hcCAiOyIg
+ICAgJ2JjLW1vZGUpDQogIChkZWZpbmUta2V5IGJjLW1vZGUtcHJlZml4LW1hcCAiWyIgJ2JjLXRv
+Z2dsZS1rZXltYXAtbGV2ZWwpDQogIChkZWZpbmUta2V5IGJjLW1vZGUtcHJlZml4LW1hcCAiXEMt
+YSIgJ2JjLWJlZ2lubmluZy1vZi1saW5lKQ0KICAoZGVmaW5lLWtleSBiYy1tb2RlLXByZWZpeC1t
+YXAgIlxDLWIiICdiYy1zdWJtaXQtYnVnLXJlcG9ydCkNCiAgKGRlZmluZS1rZXkgYmMtbW9kZS1w
+cmVmaXgtbWFwICJcQy1lIiAnYmMtZW5kLW9mLWxpbmUpDQogIChkZWZpbmUta2V5IGJjLW1vZGUt
+cHJlZml4LW1hcCAiXEMtZiIgJ2JjLXNldC1tYXJnaW4pDQogIChkZWZpbmUta2V5IGJjLW1vZGUt
+cHJlZml4LW1hcCAiXEMtaiIgJ2JjLWluZGVudC1uZXctY29tbWVudC1saW5lKQ0KICAoZGVmaW5l
+LWtleSBiYy1tb2RlLXByZWZpeC1tYXAgIlxDLWsiICdiYy1raWxsLWxpbmUpDQogIChkZWZpbmUt
+a2V5IGJjLW1vZGUtcHJlZml4LW1hcCAiXEMtbSIgJ2JjLW5ld2xpbmUpDQogIChkZWZpbmUta2V5
+IGJjLW1vZGUtcHJlZml4LW1hcCAiXEMtbyIgJ2JjLW9wZW4tbGluZSkNCiAgKGRlZmluZS1rZXkg
+YmMtbW9kZS1wcmVmaXgtbWFwICJcQy1wIiAnYmMteWFuay1wb3ApDQogIChkZWZpbmUta2V5IGJj
+LW1vZGUtcHJlZml4LW1hcCAiXEMtdyIgJ2JjLWtpbGwtY29tbWVudCkNCiAgKGRlZmluZS1rZXkg
+YmMtbW9kZS1wcmVmaXgtbWFwICJcQy15IiAnYmMteWFuaykNCiAgKGRlZmluZS1rZXkgYmMtbW9k
+ZS1wcmVmaXgtbWFwICJcTS1xIiAnYmMtZmlsbCkNCiAgKGRlZmluZS1rZXkgYmMtbW9kZS1wcmVm
+aXgtbWFwICJcTS13IiAnYmMtY29weS1jb21tZW50LWNvbW1lbnQtYXMta2lsbCkNCiAgKGRlZmlu
+ZS1rZXkgYmMtbW9kZS1wcmVmaXgtbWFwICJcTS15IiAnYmMteWFuay1wb3ApDQogIChkZWZpbmUt
+a2V5IGJjLW1vZGUtcHJlZml4LW1hcCAiXHQiICdiYy1pbmRlbnQtYWNjb3JkaW5nLXRvLW1vZGUp
+DQogIChkZWZpbmUta2V5IGJjLW1vZGUtcHJlZml4LW1hcCAiYSIgICAgJ2JjLWJlZ2lubmluZy1v
+Zi1saW5lKQ0KICAoZGVmaW5lLWtleSBiYy1tb2RlLXByZWZpeC1tYXAgImIiICAgICdiYy1iYWNr
+d2FyZC1jb21tZW50KQ0KICAoZGVmaW5lLWtleSBiYy1tb2RlLXByZWZpeC1tYXAgImQiICAgICdi
+Yy1sb3dlcikNCiAgKGRlZmluZS1rZXkgYmMtbW9kZS1wcmVmaXgtbWFwICJlIiAgICAnYmMtZW5k
+LW9mLWxpbmUpDQogIChkZWZpbmUta2V5IGJjLW1vZGUtcHJlZml4LW1hcCAiZiIgICAgJ2JjLWZv
+cndhcmQtY29tbWVudCkNCiAgKGRlZmluZS1rZXkgYmMtbW9kZS1wcmVmaXgtbWFwICJpIiAgICAn
+YmMtc2V0LXRhYi1zcGFjaW5nKQ0KICAoZGVmaW5lLWtleSBiYy1tb2RlLXByZWZpeC1tYXAgImoi
+ICAgICdiYy1pbmRlbnQtbmV3LWNvbW1lbnQtbGluZSkNCiAgKGRlZmluZS1rZXkgYmMtbW9kZS1w
+cmVmaXgtbWFwICJrIiAgICAnYmMta2lsbC1saW5lKQ0KICAoZGVmaW5lLWtleSBiYy1tb2RlLXBy
+ZWZpeC1tYXAgImwiICAgICdiYy1sb3dlci1mbG93KQ0KICAoZGVmaW5lLWtleSBiYy1tb2RlLXBy
+ZWZpeC1tYXAgIm4iICAgICdiYy1uYXJyb3dlcikNCiAgKGRlZmluZS1rZXkgYmMtbW9kZS1wcmVm
+aXgtbWFwICJvIiAgICAnYmMtb3Blbi1saW5lKQ0KICAoZGVmaW5lLWtleSBiYy1tb2RlLXByZWZp
+eC1tYXAgInEiICAgICdiYy1maWxsKQ0KICAoZGVmaW5lLWtleSBiYy1tb2RlLXByZWZpeC1tYXAg
+InIiICAgICdiYy1yYWlzZS1mbG93KQ0KICAoZGVmaW5lLWtleSBiYy1tb2RlLXByZWZpeC1tYXAg
+InMiICAgICdiYy1zaG9ydGVyKQ0KICAoZGVmaW5lLWtleSBiYy1tb2RlLXByZWZpeC1tYXAgInQi
+ICAgICdiYy10YWxsZXIpDQogIChkZWZpbmUta2V5IGJjLW1vZGUtcHJlZml4LW1hcCAidSIgICAg
+J2JjLXJhaXNlKQ0KICAoZGVmaW5lLWtleSBiYy1tb2RlLXByZWZpeC1tYXAgInciICAgICdiYy13
+aWRlcikNCiAgKGRlZmluZS1rZXkgYmMtbW9kZS1wcmVmaXgtbWFwICJ5IiAgICAnYmMteWFuaykN
+CiAgKGRlZmluZS1rZXkgYmMtbW9kZS1wcmVmaXgtbWFwICJ6IiAgICAnYmMtc3F1ZWV6ZSkpDQoN
+CihkZWZ2YXIgYmMtbW9kZS1iYXNpYy1tYXAgbmlsIDsgTk9DT0xMRUNUDQogICJCYXNpYyBrZXlt
+YXAgZm9yIEJDIG1pbm9yIG1vZGUuIikNCihpZiBiYy1tb2RlLWJhc2ljLW1hcA0KICAgIG5pbA0K
+ICAoc2V0cSBiYy1tb2RlLWJhc2ljLW1hcCAobWFrZS1zcGFyc2Uta2V5bWFwKSkNCiAgKGRlZmlu
+ZS1rZXkgYmMtbW9kZS1iYXNpYy1tYXAgYmMtbW9kZS1wcmVmaXggYmMtbW9kZS1wcmVmaXgtbWFw
+KQ0KICAoZGVmaW5lLWtleSBiYy1tb2RlLWJhc2ljLW1hcCAiXEMteHI7IiAnYmMtbW9kZSkNCiAg
+KGRlZmluZS1rZXkgYmMtbW9kZS1iYXNpYy1tYXAgWyhtZXRhIHJldHVybildICdiYy1maWxsKQ0K
+Ozs7ICAoYmMtbW9kZS1mc2YtbWVudSAiQ29tbWVudHMiIGJjLW1vZGUtYmFzaWMtbWFwKQ0KICAp
+DQoNCihkZWZ2YXIgYmMtbW9kZS1leHQtcHJlZml4LW1hcCBuaWwpIDsgTk9DT0xMRUNUDQooaWYg
+YmMtbW9kZS1leHQtcHJlZml4LW1hcA0KICAgIG5pbA0KICAoc2V0cSBiYy1tb2RlLWV4dC1wcmVm
+aXgtbWFwIChtYWtlLXNwYXJzZS1rZXltYXApKQ0KICAoZGVmaW5lLWtleSBiYy1tb2RlLWV4dC1w
+cmVmaXgtbWFwICJcQy1qIiAnYmMtaW5kZW50LW5ldy1jb21tZW50LWxpbmUpDQogIChkZWZpbmUt
+a2V5IGJjLW1vZGUtZXh0LXByZWZpeC1tYXAgIlxDLWsiICdiYy1raWxsLWxpbmUpDQogIChkZWZp
+bmUta2V5IGJjLW1vZGUtZXh0LXByZWZpeC1tYXAgIlxDLW0iICdiYy1uZXdsaW5lKQ0KICAoZGVm
+aW5lLWtleSBiYy1tb2RlLWV4dC1wcmVmaXgtbWFwICJcQy1vIiAnYmMtb3Blbi1saW5lKQ0KICAo
+ZGVmaW5lLWtleSBiYy1tb2RlLWV4dC1wcmVmaXgtbWFwICJcQy1wIiAnYmMteWFuay1wb3ApDQog
+IChkZWZpbmUta2V5IGJjLW1vZGUtZXh0LXByZWZpeC1tYXAgIlxDLXciICdiYy1raWxsLWNvbW1l
+bnQpDQogIChkZWZpbmUta2V5IGJjLW1vZGUtZXh0LXByZWZpeC1tYXAgIlxDLXkiICdiYy15YW5r
+KQ0KICAoZGVmaW5lLWtleSBiYy1tb2RlLWV4dC1wcmVmaXgtbWFwICJcTS13IiAnYmMtY29weS1j
+b21tZW50LWNvbW1lbnQtYXMta2lsbCkNCiAgKGRlZmluZS1rZXkgYmMtbW9kZS1leHQtcHJlZml4
+LW1hcCAiXE0teSIgJ2JjLXlhbmstcG9wKQ0KICAoZGVmaW5lLWtleSBiYy1tb2RlLWV4dC1wcmVm
+aXgtbWFwICJcTS1qIiAnaW5kZW50LW5ldy1jb21tZW50LWxpbmUpDQogIChkZWZpbmUta2V5IGJj
+LW1vZGUtZXh0LXByZWZpeC1tYXAgIlx0IiAgICdpbmRlbnQtYWNjb3JkaW5nLXRvLW1vZGUpKQ0K
+DQo7KHNldHEgYmMtbW9kZS1leHRlbmRlZC1tYXAgbmlsKSA7IGZvciBkZWJ1Z2dpbmcNCihkZWZ2
+YXIgYmMtbW9kZS1leHRlbmRlZC1tYXAgbmlsIDsgTk9DT0xMRUNUDQogICJFeHRlbmRlZCBrZXlt
+YXAgZm9yIEJDIG1pbm9yIG1vZGUuIikNCihpZiBiYy1tb2RlLWV4dGVuZGVkLW1hcA0KICAgICgp
+DQogIDs7IFhFbWFjcyBhbmQgRW1hY3MgMTkgZG8gdGhpcyBkaWZmZXJlbnRseQ0KICA7OyBVc2Ug
+YGJjLWZ1bmNhbGwnIHRvIHF1aWV0IHRoZSBieXRlIGNvbXBpbGVyIGFib3V0IG9ic29sZXRlL3Vu
+a25vd24NCiAgOzsgZnVuY3Rpb25zLg0KICAoY29uZA0KICAgOzsgCQkJCTsgSW5oZXJpdCBmcm9t
+IGJjLW1vZGUtYmFzaWMtbWFwLg0KICAgKChmYm91bmRwICdzZXQta2V5bWFwLXBhcmVudHMpDQog
+ICAgKHNldHEgYmMtbW9kZS1leHRlbmRlZC1tYXAgKG1ha2Utc3BhcnNlLWtleW1hcCkpDQogICAg
+KGJjLWZ1bmNhbGwgJ3NldC1rZXltYXAtcGFyZW50cyBiYy1tb2RlLWV4dGVuZGVkLW1hcCBiYy1t
+b2RlLWJhc2ljLW1hcCkpDQogICAoKGZib3VuZHAgJ3NldC1rZXltYXAtcGFyZW50KQ0KICAgIChz
+ZXRxIGJjLW1vZGUtZXh0ZW5kZWQtbWFwIChtYWtlLXNwYXJzZS1rZXltYXApKQ0KICAgIChiYy1m
+dW5jYWxsICdzZXQta2V5bWFwLXBhcmVudCBiYy1tb2RlLWV4dGVuZGVkLW1hcCBiYy1tb2RlLWJh
+c2ljLW1hcCkpDQogICAodCAoc2V0cSBiYy1tb2RlLWV4dGVuZGVkLW1hcCAoY29ucyAna2V5bWFw
+IGJjLW1vZGUtYmFzaWMtbWFwKSkpKQ0KICA7OyBhZGQgYmluZGluZ3MNCiAgKHN1YnN0aXR1dGUt
+a2V5LWRlZmluaXRpb24gJ2JlZ2lubmluZy1vZi1saW5lICdiYy1iZWdpbm5pbmctb2YtbGluZQ0K
+CQkJICAgICBiYy1tb2RlLWV4dGVuZGVkLW1hcCBnbG9iYWwtbWFwKQ0KICAoc3Vic3RpdHV0ZS1r
+ZXktZGVmaW5pdGlvbiAnZW5kLW9mLWxpbmUgJ2JjLWVuZC1vZi1saW5lDQoJCQkgICAgIGJjLW1v
+ZGUtZXh0ZW5kZWQtbWFwIGdsb2JhbC1tYXApDQogIChzdWJzdGl0dXRlLWtleS1kZWZpbml0aW9u
+ICdpbmRlbnQtbmV3LWNvbW1lbnQtbGluZQ0KCQkJICAgICAnYmMtaW5kZW50LW5ldy1jb21tZW50
+LWxpbmUNCgkJCSAgICAgYmMtbW9kZS1leHRlbmRlZC1tYXAgZ2xvYmFsLW1hcCkNCiAgKGRlZmlu
+ZS1rZXkgYmMtbW9kZS1leHRlbmRlZC1tYXAgYmMtbW9kZS1leHQtcHJlZml4IGJjLW1vZGUtZXh0
+LXByZWZpeC1tYXApDQogIChkZWZpbmUta2V5IGJjLW1vZGUtZXh0ZW5kZWQtbWFwICJcTS1CIiAn
+YmMtYmFja3dhcmQtY29tbWVudCkNCiAgKGRlZmluZS1rZXkgYmMtbW9kZS1leHRlbmRlZC1tYXAg
+IlxNLUQiICdiYy1sb3dlcikNCiAgKGRlZmluZS1rZXkgYmMtbW9kZS1leHRlbmRlZC1tYXAgIlxN
+LUUiICdiYy1mb3J3YXJkLWNvbW1lbnQpDQogIChkZWZpbmUta2V5IGJjLW1vZGUtZXh0ZW5kZWQt
+bWFwICJcTS1GIiAnYmMtZm9yd2FyZC1jb21tZW50KQ0KICAoZGVmaW5lLWtleSBiYy1tb2RlLWV4
+dGVuZGVkLW1hcCAiXE0tSyIgJ2JjLWxvd2VyLWZsb3cpDQogIChkZWZpbmUta2V5IGJjLW1vZGUt
+ZXh0ZW5kZWQtbWFwICJcTS1MIiAnYmMtbG93ZXItZmxvdykNCiAgKGRlZmluZS1rZXkgYmMtbW9k
+ZS1leHRlbmRlZC1tYXAgIlxNLU4iICdiYy1uYXJyb3dlcikNCiAgKGRlZmluZS1rZXkgYmMtbW9k
+ZS1leHRlbmRlZC1tYXAgIlxNLVEiICdiYy1maWxsKQ0KICAoZGVmaW5lLWtleSBiYy1tb2RlLWV4
+dGVuZGVkLW1hcCAiXE0tUiIgJ2JjLXJhaXNlLWZsb3cpDQogIChkZWZpbmUta2V5IGJjLW1vZGUt
+ZXh0ZW5kZWQtbWFwICJcTS1TIiAnYmMtc2hvcnRlcikNCiAgKGRlZmluZS1rZXkgYmMtbW9kZS1l
+eHRlbmRlZC1tYXAgIlxNLVQiICdiYy10YWxsZXIpDQogIChkZWZpbmUta2V5IGJjLW1vZGUtZXh0
+ZW5kZWQtbWFwICJcTS1VIiAnYmMtcmFpc2UpDQogIChkZWZpbmUta2V5IGJjLW1vZGUtZXh0ZW5k
+ZWQtbWFwICJcTS1XIiAnYmMtd2lkZXIpDQogIChkZWZpbmUta2V5IGJjLW1vZGUtZXh0ZW5kZWQt
+bWFwICJcTS1aIiAnYmMtc3F1ZWV6ZSkNCg0KICAoZGVmaW5lLWtleSBiYy1tb2RlLWV4dGVuZGVk
+LW1hcCAiXE0teSIgJ2JjLXlhbmstcG9wKQ0KICAoZGVmaW5lLWtleSBiYy1tb2RlLWV4dGVuZGVk
+LW1hcCAiXHQiICdiYy1pbmRlbnQtYWNjb3JkaW5nLXRvLW1vZGUpKQ0KDQoMDQo7Ozs7PT09PT09
+PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09
+PT09PT09PT09DQo7OztfICAqIEJ1ZyBSZXBvcnRpbmc6DQoNCihldmFsLXdoZW4tY29tcGlsZSAo
+cmVxdWlyZSAncmVwb3J0ZXIpKQ0KDQooZGVmdmFyIGJjLWJ1Zy1yZXBvcnRpbmcgbmlsDQogICJO
+b24tbmlsIGR1cmluZyBiYy1zdWJtaXQtYnVnLXJlcG9ydC4iKQ0KOzs7XyAgICB8IGJjLXN1Ym1p
+dC1idWctcmVwb3J0DQooZGVmdW4gYmMtc3VibWl0LWJ1Zy1yZXBvcnQgKCkNCiAgIlN1Ym1pdCwg
+dmlhIG1haWwsIGEgYnVnIHJlcG9ydCBvbiBiYy1tb2RlLiINCiAgKGludGVyYWN0aXZlKQ0KICAo
+bGV0ICgocmVwb3J0ZXItcHJvbXB0LWZvci1zdW1tYXJ5LXAgdCkNCgl2YXJsaXN0IHNhbHV0YXRp
+b24NCgkoYmMtYnVnLXJlcG9ydGluZyB0KSkNCiAgICAoc2V0cSB2YXJsaXN0ICcobWFqb3ItbW9k
+ZQ0KCQkgICAga2lsbC13aG9sZS1saW5lDQoJCSAgICBmaWxsLWNvbHVtbg0KCQkgICAgYXV0by1m
+aWxsLWZ1bmN0aW9uDQoNCgkJICAgIGJjLWFkZGVkLW5ld2xpbmVzLWNvdW50ZXINCgkJICAgIGJj
+LWJhbm5lci1ib3R0b20tYm9yZGVyDQoJCSAgICBiYy1iYW5uZXItYm90dG9tLXNwYWNlDQoJCSAg
+ICBiYy1iYW5uZXItdG9wLWJvcmRlcg0KCQkgICAgYmMtYmFubmVyLXRvcC1zcGFjZQ0KCQkgICAg
+YmMtYnVnLWxhc3QtY29tbWFuZA0KCQkgICAgYmMtYnVnLXJlcG9ydGluZw0KCQkgICAgYmMtYnVn
+LXNhdmUtY29sdW1uDQoJCSAgICBiYy1idWctc2F2ZS1saW5lDQoJCSAgICBiYy1idWctc2F2ZS1w
+b2ludA0KCQkgICAgYmMtY29kZS13aWR0aC10aHJlc2hvbGQNCgkJICAgIGJjLWNvbW1lbnQtZW5k
+DQoJCSAgICBiYy1jb21tZW50LWxvb2tpbmctYXQtcmVnZXhwDQoJCSAgICBiYy1jb21tZW50LXJl
+Z2V4cA0KCQkgICAgYmMtY29tbWVudC1zdGFydA0KCQkgICAgYmMtZGVsaW1zLWxlbmd0aA0KCQkg
+ICAgYmMtZWZmZWN0aXZlLWVuZA0KCQkgICAgYmMtZWZmZWN0aXZlLXN0YXJ0DQoJCSAgICBiYy1l
+bmFibGUtYXV0by1maWxsLWFkdmljZQ0KCQkgICAgYmMtZXh0cmEtbGluZXMNCgkJICAgIGJjLWZi
+LWRlYnVnDQoJCSAgICBiYy1mYi1saW5lcw0KCQkgICAgYmMtZmItbmV4dC13aWR0aA0KCQkgICAg
+YmMtZmItcHJldi1maWxsLWNvbHVtbg0KCQkgICAgYmMtZmItd2lkZXN0LWlzLW9uZQ0KCQkgICAg
+YmMtZmItd2lkdGgNCgkJICAgIGJjLWZpbGwtYnVmZmVyLWNhY2hlDQoJCSAgICBiYy1maWxsLWNv
+dW50DQoJCSAgICBiYy1mb3JtYXQtY29tbWFuZHMNCgkJICAgIGJjLWtleW1hcC1sZXZlbA0KCQkg
+ICAgYmMtbGFuZ3VhZ2UNCgkJICAgIGJjLW1vZGUNCgkJICAgIGJjLW1vZGUtZGF0ZQ0KCQkgICAg
+YmMtbW9kZS1kb2MNCgkJICAgIGJjLW1vZGUtbWFpbnRhaW5lci1hZGRyZXNzDQoJCSAgICBiYy1t
+b2RlLXZlcnNpb24NCgkJICAgIGJjLXBhcnNlLWxpbmUtY2FjaGUNCgkJICAgIGJjLXBoYW50b20t
+Y29sdW1uDQoJCSAgICBiYy1wcmVmLWZpcnN0LWxpbmUNCgkJICAgIGJjLXJpZ2h0LW1hcmdpbg0K
+CQkgICAgYmMtRy1ybS1taW51cy1zdHVmZg0KCQkgICAgYmMtc2F2ZWQtZGVsaW1zDQoJCSAgICBi
+Yy1zY3JhdGNoLWJ1ZmZlcg0KCQkgICAgYmMtc2hvdy1maWxsLWNvdW50DQoJCSAgICBiYy1zdGFy
+dC1maXJzdC1jaGFyDQoJCSAgICBiYy1zdGFydC1tYXJrZXINCgkJICAgIGJjLXRhYi1zdG9wcw0K
+CQkgICAgZmlsbGFkYXB0LW1vZGUNCg0KCQkgICAgKHQgLiBiYy1idWctZ2V0LXVzZXItYnVmZmVy
+KQ0KCQkgICAgKSkNCiAgICAoc2V0cSBzYWx1dGF0aW9uICINCkNvbmdyYXR1bGF0aW9ucyEgWW91
+IGFyZSBhYm91dCB0byByZXBvcnQgYSBidWcgaW4gQkMhDQoNClBsZWFzZSBjaGVjayB0aGUgZW5k
+IG9mIHRoaXMgbWVzc2FnZSB0byBzZWUgdGhhdCBpdCBjb250YWlucyB0aGUNCnRleHQgeW91IHdl
+cmUgZWRpdGluZy4gIFRoZW4gbWFrZSBhIGNvbmNpc2UgYW5kIGFjY3VyYXRlIHN1bW1hcnkNCm9m
+IHdoYXQgaGFwcGVuZWQgYW5kIG1haWwgaXQgdG8gdGhlIGFkZHJlc3MgYWJvdmUuDQotLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLSAiKQ0K
+DQogICAgKHJlcXVpcmUgJ3JlcG9ydGVyKQ0KICAgIChzd2l0Y2gtdG8tYnVmZmVyIChnZXQtYnVm
+ZmVyLWNyZWF0ZSAiIGJjLW1zZy1idWZmZXIiKSkNCiAgICAoZXJhc2UtYnVmZmVyKQ0KICAgIChm
+dW5kYW1lbnRhbC1tb2RlKQ0KICAgIChkZWxldGUtb3RoZXItd2luZG93cykNCiAgICAoaW5zZXJ0
+ICINClBsZWFzZSByZWFkIHRoaXMgZmlyc3Q6DQotLS0tLS0tLS0tLS0tLS0tLS0tLS0tDQoNCkJD
+LW1vZGUgaXMgdmVyeSBzZW5zaXRpdmUgdG8gdGhlIHRleHQgeW91IGFyZSBlZGl0aW5nLiAgRm9y
+IHRoaXMNCnJlYXNvbiwgYGJjLXN1Ym1pdC1idWctcmVwb3J0JyB0cmllcyB0byBjb3B5IGEgYml0
+IG9mIHRoZSBidWZmZXIgbmVhcg0Kd2hlcmUgeW91IHdlcmUgZWRpdGluZy4gIEZvciB0aGlzIHRv
+IGJlIHVzZWZ1bCwgYmVmb3JlIHN1Ym1pdHRpbmcgYQ0KYnVnIHJlcG9ydCB5b3UgbXVzdCANCg0K
+ICAoMSkgIFBvc2l0aW9uIHRoZSBjdXJzb3IgaW5zaWRlIHRoZSBjb21tZW50IHdoZXJlIHlvdSBl
+eHBlcmllbmNlZA0KICAgICAgIHRoZSBlcnJvci4NCiAgKDIpICBSdW4gdGhlIEJDIGNvbW1hbmQg
+dGhhdCBmYWlsZWQuDQogICgzKSAgSWYgdGhhdCBhbHRlcmVkIHRoZSBidWZmZXIsIHR5cGUgYCIN
+CgkgICAgKHN1YnN0aXR1dGUtY29tbWFuZC1rZXlzICJcXFthZHZlcnRpc2VkLXVuZG9dIikgIicg
+XChgdW5kbydcKS4iKQ0KICAgICAgDQogICAgKGlmICh5LW9yLW4tcCAiSSBoYXZlIGRvbmUgYWxs
+IHRoYXQgYW5kIEknbSByZWFkeSB0byBtYWlsISAiKQ0KCShwcm9nbg0KCSAgKGJ1cnktYnVmZmVy
+KQ0KCSAgKGxldCAoKGVtYWNzLWxpc3AtbW9kZS1ob29rcyBuaWwpDQoJCShvcmlnLWZpbGxhZGFw
+dCAoZGVmYXVsdC12YWx1ZSBmaWxsYWRhcHQtbW9kZSkpKQ0KCSAgICAoYmMtZHVtbXkgZW1hY3Mt
+bGlzcC1tb2RlLWhvb2tzKQkgICAgICA7IHF1aWV0IHRoZSBieXRlIGNvbXBpbGVyDQoJICAgIChz
+ZXRxLWRlZmF1bHQgZmlsbGFkYXB0LW1vZGUgbmlsKQ0KCSAgICAocmVwb3J0ZXItc3VibWl0LWJ1
+Zy1yZXBvcnQgYmMtbW9kZS1tYWludGFpbmVyLWFkZHJlc3MNCgkJCQkJKGNvbmNhdCAiYmMtbW9k
+ZS5lbCAiIGJjLW1vZGUtdmVyc2lvbikNCgkJCQkJdmFybGlzdA0KCQkJCQknYmMtYnVnLXNhdmUt
+cG9pbnQgbmlsDQoJCQkJCXNhbHV0YXRpb24pDQoJICAgIChzZXRxLWRlZmF1bHQgZmlsbGFkYXB0
+LW1vZGUgb3JpZy1maWxsYWRhcHQpKSkNCiAgICAgIChidXJ5LWJ1ZmZlcikNCiAgICAgIChlcnJv
+ciAiQnVnIHJlcG9ydCBhYm9ydGVkIikpDQogICAgKSkNCg0KKGRlZnZhciBiYy1idWctc2F2ZS1w
+b2ludCBuaWwNCiAgIkdldHMgdmFsdWUgb2YgKHBvaW50KSB0byBwYXNzIHRvIHJlcG9ydGVyLXN1
+Ym1pdC1idWctcmVwb3J0LiIpDQooZGVmdmFyIGJjLWJ1Zy1zYXZlLWNvbHVtbiBuaWwNCiAgIkdl
+dHMgY29sdW1uIGF0IChwb2ludCkgdG8gcGFzcyB0byByZXBvcnRlci1zdWJtaXQtYnVnLXJlcG9y
+dC4iKQ0KKGRlZnZhciBiYy1idWctc2F2ZS1saW5lIG5pbA0KICAiR2V0cyBhIGNvcHkgb2YgdGhl
+IGxpbmUgY29udGFpbmluZyBwb2ludCB0byBwYXNzIHRvDQpyZXBvcnRlci1zdWJtaXQtYnVnLXJl
+cG9ydC4iICkNCihkZWZ2YXIgYmMtYnVnLWxhc3QtY29tbWFuZCBuaWwNCiAgIkNvbnRhaW5zIHRo
+ZSBtb3N0IHJlY2VudCBCQyBjb21tYW5kIHRvIHBhc3MgdG8gcmVwb3J0ZXItc3VibWl0LWJ1Zy1y
+ZXBvcnQuIikNCg0KKGRlZnN1YnN0IGJjLWJ1Zy1zYXZlLWNvbW1hbmQgKCkNCiAgKGlmIChub3Qg
+YmMtYnVnLXJlcG9ydGluZykNCiAgICAgIChzZXRxIGJjLWJ1Zy1sYXN0LWNvbW1hbmQgdGhpcy1j
+b21tYW5kKSkpDQo7DQo7OztfICAgIHwgYmMtYnVnLXNhdmUtcG9pbnQNCihkZWZ1biBiYy1idWct
+c2F2ZS1wb2ludCAoKQ0KICAoc2F2ZS1leGN1cnNpb24NCiAgICAoc2V0LWJ1ZmZlciByZXBvcnRl
+ci1ldmFsLWJ1ZmZlcikNCiAgICAoc2V0cSBiYy1idWctc2F2ZS1wb2ludCAocG9pbnQpDQoJICBi
+Yy1idWctc2F2ZS1jb2x1bW4gKGN1cnJlbnQtY29sdW1uKQ0KCSAgYmMtYnVnLXNhdmUtbGluZSAo
+YnVmZmVyLXN1YnN0cmluZyANCgkJCSAgICAoc2F2ZS1leGN1cnNpb24gKGJlZ2lubmluZy1vZi1s
+aW5lKSAocG9pbnQpKQ0KCQkJICAgIChzYXZlLWV4Y3Vyc2lvbiAoZW5kLW9mLWxpbmUpIChwb2lu
+dCkpKSkNCiAgICAoc2V0LXRleHQtcHJvcGVydGllcyAwIChsZW5ndGggYmMtYnVnLXNhdmUtbGlu
+ZSkgbmlsIGJjLWJ1Zy1zYXZlLWxpbmUpKSkNCjs7O18gICAgfCBiYy1idWctZ2V0LXVzZXItYnVm
+ZmVyDQooZGVmdW4gYmMtYnVnLWdldC11c2VyLWJ1ZmZlciAoc3ltICZvcHRpb25hbCBtYWlsLWJ1
+ZmZlcikNCiAgKG9yIG1haWwtYnVmZmVyIChzZXRxIG1haWwtYnVmZmVyCQk7IE9sZCB2ZXJzaW9u
+cyBvZiByZXBvcnRlcg0KCQkJKGN1cnJlbnQtYnVmZmVyKSkpCTsgZG9uJ3Qgc3VwcGx5IG1haWwt
+YnVmZmVyLg0KICAobGV0IChub2NvbW1lbnQgcmFuZ2UgYmVnIGVuZCkNCiAgICAoc2F2ZS1leGN1
+cnNpb24NCiAgICAgIChzZXRxIG5vY29tbWVudA0KCSAgICAoY2F0Y2ggJ2ZhaWx1cmUNCgkgICAg
+ICAoc2F2ZS1leGN1cnNpb24NCgkJKHNldC1idWZmZXIgcmVwb3J0ZXItZXZhbC1idWZmZXIpDQoJ
+CShzZXRxIHJhbmdlIChiYy1maW5kLXJhbmdlKSkJOyBTZWUgaWYgcG9pbnQgaXMgaW4gYSBjb21t
+ZW50Lg0KCQkoZ290by1jaGFyIChjYXIgKGNhciByYW5nZSkpKQk7IElmIHNvLCBnZXQgYnVmZmVy
+IGNvbnRlbnRzIGluDQoJCShmb3J3YXJkLWxpbmUgLTEwKQkJOyB0aGUgdmljaW5pdHkuDQoJCShz
+ZXRxIGJlZyAocG9pbnQpKQkJOyANCgkJKGdvdG8tY2hhciAoY2FyIChjZHIgcmFuZ2UpKSkJOyBJ
+ZiB0aGVyZSBhcmUgb3RoZXIgY29tbWVudHMNCgkJKGZvcndhcmQtbGluZSAtMikJCTsgbmVhcmJ5
+LCBqdXN0IGNvcHkgdG8gdGhvc2UsDQoJCShzZXRxIGJlZyAobWF4IGJlZyAocG9pbnQpKSkJOyBv
+dGhlcndpc2UgdGVuIGxpbmVzIGluIGVpdGhlcg0KCQkoZ290by1jaGFyIChjZHIgKGNhciByYW5n
+ZSkpKQk7IGRpcmVjdGlvbi4NCgkJKGZvcndhcmQtbGluZSAxMCkNCgkJKHNldHEgZW5kIChwb2lu
+dCkpDQoJCShnb3RvLWNoYXIgKGNkciAoY2RyIHJhbmdlKSkpDQoJCShmb3J3YXJkLWxpbmUgMikN
+CgkJKHNldHEgZW5kIChtaW4gZW5kIChwb2ludCkpKSkNCgkgICAgICBuaWwpKQ0KICAgICAgKGlm
+IChub3Qgbm9jb21tZW50KSBuaWwJCQk7IElmIHRoZXJlIHdhcyBubyBjb21tZW50LCBqdXN0DQoJ
+KHNhdmUtZXhjdXJzaW9uCQkJCTsgZ3JhYiAyMCBsaW5lcyBhcm91bmQgcG9pbnQuDQoJICAoc2V0
+LWJ1ZmZlciByZXBvcnRlci1ldmFsLWJ1ZmZlcikNCgkgIChzYXZlLWV4Y3Vyc2lvbg0KCSAgICAo
+Zm9yd2FyZC1saW5lIC0xMCkNCgkgICAgKHNldHEgYmVnIChwb2ludCkpKQ0KCSAgKHNhdmUtZXhj
+dXJzaW9uDQoJICAgIChmb3J3YXJkLWxpbmUgMTApDQoJICAgIChzZXRxIGVuZCAocG9pbnQpKSkp
+KQ0KDQogICAgICAoc2V0LWJ1ZmZlciBtYWlsLWJ1ZmZlcikNCiAgICAgIChpbnNlcnQgKG1ha2Ut
+c3RyaW5nIDY0ID89KSA/XG4pDQogICAgICAoaW5zZXJ0ICJDb2RlIEJ1ZmZlcjpcbiIgKG1ha2Ut
+c3RyaW5nIDY0ID8tKSA/XG4pDQogICAgICAoaW5zZXJ0DQogICAgICAgKHNhdmUtZXhjdXJzaW9u
+DQoJIChzZXQtYnVmZmVyIHJlcG9ydGVyLWV2YWwtYnVmZmVyKQ0KCSAoYnVmZmVyLXN1YnN0cmlu
+ZyBiZWcgZW5kKSkpDQogICAgICAoaWYgKGJvbHApIG5pbCAoaW5zZXJ0ICI8RU9CPlxuIikpDQog
+ICAgICAoaW5zZXJ0IChtYWtlLXN0cmluZyA2NCA/PSkgP1xuKQ0KICAgICAgKGluc2VydCAiU2Ny
+YXRjaCBCdWZmZXI6XG4iIChtYWtlLXN0cmluZyA2NCA/LSkgP1xuKQ0KICAgICAgKGluc2VydC1i
+dWZmZXIgKGJjLWdldC1idWZmZXItY3JlYXRlKSkNCiAgICAgIChnb3RvLWNoYXIgKHBvaW50LW1h
+eCkpDQogICAgICAoaW5zZXJ0IChtYWtlLXN0cmluZyA2NCA/PSkgP1xuKQ0KICAgICAgKSkpDQog
+DA0KOzs7Oz09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09
+PT09PT09PT09PT09PT09PT09PT09PQ0KOzs7XyAgKiBJbnRlcm5hbCB2YXJpYWJsZXM6DQoNCihk
+ZWZjb25zdCBiYy1mb3JtYXQtY29tbWFuZHMNCiAgJyhiYy1maWxsIGJjLXJhaXNlIGJjLXJhaXNl
+LWZsb3cgYmMtbG93ZXIgYmMtbG93ZXItZmxvdyBiYy10YWxsZXINCgkgICAgYmMtc2hvcnRlciBi
+Yy1uYXJyb3dlciBiYy13aWRlcikpDQoNCihkZWZ2YXIgYmMtY29tbWVudC1zdGFydCBuaWwNCiAg
+IkRlZmF1bHQgY29tbWVudC1zdGFydCBzdHJpbmcuIikNCihtYWtlLXZhcmlhYmxlLWJ1ZmZlci1s
+b2NhbCAnYmMtY29tbWVudC1zdGFydCkNCg0KKGRlZnZhciBiYy1jb21tZW50LWVuZCBuaWwNCiAg
+IkRlZmF1bHQgY29tbWVudC1lbmQgc3RyaW5nLiIpDQoobWFrZS12YXJpYWJsZS1idWZmZXItbG9j
+YWwgJ2JjLWNvbW1lbnQtZW5kKQ0KDQooZGVmdmFyIGJjLWZhdXgtY29tbWVudC1lbmQgbmlsKQ0K
+KG1ha2UtdmFyaWFibGUtYnVmZmVyLWxvY2FsICdiYy1mYXV4LWNvbW1lbnQtZW5kKQ0KDQooZGVm
+dmFyIGJjLXN0YXJ0LWZpcnN0LWNoYXIgbmlsDQogICJUaGUgZmlyc3QgY2hhcmFjdGVyIG9mIGBj
+b21tZW50LXN0YXJ0Jy4NCg0KVGhpcyBpcyBuZWNlc3NhcnkgZm9yIHR3byByZWFzb25zLiAgVGhl
+IGZpcnN0IGlzIHRoYXQNCmBiYy1jb21tZW50LXJlZ2V4cCcgbWF0Y2hlcyBvbmUgY2hhcmFjdGVy
+IGJlZm9yZSB0aGUgc3RhcnQgZGVsaW1pdGVyLA0KYW5kIGl0IG11c3QgYmUgZGlmZmVyZW50IHRo
+YW4gdGhlIGZpcnN0IGNoYXJhY3RlciBvZiB0aGF0LiAgVGhlcmVmb3JlLA0Kd2UgbXVzdCBiZSBj
+YXJlZnVsIG5vdCB0byBtb3ZlIGEgY29tbWVudCB0byBhIGxpbmUgd2hlcmUgdGhlIGNvZGUgZW5k
+cw0KaW4gdGhhdCBjaGFyYWN0ZXIuDQoNCkl0IGlzIGZ1cnRoZXIgbmVjY2Vzc2FyeSBiZWNhdXNl
+IGlmIHRoZSBjb21tZW50LXN0YXJ0IHN0cmluZyBpcyBhbGwNCnRoZSBzYW1lIGNoYXJhY3Rlciwg
+eW91IGNhbiBhZGQgYW5vdGhlciBhbmQgdGhlIHdob2xlIHN0cmluZyBzdGlsbA0KYmVnaW5zIHdp
+dGggY29tbWVudC1zdGFydC4gIElmIGEgbGluZSBvZiBjb2RlIHdlcmUgdG8gZW5kIHdpdGggdGhp
+cw0KY2hhcmFjdGVyLCB3ZSBtdXN0IGJlIHN1cmUgbm90IHRvIGphbWIgYSBjb21tZW50IHVwIGFn
+YWluc3QgaXQsIG9yDQp0aGF0IGNoYXJhY3RlciB3b3VsZCBiZWNvbWUgcGFydCBvZiB0aGUgc3Rh
+cnQgZGVsaW1pdGVyLiIpDQoobWFrZS12YXJpYWJsZS1idWZmZXItbG9jYWwgJ2JjLXN0YXJ0LWZp
+cnN0LWNoYXIpDQoNCihkZWZ2YXIgYmMtY29tbWVudC1yZWdleHAgbmlsDQogICIqUmVndWxhciBl
+eHByZXNzaW9uIG1hdGNoaW5nIGEgY29tbWVudCBpbiB0aGUgbGFuZ3VhZ2UgYmVpbmcNCmVkaXRl
+ZC4gSXQgbXVzdCBtYXRjaCB0aGUgZW50aXJlIGNvbW1lbnQgaW5jbHVkaW5nIHN0YXJ0aW5nIGFu
+ZCBlbmRpbmcNCmRlbGltaXRlcnMsIHBsdXMgdGhlIHNpbmdsZSBjaGFyYWN0ZXIgYmVmb3JlIHRo
+ZSBzdGFydGluZyBkZWxpbWl0ZXIuDQpUaGlzIGV4dHJhIGNoYXIgaXMgdG8gZm9yY2UgYHJlLXNl
+YXJjaC1mb3J3YXJkJyB0byBtYXRjaCBhbGwgb2YgdGhlDQpkZWxpbWl0ZXIsIGluIGNhc2VzIHdo
+ZXJlIGEgZGVsaW1pdGVyIGNoYXIgaXMgcmVwZWF0ZWQgKGUuZy4gbW9yZSB0aGFuDQpvbmUgc2Vt
+aWNvbG9uIGluIExpc3ApLiAgSXQgY2FuIGJlIGFzc3VtZWQgdGhhdCBhbGwgc2VhcmNoZXMgYmFz
+ZWQgb24NCnRoaXMgcmVnZXhwIHdpbGwgYmUgY29uZmluZWQgdG8gb25lIGxpbmUsIHNvIHRoZSBy
+ZWdleHAgaXRzZWxmIGRvZXMNCm5vdCBuZWVkIHRvIGJlIGNvbmNlcm5lZCB3aXRoIG1hdGNoaW5n
+IG5ld2xpbmUgY2hhcmFjdGVycy4gKGUuZy4gaW4NCkxpc3AsIHRoZSBjb21tZW50LWVuZCBkZWxp
+bWl0ZXIgaXMgYSBuZXdsaW5lLCBidXQgYGJjLWNvbW1lbnQtcmVnZXhwJw0KbmVlZG4ndCB0cnkg
+dG8gbWF0Y2ggaXQuKSAgSW4gYWRkaXRpb24sIGBiYy1jb21tZW50LXJlZ2V4cCcgbXVzdA0KY29u
+dGFpbiBhIHN1YnN0cmluZyBtYXRjaCB3aGljaCBtYXRjaGVzIG9ubHkgdGhlIHRleHQgb2YgdGhl
+IGNvbW1lbnQsDQpleGNsdWRpbmcgZGVsaW1pdGVycyBhbmQgbGVhZGluZyB3aGl0ZXNwYWNlLg0K
+DQpUaGlzIHZhcmlhYmxlIGlzIG5vcm1hbGx5IHNldCBvbiBlbnRyeSB0byBiYy1tb2RlIHRvIGEg
+dmFsdWUNCmFwcHJvcHJpYXRlIHRvIHRoZSBjdXJyZW50IG1ham9yIG1vZGUuDQoNCkZvciBtb3Jl
+IGluZm9ybWF0aW9uLCB0eXBlIGBcXFtkZXNjcmliZS12YXJpYWJsZV0gYmMtbW9kZS1kb2MnLiIp
+DQoobWFrZS12YXJpYWJsZS1idWZmZXItbG9jYWwgJ2JjLWNvbW1lbnQtcmVnZXhwKQ0KDQooZGVm
+dmFyIGJjLWNvbW1lbnQtbG9va2luZy1hdC1yZWdleHAgbmlsDQogIipSZWd1bGFyIGV4cHJlc3Np
+b24gbWF0Y2hpbmcgYSBjb21tZW50IGluIHRoZSBsYW5ndWFnZSBiZWluZw0KZWRpdGVkLiAgSXQg
+bXVzdCBtYXRjaCBlbm91Z2ggb2YgdGhlIGNvbW1lbnQgdG8gZGV0ZXJtaW5lIGlmIHdlIGFyZQ0K
+bG9va2luZyBhdCBhIHJpZ2h0LW1hcmdpbiBjb21tZW50LiAgDQoNClRoZSByZWFzb24gdGhpcyBy
+ZWdleHAgaXMgbmVjZXNzYXJ5IGlzIGJlY2F1c2UgYGJjLWNvbW1lbnQtcmVnZXhwJw0KbWF0Y2hl
+cyBtb3JlIHRoYW4ganVzdCB0aGUgY29tbWVudC4gIFNwZWNpZmljYWxseSwgaXQgbWF0Y2hlcyBv
+bmUNCmNoYXJhY3RlciBiZWZvcmUgdGhlIHN0YXJ0IGRlbGltaXRlci4gIEluIHNvbWUgY2FzZXMs
+IGF0IHRoZSBiZWdpbm5pbmcNCm9mIGEgbGluZSBmb3IgZXhhbXBsZSwgaXQgaXNuJ3QgcHJhY3Rp
+Y2FsIHRvIG1hdGNoIHRoZSBwcmV2aW91cw0KY2hhcmFjdGVyLCBzbyB0aGlzIHJlZ2V4cCBpcyBu
+ZWVkZWQuDQoNClRoZSBzaW1wbGVzdCBpcyBmb3IgdGhpcyByZWdleHAgdG8gYmUgdGhlIHNhbWUg
+YXMgYGJjLWNvbW1lbnQtcmVnZXhwJw0KbWludXMgdGhlIG1hdGNoIGZvciB0aGUgY2hhcmFjdGVy
+IGJlZm9yZSB0aGUgc3RhcnQgZGVsaW1pdGVyLg0KVGhpcyB2YXJpYWJsZSBpcyBub3JtYWxseSBz
+ZXQgb24gZW50cnkgdG8gYGJjLW1vZGUnIHRvIGEgdmFsdWUNCmFwcHJvcHJpYXRlIHRvIHRoZSBj
+dXJyZW50IG1ham9yIG1vZGUuDQoNCkZvciBtb3JlIGluZm9ybWF0aW9uLCB0eXBlIGBcXFtkZXNj
+cmliZS12YXJpYWJsZV0gYmMtbW9kZS1kb2MnLiIpDQoobWFrZS12YXJpYWJsZS1idWZmZXItbG9j
+YWwgJ2JjLWNvbW1lbnQtbG9va2luZy1hdC1yZWdleHApDQoNCihkZWZ2YXIgYmMtbGFuZ3VhZ2Ug
+bmlsIA0KICAiU3ltYm9sIGluZGljYXRpbmcgaWYgYGJjLW1vZGUnIGhhcyBldmVyIGJlZW4gdHVy
+bmVkIG9uIGluIHRoZQ0KYnVmZmVyLiAgSWYgbm90LCBgYmMtbGFuZ3VhZ2UnIGlzIG5pbCwgb3Ro
+ZXJ3aXNlIGl0IGlzIGEgc3ltYm9sDQpkZW5vdGluZyB0aGUgbGFuZ3VhZ2Ugc2VsZWN0ZWQgYnkg
+dGhlIHVzZXIgZnJvbSBgYmMtbGFuZ3VhZ2VzLWFsaXN0Jw0KT1IgdCBpZiB0aGUgdXNlciBzdXBw
+bGllZCBgYmMtY29tbWVudC1yZWdleHAnIGV4cGxpY2l0bHkuDQoNCkZvciBtb3JlIGluZm9ybWF0
+aW9uLCB0eXBlIGBcXFtkZXNjcmliZS12YXJpYWJsZV0gYmMtbW9kZS1kb2MnLiIpDQoobWFrZS12
+YXJpYWJsZS1idWZmZXItbG9jYWwgJ2JjLWxhbmd1YWdlKQ0KKHNldHEtZGVmYXVsdCBiYy1sYW5n
+dWFnZSBuaWwpDQoNCihkZWZ2YXIgYmMtbW9kZSBuaWwNCiAgIk5vbi1uaWwgaWYgYmMtbW9kZSBp
+cyBhY3RpdmUuDQoNCkZvciBtb3JlIGluZm9ybWF0aW9uLCB0eXBlIGBcXFtkZXNjcmliZS12YXJp
+YWJsZV0gYmMtbW9kZS1kb2MnLiIpDQoobWFrZS12YXJpYWJsZS1idWZmZXItbG9jYWwgJ2JjLW1v
+ZGUpDQo7OzsocHV0ICdiYy1tb2RlICdwZXJtYW5lbnQtbG9jYWwgdCkNCg0KKGNvbmRpdGlvbi1j
+YXNlIG5pbAkJCQk7IGJjLWZ1bmNhbGwgdG8gcXVpZXQNCiAgICAoYmMtZnVuY2FsbCAnYWRkLW1p
+bm9yLW1vZGUgJ2JjLW1vZGUgIiBCQyIpCTsgYnl0ZS1jb21waWxlcg0KICAgIChlcnJvcg0KICAg
+ICAob3IgKGFzc3EgJ2JjLW1vZGUgbWlub3ItbW9kZS1hbGlzdCkNCgkgKHNldHEgbWlub3ItbW9k
+ZS1hbGlzdCAoYXBwZW5kIG1pbm9yLW1vZGUtYWxpc3QNCgkJCQkJKGxpc3QgJyhiYy1tb2RlICIg
+QkMiKSkpKSkpKQ0KKHNldHEtZGVmYXVsdCBiYy1tb2RlIG5pbCkNCg0KKGRlZnZhciBiYy1zY3Jh
+dGNoLWJ1ZmZlciAiICpiYy1zY3JhdGNoKiINCiAgIlNjcmF0Y2ggYnVmZmVyIGluIHdoaWNoIHRv
+IGRvIHRleHQgZmlsbGluZyBmb3IgYmxvY2sgY29tbWVudHMuIikNCg0KKGRlZnZhciBiYy1zaG93
+LWZpbGwtY291bnQgbmlsDQogICIqTm9uLW5pbCBtZWFucyBkaXNwbGF5IGBiYy1maWxsLWNvdW50
+JyBhZnRlciBlYWNoIEJDIGNvbW1hbmQuIikNCg0KKGRlZnZhciBiYy1zdGFydC1tYXJrZXIgbmls
+KQ0KKHNldHEgYmMtc3RhcnQtbWFya2VyIChtYWtlLW1hcmtlcikpDQooc2V0LW1hcmtlciBiYy1z
+dGFydC1tYXJrZXIgbmlsKQ0KDQooZGVmdmFyIGJjLXNhdmVkLWZpbGwtcGFyYWdyYXBoLWZ1bmN0
+aW9uIG5pbCkNCihtYWtlLXZhcmlhYmxlLWJ1ZmZlci1sb2NhbCAnYmMtc2F2ZWQtZmlsbC1wYXJh
+Z3JhcGgtZnVuY3Rpb24pDQoNCjs7Ozs9PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09
+PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT0NCjs7O18gICBvIFBlcnNpc3Rl
+bnQgdmFyaWFibGVzLg0KOzsNCjs7IFRoZXNlIHZhcmlhYmxlcyBhcmUgdXNlZCB0byBzYXZlIGlu
+Zm8gYmV0d2VlbiBjYWxscyB0byBCQyBjb21tYW5kcy4NCg0KKGRlZnZhciBiYy1waGFudG9tLWNv
+bHVtbiBuaWwNCiAgIlBoYW50b20gY29tbWVudCBjb2x1bW4uDQpVc2VkIGJ5IEJDIGZvcm1hdHRp
+bmcgY29tbWFuZHMgd2hlbiB0aGUgcHJldmlvdXMgY29tbWFuZCB3YXMgYWxzbyBhIEJDDQpmb3Jt
+YXR0aW5nIGNvbW1hbmQuIikNCihtYWtlLXZhcmlhYmxlLWJ1ZmZlci1sb2NhbCAnYmMtcGhhbnRv
+bS1jb2x1bW4pDQoNCihkZWZ2YXIgYmMtcHJlZi1maXJzdC1saW5lIG5pbA0KICAiTGluZSBudW1i
+ZXIgb2YgcHJlZmVycmVkIHRvcCBsaW5lIG9mIHRoZSBjdXJyZW50IGNvbW1lbnQuICBVc2VkIGJ5
+DQpiYy1zaG9ydGVyIGFuZCBiYy10YWxsZXIgY29tbWFuZHMgdG8gcHJlc2VydmUgdGhlIG9yaWdp
+bmFsIHRvcCBvZiB0aGUNCmNvbW1lbnQgd2hlbmV2ZXIgdGhlIHByZXZpb3VzIGNvbW1hbmQgd2Fz
+IGEgQkMgY29tbWFuZC4iKQ0KKG1ha2UtdmFyaWFibGUtYnVmZmVyLWxvY2FsICdiYy1wcmVmLWZp
+cnN0LWxpbmUpDQoNCihkZWZ2YXIgYmMtcGFyc2UtbGluZS1jYWNoZSBuaWwNCiAgIkNhY2hlIGZv
+ciBgYmMtcGFyc2UtbGluZScuICBUaGlzIGlzIGFuIGFsaXN0IHdpdGgga2V5cyB0aGUNCmJ1ZmZl
+ciBwb3NpdGlvbnMgb2YgdGhlIGJlZ2lubmluZ3Mgb2YgbGluZXMgdGhhdCBgYmMtcGFyc2UtbGlu
+ZScNCmhhcyBwcmV2aW91c2x5IHNjYW5uZWQuICBWYWx1ZXMgYXJlIGNoYXJhY3RlciBwb3NpdGlv
+bnMgb2YgY29kZS1lbmQsDQpjb21tZW50LXN0YXJ0LCBldGMuIikNCg0KKGRlZnZhciBiYy1maWxs
+LWJ1ZmZlci1jYWNoZSBuaWwgDQogIkNhY2hlIGZvciBgYmMtZmlsbC1idWZmZXInLg0KVGhpcyBj
+YWNoZXMgdGhlIHJlc3VsdHMgb2YgZWFjaCBjYWxsIHRvIGBiYy1maWxsLWJ1ZmZlcicgc28gdGhh
+dA0KYGJjLXF1ZXJ5LWZpbGwnIGNhbiByZXRyaWV2ZSB0aGVtIGxhdGVyLiAgVGhlIHN0cnVjdHVy
+ZSBpcyBhbiBhcnJheSBvZg0KbGlzdHMuICBJdCBpcyBpbmRleGVkIGJ5IGBmaWxsLWNvbHVtbics
+IHNvIHRoZSBhcnJheSBzaXplIGlzIGNob3NlbiB0bw0KYWNjb21vZGF0ZSB0aGUgd2lkZXN0IGZv
+cnNlYWJsZSBmaWxsIGNvbHVtbiAoMiB0aW1lcyBgYmMtcmlnaHQtbWFyZ2luJykNCg0KSWYgYW4g
+ZWxlbWVudCBpcyBuaWwsIGl0IG1lYW5zIHRoZSBidWZmZXIgaGFzIG5vdCB5ZXQgYmVlbiBmaWxs
+ZWQgYXQNCnRoYXQgd2lkdGguICBPdGhlcndpc2UgaXQgaXMgYSBsaXN0IG9mIHRoZSB2YWx1ZXMg
+b2YgYGJjLWZiLWxpbmVzJywNCmBiYy1mYi13aWR0aCcsIGBiYy1mYi13aWRlc3QtaXMtb25lJywg
+YW5kIGBiYy1mYi1uZXh0LXdpZHRoJyBmb3IgdGhhdA0KdmFsdWUgb2YgYGZpbGwtY29sdW1uJy4i
+KQ0KDQooZGVmdmFyIGJjLWFkZGVkLW5ld2xpbmVzLWNvdW50ZXIgMA0KICAiVXNlZCBieSBgYmMt
+Y2xlYW51cC1uZXdsaW5lcycgdG8gZGVjaWRlIHdoZXRoZXIgbmV3bGluZXMgd2VyZSBhZGRlZA0K
+b24gdGhlIGN1cnJlbnQgb3IgYSBwcmV2aW91cyBjb21tYW5kLiAgVGhpcyBjb3VudGVyIG11c3Qg
+YmUgaW5jcmVtZW50ZWQNCm9uY2UgYXQgZW50cnkgdG8gYW55IGZ1bmN0aW9uIHRoYXQgd2lsbCBj
+YWxsIGBiYy1jbGVhbnVwLW5ld2xpbmVzJy4NClRoaXMgaXMgdXN1YWxseSBkb25lIGJ5IGNhbGxp
+bmcgYGJjLWJ1bXAtY291bnRlcnMnLiIpDQoNCjs7Ozs9PT09PT09PT09PT09PT09PT09PT09PT09
+PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT0NCjs7O18gICBv
+IFRoZSBCYWNrIEFsbGV5Lg0KOzsNCjs7O18gICAgfCBCdWZmZXIgbG9jYWwNCjs7IFRoZXNlIGds
+b2JhbCB2YXJpYWJsZXMgZ2V0IGFzc2lnbmVkIGNvcGllcyBvZiBidWZmZXItbG9jYWwNCjs7IHZh
+cmlhYmxlcyBzbyB0aGF0IHRoZXkgd2lsbCBiZSBhdmFpbGFibGUgd2hlbiB3ZSBzd2l0Y2ggdG8g
+dGhlDQo7OyBzY3JhdGNoIGJ1ZmZlcg0KDQooZGVmdmFyIGJjLUctY29kZS1idWZmZXIgbmlsDQog
+ICJUaGUgY3VycmVudCBidWZmZXIgaW4gd2hpY2ggYSBCQyBjb21tYW5kIGlzIG9wZXJhdGluZy4i
+KQ0KDQooZGVmdmFyIGJjLUctdGFiLXN0b3BzIG5pbA0KICAiQSBjb3B5IG9mIHRoZSB2YWx1ZSBv
+ZiB0aGUgYnVmZmVyLWxvY2FsIHZhcmlhYmxlIGBiYy10YWItc3RvcHMnLiIpDQoNCjsNCjs7O18g
+ICAgfCBMb3cgbGV2ZWwNCjs7IFRoZXNlIGdsb2JhbCB2YXJpYWJsZXMgYXJlIHVzZWQgdG8gcGFz
+cyBpbmZvIGFyb3VuZCBiZXR3ZWVuIGxvdw0KOzsgbGV2ZWwgZnVuY3Rpb25zIGR1cmluZyBhIHNp
+bmdsZSBjb21tYW5kIGludm9jYXRpb24uDQoNCihkZWZ2YXIgYmMtRy1zY3JhdGNoLWJ1ZmZlciBu
+aWwNCiAgIlNjcmF0Y2ggYnVmZmVyIGluIHdoaWNoIHRvIGRvIHRleHQgZmlsbGluZyBmb3IgYmxv
+Y2sgY29tbWVudHMuIikNCg0KKGRlZnZhciBiYy1kZWxpbXMtbGVuZ3RoIG5pbA0KICAiVG90YWwg
+d2lkdGggb2YgdGhlIGVmZmVjdGl2ZSBkZWxpbWl0ZXJzIGZvciB0aGUgY29tbWVudCBjdXJyZW50
+bHkNCmJlaW5nIGZvcm1hdHRlZC4gIFNldCBieSBgYmMtYW5hbHl6ZS1jb21tZW50Jy4iKQ0KDQoo
+ZGVmdmFyIGJjLUctcm0tbWludXMtc3R1ZmYgbmlsDQogICJOdW1iZXIgb2YgY29sdW1ucyBhdmFp
+bGFibGUgZm9yIGNvZGUgYW5kIGNvbW1lbnQuICBUaGlzIGlzDQpgYmMtcmlnaHQtbWFyZ2luJyBt
+aW51cyBgYmMtZGVsaW1zLWxlbmd0aCcgZm9yIHRoZSBjb21tZW50IGN1cnJlbnRseQ0KYmVpbmcg
+Zm9ybWF0dGVkLiAgU2V0IGJ5IGBiYy1hbmFseXplLWNvbW1lbnQnLiIpDQoNCihkZWZ2YXIgYmMt
+ZmlsbC1jb3VudCBuaWwNCiAgIk51bWJlciBvZiB0aW1lcyBhIEJDIGZvcm1hdHRpbmcgY29tbWFu
+ZCBjYWxscyBgYmMtZmlsbC1idWZmZXInDQpkdXJpbmcgYSBzaW5nbGUgaW52b2NhdGlvbi4gIFVz
+ZWQgb25seSBmb3IgZGlzcGxheSBvZiB0aGlzIGV4cGVuc2UuIikNCg0KKGRlZnZhciBiYy1mYi1s
+aW5lcyBuaWwgDQogICJOdW1iZXIgb2YgbGluZXMgcmVzdWx0aW5nIGZyb20gbGFzdCBjYWxsIHRv
+IGBiYy1maWxsLWJ1ZmZlcicuIikNCg0KKGRlZnZhciBiYy1mYi13aWR0aCBuaWwgDQogICJXaWR0
+aCBvZiB3aWRlc3QgbGluZSByZXN1bHRpbmcgZnJvbSBsYXN0IGNhbGwgdG8gYGJjLWZpbGwtYnVm
+ZmVyJy4iKQ0KDQooZGVmdmFyIGJjLWZiLXdpZGVzdC1pcy1vbmUgbmlsIA0KICAiTm9uLW5pbCBt
+ZWFucyB3aWRlc3QgbGluZSByZXN1bHRpbmcgZnJvbSBsYXN0IGNhbGwgdG8gYGJjLWZpbGwtYnVm
+ZmVyJyANCmNvbnRhaW5zIG5vIHdoaXRlc3BhY2UuIikNCg0KKGRlZnZhciBiYy1mYi1uZXh0LXdp
+ZHRoIG5pbCANCiAgIlNldCBieSBgYmMtZmlsbC1idWZmZXInLiAgVGhpcyBpcyB0aGUgbmV4dC13
+aWRlciB2YWx1ZSB0aGF0DQpgZmlsbC1jb2x1bW4nIHdvdWxkIGhhdmUgdG8gYmUgZm9yIGFub3Ro
+ZXIgY2FsbCBvZiBgYmMtZmlsbC1idWZmZXInIHRvDQpoYXZlIGFuIGVmZmVjdCAob24gdGhlIHNh
+bWUgdGV4dCkuIikNCg0KKGRlZnZhciBiYy1mYi1wcmV2LWZpbGwtY29sdW1uIG5pbA0KICAiTW9z
+dCByZWNlbnQgdmFsdWUgb2YgYGZpbGwtY29sdW1uJyB0byB3aGljaCBgYmMtZmlsbC1idWZmZXIn
+IGZpbGxlZC4NClVzZWQgYnkgYGJjLWZpbGwtYnVmZmVyLW1heWJlJy4iKQ0KDQooZGVmdmFyIGJj
+LWZiLWRlYnVnIG5pbA0KICAiKk5vbi1uaWwgZm9yY2VzIGBiYy1xdWVyeS1maWxsJyB0byBhbHdh
+eXMgY2FsbCBgYmMtZmlsbC1idWZmZXInLg0KRm9yIGRlYnVnZ2luZy4iKQ0KDQooZGVmdmFyIGJj
+LWVmZmVjdGl2ZS1zdGFydCBuaWwNCiAgIkVmZmVjdGl2ZSBjb21tZW50LXN0YXJ0IHN0cmluZyBm
+b3IgdGhlIGNvbW1lbnQgY3VycmVudGx5IGJlaW5nIGZvcm1hdHRlZC4iKQ0KDQooZGVmdmFyIGJj
+LWVmZmVjdGl2ZS1lbmQgbmlsDQogICJFZmZlY3RpdmUgY29tbWVudC1lbmQgc3RyaW5nIGZvciB0
+aGUgY29tbWVudCBjdXJyZW50bHkgYmVpbmcgZm9ybWF0dGVkLiIpDQoNCihkZWZ2YXIgYmMtYmFu
+bmVyLXRvcC1ib3JkZXIgbmlsDQogICJOb24tbmlsIG1lYW5zIHRoZSBjb21tZW50IGN1cnJlbnRs
+eSBiZWluZyBmb3JtYXR0ZWQgaXMgYSBiYW5uZXINCmNvbW1lbnQuICBJbiB0aGlzIGNhc2UsIGl0
+IGlzIGEgbGlzdC4gIFRoZSBjYXIgaXMgYSBzaW5nbGUgY2hhciB0aGF0DQp3aWxsIGJlIHJlcGVh
+dGVkIHRvIGZvcm0gdGhlIHRvcCBhbmQgYm90dG9tIGJhbm5lcnMuICBUaGUgY2RyIGlzDQpub24t
+bmlsIGlmIHRoaXMgaXMgYSBgaGFyZCcgYm9yZGVyLiIpDQoNCihkZWZ2YXIgYmMtYmFubmVyLXRv
+cC1zcGFjZSAwDQogICJOb24temVybyBtZWFucyB0aGUgYmFubmVyIGNvbW1lbnQgY3VycmVudGx5
+IGJlaW5nIGZvcm1hdHRlZCBoYXMgYW4NCmluaXRpYWwgYmxhbmsgbGluZS4iKQ0KDQooZGVmdmFy
+IGJjLWJhbm5lci1ib3R0b20tc3BhY2UgMA0KICAiTm9uLXplcm8gbWVhbnMgdGhlIGJhbm5lciBj
+b21tZW50IGN1cnJlbnRseSBiZWluZyBmb3JtYXR0ZWQgaGFzIGENCmZpbmFsIGJsYW5rIGxpbmUu
+IikNCg0KKGRlZnZhciBiYy1iYW5uZXItYm90dG9tLWJvcmRlciBuaWwNCiAgIk5vbi1uaWwgbWVh
+bnMgdGhlIGJhbm5lciBjb21tZW50IGN1cnJlbnRseSBiZWluZyBmb3JtYXR0ZWQgaGFzIGENCmJv
+dHRvbSBib3JkZXIuICBGb3JtYXQgaXMgdGhhdCBvZiBgYmMtYmFubmVyLXRvcC1ib3JkZScuIikN
+Cg0KKGRlZnZhciBiYy1leHRyYS1saW5lcyAwDQogICJOdW1iZXIgb2YgZXh0cmEgbGluZXMgdGhl
+IGN1cnJlbnQgY29tbWVudCBuZWVkcyB0byBhbGxvdyBmb3IgYmFubmVyDQpib3JkZXJzLCBldGMu
+IikNCg0KKGRlZnZhciBiYy1zYXZlZC1kZWxpbXMgbmlsDQogICJMaXN0IG9mIGRlbGltaXRlcnMg
+ZnJvbSB0aGUgY29tbWVudCBjdXJyZW50bHkgYmVpbmcgZWRpdGVkLg0KU2V0IGJ5IGBiYy1hbmFs
+eXplLWNvbW1lbnQnLiBVc2VkIGJ5IEJDIGVkaXRpbmcgY29tbWFuZHMuIikNCiAMDQo7Ozs7PT09
+PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09
+PT09PT09PT09PQ0KOzs7XyAgKiBNYWNyb3MgYW5kIElubGluZXM6DQoNCihkZWZzdWJzdCBiYy1k
+by1jb21tYW5kLWluaXQgKCkNCiAgKGJjLWJ1Zy1zYXZlLWNvbW1hbmQpDQogIChzZXRxIGJjLUct
+Y29kZS1idWZmZXIgKGN1cnJlbnQtYnVmZmVyKQ0KCWJjLUctdGFiLXN0b3BzIGJjLXRhYi1zdG9w
+cw0KCWJjLUctc2NyYXRjaC1idWZmZXIgKGJjLWdldC1idWZmZXItY3JlYXRlKSkpDQoNCihkZWZz
+dWJzdCBiYy1jb3VudC1jb2x1bW5zIChzdGFydCBlbmQpDQogICJDb3VudCB0aGUgbnVtYmVyIG9m
+IGNvbHVtbnMgYmV0d2VlbiBidWZmZXIgcG9zaXRpb25zIFNUQVJUIGFuZCBFTkQuDQpSZXR1cm5z
+IHRoZSBkaWZmZXJlbmNlIGJldHdlZW4gdGhlIHJlc3BlY3RpdmUgY29sdW1ucyBhdCBTVEFSVCBh
+bmQNCkVORC4gIFwoSWYgU1RBUlQgYW5kIEVORCBhcmUgb24gdGhlIHNhbWUgbGluZSBhbmQgaGF2
+ZSBubyB0YWJzIGJldHdlZW4NCnRoZW0sIHRoaXMgaXMganVzdCB0aGVpciBkaWZmZXJlbmNlLlwp
+Ig0KICAoc2F2ZS1leGN1cnNpb24NCiAgICAoLSAocHJvZ24gKGdvdG8tY2hhciBlbmQpIChjdXJy
+ZW50LWNvbHVtbikpDQogICAgICAgKHByb2duIChnb3RvLWNoYXIgc3RhcnQpIChjdXJyZW50LWNv
+bHVtbikpKSkpDQoNCihkZWZzdWJzdCBiYy1jb2RlLXdpZHRoLXRoaXMtbGluZSAoKQ0KICAiTWVh
+c3VyZXMgdGhlIGxlbmd0aCBvZiB0aGUgY29kZSBvbiB0aGUgY3VycmVudCBsaW5lLCBpZ25vcmlu
+ZyBjb21tZW50cy4NCklmIGEgY29tbWVudCBzdGFydHMgaW4gdGhlIGZpcnN0IGNvbHVtbiwgaXQg
+aXMgdHJlYXRlZCBhcyBjb2RlLiINCiAgKGxldCAoY29kZS13aWR0aCkNCiAgICAoYmMtb3BhcnNl
+LWxpbmUgbmlsIG5pbCBuaWwgbmlsIG5pbCAnY29kZS13aWR0aCkNCiAgICBjb2RlLXdpZHRoKSkN
+Cg0KKGRlZnN1YnN0IGJjLWJ1bXAtY291bnRlcnMgKCkNCiAgKHNldHENCiAgIGJjLWZpbGwtY291
+bnQgMA0KICAgYmMtYWRkZWQtbmV3bGluZXMtY291bnRlciAoMSsgYmMtYWRkZWQtbmV3bGluZXMt
+Y291bnRlcikpKQ0KDQooZGVmc3Vic3QgYmMtZmx1c2gtcGFyc2UtY2FjaGUgKCkNCiAgICAoc2V0
+cSBiYy1wYXJzZS1saW5lLWNhY2hlIG5pbCkpDQoNCihkZWZzdWJzdCBiYy1mbHVzaC1jYWNoZXMg
+KCkNCiAgKHNldHEgYmMtcGFyc2UtbGluZS1jYWNoZSBuaWwNCgliYy1mYi1wcmV2LWZpbGwtY29s
+dW1uIG5pbCkNCiAgKGlmIChtZW1xIGxhc3QtY29tbWFuZCBiYy1mb3JtYXQtY29tbWFuZHMpIG5p
+bA0KICAgIChzZXRxIGJjLWZpbGwtYnVmZmVyLWNhY2hlIG5pbCkpKQ0KDQooZGVmc3Vic3QgYmMt
+Y291bnQtbGluZXMtMS1mYXN0IChzdGFydCBlbmQpDQogICJUaGlzIGZ1bmN0aW9uIGlzIGxpa2Ug
+YGNvdW50LWxpbmVzJyBvbmx5IGl0IGNvdW50cyBsaW5lcyBpbmNsdXNpdmVseS4NClNvLCBpZiBT
+VEFSVCA9PSBFTkQsIG9yIGlmIEVORCBpcyBhdCB0aGUgYmVnaW5uaW5nIG9mIHRoZSBsaW5lLCB0
+aGlzDQpmdW5jdGlvbiByZXR1cm5zIG9uZSBtb3JlIHRoYW4gYGNvdW50LWxpbmVzJyB3b3VsZC4g
+IA0KDQpUaGlzIGZ1bmN0aW9uIGlzIGFsc28gc3BlY2lhbGl6ZWQgdG8gaWdub3JlIGBzZWxlY3Rp
+dmUtZGlzcGxheScuICBUaGUNCnJldHVybiB2YWx1ZSBpcyBvbmx5IHVzZWZ1bCBmb3IgYGJjLWdv
+dG8tbGluZS1mYXN0Jy4iDQogIChzYXZlLWV4Y3Vyc2lvbg0KICAgIChzYXZlLXJlc3RyaWN0aW9u
+DQogICAgICAod2lkZW4pDQogICAgICAobGV0ICgobmV3LXN0YXJ0IChwcm9nbiAoZ290by1jaGFy
+IHN0YXJ0KSAoYmVnaW5uaW5nLW9mLWxpbmUpIChwb2ludCkpKQ0KCSAgICAobmV3LWVuZCAocHJv
+Z24gKGdvdG8tY2hhciBlbmQpIChiZWdpbm5pbmctb2YtbGluZSkgKHBvaW50KSkpDQoJICAgICkN
+CiAgICAgICAgKG5hcnJvdy10by1yZWdpb24gbmV3LXN0YXJ0IG5ldy1lbmQpDQogICAgICAgIChn
+b3RvLWNoYXIgKHBvaW50LW1pbikpDQogICAgICAgICgtIChidWZmZXItc2l6ZSkgKGZvcndhcmQt
+bGluZSAoYnVmZmVyLXNpemUpKSAtMSkpKSkpDQoNCihkZWZzdWJzdCBiYy1nb3RvLWxpbmUtZmFz
+dCAoYXJnKQ0KICAiR290byBsaW5lIEFSRywgY291bnRpbmcgZnJvbSBsaW5lIDEgYXQgYmVnaW5u
+aW5nIG9mIGJ1ZmZlci4NCg0KVGhpcyBmdW5jdGlvbiBpcyBzcGVjaWFsaXplZCB0byBpZ25vcmUg
+IGBzZWxlY3RpdmUtZGlzcGxheScuICBJdCBpcw0KZm9yIHVzZSB3aXRoIGNvdW50cyByZXR1cm5l
+ZCBieSBgYmMtY291bnQtbGluZXMtMS1mYXN0Jy4iDQogIChzYXZlLXJlc3RyaWN0aW9uDQogICAg
+KHdpZGVuKQ0KICAgIChnb3RvLWNoYXIgMSkNCiAgICAoZm9yd2FyZC1saW5lICgxLSBhcmcpKSkp
+DQoNCihkZWZzdWJzdCBiYy1yZW1hc3NxIChrZXkgbGlzdCkNCiAgKGRlbHEgbmlsIChtYXBjYXIN
+CgkgICAgIChmdW5jdGlvbiAobGFtYmRhIChlbGVtZW50KQ0KCQkJIChpZiAoZXEga2V5IChjYXIg
+ZWxlbWVudCkpIG5pbCBlbGVtZW50KSkpIGxpc3QpKSkNCg0KKGRlZm1hY3JvIGJjLXBvcCAocGxh
+Y2UpDQogIChsaXN0ICdjYXIgKGxpc3QgJ3Byb2cxIHBsYWNlIChsaXN0ICdzZXRxIHBsYWNlIChs
+aXN0ICdjZHIgcGxhY2UpKSkpKQ0KDQo7OzsgVGhpcyBpcyBhZGFwdGVkIGZyb20gbXVsdGlwbGUt
+dmFsdWUtc2V0cSwgc3RvbGVuIGZyb20gY2wtbWFjcy5lbCAgDQooZGVmbWFjcm8gYmMtbXNldHEg
+KHZhcnMgZm9ybSkNCiAgIihiYy1tc2V0cSAoU1lNIFNZTS4uLikgRk9STSk6IGNvbGxlY3QgbXVs
+dGlwbGUgcmV0dXJuIHZhbHVlcy4gIA0KDQpGT1JNIG11c3QgcmV0dXJuIGEgbGlzdDsgdGhlIGZp
+cnN0IE4gZWxlbWVudHMgb2YgdGhpcyBsaXN0IGFyZSBzdG9yZWQNCmluIGVhY2ggb2YgdGhlIHN5
+bWJvbHMgU1lNIGluIHR1cm4uICBJZiBhbnkgb2YgdGhlIFNZTXMgYXJlIG5pbCwgdGhleQ0KYXJl
+IGlnbm9yZWQgYW5kIHRoZSBjb3JyZXNwb25kaW5nIGVsZW1lbnQgb2YgRk9STSBpcyBza2lwcGVk
+LiAgVGhpcw0KYWxsb3dzIHNlbGVjdGlvbiBvZiBqdXN0IHRoZSBuZWVkZWQgdmFsdWVzIGluIEZP
+Uk0uDQoNClJldHVybnMgXChjYXIgRk9STVwpLg0KDQpUaGlzIGlzIGFuYWxvZ291cyB0byB0aGUg
+YG11bHRpcGxlLXZhbHVlLXNldHEnIG1hY3JvIGRlZmluZWQgaW4NCmNsLW1hY3MuZWwsIGV4Y2Vw
+dCB0aGF0IG1hY3JvIGRvZXMgbm90IGFsbG93IGZvciBuaWwgc3ltYm9scy4iDQogIChjb25kICgo
+bnVsbCB2YXJzKSAobGlzdCAncHJvZ24gZm9ybSBuaWwpKQ0KCSgobnVsbCAoY2RyIHZhcnMpKQ0K
+CSAoaWYgKGNhciB2YXJzKQ0KCSAgICAgKGxpc3QgJ3NldHEgKGNhciB2YXJzKSAobGlzdCAnY2Fy
+IGZvcm0pKQ0KCSAgIChsaXN0ICdjYXIgZm9ybSkpKQ0KCSh0DQoJIChsZXQqICgodGVtcCAnYmMt
+bXNldHEtdGVtcC1zeW1ib2wpIChuIDApIChmaXJzdHZhciAoYmMtcG9wIHZhcnMpKSkNCgkgICAo
+bGlzdCAnbGV0IChsaXN0IChsaXN0IHRlbXAgZm9ybSkpDQoJCSAobGlzdCAncHJvZzENCgkJICAg
+ICAgIChpZiBmaXJzdHZhcg0KCQkJICAgKGxpc3QgJ3NldHEgZmlyc3R2YXIgKGxpc3QgJ2NhciB0
+ZW1wKSkNCgkJCSAobGlzdCAnY2FyIHRlbXApKQ0KCQkgICAgICAgKGNvbnMNCgkJCSdzZXRxDQoJ
+CQkoYXBwbHkgJ25jb25jDQoJCQkgICAgICAgKG1hcGNhciAoZnVuY3Rpb24NCgkJCQkJKGxhbWJk
+YSAodikNCgkJCQkJICAoaWYgdg0KCQkJCQkgICAgICAobGlzdCB2IChsaXN0DQoJCQkJCQkgICAg
+ICAgJ250aA0KCQkJCQkJICAgICAgIChzZXRxIG4gKDErIG4pKQ0KCQkJCQkJICAgICAgIHRlbXAp
+KQ0KCQkJCQkgICAgKHNldHEgbiAoMSsgbikpDQoJCQkJCSAgICBuaWwpKSkNCgkJCQkgICAgICAg
+dmFycykpKSkpKSkpKQ0KDQooZGVmbWFjcm8gYmMtcGFyc2UtY29tbWVudCAoKSAnKGNhciAoYmMt
+cGFyc2UtbGluZSkpKQ0KDQooZGVmbWFjcm8gYmMtcGFyc2UtY29kZSAoKSAnKG50aCAxIChiYy1w
+YXJzZS1saW5lKSkpDQoNCihkZWZtYWNybyBiYy1jb21tZW50LW1zZXRxICgmcmVzdCB2YXJzKQ0K
+ICAiUGFyc2UgdGhlIGN1cnJlbnQgbGluZSBmb3IgYSBjb21tZW50IGFuZCByZXR1cm4gcG9zaXRp
+b25zIG9mIGRlbGltaXRlcnMsIGV0Yy4NCg0KXChiYy1jb21tZW50LW1zZXRxIEJPRFktQiBCT0RZ
+LUUgUy1ERUxJTS1CIEUtREVMSU0tRSBTLURFTElNLUUgRS1ERUxJTS1CXCkNCg0KU0VUcyB2YWx1
+ZXMgaW50byB0aGUgc3ltYm9scyBhY2NvcmRpbmcgdG8gdGhlaXIgcG9zaXRpb24gaW4gdGhlDQph
+cmd1bWVudCBsaXN0LiAgQXJndW1lbnRzIGFyZSBub3QgZXZhbHVhdGVkLCBzbyB1bnF1b3RlZCBz
+eW1ib2xzDQpzaG91bGQgYmUgcGFzc2VkLiAgTmlsIGFyZ3VtZW50cyBtYXkgYmUgdXNlZCBhcyBw
+bGFjZWhvbGRlcnMgd2hlbiBzb21lDQp2YWx1ZXMgYXJlIHVubmVlZGVkLg0KDQpGb3IgZXhhbXBs
+ZSwgdGhlIGZvcm0NCg0KICBcKGJjLWNvbW1lbnQtbXNldHEgbmlsIG5pbCBteXZhcjEgbXl2YXIy
+XCkNCg0Kc2V0cSdzIG15dmFyMSB0byB0aGUgY2hhcmFjdGVyIHBvc2l0aW9uIG9mIHRoZSBmaXJz
+dCBjaGFyYWN0ZXIgb2YgdGhlDQpjb21tZW50IHN0YXJ0IGRlbGltaXRlciBvbiB0aGUgY3VycmVu
+dCBsaW5lLiAgSXQgYWxzbyBzZXRxJ3MgdGhlDQpwb3NpdGlvbiBvZiB0aGUgbGFzdCBjaGFyYWN0
+ZXIgb2YgdGhlIGNvbW1lbnQgZW5kIGRlbGltaXRlciBpbnRvIG15dmFyMi4NCg0KUmV0dXJucyBC
+T0RZLUIsIHRoZSBjaGFyYWN0ZXIgcG9zaXRpb24gb2YgdGhlIGZpcnN0IG5vbndoaXRlIGNoYXJh
+Y3Rlcg0KaW4gdGhlIHRleHQgb2YgdGhlIGNvbW1lbnQgb24gdGhpcyBsaW5lLCBvciBuaWwgaWYg
+dGhlcmUgaXMgbm8gY29tbWVudA0Kb24gdGhpcyBsaW5lLiINCiAgKGAgKGJjLW1zZXRxICgsIHZh
+cnMpIChiYy1wYXJzZS1jb21tZW50KSkpKQ0KDQooZGVmbWFjcm8gYmMtY29tbWVudC1wICgpICco
+Y2FyIChiYy1wYXJzZS1jb21tZW50KSkpDQoNCihkZWZtYWNybyBiYy1jb2RlLW1zZXRxICgmcmVz
+dCB2YXJzKQ0KICAiUGFyc2UgdGhlIGN1cnJlbnQgbGluZSBhbmQgcmV0dXJuIGluZm9ybWF0aW9u
+IGFib3V0IG5vbi1jb21tZW50IHRleHQuDQoNClwoYmMtY29kZS1tc2V0cSBDT0RFLVAgQ09ERS1F
+TkQgQ09ERS1XSURUSFwpDQoNClNFVHMgdmFsdWVzIGludG8gdGhlIHN5bWJvbHMgYWNjb3JkaW5n
+IHRvIHRoZWlyIHBvc2l0aW9uIGluIHRoZQ0KYXJndW1lbnQgbGlzdC4gIEFyZ3VtZW50cyBhcmUg
+bm90IGV2YWx1YXRlZCwgc28gdW5xdW90ZWQgc3ltYm9scw0Kc2hvdWxkIGJlIHBhc3NlZC4gIE5p
+bCBhcmd1bWVudHMgbWF5IGJlIHVzZWQgYXMgcGxhY2Vob2xkZXJzIHdoZW4gc29tZQ0KdmFsdWVz
+IGFyZSB1bm5lZWRlZC4NCg0KRm9yIGV4YW1wbGUsIHRoZSBmb3JtDQoNCiAgXChiYy1jb2RlLW1z
+ZXRxIG5pbCBteXZhcjEgbXl2YXIyXCkNCg0Kc2V0cSdzIG15dmFyMSB0byB0aGUgY2hhcmFjdGVy
+IHBvc2l0aW9uIG9mIHRoZSBlbmQgb2YgdGhlDQoobm9uLWNvbW1lbnQpIGNvZGUgb24gdGhlIGN1
+cnJlbnQgbGluZS4gIEl0IGFsc28gc2V0cSdzIHRoZSB3aWR0aCBpbg0KY29sdW1ucyBvZiB0aGUg
+Y29kZSBpbnRvIG15dmFyMi4NCg0KUmV0dXJucyBub24tbmlsIGlmIHRoZSBjdXJyZW50IGxpbmUg
+Y29udGFpbnMgY29kZSwgbmlsIG90aGVyd2lzZS4iDQogIChgIChiYy1tc2V0cSAoLCB2YXJzKSAo
+YmMtcGFyc2UtY29kZSkpKSkNCg0KKGRlZm1hY3JvIGJjLWNvZGUtd2lkdGggKCkgJyhudGggMiAo
+YmMtcGFyc2UtY29kZSkpKQ0KDQooZGVmbWFjcm8gYmMtY29kZS1wICgpIChjYXIgKGJjLXBhcnNl
+LWNvZGUpKSkNCg0KOzs7Oz09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09
+PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PQ0KOzs7XyAgKiBBZHZpY2U6DQoNCjsgKGRl
+ZmFkdmljZSBpbmRlbnQtbmV3LWNvbW1lbnQtbGluZSAoYXJvdW5kIGJjLWluZGVudC1uZXctY29t
+bWVudC1saW5lDQo7ICAgICAgICAgICAgYWN0aXZhdGUpDQo7ICAgIldoZW4gY2FsbGVkIGZyb20g
+YGRvLWF1dG8tZmlsbCcgcnVuIGBiYy1pbmRlbnQtbmV3LWNvbW1lbnQtbGluZScgaWYNCjsgYmMt
+bW9kZSBpcyBhY3RpdmUsIG90aGVyd2lzZSBydW4gdGhlIHN0YW5kYXJkIGZ1bmN0aW9uLiINCjsg
+ICAoc2V0cSBiYy1idWctbGFzdC1jb21tYW5kICdkby1pbmRlbnQtbmV3LWNvbW1lbnQtbGluZS1h
+ZHZpY2UpDQo7ICAgKGlmIChhbmQgYmMtbW9kZQ0KOyAJICAgKGVxIHRoaXMtY29tbWFuZCAnc2Vs
+Zi1pbnNlcnQtY29tbWFuZCkpDQo7ICAgICAgIChiYy1pbmRlbnQtbmV3LWNvbW1lbnQtbGluZSkN
+CjsgICAgIGFkLWRvLWl0KSkNCg0KOzs7Oz09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09
+PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT0NCg0KKGRlZmFkdmljZSBkby1h
+dXRvLWZpbGwgKGFyb3VuZCBiYy1kby1hdXRvLWZpbGwgcHJlYWN0aXZhdGUpDQogICJXaGVuIGJj
+LW1vZGUgaXMgb24gYW5kIHRoZSBjdXJyZW50IGxpbmUgY29udGFpbnMgYSBjb21tZW50LCBkbw0K
+YmxvY2stY29tbWVudC1zZW5zaXRpdmUgZmlsbGluZyB1c2luZyBgYmMtaW5kZW50LW5ldy1jb21t
+ZW50LWxpbmUnLg0KT3RoZXJ3aXNlIGRvIG5vcm1hbCBmaWxsaW5nLiINCg0KICAoc2V0cSBiYy1i
+dWctbGFzdC1jb21tYW5kICdkby1hdXRvLWZpbGwtYWR2aWNlKQ0KICAoY29uZA0KICAgKChvciAo
+bm90IGJjLW1vZGUpICg8IChjdXJyZW50LWNvbHVtbikgZmlsbC1jb2x1bW4pKQ0KICAgICAgYWQt
+ZG8taXQpDQogICAoKGVxIHRoaXMtY29tbWFuZCAnbmV3bGluZSkNCiAgICBuaWwpDQogICAodA0K
+ICAgIChiYy1mbHVzaC1jYWNoZXMpDQogICAgKGJjLWJ1bXAtY291bnRlcnMpDQoNCiAgICAobGV0
+KiAoKGN1cnJlbnQtcG9pbnQgKHBvaW50KSkNCgkgICBkZWxpbS1iIGJvZHktYiBkZWxpbS1lDQoJ
+ICAgKGNvbW1lbnQtcCAoYmMtb3BhcnNlLWxpbmUgbmlsICdkZWxpbS1iICdib2R5LWIgbmlsICdk
+ZWxpbS1lKSkNCgkgICBmaXJzdC1saW5lIGxhc3QtbGluZQ0KCSAgICkNCg0KICAgICAgKGlmIChu
+b3QgY29tbWVudC1wKQ0KCSAgYWQtZG8taXQNCiANCgkoYmMtbXNldHEgKGZpcnN0LWxpbmUgbGFz
+dC1saW5lKSAoYmMtZmluZC1jb21tZW50KSkNCgkobGV0Kg0KCSAgICAoKHBhc3QtY29tbWVudCAo
+YW5kICg8PSBkZWxpbS1lIGN1cnJlbnQtcG9pbnQpIA0KCQkJCShub3QgKGVxdWFsIGJjLWNvbW1l
+bnQtZW5kICIiKSkpKQ0KCSAgICAgKGluLWNvbW1lbnQgKDw9IGRlbGltLWIgY3VycmVudC1wb2lu
+dCkpDQoJICAgICANCgkgICAgIChmaXJzdC1saW5lLWxpbmUgKGJjLWNvdW50LWxpbmVzLTEgMSBm
+aXJzdC1saW5lKSkNCgkgICAgIChsYXN0LWxpbmUtbGluZSAoYmMtY291bnQtbGluZXMtMSAxIGxh
+c3QtbGluZSkpDQoJICAgICBib2R5LXJhbmdlIGJvZHktbGFzdCBib2R5LWZpcnN0IGV4dHJhLXdo
+aXRlIHdoaXRlLXBvaW50DQoJICAgICB1bmJyZWFrYWJsZSBzYXZlLXBvaW50DQoJICAgICApDQoN
+CgkgIChjb25kCQkJCQk7IElmIHBhc3QgdGhlIGVuZCBkZWxpbWl0ZXINCgkgICAocGFzdC1jb21t
+ZW50CQkJOyBqdXN0IHB1bnQuDQoJICAgIChtZXNzYWdlICJDYW5ub3QgYXV0by1maWxsIGJleW9u
+ZCBjb21tZW50LiIpKQ0KDQoJCQkJCQk7PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09DQoJ
+ICAgKGluLWNvbW1lbnQJCQkJOyAgICAgICAgICBJbiBjb21tZW50Lg0KCSAgICAoc2V0cQkJCQk7
+PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09DQoJICAgICBib2R5LXJhbmdlIChiYy1hbmFs
+eXplLWNvbW1lbnQgZmlyc3QtbGluZSBsYXN0LWxpbmUpDQoJICAgICBib2R5LWZpcnN0IChudGgg
+MyBib2R5LXJhbmdlKQ0KCSAgICAgYm9keS1sYXN0IChudGggNCBib2R5LXJhbmdlKQ0KCSAgICAg
+ZXh0cmEtd2hpdGUgKC0gKHNraXAtY2hhcnMtYmFja3dhcmQgIiBcdCIpKQ0KCSAgICAgd2hpdGUt
+cG9pbnQgKHBvaW50KQ0KCSAgICAgc2F2ZS1wb2ludCAoYmMtc2F2ZS1leGN1cnNpb24gY3VycmVu
+dC1wb2ludCBmaXJzdC1saW5lDQoJCQkJCSAgIGJvZHktZmlyc3QgYm9keS1sYXN0DQoJCQkJCSAg
+IGxhc3QtbGluZSAnc3RpY2stdG8tZGVsaW1zKQ0KCSAgICAgKQ0KCSAgICAoZ290by1jaGFyIGN1
+cnJlbnQtcG9pbnQpCQkJOyBUaGlzIGlzIHJlYWxseQ0KCQkJCQkJCTsgbWluaW1hbC4gSXQgb25s
+eQ0KCQkJCQkJCTsgdHJpZXMgb25jZSwgbm90DQoJICAgIChpZiAoPiAoY3VycmVudC1jb2x1bW4p
+IGZpbGwtY29sdW1uKQk7IHJlcGVhdGVkbHkgbGlrZQ0KCQkJCQkJCTsgZG8tYXV0by1maWxsLg0K
+DQoJCShsZXQgKChmaWxsLXBvaW50CQkJOyBEZXRlcm1pbmUgd2hlcmUgdG8NCgkJICAgICAgIChs
+ZXQgKChvcG9pbnQgKHBvaW50KSkpCQk7IHNwbGl0IHRoZSBsaW5lLg0KCQkJIChzYXZlLWV4Y3Vy
+c2lvbg0KCQkJICAgKG1vdmUtdG8tY29sdW1uICgxKyBmaWxsLWNvbHVtbikpDQoJCQkgICAoc2tp
+cC1jaGFycy1iYWNrd2FyZCAiXiBcdFxuIikJOyBNb3ZlIGJhY2sgdG8NCgkJCSAgIChpZiAoPCBi
+b2R5LWIgKHBvaW50KSkgbmlsCQk7IGEgd29yZA0KCQkJICAgICAoZ290by1jaGFyIGJvZHktYikJ
+CQk7IGJvdW5kYXJ5Lg0KCQkJICAgICAocmUtc2VhcmNoLWZvcndhcmQgIlsgXHRdIiBvcG9pbnQg
+dCkNCgkJCSAgICAgKGlmICg8IChwb2ludCkgd2hpdGUtcG9pbnQpIG5pbA0KCQkJICAgICAgIChz
+ZXRxIHVuYnJlYWthYmxlIHQpKSkNCgkJCSAgIChza2lwLWNoYXJzLWJhY2t3YXJkICIgXHQiKQ0K
+CQkJICAgKGlmICg9IChwb2ludCkgd2hpdGUtcG9pbnQpDQoJCQkgICAgICAgKHNldHEgdW5icmVh
+a2FibGUgdCkpCTsgTGV0IGZpbGwtcG9pbnQgYmUgc2V0DQoJCQkgICAocG9pbnQpKSkpKQkJCTsg
+dG8gdGhlIHBsYWNlIHdoZXJlIHdlDQoJCQkJCQkJOyBlbmQgdXAuDQoJCSAgKGlmIChzYXZlLWV4
+Y3Vyc2lvbg0KCQkJKGdvdG8tY2hhciBmaWxsLXBvaW50KQkJOyBJZiB0aGF0IHBsYWNlIGlzIG5v
+dA0KCQkJKG5vdCAoPD0gKHBvaW50KSBib2R5LWIpKSkJOyB0aGUgYmVnaW5uaW5nIG9mIHRoZQ0K
+CQkgICAgICAocHJvZ24JCQkJOyBsaW5lLCBicmVhayB0aGUgbGluZQ0KCQkJKGdvdG8tY2hhciBm
+aWxsLXBvaW50KQkJOyB0aGVyZS4NCgkJCShiYy1pbmRlbnQtbmV3LWNvbW1lbnQtbGluZSkpKSkp
+DQoNCgkgICAgKGlmIHVuYnJlYWthYmxlIG5pbA0KCSAgICAgIChnb3RvLWxpbmUgZmlyc3QtbGlu
+ZS1saW5lKQ0KCSAgICAgIChzZXRxIGZpcnN0LWxpbmUgKHBvaW50KSkNCgkgICAgICAoZ290by1s
+aW5lIGxhc3QtbGluZS1saW5lKQ0KCSAgICAgIChmb3J3YXJkLWxpbmUgMSkNCgkgICAgICAoc2V0
+cSBsYXN0LWxpbmUgKHBvaW50KSkJCQkgIDsgYmMtcmVzdG9yZS0NCgkgICAgICAoYmMtcmVzdG9y
+ZS1leGN1cnNpb24gc2F2ZS1wb2ludCBmaXJzdC1saW5lIDsgZXhjdXJzaW9uIGRvZXNuJ3QNCgkJ
+CQkgICAgbGFzdC1saW5lKQkJICA7IGFjY291bnQgZm9yDQoJICAgICAgKGlmIChhbmQgKGVxIChj
+YXIgc2F2ZS1wb2ludCkgJ2luLWNvbW1lbnQpICA7IG11bHRpcGxlIHdoaXRlc3BhY2UNCgkJICAg
+ICAgIChlcSAobnRoIDEgc2F2ZS1wb2ludCkgJ2luLXRleHQpCSAgOyBjaGFycywgc28gd2UgaGF2
+ZQ0KCQkgICAgICAgKG5vdCAoY2RyIChudGggMiBzYXZlLXBvaW50KSkpKQkgIDsgdG8gZG8gdGhh
+dCBoZXJlLg0KCQkgIChpZiAobm90IChlb2xwKSkNCgkJICAgICAgKGZvcndhcmQtY2hhciBleHRy
+YS13aGl0ZSkNCgkJICAgIChpbnNlcnQgKG1ha2Utc3RyaW5nIGV4dHJhLXdoaXRlID9cICkpDQoJ
+CSAgICAoZW5kLW9mLWxpbmUpKSkpDQoJICAgICk7OyBlbmQgJ2luLWNvbW1lbnQNCg0KCSAgICh0
+CQkJCQk7PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09DQoJICAgIGFkLWRvLWl0CQkJCTsg
+ICAgICAgICAgSW4gY29kZS4NCgkgICAgKSkpKSkpKSkJCQkJOz09PT09PT09PT09PT09PT09PT09
+PT09PT09PT09PQ0KDQo7Ozs7PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09
+PT09PT09PT09PT09PT09PT09PT09PT09PT09DQo7OztfICAqIENvbW1hbmRzOg0KOzs7XyAgIG8g
+VGhlIG1vZGUNCjs7O18gICAgfCB0dXJuLW9uLWJjLW1vZGUNCg0KOzs7IyMjYXV0b2xvYWQ7XyAg
+IDogdHVybi1vbi1iYy1tb2RlDQooZGVmdW4gdHVybi1vbi1iYy1tb2RlICgpDQogICJUdXJuIG9u
+IGJjLW1vZGUgdW5jb25kaXRpb25hbGx5Lg0KDQpGb3IgbW9yZSBpbmZvcm1hdGlvbiwgdHlwZSBg
+XFxbZGVzY3JpYmUtdmFyaWFibGVdIGJjLW1vZGUtZG9jJy4iDQogIChpbnRlcmFjdGl2ZSkNCiAg
+KGJjLWRvLWNvbW1hbmQtaW5pdCkNCiAgKGJjLW1vZGUgMSkpDQoNCjs7Ozs9PT09PT09PT09PT09
+PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT0NCjs7
+O18gICAgfCBiYy1tb2RlDQo7OzsjIyNhdXRvbG9hZDtfICAgOiBiYy1tb2RlDQooZGVmdW4gYmMt
+bW9kZSAoJm9wdGlvbmFsIGFyZykNCiAgIk1pbm9yIG1vZGUgZm9yIGVkaXRpbmcgcmlnaHQtbWFy
+Z2luIGJsb2NrLXN0eWxlIGNvbW1lbnRzLg0KYmMtbW9kZSB2ZXJzaW9uOiAxLjENCg0KVG8gc3Vi
+bWl0IGEgcHJvYmxlbSByZXBvcnQsIHR5cGUgYFxcW2JjLXN1Ym1pdC1idWctcmVwb3J0XScuICBU
+aGlzIGF1dG9tYXRpY2FsbHkgDQpzZXRzIHVwIGEgbWFpbCBidWZmZXIgd2l0aCB2ZXJzaW9uIGlu
+Zm9ybWF0aW9uIGFscmVhZHkgYWRkZWQuICBZb3UNCmp1c3QgbmVlZCB0byBhZGQgYSBkZXNjcmlw
+dGlvbiBvZiB0aGUgcHJvYmxlbSBhbmQgc2VuZCB0aGUgbWVzc2FnZS4NCg0KVGhpcyBtaW5vciBt
+b2RlIHByb3ZpZGVzIGNvbW1hbmRzIHRoYXQgZm9ybWF0IHJpZ2h0LW1hcmdpbiBibG9jay1zdHls
+ZQ0KY29tbWVudHMgaW4gc291cmNlIGNvZGUuICANCg0KQ09NTUVOVFMgVEhBVCBCRUdJTiBJTiBU
+SEUgRklSU1QgQ09MVU1OIEFSRSBOT1QgUkVDT0dOSVpFRCBBUyBCTE9DSyBDT01NRU5UUy4NCg0K
+U2VlIHRoZSBkb2N1bWVudGF0aW9uIGZvciB0aGUgdmFyaWFibGUgYGJjLW1vZGUtZG9jJyBmb3Ig
+bW9yZQ0KaW5mb3JtYXRpb24gYW5kIG9uIHVzaW5nIHRoZSBmdW5jdGlvbiBgYmMtbW9kZScgDQpc
+KERvIGBcXFtkZXNjcmliZS12YXJpYWJsZV0gYmMtbW9kZS1kb2MnXCkuDQoNCkNvbW1hbmRzOg0K
+XFx7YmMtbW9kZS1tYXB9DQpFbnRyeSB0byB0aGlzIG1vZGUgY2FsbHMgdGhlIHZhbHVlIG9mIGBi
+Yy1tb2RlLWhvb2snIGlmIHRoYXQgdmFsdWUgaXMNCm5vbi1uaWwuIg0KDQogIChpbnRlcmFjdGl2
+ZSAiUCIpDQogIChiYy1kby1jb21tYW5kLWluaXQpDQogIChtYWtlLWxvY2FsLXZhcmlhYmxlICdi
+Yy1sYW5ndWFnZSkNCiAgKGxldCAoKGZpcnN0LXRpbWUgKG5vdCAoYW5kIChib3VuZHAgJ2JjLWxh
+bmd1YWdlKSANCgkJCSAgICAgIChzeW1ib2xwIGJjLWxhbmd1YWdlKQ0KCQkJICAgICAgYmMtbGFu
+Z3VhZ2UpKSkNCglwcmV2LW5hbWUNCglsYW5ndWFnZS1uYW1lcw0KCXNlbGVjdGVkLW5hbWUNCgls
+YW5ndWFnZS1zeW0NCgkpCQkJCQk7PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09DQogICAg
+KGNvbmQJCQkJCTsgLS0tLS0tIENhbGxlZCBpbnRlcmFjdGl2ZWx5Lg0KCQkJCQkJOz09PT09PT09
+PT09PT09PT09PT09PT09PT09PT09PQ0KICAgICAoKGludGVyYWN0aXZlLXApDQogICAgICAoY29u
+ZAkJCQkJOyBJZiBubyBwcmVmaXggYXJnIGFuZCBiYyBoYXMNCiAgICAgICAoKGFuZCAobm90IGFy
+ZykgKG5vdCBmaXJzdC10aW1lKSkJOyBydW4gYmVmb3JlIGluIHRoaXMgYnVmZmVyDQoJKGlmIGJj
+LW1vZGUgKGJjLWludGVybmFsLXR1cm4tbW9kZS1vZmYpIDsgdGhlbiB3ZSBkb24ndCBuZWVkIHRv
+IHByb21wdC4NCgkgIChjb25kDQoJICAgKChlcSBiYy1sYW5ndWFnZSB0KQkJCTsgVXNlIGJjLWNv
+bW1lbnQtcmVnZXhwLg0KCSAgICAoYmMtaW50ZXJuYWwtdHVybi1tb2RlLW9uIGJjLWNvbW1lbnQt
+cmVnZXhwIHQpKQ0KCSAgDQoJICAgKChhbmQgYmMtbGFuZ3VhZ2UgKHN5bWJvbHAgYmMtbGFuZ3Vh
+Z2UpKQ0KCSAgICAoYmMtaW50ZXJuYWwtdHVybi1tb2RlLW9uIGJjLWxhbmd1YWdlIHQpKSkpKSAg
+ICAgOyBVc2UgYmMtbGFuZ3VhZ2UuDQoNCg0KICAgICAgICgoPCAocHJlZml4LW51bWVyaWMtdmFs
+dWUgYXJnKSAwKQk7IE5lZ2F0aXZlIHByZWZpeDogdHVybiBvZmYuDQoJKGJjLWludGVybmFsLXR1
+cm4tbW9kZS1vZmYpKQ0KDQogICAgICAgKHQJCQkJCTsgSWYgY2FsbGVkIHdpdGggcHJlZml4IGFy
+Zywgb3INCgkoaWYgKG5vdCAoYm91bmRwICdiYy1sYW5ndWFnZSkpCQk7IGlmIHRoaXMgaXMgZmly
+c3QgdGltZSwgcHJvbXB0DQoJICAgIChzZXRxIGJjLWxhbmd1YWdlIG5pbCkpCQk7IGZvciBzeW50
+YXguDQoJKHNldHEgcHJldi1uYW1lIChpZiBiYy1sYW5ndWFnZSAoc3ltYm9sLW5hbWUgYmMtbGFu
+Z3VhZ2UpIA0KCQkJICAoYmMtZ3Vlc3MtbGFuZ3VhZ2UpKSkNCgkoc2V0cSBsYW5ndWFnZS1uYW1l
+cyAobWFwY2FyDQoJCQkgICAgICAoZnVuY3Rpb24gKGxhbWJkYSAobGlzdCkgDQoJCQkJCSAgKGNv
+bnMgKHN5bWJvbC1uYW1lIChjYXIgbGlzdCkpIG5pbCkpKQ0KCQkJICAgICAgYmMtbGFuZ3VhZ2Vz
+LWFsaXN0KSkNCgkoc2V0cSBsYW5ndWFnZS1uYW1lcyAoY29ucyAnKCJUVVJOIE9GRiBCQy1NT0RF
+IikgbGFuZ3VhZ2UtbmFtZXMpKQ0KCShzZXRxIHNlbGVjdGVkLW5hbWUNCgkgICAgICAoY29tcGxl
+dGluZy1yZWFkIChjb25jYXQgIkNvbW1lbnQgc3ludGF4ICgiDQoJCQkJICAgICAgIHByZXYtbmFt
+ZQ0KCQkJCSAgICAgICAiKTogIikNCgkJCSAgICAgICBsYW5ndWFnZS1uYW1lcyBuaWwgdCkpDQoJ
+KGlmIChlcXVhbCAiIiBzZWxlY3RlZC1uYW1lKQ0KCSAgICAoaWYgcHJldi1uYW1lIChzZXRxIHNl
+bGVjdGVkLW5hbWUgcHJldi1uYW1lKQ0KCSAgICAgIChlcnJvciAiUGxlYXNlIGNob29zZSBhIGNv
+bW1lbnQgc3ludGF4IGZvciBCQyB0byB1c2UuIikpKQ0KCShjb25kDQoJICgoZXF1YWwgc2VsZWN0
+ZWQtbmFtZSAiVFVSTiBPRkYgQkMtTU9ERSIpDQoJICAoYmMtaW50ZXJuYWwtdHVybi1tb2RlLW9m
+ZikpDQoJICh0DQoJICAoc2V0cSBsYW5ndWFnZS1zeW0gKGludGVybiBzZWxlY3RlZC1uYW1lKSkN
+CgkgIChiYy1pbnRlcm5hbC10dXJuLW1vZGUtb24gbGFuZ3VhZ2Utc3ltIHQpKSkNCgkpKSkNCgkJ
+CQkJCTs9PT09PT09PT09PT09PT09PT09PT09PT09PT09PT0NCgkJCQkJCTsgLS0tLS0tIENhbGxl
+ZCBmcm9tIExpc3AuDQogICAgICh0CQkJCQkJOz09PT09PT09PT09PT09PT09PT09PT09PT09PT09
+PQ0KICAgICAgKGNvbmQNCiAgICAgICAoKG9yIChzdHJpbmdwIGFyZykJCQk7IFNldHRpbmcgYmMt
+Y29tbWVudC1yZWdleHANCgkgICAgKGFuZCBhcmcgKHN5bWJvbHAgYXJnKSkpCQk7IGV4cGxpY2l0
+bHkuIEEgc3ltYm9sIGZyb20NCgkoYmMtaW50ZXJuYWwtdHVybi1tb2RlLW9uIGFyZykpCQk7IGJj
+LWxhbmd1YWdlcy1hbGlzdC4NCg0KICAgICAgICgoPCAocHJlZml4LW51bWVyaWMtdmFsdWUgYXJn
+KSAwKQk7IE5lZ2F0aXZlIHByZWZpeDogdHVybiBvZmYuDQoJKGJjLWludGVybmFsLXR1cm4tbW9k
+ZS1vZmYpKQ0KDQogICAgICAgKHQJCQkJCTsgQXJnIGlzIHBvc2l0aXZlIG9yIG5pbCwgZ2V0DQoJ
+KGNvbmQJCQkJCTsgbGFuZ3VhZ2UgZnJvbSBiYy1sYW5ndWFnZSBvcg0KCSAoZmlyc3QtdGltZQkJ
+CQk7IGd1ZXNzLg0KCSAgKGlmIChzZXRxIHNlbGVjdGVkLW5hbWUgKGJjLWd1ZXNzLWxhbmd1YWdl
+KSkNCgkgICAgICAocHJvZ24NCgkJKHNldHEgbGFuZ3VhZ2Utc3ltIChpbnRlcm4gc2VsZWN0ZWQt
+bmFtZSkpDQoJCShiYy1pbnRlcm5hbC10dXJuLW1vZGUtb24gbGFuZ3VhZ2Utc3ltKSkNCgkgICAg
+KGVycm9yICJiYy1tb2RlOiBDYW5ub3QgZGV0ZXJtaW5lIGxhbmd1YWdlIHN5bnRheC4iKSkpDQoJ
+IA0KCSAoKGVxIGJjLWxhbmd1YWdlIHQpCQkJOyBVc2UgYmMtY29tbWVudC1yZWdleHAuDQoJICAo
+YmMtaW50ZXJuYWwtdHVybi1tb2RlLW9uIGJjLWNvbW1lbnQtcmVnZXhwKSkNCg0KCSAoKGFuZCBi
+Yy1sYW5ndWFnZSAoc3ltYm9scCBiYy1sYW5ndWFnZSkpDQoJICAoYmMtaW50ZXJuYWwtdHVybi1t
+b2RlLW9uIGJjLWxhbmd1YWdlKSkJOyBVc2UgYmMtbGFuZ3VhZ2UuDQoNCgkgKHQNCgkgIChlcnJv
+ciANCgkgICAiYmMtbW9kZSBJbnRlcm5hbCBlcnJvciAwMDIuICBQbGVhc2Ugc3VibWl0IGEgZnVs
+bCBidWcgcmVwb3J0LiIpKQ0KCSApKSkpKSkNCg0KICAoaWYgYmMtbW9kZQ0KICAgICAgKHJ1bi1o
+b29rcyAnYmMtbW9kZS1ob29rKSkNCgkJCQkJOyBVc2UgYGJjLWZ1bmNhbGwnIHRvIHF1aWV0IHRo
+ZSBieXRlDQogIChiYy1mdW5jYWxsICdmb3JjZS1tb2RlLWxpbmUtdXBkYXRlKQk7IGNvbXBpbGVy
+IGFib3V0IG9ic29sZXRlIGZ1bmN0aW9ucyBpbg0KICApCQkJCQk7IFhFbWFjcw0KDQo7Ozs7PT09
+PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09
+PT09PT09PT09PQ0KOzs7XyAgIG8gRm9ybWF0dGluZw0KOzs7XyAgICB8IGJjLWZpbGwNCihkZWZ1
+biBiYy1maWxsICgmb3B0aW9uYWwgYXJnKQ0KICAiQmxvY2stZmlsbCB0aGUgYmxvY2sgY29tbWVu
+dCBzdXJyb3VuZGluZyB0aGUgY3VycmVudCBsaW5lLiAgDQpUaGUgY29tbWVudCBpcyB0YWtlbiB0
+byBjb25zaXN0IG9mIGFsbCB0aGUgdGV4dCBpbiB0aGUgcmlnaHQtbWFyZ2luDQpjb21tZW50cyBv
+biBjb25jZWN1dGl2ZSBsaW5lcyBhZGphY2VudCB0byB0aGUgY3VycmVudCBsaW5lLiAgDQoNCkNP
+TU1FTlRTIFRIQVQgQkVHSU4gSU4gVEhFIEZJUlNUIENPTFVNTiBBUkUgTk9UIFJFQ09HTklaRUQg
+QVMgQkxPQ0sgQ09NTUVOVFMuDQoNClRoZSBmb3JtYXR0ZWQgY29tbWVudCBpcyBwbGFjZWQgYXQg
+dGhlIG5lYXJlc3QgdGFiIHN0b3AgdW5sZXNzIGENCnByZWZpeCBhcmd1bWVudCBpcyBnaXZlbi4g
+IEluIHRoYXQgY2FzZSwgdGhlIGNvbW1lbnQgaXMgcGxhY2VkIGFzIG5lYXINCmFzIHBvc3NpYmxl
+IHRvIGl0cyBjdXJyZW50IGxvY2F0aW9uLg0KDQpGb3IgbW9yZSBpbmZvcm1hdGlvbiwgdHlwZSBg
+XFxbZGVzY3JpYmUtdmFyaWFibGVdIGJjLW1vZGUtZG9jJy4iDQoNCiAgKGludGVyYWN0aXZlICIq
+UCIpDQogIChiYy1kby1jb21tYW5kLWluaXQpDQogIChiYy1maWxsLWVuZ2luZSAwIG5pbCBhcmcp
+DQogICkNCg0KOzs7Oz09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09
+PT09PT09PT09PT09PT09PT09PT09PT09PT0NCjs7O18gICAgfCBiYy1maWxsLXBhcmFncmFwaA0K
+KGRlZnVuIGJjLWZpbGwtcGFyYWdyYXBoICgmb3B0aW9uYWwganVzdGlmeSkNCiJMaWtlIE0tcSwg
+YnV0IGhhbmRsZSByaWdodC1tYXJnaW4gYmxvY2sgY29tbWVudHMuDQpJZiBhbnkgb2YgdGhlIGN1
+cnJlbnQgY29udGFpbnMgcGFydCBvZiBhIGJsb2NrIGNvbW1lbnQsIGZpbGwgdGhlIGJsb2NrDQpj
+b21tZW50IG9uIHRoaXMgYW5kIHN1cnJvdW5kaW5nIGxpbmVzLiAgVGhlIGNvbW1lbnQgaXMgdGFr
+ZW4gdG8NCmNvbnNpc3Qgb2YgYWxsIHRoZSB0ZXh0IGluIHRoZSByaWdodC1tYXJnaW4gY29tbWVu
+dHMgb24gY29uY2VjdXRpdmUNCmxpbmVzIGFkamFjZW50IHRvIHRoZSBjdXJyZW50IGxpbmUuDQoN
+CkNPTU1FTlRTIFRIQVQgQkVHSU4gSU4gVEhFIEZJUlNUIENPTFVNTiBBUkUgTk9UIFJFQ09HTkla
+RUQgQVMgQkxPQ0sgQ09NTUVOVFMuDQoNCklmIG5vIGJsb2NrIGNvbW1lbnQgaXMgb24gdGhlIGN1
+cnJlbnQgbGluZSwgcmV0dXJuIG5pbC4gIE9wdGlvbmFsIGFyZw0KSlVTVElGWSBpcyBpZ25vcmVk
+Lg0KDQpGb3IgZnVydGhlciBpbmZvcm1hdGlvbiwgdHlwZSANCmBcXFtkZXNjcmliZS12YXJpYWJs
+ZV0gYmMtZW5hYmxlLWZpbGwtcGFyYWdyYXBoLWZ1bmN0aW9uJyBvciBgXFxbZGVzY3JpYmUtdmFy
+aWFibGVdIGJjLW1vZGUtZG9jJy4iDQoNCiAgKGludGVyYWN0aXZlICIqUCIpDQogIChiYy1kby1j
+b21tYW5kLWluaXQpDQogIChpZiAoYmMtb3BhcnNlLWxpbmUpDQogICAgICAocHJvZ24gKGJjLWZp
+bGwtZW5naW5lIDApIHQpKSkNCg0KOzs7Oz09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09
+PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT0NCjs7O18gICAgfCBiYy1zcXVl
+ZXplDQooZGVmdW4gYmMtc3F1ZWV6ZSAoKQ0KICAiQmxvY2stZmlsbCB0aGUgYmxvY2sgY29tbWVu
+dCBzdXJyb3VuZGluZyB0aGUgY3VycmVudCBsaW5lLiAgDQpUaGUgY29tbWVudCBpcyBzcXVlZXpl
+ZCB0byBvY2N1cHkgdGhlIGZld2VzdCBjb2x1bW5zIGFzIHBvc3NpYmxlIGZvcg0KaXRzIGhlaWdo
+dC4NCg0KQ09NTUVOVFMgVEhBVCBCRUdJTiBJTiBUSEUgRklSU1QgQ09MVU1OIEFSRSBOT1QgUkVD
+T0dOSVpFRCBBUyBCTE9DSyBDT01NRU5UUy4NCg0KRm9yIG1vcmUgaW5mb3JtYXRpb24sIHR5cGUg
+YFxcW2Rlc2NyaWJlLXZhcmlhYmxlXSBiYy1tb2RlLWRvYycuIg0KDQogIChpbnRlcmFjdGl2ZSAi
+KiIpDQogIChiYy1kby1jb21tYW5kLWluaXQpDQogIChiYy1uYXJyb3ctZW5naW5lIDAgdCkNCiAg
+KQ0KDQo7Ozs7PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09
+PT09PT09PT09PT09PT09PT09PT09PQ0KOzs7XyAgICB8IGJjLXJhaXNlDQooZGVmdW4gYmMtcmFp
+c2UgKG1vdGlvbikNCiAgIlJhaXNlIHRoZSBjb21tZW50IHN1cnJvdW5kaW5nIHRoZSBjdXJyZW50
+IGxpbmUgYnkgb25lIG9yIG1vcmUgbGluZXMuDQpUaGUgY29tbWVudCBpcyBub3QgcmVmb3JtYXR0
+ZWQuICBJZiBuZWNlc3NhcnksIGJsYW5rIGxpbmVzIGFyZSBhZGRlZA0KdG8gaG9zdCB0aGUgY29t
+bWVudCBsaW5lcy4NCg0KQ09NTUVOVFMgVEhBVCBCRUdJTiBJTiBUSEUgRklSU1QgQ09MVU1OIEFS
+RSBOT1QgUkVDT0dOSVpFRCBBUyBCTE9DSyBDT01NRU5UUy4NCg0KV2l0aCBhIHByZWZpeCBhcmd1
+bWVudCwgcmFpc2UgdGhlIGNvbW1lbnQgdGhhdCBtYW55IGxpbmVzLg0KDQpGb3IgbW9yZSBpbmZv
+cm1hdGlvbiwgdHlwZSBgXFxbZGVzY3JpYmUtdmFyaWFibGVdIGJjLW1vZGUtZG9jJy4iDQoNCiAg
+KGludGVyYWN0aXZlICIqcCIpDQogIChiYy1kby1jb21tYW5kLWluaXQpDQogIChiYy1maWxsLWVu
+Z2luZSAoLSBtb3Rpb24pIG5pbCB0IHQpDQogICkNCg0KOzs7Oz09PT09PT09PT09PT09PT09PT09
+PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT0NCjs7O18g
+ICAgfCBiYy1yYWlzZS1mbG93DQooZGVmdW4gYmMtcmFpc2UtZmxvdyAobW90aW9uKQ0KICAiUmFp
+c2UgdGhlIGNvbW1lbnQgc3Vycm91bmRpbmcgdGhlIGN1cnJlbnQgbGluZSBieSBvbmUgb3IgbW9y
+ZSBsaW5lcy4NClRoZSBjb21tZW50IGlzIHJlZm9ybWF0dGVkIGlmIG5lY2Vzc2FyeSB0byBmaXQg
+aW4gYXZhaWxhYmxlIHNwYWNlLg0KU2VlIHRoZSBjb21tYW5kIGBiYy1maWxsJy4NCg0KQ09NTUVO
+VFMgVEhBVCBCRUdJTiBJTiBUSEUgRklSU1QgQ09MVU1OIEFSRSBOT1QgUkVDT0dOSVpFRCBBUyBC
+TE9DSyBDT01NRU5UUy4NCg0KV2l0aCBhIHByZWZpeCBhcmd1bWVudCwgcmFpc2UgdGhlIGNvbW1l
+bnQgdGhhdCBtYW55IGxpbmVzLg0KDQpGb3IgbW9yZSBpbmZvcm1hdGlvbiwgdHlwZSBgXFxbZGVz
+Y3JpYmUtdmFyaWFibGVdIGJjLW1vZGUtZG9jJy4iDQoNCiAgKGludGVyYWN0aXZlICIqcCIpDQog
+IChiYy1kby1jb21tYW5kLWluaXQpDQogIChiYy1maWxsLWVuZ2luZSAoLSBtb3Rpb24pIG5pbCB0
+KQ0KICApDQoNCjs7Ozs9PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09
+PT09PT09PT09PT09PT09PT09PT09PT09PT09DQo7OztfICAgIHwgYmMtbG93ZXINCihkZWZ1biBi
+Yy1sb3dlciAobW90aW9uKQ0KICAiTG93ZXIgdGhlIGNvbW1lbnQgc3Vycm91bmRpbmcgdGhlIGN1
+cnJlbnQgbGluZSBieSBvbmUgb3IgbW9yZSBsaW5lcy4NClRoZSBjb21tZW50IGlzIG5vdCByZWZv
+cm1hdHRlZC4gIElmIG5lY2Vzc2FyeSBibGFuayBsaW5lcyBhcmUgYWRkZWQNCnRvIGhvc3QgdGhl
+IGNvbW1lbnQgbGluZXMuDQoNCkNPTU1FTlRTIFRIQVQgQkVHSU4gSU4gVEhFIEZJUlNUIENPTFVN
+TiBBUkUgTk9UIFJFQ09HTklaRUQgQVMgQkxPQ0sgQ09NTUVOVFMuDQoNCldpdGggYSBwcmVmaXgg
+YXJndW1lbnQsIGxvd2VyIHRoZSBjb21tZW50IHRoYXQgbWFueSBsaW5lcy4NCg0KRm9yIG1vcmUg
+aW5mb3JtYXRpb24sIHR5cGUgYFxcW2Rlc2NyaWJlLXZhcmlhYmxlXSBiYy1tb2RlLWRvYycuIg0K
+DQo7OztCb3VuZCB0byBrZXlzOiBcIlxcW2JjLWxvd2VyXVwiLiINCg0KICAoaW50ZXJhY3RpdmUg
+IipwIikNCiAgKGJjLWRvLWNvbW1hbmQtaW5pdCkNCiAgKGJjLWZpbGwtZW5naW5lIG1vdGlvbiBu
+aWwgdCB0KQ0KICApDQoNCjs7Ozs9PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09
+PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09DQo7OztfICAgIHwgYmMtbG93ZXItZmxv
+dw0KKGRlZnVuIGJjLWxvd2VyLWZsb3cgKG1vdGlvbikNCiAgIkxvd2VyIHRoZSBjb21tZW50IHN1
+cnJvdW5kaW5nIHRoZSBjdXJyZW50IGxpbmUgYnkgb25lIG9yIG1vcmUgbGluZXMuDQpUaGUgY29t
+bWVudCBpcyByZWZvcm1hdHRlZCBpZiBuZWNlc3NhcnkgdG8gZml0IGluIGF2YWlsYWJsZSBzcGFj
+ZS4NClNlZSB0aGUgY29tbWFuZCBgYmMtZmlsbCcuDQoNCkNPTU1FTlRTIFRIQVQgQkVHSU4gSU4g
+VEhFIEZJUlNUIENPTFVNTiBBUkUgTk9UIFJFQ09HTklaRUQgQVMgQkxPQ0sgQ09NTUVOVFMuDQoN
+CldpdGggYSBwcmVmaXggYXJndW1lbnQsIGxvd2VyIHRoZSBjb21tZW50IHRoYXQgbWFueSBsaW5l
+cy4NCg0KRm9yIG1vcmUgaW5mb3JtYXRpb24sIHR5cGUgYFxcW2Rlc2NyaWJlLXZhcmlhYmxlXSBi
+Yy1tb2RlLWRvYycuIg0KDQo7OztCb3VuZCB0byBrZXlzOiBcIlxcW2JjLWxvd2VyXVwiLiINCg0K
+ICAoaW50ZXJhY3RpdmUgIipwIikNCiAgKGJjLWRvLWNvbW1hbmQtaW5pdCkNCiAgKGJjLWZpbGwt
+ZW5naW5lIG1vdGlvbiBuaWwgdCkNCiAgKQ0KDQo7Ozs7PT09PT09PT09PT09PT09PT09PT09PT09
+PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PQ0KOzs7XyAgICB8
+IGJjLXRhbGxlcg0KKGRlZnVuIGJjLXRhbGxlciAoKQ0KICAiUmVmb3JtYXQgdGhlIGNvbW1lbnQg
+c3Vycm91bmRpbmcgdGhlIGN1cnJlbnQgbGluZSBzbyB0aGF0IGl0DQpvY2N1cGllcyBvbmUgbGVz
+cyBsaW5lIGlmIHBvc3NpYmxlLiAgVGhlIGNvbW1lbnQgd2lsbCBiZSByYWlzZWQgb3INCmxvd2Vy
+ZWQgaWYgbmVjZXNzYXJ5IHRvIGZpdCBpbiBhdmFpbGFibGUgc3BhY2UuICBTZWUgdGhlIGNvbW1h
+bmQNCmBiYy1maWxsJy4NCg0KQ09NTUVOVFMgVEhBVCBCRUdJTiBJTiBUSEUgRklSU1QgQ09MVU1O
+IEFSRSBOT1QgUkVDT0dOSVpFRCBBUyBCTE9DSyBDT01NRU5UUy4NCg0KRm9yIG1vcmUgaW5mb3Jt
+YXRpb24sIHR5cGUgYFxcW2Rlc2NyaWJlLXZhcmlhYmxlXSBiYy1tb2RlLWRvYycuIg0KDQogIChp
+bnRlcmFjdGl2ZSAiKiIpDQogIChiYy1kby1jb21tYW5kLWluaXQpDQogIChiYy1uYXJyb3ctZW5n
+aW5lIDEgdCkNCiAgKQ0KDQo7Ozs7PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09
+PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PQ0KOzs7XyAgICB8IGJjLXNob3J0ZXIN
+CihkZWZ1biBiYy1zaG9ydGVyICgpDQogICJSZWZvcm1hdCB0aGUgY29tbWVudCBzdXJyb3VuZGlu
+ZyB0aGUgY3VycmVudCBsaW5lIHNvIHRoYXQgaXQNCm9jY3VwaWVzIG9uZSBtb3JlIGxpbmUgaWYg
+cG9zc2libGUuICBUaGUgY29tbWVudCB3aWxsIGJlIHJhaXNlZCBvcg0KbG93ZXJlZCBpZiBuZWNl
+c3NhcnkgdG8gZml0IGluIGF2YWlsYWJsZSBzcGFjZS4gIFNlZSB0aGUgY29tbWFuZA0KYGJjLWZp
+bGwnLg0KDQpDT01NRU5UUyBUSEFUIEJFR0lOIElOIFRIRSBGSVJTVCBDT0xVTU4gQVJFIE5PVCBS
+RUNPR05JWkVEIEFTIEJMT0NLIENPTU1FTlRTLg0KDQpGb3IgbW9yZSBpbmZvcm1hdGlvbiwgdHlw
+ZSBgXFxbZGVzY3JpYmUtdmFyaWFibGVdIGJjLW1vZGUtZG9jJy4iDQoNCiAgKGludGVyYWN0aXZl
+ICIqIikNCiAgKGJjLWRvLWNvbW1hbmQtaW5pdCkNCiAgKGJjLW5hcnJvdy1lbmdpbmUgLTEgdCkN
+CiAgKQ0KDQo7Ozs7PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09
+PT09PT09PT09PT09PT09PT09PT09PT09PQ0KOzs7XyAgICB8IGJjLW5hcnJvd2VyDQooZGVmdW4g
+YmMtbmFycm93ZXIgKCkNCiAgIlJlZm9ybWF0IHRoZSBjb21tZW50IHN1cnJvdW5kaW5nIHRoZSBj
+dXJyZW50IGxpbmUgc28gdGhhdCBpdA0Kb2NjdXBpZXMgb25lIGxlc3MgbGluZSBpZiBwb3NzaWJs
+ZS4gIFRoZSBjb21tZW50IHdpbGwgYmUgcmFpc2VkIG9yDQpsb3dlcmVkIGlmIG5lY2Vzc2FyeSB0
+byBmaXQgaW4gYXZhaWxhYmxlIHNwYWNlLiAgU2VlIHRoZSBjb21tYW5kDQpgYmMtZmlsbCcuDQoN
+CkNPTU1FTlRTIFRIQVQgQkVHSU4gSU4gVEhFIEZJUlNUIENPTFVNTiBBUkUgTk9UIFJFQ09HTkla
+RUQgQVMgQkxPQ0sgQ09NTUVOVFMuDQoNCkZvciBtb3JlIGluZm9ybWF0aW9uLCB0eXBlIGBcXFtk
+ZXNjcmliZS12YXJpYWJsZV0gYmMtbW9kZS1kb2MnLiINCg0KICAoaW50ZXJhY3RpdmUgIioiKQ0K
+ICAoYmMtZG8tY29tbWFuZC1pbml0KQ0KICAoYmMtbmFycm93LWVuZ2luZSAxIG5pbCkNCiAgKQ0K
+DQo7Ozs7PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09
+PT09PT09PT09PT09PT09PT09PQ0KOzs7XyAgICB8IGJjLXdpZGVyDQooZGVmdW4gYmMtd2lkZXIg
+KCkNCiAgIlJlZm9ybWF0IHRoZSBjb21tZW50IHN1cnJvdW5kaW5nIHRoZSBjdXJyZW50IGxpbmUg
+c28gdGhhdCBpdA0Kb2NjdXBpZXMgb25lIG1vcmUgbGluZSBpZiBwb3NzaWJsZS4gIFRoZSBjb21t
+ZW50IHdpbGwgYmUgcmFpc2VkIG9yDQpsb3dlcmVkIGlmIG5lY2Vzc2FyeSB0byBmaXQgaW4gYXZh
+aWxhYmxlIHNwYWNlLiAgU2VlIHRoZSBjb21tYW5kDQpgYmMtZmlsbCcuDQoNCkNPTU1FTlRTIFRI
+QVQgQkVHSU4gSU4gVEhFIEZJUlNUIENPTFVNTiBBUkUgTk9UIFJFQ09HTklaRUQgQVMgQkxPQ0sg
+Q09NTUVOVFMuDQoNCkZvciBtb3JlIGluZm9ybWF0aW9uLCB0eXBlIGBcXFtkZXNjcmliZS12YXJp
+YWJsZV0gYmMtbW9kZS1kb2MnLiINCg0KICAoaW50ZXJhY3RpdmUgIioiKQ0KICAoYmMtZG8tY29t
+bWFuZC1pbml0KQ0KICAoYmMtbmFycm93LWVuZ2luZSAtMSBuaWwpDQogICkNCg0KOzs7Oz09PT09
+PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09
+PT09PT09PT0NCjs7O18gICBvIEVkaXRpbmcNCjsNCjs7O18gICAgfCBiYy1raWxsLWNvbW1lbnQN
+CihkZWZ1biBiYy1raWxsLWNvbW1lbnQgKCkNCiAgIktpbGxzIHRoZSB0ZXh0IG9mIHRoZSBibG9j
+ayBjb21tZW50IG9uIGxpbmVzIGFyb3VuZCBwb2ludCwNCmluY2x1ZGluZyBkZWxpbWl0ZXJzLiAg
+VGV4dCBvZiB0aGUgY29tbWVudCAod2l0aG91dCBkZWxpbWl0ZXJzKSBpcw0KYXBwZW5kZWQgdG8g
+dGhlIGtpbGwtcmluZy4NCg0KRm9yIG1vcmUgaW5mb3JtYXRpb24sIHR5cGUgYFxcW2Rlc2NyaWJl
+LXZhcmlhYmxlXSBiYy1tb2RlLWRvYycuIg0KDQogIChpbnRlcmFjdGl2ZSAiKiIpDQogIChiYy1k
+by1jb21tYW5kLWluaXQpDQogIChsZXQgKA0KCShzYXZlLWNvbHVtbiAoY3VycmVudC1jb2x1bW4p
+KQ0KCShzYXZlLWxpbmUgKGJjLWNvdW50LWxpbmVzLTEtZmFzdCAxIChwb2ludCkpKQ0KCWZpcnN0
+LWxpbmUgbGFzdC1saW5lDQo7CWJvZHktcmFuZ2UNCglib2R5LWZpcnN0LWxpbmUgYm9keS1sYXN0
+LWxpbmUNCglyZXN1bHQNCgkpDQogICAgKGJjLWZsdXNoLWNhY2hlcykNCiAgICAoc2V0cSANCiAg
+ICAgYmMtYWRkZWQtbmV3bGluZXMtY291bnRlciAoMSsgYmMtYWRkZWQtbmV3bGluZXMtY291bnRl
+cikNCiAgICAgcmVzdWx0DQogICAgIChjYXRjaCAnZmFpbHVyZQ0KICAgICAgICh1bndpbmQtcHJv
+dGVjdA0KCSAgIChwcm9nbg0KCSAgICAgKGJjLW1zZXRxIChmaXJzdC1saW5lIGxhc3QtbGluZSkg
+KGJjLWZpbmQtY29tbWVudCkpDQoJICAgICAoYmMtbXNldHEgKGJvZHktZmlyc3QtbGluZSBib2R5
+LWxhc3QtbGluZSkNCgkJICAgICAgIChiYy1hbmFseXplLWNvbW1lbnQgZmlyc3QtbGluZSBsYXN0
+LWxpbmUpKQ0KOyAJICAgICAoc2V0cSA7cmFuZ2UgKGJjLWZpbmQtY29tbWVudCkNCjsgCQkgICA7
+Zmlyc3QtbGluZSAoY2FyIHJhbmdlKQ0KOyAJCSAgIDtsYXN0LWxpbmUgKGNkciByYW5nZSkNCjsg
+CQkgICBib2R5LXJhbmdlIChiYy1hbmFseXplLWNvbW1lbnQgZmlyc3QtbGluZSBsYXN0LWxpbmUp
+DQo7IAkJICAgYm9keS1maXJzdC1saW5lIChjYXIgYm9keS1yYW5nZSkNCjsgCQkgICBib2R5LWxh
+c3QtbGluZSAobnRoIDEgYm9keS1yYW5nZSkpDQo7OzsJCSAgIGxhc3QtbGluZS1saW5lIChiYy1j
+b3VudC1saW5lcy0xIChwb2ludC1taW4pIGxhc3QtbGluZSkpDQoJICAgICAoYmMtZ2V0LXRleHQg
+Ym9keS1maXJzdC1saW5lIGJvZHktbGFzdC1saW5lKQ0KCSAgICAgKHNldC1idWZmZXIgYmMtRy1z
+Y3JhdGNoLWJ1ZmZlcikNCgkgICAgIChraWxsLXJlZ2lvbiAxIChwb2ludC1tYXgpKQ0KCSAgICAg
+KHNldC1idWZmZXIgYmMtRy1jb2RlLWJ1ZmZlcikNCgkgICAgIChiYy1kZWxldGUtdGV4dCBmaXJz
+dC1saW5lIGxhc3QtbGluZSkpDQoJIA0KCSAoc2V0LWJ1ZmZlciBiYy1HLWNvZGUtYnVmZmVyKTs7
+IGNsZWFudXANCgkgKGJjLWdvdG8tbGluZS1mYXN0IHNhdmUtbGluZSkNCjsgCSAoZ290by1jaGFy
+IChwb2ludC1taW4pKQ0KOyAJIChmb3J3YXJkLWxpbmUgKDEtIHNhdmUtbGluZSkpDQo7OzsJIChn
+b3RvLWxpbmUgc2F2ZS1saW5lKQ0KCSAobW92ZS10by1jb2x1bW4gc2F2ZS1jb2x1bW4pKTs7IGVu
+ZCB1bndpbmQtcHJvdGVjdA0KICAgICAgIG5pbCkpOzsgZW5kIHNldHENCiAgICANCiAgICAoaWYg
+cmVzdWx0CQkJCQk7IHdhcyB0aGVyZSBhIHByb2JsZW0/DQoJKHByb2duIChiZWVwIHQpIChtZXNz
+YWdlICIlcyIgcmVzdWx0KSkNCiAgICAgIChzYXZlLWV4Y3Vyc2lvbg0KCShiYy1jbGVhbnVwLW5l
+d2xpbmVzIGZpcnN0LWxpbmUgKHByb2duIChnb3RvLWxpbmUgbGFzdC1saW5lKSANCgkJCQkJICAg
+ICAgIChlbmQtb2YtbGluZSkgKHBvaW50KSkpKSkpKQ0KDQo7Ozs7PT09PT09PT09PT09PT09PT09
+PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PQ0KOzs7
+XyAgICB8IGJjLWNvcHktY29tbWVudC1jb21tZW50LWFzLWtpbGwNCihkZWZ1biBiYy1jb3B5LWNv
+bW1lbnQtY29tbWVudC1hcy1raWxsICgpDQogICJDb3B5IHRoZSB0ZXh0IG9mIHRoZSBibG9jayBj
+b21tZW50IG9uIGxpbmVzIGFyb3VuZCBwb2ludC4NClRleHQgb2YgdGhlIGNvbW1lbnQgXCh3aXRo
+b3V0IGRlbGltaXRlcnNcKSBpcyBhcHBlbmRlZCB0byB0aGUga2lsbC1yaW5nLg0KDQpGb3IgbW9y
+ZSBpbmZvcm1hdGlvbiwgdHlwZSBgXFxbZGVzY3JpYmUtdmFyaWFibGVdIGJjLW1vZGUtZG9jJy4i
+DQoNCiAgKGludGVyYWN0aXZlICIqIikNCiAgKGJjLWRvLWNvbW1hbmQtaW5pdCkNCiAgKGxldCAo
+DQo7OzsJKHNjcmF0Y2gtYnVmZmVyIChiYy1nZXQtYnVmZmVyLWNyZWF0ZSkpDQo7OzsJcmFuZ2UN
+Cglib2R5LXJhbmdlIGZpcnN0LWxpbmUgbGFzdC1saW5lDQoJcmVzdWx0DQoJKQ0KDQogICAgKHNl
+dHEgDQogICAgIHJlc3VsdA0KICAgICAoY2F0Y2ggJ2ZhaWx1cmUNCiAgICAgICAoc2F2ZS1leGN1
+cnNpb24NCgkgKGJjLWZsdXNoLWNhY2hlcykNCgkgKGJjLW1zZXRxIChmaXJzdC1saW5lIGxhc3Qt
+bGluZSkgKGJjLWZpbmQtY29tbWVudCkpDQoJIChzZXRxIDtyYW5nZSAoYmMtZmluZC1jb21tZW50
+KQ0KCSAgICAgICBib2R5LXJhbmdlIChiYy1hbmFseXplLWNvbW1lbnQgZmlyc3QtbGluZSBsYXN0
+LWxpbmUpKQ0KCSAoYmMtZ2V0LXRleHQgKGNhciBib2R5LXJhbmdlKSAobnRoIDEgYm9keS1yYW5n
+ZSkpDQoJIChzZXQtYnVmZmVyIGJjLUctc2NyYXRjaC1idWZmZXIpDQoJICAgIChraWxsLXJlZ2lv
+biAxIChwb2ludC1tYXgpKSkNCgluaWwpKSA7IGVuZCBzZXRxIHJlc3VsdA0KICAgIA0KICAgIChp
+ZiByZXN1bHQgOyB3YXMgdGhlcmUgYSBwcm9ibGVtPw0KCShwcm9nbg0KCSAgKGJlZXAgdCkJCQk7
+IHNpZ25hbCBmYWlsdXJlDQoJICAobWVzc2FnZSAiJXMiIHJlc3VsdCkNCgkgICkNCiAgICAgICkp
+KQ0KICAgIA0KOzs7Oz09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09
+PT09PT09PT09PT09PT09PT09PT09PT09PT0NCjs7O18gICAgfCBiYy15YW5rDQooZGVmdW4gYmMt
+eWFuayAoKQ0KICAiWWFua3MgdGhlIG1vc3QgcmVjZW50bHkga2lsbGVkIHRleHQgYW5kIGZvcm1h
+dHMgaXQgYXMgYSByaWdodC1tYXJnaW4NCmJsb2NrIGNvbW1lbnQgb24gYW5kIGFyb3VuZCB0aGUg
+Y3VycmVudCBsaW5lLg0KDQpGb3IgbW9yZSBpbmZvcm1hdGlvbiwgdHlwZSBgXFxbZGVzY3JpYmUt
+dmFyaWFibGVdIGJjLW1vZGUtZG9jJy4iDQoNCiAgKGludGVyYWN0aXZlICIqIikNCiAgKGJjLWRv
+LWNvbW1hbmQtaW5pdCkNCiAgKGxldCoNCiAgICAgICgNCjs7OyAgICAgICAoY29kZS1idWZmZXIg
+KGN1cnJlbnQtYnVmZmVyKSkNCjs7OyAgICAgICAoY3VycmVudC1wb2ludCAocG9pbnQpKQ0KICAg
+ICAgIChzYXZlLWNvbHVtbiAoY3VycmVudC1jb2x1bW4pKQ0KICAgICAgIChzYXZlLWxpbmUgKGJj
+LWNvdW50LWxpbmVzLTEtZmFzdCAocG9pbnQtbWluKSAocG9pbnQpKSkNCjs7OyAgICAgICAoc2Ny
+YXRjaC1idWZmZXIgKGJjLWdldC1idWZmZXItY3JlYXRlKSkNCiAgICAgICBjb2x1bW4gdG9wDQo7
+OzsgICAgICAgbGltLXRvcCBsaW0tYm90dG9tDQogICAgICAgZml0LWFyZWENCiAgICAgICByZXN1
+bHQNCiAgICAgICApDQoNCiAgICAoc2F2ZS1leGN1cnNpb24NCiAgICAgIChiYy1kZWZhdWx0LWFu
+YWx5c2lzLXZhcnMpDQogICAgICAoYmMtZmx1c2gtY2FjaGVzKQ0KICAgICAgKGJjLWJ1bXAtY291
+bnRlcnMpDQogICAgICAoc2V0cQ0KICAgICAgIHJlc3VsdA0KICAgICAgIChjYXRjaCAnZmFpbHVy
+ZQ0KCSAoc2V0LWJ1ZmZlciBiYy1HLXNjcmF0Y2gtYnVmZmVyKQ0KCSAoZXJhc2UtYnVmZmVyKQ0K
+CSAoaW5zZXJ0IChjYXIga2lsbC1yaW5nLXlhbmstcG9pbnRlcikpDQoJIChzZXQtYnVmZmVyIGJj
+LUctY29kZS1idWZmZXIpDQoJIChzZXRxICBiYy1wYXJzZS1saW5lLWNhY2hlIG5pbA0KCQliYy1w
+cmVmLWZpcnN0LWxpbmUgc2F2ZS1saW5lKQ0KCSANCgkgKHNldHEgZml0LWFyZWEgKGJjLWZpdC1t
+b3ZlIDEpKQ0KCSAoc2V0cSBjb2x1bW4gKGNhciBmaXQtYXJlYSkpDQoJIChzZXRxIHRvcCAoY2Fy
+IChjZHIgZml0LWFyZWEpKSkNCgkgDQoJIChzZXRxIGJjLXBoYW50b20tY29sdW1uIGNvbHVtbikN
+CgkgKGJjLW1vdmVpdCB0b3AgbmlsIG5pbCBjb2x1bW4gKG50aCAyIGZpdC1hcmVhKSAgDQoJCSAg
+ICAobnRoIDMgZml0LWFyZWEpIHQpDQoJIChiYy1zZXQtcHJlZi1maXJzdC1saW5lKQ0KCSAoYmMt
+Z290by1saW5lLWZhc3Qgc2F2ZS1saW5lKQ0KCSAobW92ZS10by1jb2x1bW4gc2F2ZS1jb2x1bW4p
+DQoJIG5pbCkpKQ0KICAgIA0KICAgIChpZiByZXN1bHQJCQkJCQk7IHdhcyB0aGVyZSBhIHByb2Js
+ZW0/DQoJKHByb2duDQoJICAoYmVlcCB0KQkJCQkJOyBzaWduYWwgZmFpbHVyZQ0KCSAgKG1lc3Nh
+Z2UgIiVzIiByZXN1bHQpDQoJICApDQogICAgICAoaWYgYmMtc2hvdy1maWxsLWNvdW50IChtZXNz
+YWdlICJGaWxsIGNvdW50OiAlZCIgYmMtZmlsbC1jb3VudCkpKQ0KICAgICkpDQoNCjs7Ozs9PT09
+PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09
+PT09PT09PT09DQo7OztfICAgIHwgYmMteWFuay1wb3ANCihkZWZ1biBiYy15YW5rLXBvcCAoYXJn
+KSANCiAgIlJlcGxhY2UganVzdC15YW5rZWQgYmxvY2sgY29tbWVudCB3aXRoIHRoZSBuZXh0IGNo
+dW5rIG9mIHRleHQgaW4NCnRoZSBraWxsIHJpbmcuICBUaGlzIGNvbW1hbmQgaXMgYWxsb3dlZCBv
+bmx5IGltbWVkaWF0ZWx5IGFmdGVyIGENCmBiYy15YW5rJywgYGJjLXlhbmstcG9wJywgYHlhbmsn
+LCBvciBgeWFuay1wb3AnLiAgSWYgb25lIG9mIHRoZSBsYXR0ZXINCnR3bywgdGhpcyBqdXN0IGNh
+bGxzIGB5YW5rLXBvcCcuDQoNCldpdGggbm8gYXJndW1lbnQsIHRoZSBwcmV2aW91cyBraWxsIGlz
+IGluc2VydGVkLg0KV2l0aCBhcmd1bWVudCBuLCB0aGUgbid0aCBwcmV2aW91cyBraWxsIGlzIGlu
+c2VydGVkLg0KSWYgbiBpcyBuZWdhdGl2ZSwgdGhpcyBpcyBhIG1vcmUgcmVjZW50IGtpbGwuDQoN
+ClRoZSBzZXF1ZW5jZSBvZiBraWxscyB3cmFwcyBhcm91bmQsIHNvIHRoYXQgYWZ0ZXIgdGhlIG9s
+ZGVzdCBvbmUNCmNvbWVzIHRoZSBuZXdlc3Qgb25lLg0KDQpGb3IgbW9yZSBpbmZvcm1hdGlvbiwg
+dHlwZSBgXFxbZGVzY3JpYmUtdmFyaWFibGVdIGJjLW1vZGUtZG9jJy4iDQoNCiAgKGludGVyYWN0
+aXZlICIqcCIpDQogIChiYy1kby1jb21tYW5kLWluaXQpDQogIChsZXQqICgNCjs7OwkgKGNvZGUt
+YnVmZmVyIChjdXJyZW50LWJ1ZmZlcikpDQo7OzsJIChjdXJyZW50LXBvaW50IChwb2ludCkpDQoJ
+IChzYXZlLWNvbHVtbiAoY3VycmVudC1jb2x1bW4pKQ0KCSAoc2F2ZS1saW5lIChiYy1jb3VudC1s
+aW5lcy0xLWZhc3QgKHBvaW50LW1pbikgKHBvaW50KSkpDQo7OzsJIChzY3JhdGNoLWJ1ZmZlciAo
+YmMtZ2V0LWJ1ZmZlci1jcmVhdGUpKQ0KCSBjb2x1bW4gdG9wIGZpcnN0LWxpbmUgbGFzdC1saW5l
+IGZpdC1hcmVhIHJlc3VsdCBuZXctcmFuZ2UNCjs7OwkgcmFuZ2UgDQoJICkNCg0KICAgIChiYy1k
+ZWZhdWx0LWFuYWx5c2lzLXZhcnMpDQogICAgKGJjLWZsdXNoLWNhY2hlcykNCiAgICAoYmMtYnVt
+cC1jb3VudGVycykNCiAgICANCiAgICAoaWYgKG5vdCAoZXEgbGFzdC1jb21tYW5kICdiYy15YW5r
+KSkJOyBUaGlzIHdpbGwgYmFyZiBpZg0KCSh5YW5rLXBvcCBhcmcpCQkJCTsgbGFzdC1jb21tYW5k
+IG5vdCB5YW5rLg0KICAgICAgKHNhdmUtZXhjdXJzaW9uDQoJKHNldHENCgkgcmVzdWx0DQoJIChj
+YXRjaCAnZmFpbHVyZQ0KCSAgIChzZXRxIHRoaXMtY29tbWFuZCAnYmMteWFuaykNCgkgICAocm90
+YXRlLXlhbmstcG9pbnRlciBhcmcpDQoJICAgKGJjLW1zZXRxIChmaXJzdC1saW5lIGxhc3QtbGlu
+ZSkgKGJjLWZpbmQtY29tbWVudCkpDQo7OwkgICAoc2V0cSByYW5nZSAoYmMtZmluZC1jb21tZW50
+KSkNCgkgICAoc2V0LWJ1ZmZlciBiYy1HLXNjcmF0Y2gtYnVmZmVyKQ0KCSAgIChlcmFzZS1idWZm
+ZXIpDQoJICAgKGluc2VydCAoY2FyIGtpbGwtcmluZy15YW5rLXBvaW50ZXIpKQ0KCSAgIChzZXQt
+YnVmZmVyIGJjLUctY29kZS1idWZmZXIpDQoJICAgKHNldHEgYmMtcHJlZi1maXJzdC1saW5lIHNh
+dmUtbGluZSkNCjs7CQkgICBmaXJzdC1saW5lIChjYXIgcmFuZ2UpDQo7OwkJICAgbGFzdC1saW5l
+IChjZHIgcmFuZ2UpKQ0KDQoJICAgKGJjLWdvdG8tbGluZS1mYXN0IGJjLXByZWYtZmlyc3QtbGlu
+ZSkNCgkgICAoc2V0cSBmaXQtYXJlYSAoYmMtZml0LW1vdmUgMSBmaXJzdC1saW5lIGxhc3QtbGlu
+ZSkpDQoJICAgKHNldHEgY29sdW1uIChjYXIgZml0LWFyZWEpKQ0KCSAgIChzZXRxIGJjLXBoYW50
+b20tY29sdW1uIGNvbHVtbikNCgkgICAoc2V0cSB0b3AgKGNhciAoY2RyIGZpdC1hcmVhKSkpDQoJ
+ICAgDQoJICAgKHNldC1idWZmZXIgYmMtRy1jb2RlLWJ1ZmZlcikNCgkgICAoc2V0cSBuZXctcmFu
+Z2UgKGJjLW1vdmVpdCB0b3AgZmlyc3QtbGluZSBsYXN0LWxpbmUgY29sdW1uDQoJCQkJICAgICAg
+KG50aCAyIGZpdC1hcmVhKSAobnRoIDMgZml0LWFyZWEpIHQpKQ0KCSAgIChiYy1nb3RvLWxpbmUt
+ZmFzdCBzYXZlLWxpbmUpDQoJICAgKG1vdmUtdG8tY29sdW1uIHNhdmUtY29sdW1uKQ0KCSAgIG5p
+bCkpIDs7IGVuZCBzZXRxIHJlc3VsdA0KCQ0KCShpZiByZXN1bHQJCQk7IHdhcyB0aGVyZSBhIHBy
+b2JsZW0/DQoJICAgIChwcm9nbiAoYmVlcCB0KSAobWVzc2FnZSAiJXMiIHJlc3VsdCkpDQoJICAo
+c2F2ZS1leGN1cnNpb24NCgkgICAgKGJjLWNsZWFudXAtbmV3bGluZXMgKG50aCAyIG5ldy1yYW5n
+ZSkgKG50aCAzIG5ldy1yYW5nZSkpDQoJICAgIChiYy1zZXQtcHJlZi1maXJzdC1saW5lKSkNCgkg
+IChpZiBiYy1zaG93LWZpbGwtY291bnQgKG1lc3NhZ2UgIkZpbGwgY291bnQ6ICVkIiBiYy1maWxs
+LWNvdW50KSkpDQoJKSkpKQ0KDQo7Ozs7PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09
+PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PQ0KOzs7XyAgICB8IGJjLW5ld2xp
+bmUNCihkZWZ1biBiYy1uZXdsaW5lICgmb3B0aW9uYWwgYXJnKQ0KICAiSW5zZXJ0IGEgbmV3bGlu
+ZSBpbiBlaXRoZXIgdGhlIGNvZGUgb3IgdGhlIGNvbW1lbnQuDQpCcmVhayBsaW5lIGF0IHBvaW50
+IGFuZCBpbmRlbnQsIGNvbnRpbnVpbmcgY29tbWVudCBpZiB3aXRoaW4gb25lLg0KVGhpcyBmdW5j
+dGlvbiBpcyBsaWtlIGBpbmRlbnQtbmV3LWNvbW1lbnQtbGluZScgYnV0ICBidXQgaXMNCmNvbnRl
+eHQtc2Vuc2l0aXZlIHRvIGJsb2NrIGNvbW1lbnRzLg0KDQpXaXRoIHByZWZpeCBhcmd1bWVudCwg
+aW5zZXJ0IHRoYXQgbWFueSBuZXdsaW5lcy4gXChOZWdhdGl2ZQ0KYXJndW1lbnQgaXMgbm90IHll
+dCBzdXBwb3J0ZWQuXCkNCg0KRm9yIG1vcmUgaW5mb3JtYXRpb24sIHR5cGUgYFxcW2Rlc2NyaWJl
+LXZhcmlhYmxlXSBiYy1tb2RlLWRvYycuIg0KDQogIChpbnRlcmFjdGl2ZSAiKlAiKQ0KICAoYmMt
+ZG8tY29tbWFuZC1pbml0KQ0KICAoYmMtaW5zZXJ0LWxpbmUgYXJnICcobmV3bGluZSkgJ25ld2xp
+bmUgJ25ld2xpbmUgJ3RyaW0pKQ0KDQo7Ozs7PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09
+PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PQ0KOzs7XyAgICB8IGJjLWlu
+ZGVudC1uZXctY29tbWVudC1saW5lDQooZGVmdW4gYmMtaW5kZW50LW5ldy1jb21tZW50LWxpbmUg
+KCZvcHRpb25hbCBhcmcpDQogICJCcmVhayBsaW5lIGF0IHBvaW50IGFuZCBpbmRlbnQsIGNvbnRp
+bnVpbmcgY29tbWVudCBpZiB3aXRoaW4gb25lLg0KVGhpcyBmdW5jdGlvbiBpcyBsaWtlIGBpbmRl
+bnQtbmV3LWNvbW1lbnQtbGluZScgYnV0ICBidXQgaXMNCmNvbnRleHQtc2Vuc2l0aXZlIHRvIGJs
+b2NrIGNvbW1lbnRzLg0KDQpXaXRoIHByZWZpeCBhcmd1bWVudCwgaW5zZXJ0IHRoYXQgbWFueSBu
+ZXdsaW5lcyBiZWZvcmUgcG9pbnQuIFwoTmVnYXRpdmUNCmFyZ3VtZW50IGlzIG5vdCB5ZXQgc3Vw
+cG9ydGVkLlwpDQoNCkZvciBtb3JlIGluZm9ybWF0aW9uLCB0eXBlIGBcXFtkZXNjcmliZS12YXJp
+YWJsZV0gYmMtbW9kZS1kb2MnLiINCg0KICAoaW50ZXJhY3RpdmUgIipQIikNCiAgKGJjLWRvLWNv
+bW1hbmQtaW5pdCkNCiAgKGJjLWluc2VydC1saW5lIGFyZyAnaW5kZW50LW5ldy1jb21tZW50LWxp
+bmUNCgkJICAnKG5ld2xpbmUgaW5kZW50LWFjY29yZGluZy10by1tb2RlKSANCgkJICAnKG5ld2xp
+bmUgZGVsZXRlLWhvcml6b250YWwtc3BhY2UpKSkNCg0KOzs7Oz09PT09PT09PT09PT09PT09PT09
+PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT0NCjs7O18g
+ICAgfCBiYy1vcGVuLWxpbmUNCihkZWZ1biBiYy1vcGVuLWxpbmUgKCZvcHRpb25hbCBhcmcpDQog
+ICJJbnNlcnQgYSBuZXdsaW5lIGluIHRoZSBjb2RlIG9yIGNvbW1lbnQgYW5kIGxlYXZlIHBvaW50
+IGJlZm9yZSBpdC4NClRoaXMgZnVuY3Rpb24gaXMgbGlrZSBgb3Blbi1saW5lJyBidXQgaXMgY29u
+dGV4dC1zZW5zaXRpdmUgdG8NCnJpZ2h0LW1hcmdpbiBjb21tZW50cywgZGVwZW5kaW5nIG9uIHRo
+ZSBjdXJyZW50IGxvY2F0aW9uIG9mIHBvaW50Lg0KDQpXaXRoIHByZWZpeCBhcmd1bWVudCwgaW5z
+ZXJ0IHRoYXQgbWFueSBuZXdsaW5lcyBmcm9tIHBvaW50LiBcKE5lZ2F0aXZlDQphcmd1bWVudCBp
+cyBub3QgeWV0IHN1cHBvcnRlZC5cKQ0KDQpGb3IgbW9yZSBpbmZvcm1hdGlvbiwgdHlwZSBgXFxb
+ZGVzY3JpYmUtdmFyaWFibGVdIGJjLW1vZGUtZG9jJy4iDQoNCiAgKGludGVyYWN0aXZlICIqcCIp
+DQogIChiYy1kby1jb21tYW5kLWluaXQpDQogIChiYy1pbnNlcnQtbGluZSBhcmcgJyhvcGVuLWxp
+bmUpICdvcGVuLWxpbmUgJ29wZW4tbGluZSAndHJpbSkpDQoNCjs7Ozs9PT09PT09PT09PT09PT09
+PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09DQo7
+OztfICAgIHwgYmMtaW5zZXJ0LWxpbmUNCihkZWZ1biBiYy1pbnNlcnQtbGluZSAoYXJnIG5vcm1h
+bC1jb21tYW5kIGNvZGUtY29tbWFuZCBjb21tZW50LWNvbW1hbmQNCgkJCSAgICZvcHRpb25hbCB0
+cmltLXdoaXRlc3BhY2UpDQogICJJbnNlcnQgYSBuZXdsaW5lIGluIHRoZSBjb2RlIG9yIGNvbW1l
+bnQuICBUaGlzIGRvZXMgdGhlIGFjdHVhbCB3b3JrDQpmb3IgYGJjLW9wZW4tbGluZScsIGBiYy1u
+ZXdsaW5lJyBgYmMtaW5kZW50LW5ldy1jb21tZW50LWxpbmUnIGFuZA0KYGJjLXNwbGl0LWxpbmUn
+LiINCg0KICAoaWYgKDwgKHByZWZpeC1udW1lcmljLXZhbHVlIGFyZykgMCkNCiAgICAgIChlcnJv
+ciAiTmVnYXRpdmUgYXJndW1lbnQgbm90IHN1cHBvcnRlZCB5ZXQuIikpDQogICAgICAgDQogIChi
+Yy1mbHVzaC1jYWNoZXMpDQogIChiYy1idW1wLWNvdW50ZXJzKQ0KDQogIChsZXQqICgocG9pbnQg
+KHBvaW50KSkNCgkgZGVsaW0tYiBib2R5LWIgZGVsaW0tZSBuZXctcmFuZ2UgZmlyc3QtbGluZSBs
+YXN0LWxpbmUNCgkgKHNhdmUtbGluZSAoYmMtY291bnQtbGluZXMtMS1mYXN0IDEgKHBvaW50KSkp
+DQoJIChzYXZlLWNvbHVtbiAoY3VycmVudC1jb2x1bW4pKQ0KCSAoY29tbWVudC1wIChiYy1vcGFy
+c2UtbGluZSBuaWwgJ2RlbGltLWIgJ2JvZHktYiAnYm9keS1lICdkZWxpbS1lKSkNCgkgKQ0KDQog
+ICAgKHNldHEgdGhpcy1jb21tYW5kICdiYy1pbnNlcnQtbGluZSkNCgkJCQkJCTsgSWYgbm8gY29t
+bWVudCBvbiB0aGlzIGxpbmUNCiAgICAoaWYgKG5vdCBjb21tZW50LXApCQkJCTsgdGhlbiBqdXN0
+IGRvIHRoZSByZWd1bGFyDQoJKGlmIChsaXN0cCBub3JtYWwtY29tbWFuZCkJCTsgY29tbWFuZC4N
+CgkgICAgKGZ1bmNhbGwgKGNhciBub3JtYWwtY29tbWFuZCkgYXJnKQ0KCSAgKGZ1bmNhbGwgbm9y
+bWFsLWNvbW1hbmQpKQ0KDQogICAgICAodW53aW5kLXByb3RlY3QJCQkJOyBPdGhlcndpc2UgY3Jh
+bmsgdXAgdGhlIG1hZ2ljLg0KCSAgKHByb2duDQoNCgkgICAgOyBTaG91bGQgYmUgYWJsZSB0byB1
+c2UgYGJlbG93LW9ubHkgaGVyZSBmb3IgYmV0dGVyDQoJICAgIDsgZWZmaWNpZW5jeSwgYnV0IHRo
+ZXJlIGlzIGEgYnVnIHdoZW4gb24gdGhlIGJvdHRvbSBiYW5uZXINCgkgICAgOyBvZiBhIGJhbm5l
+ciBjb21tZW50Lg0KCSAgICAgICANCgkgICAgKGJjLW1zZXRxIChmaXJzdC1saW5lIGxhc3QtbGlu
+ZSkgKGJjLWZpbmQtY29tbWVudCkpDQoJICAgIChsZXQqDQoJCSgNCgkJIChwYXN0LWNvbW1lbnQg
+KGFuZCAoPD0gZGVsaW0tZSBwb2ludCkgDQoJCQkJICAgIChub3QgKGVxdWFsIGJjLWNvbW1lbnQt
+ZW5kICIiKSkpKQ0KCQkgKGluLWNvbW1lbnQgKGFuZCAoPD0gZGVsaW0tYiBwb2ludCkpKQ0KDQoJ
+CSBib2R5LXJhbmdlIGJvZHktbGFzdCBib2R5LWZpcnN0DQoJCSAoY3VycmVudC1saW5lIChwcm9n
+biAoYmVnaW5uaW5nLW9mLWxpbmUpIChwb2ludCkpKQ0KCQkgKGNvbW1lbnQtbGluZXMtYWJvdmUg
+KDEtIChiYy1jb3VudC1saW5lcy0xIGZpcnN0LWxpbmUgDQoJCQkJCQkJICAgIGN1cnJlbnQtbGlu
+ZSkpKQ0KCQkgKGNvbW1lbnQtbGluZXMtYmVsb3cNCgkJICAoYmMtY291bnQtbGluZXMtMSBjdXJy
+ZW50LWxpbmUgbGFzdC1saW5lKSkNCgkJIGNvbW1lbnQtcG9pbnQtY29sdW1uIGNvbW1lbnQtcG9p
+bnQtbGluZQ0KCQkgbmV3LWRlbGltcyBzYXZlZC1kZWxpbXMgY3VycmVudC1zdGFydC1jb2x1bW4g
+bWF4LWNvZGUtd2lkdGgNCgkJIGN1cnJlbnQtc3RhcnQtZGVsaW0gY3VycmVudC1zdGFydC1kZWxp
+bS1zYW5zLXdoaXRlDQoJCSBjdXJyZW50LWVuZC1kZWxpbSBjdXJyZW50LWVuZC1kZWxpbS1zYW5z
+LXdoaXRlDQoJCSAocmVwZWF0IChlcSBsYXN0LWNvbW1hbmQgJ2JjLWluc2VydC1saW5lKSkNCgkJ
+IChjb3VudGVyIC0xKQ0KCQkgKGxpbmVzLW5lZWRlZCBuaWwpDQoJCSAod2hlcmUgbmlsKSAoZXh0
+cmEgMCkNCgkJICkNCgkgICAgICAgDQoJICAgICAgKHNldHEgYXJnIChvciBhcmcgMSkpDQoJICAg
+ICAgKGNvbmQNCgkgICAgICAgKHBhc3QtY29tbWVudA0KCQkoZXJyb3IgIlBhc3QgY29tbWVudCIp
+KQkJOz09PT09PT09PT09PT09PT09PT09PT09PT09PT09PQ0KCSAgICAgICAoaW4tY29tbWVudAkJ
+CTsgICAgICAgICAgSW4gY29tbWVudC4NCgkJKHNhdmUtZXhjdXJzaW9uCQkJOz09PT09PT09PT09
+PT09PT09PT09PT09PT09PT09PQ0KCQkgIChzZXRxIA0KCQkgICBib2R5LXJhbmdlIChiYy1hbmFs
+eXplLWNvbW1lbnQgZmlyc3QtbGluZSBsYXN0LWxpbmUgdCkNCgkJICAgc2F2ZWQtZGVsaW1zIChu
+dGhjZHIgY29tbWVudC1saW5lcy1hYm92ZSBiYy1zYXZlZC1kZWxpbXMpDQoJCSAgIGNvbW1lbnQt
+cG9pbnQtY29sdW1uIChiYy1jb3VudC1jb2x1bW5zIGJvZHktYiBwb2ludCkNCgkJICAgYm9keS1m
+aXJzdCAobnRoIDMgYm9keS1yYW5nZSkNCgkJICAgYm9keS1sYXN0IChudGggNCBib2R5LXJhbmdl
+KQ0KCQkgICBjdXJyZW50LXN0YXJ0LWRlbGltIChpZiAoPCBwb2ludCBib2R5LWIpIA0KCQkJCQkg
+ICAoYnVmZmVyLXN1YnN0cmluZyBkZWxpbS1iIHBvaW50KQ0KCQkJCQkgKG50aCAxIChjYXIgc2F2
+ZWQtZGVsaW1zKSkpDQoJCSAgIGN1cnJlbnQtc3RhcnQtZGVsaW0tc2Fucy13aGl0ZSANCgkJICAg
+KGlmIChzdHJpbmctbWF0Y2ggIlsgXHRdIiBjdXJyZW50LXN0YXJ0LWRlbGltKQ0KCQkgICAgICAg
+KGNvbmNhdCAoc3Vic3RyaW5nIGN1cnJlbnQtc3RhcnQtZGVsaW0gMA0KCQkJCQkgIChtYXRjaC1i
+ZWdpbm5pbmcgMCkpICIgIikNCgkJICAgICBjdXJyZW50LXN0YXJ0LWRlbGltKQ0KCQkgICBjdXJy
+ZW50LWVuZC1kZWxpbSAobnRoIDIgKGNhciBzYXZlZC1kZWxpbXMpKQ0KCQkgICBjdXJyZW50LWVu
+ZC1kZWxpbS1zYW5zLXdoaXRlDQoJCSAgIChpZiAoc3RyaW5nLW1hdGNoICJbXiBcdF0iIGN1cnJl
+bnQtZW5kLWRlbGltKQ0KCQkgICAgICAgKGNvbmNhdCAiICIgKHN1YnN0cmluZyBjdXJyZW50LWVu
+ZC1kZWxpbQ0KCQkJCQkgICAgICAobWF0Y2gtYmVnaW5uaW5nIDApKSkNCgkJICAgICAiIikNCgkJ
+ICAgY3VycmVudC1zdGFydC1jb2x1bW4gKGNhciAoY2FyIHNhdmVkLWRlbGltcykpDQoJCSAgIG1h
+eC1jb2RlLXdpZHRoICgrIGN1cnJlbnQtc3RhcnQtY29sdW1uIA0KCQkJCSAgICAgYmMtY29kZS13
+aWR0aC10aHJlc2hvbGQpIA0KCQkgICBuZXctZGVsaW1zDQoJCSAgIChpZiB0cmltLXdoaXRlc3Bh
+Y2UNCgkJICAgICAgIChsaXN0IGN1cnJlbnQtc3RhcnQtY29sdW1uIGN1cnJlbnQtc3RhcnQtZGVs
+aW0tc2Fucy13aGl0ZQ0KCQkJICAgICBjdXJyZW50LWVuZC1kZWxpbS1zYW5zLXdoaXRlKQ0KCQkg
+ICAgIChsaXN0IGN1cnJlbnQtc3RhcnQtY29sdW1uIGN1cnJlbnQtc3RhcnQtZGVsaW0NCgkJCSAg
+IGN1cnJlbnQtZW5kLWRlbGltKSkpDQoJCQkJCQkJOyBGaXggdXAgdGhlDQoJCSAgKHNldGNhciAo
+Y2RyIChjYXIgc2F2ZWQtZGVsaW1zKSkJOyBkZWxpbWl0ZXJzLg0KCQkJICBjdXJyZW50LXN0YXJ0
+LWRlbGltLXNhbnMtd2hpdGUpDQoJCSAgKHNldHEgc2F2ZWQtZGVsaW1zIChuY29uYyAobWFrZS1s
+aXN0IGFyZyBuZXctZGVsaW1zKQ0KCQkJCQkgICAgc2F2ZWQtZGVsaW1zKSkNCgkJDQoJCSAgKHNl
+dGNhciAoY2RyIChjYXIgc2F2ZWQtZGVsaW1zKSkgY3VycmVudC1zdGFydC1kZWxpbSkNCgkJDQoJ
+CSAgKGlmIChhbmQgKC89IGZpcnN0LWxpbmUgYm9keS1maXJzdCkJOyBEaXNhbGxvdyBpbnNlcnRp
+b24NCgkJCSAgICg9IGN1cnJlbnQtbGluZSBmaXJzdC1saW5lKSkJOyB0aGUgdG9wIGJhbm5lci4N
+CgkJICAgICAgKGVycm9yICJCZWdpbm5pbmcgb2YgY29tbWVudCIpKQ0KCQkNCgkJICA7OyBIZXJl
+IGlzIGtpbmQgb2YgYSBrbHVkZ2UgZm9yIGEgc3RpY2t5IHByb2JsZW0uIElmIHdlIGFsbG93DQoJ
+CSAgOzsgaW5zZXJ0aW9uIGluIHRoZSBib3R0b20gYmFubmVyIHdlIGdldCBhIG1lc3MuIFRoZSBi
+b3R0b20NCgkJICA7OyBiYW5uZXIgY2hhcnMgYmVjb21lIHBhcnQgb2YgdGhlIHRleHQsIGV0Yy4g
+QnV0IGluDQoJCSAgOzsgbGFuZ3VhZ2VzIHdpdGggbm8gY29tbWVudC1lbmQgKGxpa2UgTGlzcCks
+IGEgYmxhbmsgY29tbWVudA0KCQkgIDs7IGxpbmUgYXQgdGhlIGJvdHRvbSBsb29rcyBsaWtlIGEg
+Ym90dG9tIGJhbm5lciAob25lIG1hZGUgdXANCgkJICA7OyBvZiByZXBlYXRlZCBjb21tZW50LXN0
+YXJ0IGNoYXJzLikgV29yc2UsIGEgc2luZ2xlIChvcg0KCQkgIDs7IHJlcGVhdGVkKSBjaGFyIGFm
+dGVyIHRoZSBzdGFydCBkZWxpbWl0ZXIgKG5vIHdoaXRlc3BhY2UpDQoJCSAgOzsgbG9va3MgbGlr
+ZSBhIGJvdHRvbSBiYW5uZXIsIHRob3VnaCBpdCBtYXkgYmUgcGFydCBvZiB0aGUNCgkJICA7OyB0
+ZXh0Lg0KCQkgIDs7IA0KCQkgIDs7IFdlIHdvdWxkIGxpa2UgdG8gYmUgYWJsZSB0byBzdGFydCBh
+IG5ldyBwYXJhZ3JhcGggaW4gdGhlDQoJCSAgOzsgY29tbWVudCB3aXRoIGEgY29tbWFuZCBsaWtl
+IE0taiBvciBDLWMgUkVULCBzbyB3ZSBuZWVkIHRvDQoJCSAgOzsgYWxsb3cgdGhvc2UgY2FzZXMu
+IFRoZSBzb2x1dGlvbiBmb3Igbm93IGlzIHRvIGFsbG93DQoJCSAgOzsgaW5zZXJ0aW9uIGluIHRo
+ZSBib3R0b20gYmFubmVyIGlmIGl0IGlzIGEgc29mdCBib3JkZXIuDQoJCSAgOzsgUGVyaGFwcyBz
+b21lZGF5IHdlIGNhbiBjbGVhbiB1cCB0aGUgZGVsaW1pdGVycyBmb3IgdGhlDQoJCSAgOzsgdWds
+eSBjYXNlcy4NCg0KCQkgIChpZiAoYW5kIGJjLWJhbm5lci1ib3R0b20tYm9yZGVyCQ0KCQkJICAg
+KD0gY3VycmVudC1saW5lIGxhc3QtbGluZSkNCgkJCSAgIChudGggMSBiYy1iYW5uZXItYm90dG9t
+LWJvcmRlcikpDQoJCSAgICAgIChlcnJvciAiRW5kIG9mIGNvbW1lbnQiKSkNCgkJDQoJCSAgKGJj
+LWdldC10ZXh0IGN1cnJlbnQtbGluZSBib2R5LWxhc3QpDQoJCSAgKHNldC1idWZmZXIgYmMtRy1z
+Y3JhdGNoLWJ1ZmZlcikNCgkJICAoZ290by1jaGFyIDEpDQoJCSAgKG1vdmUtdG8tY29sdW1uICht
+YXggMCBjb21tZW50LXBvaW50LWNvbHVtbikpDQoJCSAgKGlmIChhdG9tIGNvbW1lbnQtY29tbWFu
+ZCkNCgkJICAgICAgKGZ1bmNhbGwgY29tbWVudC1jb21tYW5kIGFyZykNCgkJICAgIChmdW5jYWxs
+IChjYXIgY29tbWVudC1jb21tYW5kKSBhcmcpDQoJCSAgICAoZnVuY2FsbCAobnRoIDEgY29tbWVu
+dC1jb21tYW5kKSkpDQoJCSAgKHNldHEgDQoJCSAgIGNvbW1lbnQtcG9pbnQtbGluZSAoMS0gKGJj
+LWNvdW50LWxpbmVzLTEgMSAocG9pbnQpKSkNCgkJICAgY29tbWVudC1wb2ludC1jb2x1bW4gKGN1
+cnJlbnQtY29sdW1uKSkNCgkJCQkJCTsgTWFrZSBzdXJlIHRoZXJlIGlzIGVub3VnaA0KCQkgIChz
+ZXQtYnVmZmVyIGJjLUctY29kZS1idWZmZXIpCTsgcm9vbSBiZWxvdyBzbyB0aGF0IHdlIGRvbid0
+DQoJCSAgKHNhdmUtZXhjdXJzaW9uCQk7IGphbSBpbnRvIGFub3RoZXIgY29tbWVudCBvciBhDQoJ
+CSAgICAoZ290by1jaGFyIGxhc3QtbGluZSkJOyBsaW5lIG9mIGNvZGUgdGhhdCBpcyB0b28NCgkJ
+ICAgIChmb3J3YXJkLWxpbmUgMSkJCTsgd2lkZS4NCgkJICAgICh3aGlsZSAoYW5kICg8IGNvdW50
+ZXIgYXJnKQ0KCQkJCShub3QgKGJjLW9wYXJzZS1saW5lKSkNCgkJCQkobm90ICg8IG1heC1jb2Rl
+LXdpZHRoDQoJCQkJCShiYy1jb2RlLXdpZHRoLXRoaXMtbGluZSkpKQ0KCQkJCShub3QgKGVvYnAp
+KSkNCgkJICAgICAgKHNldHEgY291bnRlciAoMSsgY291bnRlcikpDQoJCSAgICAgIChmb3J3YXJk
+LWxpbmUgMSkpDQoJCQkJCQk7IEFjY291bnQgZm9yIGNvbW1lbnQtZnJlZSBsaW5lDQoJCQkJCQk7
+IG5lZWRlZCBpZiB3ZSByYW4gaW50byBhbm90aGVyDQoJCSAgICAoaWYgKGFuZCAoPCBjb3VudGVy
+IGFyZykJOyBjb21tZW50Lg0KCQkJICAgICAobm90IChiYy1vcGFyc2UtbGluZSkpKQ0KCQkJKHNl
+dHEgY291bnRlciAoMSsgY291bnRlcikpDQoJCSAgICAgIChzZXRxIGV4dHJhIDEpKSkNCgkJICAo
+aWYgKD0gY291bnRlciBhcmcpIG5pbA0KCQkgICAgKHNldHEgbGluZXMtbmVlZGVkICgtIGFyZyBj
+b3VudGVyKQ0KCQkJICB3aGVyZSAoKyBjb3VudGVyIGV4dHJhIGNvbW1lbnQtbGluZXMtYmVsb3cp
+KSkNCgkJICAoc2V0cQ0KCQkgICBuZXctcmFuZ2UNCgkJICAgKGJjLW1vdmVpdCBjdXJyZW50LWxp
+bmUgY3VycmVudC1saW5lIGxhc3QtbGluZSBzYXZlZC1kZWxpbXMNCgkJCSAgICAgIGxpbmVzLW5l
+ZWRlZCB3aGVyZSkpDQoJCSAgKGdvdG8tY2hhciBjdXJyZW50LWxpbmUpDQoJCSAgKHdoaWxlICg8
+IDAgY29tbWVudC1wb2ludC1saW5lKQ0KCQkgICAgKHNldHEgDQoJCSAgICAgY29tbWVudC1wb2lu
+dC1saW5lICgxLSBjb21tZW50LXBvaW50LWxpbmUpDQoJCSAgICAgc2F2ZWQtZGVsaW1zIChjZHIg
+c2F2ZWQtZGVsaW1zKSkNCgkJICAgIChmb3J3YXJkLWxpbmUgMSkpDQoJCSAgKHNldHEgc2F2ZS1s
+aW5lIChiYy1jb3VudC1saW5lcy0xLWZhc3QgMSAocG9pbnQpKQ0KCQkJc2F2ZWQtZGVsaW1zIChj
+YXIgc2F2ZWQtZGVsaW1zKSkNCgkJICAobW92ZS10by1jb2x1bW4gKCsgKGNhciBzYXZlZC1kZWxp
+bXMpDQoJCQkJICAgICAobGVuZ3RoIChudGggMSBzYXZlZC1kZWxpbXMpKQ0KCQkJCSAgICAgY29t
+bWVudC1wb2ludC1jb2x1bW4pKQ0KCQkgIChzZXRxIHNhdmUtY29sdW1uIChjdXJyZW50LWNvbHVt
+bikpDQoJCSAgKSkNCg0KCQkJCQkJOz09PT09PT09PT09PT09PT09PT09PT09PT09PT09PQ0KCQkJ
+CQkJOyAgICAgICAgICBJbiBjb2RlLg0KCSAgICAgICAodAkJCQk7PT09PT09PT09PT09PT09PT09
+PT09PT09PT09PT09DQoJCShzZXRxDQoJCSBib2R5LXJhbmdlIChiYy1hbmFseXplLWNvbW1lbnQg
+DQoJCQkgICAgIGZpcnN0LWxpbmUgbGFzdC1saW5lIChub3QgcmVwZWF0KSkNCgkJIHNhdmVkLWRl
+bGltcyAobnRoY2RyIGNvbW1lbnQtbGluZXMtYWJvdmUgYmMtc2F2ZWQtZGVsaW1zKQ0KCQkgYm9k
+eS1maXJzdCAobnRoIDMgYm9keS1yYW5nZSkNCgkJIGJvZHktbGFzdCAobnRoIDQgYm9keS1yYW5n
+ZSkpDQoJCShiYy1nZXQtdGV4dCBjdXJyZW50LWxpbmUgYm9keS1sYXN0KQ0KDQoJCTsgSWYgd2Ug
+YXJlIG9uIHRoZSBzYW1lIGxpbmUgYXMgdGhlIHRvcCBiYW5uZXIsIHdlIHdpbGwgZW5kIHVwDQoJ
+CTsgZHVwbGljYXRpbmcgaXQgaW4gc2F2ZWQtZGVsaW1zIGFuZCBzY3JhdGNoLWJ1ZmZlciwgc28g
+ZGVsZXRlDQoJCTsgaXQgZnJvbSBzY3JhdGNoLWJ1ZmZlci4NCg0KCQkoaWYgKG5vdCAoYW5kICgv
+PSBmaXJzdC1saW5lIGJvZHktZmlyc3QpDQoJCQkgICAgICAoPSBjdXJyZW50LWxpbmUgZmlyc3Qt
+bGluZSkpKQ0KCQkgICAgbmlsDQoJCSAgKHNldC1idWZmZXIgYmMtRy1zY3JhdGNoLWJ1ZmZlcikN
+CgkJICAoZ290by1jaGFyIDEpDQoJCSAgKGVuZC1vZi1saW5lKQ0KCQkgIChkZWxldGUtcmVnaW9u
+IDEgKHBvaW50KSkNCgkJICAoc2V0LWJ1ZmZlciBiYy1HLWNvZGUtYnVmZmVyKSkNCgkJKGJjLWRl
+bGV0ZS10ZXh0IGN1cnJlbnQtbGluZSBsYXN0LWxpbmUpDQoJCShtb3ZlLXRvLWNvbHVtbiBzYXZl
+LWNvbHVtbikNCgkJCQkJCTsgQ29tbWFuZHMgbGlrZQ0KCQkJCQkJOyBuZXdsaW5lLWFuZC1pbmRl
+bnQgZG9uJ3QNCgkJCQkJCTsgc3VwcG9ydCBwcmVmaXggYXJnLCBzbyB3ZQ0KCQkoaWYgKGF0b20g
+Y29kZS1jb21tYW5kKQkJOyB3aWxsIGZha2UgaXQuDQoJCSAgICAoZnVuY2FsbCBjb2RlLWNvbW1h
+bmQgYXJnKQ0KCQkgIChmdW5jYWxsIChjYXIgY29kZS1jb21tYW5kKSBhcmcpDQoJCSAgKGZ1bmNh
+bGwgKG50aCAxIGNvZGUtY29tbWFuZCkpKQ0KCQkoc2V0cSBzYXZlLWNvbHVtbiAoY3VycmVudC1j
+b2x1bW4pDQoJCSAgICAgIHNhdmUtbGluZSAoYmMtY291bnQtbGluZXMtMS1mYXN0IDEgKHBvaW50
+KSkNCgkJICAgICAgbmV3LXJhbmdlIChiYy1tb3ZlaXQgY3VycmVudC1saW5lIG5pbCBuaWwgc2F2
+ZWQtZGVsaW1zKSkNCgkJKSkpKQ0KCShzZXQtYnVmZmVyIGJjLUctY29kZS1idWZmZXIpDQoJKGJj
+LWdvdG8tbGluZS1mYXN0IHNhdmUtbGluZSkNCgkobW92ZS10by1jb2x1bW4gc2F2ZS1jb2x1bW4g
+J2ZvcmNlKSkNCiAgICAgIA0KICAgICAgKHNhdmUtZXhjdXJzaW9uDQoJKGJjLWNsZWFudXAtbmV3
+bGluZXMgKG50aCAyIG5ldy1yYW5nZSkgKG50aCAzIG5ldy1yYW5nZSkpDQoJKSkpKQ0KDQo7Ozs7
+PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09
+PT09PT09PT09PT09PQ0KOzs7XyAgICB8IGJjLWtpbGwtbGluZQ0KKGRlZnVuIGJjLWtpbGwtbGlu
+ZSAoJm9wdGlvbmFsIGFyZykNCiAgIktpbGwgdGhlIHJlc3Qgb2YgdGhlIGNvZGUgb3IgY29tbWVu
+dCBvbiB0aGUgY3VycmVudCBsaW5lLg0KVGhpcyBmdW5jdGlvbiBpcyBsaWtlIGBraWxsLWxpbmUn
+IGJ1dCBsaW1pdHMga2lsbGluZyB0byBlaXRoZXIgdGhlDQpjb2RlIG9yIHRoZSBjb21tZW50LCBk
+ZXBlbmRpbmcgb24gdGhlIGN1cnJlbnQgbG9jYXRpb24gb2YgcG9pbnQuDQoNCldpdGggcHJlZml4
+IGFyZ3VtZW50LCBraWxsIHRoYXQgbWFueSBsaW5lcyBmcm9tIHBvaW50LiBcKE5lZ2F0aXZlDQph
+cmd1bWVudCBpcyBub3QgeWV0IHN1cHBvcnRlZC5cKQ0KDQpGb3IgbW9yZSBpbmZvcm1hdGlvbiwg
+dHlwZSBgXFxbZGVzY3JpYmUtdmFyaWFibGVdIGJjLW1vZGUtZG9jJy4iDQoNCiAgKGludGVyYWN0
+aXZlICIqUCIpDQogIChiYy1kby1jb21tYW5kLWluaXQpDQogIChpZiAoPCAocHJlZml4LW51bWVy
+aWMtdmFsdWUgYXJnKSAwKQ0KICAgICAgKGVycm9yICJOZWdhdGl2ZSBhcmd1bWVudCBub3Qgc3Vw
+cG9ydGVkIHlldC4iKSkNCiAgDQogIChiYy1mbHVzaC1jYWNoZXMpDQogIChiYy1idW1wLWNvdW50
+ZXJzKQ0KDQogIChsZXQqICgocG9pbnQgKHBvaW50KSkNCjs7OwkgKGNvZGUtYnVmZmVyIChjdXJy
+ZW50LWJ1ZmZlcikpDQoJIGRlbGltLWIgYm9keS1iDQo7OzsJIGJvZHktZQ0KCSBkZWxpbS1lIGNv
+ZGUtZW5kIGZpcnN0LWxpbmUgbGFzdC1saW5lDQo7OzsJIChzYXZlLWxpbmUgKGJjLWNvdW50LWxp
+bmVzLTEgMSAocG9pbnQpKSkNCgkgKHNhdmUtY29sdW1uIChjdXJyZW50LWNvbHVtbikpDQoJIChj
+b21tZW50LXAgKGJjLW9wYXJzZS1saW5lICdjb2RlLWVuZCAnZGVsaW0tYiAnYm9keS1iIG5pbCAn
+ZGVsaW0tZSkpDQoJIG5ldy1yYW5nZQ0KCSApDQogICAgDQogICAgKGlmIChub3QgY29tbWVudC1w
+KSANCgkocHJvZ24NCgkgIChraWxsLWxpbmUgYXJnKQ0KCSAgKHNldHEgdGhpcy1jb21tYW5kICdi
+Yy1raWxsLWxpbmUtcGxhaW4pKQ0KICAgICAgKHVud2luZC1wcm90ZWN0DQoJICAocHJvZ24NCgkg
+ICAgKGJjLW1zZXRxIChmaXJzdC1saW5lIGxhc3QtbGluZSkgKGJjLWZpbmQtY29tbWVudCkpDQoJ
+ICAgIChsZXQqIA0KCQkoDQo7OzsJICAgICAgIChzY3JhdGNoLWJ1ZmZlciAoYmMtZ2V0LWJ1ZmZl
+ci1jcmVhdGUpKQ0KCQkgKHBhc3QtY29tbWVudCAoYW5kICg8PSBkZWxpbS1lIHBvaW50KQ0KCQkJ
+CSAgICAobm90IChlcXVhbCBiYy1jb21tZW50LWVuZCAiIikpKSkNCgkJIChpbi1jb21tZW50IChh
+bmQgY29tbWVudC1wICg8PSBkZWxpbS1iIHBvaW50KSkpDQoJCSA7OwkgICAgICAgKHJhbmdlIChi
+Yy1maW5kLWNvbW1lbnQpKQ0KCQkgOzsJCSAoZmlyc3QtbGluZSAoY2FyIHJhbmdlKSkNCgkJIDs7
+CQkgKGxhc3QtbGluZSAoY2RyIHJhbmdlKSkNCgkJIGJvZHktcmFuZ2UgYm9keS1sYXN0IGJvZHkt
+Zmlyc3QNCgkJIChjdXJyZW50LWxpbmUgKHByb2duIChiZWdpbm5pbmctb2YtbGluZSkgKHBvaW50
+KSkpDQoJCSAoY29tbWVudC1saW5lcy1hYm92ZSAoMS0gKGJjLWNvdW50LWxpbmVzLTEgZmlyc3Qt
+bGluZSANCgkJCQkJCQkgICAgY3VycmVudC1saW5lKSkpDQoJCSAoY29tbWVudC1saW5lcy1iZWxv
+dyAoYmMtY291bnQtbGluZXMtMSBjdXJyZW50LWxpbmUgbGFzdC1saW5lKSkNCgkJIGNvbW1lbnQt
+cG9pbnQtY29sdW1uDQoJCSBzY3JhdGNoLWxpbmVzDQoJCSBzYXZlZC1kZWxpbXMgY3VycmVudC1z
+dGFydC1jb2x1bW4gY3VycmVudC1zdGFydC1kZWxpbQ0KCQkgKGxhc3Qtd2FzLWtpbGwgKG1lbXEg
+bGFzdC1jb21tYW5kICcoYmMta2lsbC1saW5lIA0KCQkJCQkJICAgICAnYmMta2lsbC1saW5lLXBs
+YWluKSkpDQoJCSAocmVwZWF0IChlcSBsYXN0LWNvbW1hbmQgJ2JjLWtpbGwtbGluZSkpDQoJCSAo
+Y291bnRlciAtMSkgDQoJCSAobGluZXMtbmVlZGVkIG5pbCkga2lsbGFibGUtbGluZXMNCgkJICh3
+aGVyZSBuaWwpDQoJCSApDQoJICAgIA0KCSAgICAgIChjb25kDQoJICAgICAgIChwYXN0LWNvbW1l
+bnQNCgkJKGVycm9yICJQYXN0IGNvbW1lbnQiKSkJCTs9PT09PT09PT09PT09PT09PT09PT09PT09
+PT09PT0NCgkgICAgICAgKGluLWNvbW1lbnQJCQk7ICAgICAgICAgIEluIGNvbW1lbnQuDQoJCShz
+YXZlLWV4Y3Vyc2lvbgkJCTs9PT09PT09PT09PT09PT09PT09PT09PT09PT09PT0NCgkJICAoc2V0
+cSANCgkJICAgYm9keS1yYW5nZSAoYmMtYW5hbHl6ZS1jb21tZW50IGZpcnN0LWxpbmUgbGFzdC1s
+aW5lIHQpDQoJCSAgIHNhdmVkLWRlbGltcyAobnRoY2RyIGNvbW1lbnQtbGluZXMtYWJvdmUgYmMt
+c2F2ZWQtZGVsaW1zKQ0KCQkgICBjb21tZW50LXBvaW50LWNvbHVtbiAoYmMtY291bnQtY29sdW1u
+cyBib2R5LWIgcG9pbnQpDQoJCSAgIGJvZHktZmlyc3QgKG50aCAzIGJvZHktcmFuZ2UpDQoJCSAg
+IGJvZHktbGFzdCAobnRoIDQgYm9keS1yYW5nZSkNCgkJICAgY3VycmVudC1zdGFydC1kZWxpbSAo
+aWYgKDwgcG9pbnQgYm9keS1iKSANCgkJCQkJICAgKGJ1ZmZlci1zdWJzdHJpbmcgZGVsaW0tYiBw
+b2ludCkNCgkJCQkJIChudGggMSAoY2FyIHNhdmVkLWRlbGltcykpKSkNCgkJICAoaWYgKGFuZCBi
+Yy1iYW5uZXItdG9wLWJvcmRlcg0KCQkJICAgKD0gY3VycmVudC1saW5lIGZpcnN0LWxpbmUpKQk7
+IERpc2FsbG93IGtpbGxpbmcgdGhlDQoJCSAgICAgIChlcnJvciAiQmVnaW5uaW5nIG9mIGNvbW1l
+bnQiKSkJOyB0b3AgYmFubmVyLg0KCQkgIChpZiAoYW5kIGJjLWJhbm5lci1ib3R0b20tYm9yZGVy
+CQ0KCQkJICAgKD0gY3VycmVudC1saW5lIGxhc3QtbGluZSkpCTsgRGlzYWxsb3cga2lsbGluZyB0
+aGUNCgkJICAgICAgKGVycm9yICJFbmQgb2YgY29tbWVudCIpKQkJOyBib3R0b20gYmFubmVyLg0K
+DQoJCSAgKGJjLWdldC10ZXh0IGN1cnJlbnQtbGluZSBib2R5LWxhc3QpDQoJCSAgKHNldC1idWZm
+ZXIgYmMtRy1zY3JhdGNoLWJ1ZmZlcikNCgkJICAoc2V0cSBzY3JhdGNoLWxpbmVzIChiYy1jb3Vu
+dC1saW5lcy0xIDEgKHBvaW50LW1heCkpKQ0KCQkgIChnb3RvLWNoYXIgMSkNCgkJICAobW92ZS10
+by1jb2x1bW4gKG1heCAwIGNvbW1lbnQtcG9pbnQtY29sdW1uKSkNCg0KCQkgIDs7IEJ1ZyBmaXg6
+IElmIHBvaW50IGlzIGFmdGVyIHdoaXRlIGluIHRoZSBjb21tZW50LA0KCQkgIDs7IHRoZSB3aGl0
+ZSBkb2Vzbid0IGdldCBwcmVzZXJ2ZWQgYmVjYXVzZQ0KCQkgIDs7IGJjLWdldC10ZXh0IGRvZXMg
+bm90IGJyaW5nIHRyYWlsaW5nIHdoaXRlIHRvIHRoZQ0KCQkgIDs7IHNjcmF0Y2ggYnVmZmVyLiBG
+aXggdGhpcyBieSBpbnRlbnQtdG8tY29sdW1uJ2luZw0KCQkgIDs7IGlmIGN1cnJlbnQtY29sdW1u
+IG5vdCBlcXVhbCB0bw0KCQkgIDs7IGNvbW1lbnQtcG9pbnQtY29sdW1uLiBJcyB0aGlzIHJvYnVz
+dD8gVGltZSB3aWxsDQoJCSAgOzsgdGVsbC4NCg0KCQkgIChpZiAoPCAoY3VycmVudC1jb2x1bW4p
+IGNvbW1lbnQtcG9pbnQtY29sdW1uKQ0KCQkgICAgICAoaW5kZW50LXRvLWNvbHVtbiBjb21tZW50
+LXBvaW50LWNvbHVtbikpDQoJCSAgKGxldCAoKGxhc3QtY29tbWFuZCAoaWYgbGFzdC13YXMta2ls
+bCAna2lsbC1yZWdpb24gbmlsKSkpDQoJCSAgICAoa2lsbC1saW5lIGFyZykpDQoJCSAgKGdvdG8t
+Y2hhciAocG9pbnQtbWF4KSkNCgkJICAoaWYgKG5vdCAoYm9scCkpIChpbnNlcnQgP1xuKSkJOyBT
+aW5jZSB3ZSBoYXZlIGtpbGxlZA0KCQkgIChzZXRxCQkJCQk7IGxpbmVzIGluIHRoZSBjb21tZW50
+LA0KCQkgICBjdXJyZW50LXN0YXJ0LWNvbHVtbgkJCTsgd2Ugd2FudCB0aGUgc3RhcnQNCgkJICAg
+KGNhciAoY2FyIHNhdmVkLWRlbGltcykpCQk7IGRlbGltaXRlciBmcm9tIHRoaXMNCgkJICAgc2F2
+ZWQtZGVsaW1zCQkJCTsgbGluZSBidXQgdGhlIGVuZA0KCQkgICAobnRoY2RyIChtaW4JCQkJOyBk
+ZWxpbWl0ZXIgZnJvbSB0aGUNCgkJCSAgICAoLSBzY3JhdGNoLWxpbmVzCQk7IG5leHQgdW5raWxs
+ZWQgbGluZS4NCgkJCSAgICAgICAoYmMtY291bnQtbGluZXMtMQk7IFRoYXQgaXMsIHVubGVzcyB0
+aGUNCgkJCQkxIChwb2ludC1tYXgpKSkJCTsgcmVtYWluaW5nIGxpbmUgaXMgdGhlDQoJCQkgICAg
+KDEtIChsZW5ndGggc2F2ZWQtZGVsaW1zKSkpCTsgYm90dG9tIGJhbm5lci4NCgkJCSAgIHNhdmVk
+LWRlbGltcykpDQoJCSAgKHNldGNhciAoY2FyIHNhdmVkLWRlbGltcykgY3VycmVudC1zdGFydC1j
+b2x1bW4pDQoJCSAgKGlmIChhbmQgKD0gKGxlbmd0aCBzYXZlZC1kZWxpbXMpIDEpIGJjLWJhbm5l
+ci1ib3R0b20tYm9yZGVyKQ0KCQkgICAgICBuaWwNCgkJICAgIChzZXRjYXIgKGNkciAoY2FyIHNh
+dmVkLWRlbGltcykpIGN1cnJlbnQtc3RhcnQtZGVsaW0pKSkNCgkJKHNldHENCgkJIG5ldy1yYW5n
+ZSAoYmMtbW92ZWl0IGN1cnJlbnQtbGluZSBjdXJyZW50LWxpbmUgbGFzdC1saW5lIA0KCQkJCSAg
+ICAgIHNhdmVkLWRlbGltcykpKQ0KCSAgICAgDQoJCQkJCQk7PT09PT09PT09PT09PT09PT09PT09
+PT09PT09PT09DQoJCQkJCQk7ICAgICAgICAgIEluIGNvZGUuDQoJICAgICAgICh0CQkJCTs9PT09
+PT09PT09PT09PT09PT09PT09PT09PT09PT0NCgkJKHNldHEgYm9keS1yYW5nZSAoYmMtYW5hbHl6
+ZS1jb21tZW50DQoJCQkJICBmaXJzdC1saW5lIGxhc3QtbGluZSAobm90IHJlcGVhdCkpDQoJCSAg
+ICAgIHNhdmVkLWRlbGltcyAobnRoY2RyIGNvbW1lbnQtbGluZXMtYWJvdmUgYmMtc2F2ZWQtZGVs
+aW1zKQ0KCQkgICAgICBib2R5LWZpcnN0IChudGggMyBib2R5LXJhbmdlKQ0KCQkgICAgICBib2R5
+LWxhc3QgKG50aCA0IGJvZHktcmFuZ2UpKQ0KCQkoYmMtZ2V0LXRleHQgY3VycmVudC1saW5lIGJv
+ZHktbGFzdCkNCgkJKGlmIChub3QgKGFuZCAoLz0gZmlyc3QtbGluZSBib2R5LWZpcnN0KQ0KCQkJ
+ICAgICAgKD0gY3VycmVudC1saW5lIGZpcnN0LWxpbmUpKSkNCgkJCQkJCQk7IElmIHdlIGFyZSBv
+biB0aGUgc2FtZQ0KCQkgICAgbmlsCQkJCQk7IGxpbmUgYXMgdGhlIHRvcA0KCQkgIChzZXQtYnVm
+ZmVyIGJjLUctc2NyYXRjaC1idWZmZXIpCTsgYmFubmVyLCB3ZSB3aWxsIGVuZA0KCQkgIChnb3Rv
+LWNoYXIgMSkJCQkJOyB1cCBkdXBsaWNhdGluZyBpdCBpbg0KCQkgIChlbmQtb2YtbGluZSkJCQkJ
+OyBzYXZlZC1kZWxpbXMgYW5kDQoJCSAgKGRlbGV0ZS1yZWdpb24gMSAocG9pbnQpKQkJOyBzY3Jh
+dGNoLWJ1ZmZlciwgc28NCgkJICAoc2V0LWJ1ZmZlciBiYy1HLWNvZGUtYnVmZmVyKSkJOyBkZWxl
+dGUgaXQgZnJvbQ0KCQkJCQkJCTsgc2NyYXRjaC1idWZmZXIuDQoNCgkJKGlmIChhbmQgKG5vdCBh
+cmcpIChvciAoYW5kIGtpbGwtd2hvbGUtbGluZSAoYm9scCkpDQoJCQkJICAgICAgICg8PSBjb2Rl
+LWVuZCBwb2ludCkpKSAoc2V0cSBhcmcgMSkpDQoJCShpZiAoYW5kIGFyZyAoPCAwIChwcmVmaXgt
+bnVtZXJpYy12YWx1ZSBhcmcpKSkNCgkJICAgIChzYXZlLWV4Y3Vyc2lvbg0KCQkgICAgICAoZ290
+by1jaGFyIGxhc3QtbGluZSkJCTsgTWFrZSBzdXJlIHRoZXJlIGFyZQ0KCQkgICAgICAoZm9yd2Fy
+ZC1saW5lIDEpCQkJOyBlbm91Z2ggbGluZXMgb2YgY29kZQ0KCQkgICAgICAod2hpbGUgKGFuZCAo
+PCBjb3VudGVyIGFyZykJOyBiZWxvdyBzbyB0aGF0IHdlDQoJCQkJICAobm90IChiYy1vcGFyc2Ut
+bGluZSkpCTsgZG9uJ3Qgc3VjayB0aGUgbmV4dA0KCQkJCSAgKG5vdCAoZW9icCkpKQkJOyBjb21t
+ZW50IG9udG8gdGhlDQoJCQkoc2V0cSBjb3VudGVyICgxKyBjb3VudGVyKSkJOyBib3R0b20gb2Yg
+dGhpcyBvbmUuDQoJCQkoZm9yd2FyZC1saW5lIDEpKQ0KCQkgICAgICAoaWYgKGFuZCAoPCBjb3Vu
+dGVyIGFyZykJCTsgQWNjb3VudCBmb3INCgkJCSAgICAgICAobm90IChiYy1vcGFyc2UtbGluZSkp
+KQk7IGNvbW1lbnQtZnJlZSBsaW5lDQoJCQkgIChzZXRxIGNvdW50ZXIgKDErIGNvdW50ZXIpKSkJ
+OyBuZWVkZWQgaWYgd2UgcmFuIGludG8NCgkJICAgICAgKGlmICg9IGNvdW50ZXIgYXJnKQkJOyBh
+bm90aGVyIGNvbW1lbnQuDQoJCQkgIChzZXRxIGtpbGxhYmxlLWxpbmVzIGFyZykNCgkJCShzZXRx
+IGtpbGxhYmxlLWxpbmVzDQoJCQkgICAgICAobWluIGFyZw0KCQkJCSAgICgrIGNvdW50ZXIgY29t
+bWVudC1saW5lcy1iZWxvdykpDQoJCQkgICAgICBsaW5lcy1uZWVkZWQgKC0ga2lsbGFibGUtbGlu
+ZXMgY291bnRlcikNCgkJCSAgICAgIHdoZXJlICgtICgrIGNvdW50ZXIgY29tbWVudC1saW5lcy1i
+ZWxvdyAxKQ0KCQkJCSAgICAgICBraWxsYWJsZS1saW5lcykpKSkpDQoNCgkJKGJjLWRlbGV0ZS10
+ZXh0IGN1cnJlbnQtbGluZSBsYXN0LWxpbmUpDQoJCShtb3ZlLXRvLWNvbHVtbiBzYXZlLWNvbHVt
+bikNCgkJKGxldCAoKGxhc3QtY29tbWFuZCAoaWYgbGFzdC13YXMta2lsbCAna2lsbC1yZWdpb24g
+bmlsKSkpDQoJCSAgKGlmIGFyZyAoa2lsbC1saW5lIGtpbGxhYmxlLWxpbmVzKQ0KCQkgICAgKGtp
+bGwtbGluZSkpKQ0KCQkoc2V0cSANCgkJIHNhdmUtY29sdW1uIChjdXJyZW50LWNvbHVtbikNCgkJ
+IG5ldy1yYW5nZSAoYmMtbW92ZWl0IGN1cnJlbnQtbGluZSBuaWwgbmlsIHNhdmVkLWRlbGltcyAN
+CgkJCQkgICAgICBsaW5lcy1uZWVkZWQgd2hlcmUpKQ0KCQkpKSkpDQoJKHNldC1idWZmZXIgYmMt
+Ry1jb2RlLWJ1ZmZlcikNCgkobW92ZS10by1jb2x1bW4gc2F2ZS1jb2x1bW4pDQoJKHNldHEgdGhp
+cy1jb21tYW5kICdiYy1raWxsLWxpbmUpKQ0KDQogICAgICAoc2F2ZS1leGN1cnNpb24NCgkoYmMt
+Y2xlYW51cC1uZXdsaW5lcyAobnRoIDIgbmV3LXJhbmdlKSAobnRoIDMgbmV3LXJhbmdlKSkNCgkp
+KSkpDQoNCjs7Ozs9PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09
+PT09PT09PT09PT09PT09PT09PT09PT09DQo7OztfICAgIHwgYmMtaW5kZW50LWFjY29yZGluZy10
+by1tb2RlDQooZGVmdW4gYmMtaW5kZW50LWFjY29yZGluZy10by1tb2RlICgpDQogICJJbmRlbnQg
+bGluZSBsaWtlIGBpbmRlbnQtYWNjb3JkaW5nLXRvLW1vZGUnIHdpdGhvdXQgZGlzdHVyYmluZyBj
+b21tZW50cy4NCg0KRm9yIG1vcmUgaW5mb3JtYXRpb24sIHR5cGUgYFxcW2Rlc2NyaWJlLXZhcmlh
+YmxlXSBiYy1tb2RlLWRvYycuIg0KDQogIDs7IFRoaXMgZnVuY3Rpb24gaGFzIHRvIGRvIGEgc3Vy
+cHJpc2luZyBhbW91bnQgb2Ygc3RydWdnbGluZyB0bw0KICA7OyBhY2hpZXZlIGEgc2VlbWluZ2x5
+IHNpbXBsZSB0aGluZy4gIFRoZSBpZGVhIGlzIHRoYXQgd2Ugd2FudCB0bw0KICA7OyBoYXZlIGFu
+IGluZGVudC1hY2NvcmRpbmctdG8tbW9kZSBiZWhhdmlvciwgZXhjZXB0IHRoYXQgYW55DQogIDs7
+IGNvbW1lbnQgaXMgbGVmdCB3aGVyZSBpdCB3YXMuICBJbiBhZGRpdGlvbiwgdGhlIGluZGVudGF0
+aW9uDQogIDs7IHNob3VsZCBiZSBhcyB0aG91Z2ggdGhlcmUgaXMgbm8gY29tbWVudCBwcmVzZW50
+LiAgVGhpcyBpcyB0bw0KICA7OyBzdXBwb3J0IGNhc2VzIHdoZXJlIHRoZSB1c2VyIHdhbnRzIHRv
+IGFkZCBzb21lIGNvZGUgb24gbGluZXMNCiAgOzsgYWxyZWFkeSBjb250YWluaW5nIGNvbW1lbnRz
+Lg0KDQogIDs7IFRoZSBkaWZmaWN1bHR5IGFyaXNlcyBiZWNhdXNlIHRoZSBvbmx5IGluZGVudGlu
+ZyBmdW5jdGlvbiB3ZSBjYW4NCiAgOzsgY291bnQgb24gaGF2aW5nIGlzIGBpbmRlbnQtbGluZS1m
+dW50aW9uJy4gIFRoaXMgdHlwaWNhbGx5IGluZGVudHMNCiAgOzsgZGlmZmVyZW50bHkgd2hlbiB0
+aGUgb25seSB0aGluZyBvbiB0aGUgbGluZSBpcyBhIGNvbW1lbnQsIGFuZCBpdA0KICA7OyBhbG1v
+c3QgYWx3YXlzIG1lc3NlcyB1cCBjb21tZW50IHBvc2l0aW9ucy4NCg0KICA7OyBPbiB0b3Agb2Yg
+YWxsIHRoYXQsIHdlIHdhbnQgdGhlIGN1cnNvciB0byBlbmQgdXAgaW4gYSByZWFzb25hYmxlDQog
+IDs7IHBvc2l0aW9uLCBhcyBpdCBkb2VzIHdpdGggYGluZGVudC1hY2NvcmRpbmctdG8tbW9kZScs
+IGJ1dCBhcw0KICA7OyB0aG91Z2ggdGhlcmUgd2VyZSBubyBjb21tZW50IG9uIHRoZSBsaW5lLg0K
+DQogIChpbnRlcmFjdGl2ZSAiKiIpDQogIChiYy1kby1jb21tYW5kLWluaXQpDQogIChiYy1mbHVz
+aC1jYWNoZXMpDQogIChsZXQqIChjb2RlLWVuZCBzdGFydC1kZWxpbSBuby1jb2RlIHRlbXANCgkg
+KGNvcHktbGluZSAiIikNCgkgKGN1cnJlbnQtY29sdW1uIChjdXJyZW50LWNvbHVtbikpDQoJICht
+cG9pbnQgKG1ha2UtbWFya2VyKSkNCgkgKG1zdGFydCAobWFrZS1tYXJrZXIpKQ0KCSAobWVuZCAo
+bWFrZS1tYXJrZXIpKQ0KCSAoY29tbWVudC1wDQoJICAoYmMtb3BhcnNlLWxpbmUgJ2NvZGUtZW5k
+ICdzdGFydC1kZWxpbSBuaWwgbmlsIG5pbCBuaWwgJ25vLWNvZGUpKQ0KCSBjb21tZW50LWNvbHVt
+biBuZXctaW5kZW50LWNvbHVtbiBvbGQtaW5kZW50LWNvbHVtbg0KCSApDQogICAgKHVud2luZC1w
+cm90ZWN0DQoJKGlmIChub3QgY29tbWVudC1wKQkJCQkgOyBJZiB0aGlzIGlzIGEgY29tbWVudA0K
+CSAgICAoaWYgKGxvb2tpbmctYXQgYmMtY29tbWVudC1sb29raW5nLWF0LXJlZ2V4cCk7IHRoYXQg
+c3RhcnRzIGF0IGJvbCwNCgkJbmlsCQkJCQkgOyBsZWF2ZSBpdCBhbG9uZS4NCgkgICAgICAoZnVu
+Y2FsbCBpbmRlbnQtbGluZS1mdW5jdGlvbikpDQoJICANCgkgIChzZXQtbWFya2VyIG1wb2ludCAo
+cG9pbnQpKQ0KCSAgKGdvdG8tY2hhciBzdGFydC1kZWxpbSkNCgkgIChzZXRxIGNvbW1lbnQtY29s
+dW1uIChjdXJyZW50LWNvbHVtbikpDQoJICAoYmVnaW5uaW5nLW9mLWxpbmUpDQoJICAoaWYgbm8t
+Y29kZSBuaWwNCgkgICAgKHNldHEgY29weS1saW5lIChidWZmZXItc3Vic3RyaW5nIChwb2ludCkg
+Y29kZS1lbmQpKSkNCgkgIChza2lwLWNoYXJzLWZvcndhcmQgIiBcdCIpDQoJICAoc2V0cSBvbGQt
+aW5kZW50LWNvbHVtbiAoY3VycmVudC1jb2x1bW4pKQ0KCSAgKGJlZ2lubmluZy1vZi1saW5lKQ0K
+CSAgKHNldC1tYXJrZXIgbXN0YXJ0IChwb2ludCkpDQoJICAoaW5zZXJ0ICJcbiIpDQoJICAoc2V0
+LW1hcmtlciBtZW5kIChwb2ludCkpDQoJICAoZm9yd2FyZC1jaGFyIC0xKQ0KCSAgKGluc2VydCBj
+b3B5LWxpbmUpDQoJICAoYmVnaW5uaW5nLW9mLWxpbmUpDQoJICAoZnVuY2FsbCBpbmRlbnQtbGlu
+ZS1mdW5jdGlvbikNCgkgIChzZXRxIG5ldy1pbmRlbnQtY29sdW1uIChjdXJyZW50LWNvbHVtbikp
+DQoJICAoZGVsZXRlLXJlZ2lvbiBtc3RhcnQgbWVuZCkNCgkgIA0KCSAgKGlmIG5vLWNvZGUNCgkg
+ICAgICAoaWYgKDwgbmV3LWluZGVudC1jb2x1bW4gY29tbWVudC1jb2x1bW4pCTsgRG9uJ3QgbmVl
+ZCB0byBpbnNlcnQNCgkJICAoaWYgKDwgY3VycmVudC1jb2x1bW4gY29tbWVudC1jb2x1bW4pCTsg
+YW55IHdoaXRlc3BhY2UNCgkJICAgICAgKG1vdmUtdG8tY29sdW1uIG5ldy1pbmRlbnQtY29sdW1u
+ICdmb3JjZSkNCgkJICAgIChnb3RvLWNoYXIgbXBvaW50KSkNCgkJKGJlZ2lubmluZy1vZi1saW5l
+KQkJCTsgRWxzZSBtb3ZlIGNvbW1lbnQNCgkJKGRlbGV0ZS1ob3Jpem9udGFsLXNwYWNlKQkJOyBl
+bm91Z2ggdG8gYWNjb21vZGF0ZQ0KCQkoaW5kZW50LXRvLWNvbHVtbiBuZXctaW5kZW50LWNvbHVt
+bikJOyBpbmRlbnRhdGlvbi4NCgkJKGlmICg8IGNvbW1lbnQtY29sdW1uIGN1cnJlbnQtY29sdW1u
+KQ0KCQkgICAgKGdvdG8tY2hhciBtcG9pbnQpKSkNCgkgICAgDQoJICAgIChiZWdpbm5pbmctb2Yt
+bGluZSkJCTsgSWYgdGhlcmUgaXMgY29kZQ0KOwkgICAgKGRlbGV0ZS1ob3Jpem9udGFsLXNwYWNl
+KQ0KCSAgICAoaW5kZW50LXRvLWNvbHVtbiBuZXctaW5kZW50LWNvbHVtbikNCgkgICAgKHNldHEg
+dGVtcCAocG9pbnQpKQ0KCSAgICAoc2tpcC1jaGFycy1mb3J3YXJkICIgXHQiKQ0KCSAgICAoZGVs
+ZXRlLXJlZ2lvbiB0ZW1wIChwb2ludCkpDQoJICAgIChiYy1mbHVzaC1wYXJzZS1jYWNoZSkJCQk7
+IFRoZSBsaW5lIGhhcyBiZWVuDQoJICAgIChiYy1vcGFyc2UtbGluZSBuaWwgJ3N0YXJ0LWRlbGlt
+KQkJOyBjaGFuZ2VkIHNvIGZsdXNoDQoJICAgIChnb3RvLWNoYXIgc3RhcnQtZGVsaW0pCQkJOyBj
+YWNoZXMuDQoJICAgIChkZWxldGUtaG9yaXpvbnRhbC1zcGFjZSkNCgkgICAgKGluZGVudC10by1j
+b2x1bW4gY29tbWVudC1jb2x1bW4pDQoJICAgIChpZiAoPCBjdXJyZW50LWNvbHVtbiBvbGQtaW5k
+ZW50LWNvbHVtbikNCgkJKG1vdmUtdG8tY29sdW1uIG5ldy1pbmRlbnQtY29sdW1uICdmb3JjZSkN
+CgkgICAgICAoZ290by1jaGFyIG1wb2ludCkpKSkNCiAgICAgIA0KICAgICAgKHNldC1tYXJrZXIg
+bXBvaW50IG5pbCkNCiAgICAgIChzZXQtbWFya2VyIG1zdGFydCBuaWwpDQogICAgICAoc2V0LW1h
+cmtlciBtZW5kIG5pbCkpKSkNCg0KOzs7Oz09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09
+PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT0NCjs7O18gICBvIE1vdGlvbg0K
+Ozs7XyAgICB8IGJjLWJlZ2lubmluZy1vZi1saW5lDQooZGVmdW4gYmMtYmVnaW5uaW5nLW9mLWxp
+bmUgKCkNCiAgIk1vdmUgdG8gdGhlIGJlZ2lubmluZyBvZiB0aGUgY3VycmVudCBjb21tZW50IG9y
+IGxpbmUuICANCg0KSWYgcG9pbnQgaXMgaW4gYSByaWdodC1tYXJnaW4gY29tbWVudCwgbW92ZSB0
+byB0aGUgYmVnaW5uaW5nIG9mIGl0cw0KdGV4dCBvbiB0aGUgY3VycmVudCBsaW5lLiAgSWYgcG9p
+bnQgaXMgb3V0c2lkZSBhIGNvbW1lbnQgKG9yIG5vDQpjb21tZW50IG9uIHRoZSBsaW5lKSwgbW92
+ZSB0byBiZWdpbm5pbmcgb2YgY3VycmVudCBsaW5lLg0KDQpJZiB0aGlzIGNvbW1hbmQgaXMgaW52
+b2tlZCB0d2ljZSBpbiBzdWNjZXNzaW9uLCBwb2ludCBpcyBtb3ZlZCB0byB0aGUNCmJlZ2lubmlu
+ZyBvZiB0aGUgY3VycmVudCBsaW5lLg0KDQpGb3IgbW9yZSBpbmZvcm1hdGlvbiwgdHlwZSBgXFxb
+ZGVzY3JpYmUtdmFyaWFibGVdIGJjLW1vZGUtZG9jJy4iDQoNCiAgKGludGVyYWN0aXZlKQ0KICAo
+YmMtZG8tY29tbWFuZC1pbml0KQ0KICAobGV0ICgocG9pbnQgKHBvaW50KSkNCglkZWxpbS1iIGNv
+bW1lbnQtYiANCgkpDQoJCQ0KICAgIChpZiAoZXEgbGFzdC1jb21tYW5kICdiYy1iZWdpbm5pbmct
+b2YtbGluZSkNCgkoYmVnaW5uaW5nLW9mLWxpbmUpDQogICAgICAoYmMtZmx1c2gtcGFyc2UtY2Fj
+aGUpDQogICAgICAoaWYgKGJjLW9wYXJzZS1saW5lIG5pbCAnZGVsaW0tYiAnY29tbWVudC1iKQ0K
+CSAgKGNvbmQNCgkgICAoKDwgcG9pbnQgZGVsaW0tYikNCgkgICAgKGJlZ2lubmluZy1vZi1saW5l
+KSkNCgkgICAodA0KCSAgICAoZ290by1jaGFyIGNvbW1lbnQtYikpKQ0KCShiZWdpbm5pbmctb2Yt
+bGluZSkNCgkpKSkpDQoNCjs7Ozs9PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09
+PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09DQo7OztfICAgIHwgYmMtZW5kLW9mLWxp
+bmUNCihkZWZ1biBiYy1lbmQtb2YtbGluZSAoKQ0KICAiTW92ZSBwb2ludCB0byB0aGUgZW5kIG9m
+IHRoZSBjdXJyZW50IGNvbW1lbnQgb3IgbGluZS4NCklmIHBvaW50IGlzIGluIGEgcmlnaHQtbWFy
+Z2luIGNvbW1lbnQsIG1vdmUgdG8gdGhlIGVuZCBvZiBpdHMgdGV4dCBvbg0KdGhlIGN1cnJlbnQg
+bGluZS4gIElmIHBvaW50IGlzIGluIGNvZGUgdG8gdGhlIGxlZnQgb2YgYSBjb21tZW50LCBtb3Zl
+DQp0byBlbmQgb2YgdGhlIGNvZGUuICBJZiBubyBjb21tZW50IG9uIHRoZSBjdXJyZW50IGxpbmUs
+IG1vdmUgdG8gZW5kIG9mDQpsaW5lLg0KDQpJZiB0aGlzIGNvbW1hbmQgaXMgaW52b2tlZCB0d2lj
+ZSBpbiBzdWNjZXNzaW9uLCBwb2ludCBpcyBtb3ZlZCB0byB0aGUNCmVuZCBvZiB0aGUgY3VycmVu
+dCBsaW5lLg0KDQpGb3IgbW9yZSBpbmZvcm1hdGlvbiwgdHlwZSBgXFxbZGVzY3JpYmUtdmFyaWFi
+bGVdIGJjLW1vZGUtZG9jJy4iDQoNCiAgKGludGVyYWN0aXZlKQ0KICAoYmMtZG8tY29tbWFuZC1p
+bml0KQ0KICAobGV0ICgocG9pbnQgKHBvaW50KSkNCgljb2RlLWUgZGVsaW0tYiBjb21tZW50LWUN
+Cjs7Owljb21tZW50LWIgZGVsaW0tZQ0KCSkNCgkJDQogICAgKGlmIChlcSBsYXN0LWNvbW1hbmQg
+J2JjLWVuZC1vZi1saW5lKQ0KCShlbmQtb2YtbGluZSkNCiAgICAgIChiYy1mbHVzaC1wYXJzZS1j
+YWNoZSkNCiAgICAgIChpZiAoYmMtb3BhcnNlLWxpbmUgJ2NvZGUtZSAnZGVsaW0tYiBuaWwgJ2Nv
+bW1lbnQtZSkNCgkgIChjb25kDQoJICAgKCg8IHBvaW50IGRlbGltLWIpDQoJICAgIChnb3RvLWNo
+YXIgY29kZS1lKSkNCgkgICAodA0KCSAgICAoZ290by1jaGFyIGNvbW1lbnQtZSkpKQ0KCShlbmQt
+b2YtbGluZSkpKSkpDQoNCjs7Ozs9PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09
+PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09DQo7OztfICAgIHwgYmMtZm9yd2FyZC1j
+b21tZW50DQooZGVmdW4gYmMtZm9yd2FyZC1jb21tZW50ICgmb3B0aW9uYWwgY291bnQpDQogICJN
+b3ZlIHBvaW50IGZvcndhcmQgQVJHIGJsb2NrIGNvbW1lbnRzIChiYWNrd2FyZCBpZiBBUkcgaXMg
+bmVnYXRpdmUpLg0KTm9ybWFsbHkgcmV0dXJucyB0Lg0KSWYgYW4gZW5kIG9mIHRoZSBidWZmZXIg
+aXMgcmVhY2hlZCwgcG9pbnQgaXMgbGVmdCB0aGVyZQ0KYW5kIG5pbCBpcyByZXR1cm5lZC4NCg0K
+Rm9yIG1vcmUgaW5mb3JtYXRpb24sIHR5cGUgYFxcW2Rlc2NyaWJlLXZhcmlhYmxlXSBiYy1tb2Rl
+LWRvYycuIg0KDQogIChpbnRlcmFjdGl2ZSAicCIpDQogIChiYy1kby1jb21tYW5kLWluaXQpDQoN
+CiAgKGJjLWZsdXNoLXBhcnNlLWNhY2hlKQ0KICAobGV0KiAoKHBvaW50IChwb2ludCkpDQoJIGJv
+ZHktYiBib2R5LWUNCgkgKGNvbW1lbnQtcCAoYmMtb3BhcnNlLWxpbmUgbmlsIG5pbCAnYm9keS1i
+ICdib2R5LWUpKQ0KCSAoYmVmb3JlLWNvbW1lbnQtcCAoYW5kIGNvbW1lbnQtcCAoPD0gcG9pbnQg
+Ym9keS1iKSkpDQoJIChwYXN0LWNvbW1lbnQtcCAoYW5kIGNvbW1lbnQtcCAoPD0gYm9keS1lIHBv
+aW50KSkpDQoJIChyYW5nZSAoYW5kIGNvbW1lbnQtcCAoYmMtZmluZC1jb21tZW50KSkpDQoJICh0
+aGlzLWxpbmUgKHByb2duIChiZWdpbm5pbmctb2YtbGluZSkgKHBvaW50KSkpDQoJIChmb3J3YXJk
+ICg8PSAwIGNvdW50KSkNCgkgKGRpcmVjdGlvbiAoaWYgZm9yd2FyZCAxIC0xKSkNCgkgZGVsaW0t
+c3RhcnQNCgkgZmlyc3QtbGluZSBsYXN0LWxpbmUgaW4tZmlyc3QtbGluZS1wIGluLWxhc3QtbGlu
+ZS1wIG1vdmUtb24NCgkgKQ0KDQogICAgKHNldHEgY291bnQgKGFicyBjb3VudCkpDQoNCiAgICAo
+aWYgcmFuZ2UgKHNldHEgZmlyc3QtbGluZSAobnRoIDAgcmFuZ2UpDQoJCSAgICBsYXN0LWxpbmUg
+KG50aCAxIHJhbmdlKQ0KCQkgICAgaW4tZmlyc3QtbGluZS1wICg9IGZpcnN0LWxpbmUgdGhpcy1s
+aW5lKQ0KCQkgICAgaW4tbGFzdC1saW5lLXAgKD0gbGFzdC1saW5lIHRoaXMtbGluZSkNCgkJICAg
+IG1vdmUtb24gKGlmIGZvcndhcmQgKGFuZCBpbi1sYXN0LWxpbmUtcCBwYXN0LWNvbW1lbnQtcCkN
+CgkJCSAgICAgIChhbmQgaW4tZmlyc3QtbGluZS1wIGJlZm9yZS1jb21tZW50LXApKSkpDQoNCiAg
+ICAoaWYgcmFuZ2UNCgkocHJvZ24NCgkgIChnb3RvLWNoYXIgKGlmIGZvcndhcmQgbGFzdC1saW5l
+IGZpcnN0LWxpbmUpKQ0KCSAgKGlmIG1vdmUtb24gbmlsDQoJICAgIChiYy1vcGFyc2UtbGluZSBu
+aWwgbmlsICdib2R5LWIgJ2JvZHktZSkNCgkgICAgKGdvdG8tY2hhciAoaWYgZm9yd2FyZCBib2R5
+LWUgYm9keS1iKSkNCgkgICAgKHNldHEgY291bnQgKDEtIGNvdW50KSkpKSkNCg0KICAgICh3aGls
+ZSAobm90IChvciAoYW5kICg9IGRpcmVjdGlvbiAxKSAoZW9icCkpDQoJCSAgICAoYW5kICg9IGRp
+cmVjdGlvbiAtMSkgKGJvYnApKQ0KCQkgICAgKDw9IGNvdW50IDApKSkNCiAgICAgIChmb3J3YXJk
+LWxpbmUgZGlyZWN0aW9uKQ0KICAgICAgKHdoaWxlIChub3QgKG9yIChlb2JwKSAoYm9icCkgKGJj
+LW9wYXJzZS1saW5lKSkpDQoJKGZvcndhcmQtbGluZSBkaXJlY3Rpb24pKQ0KICAgICAgKGlmIChv
+ciAoZW9icCkgKGJvYnApKSBuaWwNCgkoYmMtbXNldHEgKGZpcnN0LWxpbmUgbGFzdC1saW5lKSAo
+YmMtZmluZC1jb21tZW50KSkNCjs7CSAgKHNldHEgcmFuZ2UgKGJjLWZpbmQtY29tbWVudCkNCjs7
+CQlmaXJzdC1saW5lIChjYXIgcmFuZ2UpDQo7OwkJbGFzdC1saW5lIChjZHIgcmFuZ2UpKQ0KCShn
+b3RvLWNoYXIgKGlmIGZvcndhcmQgbGFzdC1saW5lIGZpcnN0LWxpbmUpKQ0KCShiYy1vcGFyc2Ut
+bGluZSBuaWwgbmlsICdib2R5LWIgJ2JvZHktZSkNCgkoZ290by1jaGFyIChpZiBmb3J3YXJkIGJv
+ZHktZSBib2R5LWIpKSkNCiAgICAgIChzZXRxIGNvdW50ICgxLSBjb3VudCkpKQ0KICAgIChpZiAo
+b3IgKGVvYnApIChib2JwKSkgbmlsDQogICAgICAoc2F2ZS1leGN1cnNpb24NCgkoZ290by1jaGFy
+IGZpcnN0LWxpbmUpDQoJKGJjLW9wYXJzZS1saW5lIG5pbCAnZGVsaW0tc3RhcnQpDQoJKGdvdG8t
+Y2hhciBkZWxpbS1zdGFydCkNCgkobWVzc2FnZSAiQ29sdW1uOiAlZCIgKGN1cnJlbnQtY29sdW1u
+KSkpKSkpDQoNCjs7Ozs9PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09
+PT09PT09PT09PT09PT09PT09PT09PT09PT09DQo7OztfICAgIHwgYmMtYmFja3dhcmQtY29tbWVu
+dA0KKGRlZnVuIGJjLWJhY2t3YXJkLWNvbW1lbnQgKCZvcHRpb25hbCBjb3VudCkNCiAgIk1vdmUg
+cG9pbnQgYmFja3dhcmQgQVJHIGJsb2NrIGNvbW1lbnRzIChmb3J3YXJkIGlmIEFSRyBpcyBuZWdh
+dGl2ZSkuDQpOb3JtYWxseSByZXR1cm5zIHQuDQpJZiBhbiBlbmQgb2YgdGhlIGJ1ZmZlciBpcyBy
+ZWFjaGVkLCBwb2ludCBpcyBsZWZ0IHRoZXJlDQphbmQgbmlsIGlzIHJldHVybmVkLg0KDQpGb3Ig
+bW9yZSBpbmZvcm1hdGlvbiwgdHlwZSBgXFxbZGVzY3JpYmUtdmFyaWFibGVdIGJjLW1vZGUtZG9j
+Jy4iDQoNCiAgKGludGVyYWN0aXZlICJwIikNCiAgKGJjLWRvLWNvbW1hbmQtaW5pdCkNCiAgKGJj
+LWZvcndhcmQtY29tbWVudCAoLSBjb3VudCkpKQ0KDQo7Ozs7PT09PT09PT09PT09PT09PT09PT09
+PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PQ0KOzs7XyAg
+IG8gT3B0aW9ucw0KOzs7XyAgICB8IGJjLXNldC10YWItc3BhY2luZw0KKGRlZnVuIGJjLXNldC10
+YWItc3BhY2luZyAoJm9wdGlvbmFsIHNwYWNpbmcgcXVpZXQpDQogICJTZXQgdGhlIHRhYiBzcGFj
+aW5nIGZvciBCQyBmb3JtYXR0aW5nIGNvbW1hbmRzLg0KV2l0aCBwcmVmaXggYXJndW1lbnQsIHNl
+dCB0YWIgc3BhY2luZyB0byB0aGF0LiAgT3RoZXJ3aXNlIHByb21wdC4NCg0KQkMtbW9kZSdzIHRh
+YmJpbmcgY29tbWFuZHMgdXNlIHRhYiBzdG9wcyB0byBwb3NpdGlvbiB0aGUgY29tbWVudC4NClRo
+ZXNlIHRhYiBzdG9wcyBhcmUga2VwdCBpbiB0aGUgdmFyaWFibGUgYGJjLXRhYi1zdG9wcycuICBU
+byBzZXQNCmluZGl2aWR1YWwgdGFiIHN0b3BzIHlvdSBoYXZlIHRvIHVzZSBFbWFjcyBMaXNwLCBi
+dXQgeW91IGNhbiBzZXQgYWxsDQp0YWIgc3RvcHMgdG8gYSB1bmlmb3JtIHNwYWNpbmcgd2l0aCB0
+aGlzIGZ1bmN0aW9uLiAgVGhlIHByZXZpb3VzIGxpc3QNCm9mIHRhYiBzdG9wcyBpcyBsb3N0LiAg
+VGhlIHNwYWNpbmcgc2l6ZSB3aWxsIGJlIGRldGVybWluZWQgYnkgU1BBQ0lORywNCmV4Y2VwdCB0
+aGF0IGEgdGFiIHN0b3Agd2lsbCBiZSBwbGFjZWQgYXQgY29sdW1uIDEgaW5zdGVhZCBvZiBjb2x1
+bW4NCnplcm8uDQoNClNlZSB0aGUgZG9jdW1lbnRhdGlvbiBmb3IgdGhlIHZhcmlhYmxlcyBgYmMt
+dGFiLXN0b3BzJw0KXChcXFtkZXNjcmliZS12YXJpYWJsZV0gYmMtdGFiLXN0b3BzXCkuDQpGb3Ig
+bW9yZSBpbmZvcm1hdGlvbiwgdHlwZSBgXFxbZGVzY3JpYmUtdmFyaWFibGVdIGJjLW1vZGUtZG9j
+Jy4iDQoNCiAgKGludGVyYWN0aXZlICJOVGFiIFNwYWNpbmc6ICIpDQogIChiYy1idWctc2F2ZS1j
+b21tYW5kKQ0KICAoaWYgKDw9IHNwYWNpbmcgMCkgKGVycm9yICJUYWIgc3BhY2luZyBtdXN0IGJl
+IHBvc2l0aXZlLiIpKQ0KICAoaWYgKDwgYmMtcmlnaHQtbWFyZ2luIHNwYWNpbmcpDQogICAgICAo
+ZXJyb3IgIlRhYiBzcGFjaW5nIG11c3QgYmUgbGVzcyB0aGVuIHRoZSByaWdodC1tYXJnaW4uIikp
+DQoNCiAgKGxldCAoKHN0b3BsaXN0IG5pbCkgKHN0b3Agc3BhY2luZykpDQogICAgKHdoaWxlICg8
+PSBzdG9wIGJjLXJpZ2h0LW1hcmdpbikNCiAgICAgIChzZXRxIHN0b3BsaXN0IChjb25zIHN0b3Ag
+c3RvcGxpc3QpKQ0KICAgICAgKHNldHEgc3RvcCAoKyBzdG9wIHNwYWNpbmcpKSkNCiAgICAoc2V0
+cSBiYy10YWItc3RvcHMgKGNvbnMgMSAobnJldmVyc2Ugc3RvcGxpc3QpKSkpDQoNCiAgKGlmIChu
+b3QgcXVpZXQpDQogICAgICAobWVzc2FnZSAiVGFiIHN0b3BzIGluIHRoaXMgYnVmZmVyIG5vdyA9
+ICVzIg0KCSAgICAgICBiYy10YWItc3RvcHMpKSkNCg0KOzs7Oz09PT09PT09PT09PT09PT09PT09
+PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PQ0KOzs7
+XyAgICB8IGJjLXRvZ2dsZS1rZXltYXAtbGV2ZWwNCihkZWZ1biBiYy10b2dnbGUta2V5bWFwLWxl
+dmVsICgmb3B0aW9uYWwgb24tb2ZmKQ0KICAiVG9nZ2xlIGJldHdlZW4gQkMncyBiYXNpYyBhbmQg
+ZXh0ZW5kZWQga2V5bWFwcy4NCldpdGggYXJnLCB0dXJuIGV4dGVuZGVkIGtleW1hcCBvbiBpZiBh
+cmcgaXMgcG9zaXRpdmUsIG9mZiBvdGhlcndpc2UuDQoNCllvdSBjYW4gc2VsZWN0IGZyb20gdHdv
+IGtleW1hcHMgZm9yIGJjLW1vZGUgdG8gdXNlLg0KVGhlIGBiYXNpYycgbWFwIGlzIGEgbWluaW1h
+bGx5IGludHJ1c2l2ZSBzZXQgb2YgYmluZGluZ3MgZm9yIEJDJ3MNCm1vc3QgcG93ZXJmdWwgZnVu
+Y3Rpb25zLiAgVGhlIGBleHRlbmRlZCcgbWFwIGFkZHMgYWRkaXRpb25hbA0KYmluZGluZ3MgZm9y
+IGN1cnNvciBtb3Rpb24gY29tbWFuZHMuICBUaGVzZSBjb21tYW5kcyBvdmVycmlkZSBzb21lDQpz
+dGFuZGFyZCBjb21tYW5kcywgc3VjaCBhcyBgYmVnaW5uaW5nLW9mLWxpbmUnIFwoYm91bmQgdG8g
+Qy1hLCBIb21lLA0KZXRjXCkuICBCQydzIHZlcnNpb25zIG9mIHRoZXNlIGNvbW1hbmRzIGJlaGF2
+ZSBsaWtlIHRoZSBzdGFuZGFyZCBvbmVzDQp3aGVuIHBvaW50IGlzIG91dHNpZGUgYSBibG9jayBj
+b21tZW50LCBhbmQgbW92ZSB3aXRoaW4gdGhlIGNvbW1lbnQNCm90aGVyd2lzZS4NCg0KQkMtbW9k
+ZSdzIGJhc2ljIGtleW1hcCBiaW5kcyB0aGVzZSBrZXlzOg0KXFx7YmMtbW9kZS1iYXNpYy1tYXB9
+DQoNCkJDLW1vZGUncyBleHRlbmRlZCBrZXltYXAgYmluZHMgdGhlc2Uga2V5czoNClxce2JjLW1v
+ZGUtZXh0ZW5kZWQtbWFwfSINCg0KICAoaW50ZXJhY3RpdmUgIlAiKQ0KICAoYmMtYnVnLXNhdmUt
+Y29tbWFuZCkNCiAgKHNldHEgYmMta2V5bWFwLWxldmVsDQoJKGlmIChudWxsIG9uLW9mZikgKG5v
+dCBiYy1rZXltYXAtbGV2ZWwpDQoJICAoPiAocHJlZml4LW51bWVyaWMtdmFsdWUgb24tb2ZmKSAw
+KSkpDQoNCiAgKGJjLXNlbGVjdC1rZXltYXApDQogIChtZXNzYWdlICJiYy1tb2RlIG5vdyB1c2lu
+ZyAlcyBrZXltYXAuIg0KCSAgIChpZiBiYy1rZXltYXAtbGV2ZWwgImV4dGVuZGVkIiAiYmFzaWMi
+KSkpDQoNCjs7Ozs9PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09
+PT09PT09PT09PT09PT09PT09PT09PT09PT0NCjs7O18gICAgfCBiYy10b2dnbGUtYXV0by1maWxs
+LWFkdmljZQ0KKGRlZnVuIGJjLXRvZ2dsZS1hdXRvLWZpbGwtYWR2aWNlICgmb3B0aW9uYWwgb24t
+b2ZmKQ0KICAiVG9nZ2xlIGJsb2NrLWNvbW1lbnQtb3JpZW50ZWQgYXV0by1maWxsLg0KV2l0aCBh
+cmcsIHR1cm4gb24gaWYgYXJnIGlzIHBvc2l0aXZlLCBvZmYgb3RoZXJ3aXNlLg0KDQpCYy1tb2Rl
+IGNhbiBwcm92aWRlIGJsb2NrLWNvbW1lbnQtb3JpZW50ZWQgYXV0byBmaWxsaW5nIHdoZW4NCmBh
+dXRvLWZpbGwtbW9kZScgaXMgdHVybmVkIG9uLiAgV2hlbiBpdCBkb2VzLCBjb21tZW50cyBhcmUg
+ZmlsbGVkIHdpdGgNCmFzIGxpdHRsZSBkaXN0dXJiYW5jZSB0byB0aGUgc291cmNlIGNvZGUgYXMg
+cG9zc2libGUuICBUbyB1c2UgRW1hY3MnDQpub3JtYWwgYXV0by1maWxsaW5nLCB0dXJuIHRoaXMg
+b3B0aW9uIG9mZi4NCg0KVGVjaG5pY2FsIG5vdGU6IEJjLW1vZGUgaW1wbGVtZW50cyBibG9jay1j
+b21tZW50LW9yaWVudGVkIGF1dG8tZmlsbGluZw0KYnkgd2F5IG9mIGFkdmlzaW5nIHRoZSBmdW5j
+dGlvbiBgZG8tYXV0by1maWxsJy4gIFRoZSB2YXJpYWJsZQ0KYGJjLWVuYWJsZS1hdXRvLWZpbGwt
+YWR2aWNlJyBjb250cm9scyB3aGV0aGVyIHRoaXMgYWR2aWNlIGlzIGVuYWJsZWQuDQpUaGlzIGZ1
+bmN0aW9uIGZpcnN0IHRvZ2dsZXMgdGhhdCB2YXJpYmxlLCB0aGVuIGNhbGxzDQpgYmMtc3luYy1h
+ZHZpY2UtZW5hYmxlJyB0byB1cGRhdGUgdGhlIHN0YXRlIG9mIHRoZSBhZHZpY2UuIg0KDQogIChp
+bnRlcmFjdGl2ZSAiUCIpDQogIChiYy1idWctc2F2ZS1jb21tYW5kKQ0KICAoc2V0cSBiYy1lbmFi
+bGUtYXV0by1maWxsLWFkdmljZQ0KCShpZiAobnVsbCBvbi1vZmYpIChub3QgYmMtZW5hYmxlLWF1
+dG8tZmlsbC1hZHZpY2UpDQoJICAoPiAocHJlZml4LW51bWVyaWMtdmFsdWUgb24tb2ZmKSAwKSkp
+DQogIChiYy1zeW5jLWFkdmljZS1lbmFibGUpDQogIChiYy1zZWxlY3Qta2V5bWFwKQkJCTsgVG8g
+dXBkYXRlIHRoZSBtZW51DQogIChtZXNzYWdlICJBZHZpY2Ugb24gYGRvLWF1dG8tZmlsbCcgaXMg
+bm93ICVzLiINCgkgICAoaWYgYmMtZW5hYmxlLWF1dG8tZmlsbC1hZHZpY2UgImVuYWJsZWQiICJk
+aXNhYmxlZCIpKSkNCg0KOzs7Oz09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09
+PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT0NCjs7O18gICAgfCBiYy1zZXQtbWFyZ2lu
+DQooZGVmdW4gYmMtc2V0LW1hcmdpbiAoYXJnKQ0KICAiU2V0IGBiYy1yaWdodC1tYXJnaW4nIHRv
+IGN1cnJlbnQgY29sdW1uLCBvciB0byBhcmd1bWVudCBpZiBnaXZlbi4NClRoZSB2YXJpYWJsZSBg
+YmMtcmlnaHQtbWFyZ2luJyBoYXMgYSBzZXBhcmF0ZSB2YWx1ZSBmb3IgZWFjaCBidWZmZXIuIg0K
+ICAoaW50ZXJhY3RpdmUgIlAiKQ0KICAoYmMtYnVnLXNhdmUtY29tbWFuZCkNCiAgKHNldHEgYmMt
+cmlnaHQtbWFyZ2luIChpZiAoaW50ZWdlcnAgYXJnKSBhcmcgKGN1cnJlbnQtY29sdW1uKSkpDQog
+IChtZXNzYWdlICJiYy1yaWdodC1tYXJnaW4gc2V0IHRvICVkIGluIHRoaXMgYnVmZmVyIiBiYy1y
+aWdodC1tYXJnaW4pKQ0KDQo7DQogDA0KOzs7Oz09PT09PT09PT09PT09PT09PT09PT09PT09PT09
+PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT0NCjs7O18gICogRnVuY3Rp
+b25zOg0KOzs7XyAgIG8gVXRpbGl0aWVzIGZvciB0dXJuaW5nIG9uIHRoZSBtb2RlDQo7OztfICAg
+IHwgYmMtZ3Vlc3MtbGFuZ3VhZ2UNCihkZWZ1biBiYy1ndWVzcy1sYW5ndWFnZSAoKQ0KICAiVHJ5
+IHRvIGd1ZXNzIHRoZSBsYW5ndWFnZSBiZWluZyBlZGl0ZWQgYnkgZXhhbWluaW5nIGBtYWpvci1t
+b2RlJy4NCklmIHRoZSBwcmVmaXggb2YgYG1ham9yLW1vZGUnIGlzIG9uZSBvZiB0aGUgbGFuZ3Vh
+Z2Ugc3ltYm9scyBpbg0KYGJjLWxhbmd1YWdlcy1hbGlzdCwgdGhhdCBuYW1lIChhIHN0cmluZykg
+aXMgcmV0dXJuZWQsIG90aGVyd2lzZSBuaWwuIg0KICAobGV0KiAoKG1vZGUtbmFtZSAoc3ltYm9s
+LW5hbWUgbWFqb3ItbW9kZSkpDQoJIChsYW5nLW5hbWUgKHN1YnN0cmluZyBtb2RlLW5hbWUgMCAo
+c3RyaW5nLW1hdGNoICItbW9kZSIgbW9kZS1uYW1lKSkpDQoJIChsYW5nLXN5bSAoaW50ZXJuLXNv
+ZnQgbGFuZy1uYW1lKSkNCgkgKGFsdC1sYW5nLW5hbWUgKHN1YnN0cmluZyBtb2RlLW5hbWUgMCAo
+c3RyaW5nLW1hdGNoICItIiBtb2RlLW5hbWUpKSkNCgkgKGFsdC1sYW5nLXN5bSAoaW50ZXJuLXNv
+ZnQgYWx0LWxhbmctbmFtZSkpDQoJICkNCiAgICAob3INCiAgICAgKGlmIChhc3NxIGxhbmctc3lt
+IGJjLWxhbmd1YWdlcy1hbGlzdCkgbGFuZy1uYW1lKQ0KICAgICAoaWYgKGFzc3EgYWx0LWxhbmct
+c3ltIGJjLWxhbmd1YWdlcy1hbGlzdCkgYWx0LWxhbmctbmFtZSkpDQogICAgKSkNCg0KOzs7Oz09
+PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09
+PT09PT09PT09PT09PQ0KOzs7XyAgICB8IGJjLXNlbGVjdC1rZXltYXANCihkZWZ1biBiYy1zZWxl
+Y3Qta2V5bWFwICgpDQogICJTZWxlY3QgYSBtaW5vciBtb2RlIG1hcCBhY2NvcmRpbmcgdG8gdGhl
+IHZhbHVlIG9mIGBiYy1rZXltYXAtbGV2ZWwnLg0KQWxzbyByZWJ1aWxkcyB0aGUgbWVudSB0byBy
+ZWZsZWN0IHRoZSBzdGF0ZSBvZiBvcHRpb24gdmFyaWFibGVzLCBhbmQgdG8gDQpmb3JjZSB0aGUg
+Y29ycmVjdCBkaXNwbGF5IG9mIGtleSBiaW5kaW5ncy4iDQogIChsZXQgKChhbGlzdC1lbnRyeSAo
+YXNzcSAnYmMtbW9kZSBtaW5vci1tb2RlLW1hcC1hbGlzdCkpDQoJKQ0KICAgIChpZiAoZmJvdW5k
+cCAnc2V0LWJ1ZmZlci1tZW51YmFyKQ0KCTs7IEZvciBYRW1hY3MsIHNldCB0aGUgbW9kZSBtYXAg
+dG8gZWl0aGVyIHRoZSBiYXNpYyBvciB0aGUgZXh0ZW5kZWQNCgk7OyBtYXAuDQoJKHNldHENCgkg
+YmMtbW9kZS1tYXANCgkgKGlmIGJjLWtleW1hcC1sZXZlbCBiYy1tb2RlLWV4dGVuZGVkLW1hcCBi
+Yy1tb2RlLWJhc2ljLW1hcCkpDQo7IAkgbWlub3ItbW9kZS1tYXAtYWxpc3QgKGJjLXJlbWFzc3Eg
+J2JjLW1vZGUgbWlub3ItbW9kZS1tYXAtYWxpc3QpDQo7IAkgbWlub3ItbW9kZS1tYXAtYWxpc3QN
+CjsgCSAoY29ucyAoY29ucyAnYmMtbW9kZSBiYy1tb2RlLW1hcCkgbWlub3ItbW9kZS1tYXAtYWxp
+c3QpKQ0KDQoNCiAgICAgIDs7IEZvciBGU0YsIG1ha2UgYSBmcmVzaCBjb3B5IG9mIHRoZSBrZXlt
+YXAgd2l0aG91dCB0aGUgbWVudSwgdGhlbiBhZGQNCiAgICAgIDs7IHRoZSBtZW51LiBUaGlzIGlz
+IGEga2x1ZGdlIHRvIGZvcmNlIHRoZSBtZW51IHRvIHVwZGF0ZSBpdHMgbGlzdCBvZiBrZXkNCiAg
+ICAgIDs7IGJpbmRpbmdzLg0KDQogICAgICAoc2V0cSBiYy1tb2RlLW1hcA0KCSAgICAoY29weS1r
+ZXltYXAgKGlmIGJjLWtleW1hcC1sZXZlbCBiYy1tb2RlLWV4dGVuZGVkLW1hcA0KCQkJICAgYmMt
+bW9kZS1iYXNpYy1tYXApKSkNCiAgICAgIChiYy1tb2RlLWZzZi1tZW51ICJDb21tZW50cyIgYmMt
+bW9kZS1tYXApDQogICAgICApDQogICAgICAoaWYgYWxpc3QtZW50cnkNCgkgIChzZXRjZHIgYWxp
+c3QtZW50cnkgYmMtbW9kZS1tYXApDQoJKHNldHEgbWlub3ItbW9kZS1tYXAtYWxpc3QgKGNvbnMg
+KGNvbnMgJ2JjLW1vZGUgYmMtbW9kZS1tYXApDQoJCQkJCSBtaW5vci1tb2RlLW1hcC1hbGlzdCkp
+KQ0KDQogICAgKGJjLWZ1bmNhbGwgJ2ZvcmNlLW1vZGUtbGluZS11cGRhdGUpKSkNCg0KOzs7Oz09
+PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09
+PT09PT09PT09PT09PQ0KOzs7XyAgICB8IGJjLXN5bmMtYWR2aWNlLWVuYWJsZQ0KKGRlZnVuIGJj
+LXN5bmMtYWR2aWNlLWVuYWJsZSAoKQ0KICAiU3luY2hyb25pemUgdGhlIGVuYWJsZWQgc3RhdGUg
+b2YgQkMncyBhZHZpY2Ugb24gYGRvLWF1dG8tZmlsbCcuDQoNCkJjLW1vZGUgZGVmaW5lcyBhZHZp
+Y2Ugb24gYGRvLWF1dG8tZmlsbCcgdG8gYXNzaXN0IGNvcnJlY3QgYXV0by1maWxsaW5nIG9mDQpi
+bG9jay1jb21tZW50cy4gIFRoaXMgYWR2aWNlIGlzIGVuYWJsZWQgd2hlbmV2ZXIgdGhlIHZhcmlh
+YmxlDQpgYmMtZW5hYmxlLWF1dG8tZmlsbC1hZHZpY2UnIGlzIG5vbi1uaWwuICBVc2UgdGhpcyBm
+dW5jdGlvbiB0byB1cGRhdGUgdGhlIHN0YXRlDQpvZiB0aGF0IGFkdmljZSB0byBjb25mb3JtIHRv
+IHRoZSB2YXJpYWJsZSdzIGN1cnJlbnQgdmFsdWUuIg0KDQogIChpZiBiYy1lbmFibGUtYXV0by1m
+aWxsLWFkdmljZQ0KICAgICAgKGFkLWVuYWJsZS1yZWdleHAgIl5iYy0iKQ0KICAgIChhZC1kaXNh
+YmxlLXJlZ2V4cCAiXmJjLSIpKQ0KICAoYWQtYWN0aXZhdGUtcmVnZXhwICJeYmMtIiAnY29tcGls
+ZSkpDQoNCjs7Ozs9PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09
+PT09PT09PT09PT09PT09PT09PT09PT09PT0NCjs7O18gICAgfCBiYy1pbnRlcm5hbC10dXJuLW1v
+ZGUtb2ZmDQooZGVmdW4gYmMtaW50ZXJuYWwtdHVybi1tb2RlLW9mZiAoKQ0KOzs7ICAoYmMtc2Vs
+ZWN0LWtleW1hcCkNCiAgKHNldHEgYmMtbW9kZSBuaWwpDQogIChiYy1pbnN0YWxsLW1lbnViYXIg
+J3JlbW92ZSkNCiAgKHNldHEgZmlsbC1wYXJhZ3JhcGgtZnVuY3Rpb24gYmMtc2F2ZWQtZmlsbC1w
+YXJhZ3JhcGgtZnVuY3Rpb24pKQ0KDQo7Ozs7PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09
+PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09DQo7OztfICAgIHwgYmMt
+aW50ZXJuYWwtdHVybi1tb2RlLW9uDQooZGVmdW4gYmMtaW50ZXJuYWwtdHVybi1tb2RlLW9uIChz
+eW1ib2wtb3ItcmVnZXhwICZvcHRpb25hbCBzaG93LW1lc3NhZ2UpDQogICJUdXJuIG9uIGJjLW1v
+ZGUgaW4gdGhpcyBidWZmZXIsIHVzaW5nIFNZTUJPTC1PUi1SRUdFWFAgYXMgdGhlIHN5bnRheC4N
+Cg0KVmFyaWFibGVzIGBiYy1jb21tZW50LXJlZ2V4cCcsIGBiYy1jb21tZW50LXN0YXJ0JywgYW5k
+IGBiYy1jb21tZW50LWVuZCcgYXJlDQppbml0aWFsaXplZC4NCg0KU1lNQk9MLU9SLVJFR0VYUCBt
+dXN0IGJlIGVpdGhlciBhIHN5bWJvbCBvciBhIHN0cmluZy4gIElmIGEgc3ltYm9sLCBpdA0Kc2hv
+dWxkIGJlIG9uZSBvZiB0aGUgbGFuZ3VhZ2Uga2V5cyBpbiBgYmMtbGFuZ3VhZ2VzLWFsaXN0Jy4g
+IElmIGENCnN0cmluZywgaXQgc2hvdWxkIGNvbnRhaW4gYSByZWd1bGFyIGV4cHJlc3Npb24gdG8g
+YmUgdXNlZCBmb3INCmBiYy1jb21tZW50LXJlZ2V4cCcuDQoNCklmIFNIT1ctTUVTU0FHRSBpcyBu
+b24tbmlsLCBhIG1lc3NhZ2UgaXMgZGlzcGxheWVkIGluIHRoZSBlY2hvIGFyZWEuDQpUaGlzIGlz
+IHVzZWZ1bCB3aGVuIHNlcnZpY2luZyBhbiBpbnRlcmFjdGl2ZSBjYWxsLg0KDQpUaGUgYnVmZmVy
+LWxvY2FsIHZhcmlhYmxlcyBgY29tbWVudC1zdGFydCcgYW5kIGBjb21tZW50LWVuZCcgYXJlIGFs
+c28NCnNldCB0byBhcHByb3ByaWF0ZSB2YWx1ZXMsIGlmIHBvc3NpYmxlLiAgSWYgU1lNQk9MLU9S
+LVJFR0VYUCBpcyBhDQpzeW1ib2wsIGBjb21tZW50LXN0YXJ0JyBhbmQgYGNvbW1lbnQtZW5kJyBh
+cmUgZ2VuZXJhdGVkIGZyb20gdGhlDQpgZGVsaW0nIHN0cmluZ3MgaW4gYGJjLWxhbmd1YWdlcy1h
+bGlzdCcuICBJZiBTWU1CT0wtT1ItUkVHRVhQIGlzIGENCnN0cmluZywgYGNvbW1lbnQtc3RhcnQn
+IGFuZCBgY29tbWVudC1lbmQnIGFyZSBsZWZ0IHVudG91Y2hlZCBhbmQgbXVzdA0KYmUgc2V0IGJ5
+IHRoZSB1c2VyLiINCg0KICAobGV0ICgobGFuZy1pbmZvIChpZiAoc3ltYm9scCBzeW1ib2wtb3It
+cmVnZXhwKQ0KCQkgICAgICAgKG9yIChhc3NxIHN5bWJvbC1vci1yZWdleHAgYmMtbGFuZ3VhZ2Vz
+LWFsaXN0KQ0KCQkJICAgKGVycm9yICJiYy1tb2RlOiBVbmtub3duIGxhbmd1YWdlOiAlcyIgDQoJ
+CQkJICBzeW1ib2wtb3ItcmVnZXhwKSkpKQ0KCWRlbGltcw0KCXJlZ2V4cA0KCSkNCg0KICAgIChp
+ZiAoYW5kIChub3QgbGFuZy1pbmZvKSAobm90IChzdHJpbmdwIHN5bWJvbC1vci1yZWdleHApKSkN
+Cgkoc2lnbmFsICd3cm9uZy10eXBlLWFyZ3VtZW50IA0KCQkobGlzdCAnKG9yIHN5bWJvbHAgc3Ry
+aW5ncCkgc3ltYm9sLW9yLXJlZ2V4cCkpKQ0KDQoJOyBBdCB0aGlzIHBvaW50LCBsYW5nLWluZm8g
+aXMgZWl0aGVyIGEgc3ltYm9sIGZyb20gYmMtbGFuZ3VhZ2VzLWFsaXN0LA0KCTsgb3IgbmlsIHRv
+IGluZGljYXRlIHRoYXQgYSByZWdleHAgd2FzIHBhc3NlZC4NCg0KICAgIChpZiBsYW5nLWluZm8N
+CgkocHJvZ24NCgkgIChzZXRxIGRlbGltcyAoYXNzcSAnZGVsaW0gKGNkciBsYW5nLWluZm8pKQ0K
+CQlyZWdleHAgKGFzc3EgJ3JlZ2V4cCAoY2RyIGxhbmctaW5mbykpKQ0KCSAgKGlmIHJlZ2V4cCAo
+c2V0cSByZWdleHAgKG50aCAxIHJlZ2V4cCkpKQ0KCSAgKGlmIChhbmQgZGVsaW1zIChub3QgcmVn
+ZXhwKSkNCgkgICAgICAoc2V0cSByZWdleHAgKGJjLW1ha2UtcmVnZXhwIChudGggMSBkZWxpbXMp
+IChudGggMiBkZWxpbXMpKSkpKQ0KICAgICAgKHNldHEgcmVnZXhwIHN5bWJvbC1vci1yZWdleHAp
+KQ0KDQogICAgKGlmIChub3QgKHN0cmluZ3AgcmVnZXhwKSkNCgkoZXJyb3IgImJjLW1vZGU6IFVu
+a25vd24gbGFuZ3VhZ2U6IGAlcyciIHN5bWJvbC1vci1yZWdleHApKQ0KDQogICAgKHNldHEgYmMt
+Y29tbWVudC1yZWdleHAgcmVnZXhwKQ0KICAgIChzZXRxIGJjLWNvbW1lbnQtbG9va2luZy1hdC1y
+ZWdleHAgKGJjLW1ha2UtbG9va2luZy1hdC1yZWdleHAgcmVnZXhwKSkNCg0KICAgIChpZiBzaG93
+LW1lc3NhZ2UNCgkobWVzc2FnZSAiYmMtbW9kZSBzZXQgdG8gYCVzJy4iIChjYXIgbGFuZy1pbmZv
+KSkpDQoNCiAgICAoc2V0IChtYWtlLWxvY2FsLXZhcmlhYmxlICdiYy1sYW5ndWFnZSkgKGlmIGxh
+bmctaW5mbyBzeW1ib2wtb3ItcmVnZXhwIHQpKQ0KICAgIChzZXRxIGJjLW1vZGUgdCkNCiAgICAo
+YmMtc2VsZWN0LWtleW1hcCkNCiAgICAoYmMtaW5zdGFsbC1tZW51YmFyKQ0KICAgIChiYy1zeW5j
+LWFkdmljZS1lbmFibGUpDQogICAgKGlmIGJjLXRhYi1zdG9wcyBuaWwgKGJjLXNldC10YWItc3Bh
+Y2luZyA4ICdxdWlldCkpDQoNCgkJCQkJOz09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09
+PT09PT09DQoJCQkJCTsgICBTZXQgdXAgYGNvbW1lbnQtc3RhcnQnIGFuZA0KCQkJCQk7ICAgYGNv
+bW1lbnQtZW5kJyBpZiBub3QgYWxyZWFkeSBzZXQuDQogICAgKG1ha2UtbG9jYWwtdmFyaWFibGUg
+J2NvbW1lbnQtc3RhcnQpOz09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09DQog
+ICAgKG1ha2UtbG9jYWwtdmFyaWFibGUgJ2NvbW1lbnQtZW5kKQ0KICAgIChpZiAobm90IGRlbGlt
+cykgbmlsCQkJOyBUaGVzZSBhcmUgcmVkdW5kYW50IGlmDQogICAgICAoc2V0cSBiYy1jb21tZW50
+LXN0YXJ0CQkJOyBiYy1tYWtlLXJlZ2V4cCB3YXMgY2FsbGVkLA0KCSAgICAoY29uY2F0IChudGgg
+MSBkZWxpbXMgKSAiICIpCTsgYnV0IHRoZXkgZG9uJ3QgaHVydC4NCgkgICAgYmMtY29tbWVudC1l
+bmQNCgkgICAgKGlmIChudGggMiBkZWxpbXMpIChjb25jYXQgIiAiIChudGggMiBkZWxpbXMpKSAi
+IikNCgkgICAgYmMtc3RhcnQtZmlyc3QtY2hhciAoYmMtYW5hbHl6ZS1jb21tZW50LXN0YXJ0KSkN
+CiAgICAgIChpZiAoYW5kIChib3VuZHAgJ2NvbW1lbnQtc3RhcnQpIChzdHJpbmdwIGNvbW1lbnQt
+c3RhcnQpKQ0KCSAgbmlsDQoJKHNldHEgY29tbWVudC1zdGFydCBiYy1jb21tZW50LXN0YXJ0IA0K
+CSAgICAgIGNvbW1lbnQtZW5kIGJjLWNvbW1lbnQtZW5kKSkNCiAgICAgIChpZiAoYW5kIChib3Vu
+ZHAgJ2NvbW1lbnQtc3RhcnQtc2tpcCkgKHN0cmluZ3AgY29tbWVudC1zdGFydC1za2lwKSkNCgkg
+IG5pbA0KCShzZXRxIGNvbW1lbnQtc3RhcnQtc2tpcCAoYmMtbWFrZS1zdGFydC1za2lwIChudGgg
+MSBkZWxpbXMpKSkpKQ0KDQogICAgKGlmIChlcSBiYy1zYXZlZC1maWxsLXBhcmFncmFwaC1mdW5j
+dGlvbiAnYmMtZmlsbC1wYXJhZ3JhcGgpDQoJbmlsDQogICAgICAoc2V0cSBiYy1zYXZlZC1maWxs
+LXBhcmFncmFwaC1mdW5jdGlvbiBmaWxsLXBhcmFncmFwaC1mdW5jdGlvbikpDQogICAgKGlmIGJj
+LWVuYWJsZS1maWxsLXBhcmFncmFwaC1mdW5jdGlvbg0KCShzZXRxIGZpbGwtcGFyYWdyYXBoLWZ1
+bmN0aW9uICdiYy1maWxsLXBhcmFncmFwaCkpDQogICAgKSkNCg0KOzs7Oz09PT09PT09PT09PT09
+PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09
+PQ0KOzs7XyAgICB8IGJjLW1ha2Utc3RhcnQtc2tpcA0KKGRlZnVuIGJjLW1ha2Utc3RhcnQtc2tp
+cCAoc3RyaW5nKQ0KICAiTWFrZSBhIHN0cmluZyBzdWl0YWJsZSBmb3IgYGNvbW1lbnQtc3RhcnQt
+c2tpcCcuDQpUaGlzIGlzIG5vdCB1c2VkIGJ5IEJDIGl0c2VsZiwgYnV0IGZvciBtb2RlcyB0aGF0
+IGRvIG5vdCBzZXQgaXQsIEJDDQp3aWxsIHRyeSB0byBzZXQgaXQgdG8gc29tZXRoaW5nIHVzZWZ1
+bC4iDQoNCiAgKGNvbmNhdCBzdHJpbmcgIitbIFx0XSoiKSkNCg0KOzs7Oz09PT09PT09PT09PT09
+PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09
+PQ0KOzs7XyAgICB8IGJjLW1ha2UtcmVnZXhwDQo7OzsjIyNhdXRvbG9hZA0KKGRlZnVuIGJjLW1p
+cnJvci1jaGFyIChjaGFyKQ0KICAob3IgKGNkciAoYXNzcSBjaGFyICcoKD88IC4gPz4pICg/PiAu
+ID88KQ0KCQkJKD9bIC4gP10pICg/XSAuID9bKQ0KCQkJKD97IC4gP30pICg/fSAuID97KQ0KCQkJ
+KD8oIC4gPykpICg/KSAuID8oKSApKSkNCiAgICAgIGNoYXIpKQ0KDQooZGVmdW4gYmMtbWFrZS1y
+ZWdleHAgKHN0YXJ0ICZvcHRpb25hbCBlbmQpDQogICJNYWtlIGEgcmVndWxhciBleHByZXNzaW9u
+IHN1aXRhYmxlIGZvciBgYmMtY29tbWVudC1yZWdleHAnLg0KQWxzbyBzZXRzIGBjb21tZW50LXN0
+YXJ0JyBhbmQgYGNvbW1lbnQtZW5kJyBpZiB0aGV5IGFyZSB1bmJvdW5kLg0KDQpTVEFSVCBtdXN0
+IGJlIGEgc3RyaW5nIGNvbnRhaW5pbmcgdGhlIGNvbW1lbnQgc3RhcnQgZGVsaW1pdGVyDQpjaGFy
+YWN0ZXJzIGZvciB0aGUgbGFuZ3VhZ2UgYmVpbmcgZWRpdGVkLiAgSXQgc2hvdWxkIG5vdCBjb250
+YWluIGFueQ0Kd2hpdGVzcGFjZS4NCg0KRU5EIG11c3QgYmUgYSBzdHJpbmcgY29udGFpbmluZyB0
+aGUgY29tbWVudCBlbmQgZGVsaW1pdGVyLiAgSXQgc2hvdWxkDQpub3QgY29udGFpbiBhbnkgd2hp
+dGVzcGFjZS4gIElmIHRoZXJlIGFyZSBubyBzcGVjaWFsIGNoYXJhY3RlcnMgdGhhdA0KZW5kIGEg
+Y29tbWVudCBcKGkuZS4sIGNvbW1lbnRzIGNvbnRpbnVlIHRvIGVuZC1vZi1saW5lXCksIEVORCBu
+ZWVkIG5vdA0KYmUgc3VwcGxpZWQuIg0KDQogIChsZXQqICgNCgkgKHN0YXJ0Zmlyc3RjaGFyIChz
+dWJzdHJpbmcgc3RhcnQgMCAxKSkNCgkgKHN0YXJ0LXJlIChyZWdleHAtcXVvdGUgc3RhcnQpKQ0K
+CSBlbmQtcmUNCgkgKQ0KDQogICAgKHNldHEgYmMtY29tbWVudC1zdGFydCAoY29uY2F0IHN0YXJ0
+ICIgIikgDQoJICBiYy1jb21tZW50LWVuZCAoaWYgKGFuZCBlbmQgKG5vdCAoZXF1YWwgZW5kICIi
+KSkpIChjb25jYXQgIiAiIGVuZCkgIiIpDQoJICBiYy1zdGFydC1maXJzdC1jaGFyIChhcmVmIHN0
+YXJ0IDApKQ0KDQogICAgKG1ha2UtbG9jYWwtdmFyaWFibGUgJ2NvbW1lbnQtc3RhcnQpDQogICAg
+KG1ha2UtbG9jYWwtdmFyaWFibGUgJ2NvbW1lbnQtZW5kKQ0KICAgIChpZiAoYW5kIChib3VuZHAg
+J2NvbW1lbnQtc3RhcnQpIChzdHJpbmdwIGNvbW1lbnQtc3RhcnQpKQ0KCW5pbA0KICAgICAgKHNl
+dHEgY29tbWVudC1zdGFydCBiYy1jb21tZW50LXN0YXJ0IA0KCSAgICBjb21tZW50LWVuZCBiYy1j
+b21tZW50LWVuZCkpDQogICAgKGlmIChhbmQgKGJvdW5kcCAnY29tbWVudC1zdGFydC1za2lwKSAo
+c3RyaW5ncCBjb21tZW50LXN0YXJ0LXNraXApKQ0KCW5pbA0KICAgICAgKHNldHEgY29tbWVudC1z
+dGFydC1za2lwIChiYy1tYWtlLXN0YXJ0LXNraXAgc3RhcnQpKSkNCg0KDQogICAgKGlmIChhbmQg
+ZW5kICg+IChsZW5ndGggZW5kKSAwKSkNCgkoc2V0cSBlbmQtcmUgKGNvbmNhdCAocmVnZXhwLXF1
+b3RlIChzdWJzdHJpbmcgZW5kIDAgMSkpDQoJCQkgICAgICIrIg0KCQkJICAgICAocmVnZXhwLXF1
+b3RlIChzdWJzdHJpbmcgZW5kIDEpKSkNCgkgICAgICBiYy1mYXV4LWNvbW1lbnQtZW5kIG5pbCkN
+CiAgICAgIChzZXRxIGJjLWZhdXgtY29tbWVudC1lbmQNCgkgICAgKHJlZ2V4cC1xdW90ZSAoY29u
+Y2F0IChyZXZlcnNlIChtYXBjYXIgJ2JjLW1pcnJvci1jaGFyIHN0YXJ0KSkpKSkpDQoNCg0KICAg
+IChjb25jYXQgIlteIiBzdGFydGZpcnN0Y2hhciAiXSIgc3RhcnQtcmUgIitbIAldKlxcKC4qXFwp
+IiBlbmQtcmUpKSkNCgkJICAgICANCg0KKGRlZnVuIGJjLW9sZC1tYWtlLXJlZ2V4cCAoc3RhcnQg
+Jm9wdGlvbmFsIGVuZCkNCiAgIk1ha2UgYSByZWd1bGFyIGV4cHJlc3Npb24gc3VpdGFibGUgZm9y
+IGBiYy1jb21tZW50LXJlZ2V4cCcuDQpBbHNvIHNldHMgYGNvbW1lbnQtc3RhcnQnIGFuZCBgY29t
+bWVudC1lbmQnIGlmIHRoZXkgYXJlIHVuYm91bmQuDQoNClNUQVJUIG11c3QgYmUgYSBzdHJpbmcg
+Y29udGFpbmluZyB0aGUgY29tbWVudCBzdGFydCBkZWxpbWl0ZXINCmNoYXJhY3RlcnMgZm9yIHRo
+ZSBsYW5ndWFnZSBiZWluZyBlZGl0ZWQuICBJdCBzaG91bGQgbm90IGNvbnRhaW4gYW55DQp3aGl0
+ZXNwYWNlLg0KDQpFTkQgbXVzdCBiZSBhIHN0cmluZyBjb250YWluaW5nIHRoZSBjb21tZW50IGVu
+ZCBkZWxpbWl0ZXIuICBJdCBzaG91bGQNCm5vdCBjb250YWluIGFueSB3aGl0ZXNwYWNlLiAgSWYg
+dGhlcmUgYXJlIG5vIHNwZWNpYWwgY2hhcmFjdGVycyB0aGF0DQplbmQgYSBjb21tZW50IFwoaS5l
+LiwgY29tbWVudHMgY29udGludWUgdG8gZW5kLW9mLWxpbmVcKSwgRU5EIG5lZWQgbm90DQpiZSBz
+dXBwbGllZC4NCg0KVGhpcyBjdXJyZW50bHkgd2lsbCBub3Qgd29yayBpZiBlaXRoZXIgYXJndW1l
+bnQgaXMgbG9uZ2VyIHRoYW4gdHdvDQpjaGFyYWN0ZXJzLiBcKFN1cmUgd2lzaCBFbWFjcyBMaXNw
+IGhhZCB0aGUgUGVybCBzdWJzdGl0dXRpb24NCm9wZXJhdG9yIVwpIg0KDQogIChsZXQqICgoc3Rh
+cnRsZW4gKGxlbmd0aCBzdGFydCkpDQoJIChlbmRsZW4gKGxlbmd0aCBlbmQpKQ0KCSAoc3RhcnRz
+dGFydGNoYXIgKGFyZWYgc3RhcnQgMCkpDQoJIChzdGFydHN0YXJ0IChiYy1wcm90ZWN0LWNoYXIg
+c3RhcnRzdGFydGNoYXIpKQ0KCSAoc3RhcnRlbmQgKGJjLXByb3RlY3QtY2hhciAoaWYgKD4gc3Rh
+cnRsZW4gMSkgDQoJCQkJCShhcmVmIHN0YXJ0ICgxLSBzdGFydGxlbikpKSkpDQoJIChlbmRzdGFy
+dCAoaWYgKD4gZW5kbGVuIDApIA0KCQkgICAgICAgKGNvbmNhdCAoYmMtcHJvdGVjdC1jaGFyIChh
+cmVmIGVuZCAwKSkgIisiKQ0KCQkgICAgICIiKSkNCgkgKGVuZGVuZCAoYmMtcHJvdGVjdC1jaGFy
+IChpZiAoPiBlbmRsZW4gMSkNCgkJCQkgICAgICAoYXJlZiBlbmQgKDEtIGVuZGxlbikpKSkpDQoJ
+ICkNCg0KICAgIChzZXRxIGJjLWNvbW1lbnQtc3RhcnQgKGNvbmNhdCBzdGFydCAiICIpIA0KCSAg
+YmMtY29tbWVudC1lbmQgKGNvbmNhdCAiICIgZW5kKQ0KCSAgYmMtc3RhcnQtZmlyc3QtY2hhciAo
+YmMtYW5hbHl6ZS1jb21tZW50LXN0YXJ0KSkNCg0KICAgIChtYWtlLWxvY2FsLXZhcmlhYmxlICdj
+b21tZW50LXN0YXJ0KQ0KICAgIChtYWtlLWxvY2FsLXZhcmlhYmxlICdjb21tZW50LWVuZCkNCiAg
+ICAoaWYgKGFuZCAoYm91bmRwICdjb21tZW50LXN0YXJ0KSAoc3RyaW5ncCBjb21tZW50LXN0YXJ0
+KSkNCgluaWwNCiAgICAgIChzZXRxIGNvbW1lbnQtc3RhcnQgYmMtY29tbWVudC1zdGFydCANCgkg
+ICAgY29tbWVudC1lbmQgYmMtY29tbWVudC1lbmQpKQ0KICAgIChpZiAoYW5kIChib3VuZHAgJ2Nv
+bW1lbnQtc3RhcnQtc2tpcCkgKHN0cmluZ3AgY29tbWVudC1zdGFydC1za2lwKSkNCgluaWwNCiAg
+ICAgIChzZXRxIGNvbW1lbnQtc3RhcnQtc2tpcCAoYmMtbWFrZS1zdGFydC1za2lwIHN0YXJ0KSkp
+DQoNCg0KICAgIChjb25jYXQgIlteIiAoY2hhci10by1zdHJpbmcgc3RhcnRzdGFydGNoYXIpICJd
+IiANCgkgICAgc3RhcnRzdGFydCBzdGFydGVuZCANCgkgICAgIitbIFx0XSpcXCguKlxcKSIgDQoJ
+ICAgIGVuZHN0YXJ0IGVuZGVuZCkpKQ0KOw0KOzs7XyAgICB8IGJjLXByb3RlY3QtY2hhcg0KKGRl
+ZnVuIGJjLXByb3RlY3QtY2hhciAoY2hhcikNCiAgKGlmIChudWxsIGNoYXIpDQogICAgICAiIg0K
+ICAgIChpZiAobWVtcSBjaGFyICcoPy4gPyogPysgP1sgP10gP14gPyQgP1xcICkpDQoJKGNvbmNh
+dCAiXFwiIChjaGFyLXRvLXN0cmluZyBjaGFyKSkNCiAgICAgIChjaGFyLXRvLXN0cmluZyBjaGFy
+KSkpKQ0KDQo7Ozs7PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09
+PT09PT09PT09PT09PT09PT09PT09PT09PQ0KOzs7XyAgICB8IGJjLWFuYWx5emUtY29tbWVudC1z
+dGFydA0KKGRlZnVuIGJjLWFuYWx5emUtY29tbWVudC1zdGFydCAoKQ0KICAiUmV0dXJuIHRoZSBm
+aXJzdCBjaGFyYWN0ZXIgb2YgYGJjLWNvbW1lbnQtc3RhcnQnLg0KVGhpcyB1c2VkIHRvIGJlIG1v
+cmUgY29tcGxleC4gIEl0IGRvZXNuJ3QgcmVhbGx5IG5lZWQgdG8gYmUgYSBzZXBhcmF0ZQ0KZnVu
+Y3Rpb24gbm93LiINCiAgKGFyZWYgYmMtY29tbWVudC1zdGFydCAwKSkNCg0KOzs7Oz09PT09PT09
+PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09
+PT09PT09PQ0KOzs7XyAgICB8IGJjLW1ha2UtbG9va2luZy1hdC1yZWdleHANCihkZWZ1biBiYy1t
+YWtlLWxvb2tpbmctYXQtcmVnZXhwIChzdHJpbmcpDQoNCiAgIlJldHVybiBhIHJlZ3VsYXIgZXhw
+cmVzc2lvbiBzdWl0YWJsZSBmb3IgYGJjLWNvbW1lbnQtbG9va2luZy1hdC1yZWdleHAnLiAgDQoN
+ClNUUklORyBzaG91bGQgY29udGFpbiBhIHJlZ3VsYXIgZXhwcmVzc2lvbiBhcHByb3ByaWF0ZSBm
+b3INCmBiYy1jb21tZW50LXJlZ2V4cCcuICBJdCB3aWxsIGJlIHBhcnNlZCB0byByZW1vdmUgdGhl
+IHBhdHRlcm4gYXQgdGhlDQpiZWdpbm5pbmcgdGhhdCBtYXRjaGVzIGEgY2hhcmFjdGVyIGJlZm9y
+ZSB0aGUgY29tbWVudCBkZWxpbWl0ZXIuIg0KDQo7IEhhdmUgeW91IGV2ZXIgdHJpZWQgdG8gcGFy
+c2UgYSByZWdleHAgd2l0aCBhbm90aGVyIHJlZ2V4cD8NCjsgS2lkcywgZG9uJ3QgdHJ5IHRoaXMg
+YXQgaG9tZSEgIA0KDQo7IFRoaXMgcmVnZXhwICh0aGUgZmlyc3QgYXJnIHRvIGBzdHJpbmctbWF0
+Y2gnKSBtZXJpdHMgc29tZQ0KOyBleHBsYW5hdGlvbjogSXQgbG9va3MgZm9yIGEgbGVmdC1icmFj
+a2V0IGZvbGxvd2VkIGJ5IG9uZSBvciBtb3JlDQo7IG5vbi1yaWdodC1icmFja2V0IGNoYXJhY3Rl
+cnMgZm9sbG93ZWQgYnkgYSByaWdodCBicmFja2V0LiAgVGhlIHdob2xlDQo7IHBhdHRlcm4gaXMg
+YW5jaG9yZWQgdG8gdGhlIGJlZ2lubmluZyBvZiB0aGUgc3RyaW5nLg0KDQogIChpZiAoc3RyaW5n
+LW1hdGNoICJeXFxbW15dXStcXF0iIHN0cmluZykNCiAgICAgIChzdWJzdHJpbmcgc3RyaW5nICht
+YXRjaC1lbmQgMCkpKSkNCg0KOzs7Oz09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09
+PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT0NCjs7O18gICBvIFRoZSBlbmdpbmVz
+DQo7OztfICAgIHwgYmMtZmlsbC1lbmdpbmUNCihkZWZ1biBiYy1maWxsLWVuZ2luZSAobW90aW9u
+ICZvcHRpb25hbCBzcXVlZXplIG5vLXRhYiBuby1yZXNoYXBlKQ0KICAiQmxvY2stZmlsbCB0aGUg
+YmxvY2sgY29tbWVudCBzdXJyb3VuZGluZyB0aGUgY3VycmVudCBsaW5lLCB3aXRoDQpvcHRpb25h
+bCBtb3ZlbWVudCB1cCBvciBkb3duIGluIHRoZSBidWZmZXIuICBUaGUgY29tbWVudCBpcyB0YWtl
+biB0bw0KY29uc2lzdCBvZiBhbGwgdGhlIHRleHQgaW4gdGhlIHJpZ2h0LW1hcmdpbiBjb21tZW50
+cyBvbiBjb25jZWN1dGl2ZQ0KbGluZXMgYWRqYWNlbnQgdG8gdGhlIGN1cnJlbnQgbGluZS4gIElm
+ICdtb3Rpb24nIGlzIHplcm8sIHRleHQgaXMNCnBhcmFncmFwaCBmaWxsZWQgdG8gd2lkdGggKGNv
+bHVtbnMpIG5lYXJlc3QgaXRzIHByZXNlbnQgd2lkdGggdGhhdA0Kd2lsbCBmaXQgaW4gdGhlIHNw
+YWNlIGF2YWlsYWJsZSB0byB0aGUgcmlnaHQgb2YgdGhlIGNvZGUuICBJZiAnbW90aW9uJw0KaXMg
+bm9uemVybywgYXR0ZW1wdCB0byBtb3ZlIHRoZSBjb21tZW50IGRvd24gYnkgdGhhdCBtYW55IGxp
+bmVzICh1cCBpZg0KbmVnYXRpdmUpLiINCg0KICAobGV0Kg0KICAgICAgKA0KICAgICAgIChjdXJy
+ZW50LXBvaW50IChwb2ludCkpDQogICAgICAgdG9wIGxpbS10b3Agc2F2ZS1wb2ludCBuby1jb2Rl
+DQogICAgICAgZmlyc3QtbGluZSBsYXN0LWxpbmUgDQogICAgICAgYm9keS1maXJzdC1saW5lIGJv
+ZHktbGFzdC1saW5lDQogICAgICAgY29sdW1uIGluaXRpYWwtd2lkdGggaW5pdGlhbC1jb2x1bW4N
+CiAgICAgICBsaW5lcy1uZWVkZWQgd2hlcmUgd2h5IHJlc3VsdA0KICAgICAgIChvbGQtZmlyc3Qt
+bWFya2VyIChtYWtlLW1hcmtlcikpDQogICAgICAgKG5ldy1maXJzdC1tYXJrZXIgKG1ha2UtbWFy
+a2VyKSkNCiAgICAgICBuZXctZmlyc3QgbmV3LWxhc3QgY2hhbmdlLWJlZ2lubmluZyBjaGFuZ2Ut
+ZW5kDQogICAgICAgKQ0KICAgIA0KICAgICh1bndpbmQtcHJvdGVjdA0KCShwcm9nbg0KCSAgKHNl
+dHEgDQoJICAgcmVzdWx0DQoJICAgKGNhdGNoICdmYWlsdXJlDQoJICAgICAoYmMtZmx1c2gtY2Fj
+aGVzKQ0KCSAgICAgKGJjLWJ1bXAtY291bnRlcnMpDQoJICAgICAoYmMtbXNldHEgKGZpcnN0LWxp
+bmUgbGFzdC1saW5lIG5vLWNvZGUpIChiYy1maW5kLWNvbW1lbnQpKQ0KCSAgICAgKHNldHEgDQo7
+OzsJCXJhbmdlIChiYy1maW5kLWNvbW1lbnQpDQo7OzsJCWZpcnN0LWxpbmUgKGNhciByYW5nZSkN
+Cjs7OwkgICAgICBmaXJzdC1saW5lLWNoYXIgZmlyc3QtbGluZSANCgkgICAgICBuZXctZmlyc3Qg
+Zmlyc3QtbGluZQ0KOzs7CSAgICAgIGxhc3QtbGluZSAoY2RyIHJhbmdlKQ0KOzs7CSAgICAgIGxh
+c3QtbGluZS1jaGFyIGxhc3QtbGluZSkNCgkgICAgICBuZXctbGFzdCBsYXN0LWxpbmUpDQoJICAg
+ICAoYmMtbXNldHEgKGJvZHktZmlyc3QtbGluZSBib2R5LWxhc3QtbGluZSBpbml0aWFsLXdpZHRo
+DQoJCQkJCW5pbCBuaWwgaW5pdGlhbC1jb2x1bW4pDQoJCSAgICAgICAoYmMtYW5hbHl6ZS1jb21t
+ZW50IGZpcnN0LWxpbmUgbGFzdC1saW5lKSkNCjs7OwkJIGJvZHktcmFuZ2UgKGJjLWFuYWx5emUt
+Y29tbWVudCBmaXJzdC1saW5lIGxhc3QtbGluZSkNCjs7OwkJIGJvZHktZmlyc3QtbGluZSAoY2Fy
+IGJvZHktcmFuZ2UpDQo7OzsJCSBib2R5LWxhc3QtbGluZSAoY2FyIChjZHIgYm9keS1yYW5nZSkp
+DQoJICAgICAoc2V0cQ0KCSAgICAgIHNhdmUtcG9pbnQgKGJjLXNhdmUtZXhjdXJzaW9uIGN1cnJl
+bnQtcG9pbnQgZmlyc3QtbGluZSANCgkJCQkJICAgIGJvZHktZmlyc3QtbGluZSBib2R5LWxhc3Qt
+bGluZQ0KCQkJCQkgICAgbGFzdC1saW5lKQ0KCSAgICAgIGluaXRpYWwtd2lkdGggKG1pbiBiYy1y
+aWdodC1tYXJnaW4gaW5pdGlhbC13aWR0aCkpDQoJICAgICANCgkgICAgIChjb25kDQoJICAgICAg
+KChvciBuby10YWIgbm8tcmVzaGFwZSkNCgkgICAgICAgKHNldHENCgkJaW5pdGlhbC1jb2x1bW4g
+KG1heCAxIGluaXRpYWwtY29sdW1uKSkpDQoJICAgICAgKHQNCgkgICAgICAgKHNldHENCgkJaW5p
+dGlhbC1jb2x1bW4gKG1heCAxIChtaW4gaW5pdGlhbC1jb2x1bW4NCgkJCQkJICAgKC0gYmMtRy1y
+bS1taW51cy1zdHVmZiANCgkJCQkJICAgICAgKG1heCAxIGluaXRpYWwtd2lkdGgpKSkpDQo7OzsJ
+CWluaXRpYWwtZGVsdGEgKG1vZCBpbml0aWFsLWNvbHVtbiBiYy10YWItc3BhY2luZykNCgkJaW5p
+dGlhbC1jb2x1bW4NCgkJKG9yIChiYy1uZXh0LXRhYi1zdG9wICdsZWZ0IGluaXRpYWwtY29sdW1u
+ICdtYXliZSkgMSkNCjs7OwkJaW5pdGlhbC1jb2x1bW4gKG1heCAxICgtIGluaXRpYWwtY29sdW1u
+IGluaXRpYWwtZGVsdGEpKQ0KCQkpKSkNCgkgICAgIA0KCSAgICAgKHNldC1tYXJrZXIgb2xkLWZp
+cnN0LW1hcmtlciBmaXJzdC1saW5lKQ0KCSAgICAgKGJjLWdldC10ZXh0IGJvZHktZmlyc3QtbGlu
+ZSBib2R5LWxhc3QtbGluZSkNCgkgICAgICh1bndpbmQtcHJvdGVjdA0KCQkgKHByb2duDQoJCSAg
+IChjb25kDQoJCSAgICAoKGVxIHRoaXMtY29tbWFuZCAnYmMtZmlsbCkgbmlsKQ0KCQkgICAgKCht
+ZW1xIGxhc3QtY29tbWFuZCBiYy1mb3JtYXQtY29tbWFuZHMpDQoJCSAgICAgKHNldHEgaW5pdGlh
+bC1jb2x1bW4gYmMtcGhhbnRvbS1jb2x1bW4pKQ0KCQkgICAgKChtZW1xIHRoaXMtY29tbWFuZA0K
+CQkJICAgJyhiYy1yYWlzZSBiYy1yYWlzZS1mbG93IGJjLWxvd2VyIGJjLWxvd2VyLWZsb3cpKQ0K
+CQkgICAgIChzZXRxIGJjLXBoYW50b20tY29sdW1uIGluaXRpYWwtY29sdW1uKSkpDQoNCgkJICAg
+OzsgVGhlIGZpcnN0LWxpbmUgb2YgYSBjb21tZW50IG11c3Qgc29tZXRpbWVzIGJlIHByZXNlcnZl
+ZA0KCQkgICA7OyBhY3Jvc3MgaW52b2NhdGlvbnMuIEZvciBleGFtcGxlLCBpZiBhIGNvbW1lbnQg
+aXMNCgkJICAgOzsgbmFycm93ZWQsIHRoZW4gaW1tZWRpYXRlbHkgd2lkZW5lZCwgaXQgc2hvdWxk
+IHJldHVybiB0bw0KCQkgICA7OyBpdHMgb3JpZ2luYWwgbG9jYXRpb24uIFNpbmNlIHRoZSBuYXJy
+b3dpbmcgY291bGQgaGF2ZQ0KCQkgICA7OyByYWlzZWQgdGhlIGZpcnN0IGxpbmUsIHdlIG11c3Qg
+c2F2ZSB0aGUgaW5pdGFsIGZpcnN0DQoJCSAgIDs7IGxpbmUgYXMgYmMtcHJlZi1maXJzdC1saW5l
+LiAgU2luY2UgbGluZXMgd2lsbCBnZXQNCgkJICAgOzsgc2NyZXdlZCB1cCB3aGVuIHdlIGNsZWFu
+IHVwIGluc2VydGVkIG5ld2xpbmVzLCB1c2UgYQ0KCQkgICA7OyBtYXJrZXIuICBXZSB3aWxsIGNv
+bnZlcnQgdGhpcyB0byBhIGxpbmUgbnVtYmVyIGF0IHRoZQ0KCQkgICA7OyBlbmQgb2YgdGhlIGZ1
+bmN0aW9uLg0KDQoJCSAgIChzZXQtbWFya2VyIGJjLXN0YXJ0LW1hcmtlcgk7IFRoaXMgd2lsbCBn
+ZXQgY2hhbmdlZCBzZXQgYnkNCgkJCSAgICAgICBmaXJzdC1saW5lKQk7IGJjLW1vdmVpdCBpZiBz
+dWNjZXNzZnVsLg0KDQoJCSAgIChnb3RvLWNoYXIgZmlyc3QtbGluZSkNCgkJICAgKGlmIChhbmQg
+KGJvYnApICg8IG1vdGlvbiAwKSkNCgkJICAgICAgICh0aHJvdyAnZmFpbHVyZSAiQmVnaW5uaW5n
+IG9mIGJ1ZmZlciIpKQ0KCQkgICAoZm9yd2FyZC1saW5lIG1vdGlvbikJDQoJCSAgIChzZXRxIGxp
+bS10b3AgKGlmICg+IG1vdGlvbiAwKSAocG9pbnQpKSkNCgkJICAgKGJjLW1zZXRxIChjb2x1bW4g
+dG9wIGxpbmVzLW5lZWRlZCB3aGVyZSB3aHkpDQoJCQkgICAgIChiYy1maXQtbW92ZSBpbml0aWFs
+LWNvbHVtbiANCgkJCQkJICBmaXJzdC1saW5lIGxhc3QtbGluZQ0KCQkJCQkgIGxpbS10b3Agc3F1
+ZWV6ZSBuby10YWIgbm8tcmVzaGFwZQ0KCQkJCQkgIChpZiAoPiBtb3Rpb24gMCkgDQoJCQkJCSAg
+ICAgIG5vLWNvZGUgOyBkb3duDQoJCQkJCSAgICAobm90IG5vLWNvZGUpKSkpIDsgdXANCgkJICAg
+DQoJCSAgIDs7IFRoZSB0cmVhZG1pbGwgcHJvYmxlbSB3aGVuIG1vdGlvbiBpcyBkb3duOiBJZiB0
+aGUgbGluZQ0KCQkgICA7OyBvZiBjb2RlIGp1c3QgYmVsb3cgdGhlIGNvbW1lbnQgaXMgdmVyeSB3
+aWRlIChlLmcuIGFsbA0KCQkgICA7OyB0aGUgd2F5IHRvIHRoZSByaWdodCBtYXJnaW4pLCBgYmMt
+Zml0LW1vdmUnIHdpbGwNCgkJICAgOzsgZGV0ZXJtaW5lIHRoYXQgd2UgbXVzdCBwdXNoIHRoYXQg
+bGluZSBkb3duIChpLmUuIHdlDQoJCSAgIDs7IG11c3QgaW5zZXJ0IGJsYW5rIGxpbmVzIGJlZm9y
+ZSBpdCkuICBUaGUgbnVtYmVyIG9mDQoJCSAgIDs7IGJsYW5rIGxpbmVzIHRvIGluc2VydCB3aWxs
+IGJlIHRoZSBzYW1lIGFzIHRoZSBudW1iZXIgb2YNCgkJICAgOzsgbGluZXMgd2UgYXJlIHRyeWlu
+ZyB0byBtb3ZlIGRvd24sIGJlY2F1c2UgaW4gc3VjaCBjYXNlcw0KCQkgICA7OyB3ZSBuZXZlciBy
+ZXNoYXBlIHRoZSBjb21tZW50Lg0KCQkgICA7Ow0KCQkgICA7OyBBcyBgYmMtbG93ZXInIG9yIGBi
+Yy1sb3dlci1mbG93JyBpcyBjYWxsZWQgcmVwZWF0ZWRseSwNCgkJICAgOzsgdGhlIGNvbW1lbnQg
+ZXZlbnR1YWxseSBzaXRzIG9uIGxpbmVzIGJ5IGl0c2VsZiwgd2l0aA0KCQkgICA7OyBubyBjb2Rl
+IHRvIGl0cyBsZWZ0IGFueXdoZXJlLiAgVGhlIHZlcnkgd2lkZSBsaW5lIGhhcw0KCQkgICA7OyBi
+ZWVuIHB1c2hlZCBkb3duIHRoZSBudW1iZXIgb2YgbGluZXMgZXF1YWwgdG8gdGhlDQoJCSAgIDs7
+IGhlaWdodCBvZiB0aGUgY29tbWVudC4gIA0KCQkgICA7OyANCgkJICAgOzsgQSBzdWJzZXF1ZW50
+IGBsb3dlcicgb3BlcmF0aW9uIHdvdWxkIHB1c2ggdGhlIHdpZGUgbGluZQ0KCQkgICA7OyBkb3du
+IGZ1cnRoZXIgaWYgd2UgdG9vayB0aGUgYWR2aWNlIG9mIGBiYy1maXQtbW92ZScsDQoJCSAgIDs7
+IGJ1dCB0aGlzIGlzIG5vdCB0aGUgYmVoYXZpb3Igd2Ugd2FudC4gIEF0IHRoaXMgcG9pbnQsDQoJ
+CSAgIDs7IHdlIHdhbnQgdG8ganVtcCBvdmVyIHRoZSB3aWRlIGxpbmUgc28gdGhhdCB3ZSBjYW4N
+CgkJICAgOzsgY29udGludWUgbW92aW5nIHRoZSBjb21tZW50IGRvd24uDQoJCSAgIDs7IA0KCQkg
+ICA7OyBXZSBoYW5kbGUgdGhpcyBhcyBhIHNwZWNpYWwgY2FzZTogd2hlbiB0aGUgY29tbWVudCBp
+cw0KCQkgICA7OyBpbml0aWFsbHkgb24gbGluZXMgYnkgaXRzZWxmIChpLmUuIG5vLWNvZGUgaXMg
+dCkgYW5kDQoJCSAgIDs7IHRoZSBudW1iZXIgb2YgbGluZXMtbmVlZGVkIHJldHVybmVkIGJ5IGBi
+Yy1maXQtbW92ZScNCgkJICAgOzsgZXF1YWxzIHRoZSBudW1iZXIgb2YgbGluZXMgd2UgYXJlIHRy
+eWluZyB0byBtb3ZlIGRvd24uIA0KDQoJCSAgIChjb25kDQoJCSAgICAoKGFuZCBuby1jb2RlICg+
+IG1vdGlvbiAwKSAoPSBsaW5lcy1uZWVkZWQgbW90aW9uKSkNCgkJICAgICAoY29uZA0KCQkgICAg
+ICAoKGVxIHdoeSAnY29tbWVudC1iZWxvdykNCgkJICAgICAgIChlcnJvciAiVGhlcmUgaXMgYW5v
+dGhlciBjb21tZW50IGluIHRoZSB3YXkuIikpDQoJCSAgICAgICgoZXEgd2h5ICdsaW5lLXRvby13
+aWRlKQ0KCQkgICAgICAgKGdvdG8tY2hhciBsYXN0LWxpbmUpDQoJCSAgICAgICAoZm9yd2FyZC1s
+aW5lIDIpDQoJCSAgICAgICAoc2V0cSB0b3AgKHBvaW50KQ0KCQkJICAgICBsaW5lcy1uZWVkZWQg
+KGJjLWNvdW50LWxpbmVzLTEgZmlyc3QtbGluZQ0KCQkJCQkJCSAgICBsYXN0LWxpbmUpDQoJCQkg
+ICAgIHdoZXJlIDApDQoJCSAgICAgICAoaWYgKGJjLW9wYXJzZS1saW5lKQ0KCQkJICAgKHNldHEg
+bGluZXMtbmVlZGVkICgxKyBsaW5lcy1uZWVkZWQpKSkpDQoJCSAgICAgICgoZXEgd2h5ICdib3R0
+b20tb2YtYnVmZmVyKQ0KCQkgICAgICAgKGVycm9yICJFbmQgb2YgYnVmZmVyLiIpKQ0KCQkgICAg
+ICAodA0KCQkgICAgICAgKGVycm9yICJIZXJlJ3Mgb25lOiAlcyIgd2h5KSkpKSkNCg0KCQkgICAo
+aWYgKGVxIHRoaXMtY29tbWFuZCAnYmMtZmlsbCkNCgkJICAgICAgIChzZXRxIGJjLXBoYW50b20t
+Y29sdW1uIGNvbHVtbikpDQoJCSAgIA0KCQkgICAoYmMtbXNldHENCgkJICAgIChuZXctZmlyc3Qg
+bmV3LWxhc3QgY2hhbmdlLWJlZ2lubmluZyBjaGFuZ2UtZW5kKQ0KCQkgICAgKGJjLW1vdmVpdCB0
+b3AgZmlyc3QtbGluZSBsYXN0LWxpbmUgY29sdW1uDQoJCQkgICAgICAgbGluZXMtbmVlZGVkIHdo
+ZXJlIHQpKQ0KOzs7CQkgICAgZmlyc3QtbGluZS1jaGFyIChjYXIgbmV3LXJhbmdlKQ0KOzs7CQkg
+ICAgbGFzdC1saW5lLWNoYXIgKG50aCAxIG5ldy1yYW5nZSkpDQoJCSAgIG5pbCk7OyBlbmQgcHJv
+Z24NCgkgICAgICAgDQoJICAgICAgIChzZXQtYnVmZmVyIGJjLUctY29kZS1idWZmZXIpOzsgY2xl
+YW51cA0KCSAgICAgICAoYmMtcmVzdG9yZS1leGN1cnNpb24gc2F2ZS1wb2ludCBuZXctZmlyc3Qg
+bmV3LWxhc3QpDQoJICAgICAgIChzZXQtbWFya2VyIG5ldy1maXJzdC1tYXJrZXIgbmV3LWZpcnN0
+KQ0KCSAgICAgICApKSk7OyBlbmQgc2V0cSByZXN1bHQNCg0KCSAgKGlmIHJlc3VsdAkJCQk7IHdh
+cyB0aGVyZSBhIHByb2JsZW0/DQoJICAgICAgKHByb2duDQoJCShiZWVwIHQpCQkJOyBzaWduYWwg
+ZmFpbHVyZQ0KCQkobWVzc2FnZSAiJXMlcyIgcmVzdWx0DQoJCQkgKGlmIGJjLXNob3ctZmlsbC1j
+b3VudCANCgkJCSAgICAgKGZvcm1hdCAiIChGaWxsIGNvdW50OiAlZCkiIGJjLWZpbGwtY291bnQp
+ICIiKSkpDQoJICAgIChzYXZlLWV4Y3Vyc2lvbg0KCSAgICAgIChiYy1jbGVhbnVwLW5ld2xpbmVz
+IGNoYW5nZS1iZWdpbm5pbmcgY2hhbmdlLWVuZCkNCgkgICAgICAoYmMtc2V0LXByZWYtZmlyc3Qt
+bGluZSkpDQoJICAgIChpZiBiYy1zaG93LWZpbGwtY291bnQgKG1lc3NhZ2UgIkZpbGwgY291bnQ6
+ICVkIiBiYy1maWxsLWNvdW50KQ0KCSAgICAgIChtZXNzYWdlICJDb2x1bW46ICVkIiBjb2x1bW4p
+KQ0KCSAgICApKQ0KICAgICAgKHNldC1tYXJrZXIgb2xkLWZpcnN0LW1hcmtlciBuaWwpDQogICAg
+ICAoc2V0LW1hcmtlciBuZXctZmlyc3QtbWFya2VyIG5pbCkNCiAgICAgIChzZXQtbWFya2VyIGJj
+LXN0YXJ0LW1hcmtlciBuaWwpKSkpDQoNCjs7Ozs9PT09PT09PT09PT09PT09PT09PT09PT09PT09
+PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09DQo7OztfICAgIHwgYmMt
+bmFycm93LWVuZ2luZQ0KKGRlZnVuIGJjLW5hcnJvdy1lbmdpbmUgKG5hcnJvdyBzcXVlZXplKQ0K
+ICAiQmxvY2stZmlsbCB0aGUgYmxvY2sgY29tbWVudCBzdXJyb3VuZGluZyB0aGUgY3VycmVudCBs
+aW5lLCBhbmQNCmVpdGhlciBuYXJyb3cgKGlmIE5BUlJPVyBpcyBwb3NpdGl2ZSkgb3Igd2lkZW4g
+dGhlIG51bWJlciBvZiBjb2x1bW5zDQp0aGF0IHRoZSBjb21tZW50IHRleHQgb2NjdXBpZXMuICBU
+aGUgY29tbWVudCBpcyB0YWtlbiB0byBjb25zaXN0IG9mDQphbGwgdGhlIHRleHQgaW4gdGhlIHJp
+Z2h0LW1hcmdpbiBjb21tZW50cyBvbiBjb25jZWN1dGl2ZSBsaW5lcw0KYWRqYWNlbnQgdG8gdGhl
+IGN1cnJlbnQgbGluZS4gIE5hcnJvd2luZyBvciB3aWRlbmluZyBhdHRlbXB0cyB0bw0KYW5jaG9y
+IHRoZSBmaXJzdCBsaW5lIG9mIHRoZSBjb21tZW50IHRvIGl0cyBjdXJyZW50IGxpbmUgaW4gdGhl
+DQpidWZmZXIsIHdpdGggdGhlIHJlc3Qgb2YgdGhlIGNvbW1lbnQgbW92aW5nIHVwIG9yIGRvd24g
+dG8gYWNjb21vZGF0ZQ0KdGhlIGNoYW5nZS4gIElmIHRoaXMgaXMgbm90IHBvc3NpYmxlLCB0aGUg
+Y29tbWVudCBtYXkgYmUgbW92ZWQgdXAgc29tZQ0KbGluZXMuICBJZiBhIHNlcmllcyBvZiBiYy10
+YWxsZXIgYW5kIGJjLXNob3J0ZXIgY29tbWFuZHMgYXJlIGV4ZWN1dGVkDQpzZXF1ZW50aWFsbHks
+IHRoZSBvcmlnaW5hbCBmaXJzdCBsaW5lIG9mIHRoZSBjb21tZW50IGlzIHJlbWVtYmVyZWQgYW5k
+DQp0aGUgY29tbWVudCB3aWxsIGJlIHBsYWNlZCBhcyBjbG9zZSBhcyBwb3NzaWJsZSB0byB0aGVy
+ZSBlYWNoIHRpbWUuDQoNCklmIFNRVUVFWkUgaXMgbm9uLW5pbCwgc3F1ZWV6ZSB0aGUgcmVzdWx0
+aW5nIHRleHQgdG8gYSByZWN0YW5nbGUsDQpvdGhlcndpc2UgcGxhY2UgaXQgYXQgdGhlIG5lYXJl
+c3QgdGFiIHN0b3AuIg0KDQogICh1bndpbmQtcHJvdGVjdA0KICAgICAgKGxldCoNCgkgICgNCjs7
+OwkgICAoY29kZS1idWZmZXIgKGN1cnJlbnQtYnVmZmVyKSkNCgkgICAoY3VycmVudC1wb2ludCAo
+cG9pbnQpKQ0KCSAgIHNhdmUtcG9pbnQNCgkgICBmaXJzdC1saW5lIGxhc3QtbGluZSBmaXJzdC1s
+aW5lLWNoYXIgbGFzdC1saW5lLWNoYXINCgkgICBmaXJzdC1saW5lLWxpbmUNCgkgICBib2R5LXJh
+bmdlIGJvZHktZmlyc3QtbGluZSBib2R5LWxhc3QtbGluZQ0KCSAgIGluaXRpYWwtd2lkdGggaW5p
+dGlhbC1jb2x1bW4gY29sdW1uIGluZGVudA0KCSAgIG5hcnJvd2VkLWFyZWEgcmVzdWx0IG5ldy1y
+YW5nZSANCjs7OwkgICBuby1jb2RlIHJhbmdlIGxpbS10b3AgDQoJICAgKQ0KDQoJKHNldHEgDQoJ
+IHJlc3VsdA0KCSAoY2F0Y2ggJ2ZhaWx1cmUNCgkgICAoYmMtZmx1c2gtY2FjaGVzKQ0KCSAgIChi
+Yy1idW1wLWNvdW50ZXJzKQ0KCSAgIChiYy1tc2V0cSAoZmlyc3QtbGluZSBsYXN0LWxpbmUpIChi
+Yy1maW5kLWNvbW1lbnQpKQ0KCSAgIChzZXRxIGluZGVudCAoYmMtY29tcHV0ZS1pbmRlbnQgZmly
+c3QtbGluZSkpDQo7OzsJICAgKGlmIG5vLWNvZGUgKHNldHEgaW5kZW50IDIwKSkNCgkgICAoc2V0
+cSANCgkgICAgOzsJcmFuZ2UgKGJjLWZpbmQtY29tbWVudCkNCiAgICAgICAgICAgIDs7OwluYXJy
+b3cgKGlmICg+IG5hcnJvdyAwKSAxIC0xKQ0KCSAgICA7OwlmaXJzdC1saW5lIChjYXIgcmFuZ2Up
+DQoJICAgIGZpcnN0LWxpbmUtY2hhciBmaXJzdC1saW5lDQoJICAgIDs7CWxhc3QtbGluZSAoY2Ry
+IHJhbmdlKQ0KCSAgICBsYXN0LWxpbmUtY2hhciBsYXN0LWxpbmUNCgkgICAgYm9keS1yYW5nZSAo
+YmMtYW5hbHl6ZS1jb21tZW50IGZpcnN0LWxpbmUgbGFzdC1saW5lKQ0KCSAgICBib2R5LWZpcnN0
+LWxpbmUgKGNhciBib2R5LXJhbmdlKQ0KCSAgICBib2R5LWxhc3QtbGluZSAoY2FyIChjZHIgYm9k
+eS1yYW5nZSkpDQoJICAgIHNhdmUtcG9pbnQgKGJjLXNhdmUtZXhjdXJzaW9uIGN1cnJlbnQtcG9p
+bnQgZmlyc3QtbGluZQ0KCQkJCQkgIGJvZHktZmlyc3QtbGluZQ0KCQkJCQkgIGJvZHktbGFzdC1s
+aW5lIGxhc3QtbGluZSkNCgkgICAgaW5pdGlhbC13aWR0aCAobWluIGJjLXJpZ2h0LW1hcmdpbiAo
+bnRoIDIgYm9keS1yYW5nZSkpDQoJICAgIGluaXRpYWwtY29sdW1uIChudGggNSBib2R5LXJhbmdl
+KSkNCg0KCSAgICh1bndpbmQtcHJvdGVjdA0KCSAgICAgICAocHJvZ24NCg0KCQkgKGJjLWdldC10
+ZXh0IGJvZHktZmlyc3QtbGluZSBib2R5LWxhc3QtbGluZSkNCg0KCQkgOzsgV2l0aCB0aGUgY3Vy
+cmVudCB2ZXJzaW9uIG9mIGBiYy1maXQtbmFycm93JywgSSdtIG5vdCBzdXJlDQoJCSA7OyBpZiBg
+YmMtcHJlZi1maXJzdC1saW5lJyBkb2VzIGFueXRoaW5nIGFueW1vcmUuIFRoaXMNCgkJIDs7IGZ1
+bmN0aW9uIHdpbGwgbm90IHJlbG9jYXRlIHRoZSBjb21tZW50J3MgZmlyc3QgbGluZSB1bmRlcg0K
+CQkgOzsgYW55IGNpcmN1bXN0YW5jZXMsIHNvIGBmaXJzdC1saW5lJyBzaG91bGQgYWx3YXlzIGVx
+dWFsDQoJCSA7OyBwcmVmLWZpcnN0LWxpbmUgYW55d2F5Lg0KCQkgKHNldHEgZmlyc3QtbGluZS1s
+aW5lIChiYy1jb3VudC1saW5lcy0xLWZhc3QgMSBmaXJzdC1saW5lKSkNCgkJIChpZiAobWVtcSBs
+YXN0LWNvbW1hbmQgYmMtZm9ybWF0LWNvbW1hbmRzKQ0KCQkgICAgIChpZiAoPSBiYy1wcmVmLWZp
+cnN0LWxpbmUgZmlyc3QtbGluZS1saW5lKSBuaWwNCgkJICAgICAgIChkaW5nKQ0KCQkgICAgICAg
+KG1lc3NhZ2UgImJjLXByZWYtZmlyc3QtbGluZSAhPSBmaXJzdC1saW5lIikpDQoJCSAgIChzZXRx
+IGJjLXByZWYtZmlyc3QtbGluZSBmaXJzdC1saW5lLWxpbmUpKQ0KDQoJCSAoc2V0LWJ1ZmZlciBi
+Yy1HLWNvZGUtYnVmZmVyKQ0KCQkgKGJjLWdvdG8tbGluZS1mYXN0IGJjLXByZWYtZmlyc3QtbGlu
+ZSkNCgkJIChzZXQtbWFya2VyIGJjLXN0YXJ0LW1hcmtlciAocG9pbnQpKQ0KCQkgKGJlZ2lubmlu
+Zy1vZi1saW5lKQ0KCQkgKHNldHEgDQoJCSAgbmFycm93ZWQtYXJlYSANCgkJICAoYmMtZml0LW5h
+cnJvdyANCgkJICAgbmFycm93IGxhc3QtbGluZSBpbml0aWFsLWNvbHVtbiBmaXJzdC1saW5lIGxh
+c3QtbGluZQ0KCQkgICBzcXVlZXplIGluZGVudCkNCgkJICBjb2x1bW4gKGNhciBuYXJyb3dlZC1h
+cmVhKQ0KCQkgIA0KCQkgIDs7IFRoZSB3aWR0aCBvZiBhIGJsb2NrIGNvbW1lbnQgbXVzdCBzb21l
+dGltZXMgYmUNCgkJICA7OyBwcmVzZXJ2ZWQuIEZvciBleGFtcGxlLCBpZiBhIGNvbW1lbnQgaXMg
+bmFycm93ZWQsIHRoZW4NCgkJICA7OyBpbW1lZGlhdGVseSByYWlzZWQsIHRoZSB1c2VyIHByb2Jh
+Ymx5IHdhbnRzIHRoZSB3aWR0aA0KCQkgIDs7IHByZXNlcnZlZC4gT24gdGhlIG90aGVyIGhhbmQs
+IGlmIGEgY29tbWVudCBpcyBzaW1wbHkNCgkJICA7OyBmaWxsZWQsIHRoZW4gc3Vic2VxdWVudGx5
+IHJhaXNlZCwgdGhlIHdpZHRoIHNob3VsZCBub3QNCgkJICA7OyBiZSByZXN0cmljdGVkLCBleGNl
+cHQgYnkgY29tbWVudC1jb2x1bW4uIFRodXMgd2UgbmVlZCBhDQoJCSAgOzsgcGhhbnRvbSBjb21t
+ZW50IGNvbHVtbiB3aGljaCBtYW5pZmVzdHMgaXRzZWxmIGFueXRpbWUgd2UNCgkJICA7OyBhcmUg
+bWFraW5nIGEgc2VyaWVzIG9mIHNlcXVlbnRpYWwgcmFpc2VzLCBsb3dlcnMsDQoJCSAgOzsgbmFy
+cm93cywgYW5kIHdpZGVucy4gVGhlIHBoYW50b20gY29sdW1uIGNvbWVzIGludG8NCgkJICA7OyBl
+eGlzdGFuY2Ugd2hlbiBuYXJyb3cgb3Igd2lkZW4gaXMgZXhlY3V0ZWQsIGFuZA0KCQkgIDs7IGRp
+c3NhcGVhcnMgd2hlbiBhIGNvbW1hbmQgaXMgZXhlY3V0ZWQgdGhhdCBpcyBub3Qgb25lIG9mDQoJ
+CSAgOzsgdGhlIGZvdXIuDQoNCgkJICBiYy1waGFudG9tLWNvbHVtbiBjb2x1bW4NCgkJICANCgkJ
+ICBuZXctcmFuZ2UgKGJjLW1vdmVpdCANCgkJCSAgICAgKG50aCAxIG5hcnJvd2VkLWFyZWEpIGZp
+cnN0LWxpbmUgbGFzdC1saW5lIA0KCQkJICAgICBjb2x1bW4gKG50aCAyIG5hcnJvd2VkLWFyZWEp
+DQoJCQkgICAgIChudGggMyBuYXJyb3dlZC1hcmVhKSkNCgkJICBmaXJzdC1saW5lLWNoYXIgKGNh
+ciBuZXctcmFuZ2UpDQoJCSAgbGFzdC1saW5lLWNoYXIgKG50aCAxIG5ldy1yYW5nZSkpDQoJCSBu
+aWwpOzsgZW5kIHByb2duDQoJICAgICAoc2V0LWJ1ZmZlciBiYy1HLWNvZGUtYnVmZmVyKTs7IGNs
+ZWFudXANCgkgICAgIChiYy1yZXN0b3JlLWV4Y3Vyc2lvbiBzYXZlLXBvaW50IGZpcnN0LWxpbmUt
+Y2hhcg0KCQkJCSAgIGxhc3QtbGluZS1jaGFyKQ0KCSAgICAgKSkpOzsgZW5kIHNldHEgcmVzdWx0
+DQoJDQoJKGlmIHJlc3VsdAkJCTsgd2FzIHRoZXJlIGEgcHJvYmxlbT8NCgkgICAgKHByb2duDQoJ
+ICAgICAgKHNldC1idWZmZXIgYmMtRy1jb2RlLWJ1ZmZlcikNCgkgICAgICAoaWYgaW5pdGlhbC13
+aWR0aA0KCQkgIChzZXRxIGJjLXBoYW50b20tY29sdW1uDQoJCQkoLSBiYy1HLXJtLW1pbnVzLXN0
+dWZmIChtYXggMSBpbml0aWFsLXdpZHRoKSkpKQ0KCSAgICAgIChnb3RvLWNoYXIgY3VycmVudC1w
+b2ludCkNCgkgICAgICAoYmVlcCB0KQkJCTsgc2lnbmFsIGZhaWx1cmUNCgkgICAgICAobWVzc2Fn
+ZSAiJXMlcyIgcmVzdWx0DQoJCSAgICAgICAoaWYgYmMtc2hvdy1maWxsLWNvdW50IA0KCQkJICAg
+KGZvcm1hdCAiIChGaWxsIGNvdW50OiAlZCkiIGJjLWZpbGwtY291bnQpICIiKSkpDQoJICAoc2F2
+ZS1leGN1cnNpb24NCgkgICAgKGJjLWNsZWFudXAtbmV3bGluZXMgKG50aCAyIG5ldy1yYW5nZSkg
+KG50aCAzIG5ldy1yYW5nZSkpDQoJICAgIChiYy1zZXQtcHJlZi1maXJzdC1saW5lKSkNCgkgIChp
+ZiBiYy1zaG93LWZpbGwtY291bnQgKG1lc3NhZ2UgIkZpbGwgY291bnQ6ICVkIiBiYy1maWxsLWNv
+dW50KQ0KCSAgICAobWVzc2FnZSAiQ29sdW1uOiAlZCIgY29sdW1uKSkNCgkgICkpDQogICAgKHNl
+dC1tYXJrZXIgYmMtc3RhcnQtbWFya2VyIG5pbCkpKQ0KDQo7Ozs7PT09PT09PT09PT09PT09PT09
+PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PQ0KOzs7
+XyAgIG8gTW92aW5nIGNvbW1lbnQgdG8vZnJvbSBzY3JhdGNoIGJ1ZmZlciBvciBuZXcgcG9zaXRp
+b24NCjs7O18gICAgfCBiYy1tb3ZlaXQNCihkZWZ1biBiYy1tb3ZlaXQgKG5ldy1jb21tZW50LWJl
+Zy1jaGFyIG9sZC1jb21tZW50LWJlZy1jaGFyIA0KCQkgIG9sZC1jb21tZW50LWVuZC1jaGFyIGNv
+bHVtbiAmb3B0aW9uYWwgbGluZXMtbmVlZGVkDQoJCSAgd2hlcmUgc2V0LXN0YXJ0LW1hcmtlcikN
+CiAgIlJlbW92ZSB0aGUgcmlnaHQtbWFyZ2luIGNvbW1lbnRzIGZyb20gdGhlIGxpbmVzIGJldHdl
+ZW4NCk9MRC1DT01NRU5ULUJFRy1DSEFSIGFuZCBPTEQtQ09NTUVOVC1FTkQtQ0hBUiBpbmNsdXNp
+dmUsIGluY2x1ZGluZyB0aGUNCmNvbW1lbnQgZGVsaW1pdGVycy4gIFRoZW4gaW5zZXJ0IHRoZSBj
+b250ZW50cyBvZiBgYmMtRy1zY3JhdGNoLWJ1ZmZlcicgYXMNCnJpZ2h0LW1hcmdpbiBjb21tZW50
+cyBiZWdpbm5pbmcgb24gdGhlIGxpbmUgY29udGFpbmluZw0KTkVXLUNPTU1FTlQtQkVHLUNIQVIu
+ICBcKEFsbCBhcmUgYnVmZmVyIHBvc2l0aW9ucy5cKSAgUGFzcyBuaWwgZm9yDQpPTEQtQ09NTUVO
+VC1CRUctQ0hBUiBpZiBubyBjb21tZW50cyB0byBiZSByZW1vdmVkLg0KDQpJZiBDT0xVTU4gaXMg
+YW4gaW50ZWdlciwgaXQgaXMgdGhlIGNvbHVtbiBhdCB3aGljaCB0byBwbGFjZSB0aGUgbmV3bHkN
+CmZvcm1hdHRlZCBjb21tZW50LiAgSWYgaXQgaXMgYSBsaXN0LCB1c2UgZGVsaW1pdGVyIGFuZCBj
+b2x1bW4NCmluZm9ybWF0aW9uIGZyb20gdGhhdCBcKFNlZSBgYmMtYW5hbHl6ZS1jb21tZW50JyBm
+b3IgZm9ybWF0XCkuDQoNCklmIExJTkVTLU5FRURFRCBpcyBhbiBpbnRlZ2VyLCB0aGF0IG1hbnkg
+YmxhbmsgbGluZXMgYXJlIGFkZGVkIHRvDQphY2NvbW9kYXRlIHRoZSBib3R0b20gb2YgdGhlIGNv
+bW1lbnQgYXQgYSBsb2NhdGlvbiBXSEVSRSBsaW5lcyBmcm9tDQp0aGUgbmV3IGJlZ2lubmluZy4g
+IElmIFdIRVJFIGlzIG5lZ2F0aXZlLCB0aGUgYmxhbmsgbGluZXMgYXJlIGFkZGVkIGF0DQpORVct
+Q09NTUVOVC1CRUctQ0hBUiwgYW5kIHRoZSBjb21tZW50IGlzIHBsYWNlZCAtV0hFUkUgbGluZXMg
+YmVsb3cNCnRoYXQuIA0KDQpSZXR1cm5zIFwobmV3LWZpcnN0IG5ldy1sYXN0IGNoYW5nZS1iZWdp
+bm5pbmcgY2hhbmdlLWVuZFwpLCBhbGwgYnVmZmVyDQpwb3NpdGlvbnMuIg0KDQogIChsZXQgKDtu
+ZXctY29tbWVudC1iZWctbGluZQkJCTsgQ2Fubm90IHVzZSBwb3NpdGlvbnMgdG8NCjsJbmV3LWNv
+bW1lbnQtZW5kLWxpbmUJCQk7IGluZGljYXRlIGxpbmVzIG5vdywgYmVjYXVzZQ0KOzs7IG9sZC1j
+b21tZW50LWJlZy1saW5lIG9sZC1jb21tZW50LWVuZC1saW5lCTsgd2UgYXJlIGFib3V0IHRvIGRl
+bGV0ZSBzb21lDQoJY2hhbmdlLWJlZy1jaGFyIGNoYW5nZS1lbmQtY2hhcgkJOyB0ZXh0Lg0KCShi
+ZWZvcmUtY2hhbmdlLWZ1bnMgYmVmb3JlLWNoYW5nZS1mdW5jdGlvbnMpDQoJKGJlZm9yZS1jaGFu
+Z2UtZnVuIG5pbCk7amtoIGJlZm9yZS1jaGFuZ2UtZnVuY3Rpb24pDQoJKGFmdGVyLWNoYW5nZS1m
+dW5zIGFmdGVyLWNoYW5nZS1mdW5jdGlvbnMpDQoJKGFmdGVyLWNoYW5nZS1mdW4gbmlsKTtqa2gg
+YWZ0ZXItY2hhbmdlLWZ1bmN0aW9uKQ0KOzs7CShjb2RlLWJ1ZmZlciAoY3VycmVudC1idWZmZXIp
+KQ0KOzs7CShzY3JhdGNoLWJ1ZmZlciAoYmMtZ2V0LWJ1ZmZlci1jcmVhdGUpKQ0KOzs7ICAgICAo
+b2xkLWJlZy1tYXJrZXIgKG1ha2UtbWFya2VyKSkNCgkob2xkLWVuZC1tYXJrZXIgKG1ha2UtbWFy
+a2VyKSkNCgljb21tZW50LXJvd3MNCgkobmV3LWJlZy1tYXJrZXIgKG1ha2UtbWFya2VyKSkNCgko
+bmV3LWVuZC1tYXJrZXIgKG1ha2UtbWFya2VyKSkNCgkpDQogICAgKGlmIChub3Qgd2hlcmUpIChz
+ZXRxIHdoZXJlIDApKQ0KICAgICh1bndpbmQtcHJvdGVjdA0KCShzYXZlLWV4Y3Vyc2lvbg0KCSAg
+KHNldC1idWZmZXIgYmMtRy1zY3JhdGNoLWJ1ZmZlcikNCgkgIChzZXRxDQoJICAgY29tbWVudC1y
+b3dzDQoJICAgKGlmIChsaXN0cCBjb2x1bW4pIChsZW5ndGggY29sdW1uKQ0KCQkJCQk7IE1pbnVz
+IG9uZSBiZWNhdXNlIGJjLXNjcmF0Y2gtYnVmZmVyDQoJICAgICAoKyAoYmMtY291bnQtbGluZXMt
+MS1mYXN0CTsgaGFzIGFuIGV4dHJhIG5ld2xpbmUgYXQgdGhlIGVuZC4NCgkJIDEgKHBvaW50LW1h
+eCkpCQk7IE1pbnVzIGFub3RoZXIgYmVjYXVzZSB3ZSB3YW50IHRoZQ0KCQktMiBiYy1leHRyYS1s
+aW5lcykpKQk7IGJlZ2lubmluZyBvZiB0aGUgbGFzdCBsaW5lIG9mIHRoZSBuZXcNCgkJCQkJOyBj
+b21tZW50LCBub3QgdGhlIGZvbGxvd2luZyBsaW5lLg0KDQoJICAoc2V0LWJ1ZmZlciBiYy1HLWNv
+ZGUtYnVmZmVyKQ0KOwkgICAoc2V0cSBuZXctY29tbWVudC1iZWctbGluZSAoYmMtY291bnQtbGlu
+ZXMtMS1mYXN0DQo7CQkJCSAgICAgICAxIG5ldy1jb21tZW50LWJlZy1jaGFyKSkNCiAgICAgIA0K
+CSAgKGlmIG9sZC1jb21tZW50LWJlZy1jaGFyDQo7OzsJICAgIChzZXQtbWFya2VyIG9sZC1iZWct
+bWFya2VyIG9sZC1jb21tZW50LWJlZy1jaGFyKQ0KCSAgICAgIChzZXQtbWFya2VyIA0KCSAgICAg
+ICBvbGQtZW5kLW1hcmtlcg0KCSAgICAgICAocHJvZ24gKGdvdG8tY2hhciBvbGQtY29tbWVudC1l
+bmQtY2hhcikgKGVuZC1vZi1saW5lKSAocG9pbnQpKSkpDQoNCgkgIChnb3RvLWNoYXIgbmV3LWNv
+bW1lbnQtYmVnLWNoYXIpDQoJICAoc2V0LW1hcmtlciBuZXctYmVnLW1hcmtlciAocG9pbnQpKQ0K
+CSAgKGZvcndhcmQtbGluZSBjb21tZW50LXJvd3MpDQoJICAoc2V0LW1hcmtlciBuZXctZW5kLW1h
+cmtlciAocG9pbnQpKQ0KDQo7CSAgIChjb25kDQo7CSAgICAoKGxpc3RwIGNvbHVtbikNCjsJICAg
+ICAoc2V0cSBuZXctY29tbWVudC1lbmQtbGluZSAoKyBuZXctY29tbWVudC1iZWctbGluZQ0KOwkJ
+CQkJICAgKGxlbmd0aCBjb2x1bW4pKSkpDQo7CSAgICAodA0KOwkgICAgIChzZXRxIG5ldy1jb21t
+ZW50LWVuZC1saW5lCQk7IE1pbnVzIG9uZSBiZWNhdXNlDQo7CQkgICAoKyBuZXctY29tbWVudC1i
+ZWctbGluZQk7IGJjLXNjcmF0Y2gtYnVmZmVyIGhhcyBhbg0KOwkJICAgICAgKGJjLWNvdW50LWxp
+bmVzLTEtZmFzdAk7IGV4dHJhIG5ld2xpbmUgYXQgdGhlIGVuZC4NCjsJCSAgICAgICAxIChwb2lu
+dC1tYXgpKQkJOyBNaW51cyBhbm90aGVyIGJlY2F1c2Ugd2Ugd2FudA0KOwkJICAgICAgLTIJCQk7
+IHRoZSBiZWdpbm5pbmcgb2YgdGhlIGxhc3QNCjsJCSAgICAgIGJjLWV4dHJhLWxpbmVzKSkpKQk7
+IGxpbmUgb2YgdGhlIG5ldyBjb21tZW50LCBub3QNCjsJCQkJCQk7IHRoZSBmb2xsb3dpbmcgbGlu
+ZS4NCjsJICAgKHNldC1idWZmZXIgYmMtRy1jb2RlLWJ1ZmZlcikNCg0KCSAgKHNldHEgY2hhbmdl
+LWJlZy1jaGFyCQkJOyBOb3cgZmlndXJlIG91dCB0aGUgbWluaW11bQ0KCQkoaWYgb2xkLWNvbW1l
+bnQtYmVnLWNoYXIJOyBidWZmIHBvcyB0aGF0IGlzIGFib3V0IHRvIGJlDQoJCSAgICAobWluIG9s
+ZC1jb21tZW50LWJlZy1jaGFyCTsgY2hhbmdlZC4NCgkJCSBuZXctY29tbWVudC1iZWctY2hhcikN
+CgkJICBuZXctY29tbWVudC1iZWctY2hhcikpDQoJICANCgkgIChzZXRxIGNoYW5nZS1lbmQtY2hh
+cg0KCQkocHJvZ24gKGdvdG8tY2hhciBuZXctZW5kLW1hcmtlcikNCgkJICAgICAgIChlbmQtb2Yt
+bGluZSkgKHBvaW50KSkpDQoJICAoaWYgb2xkLWNvbW1lbnQtYmVnLWNoYXIJCTsgTGlrZXdpc2Ug
+Zm9yIHRoZSBtYXggYnVmZg0KCSAgICAgIChzZXRxIGNoYW5nZS1lbmQtY2hhcgkJOyBwb3MuDQoJ
+CSAgICAobWF4IGNoYW5nZS1lbmQtY2hhcg0KCQkJIChwcm9nbiAoZ290by1jaGFyIG9sZC1jb21t
+ZW50LWVuZC1jaGFyKSANCgkJCQkoZW5kLW9mLWxpbmUpIChwb2ludCkpKSkpDQogICAgICANCgkg
+IChsZXQgKA0KCQkoYWZ0ZXItY2hhbmdlLWZ1bmN0aW9uIG5pbCkJOyBMZWF2aW5nIHRoZXNlIG9u
+IG1ha2VzDQoJCShhZnRlci1jaGFuZ2UtZnVuY3Rpb25zIG5pbCkJOyBjb21tZW50IGZvcm1hdHRp
+bmcgY3Jhd2wuDQoJCShiZWZvcmUtY2hhbmdlLWZ1bmN0aW9uIG5pbCkNCgkJKGJlZm9yZS1jaGFu
+Z2UtZnVuY3Rpb25zIG5pbCkpDQoNCgkgICAgKGlmIChhbmQgYmVmb3JlLWNoYW5nZS1mdW4NCgkJ
+ICAgICAoZmJvdW5kcCBiZWZvcmUtY2hhbmdlLWZ1bikpDQoJCShmdW5jYWxsIGJlZm9yZS1jaGFu
+Z2UtZnVuDQoJCQkgY2hhbmdlLWJlZy1jaGFyIGNoYW5nZS1lbmQtY2hhcikpDQoNCgkJCQkJCQk7
+IEluc3RlYWQgd2Ugd2lsbCBjYWxsDQoJCQkJCQkJOyB0aGVzZSBob29rcyBvbmNlIGZvcg0KCSAg
+ICAod2hpbGUgYmVmb3JlLWNoYW5nZS1mdW5zCQkJOyB0aGUgd2hvbGUgY2hhbmdlZA0KCSAgICAg
+IChpZiAoZmJvdW5kcCAoY2FyIGJlZm9yZS1jaGFuZ2UtZnVucykpCTsgcmVnaW9uLg0KCQkgIChm
+dW5jYWxsIChjYXIgYmVmb3JlLWNoYW5nZS1mdW5zKQ0KCQkJICAgY2hhbmdlLWJlZy1jaGFyIGNo
+YW5nZS1lbmQtY2hhcikpDQoJICAgICAgKHNldHEgYmVmb3JlLWNoYW5nZS1mdW5zIChjZHIgYmVm
+b3JlLWNoYW5nZS1mdW5zKSkpDQoJDQoJICAgIChpZiBvbGQtY29tbWVudC1iZWctY2hhcgkJCTsg
+Tm93IGFjdHVhbGx5IGN1dCB0aGUNCgkJKGJjLWRlbGV0ZS10ZXh0IG9sZC1jb21tZW50LWJlZy1j
+aGFyCTsgb2xkIGNvbW1lbnQuDQoJCQkJb2xkLWNvbW1lbnQtZW5kLWNoYXIpKQkNCg0KCSAgICAo
+aWYgKGFuZCBsaW5lcy1uZWVkZWQgKDwgMCBsaW5lcy1uZWVkZWQpKQk7IEFkZCBibGFuayBsaW5l
+cyBpZg0KCQkobGV0IChuZXdsaW5lcykJCQkJOyBuZWVkZWQuDQoJCSAgKGdvdG8tY2hhciBuZXct
+YmVnLW1hcmtlcikNCgkJICAoaWYgKD4gd2hlcmUgMCkgKGZvcndhcmQtbGluZSB3aGVyZSkpDQoJ
+CSAgKHNldHEgbmV3bGluZXMgKG1ha2Utc3RyaW5nIGxpbmVzLW5lZWRlZCA/XG4pKQ0KCQkgIChh
+ZGQtdGV4dC1wcm9wZXJ0aWVzDQoJCSAgIDAgbGluZXMtbmVlZGVkDQoJCSAgIChsaXN0ICdiYy1h
+ZGRlZC1uZXdsaW5lIGJjLWFkZGVkLW5ld2xpbmVzLWNvdW50ZXINCgkJCSAncmVhci1ub25zdGlj
+a3kgJyhiYy1hZGRlZC1uZXdsaW5lKSkNCgkJICAgbmV3bGluZXMpDQoJCSAgKGluc2VydCBuZXds
+aW5lcykpKQ0KDQoJICAgIChnb3RvLWNoYXIgbmV3LWJlZy1tYXJrZXIpDQoJICAgIChpZiAoPj0g
+d2hlcmUgMCkgbmlsDQoJICAgICAgKGZvcndhcmQtbGluZSAoLSB3aGVyZSkpDQoJICAgICAgKHNl
+dC1tYXJrZXIgbmV3LWJlZy1tYXJrZXIgKHBvaW50KSkNCjs7OwkgICAgICAoZm9yd2FyZC1saW5l
+ICgtIHdoZXJlIDEpKQ0KCSAgICAgICkNCjsJICAgICAgKHNldHEgbmV3LWNvbW1lbnQtYmVnLWxp
+bmUgKDErIG5ldy1jb21tZW50LWJlZy1saW5lKSkpKQ0KCSAgICAoaWYgc2V0LXN0YXJ0LW1hcmtl
+ciAoc2V0LW1hcmtlciBiYy1zdGFydC1tYXJrZXIgKHBvaW50KSkpDQoNCgkgICAgKGJjLXB1dC10
+ZXh0IChwb2ludCkgY29sdW1uKQk7IEluc2VydCB0aGUgbmV3IGNvbW1lbnQuDQoNCgkgICAgKHNl
+dHEgY2hhbmdlLWVuZC1jaGFyDQoJCSAgKHByb2duIChnb3RvLWNoYXIgbmV3LWVuZC1tYXJrZXIp
+IChlbmQtb2YtbGluZSkgKHBvaW50KSkpDQoNCgkgICAgKGlmIG9sZC1jb21tZW50LWJlZy1jaGFy
+CQk7IFRoZSBlbmQtb2YtbGluZSBpcyBkaWZmZXJlbnQNCgkJKHNldHEgY2hhbmdlLWVuZC1jaGFy
+CQk7IG5vdywgc28gbWVhc3VyZSBpdCBhZ2Fpbi4NCgkJICAgICAgKG1heCBjaGFuZ2UtZW5kLWNo
+YXINCgkJCSAgIChtYXJrZXItcG9zaXRpb24gb2xkLWVuZC1tYXJrZXIpKSkpDQoJICAgIA0KCSAg
+ICAoaWYgKGFuZCBhZnRlci1jaGFuZ2UtZnVuDQoJCSAgICAgKGZib3VuZHAgYWZ0ZXItY2hhbmdl
+LWZ1bikpDQoJCShmdW5jYWxsIGFmdGVyLWNoYW5nZS1mdW4NCgkJCSBjaGFuZ2UtYmVnLWNoYXIg
+Y2hhbmdlLWVuZC1jaGFyIDApKQ0KCSAgICANCgkgICAgCQkJCTsgTm93IGNhbGwgdGhlIGFmdGVy
+LWNoYW5nZS1ob29rcy4NCgkgICAgKHdoaWxlIGFmdGVyLWNoYW5nZS1mdW5zCTsgU2luY2UgdGhp
+cyBpcyBhIGRpc2NvbnRpbnVvdXMgY2hhbmdlLA0KCSAgICAgIAkJCQk7IHNlbmQgemVybyBmb3Ig
+dGhlIGJlZm9yZS0gbGVuZ3RoIHRvDQoJICAgICAgCQkJCTsgbWFrZSBpdCBsb29rIGxpa2UgYW4g
+aW5zZXJ0aW9uLg0KCSAgICAgIA0KCSAgICAgIChpZiAoZmJvdW5kcCAoY2FyIGFmdGVyLWNoYW5n
+ZS1mdW5zKSkNCgkJICAoZnVuY2FsbCAoY2FyIGFmdGVyLWNoYW5nZS1mdW5zKQ0KCQkJICAgY2hh
+bmdlLWJlZy1jaGFyIGNoYW5nZS1lbmQtY2hhciAwKSkNCgkgICAgICANCgkgICAgICAoc2V0cSBh
+ZnRlci1jaGFuZ2UtZnVucyAoY2RyIGFmdGVyLWNoYW5nZS1mdW5zKSkpDQoJICAgICkNCgkgIA0K
+CSAgKGlmIGJjLXNob3ctZmlsbC1jb3VudCAobWVzc2FnZSAiRmlsbCBjb3VudDogJWQiIGJjLWZp
+bGwtY291bnQpDQoJICAgIChpZiAoaW50ZWdlcnAgY29sdW1uKSAobWVzc2FnZSAiQ29sdW1uOiAl
+ZCIgY29sdW1uKSkpDQoJICANCgkgIChsaXN0DQoJICAgKHByb2duDQoJICAgICAoZ290by1jaGFy
+IG5ldy1iZWctbWFya2VyKQ0KCSAgICAgKHBvaW50KSkJCQkJOyBSZXR1cm4gdGhlIGNoYXIgcG9z
+IG9mIHRoZQ0KCSAgIChwcm9nbgkJCQk7IGJlZ2lubmluZ3Mgb2YgdGhlIG5ldyBmaXJzdA0KCSAg
+ICAgKGdvdG8tY2hhciBuZXctZW5kLW1hcmtlcikJCTsgYW5kIGxhc3QgbGluZXMgYW5kIHRoZSBj
+aGFuZ2UNCgkgICAgIChwb2ludCkpCQkJCTsgcmVnaW9uLg0KCSAgIGNoYW5nZS1iZWctY2hhciBj
+aGFuZ2UtZW5kLWNoYXIpDQoJICApOzsgZW5kIHNhdmUtZXhjdXJzaW9uDQogICAgICAoc2V0LW1h
+cmtlciBvbGQtZW5kLW1hcmtlciBuaWwpICA7OyBjbGVhbnVwDQogICAgICAoc2V0LW1hcmtlciBu
+ZXctYmVnLW1hcmtlciBuaWwpDQogICAgICAoc2V0LW1hcmtlciBuZXctZW5kLW1hcmtlciBuaWwp
+KQ0KICAgICkpDQoNCg0KOzs7Oz09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09
+PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT0NCjs7O18gICAgfCBiYy1jbGVhbnVwLW5l
+d2xpbmVzDQooZGVmdW4gYmMtY2xlYW51cC1uZXdsaW5lcyAoc3RhcnQgZW5kKQ0KICAiRGVsZXRl
+IGFueSBibGFuayBsaW5lcyB3ZSBpbnNlcnRlZCB0aGF0IGFyZSBubyBsb25nZXIgbmVlZGVkLiIN
+CiANCiAgKHNhdmUtZXhjdXJzaW9uDQogICAgKHNhdmUtcmVzdHJpY3Rpb24NCiAgICAgIChnb3Rv
+LWNoYXIgc3RhcnQpDQogICAgICAoZm9yd2FyZC1saW5lIC0zKQ0KICAgICAgKHNldHEgc3RhcnQg
+KHBvaW50KSkNCiAgICAgIChnb3RvLWNoYXIgZW5kKQ0KICAgICAgKGZvcndhcmQtbGluZSAyKQ0K
+ICAgICAgKGVuZC1vZi1saW5lKQ0KICAgICAgKG5hcnJvdy10by1yZWdpb24gc3RhcnQgKHBvaW50
+KSkNCiAgICAgIChnb3RvLWNoYXIgKHBvaW50LW1pbikpDQogICAgICAoZm9yd2FyZC1saW5lIDEp
+DQoJDQogICAgICAod2hpbGUgKG5vdCAoZW9icCkpDQoJKGxldCAoKHBsaXN0IChtZW1xICdiYy1h
+ZGRlZC1uZXdsaW5lICh0ZXh0LXByb3BlcnRpZXMtYXQgKHBvaW50KSkpKQ0KCSAgICAgIChuZXh0
+LWNoYW5nZQ0KCSAgICAgICAob3IgKG5leHQtc2luZ2xlLXByb3BlcnR5LWNoYW5nZSANCgkJICAg
+IChwb2ludCkgJ2JjLWFkZGVkLW5ld2xpbmUgKGN1cnJlbnQtYnVmZmVyKSkNCgkJICAgKHBvaW50
+LW1heCkpKQ0KCSAgICAgIGRlbC1iZWcgZGVsLWVuZA0KCSAgICAgIHByaW9yLWlzLWNvbW1lbnQg
+bmV4dC1pcy1jb21tZW50IDs7OyBjdXJyZW50LWlzLWJsYW5rDQoJICAgICAgKQ0KCSAgKGlmIChh
+bmQgcGxpc3QgKC89IChudGggMSBwbGlzdCkNCgkJCSAgICAgYmMtYWRkZWQtbmV3bGluZXMtY291
+bnRlcikpDQoJICAgICAgKHByb2duDQoJCShiZWdpbm5pbmctb2YtbGluZSkJCQk7IFRoaXMgdGV4
+dCB3YXMgYWRkZWQNCgkJKHdoaWxlIChhbmQgKDwgKHBvaW50KSBuZXh0LWNoYW5nZSkJOyBieSBC
+QyBvbiBhIHByZXZpb3VzDQoJCQkgICAgKG5vdCAoZW9icCkpKQkJOyBjb21tYW5kLg0KCQkgIChz
+ZXRxDQoJCSAgIGRlbC1iZWcgKHBvaW50KQ0KCQkgICBwcmlvci1pcy1jb21tZW50IChzYXZlLWV4
+Y3Vyc2lvbg0KCQkJCSAgICAgIChmb3J3YXJkLWxpbmUgLTEpIChiYy1vcGFyc2UtbGluZSkpDQoJ
+CSAgIG5leHQtaXMtY29tbWVudCAoc2F2ZS1leGN1cnNpb24NCgkJCQkgICAgIChmb3J3YXJkLWxp
+bmUgMSkgKGJjLW9wYXJzZS1saW5lKSkpDQoNCgkJICAoaWYgKG9yIChhbmQgcHJpb3ItaXMtY29t
+bWVudCBuZXh0LWlzLWNvbW1lbnQpDQoJCQkgIChub3QgKGxvb2tpbmctYXQgIlsgXHRdKiQiKSkp
+DQoJCSAgICAgIChmb3J3YXJkLWxpbmUgMSkNCgkJICAgIChmb3J3YXJkLWxpbmUgMSkNCgkJICAg
+IChzZXRxIGRlbC1lbmQgKHBvaW50KSkNCgkJICAgIChkZWxldGUtcmVnaW9uIGRlbC1iZWcgZGVs
+LWVuZCkNCgkJICAgIChiYy1mbHVzaC1wYXJzZS1jYWNoZSkNCgkJICAgIChzZXRxIG5leHQtY2hh
+bmdlIA0KCQkJICAoLSBuZXh0LWNoYW5nZSAoLSBkZWwtZW5kIGRlbC1iZWcpKSkpKSkpDQoJICAo
+Z290by1jaGFyIG5leHQtY2hhbmdlKSkpKSkpDQoNCjs7Ozs9PT09PT09PT09PT09PT09PT09PT09
+PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09DQo7OztfICAg
+IHwgYmMtZ2V0LXRleHQNCihkZWZ1biBiYy1nZXQtdGV4dCAoZmlyc3QtbGluZSBsYXN0LWxpbmUp
+DQogICJFeHRyYWN0cyB0aGUgdGV4dCBvZiBhIGJsb2NrIGNvbW1lbnQgZnJvbSB0aGUgbGluZXMg
+YmV0d2Vlbg0KRklSU1QtTElORSBhbmQgTEFTVC1MSU5FIGluY2x1c2l2ZS4gIEJvdGggYXJncyBz
+aG91bGQgYmUgYnVmZmVyDQpwb3NpdGlvbnMgb2YgdGhlIGJlZ2lubmluZ3Mgb2YgbGluZXMuICBU
+ZXh0IGlzIGNvcGllZCB0byB0aGUgYnVmZmVyDQppbmRpY2F0ZWQgYnkgJ2JjLUctc2NyYXRjaC1i
+dWZmZXInLg0KDQpUaGUgdGV4dCBjb3BpZWQgaGFzIG5vIHdoaXRlc3BhY2UgYXQgdGhlIGJlZ2lu
+bmluZyBvciBlbmQgb2YgYW55IGxpbmUuDQpUaGlzIGlzIGEgY29uc2VxdWVuY2Ugb2YgdXNpbmcg
+YGJjLXBhcnNlLWxpbmUnIHRvIGZpbmQgdGhlIGV4dGVudHMgb2YNCnRoZSB0ZXh0IG9uIHRoZSBs
+aW5lLiINCg0KICAobGV0ICgNCjs7OwkoY29kZS1idWZmZXIgKGN1cnJlbnQtYnVmZmVyKSkNCjs7
+Owkoc2NyYXRjaC1idWZmZXIgKGJjLWdldC1idWZmZXItY3JlYXRlKSkNCgljb20tYm9keS1zdGFy
+dCBjb20tYm9keS1lbmQgDQo7OzsJY29tLWRlbGltLWVuZCBjb21tZW50LXN0YXJ0LWNvbCBjb21t
+ZW50LWVuZC1jb2wNCgkpDQoNCiAgICAoc2F2ZS1leGN1cnNpb24NCiAgICAgIChzZXQtYnVmZmVy
+IGJjLUctc2NyYXRjaC1idWZmZXIpDQogICAgICAoZXJhc2UtYnVmZmVyKQkJCQkJOyBlcmFzZSBh
+bnkgb2xkIHN0dWZmDQogICAgICAoc2V0LWJ1ZmZlciBiYy1HLWNvZGUtYnVmZmVyKQ0KDQogICAg
+ICAoZ290by1jaGFyIGZpcnN0LWxpbmUpCQkJCTsgY29weSBhbGwgdGhlIHRleHQgdG8NCgkJCQkJ
+CQk7IHRoZSBzY3JhdGNoDQogICAgICAod2hpbGUgKDw9IChwb2ludCkgbGFzdC1saW5lKQ0KCShi
+Yy1vcGFyc2UtbGluZSBuaWwgbmlsICdjb20tYm9keS1zdGFydCAnY29tLWJvZHktZW5kDQoJCSAg
+ICAgICAnY29tLWRlbGltLWVuZCkNCg0KCShzZXQtYnVmZmVyIGJjLUctc2NyYXRjaC1idWZmZXIp
+DQoJKGluc2VydC1idWZmZXItc3Vic3RyaW5nDQoJIGJjLUctY29kZS1idWZmZXIgY29tLWJvZHkt
+c3RhcnQgY29tLWJvZHktZW5kKQ0KCShpbnNlcnQgIlxuIikNCgkoc2V0LWJ1ZmZlciBiYy1HLWNv
+ZGUtYnVmZmVyKQ0KCShmb3J3YXJkLWxpbmUgMSkpDQoNCjs7OyAgICAgIChzZXQtYnVmZmVyIHNj
+cmF0Y2gtYnVmZmVyKQ0KOzs7ICAgICAgKHNldC10ZXh0LXByb3BlcnRpZXMgMSAocG9pbnQtbWF4
+KSBuaWwpDQo7OzsgICAgICAoc2V0LWJ1ZmZlciBiYy1HLWNvZGUtYnVmZmVyKQ0KICAgICAgbmls
+KSkpDQoNCjs7Ozs9PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09
+PT09PT09PT09PT09PT09PT09PT09PT09DQo7OztfICAgIHwgYmMtcHV0LXRleHQNCg0KOzs7IEZv
+ciBwcm9maWxpbmc6ICBlbHAgY2FuJ3QgcHJvZmlsZSBidWlsdGlucywgc28gYSBsaXNwIHdyYXBw
+ZXIgaXMNCjs7OyBuZWVkZWQuICBGb3IgcmVsZWFzZSBjb2RlIHRoZXNlIHNob3VsZCBhbGwgYmUg
+YGRlZnN1YnN0J3MuICBGb3INCjs7OyBwcm9maWxpbmcgbWFrZSB0aGVtIGBkZWZ1bidzDQoNCihk
+ZWZzdWJzdCBiYy1pbnNlcnQtYnVmZmVyLXN1YnN0cmluZyAoYnVmZmVyIGJvc2wgZW9zbCkNCiAg
+KGluc2VydC1idWZmZXItc3Vic3RyaW5nIGJ1ZmZlciBib3NsIGVvc2wpKQ0KDQooZGVmc3Vic3Qg
+YmMtc2V0LWJ1ZmZlciAoYnVmZmVyKQ0KICAoc2V0LWJ1ZmZlciBidWZmZXIpKQ0KDQooZGVmc3Vi
+c3QgYmMtaW5kZW50LXRvIChjb2wpDQogIChpbmRlbnQtdG8gY29sKSkNCg0KKGRlZnN1YnN0IGJj
+LWRlbGV0ZS1yZWdpb24gKGIgZSkNCiAgKGRlbGV0ZS1yZWdpb24gYiBlKSkNCg0KKGRlZnN1YnN0
+IGJjLWludGVybmFsLWVuZC1vZi1saW5lICgpDQogIChlbmQtb2YtbGluZSkpDQoNCihkZWZzdWJz
+dCBiYy1mb3J3YXJkLWxpbmUgKCZvcHRpb25hbCBhcmcpDQogIChmb3J3YXJkLWxpbmUgYXJnKSkN
+Cg0KOzs7LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tDQooZGVmdW4gYmMtcHV0LXRleHQgKGZpcnN0LWxpbmUgY29sdW1uLW9y
+LWRlbGltcykNCiAgIkNvcGllcyB0aGUgdGV4dCBvZiBhIGJsb2NrIGNvbW1lbnQgZnJvbSB0aGUg
+c2NyYXRjaCBidWZmZXIgdG8gdGhlDQpjdXJyZW50IGJ1ZmZlciBhdCB0aGUgbG9jYXRpb24gc3Bl
+Y2lmaWVkIGJ5IEZJUlNULUxJTkUgYW5kIENPTFVNTi4NClRoZSBzY3JhdGNoIGJ1ZmZlciBpcyB0
+aGUgYnVmZmVyIHBvaW50ZWQgdG8gYnkgYmMtRy1zY3JhdGNoLWJ1ZmZlci4NCg0KSWYgQ09MVU1O
+LU9SLURFTElNUyBpcyBhbiBpbnRlZ2VyLCB1c2UgZGVsaW1pdGVycyBgYmMtZWZmZWN0aXZlLXN0
+YXJ0Jw0KYW5kIGBiYy1lZmZlY3RpdmUtZW5kJywgYW5kIGFsaWduIGVudGlyZSBjb21tZW50IHRv
+IHRoYXQgY29sdW1uLiAgSWYgaXQNCmlzIGEgbGlzdCwgdXNlIGRlbGltaXRlciBhbmQgY29sdW1u
+IGluZm9ybWF0aW9uIGZyb20gdGhhdCBcKFNlZQ0KYGJjLWFuYWx5emUtY29tbWVudCcgZm9yIGZv
+cm1hdFwpLg0KDQpSZXR1cm5zIHRoZSBidWZmZXIgcG9zaXRpb24gb2YgdGhlIGxhc3QgY2hhciBp
+bnNlcnRlZC4iDQoNCiAgKGxldCAoDQo7OzsJKGNvZGUtYnVmZmVyIChjdXJyZW50LWJ1ZmZlcikp
+DQo7OzsJKHNjcmF0Y2gtYnVmZmVyIChiYy1nZXQtYnVmZmVyLWNyZWF0ZSkpDQoJYm9zbCBlb3Ns
+DQoJDQoJKHJpZ2h0LWVuZCAoLSBiYy1yaWdodC1tYXJnaW4gKGxlbmd0aCBiYy1lZmZlY3RpdmUt
+ZW5kKSkpDQoJYmFubmVyLXdpZHRoIGJhbm5lci1zdGFydCBiYW5uZXItZW5kDQoJZGVsaW1zIGRl
+bGltLXdoaXRlc3BhY2UNCjs7Owllb2NsIGNvbS1zdGFydC1sZW4gY29tLWVuZC1sZW4NCgkpDQoJ
+CQkJCQk7PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09DQogICAgKHNhdmUtZXhjdXJzaW9u
+CQkJCTsgIElmIHRoaXMgaXMgdG8gYmUgYSBiYW5uZXINCiAgICAgIChnb3RvLWNoYXIgZmlyc3Qt
+bGluZSkJCQk7ICBjb21tZW50LCBpbnNlcnQgdGhlIHRvcA0KCQkJCQkJOyAgYmFubmVyLg0KICAg
+ICAgKGlmIChhbmQgKG5vdCAobGlzdHAgY29sdW1uLW9yLWRlbGltcykpCTs9PT09PT09PT09PT09
+PT09PT09PT09PT09PT09PT0NCgkgICAgICAgYmMtYmFubmVyLXRvcC1ib3JkZXIpDQoJICAocHJv
+Z24NCgkgICAgKHNldHENCgkgICAgIGRlbGltLXdoaXRlc3BhY2UgKHN0cmluZy1tYXRjaCAiWyBc
+dF0iIGJjLWVmZmVjdGl2ZS1zdGFydCkNCgkgICAgIGJhbm5lci1zdGFydCAoaWYgZGVsaW0td2hp
+dGVzcGFjZSAoc3Vic3RyaW5nIGJjLWVmZmVjdGl2ZS1zdGFydCAwIA0KCQkJCQkJCSAgZGVsaW0t
+d2hpdGVzcGFjZSkNCgkJCSAgICBiYy1lZmZlY3RpdmUtc3RhcnQpDQoJICAgICBkZWxpbS13aGl0
+ZXNwYWNlIChzdHJpbmctbWF0Y2ggIlteIFx0XSIgYmMtZWZmZWN0aXZlLWVuZCkNCgkgICAgIGJh
+bm5lci1lbmQgKGlmIChlcXVhbCBiYy1lZmZlY3RpdmUtZW5kICIiKSAiIg0KCQkJICAoaWYgZGVs
+aW0td2hpdGVzcGFjZSAoc3Vic3RyaW5nIGJjLWVmZmVjdGl2ZS1lbmQgDQoJCQkJCQkJICBkZWxp
+bS13aGl0ZXNwYWNlKQ0KCQkJICAgIGJjLWVmZmVjdGl2ZS1lbmQpKQ0KCSAgICAgYmFubmVyLXdp
+ZHRoICgtIGJjLXJpZ2h0LW1hcmdpbiBjb2x1bW4tb3ItZGVsaW1zDQoJCQkgICAgIChsZW5ndGgg
+YmFubmVyLXN0YXJ0KSAobGVuZ3RoIGJhbm5lci1lbmQpKSkNCgkgICAgKGJjLWludGVybmFsLWVu
+ZC1vZi1saW5lKQ0KCSAgICAoZGVsZXRlLWhvcml6b250YWwtc3BhY2UpDQoJICAgIChiYy1pbmRl
+bnQtdG8gY29sdW1uLW9yLWRlbGltcykNCgkgICAgKGluc2VydCBiYW5uZXItc3RhcnQpDQoJICAg
+IChpbnNlcnQgKG1ha2Utc3RyaW5nIGJhbm5lci13aWR0aCAoY2FyIGJjLWJhbm5lci10b3AtYm9y
+ZGVyKSkpDQoJICAgIChpbnNlcnQgYmFubmVyLWVuZCkNCgkgICAgKGJjLWZvcndhcmQtbGluZSAx
+KQ0KCQ0KCSAgICAoaWYgKD4gYmMtYmFubmVyLXRvcC1zcGFjZSAwKQk7IElmIHRoaXMgaXMgYSBi
+YW5uZXIsIGl0IG1heQ0KCQkocHJvZ24JCQkJOyBuZWVkIGEgYmxhbmsgbGluZSBhdCB0aGUgdG9w
+Lg0KCQkgIChiYy1pbnRlcm5hbC1lbmQtb2YtbGluZSkNCgkJICAoZGVsZXRlLWhvcml6b250YWwt
+c3BhY2UpDQoJCSAgKGJjLWluZGVudC10byBjb2x1bW4tb3ItZGVsaW1zKQ0KCQkgIChpbnNlcnQg
+YmFubmVyLXN0YXJ0KQ0KCQkgIChpZiAoZXF1YWwgYmMtZWZmZWN0aXZlLWVuZCAiIikNCgkJICAg
+ICAgbmlsDQoJCSAgICAoYmMtaW5kZW50LXRvIHJpZ2h0LWVuZCkNCgkJICAgIChpbnNlcnQgYmMt
+ZWZmZWN0aXZlLWVuZCkpDQoJCSAgKGJjLWZvcndhcmQtbGluZSAxKSkpKSkNCg0KCQkJCQkJOz09
+PT09PT09PT09PT09PT09PT09PT09PT09PT09PQ0KICAgICAgKGJjLXNldC1idWZmZXIgYmMtRy1z
+Y3JhdGNoLWJ1ZmZlcikJOyAgTm93IGFjdHVhbGx5IGluc2VydCB0aGUgdGV4dA0KICAgICAgKGdv
+dG8tY2hhciAxKQkJCQk7ICBvZiB0aGUgY29tbWVudC4NCiAgICAgIChpZiAoZW9icCkJCQkJOz09
+PT09PT09PT09PT09PT09PT09PT09PT09PT09PQ0KCSAgKHByb2duDQoJICAgIChpbnNlcnQgP1xu
+KQkJCTsgSGFjayB0byBwcmV2ZW50IG9ibGl0ZXJhdGluZw0KCSAgICAoZ290by1jaGFyIDEpKSkJ
+CQk7IGVtcHR5IGNvbW1lbnRzLg0KICAgICAgKHdoaWxlIChub3QgKGVvYnApKQ0KCShzZXRxIGJv
+c2wgKHBvaW50KSkNCgkoYmMtaW50ZXJuYWwtZW5kLW9mLWxpbmUpCQk7IEZpbmQgdGhlIGV4dGVu
+dCBvZiB0aGUgbGluZQ0KCShzZXRxIGVvc2wgKHBvaW50KSkJCQk7IGluIHRoZSBzY3JhdGNoIGJ1
+ZmZlci4NCgkoYmMtc2V0LWJ1ZmZlciBiYy1HLWNvZGUtYnVmZmVyKQ0KCShiYy1pbnRlcm5hbC1l
+bmQtb2YtbGluZSkNCgkoZGVsZXRlLWhvcml6b250YWwtc3BhY2UpDQoJKGNvbmQNCgkgKChsaXN0
+cCBjb2x1bW4tb3ItZGVsaW1zKQ0KCSAgKHNldHEgZGVsaW1zIChjYXIgY29sdW1uLW9yLWRlbGlt
+cykNCgkJY29sdW1uLW9yLWRlbGltcyAoY2RyIGNvbHVtbi1vci1kZWxpbXMpKQ0KCSAgKGJjLWlu
+ZGVudC10byAoY2FyIGRlbGltcykpDQoJICAoaW5zZXJ0IChudGggMSBkZWxpbXMpKQ0KCSAgKGJj
+LWluc2VydC1idWZmZXItc3Vic3RyaW5nIGJjLUctc2NyYXRjaC1idWZmZXIgYm9zbCBlb3NsKQ0K
+CSAgKGluc2VydCAobnRoIDIgZGVsaW1zKSkpDQoJICh0DQoJICAoYmMtaW5kZW50LXRvIGNvbHVt
+bi1vci1kZWxpbXMpDQoJICAoaW5zZXJ0IGJjLWVmZmVjdGl2ZS1zdGFydCkNCgkgIChiYy1pbnNl
+cnQtYnVmZmVyLXN1YnN0cmluZyBiYy1HLXNjcmF0Y2gtYnVmZmVyIGJvc2wgZW9zbCkNCgkgIChp
+ZiAoZXF1YWwgYmMtZWZmZWN0aXZlLWVuZCAiIikNCgkgICAgICBuaWwNCgkgICAgKGJjLWluZGVu
+dC10byByaWdodC1lbmQpDQoJICAgIChpbnNlcnQgYmMtZWZmZWN0aXZlLWVuZCkpKSkNCgkNCgko
+YmMtZm9yd2FyZC1saW5lIDEpDQoJKGJjLXNldC1idWZmZXIgYmMtRy1zY3JhdGNoLWJ1ZmZlcikN
+CgkoYmMtZm9yd2FyZC1saW5lIDEpKTs7IGVuZCB3aGlsZQ0KDQogICAgICAoYmMtc2V0LWJ1ZmZl
+ciBiYy1HLWNvZGUtYnVmZmVyKQkJOz09PT09PT09PT09PT09PT09PT09PT09PT09PT09PQ0KICAg
+ICAgKGNvbmQJCQkJCTsgIElmIHRoaXMgaXMgdG8gYmUgYSBiYW5uZXINCiAgICAgICAoKGxpc3Rw
+IGNvbHVtbi1vci1kZWxpbXMpCQk7ICBjb21tZW50LCBpbnNlcnQgdGhlIGJvdHRvbQ0KCSh3aGls
+ZSBjb2x1bW4tb3ItZGVsaW1zCQkJOyAgYmFubmVyLg0KCSAgKHNldHEgZGVsaW1zIChjYXIgY29s
+dW1uLW9yLWRlbGltcykJOz09PT09PT09PT09PT09PT09PT09PT09PT09PT09PQ0KCQljb2x1bW4t
+b3ItZGVsaW1zIChjZHIgY29sdW1uLW9yLWRlbGltcykpDQoJICAoYmMtaW50ZXJuYWwtZW5kLW9m
+LWxpbmUpDQoJICAoZGVsZXRlLWhvcml6b250YWwtc3BhY2UpDQoJICAoYmMtaW5kZW50LXRvIChj
+YXIgZGVsaW1zKSkNCgkgIChpbnNlcnQgKG50aCAxIGRlbGltcykgKG50aCAyIGRlbGltcykpDQoJ
+ICAoYmMtZm9yd2FyZC1saW5lIDEpDQoJICApKQ0KICAgICAgIChiYy1iYW5uZXItdG9wLWJvcmRl
+cg0KCShpZiAoPiBiYy1iYW5uZXItYm90dG9tLXNwYWNlIDApDQoNCgkgICAgKHByb2duDQoJICAg
+ICAgKGJjLWludGVybmFsLWVuZC1vZi1saW5lKQ0KCSAgICAgIChkZWxldGUtaG9yaXpvbnRhbC1z
+cGFjZSkNCgkgICAgICAoYmMtaW5kZW50LXRvIGNvbHVtbi1vci1kZWxpbXMpCTsgSWYgdGhpcyBp
+cyBhIGJhbm5lciwgaXQgbWF5DQoJICAgICAgKGluc2VydCBiYy1lZmZlY3RpdmUtc3RhcnQpCTsg
+bmVlZCBhIGJsYW5rIGxpbmUgYXQgdGhlDQoJICAgICAgKGlmIChlcXVhbCBiYy1lZmZlY3RpdmUt
+ZW5kICIiKQk7IGJvdHRvbS4NCgkJICBuaWwNCgkJKGJjLWluZGVudC10byByaWdodC1lbmQpDQoJ
+CShpbnNlcnQgYmMtZWZmZWN0aXZlLWVuZCkpDQoJICAgICAgKGJjLWZvcndhcmQtbGluZSAxKSkp
+DQoJDQoJKGJjLWludGVybmFsLWVuZC1vZi1saW5lKQ0KCShkZWxldGUtaG9yaXpvbnRhbC1zcGFj
+ZSkNCgkoYmMtaW5kZW50LXRvIGNvbHVtbi1vci1kZWxpbXMpDQoJKGluc2VydCBiYW5uZXItc3Rh
+cnQpDQoJKGluc2VydCAobWFrZS1zdHJpbmcgYmFubmVyLXdpZHRoIChjYXIgYmMtYmFubmVyLXRv
+cC1ib3JkZXIpKSkNCgkoaW5zZXJ0IGJhbm5lci1lbmQpKSkNCg0KICAgICAgKHNldHEgYmMtcGFy
+c2UtbGluZS1jYWNoZSBuaWwpDQogICAgICAocG9pbnQpIDsgcmV0dXJuIHBvc2l0aW9uIG9mIGxh
+c3QgY2hhcg0KICAgICAgKSA7IGVuZCBzYXZlLWV4Y3Vyc2lvbg0KICAgICkpDQoNCjs7Ozs9PT09
+PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09
+PT09PT09PT09DQo7OztfICAgIHwgYmMtZGVsZXRlLXRleHQNCihkZWZ1biBiYy1kZWxldGUtdGV4
+dCAoZmlyc3QtbGluZSBsYXN0LWxpbmUpDQogICJEZWxldGVzIHRoZSB0ZXh0IG9mIGEgYmxvY2sg
+Y29tbWVudCBmcm9tIHRoZSBsaW5lcyBzcGVjaWZpZWQgYnkgJ3JhbmdlJy4NCg0KVGhlIGNvbW1l
+bnQgaXMgdGFrZW4gdG8gY29uc2lzdCBvZiBhbGwgdGhlIHRleHQgYW5kIGNvbW1lbnQgY2hhcmFj
+dGVycyBvZg0KdGhlIHJpZ2h0LW1hcmdpbiBjb21tZW50cyBvbiB0aGUgbGluZXMgaW4gJ3Jhbmdl
+Jy4gIFdoaXRlc3BhY2UgdG8gdGhlIGxlZnQNCm9mIHRoZSBjb21tZW50cywgYW5kIGV2ZXJ5dGhp
+bmcgdG8gdGhlIHJpZ2h0IG9mIHRoZW0gaXMgYWxzbyByZW1vdmVkLg0KDQpVbmxpa2UgJ2tpbGwt
+Y29tbWVudCcgdGhpcyBmdW5jdGlvbiBvbmx5IGRlbGV0ZXMgdGhlIHJpZ2h0bW9zdCBjb21tZW50
+DQpvbiBlYWNoIGxpbmUuIg0KICANCiAgKGxldCogKChudW0tbGluZXMgKGJjLWNvdW50LWxpbmVz
+LTEgZmlyc3QtbGluZSBsYXN0LWxpbmUpKQ0KCSBjb2RlLWVuZC1wb3MgZGVsaW0tZQ0KOzs7CSBl
+b2wgDQoJICkNCg0KICAoc2F2ZS1leGN1cnNpb24NCiAgICAoZ290by1jaGFyIGxhc3QtbGluZSkJ
+CQk7IEdvIGJhY2t3YXJkcyBzbyB3ZSBjYW4gc3RpbGwNCgkJCQkJCTsgdXNlIGJjLXBhcnNlLWxp
+bmUtY2FjaGUNCiAgICAoYmVnaW5uaW5nLW9mLWxpbmUpDQogICAgKHdoaWxlICg+IG51bS1saW5l
+cyAwKQ0KICAgICAgKHNldHEgbnVtLWxpbmVzICgxLSBudW0tbGluZXMpKQ0KICAgICAgKGJjLWlu
+dGVybmFsLWVuZC1vZi1saW5lKQ0KOzs7ICAgICAgKHNldHEgZW9sIChwb2ludCkpDQogICAgICAo
+YmMtb3BhcnNlLWxpbmUgJ2NvZGUtZW5kLXBvcyBuaWwgbmlsIG5pbCAnZGVsaW0tZSkNCiAgICAg
+IChiYy1kZWxldGUtcmVnaW9uIGNvZGUtZW5kLXBvcyBkZWxpbS1lKQ0KICAgICAgKGJjLWZvcndh
+cmQtbGluZSAtMSkpDQogICAgKGJjLWZsdXNoLXBhcnNlLWNhY2hlKQ0KICAgICkpKQ0KDQo7Ozs7
+PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09
+PT09PT09PT09PT09PQ0KDQo7IChkZWZtYWNybyBiYy1maWxsLW9yLXRhYi1tYWNybyAoKQ0KOyAg
+IGAocHJvZ24NCjsgICAgICAoc2V0LWJ1ZmZlciBzY3JhdGNoLWJ1ZmZlcikNCjsgICAgICAoY29u
+ZA0KOyAgICAgICAobm8tcmVzaGFwZSkJCQkJOyBkbyBub3RoaW5nIGlmIG5vIHJlc2hhcGUNCjsg
+ICAgICAgKHNxdWVlemUNCjsgICAgICAgIChzZXRxIGZpbGwtY29sdW1uIG9yaWctYXZhaWwtd2lk
+dGgpDQo7ICAgICAgICAoYmMtcXVlcnktZmlsbCkNCjsgICAgICAgIChzZXRxIGNvbHVtbiAoLSBi
+Yy1HLXJtLW1pbnVzLXN0dWZmIGJjLWZiLXdpZHRoKSkpDQo7ICAgICAgIChuby10YWINCjsgICAg
+ICAgIChzZXRxIGZpbGwtY29sdW1uIG9yaWctYXZhaWwtd2lkdGgpDQo7ICAgICAgICAoYmMtcXVl
+cnktZmlsbCkNCjsgICAgICAgIChzZXRxIGNvbHVtbiAoLSBiYy1HLXJtLW1pbnVzLXN0dWZmIG9y
+aWctYXZhaWwtd2lkdGgpKSkNCjsgICAgICAgKHQNCjsgICAgICAgIChzZXRxDQo7IAljb2x1bW4N
+CjsgCShjYXINCjsgCSAoYmMtdGFiLWJ1ZmZlciAwDQo7IAkJCSgtIGJjLUctcm0tbWludXMtc3R1
+ZmYgb3JpZy1hdmFpbC13aWR0aCkpKSkpKSkpDQoNCjs7Ozs9PT09PT09PT09PT09PT09PT09PT09
+PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09DQo7OztfICAg
+byBGaXR0aW5nDQo7OztfICAgIHwgYmMtZml0LW1vdmUNCihkZWZ1biBiYy1maXQtbW92ZSAoaW5p
+dGlhbC1jb2x1bW4gJm9wdGlvbmFsIGNvbW0tcmFuZ2UtYmVnIGNvbW0tcmFuZ2UtZW5kDQoJCSAg
+ICBsaW0tdG9wIHNxdWVlemUgbm8tdGFiIG5vLXJlc2hhcGUgaW5zZXJ0LWFmdGVyKQ0KDQogICJG
+aW5kIGEgY29tbWVudCBzaGFwZSBhbmQgYSBwbGFjZSBpdCB3aWxsIGZpdC4NCg0KSU5JVElBTC1D
+T0xVTU4gc3BlY2lmaWVzIHRoZSBwbGFjZW1lbnQgKGFuZCB0aGVyZWZvcmUgd2lkdGgpIG9mIHRo
+ZQ0KZmlyc3QgdHJ5LiAgSWYgdGhpcyBpcyBsZXNzIHRoYW4gdGhlIHdpZHRoIG9mIHRoZSBjb2Rl
+IG9uIHRoZSBjdXJyZW50DQpsaW5lLCB0aGUgZmlyc3QgYXR0ZW1wdCBwbGFjZXMgdGhlIGNvbW1l
+bnQganVzdCBwYXN0IHRoZSBjb2RlLg0KDQpDT01NLVJBTkdFLUJFRyBhbmQgQ09NTS1SQU5HRS1F
+TkQgc2hvdWxkIHNwZWNpZnkgdGhlIGV4dGVudCBvZiBhbnkNCmNvbW1lbnQgcHJlc2VudGx5IGlu
+IHRoZSBzZWFyY2ggcmFuZ2UuICBUaGVzZSBhcmUgcGFzc2VkIHRvDQpgYmMtZmluZC1yb29tJy4g
+DQoNCklmIExJTS1UT1AgaXMgbm9uLW5pbCwgaXQgc2hvdWxkIGJlIGEgYnVmZmVyIHBvc2l0aW9u
+IG9mIHRoZSBiZWdpbm5pbmcNCm9mIHRoZSBsaW5lIGxpbWl0aW5nIHRoZSB1cHBlciByYW5nZSBv
+ZiB0aGUgc2VhcmNoLiAgKFRoZSBjb21tZW50IG1heQ0KYmUgcGxhY2VkIG9uIHRoaXMgbGluZSBi
+dXQgbm90IGFib3ZlLikNCg0KVGhlIHZhbHVlIG9mIElOU0VSVC1BRlRFUiBpcyB1c2VkIG9ubHkg
+aWYgd2UgYXJlIGZvcmNlZCB0byBpbnNlcnQgYQ0KYmxhbmsgbGluZSB0byBzdXBwb3J0IHRoZSBm
+aXJzdCBsaW5lIG9mIHRoZSBjb21tZW50LiAgSWYgbm9uLW5pbCwgdGhhdA0KYmxhbmsgbGluZSB3
+aWxsIGJlIGluc2VydGVkIGFmdGVyIHRoZSBsaW5lIGNvbnRhaW5pbmcgcG9pbnQsIG90aGVyd2lz
+ZQ0KYmVmb3JlIGl0LiAgQWRkaXRpb25hbCBibGFuayBsaW5lcyB3aWxsIGJlIGluc2VydGVkIGFz
+IG5lZWRlZCwNCmFkamFjZW50IHRvIHRoZSBmaXJzdCBvbmUuDQoNClJldHVybnMgJ1woY29tbWVu
+dC1jb2x1bW4gdG9wIGxpbmVzLW5lZWRlZCB3aGVyZSB3aHlcKS4iDQoNCiAgOzsgTGV0IG1lIHN0
+YXJ0IGJ5IHNheWluZyB0aGF0IHRoaXMgcGFydGljdWxhciBmdW5jdGlvbiBpcyBhDQogIDs7IEdv
+ZC1hd2Z1bCBiZWFzdC4gIEl0J3MgY29tcGxleGl0eSBoYXMgZ290dGVuICp3YXkqIG91dCBvZiBo
+YW5kDQogIDs7IGFuZCBldmVuIEkgZG9uJ3QgcmVhbGx5IGtub3cgaG93IGl0IHdvcmtzIGFueW1v
+cmUuICBJIHdvdWxkIGxvdmUNCiAgOzsgdG8gcmV3cml0ZSBpdC4gIEkgdGhpbmsgdGhhdCBvbmUg
+cmVhc29uIGZvciBpdHMgY29tcGxleGl0eSBpcw0KICA7OyB0aGF0IGl0IHRyaWVzIHRvIGJlIGV4
+aGF1c3RpdmUgaW4gaXRzIHNlYXJjaCBmb3IgYSBwbGFjZSB0byBwdXQNCiAgOzsgdGhlIGNvbW1l
+bnQuICBUaGlzIGlzIHBhcnRseSBhIGhvbGRvdmVyIGZyb20gdGhlIGRheXMgYmVmb3JlIEJDDQog
+IDs7IGFjcXVpcmVkIHRoZSBhYmlsaXR5IHRvIGluc2VydCBibGFuayBsaW5lcyB0byBtYWtlIHJv
+b20gZm9yIHRoZQ0KICA7OyBjb21tZW50Lg0KDQogIDs7IFRoZSBhbGdvcml0aG0gaXMgYXMgZm9s
+bG93cy4gQSBzZXJpZXMgb2YgdHJpYWxzIGFyZSBwZXJmb3JtZWQuIE9uIGVhY2gNCiAgOzsgdHJp
+YWwsIHRoZSBjb21tZW50IGlzIGZpbGxlZCB0byBhIGdpdmVuIGZpbGwtY29sdW1uIGFuZCBpdHMg
+aGVpZ2h0IGlzDQogIDs7IHRha2VuLiBiYy1maW5kLXJvb20gaXMgdGhlbiBjYWxsZWQgdG8gZmlu
+ZCB0aGF0IG1hbnkgbGluZXMgYW5kIHJldHVybnMNCiAgOzsgdGhlIHdpZHRoIG9mIHRoZSBhdmFp
+bGFibGUgcmlnaHQtbWFyZ2luIHNwYWNlIGluIHRob3NlIGxpbmVzLiBJZiB0aGlzDQogIDs7IGlz
+IHdpZGUgZW5vdWdoIGZvciB0aGUgZmlsbC1jb2x1bW4gb2YgdGhlIGNvbW1lbnQgdGV4dCwgd2Ug
+YXJlDQogIDs7IGRvbmUuIElmIG5vdCwgdGhlIGNvbW1lbnQgaXMgcmUtZmlsbGVkIGF0IHRoYXQg
+d2lkdGggYW5kIHRoZSBwcm9jZXNzDQogIDs7IGlzIHJlcGVhdGVkLiBUaHVzLCBpbiB0aGlzIHNl
+cmllcyBvZiB0cmlhbHMgdGhlIGNvbW1lbnQgaXMgcmVwZWF0ZWRseQ0KICA7OyBuYXJyb3dlZCB0
+byBzZWUgaWYgYSBmaXQgY2FuIGJlIGZvdW5kLg0KICA7Ow0KICA7OyBEdXJpbmcgdGhlc2UgdHJp
+YWxzIG5vIG1pbmltdW0gcmVxdWlyZWQgd2lkdGggaXMgcGFzc2VkIHRvDQogIDs7IGJjLWZpbmQt
+cm9vbS4gQXQgc29tZSBwb2ludCBpbiB0aGVzZSB0cmlhbHMgKHVubGVzcyB3ZSBoYXZlDQogIDs7
+IHN1Y2Nlc3MpLCB0aGUgY29tbWVudCB3aWxsIGV2ZW50dWFsbHkgcmVhY2ggaXRzIG1pbmltdW0g
+ZmlsbGFibGUNCiAgOzsgd2lkdGguIFdoZW4gdGhpcyBvY2N1cnMsIG1heC1jb2RlLXdpZHRoIGlz
+IHNldCBhbmQgYSBuZXcgc2V0IG9mDQogIDs7IHRyaWFscyBpcyBiZWd1bi4gT24gZWFjaCBvZiB0
+aGVzZSwgbWF4LWNvZGUtd2lkdGggaXMgcmVwZWF0ZWRseQ0KICA7OyByZWR1Y2VkIHdoaWNoIGFs
+bG93cyB0aGUgY29tbWVudCBmaWxsLWNvbHVtbiB0byBpbmNyZWFzZSBhbmQgaXRzDQogIDs7IGhl
+aWdodCB0byBkZWNyZWFzZS4gSWYgbWF4LWNvZGUtd2lkdGggZHJvcHMgYmVsb3cgdGhlIHdpZHRo
+IG9mDQogIDs7IHRoZSBjb2RlIG9uIHRoZSBjdXJyZW50IGxpbmUsIGFuIGV4Y2VwdGlvbiBpcyB0
+aHJvd24gdG8gJ2ZhaWx1cmUuDQoNCiAgKGxldCogKA0KOzs7CSAoY29kZS1idWZmZXIgKGN1cnJl
+bnQtYnVmZmVyKSkNCjs7OwkgKGxvY2FsLXRhYi1zdG9wcyBiYy10YWItc3RvcHMpDQo7OzsJIChz
+Y3JhdGNoLWJ1ZmZlciAoYmMtZ2V0LWJ1ZmZlci1jcmVhdGUpKQ0KCSAob3JpZy10b3AgKHBvaW50
+KSkNCgkgKHRvcCAocG9pbnQpKQ0KCSAoYm90dG9tIG5pbCkNCgkgKGNvbHVtbiBpbml0aWFsLWNv
+bHVtbikNCjs7OwkgKGJjLUctcm0tbWludXMtc3R1ZmYtMSAoMS0gYmMtRy1ybS1taW51cy1zdHVm
+ZikpDQoJIChtYXgtY29kZS13aWR0aA0KCSAgKGlmIG5vLXJlc2hhcGUgaW5pdGlhbC1jb2x1bW4g
+KDEtIGJjLUctcm0tbWludXMtc3R1ZmYpKSkNCjs7OwkgICAgYmMtRy1ybS1taW51cy1zdHVmZi0x
+KSkNCjs7OwkgICAgKG9yaWctbWF4LWNvZGUtd2lkdGgNCjs7OwkgICAgIChpZiBuby1yZXNoYXBl
+IGluaXRpYWwtY29sdW1uDQo7OzsJICAgICAgIChtaW4NCjs7OwkJYmMtRy1ybS1taW51cy1zdHVm
+Zi0xDQo7OzsJCShtYXggKGJjLWNvZGUtd2lkdGgtdGhpcy1saW5lKSBpbml0aWFsLWNvbHVtbikp
+KSkNCgkgKG9yaWctbWF4LWNvZGUtd2lkdGggKG1pbg0KCQkJICAgICAgIG1heC1jb2RlLXdpZHRo
+DQoJCQkgICAgICAgKG1heCAoYmMtY29kZS13aWR0aC10aGlzLWxpbmUpIGluaXRpYWwtY29sdW1u
+KSkpDQoJIChhdmFpbC13aWR0aCAoLSBiYy1HLXJtLW1pbnVzLXN0dWZmIG9yaWctbWF4LWNvZGUt
+d2lkdGgpKQ0KCSAob3JpZy1hdmFpbC13aWR0aCBhdmFpbC13aWR0aCkNCgkgYXZhaWwtYXJlYSB0
+cnktYWdhaW4gdHJ5LWFkZGluZy1saW5lcyBuZWVkLWJsYW5rLWxpbmUNCgkgbGluZXMtbmVlZGVk
+IHdoZXJlIHdoeSBuby1jb2RlLXRoaXMtbGluZQ0KCSBjb21tZW50LXdpZHRoIGNvbW1lbnQtaGVp
+Z2h0IGZhaWx1cmUgbmV3LWNvbHVtbg0KOzs7CSBkZWx0YQ0KCSApDQogICAgDQogICAgKHNldHEg
+DQogICAgIG5lZWQtYmxhbmstbGluZQ0KICAgICAoY2F0Y2ggJ2ZhaWx1cmUNCg0KICAgICAgIChp
+ZiAoPCBhdmFpbC13aWR0aCAyKQ0KCSAgICh0aHJvdyAnZmFpbHVyZSAnbGluZS10b28td2lkZSkp
+DQogICAgDQogICAgICAgKHNhdmUtZXhjdXJzaW9uDQoJIChiYy1wcmVwYXJlLXRleHQpDQoJIChi
+ZWdpbm5pbmctb2YtbGluZSkNCiAgICAgIA0KCSAoc2V0cSANCgkgIHRyeS1hZGRpbmctbGluZXMN
+CgkgIChjYXRjaCAndHJ5LWFkZGluZy1saW5lcw0KCSAgICAod2hpbGUNCgkJKHByb2duDQoJCSAg
+KHNldHEgY29tbWVudC13aWR0aCAoLSBiYy1HLXJtLW1pbnVzLXN0dWZmIGNvbHVtbikpDQoJCSAg
+KHNldC1idWZmZXIgYmMtRy1zY3JhdGNoLWJ1ZmZlcikNCgkJICAoc2V0cQ0KCQkgICB0cnktYWdh
+aW4NCgkJICAgKGNhdGNoICd0cnktYWdhaW4JCQk7IEZpbGwgdGhlIGNvbW1lbnQgdG8NCgkJCQkJ
+CQk7IHRoZSBuZXcgd2lkdGguDQoJCSAgICAgKGNvbmQNCgkJICAgICAgKChvciBzcXVlZXplIG5v
+LXRhYiBuby1yZXNoYXBlKQk7ICoqIEp1c3QgZmlsbGluZy4NCgkJICAgICAgIChzZXRxIGZpbGwt
+Y29sdW1uIGNvbW1lbnQtd2lkdGgpDQoJCSAgICAgICAoYmMtcXVlcnktZmlsbCkNCgkJICAgICAg
+IChpZiAoPD0gYmMtZmItd2lkdGggY29tbWVudC13aWR0aCkNCgkJCSAgIChzZXRxIGNvbW1lbnQt
+d2lkdGggYmMtZmItd2lkdGgpDQoJCQkgKHNldHEgbWF4LWNvZGUtd2lkdGgJCTsgSWYgd2UgaGF2
+ZSByZWFjaGVkDQoJCQkgICAgICAgKC0gYmMtRy1ybS1taW51cy1zdHVmZgk7IHRoZSBuYXJyb3dl
+c3QgdGhpcw0KCQkJCSAgYmMtZmItd2lkdGgpCQk7IGNvbW1lbnQgY2FuIGdvLCBzdGFydA0KCQkJ
+ICAgICAgIGNvbHVtbgkJCTsgb3ZlciB1c2luZyBpdHMgbWluDQoJCQkgICAgICAgKG1pbiBtYXgt
+Y29kZS13aWR0aAk7IHdpZHRoLg0KCQkJCSAgICBvcmlnLW1heC1jb2RlLXdpZHRoKSkNCgkJCSAo
+dGhyb3cgJ3RyeS1hZ2FpbiB0KSkpDQoJCSAgICAgICh0DQoJCSAgICAgICAoc2V0cQkJCQk7ICoq
+IFRhYmJpbmcNCgkJCWZhaWx1cmUgKGNhdGNoICdmYWlsdXJlDQoJCQkJICAoc2V0cSBjb2x1bW4N
+CgkJCQkJKGNhciAoYmMtdGFiLWJ1ZmZlciAwIGNvbHVtbikpKQ0KCQkJCSAgbmlsKSkNCgkJICAg
+ICAgIChpZiAobm90IGZhaWx1cmUpDQoJCQkgICAoc2V0cSBjb21tZW50LXdpZHRoICgtIGJjLUct
+cm0tbWludXMtc3R1ZmYgY29sdW1uKSkNCgkJCSAoc2V0cSBtYXgtY29kZS13aWR0aCAoYmMtbmV4
+dC10YWItc3RvcCAnbGVmdCBjb2x1bW4pKQ0KCQkJIChpZiAobm90IG1heC1jb2RlLXdpZHRoKQ0K
+CQkJICAgICAodGhyb3cgJ2ZhaWx1cmUgJ2NvbW1lbnQtd2lkZXItdGhhbi1tYXJnaW5zKSkNCgkJ
+CSAgICAgICANCg0KOyAJCQkgIGRlbHRhIChtb2QgY29sdW1uCQkgOyBJZiB3ZSBoYXZlIHJlYWNo
+ZWQNCjsgCQkJCSAgICAgYmMtdGFiLXNwYWNpbmcpCSA7IHRoZSByaWdodG1vc3QgdGFiIGF0DQo7
+IAkJCSAgZGVsdGEgKGlmICh6ZXJvcCBkZWx0YSkJIDsgd2hpY2ggdGhpcyBjb21tZW50DQo7IAkJ
+CQkgICAgYmMtdGFiLXNwYWNpbmcgZGVsdGEpOyBjYW4gZml0LCBzdGFydCBvdmVyDQo7IAkJCSAg
+bWF4LWNvZGUtd2lkdGgJCSA7IHVzaW5nIHRoZSB0YWIgc3RvcA0KOyAJCQkgIChtYXggMSAoLSBj
+b2x1bW4gZGVsdGEpKQkgOyB0byB0aGUgbGVmdCBvZiB0aGF0Lg0KCQkJIChzZXRxIGNvbHVtbg0K
+CQkJICAgICAgIChtaW4gbWF4LWNvZGUtd2lkdGggb3JpZy1tYXgtY29kZS13aWR0aCkpDQoJCQkg
+KHRocm93ICd0cnktYWdhaW4gdCkpKSkNCgkgICAgICAgDQoJCSAgICAgKHNldHEgY29tbWVudC1o
+ZWlnaHQgKCsgYmMtZmItbGluZXMgYmMtZXh0cmEtbGluZXMpKQ0KCQkgICAgIChzZXQtYnVmZmVy
+IGJjLUctY29kZS1idWZmZXIpDQoJCSAgICAgKHNldHEJCQkJOyBTZWUgaWYgaXQgd2lsbCBmaXQN
+CgkJICAgICAgYXZhaWwtYXJlYQkJCTsgbm93Lg0KCQkgICAgICAoYmMtZmluZC1yb29tDQoJCSAg
+ICAgICBjb21tZW50LWhlaWdodCBjb2x1bW4gbWF4LWNvZGUtd2lkdGggdG9wIGJvdHRvbQ0KCQkg
+ICAgICAgY29tbS1yYW5nZS1iZWcgY29tbS1yYW5nZS1lbmQgbGltLXRvcCkpDQoNCgkJICAgICAo
+aWYgKG5vdCAoZXEgKGNhciBhdmFpbC1hcmVhKSAnZmFpbHVyZSkpIG5pbA0KCQkgICAgICAgKGNv
+bmQNCgkJCShuby1yZXNoYXBlCQkJOyBJZiBub3QgZW5vdWdoIGxpbmVzDQoJCQkgKHRocm93ICd0
+cnktYWRkaW5nLWxpbmVzIHQpKQk7IHdpdGggcmVxdWlyZWQgc3BhY2UsDQoJCQkJCQkJOyB0cnkg
+dG8gcmVkdWNlIHRoZQ0KCQkJKChvciBzcXVlZXplIG5vLXRhYikJCTsgbnVtYmVyIG9mIGxpbmVz
+DQoJCQkgKHNldHEJCQkJOyBuZWVkZWQgYnkgd2lkZW5pbmcNCgkJCSAgbWF4LWNvZGUtd2lkdGgJ
+CTsgdGhlIGNvbW1lbnQuDQoJCQkgICgxLSAobWluIG1heC1jb2RlLXdpZHRoIGNvbHVtbikpDQoJ
+CQkgIGF2YWlsLXdpZHRoIG9yaWctYXZhaWwtd2lkdGgNCgkJCSAgY29sdW1uIChtaW4gbWF4LWNv
+ZGUtd2lkdGgNCgkJCQkgICAgICBvcmlnLW1heC1jb2RlLXdpZHRoKSkpDQoJCQkodA0KCQkJIChp
+ZiAoYW5kIChlcSBtYXgtY29kZS13aWR0aCAxKQ0KCQkJCSAgKGVxIGNvbHVtbiAxKSkJCTsgU2Ft
+ZSwgYnV0DQoJCQkgICAgICh0aHJvdyAndHJ5LWFkZGluZy1saW5lcyB0KSkJOyByZWR1Y2UgYnkg
+dGFiDQoJCQkgKHNldHEJCQkJCTsgc3RvcHMuDQoJCQkgIGNvbHVtbiAobWluIG1heC1jb2RlLXdp
+ZHRoIGNvbHVtbikNCgkJCSAgbWF4LWNvZGUtd2lkdGggKG9yIChiYy1uZXh0LXRhYi1zdG9wICds
+ZWZ0IGNvbHVtbikgMSkNCjsgCQkJICBkZWx0YSAobW9kIGNvbHVtbiBiYy10YWItc3BhY2luZykN
+CjsgCQkJICBkZWx0YSAoaWYgKHplcm9wIGRlbHRhKQ0KOyAJCQkJICAgIGJjLXRhYi1zcGFjaW5n
+IGRlbHRhKQ0KOyAJCQkgIG1heC1jb2RlLXdpZHRoIChtYXggMSAoLSBjb2x1bW4gZGVsdGEpKQ0K
+CQkJICBjb2x1bW4gKG1pbiBtYXgtY29kZS13aWR0aCBvcmlnLW1heC1jb2RlLXdpZHRoKSkpKQ0K
+DQoJCSAgICAgICAoaWYgKDwgbWF4LWNvZGUtd2lkdGgNCgkJCSAgICAgIG9yaWctbWF4LWNvZGUt
+d2lkdGgpDQoJCQkgICAodGhyb3cgJ3RyeS1hZGRpbmctbGluZXMgdCkNCgkJCSAodGhyb3cgJ3Ry
+eS1hZ2FpbiB0KSkpDQoJCSAgDQoJCSAgICAgKHNldHEgY29sdW1uIChudGggMiBhdmFpbC1hcmVh
+KQ0KCQkJICAgYXZhaWwtd2lkdGggKC0gYmMtRy1ybS1taW51cy1zdHVmZiBjb2x1bW4pKQ0KDQoJ
+CSAgICAgKGlmICg8IDEgYXZhaWwtd2lkdGgpCQk7IElmIHdlIGhhdmUgcnVuIGludG8gYQ0KCQkJ
+IG5pbAkJCQk7IHZlcnkgd2lkZSBjb2RlIGxpbmUsDQoJCSAgICAgICAoc2V0LWJ1ZmZlciBiYy1H
+LXNjcmF0Y2gtYnVmZmVyKQk7IHN0YXJ0IG92ZXIgdXNpbmcgdGhlDQoJCSAgICAgICAoc2V0cSBm
+aWxsLWNvbHVtbiAxKQkJOyBjb21tZW50J3MgbWluIHdpZHRoDQoJCSAgICAgICAoYmMtcXVlcnkt
+ZmlsbCkJCQk7IHRvIGRpY3RhdGUNCgkJICAgICAgIChzZXRxIG1heC1jb2RlLXdpZHRoCQk7IG1h
+eC1jb2RlLXdpZHRoLg0KCQkJICAgICAoLSBiYy1HLXJtLW1pbnVzLXN0dWZmIGJjLWZiLXdpZHRo
+KQ0KCQkJICAgICBjb2x1bW4gbWF4LWNvZGUtd2lkdGgpDQoJCSAgICAgICAodGhyb3cgJ3RyeS1h
+Z2FpbiB0KSkNCgkJICANCgkJICAgICAoc2V0cSB0b3AgKGNhciBhdmFpbC1hcmVhKQ0KCQkJICAg
+Ym90dG9tIChudGggMSBhdmFpbC1hcmVhKSkNCgkJICAgICBuaWwpKTs7IGVuZCBzZXRxIHRyeS1h
+Z2Fpbg0KCQkgIChpZiB0cnktYWdhaW4NCgkJICAgICAgKHNldHEgYm90dG9tIG5pbA0KCQkJICAg
+IHRvcCBvcmlnLXRvcCk7OyBgd2hpbGUnIGNvbmRpdGlvbg0KCQkgICAgKDwgYXZhaWwtd2lkdGgg
+Y29tbWVudC13aWR0aCkpKSkNCgkgICAgKSk7OyBlbmQgc2V0cSB0cnktYWRkaW5nLWxpbmVzDQog
+ICAgICANCgkgKGNvbmQNCgkgICh0cnktYWRkaW5nLWxpbmVzDQo7CSAgIChiYy1maWxsLW9yLXRh
+Yi1tYWNybykNCgkgICAoc2V0LWJ1ZmZlciBiYy1HLXNjcmF0Y2gtYnVmZmVyKQ0KCSAgIChjb25k
+DQoJICAgIChuby1yZXNoYXBlKQkJCTsgRG8gbm90aGluZyBpZiBubyByZXNoYXBlLg0KCSAgICAo
+c3F1ZWV6ZQ0KCSAgICAgKHNldHEgZmlsbC1jb2x1bW4gb3JpZy1hdmFpbC13aWR0aCkNCgkgICAg
+IChiYy1xdWVyeS1maWxsKQ0KCSAgICAgKHNldHEgY29sdW1uICgtIGJjLUctcm0tbWludXMtc3R1
+ZmYgYmMtZmItd2lkdGgpKSkNCgkgICAgKG5vLXRhYg0KCSAgICAgKHNldHEgZmlsbC1jb2x1bW4g
+b3JpZy1hdmFpbC13aWR0aCkNCgkgICAgIChiYy1xdWVyeS1maWxsKQ0KCSAgICAgKHNldHEgY29s
+dW1uICgtIGJjLUctcm0tbWludXMtc3R1ZmYgb3JpZy1hdmFpbC13aWR0aCkpKQ0KCSAgICAodA0K
+CSAgICAgKHNldHENCgkgICAgICBjb2x1bW4NCgkgICAgICAoY2FyDQoJICAgICAgIChiYy10YWIt
+YnVmZmVyIDAgKC0gYmMtRy1ybS1taW51cy1zdHVmZiBvcmlnLWF2YWlsLXdpZHRoKSkpKSkpDQoN
+CgkgICAoaWYgKDw9IGJjLWZiLXdpZHRoIGZpbGwtY29sdW1uKSBuaWwNCgkgICAgICh0aHJvdyAn
+ZmFpbHVyZSAiTm8gcm9vbSB0aGVyZS4uIikpDQoJDQoJICAgKHNldHEgY29tbWVudC1oZWlnaHQg
+KCsgYmMtZmItbGluZXMgYmMtZXh0cmEtbGluZXMpKQ0KCSAgIChzZXQtYnVmZmVyIGJjLUctY29k
+ZS1idWZmZXIpDQoJICAgKHNldHEgYXZhaWwtYXJlYSAoYmMtZmluZC1yb29tIGNvbW1lbnQtaGVp
+Z2h0IGNvbHVtbiBjb2x1bW4NCgkJCQkJICBvcmlnLXRvcCBuaWwgY29tbS1yYW5nZS1iZWcgDQoJ
+CQkJCSAgY29tbS1yYW5nZS1lbmQgbGltLXRvcCkpDQoJDQoJICAgKGlmIChlcSAoY2FyIGF2YWls
+LWFyZWEpICdmYWlsdXJlKQ0KCSAgICAgICAoc2V0cQ0KCQl3aHkgKG50aCAxIGF2YWlsLWFyZWEp
+DQoJCWxpbmVzLW5lZWRlZCAoLSBjb21tZW50LWhlaWdodCAobnRoIDIgYXZhaWwtYXJlYSkpDQoJ
+CXRvcCAobnRoIDMgYXZhaWwtYXJlYSkNCgkJY29sdW1uIChudGggNCBhdmFpbC1hcmVhKQ0KCQl3
+aGVyZSANCgkJKGNvbmQNCgkJICgobWVtcSB3aHkgJyhjb21tZW50LW9uLWZpcnN0LWxpbmUgY29t
+bWVudC1hYm92ZSkpDQoJCSAgKHRocm93ICdmYWlsdXJlIHdoeSkpDQoJCQkgICA7IlRoZXJlIGlz
+IGFub3RoZXIgY29tbWVudCBpbiB0aGUgd2F5LiIpKQ0KCQkgKChlcSB3aHkgJ2NvbW1lbnQtYmVs
+b3cpIA0KCQkgICgtIGNvbW1lbnQtaGVpZ2h0IC0xIGxpbmVzLW5lZWRlZCkpDQoJCSAoKHplcm9w
+IChudGggMiBhdmFpbC1hcmVhKSkNCgkJICAodGhyb3cgJ2ZhaWx1cmUgIk5vIHJvb20gdGhlcmUi
+KSkNCgkJICgobWVtcSB3aHkgJyhib3R0b20tb2YtYnVmZmVyIGxpbmUtdG9vLXdpZGUgdG9wLXJl
+YWNoZWQpKQ0KCQkgICgtIGNvbW1lbnQtaGVpZ2h0IGxpbmVzLW5lZWRlZCkpDQoJCSApKQ0KCSAg
+ICAgKGVycm9yIA0KCSAgICAgICJiYy1tb2RlIGludGVybmFsIGVycm9yIDAwMy4gIFBsZWFzZSBz
+dWJtaXQgYSBmdWxsIGJ1ZyByZXBvcnQuIikpDQoJICAgKQ0KCSAgKHQNCgkgICAoc2V0cSBsaW5l
+cy1uZWVkZWQgMCkNCgkgICApKQ0KCSApIG5pbCkpIDsgZW5kIHNldHEgbmVlZC1ibGFuay1saW5l
+DQoNCiAgICAoY29uZA0KICAgICAoKGVxIG5lZWQtYmxhbmstbGluZSAnY29tbWVudC13aWRlci10
+aGFuLW1hcmdpbnMpDQogICAgICAoZXJyb3IgIlRoYXQgY29tbWVudCBpcyB0b28gd2lkZSBmb3Ig
+dGhlIG1hcmdpbnMuIikpDQogICAgICgoZXEgbmVlZC1ibGFuay1saW5lICdsaW5lLXRvby13aWRl
+KQ0KICAgICAgKGdvdG8tY2hhciBvcmlnLXRvcCkNCiAgICAgIChmb3J3YXJkLWxpbmUgLTEpDQog
+ICAgICAoaWYgKGJjLW9wYXJzZS1saW5lKSAoc2V0cSBuZWVkLWJsYW5rLWxpbmUgJ2NvbW1lbnQt
+YWJvdmUpKSkNCiAgICAgKQ0KDQogICAgKGNvbmQNCiAgICAgOzsgSWYgbmVlZC1ibGFuay1saW5l
+IGlzIHNldCwgYWxsIGFib3ZlIGF0dGVtdHMgYXQgZmluZGluZyBzcGFjZQ0KICAgICA7OyBoYXZl
+IGZhaWxlZC4gIFRoaXMgbWVhbnMgZWl0aGVyIHRoYXQgdGhlIGZpcnN0IGxpbmUgb2YgdGhlDQog
+ICAgIDs7IGRlc3RpbmF0aW9uIGlzIHRvbyB3aWRlLCBvciB0aGF0IHRoZXJlIGlzIGFub3RoZXIg
+Y29tbWVudCBpbg0KICAgICA7OyB0aGUgd2F5Lg0KDQogICAgICgoZXEgbmVlZC1ibGFuay1saW5l
+ICdjb21tZW50LW9uLWZpcnN0LWxpbmUpDQogICAgICAodGhyb3cgJ2ZhaWx1cmUgIlRoZXJlIGlz
+IGFub3RoZXIgY29tbWVudCBvbiB0aGUgZmlyc3QgbGluZS4iKSkNCg0KICAgICAobmVlZC1ibGFu
+ay1saW5lDQogICAgICA7OyBJbiB0aGlzIGNhc2UsIHdlIHdpbGwgYWRkIGEgYmxhbmsgbGluZSBi
+ZWZvcmUgb3IgYWZ0ZXIgdGhlDQogICAgICA7OyBmaXJzdCBsaW5lIG9mIHRoZSBkZXN0aW5hdGlv
+biwgdGhlbiB0cnkgYWdhaW4gdG8gZmluZCBzcGFjZS4gDQoNCiAgICAgIChzZXQtYnVmZmVyIGJj
+LUctc2NyYXRjaC1idWZmZXIpDQogICAgICAoc2V0cSBmaWxsLWNvbHVtbiAoLSBiYy1HLXJtLW1p
+bnVzLXN0dWZmIGluaXRpYWwtY29sdW1uKSkNCiAgICAgIChiYy1xdWVyeS1maWxsKQ0KICAgICAg
+KHNldHEgY29sdW1uICgtIGJjLUctcm0tbWludXMtc3R1ZmYgKG1heCBiYy1mYi13aWR0aCBvcmln
+LWF2YWlsLXdpZHRoKSkNCgkgICAgY29tbWVudC1oZWlnaHQgKCsgYmMtZmItbGluZXMgYmMtZXh0
+cmEtbGluZXMpDQoJICAgIGxpbmVzLW5lZWRlZCBjb21tZW50LWhlaWdodA0KCSAgICB0b3Agb3Jp
+Zy10b3ANCgkgICAgd2hlcmUgMCkNCg0KICAgICAgKHNldC1idWZmZXIgYmMtRy1jb2RlLWJ1ZmZl
+cikNCiAgICAgIChjb25kDQoNCiAgICAgICA7OyBJZiBpbnNlcnRpbmcgbGluZXMgYWZ0ZXIgdGhl
+IGRlc3RpbmF0aW9uLCB3ZSBtYXkgbm90IG5lZWQgdG8gYWRkDQogICAgICAgOzsgYGNvbW1lbnQt
+aGVpZ2h0JyBvZiB0aGVtLCBiZWNhdXNlIHRoZXJlIG1heSBiZSBzb21lIHJvb20gYWZ0ZXIgdGhl
+DQogICAgICAgOzsgZmlyc3QgbGluZS4gIFdlIG11c3QgbG9vayBmb3Igcm9vbSBhZ2FpbiwgdGhp
+cyB0aW1lIHN0YXJ0aW5nIG9uIHRoZQ0KICAgICAgIDs7IHNlY29uZCBsaW5lLCBhbmQgYXNzdW1p
+bmcgdGhhdCB3ZSBhbHJlYWR5IGhhdmUgb25lIG9mIHRoZSBsaW5lcyB3ZQ0KICAgICAgIDs7IG5l
+ZWQuDQoNCiAgICAgICAoaW5zZXJ0LWFmdGVyDQoJKHNldHEgdG9wDQoJICAgICAgKHNhdmUtZXhj
+dXJzaW9uIChnb3RvLWNoYXIgb3JpZy10b3ApIChmb3J3YXJkLWxpbmUgMSkgKHBvaW50KSkNCgkg
+ICAgICBhdmFpbC1hcmVhDQoJICAgICAgKGJjLWZpbmQtcm9vbSAoMS0gY29tbWVudC1oZWlnaHQp
+IGluaXRpYWwtY29sdW1uIGNvbHVtbiB0b3AgbmlsDQoJCQkgICAgY29tbS1yYW5nZS1iZWcgY29t
+bS1yYW5nZS1lbmQgdG9wKSkNCgkoaWYgKGVxIChjYXIgYXZhaWwtYXJlYSkgJ2ZhaWx1cmUpDQoJ
+ICAgIChzZXRxIA0KCSAgICAgd2h5IChudGggMSBhdmFpbC1hcmVhKQ0KCSAgICAgbGluZXMtbmVl
+ZGVkICgtIGNvbW1lbnQtaGVpZ2h0IChudGggMiBhdmFpbC1hcmVhKSkNCgkgICAgIG5ldy1jb2x1
+bW4gKG50aCA0IGF2YWlsLWFyZWEpDQoJICAgICApDQoJICAoc2V0cSBsaW5lcy1uZWVkZWQgMQ0K
+CQluZXctY29sdW1uIChudGggMiBhdmFpbC1hcmVhKSkpDQoJKGNvbmQNCgkgKChlcSBuZWVkLWJs
+YW5rLWxpbmUgJ2NvbW1lbnQtYWJvdmUpDQoJICAoZ290by1jaGFyIG9yaWctdG9wKQ0KCSAgKGlm
+ICg8PSAoYmMtY29kZS13aWR0aC10aGlzLWxpbmUpIGNvbHVtbikNCgkgICAgICAoc2V0cQ0KCSAg
+ICAgICB0b3Agb3JpZy10b3ANCgkgICAgICAgd2hlcmUgLTENCgkgICAgICAgY29sdW1uIChtYXgg
+bmV3LWNvbHVtbiAoYmMtY29kZS13aWR0aC10aGlzLWxpbmUpKSkNCgkgICAgKHNldHEgY29sdW1u
+IG5ldy1jb2x1bW4pKSkpKQ0KDQogICAgICAgOzsgSWYgaW5zZXJ0aW5nIGEgYmxhbmsgbGluZSBi
+ZWZvcmUgdGhlIGRlc3RpbmF0aW9uLCB3ZSB3aWxsDQogICAgICAgOzsgaGF2ZSB0byBpbnNlcnQg
+YXMgbWFueSBibGFuayBsaW5lcyBhcyBjb21tZW50LWhlaWdodCBpZiB0aGUNCiAgICAgICA7OyBk
+ZXN0aW5hdGlvbiBsaW5lIGlzIHRvbyB3aWRlLiAgVGhvc2UgdmFsdWVzIGFyZSBhbHJlYWR5IHNl
+dCBieSBub3cNCiAgICAgICA7OyBzbyBkbyBub3RoaW5nLiAgSWYgdGhlIHJlYXNvbiBpcyBiZWNh
+dXNlIHRoZXJlIGlzIGEgY29tbWVudCBhYm92ZSwNCiAgICAgICA7OyB0aGVuIHdlIG1heSBub3Qg
+aGF2ZSB0byBpbnNlcnQgdGhhdCBtYW55IGxpbmVzLg0KDQogICAgICAgKChlcSBuZWVkLWJsYW5r
+LWxpbmUgJ2NvbW1lbnQtYWJvdmUpDQoJKHNldHEgd2hlcmUgLTEpDQoJKGdvdG8tY2hhciBvcmln
+LXRvcCkNCgkoYmMtb3BhcnNlLWxpbmUgbmlsIG5pbCBuaWwgbmlsIG5pbCBuaWwgJ25vLWNvZGUt
+dGhpcy1saW5lKQ0KCShpZiBuby1jb2RlLXRoaXMtbGluZQ0KCSAgICAodGhyb3cgJ2ZhaWx1cmUg
+IlRoZXJlIGlzIGFub3RoZXIgY29tbWVudCBhYm92ZS4iKSkNCgkoaWYgKD4gKGJjLWNvZGUtd2lk
+dGgtdGhpcy1saW5lKSBjb2x1bW4pDQoJICAgIChzZXRxDQoJICAgICBsaW5lcy1uZWVkZWQgKDEr
+IGNvbW1lbnQtaGVpZ2h0KQ0KCSAgICAgY29sdW1uIGluaXRpYWwtY29sdW1uKQ0KCSAgKHNldHEg
+dG9wDQoJCShzYXZlLWV4Y3Vyc2lvbiAoZ290by1jaGFyIG9yaWctdG9wKSAoZm9yd2FyZC1saW5l
+IDEpIChwb2ludCkpDQoJCWF2YWlsLWFyZWENCgkJKGJjLWZpbmQtcm9vbSAoMS0gY29tbWVudC1o
+ZWlnaHQpIGNvbHVtbiBjb2x1bW4gdG9wIG5pbA0KCQkJICAgICAgY29tbS1yYW5nZS1iZWcgY29t
+bS1yYW5nZS1lbmQgdG9wKSkNCgkgIChpZiAoZXEgKGNhciBhdmFpbC1hcmVhKSAnZmFpbHVyZSkN
+CgkgICAgICAoc2V0cSANCgkgICAgICAgd2h5IChudGggMSBhdmFpbC1hcmVhKQ0KCSAgICAgICBs
+aW5lcy1uZWVkZWQgKC0gY29tbWVudC1oZWlnaHQgKG50aCAyIGF2YWlsLWFyZWEpIC0yKQ0KCSAg
+ICAgICApDQoJICAgIChzZXRxIGxpbmVzLW5lZWRlZCAxKSkpDQoJKHNldHEgdG9wIG9yaWctdG9w
+KSkNCjs7OwkodGhyb3cgJ2ZhaWx1cmUgIlRoZXJlIGlzIGFub3RoZXIgY29tbWVudCBhYm92ZS4i
+KSkNCiAgICAgICApKSkgICAgOyBlbmQgY29uZA0KDQogICAgKHNldC1idWZmZXIgYmMtRy1zY3Jh
+dGNoLWJ1ZmZlcikJCQk7IElmIHdlIGFyZSBzdXBwb3NlZCB0bw0KICAgIChpZiBzcXVlZXplCQkJ
+CQkJOyBzcXVlZXplLCBkbyBpdCBub3cuDQoJKHNldHEgYXZhaWwtYXJlYQ0KCSAgICAgIChiYy1z
+cXVlZXplLWJ1ZmZlcg0KCSAgICAgICAwIGNvbHVtbiAoMS0gYmMtRy1ybS1taW51cy1zdHVmZikp
+DQoJICAgICAgY29sdW1uIChjYXIgYXZhaWwtYXJlYSkpKQ0KICAgIA0KICAgIChzZXRxIGZpbGwt
+Y29sdW1uICgtIGJjLUctcm0tbWludXMtc3R1ZmYgY29sdW1uKSkNCiAgICAoYmMtZmlsbC1idWZm
+ZXItbWF5YmUpDQogICAgDQogICAgKHNldC1idWZmZXIgYmMtRy1jb2RlLWJ1ZmZlcikNCjs7ICAg
+IChzZXRxIGJjLXByZWYtZmlyc3QtbGluZSAoYmMtY291bnQtbGluZXMtMSAxIHRvcCkpDQogICAg
+KGxpc3QgY29sdW1uIHRvcCBsaW5lcy1uZWVkZWQgd2hlcmUgd2h5KQ0KICAgICkpDQoNCjs7Ozs9
+PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09
+PT09PT09PT09PT09DQo7OztfICAgIHwgYmMtZml0LW5hcnJvdw0KKGRlZnVuIGJjLWZpdC1uYXJy
+b3cgKG5hcnJvdyBsYXN0LWxpbmUgaW5pdGlhbC1jb2x1bW4NCgkJICAgICAgY29tbS1yYW5nZS1i
+ZWcgY29tbS1yYW5nZS1lbmQgc3F1ZWV6ZSBpbmRlbnQpDQogICJGaW5kIGEgbmV3IHdpZHRoIGZv
+ciB0aGUgY29tbWVudCBhbmQgYSBwbGFjZSBpdCB3aWxsIGZpdC4gDQpUaGUgd2lkdGggd2lsbCBi
+ZSBvbmUgc3RvcCB3aWRlciBvciBuYXJyb3dlciwgZGVwZW5kaW5nIG9uIHRoZSB2YWx1ZXMNCm9m
+IE5BUlJPVyBhbmQgU1FVRUVaRS4gIElmIG5hcnJvdyBpcyAxLCBuYXJyb3dpbmcgaXMgcGVyZm9y
+bWVkLCBpZiAtMSwNCndpZGVuaW5nLiAgSWYgU1FVRUVaRSBpcyBub24tbmlsLCB0aGUgY29tbWVu
+dCBpcyBuYXJyb3dlZCBvciB3aWRlbmVkDQp0byBtYWtlIGl0IG9uZSBsaW5lIHRhbGxlciBvciBz
+aG9ydGVyLCBhbmQgc3F1ZWV6ZWQgYXMgbmFycm93IGFzDQpwb3NzaWJsZSBhdCB0aGF0IGhlaWdo
+dC4gIElmIFNRVUVFWkUgaXMgbmlsLCB0aGUgY29tbWVudCBpcyBuYXJyb3dlZA0Kb3Igd2lkZW5l
+ZCB0byB0aGUgbmV4dCB0YWIgc3RvcC4NCg0KQWxzbyBjYWxscyBgYmMtZmlsbC1idWZmZXItbWF5
+YmUnIHRvIG1ha2Ugc3VyZSBzY3JhdGNoIGJ1ZmZlciBpcw0KZmlsbGVkIGFuZCByZWFkeSB0byBi
+ZSB1c2VkLg0KDQpSZXR1cm5zICdcKGNvbW1lbnQtY29sdW1uIHRvcCBsaW5lcy1uZWVkZWQgd2hl
+cmVcKS4iDQogIChsZXQgKA0KOzs7CShzY3JhdGNoLWJ1ZmZlciAoYmMtZ2V0LWJ1ZmZlci1jcmVh
+dGUpKQ0KOzs7CShjb2RlLWJ1ZmZlciAoY3VycmVudC1idWZmZXIpKQ0KOzs7CShsb2NhbC10YWIt
+c3RvcHMgYmMtdGFiLXN0b3BzKQ0KCSh0b3AgKHBvaW50KSkNCgljb2x1bW4gbGluZXMtbmVlZGVk
+IG5hcnJvd2VkLWFyZWEgYXZhaWwtYXJlYSBjb21tZW50LWhlaWdodA0KOzs7CXdoZXJlDQoJKQ0K
+ICAgIChzYXZlLWV4Y3Vyc2lvbg0KICAgICAgKGJjLXByZXBhcmUtdGV4dCkNCg0KICAgICAgKHNl
+dHEgY29sdW1uIGluaXRpYWwtY29sdW1uKQ0KICAgICAgKHNldC1idWZmZXIgYmMtRy1zY3JhdGNo
+LWJ1ZmZlcikNCiAgICAgIChzZXRxIG5hcnJvd2VkLWFyZWENCgkgICAgKGlmIHNxdWVlemUNCgkJ
+KGJjLXNxdWVlemUtYnVmZmVyIG5hcnJvdyBjb2x1bW4gKDEtIGJjLUctcm0tbWludXMtc3R1ZmYp
+KQ0KCSAgICAgIChiYy10YWItYnVmZmVyIG5hcnJvdyBjb2x1bW4gaW5kZW50KSkNCgkgICAgY29s
+dW1uIChjYXIgbmFycm93ZWQtYXJlYSkNCgkgICAgY29tbWVudC1oZWlnaHQgKCsgKGNhciAoY2Ry
+IG5hcnJvd2VkLWFyZWEpKSBiYy1leHRyYS1saW5lcykpDQoNCiAgICAgIChzZXRxIGZpbGwtY29s
+dW1uICgtIGJjLUctcm0tbWludXMtc3R1ZmYgY29sdW1uKSkNCiAgICAgIChiYy1maWxsLWJ1ZmZl
+ci1tYXliZSkNCg0KICAgICAgKHNldC1idWZmZXIgYmMtRy1jb2RlLWJ1ZmZlcikNCiAgICAgIChz
+ZXRxDQogICAgICAgYXZhaWwtYXJlYSAoYmMtZmluZC1yb29tIGNvbW1lbnQtaGVpZ2h0IDAgY29s
+dW1uIHRvcCBuaWwNCgkJCQljb21tLXJhbmdlLWJlZyBjb21tLXJhbmdlLWVuZCB0b3ApKQ0KICAg
+ICAgKGlmIChlcSAoY2FyIGF2YWlsLWFyZWEpICdmYWlsdXJlKQ0KCSAgKHNldHEgbGluZXMtbmVl
+ZGVkICgtIGNvbW1lbnQtaGVpZ2h0IChudGggMiBhdmFpbC1hcmVhKSkpDQo7OzsJCXdoZXJlICgt
+IGNvbW1lbnQtaGVpZ2h0IGxpbmVzLW5lZWRlZCkpDQoJKHNldHEgbGluZXMtbmVlZGVkIG5pbCkp
+DQoNCiAgICAgIDs7IFJldHVybiAwIGZvciBgd2hlcmUnLiBUaGlzIGNhdXNlcyBibGFuayBsaW5l
+cyB0byBiZSBhZGRlZCBhdCB0aGUNCiAgICAgIDs7IGJlZ2lubmluZyByYXRoZXIgdGhhbiBhdCB0
+aGUgZW5kLiBXaGVuIHRoZSB1c2VyIGRvZXMgYSB3aWRlbiBmb2xsb3dlZA0KICAgICAgOzsgaW1t
+ZWRpYXRlbHkgYnkgYSBuYXJyb3csIHRoZXNlIGJsYW5rIGxpbmVzIHJlbWFpbi4gQmVjYXVzZSBv
+ZiB0aGlzLA0KICAgICAgOzsgdGhlIHR3byBvcGVyYXRpb25zIGFyZSBub3QgaW52ZXJzZXMgb2Yg
+ZWFjaCBvdGhlci4gV2l0aCB0aGVzZSBsaW5lcyBhdA0KICAgICAgOzsgdGhlIGJlZ2lubmluZyBv
+ZiB0aGUgY29tbWVudCByYXRoZXIgdGhhbiBhdCB0aGUgZW5kLCBpdCBpcyBwb3NzaWJsZSB0bw0K
+ICAgICAgOzsgcmVzdG9yZSB0aGUgYnVmZmVyIGVhc2lseSBieSBkb2luZyBgYmMtbG93ZXInIGEg
+ZmV3IHRpbWVzLg0KICAgICAgKGxpc3QgY29sdW1uIHRvcCBsaW5lcy1uZWVkZWQgMCkpKSkNCjs7
+OyAgICAgIChsaXN0IGNvbHVtbiB0b3AgbGluZXMtbmVlZGVkIHdoZXJlKSkpKQ0KICAgICAgDQo7
+Ozs7PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09
+PT09PT09PT09PT09PT09PQ0KOzs7XyAgICB8IGJjLWZpbmQtcm9vbQ0KKGRlZm1hY3JvIGJjLWNo
+ZWNrLWFkai1jb21tZW50IChjYXRjaC10YWcgZXhjZXB0aW9uKQ0KICAiQ2hlY2sgdGhlIHJlc3Vs
+dHMgb2YgYSBjYWxsIHRvIGBiYy1wYXJzZS1saW5lJy4gDQpJZiB0aGUgbGluZSBjb250YWlucyBh
+IGNvbW1lbnQsIHdlIG5lZWQgdG8gZGVjaWRlIGlmIHRoaXMgaXMgdGhlDQpjb21tZW50IGJlZ2lu
+IHByb2Nlc3NlZCBvciBhbiBhZGphY2VudCBvbmUuICBJbiB0aGUgbGF0dGVyIGNhc2UsIHdlDQpu
+ZWVkIHRvIHRocm93IGFuIGV4Y2VwdGlvbi4NCg0KUG9pbnQgbXVzdCBiZSBpbiB0aGUgc2FtZSBs
+aW5lIGFzIHdoZW4gYGJjLXBhcnNlLWxpbmUnIHdhcyBjYWxsZWQuDQoNClVzZXMgZnJlZSB2YXJp
+YWJsZXMgYGNvbW1lbnQtcCcsIGBjb21tLXJhbmdlLWJlZycgYW5kIGBjb21tLXJhbmdlLWVuZCcu
+Ig0KICAoYA0KICAgKGlmIChvciAobm90IGNvbW1lbnQtcCkNCgkgICAoYW5kIGNvbW0tcmFuZ2Ut
+YmVnDQoJCShvciAoYmVnaW5uaW5nLW9mLWxpbmUpIDEpDQoJCSg8PSBjb21tLXJhbmdlLWJlZyAo
+cG9pbnQpKQ0KCQkoPD0gKHBvaW50KSBjb21tLXJhbmdlLWVuZCkpKQ0KCQkgbmlsDQoJICAgICAg
+ICh0aHJvdyAoLCBjYXRjaC10YWcpICgsIGV4Y2VwdGlvbikpKSkpDQoNCjs7Ozs9PT09PT09PT09
+PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09
+PT09DQooZGVmdW4gYmMtZmluZC1yb29tIChsaW5lcy1uZWVkZWQgY29kZS13aWR0aCBtYXgtY29k
+ZS13aWR0aCANCgkJCQkgIGZpcnN0LWxpbmUgbGFzdC1saW5lDQoJCQkJICAmb3B0aW9uYWwgY29t
+bS1yYW5nZS1iZWcgY29tbS1yYW5nZS1lbmQNCgkJCQkgIGxpbS10b3ApDQogICJGaW5kcyBhdmFp
+bGFibGUgc3BhY2UgZm9yIHJpZ2h0LW1hcmdpbiBjb21tZW50cyBpbiB0aGUgbmVpZ2hib3Job29k
+DQpvZiAnZmlyc3QtbGluZScuDQoNClRoZSBmdW5jdGlvbiB0cmllcyB0byBleHBhbmQgdGhlIHJh
+bmdlIG9mIGxpbmVzIGZyb20gRklSU1QtTElORSB0bw0KTEFTVC1MSU5FIHRvIGluY2x1ZGUgTElO
+RVMtTkVFREVEIGxpbmVzIHN1Y2ggdGhhdCB0aGUgd2lkdGhzIG9mDQp0aG9zZSBsaW5lcyBhcmUg
+YWxsIGxlc3MgdGhhbiBvciBlcXVhbCBNQVgtQ09ERS1XSURUSC4gIExBU1QtTElORQ0KbWF5IGJl
+IG5pbCB0byBpbmRpY2F0ZSB0aGF0IG5vIHJhbmdlIGhhcyBiZWVuIGFjcXVpcmVkIHlldC4NCg0K
+SWYgc3VjY2Vzc2Z1bCwgZnVuY3Rpb24gcmV0dXJucyBcKGZpcnN0LWxpbmUgbGFzdC1saW5lIGNv
+ZGUtd2lkdGhcKSwgd2hlcmUNCmBmaXJzdC1saW5lJyBhbmQgYGxhc3QtbGluZScgaW5kaWNhdGUg
+dGhlIG5ldyByYW5nZSwgYW5kIGBjb2RlLXdpZHRoJw0KaW5kaWNhdGVzIHRoZSB3aWR0aCBvZiB0
+aGUgd2lkZXN0IGxpbmUgb2YgY29kZSBpbiB0aGUgcmFuZ2UuDQoNCklmIHRoZSBzZWFyY2ggYXJl
+YSBjb250YWlucyBhIGNvbW1lbnQgdGhhdCBpcyBjdXJyZW50bHkgYmVpbmcNCmZvcm1hdHRlZCwg
+d2UgZG9uJ3Qgd2FudCB0aGlzIHRvIGJlIG1pc3Rha2VuIGFzIGJlaW5nIGluIHRoZSB3YXkuICAN
+CkNPTU0tUkFOR0UtQkVHIENPTU0tUkFOR0UtRU5EIG11c3QgYmUgc3VwcGxpZWQgdG8gaW5kaWNh
+dGUgd2hlcmUgdGhlDQpjb21tZW50IGN1cnJlbnRseSBsaWVzLiAgQm90aCBhcmUgYnVmZmVyIHBv
+c2l0aW9ucyBvZiBiZWdpbm5pbmdzIG9mDQpsaW5lcy4NCg0KSWYgdGhlcmUgaXMgbm90IGVub3Vn
+aCByb29tIChiZWNhdXNlIG9mIGJ1ZmZlciBsaW1pdHMsIHdpZGUgY29kZSwgb3INCmFkamFjZW50
+IGNvbW1lbnRzKSwgZnVuY3Rpb24gcmV0dXJucyAoJ2ZhaWx1cmUgcmVhc29uIGxpbmVzLWF2YWls
+DQpmaXJzdC1saW5lIGNvZGUtd2lkdGgpLCB3aGVyZSAnbGluZXMtYXZhaWwnIGlzIGEgY291bnQg
+b2YgaG93IG1hbnkNCmxpbmVzIGRpZCBmaXQuIg0KDQogIChsZXQgKChudW0tbGluZXMgKGlmIGxh
+c3QtbGluZSAoYmMtY291bnQtbGluZXMtMSBmaXJzdC1saW5lIGxhc3QtbGluZSkgMCkpDQoJKG5l
+dy1maXJzdCBmaXJzdC1saW5lKQ0KCShuZXctbGFzdCBsYXN0LWxpbmUpDQoJcmVzdWx0DQoJY29k
+ZS13aWR0aC10aGlzLWxpbmUgY29kZS1lbmQtcG9zIG5vLW1vcmUtZG93bg0KCWNvbW1lbnQtcCAN
+Cjs7Owkobm8tbW9yZS11cCBuaWwpIGN1cnJlbnQtbGluZQ0KCSkNCg0KICAgIChzZXRxIGxpbS10
+b3AgKG9yIGxpbS10b3AgKHBvaW50LW1pbikpKQ0KICAgIChzYXZlLXJlc3RyaWN0aW9uDQogICAg
+ICAoc2V0cQ0KICAgICAgIHJlc3VsdAkJCQkJOz09PT09PT09PT09PT09PT09PT09PT09PT09PT09
+PQ0KICAgICAgIChjYXRjaCAnZmFpbHVyZQkJCQk7IElmIG5vIHJhbmdlIGV4aXN0cyB5ZXQsDQoJ
+IChnb3RvLWNoYXIgZmlyc3QtbGluZSkJCQk7IGV4YW1pbmUgdGhlIGZpcnN0IGxpbmUuDQoJIChp
+ZiBsYXN0LWxpbmUgbmlsCQkJOz09PT09PT09PT09PT09PT09PT09PT09PT09PT09PQ0KCSAgIChz
+ZXRxIGNvbW1lbnQtcCAoYmMtb3BhcnNlLWxpbmUgJ2NvZGUtZW5kLXBvcykpDQoJICAgKGJjLWNo
+ZWNrLWFkai1jb21tZW50ICdmYWlsdXJlICdjb21tZW50LW9uLWZpcnN0LWxpbmUpDQoJICAgKGlm
+IChib2JwKSBuaWwNCgkgICAgIChmb3J3YXJkLWxpbmUgLTEpCQkJOyBNYWtlIHN1cmUgdGhlcmUg
+aXMgYQ0KCSAgICAgKHNldHEgY29tbWVudC1wIChiYy1vcGFyc2UtbGluZSkpCTsgY29tbWVudC1m
+cmVlIGxpbmUgYWJvdmUuDQoJICAgICAoYmMtY2hlY2stYWRqLWNvbW1lbnQgJ2ZhaWx1cmUgJ2Nv
+bW1lbnQtYWJvdmUpKQ0KCSAgIChnb3RvLWNoYXIgZmlyc3QtbGluZSkNCgkgICAoaWYgKGVvYnAp
+IG5pbA0KCSAgICAgKGZvcndhcmQtbGluZSAxKQ0KCSAgICAgKHNldHEgY29tbWVudC1wIChiYy1v
+cGFyc2UtbGluZSkpDQoJICAgICAoYmMtY2hlY2stYWRqLWNvbW1lbnQgJ2ZhaWx1cmUgJ2NvbW1l
+bnQtYmVsb3cpKQ0KCSAgIChnb3RvLWNoYXIgZmlyc3QtbGluZSkNCgkgICAoc2V0cSBjb2RlLXdp
+ZHRoLXRoaXMtbGluZSAoYmMtY29kZS13aWR0aC10aGlzLWxpbmUpKQ0KCSAgIChpZiAoPiBjb2Rl
+LXdpZHRoLXRoaXMtbGluZSBtYXgtY29kZS13aWR0aCkNCgkgICAgICAgKHRocm93ICdmYWlsdXJl
+ICdsaW5lLXRvby13aWRlKSkNCgkgICAoc2V0cSBjb2RlLXdpZHRoIChtYXggY29kZS13aWR0aC10
+aGlzLWxpbmUgY29kZS13aWR0aCkpDQoJICAgKHNldHEgbnVtLWxpbmVzIDEpDQoJICAgKHNldHEg
+bmV3LWxhc3QgZmlyc3QtbGluZSkpDQoNCgkgOzsgVGhlcmUgYXJlIHRocmVlIHRoaW5ncyB0aGF0
+IG1ha2UgdXMgc3RvcCBzZWFyY2hpbmcgaW4gYSBwYXJ0aWN1bGFyDQoJIDs7IGRpcmVjdGlvbjog
+ZW5kLW9mLWJ1ZmZlciwgYSBsaW5lIHdpdGggdG9vLXdpZGUgY29kZSwgb3IgYSBsaW5lIHdpdGgN
+CgkgOzsgYW5vdGhlciBjb21tZW50LiBUaGUgbGFzdCBvbmUgaXMgc3BlY2lhbCBiZWNhdXNlIHdl
+IG11c3QgaGF2ZSBhbg0KCSA7OyBleHRyYSBsaW5lIHRvIHNlcGFyYXRlIHRoYXQgY29tbWVudCBm
+cm9tIHRoZSBvbmUgYmVpbmcgZm9ybWF0dGVkLg0KDQoJIChzZXRxDQoJICBuby1tb3JlLWRvd24N
+CgkJCQkJOzs9PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PTs7DQoJCQkJCTs7IEZp
+cnN0IHNlYXJjaCBkb3dud2FyZCB0byBzZWUgaWYgICA7Ow0KCSAgKGNhdGNoICduby1tb3JlLWRv
+d24JCTs7IHRoZXJlIGlzIGVub3VnaCBzcGFjZSBpbiB0aGF0ICAgICA7Ow0KCSAgICAoZ290by1j
+aGFyIG5ldy1sYXN0KQk7OyBkaXJlY3Rpb24uCQkJICAgICA7Ow0KCQkJCQk7Oz09PT09PT09PT09
+PT09PT09PT09PT09PT09PT09PT09PT09OzsNCgkgICAgKHdoaWxlICg8IG51bS1saW5lcyBsaW5l
+cy1uZWVkZWQpDQoJICAgICAgKHNhdmUtZXhjdXJzaW9uDQoJCShlbmQtb2YtbGluZSkNCgkJKGlm
+IChlb2JwKSAodGhyb3cgJ25vLW1vcmUtZG93biAnYm90dG9tLW9mLWJ1ZmZlcikpKQ0KDQoJICAg
+ICAgKGZvcndhcmQtbGluZSAxKQ0KCSAgICAgIChiYy1vcGFyc2UtbGluZSAnY29kZS1lbmQtcG9z
+IG5pbCBuaWwgbmlsIG5pbCANCgkJCSAgICAgJ2NvZGUtd2lkdGgtdGhpcy1saW5lKQ0KDQoJCQkJ
+CTsgVGhpcyBjaGVjayBtdXN0IGJlIG1hZGUgYmVmb3JlIHRoZQ0KCQkJCQk7IG5leHQgb25lIGJl
+Y2F1c2UgaWYgd2UgZW5kIHVwIGFkZGluZw0KCQkJCQk7IGxpbmVzIHdlIG5lZWQgdG8ga25vdyB3
+aHkgc28gd2UgY2FuDQoJCQkJCTsgYWRkIHRoZW0gaW4gdGhlIHJpZ2h0IHBsYWNlLg0KCSAgICAg
+IChpZiAoPD0gY29kZS13aWR0aC10aGlzLWxpbmUgbWF4LWNvZGUtd2lkdGgpIG5pbA0KCQkodGhy
+b3cgJ25vLW1vcmUtZG93biAnbGluZS10b28td2lkZSkpDQoNCgkgICAgICAoaWYgKGVvYnApIG5p
+bAkJCTsgTWFrZSBzdXJlIHRoZXJlIGlzIGENCgkJKGZvcndhcmQtbGluZSAxKQkJOyBjb21tZW50
+LWZyZWUgbGluZSBiZWxvdy4NCgkJKHNldHEgY29tbWVudC1wIChiYy1vcGFyc2UtbGluZSkpDQoJ
+CShiYy1jaGVjay1hZGotY29tbWVudCAnbm8tbW9yZS1kb3duICdjb21tZW50LWJlbG93KSkNCg0K
+CSAgICAgIChnb3RvLWNoYXIgY29kZS1lbmQtcG9zKQ0KCSAgICAgIChzZXRxIGNvZGUtd2lkdGgg
+KG1heCBjb2RlLXdpZHRoLXRoaXMtbGluZSBjb2RlLXdpZHRoKSkNCgkgICAgICAoYmVnaW5uaW5n
+LW9mLWxpbmUpDQoJICAgICAgKHNldHEgbmV3LWxhc3QgKHBvaW50KSkNCgkgICAgICAoc2V0cSBu
+dW0tbGluZXMgKDErIG51bS1saW5lcykpKSkpDQoNCg0KCSAoaWYgKG9yICg9IG51bS1saW5lcyBs
+aW5lcy1uZWVkZWQpCTs7PT09PT09PT09PT09PT09PT09PT09PT09PT09PT0NCgkJIChlcSBuby1t
+b3JlLWRvd24JCTs7IElmIHdlIHN0aWxsIG5lZWQgbW9yZSByb29tLA0KCQkgICAgICdib3R0b20t
+b2YtYnVmZmVyKSkJOzsgdHJ5IGxvb2tpbmcgdXAuDQoJICAgICBuaWwJCQkJOzs9PT09PT09PT09
+PT09PT09PT09PT09PT09PT09PQ0KOzs7CSAgIChzZXRxDQo7OzsJICAgIG5vLW1vcmUtdXANCgkg
+ICAgKGNhdGNoICduby1tb3JlLXVwIA0KCSAgICAgIChnb3RvLWNoYXIgbmV3LWZpcnN0KQ0KCSAg
+ICAgICh3aGlsZSAoPCBudW0tbGluZXMgbGluZXMtbmVlZGVkKQ0KCQkoaWYgKG9yICg8PSBuZXct
+Zmlyc3QgbGltLXRvcCkgKGJvYnApKQ0KCQkgICAgKHByb2duDQoJCSAgICAgICh0aHJvdyAnbm8t
+bW9yZS11cCAndG9wLXJlYWNoZWQpKSkNCgkJKGZvcndhcmQtbGluZSAtMSkNCjs7OwkJKHNldHEg
+Y3VycmVudC1saW5lIChwb2ludCkpDQoNCgkJKGJjLW9wYXJzZS1saW5lICdjb2RlLWVuZC1wb3Mg
+bmlsIG5pbCBuaWwgbmlsIA0KCQkJICAgICAgICdjb2RlLXdpZHRoLXRoaXMtbGluZSkNCjs7OwkJ
+KGdvdG8tY2hhciBjb2RlLWVuZC1wb3MpDQo7OzsJCShzZXRxIGNvZGUtd2lkdGgtdGhpcy1saW5l
+IChiYy1jb2RlLXdpZHRoLXRoaXMtbGluZSkpDQoJCShpZiAoPD0gY29kZS13aWR0aC10aGlzLWxp
+bmUgbWF4LWNvZGUtd2lkdGgpIG5pbA0KCQkgICh0aHJvdyAnbm8tbW9yZS11cCAnbGluZS10b28t
+d2lkZSkpDQoNCgkJKGlmIChib2JwKSBuaWwNCgkJICAoZm9yd2FyZC1saW5lIC0xKQ0KCQkgIChz
+ZXRxIGNvbW1lbnQtcCAoYmMtb3BhcnNlLWxpbmUpKQ0KCQkgIChiYy1jaGVjay1hZGotY29tbWVu
+dCAnbm8tbW9yZS11cCAnY29tbWVudC1iZWZvcmUpKQ0KCQkgDQoJCShnb3RvLWNoYXIgY29kZS1l
+bmQtcG9zKQ0KCQkoc2V0cSBjb2RlLXdpZHRoIChtYXggY29kZS13aWR0aC10aGlzLWxpbmUgY29k
+ZS13aWR0aCkpDQoJCShiZWdpbm5pbmctb2YtbGluZSkNCgkJKHNldHEgbmV3LWZpcnN0IChwb2lu
+dCkpDQoJCShzZXRxIG51bS1saW5lcyAoMSsgbnVtLWxpbmVzKSkpIG5pbCkpDQoNCgkgKGlmICg8
+PSBsaW5lcy1uZWVkZWQgbnVtLWxpbmVzKSBuaWwNCgkgICAodGhyb3cgJ2ZhaWx1cmUgbm8tbW9y
+ZS1kb3duKSkNCjs7OwkgICAgICAoaWYgKG9yIChub3Qgbm8tbW9yZS11cCkgKGVxIG5vLW1vcmUt
+dXAgJ3RvcC1yZWFjaGVkKSkNCjs7OwkJICAodGhyb3cgJ2ZhaWx1cmUgbm8tbW9yZS1kb3duKQk7
+IFVzZSByZWFzb24gYXQgYm90dG9tLg0KOzs7CSAgICAgICh0aHJvdyAnZmFpbHVyZSBuby1tb3Jl
+LXVwKSkpDQoJICkpOzsgZW5kIHNldHEgcmVzdWx0DQogICAgICApIDsgZW5kIHNhdmUtcmVzdHJp
+Y3Rpb24NCiAgICAoaWYgcmVzdWx0DQoJKGxpc3QgJ2ZhaWx1cmUgcmVzdWx0IG51bS1saW5lcyBu
+ZXctZmlyc3QgY29kZS13aWR0aCkNCiAgICAgIChsaXN0IG5ldy1maXJzdCBuZXctbGFzdCBjb2Rl
+LXdpZHRoKSkNCiAgICApIDsgZW5kIGxldA0KICApDQoNCjs7Ozs9PT09PT09PT09PT09PT09PT09
+PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09DQo7Oztf
+ICAgbyBGaWxsaW5nDQo7OztfICAgIHwgYmMtc3F1ZWV6ZS1idWZmZXINCihkZWZ1biBiYy1zcXVl
+ZXplLWJ1ZmZlciAobmFycm93IGN1cnJlbnQtY29sdW1uIG1heC13aWR0aCkNCiAgIkFkanVzdCB0
+aGUgZmlsbC13aWR0aCBvZiB0aGUgYnVmZmVyIHNvIHRoZSB0ZXh0IGlzIGFzIGNsb3NlIHRvIGEg
+DQpyZWN0YW5ndWxhciBibG9jayBhcyBwb3NzaWJsZSwgYW5kIG9wdGlvbmFsbHkgbmFycm93IG9y
+IHdpZGVuIHRoZSANCnJlY3RhbmdsZSBzbyB0aGF0IHRoZSBibG9jayBiZWNvbWVzIG9uZSBsaW5l
+IG1vcmUgb3IgbGVzcyB0aGFuIGJlZm9yZS4NCg0KQSB6ZXJvIE5BUlJPVyBhcmd1bWVudCBjYXVz
+ZXMgb25seSByZWN0YW5ndWxhciBibG9ja2luZy4gIE5lZ2F0aXZlDQp2YWx1ZXMgY2F1c2UgdGhl
+IGZpbGwtY29sdW1uIHRvIGJlIGluY3JlYXNlZCB0byBtYWtlIHRoZSB0ZXh0IG9jY3VweQ0Kb25l
+IGxlc3MgbGluZS4gIFBvc2l0aXZlIHZhbHVlcyBjYXVzZSB0aGUgZmlsbC1jb2x1bW4gdG8gYmUg
+cmVkdWNlZCwNCmFuZCwgaWYgdGhlIHRleHQgd2FzIGluaXRpYWxseSByZWN0YW5ndWxhci1ibG9j
+a2VkLCB0aGUgdGV4dCB3aWxsDQpzdWJzZXF1ZW50bHkgb2NjdXB5IG9uZSBtb3JlIGxpbmUsIG90
+aGVyd2lzZSBpdCB3aWxsIG9ubHkgYmUNCnJlY3Rhbmd1bGFyLWJsb2NrZWQuDQoNCkNVUlJFTlQt
+Q09MVU1OIGlzIHRoZSBjb2x1bW4gaW4gdGhlIGNvZGUgYnVmZmVyIHRvIHdoaWNoIHRoZSB0ZXh0
+IGluDQp0aGUgc2NyYXRjaCBidWZmZXIgaXMgY3VycmVudGx5IGZpdC4gIFRoaXMgbWVhbnMgdGhh
+dCB0aGUgdGV4dCBpbiB0aGUNCnNjcmF0Y2ggYnVmZmVyIGlzIGZpbGxlZCB0byBcKC0gYmMtRy1y
+bS1taW51cy1zdHVmZiBDVVJSRU5ULUNPTFVNTlwpLg0KDQpSZXR1cm5zIFwoY29sdW1uIGhlaWdo
+dFwpLg0KDQpUaHJvd3MgdG8gJ2ZhaWx1cmUgaWYgbmFycm93aW5nIG9yIHdpZGVuaW5nIGNhbm5v
+dCBiZSBkb25lIHdpdGhpbg0KYWxsb3dhYmxlIG1hcmdpbnMuIg0KDQogOyBOb3RlOiBjYWxsaW5n
+IGZ1bmN0aW9ucyBkZXBlbmQgb24gdGhpcyBmdW5jdGlvbiB0byBlaXRoZXIgbW9kaWZ5IHRoZSBi
+dWZmZXINCiA7IG9yIHRocm93IGFuIGV4Y2VwdGlvbi4gSWYgdGhpcyBmdW5jdGlvbiB3ZXJlIHRv
+IGRlY2lkZSB0aGF0IGl0IG11c3QgbGVhdmUNCiA7IHRoZSBidWZmZXIgYXMgaXMsIGJ1dCByZXR1
+cm4gd2l0aG91dCB0aHJvd2luZywgYSBjYWxsaW5nIGZ1bmN0aW9uIHdpbGwNCiA7IHByb2JhYmx5
+IGdldCBzdHVjayBpbiBhbiBpbmZpbml0ZSBsb29wLg0KDQogIChsZXQgKGhlaWdodCBvcmlnLWhl
+aWdodCANCgl3aWR0aCBvbGQtd2lkdGgNCgluZXctaGVpZ2h0DQoJKGp1c3QtYmxvY2tpbmctcCBu
+aWwpDQoJZmlsbC13aWR0aCBmaWxsLW5leHQtd2lkdGgNCglhdC1tYXgtd2lkdGggDQo7OzsJZmls
+bC1saW5lcyB3aWRlc3QtaXMtb25lIGN1cnJlbnQtd2lkdGgNCgkpDQoNCiAgICAoc2V0cSBmaWxs
+LWNvbHVtbiAoLSBiYy1HLXJtLW1pbnVzLXN0dWZmIGN1cnJlbnQtY29sdW1uKSkNCiAgICAoYmMt
+cXVlcnktZmlsbCkNCiAgICAoc2V0cSA7OzsgY3VycmVudC13aWR0aCBiYy1mYi13aWR0aA0KCSAg
+d2lkdGggYmMtZmItd2lkdGgNCgkgIGhlaWdodCBiYy1mYi1saW5lcw0KCSAgZmlsbC1uZXh0LXdp
+ZHRoIGJjLWZiLW5leHQtd2lkdGgNCgkgIG9yaWctaGVpZ2h0IGJjLWZiLWxpbmVzDQoJICBuZXct
+aGVpZ2h0IGJjLWZiLWxpbmVzDQoJICBvbGQtd2lkdGggYmMtZmItd2lkdGgpCQk7IENhbid0IHVz
+ZSBmb3J3YXJkLXdvcmQNCgkJCQkJCTsgYmVjYXVzZSBgZmlsbC1yZWdpb24nIHdvbid0DQo7Ozsg
+ICAgKGdvdG8tY2hhciAocG9pbnQtbWluKSkJCQk7IGJyZWFrIG9uIGNoYXJhY3RlcnMgbGlrZSBg
+LScsDQo7OzsgICAgKHNraXAtY2hhcnMtZm9yd2FyZCAiXiBcdFxuIikJCTsgdGh1cyB3ZSBkZWZp
+bmUgYSBgd29yZCcgYXMNCjs7OyAgICAoc2tpcC1jaGFycy1mb3J3YXJkICIgXHRcbiIpCQk7IHNv
+bWV0aGluZyBkZWxpbWl0ZWQgYnkNCjs7OyAgICAoY29uZAkJCQkJOyB3aGl0ZXNwYWNlLg0KOzs7
+CSgoZW9icCkNCjs7OwkgKGdvdG8tY2hhciAocG9pbnQtbWluKSkJCTsgVGhpcyBjb21tZW50IGlz
+IG9ubHkgb25lDQo7OzsJIChza2lwLWNoYXJzLWZvcndhcmQgIl4gXHRcbiIpCQk7IHdvcmQsIHNv
+IGl0IGNhbid0IGJlIHdpZGVuZWQNCjs7OwkgKHNldHEgd2lkdGggKGN1cnJlbnQtY29sdW1uKSkJ
+CTsgb3IgbmFycm93ZWQuDQo7OzsJIChzZXRxIG5ldy1oZWlnaHQgMSkNCjs7OwkgKQ0KDQogICAg
+KGNvbmQJCQkJCTsgSWYgd2lkZW5pbmcsIHNldCB0aGUNCiAgICAgKCg8IG5hcnJvdyAwKQkJCQk7
+IGZpbGwtY29sdW1uIHByb2dyZXNzaXZlbHkNCiAgICAgICh3aGlsZSAoYW5kICg9IG5ldy1oZWln
+aHQgaGVpZ2h0KQkJOyB3aWRlciBhbmQgd2lkZXIgdW50aWwgdGhlDQoJCSAgKG5vdCBhdC1tYXgt
+d2lkdGgpKQkJOyBoZWlnaHQgZGVjcmVhc2VzLCB0aGVuIHdlIGFyZQ0KCShpZiAoYW5kICg8IGZp
+bGwtbmV4dC13aWR0aCBtYXgtd2lkdGgpCTsgZG9uZS4NCgkJIChub3QgKD0gMSBoZWlnaHQpKSkN
+CgkgICAgKHNldHEgZmlsbC1jb2x1bW4gZmlsbC1uZXh0LXdpZHRoKQ0KCSAgKHNldHEgZmlsbC1j
+b2x1bW4gbWF4LXdpZHRoKQkJOyBJZiB3ZSByZWFjaCBmdWxsLXBhZ2Ugd2lkdGgsDQoJICAoc2V0
+cSBhdC1tYXgtd2lkdGggdCkpCQk7IGRvbid0IHJlcXVpcmUgcmVjdGFuZ3VsYXINCgkJCQkJCTsg
+YmxvY2tpbmcuDQoJKGJjLXF1ZXJ5LWZpbGwpDQoJKHNldHEgZmlsbC13aWR0aCBiYy1mYi13aWR0
+aA0KCSAgICAgIG5ldy1oZWlnaHQgYmMtZmItbGluZXMNCgkgICAgICBmaWxsLW5leHQtd2lkdGgg
+YmMtZmItbmV4dC13aWR0aCkpOzsgZW5kIHdoaWxlDQogICAgICAoaWYgKGFuZCBhdC1tYXgtd2lk
+dGggKD0gZmlsbC13aWR0aCBvbGQtd2lkdGgpKQ0KCSAgKHRocm93ICdmYWlsdXJlICJObyByb29t
+IHRvIHdpZGVuLiIpKQ0KICAgICAgKHNldHEgd2lkdGgNCgkgICAgKGlmIGF0LW1heC13aWR0aCBt
+YXgtd2lkdGggZmlsbC13aWR0aCkpDQogICAgICApDQoNCiAgICAgKHQJCQkJCQk7IElmIG5hcnJv
+d2luZyBvciBibG9ja2luZywgc2V0DQogICAgICAod2hpbGUgKGFuZCAoPSBuZXctaGVpZ2h0IGhl
+aWdodCkJCTsgdGhlIGZpbGwtY29sdW1uIHByb2dyZXNzaXZlbHkNCgkJICAobm90IGJjLWZiLXdp
+ZGVzdC1pcy1vbmUpKQk7IG5hcnJvd2VyIHVudGlsIHRoZSBoZWlnaHQNCgkoaWYgKDwgd2lkdGgg
+MSkJCQkJOyBpbmNyZWFzZXMuDQoJICAgICh0aHJvdyAnZmFpbHVyZSAiTm8gcm9vbSB0byBuYXJy
+b3ciKSkNCgkoc2V0cSBmaWxsLWNvbHVtbiAoMS0gd2lkdGgpKQ0KCShzZXRxIG9sZC13aWR0aCB3
+aWR0aCkNCgkoYmMtcXVlcnktZmlsbCkNCgkoc2V0cSB3aWR0aCBiYy1mYi13aWR0aCkNCgkoc2V0
+cSBuZXctaGVpZ2h0IGJjLWZiLWxpbmVzKQ0KCShzZXRxIGZpbGwtbmV4dC13aWR0aCBiYy1mYi1u
+ZXh0LXdpZHRoKSkNCg0KCQkJCQkJOyBBdCB0aGlzIHBvaW50LCB3ZSBoYXZlIGVpdGhlcg0KICAg
+ICAgKGlmIChhbmQgYmMtZmItd2lkZXN0LWlzLW9uZQkJOyBzdWNjZWVkZWQgaW4gaW5jcmVhc2lu
+ZyB0aGUNCgkgICAgICAgKG5vdCAoPSBuYXJyb3cgMCkpKQkJOyBudW1iZXIgb2YgbGluZXMgb3Ig
+Z290dGVuDQoJICAoc2V0cSBmaWxsLW5leHQtd2lkdGggd2lkdGgpKQkJOyBzdHVjayBvbiBhIGxv
+bmcgb25lLXdvcmQNCgkJCQkJCTsgbGluZS4NCg0KICAgICAgKGlmIChvciAoPSBuYXJyb3cgMCkp
+CQkJOyBJZiB3ZSB3ZXJlIGFza2VkIHRvIG5hcnJvdywNCjs7Oyhub3QgKD0gY3VycmVudC13aWR0
+aCBvbGQtd2lkdGgpKSkJCTsgYW5kIHRoZSB0ZXh0IHdhcyBhbHJlYWR5DQoJICAoc2V0cSBqdXN0
+LWJsb2NraW5nLXAgdCkJCTsgYmxvY2tlZCwgdGhlbiB3ZSBuZWVkDQoJKHNldHEgaGVpZ2h0IG5l
+dy1oZWlnaHQpCQk7IGNvbnRpbnVlIG5hcnJvd2luZyB1bnRpbCB0aGUNCgkod2hpbGUgKGFuZCAo
+PSBuZXctaGVpZ2h0IGhlaWdodCkJOyBoZWlnaHQgaW5jcmVhc2VzIGJ5IG9uZSBtb3JlLg0KCQkg
+ICAgKG5vdCBiYy1mYi13aWRlc3QtaXMtb25lKSkNCgkgIChpZiAoPCB3aWR0aCAxKQ0KCSAgICAg
+ICh0aHJvdyAnZmFpbHVyZSAiTm8gcm9vbSB0byBuYXJyb3cuIikpDQoJICAoc2V0cSBmaWxsLWNv
+bHVtbiAoMS0gd2lkdGgpKQ0KCSAgKGJjLXF1ZXJ5LWZpbGwpDQoJICAoc2V0cSB3aWR0aCBiYy1m
+Yi13aWR0aCkNCgkgIChzZXRxIG5ldy1oZWlnaHQgYmMtZmItbGluZXMpDQoJICAoc2V0cSBmaWxs
+LW5leHQtd2lkdGggYmMtZmItbmV4dC13aWR0aCkpKQ0KDQoJCQkJCQk7IEFnYWluLCB3ZSBoYXZl
+IGVpdGhlcg0KCQkJCQkJOyBzdWNjZWVkZWQgaW4gaW5jcmVhc2luZyB0aGUNCgkJCQkJCTsgbnVt
+YmVyIG9mIGxpbmVzIG9yIGdvdHRlbg0KCQkJCQkJOyBzdHVjayBvbiBhIGxvbmcgb25lLXdvcmQN
+CiAgICAgIChzZXRxIGZpbGwtY29sdW1uCQkJCTsgbGluZS4NCgkgICAgKGlmIGp1c3QtYmxvY2tp
+bmctcA0KCQkoaWYgKD0gb3JpZy1oZWlnaHQgbmV3LWhlaWdodCkgd2lkdGggZmlsbC1uZXh0LXdp
+ZHRoKQ0KCSAgICAgIChjb25kDQoJICAgICAgICgoPSBuZXctaGVpZ2h0IG9yaWctaGVpZ2h0KQ0K
+CQkodGhyb3cgJ2ZhaWx1cmUgIlRoYXQgaXMgYXMgbmFycm93IGFzIGl0IGdvZXMuIikpDQoJICAg
+ICAgICgoPSBuZXctaGVpZ2h0ICgxKyBvcmlnLWhlaWdodCkpDQoJCXdpZHRoKQ0KCSAgICAgICAo
+dA0KCQlmaWxsLW5leHQtd2lkdGgpKSkpDQoNCiAgICAgIChiYy1xdWVyeS1maWxsKQ0KICAgICAg
+KGlmIGp1c3QtYmxvY2tpbmctcCBuaWwNCgkoaWYgKD0gb3JpZy1oZWlnaHQgYmMtZmItbGluZXMp
+DQoJICAgICh0aHJvdyAnZmFpbHVyZSAiTm8gcm9vbSB0byBuYXJyb3cuLi4iKSkpDQoNCiAgICAg
+IChzZXRxIHdpZHRoIGJjLWZiLXdpZHRoKQ0KICAgICAgKHNldHEgbmV3LWhlaWdodCBiYy1mYi1s
+aW5lcykNCiAgICAgICkNCiAgICAgKTs7IGVuZCBjb25kDQogICAgDQogICAgKGxpc3QgKC0gYmMt
+Ry1ybS1taW51cy1zdHVmZiB3aWR0aCkgbmV3LWhlaWdodCkNCiAgICApOzsgZW5kIGxldA0KICAp
+DQoNCjs7Ozs9PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09
+PT09PT09PT09PT09PT09PT09PT09DQo7OztfICAgIHwgYmMtbmV4dC10YWItc3RvcA0KKGRlZnVu
+IGJjLW5leHQtdGFiLXN0b3AgKGRpcmVjdGlvbiBjb2x1bW4gJm9wdGlvbmFsIG1heWJlIGluZGVu
+dCkNCiAgIkZpbmQgdGhlIG5leHQgdGFiIHN0b3AgdG8gdGhlIHJpZ2h0IG9yIGxlZnQgb2YgQ09M
+VU1OLg0KRElSRUNUSU9OIHNob3VsZCBiZSBlaXRoZXIgb2YgdGhlIHN5bWJvbHMgYHJpZ2h0JyBv
+ciBgbGVmdCcuICANCg0KSWYgQ09MVU1OIGhhcHBlbnMgdG8gYWxyZWFkeSBiZSBhdCBhIHRhYiBz
+dG9wLCB0aGUgcmV0dXJuIHZhbHVlIGNhbiBiZQ0KY29udHJvbGxlZCBieSB0aGUgb3B0aW9uYWwg
+YXJndW1lbnQgTUFZQkUuICBJZiB0aGlzIGlzIHRoZSBzeW1ib2wNCmBtYXliZScsIHRoZW4gdGhl
+IHNhbWUgY29sdW1uIGlzIHJldHVybmVkLiAgSWYgaXQgaXMgbmlsIG9yIHRoZSBzeW1ib2wNCmBm
+b3JjZScsIHRoZSBuZXh0IHRhYiBzdG9wIGluIHRoZSBhcHByb3ByaWF0ZSBkaXJlY3Rpb24gaXMg
+cmV0dXJuZWQuDQoNClRoZSBnbG9iYWwgdmFyaWFibGUgYGJjLUctdGFiLXN0b3BzJyB3aWxsIGJl
+IHVzZWQgYXMgdGhlIGxpc3Qgb2YgdGFiDQpzdG9wcy4gIFRoZSBvcHRpb25hbCBhcmd1bWVudCBJ
+TkRFTlQgY2FuIHNwZWNpZnkgYW4gYWRkaXRpb25hbCB0YWINCnN0b3AuDQoNClJldHVybnMgbmls
+IGlmIHRoZXJlIGlzIG5vIHN0b3AgaW4gdGhlIGRlc2lyZWQgZGlyZWN0aW9uLiINCg0KICAobGV0
+IChzdG9wDQoJKHN0b3BsaXN0IGJjLUctdGFiLXN0b3BzKQ0KCW5ldy1jb2x1bW4gZGVsdGEgdGhy
+ZXNoDQoJKG1pbi1kZWx0YSA5OTk5KQ0KCSkNCiAgICAoaWYgKGVxIG1heWJlICdmb3JjZSkgKHNl
+dHEgbWF5YmUgbmlsKSkNCiAgICAoc2V0cSB0aHJlc2ggKGlmIG1heWJlIC0xIDApKQ0KDQogICAg
+KGlmIChvciAobm90IGluZGVudCkgKHplcm9wIGluZGVudCkpIG5pbAk7OyBGaXJzdCBjaGVjayB0
+aGUgb3B0aW9uYWwNCiAgICAgIChzZXRxIGRlbHRhIChpZiAoZXEgZGlyZWN0aW9uICdsZWZ0KQk7
+OyBzdG9wLiBXZSBkbyB0aGlzIGhlcmUNCgkJICAgICAgKC0gY29sdW1uIGluZGVudCkJCTs7IGJl
+Y2F1c2Ugc29tZWRheSB3ZSBtYXkgdGFrZQ0KCQkgICAgKC0gaW5kZW50IGNvbHVtbikpKQkJOzsg
+YWR2YW50YWdlIG9mIHRoZSBmYWN0IHRoYXQNCiAgICAgIChpZiAoPCB0aHJlc2ggZGVsdGEpCQkJ
+OzsgU1RPUExJU1QgaXMgb3JkZXJlZC4NCgkgIChzZXRxIG5ldy1jb2x1bW4gaW5kZW50DQoJCW1p
+bi1kZWx0YSBkZWx0YSkpKQ0KDQogICAgKHdoaWxlIHN0b3BsaXN0CQkJCTs7IE5vdyBjaGVjayB0
+aGUgc3RvcGxpc3QuDQogICAgICAoc2V0cSBzdG9wIChiYy1wb3Agc3RvcGxpc3QpCQk7OyBTb21l
+ZGF5IHRoZSBzdG9wbGlzdCBzaG91bGQNCgkgICAgZGVsdGEgKGlmIChlcSBkaXJlY3Rpb24gJ2xl
+ZnQpCTs7IHByb2JhYmx5IGJlIGFuIGFycnkgYW5kIHRoaXMNCgkJICAgICAgKC0gY29sdW1uIHN0
+b3ApCQk7OyBzaG91bGQgZG8gYSBiaW5hcnkgc2VhcmNoLg0KCQkgICAgKC0gc3RvcCBjb2x1bW4p
+KSkNCiAgICAgIChpZiAoYW5kICg8IHRocmVzaCBkZWx0YSkNCgkgICAgICAgKDwgZGVsdGEgbWlu
+LWRlbHRhKQ0KCSAgICAgICAoPCBzdG9wIGJjLUctcm0tbWludXMtc3R1ZmYpDQoJICAgICAgIChu
+b3QgKHplcm9wIHN0b3ApKSkNCgkgIChzZXRxIG5ldy1jb2x1bW4gc3RvcCBtaW4tZGVsdGEgZGVs
+dGEpKSkNCiAgICBuZXctY29sdW1uKSkNCg0KOzs7Oz09PT09PT09PT09PT09PT09PT09PT09PT09
+PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT0NCjs7O18gICAgfCBi
+Yy10YWItYnVmZmVyDQooZGVmdW4gYmMtdGFiLWJ1ZmZlciAobmFycm93IGN1cnJlbnQtY29sdW1u
+ICZvcHRpb25hbCBpbmRlbnQpIA0KDQogICJGaWxsIGBiYy1HLXNjcmF0Y2gtYnVmZmVyJyB0byB0
+aGUgbmV4dCBuZWFyZXN0IHRhYiBzdG9wLiAgVGFiIHN0b3BzDQphcmUgdGhvc2Ugb2YgdGhlIGNv
+ZGUgYnVmZmVyIC0tIHRhYiBzdG9wcyBmYXJ0aGVyIHRvIHRoZSByaWdodCBtZWFuDQpmaWxsIHRo
+ZSBzY3JhdGNoIGJ1ZmZlciBuYXJyb3dlci4NCg0KSWYgTkFSUk9XIGlzIHplcm8sIGRvIG5vdGhp
+bmcgaWYgQ1VSUkVOVC1DT0xVTU4gaXMgb24gYSB0YWIgc3RvcC4NCk90aGVyd2lzZSBmaWxsIHRv
+IG5leHQgdGFiIHN0b3AgdG8gcmlnaHQuDQoNCklmIE5BUlJPVyBpcyBwb3NpdGl2ZSwgZmlsbCB0
+byBuZXh0IHRhYiBzdG9wIHRvIHJpZ2h0LiAgSWYgbmVnYXRpdmUsDQpmaWxsIHRvIG5leHQgdGFi
+IHN0b3AgdG8gbGVmdC4NCg0KT3B0aW9uYWwgSU5ERU5UIGNhbiBzcGVjaWZ5IGFuIGFkZGl0aW9u
+YWwgdGFiIHN0b3AuDQoNClJldHVybnMgXChjb2x1bW4gaGVpZ2h0XCkuIg0KDQogIChsZXQqICg7
+Oyhtb2QtZGVsdGEgKC0gKG1vZCBjdXJyZW50LWNvbHVtbiBiYy10YWItc3BhY2luZykpKQ0KCSA7
+Oyhvbi10YWItc3RvcCAob3IgKD0gY3VycmVudC1jb2x1bW4gMSkNCgk7OwkJICAoPSBtb2QtZGVs
+dGEgMCkpKQ0KOwkgKHN0b3BzIChhcHBlbmQgdGFiLXN0b3BzIChsaXN0IGluZGVudCkpKQ0KCSBu
+ZXctY29sdW1uIG5ldy1oZWlnaHQNCjs7OwkgKHByZXYtc3RvcC1kZWx0YSA5OTk5KSBzdG9wLWNv
+bHVtbiBzdG9wLWRlbHRhDQoJICkNCiAgICANCiAgICAoY29uZA0KICAgICAoKDwgbmFycm93IDAp
+CQkJCTsgV2lkZW5pbmcgdGhlIGNvbW1lbnQuDQoNCiAgICAgIChzZXRxIG5ldy1jb2x1bW4gKGJj
+LW5leHQtdGFiLXN0b3AgJ2xlZnQgY3VycmVudC1jb2x1bW4gJ2ZvcmNlIGluZGVudCkpDQo7ICAg
+ICAgICh3aGlsZSBzdG9wcw0KOyAJKHNldHEgc3RvcC1jb2x1bW4gKGNhciBzdG9wcykNCjsgCSAg
+ICAgIHN0b3BzIChjZHIgc3RvcHMpKQ0KOyAJKGlmIChub3Qgc3RvcC1jb2x1bW4pIG5pbA0KOyAJ
+ICAoc2V0cSBzdG9wLWRlbHRhICgtIGN1cnJlbnQtY29sdW1uIHN0b3AtY29sdW1uKSkJOyBTZWFy
+Y2ggZm9yDQo7IAkgIChpZiAoYW5kICg8IDAgc3RvcC1kZWx0YSkJCQkJOyB0aGUgbmVhcmVzdA0K
+OyAJCSAgICg8IHN0b3AtZGVsdGEgcHJldi1zdG9wLWRlbHRhKQkJOyBzdG9wIHRvIHRoZQ0KOyAJ
+CSAgIChub3QgKD0gc3RvcC1jb2x1bW4gMCkpKQkJCTsgbGVmdC4NCjsgCSAgICAgIChwcm9nbiAo
+c2V0cSBuZXctY29sdW1uIHN0b3AtY29sdW1uKQ0KOyAJCSAgICAgKHNldHEgcHJldi1zdG9wLWRl
+bHRhIHN0b3AtZGVsdGEpKSkpKQ0KDQogICAgICAoaWYgKG5vdCBuZXctY29sdW1uKSANCgkgICh0
+aHJvdyAnZmFpbHVyZSAiQ2FuJ3Qgd2lkZW4gdGhhdC4iKSkNCiAgICAgICkNCg0KICAgICAodAkJ
+CQkJOyBOYXJyb3dpbmcgdGhlIGNvbW1lbnQuDQogICAgICAoc2V0cSBuZXctY29sdW1uIChiYy1u
+ZXh0LXRhYi1zdG9wICdyaWdodCBjdXJyZW50LWNvbHVtbg0KCQkJCQkgKGlmICh6ZXJvcCBuYXJy
+b3cpICdtYXliZSAnZm9yY2UpDQoJCQkJCSBpbmRlbnQpKQ0KDQo7ICAgICAgICh3aGlsZSBzdG9w
+cw0KOyAJKHNldHEgc3RvcC1jb2x1bW4gKGNhciBzdG9wcykNCjsgCSAgICAgIHN0b3BzIChjZHIg
+c3RvcHMpKQkJCQk7IFNlYXJjaCBmb3INCjsgCShpZiAobm90IHN0b3AtY29sdW1uKSBuaWwJCQkJ
+OyB0aGUgbmVhcmVzdA0KOyAJICAoc2V0cSBzdG9wLWRlbHRhICgtIHN0b3AtY29sdW1uIGN1cnJl
+bnQtY29sdW1uKSkJOyBzdG9wIHRvIHRoZQ0KOyAJICAoaWYgKGFuZCAob3IgKGFuZCAoemVyb3Ag
+bmFycm93KSAoemVyb3Agc3RvcC1kZWx0YSkpCTsgcmlnaHQuDQo7IAkJICAgICAgICg8IDAgc3Rv
+cC1kZWx0YSkpDQo7IAkJICAgKDwgc3RvcC1kZWx0YSBwcmV2LXN0b3AtZGVsdGEpDQo7IAkJICAg
+KG5vdCAoPSBzdG9wLWNvbHVtbiAwKSkpDQo7IAkgICAgICAoc2V0cSBuZXctY29sdW1uIHN0b3At
+Y29sdW1uDQo7IAkJICAgIHByZXYtc3RvcC1kZWx0YSBzdG9wLWRlbHRhKSkpKQ0KICAgICAgKGlm
+IChub3QgbmV3LWNvbHVtbikNCgkgICh0aHJvdyAnZmFpbHVyZSAiQ2FuJ3QgbmFycm93IHRoYXQu
+IikpDQogICAgICApDQogICAgICkgOyBjb25kDQoNCiAgICAgKGNvbmQNCiAgICAgICgoPCBuYXJy
+b3cgMCkJCQkJOyBXaWRlbmluZw0KICAgICAgIChpZiAoPD0gY3VycmVudC1jb2x1bW4gMSkNCgkg
+ICAodGhyb3cgJ2ZhaWx1cmUgIkNhbid0IHdpZGVuIHRoYXQuIikpKQ0KICAgICAgKCg8PSAwIG5h
+cnJvdykJCQkJOyBOYXJyb3dpbmcNCiAgICAgICAoaWYgKDwgYmMtRy1ybS1taW51cy1zdHVmZiBu
+ZXctY29sdW1uKQ0KCSAgICh0aHJvdyAnZmFpbHVyZSAiQ2FuJ3QgbmFycm93IHRoYXQuIikpKSkN
+Cg0KOyAgICAgKHNldHEgZmlsbC1jb2x1bW4gKC0gYmMtRy1ybS1taW51cy1zdHVmZiBjdXJyZW50
+LWNvbHVtbikpDQo7ICAgICAoYmMtcXVlcnktZmlsbCkNCjsgICAgIChzZXRxIG9yaWctaGVpZ2h0
+IGJjLWZiLWxpbmVzKQ0KDQogICAgKHNldHEgbmV3LWNvbHVtbiAobWF4IDEgbmV3LWNvbHVtbikp
+CTsgRG9uJ3QgdXNlIGNvbHVtbiB6ZXJvLg0KICAgIChzZXRxIGZpbGwtY29sdW1uICgtIGJjLUct
+cm0tbWludXMtc3R1ZmYgbmV3LWNvbHVtbikpDQogICAgKGJjLXF1ZXJ5LWZpbGwpDQogICAgKHNl
+dHEgbmV3LWhlaWdodCBiYy1mYi1saW5lcykNCg0KICAgIChpZiAoYW5kICg8PSAwIG5hcnJvdykg
+KDwgYmMtRy1ybS1taW51cy1zdHVmZiAoKyBuZXctY29sdW1uIGJjLWZiLXdpZHRoKSkpDQoJKHRo
+cm93ICdmYWlsdXJlICJDYW4ndCBuYXJyb3cgdGhhdCIpKQ0KICAgIA0KICAgIChsaXN0IG5ldy1j
+b2x1bW4gbmV3LWhlaWdodCkpKQ0KDQo7Ozs7PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09
+PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PQ0KOzs7XyAgICB8IGJjLXF1
+ZXJ5LWZpbGwNCihkZWZ1biBiYy1xdWVyeS1maWxsICgpDQogICJSZXRyaWV2ZSBmaWxsIGluZm9y
+bWF0aW9uIGZvciBjdXJyZW50IHZhbHVlIG9mIGBmaWxsLWNvbHVtbicuDQpJZiBgYmMtZmlsbC1i
+dWZmZXInIGhhcyBiZWVuIGNhbGxlZCB3aXRoIHRoZSBzYW1lIHZhbHVlIG9mDQpgZmlsbC1jb2x1
+bW4nIG9uIHRoZSBzYW1lIHRleHQgYmVmb3JlLCB0aGUgc2hhcGUgaW5mb3JtYXRpb24gd2lsbCBi
+ZQ0KaW4gYGJjLWZpbGwtYnVmZmVyLWNhY2hlJy4gIElmIG5vdCwgYGJjLWZpbGwtYnVmZmVyJyBp
+cyBjYWxsZWQgdG8NCmZpbGwgdGhlIGJ1ZmZlciBhbmQgY29tcHV0ZSBzaGFwZSBpbmZvLg0KDQpJ
+ZiBgYmMtZmItZGVidWcnIGlzIG5vbi1uaWwsIGFsd2F5cyBjYWxsIGBiYy1maWxsLWJ1ZmZlcicu
+DQoNClNldHMgZ2xvYmFsIHZhcmlhYmxlczogYGJjLWZiLWxpbmVzJywgYGJjLWZiLXdpZHRoJywg
+YGJjLWZiLXdpZGVzdC1pcy1vbmUnLA0KYGJjLWZiLW5leHQtd2lkdGgnLiINCg0KICAobGV0IChm
+aWxsLWluZm8gDQoJKGNvbHVtbiBmaWxsLWNvbHVtbikNCgkpDQogICAgKGlmIChub3QgYmMtZmls
+bC1idWZmZXItY2FjaGUpDQoJKHNldHEgYmMtZmlsbC1idWZmZXItY2FjaGUgKG1ha2UtdmVjdG9y
+DQoJCQkJICAgICgqIDIgYmMtRy1ybS1taW51cy1zdHVmZikgbmlsKSkpDQogICAgKHNldHEgZmls
+bC1pbmZvIChhcmVmIGJjLWZpbGwtYnVmZmVyLWNhY2hlIGNvbHVtbikpDQogICAgKGlmIChhbmQg
+ZmlsbC1pbmZvIChub3QgYmMtZmItZGVidWcpKQ0KCShwcm9nbg0KCSAgKHNldHEgYmMtZmItbGlu
+ZXMgKG50aCAwIGZpbGwtaW5mbykNCgkJYmMtZmItd2lkdGggKG50aCAxIGZpbGwtaW5mbykNCgkJ
+YmMtZmItd2lkZXN0LWlzLW9uZSAobnRoIDIgZmlsbC1pbmZvKQ0KCQliYy1mYi1uZXh0LXdpZHRo
+IChudGggMyBmaWxsLWluZm8pKSkNCiAgICAgIChiYy1maWxsLWJ1ZmZlcikNCiAgICAgIChzZXRx
+IGZpbGwtaW5mbw0KCSAgICAobGlzdCBiYy1mYi1saW5lcyBiYy1mYi13aWR0aCBiYy1mYi13aWRl
+c3QtaXMtb25lDQoJCSAgYmMtZmItbmV4dC13aWR0aCkpDQogICAgICAoYXNldCBiYy1maWxsLWJ1
+ZmZlci1jYWNoZSBjb2x1bW4gZmlsbC1pbmZvKQ0KICAgICAgKHNldHEgY29sdW1uICgxLSBjb2x1
+bW4pKQ0KICAgICAgKHdoaWxlICg8PSBiYy1mYi13aWR0aCBjb2x1bW4pCTsgSWYgdGhlIHJlc3Vs
+dCB3YXMgYWN0dWFsbHkgbmFycm93ZXINCgkoYXNldCBiYy1maWxsLWJ1ZmZlci1jYWNoZQk7IHRo
+YW4gZmlsbC1jb2x1bW4sIHNldCBhbGwgYXJyYXkNCgkgICAgICBjb2x1bW4gZmlsbC1pbmZvKQkJ
+OyBlbGVtZW50cyBpbiBiZXR3ZWVuIGJlY2F1c2UgdGhleSB3aWxsDQoJKHNldHEgY29sdW1uICgx
+LSBjb2x1bW4pKSkpKSkJOyBoYXZlIHRoZSBzYW1lIHJlc3VsdHMuDQoNCjs7Ozs9PT09PT09PT09
+PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09
+PT09DQo7OztfICAgIHwgYmMtcHJlcGFyZS10ZXh0DQooZGVmdW4gYmMtcHJlcGFyZS10ZXh0ICgp
+DQogICJDbGVhbiB1cCB0aGUgdGV4dCBpbiB0aGUgc2NyYXRjaCBidWZmZXIgaW4gcHJlcGFyYXRp
+b24gZm9yDQpmb3JtYXR0aW5nLiAgVGhpcyBpcyBzdHVmZiB0aGF0IGNvdWxkIGJlIGRvbmUgaW4g
+YGJjLWZpbGwtYnVmZmVyJywgYnV0DQppdCBvbmx5IG5lZWRzIHRvIGJlIGRvbmUgb25jZSwgc28g
+ZG9pbmcgaXQgaGVyZSBzdHJlYW1saW5lcyBtdWx0aXBsZQ0KY2FsbHMgdG8gYGJjLWZpbGwtYnVm
+ZmVyJy4iDQoNCiAgKHNhdmUtZXhjdXJzaW9uCQkJCQk7IHRhYnMgaW4gdGhlIHRleHQgd2lsbA0K
+ICAgIChzZXQtYnVmZmVyIGJjLUctc2NyYXRjaC1idWZmZXIpCQkJOyBzY3JldyB0aGluZ3MgdXAg
+d2hlbg0KCQkJCQkJCTsgaXRzIGNvcGllZCBiYWNrIHRvDQogICAgKHN1YnN0LWNoYXItaW4tcmVn
+aW9uIDEgKHBvaW50LW1heCkgP1x0ID9cICApCTsgdGhlIGNvZGUNCg0KICAgIChnb3RvLWNoYXIg
+MSkJCQkJCTsgRGVsZXRlIGFsbCB3aGl0ZXNwYWNlDQogICAgKHNraXAtY2hhcnMtZm9yd2FyZCAi
+IFx0XG4iKQkJCTsgYXQgYmVnaW5uaW5nIG9mDQogICAgKGRlbGV0ZS1yZWdpb24gMSAocG9pbnQp
+KQkJCQk7IGJ1ZmZlci4NCg0KICAgICh3aGlsZSAobm90IChlb2JwKSkNCiAgICAgIChmb3J3YXJk
+LXBhcmFncmFwaCkJCQkJOyBEZWxldGUgcGFyYWdyYXBoDQogICAgICAoaW5zZXJ0ID9cbikJCQkJ
+CTsgaW5kZW50YXRpb25zIGFuZA0KICAgICAgKGRlbGV0ZS1ibGFuay1saW5lcykJCQkJOyBwcmVz
+ZXJ2ZSBvbmx5IGENCiAgICAgIChza2lwLWNoYXJzLWZvcndhcmQgIiBcdFxuXHIiKQkJCTsgc2lu
+Z2xlIGJsYW5rIGxpbmUNCiAgICAgIChkZWxldGUtaG9yaXpvbnRhbC1zcGFjZSkpCQkJOyBiZXR3
+ZWVuIHBhcmFncmFwaHMuDQoNCiAgICAoZ290by1jaGFyIChwb2ludC1tYXgpKQkJCQk7IE1ha2Ug
+c3VyZSB0aGUgc2NyYXRjaA0KICAgIChpbnNlcnQgP1xuKQkJCQkJOyBidWZmZXIgZW5kcyB3aXRo
+IGENCiAgICAoZ290by1jaGFyIChwb2ludC1tYXgpKQkJCQk7IHNpbmdsZSBuZXdsaW5lLg0KICAg
+IChkZWxldGUtYmxhbmstbGluZXMpDQogICAgKSkNCg0KOzs7Oz09PT09PT09PT09PT09PT09PT09
+PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT0NCjs7O18g
+ICAgfCBiYy1maWxsLWJ1ZmZlci1tYXliZQ0KKGRlZnVuIGJjLWZpbGwtYnVmZmVyLW1heWJlICgp
+DQogIChpZiAoYW5kIGJjLWZiLXByZXYtZmlsbC1jb2x1bW4gKD0gYmMtZmItcHJldi1maWxsLWNv
+bHVtbiBmaWxsLWNvbHVtbikpDQogICAgICBuaWwNCiAgICAoYmMtZmlsbC1idWZmZXIpKSkNCg0K
+Ozs7Oz09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09
+PT09PT09PT09PT09PT09PT0NCjs7O18gICAgfCBiYy1maWxsLWJ1ZmZlcg0KKGRlZnVuIGJjLWZp
+bGwtYnVmZmVyICgpDQogICJGaWxsIGVhY2ggb2YgdGhlIHBhcmFncmFwaHMgaW4gdGhlIGJ1ZmZl
+ci4NCkFkZGFwdGVkIGZyb20gYGZpbGwtcmVnaW9uJyBmcm9tIGZpbGwuZWwNCg0KVGhpcyBkb2Vz
+IGEgbWluaW11bSBvZiBjbGVhbnVwLCBzbyB1c3VhbGx5IGBiYy1wcmVwYXJlLXRleHQnIHNob3Vs
+ZCBiZQ0KY2FsbGVkIG9uY2Ugb24gdGhlIHRleHQgYmVmb3JlIHRoZSBmaXJzdCBjYWxsIHRvIHRo
+aXMgZnVuY3Rpb24uICBPbmx5DQpvbmUgY2FsbCB0byB0aGF0IGZ1bmN0aW9uIGlzIG5lY2Vzc2Fy
+eSBwcmlvciB0byBtdWx0aXBsZSBjYWxscyB0byB0aGlzDQpmdW5jdGlvbi4gDQoNClNldHMgZ2xv
+YmFsIHZhcnM6IGBiYy1mYi1saW5lcycsIGBiYy1mYi13aWR0aCcsIGBiYy1mYi13aWRlc3QtaXMt
+b25lJywNCmBiYy1mYi1uZXh0LXdpZHRoJywgYGJjLWZpbGwtY291bnQnLCBgYmMtZmItcHJldi1m
+aWxsLWNvbHVtbicuDQoNCmBiYy1mYi1uZXh0LXdpZHRoJyBpcyBzZXQgd2l0aCB0aGUgbmV4dCB2
+YWx1ZSBvZiBmaWxsLWNvbHVtbiBncmVhdGVyDQp0aGFuIHRoZSBjdXJyZW50IHRoYXQgd291bGQg
+Y2F1c2UgdGhlIHJlZ2lvbiB0byBiZSBmaWxsZWQgZGlmZmVyZW50bHkNClwoaS5lLiB3aWRlclwp
+LiAgVGhpcyBpcyBmb3VuZCBieSBsb29raW5nIGF0IHRoZSB3aWR0aCBvZiBlYWNoDQpyZXN1bHRp
+bmcgbGluZSwgcGx1cyB0aGUgbGVuZ3RoIG9mIHRoZSBmaXJzdCB3b3JkIG9uIHRoZSBuZXh0IGxp
+bmUuDQpUaGUgbWluaW11bSBvZiB0aGVzZSBzdW1zIGlzIHRoZSB2YWx1ZSBvZiBuZXh0LXdpZHRo
+LiIgIA0KDQogIChzZXRxIGJjLWZpbGwtY291bnQgKDErIGJjLWZpbGwtY291bnQpDQoJYmMtZmIt
+cHJldi1maWxsLWNvbHVtbiBmaWxsLWNvbHVtbg0KDQoJYmMtZmItbGluZXMgMA0KCWJjLWZiLXdp
+ZHRoIDANCgliYy1mYi13aWRlc3QtaXMtb25lIG5pbA0KCWJjLWZiLW5leHQtd2lkdGggNjU1MzUp
+DQoNCiAgKGdvdG8tY2hhciAocG9pbnQtbWluKSkNCiAgKHdoaWxlIChub3QgKGVvYnApKQ0KICAg
+IChsZXQgKChpbml0aWFsIChwb2ludCkpDQoJICAoZW5kIChwcm9nbg0KCQkgKGZvcndhcmQtcGFy
+YWdyYXBoIDEpIChwb2ludCkpKSkNCiAgICAgIChmb3J3YXJkLXBhcmFncmFwaCAtMSkJCQkJOyBQ
+cmVzZXJ2ZSB0aGUgYmxhbmsNCiAgICAgIChza2lwLWNoYXJzLWZvcndhcmQgIiBcdFxuIikJCQk7
+IGxpbmUgYmV0d2Vlbg0KICAgICAgKGlmICg8IChwb2ludCkgaW5pdGlhbCkJCQkJOyBwYXJhZ3Jh
+cGhzDQoJICAoZ290by1jaGFyIGVuZCkNCgkNCjs7OyBmaWxsLXBhcmFncmFwaA0KCShzYXZlLXJl
+c3RyaWN0aW9uIA0KCSAgKG5hcnJvdy10by1yZWdpb24gKHBvaW50KSBlbmQpDQoJICANCgkgIChz
+dWJzdC1jaGFyLWluLXJlZ2lvbiAocG9pbnQtbWluKQkJOyBDaGFuZ2UgYWxsIG5ld2xpbmVzDQoJ
+CQkJKHBvaW50LW1heCkgP1xuID9cICkJOyB0byBzcGFjZXMuDQoJICAgIA0KCSAgKGdvdG8tY2hh
+ciAocG9pbnQtbWluKSkJCQk7IEZsdXNoIGV4Y2VzcyBzcGFjZXMuDQoJICAod2hpbGUgKHJlLXNl
+YXJjaC1mb3J3YXJkICIgICAqIiBuaWwgdCkNCgkgICAgKGRlbGV0ZS1yZWdpb24NCgkgICAgICgr
+IChtYXRjaC1iZWdpbm5pbmcgMCkgMSkNCgkgICAgIChtYXRjaC1lbmQgMCkpKQ0KCSAgKGdvdG8t
+Y2hhciAocG9pbnQtbWF4KSkNCgkgIChkZWxldGUtaG9yaXpvbnRhbC1zcGFjZSkNCgkgIChpbnNl
+cnQgIiAiKQ0KCSAgKGdvdG8tY2hhciAocG9pbnQtbWluKSkNCgkgICAgDQoJICA7OyBUaGlzIGlz
+IHRoZSBhY3R1YWwgZmlsbGluZyBsb29wLg0KCSAgKGxldCAobGluZWJlZykNCgkgICAgKHdoaWxl
+IChub3QgKGVvYnApKQ0KCSAgICAgIChzZXRxIGxpbmViZWcgKHBvaW50KSkNCgkgICAgICAobW92
+ZS10by1jb2x1bW4gKDErIGZpbGwtY29sdW1uKSkNCgkgICAgICA7OyBNb3ZlIGJhY2sgdG8gc3Rh
+cnQgb2Ygd29yZC4NCgkgICAgICAoc2tpcC1jaGFycy1iYWNrd2FyZCAiXiBcbiIgbGluZWJlZykN
+Cg0KCSAgICAgIChpZiAoc2F2ZS1leGN1cnNpb24JCQk7IEtlZXAgYXQgbGVhc3Qgb25lDQoJCSAg
+ICAoc2tpcC1jaGFycy1iYWNrd2FyZCAiICIgbGluZWJlZykJOyB3b3JkIGV2ZW4gaWYgZmlsbA0K
+CQkgICAgKGJvbHApKQkJCQk7IHByZWZpeCBleGNlZWRzDQoJCSAgKHByb2duCQkJCTsgbWFyZ2lu
+Lg0KCQkgICAgKGJlZ2lubmluZy1vZi1saW5lKQ0KCQkgICAgKGRlbGV0ZS1ob3Jpem9udGFsLXNw
+YWNlKQ0KCQkgICAgKHNraXAtY2hhcnMtZm9yd2FyZCAiXiBcbiIpKQ0KCQkJCQkJCTsgTm9ybWFs
+bHksIG1vdmUgYmFjaw0KCQkJCQkJCTsgb3ZlciB0aGUgc2luZ2xlIHNwYWNlDQoJCShmb3J3YXJk
+LWNoYXIgLTEpKQkJCTsgYmV0d2VlbiB0aGUgd29yZHMuDQoJDQoJICAgICAgKHNraXAtY2hhcnMt
+YmFja3dhcmQgIiAiKQkJCTsgQ2hlY2sgZm9yIHdpZGVzdA0KCSAgICAgIChjb25kCQkJCQk7IGxp
+bmUuIElmIHRoaXMgaXMsDQoJICAgICAgICgoPSBiYy1mYi13aWR0aCAoY3VycmVudC1jb2x1bW4p
+KQk7IGFsc28gY2hlY2sgaWYgaXQgaXMNCgkJKGlmIChzYXZlLWV4Y3Vyc2lvbgkJCTsgdW5icmVh
+a2FibGUuDQoJCSAgICAoc2tpcC1jaGFycy1iYWNrd2FyZCAiXiAiIGxpbmViZWcpDQoJCSAgICAo
+Ym9scCkpDQoJCSAgICAoc2V0cSBiYy1mYi13aWRlc3QtaXMtb25lIHQpKSkNCgkgICAgICAgKCg8
+PSBiYy1mYi13aWR0aCAoY3VycmVudC1jb2x1bW4pKQ0KCQkoc2V0cSBiYy1mYi13aWRlc3QtaXMt
+b25lIA0KCQkgICAgICAoc2F2ZS1leGN1cnNpb24NCgkJCShza2lwLWNoYXJzLWJhY2t3YXJkICJe
+ICIgbGluZWJlZykgKGJvbHApKSkNCgkJKHNldHEgYmMtZmItd2lkdGggKGN1cnJlbnQtY29sdW1u
+KSkpKQ0KCSAgICAgIA0KCSAgICAgIChzYXZlLWV4Y3Vyc2lvbgkJCQk7IEZpbmQgb3V0IHdoYXQN
+CgkJKHNraXAtY2hhcnMtZm9yd2FyZCAiICIgKHBvaW50LW1heCkpCTsgZmlsbC1jb2x1bW4gd291
+bGQNCgkJKGlmIChlb2JwKQkJCQk7IGhhdmUgdG8gYmUgdG8gbWFrZQ0KCQkgICAgbmlsCQkJCQk7
+IHRoaXMgbGluZSB3aWRlci4NCgkJICAoc2tpcC1jaGFycy1mb3J3YXJkICJeICIgKHBvaW50LW1h
+eCkpDQoJCSAgKHNldHEgYmMtZmItbmV4dC13aWR0aCAobWluIGJjLWZiLW5leHQtd2lkdGgNCgkJ
+CQkJICAgICAgKGN1cnJlbnQtY29sdW1uKSkpKSkNCg0KCSAgICAgIChpbnNlcnQgP1xuKQkJCQk7
+IFJlcGxhY2UgYWxsDQoJICAgICAgKHNldHEgYmMtZmItbGluZXMgKDErIGJjLWZiLWxpbmVzKSkJ
+OyB3aGl0ZXNwYWNlIGhlcmUgd2l0aA0KCSAgICAgIChkZWxldGUtaG9yaXpvbnRhbC1zcGFjZSkp
+CQk7IG9uZSBuZXdsaW5lLg0KDQoJICAgICk7OyBlbmQgbGV0IChsaW5lYmVnKQ0KICANCjs7OyBl
+bmQgZmlsbC1wYXJhZ3JhcGgNCgkgIA0KCSAgKHNldHEgYmMtZmItbGluZXMgKDErIGJjLWZiLWxp
+bmVzKSkpDQoJKSkpOzsgZW5kIHdoaWxlDQogIChzZXRxIGJjLWZiLWxpbmVzICgxLSBiYy1mYi1s
+aW5lcykpOzsgZW5kIGxldA0KICBiYy1mYi1saW5lcykgDQoNCjsNCjs7O18gICBvIFNjYW5uaW5n
+DQo7OztfICAgIHwgYmMtZmluZC1jb21tZW50DQooZGVmdW4gYmMtZmluZC1jb21tZW50ICgmb3B0
+aW9uYWwgYmVsb3ctb25seSkNCiAgIkZpbmRzIHRoZSBudW1iZXIgb2YgbGluZXMgYWRqYWNlbnQg
+dG8gdGhlIGN1cnJlbnQgb25lIHdoaWNoIGNvbnRhaW4NCnJpZ2h0LSBtYXJnaW4gY29tbWVudHMu
+DQoNClJldHVybnMgKGNvbW1lbnQtdG9wIGNvbW1lbnQtYm90dG9tIG5vLWNvZGUpIHdoZXJlIHRo
+ZSBmaXJzdCB0d28NCnZhbHVlcyBlYWNoIGluZGljYXRlIHRoZSBjaGFyYWN0ZXIgcG9zaXRpb24g
+b2YgdGhlIGJlZ2lubmluZyBvZiB0aGF0DQpsaW5lLiAgYG5vLWNvZGUnIGlzIG5vbi1uaWwgaWYg
+bm8gbGluZSBvZiB0aGUgY29tbWVudCBjb250YWlucyBhbnkNCmNvZGUgdG8gaXRzIGxlZnQsIGku
+ZS4sIHRoaXMgaXMgbm90IGEgcmlnaHQtbWFyZ2luLWNvbW1lbnQuDQoNCklmIEJFTE9XLU9OTFkg
+aXMgbm9uLW5pbCwgdGhlIGN1cnJlbnQgbGluZSB3aWxsIGJlIGNvbnNpZGVyZWQgdGhlIHRvcA0K
+bGluZSBvZiB0aGUgY29tbWVudC4NCg0KQ29tbWVudHMgd2hpY2ggc3RhcnQgaW4gY29sdW1uIDEs
+IGFuZCBjb21tZW50cyB3aGljaCBzcGFuIG1vcmUgdGhhbiBvbmUgbGluZQ0KYXJlIG5vdCBjb25z
+aWRlcmVkIHRvIGJlIHJpZ2h0LW1hcmdpbiBjb21tZW50cy4NCg0KVGhyb3dzIHRvICdmYWlsdXJl
+IGlmIG5vIGJsb2NrIGNvbW1lbnQgZm91bmQuIg0KDQogIChsZXQgICgNCgkgZmlyc3QtbGluZSBs
+YXN0LWxpbmUNCgkgcmFuZ2UtYm90dG9tDQo7OzsJIGNvZGUtZW5kLXBvcyBjb20tZGVsaW0tc3Rh
+cnQtcG9zDQo7OzsJIGNvbS1ib2R5LXN0YXJ0LXBvcyBjb20tYm9keS1lbmQtcG9zIA0KOzs7CSBj
+b20tZGVsaW0tZW5kLXBvcw0KCSBuby1jb2RlLXRoaXMtbGluZSAobm8tY29kZSB0KQ0KOzs7CSBy
+YW5nZS10b3AgdG9wLWlzLWNvbW1lbnQgYm90dG9tLWlzLWNvbW1lbnQgDQoJICkNCg0KICAgIChp
+ZiBzZWxlY3RpdmUtZGlzcGxheQkJCQk7IElzIGFuIG91dGxpbmUgbW9kZQ0KCShzYXZlLWV4Y3Vy
+c2lvbgkJCQkJOyBvbj8NCgkgIChlbmQtb2YtbGluZSkNCgkgIChzZXRxIHJhbmdlLWJvdHRvbSAo
+cG9pbnQpKQ0KCSAgKGJlZ2lubmluZy1vZi1saW5lKQ0KCSAgKGlmIChzZWFyY2gtZm9yd2FyZCAi
+XEMtTSIgcmFuZ2UtYm90dG9tICdub2Vycm9yKQ0KCSAgICAgICh0aHJvdyAnZmFpbHVyZQ0KCQkg
+ICAgICJDYW4ndCBmb3JtYXQgY29tbWVudHMgaW5zaWRlIGNsb3NlZCBvdXRsaW5lIGJvZHkuIikp
+KSkNCg0KICAgIChpZiAobm90IChiYy1vcGFyc2UtbGluZSBuaWwgbmlsIG5pbCBuaWwgbmlsIG5p
+bAk7IElzIHRoZXJlIGEgY29tbWVudCBvbg0KCQkJICAgICduby1jb2RlLXRoaXMtbGluZSkpCTsg
+dGhpcyBsaW5lPw0KDQoJKHNhdmUtZXhjdXJzaW9uDQoJICAoYmVnaW5uaW5nLW9mLWxpbmUpDQoJ
+ICAoaWYgKGxvb2tpbmctYXQgYmMtY29tbWVudC1sb29raW5nLWF0LXJlZ2V4cCkNCgkgICAgICAo
+dGhyb3cgJ2ZhaWx1cmUgDQoiTm8gYmxvY2sgY29tbWVudCBmb3VuZC4gKEJlY2F1c2UgdGhlIGNv
+bW1lbnQgc3RhcnRzIGF0IHRoZSBsZWZ0IG1hcmdpbi4pIikNCgkgICAgKHRocm93ICdmYWlsdXJl
+ICJObyBibG9jayBjb21tZW50IGZvdW5kLiIpKSkpDQoNCiAgICAoc2V0cSBuby1jb2RlIChhbmQg
+bm8tY29kZSBuby1jb2RlLXRoaXMtbGluZSkpDQoNCiAgICAoc2F2ZS1leGN1cnNpb24NCiAgICAg
+IChpZiBiZWxvdy1vbmx5DQoJICAoc2V0cSBmaXJzdC1saW5lIChwb2ludCkpCTsgZmluZCB0aGUg
+Zmlyc3QgbGluZSBvZiB0aGlzICAJICAgICAgIA0KCSh3aGlsZSAoYW5kCQkJOyBibG9jawkJCSAg
+ICAgICAJICAgICAgIA0KCQkoc2V0cSBmaXJzdC1saW5lIChwb2ludCkpDQoJCSg9IChmb3J3YXJk
+LWxpbmUgLTEpIDApCTsgd2F0Y2ggZm9yIGJlZ2lubmluZyBvZiBidWZmZXINCgkJKGJjLW9wYXJz
+ZS1saW5lIG5pbCBuaWwgbmlsIG5pbCBuaWwgbmlsICduby1jb2RlLXRoaXMtbGluZSkNCgkJKG9y
+IChzZXRxIG5vLWNvZGUgKGFuZCBuby1jb2RlIG5vLWNvZGUtdGhpcy1saW5lKSkgMSkNCgkJKSkp
+DQogICAgICAoZ290by1jaGFyIGZpcnN0LWxpbmUpDQogICAgICAoYmVnaW5uaW5nLW9mLWxpbmUp
+CQk7IGZpbmQgdGhlIGJlZ2lubmluZyBvZiB0aGF0IGxpbmUNCiAgICAgIChzZXRxIGZpcnN0LWxp
+bmUgKHBvaW50KSkpDQoNCiAgICAoc2F2ZS1leGN1cnNpb24NCiAgICAgICh3aGlsZSAoYW5kCQkJ
+OyBmaW5kIHRoZSBsYXN0IGxpbmUgb2YgdGhpcyBibG9jaw0KCSAgICAgIChzZXRxIGxhc3QtbGlu
+ZSAocG9pbnQpKQ0KCSAgICAgIChmb3J3YXJkLWxpbmUgMSkNCgkgICAgICAobm90IChlb2JwKSkJ
+CTsgd2F0Y2ggZm9yIGVuZCBvZiBidWZmZXINCgkgICAgICAoYmMtb3BhcnNlLWxpbmUgbmlsIG5p
+bCBuaWwgbmlsIG5pbCBuaWwgJ25vLWNvZGUtdGhpcy1saW5lKQ0KCSAgICAgIChvciAoc2V0cSBu
+by1jb2RlIChhbmQgbm8tY29kZSBuby1jb2RlLXRoaXMtbGluZSkpIDEpDQoJICAgICAgKSkNCiAg
+ICAgIChnb3RvLWNoYXIgbGFzdC1saW5lKQ0KICAgICAgKGJlZ2lubmluZy1vZi1saW5lKQkJOyBm
+aW5kIHRoZSBiZWdpbm5pbmcgb2YgdGhhdCBsaW5lDQogICAgICAoc2V0cSBsYXN0LWxpbmUgKHBv
+aW50KSkpDQoNCiAgICAobGlzdCBmaXJzdC1saW5lIGxhc3QtbGluZSBuby1jb2RlKSkpCTsgcmV0
+dXJuIHJhbmdlDQoNCjs7Ozs9PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09
+PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09DQo7OztfICAgIHwgYmMtZmluZC1qdXN0LXJh
+bmdlDQooZGVmdW4gYmMtZmluZC1qdXN0LXJhbmdlICgpDQogICJGaW5kcyB0aGUgbnVtYmVyIG9m
+IGxpbmVzIGFkamFjZW50IHRvIHRoZSBjdXJyZW50IG9uZSB3aGljaCBkbyBub3QNCmNvbnRhaW4g
+cmlnaHQtbWFyZ2luIGNvbW1lbnRzLiAgDQoNClJldHVybnMgKHJhbmdlLXRvcCAuIHJhbmdlLWJv
+dHRvbSksIHdoZXJlIGVhY2ggdmFsdWUgaW5kaWNhdGVzIHRoZQ0KY2hhcmFjdGVyIHBvc2l0aW9u
+IG9mIHRoZSBiZWdpbm5pbmcgb2YgdGhhdCBsaW5lLiAgTm90ZSB0aGF0DQpyYW5nZS1ib3R0b20g
+aXMgcmVhbGx5IHRoZSBiZWdpbm5pbmcgb2YgdGhlIGxpbmUganVzdCBiZWxvdyB0aGUgYWN0dWFs
+DQpyYW5nZS4gIFRoaXMgaXMgc28gdGhhdCBpZiB5b3UgbmFycm93LXRvLXJlZ2lvbiBvbiB0aGlz
+IHJhbmdlLCB5b3UNCndpbGwgaGF2ZSBhbGwgdGhlIGFsbG93YWJsZSBsaW5lcy4NCg0KQ29tbWVu
+dHMgd2hpY2ggc3RhcnQgaW4gY29sdW1uIDEsIGFuZCBjb21tZW50cyB3aGljaCBzcGFuIG1vcmUg
+dGhhbg0Kb25lIGxpbmUgYXJlIG5vdCBjb25zaWRlcmVkIHRvIGJlIHJpZ2h0LW1hcmdpbiBjb21t
+ZW50cy4NCg0KVGhyb3dzIHRvICdmYWlsdXJlIGlmIGVpdGhlciB0aGUgY3VycmVudCBsaW5lLCB0
+aGUgbGluZSBhYm92ZSwgb3IgdGhlDQpsaW5lIGJlbG93IGNvbnRhaW5zIGEgYmxvY2sgY29tbWVu
+dC4iDQoNCiAgKGxldCAgKA0KOzs7CSBmaXJzdC1saW5lIGxhc3QtbGluZSB0aGlzLWxpbmUNCgkg
+cmFuZ2UtdG9wIHJhbmdlLWJvdHRvbQ0KCSB0b3AtaXMtY29tbWVudCANCjs7OwkgY29tLWJvZHkt
+c3RhcnQtcG9zIGNvbS1ib2R5LWVuZC1wb3MgDQo7OzsJIGNvbS1kZWxpbS1lbmQtcG9zDQo7OzsJ
+IGJvdHRvbS1pcy1jb21tZW50IGNvZGUtZW5kLXBvcyBjb20tZGVsaW0tc3RhcnQtcG9zIA0KCSAp
+DQogICAgDQogICAgKGlmIChiYy1vcGFyc2UtbGluZSkJICANCgkodGhyb3cgJ2ZhaWx1cmUgIk5v
+IHJvb20uIikpCTsgQWxyZWFkeSBhIGNvbW1lbnQgb24gdGhpcyBsaW5lLg0KDQogICAgKHNhdmUt
+ZXhjdXJzaW9uDQogICAgICAod2hpbGUgKGFuZA0KCSAgICAgIChzZXRxIHJhbmdlLXRvcCAocG9p
+bnQpKQk7IHdhdGNoIGZvciBiZWdpbm5pbmcNCgkgICAgICAoPSAoZm9yd2FyZC1saW5lIC0xKSAw
+KQk7IG9mIGJ1ZmZlcgkgICAgICAgDQoJICAgICAgKG5vdCAoc2V0cSB0b3AtaXMtY29tbWVudCAo
+YmMtb3BhcnNlLWxpbmUpKSkpKQ0KICAgICAgKGdvdG8tY2hhciByYW5nZS10b3ApDQogICAgICAo
+aWYgdG9wLWlzLWNvbW1lbnQgKGZvcndhcmQtbGluZSAxKSkNCiAgICAgIChiZWdpbm5pbmctb2Yt
+bGluZSkJCTsgZmluZCB0aGUgYmVnaW5uaW5nIG9mIHRoYXQgbGluZQ0KICAgICAgKHNldHEgcmFu
+Z2UtdG9wIChwb2ludCkpKQ0KDQogICAgOzsgICAgICAoaWYgKD0gcmFuZ2UtdG9wIHRoaXMtbGlu
+ZSkgKHRocm93ICdmYWlsdXJlICJObyByb29tLiIpKQ0KDQogICAgKHNhdmUtZXhjdXJzaW9uCQkJ
+OyBmaW5kIHRoZSB0b3AgbGluZSBvZiB0aGUNCiAgICAgICh3aGlsZSAoYW5kCQkJOyByYW5nZSBi
+ZWxvdyBjb250YWluaW5nIGENCgkgICAgICAoc2V0cSByYW5nZS1ib3R0b20gKHBvaW50KSkgOyBy
+dC1tYXJnaW4gY29tbWVudCAgICAgICANCgkgICAgICAoZm9yd2FyZC1saW5lIDEpDQoJICAgICAg
+KG5vdCAoZW9icCkpCQk7IHdhdGNoIGZvciBlbmQNCgkgICAgICAobm90IChiYy1vcGFyc2UtbGlu
+ZSkpKSkgOyBvZiBidWZmZXIgICAgDQogICAgICAoZ290by1jaGFyIHJhbmdlLWJvdHRvbSkNCiAg
+ICAgIChiZWdpbm5pbmctb2YtbGluZSkJCTsgZmluZCB0aGUgYmVnaW5uaW5nIG9mIHRoYXQgbGlu
+ZQ0KICAgICAgKHNldHEgcmFuZ2UtYm90dG9tIChwb2ludCkpKQ0KDQogICAgKGlmICg8PSByYW5n
+ZS1ib3R0b20gcmFuZ2UtdG9wKSAodGhyb3cgJ2ZhaWx1cmUgIk5vIHJvb20uIikpDQoNCiAgICAo
+Y29ucyByYW5nZS10b3AgcmFuZ2UtYm90dG9tKSkpCTsgcmV0dXJuIGxpc3QNCg0KOzs7Oz09PT09
+PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09
+PT09PT09PT0NCjs7O18gICAgfCBiYy1maW5kLXJhbmdlDQooZGVmdW4gYmMtZmluZC1yYW5nZSAo
+KQ0KICAiRmluZHMgdGhlIG51bWJlciBvZiBsaW5lcyBhZGphY2VudCB0byB0aGUgY3VycmVudCBv
+bmUgd2hpY2ggY29udGFpbiByaWdodC0NCm1hcmdpbiBjb21tZW50cy4gIEFkZGl0aW9uYWxseSwg
+dGhlIGZ1bmN0aW9uIGZpbmRzIHRoZSBsb2NhbCByYW5nZSBvZiBsaW5lcw0Kd2hpY2ggY29udGFp
+biBubyBvdGhlciByaWdodC1tYXJnaW4gY29tbWVudHMuDQoNClJldHVybnMgKChjb21tZW50LXRv
+cCAuIGNvbW1lbnQtYm90dG9tKSAuIChyYW5nZS10b3AgLiByYW5nZS1ib3R0b20pKSwNCndoZXJl
+IGVhY2ggdmFsdWUgaW5kaWNhdGVzIHRoZSBjaGFyYWN0ZXIgcG9zaXRpb24gb2YgdGhlIGJlZ2lu
+bmluZyBvZg0KdGhhdCBsaW5lLiAgTm90ZSB0aGF0IHJhbmdlLWJvdHRvbSBpcyByZWFsbHkgdGhl
+IGJlZ2lubmluZyBvZiB0aGUgbGluZQ0KanVzdCBiZWxvdyB0aGUgYWN0dWFsIHJhbmdlLiAgVGhp
+cyBpcyBzbyB0aGF0IGlmIHlvdSBuYXJyb3ctdG8tcmVnaW9uDQpvbiB0aGlzIHJhbmdlLCB5b3Ug
+d2lsbCBoYXZlIGFsbCB0aGUgYWxsb3dhYmxlIGxpbmVzLg0KDQpDb21tZW50cyB3aGljaCBzdGFy
+dCBpbiBjb2x1bW4gMSwgYW5kIGNvbW1lbnRzIHdoaWNoIHNwYW4gbW9yZSB0aGFuIG9uZSBsaW5l
+DQphcmUgbm90IGNvbnNpZGVyZWQgdG8gYmUgcmlnaHQtbWFyZ2luIGNvbW1lbnRzLg0KDQpUaHJv
+d3MgdG8gJ2ZhaWx1cmUgaWYgbm8gYmxvY2sgY29tbWVudCBmb3VuZC4iDQoNCiAgKGxldCAoDQo7
+OzsJKGN1cnJlbnQtcG9pbnQgKHBvaW50KSkNCglmaXJzdC1saW5lIGxhc3QtbGluZQ0KCXJhbmdl
+LXRvcCByYW5nZS1ib3R0b20NCgl0b3AtaXMtY29tbWVudCANCjs7Owlib2wgYm90dG9tLWlzLWNv
+bW1lbnQNCgkpDQoNCiAgICAoaWYgKG5vdCAoYmMtb3BhcnNlLWxpbmUpKQkJICAgICA7IElzIHRo
+ZXJlIGEgY29tbWVudCBvbiB0aGlzIGxpbmU/DQoJKHRocm93ICdmYWlsdXJlICJObyBibG9jayBj
+b21tZW50IGZvdW5kLiIpKQ0KDQogICAgKHNhdmUtZXhjdXJzaW9uCQkJCTsgRmluZCB0aGUgZmly
+c3QgbGluZSBvZiB0aGlzDQogICAgICAod2hpbGUgKGFuZAkJCQk7IGJsb2NrLg0KCSAgICAgIChz
+ZXRxIGZpcnN0LWxpbmUgKHBvaW50KSkNCgkgICAgICAoPSAoZm9yd2FyZC1saW5lIC0xKSAwKQkJ
+OyBXYXRjaCBmb3IgYmVnaW5uaW5nIG9mIGJ1ZmZlci4NCgkgICAgICAoYmMtb3BhcnNlLWxpbmUp
+KSkNCiAgICAgIChnb3RvLWNoYXIgZmlyc3QtbGluZSkJCQk7IEZpbmQgdGhlIGJlZ2lubmluZyBv
+ZiB0aGF0DQogICAgICAoYmVnaW5uaW5nLW9mLWxpbmUpCQkJOyBsaW5lLg0KICAgICAgKHNldHEg
+Zmlyc3QtbGluZSAocG9pbnQpKQ0KCQkJCQkJOyBGaW5kIHRoZSBsYXN0IGxpbmUgb2YgdGhlDQog
+ICAgICAod2hpbGUgKGFuZAkJCQk7IHJhbmdlIGFib3ZlIGNvbnRhaW5pbmcgYQ0KCSAgICAgIChz
+ZXRxIHJhbmdlLXRvcCAocG9pbnQpKQkJOyBydC1tYXJnaW4gY29tbWVudC4NCg0KCSAgICAgICg9
+IChmb3J3YXJkLWxpbmUgLTEpIDApCQk7IFdhdGNoIGZvciBiZWdpbm5pbmcgb2YgYnVmZmVyLg0K
+CSAgICAgIChub3QgKHNldHEgdG9wLWlzLWNvbW1lbnQgKGJjLW9wYXJzZS1saW5lKSkpKSkNCiAg
+ICAgIChnb3RvLWNoYXIgcmFuZ2UtdG9wKQ0KICAgICAgKGlmIHRvcC1pcy1jb21tZW50IChmb3J3
+YXJkLWxpbmUgMSkpDQogICAgICAoYmVnaW5uaW5nLW9mLWxpbmUpCQkJOyBGaW5kIHRoZSBiZWdp
+bm5pbmcgb2YgdGhhdA0KICAgICAgKHNldHEgcmFuZ2UtdG9wIChwb2ludCkpKQkJCTsgbGluZS4N
+Cg0KICAgIChzYXZlLWV4Y3Vyc2lvbg0KICAgICAgKHdoaWxlIChhbmQJCQkJOyBGaW5kIHRoZSBs
+YXN0IGxpbmUgb2YgdGhpcw0KCSAgICAgIChzZXRxIGxhc3QtbGluZSAocG9pbnQpKQkJOyBibG9j
+ay4NCgkgICAgICAoZm9yd2FyZC1saW5lIDEpDQoJICAgICAgKG5vdCAoZW9icCkpCQkJOyBXYXRj
+aCBmb3IgZW5kIG9mIGJ1ZmZlci4NCgkgICAgICAoYmMtb3BhcnNlLWxpbmUpKSkNCiAgICAgIChn
+b3RvLWNoYXIgbGFzdC1saW5lKQkJCTsgRmluZCB0aGUgYmVnaW5uaW5nIG9mIHRoYXQNCiAgICAg
+IChiZWdpbm5pbmctb2YtbGluZSkJCQk7IGxpbmUuDQogICAgICAoc2V0cSBsYXN0LWxpbmUgKHBv
+aW50KSkNCgkJCQkJCTsgRmluZCB0aGUgdG9wIGxpbmUgb2YgdGhlDQogICAgICAod2hpbGUgKGFu
+ZAkJCQk7IHJhbmdlIGJlbG93IGNvbnRhaW5pbmcgYQ0KCSAgICAgIChzZXRxIHJhbmdlLWJvdHRv
+bSAocG9pbnQpKQk7IHJ0LW1hcmdpbiBjb21tZW50Lg0KCSAgICAgIChmb3J3YXJkLWxpbmUgMSkN
+CgkgICAgICAobm90IChlb2JwKSkJCQk7IFdhdGNoIGZvciBlbmQgb2YgYnVmZmVyLg0KCSAgICAg
+IChub3QgKGJjLW9wYXJzZS1saW5lKSkpKQ0KICAgICAgKGdvdG8tY2hhciByYW5nZS1ib3R0b20p
+DQogICAgICAoYmVnaW5uaW5nLW9mLWxpbmUpCQkJOyBGaW5kIHRoZSBiZWdpbm5pbmcgb2YgdGhh
+dA0KICAgICAgKHNldHEgcmFuZ2UtYm90dG9tIChwb2ludCkpKQkJOyBsaW5lLg0KDQogICAgKGNv
+bnMgKGNvbnMgZmlyc3QtbGluZSBsYXN0LWxpbmUpDQoJICAoY29ucyByYW5nZS10b3AgcmFuZ2Ut
+Ym90dG9tKSkpKQk7IFJldHVybiBsaXN0Lg0KDQo7Ozs7PT09PT09PT09PT09PT09PT09PT09PT09
+PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PQ0KOzs7XyAgICB8
+IGJjLWFuYWx5emUtbGluZQ0KKGRlZm1hY3JvIGJjLWFuYWx5emUtbGluZSAoKQ0KICAoYA0KICAg
+KHNhdmUtZXhjdXJzaW9uIA0KICAgICAoYmMtb3BhcnNlLWxpbmUgbmlsICdzdGFydC1kZWxpbS1i
+ICdib2R5LWIgJ2JvZHktZSAnZW5kLWRlbGltLWUpDQogICAgIChnb3RvLWNoYXIgYm9keS1iKQ0K
+ICAgICAoc2tpcC1jaGFycy1iYWNrd2FyZCAiIFx0IikNCiAgICAgKHNldHEgc3RhcnQtZGVsaW0t
+ZSAocG9pbnQpKQ0KICAgICAoZ290by1jaGFyIGJvZHktZSkNCiAgICAgKHNraXAtY2hhcnMtZm9y
+d2FyZCAiIFx0IiBlbmQtZGVsaW0tZSkNCiAgICAgKHNldHEgZW5kLWRlbGltLWIgKHBvaW50KSkp
+KSkNCg0KOzs7Oz09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09
+PT09PT09PT09PT09PT09PT09PT09PT0NCjs7O18gICAgfCBiYy1hbmFseXplLWJhbm5lcg0KKGRl
+Zm1hY3JvIGJjLWFuYWx5emUtYmFubmVyICgpDQogICJBbmFseXplIGNvbW1lbnQgb24gY3VycmVu
+dCBsaW5lIHRvIHNlZSBpZiBpdCBpcyBhIGJhbm5lci4NClJldHVybnMgdGhlIGJhbm5lciBjaGFy
+YWN0ZXIgaWYgc28sIG5pbCBpZiBub3QuDQoNCmBiYy1hbmFseXplLWxpbmUnIG11c3QgYmUgY2Fs
+bGVkIG9uIHRoZSBjdXJyZW50IGxpbmUgZmlyc3QuIg0KICAoYA0KICAgKHNhdmUtZXhjdXJzaW9u
+IA0KICAgICAoY29uZA0KICAgICAgKChvcgkJCQkgOyBTb2Z0IGJvcmRlcnMgbWFkZSBvZiBkZWxp
+bWl0ZXIgY2hhcnMNCgkoPSBzdGFydC1kZWxpbS1lIGVuZC1kZWxpbS1iKQkgOyAvKiovIA0KCShw
+cm9nbiAoZ290by1jaGFyIHN0YXJ0LWRlbGltLWUpIDsgLyoqKioqLw0KCSAgICAgICAobG9va2lu
+Zy1hdCAiWyBcdF0qJCIpKSkJIDsgOzs7Ozs7Ozs7Ow0KICAgICAgIChsaXN0IChjaGFyLWFmdGVy
+ICgxLSBzdGFydC1kZWxpbS1lKSkgbmlsKSkNCiAgICANCgkJCQkJIDsgVGhlc2UgYXJlIG5vdCBi
+YW5uZXJzIGJlY2F1c2Ugb2YNCiAgICAgICgob3IgKC89IHN0YXJ0LWRlbGltLWUgYm9keS1iKQkg
+OyBzcGFjZXM6DQoJICAgKC89IGJvZHktZSBlbmQtZGVsaW0tYikpCSA7IDs7Ozs7ID09PT09PQ0K
+ICAgICAgIG5pbCkJCQkJIDsgLyo9PT09PT09ICovDQoNCgkJCQkJIDsgSGFyZCBib3JkZXJzIG1h
+ZGUgb2Ygb3RoZXIgY2hhcnMNCiAgICAgICgocHJvZ24JCQkJIDsgLyo9PT09PT0qLw0KCSAoZ290
+by1jaGFyIGJvZHktYikJCSA7IDs7PT09PT09PQ0KCSAoc2tpcC1jaGFycy1mb3J3YXJkIA0KCSAg
+KGJ1ZmZlci1zdWJzdHJpbmcgYm9keS1iICgxKyBib2R5LWIpKQ0KCSAgKHNhdmUtZXhjdXJzaW9u
+IChlbmQtb2YtbGluZSkgKHBvaW50KSkpDQoJICg9IChwb2ludCkgYm9keS1lKSkNCiAgICAgICAo
+bGlzdCAoY2hhci1hZnRlciBib2R5LWIpICdoYXJkKSkNCiAgICANCiAgICAgICh0IG5pbCkpKQkJ
+CQkgOyBOb3QgYSBiYW5uZXIgYWZ0ZXIgYWxsLg0KICAgKSkNCg0KOzs7Oz09PT09PT09PT09PT09
+PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT0N
+Cjs7O18gICAgfCBiYy1zYXZlLWRlbGltcw0KKGRlZm1hY3JvIGJjLXNhdmUtZGVsaW1zICgpDQog
+IChgDQogICAobGV0ICgoc3RhcnQtZGVsaW0tc3RyaW5nIChidWZmZXItc3Vic3RyaW5nIHN0YXJ0
+LWRlbGltLWIgYm9keS1iKSkNCgkgKGVuZC1kZWxpbS1zdHJpbmcgKGJ1ZmZlci1zdWJzdHJpbmcg
+Ym9keS1lIGVuZC1kZWxpbS1lKSkNCgkgKQ0KICAgICAoc2V0cSANCiAgICAgIGJjLXNhdmVkLWRl
+bGltcyAoY29ucyANCgkJICAgICAgIChsaXN0IChwcm9nbiAoZ290by1jaGFyIHN0YXJ0LWRlbGlt
+LWIpIChjdXJyZW50LWNvbHVtbikpDQoJCQkgICAgIHN0YXJ0LWRlbGltLXN0cmluZyBlbmQtZGVs
+aW0tc3RyaW5nKQ0KCQkgICAgICAgYmMtc2F2ZWQtZGVsaW1zKSkNCiAgICAgKHNldC10ZXh0LXBy
+b3BlcnRpZXMgMCAobGVuZ3RoIHN0YXJ0LWRlbGltLXN0cmluZykgbmlsIHN0YXJ0LWRlbGltLXN0
+cmluZykNCiAgICAgKHNldC10ZXh0LXByb3BlcnRpZXMgMCAobGVuZ3RoIGVuZC1kZWxpbS1zdHJp
+bmcpIG5pbCBlbmQtZGVsaW0tc3RyaW5nKQ0KICAgICApKSkNCg0KOzs7Oz09PT09PT09PT09PT09
+PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT0N
+Cjs7O18gICAgfCBiYy1zYXZlLWJhbm5lcnMNCihkZWZtYWNybyBiYy1zYXZlLWJhbm5lcnMgKCkN
+CiAgKGANCiAgIChsZXQgKChzdGFydC1kZWxpbS1zdHJpbmcgKGJ1ZmZlci1zdWJzdHJpbmcgc3Rh
+cnQtZGVsaW0tYiBib2R5LWUpKQ0KCSAoZW5kLWRlbGltLXN0cmluZyAoYnVmZmVyLXN1YnN0cmlu
+ZyBib2R5LWUgZW5kLWRlbGltLWUpKQ0KCSApDQogICAgIChzZXRxIA0KICAgICAgYmMtc2F2ZWQt
+ZGVsaW1zIChjb25zIA0KCQkgICAgICAgKGxpc3QgKHByb2duIChnb3RvLWNoYXIgc3RhcnQtZGVs
+aW0tYikgKGN1cnJlbnQtY29sdW1uKSkNCgkJCSAgICAgc3RhcnQtZGVsaW0tc3RyaW5nIGVuZC1k
+ZWxpbS1zdHJpbmcpDQoJCSAgICAgICBiYy1zYXZlZC1kZWxpbXMpKQ0KICAgICAoc2V0LXRleHQt
+cHJvcGVydGllcyAwIChsZW5ndGggc3RhcnQtZGVsaW0tc3RyaW5nKSBuaWwgc3RhcnQtZGVsaW0t
+c3RyaW5nKQ0KICAgICAoc2V0LXRleHQtcHJvcGVydGllcyAwIChsZW5ndGggZW5kLWRlbGltLXN0
+cmluZykgbmlsIGVuZC1kZWxpbS1zdHJpbmcpDQogICAgICkpKQ0KDQo7Ozs7PT09PT09PT09PT09
+PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09
+PQ0KOzs7XyAgICB8IGJjLWFuYWx5emUtY29tbWVudA0KKGRlZnVuIGJjLWFuYWx5emUtY29tbWVu
+dCAoc3RhcnQgZW5kICZvcHRpb25hbCBzYXZlLWRlbGltcykNCiAgIkV4YW1pbmUgdGhlIHJpZ2h0
+LW1hcmdpbiBjb21tZW50IG9uIHRoZSBsaW5lcyBiZXR3ZWVuIFNUQVJUIGFuZCBFTkQuDQpEZXRl
+cm1pbmVzIHRoZSBlZmZlY3RpdmUgY29tbWVudCBkZWxpbWl0ZXJzLiAgRm9yIGV4YW1wbGUsIGlu
+IExpc3AgdGhlDQpjb21tZW50LXN0YXJ0IHN0cmluZyBpcyBhIHNpbmdsZSBzZW1pY29sb24sIGJ1
+dCBhIGNvbW1lbnQgbWF5IHN0YXJ0DQp3aXRoIG1vcmUgdGhhbiBvbmUuICBJZiBzbyB3ZSB3YW50
+IHRoZSBlZmZlY3RpdmUgY29tbWVudC1zdGFydCBzdHJpbmcNCnRvIGhhdmUgdGhhdCBtYW55IHNl
+bWlzLg0KDQpUaGlzIGZ1bmN0aW9uIGFsc28gZGV0ZXJtaW5lcyB3aGV0aGVyIHRoZSBjb21tZW50
+IGhhcyBhIGJhbm5lci4NCg0KUmV0dXJucyBcKG5ldy1zdGFydCBuZXctZW5kIHdpZHRoIG5ldy1m
+aXJzdCBuZXctbGFzdCBjb2x1bW5cKSwgd2hlcmUNCmBuZXctc3RhcnQnIGFuZCBgbmV3LWVuZCcg
+aW5kaWNhdGUgdGhlIHJhbmdlIG9mIHRoZSBjb21tZW50IG1pbnVzDQpiYW5uZXIgYW5kIGVtcHR5
+IGxpbmVzLiAgYHdpZHRoJyBpbmRpY2F0ZXMgdGhlIHdpZHRoIG9mIHRoZSBjb21tZW50LA0KZGVm
+aW5lZCB0byBiZSBtYXhpbXVtIG9mIHRoZSB3aWR0aHMgb2YgdGhlIHRleHQgXChleGNsdWRpbmcN
+CmRlbGltaXRlcnNcKSBvbiBlYWNoIGxpbmUuICBgbmV3LWZpcnN0JyBhbmQgYG5ldy1sYXN0JyBp
+bmRpY2F0ZSB0aGUNCnJhbmdlIG9mIHRoZSBjb21tZW50IG1pbnVzIGJhbm5lciBsaW5lcy4gIGBj
+b2x1bW4nIGluZGljYXRlcyB0aGUNCnN0YXJ0aW5nIGNvbHVtbiBvZiB0aGUgY29tbWVudCwgYXMg
+ZGV0ZXJtaW5lZCBieSB0aGUgc3RhcnQgZGVsaW1pdGVyDQpvZiB0aGUgZmlyc3QgdGV4dCBsaW5l
+IG9mIHRoZSBjb21tZW50Lg0KDQpJZiBTQVZFLURFTElNUyBpcyBub24tbmlsLCBkZWxpbWl0ZXJz
+IGFuZCB0aGVpciBjb2x1bW4gcG9zaXRpb25zIGFyZQ0KcmVjb3JkZWQgaW4gdGhlIGdsb2JhbCB2
+YXJpYWJsZSBgYmMtc2F2ZWQtZGVsaW1zJy4gIFRoZSBmb3JtYXQgaXMgYQ0KbGlzdCBvZiBlbGVt
+ZW50cywgZWFjaCByZWNvcmRpbmcgZGVsaW1pdGVyIGluZm9ybWF0aW9uIGZvciBvbmUgbGluZS4N
+ClRoZSBmaXJzdCBlbGVtZW50IG9mIHRoZSBsaXN0IGNvcnJlc3BvbmRzIHRvIFNUQVJULiAgDQoN
+ClR3byB0eXBlcyBvZiBlbGVtZW50cyBhcmUgdXNlZDogb25lIGZvciBiYW5uZXJzIGFuZCBvbmUg
+Zm9yIHRoZSByZXN0DQpvZiB0aGUgY29tbWVudC4gIEZvciBiYW5uZXJzLCBlYWNoIGVsZW1lbnQg
+aGFzIHRoZSBmb3JtIFwoY29sdW1uDQpiYW5uZXJcKSx3aGVyZSBgY29sdW1uJyBpbmRpY2F0ZXMg
+dGhlIGNvbHVtbiBpbiB3aGljaCB0aGUgc3RhcnQNCmRlbGltaXRlciBiZWdpbnMgb24gdGhhdCBs
+aW5lLCBhbmQgYGJhbm5lcicgY29udGFpbnMgYWxsIG9mIHRoZQ0KY29tbWVudCBvbiB0aGF0IGxp
+bmUsIGluY2x1ZGluZyBkZWxpbWl0ZXJzLiAgDQoNCkZvciB0aGUgcmVzdCBvZiB0aGUgY29tbWVu
+dCwgZWFjaCBlbGVtZW50IGhhcyB0aGUgZm9ybWF0IFwoY29sdW1uDQpzdGFydCBlbmRcKSwgd2hl
+cmUgYHN0YXJ0JyBhbmQgYGVuZCcgYXJlIHRoZSBlZmZlY3RpdmUgZGVsaW1pdGVycywNCmluY2x1
+ZGluZyB3aGl0ZXNwYWNlLg0KDQpTZXRzIGdsb2JhbCB2YXJpYWJsZXM6IGBiYy1lZmZlY3RpdmUt
+c3RhcnQnLCBgYmMtZWZmZWN0aXZlLWVuZCcsDQpgYmMtRy1ybS1taW51cy1zdHVmZicsIGBiYy1i
+YW5uZXItdG9wLWJvcmRlcicsIGBiYy1iYW5uZXItdG9wLXNwYWNlJywNCmBiYy1iYW5uZXItYm90
+dG9tLXNwYWNlJywgYGJjLWJhbm5lci1ib3R0b20tYm9yZGVyJywgYGJjLWV4dHJhLWxpbmVzJywg
+DQpgYmMtc2F2ZWQtZGVsaW1zJywgYGJjLWRlbGltcy1sZW5ndGgnLiINCg0KICAobGV0IChzdGFy
+dC1kZWxpbS1iIA0KCXN0YXJ0LWRlbGltLWUNCglib2R5LWIgYm9keS1lDQoJZW5kLWRlbGltLWIg
+ZW5kLWRlbGltLWUNCgluZXctc3RhcnQgbmV3LWVuZCANCgkobmV3LWZpcnN0IHN0YXJ0KQ0KCShu
+ZXctbGFzdCBlbmQpDQoJdGhpcy13aWR0aCAobWF4LXdpZHRoIDApDQoJY29sdW1uIGZpcnN0LWxp
+bmUtY29sdW1uDQoJKQ0KICAgIChzYXZlLWV4Y3Vyc2lvbg0KICAgICAgKHNldHEgYmMtYmFubmVy
+LXRvcC1zcGFjZSAwDQoJICAgIGJjLWJhbm5lci1ib3R0b20tc3BhY2UgMCkNCiAgICAgIA0KICAg
+ICAgKGdvdG8tY2hhciBzdGFydCkNCiAgICAgIChiYy1hbmFseXplLWxpbmUpDQogICAgICAoc2V0
+cSBmaXJzdC1saW5lLWNvbHVtbiAoc2F2ZS1leGN1cnNpb24NCgkJCQkoZ290by1jaGFyIHN0YXJ0
+LWRlbGltLWIpDQoJCQkJKGN1cnJlbnQtY29sdW1uKSkJOyBGaXJzdCBkZWNpZGUgaWYgdGhpcw0K
+CSAgICBiYy1iYW5uZXItdG9wLWJvcmRlciAoYmMtYW5hbHl6ZS1iYW5uZXIpKQk7IGlzIGEgYmFu
+bmVyIGNvbW1lbnQuDQogICAgICAoaWYgKG5vdCBiYy1iYW5uZXItdG9wLWJvcmRlcikgbmlsDQoJ
+KGZvcndhcmQtbGluZSAxKQkJCQkNCgkoc2V0cSBuZXctZmlyc3QgKHBvaW50KSkJCQk7IElmIHNv
+LCBjaGVjayBmb3INCgkoaWYgKDwgZW5kIChwb2ludCkpIG5pbAkJCQk7IGluaXRpYWwgYmxhbmsg
+bGluZS4NCgkgIChiYy1vcGFyc2UtbGluZSBuaWwgbmlsICdib2R5LWIgJ2JvZHktZSkNCgkgIChp
+ZiAoLz0gYm9keS1iIGJvZHktZSkgbmlsDQoJICAgIChzZXRxIGJjLWJhbm5lci10b3Atc3BhY2Ug
+MSkNCgkgICAgKGZvcndhcmQtbGluZSAxKSkpKQ0KICAgICAgDQogICAgICAoYmMtb3BhcnNlLWxp
+bmUgbmlsIG5pbCAnYm9keS1iICdib2R5LWUpDQogICAgICAod2hpbGUgKGFuZCAoPD0gKHBvaW50
+KSBlbmQpICg9IGJvZHktYiBib2R5LWUpKQk7IFNraXAgYmxhbmsgbGluZXMuDQoJKGZvcndhcmQt
+bGluZSAxKQ0KCShiYy1vcGFyc2UtbGluZSBuaWwgbmlsICdib2R5LWIgJ2JvZHktZSkpDQogICAg
+ICAoc2V0cSBuZXctc3RhcnQgKG1pbiAocG9pbnQpIGVuZCkpDQogICAgICANCiAgICAgIChpZiAo
+bm90IChiYy1vcGFyc2UtbGluZSBuaWwgJ3N0YXJ0LWRlbGltLWIgJ2JvZHktYikpDQoJICAocHJv
+Z24NCgkgICAgKHNldHEgbmV3LWVuZCBlbmQNCgkJICBuZXctbGFzdCBlbmQJCQkJOyBJZiB3ZSBm
+ZWxsIG9mZiB0aGUNCgkJICBtYXgtd2lkdGggMAkJCQk7IGVuZCBvZiB0aGUgY29tbWVudCwNCgkJ
+ICBiYy1lZmZlY3RpdmUtc3RhcnQgYmMtY29tbWVudC1zdGFydAk7IHRoZW4gaXQgY29udGFpbmVk
+DQoJCSAgYmMtZWZmZWN0aXZlLWVuZCBiYy1jb21tZW50LWVuZAk7IG9ubHkgYmxhbmsgbGluZXMu
+DQoJCSAgYmMtYmFubmVyLWJvdHRvbS1ib3JkZXIgbmlsDQoJCSAgYmMtYmFubmVyLWJvdHRvbS1z
+cGFjZSAwDQoJCSAgY29sdW1uIGZpcnN0LWxpbmUtY29sdW1uDQoJCSkJCQkJCTsgSWYgdG9wIGJv
+cmRlciB3YXMNCgkgICAgKGlmIChudGggMSBiYy1iYW5uZXItdG9wLWJvcmRlcikgbmlsCTsgc29m
+dCwgdGhlbiBpdA0KCSAgICAgIChzZXRxIGJjLWJhbm5lci10b3AtYm9yZGVyIG5pbCkpCQk7IHBy
+b2JhYmx5IHdhc24ndCBhDQoJICAgIChnb3RvLWNoYXIgZW5kKSkJCQkJOyBiYW5uZXIgYWZ0ZXIg
+YWxsLg0KDQoJKGJjLWFuYWx5emUtbGluZSkJCQkJOyBGaWd1cmUgb3V0IHRoZQ0KCShzZXRxCQkJ
+CQkJOyBlZmZlY3RpdmUgc3RhcnQgYW5kDQoJIGJjLWVmZmVjdGl2ZS1zdGFydCAoYnVmZmVyLXN1
+YnN0cmluZwkJOyBlbmQgZGVsaW1pdGVycy4NCgkJCSAgICAgc3RhcnQtZGVsaW0tYiBib2R5LWIp
+IA0KCSBiYy1lZmZlY3RpdmUtZW5kIChpZiAoYW5kIChlcXVhbCBiYy1jb21tZW50LWVuZCAiIikN
+CgkJCQkgICAobm90IGJjLWZhdXgtY29tbWVudC1lbmQpKSAiIg0KCQkJICAgIChzYXZlLWV4Y3Vy
+c2lvbg0KCQkJICAgICAgKGdvdG8tY2hhciBib2R5LWIpDQoJCQkgICAgICAoc2tpcC1jaGFycy1i
+YWNrd2FyZCAiXHQgIikNCgkJCSAgICAgIChjb25jYXQgKGJ1ZmZlci1zdWJzdHJpbmcgKHBvaW50
+KSBib2R5LWIpDQoJCQkJICAgICAgKGJ1ZmZlci1zdWJzdHJpbmcNCgkJCQkgICAgICAgZW5kLWRl
+bGltLWIgIGVuZC1kZWxpbS1lKSkpKSkNCgkoaWYgKHN0cmluZy1tYXRjaCAiXlsgXHRdKyQiIGJj
+LWVmZmVjdGl2ZS1lbmQpDQoJICAgIChzZXRxIGJjLWVmZmVjdGl2ZS1lbmQgIiIpKQ0KDQoJKGdv
+dG8tY2hhciBzdGFydC1kZWxpbS1iKSAgICAgICAgICAgICAgICAgICANCgkoc2V0cSBjb2x1bW4g
+KGN1cnJlbnQtY29sdW1uKSkNCg0KCShnb3RvLWNoYXIgZW5kKQkJCQkJOyBTZWUgaWYgYm90dG9t
+IGxpbmUgaXMNCgkoYmMtYW5hbHl6ZS1saW5lKQkJCQk7IGEgYmFubmVyIGJvcmRlci4NCgkoaWYg
+KG5vdCAoc2V0cSBiYy1iYW5uZXItYm90dG9tLWJvcmRlciAoYmMtYW5hbHl6ZS1iYW5uZXIpKSkN
+CgkgICAgKHNldHEgbmV3LWxhc3QgKHBvaW50KSkNCgkgIChmb3J3YXJkLWxpbmUgLTEpDQoJICAo
+c2V0cSBuZXctbGFzdCAocG9pbnQpCQk7IElmIHRoZSBjb21tZW50IHdhcyBlbnRpcmVseQ0KCQkJ
+CQkJOyBlbXB0eSwgbmV3LXN0YXJ0IHdpbGwgaGF2ZQ0KCQluZXctc3RhcnQJCQk7IHNuYWdnZWQg
+b24gdGhlIGJvdHRvbSBiYW5uZXIuDQoJCShtaW4gbmV3LXN0YXJ0IG5ldy1sYXN0KSkJOyBUaGlz
+IGlzbid0IGNvbW1lbnQgdGV4dCwNCgkJCQkJCTsgdGhvdWdoLCBzbyBiYWNrIGl0IHVwLg0KCSAg
+KGlmICg8IChwb2ludCkgbmV3LXN0YXJ0KSBuaWwNCgkgICAgKGJjLW9wYXJzZS1saW5lIG5pbCBu
+aWwgJ2JvZHktYiAnYm9keS1lKQ0KCSAgICAoaWYgKC89IGJvZHktYiBib2R5LWUpIG5pbAkJCTsg
+SWYgc28sIGlzIHRoZXJlIGENCgkgICAgICAoc2V0cSBiYy1iYW5uZXItYm90dG9tLXNwYWNlIDEp
+CQk7IGZpbmFsIGJsYW5rIGxpbmU/DQoJICAgICAgKGZvcndhcmQtbGluZSAtMSkpKSkNCgkNCgko
+YmMtb3BhcnNlLWxpbmUgbmlsIG5pbCAnYm9keS1iICdib2R5LWUpDQoJKHdoaWxlIChhbmQgKDwg
+bmV3LXN0YXJ0IChwb2ludCkpICg9IGJvZHktYiBib2R5LWUpKQ0KCSAgKGZvcndhcmQtbGluZSAt
+MSkNCgkgIChiYy1vcGFyc2UtbGluZSBuaWwgbmlsICdib2R5LWIgJ2JvZHktZSkpCTsgU2tpcCBi
+bGFuayBsaW5lcyBhdA0KCShzZXRxIG5ldy1lbmQgKG1heCAocG9pbnQpIG5ldy1zdGFydCkpCQk7
+IGJvdHRvbS4NCg0KCSk7OyBlbmQgKGlmIChub3QgKGJjLW9wYXJzZS1saW5lKQ0KICAgICAgDQog
+ICAgICAoc2V0cSBiYy1leHRyYS1saW5lcwkJCQk7IFNjYW4gdGhlIGNvbW1lbnQNCgkgICAgKCsg
+KGlmIGJjLWJhbm5lci10b3AtYm9yZGVyIDIgMCkJCTsgYm90dG9tLXVwLCBzbyB0aGF0DQoJICAg
+ICAgIGJjLWJhbm5lci10b3Atc3BhY2UJCQk7IHNhdmVkLWRlbGltcyB3aWxsIGJlDQoJICAgICAg
+IGJjLWJhbm5lci1ib3R0b20tc3BhY2UpKQkJCTsgaW4gb3JkZXIuDQogICAgICANCiAgICAgIChp
+ZiAobm90IHNhdmUtZGVsaW1zKSBuaWwJCQkJOyBTYXZlIGRlbGltcyBpbiB0aGUNCgkoc2V0cSBi
+Yy1zYXZlZC1kZWxpbXMgbmlsKQkJCTsgYm90dG9tIGJhbm5lciBib3JkZXIuDQoJKGdvdG8tY2hh
+ciBlbmQpDQoJKHdoaWxlICg8IG5ldy1lbmQgKHBvaW50KSkNCgkgIChiYy1vcGFyc2UtbGluZSBu
+aWwgJ3N0YXJ0LWRlbGltLWIgJ2JvZHktYiAnYm9keS1lICdlbmQtZGVsaW0tZSkNCgkgIChiYy1z
+YXZlLWJhbm5lcnMpDQoJICAoZm9yd2FyZC1saW5lIC0xKSkpDQoNCiAgICAgICh3aGlsZQkJCQkJ
+CTsgRmlndXJlIG91dCBjb21tZW50DQoJICAoYW5kCQkJCQkJOyB3aWR0aC4NCgkgICAoPD0gbmV3
+LXN0YXJ0IChwb2ludCkpDQoJICAgKHByb2duDQoJICAgICAoYmMtb3BhcnNlLWxpbmUgbmlsICdz
+dGFydC1kZWxpbS1iICdib2R5LWIgJ2JvZHktZSAnZW5kLWRlbGltLWUpDQoJICAgICAoc2V0cSB0
+aGlzLXdpZHRoICgtIChwcm9nbiAoZ290by1jaGFyIGJvZHktZSkgKGN1cnJlbnQtY29sdW1uKSkN
+CgkJCQkgKHByb2duIChnb3RvLWNoYXIgYm9keS1iKSAoY3VycmVudC1jb2x1bW4pKSkpDQoJICAg
+ICAoaWYgKDwgdGhpcy13aWR0aCBtYXgtd2lkdGgpIG5pbA0KCSAgICAgICAoc2V0cSBtYXgtd2lk
+dGggdGhpcy13aWR0aCkpDQoJICAgICAoaWYgc2F2ZS1kZWxpbXMgKGJjLXNhdmUtZGVsaW1zKSkN
+CgkgICAgICg9IDAgKGZvcndhcmQtbGluZSAtMSkpKSkpDQoNCg0KOzs7CSAoYW5kICg9IG5ldy1z
+dGFydCBuZXctZW5kKQkJCTsgSWYgdGV4dCBpcyBvbmx5IG9uZQ0KOzs7CSAgICAgIChzZXRxCQkJ
+CQk7IGxpbmUsIHdlIG11c3RuJ3QgdXNlDQo7OzsJICAgICAgIG5vbndoaXRlCQkJCQk7IGFsbCB0
+aGUgdHJhaWxpbmcNCjs7OwkgICAgICAgKHN0cmluZy1tYXRjaCAiW14gXHRdIiBiYy1lZmZlY3Rp
+dmUtZW5kKSk7IHdoaXRlc3BhY2UgYXMgcGFydCBvZg0KOzs7CSAgICAgIChzZXRxCQkJCQk7IHRo
+ZSBlbmQgZGVsaW0uDQo7OzsJICAgICAgIGJjLWVmZmVjdGl2ZS1lbmQNCjs7OwkgICAgICAgKGNv
+bmNhdCAiICIgKHN1YnN0cmluZyBiYy1lZmZlY3RpdmUtZW5kIG5vbndoaXRlKSkpKQ0KOzs7DQo7
+ICAgICAgICh3aGlsZSAoYW5kIHNhdmUtZGVsaW1zICg8PSBzdGFydCAocG9pbnQpKSkNCjsgCShi
+Yy1vcGFyc2UtbGluZSBuaWwgJ3N0YXJ0LWRlbGltLWIgJ2JvZHktYg0KOyAJCSAgICAgICAnYm9k
+eS1lICdlbmQtZGVsaW0tZSkNCjsgCShiYy1zYXZlLWJhbm5lcnMpDQo7IAkoZm9yd2FyZC1saW5l
+IC0xKSkNCg0KICAgICAgKGlmIChhbmQgc2F2ZS1kZWxpbXMJCTsgU2F2ZSBkZWxpbXMgaW4gdGhl
+IHRvcCBiYW5uZXIgYm9yZGVyLg0KDQoJCQkJCTsgTWFrZSBzdXJlIHRoZSBjb2RlIHRvIGZpZ3Vy
+ZSBvdXQgdGhlDQoJICAgICAgICg8IChwb2ludCkgbmV3LXN0YXJ0KSkJOyBjb21tZW50IHdpZHRo
+IGRpZG4ndCBidW1wIGludG8gdGhlDQoJCQkJCTsgdG9wIG9mIHRoZSBidWZmZXIuDQoJICAod2hp
+bGUgKGFuZCAoPD0gc3RhcnQgKHBvaW50KSkNCgkJICAgICAgKHByb2duCSAgICAgICANCgkJCShi
+Yy1vcGFyc2UtbGluZSBuaWwgJ3N0YXJ0LWRlbGltLWIgJ2JvZHktYg0KCQkJCSAgICAgICAnYm9k
+eS1lICdlbmQtZGVsaW0tZSkNCgkJCShiYy1zYXZlLWJhbm5lcnMpDQoJCQkoPSAwIChmb3J3YXJk
+LWxpbmUgLTEpKSkpKSkJOyBTdG9wIGlmIHdlIGJ1bXAgaW50bw0KCQkJCQkJCTsgdG9wIG9mIGJ1
+ZmZlci4NCg0KICAgICAgDQogICAgICAoc2V0cSBiYy1kZWxpbXMtbGVuZ3RoICgrIChsZW5ndGgg
+YmMtZWZmZWN0aXZlLXN0YXJ0KQ0KCQkJCShsZW5ndGggYmMtZWZmZWN0aXZlLWVuZCkpDQoJICAg
+IGJjLUctcm0tbWludXMtc3R1ZmYgKC0gYmMtcmlnaHQtbWFyZ2luIGJjLWRlbGltcy1sZW5ndGgp
+KQ0KICAgICAgDQogICAgICAobGlzdCBuZXctc3RhcnQgbmV3LWVuZCBtYXgtd2lkdGggbmV3LWZp
+cnN0IG5ldy1sYXN0IGNvbHVtbikNCiAgICAgICkpKQ0KDQo7Ozs7PT09PT09PT09PT09PT09PT09
+PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PQ0KOzs7
+XyAgICB8IGJjLWRlZmF1bHQtYW5hbHlzaXMtdmFycw0KKGRlZnVuIGJjLWRlZmF1bHQtYW5hbHlz
+aXMtdmFycyAoKQ0KDQogICJJbml0aWFsaXplIGdsb2JhbCB2YXJpYWJsZXMgc2V0IGJ5IGBiYy1h
+bmFseXplLWNvbW1lbnQnIHRvIGRlZmF1bHRzDQpmb3IgZm9ybWF0dGluZyBjb21tYW5kcyB0aGF0
+IGRvbid0IGNhbGwgdGhhdCBmdW5jdGlvbi4iDQoNCiAgKHNldHEgYmMtYmFubmVyLXRvcC1ib3Jk
+ZXIgbmlsDQoJYmMtYmFubmVyLXRvcC1zcGFjZSAwDQoJYmMtYmFubmVyLWJvdHRvbS1zcGFjZSAw
+DQoJYmMtZXh0cmEtbGluZXMgMA0KCWJjLWVmZmVjdGl2ZS1zdGFydCBiYy1jb21tZW50LXN0YXJ0
+DQoJYmMtZWZmZWN0aXZlLWVuZCBiYy1jb21tZW50LWVuZA0KCWJjLUctcm0tbWludXMtc3R1ZmYg
+KC0gYmMtcmlnaHQtbWFyZ2luIChsZW5ndGggYmMtZWZmZWN0aXZlLXN0YXJ0KQ0KCQkJICAgICAo
+bGVuZ3RoIGJjLWVmZmVjdGl2ZS1lbmQpKQ0KCSkpDQoNCjs7Ozs9PT09PT09PT09PT09PT09PT09
+PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09DQo7Oztf
+ICAgIHwgYmMtcGFyc2UtbGluZQ0KKGRlZnVuIGJjLXBhcnNlLWxpbmUgKCZyZXN0IGFyZ3MpDQog
+IChlcnJvciAiVGhlIGZ1bmN0aW9uIGJjLXBhcnNlLWxpbmUgaXMganVzdCBhIHBsYWNlaG9sZGVy
+IHJpZ2h0IG5vdy4iKSkNCg0KKGRlZnVuIGJjLW9wYXJzZS1saW5lICgmb3B0aW9uYWwgYnBsLWNv
+ZGUtZW5kIGJwbC1kZWxpbWl0ZXItc3RhcnQgDQoJCQkJIGJwbC1ib2R5LXN0YXJ0IGJwbC1ib2R5
+LWVuZCANCgkJCQkgYnBsLWRlbGltaXRlci1lbmQNCgkJCQkgYnBsLWNvZGUtd2lkdGggYnBsLW5v
+LWNvZGUpDQogICJQYXJzZSB0aGUgY3VycmVudCBsaW5lIHRvIGZpbmQgYnVmZmVyIHBvc2l0aW9u
+cyBvZiBiZWdpbm5pbmdzIGFuZA0KZW5kaW5ncyBvZiBjb2RlLCBjb21tZW50IGFuZCBkZWxpbWl0
+ZXJzLg0KDQpBUkdTIHNob3VsZCBhbGwgYmUgc3ltYm9scywgdmFsdWVzIHdpbGwgYmUgc2V0IGlu
+dG8gdGhlbSAgUGFzcyBuaWwgZm9yDQphcmdzIHlvdSBkb24ndCBuZWVkLg0KDQpSZXR1cm5zIG5v
+bi1uaWwgaWYgbGluZSBjb250YWlucyBhIGJsb2NrLWNvbW1lbnQuIg0KDQogIDs7IFRoZSBicGwt
+IGFuZCBicGxpLSBwcmVmaXhlcyBhcmUgbmVjZXNzYXJ5IGJlY2F1c2UgdGhpcyBmdW5jdGlvbg0K
+ICA7OyBgc2V0J3MgdmFsdWVzIGludG8gYXJndW1lbnRzICh3aGljaCBtdXN0IGJlIHN5bWJvbHMp
+LiAgQWxsIHRoZQ0KICA7OyBsb2NhbCB2YXJpYWJsZXMgbXVzdCBoYXZlIHdpZXJkIG5hbWVzIHNv
+IGFzIG5vdCB0byBtYXRjaCBhbnkNCiAgOzsgc3ltYm9scyB0aGF0IHRoZSBjYWxsZXIgbWF5IHBh
+c3MuDQogIDs7IA0KICA7OyBUaGlzIGlzIGhvcnJpYmxlISAgSSB3aWxsIG5ldmVyIGRvIHRoaXMg
+YWdhaW4hICBUaGlzIHNob3VsZCBqdXN0DQogIDs7IHJldHVybiBhIGxpc3QgYW5kIGxldCBjYWxs
+ZXJzIGFzc2lnbiB3aXRoIGBiYy1tc2V0cScNCg0KICAoc2F2ZS1leGN1cnNpb24gDQogICAgKGxl
+dCogKA0KCSAgIChicGxpLWVvbCAocHJvZ24gKGVuZC1vZi1saW5lKSAocG9pbnQpKSkNCgkgICAo
+YnBsaS1ib2wgKHByb2duIChiZWdpbm5pbmctb2YtbGluZSkgKHBvaW50KSkpDQoJICAgKGJwbGkt
+bGluZS1pbmZvIChhc3NxIGJwbGktYm9sIGJjLXBhcnNlLWxpbmUtY2FjaGUpKQ0KCSAgIGJwbGkt
+Y29tbWVudHAgYnBsaS1kYW5nZXINCgkgICBicGxpLWNvZGUtZW5kIGJwbGktZGVsaW0tc3RhcnQg
+YnBsaS1ib2R5LXN0YXJ0DQoJICAgYnBsaS1ib2R5LWVuZCBicGxpLWRlbGltLWVuZCBicGxpLWNv
+ZGUtd2lkdGggYnBsaS1uby1jb2RlDQoJICAgKQ0KICAgICAgDQogICAgICAoaWYgYnBsaS1saW5l
+LWluZm8JCTsgQ2FjaGUgaGl0PyBJZiBub3QsIHNjYW4gdGhlIGxpbmUuDQoJICBuaWwNCgkoc2V0
+cSBicGxpLWNvbW1lbnRwDQoJICAgICAgKGlmIChlb2xwKQkJOyBJcyB0aGlzIGEgYmxhbmsgbGlu
+ZT8NCgkJICBuaWwNCgkJKHJlLXNlYXJjaC1mb3J3YXJkIGJjLWNvbW1lbnQtcmVnZXhwIGJwbGkt
+ZW9sICdtb3ZlKSkNCg0KCSAgICAgIDs7IFdlIHdvbid0IG1hdGNoIGNvbW1lbnRzIHN0YXJ0aW5n
+IGluIGNvbHVtbiB6ZXJvDQoJICAgICAgOzsgYmVjYXVzZSBiYy1jb21tZW50LXJlZ2V4cCBtdXN0
+IG1hdGNoIG9uZQ0KCSAgICAgIDs7IGNoYXJhY3RlciBwcmVjZWRpbmcgdGhlIHN0YXJ0LWNvbW1l
+bnQgZGVsaW1pdGVyLg0KCSAgICAgIDs7IFRoZXJlZm9yZSwgd2UgZG8gbm90IG5lZWQgdG8gdGVz
+dCBmb3IgY29sdW1uIHplcm8uDQoNCgkJCQkJOyBBZGQgb25lIGJlY2F1c2UgcmVnZXhwIG1hdGNo
+ZXMgb25lDQoJICAgICAgYnBsaS1kZWxpbS1zdGFydCAoYW5kCTsgY2hhciBiZWZvcmUgdGhlIGRl
+bGltaXRlci4NCgkJCQlicGxpLWNvbW1lbnRwDQoJCQkJKDErIChtYXRjaC1iZWdpbm5pbmcgMCkp
+KQ0KCSAgICAgIGJwbGktYm9keS1zdGFydCAoYW5kIGJwbGktY29tbWVudHAgKG1hdGNoLWJlZ2lu
+bmluZyAxKSkNCg0KCSAgICAgIGJwbGktYm9keS1lbmQNCgkgICAgICAoYW5kDQoJICAgICAgIGJw
+bGktY29tbWVudHANCgkgICAgICAgKHByb2duDQoJCSAoY29uZA0KCQkgIChiYy1mYXV4LWNvbW1l
+bnQtZW5kDQoJCSAgIChnb3RvLWNoYXIgKG1hdGNoLWVuZCAwKSkNCgkJICAgKHNhdmUtbWF0Y2gt
+ZGF0YQ0KCQkgICAgIChyZS1zZWFyY2gtYmFja3dhcmQgYmMtZmF1eC1jb21tZW50LWVuZA0KCQkJ
+CQkgYnBsaS1ib2R5LXN0YXJ0IHQpKSkNCgkJICAodA0KCQkgICAoZ290by1jaGFyIChtYXRjaC1l
+bmQgMSkpKSkNCgkJIChza2lwLWNoYXJzLWJhY2t3YXJkIChjaGFyLXRvLXN0cmluZwkgICAgIDsg
+TWlnaHQgYmUgZXh0cmENCgkJCQkgICAgICAgKGZvbGxvd2luZy1jaGFyKSkpICAgIDsgZW5kIGRl
+bGltIGNoYXJzDQoJCSAoc2tpcC1jaGFycy1iYWNrd2FyZCAiIFx0IikJCSAgICAgOyB0aGF0IGdv
+dCBtYXRjaGVkDQoJCSAobWF4IChwb2ludCkgKG1hdGNoLWJlZ2lubmluZyAxKSkpKQkgICAgIDsg
+YnkgdGhlIC4qDQoNCgkgICAgICBicGxpLWRlbGltLWVuZCAoYW5kIGJwbGktY29tbWVudHANCgkJ
+CQkgIChwcm9nbg0KCQkJCSAgICAoZ290by1jaGFyIChtYXRjaC1lbmQgMCkpDQoJCQkJICAgIChz
+a2lwLWNoYXJzLWJhY2t3YXJkICIgXHQiKQ0KCQkJCSAgICAobWF4IChwb2ludCkgYnBsaS1ib2R5
+LWVuZCkpKQ0KCSAgICAgIGJwbGktY29kZS1lbmQgKHByb2duDQoJCQkgICAgICAoaWYgKG5vdCBi
+cGxpLWNvbW1lbnRwKSAoZW5kLW9mLWxpbmUpDQoJCQkJKGdvdG8tY2hhciAoMSsgKG1hdGNoLWJl
+Z2lubmluZyAwKSkpKQ0KCQkJICAgICAgKHNraXAtY2hhcnMtYmFja3dhcmQgIiBcdCIpDQoJCQkg
+ICAgICAoaWYgKGFuZCBiYy1zdGFydC1maXJzdC1jaGFyDQoJCQkJICAgICAgIChlcSAocHJlY2Vk
+aW5nLWNoYXIpCTsgQ2hlY2sgZm9yDQoJCQkJCSAgIGJjLXN0YXJ0LWZpcnN0LWNoYXIpKTsgY29k
+ZSBlbmRpbmcNCgkJCQkgIChzZXRxIGJwbGktZGFuZ2VyIHQpCQk7IGluIGRhbmdlcm91cw0KCQkJ
+CShzZXRxIGJwbGktZGFuZ2VyIG5pbCkpCQk7IGNoYXJhY3RlcnMuDQoJCQkgICAgICAocG9pbnQp
+KQ0KCSAgICAgIGJwbGktY29kZS13aWR0aCAoaWYgYnBsaS1kYW5nZXIgKDErIChjdXJyZW50LWNv
+bHVtbikpDQoJCQkJKG1heCAxIChjdXJyZW50LWNvbHVtbikpKQ0KDQoJICAgICAgYnBsaS1uby1j
+b2RlICg9IChjdXJyZW50LWNvbHVtbikgMCkNCg0KDQoJICAgICAgYnBsaS1saW5lLWluZm8gKGxp
+c3QgYnBsaS1ib2wgYnBsaS1kZWxpbS1zdGFydCBicGxpLWJvZHktc3RhcnQNCgkJCQkgICBicGxp
+LWJvZHktZW5kIGJwbGktZGVsaW0tZW5kDQoJCQkJICAgYnBsaS1jb2RlLWVuZCBicGxpLWNvZGUt
+d2lkdGgNCgkJCQkgICBicGxpLW5vLWNvZGUpDQoNCgkgICAgICBiYy1wYXJzZS1saW5lLWNhY2hl
+IChjb25zIGJwbGktbGluZS1pbmZvIGJjLXBhcnNlLWxpbmUtY2FjaGUpKSkNCgkJCQkJICAgICAN
+CiAgICAgIChpZiBicGwtZGVsaW1pdGVyLXN0YXJ0DQoJICAoc2V0IGJwbC1kZWxpbWl0ZXItc3Rh
+cnQgKG50aCAxIGJwbGktbGluZS1pbmZvKSkpDQogICAgICAoaWYgYnBsLWJvZHktc3RhcnQNCgkg
+IChzZXQgYnBsLWJvZHktc3RhcnQgKG50aCAyIGJwbGktbGluZS1pbmZvKSkpDQogICAgICAoaWYg
+YnBsLWJvZHktZW5kDQoJICAoc2V0IGJwbC1ib2R5LWVuZCAobnRoIDMgYnBsaS1saW5lLWluZm8p
+KSkNCiAgICAgIChpZiBicGwtZGVsaW1pdGVyLWVuZA0KCSAgKHNldCBicGwtZGVsaW1pdGVyLWVu
+ZCAobnRoIDQgYnBsaS1saW5lLWluZm8pKSkNCiAgICAgIChpZiBicGwtY29kZS1lbmQgDQoJICAo
+c2V0IGJwbC1jb2RlLWVuZCAobnRoIDUgYnBsaS1saW5lLWluZm8pKSkNCiAgICAgIChpZiBicGwt
+Y29kZS13aWR0aA0KCSAgKHNldCBicGwtY29kZS13aWR0aCAobnRoIDYgYnBsaS1saW5lLWluZm8p
+KSkNCiAgICAgIChpZiBicGwtbm8tY29kZQ0KCSAgKHNldCBicGwtbm8tY29kZSAobnRoIDcgYnBs
+aS1saW5lLWluZm8pKSkNCg0KICAgICAgKG50aCAxIGJwbGktbGluZS1pbmZvKSkpKQkJOyByZXR1
+cm4gY29tbWVudC1wDQogICAgDQo7Ozs7PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09
+PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PQ0KOzs7XyAgICB8IGJjLWNvbXB1
+dGUtaW5kZW50DQooZGVmdW4gYmMtbmV3LWNvbXB1dGUtaW5kZW50IChidWZwb3MpDQogICJSZXR1
+cm4gYW4gYXBwcm9wcmlhdGUgaW5kZW50YXRpb24gZm9yIHRoZSBsaW5lIGNvbnRhaW5pbmcgQlVG
+UE9TLg0KQ2FsbHMgdGhlIGZ1bmN0aW9uIGRlc2lnbmF0ZWQgYnkgYGluZGVudC1saW5lLWZ1bmN0
+aW9uJywgaWYgdGhhdCBpcw0Kbm9uLW5pbC4gIEluIHRoaXMgd2F5LCB0aGUgaW5kZW50YXRpb24g
+aXMgY29tcHV0ZWQgYnkgdGhlIG1ham9yIG1vZGUuDQoNClJldHVybnMgdGhlIGNvbHVtbiBvZiB0
+aGUgaW5kZW50YXRpb24sIG5vdCBhIGJ1ZmZlciBwb3NpdGlvbi4iDQogIChpZiAoYW5kIChib3Vu
+ZHAgJ2luZGVudC1saW5lLWZ1bmN0aW9uKQ0KCSAgIChmYm91bmRwIGluZGVudC1saW5lLWZ1bmN0
+aW9uKSkNCiAgICAgIChsZXQgKA0KCSAgICAobXN0YXJ0IChtYWtlLW1hcmtlcikpDQoJICAgICht
+ZW5kIChtYWtlLW1hcmtlcikpDQoJICAgIGNvbHVtbiBzYXZlLWxpbmUNCgkgICAgYmVmb3JlLWNo
+YW5nZS1mdW5jdGlvbiBiZWZvcmUtY2hhbmdlLWZ1bmN0aW9ucw0KCSAgICBhZnRlci1jaGFuZ2Ut
+ZnVuY3Rpb24gYWZ0ZXItY2hhbmdlLWZ1bmN0aW9ucw0KCSAgICApDQoJOzsgV2UgbXVzdCBjYWxj
+dWxhdGUgdGhlIGNvcnJlY3QgaW5kZW50YXRpb24gZm9yIHRoZSBjdXJyZW50DQoJOzsgbGluZS4g
+IFVuZm9ydHVuYXRlbHksIHRoZSBvbmx5IGZ1bmN0aW9uIHdlIGNhbiBjb3VudCBvbg0KCTs7IGhh
+dmluZyBpcyBgaW5kZW50LWxpbmUtZnVuY3Rpb24nLCB3aGljaCB3aWxsIGFjdHVhbGx5DQoJOzsg
+aW50ZW50IHRoZSB0aGUgbGluZS4gIFNvLCB3ZSB3aWxsIGZpcnN0IHNhdmUgdGhlIGN1cnJlbnQN
+Cgk7OyBsaW5lIGluIGEgc3RyaW5nLCBjYWxsIGBpbmRlbnQtbGluZS1mdW5jdGlvbicsIHRoZW4g
+cHV0IHRoZQ0KCTs7IGxpbmUgYmFjayB0aGUgd2F5IGl0IHdhcy4NCgkoc2F2ZS1leGN1cnNpb24N
+CgkgICh1bndpbmQtcHJvdGVjdA0KCSAgICAgIChwcm9nbg0KCQkoZ290by1jaGFyIGJ1ZnBvcykN
+CgkJKGVuZC1vZi1saW5lKQ0KCQkoc2V0LW1hcmtlciBtZW5kIChwb2ludCkpDQoJCShiZWdpbm5p
+bmctb2YtbGluZSkNCgkJKHNldC1tYXJrZXIgbXN0YXJ0IChwb2ludCkpDQoJCShzZXRxIHNhdmUt
+bGluZSAoYnVmZmVyLXN1YnN0cmluZyBtc3RhcnQgbWVuZCkpDQoJCShmdW5jYWxsIGluZGVudC1s
+aW5lLWZ1bmN0aW9uKQ0KCQkoYmFjay10by1pbmRlbnRhdGlvbikNCgkJKHNldHEgY29sdW1uIChj
+dXJyZW50LWNvbHVtbikpDQoJCShkZWxldGUtcmVnaW9uIG1zdGFydCBtZW5kKQ0KCQkoZ290by1j
+aGFyIG1zdGFydCkNCgkJKGluc2VydCBzYXZlLWxpbmUpKQ0KCSAgICAoc2V0LW1hcmtlciBtc3Rh
+cnQgbmlsKQ0KCSAgICAoc2V0LW1hcmtlciBtZW5kIG5pbCkpDQoJICBjb2x1bW4pKSkpDQoNCg0K
+KGRlZnVuIGJjLWNvbXB1dGUtaW5kZW50IChidWZwb3MpDQogICJSZXR1cm4gYW4gYXBwcm9wcmlh
+dGUgaW5kZW50YXRpb24gZm9yIHRoZSBsaW5lIGNvbnRhaW5pbmcgQlVGUE9TLg0KQ2FsbHMgdGhl
+IGZ1bmN0aW9uIGRlc2lnbmF0ZWQgYnkgYGluZGVudC1saW5lLWZ1bmN0aW9uJywgaWYgdGhhdCBp
+cw0Kbm9uLW5pbC4gIEluIHRoaXMgd2F5LCB0aGUgaW5kZW50YXRpb24gaXMgY29tcHV0ZWQgYnkg
+dGhlIG1ham9yIG1vZGUuDQoNClJldHVybnMgdGhlIGNvbHVtbiBvZiB0aGUgaW5kZW50YXRpb24s
+IG5vdCBhIGJ1ZmZlciBwb3NpdGlvbi4iDQogIChpZiAoYW5kIChib3VuZHAgJ2luZGVudC1saW5l
+LWZ1bmN0aW9uKQ0KCSAgIChmYm91bmRwIGluZGVudC1saW5lLWZ1bmN0aW9uKSkNCiAgICAgIChs
+ZXQgKA0KCSAgICAobXN0YXJ0IChtYWtlLW1hcmtlcikpDQoJICAgIChtZW5kIChtYWtlLW1hcmtl
+cikpDQoJICAgIGNvbHVtbg0KCSAgICBiZWZvcmUtY2hhbmdlLWZ1bmN0aW9uIGJlZm9yZS1jaGFu
+Z2UtZnVuY3Rpb25zDQoJICAgIGFmdGVyLWNoYW5nZS1mdW5jdGlvbiBhZnRlci1jaGFuZ2UtZnVu
+Y3Rpb25zDQoJICAgICkNCgkoc2F2ZS1leGN1cnNpb24NCgkgICh1bndpbmQtcHJvdGVjdA0KCSAg
+ICAgIChwcm9nbg0KCQkoZ290by1jaGFyIGJ1ZnBvcykNCgkJKGJlZ2lubmluZy1vZi1saW5lKQ0K
+CQkoc2V0LW1hcmtlciBtc3RhcnQgKHBvaW50KSkNCgkJKGluc2VydCAiXG4iKQ0KCQkoc2V0LW1h
+cmtlciBtZW5kIChwb2ludCkpDQoJCShmb3J3YXJkLWNoYXIgLTEpDQoJCShmdW5jYWxsIGluZGVu
+dC1saW5lLWZ1bmN0aW9uKQ0KCQkoc2V0cSBjb2x1bW4gKGN1cnJlbnQtY29sdW1uKSkNCgkJKGRl
+bGV0ZS1yZWdpb24gbXN0YXJ0IG1lbmQpKQ0KCSAgICAoc2V0LW1hcmtlciBtc3RhcnQgbmlsKQ0K
+CSAgICAoc2V0LW1hcmtlciBtZW5kIG5pbCkpDQoJICBjb2x1bW4pKSkpDQoNCg0KOzs7Oz09PT09
+PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09
+PT09PT09PT0NCjs7O18gICAgfCBiYy1zYXZlLWV4Y3Vyc2lvbg0KKGRlZnVuIGJjLXNhdmUtZXhj
+dXJzaW9uIChjdXJyZW50LXBvaW50IGZpcnN0LWxpbmUgYm9keS1maXJzdCBib2R5LWxhc3QNCgkJ
+CQkJbGFzdC1saW5lICZvcHRpb25hbA0KCQkJCQlzdGljay10by1kZWxpbXMpDQogICJTYXZlcyB0
+aGUgbG9jYXRpb24gb2YgcG9pbnQgc28gdGhhdCBpdCBjYW4gYmUgcHV0IGJhY2sgaW4gYSBzZW5z
+aWJsZSBmYXNpb24NCmFmdGVyIGEgYmMgZm9ybWF0dGluZyBjb21tYW5kLiAgSWYgcG9pbnQgaXMg
+bm90IGluc2lkZSB0aGUgY29tbWVudA0Kd2hlbiB0aGUgY29tbWFuZCBpcyBjYWxsZWQgKGkuZS4g
+aXQgaXMgaW4gdGhlIGNvZGUpLCB3ZSB3YW50IHBvaW50IHRvIGVuZCB1cA0KaW4gZXhhY3RseSB0
+aGF0IHBsYWNlIGluIHRoZSBjb2RlIGFmdGVyd2FyZC4gIElmLCBvbiB0aGUgb3RoZXIgaGFuZCwg
+cG9pbnQgaXMNCmluc2lkZSB0aGUgY29tbWVudCwgdGhlbiB3ZSB3YW50IGl0IHRvIGVuZCB1cCBh
+dCB0aGUgc2FtZSBwbGFjZSBpbiB0aGUgY29tbWVudA0KYWZ0ZXJ3YXJkLiAgQm90aCBvZiB0aGVz
+ZSB3aWxsIGJlLCBpbiBnZW5lcmFsLCBxdWl0ZSBkaWZmZXJlbnQgZnJvbSBzaW1wbHkNCnJldHVy
+bmluZyBwb2ludCB0byB0aGUgc2FtZSBjaGFyYWN0ZXIgcG9zaXRpb24gaW4gdGhlIGJ1ZmZlciBc
+KGFzIHdpdGgNCnNhdmUtZXhjdXJzaW9uXCkuDQoNCkNVUlJFTlQtUE9JTlQgaXMgdGhlIGJ1ZmZl
+ciBwb3NpdGlvbiB0byBiZSBzYXZlZC4gIFRoZSBvdGhlciBmb3VyDQphcmd1bWVudHMgYXJlIHRo
+ZSBidWZmZXIgcG9zaXRpb25zIG9mIHRoZSBiZWdpbm5pbmdzIG9mIGxpbmVzLg0KDQpJZiBTVElD
+Sy1UTy1ERUxJTVMgaXMgbm9uLW5pbCwgaXQgZWZmZWN0cyB0aGUgY291bnQgb2Ygbm9uLXdoaXRl
+c3BhY2UNCmNoYXJhY3RlcnMgcmV0dXJuZWQgd2hlbiB0aGUgcmVzdWx0IGlzICgnaW4tY29tbWVu
+dCAnaW4tZW5kLWRlbGltaXRlcg0KY291bnQpLiAgTm9ybWFsbHkgdGhlIGNoYXJhY3RlcnMgYXJl
+IGNvdW50ZWQgdG8gdGhlIGNlbnRlciBvZiB0aGUNCmNvbW1lbnQgdGV4dCBvbiB0aGUgbGluZS4g
+IElmIHRoaXMgYXJndW1lbnQgaXMgbm9uLW5pbCB0aGV5IGFyZQ0KY291bnRlZCB0byB0aGUgZW5k
+IG9mIHRoZSBjb21tZW50IHRleHQgb24gdGhlIGxpbmUuDQoNClRoaXMgZnVuY3Rpb24gcmV0dXJu
+cyBhIHN0cnVjdHVyZSB3aGljaCBjYW4gYmUgdXNlZCBieQ0KYGJjLXJlc3RvcmUtZXhjdXJzaW9u
+Jy4gIEl0cyBzdHJ1Y3R1cmUgaXMgYSBsaXN0IG9mIHRocmVlIGVsZW1lbnRzOg0KXChgdmVydCcg
+YGhvcml6JyBgcG9zJ1wpLg0KDQpgdmVydCcgd2lsbCBiZSBvbmUgb2YgdGhlIGZvbGxvd2luZzog
+J2luLXRvcC1iYW5uZXIsICdpbi1ib3R0b20tYmFubmVyDQonaW4tdG9wLXNwYWNlLCAnaW4tYm90
+dG9tLXNwYWNlLCAnaW4tY29tbWVudCwgJ2luLWNvZGUsIG9yDQoncGFzdC1jb21tZW50Lg0KDQpJ
+ZiBgdmVydCcgaXMgJ2luLWNvZGUsIGBob3JpeicgaXMgdGhlIGxpbmUgbnVtYmVyIGFuZCBgcG9z
+JyBpcyB0aGUNCmNvbHVtbi4gSWYgYHZlcnQnIGlzICdwYXN0LWNvbW1lbnQsIGBob3JpeicgaXMg
+dGhlIGxpbmUgbnVtYmVyIGFuZA0KYHBvcycgaXMgbmlsLg0KDQpPdGhlcndpc2UsIGBob3Jpeicg
+d2lsbCBiZSBvbmUgb2YgdGhlIGZvbGxvd2luZzogJ2luLXN0YXJ0LWRlbGltaXRlciwNCidpbi10
+ZXh0LCAnaW4tZW5kLWRlbGltaXRlciwgb3IgJ3Bhc3QtZW5kLg0KDQpJZiBgdmVydCcgaXMgb25l
+IG9mICdpbi10b3AtYmFubmVyLCAnaW4tYm90dG9tLWJhbm5lciAnaW4tdG9wLXNwYWNlLA0Kb3Ig
+J2luLWJvdHRvbS1zcGFjZSwgYHBvcycgaGFzIGEgdmFsdWUgZGVwZW5kaW5nIG9uIGBob3Jpeic6
+DQoNCiAgICAgICBIT1JJWiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBQT1MNCi0t
+LS0tLS0tLS0tLS0tLS0tLS0JLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLQ0KJ2luLXN0YXJ0LWRlbGltaXRlcglDb3VudCBvZiBjaGFyYWN0ZXIgY29s
+dW1ucyBmcm9tIGJlZ2lubmluZyBvZiBzdGFydA0KJ2luLXRleHQJCWRlbGltaXRlciB0byBwb2lu
+dC4NCg0KJ2luLWVuZC1kZWxpbWl0ZXIJQ291bnQgb2YgY29sdW1ucyBmcm9tIGJlZ2lubmluZyBv
+ZiBlbmQgZGVsaW1pdGVyLg0KDQoNCklmIGB2ZXJ0JyBpcyAnaW4tY29tbWVudCwgYHBvcycgaGFz
+IGEgdmFsdWUgZGVwZW5kaW5nIG9uIGBob3Jpeic6DQoNCiAgICAgICBIT1JJWiAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICBQT1MNCi0tLS0tLS0tLS0tLS0tLS0tLS0JLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQ0KJ2luLXN0YXJ0LWRl
+bGltaXRlcglcKGBjb3VudCcuIGBjb2x1bW4nXCksIHdoZXJlIGBjb3VudCcgaW5kaWNhdGVzIGhv
+dyBmYXINCidpbi1lbmQtZGVsaW1pdGVyCXBvaW50IGlzIGludG8gdGhlIGNvbW1lbnQgYXMgYSBj
+b3VudCBvZiBub24td2hpdGVzcGFjZQ0KCQkJY2hhcmFjdGVycywgYW5kIGBjb2x1bW4nIGluZGlj
+YXRlcyBpbiB3aGljaCBjb2x1bW4gb2YNCgkJCXRoZSBkZWxpbWl0ZXIgcG9pbnQgaXMuDQoNCgkJ
+CVwoYGNvdW50JyAuIGB3aGl0ZXAnXCkgd2hlcmUgYGNvdW50JyBpbmRpY2F0ZXMgaG93IGZhcg0K
+J2luLXRleHQJCXBvaW50IGlzIGludG8gdGhlIGNvbW1lbnQgYXMgYSBjb3VudCBvZiBub24td2hp
+dGVzcGFjZQ0KCQkJY2hhcmFjdGVycywgYW5kIGB3aGl0ZXAnIGlzIG5vbi1uaWwgaWYgcG9pbnQg
+aXMgYmVmb3JlDQogICAgICAgICAgICAgICAgICAgICAgICB0aGUgZmlyc3Qgbm9ud2hpdGUgY2hh
+ciBmb2xsb3dpbmcgd2hpdGVzcGFjZS4iDQoNCiAgOzsgVE9ETzogSSBzaG91bGQgYmUgYWJsZSB0
+byBzaW1wbGlmeSB0aGlzIGJ5IHVzaW5nIGEgY291cGxlIG9mDQogIDs7IG1hcmtlcnMgcmF0aGVy
+IHRoYW4gY2hhcmFjdGVyIGNvdW50cy4gYmMtZ2V0LXRleHQsIGJjLXB1dC10ZXh0LA0KICA7OyBl
+dGMuIHdvdWxkIGhhdmUgdG8gYmUgdXBkYXRlZCB0byBkdXBsaWNhdGUgdGhlIG1hcmtlciB0byBh
+bmQgZnJvbQ0KICA7OyB0aGUgc2NyYXRjaCBidWZmZXIuDQoNCiAgKGxldA0KICAgICAgKHZlcnQg
+aG9yaXogcG9zIHBvaW50LWNvbHVtbiBjb3VudA0KCSAgICBzdGFydC1kZWxpbS1iIHN0YXJ0LWRl
+bGltLWUgYm9keS1iIGJvZHktZSBlbmQtZGVsaW0tYiBlbmQtZGVsaW0tZQ0KCSAgICAoZmlyc3Qt
+bGluZS1lIChwcm9nbiAoZ290by1jaGFyIGZpcnN0LWxpbmUpIChlbmQtb2YtbGluZSkgKHBvaW50
+KSkpDQoJICAgIChib2R5LWxhc3QtZSAocHJvZ24gKGdvdG8tY2hhciBib2R5LWxhc3QpIChlbmQt
+b2YtbGluZSkgKHBvaW50KSkpDQo7OzsJICAgIGNvZGUtZW5kLXBvcyANCgkgICAgKQ0KICAgIChi
+Yy1kdW1teSBzdGFydC1kZWxpbS1lKSA7IHF1aWV0IHRoZSBieXRlIGNvbXBpbGVyDQoNCgkJCQkJ
+CTsgTWFrZSBzdXJlIHdlIGFyZSBub3Qgc3RyYW5kZWQNCiAgICAoc2F2ZS1leGN1cnNpb24JCQkJ
+OyBpbiB0aGF0IG5vLW1hbidzLWxhbmQgb2YNCgkJCQkJCTsgZXh0cmEgc3BhY2UgdG8gdGhlIHJp
+Z2h0IG9mDQogICAgICAoZ290by1jaGFyIGN1cnJlbnQtcG9pbnQpCQkJOyB0aGUgY29tbWVudCBi
+b2R5LiBXZSB3YW50IHRvDQogICAgICAoaWYgKGxvb2tpbmctYXQgIlsgXHRdKiQiKQkJOyB0cmVh
+dCBzdWNoIGNhc2VzIGFzIHRob3VnaA0KCSAgKHNraXAtY2hhcnMtYmFja3dhcmQgIiBcdCIpKQkJ
+OyBwb2ludCBpcyBgaW4tY29tbWVudCwgc28gbW92ZQ0KICAgICAgKHNldHEgY3VycmVudC1wb2lu
+dCAocG9pbnQpKQkJOyB0byBqdXN0IHBhc3QgdGhlIHJpZ2h0bW9zdA0KICAgICAgKHNldHEgcG9p
+bnQtY29sdW1uIChjdXJyZW50LWNvbHVtbikpCTsgbm9ud2hpdGUuDQogICAgICANCgkJCQkJCTs9
+PT09PT09PT09PT09PT09PT09PT09PT09PT09PT0NCgkJCQkJCTsgUG9pbnQgaXMgb3V0c2lkZSB0
+aGUgY29tbWVudC4NCiAgICAgIChiYy1hbmFseXplLWxpbmUpCQkJCTs9PT09PT09PT09PT09PT09
+PT09PT09PT09PT09PT0NCiAgICAgIChjb25kDQogICAgICAgKCg8IGN1cnJlbnQtcG9pbnQgc3Rh
+cnQtZGVsaW0tYikJCTsgUG9pbnQgaXMgaW4gdGhlIGNvZGUuDQoJKHNldHEgdmVydCAnaW4tY29k
+ZQ0KCSAgICAgIGhvcml6IChiYy1jb3VudC1saW5lcy0xLWZhc3QgMSBjdXJyZW50LXBvaW50KQ0K
+CSAgICAgIHBvcyBwb2ludC1jb2x1bW4pKQ0KCQkJCQkJICANCiAgICAgICAoKDwgZW5kLWRlbGlt
+LWUgY3VycmVudC1wb2ludCkJCTsgUG9pbnQgaXMgcGFzdCB0aGUgY29tbWVudC4NCgkoc2V0cSB2
+ZXJ0ICdwYXN0LWNvbW1lbnQNCgkgICAgICBob3JpeiAoYmMtY291bnQtbGluZXMtMS1mYXN0IDEg
+Y3VycmVudC1wb2ludCkJDQoJICAgICAgcG9zIG5pbCkpDQogICAgICAgDQogICAgICAgKHQJOyBQ
+b2ludCBpcyBzb21ld2hlcmUgaW4gdGhlIGNvbW1lbnQuIEZpZ3VyZSBvdXQgb24gd2hhdCBsaW5l
+IG9mDQoJCTsgdGhlIGNvbW1lbnQgd2UgYXJlLiBJZiB0aGlzIGlzIG5vdCBhIGJhbm5lciBjb21t
+ZW50IHRoZW4NCgkJOyBmaXJzdC1saW5lID09IGJvZHktZmlyc3QgYW5kIGxhc3QtbGluZSA9PSBi
+b2R5LWxhc3QNCg0KCShzZXRxIHZlcnQgJ2luLXRvcC1iYW5uZXIpDQoJKGlmICg8IGZpcnN0LWxp
+bmUtZSBjdXJyZW50LXBvaW50KSAoc2V0cSB2ZXJ0ICdpbi10b3Atc3BhY2UpKQ0KCShpZiAoPD0g
+Ym9keS1maXJzdCBjdXJyZW50LXBvaW50KSAgKHNldHEgdmVydCAnaW4tY29tbWVudCkpDQoJKGlm
+ICg9IGJvZHktbGFzdCBsYXN0LWxpbmUpDQoJICAgIG5pbA0KCSAgKGlmICg8IGJvZHktbGFzdC1l
+IGN1cnJlbnQtcG9pbnQpICAoc2V0cSB2ZXJ0ICdpbi1ib3R0b20tc3BhY2UpKQ0KCSAgKGlmICg8
+PSBsYXN0LWxpbmUgY3VycmVudC1wb2ludCkgICAoc2V0cSB2ZXJ0ICdpbi1ib3R0b20tYmFubmVy
+KSkpDQoNCgkJCQkJCTs9PT09PT09PT09PT09PT09PT09PT09PT09PT09PT0NCgkoY29uZAkJCQkJ
+OyBQb2ludCBpcyBpbiB0aGUgYm9keSBvZiB0aGUNCgkgKChlcSB2ZXJ0ICdpbi1jb21tZW50KQkJ
+CTsgY29tbWVudC4NCgkgIChjb25kCQkJCQk7PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09
+DQoJICAgDQoJICAgKCg8IGN1cnJlbnQtcG9pbnQgYm9keS1iKQkJOyBQb2ludCBpbiBzdGFydCBk
+ZWxpbWl0ZXIuDQoJICAgIChnb3RvLWNoYXIgc3RhcnQtZGVsaW0tYikNCgkgICAgKHNldHEgaG9y
+aXogJ2luLXN0YXJ0LWRlbGltaXRlcg0KCQkgIGNvdW50IChjYXIgKGJjLWNvdW50LW5vbndoaXRl
+DQoJCQkgICAgICBib2R5LWZpcnN0CQk7IFN0aWNrIHRvIHRoZSBtaWRkbGUNCgkJCSAgICAgICgv
+ICgrIHN0YXJ0LWRlbGltLWIJOyBvZiB0aGUgdGV4dC4NCgkJCQkgICAgZW5kLWRlbGltLWUpIDIp
+KSkNCgkJICBwb3MgKGNvbnMgY291bnQgKC0gcG9pbnQtY29sdW1uIChjdXJyZW50LWNvbHVtbikp
+KSkpDQoJICAgDQoJICAgKChvciAoPCBjdXJyZW50LXBvaW50IGVuZC1kZWxpbS1iKQk7IFBvaW50
+IGluIHRleHQgb2YgY29tbWVudC4NCgkJDQoJCQkJCQk7IElmIHRoZSBsYW5ndWFnZSB1c2VzIG5l
+d2xpbmUNCgkJCQkJCTsgYXMgdGhlIGVuZGluZyBkZWxpbWl0ZXIsIHRoZW4NCgkJKGVxdWFsIGJj
+LWNvbW1lbnQtZW5kICIiKSkJOyBhbnl0aGluZyB0byB0aGUgcmlnaHQgb2YgdGhlDQoJCQkJCQk7
+IGNvbW1lbnQgdGV4dCBzaG91bGQgYmUNCgkJCQkJCTsgY29uc2lkZXJlZCB0byBiZSBpbiB0aGUg
+Ym9keQ0KCQkJCQkJOyBvZiB0aGUgY29tbWVudC4NCgkgICAgKGlmICg8IGJvZHktZSBjdXJyZW50
+LXBvaW50KSAoc2V0cSBjdXJyZW50LXBvaW50IGJvZHktZSkpDQoJICAgIChzZXRxIGhvcml6ICdp
+bi10ZXh0DQoJCSAgY291bnQgKGJjLWNvdW50LW5vbndoaXRlIGJvZHktZmlyc3QgY3VycmVudC1w
+b2ludCkNCgkJICBwb3MgDQoJCSAgKGNvbnMgKGNhciBjb3VudCkJCQkJICA7IElzIHBvaW50IG9u
+DQoJCQkob3IgKD0gY3VycmVudC1wb2ludCBib2R5LWIpCQkgIDsgdGhlIGZpcnN0DQoJCQkgICAg
+KGFuZCAobm90IChjZHIgY291bnQpKQkJICA7IG5vbndoaXRlDQoJCQkJIChwcm9nbiAoZ290by1j
+aGFyIGN1cnJlbnQtcG9pbnQpIDsgY2hhciBhZnRlcg0KCQkJCQkoYmFja3dhcmQtY2hhcikJCSAg
+OyBzb21lIHdoaXRlPw0KCQkJCQkobG9va2luZy1hdCAiWyBcdF0iKSkpKSkpKQ0KCSAgIA0KCSAg
+ICh0CQkJCQk7IFBvaW50IGluIGVuZCBkZWxpbWl0ZXIuDQoJICAgIChnb3RvLWNoYXIgZW5kLWRl
+bGltLWUpDQoJICAgIChzZXRxIGhvcml6ICdpbi1lbmQtZGVsaW1pdGVyCTsgTm9ybWFsbHkgdGhl
+IGNoYXJhY3RlcnMgYXJlDQoJCQkJCQk7IGNvdW50ZWQgdG8gdGhlIGNlbnRlciBvZiB0aGUNCgkJ
+CQkJCTsgY29tbWVudCB0ZXh0IG9uIHRoZSBsaW5lLg0KCQkgIGNvdW50IChjYXIJCQk7IFRoaXMg
+aXMgc28gdGhhdCBwb2ludCB3aWxsDQoJCQkgKGJjLWNvdW50LW5vbndoaXRlCTsgYXBwZWFyIHRv
+IHN0YXkgaW4gcm91Z2hseSB0aGUNCgkJCSAgYm9keS1maXJzdAkJOyBzYW1lIHBsYWNlIGluIHRo
+ZSBjb21tZW50DQoJCQkgIChpZiBzdGljay10by1kZWxpbXMJOyBhZnRlciBhIHNlcmllcyBvZiBm
+b3JtYXR0aW5nDQoJCQkgICAgICBlbmQtZGVsaW0tZQk7IGNvbW1hbmRzLiBUaGlzIGlzDQoJCQkg
+ICAgKC8JCQk7IHVuZGVzaXJhYmxlLCBob3dldmVyLCB3aGVuDQoJCQkgICAgICgrCQkJOyBwcm9j
+ZXNzaW5nIGBkby1hdXRvLWZpbGwnLiBJZg0KCQkJICAgICAgc3RhcnQtZGVsaW0tYgk7IFNUSUNL
+LVRPLURFTElNUyBpcyBub24tbmlsLA0KCQkJICAgICAgZW5kLWRlbGltLWUpCTsgY291bnQgbm9u
+LXdoaXRlc3BhY2UNCgkJCSAgICAgMikpKSkJCTsgY2hhcmFjdGVycyB0byB0aGUgZW5kIG9mIHRo
+ZQ0KCQkJCQkJOyBjb21tZW50IHRleHQgb24gdGhlIGxpbmUuDQoNCgkJICBwb3MgKGNvbnMgY291
+bnQgKC0gKGN1cnJlbnQtY29sdW1uKSBwb2ludC1jb2x1bW4pKSkpKSkNCgkgDQoJCQkJCQk7PT09
+PT09PT09PT09PT09PT09PT09PT09PT09PT09DQoJCQkJCQk7IFBvaW50IGlzIGluIHRoZSBiYW5u
+ZXIuDQoJICh0CQkJCQk7PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09DQoJICAoY29uZAkN
+CgkgICAoKG9yICg8IGN1cnJlbnQtcG9pbnQgYm9keS1lKQk7IFBvaW50IGluIHN0YXJ0IG9yIHRl
+eHQuDQoJCShlcXVhbCBiYy1jb21tZW50LWVuZCAiIikpDQoJICAgIChnb3RvLWNoYXIgc3RhcnQt
+ZGVsaW0tYikNCgkgICAgKHNldHEgaG9yaXogJ2luLXRleHQNCgkJICBwb3MgKC0gcG9pbnQtY29s
+dW1uIChjdXJyZW50LWNvbHVtbikpKSkNCgkgICANCgkgICAodAkJCQkJOyBQb2ludCBpbiBlbmQg
+ZGVsaW1pdGVyLg0KCSAgICAoZ290by1jaGFyIGVuZC1kZWxpbS1lKQ0KCSAgICAoc2V0cSBob3Jp
+eiAnaW4tZW5kLWRlbGltaXRlcg0KCQkgIHBvcyAoLSAoY3VycmVudC1jb2x1bW4pIHBvaW50LWNv
+bHVtbikpKSkpKSkpDQogICAgICANCiAgICAgIA0KICAgICAgKGxpc3QgdmVydCBob3JpeiBwb3Mp
+KSkpCQkJOyByZXR1cm4gdmFsdWUNCg0KOzs7Oz09PT09PT09PT09PT09PT09PT09PT09PT09PT09
+PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT0NCjs7O18gICAgfCBiYy1y
+ZXN0b3JlLWV4Y3Vyc2lvbg0KKGRlZnVuIGJjLXJlc3RvcmUtZXhjdXJzaW9uIChzYXZlLXBvaW50
+IGZpcnN0LWxpbmUgbGFzdC1saW5lKQ0KICAiVGFrZXMgYSBzdHJ1Y3R1cmUsIFNBVkUtUE9JTlQg
+Y3JlYXRlZCBieSBiYy1zYXZlLWV4Y3Vyc2lvbg0KYW5kIHBsYWNlcyBwb2ludCBhdCB0aGUgcG9z
+aXRpb24gaW5kaWNhdGVkIGluIHRoZSBzdHJ1Y3R1cmUuICANCg0KRklSU1QtTElORSBpcyB0aGUg
+Y2hhcmFjdGVyIHBvc2l0aW9uIG9mIHRoZSBmaXJzdCBsaW5lIG9mIHRoZSBuZXcNCmxvY2F0aW9u
+IG9mIHRoZSBjb21tZW50Lg0KDQpMQVNULUxJTkUgaXMgdGhlIGNoYXJhY3RlciBwb3NpdGlvbiBv
+ZiB0aGUgbGFzdCBsaW5lIG9mIHRoZSBuZXcNCmxvY2F0aW9uIG9mIHRoZSBjb21tZW50LiINCg0K
+ICAobGV0ICgodmVydCAoY2FyIHNhdmUtcG9pbnQpKQ0KCShob3JpeiAobnRoIDEgc2F2ZS1wb2lu
+dCkpDQoJKHBvcyAobnRoIDIgc2F2ZS1wb2ludCkpDQoJY29tLWRlbGltLXN0YXJ0LXBvcyBjb20t
+ZGVsaW0tZW5kLXBvcyBjb20tYm9keS1zdGFydC1wb3MNCgljb20tYm9keS1lbmQtcG9zIGJvZHkt
+Zmlyc3QNCgkpDQoNCiAgICAoZ290by1jaGFyIGZpcnN0LWxpbmUpDQogICAgKGlmIGJjLWJhbm5l
+ci10b3AtYm9yZGVyIChmb3J3YXJkLWxpbmUgKCsgMSBiYy1iYW5uZXItdG9wLXNwYWNlKSkpDQog
+ICAgKHNldHEgYm9keS1maXJzdCAocG9pbnQpKQ0KCQkJCQkJOz09PT09PT09PT09PT09PT09PT09
+PT09PT09PT09PQ0KCQkJCQkJOyBQb2ludCBpcyBvdXRzaWRlIHRoZSBjb21tZW50Lg0KICAgIChj
+b25kCQkJCQk7PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09DQogICAgICgoZXEgdmVydCAn
+aW4tY29kZSkNCiAgICAgIChiYy1nb3RvLWxpbmUtZmFzdCBob3JpeikJCQkJOyBQb2ludCBpcyBp
+biB0aGUgY29kZS4NCiAgICAgIChtb3ZlLXRvLWNvbHVtbiBwb3MpKQ0KICAgICANCiAgICAgKChl
+cSB2ZXJ0ICdwYXN0LWNvbW1lbnQpCQkJOyBQb2ludCBpcyBwYXN0IHRoZSBjb21tZW50Lg0KICAg
+ICAgKGJjLWdvdG8tbGluZS1mYXN0IGhvcml6KQ0KICAgICAgKGVuZC1vZi1saW5lKSkNCgkJCQkJ
+CTs9PT09PT09PT09PT09PT09PT09PT09PT09PT09PT0NCiAgICAgKHQJCQkJCQk7IFBvaW50IGlz
+IGluIHRoZSBib2R5IG9mIHRoZQ0KICAgICAgKGNvbmQJCQkJCTsgY29tbWVudC4NCiAgICAgICAo
+KGVxIHZlcnQgJ2luLWNvbW1lbnQpCQkJOz09PT09PT09PT09PT09PT09PT09PT09PT09PT09PQ0K
+CShjb25kDQoJICgoZXEgaG9yaXogJ2luLXN0YXJ0LWRlbGltaXRlcikJOyBQb2ludCBpbiBzdGFy
+dCBkZWxpbWl0ZXIuDQoJICAoaWYgKGJjLWZvcndhcmQtbm9ud2hpdGUgYm9keS1maXJzdCAoY2Fy
+IHBvcykpIG5pbA0KCSAgICAoYmMtb3BhcnNlLWxpbmUgbmlsICdjb20tZGVsaW0tc3RhcnQtcG9z
+ICdjb20tYm9keS1zdGFydC1wb3MpDQoJICAgIChnb3RvLWNoYXIgY29tLWRlbGltLXN0YXJ0LXBv
+cykNCgkgICAgKGZvcndhcmQtY2hhciAoY2RyIHBvcykpDQoJICAgIChpZiAoPCBjb20tYm9keS1z
+dGFydC1wb3MgKHBvaW50KSkNCgkJKGdvdG8tY2hhciBjb20tYm9keS1zdGFydC1wb3MpKSkpDQoN
+CgkgKChlcSBob3JpeiAnaW4tdGV4dCkJCQk7IFBvaW50IGluIGNvbW1lbnQgdGV4dC4NCgkgIChi
+Yy1mb3J3YXJkLW5vbndoaXRlIGJvZHktZmlyc3QgKCsgKGNhciBwb3MpIChpZiAoY2RyIHBvcykg
+MSAwKSkpDQoJICAoaWYgKGNkciBwb3MpIChiYWNrd2FyZC1jaGFyKSkpDQoNCgkgKHQJCQkJCTsg
+UG9pbnQgaW4gZW5kIGRlbGltaXRlci4NCgkgIChiYy1mb3J3YXJkLW5vbndoaXRlIGJvZHktZmly
+c3QgKGNhciBwb3MpKQ0KCSAgKGJjLW9wYXJzZS1saW5lIG5pbCBuaWwgbmlsIG5pbCAnY29tLWRl
+bGltLWVuZC1wb3MpDQoJICAoZ290by1jaGFyIGNvbS1kZWxpbS1lbmQtcG9zKQ0KCSAgKGJhY2t3
+YXJkLWNoYXIgKGNkciBwb3MpKSkpKQ0KDQogICAgICAgKHQJCQkJCTs9PT09PT09PT09PT09PT09
+PT09PT09PT09PT09PT0NCgkoY29uZAkJCQkJOyBQb2ludCBpcyBpbiB0aGUgYmFubmVyLg0KCSAo
+KGVxIHZlcnQgJ2luLXRvcC1iYW5uZXIpCQk7PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09
+DQoJICAoZ290by1jaGFyIGZpcnN0LWxpbmUpKQ0KCSAoKGVxIHZlcnQgJ2luLXRvcC1zcGFjZSkN
+CgkgIChnb3RvLWNoYXIgZmlyc3QtbGluZSkNCgkgIChmb3J3YXJkLWxpbmUgMSkpDQoJICgoZXEg
+dmVydCAnaW4tYm90dG9tLWJhbm5lcikNCgkgIChnb3RvLWNoYXIgbGFzdC1saW5lKSkNCgkgKChl
+cSB2ZXJ0ICdpbi1ib3R0b20tc3BhY2UpDQoJICAoZ290by1jaGFyIGxhc3QtbGluZSkNCgkgIChm
+b3J3YXJkLWxpbmUgLTEpKSkNCgkgIA0KCShiYy1vcGFyc2UtbGluZSBuaWwgJ2NvbS1kZWxpbS1z
+dGFydC1wb3MgbmlsICdjb20tYm9keS1lbmQtcG9zDQoJCSAgICAgICAnY29tLWRlbGltLWVuZC1w
+b3MpDQoJKGNvbmQNCgkgKChtZW1xIGhvcml6ICcoaW4tc3RhcnQtZGVsaW1pdGVyIGluLXRleHQp
+KQ0KCSAgKGdvdG8tY2hhciBjb20tZGVsaW0tc3RhcnQtcG9zKQ0KCSAgKG1vdmUtdG8tY29sdW1u
+ICgrIChjdXJyZW50LWNvbHVtbikgcG9zKSkNCgkgIChnb3RvLWNoYXIgKG1pbiAocG9pbnQpIGNv
+bS1ib2R5LWVuZC1wb3MpKSkNCgkgKHQJCQkJCQk7ICdpbi1lbmQtZGVsaW1pdGVyDQoJICAoZ290
+by1jaGFyIGNvbS1kZWxpbS1lbmQtcG9zKQ0KCSAgKG1vdmUtdG8tY29sdW1uICgtIChjdXJyZW50
+LWNvbHVtbikgcG9zKSkNCgkgIChnb3RvLWNoYXIgKG1pbiAocG9pbnQpIGNvbS1kZWxpbS1lbmQt
+cG9zKSkpKSkpKSkNCiAgICApKQ0KICAgDQo7Ozs7PT09PT09PT09PT09PT09PT09PT09PT09PT09
+PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PQ0KOzs7XyAgICB8IGJj
+LWNvdW50LWxpbmVzLTENCihkZWZ1biBiYy1jb3VudC1saW5lcy0xIChzdGFydCBlbmQpDQogICJU
+aGlzIGZ1bmN0aW9uIGlzIGxpa2UgYGNvdW50LWxpbmVzJyBvbmx5IGl0IGNvdW50cyBsaW5lcyBp
+bmNsdXNpdmVseS4NClNvLCBpZiBTVEFSVCA9PSBFTkQsIG9yIGlmIEVORCBpcyBhdCB0aGUgYmVn
+aW5uaW5nIG9mIHRoZSBsaW5lLCB0aGlzDQpmdW5jdGlvbiByZXR1cm5zIG9uZSBtb3JlIHRoYW4g
+YGNvdW50LWxpbmVzJyB3b3VsZC4iDQoNCiAgKHNhdmUtZXhjdXJzaW9uDQogICAgKHNhdmUtcmVz
+dHJpY3Rpb24NCiAgICAgICh3aWRlbikNCiAgICAgICgxKyAoY291bnQtbGluZXMNCgkgICAocHJv
+Z24gKGdvdG8tY2hhciBzdGFydCkgKGJlZ2lubmluZy1vZi1saW5lKSAocG9pbnQpKQ0KCSAgIChw
+cm9nbiAoZ290by1jaGFyIGVuZCkgKGJlZ2lubmluZy1vZi1saW5lKSAocG9pbnQpKSkpKSkpDQoN
+CjsgIChzYXZlLWV4Y3Vyc2lvbg0KOyAgICAoc2F2ZS1yZXN0cmljdGlvbg0KOyAgICAgICh3aWRl
+bikNCjsgICAgICAobGV0ICgobmV3LXN0YXJ0IChwcm9nbiAoZ290by1jaGFyIHN0YXJ0KSAoYmVn
+aW5uaW5nLW9mLWxpbmUpIChwb2ludCkpKQ0KOyAJICAgKG5ldy1lbmQgKHByb2duIChnb3RvLWNo
+YXIgZW5kKSAoYmVnaW5uaW5nLW9mLWxpbmUpIChwb2ludCkpKQ0KOyAJICAgKQ0KOyAgICAgICAg
+KG5hcnJvdy10by1yZWdpb24gbmV3LXN0YXJ0IG5ldy1lbmQpDQo7ICAgICAgICAoZ290by1jaGFy
+IChwb2ludC1taW4pKQ0KOyAgICAgICAgKC0gKGJ1ZmZlci1zaXplKSAoZm9yd2FyZC1saW5lIChi
+dWZmZXItc2l6ZSkpIC0xKSkpKSkNCg0KOzs7Oz09PT09PT09PT09PT09PT09PT09PT09PT09PT09
+PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT0NCjs7O18gICAgfCBiYy1j
+b3VudC1ub253aGl0ZQ0KKGRlZnVuIGJjLWNvdW50LW5vbndoaXRlIChmaXJzdC1saW5lIHRhcmdl
+dC1wb2ludCkNCiAgIkNvdW50cyB0aGUgbnVtYmVyIG9mIG5vbi13aGl0ZXNwYWNlIGNoYXJhY3Rl
+cnMgY29udGFpbmVkIGluIHRoZQ0KYmxvY2sgY29tbWVudCBzdGFydGluZyBvbiBGSVJTVC1MSU5F
+IHVwIHRvIFRBUkdFVC1QT0lOVC4gIFRBUkdFVC1QT0lOVA0KaXMgYXNzdW1lZCB0byBiZSBpbiB0
+aGUgYmxvY2sgY29tbWVudC4NCg0KUmV0dXJucyBcKGNvdW50IC4gZW5kLWlzLXdoaXRlc3BhY2Ut
+cFwpDQoNCiAgKioqIE1vdmVzIHBvaW50ICoqKiINCg0KICAobGV0DQogICAgICAoKHN1bSAwKQ0K
+ICAgICAgIGxpbWl0DQogICAgICAgKGRvbmUgbmlsKQ0KICAgICAgIGNvdW50LXRoaXMtbGluZQ0K
+Ozs7ICAgICAgIGNvZGUtZW5kLXBvcyANCiAgICAgICBjb20tYm9keS1zdGFydC1wb3MgY29tLWJv
+ZHktZW5kLXBvcyANCiAgICAgICApDQoNCiAgICAoc2F2ZS1leGN1cnNpb24NCiAgICAgIChnb3Rv
+LWNoYXIgZmlyc3QtbGluZSkNCiAgICAgICh3aGlsZSAobm90IGRvbmUpDQoJKGJjLW9wYXJzZS1s
+aW5lIG5pbCBuaWwgJ2NvbS1ib2R5LXN0YXJ0LXBvcyAnY29tLWJvZHktZW5kLXBvcykNCgkoaWYg
+KDwgY29tLWJvZHktZW5kLXBvcyB0YXJnZXQtcG9pbnQpDQoJICAgIChzZXRxIGxpbWl0IGNvbS1i
+b2R5LWVuZC1wb3MpDQoJICAoc2V0cSBkb25lIHQpDQoJICAoc2V0cSBsaW1pdCB0YXJnZXQtcG9p
+bnQpKQ0KCShzZXRxIGNvdW50LXRoaXMtbGluZSAoYmMtY291bnQtbm9ud2hpdGUtY2hhcnMgDQoJ
+CQkgICAgICAgY29tLWJvZHktc3RhcnQtcG9zIGxpbWl0KQ0KCSAgICAgIHN1bSAoKyBzdW0gKGNh
+ciBjb3VudC10aGlzLWxpbmUpKSkNCgkoZm9yd2FyZC1saW5lIDEpKSkNCg0KICAgIChjb25zIHN1
+bSAoY2RyIGNvdW50LXRoaXMtbGluZSkpKSkJCTsgcmV0dXJuIHRoZSB0b3RhbA0KDQo7Ozs7PT09
+PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09
+PT09PT09PT09PQ0KOzs7XyAgICB8IGJjLWZvcndhcmQtbm9ud2hpdGUNCihkZWZ1biBiYy1mb3J3
+YXJkLW5vbndoaXRlIChmaXJzdC1saW5lIGNvdW50KQ0KICAiTW92ZXMgcG9pbnQgZm9yd2FyZCBi
+eSBDT1VOVCBub24td2hpdGVzcGFjZSBjaGFyYWN0ZXJzIGNvbnRhaW5lZCBpbiB0aGUNCmJsb2Nr
+IGNvbW1lbnQgc3RhcnRpbmcgb24gRklSU1QtTElORS4iDQoNCiAgKGxldA0KICAgICAgKGRvbmUN
+Cjs7OyAgICAgICBjb2RlLWVuZC1wb3MgY29tLWRlbGltLXN0YXJ0LXBvcyBjb20tZGVsaW0tZW5k
+LXBvcw0KICAgICAgIGNvbS1ib2R5LXN0YXJ0LXBvcw0KICAgICAgIGNvbS1ib2R5LWVuZC1wb3MN
+CiAgICAgICAobGFzdCAocG9pbnQpKSBmYWlsdXJlDQogICAgICAgKQ0KICAgIChnb3RvLWNoYXIg
+Zmlyc3QtbGluZSkNCiAgICAod2hpbGUgKG5vdCBkb25lKQ0KICAgICAgKGlmIChub3QgKGJjLW9w
+YXJzZS1saW5lIG5pbCBuaWwgJ2NvbS1ib2R5LXN0YXJ0LXBvcyAnY29tLWJvZHktZW5kLXBvcykp
+DQoJICAocHJvZ24NCgkgICAgKHNldHEgZG9uZSB0DQoJCSAgZmFpbHVyZSB0KQ0KCSAgICAoZ290
+by1jaGFyIGxhc3QpKQ0KCShzZXRxIGNvdW50ICgtIGNvdW50IChiYy1mb3J3YXJkLW5vbndoaXRl
+LWNoYXJzDQoJCQkgICAgICBjb20tYm9keS1zdGFydC1wb3MgY291bnQgY29tLWJvZHktZW5kLXBv
+cykpKSkNCiAgICAgIChzZXRxIGxhc3QgKHBvaW50KSkNCiAgICAgIChpZiAoPSBjb3VudCAwKQ0K
+CSAgKHNldHEgZG9uZSB0KQ0KCShmb3J3YXJkLWxpbmUgMSkpKQ0KICAgIGZhaWx1cmUpKQ0KDQo7
+Ozs7PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09
+PT09PT09PT09PT09PT09PQ0KOzs7XyAgICB8IGJjLWNvdW50LW5vbndoaXRlLWNoYXJzDQooZGVm
+dW4gYmMtY291bnQtbm9ud2hpdGUtY2hhcnMgKGJlZ2luIGVuZCkNCiAgIkNvdW50cyB0aGUgbnVt
+YmVyIG9mIG5vbi13aGl0ZXNwYWNlIGNoYXJhY3RlcnMgYmV0d2VlbiBCRUdJTiBhbmQgRU5ELg0K
+DQpSZXR1cm5zIFwoY291bnQ+IC4gPGVuZC1pcy13aGl0ZXNwYWNlLXBcKQ0KDQogICoqKiBNb3Zl
+cyBwb2ludCAqKioiDQoNCiAgKGxldCAoKGNvdW50ZXIgMCkgcHJldiBkb25lKQ0KICAgIChnb3Rv
+LWNoYXIgYmVnaW4pDQoNCiAgICAod2hpbGUgKGFuZCAobm90IGRvbmUpIChub3QgKGVvbHApKSkN
+CiAgICAgIChza2lwLWNoYXJzLWZvcndhcmQgIiBcdCIpDQogICAgICAoaWYgKDwgZW5kIChwb2lu
+dCkpDQoJICAoc2V0cSBkb25lIHQpDQoJKHNldHEgcHJldiAocG9pbnQpKSANCgkoc2tpcC1jaGFy
+cy1mb3J3YXJkICJeIFx0XG4iKQ0KCShpZiAoPCBlbmQgKHBvaW50KSkNCgkgICAgKHNldHEgZG9u
+ZSB0DQoJCSAgY291bnRlciAoKyBjb3VudGVyICgtIGVuZCBwcmV2KSkpDQoJICAoc2V0cSBjb3Vu
+dGVyICgrIGNvdW50ZXIgKC0gKHBvaW50KSBwcmV2KSkpKSkpDQogICAgKGNvbnMgY291bnRlciAo
+bG9va2luZy1hdCAiWyBcdFxuXSIpKQ0KICAgICkpDQo7OzsJDQo7OzsgICAgKHdoaWxlICg8IChw
+b2ludCkgZW5kKQkJCTsgaWYgcG9pbnQgaXMgYmVmb3JlIHdoaXRlc3BhY2UNCjs7OwkgKGlmIChs
+b29raW5nLWF0ICJbIFx0XG5dIikJCTsgZG9uJ3QgaW5jcmVtZW50IGNvdW50ZXINCjs7OwkgICAg
+IG5pbA0KOzs7CSAgIChzZXRxIGNvdW50ZXIgKDErIGNvdW50ZXIpKSkJCTsgb3RoZXJ3aXNlIGNv
+dW50IHRoaXMgYXMNCjs7OwkgKGZvcndhcmQtY2hhciAxKSkJCQkJOyBub253aGl0ZQ0KOzs7ICAg
+IChjb25zIGNvdW50ZXIgKGxvb2tpbmctYXQgIlsgXHRcbl0iKSkpKQ0KDQo7Ozs7PT09PT09PT09
+PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09
+PT09PQ0KOzs7XyAgICB8IGJjLWZvcndhcmQtbm9ud2hpdGUtY2hhcnMNCihkZWZ1biBiYy1mb3J3
+YXJkLW5vbndoaXRlLWNoYXJzIChiZWdpbiBjb3VudCBlbmQpDQogICJNb3ZlcyBwb2ludCB0byBC
+RUdJTiBhbmQgdGhlbiBmb3J3YXJkIGJ5IENPVU5UIG5vbi13aGl0ZXNwYWNlDQpjaGFyYWN0ZXJz
+LCBidXQgbmV2ZXIgcGFzdCBFTkQuICANCg0KUmV0dXJucyB0aGUgZGlzdGFuY2UgYWN0dWFsbHkg
+bW92ZWQuDQoNCiAgKioqIE1vdmVzIHBvaW50ICoqKiINCg0KICAobGV0ICgoY291bnRlciAwKSBw
+cmV2IGRvbmUpDQogICAgKGdvdG8tY2hhciBiZWdpbikNCg0KICAgICh3aGlsZSAoYW5kIChub3Qg
+ZG9uZSkgKG5vdCAoZW9scCkpKQ0KICAgICAgKHNraXAtY2hhcnMtZm9yd2FyZCAiIFx0IikNCiAg
+ICAgIChpZiAoPCBlbmQgKHBvaW50KSkNCgkgIChwcm9nbiAoc2V0cSBkb25lIHQpIChnb3RvLWNo
+YXIgZW5kKSkNCgkoc2V0cSBwcmV2IChwb2ludCkpIA0KCShza2lwLWNoYXJzLWZvcndhcmQgIl4g
+XHRcbiIpDQoJKHNldHEgY291bnRlciAoKyBjb3VudGVyICgtIChwb2ludCkgcHJldikpKQ0KCShj
+b25kDQoJICgoPCBlbmQgKHBvaW50KSkNCgkgIChzZXRxIGRvbmUgdCkgKGdvdG8tY2hhciBlbmQp
+KQ0KCSAoKDw9IGNvdW50IGNvdW50ZXIpDQoJICAoc2V0cSBkb25lIHQpDQoJICAoZm9yd2FyZC1j
+aGFyICgtIGNvdW50IGNvdW50ZXIpKQ0KCSAgKHNldHEgY291bnRlciBjb3VudCkpKSkpDQogICAg
+Y291bnRlcikpDQoNCjs7OyAgICAod2hpbGUgKGFuZCAoPCBjb3VudGVyIGNvdW50KQ0KOzs7CQkg
+ICAoPCAocG9pbnQpIGxpbWl0KSkJCTsgaWYgcG9pbnQgaXMgYmVmb3JlIHdoaXRlc3BhY2UNCjs7
+OwkgKGlmIChsb29raW5nLWF0ICJbIFx0XG5dIikJCTsgZG9uJ3QgaW5jcmVtZW50IGNvdW50ZXIN
+Cjs7OwkgICAgIG5pbA0KOzs7CSAgIChzZXRxIGNvdW50ZXIgKDErIGNvdW50ZXIpKSkJCTsgb3Ro
+ZXJ3aXNlIGNvdW50IHRoaXMgYXMNCjs7OwkgKGZvcndhcmQtY2hhciAxKSkJCQkJOyBub253aGl0
+ZQ0KOzs7ICAgIGNvdW50ZXIpKQ0KDQo7Ozs7PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09
+PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PQ0KOzs7XyAgIG8gTWlzY2Vs
+bGFuZW91cw0KOzs7XyAgICB8IGJjLWdldC1idWZmZXItY3JlYXRlDQooZGVmdW4gYmMtZ2V0LWJ1
+ZmZlci1jcmVhdGUgKCkNCiAgIChsZXQgKChzY3JhdGNoLWJ1ZmZlciAoZ2V0LWJ1ZmZlci1jcmVh
+dGUgYmMtc2NyYXRjaC1idWZmZXIpKSkNCiAgICAgKGJ1ZmZlci1kaXNhYmxlLXVuZG8gc2NyYXRj
+aC1idWZmZXIpDQogICAgIHNjcmF0Y2gtYnVmZmVyKSkNCg0KOzs7Oz09PT09PT09PT09PT09PT09
+PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT0NCjs7
+O18gICAgfCBiYy1zZXQtcHJlZi1maXJzdC1saW5lDQooZGVmdW4gYmMtc2V0LXByZWYtZmlyc3Qt
+bGluZSAoKQ0KICAoc2V0cSBiYy1wcmVmLWZpcnN0LWxpbmUgKGJjLWNvdW50LWxpbmVzLTEtZmFz
+dA0KCQkJICAgIDEgDQoJCQkgICAgKG1hcmtlci1wb3NpdGlvbiBiYy1zdGFydC1tYXJrZXIpKSkN
+CiAgKHNldC1tYXJrZXIgYmMtc3RhcnQtbWFya2VyIG5pbCkpDQoNCjs7Ozs9PT09PT09PT09PT09
+PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09
+DQoNCihwcm92aWRlICdiYy1tb2RlKQ0KDQo7OztfICYgDQoNCjs7OyBMb2NhbCBWYXJpYWJsZXM6
+DQo7Ozsga2VwdC1uZXctdmVyc2lvbnM6IDk5OQ0KOzs7IG9lLWhlYWRlci1wcmVmaXg6ICI7Oztf
+Ig0KOzs7IG1vZGU6IG91dGxpbmUtbWlub3INCjs7OyBFbmQ6DQoNCjs7OyBiYy1tb2RlLmVsIGVu
+ZHMgaGVyZQ0K

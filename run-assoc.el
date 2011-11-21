@@ -1,108 +1,70 @@
-;;; run-assoc.el -- Run program or lisp function associated with a file.
-;;
-;; Filename: run-assoc.el
-;; Description: Run program or lisp function associated with a file.
-;; Authors: Emacs Wiki, pinetr2e, pft
-;;
-;;; Commentary
-;;
-;; run-assoc.el was tested with GNU Emacs 21.4 and 22.0.50.3 on debian linux.
-;;
-;; The idea and some portion of codes were borrowed from 'w32-browser'
-;; which is only for w32 and from 'TrivialMode'.
-;;
-;; It is very simple to use:
-;;
-;; (require 'run-assoc)
-;;
-;; (setq associated-program-alist
-;;    '(("gnochm" "\\.chm$")
-;; 	("evince" "\\.pdf$")
-;; 	("mplayer" "\\.mp3$")
-;; 	((lambda (file)
-;; 	   (let ((newfile (concat (file-name-sans-extension (file-name-nondirectory file)) ".txt")))
-;; 	     (cond
-;; 	      ((get-buffer newfile)
-;; 	       (switch-to-buffer newfile)
-;; 	       (message "Buffer with name %s exists, switching to it" newfile))
-;; 	      ((file-exists-p newfile)
-;; 	       (find-file newfile)
-;; 	       (message "File %s exists, opening" newfile))
-;; 	      (t (find-file newfile)
-;; 		 (= 0 (call-process "antiword" file
-;; 				    newfile t "-")))))) "\\.doc$")
-;; 	("evince" "\\.ps$")
-;;	("fontforge" "\\.\\(sfd\\(ir\\)?\\|ttf\\|otf\\)$")
-;; 	((lambda (file)
-;; 	   (browse-url (concat "file:///" (expand-file-name file)))) "\\.html?$")))
-;;
-;;
-;;		Then, you can run the associated program in dired mode by
-;;		Control-Return on a specific file or you can run the program
-;;		directly by M-x run-associated-program
-;;
-;;
-;; This program is free software; you can redistribute it and/or modify
-;; it under the terms of the GNU General Public License as published by
-;; the Free Software Foundation; either version 2, or (at your option)
-;; any later version.
-;;
-;; This program is distributed in the hope that it will be useful,
-;; but WITHOUT ANY WARRANTY; without even the implied warranty of
-;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-;; GNU General Public License for more details.
-;;
-;; You should have received a copy of the GNU General Public License
-;; along with this program; see the file COPYING.  If not, write to
-;; the Free Software Foundation, Inc., 51 Franklin Street, Fifth
-;; Floor, Boston, MA 02110-1301, USA.
-;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;
-;;; Code:
-
-(defvar associated-program-alist nil
-  "Associated program/function list depending on file name regexp.")
-
-(defun run-associated-program (file-name-arg)
-  "Run program or function associated with file-name-arg.
-      If no application is associated with file, then `find-file'."
-  (interactive "ffile:")
-  (let ((items associated-program-alist) 
-	item
-	program
-	regexp
-	file-name
-	result)
-    (setq file-name (expand-file-name file-name-arg))
-    (while (and (not result) items)
-      (setq item (car items))
-      (setq program (nth 0 item))
-      (setq regexp (nth 1 item))
-      (if (string-match regexp file-name)
-	  (cond ((stringp program)
-		 (setq result (start-process program nil program file-name)))
-		((functionp program)
-		 (funcall program file-name)
-		 ;; This implementation assumes everything went well,
-		 ;; or that the called function handled an error by
-		 ;; itself:
-		 (setq result t))))
-      (setq items (cdr items)))
-    ;; fail to run
-    (unless result (find-file file))))
-
-(defun dired-run-associated-program ()
-  "Run program or function associated with current line's file.
-      If file is a directory, then `dired-find-file' instead.  If no
-      application is associated with file, then `find-file'."
-  (interactive)
-  (run-associated-program (dired-get-filename)))
-
-(eval-after-load "dired"
-  '(progn
-     (define-key dired-mode-map [C-return] 'dired-run-associated-program)
-     (define-key dired-mode-map [menu-bar immediate dired-run-associated-program]
-       '("Open Associated Application" . dired-run-associated-program))))
-
-(provide 'run-assoc)
+#FILE text/plain
+Ozs7IHJ1bi1hc3NvYy5lbCAtLSBSdW4gcHJvZ3JhbSBvciBsaXNwIGZ1bmN0aW9uIGFzc29jaWF0
+ZWQgd2l0aCBhIGZpbGUuCjs7Cjs7IEZpbGVuYW1lOiBydW4tYXNzb2MuZWwKOzsgRGVzY3JpcHRp
+b246IFJ1biBwcm9ncmFtIG9yIGxpc3AgZnVuY3Rpb24gYXNzb2NpYXRlZCB3aXRoIGEgZmlsZS4K
+OzsgQXV0aG9yczogRW1hY3MgV2lraSwgcGluZXRyMmUsIHBmdAo7Owo7OzsgQ29tbWVudGFyeQo7
+Owo7OyBydW4tYXNzb2MuZWwgd2FzIHRlc3RlZCB3aXRoIEdOVSBFbWFjcyAyMS40IGFuZCAyMi4w
+LjUwLjMgb24gZGViaWFuIGxpbnV4Lgo7Owo7OyBUaGUgaWRlYSBhbmQgc29tZSBwb3J0aW9uIG9m
+IGNvZGVzIHdlcmUgYm9ycm93ZWQgZnJvbSAndzMyLWJyb3dzZXInCjs7IHdoaWNoIGlzIG9ubHkg
+Zm9yIHczMiBhbmQgZnJvbSAnVHJpdmlhbE1vZGUnLgo7Owo7OyBJdCBpcyB2ZXJ5IHNpbXBsZSB0
+byB1c2U6Cjs7Cjs7IChyZXF1aXJlICdydW4tYXNzb2MpCjs7Cjs7IChzZXRxIGFzc29jaWF0ZWQt
+cHJvZ3JhbS1hbGlzdAo7OyAgICAnKCgiZ25vY2htIiAiXFwuY2htJCIpCjs7IAkoImV2aW5jZSIg
+IlxcLnBkZiQiKQo7OyAJKCJtcGxheWVyIiAiXFwubXAzJCIpCjs7IAkoKGxhbWJkYSAoZmlsZSkK
+OzsgCSAgIChsZXQgKChuZXdmaWxlIChjb25jYXQgKGZpbGUtbmFtZS1zYW5zLWV4dGVuc2lvbiAo
+ZmlsZS1uYW1lLW5vbmRpcmVjdG9yeSBmaWxlKSkgIi50eHQiKSkpCjs7IAkgICAgIChjb25kCjs7
+IAkgICAgICAoKGdldC1idWZmZXIgbmV3ZmlsZSkKOzsgCSAgICAgICAoc3dpdGNoLXRvLWJ1ZmZl
+ciBuZXdmaWxlKQo7OyAJICAgICAgIChtZXNzYWdlICJCdWZmZXIgd2l0aCBuYW1lICVzIGV4aXN0
+cywgc3dpdGNoaW5nIHRvIGl0IiBuZXdmaWxlKSkKOzsgCSAgICAgICgoZmlsZS1leGlzdHMtcCBu
+ZXdmaWxlKQo7OyAJICAgICAgIChmaW5kLWZpbGUgbmV3ZmlsZSkKOzsgCSAgICAgICAobWVzc2Fn
+ZSAiRmlsZSAlcyBleGlzdHMsIG9wZW5pbmciIG5ld2ZpbGUpKQo7OyAJICAgICAgKHQgKGZpbmQt
+ZmlsZSBuZXdmaWxlKQo7OyAJCSAoPSAwIChjYWxsLXByb2Nlc3MgImFudGl3b3JkIiBmaWxlCjs7
+IAkJCQkgICAgbmV3ZmlsZSB0ICItIikpKSkpKSAiXFwuZG9jJCIpCjs7IAkoImV2aW5jZSIgIlxc
+LnBzJCIpCjs7CSgiZm9udGZvcmdlIiAiXFwuXFwoc2ZkXFwoaXJcXCk/XFx8dHRmXFx8b3RmXFwp
+JCIpCjs7IAkoKGxhbWJkYSAoZmlsZSkKOzsgCSAgIChicm93c2UtdXJsIChjb25jYXQgImZpbGU6
+Ly8vIiAoZXhwYW5kLWZpbGUtbmFtZSBmaWxlKSkpKSAiXFwuaHRtbD8kIikpKQo7Owo7Owo7OwkJ
+VGhlbiwgeW91IGNhbiBydW4gdGhlIGFzc29jaWF0ZWQgcHJvZ3JhbSBpbiBkaXJlZCBtb2RlIGJ5
+Cjs7CQlDb250cm9sLVJldHVybiBvbiBhIHNwZWNpZmljIGZpbGUgb3IgeW91IGNhbiBydW4gdGhl
+IHByb2dyYW0KOzsJCWRpcmVjdGx5IGJ5IE0teCBydW4tYXNzb2NpYXRlZC1wcm9ncmFtCjs7Cjs7
+Cjs7IFRoaXMgcHJvZ3JhbSBpcyBmcmVlIHNvZnR3YXJlOyB5b3UgY2FuIHJlZGlzdHJpYnV0ZSBp
+dCBhbmQvb3IgbW9kaWZ5Cjs7IGl0IHVuZGVyIHRoZSB0ZXJtcyBvZiB0aGUgR05VIEdlbmVyYWwg
+UHVibGljIExpY2Vuc2UgYXMgcHVibGlzaGVkIGJ5Cjs7IHRoZSBGcmVlIFNvZnR3YXJlIEZvdW5k
+YXRpb247IGVpdGhlciB2ZXJzaW9uIDIsIG9yIChhdCB5b3VyIG9wdGlvbikKOzsgYW55IGxhdGVy
+IHZlcnNpb24uCjs7Cjs7IFRoaXMgcHJvZ3JhbSBpcyBkaXN0cmlidXRlZCBpbiB0aGUgaG9wZSB0
+aGF0IGl0IHdpbGwgYmUgdXNlZnVsLAo7OyBidXQgV0lUSE9VVCBBTlkgV0FSUkFOVFk7IHdpdGhv
+dXQgZXZlbiB0aGUgaW1wbGllZCB3YXJyYW50eSBvZgo7OyBNRVJDSEFOVEFCSUxJVFkgb3IgRklU
+TkVTUyBGT1IgQSBQQVJUSUNVTEFSIFBVUlBPU0UuICBTZWUgdGhlCjs7IEdOVSBHZW5lcmFsIFB1
+YmxpYyBMaWNlbnNlIGZvciBtb3JlIGRldGFpbHMuCjs7Cjs7IFlvdSBzaG91bGQgaGF2ZSByZWNl
+aXZlZCBhIGNvcHkgb2YgdGhlIEdOVSBHZW5lcmFsIFB1YmxpYyBMaWNlbnNlCjs7IGFsb25nIHdp
+dGggdGhpcyBwcm9ncmFtOyBzZWUgdGhlIGZpbGUgQ09QWUlORy4gIElmIG5vdCwgd3JpdGUgdG8K
+OzsgdGhlIEZyZWUgU29mdHdhcmUgRm91bmRhdGlvbiwgSW5jLiwgNTEgRnJhbmtsaW4gU3RyZWV0
+LCBGaWZ0aAo7OyBGbG9vciwgQm9zdG9uLCBNQSAwMjExMC0xMzAxLCBVU0EuCjs7Cjs7Ozs7Ozs7
+Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7
+Ozs7OzsKOzsKOzs7IENvZGU6CgooZGVmdmFyIGFzc29jaWF0ZWQtcHJvZ3JhbS1hbGlzdCBuaWwK
+ICAiQXNzb2NpYXRlZCBwcm9ncmFtL2Z1bmN0aW9uIGxpc3QgZGVwZW5kaW5nIG9uIGZpbGUgbmFt
+ZSByZWdleHAuIikKCihkZWZ1biBydW4tYXNzb2NpYXRlZC1wcm9ncmFtIChmaWxlLW5hbWUtYXJn
+KQogICJSdW4gcHJvZ3JhbSBvciBmdW5jdGlvbiBhc3NvY2lhdGVkIHdpdGggZmlsZS1uYW1lLWFy
+Zy4KICAgICAgSWYgbm8gYXBwbGljYXRpb24gaXMgYXNzb2NpYXRlZCB3aXRoIGZpbGUsIHRoZW4g
+YGZpbmQtZmlsZScuIgogIChpbnRlcmFjdGl2ZSAiZmZpbGU6IikKICAobGV0ICgoaXRlbXMgYXNz
+b2NpYXRlZC1wcm9ncmFtLWFsaXN0KSAKCWl0ZW0KCXByb2dyYW0KCXJlZ2V4cAoJZmlsZS1uYW1l
+CglyZXN1bHQpCiAgICAoc2V0cSBmaWxlLW5hbWUgKGV4cGFuZC1maWxlLW5hbWUgZmlsZS1uYW1l
+LWFyZykpCiAgICAod2hpbGUgKGFuZCAobm90IHJlc3VsdCkgaXRlbXMpCiAgICAgIChzZXRxIGl0
+ZW0gKGNhciBpdGVtcykpCiAgICAgIChzZXRxIHByb2dyYW0gKG50aCAwIGl0ZW0pKQogICAgICAo
+c2V0cSByZWdleHAgKG50aCAxIGl0ZW0pKQogICAgICAoaWYgKHN0cmluZy1tYXRjaCByZWdleHAg
+ZmlsZS1uYW1lKQoJICAoY29uZCAoKHN0cmluZ3AgcHJvZ3JhbSkKCQkgKHNldHEgcmVzdWx0IChz
+dGFydC1wcm9jZXNzIHByb2dyYW0gbmlsIHByb2dyYW0gZmlsZS1uYW1lKSkpCgkJKChmdW5jdGlv
+bnAgcHJvZ3JhbSkKCQkgKGZ1bmNhbGwgcHJvZ3JhbSBmaWxlLW5hbWUpCgkJIDs7IFRoaXMgaW1w
+bGVtZW50YXRpb24gYXNzdW1lcyBldmVyeXRoaW5nIHdlbnQgd2VsbCwKCQkgOzsgb3IgdGhhdCB0
+aGUgY2FsbGVkIGZ1bmN0aW9uIGhhbmRsZWQgYW4gZXJyb3IgYnkKCQkgOzsgaXRzZWxmOgoJCSAo
+c2V0cSByZXN1bHQgdCkpKSkKICAgICAgKHNldHEgaXRlbXMgKGNkciBpdGVtcykpKQogICAgOzsg
+ZmFpbCB0byBydW4KICAgICh1bmxlc3MgcmVzdWx0IChmaW5kLWZpbGUgZmlsZSkpKSkKCihkZWZ1
+biBkaXJlZC1ydW4tYXNzb2NpYXRlZC1wcm9ncmFtICgpCiAgIlJ1biBwcm9ncmFtIG9yIGZ1bmN0
+aW9uIGFzc29jaWF0ZWQgd2l0aCBjdXJyZW50IGxpbmUncyBmaWxlLgogICAgICBJZiBmaWxlIGlz
+IGEgZGlyZWN0b3J5LCB0aGVuIGBkaXJlZC1maW5kLWZpbGUnIGluc3RlYWQuICBJZiBubwogICAg
+ICBhcHBsaWNhdGlvbiBpcyBhc3NvY2lhdGVkIHdpdGggZmlsZSwgdGhlbiBgZmluZC1maWxlJy4i
+CiAgKGludGVyYWN0aXZlKQogIChydW4tYXNzb2NpYXRlZC1wcm9ncmFtIChkaXJlZC1nZXQtZmls
+ZW5hbWUpKSkKCihldmFsLWFmdGVyLWxvYWQgImRpcmVkIgogICcocHJvZ24KICAgICAoZGVmaW5l
+LWtleSBkaXJlZC1tb2RlLW1hcCBbQy1yZXR1cm5dICdkaXJlZC1ydW4tYXNzb2NpYXRlZC1wcm9n
+cmFtKQogICAgIChkZWZpbmUta2V5IGRpcmVkLW1vZGUtbWFwIFttZW51LWJhciBpbW1lZGlhdGUg
+ZGlyZWQtcnVuLWFzc29jaWF0ZWQtcHJvZ3JhbV0KICAgICAgICcoIk9wZW4gQXNzb2NpYXRlZCBB
+cHBsaWNhdGlvbiIgLiBkaXJlZC1ydW4tYXNzb2NpYXRlZC1wcm9ncmFtKSkpKQoKKHByb3ZpZGUg
+J3J1bi1hc3NvYykK

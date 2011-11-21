@@ -1,114 +1,128 @@
-(eval-when-compile
-  (require 'color-theme))
-
-(defun color-theme-ubuntu2 ()
-   "Color theme by Geoff Teale, created 2010-03-31.  Derived from Deep Blue by Tomas Cerha."
-   (interactive)
-   (color-theme-install
-    '(color-theme-deep-blue
-      ((background-color . "#2E0520")
-       (background-mode . dark)
-       (border-color . "black")
-       (cursor-color . "green")
-       (foreground-color . "#eeeeec")
-       (mouse-color . "white"))
-      ((browse-kill-ring-separator-face . bold)
-       (display-time-mail-face . mode-line)
-       (help-highlight-face . underline)
-       (list-matching-lines-face . secondary-selection)
-       (vc-annotate-very-old-color . "#0046FF")
-       (view-highlight-face . highlight)
-       (widget-mouse-face . highlight))
-      (default ((t (:stipple nil :background "#2E0520" :foreground "#eeeeec" :inverse-video nil :box nil :strike-through nil :overline nil :underline nil :slant normal :weight normal :width normal :family "misc-fixed"))))
-      (Info-title-1-face ((t (:bold t :weight bold :family "helv" :height 1.728))))
-      (Info-title-2-face ((t (:bold t :family "helv" :weight bold :height 1.44))))
-      (Info-title-3-face ((t (:bold t :weight bold :family "helv" :height 1.2))))
-      (Info-title-4-face ((t (:bold t :family "helv" :weight bold))))
-      (bold ((t (:bold t :weight bold))))
-      (bold-italic ((t (:italic t :bold t :slant italic :weight bold))))
-      (border ((t (:background "black"))))
-      (calendar-today-face ((t (:background "blue"))))
-      (change-log-acknowledgement-face ((t (:italic t :slant italic :foreground "CadetBlue"))))
-      (change-log-conditionals-face ((t (:foreground "SeaGreen2"))))
-      (change-log-date-face ((t (:foreground "burlywood"))))
-      (change-log-email-face ((t (:foreground "SeaGreen2"))))
-      (change-log-file-face ((t (:bold t :weight bold :foreground "goldenrod"))))
-      (change-log-function-face ((t (:foreground "SeaGreen2"))))
-      (change-log-list-face ((t (:bold t :weight bold :foreground "DeepSkyBlue1"))))
-      (change-log-name-face ((t (:foreground "gold"))))
-      (comint-highlight-input ((t (:bold t :weight bold))))
-      (comint-highlight-prompt ((t (:foreground "cyan"))))
-      (cursor ((t (:background "green" :foreground "black"))))
-      (cvs-filename-face ((t (:foreground "lightblue"))))
-      (cvs-handled-face ((t (:foreground "pink"))))
-      (cvs-header-face ((t (:bold t :foreground "lightyellow" :weight bold))))
-      (cvs-marked-face ((t (:bold t :foreground "green" :weight bold))))
-      (cvs-msg-face ((t (:italic t :slant italic))))
-      (cvs-need-action-face ((t (:foreground "orange"))))
-      (cvs-unknown-face ((t (:foreground "red"))))
-      (diary-face ((t (:foreground "orange red"))))
-      (diff-added-face ((t (nil))))
-      (diff-changed-face ((t (nil))))
-      (diff-context-face ((t (:foreground "grey70"))))
-      (diff-file-header-face ((t (:bold t :background "grey60" :weight bold))))
-      (diff-function-face ((t (:foreground "grey70"))))
-      (diff-header-face ((t (:background "grey45"))))
-      (diff-hunk-header-face ((t (:background "grey45"))))
-      (diff-index-face ((t (:bold t :weight bold :background "grey60"))))
-      (diff-nonexistent-face ((t (:bold t :weight bold :background "grey60"))))
-      (diff-removed-face ((t (nil))))
-      (fixed-pitch ((t (:family "fixed"))))
-      (font-latex-bold-face ((t (:bold t :foreground "OliveDrab" :weight bold))))
-      (font-latex-italic-face ((t (:italic t :foreground "OliveDrab" :slant italic))))
-      (font-latex-math-face ((t (:foreground "burlywood"))))
-      (font-latex-sedate-face ((t (:foreground "LightGray"))))
-      (font-latex-string-face ((t (:foreground "LightSalmon"))))
-      (font-latex-warning-face ((t (:bold t :foreground "Pink" :weight bold))))
-      (font-lock-builtin-face ((t (:foreground "LightCoral"))))
-      (font-lock-comment-face ((t (:italic t :foreground "CadetBlue" :slant italic))))
-      (font-lock-constant-face ((t (:foreground "gold"))))
-      (font-lock-doc-face ((t (:foreground "BlanchedAlmond"))))
-      (font-lock-doc-string-face ((t (:foreground "BlanchedAlmond"))))
-      (font-lock-function-name-face ((t (:bold t :foreground "goldenrod" :weight bold))))
-      (font-lock-keyword-face ((t (:bold t :foreground "DeepSkyBlue1" :weight bold))))
-      (font-lock-preprocessor-face ((t (:foreground "gold"))))
-      (font-lock-reference-face ((t (:foreground "LightCoral"))))
-      (font-lock-string-face ((t (:foreground "burlywood"))))
-      (font-lock-type-face ((t (:foreground "CadetBlue1"))))
-      (font-lock-variable-name-face ((t (:foreground "SeaGreen2"))))
-      (font-lock-warning-face ((t (:foreground "yellow"))))
-      (fringe ((t (:background "#405060"))))
-      (header-line ((t (:box (:line-width 2 :style released-button) :background "grey20" :foreground "grey90" :box nil))))
-      (highlight ((t (:background "darkgreen"))))
-      (holiday-face ((t (:foreground "green"))))
-      (info-header-node ((t (:foreground "DeepSkyBlue1"))))
-      (info-header-xref ((t (:bold t :weight bold :foreground "SeaGreen2"))))
-      (info-menu-5 ((t (:foreground "wheat"))))
-      (info-menu-header ((t (:bold t :family "helv" :weight bold))))
-      (info-node ((t (:foreground "DeepSkyBlue1"))))
-      (info-xref ((t (:bold t :foreground "SeaGreen2" :weight bold))))
-      (isearch ((t (:background "palevioletred2" :foreground "brown4"))))
-      (isearch-lazy-highlight-face ((t (:background "paleturquoise4"))))
-      (italic ((t (:italic t :slant italic))))
-      (menu ((t (:background "gray" :foreground "black" :family "helvetica"))))
-      (modeline ((t (:background "gray" :foreground "black" :box (:line-width 2 :style released-button)))))
-      (modeline-buffer-id ((t (:background "gray" :foreground "black" :box (:line-width 2 :style released-button)))))
-      (modeline-mousable ((t (:background "gray" :foreground "black" :box (:line-width 2 :style released-button)))))
-      (modeline-mousable-minor-mode ((t (:background "gray" :foreground "black" :box (:line-width 2 :style released-button)))))
-      (mouse ((t (:background "white"))))
-      (region ((t (:background "DarkCyan"))))
-      (scroll-bar ((t (:background "gray" :foreground "#506070"))))
-      (secondary-selection ((t (:background "yellow" :foreground "gray10"))))
-      (show-paren-match-face ((t (:bold t :foreground "yellow" :weight bold))))
-      (show-paren-mismatch-face ((t (:bold t :foreground "red" :weight bold))))
-      (tool-bar ((t (:background "grey75" :foreground "black" :box (:line-width 1 :style released-button)))))
-      (tooltip ((t (:background "lightyellow" :foreground "black"))))
-      (trailing-whitespace ((t (:background "#2E0520"))))
-      (underline ((t (:underline t))))
-      (variable-pitch ((t (:family "helv"))))
-      (widget-button-face ((t (:bold t :weight bold))))
-      (widget-button-pressed-face ((t (:foreground "red"))))
-      (widget-documentation-face ((t (:foreground "lime green"))))
-      (widget-field-face ((t (:background "dim gray"))))
-      (widget-inactive-face ((t (:foreground "light gray"))))
-      (widget-single-line-field-face ((t (:background "dim gray")))))))
+#FILE text/x-emacs-lisp
+KGV2YWwtd2hlbi1jb21waWxlCiAgKHJlcXVpcmUgJ2NvbG9yLXRoZW1lKSkKCihkZWZ1biBjb2xv
+ci10aGVtZS11YnVudHUyICgpCiAgICJDb2xvciB0aGVtZSBieSBHZW9mZiBUZWFsZSwgY3JlYXRl
+ZCAyMDEwLTAzLTMxLiAgRGVyaXZlZCBmcm9tIERlZXAgQmx1ZSBieSBUb21hcyBDZXJoYS4iCiAg
+IChpbnRlcmFjdGl2ZSkKICAgKGNvbG9yLXRoZW1lLWluc3RhbGwKICAgICcoY29sb3ItdGhlbWUt
+ZGVlcC1ibHVlCiAgICAgICgoYmFja2dyb3VuZC1jb2xvciAuICIjMkUwNTIwIikKICAgICAgIChi
+YWNrZ3JvdW5kLW1vZGUgLiBkYXJrKQogICAgICAgKGJvcmRlci1jb2xvciAuICJibGFjayIpCiAg
+ICAgICAoY3Vyc29yLWNvbG9yIC4gImdyZWVuIikKICAgICAgIChmb3JlZ3JvdW5kLWNvbG9yIC4g
+IiNlZWVlZWMiKQogICAgICAgKG1vdXNlLWNvbG9yIC4gIndoaXRlIikpCiAgICAgICgoYnJvd3Nl
+LWtpbGwtcmluZy1zZXBhcmF0b3ItZmFjZSAuIGJvbGQpCiAgICAgICAoZGlzcGxheS10aW1lLW1h
+aWwtZmFjZSAuIG1vZGUtbGluZSkKICAgICAgIChoZWxwLWhpZ2hsaWdodC1mYWNlIC4gdW5kZXJs
+aW5lKQogICAgICAgKGxpc3QtbWF0Y2hpbmctbGluZXMtZmFjZSAuIHNlY29uZGFyeS1zZWxlY3Rp
+b24pCiAgICAgICAodmMtYW5ub3RhdGUtdmVyeS1vbGQtY29sb3IgLiAiIzAwNDZGRiIpCiAgICAg
+ICAodmlldy1oaWdobGlnaHQtZmFjZSAuIGhpZ2hsaWdodCkKICAgICAgICh3aWRnZXQtbW91c2Ut
+ZmFjZSAuIGhpZ2hsaWdodCkpCiAgICAgIChkZWZhdWx0ICgodCAoOnN0aXBwbGUgbmlsIDpiYWNr
+Z3JvdW5kICIjMkUwNTIwIiA6Zm9yZWdyb3VuZCAiI2VlZWVlYyIgOmludmVyc2UtdmlkZW8gbmls
+IDpib3ggbmlsIDpzdHJpa2UtdGhyb3VnaCBuaWwgOm92ZXJsaW5lIG5pbCA6dW5kZXJsaW5lIG5p
+bCA6c2xhbnQgbm9ybWFsIDp3ZWlnaHQgbm9ybWFsIDp3aWR0aCBub3JtYWwgOmZhbWlseSAibWlz
+Yy1maXhlZCIpKSkpCiAgICAgIChJbmZvLXRpdGxlLTEtZmFjZSAoKHQgKDpib2xkIHQgOndlaWdo
+dCBib2xkIDpmYW1pbHkgImhlbHYiIDpoZWlnaHQgMS43MjgpKSkpCiAgICAgIChJbmZvLXRpdGxl
+LTItZmFjZSAoKHQgKDpib2xkIHQgOmZhbWlseSAiaGVsdiIgOndlaWdodCBib2xkIDpoZWlnaHQg
+MS40NCkpKSkKICAgICAgKEluZm8tdGl0bGUtMy1mYWNlICgodCAoOmJvbGQgdCA6d2VpZ2h0IGJv
+bGQgOmZhbWlseSAiaGVsdiIgOmhlaWdodCAxLjIpKSkpCiAgICAgIChJbmZvLXRpdGxlLTQtZmFj
+ZSAoKHQgKDpib2xkIHQgOmZhbWlseSAiaGVsdiIgOndlaWdodCBib2xkKSkpKQogICAgICAoYm9s
+ZCAoKHQgKDpib2xkIHQgOndlaWdodCBib2xkKSkpKQogICAgICAoYm9sZC1pdGFsaWMgKCh0ICg6
+aXRhbGljIHQgOmJvbGQgdCA6c2xhbnQgaXRhbGljIDp3ZWlnaHQgYm9sZCkpKSkKICAgICAgKGJv
+cmRlciAoKHQgKDpiYWNrZ3JvdW5kICJibGFjayIpKSkpCiAgICAgIChjYWxlbmRhci10b2RheS1m
+YWNlICgodCAoOmJhY2tncm91bmQgImJsdWUiKSkpKQogICAgICAoY2hhbmdlLWxvZy1hY2tub3ds
+ZWRnZW1lbnQtZmFjZSAoKHQgKDppdGFsaWMgdCA6c2xhbnQgaXRhbGljIDpmb3JlZ3JvdW5kICJD
+YWRldEJsdWUiKSkpKQogICAgICAoY2hhbmdlLWxvZy1jb25kaXRpb25hbHMtZmFjZSAoKHQgKDpm
+b3JlZ3JvdW5kICJTZWFHcmVlbjIiKSkpKQogICAgICAoY2hhbmdlLWxvZy1kYXRlLWZhY2UgKCh0
+ICg6Zm9yZWdyb3VuZCAiYnVybHl3b29kIikpKSkKICAgICAgKGNoYW5nZS1sb2ctZW1haWwtZmFj
+ZSAoKHQgKDpmb3JlZ3JvdW5kICJTZWFHcmVlbjIiKSkpKQogICAgICAoY2hhbmdlLWxvZy1maWxl
+LWZhY2UgKCh0ICg6Ym9sZCB0IDp3ZWlnaHQgYm9sZCA6Zm9yZWdyb3VuZCAiZ29sZGVucm9kIikp
+KSkKICAgICAgKGNoYW5nZS1sb2ctZnVuY3Rpb24tZmFjZSAoKHQgKDpmb3JlZ3JvdW5kICJTZWFH
+cmVlbjIiKSkpKQogICAgICAoY2hhbmdlLWxvZy1saXN0LWZhY2UgKCh0ICg6Ym9sZCB0IDp3ZWln
+aHQgYm9sZCA6Zm9yZWdyb3VuZCAiRGVlcFNreUJsdWUxIikpKSkKICAgICAgKGNoYW5nZS1sb2ct
+bmFtZS1mYWNlICgodCAoOmZvcmVncm91bmQgImdvbGQiKSkpKQogICAgICAoY29taW50LWhpZ2hs
+aWdodC1pbnB1dCAoKHQgKDpib2xkIHQgOndlaWdodCBib2xkKSkpKQogICAgICAoY29taW50LWhp
+Z2hsaWdodC1wcm9tcHQgKCh0ICg6Zm9yZWdyb3VuZCAiY3lhbiIpKSkpCiAgICAgIChjdXJzb3Ig
+KCh0ICg6YmFja2dyb3VuZCAiZ3JlZW4iIDpmb3JlZ3JvdW5kICJibGFjayIpKSkpCiAgICAgIChj
+dnMtZmlsZW5hbWUtZmFjZSAoKHQgKDpmb3JlZ3JvdW5kICJsaWdodGJsdWUiKSkpKQogICAgICAo
+Y3ZzLWhhbmRsZWQtZmFjZSAoKHQgKDpmb3JlZ3JvdW5kICJwaW5rIikpKSkKICAgICAgKGN2cy1o
+ZWFkZXItZmFjZSAoKHQgKDpib2xkIHQgOmZvcmVncm91bmQgImxpZ2h0eWVsbG93IiA6d2VpZ2h0
+IGJvbGQpKSkpCiAgICAgIChjdnMtbWFya2VkLWZhY2UgKCh0ICg6Ym9sZCB0IDpmb3JlZ3JvdW5k
+ICJncmVlbiIgOndlaWdodCBib2xkKSkpKQogICAgICAoY3ZzLW1zZy1mYWNlICgodCAoOml0YWxp
+YyB0IDpzbGFudCBpdGFsaWMpKSkpCiAgICAgIChjdnMtbmVlZC1hY3Rpb24tZmFjZSAoKHQgKDpm
+b3JlZ3JvdW5kICJvcmFuZ2UiKSkpKQogICAgICAoY3ZzLXVua25vd24tZmFjZSAoKHQgKDpmb3Jl
+Z3JvdW5kICJyZWQiKSkpKQogICAgICAoZGlhcnktZmFjZSAoKHQgKDpmb3JlZ3JvdW5kICJvcmFu
+Z2UgcmVkIikpKSkKICAgICAgKGRpZmYtYWRkZWQtZmFjZSAoKHQgKG5pbCkpKSkKICAgICAgKGRp
+ZmYtY2hhbmdlZC1mYWNlICgodCAobmlsKSkpKQogICAgICAoZGlmZi1jb250ZXh0LWZhY2UgKCh0
+ICg6Zm9yZWdyb3VuZCAiZ3JleTcwIikpKSkKICAgICAgKGRpZmYtZmlsZS1oZWFkZXItZmFjZSAo
+KHQgKDpib2xkIHQgOmJhY2tncm91bmQgImdyZXk2MCIgOndlaWdodCBib2xkKSkpKQogICAgICAo
+ZGlmZi1mdW5jdGlvbi1mYWNlICgodCAoOmZvcmVncm91bmQgImdyZXk3MCIpKSkpCiAgICAgIChk
+aWZmLWhlYWRlci1mYWNlICgodCAoOmJhY2tncm91bmQgImdyZXk0NSIpKSkpCiAgICAgIChkaWZm
+LWh1bmstaGVhZGVyLWZhY2UgKCh0ICg6YmFja2dyb3VuZCAiZ3JleTQ1IikpKSkKICAgICAgKGRp
+ZmYtaW5kZXgtZmFjZSAoKHQgKDpib2xkIHQgOndlaWdodCBib2xkIDpiYWNrZ3JvdW5kICJncmV5
+NjAiKSkpKQogICAgICAoZGlmZi1ub25leGlzdGVudC1mYWNlICgodCAoOmJvbGQgdCA6d2VpZ2h0
+IGJvbGQgOmJhY2tncm91bmQgImdyZXk2MCIpKSkpCiAgICAgIChkaWZmLXJlbW92ZWQtZmFjZSAo
+KHQgKG5pbCkpKSkKICAgICAgKGZpeGVkLXBpdGNoICgodCAoOmZhbWlseSAiZml4ZWQiKSkpKQog
+ICAgICAoZm9udC1sYXRleC1ib2xkLWZhY2UgKCh0ICg6Ym9sZCB0IDpmb3JlZ3JvdW5kICJPbGl2
+ZURyYWIiIDp3ZWlnaHQgYm9sZCkpKSkKICAgICAgKGZvbnQtbGF0ZXgtaXRhbGljLWZhY2UgKCh0
+ICg6aXRhbGljIHQgOmZvcmVncm91bmQgIk9saXZlRHJhYiIgOnNsYW50IGl0YWxpYykpKSkKICAg
+ICAgKGZvbnQtbGF0ZXgtbWF0aC1mYWNlICgodCAoOmZvcmVncm91bmQgImJ1cmx5d29vZCIpKSkp
+CiAgICAgIChmb250LWxhdGV4LXNlZGF0ZS1mYWNlICgodCAoOmZvcmVncm91bmQgIkxpZ2h0R3Jh
+eSIpKSkpCiAgICAgIChmb250LWxhdGV4LXN0cmluZy1mYWNlICgodCAoOmZvcmVncm91bmQgIkxp
+Z2h0U2FsbW9uIikpKSkKICAgICAgKGZvbnQtbGF0ZXgtd2FybmluZy1mYWNlICgodCAoOmJvbGQg
+dCA6Zm9yZWdyb3VuZCAiUGluayIgOndlaWdodCBib2xkKSkpKQogICAgICAoZm9udC1sb2NrLWJ1
+aWx0aW4tZmFjZSAoKHQgKDpmb3JlZ3JvdW5kICJMaWdodENvcmFsIikpKSkKICAgICAgKGZvbnQt
+bG9jay1jb21tZW50LWZhY2UgKCh0ICg6aXRhbGljIHQgOmZvcmVncm91bmQgIkNhZGV0Qmx1ZSIg
+OnNsYW50IGl0YWxpYykpKSkKICAgICAgKGZvbnQtbG9jay1jb25zdGFudC1mYWNlICgodCAoOmZv
+cmVncm91bmQgImdvbGQiKSkpKQogICAgICAoZm9udC1sb2NrLWRvYy1mYWNlICgodCAoOmZvcmVn
+cm91bmQgIkJsYW5jaGVkQWxtb25kIikpKSkKICAgICAgKGZvbnQtbG9jay1kb2Mtc3RyaW5nLWZh
+Y2UgKCh0ICg6Zm9yZWdyb3VuZCAiQmxhbmNoZWRBbG1vbmQiKSkpKQogICAgICAoZm9udC1sb2Nr
+LWZ1bmN0aW9uLW5hbWUtZmFjZSAoKHQgKDpib2xkIHQgOmZvcmVncm91bmQgImdvbGRlbnJvZCIg
+OndlaWdodCBib2xkKSkpKQogICAgICAoZm9udC1sb2NrLWtleXdvcmQtZmFjZSAoKHQgKDpib2xk
+IHQgOmZvcmVncm91bmQgIkRlZXBTa3lCbHVlMSIgOndlaWdodCBib2xkKSkpKQogICAgICAoZm9u
+dC1sb2NrLXByZXByb2Nlc3Nvci1mYWNlICgodCAoOmZvcmVncm91bmQgImdvbGQiKSkpKQogICAg
+ICAoZm9udC1sb2NrLXJlZmVyZW5jZS1mYWNlICgodCAoOmZvcmVncm91bmQgIkxpZ2h0Q29yYWwi
+KSkpKQogICAgICAoZm9udC1sb2NrLXN0cmluZy1mYWNlICgodCAoOmZvcmVncm91bmQgImJ1cmx5
+d29vZCIpKSkpCiAgICAgIChmb250LWxvY2stdHlwZS1mYWNlICgodCAoOmZvcmVncm91bmQgIkNh
+ZGV0Qmx1ZTEiKSkpKQogICAgICAoZm9udC1sb2NrLXZhcmlhYmxlLW5hbWUtZmFjZSAoKHQgKDpm
+b3JlZ3JvdW5kICJTZWFHcmVlbjIiKSkpKQogICAgICAoZm9udC1sb2NrLXdhcm5pbmctZmFjZSAo
+KHQgKDpmb3JlZ3JvdW5kICJ5ZWxsb3ciKSkpKQogICAgICAoZnJpbmdlICgodCAoOmJhY2tncm91
+bmQgIiM0MDUwNjAiKSkpKQogICAgICAoaGVhZGVyLWxpbmUgKCh0ICg6Ym94ICg6bGluZS13aWR0
+aCAyIDpzdHlsZSByZWxlYXNlZC1idXR0b24pIDpiYWNrZ3JvdW5kICJncmV5MjAiIDpmb3JlZ3Jv
+dW5kICJncmV5OTAiIDpib3ggbmlsKSkpKQogICAgICAoaGlnaGxpZ2h0ICgodCAoOmJhY2tncm91
+bmQgImRhcmtncmVlbiIpKSkpCiAgICAgIChob2xpZGF5LWZhY2UgKCh0ICg6Zm9yZWdyb3VuZCAi
+Z3JlZW4iKSkpKQogICAgICAoaW5mby1oZWFkZXItbm9kZSAoKHQgKDpmb3JlZ3JvdW5kICJEZWVw
+U2t5Qmx1ZTEiKSkpKQogICAgICAoaW5mby1oZWFkZXIteHJlZiAoKHQgKDpib2xkIHQgOndlaWdo
+dCBib2xkIDpmb3JlZ3JvdW5kICJTZWFHcmVlbjIiKSkpKQogICAgICAoaW5mby1tZW51LTUgKCh0
+ICg6Zm9yZWdyb3VuZCAid2hlYXQiKSkpKQogICAgICAoaW5mby1tZW51LWhlYWRlciAoKHQgKDpi
+b2xkIHQgOmZhbWlseSAiaGVsdiIgOndlaWdodCBib2xkKSkpKQogICAgICAoaW5mby1ub2RlICgo
+dCAoOmZvcmVncm91bmQgIkRlZXBTa3lCbHVlMSIpKSkpCiAgICAgIChpbmZvLXhyZWYgKCh0ICg6
+Ym9sZCB0IDpmb3JlZ3JvdW5kICJTZWFHcmVlbjIiIDp3ZWlnaHQgYm9sZCkpKSkKICAgICAgKGlz
+ZWFyY2ggKCh0ICg6YmFja2dyb3VuZCAicGFsZXZpb2xldHJlZDIiIDpmb3JlZ3JvdW5kICJicm93
+bjQiKSkpKQogICAgICAoaXNlYXJjaC1sYXp5LWhpZ2hsaWdodC1mYWNlICgodCAoOmJhY2tncm91
+bmQgInBhbGV0dXJxdW9pc2U0IikpKSkKICAgICAgKGl0YWxpYyAoKHQgKDppdGFsaWMgdCA6c2xh
+bnQgaXRhbGljKSkpKQogICAgICAobWVudSAoKHQgKDpiYWNrZ3JvdW5kICJncmF5IiA6Zm9yZWdy
+b3VuZCAiYmxhY2siIDpmYW1pbHkgImhlbHZldGljYSIpKSkpCiAgICAgIChtb2RlbGluZSAoKHQg
+KDpiYWNrZ3JvdW5kICJncmF5IiA6Zm9yZWdyb3VuZCAiYmxhY2siIDpib3ggKDpsaW5lLXdpZHRo
+IDIgOnN0eWxlIHJlbGVhc2VkLWJ1dHRvbikpKSkpCiAgICAgIChtb2RlbGluZS1idWZmZXItaWQg
+KCh0ICg6YmFja2dyb3VuZCAiZ3JheSIgOmZvcmVncm91bmQgImJsYWNrIiA6Ym94ICg6bGluZS13
+aWR0aCAyIDpzdHlsZSByZWxlYXNlZC1idXR0b24pKSkpKQogICAgICAobW9kZWxpbmUtbW91c2Fi
+bGUgKCh0ICg6YmFja2dyb3VuZCAiZ3JheSIgOmZvcmVncm91bmQgImJsYWNrIiA6Ym94ICg6bGlu
+ZS13aWR0aCAyIDpzdHlsZSByZWxlYXNlZC1idXR0b24pKSkpKQogICAgICAobW9kZWxpbmUtbW91
+c2FibGUtbWlub3ItbW9kZSAoKHQgKDpiYWNrZ3JvdW5kICJncmF5IiA6Zm9yZWdyb3VuZCAiYmxh
+Y2siIDpib3ggKDpsaW5lLXdpZHRoIDIgOnN0eWxlIHJlbGVhc2VkLWJ1dHRvbikpKSkpCiAgICAg
+IChtb3VzZSAoKHQgKDpiYWNrZ3JvdW5kICJ3aGl0ZSIpKSkpCiAgICAgIChyZWdpb24gKCh0ICg6
+YmFja2dyb3VuZCAiRGFya0N5YW4iKSkpKQogICAgICAoc2Nyb2xsLWJhciAoKHQgKDpiYWNrZ3Jv
+dW5kICJncmF5IiA6Zm9yZWdyb3VuZCAiIzUwNjA3MCIpKSkpCiAgICAgIChzZWNvbmRhcnktc2Vs
+ZWN0aW9uICgodCAoOmJhY2tncm91bmQgInllbGxvdyIgOmZvcmVncm91bmQgImdyYXkxMCIpKSkp
+CiAgICAgIChzaG93LXBhcmVuLW1hdGNoLWZhY2UgKCh0ICg6Ym9sZCB0IDpmb3JlZ3JvdW5kICJ5
+ZWxsb3ciIDp3ZWlnaHQgYm9sZCkpKSkKICAgICAgKHNob3ctcGFyZW4tbWlzbWF0Y2gtZmFjZSAo
+KHQgKDpib2xkIHQgOmZvcmVncm91bmQgInJlZCIgOndlaWdodCBib2xkKSkpKQogICAgICAodG9v
+bC1iYXIgKCh0ICg6YmFja2dyb3VuZCAiZ3JleTc1IiA6Zm9yZWdyb3VuZCAiYmxhY2siIDpib3gg
+KDpsaW5lLXdpZHRoIDEgOnN0eWxlIHJlbGVhc2VkLWJ1dHRvbikpKSkpCiAgICAgICh0b29sdGlw
+ICgodCAoOmJhY2tncm91bmQgImxpZ2h0eWVsbG93IiA6Zm9yZWdyb3VuZCAiYmxhY2siKSkpKQog
+ICAgICAodHJhaWxpbmctd2hpdGVzcGFjZSAoKHQgKDpiYWNrZ3JvdW5kICIjMkUwNTIwIikpKSkK
+ICAgICAgKHVuZGVybGluZSAoKHQgKDp1bmRlcmxpbmUgdCkpKSkKICAgICAgKHZhcmlhYmxlLXBp
+dGNoICgodCAoOmZhbWlseSAiaGVsdiIpKSkpCiAgICAgICh3aWRnZXQtYnV0dG9uLWZhY2UgKCh0
+ICg6Ym9sZCB0IDp3ZWlnaHQgYm9sZCkpKSkKICAgICAgKHdpZGdldC1idXR0b24tcHJlc3NlZC1m
+YWNlICgodCAoOmZvcmVncm91bmQgInJlZCIpKSkpCiAgICAgICh3aWRnZXQtZG9jdW1lbnRhdGlv
+bi1mYWNlICgodCAoOmZvcmVncm91bmQgImxpbWUgZ3JlZW4iKSkpKQogICAgICAod2lkZ2V0LWZp
+ZWxkLWZhY2UgKCh0ICg6YmFja2dyb3VuZCAiZGltIGdyYXkiKSkpKQogICAgICAod2lkZ2V0LWlu
+YWN0aXZlLWZhY2UgKCh0ICg6Zm9yZWdyb3VuZCAibGlnaHQgZ3JheSIpKSkpCiAgICAgICh3aWRn
+ZXQtc2luZ2xlLWxpbmUtZmllbGQtZmFjZSAoKHQgKDpiYWNrZ3JvdW5kICJkaW0gZ3JheSIpKSkp
+KSkpCg==

@@ -1,287 +1,206 @@
-;;; poor-mans-bidi.el --- BiDirectional editing mode  -*-coding: utf-8;-*-
-
-;; Copyright (C) 2008 Niels Giesen
-;; <nielsDODOgiesen@gmailDINOSAURcom, with the extinct animals
-;; replaced by dots.> 
-
-;; Author: Niels Giesen nielsDODOgiesen@gmailDINOSAURcom, with
-;; the extinct animals replaced by dots. 
-;; Keywords: languages, wp
-;; Version: 0.2
-
-;; This program is free software; you can redistribute it and/or
-;; modify it under the terms of the GNU General Public License
-;; as published by the Free Software Foundation; either version 2
-;; of the License, or (at your option) any later version.
-
-;; This program is distributed in the hope that it will be useful,
-;; but WITHOUT ANY WARRANTY; without even the implied warranty of
-;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-;; GNU General Public License for more details.
-
-;; You should have received a copy of the GNU General Public License
-;; along with this program; if not, write to the Free Software
-;; Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
-;; 02110-1301, USA.
-
-;;; Commentary:
-
-;; This library provides a 'BiDified' mirror of the current
-;; buffer, using an external program such as 'fribidi' (although
-;; for paragraph mode, you might want to switch that to
-;; bidiv). Use 
-;; (autoload 'poor-mans-bidi-mode "poor-mans-bidi" "" t)
-;; to have this code autoloaded.
-;; See the documentation for `poor-mans-bidi-mode' for more
-;; information.  
-
-;;; Code:
-(defgroup poor-mans-bidi nil
-  "Customization group for `poor-mans-bidi-mode'."
-  :group 'wp)
-
-(defcustom poor-mans-bidi-filter-command
-  (lambda () (format "fribidi --nobreak -w %s" fill-column))
-  "Function to return the command invoked by `poor-mans-bidi-decode-buffer'.
-
-It should handle the conversion from logical->visual ordering,
-  while preserving lines.  For this reason, `auto-fill-mode' is
-  turned  on as well.
-
-Pros fribidi:
-- handles characters better than bidiv;
-- --nobreak option is nice to keep line numbers the same across
-buffers.
-
-Pros bidiv:
-- can interpret on paragraph-level
-
-The cons are that either doesn't do/have what the other does/has."
-  :group 'poor-mans-bidi
-  :type '(function))
-
-(defcustom poor-mans-bidi-font-lock-keywords
-  '(("\\([ְֱֲֳִֵֶַָֹֻּֽֿﬞ׀ׁׂ][םמןנבץצחזלךכהגדסףפאיײױװותטרעשק]\\)"
-     (0 (progn (compose-region (match-beginning 1) (match-end 1))
-	       nil))))
-  "Font lock keyword rules for BiDi mirror buffers.
-
-The rules are meant for composing complex characters from base (Unicode) chars
-and punctuation marks (that are used in e.g. Yiddish texts) in the mirror
-buffer showing bidirectional output.  If you find other rules useful, please
-send a report, so that they can be included in this file."
-  :group 'poor-mans-bidi
-  :type '(alist))
-
-(defcustom poor-mans-bidi-minimal-context-length 3
-  "Minimal length of search context (or rather: pretext).
-
-This variable is used by `poor-mans-bidi-decode-buffer' when locating point in
- the mirror buffer. Setting this too short may find point at another, like,
- point, esp. with short palindromes such as the word \"a\" in English or (its
- translation!) \"א\" in Yiddish in BiDi texts (not in one-way texts) . Set it
- to 4 if this really bugs you.
-
-You might also want to change it to something larger to start looking in the
-opposite direction sooner, e.g. when you edit texts that are mainly RTL (or
-LTR), and not so much intertwined. The RTL-direction is searched first:
-assuming that if variable `poor-mans-bidi-mode' is non-nil, you are probably
-editing RTL text."
-  :group 'poor-mans-bidi
-  :type '(integer))
-
-(defcustom poor-mans-bidi-timer-interval .1
-  "Interval used by `poor-mans-bidi-timer'.
-
-Set this to a small value (such as 0.01), to have quick response in the mirror
-buffer.  Smaller than that is hardly noticeable.  Larger values than the default
-might be wise for slower computers.
-
-When changed, make sure to run \\[poor-mans-bidi-disable-altogether] and
-\\[poor-mans-bidi-mode] again, in order to reset the timer so it will see its
-new interval."
-  :group 'poor-mans-bidi
-  :type '(float))
-
-(defcustom poor-mans-bidi-inhibited-major-modes
-  '((w3m-mode))
-  "Rules for alternative modes for bidirectional mirror buffers.
-
-This variable overrides the default behaviour that mirror buffers made with
-the command `poor-mans-bidi-mode' have the same major mode as the major mode
-for the source buffer.
-
-This variable is an alist of the form ((MAJOR-MODE . ALTERNATIVE-MODE)), where
-ALTERNATIVE-MODE will be the major mode for buffers mirroring buffers where
-MAJOR-MODE is the major mode.
-
-As a shortcut, if MAJOR MODE is nil, `fundamental-mode' will become the
-major mode for the mirror buffer."
-  :group 'poor-mans-bidi
-  :type '(alist))
-
-(define-minor-mode poor-mans-bidi-mode 
-  "Minor mode for writing bidirectional text. 
-
-Show a 'BiDified' mirror of the current buffer, using external
-  programs such  as 'fribidi' (although for paragraph mode, you
-  might want to switch that to bidiv). Adjust the variable
-  `poor-mans-bidi-filter-command' to use another filter.
-
-In the mirroring buffer, a new point tries to be located merely
-  on context in source buffer, NOT on any knowledge of the
-  algorithm described at url 
-`http://www.unicode.org/unicode/reports/tr9/'.  
-
-Toggle the mirroring with the command \\[poor-mans-bidi-mode].
-  This sets an idle timer doing its work every tenth of a
-  second, so if you are not working on a BiDi text, you'd better
-  issue the  command \\[poor-mans-bidi-disable-altogether] 
-
-Could be very well adapted for lisp-only handling however. See
-  comments in the definition for the function
-  `poor-mans-bidi-decode-buffer' if you feel so inclined." 
-  nil
-  " BiDi"
-  '(("\C-cb" . poor-mans-bidi-mode))
-  (if poor-mans-bidi-mode
-      (poor-mans-bidi-enable)
-    (poor-mans-bidi-disable)))
-
-(defvar poor-mans-bidi-timer nil "Timer object.")
-(defvar poor-mans-bidi-tick nil "To compare with output from `buffer-modified-tick'.")
-(defvar poor-mans-bidi-point nil "To compare old point with current (point).")
-(defvar poor-mans-bidi-mirror-buffer nil "Buffer for BiDi display.")
-(defconst poor-mans-bidi-mirror-buffer-postfix "-BiDi")
-
-(defun poor-mans-bidi-enable ()
-  "Enable BiDi display in mirror buffer."
-  (set (make-local-variable 'poor-mans-bidi-tick)
-       (buffer-modified-tick))
-  (set (make-local-variable 'poor-mans-bidi-point)
-       (point))
-  (set (make-local-variable 'poor-mans-bidi-mirror-buffer)
-       (concat (buffer-name (current-buffer))
-	       poor-mans-bidi-mirror-buffer-postfix))
-  (if (timerp poor-mans-bidi-timer)
-      (timer-activate poor-mans-bidi-timer)
-    (setq poor-mans-bidi-timer
-	  (run-with-idle-timer poor-mans-bidi-timer-interval poor-mans-bidi-timer-interval
-			  (lambda ()
-			    (when
-				(and poor-mans-bidi-mode
-				(or (and (boundp 'poor-mans-bidi-tick)
- 				     (< poor-mans-bidi-tick
- 					(buffer-modified-tick)))
-				    (not (= poor-mans-bidi-point (point)))))
-			      (setq poor-mans-bidi-point (point))
-			      (setq poor-mans-bidi-tick (buffer-modified-tick))
-			      (poor-mans-bidi-decode-buffer))))))
-  (auto-fill-mode 1)
-  ;; Copy major mode over and add font-locking
-  (let ((mode major-mode))
-    (if (assoc mode poor-mans-bidi-inhibited-major-modes)
-        (setq mode
-              (or (cdr (assoc mode poor-mans-bidi-inhibited-major-modes))
-                  'fundamental-mode)))
-    (save-window-excursion
-      (switch-to-buffer-other-window poor-mans-bidi-mirror-buffer)
-      (funcall mode)
-      (font-lock-mode -1)
-      (poor-mans-bidi-add-font-locking))))
-
-(defun poor-mans-bidi-disable ()
-  "Disable BiDi display in mirror buffer."
-  (and poor-mans-bidi-mirror-buffer
-       (bufferp (get-buffer poor-mans-bidi-mirror-buffer))
-   (kill-buffer poor-mans-bidi-mirror-buffer)))
-
-(defun poor-mans-bidi-disable-altogether ()
-  "Disable BiDi altogether.
-
-This command disables BiDi altogether, until function `poor-mans-bidi-mode' is
-  called again with a positive argument.  Its foremost use is to kill the
-  timer.  Kills all associated BiDi-mirror buffers too."
-  (interactive)
-  (when  (timerp poor-mans-bidi-timer)
-    (cancel-timer poor-mans-bidi-timer))
-  (setq poor-mans-bidi-timer nil)
-  (mapcar (lambda (b)
-	    (when (and
-                   (buffer-live-p b)
-                   (string-match
-                    (format "%s$"
-                            poor-mans-bidi-mirror-buffer-postfix)
-                    (buffer-name b)))
-                   (kill-buffer b))
-            (when poor-mans-bidi-mode (poor-mans-bidi-mode -1))) (buffer-list)))
-
-(defun poor-mans-bidi-decode-buffer ()
-  "Send buffer to filter defined by  `poor-mans-bidi-filter-command'."
-  (let ((line-number (line-number-at-pos))
-        (column (current-column))
-        (context (buffer-substring-no-properties
-                       (point-at-bol)
-                       (point)))
-        (buffer (current-buffer))
-        (mode major-mode))
-    ;; change following sexp to adopt to Lisp-only logical->visual
-    ;; conversion of our buffer.  Just make sure to  put the output in
-    ;; `poor-mans-bidi-mirror-buffer', then it will work.
-    (shell-command-on-region (point-min)
-                             (point-max)
-                             (funcall poor-mans-bidi-filter-command)
-                             poor-mans-bidi-mirror-buffer)
-    ;; Here's  a stab  at what  I  just said.  It works  roughly;
-    ;; however `bidi-logical-to-visual'  is not perfect  (yet, as
-    ;; this mode isn't either), so I'll rely on fribidi for now.
-    ;;
-    ;; (save-window-excursion
-    ;;   (let ((str (bidi-logical-to-visual (buffer-string))))
-    ;;     (switch-to-buffer-other-window poor-mans-bidi-mirror-buffer)
-    ;;     (erase-buffer)
-    ;;     (insert str)))
-    (switch-to-buffer-other-window poor-mans-bidi-mirror-buffer)
-    (goto-line line-number)
-    ;; Reductively try and find position by context as defined by beginning of
-    ;; source line up until point -- and smaller each run. Stop search when
-    ;; length of the search string equals the value of
-    ;; `poor-mans-bidi-minimal-context-length'. Begin search RTL.
-    (end-of-line)
-    (unless (< poor-mans-bidi-minimal-context-length
-               (length (do ((str context (substring str 1)))
-                           ((or (search-backward (poor-mans-bidi-string-reverse
-                                                  str)
-                                                 (point-at-bol) t)
-                         (< (length str) poor-mans-bidi-minimal-context-length))
-                            str))))
-      (progn (beginning-of-line)
-             (do ((str context (substring str 1)))
-                 ((or (search-forward str (point-at-eol) t)
-                      (< (length str) poor-mans-bidi-minimal-context-length))
-                  str))))
-    (switch-to-buffer-other-window buffer)))
-
-(defun poor-mans-bidi-add-font-locking ()
-  "Add font locking to BiDi mirror buffer.
-
-See also variable `poor-mans-bidi-font-lock-keywords'."
-  (unless (and (boundp 'auto-composition-mode)
-               auto-composition-mode)
-    (font-lock-add-keywords
-     nil poor-mans-bidi-font-lock-keywords)
-    (font-lock-mode 1)))
-  
-(defun poor-mans-bidi-remove-font-locking ()
-  "Remove font locking to BiDi mirror buffer.
-
-See also variable `poor-mans-bidi-font-lock-keywords'."
-  (font-lock-remove-keywords
-   nil poor-mans-bidi-font-lock-keywords)
-  (font-lock-mode 1))
-
-(defun poor-mans-bidi-string-reverse (str)
-  (mapconcat 'identity (reverse (split-string str "")) ""))
-
-(provide 'poor-mans-bidi)
-;;; poor-mans-bidi.el ends here
+#FILE text/plain
+Ozs7IHBvb3ItbWFucy1iaWRpLmVsIC0tLSBCaURpcmVjdGlvbmFsIGVkaXRpbmcgbW9kZSAgLSot
+Y29kaW5nOiB1dGYtODstKi0KCjs7IENvcHlyaWdodCAoQykgMjAwOCBOaWVscyBHaWVzZW4KOzsg
+PG5pZWxzRE9ET2dpZXNlbkBnbWFpbERJTk9TQVVSY29tLCB3aXRoIHRoZSBleHRpbmN0IGFuaW1h
+bHMKOzsgcmVwbGFjZWQgYnkgZG90cy4+IAoKOzsgQXV0aG9yOiBOaWVscyBHaWVzZW4gbmllbHNE
+T0RPZ2llc2VuQGdtYWlsRElOT1NBVVJjb20sIHdpdGgKOzsgdGhlIGV4dGluY3QgYW5pbWFscyBy
+ZXBsYWNlZCBieSBkb3RzLiAKOzsgS2V5d29yZHM6IGxhbmd1YWdlcywgd3AKOzsgVmVyc2lvbjog
+MC4yCgo7OyBUaGlzIHByb2dyYW0gaXMgZnJlZSBzb2Z0d2FyZTsgeW91IGNhbiByZWRpc3RyaWJ1
+dGUgaXQgYW5kL29yCjs7IG1vZGlmeSBpdCB1bmRlciB0aGUgdGVybXMgb2YgdGhlIEdOVSBHZW5l
+cmFsIFB1YmxpYyBMaWNlbnNlCjs7IGFzIHB1Ymxpc2hlZCBieSB0aGUgRnJlZSBTb2Z0d2FyZSBG
+b3VuZGF0aW9uOyBlaXRoZXIgdmVyc2lvbiAyCjs7IG9mIHRoZSBMaWNlbnNlLCBvciAoYXQgeW91
+ciBvcHRpb24pIGFueSBsYXRlciB2ZXJzaW9uLgoKOzsgVGhpcyBwcm9ncmFtIGlzIGRpc3RyaWJ1
+dGVkIGluIHRoZSBob3BlIHRoYXQgaXQgd2lsbCBiZSB1c2VmdWwsCjs7IGJ1dCBXSVRIT1VUIEFO
+WSBXQVJSQU5UWTsgd2l0aG91dCBldmVuIHRoZSBpbXBsaWVkIHdhcnJhbnR5IG9mCjs7IE1FUkNI
+QU5UQUJJTElUWSBvciBGSVRORVNTIEZPUiBBIFBBUlRJQ1VMQVIgUFVSUE9TRS4gIFNlZSB0aGUK
+OzsgR05VIEdlbmVyYWwgUHVibGljIExpY2Vuc2UgZm9yIG1vcmUgZGV0YWlscy4KCjs7IFlvdSBz
+aG91bGQgaGF2ZSByZWNlaXZlZCBhIGNvcHkgb2YgdGhlIEdOVSBHZW5lcmFsIFB1YmxpYyBMaWNl
+bnNlCjs7IGFsb25nIHdpdGggdGhpcyBwcm9ncmFtOyBpZiBub3QsIHdyaXRlIHRvIHRoZSBGcmVl
+IFNvZnR3YXJlCjs7IEZvdW5kYXRpb24sIEluYy4sIDUxIEZyYW5rbGluIFN0cmVldCwgRmlmdGgg
+Rmxvb3IsIEJvc3RvbiwgTUEKOzsgMDIxMTAtMTMwMSwgVVNBLgoKOzs7IENvbW1lbnRhcnk6Cgo7
+OyBUaGlzIGxpYnJhcnkgcHJvdmlkZXMgYSAnQmlEaWZpZWQnIG1pcnJvciBvZiB0aGUgY3VycmVu
+dAo7OyBidWZmZXIsIHVzaW5nIGFuIGV4dGVybmFsIHByb2dyYW0gc3VjaCBhcyAnZnJpYmlkaScg
+KGFsdGhvdWdoCjs7IGZvciBwYXJhZ3JhcGggbW9kZSwgeW91IG1pZ2h0IHdhbnQgdG8gc3dpdGNo
+IHRoYXQgdG8KOzsgYmlkaXYpLiBVc2UgCjs7IChhdXRvbG9hZCAncG9vci1tYW5zLWJpZGktbW9k
+ZSAicG9vci1tYW5zLWJpZGkiICIiIHQpCjs7IHRvIGhhdmUgdGhpcyBjb2RlIGF1dG9sb2FkZWQu
+Cjs7IFNlZSB0aGUgZG9jdW1lbnRhdGlvbiBmb3IgYHBvb3ItbWFucy1iaWRpLW1vZGUnIGZvciBt
+b3JlCjs7IGluZm9ybWF0aW9uLiAgCgo7OzsgQ29kZToKKGRlZmdyb3VwIHBvb3ItbWFucy1iaWRp
+IG5pbAogICJDdXN0b21pemF0aW9uIGdyb3VwIGZvciBgcG9vci1tYW5zLWJpZGktbW9kZScuIgog
+IDpncm91cCAnd3ApCgooZGVmY3VzdG9tIHBvb3ItbWFucy1iaWRpLWZpbHRlci1jb21tYW5kCiAg
+KGxhbWJkYSAoKSAoZm9ybWF0ICJmcmliaWRpIC0tbm9icmVhayAtdyAlcyIgZmlsbC1jb2x1bW4p
+KQogICJGdW5jdGlvbiB0byByZXR1cm4gdGhlIGNvbW1hbmQgaW52b2tlZCBieSBgcG9vci1tYW5z
+LWJpZGktZGVjb2RlLWJ1ZmZlcicuCgpJdCBzaG91bGQgaGFuZGxlIHRoZSBjb252ZXJzaW9uIGZy
+b20gbG9naWNhbC0+dmlzdWFsIG9yZGVyaW5nLAogIHdoaWxlIHByZXNlcnZpbmcgbGluZXMuICBG
+b3IgdGhpcyByZWFzb24sIGBhdXRvLWZpbGwtbW9kZScgaXMKICB0dXJuZWQgIG9uIGFzIHdlbGwu
+CgpQcm9zIGZyaWJpZGk6Ci0gaGFuZGxlcyBjaGFyYWN0ZXJzIGJldHRlciB0aGFuIGJpZGl2Owot
+IC0tbm9icmVhayBvcHRpb24gaXMgbmljZSB0byBrZWVwIGxpbmUgbnVtYmVycyB0aGUgc2FtZSBh
+Y3Jvc3MKYnVmZmVycy4KClByb3MgYmlkaXY6Ci0gY2FuIGludGVycHJldCBvbiBwYXJhZ3JhcGgt
+bGV2ZWwKClRoZSBjb25zIGFyZSB0aGF0IGVpdGhlciBkb2Vzbid0IGRvL2hhdmUgd2hhdCB0aGUg
+b3RoZXIgZG9lcy9oYXMuIgogIDpncm91cCAncG9vci1tYW5zLWJpZGkKICA6dHlwZSAnKGZ1bmN0
+aW9uKSkKCihkZWZjdXN0b20gcG9vci1tYW5zLWJpZGktZm9udC1sb2NrLWtleXdvcmRzCiAgJygo
+IlxcKFvvrJ7WsNax1rLWs9a01rXWtta31rjWuda71rzWvda/14DXgdeCXVvXndee15/XoNeR16XX
+pteX15bXnNea15vXlNeS15PXodej16TXkNeZ17LXsdew15XXqteY16jXotep16ddXFwpIgogICAg
+ICgwIChwcm9nbiAoY29tcG9zZS1yZWdpb24gKG1hdGNoLWJlZ2lubmluZyAxKSAobWF0Y2gtZW5k
+IDEpKQoJICAgICAgIG5pbCkpKSkKICAiRm9udCBsb2NrIGtleXdvcmQgcnVsZXMgZm9yIEJpRGkg
+bWlycm9yIGJ1ZmZlcnMuCgpUaGUgcnVsZXMgYXJlIG1lYW50IGZvciBjb21wb3NpbmcgY29tcGxl
+eCBjaGFyYWN0ZXJzIGZyb20gYmFzZSAoVW5pY29kZSkgY2hhcnMKYW5kIHB1bmN0dWF0aW9uIG1h
+cmtzICh0aGF0IGFyZSB1c2VkIGluIGUuZy4gWWlkZGlzaCB0ZXh0cykgaW4gdGhlIG1pcnJvcgpi
+dWZmZXIgc2hvd2luZyBiaWRpcmVjdGlvbmFsIG91dHB1dC4gIElmIHlvdSBmaW5kIG90aGVyIHJ1
+bGVzIHVzZWZ1bCwgcGxlYXNlCnNlbmQgYSByZXBvcnQsIHNvIHRoYXQgdGhleSBjYW4gYmUgaW5j
+bHVkZWQgaW4gdGhpcyBmaWxlLiIKICA6Z3JvdXAgJ3Bvb3ItbWFucy1iaWRpCiAgOnR5cGUgJyhh
+bGlzdCkpCgooZGVmY3VzdG9tIHBvb3ItbWFucy1iaWRpLW1pbmltYWwtY29udGV4dC1sZW5ndGgg
+MwogICJNaW5pbWFsIGxlbmd0aCBvZiBzZWFyY2ggY29udGV4dCAob3IgcmF0aGVyOiBwcmV0ZXh0
+KS4KClRoaXMgdmFyaWFibGUgaXMgdXNlZCBieSBgcG9vci1tYW5zLWJpZGktZGVjb2RlLWJ1ZmZl
+cicgd2hlbiBsb2NhdGluZyBwb2ludCBpbgogdGhlIG1pcnJvciBidWZmZXIuIFNldHRpbmcgdGhp
+cyB0b28gc2hvcnQgbWF5IGZpbmQgcG9pbnQgYXQgYW5vdGhlciwgbGlrZSwKIHBvaW50LCBlc3Au
+IHdpdGggc2hvcnQgcGFsaW5kcm9tZXMgc3VjaCBhcyB0aGUgd29yZCBcImFcIiBpbiBFbmdsaXNo
+IG9yIChpdHMKIHRyYW5zbGF0aW9uISkgXCLXkFwiIGluIFlpZGRpc2ggaW4gQmlEaSB0ZXh0cyAo
+bm90IGluIG9uZS13YXkgdGV4dHMpIC4gU2V0IGl0CiB0byA0IGlmIHRoaXMgcmVhbGx5IGJ1Z3Mg
+eW91LgoKWW91IG1pZ2h0IGFsc28gd2FudCB0byBjaGFuZ2UgaXQgdG8gc29tZXRoaW5nIGxhcmdl
+ciB0byBzdGFydCBsb29raW5nIGluIHRoZQpvcHBvc2l0ZSBkaXJlY3Rpb24gc29vbmVyLCBlLmcu
+IHdoZW4geW91IGVkaXQgdGV4dHMgdGhhdCBhcmUgbWFpbmx5IFJUTCAob3IKTFRSKSwgYW5kIG5v
+dCBzbyBtdWNoIGludGVydHdpbmVkLiBUaGUgUlRMLWRpcmVjdGlvbiBpcyBzZWFyY2hlZCBmaXJz
+dDoKYXNzdW1pbmcgdGhhdCBpZiB2YXJpYWJsZSBgcG9vci1tYW5zLWJpZGktbW9kZScgaXMgbm9u
+LW5pbCwgeW91IGFyZSBwcm9iYWJseQplZGl0aW5nIFJUTCB0ZXh0LiIKICA6Z3JvdXAgJ3Bvb3It
+bWFucy1iaWRpCiAgOnR5cGUgJyhpbnRlZ2VyKSkKCihkZWZjdXN0b20gcG9vci1tYW5zLWJpZGkt
+dGltZXItaW50ZXJ2YWwgLjEKICAiSW50ZXJ2YWwgdXNlZCBieSBgcG9vci1tYW5zLWJpZGktdGlt
+ZXInLgoKU2V0IHRoaXMgdG8gYSBzbWFsbCB2YWx1ZSAoc3VjaCBhcyAwLjAxKSwgdG8gaGF2ZSBx
+dWljayByZXNwb25zZSBpbiB0aGUgbWlycm9yCmJ1ZmZlci4gIFNtYWxsZXIgdGhhbiB0aGF0IGlz
+IGhhcmRseSBub3RpY2VhYmxlLiAgTGFyZ2VyIHZhbHVlcyB0aGFuIHRoZSBkZWZhdWx0Cm1pZ2h0
+IGJlIHdpc2UgZm9yIHNsb3dlciBjb21wdXRlcnMuCgpXaGVuIGNoYW5nZWQsIG1ha2Ugc3VyZSB0
+byBydW4gXFxbcG9vci1tYW5zLWJpZGktZGlzYWJsZS1hbHRvZ2V0aGVyXSBhbmQKXFxbcG9vci1t
+YW5zLWJpZGktbW9kZV0gYWdhaW4sIGluIG9yZGVyIHRvIHJlc2V0IHRoZSB0aW1lciBzbyBpdCB3
+aWxsIHNlZSBpdHMKbmV3IGludGVydmFsLiIKICA6Z3JvdXAgJ3Bvb3ItbWFucy1iaWRpCiAgOnR5
+cGUgJyhmbG9hdCkpCgooZGVmY3VzdG9tIHBvb3ItbWFucy1iaWRpLWluaGliaXRlZC1tYWpvci1t
+b2RlcwogICcoKHczbS1tb2RlKSkKICAiUnVsZXMgZm9yIGFsdGVybmF0aXZlIG1vZGVzIGZvciBi
+aWRpcmVjdGlvbmFsIG1pcnJvciBidWZmZXJzLgoKVGhpcyB2YXJpYWJsZSBvdmVycmlkZXMgdGhl
+IGRlZmF1bHQgYmVoYXZpb3VyIHRoYXQgbWlycm9yIGJ1ZmZlcnMgbWFkZSB3aXRoCnRoZSBjb21t
+YW5kIGBwb29yLW1hbnMtYmlkaS1tb2RlJyBoYXZlIHRoZSBzYW1lIG1ham9yIG1vZGUgYXMgdGhl
+IG1ham9yIG1vZGUKZm9yIHRoZSBzb3VyY2UgYnVmZmVyLgoKVGhpcyB2YXJpYWJsZSBpcyBhbiBh
+bGlzdCBvZiB0aGUgZm9ybSAoKE1BSk9SLU1PREUgLiBBTFRFUk5BVElWRS1NT0RFKSksIHdoZXJl
+CkFMVEVSTkFUSVZFLU1PREUgd2lsbCBiZSB0aGUgbWFqb3IgbW9kZSBmb3IgYnVmZmVycyBtaXJy
+b3JpbmcgYnVmZmVycyB3aGVyZQpNQUpPUi1NT0RFIGlzIHRoZSBtYWpvciBtb2RlLgoKQXMgYSBz
+aG9ydGN1dCwgaWYgTUFKT1IgTU9ERSBpcyBuaWwsIGBmdW5kYW1lbnRhbC1tb2RlJyB3aWxsIGJl
+Y29tZSB0aGUKbWFqb3IgbW9kZSBmb3IgdGhlIG1pcnJvciBidWZmZXIuIgogIDpncm91cCAncG9v
+ci1tYW5zLWJpZGkKICA6dHlwZSAnKGFsaXN0KSkKCihkZWZpbmUtbWlub3ItbW9kZSBwb29yLW1h
+bnMtYmlkaS1tb2RlIAogICJNaW5vciBtb2RlIGZvciB3cml0aW5nIGJpZGlyZWN0aW9uYWwgdGV4
+dC4gCgpTaG93IGEgJ0JpRGlmaWVkJyBtaXJyb3Igb2YgdGhlIGN1cnJlbnQgYnVmZmVyLCB1c2lu
+ZyBleHRlcm5hbAogIHByb2dyYW1zIHN1Y2ggIGFzICdmcmliaWRpJyAoYWx0aG91Z2ggZm9yIHBh
+cmFncmFwaCBtb2RlLCB5b3UKICBtaWdodCB3YW50IHRvIHN3aXRjaCB0aGF0IHRvIGJpZGl2KS4g
+QWRqdXN0IHRoZSB2YXJpYWJsZQogIGBwb29yLW1hbnMtYmlkaS1maWx0ZXItY29tbWFuZCcgdG8g
+dXNlIGFub3RoZXIgZmlsdGVyLgoKSW4gdGhlIG1pcnJvcmluZyBidWZmZXIsIGEgbmV3IHBvaW50
+IHRyaWVzIHRvIGJlIGxvY2F0ZWQgbWVyZWx5CiAgb24gY29udGV4dCBpbiBzb3VyY2UgYnVmZmVy
+LCBOT1Qgb24gYW55IGtub3dsZWRnZSBvZiB0aGUKICBhbGdvcml0aG0gZGVzY3JpYmVkIGF0IHVy
+bCAKYGh0dHA6Ly93d3cudW5pY29kZS5vcmcvdW5pY29kZS9yZXBvcnRzL3RyOS8nLiAgCgpUb2dn
+bGUgdGhlIG1pcnJvcmluZyB3aXRoIHRoZSBjb21tYW5kIFxcW3Bvb3ItbWFucy1iaWRpLW1vZGVd
+LgogIFRoaXMgc2V0cyBhbiBpZGxlIHRpbWVyIGRvaW5nIGl0cyB3b3JrIGV2ZXJ5IHRlbnRoIG9m
+IGEKICBzZWNvbmQsIHNvIGlmIHlvdSBhcmUgbm90IHdvcmtpbmcgb24gYSBCaURpIHRleHQsIHlv
+dSdkIGJldHRlcgogIGlzc3VlIHRoZSAgY29tbWFuZCBcXFtwb29yLW1hbnMtYmlkaS1kaXNhYmxl
+LWFsdG9nZXRoZXJdIAoKQ291bGQgYmUgdmVyeSB3ZWxsIGFkYXB0ZWQgZm9yIGxpc3Atb25seSBo
+YW5kbGluZyBob3dldmVyLiBTZWUKICBjb21tZW50cyBpbiB0aGUgZGVmaW5pdGlvbiBmb3IgdGhl
+IGZ1bmN0aW9uCiAgYHBvb3ItbWFucy1iaWRpLWRlY29kZS1idWZmZXInIGlmIHlvdSBmZWVsIHNv
+IGluY2xpbmVkLiIgCiAgbmlsCiAgIiBCaURpIgogICcoKCJcQy1jYiIgLiBwb29yLW1hbnMtYmlk
+aS1tb2RlKSkKICAoaWYgcG9vci1tYW5zLWJpZGktbW9kZQogICAgICAocG9vci1tYW5zLWJpZGkt
+ZW5hYmxlKQogICAgKHBvb3ItbWFucy1iaWRpLWRpc2FibGUpKSkKCihkZWZ2YXIgcG9vci1tYW5z
+LWJpZGktdGltZXIgbmlsICJUaW1lciBvYmplY3QuIikKKGRlZnZhciBwb29yLW1hbnMtYmlkaS10
+aWNrIG5pbCAiVG8gY29tcGFyZSB3aXRoIG91dHB1dCBmcm9tIGBidWZmZXItbW9kaWZpZWQtdGlj
+aycuIikKKGRlZnZhciBwb29yLW1hbnMtYmlkaS1wb2ludCBuaWwgIlRvIGNvbXBhcmUgb2xkIHBv
+aW50IHdpdGggY3VycmVudCAocG9pbnQpLiIpCihkZWZ2YXIgcG9vci1tYW5zLWJpZGktbWlycm9y
+LWJ1ZmZlciBuaWwgIkJ1ZmZlciBmb3IgQmlEaSBkaXNwbGF5LiIpCihkZWZjb25zdCBwb29yLW1h
+bnMtYmlkaS1taXJyb3ItYnVmZmVyLXBvc3RmaXggIi1CaURpIikKCihkZWZ1biBwb29yLW1hbnMt
+YmlkaS1lbmFibGUgKCkKICAiRW5hYmxlIEJpRGkgZGlzcGxheSBpbiBtaXJyb3IgYnVmZmVyLiIK
+ICAoc2V0IChtYWtlLWxvY2FsLXZhcmlhYmxlICdwb29yLW1hbnMtYmlkaS10aWNrKQogICAgICAg
+KGJ1ZmZlci1tb2RpZmllZC10aWNrKSkKICAoc2V0IChtYWtlLWxvY2FsLXZhcmlhYmxlICdwb29y
+LW1hbnMtYmlkaS1wb2ludCkKICAgICAgIChwb2ludCkpCiAgKHNldCAobWFrZS1sb2NhbC12YXJp
+YWJsZSAncG9vci1tYW5zLWJpZGktbWlycm9yLWJ1ZmZlcikKICAgICAgIChjb25jYXQgKGJ1ZmZl
+ci1uYW1lIChjdXJyZW50LWJ1ZmZlcikpCgkgICAgICAgcG9vci1tYW5zLWJpZGktbWlycm9yLWJ1
+ZmZlci1wb3N0Zml4KSkKICAoaWYgKHRpbWVycCBwb29yLW1hbnMtYmlkaS10aW1lcikKICAgICAg
+KHRpbWVyLWFjdGl2YXRlIHBvb3ItbWFucy1iaWRpLXRpbWVyKQogICAgKHNldHEgcG9vci1tYW5z
+LWJpZGktdGltZXIKCSAgKHJ1bi13aXRoLWlkbGUtdGltZXIgcG9vci1tYW5zLWJpZGktdGltZXIt
+aW50ZXJ2YWwgcG9vci1tYW5zLWJpZGktdGltZXItaW50ZXJ2YWwKCQkJICAobGFtYmRhICgpCgkJ
+CSAgICAod2hlbgoJCQkJKGFuZCBwb29yLW1hbnMtYmlkaS1tb2RlCgkJCQkob3IgKGFuZCAoYm91
+bmRwICdwb29yLW1hbnMtYmlkaS10aWNrKQogCQkJCSAgICAgKDwgcG9vci1tYW5zLWJpZGktdGlj
+awogCQkJCQkoYnVmZmVyLW1vZGlmaWVkLXRpY2spKSkKCQkJCSAgICAobm90ICg9IHBvb3ItbWFu
+cy1iaWRpLXBvaW50IChwb2ludCkpKSkpCgkJCSAgICAgIChzZXRxIHBvb3ItbWFucy1iaWRpLXBv
+aW50IChwb2ludCkpCgkJCSAgICAgIChzZXRxIHBvb3ItbWFucy1iaWRpLXRpY2sgKGJ1ZmZlci1t
+b2RpZmllZC10aWNrKSkKCQkJICAgICAgKHBvb3ItbWFucy1iaWRpLWRlY29kZS1idWZmZXIpKSkp
+KSkKICAoYXV0by1maWxsLW1vZGUgMSkKICA7OyBDb3B5IG1ham9yIG1vZGUgb3ZlciBhbmQgYWRk
+IGZvbnQtbG9ja2luZwogIChsZXQgKChtb2RlIG1ham9yLW1vZGUpKQogICAgKGlmIChhc3NvYyBt
+b2RlIHBvb3ItbWFucy1iaWRpLWluaGliaXRlZC1tYWpvci1tb2RlcykKICAgICAgICAoc2V0cSBt
+b2RlCiAgICAgICAgICAgICAgKG9yIChjZHIgKGFzc29jIG1vZGUgcG9vci1tYW5zLWJpZGktaW5o
+aWJpdGVkLW1ham9yLW1vZGVzKSkKICAgICAgICAgICAgICAgICAgJ2Z1bmRhbWVudGFsLW1vZGUp
+KSkKICAgIChzYXZlLXdpbmRvdy1leGN1cnNpb24KICAgICAgKHN3aXRjaC10by1idWZmZXItb3Ro
+ZXItd2luZG93IHBvb3ItbWFucy1iaWRpLW1pcnJvci1idWZmZXIpCiAgICAgIChmdW5jYWxsIG1v
+ZGUpCiAgICAgIChmb250LWxvY2stbW9kZSAtMSkKICAgICAgKHBvb3ItbWFucy1iaWRpLWFkZC1m
+b250LWxvY2tpbmcpKSkpCgooZGVmdW4gcG9vci1tYW5zLWJpZGktZGlzYWJsZSAoKQogICJEaXNh
+YmxlIEJpRGkgZGlzcGxheSBpbiBtaXJyb3IgYnVmZmVyLiIKICAoYW5kIHBvb3ItbWFucy1iaWRp
+LW1pcnJvci1idWZmZXIKICAgICAgIChidWZmZXJwIChnZXQtYnVmZmVyIHBvb3ItbWFucy1iaWRp
+LW1pcnJvci1idWZmZXIpKQogICAoa2lsbC1idWZmZXIgcG9vci1tYW5zLWJpZGktbWlycm9yLWJ1
+ZmZlcikpKQoKKGRlZnVuIHBvb3ItbWFucy1iaWRpLWRpc2FibGUtYWx0b2dldGhlciAoKQogICJE
+aXNhYmxlIEJpRGkgYWx0b2dldGhlci4KClRoaXMgY29tbWFuZCBkaXNhYmxlcyBCaURpIGFsdG9n
+ZXRoZXIsIHVudGlsIGZ1bmN0aW9uIGBwb29yLW1hbnMtYmlkaS1tb2RlJyBpcwogIGNhbGxlZCBh
+Z2FpbiB3aXRoIGEgcG9zaXRpdmUgYXJndW1lbnQuICBJdHMgZm9yZW1vc3QgdXNlIGlzIHRvIGtp
+bGwgdGhlCiAgdGltZXIuICBLaWxscyBhbGwgYXNzb2NpYXRlZCBCaURpLW1pcnJvciBidWZmZXJz
+IHRvby4iCiAgKGludGVyYWN0aXZlKQogICh3aGVuICAodGltZXJwIHBvb3ItbWFucy1iaWRpLXRp
+bWVyKQogICAgKGNhbmNlbC10aW1lciBwb29yLW1hbnMtYmlkaS10aW1lcikpCiAgKHNldHEgcG9v
+ci1tYW5zLWJpZGktdGltZXIgbmlsKQogIChtYXBjYXIgKGxhbWJkYSAoYikKCSAgICAod2hlbiAo
+YW5kCiAgICAgICAgICAgICAgICAgICAoYnVmZmVyLWxpdmUtcCBiKQogICAgICAgICAgICAgICAg
+ICAgKHN0cmluZy1tYXRjaAogICAgICAgICAgICAgICAgICAgIChmb3JtYXQgIiVzJCIKICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgIHBvb3ItbWFucy1iaWRpLW1pcnJvci1idWZmZXItcG9zdGZp
+eCkKICAgICAgICAgICAgICAgICAgICAoYnVmZmVyLW5hbWUgYikpKQogICAgICAgICAgICAgICAg
+ICAgKGtpbGwtYnVmZmVyIGIpKQogICAgICAgICAgICAod2hlbiBwb29yLW1hbnMtYmlkaS1tb2Rl
+IChwb29yLW1hbnMtYmlkaS1tb2RlIC0xKSkpIChidWZmZXItbGlzdCkpKQoKKGRlZnVuIHBvb3It
+bWFucy1iaWRpLWRlY29kZS1idWZmZXIgKCkKICAiU2VuZCBidWZmZXIgdG8gZmlsdGVyIGRlZmlu
+ZWQgYnkgIGBwb29yLW1hbnMtYmlkaS1maWx0ZXItY29tbWFuZCcuIgogIChsZXQgKChsaW5lLW51
+bWJlciAobGluZS1udW1iZXItYXQtcG9zKSkKICAgICAgICAoY29sdW1uIChjdXJyZW50LWNvbHVt
+bikpCiAgICAgICAgKGNvbnRleHQgKGJ1ZmZlci1zdWJzdHJpbmctbm8tcHJvcGVydGllcwogICAg
+ICAgICAgICAgICAgICAgICAgIChwb2ludC1hdC1ib2wpCiAgICAgICAgICAgICAgICAgICAgICAg
+KHBvaW50KSkpCiAgICAgICAgKGJ1ZmZlciAoY3VycmVudC1idWZmZXIpKQogICAgICAgIChtb2Rl
+IG1ham9yLW1vZGUpKQogICAgOzsgY2hhbmdlIGZvbGxvd2luZyBzZXhwIHRvIGFkb3B0IHRvIExp
+c3Atb25seSBsb2dpY2FsLT52aXN1YWwKICAgIDs7IGNvbnZlcnNpb24gb2Ygb3VyIGJ1ZmZlci4g
+IEp1c3QgbWFrZSBzdXJlIHRvICBwdXQgdGhlIG91dHB1dCBpbgogICAgOzsgYHBvb3ItbWFucy1i
+aWRpLW1pcnJvci1idWZmZXInLCB0aGVuIGl0IHdpbGwgd29yay4KICAgIChzaGVsbC1jb21tYW5k
+LW9uLXJlZ2lvbiAocG9pbnQtbWluKQogICAgICAgICAgICAgICAgICAgICAgICAgICAgIChwb2lu
+dC1tYXgpCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgKGZ1bmNhbGwgcG9vci1tYW5zLWJp
+ZGktZmlsdGVyLWNvbW1hbmQpCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgcG9vci1tYW5z
+LWJpZGktbWlycm9yLWJ1ZmZlcikKICAgIDs7IEhlcmUncyAgYSBzdGFiICBhdCB3aGF0ICBJICBq
+dXN0IHNhaWQuICBJdCB3b3JrcyAgcm91Z2hseTsKICAgIDs7IGhvd2V2ZXIgYGJpZGktbG9naWNh
+bC10by12aXN1YWwnICBpcyBub3QgcGVyZmVjdCAgKHlldCwgYXMKICAgIDs7IHRoaXMgbW9kZSBp
+c24ndCBlaXRoZXIpLCBzbyBJJ2xsIHJlbHkgb24gZnJpYmlkaSBmb3Igbm93LgogICAgOzsKICAg
+IDs7IChzYXZlLXdpbmRvdy1leGN1cnNpb24KICAgIDs7ICAgKGxldCAoKHN0ciAoYmlkaS1sb2dp
+Y2FsLXRvLXZpc3VhbCAoYnVmZmVyLXN0cmluZykpKSkKICAgIDs7ICAgICAoc3dpdGNoLXRvLWJ1
+ZmZlci1vdGhlci13aW5kb3cgcG9vci1tYW5zLWJpZGktbWlycm9yLWJ1ZmZlcikKICAgIDs7ICAg
+ICAoZXJhc2UtYnVmZmVyKQogICAgOzsgICAgIChpbnNlcnQgc3RyKSkpCiAgICAoc3dpdGNoLXRv
+LWJ1ZmZlci1vdGhlci13aW5kb3cgcG9vci1tYW5zLWJpZGktbWlycm9yLWJ1ZmZlcikKICAgIChn
+b3RvLWxpbmUgbGluZS1udW1iZXIpCiAgICA7OyBSZWR1Y3RpdmVseSB0cnkgYW5kIGZpbmQgcG9z
+aXRpb24gYnkgY29udGV4dCBhcyBkZWZpbmVkIGJ5IGJlZ2lubmluZyBvZgogICAgOzsgc291cmNl
+IGxpbmUgdXAgdW50aWwgcG9pbnQgLS0gYW5kIHNtYWxsZXIgZWFjaCBydW4uIFN0b3Agc2VhcmNo
+IHdoZW4KICAgIDs7IGxlbmd0aCBvZiB0aGUgc2VhcmNoIHN0cmluZyBlcXVhbHMgdGhlIHZhbHVl
+IG9mCiAgICA7OyBgcG9vci1tYW5zLWJpZGktbWluaW1hbC1jb250ZXh0LWxlbmd0aCcuIEJlZ2lu
+IHNlYXJjaCBSVEwuCiAgICAoZW5kLW9mLWxpbmUpCiAgICAodW5sZXNzICg8IHBvb3ItbWFucy1i
+aWRpLW1pbmltYWwtY29udGV4dC1sZW5ndGgKICAgICAgICAgICAgICAgKGxlbmd0aCAoZG8gKChz
+dHIgY29udGV4dCAoc3Vic3RyaW5nIHN0ciAxKSkpCiAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICgob3IgKHNlYXJjaC1iYWNrd2FyZCAocG9vci1tYW5zLWJpZGktc3RyaW5nLXJldmVyc2UKICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBzdHIpCiAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAocG9pbnQtYXQtYm9s
+KSB0KQogICAgICAgICAgICAgICAgICAgICAgICAgKDwgKGxlbmd0aCBzdHIpIHBvb3ItbWFucy1i
+aWRpLW1pbmltYWwtY29udGV4dC1sZW5ndGgpKQogICAgICAgICAgICAgICAgICAgICAgICAgICAg
+c3RyKSkpKQogICAgICAocHJvZ24gKGJlZ2lubmluZy1vZi1saW5lKQogICAgICAgICAgICAgKGRv
+ICgoc3RyIGNvbnRleHQgKHN1YnN0cmluZyBzdHIgMSkpKQogICAgICAgICAgICAgICAgICgob3Ig
+KHNlYXJjaC1mb3J3YXJkIHN0ciAocG9pbnQtYXQtZW9sKSB0KQogICAgICAgICAgICAgICAgICAg
+ICAgKDwgKGxlbmd0aCBzdHIpIHBvb3ItbWFucy1iaWRpLW1pbmltYWwtY29udGV4dC1sZW5ndGgp
+KQogICAgICAgICAgICAgICAgICBzdHIpKSkpCiAgICAoc3dpdGNoLXRvLWJ1ZmZlci1vdGhlci13
+aW5kb3cgYnVmZmVyKSkpCgooZGVmdW4gcG9vci1tYW5zLWJpZGktYWRkLWZvbnQtbG9ja2luZyAo
+KQogICJBZGQgZm9udCBsb2NraW5nIHRvIEJpRGkgbWlycm9yIGJ1ZmZlci4KClNlZSBhbHNvIHZh
+cmlhYmxlIGBwb29yLW1hbnMtYmlkaS1mb250LWxvY2sta2V5d29yZHMnLiIKICAodW5sZXNzIChh
+bmQgKGJvdW5kcCAnYXV0by1jb21wb3NpdGlvbi1tb2RlKQogICAgICAgICAgICAgICBhdXRvLWNv
+bXBvc2l0aW9uLW1vZGUpCiAgICAoZm9udC1sb2NrLWFkZC1rZXl3b3JkcwogICAgIG5pbCBwb29y
+LW1hbnMtYmlkaS1mb250LWxvY2sta2V5d29yZHMpCiAgICAoZm9udC1sb2NrLW1vZGUgMSkpKQog
+IAooZGVmdW4gcG9vci1tYW5zLWJpZGktcmVtb3ZlLWZvbnQtbG9ja2luZyAoKQogICJSZW1vdmUg
+Zm9udCBsb2NraW5nIHRvIEJpRGkgbWlycm9yIGJ1ZmZlci4KClNlZSBhbHNvIHZhcmlhYmxlIGBw
+b29yLW1hbnMtYmlkaS1mb250LWxvY2sta2V5d29yZHMnLiIKICAoZm9udC1sb2NrLXJlbW92ZS1r
+ZXl3b3JkcwogICBuaWwgcG9vci1tYW5zLWJpZGktZm9udC1sb2NrLWtleXdvcmRzKQogIChmb250
+LWxvY2stbW9kZSAxKSkKCihkZWZ1biBwb29yLW1hbnMtYmlkaS1zdHJpbmctcmV2ZXJzZSAoc3Ry
+KQogIChtYXBjb25jYXQgJ2lkZW50aXR5IChyZXZlcnNlIChzcGxpdC1zdHJpbmcgc3RyICIiKSkg
+IiIpKQoKKHByb3ZpZGUgJ3Bvb3ItbWFucy1iaWRpKQo7OzsgcG9vci1tYW5zLWJpZGkuZWwgZW5k
+cyBoZXJlCg==

@@ -1,991 +1,522 @@
-/* Communicate between GNU Emacs and the Linux Joystick Interface.
-
-   Copyright (C) 2007 John C. G. Sturdy
-
-   Based on jstest.c which is Copyright (C) 1996-1999 Vojtech Pavlik (Sponsored by SuSE) and released under GPL2.
-
-   Initially written 2007-08-29.
-
-   This file is not part of GNU Emacs.
-
-   The Emacs Joystick Interface is free software; you can redistribute
-   it and/or modify it under the terms of the GNU General Public
-   License as published by the Free Software Foundation; either
-   version 2, or (at your option) any later version.
-
-   The Emacs Joystick Interface is distributed in the hope that it
-   will be useful, but WITHOUT ANY WARRANTY; without even the implied
-   warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-   See the GNU General Public License for more details.
-
-   You should have received a copy of the GNU General Public License
-   along with the Emacs Joystick Interface; see the file COPYING.  If
-   not, write to the Free Software Foundation, Inc., 51 Franklin
-   Street, Fifth Floor, Boston, MA 02110-1301, USA.
-
-   Starting the program
-   ====================
-
-   This is normally done for you by `joystick-start' in the
-   accompanying Emacs-Lisp file `joystick.el'.  In case you want to
-   use this in some other application, here are the details anyway.
-
-   Usage: joylisp [device [device-event-label [device-non-event-label]]]
-
-   This program converts joystick events to Lisp s-expressions, and
-   sends them to stdout.
-
-   The "device" argument is the joystick device to read, such as
-   /dev/js0.
-
-   The optional "device-event-label" argument is something to put at
-   the start of each event s-exp instead of "jse '" (which stands for
-   JoyStick Event).  This is partly in case you have several
-   joystick-like devices on the same system, and also lets you give
-   something without the space and quote, so that each type of event
-   runs a different Lisp function.
-
-   The optional "device-event-label" argument is something to put at
-   the start of each non-event s-exp instead of "joystick-".  This is
-   partly in case you have several joystick-like devices on the same
-   system.  The default is such that each type of non-event
-   (declarations etc) runs a different Lisp function.
-
-   Buttons
-   =======
-
-   When you press a button (say the button Trigger), an expression of
-   the form
-
-      (jse 'Trigger-down)
-
-   is sent to stdout, and if that button is then released without any
-   other buttons having been pressed,
-
-      (jse 'Trigger-up)
-
-   is output.
-
-   If a button is pressed and held while another button is pressed,
-   the "down" event for the first button is sent as before (as we
-   don't have the technology to predict whether another button will be
-   pressed before the first is released), but the second button, say
-   button TopBtn, gets some modifiers included, either as a string of
-   abbreviated button names, or as an octal number embedded in the
-   functor name:
-
-      (jse 'BaBt2-TopBtn-down)
-      (jse 'BaBt2-TopBtn-up)
-
-      (jse 'm200-TopBtn-down)
-      (jse 'm200-TopBtn-up)
-
-   where 200 is the octal code for just bit 7 (the modifier button
-   number) being set.  The abbreviations are made of any upper-case
-   letters in the full name of the button, any lower-case letters
-   preceded by an upper-case letter, and any digits.  This seems to be
-   a reasonably simple way of making unique abbreviations, giving the
-   collection of button names provided.
-   
-   Any number of modifiers may be used at once.  (There are
-   potentially nearly 80 of them, given a suitable monstrous stick!)
-
-   When button 7 is eventually released, because it has been used as a
-   modifier, instead of an "up" event, it generates a "release" event.
-
-      (jse 'Trigger-release)
-
-   This way, each button can be used both in its own right (press and
-   release) or as a modifier (press and hold while pressing other
-   buttons).
-
-   Also, note that if you're using "-up" codes for chording, it makes
-   a difference which button you take your finger off last.  This
-   makes for a potentially extremely subtle chording keyboard!
-
-   Joystick axes
-   =============
-
-   When you move a "stick" control, there are three modes of output
-   written into the code, called "timing", "up_down" and "signed".  At
-   the moment, it is hardwired to use "timing", but when commands to
-   this program from the calling program (e.g. Emacs) are implemented,
-   it'll be switchable.
-
-   In timing mode, each joystick event is sent as one of these:
-
-     (jse 'X-previous)
-     (jse 'X-center)
-     (jse 'X-next)
-
-   and the event is sent repeatedly (except for -center), at a rate
-   determined by the displacement of that stick axis from its centered
-   position.
-
-   In up_down mode, each joystick event is sent as:
-
-     (jse 'X-previous amount)
-     (jse 'X-center)
-     (jse 'X-next amount)
-
-   according to whether the direction is the one Emacs regards as
-   "previous" (i.e. up or left, depending on the axis) or as "next"
-   (down or right), or "center" which is output when the joystick
-   returns to the center.  The "amount" is the number received from
-   the joystick event, and is the amount (unsigned) by which the stick
-   is displaced from the center.  The amount for "center" is
-   implicitly 0, so is not sent.
-
-   In signed mode, the joystick events are sent as:
-
-     (jse 'X amount)
-
-   where the amount may be positive or negative.
-
-   In signed and up_down modes, the events are not automatically
-   repeated.
-
-   In any case, modifier numbers are sent in octal:
-
-     (jse 'm200-X-previous amount)
-     (jse 'm200-X-center)
-     (jse 'm200-X-next amount)
-
-   and it is remembered that those buttons have been used as
-   modifiers, and hence generate "release" instead of "up" when
-   released.
-
-   Controlling the interface program
-   =================================
-
-   The program accepts "shell-style" commands on stdin.  The commands
-   are as follows:
-
-     acknowledge [arg]
-
-       With arg == 0, turn command acknowledgment off; otherwise turn
-       it on.
-
-     hatspeed
-     hatspeed value
-     hatspeed channel
-     hatspeed channel value
-
-       Set the hat speed.  This is the same as `sensitivity', but only
-       applies to axes that are described as hat switch axes.  (These
-       are `all-or-nothing' joystick axes, so you may well want to
-       make them less sensitive than the ordinary ones.)
-
-     numeric-mods
-     symbolic-mods
-
-       Set the modifier representation to numeric or symbolic.
-
-     quit
-
-       Quit the joystick-to-lisp program.
-
-     rumble
-
-       Make the joystick / keypad rumble.  Not implemented, as there's
-       no mention of this in the joystick driver documentation.
-
-     sensitivity
-     sensitivity value
-     sensitivity axis value
-     sensitivity axis
-     
-       With no args, or with only an axis name, report all or one of
-       the sensitivities.
-
-       With a value, and with or without an axis name, set one or all
-       of the sensitivities.
-
-       Value should be a floating-point value between 0.0 and 1.0; it
-       is the proportion of internal ticks for which full displacement
-       of the joystick in this output will produce an event in
-       `timing' mode.  So, for example, if you set an axis'
-       sensitivity to 0.25, it will produce an event at most once
-       every 4 ticks.
-
-     shock
-
-       Make the joystick / keypad give the user a shock.  Not
-       implemented, as there's no mention of this in the joystick
-       driver documentation.  Also, this is just a joke entry from a
-       James Bond film, but I wouldn't be surprised if someone really
-       makes one sometime.
-
-     show-ticking [arg]
-
-       With arg == 0, don't show every internal tick.
-       Otherwise, show all the internal ticks.
-       Mostly meant for debugging.
-
-     signed
-
-       Output the joystick displacement as a signed value.  See also
-       `timing' and `updown'.
-
-     stamped [arg]
-
-       With arg == 0, don't send timestamps before each event.
-       Otherwise, send a timestamp before each event.
-
-     tickrate [ticks-per-second]
-
-       With argument, set the ticks per second (for the `timing'
-       output) to ticks-per-second.
-
-       With no argument, report the current tick rate.
-
-       If you set this to a larger value (and you'll probably want to
-       turn `sensitivity' down in that case), you get finer
-       discrimination of the joystick position, at the expense of
-       using more CPU time.  Still, that probably won't be much.
-
-     timing
-
-       When a joystick axis is off-center, send a stream of events, at
-       a rate determined by how far off-center it is.  This is the
-       default.  See also `signed' and `updown'.  The scale of the
-       individual axis is set with the `sensitivity' command, and the
-       overall rate of the system is set with `tickrate'.
-
-     updown
-
-       Output the joystick displacement as an unsigned value, and give
-       the sign by issuing different event types.  See also `signed'
-       and `timing' output modes.
-
- */
-
-
-#include <sys/ioctl.h>
-#include <sys/time.h>
-#include <sys/types.h>
-#include <stdlib.h>
-#include <fcntl.h>
-#include <unistd.h>
-#include <stdio.h>
-#include <errno.h>
-#include <string.h>
-#include <stdlib.h>
-#include <stdint.h>
-#include <stdarg.h>
-#include <ctype.h>
-#include <math.h>
-
-#include <linux/input.h>
-#include <linux/joystick.h>
-
-char *axis_names[ABS_MAX + 1] = {
-  /* most of these come straight from jstest.c, but I finished
-     numbering them, to make them all unique */
-  "X", "Y", "Z",		/* 0,1,2 */
-  "Rx", "Ry", "Rz",		/* 3,4,5 */
-  "Throttle", "Rudder",		/* 6,7 */
-  "Wheel", "Gas", "Brake",	/* 8,9,10 */
-  "Ax11", "Ax12", "Ax13", "Ax14", "Ax15", /* 11,12,13,14,15 */
-  "Hat0X", "Hat0Y",		/* 16,17 */
-  "Hat1X", "Hat1Y",		/* 18,19 */
-  "Hat2X", "Hat2Y",		/* 20,21 */
-  "Hat3X", "Hat3Y",		/* 22,23 */
-  "Ax24", "Ax25", "Ax26", "Ax27", /* 24,25,26,27 */
-  "Ax28", "Ax29", "Ax30",	  /* 28,29,30 */
-};
-
-/* Hat joysticks give "full displacement" or "no displacement" and
-   nothing inbetween.  This means they repeat very fast, unless we take
-   special measures.  So, we note the axis numbers that belong to
-   hats. */
-#define HAT_MIN 16
-#define HAT_MAX 23
-
-#define Axis_Name(_a_) (axis_names[axmap[(_a_)]])
-
-char *button_names[KEY_MAX - BTN_MISC + 1] = {
-  /* most of these come straight from jstest.c, but I finished
-     numbering them, to make them all unique */
-  "Btn0", "Btn1", "Btn2", "Btn3", "Btn4", 
-  "Btn5", "Btn6", "Btn7", "Btn8", "Btn9", /* 0-9 */
-  "Btn10", "Btn11", "Btn12", "Btn13", "Btn14", "Btn15",	   /* 10-15 */
-  "LeftBtn", "RightBtn", "MiddleBtn", "SideBtn",	   /* 16-19 */
-  "ExtraBtn",						   /* 20 */
-  "ForwardBtn", "BackBtn",				   /* 21,22 */
-  "TaskBtn",						   /* 23 */
-  "Btn24", "Btn25", "Btn26", "Btn27", "Btn28", "Btn29", "Btn30", "Btn31", /* 24-31 */
-  "Trigger", "ThumbBtn", "ThumbBtn2", "TopBtn", "TopBtn2", /* 32-36 */
-  "PinkieBtn",						   /* 37 */
-  "BaseBtn", "BaseBtn2", "BaseBtn3", "BaseBtn4", "BaseBtn5", "BaseBtn6", /* 38-43 */
-  "BtnDead",			/* 44 */
-  "BtnA", "BtnB", "BtnC",	/* 45-47 */
-  "BtnX", "BtnY", "BtnZ",	/* 48-50 */
-  "BtnTL", "BtnTR", 		/* 51,52 */
-  "BtnTL2", "BtnTR2",		/* 53,54 */
-  "BtnSelect", "BtnStart",	/* 55,56 */
-  "BtnMode",			/* 57 */
-  "BtnThumbL", "BtnThumbR",	/* 58,59 */
-  "Btn60", "Btn61", "Btn62", "Btn63", 
-  "Btn64", "Btn65", "Btn66", "Btn67",
-  "Btn68", "Btn69", "Btn70", "Btn71", 
-  "Btn72", "Btn73", "Btn74", "Btn75", "Btn76", /* 60-76 */
-  "WheelBtn",			/* 77 */
-  "Gear up",			/* 78 */
-};
-
-#define Button_Name(_b_) (button_names[btnmap[(_b_)] - BTN_MISC])
-
-#define NAME_LENGTH 128
-
-/* This should be large enough, as the only variable parts output for
-   joystick events are numbers and modifiers.  The maximum modifiers
-   on a maximum monstrous joystick (that would be about 80 buttons,
-   all pressed at the same time) come to about 500 chars. */
-#define OUTPUT_BUF_SIZE 1024
-#define COMMAND_BUF_SIZE 1024
-
-/* max stick displacement; dividing this by the actual displacement
-   gives 1, i.e. send a simulated event every 1 tick, when the stick
-   is displaced maximally */
-
-#define STICK_MAX_DISPLACEMENT 32767.0
-
-static char output_buf[OUTPUT_BUF_SIZE];
-
-static char command_buf[COMMAND_BUF_SIZE];
-
-
-/* The first thing inside the brackets for all the event s-exps we issue.
-   The user can set this (as the second arg when calling the program);
-   the default value is a Lisp symbol followed by a space, and quote
-   for what follows; but you could make it the start of a symbol name,
-   without the space, so that each event type calls a different Lisp
-   function. */
-static char *joystick_event_name = "jse '";
-
-/* The first thing inside the brackets for all the NON-event s-exps we
-   issue.  The user can set this (as the third arg when calling the
-   program); the default value is "joystick", so that each event type calls a
-   different Lisp function. */
-static char *joystick_name = "joystick-";
-
-/* whether we are sending timestamps */
-static int timestamped = 0;
-
-/* Whether we are doing the timing, or leaving that to our consumer process */
-static int timing = 1;
-
-/* Whether we are reporting axis up and down as separate commands.
-   static.  This has effect only if timing == 0. */
-static int up_down = 1;
-
-/* Whether we are still running: */
-static int running = 1;
-
-/* Used to set the repeat rate for "all-or-nothing" joystick axes. */
-static int hat_sensitivity = 1.0;
-
-/* Whether we are acknowledging commands */
-static int acknowledge = 0;
-
-/* Whether we are showing ticks -- mostly for debugging */
-static int show_ticking = 0;
-
-
-void
-output(char *fmt, ...)
-{
-  va_list ap;
-  int formatted;
-  va_start(ap, fmt);
-
-  formatted = vsnprintf(output_buf, OUTPUT_BUF_SIZE, fmt, ap);
-
-  va_end(ap);
-
-  write(1, output_buf, strlen(output_buf));
-
-  output_buf[0] = '\0';
-}
-
-unsigned int
-getstamptime()
-/* return milliseconds since midnight */
-{
-  struct timeval tv;
-  if (gettimeofday(&tv, NULL) == 0)
-    {
-      return (tv.tv_usec / 1000) + ((tv.tv_sec % (24 * 60 * 60)) * 1000);
-    } else {
-    return 0;
-  }
-}
-
-
-static unsigned long modifiers = 0;
-/* If a button is used as a modifier, when it goes up we say "release"
-   rather than "up", so each button can be used as either a modifier
-   (if any other buttons are pressed before it is released) or a
-   button in its own right (if no other buttons are pressed before it
-   is released).  So, we need to remember which buttons have been
-   actually used as modifiers. */
-static unsigned long used_modifiers = 0;
-
-/* 5*80 should be enough for all possible modifiers pressed at once */
-static char modifiers_buf[512];
-/* abbreviations of button names */
-static char modifier_names[512];
-
-static int symbolic_modifiers = 1;
-
-static char *btn_abbrevs[KEY_MAX - BTN_MISC + 1];
-
-void
-set_modifiers_buffer()
-/* fill in modifiers_buf according to modifiers */
-{
-  if (modifiers) {
-    if (symbolic_modifiers) {
-      unsigned int i = 0;
-      unsigned int mods = modifiers;
-      char *dest = modifiers_buf;
-      while (mods) {
-	if (mods & 1) {
-	  char *src = btn_abbrevs[i];
-	  while (*src) {
-	    *dest++ = *src++;
-	  }
-	  *dest++ = '-';
-	}
-	i++;
-	mods = mods >> 1;
-      }
-      *dest = '\0';
-    } else {
-      sprintf(modifiers_buf, "m%o-", modifiers);
-    }
-  } else {
-    modifiers_buf[0] = '\0';
-  }
-}
-
-int
-main (int argc, char **argv)
-{
-  int fd;
-
-  struct js_event js;
-  struct timeval tv;
-  fd_set set;
-
-  unsigned char naxes = 2;
-  unsigned char nbuttons = 2;
-  int version = 0x000800;
-  char name[NAME_LENGTH] = "Unknown";
-  uint16_t btnmap[KEY_MAX - BTN_MISC + 1];
-  uint8_t axmap[ABS_MAX + 1];
-
-  unsigned int *rates;
-  int *countdowns;
-  double *sensitivities;
-  char **actions;
-
-  /* Commands don't always come in in a single read; this is for
-     accumulating them until we get EOL: */
-  char *command_reading = command_buf;
-
-  int i;
-
-  int tick_secs = 0;
-  int tick_usecs = 250000;
-
-  char *joystick_device = "/dev/js0";
-
-  set_modifiers_buffer();
-
-  if ((argc >= 2) && (argv[1][0] != '\0')) {
-    joystick_device = argv[1];
-  }
-
-  if ((fd = open(joystick_device, O_RDONLY)) < 0) {
-    perror("joylisp");
-    return 1;
-  }
-
-  /* Allow the caller to name the joystick, in case there are several
-     on the system.  Rather than fiddling round to vary the number of
-     args in the call to call-process, I pass the empty string if the
-     user doesn't want to label it, so look out for that. */
-  if ((argc >= 3) && (argv[2][0] != '\0')) {
-    joystick_event_name = argv[2];
-    if (strlen(joystick_event_name) > 512) {
-      /* avoid buffer overruns from over-long label names; truncate
-	 quietly, they deserve nothing better ;-) */
-      joystick_event_name[511] = '\0';
-    }
-  }
-
-  if ((argc >= 4) && (argv[3][0] != '\0')) {
-    joystick_event_name = argv[3];
-    if (strlen(joystick_name) > 512) {
-      /* avoid buffer overruns from over-long label names; truncate
-	 quietly, they deserve nothing better ;-) */
-      joystick_name[511] = '\0';
-    }
-  }
-
-  ioctl(fd, JSIOCGVERSION, &version);
-  ioctl(fd, JSIOCGAXES, &naxes);
-  ioctl(fd, JSIOCGBUTTONS, &nbuttons);
-  ioctl(fd, JSIOCGNAME(NAME_LENGTH), name);
-  ioctl(fd, JSIOCGAXMAP, axmap);
-  ioctl(fd, JSIOCGBTNMAP, btnmap);
-
-  output("(%sdeclare-version \"%d.%d.%d\")\n",
-	 joystick_name,
-	 /* I'm only guessing, I couldn't find the description of
-	    this in the header files */
-	 version >> 16,
-	 (version & 0xffff) >> 8,
-	 version & 0xff);
-  output("(%sdeclare-buttons %d)\n",
-	 joystick_name, nbuttons);
-  output("(%sdeclare-axes %d)\n", 
-	 joystick_name, naxes);
-  output("(%sdeclare-name \"%s\")\n",
-	 joystick_name, name);
-
-  rates = (unsigned int*) malloc ((naxes + 1) * sizeof(unsigned int));
-  countdowns = (int*) malloc ((naxes + 1) * sizeof(int));
-  sensitivities = (double*) malloc ((naxes + 1) * sizeof(double));
-  actions = (char**) malloc ((naxes + 1) * sizeof(char*));
-
-  for (i = 0; i < naxes; i++) {
-    countdowns[i] = rates[i] = 0;
-    sensitivities[i] = 1.0;
-    actions[i] = "-idle";
-  }
-
-  for (i = HAT_MIN; i <= HAT_MAX; i++) {
-    sensitivities[i] = hat_sensitivity;
-  }
-
-  /* make abbreviations of button names */
-  {
-    char *next = modifier_names;
-    for (i = 0; i < nbuttons; i++) {
-      char prev;
-      char *button_name = Button_Name(i);
-      btn_abbrevs[i] = next;
-      prev = *button_name;
-      for (; *button_name != '\0'; button_name++) {
-	if (isupper(*button_name) || isupper(prev) || isdigit(*button_name)) {
-	  *next++ = *button_name;
-	}
-	prev = *button_name;
-      }
-      *next++ = '\0';
-    }
-  }
-
-  /* Make stdin non-blocking */
-  {
-    int flags = fcntl(0, F_GETFL);
-    fcntl(0, F_SETFL, flags | O_NONBLOCK /* | O_DIRECT */);
-  }
-
-  while (running) {
-
-    FD_ZERO(&set);
-    FD_SET(fd, &set);
-    FD_SET(0, &set);
-
-    int command_length;
-    int selected;
-
-    tv.tv_sec = tick_secs;
-    tv.tv_usec = tick_usecs;
-
-    selected = select(fd+1, &set, NULL, NULL, &tv);
-
-    switch (selected) {
-    case -1:
-      perror("joylisp");
-      exit(1);
-      break;		/* for lintage */
-
-    case 0:
-      /* In the case of a timeout on the select, we step all the
-	 things that could be doing countdowns, and output events for
-	 any that have reached 0. */
-      if (show_ticking) {
-	output("(%stick)\n", joystick_event_name);
-      }
-      for (i = 0; i < naxes; i++) {
-	if (rates[i]) {
-	  if (--countdowns[i] == 0) {
-	    countdowns[i] = rates[i];
-	    if (timestamped) {
-	      unsigned int stamptime = getstamptime();
-	      output("(%stimestamp %d)\n", joystick_event_name, stamptime);
-	    }
-	    output("(%s%s%s%s)\n",
-		   joystick_event_name,
-		   modifiers_buf,
-		   Axis_Name(i),
-		   actions[i]);
-	    used_modifiers |= modifiers;
-	  }
-	}
-      }
-      break;
-
-    default:
-      if ((command_length = read(0, command_reading, COMMAND_BUF_SIZE)) > 0)
-	{
-	  char command_name[COMMAND_BUF_SIZE];
-	  double float_arg;
-	  int numeric_arg;
-	  int has_numeric_arg = 0;
-	  char name_arg[COMMAND_BUF_SIZE];
-	  int has_name_arg = 0;
-	  int channel = -1;	/* index into all the possible buttons/axes */
-	  int channel_index = -1; /* index into the buttons/axes that we actually have */
-	  int channel_type = -1;
-	  char *command_end;
-
-	  command_reading[command_length] = '\0';
-	  command_reading += command_length;
-
-	  if ((command_end = strchr(command_buf, '\n')) != 0) {
-	    
-	    int cmd_n_parts = sscanf(command_buf, "%s %lf", command_name, &float_arg);
-
-	    *command_end = '\0'; /* for neat acknowledgement */
-
-	    if (cmd_n_parts == 2) {
-	      /* command has numeric arg only */
-	      numeric_arg = (int)float_arg;
-	      has_numeric_arg = 1;
-	    } else if ((cmd_n_parts = sscanf(command_buf,
-					     "%s %s %lf",
-					     command_name,
-					     name_arg,
-					     &float_arg)) >= 2) {
-	      if (cmd_n_parts == 3) {
-		numeric_arg = (int)float_arg;
-		has_numeric_arg = 1;
-	      }
-	      /* command has channel (and perhaps numeric arg) */
-	      /* look for the channel number and type */
-	      for (i = 0; i < nbuttons; i++) {
-		if ((Button_Name(i) != NULL) &&
-		    (strcmp(name_arg, Button_Name(i)) == 0)) {
-		  channel = btnmap[i];
-		  channel_type = JS_EVENT_BUTTON;
-		  channel_index = i;
-		  has_name_arg = 1;
-		  break;
-		}
-	      }
-
-	      if (channel == -1) {
-		for (i = 0; i < naxes; i++) {
-		  if ((Axis_Name(i) != NULL) &&
-		      (strcmp(name_arg, Axis_Name(i)) == 0)) {
-		    channel = axmap[i];
-		    channel_type = JS_EVENT_AXIS;
-		    channel_index = i;
-		    has_name_arg = 1;
-		    break;
-		  }
-		}
-	      }
-	    } else {
-	      /* command name only */
-	    }
-
-	    if (acknowledge) {
-	      output("(command-acknowledge \"%.64s\")\n", command_buf);
-	    }
-
-	    if (strcmp(command_name, "quit") == 0) {
-	      running = 0;
-	    } else if (strcmp(command_name, "rumble") == 0) {
-	      /* send a rumble command to game controllers that support it */
-	      /* unfortunately, the Linux Joystick Driver doesn't
-		 support it (yet); the person to ask would be Vojtech
-		 Pavlik <vojtech@ucw.cz> */
-	    } else if (strcmp(command_name, "shock") == 0) {
-	      /* give the user an electric shock, like in that James
-		 Bond film ;-) --- does that require an opto-isolated
-		 joystick to avoid damaging the computing circuitry? PS
-		 only joking, I don't know of any real joysticks that do
-		 this -- alias it to rumble */
-	    } else if (strcmp(command_name, "updown") == 0) {
-	      /* send different events for the two directions of each
-		 axis, with an unsigned number for the displacement from
-		 center */
-	      timing = 0;
-	      up_down = 1;
-	    } else if (strcmp(command_name, "signed") == 0) {
-	      /* send the same event for both directions of the same
-		 axis, with a signed number for the displacement from
-		 center */
-	      timing = 0;
-	      up_down = 0;
-	    } else if (strcmp(command_name, "timing") == 0) {
-	      /* send different events for the two directions of each
-		 axis, without any numbers, but repeating at an interval
-		 set from the displacement from center */
-	      timing = 1;
-	    } else if (strcmp(command_name, "show-ticking") == 0) {
-	      if (has_numeric_arg) {
-		show_ticking = numeric_arg;
-	      } else {
-		show_ticking = 1;
-	      }
-	    } else if (strcmp(command_name, "symbolic-mods") == 0) {
-	      /* send modifiers using abbreviated names */
-	      symbolic_modifiers = 1;
-	    } else if (strcmp(command_name, "numeric-mods") == 0) {
-	      /* send combined modifiers as octal number */
-	      symbolic_modifiers = 0;
-	    } else if (strcmp(command_name, "stamped") == 0) {
-	      /* send a timestamp before each action */
-	      if (cmd_n_parts == 2) {
-		timestamped = numeric_arg;
-	      } else {
-		timestamped = 1;
-	      }
-	    } else if (strcmp(command_name, "tickrate") == 0) {
-	      /* set the tick rate */
-	      double tick_time = 1.0 / float_arg;
-	      if (has_numeric_arg) {
-		tick_secs = (int)(floor(tick_time));
-		tick_usecs = (int)(((tick_time - (double)tick_secs)) * 1000000.0);
-	      } else {
-		output("(joystick-current-tick-rate %lf)\n", 1.0 / (((double)tick_secs) + (((double)tick_usecs) / 1000000.0)));
-	      }
-	    } else if (strcmp(command_name, "sensitivity") == 0) {
-	      /* set or show the sensitivity, either overall or specifically */
-	      if (has_name_arg) {
-		if (has_numeric_arg) {
-		  if ((channel_type == JS_EVENT_AXIS) &&
-		      (channel_index >= 0) &&
-		      (channel_index < naxes)) {
-		    sensitivities[channel_index] = float_arg;
-		  }	
-		} else {
-		  output("(axis-sensitivity \"%s\" %lf)\n", Axis_Name(channel_index), sensitivities[channel_index]);
-		}
-	      } else {
-		if (has_numeric_arg) {
-		  for (i = 0; i < naxes; i++) {
-		    if ((i < HAT_MIN) || (i > HAT_MAX)) {
-		      sensitivities[i] = float_arg;
-		    }
-		  }
-		} else {
-		  for (i = 0; i < naxes; i++) {
-		    output("(axis-sensitivity \"%s\" %lf)\n", Axis_Name(i), sensitivities[i]);
-		  }		}
-	      }
-	    } else if (strcmp(command_name, "hatspeed") == 0) {
-	      /* set or show the hat speed, either overall or specifically */
-	      if (has_name_arg) {
-		if (has_numeric_arg) {
-		  if ((channel_type == JS_EVENT_AXIS) &&
-		      (channel_index >= 0) &&
-		      (channel_index < naxes) &&
-		      (channel >= HAT_MIN) &&
-		      (channel <= HAT_MAX))
-		
-		    sensitivities[channel_index] = float_arg;
-		} else {
-		  output("(hatspeed \"%s\" %lf)\n", Axis_Name(channel_index), sensitivities[channel_index]);
-		}
-	      } else {
-		if (has_numeric_arg) {
-		  for (i = 0; i <= naxes; i++) {
-		    int j = axmap[i];
-
-		    if ((j >= HAT_MIN) && (j <= HAT_MAX)) {
-		      sensitivities[i] = float_arg;
-		    }
-		  }
-		} else {
-		  for (i = 0; i <= naxes; i++) {
-		    int j = axmap[i];
-
-		    if ((j >= HAT_MIN) && (j <= HAT_MAX)) {
-		      output("(hatspeed \"%s\" %lf)\n",
-			     Axis_Name(i),
-			     sensitivities[i]);
-		    }
-		  }
-		}
-	      }
-	    } else if (strcmp(command_name, "acknowledge") == 0) {
-	      if (cmd_n_parts == 2) {
-		acknowledge = numeric_arg;
-	      } else {
-		acknowledge = 1;
-	      }
-	    } else {
-	      output("(%sbad-command \"%s\")", joystick_event_name, command_buf);
-	    }
-	    command_reading = command_buf;
-	  }
-	  continue;
-	}
-
-      if (read(fd, &js, sizeof(struct js_event)) != sizeof(struct js_event)) {
-#if 0
-	output("(%sread-error)\n", joystick_event_name);
-#endif
-	continue;
-      }
-
-      if (timestamped) {
-	unsigned int stamptime = getstamptime();
-	output("(%stimestamp %d)\n", joystick_event_name, stamptime);
-      }
-
-      switch (js.type) {
-      case JS_EVENT_BUTTON:
-	if (js.value) {
-
-	  /* value != 0: button has been pressed */
-	  output("(%s%s%s-down)\n",
-		 joystick_event_name,
-		 modifiers_buf,
-		 Button_Name(js.number));
-
-	  /* all the current modifiers have now been used */
-	  used_modifiers |= modifiers;
-
-	  /* add to modifiers after output, so it doesn't modify itself */
-	  modifiers |= (1 << js.number);
-	  set_modifiers_buffer();
-
-	} else {
-
-	  /* value == 0: button has been released */
-
-	  char *action = ((1 << js.number) & used_modifiers) ? "release" : "up";
-
-	  /* take it out of used_modifiers, as it's no longer an active modifier */
-	  used_modifiers &= ~(1 << js.number);
-
-	  /* remove from modifiers before output, so it doesn't modify itself */
-	  modifiers &= ~(1 << js.number);
-	  set_modifiers_buffer();
-
-	  output("(%s%s%s-%s)\n",
-		 joystick_event_name,
-		 modifiers_buf,
-		 Button_Name(js.number),
-		 action);
-	}
-	break;
-      case JS_EVENT_AXIS:
-	{
-	  char *action;
-	  int has_value = 1;
-	  int value = js.value;
-	  unsigned int which_axis = js.number;
-
-	  if (up_down) {
-	    if (value == 0) {
-	      action = "-center";
-	      has_value = 0;
-	    } else if (value < 0) {
-	      action = "-previous";
-	      value = -value;
-	    } else {
-	      action = "-next";
-	    }
-	  } else {
-	    action = "";
-	  }
-
-	  if (timing) {
-	    double proportion;
-	    if (value < 0) {
-	      value = -value;
-	    }
-	    proportion = ((double)value) / STICK_MAX_DISPLACEMENT;
-	    /* If using timing, don't issue an event immediately, but
-	       wait for the countdown mechanism to do it, unless it is
-	       starting from centered or has just gone back to
-	       centered.  Otherwise, we get an extra event every time
-	       the value changes, which can be very often, and makes
-	       the joystick speed up whenever you move it. */
-	    if ((value == 0) || (rates[which_axis] == 0)) {
-	      output("(%s%s%s%s)\n",
-		     joystick_event_name,
-		     modifiers_buf,
-		     Axis_Name(which_axis),
-		     action);
-	    }
-
-	    countdowns[which_axis] =
-	      rates[which_axis] =
-	      (value == 0) ? 0 : sensitivities[which_axis] / proportion;
-	    actions[which_axis] = action;
-	  } else {
-	    if (has_value) {
-	      output("(%s%s%s%s %d)\n",
-		     joystick_event_name,
-		     modifiers_buf,
-		     Axis_Name(which_axis),
-		     action,
-		     value);
-	    } else {
-	      output("(%s%s%s%s)\n",
-		     joystick_event_name,
-		     modifiers_buf,
-		     Axis_Name(which_axis),
-		     action);
-	    }
-	  }
-	  used_modifiers |= modifiers;
-	}
-	break;
-      case JS_EVENT_INIT | JS_EVENT_BUTTON:
-	output("(%sdeclare-button %d '%s)\n",
-	       joystick_name,
-	       js.number,
-	       Button_Name(js.number));
-	break;
-      case JS_EVENT_INIT | JS_EVENT_AXIS:
-	output("(%sdeclare-axis %d '%s)\n",
-	       joystick_name,
-	       js.number,
-	       Axis_Name(js.number));
-	break;
-      default:
-	if (modifiers) {
-	  output("(%sevent-%d%s %d %d)\n",
-		 joystick_event_name,
-		 js.type,
-		 js.number,
-		 modifiers_buf,
-		 js.value);
-	  used_modifiers |= modifiers;
-	} else {
-	  output("(%sevent-%d %d %d)\n",
-		 joystick_event_name,
-		 js.type,
-		 js.number,
-		 js.value);
-	}
-	break;
-      }
-    }
-  }
-
-  exit(0);
-}
+#FILE text/plain
+LyogQ29tbXVuaWNhdGUgYmV0d2VlbiBHTlUgRW1hY3MgYW5kIHRoZSBMaW51eCBKb3lzdGljayBJ
+bnRlcmZhY2UuCgogICBDb3B5cmlnaHQgKEMpIDIwMDcgSm9obiBDLiBHLiBTdHVyZHkKCiAgIEJh
+c2VkIG9uIGpzdGVzdC5jIHdoaWNoIGlzIENvcHlyaWdodCAoQykgMTk5Ni0xOTk5IFZvanRlY2gg
+UGF2bGlrIChTcG9uc29yZWQgYnkgU3VTRSkgYW5kIHJlbGVhc2VkIHVuZGVyIEdQTDIuCgogICBJ
+bml0aWFsbHkgd3JpdHRlbiAyMDA3LTA4LTI5LgoKICAgVGhpcyBmaWxlIGlzIG5vdCBwYXJ0IG9m
+IEdOVSBFbWFjcy4KCiAgIFRoZSBFbWFjcyBKb3lzdGljayBJbnRlcmZhY2UgaXMgZnJlZSBzb2Z0
+d2FyZTsgeW91IGNhbiByZWRpc3RyaWJ1dGUKICAgaXQgYW5kL29yIG1vZGlmeSBpdCB1bmRlciB0
+aGUgdGVybXMgb2YgdGhlIEdOVSBHZW5lcmFsIFB1YmxpYwogICBMaWNlbnNlIGFzIHB1Ymxpc2hl
+ZCBieSB0aGUgRnJlZSBTb2Z0d2FyZSBGb3VuZGF0aW9uOyBlaXRoZXIKICAgdmVyc2lvbiAyLCBv
+ciAoYXQgeW91ciBvcHRpb24pIGFueSBsYXRlciB2ZXJzaW9uLgoKICAgVGhlIEVtYWNzIEpveXN0
+aWNrIEludGVyZmFjZSBpcyBkaXN0cmlidXRlZCBpbiB0aGUgaG9wZSB0aGF0IGl0CiAgIHdpbGwg
+YmUgdXNlZnVsLCBidXQgV0lUSE9VVCBBTlkgV0FSUkFOVFk7IHdpdGhvdXQgZXZlbiB0aGUgaW1w
+bGllZAogICB3YXJyYW50eSBvZiBNRVJDSEFOVEFCSUxJVFkgb3IgRklUTkVTUyBGT1IgQSBQQVJU
+SUNVTEFSIFBVUlBPU0UuCiAgIFNlZSB0aGUgR05VIEdlbmVyYWwgUHVibGljIExpY2Vuc2UgZm9y
+IG1vcmUgZGV0YWlscy4KCiAgIFlvdSBzaG91bGQgaGF2ZSByZWNlaXZlZCBhIGNvcHkgb2YgdGhl
+IEdOVSBHZW5lcmFsIFB1YmxpYyBMaWNlbnNlCiAgIGFsb25nIHdpdGggdGhlIEVtYWNzIEpveXN0
+aWNrIEludGVyZmFjZTsgc2VlIHRoZSBmaWxlIENPUFlJTkcuICBJZgogICBub3QsIHdyaXRlIHRv
+IHRoZSBGcmVlIFNvZnR3YXJlIEZvdW5kYXRpb24sIEluYy4sIDUxIEZyYW5rbGluCiAgIFN0cmVl
+dCwgRmlmdGggRmxvb3IsIEJvc3RvbiwgTUEgMDIxMTAtMTMwMSwgVVNBLgoKICAgU3RhcnRpbmcg
+dGhlIHByb2dyYW0KICAgPT09PT09PT09PT09PT09PT09PT0KCiAgIFRoaXMgaXMgbm9ybWFsbHkg
+ZG9uZSBmb3IgeW91IGJ5IGBqb3lzdGljay1zdGFydCcgaW4gdGhlCiAgIGFjY29tcGFueWluZyBF
+bWFjcy1MaXNwIGZpbGUgYGpveXN0aWNrLmVsJy4gIEluIGNhc2UgeW91IHdhbnQgdG8KICAgdXNl
+IHRoaXMgaW4gc29tZSBvdGhlciBhcHBsaWNhdGlvbiwgaGVyZSBhcmUgdGhlIGRldGFpbHMgYW55
+d2F5LgoKICAgVXNhZ2U6IGpveWxpc3AgW2RldmljZSBbZGV2aWNlLWV2ZW50LWxhYmVsIFtkZXZp
+Y2Utbm9uLWV2ZW50LWxhYmVsXV1dCgogICBUaGlzIHByb2dyYW0gY29udmVydHMgam95c3RpY2sg
+ZXZlbnRzIHRvIExpc3Agcy1leHByZXNzaW9ucywgYW5kCiAgIHNlbmRzIHRoZW0gdG8gc3Rkb3V0
+LgoKICAgVGhlICJkZXZpY2UiIGFyZ3VtZW50IGlzIHRoZSBqb3lzdGljayBkZXZpY2UgdG8gcmVh
+ZCwgc3VjaCBhcwogICAvZGV2L2pzMC4KCiAgIFRoZSBvcHRpb25hbCAiZGV2aWNlLWV2ZW50LWxh
+YmVsIiBhcmd1bWVudCBpcyBzb21ldGhpbmcgdG8gcHV0IGF0CiAgIHRoZSBzdGFydCBvZiBlYWNo
+IGV2ZW50IHMtZXhwIGluc3RlYWQgb2YgImpzZSAnIiAod2hpY2ggc3RhbmRzIGZvcgogICBKb3lT
+dGljayBFdmVudCkuICBUaGlzIGlzIHBhcnRseSBpbiBjYXNlIHlvdSBoYXZlIHNldmVyYWwKICAg
+am95c3RpY2stbGlrZSBkZXZpY2VzIG9uIHRoZSBzYW1lIHN5c3RlbSwgYW5kIGFsc28gbGV0cyB5
+b3UgZ2l2ZQogICBzb21ldGhpbmcgd2l0aG91dCB0aGUgc3BhY2UgYW5kIHF1b3RlLCBzbyB0aGF0
+IGVhY2ggdHlwZSBvZiBldmVudAogICBydW5zIGEgZGlmZmVyZW50IExpc3AgZnVuY3Rpb24uCgog
+ICBUaGUgb3B0aW9uYWwgImRldmljZS1ldmVudC1sYWJlbCIgYXJndW1lbnQgaXMgc29tZXRoaW5n
+IHRvIHB1dCBhdAogICB0aGUgc3RhcnQgb2YgZWFjaCBub24tZXZlbnQgcy1leHAgaW5zdGVhZCBv
+ZiAiam95c3RpY2stIi4gIFRoaXMgaXMKICAgcGFydGx5IGluIGNhc2UgeW91IGhhdmUgc2V2ZXJh
+bCBqb3lzdGljay1saWtlIGRldmljZXMgb24gdGhlIHNhbWUKICAgc3lzdGVtLiAgVGhlIGRlZmF1
+bHQgaXMgc3VjaCB0aGF0IGVhY2ggdHlwZSBvZiBub24tZXZlbnQKICAgKGRlY2xhcmF0aW9ucyBl
+dGMpIHJ1bnMgYSBkaWZmZXJlbnQgTGlzcCBmdW5jdGlvbi4KCiAgIEJ1dHRvbnMKICAgPT09PT09
+PQoKICAgV2hlbiB5b3UgcHJlc3MgYSBidXR0b24gKHNheSB0aGUgYnV0dG9uIFRyaWdnZXIpLCBh
+biBleHByZXNzaW9uIG9mCiAgIHRoZSBmb3JtCgogICAgICAoanNlICdUcmlnZ2VyLWRvd24pCgog
+ICBpcyBzZW50IHRvIHN0ZG91dCwgYW5kIGlmIHRoYXQgYnV0dG9uIGlzIHRoZW4gcmVsZWFzZWQg
+d2l0aG91dCBhbnkKICAgb3RoZXIgYnV0dG9ucyBoYXZpbmcgYmVlbiBwcmVzc2VkLAoKICAgICAg
+KGpzZSAnVHJpZ2dlci11cCkKCiAgIGlzIG91dHB1dC4KCiAgIElmIGEgYnV0dG9uIGlzIHByZXNz
+ZWQgYW5kIGhlbGQgd2hpbGUgYW5vdGhlciBidXR0b24gaXMgcHJlc3NlZCwKICAgdGhlICJkb3du
+IiBldmVudCBmb3IgdGhlIGZpcnN0IGJ1dHRvbiBpcyBzZW50IGFzIGJlZm9yZSAoYXMgd2UKICAg
+ZG9uJ3QgaGF2ZSB0aGUgdGVjaG5vbG9neSB0byBwcmVkaWN0IHdoZXRoZXIgYW5vdGhlciBidXR0
+b24gd2lsbCBiZQogICBwcmVzc2VkIGJlZm9yZSB0aGUgZmlyc3QgaXMgcmVsZWFzZWQpLCBidXQg
+dGhlIHNlY29uZCBidXR0b24sIHNheQogICBidXR0b24gVG9wQnRuLCBnZXRzIHNvbWUgbW9kaWZp
+ZXJzIGluY2x1ZGVkLCBlaXRoZXIgYXMgYSBzdHJpbmcgb2YKICAgYWJicmV2aWF0ZWQgYnV0dG9u
+IG5hbWVzLCBvciBhcyBhbiBvY3RhbCBudW1iZXIgZW1iZWRkZWQgaW4gdGhlCiAgIGZ1bmN0b3Ig
+bmFtZToKCiAgICAgIChqc2UgJ0JhQnQyLVRvcEJ0bi1kb3duKQogICAgICAoanNlICdCYUJ0Mi1U
+b3BCdG4tdXApCgogICAgICAoanNlICdtMjAwLVRvcEJ0bi1kb3duKQogICAgICAoanNlICdtMjAw
+LVRvcEJ0bi11cCkKCiAgIHdoZXJlIDIwMCBpcyB0aGUgb2N0YWwgY29kZSBmb3IganVzdCBiaXQg
+NyAodGhlIG1vZGlmaWVyIGJ1dHRvbgogICBudW1iZXIpIGJlaW5nIHNldC4gIFRoZSBhYmJyZXZp
+YXRpb25zIGFyZSBtYWRlIG9mIGFueSB1cHBlci1jYXNlCiAgIGxldHRlcnMgaW4gdGhlIGZ1bGwg
+bmFtZSBvZiB0aGUgYnV0dG9uLCBhbnkgbG93ZXItY2FzZSBsZXR0ZXJzCiAgIHByZWNlZGVkIGJ5
+IGFuIHVwcGVyLWNhc2UgbGV0dGVyLCBhbmQgYW55IGRpZ2l0cy4gIFRoaXMgc2VlbXMgdG8gYmUK
+ICAgYSByZWFzb25hYmx5IHNpbXBsZSB3YXkgb2YgbWFraW5nIHVuaXF1ZSBhYmJyZXZpYXRpb25z
+LCBnaXZpbmcgdGhlCiAgIGNvbGxlY3Rpb24gb2YgYnV0dG9uIG5hbWVzIHByb3ZpZGVkLgogICAK
+ICAgQW55IG51bWJlciBvZiBtb2RpZmllcnMgbWF5IGJlIHVzZWQgYXQgb25jZS4gIChUaGVyZSBh
+cmUKICAgcG90ZW50aWFsbHkgbmVhcmx5IDgwIG9mIHRoZW0sIGdpdmVuIGEgc3VpdGFibGUgbW9u
+c3Ryb3VzIHN0aWNrISkKCiAgIFdoZW4gYnV0dG9uIDcgaXMgZXZlbnR1YWxseSByZWxlYXNlZCwg
+YmVjYXVzZSBpdCBoYXMgYmVlbiB1c2VkIGFzIGEKICAgbW9kaWZpZXIsIGluc3RlYWQgb2YgYW4g
+InVwIiBldmVudCwgaXQgZ2VuZXJhdGVzIGEgInJlbGVhc2UiIGV2ZW50LgoKICAgICAgKGpzZSAn
+VHJpZ2dlci1yZWxlYXNlKQoKICAgVGhpcyB3YXksIGVhY2ggYnV0dG9uIGNhbiBiZSB1c2VkIGJv
+dGggaW4gaXRzIG93biByaWdodCAocHJlc3MgYW5kCiAgIHJlbGVhc2UpIG9yIGFzIGEgbW9kaWZp
+ZXIgKHByZXNzIGFuZCBob2xkIHdoaWxlIHByZXNzaW5nIG90aGVyCiAgIGJ1dHRvbnMpLgoKICAg
+QWxzbywgbm90ZSB0aGF0IGlmIHlvdSdyZSB1c2luZyAiLXVwIiBjb2RlcyBmb3IgY2hvcmRpbmcs
+IGl0IG1ha2VzCiAgIGEgZGlmZmVyZW5jZSB3aGljaCBidXR0b24geW91IHRha2UgeW91ciBmaW5n
+ZXIgb2ZmIGxhc3QuICBUaGlzCiAgIG1ha2VzIGZvciBhIHBvdGVudGlhbGx5IGV4dHJlbWVseSBz
+dWJ0bGUgY2hvcmRpbmcga2V5Ym9hcmQhCgogICBKb3lzdGljayBheGVzCiAgID09PT09PT09PT09
+PT0KCiAgIFdoZW4geW91IG1vdmUgYSAic3RpY2siIGNvbnRyb2wsIHRoZXJlIGFyZSB0aHJlZSBt
+b2RlcyBvZiBvdXRwdXQKICAgd3JpdHRlbiBpbnRvIHRoZSBjb2RlLCBjYWxsZWQgInRpbWluZyIs
+ICJ1cF9kb3duIiBhbmQgInNpZ25lZCIuICBBdAogICB0aGUgbW9tZW50LCBpdCBpcyBoYXJkd2ly
+ZWQgdG8gdXNlICJ0aW1pbmciLCBidXQgd2hlbiBjb21tYW5kcyB0bwogICB0aGlzIHByb2dyYW0g
+ZnJvbSB0aGUgY2FsbGluZyBwcm9ncmFtIChlLmcuIEVtYWNzKSBhcmUgaW1wbGVtZW50ZWQsCiAg
+IGl0J2xsIGJlIHN3aXRjaGFibGUuCgogICBJbiB0aW1pbmcgbW9kZSwgZWFjaCBqb3lzdGljayBl
+dmVudCBpcyBzZW50IGFzIG9uZSBvZiB0aGVzZToKCiAgICAgKGpzZSAnWC1wcmV2aW91cykKICAg
+ICAoanNlICdYLWNlbnRlcikKICAgICAoanNlICdYLW5leHQpCgogICBhbmQgdGhlIGV2ZW50IGlz
+IHNlbnQgcmVwZWF0ZWRseSAoZXhjZXB0IGZvciAtY2VudGVyKSwgYXQgYSByYXRlCiAgIGRldGVy
+bWluZWQgYnkgdGhlIGRpc3BsYWNlbWVudCBvZiB0aGF0IHN0aWNrIGF4aXMgZnJvbSBpdHMgY2Vu
+dGVyZWQKICAgcG9zaXRpb24uCgogICBJbiB1cF9kb3duIG1vZGUsIGVhY2ggam95c3RpY2sgZXZl
+bnQgaXMgc2VudCBhczoKCiAgICAgKGpzZSAnWC1wcmV2aW91cyBhbW91bnQpCiAgICAgKGpzZSAn
+WC1jZW50ZXIpCiAgICAgKGpzZSAnWC1uZXh0IGFtb3VudCkKCiAgIGFjY29yZGluZyB0byB3aGV0
+aGVyIHRoZSBkaXJlY3Rpb24gaXMgdGhlIG9uZSBFbWFjcyByZWdhcmRzIGFzCiAgICJwcmV2aW91
+cyIgKGkuZS4gdXAgb3IgbGVmdCwgZGVwZW5kaW5nIG9uIHRoZSBheGlzKSBvciBhcyAibmV4dCIK
+ICAgKGRvd24gb3IgcmlnaHQpLCBvciAiY2VudGVyIiB3aGljaCBpcyBvdXRwdXQgd2hlbiB0aGUg
+am95c3RpY2sKICAgcmV0dXJucyB0byB0aGUgY2VudGVyLiAgVGhlICJhbW91bnQiIGlzIHRoZSBu
+dW1iZXIgcmVjZWl2ZWQgZnJvbQogICB0aGUgam95c3RpY2sgZXZlbnQsIGFuZCBpcyB0aGUgYW1v
+dW50ICh1bnNpZ25lZCkgYnkgd2hpY2ggdGhlIHN0aWNrCiAgIGlzIGRpc3BsYWNlZCBmcm9tIHRo
+ZSBjZW50ZXIuICBUaGUgYW1vdW50IGZvciAiY2VudGVyIiBpcwogICBpbXBsaWNpdGx5IDAsIHNv
+IGlzIG5vdCBzZW50LgoKICAgSW4gc2lnbmVkIG1vZGUsIHRoZSBqb3lzdGljayBldmVudHMgYXJl
+IHNlbnQgYXM6CgogICAgIChqc2UgJ1ggYW1vdW50KQoKICAgd2hlcmUgdGhlIGFtb3VudCBtYXkg
+YmUgcG9zaXRpdmUgb3IgbmVnYXRpdmUuCgogICBJbiBzaWduZWQgYW5kIHVwX2Rvd24gbW9kZXMs
+IHRoZSBldmVudHMgYXJlIG5vdCBhdXRvbWF0aWNhbGx5CiAgIHJlcGVhdGVkLgoKICAgSW4gYW55
+IGNhc2UsIG1vZGlmaWVyIG51bWJlcnMgYXJlIHNlbnQgaW4gb2N0YWw6CgogICAgIChqc2UgJ20y
+MDAtWC1wcmV2aW91cyBhbW91bnQpCiAgICAgKGpzZSAnbTIwMC1YLWNlbnRlcikKICAgICAoanNl
+ICdtMjAwLVgtbmV4dCBhbW91bnQpCgogICBhbmQgaXQgaXMgcmVtZW1iZXJlZCB0aGF0IHRob3Nl
+IGJ1dHRvbnMgaGF2ZSBiZWVuIHVzZWQgYXMKICAgbW9kaWZpZXJzLCBhbmQgaGVuY2UgZ2VuZXJh
+dGUgInJlbGVhc2UiIGluc3RlYWQgb2YgInVwIiB3aGVuCiAgIHJlbGVhc2VkLgoKICAgQ29udHJv
+bGxpbmcgdGhlIGludGVyZmFjZSBwcm9ncmFtCiAgID09PT09PT09PT09PT09PT09PT09PT09PT09
+PT09PT09PQoKICAgVGhlIHByb2dyYW0gYWNjZXB0cyAic2hlbGwtc3R5bGUiIGNvbW1hbmRzIG9u
+IHN0ZGluLiAgVGhlIGNvbW1hbmRzCiAgIGFyZSBhcyBmb2xsb3dzOgoKICAgICBhY2tub3dsZWRn
+ZSBbYXJnXQoKICAgICAgIFdpdGggYXJnID09IDAsIHR1cm4gY29tbWFuZCBhY2tub3dsZWRnbWVu
+dCBvZmY7IG90aGVyd2lzZSB0dXJuCiAgICAgICBpdCBvbi4KCiAgICAgaGF0c3BlZWQKICAgICBo
+YXRzcGVlZCB2YWx1ZQogICAgIGhhdHNwZWVkIGNoYW5uZWwKICAgICBoYXRzcGVlZCBjaGFubmVs
+IHZhbHVlCgogICAgICAgU2V0IHRoZSBoYXQgc3BlZWQuICBUaGlzIGlzIHRoZSBzYW1lIGFzIGBz
+ZW5zaXRpdml0eScsIGJ1dCBvbmx5CiAgICAgICBhcHBsaWVzIHRvIGF4ZXMgdGhhdCBhcmUgZGVz
+Y3JpYmVkIGFzIGhhdCBzd2l0Y2ggYXhlcy4gIChUaGVzZQogICAgICAgYXJlIGBhbGwtb3Itbm90
+aGluZycgam95c3RpY2sgYXhlcywgc28geW91IG1heSB3ZWxsIHdhbnQgdG8KICAgICAgIG1ha2Ug
+dGhlbSBsZXNzIHNlbnNpdGl2ZSB0aGFuIHRoZSBvcmRpbmFyeSBvbmVzLikKCiAgICAgbnVtZXJp
+Yy1tb2RzCiAgICAgc3ltYm9saWMtbW9kcwoKICAgICAgIFNldCB0aGUgbW9kaWZpZXIgcmVwcmVz
+ZW50YXRpb24gdG8gbnVtZXJpYyBvciBzeW1ib2xpYy4KCiAgICAgcXVpdAoKICAgICAgIFF1aXQg
+dGhlIGpveXN0aWNrLXRvLWxpc3AgcHJvZ3JhbS4KCiAgICAgcnVtYmxlCgogICAgICAgTWFrZSB0
+aGUgam95c3RpY2sgLyBrZXlwYWQgcnVtYmxlLiAgTm90IGltcGxlbWVudGVkLCBhcyB0aGVyZSdz
+CiAgICAgICBubyBtZW50aW9uIG9mIHRoaXMgaW4gdGhlIGpveXN0aWNrIGRyaXZlciBkb2N1bWVu
+dGF0aW9uLgoKICAgICBzZW5zaXRpdml0eQogICAgIHNlbnNpdGl2aXR5IHZhbHVlCiAgICAgc2Vu
+c2l0aXZpdHkgYXhpcyB2YWx1ZQogICAgIHNlbnNpdGl2aXR5IGF4aXMKICAgICAKICAgICAgIFdp
+dGggbm8gYXJncywgb3Igd2l0aCBvbmx5IGFuIGF4aXMgbmFtZSwgcmVwb3J0IGFsbCBvciBvbmUg
+b2YKICAgICAgIHRoZSBzZW5zaXRpdml0aWVzLgoKICAgICAgIFdpdGggYSB2YWx1ZSwgYW5kIHdp
+dGggb3Igd2l0aG91dCBhbiBheGlzIG5hbWUsIHNldCBvbmUgb3IgYWxsCiAgICAgICBvZiB0aGUg
+c2Vuc2l0aXZpdGllcy4KCiAgICAgICBWYWx1ZSBzaG91bGQgYmUgYSBmbG9hdGluZy1wb2ludCB2
+YWx1ZSBiZXR3ZWVuIDAuMCBhbmQgMS4wOyBpdAogICAgICAgaXMgdGhlIHByb3BvcnRpb24gb2Yg
+aW50ZXJuYWwgdGlja3MgZm9yIHdoaWNoIGZ1bGwgZGlzcGxhY2VtZW50CiAgICAgICBvZiB0aGUg
+am95c3RpY2sgaW4gdGhpcyBvdXRwdXQgd2lsbCBwcm9kdWNlIGFuIGV2ZW50IGluCiAgICAgICBg
+dGltaW5nJyBtb2RlLiAgU28sIGZvciBleGFtcGxlLCBpZiB5b3Ugc2V0IGFuIGF4aXMnCiAgICAg
+ICBzZW5zaXRpdml0eSB0byAwLjI1LCBpdCB3aWxsIHByb2R1Y2UgYW4gZXZlbnQgYXQgbW9zdCBv
+bmNlCiAgICAgICBldmVyeSA0IHRpY2tzLgoKICAgICBzaG9jawoKICAgICAgIE1ha2UgdGhlIGpv
+eXN0aWNrIC8ga2V5cGFkIGdpdmUgdGhlIHVzZXIgYSBzaG9jay4gIE5vdAogICAgICAgaW1wbGVt
+ZW50ZWQsIGFzIHRoZXJlJ3Mgbm8gbWVudGlvbiBvZiB0aGlzIGluIHRoZSBqb3lzdGljawogICAg
+ICAgZHJpdmVyIGRvY3VtZW50YXRpb24uICBBbHNvLCB0aGlzIGlzIGp1c3QgYSBqb2tlIGVudHJ5
+IGZyb20gYQogICAgICAgSmFtZXMgQm9uZCBmaWxtLCBidXQgSSB3b3VsZG4ndCBiZSBzdXJwcmlz
+ZWQgaWYgc29tZW9uZSByZWFsbHkKICAgICAgIG1ha2VzIG9uZSBzb21ldGltZS4KCiAgICAgc2hv
+dy10aWNraW5nIFthcmddCgogICAgICAgV2l0aCBhcmcgPT0gMCwgZG9uJ3Qgc2hvdyBldmVyeSBp
+bnRlcm5hbCB0aWNrLgogICAgICAgT3RoZXJ3aXNlLCBzaG93IGFsbCB0aGUgaW50ZXJuYWwgdGlj
+a3MuCiAgICAgICBNb3N0bHkgbWVhbnQgZm9yIGRlYnVnZ2luZy4KCiAgICAgc2lnbmVkCgogICAg
+ICAgT3V0cHV0IHRoZSBqb3lzdGljayBkaXNwbGFjZW1lbnQgYXMgYSBzaWduZWQgdmFsdWUuICBT
+ZWUgYWxzbwogICAgICAgYHRpbWluZycgYW5kIGB1cGRvd24nLgoKICAgICBzdGFtcGVkIFthcmdd
+CgogICAgICAgV2l0aCBhcmcgPT0gMCwgZG9uJ3Qgc2VuZCB0aW1lc3RhbXBzIGJlZm9yZSBlYWNo
+IGV2ZW50LgogICAgICAgT3RoZXJ3aXNlLCBzZW5kIGEgdGltZXN0YW1wIGJlZm9yZSBlYWNoIGV2
+ZW50LgoKICAgICB0aWNrcmF0ZSBbdGlja3MtcGVyLXNlY29uZF0KCiAgICAgICBXaXRoIGFyZ3Vt
+ZW50LCBzZXQgdGhlIHRpY2tzIHBlciBzZWNvbmQgKGZvciB0aGUgYHRpbWluZycKICAgICAgIG91
+dHB1dCkgdG8gdGlja3MtcGVyLXNlY29uZC4KCiAgICAgICBXaXRoIG5vIGFyZ3VtZW50LCByZXBv
+cnQgdGhlIGN1cnJlbnQgdGljayByYXRlLgoKICAgICAgIElmIHlvdSBzZXQgdGhpcyB0byBhIGxh
+cmdlciB2YWx1ZSAoYW5kIHlvdSdsbCBwcm9iYWJseSB3YW50IHRvCiAgICAgICB0dXJuIGBzZW5z
+aXRpdml0eScgZG93biBpbiB0aGF0IGNhc2UpLCB5b3UgZ2V0IGZpbmVyCiAgICAgICBkaXNjcmlt
+aW5hdGlvbiBvZiB0aGUgam95c3RpY2sgcG9zaXRpb24sIGF0IHRoZSBleHBlbnNlIG9mCiAgICAg
+ICB1c2luZyBtb3JlIENQVSB0aW1lLiAgU3RpbGwsIHRoYXQgcHJvYmFibHkgd29uJ3QgYmUgbXVj
+aC4KCiAgICAgdGltaW5nCgogICAgICAgV2hlbiBhIGpveXN0aWNrIGF4aXMgaXMgb2ZmLWNlbnRl
+ciwgc2VuZCBhIHN0cmVhbSBvZiBldmVudHMsIGF0CiAgICAgICBhIHJhdGUgZGV0ZXJtaW5lZCBi
+eSBob3cgZmFyIG9mZi1jZW50ZXIgaXQgaXMuICBUaGlzIGlzIHRoZQogICAgICAgZGVmYXVsdC4g
+IFNlZSBhbHNvIGBzaWduZWQnIGFuZCBgdXBkb3duJy4gIFRoZSBzY2FsZSBvZiB0aGUKICAgICAg
+IGluZGl2aWR1YWwgYXhpcyBpcyBzZXQgd2l0aCB0aGUgYHNlbnNpdGl2aXR5JyBjb21tYW5kLCBh
+bmQgdGhlCiAgICAgICBvdmVyYWxsIHJhdGUgb2YgdGhlIHN5c3RlbSBpcyBzZXQgd2l0aCBgdGlj
+a3JhdGUnLgoKICAgICB1cGRvd24KCiAgICAgICBPdXRwdXQgdGhlIGpveXN0aWNrIGRpc3BsYWNl
+bWVudCBhcyBhbiB1bnNpZ25lZCB2YWx1ZSwgYW5kIGdpdmUKICAgICAgIHRoZSBzaWduIGJ5IGlz
+c3VpbmcgZGlmZmVyZW50IGV2ZW50IHR5cGVzLiAgU2VlIGFsc28gYHNpZ25lZCcKICAgICAgIGFu
+ZCBgdGltaW5nJyBvdXRwdXQgbW9kZXMuCgogKi8KCgojaW5jbHVkZSA8c3lzL2lvY3RsLmg+CiNp
+bmNsdWRlIDxzeXMvdGltZS5oPgojaW5jbHVkZSA8c3lzL3R5cGVzLmg+CiNpbmNsdWRlIDxzdGRs
+aWIuaD4KI2luY2x1ZGUgPGZjbnRsLmg+CiNpbmNsdWRlIDx1bmlzdGQuaD4KI2luY2x1ZGUgPHN0
+ZGlvLmg+CiNpbmNsdWRlIDxlcnJuby5oPgojaW5jbHVkZSA8c3RyaW5nLmg+CiNpbmNsdWRlIDxz
+dGRsaWIuaD4KI2luY2x1ZGUgPHN0ZGludC5oPgojaW5jbHVkZSA8c3RkYXJnLmg+CiNpbmNsdWRl
+IDxjdHlwZS5oPgojaW5jbHVkZSA8bWF0aC5oPgoKI2luY2x1ZGUgPGxpbnV4L2lucHV0Lmg+CiNp
+bmNsdWRlIDxsaW51eC9qb3lzdGljay5oPgoKY2hhciAqYXhpc19uYW1lc1tBQlNfTUFYICsgMV0g
+PSB7CiAgLyogbW9zdCBvZiB0aGVzZSBjb21lIHN0cmFpZ2h0IGZyb20ganN0ZXN0LmMsIGJ1dCBJ
+IGZpbmlzaGVkCiAgICAgbnVtYmVyaW5nIHRoZW0sIHRvIG1ha2UgdGhlbSBhbGwgdW5pcXVlICov
+CiAgIlgiLCAiWSIsICJaIiwJCS8qIDAsMSwyICovCiAgIlJ4IiwgIlJ5IiwgIlJ6IiwJCS8qIDMs
+NCw1ICovCiAgIlRocm90dGxlIiwgIlJ1ZGRlciIsCQkvKiA2LDcgKi8KICAiV2hlZWwiLCAiR2Fz
+IiwgIkJyYWtlIiwJLyogOCw5LDEwICovCiAgIkF4MTEiLCAiQXgxMiIsICJBeDEzIiwgIkF4MTQi
+LCAiQXgxNSIsIC8qIDExLDEyLDEzLDE0LDE1ICovCiAgIkhhdDBYIiwgIkhhdDBZIiwJCS8qIDE2
+LDE3ICovCiAgIkhhdDFYIiwgIkhhdDFZIiwJCS8qIDE4LDE5ICovCiAgIkhhdDJYIiwgIkhhdDJZ
+IiwJCS8qIDIwLDIxICovCiAgIkhhdDNYIiwgIkhhdDNZIiwJCS8qIDIyLDIzICovCiAgIkF4MjQi
+LCAiQXgyNSIsICJBeDI2IiwgIkF4MjciLCAvKiAyNCwyNSwyNiwyNyAqLwogICJBeDI4IiwgIkF4
+MjkiLCAiQXgzMCIsCSAgLyogMjgsMjksMzAgKi8KfTsKCi8qIEhhdCBqb3lzdGlja3MgZ2l2ZSAi
+ZnVsbCBkaXNwbGFjZW1lbnQiIG9yICJubyBkaXNwbGFjZW1lbnQiIGFuZAogICBub3RoaW5nIGlu
+YmV0d2Vlbi4gIFRoaXMgbWVhbnMgdGhleSByZXBlYXQgdmVyeSBmYXN0LCB1bmxlc3Mgd2UgdGFr
+ZQogICBzcGVjaWFsIG1lYXN1cmVzLiAgU28sIHdlIG5vdGUgdGhlIGF4aXMgbnVtYmVycyB0aGF0
+IGJlbG9uZyB0bwogICBoYXRzLiAqLwojZGVmaW5lIEhBVF9NSU4gMTYKI2RlZmluZSBIQVRfTUFY
+IDIzCgojZGVmaW5lIEF4aXNfTmFtZShfYV8pIChheGlzX25hbWVzW2F4bWFwWyhfYV8pXV0pCgpj
+aGFyICpidXR0b25fbmFtZXNbS0VZX01BWCAtIEJUTl9NSVNDICsgMV0gPSB7CiAgLyogbW9zdCBv
+ZiB0aGVzZSBjb21lIHN0cmFpZ2h0IGZyb20ganN0ZXN0LmMsIGJ1dCBJIGZpbmlzaGVkCiAgICAg
+bnVtYmVyaW5nIHRoZW0sIHRvIG1ha2UgdGhlbSBhbGwgdW5pcXVlICovCiAgIkJ0bjAiLCAiQnRu
+MSIsICJCdG4yIiwgIkJ0bjMiLCAiQnRuNCIsIAogICJCdG41IiwgIkJ0bjYiLCAiQnRuNyIsICJC
+dG44IiwgIkJ0bjkiLCAvKiAwLTkgKi8KICAiQnRuMTAiLCAiQnRuMTEiLCAiQnRuMTIiLCAiQnRu
+MTMiLCAiQnRuMTQiLCAiQnRuMTUiLAkgICAvKiAxMC0xNSAqLwogICJMZWZ0QnRuIiwgIlJpZ2h0
+QnRuIiwgIk1pZGRsZUJ0biIsICJTaWRlQnRuIiwJICAgLyogMTYtMTkgKi8KICAiRXh0cmFCdG4i
+LAkJCQkJCSAgIC8qIDIwICovCiAgIkZvcndhcmRCdG4iLCAiQmFja0J0biIsCQkJCSAgIC8qIDIx
+LDIyICovCiAgIlRhc2tCdG4iLAkJCQkJCSAgIC8qIDIzICovCiAgIkJ0bjI0IiwgIkJ0bjI1Iiwg
+IkJ0bjI2IiwgIkJ0bjI3IiwgIkJ0bjI4IiwgIkJ0bjI5IiwgIkJ0bjMwIiwgIkJ0bjMxIiwgLyog
+MjQtMzEgKi8KICAiVHJpZ2dlciIsICJUaHVtYkJ0biIsICJUaHVtYkJ0bjIiLCAiVG9wQnRuIiwg
+IlRvcEJ0bjIiLCAvKiAzMi0zNiAqLwogICJQaW5raWVCdG4iLAkJCQkJCSAgIC8qIDM3ICovCiAg
+IkJhc2VCdG4iLCAiQmFzZUJ0bjIiLCAiQmFzZUJ0bjMiLCAiQmFzZUJ0bjQiLCAiQmFzZUJ0bjUi
+LCAiQmFzZUJ0bjYiLCAvKiAzOC00MyAqLwogICJCdG5EZWFkIiwJCQkvKiA0NCAqLwogICJCdG5B
+IiwgIkJ0bkIiLCAiQnRuQyIsCS8qIDQ1LTQ3ICovCiAgIkJ0blgiLCAiQnRuWSIsICJCdG5aIiwJ
+LyogNDgtNTAgKi8KICAiQnRuVEwiLCAiQnRuVFIiLCAJCS8qIDUxLDUyICovCiAgIkJ0blRMMiIs
+ICJCdG5UUjIiLAkJLyogNTMsNTQgKi8KICAiQnRuU2VsZWN0IiwgIkJ0blN0YXJ0IiwJLyogNTUs
+NTYgKi8KICAiQnRuTW9kZSIsCQkJLyogNTcgKi8KICAiQnRuVGh1bWJMIiwgIkJ0blRodW1iUiIs
+CS8qIDU4LDU5ICovCiAgIkJ0bjYwIiwgIkJ0bjYxIiwgIkJ0bjYyIiwgIkJ0bjYzIiwgCiAgIkJ0
+bjY0IiwgIkJ0bjY1IiwgIkJ0bjY2IiwgIkJ0bjY3IiwKICAiQnRuNjgiLCAiQnRuNjkiLCAiQnRu
+NzAiLCAiQnRuNzEiLCAKICAiQnRuNzIiLCAiQnRuNzMiLCAiQnRuNzQiLCAiQnRuNzUiLCAiQnRu
+NzYiLCAvKiA2MC03NiAqLwogICJXaGVlbEJ0biIsCQkJLyogNzcgKi8KICAiR2VhciB1cCIsCQkJ
+LyogNzggKi8KfTsKCiNkZWZpbmUgQnV0dG9uX05hbWUoX2JfKSAoYnV0dG9uX25hbWVzW2J0bm1h
+cFsoX2JfKV0gLSBCVE5fTUlTQ10pCgojZGVmaW5lIE5BTUVfTEVOR1RIIDEyOAoKLyogVGhpcyBz
+aG91bGQgYmUgbGFyZ2UgZW5vdWdoLCBhcyB0aGUgb25seSB2YXJpYWJsZSBwYXJ0cyBvdXRwdXQg
+Zm9yCiAgIGpveXN0aWNrIGV2ZW50cyBhcmUgbnVtYmVycyBhbmQgbW9kaWZpZXJzLiAgVGhlIG1h
+eGltdW0gbW9kaWZpZXJzCiAgIG9uIGEgbWF4aW11bSBtb25zdHJvdXMgam95c3RpY2sgKHRoYXQg
+d291bGQgYmUgYWJvdXQgODAgYnV0dG9ucywKICAgYWxsIHByZXNzZWQgYXQgdGhlIHNhbWUgdGlt
+ZSkgY29tZSB0byBhYm91dCA1MDAgY2hhcnMuICovCiNkZWZpbmUgT1VUUFVUX0JVRl9TSVpFIDEw
+MjQKI2RlZmluZSBDT01NQU5EX0JVRl9TSVpFIDEwMjQKCi8qIG1heCBzdGljayBkaXNwbGFjZW1l
+bnQ7IGRpdmlkaW5nIHRoaXMgYnkgdGhlIGFjdHVhbCBkaXNwbGFjZW1lbnQKICAgZ2l2ZXMgMSwg
+aS5lLiBzZW5kIGEgc2ltdWxhdGVkIGV2ZW50IGV2ZXJ5IDEgdGljaywgd2hlbiB0aGUgc3RpY2sK
+ICAgaXMgZGlzcGxhY2VkIG1heGltYWxseSAqLwoKI2RlZmluZSBTVElDS19NQVhfRElTUExBQ0VN
+RU5UIDMyNzY3LjAKCnN0YXRpYyBjaGFyIG91dHB1dF9idWZbT1VUUFVUX0JVRl9TSVpFXTsKCnN0
+YXRpYyBjaGFyIGNvbW1hbmRfYnVmW0NPTU1BTkRfQlVGX1NJWkVdOwoKCi8qIFRoZSBmaXJzdCB0
+aGluZyBpbnNpZGUgdGhlIGJyYWNrZXRzIGZvciBhbGwgdGhlIGV2ZW50IHMtZXhwcyB3ZSBpc3N1
+ZS4KICAgVGhlIHVzZXIgY2FuIHNldCB0aGlzIChhcyB0aGUgc2Vjb25kIGFyZyB3aGVuIGNhbGxp
+bmcgdGhlIHByb2dyYW0pOwogICB0aGUgZGVmYXVsdCB2YWx1ZSBpcyBhIExpc3Agc3ltYm9sIGZv
+bGxvd2VkIGJ5IGEgc3BhY2UsIGFuZCBxdW90ZQogICBmb3Igd2hhdCBmb2xsb3dzOyBidXQgeW91
+IGNvdWxkIG1ha2UgaXQgdGhlIHN0YXJ0IG9mIGEgc3ltYm9sIG5hbWUsCiAgIHdpdGhvdXQgdGhl
+IHNwYWNlLCBzbyB0aGF0IGVhY2ggZXZlbnQgdHlwZSBjYWxscyBhIGRpZmZlcmVudCBMaXNwCiAg
+IGZ1bmN0aW9uLiAqLwpzdGF0aWMgY2hhciAqam95c3RpY2tfZXZlbnRfbmFtZSA9ICJqc2UgJyI7
+CgovKiBUaGUgZmlyc3QgdGhpbmcgaW5zaWRlIHRoZSBicmFja2V0cyBmb3IgYWxsIHRoZSBOT04t
+ZXZlbnQgcy1leHBzIHdlCiAgIGlzc3VlLiAgVGhlIHVzZXIgY2FuIHNldCB0aGlzIChhcyB0aGUg
+dGhpcmQgYXJnIHdoZW4gY2FsbGluZyB0aGUKICAgcHJvZ3JhbSk7IHRoZSBkZWZhdWx0IHZhbHVl
+IGlzICJqb3lzdGljayIsIHNvIHRoYXQgZWFjaCBldmVudCB0eXBlIGNhbGxzIGEKICAgZGlmZmVy
+ZW50IExpc3AgZnVuY3Rpb24uICovCnN0YXRpYyBjaGFyICpqb3lzdGlja19uYW1lID0gImpveXN0
+aWNrLSI7CgovKiB3aGV0aGVyIHdlIGFyZSBzZW5kaW5nIHRpbWVzdGFtcHMgKi8Kc3RhdGljIGlu
+dCB0aW1lc3RhbXBlZCA9IDA7CgovKiBXaGV0aGVyIHdlIGFyZSBkb2luZyB0aGUgdGltaW5nLCBv
+ciBsZWF2aW5nIHRoYXQgdG8gb3VyIGNvbnN1bWVyIHByb2Nlc3MgKi8Kc3RhdGljIGludCB0aW1p
+bmcgPSAxOwoKLyogV2hldGhlciB3ZSBhcmUgcmVwb3J0aW5nIGF4aXMgdXAgYW5kIGRvd24gYXMg
+c2VwYXJhdGUgY29tbWFuZHMuCiAgIHN0YXRpYy4gIFRoaXMgaGFzIGVmZmVjdCBvbmx5IGlmIHRp
+bWluZyA9PSAwLiAqLwpzdGF0aWMgaW50IHVwX2Rvd24gPSAxOwoKLyogV2hldGhlciB3ZSBhcmUg
+c3RpbGwgcnVubmluZzogKi8Kc3RhdGljIGludCBydW5uaW5nID0gMTsKCi8qIFVzZWQgdG8gc2V0
+IHRoZSByZXBlYXQgcmF0ZSBmb3IgImFsbC1vci1ub3RoaW5nIiBqb3lzdGljayBheGVzLiAqLwpz
+dGF0aWMgaW50IGhhdF9zZW5zaXRpdml0eSA9IDEuMDsKCi8qIFdoZXRoZXIgd2UgYXJlIGFja25v
+d2xlZGdpbmcgY29tbWFuZHMgKi8Kc3RhdGljIGludCBhY2tub3dsZWRnZSA9IDA7CgovKiBXaGV0
+aGVyIHdlIGFyZSBzaG93aW5nIHRpY2tzIC0tIG1vc3RseSBmb3IgZGVidWdnaW5nICovCnN0YXRp
+YyBpbnQgc2hvd190aWNraW5nID0gMDsKCgp2b2lkCm91dHB1dChjaGFyICpmbXQsIC4uLikKewog
+IHZhX2xpc3QgYXA7CiAgaW50IGZvcm1hdHRlZDsKICB2YV9zdGFydChhcCwgZm10KTsKCiAgZm9y
+bWF0dGVkID0gdnNucHJpbnRmKG91dHB1dF9idWYsIE9VVFBVVF9CVUZfU0laRSwgZm10LCBhcCk7
+CgogIHZhX2VuZChhcCk7CgogIHdyaXRlKDEsIG91dHB1dF9idWYsIHN0cmxlbihvdXRwdXRfYnVm
+KSk7CgogIG91dHB1dF9idWZbMF0gPSAnXDAnOwp9Cgp1bnNpZ25lZCBpbnQKZ2V0c3RhbXB0aW1l
+KCkKLyogcmV0dXJuIG1pbGxpc2Vjb25kcyBzaW5jZSBtaWRuaWdodCAqLwp7CiAgc3RydWN0IHRp
+bWV2YWwgdHY7CiAgaWYgKGdldHRpbWVvZmRheSgmdHYsIE5VTEwpID09IDApCiAgICB7CiAgICAg
+IHJldHVybiAodHYudHZfdXNlYyAvIDEwMDApICsgKCh0di50dl9zZWMgJSAoMjQgKiA2MCAqIDYw
+KSkgKiAxMDAwKTsKICAgIH0gZWxzZSB7CiAgICByZXR1cm4gMDsKICB9Cn0KCgpzdGF0aWMgdW5z
+aWduZWQgbG9uZyBtb2RpZmllcnMgPSAwOwovKiBJZiBhIGJ1dHRvbiBpcyB1c2VkIGFzIGEgbW9k
+aWZpZXIsIHdoZW4gaXQgZ29lcyB1cCB3ZSBzYXkgInJlbGVhc2UiCiAgIHJhdGhlciB0aGFuICJ1
+cCIsIHNvIGVhY2ggYnV0dG9uIGNhbiBiZSB1c2VkIGFzIGVpdGhlciBhIG1vZGlmaWVyCiAgIChp
+ZiBhbnkgb3RoZXIgYnV0dG9ucyBhcmUgcHJlc3NlZCBiZWZvcmUgaXQgaXMgcmVsZWFzZWQpIG9y
+IGEKICAgYnV0dG9uIGluIGl0cyBvd24gcmlnaHQgKGlmIG5vIG90aGVyIGJ1dHRvbnMgYXJlIHBy
+ZXNzZWQgYmVmb3JlIGl0CiAgIGlzIHJlbGVhc2VkKS4gIFNvLCB3ZSBuZWVkIHRvIHJlbWVtYmVy
+IHdoaWNoIGJ1dHRvbnMgaGF2ZSBiZWVuCiAgIGFjdHVhbGx5IHVzZWQgYXMgbW9kaWZpZXJzLiAq
+LwpzdGF0aWMgdW5zaWduZWQgbG9uZyB1c2VkX21vZGlmaWVycyA9IDA7CgovKiA1KjgwIHNob3Vs
+ZCBiZSBlbm91Z2ggZm9yIGFsbCBwb3NzaWJsZSBtb2RpZmllcnMgcHJlc3NlZCBhdCBvbmNlICov
+CnN0YXRpYyBjaGFyIG1vZGlmaWVyc19idWZbNTEyXTsKLyogYWJicmV2aWF0aW9ucyBvZiBidXR0
+b24gbmFtZXMgKi8Kc3RhdGljIGNoYXIgbW9kaWZpZXJfbmFtZXNbNTEyXTsKCnN0YXRpYyBpbnQg
+c3ltYm9saWNfbW9kaWZpZXJzID0gMTsKCnN0YXRpYyBjaGFyICpidG5fYWJicmV2c1tLRVlfTUFY
+IC0gQlROX01JU0MgKyAxXTsKCnZvaWQKc2V0X21vZGlmaWVyc19idWZmZXIoKQovKiBmaWxsIGlu
+IG1vZGlmaWVyc19idWYgYWNjb3JkaW5nIHRvIG1vZGlmaWVycyAqLwp7CiAgaWYgKG1vZGlmaWVy
+cykgewogICAgaWYgKHN5bWJvbGljX21vZGlmaWVycykgewogICAgICB1bnNpZ25lZCBpbnQgaSA9
+IDA7CiAgICAgIHVuc2lnbmVkIGludCBtb2RzID0gbW9kaWZpZXJzOwogICAgICBjaGFyICpkZXN0
+ID0gbW9kaWZpZXJzX2J1ZjsKICAgICAgd2hpbGUgKG1vZHMpIHsKCWlmIChtb2RzICYgMSkgewoJ
+ICBjaGFyICpzcmMgPSBidG5fYWJicmV2c1tpXTsKCSAgd2hpbGUgKCpzcmMpIHsKCSAgICAqZGVz
+dCsrID0gKnNyYysrOwoJICB9CgkgICpkZXN0KysgPSAnLSc7Cgl9CglpKys7Cgltb2RzID0gbW9k
+cyA+PiAxOwogICAgICB9CiAgICAgICpkZXN0ID0gJ1wwJzsKICAgIH0gZWxzZSB7CiAgICAgIHNw
+cmludGYobW9kaWZpZXJzX2J1ZiwgIm0lby0iLCBtb2RpZmllcnMpOwogICAgfQogIH0gZWxzZSB7
+CiAgICBtb2RpZmllcnNfYnVmWzBdID0gJ1wwJzsKICB9Cn0KCmludAptYWluIChpbnQgYXJnYywg
+Y2hhciAqKmFyZ3YpCnsKICBpbnQgZmQ7CgogIHN0cnVjdCBqc19ldmVudCBqczsKICBzdHJ1Y3Qg
+dGltZXZhbCB0djsKICBmZF9zZXQgc2V0OwoKICB1bnNpZ25lZCBjaGFyIG5heGVzID0gMjsKICB1
+bnNpZ25lZCBjaGFyIG5idXR0b25zID0gMjsKICBpbnQgdmVyc2lvbiA9IDB4MDAwODAwOwogIGNo
+YXIgbmFtZVtOQU1FX0xFTkdUSF0gPSAiVW5rbm93biI7CiAgdWludDE2X3QgYnRubWFwW0tFWV9N
+QVggLSBCVE5fTUlTQyArIDFdOwogIHVpbnQ4X3QgYXhtYXBbQUJTX01BWCArIDFdOwoKICB1bnNp
+Z25lZCBpbnQgKnJhdGVzOwogIGludCAqY291bnRkb3duczsKICBkb3VibGUgKnNlbnNpdGl2aXRp
+ZXM7CiAgY2hhciAqKmFjdGlvbnM7CgogIC8qIENvbW1hbmRzIGRvbid0IGFsd2F5cyBjb21lIGlu
+IGluIGEgc2luZ2xlIHJlYWQ7IHRoaXMgaXMgZm9yCiAgICAgYWNjdW11bGF0aW5nIHRoZW0gdW50
+aWwgd2UgZ2V0IEVPTDogKi8KICBjaGFyICpjb21tYW5kX3JlYWRpbmcgPSBjb21tYW5kX2J1ZjsK
+CiAgaW50IGk7CgogIGludCB0aWNrX3NlY3MgPSAwOwogIGludCB0aWNrX3VzZWNzID0gMjUwMDAw
+OwoKICBjaGFyICpqb3lzdGlja19kZXZpY2UgPSAiL2Rldi9qczAiOwoKICBzZXRfbW9kaWZpZXJz
+X2J1ZmZlcigpOwoKICBpZiAoKGFyZ2MgPj0gMikgJiYgKGFyZ3ZbMV1bMF0gIT0gJ1wwJykpIHsK
+ICAgIGpveXN0aWNrX2RldmljZSA9IGFyZ3ZbMV07CiAgfQoKICBpZiAoKGZkID0gb3Blbihqb3lz
+dGlja19kZXZpY2UsIE9fUkRPTkxZKSkgPCAwKSB7CiAgICBwZXJyb3IoImpveWxpc3AiKTsKICAg
+IHJldHVybiAxOwogIH0KCiAgLyogQWxsb3cgdGhlIGNhbGxlciB0byBuYW1lIHRoZSBqb3lzdGlj
+aywgaW4gY2FzZSB0aGVyZSBhcmUgc2V2ZXJhbAogICAgIG9uIHRoZSBzeXN0ZW0uICBSYXRoZXIg
+dGhhbiBmaWRkbGluZyByb3VuZCB0byB2YXJ5IHRoZSBudW1iZXIgb2YKICAgICBhcmdzIGluIHRo
+ZSBjYWxsIHRvIGNhbGwtcHJvY2VzcywgSSBwYXNzIHRoZSBlbXB0eSBzdHJpbmcgaWYgdGhlCiAg
+ICAgdXNlciBkb2Vzbid0IHdhbnQgdG8gbGFiZWwgaXQsIHNvIGxvb2sgb3V0IGZvciB0aGF0LiAq
+LwogIGlmICgoYXJnYyA+PSAzKSAmJiAoYXJndlsyXVswXSAhPSAnXDAnKSkgewogICAgam95c3Rp
+Y2tfZXZlbnRfbmFtZSA9IGFyZ3ZbMl07CiAgICBpZiAoc3RybGVuKGpveXN0aWNrX2V2ZW50X25h
+bWUpID4gNTEyKSB7CiAgICAgIC8qIGF2b2lkIGJ1ZmZlciBvdmVycnVucyBmcm9tIG92ZXItbG9u
+ZyBsYWJlbCBuYW1lczsgdHJ1bmNhdGUKCSBxdWlldGx5LCB0aGV5IGRlc2VydmUgbm90aGluZyBi
+ZXR0ZXIgOy0pICovCiAgICAgIGpveXN0aWNrX2V2ZW50X25hbWVbNTExXSA9ICdcMCc7CiAgICB9
+CiAgfQoKICBpZiAoKGFyZ2MgPj0gNCkgJiYgKGFyZ3ZbM11bMF0gIT0gJ1wwJykpIHsKICAgIGpv
+eXN0aWNrX2V2ZW50X25hbWUgPSBhcmd2WzNdOwogICAgaWYgKHN0cmxlbihqb3lzdGlja19uYW1l
+KSA+IDUxMikgewogICAgICAvKiBhdm9pZCBidWZmZXIgb3ZlcnJ1bnMgZnJvbSBvdmVyLWxvbmcg
+bGFiZWwgbmFtZXM7IHRydW5jYXRlCgkgcXVpZXRseSwgdGhleSBkZXNlcnZlIG5vdGhpbmcgYmV0
+dGVyIDstKSAqLwogICAgICBqb3lzdGlja19uYW1lWzUxMV0gPSAnXDAnOwogICAgfQogIH0KCiAg
+aW9jdGwoZmQsIEpTSU9DR1ZFUlNJT04sICZ2ZXJzaW9uKTsKICBpb2N0bChmZCwgSlNJT0NHQVhF
+UywgJm5heGVzKTsKICBpb2N0bChmZCwgSlNJT0NHQlVUVE9OUywgJm5idXR0b25zKTsKICBpb2N0
+bChmZCwgSlNJT0NHTkFNRShOQU1FX0xFTkdUSCksIG5hbWUpOwogIGlvY3RsKGZkLCBKU0lPQ0dB
+WE1BUCwgYXhtYXApOwogIGlvY3RsKGZkLCBKU0lPQ0dCVE5NQVAsIGJ0bm1hcCk7CgogIG91dHB1
+dCgiKCVzZGVjbGFyZS12ZXJzaW9uIFwiJWQuJWQuJWRcIilcbiIsCgkgam95c3RpY2tfbmFtZSwK
+CSAvKiBJJ20gb25seSBndWVzc2luZywgSSBjb3VsZG4ndCBmaW5kIHRoZSBkZXNjcmlwdGlvbiBv
+ZgoJICAgIHRoaXMgaW4gdGhlIGhlYWRlciBmaWxlcyAqLwoJIHZlcnNpb24gPj4gMTYsCgkgKHZl
+cnNpb24gJiAweGZmZmYpID4+IDgsCgkgdmVyc2lvbiAmIDB4ZmYpOwogIG91dHB1dCgiKCVzZGVj
+bGFyZS1idXR0b25zICVkKVxuIiwKCSBqb3lzdGlja19uYW1lLCBuYnV0dG9ucyk7CiAgb3V0cHV0
+KCIoJXNkZWNsYXJlLWF4ZXMgJWQpXG4iLCAKCSBqb3lzdGlja19uYW1lLCBuYXhlcyk7CiAgb3V0
+cHV0KCIoJXNkZWNsYXJlLW5hbWUgXCIlc1wiKVxuIiwKCSBqb3lzdGlja19uYW1lLCBuYW1lKTsK
+CiAgcmF0ZXMgPSAodW5zaWduZWQgaW50KikgbWFsbG9jICgobmF4ZXMgKyAxKSAqIHNpemVvZih1
+bnNpZ25lZCBpbnQpKTsKICBjb3VudGRvd25zID0gKGludCopIG1hbGxvYyAoKG5heGVzICsgMSkg
+KiBzaXplb2YoaW50KSk7CiAgc2Vuc2l0aXZpdGllcyA9IChkb3VibGUqKSBtYWxsb2MgKChuYXhl
+cyArIDEpICogc2l6ZW9mKGRvdWJsZSkpOwogIGFjdGlvbnMgPSAoY2hhcioqKSBtYWxsb2MgKChu
+YXhlcyArIDEpICogc2l6ZW9mKGNoYXIqKSk7CgogIGZvciAoaSA9IDA7IGkgPCBuYXhlczsgaSsr
+KSB7CiAgICBjb3VudGRvd25zW2ldID0gcmF0ZXNbaV0gPSAwOwogICAgc2Vuc2l0aXZpdGllc1tp
+XSA9IDEuMDsKICAgIGFjdGlvbnNbaV0gPSAiLWlkbGUiOwogIH0KCiAgZm9yIChpID0gSEFUX01J
+TjsgaSA8PSBIQVRfTUFYOyBpKyspIHsKICAgIHNlbnNpdGl2aXRpZXNbaV0gPSBoYXRfc2Vuc2l0
+aXZpdHk7CiAgfQoKICAvKiBtYWtlIGFiYnJldmlhdGlvbnMgb2YgYnV0dG9uIG5hbWVzICovCiAg
+ewogICAgY2hhciAqbmV4dCA9IG1vZGlmaWVyX25hbWVzOwogICAgZm9yIChpID0gMDsgaSA8IG5i
+dXR0b25zOyBpKyspIHsKICAgICAgY2hhciBwcmV2OwogICAgICBjaGFyICpidXR0b25fbmFtZSA9
+IEJ1dHRvbl9OYW1lKGkpOwogICAgICBidG5fYWJicmV2c1tpXSA9IG5leHQ7CiAgICAgIHByZXYg
+PSAqYnV0dG9uX25hbWU7CiAgICAgIGZvciAoOyAqYnV0dG9uX25hbWUgIT0gJ1wwJzsgYnV0dG9u
+X25hbWUrKykgewoJaWYgKGlzdXBwZXIoKmJ1dHRvbl9uYW1lKSB8fCBpc3VwcGVyKHByZXYpIHx8
+IGlzZGlnaXQoKmJ1dHRvbl9uYW1lKSkgewoJICAqbmV4dCsrID0gKmJ1dHRvbl9uYW1lOwoJfQoJ
+cHJldiA9ICpidXR0b25fbmFtZTsKICAgICAgfQogICAgICAqbmV4dCsrID0gJ1wwJzsKICAgIH0K
+ICB9CgogIC8qIE1ha2Ugc3RkaW4gbm9uLWJsb2NraW5nICovCiAgewogICAgaW50IGZsYWdzID0g
+ZmNudGwoMCwgRl9HRVRGTCk7CiAgICBmY250bCgwLCBGX1NFVEZMLCBmbGFncyB8IE9fTk9OQkxP
+Q0sgLyogfCBPX0RJUkVDVCAqLyk7CiAgfQoKICB3aGlsZSAocnVubmluZykgewoKICAgIEZEX1pF
+Uk8oJnNldCk7CiAgICBGRF9TRVQoZmQsICZzZXQpOwogICAgRkRfU0VUKDAsICZzZXQpOwoKICAg
+IGludCBjb21tYW5kX2xlbmd0aDsKICAgIGludCBzZWxlY3RlZDsKCiAgICB0di50dl9zZWMgPSB0
+aWNrX3NlY3M7CiAgICB0di50dl91c2VjID0gdGlja191c2VjczsKCiAgICBzZWxlY3RlZCA9IHNl
+bGVjdChmZCsxLCAmc2V0LCBOVUxMLCBOVUxMLCAmdHYpOwoKICAgIHN3aXRjaCAoc2VsZWN0ZWQp
+IHsKICAgIGNhc2UgLTE6CiAgICAgIHBlcnJvcigiam95bGlzcCIpOwogICAgICBleGl0KDEpOwog
+ICAgICBicmVhazsJCS8qIGZvciBsaW50YWdlICovCgogICAgY2FzZSAwOgogICAgICAvKiBJbiB0
+aGUgY2FzZSBvZiBhIHRpbWVvdXQgb24gdGhlIHNlbGVjdCwgd2Ugc3RlcCBhbGwgdGhlCgkgdGhp
+bmdzIHRoYXQgY291bGQgYmUgZG9pbmcgY291bnRkb3ducywgYW5kIG91dHB1dCBldmVudHMgZm9y
+CgkgYW55IHRoYXQgaGF2ZSByZWFjaGVkIDAuICovCiAgICAgIGlmIChzaG93X3RpY2tpbmcpIHsK
+CW91dHB1dCgiKCVzdGljaylcbiIsIGpveXN0aWNrX2V2ZW50X25hbWUpOwogICAgICB9CiAgICAg
+IGZvciAoaSA9IDA7IGkgPCBuYXhlczsgaSsrKSB7CglpZiAocmF0ZXNbaV0pIHsKCSAgaWYgKC0t
+Y291bnRkb3duc1tpXSA9PSAwKSB7CgkgICAgY291bnRkb3duc1tpXSA9IHJhdGVzW2ldOwoJICAg
+IGlmICh0aW1lc3RhbXBlZCkgewoJICAgICAgdW5zaWduZWQgaW50IHN0YW1wdGltZSA9IGdldHN0
+YW1wdGltZSgpOwoJICAgICAgb3V0cHV0KCIoJXN0aW1lc3RhbXAgJWQpXG4iLCBqb3lzdGlja19l
+dmVudF9uYW1lLCBzdGFtcHRpbWUpOwoJICAgIH0KCSAgICBvdXRwdXQoIiglcyVzJXMlcylcbiIs
+CgkJICAgam95c3RpY2tfZXZlbnRfbmFtZSwKCQkgICBtb2RpZmllcnNfYnVmLAoJCSAgIEF4aXNf
+TmFtZShpKSwKCQkgICBhY3Rpb25zW2ldKTsKCSAgICB1c2VkX21vZGlmaWVycyB8PSBtb2RpZmll
+cnM7CgkgIH0KCX0KICAgICAgfQogICAgICBicmVhazsKCiAgICBkZWZhdWx0OgogICAgICBpZiAo
+KGNvbW1hbmRfbGVuZ3RoID0gcmVhZCgwLCBjb21tYW5kX3JlYWRpbmcsIENPTU1BTkRfQlVGX1NJ
+WkUpKSA+IDApCgl7CgkgIGNoYXIgY29tbWFuZF9uYW1lW0NPTU1BTkRfQlVGX1NJWkVdOwoJICBk
+b3VibGUgZmxvYXRfYXJnOwoJICBpbnQgbnVtZXJpY19hcmc7CgkgIGludCBoYXNfbnVtZXJpY19h
+cmcgPSAwOwoJICBjaGFyIG5hbWVfYXJnW0NPTU1BTkRfQlVGX1NJWkVdOwoJICBpbnQgaGFzX25h
+bWVfYXJnID0gMDsKCSAgaW50IGNoYW5uZWwgPSAtMTsJLyogaW5kZXggaW50byBhbGwgdGhlIHBv
+c3NpYmxlIGJ1dHRvbnMvYXhlcyAqLwoJICBpbnQgY2hhbm5lbF9pbmRleCA9IC0xOyAvKiBpbmRl
+eCBpbnRvIHRoZSBidXR0b25zL2F4ZXMgdGhhdCB3ZSBhY3R1YWxseSBoYXZlICovCgkgIGludCBj
+aGFubmVsX3R5cGUgPSAtMTsKCSAgY2hhciAqY29tbWFuZF9lbmQ7CgoJICBjb21tYW5kX3JlYWRp
+bmdbY29tbWFuZF9sZW5ndGhdID0gJ1wwJzsKCSAgY29tbWFuZF9yZWFkaW5nICs9IGNvbW1hbmRf
+bGVuZ3RoOwoKCSAgaWYgKChjb21tYW5kX2VuZCA9IHN0cmNocihjb21tYW5kX2J1ZiwgJ1xuJykp
+ICE9IDApIHsKCSAgICAKCSAgICBpbnQgY21kX25fcGFydHMgPSBzc2NhbmYoY29tbWFuZF9idWYs
+ICIlcyAlbGYiLCBjb21tYW5kX25hbWUsICZmbG9hdF9hcmcpOwoKCSAgICAqY29tbWFuZF9lbmQg
+PSAnXDAnOyAvKiBmb3IgbmVhdCBhY2tub3dsZWRnZW1lbnQgKi8KCgkgICAgaWYgKGNtZF9uX3Bh
+cnRzID09IDIpIHsKCSAgICAgIC8qIGNvbW1hbmQgaGFzIG51bWVyaWMgYXJnIG9ubHkgKi8KCSAg
+ICAgIG51bWVyaWNfYXJnID0gKGludClmbG9hdF9hcmc7CgkgICAgICBoYXNfbnVtZXJpY19hcmcg
+PSAxOwoJICAgIH0gZWxzZSBpZiAoKGNtZF9uX3BhcnRzID0gc3NjYW5mKGNvbW1hbmRfYnVmLAoJ
+CQkJCSAgICAgIiVzICVzICVsZiIsCgkJCQkJICAgICBjb21tYW5kX25hbWUsCgkJCQkJICAgICBu
+YW1lX2FyZywKCQkJCQkgICAgICZmbG9hdF9hcmcpKSA+PSAyKSB7CgkgICAgICBpZiAoY21kX25f
+cGFydHMgPT0gMykgewoJCW51bWVyaWNfYXJnID0gKGludClmbG9hdF9hcmc7CgkJaGFzX251bWVy
+aWNfYXJnID0gMTsKCSAgICAgIH0KCSAgICAgIC8qIGNvbW1hbmQgaGFzIGNoYW5uZWwgKGFuZCBw
+ZXJoYXBzIG51bWVyaWMgYXJnKSAqLwoJICAgICAgLyogbG9vayBmb3IgdGhlIGNoYW5uZWwgbnVt
+YmVyIGFuZCB0eXBlICovCgkgICAgICBmb3IgKGkgPSAwOyBpIDwgbmJ1dHRvbnM7IGkrKykgewoJ
+CWlmICgoQnV0dG9uX05hbWUoaSkgIT0gTlVMTCkgJiYKCQkgICAgKHN0cmNtcChuYW1lX2FyZywg
+QnV0dG9uX05hbWUoaSkpID09IDApKSB7CgkJICBjaGFubmVsID0gYnRubWFwW2ldOwoJCSAgY2hh
+bm5lbF90eXBlID0gSlNfRVZFTlRfQlVUVE9OOwoJCSAgY2hhbm5lbF9pbmRleCA9IGk7CgkJICBo
+YXNfbmFtZV9hcmcgPSAxOwoJCSAgYnJlYWs7CgkJfQoJICAgICAgfQoKCSAgICAgIGlmIChjaGFu
+bmVsID09IC0xKSB7CgkJZm9yIChpID0gMDsgaSA8IG5heGVzOyBpKyspIHsKCQkgIGlmICgoQXhp
+c19OYW1lKGkpICE9IE5VTEwpICYmCgkJICAgICAgKHN0cmNtcChuYW1lX2FyZywgQXhpc19OYW1l
+KGkpKSA9PSAwKSkgewoJCSAgICBjaGFubmVsID0gYXhtYXBbaV07CgkJICAgIGNoYW5uZWxfdHlw
+ZSA9IEpTX0VWRU5UX0FYSVM7CgkJICAgIGNoYW5uZWxfaW5kZXggPSBpOwoJCSAgICBoYXNfbmFt
+ZV9hcmcgPSAxOwoJCSAgICBicmVhazsKCQkgIH0KCQl9CgkgICAgICB9CgkgICAgfSBlbHNlIHsK
+CSAgICAgIC8qIGNvbW1hbmQgbmFtZSBvbmx5ICovCgkgICAgfQoKCSAgICBpZiAoYWNrbm93bGVk
+Z2UpIHsKCSAgICAgIG91dHB1dCgiKGNvbW1hbmQtYWNrbm93bGVkZ2UgXCIlLjY0c1wiKVxuIiwg
+Y29tbWFuZF9idWYpOwoJICAgIH0KCgkgICAgaWYgKHN0cmNtcChjb21tYW5kX25hbWUsICJxdWl0
+IikgPT0gMCkgewoJICAgICAgcnVubmluZyA9IDA7CgkgICAgfSBlbHNlIGlmIChzdHJjbXAoY29t
+bWFuZF9uYW1lLCAicnVtYmxlIikgPT0gMCkgewoJICAgICAgLyogc2VuZCBhIHJ1bWJsZSBjb21t
+YW5kIHRvIGdhbWUgY29udHJvbGxlcnMgdGhhdCBzdXBwb3J0IGl0ICovCgkgICAgICAvKiB1bmZv
+cnR1bmF0ZWx5LCB0aGUgTGludXggSm95c3RpY2sgRHJpdmVyIGRvZXNuJ3QKCQkgc3VwcG9ydCBp
+dCAoeWV0KTsgdGhlIHBlcnNvbiB0byBhc2sgd291bGQgYmUgVm9qdGVjaAoJCSBQYXZsaWsgPHZv
+anRlY2hAdWN3LmN6PiAqLwoJICAgIH0gZWxzZSBpZiAoc3RyY21wKGNvbW1hbmRfbmFtZSwgInNo
+b2NrIikgPT0gMCkgewoJICAgICAgLyogZ2l2ZSB0aGUgdXNlciBhbiBlbGVjdHJpYyBzaG9jaywg
+bGlrZSBpbiB0aGF0IEphbWVzCgkJIEJvbmQgZmlsbSA7LSkgLS0tIGRvZXMgdGhhdCByZXF1aXJl
+IGFuIG9wdG8taXNvbGF0ZWQKCQkgam95c3RpY2sgdG8gYXZvaWQgZGFtYWdpbmcgdGhlIGNvbXB1
+dGluZyBjaXJjdWl0cnk/IFBTCgkJIG9ubHkgam9raW5nLCBJIGRvbid0IGtub3cgb2YgYW55IHJl
+YWwgam95c3RpY2tzIHRoYXQgZG8KCQkgdGhpcyAtLSBhbGlhcyBpdCB0byBydW1ibGUgKi8KCSAg
+ICB9IGVsc2UgaWYgKHN0cmNtcChjb21tYW5kX25hbWUsICJ1cGRvd24iKSA9PSAwKSB7CgkgICAg
+ICAvKiBzZW5kIGRpZmZlcmVudCBldmVudHMgZm9yIHRoZSB0d28gZGlyZWN0aW9ucyBvZiBlYWNo
+CgkJIGF4aXMsIHdpdGggYW4gdW5zaWduZWQgbnVtYmVyIGZvciB0aGUgZGlzcGxhY2VtZW50IGZy
+b20KCQkgY2VudGVyICovCgkgICAgICB0aW1pbmcgPSAwOwoJICAgICAgdXBfZG93biA9IDE7Cgkg
+ICAgfSBlbHNlIGlmIChzdHJjbXAoY29tbWFuZF9uYW1lLCAic2lnbmVkIikgPT0gMCkgewoJICAg
+ICAgLyogc2VuZCB0aGUgc2FtZSBldmVudCBmb3IgYm90aCBkaXJlY3Rpb25zIG9mIHRoZSBzYW1l
+CgkJIGF4aXMsIHdpdGggYSBzaWduZWQgbnVtYmVyIGZvciB0aGUgZGlzcGxhY2VtZW50IGZyb20K
+CQkgY2VudGVyICovCgkgICAgICB0aW1pbmcgPSAwOwoJICAgICAgdXBfZG93biA9IDA7CgkgICAg
+fSBlbHNlIGlmIChzdHJjbXAoY29tbWFuZF9uYW1lLCAidGltaW5nIikgPT0gMCkgewoJICAgICAg
+Lyogc2VuZCBkaWZmZXJlbnQgZXZlbnRzIGZvciB0aGUgdHdvIGRpcmVjdGlvbnMgb2YgZWFjaAoJ
+CSBheGlzLCB3aXRob3V0IGFueSBudW1iZXJzLCBidXQgcmVwZWF0aW5nIGF0IGFuIGludGVydmFs
+CgkJIHNldCBmcm9tIHRoZSBkaXNwbGFjZW1lbnQgZnJvbSBjZW50ZXIgKi8KCSAgICAgIHRpbWlu
+ZyA9IDE7CgkgICAgfSBlbHNlIGlmIChzdHJjbXAoY29tbWFuZF9uYW1lLCAic2hvdy10aWNraW5n
+IikgPT0gMCkgewoJICAgICAgaWYgKGhhc19udW1lcmljX2FyZykgewoJCXNob3dfdGlja2luZyA9
+IG51bWVyaWNfYXJnOwoJICAgICAgfSBlbHNlIHsKCQlzaG93X3RpY2tpbmcgPSAxOwoJICAgICAg
+fQoJICAgIH0gZWxzZSBpZiAoc3RyY21wKGNvbW1hbmRfbmFtZSwgInN5bWJvbGljLW1vZHMiKSA9
+PSAwKSB7CgkgICAgICAvKiBzZW5kIG1vZGlmaWVycyB1c2luZyBhYmJyZXZpYXRlZCBuYW1lcyAq
+LwoJICAgICAgc3ltYm9saWNfbW9kaWZpZXJzID0gMTsKCSAgICB9IGVsc2UgaWYgKHN0cmNtcChj
+b21tYW5kX25hbWUsICJudW1lcmljLW1vZHMiKSA9PSAwKSB7CgkgICAgICAvKiBzZW5kIGNvbWJp
+bmVkIG1vZGlmaWVycyBhcyBvY3RhbCBudW1iZXIgKi8KCSAgICAgIHN5bWJvbGljX21vZGlmaWVy
+cyA9IDA7CgkgICAgfSBlbHNlIGlmIChzdHJjbXAoY29tbWFuZF9uYW1lLCAic3RhbXBlZCIpID09
+IDApIHsKCSAgICAgIC8qIHNlbmQgYSB0aW1lc3RhbXAgYmVmb3JlIGVhY2ggYWN0aW9uICovCgkg
+ICAgICBpZiAoY21kX25fcGFydHMgPT0gMikgewoJCXRpbWVzdGFtcGVkID0gbnVtZXJpY19hcmc7
+CgkgICAgICB9IGVsc2UgewoJCXRpbWVzdGFtcGVkID0gMTsKCSAgICAgIH0KCSAgICB9IGVsc2Ug
+aWYgKHN0cmNtcChjb21tYW5kX25hbWUsICJ0aWNrcmF0ZSIpID09IDApIHsKCSAgICAgIC8qIHNl
+dCB0aGUgdGljayByYXRlICovCgkgICAgICBkb3VibGUgdGlja190aW1lID0gMS4wIC8gZmxvYXRf
+YXJnOwoJICAgICAgaWYgKGhhc19udW1lcmljX2FyZykgewoJCXRpY2tfc2VjcyA9IChpbnQpKGZs
+b29yKHRpY2tfdGltZSkpOwoJCXRpY2tfdXNlY3MgPSAoaW50KSgoKHRpY2tfdGltZSAtIChkb3Vi
+bGUpdGlja19zZWNzKSkgKiAxMDAwMDAwLjApOwoJICAgICAgfSBlbHNlIHsKCQlvdXRwdXQoIihq
+b3lzdGljay1jdXJyZW50LXRpY2stcmF0ZSAlbGYpXG4iLCAxLjAgLyAoKChkb3VibGUpdGlja19z
+ZWNzKSArICgoKGRvdWJsZSl0aWNrX3VzZWNzKSAvIDEwMDAwMDAuMCkpKTsKCSAgICAgIH0KCSAg
+ICB9IGVsc2UgaWYgKHN0cmNtcChjb21tYW5kX25hbWUsICJzZW5zaXRpdml0eSIpID09IDApIHsK
+CSAgICAgIC8qIHNldCBvciBzaG93IHRoZSBzZW5zaXRpdml0eSwgZWl0aGVyIG92ZXJhbGwgb3Ig
+c3BlY2lmaWNhbGx5ICovCgkgICAgICBpZiAoaGFzX25hbWVfYXJnKSB7CgkJaWYgKGhhc19udW1l
+cmljX2FyZykgewoJCSAgaWYgKChjaGFubmVsX3R5cGUgPT0gSlNfRVZFTlRfQVhJUykgJiYKCQkg
+ICAgICAoY2hhbm5lbF9pbmRleCA+PSAwKSAmJgoJCSAgICAgIChjaGFubmVsX2luZGV4IDwgbmF4
+ZXMpKSB7CgkJICAgIHNlbnNpdGl2aXRpZXNbY2hhbm5lbF9pbmRleF0gPSBmbG9hdF9hcmc7CgkJ
+ICB9CQoJCX0gZWxzZSB7CgkJICBvdXRwdXQoIihheGlzLXNlbnNpdGl2aXR5IFwiJXNcIiAlbGYp
+XG4iLCBBeGlzX05hbWUoY2hhbm5lbF9pbmRleCksIHNlbnNpdGl2aXRpZXNbY2hhbm5lbF9pbmRl
+eF0pOwoJCX0KCSAgICAgIH0gZWxzZSB7CgkJaWYgKGhhc19udW1lcmljX2FyZykgewoJCSAgZm9y
+IChpID0gMDsgaSA8IG5heGVzOyBpKyspIHsKCQkgICAgaWYgKChpIDwgSEFUX01JTikgfHwgKGkg
+PiBIQVRfTUFYKSkgewoJCSAgICAgIHNlbnNpdGl2aXRpZXNbaV0gPSBmbG9hdF9hcmc7CgkJICAg
+IH0KCQkgIH0KCQl9IGVsc2UgewoJCSAgZm9yIChpID0gMDsgaSA8IG5heGVzOyBpKyspIHsKCQkg
+ICAgb3V0cHV0KCIoYXhpcy1zZW5zaXRpdml0eSBcIiVzXCIgJWxmKVxuIiwgQXhpc19OYW1lKGkp
+LCBzZW5zaXRpdml0aWVzW2ldKTsKCQkgIH0JCX0KCSAgICAgIH0KCSAgICB9IGVsc2UgaWYgKHN0
+cmNtcChjb21tYW5kX25hbWUsICJoYXRzcGVlZCIpID09IDApIHsKCSAgICAgIC8qIHNldCBvciBz
+aG93IHRoZSBoYXQgc3BlZWQsIGVpdGhlciBvdmVyYWxsIG9yIHNwZWNpZmljYWxseSAqLwoJICAg
+ICAgaWYgKGhhc19uYW1lX2FyZykgewoJCWlmIChoYXNfbnVtZXJpY19hcmcpIHsKCQkgIGlmICgo
+Y2hhbm5lbF90eXBlID09IEpTX0VWRU5UX0FYSVMpICYmCgkJICAgICAgKGNoYW5uZWxfaW5kZXgg
+Pj0gMCkgJiYKCQkgICAgICAoY2hhbm5lbF9pbmRleCA8IG5heGVzKSAmJgoJCSAgICAgIChjaGFu
+bmVsID49IEhBVF9NSU4pICYmCgkJICAgICAgKGNoYW5uZWwgPD0gSEFUX01BWCkpCgkJCgkJICAg
+IHNlbnNpdGl2aXRpZXNbY2hhbm5lbF9pbmRleF0gPSBmbG9hdF9hcmc7CgkJfSBlbHNlIHsKCQkg
+IG91dHB1dCgiKGhhdHNwZWVkIFwiJXNcIiAlbGYpXG4iLCBBeGlzX05hbWUoY2hhbm5lbF9pbmRl
+eCksIHNlbnNpdGl2aXRpZXNbY2hhbm5lbF9pbmRleF0pOwoJCX0KCSAgICAgIH0gZWxzZSB7CgkJ
+aWYgKGhhc19udW1lcmljX2FyZykgewoJCSAgZm9yIChpID0gMDsgaSA8PSBuYXhlczsgaSsrKSB7
+CgkJICAgIGludCBqID0gYXhtYXBbaV07CgoJCSAgICBpZiAoKGogPj0gSEFUX01JTikgJiYgKGog
+PD0gSEFUX01BWCkpIHsKCQkgICAgICBzZW5zaXRpdml0aWVzW2ldID0gZmxvYXRfYXJnOwoJCSAg
+ICB9CgkJICB9CgkJfSBlbHNlIHsKCQkgIGZvciAoaSA9IDA7IGkgPD0gbmF4ZXM7IGkrKykgewoJ
+CSAgICBpbnQgaiA9IGF4bWFwW2ldOwoKCQkgICAgaWYgKChqID49IEhBVF9NSU4pICYmIChqIDw9
+IEhBVF9NQVgpKSB7CgkJICAgICAgb3V0cHV0KCIoaGF0c3BlZWQgXCIlc1wiICVsZilcbiIsCgkJ
+CSAgICAgQXhpc19OYW1lKGkpLAoJCQkgICAgIHNlbnNpdGl2aXRpZXNbaV0pOwoJCSAgICB9CgkJ
+ICB9CgkJfQoJICAgICAgfQoJICAgIH0gZWxzZSBpZiAoc3RyY21wKGNvbW1hbmRfbmFtZSwgImFj
+a25vd2xlZGdlIikgPT0gMCkgewoJICAgICAgaWYgKGNtZF9uX3BhcnRzID09IDIpIHsKCQlhY2tu
+b3dsZWRnZSA9IG51bWVyaWNfYXJnOwoJICAgICAgfSBlbHNlIHsKCQlhY2tub3dsZWRnZSA9IDE7
+CgkgICAgICB9CgkgICAgfSBlbHNlIHsKCSAgICAgIG91dHB1dCgiKCVzYmFkLWNvbW1hbmQgXCIl
+c1wiKSIsIGpveXN0aWNrX2V2ZW50X25hbWUsIGNvbW1hbmRfYnVmKTsKCSAgICB9CgkgICAgY29t
+bWFuZF9yZWFkaW5nID0gY29tbWFuZF9idWY7CgkgIH0KCSAgY29udGludWU7Cgl9CgogICAgICBp
+ZiAocmVhZChmZCwgJmpzLCBzaXplb2Yoc3RydWN0IGpzX2V2ZW50KSkgIT0gc2l6ZW9mKHN0cnVj
+dCBqc19ldmVudCkpIHsKI2lmIDAKCW91dHB1dCgiKCVzcmVhZC1lcnJvcilcbiIsIGpveXN0aWNr
+X2V2ZW50X25hbWUpOwojZW5kaWYKCWNvbnRpbnVlOwogICAgICB9CgogICAgICBpZiAodGltZXN0
+YW1wZWQpIHsKCXVuc2lnbmVkIGludCBzdGFtcHRpbWUgPSBnZXRzdGFtcHRpbWUoKTsKCW91dHB1
+dCgiKCVzdGltZXN0YW1wICVkKVxuIiwgam95c3RpY2tfZXZlbnRfbmFtZSwgc3RhbXB0aW1lKTsK
+ICAgICAgfQoKICAgICAgc3dpdGNoIChqcy50eXBlKSB7CiAgICAgIGNhc2UgSlNfRVZFTlRfQlVU
+VE9OOgoJaWYgKGpzLnZhbHVlKSB7CgoJICAvKiB2YWx1ZSAhPSAwOiBidXR0b24gaGFzIGJlZW4g
+cHJlc3NlZCAqLwoJICBvdXRwdXQoIiglcyVzJXMtZG93bilcbiIsCgkJIGpveXN0aWNrX2V2ZW50
+X25hbWUsCgkJIG1vZGlmaWVyc19idWYsCgkJIEJ1dHRvbl9OYW1lKGpzLm51bWJlcikpOwoKCSAg
+LyogYWxsIHRoZSBjdXJyZW50IG1vZGlmaWVycyBoYXZlIG5vdyBiZWVuIHVzZWQgKi8KCSAgdXNl
+ZF9tb2RpZmllcnMgfD0gbW9kaWZpZXJzOwoKCSAgLyogYWRkIHRvIG1vZGlmaWVycyBhZnRlciBv
+dXRwdXQsIHNvIGl0IGRvZXNuJ3QgbW9kaWZ5IGl0c2VsZiAqLwoJICBtb2RpZmllcnMgfD0gKDEg
+PDwganMubnVtYmVyKTsKCSAgc2V0X21vZGlmaWVyc19idWZmZXIoKTsKCgl9IGVsc2UgewoKCSAg
+LyogdmFsdWUgPT0gMDogYnV0dG9uIGhhcyBiZWVuIHJlbGVhc2VkICovCgoJICBjaGFyICphY3Rp
+b24gPSAoKDEgPDwganMubnVtYmVyKSAmIHVzZWRfbW9kaWZpZXJzKSA/ICJyZWxlYXNlIiA6ICJ1
+cCI7CgoJICAvKiB0YWtlIGl0IG91dCBvZiB1c2VkX21vZGlmaWVycywgYXMgaXQncyBubyBsb25n
+ZXIgYW4gYWN0aXZlIG1vZGlmaWVyICovCgkgIHVzZWRfbW9kaWZpZXJzICY9IH4oMSA8PCBqcy5u
+dW1iZXIpOwoKCSAgLyogcmVtb3ZlIGZyb20gbW9kaWZpZXJzIGJlZm9yZSBvdXRwdXQsIHNvIGl0
+IGRvZXNuJ3QgbW9kaWZ5IGl0c2VsZiAqLwoJICBtb2RpZmllcnMgJj0gfigxIDw8IGpzLm51bWJl
+cik7CgkgIHNldF9tb2RpZmllcnNfYnVmZmVyKCk7CgoJICBvdXRwdXQoIiglcyVzJXMtJXMpXG4i
+LAoJCSBqb3lzdGlja19ldmVudF9uYW1lLAoJCSBtb2RpZmllcnNfYnVmLAoJCSBCdXR0b25fTmFt
+ZShqcy5udW1iZXIpLAoJCSBhY3Rpb24pOwoJfQoJYnJlYWs7CiAgICAgIGNhc2UgSlNfRVZFTlRf
+QVhJUzoKCXsKCSAgY2hhciAqYWN0aW9uOwoJICBpbnQgaGFzX3ZhbHVlID0gMTsKCSAgaW50IHZh
+bHVlID0ganMudmFsdWU7CgkgIHVuc2lnbmVkIGludCB3aGljaF9heGlzID0ganMubnVtYmVyOwoK
+CSAgaWYgKHVwX2Rvd24pIHsKCSAgICBpZiAodmFsdWUgPT0gMCkgewoJICAgICAgYWN0aW9uID0g
+Ii1jZW50ZXIiOwoJICAgICAgaGFzX3ZhbHVlID0gMDsKCSAgICB9IGVsc2UgaWYgKHZhbHVlIDwg
+MCkgewoJICAgICAgYWN0aW9uID0gIi1wcmV2aW91cyI7CgkgICAgICB2YWx1ZSA9IC12YWx1ZTsK
+CSAgICB9IGVsc2UgewoJICAgICAgYWN0aW9uID0gIi1uZXh0IjsKCSAgICB9CgkgIH0gZWxzZSB7
+CgkgICAgYWN0aW9uID0gIiI7CgkgIH0KCgkgIGlmICh0aW1pbmcpIHsKCSAgICBkb3VibGUgcHJv
+cG9ydGlvbjsKCSAgICBpZiAodmFsdWUgPCAwKSB7CgkgICAgICB2YWx1ZSA9IC12YWx1ZTsKCSAg
+ICB9CgkgICAgcHJvcG9ydGlvbiA9ICgoZG91YmxlKXZhbHVlKSAvIFNUSUNLX01BWF9ESVNQTEFD
+RU1FTlQ7CgkgICAgLyogSWYgdXNpbmcgdGltaW5nLCBkb24ndCBpc3N1ZSBhbiBldmVudCBpbW1l
+ZGlhdGVseSwgYnV0CgkgICAgICAgd2FpdCBmb3IgdGhlIGNvdW50ZG93biBtZWNoYW5pc20gdG8g
+ZG8gaXQsIHVubGVzcyBpdCBpcwoJICAgICAgIHN0YXJ0aW5nIGZyb20gY2VudGVyZWQgb3IgaGFz
+IGp1c3QgZ29uZSBiYWNrIHRvCgkgICAgICAgY2VudGVyZWQuICBPdGhlcndpc2UsIHdlIGdldCBh
+biBleHRyYSBldmVudCBldmVyeSB0aW1lCgkgICAgICAgdGhlIHZhbHVlIGNoYW5nZXMsIHdoaWNo
+IGNhbiBiZSB2ZXJ5IG9mdGVuLCBhbmQgbWFrZXMKCSAgICAgICB0aGUgam95c3RpY2sgc3BlZWQg
+dXAgd2hlbmV2ZXIgeW91IG1vdmUgaXQuICovCgkgICAgaWYgKCh2YWx1ZSA9PSAwKSB8fCAocmF0
+ZXNbd2hpY2hfYXhpc10gPT0gMCkpIHsKCSAgICAgIG91dHB1dCgiKCVzJXMlcyVzKVxuIiwKCQkg
+ICAgIGpveXN0aWNrX2V2ZW50X25hbWUsCgkJICAgICBtb2RpZmllcnNfYnVmLAoJCSAgICAgQXhp
+c19OYW1lKHdoaWNoX2F4aXMpLAoJCSAgICAgYWN0aW9uKTsKCSAgICB9CgoJICAgIGNvdW50ZG93
+bnNbd2hpY2hfYXhpc10gPQoJICAgICAgcmF0ZXNbd2hpY2hfYXhpc10gPQoJICAgICAgKHZhbHVl
+ID09IDApID8gMCA6IHNlbnNpdGl2aXRpZXNbd2hpY2hfYXhpc10gLyBwcm9wb3J0aW9uOwoJICAg
+IGFjdGlvbnNbd2hpY2hfYXhpc10gPSBhY3Rpb247CgkgIH0gZWxzZSB7CgkgICAgaWYgKGhhc192
+YWx1ZSkgewoJICAgICAgb3V0cHV0KCIoJXMlcyVzJXMgJWQpXG4iLAoJCSAgICAgam95c3RpY2tf
+ZXZlbnRfbmFtZSwKCQkgICAgIG1vZGlmaWVyc19idWYsCgkJICAgICBBeGlzX05hbWUod2hpY2hf
+YXhpcyksCgkJICAgICBhY3Rpb24sCgkJICAgICB2YWx1ZSk7CgkgICAgfSBlbHNlIHsKCSAgICAg
+IG91dHB1dCgiKCVzJXMlcyVzKVxuIiwKCQkgICAgIGpveXN0aWNrX2V2ZW50X25hbWUsCgkJICAg
+ICBtb2RpZmllcnNfYnVmLAoJCSAgICAgQXhpc19OYW1lKHdoaWNoX2F4aXMpLAoJCSAgICAgYWN0
+aW9uKTsKCSAgICB9CgkgIH0KCSAgdXNlZF9tb2RpZmllcnMgfD0gbW9kaWZpZXJzOwoJfQoJYnJl
+YWs7CiAgICAgIGNhc2UgSlNfRVZFTlRfSU5JVCB8IEpTX0VWRU5UX0JVVFRPTjoKCW91dHB1dCgi
+KCVzZGVjbGFyZS1idXR0b24gJWQgJyVzKVxuIiwKCSAgICAgICBqb3lzdGlja19uYW1lLAoJICAg
+ICAgIGpzLm51bWJlciwKCSAgICAgICBCdXR0b25fTmFtZShqcy5udW1iZXIpKTsKCWJyZWFrOwog
+ICAgICBjYXNlIEpTX0VWRU5UX0lOSVQgfCBKU19FVkVOVF9BWElTOgoJb3V0cHV0KCIoJXNkZWNs
+YXJlLWF4aXMgJWQgJyVzKVxuIiwKCSAgICAgICBqb3lzdGlja19uYW1lLAoJICAgICAgIGpzLm51
+bWJlciwKCSAgICAgICBBeGlzX05hbWUoanMubnVtYmVyKSk7CglicmVhazsKICAgICAgZGVmYXVs
+dDoKCWlmIChtb2RpZmllcnMpIHsKCSAgb3V0cHV0KCIoJXNldmVudC0lZCVzICVkICVkKVxuIiwK
+CQkgam95c3RpY2tfZXZlbnRfbmFtZSwKCQkganMudHlwZSwKCQkganMubnVtYmVyLAoJCSBtb2Rp
+ZmllcnNfYnVmLAoJCSBqcy52YWx1ZSk7CgkgIHVzZWRfbW9kaWZpZXJzIHw9IG1vZGlmaWVyczsK
+CX0gZWxzZSB7CgkgIG91dHB1dCgiKCVzZXZlbnQtJWQgJWQgJWQpXG4iLAoJCSBqb3lzdGlja19l
+dmVudF9uYW1lLAoJCSBqcy50eXBlLAoJCSBqcy5udW1iZXIsCgkJIGpzLnZhbHVlKTsKCX0KCWJy
+ZWFrOwogICAgICB9CiAgICB9CiAgfQoKICBleGl0KDApOwp9Cg==

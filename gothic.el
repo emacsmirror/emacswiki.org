@@ -1,94 +1,42 @@
-;;; gothic.el --- Quail package for inputting characters from the gothic alphabet (as used by Wulfila)  -*-coding: utf-8;-*-
-
-;; Copyright (C) 2008  Niels Giesen <niels.giesen@gmail.com>
-
-;; Author: Niels Giesen <niels.giesen@gmail.com>
-;; Keywords: mule, input method, Gothic
-;; Version: 0.1
-
-;; This program is free software; you can redistribute it and/or
-;; modify it under the terms of the GNU General Public License
-;; as published by the Free Software Foundation; either version 3
-;; of the License, or (at your option) any later version.
-
-;; This program is distributed in the hope that it will be useful,
-;; but WITHOUT ANY WARRANTY; without even the implied warranty of
-;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-;; GNU General Public License for more details.
-
-;; You should have received a copy of the GNU General Public License
-;; along with this program; if not, write to the Free Software
-;; Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
-;; 02110-1301, USA.
-
-;;; Commentary:
-
-;; Numerics are input unintelligently, so if you want to, say, input
-;; 412, type in 400 1 2, (or "wab" of course).
-(require 'quail)
-
-(quail-define-package
- "gothic" "Gothic" "𐌾" t
- "Gothic (UTF-8) input method."
- nil t nil nil nil nil nil nil nil nil t)
-
-(quail-define-rules
- ("a" ["𐌰"])
- ("1"  ["𐌰"])
- ("b" ["𐌱"])
- ("2"  ["𐌱"])
- ("g" ["𐌲"])
- ("3"  ["𐌲"])
- ("d" ["𐌳"])
- ("4"  ["𐌳"])
- ("e" ["𐌴"])
- ("5"  ["𐌴"])
- ("q" ["𐌵"])
- ("6"  ["𐌵"])
- ("z" ["𐌶"])
- ("7"  ["𐌶"])
- ("h" ["𐌷"])
- ("8"  ["𐌷"])
- ("th" ["𐌸"])
- ("9"  ["𐌸"])
- ("i" ["𐌹"])
- ("10"  ["𐌹"])
- ("\"i" ["𐌹̈"])
- ("10"  ["𐌹̈"])
- ("k" ["𐌺"])
- ("20"  ["𐌺"])
- ("l" ["𐌻"])
- ("30"  ["𐌻"])
- ("m" ["𐌼"])
- ("40"  ["𐌼"])
- ("n" ["𐌽"])
- ("50"  ["𐌽"])
- ("j" ["𐌾"])
- ("60"  ["𐌾"])
- ("u" ["𐌿"])
- ("70"  ["𐌿"])
- ("p" ["𐍀"])
- ("80"  ["𐍀"])
- ("q'" ["𐍁"])	
- ("90"  ["𐍁"])
- ("r" ["𐍂"])
- ("100"  ["𐍂"])
- ("s" ["𐍃"])
- ("200"  ["𐍃"])
- ("t" ["𐍄"])
- ("300"  ["𐍄"])
- ("w" ["𐍅"])
- ("400"  ["𐍅"])
- ("f" ["𐍆"])
- ("500"  ["𐍆"])
- ("x" ["𐍇"])
- ("600"  ["𐍇"])
- ("hw" ["𐍈"])
- ("700"  ["𐍈"])
- ("o" ["𐍉"])
- ("800"  ["𐍉"])
- ("S" ["𐍊"])
- ("900" ["𐍊"]))
-
-(provide 'gothic)
-;;; gothic.el ends here
+#FILE text/plain
+Ozs7IGdvdGhpYy5lbCAtLS0gUXVhaWwgcGFja2FnZSBmb3IgaW5wdXR0aW5nIGNoYXJhY3RlcnMg
+ZnJvbSB0aGUgZ290aGljIGFscGhhYmV0IChhcyB1c2VkIGJ5IFd1bGZpbGEpICAtKi1jb2Rpbmc6
+IHV0Zi04Oy0qLQoKOzsgQ29weXJpZ2h0IChDKSAyMDA4ICBOaWVscyBHaWVzZW4gPG5pZWxzLmdp
+ZXNlbkBnbWFpbC5jb20+Cgo7OyBBdXRob3I6IE5pZWxzIEdpZXNlbiA8bmllbHMuZ2llc2VuQGdt
+YWlsLmNvbT4KOzsgS2V5d29yZHM6IG11bGUsIGlucHV0IG1ldGhvZCwgR290aGljCjs7IFZlcnNp
+b246IDAuMQoKOzsgVGhpcyBwcm9ncmFtIGlzIGZyZWUgc29mdHdhcmU7IHlvdSBjYW4gcmVkaXN0
+cmlidXRlIGl0IGFuZC9vcgo7OyBtb2RpZnkgaXQgdW5kZXIgdGhlIHRlcm1zIG9mIHRoZSBHTlUg
+R2VuZXJhbCBQdWJsaWMgTGljZW5zZQo7OyBhcyBwdWJsaXNoZWQgYnkgdGhlIEZyZWUgU29mdHdh
+cmUgRm91bmRhdGlvbjsgZWl0aGVyIHZlcnNpb24gMwo7OyBvZiB0aGUgTGljZW5zZSwgb3IgKGF0
+IHlvdXIgb3B0aW9uKSBhbnkgbGF0ZXIgdmVyc2lvbi4KCjs7IFRoaXMgcHJvZ3JhbSBpcyBkaXN0
+cmlidXRlZCBpbiB0aGUgaG9wZSB0aGF0IGl0IHdpbGwgYmUgdXNlZnVsLAo7OyBidXQgV0lUSE9V
+VCBBTlkgV0FSUkFOVFk7IHdpdGhvdXQgZXZlbiB0aGUgaW1wbGllZCB3YXJyYW50eSBvZgo7OyBN
+RVJDSEFOVEFCSUxJVFkgb3IgRklUTkVTUyBGT1IgQSBQQVJUSUNVTEFSIFBVUlBPU0UuICBTZWUg
+dGhlCjs7IEdOVSBHZW5lcmFsIFB1YmxpYyBMaWNlbnNlIGZvciBtb3JlIGRldGFpbHMuCgo7OyBZ
+b3Ugc2hvdWxkIGhhdmUgcmVjZWl2ZWQgYSBjb3B5IG9mIHRoZSBHTlUgR2VuZXJhbCBQdWJsaWMg
+TGljZW5zZQo7OyBhbG9uZyB3aXRoIHRoaXMgcHJvZ3JhbTsgaWYgbm90LCB3cml0ZSB0byB0aGUg
+RnJlZSBTb2Z0d2FyZQo7OyBGb3VuZGF0aW9uLCBJbmMuLCA1MSBGcmFua2xpbiBTdHJlZXQsIEZp
+ZnRoIEZsb29yLCBCb3N0b24sIE1BCjs7IDAyMTEwLTEzMDEsIFVTQS4KCjs7OyBDb21tZW50YXJ5
+OgoKOzsgTnVtZXJpY3MgYXJlIGlucHV0IHVuaW50ZWxsaWdlbnRseSwgc28gaWYgeW91IHdhbnQg
+dG8sIHNheSwgaW5wdXQKOzsgNDEyLCB0eXBlIGluIDQwMCAxIDIsIChvciAid2FiIiBvZiBjb3Vy
+c2UpLgoocmVxdWlyZSAncXVhaWwpCgoocXVhaWwtZGVmaW5lLXBhY2thZ2UKICJnb3RoaWMiICJH
+b3RoaWMiICLwkIy+IiB0CiAiR290aGljIChVVEYtOCkgaW5wdXQgbWV0aG9kLiIKIG5pbCB0IG5p
+bCBuaWwgbmlsIG5pbCBuaWwgbmlsIG5pbCBuaWwgdCkKCihxdWFpbC1kZWZpbmUtcnVsZXMKICgi
+YSIgWyLwkIywIl0pCiAoIjEiICBbIvCQjLAiXSkKICgiYiIgWyLwkIyxIl0pCiAoIjIiICBbIvCQ
+jLEiXSkKICgiZyIgWyLwkIyyIl0pCiAoIjMiICBbIvCQjLIiXSkKICgiZCIgWyLwkIyzIl0pCiAo
+IjQiICBbIvCQjLMiXSkKICgiZSIgWyLwkIy0Il0pCiAoIjUiICBbIvCQjLQiXSkKICgicSIgWyLw
+kIy1Il0pCiAoIjYiICBbIvCQjLUiXSkKICgieiIgWyLwkIy2Il0pCiAoIjciICBbIvCQjLYiXSkK
+ICgiaCIgWyLwkIy3Il0pCiAoIjgiICBbIvCQjLciXSkKICgidGgiIFsi8JCMuCJdKQogKCI5IiAg
+WyLwkIy4Il0pCiAoImkiIFsi8JCMuSJdKQogKCIxMCIgIFsi8JCMuSJdKQogKCJcImkiIFsi8JCM
+ucyIIl0pCiAoIjEwIiAgWyLwkIy5zIgiXSkKICgiayIgWyLwkIy6Il0pCiAoIjIwIiAgWyLwkIy6
+Il0pCiAoImwiIFsi8JCMuyJdKQogKCIzMCIgIFsi8JCMuyJdKQogKCJtIiBbIvCQjLwiXSkKICgi
+NDAiICBbIvCQjLwiXSkKICgibiIgWyLwkIy9Il0pCiAoIjUwIiAgWyLwkIy9Il0pCiAoImoiIFsi
+8JCMviJdKQogKCI2MCIgIFsi8JCMviJdKQogKCJ1IiBbIvCQjL8iXSkKICgiNzAiICBbIvCQjL8i
+XSkKICgicCIgWyLwkI2AIl0pCiAoIjgwIiAgWyLwkI2AIl0pCiAoInEnIiBbIvCQjYEiXSkJCiAo
+IjkwIiAgWyLwkI2BIl0pCiAoInIiIFsi8JCNgiJdKQogKCIxMDAiICBbIvCQjYIiXSkKICgicyIg
+WyLwkI2DIl0pCiAoIjIwMCIgIFsi8JCNgyJdKQogKCJ0IiBbIvCQjYQiXSkKICgiMzAwIiAgWyLw
+kI2EIl0pCiAoInciIFsi8JCNhSJdKQogKCI0MDAiICBbIvCQjYUiXSkKICgiZiIgWyLwkI2GIl0p
+CiAoIjUwMCIgIFsi8JCNhiJdKQogKCJ4IiBbIvCQjYciXSkKICgiNjAwIiAgWyLwkI2HIl0pCiAo
+Imh3IiBbIvCQjYgiXSkKICgiNzAwIiAgWyLwkI2IIl0pCiAoIm8iIFsi8JCNiSJdKQogKCI4MDAi
+ICBbIvCQjYkiXSkKICgiUyIgWyLwkI2KIl0pCiAoIjkwMCIgWyLwkI2KIl0pKQoKKHByb3ZpZGUg
+J2dvdGhpYykKOzs7IGdvdGhpYy5lbCBlbmRzIGhlcmUK

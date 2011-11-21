@@ -1,5911 +1,3961 @@
-;;; csharp-mode.el --- C# mode derived mode
-
-;; Author     : Dylan R. E. Moonfire (original)
-;; Maintainer : Dino Chiesa <dpchiesa@hotmail.com>
-;; Created    : Feburary 2005
-;; Modified   : May 2011
-;; Version    : 0.8.6
-;; Keywords   : c# languages oop mode
-;; X-URL      : http://code.google.com/p/csharpmode/
-;; Last-saved : <2011-May-21 20:28:30>
-
-;;
-;; This program is free software; you can redistribute it and/or modify
-;; it under the terms of the GNU General Public License as published by
-;; the Free Software Foundation; either version 2 of the License, or
-;; (at your option) any later version.
-;;
-;; This program is distributed in the hope that it will be useful,
-;; but WITHOUT ANY WARRANTY; without even the implied warranty of
-;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-;; GNU General Public License for more details.
-;;
-;; You should have received a copy of the GNU General Public License
-;; along with this program; see the file COPYING.  If not, write to
-;; the Free Software Foundation, Inc., 59 Temple Place - Suite 330,
-;; Boston, MA 02111-1307, USA.
-
-;;; Commentary:
-;;
-;;    This is a major mode for editing C# code. It performs automatic
-;;    indentation of C# syntax; font locking; and integration with compile.el;
-;;    flymake.el; yasnippet.el; and imenu.el.
-;;
-;;    csharp-mode requires CC Mode 5.30 or later.  It works with
-;;    cc-mode 5.31.3, which is current at this time.
-;;
-;; Features:
-;;
-;;   - font-lock and indent of C# syntax including:
-;;       all c# keywords and major syntax
-;;       attributes that decorate methods, classes, fields, properties
-;;       enum types
-;;       #if/#endif  #region/#endregion
-;;       instance initializers
-;;       anonymous functions and methods
-;;       verbatim literal strings (those that begin with @)
-;;       generics
-;;
-;;   - automagic code-doc generation when you type three slashes.
-;;
-;;   - intelligent insertion of matched pairs of curly braces.
-;;
-;;   - compile tweaks. Infers the compile command from special comments
-;;     in the file header.  Also, sets the regex for next-error, so that
-;;     compile.el can handle csc.exe output.
-;;
-;;   - flymake integration
-;;       - select flymake command from code comments
-;;       - infer flymake command otherwise (presence of makefile, etc)
-;;       - Turn off query-on-exit-flag for the flymake process.
-;;       - define advice to flymake-goto-line , to allow it to goto the
-;;         appropriate column for the error on a given line. This works
-;;         with `flymake-goto-next-error' etc.
-;;
-;;   - yasnippet integration
-;;       - preloaded snippets
-;;
-;;   - imenu integration - generates an index of namespaces, classes,
-;;     interfaces, methods, and properties for easy navigation within
-;;     the buffer.
-;;
-
-
-;; Installation instructions
-;; --------------------------------
-;;
-;; Put csharp-mode.el somewhere in your load path, optionally byte-compile
-;; it, and add the following to your .emacs file:
-;;
-;;   (autoload 'csharp-mode "csharp-mode" "Major mode for editing C# code." t)
-;;   (setq auto-mode-alist
-;;      (append '(("\\.cs$" . csharp-mode)) auto-mode-alist))
-;;
-;;
-;; Optionally, define and register a mode-hook function. To do so, use
-;; something like this in your .emacs file:
-;;
-;;   (defun my-csharp-mode-fn ()
-;;      "function that runs when csharp-mode is initialized for a buffer."
-;;      (turn-on-auto-revert-mode)
-;;      (setq indent-tabs-mode nil)
-;;      (require 'flymake)
-;;      (flymake-mode 1)
-;;      (require 'yasnippet)
-;;      (yas/minor-mode-on)
-;;      (require 'rfringe)
-;;      ...insert more code here...
-;;      ...including any custom key bindings you might want ...
-;;   )
-;;   (add-hook  'csharp-mode-hook 'my-csharp-mode-fn t)
-;;
-;;
-;;  General
-;;  ----------------------------
-;;
-;;  Mostly C# mode will "just work."  Use `describe-mode' to see the
-;;  default keybindings and the highlights of the mode.
-;;
-;;
-;;  Flymake Integration
-;;  ----------------------------
-;;
-;;  You can use flymake with csharp mode to automatically check the
-;;  syntax of your csharp code, and highlight errors.  To do so, add a
-;;  comment line like this to each .cs file that you use flymake with:
-;;
-;;   //  flymake: c:\.net3.5\csc.exe /t:module /nologo /R:Foo.dll @@FILE@@
-;;
-;;  That lines specifies a command "stub".  Flymake appends the name of
-;;  the file to compile, and then runs the command to check
-;;  syntax. Flymake assumes that syntax errors will be noted in the
-;;  output of the command in a form that fits one of the regexs in the
-;;  `compilation-error-regexp-alist-alist'. Check the flymake module for
-;;  more information on that.
-;;
-;;  Some rules for the command:
-;;
-;;    1. it must appear all on a single line.
-;;
-;;    2. csharp-mode generally looks for the marker line in the first N
-;;       lines of the file, where N is set in
-;;       `csharp-cmd-line-limit'.  See the documentation on that
-;;       variable for more information.
-;;
-;;    3. the command SHOULD use @@FILE@@ in place of the name of the
-;;       source file to be compiled, normally the file being edited.
-;;       This is because normally flymake saves a copy of the buffer
-;;       into a temporary file with a unique name, and then compiles
-;;       that temporary file. The token @@FILE@@ is replaced by
-;;       csharp-mode with the name of the temporary file created by
-;;       flymake, before invoking the command.
-;;
-;;    4. The command should include /R options specifying external
-;;       libraries that the code depends on.
-;;
-;;  If you have no external dependencies, then you need not specify any
-;;  flymake command at all. csharp-mode will implicitly act as if you had
-;;  specified the command:
-;;
-;;      // flymake: c:\.net3.5\csc.exe /t:module /nologo @@FILE@@
-;;
-;;
-;;  If you use csc.exe as the syntax check tool (as almost everyone
-;;  will), the /t:module is important. csharp-mode assumes that the
-;;  syntax-check compile command will produce a file named
-;;  NAME.netmodule, which is the default when using /t:module. (Remember
-;;  than NAME is dynamically generated).  csharp-mode will remove the
-;;  generated netmodule file after the syntax check is complete. If you
-;;  don't specify /t:module, then csharp-mode won't know what file to
-;;  delete.
-;;
-;;  csharp-mode also fiddles with some other flymake things.  In
-;;  particular it: adds .cs to the flymake "allowed filename masks";
-;;  adds parsing for csc error messages; and adds advice to the error
-;;  parsing logic. This all should be pretty benign for all other
-;;  flymake buffers.  But it might not be.
-;;
-;;  You can explicitly turn the flymake integration for C# off by
-;;  setting `csharp-want-flymake-fixup' to nil.
-;;
-;;
-;;  Compile Integration
-;;  ----------------------------
-;;
-;;  csharp-mode binds the function `csharp-invoke-compile-interactively'
-;;  to "\C-x\C-e" .  This function attempts to intellgently guess the
-;;  format of the compile command to use for a buffer.  It looks in the
-;;  comments at the head of the buffer for a line that begins with
-;;  compile: .  If found, csharp-mode suggests the text that follows as
-;;  the compilation command when running `compile' .  If such a line is
-;;  not found, csharp-mode falls back to a msbuild or nmake command.
-;;  See the documentation on `csharp-cmd-line-limit' for further
-;;  information.
-;;
-;;  Also, csharp-mode installs an error regexp for csc.exe into
-;;  `compilation-error-regexp-alist-alist', which allows `next-error'
-;;  and `previous-error' (defined in compile.el) to navigate to the next
-;;  and previous compile errors in the cs buffer, after you've run `compile'.
-;;
-;;
-;;  YASnippet integration
-;;  -----------------------------
-;;
-;;  csharp-mode defines some built-in snippets for
-;;  convenience.  For example, if statements, for, foreach, and
-;;  so on.  You can see them on the YASnippet menu that is displayed
-;;  when a csharp-mode buffer is opened.  csharp-mode defines this
-;;  snippets happens only if ya-snippet is available. (It is done in an
-;;  `eval-after-load' clause.)  The builtin snippets will not overwrite
-;;  snippets that use the same name, if they are defined in the normal
-;;  way (in a compiled bundle) with ya-snippet.
-;;
-;;  You can explicitly turn off ya-snippet integration. See the var,
-;;  `csharp-want-yasnippet-fixup'.
-;;
-;;
-;;  imenu integration
-;;  -----------------------------
-;;
-;;  This should just work. For those who don't know what imenu is, it
-;;  allows navigation to different points within the file from an
-;;  "Index" menu, in the window's menubar.  csharp-mode computes the
-;;  menu containing the namespaces, classes, methods, and so on, in the
-;;  buffer.  This happens at the time the file is loaded; for large
-;;  files it takes a bit of time to complete the scan.  If you don't
-;;  want this capability, set `csharp-want-imenu' to nil.
-;;
-;;
-
-
-;;; Known Bugs:
-;;
-;;   The imenu scan is text-based and naive. For example, if you
-;;   intersperse comments between the name of a class/method/namespace,
-;;   and the curly brace, the scan will not recognize the thing being
-;;   declared. This is fixable - would need to extract the buffer
-;;   substring then remove comments before doing the regexp checks - but
-;;   it would make the scan much slower.  Also, the scan doesn't deal
-;;   with preproc symbol definitions and #if/#else. Those things are
-;;   invisible to the scanner csharp-mode uses to build the imenu menu.
-;;
-;;   Leading identifiers are no longer being fontified, for some reason.
-;;   See matchers-before. (Not sure this is still a problem - 19 may
-;;   2011 DPC)
-;;
-;;   Method names with a preceding attribute are not fontified.
-;;
-;;   The symbol followng #if is not fontified.  It should be treated like
-;;   define and get font-lock-variable-name-face .
-;;
-;;   This code doesn't seem to work when you compile it, then
-;;   load/require in the emacs file. You will get an error (error
-;;   "`c-lang-defconst' must be used in a file") which happens because
-;;   cc-mode doesn't think it is in a buffer while loading directly
-;;   from the init. However, if you call it based on a file extension,
-;;   it works properly. Interestingly enough, this doesn't happen if
-;;   you don't byte-compile cc-mode.
-;;
-;;
-;;
-;;  Todo:
-;;
-;;   imenu should scan for and find delegates and events, in addition
-;;   to the classes, structs, properties and methods it does currently.
-;;
-;;   Get csharp-mode.el accepted as part of the emacs standard distribution.
-;;   Must contact monnier at iro.umontreal.ca to make this happen.
-;;
-;;   Add refactoring capabilities?
-;;     - extract as method - extract a block of code into a method
-;;     - extract as Func<> - extract a block of code into an Action<T>
-;;
-;;   More code-gen power:
-;;     - interface implementation - I think would require csharp-shell
-;;
-;;
-;;  Acknowledgements:
-;;
-;;    Thanks to Alan Mackenzie and Stefan Monnier for answering questions
-;;    and making suggestions. And to Trey Jackson for sharing his
-;;    knowledge of emacs lisp.
-;;
-;;
-
-;;; Versions:
-;;
-;;    0.1.0 - Initial release.
-;;    0.2.0 - Fixed the identification on the "enum" keyword.
-;;          - Fixed the font-lock on the "base" keyword
-;;    0.3.0 - Added a regex to fontify attributes. It isn't the
-;;            the best method, but it handles single-like attributes
-;;            well.
-;;          - Got "super" not to fontify as a keyword.
-;;          - Got extending classes and interfaces to fontify as something.
-;;    0.4.0 - Removed the attribute matching because it broke more than
-;;            it fixed.
-;;          - Corrected a bug with namespace not being properly identified
-;;            and treating the class level as an inner object, which screwed
-;;            up formatting.
-;;          - Added "partial" to the keywords.
-;;    0.5.0 - Found bugs with compiled cc-mode and loading from init files.
-;;          - Updated the eval-when-compile to code to let the mode be
-;;            compiled.
-;;    0.6.0 - Added the c-filter-ops patch for 5.31.1 which made that
-;;            function in cc-langs.el unavailable.
-;;          - Added a csharp-lineup-region for indention #region and
-;;            #endregion block differently.
-;;    0.7.0 - Added autoload so update-directory-autoloads works
-;;            (Thank you, Nikolaj Schumacher)
-;;          - Fontified the entire #region and #endregion lines.
-;;          - Initial work to get get, set, add, remove font-locked.
-;;    0.7.1 - Added option to indent #if/endif with code
-;;          - Fixed c-opt-cpp-prefix defn (it must not include the BOL
-;;            char (^).
-;;          - proper fontification and indent of classes that inherit
-;;            (previously the colon was confusing the parser)
-;;          - reclassified namespace as a block beginner
-;;          - removed $ as a legal symbol char - not legal in C#.
-;;          - added struct to c-class-decl-kwds so indent is correct
-;;            within a struct.
-;;    0.7.2 - Added automatic codedoc insertion.
-;;    0.7.3 - Instance initializers (new Type { ... } ) and
-;;            (new Type() { ...} ) are now indented properly.
-;;          - proper fontification and indent of enums as brace-list-*,
-;;            including special treatment for enums that explicitly
-;;            inherit from an int type. Previously the colon was
-;;            confusing the parser.
-;;          - proper fontification of verbatim literal strings,
-;;            including those that end in slash. This edge case was not
-;;            handled at all before; it is now handled correctly.
-;;          - code cleanup and organization; removed the formfeed.
-;;          - intelligent curly-brace insertion with
-;;            `csharp-insert-open-brace'
-;;    0.7.4 - added a C# style
-;;          - using is now a keyword and gets fontified correctly
-;;          - fixed a bug that had crept into the codedoc insertion.
-;;    0.7.5 - now fontify namespaces in the using statements. This is
-;;            done in the csharp value for c-basic-matchers-before .
-;;          - also fontify the name following namespace decl.
-;;            This is done in the csharp value for c-basic-matchers-after .
-;;          - turn on recognition of generic types. They are now
-;;            fontified correctly.
-;;          - <> are now treated as syntactic parens and can be jumped
-;;            over with c-forward-sexp.
-;;          - Constructors are now fontified.
-;;          - Field/Prop names inside object initializers are now fontified.
-;;
-;;    0.7.7 - relocate running c-run-mode-hooks to the end of
-;;            csharp-mode, to allow user to modify key bindings in a
-;;            hook if he doesn't like the defaults.
-;;
-;;    0.7.8 - redefine csharp-log to insert timestamp.
-;;          - Fix byte-compile errors on emacs 23.2 ?  Why was
-;;            c-filter-ops duplicated here?  What was the purpose of its
-;;            presence here, I am not clear.
-;;
-;;    0.8.0 - include flymake magic into this module.
-;;          - include yasnippet integration
-;;
-;;    0.8.2 2011 April DPC
-;;          - small tweaks; now set a one-time bool for flymake installation
-;;          - some doc updates on flymake
-;;
-;;    0.8.3 2011 May 17  DPC
-;;          - better help on csharp-mode
-;;          - csharp-move-* functions for manual navigation.
-;;          - imenu integration for menu-driven navigation - navigate to
-;;            named methods, classes, etc.
-;;          - adjusted the flymake regexp to handle output from fxcopcmd,
-;;            and extended the help to provide examples how to use this.
-;;
-;;    0.8.4 DPC 2011 May 18
-;;          - fix a basic bug in the `csharp-yasnippet-fixup' fn.
-;;
-;;    0.8.5 DPC 2011 May 21
-;;          - imenu: correctly parse Properties that are part of an
-;;            explicitly specified interface. Probably need to do this
-;;            for methods, too.
-;;          - fontify the optional alias before namespace in a using (import).
-;;          - Tweak open-curly magic insertion for object initializers.
-;;          - better fontification of variables and references
-;;          - "sealed" is now fontified as a keyword
-;;          - imenu: correctly index ctors that call this or base.
-;;          - imenu: correctly index Extension methods (this System.Enum e)
-;;          - imenu: correctly scan  method params tagged with out, ref, params
-;;          - imenu scan: now handle curlies within strings.
-;;          - imenu: split menus now have better labels, are sorted correctly.
-;;
-;;    0.8.6 DPC 2011 May ??
-;;          -
-
-
-(require 'cc-mode)
-
-(message  (concat "Loading " load-file-name))
-
-
-;; ==================================================================
-;; c# upfront stuff
-;; ==================================================================
-
-;; This is a copy of the function in cc-mode which is used to handle the
-;; eval-when-compile which is needed during other times.
-;;
-;; NB: I think this is needed to satisfy requirements when this module
-;; calls `c-lang-defconst'. (DPC)
-
-;; (defun c-filter-ops (ops opgroup-filter op-filter &optional xlate)
-;;   ;; See cc-langs.el, a direct copy.
-;;   (unless (listp (car-safe ops))
-;;     (setq ops (list ops)))
-;;   (cond ((eq opgroup-filter t)
-;;          (setq opgroup-filter (lambda (opgroup) t)))
-;;         ((not (functionp opgroup-filter))
-;;          (setq opgroup-filter `(lambda (opgroup)
-;;                                  (memq opgroup ',opgroup-filter)))))
-;;   (cond ((eq op-filter t)
-;;          (setq op-filter (lambda (op) t)))
-;;         ((stringp op-filter)
-;;          (setq op-filter `(lambda (op)
-;;                             (string-match ,op-filter op)))))
-;;   (unless xlate
-;;     (setq xlate 'identity))
-;;   (c-with-syntax-table (c-lang-const c-mode-syntax-table)
-;;     (delete-duplicates
-;;      (mapcan (lambda (opgroup)
-;;                (when (if (symbolp (car opgroup))
-;;                          (when (funcall opgroup-filter (car opgroup))
-;;                            (setq opgroup (cdr opgroup))
-;;                            t)
-;;                        t)
-;;                  (mapcan (lambda (op)
-;;                            (when (funcall op-filter op)
-;;                              (let ((res (funcall xlate op)))
-;;                                (if (listp res) res (list res)))))
-;;                          opgroup)))
-;;              ops)
-;;      :test 'equal)))
-
-
-
-;; These are only required at compile time to get the sources for the
-;; language constants.  (The load of cc-fonts and the font-lock
-;; related constants could additionally be put inside an
-;; (eval-after-load "font-lock" ...) but then some trickery is
-;; necessary to get them compiled.)
-
-(eval-when-compile
-  (let ((load-path
-         (if (and (boundp 'byte-compile-dest-file)
-                  (stringp byte-compile-dest-file))
-             (cons (file-name-directory byte-compile-dest-file) load-path)
-           load-path)))
-    (load "cc-mode" nil t)
-    (load "cc-fonts" nil t)
-    (load "cc-langs" nil t)))
-
-(eval-and-compile
-  ;; Make our mode known to the language constant system.  Use Java
-  ;; mode as the fallback for the constants we don't change here.
-  ;; This needs to be done also at compile time since the language
-  ;; constants are evaluated then.
-  (c-add-language 'csharp-mode 'java-mode))
-
-;; ==================================================================
-;; end of c# upfront stuff
-;; ==================================================================
-
-
-
-
-
-;; ==================================================================
-;; constants used in this module
-;; ==================================================================
-
-;;(error (byte-compile-dest-file))
-;;(error (c-get-current-file))
-
-(defconst csharp-aspnet-directive-re
-  "<%@.+?%>"
-  "Regex for matching directive blocks in ASP.NET files (.aspx, .ashx, .ascx)")
-
-
-(defconst csharp-enum-decl-re
-  (concat
-   "\\<enum[ \t\n\r\f\v]+"
-   "\\([[:alpha:]_][[:alnum:]_]*\\)"
-   "[ \t\n\r\f\v]*"
-   "\\(:[ \t\n\r\f\v]*"
-   "\\("
-   (c-make-keywords-re nil
-     (list "sbyte" "byte" "short" "ushort" "int" "uint" "long" "ulong"))
-   "\\)"
-   "\\)?")
-  "Regex that captures an enum declaration in C#"
-  )
-
-;; ==================================================================
-
-
-
-
-
-
-;; ==================================================================
-;; csharp-mode utility and feature defuns
-;; ==================================================================
-
-(defun csharp--at-vsemi-p (&optional pos)
-  "Determines if there is a virtual semicolon at POS or point.
-It returns t if at a position where a virtual-semicolon is.
-Otherwise nil.
-
-This is the C# version of the function. It gets set into
-the variable `c-at-vsemi-p-fn'.
-
-A vsemi is a cc-mode concept implying the end of a statement,
-where no actual end-of-statement signifier character ( semicolon,
-close-brace) appears.  The concept is used to allow proper
-indenting of blocks of code: Where a vsemi appears, the following
-line will not indent further.
-
-A vsemi appears in 3 cases in C#:
-
- - after an attribute that decorates a class, method, field, or
-   property.
-
- - in an object initializer, before the open-curly?
-
- - after an ASPNET directive, that appears in a aspx/ashx/ascx file
-
-An example of the former is  [WebMethod] or [XmlElement].
-An example of the latter is something like this:
-
-    <%@ WebHandler Language=\"C#\" Class=\"Handler\" %>
-
-Providing this function allows the indenting in csharp-mode
-to work properly with code that includes attributes and ASPNET
-directives.
-
-"
-  (save-excursion
-    (let ((pos-or-point (progn (if pos (goto-char pos)) (point))))
-
-      (cond
-
-       ;; before open curly in object initializer. new Foo* { }
-       ((and (looking-back
-              (concat "\\<new[ \t\n\f\v\r]+"
-              "\\(?:[A-Za-z_][[:alnum:]]*\\.\\)*"
-              "[A-Za-z_][[:alnum:]]*[\ t\n\f\v\r]*"))
-             (looking-at "[ \t\n\f\v\r]*{"))
-        t)
-
-       ;; put a vsemi after an ASPNET directive, like
-       ;; <%@ WebHandler Language="C#" Class="Handler" %>
-       ((looking-back (concat csharp-aspnet-directive-re "$") nil t)
-        t)
-
-       ;; put a vsemi after an attribute, as with
-       ;;   [XmlElement]
-       ;; Except when the attribute is used within a line of code, as
-       ;; specifying something for a parameter.
-       ((c-safe (backward-sexp) t)
-        (cond
-           ((re-search-forward
-             (concat
-              "\\(\\["
-              "[ \t\n\r\f\v]*"
-              "\\("
-              "\\(?:[A-Za-z_][[:alnum:]]*\\.\\)*"
-              "[A-Za-z_][[:alnum:]]*"
-              "\\)"
-              "[^]]*\\]\\)"
-              )
-             (1+ pos-or-point) t)
-
-             (c-safe (backward-sexp))
-             (c-backward-syntactic-ws)
-             (cond
-
-              ((eq (char-before) 93) ;; close sq brace (a previous attribute)
-               (csharp--at-vsemi-p (point))) ;; recurse
-
-              ((or
-                (eq (char-before) 59) ;; semicolon
-                (eq (char-before) 123) ;; open curly
-                (eq (char-before) 125)) ;; close curly
-               t)
-
-              ;; attr is used within a line of code
-              (t nil)))
-
-           (t nil)))
-
-        (t nil))
-      )))
-
-
-
-
-(defun csharp-lineup-region (langelem)
-  "Indent all #region and #endregion blocks inline with code while
-retaining normal column-zero indention for #if and the other
-processing blocks.
-
-To use this indenting just put the following in your emacs file:
-   (c-set-offset 'cpp-macro 'csharp-lineup-region)
-
-An alternative is to use `csharp-lineup-if-and-region'.
-"
-
-  (save-excursion
-    (back-to-indentation)
-    (if (re-search-forward "#\\(end\\)?region" (c-point 'eol) [0]) 0  [0])))
-
-
-
-
-
-(defun csharp-lineup-if-and-region (langelem)
-
-"Indent all #region/endregion blocks and #if/endif blocks inline
-with code while retaining normal column-zero indention for any
-other processing blocks.
-
-To use this indenting just put the following in your emacs file:
-  (c-set-offset 'cpp-macro 'csharp-lineup-if-and-region)
-
-Another option is to use `csharp-lineup-region'.
-
-"
-  (save-excursion
-    (back-to-indentation)
-    (if (re-search-forward "#\\(\\(end\\)?\\(if\\|region\\)\\|else\\)" (c-point 'eol) [0]) 0  [0])))
-
-
-
-
-  (defun csharp-in-literal (&optional lim detect-cpp)
-    "Return the type of literal point is in, if any.
-Basically this works like `c-in-literal' except it doesn't
-use or fill the cache (`c-in-literal-cache').
-
-The return value is a symbol: `c' if in a C-style comment, `c++'
-if in a C++ style comment, `string' if in a string literal,
-`pound' if DETECT-CPP is non-nil and in a preprocessor line, or
-nil if somewhere else.  Optional LIM is used as the backward
-limit of the search.  If omitted, or nil, `c-beginning-of-syntax'
-is used.
-
-Note that this function might do hidden buffer changes.  See the
-comment at the start of cc-engine.el for more info."
-
-    (let ((rtn
-           (save-excursion
-             (let* ((pos (point))
-                    (lim (or lim (progn
-                                   (c-beginning-of-syntax)
-                                   (point))))
-                    (state (parse-partial-sexp lim pos)))
-               (csharp-log 4 "parse lim(%d) state: %s" lim (prin1-to-string state))
-               (cond
-                ((elt state 3)
-                 (csharp-log 4 "in literal string (%d)" pos)
-                 'string)
-                ((elt state 4)
-                 (csharp-log 4 "in literal comment (%d)" pos)
-                 (if (elt state 7) 'c++ 'c))
-                ((and detect-cpp (c-beginning-of-macro lim)) 'pound)
-                (t nil))))))
-      rtn))
-
-
-
-(defun csharp-insert-open-brace ()
-  "Intelligently insert a pair of curly braces. This fn should be
-bound to the open-curly brace, with
-
-    (local-set-key (kbd \"{\") 'csharp-insert-open-brace)
-
-The default binding for an open curly brace in cc-modes is often
-`c-electric-brace' or `skeleton-pair-insert-maybe'.  The former
-can be configured to insert newlines around braces in various
-syntactic positions.  The latter inserts a pair of braces and
-then does not insert a newline, and does not indent.
-
-This fn provides another option, with some additional
-intelligence for csharp-mode.  When you type an open curly, the
-appropriate pair of braces appears, with spacing and indent set
-in a context-sensitive manner:
-
- - Within a string literal, you just get a pair of braces, and
-   point is set between them. This works for String.Format()
-   purposes.
-
- - Following = or [], as in an array assignment, you get a pair
-   of braces, with two intervening spaces, with a semincolon
-   appended. Point is left between the braces.
-
- - Following \"new Foo\", it's an object initializer. You get:
-   newline, open brace, newline, newline, close, semi.  Point is
-   left on the blank line between the braces. Unless the object
-   initializer is within an array initializer, in which case, no
-   newlines, and the semi is replaced with a comma. (Try it to
-   see what this means).
-
- - Following => , implying a lambda, you get an open/close pair,
-   with two intervening spaces, no semicolon, and point on the
-   2nd space.
-
- - Otherwise, you get a newline, the open curly, followed by
-   an empty line and the closing curly on the line following,
-   with point on the empty line.
-
-
-There may be another way to get this to happen appropriately just
-within emacs, but I could not figure out how to do it.  So I
-wrote this alternative.
-
-    "
-  (interactive)
-  (let
-      (tpoint
-       (in-string (string= (csharp-in-literal) "string"))
-       (preceding3
-        (save-excursion
-          (and
-           (skip-chars-backward " \t")
-           (> (- (point) 2) (point-min))
-           (buffer-substring-no-properties (point) (- (point) 3)))))
-       (one-word-back
-        (save-excursion
-          (backward-word 2)
-          (thing-at-point 'word))))
-
-    (cond
-
-     ;; Case 1: inside a string literal?
-     ;; --------------------------------------------
-     ;; If so, then just insert a pair of braces and put the point
-     ;; between them.  The most common case is a format string for
-     ;; String.Format() or Console.WriteLine().
-     (in-string
-      (self-insert-command 1)
-      (insert "}")
-      (backward-char))
-
-     ;; Case 2: the open brace starts an array initializer.
-     ;; --------------------------------------------
-     ;; When the last non-space was an equals sign or square brackets,
-     ;; then it's an initializer.
-     ((save-excursion
-        (and (c-safe (backward-sexp) t)
-             (looking-at "\\(\\w+\\b *=\\|[[]]+\\)")))
-      (self-insert-command 1)
-      (insert "  };")
-      (backward-char 3))
-
-     ;; Case 3: the open brace starts an instance initializer
-     ;; --------------------------------------------
-     ;; If one-word-back was "new", then it's an object initializer.
-     ((string= one-word-back "new")
-      (csharp-log 2 "object initializer")
-      (setq tpoint (point)) ;; prepare to indent-region later
-      (backward-word 2)
-      (c-backward-syntactic-ws)
-      (if (or (eq (char-before) ?,)       ;; comma
-              (and (eq (char-before) 123) ;; open curly
-                   (progn (backward-char)
-                          (c-backward-syntactic-ws)
-                          (looking-back "\\[\\]"))))
-          (progn
-            ;; within an array - emit no newlines
-            (goto-char tpoint)
-            (self-insert-command 1)
-            (insert "  },")
-            (backward-char 3))
-
-        (progn
-          (goto-char tpoint)
-          (newline)
-          (self-insert-command 1)
-          (newline-and-indent)
-          (newline)
-          (insert "};")
-          (c-indent-region tpoint (point))
-          (forward-line -1)
-          (indent-according-to-mode)
-          (end-of-line))))
-
-
-     ;; Case 4: a lambda initialier.
-     ;; --------------------------------------------
-     ;; If the open curly follows =>, then it's a lambda initializer.
-     ((string= (substring preceding3 -2) "=>")
-      (csharp-log 2 "lambda init")
-      (self-insert-command 1)
-      (insert "  }")
-      (backward-char 2))
-
-     ;; else, it's a new scope. (if, while, class, etc)
-     (t
-      (save-excursion
-        (csharp-log 2 "new scope")
-        (set-mark (point)) ;; prepare to indent-region later
-        ;; check if the prior sexp is on the same line
-        (if (save-excursion
-              (let ((curline (line-number-at-pos))
-                    (aftline (progn
-                               (if (c-safe (backward-sexp) t)
-                                   (line-number-at-pos)
-                                 -1))))
-                (= curline aftline)))
-            (newline-and-indent))
-        (self-insert-command 1)
-        (c-indent-line-or-region)
-        (end-of-line)
-        (newline)
-        (insert "}")
-        ;;(c-indent-command) ;; not sure of the difference here
-        (c-indent-line-or-region)
-        (forward-line -1)
-        (end-of-line)
-        (newline-and-indent)
-        ;; point ends up on an empty line, within the braces, properly indented
-        (setq tpoint (point)))
-
-      (goto-char tpoint)))))
-
-
-;; ==================================================================
-;; end of csharp-mode utility and feature defuns
-;; ==================================================================
-
-
-
-;; ==================================================================
-;; c# values for "language constants" defined in cc-langs.el
-;; ==================================================================
-
-(c-lang-defconst c-at-vsemi-p-fn
-  csharp 'csharp--at-vsemi-p)
-
-
-;; This c-opt-after-id-concat-key is a regexp that matches
-;; dot.  In other words: "\\(\\.\\)"
-;; Not sure why this needs to be so complicated.
-;; This const is now internal (obsolete); need to move to
-;; c-after-id-concat-ops.  I don't yet understand the meaning
-;; of that variable, so for now. . .  .
-
-;; (c-lang-defconst c-opt-after-id-concat-key
-;;   csharp (if (c-lang-const c-opt-identifier-concat-key)
-;;              (c-lang-const c-symbol-start)))
-
-(c-lang-defconst c-opt-after-id-concat-key
-  csharp "[[:alpha:]_]" )
-
-
-
-
-;; The matchers elements can be of many forms.  It gets pretty
-;; complicated.  Do a describe-variable on font-lock-keywords to get a
-;; description.  (Why on font-lock-keywords? I don't know, but that's
-;; where you get the help.)
-;;
-;; Aside from the provided documentation, the other option of course, is
-;; to look in the source code as an example for what to do.  The source
-;; in cc-fonts uses a defun c-make-font-lock-search-function to produce
-;; most of the matchers.  Called this way:
-;;
-;;   (c-make-font-lock-search-function  regexp '(A B c))
-;;
-;; The REGEXP is used in re-search-forward, and if there's a match, then
-;; A is called within a save-match-data. If B and C are non-nil, they
-;; are called as pre and post blocks, respecitvely.
-;;
-;; Anyway the c-make-font-lock-search-function works for a single regex,
-;; but more complicated scenarios such as those intended to match and
-;; fontify object initializers, call for a hand-crafted lambda.
-;;
-;; The object initializer is special because matching on it must
-;; allow nesting.
-;;
-;; In c#, the object initializer block is used directly after a
-;; constructor, like this:
-;;
-;;     new MyType
-;;     {
-;;        Prop1 = "foo"
-;;     }
-;;
-;; csharp-mode needs to fontify the properties in the
-;; initializer block in font-lock-variable-name-face. The key thing is
-;; to set the text property on the open curly, using type c-type and
-;; value c-decl-id-start. This apparently allows `parse-partial-sexp' to
-;; do the right thing, later.
-;;
-;; This simple case is easy to handle in a regex, using the basic
-;; `c-make-font-lock-search-function' form.  But the general syntax for a
-;; constructor + object initializer in C# is more complex:
-;;
-;;     new MyType(..arglist..) {
-;;        Prop1 = "foo"
-;;     }
-;;
-;; A simple regex match won't satisfy here, because the ..arglist.. can
-;; be anything, including calls to other constructors, potentially with
-;; object initializer blocks. This may nest arbitrarily deeply, and the
-;; regex in emacs doesn't support balanced matching.  Therefore there's
-;; no way to match on the "outside" pair of parens, to find the relevant
-;; open curly.  What's necessary is to do the match on "new MyType" then
-;; skip over the sexp defined by the parens, then set the text property on
-;; the appropriate open-curly.
-;;
-;; To make that happen, it's good to have insight into what the matcher
-;; really does.  The output of `c-make-font-lock-search-function' before
-;; byte-compiling, is:
-;;
-;; (lambda (limit)
-;;   (let ((parse-sexp-lookup-properties
-;;          (cc-eval-when-compile
-;;            (boundp 'parse-sexp-lookup-properties))))
-;;     (while (re-search-forward REGEX limit t)
-;;       (unless
-;;           (progn
-;;             (goto-char (match-beginning 0))
-;;             (c-skip-comments-and-strings limit))
-;;         (goto-char (match-end 0))
-;;         (progn
-;;           B
-;;           (save-match-data A)
-;;           C ))))
-;;   nil)
-;;
-;; csharp-mode uses this hand-crafted form of a matcher to handle the
-;; general case for constructor + object initializer, within
-;; `c-basic-matchers-after' .
-;;
-
-
-
-
-;; (defun c-make-font-lock-search-function (regexp &rest highlights)
-;;     ;; This function makes a byte compiled function that works much like
-;;     ;; a matcher element in `font-lock-keywords'.  It cuts out a little
-;;     ;; bit of the overhead compared to a real matcher.  The main reason
-;;     ;; is however to pass the real search limit to the anchored
-;;     ;; matcher(s), since most (if not all) font-lock implementations
-;;     ;; arbitrarily limits anchored matchers to the same line, and also
-;;     ;; to insulate against various other irritating differences between
-;;     ;; the different (X)Emacs font-lock packages.
-;;     ;;
-;;     ;; REGEXP is the matcher, which must be a regexp.  Only matches
-;;     ;; where the beginning is outside any comment or string literal are
-;;     ;; significant.
-;;     ;;
-;;     ;; HIGHLIGHTS is a list of highlight specs, just like in
-;;     ;; `font-lock-keywords', with these limitations: The face is always
-;;     ;; overridden (no big disadvantage, since hits in comments etc are
-;;     ;; filtered anyway), there is no "laxmatch", and an anchored matcher
-;;     ;; is always a form which must do all the fontification directly.
-;;     ;; `limit' is a variable bound to the real limit in the context of
-;;     ;; the anchored matcher forms.
-;;     ;;
-;;     ;; This function does not do any hidden buffer changes, but the
-;;     ;; generated functions will.  (They are however used in places
-;;     ;; covered by the font-lock context.)
-;;
-;;     ;; Note: Replace `byte-compile' with `eval' to debug the generated
-;;     ;; lambda easier.
-;;     (byte-compile
-;;      `(lambda (limit)
-;;         (let (;; The font-lock package in Emacs is known to clobber
-;;               ;; `parse-sexp-lookup-properties' (when it exists).
-;;               (parse-sexp-lookup-properties
-;;                (cc-eval-when-compile
-;;                  (boundp 'parse-sexp-lookup-properties))))
-;;           (while (re-search-forward ,regexp limit t)
-;;             (unless (progn
-;;                       (goto-char (match-beginning 0))
-;;                       (c-skip-comments-and-strings limit))
-;;               (goto-char (match-end 0))
-;;               ,@(mapcar
-;;                  (lambda (highlight)
-;;                    (if (integerp (car highlight))
-;;                        (progn
-;;                          (unless (eq (nth 2 highlight) t)
-;;                            (error
-;;                             "The override flag must currently be t in %s"
-;;                             highlight))
-;;                          (when (nth 3 highlight)
-;;                            (error
-;;                             "The laxmatch flag may currently not be set in %s"
-;;                             highlight))
-;;                          `(save-match-data
-;;                             (c-put-font-lock-face
-;;                              (match-beginning ,(car highlight))
-;;                              (match-end ,(car highlight))
-;;                              ,(elt highlight 1))))
-;;                      (when (nth 3 highlight)
-;;                        (error "Match highlights currently not supported in %s"
-;;                               highlight))
-;;                      `(progn
-;;                         ,(nth 1 highlight)
-;;                         (save-match-data ,(car highlight))
-;;                         ,(nth 2 highlight))))
-;;                  highlights))))
-;;         nil))
-;;     )
-
-
-(c-lang-defconst c-basic-matchers-before
-  csharp `(
-           ;;;; Font-lock the attributes by searching for the
-           ;;;; appropriate regex and marking it as TODO.
-           ;;,`(,(concat "\\(" csharp-attribute-regex "\\)")
-           ;;   0 font-lock-function-name-face)
-
-           ;; Put a warning face on the opener of unclosed strings that
-           ;; can't span lines.  Later font
-           ;; lock packages have a `font-lock-syntactic-face-function' for
-           ;; this, but it doesn't give the control we want since any
-           ;; fontification done inside the function will be
-           ;; unconditionally overridden.
-           ,(c-make-font-lock-search-function
-             ;; Match a char before the string starter to make
-             ;; `c-skip-comments-and-strings' work correctly.
-             (concat ".\\(" c-string-limit-regexp "\\)")
-             '((c-font-lock-invalid-string)))
-
-
-           ;; Fontify keyword constants.
-           ,@(when (c-lang-const c-constant-kwds)
-               (let ((re (c-make-keywords-re nil
-                           (c-lang-const c-constant-kwds))))
-                 `((eval . (list ,(concat "\\<\\(" re "\\)\\>")
-                                 1 c-constant-face-name)))))
-
-
-           ;; Fontify the namespaces that follow using statements.
-           ;; This regex handles the optional alias, as well.
-           ,`(,(concat
-                "\\<\\(using\\)[ \t\n\f\v\r]+"
-                "\\(?:"
-                "\\([A-Za-z_][[:alnum:]]*\\)"
-                "[ \t\n\f\v\r]*="
-                "[ \t\n\f\v\r]*"
-                "\\)?"
-                "\\(\\(?:[A-Za-z_][[:alnum:]]*\\.\\)*[A-Za-z_][[:alnum:]]*\\)"
-                "[ \t\n\f\v\r]*;")
-              (2 font-lock-constant-face t t)
-              (3 font-lock-constant-face))
-
-
-           ;; Fontify all keywords except the primitive types.
-           ,`(,(concat "\\<" (c-lang-const c-regular-keywords-regexp))
-              1 font-lock-keyword-face)
-
-
-           ;; Fontify leading identifiers as a reference? in fully
-           ;; qualified names like "Foo.Bar".
-           ,@(when (c-lang-const c-opt-identifier-concat-key)
-               `((,(byte-compile
-                    `(lambda (limit)
-                       (csharp-log 3 "bmb reference? p(%d) L(%d)" (point) limit)
-                       (while (re-search-forward
-                               ,(concat "\\(\\<" ;; 1
-                                        "\\("  ;; 2
-                                        ;;"[A-Z]";; uppercase - assume upper = classname
-                                        "[A-Za-z_]"  ;; any old
-                                        "[A-Za-z0-9_]*" ;; old: (c-lang-const c-symbol-key)
-                                        "\\)"
-                                        "[ \t\n\r\f\v]*"
-                                        "\\."   ;;(c-lang-const c-opt-identifier-concat-key)
-                                        "[ \t\n\r\f\v]*"
-                                        "\\)" ;; 1 ends
-                                        "\\("
-                                        "[[:alpha:]_][A-Za-z0-9_]*" ;; start of another symbolname
-                                        "\\)"  ;; 3 ends
-                                        )
-                               limit t)
-                         (csharp-log 3 "bmb ref? B(%d)" (match-beginning 0))
-                         (unless (progn
-                                   (goto-char (match-beginning 0))
-                                   (c-skip-comments-and-strings limit))
-                           (let* ((prefix  (match-string 2))
-                                  (me1 (match-end 1))
-                                  (first-char (string-to-char prefix))
-                                  (is-upper (and (>= first-char 65)
-                                                 (<= first-char 90))))
-                             (csharp-log 3 "  - class/intf ref (%s)" prefix)
-                             ;; only put face if not there already
-                             (or (get-text-property (match-beginning 2) 'face)
-                                 (c-put-font-lock-face (match-beginning 2)
-                                                       (match-end 2)
-                                                       (if is-upper
-                                                           font-lock-type-face ;; it's a type!
-                                                         font-lock-variable-name-face)))
-
-                             (goto-char (match-end 3))
-                             (c-forward-syntactic-ws limit)
-
-                             ;; now, maybe fontify the thing afterwards, too
-                             (let ((c (char-after)))
-                               (csharp-log 3 "  - now lkg at c(%c)" c)
-
-                               (cond
-
-                                ((= c 40) ;; open paren
-                                 (or (get-text-property (match-beginning 3) 'face)
-                                     (c-put-font-lock-face (match-beginning 3)
-                                                           (match-end 3)
-                                                           font-lock-function-name-face))
-                                 (goto-char (match-end 3)))
-
-                                ;;  these all look like variables or properties
-                                ((or (= c 59)  ;; semicolon
-                                     (= c 91)  ;; open sq brack
-                                     (= c 41)  ;; close paren
-                                     (= c 44)  ;; ,
-                                     (= c 33)  ;; !
-                                     (= c 124) ;; |
-                                     (= c 61)  ;; =
-                                     (= c 43)  ;; +
-                                     (= c 45)  ;; -
-                                     (= c 42)  ;; *
-                                     (= c 47)) ;; /
-                                 (or (get-text-property (match-beginning 3) 'face)
-                                     (c-put-font-lock-face (match-beginning 3)
-                                                           (match-end 3)
-                                                           font-lock-variable-name-face))
-                                 (goto-char (match-end 3)))
-
-                                (t
-                                 (goto-char (match-end 1)))))))))))))
-
-           ))
-
-
-
-(c-lang-defconst c-basic-matchers-after
-  csharp `(
-
-           ;; option 1:
-           ;;            ,@(when condition
-           ;;                `((,(byte-compile
-           ;;                     `(lambda (limit) ...
-           ;;
-           ;; option 2:
-           ;;            ,`((lambda (limit) ...
-           ;;
-           ;; I don't know how to avoid the (when condition ...) in the
-           ;; byte-compiled version.
-           ;;
-           ;; X+X+X+X+X+X+X+X+X+X+X+X+X+X+X+X+X+X+X+X+X+X+X+X+X+X+X+X+X+X+
-
-           ;; Case 1: invocation of constructor + maybe an object
-           ;; initializer.  Some possible examples that satisfy:
-           ;;
-           ;;   new Foo ();
-           ;;
-           ;;   new Foo () { };
-           ;;
-           ;;   new Foo {  };
-           ;;
-           ;;   new Foo { Prop1= 7 };
-           ;;
-           ;;   new Foo {
-           ;;     Prop1= 7
-           ;;   };
-           ;;
-           ;;   new Foo {
-           ;;     Prop1= 7,
-           ;;     Prop2= "Fred"
-           ;;   };
-           ;;
-           ;;   new Foo {
-           ;;      Prop1= new Bar()
-           ;;   };
-           ;;
-           ;;   new Foo {
-           ;;      Prop1= new Bar { PropA = 5.6F }
-           ;;   };
-           ;;
-           ,@(when t
-               `((,(byte-compile
-                    `(lambda (limit)
-                        (let ((parse-sexp-lookup-properties
-                               (cc-eval-when-compile
-                                 (boundp 'parse-sexp-lookup-properties))))
-
-                          (while (re-search-forward
-                                  ,(concat "\\<new"
-                                           "[ \t\n\r\f\v]+"
-                                           "\\(\\(?:"
-                                           (c-lang-const c-symbol-key)
-                                           "\\.\\)*"
-                                           (c-lang-const c-symbol-key)
-                                           "\\)"
-                                           )
-                                  limit t)
-                            (unless
-                                (progn
-                                  (goto-char (match-beginning 0))
-                                  (c-skip-comments-and-strings limit))
-
-                              (csharp-log 3 "ctor invoke? at %d" (match-beginning 1))
-
-                              (save-match-data
-                                ;; next thing could be: [] () <> or {} or nothing (semicolon, comma).
-
-                                ;; fontify the typename
-                                (c-put-font-lock-face (match-beginning 1)
-                                                      (match-end 1)
-                                                      'font-lock-type-face)
-
-                                (goto-char (match-end 0))
-                                (c-forward-syntactic-ws limit)
-                                (if (eq (char-after) ?<) ;; ctor for generic type
-                                    (progn
-                                      (csharp-log 3 " - this is a generic type")
-                                      ;; skip over <> safely
-                                      (c-safe (c-forward-sexp 1) t)
-                                      (c-forward-syntactic-ws)))
-
-                                ;; now, could be [] or (..) or {..} or semicolon.
-
-                                (csharp-log 3 " - looking for sexp")
-
-                                (if (or
-                                     (eq (char-after) ?{) ;; open curly
-                                     (and (eq (char-after) 91) ;; open square
-                                          (while (eq (char-after) 91)
-                                            (c-safe (c-forward-sexp 1)))
-                                          (eq (char-before) 93)) ;; close square
-                                     (and (eq (char-after) 40) ;; open paren
-                                          (c-safe (c-forward-sexp 1) t)))
-
-                                    (progn
-                                      ;; at this point we've jumped over any intervening s-exp,
-                                      ;; like sq brackets or parens.
-                                      (c-forward-syntactic-ws)
-                                      (csharp-log 3 " - after fwd-syn-ws point(%d)" (point))
-                                      (csharp-log 3 " - next char:  %c" (char-after))
-                                      (if (eq (char-after) ?{)
-                                          (let ((start (point))
-                                                (end (if (c-safe (c-forward-sexp 1) t)
-                                                         (point) 0)))
-                                            (csharp-log 3 " -  open curly gets c-decl-id-start %d" start)
-                                            (c-put-char-property start
-                                                                 'c-type
-                                                                 'c-decl-id-start)
-                                            (goto-char start)
-                                            (if (> end start)
-                                                (progn
-                                                  (forward-char 1) ;; step over open curly
-                                                  (c-forward-syntactic-ws)
-                                                  (while (> end (point))
-                                                    ;; now, try to fontify/assign variables to any properties inside the curlies
-                                                    (csharp-log 3 " - inside open curly  point(%d)" (point))
-                                                    (csharp-log 3 " -   next char:  %c" (char-after))
-                                                    ;; fontify each property assignment
-                                                    (if (re-search-forward
-                                                         (concat "\\(" (c-lang-const c-symbol-key) "\\)\\s*=")
-                                                         end t)
-                                                        (progn
-                                                          (csharp-log 3 " -   found variable  %d-%d"
-                                                                      (match-beginning 1)
-                                                                      (match-end 1))
-                                                          (c-put-font-lock-face (match-beginning 1)
-                                                                                (match-end 1)
-                                                                                'font-lock-variable-name-face)
-                                                          (goto-char (match-end 0))
-                                                          (c-forward-syntactic-ws)
-                                                          ;; advance to the next assignment, if possible
-                                                          (if (eq (char-after) ?@)
-                                                              (forward-char 1))
-
-                                                          (if (c-safe (c-forward-sexp 1) t)
-                                                              (progn
-                                                                (forward-char 1)
-                                                                (c-forward-syntactic-ws))))
-
-                                                      ;; else
-                                                      (csharp-log 3 " -   no more assgnmts found")
-                                                      (goto-char end)))))
-                                            )))))
-
-                              (goto-char (match-end 0))
-                              )))
-                        nil))
-                    )))
-
-
-           ;; Case 2: declaration of enum with or without an explicit
-           ;; base type.
-           ;;
-           ;; Examples:
-           ;;
-           ;;  public enum Foo { ... }
-           ;;
-           ;;  public enum Foo : uint { ... }
-           ;;
-           ,@(when t
-               `((,(byte-compile
-                    `(lambda (limit)
-                       (let ((parse-sexp-lookup-properties
-                              (cc-eval-when-compile
-                                (boundp 'parse-sexp-lookup-properties))))
-                         (while (re-search-forward
-                                 ,(concat csharp-enum-decl-re
-                                          "[ \t\n\r\f\v]*"
-                                          "{")
-                                 limit t)
-
-                           (csharp-log 3 "enum? at %d" (match-beginning 0))
-
-                           (unless
-                               (progn
-                                 (goto-char (match-beginning 0))
-                                 (c-skip-comments-and-strings limit))
-                             (progn
-                               (save-match-data
-                                 (goto-char (match-end 0))
-                                 (c-put-char-property (1- (point))
-                                                      'c-type
-                                                      'c-decl-id-start)
-                                 (c-forward-syntactic-ws))
-                               (save-match-data
-                                 (c-font-lock-declarators limit t nil))
-                               (goto-char (match-end 0))
-                               )
-                             )))
-                       nil))
-                  )))
-
-
-           ;; Case 3: declaration of constructor
-           ;;
-           ;; Example:
-           ;;
-           ;; private Foo(...) {...}
-           ;;
-           ,@(when t
-               `((,(byte-compile
-                    `(lambda (limit)
-                       (let ((parse-sexp-lookup-properties
-                              (cc-eval-when-compile
-                                (boundp 'parse-sexp-lookup-properties)))
-                             (found-it nil))
-                         (while (re-search-forward
-                                 ,(concat
-                                   "^[ \t\n\r\f\v]*"
-                                   "\\(\\<\\(public\\|private\\|protected\\)\\)?[ \t\n\r\f\v]+"
-                                   "\\(@?[[:alpha:]_][[:alnum:]_]*\\)" ;; name of constructor
-                                   "[ \t\n\r\f\v]*"
-                                   "\\("
-                                   "("
-                                   "\\)")
-                                 limit t)
-
-                           (unless
-                               (progn
-                                 (goto-char (match-beginning 0))
-                                 (c-skip-comments-and-strings limit))
-
-                             (goto-char (match-end 0))
-
-                             (csharp-log 3 "ctor decl? L(%d) B(%d) E(%d)"
-                                         limit (match-beginning 0) (point))
-
-                             (backward-char 1) ;; just left of the open paren
-                             (save-match-data
-                               ;; Jump over the parens, safely.
-                               ;; If it's an unbalanced paren, no problem,
-                               ;; do nothing.
-                               (if (c-safe (c-forward-sexp 1) t)
-                                   (progn
-                                     (c-forward-syntactic-ws)
-                                     (cond
-
-                                      ;; invokes base or this constructor.
-                                      ((re-search-forward
-                                        ,(concat
-                                          "\\(:[ \t\n\r\f\v]*\\(base\\|this\\)\\)"
-                                          "[ \t\n\r\f\v]*"
-                                          "("
-                                          )
-                                        limit t)
-                                       (csharp-log 3 " - ctor with dependency?")
-
-                                       (goto-char (match-end 0))
-                                       (backward-char 1) ;; just left of the open paren
-                                       (csharp-log 3 " - before paren at %d" (point))
-
-                                       (if (c-safe (c-forward-sexp 1) t)
-                                           (progn
-                                             (c-forward-syntactic-ws)
-                                             (csharp-log 3 " - skipped over paren pair %d" (point))
-                                             (if (eq (char-after) ?{)
-                                                 (setq found-it t)))))
-
-                                      ;; open curly. no depedency on other ctor.
-                                      ((eq (char-after) ?{)
-                                       (csharp-log 3 " - no dependency, curly at %d" (point))
-                                       (setq found-it t)))
-
-                                     )))
-
-                             (if found-it
-                                 ;; fontify the constructor symbol
-                                 (c-put-font-lock-face (match-beginning 3)
-                                                       (match-end 3)
-                                                       'font-lock-function-name-face))
-                             (goto-char (match-end 0)))))
-                       nil)))))
-
-
-           ;; Case 4: using clause. Without this, using (..) gets fontified as a fn.
-           ,@(when t
-               `((,(byte-compile
-                    `(lambda (limit)
-                       (let ((parse-sexp-lookup-properties
-                              (cc-eval-when-compile
-                                (boundp 'parse-sexp-lookup-properties))))
-                         (while (re-search-forward
-                                 ,(concat "\\<\\(using\\)"
-                                          "[ \t\n\r\f\v]*"
-                                          "(")
-                                 limit t)
-
-                           (csharp-log 3 "using clause p(%d)" (match-beginning 0))
-
-                           (unless
-                               (progn
-                                 (goto-char (match-beginning 0))
-                                 (c-skip-comments-and-strings limit))
-
-                             (save-match-data
-                               (c-put-font-lock-face (match-beginning 1)
-                                                     (match-end 1)
-                                                     'font-lock-keyword-face)
-                               (goto-char (match-end 0))))))
-                       nil))
-                  )))
-
-           ;; Case 5: attributes
-           ,`((lambda (limit)
-                (let ((parse-sexp-lookup-properties
-                       (cc-eval-when-compile
-                         (boundp 'parse-sexp-lookup-properties))))
-
-                  (while (re-search-forward
-                          ,(concat "[ \t\n\r\f\v]+"
-                                   "\\(\\["
-                                   "[ \t\n\r\f\v]*"
-                                   "\\(?:\\(?:return\\|assembly\\)[ \t]*:[ \t]*\\)?"
-                                   "\\("
-                                   "\\(?:[A-Za-z_][[:alnum:]]*\\.\\)*"
-                                   "[A-Za-z_][[:alnum:]]*"
-                                   "\\)"
-                                   "[^]]*\\]\\)"
-                                   )
-                          limit t)
-
-                    (csharp-log 3 "attribute? - %d limit(%d)" (match-beginning 1)
-                                limit)
-
-                    (unless
-                        (progn
-                          (goto-char (match-beginning 1))
-                          (c-skip-comments-and-strings limit))
-
-                      (let ((b2 (match-beginning 2))
-                            (e2 (match-end 2))
-                            (is-attr nil))
-                        (csharp-log 3 " - type match: %d - %d"
-                                    b2 e2)
-                        (save-match-data
-                          (c-backward-syntactic-ws)
-                          (setq is-attr (or
-                                         (eq (char-before) 59) ;; semicolon
-                                         (eq (char-before) 93) ;; close square brace
-                                         (eq (char-before) 123) ;; open curly
-                                         (eq (char-before) 125) ;; close curly
-                                         (save-excursion
-                                           (c-beginning-of-statement-1)
-                                           (looking-at
-                                            "#\\(pragma\\|endregion\\|region\\|if\\|else\\|endif\\)"))
-                                         )))
-
-                        (if is-attr
-                            (progn
-                              (if (<= 3 csharp-log-level)
-                                  (csharp-log 3 " - attribute: '%s'"
-                                              (buffer-substring-no-properties b2 e2)))
-                              (c-put-font-lock-face b2 e2 'font-lock-type-face)))))
-                    (goto-char (match-end 0))
-                    ))
-                nil))
-
-
-           ;; Case 6: directive blocks for .aspx/.ashx/.ascx
-           ,`((lambda (limit)
-                (let ((parse-sexp-lookup-properties
-                       (cc-eval-when-compile
-                         (boundp 'parse-sexp-lookup-properties))))
-
-                  (while (re-search-forward csharp-aspnet-directive-re limit t)
-                    (csharp-log 3 "aspnet template? - %d limit(%d)" (match-beginning 1)
-                                limit)
-
-                    (unless
-                        (progn
-                          (goto-char (match-beginning 0))
-                          (c-skip-comments-and-strings limit))
-
-                        (save-match-data
-                          (let ((end-open (+ (match-beginning 0) 3))
-                                (beg-close (- (match-end 0) 2)))
-                            (c-put-font-lock-face (match-beginning 0)
-                                                  end-open
-                                                  'font-lock-preprocessor-face)
-
-                            (c-put-font-lock-face beg-close
-                                                  (match-end 0)
-                                                  'font-lock-preprocessor-face)
-
-                            ;; fontify within the directive
-                            (while (re-search-forward
-                                    ,(concat
-                                      "\\("
-                                      (c-lang-const c-symbol-key)
-                                      "\\)"
-                                      "=?"
-                                      )
-                                    beg-close t)
-
-                            (c-put-font-lock-face (match-beginning 1)
-                                                  (match-end 1)
-                                                  'font-lock-keyword-face)
-                            (c-skip-comments-and-strings beg-close))
-                            ))
-                        (goto-char (match-end 0)))))
-                nil))
-
-
-;;            ;; Case 5: #if
-;;            ,@(when t
-;;                `((,(byte-compile
-;;                     `(lambda (limit)
-;;                        (let ((parse-sexp-lookup-properties
-;;                               (cc-eval-when-compile
-;;                                 (boundp 'parse-sexp-lookup-properties))))
-;;                          (while (re-search-forward
-;;                                  "\\<\\(#if\\)[ \t\n\r\f\v]+\\([A-Za-z_][[:alnum:]]*\\)"
-;;                                  limit t)
-;;
-;;                            (csharp-log 3 "#if directive - %d" (match-beginning 1))
-;;
-;;                            (unless
-;;                                (progn
-;;                                  (goto-char (match-beginning 0))
-;;                                  (c-skip-comments-and-strings limit))
-;;
-;;                              (save-match-data
-;;                                (c-put-font-lock-face (match-beginning 2)
-;;                                                      (match-end 2)
-;;                                                      'font-lock-variable-name-face)
-;;                                (goto-char (match-end 0))))))
-;;                        nil))
-;;                   )))
-
-
- ;;           ,`(,(c-make-font-lock-search-function
- ;;                (concat "\\<new"
- ;;                        "[ \t\n\r\f\v]+"
- ;;                        "\\(\\(?:"
- ;;                        (c-lang-const c-symbol-key)
- ;;                        "\\.\\)*"
- ;;                        (c-lang-const c-symbol-key)
- ;;                        "\\)"
- ;;                        "[ \t\n\r\f\v]*"
- ;;                        "\\(?:"
- ;;                        "( *)[ \t\n\r\f\v]*"          ;; optional ()
- ;;                        "\\)?"
- ;;                        "{")
- ;;                '((c-font-lock-declarators limit t nil)
- ;;                  (save-match-data
- ;;                    (goto-char (match-end 0))
- ;;                    (c-put-char-property (1- (point)) 'c-type
- ;;                                         'c-decl-id-start)
- ;;                    (c-forward-syntactic-ws))
- ;;                  (goto-char (match-end 0)))))
-
-
-
-
-           ;; Fontify labels after goto etc.
-           ,@(when (c-lang-const c-before-label-kwds)
-               `( ;; (Got three different interpretation levels here,
-                 ;; which makes it a bit complicated: 1) The backquote
-                 ;; stuff is expanded when compiled or loaded, 2) the
-                 ;; eval form is evaluated at font-lock setup (to
-                 ;; substitute c-label-face-name correctly), and 3) the
-                 ;; resulting structure is interpreted during
-                 ;; fontification.)
-                 (eval
-                  . ,(let* ((c-before-label-re
-                             (c-make-keywords-re nil
-                               (c-lang-const c-before-label-kwds))))
-                       `(list
-                         ,(concat "\\<\\(" c-before-label-re "\\)\\>"
-                                  "\\s *"
-                                  "\\(" ; identifier-offset
-                                  (c-lang-const c-symbol-key)
-                                  "\\)")
-                         (list ,(+ (regexp-opt-depth c-before-label-re) 2)
-                               c-label-face-name nil t))))))
-
-
-
-           ;; Fontify the clauses after various keywords.
-           ,@(when (or (c-lang-const c-type-list-kwds)
-                       (c-lang-const c-ref-list-kwds)
-                       (c-lang-const c-colon-type-list-kwds)
-                       (c-lang-const c-paren-type-kwds))
-               `((,(c-make-font-lock-search-function
-                    (concat "\\<\\("
-                            (c-make-keywords-re nil
-                              (append (c-lang-const c-type-list-kwds)
-                                      (c-lang-const c-ref-list-kwds)
-                                      (c-lang-const c-colon-type-list-kwds)
-                                      (c-lang-const c-paren-type-kwds)))
-                            "\\)\\>")
-                    '((c-fontify-types-and-refs ((c-promote-possible-types t))
-                        (c-forward-keyword-clause 1)
-                        (if (> (point) limit) (goto-char limit))))))))
-
-
-           ;; Fontify the name that follows each namespace declaration
-           ;; this needs to be done in the matchers-after because
-           ;; otherwise the namespace names get the font-lock-type-face,
-           ;; due to the energetic efforts of c-forward-type.
-           ,`("\\<\\(namespace\\)[ \t\n\r\f\v]+\\(\\(?:[A-Za-z_][[:alnum:]]*\\.\\)*[A-Za-z_][[:alnum:]]*\\)"
-              2 font-lock-constant-face t)
-
-
-           ))
-
-
-
-;; C# does generics.  Setting this to t tells the parser to put
-;; parenthesis syntax on angle braces that surround a comma-separated
-;; list.
-(c-lang-defconst c-recognize-<>-arglists
-  csharp t)
-
-
-(c-lang-defconst c-identifier-key
-  csharp (concat "\\([[:alpha:]_][[:alnum:]_]*\\)" ; 1
-                 "\\("
-                 "[ \t\n\r\f\v]*"
-                 "\\(\\.\\)"             ;;(c-lang-const c-opt-identifier-concat-key)
-                 "[ \t\n\r\f\v]*"
-                 "\\(\\([[:alpha:]_][[:alnum:]_]*\\)\\)"
-                 "\\)*"))
-
-;; C# has a few rules that are slightly different than Java for
-;; operators. This also removed the Java's "super" and replaces it
-;; with the C#'s "base".
-(c-lang-defconst c-operators
-  csharp `((prefix "base")))
-
-
-;; C# uses CPP-like prefixes to mark #define, #region/endregion,
-;; #if/else/endif, and #pragma.  This regexp matches the prefix, not
-;; including the beginning-of-line (BOL), and not including the term
-;; after the prefix (define, pragma, region, etc).  This regexp says
-;; whitespace, followed by the prefix, followed by maybe more
-;; whitespace.
-
-(c-lang-defconst c-opt-cpp-prefix
-  csharp "\\s *#\\s *")
-
-
-;; there are no message directives in C#
-(c-lang-defconst c-cpp-message-directives
-  csharp nil)
-
-(c-lang-defconst c-cpp-expr-directives
-  csharp '("if"))
-
-(c-lang-defconst c-opt-cpp-macro-define
-  csharp "define")
-
-;; $ is not a legal char in an identifier in C#.  So we need to
-;; create a csharp-specific definition of this constant.
-(c-lang-defconst c-symbol-chars
-  csharp (concat c-alnum "_"))
-
-;; c-identifier-syntax-modifications by default defines $ as a word
-;; syntax, which is not legal in C#.  So, define our own lang-specific
-;; value.
-(c-lang-defconst c-identifier-syntax-modifications
-  csharp '((?_ . "w")))
-
-
-
-(c-lang-defconst c-colon-type-list-kwds
-  csharp '("class"))
-
-(c-lang-defconst c-block-prefix-disallowed-chars
-
-  ;; Allow ':' for inherit list starters.
-  csharp (set-difference (c-lang-const c-block-prefix-disallowed-chars)
-                         '(?: ?,)))
-
-
-(c-lang-defconst c-assignment-operators
-  csharp '("=" "*=" "/=" "%=" "+=" "-=" ">>=" "<<=" "&=" "^=" "|="))
-
-(c-lang-defconst c-primitive-type-kwds
-  ;; ECMA-344, S8
-  csharp '("object" "string" "sbyte" "short" "int" "long" "byte"
-           "ushort" "uint" "ulong" "float" "double" "bool" "char"
-           "decimal" "void"))
-
-;; The keywords that define that the following is a type, such as a
-;; class definition.
-(c-lang-defconst c-type-prefix-kwds
-  ;; ECMA-344, S?
-  csharp '("class" "interface" "struct"))  ;; no enum here.
-                                           ;; we want enum to be a brace list.
-
-
-;; Type modifier keywords. They appear anywhere in types, but modify
-;; instead of create one.
-(c-lang-defconst c-type-modifier-kwds
-  ;; EMCA-344, S?
-  csharp '("readonly" "const"))
-
-
-;; Tue, 20 Apr 2010  16:02
-;; need to verify that this works for lambdas...
-(c-lang-defconst c-special-brace-lists
-  csharp '((?{ . ?}) ))
-
-
-
-;; dinoch
-;; Thu, 22 Apr 2010  18:54
-;;
-;; No idea why this isn't getting set properly in the first place.
-;; In cc-langs.el, it is set to the union of a bunch of things, none
-;; of which include "new", or "enum".
-;;
-;; But somehow both of those show up in the resulting derived regexp.
-;; This breaks indentation of instance initializers, such as
-;;
-;;         var x = new Foo { ... };
-;;
-;; Based on my inspection, the existing c-lang-defconst should work!
-;; I don't know how to fix this c-lang-defconst, so I am re-setting this
-;; variable here, to provide the regex explicitly.
-;;
-(c-lang-defconst c-decl-block-key
-  csharp '"\\(namespace\\)\\([^[:alnum:]_]\\|$\\)\\|\\(class\\|interface\\|struct\\)\\([^[:alnum:]_]\\|$\\)" )
-
-
-;; Thu, 22 Apr 2010  14:29
-;; I want this to handle    var x = new Foo[] { ... };
-;; not sure if necessary.
-(c-lang-defconst c-inexpr-brace-list-kwds
-  csharp '("new"))
-
-
-;; ;;(c-lang-defconst c-inexpr-class-kwds
-;; ;; csharp '("new"))
-
-
-
-(c-lang-defconst c-class-decl-kwds
-  ;; EMCA-344, S?
-  ;; don't include enum here, because we want it to be fontified as a brace
-  ;; list, with commas delimiting the values. see c-brace-list-decl-kwds
-  ;; below.
-  csharp '("class" "interface" "struct" ))  ;; no "enum"!!
-
-
-;; The various modifiers used for class and method descriptions.
-(c-lang-defconst c-modifier-kwds
-  csharp '("public" "partial" "private" "const" "abstract" "sealed"
-           "protected" "ref" "out" "static" "virtual"
-           "override" "params" "internal"))
-
-
-;; Thu, 22 Apr 2010  23:02
-;; Based on inspection of the cc-mode code, the c-protection-kwds
-;; c-lang-const is used only for objective-c.  So the value is
-;; irrelevant for csharp.
-(c-lang-defconst c-protection-kwds
-  csharp nil
-  ;; csharp '("private" "protected" "public" "internal")
-)
-
-
-;; Define the keywords that can have something following after them.
-(c-lang-defconst c-type-list-kwds
-  csharp '("struct" "class" "interface" "is" "as"
-           "delegate" "event" "set" "get" "add" "remove"))
-
-
-;; This allows the classes after the : in the class declartion to be
-;; fontified.
-(c-lang-defconst c-typeless-decl-kwds
-  csharp '(":"))
-
-;; Sets up the enum to handle the list properly, and also the new
-;; keyword to handle object initializers.  This requires a modified
-;; c-basic-matchers-after (see above) in order to correctly fontify C#
-;; 3.0 object initializers.
-(c-lang-defconst c-brace-list-decl-kwds
-  csharp '("enum" "new"))
-
-
-;; Statement keywords followed directly by a substatement.
-;; catch is not one of them, because catch has a paren (typically).
-(c-lang-defconst c-block-stmt-1-kwds
-  csharp '("do" "try" "finally" "unsafe"))
-
-
-;; Statement keywords followed by a paren sexp and then by a substatement.
-(c-lang-defconst c-block-stmt-2-kwds
-  csharp '("for" "if" "switch" "while" "catch" "foreach" "using"
-           "checked" "unchecked" "lock"))
-
-
-;; Statements that break out of braces
-(c-lang-defconst c-simple-stmt-kwds
-  csharp '("return" "continue" "break" "throw" "goto" ))
-
-;; Statements that allow a label
-;; TODO?
-(c-lang-defconst c-before-label-kwds
-  csharp nil)
-
-;; Constant keywords
-(c-lang-defconst c-constant-kwds
-  csharp '("true" "false" "null"))
-
-;; Keywords that start "primary expressions."
-(c-lang-defconst c-primary-expr-kwds
-  csharp '("this" "base"))
-
-;; Treat namespace as an outer block so class indenting
-;; works properly.
-(c-lang-defconst c-other-block-decl-kwds
-  csharp '("namespace"))
-
-(c-lang-defconst c-other-kwds
-  csharp '("sizeof" "typeof" "is" "as" "yield"
-           "where" "select" "in" "from"))
-
-(c-lang-defconst c-overloadable-operators
-  ;; EMCA-344, S14.2.1
-  csharp '("+" "-" "*" "/" "%" "&" "|" "^"
-           "<<" ">>" "==" "!=" ">" "<" ">=" "<="))
-
-
-;; This c-cpp-matchers stuff is used for fontification.
-;; see cc-font.el
-;;
-
-;; There's no preprocessor in C#, but there are still compiler
-;; directives to fontify: "#pragma", #region/endregion, #define, #undef,
-;; #if/else/endif.  (The definitions for the extra keywords above are
-;; enough to incorporate them into the fontification regexps for types
-;; and keywords, so no additional font-lock patterns are required for
-;; keywords.)
-
-(c-lang-defconst c-cpp-matchers
-  csharp (cons
-      ;; Use the eval form for `font-lock-keywords' to be able to use
-      ;; the `c-preprocessor-face-name' variable that maps to a
-      ;; suitable face depending on the (X)Emacs version.
-      '(eval . (list "^\\s *\\(#pragma\\|undef\\|define\\)\\>\\(.*\\)"
-                     (list 1 c-preprocessor-face-name)
-                     '(2 font-lock-string-face)))
-      ;; There are some other things in `c-cpp-matchers' besides the
-      ;; preprocessor support, so include it.
-      (c-lang-const c-cpp-matchers)))
-
-
-
-;; Custom variables
-;;;###autoload
-(defcustom csharp-mode-hook nil
-    "*Hook called by `csharp-mode'."
-    :type 'hook
-    :group 'csharp)
-
-  ;; The following fn allows this:
-  ;;    (csharp-log 3 "scan result...'%s'" state)
-
-(defcustom csharp-log-level 0
-    "The current log level for CSharp-mode-specific operations.
-This is used in particular by the verbatim-literal
-string scanning.
-
-Most other csharp functions are not instrumented.
-0 = NONE, 1 = Info, 2 = VERBOSE, 3 = DEBUG, 4 = SHUTUP ALREADY. "
-    :type 'integer
-    :group 'csharp)
-
-
-;;;###autoload
-(defcustom csharp-want-flymake-fixup t
-  "*Whether to enable the builtin C# support for flymake. This is meaningful
-only if flymake is loaded."
-  :type 'boolean :group 'csharp)
-
-;;;###autoload
-(defcustom csharp-want-yasnippet-fixup t
-  "*Whether to enable the builtin C# support for yasnippet. This is meaningful
-only if flymake is loaded."
-  :type 'boolean :group 'csharp)
-
-
-;;;###autoload
-(defcustom csharp-want-imenu t
-  "*Whether to generate a buffer index via imenu for C# buffers."
-  :type 'boolean :group 'csharp)
-
-
-;;;###autoload
-(defcustom csharp-make-tool "nmake.exe"
-  "*The make tool to use. Defaults to nmake, found on path. Specify
-a full path or alternative program name, to tell csharp-mode to use
-a different make tool in compile commands.
-
-See also, `csharp-msbuild-tool'.
-
-"
-  :type 'string :group 'csharp)
-
-
-;;;###autoload
-(defcustom csharp-msbuild-tool "msbuild.exe"
-  "*The tool to use to build .csproj files. Defaults to msbuild, found on
-path. Specify a full path or alternative program name, to tell csharp-mode
-to use a different make tool in compile commands.
-
-See also, `csharp-make-tool'.
-
-"
-  :type 'string :group 'csharp)
-
-
-;;;###autoload
-(defcustom csharp-cmd-line-limit 28
-  "The number of lines at the top of the file to look in, to find
-the command that csharp-mode will use to compile the current
-buffer, or the command \"stub\" that csharp-mode will use to
-check the syntax of the current buffer via flymake.
-
-If the value of this variable is zero, then csharp-mode looks
-everywhere in the file.  If the value is positive, then only in
-the first N lines. If negative, then only in the final N lines.
-
-The line should appear in a comment inside the C# buffer.
-
-
-Compile
---------
-
-In the case of compile, the compile command must be prefixed with
-\"compile:\".  For example,
-
- // compile: csc.exe /r:Hallo.dll Arfie.cs
-
-
-This command will be suggested as the compile command when the
-user invokes `compile' for the first time.
-
-
-Flymake
---------
-
-In the case of flymake, the command \"stub\" string must be
-prefixed with \"flymake:\".  For example,
-
- // flymake: DOTNETDIR\csc.exe /target:netmodule /r:foo.dll @@FILE@@
-
-In the case of flymake, the string should NOT include the name of
-the file for the buffer being checked. Instead, use the token
-@@FILE@@ .  csharp-mode will replace this token with the name of
-the source file to compile, before passing the command to flymake
-to run it.
-
-If for some reason the command is invalid or illegal, flymake
-will report an error and disable itself.
-
-It might be handy to run fxcop, for example, via flymake.
-
- // flymake: fxcopcmd.exe /c  /f:MyLibrary.dll
-
-
-
-In all cases
-------------
-
-Be sure to specify the proper path for your csc.exe, whatever
-version that might be, or no path if you want to use the system
-PATH search.
-
-If the buffer depends on external libraries, then you will want
-to include /R arguments to that csc.exe command.
-
-To be clear, this variable sets the number of lines to search for
-the command.  This cariable is an integer.
-
-If the marker string (either \"compile:\" or \"flymake:\"
-is present in the given set of lines, csharp-mode will take
-anything after the marker string as the command to run.
-
-"
-  :type 'integer   :group 'csharp)
-
-
-
-(defconst csharp-font-lock-keywords-1 (c-lang-const c-matchers-1 csharp)
-  "Minimal highlighting for C# mode.")
-
-(defconst csharp-font-lock-keywords-2 (c-lang-const c-matchers-2 csharp)
-  "Fast normal highlighting for C# mode.")
-
-(defconst csharp-font-lock-keywords-3 (c-lang-const c-matchers-3 csharp)
-  "Accurate normal highlighting for C# mode.")
-
-(defvar csharp-font-lock-keywords csharp-font-lock-keywords-3
-  "Default expressions to highlight in C# mode.")
-
-
-(defvar csharp-mode-syntax-table nil
-  "Syntax table used in csharp-mode buffers.")
-(or csharp-mode-syntax-table
-    (setq csharp-mode-syntax-table
-          (funcall (c-lang-const c-make-mode-syntax-table csharp))))
-
-(defvar csharp-mode-abbrev-table nil
-  "Abbreviation table used in csharp-mode buffers.")
-(c-define-abbrev-table 'csharp-mode-abbrev-table
-  ;; Keywords that if they occur first on a line might alter the
-  ;; syntactic context, and which therefore should trig reindentation
-  ;; when they are completed.
-  '(("else" "else" c-electric-continued-statement 0)
-    ("while" "while" c-electric-continued-statement 0)
-    ("catch" "catch" c-electric-continued-statement 0)
-    ("finally" "finally" c-electric-continued-statement 0)))
-
-(defvar csharp-mode-map (let ((map (c-make-inherited-keymap)))
-                      ;; Add bindings which are only useful for C#
-                      map)
-  "Keymap used in csharp-mode buffers.")
-
-
-(defvar csharp--yasnippet-has-been-fixed nil
-  "indicates whether yasnippet has been patched for use with csharp.
-Intended for internal use only.")
-
-(defvar csharp--flymake-has-been-installed  nil
-  "one-time use boolean, to check whether csharp tweaks for flymake (advice
-etc) have been installed.")
-
-(defvar csharp-flymake-csc-arguments
-  (list "/t:module" "/nologo")
-  "A list of arguments to use with the csc.exe
-compiler, when using flymake with a
-direct csc.exe build for syntax checking purposes.")
-
-
-(defvar csharp-flymake-aux-error-info nil
-  "a list of auxiliary flymake error info items. Each item in the
-list is a pair, consisting of a line number and a column number.
-This info is set by advice to flymake-parse-line, and used by
-advice attached to flymake-goto-line, to navigate to the proper
-error column when possible. ")
-
-
-(defvar csharp-flymake-csc-error-pattern
-  "^[ \t]*\\([_A-Za-z0-9][^(]+\\.cs\\)(\\([0-9]+\\)[,]\\([0-9]+\\)) ?: \\(\\(error\\|warning\\) +:? *C[SA][0-9]+ *:[ \t\n]*\\(.+\\)\\)"
-  "The regex pattern for C# compiler error messages. Follows
-the same form as an entry in `flymake-err-line-patterns'. The
-value is a STRING, a regex.")
-
-;; TODO
-;; Defines our constant for finding attributes.
-;;(defconst csharp-attribute-regex "\\[\\([XmlType]+\\)(")
-;;(defconst csharp-attribute-regex "\\[\\(.\\)")
-;; This doesn't work because the string regex happens before this point
-;; and getting the font-locking to work before and after is fairly difficult
-;;(defconst csharp-attribute-regex
-;;  (concat
-;;   "\\[[a-zA-Z][ \ta-zA-Z0-9.]+"
-;;   "\\((.*\\)?"
-;;))
-
-
-;; ==================================================================
-;; end of c# values for "language constants" defined in cc-langs.el
-;; ==================================================================
-
-
-
-
-
-;; ========================================================================
-;; Flymake integration
-
-(defun csharp-flymake-init ()
-  (csharp-flymake-init-impl
-   'flymake-create-temp-inplace t t 'csharp-flymake-get-cmdline))
-
-(defun csharp-flymake-init-impl (create-temp-f use-relative-base-dir use-relative-source get-cmdline-f)
-  "Create syntax check command line for a directly checked source file.
-Use CREATE-TEMP-F for creating temp copy."
-  (let* ((args nil)
-        (temp-source-file-name  (flymake-init-create-temp-buffer-copy create-temp-f)))
-    (setq args (flymake-get-syntax-check-program-args
-                temp-source-file-name "."
-                use-relative-base-dir use-relative-source
-                get-cmdline-f))
-    args))
-
-
-(defun csharp-flymake-cleanup ()
-  "Delete the temporary .netmodule file created in syntax checking
-a C# buffer, then call through to flymake-simple-cleanup."
-
-  (if flymake-temp-source-file-name
-      (progn
-        (let* ((netmodule-name
-                (concat (file-name-sans-extension flymake-temp-source-file-name)
-                        ".netmodule"))
-               (expanded-netmodule-name (expand-file-name netmodule-name ".")))
-          (if (file-exists-p expanded-netmodule-name)
-              (flymake-safe-delete-file expanded-netmodule-name)))
-        ))
-  (flymake-simple-cleanup))
-
-
-(defun csharp-split-string-respecting-quotes (s)
-  "splits a string into tokens, respecting double quotes
-For example, the string 'This is \"a string\"' will be split into 3 tokens.
-
-More pertinently, the string
-   'csc /t:module /R:\"c:\abba dabba\dooo\Foo.dll\"'
-
-...will be split into 3 tokens.
-
-This fn also removes quotes from the tokens that have them. This is for
-compatibility with flymake and the process-start fn.
-
-"
-  (let ((local-s s)
-        (my-re-1 "[^ \"]*\"[^\"]+\"\\|[^ \"]+")
-        (my-re-2 "\\([^ \"]*\\)\"\\([^\"]+\\)\"")
-        (tokens))
-    (while (string-match my-re-1 local-s)
-      (let ((token (match-string 0 local-s))
-            (remainder (substring local-s (match-end 0))))
-        (if (string-match my-re-2 token)
-            (setq token (concat (match-string 1 token) (match-string 2 token))))
-        ;;(message "token: %s" token)
-        (setq tokens (append tokens (list token)))
-        (setq local-s remainder)))
-    tokens))
-
-
-(defun csharp-get-value-from-comments (marker-string line-limit)
-  "gets a string from the header comments in the current buffer.
-
-This is used to extract the flymake command and the compile
-command from the comments.
-
-It looks for \"marker-string:\" and returns the string that
-follows it, or returns nil if that string is not found.
-
-eg, when marker-string is \"flymake\", and the following
-string is found at the top of the buffer:
-
-     flymake: csc.exe /r:Hallo.dll
-
-...then this command will return the string
-
-     \"csc.exe /r:Hallo.dll\"
-
-It's ok to have whitespace between the marker and the following
-colon.
-
-"
-
-  (let (start search-limit found)
-    ;; determine what lines to look in
-    (save-excursion
-      (save-restriction
-        (widen)
-        (cond ((> line-limit 0)
-               (goto-char (setq start (point-min)))
-               (forward-line line-limit)
-               (setq search-limit (point)))
-              ((< line-limit 0)
-               (goto-char (setq search-limit (point-max)))
-               (forward-line line-limit)
-               (setq start (point)))
-              (t                        ;0 => no limit (use with care!)
-               (setq start (point-min))
-               (setq search-limit (point-max))))))
-
-    ;; look in those lines
-    (save-excursion
-      (save-restriction
-        (widen)
-        (let ((re-string
-               (concat "\\b" marker-string "[ \t]*:[ \t]*\\(.+\\)$")))
-          (if (and start
-                   (< (goto-char start) search-limit)
-                   (re-search-forward re-string search-limit 'move))
-
-              (buffer-substring-no-properties
-               (match-beginning 1)
-               (match-end 1))))))))
-
-
-
-
-(defun csharp-replace-command-tokens (explicitly-specified-command)
-  "Replace tokens in the flymake or compile command extracted from the
-buffer, to allow specification of the original and modified
-filenames.
-
-  @@ORIG@@ - gets replaced with the original filename
-  @@FILE@@ - gets replaced with the name of the temporary file
-      created by flymake
-
-"
-  (let ((massaged-command explicitly-specified-command))
-    (if (string-match "@@SRC@@" massaged-command)
-        (setq massaged-command
-              (replace-match
-               (file-relative-name flymake-temp-source-file-name) t t massaged-command)))
-    (if (string-match "@@ORIG@@" massaged-command)
-        (setq massaged-command
-              (replace-match
-               (file-relative-name buffer-file-name) t t massaged-command)))
-    massaged-command))
-
-
-;;(setq flymake-log-level 3)
-
-(defun csharp-flymake-get-final-csc-arguments (initial-arglist)
-  "Gets the command used by csc.exe for flymake runs.
-This may inject a /t:module into an arglist, where it is not
-present.
-
-This fn burps if a different /t: argument is found.
-
-"
-  (interactive)
-  (let ((args initial-arglist)
-        arg
-        (found nil))
-    (while args
-      (setq arg (car args))
-      (cond
-       ((string-equal arg "/t:module") (setq found t))
-       ((string-match "^/t:" arg)
-        (setq found t)
-        (message "csharp-mode: WARNING /t: option present in arglist, and not /t:module; fix this.")))
-
-      (setq args (cdr args)))
-
-    (setq args
-          (if found
-              initial-arglist
-            (append (list "/t:module") initial-arglist)))
-
-    (if (called-interactively-p 'any)
-        (message "result: %s" (prin1-to-string args)))
-
-    args))
-
-
-(defun csharp-flymake-get-cmdline (source base-dir)
-  "Gets the cmd line for running a flymake session in a C# buffer.
-This gets called by flymake itself.
-
-The fn looks in the buffer for a line that looks like:
-
-  flymake: <command goes here>
-
-  (It should be embedded into a comment)
-
-Typically the command will be a line that runs nmake.exe,
-msbuild.exe, or csc.exe, with various options. It should
-eventually run the CSC.exe compiler, or something else that emits
-error messages in the same form as the C# compiler, like FxCopCmd.exe
-
-Some notes on implementation:
-
-  1. csharp-mode copies the buffer to a temporary file and
-     compiles *that*.  This temporary file has a different name
-     than the actual file name for the buffer - _flymake gets
-     appended to the basename.  Therefore, you should specify
-     Foo_flymake.cs for the filename, if you want to explicitly
-     refer to it.
-
-     If you want to refer to it implicitly, you can use the special
-     token \"@@SRC@@\" in the command. It will get replaced with the
-     name of the temporary file at runtime. If you want to refer to
-     the original name of the buffer, use @@ORIG@@.
-
-  2. In general, when running the compiler, you should use a
-     target type of \"module\" (eg, /t:module) to allow
-     csharp-mode to clean up the products of the build.
-
-  3. See `csharp-cmd-line-limit' for a way to restrict where
-     csharp-mode will search for the command.
-
-  4. If this string is not found, then this fn will fallback to
-     a generic, generated csc.exe command.
-
-"
-  (let ((explicitly-specified-command
-         (csharp-get-value-from-comments "flymake" csharp-cmd-line-limit)))
-
-    (cond
-     (explicitly-specified-command
-
-      ;; the marker string was found in the buffer
-      (let ((tokens (csharp-split-string-respecting-quotes
-                      (csharp-replace-command-tokens explicitly-specified-command))))
-
-        (list (car tokens) (cdr tokens))))
-
-        ;; ;; implicitly append? the name of the temporary source file
-        ;; (list (car tokens) (append (cdr tokens) (list flymake-temp-source-file-name)))))
-
-     (t
-      ;; fallback
-      (list "csc.exe"
-            (append (csharp-flymake-get-final-csc-arguments
-                     csharp-flymake-csc-arguments)
-                    (list source)))))))
-
-
-;; (defun csharp-flymake-get-cmdline (source base-dir)
-;;   "Gets the cmd line for running a flymake session in a C# buffer.
-;; This gets called by flymake itself.
-;;
-;; The fn looks in the buffer for a line that looks like:
-;;
-;;   flymake: <command goes here>
-;;
-;;   (It should be embedded into a comment)
-;;
-;; Typically the command will be a line that runs nmake.exe,
-;; msbuild.exe, or cscc.exe, with various options. It should
-;; eventually run the CSC.exe compiler, or something else that emits
-;; error messages in the same form as the C# compiler.
-;;
-;; In general, when running the compiler, you should use a target
-;; type of \"module\" (eg, /t:module) to allow csharp-mode to
-;; clean up the products of the build.
-;;
-;; See `csharp-cmd-line-limit' for a way to restrict where
-;; csharp-mode will search for the command.
-;;
-;; If this string is not found, then this fn will fallback to a
-;; generic, generated csc.exe command.
-;;
-;; "
-;;   (let ((explicitly-specified-command
-;;          (let ((line-limit csharp-cmd-line-limit)
-;;                start search-limit found)
-;;            ;; determine what lines to look in
-;;            (save-excursion
-;;              (save-restriction
-;;                (widen)
-;;                (cond ((> line-limit 0)
-;;                       (goto-char (setq start (point-min)))
-;;                       (forward-line line-limit)
-;;                       (setq search-limit (point)))
-;;                      ((< line-limit 0)
-;;                       (goto-char (setq search-limit (point-max)))
-;;                       (forward-line line-limit)
-;;                       (setq start (point)))
-;;                      (t                        ;0 => no limit (use with care!)
-;;                       (setq start (point-min))
-;;                       (setq search-limit (point-max))))))
-;;
-;;            ;; look in those lines
-;;            (save-excursion
-;;              (save-restriction
-;;                (widen)
-;;                (if (and start
-;;                         (< (goto-char start) search-limit)
-;;                         (re-search-forward "\\bflymake-command[ \t]*:[ \t]*\\(.+\\)$" search-limit 'move))
-;;
-;;                    (buffer-substring-no-properties
-;;                     (match-beginning 1)
-;;                     (match-end 1))))))))
-;;
-;;     (cond
-;;      (explicitly-specified-command
-;;       ;; the marker string was found in the buffer
-;;       (let ((tokens (csharp-split-string-respecting-quotes
-;;                      explicitly-specified-command)))
-;;         ;; implicitly append the name of the temporary source file
-;;         (list (car tokens) (append (cdr tokens) (list flymake-temp-source-file-name)))))
-;;
-;;      (t
-;;       ;; fallback
-;;       (list "csc.exe"
-;;             (append (csharp-flymake-get-final-csc-arguments
-;;                      csharp-flymake-csc-arguments)
-;;                     (list source)))))))
-
-
-
-
-
-(defun csharp-flymake-install ()
-  "Change flymake variables and fns to work with C#.
-
-This fn does these things:
-
-1. add a C# entry to the flymake-allowed-file-name-masks,
-   or replace it if it already exists.
-
-2. add a C# entry to flymake-err-line-patterns.
-   This isn't strictly necessary because of item #4.
-
-3. override the definition for flymake-process-sentinel
-   to NOT check the process status on exit. MSBuild.exe
-   sets a non-zero status code when compile errors occur,
-   which causes flymake to disable itself with the regular
-   flymake-process-sentinel.
-
-4. redefine flymake-start-syntax-check-process to unset the
-   query-on-exit flag for flymake processes. This allows emacs to
-   exit even if flymake is currently running.
-
-5. provide advice to flymake-parse-line and
-   flymake-parse-err-lines, specifically set up for C#
-   buffers. This allows optimized searching for errors in csc.exe
-   output, and storing column numbers, for use in #6.
-
-6. define advice to flymake-goto-line , to allow it to goto the
-   appropriate column for the error on a given line. This advice
-   looks in flymake-er-info, a list, and uses the heuristic that
-   the first error that matches the given line number, is the error
-   we want. This will break if there is more than one error on a
-   single line.
-
-"
-
-  (flymake-log 2 "csharp-flymake-install")
-
-  (or csharp--flymake-has-been-installed
-      (progn
-
-  ;; 1. add a C# entry to the flymake-allowed-file-name-masks
-  (let* ((key "\\.cs\\'")
-         (csharpentry (assoc key flymake-allowed-file-name-masks)))
-    (if csharpentry
-        (setcdr csharpentry '(csharp-flymake-init csharp-flymake-cleanup))
-      (add-to-list
-       'flymake-allowed-file-name-masks
-       (list key 'csharp-flymake-init 'csharp-flymake-cleanup))))
-
-
-  ;; 2. add a C# entry to flymake-err-line-patterns
-  ;;
-  ;; The value of each entry is a list, (STRING IX1 IX2 IX3 IX4), where
-  ;; STRING is the regex, and the other 4 values are indexes into the
-  ;; regex captures for the filename, line, column, and error text,
-  ;; respectively.
-  (add-to-list
-   'flymake-err-line-patterns
-   (list csharp-flymake-csc-error-pattern 1 2 3 4))
-
-
-
-  ;; 3.  override the definition for flymake-process-sentinel
-  ;;
-  ;; DPC - 2011 Feb 26
-  ;; Redefining a function is a bit unusual, but I think it is necessary
-  ;; to remove the check on process exit status.  For VBC.exe, it gives
-  ;; a 1 status when compile errors result. Likewise msbuild.exe.  This
-  ;; means flymake turns itself off, which we don't want. This really
-  ;; ought to be tunable in flymake, but I guess no one asked for that
-  ;; feature yet.
-  (defun flymake-process-sentinel (process event)
-    "Sentinel for syntax check buffers."
-    (when (memq (process-status process) '(signal exit))
-      (let* ((exit-status       (process-exit-status process))
-             (command           (process-command process))
-             (source-buffer     (process-buffer process))
-             (cleanup-f         (flymake-get-cleanup-function (buffer-file-name source-buffer))))
-
-        (flymake-log 2 "process %d exited with code %d"
-                     (process-id process) exit-status)
-        (condition-case err
-            (progn
-              (flymake-log 3 "cleaning up using %s" cleanup-f)
-              (when (buffer-live-p source-buffer)
-                (with-current-buffer source-buffer
-                  (funcall cleanup-f)))
-
-              (delete-process process)
-              (setq flymake-processes (delq process flymake-processes))
-
-              (when (buffer-live-p source-buffer)
-                (with-current-buffer source-buffer
-
-                  (flymake-parse-residual)
-                  ;;(flymake-post-syntax-check exit-status command)
-                  (flymake-post-syntax-check 0 command)
-                  (setq flymake-is-running nil))))
-          (error
-           (let ((err-str (format "Error in process sentinel for buffer %s: %s"
-                                  source-buffer (error-message-string err))))
-             (flymake-log 0 err-str)
-             (with-current-buffer source-buffer
-               (setq flymake-is-running nil))))))))
-
-
-  ;; 4. redefine this fn - the reason is to allow exit without query on
-  ;; flymake processes.  Not sure why this is not the default.
-  (defun flymake-start-syntax-check-process (cmd args dir)
-    "Start syntax check process."
-    (let* ((process nil))
-      (condition-case err
-          (progn
-            (when dir
-              (let ((default-directory dir))
-                (flymake-log 3 "starting process on dir %s" default-directory)))
-            (setq process (apply 'start-process "flymake-proc" (current-buffer) cmd args))
-
-            ;; dino - exit without query on active flymake processes
-            (set-process-query-on-exit-flag process nil)
-
-            (set-process-sentinel process 'flymake-process-sentinel)
-            (set-process-filter process 'flymake-process-filter)
-            (push process flymake-processes)
-
-            (setq flymake-is-running t)
-            (setq flymake-last-change-time nil)
-            (setq flymake-check-start-time (flymake-float-time))
-
-            (flymake-report-status nil "*")
-            (flymake-log 2 "started process %d, command=%s, dir=%s"
-                         (process-id process) (process-command process)
-                         default-directory)
-            process)
-        (error
-         (let* ((err-str (format "Failed to launch syntax check process '%s' with args %s: %s"
-                                 cmd args (error-message-string err)))
-                (source-file-name buffer-file-name)
-                (cleanup-f        (flymake-get-cleanup-function source-file-name)))
-           (flymake-log 0 err-str)
-           (funcall cleanup-f)
-           (flymake-report-fatal-status "PROCERR" err-str))))))
-
-
-  ;; 5. define some advice for the error parsing
-  (defadvice flymake-parse-err-lines (before
-                                      csharp-flymake-parse-line-patch-1
-                                      activate compile)
-    (if (string-match "\\.[Cc][Ss]$"  (file-relative-name buffer-file-name))
-        ;; clear the auxiliary line information list, when a new parse
-        ;; starts.
-        (setq csharp-flymake-aux-error-info nil)))
-
-  (defadvice flymake-parse-line (around
-                                 csharp-flymake-parse-line-patch-2
-                                 activate compile)
-    ;; This advice will run in all buffers.  Let's may sure we
-    ;; actually execute the important stiff only when a C# buffer is active.
-    (if (string-match "\\.[Cc][Ss]$"  (file-relative-name buffer-file-name))
-
-        (let (raw-file-name
-              e-text
-              result
-              (pattern (list csharp-flymake-csc-error-pattern 1 2 3 4))
-              (line-no 0)
-              (col-no 0)
-              (err-type "e"))
-          (if (string-match (car pattern) line)
-              (let* ((file-idx (nth 1 pattern))
-                     (line-idx (nth 2 pattern))
-                     (col-idx (nth 3 pattern))
-                     (e-idx (nth 4 pattern)))
-                (flymake-log 3 "parse line: fx=%s lx=%s ex=%s"
-                             file-idx line-idx e-idx)
-                (setq raw-file-name (if file-idx (match-string file-idx line) nil))
-                (setq line-no       (if line-idx (string-to-number (match-string line-idx line)) 0))
-                (setq col-no        (if col-idx  (string-to-number (match-string col-idx line)) 0))
-                (setq e-text      (if e-idx
-                                      (match-string e-idx line)
-                                    (flymake-patch-e-text (substring line (match-end 0)))))
-                (or e-text (setq e-text "<no error text>"))
-                (if (and e-text (string-match "^[wW]arning" e-text))
-                    (setq err-type "w"))
-                (flymake-log 3 "parse line: fx=%s/%s lin=%s/%s col=%s/%s text=%s"
-                             file-idx raw-file-name
-                             line-idx line-no
-                             col-idx (prin1-to-string col-no)
-                             e-text)
-
-                ;; add one entry to the list of auxiliary error information.
-                (add-to-list 'csharp-flymake-aux-error-info
-                             (list line-no col-no))
-
-                (setq ad-return-value
-                      (flymake-ler-make-ler raw-file-name line-no err-type e-text nil))
-                )))
-
-      ;; else - not in a C# buffer
-      ad-do-it))
-
-
-  ;; 6. finally, define some advice for the line navigation.  It moves
-  ;; to the proper column, given the line number containing the
-  ;; error. It first calls the normal `flymake-goto-line', and assumes
-  ;; that the result is that the cursor is on the line that contains the
-  ;; error.  At exit from that fn, the column is not important. This advice
-  ;; sets the column.
-  (defadvice flymake-goto-line (around
-                                csharp-flymake-goto-line-patch
-                                activate compile)
-    ;; This advice will run in all buffers.  Let's may sure we
-    ;; actually execute the important stuff only when a C# buffer is active.
-    ad-do-it
-    (if (string-match "\\.[Cc][Ss]$"  (file-relative-name buffer-file-name))
-        (let* ((lno (ad-get-arg 0))
-              (epair (assoc lno csharp-flymake-aux-error-info)))
-          (if epair
-              (forward-char (- (cadr epair) (current-column) 1))))))
-
-
-  ;; 7. finally, set the flag
-  (setq csharp--flymake-has-been-installed t))))
-
-
-
-;; Need to temporarily turn off flymake while reverting.
-;; There' some kind of race-condition where flymake is trying
-;; to compile while the buffer is being changed, and that
-;; causes flymake to choke.
-(defadvice revert-buffer (around
-                          csharp-advise-revert-buffer
-                          activate compile)
-  (let ((is-flymake-enabled
-         (and (fboundp 'flymake-mode)
-              flymake-mode)))
-    ;; disable
-    (if is-flymake-enabled
-        (flymake-mode-off))
-
-    ;; revert
-    ad-do-it
-
-    ;; enable
-    (if is-flymake-enabled
-        (flymake-mode-on))))
-
-;; ++++++++++++++++++++++
-
-
-
-
-;; ========================================================================
-;; moving
-
-;; alist of regexps for various structures in a csharp source file.
-(eval-and-compile
-  (defconst csharp--regexp-alist
-    (list
-
-     `(func-start
-       ,(concat
-         "^[ \t\n\r\f\v]*"                            ;; leading whitespace
-         "\\("
-         "public\\(?: static\\)?\\|"                  ;; 1. access modifier
-         "private\\(?: static\\)?\\|"
-         "protected\\(?: internal\\)?\\(?: static\\)?\\|"
-         "static\\|"
-         "\\)"
-         "[ \t\n\r\f\v]+"
-         "\\(?:override[ \t\n\r\f\v]+\\)?"            ;; optional
-         "\\([[:alpha:]_][^\t\(\n]+\\)"               ;; 2. return type - possibly generic
-         "[ \t\n\r\f\v]+"
-         "\\([[:alpha:]_][[:alnum:]_]*\\)"            ;; 3. name of func
-         "[ \t\n\r\f\v]*"
-         "\\(\([^\)]*\)\\)"                           ;; 4. params w/parens
-         "[ \t\n\r\f\v]*"
-         ))
-
-     `(ctor-start
-       ,(concat
-         "^[ \t\n\r\f\v]*"                            ;; leading whitespace
-         "\\("
-         "public\\|"                                  ;; 1. access modifier
-         "private\\|"
-         "protected\\(?: internal\\)?\\|"
-         "static\\|"
-         "\\)"
-         "[ \t\n\r\f\v]+"
-         "\\([[:alpha:]_][[:alnum:]_]*\\)"            ;; 2. name of ctor
-         "[ \t\n\r\f\v]*"
-         "\\(\([^\)]*\)\\)"                           ;; 3. parameter list (with parens)
-         "\\("                                        ;; 4. ctor dependency
-         "[ \t\n]*:[ \t\n]*"                          ;; colon
-         "\\(?:this\\|base\\)"                        ;; this or base
-         "[ \t\n\r\f\v]*"
-         "\\(?:\([^\)]*\)\\)"                         ;; parameter list (with parens)
-         "\\)?"                                       ;; possibly
-         "[ \t\n\r\f\v]*"
-         ))
-
-
-     `(using-stmt
-       ,(concat
-         ;;"^[ \t\n\r\f\v]*"
-         "\\(\\<using\\)"
-         "[ \t\n\r\f\v]+"
-         "\\(?:"
-         "\\([[:alpha:]_][[:alnum:]_]*\\)"            ;; alias
-         "[ \t\n\r\f\v]*"
-         "="
-         "[ \t\n\r\f\v]*"
-         "\\)?"
-         "\\("
-         "\\(?:[A-Za-z_][[:alnum:]]*\\.\\)*"
-         "[A-Za-z_][[:alnum:]]*"
-         "\\)"                                        ;; imported namespace
-         "[ \t\n\r\f\v]*"
-         ";"
-         ))
-
-     `(class-start
-       ,(concat
-         "^[ \t]*"                                    ;; leading whitespace
-         "\\("
-         "public\\(?: \\(?:static\\|sealed\\)\\)?[ \t]+\\|"  ;; access modifiers
-         "internal\\(?: \\(?:static\\|sealed\\)\\)?[ \t]+\\|"
-         "static\\(?: internal\\)?[ \t]+\\|"
-         "sealed\\(?: internal\\)?[ \t]+\\|"
-         "static[ \t]+\\|"
-         "sealed[ \t]+\\|"
-         "\\)"
-         "\\(\\(?:partial[ \t]+\\)?class\\|struct\\)" ;; class/struct keyword
-         "[ \t]+"
-         "\\([[:alpha:]_][[:alnum:]]*\\)"             ;; type name
-         "\\("
-         "[ \t\n]*:[ \t\n]*"                          ;; colon
-         "\\([[:alpha:]_][^\t\(\n]+\\)"               ;; base / intf - poss generic
-         "\\("
-         "[ \t\n]*,[ \t\n]*"
-         "\\([[:alpha:]_][^\t\(\n]+\\)"               ;; addl interface - poss generic
-         "\\)*"
-         "\\)?"                                       ;; possibly
-         "[ \t\n\r\f\v]*"
-         ))
-
-     `(genclass-start
-       ,(concat
-         "^[ \t]*"                                    ;; leading whitespace
-         "\\("
-         "public\\(?: \\(?:static\\|sealed\\)\\)?[ \t]+\\|"  ;; access modifiers
-         "internal\\(?: \\(?:static\\|sealed\\)\\)?[ \t]+\\|"
-         "static\\(?: internal\\)?[ \t]+\\|"
-         "sealed\\(?: internal\\)?[ \t]+\\|"
-         "static[ \t]+\\|"
-         "sealed[ \t]+\\|"
-         "\\)"
-         "\\(\\(?:partial[ \t]+\\)?class\\|struct\\)" ;; class/struct keyword
-         "[ \t]+"
-         "\\([[:alpha:]_][[:alnum:]_<>, ]*\\)"        ;; type name (generic)
-         "\\("
-         "[ \t\n]*:[ \t\n]*"                          ;; colon
-         "\\([[:alpha:]_][^\t\(\n]+\\)"               ;; base / intf - poss generic
-         "\\("
-         "[ \t\n]*,[ \t\n]*"
-         "\\([[:alpha:]_][^\t\(\n]+\\)"               ;; addl interface - poss generic
-         "\\)*"
-         "\\)?"                                       ;; possibly
-         "[ \t\n\r\f\v]*"
-         ))
-
-     `(enum-start
-       ,(concat
-         "^[ \t\f\v]*"                                ;; leading whitespace
-         "\\("
-         "public[ \t]+enum\\|"                        ;; enum keyword
-         "enum"
-         "\\)"
-         "[ \t\n\r\f\v]+"
-         "\\([[:alpha:]_][[:alnum:]_]*\\)"            ;; name of enum
-         "[ \t\n\r\f\v]*"
-         "\\(:[ \t\n\r\f\v]*"
-         "\\("
-         "sbyte\\|byte\\|short\\|ushort\\|int\\|uint\\|long\\|ulong"
-         "\\)"
-         "[ \t\n\r\f\v]*"
-         "\\)?"                                       ;; possibly
-         "[ \t\n\r\f\v]*"
-         ))
-
-
-     `(intf-start
-       ,(concat
-         "^[ \t\f\v]*"                                ;; leading whitespace
-         "\\(?:"
-         "public\\|internal\\|"                       ;; access modifier
-         "\\)"
-         "[ \t\n\r\f\v]+"
-         "\\(interface\\)"
-         "[ \t\n\r\f\v]+"
-         "\\([[:alpha:]_][[:alnum:]_]*\\)"            ;; name of interface
-         "[ \t\n\r\f\v]*"
-         ))
-
-     `(prop-start
-       ,(concat
-         "^[ \t\f\v]*"                                ;; leading whitespace
-         "\\("
-         "public\\|"                                  ;; 1: access modifier
-         "private\\|"
-         "protected internal\\|"
-         "internal protected\\|"
-         "internal\\|"
-         "\\)"
-         "[ \t\n\r\f\v]+"
-         "\\([[:alpha:]_][^\t\(\n]+\\)"               ;; 2: return type - possibly generic
-         "[ \t\n\r\f\v]+"
-         "\\("
-         "\\(?:[A-Za-z_][[:alnum:]_]*\\.\\)*"          ;; possible prefix interface
-         "[[:alpha:]_][[:alnum:]_]*"                  ;; 3: name of prop
-         "\\)"
-         "[ \t\n\r\f\v]*"
-         ))
-
-     `(indexer-start
-       ,(concat
-         "^[ \t\f\v]*"                                ;; leading whitespace
-         "\\("
-         "public\\|"                                  ;; 1: access modifier
-         "private\\|"
-         "protected internal\\|"
-         "internal protected\\|"
-         "internal\\|"
-         "\\)"
-         "[ \t\n\r\f\v]+"
-         "\\([[:alpha:]_][^\t\(\n]+\\)"               ;; 2: return type - possibly generic
-         "[ \t\n\r\f\v]+"
-         "\\(this\\)"                                 ;; 3: 'this' keyword
-         "[ \t\n\r\f\v]*"
-         "\\["                                        ;; open square bracket
-         "[ \t\n\r\f\v]*"
-         "\\([^\]]+\\)"                               ;; 4: index type
-         "[ \t\n\r\f\v]+"
-         "[[:alpha:]_][[:alnum:]_]*"                  ;; index name - a simple identifier
-         "\\]"                                        ;; closing sq bracket
-         "[ \t\n\r\f\v]*"
-         ))
-
-     `(namespace-start
-       ,(concat
-         "^[ \t\f\v]*"                                ;; leading whitespace
-         "\\(namespace\\)"
-         "[ \t\n\r\f\v]+"
-         "\\("
-         "\\(?:[A-Za-z_][[:alnum:]_]*\\.\\)*"          ;; name of namespace
-         "[A-Za-z_][[:alnum:]]*"
-         "\\)"
-         "[ \t\n\r\f\v]*"
-         ))
-
-     )))
-
-
-(defun csharp--regexp (symbol)
-  "Retrieves a regexp from the `csharp--regexp-alist' corresponding
-to the given symbol.
-"
-  (let ((elt (assoc symbol csharp--regexp-alist)))
-    (if elt (cadr elt) nil)))
-
-
-(defun csharp-move-back-to-beginning-of-block ()
-  "Moves to the previous open curly.
-"
-  (interactive)
-  (re-search-backward "{" (point-min) t))
-
-
-(defun csharp--move-back-to-beginning-of-something (must-match &optional must-not-match)
-  "Moves back to the open-curly that defines the beginning of *something*,
-defined by the given MUST-MATCH, a regexp which must match immediately
-preceding the curly.  If MUST-NOT-MATCH is non-nil, it is treated
-as a regexp that must not match immediately preceding the curly.
-
-This is a helper fn for `csharp-move-back-to-beginning-of-defun' and
-`csharp-move-back-to-beginning-of-class'
-
-"
-  (interactive)
-  (let (done
-        (found (point))
-        (need-to-backup (not (looking-at "{"))))
-    (while (not done)
-      (if need-to-backup
-          (setq found (csharp-move-back-to-beginning-of-block)))
-      (if found
-          (setq done (and (looking-back must-match)
-                          (or (not must-not-match)
-                              (not (looking-back must-not-match))))
-                need-to-backup t)
-        (setq done t)))
-    found))
-
-
-
-(defun csharp-move-back-to-beginning-of-defun ()
-  "Moves back to the open-curly that defines the beginning of the
-enclosing method.  If point is outside a method, then move back to the
-beginning of the prior method.
-
-See also, `csharp-move-fwd-to-end-of-defun'.
-"
-  (interactive)
-  (cond
-
-   ((bobp) nil)
-
-   (t
-    (let (found)
-      (save-excursion
-        ;; handle the case where we're at the top of a fn now.
-        ;; if the user is asking to move back, then obviously
-        ;; he wants to move back to a *prior* defun.
-        (if (and (looking-at "{")
-                 (looking-back (csharp--regexp 'func-start))
-                 (not (looking-back (csharp--regexp 'namespace-start))))
-            (forward-char -1))
-
-        ;; now do the real work
-        (setq found (csharp--move-back-to-beginning-of-something
-                     (csharp--regexp 'func-start)
-                     (csharp--regexp 'namespace-start))))
-      (if found
-          (goto-char found))))))
-
-
-(defun csharp--on-defun-close-curly-p ()
-  "return t when point is on the close-curly of a method."
-  (and (looking-at "}")
-       (save-excursion
-         (and
-          (progn (forward-char) (forward-sexp -1) t)
-          (not (looking-back (csharp--regexp 'class-start)))
-          (not (looking-back (csharp--regexp 'namespace-start)))
-          (looking-back (csharp--regexp 'func-start))))))
-
-(defun csharp--on-ctor-close-curly-p ()
-  "return t when point is on the close-curly of a constructor."
-  (and (looking-at "}")
-       (save-excursion
-         (and
-          (progn (forward-char) (forward-sexp -1) t)
-          (looking-back (csharp--regexp 'ctor-start))))))
-
-(defun csharp--on-class-close-curly-p ()
-  "return t when point is on the close-curly of a class or struct."
-  (and (looking-at "}")
-       (save-excursion
-         (and
-          (progn (forward-char) (forward-sexp -1) t)
-          (not (looking-back (csharp--regexp 'namespace-start)))
-          (looking-back (csharp--regexp 'class-start))))))
-
-(defun csharp--on-intf-close-curly-p ()
-  "return t when point is on the close-curly of an interface."
-  (and (looking-at "}")
-       (save-excursion
-         (and
-          (progn (forward-char) (forward-sexp -1) t)
-          (looking-back (csharp--regexp 'intf-start))))))
-
-(defun csharp--on-enum-close-curly-p ()
-  "return t when point is on the close-curly of an enum."
-  (and (looking-at "}")
-       (save-excursion
-         (and
-          (progn (forward-char) (forward-sexp -1) t)
-          (looking-back (csharp--regexp 'enum-start))))))
-
-(defun csharp--on-namespace-close-curly-p ()
-  "return t when point is on the close-curly of a namespace."
-  (and (looking-at "}")
-       (save-excursion
-         (and
-          (progn (forward-char) (forward-sexp -1) t)
-          (looking-back (csharp--regexp 'namespace-start))))))
-
-(defun csharp--on-defun-open-curly-p ()
-  "return t when point is on the open-curly of a method."
-  (and (looking-at "{")
-       (not (looking-back (csharp--regexp 'class-start)))
-       (not (looking-back (csharp--regexp 'namespace-start)))
-       (looking-back (csharp--regexp 'func-start))))
-
-(defun csharp--on-class-open-curly-p ()
-  "return t when point is on the open-curly of a class."
-  (and (looking-at "{")
-       (not (looking-back (csharp--regexp 'namespace-start)))
-       (looking-back (csharp--regexp 'class-start))))
-
-(defun csharp--on-genclass-open-curly-p ()
-  "return t when point is on the open-curly of a generic class."
-  (and (looking-at "{")
-       (looking-back (csharp--regexp 'genclass-start))))
-
-(defun csharp--on-namespace-open-curly-p ()
-  "return t when point is on the open-curly of a namespace."
-  (and (looking-at "{")
-       (looking-back (csharp--regexp 'namespace-start))))
-
-(defun csharp--on-ctor-open-curly-p ()
-  "return t when point is on the open-curly of a ctor."
-  (and (looking-at "{")
-       (looking-back (csharp--regexp 'ctor-start))))
-
-(defun csharp--on-intf-open-curly-p ()
-  "return t when point is on the open-curly of a interface."
-  (and (looking-at "{")
-       (looking-back (csharp--regexp 'intf-start))))
-
-(defun csharp--on-prop-open-curly-p ()
-  "return t when point is on the open-curly of a property."
-  (and (looking-at "{")
-       (not (looking-back (csharp--regexp 'class-start)))
-       (looking-back (csharp--regexp 'prop-start))))
-
-(defun csharp--on-indexer-open-curly-p ()
-  "return t when point is on the open-curly of a C# indexer."
-  (and (looking-at "{")
-       (looking-back (csharp--regexp 'indexer-start))))
-
-(defun csharp--on-enum-open-curly-p ()
-  "return t when point is on the open-curly of a interface."
-  (and (looking-at "{")
-       (looking-back (csharp--regexp 'enum-start))))
-
-
-
-(defun csharp-move-fwd-to-end-of-defun ()
-  "Moves forward to the close-curly that defines the end of the enclosing
-method. If point is outside a method, moves forward to the close-curly that
-defines the end of the next method.
-
-See also, `csharp-move-back-to-beginning-of-defun'.
-"
-  (interactive)
-
-  (let ((really-move
-         (lambda ()
-           (let ((start (point))
-                 dest-char)
-             (save-excursion
-               (csharp-move-back-to-beginning-of-defun)
-               (forward-sexp)
-               (if (>= (point) start)
-                   (setq dest-char (point))))
-             (if dest-char
-                 (goto-char dest-char))))))
-
-    (cond
-
-     ;; case 1: end of buffer.  do nothing.
-     ((eobp) nil)
-
-     ;; case 2: we're at the top of a class
-     ((csharp--on-class-open-curly-p)
-      (let (found-it)
-        (save-excursion
-          (forward-char 1) ;; get off the curly
-          (setq found-it
-                (and ;; look for next open curly
-                 (re-search-forward "{" (point-max) t)
-                 (funcall really-move))))
-        (if found-it
-            (goto-char found-it))))
-
-
-     ;; case 3: we're at the top of a fn now.
-     ((csharp--on-defun-open-curly-p)
-      (forward-sexp))
-
-
-     ;; case 4: we're at the bottom of a fn now (possibly
-     ;; after just calling csharp-move-fwd-to-end-of-defun.
-     ((and (looking-back "}")
-           (save-excursion
-             (forward-sexp -1)
-             (csharp--on-defun-open-curly-p)))
-
-      (let (found-it)
-        (save-excursion
-          (setq found-it
-                (and (re-search-forward "{" (point-max) t)
-                     (funcall really-move))))
-        (if found-it
-            (goto-char found-it))))
-
-
-     ;; case 5: we're at none of those places.
-     (t
-      (funcall really-move)))))
-
-
-
-
-(defun csharp-move-back-to-beginning-of-class ()
-  "Moves back to the open-curly that defines the beginning of the
-enclosing class.  If point is outside a class, then move back to the
-beginning of the prior class.
-
-See also, `csharp-move-fwd-to-end-of-defun'.
-"
-  (interactive)
-
-  (cond
-   ((bobp) nil)
-
-   (t
-    (let (found)
-      (save-excursion
-        ;; handle the case where we're at the top of a class now.
-        ;; if the user is asking to move back, then obviously
-        ;; he wants to move back to a *prior* defun.
-        (if (and (looking-at "{")
-                 (looking-back (csharp--regexp 'class-start))
-                 (not (looking-back (csharp--regexp 'namespace-start))))
-            (forward-char -1))
-
-        ;; now do the real work
-        (setq found (csharp--move-back-to-beginning-of-something
-                     (csharp--regexp 'class-start)
-                     (csharp--regexp 'namespace-start))))
-      (if found
-          (goto-char found))))))
-
-
-
-
-(defun csharp-move-fwd-to-end-of-class ()
-  "Moves forward to the close-curly that defines the end of the
-enclosing class.
-
-See also, `csharp-move-back-to-beginning-of-class'.
-"
-  (interactive)
-  (let ((start (point))
-        dest-char)
-    (save-excursion
-      (csharp-move-back-to-beginning-of-class)
-      (forward-sexp)
-      (if (>= (point) start)
-          (setq dest-char (point))))
-
-    (if dest-char
-        (goto-char dest-char))))
-
-
-
-(defun csharp-move-back-to-beginning-of-namespace ()
-  "Moves back to the open-curly that defines the beginning of the
-enclosing namespace.  If point is outside a namespace, then move back
-to the beginning of the prior namespace.
-
-"
-  (interactive)
-  (cond
-
-   ((bobp) nil)
-
-   (t
-    (let (found)
-      (save-excursion
-        ;; handle the case where we're at the top of a namespace now.
-        ;; if the user is asking to move back, then obviously
-        ;; he wants to move back to a *prior* defun.
-        (if (and (looking-at "{")
-                 (looking-back (csharp--regexp 'namespace-start)))
-            (forward-char -1))
-
-        ;; now do the real work
-        (setq found (csharp--move-back-to-beginning-of-something
-                     (csharp--regexp 'namespace-start))))
-      (if found
-          (goto-char found))))))
-
-;; moving
-;; ========================================================================
-
-
-
-
-;; ==================================================================
-;;; imenu stuff
-
-;; define some advice for menu construction.
-
-;; The way imenu constructs menus from the index alist, in
-;; `imenu--split-menu', is ... ah ... perplexing.  If the csharp
-;; create-index fn returns an ordered menu, and the imenu "sort" fn has
-;; been set to nil, imenu still sorts the menu, according to the rule
-;; that all submenus must appear at the top of any menu. Why?  I don't
-;; know. This advice disables that weirdness in C# buffers.
-
-(defadvice imenu--split-menu (around
-                              csharp--imenu-split-menu-patch
-                              activate compile)
-  ;; This advice will run in all buffers.  Let's may sure we
-  ;; actually execute the important bits only when a C# buffer is active.
-  (if (and (string-match "\\.[Cc][Ss]$"  (file-relative-name buffer-file-name))
-           (boundp 'csharp-want-imenu)
-           csharp-want-imenu)
-      (let ((menulist (copy-sequence menulist))
-            keep-at-top)
-        (if (memq imenu--rescan-item menulist)
-            (setq keep-at-top (list imenu--rescan-item)
-                  menulist (delq imenu--rescan-item menulist)))
-        ;; This is the part from the original imenu code
-        ;; that puts submenus at the top.  huh? why?
-        ;; --------------------------------------------
-        ;; (setq tail menulist)
-        ;; (dolist (item tail)
-        ;;   (when (imenu--subalist-p item)
-        ;;     (push item keep-at-top)
-        ;;     (setq menulist (delq item menulist))))
-        (if imenu-sort-function
-            (setq menulist (sort menulist imenu-sort-function)))
-        (if (> (length menulist) imenu-max-items)
-            (setq menulist
-                  (mapcar
-                   (lambda (menu)
-                     (cons (format "From: %s" (caar menu)) menu))
-                   (imenu--split menulist imenu-max-items))))
-        (setq ad-return-value
-              (cons title
-                    (nconc (nreverse keep-at-top) menulist))))
-    ;; else
-    ad-do-it))
-
-
-;;
-;; I used this to examine the performance of the imenu scanning.
-;; It's not necessary during normal operation.
-;;
-;; (defun csharp-imenu-begin-profile ()
-;;   "turn on profiling"
-;;   (interactive)
-;;   (let ((fns '(csharp--on-class-open-curly-p
-;;              csharp--on-namespace-open-curly-p
-;;              csharp--on-ctor-open-curly-p
-;;              csharp--on-enum-open-curly-p
-;;              csharp--on-intf-open-curly-p
-;;              csharp--on-prop-open-curly-p
-;;              csharp--on-indexer-open-curly-p
-;;              csharp--on-defun-open-curly-p
-;;              csharp--imenu-create-index-helper
-;;              looking-back
-;;              looking-at)))
-;;     (if (fboundp 'elp-reset-all)
-;;         (elp-reset-all))
-;;     (mapc 'elp-instrument-function fns)))
-
-
-
-(defun csharp--imenu-remove-param-names-from-paramlist (s)
-  "The input string S is a parameter list, of the form seen in a
-C# method.  TYPE1 NAME1 [, TYPE2 NAME2 ...]
-
-This fn returns a string of the form TYPE1 [, TYPE2...]
-
-Upon entry, it's assumed that the parens included in S.
-
-"
-  (if (string= s "()")
-      s
-    (save-match-data
-      (let* (new
-             (state 0)  ;; 0 => ws, 1=>slurping param...
-             c
-             cs
-             nesting
-             need-type
-             ix2
-             (s2 (substring s 1 -1))
-             (len (length s2))
-             (i (1- len)))
-
-        (while (> i 0)
-          (setq c (aref s2 i) ;; current character
-                cs (char-to-string c)) ;; s.t. as a string
-
-          (cond
-
-           ;; backing over whitespace "after" the param
-           ((= state 0)
-            (cond
-             ;; more ws
-             ((string-match "[ \t\f\v\n\r]" cs)
-              t)
-             ;; a legal char for an identifier
-             ((string-match "[A-Za-z_0-9]" cs)
-              (setq state 1))
-             (t
-              (error "unexpected char (A)"))))
-
-
-           ;; slurping param name
-           ((= state 1)
-            (cond
-             ;; ws signifies the end of the param
-             ((string-match "[ \t\f\v\n\r]" cs)
-              (setq state 2))
-             ;; a legal char for an identifier
-             ((string-match "[A-Za-z_0-9]" cs)
-              t)
-             (t
-              (error "unexpected char (B)"))))
-
-
-           ;; ws between typespec and param name
-           ((= state 2)
-            (cond
-             ((string-match "[ \t\f\v\n\r]" cs)
-              t)
-             ;; non-ws indicates the type spec is beginning
-             (t
-              (incf i)
-              (setq state 3
-                    need-type nil
-                    nesting 0
-                    ix2 i))))
-
-
-           ;; slurping type
-           ((= state 3)
-            (cond
-             ((= ?> c) (incf nesting))
-             ((= ?< c)
-              (decf nesting)
-              (setq need-type t))
-
-             ;; ws or comma maybe signifies the end of the typespec
-             ((string-match "[ \t\f\v\n\r,]" cs)
-              (if (and (= nesting 0) (not need-type))
-                  (progn
-                    (setq new (cons (substring s2 (1+ i) ix2) new))
-                    (setq state
-                          (if (= c ?,) 0 4)))))
-
-             ((string-match "[A-Za-z_0-9]" cs)
-              (setq need-type nil))))
-
-
-           ;; awaiting comma or b-o-s
-           ((= state 4)
-            (cond
-
-             ((= ?, c)
-              (if  (= nesting 0)
-                  (setq state 0)))
-
-             ((string-match "[ \t\f\v\n\r]" cs)
-              t)
-
-             ((= 93 c) (incf nesting)) ;; sq brack
-             ((= 91 c)  ;; open sq brack
-              (decf nesting))
-
-             ;; handle this (extension methods), out, ref, params
-             ((and (>= i 5)
-                   (string= (substring s2 (- i 5) (1+ i)) "params"))
-              (setf (car new) (concat "params " (car new)))
-              (setq i (- i 5)))
-
-             ((and (>= i 3)
-                   (string= (substring s2 (- i 3) (1+ i)) "this"))
-              (setf (car new) (concat "this " (car new)))
-              (setq i (- i 3)))
-
-             ((and (>= i 2)
-                   (string= (substring s2 (- i 2) (1+ i)) "ref"))
-              (setf (car new) (concat "ref " (car new)))
-              (setq i (- i 2)))
-
-             ((and (>= i 2)
-                   (string= (substring s2 (- i 2) (1+ i)) "out"))
-              (setf (car new) (concat "out " (car new)))
-              (setq i (- i 2)))
-
-             (t
-              (error "unexpected char (C)"))))
-           )
-
-          (decf i))
-
-        (if (and (= state 3) (= nesting 0))
-            (setq new (cons (substring s2 i ix2) new)))
-
-        (concat "("
-                (if new
-                    (mapconcat 'identity new ", ")
-                  "")
-                ")")))))
-
-
-(defun csharp--imenu-item-basic-comparer (a b)
-  "Compares the car of each element, assumed to be a string."
-  (string-lessp (car a) (car b)))
-
-
-(defun csharp--imenu-get-method-name-from-sig (sig)
-  "Extract a method name with its parameter list from a method
-signature, SIG. This is used to aid in sorting methods by name,
-and secondarily by parameter list.
-
-For this input:
-
-    private Dict<String, int>  DoSomething(int, string)
-
-...the output is:
-
-   DoSomething(int, string)
-
-"
-  (let* (c
-         result
-         (state 0)
-         (len (length sig))
-         (i (1- len)))
-    (while (> i 0)
-      (setq c (aref sig i))
-
-      (cond
-       ((and (= state 0) (= c 40))
-        (setq state 1))
-
-       ((and (= state 1) (or (= c 9) (= c 32)))
-        (setq result (substring sig (1+ i))
-              i 0)))
-      (decf i))
-    result))
-
-
-
-(defun csharp--imenu-item-method-name-comparer (a b)
-  "Compares the method names in the respective cars of each element.
-
-The car of each element is assumed to be a string with multiple
-tokens in it, representing a method signature, including access
-modifier, return type, and parameter list (surrounded by parens).
-If the method takes no params, then it's just an empty pair of
-parens.
-
-This fn extracts the method name and param list from that
-signature and compares *that*.
-
-"
-  (let ((methoda (csharp--imenu-get-method-name-from-sig (car a)))
-        (methodb (csharp--imenu-get-method-name-from-sig (car b))))
-    ;;(csharp-log -1 "compare '%s' <> '%s'" methoda methodb)
-    (string-lessp methoda methodb)))
-
-
-
-(defun csharp--imenu-create-index-helper (&optional parent-ns indent-level
-                                                    consider-usings consider-namespaces)
-  "Helper fn for `csharp-imenu-create-index'.
-
-Scans a possibly narrowed section of a c# buffer.  It finds
-namespaces, classes, structs, enums, interfaces, and methods
-within classes and structs.
-
-The way it works: it looks for an open-curly.  If the open-curly
-is a namespace or a class, it narrows to whatever is inside the
-curlies, then recurses.
-
-Otherwise (the open-curly is neither of those things), this fn
-tries to recognize the open-curly as the beginning of an enum,
-method, or interface.
-
-If it succeeds, then a menu item is created for the thing. Then
-it jumps to the matching close-curly, and continues. Stop when no
-more open-curlies are found.
-
-"
-
-  ;; A C# module consists of zero of more explicitly denoted (and
-  ;; possibly nested) namespaces. In the absence of an
-  ;; explicitly-denoted namespace, the global namespace is implicitly
-  ;; applied.  Within each namespace there can be zero or more
-  ;; "container" things - like class, struct, or interface; each with
-  ;; zero or more indexable items - like methods, constructors.
-  ;; and so on.
-
-  ;; This fn parses the module and indexes those items, creating a
-  ;; hierarchically organized list to describe them.  Each container
-  ;; (ns/class/struct/etc) is represented on a separate submenu.
-
-  ;; It works like this:
-  ;; (start at the top of the module)
-  ;;
-  ;; 1. look for a using clause
-  ;;    yes - insert an item in the menu; move past all using clauses.
-  ;;
-  ;; 2. go to next open curly
-  ;;
-  ;; 2. beginning of a container? (a class or namespace)
-  ;;
-  ;;    yes - narrow, and recurse
-  ;;
-  ;;    no - create a menu item for the thing, whatever it is.  add to
-  ;;         the submenu. Go to the end of the thing (to the matching
-  ;;         close curly) then goto step 1.
-  ;;
-
-  (let (container-name
-        (pos-last-curly -1)
-        this-flavor
-        this-item
-        this-menu
-        found-usings
-        done)
-
-    (while (not done)
-
-      ;; move to the next thing
-      (c-forward-syntactic-ws)
-      (cond
-       ((and consider-usings
-             (re-search-forward (csharp--regexp 'using-stmt) (point-max) t))
-        (goto-char (match-beginning 1))
-        (setq found-usings t
-              done nil))
-
-       ((re-search-forward "{" (point-max) t)
-        (if (= pos-last-curly (point))
-            (progn
-              ;;(csharp-log -1 "imenu: No advance? quitting (%d)" (point))
-              (setq done t)) ;; haven't advanced- likely a loop
-
-          (setq pos-last-curly (point))
-          (let ((literal (csharp-in-literal)))
-            ;; skip over comments?
-            (cond
-
-             ((memq literal '(c c++))
-              (while (memq literal '(c c++))
-                (end-of-line)
-                (forward-char 1)
-                (setq literal (csharp-in-literal)))
-              (if (re-search-forward "{" (point-max) t)
-                  (forward-char -1)
-                ;;(csharp-log -1 "imenu: No more curlies (A) (%d)" (point))
-                (setq done t)))
-
-             ((eq literal 'string)
-              (if  (re-search-forward "\"" (point-max) t)
-                  (forward-char 1)
-                ;;(csharp-log -1 "imenu: Never-ending string? posn(%d)" (point))
-                (setq done t)))
-
-             (t
-              (forward-char -1)))))) ;; backup onto the curly
-
-       (t
-        ;;(csharp-log -1 "imenu: No more curlies (B) posn(%d)" (point))
-        (setq done t)))
-
-
-      (if (not done)
-          (cond
-
-           ;; case 1: open curly for an array initializer
-           ((looking-back "\\[\\][ \t\n\r]*")
-            (forward-sexp 1))
-
-           ;; case 2: just jumped over a string
-           ((looking-back "\"")
-            (forward-char 1))
-
-           ;; case 3: at the head of a block of using statements
-           (found-usings
-            (setq found-usings nil
-                  consider-usings nil) ;; only one batch
-            (let ((first-using (match-beginning 1))
-                  (count 0)
-                  marquis
-                  ;; don't search beyond next open curly
-                  (limit (1-
-                          (save-excursion
-                            (re-search-forward "{" (point-max) t)))))
-
-              ;; count the using statements
-              (while (re-search-forward (csharp--regexp 'using-stmt) limit t)
-                (incf count))
-
-              (setq marquis (if (eq count 1) "using (1)"
-                              (format "usings (%d)" count)))
-              (push (cons marquis first-using) this-menu)))
-
-
-           ;; case 4: an interface or enum inside the container
-           ;; (must come before class / namespace )
-           ((or (csharp--on-intf-open-curly-p)
-                (csharp--on-enum-open-curly-p))
-              (setq consider-namespaces nil
-                    consider-usings nil
-                    this-menu
-                    (append this-menu
-                            (list
-                             (cons (concat
-                                    (match-string-no-properties 1) ;; thing flavor
-                                    " "
-                                    (match-string-no-properties 2)) ;; intf name
-                                   (match-beginning 1)))))
-              (forward-sexp 1))
-
-
-           ;; case 5: at the start of a container (class, namespace)
-           ((or (and consider-namespaces (csharp--on-namespace-open-curly-p))
-                (csharp--on-class-open-curly-p)
-                (csharp--on-genclass-open-curly-p))
-
-            ;; produce a fully-qualified name for this thing
-            (if (string= (match-string-no-properties 1) "namespace")
-                (setq this-flavor (match-string-no-properties 1)
-                      this-item (match-string-no-properties 2))
-              (setq this-flavor (match-string-no-properties 2)
-                    this-item (match-string-no-properties 3)
-                    consider-usings nil
-                    consider-namespaces nil))
-
-            (setq container-name (if parent-ns
-                                     (concat parent-ns "." this-item)
-                                   this-item))
-
-            ;; create a submenu
-            (let (submenu
-                  (top (match-beginning 1))
-                  (open-curly (point))
-                  (close-curly (save-excursion
-                                 (forward-sexp 1)
-                                 (point))))
-              (setq submenu
-                    (list
-                     (concat this-flavor " " container-name)
-                     (cons "(top)" top)))
-
-              ;; find all contained items
-              (save-restriction
-                (narrow-to-region (1+ open-curly) (1- close-curly))
-
-                (let* ((yok (string= this-flavor "namespace"))
-                       (child-menu
-                        (csharp--imenu-create-index-helper container-name
-                                                           (concat indent-level "  ")
-                                                           yok yok)))
-                  (if child-menu
-                      (setq submenu
-                            (append submenu
-                                    (sort child-menu
-                                          'csharp--imenu-item-basic-comparer))))))
-              (setq submenu
-                    (append submenu
-                            (list (cons "(bottom)" close-curly))))
-
-              (setq this-menu
-                    (append this-menu (list submenu)))
-
-              (goto-char close-curly)))
-
-
-           ;; case 6: a property
-           ((csharp--on-prop-open-curly-p)
-            (setq consider-namespaces nil
-                  consider-usings nil
-                  this-menu
-                  (append this-menu
-                          (list
-                           (cons (concat
-                                  "prop "
-                                  (match-string-no-properties 3)) ;; prop name
-                                 (match-beginning 1)))))
-            (forward-sexp 1))
-
-
-           ;; case 7: an indexer
-           ((csharp--on-indexer-open-curly-p)
-            (setq consider-namespaces nil
-                    consider-usings nil
-                    this-menu
-                    (append this-menu
-                            (list
-                             (cons (concat
-                                    "indexer "
-                                    (match-string-no-properties 4)) ;; index type
-                                   (match-beginning 1)))))
-            (forward-sexp 1))
-
-
-           ;; case 8: a constructor inside the container
-           ((csharp--on-ctor-open-curly-p)
-            (setq consider-namespaces nil
-                  consider-usings nil
-                  this-menu
-                  (append this-menu
-                          (list
-                           (cons (concat
-                                  "ctor "
-                                  (match-string-no-properties 2) ;; ctor name
-                                  (csharp--imenu-remove-param-names-from-paramlist
-                                   (match-string-no-properties 3))) ;; ctor params
-                                 (match-beginning 1)))))
-            (forward-sexp 1))
-
-
-           ;; case 9: a method inside the container
-           ((csharp--on-defun-open-curly-p)
-            (setq consider-namespaces nil
-                  consider-usings nil
-                  this-menu
-                  (append this-menu
-                          (list
-                           (cons (concat
-                                  "method "
-                                  (match-string-no-properties 2) ;; return type
-                                  " "
-                                  (match-string-no-properties 3) ;; func name
-                                  (csharp--imenu-remove-param-names-from-paramlist
-                                   (match-string-no-properties 4))) ;; fn params
-                                 (match-beginning 1)))))
-            (forward-sexp 1))
-
-
-           ;; case 10: unknown open curly - just jump over it.
-           ((looking-at "{")
-            (forward-sexp 1))
-
-           ;; case 11: none of the above. shouldn't happen?
-           (t
-            (forward-char 1)))))
-
-    this-menu))
-
-
-;; =======================================================
-;; DPC Thu, 19 May 2011  11:25
-;; There are two challenges with the imenu support: generating the
-;; index, and generating a reasonable display for the index.  The index
-;; generation is pretty straightforward: use regexi to locate
-;; interesting stuff in the buffer.
-;;
-;; The menu generation is a little trickier.  Long lists of methods
-;; mixed with properties and interfaces (etc) will be displayed in the
-;; menu but will look Very Bad. Better to organize the menu into
-;; submenus, organized primarily by category.  Also the menus should be
-;; sorted, for ease of human scanning.  The next section of logic is
-;; designed to do the stuff for the menu generation.
-
-
-(defcustom csharp-imenu-max-similar-items-before-extraction 6
-  "The maximum number of things of a particular
-category (constructor, property, method, etc) that will be
-separely displayed on an imenu without factoring them into a
-separate submenu.
-
-For example, if a module has 3 consructors, 5 methods, and 7
-properties, and the value of this variable is 4, then upon
-refactoring, the constructors will remain in the toplevel imenu
-and the methods and properties will each get their own
-category-specific submenu.
-
-See also `csharp-imenu-min-size-for-sub-submenu'.
-
-For more information on how csharp-mode uses imenu,
-see `csharp-want-imenu', and `csharp-mode'.
-"
-  :type 'integer
-  :group 'csharp)
-
-
-(defcustom csharp-imenu-min-size-for-sub-submenu 18
-  "The minimum number of imenu items  of a particular
-category (constructor, property, method, etc) that will be
-broken out into sub-submenus.
-
-For example, if a module has 28 properties, then the properties will
-be placed in a submenu, and then that submenu with be further divided
-into smaller submenus.
-
-See also `csharp-imenu-max-similar-items-before-extraction'
-
-For more information on how csharp-mode uses imenu,
-see `csharp-want-imenu', and `csharp-mode'.
-"
-  :type 'integer
-  :group 'csharp)
-
-
-(defun csharp--first-word (s)
-  "gets the first word from the given string.
-It had better be a string!"
-  (car (split-string s nil t)))
-
-
-(defun csharp--make-plural (s)
-  "make a word plural. For use within the generated imenu."
-  (cond
-   ((string= s "prop") "properties")
-   ((string= s "class") "classes")
-   ((string= s "ctor") "constructors")
-   (t (concat s "s"))))
-
-
-(defun csharp--imenu-counts (list)
-  "Returns an alist, each item is a cons cell where the car is a
-unique first substring of an element of LIST, and the cdr is the
-number of occurrences of that substring in elements in the
-list.
-
-For a complicated imenu generated for a large C# module, the result of
-this fn will be something like this:
-
-    ((\"(top)\"        . 1)
-     (\"properties\"   . 38)
-     (\"methods\"      . 12)
-     (\"constructors\" . 7)
-     (\"(bottom)\"     . 1))
-
-"
-  (flet ((helper (list new)
-                 (if (null list) new
-                   (let* ((elt (car list))
-                          (topic (csharp--make-plural (csharp--first-word (car elt))))
-                          (xelt (assoc topic new)))
-                     (helper (cdr list)
-                             (if xelt
-                                 (progn (incf (cdr xelt)) new)
-                               (cons (cons topic 1) new)))))))
-    (nreverse (helper list nil))))
-
-
-
-(defun csharp--imenu-get-submenu-size (n)
-  "Gets the preferred size of submenus given N, the size of the
-flat, unparceled menu.
-
-Suppose there are 50 properties in a given C# module. This fn maps
-from that number, to the maximum size of the submenus into which the
-large set of properties should be broken.
-
-Currently the submenu size for 50 is 12.  To change this, change
-the lookup table.
-
-The reason it's a lookup table and not a simple arithmetic
-function: I think it would look silly to have 2 submenus each
-with 24 items.  Sixteen or 18 items on a submenu seems fine when
-you're working through 120 items total. But if you have only 28
-items, better to have 3 submenus with 10 and 9 items each.  So
-it's not a linear function. That's what this lookup tries to do.
-
-"
-  (let ((size-pairs '((100 . 22)
-                      (80 . 20)
-                      (60 . 18)
-                      (40 . 15)
-                      (30 . 14)
-                      (24 . 11)
-                      (0  . 9)))
-        elt
-        (r 0))
-
-    (while (and size-pairs (eq r 0))
-      (setq elt (car size-pairs))
-      (if (> n (car elt))
-          (setq r (cdr elt)))
-      (setq size-pairs (cdr size-pairs)))
-    r))
-
-
-
-(defun csharp--imenu-remove-category-names (menu-list)
-  "Input is a list, each element is (LABEL . LOCATION). This fn
-returns a modified list, with the first word - the category name
-- removed from each label.
-
-"
-  (mapcar (lambda (elt)
-            (let ((tokens (split-string (car elt) "[ \t]" t)))
-              (cons (mapconcat 'identity (cdr tokens) " ")
-                    (cdr elt))))
-          menu-list))
-
-(defun string-indexof (s c)
-  "Returns the index of the first occurrence of character C in string S.
-Returns nil if not found.
-
-See also, `string-lastindexof'
-
-"
-  (let ((len (length s))
-        (i 0) ix c2)
-    (while (and (< i len) (not ix))
-      (setq c2 (aref s i))
-      (if (= c c2)
-          (setq ix i))
-      (incf i))
-    ix))
-
-(defun string-lastindexof (s c)
-  "Returns the index of the last occurrence of character C in string S.
-Returns nil if not found.
-
-See also, `string-indexof'
-
-"
-  (let ((i (length s))
-        ix c2)
-    (while (and (>= i 0) (not ix))
-      (setq c2 (aref s i))
-      (if (= c c2)
-          (setq ix i))
-      (decf i))
-    ix))
-
-
-(defun csharp--imenu-submenu-label (sig flavor)
-  "generate a submenu label from the given signature, SIG.
-The sig is a method signature, property type-and-name,
-constructor, and so on, indicated by FLAVOR.
-
-This fn returns a simple name that can be used in the label for a
-break out submenu.
-
-"
-  (if (string= flavor "method")
-      (let ((method-name (csharp--imenu-get-method-name-from-sig sig)))
-        (substring method-name 0 (string-indexof method-name 40)))
-    (substring sig (1+ (string-lastindexof sig 32)))))
-
-
-
-
-(defun csharp--imenu-break-one-menu-into-submenus (menu-list)
-  "Parcels a flat list MENU-LIST up into smaller sublists. It tries
-to balance the number of sublists and the size of each sublist.
-
-The max size of any sublist will be about 20 (arbitrary) and the
-min size will be 7 or so. See `csharp--imenu-get-submenu-size'
-for how this is done.
-
-It does this destructively, using `nbutlast'.
-
-Returns a new list, containing sublists.
-"
-
-  (let ((len (length menu-list))
-        (counts (csharp--imenu-counts menu-list)))
-
-    (cond
-     ;; a small number, and all the same flavor
-     ((and (< len csharp-imenu-min-size-for-sub-submenu) (= (length counts) 1))
-      (csharp--imenu-remove-category-names
-       (sort menu-list
-             (if (string= (caar counts) "methods")
-                 'csharp--imenu-item-method-name-comparer
-               'csharp--imenu-item-basic-comparer))))
-
-     ;; is the length already pretty short?
-     ((< len csharp-imenu-min-size-for-sub-submenu)
-      menu-list)
-
-     ((/= (length counts) 1)
-      menu-list)
-
-     (t
-      (let* ((lst    (sort menu-list
-                           (if (string= (caar counts) "methods")
-                               'csharp--imenu-item-method-name-comparer
-                             'csharp--imenu-item-basic-comparer)))
-             new
-             (sz     (csharp--imenu-get-submenu-size len)) ;; goal max size of sublist
-             (n      (ceiling (/ (* 1.0 len) sz))) ;; total number of sublists
-             (adj-sz (ceiling (/ (* 1.0 len) n)))  ;; maybe a little less than sz
-             (nsmall (mod (- adj-sz (mod len adj-sz)) adj-sz)) ;; num of (n-1) lists
-             (i      0)
-             (base-name (csharp--first-word (caar lst)))
-             label
-             chunksz
-             this-chunk)
-
-        (while lst
-          (setq chunksz (if (> nsmall i) (1- adj-sz) adj-sz)
-                this-chunk (csharp--imenu-remove-category-names
-                            (nthcdr (- len chunksz) lst))
-                lst (nbutlast lst chunksz)
-                ;;label (format "%s %d" plural-name (- n i))
-                label (concat "from " (csharp--imenu-submenu-label (caar this-chunk) base-name))
-                new (cons (cons label this-chunk) new)
-                len (- len chunksz))
-          (incf i))
-        new)))))
-
-
-
-(defun csharp--imenu-break-into-submenus (menu-list)
-  "For an imenu menu-list with category-based submenus,
-possibly break a submenu into smaller sublists, based on size.
-
-"
-  (mapcar (lambda (elt)
-            (if (imenu--subalist-p elt)
-                (cons (car elt)
-                      (csharp--imenu-break-one-menu-into-submenus (cdr elt)))
-              elt))
-          menu-list))
-
-
-
-
-
-(defun csharp--imenu-reorg-alist-intelligently (menu-alist)
-  "Accepts an imenu alist. Returns an alist, reorganized.
-Things get sorted, factored out into category submenus,
-and split into multiple submenus, where conditions warrant.
-
-For example, suppose this imenu alist is generated from a scan:
-
-    ((\"usings (4)\" . 1538)
-     (\"namespace Ionic.Zip\"
-      (\"(top)\" . 1651)
-      (\"partial class Ionic.Zip.ZipFile\"
-       (\"(top)\" . 5473)
-       (\"prop FullScan\" . 8036)
-           ...
-       (\"prop Comment\" . 21118)
-       (\"prop Verbose\" . 32278)
-       (\"method override String ToString\" . 96577)
-       (\"method internal void NotifyEntryChanged\" . 97608)
-          ....
-       (\"method internal void Reset\" . 98231)
-       (\"ctor ZipFile\" . 103598)
-           ...
-       (\"ctor ZipFile\" . 109723)
-       (\"ctor ZipFile\" . 116487)
-       (\"indexer int\" . 121232)
-       (\"indexer String\" . 124933)
-       (\"(bottom)\" . 149777))
-      (\"public enum Zip64Option\" . 153839)
-      (\"enum AddOrUpdateAction\" . 154815)
-      (\"(bottom)\" . 154893)))
-
-
-This is displayed as a toplevel menu with 2 items; the namespace
-menu has 5 items (top, bottom, the 2 enums, and the class).  The
-class menu has 93 items. It needs to be reorganized to be more usable.
-
-After transformation of the alist through this fn, the result is:
-
-    ((\"usings (4)\" . 1538)
-     (\"namespace Ionic.Zip\"
-      (\"(top)\" . 1651)
-      (\"partial class Ionic.Zip.ZipFile\"
-       (\"(top)\" . 5473)
-       (\"properties\"
-        (\"WriteStream\" . 146489)
-        (\"Count\" . 133827)
-            ....
-        (\"BufferSize\" . 12837)
-        (\"FullScan\" . 8036))
-       (\"methods\"
-        (\"virtual void Dispose\" . 144389)
-        (\"void RemoveEntry\" . 141027)
-           ....
-        (\"method override String ToString\" . 96577)
-        (\"method bool ContainsEntry\" . 32517))
-       (\"constructors\"
-        (\"ZipFile\" . 116487)
-           ....
-        (\"ZipFile\" . 105698)
-        (\"ZipFile\" . 103598))
-       (\"indexer int\" . 121232)
-       (\"indexer String\" . 124933)
-       (\"(bottom)\" . 149777))
-      (\"public enum Zip64Option\" . 153839)
-      (\"enum AddOrUpdateAction\" . 154815)
-      (\"(bottom)\" . 154893)))
-
-All menus are the same except the class menu, which has been
-organized into subtopics, each of which gets its own cascaded
-submenu.  If the submenu itself holds more than
-`csharp-imenu-max-similar-items-before-extraction' items that are
-all the same flavor (properties, methods, etc), thos get split
-out into multiple submenus.
-
-"
-  (let ((counts (csharp--imenu-counts menu-alist)))
-    (flet ((helper
-            (list new)
-            (if (null list)
-                new
-              (let* ((elt (car list))
-                     (topic (csharp--make-plural (csharp--first-word (car elt))))
-                     (xelt (assoc topic new)))
-                (helper
-                 (cdr list)
-                 (if xelt
-                     (progn
-                       (rplacd xelt (cons elt (cdr xelt)))
-                       new)
-                   (cons
-
-                    (cond
-                     ((> (cdr (assoc topic counts))
-                         csharp-imenu-max-similar-items-before-extraction)
-                      (cons topic (list elt)))
-
-                     ((imenu--subalist-p elt)
-                      (cons (car elt)
-                            (csharp--imenu-reorg-alist-intelligently (cdr elt))))
-                     (t
-                      elt))
-
-                    new)))))))
-
-      (csharp--imenu-break-into-submenus
-       (nreverse (helper menu-alist nil))))))
-
-
-
-
-(defun csharp-imenu-create-index ()
-  "This function is called by imenu to create an index for the
-current C# buffer, conforming to the format specified in
-`imenu--index-alist' .
-
-See `imenu-create-index-function' for background information.
-
-To produce the index, which lists the classes, functions,
-methods, and properties for the current buffer, this function
-scans the entire buffer.
-
-This can take a long time for a large buffer. The scan uses
-regular expressions that attempt to match on the general-case C#
-syntax, for classes and functions, generic types, base-classes,
-implemented interfaces, and so on. This can be time-consuming.
-For a large source file, say 160k, it can take 10 seconds or more.
-The UI hangs during the scan.
-
-imenu calls this fn when it feels like it, I suppose when it
-thinks the buffer has been updated. The user can also kick it off
-explicitly by selecting *Rescan* from the imenu menu.
-
-After generating the hierarchical list of props, methods,
-interfaces, classes, and namespaces, csharp-mode re-organizes the
-list as appropriate:
-
- - it extracts sets of like items into submenus. All properties
-   will be placed on a submenu. See
-   `csharp-imenu-max-similar-items-before-extraction' for a way
-   to tune this.
-
- - it converts those submenus into sub-submenus, if there are more than
-   `csharp-imenu-min-size-for-sub-submenu' items.
-
- - it sorts each set of items on the outermost menus lexicographically.
-
-The result of these transformations is what is provided to imenu
-to generate the visible menus.  Just FYI - the reorganization of
-the scan results is much much faster than the actual generation
-of the scan results. If you're looking to save time, the re-org
-logic is not where the cost is.
-
-imenu itself likes to sort the menus. See `imenu--split-menu' and
-also `csharp--imenu-split-menu-patch', which is advice that
-attempts to disable the weird re-jiggering that imenu performs.
-
-"
-  ;; I think widen/narrow causes the buffer to be marked as
-  ;; modified. This is a bit surprising, but I have no other
-  ;; explanation for the source of the problem.
-  ;; So I use `c-save-buffer-state' so that the buffer is not
-  ;; marked modified when the scan completes.
-
-  (c-save-buffer-state ()
-      (save-excursion
-        (save-restriction
-          (widen)
-          (goto-char (point-min))
-
-          (let ((index-alist
-                 (csharp--imenu-create-index-helper nil "" t t)))
-
-            (csharp--imenu-reorg-alist-intelligently index-alist)
-
-            ;;index-alist
-
-            ;; What follows is No longer used.
-            ;; =======================================================
-
-            ;; If the index menu contains exactly one element, and it is
-            ;; a namespace menu, then remove it.  This simplifies the
-            ;; menu, and results in no loss of information: all types
-            ;; get fully-qualified names anyway. This will probably
-            ;; cover the majority of cases; often a C# source module
-            ;; defines either one class, or a set of related classes
-            ;; inside a single namespace.
-
-            ;; To remove that namespace, we need to prune & graft the tree.
-            ;; Remove the ns hierarchy level, but also remove the 1st and
-            ;; last elements in the sub-menu, which represent the top and
-            ;; bottom of the namespace.
-
-            ;; (if (and
-            ;;      (= 1 (length index-alist))
-            ;;      (consp (car index-alist))
-            ;;      (let ((tokens (split-string
-            ;;                     (car (car index-alist))
-            ;;                     "[ \t]" t)))
-            ;;        (and (<= 1 (length tokens))
-            ;;             (string= (downcase
-            ;;                       (nth 0 tokens)) "namespace"))))
-            ;;
-            ;;     (let (elt
-            ;;           (newlist (cdar index-alist)))
-            ;;       (setf (car (car newlist))  (car (car index-alist)))
-            ;;       newlist)
-            ;;
-            ;;   index-alist)
-
-            )))))
-
-
-;; ==================================================================
-
-
-
-
-;; ==================================================================
-;; C# code-doc insertion magic
-;; ==================================================================
-;;
-;; In Visual Studio, if you type three slashes, it immediately expands into
-;; an inline code-documentation fragment.  The following method does the
-;; same thing.
-;;
-;; This is the kind of thing that could be handled by YASnippet or
-;; another similarly flexible snippet framework. But I don't want to
-;; introduce a dependency on yasnippet to csharp-mode. So the capability
-;; must live within csharp-mode itself.
-
-(defun csharp-maybe-insert-codedoc (arg)
-
-  "Insert an xml code documentation template as appropriate, when
-typing slashes.  This fn gets bound to / (the slash key), in
-csharp-mode.  If the slash being inserted is not the third
-consecutive slash, the slash is inserted as normal.  If it is the
-third consecutive slash, then a xml code documentation template
-may be inserted in some cases. For example,
-
-  a <summary> template is inserted if the prior line is empty,
-        or contains only an open curly brace;
-  a <remarks> template is inserted if the prior word
-        closes the <summary> element;
-  a <returns> template is inserted if the prior word
-        closes the <remarks> element;
-  an <example> template is inserted if the prior word closes
-        the <returns> element;
-  a <para> template is inserted if the prior word closes
-        a <para> element.
-
-In all other cases the slash is inserted as normal.
-
-If you want the default cc-mode behavior, which implies no automatic
-insertion of xml code documentation templates, then use this in
-your `csharp-mode-hook' function:
-
-     (local-set-key (kbd \"/\") 'c-electric-slash)
-
- "
-  (interactive "*p")
-  ;;(message "csharp-maybe-insert-codedoc")
-  (let (
-        (cur-point (point))
-        (char last-command-event)
-        (cb0 (char-before (- (point) 0)))
-        (cb1 (char-before (- (point) 1)))
-        is-first-non-whitespace
-        did-auto-insert
-        )
-
-    ;; check if two prior chars were slash, in other words,
-    ;; check if this is the third slash in a row.
-    (if (and (= char ?/) cb0 (= ?/ cb0) cb1 (= ?/ cb1))
-
-        (progn
-          ;;(message "yes - this is the third consecutive slash")
-          (setq is-first-non-whitespace
-                (save-excursion
-                  (back-to-indentation)
-                  (= cur-point (+ (point) 2))))
-
-          (if is-first-non-whitespace
-              ;; This is a 3-slash sequence.  It is the first non-whitespace text
-              ;; on the line. Now we need to examine the surrounding context
-              ;; in order to determine which xml cod doc template to insert.
-              (let (word-back char0 char1
-                              word-fore char-0 char-1
-                              text-to-insert         ;; text to insert in lieu of slash
-                              fn-to-call     ;; func to call after inserting text
-                              (preceding-line-is-empty (or
-                                                        (= (line-number-at-pos) 1)
-                                                        (save-excursion
-                                                          (forward-line -1)
-                                                          (beginning-of-line)
-                                                          (looking-at "[ \t]*$\\|[ \t]*{[ \t]*$"))))
-                              (flavor 0) ;; used only for diagnostic purposes
-                              )
-
-                ;;(message "starting a 3-slash comment")
-                ;; get the prior word, and the 2 chars preceding it.
-                (backward-word)
-
-                (setq word-back (thing-at-point 'word)
-                      char0 (char-before (- (point) 0))
-                      char1 (char-before (- (point) 1)))
-
-                ;; restore prior position
-                (goto-char cur-point)
-
-                ;; get the following word, and the 2 chars preceding it.
-                (forward-word)
-                (backward-word)
-                (setq word-fore (thing-at-point 'word)
-                      char-0 (char-before (- (point) 0))
-                      char-1 (char-before (- (point) 1)))
-
-                ;; restore prior position again
-                (goto-char cur-point)
-
-                (cond
-                 ;; The preceding line is empty, or all whitespace, or
-                 ;; contains only an open-curly.  In this case, insert a
-                 ;; summary element pair.
-                 (preceding-line-is-empty
-                  (setq text-to-insert  "/ <summary>\n///   \n/// </summary>"
-                        flavor 1) )
-
-                 ;; The preceding word closed a summary element.  In this case,
-                 ;; if the forward word does not open a remarks element, then
-                 ;; insert a remarks element.
-                 ((and (string-equal word-back "summary") (eq char0 ?/)  (eq char1 ?<))
-                  (if (not (and (string-equal word-fore "remarks") (eq char-0 ?<)))
-                      (setq text-to-insert "/ <remarks>\n///   <para>\n///     \n///   </para>\n/// </remarks>"
-                            flavor 2)))
-
-                 ;; The preceding word closed the remarks section.  In this case,
-                 ;; insert an example element.
-                 ((and (string-equal word-back "remarks")  (eq char0 ?/)  (eq char1 ?<))
-                  (setq text-to-insert "/ <example>\n///   \n/// </example>"
-                        flavor 3))
-
-                 ;; The preceding word closed the example section.  In this
-                 ;; case, insert an returns element.  This isn't always
-                 ;; correct, because sometimes the xml code doc is attached to
-                 ;; a class or a property, neither of which has a return
-                 ;; value. A more intelligent implementation would inspect the
-                 ;; syntax state and only inject a returns element if
-                 ;; appropriate.
-                 ((and (string-equal word-back "example")  (eq char0 ?/)  (eq char1 ?<))
-                  (setq text-to-insert "/ <returns></returns>"
-                        fn-to-call (lambda ()
-                                     (backward-word)
-                                     (backward-char)
-                                     (backward-char)
-                                     (c-indent-line-or-region)
-                                     )
-                        flavor 4))
-
-                 ;; The preceding word opened the remarks section, or it
-                 ;; closed a para section. In this case, insert a para
-                 ;; element, using appropriate indentation with respect to the
-                 ;; prior tag.
-                 ((or
-                   (and (string-equal word-back "remarks")  (eq char0 ?<)  (or (eq char1 32) (eq char1 9)))
-                   (and (string-equal word-back "para")     (eq char0 ?/)  (eq char1 ?<)))
-
-                  (let (prior-point spacer)
-                    (save-excursion
-                      (backward-word)
-                      (backward-char)
-                      (backward-char)
-                      (setq prior-point (point))
-                      (skip-chars-backward "\t ")
-                      (setq spacer (buffer-substring (point) prior-point))
-                      ;;(message (format "pt(%d) prior(%d) spacer(%s)" (point) prior-point spacer))
-                      )
-
-                    (if (string-equal word-back "remarks")
-                        (setq spacer (concat spacer "   ")))
-
-                    (setq text-to-insert (format "/%s<para>\n///%s  \n///%s</para>"
-                                                 spacer spacer spacer)
-                          flavor 6)))
-
-                 ;; The preceding word opened a para element.  In this case, if
-                 ;; the forward word does not close the para element, then
-                 ;; close the para element.
-                 ;; --
-                 ;; This is a nice idea but flawed.  Suppose I have a para element with some
-                 ;; text in it. If I position the cursor at the first line, then type 3 slashes,
-                 ;; I get a close-element, and that would be inappropriate.  Not sure I can
-                 ;; easily solve that problem, so the best thing might be to simply punt, and
-                 ;; require people to close their own elements.
-                 ;;
-                 ;;              ( (and (string-equal word-back "para")  (eq char0 60)  (or (eq char1 32) (eq char1 9)))
-                 ;;                (if (not (and (string-equal word-fore "para") (eq char-0 47) (eq char-1 60) ))
-                 ;;                    (setq text-to-insert "/   \n/// </para>\n///"
-                 ;;                          fn-to-call (lambda ()
-                 ;;                                       (previous-line)
-                 ;;                                       (end-of-line)
-                 ;;                                       )
-                 ;;                          flavor 7) )
-                 ;;                )
-
-                 ;; the default case - do nothing
-                 (t nil))
-
-                (if text-to-insert
-                    (progn
-                      ;;(message (format "inserting special text (f(%d))" flavor))
-
-                      ;; set the flag, that we actually inserted text
-                      (setq did-auto-insert t)
-
-                      ;; save point of beginning of insertion
-                      (setq cur-point (point))
-
-                      ;; actually insert the text
-                      (insert text-to-insert)
-
-                      ;; indent the inserted string, and re-position point, either through
-                      ;; the case-specific fn, or via the default progn.
-                      (if fn-to-call
-                          (funcall fn-to-call)
-
-                        (let ((newline-count 0) (pos 0) ix)
-
-                          ;; count the number of newlines in the inserted string
-                          (while (string-match "\n" text-to-insert pos)
-                            (setq pos (match-end 0)
-                                  newline-count (+ newline-count 1) )
-                            )
-
-                          ;; indent what we just inserted
-                          (c-indent-region cur-point (point) t)
-
-                          ;; move up n/2 lines. This assumes that the
-                          ;; inserted text is ~symmetric about the halfway point.
-                          ;; The assumption holds if the xml code doc uses a
-                          ;; begin-elt and end-elt on a new line all by themselves,
-                          ;; and a blank line in between them where the point should be.
-                          ;; A more intelligent implementation would use a specific
-                          ;; marker string, like @@DOT, to note the desired point.
-                          (forward-line (- 0 (/ newline-count 2)))
-                          (end-of-line)))))))))
-
-    (if (not did-auto-insert)
-        (self-insert-command (prefix-numeric-value arg)))))
-
-;; ==================================================================
-;; end of c# code-doc insertion magic
-;; ==================================================================
-
-
-
-
-;; ==================================================================
-;; c# fontification extensions
-;; ==================================================================
-;; Commentary:
-;;
-;; The purpose of the following code is to fix font-lock for C#,
-;; specifically for the verbatim-literal strings. C# is a cc-mode
-;; language and strings are handled mostly like other c-based
-;; languages. The one exception is the verbatim-literal string, which
-;; uses the syntax @"...".
-;;
-;; `parse-partial-sexp' treats those strings as just regular strings,
-;; with the @ a non-string character.  This is fine, except when the
-;; verblit string ends in a slash, in which case, font-lock breaks from
-;; that point onward in the buffer.
-;;
-;; This is an attempt to fix that.
-;;
-;; The idea is to scan the buffer in full for verblit strings, and apply the
-;; appropriate syntax-table text properties for verblit strings. Also setting
-;; `parse-sexp-lookup-properties' to t tells `parse-partial-sexp'
-;; to use the syntax-table text properties set up by the scan as it does
-;; its parse.
-;;
-;; Also need to re-scan after any changes in the buffer, but on a more
-;; limited region.
-;;
-
-
-;; ;; I don't remember what this is supposed to do,
-;; ;; or how I figured out the value.
-;; ;;
-;; (defconst csharp-font-lock-syntactic-keywords
-;;   '(("\\(@\\)\\(\"\\)[^\"]*\\(\"\\)\\(\"\\)[^\"]*\\(\"\\)[^\"]"
-;;      (1 '(6)) (2 '(7)) (3 '(1)) (4 '(1)) (5 '(7))
-;;                  ))
-;;   "Highlighting of verbatim literal strings. See also the variable
-;;   `font-lock-keywords'.")
-
-
-
-(defun csharp-time ()
-  "returns the time of day as a string.  Used in the `csharp-log' function."
-  (substring (current-time-string) 11 19)) ;24-hr time
-
-
-(defun csharp-log (level text &rest args)
-  "Log a message at level LEVEL.
-If LEVEL is higher than `csharp-log-level', the message is
-ignored.  Otherwise, it is printed using `message'.
-TEXT is a format control string, and the remaining arguments ARGS
-are the string substitutions (see `format')."
-  (if (<= level csharp-log-level)
-      (let* ((msg (apply 'format text args)))
-        (message "C# %s %s" (csharp-time) msg))))
-
-
-
-(defun csharp-max-beginning-of-stmt ()
-  "Return the greater of `c-beginning-of-statement-1' and
-`c-beginning-of-statement' .  I don't understand why both of
-these methods are necessary or why they differ. But they do."
-
-  (let (dash
-        nodash
-        (curpos (point)))
-
-    ;; I think this may need a save-excursion...
-    ;; Calling c-beginning-of-statement-1 resets the point!
-
-    (setq dash (progn (c-beginning-of-statement-1) (point)))
-    (csharp-log 3 "max-bostmt dash(%d)" dash)
-    (goto-char curpos)
-
-    (setq nodash (progn (c-beginning-of-statement 1) (point)))
-    (csharp-log 3 "max-bostmt nodash(%d)" nodash)
-    (goto-char curpos)
-
-    (max dash nodash)))
-
-
-
-
-
-(defun csharp-set-vliteral-syntax-table-properties (beg end)
-  "Scan the buffer text between BEG and END, a verbatim literal
-string, setting and clearing syntax-table text properties where
-necessary.
-
-We need to modify the default syntax-table text property in these cases:
-  (backslash)    - is not an escape inside a verbatim literal string.
-  (double-quote) - can be a literal quote, when doubled.
-
-BEG is the @ delimiter. END is the 'old' position of the ending quote.
-
-see http://www.sunsite.ualberta.ca/Documentation/Gnu/emacs-lisp-ref-21-2.7/html_node/elisp_592.html
-for the list of syntax table numeric codes.
-
-"
-
-  (csharp-log 3 "set-vlit-syntax-table:  beg(%d) end(%d)" beg end)
-
-  (if (and (> beg 0) (> end 0))
-
-      (let ((curpos beg)
-            (state 0))
-
-        (c-clear-char-properties beg end 'syntax-table)
-
-        (while (<= curpos end)
-
-          (cond
-           ((= state 0)
-            (if (= (char-after curpos) ?@)
-                (progn
-                  (c-put-char-property curpos 'syntax-table '(6)) ; (6) = expression prefix, (3) = symbol
-                  ;;(message (format "set-s-t: prefix pos(%d) chr(%c)" beg (char-after beg)))
-                  )
-              )
-            (setq state (+ 1 state)))
-
-           ((= state 1)
-            (if (= (char-after curpos) ?\")
-                (progn
-                  (c-put-char-property curpos 'syntax-table '(7)) ; (7) = string quote
-                  ;;(message (format "set-s-t: open quote pos(%d) chr(%c)"
-                  ;; curpos (char-after curpos)))
-                  ))
-            (setq state (+ 1 state)))
-
-           ((= state 2)
-            (cond
-             ;; handle backslash inside the string
-             ((= (char-after curpos) ?\\)
-              (c-put-char-property curpos 'syntax-table '(2)) ; (1) = punctuation, (2) = word
-              ;;(message (format "set-s-t: backslash word pos(%d) chr(%c)" curpos (char-after curpos)))
-              )
-
-             ;; doubled double-quote
-             ((and
-               (= (char-after curpos) ?\")
-               (= (char-after (+ 1 curpos)) ?\"))
-              (c-put-char-property curpos 'syntax-table '(2)) ; (1) = punctuation, (2) = word
-              (c-put-char-property (+ 1 curpos) 'syntax-table '(2)) ; (1) = punctuation
-              ;;(message (format "set-s-t: double doublequote pos(%d) chr(%c)" curpos (char-after curpos)))
-              (setq curpos (+ curpos 1))
-              )
-
-             ;; a single double-quote, which should be a string terminator
-             ((= (char-after curpos) ?\")
-              (c-put-char-property curpos 'syntax-table '(7)) ; (7) = string quote
-              ;;(message (format "set-s-t: close quote pos(%d) chr(%c)" curpos (char-after curpos)))
-              ;;go no further
-              (setq state (+ 1 state)))
-
-             ;; everything else
-             (t
-              ;;(message (format "set-s-t: none pos(%d) chr(%c)" curpos (char-after curpos)))
-              nil))))
-          ;; next char
-          (setq curpos (+ curpos 1))))))
-
-
-
-(defun csharp-end-of-verbatim-literal-string (&optional lim)
-  "Moves to and returns the position of the end quote of the verbatim literal
-string.  When calling, point should be on the @ of the verblit string.
-If it is not, then no movement is performed and `point' is returned.
-
-This function ignores text properties. In fact it is the
-underlying scanner used to set the text properties in a C# buffer.
-"
-
-  (csharp-log 3 "end-of-vlit-string: point(%d) c(%c)" (point) (char-after))
-
-  (let (curpos
-        (max (or lim (point-max))))
-
-    (if (not (looking-at "@\""))
-        (point)
-      (forward-char 2) ;; pass up the @ sign and first quote
-      (setq curpos (point))
-
-      ;; Within a verbatim literal string, a doubled double-quote
-      ;; escapes the double-quote."
-      (while (and                                  ;; process characters...
-              (or                                  ;; while...
-               (not (eq (char-after curpos) ?\"))  ;; it's not a quote
-               (eq (char-after (+ curpos 1)) ?\")) ;; or, its a double (double) quote
-              (< curpos max))                      ;; and we're not done yet
-
-        (cond
-         ((and (eq (char-after curpos) ?\")        ;; it's a double-quote.
-               (eq (char-after (+ curpos 1)) ?\"))
-          (setq curpos (+ 2 curpos)))              ;; Skip 2
-         (t                                        ;; anything else
-          (setq curpos (+ 1 curpos)))))            ;; skip fwd 1
-      curpos)))
-
-
-
-
-(defun csharp-scan-for-verbatim-literals-and-set-props (&optional beg end)
-  "Scans the buffer, between BEG and END, for verbatim literal
-strings, and sets override text properties on each string to
-allow proper syntax highlighting, indenting, and cursor movement.
-
-BEG and END define the limits of the scan.  When nil, they
-default to `point-min' and `point-max' respectively.
-
-Setting text properties generally causes the buffer to be marked
-as modified, but this fn suppresses that via the
-`c-buffer-save-state' macro, for any changes in text properties
-that it makes.  This fn also ignores the read-only setting on a
-buffer, using the same macro.
-
-This fn is called when a csharp-mode buffer is loaded, with BEG
-and END set to nil, to do a full scan.  It is also called on
-every buffer change, with the BEG and END set to the values for
-the change.
-
-The return value is nil if the buffer was not a csharp-mode
-buffer. Otherwise it is the last cursor position examined by the
-scan.
-"
-
-  (if (not (c-major-mode-is 'csharp-mode)) ;; don't scan if not csharp mode
-      nil
-    (save-excursion
-      (c-save-buffer-state
-          ((curpos (or beg (point-min)))
-           (lastpos (or end (point-max)))
-           (state 0) (start 0) (cycle 0)
-           literal eos limits)
-
-        (csharp-log 3 "verblit scan")
-        (goto-char curpos)
-
-        (while (and (< curpos lastpos) (< cycle 10000))
-          (cond
-
-           ;; Case 1: current char is a @ sign
-           ;; --------------------------------------------
-           ;; Check to see if it demarks the beginning of a verblit
-           ;; string.
-           ((= ?@ (char-after curpos))
-
-            ;; are we in a comment?   a string?  Maybe the @ is a prefix
-            ;; to allow the use of a reserved word as a symbol. Let's find out.
-
-            ;; not sure why I need both of the following.
-            (syntax-ppss-flush-cache 1)
-            (parse-partial-sexp 1 curpos)
-            (goto-char curpos)
-            (setq literal (csharp-in-literal))
-            (cond
-
-             ;; Case 1.A: it's a @ within a string.
-             ;; --------------------------------------------
-             ;; This should never happen, because this scanner hops over strings.
-             ;; But it might happen if the scan starts at an odd place.
-             ((eq literal 'string) nil)
-
-             ;; Case 1.B: The @ is within a comment.  Hop over it.
-             ((and (memq literal '(c c++))
-                   ;; This is a kludge for XEmacs where we use
-                   ;; `buffer-syntactic-context', which doesn't correctly
-                   ;; recognize "\*/" to end a block comment.
-                   ;; `parse-partial-sexp' which is used by
-                   ;; `c-literal-limits' will however do that in most
-                   ;; versions, which results in that we get nil from
-                   ;; `c-literal-limits' even when `c-in-literal' claims
-                   ;; we're inside a comment.
-                   ;;(setq limits (c-literal-limits start)))
-                   (setq limits (c-literal-limits)))
-
-              ;; advance to the end of the comment
-              (if limits
-                  (progn
-                    (csharp-log 4 "scan: jump end comment A (%d)" (cdr limits))
-                    (setq curpos (cdr limits)))))
-
-
-             ;; Case 1.B: curpos is at least 2 chars before the last
-             ;; position to examine, and, the following char is a
-             ;; double-quote (ASCII 34).
-             ;; --------------------------------------------
-             ;; This looks like the beginning of a verbatim string
-             ;; literal.
-             ((and (< (+ 2 curpos) lastpos)
-                   (= ?\" (char-after (+ 1 curpos))))
-
-              (setq eos (csharp-end-of-verbatim-literal-string))
-              ;; set override syntax properties on the verblit string
-              (csharp-set-vliteral-syntax-table-properties curpos eos)
-
-              (csharp-log 4 "scan: jump end verblit string (%d)" eos)
-              (setq curpos eos))))
-
-
-           ;; Case 2: current char is a double-quote.
-           ;; --------------------------------------------
-           ;; If this is a string, we hop over it, on the assumption that
-           ;; this scanner need not bother with regular literal strings, which
-           ;; get the proper syntax with the generic approach.
-           ;; If in a comment, hop over the comment.
-           ((= ?\" (char-after curpos))
-            (goto-char curpos)
-            (setq literal (c-in-literal))
-            (cond
-
-             ;; Case 2.A: a quote within a string
-             ;; --------------------------------------------
-             ;; This shouldn't happen, because we hop over strings.
-             ;; But it might.
-             ((eq literal 'string) nil)
-
-             ;; Case 2.B: a quote within a comment
-             ;; --------------------------------------------
-             ((and (memq literal '(c c++))
-                   ;; This is a kludge for XEmacs where we use
-                   ;; `buffer-syntactic-context', which doesn't correctly
-                   ;; recognize "\*/" to end a block comment.
-                   ;; `parse-partial-sexp' which is used by
-                   ;; `c-literal-limits' will however do that in most
-                   ;; versions, which results in that we get nil from
-                   ;; `c-literal-limits' even when `c-in-literal' claims
-                   ;; we're inside a comment.
-                   ;;(setq limits (c-literal-limits start)))
-                   (setq limits (c-literal-limits)))
-
-              ;; advance to the end of the comment
-              (if limits
-                  (progn
-                    (setq curpos (cdr limits))
-                    (csharp-log 3 "scan: jump end comment B (%s)" curpos))))
-
-
-             ;; Case 2.C: Not in a comment, and not in a string.
-             ;; --------------------------------------------
-             ;; This is the beginning of a literal (but not verbatim) string.
-             (t
-              (forward-char 1) ;; pass up the quote
-              (if (consp (setq limits (c-literal-limits)))
-                  (progn
-                    (csharp-log 4 "scan: jump end literal (%d)" (cdr limits))
-                    (setq curpos (cdr limits))))))))
-
-          (setq cycle (+ 1 cycle))
-          (setq curpos (+ 1 curpos))
-          (c-safe (goto-char curpos)))))))
-
-
-
-(defun csharp--before-font-lock (beg end old-len)
-  "Adjust`syntax-table' properties on the region affected by the change
-in a csharp-mode buffer.
-
-This function is the C# value for `c-before-font-lock-function'.
-It intended to be called only by the cc-mode runtime.
-
-It prepares the buffer for font locking, hence must get called
-before `font-lock-after-change-function'.
-
-It does hidden buffer changes.
-
-BEG, END and OLD-LEN have the same meaning here as for any
-after-change function.
-
-Point is undefined both before and after this function call.
-The return value is meaningless, and is ignored by cc-mode.
-"
-  (csharp-log 2 "before font lock %d %d %d %d" beg end old-len (point))
-  (let ((start-scan (progn
-                      ;; is this right?  I think
-                      (c-beginning-of-statement 1)
-                      (point))))
-    (csharp-scan-for-verbatim-literals-and-set-props start-scan end)))
-
-
-
-(c-lang-defconst c-before-font-lock-function
-  csharp 'csharp--before-font-lock)
-
-;; ==================================================================
-;; end of c# fontification extensions
-;; ==================================================================
-
-
-
-
-
-;; ==================================================================
-;; C#-specific optimizations of cc-mode funcs
-;; ==================================================================
-
-;; There's never a need to move over an Obj-C directive in csharp-mode.
-(defadvice c-forward-objc-directive (around
-                                     csharp-mode-advice-2
-                                     compile activate)
-  (if (c-major-mode-is 'csharp-mode)
-      nil
-    ad-do-it)
-  )
-
-;; ==================================================================
-;; end of C#-specific optimizations of cc-mode funcs
-;; ==================================================================
-
-
-
-
-
-
-
-
-;; ==================================================================
-;; c# - monkey-patching of basic parsing logic
-;; ==================================================================
-;;
-;; The following 2 defuns redefine functions from cc-mode, to add
-;; special cases for C#.  These primarily deal with indentation of
-;; instance initializers, which are somewhat unique to C#.  I couldn't
-;; figure out how to get cc-mode to do what C# needs, without modifying
-;; these defuns.
-;;
-
-(defun c-looking-at-inexpr-block (lim containing-sexp &optional check-at-end)
-  ;; Return non-nil if we're looking at the beginning of a block
-  ;; inside an expression.  The value returned is actually a cons of
-  ;; either 'inlambda, 'inexpr-statement or 'inexpr-class and the
-  ;; position of the beginning of the construct.
-  ;;
-  ;; LIM limits the backward search.  CONTAINING-SEXP is the start
-  ;; position of the closest containing list.  If it's nil, the
-  ;; containing paren isn't used to decide whether we're inside an
-  ;; expression or not.  If both LIM and CONTAINING-SEXP are used, LIM
-  ;; needs to be farther back.
-  ;;
-  ;; If CHECK-AT-END is non-nil then extra checks at the end of the
-  ;; brace block might be done.  It should only be used when the
-  ;; construct can be assumed to be complete, i.e. when the original
-  ;; starting position was further down than that.
-  ;;
-  ;; This function might do hidden buffer changes.
-
-  (save-excursion
-    (let ((res 'maybe) passed-paren
-          (closest-lim (or containing-sexp lim (point-min)))
-          ;; Look at the character after point only as a last resort
-          ;; when we can't disambiguate.
-          (block-follows (and (eq (char-after) ?{) (point))))
-
-      (while (and (eq res 'maybe)
-                  (progn (c-backward-syntactic-ws)
-                         (> (point) closest-lim))
-                  (not (bobp))
-                  (progn (backward-char)
-                         (looking-at "[\]\).]\\|\w\\|\\s_"))
-                  (c-safe (forward-char)
-                          (goto-char (scan-sexps (point) -1))))
-
-        (setq res
-              (if (looking-at c-keywords-regexp)
-                  (let ((kw-sym (c-keyword-sym (match-string 1))))
-                    (cond
-                     ((and block-follows
-                           (c-keyword-member kw-sym 'c-inexpr-class-kwds))
-                      (and (not (eq passed-paren ?\[))
-
-                           ;; dinoch Thu, 22 Apr 2010  18:20
-                           ;; ============================================
-                           ;; looking at new MyType() { ... }
-                           ;; means this is a brace list, so, return nil,
-                           ;; implying NOT looking-at-inexpr-block
-                           (not
-                            (and (c-major-mode-is 'csharp-mode)
-                                 (looking-at "new[ \t\n\f\v\r]+\\([[:alnum:]_]+\\)\\b")))
-
-                           (or (not (looking-at c-class-key))
-                               ;; If the class instantiation is at the start of
-                               ;; a statement, we don't consider it an
-                               ;; in-expression class.
-                               (let ((prev (point)))
-                                 (while (and
-                                         (= (c-backward-token-2 1 nil closest-lim) 0)
-                                         (eq (char-syntax (char-after)) ?w))
-                                   (setq prev (point)))
-                                 (goto-char prev)
-                                 (not (c-at-statement-start-p)))
-                               ;; Also, in Pike we treat it as an
-                               ;; in-expression class if it's used in an
-                               ;; object clone expression.
-                               (save-excursion
-                                 (and check-at-end
-                                      (c-major-mode-is 'pike-mode)
-                                      (progn (goto-char block-follows)
-                                             (zerop (c-forward-token-2 1 t)))
-                                      (eq (char-after) ?\())))
-                           (cons 'inexpr-class (point))))
-                     ((c-keyword-member kw-sym 'c-inexpr-block-kwds)
-                      (when (not passed-paren)
-                        (cons 'inexpr-statement (point))))
-                     ((c-keyword-member kw-sym 'c-lambda-kwds)
-                      (when (or (not passed-paren)
-                                (eq passed-paren ?\())
-                        (cons 'inlambda (point))))
-                     ((c-keyword-member kw-sym 'c-block-stmt-kwds)
-                      nil)
-                     (t
-                      'maybe)))
-
-                (if (looking-at "\\s(")
-                    (if passed-paren
-                        (if (and (eq passed-paren ?\[)
-                                 (eq (char-after) ?\[))
-                            ;; Accept several square bracket sexps for
-                            ;; Java array initializations.
-                            'maybe)
-                      (setq passed-paren (char-after))
-                      'maybe)
-                  'maybe))))
-
-      (if (eq res 'maybe)
-          (when (and c-recognize-paren-inexpr-blocks
-                     block-follows
-                     containing-sexp
-                     (eq (char-after containing-sexp) ?\())
-            (goto-char containing-sexp)
-            (if (or (save-excursion
-                      (c-backward-syntactic-ws lim)
-                      (and (> (point) (or lim (point-min)))
-                           (c-on-identifier)))
-                    (and c-special-brace-lists
-                         (c-looking-at-special-brace-list)))
-                nil
-              (cons 'inexpr-statement (point))))
-
-        res))))
-
-
-
-
-
-(defun c-inside-bracelist-p (containing-sexp paren-state)
-  ;; return the buffer position of the beginning of the brace list
-  ;; statement if we're inside a brace list, otherwise return nil.
-  ;; CONTAINING-SEXP is the buffer pos of the innermost containing
-  ;; paren.  PAREN-STATE is the remainder of the state of enclosing
-  ;; braces
-  ;;
-  ;; N.B.: This algorithm can potentially get confused by cpp macros
-  ;; placed in inconvenient locations.  It's a trade-off we make for
-  ;; speed.
-  ;;
-  ;; This function might do hidden buffer changes.
-  (or
-   ;; This will pick up brace list declarations.
-   (c-safe
-     (save-excursion
-       (goto-char containing-sexp)
-       (c-safe (c-forward-sexp -1))
-       (let (bracepos)
-         (if (and (or (looking-at c-brace-list-key)
-
-                      (progn
-                        (c-safe (c-forward-sexp -1))
-                        (looking-at c-brace-list-key))
-
-                      ;; dinoch Thu, 22 Apr 2010  18:20
-                      ;; ============================================
-                      ;; looking enum Foo : int
-                      ;; means this is a brace list, so, return nil,
-                      ;; implying NOT looking-at-inexpr-block
-
-                      (and (c-major-mode-is 'csharp-mode)
-                           (progn
-                             (c-safe (c-forward-sexp -1))
-                             (looking-at csharp-enum-decl-re))))
-
-                  (setq bracepos (c-down-list-forward (point)))
-                  (not (c-crosses-statement-barrier-p (point)
-                                                      (- bracepos 2))))
-             (point)))))
-
-   ;; this will pick up array/aggregate init lists, even if they are nested.
-   (save-excursion
-     (let ((class-key
-            ;; Pike can have class definitions anywhere, so we must
-            ;; check for the class key here.
-            (and (c-major-mode-is 'pike-mode)
-                 c-decl-block-key))
-           bufpos braceassignp lim next-containing)
-       (while (and (not bufpos)
-                   containing-sexp)
-         (when paren-state
-           (if (consp (car paren-state))
-               (setq lim (cdr (car paren-state))
-                     paren-state (cdr paren-state))
-             (setq lim (car paren-state)))
-           (when paren-state
-             (setq next-containing (car paren-state)
-                   paren-state (cdr paren-state))))
-         (goto-char containing-sexp)
-         (if (c-looking-at-inexpr-block next-containing next-containing)
-             ;; We're in an in-expression block of some kind.  Do not
-             ;; check nesting.  We deliberately set the limit to the
-             ;; containing sexp, so that c-looking-at-inexpr-block
-             ;; doesn't check for an identifier before it.
-             (setq containing-sexp nil)
-           ;; see if the open brace is preceded by = or [...] in
-           ;; this statement, but watch out for operator=
-           (setq braceassignp 'dontknow)
-           (c-backward-token-2 1 t lim)
-           ;; Checks to do only on the first sexp before the brace.
-           (when (and c-opt-inexpr-brace-list-key
-                      (eq (char-after) ?\[))
-             ;; In Java, an initialization brace list may follow
-             ;; directly after "new Foo[]", so check for a "new"
-             ;; earlier.
-             (while (eq braceassignp 'dontknow)
-               (setq braceassignp
-                     (cond ((/= (c-backward-token-2 1 t lim) 0) nil)
-                           ((looking-at c-opt-inexpr-brace-list-key) t)
-                           ((looking-at "\\sw\\|\\s_\\|[.[]")
-                            ;; Carry on looking if this is an
-                            ;; identifier (may contain "." in Java)
-                            ;; or another "[]" sexp.
-                            'dontknow)
-                           (t nil)))))
-           ;; Checks to do on all sexps before the brace, up to the
-           ;; beginning of the statement.
-           (while (eq braceassignp 'dontknow)
-             (cond ((eq (char-after) ?\;)
-                    (setq braceassignp nil))
-                   ((and class-key
-                         (looking-at class-key))
-                    (setq braceassignp nil))
-                   ((eq (char-after) ?=)
-                    ;; We've seen a =, but must check earlier tokens so
-                    ;; that it isn't something that should be ignored.
-                    (setq braceassignp 'maybe)
-                    (while (and (eq braceassignp 'maybe)
-                                (zerop (c-backward-token-2 1 t lim)))
-                      (setq braceassignp
-                            (cond
-                             ;; Check for operator =
-                             ((and c-opt-op-identifier-prefix
-                                   (looking-at c-opt-op-identifier-prefix))
-                              nil)
-                             ;; Check for `<opchar>= in Pike.
-                             ((and (c-major-mode-is 'pike-mode)
-                                   (or (eq (char-after) ?`)
-                                       ;; Special case for Pikes
-                                       ;; `[]=, since '[' is not in
-                                       ;; the punctuation class.
-                                       (and (eq (char-after) ?\[)
-                                            (eq (char-before) ?`))))
-                              nil)
-                             ((looking-at "\\s.") 'maybe)
-                             ;; make sure we're not in a C++ template
-                             ;; argument assignment
-                             ((and
-                               (c-major-mode-is 'c++-mode)
-                               (save-excursion
-                                 (let ((here (point))
-                                       (pos< (progn
-                                               (skip-chars-backward "^<>")
-                                               (point))))
-                                   (and (eq (char-before) ?<)
-                                        (not (c-crosses-statement-barrier-p
-                                              pos< here))
-                                        (not (c-in-literal))
-                                        ))))
-                              nil)
-                             (t t))))))
-             (if (and (eq braceassignp 'dontknow)
-                      (/= (c-backward-token-2 1 t lim) 0))
-                 (setq braceassignp nil)))
-           (if (not braceassignp)
-               (if (eq (char-after) ?\;)
-                   ;; Brace lists can't contain a semicolon, so we're done.
-                   (setq containing-sexp nil)
-                 ;; Go up one level.
-                 (setq containing-sexp next-containing
-                       lim nil
-                       next-containing nil))
-             ;; we've hit the beginning of the aggregate list
-             (c-beginning-of-statement-1
-              (c-most-enclosing-brace paren-state))
-             (setq bufpos (point))))
-         )
-       bufpos))
-   ))
-
-;; ==================================================================
-;; end of monkey-patching of basic parsing logic
-;; ==================================================================
-
-
-
-
-;;(easy-menu-define csharp-menu csharp-mode-map "C# Mode Commands"
-;;                ;; Can use `csharp' as the language for `c-mode-menu'
-;;                ;; since its definition covers any language.  In
-;;                ;; this case the language is used to adapt to the
-;;                ;; nonexistence of a cpp pass and thus removing some
-;;                ;; irrelevant menu alternatives.
-;;                (cons "C#" (c-lang-const c-mode-menu csharp)))
-
-;;; Autoload mode trigger
-;;;###autoload
-(add-to-list 'auto-mode-alist '("\\.cs$" . csharp-mode))
-
-
-(c-add-style "C#"
-             '("Java"
-               (c-basic-offset . 4)
-               (c-comment-only-line-offset . (0 . 0))
-               (c-offsets-alist . (
-                                   (access-label          . -)
-                                   (arglist-close         . c-lineup-arglist)
-                                   (arglist-cont          . 0)
-                                   (arglist-cont-nonempty . c-lineup-arglist)
-                                   (arglist-intro         . c-lineup-arglist-intro-after-paren)
-                                   (block-close           . 0)
-                                   (block-open            . 0)
-                                   (brace-entry-open      . 0)
-                                   (brace-list-close      . 0)
-                                   (brace-list-entry      . 0)
-                                   (brace-list-intro      . +)
-                                   (brace-list-open       . +)
-                                   (c                     . c-lineup-C-comments)
-                                   (case-label            . +)
-                                   (catch-clause          . 0)
-                                   (class-close           . 0)
-                                   (class-open            . 0)
-                                   (comment-intro         . c-lineup-comment)
-                                   (cpp-macro             . 0)
-                                   (cpp-macro-cont        . c-lineup-dont-change)
-                                   (defun-block-intro     . +)
-                                   (defun-close           . 0)
-                                   (defun-open            . 0)
-                                   (do-while-closure      . 0)
-                                   (else-clause           . 0)
-                                   (extern-lang-close     . 0)
-                                   (extern-lang-open      . 0)
-                                   (friend                . 0)
-                                   (func-decl-cont        . +)
-                                   (inclass               . +)
-                                   (inexpr-class          . +)
-                                   (inexpr-statement      . 0)
-                                   (inextern-lang         . +)
-                                   (inher-cont            . c-lineup-multi-inher)
-                                   (inher-intro           . +)
-                                   (inlambda              . c-lineup-inexpr-block)
-                                   (inline-close          . 0)
-                                   (inline-open           . 0)
-                                   (innamespace           . +)
-                                   (knr-argdecl           . 0)
-                                   (knr-argdecl-intro     . 5)
-                                   (label                 . 0)
-                                   (lambda-intro-cont     . +)
-                                   (member-init-cont      . c-lineup-multi-inher)
-                                   (member-init-intro     . +)
-                                   (namespace-close       . 0)
-                                   (namespace-open        . 0)
-                                   (statement             . 0)
-                                   (statement-block-intro . +)
-                                   (statement-case-intro  . +)
-                                   (statement-case-open   . +)
-                                   (statement-cont        . +)
-                                   (stream-op             . c-lineup-streamop)
-                                   (string                . c-lineup-dont-change)
-                                   (substatement          . +)
-                                   (substatement-open     . 0)
-                                   (template-args-cont c-lineup-template-args +)
-                                   (topmost-intro         . 0)
-                                   (topmost-intro-cont    . +)
-                                   ))
-               ))
-
-
-
-(defun csharp-guess-compile-command ()
-  "set `compile-command' intelligently depending on the
-current buffer, or the contents of the current directory.
-"
-  (interactive)
-  (set (make-local-variable 'compile-command)
-
-       (cond
-        ((or (file-expand-wildcards "*.csproj" t)
-             (file-expand-wildcards "*.vcproj" t)
-             (file-expand-wildcards "*.vbproj" t)
-             (file-expand-wildcards "*.shfbproj" t)
-             (file-expand-wildcards "*.sln" t))
-         (concat csharp-msbuild-tool " "))
-
-        ;; sometimes, not sure why, the buffer-file-name is
-        ;; not set.  Can use it only if set.
-        (buffer-file-name
-         (let ((filename (file-name-nondirectory buffer-file-name)))
-           (cond
-
-            ;; editing a c# file - check for an explicitly-specified command
-            ((string-equal (substring buffer-file-name -3) ".cs")
-             (let ((explicitly-specified-command
-                    (csharp-get-value-from-comments "compile" csharp-cmd-line-limit)))
-
-
-               (if explicitly-specified-command
-                   (csharp-replace-command-tokens explicitly-specified-command)
-                   (concat csharp-make-tool " " ;; assume a makefile exists
-                           (file-name-sans-extension filename)
-                           ".exe"))))
-
-            ;; something else - do a typical .exe build
-            (t
-             (concat csharp-make-tool " "
-                     (file-name-sans-extension filename)
-                     ".exe")))))
-        (t
-         ;; punt
-         (concat csharp-make-tool " ")))))
-
-
-
-(defun csharp-invoke-compile-interactively ()
-  "fn to wrap the `compile' function.  This simply
-checks to see if `compile-command' has been previously set, and
-if not, invokes `csharp-guess-compile-command' to set the value.
-Then it invokes the `compile' function, interactively.
-
-The effect is to guess the compile command only once, per buffer.
-
-I tried doing this with advice attached to the `compile'
-function, but because of the interactive nature of the fn, it
-didn't work the way I wanted it to. So this fn should be bound to
-the key sequence the user likes for invoking compile, like ctrl-c
-ctrl-e.
-
-"
-  (interactive)
-  (cond
-   ((not (boundp 'csharp-local-compile-command-has-been-set))
-    (csharp-guess-compile-command)
-    (set (make-local-variable 'csharp-local-compile-command-has-been-set) t)))
-  ;; local compile command has now been set
-  (call-interactively 'compile))
-
-
-
-
-;;; The entry point into the mode
-;;;###autoload
-  (defun csharp-mode ()
-  "Major mode for editing C# code. This mode is derived from CC Mode to
-support C#.
-
-Normally, you'd want to autoload this mode by setting `auto-mode-alist' with
-an entry for csharp, in your .emacs file:
-
-   (autoload 'csharp-mode \"csharp-mode\" \"Major mode for editing C# code.\" t)
-   (setq auto-mode-alist
-      (append '((\"\\.cs$\" . csharp-mode)) auto-mode-alist))
-
-The mode provides fontification and indent for C# syntax, as well
-as some other handy features.
-
-At mode startup, there are two interesting hooks that run:
-`c-mode-common-hook' is run with no args, then `csharp-mode-hook' is run after
-that, also with no args.
-
-To run your own logic after csharp-mode starts, do this:
-
-  (defun my-csharp-mode-fn ()
-    \"my function that runs when csharp-mode is initialized for a buffer.\"
-    (turn-on-font-lock)
-    (turn-on-auto-revert-mode) ;; helpful when also using Visual Studio
-    (setq indent-tabs-mode nil) ;; tabs are evil
-    (flymake-mode 1)
-    (yas/minor-mode-on)
-    (require 'rfringe)  ;; handy for flymake
-    (require 'flymake-cursor) ;; also handy for flymake
-    ....your own code here...
-  )
-  (add-hook  'csharp-mode-hook 'my-csharp-mode-fn t)
-
-
-The function above is just a suggestion.
-
-
-Compile integration:
-========================
-
-csharp-mode binds the function `csharp-invoke-compile-interactively' to
-\"\C-x\C-e\" .  This function attempts to intellgently guess the format of the
-compile command to use for a buffer.  It looks in the comments at the head of
-the buffer for a line that begins with compile: .  For exammple:
-
-  // compile: csc.exe /t:library /r:Mylib.dll Foo.cs
-
-If csharp-mode finds a line like this, it will suggest the text that follows
-as the compilation command when running `compile' for the first time.  If such
-a line is not found, csharp-mode falls back to a msbuild or nmake command.
-See the documentation on `csharp-cmd-line-limit' for further information. If
-you don't want this magic, then you can just run `compile' directly, rather
-than `csharp-invoke-compile-interactively' .
-
-This mode will also automatically add a symbol and regexp to the
-`compilation-error-regexp-alist' and`compilation-error-regexp-alist-alist'
-respectively, for Csc.exe error and warning messages. If you invoke `compile',
-then `next-error' should work properly for error messages produced by csc.exe.
-
-
-Flymake Integraiton
-========================
-
-You can use flymake with csharp mode to automatically check the syntax of your
-csharp code, and highlight errors.  To do so, add a comment line like this to
-each .cs file that you use flymake with:
-
-   //  flymake: csc.exe /t:module /R:Foo.dll @@FILE@@
-
-csharp-mode replaces special tokens in the command with different values:
-
-  @@ORIG@@ - gets replaced with the original filename
-  @@FILE@@ - gets replaced with the name of the temporary file
-      created by flymake. This is usually what you want in place of the
-      name of the file to be compiled.
-
-See the documentation on `csharp-cmd-line-limit' for further information.
-
-You may also want to run a syntax checker, like fxcop:
-
-   //  flymake: fxcopcmd.exe /c /F:MyLibrary.dll
-
-In this case you don't need either of the tokens described above.
-
-If the module has no external dependencies, then you need not specify any
-flymake command at all. csharp-mode will implicitly act as if you had
-specified the command:
-
-     // flymake: csc.exe /t:module /nologo @@FILE@@
-
-It looks for the EXE on the path.  You can specify a full path if you like.
-
-
-YASnippet and IMenu Integraiton
-===============================
-
-Check the menubar for menu entries for YASnippet and Imenu; the latter
-is labelled \"Index\".
-
-The Imenu index gets computed when the file is .cs first opened and loaded.
-This may take a moment or two.  If you don't like this delay and don't
-use imenu, you can turn this off with the variable `csharp-want-imenu'.
-
-
-
-Key bindings:
-\\{csharp-mode-map}"
-    (interactive)
-    (kill-all-local-variables)
-    (make-local-variable 'beginning-of-defun-function)
-    (make-local-variable 'end-of-defun-function)
-    (c-initialize-cc-mode t)
-    (set-syntax-table csharp-mode-syntax-table)
-
-    ;; define underscore as part of a word in the Csharp syntax table
-    (modify-syntax-entry ?_ "w" csharp-mode-syntax-table)
-
-    ;; define @ as an expression prefix in Csharp syntax table
-    (modify-syntax-entry ?@ "'" csharp-mode-syntax-table)
-
-    (setq major-mode 'csharp-mode
-          mode-name "C#"
-          local-abbrev-table csharp-mode-abbrev-table
-          abbrev-mode t)
-    (use-local-map csharp-mode-map)
-
-    ;; `c-init-language-vars' is a macro that is expanded at compile
-    ;; time to a large `setq' with all the language variables and their
-    ;; customized values for our language.
-    (c-init-language-vars csharp-mode)
-
-    ;; `c-common-init' initializes most of the components of a CC Mode
-    ;; buffer, including setup of the mode menu, font-lock, etc.
-    ;; There's also a lower level routine `c-basic-common-init' that
-    ;; only makes the necessary initialization to get the syntactic
-    ;; analysis and similar things working.
-    (c-common-init 'csharp-mode)
-
-    ;; compile
-    (local-set-key "\C-x\C-e"  'csharp-invoke-compile-interactively)
-
-    ;; to allow next-error to work with csc.exe:
-    (setq compilation-scroll-output t)
-
-    ;; csc.exe, the C# Compiler, produces errors like this:
-    ;; file.cs(6,18): error CS1006: Name of constructor must match name of class
-    (if (boundp 'compilation-error-regexp-alist-alist)
-        (progn
-          (add-to-list
-           'compilation-error-regexp-alist-alist
-           '(ms-csharp "^[ \t]*\\([-_:A-Za-z0-9][^\n(]*\\.\\(?:cs\\|xaml\\)\\)(\\([0-9]+\\)[,]\\([0-9]+\\)) ?: \\(error\\|warning\\) CS[0-9]+:" 1 2 3))
-          (add-to-list
-           'compilation-error-regexp-alist
-           'ms-csharp)))
-
-    ;; flymake
-    (eval-after-load "flymake"
-      '(progn
-         (if csharp-want-flymake-fixup
-             (csharp-flymake-install))))
-
-    (eval-after-load  "yasnippet"
-      '(progn
-         (if csharp-want-yasnippet-fixup
-             (csharp-yasnippet-fixup))))
-
-
-    (local-set-key (kbd "/") 'csharp-maybe-insert-codedoc)
-    (local-set-key (kbd "{") 'csharp-insert-open-brace)
-
-    ;; Need the following for parse-partial-sexp to work properly with
-    ;; verbatim literal strings Setting this var to non-nil tells
-    ;; `parse-partial-sexp' to pay attention to the syntax text
-    ;; properties on the text in the buffer.  If csharp-mode attaches
-    ;; text syntax to @"..." then, `parse-partial-sexp' will treat those
-    ;; strings accordingly.
-    (set (make-local-variable 'parse-sexp-lookup-properties) t)
-
-    ;; scan the entire buffer for verblit strings
-    ;; This will happen on font; it's necessary only
-    ;; if font-lock is disabled. But it won't hurt.
-    (csharp-scan-for-verbatim-literals-and-set-props nil nil)
-
-    ;; Allow fill-paragraph to work on xml code doc
-    ;; This setting gets overwritten quietly by c-run-mode-hooks,
-    ;; so I put it afterwards to make it stick.
-    (make-local-variable 'paragraph-separate)
-
-    ;;(message "C#: set paragraph-separate")
-
-    ;; Speedbar handling
-    (if (fboundp 'speedbar-add-supported-extension)
-        (speedbar-add-supported-extension '(".cs"))) ;; idempotent
-
-    (c-update-modeline)
-    (c-run-mode-hooks 'c-mode-common-hook 'csharp-mode-hook)
-
-    ;; maybe do imenu scan after hook returns
-    (if csharp-want-imenu
-      (progn
-        ;; There are two ways to do imenu indexing. One is to provide a
-        ;; function, via `imenu-create-index-function'.  The other is to
-        ;; provide imenu with a list of regexps via
-        ;; `imenu-generic-expression'; imenu will do a "generic scan" for you.
-        ;; csharp-mode uses the former method.
-        ;;
-        (setq imenu-create-index-function 'csharp-imenu-create-index)
-        (imenu-add-menubar-index)))
-
-    ;; The paragraph-separate variable was getting stomped by
-    ;; other hooks, so it must reside here.
-    (setq paragraph-separate
-          "[ \t]*\\(//+\\|\\**\\)\\([ \t]+\\|[ \t]+<.+?>\\)$\\|^\f")
-
-    (setq beginning-of-defun-function 'csharp-move-back-to-beginning-of-defun)
-    ;; end-of-defun-function   can remain forward-sexp !!
-
-    (set (make-local-variable 'comment-auto-fill-only-comments) t)
-    )
-
-
-
-
-  ;; =======================================================
-  ;;
-  ;; This section attempts to workaround an anomalous display behavior
-  ;; for tooltips.  It's not strictly necessary, only for aesthetics.  The
-  ;; issue is that tooltips can get clipped.  This is the topic of Emacs
-  ;; bug #5908, unfixed in v23 and present in v22.
-
-
-  (defadvice tooltip-show (before
-                           flymake-for-csharp-fixup-tooltip
-                           (arg &optional use-echo-area)
-                           activate compile)
-    (progn
-      (if ;;(and (not use-echo-area) (eq major-mode 'csharp-mode))
-          (not use-echo-area)
-          (let ((orig (ad-get-arg 0)))
-            (ad-set-arg 0 (concat " " (cheeso-string-trim (cheeso-reform-string 74 orig) ?\ )))
-            ))))
-
-
-
-
-;; ========================================================================
-;; YA-snippet integration
-
-(defun csharp-yasnippet-fixup ()
-  "Sets snippets into ya-snippet for C#, if yasnippet is loaded,
-and if the snippets do not already exist.
-"
-  (if (not csharp--yasnippet-has-been-fixed)
-      (if (fboundp 'yas/snippet-table-fetch)
-          ;; yasnippet is present
-          (let ((snippet-table (yas/snippet-table 'csharp-mode))
-                (keymap (if yas/use-menu
-                            (yas/menu-keymap-for-mode 'csharp-mode)
-                          nil))
-                (yas/require-template-condition nil)
-                (builtin-snips
-                 '(
-  ("xmls" "{
-      XmlSerializer s1 = new XmlSerializer(typeof(${1:type}));
-
-      // use this to \"suppress\" the default xsd and xsd-instance namespaces
-      XmlSerializerNamespaces ns = new XmlSerializerNamespaces();
-      ns.Add(\"\", \"\");
-
-      s1.Serialize(new XTWFND(System.Console.Out), object, ns);
-      System.Console.WriteLine(\"\\n\");
-}
-
-  $0
-  /// XmlTextWriterFormattedNoDeclaration
-  /// helper class : eliminates the XML Documentation at the
-  /// start of a XML doc.
-  /// XTWFND = XmlTextWriterFormattedNoDeclaration
-  /// usage:       s1.Serialize(new XTWFND(System.Console.Out), thing, ns);
-
-  public class XTWFND : System.Xml.XmlTextWriter
-  {
-    public XTWFND(System.IO.StringWriter w) : base(w) { Formatting=System.Xml.Formatting.Indented;  }
-    public XTWFND(System.IO.TextWriter w) : base(w) { Formatting = System.Xml.Formatting.Indented; }
-    public XTWFND(System.IO.Stream s) : base(s, null) { Formatting = System.Xml.Formatting.Indented; }
-    public XTWFND(string filename) : base(filename, null) { Formatting = System.Xml.Formatting.Indented; }
-    public override void WriteStartDocument() { }
-  }
-
-" "xmlserializer { ... }" nil)
-  ("wl" "System.Console.WriteLine(${0://thing to do});
-" "WriteLine( ... );" nil)
-  ("while" "while (${1:condition})
-{
-    ${0://thing to do}
-}" "while (...) { ... }" nil)
-  ("using" "using (${1:type} ${2:var} = new ${1:type}(${4:ctor args}))
-{
-    ${5:// body...}
-}" "using ... { ... }" nil)
-  ("try" "try
-{
-  $0
-}
-catch (System.Exception exc1)
-{
-  throw new Exception(\"uncaught exception\", exc1);
-}" "try { ... } catch { ... }" nil)
-  ("sum" "/// <summary>
-///  ${1:description}
-/// </summary>
-///
-/// <remarks>
-///  ${2:comments}
-/// </remarks>
-" "/// <summary>..." nil)
-  ("sing" "#region Singleton ${1:className}
-public sealed class $1
-{
-    private readonly static $1 _instance = new $1();
-    public static $1 Instance  { get { return _instance; } }
-    static $1() { /* required for lazy init */ }
-    private $1()
-    {
-        // implementation here
-    }
-}
-
-#endregion
-" "public sealed class Singleton {...}" nil)
-  ("setting" " #region Property${1:PropName}
-
-    private string default$1 = ${2:defaultValue};
-    private string _$1;
-    public string $1
-    {
-        get
-        {
-                if (_$1 == null)
-                {
-                    _$1 = System.Configuration.ConfigurationManager.AppSettings[\"$1\"];
-
-                    if (string.IsNullOrEmpty(_$1))
-                    {
-                        _$1 = default$1;
-                    }
-                }
-                return this._$1;
-            }
-        set
-        {
-            string new$1 = value;
-            // optional validation:
-            //Validation.EnforceXxxx(new$1, \"$1\");
-            _$1 = new$1;
-        }
-    }
-
-#endregion
-" "config setting" nil)
-  ("prop" "private ${1:Type} _${2:Name};
-public ${1:Type} ${2:Name}
-{
-  get
-  {
-    ${3://get impl}
-  }
-
-  set
-  {
-    ${4://get impl}
-  }
-
-}" "property ... { ... }" nil)
-  ("pa" "        for (int i=0; i < args.Length; i++)
-        {
-            switch (args[i])
-            {
-            case \"-?\":
-            case \"-help\":
-                throw new ArgumentException(args[i]);
-
-            default: // positional args
-                if ($2 != 0)
-                    // we have all the args we need
-                    throw new ArgumentException(args[i]);
-
-                if ($1 == null)
-                    $1 = args[i];
-
-                else
-                    $2 = System.Int32.Parse(args[i]);
-
-                break;
-            }
-        }
-
-        // check values
-        if ($1 == null)
-            throw new ArgumentException();
-
-        if ($2 == 0)
-            throw new ArgumentException();
-
-
-" "switch(args[0]) {...}" nil)
-  ("openread" "        using(Stream src = File.OpenRead($1))
-        {
-          using(Stream dest= File.Create($2))
-          {
-            if (compress)
-              Compress(src, dest);
-            else
-              Decompress(src, dest);
-          }
-        }
-" "File.OpenRead(...)" nil)
-  ("ofd" "var dlg = new System.Windows.Forms.OpenFileDialog();
-dlg.Filter = \"${1:filter string}\"; // ex: \"C# (*.cs)|*.cs|Text (*.txt)|*.txt\";
-if (dlg.ShowDialog() == DialogResult.OK)
-{
-    string fileName = dlg.FileName;
-    $0
-}
-" "new OpenFileDialog; if (DialogResult.OK) { ... }" nil)
-  ("ife" "if (${1:predicate})
-{
-  ${2:// then clause}
-}
-else
-{
-  ${3:// else clause}
-}" "if (...) { ... } else { ... }" nil)
-  ("fore" "foreach (${1:type} ${2:var} in ${3:IEnumerable})
-{
-    ${4:// body...}
-}" "foreach ... { ... }" nil)
-  ("for" "for (int ${1:index}=0; $1 < ${2:Limit}; $1++)
-{
-    ${3:// body...}
-}" "for (...) { ... }" nil)
-  ("fbd" "using (FolderBrowserDialog dialog = new FolderBrowserDialog())
-{
-    dialog.Description = \"Open a folder which contains the xml output\";
-    dialog.ShowNewFolderButton = false;
-    dialog.RootFolder = Environment.SpecialFolder.MyComputer;
-    if(dialog.ShowDialog() == DialogResult.OK)
-    {
-        string folder = dialog.SelectedPath;
-        foreach (string fileName in Directory.GetFiles(folder, \"*.xml\", SearchOption.TopDirectoryOnly))
-        {
-            SQLGenerator.GenerateSQLTransactions(Path.GetFullPath(fileName));
-        }
-    }
-}
-
-" "new FolderBrowserDialog; if (DialogResult.OK) { ... }" nil)
-  ("doc" "/// <summary>
-/// ${1:summary}
-/// </summary>
-///
-/// <remarks>
-/// ${2:remarks}
-/// </remarks>
-$0" "XML Documentation" nil)
-  ("conv" "  List<String> Values = new List<String>() { \"7\", \"13\", \"41\", \"3\" };
-
-  // ConvertAll maps the given delegate across all the List elements
-  var foo = Values.ConvertAll((s) => { return System.Convert.ToInt32(s); }) ;
-
-  System.Console.WriteLine(\"typeof(foo) = {0}\", foo.GetType().ToString());
-
-  Array.ForEach(foo.ToArray(),Console.WriteLine);
-" "ConvertAll((s) => { ... });" nil)
-  ("cla" "public class ${1:Classname}
-{
-  // default ctor
-  public ${1:Classname}()
-  {
-  }
-
-  ${2:// methods here}
-}" "class ... { ... }" nil)
-  ("ca" "  List<String> Values = new List<String>() { \"7\", \"13\", \"41\", \"3\" };
-
-  // ConvertAll maps the given delegate across all the List elements
-  var foo = Values.ConvertAll((s) => { return System.Convert.ToInt32(s); }) ;
-
-  System.Console.WriteLine(\"typeof(foo) = {0}\", foo.GetType().ToString());
-
-  Array.ForEach(foo.ToArray(),Console.WriteLine);
-" "ConvertAll((s) => { ... });" nil)
-  ("ass" "
-
-[assembly: AssemblyTitle(\"$1\")]
-[assembly: AssemblyCompany(\"${2:YourCoName}\")]
-[assembly: AssemblyProduct(\"${3}\")]
-[assembly: AssemblyCopyright(\"Copyright © ${4:Someone} 2011\")]
-[assembly: AssemblyTrademark(\"\")]
-[assembly: AssemblyCulture(\"\")]
-[assembly: AssemblyConfiguration(\"\")]
-[assembly: AssemblyDescription(\"${5}\")]
-[assembly: AssemblyVersion(\"${6:1.0.1.0}\")]
-[assembly: AssemblyFileVersion(\"${7:1.0.1.0}\")]
-
-" "assembly info" nil)
-  )))
-
-            (setq csharp--yasnippet-has-been-fixed t)
-
-            (add-to-list 'yas/known-modes 'csharp-mode)
-
-            ;; It's possible that Csharp-mode is not on the yasnippet menu
-            ;; Install it here.
-            (when yas/use-menu
-              (define-key
-                yas/menu-keymap
-                (vector 'csharp-mode)
-                `(menu-item "C#" ,keymap)))
-
-            ;; Insert the snippets from above into the table if they
-            ;; are not already defined.
-            (mapcar
-             '(lambda (item)
-                (let* ((full-key (car item))
-                       (existing-snip
-                        (yas/snippet-table-fetch snippet-table full-key)))
-                  (if (not existing-snip)
-                      (let* ((key (file-name-sans-extension full-key))
-                             (name (caddr item))
-                             (condition (nth 3 item))
-                             (template (yas/make-template (cadr item)
-                                                          (or name key)
-                                                          condition)))
-                        (yas/snippet-table-store snippet-table
-                                                 full-key
-                                                 key
-                                                 template)
-                        (when yas/use-menu
-                          (define-key keymap (vector (make-symbol full-key))
-                            `(menu-item ,(yas/template-name template)
-                                        ,(yas/make-menu-binding (yas/template-content template))
-                                        :keys ,(concat key yas/trigger-symbol))))))))
-             builtin-snips)))))
-
-
-
-
-(message  (concat "Done loading " load-file-name))
-
-
-(provide 'csharp-mode)
-
-;;; csharp-mode.el ends here
+#FILE text/plain
+Ozs7IGNzaGFycC1tb2RlLmVsIC0tLSBDIyBtb2RlIGRlcml2ZWQgbW9kZQoKOzsgQXV0aG9yICAg
+ICA6IER5bGFuIFIuIEUuIE1vb25maXJlIChvcmlnaW5hbCkKOzsgTWFpbnRhaW5lciA6IERpbm8g
+Q2hpZXNhIDxkcGNoaWVzYUBob3RtYWlsLmNvbT4KOzsgQ3JlYXRlZCAgICA6IEZlYnVyYXJ5IDIw
+MDUKOzsgTW9kaWZpZWQgICA6IE1heSAyMDExCjs7IFZlcnNpb24gICAgOiAwLjguNgo7OyBLZXl3
+b3JkcyAgIDogYyMgbGFuZ3VhZ2VzIG9vcCBtb2RlCjs7IFgtVVJMICAgICAgOiBodHRwOi8vY29k
+ZS5nb29nbGUuY29tL3AvY3NoYXJwbW9kZS8KOzsgTGFzdC1zYXZlZCA6IDwyMDExLU1heS0yMSAy
+MDoyODozMD4KCjs7Cjs7IFRoaXMgcHJvZ3JhbSBpcyBmcmVlIHNvZnR3YXJlOyB5b3UgY2FuIHJl
+ZGlzdHJpYnV0ZSBpdCBhbmQvb3IgbW9kaWZ5Cjs7IGl0IHVuZGVyIHRoZSB0ZXJtcyBvZiB0aGUg
+R05VIEdlbmVyYWwgUHVibGljIExpY2Vuc2UgYXMgcHVibGlzaGVkIGJ5Cjs7IHRoZSBGcmVlIFNv
+ZnR3YXJlIEZvdW5kYXRpb247IGVpdGhlciB2ZXJzaW9uIDIgb2YgdGhlIExpY2Vuc2UsIG9yCjs7
+IChhdCB5b3VyIG9wdGlvbikgYW55IGxhdGVyIHZlcnNpb24uCjs7Cjs7IFRoaXMgcHJvZ3JhbSBp
+cyBkaXN0cmlidXRlZCBpbiB0aGUgaG9wZSB0aGF0IGl0IHdpbGwgYmUgdXNlZnVsLAo7OyBidXQg
+V0lUSE9VVCBBTlkgV0FSUkFOVFk7IHdpdGhvdXQgZXZlbiB0aGUgaW1wbGllZCB3YXJyYW50eSBv
+Zgo7OyBNRVJDSEFOVEFCSUxJVFkgb3IgRklUTkVTUyBGT1IgQSBQQVJUSUNVTEFSIFBVUlBPU0Uu
+ICBTZWUgdGhlCjs7IEdOVSBHZW5lcmFsIFB1YmxpYyBMaWNlbnNlIGZvciBtb3JlIGRldGFpbHMu
+Cjs7Cjs7IFlvdSBzaG91bGQgaGF2ZSByZWNlaXZlZCBhIGNvcHkgb2YgdGhlIEdOVSBHZW5lcmFs
+IFB1YmxpYyBMaWNlbnNlCjs7IGFsb25nIHdpdGggdGhpcyBwcm9ncmFtOyBzZWUgdGhlIGZpbGUg
+Q09QWUlORy4gIElmIG5vdCwgd3JpdGUgdG8KOzsgdGhlIEZyZWUgU29mdHdhcmUgRm91bmRhdGlv
+biwgSW5jLiwgNTkgVGVtcGxlIFBsYWNlIC0gU3VpdGUgMzMwLAo7OyBCb3N0b24sIE1BIDAyMTEx
+LTEzMDcsIFVTQS4KCjs7OyBDb21tZW50YXJ5Ogo7Owo7OyAgICBUaGlzIGlzIGEgbWFqb3IgbW9k
+ZSBmb3IgZWRpdGluZyBDIyBjb2RlLiBJdCBwZXJmb3JtcyBhdXRvbWF0aWMKOzsgICAgaW5kZW50
+YXRpb24gb2YgQyMgc3ludGF4OyBmb250IGxvY2tpbmc7IGFuZCBpbnRlZ3JhdGlvbiB3aXRoIGNv
+bXBpbGUuZWw7Cjs7ICAgIGZseW1ha2UuZWw7IHlhc25pcHBldC5lbDsgYW5kIGltZW51LmVsLgo7
+Owo7OyAgICBjc2hhcnAtbW9kZSByZXF1aXJlcyBDQyBNb2RlIDUuMzAgb3IgbGF0ZXIuICBJdCB3
+b3JrcyB3aXRoCjs7ICAgIGNjLW1vZGUgNS4zMS4zLCB3aGljaCBpcyBjdXJyZW50IGF0IHRoaXMg
+dGltZS4KOzsKOzsgRmVhdHVyZXM6Cjs7Cjs7ICAgLSBmb250LWxvY2sgYW5kIGluZGVudCBvZiBD
+IyBzeW50YXggaW5jbHVkaW5nOgo7OyAgICAgICBhbGwgYyMga2V5d29yZHMgYW5kIG1ham9yIHN5
+bnRheAo7OyAgICAgICBhdHRyaWJ1dGVzIHRoYXQgZGVjb3JhdGUgbWV0aG9kcywgY2xhc3Nlcywg
+ZmllbGRzLCBwcm9wZXJ0aWVzCjs7ICAgICAgIGVudW0gdHlwZXMKOzsgICAgICAgI2lmLyNlbmRp
+ZiAgI3JlZ2lvbi8jZW5kcmVnaW9uCjs7ICAgICAgIGluc3RhbmNlIGluaXRpYWxpemVycwo7OyAg
+ICAgICBhbm9ueW1vdXMgZnVuY3Rpb25zIGFuZCBtZXRob2RzCjs7ICAgICAgIHZlcmJhdGltIGxp
+dGVyYWwgc3RyaW5ncyAodGhvc2UgdGhhdCBiZWdpbiB3aXRoIEApCjs7ICAgICAgIGdlbmVyaWNz
+Cjs7Cjs7ICAgLSBhdXRvbWFnaWMgY29kZS1kb2MgZ2VuZXJhdGlvbiB3aGVuIHlvdSB0eXBlIHRo
+cmVlIHNsYXNoZXMuCjs7Cjs7ICAgLSBpbnRlbGxpZ2VudCBpbnNlcnRpb24gb2YgbWF0Y2hlZCBw
+YWlycyBvZiBjdXJseSBicmFjZXMuCjs7Cjs7ICAgLSBjb21waWxlIHR3ZWFrcy4gSW5mZXJzIHRo
+ZSBjb21waWxlIGNvbW1hbmQgZnJvbSBzcGVjaWFsIGNvbW1lbnRzCjs7ICAgICBpbiB0aGUgZmls
+ZSBoZWFkZXIuICBBbHNvLCBzZXRzIHRoZSByZWdleCBmb3IgbmV4dC1lcnJvciwgc28gdGhhdAo7
+OyAgICAgY29tcGlsZS5lbCBjYW4gaGFuZGxlIGNzYy5leGUgb3V0cHV0Lgo7Owo7OyAgIC0gZmx5
+bWFrZSBpbnRlZ3JhdGlvbgo7OyAgICAgICAtIHNlbGVjdCBmbHltYWtlIGNvbW1hbmQgZnJvbSBj
+b2RlIGNvbW1lbnRzCjs7ICAgICAgIC0gaW5mZXIgZmx5bWFrZSBjb21tYW5kIG90aGVyd2lzZSAo
+cHJlc2VuY2Ugb2YgbWFrZWZpbGUsIGV0YykKOzsgICAgICAgLSBUdXJuIG9mZiBxdWVyeS1vbi1l
+eGl0LWZsYWcgZm9yIHRoZSBmbHltYWtlIHByb2Nlc3MuCjs7ICAgICAgIC0gZGVmaW5lIGFkdmlj
+ZSB0byBmbHltYWtlLWdvdG8tbGluZSAsIHRvIGFsbG93IGl0IHRvIGdvdG8gdGhlCjs7ICAgICAg
+ICAgYXBwcm9wcmlhdGUgY29sdW1uIGZvciB0aGUgZXJyb3Igb24gYSBnaXZlbiBsaW5lLiBUaGlz
+IHdvcmtzCjs7ICAgICAgICAgd2l0aCBgZmx5bWFrZS1nb3RvLW5leHQtZXJyb3InIGV0Yy4KOzsK
+OzsgICAtIHlhc25pcHBldCBpbnRlZ3JhdGlvbgo7OyAgICAgICAtIHByZWxvYWRlZCBzbmlwcGV0
+cwo7Owo7OyAgIC0gaW1lbnUgaW50ZWdyYXRpb24gLSBnZW5lcmF0ZXMgYW4gaW5kZXggb2YgbmFt
+ZXNwYWNlcywgY2xhc3NlcywKOzsgICAgIGludGVyZmFjZXMsIG1ldGhvZHMsIGFuZCBwcm9wZXJ0
+aWVzIGZvciBlYXN5IG5hdmlnYXRpb24gd2l0aGluCjs7ICAgICB0aGUgYnVmZmVyLgo7OwoKCjs7
+IEluc3RhbGxhdGlvbiBpbnN0cnVjdGlvbnMKOzsgLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0KOzsKOzsgUHV0IGNzaGFycC1tb2RlLmVsIHNvbWV3aGVyZSBpbiB5b3VyIGxvYWQgcGF0
+aCwgb3B0aW9uYWxseSBieXRlLWNvbXBpbGUKOzsgaXQsIGFuZCBhZGQgdGhlIGZvbGxvd2luZyB0
+byB5b3VyIC5lbWFjcyBmaWxlOgo7Owo7OyAgIChhdXRvbG9hZCAnY3NoYXJwLW1vZGUgImNzaGFy
+cC1tb2RlIiAiTWFqb3IgbW9kZSBmb3IgZWRpdGluZyBDIyBjb2RlLiIgdCkKOzsgICAoc2V0cSBh
+dXRvLW1vZGUtYWxpc3QKOzsgICAgICAoYXBwZW5kICcoKCJcXC5jcyQiIC4gY3NoYXJwLW1vZGUp
+KSBhdXRvLW1vZGUtYWxpc3QpKQo7Owo7Owo7OyBPcHRpb25hbGx5LCBkZWZpbmUgYW5kIHJlZ2lz
+dGVyIGEgbW9kZS1ob29rIGZ1bmN0aW9uLiBUbyBkbyBzbywgdXNlCjs7IHNvbWV0aGluZyBsaWtl
+IHRoaXMgaW4geW91ciAuZW1hY3MgZmlsZToKOzsKOzsgICAoZGVmdW4gbXktY3NoYXJwLW1vZGUt
+Zm4gKCkKOzsgICAgICAiZnVuY3Rpb24gdGhhdCBydW5zIHdoZW4gY3NoYXJwLW1vZGUgaXMgaW5p
+dGlhbGl6ZWQgZm9yIGEgYnVmZmVyLiIKOzsgICAgICAodHVybi1vbi1hdXRvLXJldmVydC1tb2Rl
+KQo7OyAgICAgIChzZXRxIGluZGVudC10YWJzLW1vZGUgbmlsKQo7OyAgICAgIChyZXF1aXJlICdm
+bHltYWtlKQo7OyAgICAgIChmbHltYWtlLW1vZGUgMSkKOzsgICAgICAocmVxdWlyZSAneWFzbmlw
+cGV0KQo7OyAgICAgICh5YXMvbWlub3ItbW9kZS1vbikKOzsgICAgICAocmVxdWlyZSAncmZyaW5n
+ZSkKOzsgICAgICAuLi5pbnNlcnQgbW9yZSBjb2RlIGhlcmUuLi4KOzsgICAgICAuLi5pbmNsdWRp
+bmcgYW55IGN1c3RvbSBrZXkgYmluZGluZ3MgeW91IG1pZ2h0IHdhbnQgLi4uCjs7ICAgKQo7OyAg
+IChhZGQtaG9vayAgJ2NzaGFycC1tb2RlLWhvb2sgJ215LWNzaGFycC1tb2RlLWZuIHQpCjs7Cjs7
+Cjs7ICBHZW5lcmFsCjs7ICAtLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tCjs7Cjs7ICBNb3N0
+bHkgQyMgbW9kZSB3aWxsICJqdXN0IHdvcmsuIiAgVXNlIGBkZXNjcmliZS1tb2RlJyB0byBzZWUg
+dGhlCjs7ICBkZWZhdWx0IGtleWJpbmRpbmdzIGFuZCB0aGUgaGlnaGxpZ2h0cyBvZiB0aGUgbW9k
+ZS4KOzsKOzsKOzsgIEZseW1ha2UgSW50ZWdyYXRpb24KOzsgIC0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0KOzsKOzsgIFlvdSBjYW4gdXNlIGZseW1ha2Ugd2l0aCBjc2hhcnAgbW9kZSB0byBh
+dXRvbWF0aWNhbGx5IGNoZWNrIHRoZQo7OyAgc3ludGF4IG9mIHlvdXIgY3NoYXJwIGNvZGUsIGFu
+ZCBoaWdobGlnaHQgZXJyb3JzLiAgVG8gZG8gc28sIGFkZCBhCjs7ICBjb21tZW50IGxpbmUgbGlr
+ZSB0aGlzIHRvIGVhY2ggLmNzIGZpbGUgdGhhdCB5b3UgdXNlIGZseW1ha2Ugd2l0aDoKOzsKOzsg
+ICAvLyAgZmx5bWFrZTogYzpcLm5ldDMuNVxjc2MuZXhlIC90Om1vZHVsZSAvbm9sb2dvIC9SOkZv
+by5kbGwgQEBGSUxFQEAKOzsKOzsgIFRoYXQgbGluZXMgc3BlY2lmaWVzIGEgY29tbWFuZCAic3R1
+YiIuICBGbHltYWtlIGFwcGVuZHMgdGhlIG5hbWUgb2YKOzsgIHRoZSBmaWxlIHRvIGNvbXBpbGUs
+IGFuZCB0aGVuIHJ1bnMgdGhlIGNvbW1hbmQgdG8gY2hlY2sKOzsgIHN5bnRheC4gRmx5bWFrZSBh
+c3N1bWVzIHRoYXQgc3ludGF4IGVycm9ycyB3aWxsIGJlIG5vdGVkIGluIHRoZQo7OyAgb3V0cHV0
+IG9mIHRoZSBjb21tYW5kIGluIGEgZm9ybSB0aGF0IGZpdHMgb25lIG9mIHRoZSByZWdleHMgaW4g
+dGhlCjs7ICBgY29tcGlsYXRpb24tZXJyb3ItcmVnZXhwLWFsaXN0LWFsaXN0Jy4gQ2hlY2sgdGhl
+IGZseW1ha2UgbW9kdWxlIGZvcgo7OyAgbW9yZSBpbmZvcm1hdGlvbiBvbiB0aGF0Lgo7Owo7OyAg
+U29tZSBydWxlcyBmb3IgdGhlIGNvbW1hbmQ6Cjs7Cjs7ICAgIDEuIGl0IG11c3QgYXBwZWFyIGFs
+bCBvbiBhIHNpbmdsZSBsaW5lLgo7Owo7OyAgICAyLiBjc2hhcnAtbW9kZSBnZW5lcmFsbHkgbG9v
+a3MgZm9yIHRoZSBtYXJrZXIgbGluZSBpbiB0aGUgZmlyc3QgTgo7OyAgICAgICBsaW5lcyBvZiB0
+aGUgZmlsZSwgd2hlcmUgTiBpcyBzZXQgaW4KOzsgICAgICAgYGNzaGFycC1jbWQtbGluZS1saW1p
+dCcuICBTZWUgdGhlIGRvY3VtZW50YXRpb24gb24gdGhhdAo7OyAgICAgICB2YXJpYWJsZSBmb3Ig
+bW9yZSBpbmZvcm1hdGlvbi4KOzsKOzsgICAgMy4gdGhlIGNvbW1hbmQgU0hPVUxEIHVzZSBAQEZJ
+TEVAQCBpbiBwbGFjZSBvZiB0aGUgbmFtZSBvZiB0aGUKOzsgICAgICAgc291cmNlIGZpbGUgdG8g
+YmUgY29tcGlsZWQsIG5vcm1hbGx5IHRoZSBmaWxlIGJlaW5nIGVkaXRlZC4KOzsgICAgICAgVGhp
+cyBpcyBiZWNhdXNlIG5vcm1hbGx5IGZseW1ha2Ugc2F2ZXMgYSBjb3B5IG9mIHRoZSBidWZmZXIK
+OzsgICAgICAgaW50byBhIHRlbXBvcmFyeSBmaWxlIHdpdGggYSB1bmlxdWUgbmFtZSwgYW5kIHRo
+ZW4gY29tcGlsZXMKOzsgICAgICAgdGhhdCB0ZW1wb3JhcnkgZmlsZS4gVGhlIHRva2VuIEBARklM
+RUBAIGlzIHJlcGxhY2VkIGJ5Cjs7ICAgICAgIGNzaGFycC1tb2RlIHdpdGggdGhlIG5hbWUgb2Yg
+dGhlIHRlbXBvcmFyeSBmaWxlIGNyZWF0ZWQgYnkKOzsgICAgICAgZmx5bWFrZSwgYmVmb3JlIGlu
+dm9raW5nIHRoZSBjb21tYW5kLgo7Owo7OyAgICA0LiBUaGUgY29tbWFuZCBzaG91bGQgaW5jbHVk
+ZSAvUiBvcHRpb25zIHNwZWNpZnlpbmcgZXh0ZXJuYWwKOzsgICAgICAgbGlicmFyaWVzIHRoYXQg
+dGhlIGNvZGUgZGVwZW5kcyBvbi4KOzsKOzsgIElmIHlvdSBoYXZlIG5vIGV4dGVybmFsIGRlcGVu
+ZGVuY2llcywgdGhlbiB5b3UgbmVlZCBub3Qgc3BlY2lmeSBhbnkKOzsgIGZseW1ha2UgY29tbWFu
+ZCBhdCBhbGwuIGNzaGFycC1tb2RlIHdpbGwgaW1wbGljaXRseSBhY3QgYXMgaWYgeW91IGhhZAo7
+OyAgc3BlY2lmaWVkIHRoZSBjb21tYW5kOgo7Owo7OyAgICAgIC8vIGZseW1ha2U6IGM6XC5uZXQz
+LjVcY3NjLmV4ZSAvdDptb2R1bGUgL25vbG9nbyBAQEZJTEVAQAo7Owo7Owo7OyAgSWYgeW91IHVz
+ZSBjc2MuZXhlIGFzIHRoZSBzeW50YXggY2hlY2sgdG9vbCAoYXMgYWxtb3N0IGV2ZXJ5b25lCjs7
+ICB3aWxsKSwgdGhlIC90Om1vZHVsZSBpcyBpbXBvcnRhbnQuIGNzaGFycC1tb2RlIGFzc3VtZXMg
+dGhhdCB0aGUKOzsgIHN5bnRheC1jaGVjayBjb21waWxlIGNvbW1hbmQgd2lsbCBwcm9kdWNlIGEg
+ZmlsZSBuYW1lZAo7OyAgTkFNRS5uZXRtb2R1bGUsIHdoaWNoIGlzIHRoZSBkZWZhdWx0IHdoZW4g
+dXNpbmcgL3Q6bW9kdWxlLiAoUmVtZW1iZXIKOzsgIHRoYW4gTkFNRSBpcyBkeW5hbWljYWxseSBn
+ZW5lcmF0ZWQpLiAgY3NoYXJwLW1vZGUgd2lsbCByZW1vdmUgdGhlCjs7ICBnZW5lcmF0ZWQgbmV0
+bW9kdWxlIGZpbGUgYWZ0ZXIgdGhlIHN5bnRheCBjaGVjayBpcyBjb21wbGV0ZS4gSWYgeW91Cjs7
+ICBkb24ndCBzcGVjaWZ5IC90Om1vZHVsZSwgdGhlbiBjc2hhcnAtbW9kZSB3b24ndCBrbm93IHdo
+YXQgZmlsZSB0bwo7OyAgZGVsZXRlLgo7Owo7OyAgY3NoYXJwLW1vZGUgYWxzbyBmaWRkbGVzIHdp
+dGggc29tZSBvdGhlciBmbHltYWtlIHRoaW5ncy4gIEluCjs7ICBwYXJ0aWN1bGFyIGl0OiBhZGRz
+IC5jcyB0byB0aGUgZmx5bWFrZSAiYWxsb3dlZCBmaWxlbmFtZSBtYXNrcyI7Cjs7ICBhZGRzIHBh
+cnNpbmcgZm9yIGNzYyBlcnJvciBtZXNzYWdlczsgYW5kIGFkZHMgYWR2aWNlIHRvIHRoZSBlcnJv
+cgo7OyAgcGFyc2luZyBsb2dpYy4gVGhpcyBhbGwgc2hvdWxkIGJlIHByZXR0eSBiZW5pZ24gZm9y
+IGFsbCBvdGhlcgo7OyAgZmx5bWFrZSBidWZmZXJzLiAgQnV0IGl0IG1pZ2h0IG5vdCBiZS4KOzsK
+OzsgIFlvdSBjYW4gZXhwbGljaXRseSB0dXJuIHRoZSBmbHltYWtlIGludGVncmF0aW9uIGZvciBD
+IyBvZmYgYnkKOzsgIHNldHRpbmcgYGNzaGFycC13YW50LWZseW1ha2UtZml4dXAnIHRvIG5pbC4K
+OzsKOzsKOzsgIENvbXBpbGUgSW50ZWdyYXRpb24KOzsgIC0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0KOzsKOzsgIGNzaGFycC1tb2RlIGJpbmRzIHRoZSBmdW5jdGlvbiBgY3NoYXJwLWludm9r
+ZS1jb21waWxlLWludGVyYWN0aXZlbHknCjs7ICB0byAiXEMteFxDLWUiIC4gIFRoaXMgZnVuY3Rp
+b24gYXR0ZW1wdHMgdG8gaW50ZWxsZ2VudGx5IGd1ZXNzIHRoZQo7OyAgZm9ybWF0IG9mIHRoZSBj
+b21waWxlIGNvbW1hbmQgdG8gdXNlIGZvciBhIGJ1ZmZlci4gIEl0IGxvb2tzIGluIHRoZQo7OyAg
+Y29tbWVudHMgYXQgdGhlIGhlYWQgb2YgdGhlIGJ1ZmZlciBmb3IgYSBsaW5lIHRoYXQgYmVnaW5z
+IHdpdGgKOzsgIGNvbXBpbGU6IC4gIElmIGZvdW5kLCBjc2hhcnAtbW9kZSBzdWdnZXN0cyB0aGUg
+dGV4dCB0aGF0IGZvbGxvd3MgYXMKOzsgIHRoZSBjb21waWxhdGlvbiBjb21tYW5kIHdoZW4gcnVu
+bmluZyBgY29tcGlsZScgLiAgSWYgc3VjaCBhIGxpbmUgaXMKOzsgIG5vdCBmb3VuZCwgY3NoYXJw
+LW1vZGUgZmFsbHMgYmFjayB0byBhIG1zYnVpbGQgb3Igbm1ha2UgY29tbWFuZC4KOzsgIFNlZSB0
+aGUgZG9jdW1lbnRhdGlvbiBvbiBgY3NoYXJwLWNtZC1saW5lLWxpbWl0JyBmb3IgZnVydGhlcgo7
+OyAgaW5mb3JtYXRpb24uCjs7Cjs7ICBBbHNvLCBjc2hhcnAtbW9kZSBpbnN0YWxscyBhbiBlcnJv
+ciByZWdleHAgZm9yIGNzYy5leGUgaW50bwo7OyAgYGNvbXBpbGF0aW9uLWVycm9yLXJlZ2V4cC1h
+bGlzdC1hbGlzdCcsIHdoaWNoIGFsbG93cyBgbmV4dC1lcnJvcicKOzsgIGFuZCBgcHJldmlvdXMt
+ZXJyb3InIChkZWZpbmVkIGluIGNvbXBpbGUuZWwpIHRvIG5hdmlnYXRlIHRvIHRoZSBuZXh0Cjs7
+ICBhbmQgcHJldmlvdXMgY29tcGlsZSBlcnJvcnMgaW4gdGhlIGNzIGJ1ZmZlciwgYWZ0ZXIgeW91
+J3ZlIHJ1biBgY29tcGlsZScuCjs7Cjs7Cjs7ICBZQVNuaXBwZXQgaW50ZWdyYXRpb24KOzsgIC0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tCjs7Cjs7ICBjc2hhcnAtbW9kZSBkZWZpbmVzIHNv
+bWUgYnVpbHQtaW4gc25pcHBldHMgZm9yCjs7ICBjb252ZW5pZW5jZS4gIEZvciBleGFtcGxlLCBp
+ZiBzdGF0ZW1lbnRzLCBmb3IsIGZvcmVhY2gsIGFuZAo7OyAgc28gb24uICBZb3UgY2FuIHNlZSB0
+aGVtIG9uIHRoZSBZQVNuaXBwZXQgbWVudSB0aGF0IGlzIGRpc3BsYXllZAo7OyAgd2hlbiBhIGNz
+aGFycC1tb2RlIGJ1ZmZlciBpcyBvcGVuZWQuICBjc2hhcnAtbW9kZSBkZWZpbmVzIHRoaXMKOzsg
+IHNuaXBwZXRzIGhhcHBlbnMgb25seSBpZiB5YS1zbmlwcGV0IGlzIGF2YWlsYWJsZS4gKEl0IGlz
+IGRvbmUgaW4gYW4KOzsgIGBldmFsLWFmdGVyLWxvYWQnIGNsYXVzZS4pICBUaGUgYnVpbHRpbiBz
+bmlwcGV0cyB3aWxsIG5vdCBvdmVyd3JpdGUKOzsgIHNuaXBwZXRzIHRoYXQgdXNlIHRoZSBzYW1l
+IG5hbWUsIGlmIHRoZXkgYXJlIGRlZmluZWQgaW4gdGhlIG5vcm1hbAo7OyAgd2F5IChpbiBhIGNv
+bXBpbGVkIGJ1bmRsZSkgd2l0aCB5YS1zbmlwcGV0Lgo7Owo7OyAgWW91IGNhbiBleHBsaWNpdGx5
+IHR1cm4gb2ZmIHlhLXNuaXBwZXQgaW50ZWdyYXRpb24uIFNlZSB0aGUgdmFyLAo7OyAgYGNzaGFy
+cC13YW50LXlhc25pcHBldC1maXh1cCcuCjs7Cjs7Cjs7ICBpbWVudSBpbnRlZ3JhdGlvbgo7OyAg
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0KOzsKOzsgIFRoaXMgc2hvdWxkIGp1c3Qgd29y
+ay4gRm9yIHRob3NlIHdobyBkb24ndCBrbm93IHdoYXQgaW1lbnUgaXMsIGl0Cjs7ICBhbGxvd3Mg
+bmF2aWdhdGlvbiB0byBkaWZmZXJlbnQgcG9pbnRzIHdpdGhpbiB0aGUgZmlsZSBmcm9tIGFuCjs7
+ICAiSW5kZXgiIG1lbnUsIGluIHRoZSB3aW5kb3cncyBtZW51YmFyLiAgY3NoYXJwLW1vZGUgY29t
+cHV0ZXMgdGhlCjs7ICBtZW51IGNvbnRhaW5pbmcgdGhlIG5hbWVzcGFjZXMsIGNsYXNzZXMsIG1l
+dGhvZHMsIGFuZCBzbyBvbiwgaW4gdGhlCjs7ICBidWZmZXIuICBUaGlzIGhhcHBlbnMgYXQgdGhl
+IHRpbWUgdGhlIGZpbGUgaXMgbG9hZGVkOyBmb3IgbGFyZ2UKOzsgIGZpbGVzIGl0IHRha2VzIGEg
+Yml0IG9mIHRpbWUgdG8gY29tcGxldGUgdGhlIHNjYW4uICBJZiB5b3UgZG9uJ3QKOzsgIHdhbnQg
+dGhpcyBjYXBhYmlsaXR5LCBzZXQgYGNzaGFycC13YW50LWltZW51JyB0byBuaWwuCjs7Cjs7CgoK
+Ozs7IEtub3duIEJ1Z3M6Cjs7Cjs7ICAgVGhlIGltZW51IHNjYW4gaXMgdGV4dC1iYXNlZCBhbmQg
+bmFpdmUuIEZvciBleGFtcGxlLCBpZiB5b3UKOzsgICBpbnRlcnNwZXJzZSBjb21tZW50cyBiZXR3
+ZWVuIHRoZSBuYW1lIG9mIGEgY2xhc3MvbWV0aG9kL25hbWVzcGFjZSwKOzsgICBhbmQgdGhlIGN1
+cmx5IGJyYWNlLCB0aGUgc2NhbiB3aWxsIG5vdCByZWNvZ25pemUgdGhlIHRoaW5nIGJlaW5nCjs7
+ICAgZGVjbGFyZWQuIFRoaXMgaXMgZml4YWJsZSAtIHdvdWxkIG5lZWQgdG8gZXh0cmFjdCB0aGUg
+YnVmZmVyCjs7ICAgc3Vic3RyaW5nIHRoZW4gcmVtb3ZlIGNvbW1lbnRzIGJlZm9yZSBkb2luZyB0
+aGUgcmVnZXhwIGNoZWNrcyAtIGJ1dAo7OyAgIGl0IHdvdWxkIG1ha2UgdGhlIHNjYW4gbXVjaCBz
+bG93ZXIuICBBbHNvLCB0aGUgc2NhbiBkb2Vzbid0IGRlYWwKOzsgICB3aXRoIHByZXByb2Mgc3lt
+Ym9sIGRlZmluaXRpb25zIGFuZCAjaWYvI2Vsc2UuIFRob3NlIHRoaW5ncyBhcmUKOzsgICBpbnZp
+c2libGUgdG8gdGhlIHNjYW5uZXIgY3NoYXJwLW1vZGUgdXNlcyB0byBidWlsZCB0aGUgaW1lbnUg
+bWVudS4KOzsKOzsgICBMZWFkaW5nIGlkZW50aWZpZXJzIGFyZSBubyBsb25nZXIgYmVpbmcgZm9u
+dGlmaWVkLCBmb3Igc29tZSByZWFzb24uCjs7ICAgU2VlIG1hdGNoZXJzLWJlZm9yZS4gKE5vdCBz
+dXJlIHRoaXMgaXMgc3RpbGwgYSBwcm9ibGVtIC0gMTkgbWF5Cjs7ICAgMjAxMSBEUEMpCjs7Cjs7
+ICAgTWV0aG9kIG5hbWVzIHdpdGggYSBwcmVjZWRpbmcgYXR0cmlidXRlIGFyZSBub3QgZm9udGlm
+aWVkLgo7Owo7OyAgIFRoZSBzeW1ib2wgZm9sbG93bmcgI2lmIGlzIG5vdCBmb250aWZpZWQuICBJ
+dCBzaG91bGQgYmUgdHJlYXRlZCBsaWtlCjs7ICAgZGVmaW5lIGFuZCBnZXQgZm9udC1sb2NrLXZh
+cmlhYmxlLW5hbWUtZmFjZSAuCjs7Cjs7ICAgVGhpcyBjb2RlIGRvZXNuJ3Qgc2VlbSB0byB3b3Jr
+IHdoZW4geW91IGNvbXBpbGUgaXQsIHRoZW4KOzsgICBsb2FkL3JlcXVpcmUgaW4gdGhlIGVtYWNz
+IGZpbGUuIFlvdSB3aWxsIGdldCBhbiBlcnJvciAoZXJyb3IKOzsgICAiYGMtbGFuZy1kZWZjb25z
+dCcgbXVzdCBiZSB1c2VkIGluIGEgZmlsZSIpIHdoaWNoIGhhcHBlbnMgYmVjYXVzZQo7OyAgIGNj
+LW1vZGUgZG9lc24ndCB0aGluayBpdCBpcyBpbiBhIGJ1ZmZlciB3aGlsZSBsb2FkaW5nIGRpcmVj
+dGx5Cjs7ICAgZnJvbSB0aGUgaW5pdC4gSG93ZXZlciwgaWYgeW91IGNhbGwgaXQgYmFzZWQgb24g
+YSBmaWxlIGV4dGVuc2lvbiwKOzsgICBpdCB3b3JrcyBwcm9wZXJseS4gSW50ZXJlc3RpbmdseSBl
+bm91Z2gsIHRoaXMgZG9lc24ndCBoYXBwZW4gaWYKOzsgICB5b3UgZG9uJ3QgYnl0ZS1jb21waWxl
+IGNjLW1vZGUuCjs7Cjs7Cjs7Cjs7ICBUb2RvOgo7Owo7OyAgIGltZW51IHNob3VsZCBzY2FuIGZv
+ciBhbmQgZmluZCBkZWxlZ2F0ZXMgYW5kIGV2ZW50cywgaW4gYWRkaXRpb24KOzsgICB0byB0aGUg
+Y2xhc3Nlcywgc3RydWN0cywgcHJvcGVydGllcyBhbmQgbWV0aG9kcyBpdCBkb2VzIGN1cnJlbnRs
+eS4KOzsKOzsgICBHZXQgY3NoYXJwLW1vZGUuZWwgYWNjZXB0ZWQgYXMgcGFydCBvZiB0aGUgZW1h
+Y3Mgc3RhbmRhcmQgZGlzdHJpYnV0aW9uLgo7OyAgIE11c3QgY29udGFjdCBtb25uaWVyIGF0IGly
+by51bW9udHJlYWwuY2EgdG8gbWFrZSB0aGlzIGhhcHBlbi4KOzsKOzsgICBBZGQgcmVmYWN0b3Jp
+bmcgY2FwYWJpbGl0aWVzPwo7OyAgICAgLSBleHRyYWN0IGFzIG1ldGhvZCAtIGV4dHJhY3QgYSBi
+bG9jayBvZiBjb2RlIGludG8gYSBtZXRob2QKOzsgICAgIC0gZXh0cmFjdCBhcyBGdW5jPD4gLSBl
+eHRyYWN0IGEgYmxvY2sgb2YgY29kZSBpbnRvIGFuIEFjdGlvbjxUPgo7Owo7OyAgIE1vcmUgY29k
+ZS1nZW4gcG93ZXI6Cjs7ICAgICAtIGludGVyZmFjZSBpbXBsZW1lbnRhdGlvbiAtIEkgdGhpbmsg
+d291bGQgcmVxdWlyZSBjc2hhcnAtc2hlbGwKOzsKOzsKOzsgIEFja25vd2xlZGdlbWVudHM6Cjs7
+Cjs7ICAgIFRoYW5rcyB0byBBbGFuIE1hY2tlbnppZSBhbmQgU3RlZmFuIE1vbm5pZXIgZm9yIGFu
+c3dlcmluZyBxdWVzdGlvbnMKOzsgICAgYW5kIG1ha2luZyBzdWdnZXN0aW9ucy4gQW5kIHRvIFRy
+ZXkgSmFja3NvbiBmb3Igc2hhcmluZyBoaXMKOzsgICAga25vd2xlZGdlIG9mIGVtYWNzIGxpc3Au
+Cjs7Cjs7Cgo7OzsgVmVyc2lvbnM6Cjs7Cjs7ICAgIDAuMS4wIC0gSW5pdGlhbCByZWxlYXNlLgo7
+OyAgICAwLjIuMCAtIEZpeGVkIHRoZSBpZGVudGlmaWNhdGlvbiBvbiB0aGUgImVudW0iIGtleXdv
+cmQuCjs7ICAgICAgICAgIC0gRml4ZWQgdGhlIGZvbnQtbG9jayBvbiB0aGUgImJhc2UiIGtleXdv
+cmQKOzsgICAgMC4zLjAgLSBBZGRlZCBhIHJlZ2V4IHRvIGZvbnRpZnkgYXR0cmlidXRlcy4gSXQg
+aXNuJ3QgdGhlCjs7ICAgICAgICAgICAgdGhlIGJlc3QgbWV0aG9kLCBidXQgaXQgaGFuZGxlcyBz
+aW5nbGUtbGlrZSBhdHRyaWJ1dGVzCjs7ICAgICAgICAgICAgd2VsbC4KOzsgICAgICAgICAgLSBH
+b3QgInN1cGVyIiBub3QgdG8gZm9udGlmeSBhcyBhIGtleXdvcmQuCjs7ICAgICAgICAgIC0gR290
+IGV4dGVuZGluZyBjbGFzc2VzIGFuZCBpbnRlcmZhY2VzIHRvIGZvbnRpZnkgYXMgc29tZXRoaW5n
+Lgo7OyAgICAwLjQuMCAtIFJlbW92ZWQgdGhlIGF0dHJpYnV0ZSBtYXRjaGluZyBiZWNhdXNlIGl0
+IGJyb2tlIG1vcmUgdGhhbgo7OyAgICAgICAgICAgIGl0IGZpeGVkLgo7OyAgICAgICAgICAtIENv
+cnJlY3RlZCBhIGJ1ZyB3aXRoIG5hbWVzcGFjZSBub3QgYmVpbmcgcHJvcGVybHkgaWRlbnRpZmll
+ZAo7OyAgICAgICAgICAgIGFuZCB0cmVhdGluZyB0aGUgY2xhc3MgbGV2ZWwgYXMgYW4gaW5uZXIg
+b2JqZWN0LCB3aGljaCBzY3Jld2VkCjs7ICAgICAgICAgICAgdXAgZm9ybWF0dGluZy4KOzsgICAg
+ICAgICAgLSBBZGRlZCAicGFydGlhbCIgdG8gdGhlIGtleXdvcmRzLgo7OyAgICAwLjUuMCAtIEZv
+dW5kIGJ1Z3Mgd2l0aCBjb21waWxlZCBjYy1tb2RlIGFuZCBsb2FkaW5nIGZyb20gaW5pdCBmaWxl
+cy4KOzsgICAgICAgICAgLSBVcGRhdGVkIHRoZSBldmFsLXdoZW4tY29tcGlsZSB0byBjb2RlIHRv
+IGxldCB0aGUgbW9kZSBiZQo7OyAgICAgICAgICAgIGNvbXBpbGVkLgo7OyAgICAwLjYuMCAtIEFk
+ZGVkIHRoZSBjLWZpbHRlci1vcHMgcGF0Y2ggZm9yIDUuMzEuMSB3aGljaCBtYWRlIHRoYXQKOzsg
+ICAgICAgICAgICBmdW5jdGlvbiBpbiBjYy1sYW5ncy5lbCB1bmF2YWlsYWJsZS4KOzsgICAgICAg
+ICAgLSBBZGRlZCBhIGNzaGFycC1saW5ldXAtcmVnaW9uIGZvciBpbmRlbnRpb24gI3JlZ2lvbiBh
+bmQKOzsgICAgICAgICAgICAjZW5kcmVnaW9uIGJsb2NrIGRpZmZlcmVudGx5Lgo7OyAgICAwLjcu
+MCAtIEFkZGVkIGF1dG9sb2FkIHNvIHVwZGF0ZS1kaXJlY3RvcnktYXV0b2xvYWRzIHdvcmtzCjs7
+ICAgICAgICAgICAgKFRoYW5rIHlvdSwgTmlrb2xhaiBTY2h1bWFjaGVyKQo7OyAgICAgICAgICAt
+IEZvbnRpZmllZCB0aGUgZW50aXJlICNyZWdpb24gYW5kICNlbmRyZWdpb24gbGluZXMuCjs7ICAg
+ICAgICAgIC0gSW5pdGlhbCB3b3JrIHRvIGdldCBnZXQsIHNldCwgYWRkLCByZW1vdmUgZm9udC1s
+b2NrZWQuCjs7ICAgIDAuNy4xIC0gQWRkZWQgb3B0aW9uIHRvIGluZGVudCAjaWYvZW5kaWYgd2l0
+aCBjb2RlCjs7ICAgICAgICAgIC0gRml4ZWQgYy1vcHQtY3BwLXByZWZpeCBkZWZuIChpdCBtdXN0
+IG5vdCBpbmNsdWRlIHRoZSBCT0wKOzsgICAgICAgICAgICBjaGFyICheKS4KOzsgICAgICAgICAg
+LSBwcm9wZXIgZm9udGlmaWNhdGlvbiBhbmQgaW5kZW50IG9mIGNsYXNzZXMgdGhhdCBpbmhlcml0
+Cjs7ICAgICAgICAgICAgKHByZXZpb3VzbHkgdGhlIGNvbG9uIHdhcyBjb25mdXNpbmcgdGhlIHBh
+cnNlcikKOzsgICAgICAgICAgLSByZWNsYXNzaWZpZWQgbmFtZXNwYWNlIGFzIGEgYmxvY2sgYmVn
+aW5uZXIKOzsgICAgICAgICAgLSByZW1vdmVkICQgYXMgYSBsZWdhbCBzeW1ib2wgY2hhciAtIG5v
+dCBsZWdhbCBpbiBDIy4KOzsgICAgICAgICAgLSBhZGRlZCBzdHJ1Y3QgdG8gYy1jbGFzcy1kZWNs
+LWt3ZHMgc28gaW5kZW50IGlzIGNvcnJlY3QKOzsgICAgICAgICAgICB3aXRoaW4gYSBzdHJ1Y3Qu
+Cjs7ICAgIDAuNy4yIC0gQWRkZWQgYXV0b21hdGljIGNvZGVkb2MgaW5zZXJ0aW9uLgo7OyAgICAw
+LjcuMyAtIEluc3RhbmNlIGluaXRpYWxpemVycyAobmV3IFR5cGUgeyAuLi4gfSApIGFuZAo7OyAg
+ICAgICAgICAgIChuZXcgVHlwZSgpIHsgLi4ufSApIGFyZSBub3cgaW5kZW50ZWQgcHJvcGVybHku
+Cjs7ICAgICAgICAgIC0gcHJvcGVyIGZvbnRpZmljYXRpb24gYW5kIGluZGVudCBvZiBlbnVtcyBh
+cyBicmFjZS1saXN0LSosCjs7ICAgICAgICAgICAgaW5jbHVkaW5nIHNwZWNpYWwgdHJlYXRtZW50
+IGZvciBlbnVtcyB0aGF0IGV4cGxpY2l0bHkKOzsgICAgICAgICAgICBpbmhlcml0IGZyb20gYW4g
+aW50IHR5cGUuIFByZXZpb3VzbHkgdGhlIGNvbG9uIHdhcwo7OyAgICAgICAgICAgIGNvbmZ1c2lu
+ZyB0aGUgcGFyc2VyLgo7OyAgICAgICAgICAtIHByb3BlciBmb250aWZpY2F0aW9uIG9mIHZlcmJh
+dGltIGxpdGVyYWwgc3RyaW5ncywKOzsgICAgICAgICAgICBpbmNsdWRpbmcgdGhvc2UgdGhhdCBl
+bmQgaW4gc2xhc2guIFRoaXMgZWRnZSBjYXNlIHdhcyBub3QKOzsgICAgICAgICAgICBoYW5kbGVk
+IGF0IGFsbCBiZWZvcmU7IGl0IGlzIG5vdyBoYW5kbGVkIGNvcnJlY3RseS4KOzsgICAgICAgICAg
+LSBjb2RlIGNsZWFudXAgYW5kIG9yZ2FuaXphdGlvbjsgcmVtb3ZlZCB0aGUgZm9ybWZlZWQuCjs7
+ICAgICAgICAgIC0gaW50ZWxsaWdlbnQgY3VybHktYnJhY2UgaW5zZXJ0aW9uIHdpdGgKOzsgICAg
+ICAgICAgICBgY3NoYXJwLWluc2VydC1vcGVuLWJyYWNlJwo7OyAgICAwLjcuNCAtIGFkZGVkIGEg
+QyMgc3R5bGUKOzsgICAgICAgICAgLSB1c2luZyBpcyBub3cgYSBrZXl3b3JkIGFuZCBnZXRzIGZv
+bnRpZmllZCBjb3JyZWN0bHkKOzsgICAgICAgICAgLSBmaXhlZCBhIGJ1ZyB0aGF0IGhhZCBjcmVw
+dCBpbnRvIHRoZSBjb2RlZG9jIGluc2VydGlvbi4KOzsgICAgMC43LjUgLSBub3cgZm9udGlmeSBu
+YW1lc3BhY2VzIGluIHRoZSB1c2luZyBzdGF0ZW1lbnRzLiBUaGlzIGlzCjs7ICAgICAgICAgICAg
+ZG9uZSBpbiB0aGUgY3NoYXJwIHZhbHVlIGZvciBjLWJhc2ljLW1hdGNoZXJzLWJlZm9yZSAuCjs7
+ICAgICAgICAgIC0gYWxzbyBmb250aWZ5IHRoZSBuYW1lIGZvbGxvd2luZyBuYW1lc3BhY2UgZGVj
+bC4KOzsgICAgICAgICAgICBUaGlzIGlzIGRvbmUgaW4gdGhlIGNzaGFycCB2YWx1ZSBmb3IgYy1i
+YXNpYy1tYXRjaGVycy1hZnRlciAuCjs7ICAgICAgICAgIC0gdHVybiBvbiByZWNvZ25pdGlvbiBv
+ZiBnZW5lcmljIHR5cGVzLiBUaGV5IGFyZSBub3cKOzsgICAgICAgICAgICBmb250aWZpZWQgY29y
+cmVjdGx5Lgo7OyAgICAgICAgICAtIDw+IGFyZSBub3cgdHJlYXRlZCBhcyBzeW50YWN0aWMgcGFy
+ZW5zIGFuZCBjYW4gYmUganVtcGVkCjs7ICAgICAgICAgICAgb3ZlciB3aXRoIGMtZm9yd2FyZC1z
+ZXhwLgo7OyAgICAgICAgICAtIENvbnN0cnVjdG9ycyBhcmUgbm93IGZvbnRpZmllZC4KOzsgICAg
+ICAgICAgLSBGaWVsZC9Qcm9wIG5hbWVzIGluc2lkZSBvYmplY3QgaW5pdGlhbGl6ZXJzIGFyZSBu
+b3cgZm9udGlmaWVkLgo7Owo7OyAgICAwLjcuNyAtIHJlbG9jYXRlIHJ1bm5pbmcgYy1ydW4tbW9k
+ZS1ob29rcyB0byB0aGUgZW5kIG9mCjs7ICAgICAgICAgICAgY3NoYXJwLW1vZGUsIHRvIGFsbG93
+IHVzZXIgdG8gbW9kaWZ5IGtleSBiaW5kaW5ncyBpbiBhCjs7ICAgICAgICAgICAgaG9vayBpZiBo
+ZSBkb2Vzbid0IGxpa2UgdGhlIGRlZmF1bHRzLgo7Owo7OyAgICAwLjcuOCAtIHJlZGVmaW5lIGNz
+aGFycC1sb2cgdG8gaW5zZXJ0IHRpbWVzdGFtcC4KOzsgICAgICAgICAgLSBGaXggYnl0ZS1jb21w
+aWxlIGVycm9ycyBvbiBlbWFjcyAyMy4yID8gIFdoeSB3YXMKOzsgICAgICAgICAgICBjLWZpbHRl
+ci1vcHMgZHVwbGljYXRlZCBoZXJlPyAgV2hhdCB3YXMgdGhlIHB1cnBvc2Ugb2YgaXRzCjs7ICAg
+ICAgICAgICAgcHJlc2VuY2UgaGVyZSwgSSBhbSBub3QgY2xlYXIuCjs7Cjs7ICAgIDAuOC4wIC0g
+aW5jbHVkZSBmbHltYWtlIG1hZ2ljIGludG8gdGhpcyBtb2R1bGUuCjs7ICAgICAgICAgIC0gaW5j
+bHVkZSB5YXNuaXBwZXQgaW50ZWdyYXRpb24KOzsKOzsgICAgMC44LjIgMjAxMSBBcHJpbCBEUEMK
+OzsgICAgICAgICAgLSBzbWFsbCB0d2Vha3M7IG5vdyBzZXQgYSBvbmUtdGltZSBib29sIGZvciBm
+bHltYWtlIGluc3RhbGxhdGlvbgo7OyAgICAgICAgICAtIHNvbWUgZG9jIHVwZGF0ZXMgb24gZmx5
+bWFrZQo7Owo7OyAgICAwLjguMyAyMDExIE1heSAxNyAgRFBDCjs7ICAgICAgICAgIC0gYmV0dGVy
+IGhlbHAgb24gY3NoYXJwLW1vZGUKOzsgICAgICAgICAgLSBjc2hhcnAtbW92ZS0qIGZ1bmN0aW9u
+cyBmb3IgbWFudWFsIG5hdmlnYXRpb24uCjs7ICAgICAgICAgIC0gaW1lbnUgaW50ZWdyYXRpb24g
+Zm9yIG1lbnUtZHJpdmVuIG5hdmlnYXRpb24gLSBuYXZpZ2F0ZSB0bwo7OyAgICAgICAgICAgIG5h
+bWVkIG1ldGhvZHMsIGNsYXNzZXMsIGV0Yy4KOzsgICAgICAgICAgLSBhZGp1c3RlZCB0aGUgZmx5
+bWFrZSByZWdleHAgdG8gaGFuZGxlIG91dHB1dCBmcm9tIGZ4Y29wY21kLAo7OyAgICAgICAgICAg
+IGFuZCBleHRlbmRlZCB0aGUgaGVscCB0byBwcm92aWRlIGV4YW1wbGVzIGhvdyB0byB1c2UgdGhp
+cy4KOzsKOzsgICAgMC44LjQgRFBDIDIwMTEgTWF5IDE4Cjs7ICAgICAgICAgIC0gZml4IGEgYmFz
+aWMgYnVnIGluIHRoZSBgY3NoYXJwLXlhc25pcHBldC1maXh1cCcgZm4uCjs7Cjs7ICAgIDAuOC41
+IERQQyAyMDExIE1heSAyMQo7OyAgICAgICAgICAtIGltZW51OiBjb3JyZWN0bHkgcGFyc2UgUHJv
+cGVydGllcyB0aGF0IGFyZSBwYXJ0IG9mIGFuCjs7ICAgICAgICAgICAgZXhwbGljaXRseSBzcGVj
+aWZpZWQgaW50ZXJmYWNlLiBQcm9iYWJseSBuZWVkIHRvIGRvIHRoaXMKOzsgICAgICAgICAgICBm
+b3IgbWV0aG9kcywgdG9vLgo7OyAgICAgICAgICAtIGZvbnRpZnkgdGhlIG9wdGlvbmFsIGFsaWFz
+IGJlZm9yZSBuYW1lc3BhY2UgaW4gYSB1c2luZyAoaW1wb3J0KS4KOzsgICAgICAgICAgLSBUd2Vh
+ayBvcGVuLWN1cmx5IG1hZ2ljIGluc2VydGlvbiBmb3Igb2JqZWN0IGluaXRpYWxpemVycy4KOzsg
+ICAgICAgICAgLSBiZXR0ZXIgZm9udGlmaWNhdGlvbiBvZiB2YXJpYWJsZXMgYW5kIHJlZmVyZW5j
+ZXMKOzsgICAgICAgICAgLSAic2VhbGVkIiBpcyBub3cgZm9udGlmaWVkIGFzIGEga2V5d29yZAo7
+OyAgICAgICAgICAtIGltZW51OiBjb3JyZWN0bHkgaW5kZXggY3RvcnMgdGhhdCBjYWxsIHRoaXMg
+b3IgYmFzZS4KOzsgICAgICAgICAgLSBpbWVudTogY29ycmVjdGx5IGluZGV4IEV4dGVuc2lvbiBt
+ZXRob2RzICh0aGlzIFN5c3RlbS5FbnVtIGUpCjs7ICAgICAgICAgIC0gaW1lbnU6IGNvcnJlY3Rs
+eSBzY2FuICBtZXRob2QgcGFyYW1zIHRhZ2dlZCB3aXRoIG91dCwgcmVmLCBwYXJhbXMKOzsgICAg
+ICAgICAgLSBpbWVudSBzY2FuOiBub3cgaGFuZGxlIGN1cmxpZXMgd2l0aGluIHN0cmluZ3MuCjs7
+ICAgICAgICAgIC0gaW1lbnU6IHNwbGl0IG1lbnVzIG5vdyBoYXZlIGJldHRlciBsYWJlbHMsIGFy
+ZSBzb3J0ZWQgY29ycmVjdGx5Lgo7Owo7OyAgICAwLjguNiBEUEMgMjAxMSBNYXkgPz8KOzsgICAg
+ICAgICAgLQoKCihyZXF1aXJlICdjYy1tb2RlKQoKKG1lc3NhZ2UgIChjb25jYXQgIkxvYWRpbmcg
+IiBsb2FkLWZpbGUtbmFtZSkpCgoKOzsgPT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09
+PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09Cjs7IGMjIHVwZnJvbnQgc3R1ZmYKOzsg
+PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09
+PT09PT09PT09Cgo7OyBUaGlzIGlzIGEgY29weSBvZiB0aGUgZnVuY3Rpb24gaW4gY2MtbW9kZSB3
+aGljaCBpcyB1c2VkIHRvIGhhbmRsZSB0aGUKOzsgZXZhbC13aGVuLWNvbXBpbGUgd2hpY2ggaXMg
+bmVlZGVkIGR1cmluZyBvdGhlciB0aW1lcy4KOzsKOzsgTkI6IEkgdGhpbmsgdGhpcyBpcyBuZWVk
+ZWQgdG8gc2F0aXNmeSByZXF1aXJlbWVudHMgd2hlbiB0aGlzIG1vZHVsZQo7OyBjYWxscyBgYy1s
+YW5nLWRlZmNvbnN0Jy4gKERQQykKCjs7IChkZWZ1biBjLWZpbHRlci1vcHMgKG9wcyBvcGdyb3Vw
+LWZpbHRlciBvcC1maWx0ZXIgJm9wdGlvbmFsIHhsYXRlKQo7OyAgIDs7IFNlZSBjYy1sYW5ncy5l
+bCwgYSBkaXJlY3QgY29weS4KOzsgICAodW5sZXNzIChsaXN0cCAoY2FyLXNhZmUgb3BzKSkKOzsg
+ICAgIChzZXRxIG9wcyAobGlzdCBvcHMpKSkKOzsgICAoY29uZCAoKGVxIG9wZ3JvdXAtZmlsdGVy
+IHQpCjs7ICAgICAgICAgIChzZXRxIG9wZ3JvdXAtZmlsdGVyIChsYW1iZGEgKG9wZ3JvdXApIHQp
+KSkKOzsgICAgICAgICAoKG5vdCAoZnVuY3Rpb25wIG9wZ3JvdXAtZmlsdGVyKSkKOzsgICAgICAg
+ICAgKHNldHEgb3Bncm91cC1maWx0ZXIgYChsYW1iZGEgKG9wZ3JvdXApCjs7ICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgIChtZW1xIG9wZ3JvdXAgJyxvcGdyb3VwLWZpbHRlcikpKSkp
+Cjs7ICAgKGNvbmQgKChlcSBvcC1maWx0ZXIgdCkKOzsgICAgICAgICAgKHNldHEgb3AtZmlsdGVy
+IChsYW1iZGEgKG9wKSB0KSkpCjs7ICAgICAgICAgKChzdHJpbmdwIG9wLWZpbHRlcikKOzsgICAg
+ICAgICAgKHNldHEgb3AtZmlsdGVyIGAobGFtYmRhIChvcCkKOzsgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgIChzdHJpbmctbWF0Y2ggLG9wLWZpbHRlciBvcCkpKSkpCjs7ICAgKHVubGVzcyB4
+bGF0ZQo7OyAgICAgKHNldHEgeGxhdGUgJ2lkZW50aXR5KSkKOzsgICAoYy13aXRoLXN5bnRheC10
+YWJsZSAoYy1sYW5nLWNvbnN0IGMtbW9kZS1zeW50YXgtdGFibGUpCjs7ICAgICAoZGVsZXRlLWR1
+cGxpY2F0ZXMKOzsgICAgICAobWFwY2FuIChsYW1iZGEgKG9wZ3JvdXApCjs7ICAgICAgICAgICAg
+ICAgICh3aGVuIChpZiAoc3ltYm9scCAoY2FyIG9wZ3JvdXApKQo7OyAgICAgICAgICAgICAgICAg
+ICAgICAgICAgKHdoZW4gKGZ1bmNhbGwgb3Bncm91cC1maWx0ZXIgKGNhciBvcGdyb3VwKSkKOzsg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgKHNldHEgb3Bncm91cCAoY2RyIG9wZ3JvdXApKQo7
+OyAgICAgICAgICAgICAgICAgICAgICAgICAgICB0KQo7OyAgICAgICAgICAgICAgICAgICAgICAg
+IHQpCjs7ICAgICAgICAgICAgICAgICAgKG1hcGNhbiAobGFtYmRhIChvcCkKOzsgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgKHdoZW4gKGZ1bmNhbGwgb3AtZmlsdGVyIG9wKQo7OyAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgIChsZXQgKChyZXMgKGZ1bmNhbGwgeGxhdGUgb3ApKSkKOzsg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIChpZiAobGlzdHAgcmVzKSByZXMgKGxpc3Qg
+cmVzKSkpKSkKOzsgICAgICAgICAgICAgICAgICAgICAgICAgIG9wZ3JvdXApKSkKOzsgICAgICAg
+ICAgICAgIG9wcykKOzsgICAgICA6dGVzdCAnZXF1YWwpKSkKCgoKOzsgVGhlc2UgYXJlIG9ubHkg
+cmVxdWlyZWQgYXQgY29tcGlsZSB0aW1lIHRvIGdldCB0aGUgc291cmNlcyBmb3IgdGhlCjs7IGxh
+bmd1YWdlIGNvbnN0YW50cy4gIChUaGUgbG9hZCBvZiBjYy1mb250cyBhbmQgdGhlIGZvbnQtbG9j
+awo7OyByZWxhdGVkIGNvbnN0YW50cyBjb3VsZCBhZGRpdGlvbmFsbHkgYmUgcHV0IGluc2lkZSBh
+bgo7OyAoZXZhbC1hZnRlci1sb2FkICJmb250LWxvY2siIC4uLikgYnV0IHRoZW4gc29tZSB0cmlj
+a2VyeSBpcwo7OyBuZWNlc3NhcnkgdG8gZ2V0IHRoZW0gY29tcGlsZWQuKQoKKGV2YWwtd2hlbi1j
+b21waWxlCiAgKGxldCAoKGxvYWQtcGF0aAogICAgICAgICAoaWYgKGFuZCAoYm91bmRwICdieXRl
+LWNvbXBpbGUtZGVzdC1maWxlKQogICAgICAgICAgICAgICAgICAoc3RyaW5ncCBieXRlLWNvbXBp
+bGUtZGVzdC1maWxlKSkKICAgICAgICAgICAgIChjb25zIChmaWxlLW5hbWUtZGlyZWN0b3J5IGJ5
+dGUtY29tcGlsZS1kZXN0LWZpbGUpIGxvYWQtcGF0aCkKICAgICAgICAgICBsb2FkLXBhdGgpKSkK
+ICAgIChsb2FkICJjYy1tb2RlIiBuaWwgdCkKICAgIChsb2FkICJjYy1mb250cyIgbmlsIHQpCiAg
+ICAobG9hZCAiY2MtbGFuZ3MiIG5pbCB0KSkpCgooZXZhbC1hbmQtY29tcGlsZQogIDs7IE1ha2Ug
+b3VyIG1vZGUga25vd24gdG8gdGhlIGxhbmd1YWdlIGNvbnN0YW50IHN5c3RlbS4gIFVzZSBKYXZh
+CiAgOzsgbW9kZSBhcyB0aGUgZmFsbGJhY2sgZm9yIHRoZSBjb25zdGFudHMgd2UgZG9uJ3QgY2hh
+bmdlIGhlcmUuCiAgOzsgVGhpcyBuZWVkcyB0byBiZSBkb25lIGFsc28gYXQgY29tcGlsZSB0aW1l
+IHNpbmNlIHRoZSBsYW5ndWFnZQogIDs7IGNvbnN0YW50cyBhcmUgZXZhbHVhdGVkIHRoZW4uCiAg
+KGMtYWRkLWxhbmd1YWdlICdjc2hhcnAtbW9kZSAnamF2YS1tb2RlKSkKCjs7ID09PT09PT09PT09
+PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PQo7
+OyBlbmQgb2YgYyMgdXBmcm9udCBzdHVmZgo7OyA9PT09PT09PT09PT09PT09PT09PT09PT09PT09
+PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT0KCgoKCgo7OyA9PT09PT09PT09
+PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT0K
+OzsgY29uc3RhbnRzIHVzZWQgaW4gdGhpcyBtb2R1bGUKOzsgPT09PT09PT09PT09PT09PT09PT09
+PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09Cgo7OyhlcnJvciAo
+Ynl0ZS1jb21waWxlLWRlc3QtZmlsZSkpCjs7KGVycm9yIChjLWdldC1jdXJyZW50LWZpbGUpKQoK
+KGRlZmNvbnN0IGNzaGFycC1hc3BuZXQtZGlyZWN0aXZlLXJlCiAgIjwlQC4rPyU+IgogICJSZWdl
+eCBmb3IgbWF0Y2hpbmcgZGlyZWN0aXZlIGJsb2NrcyBpbiBBU1AuTkVUIGZpbGVzICguYXNweCwg
+LmFzaHgsIC5hc2N4KSIpCgoKKGRlZmNvbnN0IGNzaGFycC1lbnVtLWRlY2wtcmUKICAoY29uY2F0
+CiAgICJcXDxlbnVtWyBcdFxuXHJcZlx2XSsiCiAgICJcXChbWzphbHBoYTpdX11bWzphbG51bTpd
+X10qXFwpIgogICAiWyBcdFxuXHJcZlx2XSoiCiAgICJcXCg6WyBcdFxuXHJcZlx2XSoiCiAgICJc
+XCgiCiAgIChjLW1ha2Uta2V5d29yZHMtcmUgbmlsCiAgICAgKGxpc3QgInNieXRlIiAiYnl0ZSIg
+InNob3J0IiAidXNob3J0IiAiaW50IiAidWludCIgImxvbmciICJ1bG9uZyIpKQogICAiXFwpIgog
+ICAiXFwpPyIpCiAgIlJlZ2V4IHRoYXQgY2FwdHVyZXMgYW4gZW51bSBkZWNsYXJhdGlvbiBpbiBD
+IyIKICApCgo7OyA9PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09
+PT09PT09PT09PT09PT09PT09PT0KCgoKCgoKOzsgPT09PT09PT09PT09PT09PT09PT09PT09PT09
+PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09Cjs7IGNzaGFycC1tb2RlIHV0
+aWxpdHkgYW5kIGZlYXR1cmUgZGVmdW5zCjs7ID09PT09PT09PT09PT09PT09PT09PT09PT09PT09
+PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PQoKKGRlZnVuIGNzaGFycC0tYXQt
+dnNlbWktcCAoJm9wdGlvbmFsIHBvcykKICAiRGV0ZXJtaW5lcyBpZiB0aGVyZSBpcyBhIHZpcnR1
+YWwgc2VtaWNvbG9uIGF0IFBPUyBvciBwb2ludC4KSXQgcmV0dXJucyB0IGlmIGF0IGEgcG9zaXRp
+b24gd2hlcmUgYSB2aXJ0dWFsLXNlbWljb2xvbiBpcy4KT3RoZXJ3aXNlIG5pbC4KClRoaXMgaXMg
+dGhlIEMjIHZlcnNpb24gb2YgdGhlIGZ1bmN0aW9uLiBJdCBnZXRzIHNldCBpbnRvCnRoZSB2YXJp
+YWJsZSBgYy1hdC12c2VtaS1wLWZuJy4KCkEgdnNlbWkgaXMgYSBjYy1tb2RlIGNvbmNlcHQgaW1w
+bHlpbmcgdGhlIGVuZCBvZiBhIHN0YXRlbWVudCwKd2hlcmUgbm8gYWN0dWFsIGVuZC1vZi1zdGF0
+ZW1lbnQgc2lnbmlmaWVyIGNoYXJhY3RlciAoIHNlbWljb2xvbiwKY2xvc2UtYnJhY2UpIGFwcGVh
+cnMuICBUaGUgY29uY2VwdCBpcyB1c2VkIHRvIGFsbG93IHByb3BlcgppbmRlbnRpbmcgb2YgYmxv
+Y2tzIG9mIGNvZGU6IFdoZXJlIGEgdnNlbWkgYXBwZWFycywgdGhlIGZvbGxvd2luZwpsaW5lIHdp
+bGwgbm90IGluZGVudCBmdXJ0aGVyLgoKQSB2c2VtaSBhcHBlYXJzIGluIDMgY2FzZXMgaW4gQyM6
+CgogLSBhZnRlciBhbiBhdHRyaWJ1dGUgdGhhdCBkZWNvcmF0ZXMgYSBjbGFzcywgbWV0aG9kLCBm
+aWVsZCwgb3IKICAgcHJvcGVydHkuCgogLSBpbiBhbiBvYmplY3QgaW5pdGlhbGl6ZXIsIGJlZm9y
+ZSB0aGUgb3Blbi1jdXJseT8KCiAtIGFmdGVyIGFuIEFTUE5FVCBkaXJlY3RpdmUsIHRoYXQgYXBw
+ZWFycyBpbiBhIGFzcHgvYXNoeC9hc2N4IGZpbGUKCkFuIGV4YW1wbGUgb2YgdGhlIGZvcm1lciBp
+cyAgW1dlYk1ldGhvZF0gb3IgW1htbEVsZW1lbnRdLgpBbiBleGFtcGxlIG9mIHRoZSBsYXR0ZXIg
+aXMgc29tZXRoaW5nIGxpa2UgdGhpczoKCiAgICA8JUAgV2ViSGFuZGxlciBMYW5ndWFnZT1cIkMj
+XCIgQ2xhc3M9XCJIYW5kbGVyXCIgJT4KClByb3ZpZGluZyB0aGlzIGZ1bmN0aW9uIGFsbG93cyB0
+aGUgaW5kZW50aW5nIGluIGNzaGFycC1tb2RlCnRvIHdvcmsgcHJvcGVybHkgd2l0aCBjb2RlIHRo
+YXQgaW5jbHVkZXMgYXR0cmlidXRlcyBhbmQgQVNQTkVUCmRpcmVjdGl2ZXMuCgoiCiAgKHNhdmUt
+ZXhjdXJzaW9uCiAgICAobGV0ICgocG9zLW9yLXBvaW50IChwcm9nbiAoaWYgcG9zIChnb3RvLWNo
+YXIgcG9zKSkgKHBvaW50KSkpKQoKICAgICAgKGNvbmQKCiAgICAgICA7OyBiZWZvcmUgb3BlbiBj
+dXJseSBpbiBvYmplY3QgaW5pdGlhbGl6ZXIuIG5ldyBGb28qIHsgfQogICAgICAgKChhbmQgKGxv
+b2tpbmctYmFjawogICAgICAgICAgICAgIChjb25jYXQgIlxcPG5ld1sgXHRcblxmXHZccl0rIgog
+ICAgICAgICAgICAgICJcXCg/OltBLVphLXpfXVtbOmFsbnVtOl1dKlxcLlxcKSoiCiAgICAgICAg
+ICAgICAgIltBLVphLXpfXVtbOmFsbnVtOl1dKltcIHRcblxmXHZccl0qIikpCiAgICAgICAgICAg
+ICAobG9va2luZy1hdCAiWyBcdFxuXGZcdlxyXSp7IikpCiAgICAgICAgdCkKCiAgICAgICA7OyBw
+dXQgYSB2c2VtaSBhZnRlciBhbiBBU1BORVQgZGlyZWN0aXZlLCBsaWtlCiAgICAgICA7OyA8JUAg
+V2ViSGFuZGxlciBMYW5ndWFnZT0iQyMiIENsYXNzPSJIYW5kbGVyIiAlPgogICAgICAgKChsb29r
+aW5nLWJhY2sgKGNvbmNhdCBjc2hhcnAtYXNwbmV0LWRpcmVjdGl2ZS1yZSAiJCIpIG5pbCB0KQog
+ICAgICAgIHQpCgogICAgICAgOzsgcHV0IGEgdnNlbWkgYWZ0ZXIgYW4gYXR0cmlidXRlLCBhcyB3
+aXRoCiAgICAgICA7OyAgIFtYbWxFbGVtZW50XQogICAgICAgOzsgRXhjZXB0IHdoZW4gdGhlIGF0
+dHJpYnV0ZSBpcyB1c2VkIHdpdGhpbiBhIGxpbmUgb2YgY29kZSwgYXMKICAgICAgIDs7IHNwZWNp
+Znlpbmcgc29tZXRoaW5nIGZvciBhIHBhcmFtZXRlci4KICAgICAgICgoYy1zYWZlIChiYWNrd2Fy
+ZC1zZXhwKSB0KQogICAgICAgIChjb25kCiAgICAgICAgICAgKChyZS1zZWFyY2gtZm9yd2FyZAog
+ICAgICAgICAgICAgKGNvbmNhdAogICAgICAgICAgICAgICJcXChcXFsiCiAgICAgICAgICAgICAg
+IlsgXHRcblxyXGZcdl0qIgogICAgICAgICAgICAgICJcXCgiCiAgICAgICAgICAgICAgIlxcKD86
+W0EtWmEtel9dW1s6YWxudW06XV0qXFwuXFwpKiIKICAgICAgICAgICAgICAiW0EtWmEtel9dW1s6
+YWxudW06XV0qIgogICAgICAgICAgICAgICJcXCkiCiAgICAgICAgICAgICAgIlteXV0qXFxdXFwp
+IgogICAgICAgICAgICAgICkKICAgICAgICAgICAgICgxKyBwb3Mtb3ItcG9pbnQpIHQpCgogICAg
+ICAgICAgICAgKGMtc2FmZSAoYmFja3dhcmQtc2V4cCkpCiAgICAgICAgICAgICAoYy1iYWNrd2Fy
+ZC1zeW50YWN0aWMtd3MpCiAgICAgICAgICAgICAoY29uZAoKICAgICAgICAgICAgICAoKGVxIChj
+aGFyLWJlZm9yZSkgOTMpIDs7IGNsb3NlIHNxIGJyYWNlIChhIHByZXZpb3VzIGF0dHJpYnV0ZSkK
+ICAgICAgICAgICAgICAgKGNzaGFycC0tYXQtdnNlbWktcCAocG9pbnQpKSkgOzsgcmVjdXJzZQoK
+ICAgICAgICAgICAgICAoKG9yCiAgICAgICAgICAgICAgICAoZXEgKGNoYXItYmVmb3JlKSA1OSkg
+Ozsgc2VtaWNvbG9uCiAgICAgICAgICAgICAgICAoZXEgKGNoYXItYmVmb3JlKSAxMjMpIDs7IG9w
+ZW4gY3VybHkKICAgICAgICAgICAgICAgIChlcSAoY2hhci1iZWZvcmUpIDEyNSkpIDs7IGNsb3Nl
+IGN1cmx5CiAgICAgICAgICAgICAgIHQpCgogICAgICAgICAgICAgIDs7IGF0dHIgaXMgdXNlZCB3
+aXRoaW4gYSBsaW5lIG9mIGNvZGUKICAgICAgICAgICAgICAodCBuaWwpKSkKCiAgICAgICAgICAg
+KHQgbmlsKSkpCgogICAgICAgICh0IG5pbCkpCiAgICAgICkpKQoKCgoKKGRlZnVuIGNzaGFycC1s
+aW5ldXAtcmVnaW9uIChsYW5nZWxlbSkKICAiSW5kZW50IGFsbCAjcmVnaW9uIGFuZCAjZW5kcmVn
+aW9uIGJsb2NrcyBpbmxpbmUgd2l0aCBjb2RlIHdoaWxlCnJldGFpbmluZyBub3JtYWwgY29sdW1u
+LXplcm8gaW5kZW50aW9uIGZvciAjaWYgYW5kIHRoZSBvdGhlcgpwcm9jZXNzaW5nIGJsb2Nrcy4K
+ClRvIHVzZSB0aGlzIGluZGVudGluZyBqdXN0IHB1dCB0aGUgZm9sbG93aW5nIGluIHlvdXIgZW1h
+Y3MgZmlsZToKICAgKGMtc2V0LW9mZnNldCAnY3BwLW1hY3JvICdjc2hhcnAtbGluZXVwLXJlZ2lv
+bikKCkFuIGFsdGVybmF0aXZlIGlzIHRvIHVzZSBgY3NoYXJwLWxpbmV1cC1pZi1hbmQtcmVnaW9u
+Jy4KIgoKICAoc2F2ZS1leGN1cnNpb24KICAgIChiYWNrLXRvLWluZGVudGF0aW9uKQogICAgKGlm
+IChyZS1zZWFyY2gtZm9yd2FyZCAiI1xcKGVuZFxcKT9yZWdpb24iIChjLXBvaW50ICdlb2wpIFsw
+XSkgMCAgWzBdKSkpCgoKCgoKKGRlZnVuIGNzaGFycC1saW5ldXAtaWYtYW5kLXJlZ2lvbiAobGFu
+Z2VsZW0pCgoiSW5kZW50IGFsbCAjcmVnaW9uL2VuZHJlZ2lvbiBibG9ja3MgYW5kICNpZi9lbmRp
+ZiBibG9ja3MgaW5saW5lCndpdGggY29kZSB3aGlsZSByZXRhaW5pbmcgbm9ybWFsIGNvbHVtbi16
+ZXJvIGluZGVudGlvbiBmb3IgYW55Cm90aGVyIHByb2Nlc3NpbmcgYmxvY2tzLgoKVG8gdXNlIHRo
+aXMgaW5kZW50aW5nIGp1c3QgcHV0IHRoZSBmb2xsb3dpbmcgaW4geW91ciBlbWFjcyBmaWxlOgog
+IChjLXNldC1vZmZzZXQgJ2NwcC1tYWNybyAnY3NoYXJwLWxpbmV1cC1pZi1hbmQtcmVnaW9uKQoK
+QW5vdGhlciBvcHRpb24gaXMgdG8gdXNlIGBjc2hhcnAtbGluZXVwLXJlZ2lvbicuCgoiCiAgKHNh
+dmUtZXhjdXJzaW9uCiAgICAoYmFjay10by1pbmRlbnRhdGlvbikKICAgIChpZiAocmUtc2VhcmNo
+LWZvcndhcmQgIiNcXChcXChlbmRcXCk/XFwoaWZcXHxyZWdpb25cXClcXHxlbHNlXFwpIiAoYy1w
+b2ludCAnZW9sKSBbMF0pIDAgIFswXSkpKQoKCgoKICAoZGVmdW4gY3NoYXJwLWluLWxpdGVyYWwg
+KCZvcHRpb25hbCBsaW0gZGV0ZWN0LWNwcCkKICAgICJSZXR1cm4gdGhlIHR5cGUgb2YgbGl0ZXJh
+bCBwb2ludCBpcyBpbiwgaWYgYW55LgpCYXNpY2FsbHkgdGhpcyB3b3JrcyBsaWtlIGBjLWluLWxp
+dGVyYWwnIGV4Y2VwdCBpdCBkb2Vzbid0CnVzZSBvciBmaWxsIHRoZSBjYWNoZSAoYGMtaW4tbGl0
+ZXJhbC1jYWNoZScpLgoKVGhlIHJldHVybiB2YWx1ZSBpcyBhIHN5bWJvbDogYGMnIGlmIGluIGEg
+Qy1zdHlsZSBjb21tZW50LCBgYysrJwppZiBpbiBhIEMrKyBzdHlsZSBjb21tZW50LCBgc3RyaW5n
+JyBpZiBpbiBhIHN0cmluZyBsaXRlcmFsLApgcG91bmQnIGlmIERFVEVDVC1DUFAgaXMgbm9uLW5p
+bCBhbmQgaW4gYSBwcmVwcm9jZXNzb3IgbGluZSwgb3IKbmlsIGlmIHNvbWV3aGVyZSBlbHNlLiAg
+T3B0aW9uYWwgTElNIGlzIHVzZWQgYXMgdGhlIGJhY2t3YXJkCmxpbWl0IG9mIHRoZSBzZWFyY2gu
+ICBJZiBvbWl0dGVkLCBvciBuaWwsIGBjLWJlZ2lubmluZy1vZi1zeW50YXgnCmlzIHVzZWQuCgpO
+b3RlIHRoYXQgdGhpcyBmdW5jdGlvbiBtaWdodCBkbyBoaWRkZW4gYnVmZmVyIGNoYW5nZXMuICBT
+ZWUgdGhlCmNvbW1lbnQgYXQgdGhlIHN0YXJ0IG9mIGNjLWVuZ2luZS5lbCBmb3IgbW9yZSBpbmZv
+LiIKCiAgICAobGV0ICgocnRuCiAgICAgICAgICAgKHNhdmUtZXhjdXJzaW9uCiAgICAgICAgICAg
+ICAobGV0KiAoKHBvcyAocG9pbnQpKQogICAgICAgICAgICAgICAgICAgIChsaW0gKG9yIGxpbSAo
+cHJvZ24KICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAoYy1iZWdpbm5pbmctb2Yt
+c3ludGF4KQogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIChwb2ludCkpKSkKICAg
+ICAgICAgICAgICAgICAgICAoc3RhdGUgKHBhcnNlLXBhcnRpYWwtc2V4cCBsaW0gcG9zKSkpCiAg
+ICAgICAgICAgICAgIChjc2hhcnAtbG9nIDQgInBhcnNlIGxpbSglZCkgc3RhdGU6ICVzIiBsaW0g
+KHByaW4xLXRvLXN0cmluZyBzdGF0ZSkpCiAgICAgICAgICAgICAgIChjb25kCiAgICAgICAgICAg
+ICAgICAoKGVsdCBzdGF0ZSAzKQogICAgICAgICAgICAgICAgIChjc2hhcnAtbG9nIDQgImluIGxp
+dGVyYWwgc3RyaW5nICglZCkiIHBvcykKICAgICAgICAgICAgICAgICAnc3RyaW5nKQogICAgICAg
+ICAgICAgICAgKChlbHQgc3RhdGUgNCkKICAgICAgICAgICAgICAgICAoY3NoYXJwLWxvZyA0ICJp
+biBsaXRlcmFsIGNvbW1lbnQgKCVkKSIgcG9zKQogICAgICAgICAgICAgICAgIChpZiAoZWx0IHN0
+YXRlIDcpICdjKysgJ2MpKQogICAgICAgICAgICAgICAgKChhbmQgZGV0ZWN0LWNwcCAoYy1iZWdp
+bm5pbmctb2YtbWFjcm8gbGltKSkgJ3BvdW5kKQogICAgICAgICAgICAgICAgKHQgbmlsKSkpKSkp
+CiAgICAgIHJ0bikpCgoKCihkZWZ1biBjc2hhcnAtaW5zZXJ0LW9wZW4tYnJhY2UgKCkKICAiSW50
+ZWxsaWdlbnRseSBpbnNlcnQgYSBwYWlyIG9mIGN1cmx5IGJyYWNlcy4gVGhpcyBmbiBzaG91bGQg
+YmUKYm91bmQgdG8gdGhlIG9wZW4tY3VybHkgYnJhY2UsIHdpdGgKCiAgICAobG9jYWwtc2V0LWtl
+eSAoa2JkIFwie1wiKSAnY3NoYXJwLWluc2VydC1vcGVuLWJyYWNlKQoKVGhlIGRlZmF1bHQgYmlu
+ZGluZyBmb3IgYW4gb3BlbiBjdXJseSBicmFjZSBpbiBjYy1tb2RlcyBpcyBvZnRlbgpgYy1lbGVj
+dHJpYy1icmFjZScgb3IgYHNrZWxldG9uLXBhaXItaW5zZXJ0LW1heWJlJy4gIFRoZSBmb3JtZXIK
+Y2FuIGJlIGNvbmZpZ3VyZWQgdG8gaW5zZXJ0IG5ld2xpbmVzIGFyb3VuZCBicmFjZXMgaW4gdmFy
+aW91cwpzeW50YWN0aWMgcG9zaXRpb25zLiAgVGhlIGxhdHRlciBpbnNlcnRzIGEgcGFpciBvZiBi
+cmFjZXMgYW5kCnRoZW4gZG9lcyBub3QgaW5zZXJ0IGEgbmV3bGluZSwgYW5kIGRvZXMgbm90IGlu
+ZGVudC4KClRoaXMgZm4gcHJvdmlkZXMgYW5vdGhlciBvcHRpb24sIHdpdGggc29tZSBhZGRpdGlv
+bmFsCmludGVsbGlnZW5jZSBmb3IgY3NoYXJwLW1vZGUuICBXaGVuIHlvdSB0eXBlIGFuIG9wZW4g
+Y3VybHksIHRoZQphcHByb3ByaWF0ZSBwYWlyIG9mIGJyYWNlcyBhcHBlYXJzLCB3aXRoIHNwYWNp
+bmcgYW5kIGluZGVudCBzZXQKaW4gYSBjb250ZXh0LXNlbnNpdGl2ZSBtYW5uZXI6CgogLSBXaXRo
+aW4gYSBzdHJpbmcgbGl0ZXJhbCwgeW91IGp1c3QgZ2V0IGEgcGFpciBvZiBicmFjZXMsIGFuZAog
+ICBwb2ludCBpcyBzZXQgYmV0d2VlbiB0aGVtLiBUaGlzIHdvcmtzIGZvciBTdHJpbmcuRm9ybWF0
+KCkKICAgcHVycG9zZXMuCgogLSBGb2xsb3dpbmcgPSBvciBbXSwgYXMgaW4gYW4gYXJyYXkgYXNz
+aWdubWVudCwgeW91IGdldCBhIHBhaXIKICAgb2YgYnJhY2VzLCB3aXRoIHR3byBpbnRlcnZlbmlu
+ZyBzcGFjZXMsIHdpdGggYSBzZW1pbmNvbG9uCiAgIGFwcGVuZGVkLiBQb2ludCBpcyBsZWZ0IGJl
+dHdlZW4gdGhlIGJyYWNlcy4KCiAtIEZvbGxvd2luZyBcIm5ldyBGb29cIiwgaXQncyBhbiBvYmpl
+Y3QgaW5pdGlhbGl6ZXIuIFlvdSBnZXQ6CiAgIG5ld2xpbmUsIG9wZW4gYnJhY2UsIG5ld2xpbmUs
+IG5ld2xpbmUsIGNsb3NlLCBzZW1pLiAgUG9pbnQgaXMKICAgbGVmdCBvbiB0aGUgYmxhbmsgbGlu
+ZSBiZXR3ZWVuIHRoZSBicmFjZXMuIFVubGVzcyB0aGUgb2JqZWN0CiAgIGluaXRpYWxpemVyIGlz
+IHdpdGhpbiBhbiBhcnJheSBpbml0aWFsaXplciwgaW4gd2hpY2ggY2FzZSwgbm8KICAgbmV3bGlu
+ZXMsIGFuZCB0aGUgc2VtaSBpcyByZXBsYWNlZCB3aXRoIGEgY29tbWEuIChUcnkgaXQgdG8KICAg
+c2VlIHdoYXQgdGhpcyBtZWFucykuCgogLSBGb2xsb3dpbmcgPT4gLCBpbXBseWluZyBhIGxhbWJk
+YSwgeW91IGdldCBhbiBvcGVuL2Nsb3NlIHBhaXIsCiAgIHdpdGggdHdvIGludGVydmVuaW5nIHNw
+YWNlcywgbm8gc2VtaWNvbG9uLCBhbmQgcG9pbnQgb24gdGhlCiAgIDJuZCBzcGFjZS4KCiAtIE90
+aGVyd2lzZSwgeW91IGdldCBhIG5ld2xpbmUsIHRoZSBvcGVuIGN1cmx5LCBmb2xsb3dlZCBieQog
+ICBhbiBlbXB0eSBsaW5lIGFuZCB0aGUgY2xvc2luZyBjdXJseSBvbiB0aGUgbGluZSBmb2xsb3dp
+bmcsCiAgIHdpdGggcG9pbnQgb24gdGhlIGVtcHR5IGxpbmUuCgoKVGhlcmUgbWF5IGJlIGFub3Ro
+ZXIgd2F5IHRvIGdldCB0aGlzIHRvIGhhcHBlbiBhcHByb3ByaWF0ZWx5IGp1c3QKd2l0aGluIGVt
+YWNzLCBidXQgSSBjb3VsZCBub3QgZmlndXJlIG91dCBob3cgdG8gZG8gaXQuICBTbyBJCndyb3Rl
+IHRoaXMgYWx0ZXJuYXRpdmUuCgogICAgIgogIChpbnRlcmFjdGl2ZSkKICAobGV0CiAgICAgICh0
+cG9pbnQKICAgICAgIChpbi1zdHJpbmcgKHN0cmluZz0gKGNzaGFycC1pbi1saXRlcmFsKSAic3Ry
+aW5nIikpCiAgICAgICAocHJlY2VkaW5nMwogICAgICAgIChzYXZlLWV4Y3Vyc2lvbgogICAgICAg
+ICAgKGFuZAogICAgICAgICAgIChza2lwLWNoYXJzLWJhY2t3YXJkICIgXHQiKQogICAgICAgICAg
+ICg+ICgtIChwb2ludCkgMikgKHBvaW50LW1pbikpCiAgICAgICAgICAgKGJ1ZmZlci1zdWJzdHJp
+bmctbm8tcHJvcGVydGllcyAocG9pbnQpICgtIChwb2ludCkgMykpKSkpCiAgICAgICAob25lLXdv
+cmQtYmFjawogICAgICAgIChzYXZlLWV4Y3Vyc2lvbgogICAgICAgICAgKGJhY2t3YXJkLXdvcmQg
+MikKICAgICAgICAgICh0aGluZy1hdC1wb2ludCAnd29yZCkpKSkKCiAgICAoY29uZAoKICAgICA7
+OyBDYXNlIDE6IGluc2lkZSBhIHN0cmluZyBsaXRlcmFsPwogICAgIDs7IC0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tCiAgICAgOzsgSWYgc28sIHRoZW4ganVzdCBp
+bnNlcnQgYSBwYWlyIG9mIGJyYWNlcyBhbmQgcHV0IHRoZSBwb2ludAogICAgIDs7IGJldHdlZW4g
+dGhlbS4gIFRoZSBtb3N0IGNvbW1vbiBjYXNlIGlzIGEgZm9ybWF0IHN0cmluZyBmb3IKICAgICA7
+OyBTdHJpbmcuRm9ybWF0KCkgb3IgQ29uc29sZS5Xcml0ZUxpbmUoKS4KICAgICAoaW4tc3RyaW5n
+CiAgICAgIChzZWxmLWluc2VydC1jb21tYW5kIDEpCiAgICAgIChpbnNlcnQgIn0iKQogICAgICAo
+YmFja3dhcmQtY2hhcikpCgogICAgIDs7IENhc2UgMjogdGhlIG9wZW4gYnJhY2Ugc3RhcnRzIGFu
+IGFycmF5IGluaXRpYWxpemVyLgogICAgIDs7IC0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tCiAgICAgOzsgV2hlbiB0aGUgbGFzdCBub24tc3BhY2Ugd2FzIGFuIGVx
+dWFscyBzaWduIG9yIHNxdWFyZSBicmFja2V0cywKICAgICA7OyB0aGVuIGl0J3MgYW4gaW5pdGlh
+bGl6ZXIuCiAgICAgKChzYXZlLWV4Y3Vyc2lvbgogICAgICAgIChhbmQgKGMtc2FmZSAoYmFja3dh
+cmQtc2V4cCkgdCkKICAgICAgICAgICAgIChsb29raW5nLWF0ICJcXChcXHcrXFxiICo9XFx8W1td
+XStcXCkiKSkpCiAgICAgIChzZWxmLWluc2VydC1jb21tYW5kIDEpCiAgICAgIChpbnNlcnQgIiAg
+fTsiKQogICAgICAoYmFja3dhcmQtY2hhciAzKSkKCiAgICAgOzsgQ2FzZSAzOiB0aGUgb3BlbiBi
+cmFjZSBzdGFydHMgYW4gaW5zdGFuY2UgaW5pdGlhbGl6ZXIKICAgICA7OyAtLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQogICAgIDs7IElmIG9uZS13b3JkLWJhY2sg
+d2FzICJuZXciLCB0aGVuIGl0J3MgYW4gb2JqZWN0IGluaXRpYWxpemVyLgogICAgICgoc3RyaW5n
+PSBvbmUtd29yZC1iYWNrICJuZXciKQogICAgICAoY3NoYXJwLWxvZyAyICJvYmplY3QgaW5pdGlh
+bGl6ZXIiKQogICAgICAoc2V0cSB0cG9pbnQgKHBvaW50KSkgOzsgcHJlcGFyZSB0byBpbmRlbnQt
+cmVnaW9uIGxhdGVyCiAgICAgIChiYWNrd2FyZC13b3JkIDIpCiAgICAgIChjLWJhY2t3YXJkLXN5
+bnRhY3RpYy13cykKICAgICAgKGlmIChvciAoZXEgKGNoYXItYmVmb3JlKSA/LCkgICAgICAgOzsg
+Y29tbWEKICAgICAgICAgICAgICAoYW5kIChlcSAoY2hhci1iZWZvcmUpIDEyMykgOzsgb3BlbiBj
+dXJseQogICAgICAgICAgICAgICAgICAgKHByb2duIChiYWNrd2FyZC1jaGFyKQogICAgICAgICAg
+ICAgICAgICAgICAgICAgIChjLWJhY2t3YXJkLXN5bnRhY3RpYy13cykKICAgICAgICAgICAgICAg
+ICAgICAgICAgICAobG9va2luZy1iYWNrICJcXFtcXF0iKSkpKQogICAgICAgICAgKHByb2duCiAg
+ICAgICAgICAgIDs7IHdpdGhpbiBhbiBhcnJheSAtIGVtaXQgbm8gbmV3bGluZXMKICAgICAgICAg
+ICAgKGdvdG8tY2hhciB0cG9pbnQpCiAgICAgICAgICAgIChzZWxmLWluc2VydC1jb21tYW5kIDEp
+CiAgICAgICAgICAgIChpbnNlcnQgIiAgfSwiKQogICAgICAgICAgICAoYmFja3dhcmQtY2hhciAz
+KSkKCiAgICAgICAgKHByb2duCiAgICAgICAgICAoZ290by1jaGFyIHRwb2ludCkKICAgICAgICAg
+IChuZXdsaW5lKQogICAgICAgICAgKHNlbGYtaW5zZXJ0LWNvbW1hbmQgMSkKICAgICAgICAgIChu
+ZXdsaW5lLWFuZC1pbmRlbnQpCiAgICAgICAgICAobmV3bGluZSkKICAgICAgICAgIChpbnNlcnQg
+In07IikKICAgICAgICAgIChjLWluZGVudC1yZWdpb24gdHBvaW50IChwb2ludCkpCiAgICAgICAg
+ICAoZm9yd2FyZC1saW5lIC0xKQogICAgICAgICAgKGluZGVudC1hY2NvcmRpbmctdG8tbW9kZSkK
+ICAgICAgICAgIChlbmQtb2YtbGluZSkpKSkKCgogICAgIDs7IENhc2UgNDogYSBsYW1iZGEgaW5p
+dGlhbGllci4KICAgICA7OyAtLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLQogICAgIDs7IElmIHRoZSBvcGVuIGN1cmx5IGZvbGxvd3MgPT4sIHRoZW4gaXQncyBhIGxh
+bWJkYSBpbml0aWFsaXplci4KICAgICAoKHN0cmluZz0gKHN1YnN0cmluZyBwcmVjZWRpbmczIC0y
+KSAiPT4iKQogICAgICAoY3NoYXJwLWxvZyAyICJsYW1iZGEgaW5pdCIpCiAgICAgIChzZWxmLWlu
+c2VydC1jb21tYW5kIDEpCiAgICAgIChpbnNlcnQgIiAgfSIpCiAgICAgIChiYWNrd2FyZC1jaGFy
+IDIpKQoKICAgICA7OyBlbHNlLCBpdCdzIGEgbmV3IHNjb3BlLiAoaWYsIHdoaWxlLCBjbGFzcywg
+ZXRjKQogICAgICh0CiAgICAgIChzYXZlLWV4Y3Vyc2lvbgogICAgICAgIChjc2hhcnAtbG9nIDIg
+Im5ldyBzY29wZSIpCiAgICAgICAgKHNldC1tYXJrIChwb2ludCkpIDs7IHByZXBhcmUgdG8gaW5k
+ZW50LXJlZ2lvbiBsYXRlcgogICAgICAgIDs7IGNoZWNrIGlmIHRoZSBwcmlvciBzZXhwIGlzIG9u
+IHRoZSBzYW1lIGxpbmUKICAgICAgICAoaWYgKHNhdmUtZXhjdXJzaW9uCiAgICAgICAgICAgICAg
+KGxldCAoKGN1cmxpbmUgKGxpbmUtbnVtYmVyLWF0LXBvcykpCiAgICAgICAgICAgICAgICAgICAg
+KGFmdGxpbmUgKHByb2duCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAoaWYgKGMtc2Fm
+ZSAoYmFja3dhcmQtc2V4cCkgdCkKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAo
+bGluZS1udW1iZXItYXQtcG9zKQogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAtMSkp
+KSkKICAgICAgICAgICAgICAgICg9IGN1cmxpbmUgYWZ0bGluZSkpKQogICAgICAgICAgICAobmV3
+bGluZS1hbmQtaW5kZW50KSkKICAgICAgICAoc2VsZi1pbnNlcnQtY29tbWFuZCAxKQogICAgICAg
+IChjLWluZGVudC1saW5lLW9yLXJlZ2lvbikKICAgICAgICAoZW5kLW9mLWxpbmUpCiAgICAgICAg
+KG5ld2xpbmUpCiAgICAgICAgKGluc2VydCAifSIpCiAgICAgICAgOzsoYy1pbmRlbnQtY29tbWFu
+ZCkgOzsgbm90IHN1cmUgb2YgdGhlIGRpZmZlcmVuY2UgaGVyZQogICAgICAgIChjLWluZGVudC1s
+aW5lLW9yLXJlZ2lvbikKICAgICAgICAoZm9yd2FyZC1saW5lIC0xKQogICAgICAgIChlbmQtb2Yt
+bGluZSkKICAgICAgICAobmV3bGluZS1hbmQtaW5kZW50KQogICAgICAgIDs7IHBvaW50IGVuZHMg
+dXAgb24gYW4gZW1wdHkgbGluZSwgd2l0aGluIHRoZSBicmFjZXMsIHByb3Blcmx5IGluZGVudGVk
+CiAgICAgICAgKHNldHEgdHBvaW50IChwb2ludCkpKQoKICAgICAgKGdvdG8tY2hhciB0cG9pbnQp
+KSkpKQoKCjs7ID09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09
+PT09PT09PT09PT09PT09PT09PQo7OyBlbmQgb2YgY3NoYXJwLW1vZGUgdXRpbGl0eSBhbmQgZmVh
+dHVyZSBkZWZ1bnMKOzsgPT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09
+PT09PT09PT09PT09PT09PT09PT09PT09CgoKCjs7ID09PT09PT09PT09PT09PT09PT09PT09PT09
+PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PQo7OyBjIyB2YWx1ZXMgZm9y
+ICJsYW5ndWFnZSBjb25zdGFudHMiIGRlZmluZWQgaW4gY2MtbGFuZ3MuZWwKOzsgPT09PT09PT09
+PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09
+CgooYy1sYW5nLWRlZmNvbnN0IGMtYXQtdnNlbWktcC1mbgogIGNzaGFycCAnY3NoYXJwLS1hdC12
+c2VtaS1wKQoKCjs7IFRoaXMgYy1vcHQtYWZ0ZXItaWQtY29uY2F0LWtleSBpcyBhIHJlZ2V4cCB0
+aGF0IG1hdGNoZXMKOzsgZG90LiAgSW4gb3RoZXIgd29yZHM6ICJcXChcXC5cXCkiCjs7IE5vdCBz
+dXJlIHdoeSB0aGlzIG5lZWRzIHRvIGJlIHNvIGNvbXBsaWNhdGVkLgo7OyBUaGlzIGNvbnN0IGlz
+IG5vdyBpbnRlcm5hbCAob2Jzb2xldGUpOyBuZWVkIHRvIG1vdmUgdG8KOzsgYy1hZnRlci1pZC1j
+b25jYXQtb3BzLiAgSSBkb24ndCB5ZXQgdW5kZXJzdGFuZCB0aGUgbWVhbmluZwo7OyBvZiB0aGF0
+IHZhcmlhYmxlLCBzbyBmb3Igbm93LiAuIC4gIC4KCjs7IChjLWxhbmctZGVmY29uc3QgYy1vcHQt
+YWZ0ZXItaWQtY29uY2F0LWtleQo7OyAgIGNzaGFycCAoaWYgKGMtbGFuZy1jb25zdCBjLW9wdC1p
+ZGVudGlmaWVyLWNvbmNhdC1rZXkpCjs7ICAgICAgICAgICAgICAoYy1sYW5nLWNvbnN0IGMtc3lt
+Ym9sLXN0YXJ0KSkpCgooYy1sYW5nLWRlZmNvbnN0IGMtb3B0LWFmdGVyLWlkLWNvbmNhdC1rZXkK
+ICBjc2hhcnAgIltbOmFscGhhOl1fXSIgKQoKCgoKOzsgVGhlIG1hdGNoZXJzIGVsZW1lbnRzIGNh
+biBiZSBvZiBtYW55IGZvcm1zLiAgSXQgZ2V0cyBwcmV0dHkKOzsgY29tcGxpY2F0ZWQuICBEbyBh
+IGRlc2NyaWJlLXZhcmlhYmxlIG9uIGZvbnQtbG9jay1rZXl3b3JkcyB0byBnZXQgYQo7OyBkZXNj
+cmlwdGlvbi4gIChXaHkgb24gZm9udC1sb2NrLWtleXdvcmRzPyBJIGRvbid0IGtub3csIGJ1dCB0
+aGF0J3MKOzsgd2hlcmUgeW91IGdldCB0aGUgaGVscC4pCjs7Cjs7IEFzaWRlIGZyb20gdGhlIHBy
+b3ZpZGVkIGRvY3VtZW50YXRpb24sIHRoZSBvdGhlciBvcHRpb24gb2YgY291cnNlLCBpcwo7OyB0
+byBsb29rIGluIHRoZSBzb3VyY2UgY29kZSBhcyBhbiBleGFtcGxlIGZvciB3aGF0IHRvIGRvLiAg
+VGhlIHNvdXJjZQo7OyBpbiBjYy1mb250cyB1c2VzIGEgZGVmdW4gYy1tYWtlLWZvbnQtbG9jay1z
+ZWFyY2gtZnVuY3Rpb24gdG8gcHJvZHVjZQo7OyBtb3N0IG9mIHRoZSBtYXRjaGVycy4gIENhbGxl
+ZCB0aGlzIHdheToKOzsKOzsgICAoYy1tYWtlLWZvbnQtbG9jay1zZWFyY2gtZnVuY3Rpb24gIHJl
+Z2V4cCAnKEEgQiBjKSkKOzsKOzsgVGhlIFJFR0VYUCBpcyB1c2VkIGluIHJlLXNlYXJjaC1mb3J3
+YXJkLCBhbmQgaWYgdGhlcmUncyBhIG1hdGNoLCB0aGVuCjs7IEEgaXMgY2FsbGVkIHdpdGhpbiBh
+IHNhdmUtbWF0Y2gtZGF0YS4gSWYgQiBhbmQgQyBhcmUgbm9uLW5pbCwgdGhleQo7OyBhcmUgY2Fs
+bGVkIGFzIHByZSBhbmQgcG9zdCBibG9ja3MsIHJlc3BlY2l0dmVseS4KOzsKOzsgQW55d2F5IHRo
+ZSBjLW1ha2UtZm9udC1sb2NrLXNlYXJjaC1mdW5jdGlvbiB3b3JrcyBmb3IgYSBzaW5nbGUgcmVn
+ZXgsCjs7IGJ1dCBtb3JlIGNvbXBsaWNhdGVkIHNjZW5hcmlvcyBzdWNoIGFzIHRob3NlIGludGVu
+ZGVkIHRvIG1hdGNoIGFuZAo7OyBmb250aWZ5IG9iamVjdCBpbml0aWFsaXplcnMsIGNhbGwgZm9y
+IGEgaGFuZC1jcmFmdGVkIGxhbWJkYS4KOzsKOzsgVGhlIG9iamVjdCBpbml0aWFsaXplciBpcyBz
+cGVjaWFsIGJlY2F1c2UgbWF0Y2hpbmcgb24gaXQgbXVzdAo7OyBhbGxvdyBuZXN0aW5nLgo7Owo7
+OyBJbiBjIywgdGhlIG9iamVjdCBpbml0aWFsaXplciBibG9jayBpcyB1c2VkIGRpcmVjdGx5IGFm
+dGVyIGEKOzsgY29uc3RydWN0b3IsIGxpa2UgdGhpczoKOzsKOzsgICAgIG5ldyBNeVR5cGUKOzsg
+ICAgIHsKOzsgICAgICAgIFByb3AxID0gImZvbyIKOzsgICAgIH0KOzsKOzsgY3NoYXJwLW1vZGUg
+bmVlZHMgdG8gZm9udGlmeSB0aGUgcHJvcGVydGllcyBpbiB0aGUKOzsgaW5pdGlhbGl6ZXIgYmxv
+Y2sgaW4gZm9udC1sb2NrLXZhcmlhYmxlLW5hbWUtZmFjZS4gVGhlIGtleSB0aGluZyBpcwo7OyB0
+byBzZXQgdGhlIHRleHQgcHJvcGVydHkgb24gdGhlIG9wZW4gY3VybHksIHVzaW5nIHR5cGUgYy10
+eXBlIGFuZAo7OyB2YWx1ZSBjLWRlY2wtaWQtc3RhcnQuIFRoaXMgYXBwYXJlbnRseSBhbGxvd3Mg
+YHBhcnNlLXBhcnRpYWwtc2V4cCcgdG8KOzsgZG8gdGhlIHJpZ2h0IHRoaW5nLCBsYXRlci4KOzsK
+OzsgVGhpcyBzaW1wbGUgY2FzZSBpcyBlYXN5IHRvIGhhbmRsZSBpbiBhIHJlZ2V4LCB1c2luZyB0
+aGUgYmFzaWMKOzsgYGMtbWFrZS1mb250LWxvY2stc2VhcmNoLWZ1bmN0aW9uJyBmb3JtLiAgQnV0
+IHRoZSBnZW5lcmFsIHN5bnRheCBmb3IgYQo7OyBjb25zdHJ1Y3RvciArIG9iamVjdCBpbml0aWFs
+aXplciBpbiBDIyBpcyBtb3JlIGNvbXBsZXg6Cjs7Cjs7ICAgICBuZXcgTXlUeXBlKC4uYXJnbGlz
+dC4uKSB7Cjs7ICAgICAgICBQcm9wMSA9ICJmb28iCjs7ICAgICB9Cjs7Cjs7IEEgc2ltcGxlIHJl
+Z2V4IG1hdGNoIHdvbid0IHNhdGlzZnkgaGVyZSwgYmVjYXVzZSB0aGUgLi5hcmdsaXN0Li4gY2Fu
+Cjs7IGJlIGFueXRoaW5nLCBpbmNsdWRpbmcgY2FsbHMgdG8gb3RoZXIgY29uc3RydWN0b3JzLCBw
+b3RlbnRpYWxseSB3aXRoCjs7IG9iamVjdCBpbml0aWFsaXplciBibG9ja3MuIFRoaXMgbWF5IG5l
+c3QgYXJiaXRyYXJpbHkgZGVlcGx5LCBhbmQgdGhlCjs7IHJlZ2V4IGluIGVtYWNzIGRvZXNuJ3Qg
+c3VwcG9ydCBiYWxhbmNlZCBtYXRjaGluZy4gIFRoZXJlZm9yZSB0aGVyZSdzCjs7IG5vIHdheSB0
+byBtYXRjaCBvbiB0aGUgIm91dHNpZGUiIHBhaXIgb2YgcGFyZW5zLCB0byBmaW5kIHRoZSByZWxl
+dmFudAo7OyBvcGVuIGN1cmx5LiAgV2hhdCdzIG5lY2Vzc2FyeSBpcyB0byBkbyB0aGUgbWF0Y2gg
+b24gIm5ldyBNeVR5cGUiIHRoZW4KOzsgc2tpcCBvdmVyIHRoZSBzZXhwIGRlZmluZWQgYnkgdGhl
+IHBhcmVucywgdGhlbiBzZXQgdGhlIHRleHQgcHJvcGVydHkgb24KOzsgdGhlIGFwcHJvcHJpYXRl
+IG9wZW4tY3VybHkuCjs7Cjs7IFRvIG1ha2UgdGhhdCBoYXBwZW4sIGl0J3MgZ29vZCB0byBoYXZl
+IGluc2lnaHQgaW50byB3aGF0IHRoZSBtYXRjaGVyCjs7IHJlYWxseSBkb2VzLiAgVGhlIG91dHB1
+dCBvZiBgYy1tYWtlLWZvbnQtbG9jay1zZWFyY2gtZnVuY3Rpb24nIGJlZm9yZQo7OyBieXRlLWNv
+bXBpbGluZywgaXM6Cjs7Cjs7IChsYW1iZGEgKGxpbWl0KQo7OyAgIChsZXQgKChwYXJzZS1zZXhw
+LWxvb2t1cC1wcm9wZXJ0aWVzCjs7ICAgICAgICAgIChjYy1ldmFsLXdoZW4tY29tcGlsZQo7OyAg
+ICAgICAgICAgIChib3VuZHAgJ3BhcnNlLXNleHAtbG9va3VwLXByb3BlcnRpZXMpKSkpCjs7ICAg
+ICAod2hpbGUgKHJlLXNlYXJjaC1mb3J3YXJkIFJFR0VYIGxpbWl0IHQpCjs7ICAgICAgICh1bmxl
+c3MKOzsgICAgICAgICAgIChwcm9nbgo7OyAgICAgICAgICAgICAoZ290by1jaGFyIChtYXRjaC1i
+ZWdpbm5pbmcgMCkpCjs7ICAgICAgICAgICAgIChjLXNraXAtY29tbWVudHMtYW5kLXN0cmluZ3Mg
+bGltaXQpKQo7OyAgICAgICAgIChnb3RvLWNoYXIgKG1hdGNoLWVuZCAwKSkKOzsgICAgICAgICAo
+cHJvZ24KOzsgICAgICAgICAgIEIKOzsgICAgICAgICAgIChzYXZlLW1hdGNoLWRhdGEgQSkKOzsg
+ICAgICAgICAgIEMgKSkpKQo7OyAgIG5pbCkKOzsKOzsgY3NoYXJwLW1vZGUgdXNlcyB0aGlzIGhh
+bmQtY3JhZnRlZCBmb3JtIG9mIGEgbWF0Y2hlciB0byBoYW5kbGUgdGhlCjs7IGdlbmVyYWwgY2Fz
+ZSBmb3IgY29uc3RydWN0b3IgKyBvYmplY3QgaW5pdGlhbGl6ZXIsIHdpdGhpbgo7OyBgYy1iYXNp
+Yy1tYXRjaGVycy1hZnRlcicgLgo7OwoKCgoKOzsgKGRlZnVuIGMtbWFrZS1mb250LWxvY2stc2Vh
+cmNoLWZ1bmN0aW9uIChyZWdleHAgJnJlc3QgaGlnaGxpZ2h0cykKOzsgICAgIDs7IFRoaXMgZnVu
+Y3Rpb24gbWFrZXMgYSBieXRlIGNvbXBpbGVkIGZ1bmN0aW9uIHRoYXQgd29ya3MgbXVjaCBsaWtl
+Cjs7ICAgICA7OyBhIG1hdGNoZXIgZWxlbWVudCBpbiBgZm9udC1sb2NrLWtleXdvcmRzJy4gIEl0
+IGN1dHMgb3V0IGEgbGl0dGxlCjs7ICAgICA7OyBiaXQgb2YgdGhlIG92ZXJoZWFkIGNvbXBhcmVk
+IHRvIGEgcmVhbCBtYXRjaGVyLiAgVGhlIG1haW4gcmVhc29uCjs7ICAgICA7OyBpcyBob3dldmVy
+IHRvIHBhc3MgdGhlIHJlYWwgc2VhcmNoIGxpbWl0IHRvIHRoZSBhbmNob3JlZAo7OyAgICAgOzsg
+bWF0Y2hlcihzKSwgc2luY2UgbW9zdCAoaWYgbm90IGFsbCkgZm9udC1sb2NrIGltcGxlbWVudGF0
+aW9ucwo7OyAgICAgOzsgYXJiaXRyYXJpbHkgbGltaXRzIGFuY2hvcmVkIG1hdGNoZXJzIHRvIHRo
+ZSBzYW1lIGxpbmUsIGFuZCBhbHNvCjs7ICAgICA7OyB0byBpbnN1bGF0ZSBhZ2FpbnN0IHZhcmlv
+dXMgb3RoZXIgaXJyaXRhdGluZyBkaWZmZXJlbmNlcyBiZXR3ZWVuCjs7ICAgICA7OyB0aGUgZGlm
+ZmVyZW50IChYKUVtYWNzIGZvbnQtbG9jayBwYWNrYWdlcy4KOzsgICAgIDs7Cjs7ICAgICA7OyBS
+RUdFWFAgaXMgdGhlIG1hdGNoZXIsIHdoaWNoIG11c3QgYmUgYSByZWdleHAuICBPbmx5IG1hdGNo
+ZXMKOzsgICAgIDs7IHdoZXJlIHRoZSBiZWdpbm5pbmcgaXMgb3V0c2lkZSBhbnkgY29tbWVudCBv
+ciBzdHJpbmcgbGl0ZXJhbCBhcmUKOzsgICAgIDs7IHNpZ25pZmljYW50Lgo7OyAgICAgOzsKOzsg
+ICAgIDs7IEhJR0hMSUdIVFMgaXMgYSBsaXN0IG9mIGhpZ2hsaWdodCBzcGVjcywganVzdCBsaWtl
+IGluCjs7ICAgICA7OyBgZm9udC1sb2NrLWtleXdvcmRzJywgd2l0aCB0aGVzZSBsaW1pdGF0aW9u
+czogVGhlIGZhY2UgaXMgYWx3YXlzCjs7ICAgICA7OyBvdmVycmlkZGVuIChubyBiaWcgZGlzYWR2
+YW50YWdlLCBzaW5jZSBoaXRzIGluIGNvbW1lbnRzIGV0YyBhcmUKOzsgICAgIDs7IGZpbHRlcmVk
+IGFueXdheSksIHRoZXJlIGlzIG5vICJsYXhtYXRjaCIsIGFuZCBhbiBhbmNob3JlZCBtYXRjaGVy
+Cjs7ICAgICA7OyBpcyBhbHdheXMgYSBmb3JtIHdoaWNoIG11c3QgZG8gYWxsIHRoZSBmb250aWZp
+Y2F0aW9uIGRpcmVjdGx5Lgo7OyAgICAgOzsgYGxpbWl0JyBpcyBhIHZhcmlhYmxlIGJvdW5kIHRv
+IHRoZSByZWFsIGxpbWl0IGluIHRoZSBjb250ZXh0IG9mCjs7ICAgICA7OyB0aGUgYW5jaG9yZWQg
+bWF0Y2hlciBmb3Jtcy4KOzsgICAgIDs7Cjs7ICAgICA7OyBUaGlzIGZ1bmN0aW9uIGRvZXMgbm90
+IGRvIGFueSBoaWRkZW4gYnVmZmVyIGNoYW5nZXMsIGJ1dCB0aGUKOzsgICAgIDs7IGdlbmVyYXRl
+ZCBmdW5jdGlvbnMgd2lsbC4gIChUaGV5IGFyZSBob3dldmVyIHVzZWQgaW4gcGxhY2VzCjs7ICAg
+ICA7OyBjb3ZlcmVkIGJ5IHRoZSBmb250LWxvY2sgY29udGV4dC4pCjs7Cjs7ICAgICA7OyBOb3Rl
+OiBSZXBsYWNlIGBieXRlLWNvbXBpbGUnIHdpdGggYGV2YWwnIHRvIGRlYnVnIHRoZSBnZW5lcmF0
+ZWQKOzsgICAgIDs7IGxhbWJkYSBlYXNpZXIuCjs7ICAgICAoYnl0ZS1jb21waWxlCjs7ICAgICAg
+YChsYW1iZGEgKGxpbWl0KQo7OyAgICAgICAgIChsZXQgKDs7IFRoZSBmb250LWxvY2sgcGFja2Fn
+ZSBpbiBFbWFjcyBpcyBrbm93biB0byBjbG9iYmVyCjs7ICAgICAgICAgICAgICAgOzsgYHBhcnNl
+LXNleHAtbG9va3VwLXByb3BlcnRpZXMnICh3aGVuIGl0IGV4aXN0cykuCjs7ICAgICAgICAgICAg
+ICAgKHBhcnNlLXNleHAtbG9va3VwLXByb3BlcnRpZXMKOzsgICAgICAgICAgICAgICAgKGNjLWV2
+YWwtd2hlbi1jb21waWxlCjs7ICAgICAgICAgICAgICAgICAgKGJvdW5kcCAncGFyc2Utc2V4cC1s
+b29rdXAtcHJvcGVydGllcykpKSkKOzsgICAgICAgICAgICh3aGlsZSAocmUtc2VhcmNoLWZvcndh
+cmQgLHJlZ2V4cCBsaW1pdCB0KQo7OyAgICAgICAgICAgICAodW5sZXNzIChwcm9nbgo7OyAgICAg
+ICAgICAgICAgICAgICAgICAgKGdvdG8tY2hhciAobWF0Y2gtYmVnaW5uaW5nIDApKQo7OyAgICAg
+ICAgICAgICAgICAgICAgICAgKGMtc2tpcC1jb21tZW50cy1hbmQtc3RyaW5ncyBsaW1pdCkpCjs7
+ICAgICAgICAgICAgICAgKGdvdG8tY2hhciAobWF0Y2gtZW5kIDApKQo7OyAgICAgICAgICAgICAg
+ICxAKG1hcGNhcgo7OyAgICAgICAgICAgICAgICAgIChsYW1iZGEgKGhpZ2hsaWdodCkKOzsgICAg
+ICAgICAgICAgICAgICAgIChpZiAoaW50ZWdlcnAgKGNhciBoaWdobGlnaHQpKQo7OyAgICAgICAg
+ICAgICAgICAgICAgICAgIChwcm9nbgo7OyAgICAgICAgICAgICAgICAgICAgICAgICAgKHVubGVz
+cyAoZXEgKG50aCAyIGhpZ2hsaWdodCkgdCkKOzsgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+KGVycm9yCjs7ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAiVGhlIG92ZXJyaWRlIGZsYWcg
+bXVzdCBjdXJyZW50bHkgYmUgdCBpbiAlcyIKOzsgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+IGhpZ2hsaWdodCkpCjs7ICAgICAgICAgICAgICAgICAgICAgICAgICAod2hlbiAobnRoIDMgaGln
+aGxpZ2h0KQo7OyAgICAgICAgICAgICAgICAgICAgICAgICAgICAoZXJyb3IKOzsgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICJUaGUgbGF4bWF0Y2ggZmxhZyBtYXkgY3VycmVudGx5IG5vdCBi
+ZSBzZXQgaW4gJXMiCjs7ICAgICAgICAgICAgICAgICAgICAgICAgICAgICBoaWdobGlnaHQpKQo7
+OyAgICAgICAgICAgICAgICAgICAgICAgICAgYChzYXZlLW1hdGNoLWRhdGEKOzsgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgIChjLXB1dC1mb250LWxvY2stZmFjZQo7OyAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgIChtYXRjaC1iZWdpbm5pbmcgLChjYXIgaGlnaGxpZ2h0KSkKOzsgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAobWF0Y2gtZW5kICwoY2FyIGhpZ2hsaWdodCkpCjs7
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgLChlbHQgaGlnaGxpZ2h0IDEpKSkpCjs7ICAg
+ICAgICAgICAgICAgICAgICAgICh3aGVuIChudGggMyBoaWdobGlnaHQpCjs7ICAgICAgICAgICAg
+ICAgICAgICAgICAgKGVycm9yICJNYXRjaCBoaWdobGlnaHRzIGN1cnJlbnRseSBub3Qgc3VwcG9y
+dGVkIGluICVzIgo7OyAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBoaWdobGlnaHQpKQo7
+OyAgICAgICAgICAgICAgICAgICAgICBgKHByb2duCjs7ICAgICAgICAgICAgICAgICAgICAgICAg
+ICwobnRoIDEgaGlnaGxpZ2h0KQo7OyAgICAgICAgICAgICAgICAgICAgICAgICAoc2F2ZS1tYXRj
+aC1kYXRhICwoY2FyIGhpZ2hsaWdodCkpCjs7ICAgICAgICAgICAgICAgICAgICAgICAgICwobnRo
+IDIgaGlnaGxpZ2h0KSkpKQo7OyAgICAgICAgICAgICAgICAgIGhpZ2hsaWdodHMpKSkpCjs7ICAg
+ICAgICAgbmlsKSkKOzsgICAgICkKCgooYy1sYW5nLWRlZmNvbnN0IGMtYmFzaWMtbWF0Y2hlcnMt
+YmVmb3JlCiAgY3NoYXJwIGAoCiAgICAgICAgICAgOzs7OyBGb250LWxvY2sgdGhlIGF0dHJpYnV0
+ZXMgYnkgc2VhcmNoaW5nIGZvciB0aGUKICAgICAgICAgICA7Ozs7IGFwcHJvcHJpYXRlIHJlZ2V4
+IGFuZCBtYXJraW5nIGl0IGFzIFRPRE8uCiAgICAgICAgICAgOzssYCgsKGNvbmNhdCAiXFwoIiBj
+c2hhcnAtYXR0cmlidXRlLXJlZ2V4ICJcXCkiKQogICAgICAgICAgIDs7ICAgMCBmb250LWxvY2st
+ZnVuY3Rpb24tbmFtZS1mYWNlKQoKICAgICAgICAgICA7OyBQdXQgYSB3YXJuaW5nIGZhY2Ugb24g
+dGhlIG9wZW5lciBvZiB1bmNsb3NlZCBzdHJpbmdzIHRoYXQKICAgICAgICAgICA7OyBjYW4ndCBz
+cGFuIGxpbmVzLiAgTGF0ZXIgZm9udAogICAgICAgICAgIDs7IGxvY2sgcGFja2FnZXMgaGF2ZSBh
+IGBmb250LWxvY2stc3ludGFjdGljLWZhY2UtZnVuY3Rpb24nIGZvcgogICAgICAgICAgIDs7IHRo
+aXMsIGJ1dCBpdCBkb2Vzbid0IGdpdmUgdGhlIGNvbnRyb2wgd2Ugd2FudCBzaW5jZSBhbnkKICAg
+ICAgICAgICA7OyBmb250aWZpY2F0aW9uIGRvbmUgaW5zaWRlIHRoZSBmdW5jdGlvbiB3aWxsIGJl
+CiAgICAgICAgICAgOzsgdW5jb25kaXRpb25hbGx5IG92ZXJyaWRkZW4uCiAgICAgICAgICAgLChj
+LW1ha2UtZm9udC1sb2NrLXNlYXJjaC1mdW5jdGlvbgogICAgICAgICAgICAgOzsgTWF0Y2ggYSBj
+aGFyIGJlZm9yZSB0aGUgc3RyaW5nIHN0YXJ0ZXIgdG8gbWFrZQogICAgICAgICAgICAgOzsgYGMt
+c2tpcC1jb21tZW50cy1hbmQtc3RyaW5ncycgd29yayBjb3JyZWN0bHkuCiAgICAgICAgICAgICAo
+Y29uY2F0ICIuXFwoIiBjLXN0cmluZy1saW1pdC1yZWdleHAgIlxcKSIpCiAgICAgICAgICAgICAn
+KChjLWZvbnQtbG9jay1pbnZhbGlkLXN0cmluZykpKQoKCiAgICAgICAgICAgOzsgRm9udGlmeSBr
+ZXl3b3JkIGNvbnN0YW50cy4KICAgICAgICAgICAsQCh3aGVuIChjLWxhbmctY29uc3QgYy1jb25z
+dGFudC1rd2RzKQogICAgICAgICAgICAgICAobGV0ICgocmUgKGMtbWFrZS1rZXl3b3Jkcy1yZSBu
+aWwKICAgICAgICAgICAgICAgICAgICAgICAgICAgKGMtbGFuZy1jb25zdCBjLWNvbnN0YW50LWt3
+ZHMpKSkpCiAgICAgICAgICAgICAgICAgYCgoZXZhbCAuIChsaXN0ICwoY29uY2F0ICJcXDxcXCgi
+IHJlICJcXClcXD4iKQogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAxIGMtY29uc3Rh
+bnQtZmFjZS1uYW1lKSkpKSkKCgogICAgICAgICAgIDs7IEZvbnRpZnkgdGhlIG5hbWVzcGFjZXMg
+dGhhdCBmb2xsb3cgdXNpbmcgc3RhdGVtZW50cy4KICAgICAgICAgICA7OyBUaGlzIHJlZ2V4IGhh
+bmRsZXMgdGhlIG9wdGlvbmFsIGFsaWFzLCBhcyB3ZWxsLgogICAgICAgICAgICxgKCwoY29uY2F0
+CiAgICAgICAgICAgICAgICAiXFw8XFwodXNpbmdcXClbIFx0XG5cZlx2XHJdKyIKICAgICAgICAg
+ICAgICAgICJcXCg/OiIKICAgICAgICAgICAgICAgICJcXChbQS1aYS16X11bWzphbG51bTpdXSpc
+XCkiCiAgICAgICAgICAgICAgICAiWyBcdFxuXGZcdlxyXSo9IgogICAgICAgICAgICAgICAgIlsg
+XHRcblxmXHZccl0qIgogICAgICAgICAgICAgICAgIlxcKT8iCiAgICAgICAgICAgICAgICAiXFwo
+XFwoPzpbQS1aYS16X11bWzphbG51bTpdXSpcXC5cXCkqW0EtWmEtel9dW1s6YWxudW06XV0qXFwp
+IgogICAgICAgICAgICAgICAgIlsgXHRcblxmXHZccl0qOyIpCiAgICAgICAgICAgICAgKDIgZm9u
+dC1sb2NrLWNvbnN0YW50LWZhY2UgdCB0KQogICAgICAgICAgICAgICgzIGZvbnQtbG9jay1jb25z
+dGFudC1mYWNlKSkKCgogICAgICAgICAgIDs7IEZvbnRpZnkgYWxsIGtleXdvcmRzIGV4Y2VwdCB0
+aGUgcHJpbWl0aXZlIHR5cGVzLgogICAgICAgICAgICxgKCwoY29uY2F0ICJcXDwiIChjLWxhbmct
+Y29uc3QgYy1yZWd1bGFyLWtleXdvcmRzLXJlZ2V4cCkpCiAgICAgICAgICAgICAgMSBmb250LWxv
+Y2sta2V5d29yZC1mYWNlKQoKCiAgICAgICAgICAgOzsgRm9udGlmeSBsZWFkaW5nIGlkZW50aWZp
+ZXJzIGFzIGEgcmVmZXJlbmNlPyBpbiBmdWxseQogICAgICAgICAgIDs7IHF1YWxpZmllZCBuYW1l
+cyBsaWtlICJGb28uQmFyIi4KICAgICAgICAgICAsQCh3aGVuIChjLWxhbmctY29uc3QgYy1vcHQt
+aWRlbnRpZmllci1jb25jYXQta2V5KQogICAgICAgICAgICAgICBgKCgsKGJ5dGUtY29tcGlsZQog
+ICAgICAgICAgICAgICAgICAgIGAobGFtYmRhIChsaW1pdCkKICAgICAgICAgICAgICAgICAgICAg
+ICAoY3NoYXJwLWxvZyAzICJibWIgcmVmZXJlbmNlPyBwKCVkKSBMKCVkKSIgKHBvaW50KSBsaW1p
+dCkKICAgICAgICAgICAgICAgICAgICAgICAod2hpbGUgKHJlLXNlYXJjaC1mb3J3YXJkCiAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAsKGNvbmNhdCAiXFwoXFw8IiA7OyAxCiAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAiXFwoIiAgOzsgMgogICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgOzsiW0EtWl0iOzsgdXBwZXJjYXNlIC0gYXNzdW1l
+IHVwcGVyID0gY2xhc3NuYW1lCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAiW0EtWmEtel9dIiAgOzsgYW55IG9sZAogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgIltBLVphLXowLTlfXSoiIDs7IG9sZDogKGMtbGFuZy1jb25zdCBjLXN5bWJvbC1r
+ZXkpCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAiXFwpIgogICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIlsgXHRcblxyXGZcdl0qIgogICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIlxcLiIgICA7OyhjLWxhbmctY29uc3Qg
+Yy1vcHQtaWRlbnRpZmllci1jb25jYXQta2V5KQogICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgIlsgXHRcblxyXGZcdl0qIgogICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgIlxcKSIgOzsgMSBlbmRzCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAiXFwoIgogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+IltbOmFscGhhOl1fXVtBLVphLXowLTlfXSoiIDs7IHN0YXJ0IG9mIGFub3RoZXIgc3ltYm9sbmFt
+ZQogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIlxcKSIgIDs7IDMgZW5k
+cwogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgKQogICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgbGltaXQgdCkKICAgICAgICAgICAgICAgICAgICAgICAgIChjc2hh
+cnAtbG9nIDMgImJtYiByZWY/IEIoJWQpIiAobWF0Y2gtYmVnaW5uaW5nIDApKQogICAgICAgICAg
+ICAgICAgICAgICAgICAgKHVubGVzcyAocHJvZ24KICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAoZ290by1jaGFyIChtYXRjaC1iZWdpbm5pbmcgMCkpCiAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgKGMtc2tpcC1jb21tZW50cy1hbmQtc3RyaW5ncyBsaW1pdCkpCiAg
+ICAgICAgICAgICAgICAgICAgICAgICAgIChsZXQqICgocHJlZml4ICAobWF0Y2gtc3RyaW5nIDIp
+KQogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgKG1lMSAobWF0Y2gtZW5kIDEpKQog
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgKGZpcnN0LWNoYXIgKHN0cmluZy10by1j
+aGFyIHByZWZpeCkpCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAoaXMtdXBwZXIg
+KGFuZCAoPj0gZmlyc3QtY2hhciA2NSkKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICg8PSBmaXJzdC1jaGFyIDkwKSkpKQogICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgIChjc2hhcnAtbG9nIDMgIiAgLSBjbGFzcy9pbnRmIHJlZiAoJXMpIiBwcmVmaXgp
+CiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgOzsgb25seSBwdXQgZmFjZSBpZiBub3QgdGhl
+cmUgYWxyZWFkeQogICAgICAgICAgICAgICAgICAgICAgICAgICAgIChvciAoZ2V0LXRleHQtcHJv
+cGVydHkgKG1hdGNoLWJlZ2lubmluZyAyKSAnZmFjZSkKICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgKGMtcHV0LWZvbnQtbG9jay1mYWNlIChtYXRjaC1iZWdpbm5pbmcgMikKICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIChtYXRjaC1l
+bmQgMikKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgIChpZiBpcy11cHBlcgogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgIGZvbnQtbG9jay10eXBlLWZhY2UgOzsgaXQncyBhIHR5cGUhCiAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIGZv
+bnQtbG9jay12YXJpYWJsZS1uYW1lLWZhY2UpKSkKCiAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgKGdvdG8tY2hhciAobWF0Y2gtZW5kIDMpKQogICAgICAgICAgICAgICAgICAgICAgICAgICAg
+IChjLWZvcndhcmQtc3ludGFjdGljLXdzIGxpbWl0KQoKICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICA7OyBub3csIG1heWJlIGZvbnRpZnkgdGhlIHRoaW5nIGFmdGVyd2FyZHMsIHRvbwogICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgIChsZXQgKChjIChjaGFyLWFmdGVyKSkpCiAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAoY3NoYXJwLWxvZyAzICIgIC0gbm93IGxrZyBhdCBjKCVj
+KSIgYykKCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAoY29uZAoKICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAoKD0gYyA0MCkgOzsgb3BlbiBwYXJlbgogICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAob3IgKGdldC10ZXh0LXByb3BlcnR5IChtYXRjaC1iZWdpbm5p
+bmcgMykgJ2ZhY2UpCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAoYy1wdXQt
+Zm9udC1sb2NrLWZhY2UgKG1hdGNoLWJlZ2lubmluZyAzKQogICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIChtYXRjaC1lbmQgMykKICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBmb250
+LWxvY2stZnVuY3Rpb24tbmFtZS1mYWNlKSkKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgKGdvdG8tY2hhciAobWF0Y2gtZW5kIDMpKSkKCiAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgOzsgIHRoZXNlIGFsbCBsb29rIGxpa2UgdmFyaWFibGVzIG9yIHByb3BlcnRpZXMKICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAoKG9yICg9IGMgNTkpICA7OyBzZW1pY29sb24K
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICg9IGMgOTEpICA7OyBvcGVuIHNx
+IGJyYWNrCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAoPSBjIDQxKSAgOzsg
+Y2xvc2UgcGFyZW4KICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICg9IGMgNDQp
+ICA7OyAsCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAoPSBjIDMzKSAgOzsg
+IQogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgKD0gYyAxMjQpIDs7IHwKICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICg9IGMgNjEpICA7OyA9CiAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAoPSBjIDQzKSAgOzsgKwogICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgKD0gYyA0NSkgIDs7IC0KICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICg9IGMgNDIpICA7OyAqCiAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAoPSBjIDQ3KSkgOzsgLwogICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAob3IgKGdldC10ZXh0LXByb3BlcnR5IChtYXRjaC1iZWdpbm5pbmcgMykgJ2ZhY2UpCiAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAoYy1wdXQtZm9udC1sb2NrLWZhY2Ug
+KG1hdGNoLWJlZ2lubmluZyAzKQogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgIChtYXRjaC1lbmQgMykKICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBmb250LWxvY2stdmFyaWFibGUt
+bmFtZS1mYWNlKSkKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgKGdvdG8tY2hhciAo
+bWF0Y2gtZW5kIDMpKSkKCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgKHQKICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgKGdvdG8tY2hhciAobWF0Y2gtZW5kIDEpKSkpKSkp
+KSkpKSkpCgogICAgICAgICAgICkpCgoKCihjLWxhbmctZGVmY29uc3QgYy1iYXNpYy1tYXRjaGVy
+cy1hZnRlcgogIGNzaGFycCBgKAoKICAgICAgICAgICA7OyBvcHRpb24gMToKICAgICAgICAgICA7
+OyAgICAgICAgICAgICxAKHdoZW4gY29uZGl0aW9uCiAgICAgICAgICAgOzsgICAgICAgICAgICAg
+ICAgYCgoLChieXRlLWNvbXBpbGUKICAgICAgICAgICA7OyAgICAgICAgICAgICAgICAgICAgIGAo
+bGFtYmRhIChsaW1pdCkgLi4uCiAgICAgICAgICAgOzsKICAgICAgICAgICA7OyBvcHRpb24gMjoK
+ICAgICAgICAgICA7OyAgICAgICAgICAgICxgKChsYW1iZGEgKGxpbWl0KSAuLi4KICAgICAgICAg
+ICA7OwogICAgICAgICAgIDs7IEkgZG9uJ3Qga25vdyBob3cgdG8gYXZvaWQgdGhlICh3aGVuIGNv
+bmRpdGlvbiAuLi4pIGluIHRoZQogICAgICAgICAgIDs7IGJ5dGUtY29tcGlsZWQgdmVyc2lvbi4K
+ICAgICAgICAgICA7OwogICAgICAgICAgIDs7IFgrWCtYK1grWCtYK1grWCtYK1grWCtYK1grWCtY
+K1grWCtYK1grWCtYK1grWCtYK1grWCtYK1grWCtYKwoKICAgICAgICAgICA7OyBDYXNlIDE6IGlu
+dm9jYXRpb24gb2YgY29uc3RydWN0b3IgKyBtYXliZSBhbiBvYmplY3QKICAgICAgICAgICA7OyBp
+bml0aWFsaXplci4gIFNvbWUgcG9zc2libGUgZXhhbXBsZXMgdGhhdCBzYXRpc2Z5OgogICAgICAg
+ICAgIDs7CiAgICAgICAgICAgOzsgICBuZXcgRm9vICgpOwogICAgICAgICAgIDs7CiAgICAgICAg
+ICAgOzsgICBuZXcgRm9vICgpIHsgfTsKICAgICAgICAgICA7OwogICAgICAgICAgIDs7ICAgbmV3
+IEZvbyB7ICB9OwogICAgICAgICAgIDs7CiAgICAgICAgICAgOzsgICBuZXcgRm9vIHsgUHJvcDE9
+IDcgfTsKICAgICAgICAgICA7OwogICAgICAgICAgIDs7ICAgbmV3IEZvbyB7CiAgICAgICAgICAg
+OzsgICAgIFByb3AxPSA3CiAgICAgICAgICAgOzsgICB9OwogICAgICAgICAgIDs7CiAgICAgICAg
+ICAgOzsgICBuZXcgRm9vIHsKICAgICAgICAgICA7OyAgICAgUHJvcDE9IDcsCiAgICAgICAgICAg
+OzsgICAgIFByb3AyPSAiRnJlZCIKICAgICAgICAgICA7OyAgIH07CiAgICAgICAgICAgOzsKICAg
+ICAgICAgICA7OyAgIG5ldyBGb28gewogICAgICAgICAgIDs7ICAgICAgUHJvcDE9IG5ldyBCYXIo
+KQogICAgICAgICAgIDs7ICAgfTsKICAgICAgICAgICA7OwogICAgICAgICAgIDs7ICAgbmV3IEZv
+byB7CiAgICAgICAgICAgOzsgICAgICBQcm9wMT0gbmV3IEJhciB7IFByb3BBID0gNS42RiB9CiAg
+ICAgICAgICAgOzsgICB9OwogICAgICAgICAgIDs7CiAgICAgICAgICAgLEAod2hlbiB0CiAgICAg
+ICAgICAgICAgIGAoKCwoYnl0ZS1jb21waWxlCiAgICAgICAgICAgICAgICAgICAgYChsYW1iZGEg
+KGxpbWl0KQogICAgICAgICAgICAgICAgICAgICAgICAobGV0ICgocGFyc2Utc2V4cC1sb29rdXAt
+cHJvcGVydGllcwogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgKGNjLWV2YWwtd2hlbi1j
+b21waWxlCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIChib3VuZHAgJ3BhcnNlLXNl
+eHAtbG9va3VwLXByb3BlcnRpZXMpKSkpCgogICAgICAgICAgICAgICAgICAgICAgICAgICh3aGls
+ZSAocmUtc2VhcmNoLWZvcndhcmQKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICwo
+Y29uY2F0ICJcXDxuZXciCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAiWyBcdFxuXHJcZlx2XSsiCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAiXFwoXFwoPzoiCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAoYy1sYW5nLWNvbnN0IGMtc3ltYm9sLWtleSkKICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICJcXC5cXCkqIgogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgKGMtbGFuZy1jb25zdCBjLXN5bWJvbC1rZXkpCiAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAiXFwpIgogICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgKQogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgbGlt
+aXQgdCkKICAgICAgICAgICAgICAgICAgICAgICAgICAgICh1bmxlc3MKICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAocHJvZ24KICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+IChnb3RvLWNoYXIgKG1hdGNoLWJlZ2lubmluZyAwKSkKICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgIChjLXNraXAtY29tbWVudHMtYW5kLXN0cmluZ3MgbGltaXQpKQoKICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgKGNzaGFycC1sb2cgMyAiY3RvciBpbnZva2U/IGF0ICVkIiAo
+bWF0Y2gtYmVnaW5uaW5nIDEpKQoKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgKHNhdmUt
+bWF0Y2gtZGF0YQogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIDs7IG5leHQgdGhpbmcg
+Y291bGQgYmU6IFtdICgpIDw+IG9yIHt9IG9yIG5vdGhpbmcgKHNlbWljb2xvbiwgY29tbWEpLgoK
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICA7OyBmb250aWZ5IHRoZSB0eXBlbmFtZQog
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIChjLXB1dC1mb250LWxvY2stZmFjZSAobWF0
+Y2gtYmVnaW5uaW5nIDEpCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgIChtYXRjaC1lbmQgMSkKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgJ2ZvbnQtbG9jay10eXBlLWZhY2UpCgogICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgIChnb3RvLWNoYXIgKG1hdGNoLWVuZCAwKSkKICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAoYy1mb3J3YXJkLXN5bnRhY3RpYy13cyBsaW1pdCkKICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAoaWYgKGVxIChjaGFyLWFmdGVyKSA/PCkgOzsg
+Y3RvciBmb3IgZ2VuZXJpYyB0eXBlCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+IChwcm9nbgogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIChjc2hhcnAtbG9n
+IDMgIiAtIHRoaXMgaXMgYSBnZW5lcmljIHR5cGUiKQogICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgIDs7IHNraXAgb3ZlciA8PiBzYWZlbHkKICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAoYy1zYWZlIChjLWZvcndhcmQtc2V4cCAxKSB0KQogICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgIChjLWZvcndhcmQtc3ludGFjdGljLXdzKSkpCgog
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIDs7IG5vdywgY291bGQgYmUgW10gb3IgKC4u
+KSBvciB7Li59IG9yIHNlbWljb2xvbi4KCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+KGNzaGFycC1sb2cgMyAiIC0gbG9va2luZyBmb3Igc2V4cCIpCgogICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgIChpZiAob3IKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+IChlcSAoY2hhci1hZnRlcikgP3spIDs7IG9wZW4gY3VybHkKICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgIChhbmQgKGVxIChjaGFyLWFmdGVyKSA5MSkgOzsgb3BlbiBzcXVhcmUK
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgKHdoaWxlIChlcSAoY2hh
+ci1hZnRlcikgOTEpCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+KGMtc2FmZSAoYy1mb3J3YXJkLXNleHAgMSkpKQogICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAoZXEgKGNoYXItYmVmb3JlKSA5MykpIDs7IGNsb3NlIHNxdWFyZQogICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgKGFuZCAoZXEgKGNoYXItYWZ0ZXIpIDQw
+KSA7OyBvcGVuIHBhcmVuCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+IChjLXNhZmUgKGMtZm9yd2FyZC1zZXhwIDEpIHQpKSkKCiAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgIChwcm9nbgogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+IDs7IGF0IHRoaXMgcG9pbnQgd2UndmUganVtcGVkIG92ZXIgYW55IGludGVydmVuaW5nIHMtZXhw
+LAogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIDs7IGxpa2Ugc3EgYnJhY2tl
+dHMgb3IgcGFyZW5zLgogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIChjLWZv
+cndhcmQtc3ludGFjdGljLXdzKQogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+IChjc2hhcnAtbG9nIDMgIiAtIGFmdGVyIGZ3ZC1zeW4td3MgcG9pbnQoJWQpIiAocG9pbnQpKQog
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIChjc2hhcnAtbG9nIDMgIiAtIG5l
+eHQgY2hhcjogICVjIiAoY2hhci1hZnRlcikpCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgKGlmIChlcSAoY2hhci1hZnRlcikgP3spCiAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgIChsZXQgKChzdGFydCAocG9pbnQpKQogICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAoZW5kIChpZiAoYy1zYWZlIChjLWZvcndh
+cmQtc2V4cCAxKSB0KQogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAocG9pbnQpIDApKSkKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAoY3NoYXJwLWxvZyAzICIgLSAgb3BlbiBjdXJseSBnZXRzIGMtZGVjbC1p
+ZC1zdGFydCAlZCIgc3RhcnQpCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgKGMtcHV0LWNoYXItcHJvcGVydHkgc3RhcnQKICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAnYy10eXBlCiAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+J2MtZGVjbC1pZC1zdGFydCkKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAoZ290by1jaGFyIHN0YXJ0KQogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgIChpZiAoPiBlbmQgc3RhcnQpCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgIChwcm9nbgogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgIChmb3J3YXJkLWNoYXIgMSkgOzsgc3RlcCBvdmVyIG9wZW4gY3Vy
+bHkKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAoYy1m
+b3J3YXJkLXN5bnRhY3RpYy13cykKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAod2hpbGUgKD4gZW5kIChwb2ludCkpCiAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICA7OyBub3csIHRyeSB0byBmb250aWZ5L2Fz
+c2lnbiB2YXJpYWJsZXMgdG8gYW55IHByb3BlcnRpZXMgaW5zaWRlIHRoZSBjdXJsaWVzCiAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAoY3NoYXJwLWxv
+ZyAzICIgLSBpbnNpZGUgb3BlbiBjdXJseSAgcG9pbnQoJWQpIiAocG9pbnQpKQogICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgKGNzaGFycC1sb2cgMyAi
+IC0gICBuZXh0IGNoYXI6ICAlYyIgKGNoYXItYWZ0ZXIpKQogICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgOzsgZm9udGlmeSBlYWNoIHByb3BlcnR5IGFz
+c2lnbm1lbnQKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgIChpZiAocmUtc2VhcmNoLWZvcndhcmQKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgKGNvbmNhdCAiXFwoIiAoYy1sYW5nLWNvbnN0IGMt
+c3ltYm9sLWtleSkgIlxcKVxccyo9IikKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgZW5kIHQpCiAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgKHByb2duCiAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAoY3NoYXJwLWxvZyAzICIgLSAg
+IGZvdW5kIHZhcmlhYmxlICAlZC0lZCIKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIChtYXRjaC1iZWdpbm5pbmcgMSkK
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgIChtYXRjaC1lbmQgMSkpCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAoYy1wdXQtZm9udC1sb2NrLWZhY2UgKG1hdGNo
+LWJlZ2lubmluZyAxKQogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIChtYXRjaC1lbmQgMSkKICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAnZm9udC1sb2NrLXZhcmlhYmxlLW5hbWUtZmFjZSkKICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIChnb3RvLWNo
+YXIgKG1hdGNoLWVuZCAwKSkKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgIChjLWZvcndhcmQtc3ludGFjdGljLXdzKQogICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgOzsgYWR2YW5jZSB0
+byB0aGUgbmV4dCBhc3NpZ25tZW50LCBpZiBwb3NzaWJsZQogICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgKGlmIChlcSAoY2hhci1hZnRlcikg
+P0ApCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgKGZvcndhcmQtY2hhciAxKSkKCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAoaWYgKGMtc2FmZSAoYy1mb3J3YXJkLXNleHAg
+MSkgdCkKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAocHJvZ24KICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgIChmb3J3YXJkLWNoYXIgMSkKICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIChjLWZvcndh
+cmQtc3ludGFjdGljLXdzKSkpKQoKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgOzsgZWxzZQogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAoY3NoYXJwLWxvZyAzICIgLSAgIG5vIG1vcmUgYXNzZ25t
+dHMgZm91bmQiKQogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAoZ290by1jaGFyIGVuZCkpKSkpCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgKSkpKSkKCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIChnb3Rv
+LWNoYXIgKG1hdGNoLWVuZCAwKSkKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgKSkpCiAg
+ICAgICAgICAgICAgICAgICAgICAgIG5pbCkpCiAgICAgICAgICAgICAgICAgICAgKSkpCgoKICAg
+ICAgICAgICA7OyBDYXNlIDI6IGRlY2xhcmF0aW9uIG9mIGVudW0gd2l0aCBvciB3aXRob3V0IGFu
+IGV4cGxpY2l0CiAgICAgICAgICAgOzsgYmFzZSB0eXBlLgogICAgICAgICAgIDs7CiAgICAgICAg
+ICAgOzsgRXhhbXBsZXM6CiAgICAgICAgICAgOzsKICAgICAgICAgICA7OyAgcHVibGljIGVudW0g
+Rm9vIHsgLi4uIH0KICAgICAgICAgICA7OwogICAgICAgICAgIDs7ICBwdWJsaWMgZW51bSBGb28g
+OiB1aW50IHsgLi4uIH0KICAgICAgICAgICA7OwogICAgICAgICAgICxAKHdoZW4gdAogICAgICAg
+ICAgICAgICBgKCgsKGJ5dGUtY29tcGlsZQogICAgICAgICAgICAgICAgICAgIGAobGFtYmRhIChs
+aW1pdCkKICAgICAgICAgICAgICAgICAgICAgICAobGV0ICgocGFyc2Utc2V4cC1sb29rdXAtcHJv
+cGVydGllcwogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAoY2MtZXZhbC13aGVuLWNvbXBp
+bGUKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAoYm91bmRwICdwYXJzZS1zZXhwLWxv
+b2t1cC1wcm9wZXJ0aWVzKSkpKQogICAgICAgICAgICAgICAgICAgICAgICAgKHdoaWxlIChyZS1z
+ZWFyY2gtZm9yd2FyZAogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAsKGNvbmNhdCBj
+c2hhcnAtZW51bS1kZWNsLXJlCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICJbIFx0XG5cclxmXHZdKiIKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgInsiKQogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBsaW1pdCB0KQoKICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgKGNzaGFycC1sb2cgMyAiZW51bT8gYXQgJWQiIChtYXRj
+aC1iZWdpbm5pbmcgMCkpCgogICAgICAgICAgICAgICAgICAgICAgICAgICAodW5sZXNzCiAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAocHJvZ24KICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgKGdvdG8tY2hhciAobWF0Y2gtYmVnaW5uaW5nIDApKQogICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAoYy1za2lwLWNvbW1lbnRzLWFuZC1zdHJpbmdzIGxpbWl0KSkKICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAocHJvZ24KICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgIChzYXZlLW1hdGNoLWRhdGEKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+KGdvdG8tY2hhciAobWF0Y2gtZW5kIDApKQogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAoYy1wdXQtY2hhci1wcm9wZXJ0eSAoMS0gKHBvaW50KSkKICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgJ2MtdHlwZQogICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAnYy1kZWNsLWlkLXN0YXJ0KQog
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAoYy1mb3J3YXJkLXN5bnRhY3RpYy13cykp
+CiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAoc2F2ZS1tYXRjaC1kYXRhCiAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgIChjLWZvbnQtbG9jay1kZWNsYXJhdG9ycyBsaW1pdCB0
+IG5pbCkpCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAoZ290by1jaGFyIChtYXRjaC1l
+bmQgMCkpCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICApCiAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgKSkpCiAgICAgICAgICAgICAgICAgICAgICAgbmlsKSkKICAgICAgICAgICAg
+ICAgICAgKSkpCgoKICAgICAgICAgICA7OyBDYXNlIDM6IGRlY2xhcmF0aW9uIG9mIGNvbnN0cnVj
+dG9yCiAgICAgICAgICAgOzsKICAgICAgICAgICA7OyBFeGFtcGxlOgogICAgICAgICAgIDs7CiAg
+ICAgICAgICAgOzsgcHJpdmF0ZSBGb28oLi4uKSB7Li4ufQogICAgICAgICAgIDs7CiAgICAgICAg
+ICAgLEAod2hlbiB0CiAgICAgICAgICAgICAgIGAoKCwoYnl0ZS1jb21waWxlCiAgICAgICAgICAg
+ICAgICAgICAgYChsYW1iZGEgKGxpbWl0KQogICAgICAgICAgICAgICAgICAgICAgIChsZXQgKChw
+YXJzZS1zZXhwLWxvb2t1cC1wcm9wZXJ0aWVzCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+IChjYy1ldmFsLXdoZW4tY29tcGlsZQogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIChi
+b3VuZHAgJ3BhcnNlLXNleHAtbG9va3VwLXByb3BlcnRpZXMpKSkKICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAoZm91bmQtaXQgbmlsKSkKICAgICAgICAgICAgICAgICAgICAgICAgICh3aGls
+ZSAocmUtc2VhcmNoLWZvcndhcmQKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgLChj
+b25jYXQKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAiXlsgXHRcblxyXGZcdl0q
+IgogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICJcXChcXDxcXChwdWJsaWNcXHxw
+cml2YXRlXFx8cHJvdGVjdGVkXFwpXFwpP1sgXHRcblxyXGZcdl0rIgogICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICJcXChAP1tbOmFscGhhOl1fXVtbOmFsbnVtOl1fXSpcXCkiIDs7
+IG5hbWUgb2YgY29uc3RydWN0b3IKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAi
+WyBcdFxuXHJcZlx2XSoiCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIlxcKCIK
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAiKCIKICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAiXFwpIikKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+bGltaXQgdCkKCiAgICAgICAgICAgICAgICAgICAgICAgICAgICh1bmxlc3MKICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgIChwcm9nbgogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAoZ290by1jaGFyIChtYXRjaC1iZWdpbm5pbmcgMCkpCiAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgIChjLXNraXAtY29tbWVudHMtYW5kLXN0cmluZ3MgbGltaXQpKQoKICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAoZ290by1jaGFyIChtYXRjaC1lbmQgMCkpCgogICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgIChjc2hhcnAtbG9nIDMgImN0b3IgZGVjbD8gTCglZCkgQiglZCkg
+RSglZCkiCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgbGltaXQgKG1h
+dGNoLWJlZ2lubmluZyAwKSAocG9pbnQpKQoKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAo
+YmFja3dhcmQtY2hhciAxKSA7OyBqdXN0IGxlZnQgb2YgdGhlIG9wZW4gcGFyZW4KICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAoc2F2ZS1tYXRjaC1kYXRhCiAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICA7OyBKdW1wIG92ZXIgdGhlIHBhcmVucywgc2FmZWx5LgogICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgOzsgSWYgaXQncyBhbiB1bmJhbGFuY2VkIHBhcmVuLCBubyBwcm9i
+bGVtLAogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgOzsgZG8gbm90aGluZy4KICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgIChpZiAoYy1zYWZlIChjLWZvcndhcmQtc2V4cCAxKSB0
+KQogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIChwcm9nbgogICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgKGMtZm9yd2FyZC1zeW50YWN0aWMtd3MpCiAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAoY29uZAoKICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICA7OyBpbnZva2VzIGJhc2Ugb3IgdGhpcyBjb25zdHJ1Y3Rvci4KICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAoKHJlLXNlYXJjaC1mb3J3YXJkCiAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAsKGNvbmNhdAogICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAiXFwoOlsgXHRcblxyXGZcdl0qXFwoYmFz
+ZVxcfHRoaXNcXClcXCkiCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICJbIFx0XG5cclxmXHZdKiIKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgIigiCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICkKICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIGxpbWl0IHQpCiAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgIChjc2hhcnAtbG9nIDMgIiAtIGN0b3Igd2l0aCBkZXBl
+bmRlbmN5PyIpCgogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAoZ290by1j
+aGFyIChtYXRjaC1lbmQgMCkpCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+IChiYWNrd2FyZC1jaGFyIDEpIDs7IGp1c3QgbGVmdCBvZiB0aGUgb3BlbiBwYXJlbgogICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAoY3NoYXJwLWxvZyAzICIgLSBiZWZvcmUg
+cGFyZW4gYXQgJWQiIChwb2ludCkpCgogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAoaWYgKGMtc2FmZSAoYy1mb3J3YXJkLXNleHAgMSkgdCkKICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgIChwcm9nbgogICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAoYy1mb3J3YXJkLXN5bnRhY3RpYy13cykKICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgKGNzaGFycC1sb2cgMyAiIC0gc2tpcHBl
+ZCBvdmVyIHBhcmVuIHBhaXIgJWQiIChwb2ludCkpCiAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgIChpZiAoZXEgKGNoYXItYWZ0ZXIpID97KQogICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgKHNldHEgZm91bmQtaXQgdCkpKSkp
+CgogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIDs7IG9wZW4gY3VybHkuIG5v
+IGRlcGVkZW5jeSBvbiBvdGhlciBjdG9yLgogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICgoZXEgKGNoYXItYWZ0ZXIpID97KQogICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAoY3NoYXJwLWxvZyAzICIgLSBubyBkZXBlbmRlbmN5LCBjdXJseSBhdCAlZCIg
+KHBvaW50KSkKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgKHNldHEgZm91
+bmQtaXQgdCkpKQoKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICkpKQoKICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAoaWYgZm91bmQtaXQKICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgOzsgZm9udGlmeSB0aGUgY29uc3RydWN0b3Igc3ltYm9sCiAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgIChjLXB1dC1mb250LWxvY2stZmFjZSAobWF0Y2gtYmVn
+aW5uaW5nIDMpCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAobWF0Y2gtZW5kIDMpCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAnZm9udC1sb2NrLWZ1bmN0aW9uLW5hbWUtZmFjZSkpCiAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgKGdvdG8tY2hhciAobWF0Y2gtZW5kIDApKSkpKQogICAg
+ICAgICAgICAgICAgICAgICAgIG5pbCkpKSkpCgoKICAgICAgICAgICA7OyBDYXNlIDQ6IHVzaW5n
+IGNsYXVzZS4gV2l0aG91dCB0aGlzLCB1c2luZyAoLi4pIGdldHMgZm9udGlmaWVkIGFzIGEgZm4u
+CiAgICAgICAgICAgLEAod2hlbiB0CiAgICAgICAgICAgICAgIGAoKCwoYnl0ZS1jb21waWxlCiAg
+ICAgICAgICAgICAgICAgICAgYChsYW1iZGEgKGxpbWl0KQogICAgICAgICAgICAgICAgICAgICAg
+IChsZXQgKChwYXJzZS1zZXhwLWxvb2t1cC1wcm9wZXJ0aWVzCiAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgIChjYy1ldmFsLXdoZW4tY29tcGlsZQogICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgIChib3VuZHAgJ3BhcnNlLXNleHAtbG9va3VwLXByb3BlcnRpZXMpKSkpCiAgICAgICAg
+ICAgICAgICAgICAgICAgICAod2hpbGUgKHJlLXNlYXJjaC1mb3J3YXJkCiAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICwoY29uY2F0ICJcXDxcXCh1c2luZ1xcKSIKICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIlsgXHRcblxyXGZcdl0qIgogICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAiKCIpCiAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgIGxpbWl0IHQpCgogICAgICAgICAgICAgICAgICAgICAgICAgICAoY3NoYXJw
+LWxvZyAzICJ1c2luZyBjbGF1c2UgcCglZCkiIChtYXRjaC1iZWdpbm5pbmcgMCkpCgogICAgICAg
+ICAgICAgICAgICAgICAgICAgICAodW5sZXNzCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAocHJvZ24KICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgKGdvdG8tY2hhciAobWF0
+Y2gtYmVnaW5uaW5nIDApKQogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAoYy1za2lw
+LWNvbW1lbnRzLWFuZC1zdHJpbmdzIGxpbWl0KSkKCiAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgKHNhdmUtbWF0Y2gtZGF0YQogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgKGMtcHV0
+LWZvbnQtbG9jay1mYWNlIChtYXRjaC1iZWdpbm5pbmcgMSkKICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAobWF0Y2gtZW5kIDEpCiAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgJ2ZvbnQtbG9jay1rZXl3
+b3JkLWZhY2UpCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAoZ290by1jaGFyIChtYXRj
+aC1lbmQgMCkpKSkpKQogICAgICAgICAgICAgICAgICAgICAgIG5pbCkpCiAgICAgICAgICAgICAg
+ICAgICkpKQoKICAgICAgICAgICA7OyBDYXNlIDU6IGF0dHJpYnV0ZXMKICAgICAgICAgICAsYCgo
+bGFtYmRhIChsaW1pdCkKICAgICAgICAgICAgICAgIChsZXQgKChwYXJzZS1zZXhwLWxvb2t1cC1w
+cm9wZXJ0aWVzCiAgICAgICAgICAgICAgICAgICAgICAgKGNjLWV2YWwtd2hlbi1jb21waWxlCiAg
+ICAgICAgICAgICAgICAgICAgICAgICAoYm91bmRwICdwYXJzZS1zZXhwLWxvb2t1cC1wcm9wZXJ0
+aWVzKSkpKQoKICAgICAgICAgICAgICAgICAgKHdoaWxlIChyZS1zZWFyY2gtZm9yd2FyZAogICAg
+ICAgICAgICAgICAgICAgICAgICAgICwoY29uY2F0ICJbIFx0XG5cclxmXHZdKyIKICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAiXFwoXFxbIgogICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICJbIFx0XG5cclxmXHZdKiIKICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAiXFwoPzpcXCg/OnJldHVyblxcfGFzc2VtYmx5XFwpWyBcdF0qOlsgXHRdKlxcKT8i
+CiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIlxcKCIKICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAiXFwoPzpbQS1aYS16X11bWzphbG51bTpdXSpcXC5cXCkqIgog
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICJbQS1aYS16X11bWzphbG51bTpdXSoi
+CiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIlxcKSIKICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAiW15dXSpcXF1cXCkiCiAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgKQogICAgICAgICAgICAgICAgICAgICAgICAgIGxpbWl0IHQpCgogICAgICAg
+ICAgICAgICAgICAgIChjc2hhcnAtbG9nIDMgImF0dHJpYnV0ZT8gLSAlZCBsaW1pdCglZCkiICht
+YXRjaC1iZWdpbm5pbmcgMSkKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBsaW1pdCkK
+CiAgICAgICAgICAgICAgICAgICAgKHVubGVzcwogICAgICAgICAgICAgICAgICAgICAgICAocHJv
+Z24KICAgICAgICAgICAgICAgICAgICAgICAgICAoZ290by1jaGFyIChtYXRjaC1iZWdpbm5pbmcg
+MSkpCiAgICAgICAgICAgICAgICAgICAgICAgICAgKGMtc2tpcC1jb21tZW50cy1hbmQtc3RyaW5n
+cyBsaW1pdCkpCgogICAgICAgICAgICAgICAgICAgICAgKGxldCAoKGIyIChtYXRjaC1iZWdpbm5p
+bmcgMikpCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAoZTIgKG1hdGNoLWVuZCAyKSkKICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgIChpcy1hdHRyIG5pbCkpCiAgICAgICAgICAgICAgICAg
+ICAgICAgIChjc2hhcnAtbG9nIDMgIiAtIHR5cGUgbWF0Y2g6ICVkIC0gJWQiCiAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgIGIyIGUyKQogICAgICAgICAgICAgICAgICAgICAgICAo
+c2F2ZS1tYXRjaC1kYXRhCiAgICAgICAgICAgICAgICAgICAgICAgICAgKGMtYmFja3dhcmQtc3lu
+dGFjdGljLXdzKQogICAgICAgICAgICAgICAgICAgICAgICAgIChzZXRxIGlzLWF0dHIgKG9yCiAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgKGVxIChjaGFyLWJlZm9yZSkg
+NTkpIDs7IHNlbWljb2xvbgogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+IChlcSAoY2hhci1iZWZvcmUpIDkzKSA7OyBjbG9zZSBzcXVhcmUgYnJhY2UKICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAoZXEgKGNoYXItYmVmb3JlKSAxMjMpIDs7IG9w
+ZW4gY3VybHkKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAoZXEgKGNo
+YXItYmVmb3JlKSAxMjUpIDs7IGNsb3NlIGN1cmx5CiAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgKHNhdmUtZXhjdXJzaW9uCiAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAoYy1iZWdpbm5pbmctb2Ytc3RhdGVtZW50LTEpCiAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAobG9va2luZy1hdAogICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICIjXFwocHJhZ21hXFx8ZW5kcmVnaW9uXFx8
+cmVnaW9uXFx8aWZcXHxlbHNlXFx8ZW5kaWZcXCkiKSkKICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICApKSkKCiAgICAgICAgICAgICAgICAgICAgICAgIChpZiBpcy1hdHRy
+CiAgICAgICAgICAgICAgICAgICAgICAgICAgICAocHJvZ24KICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgKGlmICg8PSAzIGNzaGFycC1sb2ctbGV2ZWwpCiAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAoY3NoYXJwLWxvZyAzICIgLSBhdHRyaWJ1dGU6ICclcyciCiAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAoYnVmZmVyLXN1YnN0cmluZy1u
+by1wcm9wZXJ0aWVzIGIyIGUyKSkpCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIChjLXB1
+dC1mb250LWxvY2stZmFjZSBiMiBlMiAnZm9udC1sb2NrLXR5cGUtZmFjZSkpKSkpCiAgICAgICAg
+ICAgICAgICAgICAgKGdvdG8tY2hhciAobWF0Y2gtZW5kIDApKQogICAgICAgICAgICAgICAgICAg
+ICkpCiAgICAgICAgICAgICAgICBuaWwpKQoKCiAgICAgICAgICAgOzsgQ2FzZSA2OiBkaXJlY3Rp
+dmUgYmxvY2tzIGZvciAuYXNweC8uYXNoeC8uYXNjeAogICAgICAgICAgICxgKChsYW1iZGEgKGxp
+bWl0KQogICAgICAgICAgICAgICAgKGxldCAoKHBhcnNlLXNleHAtbG9va3VwLXByb3BlcnRpZXMK
+ICAgICAgICAgICAgICAgICAgICAgICAoY2MtZXZhbC13aGVuLWNvbXBpbGUKICAgICAgICAgICAg
+ICAgICAgICAgICAgIChib3VuZHAgJ3BhcnNlLXNleHAtbG9va3VwLXByb3BlcnRpZXMpKSkpCgog
+ICAgICAgICAgICAgICAgICAod2hpbGUgKHJlLXNlYXJjaC1mb3J3YXJkIGNzaGFycC1hc3BuZXQt
+ZGlyZWN0aXZlLXJlIGxpbWl0IHQpCiAgICAgICAgICAgICAgICAgICAgKGNzaGFycC1sb2cgMyAi
+YXNwbmV0IHRlbXBsYXRlPyAtICVkIGxpbWl0KCVkKSIgKG1hdGNoLWJlZ2lubmluZyAxKQogICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgIGxpbWl0KQoKICAgICAgICAgICAgICAgICAgICAo
+dW5sZXNzCiAgICAgICAgICAgICAgICAgICAgICAgIChwcm9nbgogICAgICAgICAgICAgICAgICAg
+ICAgICAgIChnb3RvLWNoYXIgKG1hdGNoLWJlZ2lubmluZyAwKSkKICAgICAgICAgICAgICAgICAg
+ICAgICAgICAoYy1za2lwLWNvbW1lbnRzLWFuZC1zdHJpbmdzIGxpbWl0KSkKCiAgICAgICAgICAg
+ICAgICAgICAgICAgIChzYXZlLW1hdGNoLWRhdGEKICAgICAgICAgICAgICAgICAgICAgICAgICAo
+bGV0ICgoZW5kLW9wZW4gKCsgKG1hdGNoLWJlZ2lubmluZyAwKSAzKSkKICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAoYmVnLWNsb3NlICgtIChtYXRjaC1lbmQgMCkgMikpKQogICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgKGMtcHV0LWZvbnQtbG9jay1mYWNlIChtYXRjaC1iZWdpbm5p
+bmcgMCkKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBl
+bmQtb3BlbgogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICdmb250LWxvY2stcHJlcHJvY2Vzc29yLWZhY2UpCgogICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgKGMtcHV0LWZvbnQtbG9jay1mYWNlIGJlZy1jbG9zZQogICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgIChtYXRjaC1lbmQgMCkKICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAnZm9udC1sb2NrLXByZXByb2Nlc3Nv
+ci1mYWNlKQoKICAgICAgICAgICAgICAgICAgICAgICAgICAgIDs7IGZvbnRpZnkgd2l0aGluIHRo
+ZSBkaXJlY3RpdmUKICAgICAgICAgICAgICAgICAgICAgICAgICAgICh3aGlsZSAocmUtc2VhcmNo
+LWZvcndhcmQKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgLChjb25jYXQKICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAiXFwoIgogICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgIChjLWxhbmctY29uc3QgYy1zeW1ib2wta2V5KQogICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICJcXCkiCiAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgIj0/IgogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICkKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgYmVnLWNsb3NlIHQpCgog
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgKGMtcHV0LWZvbnQtbG9jay1mYWNlIChtYXRjaC1i
+ZWdpbm5pbmcgMSkKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAobWF0Y2gtZW5kIDEpCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgJ2ZvbnQtbG9jay1rZXl3b3JkLWZhY2UpCiAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAoYy1za2lwLWNvbW1lbnRzLWFuZC1zdHJpbmdzIGJlZy1jbG9zZSkpCiAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICApKQogICAgICAgICAgICAgICAgICAgICAgICAoZ290by1jaGFy
+IChtYXRjaC1lbmQgMCkpKSkpCiAgICAgICAgICAgICAgICBuaWwpKQoKCjs7ICAgICAgICAgICAg
+OzsgQ2FzZSA1OiAjaWYKOzsgICAgICAgICAgICAsQCh3aGVuIHQKOzsgICAgICAgICAgICAgICAg
+YCgoLChieXRlLWNvbXBpbGUKOzsgICAgICAgICAgICAgICAgICAgICBgKGxhbWJkYSAobGltaXQp
+Cjs7ICAgICAgICAgICAgICAgICAgICAgICAgKGxldCAoKHBhcnNlLXNleHAtbG9va3VwLXByb3Bl
+cnRpZXMKOzsgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgKGNjLWV2YWwtd2hlbi1jb21w
+aWxlCjs7ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgKGJvdW5kcCAncGFyc2Utc2V4
+cC1sb29rdXAtcHJvcGVydGllcykpKSkKOzsgICAgICAgICAgICAgICAgICAgICAgICAgICh3aGls
+ZSAocmUtc2VhcmNoLWZvcndhcmQKOzsgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+IlxcPFxcKCNpZlxcKVsgXHRcblxyXGZcdl0rXFwoW0EtWmEtel9dW1s6YWxudW06XV0qXFwpIgo7
+OyAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBsaW1pdCB0KQo7Owo7OyAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAoY3NoYXJwLWxvZyAzICIjaWYgZGlyZWN0aXZlIC0gJWQiICht
+YXRjaC1iZWdpbm5pbmcgMSkpCjs7Cjs7ICAgICAgICAgICAgICAgICAgICAgICAgICAgICh1bmxl
+c3MKOzsgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIChwcm9nbgo7OyAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAoZ290by1jaGFyIChtYXRjaC1iZWdpbm5pbmcgMCkpCjs7
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIChjLXNraXAtY29tbWVudHMtYW5kLXN0
+cmluZ3MgbGltaXQpKQo7Owo7OyAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIChzYXZlLW1h
+dGNoLWRhdGEKOzsgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIChjLXB1dC1mb250LWxv
+Y2stZmFjZSAobWF0Y2gtYmVnaW5uaW5nIDIpCjs7ICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgKG1hdGNoLWVuZCAyKQo7OyAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICdmb250LWxvY2stdmFyaWFi
+bGUtbmFtZS1mYWNlKQo7OyAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgKGdvdG8tY2hh
+ciAobWF0Y2gtZW5kIDApKSkpKSkKOzsgICAgICAgICAgICAgICAgICAgICAgICBuaWwpKQo7OyAg
+ICAgICAgICAgICAgICAgICApKSkKCgogOzsgICAgICAgICAgICxgKCwoYy1tYWtlLWZvbnQtbG9j
+ay1zZWFyY2gtZnVuY3Rpb24KIDs7ICAgICAgICAgICAgICAgIChjb25jYXQgIlxcPG5ldyIKIDs7
+ICAgICAgICAgICAgICAgICAgICAgICAgIlsgXHRcblxyXGZcdl0rIgogOzsgICAgICAgICAgICAg
+ICAgICAgICAgICAiXFwoXFwoPzoiCiA7OyAgICAgICAgICAgICAgICAgICAgICAgIChjLWxhbmct
+Y29uc3QgYy1zeW1ib2wta2V5KQogOzsgICAgICAgICAgICAgICAgICAgICAgICAiXFwuXFwpKiIK
+IDs7ICAgICAgICAgICAgICAgICAgICAgICAgKGMtbGFuZy1jb25zdCBjLXN5bWJvbC1rZXkpCiA7
+OyAgICAgICAgICAgICAgICAgICAgICAgICJcXCkiCiA7OyAgICAgICAgICAgICAgICAgICAgICAg
+ICJbIFx0XG5cclxmXHZdKiIKIDs7ICAgICAgICAgICAgICAgICAgICAgICAgIlxcKD86IgogOzsg
+ICAgICAgICAgICAgICAgICAgICAgICAiKCAqKVsgXHRcblxyXGZcdl0qIiAgICAgICAgICA7OyBv
+cHRpb25hbCAoKQogOzsgICAgICAgICAgICAgICAgICAgICAgICAiXFwpPyIKIDs7ICAgICAgICAg
+ICAgICAgICAgICAgICAgInsiKQogOzsgICAgICAgICAgICAgICAgJygoYy1mb250LWxvY2stZGVj
+bGFyYXRvcnMgbGltaXQgdCBuaWwpCiA7OyAgICAgICAgICAgICAgICAgIChzYXZlLW1hdGNoLWRh
+dGEKIDs7ICAgICAgICAgICAgICAgICAgICAoZ290by1jaGFyIChtYXRjaC1lbmQgMCkpCiA7OyAg
+ICAgICAgICAgICAgICAgICAgKGMtcHV0LWNoYXItcHJvcGVydHkgKDEtIChwb2ludCkpICdjLXR5
+cGUKIDs7ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAnYy1kZWNsLWlk
+LXN0YXJ0KQogOzsgICAgICAgICAgICAgICAgICAgIChjLWZvcndhcmQtc3ludGFjdGljLXdzKSkK
+IDs7ICAgICAgICAgICAgICAgICAgKGdvdG8tY2hhciAobWF0Y2gtZW5kIDApKSkpKQoKCgoKICAg
+ICAgICAgICA7OyBGb250aWZ5IGxhYmVscyBhZnRlciBnb3RvIGV0Yy4KICAgICAgICAgICAsQCh3
+aGVuIChjLWxhbmctY29uc3QgYy1iZWZvcmUtbGFiZWwta3dkcykKICAgICAgICAgICAgICAgYCgg
+OzsgKEdvdCB0aHJlZSBkaWZmZXJlbnQgaW50ZXJwcmV0YXRpb24gbGV2ZWxzIGhlcmUsCiAgICAg
+ICAgICAgICAgICAgOzsgd2hpY2ggbWFrZXMgaXQgYSBiaXQgY29tcGxpY2F0ZWQ6IDEpIFRoZSBi
+YWNrcXVvdGUKICAgICAgICAgICAgICAgICA7OyBzdHVmZiBpcyBleHBhbmRlZCB3aGVuIGNvbXBp
+bGVkIG9yIGxvYWRlZCwgMikgdGhlCiAgICAgICAgICAgICAgICAgOzsgZXZhbCBmb3JtIGlzIGV2
+YWx1YXRlZCBhdCBmb250LWxvY2sgc2V0dXAgKHRvCiAgICAgICAgICAgICAgICAgOzsgc3Vic3Rp
+dHV0ZSBjLWxhYmVsLWZhY2UtbmFtZSBjb3JyZWN0bHkpLCBhbmQgMykgdGhlCiAgICAgICAgICAg
+ICAgICAgOzsgcmVzdWx0aW5nIHN0cnVjdHVyZSBpcyBpbnRlcnByZXRlZCBkdXJpbmcKICAgICAg
+ICAgICAgICAgICA7OyBmb250aWZpY2F0aW9uLikKICAgICAgICAgICAgICAgICAoZXZhbAogICAg
+ICAgICAgICAgICAgICAuICwobGV0KiAoKGMtYmVmb3JlLWxhYmVsLXJlCiAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgKGMtbWFrZS1rZXl3b3Jkcy1yZSBuaWwKICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgIChjLWxhbmctY29uc3QgYy1iZWZvcmUtbGFiZWwta3dkcykpKSkKICAgICAg
+ICAgICAgICAgICAgICAgICBgKGxpc3QKICAgICAgICAgICAgICAgICAgICAgICAgICwoY29uY2F0
+ICJcXDxcXCgiIGMtYmVmb3JlLWxhYmVsLXJlICJcXClcXD4iCiAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAiXFxzICoiCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAi
+XFwoIiA7IGlkZW50aWZpZXItb2Zmc2V0CiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAoYy1sYW5nLWNvbnN0IGMtc3ltYm9sLWtleSkKICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICJcXCkiKQogICAgICAgICAgICAgICAgICAgICAgICAgKGxpc3QgLCgrIChyZWdleHAt
+b3B0LWRlcHRoIGMtYmVmb3JlLWxhYmVsLXJlKSAyKQogICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgYy1sYWJlbC1mYWNlLW5hbWUgbmlsIHQpKSkpKSkKCgoKICAgICAgICAgICA7OyBGb250
+aWZ5IHRoZSBjbGF1c2VzIGFmdGVyIHZhcmlvdXMga2V5d29yZHMuCiAgICAgICAgICAgLEAod2hl
+biAob3IgKGMtbGFuZy1jb25zdCBjLXR5cGUtbGlzdC1rd2RzKQogICAgICAgICAgICAgICAgICAg
+ICAgIChjLWxhbmctY29uc3QgYy1yZWYtbGlzdC1rd2RzKQogICAgICAgICAgICAgICAgICAgICAg
+IChjLWxhbmctY29uc3QgYy1jb2xvbi10eXBlLWxpc3Qta3dkcykKICAgICAgICAgICAgICAgICAg
+ICAgICAoYy1sYW5nLWNvbnN0IGMtcGFyZW4tdHlwZS1rd2RzKSkKICAgICAgICAgICAgICAgYCgo
+LChjLW1ha2UtZm9udC1sb2NrLXNlYXJjaC1mdW5jdGlvbgogICAgICAgICAgICAgICAgICAgIChj
+b25jYXQgIlxcPFxcKCIKICAgICAgICAgICAgICAgICAgICAgICAgICAgIChjLW1ha2Uta2V5d29y
+ZHMtcmUgbmlsCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIChhcHBlbmQgKGMtbGFuZy1j
+b25zdCBjLXR5cGUtbGlzdC1rd2RzKQogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgIChjLWxhbmctY29uc3QgYy1yZWYtbGlzdC1rd2RzKQogICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgIChjLWxhbmctY29uc3QgYy1jb2xvbi10eXBlLWxpc3Qta3dkcykKICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAoYy1sYW5nLWNvbnN0IGMtcGFyZW4t
+dHlwZS1rd2RzKSkpCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAiXFwpXFw+IikKICAgICAg
+ICAgICAgICAgICAgICAnKChjLWZvbnRpZnktdHlwZXMtYW5kLXJlZnMgKChjLXByb21vdGUtcG9z
+c2libGUtdHlwZXMgdCkpCiAgICAgICAgICAgICAgICAgICAgICAgIChjLWZvcndhcmQta2V5d29y
+ZC1jbGF1c2UgMSkKICAgICAgICAgICAgICAgICAgICAgICAgKGlmICg+IChwb2ludCkgbGltaXQp
+IChnb3RvLWNoYXIgbGltaXQpKSkpKSkpKQoKCiAgICAgICAgICAgOzsgRm9udGlmeSB0aGUgbmFt
+ZSB0aGF0IGZvbGxvd3MgZWFjaCBuYW1lc3BhY2UgZGVjbGFyYXRpb24KICAgICAgICAgICA7OyB0
+aGlzIG5lZWRzIHRvIGJlIGRvbmUgaW4gdGhlIG1hdGNoZXJzLWFmdGVyIGJlY2F1c2UKICAgICAg
+ICAgICA7OyBvdGhlcndpc2UgdGhlIG5hbWVzcGFjZSBuYW1lcyBnZXQgdGhlIGZvbnQtbG9jay10
+eXBlLWZhY2UsCiAgICAgICAgICAgOzsgZHVlIHRvIHRoZSBlbmVyZ2V0aWMgZWZmb3J0cyBvZiBj
+LWZvcndhcmQtdHlwZS4KICAgICAgICAgICAsYCgiXFw8XFwobmFtZXNwYWNlXFwpWyBcdFxuXHJc
+Zlx2XStcXChcXCg/OltBLVphLXpfXVtbOmFsbnVtOl1dKlxcLlxcKSpbQS1aYS16X11bWzphbG51
+bTpdXSpcXCkiCiAgICAgICAgICAgICAgMiBmb250LWxvY2stY29uc3RhbnQtZmFjZSB0KQoKCiAg
+ICAgICAgICAgKSkKCgoKOzsgQyMgZG9lcyBnZW5lcmljcy4gIFNldHRpbmcgdGhpcyB0byB0IHRl
+bGxzIHRoZSBwYXJzZXIgdG8gcHV0Cjs7IHBhcmVudGhlc2lzIHN5bnRheCBvbiBhbmdsZSBicmFj
+ZXMgdGhhdCBzdXJyb3VuZCBhIGNvbW1hLXNlcGFyYXRlZAo7OyBsaXN0LgooYy1sYW5nLWRlZmNv
+bnN0IGMtcmVjb2duaXplLTw+LWFyZ2xpc3RzCiAgY3NoYXJwIHQpCgoKKGMtbGFuZy1kZWZjb25z
+dCBjLWlkZW50aWZpZXIta2V5CiAgY3NoYXJwIChjb25jYXQgIlxcKFtbOmFscGhhOl1fXVtbOmFs
+bnVtOl1fXSpcXCkiIDsgMQogICAgICAgICAgICAgICAgICJcXCgiCiAgICAgICAgICAgICAgICAg
+IlsgXHRcblxyXGZcdl0qIgogICAgICAgICAgICAgICAgICJcXChcXC5cXCkiICAgICAgICAgICAg
+IDs7KGMtbGFuZy1jb25zdCBjLW9wdC1pZGVudGlmaWVyLWNvbmNhdC1rZXkpCiAgICAgICAgICAg
+ICAgICAgIlsgXHRcblxyXGZcdl0qIgogICAgICAgICAgICAgICAgICJcXChcXChbWzphbHBoYTpd
+X11bWzphbG51bTpdX10qXFwpXFwpIgogICAgICAgICAgICAgICAgICJcXCkqIikpCgo7OyBDIyBo
+YXMgYSBmZXcgcnVsZXMgdGhhdCBhcmUgc2xpZ2h0bHkgZGlmZmVyZW50IHRoYW4gSmF2YSBmb3IK
+Ozsgb3BlcmF0b3JzLiBUaGlzIGFsc28gcmVtb3ZlZCB0aGUgSmF2YSdzICJzdXBlciIgYW5kIHJl
+cGxhY2VzIGl0Cjs7IHdpdGggdGhlIEMjJ3MgImJhc2UiLgooYy1sYW5nLWRlZmNvbnN0IGMtb3Bl
+cmF0b3JzCiAgY3NoYXJwIGAoKHByZWZpeCAiYmFzZSIpKSkKCgo7OyBDIyB1c2VzIENQUC1saWtl
+IHByZWZpeGVzIHRvIG1hcmsgI2RlZmluZSwgI3JlZ2lvbi9lbmRyZWdpb24sCjs7ICNpZi9lbHNl
+L2VuZGlmLCBhbmQgI3ByYWdtYS4gIFRoaXMgcmVnZXhwIG1hdGNoZXMgdGhlIHByZWZpeCwgbm90
+Cjs7IGluY2x1ZGluZyB0aGUgYmVnaW5uaW5nLW9mLWxpbmUgKEJPTCksIGFuZCBub3QgaW5jbHVk
+aW5nIHRoZSB0ZXJtCjs7IGFmdGVyIHRoZSBwcmVmaXggKGRlZmluZSwgcHJhZ21hLCByZWdpb24s
+IGV0YykuICBUaGlzIHJlZ2V4cCBzYXlzCjs7IHdoaXRlc3BhY2UsIGZvbGxvd2VkIGJ5IHRoZSBw
+cmVmaXgsIGZvbGxvd2VkIGJ5IG1heWJlIG1vcmUKOzsgd2hpdGVzcGFjZS4KCihjLWxhbmctZGVm
+Y29uc3QgYy1vcHQtY3BwLXByZWZpeAogIGNzaGFycCAiXFxzICojXFxzICoiKQoKCjs7IHRoZXJl
+IGFyZSBubyBtZXNzYWdlIGRpcmVjdGl2ZXMgaW4gQyMKKGMtbGFuZy1kZWZjb25zdCBjLWNwcC1t
+ZXNzYWdlLWRpcmVjdGl2ZXMKICBjc2hhcnAgbmlsKQoKKGMtbGFuZy1kZWZjb25zdCBjLWNwcC1l
+eHByLWRpcmVjdGl2ZXMKICBjc2hhcnAgJygiaWYiKSkKCihjLWxhbmctZGVmY29uc3QgYy1vcHQt
+Y3BwLW1hY3JvLWRlZmluZQogIGNzaGFycCAiZGVmaW5lIikKCjs7ICQgaXMgbm90IGEgbGVnYWwg
+Y2hhciBpbiBhbiBpZGVudGlmaWVyIGluIEMjLiAgU28gd2UgbmVlZCB0bwo7OyBjcmVhdGUgYSBj
+c2hhcnAtc3BlY2lmaWMgZGVmaW5pdGlvbiBvZiB0aGlzIGNvbnN0YW50LgooYy1sYW5nLWRlZmNv
+bnN0IGMtc3ltYm9sLWNoYXJzCiAgY3NoYXJwIChjb25jYXQgYy1hbG51bSAiXyIpKQoKOzsgYy1p
+ZGVudGlmaWVyLXN5bnRheC1tb2RpZmljYXRpb25zIGJ5IGRlZmF1bHQgZGVmaW5lcyAkIGFzIGEg
+d29yZAo7OyBzeW50YXgsIHdoaWNoIGlzIG5vdCBsZWdhbCBpbiBDIy4gIFNvLCBkZWZpbmUgb3Vy
+IG93biBsYW5nLXNwZWNpZmljCjs7IHZhbHVlLgooYy1sYW5nLWRlZmNvbnN0IGMtaWRlbnRpZmll
+ci1zeW50YXgtbW9kaWZpY2F0aW9ucwogIGNzaGFycCAnKCg/XyAuICJ3IikpKQoKCgooYy1sYW5n
+LWRlZmNvbnN0IGMtY29sb24tdHlwZS1saXN0LWt3ZHMKICBjc2hhcnAgJygiY2xhc3MiKSkKCihj
+LWxhbmctZGVmY29uc3QgYy1ibG9jay1wcmVmaXgtZGlzYWxsb3dlZC1jaGFycwoKICA7OyBBbGxv
+dyAnOicgZm9yIGluaGVyaXQgbGlzdCBzdGFydGVycy4KICBjc2hhcnAgKHNldC1kaWZmZXJlbmNl
+IChjLWxhbmctY29uc3QgYy1ibG9jay1wcmVmaXgtZGlzYWxsb3dlZC1jaGFycykKICAgICAgICAg
+ICAgICAgICAgICAgICAgICcoPzogPywpKSkKCgooYy1sYW5nLWRlZmNvbnN0IGMtYXNzaWdubWVu
+dC1vcGVyYXRvcnMKICBjc2hhcnAgJygiPSIgIio9IiAiLz0iICIlPSIgIis9IiAiLT0iICI+Pj0i
+ICI8PD0iICImPSIgIl49IiAifD0iKSkKCihjLWxhbmctZGVmY29uc3QgYy1wcmltaXRpdmUtdHlw
+ZS1rd2RzCiAgOzsgRUNNQS0zNDQsIFM4CiAgY3NoYXJwICcoIm9iamVjdCIgInN0cmluZyIgInNi
+eXRlIiAic2hvcnQiICJpbnQiICJsb25nIiAiYnl0ZSIKICAgICAgICAgICAidXNob3J0IiAidWlu
+dCIgInVsb25nIiAiZmxvYXQiICJkb3VibGUiICJib29sIiAiY2hhciIKICAgICAgICAgICAiZGVj
+aW1hbCIgInZvaWQiKSkKCjs7IFRoZSBrZXl3b3JkcyB0aGF0IGRlZmluZSB0aGF0IHRoZSBmb2xs
+b3dpbmcgaXMgYSB0eXBlLCBzdWNoIGFzIGEKOzsgY2xhc3MgZGVmaW5pdGlvbi4KKGMtbGFuZy1k
+ZWZjb25zdCBjLXR5cGUtcHJlZml4LWt3ZHMKICA7OyBFQ01BLTM0NCwgUz8KICBjc2hhcnAgJygi
+Y2xhc3MiICJpbnRlcmZhY2UiICJzdHJ1Y3QiKSkgIDs7IG5vIGVudW0gaGVyZS4KICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIDs7IHdlIHdhbnQgZW51bSB0byBiZSBh
+IGJyYWNlIGxpc3QuCgoKOzsgVHlwZSBtb2RpZmllciBrZXl3b3Jkcy4gVGhleSBhcHBlYXIgYW55
+d2hlcmUgaW4gdHlwZXMsIGJ1dCBtb2RpZnkKOzsgaW5zdGVhZCBvZiBjcmVhdGUgb25lLgooYy1s
+YW5nLWRlZmNvbnN0IGMtdHlwZS1tb2RpZmllci1rd2RzCiAgOzsgRU1DQS0zNDQsIFM/CiAgY3No
+YXJwICcoInJlYWRvbmx5IiAiY29uc3QiKSkKCgo7OyBUdWUsIDIwIEFwciAyMDEwICAxNjowMgo7
+OyBuZWVkIHRvIHZlcmlmeSB0aGF0IHRoaXMgd29ya3MgZm9yIGxhbWJkYXMuLi4KKGMtbGFuZy1k
+ZWZjb25zdCBjLXNwZWNpYWwtYnJhY2UtbGlzdHMKICBjc2hhcnAgJygoP3sgLiA/fSkgKSkKCgoK
+OzsgZGlub2NoCjs7IFRodSwgMjIgQXByIDIwMTAgIDE4OjU0Cjs7Cjs7IE5vIGlkZWEgd2h5IHRo
+aXMgaXNuJ3QgZ2V0dGluZyBzZXQgcHJvcGVybHkgaW4gdGhlIGZpcnN0IHBsYWNlLgo7OyBJbiBj
+Yy1sYW5ncy5lbCwgaXQgaXMgc2V0IHRvIHRoZSB1bmlvbiBvZiBhIGJ1bmNoIG9mIHRoaW5ncywg
+bm9uZQo7OyBvZiB3aGljaCBpbmNsdWRlICJuZXciLCBvciAiZW51bSIuCjs7Cjs7IEJ1dCBzb21l
+aG93IGJvdGggb2YgdGhvc2Ugc2hvdyB1cCBpbiB0aGUgcmVzdWx0aW5nIGRlcml2ZWQgcmVnZXhw
+Lgo7OyBUaGlzIGJyZWFrcyBpbmRlbnRhdGlvbiBvZiBpbnN0YW5jZSBpbml0aWFsaXplcnMsIHN1
+Y2ggYXMKOzsKOzsgICAgICAgICB2YXIgeCA9IG5ldyBGb28geyAuLi4gfTsKOzsKOzsgQmFzZWQg
+b24gbXkgaW5zcGVjdGlvbiwgdGhlIGV4aXN0aW5nIGMtbGFuZy1kZWZjb25zdCBzaG91bGQgd29y
+ayEKOzsgSSBkb24ndCBrbm93IGhvdyB0byBmaXggdGhpcyBjLWxhbmctZGVmY29uc3QsIHNvIEkg
+YW0gcmUtc2V0dGluZyB0aGlzCjs7IHZhcmlhYmxlIGhlcmUsIHRvIHByb3ZpZGUgdGhlIHJlZ2V4
+IGV4cGxpY2l0bHkuCjs7CihjLWxhbmctZGVmY29uc3QgYy1kZWNsLWJsb2NrLWtleQogIGNzaGFy
+cCAnIlxcKG5hbWVzcGFjZVxcKVxcKFteWzphbG51bTpdX11cXHwkXFwpXFx8XFwoY2xhc3NcXHxp
+bnRlcmZhY2VcXHxzdHJ1Y3RcXClcXChbXls6YWxudW06XV9dXFx8JFxcKSIgKQoKCjs7IFRodSwg
+MjIgQXByIDIwMTAgIDE0OjI5Cjs7IEkgd2FudCB0aGlzIHRvIGhhbmRsZSAgICB2YXIgeCA9IG5l
+dyBGb29bXSB7IC4uLiB9Owo7OyBub3Qgc3VyZSBpZiBuZWNlc3NhcnkuCihjLWxhbmctZGVmY29u
+c3QgYy1pbmV4cHItYnJhY2UtbGlzdC1rd2RzCiAgY3NoYXJwICcoIm5ldyIpKQoKCjs7IDs7KGMt
+bGFuZy1kZWZjb25zdCBjLWluZXhwci1jbGFzcy1rd2RzCjs7IDs7IGNzaGFycCAnKCJuZXciKSkK
+CgoKKGMtbGFuZy1kZWZjb25zdCBjLWNsYXNzLWRlY2wta3dkcwogIDs7IEVNQ0EtMzQ0LCBTPwog
+IDs7IGRvbid0IGluY2x1ZGUgZW51bSBoZXJlLCBiZWNhdXNlIHdlIHdhbnQgaXQgdG8gYmUgZm9u
+dGlmaWVkIGFzIGEgYnJhY2UKICA7OyBsaXN0LCB3aXRoIGNvbW1hcyBkZWxpbWl0aW5nIHRoZSB2
+YWx1ZXMuIHNlZSBjLWJyYWNlLWxpc3QtZGVjbC1rd2RzCiAgOzsgYmVsb3cuCiAgY3NoYXJwICco
+ImNsYXNzIiAiaW50ZXJmYWNlIiAic3RydWN0IiApKSAgOzsgbm8gImVudW0iISEKCgo7OyBUaGUg
+dmFyaW91cyBtb2RpZmllcnMgdXNlZCBmb3IgY2xhc3MgYW5kIG1ldGhvZCBkZXNjcmlwdGlvbnMu
+CihjLWxhbmctZGVmY29uc3QgYy1tb2RpZmllci1rd2RzCiAgY3NoYXJwICcoInB1YmxpYyIgInBh
+cnRpYWwiICJwcml2YXRlIiAiY29uc3QiICJhYnN0cmFjdCIgInNlYWxlZCIKICAgICAgICAgICAi
+cHJvdGVjdGVkIiAicmVmIiAib3V0IiAic3RhdGljIiAidmlydHVhbCIKICAgICAgICAgICAib3Zl
+cnJpZGUiICJwYXJhbXMiICJpbnRlcm5hbCIpKQoKCjs7IFRodSwgMjIgQXByIDIwMTAgIDIzOjAy
+Cjs7IEJhc2VkIG9uIGluc3BlY3Rpb24gb2YgdGhlIGNjLW1vZGUgY29kZSwgdGhlIGMtcHJvdGVj
+dGlvbi1rd2RzCjs7IGMtbGFuZy1jb25zdCBpcyB1c2VkIG9ubHkgZm9yIG9iamVjdGl2ZS1jLiAg
+U28gdGhlIHZhbHVlIGlzCjs7IGlycmVsZXZhbnQgZm9yIGNzaGFycC4KKGMtbGFuZy1kZWZjb25z
+dCBjLXByb3RlY3Rpb24ta3dkcwogIGNzaGFycCBuaWwKICA7OyBjc2hhcnAgJygicHJpdmF0ZSIg
+InByb3RlY3RlZCIgInB1YmxpYyIgImludGVybmFsIikKKQoKCjs7IERlZmluZSB0aGUga2V5d29y
+ZHMgdGhhdCBjYW4gaGF2ZSBzb21ldGhpbmcgZm9sbG93aW5nIGFmdGVyIHRoZW0uCihjLWxhbmct
+ZGVmY29uc3QgYy10eXBlLWxpc3Qta3dkcwogIGNzaGFycCAnKCJzdHJ1Y3QiICJjbGFzcyIgImlu
+dGVyZmFjZSIgImlzIiAiYXMiCiAgICAgICAgICAgImRlbGVnYXRlIiAiZXZlbnQiICJzZXQiICJn
+ZXQiICJhZGQiICJyZW1vdmUiKSkKCgo7OyBUaGlzIGFsbG93cyB0aGUgY2xhc3NlcyBhZnRlciB0
+aGUgOiBpbiB0aGUgY2xhc3MgZGVjbGFydGlvbiB0byBiZQo7OyBmb250aWZpZWQuCihjLWxhbmct
+ZGVmY29uc3QgYy10eXBlbGVzcy1kZWNsLWt3ZHMKICBjc2hhcnAgJygiOiIpKQoKOzsgU2V0cyB1
+cCB0aGUgZW51bSB0byBoYW5kbGUgdGhlIGxpc3QgcHJvcGVybHksIGFuZCBhbHNvIHRoZSBuZXcK
+Ozsga2V5d29yZCB0byBoYW5kbGUgb2JqZWN0IGluaXRpYWxpemVycy4gIFRoaXMgcmVxdWlyZXMg
+YSBtb2RpZmllZAo7OyBjLWJhc2ljLW1hdGNoZXJzLWFmdGVyIChzZWUgYWJvdmUpIGluIG9yZGVy
+IHRvIGNvcnJlY3RseSBmb250aWZ5IEMjCjs7IDMuMCBvYmplY3QgaW5pdGlhbGl6ZXJzLgooYy1s
+YW5nLWRlZmNvbnN0IGMtYnJhY2UtbGlzdC1kZWNsLWt3ZHMKICBjc2hhcnAgJygiZW51bSIgIm5l
+dyIpKQoKCjs7IFN0YXRlbWVudCBrZXl3b3JkcyBmb2xsb3dlZCBkaXJlY3RseSBieSBhIHN1YnN0
+YXRlbWVudC4KOzsgY2F0Y2ggaXMgbm90IG9uZSBvZiB0aGVtLCBiZWNhdXNlIGNhdGNoIGhhcyBh
+IHBhcmVuICh0eXBpY2FsbHkpLgooYy1sYW5nLWRlZmNvbnN0IGMtYmxvY2stc3RtdC0xLWt3ZHMK
+ICBjc2hhcnAgJygiZG8iICJ0cnkiICJmaW5hbGx5IiAidW5zYWZlIikpCgoKOzsgU3RhdGVtZW50
+IGtleXdvcmRzIGZvbGxvd2VkIGJ5IGEgcGFyZW4gc2V4cCBhbmQgdGhlbiBieSBhIHN1YnN0YXRl
+bWVudC4KKGMtbGFuZy1kZWZjb25zdCBjLWJsb2NrLXN0bXQtMi1rd2RzCiAgY3NoYXJwICcoImZv
+ciIgImlmIiAic3dpdGNoIiAid2hpbGUiICJjYXRjaCIgImZvcmVhY2giICJ1c2luZyIKICAgICAg
+ICAgICAiY2hlY2tlZCIgInVuY2hlY2tlZCIgImxvY2siKSkKCgo7OyBTdGF0ZW1lbnRzIHRoYXQg
+YnJlYWsgb3V0IG9mIGJyYWNlcwooYy1sYW5nLWRlZmNvbnN0IGMtc2ltcGxlLXN0bXQta3dkcwog
+IGNzaGFycCAnKCJyZXR1cm4iICJjb250aW51ZSIgImJyZWFrIiAidGhyb3ciICJnb3RvIiApKQoK
+OzsgU3RhdGVtZW50cyB0aGF0IGFsbG93IGEgbGFiZWwKOzsgVE9ETz8KKGMtbGFuZy1kZWZjb25z
+dCBjLWJlZm9yZS1sYWJlbC1rd2RzCiAgY3NoYXJwIG5pbCkKCjs7IENvbnN0YW50IGtleXdvcmRz
+CihjLWxhbmctZGVmY29uc3QgYy1jb25zdGFudC1rd2RzCiAgY3NoYXJwICcoInRydWUiICJmYWxz
+ZSIgIm51bGwiKSkKCjs7IEtleXdvcmRzIHRoYXQgc3RhcnQgInByaW1hcnkgZXhwcmVzc2lvbnMu
+IgooYy1sYW5nLWRlZmNvbnN0IGMtcHJpbWFyeS1leHByLWt3ZHMKICBjc2hhcnAgJygidGhpcyIg
+ImJhc2UiKSkKCjs7IFRyZWF0IG5hbWVzcGFjZSBhcyBhbiBvdXRlciBibG9jayBzbyBjbGFzcyBp
+bmRlbnRpbmcKOzsgd29ya3MgcHJvcGVybHkuCihjLWxhbmctZGVmY29uc3QgYy1vdGhlci1ibG9j
+ay1kZWNsLWt3ZHMKICBjc2hhcnAgJygibmFtZXNwYWNlIikpCgooYy1sYW5nLWRlZmNvbnN0IGMt
+b3RoZXIta3dkcwogIGNzaGFycCAnKCJzaXplb2YiICJ0eXBlb2YiICJpcyIgImFzIiAieWllbGQi
+CiAgICAgICAgICAgIndoZXJlIiAic2VsZWN0IiAiaW4iICJmcm9tIikpCgooYy1sYW5nLWRlZmNv
+bnN0IGMtb3ZlcmxvYWRhYmxlLW9wZXJhdG9ycwogIDs7IEVNQ0EtMzQ0LCBTMTQuMi4xCiAgY3No
+YXJwICcoIisiICItIiAiKiIgIi8iICIlIiAiJiIgInwiICJeIgogICAgICAgICAgICI8PCIgIj4+
+IiAiPT0iICIhPSIgIj4iICI8IiAiPj0iICI8PSIpKQoKCjs7IFRoaXMgYy1jcHAtbWF0Y2hlcnMg
+c3R1ZmYgaXMgdXNlZCBmb3IgZm9udGlmaWNhdGlvbi4KOzsgc2VlIGNjLWZvbnQuZWwKOzsKCjs7
+IFRoZXJlJ3Mgbm8gcHJlcHJvY2Vzc29yIGluIEMjLCBidXQgdGhlcmUgYXJlIHN0aWxsIGNvbXBp
+bGVyCjs7IGRpcmVjdGl2ZXMgdG8gZm9udGlmeTogIiNwcmFnbWEiLCAjcmVnaW9uL2VuZHJlZ2lv
+biwgI2RlZmluZSwgI3VuZGVmLAo7OyAjaWYvZWxzZS9lbmRpZi4gIChUaGUgZGVmaW5pdGlvbnMg
+Zm9yIHRoZSBleHRyYSBrZXl3b3JkcyBhYm92ZSBhcmUKOzsgZW5vdWdoIHRvIGluY29ycG9yYXRl
+IHRoZW0gaW50byB0aGUgZm9udGlmaWNhdGlvbiByZWdleHBzIGZvciB0eXBlcwo7OyBhbmQga2V5
+d29yZHMsIHNvIG5vIGFkZGl0aW9uYWwgZm9udC1sb2NrIHBhdHRlcm5zIGFyZSByZXF1aXJlZCBm
+b3IKOzsga2V5d29yZHMuKQoKKGMtbGFuZy1kZWZjb25zdCBjLWNwcC1tYXRjaGVycwogIGNzaGFy
+cCAoY29ucwogICAgICA7OyBVc2UgdGhlIGV2YWwgZm9ybSBmb3IgYGZvbnQtbG9jay1rZXl3b3Jk
+cycgdG8gYmUgYWJsZSB0byB1c2UKICAgICAgOzsgdGhlIGBjLXByZXByb2Nlc3Nvci1mYWNlLW5h
+bWUnIHZhcmlhYmxlIHRoYXQgbWFwcyB0byBhCiAgICAgIDs7IHN1aXRhYmxlIGZhY2UgZGVwZW5k
+aW5nIG9uIHRoZSAoWClFbWFjcyB2ZXJzaW9uLgogICAgICAnKGV2YWwgLiAobGlzdCAiXlxccyAq
+XFwoI3ByYWdtYVxcfHVuZGVmXFx8ZGVmaW5lXFwpXFw+XFwoLipcXCkiCiAgICAgICAgICAgICAg
+ICAgICAgIChsaXN0IDEgYy1wcmVwcm9jZXNzb3ItZmFjZS1uYW1lKQogICAgICAgICAgICAgICAg
+ICAgICAnKDIgZm9udC1sb2NrLXN0cmluZy1mYWNlKSkpCiAgICAgIDs7IFRoZXJlIGFyZSBzb21l
+IG90aGVyIHRoaW5ncyBpbiBgYy1jcHAtbWF0Y2hlcnMnIGJlc2lkZXMgdGhlCiAgICAgIDs7IHBy
+ZXByb2Nlc3NvciBzdXBwb3J0LCBzbyBpbmNsdWRlIGl0LgogICAgICAoYy1sYW5nLWNvbnN0IGMt
+Y3BwLW1hdGNoZXJzKSkpCgoKCjs7IEN1c3RvbSB2YXJpYWJsZXMKOzs7IyMjYXV0b2xvYWQKKGRl
+ZmN1c3RvbSBjc2hhcnAtbW9kZS1ob29rIG5pbAogICAgIipIb29rIGNhbGxlZCBieSBgY3NoYXJw
+LW1vZGUnLiIKICAgIDp0eXBlICdob29rCiAgICA6Z3JvdXAgJ2NzaGFycCkKCiAgOzsgVGhlIGZv
+bGxvd2luZyBmbiBhbGxvd3MgdGhpczoKICA7OyAgICAoY3NoYXJwLWxvZyAzICJzY2FuIHJlc3Vs
+dC4uLiclcyciIHN0YXRlKQoKKGRlZmN1c3RvbSBjc2hhcnAtbG9nLWxldmVsIDAKICAgICJUaGUg
+Y3VycmVudCBsb2cgbGV2ZWwgZm9yIENTaGFycC1tb2RlLXNwZWNpZmljIG9wZXJhdGlvbnMuClRo
+aXMgaXMgdXNlZCBpbiBwYXJ0aWN1bGFyIGJ5IHRoZSB2ZXJiYXRpbS1saXRlcmFsCnN0cmluZyBz
+Y2FubmluZy4KCk1vc3Qgb3RoZXIgY3NoYXJwIGZ1bmN0aW9ucyBhcmUgbm90IGluc3RydW1lbnRl
+ZC4KMCA9IE5PTkUsIDEgPSBJbmZvLCAyID0gVkVSQk9TRSwgMyA9IERFQlVHLCA0ID0gU0hVVFVQ
+IEFMUkVBRFkuICIKICAgIDp0eXBlICdpbnRlZ2VyCiAgICA6Z3JvdXAgJ2NzaGFycCkKCgo7Ozsj
+IyNhdXRvbG9hZAooZGVmY3VzdG9tIGNzaGFycC13YW50LWZseW1ha2UtZml4dXAgdAogICIqV2hl
+dGhlciB0byBlbmFibGUgdGhlIGJ1aWx0aW4gQyMgc3VwcG9ydCBmb3IgZmx5bWFrZS4gVGhpcyBp
+cyBtZWFuaW5nZnVsCm9ubHkgaWYgZmx5bWFrZSBpcyBsb2FkZWQuIgogIDp0eXBlICdib29sZWFu
+IDpncm91cCAnY3NoYXJwKQoKOzs7IyMjYXV0b2xvYWQKKGRlZmN1c3RvbSBjc2hhcnAtd2FudC15
+YXNuaXBwZXQtZml4dXAgdAogICIqV2hldGhlciB0byBlbmFibGUgdGhlIGJ1aWx0aW4gQyMgc3Vw
+cG9ydCBmb3IgeWFzbmlwcGV0LiBUaGlzIGlzIG1lYW5pbmdmdWwKb25seSBpZiBmbHltYWtlIGlz
+IGxvYWRlZC4iCiAgOnR5cGUgJ2Jvb2xlYW4gOmdyb3VwICdjc2hhcnApCgoKOzs7IyMjYXV0b2xv
+YWQKKGRlZmN1c3RvbSBjc2hhcnAtd2FudC1pbWVudSB0CiAgIipXaGV0aGVyIHRvIGdlbmVyYXRl
+IGEgYnVmZmVyIGluZGV4IHZpYSBpbWVudSBmb3IgQyMgYnVmZmVycy4iCiAgOnR5cGUgJ2Jvb2xl
+YW4gOmdyb3VwICdjc2hhcnApCgoKOzs7IyMjYXV0b2xvYWQKKGRlZmN1c3RvbSBjc2hhcnAtbWFr
+ZS10b29sICJubWFrZS5leGUiCiAgIipUaGUgbWFrZSB0b29sIHRvIHVzZS4gRGVmYXVsdHMgdG8g
+bm1ha2UsIGZvdW5kIG9uIHBhdGguIFNwZWNpZnkKYSBmdWxsIHBhdGggb3IgYWx0ZXJuYXRpdmUg
+cHJvZ3JhbSBuYW1lLCB0byB0ZWxsIGNzaGFycC1tb2RlIHRvIHVzZQphIGRpZmZlcmVudCBtYWtl
+IHRvb2wgaW4gY29tcGlsZSBjb21tYW5kcy4KClNlZSBhbHNvLCBgY3NoYXJwLW1zYnVpbGQtdG9v
+bCcuCgoiCiAgOnR5cGUgJ3N0cmluZyA6Z3JvdXAgJ2NzaGFycCkKCgo7OzsjIyNhdXRvbG9hZAoo
+ZGVmY3VzdG9tIGNzaGFycC1tc2J1aWxkLXRvb2wgIm1zYnVpbGQuZXhlIgogICIqVGhlIHRvb2wg
+dG8gdXNlIHRvIGJ1aWxkIC5jc3Byb2ogZmlsZXMuIERlZmF1bHRzIHRvIG1zYnVpbGQsIGZvdW5k
+IG9uCnBhdGguIFNwZWNpZnkgYSBmdWxsIHBhdGggb3IgYWx0ZXJuYXRpdmUgcHJvZ3JhbSBuYW1l
+LCB0byB0ZWxsIGNzaGFycC1tb2RlCnRvIHVzZSBhIGRpZmZlcmVudCBtYWtlIHRvb2wgaW4gY29t
+cGlsZSBjb21tYW5kcy4KClNlZSBhbHNvLCBgY3NoYXJwLW1ha2UtdG9vbCcuCgoiCiAgOnR5cGUg
+J3N0cmluZyA6Z3JvdXAgJ2NzaGFycCkKCgo7OzsjIyNhdXRvbG9hZAooZGVmY3VzdG9tIGNzaGFy
+cC1jbWQtbGluZS1saW1pdCAyOAogICJUaGUgbnVtYmVyIG9mIGxpbmVzIGF0IHRoZSB0b3Agb2Yg
+dGhlIGZpbGUgdG8gbG9vayBpbiwgdG8gZmluZAp0aGUgY29tbWFuZCB0aGF0IGNzaGFycC1tb2Rl
+IHdpbGwgdXNlIHRvIGNvbXBpbGUgdGhlIGN1cnJlbnQKYnVmZmVyLCBvciB0aGUgY29tbWFuZCBc
+InN0dWJcIiB0aGF0IGNzaGFycC1tb2RlIHdpbGwgdXNlIHRvCmNoZWNrIHRoZSBzeW50YXggb2Yg
+dGhlIGN1cnJlbnQgYnVmZmVyIHZpYSBmbHltYWtlLgoKSWYgdGhlIHZhbHVlIG9mIHRoaXMgdmFy
+aWFibGUgaXMgemVybywgdGhlbiBjc2hhcnAtbW9kZSBsb29rcwpldmVyeXdoZXJlIGluIHRoZSBm
+aWxlLiAgSWYgdGhlIHZhbHVlIGlzIHBvc2l0aXZlLCB0aGVuIG9ubHkgaW4KdGhlIGZpcnN0IE4g
+bGluZXMuIElmIG5lZ2F0aXZlLCB0aGVuIG9ubHkgaW4gdGhlIGZpbmFsIE4gbGluZXMuCgpUaGUg
+bGluZSBzaG91bGQgYXBwZWFyIGluIGEgY29tbWVudCBpbnNpZGUgdGhlIEMjIGJ1ZmZlci4KCgpD
+b21waWxlCi0tLS0tLS0tCgpJbiB0aGUgY2FzZSBvZiBjb21waWxlLCB0aGUgY29tcGlsZSBjb21t
+YW5kIG11c3QgYmUgcHJlZml4ZWQgd2l0aApcImNvbXBpbGU6XCIuICBGb3IgZXhhbXBsZSwKCiAv
+LyBjb21waWxlOiBjc2MuZXhlIC9yOkhhbGxvLmRsbCBBcmZpZS5jcwoKClRoaXMgY29tbWFuZCB3
+aWxsIGJlIHN1Z2dlc3RlZCBhcyB0aGUgY29tcGlsZSBjb21tYW5kIHdoZW4gdGhlCnVzZXIgaW52
+b2tlcyBgY29tcGlsZScgZm9yIHRoZSBmaXJzdCB0aW1lLgoKCkZseW1ha2UKLS0tLS0tLS0KCklu
+IHRoZSBjYXNlIG9mIGZseW1ha2UsIHRoZSBjb21tYW5kIFwic3R1YlwiIHN0cmluZyBtdXN0IGJl
+CnByZWZpeGVkIHdpdGggXCJmbHltYWtlOlwiLiAgRm9yIGV4YW1wbGUsCgogLy8gZmx5bWFrZTog
+RE9UTkVURElSXGNzYy5leGUgL3RhcmdldDpuZXRtb2R1bGUgL3I6Zm9vLmRsbCBAQEZJTEVAQAoK
+SW4gdGhlIGNhc2Ugb2YgZmx5bWFrZSwgdGhlIHN0cmluZyBzaG91bGQgTk9UIGluY2x1ZGUgdGhl
+IG5hbWUgb2YKdGhlIGZpbGUgZm9yIHRoZSBidWZmZXIgYmVpbmcgY2hlY2tlZC4gSW5zdGVhZCwg
+dXNlIHRoZSB0b2tlbgpAQEZJTEVAQCAuICBjc2hhcnAtbW9kZSB3aWxsIHJlcGxhY2UgdGhpcyB0
+b2tlbiB3aXRoIHRoZSBuYW1lIG9mCnRoZSBzb3VyY2UgZmlsZSB0byBjb21waWxlLCBiZWZvcmUg
+cGFzc2luZyB0aGUgY29tbWFuZCB0byBmbHltYWtlCnRvIHJ1biBpdC4KCklmIGZvciBzb21lIHJl
+YXNvbiB0aGUgY29tbWFuZCBpcyBpbnZhbGlkIG9yIGlsbGVnYWwsIGZseW1ha2UKd2lsbCByZXBv
+cnQgYW4gZXJyb3IgYW5kIGRpc2FibGUgaXRzZWxmLgoKSXQgbWlnaHQgYmUgaGFuZHkgdG8gcnVu
+IGZ4Y29wLCBmb3IgZXhhbXBsZSwgdmlhIGZseW1ha2UuCgogLy8gZmx5bWFrZTogZnhjb3BjbWQu
+ZXhlIC9jICAvZjpNeUxpYnJhcnkuZGxsCgoKCkluIGFsbCBjYXNlcwotLS0tLS0tLS0tLS0KCkJl
+IHN1cmUgdG8gc3BlY2lmeSB0aGUgcHJvcGVyIHBhdGggZm9yIHlvdXIgY3NjLmV4ZSwgd2hhdGV2
+ZXIKdmVyc2lvbiB0aGF0IG1pZ2h0IGJlLCBvciBubyBwYXRoIGlmIHlvdSB3YW50IHRvIHVzZSB0
+aGUgc3lzdGVtClBBVEggc2VhcmNoLgoKSWYgdGhlIGJ1ZmZlciBkZXBlbmRzIG9uIGV4dGVybmFs
+IGxpYnJhcmllcywgdGhlbiB5b3Ugd2lsbCB3YW50CnRvIGluY2x1ZGUgL1IgYXJndW1lbnRzIHRv
+IHRoYXQgY3NjLmV4ZSBjb21tYW5kLgoKVG8gYmUgY2xlYXIsIHRoaXMgdmFyaWFibGUgc2V0cyB0
+aGUgbnVtYmVyIG9mIGxpbmVzIHRvIHNlYXJjaCBmb3IKdGhlIGNvbW1hbmQuICBUaGlzIGNhcmlh
+YmxlIGlzIGFuIGludGVnZXIuCgpJZiB0aGUgbWFya2VyIHN0cmluZyAoZWl0aGVyIFwiY29tcGls
+ZTpcIiBvciBcImZseW1ha2U6XCIKaXMgcHJlc2VudCBpbiB0aGUgZ2l2ZW4gc2V0IG9mIGxpbmVz
+LCBjc2hhcnAtbW9kZSB3aWxsIHRha2UKYW55dGhpbmcgYWZ0ZXIgdGhlIG1hcmtlciBzdHJpbmcg
+YXMgdGhlIGNvbW1hbmQgdG8gcnVuLgoKIgogIDp0eXBlICdpbnRlZ2VyICAgOmdyb3VwICdjc2hh
+cnApCgoKCihkZWZjb25zdCBjc2hhcnAtZm9udC1sb2NrLWtleXdvcmRzLTEgKGMtbGFuZy1jb25z
+dCBjLW1hdGNoZXJzLTEgY3NoYXJwKQogICJNaW5pbWFsIGhpZ2hsaWdodGluZyBmb3IgQyMgbW9k
+ZS4iKQoKKGRlZmNvbnN0IGNzaGFycC1mb250LWxvY2sta2V5d29yZHMtMiAoYy1sYW5nLWNvbnN0
+IGMtbWF0Y2hlcnMtMiBjc2hhcnApCiAgIkZhc3Qgbm9ybWFsIGhpZ2hsaWdodGluZyBmb3IgQyMg
+bW9kZS4iKQoKKGRlZmNvbnN0IGNzaGFycC1mb250LWxvY2sta2V5d29yZHMtMyAoYy1sYW5nLWNv
+bnN0IGMtbWF0Y2hlcnMtMyBjc2hhcnApCiAgIkFjY3VyYXRlIG5vcm1hbCBoaWdobGlnaHRpbmcg
+Zm9yIEMjIG1vZGUuIikKCihkZWZ2YXIgY3NoYXJwLWZvbnQtbG9jay1rZXl3b3JkcyBjc2hhcnAt
+Zm9udC1sb2NrLWtleXdvcmRzLTMKICAiRGVmYXVsdCBleHByZXNzaW9ucyB0byBoaWdobGlnaHQg
+aW4gQyMgbW9kZS4iKQoKCihkZWZ2YXIgY3NoYXJwLW1vZGUtc3ludGF4LXRhYmxlIG5pbAogICJT
+eW50YXggdGFibGUgdXNlZCBpbiBjc2hhcnAtbW9kZSBidWZmZXJzLiIpCihvciBjc2hhcnAtbW9k
+ZS1zeW50YXgtdGFibGUKICAgIChzZXRxIGNzaGFycC1tb2RlLXN5bnRheC10YWJsZQogICAgICAg
+ICAgKGZ1bmNhbGwgKGMtbGFuZy1jb25zdCBjLW1ha2UtbW9kZS1zeW50YXgtdGFibGUgY3NoYXJw
+KSkpKQoKKGRlZnZhciBjc2hhcnAtbW9kZS1hYmJyZXYtdGFibGUgbmlsCiAgIkFiYnJldmlhdGlv
+biB0YWJsZSB1c2VkIGluIGNzaGFycC1tb2RlIGJ1ZmZlcnMuIikKKGMtZGVmaW5lLWFiYnJldi10
+YWJsZSAnY3NoYXJwLW1vZGUtYWJicmV2LXRhYmxlCiAgOzsgS2V5d29yZHMgdGhhdCBpZiB0aGV5
+IG9jY3VyIGZpcnN0IG9uIGEgbGluZSBtaWdodCBhbHRlciB0aGUKICA7OyBzeW50YWN0aWMgY29u
+dGV4dCwgYW5kIHdoaWNoIHRoZXJlZm9yZSBzaG91bGQgdHJpZyByZWluZGVudGF0aW9uCiAgOzsg
+d2hlbiB0aGV5IGFyZSBjb21wbGV0ZWQuCiAgJygoImVsc2UiICJlbHNlIiBjLWVsZWN0cmljLWNv
+bnRpbnVlZC1zdGF0ZW1lbnQgMCkKICAgICgid2hpbGUiICJ3aGlsZSIgYy1lbGVjdHJpYy1jb250
+aW51ZWQtc3RhdGVtZW50IDApCiAgICAoImNhdGNoIiAiY2F0Y2giIGMtZWxlY3RyaWMtY29udGlu
+dWVkLXN0YXRlbWVudCAwKQogICAgKCJmaW5hbGx5IiAiZmluYWxseSIgYy1lbGVjdHJpYy1jb250
+aW51ZWQtc3RhdGVtZW50IDApKSkKCihkZWZ2YXIgY3NoYXJwLW1vZGUtbWFwIChsZXQgKChtYXAg
+KGMtbWFrZS1pbmhlcml0ZWQta2V5bWFwKSkpCiAgICAgICAgICAgICAgICAgICAgICA7OyBBZGQg
+YmluZGluZ3Mgd2hpY2ggYXJlIG9ubHkgdXNlZnVsIGZvciBDIwogICAgICAgICAgICAgICAgICAg
+ICAgbWFwKQogICJLZXltYXAgdXNlZCBpbiBjc2hhcnAtbW9kZSBidWZmZXJzLiIpCgoKKGRlZnZh
+ciBjc2hhcnAtLXlhc25pcHBldC1oYXMtYmVlbi1maXhlZCBuaWwKICAiaW5kaWNhdGVzIHdoZXRo
+ZXIgeWFzbmlwcGV0IGhhcyBiZWVuIHBhdGNoZWQgZm9yIHVzZSB3aXRoIGNzaGFycC4KSW50ZW5k
+ZWQgZm9yIGludGVybmFsIHVzZSBvbmx5LiIpCgooZGVmdmFyIGNzaGFycC0tZmx5bWFrZS1oYXMt
+YmVlbi1pbnN0YWxsZWQgIG5pbAogICJvbmUtdGltZSB1c2UgYm9vbGVhbiwgdG8gY2hlY2sgd2hl
+dGhlciBjc2hhcnAgdHdlYWtzIGZvciBmbHltYWtlIChhZHZpY2UKZXRjKSBoYXZlIGJlZW4gaW5z
+dGFsbGVkLiIpCgooZGVmdmFyIGNzaGFycC1mbHltYWtlLWNzYy1hcmd1bWVudHMKICAobGlzdCAi
+L3Q6bW9kdWxlIiAiL25vbG9nbyIpCiAgIkEgbGlzdCBvZiBhcmd1bWVudHMgdG8gdXNlIHdpdGgg
+dGhlIGNzYy5leGUKY29tcGlsZXIsIHdoZW4gdXNpbmcgZmx5bWFrZSB3aXRoIGEKZGlyZWN0IGNz
+Yy5leGUgYnVpbGQgZm9yIHN5bnRheCBjaGVja2luZyBwdXJwb3Nlcy4iKQoKCihkZWZ2YXIgY3No
+YXJwLWZseW1ha2UtYXV4LWVycm9yLWluZm8gbmlsCiAgImEgbGlzdCBvZiBhdXhpbGlhcnkgZmx5
+bWFrZSBlcnJvciBpbmZvIGl0ZW1zLiBFYWNoIGl0ZW0gaW4gdGhlCmxpc3QgaXMgYSBwYWlyLCBj
+b25zaXN0aW5nIG9mIGEgbGluZSBudW1iZXIgYW5kIGEgY29sdW1uIG51bWJlci4KVGhpcyBpbmZv
+IGlzIHNldCBieSBhZHZpY2UgdG8gZmx5bWFrZS1wYXJzZS1saW5lLCBhbmQgdXNlZCBieQphZHZp
+Y2UgYXR0YWNoZWQgdG8gZmx5bWFrZS1nb3RvLWxpbmUsIHRvIG5hdmlnYXRlIHRvIHRoZSBwcm9w
+ZXIKZXJyb3IgY29sdW1uIHdoZW4gcG9zc2libGUuICIpCgoKKGRlZnZhciBjc2hhcnAtZmx5bWFr
+ZS1jc2MtZXJyb3ItcGF0dGVybgogICJeWyBcdF0qXFwoW19BLVphLXowLTldW14oXStcXC5jc1xc
+KShcXChbMC05XStcXClbLF1cXChbMC05XStcXCkpID86IFxcKFxcKGVycm9yXFx8d2FybmluZ1xc
+KSArOj8gKkNbU0FdWzAtOV0rICo6WyBcdFxuXSpcXCguK1xcKVxcKSIKICAiVGhlIHJlZ2V4IHBh
+dHRlcm4gZm9yIEMjIGNvbXBpbGVyIGVycm9yIG1lc3NhZ2VzLiBGb2xsb3dzCnRoZSBzYW1lIGZv
+cm0gYXMgYW4gZW50cnkgaW4gYGZseW1ha2UtZXJyLWxpbmUtcGF0dGVybnMnLiBUaGUKdmFsdWUg
+aXMgYSBTVFJJTkcsIGEgcmVnZXguIikKCjs7IFRPRE8KOzsgRGVmaW5lcyBvdXIgY29uc3RhbnQg
+Zm9yIGZpbmRpbmcgYXR0cmlidXRlcy4KOzsoZGVmY29uc3QgY3NoYXJwLWF0dHJpYnV0ZS1yZWdl
+eCAiXFxbXFwoW1htbFR5cGVdK1xcKSgiKQo7OyhkZWZjb25zdCBjc2hhcnAtYXR0cmlidXRlLXJl
+Z2V4ICJcXFtcXCguXFwpIikKOzsgVGhpcyBkb2Vzbid0IHdvcmsgYmVjYXVzZSB0aGUgc3RyaW5n
+IHJlZ2V4IGhhcHBlbnMgYmVmb3JlIHRoaXMgcG9pbnQKOzsgYW5kIGdldHRpbmcgdGhlIGZvbnQt
+bG9ja2luZyB0byB3b3JrIGJlZm9yZSBhbmQgYWZ0ZXIgaXMgZmFpcmx5IGRpZmZpY3VsdAo7Oyhk
+ZWZjb25zdCBjc2hhcnAtYXR0cmlidXRlLXJlZ2V4Cjs7ICAoY29uY2F0Cjs7ICAgIlxcW1thLXpB
+LVpdWyBcdGEtekEtWjAtOS5dKyIKOzsgICAiXFwoKC4qXFwpPyIKOzspKQoKCjs7ID09PT09PT09
+PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09
+PQo7OyBlbmQgb2YgYyMgdmFsdWVzIGZvciAibGFuZ3VhZ2UgY29uc3RhbnRzIiBkZWZpbmVkIGlu
+IGNjLWxhbmdzLmVsCjs7ID09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09
+PT09PT09PT09PT09PT09PT09PT09PT09PQoKCgoKCjs7ID09PT09PT09PT09PT09PT09PT09PT09
+PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PQo7OyBGbHlt
+YWtlIGludGVncmF0aW9uCgooZGVmdW4gY3NoYXJwLWZseW1ha2UtaW5pdCAoKQogIChjc2hhcnAt
+Zmx5bWFrZS1pbml0LWltcGwKICAgJ2ZseW1ha2UtY3JlYXRlLXRlbXAtaW5wbGFjZSB0IHQgJ2Nz
+aGFycC1mbHltYWtlLWdldC1jbWRsaW5lKSkKCihkZWZ1biBjc2hhcnAtZmx5bWFrZS1pbml0LWlt
+cGwgKGNyZWF0ZS10ZW1wLWYgdXNlLXJlbGF0aXZlLWJhc2UtZGlyIHVzZS1yZWxhdGl2ZS1zb3Vy
+Y2UgZ2V0LWNtZGxpbmUtZikKICAiQ3JlYXRlIHN5bnRheCBjaGVjayBjb21tYW5kIGxpbmUgZm9y
+IGEgZGlyZWN0bHkgY2hlY2tlZCBzb3VyY2UgZmlsZS4KVXNlIENSRUFURS1URU1QLUYgZm9yIGNy
+ZWF0aW5nIHRlbXAgY29weS4iCiAgKGxldCogKChhcmdzIG5pbCkKICAgICAgICAodGVtcC1zb3Vy
+Y2UtZmlsZS1uYW1lICAoZmx5bWFrZS1pbml0LWNyZWF0ZS10ZW1wLWJ1ZmZlci1jb3B5IGNyZWF0
+ZS10ZW1wLWYpKSkKICAgIChzZXRxIGFyZ3MgKGZseW1ha2UtZ2V0LXN5bnRheC1jaGVjay1wcm9n
+cmFtLWFyZ3MKICAgICAgICAgICAgICAgIHRlbXAtc291cmNlLWZpbGUtbmFtZSAiLiIKICAgICAg
+ICAgICAgICAgIHVzZS1yZWxhdGl2ZS1iYXNlLWRpciB1c2UtcmVsYXRpdmUtc291cmNlCiAgICAg
+ICAgICAgICAgICBnZXQtY21kbGluZS1mKSkKICAgIGFyZ3MpKQoKCihkZWZ1biBjc2hhcnAtZmx5
+bWFrZS1jbGVhbnVwICgpCiAgIkRlbGV0ZSB0aGUgdGVtcG9yYXJ5IC5uZXRtb2R1bGUgZmlsZSBj
+cmVhdGVkIGluIHN5bnRheCBjaGVja2luZwphIEMjIGJ1ZmZlciwgdGhlbiBjYWxsIHRocm91Z2gg
+dG8gZmx5bWFrZS1zaW1wbGUtY2xlYW51cC4iCgogIChpZiBmbHltYWtlLXRlbXAtc291cmNlLWZp
+bGUtbmFtZQogICAgICAocHJvZ24KICAgICAgICAobGV0KiAoKG5ldG1vZHVsZS1uYW1lCiAgICAg
+ICAgICAgICAgICAoY29uY2F0IChmaWxlLW5hbWUtc2Fucy1leHRlbnNpb24gZmx5bWFrZS10ZW1w
+LXNvdXJjZS1maWxlLW5hbWUpCiAgICAgICAgICAgICAgICAgICAgICAgICIubmV0bW9kdWxlIikp
+CiAgICAgICAgICAgICAgIChleHBhbmRlZC1uZXRtb2R1bGUtbmFtZSAoZXhwYW5kLWZpbGUtbmFt
+ZSBuZXRtb2R1bGUtbmFtZSAiLiIpKSkKICAgICAgICAgIChpZiAoZmlsZS1leGlzdHMtcCBleHBh
+bmRlZC1uZXRtb2R1bGUtbmFtZSkKICAgICAgICAgICAgICAoZmx5bWFrZS1zYWZlLWRlbGV0ZS1m
+aWxlIGV4cGFuZGVkLW5ldG1vZHVsZS1uYW1lKSkpCiAgICAgICAgKSkKICAoZmx5bWFrZS1zaW1w
+bGUtY2xlYW51cCkpCgoKKGRlZnVuIGNzaGFycC1zcGxpdC1zdHJpbmctcmVzcGVjdGluZy1xdW90
+ZXMgKHMpCiAgInNwbGl0cyBhIHN0cmluZyBpbnRvIHRva2VucywgcmVzcGVjdGluZyBkb3VibGUg
+cXVvdGVzCkZvciBleGFtcGxlLCB0aGUgc3RyaW5nICdUaGlzIGlzIFwiYSBzdHJpbmdcIicgd2ls
+bCBiZSBzcGxpdCBpbnRvIDMgdG9rZW5zLgoKTW9yZSBwZXJ0aW5lbnRseSwgdGhlIHN0cmluZwog
+ICAnY3NjIC90Om1vZHVsZSAvUjpcImM6XGFiYmEgZGFiYmFcZG9vb1xGb28uZGxsXCInCgouLi53
+aWxsIGJlIHNwbGl0IGludG8gMyB0b2tlbnMuCgpUaGlzIGZuIGFsc28gcmVtb3ZlcyBxdW90ZXMg
+ZnJvbSB0aGUgdG9rZW5zIHRoYXQgaGF2ZSB0aGVtLiBUaGlzIGlzIGZvcgpjb21wYXRpYmlsaXR5
+IHdpdGggZmx5bWFrZSBhbmQgdGhlIHByb2Nlc3Mtc3RhcnQgZm4uCgoiCiAgKGxldCAoKGxvY2Fs
+LXMgcykKICAgICAgICAobXktcmUtMSAiW14gXCJdKlwiW15cIl0rXCJcXHxbXiBcIl0rIikKICAg
+ICAgICAobXktcmUtMiAiXFwoW14gXCJdKlxcKVwiXFwoW15cIl0rXFwpXCIiKQogICAgICAgICh0
+b2tlbnMpKQogICAgKHdoaWxlIChzdHJpbmctbWF0Y2ggbXktcmUtMSBsb2NhbC1zKQogICAgICAo
+bGV0ICgodG9rZW4gKG1hdGNoLXN0cmluZyAwIGxvY2FsLXMpKQogICAgICAgICAgICAocmVtYWlu
+ZGVyIChzdWJzdHJpbmcgbG9jYWwtcyAobWF0Y2gtZW5kIDApKSkpCiAgICAgICAgKGlmIChzdHJp
+bmctbWF0Y2ggbXktcmUtMiB0b2tlbikKICAgICAgICAgICAgKHNldHEgdG9rZW4gKGNvbmNhdCAo
+bWF0Y2gtc3RyaW5nIDEgdG9rZW4pIChtYXRjaC1zdHJpbmcgMiB0b2tlbikpKSkKICAgICAgICA7
+OyhtZXNzYWdlICJ0b2tlbjogJXMiIHRva2VuKQogICAgICAgIChzZXRxIHRva2VucyAoYXBwZW5k
+IHRva2VucyAobGlzdCB0b2tlbikpKQogICAgICAgIChzZXRxIGxvY2FsLXMgcmVtYWluZGVyKSkp
+CiAgICB0b2tlbnMpKQoKCihkZWZ1biBjc2hhcnAtZ2V0LXZhbHVlLWZyb20tY29tbWVudHMgKG1h
+cmtlci1zdHJpbmcgbGluZS1saW1pdCkKICAiZ2V0cyBhIHN0cmluZyBmcm9tIHRoZSBoZWFkZXIg
+Y29tbWVudHMgaW4gdGhlIGN1cnJlbnQgYnVmZmVyLgoKVGhpcyBpcyB1c2VkIHRvIGV4dHJhY3Qg
+dGhlIGZseW1ha2UgY29tbWFuZCBhbmQgdGhlIGNvbXBpbGUKY29tbWFuZCBmcm9tIHRoZSBjb21t
+ZW50cy4KCkl0IGxvb2tzIGZvciBcIm1hcmtlci1zdHJpbmc6XCIgYW5kIHJldHVybnMgdGhlIHN0
+cmluZyB0aGF0CmZvbGxvd3MgaXQsIG9yIHJldHVybnMgbmlsIGlmIHRoYXQgc3RyaW5nIGlzIG5v
+dCBmb3VuZC4KCmVnLCB3aGVuIG1hcmtlci1zdHJpbmcgaXMgXCJmbHltYWtlXCIsIGFuZCB0aGUg
+Zm9sbG93aW5nCnN0cmluZyBpcyBmb3VuZCBhdCB0aGUgdG9wIG9mIHRoZSBidWZmZXI6CgogICAg
+IGZseW1ha2U6IGNzYy5leGUgL3I6SGFsbG8uZGxsCgouLi50aGVuIHRoaXMgY29tbWFuZCB3aWxs
+IHJldHVybiB0aGUgc3RyaW5nCgogICAgIFwiY3NjLmV4ZSAvcjpIYWxsby5kbGxcIgoKSXQncyBv
+ayB0byBoYXZlIHdoaXRlc3BhY2UgYmV0d2VlbiB0aGUgbWFya2VyIGFuZCB0aGUgZm9sbG93aW5n
+CmNvbG9uLgoKIgoKICAobGV0IChzdGFydCBzZWFyY2gtbGltaXQgZm91bmQpCiAgICA7OyBkZXRl
+cm1pbmUgd2hhdCBsaW5lcyB0byBsb29rIGluCiAgICAoc2F2ZS1leGN1cnNpb24KICAgICAgKHNh
+dmUtcmVzdHJpY3Rpb24KICAgICAgICAod2lkZW4pCiAgICAgICAgKGNvbmQgKCg+IGxpbmUtbGlt
+aXQgMCkKICAgICAgICAgICAgICAgKGdvdG8tY2hhciAoc2V0cSBzdGFydCAocG9pbnQtbWluKSkp
+CiAgICAgICAgICAgICAgIChmb3J3YXJkLWxpbmUgbGluZS1saW1pdCkKICAgICAgICAgICAgICAg
+KHNldHEgc2VhcmNoLWxpbWl0IChwb2ludCkpKQogICAgICAgICAgICAgICgoPCBsaW5lLWxpbWl0
+IDApCiAgICAgICAgICAgICAgIChnb3RvLWNoYXIgKHNldHEgc2VhcmNoLWxpbWl0IChwb2ludC1t
+YXgpKSkKICAgICAgICAgICAgICAgKGZvcndhcmQtbGluZSBsaW5lLWxpbWl0KQogICAgICAgICAg
+ICAgICAoc2V0cSBzdGFydCAocG9pbnQpKSkKICAgICAgICAgICAgICAodCAgICAgICAgICAgICAg
+ICAgICAgICAgIDswID0+IG5vIGxpbWl0ICh1c2Ugd2l0aCBjYXJlISkKICAgICAgICAgICAgICAg
+KHNldHEgc3RhcnQgKHBvaW50LW1pbikpCiAgICAgICAgICAgICAgIChzZXRxIHNlYXJjaC1saW1p
+dCAocG9pbnQtbWF4KSkpKSkpCgogICAgOzsgbG9vayBpbiB0aG9zZSBsaW5lcwogICAgKHNhdmUt
+ZXhjdXJzaW9uCiAgICAgIChzYXZlLXJlc3RyaWN0aW9uCiAgICAgICAgKHdpZGVuKQogICAgICAg
+IChsZXQgKChyZS1zdHJpbmcKICAgICAgICAgICAgICAgKGNvbmNhdCAiXFxiIiBtYXJrZXItc3Ry
+aW5nICJbIFx0XSo6WyBcdF0qXFwoLitcXCkkIikpKQogICAgICAgICAgKGlmIChhbmQgc3RhcnQK
+ICAgICAgICAgICAgICAgICAgICg8IChnb3RvLWNoYXIgc3RhcnQpIHNlYXJjaC1saW1pdCkKICAg
+ICAgICAgICAgICAgICAgIChyZS1zZWFyY2gtZm9yd2FyZCByZS1zdHJpbmcgc2VhcmNoLWxpbWl0
+ICdtb3ZlKSkKCiAgICAgICAgICAgICAgKGJ1ZmZlci1zdWJzdHJpbmctbm8tcHJvcGVydGllcwog
+ICAgICAgICAgICAgICAobWF0Y2gtYmVnaW5uaW5nIDEpCiAgICAgICAgICAgICAgIChtYXRjaC1l
+bmQgMSkpKSkpKSkpCgoKCgooZGVmdW4gY3NoYXJwLXJlcGxhY2UtY29tbWFuZC10b2tlbnMgKGV4
+cGxpY2l0bHktc3BlY2lmaWVkLWNvbW1hbmQpCiAgIlJlcGxhY2UgdG9rZW5zIGluIHRoZSBmbHlt
+YWtlIG9yIGNvbXBpbGUgY29tbWFuZCBleHRyYWN0ZWQgZnJvbSB0aGUKYnVmZmVyLCB0byBhbGxv
+dyBzcGVjaWZpY2F0aW9uIG9mIHRoZSBvcmlnaW5hbCBhbmQgbW9kaWZpZWQKZmlsZW5hbWVzLgoK
+ICBAQE9SSUdAQCAtIGdldHMgcmVwbGFjZWQgd2l0aCB0aGUgb3JpZ2luYWwgZmlsZW5hbWUKICBA
+QEZJTEVAQCAtIGdldHMgcmVwbGFjZWQgd2l0aCB0aGUgbmFtZSBvZiB0aGUgdGVtcG9yYXJ5IGZp
+bGUKICAgICAgY3JlYXRlZCBieSBmbHltYWtlCgoiCiAgKGxldCAoKG1hc3NhZ2VkLWNvbW1hbmQg
+ZXhwbGljaXRseS1zcGVjaWZpZWQtY29tbWFuZCkpCiAgICAoaWYgKHN0cmluZy1tYXRjaCAiQEBT
+UkNAQCIgbWFzc2FnZWQtY29tbWFuZCkKICAgICAgICAoc2V0cSBtYXNzYWdlZC1jb21tYW5kCiAg
+ICAgICAgICAgICAgKHJlcGxhY2UtbWF0Y2gKICAgICAgICAgICAgICAgKGZpbGUtcmVsYXRpdmUt
+bmFtZSBmbHltYWtlLXRlbXAtc291cmNlLWZpbGUtbmFtZSkgdCB0IG1hc3NhZ2VkLWNvbW1hbmQp
+KSkKICAgIChpZiAoc3RyaW5nLW1hdGNoICJAQE9SSUdAQCIgbWFzc2FnZWQtY29tbWFuZCkKICAg
+ICAgICAoc2V0cSBtYXNzYWdlZC1jb21tYW5kCiAgICAgICAgICAgICAgKHJlcGxhY2UtbWF0Y2gK
+ICAgICAgICAgICAgICAgKGZpbGUtcmVsYXRpdmUtbmFtZSBidWZmZXItZmlsZS1uYW1lKSB0IHQg
+bWFzc2FnZWQtY29tbWFuZCkpKQogICAgbWFzc2FnZWQtY29tbWFuZCkpCgoKOzsoc2V0cSBmbHlt
+YWtlLWxvZy1sZXZlbCAzKQoKKGRlZnVuIGNzaGFycC1mbHltYWtlLWdldC1maW5hbC1jc2MtYXJn
+dW1lbnRzIChpbml0aWFsLWFyZ2xpc3QpCiAgIkdldHMgdGhlIGNvbW1hbmQgdXNlZCBieSBjc2Mu
+ZXhlIGZvciBmbHltYWtlIHJ1bnMuClRoaXMgbWF5IGluamVjdCBhIC90Om1vZHVsZSBpbnRvIGFu
+IGFyZ2xpc3QsIHdoZXJlIGl0IGlzIG5vdApwcmVzZW50LgoKVGhpcyBmbiBidXJwcyBpZiBhIGRp
+ZmZlcmVudCAvdDogYXJndW1lbnQgaXMgZm91bmQuCgoiCiAgKGludGVyYWN0aXZlKQogIChsZXQg
+KChhcmdzIGluaXRpYWwtYXJnbGlzdCkKICAgICAgICBhcmcKICAgICAgICAoZm91bmQgbmlsKSkK
+ICAgICh3aGlsZSBhcmdzCiAgICAgIChzZXRxIGFyZyAoY2FyIGFyZ3MpKQogICAgICAoY29uZAog
+ICAgICAgKChzdHJpbmctZXF1YWwgYXJnICIvdDptb2R1bGUiKSAoc2V0cSBmb3VuZCB0KSkKICAg
+ICAgICgoc3RyaW5nLW1hdGNoICJeL3Q6IiBhcmcpCiAgICAgICAgKHNldHEgZm91bmQgdCkKICAg
+ICAgICAobWVzc2FnZSAiY3NoYXJwLW1vZGU6IFdBUk5JTkcgL3Q6IG9wdGlvbiBwcmVzZW50IGlu
+IGFyZ2xpc3QsIGFuZCBub3QgL3Q6bW9kdWxlOyBmaXggdGhpcy4iKSkpCgogICAgICAoc2V0cSBh
+cmdzIChjZHIgYXJncykpKQoKICAgIChzZXRxIGFyZ3MKICAgICAgICAgIChpZiBmb3VuZAogICAg
+ICAgICAgICAgIGluaXRpYWwtYXJnbGlzdAogICAgICAgICAgICAoYXBwZW5kIChsaXN0ICIvdDpt
+b2R1bGUiKSBpbml0aWFsLWFyZ2xpc3QpKSkKCiAgICAoaWYgKGNhbGxlZC1pbnRlcmFjdGl2ZWx5
+LXAgJ2FueSkKICAgICAgICAobWVzc2FnZSAicmVzdWx0OiAlcyIgKHByaW4xLXRvLXN0cmluZyBh
+cmdzKSkpCgogICAgYXJncykpCgoKKGRlZnVuIGNzaGFycC1mbHltYWtlLWdldC1jbWRsaW5lIChz
+b3VyY2UgYmFzZS1kaXIpCiAgIkdldHMgdGhlIGNtZCBsaW5lIGZvciBydW5uaW5nIGEgZmx5bWFr
+ZSBzZXNzaW9uIGluIGEgQyMgYnVmZmVyLgpUaGlzIGdldHMgY2FsbGVkIGJ5IGZseW1ha2UgaXRz
+ZWxmLgoKVGhlIGZuIGxvb2tzIGluIHRoZSBidWZmZXIgZm9yIGEgbGluZSB0aGF0IGxvb2tzIGxp
+a2U6CgogIGZseW1ha2U6IDxjb21tYW5kIGdvZXMgaGVyZT4KCiAgKEl0IHNob3VsZCBiZSBlbWJl
+ZGRlZCBpbnRvIGEgY29tbWVudCkKClR5cGljYWxseSB0aGUgY29tbWFuZCB3aWxsIGJlIGEgbGlu
+ZSB0aGF0IHJ1bnMgbm1ha2UuZXhlLAptc2J1aWxkLmV4ZSwgb3IgY3NjLmV4ZSwgd2l0aCB2YXJp
+b3VzIG9wdGlvbnMuIEl0IHNob3VsZApldmVudHVhbGx5IHJ1biB0aGUgQ1NDLmV4ZSBjb21waWxl
+ciwgb3Igc29tZXRoaW5nIGVsc2UgdGhhdCBlbWl0cwplcnJvciBtZXNzYWdlcyBpbiB0aGUgc2Ft
+ZSBmb3JtIGFzIHRoZSBDIyBjb21waWxlciwgbGlrZSBGeENvcENtZC5leGUKClNvbWUgbm90ZXMg
+b24gaW1wbGVtZW50YXRpb246CgogIDEuIGNzaGFycC1tb2RlIGNvcGllcyB0aGUgYnVmZmVyIHRv
+IGEgdGVtcG9yYXJ5IGZpbGUgYW5kCiAgICAgY29tcGlsZXMgKnRoYXQqLiAgVGhpcyB0ZW1wb3Jh
+cnkgZmlsZSBoYXMgYSBkaWZmZXJlbnQgbmFtZQogICAgIHRoYW4gdGhlIGFjdHVhbCBmaWxlIG5h
+bWUgZm9yIHRoZSBidWZmZXIgLSBfZmx5bWFrZSBnZXRzCiAgICAgYXBwZW5kZWQgdG8gdGhlIGJh
+c2VuYW1lLiAgVGhlcmVmb3JlLCB5b3Ugc2hvdWxkIHNwZWNpZnkKICAgICBGb29fZmx5bWFrZS5j
+cyBmb3IgdGhlIGZpbGVuYW1lLCBpZiB5b3Ugd2FudCB0byBleHBsaWNpdGx5CiAgICAgcmVmZXIg
+dG8gaXQuCgogICAgIElmIHlvdSB3YW50IHRvIHJlZmVyIHRvIGl0IGltcGxpY2l0bHksIHlvdSBj
+YW4gdXNlIHRoZSBzcGVjaWFsCiAgICAgdG9rZW4gXCJAQFNSQ0BAXCIgaW4gdGhlIGNvbW1hbmQu
+IEl0IHdpbGwgZ2V0IHJlcGxhY2VkIHdpdGggdGhlCiAgICAgbmFtZSBvZiB0aGUgdGVtcG9yYXJ5
+IGZpbGUgYXQgcnVudGltZS4gSWYgeW91IHdhbnQgdG8gcmVmZXIgdG8KICAgICB0aGUgb3JpZ2lu
+YWwgbmFtZSBvZiB0aGUgYnVmZmVyLCB1c2UgQEBPUklHQEAuCgogIDIuIEluIGdlbmVyYWwsIHdo
+ZW4gcnVubmluZyB0aGUgY29tcGlsZXIsIHlvdSBzaG91bGQgdXNlIGEKICAgICB0YXJnZXQgdHlw
+ZSBvZiBcIm1vZHVsZVwiIChlZywgL3Q6bW9kdWxlKSB0byBhbGxvdwogICAgIGNzaGFycC1tb2Rl
+IHRvIGNsZWFuIHVwIHRoZSBwcm9kdWN0cyBvZiB0aGUgYnVpbGQuCgogIDMuIFNlZSBgY3NoYXJw
+LWNtZC1saW5lLWxpbWl0JyBmb3IgYSB3YXkgdG8gcmVzdHJpY3Qgd2hlcmUKICAgICBjc2hhcnAt
+bW9kZSB3aWxsIHNlYXJjaCBmb3IgdGhlIGNvbW1hbmQuCgogIDQuIElmIHRoaXMgc3RyaW5nIGlz
+IG5vdCBmb3VuZCwgdGhlbiB0aGlzIGZuIHdpbGwgZmFsbGJhY2sgdG8KICAgICBhIGdlbmVyaWMs
+IGdlbmVyYXRlZCBjc2MuZXhlIGNvbW1hbmQuCgoiCiAgKGxldCAoKGV4cGxpY2l0bHktc3BlY2lm
+aWVkLWNvbW1hbmQKICAgICAgICAgKGNzaGFycC1nZXQtdmFsdWUtZnJvbS1jb21tZW50cyAiZmx5
+bWFrZSIgY3NoYXJwLWNtZC1saW5lLWxpbWl0KSkpCgogICAgKGNvbmQKICAgICAoZXhwbGljaXRs
+eS1zcGVjaWZpZWQtY29tbWFuZAoKICAgICAgOzsgdGhlIG1hcmtlciBzdHJpbmcgd2FzIGZvdW5k
+IGluIHRoZSBidWZmZXIKICAgICAgKGxldCAoKHRva2VucyAoY3NoYXJwLXNwbGl0LXN0cmluZy1y
+ZXNwZWN0aW5nLXF1b3RlcwogICAgICAgICAgICAgICAgICAgICAgKGNzaGFycC1yZXBsYWNlLWNv
+bW1hbmQtdG9rZW5zIGV4cGxpY2l0bHktc3BlY2lmaWVkLWNvbW1hbmQpKSkpCgogICAgICAgIChs
+aXN0IChjYXIgdG9rZW5zKSAoY2RyIHRva2VucykpKSkKCiAgICAgICAgOzsgOzsgaW1wbGljaXRs
+eSBhcHBlbmQ/IHRoZSBuYW1lIG9mIHRoZSB0ZW1wb3Jhcnkgc291cmNlIGZpbGUKICAgICAgICA7
+OyAobGlzdCAoY2FyIHRva2VucykgKGFwcGVuZCAoY2RyIHRva2VucykgKGxpc3QgZmx5bWFrZS10
+ZW1wLXNvdXJjZS1maWxlLW5hbWUpKSkpKQoKICAgICAodAogICAgICA7OyBmYWxsYmFjawogICAg
+ICAobGlzdCAiY3NjLmV4ZSIKICAgICAgICAgICAgKGFwcGVuZCAoY3NoYXJwLWZseW1ha2UtZ2V0
+LWZpbmFsLWNzYy1hcmd1bWVudHMKICAgICAgICAgICAgICAgICAgICAgY3NoYXJwLWZseW1ha2Ut
+Y3NjLWFyZ3VtZW50cykKICAgICAgICAgICAgICAgICAgICAobGlzdCBzb3VyY2UpKSkpKSkpCgoK
+OzsgKGRlZnVuIGNzaGFycC1mbHltYWtlLWdldC1jbWRsaW5lIChzb3VyY2UgYmFzZS1kaXIpCjs7
+ICAgIkdldHMgdGhlIGNtZCBsaW5lIGZvciBydW5uaW5nIGEgZmx5bWFrZSBzZXNzaW9uIGluIGEg
+QyMgYnVmZmVyLgo7OyBUaGlzIGdldHMgY2FsbGVkIGJ5IGZseW1ha2UgaXRzZWxmLgo7Owo7OyBU
+aGUgZm4gbG9va3MgaW4gdGhlIGJ1ZmZlciBmb3IgYSBsaW5lIHRoYXQgbG9va3MgbGlrZToKOzsK
+OzsgICBmbHltYWtlOiA8Y29tbWFuZCBnb2VzIGhlcmU+Cjs7Cjs7ICAgKEl0IHNob3VsZCBiZSBl
+bWJlZGRlZCBpbnRvIGEgY29tbWVudCkKOzsKOzsgVHlwaWNhbGx5IHRoZSBjb21tYW5kIHdpbGwg
+YmUgYSBsaW5lIHRoYXQgcnVucyBubWFrZS5leGUsCjs7IG1zYnVpbGQuZXhlLCBvciBjc2NjLmV4
+ZSwgd2l0aCB2YXJpb3VzIG9wdGlvbnMuIEl0IHNob3VsZAo7OyBldmVudHVhbGx5IHJ1biB0aGUg
+Q1NDLmV4ZSBjb21waWxlciwgb3Igc29tZXRoaW5nIGVsc2UgdGhhdCBlbWl0cwo7OyBlcnJvciBt
+ZXNzYWdlcyBpbiB0aGUgc2FtZSBmb3JtIGFzIHRoZSBDIyBjb21waWxlci4KOzsKOzsgSW4gZ2Vu
+ZXJhbCwgd2hlbiBydW5uaW5nIHRoZSBjb21waWxlciwgeW91IHNob3VsZCB1c2UgYSB0YXJnZXQK
+OzsgdHlwZSBvZiBcIm1vZHVsZVwiIChlZywgL3Q6bW9kdWxlKSB0byBhbGxvdyBjc2hhcnAtbW9k
+ZSB0bwo7OyBjbGVhbiB1cCB0aGUgcHJvZHVjdHMgb2YgdGhlIGJ1aWxkLgo7Owo7OyBTZWUgYGNz
+aGFycC1jbWQtbGluZS1saW1pdCcgZm9yIGEgd2F5IHRvIHJlc3RyaWN0IHdoZXJlCjs7IGNzaGFy
+cC1tb2RlIHdpbGwgc2VhcmNoIGZvciB0aGUgY29tbWFuZC4KOzsKOzsgSWYgdGhpcyBzdHJpbmcg
+aXMgbm90IGZvdW5kLCB0aGVuIHRoaXMgZm4gd2lsbCBmYWxsYmFjayB0byBhCjs7IGdlbmVyaWMs
+IGdlbmVyYXRlZCBjc2MuZXhlIGNvbW1hbmQuCjs7Cjs7ICIKOzsgICAobGV0ICgoZXhwbGljaXRs
+eS1zcGVjaWZpZWQtY29tbWFuZAo7OyAgICAgICAgICAobGV0ICgobGluZS1saW1pdCBjc2hhcnAt
+Y21kLWxpbmUtbGltaXQpCjs7ICAgICAgICAgICAgICAgIHN0YXJ0IHNlYXJjaC1saW1pdCBmb3Vu
+ZCkKOzsgICAgICAgICAgICA7OyBkZXRlcm1pbmUgd2hhdCBsaW5lcyB0byBsb29rIGluCjs7ICAg
+ICAgICAgICAgKHNhdmUtZXhjdXJzaW9uCjs7ICAgICAgICAgICAgICAoc2F2ZS1yZXN0cmljdGlv
+bgo7OyAgICAgICAgICAgICAgICAod2lkZW4pCjs7ICAgICAgICAgICAgICAgIChjb25kICgoPiBs
+aW5lLWxpbWl0IDApCjs7ICAgICAgICAgICAgICAgICAgICAgICAoZ290by1jaGFyIChzZXRxIHN0
+YXJ0IChwb2ludC1taW4pKSkKOzsgICAgICAgICAgICAgICAgICAgICAgIChmb3J3YXJkLWxpbmUg
+bGluZS1saW1pdCkKOzsgICAgICAgICAgICAgICAgICAgICAgIChzZXRxIHNlYXJjaC1saW1pdCAo
+cG9pbnQpKSkKOzsgICAgICAgICAgICAgICAgICAgICAgKCg8IGxpbmUtbGltaXQgMCkKOzsgICAg
+ICAgICAgICAgICAgICAgICAgIChnb3RvLWNoYXIgKHNldHEgc2VhcmNoLWxpbWl0IChwb2ludC1t
+YXgpKSkKOzsgICAgICAgICAgICAgICAgICAgICAgIChmb3J3YXJkLWxpbmUgbGluZS1saW1pdCkK
+OzsgICAgICAgICAgICAgICAgICAgICAgIChzZXRxIHN0YXJ0IChwb2ludCkpKQo7OyAgICAgICAg
+ICAgICAgICAgICAgICAodCAgICAgICAgICAgICAgICAgICAgICAgIDswID0+IG5vIGxpbWl0ICh1
+c2Ugd2l0aCBjYXJlISkKOzsgICAgICAgICAgICAgICAgICAgICAgIChzZXRxIHN0YXJ0IChwb2lu
+dC1taW4pKQo7OyAgICAgICAgICAgICAgICAgICAgICAgKHNldHEgc2VhcmNoLWxpbWl0IChwb2lu
+dC1tYXgpKSkpKSkKOzsKOzsgICAgICAgICAgICA7OyBsb29rIGluIHRob3NlIGxpbmVzCjs7ICAg
+ICAgICAgICAgKHNhdmUtZXhjdXJzaW9uCjs7ICAgICAgICAgICAgICAoc2F2ZS1yZXN0cmljdGlv
+bgo7OyAgICAgICAgICAgICAgICAod2lkZW4pCjs7ICAgICAgICAgICAgICAgIChpZiAoYW5kIHN0
+YXJ0Cjs7ICAgICAgICAgICAgICAgICAgICAgICAgICg8IChnb3RvLWNoYXIgc3RhcnQpIHNlYXJj
+aC1saW1pdCkKOzsgICAgICAgICAgICAgICAgICAgICAgICAgKHJlLXNlYXJjaC1mb3J3YXJkICJc
+XGJmbHltYWtlLWNvbW1hbmRbIFx0XSo6WyBcdF0qXFwoLitcXCkkIiBzZWFyY2gtbGltaXQgJ21v
+dmUpKQo7Owo7OyAgICAgICAgICAgICAgICAgICAgKGJ1ZmZlci1zdWJzdHJpbmctbm8tcHJvcGVy
+dGllcwo7OyAgICAgICAgICAgICAgICAgICAgIChtYXRjaC1iZWdpbm5pbmcgMSkKOzsgICAgICAg
+ICAgICAgICAgICAgICAobWF0Y2gtZW5kIDEpKSkpKSkpKQo7Owo7OyAgICAgKGNvbmQKOzsgICAg
+ICAoZXhwbGljaXRseS1zcGVjaWZpZWQtY29tbWFuZAo7OyAgICAgICA7OyB0aGUgbWFya2VyIHN0
+cmluZyB3YXMgZm91bmQgaW4gdGhlIGJ1ZmZlcgo7OyAgICAgICAobGV0ICgodG9rZW5zIChjc2hh
+cnAtc3BsaXQtc3RyaW5nLXJlc3BlY3RpbmctcXVvdGVzCjs7ICAgICAgICAgICAgICAgICAgICAg
+IGV4cGxpY2l0bHktc3BlY2lmaWVkLWNvbW1hbmQpKSkKOzsgICAgICAgICA7OyBpbXBsaWNpdGx5
+IGFwcGVuZCB0aGUgbmFtZSBvZiB0aGUgdGVtcG9yYXJ5IHNvdXJjZSBmaWxlCjs7ICAgICAgICAg
+KGxpc3QgKGNhciB0b2tlbnMpIChhcHBlbmQgKGNkciB0b2tlbnMpIChsaXN0IGZseW1ha2UtdGVt
+cC1zb3VyY2UtZmlsZS1uYW1lKSkpKSkKOzsKOzsgICAgICAodAo7OyAgICAgICA7OyBmYWxsYmFj
+awo7OyAgICAgICAobGlzdCAiY3NjLmV4ZSIKOzsgICAgICAgICAgICAgKGFwcGVuZCAoY3NoYXJw
+LWZseW1ha2UtZ2V0LWZpbmFsLWNzYy1hcmd1bWVudHMKOzsgICAgICAgICAgICAgICAgICAgICAg
+Y3NoYXJwLWZseW1ha2UtY3NjLWFyZ3VtZW50cykKOzsgICAgICAgICAgICAgICAgICAgICAobGlz
+dCBzb3VyY2UpKSkpKSkpCgoKCgoKKGRlZnVuIGNzaGFycC1mbHltYWtlLWluc3RhbGwgKCkKICAi
+Q2hhbmdlIGZseW1ha2UgdmFyaWFibGVzIGFuZCBmbnMgdG8gd29yayB3aXRoIEMjLgoKVGhpcyBm
+biBkb2VzIHRoZXNlIHRoaW5nczoKCjEuIGFkZCBhIEMjIGVudHJ5IHRvIHRoZSBmbHltYWtlLWFs
+bG93ZWQtZmlsZS1uYW1lLW1hc2tzLAogICBvciByZXBsYWNlIGl0IGlmIGl0IGFscmVhZHkgZXhp
+c3RzLgoKMi4gYWRkIGEgQyMgZW50cnkgdG8gZmx5bWFrZS1lcnItbGluZS1wYXR0ZXJucy4KICAg
+VGhpcyBpc24ndCBzdHJpY3RseSBuZWNlc3NhcnkgYmVjYXVzZSBvZiBpdGVtICM0LgoKMy4gb3Zl
+cnJpZGUgdGhlIGRlZmluaXRpb24gZm9yIGZseW1ha2UtcHJvY2Vzcy1zZW50aW5lbAogICB0byBO
+T1QgY2hlY2sgdGhlIHByb2Nlc3Mgc3RhdHVzIG9uIGV4aXQuIE1TQnVpbGQuZXhlCiAgIHNldHMg
+YSBub24temVybyBzdGF0dXMgY29kZSB3aGVuIGNvbXBpbGUgZXJyb3JzIG9jY3VyLAogICB3aGlj
+aCBjYXVzZXMgZmx5bWFrZSB0byBkaXNhYmxlIGl0c2VsZiB3aXRoIHRoZSByZWd1bGFyCiAgIGZs
+eW1ha2UtcHJvY2Vzcy1zZW50aW5lbC4KCjQuIHJlZGVmaW5lIGZseW1ha2Utc3RhcnQtc3ludGF4
+LWNoZWNrLXByb2Nlc3MgdG8gdW5zZXQgdGhlCiAgIHF1ZXJ5LW9uLWV4aXQgZmxhZyBmb3IgZmx5
+bWFrZSBwcm9jZXNzZXMuIFRoaXMgYWxsb3dzIGVtYWNzIHRvCiAgIGV4aXQgZXZlbiBpZiBmbHlt
+YWtlIGlzIGN1cnJlbnRseSBydW5uaW5nLgoKNS4gcHJvdmlkZSBhZHZpY2UgdG8gZmx5bWFrZS1w
+YXJzZS1saW5lIGFuZAogICBmbHltYWtlLXBhcnNlLWVyci1saW5lcywgc3BlY2lmaWNhbGx5IHNl
+dCB1cCBmb3IgQyMKICAgYnVmZmVycy4gVGhpcyBhbGxvd3Mgb3B0aW1pemVkIHNlYXJjaGluZyBm
+b3IgZXJyb3JzIGluIGNzYy5leGUKICAgb3V0cHV0LCBhbmQgc3RvcmluZyBjb2x1bW4gbnVtYmVy
+cywgZm9yIHVzZSBpbiAjNi4KCjYuIGRlZmluZSBhZHZpY2UgdG8gZmx5bWFrZS1nb3RvLWxpbmUg
+LCB0byBhbGxvdyBpdCB0byBnb3RvIHRoZQogICBhcHByb3ByaWF0ZSBjb2x1bW4gZm9yIHRoZSBl
+cnJvciBvbiBhIGdpdmVuIGxpbmUuIFRoaXMgYWR2aWNlCiAgIGxvb2tzIGluIGZseW1ha2UtZXIt
+aW5mbywgYSBsaXN0LCBhbmQgdXNlcyB0aGUgaGV1cmlzdGljIHRoYXQKICAgdGhlIGZpcnN0IGVy
+cm9yIHRoYXQgbWF0Y2hlcyB0aGUgZ2l2ZW4gbGluZSBudW1iZXIsIGlzIHRoZSBlcnJvcgogICB3
+ZSB3YW50LiBUaGlzIHdpbGwgYnJlYWsgaWYgdGhlcmUgaXMgbW9yZSB0aGFuIG9uZSBlcnJvciBv
+biBhCiAgIHNpbmdsZSBsaW5lLgoKIgoKICAoZmx5bWFrZS1sb2cgMiAiY3NoYXJwLWZseW1ha2Ut
+aW5zdGFsbCIpCgogIChvciBjc2hhcnAtLWZseW1ha2UtaGFzLWJlZW4taW5zdGFsbGVkCiAgICAg
+IChwcm9nbgoKICA7OyAxLiBhZGQgYSBDIyBlbnRyeSB0byB0aGUgZmx5bWFrZS1hbGxvd2VkLWZp
+bGUtbmFtZS1tYXNrcwogIChsZXQqICgoa2V5ICJcXC5jc1xcJyIpCiAgICAgICAgIChjc2hhcnBl
+bnRyeSAoYXNzb2Mga2V5IGZseW1ha2UtYWxsb3dlZC1maWxlLW5hbWUtbWFza3MpKSkKICAgIChp
+ZiBjc2hhcnBlbnRyeQogICAgICAgIChzZXRjZHIgY3NoYXJwZW50cnkgJyhjc2hhcnAtZmx5bWFr
+ZS1pbml0IGNzaGFycC1mbHltYWtlLWNsZWFudXApKQogICAgICAoYWRkLXRvLWxpc3QKICAgICAg
+ICdmbHltYWtlLWFsbG93ZWQtZmlsZS1uYW1lLW1hc2tzCiAgICAgICAobGlzdCBrZXkgJ2NzaGFy
+cC1mbHltYWtlLWluaXQgJ2NzaGFycC1mbHltYWtlLWNsZWFudXApKSkpCgoKICA7OyAyLiBhZGQg
+YSBDIyBlbnRyeSB0byBmbHltYWtlLWVyci1saW5lLXBhdHRlcm5zCiAgOzsKICA7OyBUaGUgdmFs
+dWUgb2YgZWFjaCBlbnRyeSBpcyBhIGxpc3QsIChTVFJJTkcgSVgxIElYMiBJWDMgSVg0KSwgd2hl
+cmUKICA7OyBTVFJJTkcgaXMgdGhlIHJlZ2V4LCBhbmQgdGhlIG90aGVyIDQgdmFsdWVzIGFyZSBp
+bmRleGVzIGludG8gdGhlCiAgOzsgcmVnZXggY2FwdHVyZXMgZm9yIHRoZSBmaWxlbmFtZSwgbGlu
+ZSwgY29sdW1uLCBhbmQgZXJyb3IgdGV4dCwKICA7OyByZXNwZWN0aXZlbHkuCiAgKGFkZC10by1s
+aXN0CiAgICdmbHltYWtlLWVyci1saW5lLXBhdHRlcm5zCiAgIChsaXN0IGNzaGFycC1mbHltYWtl
+LWNzYy1lcnJvci1wYXR0ZXJuIDEgMiAzIDQpKQoKCgogIDs7IDMuICBvdmVycmlkZSB0aGUgZGVm
+aW5pdGlvbiBmb3IgZmx5bWFrZS1wcm9jZXNzLXNlbnRpbmVsCiAgOzsKICA7OyBEUEMgLSAyMDEx
+IEZlYiAyNgogIDs7IFJlZGVmaW5pbmcgYSBmdW5jdGlvbiBpcyBhIGJpdCB1bnVzdWFsLCBidXQg
+SSB0aGluayBpdCBpcyBuZWNlc3NhcnkKICA7OyB0byByZW1vdmUgdGhlIGNoZWNrIG9uIHByb2Nl
+c3MgZXhpdCBzdGF0dXMuICBGb3IgVkJDLmV4ZSwgaXQgZ2l2ZXMKICA7OyBhIDEgc3RhdHVzIHdo
+ZW4gY29tcGlsZSBlcnJvcnMgcmVzdWx0LiBMaWtld2lzZSBtc2J1aWxkLmV4ZS4gIFRoaXMKICA7
+OyBtZWFucyBmbHltYWtlIHR1cm5zIGl0c2VsZiBvZmYsIHdoaWNoIHdlIGRvbid0IHdhbnQuIFRo
+aXMgcmVhbGx5CiAgOzsgb3VnaHQgdG8gYmUgdHVuYWJsZSBpbiBmbHltYWtlLCBidXQgSSBndWVz
+cyBubyBvbmUgYXNrZWQgZm9yIHRoYXQKICA7OyBmZWF0dXJlIHlldC4KICAoZGVmdW4gZmx5bWFr
+ZS1wcm9jZXNzLXNlbnRpbmVsIChwcm9jZXNzIGV2ZW50KQogICAgIlNlbnRpbmVsIGZvciBzeW50
+YXggY2hlY2sgYnVmZmVycy4iCiAgICAod2hlbiAobWVtcSAocHJvY2Vzcy1zdGF0dXMgcHJvY2Vz
+cykgJyhzaWduYWwgZXhpdCkpCiAgICAgIChsZXQqICgoZXhpdC1zdGF0dXMgICAgICAgKHByb2Nl
+c3MtZXhpdC1zdGF0dXMgcHJvY2VzcykpCiAgICAgICAgICAgICAoY29tbWFuZCAgICAgICAgICAg
+KHByb2Nlc3MtY29tbWFuZCBwcm9jZXNzKSkKICAgICAgICAgICAgIChzb3VyY2UtYnVmZmVyICAg
+ICAocHJvY2Vzcy1idWZmZXIgcHJvY2VzcykpCiAgICAgICAgICAgICAoY2xlYW51cC1mICAgICAg
+ICAgKGZseW1ha2UtZ2V0LWNsZWFudXAtZnVuY3Rpb24gKGJ1ZmZlci1maWxlLW5hbWUgc291cmNl
+LWJ1ZmZlcikpKSkKCiAgICAgICAgKGZseW1ha2UtbG9nIDIgInByb2Nlc3MgJWQgZXhpdGVkIHdp
+dGggY29kZSAlZCIKICAgICAgICAgICAgICAgICAgICAgKHByb2Nlc3MtaWQgcHJvY2VzcykgZXhp
+dC1zdGF0dXMpCiAgICAgICAgKGNvbmRpdGlvbi1jYXNlIGVycgogICAgICAgICAgICAocHJvZ24K
+ICAgICAgICAgICAgICAoZmx5bWFrZS1sb2cgMyAiY2xlYW5pbmcgdXAgdXNpbmcgJXMiIGNsZWFu
+dXAtZikKICAgICAgICAgICAgICAod2hlbiAoYnVmZmVyLWxpdmUtcCBzb3VyY2UtYnVmZmVyKQog
+ICAgICAgICAgICAgICAgKHdpdGgtY3VycmVudC1idWZmZXIgc291cmNlLWJ1ZmZlcgogICAgICAg
+ICAgICAgICAgICAoZnVuY2FsbCBjbGVhbnVwLWYpKSkKCiAgICAgICAgICAgICAgKGRlbGV0ZS1w
+cm9jZXNzIHByb2Nlc3MpCiAgICAgICAgICAgICAgKHNldHEgZmx5bWFrZS1wcm9jZXNzZXMgKGRl
+bHEgcHJvY2VzcyBmbHltYWtlLXByb2Nlc3NlcykpCgogICAgICAgICAgICAgICh3aGVuIChidWZm
+ZXItbGl2ZS1wIHNvdXJjZS1idWZmZXIpCiAgICAgICAgICAgICAgICAod2l0aC1jdXJyZW50LWJ1
+ZmZlciBzb3VyY2UtYnVmZmVyCgogICAgICAgICAgICAgICAgICAoZmx5bWFrZS1wYXJzZS1yZXNp
+ZHVhbCkKICAgICAgICAgICAgICAgICAgOzsoZmx5bWFrZS1wb3N0LXN5bnRheC1jaGVjayBleGl0
+LXN0YXR1cyBjb21tYW5kKQogICAgICAgICAgICAgICAgICAoZmx5bWFrZS1wb3N0LXN5bnRheC1j
+aGVjayAwIGNvbW1hbmQpCiAgICAgICAgICAgICAgICAgIChzZXRxIGZseW1ha2UtaXMtcnVubmlu
+ZyBuaWwpKSkpCiAgICAgICAgICAoZXJyb3IKICAgICAgICAgICAobGV0ICgoZXJyLXN0ciAoZm9y
+bWF0ICJFcnJvciBpbiBwcm9jZXNzIHNlbnRpbmVsIGZvciBidWZmZXIgJXM6ICVzIgogICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgc291cmNlLWJ1ZmZlciAoZXJyb3ItbWVzc2FnZS1z
+dHJpbmcgZXJyKSkpKQogICAgICAgICAgICAgKGZseW1ha2UtbG9nIDAgZXJyLXN0cikKICAgICAg
+ICAgICAgICh3aXRoLWN1cnJlbnQtYnVmZmVyIHNvdXJjZS1idWZmZXIKICAgICAgICAgICAgICAg
+KHNldHEgZmx5bWFrZS1pcy1ydW5uaW5nIG5pbCkpKSkpKSkpCgoKICA7OyA0LiByZWRlZmluZSB0
+aGlzIGZuIC0gdGhlIHJlYXNvbiBpcyB0byBhbGxvdyBleGl0IHdpdGhvdXQgcXVlcnkgb24KICA7
+OyBmbHltYWtlIHByb2Nlc3Nlcy4gIE5vdCBzdXJlIHdoeSB0aGlzIGlzIG5vdCB0aGUgZGVmYXVs
+dC4KICAoZGVmdW4gZmx5bWFrZS1zdGFydC1zeW50YXgtY2hlY2stcHJvY2VzcyAoY21kIGFyZ3Mg
+ZGlyKQogICAgIlN0YXJ0IHN5bnRheCBjaGVjayBwcm9jZXNzLiIKICAgIChsZXQqICgocHJvY2Vz
+cyBuaWwpKQogICAgICAoY29uZGl0aW9uLWNhc2UgZXJyCiAgICAgICAgICAocHJvZ24KICAgICAg
+ICAgICAgKHdoZW4gZGlyCiAgICAgICAgICAgICAgKGxldCAoKGRlZmF1bHQtZGlyZWN0b3J5IGRp
+cikpCiAgICAgICAgICAgICAgICAoZmx5bWFrZS1sb2cgMyAic3RhcnRpbmcgcHJvY2VzcyBvbiBk
+aXIgJXMiIGRlZmF1bHQtZGlyZWN0b3J5KSkpCiAgICAgICAgICAgIChzZXRxIHByb2Nlc3MgKGFw
+cGx5ICdzdGFydC1wcm9jZXNzICJmbHltYWtlLXByb2MiIChjdXJyZW50LWJ1ZmZlcikgY21kIGFy
+Z3MpKQoKICAgICAgICAgICAgOzsgZGlubyAtIGV4aXQgd2l0aG91dCBxdWVyeSBvbiBhY3RpdmUg
+Zmx5bWFrZSBwcm9jZXNzZXMKICAgICAgICAgICAgKHNldC1wcm9jZXNzLXF1ZXJ5LW9uLWV4aXQt
+ZmxhZyBwcm9jZXNzIG5pbCkKCiAgICAgICAgICAgIChzZXQtcHJvY2Vzcy1zZW50aW5lbCBwcm9j
+ZXNzICdmbHltYWtlLXByb2Nlc3Mtc2VudGluZWwpCiAgICAgICAgICAgIChzZXQtcHJvY2Vzcy1m
+aWx0ZXIgcHJvY2VzcyAnZmx5bWFrZS1wcm9jZXNzLWZpbHRlcikKICAgICAgICAgICAgKHB1c2gg
+cHJvY2VzcyBmbHltYWtlLXByb2Nlc3NlcykKCiAgICAgICAgICAgIChzZXRxIGZseW1ha2UtaXMt
+cnVubmluZyB0KQogICAgICAgICAgICAoc2V0cSBmbHltYWtlLWxhc3QtY2hhbmdlLXRpbWUgbmls
+KQogICAgICAgICAgICAoc2V0cSBmbHltYWtlLWNoZWNrLXN0YXJ0LXRpbWUgKGZseW1ha2UtZmxv
+YXQtdGltZSkpCgogICAgICAgICAgICAoZmx5bWFrZS1yZXBvcnQtc3RhdHVzIG5pbCAiKiIpCiAg
+ICAgICAgICAgIChmbHltYWtlLWxvZyAyICJzdGFydGVkIHByb2Nlc3MgJWQsIGNvbW1hbmQ9JXMs
+IGRpcj0lcyIKICAgICAgICAgICAgICAgICAgICAgICAgIChwcm9jZXNzLWlkIHByb2Nlc3MpIChw
+cm9jZXNzLWNvbW1hbmQgcHJvY2VzcykKICAgICAgICAgICAgICAgICAgICAgICAgIGRlZmF1bHQt
+ZGlyZWN0b3J5KQogICAgICAgICAgICBwcm9jZXNzKQogICAgICAgIChlcnJvcgogICAgICAgICAo
+bGV0KiAoKGVyci1zdHIgKGZvcm1hdCAiRmFpbGVkIHRvIGxhdW5jaCBzeW50YXggY2hlY2sgcHJv
+Y2VzcyAnJXMnIHdpdGggYXJncyAlczogJXMiCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgIGNtZCBhcmdzIChlcnJvci1tZXNzYWdlLXN0cmluZyBlcnIpKSkKICAgICAgICAgICAgICAg
+IChzb3VyY2UtZmlsZS1uYW1lIGJ1ZmZlci1maWxlLW5hbWUpCiAgICAgICAgICAgICAgICAoY2xl
+YW51cC1mICAgICAgICAoZmx5bWFrZS1nZXQtY2xlYW51cC1mdW5jdGlvbiBzb3VyY2UtZmlsZS1u
+YW1lKSkpCiAgICAgICAgICAgKGZseW1ha2UtbG9nIDAgZXJyLXN0cikKICAgICAgICAgICAoZnVu
+Y2FsbCBjbGVhbnVwLWYpCiAgICAgICAgICAgKGZseW1ha2UtcmVwb3J0LWZhdGFsLXN0YXR1cyAi
+UFJPQ0VSUiIgZXJyLXN0cikpKSkpKQoKCiAgOzsgNS4gZGVmaW5lIHNvbWUgYWR2aWNlIGZvciB0
+aGUgZXJyb3IgcGFyc2luZwogIChkZWZhZHZpY2UgZmx5bWFrZS1wYXJzZS1lcnItbGluZXMgKGJl
+Zm9yZQogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIGNzaGFycC1mbHltYWtl
+LXBhcnNlLWxpbmUtcGF0Y2gtMQogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+IGFjdGl2YXRlIGNvbXBpbGUpCiAgICAoaWYgKHN0cmluZy1tYXRjaCAiXFwuW0NjXVtTc10kIiAg
+KGZpbGUtcmVsYXRpdmUtbmFtZSBidWZmZXItZmlsZS1uYW1lKSkKICAgICAgICA7OyBjbGVhciB0
+aGUgYXV4aWxpYXJ5IGxpbmUgaW5mb3JtYXRpb24gbGlzdCwgd2hlbiBhIG5ldyBwYXJzZQogICAg
+ICAgIDs7IHN0YXJ0cy4KICAgICAgICAoc2V0cSBjc2hhcnAtZmx5bWFrZS1hdXgtZXJyb3ItaW5m
+byBuaWwpKSkKCiAgKGRlZmFkdmljZSBmbHltYWtlLXBhcnNlLWxpbmUgKGFyb3VuZAogICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICBjc2hhcnAtZmx5bWFrZS1wYXJzZS1saW5lLXBhdGNo
+LTIKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgYWN0aXZhdGUgY29tcGlsZSkKICAg
+IDs7IFRoaXMgYWR2aWNlIHdpbGwgcnVuIGluIGFsbCBidWZmZXJzLiAgTGV0J3MgbWF5IHN1cmUg
+d2UKICAgIDs7IGFjdHVhbGx5IGV4ZWN1dGUgdGhlIGltcG9ydGFudCBzdGlmZiBvbmx5IHdoZW4g
+YSBDIyBidWZmZXIgaXMgYWN0aXZlLgogICAgKGlmIChzdHJpbmctbWF0Y2ggIlxcLltDY11bU3Nd
+JCIgIChmaWxlLXJlbGF0aXZlLW5hbWUgYnVmZmVyLWZpbGUtbmFtZSkpCgogICAgICAgIChsZXQg
+KHJhdy1maWxlLW5hbWUKICAgICAgICAgICAgICBlLXRleHQKICAgICAgICAgICAgICByZXN1bHQK
+ICAgICAgICAgICAgICAocGF0dGVybiAobGlzdCBjc2hhcnAtZmx5bWFrZS1jc2MtZXJyb3ItcGF0
+dGVybiAxIDIgMyA0KSkKICAgICAgICAgICAgICAobGluZS1ubyAwKQogICAgICAgICAgICAgIChj
+b2wtbm8gMCkKICAgICAgICAgICAgICAoZXJyLXR5cGUgImUiKSkKICAgICAgICAgIChpZiAoc3Ry
+aW5nLW1hdGNoIChjYXIgcGF0dGVybikgbGluZSkKICAgICAgICAgICAgICAobGV0KiAoKGZpbGUt
+aWR4IChudGggMSBwYXR0ZXJuKSkKICAgICAgICAgICAgICAgICAgICAgKGxpbmUtaWR4IChudGgg
+MiBwYXR0ZXJuKSkKICAgICAgICAgICAgICAgICAgICAgKGNvbC1pZHggKG50aCAzIHBhdHRlcm4p
+KQogICAgICAgICAgICAgICAgICAgICAoZS1pZHggKG50aCA0IHBhdHRlcm4pKSkKICAgICAgICAg
+ICAgICAgIChmbHltYWtlLWxvZyAzICJwYXJzZSBsaW5lOiBmeD0lcyBseD0lcyBleD0lcyIKICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICBmaWxlLWlkeCBsaW5lLWlkeCBlLWlkeCkKICAgICAg
+ICAgICAgICAgIChzZXRxIHJhdy1maWxlLW5hbWUgKGlmIGZpbGUtaWR4IChtYXRjaC1zdHJpbmcg
+ZmlsZS1pZHggbGluZSkgbmlsKSkKICAgICAgICAgICAgICAgIChzZXRxIGxpbmUtbm8gICAgICAg
+KGlmIGxpbmUtaWR4IChzdHJpbmctdG8tbnVtYmVyIChtYXRjaC1zdHJpbmcgbGluZS1pZHggbGlu
+ZSkpIDApKQogICAgICAgICAgICAgICAgKHNldHEgY29sLW5vICAgICAgICAoaWYgY29sLWlkeCAg
+KHN0cmluZy10by1udW1iZXIgKG1hdGNoLXN0cmluZyBjb2wtaWR4IGxpbmUpKSAwKSkKICAgICAg
+ICAgICAgICAgIChzZXRxIGUtdGV4dCAgICAgIChpZiBlLWlkeAogICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgIChtYXRjaC1zdHJpbmcgZS1pZHggbGluZSkKICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgKGZseW1ha2UtcGF0Y2gtZS10ZXh0IChzdWJzdHJpbmcg
+bGluZSAobWF0Y2gtZW5kIDApKSkpKQogICAgICAgICAgICAgICAgKG9yIGUtdGV4dCAoc2V0cSBl
+LXRleHQgIjxubyBlcnJvciB0ZXh0PiIpKQogICAgICAgICAgICAgICAgKGlmIChhbmQgZS10ZXh0
+IChzdHJpbmctbWF0Y2ggIl5bd1ddYXJuaW5nIiBlLXRleHQpKQogICAgICAgICAgICAgICAgICAg
+IChzZXRxIGVyci10eXBlICJ3IikpCiAgICAgICAgICAgICAgICAoZmx5bWFrZS1sb2cgMyAicGFy
+c2UgbGluZTogZng9JXMvJXMgbGluPSVzLyVzIGNvbD0lcy8lcyB0ZXh0PSVzIgogICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgIGZpbGUtaWR4IHJhdy1maWxlLW5hbWUKICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICBsaW5lLWlkeCBsaW5lLW5vCiAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgY29sLWlkeCAocHJpbjEtdG8tc3RyaW5nIGNvbC1ubykKICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICBlLXRleHQpCgogICAgICAgICAgICAgICAgOzsgYWRkIG9uZSBlbnRyeSB0byB0aGUg
+bGlzdCBvZiBhdXhpbGlhcnkgZXJyb3IgaW5mb3JtYXRpb24uCiAgICAgICAgICAgICAgICAoYWRk
+LXRvLWxpc3QgJ2NzaGFycC1mbHltYWtlLWF1eC1lcnJvci1pbmZvCiAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgKGxpc3QgbGluZS1ubyBjb2wtbm8pKQoKICAgICAgICAgICAgICAgIChzZXRx
+IGFkLXJldHVybi12YWx1ZQogICAgICAgICAgICAgICAgICAgICAgKGZseW1ha2UtbGVyLW1ha2Ut
+bGVyIHJhdy1maWxlLW5hbWUgbGluZS1ubyBlcnItdHlwZSBlLXRleHQgbmlsKSkKICAgICAgICAg
+ICAgICAgICkpKQoKICAgICAgOzsgZWxzZSAtIG5vdCBpbiBhIEMjIGJ1ZmZlcgogICAgICBhZC1k
+by1pdCkpCgoKICA7OyA2LiBmaW5hbGx5LCBkZWZpbmUgc29tZSBhZHZpY2UgZm9yIHRoZSBsaW5l
+IG5hdmlnYXRpb24uICBJdCBtb3ZlcwogIDs7IHRvIHRoZSBwcm9wZXIgY29sdW1uLCBnaXZlbiB0
+aGUgbGluZSBudW1iZXIgY29udGFpbmluZyB0aGUKICA7OyBlcnJvci4gSXQgZmlyc3QgY2FsbHMg
+dGhlIG5vcm1hbCBgZmx5bWFrZS1nb3RvLWxpbmUnLCBhbmQgYXNzdW1lcwogIDs7IHRoYXQgdGhl
+IHJlc3VsdCBpcyB0aGF0IHRoZSBjdXJzb3IgaXMgb24gdGhlIGxpbmUgdGhhdCBjb250YWlucyB0
+aGUKICA7OyBlcnJvci4gIEF0IGV4aXQgZnJvbSB0aGF0IGZuLCB0aGUgY29sdW1uIGlzIG5vdCBp
+bXBvcnRhbnQuIFRoaXMgYWR2aWNlCiAgOzsgc2V0cyB0aGUgY29sdW1uLgogIChkZWZhZHZpY2Ug
+Zmx5bWFrZS1nb3RvLWxpbmUgKGFyb3VuZAogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+IGNzaGFycC1mbHltYWtlLWdvdG8tbGluZS1wYXRjaAogICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgIGFjdGl2YXRlIGNvbXBpbGUpCiAgICA7OyBUaGlzIGFkdmljZSB3aWxsIHJ1biBpbiBh
+bGwgYnVmZmVycy4gIExldCdzIG1heSBzdXJlIHdlCiAgICA7OyBhY3R1YWxseSBleGVjdXRlIHRo
+ZSBpbXBvcnRhbnQgc3R1ZmYgb25seSB3aGVuIGEgQyMgYnVmZmVyIGlzIGFjdGl2ZS4KICAgIGFk
+LWRvLWl0CiAgICAoaWYgKHN0cmluZy1tYXRjaCAiXFwuW0NjXVtTc10kIiAgKGZpbGUtcmVsYXRp
+dmUtbmFtZSBidWZmZXItZmlsZS1uYW1lKSkKICAgICAgICAobGV0KiAoKGxubyAoYWQtZ2V0LWFy
+ZyAwKSkKICAgICAgICAgICAgICAoZXBhaXIgKGFzc29jIGxubyBjc2hhcnAtZmx5bWFrZS1hdXgt
+ZXJyb3ItaW5mbykpKQogICAgICAgICAgKGlmIGVwYWlyCiAgICAgICAgICAgICAgKGZvcndhcmQt
+Y2hhciAoLSAoY2FkciBlcGFpcikgKGN1cnJlbnQtY29sdW1uKSAxKSkpKSkpCgoKICA7OyA3LiBm
+aW5hbGx5LCBzZXQgdGhlIGZsYWcKICAoc2V0cSBjc2hhcnAtLWZseW1ha2UtaGFzLWJlZW4taW5z
+dGFsbGVkIHQpKSkpCgoKCjs7IE5lZWQgdG8gdGVtcG9yYXJpbHkgdHVybiBvZmYgZmx5bWFrZSB3
+aGlsZSByZXZlcnRpbmcuCjs7IFRoZXJlJyBzb21lIGtpbmQgb2YgcmFjZS1jb25kaXRpb24gd2hl
+cmUgZmx5bWFrZSBpcyB0cnlpbmcKOzsgdG8gY29tcGlsZSB3aGlsZSB0aGUgYnVmZmVyIGlzIGJl
+aW5nIGNoYW5nZWQsIGFuZCB0aGF0Cjs7IGNhdXNlcyBmbHltYWtlIHRvIGNob2tlLgooZGVmYWR2
+aWNlIHJldmVydC1idWZmZXIgKGFyb3VuZAogICAgICAgICAgICAgICAgICAgICAgICAgIGNzaGFy
+cC1hZHZpc2UtcmV2ZXJ0LWJ1ZmZlcgogICAgICAgICAgICAgICAgICAgICAgICAgIGFjdGl2YXRl
+IGNvbXBpbGUpCiAgKGxldCAoKGlzLWZseW1ha2UtZW5hYmxlZAogICAgICAgICAoYW5kIChmYm91
+bmRwICdmbHltYWtlLW1vZGUpCiAgICAgICAgICAgICAgZmx5bWFrZS1tb2RlKSkpCiAgICA7OyBk
+aXNhYmxlCiAgICAoaWYgaXMtZmx5bWFrZS1lbmFibGVkCiAgICAgICAgKGZseW1ha2UtbW9kZS1v
+ZmYpKQoKICAgIDs7IHJldmVydAogICAgYWQtZG8taXQKCiAgICA7OyBlbmFibGUKICAgIChpZiBp
+cy1mbHltYWtlLWVuYWJsZWQKICAgICAgICAoZmx5bWFrZS1tb2RlLW9uKSkpKQoKOzsgKysrKysr
+KysrKysrKysrKysrKysrKwoKCgoKOzsgPT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09
+PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09Cjs7IG1vdmluZwoKOzsgYWxp
+c3Qgb2YgcmVnZXhwcyBmb3IgdmFyaW91cyBzdHJ1Y3R1cmVzIGluIGEgY3NoYXJwIHNvdXJjZSBm
+aWxlLgooZXZhbC1hbmQtY29tcGlsZQogIChkZWZjb25zdCBjc2hhcnAtLXJlZ2V4cC1hbGlzdAog
+ICAgKGxpc3QKCiAgICAgYChmdW5jLXN0YXJ0CiAgICAgICAsKGNvbmNhdAogICAgICAgICAiXlsg
+XHRcblxyXGZcdl0qIiAgICAgICAgICAgICAgICAgICAgICAgICAgICA7OyBsZWFkaW5nIHdoaXRl
+c3BhY2UKICAgICAgICAgIlxcKCIKICAgICAgICAgInB1YmxpY1xcKD86IHN0YXRpY1xcKT9cXHwi
+ICAgICAgICAgICAgICAgICAgOzsgMS4gYWNjZXNzIG1vZGlmaWVyCiAgICAgICAgICJwcml2YXRl
+XFwoPzogc3RhdGljXFwpP1xcfCIKICAgICAgICAgInByb3RlY3RlZFxcKD86IGludGVybmFsXFwp
+P1xcKD86IHN0YXRpY1xcKT9cXHwiCiAgICAgICAgICJzdGF0aWNcXHwiCiAgICAgICAgICJcXCki
+CiAgICAgICAgICJbIFx0XG5cclxmXHZdKyIKICAgICAgICAgIlxcKD86b3ZlcnJpZGVbIFx0XG5c
+clxmXHZdK1xcKT8iICAgICAgICAgICAgOzsgb3B0aW9uYWwKICAgICAgICAgIlxcKFtbOmFscGhh
+Ol1fXVteXHRcKFxuXStcXCkiICAgICAgICAgICAgICAgOzsgMi4gcmV0dXJuIHR5cGUgLSBwb3Nz
+aWJseSBnZW5lcmljCiAgICAgICAgICJbIFx0XG5cclxmXHZdKyIKICAgICAgICAgIlxcKFtbOmFs
+cGhhOl1fXVtbOmFsbnVtOl1fXSpcXCkiICAgICAgICAgICAgOzsgMy4gbmFtZSBvZiBmdW5jCiAg
+ICAgICAgICJbIFx0XG5cclxmXHZdKiIKICAgICAgICAgIlxcKFwoW15cKV0qXClcXCkiICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgOzsgNC4gcGFyYW1zIHcvcGFyZW5zCiAgICAgICAgICJbIFx0
+XG5cclxmXHZdKiIKICAgICAgICAgKSkKCiAgICAgYChjdG9yLXN0YXJ0CiAgICAgICAsKGNvbmNh
+dAogICAgICAgICAiXlsgXHRcblxyXGZcdl0qIiAgICAgICAgICAgICAgICAgICAgICAgICAgICA7
+OyBsZWFkaW5nIHdoaXRlc3BhY2UKICAgICAgICAgIlxcKCIKICAgICAgICAgInB1YmxpY1xcfCIg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgOzsgMS4gYWNjZXNzIG1vZGlmaWVyCiAg
+ICAgICAgICJwcml2YXRlXFx8IgogICAgICAgICAicHJvdGVjdGVkXFwoPzogaW50ZXJuYWxcXCk/
+XFx8IgogICAgICAgICAic3RhdGljXFx8IgogICAgICAgICAiXFwpIgogICAgICAgICAiWyBcdFxu
+XHJcZlx2XSsiCiAgICAgICAgICJcXChbWzphbHBoYTpdX11bWzphbG51bTpdX10qXFwpIiAgICAg
+ICAgICAgIDs7IDIuIG5hbWUgb2YgY3RvcgogICAgICAgICAiWyBcdFxuXHJcZlx2XSoiCiAgICAg
+ICAgICJcXChcKFteXCldKlwpXFwpIiAgICAgICAgICAgICAgICAgICAgICAgICAgIDs7IDMuIHBh
+cmFtZXRlciBsaXN0ICh3aXRoIHBhcmVucykKICAgICAgICAgIlxcKCIgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgOzsgNC4gY3RvciBkZXBlbmRlbmN5CiAgICAgICAgICJb
+IFx0XG5dKjpbIFx0XG5dKiIgICAgICAgICAgICAgICAgICAgICAgICAgIDs7IGNvbG9uCiAgICAg
+ICAgICJcXCg/OnRoaXNcXHxiYXNlXFwpIiAgICAgICAgICAgICAgICAgICAgICAgIDs7IHRoaXMg
+b3IgYmFzZQogICAgICAgICAiWyBcdFxuXHJcZlx2XSoiCiAgICAgICAgICJcXCg/OlwoW15cKV0q
+XClcXCkiICAgICAgICAgICAgICAgICAgICAgICAgIDs7IHBhcmFtZXRlciBsaXN0ICh3aXRoIHBh
+cmVucykKICAgICAgICAgIlxcKT8iICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgOzsgcG9zc2libHkKICAgICAgICAgIlsgXHRcblxyXGZcdl0qIgogICAgICAgICApKQoKCiAg
+ICAgYCh1c2luZy1zdG10CiAgICAgICAsKGNvbmNhdAogICAgICAgICA7OyJeWyBcdFxuXHJcZlx2
+XSoiCiAgICAgICAgICJcXChcXDx1c2luZ1xcKSIKICAgICAgICAgIlsgXHRcblxyXGZcdl0rIgog
+ICAgICAgICAiXFwoPzoiCiAgICAgICAgICJcXChbWzphbHBoYTpdX11bWzphbG51bTpdX10qXFwp
+IiAgICAgICAgICAgIDs7IGFsaWFzCiAgICAgICAgICJbIFx0XG5cclxmXHZdKiIKICAgICAgICAg
+Ij0iCiAgICAgICAgICJbIFx0XG5cclxmXHZdKiIKICAgICAgICAgIlxcKT8iCiAgICAgICAgICJc
+XCgiCiAgICAgICAgICJcXCg/OltBLVphLXpfXVtbOmFsbnVtOl1dKlxcLlxcKSoiCiAgICAgICAg
+ICJbQS1aYS16X11bWzphbG51bTpdXSoiCiAgICAgICAgICJcXCkiICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgIDs7IGltcG9ydGVkIG5hbWVzcGFjZQogICAgICAgICAiWyBc
+dFxuXHJcZlx2XSoiCiAgICAgICAgICI7IgogICAgICAgICApKQoKICAgICBgKGNsYXNzLXN0YXJ0
+CiAgICAgICAsKGNvbmNhdAogICAgICAgICAiXlsgXHRdKiIgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICA7OyBsZWFkaW5nIHdoaXRlc3BhY2UKICAgICAgICAgIlxcKCIKICAgICAg
+ICAgInB1YmxpY1xcKD86IFxcKD86c3RhdGljXFx8c2VhbGVkXFwpXFwpP1sgXHRdK1xcfCIgIDs7
+IGFjY2VzcyBtb2RpZmllcnMKICAgICAgICAgImludGVybmFsXFwoPzogXFwoPzpzdGF0aWNcXHxz
+ZWFsZWRcXClcXCk/WyBcdF0rXFx8IgogICAgICAgICAic3RhdGljXFwoPzogaW50ZXJuYWxcXCk/
+WyBcdF0rXFx8IgogICAgICAgICAic2VhbGVkXFwoPzogaW50ZXJuYWxcXCk/WyBcdF0rXFx8Igog
+ICAgICAgICAic3RhdGljWyBcdF0rXFx8IgogICAgICAgICAic2VhbGVkWyBcdF0rXFx8IgogICAg
+ICAgICAiXFwpIgogICAgICAgICAiXFwoXFwoPzpwYXJ0aWFsWyBcdF0rXFwpP2NsYXNzXFx8c3Ry
+dWN0XFwpIiA7OyBjbGFzcy9zdHJ1Y3Qga2V5d29yZAogICAgICAgICAiWyBcdF0rIgogICAgICAg
+ICAiXFwoW1s6YWxwaGE6XV9dW1s6YWxudW06XV0qXFwpIiAgICAgICAgICAgICA7OyB0eXBlIG5h
+bWUKICAgICAgICAgIlxcKCIKICAgICAgICAgIlsgXHRcbl0qOlsgXHRcbl0qIiAgICAgICAgICAg
+ICAgICAgICAgICAgICAgOzsgY29sb24KICAgICAgICAgIlxcKFtbOmFscGhhOl1fXVteXHRcKFxu
+XStcXCkiICAgICAgICAgICAgICAgOzsgYmFzZSAvIGludGYgLSBwb3NzIGdlbmVyaWMKICAgICAg
+ICAgIlxcKCIKICAgICAgICAgIlsgXHRcbl0qLFsgXHRcbl0qIgogICAgICAgICAiXFwoW1s6YWxw
+aGE6XV9dW15cdFwoXG5dK1xcKSIgICAgICAgICAgICAgICA7OyBhZGRsIGludGVyZmFjZSAtIHBv
+c3MgZ2VuZXJpYwogICAgICAgICAiXFwpKiIKICAgICAgICAgIlxcKT8iICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgOzsgcG9zc2libHkKICAgICAgICAgIlsgXHRcblxyXGZc
+dl0qIgogICAgICAgICApKQoKICAgICBgKGdlbmNsYXNzLXN0YXJ0CiAgICAgICAsKGNvbmNhdAog
+ICAgICAgICAiXlsgXHRdKiIgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICA7OyBs
+ZWFkaW5nIHdoaXRlc3BhY2UKICAgICAgICAgIlxcKCIKICAgICAgICAgInB1YmxpY1xcKD86IFxc
+KD86c3RhdGljXFx8c2VhbGVkXFwpXFwpP1sgXHRdK1xcfCIgIDs7IGFjY2VzcyBtb2RpZmllcnMK
+ICAgICAgICAgImludGVybmFsXFwoPzogXFwoPzpzdGF0aWNcXHxzZWFsZWRcXClcXCk/WyBcdF0r
+XFx8IgogICAgICAgICAic3RhdGljXFwoPzogaW50ZXJuYWxcXCk/WyBcdF0rXFx8IgogICAgICAg
+ICAic2VhbGVkXFwoPzogaW50ZXJuYWxcXCk/WyBcdF0rXFx8IgogICAgICAgICAic3RhdGljWyBc
+dF0rXFx8IgogICAgICAgICAic2VhbGVkWyBcdF0rXFx8IgogICAgICAgICAiXFwpIgogICAgICAg
+ICAiXFwoXFwoPzpwYXJ0aWFsWyBcdF0rXFwpP2NsYXNzXFx8c3RydWN0XFwpIiA7OyBjbGFzcy9z
+dHJ1Y3Qga2V5d29yZAogICAgICAgICAiWyBcdF0rIgogICAgICAgICAiXFwoW1s6YWxwaGE6XV9d
+W1s6YWxudW06XV88PiwgXSpcXCkiICAgICAgICA7OyB0eXBlIG5hbWUgKGdlbmVyaWMpCiAgICAg
+ICAgICJcXCgiCiAgICAgICAgICJbIFx0XG5dKjpbIFx0XG5dKiIgICAgICAgICAgICAgICAgICAg
+ICAgICAgIDs7IGNvbG9uCiAgICAgICAgICJcXChbWzphbHBoYTpdX11bXlx0XChcbl0rXFwpIiAg
+ICAgICAgICAgICAgIDs7IGJhc2UgLyBpbnRmIC0gcG9zcyBnZW5lcmljCiAgICAgICAgICJcXCgi
+CiAgICAgICAgICJbIFx0XG5dKixbIFx0XG5dKiIKICAgICAgICAgIlxcKFtbOmFscGhhOl1fXVte
+XHRcKFxuXStcXCkiICAgICAgICAgICAgICAgOzsgYWRkbCBpbnRlcmZhY2UgLSBwb3NzIGdlbmVy
+aWMKICAgICAgICAgIlxcKSoiCiAgICAgICAgICJcXCk/IiAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgIDs7IHBvc3NpYmx5CiAgICAgICAgICJbIFx0XG5cclxmXHZdKiIKICAg
+ICAgICAgKSkKCiAgICAgYChlbnVtLXN0YXJ0CiAgICAgICAsKGNvbmNhdAogICAgICAgICAiXlsg
+XHRcZlx2XSoiICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICA7OyBsZWFkaW5nIHdoaXRl
+c3BhY2UKICAgICAgICAgIlxcKCIKICAgICAgICAgInB1YmxpY1sgXHRdK2VudW1cXHwiICAgICAg
+ICAgICAgICAgICAgICAgICAgOzsgZW51bSBrZXl3b3JkCiAgICAgICAgICJlbnVtIgogICAgICAg
+ICAiXFwpIgogICAgICAgICAiWyBcdFxuXHJcZlx2XSsiCiAgICAgICAgICJcXChbWzphbHBoYTpd
+X11bWzphbG51bTpdX10qXFwpIiAgICAgICAgICAgIDs7IG5hbWUgb2YgZW51bQogICAgICAgICAi
+WyBcdFxuXHJcZlx2XSoiCiAgICAgICAgICJcXCg6WyBcdFxuXHJcZlx2XSoiCiAgICAgICAgICJc
+XCgiCiAgICAgICAgICJzYnl0ZVxcfGJ5dGVcXHxzaG9ydFxcfHVzaG9ydFxcfGludFxcfHVpbnRc
+XHxsb25nXFx8dWxvbmciCiAgICAgICAgICJcXCkiCiAgICAgICAgICJbIFx0XG5cclxmXHZdKiIK
+ICAgICAgICAgIlxcKT8iICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgOzsg
+cG9zc2libHkKICAgICAgICAgIlsgXHRcblxyXGZcdl0qIgogICAgICAgICApKQoKCiAgICAgYChp
+bnRmLXN0YXJ0CiAgICAgICAsKGNvbmNhdAogICAgICAgICAiXlsgXHRcZlx2XSoiICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICA7OyBsZWFkaW5nIHdoaXRlc3BhY2UKICAgICAgICAgIlxc
+KD86IgogICAgICAgICAicHVibGljXFx8aW50ZXJuYWxcXHwiICAgICAgICAgICAgICAgICAgICAg
+ICA7OyBhY2Nlc3MgbW9kaWZpZXIKICAgICAgICAgIlxcKSIKICAgICAgICAgIlsgXHRcblxyXGZc
+dl0rIgogICAgICAgICAiXFwoaW50ZXJmYWNlXFwpIgogICAgICAgICAiWyBcdFxuXHJcZlx2XSsi
+CiAgICAgICAgICJcXChbWzphbHBoYTpdX11bWzphbG51bTpdX10qXFwpIiAgICAgICAgICAgIDs7
+IG5hbWUgb2YgaW50ZXJmYWNlCiAgICAgICAgICJbIFx0XG5cclxmXHZdKiIKICAgICAgICAgKSkK
+CiAgICAgYChwcm9wLXN0YXJ0CiAgICAgICAsKGNvbmNhdAogICAgICAgICAiXlsgXHRcZlx2XSoi
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICA7OyBsZWFkaW5nIHdoaXRlc3BhY2UKICAg
+ICAgICAgIlxcKCIKICAgICAgICAgInB1YmxpY1xcfCIgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgOzsgMTogYWNjZXNzIG1vZGlmaWVyCiAgICAgICAgICJwcml2YXRlXFx8IgogICAg
+ICAgICAicHJvdGVjdGVkIGludGVybmFsXFx8IgogICAgICAgICAiaW50ZXJuYWwgcHJvdGVjdGVk
+XFx8IgogICAgICAgICAiaW50ZXJuYWxcXHwiCiAgICAgICAgICJcXCkiCiAgICAgICAgICJbIFx0
+XG5cclxmXHZdKyIKICAgICAgICAgIlxcKFtbOmFscGhhOl1fXVteXHRcKFxuXStcXCkiICAgICAg
+ICAgICAgICAgOzsgMjogcmV0dXJuIHR5cGUgLSBwb3NzaWJseSBnZW5lcmljCiAgICAgICAgICJb
+IFx0XG5cclxmXHZdKyIKICAgICAgICAgIlxcKCIKICAgICAgICAgIlxcKD86W0EtWmEtel9dW1s6
+YWxudW06XV9dKlxcLlxcKSoiICAgICAgICAgIDs7IHBvc3NpYmxlIHByZWZpeCBpbnRlcmZhY2UK
+ICAgICAgICAgIltbOmFscGhhOl1fXVtbOmFsbnVtOl1fXSoiICAgICAgICAgICAgICAgICAgOzsg
+MzogbmFtZSBvZiBwcm9wCiAgICAgICAgICJcXCkiCiAgICAgICAgICJbIFx0XG5cclxmXHZdKiIK
+ICAgICAgICAgKSkKCiAgICAgYChpbmRleGVyLXN0YXJ0CiAgICAgICAsKGNvbmNhdAogICAgICAg
+ICAiXlsgXHRcZlx2XSoiICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICA7OyBsZWFkaW5n
+IHdoaXRlc3BhY2UKICAgICAgICAgIlxcKCIKICAgICAgICAgInB1YmxpY1xcfCIgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgOzsgMTogYWNjZXNzIG1vZGlmaWVyCiAgICAgICAgICJw
+cml2YXRlXFx8IgogICAgICAgICAicHJvdGVjdGVkIGludGVybmFsXFx8IgogICAgICAgICAiaW50
+ZXJuYWwgcHJvdGVjdGVkXFx8IgogICAgICAgICAiaW50ZXJuYWxcXHwiCiAgICAgICAgICJcXCki
+CiAgICAgICAgICJbIFx0XG5cclxmXHZdKyIKICAgICAgICAgIlxcKFtbOmFscGhhOl1fXVteXHRc
+KFxuXStcXCkiICAgICAgICAgICAgICAgOzsgMjogcmV0dXJuIHR5cGUgLSBwb3NzaWJseSBnZW5l
+cmljCiAgICAgICAgICJbIFx0XG5cclxmXHZdKyIKICAgICAgICAgIlxcKHRoaXNcXCkiICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgOzsgMzogJ3RoaXMnIGtleXdvcmQKICAgICAgICAg
+IlsgXHRcblxyXGZcdl0qIgogICAgICAgICAiXFxbIiAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICA7OyBvcGVuIHNxdWFyZSBicmFja2V0CiAgICAgICAgICJbIFx0XG5cclxm
+XHZdKiIKICAgICAgICAgIlxcKFteXF1dK1xcKSIgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgOzsgNDogaW5kZXggdHlwZQogICAgICAgICAiWyBcdFxuXHJcZlx2XSsiCiAgICAgICAgICJb
+WzphbHBoYTpdX11bWzphbG51bTpdX10qIiAgICAgICAgICAgICAgICAgIDs7IGluZGV4IG5hbWUg
+LSBhIHNpbXBsZSBpZGVudGlmaWVyCiAgICAgICAgICJcXF0iICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgIDs7IGNsb3Npbmcgc3EgYnJhY2tldAogICAgICAgICAiWyBcdFxu
+XHJcZlx2XSoiCiAgICAgICAgICkpCgogICAgIGAobmFtZXNwYWNlLXN0YXJ0CiAgICAgICAsKGNv
+bmNhdAogICAgICAgICAiXlsgXHRcZlx2XSoiICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICA7OyBsZWFkaW5nIHdoaXRlc3BhY2UKICAgICAgICAgIlxcKG5hbWVzcGFjZVxcKSIKICAgICAg
+ICAgIlsgXHRcblxyXGZcdl0rIgogICAgICAgICAiXFwoIgogICAgICAgICAiXFwoPzpbQS1aYS16
+X11bWzphbG51bTpdX10qXFwuXFwpKiIgICAgICAgICAgOzsgbmFtZSBvZiBuYW1lc3BhY2UKICAg
+ICAgICAgIltBLVphLXpfXVtbOmFsbnVtOl1dKiIKICAgICAgICAgIlxcKSIKICAgICAgICAgIlsg
+XHRcblxyXGZcdl0qIgogICAgICAgICApKQoKICAgICApKSkKCgooZGVmdW4gY3NoYXJwLS1yZWdl
+eHAgKHN5bWJvbCkKICAiUmV0cmlldmVzIGEgcmVnZXhwIGZyb20gdGhlIGBjc2hhcnAtLXJlZ2V4
+cC1hbGlzdCcgY29ycmVzcG9uZGluZwp0byB0aGUgZ2l2ZW4gc3ltYm9sLgoiCiAgKGxldCAoKGVs
+dCAoYXNzb2Mgc3ltYm9sIGNzaGFycC0tcmVnZXhwLWFsaXN0KSkpCiAgICAoaWYgZWx0IChjYWRy
+IGVsdCkgbmlsKSkpCgoKKGRlZnVuIGNzaGFycC1tb3ZlLWJhY2stdG8tYmVnaW5uaW5nLW9mLWJs
+b2NrICgpCiAgIk1vdmVzIHRvIHRoZSBwcmV2aW91cyBvcGVuIGN1cmx5LgoiCiAgKGludGVyYWN0
+aXZlKQogIChyZS1zZWFyY2gtYmFja3dhcmQgInsiIChwb2ludC1taW4pIHQpKQoKCihkZWZ1biBj
+c2hhcnAtLW1vdmUtYmFjay10by1iZWdpbm5pbmctb2Ytc29tZXRoaW5nIChtdXN0LW1hdGNoICZv
+cHRpb25hbCBtdXN0LW5vdC1tYXRjaCkKICAiTW92ZXMgYmFjayB0byB0aGUgb3Blbi1jdXJseSB0
+aGF0IGRlZmluZXMgdGhlIGJlZ2lubmluZyBvZiAqc29tZXRoaW5nKiwKZGVmaW5lZCBieSB0aGUg
+Z2l2ZW4gTVVTVC1NQVRDSCwgYSByZWdleHAgd2hpY2ggbXVzdCBtYXRjaCBpbW1lZGlhdGVseQpw
+cmVjZWRpbmcgdGhlIGN1cmx5LiAgSWYgTVVTVC1OT1QtTUFUQ0ggaXMgbm9uLW5pbCwgaXQgaXMg
+dHJlYXRlZAphcyBhIHJlZ2V4cCB0aGF0IG11c3Qgbm90IG1hdGNoIGltbWVkaWF0ZWx5IHByZWNl
+ZGluZyB0aGUgY3VybHkuCgpUaGlzIGlzIGEgaGVscGVyIGZuIGZvciBgY3NoYXJwLW1vdmUtYmFj
+ay10by1iZWdpbm5pbmctb2YtZGVmdW4nIGFuZApgY3NoYXJwLW1vdmUtYmFjay10by1iZWdpbm5p
+bmctb2YtY2xhc3MnCgoiCiAgKGludGVyYWN0aXZlKQogIChsZXQgKGRvbmUKICAgICAgICAoZm91
+bmQgKHBvaW50KSkKICAgICAgICAobmVlZC10by1iYWNrdXAgKG5vdCAobG9va2luZy1hdCAieyIp
+KSkpCiAgICAod2hpbGUgKG5vdCBkb25lKQogICAgICAoaWYgbmVlZC10by1iYWNrdXAKICAgICAg
+ICAgIChzZXRxIGZvdW5kIChjc2hhcnAtbW92ZS1iYWNrLXRvLWJlZ2lubmluZy1vZi1ibG9jaykp
+KQogICAgICAoaWYgZm91bmQKICAgICAgICAgIChzZXRxIGRvbmUgKGFuZCAobG9va2luZy1iYWNr
+IG11c3QtbWF0Y2gpCiAgICAgICAgICAgICAgICAgICAgICAgICAgKG9yIChub3QgbXVzdC1ub3Qt
+bWF0Y2gpCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIChub3QgKGxvb2tpbmctYmFjayBt
+dXN0LW5vdC1tYXRjaCkpKSkKICAgICAgICAgICAgICAgIG5lZWQtdG8tYmFja3VwIHQpCiAgICAg
+ICAgKHNldHEgZG9uZSB0KSkpCiAgICBmb3VuZCkpCgoKCihkZWZ1biBjc2hhcnAtbW92ZS1iYWNr
+LXRvLWJlZ2lubmluZy1vZi1kZWZ1biAoKQogICJNb3ZlcyBiYWNrIHRvIHRoZSBvcGVuLWN1cmx5
+IHRoYXQgZGVmaW5lcyB0aGUgYmVnaW5uaW5nIG9mIHRoZQplbmNsb3NpbmcgbWV0aG9kLiAgSWYg
+cG9pbnQgaXMgb3V0c2lkZSBhIG1ldGhvZCwgdGhlbiBtb3ZlIGJhY2sgdG8gdGhlCmJlZ2lubmlu
+ZyBvZiB0aGUgcHJpb3IgbWV0aG9kLgoKU2VlIGFsc28sIGBjc2hhcnAtbW92ZS1md2QtdG8tZW5k
+LW9mLWRlZnVuJy4KIgogIChpbnRlcmFjdGl2ZSkKICAoY29uZAoKICAgKChib2JwKSBuaWwpCgog
+ICAodAogICAgKGxldCAoZm91bmQpCiAgICAgIChzYXZlLWV4Y3Vyc2lvbgogICAgICAgIDs7IGhh
+bmRsZSB0aGUgY2FzZSB3aGVyZSB3ZSdyZSBhdCB0aGUgdG9wIG9mIGEgZm4gbm93LgogICAgICAg
+IDs7IGlmIHRoZSB1c2VyIGlzIGFza2luZyB0byBtb3ZlIGJhY2ssIHRoZW4gb2J2aW91c2x5CiAg
+ICAgICAgOzsgaGUgd2FudHMgdG8gbW92ZSBiYWNrIHRvIGEgKnByaW9yKiBkZWZ1bi4KICAgICAg
+ICAoaWYgKGFuZCAobG9va2luZy1hdCAieyIpCiAgICAgICAgICAgICAgICAgKGxvb2tpbmctYmFj
+ayAoY3NoYXJwLS1yZWdleHAgJ2Z1bmMtc3RhcnQpKQogICAgICAgICAgICAgICAgIChub3QgKGxv
+b2tpbmctYmFjayAoY3NoYXJwLS1yZWdleHAgJ25hbWVzcGFjZS1zdGFydCkpKSkKICAgICAgICAg
+ICAgKGZvcndhcmQtY2hhciAtMSkpCgogICAgICAgIDs7IG5vdyBkbyB0aGUgcmVhbCB3b3JrCiAg
+ICAgICAgKHNldHEgZm91bmQgKGNzaGFycC0tbW92ZS1iYWNrLXRvLWJlZ2lubmluZy1vZi1zb21l
+dGhpbmcKICAgICAgICAgICAgICAgICAgICAgKGNzaGFycC0tcmVnZXhwICdmdW5jLXN0YXJ0KQog
+ICAgICAgICAgICAgICAgICAgICAoY3NoYXJwLS1yZWdleHAgJ25hbWVzcGFjZS1zdGFydCkpKSkK
+ICAgICAgKGlmIGZvdW5kCiAgICAgICAgICAoZ290by1jaGFyIGZvdW5kKSkpKSkpCgoKKGRlZnVu
+IGNzaGFycC0tb24tZGVmdW4tY2xvc2UtY3VybHktcCAoKQogICJyZXR1cm4gdCB3aGVuIHBvaW50
+IGlzIG9uIHRoZSBjbG9zZS1jdXJseSBvZiBhIG1ldGhvZC4iCiAgKGFuZCAobG9va2luZy1hdCAi
+fSIpCiAgICAgICAoc2F2ZS1leGN1cnNpb24KICAgICAgICAgKGFuZAogICAgICAgICAgKHByb2du
+IChmb3J3YXJkLWNoYXIpIChmb3J3YXJkLXNleHAgLTEpIHQpCiAgICAgICAgICAobm90IChsb29r
+aW5nLWJhY2sgKGNzaGFycC0tcmVnZXhwICdjbGFzcy1zdGFydCkpKQogICAgICAgICAgKG5vdCAo
+bG9va2luZy1iYWNrIChjc2hhcnAtLXJlZ2V4cCAnbmFtZXNwYWNlLXN0YXJ0KSkpCiAgICAgICAg
+ICAobG9va2luZy1iYWNrIChjc2hhcnAtLXJlZ2V4cCAnZnVuYy1zdGFydCkpKSkpKQoKKGRlZnVu
+IGNzaGFycC0tb24tY3Rvci1jbG9zZS1jdXJseS1wICgpCiAgInJldHVybiB0IHdoZW4gcG9pbnQg
+aXMgb24gdGhlIGNsb3NlLWN1cmx5IG9mIGEgY29uc3RydWN0b3IuIgogIChhbmQgKGxvb2tpbmct
+YXQgIn0iKQogICAgICAgKHNhdmUtZXhjdXJzaW9uCiAgICAgICAgIChhbmQKICAgICAgICAgIChw
+cm9nbiAoZm9yd2FyZC1jaGFyKSAoZm9yd2FyZC1zZXhwIC0xKSB0KQogICAgICAgICAgKGxvb2tp
+bmctYmFjayAoY3NoYXJwLS1yZWdleHAgJ2N0b3Itc3RhcnQpKSkpKSkKCihkZWZ1biBjc2hhcnAt
+LW9uLWNsYXNzLWNsb3NlLWN1cmx5LXAgKCkKICAicmV0dXJuIHQgd2hlbiBwb2ludCBpcyBvbiB0
+aGUgY2xvc2UtY3VybHkgb2YgYSBjbGFzcyBvciBzdHJ1Y3QuIgogIChhbmQgKGxvb2tpbmctYXQg
+In0iKQogICAgICAgKHNhdmUtZXhjdXJzaW9uCiAgICAgICAgIChhbmQKICAgICAgICAgIChwcm9n
+biAoZm9yd2FyZC1jaGFyKSAoZm9yd2FyZC1zZXhwIC0xKSB0KQogICAgICAgICAgKG5vdCAobG9v
+a2luZy1iYWNrIChjc2hhcnAtLXJlZ2V4cCAnbmFtZXNwYWNlLXN0YXJ0KSkpCiAgICAgICAgICAo
+bG9va2luZy1iYWNrIChjc2hhcnAtLXJlZ2V4cCAnY2xhc3Mtc3RhcnQpKSkpKSkKCihkZWZ1biBj
+c2hhcnAtLW9uLWludGYtY2xvc2UtY3VybHktcCAoKQogICJyZXR1cm4gdCB3aGVuIHBvaW50IGlz
+IG9uIHRoZSBjbG9zZS1jdXJseSBvZiBhbiBpbnRlcmZhY2UuIgogIChhbmQgKGxvb2tpbmctYXQg
+In0iKQogICAgICAgKHNhdmUtZXhjdXJzaW9uCiAgICAgICAgIChhbmQKICAgICAgICAgIChwcm9n
+biAoZm9yd2FyZC1jaGFyKSAoZm9yd2FyZC1zZXhwIC0xKSB0KQogICAgICAgICAgKGxvb2tpbmct
+YmFjayAoY3NoYXJwLS1yZWdleHAgJ2ludGYtc3RhcnQpKSkpKSkKCihkZWZ1biBjc2hhcnAtLW9u
+LWVudW0tY2xvc2UtY3VybHktcCAoKQogICJyZXR1cm4gdCB3aGVuIHBvaW50IGlzIG9uIHRoZSBj
+bG9zZS1jdXJseSBvZiBhbiBlbnVtLiIKICAoYW5kIChsb29raW5nLWF0ICJ9IikKICAgICAgIChz
+YXZlLWV4Y3Vyc2lvbgogICAgICAgICAoYW5kCiAgICAgICAgICAocHJvZ24gKGZvcndhcmQtY2hh
+cikgKGZvcndhcmQtc2V4cCAtMSkgdCkKICAgICAgICAgIChsb29raW5nLWJhY2sgKGNzaGFycC0t
+cmVnZXhwICdlbnVtLXN0YXJ0KSkpKSkpCgooZGVmdW4gY3NoYXJwLS1vbi1uYW1lc3BhY2UtY2xv
+c2UtY3VybHktcCAoKQogICJyZXR1cm4gdCB3aGVuIHBvaW50IGlzIG9uIHRoZSBjbG9zZS1jdXJs
+eSBvZiBhIG5hbWVzcGFjZS4iCiAgKGFuZCAobG9va2luZy1hdCAifSIpCiAgICAgICAoc2F2ZS1l
+eGN1cnNpb24KICAgICAgICAgKGFuZAogICAgICAgICAgKHByb2duIChmb3J3YXJkLWNoYXIpIChm
+b3J3YXJkLXNleHAgLTEpIHQpCiAgICAgICAgICAobG9va2luZy1iYWNrIChjc2hhcnAtLXJlZ2V4
+cCAnbmFtZXNwYWNlLXN0YXJ0KSkpKSkpCgooZGVmdW4gY3NoYXJwLS1vbi1kZWZ1bi1vcGVuLWN1
+cmx5LXAgKCkKICAicmV0dXJuIHQgd2hlbiBwb2ludCBpcyBvbiB0aGUgb3Blbi1jdXJseSBvZiBh
+IG1ldGhvZC4iCiAgKGFuZCAobG9va2luZy1hdCAieyIpCiAgICAgICAobm90IChsb29raW5nLWJh
+Y2sgKGNzaGFycC0tcmVnZXhwICdjbGFzcy1zdGFydCkpKQogICAgICAgKG5vdCAobG9va2luZy1i
+YWNrIChjc2hhcnAtLXJlZ2V4cCAnbmFtZXNwYWNlLXN0YXJ0KSkpCiAgICAgICAobG9va2luZy1i
+YWNrIChjc2hhcnAtLXJlZ2V4cCAnZnVuYy1zdGFydCkpKSkKCihkZWZ1biBjc2hhcnAtLW9uLWNs
+YXNzLW9wZW4tY3VybHktcCAoKQogICJyZXR1cm4gdCB3aGVuIHBvaW50IGlzIG9uIHRoZSBvcGVu
+LWN1cmx5IG9mIGEgY2xhc3MuIgogIChhbmQgKGxvb2tpbmctYXQgInsiKQogICAgICAgKG5vdCAo
+bG9va2luZy1iYWNrIChjc2hhcnAtLXJlZ2V4cCAnbmFtZXNwYWNlLXN0YXJ0KSkpCiAgICAgICAo
+bG9va2luZy1iYWNrIChjc2hhcnAtLXJlZ2V4cCAnY2xhc3Mtc3RhcnQpKSkpCgooZGVmdW4gY3No
+YXJwLS1vbi1nZW5jbGFzcy1vcGVuLWN1cmx5LXAgKCkKICAicmV0dXJuIHQgd2hlbiBwb2ludCBp
+cyBvbiB0aGUgb3Blbi1jdXJseSBvZiBhIGdlbmVyaWMgY2xhc3MuIgogIChhbmQgKGxvb2tpbmct
+YXQgInsiKQogICAgICAgKGxvb2tpbmctYmFjayAoY3NoYXJwLS1yZWdleHAgJ2dlbmNsYXNzLXN0
+YXJ0KSkpKQoKKGRlZnVuIGNzaGFycC0tb24tbmFtZXNwYWNlLW9wZW4tY3VybHktcCAoKQogICJy
+ZXR1cm4gdCB3aGVuIHBvaW50IGlzIG9uIHRoZSBvcGVuLWN1cmx5IG9mIGEgbmFtZXNwYWNlLiIK
+ICAoYW5kIChsb29raW5nLWF0ICJ7IikKICAgICAgIChsb29raW5nLWJhY2sgKGNzaGFycC0tcmVn
+ZXhwICduYW1lc3BhY2Utc3RhcnQpKSkpCgooZGVmdW4gY3NoYXJwLS1vbi1jdG9yLW9wZW4tY3Vy
+bHktcCAoKQogICJyZXR1cm4gdCB3aGVuIHBvaW50IGlzIG9uIHRoZSBvcGVuLWN1cmx5IG9mIGEg
+Y3Rvci4iCiAgKGFuZCAobG9va2luZy1hdCAieyIpCiAgICAgICAobG9va2luZy1iYWNrIChjc2hh
+cnAtLXJlZ2V4cCAnY3Rvci1zdGFydCkpKSkKCihkZWZ1biBjc2hhcnAtLW9uLWludGYtb3Blbi1j
+dXJseS1wICgpCiAgInJldHVybiB0IHdoZW4gcG9pbnQgaXMgb24gdGhlIG9wZW4tY3VybHkgb2Yg
+YSBpbnRlcmZhY2UuIgogIChhbmQgKGxvb2tpbmctYXQgInsiKQogICAgICAgKGxvb2tpbmctYmFj
+ayAoY3NoYXJwLS1yZWdleHAgJ2ludGYtc3RhcnQpKSkpCgooZGVmdW4gY3NoYXJwLS1vbi1wcm9w
+LW9wZW4tY3VybHktcCAoKQogICJyZXR1cm4gdCB3aGVuIHBvaW50IGlzIG9uIHRoZSBvcGVuLWN1
+cmx5IG9mIGEgcHJvcGVydHkuIgogIChhbmQgKGxvb2tpbmctYXQgInsiKQogICAgICAgKG5vdCAo
+bG9va2luZy1iYWNrIChjc2hhcnAtLXJlZ2V4cCAnY2xhc3Mtc3RhcnQpKSkKICAgICAgIChsb29r
+aW5nLWJhY2sgKGNzaGFycC0tcmVnZXhwICdwcm9wLXN0YXJ0KSkpKQoKKGRlZnVuIGNzaGFycC0t
+b24taW5kZXhlci1vcGVuLWN1cmx5LXAgKCkKICAicmV0dXJuIHQgd2hlbiBwb2ludCBpcyBvbiB0
+aGUgb3Blbi1jdXJseSBvZiBhIEMjIGluZGV4ZXIuIgogIChhbmQgKGxvb2tpbmctYXQgInsiKQog
+ICAgICAgKGxvb2tpbmctYmFjayAoY3NoYXJwLS1yZWdleHAgJ2luZGV4ZXItc3RhcnQpKSkpCgoo
+ZGVmdW4gY3NoYXJwLS1vbi1lbnVtLW9wZW4tY3VybHktcCAoKQogICJyZXR1cm4gdCB3aGVuIHBv
+aW50IGlzIG9uIHRoZSBvcGVuLWN1cmx5IG9mIGEgaW50ZXJmYWNlLiIKICAoYW5kIChsb29raW5n
+LWF0ICJ7IikKICAgICAgIChsb29raW5nLWJhY2sgKGNzaGFycC0tcmVnZXhwICdlbnVtLXN0YXJ0
+KSkpKQoKCgooZGVmdW4gY3NoYXJwLW1vdmUtZndkLXRvLWVuZC1vZi1kZWZ1biAoKQogICJNb3Zl
+cyBmb3J3YXJkIHRvIHRoZSBjbG9zZS1jdXJseSB0aGF0IGRlZmluZXMgdGhlIGVuZCBvZiB0aGUg
+ZW5jbG9zaW5nCm1ldGhvZC4gSWYgcG9pbnQgaXMgb3V0c2lkZSBhIG1ldGhvZCwgbW92ZXMgZm9y
+d2FyZCB0byB0aGUgY2xvc2UtY3VybHkgdGhhdApkZWZpbmVzIHRoZSBlbmQgb2YgdGhlIG5leHQg
+bWV0aG9kLgoKU2VlIGFsc28sIGBjc2hhcnAtbW92ZS1iYWNrLXRvLWJlZ2lubmluZy1vZi1kZWZ1
+bicuCiIKICAoaW50ZXJhY3RpdmUpCgogIChsZXQgKChyZWFsbHktbW92ZQogICAgICAgICAobGFt
+YmRhICgpCiAgICAgICAgICAgKGxldCAoKHN0YXJ0IChwb2ludCkpCiAgICAgICAgICAgICAgICAg
+ZGVzdC1jaGFyKQogICAgICAgICAgICAgKHNhdmUtZXhjdXJzaW9uCiAgICAgICAgICAgICAgIChj
+c2hhcnAtbW92ZS1iYWNrLXRvLWJlZ2lubmluZy1vZi1kZWZ1bikKICAgICAgICAgICAgICAgKGZv
+cndhcmQtc2V4cCkKICAgICAgICAgICAgICAgKGlmICg+PSAocG9pbnQpIHN0YXJ0KQogICAgICAg
+ICAgICAgICAgICAgKHNldHEgZGVzdC1jaGFyIChwb2ludCkpKSkKICAgICAgICAgICAgIChpZiBk
+ZXN0LWNoYXIKICAgICAgICAgICAgICAgICAoZ290by1jaGFyIGRlc3QtY2hhcikpKSkpKQoKICAg
+IChjb25kCgogICAgIDs7IGNhc2UgMTogZW5kIG9mIGJ1ZmZlci4gIGRvIG5vdGhpbmcuCiAgICAg
+KChlb2JwKSBuaWwpCgogICAgIDs7IGNhc2UgMjogd2UncmUgYXQgdGhlIHRvcCBvZiBhIGNsYXNz
+CiAgICAgKChjc2hhcnAtLW9uLWNsYXNzLW9wZW4tY3VybHktcCkKICAgICAgKGxldCAoZm91bmQt
+aXQpCiAgICAgICAgKHNhdmUtZXhjdXJzaW9uCiAgICAgICAgICAoZm9yd2FyZC1jaGFyIDEpIDs7
+IGdldCBvZmYgdGhlIGN1cmx5CiAgICAgICAgICAoc2V0cSBmb3VuZC1pdAogICAgICAgICAgICAg
+ICAgKGFuZCA7OyBsb29rIGZvciBuZXh0IG9wZW4gY3VybHkKICAgICAgICAgICAgICAgICAocmUt
+c2VhcmNoLWZvcndhcmQgInsiIChwb2ludC1tYXgpIHQpCiAgICAgICAgICAgICAgICAgKGZ1bmNh
+bGwgcmVhbGx5LW1vdmUpKSkpCiAgICAgICAgKGlmIGZvdW5kLWl0CiAgICAgICAgICAgIChnb3Rv
+LWNoYXIgZm91bmQtaXQpKSkpCgoKICAgICA7OyBjYXNlIDM6IHdlJ3JlIGF0IHRoZSB0b3Agb2Yg
+YSBmbiBub3cuCiAgICAgKChjc2hhcnAtLW9uLWRlZnVuLW9wZW4tY3VybHktcCkKICAgICAgKGZv
+cndhcmQtc2V4cCkpCgoKICAgICA7OyBjYXNlIDQ6IHdlJ3JlIGF0IHRoZSBib3R0b20gb2YgYSBm
+biBub3cgKHBvc3NpYmx5CiAgICAgOzsgYWZ0ZXIganVzdCBjYWxsaW5nIGNzaGFycC1tb3ZlLWZ3
+ZC10by1lbmQtb2YtZGVmdW4uCiAgICAgKChhbmQgKGxvb2tpbmctYmFjayAifSIpCiAgICAgICAg
+ICAgKHNhdmUtZXhjdXJzaW9uCiAgICAgICAgICAgICAoZm9yd2FyZC1zZXhwIC0xKQogICAgICAg
+ICAgICAgKGNzaGFycC0tb24tZGVmdW4tb3Blbi1jdXJseS1wKSkpCgogICAgICAobGV0IChmb3Vu
+ZC1pdCkKICAgICAgICAoc2F2ZS1leGN1cnNpb24KICAgICAgICAgIChzZXRxIGZvdW5kLWl0CiAg
+ICAgICAgICAgICAgICAoYW5kIChyZS1zZWFyY2gtZm9yd2FyZCAieyIgKHBvaW50LW1heCkgdCkK
+ICAgICAgICAgICAgICAgICAgICAgKGZ1bmNhbGwgcmVhbGx5LW1vdmUpKSkpCiAgICAgICAgKGlm
+IGZvdW5kLWl0CiAgICAgICAgICAgIChnb3RvLWNoYXIgZm91bmQtaXQpKSkpCgoKICAgICA7OyBj
+YXNlIDU6IHdlJ3JlIGF0IG5vbmUgb2YgdGhvc2UgcGxhY2VzLgogICAgICh0CiAgICAgIChmdW5j
+YWxsIHJlYWxseS1tb3ZlKSkpKSkKCgoKCihkZWZ1biBjc2hhcnAtbW92ZS1iYWNrLXRvLWJlZ2lu
+bmluZy1vZi1jbGFzcyAoKQogICJNb3ZlcyBiYWNrIHRvIHRoZSBvcGVuLWN1cmx5IHRoYXQgZGVm
+aW5lcyB0aGUgYmVnaW5uaW5nIG9mIHRoZQplbmNsb3NpbmcgY2xhc3MuICBJZiBwb2ludCBpcyBv
+dXRzaWRlIGEgY2xhc3MsIHRoZW4gbW92ZSBiYWNrIHRvIHRoZQpiZWdpbm5pbmcgb2YgdGhlIHBy
+aW9yIGNsYXNzLgoKU2VlIGFsc28sIGBjc2hhcnAtbW92ZS1md2QtdG8tZW5kLW9mLWRlZnVuJy4K
+IgogIChpbnRlcmFjdGl2ZSkKCiAgKGNvbmQKICAgKChib2JwKSBuaWwpCgogICAodAogICAgKGxl
+dCAoZm91bmQpCiAgICAgIChzYXZlLWV4Y3Vyc2lvbgogICAgICAgIDs7IGhhbmRsZSB0aGUgY2Fz
+ZSB3aGVyZSB3ZSdyZSBhdCB0aGUgdG9wIG9mIGEgY2xhc3Mgbm93LgogICAgICAgIDs7IGlmIHRo
+ZSB1c2VyIGlzIGFza2luZyB0byBtb3ZlIGJhY2ssIHRoZW4gb2J2aW91c2x5CiAgICAgICAgOzsg
+aGUgd2FudHMgdG8gbW92ZSBiYWNrIHRvIGEgKnByaW9yKiBkZWZ1bi4KICAgICAgICAoaWYgKGFu
+ZCAobG9va2luZy1hdCAieyIpCiAgICAgICAgICAgICAgICAgKGxvb2tpbmctYmFjayAoY3NoYXJw
+LS1yZWdleHAgJ2NsYXNzLXN0YXJ0KSkKICAgICAgICAgICAgICAgICAobm90IChsb29raW5nLWJh
+Y2sgKGNzaGFycC0tcmVnZXhwICduYW1lc3BhY2Utc3RhcnQpKSkpCiAgICAgICAgICAgIChmb3J3
+YXJkLWNoYXIgLTEpKQoKICAgICAgICA7OyBub3cgZG8gdGhlIHJlYWwgd29yawogICAgICAgIChz
+ZXRxIGZvdW5kIChjc2hhcnAtLW1vdmUtYmFjay10by1iZWdpbm5pbmctb2Ytc29tZXRoaW5nCiAg
+ICAgICAgICAgICAgICAgICAgIChjc2hhcnAtLXJlZ2V4cCAnY2xhc3Mtc3RhcnQpCiAgICAgICAg
+ICAgICAgICAgICAgIChjc2hhcnAtLXJlZ2V4cCAnbmFtZXNwYWNlLXN0YXJ0KSkpKQogICAgICAo
+aWYgZm91bmQKICAgICAgICAgIChnb3RvLWNoYXIgZm91bmQpKSkpKSkKCgoKCihkZWZ1biBjc2hh
+cnAtbW92ZS1md2QtdG8tZW5kLW9mLWNsYXNzICgpCiAgIk1vdmVzIGZvcndhcmQgdG8gdGhlIGNs
+b3NlLWN1cmx5IHRoYXQgZGVmaW5lcyB0aGUgZW5kIG9mIHRoZQplbmNsb3NpbmcgY2xhc3MuCgpT
+ZWUgYWxzbywgYGNzaGFycC1tb3ZlLWJhY2stdG8tYmVnaW5uaW5nLW9mLWNsYXNzJy4KIgogIChp
+bnRlcmFjdGl2ZSkKICAobGV0ICgoc3RhcnQgKHBvaW50KSkKICAgICAgICBkZXN0LWNoYXIpCiAg
+ICAoc2F2ZS1leGN1cnNpb24KICAgICAgKGNzaGFycC1tb3ZlLWJhY2stdG8tYmVnaW5uaW5nLW9m
+LWNsYXNzKQogICAgICAoZm9yd2FyZC1zZXhwKQogICAgICAoaWYgKD49IChwb2ludCkgc3RhcnQp
+CiAgICAgICAgICAoc2V0cSBkZXN0LWNoYXIgKHBvaW50KSkpKQoKICAgIChpZiBkZXN0LWNoYXIK
+ICAgICAgICAoZ290by1jaGFyIGRlc3QtY2hhcikpKSkKCgoKKGRlZnVuIGNzaGFycC1tb3ZlLWJh
+Y2stdG8tYmVnaW5uaW5nLW9mLW5hbWVzcGFjZSAoKQogICJNb3ZlcyBiYWNrIHRvIHRoZSBvcGVu
+LWN1cmx5IHRoYXQgZGVmaW5lcyB0aGUgYmVnaW5uaW5nIG9mIHRoZQplbmNsb3NpbmcgbmFtZXNw
+YWNlLiAgSWYgcG9pbnQgaXMgb3V0c2lkZSBhIG5hbWVzcGFjZSwgdGhlbiBtb3ZlIGJhY2sKdG8g
+dGhlIGJlZ2lubmluZyBvZiB0aGUgcHJpb3IgbmFtZXNwYWNlLgoKIgogIChpbnRlcmFjdGl2ZSkK
+ICAoY29uZAoKICAgKChib2JwKSBuaWwpCgogICAodAogICAgKGxldCAoZm91bmQpCiAgICAgIChz
+YXZlLWV4Y3Vyc2lvbgogICAgICAgIDs7IGhhbmRsZSB0aGUgY2FzZSB3aGVyZSB3ZSdyZSBhdCB0
+aGUgdG9wIG9mIGEgbmFtZXNwYWNlIG5vdy4KICAgICAgICA7OyBpZiB0aGUgdXNlciBpcyBhc2tp
+bmcgdG8gbW92ZSBiYWNrLCB0aGVuIG9idmlvdXNseQogICAgICAgIDs7IGhlIHdhbnRzIHRvIG1v
+dmUgYmFjayB0byBhICpwcmlvciogZGVmdW4uCiAgICAgICAgKGlmIChhbmQgKGxvb2tpbmctYXQg
+InsiKQogICAgICAgICAgICAgICAgIChsb29raW5nLWJhY2sgKGNzaGFycC0tcmVnZXhwICduYW1l
+c3BhY2Utc3RhcnQpKSkKICAgICAgICAgICAgKGZvcndhcmQtY2hhciAtMSkpCgogICAgICAgIDs7
+IG5vdyBkbyB0aGUgcmVhbCB3b3JrCiAgICAgICAgKHNldHEgZm91bmQgKGNzaGFycC0tbW92ZS1i
+YWNrLXRvLWJlZ2lubmluZy1vZi1zb21ldGhpbmcKICAgICAgICAgICAgICAgICAgICAgKGNzaGFy
+cC0tcmVnZXhwICduYW1lc3BhY2Utc3RhcnQpKSkpCiAgICAgIChpZiBmb3VuZAogICAgICAgICAg
+KGdvdG8tY2hhciBmb3VuZCkpKSkpKQoKOzsgbW92aW5nCjs7ID09PT09PT09PT09PT09PT09PT09
+PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PQoKCgoK
+OzsgPT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09
+PT09PT09PT09PT09Cjs7OyBpbWVudSBzdHVmZgoKOzsgZGVmaW5lIHNvbWUgYWR2aWNlIGZvciBt
+ZW51IGNvbnN0cnVjdGlvbi4KCjs7IFRoZSB3YXkgaW1lbnUgY29uc3RydWN0cyBtZW51cyBmcm9t
+IHRoZSBpbmRleCBhbGlzdCwgaW4KOzsgYGltZW51LS1zcGxpdC1tZW51JywgaXMgLi4uIGFoIC4u
+LiBwZXJwbGV4aW5nLiAgSWYgdGhlIGNzaGFycAo7OyBjcmVhdGUtaW5kZXggZm4gcmV0dXJucyBh
+biBvcmRlcmVkIG1lbnUsIGFuZCB0aGUgaW1lbnUgInNvcnQiIGZuIGhhcwo7OyBiZWVuIHNldCB0
+byBuaWwsIGltZW51IHN0aWxsIHNvcnRzIHRoZSBtZW51LCBhY2NvcmRpbmcgdG8gdGhlIHJ1bGUK
+OzsgdGhhdCBhbGwgc3VibWVudXMgbXVzdCBhcHBlYXIgYXQgdGhlIHRvcCBvZiBhbnkgbWVudS4g
+V2h5PyAgSSBkb24ndAo7OyBrbm93LiBUaGlzIGFkdmljZSBkaXNhYmxlcyB0aGF0IHdlaXJkbmVz
+cyBpbiBDIyBidWZmZXJzLgoKKGRlZmFkdmljZSBpbWVudS0tc3BsaXQtbWVudSAoYXJvdW5kCiAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgIGNzaGFycC0taW1lbnUtc3BsaXQtbWVudS1wYXRj
+aAogICAgICAgICAgICAgICAgICAgICAgICAgICAgICBhY3RpdmF0ZSBjb21waWxlKQogIDs7IFRo
+aXMgYWR2aWNlIHdpbGwgcnVuIGluIGFsbCBidWZmZXJzLiAgTGV0J3MgbWF5IHN1cmUgd2UKICA7
+OyBhY3R1YWxseSBleGVjdXRlIHRoZSBpbXBvcnRhbnQgYml0cyBvbmx5IHdoZW4gYSBDIyBidWZm
+ZXIgaXMgYWN0aXZlLgogIChpZiAoYW5kIChzdHJpbmctbWF0Y2ggIlxcLltDY11bU3NdJCIgIChm
+aWxlLXJlbGF0aXZlLW5hbWUgYnVmZmVyLWZpbGUtbmFtZSkpCiAgICAgICAgICAgKGJvdW5kcCAn
+Y3NoYXJwLXdhbnQtaW1lbnUpCiAgICAgICAgICAgY3NoYXJwLXdhbnQtaW1lbnUpCiAgICAgIChs
+ZXQgKChtZW51bGlzdCAoY29weS1zZXF1ZW5jZSBtZW51bGlzdCkpCiAgICAgICAgICAgIGtlZXAt
+YXQtdG9wKQogICAgICAgIChpZiAobWVtcSBpbWVudS0tcmVzY2FuLWl0ZW0gbWVudWxpc3QpCiAg
+ICAgICAgICAgIChzZXRxIGtlZXAtYXQtdG9wIChsaXN0IGltZW51LS1yZXNjYW4taXRlbSkKICAg
+ICAgICAgICAgICAgICAgbWVudWxpc3QgKGRlbHEgaW1lbnUtLXJlc2Nhbi1pdGVtIG1lbnVsaXN0
+KSkpCiAgICAgICAgOzsgVGhpcyBpcyB0aGUgcGFydCBmcm9tIHRoZSBvcmlnaW5hbCBpbWVudSBj
+b2RlCiAgICAgICAgOzsgdGhhdCBwdXRzIHN1Ym1lbnVzIGF0IHRoZSB0b3AuICBodWg/IHdoeT8K
+ICAgICAgICA7OyAtLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQog
+ICAgICAgIDs7IChzZXRxIHRhaWwgbWVudWxpc3QpCiAgICAgICAgOzsgKGRvbGlzdCAoaXRlbSB0
+YWlsKQogICAgICAgIDs7ICAgKHdoZW4gKGltZW51LS1zdWJhbGlzdC1wIGl0ZW0pCiAgICAgICAg
+OzsgICAgIChwdXNoIGl0ZW0ga2VlcC1hdC10b3ApCiAgICAgICAgOzsgICAgIChzZXRxIG1lbnVs
+aXN0IChkZWxxIGl0ZW0gbWVudWxpc3QpKSkpCiAgICAgICAgKGlmIGltZW51LXNvcnQtZnVuY3Rp
+b24KICAgICAgICAgICAgKHNldHEgbWVudWxpc3QgKHNvcnQgbWVudWxpc3QgaW1lbnUtc29ydC1m
+dW5jdGlvbikpKQogICAgICAgIChpZiAoPiAobGVuZ3RoIG1lbnVsaXN0KSBpbWVudS1tYXgtaXRl
+bXMpCiAgICAgICAgICAgIChzZXRxIG1lbnVsaXN0CiAgICAgICAgICAgICAgICAgIChtYXBjYXIK
+ICAgICAgICAgICAgICAgICAgIChsYW1iZGEgKG1lbnUpCiAgICAgICAgICAgICAgICAgICAgIChj
+b25zIChmb3JtYXQgIkZyb206ICVzIiAoY2FhciBtZW51KSkgbWVudSkpCiAgICAgICAgICAgICAg
+ICAgICAoaW1lbnUtLXNwbGl0IG1lbnVsaXN0IGltZW51LW1heC1pdGVtcykpKSkKICAgICAgICAo
+c2V0cSBhZC1yZXR1cm4tdmFsdWUKICAgICAgICAgICAgICAoY29ucyB0aXRsZQogICAgICAgICAg
+ICAgICAgICAgIChuY29uYyAobnJldmVyc2Uga2VlcC1hdC10b3ApIG1lbnVsaXN0KSkpKQogICAg
+OzsgZWxzZQogICAgYWQtZG8taXQpKQoKCjs7Cjs7IEkgdXNlZCB0aGlzIHRvIGV4YW1pbmUgdGhl
+IHBlcmZvcm1hbmNlIG9mIHRoZSBpbWVudSBzY2FubmluZy4KOzsgSXQncyBub3QgbmVjZXNzYXJ5
+IGR1cmluZyBub3JtYWwgb3BlcmF0aW9uLgo7Owo7OyAoZGVmdW4gY3NoYXJwLWltZW51LWJlZ2lu
+LXByb2ZpbGUgKCkKOzsgICAidHVybiBvbiBwcm9maWxpbmciCjs7ICAgKGludGVyYWN0aXZlKQo7
+OyAgIChsZXQgKChmbnMgJyhjc2hhcnAtLW9uLWNsYXNzLW9wZW4tY3VybHktcAo7OyAgICAgICAg
+ICAgICAgY3NoYXJwLS1vbi1uYW1lc3BhY2Utb3Blbi1jdXJseS1wCjs7ICAgICAgICAgICAgICBj
+c2hhcnAtLW9uLWN0b3Itb3Blbi1jdXJseS1wCjs7ICAgICAgICAgICAgICBjc2hhcnAtLW9uLWVu
+dW0tb3Blbi1jdXJseS1wCjs7ICAgICAgICAgICAgICBjc2hhcnAtLW9uLWludGYtb3Blbi1jdXJs
+eS1wCjs7ICAgICAgICAgICAgICBjc2hhcnAtLW9uLXByb3Atb3Blbi1jdXJseS1wCjs7ICAgICAg
+ICAgICAgICBjc2hhcnAtLW9uLWluZGV4ZXItb3Blbi1jdXJseS1wCjs7ICAgICAgICAgICAgICBj
+c2hhcnAtLW9uLWRlZnVuLW9wZW4tY3VybHktcAo7OyAgICAgICAgICAgICAgY3NoYXJwLS1pbWVu
+dS1jcmVhdGUtaW5kZXgtaGVscGVyCjs7ICAgICAgICAgICAgICBsb29raW5nLWJhY2sKOzsgICAg
+ICAgICAgICAgIGxvb2tpbmctYXQpKSkKOzsgICAgIChpZiAoZmJvdW5kcCAnZWxwLXJlc2V0LWFs
+bCkKOzsgICAgICAgICAoZWxwLXJlc2V0LWFsbCkpCjs7ICAgICAobWFwYyAnZWxwLWluc3RydW1l
+bnQtZnVuY3Rpb24gZm5zKSkpCgoKCihkZWZ1biBjc2hhcnAtLWltZW51LXJlbW92ZS1wYXJhbS1u
+YW1lcy1mcm9tLXBhcmFtbGlzdCAocykKICAiVGhlIGlucHV0IHN0cmluZyBTIGlzIGEgcGFyYW1l
+dGVyIGxpc3QsIG9mIHRoZSBmb3JtIHNlZW4gaW4gYQpDIyBtZXRob2QuICBUWVBFMSBOQU1FMSBb
+LCBUWVBFMiBOQU1FMiAuLi5dCgpUaGlzIGZuIHJldHVybnMgYSBzdHJpbmcgb2YgdGhlIGZvcm0g
+VFlQRTEgWywgVFlQRTIuLi5dCgpVcG9uIGVudHJ5LCBpdCdzIGFzc3VtZWQgdGhhdCB0aGUgcGFy
+ZW5zIGluY2x1ZGVkIGluIFMuCgoiCiAgKGlmIChzdHJpbmc9IHMgIigpIikKICAgICAgcwogICAg
+KHNhdmUtbWF0Y2gtZGF0YQogICAgICAobGV0KiAobmV3CiAgICAgICAgICAgICAoc3RhdGUgMCkg
+IDs7IDAgPT4gd3MsIDE9PnNsdXJwaW5nIHBhcmFtLi4uCiAgICAgICAgICAgICBjCiAgICAgICAg
+ICAgICBjcwogICAgICAgICAgICAgbmVzdGluZwogICAgICAgICAgICAgbmVlZC10eXBlCiAgICAg
+ICAgICAgICBpeDIKICAgICAgICAgICAgIChzMiAoc3Vic3RyaW5nIHMgMSAtMSkpCiAgICAgICAg
+ICAgICAobGVuIChsZW5ndGggczIpKQogICAgICAgICAgICAgKGkgKDEtIGxlbikpKQoKICAgICAg
+ICAod2hpbGUgKD4gaSAwKQogICAgICAgICAgKHNldHEgYyAoYXJlZiBzMiBpKSA7OyBjdXJyZW50
+IGNoYXJhY3RlcgogICAgICAgICAgICAgICAgY3MgKGNoYXItdG8tc3RyaW5nIGMpKSA7OyBzLnQu
+IGFzIGEgc3RyaW5nCgogICAgICAgICAgKGNvbmQKCiAgICAgICAgICAgOzsgYmFja2luZyBvdmVy
+IHdoaXRlc3BhY2UgImFmdGVyIiB0aGUgcGFyYW0KICAgICAgICAgICAoKD0gc3RhdGUgMCkKICAg
+ICAgICAgICAgKGNvbmQKICAgICAgICAgICAgIDs7IG1vcmUgd3MKICAgICAgICAgICAgICgoc3Ry
+aW5nLW1hdGNoICJbIFx0XGZcdlxuXHJdIiBjcykKICAgICAgICAgICAgICB0KQogICAgICAgICAg
+ICAgOzsgYSBsZWdhbCBjaGFyIGZvciBhbiBpZGVudGlmaWVyCiAgICAgICAgICAgICAoKHN0cmlu
+Zy1tYXRjaCAiW0EtWmEtel8wLTldIiBjcykKICAgICAgICAgICAgICAoc2V0cSBzdGF0ZSAxKSkK
+ICAgICAgICAgICAgICh0CiAgICAgICAgICAgICAgKGVycm9yICJ1bmV4cGVjdGVkIGNoYXIgKEEp
+IikpKSkKCgogICAgICAgICAgIDs7IHNsdXJwaW5nIHBhcmFtIG5hbWUKICAgICAgICAgICAoKD0g
+c3RhdGUgMSkKICAgICAgICAgICAgKGNvbmQKICAgICAgICAgICAgIDs7IHdzIHNpZ25pZmllcyB0
+aGUgZW5kIG9mIHRoZSBwYXJhbQogICAgICAgICAgICAgKChzdHJpbmctbWF0Y2ggIlsgXHRcZlx2
+XG5ccl0iIGNzKQogICAgICAgICAgICAgIChzZXRxIHN0YXRlIDIpKQogICAgICAgICAgICAgOzsg
+YSBsZWdhbCBjaGFyIGZvciBhbiBpZGVudGlmaWVyCiAgICAgICAgICAgICAoKHN0cmluZy1tYXRj
+aCAiW0EtWmEtel8wLTldIiBjcykKICAgICAgICAgICAgICB0KQogICAgICAgICAgICAgKHQKICAg
+ICAgICAgICAgICAoZXJyb3IgInVuZXhwZWN0ZWQgY2hhciAoQikiKSkpKQoKCiAgICAgICAgICAg
+Ozsgd3MgYmV0d2VlbiB0eXBlc3BlYyBhbmQgcGFyYW0gbmFtZQogICAgICAgICAgICgoPSBzdGF0
+ZSAyKQogICAgICAgICAgICAoY29uZAogICAgICAgICAgICAgKChzdHJpbmctbWF0Y2ggIlsgXHRc
+Zlx2XG5ccl0iIGNzKQogICAgICAgICAgICAgIHQpCiAgICAgICAgICAgICA7OyBub24td3MgaW5k
+aWNhdGVzIHRoZSB0eXBlIHNwZWMgaXMgYmVnaW5uaW5nCiAgICAgICAgICAgICAodAogICAgICAg
+ICAgICAgIChpbmNmIGkpCiAgICAgICAgICAgICAgKHNldHEgc3RhdGUgMwogICAgICAgICAgICAg
+ICAgICAgIG5lZWQtdHlwZSBuaWwKICAgICAgICAgICAgICAgICAgICBuZXN0aW5nIDAKICAgICAg
+ICAgICAgICAgICAgICBpeDIgaSkpKSkKCgogICAgICAgICAgIDs7IHNsdXJwaW5nIHR5cGUKICAg
+ICAgICAgICAoKD0gc3RhdGUgMykKICAgICAgICAgICAgKGNvbmQKICAgICAgICAgICAgICgoPSA/
+PiBjKSAoaW5jZiBuZXN0aW5nKSkKICAgICAgICAgICAgICgoPSA/PCBjKQogICAgICAgICAgICAg
+IChkZWNmIG5lc3RpbmcpCiAgICAgICAgICAgICAgKHNldHEgbmVlZC10eXBlIHQpKQoKICAgICAg
+ICAgICAgIDs7IHdzIG9yIGNvbW1hIG1heWJlIHNpZ25pZmllcyB0aGUgZW5kIG9mIHRoZSB0eXBl
+c3BlYwogICAgICAgICAgICAgKChzdHJpbmctbWF0Y2ggIlsgXHRcZlx2XG5ccixdIiBjcykKICAg
+ICAgICAgICAgICAoaWYgKGFuZCAoPSBuZXN0aW5nIDApIChub3QgbmVlZC10eXBlKSkKICAgICAg
+ICAgICAgICAgICAgKHByb2duCiAgICAgICAgICAgICAgICAgICAgKHNldHEgbmV3IChjb25zIChz
+dWJzdHJpbmcgczIgKDErIGkpIGl4MikgbmV3KSkKICAgICAgICAgICAgICAgICAgICAoc2V0cSBz
+dGF0ZQogICAgICAgICAgICAgICAgICAgICAgICAgIChpZiAoPSBjID8sKSAwIDQpKSkpKQoKICAg
+ICAgICAgICAgICgoc3RyaW5nLW1hdGNoICJbQS1aYS16XzAtOV0iIGNzKQogICAgICAgICAgICAg
+IChzZXRxIG5lZWQtdHlwZSBuaWwpKSkpCgoKICAgICAgICAgICA7OyBhd2FpdGluZyBjb21tYSBv
+ciBiLW8tcwogICAgICAgICAgICgoPSBzdGF0ZSA0KQogICAgICAgICAgICAoY29uZAoKICAgICAg
+ICAgICAgICgoPSA/LCBjKQogICAgICAgICAgICAgIChpZiAgKD0gbmVzdGluZyAwKQogICAgICAg
+ICAgICAgICAgICAoc2V0cSBzdGF0ZSAwKSkpCgogICAgICAgICAgICAgKChzdHJpbmctbWF0Y2gg
+IlsgXHRcZlx2XG5ccl0iIGNzKQogICAgICAgICAgICAgIHQpCgogICAgICAgICAgICAgKCg9IDkz
+IGMpIChpbmNmIG5lc3RpbmcpKSA7OyBzcSBicmFjawogICAgICAgICAgICAgKCg9IDkxIGMpICA7
+OyBvcGVuIHNxIGJyYWNrCiAgICAgICAgICAgICAgKGRlY2YgbmVzdGluZykpCgogICAgICAgICAg
+ICAgOzsgaGFuZGxlIHRoaXMgKGV4dGVuc2lvbiBtZXRob2RzKSwgb3V0LCByZWYsIHBhcmFtcwog
+ICAgICAgICAgICAgKChhbmQgKD49IGkgNSkKICAgICAgICAgICAgICAgICAgIChzdHJpbmc9IChz
+dWJzdHJpbmcgczIgKC0gaSA1KSAoMSsgaSkpICJwYXJhbXMiKSkKICAgICAgICAgICAgICAoc2V0
+ZiAoY2FyIG5ldykgKGNvbmNhdCAicGFyYW1zICIgKGNhciBuZXcpKSkKICAgICAgICAgICAgICAo
+c2V0cSBpICgtIGkgNSkpKQoKICAgICAgICAgICAgICgoYW5kICg+PSBpIDMpCiAgICAgICAgICAg
+ICAgICAgICAoc3RyaW5nPSAoc3Vic3RyaW5nIHMyICgtIGkgMykgKDErIGkpKSAidGhpcyIpKQog
+ICAgICAgICAgICAgIChzZXRmIChjYXIgbmV3KSAoY29uY2F0ICJ0aGlzICIgKGNhciBuZXcpKSkK
+ICAgICAgICAgICAgICAoc2V0cSBpICgtIGkgMykpKQoKICAgICAgICAgICAgICgoYW5kICg+PSBp
+IDIpCiAgICAgICAgICAgICAgICAgICAoc3RyaW5nPSAoc3Vic3RyaW5nIHMyICgtIGkgMikgKDEr
+IGkpKSAicmVmIikpCiAgICAgICAgICAgICAgKHNldGYgKGNhciBuZXcpIChjb25jYXQgInJlZiAi
+IChjYXIgbmV3KSkpCiAgICAgICAgICAgICAgKHNldHEgaSAoLSBpIDIpKSkKCiAgICAgICAgICAg
+ICAoKGFuZCAoPj0gaSAyKQogICAgICAgICAgICAgICAgICAgKHN0cmluZz0gKHN1YnN0cmluZyBz
+MiAoLSBpIDIpICgxKyBpKSkgIm91dCIpKQogICAgICAgICAgICAgIChzZXRmIChjYXIgbmV3KSAo
+Y29uY2F0ICJvdXQgIiAoY2FyIG5ldykpKQogICAgICAgICAgICAgIChzZXRxIGkgKC0gaSAyKSkp
+CgogICAgICAgICAgICAgKHQKICAgICAgICAgICAgICAoZXJyb3IgInVuZXhwZWN0ZWQgY2hhciAo
+QykiKSkpKQogICAgICAgICAgICkKCiAgICAgICAgICAoZGVjZiBpKSkKCiAgICAgICAgKGlmIChh
+bmQgKD0gc3RhdGUgMykgKD0gbmVzdGluZyAwKSkKICAgICAgICAgICAgKHNldHEgbmV3IChjb25z
+IChzdWJzdHJpbmcgczIgaSBpeDIpIG5ldykpKQoKICAgICAgICAoY29uY2F0ICIoIgogICAgICAg
+ICAgICAgICAgKGlmIG5ldwogICAgICAgICAgICAgICAgICAgIChtYXBjb25jYXQgJ2lkZW50aXR5
+IG5ldyAiLCAiKQogICAgICAgICAgICAgICAgICAiIikKICAgICAgICAgICAgICAgICIpIikpKSkp
+CgoKKGRlZnVuIGNzaGFycC0taW1lbnUtaXRlbS1iYXNpYy1jb21wYXJlciAoYSBiKQogICJDb21w
+YXJlcyB0aGUgY2FyIG9mIGVhY2ggZWxlbWVudCwgYXNzdW1lZCB0byBiZSBhIHN0cmluZy4iCiAg
+KHN0cmluZy1sZXNzcCAoY2FyIGEpIChjYXIgYikpKQoKCihkZWZ1biBjc2hhcnAtLWltZW51LWdl
+dC1tZXRob2QtbmFtZS1mcm9tLXNpZyAoc2lnKQogICJFeHRyYWN0IGEgbWV0aG9kIG5hbWUgd2l0
+aCBpdHMgcGFyYW1ldGVyIGxpc3QgZnJvbSBhIG1ldGhvZApzaWduYXR1cmUsIFNJRy4gVGhpcyBp
+cyB1c2VkIHRvIGFpZCBpbiBzb3J0aW5nIG1ldGhvZHMgYnkgbmFtZSwKYW5kIHNlY29uZGFyaWx5
+IGJ5IHBhcmFtZXRlciBsaXN0LgoKRm9yIHRoaXMgaW5wdXQ6CgogICAgcHJpdmF0ZSBEaWN0PFN0
+cmluZywgaW50PiAgRG9Tb21ldGhpbmcoaW50LCBzdHJpbmcpCgouLi50aGUgb3V0cHV0IGlzOgoK
+ICAgRG9Tb21ldGhpbmcoaW50LCBzdHJpbmcpCgoiCiAgKGxldCogKGMKICAgICAgICAgcmVzdWx0
+CiAgICAgICAgIChzdGF0ZSAwKQogICAgICAgICAobGVuIChsZW5ndGggc2lnKSkKICAgICAgICAg
+KGkgKDEtIGxlbikpKQogICAgKHdoaWxlICg+IGkgMCkKICAgICAgKHNldHEgYyAoYXJlZiBzaWcg
+aSkpCgogICAgICAoY29uZAogICAgICAgKChhbmQgKD0gc3RhdGUgMCkgKD0gYyA0MCkpCiAgICAg
+ICAgKHNldHEgc3RhdGUgMSkpCgogICAgICAgKChhbmQgKD0gc3RhdGUgMSkgKG9yICg9IGMgOSkg
+KD0gYyAzMikpKQogICAgICAgIChzZXRxIHJlc3VsdCAoc3Vic3RyaW5nIHNpZyAoMSsgaSkpCiAg
+ICAgICAgICAgICAgaSAwKSkpCiAgICAgIChkZWNmIGkpKQogICAgcmVzdWx0KSkKCgoKKGRlZnVu
+IGNzaGFycC0taW1lbnUtaXRlbS1tZXRob2QtbmFtZS1jb21wYXJlciAoYSBiKQogICJDb21wYXJl
+cyB0aGUgbWV0aG9kIG5hbWVzIGluIHRoZSByZXNwZWN0aXZlIGNhcnMgb2YgZWFjaCBlbGVtZW50
+LgoKVGhlIGNhciBvZiBlYWNoIGVsZW1lbnQgaXMgYXNzdW1lZCB0byBiZSBhIHN0cmluZyB3aXRo
+IG11bHRpcGxlCnRva2VucyBpbiBpdCwgcmVwcmVzZW50aW5nIGEgbWV0aG9kIHNpZ25hdHVyZSwg
+aW5jbHVkaW5nIGFjY2Vzcwptb2RpZmllciwgcmV0dXJuIHR5cGUsIGFuZCBwYXJhbWV0ZXIgbGlz
+dCAoc3Vycm91bmRlZCBieSBwYXJlbnMpLgpJZiB0aGUgbWV0aG9kIHRha2VzIG5vIHBhcmFtcywg
+dGhlbiBpdCdzIGp1c3QgYW4gZW1wdHkgcGFpciBvZgpwYXJlbnMuCgpUaGlzIGZuIGV4dHJhY3Rz
+IHRoZSBtZXRob2QgbmFtZSBhbmQgcGFyYW0gbGlzdCBmcm9tIHRoYXQKc2lnbmF0dXJlIGFuZCBj
+b21wYXJlcyAqdGhhdCouCgoiCiAgKGxldCAoKG1ldGhvZGEgKGNzaGFycC0taW1lbnUtZ2V0LW1l
+dGhvZC1uYW1lLWZyb20tc2lnIChjYXIgYSkpKQogICAgICAgIChtZXRob2RiIChjc2hhcnAtLWlt
+ZW51LWdldC1tZXRob2QtbmFtZS1mcm9tLXNpZyAoY2FyIGIpKSkpCiAgICA7Oyhjc2hhcnAtbG9n
+IC0xICJjb21wYXJlICclcycgPD4gJyVzJyIgbWV0aG9kYSBtZXRob2RiKQogICAgKHN0cmluZy1s
+ZXNzcCBtZXRob2RhIG1ldGhvZGIpKSkKCgoKKGRlZnVuIGNzaGFycC0taW1lbnUtY3JlYXRlLWlu
+ZGV4LWhlbHBlciAoJm9wdGlvbmFsIHBhcmVudC1ucyBpbmRlbnQtbGV2ZWwKICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIGNvbnNpZGVyLXVzaW5ncyBj
+b25zaWRlci1uYW1lc3BhY2VzKQogICJIZWxwZXIgZm4gZm9yIGBjc2hhcnAtaW1lbnUtY3JlYXRl
+LWluZGV4Jy4KClNjYW5zIGEgcG9zc2libHkgbmFycm93ZWQgc2VjdGlvbiBvZiBhIGMjIGJ1ZmZl
+ci4gIEl0IGZpbmRzCm5hbWVzcGFjZXMsIGNsYXNzZXMsIHN0cnVjdHMsIGVudW1zLCBpbnRlcmZh
+Y2VzLCBhbmQgbWV0aG9kcwp3aXRoaW4gY2xhc3NlcyBhbmQgc3RydWN0cy4KClRoZSB3YXkgaXQg
+d29ya3M6IGl0IGxvb2tzIGZvciBhbiBvcGVuLWN1cmx5LiAgSWYgdGhlIG9wZW4tY3VybHkKaXMg
+YSBuYW1lc3BhY2Ugb3IgYSBjbGFzcywgaXQgbmFycm93cyB0byB3aGF0ZXZlciBpcyBpbnNpZGUg
+dGhlCmN1cmxpZXMsIHRoZW4gcmVjdXJzZXMuCgpPdGhlcndpc2UgKHRoZSBvcGVuLWN1cmx5IGlz
+IG5laXRoZXIgb2YgdGhvc2UgdGhpbmdzKSwgdGhpcyBmbgp0cmllcyB0byByZWNvZ25pemUgdGhl
+IG9wZW4tY3VybHkgYXMgdGhlIGJlZ2lubmluZyBvZiBhbiBlbnVtLAptZXRob2QsIG9yIGludGVy
+ZmFjZS4KCklmIGl0IHN1Y2NlZWRzLCB0aGVuIGEgbWVudSBpdGVtIGlzIGNyZWF0ZWQgZm9yIHRo
+ZSB0aGluZy4gVGhlbgppdCBqdW1wcyB0byB0aGUgbWF0Y2hpbmcgY2xvc2UtY3VybHksIGFuZCBj
+b250aW51ZXMuIFN0b3Agd2hlbiBubwptb3JlIG9wZW4tY3VybGllcyBhcmUgZm91bmQuCgoiCgog
+IDs7IEEgQyMgbW9kdWxlIGNvbnNpc3RzIG9mIHplcm8gb2YgbW9yZSBleHBsaWNpdGx5IGRlbm90
+ZWQgKGFuZAogIDs7IHBvc3NpYmx5IG5lc3RlZCkgbmFtZXNwYWNlcy4gSW4gdGhlIGFic2VuY2Ug
+b2YgYW4KICA7OyBleHBsaWNpdGx5LWRlbm90ZWQgbmFtZXNwYWNlLCB0aGUgZ2xvYmFsIG5hbWVz
+cGFjZSBpcyBpbXBsaWNpdGx5CiAgOzsgYXBwbGllZC4gIFdpdGhpbiBlYWNoIG5hbWVzcGFjZSB0
+aGVyZSBjYW4gYmUgemVybyBvciBtb3JlCiAgOzsgImNvbnRhaW5lciIgdGhpbmdzIC0gbGlrZSBj
+bGFzcywgc3RydWN0LCBvciBpbnRlcmZhY2U7IGVhY2ggd2l0aAogIDs7IHplcm8gb3IgbW9yZSBp
+bmRleGFibGUgaXRlbXMgLSBsaWtlIG1ldGhvZHMsIGNvbnN0cnVjdG9ycy4KICA7OyBhbmQgc28g
+b24uCgogIDs7IFRoaXMgZm4gcGFyc2VzIHRoZSBtb2R1bGUgYW5kIGluZGV4ZXMgdGhvc2UgaXRl
+bXMsIGNyZWF0aW5nIGEKICA7OyBoaWVyYXJjaGljYWxseSBvcmdhbml6ZWQgbGlzdCB0byBkZXNj
+cmliZSB0aGVtLiAgRWFjaCBjb250YWluZXIKICA7OyAobnMvY2xhc3Mvc3RydWN0L2V0YykgaXMg
+cmVwcmVzZW50ZWQgb24gYSBzZXBhcmF0ZSBzdWJtZW51LgoKICA7OyBJdCB3b3JrcyBsaWtlIHRo
+aXM6CiAgOzsgKHN0YXJ0IGF0IHRoZSB0b3Agb2YgdGhlIG1vZHVsZSkKICA7OwogIDs7IDEuIGxv
+b2sgZm9yIGEgdXNpbmcgY2xhdXNlCiAgOzsgICAgeWVzIC0gaW5zZXJ0IGFuIGl0ZW0gaW4gdGhl
+IG1lbnU7IG1vdmUgcGFzdCBhbGwgdXNpbmcgY2xhdXNlcy4KICA7OwogIDs7IDIuIGdvIHRvIG5l
+eHQgb3BlbiBjdXJseQogIDs7CiAgOzsgMi4gYmVnaW5uaW5nIG9mIGEgY29udGFpbmVyPyAoYSBj
+bGFzcyBvciBuYW1lc3BhY2UpCiAgOzsKICA7OyAgICB5ZXMgLSBuYXJyb3csIGFuZCByZWN1cnNl
+CiAgOzsKICA7OyAgICBubyAtIGNyZWF0ZSBhIG1lbnUgaXRlbSBmb3IgdGhlIHRoaW5nLCB3aGF0
+ZXZlciBpdCBpcy4gIGFkZCB0bwogIDs7ICAgICAgICAgdGhlIHN1Ym1lbnUuIEdvIHRvIHRoZSBl
+bmQgb2YgdGhlIHRoaW5nICh0byB0aGUgbWF0Y2hpbmcKICA7OyAgICAgICAgIGNsb3NlIGN1cmx5
+KSB0aGVuIGdvdG8gc3RlcCAxLgogIDs7CgogIChsZXQgKGNvbnRhaW5lci1uYW1lCiAgICAgICAg
+KHBvcy1sYXN0LWN1cmx5IC0xKQogICAgICAgIHRoaXMtZmxhdm9yCiAgICAgICAgdGhpcy1pdGVt
+CiAgICAgICAgdGhpcy1tZW51CiAgICAgICAgZm91bmQtdXNpbmdzCiAgICAgICAgZG9uZSkKCiAg
+ICAod2hpbGUgKG5vdCBkb25lKQoKICAgICAgOzsgbW92ZSB0byB0aGUgbmV4dCB0aGluZwogICAg
+ICAoYy1mb3J3YXJkLXN5bnRhY3RpYy13cykKICAgICAgKGNvbmQKICAgICAgICgoYW5kIGNvbnNp
+ZGVyLXVzaW5ncwogICAgICAgICAgICAgKHJlLXNlYXJjaC1mb3J3YXJkIChjc2hhcnAtLXJlZ2V4
+cCAndXNpbmctc3RtdCkgKHBvaW50LW1heCkgdCkpCiAgICAgICAgKGdvdG8tY2hhciAobWF0Y2gt
+YmVnaW5uaW5nIDEpKQogICAgICAgIChzZXRxIGZvdW5kLXVzaW5ncyB0CiAgICAgICAgICAgICAg
+ZG9uZSBuaWwpKQoKICAgICAgICgocmUtc2VhcmNoLWZvcndhcmQgInsiIChwb2ludC1tYXgpIHQp
+CiAgICAgICAgKGlmICg9IHBvcy1sYXN0LWN1cmx5IChwb2ludCkpCiAgICAgICAgICAgIChwcm9n
+bgogICAgICAgICAgICAgIDs7KGNzaGFycC1sb2cgLTEgImltZW51OiBObyBhZHZhbmNlPyBxdWl0
+dGluZyAoJWQpIiAocG9pbnQpKQogICAgICAgICAgICAgIChzZXRxIGRvbmUgdCkpIDs7IGhhdmVu
+J3QgYWR2YW5jZWQtIGxpa2VseSBhIGxvb3AKCiAgICAgICAgICAoc2V0cSBwb3MtbGFzdC1jdXJs
+eSAocG9pbnQpKQogICAgICAgICAgKGxldCAoKGxpdGVyYWwgKGNzaGFycC1pbi1saXRlcmFsKSkp
+CiAgICAgICAgICAgIDs7IHNraXAgb3ZlciBjb21tZW50cz8KICAgICAgICAgICAgKGNvbmQKCiAg
+ICAgICAgICAgICAoKG1lbXEgbGl0ZXJhbCAnKGMgYysrKSkKICAgICAgICAgICAgICAod2hpbGUg
+KG1lbXEgbGl0ZXJhbCAnKGMgYysrKSkKICAgICAgICAgICAgICAgIChlbmQtb2YtbGluZSkKICAg
+ICAgICAgICAgICAgIChmb3J3YXJkLWNoYXIgMSkKICAgICAgICAgICAgICAgIChzZXRxIGxpdGVy
+YWwgKGNzaGFycC1pbi1saXRlcmFsKSkpCiAgICAgICAgICAgICAgKGlmIChyZS1zZWFyY2gtZm9y
+d2FyZCAieyIgKHBvaW50LW1heCkgdCkKICAgICAgICAgICAgICAgICAgKGZvcndhcmQtY2hhciAt
+MSkKICAgICAgICAgICAgICAgIDs7KGNzaGFycC1sb2cgLTEgImltZW51OiBObyBtb3JlIGN1cmxp
+ZXMgKEEpICglZCkiIChwb2ludCkpCiAgICAgICAgICAgICAgICAoc2V0cSBkb25lIHQpKSkKCiAg
+ICAgICAgICAgICAoKGVxIGxpdGVyYWwgJ3N0cmluZykKICAgICAgICAgICAgICAoaWYgIChyZS1z
+ZWFyY2gtZm9yd2FyZCAiXCIiIChwb2ludC1tYXgpIHQpCiAgICAgICAgICAgICAgICAgIChmb3J3
+YXJkLWNoYXIgMSkKICAgICAgICAgICAgICAgIDs7KGNzaGFycC1sb2cgLTEgImltZW51OiBOZXZl
+ci1lbmRpbmcgc3RyaW5nPyBwb3NuKCVkKSIgKHBvaW50KSkKICAgICAgICAgICAgICAgIChzZXRx
+IGRvbmUgdCkpKQoKICAgICAgICAgICAgICh0CiAgICAgICAgICAgICAgKGZvcndhcmQtY2hhciAt
+MSkpKSkpKSA7OyBiYWNrdXAgb250byB0aGUgY3VybHkKCiAgICAgICAodAogICAgICAgIDs7KGNz
+aGFycC1sb2cgLTEgImltZW51OiBObyBtb3JlIGN1cmxpZXMgKEIpIHBvc24oJWQpIiAocG9pbnQp
+KQogICAgICAgIChzZXRxIGRvbmUgdCkpKQoKCiAgICAgIChpZiAobm90IGRvbmUpCiAgICAgICAg
+ICAoY29uZAoKICAgICAgICAgICA7OyBjYXNlIDE6IG9wZW4gY3VybHkgZm9yIGFuIGFycmF5IGlu
+aXRpYWxpemVyCiAgICAgICAgICAgKChsb29raW5nLWJhY2sgIlxcW1xcXVsgXHRcblxyXSoiKQog
+ICAgICAgICAgICAoZm9yd2FyZC1zZXhwIDEpKQoKICAgICAgICAgICA7OyBjYXNlIDI6IGp1c3Qg
+anVtcGVkIG92ZXIgYSBzdHJpbmcKICAgICAgICAgICAoKGxvb2tpbmctYmFjayAiXCIiKQogICAg
+ICAgICAgICAoZm9yd2FyZC1jaGFyIDEpKQoKICAgICAgICAgICA7OyBjYXNlIDM6IGF0IHRoZSBo
+ZWFkIG9mIGEgYmxvY2sgb2YgdXNpbmcgc3RhdGVtZW50cwogICAgICAgICAgIChmb3VuZC11c2lu
+Z3MKICAgICAgICAgICAgKHNldHEgZm91bmQtdXNpbmdzIG5pbAogICAgICAgICAgICAgICAgICBj
+b25zaWRlci11c2luZ3MgbmlsKSA7OyBvbmx5IG9uZSBiYXRjaAogICAgICAgICAgICAobGV0ICgo
+Zmlyc3QtdXNpbmcgKG1hdGNoLWJlZ2lubmluZyAxKSkKICAgICAgICAgICAgICAgICAgKGNvdW50
+IDApCiAgICAgICAgICAgICAgICAgIG1hcnF1aXMKICAgICAgICAgICAgICAgICAgOzsgZG9uJ3Qg
+c2VhcmNoIGJleW9uZCBuZXh0IG9wZW4gY3VybHkKICAgICAgICAgICAgICAgICAgKGxpbWl0ICgx
+LQogICAgICAgICAgICAgICAgICAgICAgICAgIChzYXZlLWV4Y3Vyc2lvbgogICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgKHJlLXNlYXJjaC1mb3J3YXJkICJ7IiAocG9pbnQtbWF4KSB0KSkpKSkK
+CiAgICAgICAgICAgICAgOzsgY291bnQgdGhlIHVzaW5nIHN0YXRlbWVudHMKICAgICAgICAgICAg
+ICAod2hpbGUgKHJlLXNlYXJjaC1mb3J3YXJkIChjc2hhcnAtLXJlZ2V4cCAndXNpbmctc3RtdCkg
+bGltaXQgdCkKICAgICAgICAgICAgICAgIChpbmNmIGNvdW50KSkKCiAgICAgICAgICAgICAgKHNl
+dHEgbWFycXVpcyAoaWYgKGVxIGNvdW50IDEpICJ1c2luZyAoMSkiCiAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgIChmb3JtYXQgInVzaW5ncyAoJWQpIiBjb3VudCkpKQogICAgICAgICAgICAg
+IChwdXNoIChjb25zIG1hcnF1aXMgZmlyc3QtdXNpbmcpIHRoaXMtbWVudSkpKQoKCiAgICAgICAg
+ICAgOzsgY2FzZSA0OiBhbiBpbnRlcmZhY2Ugb3IgZW51bSBpbnNpZGUgdGhlIGNvbnRhaW5lcgog
+ICAgICAgICAgIDs7IChtdXN0IGNvbWUgYmVmb3JlIGNsYXNzIC8gbmFtZXNwYWNlICkKICAgICAg
+ICAgICAoKG9yIChjc2hhcnAtLW9uLWludGYtb3Blbi1jdXJseS1wKQogICAgICAgICAgICAgICAg
+KGNzaGFycC0tb24tZW51bS1vcGVuLWN1cmx5LXApKQogICAgICAgICAgICAgIChzZXRxIGNvbnNp
+ZGVyLW5hbWVzcGFjZXMgbmlsCiAgICAgICAgICAgICAgICAgICAgY29uc2lkZXItdXNpbmdzIG5p
+bAogICAgICAgICAgICAgICAgICAgIHRoaXMtbWVudQogICAgICAgICAgICAgICAgICAgIChhcHBl
+bmQgdGhpcy1tZW51CiAgICAgICAgICAgICAgICAgICAgICAgICAgICAobGlzdAogICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgIChjb25zIChjb25jYXQKICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgKG1hdGNoLXN0cmluZy1uby1wcm9wZXJ0aWVzIDEpIDs7IHRoaW5nIGZsYXZv
+cgogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAiICIKICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgKG1hdGNoLXN0cmluZy1uby1wcm9wZXJ0aWVzIDIpKSA7OyBp
+bnRmIG5hbWUKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAobWF0Y2gtYmVnaW5u
+aW5nIDEpKSkpKQogICAgICAgICAgICAgIChmb3J3YXJkLXNleHAgMSkpCgoKICAgICAgICAgICA7
+OyBjYXNlIDU6IGF0IHRoZSBzdGFydCBvZiBhIGNvbnRhaW5lciAoY2xhc3MsIG5hbWVzcGFjZSkK
+ICAgICAgICAgICAoKG9yIChhbmQgY29uc2lkZXItbmFtZXNwYWNlcyAoY3NoYXJwLS1vbi1uYW1l
+c3BhY2Utb3Blbi1jdXJseS1wKSkKICAgICAgICAgICAgICAgIChjc2hhcnAtLW9uLWNsYXNzLW9w
+ZW4tY3VybHktcCkKICAgICAgICAgICAgICAgIChjc2hhcnAtLW9uLWdlbmNsYXNzLW9wZW4tY3Vy
+bHktcCkpCgogICAgICAgICAgICA7OyBwcm9kdWNlIGEgZnVsbHktcXVhbGlmaWVkIG5hbWUgZm9y
+IHRoaXMgdGhpbmcKICAgICAgICAgICAgKGlmIChzdHJpbmc9IChtYXRjaC1zdHJpbmctbm8tcHJv
+cGVydGllcyAxKSAibmFtZXNwYWNlIikKICAgICAgICAgICAgICAgIChzZXRxIHRoaXMtZmxhdm9y
+IChtYXRjaC1zdHJpbmctbm8tcHJvcGVydGllcyAxKQogICAgICAgICAgICAgICAgICAgICAgdGhp
+cy1pdGVtIChtYXRjaC1zdHJpbmctbm8tcHJvcGVydGllcyAyKSkKICAgICAgICAgICAgICAoc2V0
+cSB0aGlzLWZsYXZvciAobWF0Y2gtc3RyaW5nLW5vLXByb3BlcnRpZXMgMikKICAgICAgICAgICAg
+ICAgICAgICB0aGlzLWl0ZW0gKG1hdGNoLXN0cmluZy1uby1wcm9wZXJ0aWVzIDMpCiAgICAgICAg
+ICAgICAgICAgICAgY29uc2lkZXItdXNpbmdzIG5pbAogICAgICAgICAgICAgICAgICAgIGNvbnNp
+ZGVyLW5hbWVzcGFjZXMgbmlsKSkKCiAgICAgICAgICAgIChzZXRxIGNvbnRhaW5lci1uYW1lIChp
+ZiBwYXJlbnQtbnMKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIChjb25jYXQg
+cGFyZW50LW5zICIuIiB0aGlzLWl0ZW0pCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgdGhpcy1pdGVtKSkKCiAgICAgICAgICAgIDs7IGNyZWF0ZSBhIHN1Ym1lbnUKICAgICAgICAg
+ICAgKGxldCAoc3VibWVudQogICAgICAgICAgICAgICAgICAodG9wIChtYXRjaC1iZWdpbm5pbmcg
+MSkpCiAgICAgICAgICAgICAgICAgIChvcGVuLWN1cmx5IChwb2ludCkpCiAgICAgICAgICAgICAg
+ICAgIChjbG9zZS1jdXJseSAoc2F2ZS1leGN1cnNpb24KICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgKGZvcndhcmQtc2V4cCAxKQogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAocG9pbnQpKSkpCiAgICAgICAgICAgICAgKHNldHEgc3VibWVudQogICAgICAgICAgICAgICAg
+ICAgIChsaXN0CiAgICAgICAgICAgICAgICAgICAgIChjb25jYXQgdGhpcy1mbGF2b3IgIiAiIGNv
+bnRhaW5lci1uYW1lKQogICAgICAgICAgICAgICAgICAgICAoY29ucyAiKHRvcCkiIHRvcCkpKQoK
+ICAgICAgICAgICAgICA7OyBmaW5kIGFsbCBjb250YWluZWQgaXRlbXMKICAgICAgICAgICAgICAo
+c2F2ZS1yZXN0cmljdGlvbgogICAgICAgICAgICAgICAgKG5hcnJvdy10by1yZWdpb24gKDErIG9w
+ZW4tY3VybHkpICgxLSBjbG9zZS1jdXJseSkpCgogICAgICAgICAgICAgICAgKGxldCogKCh5b2sg
+KHN0cmluZz0gdGhpcy1mbGF2b3IgIm5hbWVzcGFjZSIpKQogICAgICAgICAgICAgICAgICAgICAg
+IChjaGlsZC1tZW51CiAgICAgICAgICAgICAgICAgICAgICAgIChjc2hhcnAtLWltZW51LWNyZWF0
+ZS1pbmRleC1oZWxwZXIgY29udGFpbmVyLW5hbWUKICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAoY29uY2F0IGluZGVudC1sZXZlbCAiICAi
+KQogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgIHlvayB5b2spKSkKICAgICAgICAgICAgICAgICAgKGlmIGNoaWxkLW1lbnUKICAgICAgICAg
+ICAgICAgICAgICAgIChzZXRxIHN1Ym1lbnUKICAgICAgICAgICAgICAgICAgICAgICAgICAgIChh
+cHBlbmQgc3VibWVudQogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAoc29ydCBj
+aGlsZC1tZW51CiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICdjc2hh
+cnAtLWltZW51LWl0ZW0tYmFzaWMtY29tcGFyZXIpKSkpKSkKICAgICAgICAgICAgICAoc2V0cSBz
+dWJtZW51CiAgICAgICAgICAgICAgICAgICAgKGFwcGVuZCBzdWJtZW51CiAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAobGlzdCAoY29ucyAiKGJvdHRvbSkiIGNsb3NlLWN1cmx5KSkpKQoKICAg
+ICAgICAgICAgICAoc2V0cSB0aGlzLW1lbnUKICAgICAgICAgICAgICAgICAgICAoYXBwZW5kIHRo
+aXMtbWVudSAobGlzdCBzdWJtZW51KSkpCgogICAgICAgICAgICAgIChnb3RvLWNoYXIgY2xvc2Ut
+Y3VybHkpKSkKCgogICAgICAgICAgIDs7IGNhc2UgNjogYSBwcm9wZXJ0eQogICAgICAgICAgICgo
+Y3NoYXJwLS1vbi1wcm9wLW9wZW4tY3VybHktcCkKICAgICAgICAgICAgKHNldHEgY29uc2lkZXIt
+bmFtZXNwYWNlcyBuaWwKICAgICAgICAgICAgICAgICAgY29uc2lkZXItdXNpbmdzIG5pbAogICAg
+ICAgICAgICAgICAgICB0aGlzLW1lbnUKICAgICAgICAgICAgICAgICAgKGFwcGVuZCB0aGlzLW1l
+bnUKICAgICAgICAgICAgICAgICAgICAgICAgICAobGlzdAogICAgICAgICAgICAgICAgICAgICAg
+ICAgICAoY29ucyAoY29uY2F0CiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAicHJv
+cCAiCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAobWF0Y2gtc3RyaW5nLW5vLXBy
+b3BlcnRpZXMgMykpIDs7IHByb3AgbmFtZQogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAobWF0Y2gtYmVnaW5uaW5nIDEpKSkpKQogICAgICAgICAgICAoZm9yd2FyZC1zZXhwIDEpKQoK
+CiAgICAgICAgICAgOzsgY2FzZSA3OiBhbiBpbmRleGVyCiAgICAgICAgICAgKChjc2hhcnAtLW9u
+LWluZGV4ZXItb3Blbi1jdXJseS1wKQogICAgICAgICAgICAoc2V0cSBjb25zaWRlci1uYW1lc3Bh
+Y2VzIG5pbAogICAgICAgICAgICAgICAgICAgIGNvbnNpZGVyLXVzaW5ncyBuaWwKICAgICAgICAg
+ICAgICAgICAgICB0aGlzLW1lbnUKICAgICAgICAgICAgICAgICAgICAoYXBwZW5kIHRoaXMtbWVu
+dQogICAgICAgICAgICAgICAgICAgICAgICAgICAgKGxpc3QKICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAoY29ucyAoY29uY2F0CiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICJpbmRleGVyICIKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgKG1hdGNoLXN0
+cmluZy1uby1wcm9wZXJ0aWVzIDQpKSA7OyBpbmRleCB0eXBlCiAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgKG1hdGNoLWJlZ2lubmluZyAxKSkpKSkKICAgICAgICAgICAgKGZvcndh
+cmQtc2V4cCAxKSkKCgogICAgICAgICAgIDs7IGNhc2UgODogYSBjb25zdHJ1Y3RvciBpbnNpZGUg
+dGhlIGNvbnRhaW5lcgogICAgICAgICAgICgoY3NoYXJwLS1vbi1jdG9yLW9wZW4tY3VybHktcCkK
+ICAgICAgICAgICAgKHNldHEgY29uc2lkZXItbmFtZXNwYWNlcyBuaWwKICAgICAgICAgICAgICAg
+ICAgY29uc2lkZXItdXNpbmdzIG5pbAogICAgICAgICAgICAgICAgICB0aGlzLW1lbnUKICAgICAg
+ICAgICAgICAgICAgKGFwcGVuZCB0aGlzLW1lbnUKICAgICAgICAgICAgICAgICAgICAgICAgICAo
+bGlzdAogICAgICAgICAgICAgICAgICAgICAgICAgICAoY29ucyAoY29uY2F0CiAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAiY3RvciAiCiAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAobWF0Y2gtc3RyaW5nLW5vLXByb3BlcnRpZXMgMikgOzsgY3RvciBuYW1lCiAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAoY3NoYXJwLS1pbWVudS1yZW1vdmUtcGFyYW0t
+bmFtZXMtZnJvbS1wYXJhbWxpc3QKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAo
+bWF0Y2gtc3RyaW5nLW5vLXByb3BlcnRpZXMgMykpKSA7OyBjdG9yIHBhcmFtcwogICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAobWF0Y2gtYmVnaW5uaW5nIDEpKSkpKQogICAgICAgICAg
+ICAoZm9yd2FyZC1zZXhwIDEpKQoKCiAgICAgICAgICAgOzsgY2FzZSA5OiBhIG1ldGhvZCBpbnNp
+ZGUgdGhlIGNvbnRhaW5lcgogICAgICAgICAgICgoY3NoYXJwLS1vbi1kZWZ1bi1vcGVuLWN1cmx5
+LXApCiAgICAgICAgICAgIChzZXRxIGNvbnNpZGVyLW5hbWVzcGFjZXMgbmlsCiAgICAgICAgICAg
+ICAgICAgIGNvbnNpZGVyLXVzaW5ncyBuaWwKICAgICAgICAgICAgICAgICAgdGhpcy1tZW51CiAg
+ICAgICAgICAgICAgICAgIChhcHBlbmQgdGhpcy1tZW51CiAgICAgICAgICAgICAgICAgICAgICAg
+ICAgKGxpc3QKICAgICAgICAgICAgICAgICAgICAgICAgICAgKGNvbnMgKGNvbmNhdAogICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgIm1ldGhvZCAiCiAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAobWF0Y2gtc3RyaW5nLW5vLXByb3BlcnRpZXMgMikgOzsgcmV0dXJuIHR5
+cGUKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICIgIgogICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgKG1hdGNoLXN0cmluZy1uby1wcm9wZXJ0aWVzIDMpIDs7IGZ1bmMg
+bmFtZQogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgKGNzaGFycC0taW1lbnUtcmVt
+b3ZlLXBhcmFtLW5hbWVzLWZyb20tcGFyYW1saXN0CiAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgKG1hdGNoLXN0cmluZy1uby1wcm9wZXJ0aWVzIDQpKSkgOzsgZm4gcGFyYW1zCiAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIChtYXRjaC1iZWdpbm5pbmcgMSkpKSkpCiAg
+ICAgICAgICAgIChmb3J3YXJkLXNleHAgMSkpCgoKICAgICAgICAgICA7OyBjYXNlIDEwOiB1bmtu
+b3duIG9wZW4gY3VybHkgLSBqdXN0IGp1bXAgb3ZlciBpdC4KICAgICAgICAgICAoKGxvb2tpbmct
+YXQgInsiKQogICAgICAgICAgICAoZm9yd2FyZC1zZXhwIDEpKQoKICAgICAgICAgICA7OyBjYXNl
+IDExOiBub25lIG9mIHRoZSBhYm92ZS4gc2hvdWxkbid0IGhhcHBlbj8KICAgICAgICAgICAodAog
+ICAgICAgICAgICAoZm9yd2FyZC1jaGFyIDEpKSkpKQoKICAgIHRoaXMtbWVudSkpCgoKOzsgPT09
+PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PQo7OyBE
+UEMgVGh1LCAxOSBNYXkgMjAxMSAgMTE6MjUKOzsgVGhlcmUgYXJlIHR3byBjaGFsbGVuZ2VzIHdp
+dGggdGhlIGltZW51IHN1cHBvcnQ6IGdlbmVyYXRpbmcgdGhlCjs7IGluZGV4LCBhbmQgZ2VuZXJh
+dGluZyBhIHJlYXNvbmFibGUgZGlzcGxheSBmb3IgdGhlIGluZGV4LiAgVGhlIGluZGV4Cjs7IGdl
+bmVyYXRpb24gaXMgcHJldHR5IHN0cmFpZ2h0Zm9yd2FyZDogdXNlIHJlZ2V4aSB0byBsb2NhdGUK
+OzsgaW50ZXJlc3Rpbmcgc3R1ZmYgaW4gdGhlIGJ1ZmZlci4KOzsKOzsgVGhlIG1lbnUgZ2VuZXJh
+dGlvbiBpcyBhIGxpdHRsZSB0cmlja2llci4gIExvbmcgbGlzdHMgb2YgbWV0aG9kcwo7OyBtaXhl
+ZCB3aXRoIHByb3BlcnRpZXMgYW5kIGludGVyZmFjZXMgKGV0Yykgd2lsbCBiZSBkaXNwbGF5ZWQg
+aW4gdGhlCjs7IG1lbnUgYnV0IHdpbGwgbG9vayBWZXJ5IEJhZC4gQmV0dGVyIHRvIG9yZ2FuaXpl
+IHRoZSBtZW51IGludG8KOzsgc3VibWVudXMsIG9yZ2FuaXplZCBwcmltYXJpbHkgYnkgY2F0ZWdv
+cnkuICBBbHNvIHRoZSBtZW51cyBzaG91bGQgYmUKOzsgc29ydGVkLCBmb3IgZWFzZSBvZiBodW1h
+biBzY2FubmluZy4gIFRoZSBuZXh0IHNlY3Rpb24gb2YgbG9naWMgaXMKOzsgZGVzaWduZWQgdG8g
+ZG8gdGhlIHN0dWZmIGZvciB0aGUgbWVudSBnZW5lcmF0aW9uLgoKCihkZWZjdXN0b20gY3NoYXJw
+LWltZW51LW1heC1zaW1pbGFyLWl0ZW1zLWJlZm9yZS1leHRyYWN0aW9uIDYKICAiVGhlIG1heGlt
+dW0gbnVtYmVyIG9mIHRoaW5ncyBvZiBhIHBhcnRpY3VsYXIKY2F0ZWdvcnkgKGNvbnN0cnVjdG9y
+LCBwcm9wZXJ0eSwgbWV0aG9kLCBldGMpIHRoYXQgd2lsbCBiZQpzZXBhcmVseSBkaXNwbGF5ZWQg
+b24gYW4gaW1lbnUgd2l0aG91dCBmYWN0b3JpbmcgdGhlbSBpbnRvIGEKc2VwYXJhdGUgc3VibWVu
+dS4KCkZvciBleGFtcGxlLCBpZiBhIG1vZHVsZSBoYXMgMyBjb25zcnVjdG9ycywgNSBtZXRob2Rz
+LCBhbmQgNwpwcm9wZXJ0aWVzLCBhbmQgdGhlIHZhbHVlIG9mIHRoaXMgdmFyaWFibGUgaXMgNCwg
+dGhlbiB1cG9uCnJlZmFjdG9yaW5nLCB0aGUgY29uc3RydWN0b3JzIHdpbGwgcmVtYWluIGluIHRo
+ZSB0b3BsZXZlbCBpbWVudQphbmQgdGhlIG1ldGhvZHMgYW5kIHByb3BlcnRpZXMgd2lsbCBlYWNo
+IGdldCB0aGVpciBvd24KY2F0ZWdvcnktc3BlY2lmaWMgc3VibWVudS4KClNlZSBhbHNvIGBjc2hh
+cnAtaW1lbnUtbWluLXNpemUtZm9yLXN1Yi1zdWJtZW51Jy4KCkZvciBtb3JlIGluZm9ybWF0aW9u
+IG9uIGhvdyBjc2hhcnAtbW9kZSB1c2VzIGltZW51LApzZWUgYGNzaGFycC13YW50LWltZW51Jywg
+YW5kIGBjc2hhcnAtbW9kZScuCiIKICA6dHlwZSAnaW50ZWdlcgogIDpncm91cCAnY3NoYXJwKQoK
+CihkZWZjdXN0b20gY3NoYXJwLWltZW51LW1pbi1zaXplLWZvci1zdWItc3VibWVudSAxOAogICJU
+aGUgbWluaW11bSBudW1iZXIgb2YgaW1lbnUgaXRlbXMgIG9mIGEgcGFydGljdWxhcgpjYXRlZ29y
+eSAoY29uc3RydWN0b3IsIHByb3BlcnR5LCBtZXRob2QsIGV0YykgdGhhdCB3aWxsIGJlCmJyb2tl
+biBvdXQgaW50byBzdWItc3VibWVudXMuCgpGb3IgZXhhbXBsZSwgaWYgYSBtb2R1bGUgaGFzIDI4
+IHByb3BlcnRpZXMsIHRoZW4gdGhlIHByb3BlcnRpZXMgd2lsbApiZSBwbGFjZWQgaW4gYSBzdWJt
+ZW51LCBhbmQgdGhlbiB0aGF0IHN1Ym1lbnUgd2l0aCBiZSBmdXJ0aGVyIGRpdmlkZWQKaW50byBz
+bWFsbGVyIHN1Ym1lbnVzLgoKU2VlIGFsc28gYGNzaGFycC1pbWVudS1tYXgtc2ltaWxhci1pdGVt
+cy1iZWZvcmUtZXh0cmFjdGlvbicKCkZvciBtb3JlIGluZm9ybWF0aW9uIG9uIGhvdyBjc2hhcnAt
+bW9kZSB1c2VzIGltZW51LApzZWUgYGNzaGFycC13YW50LWltZW51JywgYW5kIGBjc2hhcnAtbW9k
+ZScuCiIKICA6dHlwZSAnaW50ZWdlcgogIDpncm91cCAnY3NoYXJwKQoKCihkZWZ1biBjc2hhcnAt
+LWZpcnN0LXdvcmQgKHMpCiAgImdldHMgdGhlIGZpcnN0IHdvcmQgZnJvbSB0aGUgZ2l2ZW4gc3Ry
+aW5nLgpJdCBoYWQgYmV0dGVyIGJlIGEgc3RyaW5nISIKICAoY2FyIChzcGxpdC1zdHJpbmcgcyBu
+aWwgdCkpKQoKCihkZWZ1biBjc2hhcnAtLW1ha2UtcGx1cmFsIChzKQogICJtYWtlIGEgd29yZCBw
+bHVyYWwuIEZvciB1c2Ugd2l0aGluIHRoZSBnZW5lcmF0ZWQgaW1lbnUuIgogIChjb25kCiAgICgo
+c3RyaW5nPSBzICJwcm9wIikgInByb3BlcnRpZXMiKQogICAoKHN0cmluZz0gcyAiY2xhc3MiKSAi
+Y2xhc3NlcyIpCiAgICgoc3RyaW5nPSBzICJjdG9yIikgImNvbnN0cnVjdG9ycyIpCiAgICh0IChj
+b25jYXQgcyAicyIpKSkpCgoKKGRlZnVuIGNzaGFycC0taW1lbnUtY291bnRzIChsaXN0KQogICJS
+ZXR1cm5zIGFuIGFsaXN0LCBlYWNoIGl0ZW0gaXMgYSBjb25zIGNlbGwgd2hlcmUgdGhlIGNhciBp
+cyBhCnVuaXF1ZSBmaXJzdCBzdWJzdHJpbmcgb2YgYW4gZWxlbWVudCBvZiBMSVNULCBhbmQgdGhl
+IGNkciBpcyB0aGUKbnVtYmVyIG9mIG9jY3VycmVuY2VzIG9mIHRoYXQgc3Vic3RyaW5nIGluIGVs
+ZW1lbnRzIGluIHRoZQpsaXN0LgoKRm9yIGEgY29tcGxpY2F0ZWQgaW1lbnUgZ2VuZXJhdGVkIGZv
+ciBhIGxhcmdlIEMjIG1vZHVsZSwgdGhlIHJlc3VsdCBvZgp0aGlzIGZuIHdpbGwgYmUgc29tZXRo
+aW5nIGxpa2UgdGhpczoKCiAgICAoKFwiKHRvcClcIiAgICAgICAgLiAxKQogICAgIChcInByb3Bl
+cnRpZXNcIiAgIC4gMzgpCiAgICAgKFwibWV0aG9kc1wiICAgICAgLiAxMikKICAgICAoXCJjb25z
+dHJ1Y3RvcnNcIiAuIDcpCiAgICAgKFwiKGJvdHRvbSlcIiAgICAgLiAxKSkKCiIKICAoZmxldCAo
+KGhlbHBlciAobGlzdCBuZXcpCiAgICAgICAgICAgICAgICAgKGlmIChudWxsIGxpc3QpIG5ldwog
+ICAgICAgICAgICAgICAgICAgKGxldCogKChlbHQgKGNhciBsaXN0KSkKICAgICAgICAgICAgICAg
+ICAgICAgICAgICAodG9waWMgKGNzaGFycC0tbWFrZS1wbHVyYWwgKGNzaGFycC0tZmlyc3Qtd29y
+ZCAoY2FyIGVsdCkpKSkKICAgICAgICAgICAgICAgICAgICAgICAgICAoeGVsdCAoYXNzb2MgdG9w
+aWMgbmV3KSkpCiAgICAgICAgICAgICAgICAgICAgIChoZWxwZXIgKGNkciBsaXN0KQogICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgIChpZiB4ZWx0CiAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgIChwcm9nbiAoaW5jZiAoY2RyIHhlbHQpKSBuZXcpCiAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAoY29ucyAoY29ucyB0b3BpYyAxKSBuZXcpKSkpKSkpCiAgICAobnJldmVyc2Ug
+KGhlbHBlciBsaXN0IG5pbCkpKSkKCgoKKGRlZnVuIGNzaGFycC0taW1lbnUtZ2V0LXN1Ym1lbnUt
+c2l6ZSAobikKICAiR2V0cyB0aGUgcHJlZmVycmVkIHNpemUgb2Ygc3VibWVudXMgZ2l2ZW4gTiwg
+dGhlIHNpemUgb2YgdGhlCmZsYXQsIHVucGFyY2VsZWQgbWVudS4KClN1cHBvc2UgdGhlcmUgYXJl
+IDUwIHByb3BlcnRpZXMgaW4gYSBnaXZlbiBDIyBtb2R1bGUuIFRoaXMgZm4gbWFwcwpmcm9tIHRo
+YXQgbnVtYmVyLCB0byB0aGUgbWF4aW11bSBzaXplIG9mIHRoZSBzdWJtZW51cyBpbnRvIHdoaWNo
+IHRoZQpsYXJnZSBzZXQgb2YgcHJvcGVydGllcyBzaG91bGQgYmUgYnJva2VuLgoKQ3VycmVudGx5
+IHRoZSBzdWJtZW51IHNpemUgZm9yIDUwIGlzIDEyLiAgVG8gY2hhbmdlIHRoaXMsIGNoYW5nZQp0
+aGUgbG9va3VwIHRhYmxlLgoKVGhlIHJlYXNvbiBpdCdzIGEgbG9va3VwIHRhYmxlIGFuZCBub3Qg
+YSBzaW1wbGUgYXJpdGhtZXRpYwpmdW5jdGlvbjogSSB0aGluayBpdCB3b3VsZCBsb29rIHNpbGx5
+IHRvIGhhdmUgMiBzdWJtZW51cyBlYWNoCndpdGggMjQgaXRlbXMuICBTaXh0ZWVuIG9yIDE4IGl0
+ZW1zIG9uIGEgc3VibWVudSBzZWVtcyBmaW5lIHdoZW4KeW91J3JlIHdvcmtpbmcgdGhyb3VnaCAx
+MjAgaXRlbXMgdG90YWwuIEJ1dCBpZiB5b3UgaGF2ZSBvbmx5IDI4Cml0ZW1zLCBiZXR0ZXIgdG8g
+aGF2ZSAzIHN1Ym1lbnVzIHdpdGggMTAgYW5kIDkgaXRlbXMgZWFjaC4gIFNvCml0J3Mgbm90IGEg
+bGluZWFyIGZ1bmN0aW9uLiBUaGF0J3Mgd2hhdCB0aGlzIGxvb2t1cCB0cmllcyB0byBkby4KCiIK
+ICAobGV0ICgoc2l6ZS1wYWlycyAnKCgxMDAgLiAyMikKICAgICAgICAgICAgICAgICAgICAgICg4
+MCAuIDIwKQogICAgICAgICAgICAgICAgICAgICAgKDYwIC4gMTgpCiAgICAgICAgICAgICAgICAg
+ICAgICAoNDAgLiAxNSkKICAgICAgICAgICAgICAgICAgICAgICgzMCAuIDE0KQogICAgICAgICAg
+ICAgICAgICAgICAgKDI0IC4gMTEpCiAgICAgICAgICAgICAgICAgICAgICAoMCAgLiA5KSkpCiAg
+ICAgICAgZWx0CiAgICAgICAgKHIgMCkpCgogICAgKHdoaWxlIChhbmQgc2l6ZS1wYWlycyAoZXEg
+ciAwKSkKICAgICAgKHNldHEgZWx0IChjYXIgc2l6ZS1wYWlycykpCiAgICAgIChpZiAoPiBuIChj
+YXIgZWx0KSkKICAgICAgICAgIChzZXRxIHIgKGNkciBlbHQpKSkKICAgICAgKHNldHEgc2l6ZS1w
+YWlycyAoY2RyIHNpemUtcGFpcnMpKSkKICAgIHIpKQoKCgooZGVmdW4gY3NoYXJwLS1pbWVudS1y
+ZW1vdmUtY2F0ZWdvcnktbmFtZXMgKG1lbnUtbGlzdCkKICAiSW5wdXQgaXMgYSBsaXN0LCBlYWNo
+IGVsZW1lbnQgaXMgKExBQkVMIC4gTE9DQVRJT04pLiBUaGlzIGZuCnJldHVybnMgYSBtb2RpZmll
+ZCBsaXN0LCB3aXRoIHRoZSBmaXJzdCB3b3JkIC0gdGhlIGNhdGVnb3J5IG5hbWUKLSByZW1vdmVk
+IGZyb20gZWFjaCBsYWJlbC4KCiIKICAobWFwY2FyIChsYW1iZGEgKGVsdCkKICAgICAgICAgICAg
+KGxldCAoKHRva2VucyAoc3BsaXQtc3RyaW5nIChjYXIgZWx0KSAiWyBcdF0iIHQpKSkKICAgICAg
+ICAgICAgICAoY29ucyAobWFwY29uY2F0ICdpZGVudGl0eSAoY2RyIHRva2VucykgIiAiKQogICAg
+ICAgICAgICAgICAgICAgIChjZHIgZWx0KSkpKQogICAgICAgICAgbWVudS1saXN0KSkKCihkZWZ1
+biBzdHJpbmctaW5kZXhvZiAocyBjKQogICJSZXR1cm5zIHRoZSBpbmRleCBvZiB0aGUgZmlyc3Qg
+b2NjdXJyZW5jZSBvZiBjaGFyYWN0ZXIgQyBpbiBzdHJpbmcgUy4KUmV0dXJucyBuaWwgaWYgbm90
+IGZvdW5kLgoKU2VlIGFsc28sIGBzdHJpbmctbGFzdGluZGV4b2YnCgoiCiAgKGxldCAoKGxlbiAo
+bGVuZ3RoIHMpKQogICAgICAgIChpIDApIGl4IGMyKQogICAgKHdoaWxlIChhbmQgKDwgaSBsZW4p
+IChub3QgaXgpKQogICAgICAoc2V0cSBjMiAoYXJlZiBzIGkpKQogICAgICAoaWYgKD0gYyBjMikK
+ICAgICAgICAgIChzZXRxIGl4IGkpKQogICAgICAoaW5jZiBpKSkKICAgIGl4KSkKCihkZWZ1biBz
+dHJpbmctbGFzdGluZGV4b2YgKHMgYykKICAiUmV0dXJucyB0aGUgaW5kZXggb2YgdGhlIGxhc3Qg
+b2NjdXJyZW5jZSBvZiBjaGFyYWN0ZXIgQyBpbiBzdHJpbmcgUy4KUmV0dXJucyBuaWwgaWYgbm90
+IGZvdW5kLgoKU2VlIGFsc28sIGBzdHJpbmctaW5kZXhvZicKCiIKICAobGV0ICgoaSAobGVuZ3Ro
+IHMpKQogICAgICAgIGl4IGMyKQogICAgKHdoaWxlIChhbmQgKD49IGkgMCkgKG5vdCBpeCkpCiAg
+ICAgIChzZXRxIGMyIChhcmVmIHMgaSkpCiAgICAgIChpZiAoPSBjIGMyKQogICAgICAgICAgKHNl
+dHEgaXggaSkpCiAgICAgIChkZWNmIGkpKQogICAgaXgpKQoKCihkZWZ1biBjc2hhcnAtLWltZW51
+LXN1Ym1lbnUtbGFiZWwgKHNpZyBmbGF2b3IpCiAgImdlbmVyYXRlIGEgc3VibWVudSBsYWJlbCBm
+cm9tIHRoZSBnaXZlbiBzaWduYXR1cmUsIFNJRy4KVGhlIHNpZyBpcyBhIG1ldGhvZCBzaWduYXR1
+cmUsIHByb3BlcnR5IHR5cGUtYW5kLW5hbWUsCmNvbnN0cnVjdG9yLCBhbmQgc28gb24sIGluZGlj
+YXRlZCBieSBGTEFWT1IuCgpUaGlzIGZuIHJldHVybnMgYSBzaW1wbGUgbmFtZSB0aGF0IGNhbiBi
+ZSB1c2VkIGluIHRoZSBsYWJlbCBmb3IgYQpicmVhayBvdXQgc3VibWVudS4KCiIKICAoaWYgKHN0
+cmluZz0gZmxhdm9yICJtZXRob2QiKQogICAgICAobGV0ICgobWV0aG9kLW5hbWUgKGNzaGFycC0t
+aW1lbnUtZ2V0LW1ldGhvZC1uYW1lLWZyb20tc2lnIHNpZykpKQogICAgICAgIChzdWJzdHJpbmcg
+bWV0aG9kLW5hbWUgMCAoc3RyaW5nLWluZGV4b2YgbWV0aG9kLW5hbWUgNDApKSkKICAgIChzdWJz
+dHJpbmcgc2lnICgxKyAoc3RyaW5nLWxhc3RpbmRleG9mIHNpZyAzMikpKSkpCgoKCgooZGVmdW4g
+Y3NoYXJwLS1pbWVudS1icmVhay1vbmUtbWVudS1pbnRvLXN1Ym1lbnVzIChtZW51LWxpc3QpCiAg
+IlBhcmNlbHMgYSBmbGF0IGxpc3QgTUVOVS1MSVNUIHVwIGludG8gc21hbGxlciBzdWJsaXN0cy4g
+SXQgdHJpZXMKdG8gYmFsYW5jZSB0aGUgbnVtYmVyIG9mIHN1Ymxpc3RzIGFuZCB0aGUgc2l6ZSBv
+ZiBlYWNoIHN1Ymxpc3QuCgpUaGUgbWF4IHNpemUgb2YgYW55IHN1Ymxpc3Qgd2lsbCBiZSBhYm91
+dCAyMCAoYXJiaXRyYXJ5KSBhbmQgdGhlCm1pbiBzaXplIHdpbGwgYmUgNyBvciBzby4gU2VlIGBj
+c2hhcnAtLWltZW51LWdldC1zdWJtZW51LXNpemUnCmZvciBob3cgdGhpcyBpcyBkb25lLgoKSXQg
+ZG9lcyB0aGlzIGRlc3RydWN0aXZlbHksIHVzaW5nIGBuYnV0bGFzdCcuCgpSZXR1cm5zIGEgbmV3
+IGxpc3QsIGNvbnRhaW5pbmcgc3VibGlzdHMuCiIKCiAgKGxldCAoKGxlbiAobGVuZ3RoIG1lbnUt
+bGlzdCkpCiAgICAgICAgKGNvdW50cyAoY3NoYXJwLS1pbWVudS1jb3VudHMgbWVudS1saXN0KSkp
+CgogICAgKGNvbmQKICAgICA7OyBhIHNtYWxsIG51bWJlciwgYW5kIGFsbCB0aGUgc2FtZSBmbGF2
+b3IKICAgICAoKGFuZCAoPCBsZW4gY3NoYXJwLWltZW51LW1pbi1zaXplLWZvci1zdWItc3VibWVu
+dSkgKD0gKGxlbmd0aCBjb3VudHMpIDEpKQogICAgICAoY3NoYXJwLS1pbWVudS1yZW1vdmUtY2F0
+ZWdvcnktbmFtZXMKICAgICAgIChzb3J0IG1lbnUtbGlzdAogICAgICAgICAgICAgKGlmIChzdHJp
+bmc9IChjYWFyIGNvdW50cykgIm1ldGhvZHMiKQogICAgICAgICAgICAgICAgICdjc2hhcnAtLWlt
+ZW51LWl0ZW0tbWV0aG9kLW5hbWUtY29tcGFyZXIKICAgICAgICAgICAgICAgJ2NzaGFycC0taW1l
+bnUtaXRlbS1iYXNpYy1jb21wYXJlcikpKSkKCiAgICAgOzsgaXMgdGhlIGxlbmd0aCBhbHJlYWR5
+IHByZXR0eSBzaG9ydD8KICAgICAoKDwgbGVuIGNzaGFycC1pbWVudS1taW4tc2l6ZS1mb3Itc3Vi
+LXN1Ym1lbnUpCiAgICAgIG1lbnUtbGlzdCkKCiAgICAgKCgvPSAobGVuZ3RoIGNvdW50cykgMSkK
+ICAgICAgbWVudS1saXN0KQoKICAgICAodAogICAgICAobGV0KiAoKGxzdCAgICAoc29ydCBtZW51
+LWxpc3QKICAgICAgICAgICAgICAgICAgICAgICAgICAgKGlmIChzdHJpbmc9IChjYWFyIGNvdW50
+cykgIm1ldGhvZHMiKQogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgJ2NzaGFycC0taW1l
+bnUtaXRlbS1tZXRob2QtbmFtZS1jb21wYXJlcgogICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICdjc2hhcnAtLWltZW51LWl0ZW0tYmFzaWMtY29tcGFyZXIpKSkKICAgICAgICAgICAgIG5ldwog
+ICAgICAgICAgICAgKHN6ICAgICAoY3NoYXJwLS1pbWVudS1nZXQtc3VibWVudS1zaXplIGxlbikp
+IDs7IGdvYWwgbWF4IHNpemUgb2Ygc3VibGlzdAogICAgICAgICAgICAgKG4gICAgICAoY2VpbGlu
+ZyAoLyAoKiAxLjAgbGVuKSBzeikpKSA7OyB0b3RhbCBudW1iZXIgb2Ygc3VibGlzdHMKICAgICAg
+ICAgICAgIChhZGotc3ogKGNlaWxpbmcgKC8gKCogMS4wIGxlbikgbikpKSAgOzsgbWF5YmUgYSBs
+aXR0bGUgbGVzcyB0aGFuIHN6CiAgICAgICAgICAgICAobnNtYWxsIChtb2QgKC0gYWRqLXN6ICht
+b2QgbGVuIGFkai1zeikpIGFkai1zeikpIDs7IG51bSBvZiAobi0xKSBsaXN0cwogICAgICAgICAg
+ICAgKGkgICAgICAwKQogICAgICAgICAgICAgKGJhc2UtbmFtZSAoY3NoYXJwLS1maXJzdC13b3Jk
+IChjYWFyIGxzdCkpKQogICAgICAgICAgICAgbGFiZWwKICAgICAgICAgICAgIGNodW5rc3oKICAg
+ICAgICAgICAgIHRoaXMtY2h1bmspCgogICAgICAgICh3aGlsZSBsc3QKICAgICAgICAgIChzZXRx
+IGNodW5rc3ogKGlmICg+IG5zbWFsbCBpKSAoMS0gYWRqLXN6KSBhZGotc3opCiAgICAgICAgICAg
+ICAgICB0aGlzLWNodW5rIChjc2hhcnAtLWltZW51LXJlbW92ZS1jYXRlZ29yeS1uYW1lcwogICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgKG50aGNkciAoLSBsZW4gY2h1bmtzeikgbHN0KSkKICAg
+ICAgICAgICAgICAgIGxzdCAobmJ1dGxhc3QgbHN0IGNodW5rc3opCiAgICAgICAgICAgICAgICA7
+O2xhYmVsIChmb3JtYXQgIiVzICVkIiBwbHVyYWwtbmFtZSAoLSBuIGkpKQogICAgICAgICAgICAg
+ICAgbGFiZWwgKGNvbmNhdCAiZnJvbSAiIChjc2hhcnAtLWltZW51LXN1Ym1lbnUtbGFiZWwgKGNh
+YXIgdGhpcy1jaHVuaykgYmFzZS1uYW1lKSkKICAgICAgICAgICAgICAgIG5ldyAoY29ucyAoY29u
+cyBsYWJlbCB0aGlzLWNodW5rKSBuZXcpCiAgICAgICAgICAgICAgICBsZW4gKC0gbGVuIGNodW5r
+c3opKQogICAgICAgICAgKGluY2YgaSkpCiAgICAgICAgbmV3KSkpKSkKCgoKKGRlZnVuIGNzaGFy
+cC0taW1lbnUtYnJlYWstaW50by1zdWJtZW51cyAobWVudS1saXN0KQogICJGb3IgYW4gaW1lbnUg
+bWVudS1saXN0IHdpdGggY2F0ZWdvcnktYmFzZWQgc3VibWVudXMsCnBvc3NpYmx5IGJyZWFrIGEg
+c3VibWVudSBpbnRvIHNtYWxsZXIgc3VibGlzdHMsIGJhc2VkIG9uIHNpemUuCgoiCiAgKG1hcGNh
+ciAobGFtYmRhIChlbHQpCiAgICAgICAgICAgIChpZiAoaW1lbnUtLXN1YmFsaXN0LXAgZWx0KQog
+ICAgICAgICAgICAgICAgKGNvbnMgKGNhciBlbHQpCiAgICAgICAgICAgICAgICAgICAgICAoY3No
+YXJwLS1pbWVudS1icmVhay1vbmUtbWVudS1pbnRvLXN1Ym1lbnVzIChjZHIgZWx0KSkpCiAgICAg
+ICAgICAgICAgZWx0KSkKICAgICAgICAgIG1lbnUtbGlzdCkpCgoKCgoKKGRlZnVuIGNzaGFycC0t
+aW1lbnUtcmVvcmctYWxpc3QtaW50ZWxsaWdlbnRseSAobWVudS1hbGlzdCkKICAiQWNjZXB0cyBh
+biBpbWVudSBhbGlzdC4gUmV0dXJucyBhbiBhbGlzdCwgcmVvcmdhbml6ZWQuClRoaW5ncyBnZXQg
+c29ydGVkLCBmYWN0b3JlZCBvdXQgaW50byBjYXRlZ29yeSBzdWJtZW51cywKYW5kIHNwbGl0IGlu
+dG8gbXVsdGlwbGUgc3VibWVudXMsIHdoZXJlIGNvbmRpdGlvbnMgd2FycmFudC4KCkZvciBleGFt
+cGxlLCBzdXBwb3NlIHRoaXMgaW1lbnUgYWxpc3QgaXMgZ2VuZXJhdGVkIGZyb20gYSBzY2FuOgoK
+ICAgICgoXCJ1c2luZ3MgKDQpXCIgLiAxNTM4KQogICAgIChcIm5hbWVzcGFjZSBJb25pYy5aaXBc
+IgogICAgICAoXCIodG9wKVwiIC4gMTY1MSkKICAgICAgKFwicGFydGlhbCBjbGFzcyBJb25pYy5a
+aXAuWmlwRmlsZVwiCiAgICAgICAoXCIodG9wKVwiIC4gNTQ3MykKICAgICAgIChcInByb3AgRnVs
+bFNjYW5cIiAuIDgwMzYpCiAgICAgICAgICAgLi4uCiAgICAgICAoXCJwcm9wIENvbW1lbnRcIiAu
+IDIxMTE4KQogICAgICAgKFwicHJvcCBWZXJib3NlXCIgLiAzMjI3OCkKICAgICAgIChcIm1ldGhv
+ZCBvdmVycmlkZSBTdHJpbmcgVG9TdHJpbmdcIiAuIDk2NTc3KQogICAgICAgKFwibWV0aG9kIGlu
+dGVybmFsIHZvaWQgTm90aWZ5RW50cnlDaGFuZ2VkXCIgLiA5NzYwOCkKICAgICAgICAgIC4uLi4K
+ICAgICAgIChcIm1ldGhvZCBpbnRlcm5hbCB2b2lkIFJlc2V0XCIgLiA5ODIzMSkKICAgICAgIChc
+ImN0b3IgWmlwRmlsZVwiIC4gMTAzNTk4KQogICAgICAgICAgIC4uLgogICAgICAgKFwiY3RvciBa
+aXBGaWxlXCIgLiAxMDk3MjMpCiAgICAgICAoXCJjdG9yIFppcEZpbGVcIiAuIDExNjQ4NykKICAg
+ICAgIChcImluZGV4ZXIgaW50XCIgLiAxMjEyMzIpCiAgICAgICAoXCJpbmRleGVyIFN0cmluZ1wi
+IC4gMTI0OTMzKQogICAgICAgKFwiKGJvdHRvbSlcIiAuIDE0OTc3NykpCiAgICAgIChcInB1Ymxp
+YyBlbnVtIFppcDY0T3B0aW9uXCIgLiAxNTM4MzkpCiAgICAgIChcImVudW0gQWRkT3JVcGRhdGVB
+Y3Rpb25cIiAuIDE1NDgxNSkKICAgICAgKFwiKGJvdHRvbSlcIiAuIDE1NDg5MykpKQoKClRoaXMg
+aXMgZGlzcGxheWVkIGFzIGEgdG9wbGV2ZWwgbWVudSB3aXRoIDIgaXRlbXM7IHRoZSBuYW1lc3Bh
+Y2UKbWVudSBoYXMgNSBpdGVtcyAodG9wLCBib3R0b20sIHRoZSAyIGVudW1zLCBhbmQgdGhlIGNs
+YXNzKS4gIFRoZQpjbGFzcyBtZW51IGhhcyA5MyBpdGVtcy4gSXQgbmVlZHMgdG8gYmUgcmVvcmdh
+bml6ZWQgdG8gYmUgbW9yZSB1c2FibGUuCgpBZnRlciB0cmFuc2Zvcm1hdGlvbiBvZiB0aGUgYWxp
+c3QgdGhyb3VnaCB0aGlzIGZuLCB0aGUgcmVzdWx0IGlzOgoKICAgICgoXCJ1c2luZ3MgKDQpXCIg
+LiAxNTM4KQogICAgIChcIm5hbWVzcGFjZSBJb25pYy5aaXBcIgogICAgICAoXCIodG9wKVwiIC4g
+MTY1MSkKICAgICAgKFwicGFydGlhbCBjbGFzcyBJb25pYy5aaXAuWmlwRmlsZVwiCiAgICAgICAo
+XCIodG9wKVwiIC4gNTQ3MykKICAgICAgIChcInByb3BlcnRpZXNcIgogICAgICAgIChcIldyaXRl
+U3RyZWFtXCIgLiAxNDY0ODkpCiAgICAgICAgKFwiQ291bnRcIiAuIDEzMzgyNykKICAgICAgICAg
+ICAgLi4uLgogICAgICAgIChcIkJ1ZmZlclNpemVcIiAuIDEyODM3KQogICAgICAgIChcIkZ1bGxT
+Y2FuXCIgLiA4MDM2KSkKICAgICAgIChcIm1ldGhvZHNcIgogICAgICAgIChcInZpcnR1YWwgdm9p
+ZCBEaXNwb3NlXCIgLiAxNDQzODkpCiAgICAgICAgKFwidm9pZCBSZW1vdmVFbnRyeVwiIC4gMTQx
+MDI3KQogICAgICAgICAgIC4uLi4KICAgICAgICAoXCJtZXRob2Qgb3ZlcnJpZGUgU3RyaW5nIFRv
+U3RyaW5nXCIgLiA5NjU3NykKICAgICAgICAoXCJtZXRob2QgYm9vbCBDb250YWluc0VudHJ5XCIg
+LiAzMjUxNykpCiAgICAgICAoXCJjb25zdHJ1Y3RvcnNcIgogICAgICAgIChcIlppcEZpbGVcIiAu
+IDExNjQ4NykKICAgICAgICAgICAuLi4uCiAgICAgICAgKFwiWmlwRmlsZVwiIC4gMTA1Njk4KQog
+ICAgICAgIChcIlppcEZpbGVcIiAuIDEwMzU5OCkpCiAgICAgICAoXCJpbmRleGVyIGludFwiIC4g
+MTIxMjMyKQogICAgICAgKFwiaW5kZXhlciBTdHJpbmdcIiAuIDEyNDkzMykKICAgICAgIChcIihi
+b3R0b20pXCIgLiAxNDk3NzcpKQogICAgICAoXCJwdWJsaWMgZW51bSBaaXA2NE9wdGlvblwiIC4g
+MTUzODM5KQogICAgICAoXCJlbnVtIEFkZE9yVXBkYXRlQWN0aW9uXCIgLiAxNTQ4MTUpCiAgICAg
+IChcIihib3R0b20pXCIgLiAxNTQ4OTMpKSkKCkFsbCBtZW51cyBhcmUgdGhlIHNhbWUgZXhjZXB0
+IHRoZSBjbGFzcyBtZW51LCB3aGljaCBoYXMgYmVlbgpvcmdhbml6ZWQgaW50byBzdWJ0b3BpY3Ms
+IGVhY2ggb2Ygd2hpY2ggZ2V0cyBpdHMgb3duIGNhc2NhZGVkCnN1Ym1lbnUuICBJZiB0aGUgc3Vi
+bWVudSBpdHNlbGYgaG9sZHMgbW9yZSB0aGFuCmBjc2hhcnAtaW1lbnUtbWF4LXNpbWlsYXItaXRl
+bXMtYmVmb3JlLWV4dHJhY3Rpb24nIGl0ZW1zIHRoYXQgYXJlCmFsbCB0aGUgc2FtZSBmbGF2b3Ig
+KHByb3BlcnRpZXMsIG1ldGhvZHMsIGV0YyksIHRob3MgZ2V0IHNwbGl0Cm91dCBpbnRvIG11bHRp
+cGxlIHN1Ym1lbnVzLgoKIgogIChsZXQgKChjb3VudHMgKGNzaGFycC0taW1lbnUtY291bnRzIG1l
+bnUtYWxpc3QpKSkKICAgIChmbGV0ICgoaGVscGVyCiAgICAgICAgICAgIChsaXN0IG5ldykKICAg
+ICAgICAgICAgKGlmIChudWxsIGxpc3QpCiAgICAgICAgICAgICAgICBuZXcKICAgICAgICAgICAg
+ICAobGV0KiAoKGVsdCAoY2FyIGxpc3QpKQogICAgICAgICAgICAgICAgICAgICAodG9waWMgKGNz
+aGFycC0tbWFrZS1wbHVyYWwgKGNzaGFycC0tZmlyc3Qtd29yZCAoY2FyIGVsdCkpKSkKICAgICAg
+ICAgICAgICAgICAgICAgKHhlbHQgKGFzc29jIHRvcGljIG5ldykpKQogICAgICAgICAgICAgICAg
+KGhlbHBlcgogICAgICAgICAgICAgICAgIChjZHIgbGlzdCkKICAgICAgICAgICAgICAgICAoaWYg
+eGVsdAogICAgICAgICAgICAgICAgICAgICAocHJvZ24KICAgICAgICAgICAgICAgICAgICAgICAo
+cnBsYWNkIHhlbHQgKGNvbnMgZWx0IChjZHIgeGVsdCkpKQogICAgICAgICAgICAgICAgICAgICAg
+IG5ldykKICAgICAgICAgICAgICAgICAgIChjb25zCgogICAgICAgICAgICAgICAgICAgIChjb25k
+CiAgICAgICAgICAgICAgICAgICAgICgoPiAoY2RyIChhc3NvYyB0b3BpYyBjb3VudHMpKQogICAg
+ICAgICAgICAgICAgICAgICAgICAgY3NoYXJwLWltZW51LW1heC1zaW1pbGFyLWl0ZW1zLWJlZm9y
+ZS1leHRyYWN0aW9uKQogICAgICAgICAgICAgICAgICAgICAgKGNvbnMgdG9waWMgKGxpc3QgZWx0
+KSkpCgogICAgICAgICAgICAgICAgICAgICAoKGltZW51LS1zdWJhbGlzdC1wIGVsdCkKICAgICAg
+ICAgICAgICAgICAgICAgIChjb25zIChjYXIgZWx0KQogICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgKGNzaGFycC0taW1lbnUtcmVvcmctYWxpc3QtaW50ZWxsaWdlbnRseSAoY2RyIGVsdCkpKSkK
+ICAgICAgICAgICAgICAgICAgICAgKHQKICAgICAgICAgICAgICAgICAgICAgIGVsdCkpCgogICAg
+ICAgICAgICAgICAgICAgIG5ldykpKSkpKSkKCiAgICAgIChjc2hhcnAtLWltZW51LWJyZWFrLWlu
+dG8tc3VibWVudXMKICAgICAgIChucmV2ZXJzZSAoaGVscGVyIG1lbnUtYWxpc3QgbmlsKSkpKSkp
+CgoKCgooZGVmdW4gY3NoYXJwLWltZW51LWNyZWF0ZS1pbmRleCAoKQogICJUaGlzIGZ1bmN0aW9u
+IGlzIGNhbGxlZCBieSBpbWVudSB0byBjcmVhdGUgYW4gaW5kZXggZm9yIHRoZQpjdXJyZW50IEMj
+IGJ1ZmZlciwgY29uZm9ybWluZyB0byB0aGUgZm9ybWF0IHNwZWNpZmllZCBpbgpgaW1lbnUtLWlu
+ZGV4LWFsaXN0JyAuCgpTZWUgYGltZW51LWNyZWF0ZS1pbmRleC1mdW5jdGlvbicgZm9yIGJhY2tn
+cm91bmQgaW5mb3JtYXRpb24uCgpUbyBwcm9kdWNlIHRoZSBpbmRleCwgd2hpY2ggbGlzdHMgdGhl
+IGNsYXNzZXMsIGZ1bmN0aW9ucywKbWV0aG9kcywgYW5kIHByb3BlcnRpZXMgZm9yIHRoZSBjdXJy
+ZW50IGJ1ZmZlciwgdGhpcyBmdW5jdGlvbgpzY2FucyB0aGUgZW50aXJlIGJ1ZmZlci4KClRoaXMg
+Y2FuIHRha2UgYSBsb25nIHRpbWUgZm9yIGEgbGFyZ2UgYnVmZmVyLiBUaGUgc2NhbiB1c2VzCnJl
+Z3VsYXIgZXhwcmVzc2lvbnMgdGhhdCBhdHRlbXB0IHRvIG1hdGNoIG9uIHRoZSBnZW5lcmFsLWNh
+c2UgQyMKc3ludGF4LCBmb3IgY2xhc3NlcyBhbmQgZnVuY3Rpb25zLCBnZW5lcmljIHR5cGVzLCBi
+YXNlLWNsYXNzZXMsCmltcGxlbWVudGVkIGludGVyZmFjZXMsIGFuZCBzbyBvbi4gVGhpcyBjYW4g
+YmUgdGltZS1jb25zdW1pbmcuCkZvciBhIGxhcmdlIHNvdXJjZSBmaWxlLCBzYXkgMTYwaywgaXQg
+Y2FuIHRha2UgMTAgc2Vjb25kcyBvciBtb3JlLgpUaGUgVUkgaGFuZ3MgZHVyaW5nIHRoZSBzY2Fu
+LgoKaW1lbnUgY2FsbHMgdGhpcyBmbiB3aGVuIGl0IGZlZWxzIGxpa2UgaXQsIEkgc3VwcG9zZSB3
+aGVuIGl0CnRoaW5rcyB0aGUgYnVmZmVyIGhhcyBiZWVuIHVwZGF0ZWQuIFRoZSB1c2VyIGNhbiBh
+bHNvIGtpY2sgaXQgb2ZmCmV4cGxpY2l0bHkgYnkgc2VsZWN0aW5nICpSZXNjYW4qIGZyb20gdGhl
+IGltZW51IG1lbnUuCgpBZnRlciBnZW5lcmF0aW5nIHRoZSBoaWVyYXJjaGljYWwgbGlzdCBvZiBw
+cm9wcywgbWV0aG9kcywKaW50ZXJmYWNlcywgY2xhc3NlcywgYW5kIG5hbWVzcGFjZXMsIGNzaGFy
+cC1tb2RlIHJlLW9yZ2FuaXplcyB0aGUKbGlzdCBhcyBhcHByb3ByaWF0ZToKCiAtIGl0IGV4dHJh
+Y3RzIHNldHMgb2YgbGlrZSBpdGVtcyBpbnRvIHN1Ym1lbnVzLiBBbGwgcHJvcGVydGllcwogICB3
+aWxsIGJlIHBsYWNlZCBvbiBhIHN1Ym1lbnUuIFNlZQogICBgY3NoYXJwLWltZW51LW1heC1zaW1p
+bGFyLWl0ZW1zLWJlZm9yZS1leHRyYWN0aW9uJyBmb3IgYSB3YXkKICAgdG8gdHVuZSB0aGlzLgoK
+IC0gaXQgY29udmVydHMgdGhvc2Ugc3VibWVudXMgaW50byBzdWItc3VibWVudXMsIGlmIHRoZXJl
+IGFyZSBtb3JlIHRoYW4KICAgYGNzaGFycC1pbWVudS1taW4tc2l6ZS1mb3Itc3ViLXN1Ym1lbnUn
+IGl0ZW1zLgoKIC0gaXQgc29ydHMgZWFjaCBzZXQgb2YgaXRlbXMgb24gdGhlIG91dGVybW9zdCBt
+ZW51cyBsZXhpY29ncmFwaGljYWxseS4KClRoZSByZXN1bHQgb2YgdGhlc2UgdHJhbnNmb3JtYXRp
+b25zIGlzIHdoYXQgaXMgcHJvdmlkZWQgdG8gaW1lbnUKdG8gZ2VuZXJhdGUgdGhlIHZpc2libGUg
+bWVudXMuICBKdXN0IEZZSSAtIHRoZSByZW9yZ2FuaXphdGlvbiBvZgp0aGUgc2NhbiByZXN1bHRz
+IGlzIG11Y2ggbXVjaCBmYXN0ZXIgdGhhbiB0aGUgYWN0dWFsIGdlbmVyYXRpb24Kb2YgdGhlIHNj
+YW4gcmVzdWx0cy4gSWYgeW91J3JlIGxvb2tpbmcgdG8gc2F2ZSB0aW1lLCB0aGUgcmUtb3JnCmxv
+Z2ljIGlzIG5vdCB3aGVyZSB0aGUgY29zdCBpcy4KCmltZW51IGl0c2VsZiBsaWtlcyB0byBzb3J0
+IHRoZSBtZW51cy4gU2VlIGBpbWVudS0tc3BsaXQtbWVudScgYW5kCmFsc28gYGNzaGFycC0taW1l
+bnUtc3BsaXQtbWVudS1wYXRjaCcsIHdoaWNoIGlzIGFkdmljZSB0aGF0CmF0dGVtcHRzIHRvIGRp
+c2FibGUgdGhlIHdlaXJkIHJlLWppZ2dlcmluZyB0aGF0IGltZW51IHBlcmZvcm1zLgoKIgogIDs7
+IEkgdGhpbmsgd2lkZW4vbmFycm93IGNhdXNlcyB0aGUgYnVmZmVyIHRvIGJlIG1hcmtlZCBhcwog
+IDs7IG1vZGlmaWVkLiBUaGlzIGlzIGEgYml0IHN1cnByaXNpbmcsIGJ1dCBJIGhhdmUgbm8gb3Ro
+ZXIKICA7OyBleHBsYW5hdGlvbiBmb3IgdGhlIHNvdXJjZSBvZiB0aGUgcHJvYmxlbS4KICA7OyBT
+byBJIHVzZSBgYy1zYXZlLWJ1ZmZlci1zdGF0ZScgc28gdGhhdCB0aGUgYnVmZmVyIGlzIG5vdAog
+IDs7IG1hcmtlZCBtb2RpZmllZCB3aGVuIHRoZSBzY2FuIGNvbXBsZXRlcy4KCiAgKGMtc2F2ZS1i
+dWZmZXItc3RhdGUgKCkKICAgICAgKHNhdmUtZXhjdXJzaW9uCiAgICAgICAgKHNhdmUtcmVzdHJp
+Y3Rpb24KICAgICAgICAgICh3aWRlbikKICAgICAgICAgIChnb3RvLWNoYXIgKHBvaW50LW1pbikp
+CgogICAgICAgICAgKGxldCAoKGluZGV4LWFsaXN0CiAgICAgICAgICAgICAgICAgKGNzaGFycC0t
+aW1lbnUtY3JlYXRlLWluZGV4LWhlbHBlciBuaWwgIiIgdCB0KSkpCgogICAgICAgICAgICAoY3No
+YXJwLS1pbWVudS1yZW9yZy1hbGlzdC1pbnRlbGxpZ2VudGx5IGluZGV4LWFsaXN0KQoKICAgICAg
+ICAgICAgOztpbmRleC1hbGlzdAoKICAgICAgICAgICAgOzsgV2hhdCBmb2xsb3dzIGlzIE5vIGxv
+bmdlciB1c2VkLgogICAgICAgICAgICA7OyA9PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09
+PT09PT09PT09PT09PT09PT09PT09PT09CgogICAgICAgICAgICA7OyBJZiB0aGUgaW5kZXggbWVu
+dSBjb250YWlucyBleGFjdGx5IG9uZSBlbGVtZW50LCBhbmQgaXQgaXMKICAgICAgICAgICAgOzsg
+YSBuYW1lc3BhY2UgbWVudSwgdGhlbiByZW1vdmUgaXQuICBUaGlzIHNpbXBsaWZpZXMgdGhlCiAg
+ICAgICAgICAgIDs7IG1lbnUsIGFuZCByZXN1bHRzIGluIG5vIGxvc3Mgb2YgaW5mb3JtYXRpb246
+IGFsbCB0eXBlcwogICAgICAgICAgICA7OyBnZXQgZnVsbHktcXVhbGlmaWVkIG5hbWVzIGFueXdh
+eS4gVGhpcyB3aWxsIHByb2JhYmx5CiAgICAgICAgICAgIDs7IGNvdmVyIHRoZSBtYWpvcml0eSBv
+ZiBjYXNlczsgb2Z0ZW4gYSBDIyBzb3VyY2UgbW9kdWxlCiAgICAgICAgICAgIDs7IGRlZmluZXMg
+ZWl0aGVyIG9uZSBjbGFzcywgb3IgYSBzZXQgb2YgcmVsYXRlZCBjbGFzc2VzCiAgICAgICAgICAg
+IDs7IGluc2lkZSBhIHNpbmdsZSBuYW1lc3BhY2UuCgogICAgICAgICAgICA7OyBUbyByZW1vdmUg
+dGhhdCBuYW1lc3BhY2UsIHdlIG5lZWQgdG8gcHJ1bmUgJiBncmFmdCB0aGUgdHJlZS4KICAgICAg
+ICAgICAgOzsgUmVtb3ZlIHRoZSBucyBoaWVyYXJjaHkgbGV2ZWwsIGJ1dCBhbHNvIHJlbW92ZSB0
+aGUgMXN0IGFuZAogICAgICAgICAgICA7OyBsYXN0IGVsZW1lbnRzIGluIHRoZSBzdWItbWVudSwg
+d2hpY2ggcmVwcmVzZW50IHRoZSB0b3AgYW5kCiAgICAgICAgICAgIDs7IGJvdHRvbSBvZiB0aGUg
+bmFtZXNwYWNlLgoKICAgICAgICAgICAgOzsgKGlmIChhbmQKICAgICAgICAgICAgOzsgICAgICAo
+PSAxIChsZW5ndGggaW5kZXgtYWxpc3QpKQogICAgICAgICAgICA7OyAgICAgIChjb25zcCAoY2Fy
+IGluZGV4LWFsaXN0KSkKICAgICAgICAgICAgOzsgICAgICAobGV0ICgodG9rZW5zIChzcGxpdC1z
+dHJpbmcKICAgICAgICAgICAgOzsgICAgICAgICAgICAgICAgICAgICAoY2FyIChjYXIgaW5kZXgt
+YWxpc3QpKQogICAgICAgICAgICA7OyAgICAgICAgICAgICAgICAgICAgICJbIFx0XSIgdCkpKQog
+ICAgICAgICAgICA7OyAgICAgICAgKGFuZCAoPD0gMSAobGVuZ3RoIHRva2VucykpCiAgICAgICAg
+ICAgIDs7ICAgICAgICAgICAgIChzdHJpbmc9IChkb3duY2FzZQogICAgICAgICAgICA7OyAgICAg
+ICAgICAgICAgICAgICAgICAgKG50aCAwIHRva2VucykpICJuYW1lc3BhY2UiKSkpKQogICAgICAg
+ICAgICA7OwogICAgICAgICAgICA7OyAgICAgKGxldCAoZWx0CiAgICAgICAgICAgIDs7ICAgICAg
+ICAgICAobmV3bGlzdCAoY2RhciBpbmRleC1hbGlzdCkpKQogICAgICAgICAgICA7OyAgICAgICAo
+c2V0ZiAoY2FyIChjYXIgbmV3bGlzdCkpICAoY2FyIChjYXIgaW5kZXgtYWxpc3QpKSkKICAgICAg
+ICAgICAgOzsgICAgICAgbmV3bGlzdCkKICAgICAgICAgICAgOzsKICAgICAgICAgICAgOzsgICBp
+bmRleC1hbGlzdCkKCiAgICAgICAgICAgICkpKSkpCgoKOzsgPT09PT09PT09PT09PT09PT09PT09
+PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09CgoKCgo7OyA9PT09
+PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09
+PT09PT0KOzsgQyMgY29kZS1kb2MgaW5zZXJ0aW9uIG1hZ2ljCjs7ID09PT09PT09PT09PT09PT09
+PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PQo7Owo7OyBJ
+biBWaXN1YWwgU3R1ZGlvLCBpZiB5b3UgdHlwZSB0aHJlZSBzbGFzaGVzLCBpdCBpbW1lZGlhdGVs
+eSBleHBhbmRzIGludG8KOzsgYW4gaW5saW5lIGNvZGUtZG9jdW1lbnRhdGlvbiBmcmFnbWVudC4g
+IFRoZSBmb2xsb3dpbmcgbWV0aG9kIGRvZXMgdGhlCjs7IHNhbWUgdGhpbmcuCjs7Cjs7IFRoaXMg
+aXMgdGhlIGtpbmQgb2YgdGhpbmcgdGhhdCBjb3VsZCBiZSBoYW5kbGVkIGJ5IFlBU25pcHBldCBv
+cgo7OyBhbm90aGVyIHNpbWlsYXJseSBmbGV4aWJsZSBzbmlwcGV0IGZyYW1ld29yay4gQnV0IEkg
+ZG9uJ3Qgd2FudCB0bwo7OyBpbnRyb2R1Y2UgYSBkZXBlbmRlbmN5IG9uIHlhc25pcHBldCB0byBj
+c2hhcnAtbW9kZS4gU28gdGhlIGNhcGFiaWxpdHkKOzsgbXVzdCBsaXZlIHdpdGhpbiBjc2hhcnAt
+bW9kZSBpdHNlbGYuCgooZGVmdW4gY3NoYXJwLW1heWJlLWluc2VydC1jb2RlZG9jIChhcmcpCgog
+ICJJbnNlcnQgYW4geG1sIGNvZGUgZG9jdW1lbnRhdGlvbiB0ZW1wbGF0ZSBhcyBhcHByb3ByaWF0
+ZSwgd2hlbgp0eXBpbmcgc2xhc2hlcy4gIFRoaXMgZm4gZ2V0cyBib3VuZCB0byAvICh0aGUgc2xh
+c2gga2V5KSwgaW4KY3NoYXJwLW1vZGUuICBJZiB0aGUgc2xhc2ggYmVpbmcgaW5zZXJ0ZWQgaXMg
+bm90IHRoZSB0aGlyZApjb25zZWN1dGl2ZSBzbGFzaCwgdGhlIHNsYXNoIGlzIGluc2VydGVkIGFz
+IG5vcm1hbC4gIElmIGl0IGlzIHRoZQp0aGlyZCBjb25zZWN1dGl2ZSBzbGFzaCwgdGhlbiBhIHht
+bCBjb2RlIGRvY3VtZW50YXRpb24gdGVtcGxhdGUKbWF5IGJlIGluc2VydGVkIGluIHNvbWUgY2Fz
+ZXMuIEZvciBleGFtcGxlLAoKICBhIDxzdW1tYXJ5PiB0ZW1wbGF0ZSBpcyBpbnNlcnRlZCBpZiB0
+aGUgcHJpb3IgbGluZSBpcyBlbXB0eSwKICAgICAgICBvciBjb250YWlucyBvbmx5IGFuIG9wZW4g
+Y3VybHkgYnJhY2U7CiAgYSA8cmVtYXJrcz4gdGVtcGxhdGUgaXMgaW5zZXJ0ZWQgaWYgdGhlIHBy
+aW9yIHdvcmQKICAgICAgICBjbG9zZXMgdGhlIDxzdW1tYXJ5PiBlbGVtZW50OwogIGEgPHJldHVy
+bnM+IHRlbXBsYXRlIGlzIGluc2VydGVkIGlmIHRoZSBwcmlvciB3b3JkCiAgICAgICAgY2xvc2Vz
+IHRoZSA8cmVtYXJrcz4gZWxlbWVudDsKICBhbiA8ZXhhbXBsZT4gdGVtcGxhdGUgaXMgaW5zZXJ0
+ZWQgaWYgdGhlIHByaW9yIHdvcmQgY2xvc2VzCiAgICAgICAgdGhlIDxyZXR1cm5zPiBlbGVtZW50
+OwogIGEgPHBhcmE+IHRlbXBsYXRlIGlzIGluc2VydGVkIGlmIHRoZSBwcmlvciB3b3JkIGNsb3Nl
+cwogICAgICAgIGEgPHBhcmE+IGVsZW1lbnQuCgpJbiBhbGwgb3RoZXIgY2FzZXMgdGhlIHNsYXNo
+IGlzIGluc2VydGVkIGFzIG5vcm1hbC4KCklmIHlvdSB3YW50IHRoZSBkZWZhdWx0IGNjLW1vZGUg
+YmVoYXZpb3IsIHdoaWNoIGltcGxpZXMgbm8gYXV0b21hdGljCmluc2VydGlvbiBvZiB4bWwgY29k
+ZSBkb2N1bWVudGF0aW9uIHRlbXBsYXRlcywgdGhlbiB1c2UgdGhpcyBpbgp5b3VyIGBjc2hhcnAt
+bW9kZS1ob29rJyBmdW5jdGlvbjoKCiAgICAgKGxvY2FsLXNldC1rZXkgKGtiZCBcIi9cIikgJ2Mt
+ZWxlY3RyaWMtc2xhc2gpCgogIgogIChpbnRlcmFjdGl2ZSAiKnAiKQogIDs7KG1lc3NhZ2UgImNz
+aGFycC1tYXliZS1pbnNlcnQtY29kZWRvYyIpCiAgKGxldCAoCiAgICAgICAgKGN1ci1wb2ludCAo
+cG9pbnQpKQogICAgICAgIChjaGFyIGxhc3QtY29tbWFuZC1ldmVudCkKICAgICAgICAoY2IwIChj
+aGFyLWJlZm9yZSAoLSAocG9pbnQpIDApKSkKICAgICAgICAoY2IxIChjaGFyLWJlZm9yZSAoLSAo
+cG9pbnQpIDEpKSkKICAgICAgICBpcy1maXJzdC1ub24td2hpdGVzcGFjZQogICAgICAgIGRpZC1h
+dXRvLWluc2VydAogICAgICAgICkKCiAgICA7OyBjaGVjayBpZiB0d28gcHJpb3IgY2hhcnMgd2Vy
+ZSBzbGFzaCwgaW4gb3RoZXIgd29yZHMsCiAgICA7OyBjaGVjayBpZiB0aGlzIGlzIHRoZSB0aGly
+ZCBzbGFzaCBpbiBhIHJvdy4KICAgIChpZiAoYW5kICg9IGNoYXIgPy8pIGNiMCAoPSA/LyBjYjAp
+IGNiMSAoPSA/LyBjYjEpKQoKICAgICAgICAocHJvZ24KICAgICAgICAgIDs7KG1lc3NhZ2UgInll
+cyAtIHRoaXMgaXMgdGhlIHRoaXJkIGNvbnNlY3V0aXZlIHNsYXNoIikKICAgICAgICAgIChzZXRx
+IGlzLWZpcnN0LW5vbi13aGl0ZXNwYWNlCiAgICAgICAgICAgICAgICAoc2F2ZS1leGN1cnNpb24K
+ICAgICAgICAgICAgICAgICAgKGJhY2stdG8taW5kZW50YXRpb24pCiAgICAgICAgICAgICAgICAg
+ICg9IGN1ci1wb2ludCAoKyAocG9pbnQpIDIpKSkpCgogICAgICAgICAgKGlmIGlzLWZpcnN0LW5v
+bi13aGl0ZXNwYWNlCiAgICAgICAgICAgICAgOzsgVGhpcyBpcyBhIDMtc2xhc2ggc2VxdWVuY2Uu
+ICBJdCBpcyB0aGUgZmlyc3Qgbm9uLXdoaXRlc3BhY2UgdGV4dAogICAgICAgICAgICAgIDs7IG9u
+IHRoZSBsaW5lLiBOb3cgd2UgbmVlZCB0byBleGFtaW5lIHRoZSBzdXJyb3VuZGluZyBjb250ZXh0
+CiAgICAgICAgICAgICAgOzsgaW4gb3JkZXIgdG8gZGV0ZXJtaW5lIHdoaWNoIHhtbCBjb2QgZG9j
+IHRlbXBsYXRlIHRvIGluc2VydC4KICAgICAgICAgICAgICAobGV0ICh3b3JkLWJhY2sgY2hhcjAg
+Y2hhcjEKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgd29yZC1mb3JlIGNoYXItMCBjaGFy
+LTEKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgdGV4dC10by1pbnNlcnQgICAgICAgICA7
+OyB0ZXh0IHRvIGluc2VydCBpbiBsaWV1IG9mIHNsYXNoCiAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgIGZuLXRvLWNhbGwgICAgIDs7IGZ1bmMgdG8gY2FsbCBhZnRlciBpbnNlcnRpbmcgdGV4
+dAogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAocHJlY2VkaW5nLWxpbmUtaXMtZW1wdHkg
+KG9yCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgKD0gKGxpbmUtbnVtYmVyLWF0LXBvcykgMSkKICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAoc2F2ZS1leGN1cnNpb24KICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIChmb3J3YXJkLWxp
+bmUgLTEpCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAoYmVnaW5uaW5nLW9mLWxpbmUpCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAobG9va2luZy1hdCAiWyBcdF0qJFxcfFsgXHRd
+KntbIFx0XSokIikpKSkKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgKGZsYXZvciAwKSA7
+OyB1c2VkIG9ubHkgZm9yIGRpYWdub3N0aWMgcHVycG9zZXMKICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgKQoKICAgICAgICAgICAgICAgIDs7KG1lc3NhZ2UgInN0YXJ0aW5nIGEgMy1zbGFz
+aCBjb21tZW50IikKICAgICAgICAgICAgICAgIDs7IGdldCB0aGUgcHJpb3Igd29yZCwgYW5kIHRo
+ZSAyIGNoYXJzIHByZWNlZGluZyBpdC4KICAgICAgICAgICAgICAgIChiYWNrd2FyZC13b3JkKQoK
+ICAgICAgICAgICAgICAgIChzZXRxIHdvcmQtYmFjayAodGhpbmctYXQtcG9pbnQgJ3dvcmQpCiAg
+ICAgICAgICAgICAgICAgICAgICBjaGFyMCAoY2hhci1iZWZvcmUgKC0gKHBvaW50KSAwKSkKICAg
+ICAgICAgICAgICAgICAgICAgIGNoYXIxIChjaGFyLWJlZm9yZSAoLSAocG9pbnQpIDEpKSkKCiAg
+ICAgICAgICAgICAgICA7OyByZXN0b3JlIHByaW9yIHBvc2l0aW9uCiAgICAgICAgICAgICAgICAo
+Z290by1jaGFyIGN1ci1wb2ludCkKCiAgICAgICAgICAgICAgICA7OyBnZXQgdGhlIGZvbGxvd2lu
+ZyB3b3JkLCBhbmQgdGhlIDIgY2hhcnMgcHJlY2VkaW5nIGl0LgogICAgICAgICAgICAgICAgKGZv
+cndhcmQtd29yZCkKICAgICAgICAgICAgICAgIChiYWNrd2FyZC13b3JkKQogICAgICAgICAgICAg
+ICAgKHNldHEgd29yZC1mb3JlICh0aGluZy1hdC1wb2ludCAnd29yZCkKICAgICAgICAgICAgICAg
+ICAgICAgIGNoYXItMCAoY2hhci1iZWZvcmUgKC0gKHBvaW50KSAwKSkKICAgICAgICAgICAgICAg
+ICAgICAgIGNoYXItMSAoY2hhci1iZWZvcmUgKC0gKHBvaW50KSAxKSkpCgogICAgICAgICAgICAg
+ICAgOzsgcmVzdG9yZSBwcmlvciBwb3NpdGlvbiBhZ2FpbgogICAgICAgICAgICAgICAgKGdvdG8t
+Y2hhciBjdXItcG9pbnQpCgogICAgICAgICAgICAgICAgKGNvbmQKICAgICAgICAgICAgICAgICA7
+OyBUaGUgcHJlY2VkaW5nIGxpbmUgaXMgZW1wdHksIG9yIGFsbCB3aGl0ZXNwYWNlLCBvcgogICAg
+ICAgICAgICAgICAgIDs7IGNvbnRhaW5zIG9ubHkgYW4gb3Blbi1jdXJseS4gIEluIHRoaXMgY2Fz
+ZSwgaW5zZXJ0IGEKICAgICAgICAgICAgICAgICA7OyBzdW1tYXJ5IGVsZW1lbnQgcGFpci4KICAg
+ICAgICAgICAgICAgICAocHJlY2VkaW5nLWxpbmUtaXMtZW1wdHkKICAgICAgICAgICAgICAgICAg
+KHNldHEgdGV4dC10by1pbnNlcnQgICIvIDxzdW1tYXJ5PlxuLy8vICAgXG4vLy8gPC9zdW1tYXJ5
+PiIKICAgICAgICAgICAgICAgICAgICAgICAgZmxhdm9yIDEpICkKCiAgICAgICAgICAgICAgICAg
+OzsgVGhlIHByZWNlZGluZyB3b3JkIGNsb3NlZCBhIHN1bW1hcnkgZWxlbWVudC4gIEluIHRoaXMg
+Y2FzZSwKICAgICAgICAgICAgICAgICA7OyBpZiB0aGUgZm9yd2FyZCB3b3JkIGRvZXMgbm90IG9w
+ZW4gYSByZW1hcmtzIGVsZW1lbnQsIHRoZW4KICAgICAgICAgICAgICAgICA7OyBpbnNlcnQgYSBy
+ZW1hcmtzIGVsZW1lbnQuCiAgICAgICAgICAgICAgICAgKChhbmQgKHN0cmluZy1lcXVhbCB3b3Jk
+LWJhY2sgInN1bW1hcnkiKSAoZXEgY2hhcjAgPy8pICAoZXEgY2hhcjEgPzwpKQogICAgICAgICAg
+ICAgICAgICAoaWYgKG5vdCAoYW5kIChzdHJpbmctZXF1YWwgd29yZC1mb3JlICJyZW1hcmtzIikg
+KGVxIGNoYXItMCA/PCkpKQogICAgICAgICAgICAgICAgICAgICAgKHNldHEgdGV4dC10by1pbnNl
+cnQgIi8gPHJlbWFya3M+XG4vLy8gICA8cGFyYT5cbi8vLyAgICAgXG4vLy8gICA8L3BhcmE+XG4v
+Ly8gPC9yZW1hcmtzPiIKICAgICAgICAgICAgICAgICAgICAgICAgICAgIGZsYXZvciAyKSkpCgog
+ICAgICAgICAgICAgICAgIDs7IFRoZSBwcmVjZWRpbmcgd29yZCBjbG9zZWQgdGhlIHJlbWFya3Mg
+c2VjdGlvbi4gIEluIHRoaXMgY2FzZSwKICAgICAgICAgICAgICAgICA7OyBpbnNlcnQgYW4gZXhh
+bXBsZSBlbGVtZW50LgogICAgICAgICAgICAgICAgICgoYW5kIChzdHJpbmctZXF1YWwgd29yZC1i
+YWNrICJyZW1hcmtzIikgIChlcSBjaGFyMCA/LykgIChlcSBjaGFyMSA/PCkpCiAgICAgICAgICAg
+ICAgICAgIChzZXRxIHRleHQtdG8taW5zZXJ0ICIvIDxleGFtcGxlPlxuLy8vICAgXG4vLy8gPC9l
+eGFtcGxlPiIKICAgICAgICAgICAgICAgICAgICAgICAgZmxhdm9yIDMpKQoKICAgICAgICAgICAg
+ICAgICA7OyBUaGUgcHJlY2VkaW5nIHdvcmQgY2xvc2VkIHRoZSBleGFtcGxlIHNlY3Rpb24uICBJ
+biB0aGlzCiAgICAgICAgICAgICAgICAgOzsgY2FzZSwgaW5zZXJ0IGFuIHJldHVybnMgZWxlbWVu
+dC4gIFRoaXMgaXNuJ3QgYWx3YXlzCiAgICAgICAgICAgICAgICAgOzsgY29ycmVjdCwgYmVjYXVz
+ZSBzb21ldGltZXMgdGhlIHhtbCBjb2RlIGRvYyBpcyBhdHRhY2hlZCB0bwogICAgICAgICAgICAg
+ICAgIDs7IGEgY2xhc3Mgb3IgYSBwcm9wZXJ0eSwgbmVpdGhlciBvZiB3aGljaCBoYXMgYSByZXR1
+cm4KICAgICAgICAgICAgICAgICA7OyB2YWx1ZS4gQSBtb3JlIGludGVsbGlnZW50IGltcGxlbWVu
+dGF0aW9uIHdvdWxkIGluc3BlY3QgdGhlCiAgICAgICAgICAgICAgICAgOzsgc3ludGF4IHN0YXRl
+IGFuZCBvbmx5IGluamVjdCBhIHJldHVybnMgZWxlbWVudCBpZgogICAgICAgICAgICAgICAgIDs7
+IGFwcHJvcHJpYXRlLgogICAgICAgICAgICAgICAgICgoYW5kIChzdHJpbmctZXF1YWwgd29yZC1i
+YWNrICJleGFtcGxlIikgIChlcSBjaGFyMCA/LykgIChlcSBjaGFyMSA/PCkpCiAgICAgICAgICAg
+ICAgICAgIChzZXRxIHRleHQtdG8taW5zZXJ0ICIvIDxyZXR1cm5zPjwvcmV0dXJucz4iCiAgICAg
+ICAgICAgICAgICAgICAgICAgIGZuLXRvLWNhbGwgKGxhbWJkYSAoKQogICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgKGJhY2t3YXJkLXdvcmQpCiAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAoYmFja3dhcmQtY2hhcikKICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgIChiYWNrd2FyZC1jaGFyKQogICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgKGMtaW5kZW50LWxpbmUtb3ItcmVnaW9uKQogICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgKQogICAgICAgICAgICAgICAgICAgICAgICBmbGF2b3IgNCkpCgogICAg
+ICAgICAgICAgICAgIDs7IFRoZSBwcmVjZWRpbmcgd29yZCBvcGVuZWQgdGhlIHJlbWFya3Mgc2Vj
+dGlvbiwgb3IgaXQKICAgICAgICAgICAgICAgICA7OyBjbG9zZWQgYSBwYXJhIHNlY3Rpb24uIElu
+IHRoaXMgY2FzZSwgaW5zZXJ0IGEgcGFyYQogICAgICAgICAgICAgICAgIDs7IGVsZW1lbnQsIHVz
+aW5nIGFwcHJvcHJpYXRlIGluZGVudGF0aW9uIHdpdGggcmVzcGVjdCB0byB0aGUKICAgICAgICAg
+ICAgICAgICA7OyBwcmlvciB0YWcuCiAgICAgICAgICAgICAgICAgKChvcgogICAgICAgICAgICAg
+ICAgICAgKGFuZCAoc3RyaW5nLWVxdWFsIHdvcmQtYmFjayAicmVtYXJrcyIpICAoZXEgY2hhcjAg
+PzwpICAob3IgKGVxIGNoYXIxIDMyKSAoZXEgY2hhcjEgOSkpKQogICAgICAgICAgICAgICAgICAg
+KGFuZCAoc3RyaW5nLWVxdWFsIHdvcmQtYmFjayAicGFyYSIpICAgICAoZXEgY2hhcjAgPy8pICAo
+ZXEgY2hhcjEgPzwpKSkKCiAgICAgICAgICAgICAgICAgIChsZXQgKHByaW9yLXBvaW50IHNwYWNl
+cikKICAgICAgICAgICAgICAgICAgICAoc2F2ZS1leGN1cnNpb24KICAgICAgICAgICAgICAgICAg
+ICAgIChiYWNrd2FyZC13b3JkKQogICAgICAgICAgICAgICAgICAgICAgKGJhY2t3YXJkLWNoYXIp
+CiAgICAgICAgICAgICAgICAgICAgICAoYmFja3dhcmQtY2hhcikKICAgICAgICAgICAgICAgICAg
+ICAgIChzZXRxIHByaW9yLXBvaW50IChwb2ludCkpCiAgICAgICAgICAgICAgICAgICAgICAoc2tp
+cC1jaGFycy1iYWNrd2FyZCAiXHQgIikKICAgICAgICAgICAgICAgICAgICAgIChzZXRxIHNwYWNl
+ciAoYnVmZmVyLXN1YnN0cmluZyAocG9pbnQpIHByaW9yLXBvaW50KSkKICAgICAgICAgICAgICAg
+ICAgICAgIDs7KG1lc3NhZ2UgKGZvcm1hdCAicHQoJWQpIHByaW9yKCVkKSBzcGFjZXIoJXMpIiAo
+cG9pbnQpIHByaW9yLXBvaW50IHNwYWNlcikpCiAgICAgICAgICAgICAgICAgICAgICApCgogICAg
+ICAgICAgICAgICAgICAgIChpZiAoc3RyaW5nLWVxdWFsIHdvcmQtYmFjayAicmVtYXJrcyIpCiAg
+ICAgICAgICAgICAgICAgICAgICAgIChzZXRxIHNwYWNlciAoY29uY2F0IHNwYWNlciAiICAgIikp
+KQoKICAgICAgICAgICAgICAgICAgICAoc2V0cSB0ZXh0LXRvLWluc2VydCAoZm9ybWF0ICIvJXM8
+cGFyYT5cbi8vLyVzICBcbi8vLyVzPC9wYXJhPiIKICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgIHNwYWNlciBzcGFjZXIgc3BhY2VyKQogICAgICAgICAgICAg
+ICAgICAgICAgICAgIGZsYXZvciA2KSkpCgogICAgICAgICAgICAgICAgIDs7IFRoZSBwcmVjZWRp
+bmcgd29yZCBvcGVuZWQgYSBwYXJhIGVsZW1lbnQuICBJbiB0aGlzIGNhc2UsIGlmCiAgICAgICAg
+ICAgICAgICAgOzsgdGhlIGZvcndhcmQgd29yZCBkb2VzIG5vdCBjbG9zZSB0aGUgcGFyYSBlbGVt
+ZW50LCB0aGVuCiAgICAgICAgICAgICAgICAgOzsgY2xvc2UgdGhlIHBhcmEgZWxlbWVudC4KICAg
+ICAgICAgICAgICAgICA7OyAtLQogICAgICAgICAgICAgICAgIDs7IFRoaXMgaXMgYSBuaWNlIGlk
+ZWEgYnV0IGZsYXdlZC4gIFN1cHBvc2UgSSBoYXZlIGEgcGFyYSBlbGVtZW50IHdpdGggc29tZQog
+ICAgICAgICAgICAgICAgIDs7IHRleHQgaW4gaXQuIElmIEkgcG9zaXRpb24gdGhlIGN1cnNvciBh
+dCB0aGUgZmlyc3QgbGluZSwgdGhlbiB0eXBlIDMgc2xhc2hlcywKICAgICAgICAgICAgICAgICA7
+OyBJIGdldCBhIGNsb3NlLWVsZW1lbnQsIGFuZCB0aGF0IHdvdWxkIGJlIGluYXBwcm9wcmlhdGUu
+ICBOb3Qgc3VyZSBJIGNhbgogICAgICAgICAgICAgICAgIDs7IGVhc2lseSBzb2x2ZSB0aGF0IHBy
+b2JsZW0sIHNvIHRoZSBiZXN0IHRoaW5nIG1pZ2h0IGJlIHRvIHNpbXBseSBwdW50LCBhbmQKICAg
+ICAgICAgICAgICAgICA7OyByZXF1aXJlIHBlb3BsZSB0byBjbG9zZSB0aGVpciBvd24gZWxlbWVu
+dHMuCiAgICAgICAgICAgICAgICAgOzsKICAgICAgICAgICAgICAgICA7OyAgICAgICAgICAgICAg
+KCAoYW5kIChzdHJpbmctZXF1YWwgd29yZC1iYWNrICJwYXJhIikgIChlcSBjaGFyMCA2MCkgIChv
+ciAoZXEgY2hhcjEgMzIpIChlcSBjaGFyMSA5KSkpCiAgICAgICAgICAgICAgICAgOzsgICAgICAg
+ICAgICAgICAgKGlmIChub3QgKGFuZCAoc3RyaW5nLWVxdWFsIHdvcmQtZm9yZSAicGFyYSIpIChl
+cSBjaGFyLTAgNDcpIChlcSBjaGFyLTEgNjApICkpCiAgICAgICAgICAgICAgICAgOzsgICAgICAg
+ICAgICAgICAgICAgIChzZXRxIHRleHQtdG8taW5zZXJ0ICIvICAgXG4vLy8gPC9wYXJhPlxuLy8v
+IgogICAgICAgICAgICAgICAgIDs7ICAgICAgICAgICAgICAgICAgICAgICAgICBmbi10by1jYWxs
+IChsYW1iZGEgKCkKICAgICAgICAgICAgICAgICA7OyAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgIChwcmV2aW91cy1saW5lKQogICAgICAgICAgICAgICAgIDs7ICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgKGVuZC1vZi1saW5lKQogICAgICAgICAgICAg
+ICAgIDs7ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgKQogICAgICAgICAg
+ICAgICAgIDs7ICAgICAgICAgICAgICAgICAgICAgICAgICBmbGF2b3IgNykgKQogICAgICAgICAg
+ICAgICAgIDs7ICAgICAgICAgICAgICAgICkKCiAgICAgICAgICAgICAgICAgOzsgdGhlIGRlZmF1
+bHQgY2FzZSAtIGRvIG5vdGhpbmcKICAgICAgICAgICAgICAgICAodCBuaWwpKQoKICAgICAgICAg
+ICAgICAgIChpZiB0ZXh0LXRvLWluc2VydAogICAgICAgICAgICAgICAgICAgIChwcm9nbgogICAg
+ICAgICAgICAgICAgICAgICAgOzsobWVzc2FnZSAoZm9ybWF0ICJpbnNlcnRpbmcgc3BlY2lhbCB0
+ZXh0IChmKCVkKSkiIGZsYXZvcikpCgogICAgICAgICAgICAgICAgICAgICAgOzsgc2V0IHRoZSBm
+bGFnLCB0aGF0IHdlIGFjdHVhbGx5IGluc2VydGVkIHRleHQKICAgICAgICAgICAgICAgICAgICAg
+IChzZXRxIGRpZC1hdXRvLWluc2VydCB0KQoKICAgICAgICAgICAgICAgICAgICAgIDs7IHNhdmUg
+cG9pbnQgb2YgYmVnaW5uaW5nIG9mIGluc2VydGlvbgogICAgICAgICAgICAgICAgICAgICAgKHNl
+dHEgY3VyLXBvaW50IChwb2ludCkpCgogICAgICAgICAgICAgICAgICAgICAgOzsgYWN0dWFsbHkg
+aW5zZXJ0IHRoZSB0ZXh0CiAgICAgICAgICAgICAgICAgICAgICAoaW5zZXJ0IHRleHQtdG8taW5z
+ZXJ0KQoKICAgICAgICAgICAgICAgICAgICAgIDs7IGluZGVudCB0aGUgaW5zZXJ0ZWQgc3RyaW5n
+LCBhbmQgcmUtcG9zaXRpb24gcG9pbnQsIGVpdGhlciB0aHJvdWdoCiAgICAgICAgICAgICAgICAg
+ICAgICA7OyB0aGUgY2FzZS1zcGVjaWZpYyBmbiwgb3IgdmlhIHRoZSBkZWZhdWx0IHByb2duLgog
+ICAgICAgICAgICAgICAgICAgICAgKGlmIGZuLXRvLWNhbGwKICAgICAgICAgICAgICAgICAgICAg
+ICAgICAoZnVuY2FsbCBmbi10by1jYWxsKQoKICAgICAgICAgICAgICAgICAgICAgICAgKGxldCAo
+KG5ld2xpbmUtY291bnQgMCkgKHBvcyAwKSBpeCkKCiAgICAgICAgICAgICAgICAgICAgICAgICAg
+OzsgY291bnQgdGhlIG51bWJlciBvZiBuZXdsaW5lcyBpbiB0aGUgaW5zZXJ0ZWQgc3RyaW5nCiAg
+ICAgICAgICAgICAgICAgICAgICAgICAgKHdoaWxlIChzdHJpbmctbWF0Y2ggIlxuIiB0ZXh0LXRv
+LWluc2VydCBwb3MpCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAoc2V0cSBwb3MgKG1hdGNo
+LWVuZCAwKQogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgbmV3bGluZS1jb3VudCAo
+KyBuZXdsaW5lLWNvdW50IDEpICkKICAgICAgICAgICAgICAgICAgICAgICAgICAgICkKCiAgICAg
+ICAgICAgICAgICAgICAgICAgICAgOzsgaW5kZW50IHdoYXQgd2UganVzdCBpbnNlcnRlZAogICAg
+ICAgICAgICAgICAgICAgICAgICAgIChjLWluZGVudC1yZWdpb24gY3VyLXBvaW50IChwb2ludCkg
+dCkKCiAgICAgICAgICAgICAgICAgICAgICAgICAgOzsgbW92ZSB1cCBuLzIgbGluZXMuIFRoaXMg
+YXNzdW1lcyB0aGF0IHRoZQogICAgICAgICAgICAgICAgICAgICAgICAgIDs7IGluc2VydGVkIHRl
+eHQgaXMgfnN5bW1ldHJpYyBhYm91dCB0aGUgaGFsZndheSBwb2ludC4KICAgICAgICAgICAgICAg
+ICAgICAgICAgICA7OyBUaGUgYXNzdW1wdGlvbiBob2xkcyBpZiB0aGUgeG1sIGNvZGUgZG9jIHVz
+ZXMgYQogICAgICAgICAgICAgICAgICAgICAgICAgIDs7IGJlZ2luLWVsdCBhbmQgZW5kLWVsdCBv
+biBhIG5ldyBsaW5lIGFsbCBieSB0aGVtc2VsdmVzLAogICAgICAgICAgICAgICAgICAgICAgICAg
+IDs7IGFuZCBhIGJsYW5rIGxpbmUgaW4gYmV0d2VlbiB0aGVtIHdoZXJlIHRoZSBwb2ludCBzaG91
+bGQgYmUuCiAgICAgICAgICAgICAgICAgICAgICAgICAgOzsgQSBtb3JlIGludGVsbGlnZW50IGlt
+cGxlbWVudGF0aW9uIHdvdWxkIHVzZSBhIHNwZWNpZmljCiAgICAgICAgICAgICAgICAgICAgICAg
+ICAgOzsgbWFya2VyIHN0cmluZywgbGlrZSBAQERPVCwgdG8gbm90ZSB0aGUgZGVzaXJlZCBwb2lu
+dC4KICAgICAgICAgICAgICAgICAgICAgICAgICAoZm9yd2FyZC1saW5lICgtIDAgKC8gbmV3bGlu
+ZS1jb3VudCAyKSkpCiAgICAgICAgICAgICAgICAgICAgICAgICAgKGVuZC1vZi1saW5lKSkpKSkp
+KSkpCgogICAgKGlmIChub3QgZGlkLWF1dG8taW5zZXJ0KQogICAgICAgIChzZWxmLWluc2VydC1j
+b21tYW5kIChwcmVmaXgtbnVtZXJpYy12YWx1ZSBhcmcpKSkpKQoKOzsgPT09PT09PT09PT09PT09
+PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09Cjs7IGVu
+ZCBvZiBjIyBjb2RlLWRvYyBpbnNlcnRpb24gbWFnaWMKOzsgPT09PT09PT09PT09PT09PT09PT09
+PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09CgoKCgo7OyA9PT09
+PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09
+PT09PT0KOzsgYyMgZm9udGlmaWNhdGlvbiBleHRlbnNpb25zCjs7ID09PT09PT09PT09PT09PT09
+PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PQo7OyBDb21t
+ZW50YXJ5Ogo7Owo7OyBUaGUgcHVycG9zZSBvZiB0aGUgZm9sbG93aW5nIGNvZGUgaXMgdG8gZml4
+IGZvbnQtbG9jayBmb3IgQyMsCjs7IHNwZWNpZmljYWxseSBmb3IgdGhlIHZlcmJhdGltLWxpdGVy
+YWwgc3RyaW5ncy4gQyMgaXMgYSBjYy1tb2RlCjs7IGxhbmd1YWdlIGFuZCBzdHJpbmdzIGFyZSBo
+YW5kbGVkIG1vc3RseSBsaWtlIG90aGVyIGMtYmFzZWQKOzsgbGFuZ3VhZ2VzLiBUaGUgb25lIGV4
+Y2VwdGlvbiBpcyB0aGUgdmVyYmF0aW0tbGl0ZXJhbCBzdHJpbmcsIHdoaWNoCjs7IHVzZXMgdGhl
+IHN5bnRheCBAIi4uLiIuCjs7Cjs7IGBwYXJzZS1wYXJ0aWFsLXNleHAnIHRyZWF0cyB0aG9zZSBz
+dHJpbmdzIGFzIGp1c3QgcmVndWxhciBzdHJpbmdzLAo7OyB3aXRoIHRoZSBAIGEgbm9uLXN0cmlu
+ZyBjaGFyYWN0ZXIuICBUaGlzIGlzIGZpbmUsIGV4Y2VwdCB3aGVuIHRoZQo7OyB2ZXJibGl0IHN0
+cmluZyBlbmRzIGluIGEgc2xhc2gsIGluIHdoaWNoIGNhc2UsIGZvbnQtbG9jayBicmVha3MgZnJv
+bQo7OyB0aGF0IHBvaW50IG9ud2FyZCBpbiB0aGUgYnVmZmVyLgo7Owo7OyBUaGlzIGlzIGFuIGF0
+dGVtcHQgdG8gZml4IHRoYXQuCjs7Cjs7IFRoZSBpZGVhIGlzIHRvIHNjYW4gdGhlIGJ1ZmZlciBp
+biBmdWxsIGZvciB2ZXJibGl0IHN0cmluZ3MsIGFuZCBhcHBseSB0aGUKOzsgYXBwcm9wcmlhdGUg
+c3ludGF4LXRhYmxlIHRleHQgcHJvcGVydGllcyBmb3IgdmVyYmxpdCBzdHJpbmdzLiBBbHNvIHNl
+dHRpbmcKOzsgYHBhcnNlLXNleHAtbG9va3VwLXByb3BlcnRpZXMnIHRvIHQgdGVsbHMgYHBhcnNl
+LXBhcnRpYWwtc2V4cCcKOzsgdG8gdXNlIHRoZSBzeW50YXgtdGFibGUgdGV4dCBwcm9wZXJ0aWVz
+IHNldCB1cCBieSB0aGUgc2NhbiBhcyBpdCBkb2VzCjs7IGl0cyBwYXJzZS4KOzsKOzsgQWxzbyBu
+ZWVkIHRvIHJlLXNjYW4gYWZ0ZXIgYW55IGNoYW5nZXMgaW4gdGhlIGJ1ZmZlciwgYnV0IG9uIGEg
+bW9yZQo7OyBsaW1pdGVkIHJlZ2lvbi4KOzsKCgo7OyA7OyBJIGRvbid0IHJlbWVtYmVyIHdoYXQg
+dGhpcyBpcyBzdXBwb3NlZCB0byBkbywKOzsgOzsgb3IgaG93IEkgZmlndXJlZCBvdXQgdGhlIHZh
+bHVlLgo7OyA7Owo7OyAoZGVmY29uc3QgY3NoYXJwLWZvbnQtbG9jay1zeW50YWN0aWMta2V5d29y
+ZHMKOzsgICAnKCgiXFwoQFxcKVxcKFwiXFwpW15cIl0qXFwoXCJcXClcXChcIlxcKVteXCJdKlxc
+KFwiXFwpW15cIl0iCjs7ICAgICAgKDEgJyg2KSkgKDIgJyg3KSkgKDMgJygxKSkgKDQgJygxKSkg
+KDUgJyg3KSkKOzsgICAgICAgICAgICAgICAgICApKQo7OyAgICJIaWdobGlnaHRpbmcgb2YgdmVy
+YmF0aW0gbGl0ZXJhbCBzdHJpbmdzLiBTZWUgYWxzbyB0aGUgdmFyaWFibGUKOzsgICBgZm9udC1s
+b2NrLWtleXdvcmRzJy4iKQoKCgooZGVmdW4gY3NoYXJwLXRpbWUgKCkKICAicmV0dXJucyB0aGUg
+dGltZSBvZiBkYXkgYXMgYSBzdHJpbmcuICBVc2VkIGluIHRoZSBgY3NoYXJwLWxvZycgZnVuY3Rp
+b24uIgogIChzdWJzdHJpbmcgKGN1cnJlbnQtdGltZS1zdHJpbmcpIDExIDE5KSkgOzI0LWhyIHRp
+bWUKCgooZGVmdW4gY3NoYXJwLWxvZyAobGV2ZWwgdGV4dCAmcmVzdCBhcmdzKQogICJMb2cgYSBt
+ZXNzYWdlIGF0IGxldmVsIExFVkVMLgpJZiBMRVZFTCBpcyBoaWdoZXIgdGhhbiBgY3NoYXJwLWxv
+Zy1sZXZlbCcsIHRoZSBtZXNzYWdlIGlzCmlnbm9yZWQuICBPdGhlcndpc2UsIGl0IGlzIHByaW50
+ZWQgdXNpbmcgYG1lc3NhZ2UnLgpURVhUIGlzIGEgZm9ybWF0IGNvbnRyb2wgc3RyaW5nLCBhbmQg
+dGhlIHJlbWFpbmluZyBhcmd1bWVudHMgQVJHUwphcmUgdGhlIHN0cmluZyBzdWJzdGl0dXRpb25z
+IChzZWUgYGZvcm1hdCcpLiIKICAoaWYgKDw9IGxldmVsIGNzaGFycC1sb2ctbGV2ZWwpCiAgICAg
+IChsZXQqICgobXNnIChhcHBseSAnZm9ybWF0IHRleHQgYXJncykpKQogICAgICAgIChtZXNzYWdl
+ICJDIyAlcyAlcyIgKGNzaGFycC10aW1lKSBtc2cpKSkpCgoKCihkZWZ1biBjc2hhcnAtbWF4LWJl
+Z2lubmluZy1vZi1zdG10ICgpCiAgIlJldHVybiB0aGUgZ3JlYXRlciBvZiBgYy1iZWdpbm5pbmct
+b2Ytc3RhdGVtZW50LTEnIGFuZApgYy1iZWdpbm5pbmctb2Ytc3RhdGVtZW50JyAuICBJIGRvbid0
+IHVuZGVyc3RhbmQgd2h5IGJvdGggb2YKdGhlc2UgbWV0aG9kcyBhcmUgbmVjZXNzYXJ5IG9yIHdo
+eSB0aGV5IGRpZmZlci4gQnV0IHRoZXkgZG8uIgoKICAobGV0IChkYXNoCiAgICAgICAgbm9kYXNo
+CiAgICAgICAgKGN1cnBvcyAocG9pbnQpKSkKCiAgICA7OyBJIHRoaW5rIHRoaXMgbWF5IG5lZWQg
+YSBzYXZlLWV4Y3Vyc2lvbi4uLgogICAgOzsgQ2FsbGluZyBjLWJlZ2lubmluZy1vZi1zdGF0ZW1l
+bnQtMSByZXNldHMgdGhlIHBvaW50IQoKICAgIChzZXRxIGRhc2ggKHByb2duIChjLWJlZ2lubmlu
+Zy1vZi1zdGF0ZW1lbnQtMSkgKHBvaW50KSkpCiAgICAoY3NoYXJwLWxvZyAzICJtYXgtYm9zdG10
+IGRhc2goJWQpIiBkYXNoKQogICAgKGdvdG8tY2hhciBjdXJwb3MpCgogICAgKHNldHEgbm9kYXNo
+IChwcm9nbiAoYy1iZWdpbm5pbmctb2Ytc3RhdGVtZW50IDEpIChwb2ludCkpKQogICAgKGNzaGFy
+cC1sb2cgMyAibWF4LWJvc3RtdCBub2Rhc2goJWQpIiBub2Rhc2gpCiAgICAoZ290by1jaGFyIGN1
+cnBvcykKCiAgICAobWF4IGRhc2ggbm9kYXNoKSkpCgoKCgoKKGRlZnVuIGNzaGFycC1zZXQtdmxp
+dGVyYWwtc3ludGF4LXRhYmxlLXByb3BlcnRpZXMgKGJlZyBlbmQpCiAgIlNjYW4gdGhlIGJ1ZmZl
+ciB0ZXh0IGJldHdlZW4gQkVHIGFuZCBFTkQsIGEgdmVyYmF0aW0gbGl0ZXJhbApzdHJpbmcsIHNl
+dHRpbmcgYW5kIGNsZWFyaW5nIHN5bnRheC10YWJsZSB0ZXh0IHByb3BlcnRpZXMgd2hlcmUKbmVj
+ZXNzYXJ5LgoKV2UgbmVlZCB0byBtb2RpZnkgdGhlIGRlZmF1bHQgc3ludGF4LXRhYmxlIHRleHQg
+cHJvcGVydHkgaW4gdGhlc2UgY2FzZXM6CiAgKGJhY2tzbGFzaCkgICAgLSBpcyBub3QgYW4gZXNj
+YXBlIGluc2lkZSBhIHZlcmJhdGltIGxpdGVyYWwgc3RyaW5nLgogIChkb3VibGUtcXVvdGUpIC0g
+Y2FuIGJlIGEgbGl0ZXJhbCBxdW90ZSwgd2hlbiBkb3VibGVkLgoKQkVHIGlzIHRoZSBAIGRlbGlt
+aXRlci4gRU5EIGlzIHRoZSAnb2xkJyBwb3NpdGlvbiBvZiB0aGUgZW5kaW5nIHF1b3RlLgoKc2Vl
+IGh0dHA6Ly93d3cuc3Vuc2l0ZS51YWxiZXJ0YS5jYS9Eb2N1bWVudGF0aW9uL0dudS9lbWFjcy1s
+aXNwLXJlZi0yMS0yLjcvaHRtbF9ub2RlL2VsaXNwXzU5Mi5odG1sCmZvciB0aGUgbGlzdCBvZiBz
+eW50YXggdGFibGUgbnVtZXJpYyBjb2Rlcy4KCiIKCiAgKGNzaGFycC1sb2cgMyAic2V0LXZsaXQt
+c3ludGF4LXRhYmxlOiAgYmVnKCVkKSBlbmQoJWQpIiBiZWcgZW5kKQoKICAoaWYgKGFuZCAoPiBi
+ZWcgMCkgKD4gZW5kIDApKQoKICAgICAgKGxldCAoKGN1cnBvcyBiZWcpCiAgICAgICAgICAgIChz
+dGF0ZSAwKSkKCiAgICAgICAgKGMtY2xlYXItY2hhci1wcm9wZXJ0aWVzIGJlZyBlbmQgJ3N5bnRh
+eC10YWJsZSkKCiAgICAgICAgKHdoaWxlICg8PSBjdXJwb3MgZW5kKQoKICAgICAgICAgIChjb25k
+CiAgICAgICAgICAgKCg9IHN0YXRlIDApCiAgICAgICAgICAgIChpZiAoPSAoY2hhci1hZnRlciBj
+dXJwb3MpID9AKQogICAgICAgICAgICAgICAgKHByb2duCiAgICAgICAgICAgICAgICAgIChjLXB1
+dC1jaGFyLXByb3BlcnR5IGN1cnBvcyAnc3ludGF4LXRhYmxlICcoNikpIDsgKDYpID0gZXhwcmVz
+c2lvbiBwcmVmaXgsICgzKSA9IHN5bWJvbAogICAgICAgICAgICAgICAgICA7OyhtZXNzYWdlIChm
+b3JtYXQgInNldC1zLXQ6IHByZWZpeCBwb3MoJWQpIGNociglYykiIGJlZyAoY2hhci1hZnRlciBi
+ZWcpKSkKICAgICAgICAgICAgICAgICAgKQogICAgICAgICAgICAgICkKICAgICAgICAgICAgKHNl
+dHEgc3RhdGUgKCsgMSBzdGF0ZSkpKQoKICAgICAgICAgICAoKD0gc3RhdGUgMSkKICAgICAgICAg
+ICAgKGlmICg9IChjaGFyLWFmdGVyIGN1cnBvcykgP1wiKQogICAgICAgICAgICAgICAgKHByb2du
+CiAgICAgICAgICAgICAgICAgIChjLXB1dC1jaGFyLXByb3BlcnR5IGN1cnBvcyAnc3ludGF4LXRh
+YmxlICcoNykpIDsgKDcpID0gc3RyaW5nIHF1b3RlCiAgICAgICAgICAgICAgICAgIDs7KG1lc3Nh
+Z2UgKGZvcm1hdCAic2V0LXMtdDogb3BlbiBxdW90ZSBwb3MoJWQpIGNociglYykiCiAgICAgICAg
+ICAgICAgICAgIDs7IGN1cnBvcyAoY2hhci1hZnRlciBjdXJwb3MpKSkKICAgICAgICAgICAgICAg
+ICAgKSkKICAgICAgICAgICAgKHNldHEgc3RhdGUgKCsgMSBzdGF0ZSkpKQoKICAgICAgICAgICAo
+KD0gc3RhdGUgMikKICAgICAgICAgICAgKGNvbmQKICAgICAgICAgICAgIDs7IGhhbmRsZSBiYWNr
+c2xhc2ggaW5zaWRlIHRoZSBzdHJpbmcKICAgICAgICAgICAgICgoPSAoY2hhci1hZnRlciBjdXJw
+b3MpID9cXCkKICAgICAgICAgICAgICAoYy1wdXQtY2hhci1wcm9wZXJ0eSBjdXJwb3MgJ3N5bnRh
+eC10YWJsZSAnKDIpKSA7ICgxKSA9IHB1bmN0dWF0aW9uLCAoMikgPSB3b3JkCiAgICAgICAgICAg
+ICAgOzsobWVzc2FnZSAoZm9ybWF0ICJzZXQtcy10OiBiYWNrc2xhc2ggd29yZCBwb3MoJWQpIGNo
+ciglYykiIGN1cnBvcyAoY2hhci1hZnRlciBjdXJwb3MpKSkKICAgICAgICAgICAgICApCgogICAg
+ICAgICAgICAgOzsgZG91YmxlZCBkb3VibGUtcXVvdGUKICAgICAgICAgICAgICgoYW5kCiAgICAg
+ICAgICAgICAgICg9IChjaGFyLWFmdGVyIGN1cnBvcykgP1wiKQogICAgICAgICAgICAgICAoPSAo
+Y2hhci1hZnRlciAoKyAxIGN1cnBvcykpID9cIikpCiAgICAgICAgICAgICAgKGMtcHV0LWNoYXIt
+cHJvcGVydHkgY3VycG9zICdzeW50YXgtdGFibGUgJygyKSkgOyAoMSkgPSBwdW5jdHVhdGlvbiwg
+KDIpID0gd29yZAogICAgICAgICAgICAgIChjLXB1dC1jaGFyLXByb3BlcnR5ICgrIDEgY3VycG9z
+KSAnc3ludGF4LXRhYmxlICcoMikpIDsgKDEpID0gcHVuY3R1YXRpb24KICAgICAgICAgICAgICA7
+OyhtZXNzYWdlIChmb3JtYXQgInNldC1zLXQ6IGRvdWJsZSBkb3VibGVxdW90ZSBwb3MoJWQpIGNo
+ciglYykiIGN1cnBvcyAoY2hhci1hZnRlciBjdXJwb3MpKSkKICAgICAgICAgICAgICAoc2V0cSBj
+dXJwb3MgKCsgY3VycG9zIDEpKQogICAgICAgICAgICAgICkKCiAgICAgICAgICAgICA7OyBhIHNp
+bmdsZSBkb3VibGUtcXVvdGUsIHdoaWNoIHNob3VsZCBiZSBhIHN0cmluZyB0ZXJtaW5hdG9yCiAg
+ICAgICAgICAgICAoKD0gKGNoYXItYWZ0ZXIgY3VycG9zKSA/XCIpCiAgICAgICAgICAgICAgKGMt
+cHV0LWNoYXItcHJvcGVydHkgY3VycG9zICdzeW50YXgtdGFibGUgJyg3KSkgOyAoNykgPSBzdHJp
+bmcgcXVvdGUKICAgICAgICAgICAgICA7OyhtZXNzYWdlIChmb3JtYXQgInNldC1zLXQ6IGNsb3Nl
+IHF1b3RlIHBvcyglZCkgY2hyKCVjKSIgY3VycG9zIChjaGFyLWFmdGVyIGN1cnBvcykpKQogICAg
+ICAgICAgICAgIDs7Z28gbm8gZnVydGhlcgogICAgICAgICAgICAgIChzZXRxIHN0YXRlICgrIDEg
+c3RhdGUpKSkKCiAgICAgICAgICAgICA7OyBldmVyeXRoaW5nIGVsc2UKICAgICAgICAgICAgICh0
+CiAgICAgICAgICAgICAgOzsobWVzc2FnZSAoZm9ybWF0ICJzZXQtcy10OiBub25lIHBvcyglZCkg
+Y2hyKCVjKSIgY3VycG9zIChjaGFyLWFmdGVyIGN1cnBvcykpKQogICAgICAgICAgICAgIG5pbCkp
+KSkKICAgICAgICAgIDs7IG5leHQgY2hhcgogICAgICAgICAgKHNldHEgY3VycG9zICgrIGN1cnBv
+cyAxKSkpKSkpCgoKCihkZWZ1biBjc2hhcnAtZW5kLW9mLXZlcmJhdGltLWxpdGVyYWwtc3RyaW5n
+ICgmb3B0aW9uYWwgbGltKQogICJNb3ZlcyB0byBhbmQgcmV0dXJucyB0aGUgcG9zaXRpb24gb2Yg
+dGhlIGVuZCBxdW90ZSBvZiB0aGUgdmVyYmF0aW0gbGl0ZXJhbApzdHJpbmcuICBXaGVuIGNhbGxp
+bmcsIHBvaW50IHNob3VsZCBiZSBvbiB0aGUgQCBvZiB0aGUgdmVyYmxpdCBzdHJpbmcuCklmIGl0
+IGlzIG5vdCwgdGhlbiBubyBtb3ZlbWVudCBpcyBwZXJmb3JtZWQgYW5kIGBwb2ludCcgaXMgcmV0
+dXJuZWQuCgpUaGlzIGZ1bmN0aW9uIGlnbm9yZXMgdGV4dCBwcm9wZXJ0aWVzLiBJbiBmYWN0IGl0
+IGlzIHRoZQp1bmRlcmx5aW5nIHNjYW5uZXIgdXNlZCB0byBzZXQgdGhlIHRleHQgcHJvcGVydGll
+cyBpbiBhIEMjIGJ1ZmZlci4KIgoKICAoY3NoYXJwLWxvZyAzICJlbmQtb2YtdmxpdC1zdHJpbmc6
+IHBvaW50KCVkKSBjKCVjKSIgKHBvaW50KSAoY2hhci1hZnRlcikpCgogIChsZXQgKGN1cnBvcwog
+ICAgICAgIChtYXggKG9yIGxpbSAocG9pbnQtbWF4KSkpKQoKICAgIChpZiAobm90IChsb29raW5n
+LWF0ICJAXCIiKSkKICAgICAgICAocG9pbnQpCiAgICAgIChmb3J3YXJkLWNoYXIgMikgOzsgcGFz
+cyB1cCB0aGUgQCBzaWduIGFuZCBmaXJzdCBxdW90ZQogICAgICAoc2V0cSBjdXJwb3MgKHBvaW50
+KSkKCiAgICAgIDs7IFdpdGhpbiBhIHZlcmJhdGltIGxpdGVyYWwgc3RyaW5nLCBhIGRvdWJsZWQg
+ZG91YmxlLXF1b3RlCiAgICAgIDs7IGVzY2FwZXMgdGhlIGRvdWJsZS1xdW90ZS4iCiAgICAgICh3
+aGlsZSAoYW5kICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIDs7IHByb2Nlc3MgY2hh
+cmFjdGVycy4uLgogICAgICAgICAgICAgIChvciAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICA7OyB3aGlsZS4uLgogICAgICAgICAgICAgICAobm90IChlcSAoY2hhci1hZnRlciBjdXJw
+b3MpID9cIikpICA7OyBpdCdzIG5vdCBhIHF1b3RlCiAgICAgICAgICAgICAgIChlcSAoY2hhci1h
+ZnRlciAoKyBjdXJwb3MgMSkpID9cIikpIDs7IG9yLCBpdHMgYSBkb3VibGUgKGRvdWJsZSkgcXVv
+dGUKICAgICAgICAgICAgICAoPCBjdXJwb3MgbWF4KSkgICAgICAgICAgICAgICAgICAgICAgOzsg
+YW5kIHdlJ3JlIG5vdCBkb25lIHlldAoKICAgICAgICAoY29uZAogICAgICAgICAoKGFuZCAoZXEg
+KGNoYXItYWZ0ZXIgY3VycG9zKSA/XCIpICAgICAgICA7OyBpdCdzIGEgZG91YmxlLXF1b3RlLgog
+ICAgICAgICAgICAgICAoZXEgKGNoYXItYWZ0ZXIgKCsgY3VycG9zIDEpKSA/XCIpKQogICAgICAg
+ICAgKHNldHEgY3VycG9zICgrIDIgY3VycG9zKSkpICAgICAgICAgICAgICA7OyBTa2lwIDIKICAg
+ICAgICAgKHQgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgOzsgYW55dGhp
+bmcgZWxzZQogICAgICAgICAgKHNldHEgY3VycG9zICgrIDEgY3VycG9zKSkpKSkgICAgICAgICAg
+ICA7OyBza2lwIGZ3ZCAxCiAgICAgIGN1cnBvcykpKQoKCgoKKGRlZnVuIGNzaGFycC1zY2FuLWZv
+ci12ZXJiYXRpbS1saXRlcmFscy1hbmQtc2V0LXByb3BzICgmb3B0aW9uYWwgYmVnIGVuZCkKICAi
+U2NhbnMgdGhlIGJ1ZmZlciwgYmV0d2VlbiBCRUcgYW5kIEVORCwgZm9yIHZlcmJhdGltIGxpdGVy
+YWwKc3RyaW5ncywgYW5kIHNldHMgb3ZlcnJpZGUgdGV4dCBwcm9wZXJ0aWVzIG9uIGVhY2ggc3Ry
+aW5nIHRvCmFsbG93IHByb3BlciBzeW50YXggaGlnaGxpZ2h0aW5nLCBpbmRlbnRpbmcsIGFuZCBj
+dXJzb3IgbW92ZW1lbnQuCgpCRUcgYW5kIEVORCBkZWZpbmUgdGhlIGxpbWl0cyBvZiB0aGUgc2Nh
+bi4gIFdoZW4gbmlsLCB0aGV5CmRlZmF1bHQgdG8gYHBvaW50LW1pbicgYW5kIGBwb2ludC1tYXgn
+IHJlc3BlY3RpdmVseS4KClNldHRpbmcgdGV4dCBwcm9wZXJ0aWVzIGdlbmVyYWxseSBjYXVzZXMg
+dGhlIGJ1ZmZlciB0byBiZSBtYXJrZWQKYXMgbW9kaWZpZWQsIGJ1dCB0aGlzIGZuIHN1cHByZXNz
+ZXMgdGhhdCB2aWEgdGhlCmBjLWJ1ZmZlci1zYXZlLXN0YXRlJyBtYWNybywgZm9yIGFueSBjaGFu
+Z2VzIGluIHRleHQgcHJvcGVydGllcwp0aGF0IGl0IG1ha2VzLiAgVGhpcyBmbiBhbHNvIGlnbm9y
+ZXMgdGhlIHJlYWQtb25seSBzZXR0aW5nIG9uIGEKYnVmZmVyLCB1c2luZyB0aGUgc2FtZSBtYWNy
+by4KClRoaXMgZm4gaXMgY2FsbGVkIHdoZW4gYSBjc2hhcnAtbW9kZSBidWZmZXIgaXMgbG9hZGVk
+LCB3aXRoIEJFRwphbmQgRU5EIHNldCB0byBuaWwsIHRvIGRvIGEgZnVsbCBzY2FuLiAgSXQgaXMg
+YWxzbyBjYWxsZWQgb24KZXZlcnkgYnVmZmVyIGNoYW5nZSwgd2l0aCB0aGUgQkVHIGFuZCBFTkQg
+c2V0IHRvIHRoZSB2YWx1ZXMgZm9yCnRoZSBjaGFuZ2UuCgpUaGUgcmV0dXJuIHZhbHVlIGlzIG5p
+bCBpZiB0aGUgYnVmZmVyIHdhcyBub3QgYSBjc2hhcnAtbW9kZQpidWZmZXIuIE90aGVyd2lzZSBp
+dCBpcyB0aGUgbGFzdCBjdXJzb3IgcG9zaXRpb24gZXhhbWluZWQgYnkgdGhlCnNjYW4uCiIKCiAg
+KGlmIChub3QgKGMtbWFqb3ItbW9kZS1pcyAnY3NoYXJwLW1vZGUpKSA7OyBkb24ndCBzY2FuIGlm
+IG5vdCBjc2hhcnAgbW9kZQogICAgICBuaWwKICAgIChzYXZlLWV4Y3Vyc2lvbgogICAgICAoYy1z
+YXZlLWJ1ZmZlci1zdGF0ZQogICAgICAgICAgKChjdXJwb3MgKG9yIGJlZyAocG9pbnQtbWluKSkp
+CiAgICAgICAgICAgKGxhc3Rwb3MgKG9yIGVuZCAocG9pbnQtbWF4KSkpCiAgICAgICAgICAgKHN0
+YXRlIDApIChzdGFydCAwKSAoY3ljbGUgMCkKICAgICAgICAgICBsaXRlcmFsIGVvcyBsaW1pdHMp
+CgogICAgICAgIChjc2hhcnAtbG9nIDMgInZlcmJsaXQgc2NhbiIpCiAgICAgICAgKGdvdG8tY2hh
+ciBjdXJwb3MpCgogICAgICAgICh3aGlsZSAoYW5kICg8IGN1cnBvcyBsYXN0cG9zKSAoPCBjeWNs
+ZSAxMDAwMCkpCiAgICAgICAgICAoY29uZAoKICAgICAgICAgICA7OyBDYXNlIDE6IGN1cnJlbnQg
+Y2hhciBpcyBhIEAgc2lnbgogICAgICAgICAgIDs7IC0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tCiAgICAgICAgICAgOzsgQ2hlY2sgdG8gc2VlIGlmIGl0IGRlbWFy
+a3MgdGhlIGJlZ2lubmluZyBvZiBhIHZlcmJsaXQKICAgICAgICAgICA7OyBzdHJpbmcuCiAgICAg
+ICAgICAgKCg9ID9AIChjaGFyLWFmdGVyIGN1cnBvcykpCgogICAgICAgICAgICA7OyBhcmUgd2Ug
+aW4gYSBjb21tZW50PyAgIGEgc3RyaW5nPyAgTWF5YmUgdGhlIEAgaXMgYSBwcmVmaXgKICAgICAg
+ICAgICAgOzsgdG8gYWxsb3cgdGhlIHVzZSBvZiBhIHJlc2VydmVkIHdvcmQgYXMgYSBzeW1ib2wu
+IExldCdzIGZpbmQgb3V0LgoKICAgICAgICAgICAgOzsgbm90IHN1cmUgd2h5IEkgbmVlZCBib3Ro
+IG9mIHRoZSBmb2xsb3dpbmcuCiAgICAgICAgICAgIChzeW50YXgtcHBzcy1mbHVzaC1jYWNoZSAx
+KQogICAgICAgICAgICAocGFyc2UtcGFydGlhbC1zZXhwIDEgY3VycG9zKQogICAgICAgICAgICAo
+Z290by1jaGFyIGN1cnBvcykKICAgICAgICAgICAgKHNldHEgbGl0ZXJhbCAoY3NoYXJwLWluLWxp
+dGVyYWwpKQogICAgICAgICAgICAoY29uZAoKICAgICAgICAgICAgIDs7IENhc2UgMS5BOiBpdCdz
+IGEgQCB3aXRoaW4gYSBzdHJpbmcuCiAgICAgICAgICAgICA7OyAtLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQogICAgICAgICAgICAgOzsgVGhpcyBzaG91bGQgbmV2
+ZXIgaGFwcGVuLCBiZWNhdXNlIHRoaXMgc2Nhbm5lciBob3BzIG92ZXIgc3RyaW5ncy4KICAgICAg
+ICAgICAgIDs7IEJ1dCBpdCBtaWdodCBoYXBwZW4gaWYgdGhlIHNjYW4gc3RhcnRzIGF0IGFuIG9k
+ZCBwbGFjZS4KICAgICAgICAgICAgICgoZXEgbGl0ZXJhbCAnc3RyaW5nKSBuaWwpCgogICAgICAg
+ICAgICAgOzsgQ2FzZSAxLkI6IFRoZSBAIGlzIHdpdGhpbiBhIGNvbW1lbnQuICBIb3Agb3ZlciBp
+dC4KICAgICAgICAgICAgICgoYW5kIChtZW1xIGxpdGVyYWwgJyhjIGMrKykpCiAgICAgICAgICAg
+ICAgICAgICA7OyBUaGlzIGlzIGEga2x1ZGdlIGZvciBYRW1hY3Mgd2hlcmUgd2UgdXNlCiAgICAg
+ICAgICAgICAgICAgICA7OyBgYnVmZmVyLXN5bnRhY3RpYy1jb250ZXh0Jywgd2hpY2ggZG9lc24n
+dCBjb3JyZWN0bHkKICAgICAgICAgICAgICAgICAgIDs7IHJlY29nbml6ZSAiXCovIiB0byBlbmQg
+YSBibG9jayBjb21tZW50LgogICAgICAgICAgICAgICAgICAgOzsgYHBhcnNlLXBhcnRpYWwtc2V4
+cCcgd2hpY2ggaXMgdXNlZCBieQogICAgICAgICAgICAgICAgICAgOzsgYGMtbGl0ZXJhbC1saW1p
+dHMnIHdpbGwgaG93ZXZlciBkbyB0aGF0IGluIG1vc3QKICAgICAgICAgICAgICAgICAgIDs7IHZl
+cnNpb25zLCB3aGljaCByZXN1bHRzIGluIHRoYXQgd2UgZ2V0IG5pbCBmcm9tCiAgICAgICAgICAg
+ICAgICAgICA7OyBgYy1saXRlcmFsLWxpbWl0cycgZXZlbiB3aGVuIGBjLWluLWxpdGVyYWwnIGNs
+YWltcwogICAgICAgICAgICAgICAgICAgOzsgd2UncmUgaW5zaWRlIGEgY29tbWVudC4KICAgICAg
+ICAgICAgICAgICAgIDs7KHNldHEgbGltaXRzIChjLWxpdGVyYWwtbGltaXRzIHN0YXJ0KSkpCiAg
+ICAgICAgICAgICAgICAgICAoc2V0cSBsaW1pdHMgKGMtbGl0ZXJhbC1saW1pdHMpKSkKCiAgICAg
+ICAgICAgICAgOzsgYWR2YW5jZSB0byB0aGUgZW5kIG9mIHRoZSBjb21tZW50CiAgICAgICAgICAg
+ICAgKGlmIGxpbWl0cwogICAgICAgICAgICAgICAgICAocHJvZ24KICAgICAgICAgICAgICAgICAg
+ICAoY3NoYXJwLWxvZyA0ICJzY2FuOiBqdW1wIGVuZCBjb21tZW50IEEgKCVkKSIgKGNkciBsaW1p
+dHMpKQogICAgICAgICAgICAgICAgICAgIChzZXRxIGN1cnBvcyAoY2RyIGxpbWl0cykpKSkpCgoK
+ICAgICAgICAgICAgIDs7IENhc2UgMS5COiBjdXJwb3MgaXMgYXQgbGVhc3QgMiBjaGFycyBiZWZv
+cmUgdGhlIGxhc3QKICAgICAgICAgICAgIDs7IHBvc2l0aW9uIHRvIGV4YW1pbmUsIGFuZCwgdGhl
+IGZvbGxvd2luZyBjaGFyIGlzIGEKICAgICAgICAgICAgIDs7IGRvdWJsZS1xdW90ZSAoQVNDSUkg
+MzQpLgogICAgICAgICAgICAgOzsgLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0KICAgICAgICAgICAgIDs7IFRoaXMgbG9va3MgbGlrZSB0aGUgYmVnaW5uaW5nIG9m
+IGEgdmVyYmF0aW0gc3RyaW5nCiAgICAgICAgICAgICA7OyBsaXRlcmFsLgogICAgICAgICAgICAg
+KChhbmQgKDwgKCsgMiBjdXJwb3MpIGxhc3Rwb3MpCiAgICAgICAgICAgICAgICAgICAoPSA/XCIg
+KGNoYXItYWZ0ZXIgKCsgMSBjdXJwb3MpKSkpCgogICAgICAgICAgICAgIChzZXRxIGVvcyAoY3No
+YXJwLWVuZC1vZi12ZXJiYXRpbS1saXRlcmFsLXN0cmluZykpCiAgICAgICAgICAgICAgOzsgc2V0
+IG92ZXJyaWRlIHN5bnRheCBwcm9wZXJ0aWVzIG9uIHRoZSB2ZXJibGl0IHN0cmluZwogICAgICAg
+ICAgICAgIChjc2hhcnAtc2V0LXZsaXRlcmFsLXN5bnRheC10YWJsZS1wcm9wZXJ0aWVzIGN1cnBv
+cyBlb3MpCgogICAgICAgICAgICAgIChjc2hhcnAtbG9nIDQgInNjYW46IGp1bXAgZW5kIHZlcmJs
+aXQgc3RyaW5nICglZCkiIGVvcykKICAgICAgICAgICAgICAoc2V0cSBjdXJwb3MgZW9zKSkpKQoK
+CiAgICAgICAgICAgOzsgQ2FzZSAyOiBjdXJyZW50IGNoYXIgaXMgYSBkb3VibGUtcXVvdGUuCiAg
+ICAgICAgICAgOzsgLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0K
+ICAgICAgICAgICA7OyBJZiB0aGlzIGlzIGEgc3RyaW5nLCB3ZSBob3Agb3ZlciBpdCwgb24gdGhl
+IGFzc3VtcHRpb24gdGhhdAogICAgICAgICAgIDs7IHRoaXMgc2Nhbm5lciBuZWVkIG5vdCBib3Ro
+ZXIgd2l0aCByZWd1bGFyIGxpdGVyYWwgc3RyaW5ncywgd2hpY2gKICAgICAgICAgICA7OyBnZXQg
+dGhlIHByb3BlciBzeW50YXggd2l0aCB0aGUgZ2VuZXJpYyBhcHByb2FjaC4KICAgICAgICAgICA7
+OyBJZiBpbiBhIGNvbW1lbnQsIGhvcCBvdmVyIHRoZSBjb21tZW50LgogICAgICAgICAgICgoPSA/
+XCIgKGNoYXItYWZ0ZXIgY3VycG9zKSkKICAgICAgICAgICAgKGdvdG8tY2hhciBjdXJwb3MpCiAg
+ICAgICAgICAgIChzZXRxIGxpdGVyYWwgKGMtaW4tbGl0ZXJhbCkpCiAgICAgICAgICAgIChjb25k
+CgogICAgICAgICAgICAgOzsgQ2FzZSAyLkE6IGEgcXVvdGUgd2l0aGluIGEgc3RyaW5nCiAgICAg
+ICAgICAgICA7OyAtLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQog
+ICAgICAgICAgICAgOzsgVGhpcyBzaG91bGRuJ3QgaGFwcGVuLCBiZWNhdXNlIHdlIGhvcCBvdmVy
+IHN0cmluZ3MuCiAgICAgICAgICAgICA7OyBCdXQgaXQgbWlnaHQuCiAgICAgICAgICAgICAoKGVx
+IGxpdGVyYWwgJ3N0cmluZykgbmlsKQoKICAgICAgICAgICAgIDs7IENhc2UgMi5COiBhIHF1b3Rl
+IHdpdGhpbiBhIGNvbW1lbnQKICAgICAgICAgICAgIDs7IC0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tCiAgICAgICAgICAgICAoKGFuZCAobWVtcSBsaXRlcmFsICco
+YyBjKyspKQogICAgICAgICAgICAgICAgICAgOzsgVGhpcyBpcyBhIGtsdWRnZSBmb3IgWEVtYWNz
+IHdoZXJlIHdlIHVzZQogICAgICAgICAgICAgICAgICAgOzsgYGJ1ZmZlci1zeW50YWN0aWMtY29u
+dGV4dCcsIHdoaWNoIGRvZXNuJ3QgY29ycmVjdGx5CiAgICAgICAgICAgICAgICAgICA7OyByZWNv
+Z25pemUgIlwqLyIgdG8gZW5kIGEgYmxvY2sgY29tbWVudC4KICAgICAgICAgICAgICAgICAgIDs7
+IGBwYXJzZS1wYXJ0aWFsLXNleHAnIHdoaWNoIGlzIHVzZWQgYnkKICAgICAgICAgICAgICAgICAg
+IDs7IGBjLWxpdGVyYWwtbGltaXRzJyB3aWxsIGhvd2V2ZXIgZG8gdGhhdCBpbiBtb3N0CiAgICAg
+ICAgICAgICAgICAgICA7OyB2ZXJzaW9ucywgd2hpY2ggcmVzdWx0cyBpbiB0aGF0IHdlIGdldCBu
+aWwgZnJvbQogICAgICAgICAgICAgICAgICAgOzsgYGMtbGl0ZXJhbC1saW1pdHMnIGV2ZW4gd2hl
+biBgYy1pbi1saXRlcmFsJyBjbGFpbXMKICAgICAgICAgICAgICAgICAgIDs7IHdlJ3JlIGluc2lk
+ZSBhIGNvbW1lbnQuCiAgICAgICAgICAgICAgICAgICA7OyhzZXRxIGxpbWl0cyAoYy1saXRlcmFs
+LWxpbWl0cyBzdGFydCkpKQogICAgICAgICAgICAgICAgICAgKHNldHEgbGltaXRzIChjLWxpdGVy
+YWwtbGltaXRzKSkpCgogICAgICAgICAgICAgIDs7IGFkdmFuY2UgdG8gdGhlIGVuZCBvZiB0aGUg
+Y29tbWVudAogICAgICAgICAgICAgIChpZiBsaW1pdHMKICAgICAgICAgICAgICAgICAgKHByb2du
+CiAgICAgICAgICAgICAgICAgICAgKHNldHEgY3VycG9zIChjZHIgbGltaXRzKSkKICAgICAgICAg
+ICAgICAgICAgICAoY3NoYXJwLWxvZyAzICJzY2FuOiBqdW1wIGVuZCBjb21tZW50IEIgKCVzKSIg
+Y3VycG9zKSkpKQoKCiAgICAgICAgICAgICA7OyBDYXNlIDIuQzogTm90IGluIGEgY29tbWVudCwg
+YW5kIG5vdCBpbiBhIHN0cmluZy4KICAgICAgICAgICAgIDs7IC0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tCiAgICAgICAgICAgICA7OyBUaGlzIGlzIHRoZSBiZWdp
+bm5pbmcgb2YgYSBsaXRlcmFsIChidXQgbm90IHZlcmJhdGltKSBzdHJpbmcuCiAgICAgICAgICAg
+ICAodAogICAgICAgICAgICAgIChmb3J3YXJkLWNoYXIgMSkgOzsgcGFzcyB1cCB0aGUgcXVvdGUK
+ICAgICAgICAgICAgICAoaWYgKGNvbnNwIChzZXRxIGxpbWl0cyAoYy1saXRlcmFsLWxpbWl0cykp
+KQogICAgICAgICAgICAgICAgICAocHJvZ24KICAgICAgICAgICAgICAgICAgICAoY3NoYXJwLWxv
+ZyA0ICJzY2FuOiBqdW1wIGVuZCBsaXRlcmFsICglZCkiIChjZHIgbGltaXRzKSkKICAgICAgICAg
+ICAgICAgICAgICAoc2V0cSBjdXJwb3MgKGNkciBsaW1pdHMpKSkpKSkpKQoKICAgICAgICAgIChz
+ZXRxIGN5Y2xlICgrIDEgY3ljbGUpKQogICAgICAgICAgKHNldHEgY3VycG9zICgrIDEgY3VycG9z
+KSkKICAgICAgICAgIChjLXNhZmUgKGdvdG8tY2hhciBjdXJwb3MpKSkpKSkpCgoKCihkZWZ1biBj
+c2hhcnAtLWJlZm9yZS1mb250LWxvY2sgKGJlZyBlbmQgb2xkLWxlbikKICAiQWRqdXN0YHN5bnRh
+eC10YWJsZScgcHJvcGVydGllcyBvbiB0aGUgcmVnaW9uIGFmZmVjdGVkIGJ5IHRoZSBjaGFuZ2UK
+aW4gYSBjc2hhcnAtbW9kZSBidWZmZXIuCgpUaGlzIGZ1bmN0aW9uIGlzIHRoZSBDIyB2YWx1ZSBm
+b3IgYGMtYmVmb3JlLWZvbnQtbG9jay1mdW5jdGlvbicuCkl0IGludGVuZGVkIHRvIGJlIGNhbGxl
+ZCBvbmx5IGJ5IHRoZSBjYy1tb2RlIHJ1bnRpbWUuCgpJdCBwcmVwYXJlcyB0aGUgYnVmZmVyIGZv
+ciBmb250IGxvY2tpbmcsIGhlbmNlIG11c3QgZ2V0IGNhbGxlZApiZWZvcmUgYGZvbnQtbG9jay1h
+ZnRlci1jaGFuZ2UtZnVuY3Rpb24nLgoKSXQgZG9lcyBoaWRkZW4gYnVmZmVyIGNoYW5nZXMuCgpC
+RUcsIEVORCBhbmQgT0xELUxFTiBoYXZlIHRoZSBzYW1lIG1lYW5pbmcgaGVyZSBhcyBmb3IgYW55
+CmFmdGVyLWNoYW5nZSBmdW5jdGlvbi4KClBvaW50IGlzIHVuZGVmaW5lZCBib3RoIGJlZm9yZSBh
+bmQgYWZ0ZXIgdGhpcyBmdW5jdGlvbiBjYWxsLgpUaGUgcmV0dXJuIHZhbHVlIGlzIG1lYW5pbmds
+ZXNzLCBhbmQgaXMgaWdub3JlZCBieSBjYy1tb2RlLgoiCiAgKGNzaGFycC1sb2cgMiAiYmVmb3Jl
+IGZvbnQgbG9jayAlZCAlZCAlZCAlZCIgYmVnIGVuZCBvbGQtbGVuIChwb2ludCkpCiAgKGxldCAo
+KHN0YXJ0LXNjYW4gKHByb2duCiAgICAgICAgICAgICAgICAgICAgICA7OyBpcyB0aGlzIHJpZ2h0
+PyAgSSB0aGluawogICAgICAgICAgICAgICAgICAgICAgKGMtYmVnaW5uaW5nLW9mLXN0YXRlbWVu
+dCAxKQogICAgICAgICAgICAgICAgICAgICAgKHBvaW50KSkpKQogICAgKGNzaGFycC1zY2FuLWZv
+ci12ZXJiYXRpbS1saXRlcmFscy1hbmQtc2V0LXByb3BzIHN0YXJ0LXNjYW4gZW5kKSkpCgoKCihj
+LWxhbmctZGVmY29uc3QgYy1iZWZvcmUtZm9udC1sb2NrLWZ1bmN0aW9uCiAgY3NoYXJwICdjc2hh
+cnAtLWJlZm9yZS1mb250LWxvY2spCgo7OyA9PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09
+PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT0KOzsgZW5kIG9mIGMjIGZvbnRpZmlj
+YXRpb24gZXh0ZW5zaW9ucwo7OyA9PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09
+PT09PT09PT09PT09PT09PT09PT09PT09PT09PT0KCgoKCgo7OyA9PT09PT09PT09PT09PT09PT09
+PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT0KOzsgQyMtc3Bl
+Y2lmaWMgb3B0aW1pemF0aW9ucyBvZiBjYy1tb2RlIGZ1bmNzCjs7ID09PT09PT09PT09PT09PT09
+PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PQoKOzsgVGhl
+cmUncyBuZXZlciBhIG5lZWQgdG8gbW92ZSBvdmVyIGFuIE9iai1DIGRpcmVjdGl2ZSBpbiBjc2hh
+cnAtbW9kZS4KKGRlZmFkdmljZSBjLWZvcndhcmQtb2JqYy1kaXJlY3RpdmUgKGFyb3VuZAogICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgY3NoYXJwLW1vZGUtYWR2aWNlLTIKICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIGNvbXBpbGUgYWN0aXZhdGUpCiAgKGlm
+IChjLW1ham9yLW1vZGUtaXMgJ2NzaGFycC1tb2RlKQogICAgICBuaWwKICAgIGFkLWRvLWl0KQog
+ICkKCjs7ID09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09
+PT09PT09PT09PT09PT09PQo7OyBlbmQgb2YgQyMtc3BlY2lmaWMgb3B0aW1pemF0aW9ucyBvZiBj
+Yy1tb2RlIGZ1bmNzCjs7ID09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09
+PT09PT09PT09PT09PT09PT09PT09PT09PQoKCgoKCgoKCjs7ID09PT09PT09PT09PT09PT09PT09
+PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PQo7OyBjIyAtIG1v
+bmtleS1wYXRjaGluZyBvZiBiYXNpYyBwYXJzaW5nIGxvZ2ljCjs7ID09PT09PT09PT09PT09PT09
+PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PQo7Owo7OyBU
+aGUgZm9sbG93aW5nIDIgZGVmdW5zIHJlZGVmaW5lIGZ1bmN0aW9ucyBmcm9tIGNjLW1vZGUsIHRv
+IGFkZAo7OyBzcGVjaWFsIGNhc2VzIGZvciBDIy4gIFRoZXNlIHByaW1hcmlseSBkZWFsIHdpdGgg
+aW5kZW50YXRpb24gb2YKOzsgaW5zdGFuY2UgaW5pdGlhbGl6ZXJzLCB3aGljaCBhcmUgc29tZXdo
+YXQgdW5pcXVlIHRvIEMjLiAgSSBjb3VsZG4ndAo7OyBmaWd1cmUgb3V0IGhvdyB0byBnZXQgY2Mt
+bW9kZSB0byBkbyB3aGF0IEMjIG5lZWRzLCB3aXRob3V0IG1vZGlmeWluZwo7OyB0aGVzZSBkZWZ1
+bnMuCjs7CgooZGVmdW4gYy1sb29raW5nLWF0LWluZXhwci1ibG9jayAobGltIGNvbnRhaW5pbmct
+c2V4cCAmb3B0aW9uYWwgY2hlY2stYXQtZW5kKQogIDs7IFJldHVybiBub24tbmlsIGlmIHdlJ3Jl
+IGxvb2tpbmcgYXQgdGhlIGJlZ2lubmluZyBvZiBhIGJsb2NrCiAgOzsgaW5zaWRlIGFuIGV4cHJl
+c3Npb24uICBUaGUgdmFsdWUgcmV0dXJuZWQgaXMgYWN0dWFsbHkgYSBjb25zIG9mCiAgOzsgZWl0
+aGVyICdpbmxhbWJkYSwgJ2luZXhwci1zdGF0ZW1lbnQgb3IgJ2luZXhwci1jbGFzcyBhbmQgdGhl
+CiAgOzsgcG9zaXRpb24gb2YgdGhlIGJlZ2lubmluZyBvZiB0aGUgY29uc3RydWN0LgogIDs7CiAg
+OzsgTElNIGxpbWl0cyB0aGUgYmFja3dhcmQgc2VhcmNoLiAgQ09OVEFJTklORy1TRVhQIGlzIHRo
+ZSBzdGFydAogIDs7IHBvc2l0aW9uIG9mIHRoZSBjbG9zZXN0IGNvbnRhaW5pbmcgbGlzdC4gIElm
+IGl0J3MgbmlsLCB0aGUKICA7OyBjb250YWluaW5nIHBhcmVuIGlzbid0IHVzZWQgdG8gZGVjaWRl
+IHdoZXRoZXIgd2UncmUgaW5zaWRlIGFuCiAgOzsgZXhwcmVzc2lvbiBvciBub3QuICBJZiBib3Ro
+IExJTSBhbmQgQ09OVEFJTklORy1TRVhQIGFyZSB1c2VkLCBMSU0KICA7OyBuZWVkcyB0byBiZSBm
+YXJ0aGVyIGJhY2suCiAgOzsKICA7OyBJZiBDSEVDSy1BVC1FTkQgaXMgbm9uLW5pbCB0aGVuIGV4
+dHJhIGNoZWNrcyBhdCB0aGUgZW5kIG9mIHRoZQogIDs7IGJyYWNlIGJsb2NrIG1pZ2h0IGJlIGRv
+bmUuICBJdCBzaG91bGQgb25seSBiZSB1c2VkIHdoZW4gdGhlCiAgOzsgY29uc3RydWN0IGNhbiBi
+ZSBhc3N1bWVkIHRvIGJlIGNvbXBsZXRlLCBpLmUuIHdoZW4gdGhlIG9yaWdpbmFsCiAgOzsgc3Rh
+cnRpbmcgcG9zaXRpb24gd2FzIGZ1cnRoZXIgZG93biB0aGFuIHRoYXQuCiAgOzsKICA7OyBUaGlz
+IGZ1bmN0aW9uIG1pZ2h0IGRvIGhpZGRlbiBidWZmZXIgY2hhbmdlcy4KCiAgKHNhdmUtZXhjdXJz
+aW9uCiAgICAobGV0ICgocmVzICdtYXliZSkgcGFzc2VkLXBhcmVuCiAgICAgICAgICAoY2xvc2Vz
+dC1saW0gKG9yIGNvbnRhaW5pbmctc2V4cCBsaW0gKHBvaW50LW1pbikpKQogICAgICAgICAgOzsg
+TG9vayBhdCB0aGUgY2hhcmFjdGVyIGFmdGVyIHBvaW50IG9ubHkgYXMgYSBsYXN0IHJlc29ydAog
+ICAgICAgICAgOzsgd2hlbiB3ZSBjYW4ndCBkaXNhbWJpZ3VhdGUuCiAgICAgICAgICAoYmxvY2st
+Zm9sbG93cyAoYW5kIChlcSAoY2hhci1hZnRlcikgP3spIChwb2ludCkpKSkKCiAgICAgICh3aGls
+ZSAoYW5kIChlcSByZXMgJ21heWJlKQogICAgICAgICAgICAgICAgICAocHJvZ24gKGMtYmFja3dh
+cmQtc3ludGFjdGljLXdzKQogICAgICAgICAgICAgICAgICAgICAgICAgKD4gKHBvaW50KSBjbG9z
+ZXN0LWxpbSkpCiAgICAgICAgICAgICAgICAgIChub3QgKGJvYnApKQogICAgICAgICAgICAgICAg
+ICAocHJvZ24gKGJhY2t3YXJkLWNoYXIpCiAgICAgICAgICAgICAgICAgICAgICAgICAobG9va2lu
+Zy1hdCAiW1xdXCkuXVxcfFx3XFx8XFxzXyIpKQogICAgICAgICAgICAgICAgICAoYy1zYWZlIChm
+b3J3YXJkLWNoYXIpCiAgICAgICAgICAgICAgICAgICAgICAgICAgKGdvdG8tY2hhciAoc2Nhbi1z
+ZXhwcyAocG9pbnQpIC0xKSkpKQoKICAgICAgICAoc2V0cSByZXMKICAgICAgICAgICAgICAoaWYg
+KGxvb2tpbmctYXQgYy1rZXl3b3Jkcy1yZWdleHApCiAgICAgICAgICAgICAgICAgIChsZXQgKChr
+dy1zeW0gKGMta2V5d29yZC1zeW0gKG1hdGNoLXN0cmluZyAxKSkpKQogICAgICAgICAgICAgICAg
+ICAgIChjb25kCiAgICAgICAgICAgICAgICAgICAgICgoYW5kIGJsb2NrLWZvbGxvd3MKICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgKGMta2V5d29yZC1tZW1iZXIga3ctc3ltICdjLWluZXhwci1j
+bGFzcy1rd2RzKSkKICAgICAgICAgICAgICAgICAgICAgIChhbmQgKG5vdCAoZXEgcGFzc2VkLXBh
+cmVuID9cWykpCgogICAgICAgICAgICAgICAgICAgICAgICAgICA7OyBkaW5vY2ggVGh1LCAyMiBB
+cHIgMjAxMCAgMTg6MjAKICAgICAgICAgICAgICAgICAgICAgICAgICAgOzsgPT09PT09PT09PT09
+PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT0KICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgOzsgbG9va2luZyBhdCBuZXcgTXlUeXBlKCkgeyAuLi4gfQogICAgICAgICAgICAgICAgICAg
+ICAgICAgICA7OyBtZWFucyB0aGlzIGlzIGEgYnJhY2UgbGlzdCwgc28sIHJldHVybiBuaWwsCiAg
+ICAgICAgICAgICAgICAgICAgICAgICAgIDs7IGltcGx5aW5nIE5PVCBsb29raW5nLWF0LWluZXhw
+ci1ibG9jawogICAgICAgICAgICAgICAgICAgICAgICAgICAobm90CiAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAoYW5kIChjLW1ham9yLW1vZGUtaXMgJ2NzaGFycC1tb2RlKQogICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAobG9va2luZy1hdCAibmV3WyBcdFxuXGZcdlxyXStcXChb
+WzphbG51bTpdX10rXFwpXFxiIikpKQoKICAgICAgICAgICAgICAgICAgICAgICAgICAgKG9yIChu
+b3QgKGxvb2tpbmctYXQgYy1jbGFzcy1rZXkpKQogICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgOzsgSWYgdGhlIGNsYXNzIGluc3RhbnRpYXRpb24gaXMgYXQgdGhlIHN0YXJ0IG9mCiAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICA7OyBhIHN0YXRlbWVudCwgd2UgZG9uJ3QgY29uc2lk
+ZXIgaXQgYW4KICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIDs7IGluLWV4cHJlc3Npb24g
+Y2xhc3MuCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAobGV0ICgocHJldiAocG9pbnQp
+KSkKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgKHdoaWxlIChhbmQKICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAoPSAoYy1iYWNrd2FyZC10b2tlbi0yIDEg
+bmlsIGNsb3Nlc3QtbGltKSAwKQogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgIChlcSAoY2hhci1zeW50YXggKGNoYXItYWZ0ZXIpKSA/dykpCiAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgKHNldHEgcHJldiAocG9pbnQpKSkKICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgKGdvdG8tY2hhciBwcmV2KQogICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAobm90IChjLWF0LXN0YXRlbWVudC1zdGFydC1wKSkpCiAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICA7OyBBbHNvLCBpbiBQaWtlIHdlIHRyZWF0IGl0IGFzIGFuCiAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICA7OyBpbi1leHByZXNzaW9uIGNsYXNzIGlmIGl0J3MgdXNl
+ZCBpbiBhbgogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgOzsgb2JqZWN0IGNsb25lIGV4
+cHJlc3Npb24uCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAoc2F2ZS1leGN1cnNpb24K
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgKGFuZCBjaGVjay1hdC1lbmQKICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAoYy1tYWpvci1tb2RlLWlzICdwaWtlLW1v
+ZGUpCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgKHByb2duIChnb3RvLWNo
+YXIgYmxvY2stZm9sbG93cykKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgKHplcm9wIChjLWZvcndhcmQtdG9rZW4tMiAxIHQpKSkKICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAoZXEgKGNoYXItYWZ0ZXIpID9cKCkpKSkKICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgKGNvbnMgJ2luZXhwci1jbGFzcyAocG9pbnQpKSkpCiAgICAgICAgICAg
+ICAgICAgICAgICgoYy1rZXl3b3JkLW1lbWJlciBrdy1zeW0gJ2MtaW5leHByLWJsb2NrLWt3ZHMp
+CiAgICAgICAgICAgICAgICAgICAgICAod2hlbiAobm90IHBhc3NlZC1wYXJlbikKICAgICAgICAg
+ICAgICAgICAgICAgICAgKGNvbnMgJ2luZXhwci1zdGF0ZW1lbnQgKHBvaW50KSkpKQogICAgICAg
+ICAgICAgICAgICAgICAoKGMta2V5d29yZC1tZW1iZXIga3ctc3ltICdjLWxhbWJkYS1rd2RzKQog
+ICAgICAgICAgICAgICAgICAgICAgKHdoZW4gKG9yIChub3QgcGFzc2VkLXBhcmVuKQogICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgIChlcSBwYXNzZWQtcGFyZW4gP1woKSkKICAgICAgICAg
+ICAgICAgICAgICAgICAgKGNvbnMgJ2lubGFtYmRhIChwb2ludCkpKSkKICAgICAgICAgICAgICAg
+ICAgICAgKChjLWtleXdvcmQtbWVtYmVyIGt3LXN5bSAnYy1ibG9jay1zdG10LWt3ZHMpCiAgICAg
+ICAgICAgICAgICAgICAgICBuaWwpCiAgICAgICAgICAgICAgICAgICAgICh0CiAgICAgICAgICAg
+ICAgICAgICAgICAnbWF5YmUpKSkKCiAgICAgICAgICAgICAgICAoaWYgKGxvb2tpbmctYXQgIlxc
+cygiKQogICAgICAgICAgICAgICAgICAgIChpZiBwYXNzZWQtcGFyZW4KICAgICAgICAgICAgICAg
+ICAgICAgICAgKGlmIChhbmQgKGVxIHBhc3NlZC1wYXJlbiA/XFspCiAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgIChlcSAoY2hhci1hZnRlcikgP1xbKSkKICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgIDs7IEFjY2VwdCBzZXZlcmFsIHNxdWFyZSBicmFja2V0IHNleHBzIGZvcgogICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgOzsgSmF2YSBhcnJheSBpbml0aWFsaXphdGlvbnMuCiAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAnbWF5YmUpCiAgICAgICAgICAgICAgICAgICAgICAo
+c2V0cSBwYXNzZWQtcGFyZW4gKGNoYXItYWZ0ZXIpKQogICAgICAgICAgICAgICAgICAgICAgJ21h
+eWJlKQogICAgICAgICAgICAgICAgICAnbWF5YmUpKSkpCgogICAgICAoaWYgKGVxIHJlcyAnbWF5
+YmUpCiAgICAgICAgICAod2hlbiAoYW5kIGMtcmVjb2duaXplLXBhcmVuLWluZXhwci1ibG9ja3MK
+ICAgICAgICAgICAgICAgICAgICAgYmxvY2stZm9sbG93cwogICAgICAgICAgICAgICAgICAgICBj
+b250YWluaW5nLXNleHAKICAgICAgICAgICAgICAgICAgICAgKGVxIChjaGFyLWFmdGVyIGNvbnRh
+aW5pbmctc2V4cCkgP1woKSkKICAgICAgICAgICAgKGdvdG8tY2hhciBjb250YWluaW5nLXNleHAp
+CiAgICAgICAgICAgIChpZiAob3IgKHNhdmUtZXhjdXJzaW9uCiAgICAgICAgICAgICAgICAgICAg
+ICAoYy1iYWNrd2FyZC1zeW50YWN0aWMtd3MgbGltKQogICAgICAgICAgICAgICAgICAgICAgKGFu
+ZCAoPiAocG9pbnQpIChvciBsaW0gKHBvaW50LW1pbikpKQogICAgICAgICAgICAgICAgICAgICAg
+ICAgICAoYy1vbi1pZGVudGlmaWVyKSkpCiAgICAgICAgICAgICAgICAgICAgKGFuZCBjLXNwZWNp
+YWwtYnJhY2UtbGlzdHMKICAgICAgICAgICAgICAgICAgICAgICAgIChjLWxvb2tpbmctYXQtc3Bl
+Y2lhbC1icmFjZS1saXN0KSkpCiAgICAgICAgICAgICAgICBuaWwKICAgICAgICAgICAgICAoY29u
+cyAnaW5leHByLXN0YXRlbWVudCAocG9pbnQpKSkpCgogICAgICAgIHJlcykpKSkKCgoKCgooZGVm
+dW4gYy1pbnNpZGUtYnJhY2VsaXN0LXAgKGNvbnRhaW5pbmctc2V4cCBwYXJlbi1zdGF0ZSkKICA7
+OyByZXR1cm4gdGhlIGJ1ZmZlciBwb3NpdGlvbiBvZiB0aGUgYmVnaW5uaW5nIG9mIHRoZSBicmFj
+ZSBsaXN0CiAgOzsgc3RhdGVtZW50IGlmIHdlJ3JlIGluc2lkZSBhIGJyYWNlIGxpc3QsIG90aGVy
+d2lzZSByZXR1cm4gbmlsLgogIDs7IENPTlRBSU5JTkctU0VYUCBpcyB0aGUgYnVmZmVyIHBvcyBv
+ZiB0aGUgaW5uZXJtb3N0IGNvbnRhaW5pbmcKICA7OyBwYXJlbi4gIFBBUkVOLVNUQVRFIGlzIHRo
+ZSByZW1haW5kZXIgb2YgdGhlIHN0YXRlIG9mIGVuY2xvc2luZwogIDs7IGJyYWNlcwogIDs7CiAg
+OzsgTi5CLjogVGhpcyBhbGdvcml0aG0gY2FuIHBvdGVudGlhbGx5IGdldCBjb25mdXNlZCBieSBj
+cHAgbWFjcm9zCiAgOzsgcGxhY2VkIGluIGluY29udmVuaWVudCBsb2NhdGlvbnMuICBJdCdzIGEg
+dHJhZGUtb2ZmIHdlIG1ha2UgZm9yCiAgOzsgc3BlZWQuCiAgOzsKICA7OyBUaGlzIGZ1bmN0aW9u
+IG1pZ2h0IGRvIGhpZGRlbiBidWZmZXIgY2hhbmdlcy4KICAob3IKICAgOzsgVGhpcyB3aWxsIHBp
+Y2sgdXAgYnJhY2UgbGlzdCBkZWNsYXJhdGlvbnMuCiAgIChjLXNhZmUKICAgICAoc2F2ZS1leGN1
+cnNpb24KICAgICAgIChnb3RvLWNoYXIgY29udGFpbmluZy1zZXhwKQogICAgICAgKGMtc2FmZSAo
+Yy1mb3J3YXJkLXNleHAgLTEpKQogICAgICAgKGxldCAoYnJhY2Vwb3MpCiAgICAgICAgIChpZiAo
+YW5kIChvciAobG9va2luZy1hdCBjLWJyYWNlLWxpc3Qta2V5KQoKICAgICAgICAgICAgICAgICAg
+ICAgIChwcm9nbgogICAgICAgICAgICAgICAgICAgICAgICAoYy1zYWZlIChjLWZvcndhcmQtc2V4
+cCAtMSkpCiAgICAgICAgICAgICAgICAgICAgICAgIChsb29raW5nLWF0IGMtYnJhY2UtbGlzdC1r
+ZXkpKQoKICAgICAgICAgICAgICAgICAgICAgIDs7IGRpbm9jaCBUaHUsIDIyIEFwciAyMDEwICAx
+ODoyMAogICAgICAgICAgICAgICAgICAgICAgOzsgPT09PT09PT09PT09PT09PT09PT09PT09PT09
+PT09PT09PT09PT09PT09PT0KICAgICAgICAgICAgICAgICAgICAgIDs7IGxvb2tpbmcgZW51bSBG
+b28gOiBpbnQKICAgICAgICAgICAgICAgICAgICAgIDs7IG1lYW5zIHRoaXMgaXMgYSBicmFjZSBs
+aXN0LCBzbywgcmV0dXJuIG5pbCwKICAgICAgICAgICAgICAgICAgICAgIDs7IGltcGx5aW5nIE5P
+VCBsb29raW5nLWF0LWluZXhwci1ibG9jawoKICAgICAgICAgICAgICAgICAgICAgIChhbmQgKGMt
+bWFqb3ItbW9kZS1pcyAnY3NoYXJwLW1vZGUpCiAgICAgICAgICAgICAgICAgICAgICAgICAgIChw
+cm9nbgogICAgICAgICAgICAgICAgICAgICAgICAgICAgIChjLXNhZmUgKGMtZm9yd2FyZC1zZXhw
+IC0xKSkKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAobG9va2luZy1hdCBjc2hhcnAtZW51
+bS1kZWNsLXJlKSkpKQoKICAgICAgICAgICAgICAgICAgKHNldHEgYnJhY2Vwb3MgKGMtZG93bi1s
+aXN0LWZvcndhcmQgKHBvaW50KSkpCiAgICAgICAgICAgICAgICAgIChub3QgKGMtY3Jvc3Nlcy1z
+dGF0ZW1lbnQtYmFycmllci1wIChwb2ludCkKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgKC0gYnJhY2Vwb3MgMikpKSkKICAgICAgICAgICAgIChw
+b2ludCkpKSkpCgogICA7OyB0aGlzIHdpbGwgcGljayB1cCBhcnJheS9hZ2dyZWdhdGUgaW5pdCBs
+aXN0cywgZXZlbiBpZiB0aGV5IGFyZSBuZXN0ZWQuCiAgIChzYXZlLWV4Y3Vyc2lvbgogICAgIChs
+ZXQgKChjbGFzcy1rZXkKICAgICAgICAgICAgOzsgUGlrZSBjYW4gaGF2ZSBjbGFzcyBkZWZpbml0
+aW9ucyBhbnl3aGVyZSwgc28gd2UgbXVzdAogICAgICAgICAgICA7OyBjaGVjayBmb3IgdGhlIGNs
+YXNzIGtleSBoZXJlLgogICAgICAgICAgICAoYW5kIChjLW1ham9yLW1vZGUtaXMgJ3Bpa2UtbW9k
+ZSkKICAgICAgICAgICAgICAgICBjLWRlY2wtYmxvY2sta2V5KSkKICAgICAgICAgICBidWZwb3Mg
+YnJhY2Vhc3NpZ25wIGxpbSBuZXh0LWNvbnRhaW5pbmcpCiAgICAgICAod2hpbGUgKGFuZCAobm90
+IGJ1ZnBvcykKICAgICAgICAgICAgICAgICAgIGNvbnRhaW5pbmctc2V4cCkKICAgICAgICAgKHdo
+ZW4gcGFyZW4tc3RhdGUKICAgICAgICAgICAoaWYgKGNvbnNwIChjYXIgcGFyZW4tc3RhdGUpKQog
+ICAgICAgICAgICAgICAoc2V0cSBsaW0gKGNkciAoY2FyIHBhcmVuLXN0YXRlKSkKICAgICAgICAg
+ICAgICAgICAgICAgcGFyZW4tc3RhdGUgKGNkciBwYXJlbi1zdGF0ZSkpCiAgICAgICAgICAgICAo
+c2V0cSBsaW0gKGNhciBwYXJlbi1zdGF0ZSkpKQogICAgICAgICAgICh3aGVuIHBhcmVuLXN0YXRl
+CiAgICAgICAgICAgICAoc2V0cSBuZXh0LWNvbnRhaW5pbmcgKGNhciBwYXJlbi1zdGF0ZSkKICAg
+ICAgICAgICAgICAgICAgIHBhcmVuLXN0YXRlIChjZHIgcGFyZW4tc3RhdGUpKSkpCiAgICAgICAg
+IChnb3RvLWNoYXIgY29udGFpbmluZy1zZXhwKQogICAgICAgICAoaWYgKGMtbG9va2luZy1hdC1p
+bmV4cHItYmxvY2sgbmV4dC1jb250YWluaW5nIG5leHQtY29udGFpbmluZykKICAgICAgICAgICAg
+IDs7IFdlJ3JlIGluIGFuIGluLWV4cHJlc3Npb24gYmxvY2sgb2Ygc29tZSBraW5kLiAgRG8gbm90
+CiAgICAgICAgICAgICA7OyBjaGVjayBuZXN0aW5nLiAgV2UgZGVsaWJlcmF0ZWx5IHNldCB0aGUg
+bGltaXQgdG8gdGhlCiAgICAgICAgICAgICA7OyBjb250YWluaW5nIHNleHAsIHNvIHRoYXQgYy1s
+b29raW5nLWF0LWluZXhwci1ibG9jawogICAgICAgICAgICAgOzsgZG9lc24ndCBjaGVjayBmb3Ig
+YW4gaWRlbnRpZmllciBiZWZvcmUgaXQuCiAgICAgICAgICAgICAoc2V0cSBjb250YWluaW5nLXNl
+eHAgbmlsKQogICAgICAgICAgIDs7IHNlZSBpZiB0aGUgb3BlbiBicmFjZSBpcyBwcmVjZWRlZCBi
+eSA9IG9yIFsuLi5dIGluCiAgICAgICAgICAgOzsgdGhpcyBzdGF0ZW1lbnQsIGJ1dCB3YXRjaCBv
+dXQgZm9yIG9wZXJhdG9yPQogICAgICAgICAgIChzZXRxIGJyYWNlYXNzaWducCAnZG9udGtub3cp
+CiAgICAgICAgICAgKGMtYmFja3dhcmQtdG9rZW4tMiAxIHQgbGltKQogICAgICAgICAgIDs7IENo
+ZWNrcyB0byBkbyBvbmx5IG9uIHRoZSBmaXJzdCBzZXhwIGJlZm9yZSB0aGUgYnJhY2UuCiAgICAg
+ICAgICAgKHdoZW4gKGFuZCBjLW9wdC1pbmV4cHItYnJhY2UtbGlzdC1rZXkKICAgICAgICAgICAg
+ICAgICAgICAgIChlcSAoY2hhci1hZnRlcikgP1xbKSkKICAgICAgICAgICAgIDs7IEluIEphdmEs
+IGFuIGluaXRpYWxpemF0aW9uIGJyYWNlIGxpc3QgbWF5IGZvbGxvdwogICAgICAgICAgICAgOzsg
+ZGlyZWN0bHkgYWZ0ZXIgIm5ldyBGb29bXSIsIHNvIGNoZWNrIGZvciBhICJuZXciCiAgICAgICAg
+ICAgICA7OyBlYXJsaWVyLgogICAgICAgICAgICAgKHdoaWxlIChlcSBicmFjZWFzc2lnbnAgJ2Rv
+bnRrbm93KQogICAgICAgICAgICAgICAoc2V0cSBicmFjZWFzc2lnbnAKICAgICAgICAgICAgICAg
+ICAgICAgKGNvbmQgKCgvPSAoYy1iYWNrd2FyZC10b2tlbi0yIDEgdCBsaW0pIDApIG5pbCkKICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgKChsb29raW5nLWF0IGMtb3B0LWluZXhwci1icmFjZS1s
+aXN0LWtleSkgdCkKICAgICAgICAgICAgICAgICAgICAgICAgICAgKChsb29raW5nLWF0ICJcXHN3
+XFx8XFxzX1xcfFsuW10iKQogICAgICAgICAgICAgICAgICAgICAgICAgICAgOzsgQ2Fycnkgb24g
+bG9va2luZyBpZiB0aGlzIGlzIGFuCiAgICAgICAgICAgICAgICAgICAgICAgICAgICA7OyBpZGVu
+dGlmaWVyIChtYXkgY29udGFpbiAiLiIgaW4gSmF2YSkKICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgIDs7IG9yIGFub3RoZXIgIltdIiBzZXhwLgogICAgICAgICAgICAgICAgICAgICAgICAgICAg
+J2RvbnRrbm93KQogICAgICAgICAgICAgICAgICAgICAgICAgICAodCBuaWwpKSkpKQogICAgICAg
+ICAgIDs7IENoZWNrcyB0byBkbyBvbiBhbGwgc2V4cHMgYmVmb3JlIHRoZSBicmFjZSwgdXAgdG8g
+dGhlCiAgICAgICAgICAgOzsgYmVnaW5uaW5nIG9mIHRoZSBzdGF0ZW1lbnQuCiAgICAgICAgICAg
+KHdoaWxlIChlcSBicmFjZWFzc2lnbnAgJ2RvbnRrbm93KQogICAgICAgICAgICAgKGNvbmQgKChl
+cSAoY2hhci1hZnRlcikgP1w7KQogICAgICAgICAgICAgICAgICAgIChzZXRxIGJyYWNlYXNzaWdu
+cCBuaWwpKQogICAgICAgICAgICAgICAgICAgKChhbmQgY2xhc3Mta2V5CiAgICAgICAgICAgICAg
+ICAgICAgICAgICAobG9va2luZy1hdCBjbGFzcy1rZXkpKQogICAgICAgICAgICAgICAgICAgIChz
+ZXRxIGJyYWNlYXNzaWducCBuaWwpKQogICAgICAgICAgICAgICAgICAgKChlcSAoY2hhci1hZnRl
+cikgPz0pCiAgICAgICAgICAgICAgICAgICAgOzsgV2UndmUgc2VlbiBhID0sIGJ1dCBtdXN0IGNo
+ZWNrIGVhcmxpZXIgdG9rZW5zIHNvCiAgICAgICAgICAgICAgICAgICAgOzsgdGhhdCBpdCBpc24n
+dCBzb21ldGhpbmcgdGhhdCBzaG91bGQgYmUgaWdub3JlZC4KICAgICAgICAgICAgICAgICAgICAo
+c2V0cSBicmFjZWFzc2lnbnAgJ21heWJlKQogICAgICAgICAgICAgICAgICAgICh3aGlsZSAoYW5k
+IChlcSBicmFjZWFzc2lnbnAgJ21heWJlKQogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICh6ZXJvcCAoYy1iYWNrd2FyZC10b2tlbi0yIDEgdCBsaW0pKSkKICAgICAgICAgICAgICAgICAg
+ICAgIChzZXRxIGJyYWNlYXNzaWducAogICAgICAgICAgICAgICAgICAgICAgICAgICAgKGNvbmQK
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICA7OyBDaGVjayBmb3Igb3BlcmF0b3IgPQogICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICgoYW5kIGMtb3B0LW9wLWlkZW50aWZpZXItcHJlZml4
+CiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgKGxvb2tpbmctYXQgYy1vcHQtb3At
+aWRlbnRpZmllci1wcmVmaXgpKQogICAgICAgICAgICAgICAgICAgICAgICAgICAgICBuaWwpCiAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgOzsgQ2hlY2sgZm9yIGA8b3BjaGFyPj0gaW4gUGlr
+ZS4KICAgICAgICAgICAgICAgICAgICAgICAgICAgICAoKGFuZCAoYy1tYWpvci1tb2RlLWlzICdw
+aWtlLW1vZGUpCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgKG9yIChlcSAoY2hh
+ci1hZnRlcikgP2ApCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIDs7IFNw
+ZWNpYWwgY2FzZSBmb3IgUGlrZXMKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgOzsgYFtdPSwgc2luY2UgJ1snIGlzIG5vdCBpbgogICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICA7OyB0aGUgcHVuY3R1YXRpb24gY2xhc3MuCiAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgIChhbmQgKGVxIChjaGFyLWFmdGVyKSA/XFspCiAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgKGVxIChjaGFyLWJlZm9yZSkgP2Ap
+KSkpCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIG5pbCkKICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAoKGxvb2tpbmctYXQgIlxccy4iKSAnbWF5YmUpCiAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgOzsgbWFrZSBzdXJlIHdlJ3JlIG5vdCBpbiBhIEMrKyB0ZW1wbGF0ZQogICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgIDs7IGFyZ3VtZW50IGFzc2lnbm1lbnQKICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAoKGFuZAogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+KGMtbWFqb3ItbW9kZS1pcyAnYysrLW1vZGUpCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAoc2F2ZS1leGN1cnNpb24KICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgKGxldCAo
+KGhlcmUgKHBvaW50KSkKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgKHBv
+czwgKHByb2duCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+KHNraXAtY2hhcnMtYmFja3dhcmQgIl48PiIpCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgKHBvaW50KSkpKQogICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgIChhbmQgKGVxIChjaGFyLWJlZm9yZSkgPzwpCiAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAobm90IChjLWNyb3NzZXMtc3RhdGVtZW50LWJhcnJpZXItcAogICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgcG9zPCBoZXJlKSkKICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIChub3QgKGMtaW4tbGl0ZXJhbCkp
+CiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICApKSkpCiAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgIG5pbCkKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAodCB0
+KSkpKSkpCiAgICAgICAgICAgICAoaWYgKGFuZCAoZXEgYnJhY2Vhc3NpZ25wICdkb250a25vdykK
+ICAgICAgICAgICAgICAgICAgICAgICgvPSAoYy1iYWNrd2FyZC10b2tlbi0yIDEgdCBsaW0pIDAp
+KQogICAgICAgICAgICAgICAgIChzZXRxIGJyYWNlYXNzaWducCBuaWwpKSkKICAgICAgICAgICAo
+aWYgKG5vdCBicmFjZWFzc2lnbnApCiAgICAgICAgICAgICAgIChpZiAoZXEgKGNoYXItYWZ0ZXIp
+ID9cOykKICAgICAgICAgICAgICAgICAgIDs7IEJyYWNlIGxpc3RzIGNhbid0IGNvbnRhaW4gYSBz
+ZW1pY29sb24sIHNvIHdlJ3JlIGRvbmUuCiAgICAgICAgICAgICAgICAgICAoc2V0cSBjb250YWlu
+aW5nLXNleHAgbmlsKQogICAgICAgICAgICAgICAgIDs7IEdvIHVwIG9uZSBsZXZlbC4KICAgICAg
+ICAgICAgICAgICAoc2V0cSBjb250YWluaW5nLXNleHAgbmV4dC1jb250YWluaW5nCiAgICAgICAg
+ICAgICAgICAgICAgICAgbGltIG5pbAogICAgICAgICAgICAgICAgICAgICAgIG5leHQtY29udGFp
+bmluZyBuaWwpKQogICAgICAgICAgICAgOzsgd2UndmUgaGl0IHRoZSBiZWdpbm5pbmcgb2YgdGhl
+IGFnZ3JlZ2F0ZSBsaXN0CiAgICAgICAgICAgICAoYy1iZWdpbm5pbmctb2Ytc3RhdGVtZW50LTEK
+ICAgICAgICAgICAgICAoYy1tb3N0LWVuY2xvc2luZy1icmFjZSBwYXJlbi1zdGF0ZSkpCiAgICAg
+ICAgICAgICAoc2V0cSBidWZwb3MgKHBvaW50KSkpKQogICAgICAgICApCiAgICAgICBidWZwb3Mp
+KQogICApKQoKOzsgPT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09
+PT09PT09PT09PT09PT09PT09PT09Cjs7IGVuZCBvZiBtb25rZXktcGF0Y2hpbmcgb2YgYmFzaWMg
+cGFyc2luZyBsb2dpYwo7OyA9PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09
+PT09PT09PT09PT09PT09PT09PT09PT09PT0KCgoKCjs7KGVhc3ktbWVudS1kZWZpbmUgY3NoYXJw
+LW1lbnUgY3NoYXJwLW1vZGUtbWFwICJDIyBNb2RlIENvbW1hbmRzIgo7OyAgICAgICAgICAgICAg
+ICA7OyBDYW4gdXNlIGBjc2hhcnAnIGFzIHRoZSBsYW5ndWFnZSBmb3IgYGMtbW9kZS1tZW51Jwo7
+OyAgICAgICAgICAgICAgICA7OyBzaW5jZSBpdHMgZGVmaW5pdGlvbiBjb3ZlcnMgYW55IGxhbmd1
+YWdlLiAgSW4KOzsgICAgICAgICAgICAgICAgOzsgdGhpcyBjYXNlIHRoZSBsYW5ndWFnZSBpcyB1
+c2VkIHRvIGFkYXB0IHRvIHRoZQo7OyAgICAgICAgICAgICAgICA7OyBub25leGlzdGVuY2Ugb2Yg
+YSBjcHAgcGFzcyBhbmQgdGh1cyByZW1vdmluZyBzb21lCjs7ICAgICAgICAgICAgICAgIDs7IGly
+cmVsZXZhbnQgbWVudSBhbHRlcm5hdGl2ZXMuCjs7ICAgICAgICAgICAgICAgIChjb25zICJDIyIg
+KGMtbGFuZy1jb25zdCBjLW1vZGUtbWVudSBjc2hhcnApKSkKCjs7OyBBdXRvbG9hZCBtb2RlIHRy
+aWdnZXIKOzs7IyMjYXV0b2xvYWQKKGFkZC10by1saXN0ICdhdXRvLW1vZGUtYWxpc3QgJygiXFwu
+Y3MkIiAuIGNzaGFycC1tb2RlKSkKCgooYy1hZGQtc3R5bGUgIkMjIgogICAgICAgICAgICAgJygi
+SmF2YSIKICAgICAgICAgICAgICAgKGMtYmFzaWMtb2Zmc2V0IC4gNCkKICAgICAgICAgICAgICAg
+KGMtY29tbWVudC1vbmx5LWxpbmUtb2Zmc2V0IC4gKDAgLiAwKSkKICAgICAgICAgICAgICAgKGMt
+b2Zmc2V0cy1hbGlzdCAuICgKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAoYWNj
+ZXNzLWxhYmVsICAgICAgICAgIC4gLSkKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAoYXJnbGlzdC1jbG9zZSAgICAgICAgIC4gYy1saW5ldXAtYXJnbGlzdCkKICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAoYXJnbGlzdC1jb250ICAgICAgICAgIC4gMCkKICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAoYXJnbGlzdC1jb250LW5vbmVtcHR5IC4gYy1s
+aW5ldXAtYXJnbGlzdCkKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAoYXJnbGlz
+dC1pbnRybyAgICAgICAgIC4gYy1saW5ldXAtYXJnbGlzdC1pbnRyby1hZnRlci1wYXJlbikKICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAoYmxvY2stY2xvc2UgICAgICAgICAgIC4g
+MCkKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAoYmxvY2stb3BlbiAgICAgICAg
+ICAgIC4gMCkKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAoYnJhY2UtZW50cnkt
+b3BlbiAgICAgIC4gMCkKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAoYnJhY2Ut
+bGlzdC1jbG9zZSAgICAgIC4gMCkKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAo
+YnJhY2UtbGlzdC1lbnRyeSAgICAgIC4gMCkKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAoYnJhY2UtbGlzdC1pbnRybyAgICAgIC4gKykKICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAoYnJhY2UtbGlzdC1vcGVuICAgICAgIC4gKykKICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAoYyAgICAgICAgICAgICAgICAgICAgIC4gYy1saW5ldXAtQy1jb21t
+ZW50cykKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAoY2FzZS1sYWJlbCAgICAg
+ICAgICAgIC4gKykKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAoY2F0Y2gtY2xh
+dXNlICAgICAgICAgIC4gMCkKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAoY2xh
+c3MtY2xvc2UgICAgICAgICAgIC4gMCkKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAoY2xhc3Mtb3BlbiAgICAgICAgICAgIC4gMCkKICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAoY29tbWVudC1pbnRybyAgICAgICAgIC4gYy1saW5ldXAtY29tbWVudCkKICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAoY3BwLW1hY3JvICAgICAgICAgICAgIC4gMCkK
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAoY3BwLW1hY3JvLWNvbnQgICAgICAg
+IC4gYy1saW5ldXAtZG9udC1jaGFuZ2UpCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgKGRlZnVuLWJsb2NrLWludHJvICAgICAuICspCiAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgKGRlZnVuLWNsb3NlICAgICAgICAgICAuIDApCiAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgKGRlZnVuLW9wZW4gICAgICAgICAgICAuIDApCiAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgKGRvLXdoaWxlLWNsb3N1cmUgICAgICAuIDApCiAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgKGVsc2UtY2xhdXNlICAgICAgICAgICAuIDApCiAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgKGV4dGVybi1sYW5nLWNsb3NlICAgICAu
+IDApCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgKGV4dGVybi1sYW5nLW9wZW4g
+ICAgICAuIDApCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgKGZyaWVuZCAgICAg
+ICAgICAgICAgICAuIDApCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgKGZ1bmMt
+ZGVjbC1jb250ICAgICAgICAuICspCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+KGluY2xhc3MgICAgICAgICAgICAgICAuICspCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgKGluZXhwci1jbGFzcyAgICAgICAgICAuICspCiAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgKGluZXhwci1zdGF0ZW1lbnQgICAgICAuIDApCiAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgKGluZXh0ZXJuLWxhbmcgICAgICAgICAuICspCiAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgKGluaGVyLWNvbnQgICAgICAgICAgICAuIGMtbGluZXVw
+LW11bHRpLWluaGVyKQogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIChpbmhlci1p
+bnRybyAgICAgICAgICAgLiArKQogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIChp
+bmxhbWJkYSAgICAgICAgICAgICAgLiBjLWxpbmV1cC1pbmV4cHItYmxvY2spCiAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgKGlubGluZS1jbG9zZSAgICAgICAgICAuIDApCiAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgKGlubGluZS1vcGVuICAgICAgICAgICAuIDAp
+CiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgKGlubmFtZXNwYWNlICAgICAgICAg
+ICAuICspCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgKGtuci1hcmdkZWNsICAg
+ICAgICAgICAuIDApCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgKGtuci1hcmdk
+ZWNsLWludHJvICAgICAuIDUpCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgKGxh
+YmVsICAgICAgICAgICAgICAgICAuIDApCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgKGxhbWJkYS1pbnRyby1jb250ICAgICAuICspCiAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgKG1lbWJlci1pbml0LWNvbnQgICAgICAuIGMtbGluZXVwLW11bHRpLWluaGVyKQog
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIChtZW1iZXItaW5pdC1pbnRybyAgICAg
+LiArKQogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIChuYW1lc3BhY2UtY2xvc2Ug
+ICAgICAgLiAwKQogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIChuYW1lc3BhY2Ut
+b3BlbiAgICAgICAgLiAwKQogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIChzdGF0
+ZW1lbnQgICAgICAgICAgICAgLiAwKQogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+IChzdGF0ZW1lbnQtYmxvY2staW50cm8gLiArKQogICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgIChzdGF0ZW1lbnQtY2FzZS1pbnRybyAgLiArKQogICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgIChzdGF0ZW1lbnQtY2FzZS1vcGVuICAgLiArKQogICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgIChzdGF0ZW1lbnQtY29udCAgICAgICAgLiArKQogICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgIChzdHJlYW0tb3AgICAgICAgICAgICAgLiBjLWxpbmV1
+cC1zdHJlYW1vcCkKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAoc3RyaW5nICAg
+ICAgICAgICAgICAgIC4gYy1saW5ldXAtZG9udC1jaGFuZ2UpCiAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgKHN1YnN0YXRlbWVudCAgICAgICAgICAuICspCiAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgKHN1YnN0YXRlbWVudC1vcGVuICAgICAuIDApCiAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgKHRlbXBsYXRlLWFyZ3MtY29udCBjLWxpbmV1cC10
+ZW1wbGF0ZS1hcmdzICspCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgKHRvcG1v
+c3QtaW50cm8gICAgICAgICAuIDApCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+KHRvcG1vc3QtaW50cm8tY29udCAgICAuICspCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgKSkKICAgICAgICAgICAgICAgKSkKCgoKKGRlZnVuIGNzaGFycC1ndWVzcy1jb21waWxl
+LWNvbW1hbmQgKCkKICAic2V0IGBjb21waWxlLWNvbW1hbmQnIGludGVsbGlnZW50bHkgZGVwZW5k
+aW5nIG9uIHRoZQpjdXJyZW50IGJ1ZmZlciwgb3IgdGhlIGNvbnRlbnRzIG9mIHRoZSBjdXJyZW50
+IGRpcmVjdG9yeS4KIgogIChpbnRlcmFjdGl2ZSkKICAoc2V0IChtYWtlLWxvY2FsLXZhcmlhYmxl
+ICdjb21waWxlLWNvbW1hbmQpCgogICAgICAgKGNvbmQKICAgICAgICAoKG9yIChmaWxlLWV4cGFu
+ZC13aWxkY2FyZHMgIiouY3Nwcm9qIiB0KQogICAgICAgICAgICAgKGZpbGUtZXhwYW5kLXdpbGRj
+YXJkcyAiKi52Y3Byb2oiIHQpCiAgICAgICAgICAgICAoZmlsZS1leHBhbmQtd2lsZGNhcmRzICIq
+LnZicHJvaiIgdCkKICAgICAgICAgICAgIChmaWxlLWV4cGFuZC13aWxkY2FyZHMgIiouc2hmYnBy
+b2oiIHQpCiAgICAgICAgICAgICAoZmlsZS1leHBhbmQtd2lsZGNhcmRzICIqLnNsbiIgdCkpCiAg
+ICAgICAgIChjb25jYXQgY3NoYXJwLW1zYnVpbGQtdG9vbCAiICIpKQoKICAgICAgICA7OyBzb21l
+dGltZXMsIG5vdCBzdXJlIHdoeSwgdGhlIGJ1ZmZlci1maWxlLW5hbWUgaXMKICAgICAgICA7OyBu
+b3Qgc2V0LiAgQ2FuIHVzZSBpdCBvbmx5IGlmIHNldC4KICAgICAgICAoYnVmZmVyLWZpbGUtbmFt
+ZQogICAgICAgICAobGV0ICgoZmlsZW5hbWUgKGZpbGUtbmFtZS1ub25kaXJlY3RvcnkgYnVmZmVy
+LWZpbGUtbmFtZSkpKQogICAgICAgICAgIChjb25kCgogICAgICAgICAgICA7OyBlZGl0aW5nIGEg
+YyMgZmlsZSAtIGNoZWNrIGZvciBhbiBleHBsaWNpdGx5LXNwZWNpZmllZCBjb21tYW5kCiAgICAg
+ICAgICAgICgoc3RyaW5nLWVxdWFsIChzdWJzdHJpbmcgYnVmZmVyLWZpbGUtbmFtZSAtMykgIi5j
+cyIpCiAgICAgICAgICAgICAobGV0ICgoZXhwbGljaXRseS1zcGVjaWZpZWQtY29tbWFuZAogICAg
+ICAgICAgICAgICAgICAgIChjc2hhcnAtZ2V0LXZhbHVlLWZyb20tY29tbWVudHMgImNvbXBpbGUi
+IGNzaGFycC1jbWQtbGluZS1saW1pdCkpKQoKCiAgICAgICAgICAgICAgIChpZiBleHBsaWNpdGx5
+LXNwZWNpZmllZC1jb21tYW5kCiAgICAgICAgICAgICAgICAgICAoY3NoYXJwLXJlcGxhY2UtY29t
+bWFuZC10b2tlbnMgZXhwbGljaXRseS1zcGVjaWZpZWQtY29tbWFuZCkKICAgICAgICAgICAgICAg
+ICAgIChjb25jYXQgY3NoYXJwLW1ha2UtdG9vbCAiICIgOzsgYXNzdW1lIGEgbWFrZWZpbGUgZXhp
+c3RzCiAgICAgICAgICAgICAgICAgICAgICAgICAgIChmaWxlLW5hbWUtc2Fucy1leHRlbnNpb24g
+ZmlsZW5hbWUpCiAgICAgICAgICAgICAgICAgICAgICAgICAgICIuZXhlIikpKSkKCiAgICAgICAg
+ICAgIDs7IHNvbWV0aGluZyBlbHNlIC0gZG8gYSB0eXBpY2FsIC5leGUgYnVpbGQKICAgICAgICAg
+ICAgKHQKICAgICAgICAgICAgIChjb25jYXQgY3NoYXJwLW1ha2UtdG9vbCAiICIKICAgICAgICAg
+ICAgICAgICAgICAgKGZpbGUtbmFtZS1zYW5zLWV4dGVuc2lvbiBmaWxlbmFtZSkKICAgICAgICAg
+ICAgICAgICAgICAgIi5leGUiKSkpKSkKICAgICAgICAodAogICAgICAgICA7OyBwdW50CiAgICAg
+ICAgIChjb25jYXQgY3NoYXJwLW1ha2UtdG9vbCAiICIpKSkpKQoKCgooZGVmdW4gY3NoYXJwLWlu
+dm9rZS1jb21waWxlLWludGVyYWN0aXZlbHkgKCkKICAiZm4gdG8gd3JhcCB0aGUgYGNvbXBpbGUn
+IGZ1bmN0aW9uLiAgVGhpcyBzaW1wbHkKY2hlY2tzIHRvIHNlZSBpZiBgY29tcGlsZS1jb21tYW5k
+JyBoYXMgYmVlbiBwcmV2aW91c2x5IHNldCwgYW5kCmlmIG5vdCwgaW52b2tlcyBgY3NoYXJwLWd1
+ZXNzLWNvbXBpbGUtY29tbWFuZCcgdG8gc2V0IHRoZSB2YWx1ZS4KVGhlbiBpdCBpbnZva2VzIHRo
+ZSBgY29tcGlsZScgZnVuY3Rpb24sIGludGVyYWN0aXZlbHkuCgpUaGUgZWZmZWN0IGlzIHRvIGd1
+ZXNzIHRoZSBjb21waWxlIGNvbW1hbmQgb25seSBvbmNlLCBwZXIgYnVmZmVyLgoKSSB0cmllZCBk
+b2luZyB0aGlzIHdpdGggYWR2aWNlIGF0dGFjaGVkIHRvIHRoZSBgY29tcGlsZScKZnVuY3Rpb24s
+IGJ1dCBiZWNhdXNlIG9mIHRoZSBpbnRlcmFjdGl2ZSBuYXR1cmUgb2YgdGhlIGZuLCBpdApkaWRu
+J3Qgd29yayB0aGUgd2F5IEkgd2FudGVkIGl0IHRvLiBTbyB0aGlzIGZuIHNob3VsZCBiZSBib3Vu
+ZCB0bwp0aGUga2V5IHNlcXVlbmNlIHRoZSB1c2VyIGxpa2VzIGZvciBpbnZva2luZyBjb21waWxl
+LCBsaWtlIGN0cmwtYwpjdHJsLWUuCgoiCiAgKGludGVyYWN0aXZlKQogIChjb25kCiAgICgobm90
+IChib3VuZHAgJ2NzaGFycC1sb2NhbC1jb21waWxlLWNvbW1hbmQtaGFzLWJlZW4tc2V0KSkKICAg
+IChjc2hhcnAtZ3Vlc3MtY29tcGlsZS1jb21tYW5kKQogICAgKHNldCAobWFrZS1sb2NhbC12YXJp
+YWJsZSAnY3NoYXJwLWxvY2FsLWNvbXBpbGUtY29tbWFuZC1oYXMtYmVlbi1zZXQpIHQpKSkKICA7
+OyBsb2NhbCBjb21waWxlIGNvbW1hbmQgaGFzIG5vdyBiZWVuIHNldAogIChjYWxsLWludGVyYWN0
+aXZlbHkgJ2NvbXBpbGUpKQoKCgoKOzs7IFRoZSBlbnRyeSBwb2ludCBpbnRvIHRoZSBtb2RlCjs7
+OyMjI2F1dG9sb2FkCiAgKGRlZnVuIGNzaGFycC1tb2RlICgpCiAgIk1ham9yIG1vZGUgZm9yIGVk
+aXRpbmcgQyMgY29kZS4gVGhpcyBtb2RlIGlzIGRlcml2ZWQgZnJvbSBDQyBNb2RlIHRvCnN1cHBv
+cnQgQyMuCgpOb3JtYWxseSwgeW91J2Qgd2FudCB0byBhdXRvbG9hZCB0aGlzIG1vZGUgYnkgc2V0
+dGluZyBgYXV0by1tb2RlLWFsaXN0JyB3aXRoCmFuIGVudHJ5IGZvciBjc2hhcnAsIGluIHlvdXIg
+LmVtYWNzIGZpbGU6CgogICAoYXV0b2xvYWQgJ2NzaGFycC1tb2RlIFwiY3NoYXJwLW1vZGVcIiBc
+Ik1ham9yIG1vZGUgZm9yIGVkaXRpbmcgQyMgY29kZS5cIiB0KQogICAoc2V0cSBhdXRvLW1vZGUt
+YWxpc3QKICAgICAgKGFwcGVuZCAnKChcIlxcLmNzJFwiIC4gY3NoYXJwLW1vZGUpKSBhdXRvLW1v
+ZGUtYWxpc3QpKQoKVGhlIG1vZGUgcHJvdmlkZXMgZm9udGlmaWNhdGlvbiBhbmQgaW5kZW50IGZv
+ciBDIyBzeW50YXgsIGFzIHdlbGwKYXMgc29tZSBvdGhlciBoYW5keSBmZWF0dXJlcy4KCkF0IG1v
+ZGUgc3RhcnR1cCwgdGhlcmUgYXJlIHR3byBpbnRlcmVzdGluZyBob29rcyB0aGF0IHJ1bjoKYGMt
+bW9kZS1jb21tb24taG9vaycgaXMgcnVuIHdpdGggbm8gYXJncywgdGhlbiBgY3NoYXJwLW1vZGUt
+aG9vaycgaXMgcnVuIGFmdGVyCnRoYXQsIGFsc28gd2l0aCBubyBhcmdzLgoKVG8gcnVuIHlvdXIg
+b3duIGxvZ2ljIGFmdGVyIGNzaGFycC1tb2RlIHN0YXJ0cywgZG8gdGhpczoKCiAgKGRlZnVuIG15
+LWNzaGFycC1tb2RlLWZuICgpCiAgICBcIm15IGZ1bmN0aW9uIHRoYXQgcnVucyB3aGVuIGNzaGFy
+cC1tb2RlIGlzIGluaXRpYWxpemVkIGZvciBhIGJ1ZmZlci5cIgogICAgKHR1cm4tb24tZm9udC1s
+b2NrKQogICAgKHR1cm4tb24tYXV0by1yZXZlcnQtbW9kZSkgOzsgaGVscGZ1bCB3aGVuIGFsc28g
+dXNpbmcgVmlzdWFsIFN0dWRpbwogICAgKHNldHEgaW5kZW50LXRhYnMtbW9kZSBuaWwpIDs7IHRh
+YnMgYXJlIGV2aWwKICAgIChmbHltYWtlLW1vZGUgMSkKICAgICh5YXMvbWlub3ItbW9kZS1vbikK
+ICAgIChyZXF1aXJlICdyZnJpbmdlKSAgOzsgaGFuZHkgZm9yIGZseW1ha2UKICAgIChyZXF1aXJl
+ICdmbHltYWtlLWN1cnNvcikgOzsgYWxzbyBoYW5keSBmb3IgZmx5bWFrZQogICAgLi4uLnlvdXIg
+b3duIGNvZGUgaGVyZS4uLgogICkKICAoYWRkLWhvb2sgICdjc2hhcnAtbW9kZS1ob29rICdteS1j
+c2hhcnAtbW9kZS1mbiB0KQoKClRoZSBmdW5jdGlvbiBhYm92ZSBpcyBqdXN0IGEgc3VnZ2VzdGlv
+bi4KCgpDb21waWxlIGludGVncmF0aW9uOgo9PT09PT09PT09PT09PT09PT09PT09PT0KCmNzaGFy
+cC1tb2RlIGJpbmRzIHRoZSBmdW5jdGlvbiBgY3NoYXJwLWludm9rZS1jb21waWxlLWludGVyYWN0
+aXZlbHknIHRvClwiXEMteFxDLWVcIiAuICBUaGlzIGZ1bmN0aW9uIGF0dGVtcHRzIHRvIGludGVs
+bGdlbnRseSBndWVzcyB0aGUgZm9ybWF0IG9mIHRoZQpjb21waWxlIGNvbW1hbmQgdG8gdXNlIGZv
+ciBhIGJ1ZmZlci4gIEl0IGxvb2tzIGluIHRoZSBjb21tZW50cyBhdCB0aGUgaGVhZCBvZgp0aGUg
+YnVmZmVyIGZvciBhIGxpbmUgdGhhdCBiZWdpbnMgd2l0aCBjb21waWxlOiAuICBGb3IgZXhhbW1w
+bGU6CgogIC8vIGNvbXBpbGU6IGNzYy5leGUgL3Q6bGlicmFyeSAvcjpNeWxpYi5kbGwgRm9vLmNz
+CgpJZiBjc2hhcnAtbW9kZSBmaW5kcyBhIGxpbmUgbGlrZSB0aGlzLCBpdCB3aWxsIHN1Z2dlc3Qg
+dGhlIHRleHQgdGhhdCBmb2xsb3dzCmFzIHRoZSBjb21waWxhdGlvbiBjb21tYW5kIHdoZW4gcnVu
+bmluZyBgY29tcGlsZScgZm9yIHRoZSBmaXJzdCB0aW1lLiAgSWYgc3VjaAphIGxpbmUgaXMgbm90
+IGZvdW5kLCBjc2hhcnAtbW9kZSBmYWxscyBiYWNrIHRvIGEgbXNidWlsZCBvciBubWFrZSBjb21t
+YW5kLgpTZWUgdGhlIGRvY3VtZW50YXRpb24gb24gYGNzaGFycC1jbWQtbGluZS1saW1pdCcgZm9y
+IGZ1cnRoZXIgaW5mb3JtYXRpb24uIElmCnlvdSBkb24ndCB3YW50IHRoaXMgbWFnaWMsIHRoZW4g
+eW91IGNhbiBqdXN0IHJ1biBgY29tcGlsZScgZGlyZWN0bHksIHJhdGhlcgp0aGFuIGBjc2hhcnAt
+aW52b2tlLWNvbXBpbGUtaW50ZXJhY3RpdmVseScgLgoKVGhpcyBtb2RlIHdpbGwgYWxzbyBhdXRv
+bWF0aWNhbGx5IGFkZCBhIHN5bWJvbCBhbmQgcmVnZXhwIHRvIHRoZQpgY29tcGlsYXRpb24tZXJy
+b3ItcmVnZXhwLWFsaXN0JyBhbmRgY29tcGlsYXRpb24tZXJyb3ItcmVnZXhwLWFsaXN0LWFsaXN0
+JwpyZXNwZWN0aXZlbHksIGZvciBDc2MuZXhlIGVycm9yIGFuZCB3YXJuaW5nIG1lc3NhZ2VzLiBJ
+ZiB5b3UgaW52b2tlIGBjb21waWxlJywKdGhlbiBgbmV4dC1lcnJvcicgc2hvdWxkIHdvcmsgcHJv
+cGVybHkgZm9yIGVycm9yIG1lc3NhZ2VzIHByb2R1Y2VkIGJ5IGNzYy5leGUuCgoKRmx5bWFrZSBJ
+bnRlZ3JhaXRvbgo9PT09PT09PT09PT09PT09PT09PT09PT0KCllvdSBjYW4gdXNlIGZseW1ha2Ug
+d2l0aCBjc2hhcnAgbW9kZSB0byBhdXRvbWF0aWNhbGx5IGNoZWNrIHRoZSBzeW50YXggb2YgeW91
+cgpjc2hhcnAgY29kZSwgYW5kIGhpZ2hsaWdodCBlcnJvcnMuICBUbyBkbyBzbywgYWRkIGEgY29t
+bWVudCBsaW5lIGxpa2UgdGhpcyB0bwplYWNoIC5jcyBmaWxlIHRoYXQgeW91IHVzZSBmbHltYWtl
+IHdpdGg6CgogICAvLyAgZmx5bWFrZTogY3NjLmV4ZSAvdDptb2R1bGUgL1I6Rm9vLmRsbCBAQEZJ
+TEVAQAoKY3NoYXJwLW1vZGUgcmVwbGFjZXMgc3BlY2lhbCB0b2tlbnMgaW4gdGhlIGNvbW1hbmQg
+d2l0aCBkaWZmZXJlbnQgdmFsdWVzOgoKICBAQE9SSUdAQCAtIGdldHMgcmVwbGFjZWQgd2l0aCB0
+aGUgb3JpZ2luYWwgZmlsZW5hbWUKICBAQEZJTEVAQCAtIGdldHMgcmVwbGFjZWQgd2l0aCB0aGUg
+bmFtZSBvZiB0aGUgdGVtcG9yYXJ5IGZpbGUKICAgICAgY3JlYXRlZCBieSBmbHltYWtlLiBUaGlz
+IGlzIHVzdWFsbHkgd2hhdCB5b3Ugd2FudCBpbiBwbGFjZSBvZiB0aGUKICAgICAgbmFtZSBvZiB0
+aGUgZmlsZSB0byBiZSBjb21waWxlZC4KClNlZSB0aGUgZG9jdW1lbnRhdGlvbiBvbiBgY3NoYXJw
+LWNtZC1saW5lLWxpbWl0JyBmb3IgZnVydGhlciBpbmZvcm1hdGlvbi4KCllvdSBtYXkgYWxzbyB3
+YW50IHRvIHJ1biBhIHN5bnRheCBjaGVja2VyLCBsaWtlIGZ4Y29wOgoKICAgLy8gIGZseW1ha2U6
+IGZ4Y29wY21kLmV4ZSAvYyAvRjpNeUxpYnJhcnkuZGxsCgpJbiB0aGlzIGNhc2UgeW91IGRvbid0
+IG5lZWQgZWl0aGVyIG9mIHRoZSB0b2tlbnMgZGVzY3JpYmVkIGFib3ZlLgoKSWYgdGhlIG1vZHVs
+ZSBoYXMgbm8gZXh0ZXJuYWwgZGVwZW5kZW5jaWVzLCB0aGVuIHlvdSBuZWVkIG5vdCBzcGVjaWZ5
+IGFueQpmbHltYWtlIGNvbW1hbmQgYXQgYWxsLiBjc2hhcnAtbW9kZSB3aWxsIGltcGxpY2l0bHkg
+YWN0IGFzIGlmIHlvdSBoYWQKc3BlY2lmaWVkIHRoZSBjb21tYW5kOgoKICAgICAvLyBmbHltYWtl
+OiBjc2MuZXhlIC90Om1vZHVsZSAvbm9sb2dvIEBARklMRUBACgpJdCBsb29rcyBmb3IgdGhlIEVY
+RSBvbiB0aGUgcGF0aC4gIFlvdSBjYW4gc3BlY2lmeSBhIGZ1bGwgcGF0aCBpZiB5b3UgbGlrZS4K
+CgpZQVNuaXBwZXQgYW5kIElNZW51IEludGVncmFpdG9uCj09PT09PT09PT09PT09PT09PT09PT09
+PT09PT09PT0KCkNoZWNrIHRoZSBtZW51YmFyIGZvciBtZW51IGVudHJpZXMgZm9yIFlBU25pcHBl
+dCBhbmQgSW1lbnU7IHRoZSBsYXR0ZXIKaXMgbGFiZWxsZWQgXCJJbmRleFwiLgoKVGhlIEltZW51
+IGluZGV4IGdldHMgY29tcHV0ZWQgd2hlbiB0aGUgZmlsZSBpcyAuY3MgZmlyc3Qgb3BlbmVkIGFu
+ZCBsb2FkZWQuClRoaXMgbWF5IHRha2UgYSBtb21lbnQgb3IgdHdvLiAgSWYgeW91IGRvbid0IGxp
+a2UgdGhpcyBkZWxheSBhbmQgZG9uJ3QKdXNlIGltZW51LCB5b3UgY2FuIHR1cm4gdGhpcyBvZmYg
+d2l0aCB0aGUgdmFyaWFibGUgYGNzaGFycC13YW50LWltZW51Jy4KCgoKS2V5IGJpbmRpbmdzOgpc
+XHtjc2hhcnAtbW9kZS1tYXB9IgogICAgKGludGVyYWN0aXZlKQogICAgKGtpbGwtYWxsLWxvY2Fs
+LXZhcmlhYmxlcykKICAgIChtYWtlLWxvY2FsLXZhcmlhYmxlICdiZWdpbm5pbmctb2YtZGVmdW4t
+ZnVuY3Rpb24pCiAgICAobWFrZS1sb2NhbC12YXJpYWJsZSAnZW5kLW9mLWRlZnVuLWZ1bmN0aW9u
+KQogICAgKGMtaW5pdGlhbGl6ZS1jYy1tb2RlIHQpCiAgICAoc2V0LXN5bnRheC10YWJsZSBjc2hh
+cnAtbW9kZS1zeW50YXgtdGFibGUpCgogICAgOzsgZGVmaW5lIHVuZGVyc2NvcmUgYXMgcGFydCBv
+ZiBhIHdvcmQgaW4gdGhlIENzaGFycCBzeW50YXggdGFibGUKICAgIChtb2RpZnktc3ludGF4LWVu
+dHJ5ID9fICJ3IiBjc2hhcnAtbW9kZS1zeW50YXgtdGFibGUpCgogICAgOzsgZGVmaW5lIEAgYXMg
+YW4gZXhwcmVzc2lvbiBwcmVmaXggaW4gQ3NoYXJwIHN5bnRheCB0YWJsZQogICAgKG1vZGlmeS1z
+eW50YXgtZW50cnkgP0AgIiciIGNzaGFycC1tb2RlLXN5bnRheC10YWJsZSkKCiAgICAoc2V0cSBt
+YWpvci1tb2RlICdjc2hhcnAtbW9kZQogICAgICAgICAgbW9kZS1uYW1lICJDIyIKICAgICAgICAg
+IGxvY2FsLWFiYnJldi10YWJsZSBjc2hhcnAtbW9kZS1hYmJyZXYtdGFibGUKICAgICAgICAgIGFi
+YnJldi1tb2RlIHQpCiAgICAodXNlLWxvY2FsLW1hcCBjc2hhcnAtbW9kZS1tYXApCgogICAgOzsg
+YGMtaW5pdC1sYW5ndWFnZS12YXJzJyBpcyBhIG1hY3JvIHRoYXQgaXMgZXhwYW5kZWQgYXQgY29t
+cGlsZQogICAgOzsgdGltZSB0byBhIGxhcmdlIGBzZXRxJyB3aXRoIGFsbCB0aGUgbGFuZ3VhZ2Ug
+dmFyaWFibGVzIGFuZCB0aGVpcgogICAgOzsgY3VzdG9taXplZCB2YWx1ZXMgZm9yIG91ciBsYW5n
+dWFnZS4KICAgIChjLWluaXQtbGFuZ3VhZ2UtdmFycyBjc2hhcnAtbW9kZSkKCiAgICA7OyBgYy1j
+b21tb24taW5pdCcgaW5pdGlhbGl6ZXMgbW9zdCBvZiB0aGUgY29tcG9uZW50cyBvZiBhIENDIE1v
+ZGUKICAgIDs7IGJ1ZmZlciwgaW5jbHVkaW5nIHNldHVwIG9mIHRoZSBtb2RlIG1lbnUsIGZvbnQt
+bG9jaywgZXRjLgogICAgOzsgVGhlcmUncyBhbHNvIGEgbG93ZXIgbGV2ZWwgcm91dGluZSBgYy1i
+YXNpYy1jb21tb24taW5pdCcgdGhhdAogICAgOzsgb25seSBtYWtlcyB0aGUgbmVjZXNzYXJ5IGlu
+aXRpYWxpemF0aW9uIHRvIGdldCB0aGUgc3ludGFjdGljCiAgICA7OyBhbmFseXNpcyBhbmQgc2lt
+aWxhciB0aGluZ3Mgd29ya2luZy4KICAgIChjLWNvbW1vbi1pbml0ICdjc2hhcnAtbW9kZSkKCiAg
+ICA7OyBjb21waWxlCiAgICAobG9jYWwtc2V0LWtleSAiXEMteFxDLWUiICAnY3NoYXJwLWludm9r
+ZS1jb21waWxlLWludGVyYWN0aXZlbHkpCgogICAgOzsgdG8gYWxsb3cgbmV4dC1lcnJvciB0byB3
+b3JrIHdpdGggY3NjLmV4ZToKICAgIChzZXRxIGNvbXBpbGF0aW9uLXNjcm9sbC1vdXRwdXQgdCkK
+CiAgICA7OyBjc2MuZXhlLCB0aGUgQyMgQ29tcGlsZXIsIHByb2R1Y2VzIGVycm9ycyBsaWtlIHRo
+aXM6CiAgICA7OyBmaWxlLmNzKDYsMTgpOiBlcnJvciBDUzEwMDY6IE5hbWUgb2YgY29uc3RydWN0
+b3IgbXVzdCBtYXRjaCBuYW1lIG9mIGNsYXNzCiAgICAoaWYgKGJvdW5kcCAnY29tcGlsYXRpb24t
+ZXJyb3ItcmVnZXhwLWFsaXN0LWFsaXN0KQogICAgICAgIChwcm9nbgogICAgICAgICAgKGFkZC10
+by1saXN0CiAgICAgICAgICAgJ2NvbXBpbGF0aW9uLWVycm9yLXJlZ2V4cC1hbGlzdC1hbGlzdAog
+ICAgICAgICAgICcobXMtY3NoYXJwICJeWyBcdF0qXFwoWy1fOkEtWmEtejAtOV1bXlxuKF0qXFwu
+XFwoPzpjc1xcfHhhbWxcXClcXCkoXFwoWzAtOV0rXFwpWyxdXFwoWzAtOV0rXFwpKSA/OiBcXChl
+cnJvclxcfHdhcm5pbmdcXCkgQ1NbMC05XSs6IiAxIDIgMykpCiAgICAgICAgICAoYWRkLXRvLWxp
+c3QKICAgICAgICAgICAnY29tcGlsYXRpb24tZXJyb3ItcmVnZXhwLWFsaXN0CiAgICAgICAgICAg
+J21zLWNzaGFycCkpKQoKICAgIDs7IGZseW1ha2UKICAgIChldmFsLWFmdGVyLWxvYWQgImZseW1h
+a2UiCiAgICAgICcocHJvZ24KICAgICAgICAgKGlmIGNzaGFycC13YW50LWZseW1ha2UtZml4dXAK
+ICAgICAgICAgICAgIChjc2hhcnAtZmx5bWFrZS1pbnN0YWxsKSkpKQoKICAgIChldmFsLWFmdGVy
+LWxvYWQgICJ5YXNuaXBwZXQiCiAgICAgICcocHJvZ24KICAgICAgICAgKGlmIGNzaGFycC13YW50
+LXlhc25pcHBldC1maXh1cAogICAgICAgICAgICAgKGNzaGFycC15YXNuaXBwZXQtZml4dXApKSkp
+CgoKICAgIChsb2NhbC1zZXQta2V5IChrYmQgIi8iKSAnY3NoYXJwLW1heWJlLWluc2VydC1jb2Rl
+ZG9jKQogICAgKGxvY2FsLXNldC1rZXkgKGtiZCAieyIpICdjc2hhcnAtaW5zZXJ0LW9wZW4tYnJh
+Y2UpCgogICAgOzsgTmVlZCB0aGUgZm9sbG93aW5nIGZvciBwYXJzZS1wYXJ0aWFsLXNleHAgdG8g
+d29yayBwcm9wZXJseSB3aXRoCiAgICA7OyB2ZXJiYXRpbSBsaXRlcmFsIHN0cmluZ3MgU2V0dGlu
+ZyB0aGlzIHZhciB0byBub24tbmlsIHRlbGxzCiAgICA7OyBgcGFyc2UtcGFydGlhbC1zZXhwJyB0
+byBwYXkgYXR0ZW50aW9uIHRvIHRoZSBzeW50YXggdGV4dAogICAgOzsgcHJvcGVydGllcyBvbiB0
+aGUgdGV4dCBpbiB0aGUgYnVmZmVyLiAgSWYgY3NoYXJwLW1vZGUgYXR0YWNoZXMKICAgIDs7IHRl
+eHQgc3ludGF4IHRvIEAiLi4uIiB0aGVuLCBgcGFyc2UtcGFydGlhbC1zZXhwJyB3aWxsIHRyZWF0
+IHRob3NlCiAgICA7OyBzdHJpbmdzIGFjY29yZGluZ2x5LgogICAgKHNldCAobWFrZS1sb2NhbC12
+YXJpYWJsZSAncGFyc2Utc2V4cC1sb29rdXAtcHJvcGVydGllcykgdCkKCiAgICA7OyBzY2FuIHRo
+ZSBlbnRpcmUgYnVmZmVyIGZvciB2ZXJibGl0IHN0cmluZ3MKICAgIDs7IFRoaXMgd2lsbCBoYXBw
+ZW4gb24gZm9udDsgaXQncyBuZWNlc3Nhcnkgb25seQogICAgOzsgaWYgZm9udC1sb2NrIGlzIGRp
+c2FibGVkLiBCdXQgaXQgd29uJ3QgaHVydC4KICAgIChjc2hhcnAtc2Nhbi1mb3ItdmVyYmF0aW0t
+bGl0ZXJhbHMtYW5kLXNldC1wcm9wcyBuaWwgbmlsKQoKICAgIDs7IEFsbG93IGZpbGwtcGFyYWdy
+YXBoIHRvIHdvcmsgb24geG1sIGNvZGUgZG9jCiAgICA7OyBUaGlzIHNldHRpbmcgZ2V0cyBvdmVy
+d3JpdHRlbiBxdWlldGx5IGJ5IGMtcnVuLW1vZGUtaG9va3MsCiAgICA7OyBzbyBJIHB1dCBpdCBh
+ZnRlcndhcmRzIHRvIG1ha2UgaXQgc3RpY2suCiAgICAobWFrZS1sb2NhbC12YXJpYWJsZSAncGFy
+YWdyYXBoLXNlcGFyYXRlKQoKICAgIDs7KG1lc3NhZ2UgIkMjOiBzZXQgcGFyYWdyYXBoLXNlcGFy
+YXRlIikKCiAgICA7OyBTcGVlZGJhciBoYW5kbGluZwogICAgKGlmIChmYm91bmRwICdzcGVlZGJh
+ci1hZGQtc3VwcG9ydGVkLWV4dGVuc2lvbikKICAgICAgICAoc3BlZWRiYXItYWRkLXN1cHBvcnRl
+ZC1leHRlbnNpb24gJygiLmNzIikpKSA7OyBpZGVtcG90ZW50CgogICAgKGMtdXBkYXRlLW1vZGVs
+aW5lKQogICAgKGMtcnVuLW1vZGUtaG9va3MgJ2MtbW9kZS1jb21tb24taG9vayAnY3NoYXJwLW1v
+ZGUtaG9vaykKCiAgICA7OyBtYXliZSBkbyBpbWVudSBzY2FuIGFmdGVyIGhvb2sgcmV0dXJucwog
+ICAgKGlmIGNzaGFycC13YW50LWltZW51CiAgICAgIChwcm9nbgogICAgICAgIDs7IFRoZXJlIGFy
+ZSB0d28gd2F5cyB0byBkbyBpbWVudSBpbmRleGluZy4gT25lIGlzIHRvIHByb3ZpZGUgYQogICAg
+ICAgIDs7IGZ1bmN0aW9uLCB2aWEgYGltZW51LWNyZWF0ZS1pbmRleC1mdW5jdGlvbicuICBUaGUg
+b3RoZXIgaXMgdG8KICAgICAgICA7OyBwcm92aWRlIGltZW51IHdpdGggYSBsaXN0IG9mIHJlZ2V4
+cHMgdmlhCiAgICAgICAgOzsgYGltZW51LWdlbmVyaWMtZXhwcmVzc2lvbic7IGltZW51IHdpbGwg
+ZG8gYSAiZ2VuZXJpYyBzY2FuIiBmb3IgeW91LgogICAgICAgIDs7IGNzaGFycC1tb2RlIHVzZXMg
+dGhlIGZvcm1lciBtZXRob2QuCiAgICAgICAgOzsKICAgICAgICAoc2V0cSBpbWVudS1jcmVhdGUt
+aW5kZXgtZnVuY3Rpb24gJ2NzaGFycC1pbWVudS1jcmVhdGUtaW5kZXgpCiAgICAgICAgKGltZW51
+LWFkZC1tZW51YmFyLWluZGV4KSkpCgogICAgOzsgVGhlIHBhcmFncmFwaC1zZXBhcmF0ZSB2YXJp
+YWJsZSB3YXMgZ2V0dGluZyBzdG9tcGVkIGJ5CiAgICA7OyBvdGhlciBob29rcywgc28gaXQgbXVz
+dCByZXNpZGUgaGVyZS4KICAgIChzZXRxIHBhcmFncmFwaC1zZXBhcmF0ZQogICAgICAgICAgIlsg
+XHRdKlxcKC8vK1xcfFxcKipcXClcXChbIFx0XStcXHxbIFx0XSs8Lis/PlxcKSRcXHxeXGYiKQoK
+ICAgIChzZXRxIGJlZ2lubmluZy1vZi1kZWZ1bi1mdW5jdGlvbiAnY3NoYXJwLW1vdmUtYmFjay10
+by1iZWdpbm5pbmctb2YtZGVmdW4pCiAgICA7OyBlbmQtb2YtZGVmdW4tZnVuY3Rpb24gICBjYW4g
+cmVtYWluIGZvcndhcmQtc2V4cCAhIQoKICAgIChzZXQgKG1ha2UtbG9jYWwtdmFyaWFibGUgJ2Nv
+bW1lbnQtYXV0by1maWxsLW9ubHktY29tbWVudHMpIHQpCiAgICApCgoKCgogIDs7ID09PT09PT09
+PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT0KICA7OwogIDs7
+IFRoaXMgc2VjdGlvbiBhdHRlbXB0cyB0byB3b3JrYXJvdW5kIGFuIGFub21hbG91cyBkaXNwbGF5
+IGJlaGF2aW9yCiAgOzsgZm9yIHRvb2x0aXBzLiAgSXQncyBub3Qgc3RyaWN0bHkgbmVjZXNzYXJ5
+LCBvbmx5IGZvciBhZXN0aGV0aWNzLiAgVGhlCiAgOzsgaXNzdWUgaXMgdGhhdCB0b29sdGlwcyBj
+YW4gZ2V0IGNsaXBwZWQuICBUaGlzIGlzIHRoZSB0b3BpYyBvZiBFbWFjcwogIDs7IGJ1ZyAjNTkw
+OCwgdW5maXhlZCBpbiB2MjMgYW5kIHByZXNlbnQgaW4gdjIyLgoKCiAgKGRlZmFkdmljZSB0b29s
+dGlwLXNob3cgKGJlZm9yZQogICAgICAgICAgICAgICAgICAgICAgICAgICBmbHltYWtlLWZvci1j
+c2hhcnAtZml4dXAtdG9vbHRpcAogICAgICAgICAgICAgICAgICAgICAgICAgICAoYXJnICZvcHRp
+b25hbCB1c2UtZWNoby1hcmVhKQogICAgICAgICAgICAgICAgICAgICAgICAgICBhY3RpdmF0ZSBj
+b21waWxlKQogICAgKHByb2duCiAgICAgIChpZiA7OyhhbmQgKG5vdCB1c2UtZWNoby1hcmVhKSAo
+ZXEgbWFqb3ItbW9kZSAnY3NoYXJwLW1vZGUpKQogICAgICAgICAgKG5vdCB1c2UtZWNoby1hcmVh
+KQogICAgICAgICAgKGxldCAoKG9yaWcgKGFkLWdldC1hcmcgMCkpKQogICAgICAgICAgICAoYWQt
+c2V0LWFyZyAwIChjb25jYXQgIiAiIChjaGVlc28tc3RyaW5nLXRyaW0gKGNoZWVzby1yZWZvcm0t
+c3RyaW5nIDc0IG9yaWcpID9cICkpKQogICAgICAgICAgICApKSkpCgoKCgo7OyA9PT09PT09PT09
+PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09
+PT09PT0KOzsgWUEtc25pcHBldCBpbnRlZ3JhdGlvbgoKKGRlZnVuIGNzaGFycC15YXNuaXBwZXQt
+Zml4dXAgKCkKICAiU2V0cyBzbmlwcGV0cyBpbnRvIHlhLXNuaXBwZXQgZm9yIEMjLCBpZiB5YXNu
+aXBwZXQgaXMgbG9hZGVkLAphbmQgaWYgdGhlIHNuaXBwZXRzIGRvIG5vdCBhbHJlYWR5IGV4aXN0
+LgoiCiAgKGlmIChub3QgY3NoYXJwLS15YXNuaXBwZXQtaGFzLWJlZW4tZml4ZWQpCiAgICAgIChp
+ZiAoZmJvdW5kcCAneWFzL3NuaXBwZXQtdGFibGUtZmV0Y2gpCiAgICAgICAgICA7OyB5YXNuaXBw
+ZXQgaXMgcHJlc2VudAogICAgICAgICAgKGxldCAoKHNuaXBwZXQtdGFibGUgKHlhcy9zbmlwcGV0
+LXRhYmxlICdjc2hhcnAtbW9kZSkpCiAgICAgICAgICAgICAgICAoa2V5bWFwIChpZiB5YXMvdXNl
+LW1lbnUKICAgICAgICAgICAgICAgICAgICAgICAgICAgICh5YXMvbWVudS1rZXltYXAtZm9yLW1v
+ZGUgJ2NzaGFycC1tb2RlKQogICAgICAgICAgICAgICAgICAgICAgICAgIG5pbCkpCiAgICAgICAg
+ICAgICAgICAoeWFzL3JlcXVpcmUtdGVtcGxhdGUtY29uZGl0aW9uIG5pbCkKICAgICAgICAgICAg
+ICAgIChidWlsdGluLXNuaXBzCiAgICAgICAgICAgICAgICAgJygKICAoInhtbHMiICJ7CiAgICAg
+IFhtbFNlcmlhbGl6ZXIgczEgPSBuZXcgWG1sU2VyaWFsaXplcih0eXBlb2YoJHsxOnR5cGV9KSk7
+CgogICAgICAvLyB1c2UgdGhpcyB0byBcInN1cHByZXNzXCIgdGhlIGRlZmF1bHQgeHNkIGFuZCB4
+c2QtaW5zdGFuY2UgbmFtZXNwYWNlcwogICAgICBYbWxTZXJpYWxpemVyTmFtZXNwYWNlcyBucyA9
+IG5ldyBYbWxTZXJpYWxpemVyTmFtZXNwYWNlcygpOwogICAgICBucy5BZGQoXCJcIiwgXCJcIik7
+CgogICAgICBzMS5TZXJpYWxpemUobmV3IFhUV0ZORChTeXN0ZW0uQ29uc29sZS5PdXQpLCBvYmpl
+Y3QsIG5zKTsKICAgICAgU3lzdGVtLkNvbnNvbGUuV3JpdGVMaW5lKFwiXFxuXCIpOwp9CgogICQw
+CiAgLy8vIFhtbFRleHRXcml0ZXJGb3JtYXR0ZWROb0RlY2xhcmF0aW9uCiAgLy8vIGhlbHBlciBj
+bGFzcyA6IGVsaW1pbmF0ZXMgdGhlIFhNTCBEb2N1bWVudGF0aW9uIGF0IHRoZQogIC8vLyBzdGFy
+dCBvZiBhIFhNTCBkb2MuCiAgLy8vIFhUV0ZORCA9IFhtbFRleHRXcml0ZXJGb3JtYXR0ZWROb0Rl
+Y2xhcmF0aW9uCiAgLy8vIHVzYWdlOiAgICAgICBzMS5TZXJpYWxpemUobmV3IFhUV0ZORChTeXN0
+ZW0uQ29uc29sZS5PdXQpLCB0aGluZywgbnMpOwoKICBwdWJsaWMgY2xhc3MgWFRXRk5EIDogU3lz
+dGVtLlhtbC5YbWxUZXh0V3JpdGVyCiAgewogICAgcHVibGljIFhUV0ZORChTeXN0ZW0uSU8uU3Ry
+aW5nV3JpdGVyIHcpIDogYmFzZSh3KSB7IEZvcm1hdHRpbmc9U3lzdGVtLlhtbC5Gb3JtYXR0aW5n
+LkluZGVudGVkOyAgfQogICAgcHVibGljIFhUV0ZORChTeXN0ZW0uSU8uVGV4dFdyaXRlciB3KSA6
+IGJhc2UodykgeyBGb3JtYXR0aW5nID0gU3lzdGVtLlhtbC5Gb3JtYXR0aW5nLkluZGVudGVkOyB9
+CiAgICBwdWJsaWMgWFRXRk5EKFN5c3RlbS5JTy5TdHJlYW0gcykgOiBiYXNlKHMsIG51bGwpIHsg
+Rm9ybWF0dGluZyA9IFN5c3RlbS5YbWwuRm9ybWF0dGluZy5JbmRlbnRlZDsgfQogICAgcHVibGlj
+IFhUV0ZORChzdHJpbmcgZmlsZW5hbWUpIDogYmFzZShmaWxlbmFtZSwgbnVsbCkgeyBGb3JtYXR0
+aW5nID0gU3lzdGVtLlhtbC5Gb3JtYXR0aW5nLkluZGVudGVkOyB9CiAgICBwdWJsaWMgb3ZlcnJp
+ZGUgdm9pZCBXcml0ZVN0YXJ0RG9jdW1lbnQoKSB7IH0KICB9CgoiICJ4bWxzZXJpYWxpemVyIHsg
+Li4uIH0iIG5pbCkKICAoIndsIiAiU3lzdGVtLkNvbnNvbGUuV3JpdGVMaW5lKCR7MDovL3RoaW5n
+IHRvIGRvfSk7CiIgIldyaXRlTGluZSggLi4uICk7IiBuaWwpCiAgKCJ3aGlsZSIgIndoaWxlICgk
+ezE6Y29uZGl0aW9ufSkKewogICAgJHswOi8vdGhpbmcgdG8gZG99Cn0iICJ3aGlsZSAoLi4uKSB7
+IC4uLiB9IiBuaWwpCiAgKCJ1c2luZyIgInVzaW5nICgkezE6dHlwZX0gJHsyOnZhcn0gPSBuZXcg
+JHsxOnR5cGV9KCR7NDpjdG9yIGFyZ3N9KSkKewogICAgJHs1Oi8vIGJvZHkuLi59Cn0iICJ1c2lu
+ZyAuLi4geyAuLi4gfSIgbmlsKQogICgidHJ5IiAidHJ5CnsKICAkMAp9CmNhdGNoIChTeXN0ZW0u
+RXhjZXB0aW9uIGV4YzEpCnsKICB0aHJvdyBuZXcgRXhjZXB0aW9uKFwidW5jYXVnaHQgZXhjZXB0
+aW9uXCIsIGV4YzEpOwp9IiAidHJ5IHsgLi4uIH0gY2F0Y2ggeyAuLi4gfSIgbmlsKQogICgic3Vt
+IiAiLy8vIDxzdW1tYXJ5PgovLy8gICR7MTpkZXNjcmlwdGlvbn0KLy8vIDwvc3VtbWFyeT4KLy8v
+Ci8vLyA8cmVtYXJrcz4KLy8vICAkezI6Y29tbWVudHN9Ci8vLyA8L3JlbWFya3M+CiIgIi8vLyA8
+c3VtbWFyeT4uLi4iIG5pbCkKICAoInNpbmciICIjcmVnaW9uIFNpbmdsZXRvbiAkezE6Y2xhc3NO
+YW1lfQpwdWJsaWMgc2VhbGVkIGNsYXNzICQxCnsKICAgIHByaXZhdGUgcmVhZG9ubHkgc3RhdGlj
+ICQxIF9pbnN0YW5jZSA9IG5ldyAkMSgpOwogICAgcHVibGljIHN0YXRpYyAkMSBJbnN0YW5jZSAg
+eyBnZXQgeyByZXR1cm4gX2luc3RhbmNlOyB9IH0KICAgIHN0YXRpYyAkMSgpIHsgLyogcmVxdWly
+ZWQgZm9yIGxhenkgaW5pdCAqLyB9CiAgICBwcml2YXRlICQxKCkKICAgIHsKICAgICAgICAvLyBp
+bXBsZW1lbnRhdGlvbiBoZXJlCiAgICB9Cn0KCiNlbmRyZWdpb24KIiAicHVibGljIHNlYWxlZCBj
+bGFzcyBTaW5nbGV0b24gey4uLn0iIG5pbCkKICAoInNldHRpbmciICIgI3JlZ2lvbiBQcm9wZXJ0
+eSR7MTpQcm9wTmFtZX0KCiAgICBwcml2YXRlIHN0cmluZyBkZWZhdWx0JDEgPSAkezI6ZGVmYXVs
+dFZhbHVlfTsKICAgIHByaXZhdGUgc3RyaW5nIF8kMTsKICAgIHB1YmxpYyBzdHJpbmcgJDEKICAg
+IHsKICAgICAgICBnZXQKICAgICAgICB7CiAgICAgICAgICAgICAgICBpZiAoXyQxID09IG51bGwp
+CiAgICAgICAgICAgICAgICB7CiAgICAgICAgICAgICAgICAgICAgXyQxID0gU3lzdGVtLkNvbmZp
+Z3VyYXRpb24uQ29uZmlndXJhdGlvbk1hbmFnZXIuQXBwU2V0dGluZ3NbXCIkMVwiXTsKCiAgICAg
+ICAgICAgICAgICAgICAgaWYgKHN0cmluZy5Jc051bGxPckVtcHR5KF8kMSkpCiAgICAgICAgICAg
+ICAgICAgICAgewogICAgICAgICAgICAgICAgICAgICAgICBfJDEgPSBkZWZhdWx0JDE7CiAgICAg
+ICAgICAgICAgICAgICAgfQogICAgICAgICAgICAgICAgfQogICAgICAgICAgICAgICAgcmV0dXJu
+IHRoaXMuXyQxOwogICAgICAgICAgICB9CiAgICAgICAgc2V0CiAgICAgICAgewogICAgICAgICAg
+ICBzdHJpbmcgbmV3JDEgPSB2YWx1ZTsKICAgICAgICAgICAgLy8gb3B0aW9uYWwgdmFsaWRhdGlv
+bjoKICAgICAgICAgICAgLy9WYWxpZGF0aW9uLkVuZm9yY2VYeHh4KG5ldyQxLCBcIiQxXCIpOwog
+ICAgICAgICAgICBfJDEgPSBuZXckMTsKICAgICAgICB9CiAgICB9CgojZW5kcmVnaW9uCiIgImNv
+bmZpZyBzZXR0aW5nIiBuaWwpCiAgKCJwcm9wIiAicHJpdmF0ZSAkezE6VHlwZX0gXyR7MjpOYW1l
+fTsKcHVibGljICR7MTpUeXBlfSAkezI6TmFtZX0KewogIGdldAogIHsKICAgICR7MzovL2dldCBp
+bXBsfQogIH0KCiAgc2V0CiAgewogICAgJHs0Oi8vZ2V0IGltcGx9CiAgfQoKfSIgInByb3BlcnR5
+IC4uLiB7IC4uLiB9IiBuaWwpCiAgKCJwYSIgIiAgICAgICAgZm9yIChpbnQgaT0wOyBpIDwgYXJn
+cy5MZW5ndGg7IGkrKykKICAgICAgICB7CiAgICAgICAgICAgIHN3aXRjaCAoYXJnc1tpXSkKICAg
+ICAgICAgICAgewogICAgICAgICAgICBjYXNlIFwiLT9cIjoKICAgICAgICAgICAgY2FzZSBcIi1o
+ZWxwXCI6CiAgICAgICAgICAgICAgICB0aHJvdyBuZXcgQXJndW1lbnRFeGNlcHRpb24oYXJnc1tp
+XSk7CgogICAgICAgICAgICBkZWZhdWx0OiAvLyBwb3NpdGlvbmFsIGFyZ3MKICAgICAgICAgICAg
+ICAgIGlmICgkMiAhPSAwKQogICAgICAgICAgICAgICAgICAgIC8vIHdlIGhhdmUgYWxsIHRoZSBh
+cmdzIHdlIG5lZWQKICAgICAgICAgICAgICAgICAgICB0aHJvdyBuZXcgQXJndW1lbnRFeGNlcHRp
+b24oYXJnc1tpXSk7CgogICAgICAgICAgICAgICAgaWYgKCQxID09IG51bGwpCiAgICAgICAgICAg
+ICAgICAgICAgJDEgPSBhcmdzW2ldOwoKICAgICAgICAgICAgICAgIGVsc2UKICAgICAgICAgICAg
+ICAgICAgICAkMiA9IFN5c3RlbS5JbnQzMi5QYXJzZShhcmdzW2ldKTsKCiAgICAgICAgICAgICAg
+ICBicmVhazsKICAgICAgICAgICAgfQogICAgICAgIH0KCiAgICAgICAgLy8gY2hlY2sgdmFsdWVz
+CiAgICAgICAgaWYgKCQxID09IG51bGwpCiAgICAgICAgICAgIHRocm93IG5ldyBBcmd1bWVudEV4
+Y2VwdGlvbigpOwoKICAgICAgICBpZiAoJDIgPT0gMCkKICAgICAgICAgICAgdGhyb3cgbmV3IEFy
+Z3VtZW50RXhjZXB0aW9uKCk7CgoKIiAic3dpdGNoKGFyZ3NbMF0pIHsuLi59IiBuaWwpCiAgKCJv
+cGVucmVhZCIgIiAgICAgICAgdXNpbmcoU3RyZWFtIHNyYyA9IEZpbGUuT3BlblJlYWQoJDEpKQog
+ICAgICAgIHsKICAgICAgICAgIHVzaW5nKFN0cmVhbSBkZXN0PSBGaWxlLkNyZWF0ZSgkMikpCiAg
+ICAgICAgICB7CiAgICAgICAgICAgIGlmIChjb21wcmVzcykKICAgICAgICAgICAgICBDb21wcmVz
+cyhzcmMsIGRlc3QpOwogICAgICAgICAgICBlbHNlCiAgICAgICAgICAgICAgRGVjb21wcmVzcyhz
+cmMsIGRlc3QpOwogICAgICAgICAgfQogICAgICAgIH0KIiAiRmlsZS5PcGVuUmVhZCguLi4pIiBu
+aWwpCiAgKCJvZmQiICJ2YXIgZGxnID0gbmV3IFN5c3RlbS5XaW5kb3dzLkZvcm1zLk9wZW5GaWxl
+RGlhbG9nKCk7CmRsZy5GaWx0ZXIgPSBcIiR7MTpmaWx0ZXIgc3RyaW5nfVwiOyAvLyBleDogXCJD
+IyAoKi5jcyl8Ki5jc3xUZXh0ICgqLnR4dCl8Ki50eHRcIjsKaWYgKGRsZy5TaG93RGlhbG9nKCkg
+PT0gRGlhbG9nUmVzdWx0Lk9LKQp7CiAgICBzdHJpbmcgZmlsZU5hbWUgPSBkbGcuRmlsZU5hbWU7
+CiAgICAkMAp9CiIgIm5ldyBPcGVuRmlsZURpYWxvZzsgaWYgKERpYWxvZ1Jlc3VsdC5PSykgeyAu
+Li4gfSIgbmlsKQogICgiaWZlIiAiaWYgKCR7MTpwcmVkaWNhdGV9KQp7CiAgJHsyOi8vIHRoZW4g
+Y2xhdXNlfQp9CmVsc2UKewogICR7MzovLyBlbHNlIGNsYXVzZX0KfSIgImlmICguLi4pIHsgLi4u
+IH0gZWxzZSB7IC4uLiB9IiBuaWwpCiAgKCJmb3JlIiAiZm9yZWFjaCAoJHsxOnR5cGV9ICR7Mjp2
+YXJ9IGluICR7MzpJRW51bWVyYWJsZX0pCnsKICAgICR7NDovLyBib2R5Li4ufQp9IiAiZm9yZWFj
+aCAuLi4geyAuLi4gfSIgbmlsKQogICgiZm9yIiAiZm9yIChpbnQgJHsxOmluZGV4fT0wOyAkMSA8
+ICR7MjpMaW1pdH07ICQxKyspCnsKICAgICR7MzovLyBib2R5Li4ufQp9IiAiZm9yICguLi4pIHsg
+Li4uIH0iIG5pbCkKICAoImZiZCIgInVzaW5nIChGb2xkZXJCcm93c2VyRGlhbG9nIGRpYWxvZyA9
+IG5ldyBGb2xkZXJCcm93c2VyRGlhbG9nKCkpCnsKICAgIGRpYWxvZy5EZXNjcmlwdGlvbiA9IFwi
+T3BlbiBhIGZvbGRlciB3aGljaCBjb250YWlucyB0aGUgeG1sIG91dHB1dFwiOwogICAgZGlhbG9n
+LlNob3dOZXdGb2xkZXJCdXR0b24gPSBmYWxzZTsKICAgIGRpYWxvZy5Sb290Rm9sZGVyID0gRW52
+aXJvbm1lbnQuU3BlY2lhbEZvbGRlci5NeUNvbXB1dGVyOwogICAgaWYoZGlhbG9nLlNob3dEaWFs
+b2coKSA9PSBEaWFsb2dSZXN1bHQuT0spCiAgICB7CiAgICAgICAgc3RyaW5nIGZvbGRlciA9IGRp
+YWxvZy5TZWxlY3RlZFBhdGg7CiAgICAgICAgZm9yZWFjaCAoc3RyaW5nIGZpbGVOYW1lIGluIERp
+cmVjdG9yeS5HZXRGaWxlcyhmb2xkZXIsIFwiKi54bWxcIiwgU2VhcmNoT3B0aW9uLlRvcERpcmVj
+dG9yeU9ubHkpKQogICAgICAgIHsKICAgICAgICAgICAgU1FMR2VuZXJhdG9yLkdlbmVyYXRlU1FM
+VHJhbnNhY3Rpb25zKFBhdGguR2V0RnVsbFBhdGgoZmlsZU5hbWUpKTsKICAgICAgICB9CiAgICB9
+Cn0KCiIgIm5ldyBGb2xkZXJCcm93c2VyRGlhbG9nOyBpZiAoRGlhbG9nUmVzdWx0Lk9LKSB7IC4u
+LiB9IiBuaWwpCiAgKCJkb2MiICIvLy8gPHN1bW1hcnk+Ci8vLyAkezE6c3VtbWFyeX0KLy8vIDwv
+c3VtbWFyeT4KLy8vCi8vLyA8cmVtYXJrcz4KLy8vICR7MjpyZW1hcmtzfQovLy8gPC9yZW1hcmtz
+PgokMCIgIlhNTCBEb2N1bWVudGF0aW9uIiBuaWwpCiAgKCJjb252IiAiICBMaXN0PFN0cmluZz4g
+VmFsdWVzID0gbmV3IExpc3Q8U3RyaW5nPigpIHsgXCI3XCIsIFwiMTNcIiwgXCI0MVwiLCBcIjNc
+IiB9OwoKICAvLyBDb252ZXJ0QWxsIG1hcHMgdGhlIGdpdmVuIGRlbGVnYXRlIGFjcm9zcyBhbGwg
+dGhlIExpc3QgZWxlbWVudHMKICB2YXIgZm9vID0gVmFsdWVzLkNvbnZlcnRBbGwoKHMpID0+IHsg
+cmV0dXJuIFN5c3RlbS5Db252ZXJ0LlRvSW50MzIocyk7IH0pIDsKCiAgU3lzdGVtLkNvbnNvbGUu
+V3JpdGVMaW5lKFwidHlwZW9mKGZvbykgPSB7MH1cIiwgZm9vLkdldFR5cGUoKS5Ub1N0cmluZygp
+KTsKCiAgQXJyYXkuRm9yRWFjaChmb28uVG9BcnJheSgpLENvbnNvbGUuV3JpdGVMaW5lKTsKIiAi
+Q29udmVydEFsbCgocykgPT4geyAuLi4gfSk7IiBuaWwpCiAgKCJjbGEiICJwdWJsaWMgY2xhc3Mg
+JHsxOkNsYXNzbmFtZX0KewogIC8vIGRlZmF1bHQgY3RvcgogIHB1YmxpYyAkezE6Q2xhc3NuYW1l
+fSgpCiAgewogIH0KCiAgJHsyOi8vIG1ldGhvZHMgaGVyZX0KfSIgImNsYXNzIC4uLiB7IC4uLiB9
+IiBuaWwpCiAgKCJjYSIgIiAgTGlzdDxTdHJpbmc+IFZhbHVlcyA9IG5ldyBMaXN0PFN0cmluZz4o
+KSB7IFwiN1wiLCBcIjEzXCIsIFwiNDFcIiwgXCIzXCIgfTsKCiAgLy8gQ29udmVydEFsbCBtYXBz
+IHRoZSBnaXZlbiBkZWxlZ2F0ZSBhY3Jvc3MgYWxsIHRoZSBMaXN0IGVsZW1lbnRzCiAgdmFyIGZv
+byA9IFZhbHVlcy5Db252ZXJ0QWxsKChzKSA9PiB7IHJldHVybiBTeXN0ZW0uQ29udmVydC5Ub0lu
+dDMyKHMpOyB9KSA7CgogIFN5c3RlbS5Db25zb2xlLldyaXRlTGluZShcInR5cGVvZihmb28pID0g
+ezB9XCIsIGZvby5HZXRUeXBlKCkuVG9TdHJpbmcoKSk7CgogIEFycmF5LkZvckVhY2goZm9vLlRv
+QXJyYXkoKSxDb25zb2xlLldyaXRlTGluZSk7CiIgIkNvbnZlcnRBbGwoKHMpID0+IHsgLi4uIH0p
+OyIgbmlsKQogICgiYXNzIiAiCgpbYXNzZW1ibHk6IEFzc2VtYmx5VGl0bGUoXCIkMVwiKV0KW2Fz
+c2VtYmx5OiBBc3NlbWJseUNvbXBhbnkoXCIkezI6WW91ckNvTmFtZX1cIildClthc3NlbWJseTog
+QXNzZW1ibHlQcm9kdWN0KFwiJHszfVwiKV0KW2Fzc2VtYmx5OiBBc3NlbWJseUNvcHlyaWdodChc
+IkNvcHlyaWdodCCpICR7NDpTb21lb25lfSAyMDExXCIpXQpbYXNzZW1ibHk6IEFzc2VtYmx5VHJh
+ZGVtYXJrKFwiXCIpXQpbYXNzZW1ibHk6IEFzc2VtYmx5Q3VsdHVyZShcIlwiKV0KW2Fzc2VtYmx5
+OiBBc3NlbWJseUNvbmZpZ3VyYXRpb24oXCJcIildClthc3NlbWJseTogQXNzZW1ibHlEZXNjcmlw
+dGlvbihcIiR7NX1cIildClthc3NlbWJseTogQXNzZW1ibHlWZXJzaW9uKFwiJHs2OjEuMC4xLjB9
+XCIpXQpbYXNzZW1ibHk6IEFzc2VtYmx5RmlsZVZlcnNpb24oXCIkezc6MS4wLjEuMH1cIildCgoi
+ICJhc3NlbWJseSBpbmZvIiBuaWwpCiAgKSkpCgogICAgICAgICAgICAoc2V0cSBjc2hhcnAtLXlh
+c25pcHBldC1oYXMtYmVlbi1maXhlZCB0KQoKICAgICAgICAgICAgKGFkZC10by1saXN0ICd5YXMv
+a25vd24tbW9kZXMgJ2NzaGFycC1tb2RlKQoKICAgICAgICAgICAgOzsgSXQncyBwb3NzaWJsZSB0
+aGF0IENzaGFycC1tb2RlIGlzIG5vdCBvbiB0aGUgeWFzbmlwcGV0IG1lbnUKICAgICAgICAgICAg
+OzsgSW5zdGFsbCBpdCBoZXJlLgogICAgICAgICAgICAod2hlbiB5YXMvdXNlLW1lbnUKICAgICAg
+ICAgICAgICAoZGVmaW5lLWtleQogICAgICAgICAgICAgICAgeWFzL21lbnUta2V5bWFwCiAgICAg
+ICAgICAgICAgICAodmVjdG9yICdjc2hhcnAtbW9kZSkKICAgICAgICAgICAgICAgIGAobWVudS1p
+dGVtICJDIyIgLGtleW1hcCkpKQoKICAgICAgICAgICAgOzsgSW5zZXJ0IHRoZSBzbmlwcGV0cyBm
+cm9tIGFib3ZlIGludG8gdGhlIHRhYmxlIGlmIHRoZXkKICAgICAgICAgICAgOzsgYXJlIG5vdCBh
+bHJlYWR5IGRlZmluZWQuCiAgICAgICAgICAgIChtYXBjYXIKICAgICAgICAgICAgICcobGFtYmRh
+IChpdGVtKQogICAgICAgICAgICAgICAgKGxldCogKChmdWxsLWtleSAoY2FyIGl0ZW0pKQogICAg
+ICAgICAgICAgICAgICAgICAgIChleGlzdGluZy1zbmlwCiAgICAgICAgICAgICAgICAgICAgICAg
+ICh5YXMvc25pcHBldC10YWJsZS1mZXRjaCBzbmlwcGV0LXRhYmxlIGZ1bGwta2V5KSkpCiAgICAg
+ICAgICAgICAgICAgIChpZiAobm90IGV4aXN0aW5nLXNuaXApCiAgICAgICAgICAgICAgICAgICAg
+ICAobGV0KiAoKGtleSAoZmlsZS1uYW1lLXNhbnMtZXh0ZW5zaW9uIGZ1bGwta2V5KSkKICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAobmFtZSAoY2FkZHIgaXRlbSkpCiAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgKGNvbmRpdGlvbiAobnRoIDMgaXRlbSkpCiAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgKHRlbXBsYXRlICh5YXMvbWFrZS10ZW1wbGF0ZSAoY2FkciBpdGVtKQogICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgKG9y
+IG5hbWUga2V5KQogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgY29uZGl0aW9uKSkpCiAgICAgICAgICAgICAgICAgICAgICAgICh5YXMvc25p
+cHBldC10YWJsZS1zdG9yZSBzbmlwcGV0LXRhYmxlCiAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICBmdWxsLWtleQogICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAga2V5CiAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICB0ZW1wbGF0ZSkKICAgICAgICAgICAgICAgICAgICAgICAgKHdo
+ZW4geWFzL3VzZS1tZW51CiAgICAgICAgICAgICAgICAgICAgICAgICAgKGRlZmluZS1rZXkga2V5
+bWFwICh2ZWN0b3IgKG1ha2Utc3ltYm9sIGZ1bGwta2V5KSkKICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgIGAobWVudS1pdGVtICwoeWFzL3RlbXBsYXRlLW5hbWUgdGVtcGxhdGUpCiAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAsKHlhcy9tYWtlLW1lbnUtYmluZGluZyAo
+eWFzL3RlbXBsYXRlLWNvbnRlbnQgdGVtcGxhdGUpKQogICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgOmtleXMgLChjb25jYXQga2V5IHlhcy90cmlnZ2VyLXN5bWJvbCkpKSkp
+KSkpCiAgICAgICAgICAgICBidWlsdGluLXNuaXBzKSkpKSkKCgoKCihtZXNzYWdlICAoY29uY2F0
+ICJEb25lIGxvYWRpbmcgIiBsb2FkLWZpbGUtbmFtZSkpCgoKKHByb3ZpZGUgJ2NzaGFycC1tb2Rl
+KQoKOzs7IGNzaGFycC1tb2RlLmVsIGVuZHMgaGVyZQo=

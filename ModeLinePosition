@@ -1,12 +1,18 @@
 == Mode-Line Position ==
 
-This page describes library Lisp:modeline-posn.el, which provides extensions to the standard Emacs variable `mode-line-position' for Emacs 22 and later. That variable governs the behavior of minor modes `line-number-mode',  `column-number-mode', and `size-indication-mode', which show/hide the current line number, column number, and buffer size, respectively, in the '''mode-line''' (see ModeLineDefined ). See also ModeLine.
+This page describes library <tt>[[modeline-posn.el]]</tt>, which provides extensions to the standard Emacs variable `mode-line-position' for Emacs 22 and later. That variable governs the behavior of minor modes `line-number-mode',  `column-number-mode', and `size-indication-mode', which show/hide the current line number, column number, and buffer size, respectively, in the [[mode line]].
 
-The following extensions are provided by Lisp:modeline-posn.el:
+The following extensions are provided by library ##modeline-posn.el##:
 
-* In TransientMarkMode, when the region is active, the size indicated is that of the region, not the buffer. This portion of the mode-line is then highlighted with face `region'.
+* In TransientMarkMode, when the [[region]] is [[active region|active]], the size indicated is that of the region, not the [[buffer]]. This portion of the mode-line is then highlighted with face `region'.
 
 * Whenever the current column is greater than ‘modelinepos-column-limit’, the column-number indication in the mode-line is highlighted in face `font-lock-function-name-face'. This lets you know when you've gone past a certain number of characters in any line. You can customize user option ‘modelinepos-column-limit’, and you can bind it to different values in different modes. 
+
+
+
+
+
+
 
 == Discussion ==
 <pre>

@@ -1,32 +1,26 @@
-(defun pretty-greek ()
-	               ;;first upper
-  (let* ((greek '("Alpha" "Beta" "Gamma" "Delta" "Epsilon" "Zeta" "Eta" "Theta"
-								 "Iota" "Kappa" "Lambda" "Mu" "Nu" "Xi" "Omicron" "Pi" "Rho" 
-								 "Ò" "Sigma" "Tau" "Upsilon" "Phi" "Chi" "Psi" "Omega" 
-								 ;;hack to skip these characters
-								 "Ú" "Û" "Ü" "Ý" "Þ" "ß" "à"
-								 ;;lower starts after them
-								 "alpha" "beta" "gamma" "delta" "epsilon" "zeta" "eta" "theta" "iota" "kappa" "lambda" "mu" "nu" "xi" "omicron" 
-								 "pi" "rho" "sigma_final" "sigma" "tau" "upsilon" "phi" "chi" "psi" "omega"))
-				(pos 65))
-		(while greek
-			(let* ((word (car greek))
-						 (greek-char (make-char 'greek-iso8859-7 pos)))
-				;;sigh side effect hackery
-				(setq greek (cdr greek))
-				(setq pos (+ pos 1))
-				(font-lock-add-keywords nil
-																`((,(concat "\\(^\\|[^a-zA-Z0-9]\\)\\(" word "\\)[a-zA-Z]")
-																	 (0 (progn (decompose-region
-																							(match-beginning 2)
-																							(match-end 2))
-																						 nil)))))
-				(font-lock-add-keywords nil 
-																`((,(concat "\\(^\\|[^a-zA-Z0-9]\\)\\(" word "\\)[^a-zA-Z]")
-																	 (0 (progn (compose-region 
-																							(match-beginning 2) 
-																							(match-end 2)
-																							,greek-char) 
-																						 nil)))))))))
-  
-(provide 'pretty-greek)
+#FILE text/x-emacs-lisp
+KGRlZnVuIHByZXR0eS1ncmVlayAoKQoJICAgICAgICAgICAgICAgOztmaXJzdCB1cHBlcgogIChs
+ZXQqICgoZ3JlZWsgJygiQWxwaGEiICJCZXRhIiAiR2FtbWEiICJEZWx0YSIgIkVwc2lsb24iICJa
+ZXRhIiAiRXRhIiAiVGhldGEiCgkJCQkJCQkJICJJb3RhIiAiS2FwcGEiICJMYW1iZGEiICJNdSIg
+Ik51IiAiWGkiICJPbWljcm9uIiAiUGkiICJSaG8iIAoJCQkJCQkJCSAi0iIgIlNpZ21hIiAiVGF1
+IiAiVXBzaWxvbiIgIlBoaSIgIkNoaSIgIlBzaSIgIk9tZWdhIiAKCQkJCQkJCQkgOztoYWNrIHRv
+IHNraXAgdGhlc2UgY2hhcmFjdGVycwoJCQkJCQkJCSAi2iIgItsiICLcIiAi3SIgIt4iICLfIiAi
+4CIKCQkJCQkJCQkgOztsb3dlciBzdGFydHMgYWZ0ZXIgdGhlbQoJCQkJCQkJCSAiYWxwaGEiICJi
+ZXRhIiAiZ2FtbWEiICJkZWx0YSIgImVwc2lsb24iICJ6ZXRhIiAiZXRhIiAidGhldGEiICJpb3Rh
+IiAia2FwcGEiICJsYW1iZGEiICJtdSIgIm51IiAieGkiICJvbWljcm9uIiAKCQkJCQkJCQkgInBp
+IiAicmhvIiAic2lnbWFfZmluYWwiICJzaWdtYSIgInRhdSIgInVwc2lsb24iICJwaGkiICJjaGki
+ICJwc2kiICJvbWVnYSIpKQoJCQkJKHBvcyA2NSkpCgkJKHdoaWxlIGdyZWVrCgkJCShsZXQqICgo
+d29yZCAoY2FyIGdyZWVrKSkKCQkJCQkJIChncmVlay1jaGFyIChtYWtlLWNoYXIgJ2dyZWVrLWlz
+bzg4NTktNyBwb3MpKSkKCQkJCTs7c2lnaCBzaWRlIGVmZmVjdCBoYWNrZXJ5CgkJCQkoc2V0cSBn
+cmVlayAoY2RyIGdyZWVrKSkKCQkJCShzZXRxIHBvcyAoKyBwb3MgMSkpCgkJCQkoZm9udC1sb2Nr
+LWFkZC1rZXl3b3JkcyBuaWwKCQkJCQkJCQkJCQkJCQkJCWAoKCwoY29uY2F0ICJcXCheXFx8W15h
+LXpBLVowLTldXFwpXFwoIiB3b3JkICJcXClbYS16QS1aXSIpCgkJCQkJCQkJCQkJCQkJCQkJICgw
+IChwcm9nbiAoZGVjb21wb3NlLXJlZ2lvbgoJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCShtYXRjaC1i
+ZWdpbm5pbmcgMikKCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkobWF0Y2gtZW5kIDIpKQoJCQkJCQkJ
+CQkJCQkJCQkJCQkJCQkJIG5pbCkpKSkpCgkJCQkoZm9udC1sb2NrLWFkZC1rZXl3b3JkcyBuaWwg
+CgkJCQkJCQkJCQkJCQkJCQlgKCgsKGNvbmNhdCAiXFwoXlxcfFteYS16QS1aMC05XVxcKVxcKCIg
+d29yZCAiXFwpW15hLXpBLVpdIikKCQkJCQkJCQkJCQkJCQkJCQkgKDAgKHByb2duIChjb21wb3Nl
+LXJlZ2lvbiAKCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkobWF0Y2gtYmVnaW5uaW5nIDIpIAoJCQkJ
+CQkJCQkJCQkJCQkJCQkJCQkJCShtYXRjaC1lbmQgMikKCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQks
+Z3JlZWstY2hhcikgCgkJCQkJCQkJCQkJCQkJCQkJCQkJCQkgbmlsKSkpKSkpKSkpCiAgCihwcm92
+aWRlICdwcmV0dHktZ3JlZWspCg==

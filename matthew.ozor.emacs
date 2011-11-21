@@ -1,260 +1,144 @@
-;; Matthew Ozor's default emacs init file.
-;; For GNU/Linux & Windows XP-7 Machines   
-;; Updated 08/18/09 15:00PM
-
-;; all roads lead home
-(cd "~/.emacs.d")
-
-;; set default load path
-(setq load-path (cons "~/.emacs.d/" load-path))
-
-;; turn off welcome screen
-(setq inhibit-startup-message t) 
-
-;; set frame size and position
-(add-to-list 'default-frame-alist '(top . 1))
-(add-to-list 'default-frame-alist '(left . 1))
-;; home 
-(if (string= (system-name) "ozor-desktop")
-    (progn
-      (add-to-list 'default-frame-alist '(height . 62))
-      (add-to-list 'default-frame-alist '(width . 120))))
-;; laptop 
-(if (string= (system-name) "MELISSA-PC")
-    (progn
-      (add-to-list 'default-frame-alist '(height . 35))
-      (add-to-list 'default-frame-alist '(width . 152))))
-;; work
-(if (string= (system-name) "USER-92AB9A8CE1")
-    (progn
-      (add-to-list 'default-frame-alist '(height . 46))
-      (add-to-list 'default-frame-alist '(width . 154))))
-  
-;; Set the text for titlebar and icons
-(if window-system
-    (setq frame-title-format (list "GNU Emacs " emacs-version))
-          icon-title-format "Emacs")
-
-;; turn on/off menu bar
-(menu-bar-mode t)
-
-;;turn on/off toolbar
-(tool-bar-mode -1)
-
-;; turn on/off scroll bars
-(toggle-scroll-bar t)
-
-;; show column-number in mode line
-(column-number-mode t)
-
-;; turn on syntax highlighting
-(if (fboundp 'global-font-lock-mode)
-    (global-font-lock-mode 1))        ; GNU Emacs
-
-;; turn on parentheses highlighting
-(show-paren-mode)
-
-;;turn on highlight changes
-(highlight-changes-mode t)
-
-;; display date and time always
-(setq display-time-day-and-date t)
-(display-time)
-
-;; show file size
-(size-indication-mode)
-
-;; type "y"/"n" instead of "yes"/"no"
-(fset 'yes-or-no-p 'y-or-n-p)
-
-;; Save all backup file in this directory.
-(setq backup-directory-alist (quote ((".*" . "~/.emacs.d/"))))
-
-;; disable backup files
-(setq make-backup-files nil)
-
-;; disable auto save
-(auto-save-mode -1)
-
-;; autosave history on eshell
-(setq eshell-save-history-on-exit t)
-
-;; keep ediff in one frame
-;(ediff-setup-windows-plain)
-
-;; turn off word wrap
-(setq default-truncate-lines 1)
-
-;; highlight lines longer then 80 characters
-(add-hook 'emacs-lisp-mode-hook
-	  (lambda ()
-	    (font-lock-add-keywords nil
-				    '(("^[^\n]\\{80\\}\\(.*\\)$" 1 font-lock-warning-face t)))))
-
-;; mouse settings
-(setq mouse-wheel-progressive-speed nil)
-(global-set-key [wheel-up]' (lambda ()(interactive)(scroll-down 2)))
-(global-set-key [wheel-down]' (lambda ()(interactive)(scroll-up 2)))
-(global-unset-key [mouse-2]) ;kill mouse-2 paste
-
-;; bind meta shift mouse-3 to the imenu, and shift mouse-3 to alphabetical imenu
-(when window-system 
-  (define-key global-map [M-S-down-mouse-3] 'imenu)
-  (define-key global-map [S-down-mouse-3]
-    (lambda ()
-      (interactive)
-      (let ((imenu-sort-function 
-	     'imenu--sort-by-name))
-	(call-interactively 'imenu)))))
-
-;; turn on fancy prompts in the shell
-(add-hook 'shell-mode-hook 'ansi-color-for-comint-mode-on)
-
-;; turn off shell command echo
-(defun my-comint-init () 
-  (setq comint-process-echoes t)) 
-(add-hook 'comint-mode-hook 'my-comint-init) 
-
-;; Matthew Ozor custom elisp programs
-(add-to-list 'load-path "~/.emacs.d/mo")
-(load-library "mo-rot13.el")
-(load-library "mo-menu.el")
-
-;; line numbers
-(if (>= emacs-major-version 23) (require 'linum))
-
-
-;; Load ascii-table
-;;(require 'ascii-table)
-
-;; Load switch buffer
-(require 'swbuff)
-
-;; Load mercurial
-(require 'mercurial)
-
-;; Load sr-speedbar for putting speedbar in current frame
-;;(require 'sr-speedbar)
-
-;; Loads buffer to html and view with browser
-(require 'htmlize-view)
-(htmlize-view-add-to-files-menu)
-
-;; Load emacs-nav
-(add-to-list 'load-path "~/.emacs.d/nav/")
-(require 'nav)
-
-;; Load outline-magic
-(require 'outline-magic)
-
-;; color themes
-(require 'color-theme)
-(color-theme-initialize)
-;(load-file "~/.emacs.d/themes/color-theme-twilight.el")
-
-;; load the custom start-up screen / also to set shortcuts
-(load-file "~/.emacs.d/sr-splash.el")
-
-;; outline mode
-(add-to-list 'auto-mode-alist '("\\.outline\\'" . outline-mode))
-(add-hook 'outline-mode-hook 'hide-body)
-
-;;;Windows Section
-(when (string-equal system-type "windows-nt")
-;;DOS mode
-  (autoload 'batch-mode "batch-mode" "DOS batch file mode." t)
-  (setq auto-mode-alist (append '(("\\.\\(cmd\\|bat\\)$" . batch-mode))
-;; lisp-mode for AutoLISP menu files
-				(setq auto-mode-alist (cons '("\\.mnl" . lisp-mode) auto-mode-alist))
-				auto-mode-alist))
-  (set-default-font
-   "-outline-Monaco-normal-r-normal-normal-13-97-96-96-c-*-iso8859-1")
-  ;"-outline-Bitstream Vera Sans Mono-normal-r-normal-normal-13-97-96-96-c-*-iso8859-1")
-)
-
-;;; Custom shortcuts
-;;(sr-set-global-key (kbd "<f1>") "F1" 'sr-speedbar-toggle "sr-speedbar-toggle")
-(sr-set-global-key (kbd "<f1>") "F1" 'nav "emacs-nav")
-(sr-set-global-key (kbd "<f2>") "F2" '(lambda () (interactive) (other-window 1)) "other-window")
-(sr-set-global-key (kbd "<f3>") "F3" 'swbuff-switch-to-next-buffer "swbuff-switch-to-next-buffer")
-(sr-set-global-key (kbd "<f4>") "F4" 'kmacro-start-macro "kmacro-start-macro")
-(sr-set-global-key (kbd "<f5>") "F5" 'kmacro-end-or-call-macro "kmacro-end-or-call-macro")
-(sr-set-global-key (kbd "<f6>") "F6" 'linum-mode "toggle line numbers")
-(sr-set-global-key (kbd "<f7>") "F7" 'eval-defun "eval-defun")
-(sr-set-global-key (kbd "<f8>") "F8" 'compile "compile")
-(sr-set-global-key (kbd "<f9>") "F9" '(lambda () 
-					(interactive)
-					(if (eq mo-bw-color-theme 0)
-					    (progn 
-					      (color-theme-sitaramv-nt)
-					      (setq mo-bw-color-theme 1))
-					  (progn
-					    (color-theme-dark-laptop)
-					    (setq mo-bw-color-theme 0)))) 
-		   "toggle bright/dark theme")
-(sr-set-global-key (kbd "<f10>") "F10" '(lambda () 
-					  (interactive)
-					  (goto-line 3)
-					  (kill-line)
-					  (insert "\;\; Updated ")
-					  (insert (format-time-string "%D %R%p"))
-					  (save-buffer)) 
-		   "timestamp and save file")
-(sr-set-global-key (kbd "<f11>") "F11" '(lambda () (interactive) (load-file "~/.emacs")) "load .emacs")
-(sr-set-global-key (kbd "<f12>") "F12" '(lambda () (interactive) (find-file "~/.emacs")) "open .emacs")
-(sr-set-global-key (kbd "\C-cb") "C-c b" 'mo-insert-find-breadcrumb "drop a breadcrumb")
-(sr-set-global-key (kbd "\C-cp") "C-c p" 'htmlize-view-buffer "send buffer to browser")
-(sr-set-global-key (kbd "\C-cg") "C-c g" 'goto-line "goto-line")
-(sr-set-global-key (kbd "\C-cs") "C-c s" '(lambda () (interactive)
-					    (split-window-vertically)
-					    (other-window 1)
-					    (shell)) 
-		   "shell")
-(sr-set-global-key (kbd "\C-ct") "C-c t" '(lambda () (interactive)
-					(if (eq mo-trans 0)
-					    (progn 
-					      (set-frame-parameter (selected-frame) 'alpha 70)
-					      (setq mo-trans 1))
-					  (progn
-					     (set-frame-parameter (selected-frame) 'alpha 100)
-					    (setq mo-trans 0)))) 
-		   "toggle transparent")
-
-;; leave a breadcrumb trail
-(defun mo-insert-find-breadcrumb ()
- (interactive)
- (setq current-point (point))
- (goto-char (point-min))
- (if (search-forward ";;breadcrumb" nil t) ()
-   (progn
-     (goto-char current-point)
-     (insert ";;breadcrumb"))))
-
-
-;; Setup workspace
-;; different theme for x or term
-(if window-system (color-theme-dark-laptop)())
-
-;; global toggle variables
-(defvar mo-bw-color-theme 0)
-(defvar mo-trans 0)
-
-;; display custom splash screen 
-;(sr-display-keys)
-
-
-(custom-set-variables
-  ;; custom-set-variables was added by Custom.
-  ;; If you edit it by hand, you could mess it up, so be careful.
-  ;; Your init file should contain only one such instance.
-  ;; If there is more than one, they won't work right.
- '(ediff-window-setup-function (quote ediff-setup-windows-plain))
- '(nav-quickdir-list (quote ("~/.emacs.d/nav" "~/.emacs.d" "/tmp")))
- '(nav-quickfile-list (quote ("~/.emacs.d/nav/nav.el" "~/.emacs.d/nav/nav-bufs.el" "~/.emacs.d/nav/nav-tags.el")))
- '(nav-widths-percentile 100))
-(custom-set-faces
-  ;; custom-set-faces was added by Custom.
-  ;; If you edit it by hand, you could mess it up, so be careful.
-  ;; Your init file should contain only one such instance.
-  ;; If there is more than one, they won't work right.
- )
+#FILE text/plain
+OzsgTWF0dGhldyBPem9yJ3MgZGVmYXVsdCBlbWFjcyBpbml0IGZpbGUuCjs7IEZvciBHTlUvTGlu
+dXggJiBXaW5kb3dzIFhQLTcgTWFjaGluZXMgICAKOzsgVXBkYXRlZCAwOC8xOC8wOSAxNTowMFBN
+Cgo7OyBhbGwgcm9hZHMgbGVhZCBob21lCihjZCAifi8uZW1hY3MuZCIpCgo7OyBzZXQgZGVmYXVs
+dCBsb2FkIHBhdGgKKHNldHEgbG9hZC1wYXRoIChjb25zICJ+Ly5lbWFjcy5kLyIgbG9hZC1wYXRo
+KSkKCjs7IHR1cm4gb2ZmIHdlbGNvbWUgc2NyZWVuCihzZXRxIGluaGliaXQtc3RhcnR1cC1tZXNz
+YWdlIHQpIAoKOzsgc2V0IGZyYW1lIHNpemUgYW5kIHBvc2l0aW9uCihhZGQtdG8tbGlzdCAnZGVm
+YXVsdC1mcmFtZS1hbGlzdCAnKHRvcCAuIDEpKQooYWRkLXRvLWxpc3QgJ2RlZmF1bHQtZnJhbWUt
+YWxpc3QgJyhsZWZ0IC4gMSkpCjs7IGhvbWUgCihpZiAoc3RyaW5nPSAoc3lzdGVtLW5hbWUpICJv
+em9yLWRlc2t0b3AiKQogICAgKHByb2duCiAgICAgIChhZGQtdG8tbGlzdCAnZGVmYXVsdC1mcmFt
+ZS1hbGlzdCAnKGhlaWdodCAuIDYyKSkKICAgICAgKGFkZC10by1saXN0ICdkZWZhdWx0LWZyYW1l
+LWFsaXN0ICcod2lkdGggLiAxMjApKSkpCjs7IGxhcHRvcCAKKGlmIChzdHJpbmc9IChzeXN0ZW0t
+bmFtZSkgIk1FTElTU0EtUEMiKQogICAgKHByb2duCiAgICAgIChhZGQtdG8tbGlzdCAnZGVmYXVs
+dC1mcmFtZS1hbGlzdCAnKGhlaWdodCAuIDM1KSkKICAgICAgKGFkZC10by1saXN0ICdkZWZhdWx0
+LWZyYW1lLWFsaXN0ICcod2lkdGggLiAxNTIpKSkpCjs7IHdvcmsKKGlmIChzdHJpbmc9IChzeXN0
+ZW0tbmFtZSkgIlVTRVItOTJBQjlBOENFMSIpCiAgICAocHJvZ24KICAgICAgKGFkZC10by1saXN0
+ICdkZWZhdWx0LWZyYW1lLWFsaXN0ICcoaGVpZ2h0IC4gNDYpKQogICAgICAoYWRkLXRvLWxpc3Qg
+J2RlZmF1bHQtZnJhbWUtYWxpc3QgJyh3aWR0aCAuIDE1NCkpKSkKICAKOzsgU2V0IHRoZSB0ZXh0
+IGZvciB0aXRsZWJhciBhbmQgaWNvbnMKKGlmIHdpbmRvdy1zeXN0ZW0KICAgIChzZXRxIGZyYW1l
+LXRpdGxlLWZvcm1hdCAobGlzdCAiR05VIEVtYWNzICIgZW1hY3MtdmVyc2lvbikpCiAgICAgICAg
+ICBpY29uLXRpdGxlLWZvcm1hdCAiRW1hY3MiKQoKOzsgdHVybiBvbi9vZmYgbWVudSBiYXIKKG1l
+bnUtYmFyLW1vZGUgdCkKCjs7dHVybiBvbi9vZmYgdG9vbGJhcgoodG9vbC1iYXItbW9kZSAtMSkK
+Cjs7IHR1cm4gb24vb2ZmIHNjcm9sbCBiYXJzCih0b2dnbGUtc2Nyb2xsLWJhciB0KQoKOzsgc2hv
+dyBjb2x1bW4tbnVtYmVyIGluIG1vZGUgbGluZQooY29sdW1uLW51bWJlci1tb2RlIHQpCgo7OyB0
+dXJuIG9uIHN5bnRheCBoaWdobGlnaHRpbmcKKGlmIChmYm91bmRwICdnbG9iYWwtZm9udC1sb2Nr
+LW1vZGUpCiAgICAoZ2xvYmFsLWZvbnQtbG9jay1tb2RlIDEpKSAgICAgICAgOyBHTlUgRW1hY3MK
+Cjs7IHR1cm4gb24gcGFyZW50aGVzZXMgaGlnaGxpZ2h0aW5nCihzaG93LXBhcmVuLW1vZGUpCgo7
+O3R1cm4gb24gaGlnaGxpZ2h0IGNoYW5nZXMKKGhpZ2hsaWdodC1jaGFuZ2VzLW1vZGUgdCkKCjs7
+IGRpc3BsYXkgZGF0ZSBhbmQgdGltZSBhbHdheXMKKHNldHEgZGlzcGxheS10aW1lLWRheS1hbmQt
+ZGF0ZSB0KQooZGlzcGxheS10aW1lKQoKOzsgc2hvdyBmaWxlIHNpemUKKHNpemUtaW5kaWNhdGlv
+bi1tb2RlKQoKOzsgdHlwZSAieSIvIm4iIGluc3RlYWQgb2YgInllcyIvIm5vIgooZnNldCAneWVz
+LW9yLW5vLXAgJ3ktb3Itbi1wKQoKOzsgU2F2ZSBhbGwgYmFja3VwIGZpbGUgaW4gdGhpcyBkaXJl
+Y3RvcnkuCihzZXRxIGJhY2t1cC1kaXJlY3RvcnktYWxpc3QgKHF1b3RlICgoIi4qIiAuICJ+Ly5l
+bWFjcy5kLyIpKSkpCgo7OyBkaXNhYmxlIGJhY2t1cCBmaWxlcwooc2V0cSBtYWtlLWJhY2t1cC1m
+aWxlcyBuaWwpCgo7OyBkaXNhYmxlIGF1dG8gc2F2ZQooYXV0by1zYXZlLW1vZGUgLTEpCgo7OyBh
+dXRvc2F2ZSBoaXN0b3J5IG9uIGVzaGVsbAooc2V0cSBlc2hlbGwtc2F2ZS1oaXN0b3J5LW9uLWV4
+aXQgdCkKCjs7IGtlZXAgZWRpZmYgaW4gb25lIGZyYW1lCjsoZWRpZmYtc2V0dXAtd2luZG93cy1w
+bGFpbikKCjs7IHR1cm4gb2ZmIHdvcmQgd3JhcAooc2V0cSBkZWZhdWx0LXRydW5jYXRlLWxpbmVz
+IDEpCgo7OyBoaWdobGlnaHQgbGluZXMgbG9uZ2VyIHRoZW4gODAgY2hhcmFjdGVycwooYWRkLWhv
+b2sgJ2VtYWNzLWxpc3AtbW9kZS1ob29rCgkgIChsYW1iZGEgKCkKCSAgICAoZm9udC1sb2NrLWFk
+ZC1rZXl3b3JkcyBuaWwKCQkJCSAgICAnKCgiXlteXG5dXFx7ODBcXH1cXCguKlxcKSQiIDEgZm9u
+dC1sb2NrLXdhcm5pbmctZmFjZSB0KSkpKSkKCjs7IG1vdXNlIHNldHRpbmdzCihzZXRxIG1vdXNl
+LXdoZWVsLXByb2dyZXNzaXZlLXNwZWVkIG5pbCkKKGdsb2JhbC1zZXQta2V5IFt3aGVlbC11cF0n
+IChsYW1iZGEgKCkoaW50ZXJhY3RpdmUpKHNjcm9sbC1kb3duIDIpKSkKKGdsb2JhbC1zZXQta2V5
+IFt3aGVlbC1kb3duXScgKGxhbWJkYSAoKShpbnRlcmFjdGl2ZSkoc2Nyb2xsLXVwIDIpKSkKKGds
+b2JhbC11bnNldC1rZXkgW21vdXNlLTJdKSA7a2lsbCBtb3VzZS0yIHBhc3RlCgo7OyBiaW5kIG1l
+dGEgc2hpZnQgbW91c2UtMyB0byB0aGUgaW1lbnUsIGFuZCBzaGlmdCBtb3VzZS0zIHRvIGFscGhh
+YmV0aWNhbCBpbWVudQood2hlbiB3aW5kb3ctc3lzdGVtIAogIChkZWZpbmUta2V5IGdsb2JhbC1t
+YXAgW00tUy1kb3duLW1vdXNlLTNdICdpbWVudSkKICAoZGVmaW5lLWtleSBnbG9iYWwtbWFwIFtT
+LWRvd24tbW91c2UtM10KICAgIChsYW1iZGEgKCkKICAgICAgKGludGVyYWN0aXZlKQogICAgICAo
+bGV0ICgoaW1lbnUtc29ydC1mdW5jdGlvbiAKCSAgICAgJ2ltZW51LS1zb3J0LWJ5LW5hbWUpKQoJ
+KGNhbGwtaW50ZXJhY3RpdmVseSAnaW1lbnUpKSkpKQoKOzsgdHVybiBvbiBmYW5jeSBwcm9tcHRz
+IGluIHRoZSBzaGVsbAooYWRkLWhvb2sgJ3NoZWxsLW1vZGUtaG9vayAnYW5zaS1jb2xvci1mb3It
+Y29taW50LW1vZGUtb24pCgo7OyB0dXJuIG9mZiBzaGVsbCBjb21tYW5kIGVjaG8KKGRlZnVuIG15
+LWNvbWludC1pbml0ICgpIAogIChzZXRxIGNvbWludC1wcm9jZXNzLWVjaG9lcyB0KSkgCihhZGQt
+aG9vayAnY29taW50LW1vZGUtaG9vayAnbXktY29taW50LWluaXQpIAoKOzsgTWF0dGhldyBPem9y
+IGN1c3RvbSBlbGlzcCBwcm9ncmFtcwooYWRkLXRvLWxpc3QgJ2xvYWQtcGF0aCAifi8uZW1hY3Mu
+ZC9tbyIpCihsb2FkLWxpYnJhcnkgIm1vLXJvdDEzLmVsIikKKGxvYWQtbGlicmFyeSAibW8tbWVu
+dS5lbCIpCgo7OyBsaW5lIG51bWJlcnMKKGlmICg+PSBlbWFjcy1tYWpvci12ZXJzaW9uIDIzKSAo
+cmVxdWlyZSAnbGludW0pKQoKCjs7IExvYWQgYXNjaWktdGFibGUKOzsocmVxdWlyZSAnYXNjaWkt
+dGFibGUpCgo7OyBMb2FkIHN3aXRjaCBidWZmZXIKKHJlcXVpcmUgJ3N3YnVmZikKCjs7IExvYWQg
+bWVyY3VyaWFsCihyZXF1aXJlICdtZXJjdXJpYWwpCgo7OyBMb2FkIHNyLXNwZWVkYmFyIGZvciBw
+dXR0aW5nIHNwZWVkYmFyIGluIGN1cnJlbnQgZnJhbWUKOzsocmVxdWlyZSAnc3Itc3BlZWRiYXIp
+Cgo7OyBMb2FkcyBidWZmZXIgdG8gaHRtbCBhbmQgdmlldyB3aXRoIGJyb3dzZXIKKHJlcXVpcmUg
+J2h0bWxpemUtdmlldykKKGh0bWxpemUtdmlldy1hZGQtdG8tZmlsZXMtbWVudSkKCjs7IExvYWQg
+ZW1hY3MtbmF2CihhZGQtdG8tbGlzdCAnbG9hZC1wYXRoICJ+Ly5lbWFjcy5kL25hdi8iKQoocmVx
+dWlyZSAnbmF2KQoKOzsgTG9hZCBvdXRsaW5lLW1hZ2ljCihyZXF1aXJlICdvdXRsaW5lLW1hZ2lj
+KQoKOzsgY29sb3IgdGhlbWVzCihyZXF1aXJlICdjb2xvci10aGVtZSkKKGNvbG9yLXRoZW1lLWlu
+aXRpYWxpemUpCjsobG9hZC1maWxlICJ+Ly5lbWFjcy5kL3RoZW1lcy9jb2xvci10aGVtZS10d2ls
+aWdodC5lbCIpCgo7OyBsb2FkIHRoZSBjdXN0b20gc3RhcnQtdXAgc2NyZWVuIC8gYWxzbyB0byBz
+ZXQgc2hvcnRjdXRzCihsb2FkLWZpbGUgIn4vLmVtYWNzLmQvc3Itc3BsYXNoLmVsIikKCjs7IG91
+dGxpbmUgbW9kZQooYWRkLXRvLWxpc3QgJ2F1dG8tbW9kZS1hbGlzdCAnKCJcXC5vdXRsaW5lXFwn
+IiAuIG91dGxpbmUtbW9kZSkpCihhZGQtaG9vayAnb3V0bGluZS1tb2RlLWhvb2sgJ2hpZGUtYm9k
+eSkKCjs7O1dpbmRvd3MgU2VjdGlvbgood2hlbiAoc3RyaW5nLWVxdWFsIHN5c3RlbS10eXBlICJ3
+aW5kb3dzLW50IikKOztET1MgbW9kZQogIChhdXRvbG9hZCAnYmF0Y2gtbW9kZSAiYmF0Y2gtbW9k
+ZSIgIkRPUyBiYXRjaCBmaWxlIG1vZGUuIiB0KQogIChzZXRxIGF1dG8tbW9kZS1hbGlzdCAoYXBw
+ZW5kICcoKCJcXC5cXChjbWRcXHxiYXRcXCkkIiAuIGJhdGNoLW1vZGUpKQo7OyBsaXNwLW1vZGUg
+Zm9yIEF1dG9MSVNQIG1lbnUgZmlsZXMKCQkJCShzZXRxIGF1dG8tbW9kZS1hbGlzdCAoY29ucyAn
+KCJcXC5tbmwiIC4gbGlzcC1tb2RlKSBhdXRvLW1vZGUtYWxpc3QpKQoJCQkJYXV0by1tb2RlLWFs
+aXN0KSkKICAoc2V0LWRlZmF1bHQtZm9udAogICAiLW91dGxpbmUtTW9uYWNvLW5vcm1hbC1yLW5v
+cm1hbC1ub3JtYWwtMTMtOTctOTYtOTYtYy0qLWlzbzg4NTktMSIpCiAgOyItb3V0bGluZS1CaXRz
+dHJlYW0gVmVyYSBTYW5zIE1vbm8tbm9ybWFsLXItbm9ybWFsLW5vcm1hbC0xMy05Ny05Ni05Ni1j
+LSotaXNvODg1OS0xIikKKQoKOzs7IEN1c3RvbSBzaG9ydGN1dHMKOzsoc3Itc2V0LWdsb2JhbC1r
+ZXkgKGtiZCAiPGYxPiIpICJGMSIgJ3NyLXNwZWVkYmFyLXRvZ2dsZSAic3Itc3BlZWRiYXItdG9n
+Z2xlIikKKHNyLXNldC1nbG9iYWwta2V5IChrYmQgIjxmMT4iKSAiRjEiICduYXYgImVtYWNzLW5h
+diIpCihzci1zZXQtZ2xvYmFsLWtleSAoa2JkICI8ZjI+IikgIkYyIiAnKGxhbWJkYSAoKSAoaW50
+ZXJhY3RpdmUpIChvdGhlci13aW5kb3cgMSkpICJvdGhlci13aW5kb3ciKQooc3Itc2V0LWdsb2Jh
+bC1rZXkgKGtiZCAiPGYzPiIpICJGMyIgJ3N3YnVmZi1zd2l0Y2gtdG8tbmV4dC1idWZmZXIgInN3
+YnVmZi1zd2l0Y2gtdG8tbmV4dC1idWZmZXIiKQooc3Itc2V0LWdsb2JhbC1rZXkgKGtiZCAiPGY0
+PiIpICJGNCIgJ2ttYWNyby1zdGFydC1tYWNybyAia21hY3JvLXN0YXJ0LW1hY3JvIikKKHNyLXNl
+dC1nbG9iYWwta2V5IChrYmQgIjxmNT4iKSAiRjUiICdrbWFjcm8tZW5kLW9yLWNhbGwtbWFjcm8g
+ImttYWNyby1lbmQtb3ItY2FsbC1tYWNybyIpCihzci1zZXQtZ2xvYmFsLWtleSAoa2JkICI8ZjY+
+IikgIkY2IiAnbGludW0tbW9kZSAidG9nZ2xlIGxpbmUgbnVtYmVycyIpCihzci1zZXQtZ2xvYmFs
+LWtleSAoa2JkICI8Zjc+IikgIkY3IiAnZXZhbC1kZWZ1biAiZXZhbC1kZWZ1biIpCihzci1zZXQt
+Z2xvYmFsLWtleSAoa2JkICI8Zjg+IikgIkY4IiAnY29tcGlsZSAiY29tcGlsZSIpCihzci1zZXQt
+Z2xvYmFsLWtleSAoa2JkICI8Zjk+IikgIkY5IiAnKGxhbWJkYSAoKSAKCQkJCQkoaW50ZXJhY3Rp
+dmUpCgkJCQkJKGlmIChlcSBtby1idy1jb2xvci10aGVtZSAwKQoJCQkJCSAgICAocHJvZ24gCgkJ
+CQkJICAgICAgKGNvbG9yLXRoZW1lLXNpdGFyYW12LW50KQoJCQkJCSAgICAgIChzZXRxIG1vLWJ3
+LWNvbG9yLXRoZW1lIDEpKQoJCQkJCSAgKHByb2duCgkJCQkJICAgIChjb2xvci10aGVtZS1kYXJr
+LWxhcHRvcCkKCQkJCQkgICAgKHNldHEgbW8tYnctY29sb3ItdGhlbWUgMCkpKSkgCgkJICAgInRv
+Z2dsZSBicmlnaHQvZGFyayB0aGVtZSIpCihzci1zZXQtZ2xvYmFsLWtleSAoa2JkICI8ZjEwPiIp
+ICJGMTAiICcobGFtYmRhICgpIAoJCQkJCSAgKGludGVyYWN0aXZlKQoJCQkJCSAgKGdvdG8tbGlu
+ZSAzKQoJCQkJCSAgKGtpbGwtbGluZSkKCQkJCQkgIChpbnNlcnQgIlw7XDsgVXBkYXRlZCAiKQoJ
+CQkJCSAgKGluc2VydCAoZm9ybWF0LXRpbWUtc3RyaW5nICIlRCAlUiVwIikpCgkJCQkJICAoc2F2
+ZS1idWZmZXIpKSAKCQkgICAidGltZXN0YW1wIGFuZCBzYXZlIGZpbGUiKQooc3Itc2V0LWdsb2Jh
+bC1rZXkgKGtiZCAiPGYxMT4iKSAiRjExIiAnKGxhbWJkYSAoKSAoaW50ZXJhY3RpdmUpIChsb2Fk
+LWZpbGUgIn4vLmVtYWNzIikpICJsb2FkIC5lbWFjcyIpCihzci1zZXQtZ2xvYmFsLWtleSAoa2Jk
+ICI8ZjEyPiIpICJGMTIiICcobGFtYmRhICgpIChpbnRlcmFjdGl2ZSkgKGZpbmQtZmlsZSAifi8u
+ZW1hY3MiKSkgIm9wZW4gLmVtYWNzIikKKHNyLXNldC1nbG9iYWwta2V5IChrYmQgIlxDLWNiIikg
+IkMtYyBiIiAnbW8taW5zZXJ0LWZpbmQtYnJlYWRjcnVtYiAiZHJvcCBhIGJyZWFkY3J1bWIiKQoo
+c3Itc2V0LWdsb2JhbC1rZXkgKGtiZCAiXEMtY3AiKSAiQy1jIHAiICdodG1saXplLXZpZXctYnVm
+ZmVyICJzZW5kIGJ1ZmZlciB0byBicm93c2VyIikKKHNyLXNldC1nbG9iYWwta2V5IChrYmQgIlxD
+LWNnIikgIkMtYyBnIiAnZ290by1saW5lICJnb3RvLWxpbmUiKQooc3Itc2V0LWdsb2JhbC1rZXkg
+KGtiZCAiXEMtY3MiKSAiQy1jIHMiICcobGFtYmRhICgpIChpbnRlcmFjdGl2ZSkKCQkJCQkgICAg
+KHNwbGl0LXdpbmRvdy12ZXJ0aWNhbGx5KQoJCQkJCSAgICAob3RoZXItd2luZG93IDEpCgkJCQkJ
+ICAgIChzaGVsbCkpIAoJCSAgICJzaGVsbCIpCihzci1zZXQtZ2xvYmFsLWtleSAoa2JkICJcQy1j
+dCIpICJDLWMgdCIgJyhsYW1iZGEgKCkgKGludGVyYWN0aXZlKQoJCQkJCShpZiAoZXEgbW8tdHJh
+bnMgMCkKCQkJCQkgICAgKHByb2duIAoJCQkJCSAgICAgIChzZXQtZnJhbWUtcGFyYW1ldGVyIChz
+ZWxlY3RlZC1mcmFtZSkgJ2FscGhhIDcwKQoJCQkJCSAgICAgIChzZXRxIG1vLXRyYW5zIDEpKQoJ
+CQkJCSAgKHByb2duCgkJCQkJICAgICAoc2V0LWZyYW1lLXBhcmFtZXRlciAoc2VsZWN0ZWQtZnJh
+bWUpICdhbHBoYSAxMDApCgkJCQkJICAgIChzZXRxIG1vLXRyYW5zIDApKSkpIAoJCSAgICJ0b2dn
+bGUgdHJhbnNwYXJlbnQiKQoKOzsgbGVhdmUgYSBicmVhZGNydW1iIHRyYWlsCihkZWZ1biBtby1p
+bnNlcnQtZmluZC1icmVhZGNydW1iICgpCiAoaW50ZXJhY3RpdmUpCiAoc2V0cSBjdXJyZW50LXBv
+aW50IChwb2ludCkpCiAoZ290by1jaGFyIChwb2ludC1taW4pKQogKGlmIChzZWFyY2gtZm9yd2Fy
+ZCAiOzticmVhZGNydW1iIiBuaWwgdCkgKCkKICAgKHByb2duCiAgICAgKGdvdG8tY2hhciBjdXJy
+ZW50LXBvaW50KQogICAgIChpbnNlcnQgIjs7YnJlYWRjcnVtYiIpKSkpCgoKOzsgU2V0dXAgd29y
+a3NwYWNlCjs7IGRpZmZlcmVudCB0aGVtZSBmb3IgeCBvciB0ZXJtCihpZiB3aW5kb3ctc3lzdGVt
+IChjb2xvci10aGVtZS1kYXJrLWxhcHRvcCkoKSkKCjs7IGdsb2JhbCB0b2dnbGUgdmFyaWFibGVz
+CihkZWZ2YXIgbW8tYnctY29sb3ItdGhlbWUgMCkKKGRlZnZhciBtby10cmFucyAwKQoKOzsgZGlz
+cGxheSBjdXN0b20gc3BsYXNoIHNjcmVlbiAKOyhzci1kaXNwbGF5LWtleXMpCgoKKGN1c3RvbS1z
+ZXQtdmFyaWFibGVzCiAgOzsgY3VzdG9tLXNldC12YXJpYWJsZXMgd2FzIGFkZGVkIGJ5IEN1c3Rv
+bS4KICA7OyBJZiB5b3UgZWRpdCBpdCBieSBoYW5kLCB5b3UgY291bGQgbWVzcyBpdCB1cCwgc28g
+YmUgY2FyZWZ1bC4KICA7OyBZb3VyIGluaXQgZmlsZSBzaG91bGQgY29udGFpbiBvbmx5IG9uZSBz
+dWNoIGluc3RhbmNlLgogIDs7IElmIHRoZXJlIGlzIG1vcmUgdGhhbiBvbmUsIHRoZXkgd29uJ3Qg
+d29yayByaWdodC4KICcoZWRpZmYtd2luZG93LXNldHVwLWZ1bmN0aW9uIChxdW90ZSBlZGlmZi1z
+ZXR1cC13aW5kb3dzLXBsYWluKSkKICcobmF2LXF1aWNrZGlyLWxpc3QgKHF1b3RlICgifi8uZW1h
+Y3MuZC9uYXYiICJ+Ly5lbWFjcy5kIiAiL3RtcCIpKSkKICcobmF2LXF1aWNrZmlsZS1saXN0IChx
+dW90ZSAoIn4vLmVtYWNzLmQvbmF2L25hdi5lbCIgIn4vLmVtYWNzLmQvbmF2L25hdi1idWZzLmVs
+IiAifi8uZW1hY3MuZC9uYXYvbmF2LXRhZ3MuZWwiKSkpCiAnKG5hdi13aWR0aHMtcGVyY2VudGls
+ZSAxMDApKQooY3VzdG9tLXNldC1mYWNlcwogIDs7IGN1c3RvbS1zZXQtZmFjZXMgd2FzIGFkZGVk
+IGJ5IEN1c3RvbS4KICA7OyBJZiB5b3UgZWRpdCBpdCBieSBoYW5kLCB5b3UgY291bGQgbWVzcyBp
+dCB1cCwgc28gYmUgY2FyZWZ1bC4KICA7OyBZb3VyIGluaXQgZmlsZSBzaG91bGQgY29udGFpbiBv
+bmx5IG9uZSBzdWNoIGluc3RhbmNlLgogIDs7IElmIHRoZXJlIGlzIG1vcmUgdGhhbiBvbmUsIHRo
+ZXkgd29uJ3Qgd29yayByaWdodC4KICkK

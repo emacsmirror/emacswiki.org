@@ -1,5151 +1,3812 @@
-;;; sqlplus.el --- User friendly interface to SQL*Plus and support for PL/SQL compilation
-
-;; Copyright (C) 2007, 2008 Peter Karpiuk, Scott Tiger S.A.
-
-;; Author: Peter Karpiuk <piotr.karpiuk (at) gmail (dot) com>
-;; Maintainer: Peter Karpiuk <piotr.karpiuk (at) gmail (dot) com>
-;; Created: 25 Nov 2007
-;; Version 0.9.0
-;; Keywords: sql sqlplus oracle plsql
-
-;; GNU Emacs is free software; you can redistribute it and/or modify
-;; it under the terms of the GNU General Public License as published
-;; by the Free Software Foundation; either version 2, or (at your
-;; option) any later version.
-
-;; GNU Emacs is distributed in the hope that it will be useful, but
-;; WITHOUT ANY WARRANTY; without even the implied warranty of
-;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-;; General Public License for more details.
-
-;; You should have received a copy of the GNU General Public License
-;; along with GNU Emacs; see the file COPYING.  If not, write to the
-;; Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
-
-;;; Commentary:
-
-;;  Facilitates interaction with Oracle via SQL*Plus (GNU Emacs only).
-;;  Moreover, this package complements plsql.el (Kahlil Hodgson) 
-;;  upon convenient compilation of PL/SQL source files.
-;;
-;;  This package was inspired by sqlplus-mode.el (Rob Riepel, Peter
-;;  D. Pezaris, Martin Schwenke), but offers more features:
-;;    - tables are parsed, formatted and rendered with colors, like in
-;;      many GUI programs; you can see raw SQL*Plus output also, 
-;;      if you wish
-;;    - table will be cutted if you try to fetch too many rows
-;;      (SELECT * FROM MY_MILLION_ROWS_TABLE); current SQL*Plus command
-;;      will be automatically interrupted under the hood in such cases
-;;    - you can use many SQL*Plus processes simultaneously,
-;;    - font locking (especially if you use Emacs>=22), with database
-;;      object names highlighting,
-;;    - history (log) of executed commands - see` sqlplus-history-dir`
-;;      variable,
-;;    - commands for fetching any database object definition
-;;      (package, table/index/sequence script)
-;;    - query result can be shown in HTML,
-;;    - input buffer for each connection can be saved into file on
-;;      disconnect and automatically restored on next connect (see
-;;      'sqlplus-session-cache-dir' variable); if you place some
-;;      SQL*Plus commands between '/* init */' and '/* end */'
-;;      comments in saved input buffer, they will be automatically
-;;      executed on every connect
-;;    - if you use plsql.el for editing PL/SQL files, you can compile
-;;      such sources everytime with C-cC-c; error messages will be
-;;      parsed and displayed for easy source navigation
-;;    - M-. or C-mouse-1 on database object name will go to definition
-;;      in filesystem (use arrow button on toolbar to go back)
-;;
-;;  The following commands should be added to a global initialization
-;;  file or to any user's .emacs file to conveniently use
-;;  sqlplus-mode:
-;;
-;;    (require 'sqlplus)
-;;    (add-to-list 'auto-mode-alist '("\\.sqp\\'" . sqlplus-mode))
-;;
-;;  If you want PL/SQL support also, try something like this:
-;;
-;;  (require 'plsql)
-;;  (setq auto-mode-alist
-;;    (append '(("\\.pls\\'" . plsql-mode) ("\\.pkg\\'" . plsql-mode)
-;; 		("\\.pks\\'" . plsql-mode) ("\\.pkb\\'" . plsql-mode)
-;; 		("\\.sql\\'" . plsql-mode) ("\\.PLS\\'" . plsql-mode) 
-;; 		("\\.PKG\\'" . plsql-mode) ("\\.PKS\\'" . plsql-mode)
-;; 		("\\.PKB\\'" . plsql-mode) ("\\.SQL\\'" . plsql-mode)
-;; 		("\\.prc\\'" . plsql-mode) ("\\.fnc\\'" . plsql-mode)
-;; 		("\\.trg\\'" . plsql-mode) ("\\.vw\\'" . plsql-mode)
-;; 		("\\.PRC\\'" . plsql-mode) ("\\.FNC\\'" . plsql-mode)
-;; 		("\\.TRG\\'" . plsql-mode) ("\\.VW\\'" . plsql-mode))
-;; 	      auto-mode-alist ))
-;;
-;;  M-x sqlplus will start new SQL*Plus session.
-;;
-;;  C-RET   execute command under point
-;;  S-C-RET execute command under point and show result table in HTML 
-;;          buffer
-;;  M-RET   explain execution plan for command under point
-;;  M-. or C-mouse-1: find database object definition (table, view
-;;          index, synonym, trigger, procedure, function, package)
-;;          in filesystem
-;;  C-cC-s  show database object definition (retrieved from database)
-;;
-;;  Use describe-mode while in sqlplus-mode for further instructions.
-;;
-;;  Many useful commands are defined in orcl-mode minor mode, which is
-;;  common for input and otput SQL*Plus buffers, as well as PL/SQL
-;;  buffers.
-;;
-;;  For twiddling, see 'sqlplus' customization group.
-;;
-;;  If you find this package useful, send me a postcard to address:
-;;
-;;    Peter Karpiuk
-;;    Scott Tiger S.A.
-;;    ul. Gawinskiego 8
-;;    01-645 Warsaw
-;;    Poland
-
-;;; Known bugs:
-
-;; 1. Result of SQL select command can be messed up if some columns
-;;    has newline characters.  To avoid this, execute SQL*Plus command
-;;      column <colname> truncated
-;;    before such select 
-
-;;; Code:
-
-(require 'recentf)
-(require 'font-lock)
-(require 'cl)
-(require 'sql)
-(require 'tabify)
-(require 'skeleton)
-
-(defconst sqlplus-revision "$Revision: 1.7 $")
-
-;;;  Variables -
-
-(defgroup sqlplus nil
-  "SQL*Plus"
-  :group 'tools
-  :version 21)
-
-(defcustom plsql-auto-parse-errors-flag t
-  "Non nil means parse PL/SQL compilation results and show them in the compilation buffer."
-  :group 'sqlplus
-  :type '(boolean))
-
-(defcustom sqlplus-init-sequence-start-regexp "/\\* init \\*/"
-  "SQL*Plus start of session init command sequence."
-  :group 'sqlplus
-  :type '(regexp))
-
-(defcustom sqlplus-init-sequence-end-regexp "/\\* end \\*/"
-  "SQL*Plus end of session init command sequence."
-  :group 'sqlplus
-  :type '(regexp))
-
-(defcustom sqlplus-explain-plan-warning-regexps '("TABLE ACCESS FULL" "INDEX FULL SCAN")
-  "SQL*Plus explain plan warning regexps"
-  :group 'sqlplus
-  :type '(repeat regexp))
-
-(defcustom sqlplus-syntax-faces
-  '((schema font-lock-type-face nil)
-    (table font-lock-type-face ("dual"))
-    (synonym font-lock-type-face nil)
-    (view font-lock-type-face nil)
-    (column font-lock-constant-face nil)
-    (sequence font-lock-type-face nil)
-    (package font-lock-type-face nil)
-    (trigger font-lock-type-face nil)
-    (index font-lock-type-face) nil)
-  "Font lock configuration for database object names in current schema.
-This is alist, and each element looks like (SYMBOL FACE LIST)
-where SYMBOL is one of: schema, table, synonym, view, column,
-sequence, package, trigger, index.  Database objects means only
-objects from current schema, so if you want syntax highlighting
-for other objects (eg. 'dual' table name), you can explicitly
-enumerate them in LIST as strings."
-  :group 'sqlplus
-  :tag "Oracle SQL Syntax Faces"
-  :type '(repeat (list symbol face (repeat string))))
-
-(defcustom sqlplus-output-buffer-max-size (* 50 1000 1000)
-  "Maximum size of SQL*Plus output buffer.
-After exceeding oldest results are deleted."
-  :group 'sqlplus
-  :tag "SQL*Plus Output Buffer Max Size"
-  :type '(integer))
-
-(defcustom sqlplus-select-result-max-col-width nil
-  "Maximum width of column in displayed database table, or nil if there is no limit.
-If any cell value is longer, it will be cutted and terminated with ellipsis ('...')."
-  :group 'sqlplus
-  :tag "SQL*Plus Select Result Max Column Width"
-  :type  '(choice integer (const nil)))
-
-(defcustom sqlplus-format-output-tables-flag t
-  "Non-nil means format result if it looks like database table."
-  :group 'sqlplus
-  :tag "SQL*Plus Format Output Table"
-  :type '(boolean))
-
-(defcustom sqlplus-kill-processes-without-query-on-exit-flag t
-  "Non-nil means silently kill all SQL*Plus processes on Emacs exit."
-  :group 'sqlplus
-  :tag "SQL*Plus Kill Processes Without Query On Exit"
-  :type '(boolean))
-
-(defcustom sqlplus-multi-output-tables-default-flag t
-  "Non-nil means render database table as set of adjacent tables so that they occupy all width of output window.
-For screen space saving and user comfort."
-  :group 'sqlplus
-  :tag "SQL*Plus Multiple Tables In Output by Default"
-  :type '(boolean))
-
-(defcustom sqlplus-source-buffer-readonly-by-default-flag t
-  "Non-nil means show database sources in read-only buffer."
-  :group 'sqlplus
-  :tag "SQL*Plus Source Buffer Read Only By Default"
-  :type '(boolean))
-
-(defcustom sqlplus-command "sqlplus"
-  "SQL*Plus interpreter program."
-  :group 'sqlplus
-  :tag "SQL*Plus Command"
-  :type '(string))
-
-(defcustom sqlplus-history-dir nil
-  "Directory of SQL*Plus command history (log) files, or nil (dont generate log files).
-History file name has format '<connect-string>-history.txt'."
-  :group 'sqlplus
-  :tag "SQL*Plus History Dir"
-  :type '(choice directory (const nil)))
-
-(defvar sqlplus-session-file-extension "sqp")
-
-(defcustom sqlplus-session-cache-dir nil
-  "Directory of SQL*Plus input buffer files, or nil (dont save user session).
-Session file name has format '<connect-string>.sqp'"
-  :group 'sqlplus
-  :tag "SQL*Plus History Dir"
-  :type '(choice directory (const nil)))
-
-(defcustom sqlplus-save-passwords nil
-  "Non-nil means save passwords between Emacs sessions. (Not implemented yet)."
-  :group 'sqlplus
-  :tag "SQL*Plus Save Passwords"
-  :type '(boolean))
-
-(defcustom sqlplus-pagesize 200
-  "Approximate number of records in query results.
-If result has more rows, it will be cutted and terminated with '. . .' line."
-  :group 'sqlplus
-  :tag "SQL*Plus Max Rows Count"
-  :type '(integer))
-
-(defvar sqlplus-default-wrap "on")
-
-(defcustom sqlplus-initial-strings
-  (list "set sqlnumber off"
-        "set tab off"
-	"set linesize 4000"
-        "set echo off"
-        "set newpage 1"
-        "set space 1"
-        "set feedback 6"
-        "set heading on"
-        "set trimspool off"
-        (format "set wrap %s" sqlplus-default-wrap)
-        "set timing on"
-	"set feedback on")
-  "Initial commands to send to interpreter.
-Customizing this variable is dangerous."
-  :group 'sqlplus
-  :tag "SQL*Plus Initial Strings"
-  :type '(repeat string))
-
-(defcustom sqlplus-table-col-separator " | "
-  "Database table column separator (text-only terminals)."
-  :group 'sqlplus
-  :tag "SQL*Plus Table Col Separator"
-  :type '(string))
-
-(defcustom sqlplus-table-col-head-separator "-+-"
-  "Database table header-column separator (text-only terminals)."
-  :group 'sqlplus
-  :tag "SQL*Plus Table Col Separator"
-  :type '(string))
-
-(defcustom sqlplus-html-output-file-name "$HOME/sqlplus_report.html"
-  "Output file for HTML result."
-  :group 'sqlplus
-  :tag "SQL*Plus HTML Output File Name"
-  :type '(file))
-
-(defcustom sqlplus-html-output-encoding "iso-8859-1"
-  "Encoding for SQL*Plus HTML output."
-  :group 'sqlplus
-  :tag "SQL*Plus HTML Output Encoding"
-  :type '(string))
-
-(defcustom sqlplus-html-output-sql t
-  "Non-nil means put SQL*Plus command in head of HTML result."
-  :group 'sqlplus
-  :tag "SQL*Plus HTML Output Encoding"
-  :type '(choice (const :tag "Elegant" 'elegant)
-                 (const :tag "Simple" t)
-                 (const :tag "No" nil)))
-
-(defcustom sqlplus-html-output-header (concat (current-time-string) "<br><br>")
-  "HTML header sexp (result must be string)."
-  :group 'sqlplus
-  :tag "SQL*Plus HTML Output Header"
-  :type '(sexp))
-
-(defcustom sqlplus-command-highlighting-percentage 7
-  "SQL*Plus command highlighting percentage (0-100), only if sqlplus-command-highlighting-style is set."
-  :group 'sqlplus
-  :tag "SQL*Plus command highlighting percentage"
-  :type '(integer))
-  
-(defcustom sqlplus-command-highlighting-style nil
-  "How to highlight current command in sqlplus buffer."
-  :group 'sqlplus
-  :tag "SQL*Plud command highlighting style"
-  :type '(choice (const :tag "Fringe" fringe)
-		 (const :tag "Background" background)
-		 (const :tag "Fringe and background" fringe-and-background)
-		 (const :tag "None" nil)))
-
-(defvar sqlplus-elegant-style window-system)
-
-(defvar sqlplus-cs nil)
-
-(defun sqlplus-shine-color (color percent)
-  (when (equal color "unspecified-bg")
-    (setq color (if (< percent 0) "white" "black")))
-  (apply 'format "#%02x%02x%02x" 
-         (mapcar (lambda (value)
-                   (min 65535 (max 0 (* (+ (/ value 650) percent) 650))))
-                 (color-values color))))
-
-(defvar sqlplus-table-head-face 'sqlplus-table-head-face)
-(defface sqlplus-table-head-face
-  (list 
-   (list '((class mono))
-         '(:inherit default :weight bold :inverse-video t))
-   (list '((background light))
-         (append (list :inherit 'default :background (sqlplus-shine-color (face-background 'default) -70) :foreground (face-background 'default))
-                 (when (and sqlplus-elegant-style (>= emacs-major-version 22)) '(:box (:style released-button)))))
-   (list '((background dark))
-         (append (list :inherit 'default :background (sqlplus-shine-color (face-background 'default) +70) :foreground (face-background 'default))
-                 (when (and sqlplus-elegant-style (>= emacs-major-version 22)) '(:box (:style released-button)))))
-   '(t (:inherit default)))
-  "Face for table header"
-  :group 'sqlplus)
-
-(defvar sqlplus-table-even-rows-face 'sqlplus-table-even-rows-face)
-(defface sqlplus-table-even-rows-face
-  (list 
-   (list '((class mono)) '())
-   (list '((type tty)) '())
-   (list '((background light))
-         (append (list :inherit 'default :background (sqlplus-shine-color (face-background 'default) -20) :overline (face-background 'default))))
-   (list '((background dark))
-         (append (list :inherit 'default :background (sqlplus-shine-color (face-background 'default) +20) :overline (face-background 'default))))
-   '(t ()))
-  "Face for table even rows"
-  :group 'sqlplus)
-
-(defvar sqlplus-table-odd-rows-face 'sqlplus-table-odd-rows-face)
-(defface sqlplus-table-odd-rows-face
-  (list 
-   (list '((class mono)) '(:inherit default))
-   (list '((background light))
-         (append (list :inherit 'default :background (sqlplus-shine-color (face-background 'default) -30) :overline (face-background 'default))))
-   (list '((background dark))
-         (append (list :inherit 'default :background (sqlplus-shine-color (face-background 'default) +30) :overline (face-background 'default))))
-   '(t (:inherit default)))
-  "Face for table even rows"
-  :group 'sqlplus)
-
-(defvar sqlplus-command-highlight-face 'sqlplus-command-highlight-face)
-(defface sqlplus-command-highlight-face
-  (list 
-   '(((class mono)) ())
-   '(((type tty)) ())
-   (list '((background light))
-         (append (list :background (sqlplus-shine-color (face-background 'default) (- sqlplus-command-highlighting-percentage)))))
-   (list '((background dark))
-         (append (list :background (sqlplus-shine-color (face-background 'default) sqlplus-command-highlighting-percentage))))
-   '(t ()))
-  "Face for highlighting command under point"
-  :group 'sqlplus)
-
-(defvar sqlplus-plsql-compilation-results-buffer-name "*PL/SQL Compilation*")
-
-(defvar sqlplus-fan "|"
-  "Local in input buffers")
-(make-variable-buffer-local 'sqlplus-fan)
-
-(defvar orcl-mode-map nil
-  "Keymap used in Orcl mode.")
-
-(define-minor-mode orcl-mode
-  "Mode for executing SQL*Plus commands and scrolling results.
-
-Mode Specific Bindings:
-
-\\{orcl-mode-map}"
-  nil                                   ; init value
-  (" " (:eval sqlplus-fan) " " (:eval (connect-string-to-string))) ; mode indicator
-  orcl-mode-map                                           ; keymap
-  ;; body
-  (setq sqlplus-fan "|")
-  (unless (assq 'orcl-mode minor-mode-map-alist)
-    (push (cons 'orcl-mode orcl-mode-map) minor-mode-map-alist)))
-
-(defvar sqlplus-user-variables (makehash 'equal))
-
-(defvar sqlplus-user-variables-history nil)
-
-(defvar sqlplus-get-source-history nil)
-
-(defvar sqlplus-process-p nil
-  "Non-nil (connect string) if current buffer is SQL*Plus process buffer.
-Local in process buffer.")
-(make-variable-buffer-local 'sqlplus-process-p)
-
-(defvar sqlplus-command-seq 0
-  "Sequence for command id within SQL*Plus connection.
-Local in process buffer.")
-(make-variable-buffer-local 'sqlplus-command-seq)
-
-;;; :id - unique command identifier (from sequence, for session)
-;;; :sql - content of command
-;;; :dont-parse-result - process data online as it comes from sqlplus, with sqlplus-result-online or with :result-function function
-;;; :result-function - function for processing sqlplus data; must have signature (context connect-string begin end interrupted);
-;;;    if nil then it is sqlplus-result-online for :dont-parse-result set to non-nil and sqlplus-process-command-output for :dont-parse-result set to nil
-;;; :current-command-input-buffer-name - buffer name from which command was initialized
-(defvar sqlplus-command-contexts nil
-  "Command options list, for current and enqueued commands, in chronological order.
-Local in process buffer.")
-(make-variable-buffer-local 'sqlplus-command-contexts)
-
-(defvar sqlplus-connect-string nil
-  "Local variable with connect-string for current buffer (input buffers, output buffer).")
-(make-variable-buffer-local 'sqlplus-connect-string)
-
-(defvar sqlplus-connect-strings-alist nil
-  "Connect strings in format (CS . PASSWD), where PASSWD can be nil.")
-
-(defvar sqlplus-connect-string-history nil)
-
-(defvar sqlplus-prompt-prefix "SQL[")
-(defvar sqlplus-prompt-suffix "]# ")
-
-(defvar sqlplus-page-separator "@!%#!")
-
-(defvar sqlplus-repfooter "##%@!")
-
-(defvar sqlplus-mode-map nil
-  "Keymap used in SQL*Plus mode.")
-
-(defvar sqlplus-output-separator "@--"
-  "String printed between sets of SQL*Plus command output.")
-
-;;;  Markers -
-
-(defvar sqlplus-buffer-mark (make-marker)
-  "Marks the current SQL command in the SQL*Plus output buffer.
-Local in output buffer.")
-(make-variable-buffer-local 'sqlplus-buffer-mark)
-
-(defvar sqlplus-region-beginning-pos nil
-  "Marks the beginning of the region to sent to the SQL*Plus process.
-Local in input buffer with sqlplus-mode.")
-(make-variable-buffer-local 'sqlplus-region-beginning-pos)
-
-(defvar sqlplus-region-end-pos nil
-  "Marks the end of the region to sent to the SQL*Plus process.
-Local in input buffer with sqlplus-mode.")
-(make-variable-buffer-local 'sqlplus-region-end-pos)
-
-(defvar sqlplus-connections-menu
-  '("SQL*Plus"
-    :filter sqlplus-connections-menu)
-  "Menu for database connections")
-
-(defconst sqlplus-kill-xpm "\
-/* XPM */
-static char * reload_page_xpm[] = {
-\"24 24 100 2\",
-\"  	c None\",
-\". 	c #000000\",
-\"+ 	c #2A5695\",
-\"@ 	c #30609E\",
-\"# 	c #3363A2\",
-\"$ 	c #3969A6\",
-\"% 	c #3D6BA6\",
-\"& 	c #3C68A3\",
-\"* 	c #35619C\",
-\"= 	c #244F8D\",
-\"- 	c #3364A3\",
-\"; 	c #3162A1\",
-\"> 	c #3867A4\",
-\", 	c #3F6DA8\",
-\"' 	c #4672AC\",
-\") 	c #4B76AE\",
-\"! 	c #4E78AF\",
-\"~ 	c #537CB1\",
-\"{ 	c #547DB0\",
-\"] 	c #446BA1\",
-\"^ 	c #2E5D9C\",
-\"/ 	c #234F8C\",
-\"( 	c #214C89\",
-\"_ 	c #244E8C\",
-\": 	c #3A649D\",
-\"< 	c #517BB0\",
-\"[ 	c #517BB1\",
-\"} 	c #4874AD\",
-\"| 	c #6086B7\",
-\"1 	c #5F84B4\",
-\"2 	c #4B71A6\",
-\"3 	c #7B9BC4\",
-\"4 	c #224C89\",
-\"5 	c #3865A2\",
-\"6 	c #406FAB\",
-\"7 	c #436BA3\",
-\"8 	c #648ABA\",
-\"9 	c #4D78AF\",
-\"0 	c #4B77AE\",
-\"a 	c #6E91BE\",
-\"b 	c #809EC6\",
-\"c 	c #204A87\",
-\"d 	c #4974AF\",
-\"e 	c #2B5590\",
-\"f 	c #6487B5\",
-\"g 	c #678CBB\",
-\"h 	c #3465A4\",
-\"i 	c #84A1C8\",
-\"j 	c #6D8FBA\",
-\"k 	c #4F7AB0\",
-\"l 	c #8BA7CB\",
-\"m 	c #7E9DC5\",
-\"n 	c #83A1C7\",
-\"o 	c #91ACCE\",
-\"p 	c #89A4C9\",
-\"q 	c #8FA9CB\",
-\"r 	c #85A2C7\",
-\"s 	c #90ABCC\",
-\"t 	c #3E6CA8\",
-\"u 	c #87A3C8\",
-\"v 	c #4B6DA1\",
-\"w 	c #91ABCD\",
-\"x 	c #3768A5\",
-\"y 	c #8AA5C9\",
-\"z 	c #2D5690\",
-\"A 	c #204A86\",
-\"B 	c #93ADCE\",
-\"C 	c #7294BF\",
-\"D 	c #6288B9\",
-\"E 	c #86A3C8\",
-\"F 	c #466EA3\",
-\"G 	c #3864A1\",
-\"H 	c #285390\",
-\"I 	c #234E8C\",
-\"J 	c #95AECF\",
-\"K 	c #7493BC\",
-\"L 	c #86A2C7\",
-\"M 	c #7999C3\",
-\"N 	c #5B82B5\",
-\"O 	c #6C8EBB\",
-\"P 	c #4B71A5\",
-\"Q 	c #26508B\",
-\"R 	c #2B5792\",
-\"S 	c #305E9B\",
-\"T 	c #31619F\",
-\"U 	c #7895BD\",
-\"V 	c #819DC3\",
-\"W 	c #688DBB\",
-\"X 	c #6288B8\",
-\"Y 	c #5880B4\",
-\"Z 	c #577FB3\",
-\"` 	c #547DB2\",
-\" .	c #416FAA\",
-\"..	c #3564A2\",
-\"+.	c #577AAB\",
-\"@.	c #6286B6\",
-\"#.	c #668BBA\",
-\"$.	c #507AB0\",
-\"%.	c #426EA8\",
-\"&.	c #2F5B97\",
-\"                                                \",
-\"                                                \",
-\"                                                \",
-\"              . . . . . . .             .       \",
-\"          . . + @ # $ % & * . .       . .       \",
-\"        . = - ; @ > , ' ) ! ~ { . . . ] .       \",
-\"        . ^ / ( _ . . . : < [ } | 1 2 3 .       \",
-\"      . _ 4 5 6 .       . . 7 8 9 0 a b .       \",
-\"      . c d . .             . e f g h i .       \",
-\"      . . .   .               . j k h l .       \",
-\"      .                     . f m n l o .       \",
-\"                          . . . . . . . .       \",
-\"      . . . . . . . .                           \",
-\"      . p q q q r .                     .       \",
-\"      . s , t u v .             .     . .       \",
-\"      . w x | y z .             . . . A .       \",
-\"      . B C 9 D E F . .       . G H I .         \",
-\"      . J K L M N C O P . . . Q R S T .         \",
-\"      . U . . . V W X | Y Z ` )  ....           \",
-\"      . .       . . +.@.#.N $.%.&.. .           \",
-\"      .             . . . . . . .               \",
-\"                                                \",
-\"                                                \",
-\"                                                \"};
-"
-  "XPM format image used as Kill icon")
-
-(defconst sqlplus-cancel-xpm "\
-/* XPM */
-static char * process_stop_xpm[] = {
-\"24 24 197 2\",
-\"  	c None\",
-\". 	c #000000\",
-\"+ 	c #C92B1E\",
-\"@ 	c #DA432F\",
-\"# 	c #E95941\",
-\"$ 	c #F26B50\",
-\"% 	c #ED6047\",
-\"& 	c #DF4A35\",
-\"* 	c #CE3324\",
-\"= 	c #BF1D13\",
-\"- 	c #EA5942\",
-\"; 	c #EF563A\",
-\"> 	c #F14D2C\",
-\", 	c #F1431F\",
-\"' 	c #F23A12\",
-\") 	c #F2421C\",
-\"! 	c #F24D2A\",
-\"~ 	c #F15737\",
-\"{ 	c #F0644A\",
-\"] 	c #CF3121\",
-\"^ 	c #D83828\",
-\"/ 	c #ED5840\",
-\"( 	c #EC3B1C\",
-\"_ 	c #EE310B\",
-\": 	c #F1350C\",
-\"< 	c #F4380D\",
-\"[ 	c #F53A0D\",
-\"} 	c #F53B0D\",
-\"| 	c #F4390D\",
-\"1 	c #F2360C\",
-\"2 	c #EF3A15\",
-\"3 	c #F05A3D\",
-\"4 	c #E44D37\",
-\"5 	c #CD2B1E\",
-\"6 	c #EA4D35\",
-\"7 	c #E92D0C\",
-\"8 	c #ED2F0B\",
-\"9 	c #F0330C\",
-\"0 	c #F3380D\",
-\"a 	c #F63C0E\",
-\"b 	c #F93F0F\",
-\"c 	c #F9400F\",
-\"d 	c #F73D0E\",
-\"e 	c #F1340C\",
-\"f 	c #EE300B\",
-\"g 	c #EC482C\",
-\"h 	c #E04532\",
-\"i 	c #E84E3A\",
-\"j 	c #E62A0E\",
-\"k 	c #EA2B0A\",
-\"l 	c #F83F0E\",
-\"m 	c #FC4310\",
-\"n 	c #FC4410\",
-\"o 	c #F63B0E\",
-\"p 	c #EB2C0A\",
-\"q 	c #EB5139\",
-\"r 	c #C8251A\",
-\"s 	c #DD3D2E\",
-\"t 	c #E5341D\",
-\"u 	c #E62508\",
-\"v 	c #F9BEB2\",
-\"w 	c #FBCFC5\",
-\"x 	c #F54C23\",
-\"y 	c #F95125\",
-\"z 	c #FDD4CB\",
-\"A 	c #FABFB2\",
-\"B 	c #E83013\",
-\"C 	c #E84F3B\",
-\"D 	c #E54737\",
-\"E 	c #E22007\",
-\"F 	c #E92A09\",
-\"G 	c #FBD2CA\",
-\"H 	c #FFFFFF\",
-\"I 	c #FDDFD9\",
-\"J 	c #F64E24\",
-\"K 	c #FDE0D9\",
-\"L 	c #E72609\",
-\"M 	c #E7452F\",
-\"N 	c #E33D2D\",
-\"O 	c #E11E07\",
-\"P 	c #E52308\",
-\"Q 	c #E82809\",
-\"R 	c #EC3F21\",
-\"S 	c #FCDED8\",
-\"T 	c #F55C37\",
-\"U 	c #FCDFD8\",
-\"V 	c #F04521\",
-\"W 	c #EC2E0A\",
-\"X 	c #E92909\",
-\"Y 	c #E62408\",
-\"Z 	c #E53823\",
-\"` 	c #CE2B1F\",
-\" .	c #C62018\",
-\"..	c #E03120\",
-\"+.	c #E01C06\",
-\"@.	c #E32107\",
-\"#.	c #ED4121\",
-\"$.	c #FEF9F8\",
-\"%.	c #E72709\",
-\"&.	c #E42208\",
-\"*.	c #E32D17\",
-\"=.	c #D83729\",
-\"-.	c #CB231B\",
-\";.	c #DE2A1B\",
-\">.	c #DE1A06\",
-\",.	c #EE5135\",
-\"'.	c #EF5335\",
-\").	c #EC2D0A\",
-\"!.	c #E82709\",
-\"~.	c #E21F07\",
-\"{.	c #E02511\",
-\"].	c #DC392C\",
-\"^.	c #BE1612\",
-\"/.	c #DD2E21\",
-\"(.	c #DC1705\",
-\"_.	c #DF1B06\",
-\":.	c #E42308\",
-\"<.	c #E93A20\",
-\"[.	c #FBDDD8\",
-\"}.	c #EB3D20\",
-\"|.	c #DF2A18\",
-\"1.	c #D02A1F\",
-\"2.	c #DC3328\",
-\"3.	c #DA1404\",
-\"4.	c #DD1805\",
-\"5.	c #E3331E\",
-\"6.	c #FADCD8\",
-\"7.	c #FBDCD8\",
-\"8.	c #EB4C34\",
-\"9.	c #E6361F\",
-\"0.	c #DD1905\",
-\"a.	c #DF2F21\",
-\"b.	c #C21A14\",
-\"c.	c #DA3128\",
-\"d.	c #D81408\",
-\"e.	c #F7C9C4\",
-\"f.	c #FADBD8\",
-\"g.	c #E5341E\",
-\"h.	c #E5351E\",
-\"i.	c #F8CEC9\",
-\"j.	c #DB1505\",
-\"k.	c #DD3429\",
-\"l.	c #C31613\",
-\"m.	c #D9281F\",
-\"n.	c #D71003\",
-\"o.	c #D91304\",
-\"p.	c #F3B5B0\",
-\"q.	c #F7CDC9\",
-\"r.	c #E12F1D\",
-\"s.	c #DF1C06\",
-\"t.	c #E2301D\",
-\"u.	c #F4B6B0\",
-\"v.	c #DC1605\",
-\"w.	c #DB2317\",
-\"x.	c #D2271F\",
-\"y.	c #D1231D\",
-\"z.	c #D61A10\",
-\"A.	c #D60F03\",
-\"B.	c #D81104\",
-\"C.	c #DB1605\",
-\"D.	c #D81204\",
-\"E.	c #D81509\",
-\"F.	c #DA2F26\",
-\"G.	c #D52620\",
-\"H.	c #D51A12\",
-\"I.	c #D50D03\",
-\"J.	c #D60E03\",
-\"K.	c #D6170D\",
-\"L.	c #D92B23\",
-\"M.	c #BD100D\",
-\"N.	c #AB0404\",
-\"O.	c #CE1D19\",
-\"P.	c #D6231C\",
-\"Q.	c #D41008\",
-\"R.	c #D40B02\",
-\"S.	c #D40C02\",
-\"T.	c #D50C03\",
-\"U.	c #D40E05\",
-\"V.	c #D62018\",
-\"W.	c #D4251F\",
-\"X.	c #B30A09\",
-\"Y.	c #A20000\",
-\"Z.	c #BC0F0E\",
-\"`.	c #D2211E\",
-\" +	c #D52520\",
-\".+	c #D5201A\",
-\"++	c #D41A14\",
-\"@+	c #D51F19\",
-\"#+	c #D62620\",
-\"$+	c #D52420\",
-\"%+	c #C51614\",
-\"&+	c #A30101\",
-\"*+	c #A30303\",
-\"=+	c #AE0909\",
-\"-+	c #BD0E0E\",
-\";+	c #B30B0B\",
-\">+	c #A30404\",
-\"                                                \",
-\"                . . . . . . .                   \",
-\"            . . + @ # $ % & * . .               \",
-\"          . = - ; > , ' ) ! ~ { ] .             \",
-\"        . ^ / ( _ : < [ } | 1 2 3 4 .           \",
-\"      . 5 6 7 8 9 0 a b c d | e f g h .         \",
-\"      . i j k f : [ l m n c o 1 _ p q r .       \",
-\"    . s t u k v w x l m n y z A _ p B C .       \",
-\"    . D E u F G H I J b y K H w f k L M .       \",
-\"    . N O P Q R S H I T K H U V W X Y Z ` .     \",
-\"  .  ...+.@.u F #.S H $.H U V 8 k %.&.*.=..     \",
-\"  . -.;.>.O &.L F ,.$.H $.'.).k !.P ~.{.]..     \",
-\"  . ^./.(._.~.:.<.[.H $.H [.}.L P E +.|.1..     \",
-\"    . 2.3.4._.5.6.H 7.8.7.H 6.9.~.+.0.a.b..     \",
-\"    . c.d.3.(.e.H f.g.@.h.6.H i._.4.j.k..       \",
-\"    . l.m.n.o.p.q.r._.s.s.t.e.u.v.3.w.x..       \",
-\"      . y.z.A.B.o.j.C.(.(.v.j.3.D.E.F..         \",
-\"        . G.H.I.J.n.B.B.B.B.n.A.K.L.M..         \",
-\"        . N.O.P.Q.R.S.T.T.S.U.V.W.X..           \",
-\"          . Y.Z.`. +.+++@+#+$+%+&+.             \",
-\"            . . . *+=+-+;+>+Y.. .               \",
-\"                  . . . . . .                   \",
-\"                                                \",
-\"                                                \"};
-"
-  "XPM format image used as Cancel icon")
-
-(defconst sqlplus-rollback-xpm "\
-/* XPM */
-static char * rollback_xpm[] = {
-\"24 24 228 2\",
-\"  	c None\",
-\". 	c #000000\",
-\"+ 	c #F8F080\",
-\"@ 	c #FEF57B\",
-\"# 	c #FFF571\",
-\"$ 	c #FFF164\",
-\"% 	c #FFED58\",
-\"& 	c #FFE748\",
-\"* 	c #FEDE39\",
-\"= 	c #F8F897\",
-\"- 	c #FFFE96\",
-\"; 	c #FFFA8A\",
-\"> 	c #FFF67C\",
-\", 	c #FFF16E\",
-\"' 	c #FFEC62\",
-\") 	c #FFE956\",
-\"! 	c #FFE448\",
-\"~ 	c #FFE03C\",
-\"{ 	c #FFDD30\",
-\"] 	c #FED821\",
-\"^ 	c #F1CB15\",
-\"/ 	c #FFFC92\",
-\"( 	c #FFFC91\",
-\"_ 	c #FFFC90\",
-\": 	c #FFFB8D\",
-\"< 	c #FFF67D\",
-\"[ 	c #FFEB5E\",
-\"} 	c #FFEA5B\",
-\"| 	c #FFE958\",
-\"1 	c #FFE855\",
-\"2 	c #FFE752\",
-\"3 	c #FDD41C\",
-\"4 	c #FDD319\",
-\"5 	c #FDD416\",
-\"6 	c #FFFF9D\",
-\"7 	c #FFFF99\",
-\"8 	c #FFFD94\",
-\"9 	c #FFFA89\",
-\"0 	c #FFDC2F\",
-\"a 	c #FED315\",
-\"b 	c #FFD808\",
-\"c 	c #FFFC9F\",
-\"d 	c #FFFE99\",
-\"e 	c #FFDF3B\",
-\"f 	c #F7C909\",
-\"g 	c #F8EA86\",
-\"h 	c #FEFCB7\",
-\"i 	c #FFFDA6\",
-\"j 	c #FFFA91\",
-\"k 	c #FFF681\",
-\"l 	c #FFF171\",
-\"m 	c #FFED64\",
-\"n 	c #FFE44A\",
-\"o 	c #FFE03D\",
-\"p 	c #FEDB2F\",
-\"q 	c #F9D21E\",
-\"r 	c #E9BC0F\",
-\"s 	c #CE9C02\",
-\"t 	c #F3E36A\",
-\"u 	c #FCF899\",
-\"v 	c #FFFCA3\",
-\"w 	c #FEF694\",
-\"x 	c #FFF284\",
-\"y 	c #FFEE71\",
-\"z 	c #FFEA62\",
-\"A 	c #FDDC40\",
-\"B 	c #F8D22F\",
-\"C 	c #F1C61B\",
-\"D 	c #DDAD0A\",
-\"E 	c #CC9A02\",
-\"F 	c #C89500\",
-\"G 	c #F4EA77\",
-\"H 	c #F7EF7F\",
-\"I 	c #FFF16A\",
-\"J 	c #FFEF68\",
-\"K 	c #FFEE66\",
-\"L 	c #FED622\",
-\"M 	c #FED51E\",
-\"N 	c #FED419\",
-\"O 	c #E9B90E\",
-\"P 	c #E7B509\",
-\"Q 	c #D4A202\",
-\"R 	c #CA9700\",
-\"S 	c #F6E67C\",
-\"T 	c #F3E67F\",
-\"U 	c #FCEE7A\",
-\"V 	c #FDEB66\",
-\"W 	c #FEE44E\",
-\"X 	c #FED313\",
-\"Y 	c #FDCA03\",
-\"Z 	c #F2BE01\",
-\"` 	c #D4A60D\",
-\" .	c #D4A206\",
-\"..	c #D19C00\",
-\"+.	c #CF9800\",
-\"@.	c #E3AF02\",
-\"#.	c #F9EB81\",
-\"$.	c #FBF096\",
-\"%.	c #F9E67C\",
-\"&.	c #F8DC5F\",
-\"*.	c #F8D548\",
-\"=.	c #F9D02D\",
-\"-.	c #F9C915\",
-\";.	c #F7C104\",
-\">.	c #EEB606\",
-\",.	c #E9B704\",
-\"'.	c #DEAE08\",
-\").	c #414D7B\",
-\"!.	c #3C5CA2\",
-\"~.	c #3A65B3\",
-\"{.	c #3668BB\",
-\"].	c #325EAF\",
-\"^.	c #F3E46E\",
-\"/.	c #FCFA9B\",
-\"(.	c #FFF89C\",
-\"_.	c #FDEC81\",
-\":.	c #FCE668\",
-\"<.	c #FDDF4E\",
-\"[.	c #FCDA3C\",
-\"}.	c #FCD52E\",
-\"|.	c #FAD026\",
-\"1.	c #4662A2\",
-\"2.	c #465A8D\",
-\"3.	c #3F6CBA\",
-\"4.	c #3A68B7\",
-\"5.	c #2E529E\",
-\"6.	c #2655AC\",
-\"7.	c #F0DC69\",
-\"8.	c #FBF78C\",
-\"9.	c #FFF880\",
-\"0.	c #FFF06B\",
-\"a.	c #FFE03E\",
-\"b.	c #FFD828\",
-\"c.	c #FED015\",
-\"d.	c #F5C40A\",
-\"e.	c #4B70B4\",
-\"f.	c #4870B7\",
-\"g.	c #3C5CA1\",
-\"h.	c #4070BF\",
-\"i.	c #3759A0\",
-\"j.	c #1D469C\",
-\"k.	c #214493\",
-\"l.	c #F2DD6C\",
-\"m.	c #F8EB7E\",
-\"n.	c #FBEE7A\",
-\"o.	c #FBE461\",
-\"p.	c #FADB48\",
-\"q.	c #FBD631\",
-\"r.	c #FED10F\",
-\"s.	c #FECD07\",
-\"t.	c #F1BD00\",
-\"u.	c #456AAE\",
-\"v.	c #4C7ECA\",
-\"w.	c #487AC8\",
-\"x.	c #35528F\",
-\"y.	c #1B4294\",
-\"z.	c #1B4193\",
-\"A.	c #F9EA83\",
-\"B.	c #FCF08E\",
-\"C.	c #F6E16E\",
-\"D.	c #F4D559\",
-\"E.	c #F5CF45\",
-\"F.	c #F6CB2E\",
-\"G.	c #F8C611\",
-\"H.	c #F6C005\",
-\"I.	c #E8B300\",
-\"J.	c #4268AE\",
-\"K.	c #4375C4\",
-\"L.	c #3F71C1\",
-\"M.	c #33569B\",
-\"N.	c #173F94\",
-\"O.	c #183A8B\",
-\"P.	c #F3E36E\",
-\"Q.	c #FCF7A1\",
-\"R.	c #FEF9A1\",
-\"S.	c #FEEE7D\",
-\"T.	c #FCE360\",
-\"U.	c #FAD946\",
-\"V.	c #F9D132\",
-\"W.	c #F8CD26\",
-\"X.	c #F7CA20\",
-\"Y.	c #3B589A\",
-\"Z.	c #395FA9\",
-\"`.	c #3359A5\",
-\" +	c #3056A3\",
-\".+	c #2B468D\",
-\"++	c #0A3897\",
-\"@+	c #E6D465\",
-\"#+	c #FDFA90\",
-\"$+	c #FFF885\",
-\"%+	c #FFF074\",
-\"&+	c #FFEA60\",
-\"*+	c #FFE246\",
-\"=+	c #FFDC31\",
-\"-+	c #FED51F\",
-\";+	c #F7CB14\",
-\">+	c #173788\",
-\",+	c #063494\",
-\"'+	c #E8DE7B\",
-\")+	c #FFFA86\",
-\"!+	c #FFF26A\",
-\"~+	c #FFE84F\",
-\"{+	c #FFD415\",
-\"]+	c #FDCC04\",
-\"^+	c #F3C001\",
-\"/+	c #EBB600\",
-\"(+	c #E3AF01\",
-\"_+	c #D7A100\",
-\":+	c #2D3E7F\",
-\"<+	c #033396\",
-\"[+	c #CFB954\",
-\"}+	c #DBC347\",
-\"|+	c #DEBF2C\",
-\"1+	c #DFB718\",
-\"2+	c #DFB206\",
-\"3+	c #D6A505\",
-\"4+	c #C6970A\",
-\"5+	c #B48413\",
-\"6+	c #374682\",
-\"7+	c #023398\",
-\"8+	c #0E3287\",
-\"9+	c #253775\",
-\"0+	c #05318F\",
-\"a+	c #10358B\",
-\"b+	c #183888\",
-\"c+	c #053495\",
-\"d+	c #0E348D\",
-\"e+	c #183585\",
-\"        . . . . . . .                           \",
-\"    . . + @ # $ % & * . . .                     \",
-\"  . = - ; > , ' ) ! ~ { ] ^ .                   \",
-\". / ( _ : ; < [ } | 1 2 3 4 5 .                 \",
-\". 6 7 8 9 > , ' ) ! ~ 0 ] a b .                 \",
-\". c d 8 9 > , ' ) ! e 0 ] a f .                 \",
-\". g h i j k l m | n o p q r s .                 \",
-\". t u v w x y z 2 A B C D E F .                 \",
-\". G H I J K L M N O P Q R F F .                 \",
-\". S T U V W p X Y Z `  ...+.@.. . . . .         \",
-\". #.$.%.&.*.=.-.;.>.. . ,.'.. ).!.~.{.]..       \",
-\". ^./.(._.:.<.[.}.|.. 1.. . 2.3.4.. . 5.6..     \",
-\". 7.8.9.0.) a.b.c.d.. e.f.g.h.i..     . j.k..   \",
-\". l.m.n.o.p.q.r.s.t.. u.v.w.x..       . y.z..   \",
-\". A.B.C.D.E.F.G.H.I.. J.K.L.M..       . N.O..   \",
-\". P.Q.R.S.T.U.V.W.X.. Y.Z.`. +.+.     . ++.     \",
-\". @+#+$+%+&+*+=+-+;+. . . . . . .   . >+,+.     \",
-\"  . '+)+!+~+{ {+]+^+/+(+_+.       . :+<+.       \",
-\"    . . [+}+|+1+2+3+4+5+.       . 6+7+8+.       \",
-\"        . . . . . . . .       . 9+0+a+.         \",
-\"                            . b+c+d+.           \",
-\"                            . e+. .             \",
-\"                              .                 \",
-\"                                                \"};
-"
-  "XPM format image used as Rollback icon")
-
-(defconst sqlplus-commit-xpm "\
-/* XPM */
-static char * commit_xpm[] = {
-\"24 24 276 2\",
-\"  	c None\",
-\". 	c #000000\",
-\"+ 	c #FDF57D\",
-\"@ 	c #FFF676\",
-\"# 	c #FFF36C\",
-\"$ 	c #FFF05D\",
-\"% 	c #FFEB51\",
-\"& 	c #FFE445\",
-\"* 	c #FDDC35\",
-\"= 	c #EFEA85\",
-\"- 	c #FBF68D\",
-\"; 	c #FCF482\",
-\"> 	c #FCF178\",
-\", 	c #FCEE6E\",
-\"' 	c #FCEB66\",
-\") 	c #FCE85B\",
-\"! 	c #FCE551\",
-\"~ 	c #FDE147\",
-\"{ 	c #FDDF3D\",
-\"] 	c #FEDD2D\",
-\"^ 	c #FCD621\",
-\"/ 	c #E5BF16\",
-\"( 	c #D8D479\",
-\"_ 	c #FCF587\",
-\": 	c #FAEF78\",
-\"< 	c #FAEA6B\",
-\"[ 	c #FAEA6A\",
-\"} 	c #FAE968\",
-\"| 	c #FAE967\",
-\"1 	c #FAE865\",
-\"2 	c #FAE864\",
-\"3 	c #FDDD3C\",
-\"4 	c #FED621\",
-\"5 	c #FFD51D\",
-\"6 	c #FFD51B\",
-\"7 	c #FFD519\",
-\"8 	c #D8B82B\",
-\"9 	c #FCF790\",
-\"0 	c #FBF587\",
-\"a 	c #F8EF7D\",
-\"b 	c #F8EC75\",
-\"c 	c #F7E86B\",
-\"d 	c #F8E868\",
-\"e 	c #F9E663\",
-\"f 	c #F9E45A\",
-\"g 	c #F9E253\",
-\"h 	c #F9E04C\",
-\"i 	c #FBDD40\",
-\"j 	c #FBDB38\",
-\"k 	c #FAD933\",
-\"l 	c #FAD529\",
-\"m 	c #FDD810\",
-\"n 	c #FFFD9E\",
-\"o 	c #FFFF9A\",
-\"p 	c #FFFE96\",
-\"q 	c #FFFB8C\",
-\"r 	c #FFF781\",
-\"s 	c #FFF375\",
-\"t 	c #FFEF69\",
-\"u 	c #FFEA5B\",
-\"v 	c #FFE750\",
-\"w 	c #FFE345\",
-\"x 	c #FFDF38\",
-\"y 	c #FFDB2B\",
-\"z 	c #FFD81F\",
-\"A 	c #FFD313\",
-\"B 	c #FBD007\",
-\"C 	c #FBF090\",
-\"D 	c #FFFDAE\",
-\"E 	c #FFFEA2\",
-\"F 	c #FFFA8C\",
-\"G 	c #FFF780\",
-\"H 	c #F6CA11\",
-\"I 	c #E1AF03\",
-\"J 	c #F4E36D\",
-\"K 	c #FCF7A4\",
-\"L 	c #FFFEBB\",
-\"M 	c #FEFAA6\",
-\"N 	c #FFF990\",
-\"O 	c #FFF57E\",
-\"P 	c #FFEE6F\",
-\"Q 	c #FFEB61\",
-\"R 	c #FFE856\",
-\"S 	c #FFE34A\",
-\"T 	c #FBDD44\",
-\"U 	c #F7D535\",
-\"V 	c #EBBF13\",
-\"W 	c #D5A406\",
-\"X 	c #C99500\",
-\"Y 	c #F0DC5F\",
-\"Z 	c #F3E772\",
-\"` 	c #F7EC76\",
-\" .	c #F6E56D\",
-\"..	c #F6E369\",
-\"+.	c #F6E264\",
-\"@.	c #F5DF5C\",
-\"#.	c #F3DB53\",
-\"$.	c #F3D849\",
-\"%.	c #EFD245\",
-\"&.	c #ECCE3F\",
-\"*.	c #E3B91F\",
-\"=.	c #D3A40B\",
-\"-.	c #C99600\",
-\";.	c #C69200\",
-\">.	c #EED95E\",
-\",.	c #EDDA60\",
-\"'.	c #F1DF64\",
-\").	c #F2DF5E\",
-\"!.	c #F2DD57\",
-\"~.	c #F2D94E\",
-\"{.	c #F2D644\",
-\"].	c #EFD038\",
-\"^.	c #ECCB34\",
-\"/.	c #E6C430\",
-\"(.	c #DFB71F\",
-\"_.	c #D9AD17\",
-\":.	c #CC9907\",
-\"<.	c #C69000\",
-\"[.	c #D39E00\",
-\"}.	c #BB1503\",
-\"|.	c #F9EA7D\",
-\"1.	c #F6E57A\",
-\"2.	c #F5E370\",
-\"3.	c #F5DE62\",
-\"4.	c #F9DF52\",
-\"5.	c #FBDB3E\",
-\"6.	c #FCD526\",
-\"7.	c #FCCE0F\",
-\"8.	c #F7C50A\",
-\"9.	c #EEBA08\",
-\"0.	c #E2AB03\",
-\"a.	c #D7A000\",
-\"b.	c #D59D00\",
-\"c.	c #DFA901\",
-\"d.	c #E7B402\",
-\"e.	c #C91800\",
-\"f.	c #F6E676\",
-\"g.	c #FCF4A1\",
-\"h.	c #FDF096\",
-\"i.	c #FAE167\",
-\"j.	c #F7D64F\",
-\"k.	c #F7CF38\",
-\"l.	c #F7CB26\",
-\"m.	c #F6BF0C\",
-\"n.	c #F1B905\",
-\"o.	c #ECB309\",
-\"p.	c #EBB60A\",
-\"q.	c #F0BF0B\",
-\"r.	c #F3C206\",
-\"s.	c #E5B201\",
-\"t.	c #CF9C01\",
-\"u.	c #C21602\",
-\"v.	c #C21703\",
-\"w.	c #F2E067\",
-\"x.	c #FBF78F\",
-\"y.	c #FEF28A\",
-\"z.	c #FEED74\",
-\"A.	c #FFE85F\",
-\"B.	c #FFE24D\",
-\"C.	c #FFDE3A\",
-\"D.	c #FED92F\",
-\"E.	c #FCD325\",
-\"F.	c #F8CD1A\",
-\"G.	c #EDBD0A\",
-\"H.	c #D9A701\",
-\"I.	c #C79200\",
-\"J.	c #D11D00\",
-\"K.	c #EFDA64\",
-\"L.	c #F7EF7F\",
-\"M.	c #FCF47F\",
-\"N.	c #FDEE6C\",
-\"O.	c #FDE85B\",
-\"P.	c #FDE249\",
-\"Q.	c #FDDC36\",
-\"R.	c #FCD423\",
-\"S.	c #F9CC14\",
-\"T.	c #F0C10E\",
-\"U.	c #E6B507\",
-\"V.	c #DCA900\",
-\"W.	c #D29F00\",
-\"X.	c #C69400\",
-\"Y.	c #C99200\",
-\"Z.	c #CC1B02\",
-\"`.	c #C61A04\",
-\" +	c #E1CF5F\",
-\".+	c #EAD862\",
-\"++	c #ECDB63\",
-\"@+	c #EFDC5E\",
-\"#+	c #EFD955\",
-\"$+	c #EFD74D\",
-\"%+	c #EFD444\",
-\"&+	c #F0D23E\",
-\"*+	c #EECE37\",
-\"=+	c #E8C731\",
-\"-+	c #E0B922\",
-\";+	c #D09E03\",
-\">+	c #CB9700\",
-\",+	c #C39100\",
-\"'+	c #C99400\",
-\")+	c #E12400\",
-\"!+	c #F2E47C\",
-\"~+	c #F8ED8C\",
-\"{+	c #F4E171\",
-\"]+	c #F0D65B\",
-\"^+	c #F0D24F\",
-\"/+	c #F1CF43\",
-\"(+	c #F2CD34\",
-\"_+	c #F2C824\",
-\":+	c #EEC527\",
-\"<+	c #E7BD23\",
-\"[+	c #DFAC12\",
-\"}+	c #DAA203\",
-\"|+	c #E5B202\",
-\"1+	c #EDBA01\",
-\"2+	c #D69F00\",
-\"3+	c #D21E01\",
-\"4+	c #D01C00\",
-\"5+	c #F2E16A\",
-\"6+	c #FBF59D\",
-\"7+	c #FEFBAA\",
-\"8+	c #FEF084\",
-\"9+	c #FCE567\",
-\"0+	c #FBDD50\",
-\"a+	c #F8D23B\",
-\"b+	c #F8CD28\",
-\"c+	c #EEB51C\",
-\"d+	c #DA8A13\",
-\"e+	c #E29A16\",
-\"f+	c #EDB111\",
-\"g+	c #E5AE08\",
-\"h+	c #D19C01\",
-\"i+	c #C79400\",
-\"j+	c #BF1603\",
-\"k+	c #DD2300\",
-\"l+	c #E6D261\",
-\"m+	c #FCF88C\",
-\"n+	c #FFF27A\",
-\"o+	c #FFEC6A\",
-\"p+	c #FFE655\",
-\"q+	c #FFE041\",
-\"r+	c #FFDA2B\",
-\"s+	c #E49D14\",
-\"t+	c #BA4F02\",
-\"u+	c #BB6A00\",
-\"v+	c #B37102\",
-\"w+	c #DD2200\",
-\"x+	c #CA1B02\",
-\"y+	c #E6DB78\",
-\"z+	c #FEFB8B\",
-\"A+	c #FFF470\",
-\"B+	c #FFEA56\",
-\"C+	c #FFE13E\",
-\"D+	c #FFDA24\",
-\"E+	c #FECF0A\",
-\"F+	c #F5BE01\",
-\"G+	c #D37800\",
-\"H+	c #D72000\",
-\"I+	c #C61802\",
-\"J+	c #EBD55C\",
-\"K+	c #FCE353\",
-\"L+	c #FFE33E\",
-\"M+	c #FFDB26\",
-\"N+	c #FFD20B\",
-\"O+	c #FCCB01\",
-\"P+	c #F0B900\",
-\"Q+	c #D47D00\",
-\"R+	c #E42500\",
-\"S+	c #EB2900\",
-\"T+	c #DF2301\",
-\"U+	c #E82700\",
-\"V+	c #D31F04\",
-\"W+	c #C71F01\",
-\"X+	c #EA2800\",
-\"Y+	c #E92800\",
-\"Z+	c #DD2301\",
-\"`+	c #E22501\",
-\"          . . . . . . .                         \",
-\"    . . . + @ # $ % & * . . .                   \",
-\"  . = - ; > , ' ) ! ~ { ] ^ / .                 \",
-\". ( _ : < [ } | 1 2 3 4 5 6 7 8 .               \",
-\". 9 0 a b c d e f g h i j k l m .               \",
-\". n o p q r s t u v w x y z A B .               \",
-\". C D E F G s t u v w x y z H I .               \",
-\". J K L M N O P Q R S T U V W X .               \",
-\". Y Z `  ...+.@.#.$.%.&.*.=.-.;..         . .   \",
-\". >.,.'.).!.~.{.].^./.(._.:.<.[..       . }..   \",
-\". |.1.2.3.4.5.6.7.8.9.0.a.b.c.d..       . e..   \",
-\". f.g.h.i.j.k.l.m.n.o.p.q.r.s.t..     . u.v..   \",
-\". w.x.n y.z.A.B.C.D.E.F.G.H.-.I..     . J..     \",
-\". K.L.M.N.O.P.Q.R.S.T.U.V.W.X.Y..   . Z.`..     \",
-\".  +.+++@+#+$+%+&+*+=+-+;+>+,+'+.   . )+.       \",
-\". !+~+{+]+^+/+(+_+:+<+[+}+|+1+2+. . 3+4+.       \",
-\". 5+6+7+8+9+0+a+b+c+d+e+f+g+h+i+. j+k+.         \",
-\". l+m+q n+o+p+q+r+s+. . . t+u+v+. w+x+.         \",
-\"  . y+z+A+B+C+D+E+F+G+. H+. . . I+)+.           \",
-\"    . . J+K+L+M+N+O+P+Q+. R+S+T+U+V+.           \",
-\"        . . . . . . . . . . W+X+Y+.             \",
-\"                            . Z+`+.             \",
-\"                              . .               \",
-\"                                .               \"};
-"
-  "XPM format image used as Commit icon")
-
-(defconst plsql-prev-mark-xpm "\
-/* XPM */
-static char * go_previous_xpm[] = {
-\"24 24 59 1\",
-\" 	c None\",
-\".	c #000000\",
-\"+	c #355D96\",
-\"@	c #3C639B\",
-\"#	c #6E92BF\",
-\"$	c #41679D\",
-\"%	c #6990BE\",
-\"&	c #6D94C2\",
-\"*	c #456DA2\",
-\"=	c #628BBC\",
-\"-	c #4D7BB4\",
-\";	c #6991C0\",
-\">	c #4971A6\",
-\",	c #5D87BA\",
-\"'	c #4B7BB3\",
-\")	c #4979B3\",
-\"!	c #5884B9\",
-\"~	c #638CBC\",
-\"{	c #638BBC\",
-\"]	c #6089BA\",
-\"^	c #4B73A9\",
-\"/	c #5883B8\",
-\"(	c #4A7AB3\",
-\"_	c #618ABB\",
-\":	c #4C74AB\",
-\"<	c #547FB5\",
-\"[	c #4972A9\",
-\"}	c #4D79B1\",
-\"|	c #4171AD\",
-\"1	c #4071AD\",
-\"2	c #4070AD\",
-\"3	c #4171AC\",
-\"4	c #4071AC\",
-\"5	c #4070AC\",
-\"6	c #3F70AC\",
-\"7	c #3F70AB\",
-\"8	c #406FAC\",
-\"9	c #5781B5\",
-\"0	c #4A74AC\",
-\"a	c #3E6CA8\",
-\"b	c #3465A4\",
-\"c	c #4E78AF\",
-\"d	c #446FA8\",
-\"e	c #4A75AD\",
-\"f	c #3F6CA6\",
-\"g	c #3C6BA7\",
-\"h	c #3B6BA7\",
-\"i	c #4471AB\",
-\"j	c #4572AB\",
-\"k	c #4672AC\",
-\"l	c #4571AB\",
-\"m	c #3A68A3\",
-\"n	c #3B6AA7\",
-\"o	c #406EA9\",
-\"p	c #3564A0\",
-\"q	c #3868A6\",
-\"r	c #305E9D\",
-\"s	c #3767A5\",
-\"t	c #2E5D9B\",
-\"                        \",
-\"                        \",
-\"                        \",
-\"            ..          \",
-\"           .+.          \",
-\"          .@#.          \",
-\"         .$%&.          \",
-\"        .*=-;.........  \",
-\"       .>,')!~{{{{{~].  \",
-\"      .^/()))(((((('_.  \",
-\"     .:<)))))))))))),.  \",
-\"    .[}|1123455567589.  \",
-\"     .0abbbbbbbbbbbbc.  \",
-\"      .dabbbbbbbbbbbe.  \",
-\"       .fgbbhijjjjjkl.  \",
-\"        .mnbo.........  \",
-\"         .pqh.          \",
-\"          .rs.          \",
-\"           .t.          \",
-\"            ..          \",
-\"             .          \",
-\"                        \",
-\"                        \",
-\"                        \"};
-"
-  "XPM format image used as Previous Mark icon")
-
-(defconst plsql-next-mark-xpm "\
-/* XPM */
-static char * go_next_xpm[] = {
-\"24 24 63 1\",
-\" 	c None\",
-\".	c #000000\",
-\"+	c #365F97\",
-\"@	c #6B8FBE\",
-\"#	c #41689E\",
-\"$	c #6990BF\",
-\"%	c #466EA4\",
-\"&	c #678EBD\",
-\"*	c #4E7DB5\",
-\"=	c #638CBC\",
-\"-	c #4B72A7\",
-\";	c #5B83B5\",
-\">	c #628BBB\",
-\",	c #5A86BA\",
-\"'	c #4979B3\",
-\")	c #4B7AB3\",
-\"!	c #5E87B9\",
-\"~	c #4E76AA\",
-\"{	c #5B84B8\",
-\"]	c #4E7CB5\",
-\"^	c #4A7AB3\",
-\"/	c #5883B7\",
-\"(	c #5178AD\",
-\"_	c #5982B6\",
-\":	c #4C7BB4\",
-\"<	c #537FB5\",
-\"[	c #5079AE\",
-\"}	c #507BB0\",
-\"|	c #4272AD\",
-\"1	c #4070AC\",
-\"2	c #3F70AB\",
-\"3	c #3F70AC\",
-\"4	c #4071AC\",
-\"5	c #4171AC\",
-\"6	c #4070AD\",
-\"7	c #4071AD\",
-\"8	c #4171AD\",
-\"9	c #4D79B1\",
-\"0	c #4E76AD\",
-\"a	c #4872AA\",
-\"b	c #3767A5\",
-\"c	c #3465A4\",
-\"d	c #3D6CA8\",
-\"e	c #4C76AD\",
-\"f	c #2B548E\",
-\"g	c #446FA8\",
-\"h	c #3C6BA7\",
-\"i	c #4772AA\",
-\"j	c #29528E\",
-\"k	c #3F6CA6\",
-\"l	c #4471AB\",
-\"m	c #4371AB\",
-\"n	c #3B6BA7\",
-\"o	c #416EA8\",
-\"p	c #3F6CA7\",
-\"q	c #3A69A6\",
-\"r	c #3C6AA5\",
-\"s	c #3B6AA5\",
-\"t	c #3868A6\",
-\"u	c #3765A2\",
-\"v	c #3666A3\",
-\"w	c #32619F\",
-\"x	c #2F5D9B\",
-\"                        \",
-\"                        \",
-\"                        \",
-\"           ..           \",
-\"           .+.          \",
-\"           .@#.         \",
-\"           .$$%.        \",
-\"   .........&*=-.       \",
-\"   .;>>>>>>=,')!~.      \",
-\"   .{]^^^^^^''''/(.     \",
-\"   ._:'''''''''''<[.    \",
-\"   .}|12311145677890.   \",
-\"   .abcccccccccccde.    \",
-\"   .gbcccccccccchi.     \",
-\"   .klmlllllhccno.      \",
-\"   .........pcqr.       \",
-\"           .stu.        \",
-\"           .vw.         \",
-\"           .x.          \",
-\"           ..           \",
-\"           .            \",
-\"                        \",
-\"                        \",
-\"                        \"};
-"
-  "XPM format image used as Next Mark icon")
-
-(defconst sqlplus-kill-image
-  (create-image sqlplus-kill-xpm 'xpm t))
-
-(defconst sqlplus-cancel-image
-  (create-image sqlplus-cancel-xpm 'xpm t))
-
-(defconst sqlplus-commit-image
-  (create-image sqlplus-commit-xpm 'xpm t))
-
-(defconst sqlplus-rollback-image
-  (create-image sqlplus-rollback-xpm 'xpm t))
-
-(defconst plsql-prev-mark-image
-  (create-image plsql-prev-mark-xpm 'xpm t))
-
-(defconst plsql-next-mark-image
-  (create-image plsql-next-mark-xpm 'xpm t))
-
-(defvar sqlplus-mode-syntax-table nil
-  "Syntax table used while in sqlplus-mode.")
-
-(defvar sqlplus-suppress-show-output-buffer nil)
-
-;; Local in input buffers
-(defvar sqlplus-font-lock-keywords-1 nil)
-(make-variable-buffer-local 'sqlplus-font-lock-keywords-1)
-(defvar sqlplus-font-lock-keywords-2 nil)
-(make-variable-buffer-local 'sqlplus-font-lock-keywords-2)
-(defvar sqlplus-font-lock-keywords-3 nil)
-(make-variable-buffer-local 'sqlplus-font-lock-keywords-3)
-
-(defvar sqlplus-font-lock-defaults '((sqlplus-font-lock-keywords-1 sqlplus-font-lock-keywords-2 sqlplus-font-lock-keywords-3) nil t nil nil))
-
-(defvar sqlplus-oracle-extra-builtin-functions-re
-  (concat "\\b"
-          (regexp-opt '("acos" "asciistr" "asin" "atan" "atan2" "bfilename" "bin_to_num" "bitand" "cardinality" "cast" "coalesce" "collect"
-                        "compose" "corr" "corr_s" "corr_k" "covar_pop" "covar_samp" "cume_dist" "current_date" "current_timestamp" "cv"
-                        "dbtimezone" "decompose" "dense_rank" "depth" "deref" "empty_blob, empty_clob" "existsnode" "extract"
-                        "extractvalue" "first" "first_value" "from_tz" "group_id" "grouping" "grouping_id" "iteration_number"
-                        "lag" "last" "last_value" "lead" "lnnvl" "localtimestamp" "make_ref" "median" "nanvl" "nchr" "nls_charset_decl_len"
-                        "nls_charset_id" "nls_charset_name" "ntile" "nullif" "numtodsinterval" "numtoyminterval" "nvl2" "ora_hash" "path"
-                        "percent_rank" "percentile_cont" "percentile_disc" "powermultiset" "powermultiset_by_cardinality" "presentnnv"
-                        "presentv" "previous" "rank" "ratio_to_report" "rawtonhex" "ref" "reftohex" "regexp_instr" "regexp_replace"
-                        "regexp_substr" "regr_slope" "regr_intercept" "regr_count" "regr_r2" "regr_avgx" "regr_avgy" "regr_sxx" "regr_syy"
-                        "regr_sxy" "remainder" "row_number" "rowidtonchar" "scn_to_timestamp" "sessiontimezone" "stats_binomial_test"
-                        "stats_crosstab" "stats_f_test" "stats_ks_test" "stats_mode" "stats_mw_test" "stats_one_way_anova" "stats_t_test_one"
-                        "stats_t_test_paired" "stats_t_test_indep" "stats_t_test_indepu" "stats_wsr_test" "stddev_pop" "stddev_samp"
-                        "sys_connect_by_path" "sys_context" "sys_dburigen" "sys_extract_utc" "sys_guid" "sys_typeid" "sys_xmlagg" "sys_xmlgen"
-                        "systimestamp" "timestamp_to_scn" "to_binary_double" "to_binary_float" "to_clob" "to_dsinterval" "to_lob" "to_nchar"
-                        "to_nclob" "to_timestamp" "to_timestamp_tz" "to_yminterval" "treat" "tz_offset" "unistr" "updatexml" "value" "var_pop"
-                        "var_samp" "width_bucket" "xmlagg" "xmlcolattval" "xmlconcat" "xmlelement" "xmlforest" "xmlsequence" "xmltransform") t)
-          "\\b"))
-(defvar sqlplus-oracle-extra-warning-words-re
-  (concat "\\b"
-          (regexp-opt '("access_into_null" "case_not_found" "collection_is_null" "rowtype_mismatch"
-                        "self_is_null" "subscript_beyond_count" "subscript_outside_limit" "sys_invalid_rowid") t)
-          "\\b"))
-(defvar sqlplus-oracle-extra-keywords-re
-  (concat "\\b\\("
-          "\\(at\\s-+local\\|at\\s-+time\\s-+zone\\|to\\s-+second\\|to\\s-+month\\|is\\s-+present\\|a\\s-+set\\)\\|"
-          (regexp-opt '("case" "nan" "infinite" "equals_path" "empty" "likec" "like2" "like4" "member"
-                        "regexp_like" "submultiset" "under_path" "mlslabel") t)
-          "\\)\\b"))
-(defvar sqlplus-oracle-extra-pseudocolumns-re
-  (concat "\\b"
-          (regexp-opt '("connect_by_iscycle" "connect_by_isleaf" "versions_starttime" "versions_startscn"
-                        "versions_endtime" "versions_endscn" "versions_xid" "versions_operation" "object_id" "object_value" "ora_rowscn"
-                        "xmldata") t)
-          "\\b"))
-(defvar sqlplus-oracle-plsql-extra-reserved-words-re
-  (concat "\\b"
-          (regexp-opt '("array" "at" "authid" "bulk" "char_base" "day" "do" "extends" "forall" "heap" "hour"
-                        "interface" "isolation" "java" "limited" "minute" "mlslabel" "month" "natural" "naturaln" "nocopy" "number_base"
-                        "ocirowid" "opaque" "operator" "organization" "pls_integer" "positive" "positiven" "range" "record" "release" "reverse"
-                        "rowtype" "second" "separate" "space" "sql" "timezone_region" "timezone_abbr" "timezone_minute" "timezone_hour" "year"
-                        "zone") t)
-          "\\b"))
-(defvar sqlplus-oracle-extra-types-re
-  (concat "\\b"
-          (regexp-opt '("nvarchar2" "binary_float" "binary_double" "timestamp" "interval" "interval_day" "urowid" "nchar" "clob" "nclob" "bfile") t)
-          "\\b"))
-
-(defvar sqlplus-commands-regexp-1 nil)
-(defvar sqlplus-commands-regexp-23 nil)
-(defvar sqlplus-system-variables-regexp-1 nil)
-(defvar sqlplus-system-variables-regexp-23 nil)
-(defvar sqlplus-v22-commands-font-lock-keywords-1 nil)
-(defvar sqlplus-v22-commands-font-lock-keywords-23 nil)
-(defvar font-lock-sqlplus-face nil)
-
-(defvar sqlplus-output-buffer-keymap nil
-  "Local in output buffer.")
-(make-variable-buffer-local 'sqlplus-output-buffer-keymap)
-
-(defvar sqlplus-kill-function-inhibitor nil)
-
-(defvar sqlplus-slip-separator-width 2
-  "Only for classic table style.")
-
-(defvar sqlplus-user-string-history nil)
-
-(defvar sqlplus-object-types '( "CONSUMER GROUP" "SEQUENCE" "SCHEDULE" "PROCEDURE" "OPERATOR" "WINDOW"
-                                "PACKAGE" "LIBRARY" "PROGRAM" "PACKAGE BODY" "JAVA RESOURCE" "XML SCHEMA"
-                                "JOB CLASS" "TRIGGER" "TABLE" "SYNONYM" "VIEW" "FUNCTION" "WINDOW GROUP"
-                                "JAVA CLASS" "INDEXTYPE" "INDEX" "TYPE" "EVALUATION CONTEXT" ))
-
-(defvar sqlplus-end-of-source-sentinel "%%@@end-of-source-sentinel@@%%")
-
-(defconst sqlplus-system-variables
-  '("appi[nfo]" "array[size]" "auto[commit]" "autop[rint]" "autorecovery" "autot[race]" "blo[ckterminator]" "cmds[ep]"
-    "colsep" "com[patibility]" "con[cat]" "copyc[ommit]" "copytypecheck" "def[ine]" "describe" "echo" "editf[ile]"
-    "emb[edded]" "esc[ape]" "feed[back]" "flagger" "flu[sh]" "hea[ding]" "heads[ep]" "instance" "lin[esize]"
-    "lobof[fset]" "logsource" "long" "longc[hunksize]" "mark[up]" "newp[age]" "null" "numf[ormat]" "num[width]"
-    "pages[ize]" "pau[se]" "recsep" "recsepchar" "serverout[put]" "shift[inout]" "show[mode]" "sqlbl[anklines]"
-    "sqlc[ase]" "sqlco[ntinue]" "sqln[umber]" "sqlpluscompat[ibility]" "sqlpre[fix]" "sqlp[rompt]" "sqlt[erminator]"
-    "suf[fix]" "tab" "term[out]" "ti[me]" "timi[ng]" "trim[out]" "trims[pool]" "und[erline]" "ver[ify]" "wra[p]"))
-
-(defconst sqlplus-commands
-  '(("@[@]")
-    (("/" "r[un]"))
-    ("acc[ept]"
-     (font-lock-type-face "num[ber]" "char" "date" "binary_float" "binary_double")
-     (font-lock-keyword-face "for[mat]" "def[ault]" "[no]prompt" "hide"))
-    ("a[ppend]")
-    ("archive log"
-     (font-lock-keyword-face "list" "stop" "start" "next" "all" "to"))
-    ("attribute"
-     (font-lock-keyword-face "ali[as]" "cle[ar]" "for[mat]" "like" "on" "off"))
-    ("bre[ak]"
-     (font-lock-keyword-face "on" "row" "report" "ski[p]" "page" "nodup[licates]" "dup[licates]"))
-    ("bti[tle]"
-     (font-lock-keyword-face "on" "off")
-     (font-lock-builtin-face "bold" "ce[nter]" "col" "format" "le[ft]" "r[ight]" "s[kip]" "tab"))
-    ("c[hange]")
-    ("cl[ear]"
-     (font-lock-keyword-face "bre[aks]" "buff[er]" "col[umns]" "comp[utes]" "scr[een]" "sql" "timi[ng]"))
-    ("col[umn]"
-     (font-lock-keyword-face "ali[as]" "cle[ar]" "entmap" "on" "off" "fold_a[fter]" "fold_b[efore]" "for[mat]" "hea[ding]"
-                             "jus[tify]" "l[eft]" "c[enter]" "r[ight]" "like" "newl[ine]" "new_v[alue]" "nopri[nt]" "pri[nt]"
-                             "nul[l]" "old_v[alue]" "wra[pped]" "wor[d_wrapped]" "tru[ncated]"))
-    ("comp[ute]"
-     (font-lock-keyword-face "lab[el]" "of" "on" "report" "row")
-     (font-lock-builtin-face "avg" "cou[nt]" "min[imum]" "max[imum]" "num[ber]" "sum" "std" "var[iance]"))
-    ("conn[ect]"
-     (font-lock-keyword-face "as" "sysoper" "sysdba"))
-    ("copy")
-    ("def[ine]")
-    ("del"
-     (font-lock-keyword-face "last"))
-    ("desc[ribe]")
-    ("disc[onnect]")
-    ("ed[it]")
-    ("exec[ute]")
-    (("exit" "quit")
-     (font-lock-keyword-face "success" "failure" "warning" "commit" "rollback"))
-    ("get"
-     (font-lock-keyword-face "file" "lis[t]" "nol[ist]"))
-    ("help")
-    (("ho[st]" "!" "$"))
-    ("i[nput]")
-    ("l[ist]"
-     (font-lock-keyword-face "last"))
-    ("passw[ord]")
-    ("pau[se]")
-    ("pri[nt]")
-    ("pro[mpt]")
-    ("recover"
-     (font-lock-keyword-face "begin" "end" "backup" "automatic" "from" "logfile" "test" "allow" "corruption" "continue" "default" "cancel"
-                             "standby" "database" "until" "time" "change" "using" "controlfile" "tablespace" "datafile"
-                             "consistent" "with" "[no]parallel" "managed" "disconnect" "session" "[no]timeout" "[no]delay" "next" "no" "expire"
-                             "current" "through" "thread" "sequence" "all" "archivelog" "last" "switchover" "immediate" "[no]wait"
-                             "finish" "skip"))
-    ("rem[ark]")
-    ("repf[ooter]"
-     (font-lock-keyword-face "page" "on" "off")
-     (font-lock-builtin-face "bold" "ce[nter]" "col" "format" "le[ft]" "r[ight]" "s[kip]" "tab"))
-    ("reph[eader]"
-     (font-lock-keyword-face "page" "on" "off")
-     (font-lock-builtin-face "bold" "ce[nter]" "col" "format" "le[ft]" "r[ight]" "s[kip]" "tab"))
-    ("sav[e]"
-     (font-lock-keyword-face "file" "cre[ate]" "rep[lace]" "app[end]"))
-    ("set"
-     (font-lock-builtin-face sqlplus-system-variables)
-     (font-lock-keyword-face "on" "off" "immediate" "trace[only]" "explain" "statistics" "native" "v7" "v8" "all" "linenum" "indent"
-                             "entry" "intermediate" "full" "local" "head" "html" "body" "table" "entmap" "spool" "[pre]format"
-                             "none" "[word_]wrapped" "each" "truncated" "[in]visible" "mixed" "lower" "upper"))
-    ("sho[w]"
-     (font-lock-keyword-face "all" "bti[tle]" "err[ors]" "function" "procedure" "package[ body]" "trigger" "view" "type[ body]"
-                             "dimension" "java class" "lno" "parameters" "pno" "recyc[lebin]" "rel[ease]" "repf[ooter]" "reph[eader]"
-                             "sga" "spoo[l]" "sqlcode" "tti[tle]" "user")
-     (font-lock-builtin-face sqlplus-system-variables))
-    ("shutdown"
-     (font-lock-keyword-face "abort" "immediate" "normal" "transactional" "local"))
-    ("spo[ol]"
-     ("cre" "create" "rep" "replace" "app" "append" "off" "out"))
-    ("sta[rt]")
-    ("startup"
-     (font-lock-keyword-face "force" "restrict" "pfile" "quiet" "mount" "open" "nomount" "read" "only" "write" "recover"))
-    ("store"
-     (font-lock-keyword-face "set" "cre[ate]" "rep[lace]" "app[end]"))
-    ("timi[ng]"
-     (font-lock-keyword-face "start" "show" "stop"))
-    ("tti[tle]"
-     (font-lock-keyword-face "tti[tle]" "on" "off")
-     (font-lock-builtin-face "bold" "ce[nter]" "col" "format" "le[ft]" "r[ight]" "s[kip]" "tab"))
-    ("undef[ine]")
-    ("var[iable]"
-     (font-lock-type-face "number" "[n]char" "byte" "[n]varchar2" "[n]clob" "refcursor" "binary_float" "binary_double"))
-    ("whenever oserror"
-     (font-lock-keyword-face "exit" "success" "failure" "commit" "rollback" "continue" "commit" "rollback" "none"))
-    ("whenever sqlerror"
-     (font-lock-keyword-face "exit" "success" "failure" "warning" "commit" "rollback" "continue" "none"))))
-
-(defvar plsql-mode-map nil)
-
-(defstruct sqlplus-global-struct
-  font-lock-regexps
-  objects-alist
-  side-view-buffer
-  root-dir
-)
-
-(defvar sqlplus-global-structures (make-hash-table :test 'equal)
-  "Connect string -> sqlplus-global-struct")
-
-(defun sqlplus-get-objects-alist (&optional connect-string)
-  (let ((struct (gethash (car (refine-connect-string (or connect-string sqlplus-connect-string sqlplus-process-p)))
-			 sqlplus-global-structures)))
-    (when struct
-      (sqlplus-global-struct-objects-alist struct))))
-
-(defun sqlplus-set-objects-alist (objects-alist &optional connect-string)
-  (let ((struct (gethash (car (refine-connect-string (or connect-string sqlplus-connect-string sqlplus-process-p)))
-			 sqlplus-global-structures)))
-    (when struct
-      (setf (sqlplus-global-struct-objects-alist struct) objects-alist))))
-
-(defun sqlplus-get-font-lock-regexps (&optional connect-string)
-  (let ((struct (gethash (car (refine-connect-string (or connect-string sqlplus-connect-string sqlplus-process-p)))
-			 sqlplus-global-structures)))
-    (when struct
-      (sqlplus-global-struct-font-lock-regexps struct))))
-
-(defun sqlplus-set-font-lock-regexps (font-lock-regexps &optional connect-string)
-  (let ((struct (gethash (car (refine-connect-string (or connect-string sqlplus-connect-string sqlplus-process-p)))
-			 sqlplus-global-structures)))
-    (when struct
-      (setf (sqlplus-global-struct-font-lock-regexps struct) font-lock-regexps))))
-
-(defun sqlplus-get-side-view-buffer (&optional connect-string)
-  (let ((struct (gethash (car (refine-connect-string (or connect-string sqlplus-connect-string sqlplus-process-p)))
-			 sqlplus-global-structures)))
-    (when struct
-      (sqlplus-global-struct-side-view-buffer struct))))
-  
-(defun sqlplus-get-root-dir (&optional connect-string)
-  (let ((struct (gethash (car (refine-connect-string (or connect-string sqlplus-connect-string sqlplus-process-p)))
-			 sqlplus-global-structures)))
-    (when struct
-      (sqlplus-global-struct-root-dir struct))))
-
-(defun sqlplus-set-root-dir (root-dir &optional connect-string)
-  (let ((struct (gethash (car (refine-connect-string (or connect-string sqlplus-connect-string sqlplus-process-p)))
-			 sqlplus-global-structures)))
-    (when struct
-      (setf (sqlplus-global-struct-root-dir struct) root-dir))))
-
-;;; ---
-
-(defun sqlplus-initial-strings ()
-  (append sqlplus-initial-strings
-          (list 
-           (concat "btitle left '" sqlplus-page-separator "'")
-           (concat "repfooter left '" sqlplus-repfooter "'")
-           (concat "set pagesize " (number-to-string sqlplus-pagesize)))))
-
-(defun sqlplus-connect-string-lessp (cs1 cs2)
-  "Compare two connect strings"
-  (let ((cs1-pair (split-string cs1 "@"))
-        (cs2-pair (split-string cs2 "@")))
-    (or (string< (cadr cs1-pair) (cadr cs2-pair))
-        (and (string= (cadr cs1-pair) (cadr cs2-pair))
-             (string< (car cs1-pair) (car cs2-pair))))))
-
-(defun sqlplus-divide-connect-strings ()
-  "Returns (active-connect-string-list . inactive-connect-string-list)"
-  (let* ((active-connect-strings
-          (sort (delq nil (mapcar (lambda (buffer)
-                                    (with-current-buffer buffer
-                                      (when (and (eq major-mode 'sqlplus-mode)
-                                                 sqlplus-connect-string)
-                                        (let ((cs (car (refine-connect-string sqlplus-connect-string))))
-                                          (when (and (get-buffer (sqlplus-get-process-buffer-name cs))
-                                                     (get-process (sqlplus-get-process-name cs)))
-                                            (downcase cs))))))
-                                  (buffer-list)))
-                'sqlplus-connect-string-lessp))
-         (inactive-connect-strings
-          (sort (delq nil (mapcar (lambda (pair)
-                                    (unless (member (downcase (car pair)) active-connect-strings) (downcase (car pair))) )
-                                  sqlplus-connect-strings-alist))
-                'sqlplus-connect-string-lessp)))
-    (setq active-connect-strings (remove-duplicates active-connect-strings :test 'equal))
-    (setq inactive-connect-strings (remove-duplicates inactive-connect-strings :test 'equal))
-    (cons active-connect-strings inactive-connect-strings)))
-
-(defun sqlplus-connections-menu (menu)
-  (condition-case err
-      (let* ((connect-strings-pair (sqlplus-divide-connect-strings))
-             (active-connect-strings (car connect-strings-pair))
-             (inactive-connect-strings (cdr connect-strings-pair)))
-        (append 
-	 (list ["New connection..." sqlplus t])
-	 (list ["Tnsnames.ora" sqlplus-find-tnsnames t])
-	 (list ["Command Line" sqlplus-command-line t])
-	 (when (eq major-mode 'sqlplus-mode)
-	   (list
-	    "----"
-	    ["Evaluate Statement" sqlplus-send-current sqlplus-connect-string]
-	    ["Explain Statement" sqlplus-explain sqlplus-connect-string]
-	    ["Evaluate Statement (HTML)" sqlplus-send-current-html sqlplus-connect-string]
-	    ["Evaluate Region" sqlplus-send-region (and (mark) sqlplus-connect-string)]))
-	 (when orcl-mode
-	   (list
-	    "----"
-	    ["Send Commit"              sqlplus-send-commit sqlplus-connect-string]
-	    ["Send Rollback"            sqlplus-send-rollback sqlplus-connect-string]
-	    ["Restart Connection"       sqlplus-restart-connection sqlplus-connect-string]
-	    ["Show History"             sqlplus-show-history sqlplus-connect-string]
-	    ["Get Source from DB"       sqlplus-get-source sqlplus-connect-string]
-	    ["Interrupt Evaluation"     sqlplus-send-interrupt sqlplus-connect-string]
-	    ["Compare schema to filesystem" sqlplus-compare-schema-to-filesystem sqlplus-connect-string]
-	    "----"
-	    (list "Output"
-		  ["Show window"             sqlplus-buffer-display-window t]
-		  "----"
-		  ["Redisplay"               sqlplus-buffer-redisplay-current t]
-		  ["Previous"                sqlplus-buffer-prev-command t]
-		  ["Next"                    sqlplus-buffer-next-command t]
-		  "----"
-		  ["Scroll Right"            sqlplus-buffer-scroll-right t]
-		  ["Scroll Left"             sqlplus-buffer-scroll-left t]
-		  ["Scroll Down"             sqlplus-buffer-scroll-down t]
-		  ["Scroll Up"               sqlplus-buffer-scroll-up t]
-		  "----"
-		  ["Bottom"                  sqlplus-buffer-bottom t]
-		  ["Top"                     sqlplus-buffer-top    t]
-		  "----"
-		  ["Erase"                   sqlplus-buffer-erase  t])
-	    ))
-	 (when inactive-connect-strings
-	   (append
-	    (list "----")
-	    (list (append (list "Recent Connections")
-			  (mapcar (lambda (connect-string)
-				    (vector connect-string (list 'apply ''sqlplus
-								 (list 'sqlplus-read-connect-string connect-string)) t)) inactive-connect-strings)))))
-	 (when active-connect-strings
-	   (append
-	    (list "----")
-	    (mapcar (lambda (connect-string)
-		      (vector connect-string (list 'apply ''sqlplus
-						   (list 'sqlplus-read-connect-string connect-string)) t)) active-connect-strings)))
-	 ))
-    (error (message (error-message-string err)))))
-
-(defun sqlplus-send-commit ()
-  "Send 'commit' command to SQL*Process."
-  (interactive)
-  (sqlplus-check-connection)
-  (sqlplus-execute sqlplus-connect-string "commit;" nil nil))
-
-(defun sqlplus-send-rollback ()
-  "Send 'rollback' command to SQL*Process."
-  (interactive)
-  (sqlplus-check-connection)
-  (sqlplus-execute sqlplus-connect-string "rollback;" nil nil))
-
-(defun sqlplus-show-history ()
-  "Show command history for current connection."
-  (interactive)
-  (sqlplus-check-connection)
-  (sqlplus-verify-buffer sqlplus-connect-string)
-  (switch-to-buffer (sqlplus-get-history-buffer sqlplus-connect-string)))
-
-(defun sqlplus-restart-connection ()
-  "Kill SQL*Plus process and start again."
-  (interactive)
-  (sqlplus-check-connection)
-  (sqlplus-verify-buffer sqlplus-connect-string)
-  (let ((connect-stringos sqlplus-connect-string))
-    (unwind-protect
-        (progn
-          (setq sqlplus-kill-function-inhibitor t)
-          (sqlplus-shutdown connect-stringos t))
-      (setq sqlplus-kill-function-inhibitor nil))
-    (sqlplus connect-stringos (sqlplus-get-input-buffer-name connect-stringos))))
-
-(define-skeleton plsql-begin
-  "begin..end skeleton"
-  "" ; interactor
-  "begin" ?\n
-  > _ ?\n
-  "end;" >)
-
-(define-skeleton plsql-loop
-  "loop..end loop skeleton"
-  "" ; interactor
-  "loop" ?\n
-  > _ ?\n
-  "end loop;" >)
-
-(define-skeleton plsql-if
-  "if..end if skeleton"
-  "" ; interactor
-  "if " _ " then" ?\n
-  > ?\n
-  "end if;" >)
-
-;;;  SQLPLUS-mode Keymap -
-
-(unless orcl-mode-map
-  (setq orcl-mode-map (make-sparse-keymap))
-  (define-key orcl-mode-map "\C-c\C-o" 'sqlplus-buffer-display-window)
-  (define-key orcl-mode-map "\C-c\C-l" 'sqlplus-buffer-redisplay-current)
-  (define-key orcl-mode-map "\C-c\C-p" 'sqlplus-buffer-prev-command)
-  (define-key orcl-mode-map [C-S-up] 'sqlplus-buffer-prev-command)
-  (define-key orcl-mode-map "\C-c\C-n" 'sqlplus-buffer-next-command)
-  (define-key orcl-mode-map [C-S-down] 'sqlplus-buffer-next-command)
-  (define-key orcl-mode-map "\C-c\C-b" 'sqlplus-buffer-scroll-right)
-  (define-key orcl-mode-map [C-S-left] 'sqlplus-buffer-scroll-right)
-  (define-key orcl-mode-map "\C-c\C-f" 'sqlplus-buffer-scroll-left)
-  (define-key orcl-mode-map [C-S-right] 'sqlplus-buffer-scroll-left)
-  (define-key orcl-mode-map "\C-c\M-v" 'sqlplus-buffer-scroll-down)
-  (define-key orcl-mode-map "\C-c\C-v" 'sqlplus-buffer-scroll-up)
-  (define-key orcl-mode-map "\C-c>"    'sqlplus-buffer-bottom)
-  (define-key orcl-mode-map "\C-c<"    'sqlplus-buffer-top)
-  (define-key orcl-mode-map "\C-c\C-w" 'sqlplus-buffer-erase)
-  (define-key orcl-mode-map "\C-c\C-m" 'sqlplus-send-commit)
-  (define-key orcl-mode-map "\C-c\C-a" 'sqlplus-send-rollback)
-  (define-key orcl-mode-map "\C-c\C-k" 'sqlplus-restart-connection)
-  (define-key orcl-mode-map "\C-c\C-t" 'sqlplus-show-history)
-  (define-key orcl-mode-map "\C-c\C-s" 'sqlplus-get-source)
-  (define-key orcl-mode-map "\C-c\C-i" 'sqlplus-send-interrupt)
-  (define-key orcl-mode-map [S-return] 'sqlplus-send-user-string)
-  (define-key orcl-mode-map [tool-bar sqlplus-restart-connection]
-    (list 'menu-item "Restart connection" 'sqlplus-restart-connection :image sqlplus-kill-image))
-  (define-key orcl-mode-map [tool-bar sqlplus-cancel]
-    (list 'menu-item "Cancel" 'sqlplus-send-interrupt :image sqlplus-cancel-image))
-  (define-key orcl-mode-map [tool-bar sqlplus-rollback]
-    (list 'menu-item "Rollback" 'sqlplus-send-rollback :image sqlplus-rollback-image))
-  (define-key orcl-mode-map [tool-bar sqlplus-commit]
-    (list 'menu-item "Commit" 'sqlplus-send-commit :image sqlplus-commit-image)))
-
-(unless sqlplus-mode-map
-  (setq sqlplus-mode-map (make-sparse-keymap))
-  (define-key sqlplus-mode-map "\C-c\C-g" 'plsql-begin)
-  (define-key sqlplus-mode-map "\C-c\C-q" 'plsql-loop)
-  (define-key sqlplus-mode-map "\C-c\C-z" 'plsql-if)
-  (define-key sqlplus-mode-map "\C-c\C-r" 'sqlplus-send-region)
-  (define-key sqlplus-mode-map [C-return] 'sqlplus-send-current)
-  (define-key sqlplus-mode-map [M-return] 'sqlplus-explain)
-  (define-key sqlplus-mode-map "\C-c\C-e" 'sqlplus-send-current)
-  (define-key sqlplus-mode-map "\C-c\C-j" 'sqlplus-send-current-html)
-  (define-key sqlplus-mode-map [C-S-return] 'sqlplus-send-current-html)
-  (define-key sqlplus-mode-map "\M-." 'sqlplus-file-get-source)
-  (define-key sqlplus-mode-map [C-down-mouse-1] 'sqlplus-mouse-select-identifier)
-  (define-key sqlplus-mode-map [C-mouse-1] 'sqlplus-file-get-source-mouse)
-  )
-
-(easy-menu-add-item nil nil sqlplus-connections-menu t)
-
-(unless sqlplus-mode-syntax-table
-  (setq sqlplus-mode-syntax-table (make-syntax-table))
-  (modify-syntax-entry ?/ ". 14" sqlplus-mode-syntax-table) ; comment start
-  (modify-syntax-entry ?* ". 23" sqlplus-mode-syntax-table)
-  (modify-syntax-entry ?+ "."    sqlplus-mode-syntax-table)
-  (modify-syntax-entry ?. "."    sqlplus-mode-syntax-table)
-  (modify-syntax-entry ?\" "."   sqlplus-mode-syntax-table)
-  (modify-syntax-entry ?\\ "."   sqlplus-mode-syntax-table)
-  (modify-syntax-entry ?- ". 12b"    sqlplus-mode-syntax-table)
-  (modify-syntax-entry ?\n "> b"    sqlplus-mode-syntax-table)
-  (modify-syntax-entry ?= "."    sqlplus-mode-syntax-table)
-  (modify-syntax-entry ?% "w"    sqlplus-mode-syntax-table)
-  (modify-syntax-entry ?< "."    sqlplus-mode-syntax-table)
-  (modify-syntax-entry ?> "."    sqlplus-mode-syntax-table)
-  (modify-syntax-entry ?& "w"    sqlplus-mode-syntax-table)
-  (modify-syntax-entry ?| "."    sqlplus-mode-syntax-table)
-  (modify-syntax-entry ?_ "w"    sqlplus-mode-syntax-table) ; _ is word char
-  (modify-syntax-entry ?\' "\"" sqlplus-mode-syntax-table))
-
-;;;  SQL*Plus mode
-
-(defun connect-string-to-string ()
-  (let ((txt (or (car (refine-connect-string sqlplus-connect-string)) "disconnected"))
-	(result))
-    (if (string-match "^\\(.*?\\)\\(\\w*prod\\w*\\)$" txt)
-	(if (>= emacs-major-version 22)
-	    (setq result (list (list :propertize (substring txt 0 (match-beginning 2)) 'face '((:foreground "blue")))
-			       (list :propertize (substring txt (match-beginning 2)) 'face '((:foreground "red")(:weight bold)))))
-	  (setq result (setq txt (propertize txt 'face '((:foreground "blue")))))
-	  (put-text-property (match-beginning 2) (match-end 2) 'face '((:foreground "red")(:weight bold)) txt))
-      (setq result 
-	    (if (>= emacs-major-version 22)
-		(list :propertize txt 'face '((:foreground "blue")))
-	      (setq txt (propertize txt 'face '((:foreground "blue")))))))
-    result))
-
-(defun sqlplus-font-lock (type-symbol limit)
-  (let ((sqlplus-font-lock-regexps (sqlplus-get-font-lock-regexps)))
-    (when sqlplus-font-lock-regexps
-      (let ((regexp (gethash type-symbol sqlplus-font-lock-regexps)))
-	(when regexp
-	  (re-search-forward regexp limit t))))))
-
-;; Local in input buffer (sqlplus-mode)
-(defvar sqlplus-command-overlay nil)
-(make-variable-buffer-local 'sqlplus-command-overlay)
-(defvar sqlplus-begin-command-overlay-arrow-position nil)
-(make-variable-buffer-local 'sqlplus-begin-command-overlay-arrow-position)
-(defvar sqlplus-end-command-overlay-arrow-position nil)
-(make-variable-buffer-local 'sqlplus-end-command-overlay-arrow-position)
-
-(defun sqlplus-highlight-current-sqlplus-command()
-  (when (and window-system sqlplus-command-highlighting-style)
-    (let* ((pair (sqlplus-mark-current))
-	   (begin (and (car pair) (save-excursion (goto-char (car pair)) (skip-chars-forward " \t\n") (point))))
-	   (end (and (cdr pair) (save-excursion (goto-char (cdr pair)) (skip-chars-backward " \t\n") (beginning-of-line) (point))))
-	   (point-line-beg (save-excursion (beginning-of-line) (point)))
-	   (overlay-begin begin)
-	   (overlay-end end))
-      (when (and begin end)
-	(when (< end point-line-beg)
-	  (save-excursion (goto-char point-line-beg) (when (eobp) (insert "\n")))
-	  (setq end point-line-beg)
-	  (setq overlay-end end))
-	(when (or (>= begin end) (< (point) begin))
-	  (when (or (< (point) begin) (> begin end))
-	    (setq overlay-begin nil
-		  overlay-end nil))
-	  (setq begin nil
-		end nil)))
-      (if (and overlay-begin overlay-end (memq sqlplus-command-highlighting-style '(background fringe-and-background)))
-	  (progn
-	    (setq overlay-end (save-excursion
-				(goto-char overlay-end)
-				(beginning-of-line 2)
-				(point)))
-	    (move-overlay sqlplus-command-overlay overlay-begin overlay-end))
-	(move-overlay sqlplus-command-overlay 1 1))
-      (if (memq sqlplus-command-highlighting-style '(fringe fringe-and-background))
-	  (progn
-	    (put 'sqlplus-begin-command-overlay-arrow-position 'overlay-arrow-bitmap 'top-left-angle)
-	    (put 'sqlplus-end-command-overlay-arrow-position 'overlay-arrow-bitmap 'bottom-left-angle)
-	    (set-marker sqlplus-begin-command-overlay-arrow-position begin)
-	    (set-marker sqlplus-end-command-overlay-arrow-position end))
-	(set-marker sqlplus-begin-command-overlay-arrow-position nil)
-	(set-marker sqlplus-end-command-overlay-arrow-position nil)))))
-
-(defun sqlplus-find-begin-of-sqlplus-command ()
-  (save-excursion
-    (beginning-of-line)
-    (while (and (not (bobp)) (save-excursion (end-of-line 0) (skip-chars-backward " \t") (equal (char-before) ?-)))
-      (beginning-of-line 0))
-    (point)))
-
-(defun sqlplus-find-end-of-sqlplus-command ()
-  (save-excursion
-    (end-of-line)
-    (while (progn (skip-chars-backward " \t") (and (not (eobp)) (equal (char-before) ?-)))
-      (end-of-line 2))
-    (point)))
-
-(defun sqlplus-set-font-lock-emacs-structures-for-level (level mode-symbol)
-  (let ((result (append sql-mode-oracle-font-lock-keywords
-                        (default-value (cond ((equal level 3) 'sqlplus-font-lock-keywords-3)
-                                             ((equal level 2) 'sqlplus-font-lock-keywords-2)
-                                             ((equal level 1) 'sqlplus-font-lock-keywords-1)
-                                             (t nil))))))
-    (when (featurep 'plsql)
-      (setq result (append (symbol-value 'plsql-oracle-font-lock-fix-re) result)))
-    (setq result
-          (append
-           ;; Names for schemas, tables, synonyms, views, columns, sequences, packages, triggers and indexes
-           (when (> level 2)
-             (mapcar (lambda (pair)
-                       (let ((type-symbol (car pair))
-                             (face (cadr pair)))
-                         (cons (eval `(lambda (limit) (sqlplus-font-lock ',type-symbol limit))) face)))
-                     sqlplus-syntax-faces))
-           ;; SQL*Plus
-           (when (eq mode-symbol 'sqlplus-mode)
-             (unless sqlplus-commands-regexp-1
-               (flet ((first-form-fun (cmds) (mapcar (lambda (name) (car (sqlplus-full-forms name))) cmds))
-                      (all-forms-fun (cmds) (mapcan 'sqlplus-full-forms cmds))
-                      (sqlplus-commands-regexp-fun (form-fun cmds) (concat "^" (regexp-opt (funcall form-fun cmds) t) "\\b"))
-                      (sqlplus-system-variables-fun (form-fun vars) (concat "\\b" (regexp-opt (funcall form-fun vars) t) "\\b")))
-                 (flet ((sqlplus-v22-commands-font-lock-keywords-fun
-                         (form-fun)
-                         (delq nil
-                               (mapcar
-                                (lambda (command-info)
-                                  (let* ((names (car command-info))
-                                         (names-list (if (listp names) names (list names)))
-                                         (sublists (cdr command-info)))
-                                    (when sublists
-                                      (append (list (sqlplus-commands-regexp-fun form-fun names-list))
-                                              (mapcar (lambda (sublist)
-                                                        (let ((face (car sublist))
-                                                              (regexp (concat "\\b"
-                                                                              (regexp-opt (mapcan (lambda (name) (sqlplus-full-forms name))
-                                                                                                  (mapcan (lambda (elem)
-                                                                                                            (if (symbolp elem)
-                                                                                                                (copy-list (symbol-value elem))
-                                                                                                              (list elem)))
-                                                                                                          (cdr sublist)))
-                                                                                          t)
-                                                                              "\\b")))
-                                                          (list regexp '(sqlplus-find-end-of-sqlplus-command) nil (list 1 face))))
-                                                      sublists)
-                                              (list '("\\(\\w+\\)" (sqlplus-find-end-of-sqlplus-command) nil (1 font-lock-sqlplus-face)))))))
-                                sqlplus-commands))))
-                   (let ((commands (mapcan
-                                    (lambda (command-info) (let ((names (car command-info))) (if (listp names) (copy-list names) (list names))))
-                                    sqlplus-commands)))
-                     (setq sqlplus-commands-regexp-1 (sqlplus-commands-regexp-fun 'first-form-fun commands))
-                     (setq sqlplus-commands-regexp-23 (sqlplus-commands-regexp-fun 'all-forms-fun commands))
-                     (if (<= emacs-major-version 21)
-                         (setq sqlplus-system-variables-regexp-1 (sqlplus-system-variables-fun 'first-form-fun sqlplus-system-variables)
-                               sqlplus-system-variables-regexp-23 (sqlplus-system-variables-fun 'all-forms-fun sqlplus-system-variables))
-                       (setq sqlplus-v22-commands-font-lock-keywords-1 (sqlplus-v22-commands-font-lock-keywords-fun 'first-form-fun)
-                             sqlplus-v22-commands-font-lock-keywords-23 (sqlplus-v22-commands-font-lock-keywords-fun 'all-forms-fun)))))))
-             (append (list
-                      ;; Comments (REM command)
-                      (cons "^\\(rem\\)\\b\\(.*?\\)$" '((1 font-lock-keyword-face nil nil) (2 font-lock-comment-face t nil)))
-                      ;; Predefined SQL*Plus variables
-                      (cons (concat "\\b"
-                                    (regexp-opt '("_CONNECT_IDENTIFIER" "_DATE" "_EDITOR" "_O_VERSION" "_O_RELEASE" "_PRIVILEGE"
-                                                  "_SQLPLUS_RELEASE" "_USER") t)
-                                    "\\b")
-                            'font-lock-builtin-face)
-                      ;; SQL*Plus commands (+ shortcuts if level >= 2)
-                      (cons
-                       (concat (if (>= level 2) sqlplus-commands-regexp-23 sqlplus-commands-regexp-1) "\\|^\\(@@\\|@\\|!\\|/\\|\\$\\)" )
-                       'font-lock-keyword-face))
-                     (if (<= emacs-major-version 21)
-                         ;; SQL*Plus system variables (+ shortcuts if level >= 2)
-                         (list (cons (if (>= level 2) sqlplus-system-variables-regexp-23 sqlplus-system-variables-regexp-1) 'font-lock-builtin-face))
-                       ;; ver. >= 22
-                       (if (>= level 2) sqlplus-v22-commands-font-lock-keywords-23 sqlplus-v22-commands-font-lock-keywords-1))))
-            ; (cons "\\b\\([a-zA-Z$_#0-9]+\\)\\b\\.\\(\\b[a-zA-Z$_#0-9]+\\b\\)" '((1 font-lock-type-face nil nil)(2 font-lock-variable-name-face nil nil)))
-           (list
-            ;; Extra Oracle syntax highlighting, not recognized by sql-mode or plsql-mode
-            (cons sqlplus-oracle-extra-types-re 'font-lock-type-face)
-            (cons sqlplus-oracle-extra-warning-words-re 'font-lock-warning-face)
-            (cons sqlplus-oracle-extra-types-re 'font-lock-type-face)
-            (cons sqlplus-oracle-extra-keywords-re 'font-lock-keyword-face)
-            (cons sqlplus-oracle-plsql-extra-reserved-words-re 'font-lock-keyword-face)
-            (if (string-match "XEmacs\\|Lucid" emacs-version)
-                (cons sqlplus-oracle-extra-pseudocolumns-re 'font-lock-preprocessor-face)
-              (cons sqlplus-oracle-extra-pseudocolumns-re 'font-lock-builtin-face))
-            (if (string-match "XEmacs\\|Lucid" emacs-version)
-                (cons sqlplus-oracle-extra-builtin-functions-re 'font-lock-preprocessor-face)
-              (cons sqlplus-oracle-extra-builtin-functions-re 'font-lock-builtin-face))
-            ;; SQL*Plus variable names, like '&name' or '&&name'
-            (cons "\\(\\b&[&a-zA-Z$_#0-9]+\\b\\)" 'font-lock-variable-name-face))
-           result
-           ;; Function calls
-           (when (>= level 2)
-             (list (cons "\\b\\(\\([a-zA-Z$_#0-9]+\\b\\)\\.\\)?\\(\\b[a-zA-Z$_#0-9]+\\b\\)\\s-*("
-                         '((2 font-lock-type-face nil t)
-                           (3 font-lock-function-name-face nil nil)))))))
-    result))
-
-(defun sqlplus-mode nil
-  "Mode for editing and executing SQL*Plus commands.  Entry into this mode runs the hook
-'sqlplus-mode-hook'.
-
-Use \\[sqlplus] to start the SQL*Plus interpreter.
-
-Just position the cursor on or near the SQL*Plus statement you
-wish to send and press '\\[sqlplus-send-current]' to run it and
-display the results.
-
-Mode Specific Bindings:
-
-\\{sqlplus-mode-map}"
-  (interactive)
-  (run-hooks 'change-major-mode-hook)
-  (setq major-mode 'sqlplus-mode
-	mode-name "SQL*Plus")
-  (use-local-map sqlplus-mode-map)
-  (set-syntax-table sqlplus-mode-syntax-table)
-  (make-local-variable 'comment-start)
-  (make-local-variable 'comment-end)
-  (setq comment-start "/* "
-        comment-end " */")
-  (orcl-mode 1)
-  (setq sqlplus-font-lock-keywords-1 (sqlplus-set-font-lock-emacs-structures-for-level 1 major-mode)
-        sqlplus-font-lock-keywords-2 (sqlplus-set-font-lock-emacs-structures-for-level 2 major-mode)
-        sqlplus-font-lock-keywords-3 (sqlplus-set-font-lock-emacs-structures-for-level 3 major-mode))
-  (when (featurep 'plsql)
-    (set (make-local-variable 'indent-line-function)
-	 (lambda () (interactive) (condition-case err (funcall (symbol-function 'plsql-indent)) (error (message "Error: %S" err)))))
-    (set (make-local-variable 'indent-region-function) 'plsql-indent-region)
-    (set (make-local-variable 'align-mode-rules-list) 'plsql-align-rules-list))
-  (setq font-lock-defaults sqlplus-font-lock-defaults)
-  (unless sqlplus-connect-string
-    (let ((potential-connect-string (sqlplus-get-potential-connect-string (buffer-file-name))))
-      (when (and potential-connect-string
-                 (get-process (sqlplus-get-process-name potential-connect-string)))
-        (setq sqlplus-connect-string potential-connect-string))))
-  (set (make-local-variable 'font-lock-extend-after-change-region-function)
-       (lambda (beg end old-len)
-         (cons (save-excursion (goto-char beg) (sqlplus-find-begin-of-sqlplus-command))
-               (save-excursion (goto-char end) (sqlplus-find-end-of-sqlplus-command)))))
-  (unless font-lock-sqlplus-face
-    (copy-face 'default 'font-lock-sqlplus-face)
-    (setq font-lock-sqlplus-face 'font-lock-sqlplus-face))
-  (turn-on-font-lock)
-  (unless frame-background-mode
-    (setq frame-background-mode (if (< (sqlplus-color-percentage (face-background 'default)) 50) 'dark 'light)))
-  (setq imenu-generic-expression '((nil "^--[ ]*\\([^;.\n]*\\)" 1)))
-  ;; if input buffer has sqlplus-mode then prepare it for command under cursor selection
-  (when (and (eq major-mode 'sqlplus-mode) (null sqlplus-begin-command-overlay-arrow-position))
-    (setq sqlplus-begin-command-overlay-arrow-position (make-marker)
-	  sqlplus-end-command-overlay-arrow-position (make-marker)
-	  sqlplus-command-overlay (make-overlay 1 1))
-    (overlay-put sqlplus-command-overlay 'face 'sqlplus-command-highlight-face)
-    (when (and (>= emacs-major-version 22) (not (memq 'sqlplus-begin-command-overlay-arrow-position overlay-arrow-variable-list)))
-      (push 'sqlplus-begin-command-overlay-arrow-position overlay-arrow-variable-list))
-    (when (and (>= emacs-major-version 22) (not (memq 'sqlplus-end-command-overlay-arrow-position overlay-arrow-variable-list)))
-      (push 'sqlplus-end-command-overlay-arrow-position overlay-arrow-variable-list))
-    (add-hook 'pre-command-hook (lambda ()
-				  (set-marker sqlplus-begin-command-overlay-arrow-position nil)
-				  (set-marker sqlplus-end-command-overlay-arrow-position nil))
-	      nil t)
-    (add-hook 'post-command-hook (lambda ()
-				   (sqlplus-clear-mouse-selection)
-				   (set-marker sqlplus-begin-command-overlay-arrow-position nil)
-				   (set-marker sqlplus-end-command-overlay-arrow-position nil))
-	      nil t))
-  (run-hooks 'sqlplus-mode-hook))
-
-(defun sqlplus-color-percentage (color)
-  (truncate (* (/ (/ (reduce '+ (color-values color)) 3.0) 65535.0) 100.0)))
-
-(defun sqlplus-get-potential-connect-string (file-path)
-  (when file-path
-    (let* ((file-name (file-name-nondirectory file-path))
-           (extension (file-name-extension file-name))
-           (case-fold-search t))
-      (when (and extension
-		 (string-match (concat "^" sqlplus-session-file-extension "$") extension)
-		 (string-match "@" file-name))
-	(car (refine-connect-string (file-name-sans-extension file-name)))))))
-
-(defun sqlplus-check-connection ()
-  (if orcl-mode
-      (unless sqlplus-connect-string
-        (let* ((potential-connect-string (sqlplus-get-potential-connect-string (buffer-file-name)))
-               (connect-string (car (sqlplus-read-connect-string nil (or potential-connect-string
-									 (caar (sqlplus-divide-connect-strings)))))))
-          (sqlplus connect-string (buffer-name))))
-    (error "Current buffer is not determined to communicate with Oracle")))
-
-;;;  Utilitities
-
-(defun sqlplus-echo-in-buffer (buffer-name string &optional force-display hide-after-head)
-  "Displays string in the named buffer, creating the buffer if needed.  If force-display is true, the buffer will appear
-if not already shown."
-  (let ((buffer (get-buffer buffer-name)))
-    (when buffer
-      (if force-display (display-buffer buffer))
-      (with-current-buffer buffer
-	(while (and (> (buffer-size) sqlplus-output-buffer-max-size)
-		    (progn (goto-char (point-min))
-			   (unless (eobp) (forward-char))
-			   (re-search-forward  (concat "^" (regexp-quote sqlplus-output-separator)) nil t)))
-	  (delete-region 1 (- (point) (length sqlplus-output-separator))))
-
-	(goto-char (point-max))
-	(let ((start-point (point)))
-	  (insert string)
-	  (when hide-after-head
-	    (let ((from-pos (string-match "\n" string))
-		  (keymap (make-sparse-keymap))
-		  overlay)
-	      (when from-pos
-		(setq overlay (make-overlay (+ start-point from-pos) (- (+ start-point (length string)) 2)))
-		(when (or (not (consp buffer-invisibility-spec))
-			  (not (assq 'hide-symbol buffer-invisibility-spec)))
-		  (add-to-invisibility-spec '(hide-symbol . t)))
-		(overlay-put overlay 'invisible 'hide-symbol)
-		(put-text-property start-point (- (+ start-point (length string)) 2) 'help-echo string)
-		(put-text-property start-point (- (+ start-point (length string)) 2) 'mouse-face 'highlight)
-		(put-text-property start-point (- (+ start-point (length string)) 2) 'keymap sqlplus-output-buffer-keymap)))))
-	(if force-display
-	    (set-window-point (get-buffer-window buffer-name) (point-max)))))))
-
-(defun sqlplus-verify-buffer (connect-string)
-  (let ((output-buffer-name (sqlplus-get-output-buffer-name connect-string))
-	(process-buffer-name (sqlplus-get-process-buffer-name connect-string)))
-    (when (not (get-buffer process-buffer-name))
-      (sqlplus-shutdown connect-string)
-      (error "No SQL*Plus session!  Use 'M-x sqlplus' to start the SQL*Plus interpreter"))
-    (unless (get-buffer-process process-buffer-name)
-      (sqlplus-shutdown connect-string)
-      (error "Buffer '%s' is not talking to anybody!" output-buffer-name)))
-  t)
-
-(defun sqlplus-get-context (connect-string &optional id)
-  (let ((process-buffer (sqlplus-get-process-buffer-name connect-string)))
-    (when process-buffer
-      (with-current-buffer process-buffer
-        (when id
-          (while (and sqlplus-command-contexts
-                      (not (equal (sqlplus-get-context-value (car sqlplus-command-contexts) :id) id)))
-            (setq sqlplus-command-contexts (cdr sqlplus-command-contexts))))
-        (car sqlplus-command-contexts)))))
-
-(defun sqlplus-get-context-value (context var-symbol)
-  (cdr (assq var-symbol context)))
-
-(defun sqlplus-set-context-value (context var-symbol value)
-  (let ((association (assq var-symbol context)))
-    (if association
-        (setcdr association value)
-      (setcdr context (cons (cons var-symbol value) (cdr context))))
-    context))
-
-(defun sqlplus-mark-current ()
-  "Marks the current SQL for sending to the SQL*Plus process.  Marks are placed around a region defined by empty lines."
-  (let (begin end empty-line-p empty-line-p next-line-included tail-p)
-    (save-excursion
-      (beginning-of-line)
-      (setq empty-line-p (when (looking-at "^[ \t]*\\(\n\\|\\'\\)") (point)))
-      (setq next-line-included (and empty-line-p (save-excursion (skip-chars-forward " \t\n") (> (current-column) 0))))
-      (setq tail-p (and empty-line-p
-			(or (bobp) (save-excursion (beginning-of-line 0) (looking-at "^[ \t]*\n"))))))
-    (unless tail-p
-      (save-excursion
-	(end-of-line)
-	(re-search-backward "\\`\\|\n[\r\t ]*\n[^ \t]" nil t)
-	(skip-syntax-forward "-")
-	(setq begin (point)))
-      (save-excursion
-	(beginning-of-line)
-	(re-search-forward "\n[\r\t ]*\n[^ \t]\\|\\'" nil t)
-	(unless (zerop (length (match-string 0)))
-	  (backward-char 1))
-	(skip-syntax-backward "-")
-	(setq end (or (and (not next-line-included) empty-line-p) (point)))))
-    (cons begin end)))
-
-;;;  Transmission Commands
-
-(defun sqlplus-send-current (arg &optional html)
-  "Send the current SQL command(s) to the SQL*Plus process.  With argument, show results in raw form."
-  (interactive "P")
-  (sqlplus-check-connection)
-  (when (buffer-file-name)
-    (condition-case err
-	(save-buffer)
-      (error (message (error-message-string err)))))
-  (let ((region (sqlplus-mark-current)))
-    (setq sqlplus-region-beginning-pos (car region)
-          sqlplus-region-end-pos (cdr region)))
-  (if (and sqlplus-region-beginning-pos sqlplus-region-end-pos)
-      (sqlplus-send-region arg sqlplus-region-beginning-pos sqlplus-region-end-pos nil html)
-    (error "Point doesn't indicate any command to execute")))
-
-(defun sqlplus-send-current-html (arg)
-  (interactive "P")
-  (sqlplus-send-current arg t))
-
-
-;;;  SQLPLUS-Output Buffer Operations -
-
-(defun sqlplus--show-buffer (connect-string fcn args)
-  (let* ((output-buffer-name (sqlplus-get-output-buffer-name connect-string)))
-    (sqlplus-verify-buffer connect-string)
-    (if sqlplus-suppress-show-output-buffer
-        (with-current-buffer (get-buffer output-buffer-name)
-          (if fcn (condition-case err (apply fcn args) (error (message (error-message-string err))))))
-      (if (not (eq (window-buffer (selected-window)) (get-buffer output-buffer-name)))
-          (switch-to-buffer-other-window output-buffer-name))
-      (if fcn (condition-case err (apply fcn args) (error (message (error-message-string err))))))))
-
-(defun sqlplus-show-buffer (&optional connect-string fcn &rest args)
-  "Makes the SQL*Plus output buffer visible in the other window."
-  (interactive)
-  (setq connect-string (or connect-string sqlplus-connect-string))
-  (unless connect-string
-    (error "Current buffer is disconnected!"))
-  (let ((output-buffer-name (sqlplus-get-output-buffer-name connect-string)))
-    (if (and output-buffer-name
-             (eq (current-buffer) (get-buffer output-buffer-name)))
-        (sqlplus--show-buffer connect-string fcn args)
-      (save-excursion
-        (save-selected-window
-          (sqlplus--show-buffer connect-string fcn args))))))
-
-(fset 'sqlplus-buffer-display-window 'sqlplus-show-buffer)
-
-(defun sqlplus-buffer-scroll-up (&optional connect-string)
-  "Scroll-up in the SQL*Plus output buffer window."
-  (interactive)
-  (sqlplus-show-buffer (or connect-string sqlplus-connect-string) 'scroll-up))
-
-(defun sqlplus-buffer-scroll-down (&optional connect-string)
-  "Scroll-down in the SQL*Plus output buffer window."
-  (interactive)
-  (sqlplus-show-buffer (or connect-string sqlplus-connect-string) 'scroll-down))
-
-(defun sqlplus-scroll-left (num)
-  (call-interactively 'scroll-left))
-
-(defun sqlplus-scroll-right (num)
-  (call-interactively 'scroll-right))
-
-(defun sqlplus-buffer-scroll-left (num &optional connect-string)
-  "Scroll-left in the SQL*Plus output buffer window."
-  (interactive "p")
-  (sqlplus-show-buffer (or connect-string sqlplus-connect-string) 'sqlplus-scroll-left (* num (/ (window-width) 2))))
-
-(defun sqlplus-buffer-scroll-right (num &optional connect-string)
-  "Scroll-right in the SQL*Plus output buffer window."
-  (interactive "p")
-  (sqlplus-show-buffer (or connect-string sqlplus-connect-string) 'sqlplus-scroll-right (* num (/ (window-width) 2))))
-
-(defun sqlplus-buffer-mark-current (&optional connect-string)
-  "Mark the current position in the SQL*Plus output window."
-  (sqlplus-show-buffer (or connect-string sqlplus-connect-string) 'sqlplus-buffer-make-mark))
-
-(defun sqlplus-buffer-make-mark (&optional connect-string)
-  "Set the sqlplus-buffer-marker."
-  (setq sqlplus-buffer-mark (copy-marker (point))))
-
-(defun sqlplus-buffer-redisplay-current (&optional connect-string)
-  "Go to the current sqlplus-buffer-mark."
-  (interactive)
-  (sqlplus-show-buffer (or connect-string sqlplus-connect-string) 'sqlplus-goto-mark))
-
-(defun sqlplus-goto-mark ()
-  (goto-char sqlplus-buffer-mark)
-  (recenter 0))
-
-(defun sqlplus-buffer-top (&optional connect-string)
-  "Goto the top of the SQL*Plus output buffer."
-  (interactive)
-  (sqlplus-show-buffer (or connect-string sqlplus-connect-string) 'sqlplus-beginning-of-buffer))
-
-(defun sqlplus-beginning-of-buffer nil (goto-char (point-min)))
-
-(defun sqlplus-buffer-bottom (&optional connect-string)
-  "Goto the bottom of the SQL*Plus output buffer."
-  (interactive)
-  (sqlplus-show-buffer (or connect-string sqlplus-connect-string) 'sqlplus-end-of-buffer))
-
-(defun sqlplus-end-of-buffer nil (goto-char (point-max)) (unless sqlplus-suppress-show-output-buffer (recenter -1)))
-
-(defun sqlplus-buffer-erase (&optional connect-string)
-  "Clear the SQL output buffer."
-  (interactive)
-  (sqlplus-show-buffer (or connect-string sqlplus-connect-string) 'erase-buffer))
-
-(defun sqlplus-buffer-next-command (&optional connect-string)
-  "Search for the next command in the SQL*Plus output buffer."
-  (interactive)
-  (sqlplus-show-buffer (or connect-string sqlplus-connect-string) 'sqlplus-next-command))
-
-(defun sqlplus-next-command nil
-  "Search for the next command in the SQL*Plus output buffer."
-  (cond ((re-search-forward  (concat "^" (regexp-quote sqlplus-output-separator)) nil t)
-	 (forward-line 2)
-	 (recenter 0))
-	(t (beep) (message "No more commands."))))
-
-(defun sqlplus-buffer-prev-command (&optional connect-string)
-  "Search for the previous command in the SQL*Plus output buffer."
-  (interactive)
-  (sqlplus-show-buffer (or connect-string sqlplus-connect-string) 'sqlplus-previous-command))
-
-(defun sqlplus-previous-command nil
-  "Search for the previous command in the SQL*Plus output buffer."
-  (let ((start (point)))
-    (re-search-backward (concat "^" (regexp-quote sqlplus-output-separator)) nil t)
-    (cond ((re-search-backward (concat "^" (regexp-quote sqlplus-output-separator)) nil t)
-	   (forward-line 2)
-	   (recenter 0))
-	  (t
-	   (message "No more commands.") (beep)
-	   (goto-char start)))))
-
-(defun sqlplus-send-interrupt nil
-  "Send an interrupt the the SQL*Plus interpreter process."
-  (interactive)
-  (sqlplus-check-connection)
-  (let ((connect-string sqlplus-connect-string))
-    (sqlplus-verify-buffer connect-string)
-    (interrupt-process (get-process (sqlplus-get-process-name connect-string)))))
-
-
-;;;  SQL Interpreter
-
-(defun refine-connect-string (connect-string &optional no-slash)
-  "Z connect stringa do SQL*Plusa wycina haslo, tj. np. 'ponaglenia/x@SID' -> ('ponaglenia@SID' . 'x')."
-  (let (result passwd)
-    (when connect-string
-      (setq result
-	    (if (string-match "\\(\\`[^@/]*?\\)/\\([^/@:]*\\)\\(.*?\\'\\)" connect-string)
-                (progn
-                  (setq passwd (match-string 2 connect-string))
-                  (concat (match-string 1 connect-string) (match-string 3 connect-string)))
-	      connect-string))
-      (when no-slash
-	(while (string-match "/" result)
-	  (setq result (replace-match "!" nil t result)))))
-    (cons result passwd)))
-
-(defun sqlplus-get-output-buffer-name (connect-string)
-  (concat "*" (car (refine-connect-string connect-string)) "*"))
-
-(defun sqlplus-get-input-buffer-name (connect-string)
-  (concat (car (refine-connect-string connect-string)) (concat "." sqlplus-session-file-extension)))
-
-(defun sqlplus-get-history-buffer-name (connect-string)
-  (concat " " (car (refine-connect-string connect-string)) "-hist"))
-
-(defun sqlplus-get-process-buffer-name (connect-string)
-  (concat " " (car (refine-connect-string connect-string))))
-
-(defun sqlplus-get-process-name (connect-string)
-  (car (refine-connect-string connect-string)))
-
-(defun sqlplus-read-connect-string (&optional connect-string default-connect-string)
-  "Ask user for connect string with password, with DEFAULT-CONNECT-STRING proposed.
-DEFAULT-CONNECT-STRING nil means first inactive connect-string on sqlplus-connect-strings-alist.
-CONNECT-STRING non nil means ask for password only if CONNECT-STRING has no password itself.
-Returns (qualified-connect-string refined-connect-string)."
-  (unless default-connect-string
-    (let ((inactive-connect-strings (cdr (sqlplus-divide-connect-strings))))
-      (setq default-connect-string
-	    (some (lambda (pair)
-		    (when (member (car pair) inactive-connect-strings) (car pair)))
-		  sqlplus-connect-strings-alist))))
-  (let* ((cs (downcase (or connect-string 
-			   (read-string (format "Connect string%s: " (if default-connect-string (format " [default %s]" default-connect-string) ""))
-					nil 'sqlplus-connect-string-history default-connect-string))))
-         (pair (refine-connect-string cs))
-         (refined-cs (car pair))
-         (password (cdr pair))
-         (was-password password)
-         (association (assoc refined-cs sqlplus-connect-strings-alist)))
-    (unless (or password current-prefix-arg)
-      (setq password (cdr association)))
-    (unless password
-      (setq password (read-passwd (format "Password for %s: " cs))))
-    (unless was-password
-      (if (string-match "@" cs)
-          (setq cs (replace-match (concat "/" password "@") t t cs))
-        (setq cs (concat cs "/" password))))
-    (list cs refined-cs)))
-
-(defun sqlplus (connect-string &optional input-buffer-name output-buffer-flag)
-  "Create SQL*Plus process connected to Oracle according to
-CONNECT-STRING, open (or create) input buffer with specified
-name (do not create if INPUT-BUFFER-NAME is nil).
-OUTPUT-BUFFER-FLAG has meanings: nil or SHOW-OUTPUT-BUFFER -
-create output buffer and show it, DONT-SHOW-OUTPUT-BUFFER -
-create output buffer but dont show it, DONT-CREATE-OUTPUT-BUFFER
-- dont create output buffer"
-  (interactive (let ((pair (sqlplus-read-connect-string)))
-		 (list (car pair) (concat (cadr pair) (concat "." sqlplus-session-file-extension)))))
-  (set (make-local-variable 'comment-start-skip) "/\\*+ *\\|--+ *")
-  (set (make-local-variable 'comment-multi-line) t)
-  ;; create sqlplus-session-cache-dir if not exists
-  (when sqlplus-session-cache-dir
-    (condition-case err
-        (unless (file-directory-p sqlplus-session-cache-dir)
-          (make-directory sqlplus-session-cache-dir t))
-      (error (message (error-message-string err)))))
-  (let* ((was-input-buffer (and input-buffer-name (get-buffer input-buffer-name)))
-         (input-buffer (or was-input-buffer
-                           (when input-buffer-name
-                             (if sqlplus-session-cache-dir
-                                 (let ((buf (find-file-noselect
-                                             (concat
-                                              (file-name-as-directory sqlplus-session-cache-dir)
-                                              (car (refine-connect-string connect-string t))
-                                              (concat "." sqlplus-session-file-extension)))))
-                                   (condition-case nil
-                                       (with-current-buffer buf
-                                         (rename-buffer input-buffer-name))
-                                     (error nil))
-                                   buf)
-                               (get-buffer-create input-buffer-name)))))
-         (output-buffer (or (and (not (eq output-buffer-flag 'dont-create-output-buffer))
-				 (get-buffer-create (sqlplus-get-output-buffer-name connect-string)))
-			    (get-buffer (sqlplus-get-output-buffer-name connect-string))))
-	 (process-name (sqlplus-get-process-name connect-string))
-	 (process-buffer-name (sqlplus-get-process-buffer-name connect-string))
-         (was-process (get-process process-name))
-         process-created
-         (process (or was-process
-                      (let (proc)
-			(puthash (car (refine-connect-string connect-string))
-				 (make-sqlplus-global-struct :font-lock-regexps (make-hash-table :test 'equal)
-							     :side-view-buffer (when (featurep 'ide-skel) (sqlplus-create-side-view-buffer connect-string)))
-				 sqlplus-global-structures)
-			;; push current connect string to the beginning of sqlplus-connect-strings-alist
-			(let* ((refined-cs (refine-connect-string connect-string)))
-			  (setq sqlplus-connect-strings-alist (delete* (car refined-cs) sqlplus-connect-strings-alist :test 'string= :key 'car))
-			  (push refined-cs sqlplus-connect-strings-alist))
-			(sqlplus-get-history-buffer connect-string)
-			(when output-buffer
-			  (with-current-buffer output-buffer
-			    (erase-buffer)))
-			(setq process-created t
-			      proc (start-process process-name process-buffer-name sqlplus-command connect-string))
-			(set-process-sentinel proc (lambda (process event)
-							 (let ((proc-buffer (buffer-name (process-buffer process)))
-							       (output-buffer (get-buffer (sqlplus-get-output-buffer-name (process-name process))))
-							       err-msg
-							       (exited-abnormally (string-match "\\`exited abnormally with code" event)))
-							   (when output-buffer
-							     (with-current-buffer output-buffer
-							       (goto-char (point-max))
-							       (insert (format "\n%s" event))
-							       (when exited-abnormally
-								 (setq sqlplus-connect-strings-alist
-								       (delete* (car (refine-connect-string sqlplus-connect-string))
-										sqlplus-connect-strings-alist :test 'string= :key 'car))
-								 (when proc-buffer
-								   (with-current-buffer proc-buffer
-								     (save-excursion
-								       (goto-char (point-min))
-								       (when (re-search-forward "^ORA-[0-9]+.*$" nil t)
-									 (setq err-msg (match-string 0))))
-								     (erase-buffer)))
-								 (when err-msg
-								   (insert (concat "\n" err-msg)))))))))
-			(process-kill-without-query proc (not sqlplus-kill-processes-without-query-on-exit-flag))
-			(set-process-filter proc 'sqlplus-process-filter)
-			(with-current-buffer (get-buffer process-buffer-name)
-			  (setq sqlplus-process-p connect-string))
-			proc))))
-    (when output-buffer
-      (with-current-buffer output-buffer
-	(orcl-mode 1)
-	(set (make-local-variable 'line-move-ignore-invisible) t)
-	(setq sqlplus-output-buffer-keymap (make-sparse-keymap)
-	      sqlplus-connect-string connect-string
-	      truncate-lines t)
-	(define-key sqlplus-output-buffer-keymap "\C-m" (lambda () (interactive) (sqlplus-output-buffer-hide-show)))
-	(define-key sqlplus-output-buffer-keymap [S-mouse-2] (lambda (event) (interactive "@e") (sqlplus-output-buffer-hide-show)))
-	(local-set-key [S-return] 'sqlplus-send-user-string)))
-    (when input-buffer
-      (with-current-buffer input-buffer
-        (setq sqlplus-connect-string connect-string)))
-    ;; if input buffer was created then switch it to sqlplus-mode
-    (when (and input-buffer (not was-input-buffer))
-      (with-current-buffer input-buffer
-        (unless (eq major-mode 'sqlplus-mode)
-          (sqlplus-mode)))
-      (when font-lock-mode (font-lock-mode 1))
-      (set-window-buffer (sqlplus-get-workbench-window) input-buffer))
-    ;; if process was created then get information for font lock
-    (when process-created
-      (sqlplus-execute connect-string nil nil (sqlplus-initial-strings) 'no-echo)
-      (let ((plsql-font-lock-level (sqlplus-font-lock-value-in-major-mode font-lock-maximum-decoration 'plsql-mode))
-            (sqlplus-font-lock-level (sqlplus-font-lock-value-in-major-mode font-lock-maximum-decoration 'sqlplus-mode)))
-        (when (or (equal plsql-font-lock-level t) (equal sqlplus-font-lock-level t)
-                  (and (numberp plsql-font-lock-level) (>= plsql-font-lock-level 2))
-                  (and (numberp sqlplus-font-lock-level) (>= sqlplus-font-lock-level 2)))
-          (sqlplus-hidden-select connect-string 
-                                 (concat "select distinct column_name, 'COLUMN', ' ' from user_tab_columns where column_name not like 'BIN$%'\n"
-                                         "union\n"
-                                         "select username, 'SCHEMA', ' ' from all_users where username not like 'BIN$%'\n"
-                                         "union\n"
-                                         "select object_name, object_type, decode( status, 'INVALID', 'I', ' ' ) from user_objects\n"
-                                         "where object_name not like 'BIN$%'\n"
-					 "and object_type in ('VIEW', 'SEQUENCE', 'PACKAGE', 'TRIGGER', 'TABLE', 'SYNONYM', 'INDEX', 'FUNCTION', 'PROCEDURE');")
-                                 'sqlplus-my-handler))))
-    (when input-buffer
-      (save-selected-window
-        (when (equal (selected-window) (sqlplus-get-side-window))
-          (select-window (sqlplus-get-workbench-window)))
-        (switch-to-buffer input-buffer)))
-    (let ((saved-window (cons (selected-window) (window-buffer (selected-window))))
-	  (input-buffer (get-buffer (sqlplus-get-input-buffer-name connect-string))))
-      (when (or (eq output-buffer-flag 'show-output-buffer) (null output-buffer-flag))
-	(sqlplus-show-buffer connect-string))
-      (if (window-live-p (car saved-window))
-	  (select-window (car saved-window))
-	(if (get-buffer-window (cdr saved-window))
-	    (select-window (get-buffer-window (cdr saved-window)))
-	  (when (and input-buffer
-		     (get-buffer-window input-buffer))
-	    (select-window (get-buffer-window input-buffer))))))
-    ;; executing initial sequence (between /* init */ and /* end */)
-    (when (and (not was-process) input-buffer)
-      (with-current-buffer input-buffer
-        (save-excursion
-          (goto-char (point-min))
-          (when (re-search-forward (concat "^" sqlplus-init-sequence-start-regexp "\\s-*\n\\(\\(.\\|\n\\)*?\\)\n" sqlplus-init-sequence-end-regexp) nil t)
-            (when (match-string 1)
-              (sqlplus-send-region nil (match-beginning 1) (match-end 1) t))))))))
-
-;; Command under cursor selection mechanism
-(when window-system
-  (run-with-idle-timer 0 t (lambda () (when (eq major-mode 'sqlplus-mode) (sqlplus-highlight-current-sqlplus-command))))
-  (run-with-idle-timer 1 t (lambda ()
-			     (when (eq major-mode 'sqlplus-mode)
-			       (if (>= (sqlplus-color-percentage (face-background 'default)) 50)
-				   (set-face-attribute 'sqlplus-command-highlight-face nil
-						       :background (sqlplus-shine-color (face-background 'default) (- sqlplus-command-highlighting-percentage)))
-				 (set-face-attribute 'sqlplus-command-highlight-face nil
-						     :background (sqlplus-shine-color (face-background 'default) sqlplus-command-highlighting-percentage)))))))
-
-(defun sqlplus-output-buffer-hide-show ()
-  (if (and (consp buffer-invisibility-spec)
-           (assq 'hide-symbol buffer-invisibility-spec))
-      (remove-from-invisibility-spec '(hide-symbol . t))
-    (add-to-invisibility-spec '(hide-symbol . t)))
-  (let ((overlay (car (overlays-at (point)))))
-    (when overlay
-      (goto-char (overlay-start overlay))
-      (beginning-of-line)))
-  (recenter 0))
-
-(defun sqlplus-font-lock-value-in-major-mode (alist mode-symbol)
-  (if (consp alist)
-      (cdr (or (assq mode-symbol alist) (assq t alist)))
-    alist))
-
-(defun sqlplus-get-history-buffer (connect-string)
-  (let* ((history-buffer-name (sqlplus-get-history-buffer-name connect-string))
-         (history-buffer (get-buffer history-buffer-name)))
-    (unless history-buffer
-      (setq history-buffer (get-buffer-create history-buffer-name))
-      (with-current-buffer history-buffer
-        (setq sqlplus-cs connect-string)
-        (add-hook 'kill-buffer-hook 'sqlplus-history-buffer-kill-function nil t)))
-    history-buffer))
-
-(defun sqlplus-history-buffer-kill-function ()
-  (when sqlplus-history-dir
-    (condition-case err
-        (progn
-          (unless (file-directory-p sqlplus-history-dir)
-            (make-directory sqlplus-history-dir t))
-          (append-to-file 1 (buffer-size) (concat (file-name-as-directory sqlplus-history-dir) (car (refine-connect-string sqlplus-cs t)) "-hist.txt")))
-      (error (message (error-message-string err))))))
-
-(defun sqlplus-soft-shutdown (connect-string)
-  (unless (some (lambda (buffer)
-		(with-current-buffer buffer
-		  (and sqlplus-connect-string
-		       (equal (car (refine-connect-string sqlplus-connect-string))
-			      (car (refine-connect-string connect-string))))))
-	      (buffer-list))
-    (sqlplus-shutdown connect-string)))
-
-(defun sqlplus-shutdown (connect-string &optional dont-kill-input-buffer)
-  "Kill input, output and process buffer for specified CONNECT-STRING."
-  (let ((input-buffers (delq nil (mapcar (lambda (buffer) (with-current-buffer buffer
-                                                            (when (and (eq major-mode 'sqlplus-mode)
-                                                                       (equal (car (refine-connect-string sqlplus-connect-string))
-                                                                              (car (refine-connect-string connect-string))))
-                                                              buffer))) (buffer-list))))
-	(output-buffer (get-buffer (sqlplus-get-output-buffer-name connect-string)))
-        (history-buffer (get-buffer (sqlplus-get-history-buffer-name connect-string)))
-	(process-buffer (get-buffer (sqlplus-get-process-buffer-name connect-string))))
-    (when history-buffer
-      (kill-buffer history-buffer))
-    (when (and process-buffer
-	       (with-current-buffer process-buffer sqlplus-process-p))
-      (when (get-process (sqlplus-get-process-name connect-string))
-        (delete-process (sqlplus-get-process-name connect-string)))
-      (kill-buffer process-buffer))
-    (when (and output-buffer
-	       (with-current-buffer output-buffer sqlplus-connect-string))
-      (when (buffer-file-name output-buffer)
-	(with-current-buffer output-buffer
-	  (save-buffer)))
-      (kill-buffer output-buffer))
-    (dolist (input-buffer input-buffers)
-      (when (buffer-file-name input-buffer)
-        (with-current-buffer input-buffer
-          (save-buffer)))
-      (unless dont-kill-input-buffer
-        (kill-buffer input-buffer)))))
-
-(defun sqlplus-magic ()
-  (let (bottom-message pos)
-    (delete-region (point) (progn (beginning-of-line 3) (point)))
-    (setq bottom-message (buffer-substring (point) (save-excursion (end-of-line) (point))))
-    (setq pos (point))
-    (when (re-search-forward "^-------" nil t)
-      (delete-region pos (progn (beginning-of-line 2) (point)))
-      (while (re-search-forward "|" (save-excursion (end-of-line) (point)) t)
-	(save-excursion
-	  (backward-char)
-	  (if (or (bolp) (save-excursion (forward-char) (eolp)))
-	      (while (member (char-after) '(?- ?|))
-		(delete-char 1)
-		(sqlplus-next-line))
-	    (while (member (char-after) '(?- ?|))
-	      (delete-char 1)
-	      (insert " ")
-	      (backward-char)
-	      (sqlplus-next-line)))))
-      (beginning-of-line 3)
-      (re-search-forward "^---" nil t)
-      (goto-char (match-beginning 0))
-      (delete-region (point) (point-max))
-      (insert (format "%s\n\n%s\n" sqlplus-repfooter bottom-message))
-      )))
-  
-
-(defun sqlplus-process-command-output (context connect-string begin end interrupted)
-  (let* ((output-buffer-name (sqlplus-get-output-buffer-name connect-string))
-	 (output-buffer (get-buffer output-buffer-name))
-         (process-buffer (sqlplus-get-process-buffer-name connect-string))
-         str
-	 error-list show-errors-p
-	 slips-count
-         (user-function (sqlplus-get-context-value context :user-function))
-         (result-function (sqlplus-get-context-value context :result-table-function))
-         (last-compiled-file-path (sqlplus-get-context-value context :last-compiled-file-path))
-         (compilation-expected (sqlplus-get-context-value context :compilation-expected))
-         (columns-count (sqlplus-get-context-value context :columns-count))
-         (sql (sqlplus-get-context-value context :sql))
-	 (original-buffer (current-buffer))
-	 explain-plan
-	 table-data)
-    (setq slips-count columns-count)
-    (with-temp-buffer
-      (insert-buffer-substring original-buffer begin end)
-      (goto-char (point-min))
-      (while (re-search-forward (concat "\n+" (regexp-quote sqlplus-page-separator) "\n") nil t)
-	(replace-match "\n"))
-      (goto-char (point-min))
-      (setq str (buffer-string))
-      (while (string-match (concat "^" (regexp-quote sqlplus-repfooter) "\n") str)
-	(setq str (replace-match "" nil t str)))
-
-      ;; compilation errors?
-      (goto-char (point-min))
-      (skip-chars-forward "\n\t ")
-      (when (and ;;(not (equal (point) (point-max)))
-	     plsql-auto-parse-errors-flag
-	     output-buffer
-	     last-compiled-file-path
-	     (re-search-forward "^\\(LINE/COL\\|\\(SP2\\|CPY\\|ORA\\)-[0-9]\\{4,5\\}:\\|No errors\\|Nie ma b..d.w\\|Keine Fehler\\|No hay errores\\|Identificateur erron\\|Nessun errore\\|N..o h.. erros\\)" nil t))
-	(goto-char (point-min))
-	(setq error-list (plsql-parse-errors last-compiled-file-path)
-	      show-errors-p compilation-expected))
-
-      ;; explain?
-      (let ((case-fold-search t))
-	(goto-char (point-min))
-	(skip-chars-forward "\n\t ")
-	(when (and sql
-	           (string-match "^[\n\t ]*explain\\>" sql)
-		   (looking-at "Explained[.]"))
-	  (delete-region (point-min) (point-max))
-	  (setq str "")
-	  (sqlplus--send connect-string
-			 "select plan_table_output from table(dbms_xplan.display(null, null, 'TYPICAL'));"
-			 nil
-			 'no-echo
-			 nil)))
-
-      ;; plan table output?
-      (goto-char (point-min))
-      (skip-chars-forward "\n\t ")
-      (when (and (looking-at "^PLAN_TABLE_OUTPUT\n")
-		 sqlplus-format-output-tables-flag
-		 (not compilation-expected)
-		 (not show-errors-p))
-	(sqlplus-magic) ;; TODO
-	(goto-char (point-min))
-	(re-search-forward "^[^\n]+" nil t)
-	(delete-region (point-min) (progn (beginning-of-line) (point)))
-	;; (setq slips-count 1)
-	(setq explain-plan t)
-	(setq table-data (save-excursion (sqlplus-parse-output-table interrupted))))
-	
-      ;; query result?
-      (goto-char (point-min))
-      (when (and sqlplus-format-output-tables-flag
-		 (not compilation-expected)
-		 (not table-data)
-		 (not show-errors-p)
-		 (not (re-search-forward "^LINE/COL\\>" nil t)))
-	(setq table-data (save-excursion (sqlplus-parse-output-table interrupted))))
-      (if user-function
-	  (funcall user-function connect-string context (or table-data str))
-	(when output-buffer
-	  (with-current-buffer output-buffer
-	    (save-excursion
-	      (goto-char (point-max))
-	      (cond (show-errors-p
-		     (insert str)
-		     (plsql-display-errors (file-name-directory last-compiled-file-path) error-list)
-		     (let* ((plsql-buf (get-file-buffer last-compiled-file-path))
-			    (win (when plsql-buf (car (get-buffer-window-list plsql-buf)))))
-		       (when win
-			 (select-window win))))
-		    ((and table-data
-			  (car table-data))
-		       (if result-function
-			   (funcall result-function connect-string table-data)
-			 (let ((b (point))
-			       (warning-regexp (regexp-opt sqlplus-explain-plan-warning-regexps))
-			       e)
-			   (sqlplus-draw-table table-data slips-count)
-			   (when interrupted (insert ". . .\n"))
-			   (setq e (point))
-			   (when explain-plan
-			     (save-excursion
-			       (goto-char b)
-			       (while (re-search-forward warning-regexp nil t)
-				 (add-text-properties (match-beginning 0) (match-end 0)
-						      (list 'face (list (cons 'foreground-color "red") (list :weight 'bold)
-									(get-text-property (match-beginning 0) 'face))))))))))
-		    (t
-		     (insert str))))))))))
-
-(defun sqlplus-result-online (connect-string context string last-chunk)
-  (let ((output-buffer (sqlplus-get-output-buffer-name connect-string)))
-    (when output-buffer
-      (with-current-buffer output-buffer
-        (save-excursion
-          (goto-char (point-max))
-          (insert string))))))
-
-(defvar sqlplus-prompt-regexp (concat "^" (regexp-quote sqlplus-prompt-prefix) "\\([0-9]+\\)" (regexp-quote sqlplus-prompt-suffix)))
-
-(defvar sqlplus-page-separator-regexp (concat "^" (regexp-quote sqlplus-page-separator)))
-
-(defun sqlplus-process-filter (process string)
-  (with-current-buffer (process-buffer process)
-    (let* ((prompt-safe-len (+ (max (+ (length sqlplus-prompt-prefix) (length sqlplus-prompt-suffix)) (length sqlplus-page-separator)) 10))
-           current-context-id filter-input-processed
-           (connect-string sqlplus-process-p)
-           (chunk-begin-pos (make-marker))
-           (chunk-end-pos (make-marker))
-           (prompt-found (make-marker))
-	   (context (sqlplus-get-context connect-string current-context-id))
-	   (current-command-input-buffer-name (sqlplus-get-context-value context :current-command-input-buffer-name))
-	   (current-command-input-buffer-names (when current-command-input-buffer-name (list current-command-input-buffer-name))))
-      (set-marker chunk-begin-pos (max 1 (- (point) prompt-safe-len)))
-      (goto-char (point-max))
-      (insert string)
-      (unless current-command-input-buffer-names
-	(setq current-command-input-buffer-names
-	      (delq nil (mapcar (lambda (buffer) (with-current-buffer buffer
-						   (when (and (memq major-mode '(sqlplus-mode plsql-mode))
-							      sqlplus-connect-string
-							      (equal (car (refine-connect-string sqlplus-connect-string))
-								     (car (refine-connect-string connect-string))))
-						     buffer))) (buffer-list)))))
-      ;; fan animation
-      (dolist (current-command-input-buffer-name current-command-input-buffer-names)
-	(let ((input-buffer (get-buffer current-command-input-buffer-name)))
-	  (when input-buffer
-	    (with-current-buffer input-buffer
-	      (setq sqlplus-fan
-		    (cond ((equal sqlplus-fan "|") "/")
-			  ((equal sqlplus-fan "/") "-")
-			  ((equal sqlplus-fan "-") "\\")
-			  ((equal sqlplus-fan "\\") "|")))
-	      (put-text-property 0 (length sqlplus-fan) 'face '((foreground-color . "red")) sqlplus-fan)
-	      (put-text-property 0 (length sqlplus-fan) 'help-echo (sqlplus-get-context-value context :sql) sqlplus-fan)
-	      (force-mode-line-update)))))
-      (unwind-protect
-          (while (not filter-input-processed)
-            (let* ((context (sqlplus-get-context connect-string current-context-id))
-		   (dont-parse-result (sqlplus-get-context-value context :dont-parse-result))
-                   (current-command-input-buffer-name (sqlplus-get-context-value context :current-command-input-buffer-name))
-                   (result-function (sqlplus-get-context-value context :result-function))
-                   (skip-to-the-end-of-command (sqlplus-get-context-value context :skip-to-the-end-of-command)))
-              (set-marker prompt-found nil)
-	      (goto-char chunk-begin-pos)
-	      (set-marker chunk-end-pos
-			  (if (or (re-search-forward sqlplus-prompt-regexp nil t)
-				  (re-search-forward "^SQL> " nil t))
-			      (progn
-				(set-marker prompt-found (match-end 0))
-				(when (match-string 1)
-				  (setq current-context-id (string-to-number (match-string 1))))
-				(match-beginning 0))
-			    (point-max)))
-              (cond ((and (equal chunk-begin-pos chunk-end-pos) ; at the end of command
-                          (marker-position prompt-found))
-		     ;; deactivate fan
-		     (dolist (current-command-input-buffer-name current-command-input-buffer-names)
-                       (let ((input-buffer (get-buffer current-command-input-buffer-name)))
-                         (when input-buffer
-                           (with-current-buffer input-buffer
-			     (remove-text-properties 0 (length sqlplus-fan) '(face nil) sqlplus-fan)
-                             (force-mode-line-update)))))
-                     (delete-region 1 prompt-found)
-		     (when dont-parse-result
-		       (funcall (or result-function 'sqlplus-result-online) connect-string context "" t))
-                     (sqlplus-set-context-value context :skip-to-the-end-of-command nil)
-                     (set-marker chunk-begin-pos 1))
-                    ((equal chunk-begin-pos chunk-end-pos)
-		     (when dont-parse-result
-		       (delete-region 1 (point-max)))
-                     (setq filter-input-processed t))
-                    (dont-parse-result
-                     (funcall (or result-function 'sqlplus-result-online)
-                              connect-string
-                              context
-                              (buffer-substring chunk-begin-pos chunk-end-pos)
-                              (marker-position prompt-found))
-                     (set-marker chunk-begin-pos chunk-end-pos))
-                    (t
-		     (when (not skip-to-the-end-of-command)
-		       (goto-char (max 1 (- chunk-begin-pos 4010)))
-		       (let ((page-separator-found 
-			      (save-excursion (let ((pos (re-search-forward (concat sqlplus-page-separator-regexp "[^-]*\\(^-\\|^<th\\b\\)") nil t)))
-						(when (and pos
-							   (or (not (marker-position prompt-found))
-							       (< pos prompt-found)))
-						  (match-beginning 0))))))
-			 (when (or (marker-position prompt-found) page-separator-found)
-			   (goto-char (or page-separator-found chunk-end-pos))
-			   (let ((end-pos (point))
-				 (cur-msg (or (current-message) "")))
-			     (sqlplus-set-context-value context :skip-to-the-end-of-command page-separator-found)
-			     (when page-separator-found
-			       (interrupt-process)
-			       (save-excursion
-				 (re-search-backward "[^ \t\n]\n" nil t)
-				 (setq end-pos (match-end 0))))
-			     (if result-function
-				 (save-excursion (funcall result-function context connect-string 1 end-pos page-separator-found))
-			       (with-temp-message "Formatting output..."
-				 (save-excursion (sqlplus-process-command-output context connect-string 1 end-pos page-separator-found)))
-			       (message "%s" cur-msg))
-			     (when page-separator-found
-			       (delete-region 1 (+ page-separator-found (length sqlplus-page-separator)))
-			       (set-marker chunk-end-pos 1))))))
-		     (set-marker chunk-begin-pos chunk-end-pos)))))
-	(goto-char (point-max))
-        (set-marker chunk-begin-pos nil)
-        (set-marker chunk-end-pos nil)
-        (set-marker prompt-found nil)))))
-
-(defadvice switch-to-buffer (around switch-to-buffer-around-advice (buffer-or-name &optional norecord))
-  ad-do-it
-  (when (and sqlplus-connect-string
-	     (eq major-mode 'sqlplus-mode))
-    (let ((side-window (sqlplus-get-side-window))
-          (output-buffer (get-buffer (sqlplus-get-output-buffer-name sqlplus-connect-string))))
-      (when (and side-window
-                 (not (eq (window-buffer) output-buffer)))
-        (save-selected-window
-          (switch-to-buffer-other-window output-buffer))))))
-(ad-activate 'switch-to-buffer)
-
-(defun sqlplus-kill-function ()
-  (unless sqlplus-kill-function-inhibitor
-    ;; shutdown connection if it is SQL*Plus output buffer or SQL*Plus process buffer
-    (if (or (and sqlplus-connect-string (equal (buffer-name) (sqlplus-get-output-buffer-name sqlplus-connect-string)))
-            sqlplus-process-p)
-        (sqlplus--enqueue-task 'sqlplus-shutdown (or sqlplus-connect-string sqlplus-process-p))
-      ;; input buffer or another buffer connected to SQL*Plus - possibly shutdown
-      (when sqlplus-connect-string
-        (let ((counter 0)
-              (scs sqlplus-connect-string))
-          (dolist (buffer (buffer-list))
-            (with-current-buffer buffer
-              (when (equal sqlplus-connect-string scs) (incf counter))))
-          (when (<= counter 2)
-            (let* ((process (get-process (sqlplus-get-process-name sqlplus-connect-string))))
-              (when (or (not process)
-                        (memq (process-status process) '(exit signal))
-                        (y-or-n-p (format "Kill SQL*Plus process %s " (car (refine-connect-string sqlplus-connect-string)))))
-                (sqlplus--enqueue-task 'sqlplus-shutdown sqlplus-connect-string)))))))))
-
-(defun sqlplus-emacs-kill-function ()
-  ;; save and kill all sqlplus-mode buffers
-  (let (buffers-to-kill)
-    (dolist (buffer (buffer-list))
-      (with-current-buffer buffer
-	(when (and sqlplus-connect-string
-		   (eq major-mode 'sqlplus-mode))
-	  (when (buffer-file-name)
-	    (save-buffer))
-	  (push buffer buffers-to-kill))))
-    (setq sqlplus-kill-function-inhibitor t)
-    (condition-case nil
-	(unwind-protect
-	    (dolist (buffer buffers-to-kill)
-	      (kill-buffer buffer))
-	  (setq sqlplus-kill-function-inhibitor nil))
-      (error nil))
-    t))
-
-(push 'sqlplus-emacs-kill-function kill-emacs-query-functions)
-
-(add-hook 'kill-buffer-hook 'sqlplus-kill-function)
-
-;; kill all history buffers so that they can save themselves
-(add-hook 'kill-emacs-hook (lambda ()
-                             (dolist (buf (copy-list (buffer-list)))
-                               (when (and (string-match "@.*-hist" (buffer-name buf))
-                                          (with-current-buffer buf sqlplus-cs))
-                                 (kill-buffer buf)))))
-
-(defun sqlplus-find-output-table (interrupted)
-  "Search for table in last SQL*Plus command result, and return
-list (BEGIN END MSG) for first and last table char, or nil if
-table is not found."
-  (let (begin end)
-    (goto-char (point-min))
-    (when (re-search-forward "^[^\n]+\n\\( \\)?-" nil t)
-      (let (msg
-	    (indent (when (match-string 1) -1))) ; result of 'describe' sqlplus command
-	(forward-line -1)
-	;; (untabify (point) (buffer-size))
-	(setq begin (point))
-	(when indent
-	  (indent-rigidly begin (point-max) indent)
-	  (goto-char begin))
-	(if indent
-	    (progn
-	      (goto-char (point-max))
-	      (skip-chars-backward "\n\t ")
-	      (setq end (point))
-	      (goto-char (point-max)))
-	  (or (re-search-forward (concat "^" (regexp-quote sqlplus-repfooter) "\n[\n\t ]*") nil t)
-              (when interrupted (re-search-forward "\\'" nil t))) ; \\' means end of buffer
-	  (setq end (match-beginning 0))
-	  (setq msg (buffer-substring (match-end 0) (point-max))))
-	(list begin end msg)))))
-
-(defstruct col-desc
-  id              ; from 0
-  name            ; column name
-  start-pos       ; char column number
-  end-pos         ; char column number
-  max-width       ; max. column width
-  preferred-width ; preferred column width
-  min-prefix-len  ; min. prefix (spaces only)
-  numeric         ; y if column is numeric, n if is not, nil if don't know
-  has-eol         ; temporary value for processing current row
-)
-
-(defun sqlplus-previous-line ()
-  (let ((col (current-column)))
-    (forward-line -1)
-    (move-to-column col t)))
-
-(defun sqlplus-next-line ()
-  (let ((col (current-column)))
-    (forward-line 1)
-    (move-to-column col t)))
-
-(defun sqlplus--correct-column-name (max-col-no)
-  (let ((counter 0)
-	(big (1- (save-excursion (beginning-of-line) (point)))))
-    (skip-chars-forward " ")    
-    (when (re-search-forward "  [^ \n]" (+ big max-col-no) t)
-      (backward-char)
-      (while (< (point) (+ big max-col-no))
-	(setq counter (1+ counter))
-	(insert " ")))
-    counter))
-
-(defun sqlplus-parse-output-table (interrupted)
-  "Parse table and return list (COLUMN-INFOS ROWS MSG) where
-COLUMN-INFOS is a col-desc structures list, ROWS is a table of
-records (record is a list of strings).  Return nil if table is
-not detected."
-  (let ((region (sqlplus-find-output-table interrupted)))
-    (when region
-      (let ((begin (car region))
-	    (end (cadr region))
-	    (last-msg (caddr region))
-	    (col-counter 0)
-	    column-infos rows
-	    (record-lines 1)
-	    finish)
-	;; (message "'%s'\n'%s'" (buffer-substring begin end) last-msg)
-	(goto-char begin)
-	;; we are at the first char of column name
-        ;; move to the first char of '-----' column separator
-	(beginning-of-line 2)
-	(while (not finish)
-	  (if (equal (char-after) ?-)
-              ;; at the first column separator char
-	      (let* ((beg (point))
-		     (col-begin (current-column))
-		     (col-max-width (skip-chars-forward "-"))
-                     ;; after last column separator char
-		     (ed (point))
-		     (col-end (+ col-begin col-max-width))
-		     (col-name (let* ((b (progn
-					   (goto-char beg)
-					   (sqlplus-previous-line)
-					   (save-excursion
-					     (let ((counter (sqlplus--correct-column-name (1+ col-end))))
-					       (setq beg (+ beg counter))
-					       (setq ed (+ ed counter))))
-					   (point)))
-				      (e (+ b col-max-width)))
-				 (skip-chars-forward " \t")
-				 (setq b (point))
-				 (goto-char (min (save-excursion (end-of-line) (point)) e))
-				 (skip-chars-backward " \t")
-				 (setq e (point))
-				 (if (> e b)
-				     (buffer-substring b e)
-				   "")))
-		     (col-preferred-width (string-width col-name)))
-		;; (put-text-property 0 (length col-name) 'face '(bold) col-name)
-		(push (make-col-desc :id col-counter :name col-name :start-pos col-begin
-				     :end-pos col-end :max-width col-max-width :preferred-width col-preferred-width :min-prefix-len col-max-width)
-		      column-infos)
-		(incf col-counter)
-		(goto-char ed)
-		(if (equal (char-after) ?\n)
-		    (progn
-		      (beginning-of-line 3)
-		      (incf record-lines))
-		  (forward-char)))
-	    (setq finish t)))
-	(decf record-lines)
-	(setq column-infos (nreverse column-infos))
-	(forward-line -1)
-
-        ;; at the first char of first data cell.
-	;; table parsing...
-	(while (< (point) end)
-	  (let (record last-start-pos)
-	    (dolist (column-info column-infos)
-	      (let ((start-pos (col-desc-start-pos column-info))
-		    (end-pos (col-desc-end-pos column-info))
-		    width len value b e l)
-		(when (and last-start-pos
-			   (<= start-pos last-start-pos))
-		  (forward-line))
-		(setq last-start-pos start-pos)
-		(move-to-column start-pos)
-		(setq b (point))
-		(move-to-column end-pos)
-		(setq e (point))
-		(move-to-column start-pos)
-		(setq l (skip-chars-forward " " e))
-		(when (and (col-desc-min-prefix-len column-info)
-			   (< l (- e b))
-			   (< l (col-desc-min-prefix-len column-info)))
-		  (setf (col-desc-min-prefix-len column-info)
-			(if (looking-at "[0-9]") l nil)))
-		(move-to-column end-pos)
-		(skip-chars-backward " " b)
-		(setq value (if (> (point) b) (buffer-substring b (point)) ""))
-		(setq len (length value)
-		      width (string-width value))
-		(when (and sqlplus-select-result-max-col-width
-			   (> len sqlplus-select-result-max-col-width))
-		  (setq value (concat (substring value 0 sqlplus-select-result-max-col-width) "...")
-			len (length value)
-			width (string-width value)))
-		(when (> width (col-desc-preferred-width column-info))
-		  (setf (col-desc-preferred-width column-info) width))
-                (when (and (< l (- e b))
-                           (memq (col-desc-numeric column-info) '(nil y)))
-                  (setf (col-desc-numeric column-info)
-                        (if (string-match "\\` *[-+0-9Ee.,$]+\\'" value) 'y 'n)))
-		(push value record)))
-	    (forward-line)
-	    (when (> record-lines 1)
-	      (forward-line))
-	    (setq last-start-pos nil
-		  record (nreverse record))
-	    (push record rows)))
-	(setq rows (nreverse rows))
-	(list column-infos rows last-msg)))))
-
-(defun sqlplus-draw-table (lst &optional slips-count)
-  "SLIPS-COUNT (nil means compute automatically)."
-  ;; current buffer: SQL*Plus output buffer
-  (when window-system
-    (if (>= (sqlplus-color-percentage (face-background 'default)) 50)
-	(progn
-	  (set-face-attribute 'sqlplus-table-head-face nil
-			      :background (sqlplus-shine-color (face-background 'default) -70) :foreground (face-background 'default))
-	  (set-face-attribute 'sqlplus-table-even-rows-face nil
-			      :background (sqlplus-shine-color (face-background 'default) -20) :overline (face-background 'default))
-	  (set-face-attribute 'sqlplus-table-odd-rows-face nil
-			      :background (sqlplus-shine-color (face-background 'default) -30) :overline (face-background 'default)))
-      (set-face-attribute 'sqlplus-table-head-face nil
-			  :background (sqlplus-shine-color (face-background 'default) +70) :foreground (face-background 'default))
-      (set-face-attribute 'sqlplus-table-even-rows-face nil
-			  :background (sqlplus-shine-color (face-background 'default) +20) :overline (face-background 'default))
-      (set-face-attribute 'sqlplus-table-odd-rows-face nil
-			  :background (sqlplus-shine-color (face-background 'default) +30) :overline (face-background 'default))))
-  (let* ((column-infos (car lst))
-         (rows (cadr lst))
-         (slip-width 0)
-         (table-header-height 1)
-         (table-area-width (1- (let ((side-window (sqlplus-get-side-window))) (if side-window (window-width side-window) (frame-width)))))
-         ;; may be nil, which means no limit
-         (table-area-height (let ((side-window (sqlplus-get-side-window)))
-                              (when side-window
-                                (- (window-height side-window) 2 (if mode-line-format 1 0) (if header-line-format 1 0)))))
-         (column-separator-width (if sqlplus-elegant-style 1.2 (max (length sqlplus-table-col-separator) (length sqlplus-table-col-head-separator))))
-         rows-per-slip ;; data rows per slip
-         (slip-separator-width (if sqlplus-elegant-style 1.5 sqlplus-slip-separator-width))
-         (slip-separator (make-string (max 0 (if sqlplus-elegant-style 1 sqlplus-slip-separator-width)) ?\ ))
-         (last-msg (caddr lst)))
-    (when sqlplus-elegant-style
-      (put-text-property 0 1 'display (cons 'space (list :width slip-separator-width)) slip-separator))
-    (when (<= table-area-height table-header-height)
-      (setq table-area-height nil))
-    (when (and window-system sqlplus-elegant-style table-area-height (> table-area-height 3))
-      ;; overline makes glyph higher...
-      (setq table-area-height (- table-area-height (round (/ (* 20.0 (- table-area-height 3)) (face-attribute 'default :height))))))
-    (when column-infos
-      (goto-char (point-max))
-      (beginning-of-line)
-      ;; slip width (without separator between slips)
-      (dolist (col-info column-infos)
-        (when (col-desc-min-prefix-len col-info)
-          (setf (col-desc-preferred-width col-info) (max (string-width (col-desc-name col-info))
-                                                         (- (col-desc-preferred-width col-info) (col-desc-min-prefix-len col-info)))))
-	(incf slip-width (+ (col-desc-preferred-width col-info) column-separator-width)))
-      (when (> slip-width 0)
-        (setq slip-width (+ (- slip-width column-separator-width) (if sqlplus-elegant-style 1.0 0))))
-      ;; computing slip count if not known yet
-      (unless slips-count
-	(setq slips-count
-	      (if table-area-height (min (ceiling (/ (float (length rows)) (max 1 (- table-area-height table-header-height 2))))
-					 (max 1 (floor (/ (float table-area-width) (+ slip-width slip-separator-width)))))
-		1)))
-      (setq slips-count (max 1 (min slips-count (length rows)))) ; slip count <= data rows
-      (setq rows-per-slip (ceiling (/ (float (length rows)) slips-count)))
-      (when (> rows-per-slip 0)
-        (setq slips-count (max 1 (min (ceiling (/ (float (length rows)) rows-per-slip)) slips-count))))
-
-      (let ((table-begin-point (point)))
-	(dotimes (slip-no slips-count)
-	  (let ((row-no 0)
-		(slip-begin-point (point))
-		(rows-processed 0))
-	    ;; column names
-	    (dolist (col-info column-infos)
-	      (let* ((col-name (col-desc-name col-info))
-		     (spaces (max 0 (- (col-desc-preferred-width col-info) (string-width col-name))))
-                     (last-col-p (>= (1+ (col-desc-id col-info)) (length column-infos)))
-		     (val (format (if sqlplus-elegant-style " %s%s %s" "%s%s%s")
-                                  col-name
-                                  (make-string spaces ?\ )
-				  (if last-col-p "" (if sqlplus-elegant-style " " sqlplus-table-col-separator)))))
-                (put-text-property 0 (if (or (not sqlplus-elegant-style) last-col-p) (length val) (1- (length val))) 
-                                   'face 'sqlplus-table-head-face val)
-                (when sqlplus-elegant-style
-                  (put-text-property 0 1 'display '(space . (:width 0.5)) val)
-                  (put-text-property (- (length val) (if last-col-p 1 2)) (- (length val) (if last-col-p 0 1)) 'display '(space . (:width 0.5)) val)
-                  (unless last-col-p
-                    (put-text-property (- (length val) 1) (length val) 'display '(space . (:width 0.2)) val)))
-		(insert val)))
-	    (insert slip-separator)
-	    (insert "\n")
-	    ;; data rows
-	    (while (and (< rows-processed rows-per-slip)
-			rows)
-	      (let ((row (car rows)))
-		(setq rows (cdr rows))
-		(incf rows-processed)
-		(let ((col-infos column-infos))
-		  (dolist (value row)
-		    (let* ((col-info (car col-infos))
-			   (numeric-p (eq (col-desc-numeric col-info) 'y))
-			   (min-prefix (col-desc-min-prefix-len col-info)))
-		      (when (and min-prefix
-				 value
-				 (>= (length value) min-prefix))
-			(setq value (substring value min-prefix)))
-		      (let* ((spaces (max 0 (- (col-desc-preferred-width col-info) (string-width value))))
-			     (val (if numeric-p
-				      (format (if sqlplus-elegant-style " %s%s %s" "%s%s%s")
-                                              (make-string spaces ?\ )
-                                              value
-                                              (if (cdr col-infos) (if sqlplus-elegant-style " " sqlplus-table-col-separator) ""))
-				    (format (if sqlplus-elegant-style " %s%s %s" "%s%s%s")
-                                            value
-                                            (make-string spaces ?\ ) 
-                                            (if (cdr col-infos) (if sqlplus-elegant-style " " sqlplus-table-col-separator) "")))))
-			(put-text-property 0 (if (and sqlplus-elegant-style (cdr col-infos)) (- (length val) 1) (length val))
-                                           'face (if (evenp row-no)
-                                                     'sqlplus-table-even-rows-face
-                                                   'sqlplus-table-odd-rows-face) val)
-                        (when sqlplus-elegant-style
-                          (put-text-property 0 1 'display '(space . (:width 0.5)) val)
-                          (put-text-property (- (length val) (if (cdr col-infos) 2 1))
-                                             (- (length val) (if (cdr col-infos) 1 0))
-                                             'display '(space . (:width 0.5)) val)
-                          (when (cdr col-infos)
-                            (put-text-property (- (length val) 1) (length val) 'display '(space . (:width 0.2)) val)))
-			(setq col-infos (cdr col-infos))
-			(insert val))))
-		  (incf row-no)
-		  (insert slip-separator)
-		  (insert "\n"))))
-	    (when (> slip-no 0)
-	      (delete-backward-char 1)
-	      (let ((slip-end-point (point)))
-		(kill-rectangle slip-begin-point slip-end-point)
-		(delete-region slip-begin-point (point-max))
-		(goto-char table-begin-point)
-		(end-of-line)
-		(yank-rectangle)
-		(goto-char (point-max))
-		))))
-	(goto-char (point-max))
-	(when (and last-msg (> (length last-msg) 0))
-          (unless sqlplus-elegant-style (insert "\n"))
-          (let ((s (format "%s\n\n" (replace-regexp-in-string "\n+" " " last-msg))))
-            (when sqlplus-elegant-style
-              (put-text-property (- (length s) 2) (1- (length s)) 'display '(space . (:height 1.5)) s))
-            (insert s)))))))
-
-(defun sqlplus-send-user-string (str)
-  (interactive (progn (sqlplus-check-connection)
-                      (if sqlplus-connect-string
-                          (list (read-string "Send to process: " nil 'sqlplus-user-string-history ""))
-                        (error "Works only in SQL*Plus buffer"))))
-  (let ((connect-string sqlplus-connect-string))
-    (sqlplus-verify-buffer connect-string)
-    (let* ((process (get-process (sqlplus-get-process-name connect-string)))
-           (output-buffer-name (sqlplus-get-output-buffer-name connect-string)))
-      (sqlplus-echo-in-buffer output-buffer-name (concat str "\n"))
-      (send-string process (concat str "\n")))))
-
-(defun sqlplus-prepare-update-alist (table-data)
-  (let ((column-infos (car table-data))
-        (rows (cadr table-data))
-        (msg (caddr table-data))
-        alist)
-    (dolist (row rows)
-      (let* ((object-name (car row))
-             (object-type (intern (downcase (cadr row))))
-	     (status (caddr row))
-             (regexp-list (cdr (assq object-type alist)))
-	     (pair (cons object-name (equal status "I"))))
-        (if regexp-list
-            (setcdr regexp-list (cons pair (cdr regexp-list)))
-          (setq regexp-list (list pair))
-          (setq alist (cons (cons object-type regexp-list) alist)))))
-    alist))
-
-(defun sqlplus-my-update-handler (connect-string table-data)
-  (let ((alist (sqlplus-prepare-update-alist table-data)))
-    (when (featurep 'ide-skel)
-      (funcall 'sqlplus-side-view-update-data connect-string alist))))
-
-(defun sqlplus-my-handler (connect-string table-data)
-  (let ((alist (sqlplus-prepare-update-alist table-data))
-	(sqlplus-font-lock-regexps (sqlplus-get-font-lock-regexps connect-string)))
-    (sqlplus-set-objects-alist alist connect-string)
-    (when (featurep 'ide-skel)
-      (funcall 'sqlplus-side-view-update-data connect-string alist))
-    (clrhash sqlplus-font-lock-regexps)
-    (dolist (lst sqlplus-syntax-faces)
-      (let* ((object-type (car lst))
-	     (regexp-list (append (caddr lst) (mapcar 'car (cdr (assq object-type alist))))))
-	(when regexp-list
-	  (puthash object-type (concat "\\b" (regexp-opt regexp-list t) "\\b") sqlplus-font-lock-regexps))))
-    (let ((map sqlplus-font-lock-regexps))
-      (mapc (lambda (buffer)
-	      (with-current-buffer buffer
-		(when (and (memq major-mode '(sqlplus-mode plsql-mode))
-			   (equal sqlplus-connect-string connect-string))
-		  (when font-lock-mode (font-lock-mode 1)))))
-	    (buffer-list)))))
-
-(defun sqlplus-get-source-function (connect-string context string last-chunk)
-  (let* ((source-text (sqlplus-get-context-value context :source-text))
-	 (source-type (sqlplus-get-context-value context :source-type))
-	 (source-name (sqlplus-get-context-value context :source-name))
-	 (source-extension (sqlplus-get-context-value context :source-extension))
-	 (name (concat (upcase source-name) "." source-extension))
-         finish)
-    (unless (sqlplus-get-context-value context :finished)
-      (setq source-text (concat source-text string))
-      (sqlplus-set-context-value context :source-text source-text)
-      (when last-chunk
-	(if (string-match (regexp-quote sqlplus-end-of-source-sentinel) source-text)
-	    (when (< (length source-text) (+ (length sqlplus-end-of-source-sentinel) 5))
-	      (setq last-chunk nil
-		    finish "There is no such database object"))
-	  (setq last-chunk nil)))
-      (when last-chunk
-	(setq finish t))
-      (when finish
-	(sqlplus-set-context-value context :finished t)
-	(if (stringp finish)
-	    (message finish)
-	  (with-temp-buffer
-	    (insert source-text)
-	    (goto-char (point-min))
-	    (re-search-forward (regexp-quote sqlplus-end-of-source-sentinel) nil t)
-	    (replace-match "")
-	    (goto-char (point-max))
-	    (forward-comment (- (buffer-size)))
-	    (when (equal source-type "TABLE")
-	      (goto-char (point-min))
-	      (insert (format "table %s\n(\n" source-name))
-	      (goto-char (point-max))
-	      (delete-region (re-search-backward "," nil t) (point-max))
-	      (insert "\n);"))
-	    (insert "\n/\n")
-	    (unless (member source-type '("SEQUENCE" "TABLE" "SYNONYM" "INDEX"))
-	      (insert "show err\n"))
-	    (goto-char (point-min))
-	    (insert "create " (if (member source-type '("INDEX" "SEQUENCE" "TABLE")) "" "or replace "))
-	    (setq source-text (buffer-string)))
-	  (with-current-buffer (get-buffer-create name)
-	    (setq buffer-read-only nil)
-	    (erase-buffer)
-	    (insert source-text)
-	    (goto-char (point-min))
-	    (set-visited-file-name (concat (file-name-as-directory temporary-file-directory)
-					   (concat (make-temp-name (sqlplus-canonize-file-name (concat (upcase source-name) "_") "[$]")) "." source-extension)))
-	    (rename-buffer name)
-	    (condition-case err
-		(funcall (symbol-function 'plsql-mode))
-	      (error nil))
-	    (setq sqlplus-connect-string connect-string
-		  buffer-read-only sqlplus-source-buffer-readonly-by-default-flag)
-	    (save-buffer)
-	    (save-selected-window
-	      (let ((win (selected-window)))
-		(when (or (equal win (sqlplus-get-side-window))
-			  (and (fboundp 'ide-skel-side-view-window-p)
-			       (funcall 'ide-skel-side-view-window-p win)))
-		  (setq win (sqlplus-get-workbench-window)))
-		(set-window-buffer win (current-buffer))))))))))
-    
-(defun sqlplus-get-source (connect-string name type &optional schema-name)
-  "Fetch source for database object NAME in current or specified SCHEMA-NAME, and show the source in new buffer.
-Possible TYPE values are in 'sqlplus-object-types'."
-  (interactive (let* ((thing (thing-at-point 'symbol))
-                      (obj-raw-name (read-string (concat "Object name" (if thing (concat " [default " thing "]") "") ": ")
-                                                 nil
-                                                 'sqlplus-get-source-history (when thing thing)))
-                      (completion-ignore-case t)
-                      (type (completing-read "Object type: " (mapcar (lambda (type) (cons type nil)) sqlplus-object-types) nil t)))
-                 (string-match "^\\(\\([^.]+\\)[.]\\)?\\(.*\\)$" obj-raw-name)
-                 (list sqlplus-connect-string (match-string 3 obj-raw-name) type (match-string 2 obj-raw-name))))
-  (setq type (upcase type))
-  (let* ((sql
-          (cond ((equal type "SEQUENCE")
-                 (format (concat "select 'sequence %s' || sequence_name || "
-                                 "decode( increment_by, 1, '', ' increment by ' || increment_by ) || "
-                                 "case when increment_by > 0 and max_value >= (1.0000E+27)-1 or increment_by < 0 and max_value = -1 then '' "
-                                 "else decode( max_value, null, ' nomaxvalue', ' maxvalue ' || max_value) end || "
-                                 "case when increment_by > 0 and min_value = 1 or increment_by < 0 and min_value <= (-1.0000E+26)+1 then '' "
-                                 "else decode( min_value, null, ' nominvalue', ' minvalue ' || min_value) end || "
-                                 "decode( cycle_flag, 'Y', ' cycle', '' ) || "
-                                 "decode( cache_size, 20, '', 0, ' nocache', ' cache ' || cache_size ) || "
-                                 "decode( order_flag, 'Y', ' order', '' ) "
-                                 "from %s where sequence_name = '%s'%s;")
-                         (if schema-name (concat (upcase schema-name) ".") "")
-                         (if schema-name "all_sequences" "user_sequences")
-                         (upcase name)
-                         (if schema-name (format " and sequence_owner = '%s'" (upcase schema-name)) "")))
-                ((equal type "TABLE")
-                 (format (concat "select '  ' || column_name || ' ' || data_type || "
-                                 "decode( data_type,"
-                                 " 'VARCHAR2', '(' || to_char( data_length, 'fm9999' ) || ')',"
-                                 " 'NUMBER', decode( data_precision,"
-                                 "             null, '',"
-                                 "             '(' || to_char( data_precision, 'fm9999' ) || decode( data_scale,"
-                                 "                                                      null, '',"
-                                 "                                                      0, '',"
-                                 "                                                      ',' || data_scale ) || ')' ),"
-                                 " '') || "
-                                 "decode( nullable, 'Y', ' not null', '') || ','"
-                                 "from all_tab_columns "
-                                 "where owner = %s and table_name = '%s' "
-                                 "order by column_id;")
-                         (if schema-name (concat "'" (upcase schema-name) "'") "user")
-                         (upcase name)))
-                ((equal type "SYNONYM")
-                 (format (concat "select "
-                                 "decode( owner, 'PUBLIC', 'public ', '' ) || 'synonym ' || "
-                                 "decode( owner, 'PUBLIC', '', user, '', owner || '.' ) || synonym_name || ' for ' || "
-                                 "decode( table_owner, user, '', table_owner || '.' ) || table_name || "
-                                 "decode( db_link, null, '', '@' || db_link ) "
-                                 "from all_synonyms where (owner = 'PUBLIC' or owner = %s) and synonym_name = '%s';")
-                         (if schema-name (concat "'" (upcase schema-name) "'") "user")
-                         (upcase name)))
-                ((equal type "VIEW")
-                 (if schema-name (format "select 'view %s.' || view_name || ' as ', text from all_views where owner = '%s' and view_name = '%s';"
-                                         (upcase schema-name) (upcase schema-name) (upcase name))
-                   (format "select 'view ' || view_name || ' as ', text from user_views where view_name = '%s';" (upcase name))))
-		((or (equal type "PROCEDURE")
-		     (equal type "FUNCTION"))
-		 (if schema-name (format "select text from all_source where owner = '%s' and name = '%s' and type in ('PROCEDURE', 'FUNCTION') order by line;"
-                                         (upcase schema-name) (upcase name))
-                   (format "select text from user_source where name = '%s' and type in ('PROCEDURE', 'FUNCTION') order by line;"
-                           (upcase name))))
-                (t
-                 (if schema-name (format "select text from all_source where owner = '%s' and name = '%s' and type = '%s' order by line;"
-                                         (upcase schema-name) (upcase name) (upcase type))
-                   (format "select text from user_source where name = '%s' and type = '%s' order by line;"
-                           (upcase name) (upcase type))))))
-         (prolog-commands (list "set echo off"
-                                "set newpage 0"
-                                "set space 0"
-                                "set pagesize 0"
-                                "set feedback off"
-                                "set long 4000"
-                                "set longchunksize 4000"
-                                "set wrap on"
-                                "set heading off"
-                                "set trimspool on"
-                                "set linesize 4000"
-                                "set timing off"))
-         (extension (if (equal (downcase type) "package") "pks" "sql"))
-         (source-buffer-name (concat " " (upcase name) "." extension))
-         (context-options (list (cons :dont-parse-result 'dont-parse)
-                                (cons :source-text nil)
-                                (cons :source-type type)
-                                (cons :source-name name)
-				(cons :source-extension extension)
-                                (cons :result-function 'sqlplus-get-source-function))))
-    (sqlplus-execute connect-string sql context-options prolog-commands t t)
-    (sqlplus-execute connect-string (format "select '%s' from dual;" sqlplus-end-of-source-sentinel) context-options prolog-commands t t)))
-
-(defun sqlplus-canonize-file-name (file-name regexp)
-  (while (string-match regexp file-name)
-    (setq file-name (replace-match "!" nil t file-name)))
-  file-name)
-
-(defun sqlplus-define-user-variables (string)
-  (when string
-    (let (variables-list
-          define-commands
-          (index 0))
-      (while (setq index (string-match "&+\\(\\(\\sw\\|\\s_\\)+\\)" string index))
-        (let ((var-name (match-string 1 string)))
-          (setq index (+ 2 index))
-          (unless (member var-name variables-list)
-            (push var-name variables-list))))
-      (dolist (var-name (reverse variables-list))
-        (let* ((default-value (gethash var-name sqlplus-user-variables nil))
-               (value (read-string (format (concat "Variable value for %s" (if default-value (format " [default: %s]" default-value) "") ": ") var-name)
-                                   nil 'sqlplus-user-variables-history default-value)))
-          (unless value
-            (error "There is no value for %s defined" var-name))
-          (setq define-commands (cons (format "define %s=%s" var-name value) define-commands))
-          (puthash var-name value sqlplus-user-variables)))
-      define-commands)))
-    
-(defun sqlplus-parse-region (start end)
-  (let ((sql (buffer-substring start end)))
-    (save-excursion
-      ;; Strip whitespace from beginning and end, just to be neat.
-      (if (string-match "\\`[ \t\n]+" sql)
-          (setq sql (substring sql (match-end 0))))
-      (if (string-match "[ \t\n]+\\'" sql)
-          (setq sql (substring sql 0 (match-beginning 0))))
-      (setq sql (replace-regexp-in-string "^[ \t]*--.*[\n]?" "" sql))
-      (when (zerop (length sql))
-	(error "Nothing to send"))
-      ;; Now the string should end with an sqlplus-terminator.
-      (if (not (string-match "\\(;\\|/\\|[.]\\)\\'" sql))
-          (setq sql (concat sql ";"))))
-    sql))
-
-(defun sqlplus-show-html-fun (context connect-string begin end interrupted)
-  (let ((output-file (expand-file-name (substitute-in-file-name sqlplus-html-output-file-name)))
-        (sql (sqlplus-get-context-value context :htmlized-html-command))
-        (html (buffer-substring begin end))
-        (header-html (eval sqlplus-html-output-header)))
-    (let ((case-fold-search t))
-      (while (and (string-match "\\`[ \t\n]*\\(<br>\\|<p>\\)?" html) (match-string 0 html) (> (length (match-string 0 html)) 0))
-        (setq html (replace-match "" nil t html)))
-      (when (> (length html) 0)
-        (sqlplus-execute connect-string "" nil '("set markup html off") 'no-echo 'dont-show-output-buffer)
-        (find-file output-file)
-        (erase-buffer)
-        (insert (concat "<html>\n"
-                        "<head>\n"
-                        "  <meta http-equiv=\"content-type\" content=\"text/html; charset=" sqlplus-html-output-encoding "\">\n"
-                        (sqlplus-get-context-value context :head) "\n"
-                        "</head>\n"
-                        "<body " (sqlplus-get-context-value context :body) ">\n"
-                        (if header-html header-html "")
-                        (if sqlplus-html-output-sql sql "")
-                        "<p>"
-                        html "\n"
-                        "</body>\n"
-                        "</html>"))
-        (goto-char (point-min))
-        (save-buffer)))))
-
-(defun sqlplus-refine-html (html remove-entities)
-  (string-match "\\`\"?\\(\\(.\\|\n\\)*?\\)\"?[ \t\n]*\\'" html)
-  (setq html (match-string 1 html))
-  (if remove-entities
-      (progn
-        (while (string-match "&quot;" html) (setq html (replace-match "\"" nil t html)))
-        (while (string-match "&lt;" html) (setq html (replace-match "<" nil t html)))
-        (while (string-match "&gt;" html) (setq html (replace-match ">" nil t html)))
-        (while (string-match "&amp;" html) (setq html (replace-match "&" nil t html))))
-    (while (string-match "&" html) (setq html (replace-match "&amp;" nil t html)))
-    (while (string-match ">" html) (setq html (replace-match "&gt;" nil t html)))
-    (while (string-match "<" html) (setq html (replace-match "&lt;" nil t html)))
-    (while (string-match "\"" html) (setq html (replace-match "&quot;" nil t html))))
-  (string-match "\\`\"?\\(\\(.\\|\n\\)*?\\)\"?[ \t\n]*\\'" html)
-  (setq html (match-string 1 html))
-  html)
-
-(defun sqlplus-show-markup-fun (context connect-string begin end interrupted)
-  (goto-char begin)
-  (let ((head "")
-        (body "")
-        preformat)
-    (when (re-search-forward (concat "\\bHEAD\\b[ \t\n]*\\(\\(.\\|\n\\)*\\)[ \t\n]*"
-                                     "\\bBODY\\b[ \t\n]*\\(\\(.\\|\n\\)*\\)[ \t\n]*"
-                                     "\\bTABLE\\b\\(.\\|\n\\)*PREFORMAT[ \t\n]+\\(ON\\|OFF\\)\\b") nil t)
-      (setq head (match-string 1)
-            body (match-string 3)
-            preformat (string= (downcase (match-string 6)) "on"))
-      (setq head (sqlplus-refine-html head t)
-            body (sqlplus-refine-html body t))
-      (let ((context-options (list (cons :result-function 'sqlplus-show-html-fun)
-                                   (cons :current-command-input-buffer-name (sqlplus-get-context-value context :current-command-input-buffer-name))
-                                   (cons :html-command (sqlplus-get-context-value context :html-command))
-                                   (cons :htmlized-html-command (sqlplus-get-context-value context :htmlized-html-command))
-                                   (cons :head head)
-                                   (cons :body body)))
-            (prolog-commands (list "set wrap on"
-                                   (format "set linesize %S" (if preformat (1- (frame-width)) 4000))
-                                   "set pagesize 50000"
-                                   "btitle off"
-                                   "repfooter off"
-                                   "set markup html on")))
-        (sqlplus-execute connect-string (sqlplus-get-context-value context :html-command) context-options prolog-commands 'no-echo 'dont-show-output-buffer)))))
-
-(defun sqlplus-htmlize (begin end)
-  (let (result)
-    (when (featurep 'htmlize)
-      (let* ((htmlize-output-type 'font)
-             (buffer (funcall (symbol-function 'htmlize-region) begin end)))
-        (with-current-buffer buffer
-          (goto-char 1)
-          (re-search-forward "<pre>[ \t\n]*\\(\\(.\\|\n\\)*?\\)[ \t\n]*</pre>" nil t)
-          (setq result (concat "<pre>" (match-string 1) "</pre>")))
-        (kill-buffer buffer)))
-    (unless result
-      (setq result (sqlplus-refine-html (buffer-substring begin end) nil)))
-    result))
-
-(defun sqlplus--send (connect-string sql &optional arg no-echo html start end)
-  (if html
-      (let* ((context-options (list (cons :result-function 'sqlplus-show-markup-fun)
-                                    (cons :current-command-input-buffer-name (buffer-name))
-                                    (cons :html-command sql)
-                                    (cons :htmlized-html-command (if (and (eq sqlplus-html-output-sql 'elegant) (featurep 'htmlize))
-                                                                     (sqlplus-htmlize start end)
-                                                                   (sqlplus-refine-html sql nil))))))
-	(sqlplus-execute connect-string "show markup\n" context-options nil 'no-echo 'dont-show-output-buffer))
-    (let* ((no-parse (consp arg))
-	   (context-options (list (cons :dont-parse-result (consp arg))
-                                  (cons :columns-count (if (integerp arg)
-                                                           (if (zerop arg) nil arg)
-                                                         (if sqlplus-multi-output-tables-default-flag nil 1)))
-                                  (cons :current-command-input-buffer-name (buffer-name))))
-           (prolog-commands (list (format "set wrap %s" (if no-parse "on" sqlplus-default-wrap))
-                                  (format "set linesize %s" (if (consp arg) (1- (frame-width)) 4000))
-                                  (format "set pagesize %S" (if no-parse 50000 sqlplus-pagesize))
-                                  (format "btitle %s"
-                                          (if no-parse "off" (concat "left '" sqlplus-page-separator "'")))
-                                  (format "repfooter %s"
-                                          (if no-parse "off" (concat "left '" sqlplus-repfooter "'"))))))
-      (sqlplus-execute connect-string sql context-options prolog-commands no-echo))))
-
-(defun sqlplus-explain ()
-  (interactive)
-  (sqlplus-check-connection)
-  (when (buffer-file-name)
-    (condition-case err
-	(save-buffer)
-      (error (message (error-message-string err)))))
-  (let* ((region (sqlplus-mark-current)))
-    (setq sqlplus-region-beginning-pos (car region)
-          sqlplus-region-end-pos (cdr region))
-    (if (and sqlplus-region-beginning-pos sqlplus-region-end-pos)
-	(let ((sql (sqlplus-parse-region (car region) (cdr region)))
-	      (case-fold-search t))
-	  (if (string-match "^[\n\t ]*explain[\n\t ]+plan[\t\t ]+for\\>" sql)
-	      (sqlplus--send sqlplus-connect-string sql nil nil nil)
-	    (setq sql (concat (sqlplus-fontify-string sqlplus-connect-string "explain plan for ") sql))
-	    (sqlplus--send sqlplus-connect-string sql nil nil nil)))
-      (error "Point doesn't indicate any command to execute"))))
-      
-(defun sqlplus-send-region (arg start end &optional no-echo html)
-  "Send a region to the SQL*Plus process."
-  (interactive "P\nr")
-  (sqlplus-check-connection)
-  (sqlplus--send sqlplus-connect-string (sqlplus-parse-region start end) arg no-echo html start end))
-
-(defun sqlplus-user-command (connect-string sql result-proc)
-  (let* ((context-options (list (cons :user-function result-proc)
-                                (cons :columns-count 1)))
-        (prolog-commands (list (format "set wrap %s" sqlplus-default-wrap)
-                               "set linesize 4000"
-			       "set timing off"
-                               "set pagesize 50000"
-                               "btitle off"
-                               (format "repfooter %s" (concat "left '" sqlplus-repfooter "'")))))
-    (sqlplus-execute connect-string sql context-options prolog-commands 'no-echo 'dont-show-output-buffer)))
-  
-
-(defun sqlplus-hidden-select (connect-string sql result-proc)
-  (let* ((context-options (list (cons :result-table-function result-proc)
-                                (cons :columns-count 1)))
-        (prolog-commands (list (format "set wrap %s" sqlplus-default-wrap)
-                               "set linesize 4000"
-                               "set pagesize 50000"
-                               "btitle off"
-                               (format "repfooter %s" (concat "left '" sqlplus-repfooter "'")))))
-    (sqlplus-execute connect-string sql context-options prolog-commands 'no-echo 'dont-show-output-buffer)))
-
-;; "appi[nfo]" -> '("appinfo" "appi")
-(defun sqlplus-full-forms (name)
-  (if (string-match "\\`\\([^[]*\\)?\\[\\([^]]+\\)\\]\\([^]]*\\)?\\'" name)
-      (list (replace-match "\\1\\2\\3" t nil name)
-            (replace-match "\\1\\3" t nil name))
-    (list name)))
-
-(defun sqlplus-get-canonical-command-name (name)
-  (let ((association (assoc (downcase name) sqlplus-system-variables)))
-    (if association (cdr association) name)))
-    
-
-(defun sqlplus-execute (connect-string sql context-options prolog-commands &optional no-echo dont-show-output-buffer)
-  (sqlplus-verify-buffer connect-string)
-  (let* ((process-buffer-name (sqlplus-get-process-buffer-name connect-string))
-         (process-buffer (get-buffer process-buffer-name))
-         (output-buffer-name (sqlplus-get-output-buffer-name connect-string))
-         (echo-prolog (concat "\n" sqlplus-output-separator " " (current-time-string) "\n\n"))
-         (process (get-buffer-process process-buffer-name))
-         set-prolog-commands commands command-no
-	 (history-buffer (sqlplus-get-history-buffer connect-string))
-         (defines (sqlplus-define-user-variables sql)))
-    (setq prolog-commands (append (sqlplus-initial-strings) prolog-commands))
-    (when process-buffer
-      (with-current-buffer process-buffer
-	(setq command-no sqlplus-command-seq)
-	(incf sqlplus-command-seq)
-	(setq context-options (append (list (cons :id command-no) (cons :sql sql)) (copy-list context-options)))
-	(setq sqlplus-command-contexts (reverse (cons context-options (reverse sqlplus-command-contexts))))))
-    ;; move all "set" commands from prolog-commands to set-prolog-commands
-    (setq prolog-commands (delq nil (mapcar (lambda (command) (if (string-match "^\\s-*[sS][eE][tT]\\s-+" command)
-                                                                  (progn
-                                                                    (setq set-prolog-commands
-                                                                          (append set-prolog-commands
-                                                                                  (list (substring command (length (match-string 0 command))))))
-                                                                    nil)
-                                                                command))
-                                            prolog-commands)))
-    ;; remove duplicates commands from prolog-commands (last entries win)
-    (let (spc-alist)
-      (dolist (command prolog-commands)
-        (let* ((name (progn (string-match "^\\S-+" command) (downcase (match-string 0 command))))
-               (association (assoc name spc-alist)))
-          (if (and association (not (equal name "define")))
-              (setcdr association command)
-            (setq spc-alist (cons (cons name command) spc-alist)))))
-      (setq prolog-commands (mapcar (lambda (pair) (cdr pair)) (reverse spc-alist))))
-
-    (setq prolog-commands (append prolog-commands defines))
-    (setq set-prolog-commands (append (list (format "sqlprompt '%s%S%s'" sqlplus-prompt-prefix command-no sqlplus-prompt-suffix)) set-prolog-commands))
-
-    ;; remove duplicates from set-prolog-commands (last entries win)
-    (let (spc-alist)
-      (dolist (set-command set-prolog-commands)
-        (let* ((name (progn (string-match "^\\S-+" set-command) (downcase (sqlplus-get-canonical-command-name (match-string 0 set-command)))))
-               (association (assoc name spc-alist)))
-          (if association
-              (setcdr association set-command)
-            (setq spc-alist (cons (cons name set-command) spc-alist)))))
-      (setq set-prolog-commands (mapcar (lambda (pair) (cdr pair)) (reverse spc-alist))))
-          
-    (setq commands (concat (mapconcat 'identity (append
-						 (list (concat "set " (mapconcat 'identity set-prolog-commands " ")))
-						 prolog-commands
-						 (list sql)) "\n")
-                           "\n"))
-    (when history-buffer
-      (with-current-buffer history-buffer
-	(goto-char (point-max))
-	(insert echo-prolog)
-	(insert (concat commands "\n"))))
-    (let ((saved-window (cons (selected-window) (window-buffer (selected-window))))
-	  (input-buffer (get-buffer (sqlplus-get-input-buffer-name connect-string))))
-      (unless no-echo
-	(sqlplus-echo-in-buffer output-buffer-name echo-prolog)
-	(let ((old-suppress-show-output-buffer sqlplus-suppress-show-output-buffer))
-	  (unwind-protect
-	      (save-selected-window
-		(setq sqlplus-suppress-show-output-buffer dont-show-output-buffer)
-		(when (and output-buffer-name
-			   (get-buffer output-buffer-name))
-		  (with-current-buffer (get-buffer output-buffer-name)
-		    (sqlplus-buffer-bottom connect-string)
-		    (sqlplus-buffer-mark-current connect-string))))
-	    (setq sqlplus-suppress-show-output-buffer old-suppress-show-output-buffer)))
-	(sqlplus-echo-in-buffer output-buffer-name (concat sql "\n\n") nil t)
-	(save-selected-window
-	  (unless dont-show-output-buffer
-	    (when (and output-buffer-name
-		       (get-buffer output-buffer-name))
-	      (with-current-buffer (get-buffer output-buffer-name)
-		(sqlplus-buffer-redisplay-current connect-string))))))
-      (if (window-live-p (car saved-window))
-	  (select-window (car saved-window))
-	(if (get-buffer-window (cdr saved-window))
-	    (select-window (get-buffer-window (cdr saved-window)))
-	  (when (and input-buffer
-		     (get-buffer-window input-buffer))
-	    (select-window (get-buffer-window input-buffer))))))
-    (send-string process commands)))
-
-(defun sqlplus-fontify-string (connect-string string)
-  (let* ((input-buffer-name (sqlplus-get-input-buffer-name connect-string))
-	 (input-buffer (when input-buffer-name (get-buffer input-buffer-name)))
-	 (result string))
-    (when (and input-buffer (buffer-live-p input-buffer))
-      (with-current-buffer input-buffer
-	(save-excursion
-	  (goto-char (point-max))
-	  (let ((pos (point)))
-	    (insert "\n\n")
-	    (insert string)
-	    (font-lock-fontify-block (+ (count "\n" string) 2))
-	    (setq result (buffer-substring (+ pos 2) (point-max)))
-	    (delete-region pos (point-max))))))
-    result))
-
-(defvar plsql-mark-backward-list nil)
-
-(unless plsql-mode-map
-  (setq plsql-mode-map (copy-keymap sql-mode-map))
-  (define-key plsql-mode-map "\M-." 'sqlplus-file-get-source)
-  (define-key plsql-mode-map [C-down-mouse-1] 'sqlplus-mouse-select-identifier)
-  (define-key plsql-mode-map [C-mouse-1] 'sqlplus-file-get-source-mouse)
-  (define-key plsql-mode-map "\C-c\C-g" 'plsql-begin)
-  (define-key plsql-mode-map "\C-c\C-q" 'plsql-loop)
-  (define-key plsql-mode-map "\C-c\C-z" 'plsql-if)
-  (define-key plsql-mode-map "\C-c\C-c" 'plsql-compile)
-  (define-key plsql-mode-map [tool-bar plsql-prev-mark]
-    (list 'menu-item "Previous mark" 'plsql-prev-mark
-	  :image plsql-prev-mark-image
-	  :enable 'plsql-mark-backward-list)))
-
-(defvar plsql-continue-anyway nil
-  "Local in input buffer (plsql-mode).")
-(make-variable-buffer-local 'plsql-continue-anyway)
-
-(defun sqlplus-switch-to-buffer (buffer-or-path &optional line-no)
-  (if (fboundp 'ide-skel-select-buffer)
-      (funcall 'ide-skel-select-buffer buffer-or-path line-no)
-    (let ((buffer (or (and (bufferp buffer-or-path) buffer-or-path)
-		      (find-file-noselect buffer-or-path))))
-      (switch-to-buffer buffer)
-      (goto-line line-no))))
-
-(defun plsql-prev-mark ()
-  (interactive)
-  (let (finish)
-    (while (and plsql-mark-backward-list
-		(not finish))
-      (let* ((marker (pop plsql-mark-backward-list))
-	     (buffer (marker-buffer marker))
-	     (point (marker-position marker)))
-	(set-marker marker nil)
-	(when (and buffer
-		   (or (not (eq (current-buffer) buffer))
-		       (not (eql (point) point))))
-	  (sqlplus-switch-to-buffer buffer)
-	  (goto-char point)
-	  (setq finish t))))
-    ;; (message "BACK: %S -- FORWARD: %S" plsql-mark-backward-list plsql-mark-forward-list)
-    (force-mode-line-update)
-    (sit-for 0)))
-
-(defun sqlplus-mouse-select-identifier (event)
-  (interactive "@e")
-  (with-selected-window (posn-window (event-start event))
-    (save-excursion
-      (let* ((point (posn-point (event-start event)))
-	     (identifier (progn (goto-char point) (thing-at-point 'symbol)))
-	     (ident-regexp (when identifier (regexp-quote identifier))))
-	(push (point-marker) plsql-mark-backward-list)
-	(when ident-regexp
-	  (save-excursion
-	    (while (not (looking-at ident-regexp))
-	      (backward-char))
-	    (sqlplus-mouse-set-selection (current-buffer) (point) (+ (point) (length identifier)) 'highlight)))))))
-
-(defun sqlplus-file-get-source-mouse (event)
-  (interactive "@e")
-  (let (ident)
-    (with-selected-window (posn-window (event-start event))
-      (save-excursion
-	(goto-char (posn-point (event-start event)))
-	(setq ident (thing-at-point 'symbol))))
-    (sqlplus-file-get-source sqlplus-connect-string ident nil)
-    (sit-for 0)))
-
-(defun plsql-compile (&optional arg)
-  "Save buffer and send its content to SQL*Plus.
-You must enter connect-string if buffer is disconnected; with
-argument you can change connect-string even for connected
-buffer."
-  (interactive "P")
-  (let (aborted
-        exists-show-error-command
-        (case-fold-search t))
-    (save-window-excursion
-      (save-excursion
-        ;; ask for "/" and "show err" if absent
-        (let ((old-point (point))
-              show-err-needed
-              exists-run-command best-point finish)
-          (goto-char (point-min))
-          (setq show-err-needed (let ((case-fold-search t))
-                                  (re-search-forward "create\\([ \t\n]+or[ \t\n]+replace\\)?[ \t\n]+\\(package\\|procedure\\|function\\|trigger\\|view\\|type\\)" nil t)))
-          (goto-char (point-max))
-          (forward-comment (- (buffer-size)))
-          (re-search-backward "^\\s-*show\\s-+err" nil t)
-          (forward-comment (- (buffer-size)))
-          (condition-case nil (forward-char) (error nil))
-          (setq best-point (point))
-          (goto-char (point-min))
-          (setq exists-run-command (re-search-forward "^\\s-*/[^*]" nil t))
-          (goto-char (point-min))
-          (setq exists-show-error-command (or (not show-err-needed) (re-search-forward "^\\s-*show\\s-+err" nil t)))
-          (while (and (not plsql-continue-anyway) (or (not exists-run-command) (not exists-show-error-command)) (not finish))
-            (goto-char best-point)
-            (let ((c (read-char 
-                      (format "Cannot find %s.  (I)nsert it at point, (A)bort, (C)ontinue anyway"
-                              (concat (unless exists-run-command "\"/\"")
-                                      (unless (or exists-run-command exists-show-error-command) " and ")
-                                      (unless exists-show-error-command "\"show err\""))))))
-              (cond ((memq c '(?i ?I))
-                     (unless exists-run-command (insert "/\n"))
-                     (unless exists-show-error-command (insert "show err\n"))
-                     (setq finish t))
-                    ((memq c '(?a ?A))
-                     (setq aborted t
-                           finish t))
-                    ((memq c '(?c ?C))
-                     (setq plsql-continue-anyway t)
-                     (setq finish t))))))))
-    (unless aborted
-      (save-buffer)
-      (let* ((buffer (current-buffer))
-             (input-buffer-name (buffer-name))
-             (file-path (sqlplus-file-truename (buffer-file-name)))
-             (compilation-buffer (get-buffer sqlplus-plsql-compilation-results-buffer-name))
-             (context-options (list (cons :last-compiled-file-path file-path)
-                                    (cons :current-command-input-buffer-name input-buffer-name)
-                                    (cons :compilation-expected exists-show-error-command)))
-             (prolog-commands (list (format "set wrap %s" sqlplus-default-wrap)
-                                    "set linesize 4000"
-                                    (format "set pagesize %S" sqlplus-pagesize)
-                                    (format "btitle %s" (concat "left '" sqlplus-page-separator "'"))
-                                    (format "repfooter %s" (concat "left '" sqlplus-repfooter "'")))))
-        (when (or (not sqlplus-connect-string)
-                  arg)
-          (setq sqlplus-connect-string (car (sqlplus-read-connect-string nil (caar (sqlplus-divide-connect-strings))))))
-        (sqlplus sqlplus-connect-string nil (when plsql-auto-parse-errors-flag 'dont-show-output-buffer))
-        (set-buffer buffer)
-        (force-mode-line-update)
-	(when font-lock-mode (font-lock-mode 1))
-        (when compilation-buffer
-          (with-current-buffer compilation-buffer
-	    (let ((inhibit-read-only t))
-	      (erase-buffer))))
-        (setq prolog-commands (append prolog-commands (sqlplus-define-user-variables (buffer-string))))
-        (sqlplus-execute sqlplus-connect-string (concat "@" file-path) context-options prolog-commands nil exists-show-error-command)))))
-
-(defun plsql-parse-errors (last-compiled-file-path)
-  (let ((file-name (file-name-nondirectory last-compiled-file-path))
-        error-list)
-    (put-text-property 0 (length file-name) 'face 'font-lock-warning-face file-name)
-    (save-excursion 
-      (when (re-search-forward "^LINE/COL\\>" nil t)
-        (beginning-of-line 3)
-        (while (re-search-forward "^\\([0-9]+\\)/\\([0-9]+\\)\\s-*\\(\\(.\\|\n\\)*?\\)[\r\t ]*\n\\([\r\t ]*\\(\n\\|\\'\\)\\|[0-9]+\\)" nil t)
-          (let ((line-no (match-string 1))
-                (column-no (match-string 2))
-                (errmsg (match-string 3))
-                label)
-            (goto-char (match-beginning 5))
-            (while (string-match "\\s-\\s-+" errmsg)
-              (setq errmsg (replace-match " " nil t errmsg)))
-            (put-text-property 0 (length line-no) 'face 'font-lock-variable-name-face line-no)
-            (put-text-property 0 (length column-no) 'face 'font-lock-variable-name-face column-no)
-            (setq label (concat file-name ":" line-no ":" column-no ": " errmsg))
-            (put-text-property 0 (length label) 'mouse-face 'highlight label)
-            (push label error-list)))))
-    (save-excursion
-      (while (re-search-forward "\\s-\\([0-9]+\\):\n\\(ORA-[0-9]+[^\n]*\\)\n" nil t)
-        (let ((line-no (match-string 1))
-              (errmsg (match-string 2))
-              label)
-          (put-text-property 0 (length line-no) 'face 'font-lock-variable-name-face line-no)
-          (setq label (concat file-name ":" line-no ": " errmsg))
-          (put-text-property 0 (length label) 'mouse-face 'highlight label)
-          (push label error-list))))
-    (save-excursion
-      (while (re-search-forward "\\(\\(SP2\\|CPY\\)-[0-9]+:[^\n]*\\)\n" nil t)
-        (let ((errmsg (match-string 1))
-              label)
-          (setq label (concat file-name ":" errmsg))
-          (put-text-property 0 (length label) 'mouse-face 'highlight label)
-          (push label error-list))))
-    error-list))
-
-(defun plsql-display-errors (dir error-list)
-  (let ((buffer (get-buffer-create sqlplus-plsql-compilation-results-buffer-name)))
-    (save-selected-window
-      (save-excursion
-        (set-buffer buffer)
-	(let ((inhibit-read-only t))
-	  (erase-buffer)
-	  (setq default-directory dir)
-	  (insert (format "cd %s\n" default-directory))
-	  (insert (format "Compilation results\n"))
-	  (compilation-minor-mode 1)
-	  (dolist (msg (reverse error-list))
-	    (insert msg)
-	    (insert "\n"))
-	  (insert (format "\n(%s errors)\n" (length error-list))))
-        (when (and error-list (fboundp 'compile-reinitialize-errors) (funcall (symbol-function 'compile-reinitialize-errors) t)))
-        (switch-to-buffer-other-window buffer)
-        (goto-line 1)
-        (goto-line 3)))))
-
-
-(defun sqlplus-file-truename (file-name)
-  (if file-name
-      (file-truename file-name)
-    file-name))
-
-(defun sqlplus--hidden-buffer-name-p (buffer-name)
-  (equal (elt buffer-name 0) 32))
-
-(defun sqlplus-get-workbench-window ()
-  "Return upper left window"
-  (if (fboundp 'ide-get-workbench-window)
-      (funcall (symbol-function 'ide-get-workbench-window))
-    (let (best-window)
-      (dolist (win (copy-list (window-list nil 1)))
-	(when (not (sqlplus--hidden-buffer-name-p (buffer-name (window-buffer win))))
-	  (if (null best-window)
-	      (setq best-window win)
-	    (let* ((best-window-coords (window-edges best-window))
-		   (win-coords (window-edges win)))
-	      (when (or (< (cadr win-coords) (cadr best-window-coords))
-			(and (= (cadr win-coords) (cadr best-window-coords))
-			     (< (car win-coords) (car best-window-coords))))
-		(setq best-window win))))))
-      ;; (message "BEST-WINDOW: %S" best-window)
-      best-window)))
-
-(defun sqlplus-get-side-window ()
-  "Return bottom helper window, or nil if not found"
-  (if (fboundp 'ide-get-side-window)
-      (funcall (symbol-function 'ide-get-side-window))
-    (let* ((workbench-window (sqlplus-get-workbench-window))
-	   best-window)
-      (dolist (win (copy-list (window-list nil 1)))
-	(when (and (not (sqlplus--hidden-buffer-name-p (buffer-name (window-buffer win))))
-		   (not (eq win workbench-window)))
-	  (if (null best-window)
-	      (setq best-window win)
-	    (when (> (cadr (window-edges win)) (cadr (window-edges best-window)))
-	      (setq best-window win)))))
-      best-window)))
-
-(defvar sqlplus--idle-tasks nil)
-
-(defun sqlplus--enqueue-task (fun &rest params)
-  (setq sqlplus--idle-tasks (reverse (cons (cons fun params) (reverse sqlplus--idle-tasks)))))
-
-(defun sqlplus--execute-tasks ()
-  (dolist (task sqlplus--idle-tasks)
-    (let ((fun (car task))
-          (params (cdr task)))
-      (condition-case var
-          (apply fun params)
-        (error (message (error-message-string var))))))
-  (setq sqlplus--idle-tasks nil))
-
-(add-hook 'post-command-hook 'sqlplus--execute-tasks)
-
-(defvar sqlplus-mouse-selection nil)
-
-(defun sqlplus-mouse-set-selection (buffer begin end mouse-face)
-  (interactive "@e")
-  (let ((old-buffer-modified-p (buffer-modified-p)))
-    (when (buffer-live-p buffer)
-      (with-current-buffer buffer
-	(unwind-protect
-	    (put-text-property begin end 'mouse-face mouse-face)
-	  (set-buffer-modified-p old-buffer-modified-p)
-	  (setq sqlplus-mouse-selection (when mouse-face (list buffer begin end))))))))
-
-(defun sqlplus-clear-mouse-selection ()
-  (when (and sqlplus-mouse-selection
-	     (eq (event-basic-type last-input-event) 'mouse-1)
-	     (not (memq 'down (event-modifiers last-input-event))))
-    (sqlplus-mouse-set-selection (car sqlplus-mouse-selection) (cadr sqlplus-mouse-selection) (caddr sqlplus-mouse-selection) nil)))
-  
-(add-hook 'plsql-mode-hook
-          (lambda ()
-            (modify-syntax-entry ?. "." sql-mode-syntax-table)
-            (setq sqlplus-font-lock-keywords-1 (sqlplus-set-font-lock-emacs-structures-for-level 1 major-mode))
-            (setq sqlplus-font-lock-keywords-2 (sqlplus-set-font-lock-emacs-structures-for-level 2 major-mode))
-            (setq sqlplus-font-lock-keywords-3 (sqlplus-set-font-lock-emacs-structures-for-level 3 major-mode))
-            (setq font-lock-defaults '((sqlplus-font-lock-keywords-1 sqlplus-font-lock-keywords-2 sqlplus-font-lock-keywords-3)
-                                       nil t ((?_ . "w") (?$ . "w") (?# . "w") (?& . "w"))))
-	    (orcl-mode 1)
-            (use-local-map plsql-mode-map) ; std
-	    (add-hook 'post-command-hook 'sqlplus-clear-mouse-selection nil t)))
-
-(setq recentf-exclude (cons (concat "^" (regexp-quote (file-name-as-directory temporary-file-directory)))
-			    (when (boundp 'recentf-exclude)
-			      recentf-exclude)))
-
-(when (fboundp 'ide-register-persistent-var)
-  (funcall (symbol-function 'ide-register-persistent-var) 'sqlplus-connect-strings-alist
-			       ;; save proc
-			       (lambda (alist)
-				 (mapcar (lambda (pair)
-					   (if sqlplus-save-passwords
-					       pair
-					     (cons (car pair) nil)))
-					 alist))
-			       ;; load proc
-			       (lambda (alist)
-				 (setq sqlplus-connect-string-history (mapcar (lambda (pair) (car pair)) alist))
-				 alist)))
-
-(defun get-all-dirs (root-dir)
-  (let ((list-to-see (list root-dir))
-        result-list)
-    (while list-to-see
-      (let* ((dir (pop list-to-see))
-             (children (directory-files dir t)))
-        (push dir result-list)
-        (dolist (child children)
-          (when (and (not (string-match "^[.]+"(file-name-nondirectory child)))
-                     (file-directory-p child))
-            (push child list-to-see)))))
-    result-list))
-
-(defun sqlplus-command-line ()
-  (interactive)
-  (if (comint-check-proc "*SQL*")
-      (pop-to-buffer "*SQL*")
-    (let* ((pair (sqlplus-read-connect-string nil (when sqlplus-connect-string (car (refine-connect-string sqlplus-connect-string)))))
-	   (qualified-cs (car pair))
-	   (refined-cs (cadr pair))
-	   (password (cdr (refine-connect-string qualified-cs))))
-      (if (string-match "^\\([^@]*\\)@\\(.*\\)$" refined-cs)
-	  (let ((old-sql-get-login-fun (symbol-function 'sql-get-login)))
-	    (setq sql-user (match-string 1 refined-cs)
-		  sql-password password
-		  sql-database (match-string 2 refined-cs))
-	    (unwind-protect
-		(progn
-		  (fset 'sql-get-login (lambda (&rest whatever) nil))
-		  (sql-oracle))
-	      (fset 'sql-get-login old-sql-get-login-fun)))
-	(error "Connect string must be in form login@sid")))))
-
-(defun sqlplus-find-tnsnames ()
-  (interactive)
-  (let* ((ora-home-dir (or (getenv "ORACLE_HOME") (error "Environment variable ORACLE_HOME not set")))
-	 found
-	 (list-to-see (list ora-home-dir)))
-    (while (and (not found) list-to-see)
-      (let* ((dir (pop list-to-see))
-	     (children (condition-case nil (directory-files dir t) (error nil))))
-	(dolist (child children)
-	  (unless found
-	    (if (string-match "admin.tnsnames\.ora$" child)
-		(progn
-		  (setq found t)
-		  (find-file child))
-	      (if (and (not (string-match "^[.]+" (file-name-nondirectory child)))
-		       (file-directory-p child))
-		  (push child list-to-see)))))))
-    (unless found
-      (message "File tnsnames.ora not found"))))
-
-(defun sqlplus-remove-help-echo (list)
-  "Remove all HELP-ECHO properties from mode-line format value"
-  (when (listp list)
-      (if (eq (car list) :propertize)
-	  (while list
-	    (when (eq (cadr list) 'help-echo)
-	      (setcdr list (cdddr list)))
-	    (setq list (cdr list)))
-	(dolist (elem list) (sqlplus-remove-help-echo elem)))))
-
-(when (>= emacs-major-version 22)
-  (sqlplus-remove-help-echo mode-line-modes))
-
-(defun sqlplus-get-project-root-dir (path)
-  (let ((path (file-truename (substitute-in-file-name path)))
-	dir)
-    (if (file-directory-p path)
-	(progn
-	  (setq path (file-name-as-directory path))
-	  (setq dir path))
-      (setq dir (file-name-as-directory (file-name-directory path))))
-    (let ((last-project-dir dir)
-	  (dir-list (split-string dir "/"))
-	  is-project)
-      (while (directory-files dir t (concat "^" "\\(\\.svn\\|CVS\\)$") t)
-	(setq is-project t
-	      last-project-dir (file-name-as-directory dir)
-	      dir (file-name-as-directory (file-name-directory (directory-file-name dir)))))
-      (when is-project
-	(let ((list (nthcdr (1- (length (split-string last-project-dir "/"))) dir-list)))
-	  (cond ((equal (car list) "trunk")
-		 (setq last-project-dir (concat last-project-dir "trunk/")))
-		((member (car list) '("branches" "tags"))
-		 (setq last-project-dir (concat last-project-dir (car list) "/" (when (cdr list) (concat (cadr list) "/")))))
-		(t)))
-	(setq dir last-project-dir)))
-    dir))
-
-(defvar sqlplus-search-buffer-name "*search*")
-
-(defvar sqlplus-object-types-regexps 
-  '(
-    ("TABLE" . "\\bcreate\\s+table\\s+[^(]*?\\b#\\b")
-    ("VIEW"  . "\\bview\\s+.*?\\b#\\b")
-    ("INDEX" . "\\b(constraint|index)\\s+.*?\\b#\\b")
-    ("TRIGGER" . "\\btrigger\\s+.*?\\b#\\b")
-    ("SEQUENCE" . "\\bsequence\\s+.*?\\b#\\b")
-    ("SYNONYM"  . "\\bsynonym\\s+.*?\\b#\\b")
-    ("SCHEMA"   . "\\bcreate\\b.*?\\buser\\b.*?\\b#\\b")
-    ("PROCEDURE" . "\\b(procedure|function)\\b[^(]*?\\b#\\b")
-    ("PACKAGE"   . "\\bpackage\\s+.*?\\b#\\b")))
-
-(defvar sqlplus-root-dir-history nil)
-
-(defvar sqlplus-compare-report-buffer-name "*Comparation Report*")
-
-(defun sqlplus-compare-schema-to-filesystem (&optional arg)
-  (interactive "P")
-  (let* ((connect-string sqlplus-connect-string)
-	 (objects-alist (sqlplus-get-objects-alist sqlplus-connect-string))
-	 (report-buffer (get-buffer-create sqlplus-compare-report-buffer-name))
-	 (types-length (- (length objects-alist) 2))
-	 (root-dir (or (sqlplus-get-root-dir connect-string)
-		       (sqlplus-set-project-for-connect-string connect-string)
-		       (error "Root dir not set")))
-	 (counter 0))
-    (unless objects-alist
-      (error "Not ready yet - try again later"))
-    (save-excursion
-      (switch-to-buffer-other-window report-buffer))
-    (with-current-buffer report-buffer
-      (let ((inhibit-read-only t))
-	(erase-buffer)
-	(insert (format "%s %s vs. %s\n\n" (current-time-string) (car (refine-connect-string connect-string)) root-dir))
-	(sit-for 0)))
-    (dolist (pair objects-alist)
-      (let ((type (upcase (format "%s" (car pair))))
-	    (names (cdr pair)))
-	(unless (member type '("SCHEMA" "COLUMN"))
-	  (incf counter)
-	  (message (format "%s (%d/%d)..." type counter types-length))
-	  (dolist (name-pair names)
-	    (let* ((name (car name-pair))
-		   (grep-result (sqlplus-file-get-source sqlplus-connect-string name type 'batch-mode)))
-	      (with-current-buffer report-buffer
-		(let ((inhibit-read-only t))
-		  (goto-char (point-max))
-		  (cond ((eql (length grep-result) 0)
-			 (insert (format "%s %s: not found\n" type name))
-			 (sit-for 0))
-			((and arg
-			      (> (length grep-result) 1))
-			 (insert (format "%s %s:\n" type name))
-			 (dolist (list grep-result)
-			   (insert (format "  %s:%d %s\n" (car list) (cadr list) (caddr list))))
-			 (sit-for 0))
-			(t)))))))))
-    (message "Done.")
-    (with-current-buffer report-buffer
-      (goto-char (point-min)))))
-
-(defun sqlplus-proj-find-files (dir file-predicate &optional dir-predicate)
-  (setq dir (file-name-as-directory (file-truename (substitute-in-file-name dir))))
-  (let (result-list)
-    (mapcar (lambda (path)
-	      (if (file-directory-p path)
-		  (when (and (file-accessible-directory-p path)
-			     (or (null dir-predicate)
-				 (funcall dir-predicate path)))
-		    (setq result-list (append result-list (sqlplus-proj-find-files path file-predicate dir-predicate))))
-		(when (or (null file-predicate)
-			  (funcall file-predicate path))
-		  (push path result-list))))
-	    (delete (concat (file-name-as-directory dir) ".") 
-		    (delete (concat (file-name-as-directory dir) "..")
-			    (directory-files dir t nil t))))
-    result-list))
-
-(defvar sqlplus-proj-ignored-extensions '("semantic.cache"))
-
-(defun sqlplus-mode-file-regexp-list (mode-symbol-list)
-  (delq nil (mapcar (lambda (element)
-		      (let ((fun-name (if (listp (cdr element)) (cadr element) (cdr element))))
-			(when (memq fun-name mode-symbol-list) (cons (car element) fun-name))))
-		    auto-mode-alist)))
-
-(defun sqlplus-find-project-files (root-dir mode-symbol-list predicate)
-  (let ((obj-file-regexp-list (delq nil (mapcar (lambda (element)
-						  (let ((len (length element)))
-						    (unless (and (> len 0)
-								 (equal (elt element (1- len)) ?/))
-						      (concat (regexp-quote element) "$"))))
-						(append sqlplus-proj-ignored-extensions completion-ignored-extensions))))
-	(mode-file-regexp-list (sqlplus-mode-file-regexp-list mode-symbol-list))) ; (file-path-regexp . major-mode-function-symbol)
-    (when (and mode-symbol-list
-	       (not mode-file-regexp-list))
-      (error (format "No rules for %s major modes in auto-mode-alist." (mapconcat 'identity mode-symbol-list ", "))))
-    (sqlplus-proj-find-files root-dir
-			      (lambda (file-name)
-				(and (not (string-match "#" file-name))
-				     (not (string-match "semantic.cache" file-name))
-				     (or (and (not mode-symbol-list)
-					      (not (some (lambda (regexp)
-								  (string-match regexp file-name))
-								obj-file-regexp-list)))
-					 (and mode-symbol-list
-					      (some (lambda (element)
-						      (let ((freg (if (string-match "[$]" (car element))
-								      (car element)
-								    (concat (car element) "$"))))
-							(when (string-match freg file-name)
-							  (cdr element))))
-						    mode-file-regexp-list)))
-				     (or (not predicate)
-					 (funcall predicate file-name))))
-			      (lambda (dir-path)
-				(not (string-match "/\\(\\.svn\\|CVS\\)$" dir-path))))))
-
-
-(defun sqlplus-file-get-source (connect-string object-name object-type &optional batch-mode)
-  (interactive
-   (progn
-     (push (point-marker) plsql-mark-backward-list)
-     (list sqlplus-connect-string (thing-at-point 'symbol) nil)))
-  (unless object-name
-    (error "Nothing to search"))
-  (let* ((root-dir (or (and (not object-type)
-			    (eq major-mode 'plsql-mode)
-			    (buffer-file-name)
-			    (sqlplus-get-project-root-dir (buffer-file-name)))
-		       (sqlplus-get-root-dir connect-string)
-		       (sqlplus-set-project-for-connect-string connect-string)
-		       (error "Root dir not set")))
-	 (mode-symbol-list '(plsql-mode sql-mode))
-	 (files-to-grep (sqlplus-find-project-files root-dir mode-symbol-list nil))
-	 (temp-file-path (concat (file-name-as-directory temporary-file-directory) (make-temp-name "ide-")))
-	 (search-buffer (get-buffer sqlplus-search-buffer-name))
-	 (regexp (let ((index 0)
-		       (len (length object-name))
-		       result)
-		   (setq result
-			 (if object-type
-			     (let ((type (cond ((equal object-type "FUNCTION") "PROCEDURE")
-					       ((equal object-type "PACKAGE BODY") "PACKAGE")
-					       (t object-type))))
-			       (cdr (assoc type sqlplus-object-types-regexps)))
-			   (mapconcat 'cdr sqlplus-object-types-regexps "|")))
-		   (unless result
-		     (error "Not implemented"))
-		   (while (and (< index (length result))
-			       (string-match "#" result index))
-		     (setq index (+ (match-beginning 0) len))
-		     (setq result (replace-match object-name t t result)))
-		   (setq index 0)
-		   (while (and (< index (length result))
-			       (string-match "[$]\\(\\\\b\\)?" result index))
-		     (setq index (+ (match-end 0) 1))
-		     (setq result (replace-match "\\$" t t result)))
-		   result))
-	 grep-command
-	 grep-result)
-    (when search-buffer
-      (with-current-buffer search-buffer
-	(let ((inhibit-read-only t))
-	  (erase-buffer))))
-    ;; (message "Object type: %S, object name: %S, regexp: %S" object-type object-name regexp)
-    (with-temp-file temp-file-path
-      (dolist (path files-to-grep)
-	(insert (concat "'" path "'\n"))))
-    (let* ((grep-command (format "cat %s | xargs grep -nHiE -e '%s'" temp-file-path regexp))
-	   (raw-grep-result (split-string (shell-command-to-string grep-command) "\n" t))
-	   (grep-result (delq nil (mapcar (lambda (line)
-					    (string-match "^\\(.*?\\):\\([0-9]+\\):\\(.*\\)$" line)
-					    (let* ((path (match-string 1 line))
-						   (line-no (string-to-number (match-string 2 line)))
-						   (text (match-string 3 line))
-						   (text2 text)
-						   (syn-table (copy-syntax-table))
-						   (case-fold-search t))
-					      (modify-syntax-entry ?$ "w" syn-table)
-					      (modify-syntax-entry ?# "w" syn-table)
-					      (modify-syntax-entry ?_ "w" syn-table)
-					      (with-syntax-table syn-table
-						(when (and (or (and (not object-type)
-								    (> (length raw-grep-result) 1))
-							       (equal object-type "SYNONYM"))
-							   (string-match "\\<\\(for\\|from\\|on\\|as\\)\\>" text2))
-						  (setq text2 (substring text2 0 (match-beginning 0))))
-						;; (message "GREP-RESULT: %s" text2)
-						(unless (or (not (string-match (concat "\\<" (regexp-quote object-name) "\\>") text2))
-							    (string-match (concat "\\(--\\|\\<pro\\>\\|\\<prompt\\>\\|\\<drop\\>\\|\\<grant\\>\\).*\\<"
-										  (regexp-quote object-name) "\\>") text2)
-							    (and (or (and (not object-type)
-									  (> (length raw-grep-result) 1))
-								     (equal object-type "TRIGGER"))
-								 (string-match "\\<\\(alter\\|disable\\|enable\\)\\>" text2))
-							    (and (or (and (not object-type)
-									  (string-match "\\<package\\>" text2)
-									  current-prefix-arg)
-								     (equal object-type "PACKAGE"))
-								 (string-match "\\<body\\>" text2))
-							    (and (or (and (not object-type)
-									  (string-match "\\<package\\>" text2)
-									  (not current-prefix-arg))
-								     (equal object-type "PACKAGE BODY"))
-								 (not (string-match "\\<body\\>" text2)))
-							    (and (not object-type)
-								 (not current-prefix-arg)
-								 (string-match "[.]pks$" path)))
-						  (list path line-no text)))))
-					  raw-grep-result))))
-      (if batch-mode
-	  grep-result
-	(cond ((not grep-result)
-	       (error "Not found"))
-	      ((eql (length grep-result) 1)
-	       (sqlplus-switch-to-buffer (caar grep-result) (cadar grep-result))
-	       (when connect-string
-		 (setq sqlplus-connect-string connect-string)))
-	      (t
-	       (let ((search-buffer (get-buffer-create sqlplus-search-buffer-name)))
-		 (with-current-buffer search-buffer
-		   (setq buffer-read-only t)
-		   (let ((inhibit-read-only t))
-		     (setq default-directory root-dir)
-		     (erase-buffer)
-		     (insert "Root dir: ")
-		     (sqlplus-proj-insert-with-face root-dir 'font-lock-keyword-face)
-		     (insert "; Range: ")
-		     (sqlplus-proj-insert-with-face (mapconcat (lambda (sym) (sqlplus-mode-name-stringify sym)) mode-symbol-list ", ")
-						     'font-lock-keyword-face)
-		     (insert "; Object type: ")
-		     (sqlplus-proj-insert-with-face (or object-type "unspecified") 'font-lock-keyword-face)
-		     (insert "; Object name: ")
-		     (sqlplus-proj-insert-with-face object-name 'font-lock-keyword-face)
-		     (insert "\n\n")
-		     (compilation-minor-mode 1)
-		     (dolist (result grep-result)
-		       (let ((relative-path (concat "./" (file-relative-name (car result) root-dir)))
-			     (line-no (cadr result))
-			     (text (caddr result)))
-			 (put-text-property 0 (length relative-path) 'mouse-face 'highlight relative-path)
-			 (insert relative-path)
-			 (insert (format ":%S:1 %s\n" line-no text))))
-		     (insert (format "\n%d matches found." (length grep-result)))
-		     (goto-char (point-min))
-		     (when (and grep-result (fboundp 'compile-reinitialize-errors) (funcall (symbol-function 'compile-reinitialize-errors) t)))
-		     (switch-to-buffer-other-window search-buffer)
-		     (goto-line 1)
-		     (goto-line 3))))))))))
-
-(defun sqlplus-mode-name-stringify (mode-name)
-  (let ((name (format "%s" mode-name)))
-    (replace-regexp-in-string "-" " "
-			      (capitalize
-			       (if (string-match "^\\(.*\\)-mode" name)
-				   (match-string 1 name)
-				 name)))))
-
-(defun sqlplus-proj-insert-with-face (string face)
-  (let ((point (point)))
-    (insert string)
-    (let ((overlay (make-overlay point (point))))
-      (overlay-put overlay 'face face))))
-
-(defun sqlplus-set-project-for-connect-string (connect-string)
-  (if (featurep 'ide-skel)
-      ;; Prepare sqlplus-root-dir-history (file-name-history) for user convenience
-      ;; 0. previous project root
-      ;; 1. current editor file project root
-      ;; 2. previous choices
-      ;; 3. new project roots
-      (let* ((prev-proj-root-dir (sqlplus-get-root-dir connect-string))
-	     (last-sel-window (funcall 'ide-skel-get-last-selected-window))
-	     (editor-file-proj-root-dir (when last-sel-window
-					  (let* ((buffer (window-buffer last-sel-window))
-						 (path (and buffer (buffer-file-name buffer)))
-						 (project (and path (car (funcall 'ide-skel-proj-get-project-create path)))))
-					    (when (funcall 'ide-skel-project-p project)
-					      (funcall 'ide-skel-project-root-path project))))))
-	(setq sqlplus-root-dir-history
-	      (delete-dups
-	       (delq nil
-		     (mapcar (lambda (dir)
-			       (when dir
-				 (directory-file-name (file-truename (substitute-in-file-name dir)))))
-			     (append
-			      (list editor-file-proj-root-dir prev-proj-root-dir)
-			      sqlplus-root-dir-history
-			      (mapcar (lambda (project) (funcall 'ide-skel-project-root-path project))
-				      (symbol-value 'ide-skel-projects)))))))
-	(let* ((file-name-history (cdr sqlplus-root-dir-history))
-	       (use-file-dialog nil)
-	       (dir (directory-file-name (file-truename (substitute-in-file-name
-							 (read-directory-name (format "Root dir for %s: " (car (refine-connect-string connect-string)))
-									      (car sqlplus-root-dir-history)
-									      (car sqlplus-root-dir-history)
-									      t
-									      nil))))))
-	  (funcall 'ide-skel-proj-get-project-create dir)
-	  (sqlplus-set-root-dir dir connect-string)
-	  (message (format "Root dir for %s set to %s" (car (refine-connect-string connect-string)) dir))
-	  dir))
-    (let* ((use-file-dialog nil)
-	   (dir (directory-file-name (file-truename (substitute-in-file-name
-						    (read-directory-name (format "Root dir for %s: " (car (refine-connect-string connect-string)))
-									 nil nil t nil))))))
-      (sqlplus-set-root-dir dir connect-string)
-      (message (format "Root dir for %s set to %s" (car (refine-connect-string connect-string)) dir))
-      dir)))
-
-;;; Plugin for ide-skel.el
-
-(defstruct sqlplus-tab
-  id
-  name              ; tab name
-  symbol            ; view/sequence/schema/trigger/index/table/package/synonym/procedure
-  help-string
-  (display-start 1) ; display-start in side view window
-  (data nil)        ; '(("name" . status)...), where status t means 'invalid'
-  draw-function     ; parameters: sqlplus-tab
-  click-function    ; parameters: event "@e"
-  (errors-count 0)
-  (refresh-in-progress t)
-  update-select)
-
-(defvar sqlplus-side-view-connect-string nil)
-(make-variable-buffer-local 'sqlplus-side-view-connect-string)
-
-(defvar sqlplus-side-view-active-tab nil)
-(make-variable-buffer-local 'sqlplus-side-view-active-tab)
-
-(defvar sqlplus-side-view-tabset nil)
-(make-variable-buffer-local 'sqlplus-side-view-tabset)
-
-(defface sqlplus-side-view-face '((t :inherit variable-pitch :height 0.8))
-  "Default face used in right view"
-  :group 'sqlplus)
-
-(defvar sqlplus-side-view-keymap nil)
-(unless sqlplus-side-view-keymap
-  (setq sqlplus-side-view-keymap (make-sparse-keymap))
-  (define-key sqlplus-side-view-keymap [mode-line down-mouse-1] 'ignore)
-  (define-key sqlplus-side-view-keymap [mode-line mouse-1] 'sqlplus-side-view-tab-click))
-
-(defun sqlplus-side-view-tab-click (event)
-  (interactive "@e")
-  (with-selected-window (posn-window (event-start event))
-    (let* ((previous-sel-tab-info (nth sqlplus-side-view-active-tab sqlplus-side-view-tabset))
-	   (target (posn-string (event-start event)))
-	   (tab-info (get-text-property (cdr target) 'tab-info (car target))))
-      (setf (sqlplus-tab-display-start previous-sel-tab-info) (line-number-at-pos (window-start)))
-      (setq sqlplus-side-view-active-tab (sqlplus-tab-id tab-info))
-      (sqlplus-side-view-redraw (current-buffer) t)
-      (sqlplus-side-view-buffer-mode-line))))
-  
-(defun sqlplus-side-view-buffer-mode-line ()
-  (let* ((separator (propertize " "
-				'face 'header-line
-				'display '(space :width 0.2)
-				'pointer 'arrow)))
-    (setq mode-line-format
-	  (concat separator
-		  (mapconcat (lambda (tab)
-			       (let ((face (if (eq (sqlplus-tab-id tab) sqlplus-side-view-active-tab) 
-					       'tabbar-selected 
-					     'tabbar-unselected))
-				     (help-echo (concat (sqlplus-tab-help-string tab)
-							(if (> (sqlplus-tab-errors-count tab) 0)
-							    (format "\n(%s error%s)" (sqlplus-tab-errors-count tab)
-								    (if (> (sqlplus-tab-errors-count tab) 1) "s" ""))
-							  ""))))
-				 (propertize (format " %s " (sqlplus-tab-name tab))
-					     'local-map sqlplus-side-view-keymap
-					     'tab-info tab
-					     'help-echo help-echo
-					     'mouse-face 'tabbar-highlight
-					     'face (if (> (sqlplus-tab-errors-count tab) 0)
-						       (list '(foreground-color . "red") face)
-						     face)
-					     'pointer 'hand)))
-			     sqlplus-side-view-tabset
-			     separator)
-		  separator))))
-
-(defun sqlplus-side-view-click-on-default-handler (event)
-  (interactive "@e")
-  (with-selected-window (posn-window (event-start event))
-    (let* ((posn-point (posn-point (event-start event)))
-	   (object-name (get-text-property posn-point 'object-name))
-	   (object-type (get-text-property posn-point 'object-type))
-	   (type (car event)))
-      (when (eq type 'mouse-3)
-	(setq type (car (x-popup-menu t (append (list 'keymap object-name)
-						    (list '(sqlplus-refresh-side-view-buffer "Refresh" t))
-						    (list '(mouse-1 "Get source from Oracle" t))
-						    (list '(M-mouse-1 "Search source in filesystem" t))
-						    (list (list 'C-M-mouse-1 (concat "Set root dir for " (car (refine-connect-string sqlplus-side-view-connect-string))) t))
-						    )))))
-      (cond ((eq type 'mouse-1)
-	     (sqlplus-get-source sqlplus-side-view-connect-string object-name object-type))
-	    ((eq type 'M-mouse-1)
-	     (sqlplus-file-get-source sqlplus-side-view-connect-string object-name object-type))
-	    ((eq type 'C-M-mouse-1)
-	     (sqlplus-set-project-for-connect-string sqlplus-side-view-connect-string))
-	    ((eq type nil))
-	    (t
-	     (condition-case err
-		 (funcall type)
-	       (error nil)))))))
-
-(defun sqlplus-side-view-click-on-index-handler (event)
-  (interactive "@e")
-  (with-selected-window (posn-window (event-start event))
-    (let* ((posn-point (posn-point (event-start event)))
-	   (object-name (get-text-property posn-point 'object-name))
-	   (object-type (get-text-property posn-point 'object-type))
-	   (type (car event)))
-      (when (eq type 'mouse-3)
-	(setq type (car (x-popup-menu t (append (list 'keymap object-name)
-						    (list '(sqlplus-refresh-side-view-buffer "Refresh" t))
-						    (list '(mouse-1 "Get source from Oracle" t))
-						    (list '(M-mouse-1 "Search source in filesystem" t))
-						    (list (list 'C-M-mouse-1 (concat "Set root dir for " (car (refine-connect-string sqlplus-side-view-connect-string))) t))
-						    )))))
-      (cond ((eq type 'mouse-1)
-	     (sqlplus-get-source sqlplus-side-view-connect-string object-name object-type))
-	    ((eq type 'M-mouse-1)
-	     (sqlplus-file-get-source sqlplus-side-view-connect-string object-name object-type))
-	    ((eq type 'C-M-mouse-1)
-	     (sqlplus-set-project-for-connect-string sqlplus-side-view-connect-string))
-	    ((eq type nil))
-	    (t
-	     (condition-case err
-		 (funcall type)
-	       (error nil)))))))
-
-(defun sqlplus-side-view-click-on-schema-handler (event)
-  (interactive "@e")
-  (with-selected-window (posn-window (event-start event))
-    (let* ((posn-point (posn-point (event-start event)))
-	   (object-name (get-text-property posn-point 'object-name))
-	   (object-type (get-text-property posn-point 'object-type))
-	   (last-selected-win (funcall 'ide-skel-get-last-selected-window))
-	   (type (car event)))
-      (when (eq type 'mouse-3)
-	(setq type (car (x-popup-menu t (append (list 'keymap object-name)
-						    (list '(sqlplus-refresh-side-view-buffer "Refresh" t))
-						    (list '(mouse-1 "Connect to schema" t))
-						    (list '(M-mouse-1 "Search source in filesystem" t))
-						    (list (list 'C-M-mouse-1 (concat "Set root dir for " (car (refine-connect-string sqlplus-side-view-connect-string))) t))
-						    )))))
-      (cond ((eq type 'mouse-1)
-	     (when (string-match "@.*$" sqlplus-side-view-connect-string)
-	       (let* ((cs (downcase (concat object-name (match-string 0 sqlplus-side-view-connect-string))))
-		      (pair (sqlplus-read-connect-string cs cs)))
-		 (select-window (or last-selected-win (funcall 'ide-skel-get-editor-window)))
-		 (sqlplus (car pair) (concat (cadr pair) (concat "." sqlplus-session-file-extension))))))
-	    ((eq type 'M-mouse-1)
-	     (sqlplus-file-get-source sqlplus-side-view-connect-string object-name object-type))
-	    ((eq type 'C-M-mouse-1)
-	     (sqlplus-set-project-for-connect-string sqlplus-side-view-connect-string))
-	    ((eq type nil))
-	    (t
-	     (condition-case err
-		 (funcall type)
-	       (error nil))))
-      (select-window (funcall 'ide-skel-get-last-selected-window)))))
-
-(defun sqlplus-side-view-click-on-table-handler (event)
-  (interactive "@e")
-  (with-selected-window (posn-window (event-start event))
-    (let* ((posn-point (posn-point (event-start event)))
-	   (object-name (get-text-property posn-point 'object-name))
-	   (object-type (get-text-property posn-point 'object-type))
-	   (type (car event)))
-      (when (eq type 'mouse-3)
-	(setq type (car (x-popup-menu t (append (list 'keymap object-name)
-						    (list '(sqlplus-refresh-side-view-buffer "Refresh" t))
-						    (list '(mouse-1 "Show description" t))
-						    (list '(C-mouse-1 "Select *" t))
-						    (list '(S-mouse-1 "Get source from Oracle" t))
-						    (list '(M-mouse-1 "Search source in filesystem" t))
-						    (list (list 'C-M-mouse-1 (concat "Set root dir for " (car (refine-connect-string sqlplus-side-view-connect-string))) t))
-						    )))))
-      (cond ((eq type 'mouse-1)
-	     (sqlplus-execute sqlplus-side-view-connect-string
-			      (sqlplus-fontify-string sqlplus-side-view-connect-string (format "desc %s;" object-name))
-			      nil nil))
-	    ((eq type 'C-mouse-1)
-	     (sqlplus-execute sqlplus-side-view-connect-string
-			      (sqlplus-fontify-string sqlplus-side-view-connect-string (format "select * from %s;" object-name))
-			      nil nil))
-	    ((eq type 'S-mouse-1)
-	     (sqlplus-get-source sqlplus-side-view-connect-string object-name object-type))
-	    ((eq type 'M-mouse-1)
-	     (sqlplus-file-get-source sqlplus-side-view-connect-string object-name object-type))
-	    ((eq type 'C-M-mouse-1)
-	     (sqlplus-set-project-for-connect-string sqlplus-side-view-connect-string))
-	    ((eq type nil))
-	    (t
-	     (condition-case err
-		 (funcall type)
-	       (error nil))))
-      (select-window (funcall 'ide-skel-get-last-selected-window)))))
-
-(defun sqlplus-side-view-click-on-package-handler (event)
-  (interactive "@e")
-  (with-selected-window (posn-window (event-start event))
-    (let* ((posn-point (posn-point (event-start event)))
-	   (object-name (get-text-property posn-point 'object-name))
-	   (object-type (get-text-property posn-point 'object-type))
-	   (type (car event)))
-      (when (eq type 'mouse-3)
-	(setq type (car (x-popup-menu t (append (list 'keymap object-name)
-						(list '(sqlplus-refresh-side-view-buffer "Refresh" t))
-						(list '(S-mouse-1 "Get package header from Oracle" t))
-						(list '(mouse-1 "Get package body from Oracle" t))
-						(list '(S-M-mouse-1 "Search header source in filesystem" t))
-						(list '(M-mouse-1 "Search body source in filesystem" t))
-						(list (list 'C-M-mouse-1 (concat "Set root dir for " (car (refine-connect-string sqlplus-side-view-connect-string))) t))
-						)))))
-      (cond ((eq type 'S-mouse-1)
-	     (sqlplus-get-source sqlplus-side-view-connect-string object-name object-type))
-	    ((eq type 'mouse-1)
-	     (sqlplus-get-source sqlplus-side-view-connect-string object-name "PACKAGE BODY"))
-	    ((eq type 'M-mouse-1)
-	     (sqlplus-file-get-source sqlplus-side-view-connect-string object-name "PACKAGE BODY"))
-	    ((eq type 'S-M-mouse-1)
-	     (sqlplus-file-get-source sqlplus-side-view-connect-string object-name "PACKAGE"))
-	    ((eq type 'C-M-mouse-1)
-	     (sqlplus-set-project-for-connect-string sqlplus-side-view-connect-string))
-	    ((eq type nil))
-	    (t
-	     (condition-case err
-		 (funcall type)
-	       (error nil)))))))
-
-(defun sqlplus-side-view-default-draw-panel (tab-info click-function)
-  (let ((pairs (sort (sqlplus-tab-data tab-info) 
-		     (lambda (pair1 pair2) (string< (car pair1) (car pair2)))))
-	(type-name (upcase (symbol-name (sqlplus-tab-symbol tab-info)))))
-    (dolist (pair pairs)
-      (let* ((label (format "  % -100s" (car pair)))
-	     (km (make-sparse-keymap)))
-	(define-key km [down-mouse-1] 'ignore)
-	(define-key km [mouse-1] click-function)
-	(define-key km [C-down-mouse-1] 'ignore)
-	(define-key km [C-mouse-1] click-function)
-	(define-key km [S-down-mouse-1] 'ignore)
-	(define-key km [S-mouse-1] click-function)
-	(define-key km [down-mouse-3] 'ignore)
-	(define-key km [mouse-3] click-function)
-	(setq label (propertize label
-				'mouse-face 'ide-skel-highlight-face
-				'face (if (cdr pair)
-					  '(sqlplus-side-view-face (foreground-color . "red"))
-					'sqlplus-side-view-face)
-				'local-map km
-				'pointer 'hand
-				'object-name (car pair)
-				'object-type type-name))
-	(insert label)
-	(insert "\n")))))
-
-(defun sqlplus-refresh-side-view-buffer ()
-  (let* ((tab-info (nth sqlplus-side-view-active-tab sqlplus-side-view-tabset))
-	 (update-select (sqlplus-tab-update-select tab-info)))
-    (unless (sqlplus-tab-refresh-in-progress tab-info)
-      (sqlplus-hidden-select sqlplus-side-view-connect-string update-select 'sqlplus-my-update-handler))))
-	
-(defun sqlplus-get-default-update-select (symbol)
-  (concat "select object_name, object_type, decode( status, 'INVALID', 'I', ' ' ) from user_objects\n"
-	  "where object_name not like 'BIN$%'\n"
-	  (format "and object_type = '%s';" (upcase (symbol-name symbol)))))
-
-(defun sqlplus-create-side-view-buffer (connect-string)
-  (let* ((original-connect-string connect-string)
-	 (connect-string (car (refine-connect-string connect-string)))
-	 (buffer (funcall 'ide-skel-get-side-view-buffer-create
-		 (concat " Ide Skel Right View SQL " connect-string)
-		 'right "SQL" (concat "SQL Panel for " connect-string)
-		 (lambda (editor-buffer)
-		   (let ((connect-string sqlplus-side-view-connect-string))
-		     (with-current-buffer editor-buffer
-		       (and connect-string
-			    (equal (car (refine-connect-string sqlplus-connect-string))
-				   (car (refine-connect-string connect-string)))
-			    )))))))
-    (with-current-buffer buffer
-      (set 'ide-skel-tabbar-menu-function
-	   (lambda ()
-	      (let ((tab-info (nth sqlplus-side-view-active-tab sqlplus-side-view-tabset)))
-		(list
-		 (unless (sqlplus-tab-refresh-in-progress tab-info) 
-		   '(sqlplus-refresh-side-view-buffer "Refresh" t))))))
-      (setq sqlplus-side-view-connect-string original-connect-string
-	    sqlplus-side-view-active-tab 0
-	    sqlplus-side-view-tabset
-	    (list
-	     (make-sqlplus-tab :id 0 :name "Tab" :symbol 'table :help-string "Tables" :draw-function 'sqlplus-side-view-default-draw-panel
-			       :update-select (sqlplus-get-default-update-select 'table)
-			       :click-function 'sqlplus-side-view-click-on-table-handler)
-	     (make-sqlplus-tab :id 1 :name "Vie" :symbol 'view :help-string "Views" :draw-function 'sqlplus-side-view-default-draw-panel
-			       :update-select (sqlplus-get-default-update-select 'view)
-			       :click-function 'sqlplus-side-view-click-on-table-handler)
-	     (make-sqlplus-tab :id 2 :name "Idx" :symbol 'index :help-string "Indexes" :draw-function 'sqlplus-side-view-default-draw-panel
-			       :update-select (sqlplus-get-default-update-select 'index)
-			       :click-function 'sqlplus-side-view-click-on-index-handler)
-	     (make-sqlplus-tab :id 3 :name "Tri" :symbol 'trigger :help-string "Triggers" :draw-function 'sqlplus-side-view-default-draw-panel
-			       :update-select (sqlplus-get-default-update-select 'trigger)
-			       :click-function 'sqlplus-side-view-click-on-default-handler)
-	     (make-sqlplus-tab :id 4 :name "Seq" :symbol 'sequence :help-string "Sequences" :draw-function 'sqlplus-side-view-default-draw-panel
-			       :update-select (sqlplus-get-default-update-select 'sequence)
-			       :click-function 'sqlplus-side-view-click-on-default-handler)
-	     (make-sqlplus-tab :id 5 :name "Syn" :symbol 'synonym :help-string "Synonyms" :draw-function 'sqlplus-side-view-default-draw-panel
-			       :update-select (sqlplus-get-default-update-select 'synonym)
-			       :click-function 'sqlplus-side-view-click-on-default-handler)
-	     (make-sqlplus-tab :id 6 :name "Pkg" :symbol 'package :help-string "PL/SQL Packages" :draw-function 'sqlplus-side-view-default-draw-panel
-			       :update-select (sqlplus-get-default-update-select 'package)
-			       :click-function 'sqlplus-side-view-click-on-package-handler)
-	     (make-sqlplus-tab :id 7 :name "Prc" :symbol 'procedure :help-string "PL/SQL Functions & Procedures" :draw-function 'sqlplus-side-view-default-draw-panel
-			       :update-select (concat "select object_name, object_type, decode( status, 'INVALID', 'I', ' ' ) from user_objects\n"
-						      "where object_name not like 'BIN$%'\n"
-						      "and object_type in ('FUNCTION', 'PROCEDURE');")
-			       :click-function 'sqlplus-side-view-click-on-default-handler)
-	     (make-sqlplus-tab :id 8 :name "Sch" :symbol 'schema :help-string "Schemas" :draw-function 'sqlplus-side-view-default-draw-panel
-			       :update-select "select username, 'SCHEMA', ' ' from all_users where username not like 'BIN$%';"
-			       :click-function 'sqlplus-side-view-click-on-schema-handler)
-	     ))
-      (sqlplus-side-view-buffer-mode-line))
-    buffer))
-
-(defun sqlplus-side-view-redraw (sql-view-buffer &optional window-start-from-tab-info)
-  (with-current-buffer sql-view-buffer
-    (let* ((point (point))
-	   (tab-info (nth sqlplus-side-view-active-tab sqlplus-side-view-tabset))
-	   (window-start (when (and (symbol-value 'ide-skel-current-right-view-window)
-				    (eq (window-buffer (symbol-value 'ide-skel-current-right-view-window)) (current-buffer)))
-			   (if window-start-from-tab-info
-			       (sqlplus-tab-display-start tab-info)
-			     (line-number-at-pos (window-start (symbol-value 'ide-skel-current-right-view-window)))))))
-      (let ((inhibit-read-only t))
-	(setq buffer-read-only nil)
-	(erase-buffer)
-	(when (sqlplus-tab-draw-function tab-info)
-	  (funcall (sqlplus-tab-draw-function tab-info) tab-info (sqlplus-tab-click-function tab-info))))
-      (if window-start
-	  (let ((pos (save-excursion
-		       (goto-line window-start)
-		       (beginning-of-line)
-		       (point))))
-	    (set-window-start (symbol-value 'ide-skel-current-right-view-window) pos)
-	    (setf (sqlplus-tab-display-start tab-info) window-start))
-	(goto-char point)
-	(beginning-of-line)))))
-
-(defun sqlplus-side-view-update-data (connect-string alist)
-  (let* ((connect-string (car (refine-connect-string connect-string)))
-	 (sql-view-buffer (sqlplus-get-side-view-buffer connect-string))
-	 was-proc)
-    (when sql-view-buffer
-      (with-current-buffer sql-view-buffer
-	(dolist (pair alist)
-	  (let* ((symbol (if (eq (car pair) 'function) 'procedure (car pair)))
-		 (data-list (cdr pair))
-		 (tab-info (some (lambda (tab)
-				   (when (eq (sqlplus-tab-symbol tab) symbol)
-				     tab))
-				 sqlplus-side-view-tabset)))
-	    (when tab-info
-	      (setf (sqlplus-tab-refresh-in-progress tab-info) nil)
-	      (setf (sqlplus-tab-data tab-info)
-		    (if (and (eq symbol 'procedure)
-			     was-proc)
-			(append (sqlplus-tab-data tab-info) (copy-list data-list))
-		    data-list))
-	      (when (eq symbol 'procedure)
-		(setq was-proc t))
-	      (setf (sqlplus-tab-errors-count tab-info)
-		    (count t (mapcar 'cdr data-list)))
-	      (when (eql sqlplus-side-view-active-tab (sqlplus-tab-id tab-info))
-		(sqlplus-side-view-redraw (current-buffer))))))
-	(sqlplus-side-view-buffer-mode-line)
-	(force-mode-line-update)))))
-
-(defun sqlplus-side-view-window-function (side event &rest list)
-  (when (and (eq side 'right)
-	     (symbol-value 'ide-skel-current-right-view-window)
-	     (with-current-buffer (symbol-value 'ide-skel-current-editor-buffer)
-	       sqlplus-connect-string))
-    (cond ((memq event '(show editor-buffer-changed))
-	   (let ((sql-view-buffer (sqlplus-get-side-view-buffer (with-current-buffer (symbol-value 'ide-skel-current-editor-buffer)
-							     sqlplus-connect-string))))
-	     (when sql-view-buffer
-	       (with-current-buffer sql-view-buffer
-		 (set 'ide-skel-tabbar-enabled t)
-		 (funcall 'ide-skel-side-window-switch-to-buffer (symbol-value 'ide-skel-current-right-view-window) sql-view-buffer)))))))
-  nil)
-
-(add-hook 'ide-skel-side-view-window-functions 'sqlplus-side-view-window-function)
-
-
-(provide 'sqlplus)
-
-;;; sqlplus.el ends here
+#FILE text/x-emacs-lisp
+Ozs7IHNxbHBsdXMuZWwgLS0tIFVzZXIgZnJpZW5kbHkgaW50ZXJmYWNlIHRvIFNRTCpQbHVzIGFu
+ZCBzdXBwb3J0IGZvciBQTC9TUUwgY29tcGlsYXRpb24KCjs7IENvcHlyaWdodCAoQykgMjAwNywg
+MjAwOCBQZXRlciBLYXJwaXVrLCBTY290dCBUaWdlciBTLkEuCgo7OyBBdXRob3I6IFBldGVyIEth
+cnBpdWsgPHBpb3RyLmthcnBpdWsgKGF0KSBnbWFpbCAoZG90KSBjb20+Cjs7IE1haW50YWluZXI6
+IFBldGVyIEthcnBpdWsgPHBpb3RyLmthcnBpdWsgKGF0KSBnbWFpbCAoZG90KSBjb20+Cjs7IENy
+ZWF0ZWQ6IDI1IE5vdiAyMDA3Cjs7IFZlcnNpb24gMC45LjAKOzsgS2V5d29yZHM6IHNxbCBzcWxw
+bHVzIG9yYWNsZSBwbHNxbAoKOzsgR05VIEVtYWNzIGlzIGZyZWUgc29mdHdhcmU7IHlvdSBjYW4g
+cmVkaXN0cmlidXRlIGl0IGFuZC9vciBtb2RpZnkKOzsgaXQgdW5kZXIgdGhlIHRlcm1zIG9mIHRo
+ZSBHTlUgR2VuZXJhbCBQdWJsaWMgTGljZW5zZSBhcyBwdWJsaXNoZWQKOzsgYnkgdGhlIEZyZWUg
+U29mdHdhcmUgRm91bmRhdGlvbjsgZWl0aGVyIHZlcnNpb24gMiwgb3IgKGF0IHlvdXIKOzsgb3B0
+aW9uKSBhbnkgbGF0ZXIgdmVyc2lvbi4KCjs7IEdOVSBFbWFjcyBpcyBkaXN0cmlidXRlZCBpbiB0
+aGUgaG9wZSB0aGF0IGl0IHdpbGwgYmUgdXNlZnVsLCBidXQKOzsgV0lUSE9VVCBBTlkgV0FSUkFO
+VFk7IHdpdGhvdXQgZXZlbiB0aGUgaW1wbGllZCB3YXJyYW50eSBvZgo7OyBNRVJDSEFOVEFCSUxJ
+VFkgb3IgRklUTkVTUyBGT1IgQSBQQVJUSUNVTEFSIFBVUlBPU0UuICBTZWUgdGhlIEdOVQo7OyBH
+ZW5lcmFsIFB1YmxpYyBMaWNlbnNlIGZvciBtb3JlIGRldGFpbHMuCgo7OyBZb3Ugc2hvdWxkIGhh
+dmUgcmVjZWl2ZWQgYSBjb3B5IG9mIHRoZSBHTlUgR2VuZXJhbCBQdWJsaWMgTGljZW5zZQo7OyBh
+bG9uZyB3aXRoIEdOVSBFbWFjczsgc2VlIHRoZSBmaWxlIENPUFlJTkcuICBJZiBub3QsIHdyaXRl
+IHRvIHRoZQo7OyBGcmVlIFNvZnR3YXJlIEZvdW5kYXRpb24sIDY3NSBNYXNzIEF2ZSwgQ2FtYnJp
+ZGdlLCBNQSAwMjEzOSwgVVNBLgoKOzs7IENvbW1lbnRhcnk6Cgo7OyAgRmFjaWxpdGF0ZXMgaW50
+ZXJhY3Rpb24gd2l0aCBPcmFjbGUgdmlhIFNRTCpQbHVzIChHTlUgRW1hY3Mgb25seSkuCjs7ICBN
+b3Jlb3ZlciwgdGhpcyBwYWNrYWdlIGNvbXBsZW1lbnRzIHBsc3FsLmVsIChLYWhsaWwgSG9kZ3Nv
+bikgCjs7ICB1cG9uIGNvbnZlbmllbnQgY29tcGlsYXRpb24gb2YgUEwvU1FMIHNvdXJjZSBmaWxl
+cy4KOzsKOzsgIFRoaXMgcGFja2FnZSB3YXMgaW5zcGlyZWQgYnkgc3FscGx1cy1tb2RlLmVsIChS
+b2IgUmllcGVsLCBQZXRlcgo7OyAgRC4gUGV6YXJpcywgTWFydGluIFNjaHdlbmtlKSwgYnV0IG9m
+ZmVycyBtb3JlIGZlYXR1cmVzOgo7OyAgICAtIHRhYmxlcyBhcmUgcGFyc2VkLCBmb3JtYXR0ZWQg
+YW5kIHJlbmRlcmVkIHdpdGggY29sb3JzLCBsaWtlIGluCjs7ICAgICAgbWFueSBHVUkgcHJvZ3Jh
+bXM7IHlvdSBjYW4gc2VlIHJhdyBTUUwqUGx1cyBvdXRwdXQgYWxzbywgCjs7ICAgICAgaWYgeW91
+IHdpc2gKOzsgICAgLSB0YWJsZSB3aWxsIGJlIGN1dHRlZCBpZiB5b3UgdHJ5IHRvIGZldGNoIHRv
+byBtYW55IHJvd3MKOzsgICAgICAoU0VMRUNUICogRlJPTSBNWV9NSUxMSU9OX1JPV1NfVEFCTEUp
+OyBjdXJyZW50IFNRTCpQbHVzIGNvbW1hbmQKOzsgICAgICB3aWxsIGJlIGF1dG9tYXRpY2FsbHkg
+aW50ZXJydXB0ZWQgdW5kZXIgdGhlIGhvb2QgaW4gc3VjaCBjYXNlcwo7OyAgICAtIHlvdSBjYW4g
+dXNlIG1hbnkgU1FMKlBsdXMgcHJvY2Vzc2VzIHNpbXVsdGFuZW91c2x5LAo7OyAgICAtIGZvbnQg
+bG9ja2luZyAoZXNwZWNpYWxseSBpZiB5b3UgdXNlIEVtYWNzPj0yMiksIHdpdGggZGF0YWJhc2UK
+OzsgICAgICBvYmplY3QgbmFtZXMgaGlnaGxpZ2h0aW5nLAo7OyAgICAtIGhpc3RvcnkgKGxvZykg
+b2YgZXhlY3V0ZWQgY29tbWFuZHMgLSBzZWVgIHNxbHBsdXMtaGlzdG9yeS1kaXJgCjs7ICAgICAg
+dmFyaWFibGUsCjs7ICAgIC0gY29tbWFuZHMgZm9yIGZldGNoaW5nIGFueSBkYXRhYmFzZSBvYmpl
+Y3QgZGVmaW5pdGlvbgo7OyAgICAgIChwYWNrYWdlLCB0YWJsZS9pbmRleC9zZXF1ZW5jZSBzY3Jp
+cHQpCjs7ICAgIC0gcXVlcnkgcmVzdWx0IGNhbiBiZSBzaG93biBpbiBIVE1MLAo7OyAgICAtIGlu
+cHV0IGJ1ZmZlciBmb3IgZWFjaCBjb25uZWN0aW9uIGNhbiBiZSBzYXZlZCBpbnRvIGZpbGUgb24K
+OzsgICAgICBkaXNjb25uZWN0IGFuZCBhdXRvbWF0aWNhbGx5IHJlc3RvcmVkIG9uIG5leHQgY29u
+bmVjdCAoc2VlCjs7ICAgICAgJ3NxbHBsdXMtc2Vzc2lvbi1jYWNoZS1kaXInIHZhcmlhYmxlKTsg
+aWYgeW91IHBsYWNlIHNvbWUKOzsgICAgICBTUUwqUGx1cyBjb21tYW5kcyBiZXR3ZWVuICcvKiBp
+bml0ICovJyBhbmQgJy8qIGVuZCAqLycKOzsgICAgICBjb21tZW50cyBpbiBzYXZlZCBpbnB1dCBi
+dWZmZXIsIHRoZXkgd2lsbCBiZSBhdXRvbWF0aWNhbGx5Cjs7ICAgICAgZXhlY3V0ZWQgb24gZXZl
+cnkgY29ubmVjdAo7OyAgICAtIGlmIHlvdSB1c2UgcGxzcWwuZWwgZm9yIGVkaXRpbmcgUEwvU1FM
+IGZpbGVzLCB5b3UgY2FuIGNvbXBpbGUKOzsgICAgICBzdWNoIHNvdXJjZXMgZXZlcnl0aW1lIHdp
+dGggQy1jQy1jOyBlcnJvciBtZXNzYWdlcyB3aWxsIGJlCjs7ICAgICAgcGFyc2VkIGFuZCBkaXNw
+bGF5ZWQgZm9yIGVhc3kgc291cmNlIG5hdmlnYXRpb24KOzsgICAgLSBNLS4gb3IgQy1tb3VzZS0x
+IG9uIGRhdGFiYXNlIG9iamVjdCBuYW1lIHdpbGwgZ28gdG8gZGVmaW5pdGlvbgo7OyAgICAgIGlu
+IGZpbGVzeXN0ZW0gKHVzZSBhcnJvdyBidXR0b24gb24gdG9vbGJhciB0byBnbyBiYWNrKQo7Owo7
+OyAgVGhlIGZvbGxvd2luZyBjb21tYW5kcyBzaG91bGQgYmUgYWRkZWQgdG8gYSBnbG9iYWwgaW5p
+dGlhbGl6YXRpb24KOzsgIGZpbGUgb3IgdG8gYW55IHVzZXIncyAuZW1hY3MgZmlsZSB0byBjb252
+ZW5pZW50bHkgdXNlCjs7ICBzcWxwbHVzLW1vZGU6Cjs7Cjs7ICAgIChyZXF1aXJlICdzcWxwbHVz
+KQo7OyAgICAoYWRkLXRvLWxpc3QgJ2F1dG8tbW9kZS1hbGlzdCAnKCJcXC5zcXBcXCciIC4gc3Fs
+cGx1cy1tb2RlKSkKOzsKOzsgIElmIHlvdSB3YW50IFBML1NRTCBzdXBwb3J0IGFsc28sIHRyeSBz
+b21ldGhpbmcgbGlrZSB0aGlzOgo7Owo7OyAgKHJlcXVpcmUgJ3Bsc3FsKQo7OyAgKHNldHEgYXV0
+by1tb2RlLWFsaXN0Cjs7ICAgIChhcHBlbmQgJygoIlxcLnBsc1xcJyIgLiBwbHNxbC1tb2RlKSAo
+IlxcLnBrZ1xcJyIgLiBwbHNxbC1tb2RlKQo7OyAJCSgiXFwucGtzXFwnIiAuIHBsc3FsLW1vZGUp
+ICgiXFwucGtiXFwnIiAuIHBsc3FsLW1vZGUpCjs7IAkJKCJcXC5zcWxcXCciIC4gcGxzcWwtbW9k
+ZSkgKCJcXC5QTFNcXCciIC4gcGxzcWwtbW9kZSkgCjs7IAkJKCJcXC5QS0dcXCciIC4gcGxzcWwt
+bW9kZSkgKCJcXC5QS1NcXCciIC4gcGxzcWwtbW9kZSkKOzsgCQkoIlxcLlBLQlxcJyIgLiBwbHNx
+bC1tb2RlKSAoIlxcLlNRTFxcJyIgLiBwbHNxbC1tb2RlKQo7OyAJCSgiXFwucHJjXFwnIiAuIHBs
+c3FsLW1vZGUpICgiXFwuZm5jXFwnIiAuIHBsc3FsLW1vZGUpCjs7IAkJKCJcXC50cmdcXCciIC4g
+cGxzcWwtbW9kZSkgKCJcXC52d1xcJyIgLiBwbHNxbC1tb2RlKQo7OyAJCSgiXFwuUFJDXFwnIiAu
+IHBsc3FsLW1vZGUpICgiXFwuRk5DXFwnIiAuIHBsc3FsLW1vZGUpCjs7IAkJKCJcXC5UUkdcXCci
+IC4gcGxzcWwtbW9kZSkgKCJcXC5WV1xcJyIgLiBwbHNxbC1tb2RlKSkKOzsgCSAgICAgIGF1dG8t
+bW9kZS1hbGlzdCApKQo7Owo7OyAgTS14IHNxbHBsdXMgd2lsbCBzdGFydCBuZXcgU1FMKlBsdXMg
+c2Vzc2lvbi4KOzsKOzsgIEMtUkVUICAgZXhlY3V0ZSBjb21tYW5kIHVuZGVyIHBvaW50Cjs7ICBT
+LUMtUkVUIGV4ZWN1dGUgY29tbWFuZCB1bmRlciBwb2ludCBhbmQgc2hvdyByZXN1bHQgdGFibGUg
+aW4gSFRNTCAKOzsgICAgICAgICAgYnVmZmVyCjs7ICBNLVJFVCAgIGV4cGxhaW4gZXhlY3V0aW9u
+IHBsYW4gZm9yIGNvbW1hbmQgdW5kZXIgcG9pbnQKOzsgIE0tLiBvciBDLW1vdXNlLTE6IGZpbmQg
+ZGF0YWJhc2Ugb2JqZWN0IGRlZmluaXRpb24gKHRhYmxlLCB2aWV3Cjs7ICAgICAgICAgIGluZGV4
+LCBzeW5vbnltLCB0cmlnZ2VyLCBwcm9jZWR1cmUsIGZ1bmN0aW9uLCBwYWNrYWdlKQo7OyAgICAg
+ICAgICBpbiBmaWxlc3lzdGVtCjs7ICBDLWNDLXMgIHNob3cgZGF0YWJhc2Ugb2JqZWN0IGRlZmlu
+aXRpb24gKHJldHJpZXZlZCBmcm9tIGRhdGFiYXNlKQo7Owo7OyAgVXNlIGRlc2NyaWJlLW1vZGUg
+d2hpbGUgaW4gc3FscGx1cy1tb2RlIGZvciBmdXJ0aGVyIGluc3RydWN0aW9ucy4KOzsKOzsgIE1h
+bnkgdXNlZnVsIGNvbW1hbmRzIGFyZSBkZWZpbmVkIGluIG9yY2wtbW9kZSBtaW5vciBtb2RlLCB3
+aGljaCBpcwo7OyAgY29tbW9uIGZvciBpbnB1dCBhbmQgb3RwdXQgU1FMKlBsdXMgYnVmZmVycywg
+YXMgd2VsbCBhcyBQTC9TUUwKOzsgIGJ1ZmZlcnMuCjs7Cjs7ICBGb3IgdHdpZGRsaW5nLCBzZWUg
+J3NxbHBsdXMnIGN1c3RvbWl6YXRpb24gZ3JvdXAuCjs7Cjs7ICBJZiB5b3UgZmluZCB0aGlzIHBh
+Y2thZ2UgdXNlZnVsLCBzZW5kIG1lIGEgcG9zdGNhcmQgdG8gYWRkcmVzczoKOzsKOzsgICAgUGV0
+ZXIgS2FycGl1awo7OyAgICBTY290dCBUaWdlciBTLkEuCjs7ICAgIHVsLiBHYXdpbnNraWVnbyA4
+Cjs7ICAgIDAxLTY0NSBXYXJzYXcKOzsgICAgUG9sYW5kCgo7OzsgS25vd24gYnVnczoKCjs7IDEu
+IFJlc3VsdCBvZiBTUUwgc2VsZWN0IGNvbW1hbmQgY2FuIGJlIG1lc3NlZCB1cCBpZiBzb21lIGNv
+bHVtbnMKOzsgICAgaGFzIG5ld2xpbmUgY2hhcmFjdGVycy4gIFRvIGF2b2lkIHRoaXMsIGV4ZWN1
+dGUgU1FMKlBsdXMgY29tbWFuZAo7OyAgICAgIGNvbHVtbiA8Y29sbmFtZT4gdHJ1bmNhdGVkCjs7
+ICAgIGJlZm9yZSBzdWNoIHNlbGVjdCAKCjs7OyBDb2RlOgoKKHJlcXVpcmUgJ3JlY2VudGYpCihy
+ZXF1aXJlICdmb250LWxvY2spCihyZXF1aXJlICdjbCkKKHJlcXVpcmUgJ3NxbCkKKHJlcXVpcmUg
+J3RhYmlmeSkKKHJlcXVpcmUgJ3NrZWxldG9uKQoKKGRlZmNvbnN0IHNxbHBsdXMtcmV2aXNpb24g
+IiRSZXZpc2lvbjogMS43ICQiKQoKOzs7ICBWYXJpYWJsZXMgLQoKKGRlZmdyb3VwIHNxbHBsdXMg
+bmlsCiAgIlNRTCpQbHVzIgogIDpncm91cCAndG9vbHMKICA6dmVyc2lvbiAyMSkKCihkZWZjdXN0
+b20gcGxzcWwtYXV0by1wYXJzZS1lcnJvcnMtZmxhZyB0CiAgIk5vbiBuaWwgbWVhbnMgcGFyc2Ug
+UEwvU1FMIGNvbXBpbGF0aW9uIHJlc3VsdHMgYW5kIHNob3cgdGhlbSBpbiB0aGUgY29tcGlsYXRp
+b24gYnVmZmVyLiIKICA6Z3JvdXAgJ3NxbHBsdXMKICA6dHlwZSAnKGJvb2xlYW4pKQoKKGRlZmN1
+c3RvbSBzcWxwbHVzLWluaXQtc2VxdWVuY2Utc3RhcnQtcmVnZXhwICIvXFwqIGluaXQgXFwqLyIK
+ICAiU1FMKlBsdXMgc3RhcnQgb2Ygc2Vzc2lvbiBpbml0IGNvbW1hbmQgc2VxdWVuY2UuIgogIDpn
+cm91cCAnc3FscGx1cwogIDp0eXBlICcocmVnZXhwKSkKCihkZWZjdXN0b20gc3FscGx1cy1pbml0
+LXNlcXVlbmNlLWVuZC1yZWdleHAgIi9cXCogZW5kIFxcKi8iCiAgIlNRTCpQbHVzIGVuZCBvZiBz
+ZXNzaW9uIGluaXQgY29tbWFuZCBzZXF1ZW5jZS4iCiAgOmdyb3VwICdzcWxwbHVzCiAgOnR5cGUg
+JyhyZWdleHApKQoKKGRlZmN1c3RvbSBzcWxwbHVzLWV4cGxhaW4tcGxhbi13YXJuaW5nLXJlZ2V4
+cHMgJygiVEFCTEUgQUNDRVNTIEZVTEwiICJJTkRFWCBGVUxMIFNDQU4iKQogICJTUUwqUGx1cyBl
+eHBsYWluIHBsYW4gd2FybmluZyByZWdleHBzIgogIDpncm91cCAnc3FscGx1cwogIDp0eXBlICco
+cmVwZWF0IHJlZ2V4cCkpCgooZGVmY3VzdG9tIHNxbHBsdXMtc3ludGF4LWZhY2VzCiAgJygoc2No
+ZW1hIGZvbnQtbG9jay10eXBlLWZhY2UgbmlsKQogICAgKHRhYmxlIGZvbnQtbG9jay10eXBlLWZh
+Y2UgKCJkdWFsIikpCiAgICAoc3lub255bSBmb250LWxvY2stdHlwZS1mYWNlIG5pbCkKICAgICh2
+aWV3IGZvbnQtbG9jay10eXBlLWZhY2UgbmlsKQogICAgKGNvbHVtbiBmb250LWxvY2stY29uc3Rh
+bnQtZmFjZSBuaWwpCiAgICAoc2VxdWVuY2UgZm9udC1sb2NrLXR5cGUtZmFjZSBuaWwpCiAgICAo
+cGFja2FnZSBmb250LWxvY2stdHlwZS1mYWNlIG5pbCkKICAgICh0cmlnZ2VyIGZvbnQtbG9jay10
+eXBlLWZhY2UgbmlsKQogICAgKGluZGV4IGZvbnQtbG9jay10eXBlLWZhY2UpIG5pbCkKICAiRm9u
+dCBsb2NrIGNvbmZpZ3VyYXRpb24gZm9yIGRhdGFiYXNlIG9iamVjdCBuYW1lcyBpbiBjdXJyZW50
+IHNjaGVtYS4KVGhpcyBpcyBhbGlzdCwgYW5kIGVhY2ggZWxlbWVudCBsb29rcyBsaWtlIChTWU1C
+T0wgRkFDRSBMSVNUKQp3aGVyZSBTWU1CT0wgaXMgb25lIG9mOiBzY2hlbWEsIHRhYmxlLCBzeW5v
+bnltLCB2aWV3LCBjb2x1bW4sCnNlcXVlbmNlLCBwYWNrYWdlLCB0cmlnZ2VyLCBpbmRleC4gIERh
+dGFiYXNlIG9iamVjdHMgbWVhbnMgb25seQpvYmplY3RzIGZyb20gY3VycmVudCBzY2hlbWEsIHNv
+IGlmIHlvdSB3YW50IHN5bnRheCBoaWdobGlnaHRpbmcKZm9yIG90aGVyIG9iamVjdHMgKGVnLiAn
+ZHVhbCcgdGFibGUgbmFtZSksIHlvdSBjYW4gZXhwbGljaXRseQplbnVtZXJhdGUgdGhlbSBpbiBM
+SVNUIGFzIHN0cmluZ3MuIgogIDpncm91cCAnc3FscGx1cwogIDp0YWcgIk9yYWNsZSBTUUwgU3lu
+dGF4IEZhY2VzIgogIDp0eXBlICcocmVwZWF0IChsaXN0IHN5bWJvbCBmYWNlIChyZXBlYXQgc3Ry
+aW5nKSkpKQoKKGRlZmN1c3RvbSBzcWxwbHVzLW91dHB1dC1idWZmZXItbWF4LXNpemUgKCogNTAg
+MTAwMCAxMDAwKQogICJNYXhpbXVtIHNpemUgb2YgU1FMKlBsdXMgb3V0cHV0IGJ1ZmZlci4KQWZ0
+ZXIgZXhjZWVkaW5nIG9sZGVzdCByZXN1bHRzIGFyZSBkZWxldGVkLiIKICA6Z3JvdXAgJ3NxbHBs
+dXMKICA6dGFnICJTUUwqUGx1cyBPdXRwdXQgQnVmZmVyIE1heCBTaXplIgogIDp0eXBlICcoaW50
+ZWdlcikpCgooZGVmY3VzdG9tIHNxbHBsdXMtc2VsZWN0LXJlc3VsdC1tYXgtY29sLXdpZHRoIG5p
+bAogICJNYXhpbXVtIHdpZHRoIG9mIGNvbHVtbiBpbiBkaXNwbGF5ZWQgZGF0YWJhc2UgdGFibGUs
+IG9yIG5pbCBpZiB0aGVyZSBpcyBubyBsaW1pdC4KSWYgYW55IGNlbGwgdmFsdWUgaXMgbG9uZ2Vy
+LCBpdCB3aWxsIGJlIGN1dHRlZCBhbmQgdGVybWluYXRlZCB3aXRoIGVsbGlwc2lzICgnLi4uJyku
+IgogIDpncm91cCAnc3FscGx1cwogIDp0YWcgIlNRTCpQbHVzIFNlbGVjdCBSZXN1bHQgTWF4IENv
+bHVtbiBXaWR0aCIKICA6dHlwZSAgJyhjaG9pY2UgaW50ZWdlciAoY29uc3QgbmlsKSkpCgooZGVm
+Y3VzdG9tIHNxbHBsdXMtZm9ybWF0LW91dHB1dC10YWJsZXMtZmxhZyB0CiAgIk5vbi1uaWwgbWVh
+bnMgZm9ybWF0IHJlc3VsdCBpZiBpdCBsb29rcyBsaWtlIGRhdGFiYXNlIHRhYmxlLiIKICA6Z3Jv
+dXAgJ3NxbHBsdXMKICA6dGFnICJTUUwqUGx1cyBGb3JtYXQgT3V0cHV0IFRhYmxlIgogIDp0eXBl
+ICcoYm9vbGVhbikpCgooZGVmY3VzdG9tIHNxbHBsdXMta2lsbC1wcm9jZXNzZXMtd2l0aG91dC1x
+dWVyeS1vbi1leGl0LWZsYWcgdAogICJOb24tbmlsIG1lYW5zIHNpbGVudGx5IGtpbGwgYWxsIFNR
+TCpQbHVzIHByb2Nlc3NlcyBvbiBFbWFjcyBleGl0LiIKICA6Z3JvdXAgJ3NxbHBsdXMKICA6dGFn
+ICJTUUwqUGx1cyBLaWxsIFByb2Nlc3NlcyBXaXRob3V0IFF1ZXJ5IE9uIEV4aXQiCiAgOnR5cGUg
+Jyhib29sZWFuKSkKCihkZWZjdXN0b20gc3FscGx1cy1tdWx0aS1vdXRwdXQtdGFibGVzLWRlZmF1
+bHQtZmxhZyB0CiAgIk5vbi1uaWwgbWVhbnMgcmVuZGVyIGRhdGFiYXNlIHRhYmxlIGFzIHNldCBv
+ZiBhZGphY2VudCB0YWJsZXMgc28gdGhhdCB0aGV5IG9jY3VweSBhbGwgd2lkdGggb2Ygb3V0cHV0
+IHdpbmRvdy4KRm9yIHNjcmVlbiBzcGFjZSBzYXZpbmcgYW5kIHVzZXIgY29tZm9ydC4iCiAgOmdy
+b3VwICdzcWxwbHVzCiAgOnRhZyAiU1FMKlBsdXMgTXVsdGlwbGUgVGFibGVzIEluIE91dHB1dCBi
+eSBEZWZhdWx0IgogIDp0eXBlICcoYm9vbGVhbikpCgooZGVmY3VzdG9tIHNxbHBsdXMtc291cmNl
+LWJ1ZmZlci1yZWFkb25seS1ieS1kZWZhdWx0LWZsYWcgdAogICJOb24tbmlsIG1lYW5zIHNob3cg
+ZGF0YWJhc2Ugc291cmNlcyBpbiByZWFkLW9ubHkgYnVmZmVyLiIKICA6Z3JvdXAgJ3NxbHBsdXMK
+ICA6dGFnICJTUUwqUGx1cyBTb3VyY2UgQnVmZmVyIFJlYWQgT25seSBCeSBEZWZhdWx0IgogIDp0
+eXBlICcoYm9vbGVhbikpCgooZGVmY3VzdG9tIHNxbHBsdXMtY29tbWFuZCAic3FscGx1cyIKICAi
+U1FMKlBsdXMgaW50ZXJwcmV0ZXIgcHJvZ3JhbS4iCiAgOmdyb3VwICdzcWxwbHVzCiAgOnRhZyAi
+U1FMKlBsdXMgQ29tbWFuZCIKICA6dHlwZSAnKHN0cmluZykpCgooZGVmY3VzdG9tIHNxbHBsdXMt
+aGlzdG9yeS1kaXIgbmlsCiAgIkRpcmVjdG9yeSBvZiBTUUwqUGx1cyBjb21tYW5kIGhpc3Rvcnkg
+KGxvZykgZmlsZXMsIG9yIG5pbCAoZG9udCBnZW5lcmF0ZSBsb2cgZmlsZXMpLgpIaXN0b3J5IGZp
+bGUgbmFtZSBoYXMgZm9ybWF0ICc8Y29ubmVjdC1zdHJpbmc+LWhpc3RvcnkudHh0Jy4iCiAgOmdy
+b3VwICdzcWxwbHVzCiAgOnRhZyAiU1FMKlBsdXMgSGlzdG9yeSBEaXIiCiAgOnR5cGUgJyhjaG9p
+Y2UgZGlyZWN0b3J5IChjb25zdCBuaWwpKSkKCihkZWZ2YXIgc3FscGx1cy1zZXNzaW9uLWZpbGUt
+ZXh0ZW5zaW9uICJzcXAiKQoKKGRlZmN1c3RvbSBzcWxwbHVzLXNlc3Npb24tY2FjaGUtZGlyIG5p
+bAogICJEaXJlY3Rvcnkgb2YgU1FMKlBsdXMgaW5wdXQgYnVmZmVyIGZpbGVzLCBvciBuaWwgKGRv
+bnQgc2F2ZSB1c2VyIHNlc3Npb24pLgpTZXNzaW9uIGZpbGUgbmFtZSBoYXMgZm9ybWF0ICc8Y29u
+bmVjdC1zdHJpbmc+LnNxcCciCiAgOmdyb3VwICdzcWxwbHVzCiAgOnRhZyAiU1FMKlBsdXMgSGlz
+dG9yeSBEaXIiCiAgOnR5cGUgJyhjaG9pY2UgZGlyZWN0b3J5IChjb25zdCBuaWwpKSkKCihkZWZj
+dXN0b20gc3FscGx1cy1zYXZlLXBhc3N3b3JkcyBuaWwKICAiTm9uLW5pbCBtZWFucyBzYXZlIHBh
+c3N3b3JkcyBiZXR3ZWVuIEVtYWNzIHNlc3Npb25zLiAoTm90IGltcGxlbWVudGVkIHlldCkuIgog
+IDpncm91cCAnc3FscGx1cwogIDp0YWcgIlNRTCpQbHVzIFNhdmUgUGFzc3dvcmRzIgogIDp0eXBl
+ICcoYm9vbGVhbikpCgooZGVmY3VzdG9tIHNxbHBsdXMtcGFnZXNpemUgMjAwCiAgIkFwcHJveGlt
+YXRlIG51bWJlciBvZiByZWNvcmRzIGluIHF1ZXJ5IHJlc3VsdHMuCklmIHJlc3VsdCBoYXMgbW9y
+ZSByb3dzLCBpdCB3aWxsIGJlIGN1dHRlZCBhbmQgdGVybWluYXRlZCB3aXRoICcuIC4gLicgbGlu
+ZS4iCiAgOmdyb3VwICdzcWxwbHVzCiAgOnRhZyAiU1FMKlBsdXMgTWF4IFJvd3MgQ291bnQiCiAg
+OnR5cGUgJyhpbnRlZ2VyKSkKCihkZWZ2YXIgc3FscGx1cy1kZWZhdWx0LXdyYXAgIm9uIikKCihk
+ZWZjdXN0b20gc3FscGx1cy1pbml0aWFsLXN0cmluZ3MKICAobGlzdCAic2V0IHNxbG51bWJlciBv
+ZmYiCiAgICAgICAgInNldCB0YWIgb2ZmIgoJInNldCBsaW5lc2l6ZSA0MDAwIgogICAgICAgICJz
+ZXQgZWNobyBvZmYiCiAgICAgICAgInNldCBuZXdwYWdlIDEiCiAgICAgICAgInNldCBzcGFjZSAx
+IgogICAgICAgICJzZXQgZmVlZGJhY2sgNiIKICAgICAgICAic2V0IGhlYWRpbmcgb24iCiAgICAg
+ICAgInNldCB0cmltc3Bvb2wgb2ZmIgogICAgICAgIChmb3JtYXQgInNldCB3cmFwICVzIiBzcWxw
+bHVzLWRlZmF1bHQtd3JhcCkKICAgICAgICAic2V0IHRpbWluZyBvbiIKCSJzZXQgZmVlZGJhY2sg
+b24iKQogICJJbml0aWFsIGNvbW1hbmRzIHRvIHNlbmQgdG8gaW50ZXJwcmV0ZXIuCkN1c3RvbWl6
+aW5nIHRoaXMgdmFyaWFibGUgaXMgZGFuZ2Vyb3VzLiIKICA6Z3JvdXAgJ3NxbHBsdXMKICA6dGFn
+ICJTUUwqUGx1cyBJbml0aWFsIFN0cmluZ3MiCiAgOnR5cGUgJyhyZXBlYXQgc3RyaW5nKSkKCihk
+ZWZjdXN0b20gc3FscGx1cy10YWJsZS1jb2wtc2VwYXJhdG9yICIgfCAiCiAgIkRhdGFiYXNlIHRh
+YmxlIGNvbHVtbiBzZXBhcmF0b3IgKHRleHQtb25seSB0ZXJtaW5hbHMpLiIKICA6Z3JvdXAgJ3Nx
+bHBsdXMKICA6dGFnICJTUUwqUGx1cyBUYWJsZSBDb2wgU2VwYXJhdG9yIgogIDp0eXBlICcoc3Ry
+aW5nKSkKCihkZWZjdXN0b20gc3FscGx1cy10YWJsZS1jb2wtaGVhZC1zZXBhcmF0b3IgIi0rLSIK
+ICAiRGF0YWJhc2UgdGFibGUgaGVhZGVyLWNvbHVtbiBzZXBhcmF0b3IgKHRleHQtb25seSB0ZXJt
+aW5hbHMpLiIKICA6Z3JvdXAgJ3NxbHBsdXMKICA6dGFnICJTUUwqUGx1cyBUYWJsZSBDb2wgU2Vw
+YXJhdG9yIgogIDp0eXBlICcoc3RyaW5nKSkKCihkZWZjdXN0b20gc3FscGx1cy1odG1sLW91dHB1
+dC1maWxlLW5hbWUgIiRIT01FL3NxbHBsdXNfcmVwb3J0Lmh0bWwiCiAgIk91dHB1dCBmaWxlIGZv
+ciBIVE1MIHJlc3VsdC4iCiAgOmdyb3VwICdzcWxwbHVzCiAgOnRhZyAiU1FMKlBsdXMgSFRNTCBP
+dXRwdXQgRmlsZSBOYW1lIgogIDp0eXBlICcoZmlsZSkpCgooZGVmY3VzdG9tIHNxbHBsdXMtaHRt
+bC1vdXRwdXQtZW5jb2RpbmcgImlzby04ODU5LTEiCiAgIkVuY29kaW5nIGZvciBTUUwqUGx1cyBI
+VE1MIG91dHB1dC4iCiAgOmdyb3VwICdzcWxwbHVzCiAgOnRhZyAiU1FMKlBsdXMgSFRNTCBPdXRw
+dXQgRW5jb2RpbmciCiAgOnR5cGUgJyhzdHJpbmcpKQoKKGRlZmN1c3RvbSBzcWxwbHVzLWh0bWwt
+b3V0cHV0LXNxbCB0CiAgIk5vbi1uaWwgbWVhbnMgcHV0IFNRTCpQbHVzIGNvbW1hbmQgaW4gaGVh
+ZCBvZiBIVE1MIHJlc3VsdC4iCiAgOmdyb3VwICdzcWxwbHVzCiAgOnRhZyAiU1FMKlBsdXMgSFRN
+TCBPdXRwdXQgRW5jb2RpbmciCiAgOnR5cGUgJyhjaG9pY2UgKGNvbnN0IDp0YWcgIkVsZWdhbnQi
+ICdlbGVnYW50KQogICAgICAgICAgICAgICAgIChjb25zdCA6dGFnICJTaW1wbGUiIHQpCiAgICAg
+ICAgICAgICAgICAgKGNvbnN0IDp0YWcgIk5vIiBuaWwpKSkKCihkZWZjdXN0b20gc3FscGx1cy1o
+dG1sLW91dHB1dC1oZWFkZXIgKGNvbmNhdCAoY3VycmVudC10aW1lLXN0cmluZykgIjxicj48YnI+
+IikKICAiSFRNTCBoZWFkZXIgc2V4cCAocmVzdWx0IG11c3QgYmUgc3RyaW5nKS4iCiAgOmdyb3Vw
+ICdzcWxwbHVzCiAgOnRhZyAiU1FMKlBsdXMgSFRNTCBPdXRwdXQgSGVhZGVyIgogIDp0eXBlICco
+c2V4cCkpCgooZGVmY3VzdG9tIHNxbHBsdXMtY29tbWFuZC1oaWdobGlnaHRpbmctcGVyY2VudGFn
+ZSA3CiAgIlNRTCpQbHVzIGNvbW1hbmQgaGlnaGxpZ2h0aW5nIHBlcmNlbnRhZ2UgKDAtMTAwKSwg
+b25seSBpZiBzcWxwbHVzLWNvbW1hbmQtaGlnaGxpZ2h0aW5nLXN0eWxlIGlzIHNldC4iCiAgOmdy
+b3VwICdzcWxwbHVzCiAgOnRhZyAiU1FMKlBsdXMgY29tbWFuZCBoaWdobGlnaHRpbmcgcGVyY2Vu
+dGFnZSIKICA6dHlwZSAnKGludGVnZXIpKQogIAooZGVmY3VzdG9tIHNxbHBsdXMtY29tbWFuZC1o
+aWdobGlnaHRpbmctc3R5bGUgbmlsCiAgIkhvdyB0byBoaWdobGlnaHQgY3VycmVudCBjb21tYW5k
+IGluIHNxbHBsdXMgYnVmZmVyLiIKICA6Z3JvdXAgJ3NxbHBsdXMKICA6dGFnICJTUUwqUGx1ZCBj
+b21tYW5kIGhpZ2hsaWdodGluZyBzdHlsZSIKICA6dHlwZSAnKGNob2ljZSAoY29uc3QgOnRhZyAi
+RnJpbmdlIiBmcmluZ2UpCgkJIChjb25zdCA6dGFnICJCYWNrZ3JvdW5kIiBiYWNrZ3JvdW5kKQoJ
+CSAoY29uc3QgOnRhZyAiRnJpbmdlIGFuZCBiYWNrZ3JvdW5kIiBmcmluZ2UtYW5kLWJhY2tncm91
+bmQpCgkJIChjb25zdCA6dGFnICJOb25lIiBuaWwpKSkKCihkZWZ2YXIgc3FscGx1cy1lbGVnYW50
+LXN0eWxlIHdpbmRvdy1zeXN0ZW0pCgooZGVmdmFyIHNxbHBsdXMtY3MgbmlsKQoKKGRlZnVuIHNx
+bHBsdXMtc2hpbmUtY29sb3IgKGNvbG9yIHBlcmNlbnQpCiAgKHdoZW4gKGVxdWFsIGNvbG9yICJ1
+bnNwZWNpZmllZC1iZyIpCiAgICAoc2V0cSBjb2xvciAoaWYgKDwgcGVyY2VudCAwKSAid2hpdGUi
+ICJibGFjayIpKSkKICAoYXBwbHkgJ2Zvcm1hdCAiIyUwMnglMDJ4JTAyeCIgCiAgICAgICAgICht
+YXBjYXIgKGxhbWJkYSAodmFsdWUpCiAgICAgICAgICAgICAgICAgICAobWluIDY1NTM1IChtYXgg
+MCAoKiAoKyAoLyB2YWx1ZSA2NTApIHBlcmNlbnQpIDY1MCkpKSkKICAgICAgICAgICAgICAgICAo
+Y29sb3ItdmFsdWVzIGNvbG9yKSkpKQoKKGRlZnZhciBzcWxwbHVzLXRhYmxlLWhlYWQtZmFjZSAn
+c3FscGx1cy10YWJsZS1oZWFkLWZhY2UpCihkZWZmYWNlIHNxbHBsdXMtdGFibGUtaGVhZC1mYWNl
+CiAgKGxpc3QgCiAgIChsaXN0ICcoKGNsYXNzIG1vbm8pKQogICAgICAgICAnKDppbmhlcml0IGRl
+ZmF1bHQgOndlaWdodCBib2xkIDppbnZlcnNlLXZpZGVvIHQpKQogICAobGlzdCAnKChiYWNrZ3Jv
+dW5kIGxpZ2h0KSkKICAgICAgICAgKGFwcGVuZCAobGlzdCA6aW5oZXJpdCAnZGVmYXVsdCA6YmFj
+a2dyb3VuZCAoc3FscGx1cy1zaGluZS1jb2xvciAoZmFjZS1iYWNrZ3JvdW5kICdkZWZhdWx0KSAt
+NzApIDpmb3JlZ3JvdW5kIChmYWNlLWJhY2tncm91bmQgJ2RlZmF1bHQpKQogICAgICAgICAgICAg
+ICAgICh3aGVuIChhbmQgc3FscGx1cy1lbGVnYW50LXN0eWxlICg+PSBlbWFjcy1tYWpvci12ZXJz
+aW9uIDIyKSkgJyg6Ym94ICg6c3R5bGUgcmVsZWFzZWQtYnV0dG9uKSkpKSkKICAgKGxpc3QgJygo
+YmFja2dyb3VuZCBkYXJrKSkKICAgICAgICAgKGFwcGVuZCAobGlzdCA6aW5oZXJpdCAnZGVmYXVs
+dCA6YmFja2dyb3VuZCAoc3FscGx1cy1zaGluZS1jb2xvciAoZmFjZS1iYWNrZ3JvdW5kICdkZWZh
+dWx0KSArNzApIDpmb3JlZ3JvdW5kIChmYWNlLWJhY2tncm91bmQgJ2RlZmF1bHQpKQogICAgICAg
+ICAgICAgICAgICh3aGVuIChhbmQgc3FscGx1cy1lbGVnYW50LXN0eWxlICg+PSBlbWFjcy1tYWpv
+ci12ZXJzaW9uIDIyKSkgJyg6Ym94ICg6c3R5bGUgcmVsZWFzZWQtYnV0dG9uKSkpKSkKICAgJyh0
+ICg6aW5oZXJpdCBkZWZhdWx0KSkpCiAgIkZhY2UgZm9yIHRhYmxlIGhlYWRlciIKICA6Z3JvdXAg
+J3NxbHBsdXMpCgooZGVmdmFyIHNxbHBsdXMtdGFibGUtZXZlbi1yb3dzLWZhY2UgJ3NxbHBsdXMt
+dGFibGUtZXZlbi1yb3dzLWZhY2UpCihkZWZmYWNlIHNxbHBsdXMtdGFibGUtZXZlbi1yb3dzLWZh
+Y2UKICAobGlzdCAKICAgKGxpc3QgJygoY2xhc3MgbW9ubykpICcoKSkKICAgKGxpc3QgJygodHlw
+ZSB0dHkpKSAnKCkpCiAgIChsaXN0ICcoKGJhY2tncm91bmQgbGlnaHQpKQogICAgICAgICAoYXBw
+ZW5kIChsaXN0IDppbmhlcml0ICdkZWZhdWx0IDpiYWNrZ3JvdW5kIChzcWxwbHVzLXNoaW5lLWNv
+bG9yIChmYWNlLWJhY2tncm91bmQgJ2RlZmF1bHQpIC0yMCkgOm92ZXJsaW5lIChmYWNlLWJhY2tn
+cm91bmQgJ2RlZmF1bHQpKSkpCiAgIChsaXN0ICcoKGJhY2tncm91bmQgZGFyaykpCiAgICAgICAg
+IChhcHBlbmQgKGxpc3QgOmluaGVyaXQgJ2RlZmF1bHQgOmJhY2tncm91bmQgKHNxbHBsdXMtc2hp
+bmUtY29sb3IgKGZhY2UtYmFja2dyb3VuZCAnZGVmYXVsdCkgKzIwKSA6b3ZlcmxpbmUgKGZhY2Ut
+YmFja2dyb3VuZCAnZGVmYXVsdCkpKSkKICAgJyh0ICgpKSkKICAiRmFjZSBmb3IgdGFibGUgZXZl
+biByb3dzIgogIDpncm91cCAnc3FscGx1cykKCihkZWZ2YXIgc3FscGx1cy10YWJsZS1vZGQtcm93
+cy1mYWNlICdzcWxwbHVzLXRhYmxlLW9kZC1yb3dzLWZhY2UpCihkZWZmYWNlIHNxbHBsdXMtdGFi
+bGUtb2RkLXJvd3MtZmFjZQogIChsaXN0IAogICAobGlzdCAnKChjbGFzcyBtb25vKSkgJyg6aW5o
+ZXJpdCBkZWZhdWx0KSkKICAgKGxpc3QgJygoYmFja2dyb3VuZCBsaWdodCkpCiAgICAgICAgIChh
+cHBlbmQgKGxpc3QgOmluaGVyaXQgJ2RlZmF1bHQgOmJhY2tncm91bmQgKHNxbHBsdXMtc2hpbmUt
+Y29sb3IgKGZhY2UtYmFja2dyb3VuZCAnZGVmYXVsdCkgLTMwKSA6b3ZlcmxpbmUgKGZhY2UtYmFj
+a2dyb3VuZCAnZGVmYXVsdCkpKSkKICAgKGxpc3QgJygoYmFja2dyb3VuZCBkYXJrKSkKICAgICAg
+ICAgKGFwcGVuZCAobGlzdCA6aW5oZXJpdCAnZGVmYXVsdCA6YmFja2dyb3VuZCAoc3FscGx1cy1z
+aGluZS1jb2xvciAoZmFjZS1iYWNrZ3JvdW5kICdkZWZhdWx0KSArMzApIDpvdmVybGluZSAoZmFj
+ZS1iYWNrZ3JvdW5kICdkZWZhdWx0KSkpKQogICAnKHQgKDppbmhlcml0IGRlZmF1bHQpKSkKICAi
+RmFjZSBmb3IgdGFibGUgZXZlbiByb3dzIgogIDpncm91cCAnc3FscGx1cykKCihkZWZ2YXIgc3Fs
+cGx1cy1jb21tYW5kLWhpZ2hsaWdodC1mYWNlICdzcWxwbHVzLWNvbW1hbmQtaGlnaGxpZ2h0LWZh
+Y2UpCihkZWZmYWNlIHNxbHBsdXMtY29tbWFuZC1oaWdobGlnaHQtZmFjZQogIChsaXN0IAogICAn
+KCgoY2xhc3MgbW9ubykpICgpKQogICAnKCgodHlwZSB0dHkpKSAoKSkKICAgKGxpc3QgJygoYmFj
+a2dyb3VuZCBsaWdodCkpCiAgICAgICAgIChhcHBlbmQgKGxpc3QgOmJhY2tncm91bmQgKHNxbHBs
+dXMtc2hpbmUtY29sb3IgKGZhY2UtYmFja2dyb3VuZCAnZGVmYXVsdCkgKC0gc3FscGx1cy1jb21t
+YW5kLWhpZ2hsaWdodGluZy1wZXJjZW50YWdlKSkpKSkKICAgKGxpc3QgJygoYmFja2dyb3VuZCBk
+YXJrKSkKICAgICAgICAgKGFwcGVuZCAobGlzdCA6YmFja2dyb3VuZCAoc3FscGx1cy1zaGluZS1j
+b2xvciAoZmFjZS1iYWNrZ3JvdW5kICdkZWZhdWx0KSBzcWxwbHVzLWNvbW1hbmQtaGlnaGxpZ2h0
+aW5nLXBlcmNlbnRhZ2UpKSkpCiAgICcodCAoKSkpCiAgIkZhY2UgZm9yIGhpZ2hsaWdodGluZyBj
+b21tYW5kIHVuZGVyIHBvaW50IgogIDpncm91cCAnc3FscGx1cykKCihkZWZ2YXIgc3FscGx1cy1w
+bHNxbC1jb21waWxhdGlvbi1yZXN1bHRzLWJ1ZmZlci1uYW1lICIqUEwvU1FMIENvbXBpbGF0aW9u
+KiIpCgooZGVmdmFyIHNxbHBsdXMtZmFuICJ8IgogICJMb2NhbCBpbiBpbnB1dCBidWZmZXJzIikK
+KG1ha2UtdmFyaWFibGUtYnVmZmVyLWxvY2FsICdzcWxwbHVzLWZhbikKCihkZWZ2YXIgb3JjbC1t
+b2RlLW1hcCBuaWwKICAiS2V5bWFwIHVzZWQgaW4gT3JjbCBtb2RlLiIpCgooZGVmaW5lLW1pbm9y
+LW1vZGUgb3JjbC1tb2RlCiAgIk1vZGUgZm9yIGV4ZWN1dGluZyBTUUwqUGx1cyBjb21tYW5kcyBh
+bmQgc2Nyb2xsaW5nIHJlc3VsdHMuCgpNb2RlIFNwZWNpZmljIEJpbmRpbmdzOgoKXFx7b3JjbC1t
+b2RlLW1hcH0iCiAgbmlsICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICA7IGluaXQg
+dmFsdWUKICAoIiAiICg6ZXZhbCBzcWxwbHVzLWZhbikgIiAiICg6ZXZhbCAoY29ubmVjdC1zdHJp
+bmctdG8tc3RyaW5nKSkpIDsgbW9kZSBpbmRpY2F0b3IKICBvcmNsLW1vZGUtbWFwICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIDsga2V5bWFwCiAgOzsgYm9keQogIChz
+ZXRxIHNxbHBsdXMtZmFuICJ8IikKICAodW5sZXNzIChhc3NxICdvcmNsLW1vZGUgbWlub3ItbW9k
+ZS1tYXAtYWxpc3QpCiAgICAocHVzaCAoY29ucyAnb3JjbC1tb2RlIG9yY2wtbW9kZS1tYXApIG1p
+bm9yLW1vZGUtbWFwLWFsaXN0KSkpCgooZGVmdmFyIHNxbHBsdXMtdXNlci12YXJpYWJsZXMgKG1h
+a2VoYXNoICdlcXVhbCkpCgooZGVmdmFyIHNxbHBsdXMtdXNlci12YXJpYWJsZXMtaGlzdG9yeSBu
+aWwpCgooZGVmdmFyIHNxbHBsdXMtZ2V0LXNvdXJjZS1oaXN0b3J5IG5pbCkKCihkZWZ2YXIgc3Fs
+cGx1cy1wcm9jZXNzLXAgbmlsCiAgIk5vbi1uaWwgKGNvbm5lY3Qgc3RyaW5nKSBpZiBjdXJyZW50
+IGJ1ZmZlciBpcyBTUUwqUGx1cyBwcm9jZXNzIGJ1ZmZlci4KTG9jYWwgaW4gcHJvY2VzcyBidWZm
+ZXIuIikKKG1ha2UtdmFyaWFibGUtYnVmZmVyLWxvY2FsICdzcWxwbHVzLXByb2Nlc3MtcCkKCihk
+ZWZ2YXIgc3FscGx1cy1jb21tYW5kLXNlcSAwCiAgIlNlcXVlbmNlIGZvciBjb21tYW5kIGlkIHdp
+dGhpbiBTUUwqUGx1cyBjb25uZWN0aW9uLgpMb2NhbCBpbiBwcm9jZXNzIGJ1ZmZlci4iKQoobWFr
+ZS12YXJpYWJsZS1idWZmZXItbG9jYWwgJ3NxbHBsdXMtY29tbWFuZC1zZXEpCgo7OzsgOmlkIC0g
+dW5pcXVlIGNvbW1hbmQgaWRlbnRpZmllciAoZnJvbSBzZXF1ZW5jZSwgZm9yIHNlc3Npb24pCjs7
+OyA6c3FsIC0gY29udGVudCBvZiBjb21tYW5kCjs7OyA6ZG9udC1wYXJzZS1yZXN1bHQgLSBwcm9j
+ZXNzIGRhdGEgb25saW5lIGFzIGl0IGNvbWVzIGZyb20gc3FscGx1cywgd2l0aCBzcWxwbHVzLXJl
+c3VsdC1vbmxpbmUgb3Igd2l0aCA6cmVzdWx0LWZ1bmN0aW9uIGZ1bmN0aW9uCjs7OyA6cmVzdWx0
+LWZ1bmN0aW9uIC0gZnVuY3Rpb24gZm9yIHByb2Nlc3Npbmcgc3FscGx1cyBkYXRhOyBtdXN0IGhh
+dmUgc2lnbmF0dXJlIChjb250ZXh0IGNvbm5lY3Qtc3RyaW5nIGJlZ2luIGVuZCBpbnRlcnJ1cHRl
+ZCk7Cjs7OyAgICBpZiBuaWwgdGhlbiBpdCBpcyBzcWxwbHVzLXJlc3VsdC1vbmxpbmUgZm9yIDpk
+b250LXBhcnNlLXJlc3VsdCBzZXQgdG8gbm9uLW5pbCBhbmQgc3FscGx1cy1wcm9jZXNzLWNvbW1h
+bmQtb3V0cHV0IGZvciA6ZG9udC1wYXJzZS1yZXN1bHQgc2V0IHRvIG5pbAo7OzsgOmN1cnJlbnQt
+Y29tbWFuZC1pbnB1dC1idWZmZXItbmFtZSAtIGJ1ZmZlciBuYW1lIGZyb20gd2hpY2ggY29tbWFu
+ZCB3YXMgaW5pdGlhbGl6ZWQKKGRlZnZhciBzcWxwbHVzLWNvbW1hbmQtY29udGV4dHMgbmlsCiAg
+IkNvbW1hbmQgb3B0aW9ucyBsaXN0LCBmb3IgY3VycmVudCBhbmQgZW5xdWV1ZWQgY29tbWFuZHMs
+IGluIGNocm9ub2xvZ2ljYWwgb3JkZXIuCkxvY2FsIGluIHByb2Nlc3MgYnVmZmVyLiIpCihtYWtl
+LXZhcmlhYmxlLWJ1ZmZlci1sb2NhbCAnc3FscGx1cy1jb21tYW5kLWNvbnRleHRzKQoKKGRlZnZh
+ciBzcWxwbHVzLWNvbm5lY3Qtc3RyaW5nIG5pbAogICJMb2NhbCB2YXJpYWJsZSB3aXRoIGNvbm5l
+Y3Qtc3RyaW5nIGZvciBjdXJyZW50IGJ1ZmZlciAoaW5wdXQgYnVmZmVycywgb3V0cHV0IGJ1ZmZl
+cikuIikKKG1ha2UtdmFyaWFibGUtYnVmZmVyLWxvY2FsICdzcWxwbHVzLWNvbm5lY3Qtc3RyaW5n
+KQoKKGRlZnZhciBzcWxwbHVzLWNvbm5lY3Qtc3RyaW5ncy1hbGlzdCBuaWwKICAiQ29ubmVjdCBz
+dHJpbmdzIGluIGZvcm1hdCAoQ1MgLiBQQVNTV0QpLCB3aGVyZSBQQVNTV0QgY2FuIGJlIG5pbC4i
+KQoKKGRlZnZhciBzcWxwbHVzLWNvbm5lY3Qtc3RyaW5nLWhpc3RvcnkgbmlsKQoKKGRlZnZhciBz
+cWxwbHVzLXByb21wdC1wcmVmaXggIlNRTFsiKQooZGVmdmFyIHNxbHBsdXMtcHJvbXB0LXN1ZmZp
+eCAiXSMgIikKCihkZWZ2YXIgc3FscGx1cy1wYWdlLXNlcGFyYXRvciAiQCElIyEiKQoKKGRlZnZh
+ciBzcWxwbHVzLXJlcGZvb3RlciAiIyMlQCEiKQoKKGRlZnZhciBzcWxwbHVzLW1vZGUtbWFwIG5p
+bAogICJLZXltYXAgdXNlZCBpbiBTUUwqUGx1cyBtb2RlLiIpCgooZGVmdmFyIHNxbHBsdXMtb3V0
+cHV0LXNlcGFyYXRvciAiQC0tIgogICJTdHJpbmcgcHJpbnRlZCBiZXR3ZWVuIHNldHMgb2YgU1FM
+KlBsdXMgY29tbWFuZCBvdXRwdXQuIikKCjs7OyAgTWFya2VycyAtCgooZGVmdmFyIHNxbHBsdXMt
+YnVmZmVyLW1hcmsgKG1ha2UtbWFya2VyKQogICJNYXJrcyB0aGUgY3VycmVudCBTUUwgY29tbWFu
+ZCBpbiB0aGUgU1FMKlBsdXMgb3V0cHV0IGJ1ZmZlci4KTG9jYWwgaW4gb3V0cHV0IGJ1ZmZlci4i
+KQoobWFrZS12YXJpYWJsZS1idWZmZXItbG9jYWwgJ3NxbHBsdXMtYnVmZmVyLW1hcmspCgooZGVm
+dmFyIHNxbHBsdXMtcmVnaW9uLWJlZ2lubmluZy1wb3MgbmlsCiAgIk1hcmtzIHRoZSBiZWdpbm5p
+bmcgb2YgdGhlIHJlZ2lvbiB0byBzZW50IHRvIHRoZSBTUUwqUGx1cyBwcm9jZXNzLgpMb2NhbCBp
+biBpbnB1dCBidWZmZXIgd2l0aCBzcWxwbHVzLW1vZGUuIikKKG1ha2UtdmFyaWFibGUtYnVmZmVy
+LWxvY2FsICdzcWxwbHVzLXJlZ2lvbi1iZWdpbm5pbmctcG9zKQoKKGRlZnZhciBzcWxwbHVzLXJl
+Z2lvbi1lbmQtcG9zIG5pbAogICJNYXJrcyB0aGUgZW5kIG9mIHRoZSByZWdpb24gdG8gc2VudCB0
+byB0aGUgU1FMKlBsdXMgcHJvY2Vzcy4KTG9jYWwgaW4gaW5wdXQgYnVmZmVyIHdpdGggc3FscGx1
+cy1tb2RlLiIpCihtYWtlLXZhcmlhYmxlLWJ1ZmZlci1sb2NhbCAnc3FscGx1cy1yZWdpb24tZW5k
+LXBvcykKCihkZWZ2YXIgc3FscGx1cy1jb25uZWN0aW9ucy1tZW51CiAgJygiU1FMKlBsdXMiCiAg
+ICA6ZmlsdGVyIHNxbHBsdXMtY29ubmVjdGlvbnMtbWVudSkKICAiTWVudSBmb3IgZGF0YWJhc2Ug
+Y29ubmVjdGlvbnMiKQoKKGRlZmNvbnN0IHNxbHBsdXMta2lsbC14cG0gIlwKLyogWFBNICovCnN0
+YXRpYyBjaGFyICogcmVsb2FkX3BhZ2VfeHBtW10gPSB7ClwiMjQgMjQgMTAwIDJcIiwKXCIgIAlj
+IE5vbmVcIiwKXCIuIAljICMwMDAwMDBcIiwKXCIrIAljICMyQTU2OTVcIiwKXCJAIAljICMzMDYw
+OUVcIiwKXCIjIAljICMzMzYzQTJcIiwKXCIkIAljICMzOTY5QTZcIiwKXCIlIAljICMzRDZCQTZc
+IiwKXCImIAljICMzQzY4QTNcIiwKXCIqIAljICMzNTYxOUNcIiwKXCI9IAljICMyNDRGOERcIiwK
+XCItIAljICMzMzY0QTNcIiwKXCI7IAljICMzMTYyQTFcIiwKXCI+IAljICMzODY3QTRcIiwKXCIs
+IAljICMzRjZEQThcIiwKXCInIAljICM0NjcyQUNcIiwKXCIpIAljICM0Qjc2QUVcIiwKXCIhIAlj
+ICM0RTc4QUZcIiwKXCJ+IAljICM1MzdDQjFcIiwKXCJ7IAljICM1NDdEQjBcIiwKXCJdIAljICM0
+NDZCQTFcIiwKXCJeIAljICMyRTVEOUNcIiwKXCIvIAljICMyMzRGOENcIiwKXCIoIAljICMyMTRD
+ODlcIiwKXCJfIAljICMyNDRFOENcIiwKXCI6IAljICMzQTY0OURcIiwKXCI8IAljICM1MTdCQjBc
+IiwKXCJbIAljICM1MTdCQjFcIiwKXCJ9IAljICM0ODc0QURcIiwKXCJ8IAljICM2MDg2QjdcIiwK
+XCIxIAljICM1Rjg0QjRcIiwKXCIyIAljICM0QjcxQTZcIiwKXCIzIAljICM3QjlCQzRcIiwKXCI0
+IAljICMyMjRDODlcIiwKXCI1IAljICMzODY1QTJcIiwKXCI2IAljICM0MDZGQUJcIiwKXCI3IAlj
+ICM0MzZCQTNcIiwKXCI4IAljICM2NDhBQkFcIiwKXCI5IAljICM0RDc4QUZcIiwKXCIwIAljICM0
+Qjc3QUVcIiwKXCJhIAljICM2RTkxQkVcIiwKXCJiIAljICM4MDlFQzZcIiwKXCJjIAljICMyMDRB
+ODdcIiwKXCJkIAljICM0OTc0QUZcIiwKXCJlIAljICMyQjU1OTBcIiwKXCJmIAljICM2NDg3QjVc
+IiwKXCJnIAljICM2NzhDQkJcIiwKXCJoIAljICMzNDY1QTRcIiwKXCJpIAljICM4NEExQzhcIiwK
+XCJqIAljICM2RDhGQkFcIiwKXCJrIAljICM0RjdBQjBcIiwKXCJsIAljICM4QkE3Q0JcIiwKXCJt
+IAljICM3RTlEQzVcIiwKXCJuIAljICM4M0ExQzdcIiwKXCJvIAljICM5MUFDQ0VcIiwKXCJwIAlj
+ICM4OUE0QzlcIiwKXCJxIAljICM4RkE5Q0JcIiwKXCJyIAljICM4NUEyQzdcIiwKXCJzIAljICM5
+MEFCQ0NcIiwKXCJ0IAljICMzRTZDQThcIiwKXCJ1IAljICM4N0EzQzhcIiwKXCJ2IAljICM0QjZE
+QTFcIiwKXCJ3IAljICM5MUFCQ0RcIiwKXCJ4IAljICMzNzY4QTVcIiwKXCJ5IAljICM4QUE1Qzlc
+IiwKXCJ6IAljICMyRDU2OTBcIiwKXCJBIAljICMyMDRBODZcIiwKXCJCIAljICM5M0FEQ0VcIiwK
+XCJDIAljICM3Mjk0QkZcIiwKXCJEIAljICM2Mjg4QjlcIiwKXCJFIAljICM4NkEzQzhcIiwKXCJG
+IAljICM0NjZFQTNcIiwKXCJHIAljICMzODY0QTFcIiwKXCJIIAljICMyODUzOTBcIiwKXCJJIAlj
+ICMyMzRFOENcIiwKXCJKIAljICM5NUFFQ0ZcIiwKXCJLIAljICM3NDkzQkNcIiwKXCJMIAljICM4
+NkEyQzdcIiwKXCJNIAljICM3OTk5QzNcIiwKXCJOIAljICM1QjgyQjVcIiwKXCJPIAljICM2QzhF
+QkJcIiwKXCJQIAljICM0QjcxQTVcIiwKXCJRIAljICMyNjUwOEJcIiwKXCJSIAljICMyQjU3OTJc
+IiwKXCJTIAljICMzMDVFOUJcIiwKXCJUIAljICMzMTYxOUZcIiwKXCJVIAljICM3ODk1QkRcIiwK
+XCJWIAljICM4MTlEQzNcIiwKXCJXIAljICM2ODhEQkJcIiwKXCJYIAljICM2Mjg4QjhcIiwKXCJZ
+IAljICM1ODgwQjRcIiwKXCJaIAljICM1NzdGQjNcIiwKXCJgIAljICM1NDdEQjJcIiwKXCIgLglj
+ICM0MTZGQUFcIiwKXCIuLgljICMzNTY0QTJcIiwKXCIrLgljICM1NzdBQUJcIiwKXCJALgljICM2
+Mjg2QjZcIiwKXCIjLgljICM2NjhCQkFcIiwKXCIkLgljICM1MDdBQjBcIiwKXCIlLgljICM0MjZF
+QThcIiwKXCImLgljICMyRjVCOTdcIiwKXCIgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICBcIiwKXCIgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICBcIiwKXCIgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICBcIiwKXCIgICAgICAgICAgICAgIC4gLiAuIC4gLiAuIC4gICAgICAgICAgICAg
+LiAgICAgICBcIiwKXCIgICAgICAgICAgLiAuICsgQCAjICQgJSAmICogLiAuICAgICAgIC4gLiAg
+ICAgICBcIiwKXCIgICAgICAgIC4gPSAtIDsgQCA+ICwgJyApICEgfiB7IC4gLiAuIF0gLiAgICAg
+ICBcIiwKXCIgICAgICAgIC4gXiAvICggXyAuIC4gLiA6IDwgWyB9IHwgMSAyIDMgLiAgICAgICBc
+IiwKXCIgICAgICAuIF8gNCA1IDYgLiAgICAgICAuIC4gNyA4IDkgMCBhIGIgLiAgICAgICBcIiwK
+XCIgICAgICAuIGMgZCAuIC4gICAgICAgICAgICAgLiBlIGYgZyBoIGkgLiAgICAgICBcIiwKXCIg
+ICAgICAuIC4gLiAgIC4gICAgICAgICAgICAgICAuIGogayBoIGwgLiAgICAgICBcIiwKXCIgICAg
+ICAuICAgICAgICAgICAgICAgICAgICAgLiBmIG0gbiBsIG8gLiAgICAgICBcIiwKXCIgICAgICAg
+ICAgICAgICAgICAgICAgICAgIC4gLiAuIC4gLiAuIC4gLiAgICAgICBcIiwKXCIgICAgICAuIC4g
+LiAuIC4gLiAuIC4gICAgICAgICAgICAgICAgICAgICAgICAgICBcIiwKXCIgICAgICAuIHAgcSBx
+IHEgciAuICAgICAgICAgICAgICAgICAgICAgLiAgICAgICBcIiwKXCIgICAgICAuIHMgLCB0IHUg
+diAuICAgICAgICAgICAgIC4gICAgIC4gLiAgICAgICBcIiwKXCIgICAgICAuIHcgeCB8IHkgeiAu
+ICAgICAgICAgICAgIC4gLiAuIEEgLiAgICAgICBcIiwKXCIgICAgICAuIEIgQyA5IEQgRSBGIC4g
+LiAgICAgICAuIEcgSCBJIC4gICAgICAgICBcIiwKXCIgICAgICAuIEogSyBMIE0gTiBDIE8gUCAu
+IC4gLiBRIFIgUyBUIC4gICAgICAgICBcIiwKXCIgICAgICAuIFUgLiAuIC4gViBXIFggfCBZIFog
+YCApICAuLi4uICAgICAgICAgICBcIiwKXCIgICAgICAuIC4gICAgICAgLiAuICsuQC4jLk4gJC4l
+LiYuLiAuICAgICAgICAgICBcIiwKXCIgICAgICAuICAgICAgICAgICAgIC4gLiAuIC4gLiAuIC4g
+ICAgICAgICAgICAgICBcIiwKXCIgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICBcIiwKXCIgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICBcIiwKXCIgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICBcIn07CiIKICAiWFBNIGZvcm1hdCBpbWFnZSB1c2VkIGFzIEtpbGwgaWNvbiIpCgooZGVm
+Y29uc3Qgc3FscGx1cy1jYW5jZWwteHBtICJcCi8qIFhQTSAqLwpzdGF0aWMgY2hhciAqIHByb2Nl
+c3Nfc3RvcF94cG1bXSA9IHsKXCIyNCAyNCAxOTcgMlwiLApcIiAgCWMgTm9uZVwiLApcIi4gCWMg
+IzAwMDAwMFwiLApcIisgCWMgI0M5MkIxRVwiLApcIkAgCWMgI0RBNDMyRlwiLApcIiMgCWMgI0U5
+NTk0MVwiLApcIiQgCWMgI0YyNkI1MFwiLApcIiUgCWMgI0VENjA0N1wiLApcIiYgCWMgI0RGNEEz
+NVwiLApcIiogCWMgI0NFMzMyNFwiLApcIj0gCWMgI0JGMUQxM1wiLApcIi0gCWMgI0VBNTk0Mlwi
+LApcIjsgCWMgI0VGNTYzQVwiLApcIj4gCWMgI0YxNEQyQ1wiLApcIiwgCWMgI0YxNDMxRlwiLApc
+IicgCWMgI0YyM0ExMlwiLApcIikgCWMgI0YyNDIxQ1wiLApcIiEgCWMgI0YyNEQyQVwiLApcIn4g
+CWMgI0YxNTczN1wiLApcInsgCWMgI0YwNjQ0QVwiLApcIl0gCWMgI0NGMzEyMVwiLApcIl4gCWMg
+I0Q4MzgyOFwiLApcIi8gCWMgI0VENTg0MFwiLApcIiggCWMgI0VDM0IxQ1wiLApcIl8gCWMgI0VF
+MzEwQlwiLApcIjogCWMgI0YxMzUwQ1wiLApcIjwgCWMgI0Y0MzgwRFwiLApcIlsgCWMgI0Y1M0Ew
+RFwiLApcIn0gCWMgI0Y1M0IwRFwiLApcInwgCWMgI0Y0MzkwRFwiLApcIjEgCWMgI0YyMzYwQ1wi
+LApcIjIgCWMgI0VGM0ExNVwiLApcIjMgCWMgI0YwNUEzRFwiLApcIjQgCWMgI0U0NEQzN1wiLApc
+IjUgCWMgI0NEMkIxRVwiLApcIjYgCWMgI0VBNEQzNVwiLApcIjcgCWMgI0U5MkQwQ1wiLApcIjgg
+CWMgI0VEMkYwQlwiLApcIjkgCWMgI0YwMzMwQ1wiLApcIjAgCWMgI0YzMzgwRFwiLApcImEgCWMg
+I0Y2M0MwRVwiLApcImIgCWMgI0Y5M0YwRlwiLApcImMgCWMgI0Y5NDAwRlwiLApcImQgCWMgI0Y3
+M0QwRVwiLApcImUgCWMgI0YxMzQwQ1wiLApcImYgCWMgI0VFMzAwQlwiLApcImcgCWMgI0VDNDgy
+Q1wiLApcImggCWMgI0UwNDUzMlwiLApcImkgCWMgI0U4NEUzQVwiLApcImogCWMgI0U2MkEwRVwi
+LApcImsgCWMgI0VBMkIwQVwiLApcImwgCWMgI0Y4M0YwRVwiLApcIm0gCWMgI0ZDNDMxMFwiLApc
+Im4gCWMgI0ZDNDQxMFwiLApcIm8gCWMgI0Y2M0IwRVwiLApcInAgCWMgI0VCMkMwQVwiLApcInEg
+CWMgI0VCNTEzOVwiLApcInIgCWMgI0M4MjUxQVwiLApcInMgCWMgI0REM0QyRVwiLApcInQgCWMg
+I0U1MzQxRFwiLApcInUgCWMgI0U2MjUwOFwiLApcInYgCWMgI0Y5QkVCMlwiLApcIncgCWMgI0ZC
+Q0ZDNVwiLApcInggCWMgI0Y1NEMyM1wiLApcInkgCWMgI0Y5NTEyNVwiLApcInogCWMgI0ZERDRD
+QlwiLApcIkEgCWMgI0ZBQkZCMlwiLApcIkIgCWMgI0U4MzAxM1wiLApcIkMgCWMgI0U4NEYzQlwi
+LApcIkQgCWMgI0U1NDczN1wiLApcIkUgCWMgI0UyMjAwN1wiLApcIkYgCWMgI0U5MkEwOVwiLApc
+IkcgCWMgI0ZCRDJDQVwiLApcIkggCWMgI0ZGRkZGRlwiLApcIkkgCWMgI0ZEREZEOVwiLApcIkog
+CWMgI0Y2NEUyNFwiLApcIksgCWMgI0ZERTBEOVwiLApcIkwgCWMgI0U3MjYwOVwiLApcIk0gCWMg
+I0U3NDUyRlwiLApcIk4gCWMgI0UzM0QyRFwiLApcIk8gCWMgI0UxMUUwN1wiLApcIlAgCWMgI0U1
+MjMwOFwiLApcIlEgCWMgI0U4MjgwOVwiLApcIlIgCWMgI0VDM0YyMVwiLApcIlMgCWMgI0ZDREVE
+OFwiLApcIlQgCWMgI0Y1NUMzN1wiLApcIlUgCWMgI0ZDREZEOFwiLApcIlYgCWMgI0YwNDUyMVwi
+LApcIlcgCWMgI0VDMkUwQVwiLApcIlggCWMgI0U5MjkwOVwiLApcIlkgCWMgI0U2MjQwOFwiLApc
+IlogCWMgI0U1MzgyM1wiLApcImAgCWMgI0NFMkIxRlwiLApcIiAuCWMgI0M2MjAxOFwiLApcIi4u
+CWMgI0UwMzEyMFwiLApcIisuCWMgI0UwMUMwNlwiLApcIkAuCWMgI0UzMjEwN1wiLApcIiMuCWMg
+I0VENDEyMVwiLApcIiQuCWMgI0ZFRjlGOFwiLApcIiUuCWMgI0U3MjcwOVwiLApcIiYuCWMgI0U0
+MjIwOFwiLApcIiouCWMgI0UzMkQxN1wiLApcIj0uCWMgI0Q4MzcyOVwiLApcIi0uCWMgI0NCMjMx
+QlwiLApcIjsuCWMgI0RFMkExQlwiLApcIj4uCWMgI0RFMUEwNlwiLApcIiwuCWMgI0VFNTEzNVwi
+LApcIicuCWMgI0VGNTMzNVwiLApcIikuCWMgI0VDMkQwQVwiLApcIiEuCWMgI0U4MjcwOVwiLApc
+In4uCWMgI0UyMUYwN1wiLApcInsuCWMgI0UwMjUxMVwiLApcIl0uCWMgI0RDMzkyQ1wiLApcIl4u
+CWMgI0JFMTYxMlwiLApcIi8uCWMgI0REMkUyMVwiLApcIiguCWMgI0RDMTcwNVwiLApcIl8uCWMg
+I0RGMUIwNlwiLApcIjouCWMgI0U0MjMwOFwiLApcIjwuCWMgI0U5M0EyMFwiLApcIlsuCWMgI0ZC
+REREOFwiLApcIn0uCWMgI0VCM0QyMFwiLApcInwuCWMgI0RGMkExOFwiLApcIjEuCWMgI0QwMkEx
+RlwiLApcIjIuCWMgI0RDMzMyOFwiLApcIjMuCWMgI0RBMTQwNFwiLApcIjQuCWMgI0REMTgwNVwi
+LApcIjUuCWMgI0UzMzMxRVwiLApcIjYuCWMgI0ZBRENEOFwiLApcIjcuCWMgI0ZCRENEOFwiLApc
+IjguCWMgI0VCNEMzNFwiLApcIjkuCWMgI0U2MzYxRlwiLApcIjAuCWMgI0REMTkwNVwiLApcImEu
+CWMgI0RGMkYyMVwiLApcImIuCWMgI0MyMUExNFwiLApcImMuCWMgI0RBMzEyOFwiLApcImQuCWMg
+I0Q4MTQwOFwiLApcImUuCWMgI0Y3QzlDNFwiLApcImYuCWMgI0ZBREJEOFwiLApcImcuCWMgI0U1
+MzQxRVwiLApcImguCWMgI0U1MzUxRVwiLApcImkuCWMgI0Y4Q0VDOVwiLApcImouCWMgI0RCMTUw
+NVwiLApcImsuCWMgI0REMzQyOVwiLApcImwuCWMgI0MzMTYxM1wiLApcIm0uCWMgI0Q5MjgxRlwi
+LApcIm4uCWMgI0Q3MTAwM1wiLApcIm8uCWMgI0Q5MTMwNFwiLApcInAuCWMgI0YzQjVCMFwiLApc
+InEuCWMgI0Y3Q0RDOVwiLApcInIuCWMgI0UxMkYxRFwiLApcInMuCWMgI0RGMUMwNlwiLApcInQu
+CWMgI0UyMzAxRFwiLApcInUuCWMgI0Y0QjZCMFwiLApcInYuCWMgI0RDMTYwNVwiLApcIncuCWMg
+I0RCMjMxN1wiLApcInguCWMgI0QyMjcxRlwiLApcInkuCWMgI0QxMjMxRFwiLApcInouCWMgI0Q2
+MUExMFwiLApcIkEuCWMgI0Q2MEYwM1wiLApcIkIuCWMgI0Q4MTEwNFwiLApcIkMuCWMgI0RCMTYw
+NVwiLApcIkQuCWMgI0Q4MTIwNFwiLApcIkUuCWMgI0Q4MTUwOVwiLApcIkYuCWMgI0RBMkYyNlwi
+LApcIkcuCWMgI0Q1MjYyMFwiLApcIkguCWMgI0Q1MUExMlwiLApcIkkuCWMgI0Q1MEQwM1wiLApc
+IkouCWMgI0Q2MEUwM1wiLApcIksuCWMgI0Q2MTcwRFwiLApcIkwuCWMgI0Q5MkIyM1wiLApcIk0u
+CWMgI0JEMTAwRFwiLApcIk4uCWMgI0FCMDQwNFwiLApcIk8uCWMgI0NFMUQxOVwiLApcIlAuCWMg
+I0Q2MjMxQ1wiLApcIlEuCWMgI0Q0MTAwOFwiLApcIlIuCWMgI0Q0MEIwMlwiLApcIlMuCWMgI0Q0
+MEMwMlwiLApcIlQuCWMgI0Q1MEMwM1wiLApcIlUuCWMgI0Q0MEUwNVwiLApcIlYuCWMgI0Q2MjAx
+OFwiLApcIlcuCWMgI0Q0MjUxRlwiLApcIlguCWMgI0IzMEEwOVwiLApcIlkuCWMgI0EyMDAwMFwi
+LApcIlouCWMgI0JDMEYwRVwiLApcImAuCWMgI0QyMjExRVwiLApcIiArCWMgI0Q1MjUyMFwiLApc
+Ii4rCWMgI0Q1MjAxQVwiLApcIisrCWMgI0Q0MUExNFwiLApcIkArCWMgI0Q1MUYxOVwiLApcIiMr
+CWMgI0Q2MjYyMFwiLApcIiQrCWMgI0Q1MjQyMFwiLApcIiUrCWMgI0M1MTYxNFwiLApcIiYrCWMg
+I0EzMDEwMVwiLApcIiorCWMgI0EzMDMwM1wiLApcIj0rCWMgI0FFMDkwOVwiLApcIi0rCWMgI0JE
+MEUwRVwiLApcIjsrCWMgI0IzMEIwQlwiLApcIj4rCWMgI0EzMDQwNFwiLApcIiAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIFwiLApcIiAgICAgICAgICAgICAg
+ICAuIC4gLiAuIC4gLiAuICAgICAgICAgICAgICAgICAgIFwiLApcIiAgICAgICAgICAgIC4gLiAr
+IEAgIyAkICUgJiAqIC4gLiAgICAgICAgICAgICAgIFwiLApcIiAgICAgICAgICAuID0gLSA7ID4g
+LCAnICkgISB+IHsgXSAuICAgICAgICAgICAgIFwiLApcIiAgICAgICAgLiBeIC8gKCBfIDogPCBb
+IH0gfCAxIDIgMyA0IC4gICAgICAgICAgIFwiLApcIiAgICAgIC4gNSA2IDcgOCA5IDAgYSBiIGMg
+ZCB8IGUgZiBnIGggLiAgICAgICAgIFwiLApcIiAgICAgIC4gaSBqIGsgZiA6IFsgbCBtIG4gYyBv
+IDEgXyBwIHEgciAuICAgICAgIFwiLApcIiAgICAuIHMgdCB1IGsgdiB3IHggbCBtIG4geSB6IEEg
+XyBwIEIgQyAuICAgICAgIFwiLApcIiAgICAuIEQgRSB1IEYgRyBIIEkgSiBiIHkgSyBIIHcgZiBr
+IEwgTSAuICAgICAgIFwiLApcIiAgICAuIE4gTyBQIFEgUiBTIEggSSBUIEsgSCBVIFYgVyBYIFkg
+WiBgIC4gICAgIFwiLApcIiAgLiAgLi4uKy5ALnUgRiAjLlMgSCAkLkggVSBWIDggayAlLiYuKi49
+Li4gICAgIFwiLApcIiAgLiAtLjsuPi5PICYuTCBGICwuJC5IICQuJy4pLmsgIS5QIH4uey5dLi4g
+ICAgIFwiLApcIiAgLiBeLi8uKC5fLn4uOi48LlsuSCAkLkggWy59LkwgUCBFICsufC4xLi4gICAg
+IFwiLApcIiAgICAuIDIuMy40Ll8uNS42LkggNy44LjcuSCA2Ljkufi4rLjAuYS5iLi4gICAgIFwi
+LApcIiAgICAuIGMuZC4zLiguZS5IIGYuZy5ALmguNi5IIGkuXy40Lmouay4uICAgICAgIFwiLApc
+IiAgICAuIGwubS5uLm8ucC5xLnIuXy5zLnMudC5lLnUudi4zLncueC4uICAgICAgIFwiLApcIiAg
+ICAgIC4geS56LkEuQi5vLmouQy4oLigudi5qLjMuRC5FLkYuLiAgICAgICAgIFwiLApcIiAgICAg
+ICAgLiBHLkguSS5KLm4uQi5CLkIuQi5uLkEuSy5MLk0uLiAgICAgICAgIFwiLApcIiAgICAgICAg
+LiBOLk8uUC5RLlIuUy5ULlQuUy5VLlYuVy5YLi4gICAgICAgICAgIFwiLApcIiAgICAgICAgICAu
+IFkuWi5gLiArLisrK0ArIyskKyUrJisuICAgICAgICAgICAgIFwiLApcIiAgICAgICAgICAgIC4g
+LiAuICorPSstKzsrPitZLi4gLiAgICAgICAgICAgICAgIFwiLApcIiAgICAgICAgICAgICAgICAg
+IC4gLiAuIC4gLiAuICAgICAgICAgICAgICAgICAgIFwiLApcIiAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgIFwiLApcIiAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgIFwifTsKIgogICJYUE0gZm9ybWF0IGltYWdlIHVzZWQg
+YXMgQ2FuY2VsIGljb24iKQoKKGRlZmNvbnN0IHNxbHBsdXMtcm9sbGJhY2steHBtICJcCi8qIFhQ
+TSAqLwpzdGF0aWMgY2hhciAqIHJvbGxiYWNrX3hwbVtdID0gewpcIjI0IDI0IDIyOCAyXCIsClwi
+ICAJYyBOb25lXCIsClwiLiAJYyAjMDAwMDAwXCIsClwiKyAJYyAjRjhGMDgwXCIsClwiQCAJYyAj
+RkVGNTdCXCIsClwiIyAJYyAjRkZGNTcxXCIsClwiJCAJYyAjRkZGMTY0XCIsClwiJSAJYyAjRkZF
+RDU4XCIsClwiJiAJYyAjRkZFNzQ4XCIsClwiKiAJYyAjRkVERTM5XCIsClwiPSAJYyAjRjhGODk3
+XCIsClwiLSAJYyAjRkZGRTk2XCIsClwiOyAJYyAjRkZGQThBXCIsClwiPiAJYyAjRkZGNjdDXCIs
+ClwiLCAJYyAjRkZGMTZFXCIsClwiJyAJYyAjRkZFQzYyXCIsClwiKSAJYyAjRkZFOTU2XCIsClwi
+ISAJYyAjRkZFNDQ4XCIsClwifiAJYyAjRkZFMDNDXCIsClwieyAJYyAjRkZERDMwXCIsClwiXSAJ
+YyAjRkVEODIxXCIsClwiXiAJYyAjRjFDQjE1XCIsClwiLyAJYyAjRkZGQzkyXCIsClwiKCAJYyAj
+RkZGQzkxXCIsClwiXyAJYyAjRkZGQzkwXCIsClwiOiAJYyAjRkZGQjhEXCIsClwiPCAJYyAjRkZG
+NjdEXCIsClwiWyAJYyAjRkZFQjVFXCIsClwifSAJYyAjRkZFQTVCXCIsClwifCAJYyAjRkZFOTU4
+XCIsClwiMSAJYyAjRkZFODU1XCIsClwiMiAJYyAjRkZFNzUyXCIsClwiMyAJYyAjRkRENDFDXCIs
+ClwiNCAJYyAjRkREMzE5XCIsClwiNSAJYyAjRkRENDE2XCIsClwiNiAJYyAjRkZGRjlEXCIsClwi
+NyAJYyAjRkZGRjk5XCIsClwiOCAJYyAjRkZGRDk0XCIsClwiOSAJYyAjRkZGQTg5XCIsClwiMCAJ
+YyAjRkZEQzJGXCIsClwiYSAJYyAjRkVEMzE1XCIsClwiYiAJYyAjRkZEODA4XCIsClwiYyAJYyAj
+RkZGQzlGXCIsClwiZCAJYyAjRkZGRTk5XCIsClwiZSAJYyAjRkZERjNCXCIsClwiZiAJYyAjRjdD
+OTA5XCIsClwiZyAJYyAjRjhFQTg2XCIsClwiaCAJYyAjRkVGQ0I3XCIsClwiaSAJYyAjRkZGREE2
+XCIsClwiaiAJYyAjRkZGQTkxXCIsClwiayAJYyAjRkZGNjgxXCIsClwibCAJYyAjRkZGMTcxXCIs
+ClwibSAJYyAjRkZFRDY0XCIsClwibiAJYyAjRkZFNDRBXCIsClwibyAJYyAjRkZFMDNEXCIsClwi
+cCAJYyAjRkVEQjJGXCIsClwicSAJYyAjRjlEMjFFXCIsClwiciAJYyAjRTlCQzBGXCIsClwicyAJ
+YyAjQ0U5QzAyXCIsClwidCAJYyAjRjNFMzZBXCIsClwidSAJYyAjRkNGODk5XCIsClwidiAJYyAj
+RkZGQ0EzXCIsClwidyAJYyAjRkVGNjk0XCIsClwieCAJYyAjRkZGMjg0XCIsClwieSAJYyAjRkZF
+RTcxXCIsClwieiAJYyAjRkZFQTYyXCIsClwiQSAJYyAjRkREQzQwXCIsClwiQiAJYyAjRjhEMjJG
+XCIsClwiQyAJYyAjRjFDNjFCXCIsClwiRCAJYyAjRERBRDBBXCIsClwiRSAJYyAjQ0M5QTAyXCIs
+ClwiRiAJYyAjQzg5NTAwXCIsClwiRyAJYyAjRjRFQTc3XCIsClwiSCAJYyAjRjdFRjdGXCIsClwi
+SSAJYyAjRkZGMTZBXCIsClwiSiAJYyAjRkZFRjY4XCIsClwiSyAJYyAjRkZFRTY2XCIsClwiTCAJ
+YyAjRkVENjIyXCIsClwiTSAJYyAjRkVENTFFXCIsClwiTiAJYyAjRkVENDE5XCIsClwiTyAJYyAj
+RTlCOTBFXCIsClwiUCAJYyAjRTdCNTA5XCIsClwiUSAJYyAjRDRBMjAyXCIsClwiUiAJYyAjQ0E5
+NzAwXCIsClwiUyAJYyAjRjZFNjdDXCIsClwiVCAJYyAjRjNFNjdGXCIsClwiVSAJYyAjRkNFRTdB
+XCIsClwiViAJYyAjRkRFQjY2XCIsClwiVyAJYyAjRkVFNDRFXCIsClwiWCAJYyAjRkVEMzEzXCIs
+ClwiWSAJYyAjRkRDQTAzXCIsClwiWiAJYyAjRjJCRTAxXCIsClwiYCAJYyAjRDRBNjBEXCIsClwi
+IC4JYyAjRDRBMjA2XCIsClwiLi4JYyAjRDE5QzAwXCIsClwiKy4JYyAjQ0Y5ODAwXCIsClwiQC4J
+YyAjRTNBRjAyXCIsClwiIy4JYyAjRjlFQjgxXCIsClwiJC4JYyAjRkJGMDk2XCIsClwiJS4JYyAj
+RjlFNjdDXCIsClwiJi4JYyAjRjhEQzVGXCIsClwiKi4JYyAjRjhENTQ4XCIsClwiPS4JYyAjRjlE
+MDJEXCIsClwiLS4JYyAjRjlDOTE1XCIsClwiOy4JYyAjRjdDMTA0XCIsClwiPi4JYyAjRUVCNjA2
+XCIsClwiLC4JYyAjRTlCNzA0XCIsClwiJy4JYyAjREVBRTA4XCIsClwiKS4JYyAjNDE0RDdCXCIs
+ClwiIS4JYyAjM0M1Q0EyXCIsClwifi4JYyAjM0E2NUIzXCIsClwiey4JYyAjMzY2OEJCXCIsClwi
+XS4JYyAjMzI1RUFGXCIsClwiXi4JYyAjRjNFNDZFXCIsClwiLy4JYyAjRkNGQTlCXCIsClwiKC4J
+YyAjRkZGODlDXCIsClwiXy4JYyAjRkRFQzgxXCIsClwiOi4JYyAjRkNFNjY4XCIsClwiPC4JYyAj
+RkRERjRFXCIsClwiWy4JYyAjRkNEQTNDXCIsClwifS4JYyAjRkNENTJFXCIsClwifC4JYyAjRkFE
+MDI2XCIsClwiMS4JYyAjNDY2MkEyXCIsClwiMi4JYyAjNDY1QThEXCIsClwiMy4JYyAjM0Y2Q0JB
+XCIsClwiNC4JYyAjM0E2OEI3XCIsClwiNS4JYyAjMkU1MjlFXCIsClwiNi4JYyAjMjY1NUFDXCIs
+ClwiNy4JYyAjRjBEQzY5XCIsClwiOC4JYyAjRkJGNzhDXCIsClwiOS4JYyAjRkZGODgwXCIsClwi
+MC4JYyAjRkZGMDZCXCIsClwiYS4JYyAjRkZFMDNFXCIsClwiYi4JYyAjRkZEODI4XCIsClwiYy4J
+YyAjRkVEMDE1XCIsClwiZC4JYyAjRjVDNDBBXCIsClwiZS4JYyAjNEI3MEI0XCIsClwiZi4JYyAj
+NDg3MEI3XCIsClwiZy4JYyAjM0M1Q0ExXCIsClwiaC4JYyAjNDA3MEJGXCIsClwiaS4JYyAjMzc1
+OUEwXCIsClwiai4JYyAjMUQ0NjlDXCIsClwiay4JYyAjMjE0NDkzXCIsClwibC4JYyAjRjJERDZD
+XCIsClwibS4JYyAjRjhFQjdFXCIsClwibi4JYyAjRkJFRTdBXCIsClwiby4JYyAjRkJFNDYxXCIs
+ClwicC4JYyAjRkFEQjQ4XCIsClwicS4JYyAjRkJENjMxXCIsClwici4JYyAjRkVEMTBGXCIsClwi
+cy4JYyAjRkVDRDA3XCIsClwidC4JYyAjRjFCRDAwXCIsClwidS4JYyAjNDU2QUFFXCIsClwidi4J
+YyAjNEM3RUNBXCIsClwidy4JYyAjNDg3QUM4XCIsClwieC4JYyAjMzU1MjhGXCIsClwieS4JYyAj
+MUI0Mjk0XCIsClwiei4JYyAjMUI0MTkzXCIsClwiQS4JYyAjRjlFQTgzXCIsClwiQi4JYyAjRkNG
+MDhFXCIsClwiQy4JYyAjRjZFMTZFXCIsClwiRC4JYyAjRjRENTU5XCIsClwiRS4JYyAjRjVDRjQ1
+XCIsClwiRi4JYyAjRjZDQjJFXCIsClwiRy4JYyAjRjhDNjExXCIsClwiSC4JYyAjRjZDMDA1XCIs
+ClwiSS4JYyAjRThCMzAwXCIsClwiSi4JYyAjNDI2OEFFXCIsClwiSy4JYyAjNDM3NUM0XCIsClwi
+TC4JYyAjM0Y3MUMxXCIsClwiTS4JYyAjMzM1NjlCXCIsClwiTi4JYyAjMTczRjk0XCIsClwiTy4J
+YyAjMTgzQThCXCIsClwiUC4JYyAjRjNFMzZFXCIsClwiUS4JYyAjRkNGN0ExXCIsClwiUi4JYyAj
+RkVGOUExXCIsClwiUy4JYyAjRkVFRTdEXCIsClwiVC4JYyAjRkNFMzYwXCIsClwiVS4JYyAjRkFE
+OTQ2XCIsClwiVi4JYyAjRjlEMTMyXCIsClwiVy4JYyAjRjhDRDI2XCIsClwiWC4JYyAjRjdDQTIw
+XCIsClwiWS4JYyAjM0I1ODlBXCIsClwiWi4JYyAjMzk1RkE5XCIsClwiYC4JYyAjMzM1OUE1XCIs
+ClwiICsJYyAjMzA1NkEzXCIsClwiLisJYyAjMkI0NjhEXCIsClwiKysJYyAjMEEzODk3XCIsClwi
+QCsJYyAjRTZENDY1XCIsClwiIysJYyAjRkRGQTkwXCIsClwiJCsJYyAjRkZGODg1XCIsClwiJSsJ
+YyAjRkZGMDc0XCIsClwiJisJYyAjRkZFQTYwXCIsClwiKisJYyAjRkZFMjQ2XCIsClwiPSsJYyAj
+RkZEQzMxXCIsClwiLSsJYyAjRkVENTFGXCIsClwiOysJYyAjRjdDQjE0XCIsClwiPisJYyAjMTcz
+Nzg4XCIsClwiLCsJYyAjMDYzNDk0XCIsClwiJysJYyAjRThERTdCXCIsClwiKSsJYyAjRkZGQTg2
+XCIsClwiISsJYyAjRkZGMjZBXCIsClwifisJYyAjRkZFODRGXCIsClwieysJYyAjRkZENDE1XCIs
+ClwiXSsJYyAjRkRDQzA0XCIsClwiXisJYyAjRjNDMDAxXCIsClwiLysJYyAjRUJCNjAwXCIsClwi
+KCsJYyAjRTNBRjAxXCIsClwiXysJYyAjRDdBMTAwXCIsClwiOisJYyAjMkQzRTdGXCIsClwiPCsJ
+YyAjMDMzMzk2XCIsClwiWysJYyAjQ0ZCOTU0XCIsClwifSsJYyAjREJDMzQ3XCIsClwifCsJYyAj
+REVCRjJDXCIsClwiMSsJYyAjREZCNzE4XCIsClwiMisJYyAjREZCMjA2XCIsClwiMysJYyAjRDZB
+NTA1XCIsClwiNCsJYyAjQzY5NzBBXCIsClwiNSsJYyAjQjQ4NDEzXCIsClwiNisJYyAjMzc0Njgy
+XCIsClwiNysJYyAjMDIzMzk4XCIsClwiOCsJYyAjMEUzMjg3XCIsClwiOSsJYyAjMjUzNzc1XCIs
+ClwiMCsJYyAjMDUzMThGXCIsClwiYSsJYyAjMTAzNThCXCIsClwiYisJYyAjMTgzODg4XCIsClwi
+YysJYyAjMDUzNDk1XCIsClwiZCsJYyAjMEUzNDhEXCIsClwiZSsJYyAjMTgzNTg1XCIsClwiICAg
+ICAgICAuIC4gLiAuIC4gLiAuICAgICAgICAgICAgICAgICAgICAgICAgICAgXCIsClwiICAgIC4g
+LiArIEAgIyAkICUgJiAqIC4gLiAuICAgICAgICAgICAgICAgICAgICAgXCIsClwiICAuID0gLSA7
+ID4gLCAnICkgISB+IHsgXSBeIC4gICAgICAgICAgICAgICAgICAgXCIsClwiLiAvICggXyA6IDsg
+PCBbIH0gfCAxIDIgMyA0IDUgLiAgICAgICAgICAgICAgICAgXCIsClwiLiA2IDcgOCA5ID4gLCAn
+ICkgISB+IDAgXSBhIGIgLiAgICAgICAgICAgICAgICAgXCIsClwiLiBjIGQgOCA5ID4gLCAnICkg
+ISBlIDAgXSBhIGYgLiAgICAgICAgICAgICAgICAgXCIsClwiLiBnIGggaSBqIGsgbCBtIHwgbiBv
+IHAgcSByIHMgLiAgICAgICAgICAgICAgICAgXCIsClwiLiB0IHUgdiB3IHggeSB6IDIgQSBCIEMg
+RCBFIEYgLiAgICAgICAgICAgICAgICAgXCIsClwiLiBHIEggSSBKIEsgTCBNIE4gTyBQIFEgUiBG
+IEYgLiAgICAgICAgICAgICAgICAgXCIsClwiLiBTIFQgVSBWIFcgcCBYIFkgWiBgICAuLi4rLkAu
+LiAuIC4gLiAuICAgICAgICAgXCIsClwiLiAjLiQuJS4mLiouPS4tLjsuPi4uIC4gLC4nLi4gKS4h
+Ln4uey5dLi4gICAgICAgXCIsClwiLiBeLi8uKC5fLjouPC5bLn0ufC4uIDEuLiAuIDIuMy40Li4g
+LiA1LjYuLiAgICAgXCIsClwiLiA3LjguOS4wLikgYS5iLmMuZC4uIGUuZi5nLmguaS4uICAgICAu
+IGouay4uICAgXCIsClwiLiBsLm0ubi5vLnAucS5yLnMudC4uIHUudi53LnguLiAgICAgICAuIHku
+ei4uICAgXCIsClwiLiBBLkIuQy5ELkUuRi5HLkguSS4uIEouSy5MLk0uLiAgICAgICAuIE4uTy4u
+ICAgXCIsClwiLiBQLlEuUi5TLlQuVS5WLlcuWC4uIFkuWi5gLiArLisuICAgICAuICsrLiAgICAg
+XCIsClwiLiBAKyMrJCslKyYrKis9Ky0rOysuIC4gLiAuIC4gLiAuICAgLiA+KywrLiAgICAgXCIs
+ClwiICAuICcrKSshK34reyB7K10rXisvKygrXysuICAgICAgIC4gOis8Ky4gICAgICAgXCIsClwi
+ICAgIC4gLiBbK30rfCsxKzIrMys0KzUrLiAgICAgICAuIDYrNys4Ky4gICAgICAgXCIsClwiICAg
+ICAgICAuIC4gLiAuIC4gLiAuIC4gICAgICAgLiA5KzArYSsuICAgICAgICAgXCIsClwiICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgIC4gYitjK2QrLiAgICAgICAgICAgXCIsClwiICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgIC4gZSsuIC4gICAgICAgICAgICAgXCIsClwiICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgLiAgICAgICAgICAgICAgICAgXCIsClwiICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgXCJ9OwoiCiAgIlhQTSBmb3JtYXQgaW1h
+Z2UgdXNlZCBhcyBSb2xsYmFjayBpY29uIikKCihkZWZjb25zdCBzcWxwbHVzLWNvbW1pdC14cG0g
+IlwKLyogWFBNICovCnN0YXRpYyBjaGFyICogY29tbWl0X3hwbVtdID0gewpcIjI0IDI0IDI3NiAy
+XCIsClwiICAJYyBOb25lXCIsClwiLiAJYyAjMDAwMDAwXCIsClwiKyAJYyAjRkRGNTdEXCIsClwi
+QCAJYyAjRkZGNjc2XCIsClwiIyAJYyAjRkZGMzZDXCIsClwiJCAJYyAjRkZGMDVEXCIsClwiJSAJ
+YyAjRkZFQjUxXCIsClwiJiAJYyAjRkZFNDQ1XCIsClwiKiAJYyAjRkREQzM1XCIsClwiPSAJYyAj
+RUZFQTg1XCIsClwiLSAJYyAjRkJGNjhEXCIsClwiOyAJYyAjRkNGNDgyXCIsClwiPiAJYyAjRkNG
+MTc4XCIsClwiLCAJYyAjRkNFRTZFXCIsClwiJyAJYyAjRkNFQjY2XCIsClwiKSAJYyAjRkNFODVC
+XCIsClwiISAJYyAjRkNFNTUxXCIsClwifiAJYyAjRkRFMTQ3XCIsClwieyAJYyAjRkRERjNEXCIs
+ClwiXSAJYyAjRkVERDJEXCIsClwiXiAJYyAjRkNENjIxXCIsClwiLyAJYyAjRTVCRjE2XCIsClwi
+KCAJYyAjRDhENDc5XCIsClwiXyAJYyAjRkNGNTg3XCIsClwiOiAJYyAjRkFFRjc4XCIsClwiPCAJ
+YyAjRkFFQTZCXCIsClwiWyAJYyAjRkFFQTZBXCIsClwifSAJYyAjRkFFOTY4XCIsClwifCAJYyAj
+RkFFOTY3XCIsClwiMSAJYyAjRkFFODY1XCIsClwiMiAJYyAjRkFFODY0XCIsClwiMyAJYyAjRkRE
+RDNDXCIsClwiNCAJYyAjRkVENjIxXCIsClwiNSAJYyAjRkZENTFEXCIsClwiNiAJYyAjRkZENTFC
+XCIsClwiNyAJYyAjRkZENTE5XCIsClwiOCAJYyAjRDhCODJCXCIsClwiOSAJYyAjRkNGNzkwXCIs
+ClwiMCAJYyAjRkJGNTg3XCIsClwiYSAJYyAjRjhFRjdEXCIsClwiYiAJYyAjRjhFQzc1XCIsClwi
+YyAJYyAjRjdFODZCXCIsClwiZCAJYyAjRjhFODY4XCIsClwiZSAJYyAjRjlFNjYzXCIsClwiZiAJ
+YyAjRjlFNDVBXCIsClwiZyAJYyAjRjlFMjUzXCIsClwiaCAJYyAjRjlFMDRDXCIsClwiaSAJYyAj
+RkJERDQwXCIsClwiaiAJYyAjRkJEQjM4XCIsClwiayAJYyAjRkFEOTMzXCIsClwibCAJYyAjRkFE
+NTI5XCIsClwibSAJYyAjRkREODEwXCIsClwibiAJYyAjRkZGRDlFXCIsClwibyAJYyAjRkZGRjlB
+XCIsClwicCAJYyAjRkZGRTk2XCIsClwicSAJYyAjRkZGQjhDXCIsClwiciAJYyAjRkZGNzgxXCIs
+ClwicyAJYyAjRkZGMzc1XCIsClwidCAJYyAjRkZFRjY5XCIsClwidSAJYyAjRkZFQTVCXCIsClwi
+diAJYyAjRkZFNzUwXCIsClwidyAJYyAjRkZFMzQ1XCIsClwieCAJYyAjRkZERjM4XCIsClwieSAJ
+YyAjRkZEQjJCXCIsClwieiAJYyAjRkZEODFGXCIsClwiQSAJYyAjRkZEMzEzXCIsClwiQiAJYyAj
+RkJEMDA3XCIsClwiQyAJYyAjRkJGMDkwXCIsClwiRCAJYyAjRkZGREFFXCIsClwiRSAJYyAjRkZG
+RUEyXCIsClwiRiAJYyAjRkZGQThDXCIsClwiRyAJYyAjRkZGNzgwXCIsClwiSCAJYyAjRjZDQTEx
+XCIsClwiSSAJYyAjRTFBRjAzXCIsClwiSiAJYyAjRjRFMzZEXCIsClwiSyAJYyAjRkNGN0E0XCIs
+ClwiTCAJYyAjRkZGRUJCXCIsClwiTSAJYyAjRkVGQUE2XCIsClwiTiAJYyAjRkZGOTkwXCIsClwi
+TyAJYyAjRkZGNTdFXCIsClwiUCAJYyAjRkZFRTZGXCIsClwiUSAJYyAjRkZFQjYxXCIsClwiUiAJ
+YyAjRkZFODU2XCIsClwiUyAJYyAjRkZFMzRBXCIsClwiVCAJYyAjRkJERDQ0XCIsClwiVSAJYyAj
+RjdENTM1XCIsClwiViAJYyAjRUJCRjEzXCIsClwiVyAJYyAjRDVBNDA2XCIsClwiWCAJYyAjQzk5
+NTAwXCIsClwiWSAJYyAjRjBEQzVGXCIsClwiWiAJYyAjRjNFNzcyXCIsClwiYCAJYyAjRjdFQzc2
+XCIsClwiIC4JYyAjRjZFNTZEXCIsClwiLi4JYyAjRjZFMzY5XCIsClwiKy4JYyAjRjZFMjY0XCIs
+ClwiQC4JYyAjRjVERjVDXCIsClwiIy4JYyAjRjNEQjUzXCIsClwiJC4JYyAjRjNEODQ5XCIsClwi
+JS4JYyAjRUZEMjQ1XCIsClwiJi4JYyAjRUNDRTNGXCIsClwiKi4JYyAjRTNCOTFGXCIsClwiPS4J
+YyAjRDNBNDBCXCIsClwiLS4JYyAjQzk5NjAwXCIsClwiOy4JYyAjQzY5MjAwXCIsClwiPi4JYyAj
+RUVEOTVFXCIsClwiLC4JYyAjRUREQTYwXCIsClwiJy4JYyAjRjFERjY0XCIsClwiKS4JYyAjRjJE
+RjVFXCIsClwiIS4JYyAjRjJERDU3XCIsClwifi4JYyAjRjJEOTRFXCIsClwiey4JYyAjRjJENjQ0
+XCIsClwiXS4JYyAjRUZEMDM4XCIsClwiXi4JYyAjRUNDQjM0XCIsClwiLy4JYyAjRTZDNDMwXCIs
+ClwiKC4JYyAjREZCNzFGXCIsClwiXy4JYyAjRDlBRDE3XCIsClwiOi4JYyAjQ0M5OTA3XCIsClwi
+PC4JYyAjQzY5MDAwXCIsClwiWy4JYyAjRDM5RTAwXCIsClwifS4JYyAjQkIxNTAzXCIsClwifC4J
+YyAjRjlFQTdEXCIsClwiMS4JYyAjRjZFNTdBXCIsClwiMi4JYyAjRjVFMzcwXCIsClwiMy4JYyAj
+RjVERTYyXCIsClwiNC4JYyAjRjlERjUyXCIsClwiNS4JYyAjRkJEQjNFXCIsClwiNi4JYyAjRkNE
+NTI2XCIsClwiNy4JYyAjRkNDRTBGXCIsClwiOC4JYyAjRjdDNTBBXCIsClwiOS4JYyAjRUVCQTA4
+XCIsClwiMC4JYyAjRTJBQjAzXCIsClwiYS4JYyAjRDdBMDAwXCIsClwiYi4JYyAjRDU5RDAwXCIs
+ClwiYy4JYyAjREZBOTAxXCIsClwiZC4JYyAjRTdCNDAyXCIsClwiZS4JYyAjQzkxODAwXCIsClwi
+Zi4JYyAjRjZFNjc2XCIsClwiZy4JYyAjRkNGNEExXCIsClwiaC4JYyAjRkRGMDk2XCIsClwiaS4J
+YyAjRkFFMTY3XCIsClwiai4JYyAjRjdENjRGXCIsClwiay4JYyAjRjdDRjM4XCIsClwibC4JYyAj
+RjdDQjI2XCIsClwibS4JYyAjRjZCRjBDXCIsClwibi4JYyAjRjFCOTA1XCIsClwiby4JYyAjRUNC
+MzA5XCIsClwicC4JYyAjRUJCNjBBXCIsClwicS4JYyAjRjBCRjBCXCIsClwici4JYyAjRjNDMjA2
+XCIsClwicy4JYyAjRTVCMjAxXCIsClwidC4JYyAjQ0Y5QzAxXCIsClwidS4JYyAjQzIxNjAyXCIs
+Clwidi4JYyAjQzIxNzAzXCIsClwidy4JYyAjRjJFMDY3XCIsClwieC4JYyAjRkJGNzhGXCIsClwi
+eS4JYyAjRkVGMjhBXCIsClwiei4JYyAjRkVFRDc0XCIsClwiQS4JYyAjRkZFODVGXCIsClwiQi4J
+YyAjRkZFMjREXCIsClwiQy4JYyAjRkZERTNBXCIsClwiRC4JYyAjRkVEOTJGXCIsClwiRS4JYyAj
+RkNEMzI1XCIsClwiRi4JYyAjRjhDRDFBXCIsClwiRy4JYyAjRURCRDBBXCIsClwiSC4JYyAjRDlB
+NzAxXCIsClwiSS4JYyAjQzc5MjAwXCIsClwiSi4JYyAjRDExRDAwXCIsClwiSy4JYyAjRUZEQTY0
+XCIsClwiTC4JYyAjRjdFRjdGXCIsClwiTS4JYyAjRkNGNDdGXCIsClwiTi4JYyAjRkRFRTZDXCIs
+ClwiTy4JYyAjRkRFODVCXCIsClwiUC4JYyAjRkRFMjQ5XCIsClwiUS4JYyAjRkREQzM2XCIsClwi
+Ui4JYyAjRkNENDIzXCIsClwiUy4JYyAjRjlDQzE0XCIsClwiVC4JYyAjRjBDMTBFXCIsClwiVS4J
+YyAjRTZCNTA3XCIsClwiVi4JYyAjRENBOTAwXCIsClwiVy4JYyAjRDI5RjAwXCIsClwiWC4JYyAj
+QzY5NDAwXCIsClwiWS4JYyAjQzk5MjAwXCIsClwiWi4JYyAjQ0MxQjAyXCIsClwiYC4JYyAjQzYx
+QTA0XCIsClwiICsJYyAjRTFDRjVGXCIsClwiLisJYyAjRUFEODYyXCIsClwiKysJYyAjRUNEQjYz
+XCIsClwiQCsJYyAjRUZEQzVFXCIsClwiIysJYyAjRUZEOTU1XCIsClwiJCsJYyAjRUZENzREXCIs
+ClwiJSsJYyAjRUZENDQ0XCIsClwiJisJYyAjRjBEMjNFXCIsClwiKisJYyAjRUVDRTM3XCIsClwi
+PSsJYyAjRThDNzMxXCIsClwiLSsJYyAjRTBCOTIyXCIsClwiOysJYyAjRDA5RTAzXCIsClwiPisJ
+YyAjQ0I5NzAwXCIsClwiLCsJYyAjQzM5MTAwXCIsClwiJysJYyAjQzk5NDAwXCIsClwiKSsJYyAj
+RTEyNDAwXCIsClwiISsJYyAjRjJFNDdDXCIsClwifisJYyAjRjhFRDhDXCIsClwieysJYyAjRjRF
+MTcxXCIsClwiXSsJYyAjRjBENjVCXCIsClwiXisJYyAjRjBEMjRGXCIsClwiLysJYyAjRjFDRjQz
+XCIsClwiKCsJYyAjRjJDRDM0XCIsClwiXysJYyAjRjJDODI0XCIsClwiOisJYyAjRUVDNTI3XCIs
+ClwiPCsJYyAjRTdCRDIzXCIsClwiWysJYyAjREZBQzEyXCIsClwifSsJYyAjREFBMjAzXCIsClwi
+fCsJYyAjRTVCMjAyXCIsClwiMSsJYyAjRURCQTAxXCIsClwiMisJYyAjRDY5RjAwXCIsClwiMysJ
+YyAjRDIxRTAxXCIsClwiNCsJYyAjRDAxQzAwXCIsClwiNSsJYyAjRjJFMTZBXCIsClwiNisJYyAj
+RkJGNTlEXCIsClwiNysJYyAjRkVGQkFBXCIsClwiOCsJYyAjRkVGMDg0XCIsClwiOSsJYyAjRkNF
+NTY3XCIsClwiMCsJYyAjRkJERDUwXCIsClwiYSsJYyAjRjhEMjNCXCIsClwiYisJYyAjRjhDRDI4
+XCIsClwiYysJYyAjRUVCNTFDXCIsClwiZCsJYyAjREE4QTEzXCIsClwiZSsJYyAjRTI5QTE2XCIs
+ClwiZisJYyAjRURCMTExXCIsClwiZysJYyAjRTVBRTA4XCIsClwiaCsJYyAjRDE5QzAxXCIsClwi
+aSsJYyAjQzc5NDAwXCIsClwiaisJYyAjQkYxNjAzXCIsClwiaysJYyAjREQyMzAwXCIsClwibCsJ
+YyAjRTZEMjYxXCIsClwibSsJYyAjRkNGODhDXCIsClwibisJYyAjRkZGMjdBXCIsClwibysJYyAj
+RkZFQzZBXCIsClwicCsJYyAjRkZFNjU1XCIsClwicSsJYyAjRkZFMDQxXCIsClwicisJYyAjRkZE
+QTJCXCIsClwicysJYyAjRTQ5RDE0XCIsClwidCsJYyAjQkE0RjAyXCIsClwidSsJYyAjQkI2QTAw
+XCIsClwidisJYyAjQjM3MTAyXCIsClwidysJYyAjREQyMjAwXCIsClwieCsJYyAjQ0ExQjAyXCIs
+ClwieSsJYyAjRTZEQjc4XCIsClwieisJYyAjRkVGQjhCXCIsClwiQSsJYyAjRkZGNDcwXCIsClwi
+QisJYyAjRkZFQTU2XCIsClwiQysJYyAjRkZFMTNFXCIsClwiRCsJYyAjRkZEQTI0XCIsClwiRSsJ
+YyAjRkVDRjBBXCIsClwiRisJYyAjRjVCRTAxXCIsClwiRysJYyAjRDM3ODAwXCIsClwiSCsJYyAj
+RDcyMDAwXCIsClwiSSsJYyAjQzYxODAyXCIsClwiSisJYyAjRUJENTVDXCIsClwiSysJYyAjRkNF
+MzUzXCIsClwiTCsJYyAjRkZFMzNFXCIsClwiTSsJYyAjRkZEQjI2XCIsClwiTisJYyAjRkZEMjBC
+XCIsClwiTysJYyAjRkNDQjAxXCIsClwiUCsJYyAjRjBCOTAwXCIsClwiUSsJYyAjRDQ3RDAwXCIs
+ClwiUisJYyAjRTQyNTAwXCIsClwiUysJYyAjRUIyOTAwXCIsClwiVCsJYyAjREYyMzAxXCIsClwi
+VSsJYyAjRTgyNzAwXCIsClwiVisJYyAjRDMxRjA0XCIsClwiVysJYyAjQzcxRjAxXCIsClwiWCsJ
+YyAjRUEyODAwXCIsClwiWSsJYyAjRTkyODAwXCIsClwiWisJYyAjREQyMzAxXCIsClwiYCsJYyAj
+RTIyNTAxXCIsClwiICAgICAgICAgIC4gLiAuIC4gLiAuIC4gICAgICAgICAgICAgICAgICAgICAg
+ICAgXCIsClwiICAgIC4gLiAuICsgQCAjICQgJSAmICogLiAuIC4gICAgICAgICAgICAgICAgICAg
+XCIsClwiICAuID0gLSA7ID4gLCAnICkgISB+IHsgXSBeIC8gLiAgICAgICAgICAgICAgICAgXCIs
+ClwiLiAoIF8gOiA8IFsgfSB8IDEgMiAzIDQgNSA2IDcgOCAuICAgICAgICAgICAgICAgXCIsClwi
+LiA5IDAgYSBiIGMgZCBlIGYgZyBoIGkgaiBrIGwgbSAuICAgICAgICAgICAgICAgXCIsClwiLiBu
+IG8gcCBxIHIgcyB0IHUgdiB3IHggeSB6IEEgQiAuICAgICAgICAgICAgICAgXCIsClwiLiBDIEQg
+RSBGIEcgcyB0IHUgdiB3IHggeSB6IEggSSAuICAgICAgICAgICAgICAgXCIsClwiLiBKIEsgTCBN
+IE4gTyBQIFEgUiBTIFQgVSBWIFcgWCAuICAgICAgICAgICAgICAgXCIsClwiLiBZIFogYCAgLi4u
+Ky5ALiMuJC4lLiYuKi49Li0uOy4uICAgICAgICAgLiAuICAgXCIsClwiLiA+LiwuJy4pLiEufi57
+Ll0uXi4vLiguXy46LjwuWy4uICAgICAgIC4gfS4uICAgXCIsClwiLiB8LjEuMi4zLjQuNS42Ljcu
+OC45LjAuYS5iLmMuZC4uICAgICAgIC4gZS4uICAgXCIsClwiLiBmLmcuaC5pLmouay5sLm0ubi5v
+LnAucS5yLnMudC4uICAgICAuIHUudi4uICAgXCIsClwiLiB3LngubiB5LnouQS5CLkMuRC5FLkYu
+Ry5ILi0uSS4uICAgICAuIEouLiAgICAgXCIsClwiLiBLLkwuTS5OLk8uUC5RLlIuUy5ULlUuVi5X
+LlguWS4uICAgLiBaLmAuLiAgICAgXCIsClwiLiAgKy4rKytAKyMrJCslKyYrKis9Ky0rOys+Kywr
+JysuICAgLiApKy4gICAgICAgXCIsClwiLiAhK34reytdK14rLysoK18rOis8K1srfSt8KzErMisu
+IC4gMys0Ky4gICAgICAgXCIsClwiLiA1KzYrNys4KzkrMCthK2IrYytkK2UrZitnK2graSsuIGor
+aysuICAgICAgICAgXCIsClwiLiBsK20rcSBuK28rcCtxK3IrcysuIC4gLiB0K3UrdisuIHcreCsu
+ICAgICAgICAgXCIsClwiICAuIHkreitBK0IrQytEK0UrRitHKy4gSCsuIC4gLiBJKykrLiAgICAg
+ICAgICAgXCIsClwiICAgIC4gLiBKK0srTCtNK04rTytQK1ErLiBSK1MrVCtVK1YrLiAgICAgICAg
+ICAgXCIsClwiICAgICAgICAuIC4gLiAuIC4gLiAuIC4gLiAuIFcrWCtZKy4gICAgICAgICAgICAg
+XCIsClwiICAgICAgICAgICAgICAgICAgICAgICAgICAgIC4gWitgKy4gICAgICAgICAgICAgXCIs
+ClwiICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgLiAuICAgICAgICAgICAgICAgXCIsClwi
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAuICAgICAgICAgICAgICAgXCJ9OwoiCiAg
+IlhQTSBmb3JtYXQgaW1hZ2UgdXNlZCBhcyBDb21taXQgaWNvbiIpCgooZGVmY29uc3QgcGxzcWwt
+cHJldi1tYXJrLXhwbSAiXAovKiBYUE0gKi8Kc3RhdGljIGNoYXIgKiBnb19wcmV2aW91c194cG1b
+XSA9IHsKXCIyNCAyNCA1OSAxXCIsClwiIAljIE5vbmVcIiwKXCIuCWMgIzAwMDAwMFwiLApcIisJ
+YyAjMzU1RDk2XCIsClwiQAljICMzQzYzOUJcIiwKXCIjCWMgIzZFOTJCRlwiLApcIiQJYyAjNDE2
+NzlEXCIsClwiJQljICM2OTkwQkVcIiwKXCImCWMgIzZEOTRDMlwiLApcIioJYyAjNDU2REEyXCIs
+ClwiPQljICM2MjhCQkNcIiwKXCItCWMgIzREN0JCNFwiLApcIjsJYyAjNjk5MUMwXCIsClwiPglj
+ICM0OTcxQTZcIiwKXCIsCWMgIzVEODdCQVwiLApcIicJYyAjNEI3QkIzXCIsClwiKQljICM0OTc5
+QjNcIiwKXCIhCWMgIzU4ODRCOVwiLApcIn4JYyAjNjM4Q0JDXCIsClwiewljICM2MzhCQkNcIiwK
+XCJdCWMgIzYwODlCQVwiLApcIl4JYyAjNEI3M0E5XCIsClwiLwljICM1ODgzQjhcIiwKXCIoCWMg
+IzRBN0FCM1wiLApcIl8JYyAjNjE4QUJCXCIsClwiOgljICM0Qzc0QUJcIiwKXCI8CWMgIzU0N0ZC
+NVwiLApcIlsJYyAjNDk3MkE5XCIsClwifQljICM0RDc5QjFcIiwKXCJ8CWMgIzQxNzFBRFwiLApc
+IjEJYyAjNDA3MUFEXCIsClwiMgljICM0MDcwQURcIiwKXCIzCWMgIzQxNzFBQ1wiLApcIjQJYyAj
+NDA3MUFDXCIsClwiNQljICM0MDcwQUNcIiwKXCI2CWMgIzNGNzBBQ1wiLApcIjcJYyAjM0Y3MEFC
+XCIsClwiOAljICM0MDZGQUNcIiwKXCI5CWMgIzU3ODFCNVwiLApcIjAJYyAjNEE3NEFDXCIsClwi
+YQljICMzRTZDQThcIiwKXCJiCWMgIzM0NjVBNFwiLApcImMJYyAjNEU3OEFGXCIsClwiZAljICM0
+NDZGQThcIiwKXCJlCWMgIzRBNzVBRFwiLApcImYJYyAjM0Y2Q0E2XCIsClwiZwljICMzQzZCQTdc
+IiwKXCJoCWMgIzNCNkJBN1wiLApcImkJYyAjNDQ3MUFCXCIsClwiagljICM0NTcyQUJcIiwKXCJr
+CWMgIzQ2NzJBQ1wiLApcImwJYyAjNDU3MUFCXCIsClwibQljICMzQTY4QTNcIiwKXCJuCWMgIzNC
+NkFBN1wiLApcIm8JYyAjNDA2RUE5XCIsClwicAljICMzNTY0QTBcIiwKXCJxCWMgIzM4NjhBNlwi
+LApcInIJYyAjMzA1RTlEXCIsClwicwljICMzNzY3QTVcIiwKXCJ0CWMgIzJFNUQ5QlwiLApcIiAg
+ICAgICAgICAgICAgICAgICAgICAgIFwiLApcIiAgICAgICAgICAgICAgICAgICAgICAgIFwiLApc
+IiAgICAgICAgICAgICAgICAgICAgICAgIFwiLApcIiAgICAgICAgICAgIC4uICAgICAgICAgIFwi
+LApcIiAgICAgICAgICAgLisuICAgICAgICAgIFwiLApcIiAgICAgICAgICAuQCMuICAgICAgICAg
+IFwiLApcIiAgICAgICAgIC4kJSYuICAgICAgICAgIFwiLApcIiAgICAgICAgLio9LTsuLi4uLi4u
+Li4gIFwiLApcIiAgICAgICAuPiwnKSF+e3t7e3t+XS4gIFwiLApcIiAgICAgIC5eLygpKSkoKCgo
+KCgnXy4gIFwiLApcIiAgICAgLjo8KSkpKSkpKSkpKSkpLC4gIFwiLApcIiAgICAuW318MTEyMzQ1
+NTU2NzU4OS4gIFwiLApcIiAgICAgLjBhYmJiYmJiYmJiYmJiYy4gIFwiLApcIiAgICAgIC5kYWJi
+YmJiYmJiYmJiZS4gIFwiLApcIiAgICAgICAuZmdiYmhpampqamprbC4gIFwiLApcIiAgICAgICAg
+Lm1uYm8uLi4uLi4uLi4gIFwiLApcIiAgICAgICAgIC5wcWguICAgICAgICAgIFwiLApcIiAgICAg
+ICAgICAucnMuICAgICAgICAgIFwiLApcIiAgICAgICAgICAgLnQuICAgICAgICAgIFwiLApcIiAg
+ICAgICAgICAgIC4uICAgICAgICAgIFwiLApcIiAgICAgICAgICAgICAuICAgICAgICAgIFwiLApc
+IiAgICAgICAgICAgICAgICAgICAgICAgIFwiLApcIiAgICAgICAgICAgICAgICAgICAgICAgIFwi
+LApcIiAgICAgICAgICAgICAgICAgICAgICAgIFwifTsKIgogICJYUE0gZm9ybWF0IGltYWdlIHVz
+ZWQgYXMgUHJldmlvdXMgTWFyayBpY29uIikKCihkZWZjb25zdCBwbHNxbC1uZXh0LW1hcmsteHBt
+ICJcCi8qIFhQTSAqLwpzdGF0aWMgY2hhciAqIGdvX25leHRfeHBtW10gPSB7ClwiMjQgMjQgNjMg
+MVwiLApcIiAJYyBOb25lXCIsClwiLgljICMwMDAwMDBcIiwKXCIrCWMgIzM2NUY5N1wiLApcIkAJ
+YyAjNkI4RkJFXCIsClwiIwljICM0MTY4OUVcIiwKXCIkCWMgIzY5OTBCRlwiLApcIiUJYyAjNDY2
+RUE0XCIsClwiJgljICM2NzhFQkRcIiwKXCIqCWMgIzRFN0RCNVwiLApcIj0JYyAjNjM4Q0JDXCIs
+ClwiLQljICM0QjcyQTdcIiwKXCI7CWMgIzVCODNCNVwiLApcIj4JYyAjNjI4QkJCXCIsClwiLAlj
+ICM1QTg2QkFcIiwKXCInCWMgIzQ5NzlCM1wiLApcIikJYyAjNEI3QUIzXCIsClwiIQljICM1RTg3
+QjlcIiwKXCJ+CWMgIzRFNzZBQVwiLApcInsJYyAjNUI4NEI4XCIsClwiXQljICM0RTdDQjVcIiwK
+XCJeCWMgIzRBN0FCM1wiLApcIi8JYyAjNTg4M0I3XCIsClwiKAljICM1MTc4QURcIiwKXCJfCWMg
+IzU5ODJCNlwiLApcIjoJYyAjNEM3QkI0XCIsClwiPAljICM1MzdGQjVcIiwKXCJbCWMgIzUwNzlB
+RVwiLApcIn0JYyAjNTA3QkIwXCIsClwifAljICM0MjcyQURcIiwKXCIxCWMgIzQwNzBBQ1wiLApc
+IjIJYyAjM0Y3MEFCXCIsClwiMwljICMzRjcwQUNcIiwKXCI0CWMgIzQwNzFBQ1wiLApcIjUJYyAj
+NDE3MUFDXCIsClwiNgljICM0MDcwQURcIiwKXCI3CWMgIzQwNzFBRFwiLApcIjgJYyAjNDE3MUFE
+XCIsClwiOQljICM0RDc5QjFcIiwKXCIwCWMgIzRFNzZBRFwiLApcImEJYyAjNDg3MkFBXCIsClwi
+YgljICMzNzY3QTVcIiwKXCJjCWMgIzM0NjVBNFwiLApcImQJYyAjM0Q2Q0E4XCIsClwiZQljICM0
+Qzc2QURcIiwKXCJmCWMgIzJCNTQ4RVwiLApcImcJYyAjNDQ2RkE4XCIsClwiaAljICMzQzZCQTdc
+IiwKXCJpCWMgIzQ3NzJBQVwiLApcImoJYyAjMjk1MjhFXCIsClwiawljICMzRjZDQTZcIiwKXCJs
+CWMgIzQ0NzFBQlwiLApcIm0JYyAjNDM3MUFCXCIsClwibgljICMzQjZCQTdcIiwKXCJvCWMgIzQx
+NkVBOFwiLApcInAJYyAjM0Y2Q0E3XCIsClwicQljICMzQTY5QTZcIiwKXCJyCWMgIzNDNkFBNVwi
+LApcInMJYyAjM0I2QUE1XCIsClwidAljICMzODY4QTZcIiwKXCJ1CWMgIzM3NjVBMlwiLApcInYJ
+YyAjMzY2NkEzXCIsClwidwljICMzMjYxOUZcIiwKXCJ4CWMgIzJGNUQ5QlwiLApcIiAgICAgICAg
+ICAgICAgICAgICAgICAgIFwiLApcIiAgICAgICAgICAgICAgICAgICAgICAgIFwiLApcIiAgICAg
+ICAgICAgICAgICAgICAgICAgIFwiLApcIiAgICAgICAgICAgLi4gICAgICAgICAgIFwiLApcIiAg
+ICAgICAgICAgLisuICAgICAgICAgIFwiLApcIiAgICAgICAgICAgLkAjLiAgICAgICAgIFwiLApc
+IiAgICAgICAgICAgLiQkJS4gICAgICAgIFwiLApcIiAgIC4uLi4uLi4uLiYqPS0uICAgICAgIFwi
+LApcIiAgIC47Pj4+Pj4+PSwnKSF+LiAgICAgIFwiLApcIiAgIC57XV5eXl5eXicnJycvKC4gICAg
+IFwiLApcIiAgIC5fOicnJycnJycnJycnPFsuICAgIFwiLApcIiAgIC59fDEyMzExMTQ1Njc3ODkw
+LiAgIFwiLApcIiAgIC5hYmNjY2NjY2NjY2NjZGUuICAgIFwiLApcIiAgIC5nYmNjY2NjY2NjY2No
+aS4gICAgIFwiLApcIiAgIC5rbG1sbGxsbGhjY25vLiAgICAgIFwiLApcIiAgIC4uLi4uLi4uLnBj
+cXIuICAgICAgIFwiLApcIiAgICAgICAgICAgLnN0dS4gICAgICAgIFwiLApcIiAgICAgICAgICAg
+LnZ3LiAgICAgICAgIFwiLApcIiAgICAgICAgICAgLnguICAgICAgICAgIFwiLApcIiAgICAgICAg
+ICAgLi4gICAgICAgICAgIFwiLApcIiAgICAgICAgICAgLiAgICAgICAgICAgIFwiLApcIiAgICAg
+ICAgICAgICAgICAgICAgICAgIFwiLApcIiAgICAgICAgICAgICAgICAgICAgICAgIFwiLApcIiAg
+ICAgICAgICAgICAgICAgICAgICAgIFwifTsKIgogICJYUE0gZm9ybWF0IGltYWdlIHVzZWQgYXMg
+TmV4dCBNYXJrIGljb24iKQoKKGRlZmNvbnN0IHNxbHBsdXMta2lsbC1pbWFnZQogIChjcmVhdGUt
+aW1hZ2Ugc3FscGx1cy1raWxsLXhwbSAneHBtIHQpKQoKKGRlZmNvbnN0IHNxbHBsdXMtY2FuY2Vs
+LWltYWdlCiAgKGNyZWF0ZS1pbWFnZSBzcWxwbHVzLWNhbmNlbC14cG0gJ3hwbSB0KSkKCihkZWZj
+b25zdCBzcWxwbHVzLWNvbW1pdC1pbWFnZQogIChjcmVhdGUtaW1hZ2Ugc3FscGx1cy1jb21taXQt
+eHBtICd4cG0gdCkpCgooZGVmY29uc3Qgc3FscGx1cy1yb2xsYmFjay1pbWFnZQogIChjcmVhdGUt
+aW1hZ2Ugc3FscGx1cy1yb2xsYmFjay14cG0gJ3hwbSB0KSkKCihkZWZjb25zdCBwbHNxbC1wcmV2
+LW1hcmstaW1hZ2UKICAoY3JlYXRlLWltYWdlIHBsc3FsLXByZXYtbWFyay14cG0gJ3hwbSB0KSkK
+CihkZWZjb25zdCBwbHNxbC1uZXh0LW1hcmstaW1hZ2UKICAoY3JlYXRlLWltYWdlIHBsc3FsLW5l
+eHQtbWFyay14cG0gJ3hwbSB0KSkKCihkZWZ2YXIgc3FscGx1cy1tb2RlLXN5bnRheC10YWJsZSBu
+aWwKICAiU3ludGF4IHRhYmxlIHVzZWQgd2hpbGUgaW4gc3FscGx1cy1tb2RlLiIpCgooZGVmdmFy
+IHNxbHBsdXMtc3VwcHJlc3Mtc2hvdy1vdXRwdXQtYnVmZmVyIG5pbCkKCjs7IExvY2FsIGluIGlu
+cHV0IGJ1ZmZlcnMKKGRlZnZhciBzcWxwbHVzLWZvbnQtbG9jay1rZXl3b3Jkcy0xIG5pbCkKKG1h
+a2UtdmFyaWFibGUtYnVmZmVyLWxvY2FsICdzcWxwbHVzLWZvbnQtbG9jay1rZXl3b3Jkcy0xKQoo
+ZGVmdmFyIHNxbHBsdXMtZm9udC1sb2NrLWtleXdvcmRzLTIgbmlsKQoobWFrZS12YXJpYWJsZS1i
+dWZmZXItbG9jYWwgJ3NxbHBsdXMtZm9udC1sb2NrLWtleXdvcmRzLTIpCihkZWZ2YXIgc3FscGx1
+cy1mb250LWxvY2sta2V5d29yZHMtMyBuaWwpCihtYWtlLXZhcmlhYmxlLWJ1ZmZlci1sb2NhbCAn
+c3FscGx1cy1mb250LWxvY2sta2V5d29yZHMtMykKCihkZWZ2YXIgc3FscGx1cy1mb250LWxvY2st
+ZGVmYXVsdHMgJygoc3FscGx1cy1mb250LWxvY2sta2V5d29yZHMtMSBzcWxwbHVzLWZvbnQtbG9j
+ay1rZXl3b3Jkcy0yIHNxbHBsdXMtZm9udC1sb2NrLWtleXdvcmRzLTMpIG5pbCB0IG5pbCBuaWwp
+KQoKKGRlZnZhciBzcWxwbHVzLW9yYWNsZS1leHRyYS1idWlsdGluLWZ1bmN0aW9ucy1yZQogIChj
+b25jYXQgIlxcYiIKICAgICAgICAgIChyZWdleHAtb3B0ICcoImFjb3MiICJhc2NpaXN0ciIgImFz
+aW4iICJhdGFuIiAiYXRhbjIiICJiZmlsZW5hbWUiICJiaW5fdG9fbnVtIiAiYml0YW5kIiAiY2Fy
+ZGluYWxpdHkiICJjYXN0IiAiY29hbGVzY2UiICJjb2xsZWN0IgogICAgICAgICAgICAgICAgICAg
+ICAgICAiY29tcG9zZSIgImNvcnIiICJjb3JyX3MiICJjb3JyX2siICJjb3Zhcl9wb3AiICJjb3Zh
+cl9zYW1wIiAiY3VtZV9kaXN0IiAiY3VycmVudF9kYXRlIiAiY3VycmVudF90aW1lc3RhbXAiICJj
+diIKICAgICAgICAgICAgICAgICAgICAgICAgImRidGltZXpvbmUiICJkZWNvbXBvc2UiICJkZW5z
+ZV9yYW5rIiAiZGVwdGgiICJkZXJlZiIgImVtcHR5X2Jsb2IsIGVtcHR5X2Nsb2IiICJleGlzdHNu
+b2RlIiAiZXh0cmFjdCIKICAgICAgICAgICAgICAgICAgICAgICAgImV4dHJhY3R2YWx1ZSIgImZp
+cnN0IiAiZmlyc3RfdmFsdWUiICJmcm9tX3R6IiAiZ3JvdXBfaWQiICJncm91cGluZyIgImdyb3Vw
+aW5nX2lkIiAiaXRlcmF0aW9uX251bWJlciIKICAgICAgICAgICAgICAgICAgICAgICAgImxhZyIg
+Imxhc3QiICJsYXN0X3ZhbHVlIiAibGVhZCIgImxubnZsIiAibG9jYWx0aW1lc3RhbXAiICJtYWtl
+X3JlZiIgIm1lZGlhbiIgIm5hbnZsIiAibmNociIgIm5sc19jaGFyc2V0X2RlY2xfbGVuIgogICAg
+ICAgICAgICAgICAgICAgICAgICAibmxzX2NoYXJzZXRfaWQiICJubHNfY2hhcnNldF9uYW1lIiAi
+bnRpbGUiICJudWxsaWYiICJudW10b2RzaW50ZXJ2YWwiICJudW10b3ltaW50ZXJ2YWwiICJudmwy
+IiAib3JhX2hhc2giICJwYXRoIgogICAgICAgICAgICAgICAgICAgICAgICAicGVyY2VudF9yYW5r
+IiAicGVyY2VudGlsZV9jb250IiAicGVyY2VudGlsZV9kaXNjIiAicG93ZXJtdWx0aXNldCIgInBv
+d2VybXVsdGlzZXRfYnlfY2FyZGluYWxpdHkiICJwcmVzZW50bm52IgogICAgICAgICAgICAgICAg
+ICAgICAgICAicHJlc2VudHYiICJwcmV2aW91cyIgInJhbmsiICJyYXRpb190b19yZXBvcnQiICJy
+YXd0b25oZXgiICJyZWYiICJyZWZ0b2hleCIgInJlZ2V4cF9pbnN0ciIgInJlZ2V4cF9yZXBsYWNl
+IgogICAgICAgICAgICAgICAgICAgICAgICAicmVnZXhwX3N1YnN0ciIgInJlZ3Jfc2xvcGUiICJy
+ZWdyX2ludGVyY2VwdCIgInJlZ3JfY291bnQiICJyZWdyX3IyIiAicmVncl9hdmd4IiAicmVncl9h
+dmd5IiAicmVncl9zeHgiICJyZWdyX3N5eSIKICAgICAgICAgICAgICAgICAgICAgICAgInJlZ3Jf
+c3h5IiAicmVtYWluZGVyIiAicm93X251bWJlciIgInJvd2lkdG9uY2hhciIgInNjbl90b190aW1l
+c3RhbXAiICJzZXNzaW9udGltZXpvbmUiICJzdGF0c19iaW5vbWlhbF90ZXN0IgogICAgICAgICAg
+ICAgICAgICAgICAgICAic3RhdHNfY3Jvc3N0YWIiICJzdGF0c19mX3Rlc3QiICJzdGF0c19rc190
+ZXN0IiAic3RhdHNfbW9kZSIgInN0YXRzX213X3Rlc3QiICJzdGF0c19vbmVfd2F5X2Fub3ZhIiAi
+c3RhdHNfdF90ZXN0X29uZSIKICAgICAgICAgICAgICAgICAgICAgICAgInN0YXRzX3RfdGVzdF9w
+YWlyZWQiICJzdGF0c190X3Rlc3RfaW5kZXAiICJzdGF0c190X3Rlc3RfaW5kZXB1IiAic3RhdHNf
+d3NyX3Rlc3QiICJzdGRkZXZfcG9wIiAic3RkZGV2X3NhbXAiCiAgICAgICAgICAgICAgICAgICAg
+ICAgICJzeXNfY29ubmVjdF9ieV9wYXRoIiAic3lzX2NvbnRleHQiICJzeXNfZGJ1cmlnZW4iICJz
+eXNfZXh0cmFjdF91dGMiICJzeXNfZ3VpZCIgInN5c190eXBlaWQiICJzeXNfeG1sYWdnIiAic3lz
+X3htbGdlbiIKICAgICAgICAgICAgICAgICAgICAgICAgInN5c3RpbWVzdGFtcCIgInRpbWVzdGFt
+cF90b19zY24iICJ0b19iaW5hcnlfZG91YmxlIiAidG9fYmluYXJ5X2Zsb2F0IiAidG9fY2xvYiIg
+InRvX2RzaW50ZXJ2YWwiICJ0b19sb2IiICJ0b19uY2hhciIKICAgICAgICAgICAgICAgICAgICAg
+ICAgInRvX25jbG9iIiAidG9fdGltZXN0YW1wIiAidG9fdGltZXN0YW1wX3R6IiAidG9feW1pbnRl
+cnZhbCIgInRyZWF0IiAidHpfb2Zmc2V0IiAidW5pc3RyIiAidXBkYXRleG1sIiAidmFsdWUiICJ2
+YXJfcG9wIgogICAgICAgICAgICAgICAgICAgICAgICAidmFyX3NhbXAiICJ3aWR0aF9idWNrZXQi
+ICJ4bWxhZ2ciICJ4bWxjb2xhdHR2YWwiICJ4bWxjb25jYXQiICJ4bWxlbGVtZW50IiAieG1sZm9y
+ZXN0IiAieG1sc2VxdWVuY2UiICJ4bWx0cmFuc2Zvcm0iKSB0KQogICAgICAgICAgIlxcYiIpKQoo
+ZGVmdmFyIHNxbHBsdXMtb3JhY2xlLWV4dHJhLXdhcm5pbmctd29yZHMtcmUKICAoY29uY2F0ICJc
+XGIiCiAgICAgICAgICAocmVnZXhwLW9wdCAnKCJhY2Nlc3NfaW50b19udWxsIiAiY2FzZV9ub3Rf
+Zm91bmQiICJjb2xsZWN0aW9uX2lzX251bGwiICJyb3d0eXBlX21pc21hdGNoIgogICAgICAgICAg
+ICAgICAgICAgICAgICAic2VsZl9pc19udWxsIiAic3Vic2NyaXB0X2JleW9uZF9jb3VudCIgInN1
+YnNjcmlwdF9vdXRzaWRlX2xpbWl0IiAic3lzX2ludmFsaWRfcm93aWQiKSB0KQogICAgICAgICAg
+IlxcYiIpKQooZGVmdmFyIHNxbHBsdXMtb3JhY2xlLWV4dHJhLWtleXdvcmRzLXJlCiAgKGNvbmNh
+dCAiXFxiXFwoIgogICAgICAgICAgIlxcKGF0XFxzLStsb2NhbFxcfGF0XFxzLSt0aW1lXFxzLSt6
+b25lXFx8dG9cXHMtK3NlY29uZFxcfHRvXFxzLSttb250aFxcfGlzXFxzLStwcmVzZW50XFx8YVxc
+cy0rc2V0XFwpXFx8IgogICAgICAgICAgKHJlZ2V4cC1vcHQgJygiY2FzZSIgIm5hbiIgImluZmlu
+aXRlIiAiZXF1YWxzX3BhdGgiICJlbXB0eSIgImxpa2VjIiAibGlrZTIiICJsaWtlNCIgIm1lbWJl
+ciIKICAgICAgICAgICAgICAgICAgICAgICAgInJlZ2V4cF9saWtlIiAic3VibXVsdGlzZXQiICJ1
+bmRlcl9wYXRoIiAibWxzbGFiZWwiKSB0KQogICAgICAgICAgIlxcKVxcYiIpKQooZGVmdmFyIHNx
+bHBsdXMtb3JhY2xlLWV4dHJhLXBzZXVkb2NvbHVtbnMtcmUKICAoY29uY2F0ICJcXGIiCiAgICAg
+ICAgICAocmVnZXhwLW9wdCAnKCJjb25uZWN0X2J5X2lzY3ljbGUiICJjb25uZWN0X2J5X2lzbGVh
+ZiIgInZlcnNpb25zX3N0YXJ0dGltZSIgInZlcnNpb25zX3N0YXJ0c2NuIgogICAgICAgICAgICAg
+ICAgICAgICAgICAidmVyc2lvbnNfZW5kdGltZSIgInZlcnNpb25zX2VuZHNjbiIgInZlcnNpb25z
+X3hpZCIgInZlcnNpb25zX29wZXJhdGlvbiIgIm9iamVjdF9pZCIgIm9iamVjdF92YWx1ZSIgIm9y
+YV9yb3dzY24iCiAgICAgICAgICAgICAgICAgICAgICAgICJ4bWxkYXRhIikgdCkKICAgICAgICAg
+ICJcXGIiKSkKKGRlZnZhciBzcWxwbHVzLW9yYWNsZS1wbHNxbC1leHRyYS1yZXNlcnZlZC13b3Jk
+cy1yZQogIChjb25jYXQgIlxcYiIKICAgICAgICAgIChyZWdleHAtb3B0ICcoImFycmF5IiAiYXQi
+ICJhdXRoaWQiICJidWxrIiAiY2hhcl9iYXNlIiAiZGF5IiAiZG8iICJleHRlbmRzIiAiZm9yYWxs
+IiAiaGVhcCIgImhvdXIiCiAgICAgICAgICAgICAgICAgICAgICAgICJpbnRlcmZhY2UiICJpc29s
+YXRpb24iICJqYXZhIiAibGltaXRlZCIgIm1pbnV0ZSIgIm1sc2xhYmVsIiAibW9udGgiICJuYXR1
+cmFsIiAibmF0dXJhbG4iICJub2NvcHkiICJudW1iZXJfYmFzZSIKICAgICAgICAgICAgICAgICAg
+ICAgICAgIm9jaXJvd2lkIiAib3BhcXVlIiAib3BlcmF0b3IiICJvcmdhbml6YXRpb24iICJwbHNf
+aW50ZWdlciIgInBvc2l0aXZlIiAicG9zaXRpdmVuIiAicmFuZ2UiICJyZWNvcmQiICJyZWxlYXNl
+IiAicmV2ZXJzZSIKICAgICAgICAgICAgICAgICAgICAgICAgInJvd3R5cGUiICJzZWNvbmQiICJz
+ZXBhcmF0ZSIgInNwYWNlIiAic3FsIiAidGltZXpvbmVfcmVnaW9uIiAidGltZXpvbmVfYWJiciIg
+InRpbWV6b25lX21pbnV0ZSIgInRpbWV6b25lX2hvdXIiICJ5ZWFyIgogICAgICAgICAgICAgICAg
+ICAgICAgICAiem9uZSIpIHQpCiAgICAgICAgICAiXFxiIikpCihkZWZ2YXIgc3FscGx1cy1vcmFj
+bGUtZXh0cmEtdHlwZXMtcmUKICAoY29uY2F0ICJcXGIiCiAgICAgICAgICAocmVnZXhwLW9wdCAn
+KCJudmFyY2hhcjIiICJiaW5hcnlfZmxvYXQiICJiaW5hcnlfZG91YmxlIiAidGltZXN0YW1wIiAi
+aW50ZXJ2YWwiICJpbnRlcnZhbF9kYXkiICJ1cm93aWQiICJuY2hhciIgImNsb2IiICJuY2xvYiIg
+ImJmaWxlIikgdCkKICAgICAgICAgICJcXGIiKSkKCihkZWZ2YXIgc3FscGx1cy1jb21tYW5kcy1y
+ZWdleHAtMSBuaWwpCihkZWZ2YXIgc3FscGx1cy1jb21tYW5kcy1yZWdleHAtMjMgbmlsKQooZGVm
+dmFyIHNxbHBsdXMtc3lzdGVtLXZhcmlhYmxlcy1yZWdleHAtMSBuaWwpCihkZWZ2YXIgc3FscGx1
+cy1zeXN0ZW0tdmFyaWFibGVzLXJlZ2V4cC0yMyBuaWwpCihkZWZ2YXIgc3FscGx1cy12MjItY29t
+bWFuZHMtZm9udC1sb2NrLWtleXdvcmRzLTEgbmlsKQooZGVmdmFyIHNxbHBsdXMtdjIyLWNvbW1h
+bmRzLWZvbnQtbG9jay1rZXl3b3Jkcy0yMyBuaWwpCihkZWZ2YXIgZm9udC1sb2NrLXNxbHBsdXMt
+ZmFjZSBuaWwpCgooZGVmdmFyIHNxbHBsdXMtb3V0cHV0LWJ1ZmZlci1rZXltYXAgbmlsCiAgIkxv
+Y2FsIGluIG91dHB1dCBidWZmZXIuIikKKG1ha2UtdmFyaWFibGUtYnVmZmVyLWxvY2FsICdzcWxw
+bHVzLW91dHB1dC1idWZmZXIta2V5bWFwKQoKKGRlZnZhciBzcWxwbHVzLWtpbGwtZnVuY3Rpb24t
+aW5oaWJpdG9yIG5pbCkKCihkZWZ2YXIgc3FscGx1cy1zbGlwLXNlcGFyYXRvci13aWR0aCAyCiAg
+Ik9ubHkgZm9yIGNsYXNzaWMgdGFibGUgc3R5bGUuIikKCihkZWZ2YXIgc3FscGx1cy11c2VyLXN0
+cmluZy1oaXN0b3J5IG5pbCkKCihkZWZ2YXIgc3FscGx1cy1vYmplY3QtdHlwZXMgJyggIkNPTlNV
+TUVSIEdST1VQIiAiU0VRVUVOQ0UiICJTQ0hFRFVMRSIgIlBST0NFRFVSRSIgIk9QRVJBVE9SIiAi
+V0lORE9XIgogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICJQQUNLQUdFIiAiTElCUkFS
+WSIgIlBST0dSQU0iICJQQUNLQUdFIEJPRFkiICJKQVZBIFJFU09VUkNFIiAiWE1MIFNDSEVNQSIK
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAiSk9CIENMQVNTIiAiVFJJR0dFUiIgIlRB
+QkxFIiAiU1lOT05ZTSIgIlZJRVciICJGVU5DVElPTiIgIldJTkRPVyBHUk9VUCIKICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAiSkFWQSBDTEFTUyIgIklOREVYVFlQRSIgIklOREVYIiAi
+VFlQRSIgIkVWQUxVQVRJT04gQ09OVEVYVCIgKSkKCihkZWZ2YXIgc3FscGx1cy1lbmQtb2Ytc291
+cmNlLXNlbnRpbmVsICIlJUBAZW5kLW9mLXNvdXJjZS1zZW50aW5lbEBAJSUiKQoKKGRlZmNvbnN0
+IHNxbHBsdXMtc3lzdGVtLXZhcmlhYmxlcwogICcoImFwcGlbbmZvXSIgImFycmF5W3NpemVdIiAi
+YXV0b1tjb21taXRdIiAiYXV0b3BbcmludF0iICJhdXRvcmVjb3ZlcnkiICJhdXRvdFtyYWNlXSIg
+ImJsb1tja3Rlcm1pbmF0b3JdIiAiY21kc1tlcF0iCiAgICAiY29sc2VwIiAiY29tW3BhdGliaWxp
+dHldIiAiY29uW2NhdF0iICJjb3B5Y1tvbW1pdF0iICJjb3B5dHlwZWNoZWNrIiAiZGVmW2luZV0i
+ICJkZXNjcmliZSIgImVjaG8iICJlZGl0ZltpbGVdIgogICAgImVtYltlZGRlZF0iICJlc2NbYXBl
+XSIgImZlZWRbYmFja10iICJmbGFnZ2VyIiAiZmx1W3NoXSIgImhlYVtkaW5nXSIgImhlYWRzW2Vw
+XSIgImluc3RhbmNlIiAibGluW2VzaXplXSIKICAgICJsb2JvZltmc2V0XSIgImxvZ3NvdXJjZSIg
+ImxvbmciICJsb25nY1todW5rc2l6ZV0iICJtYXJrW3VwXSIgIm5ld3BbYWdlXSIgIm51bGwiICJu
+dW1mW29ybWF0XSIgIm51bVt3aWR0aF0iCiAgICAicGFnZXNbaXplXSIgInBhdVtzZV0iICJyZWNz
+ZXAiICJyZWNzZXBjaGFyIiAic2VydmVyb3V0W3B1dF0iICJzaGlmdFtpbm91dF0iICJzaG93W21v
+ZGVdIiAic3FsYmxbYW5rbGluZXNdIgogICAgInNxbGNbYXNlXSIgInNxbGNvW250aW51ZV0iICJz
+cWxuW3VtYmVyXSIgInNxbHBsdXNjb21wYXRbaWJpbGl0eV0iICJzcWxwcmVbZml4XSIgInNxbHBb
+cm9tcHRdIiAic3FsdFtlcm1pbmF0b3JdIgogICAgInN1ZltmaXhdIiAidGFiIiAidGVybVtvdXRd
+IiAidGlbbWVdIiAidGltaVtuZ10iICJ0cmltW291dF0iICJ0cmltc1twb29sXSIgInVuZFtlcmxp
+bmVdIiAidmVyW2lmeV0iICJ3cmFbcF0iKSkKCihkZWZjb25zdCBzcWxwbHVzLWNvbW1hbmRzCiAg
+JygoIkBbQF0iKQogICAgKCgiLyIgInJbdW5dIikpCiAgICAoImFjY1tlcHRdIgogICAgIChmb250
+LWxvY2stdHlwZS1mYWNlICJudW1bYmVyXSIgImNoYXIiICJkYXRlIiAiYmluYXJ5X2Zsb2F0IiAi
+YmluYXJ5X2RvdWJsZSIpCiAgICAgKGZvbnQtbG9jay1rZXl3b3JkLWZhY2UgImZvclttYXRdIiAi
+ZGVmW2F1bHRdIiAiW25vXXByb21wdCIgImhpZGUiKSkKICAgICgiYVtwcGVuZF0iKQogICAgKCJh
+cmNoaXZlIGxvZyIKICAgICAoZm9udC1sb2NrLWtleXdvcmQtZmFjZSAibGlzdCIgInN0b3AiICJz
+dGFydCIgIm5leHQiICJhbGwiICJ0byIpKQogICAgKCJhdHRyaWJ1dGUiCiAgICAgKGZvbnQtbG9j
+ay1rZXl3b3JkLWZhY2UgImFsaVthc10iICJjbGVbYXJdIiAiZm9yW21hdF0iICJsaWtlIiAib24i
+ICJvZmYiKSkKICAgICgiYnJlW2FrXSIKICAgICAoZm9udC1sb2NrLWtleXdvcmQtZmFjZSAib24i
+ICJyb3ciICJyZXBvcnQiICJza2lbcF0iICJwYWdlIiAibm9kdXBbbGljYXRlc10iICJkdXBbbGlj
+YXRlc10iKSkKICAgICgiYnRpW3RsZV0iCiAgICAgKGZvbnQtbG9jay1rZXl3b3JkLWZhY2UgIm9u
+IiAib2ZmIikKICAgICAoZm9udC1sb2NrLWJ1aWx0aW4tZmFjZSAiYm9sZCIgImNlW250ZXJdIiAi
+Y29sIiAiZm9ybWF0IiAibGVbZnRdIiAicltpZ2h0XSIgInNba2lwXSIgInRhYiIpKQogICAgKCJj
+W2hhbmdlXSIpCiAgICAoImNsW2Vhcl0iCiAgICAgKGZvbnQtbG9jay1rZXl3b3JkLWZhY2UgImJy
+ZVtha3NdIiAiYnVmZltlcl0iICJjb2xbdW1uc10iICJjb21wW3V0ZXNdIiAic2NyW2Vlbl0iICJz
+cWwiICJ0aW1pW25nXSIpKQogICAgKCJjb2xbdW1uXSIKICAgICAoZm9udC1sb2NrLWtleXdvcmQt
+ZmFjZSAiYWxpW2FzXSIgImNsZVthcl0iICJlbnRtYXAiICJvbiIgIm9mZiIgImZvbGRfYVtmdGVy
+XSIgImZvbGRfYltlZm9yZV0iICJmb3JbbWF0XSIgImhlYVtkaW5nXSIKICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAianVzW3RpZnldIiAibFtlZnRdIiAiY1tlbnRlcl0iICJyW2lnaHRdIiAi
+bGlrZSIgIm5ld2xbaW5lXSIgIm5ld192W2FsdWVdIiAibm9wcmlbbnRdIiAicHJpW250XSIKICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAibnVsW2xdIiAib2xkX3ZbYWx1ZV0iICJ3cmFbcHBl
+ZF0iICJ3b3JbZF93cmFwcGVkXSIgInRydVtuY2F0ZWRdIikpCiAgICAoImNvbXBbdXRlXSIKICAg
+ICAoZm9udC1sb2NrLWtleXdvcmQtZmFjZSAibGFiW2VsXSIgIm9mIiAib24iICJyZXBvcnQiICJy
+b3ciKQogICAgIChmb250LWxvY2stYnVpbHRpbi1mYWNlICJhdmciICJjb3VbbnRdIiAibWluW2lt
+dW1dIiAibWF4W2ltdW1dIiAibnVtW2Jlcl0iICJzdW0iICJzdGQiICJ2YXJbaWFuY2VdIikpCiAg
+ICAoImNvbm5bZWN0XSIKICAgICAoZm9udC1sb2NrLWtleXdvcmQtZmFjZSAiYXMiICJzeXNvcGVy
+IiAic3lzZGJhIikpCiAgICAoImNvcHkiKQogICAgKCJkZWZbaW5lXSIpCiAgICAoImRlbCIKICAg
+ICAoZm9udC1sb2NrLWtleXdvcmQtZmFjZSAibGFzdCIpKQogICAgKCJkZXNjW3JpYmVdIikKICAg
+ICgiZGlzY1tvbm5lY3RdIikKICAgICgiZWRbaXRdIikKICAgICgiZXhlY1t1dGVdIikKICAgICgo
+ImV4aXQiICJxdWl0IikKICAgICAoZm9udC1sb2NrLWtleXdvcmQtZmFjZSAic3VjY2VzcyIgImZh
+aWx1cmUiICJ3YXJuaW5nIiAiY29tbWl0IiAicm9sbGJhY2siKSkKICAgICgiZ2V0IgogICAgIChm
+b250LWxvY2sta2V5d29yZC1mYWNlICJmaWxlIiAibGlzW3RdIiAibm9sW2lzdF0iKSkKICAgICgi
+aGVscCIpCiAgICAoKCJob1tzdF0iICIhIiAiJCIpKQogICAgKCJpW25wdXRdIikKICAgICgibFtp
+c3RdIgogICAgIChmb250LWxvY2sta2V5d29yZC1mYWNlICJsYXN0IikpCiAgICAoInBhc3N3W29y
+ZF0iKQogICAgKCJwYXVbc2VdIikKICAgICgicHJpW250XSIpCiAgICAoInByb1ttcHRdIikKICAg
+ICgicmVjb3ZlciIKICAgICAoZm9udC1sb2NrLWtleXdvcmQtZmFjZSAiYmVnaW4iICJlbmQiICJi
+YWNrdXAiICJhdXRvbWF0aWMiICJmcm9tIiAibG9nZmlsZSIgInRlc3QiICJhbGxvdyIgImNvcnJ1
+cHRpb24iICJjb250aW51ZSIgImRlZmF1bHQiICJjYW5jZWwiCiAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgInN0YW5kYnkiICJkYXRhYmFzZSIgInVudGlsIiAidGltZSIgImNoYW5nZSIgInVz
+aW5nIiAiY29udHJvbGZpbGUiICJ0YWJsZXNwYWNlIiAiZGF0YWZpbGUiCiAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgImNvbnNpc3RlbnQiICJ3aXRoIiAiW25vXXBhcmFsbGVsIiAibWFuYWdl
+ZCIgImRpc2Nvbm5lY3QiICJzZXNzaW9uIiAiW25vXXRpbWVvdXQiICJbbm9dZGVsYXkiICJuZXh0
+IiAibm8iICJleHBpcmUiCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgImN1cnJlbnQiICJ0
+aHJvdWdoIiAidGhyZWFkIiAic2VxdWVuY2UiICJhbGwiICJhcmNoaXZlbG9nIiAibGFzdCIgInN3
+aXRjaG92ZXIiICJpbW1lZGlhdGUiICJbbm9dd2FpdCIKICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAiZmluaXNoIiAic2tpcCIpKQogICAgKCJyZW1bYXJrXSIpCiAgICAoInJlcGZbb290ZXJd
+IgogICAgIChmb250LWxvY2sta2V5d29yZC1mYWNlICJwYWdlIiAib24iICJvZmYiKQogICAgIChm
+b250LWxvY2stYnVpbHRpbi1mYWNlICJib2xkIiAiY2VbbnRlcl0iICJjb2wiICJmb3JtYXQiICJs
+ZVtmdF0iICJyW2lnaHRdIiAic1traXBdIiAidGFiIikpCiAgICAoInJlcGhbZWFkZXJdIgogICAg
+IChmb250LWxvY2sta2V5d29yZC1mYWNlICJwYWdlIiAib24iICJvZmYiKQogICAgIChmb250LWxv
+Y2stYnVpbHRpbi1mYWNlICJib2xkIiAiY2VbbnRlcl0iICJjb2wiICJmb3JtYXQiICJsZVtmdF0i
+ICJyW2lnaHRdIiAic1traXBdIiAidGFiIikpCiAgICAoInNhdltlXSIKICAgICAoZm9udC1sb2Nr
+LWtleXdvcmQtZmFjZSAiZmlsZSIgImNyZVthdGVdIiAicmVwW2xhY2VdIiAiYXBwW2VuZF0iKSkK
+ICAgICgic2V0IgogICAgIChmb250LWxvY2stYnVpbHRpbi1mYWNlIHNxbHBsdXMtc3lzdGVtLXZh
+cmlhYmxlcykKICAgICAoZm9udC1sb2NrLWtleXdvcmQtZmFjZSAib24iICJvZmYiICJpbW1lZGlh
+dGUiICJ0cmFjZVtvbmx5XSIgImV4cGxhaW4iICJzdGF0aXN0aWNzIiAibmF0aXZlIiAidjciICJ2
+OCIgImFsbCIgImxpbmVudW0iICJpbmRlbnQiCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ImVudHJ5IiAiaW50ZXJtZWRpYXRlIiAiZnVsbCIgImxvY2FsIiAiaGVhZCIgImh0bWwiICJib2R5
+IiAidGFibGUiICJlbnRtYXAiICJzcG9vbCIgIltwcmVdZm9ybWF0IgogICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICJub25lIiAiW3dvcmRfXXdyYXBwZWQiICJlYWNoIiAidHJ1bmNhdGVkIiAi
+W2luXXZpc2libGUiICJtaXhlZCIgImxvd2VyIiAidXBwZXIiKSkKICAgICgic2hvW3ddIgogICAg
+IChmb250LWxvY2sta2V5d29yZC1mYWNlICJhbGwiICJidGlbdGxlXSIgImVycltvcnNdIiAiZnVu
+Y3Rpb24iICJwcm9jZWR1cmUiICJwYWNrYWdlWyBib2R5XSIgInRyaWdnZXIiICJ2aWV3IiAidHlw
+ZVsgYm9keV0iCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgImRpbWVuc2lvbiIgImphdmEg
+Y2xhc3MiICJsbm8iICJwYXJhbWV0ZXJzIiAicG5vIiAicmVjeWNbbGViaW5dIiAicmVsW2Vhc2Vd
+IiAicmVwZltvb3Rlcl0iICJyZXBoW2VhZGVyXSIKICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAic2dhIiAic3Bvb1tsXSIgInNxbGNvZGUiICJ0dGlbdGxlXSIgInVzZXIiKQogICAgIChmb250
+LWxvY2stYnVpbHRpbi1mYWNlIHNxbHBsdXMtc3lzdGVtLXZhcmlhYmxlcykpCiAgICAoInNodXRk
+b3duIgogICAgIChmb250LWxvY2sta2V5d29yZC1mYWNlICJhYm9ydCIgImltbWVkaWF0ZSIgIm5v
+cm1hbCIgInRyYW5zYWN0aW9uYWwiICJsb2NhbCIpKQogICAgKCJzcG9bb2xdIgogICAgICgiY3Jl
+IiAiY3JlYXRlIiAicmVwIiAicmVwbGFjZSIgImFwcCIgImFwcGVuZCIgIm9mZiIgIm91dCIpKQog
+ICAgKCJzdGFbcnRdIikKICAgICgic3RhcnR1cCIKICAgICAoZm9udC1sb2NrLWtleXdvcmQtZmFj
+ZSAiZm9yY2UiICJyZXN0cmljdCIgInBmaWxlIiAicXVpZXQiICJtb3VudCIgIm9wZW4iICJub21v
+dW50IiAicmVhZCIgIm9ubHkiICJ3cml0ZSIgInJlY292ZXIiKSkKICAgICgic3RvcmUiCiAgICAg
+KGZvbnQtbG9jay1rZXl3b3JkLWZhY2UgInNldCIgImNyZVthdGVdIiAicmVwW2xhY2VdIiAiYXBw
+W2VuZF0iKSkKICAgICgidGltaVtuZ10iCiAgICAgKGZvbnQtbG9jay1rZXl3b3JkLWZhY2UgInN0
+YXJ0IiAic2hvdyIgInN0b3AiKSkKICAgICgidHRpW3RsZV0iCiAgICAgKGZvbnQtbG9jay1rZXl3
+b3JkLWZhY2UgInR0aVt0bGVdIiAib24iICJvZmYiKQogICAgIChmb250LWxvY2stYnVpbHRpbi1m
+YWNlICJib2xkIiAiY2VbbnRlcl0iICJjb2wiICJmb3JtYXQiICJsZVtmdF0iICJyW2lnaHRdIiAi
+c1traXBdIiAidGFiIikpCiAgICAoInVuZGVmW2luZV0iKQogICAgKCJ2YXJbaWFibGVdIgogICAg
+IChmb250LWxvY2stdHlwZS1mYWNlICJudW1iZXIiICJbbl1jaGFyIiAiYnl0ZSIgIltuXXZhcmNo
+YXIyIiAiW25dY2xvYiIgInJlZmN1cnNvciIgImJpbmFyeV9mbG9hdCIgImJpbmFyeV9kb3VibGUi
+KSkKICAgICgid2hlbmV2ZXIgb3NlcnJvciIKICAgICAoZm9udC1sb2NrLWtleXdvcmQtZmFjZSAi
+ZXhpdCIgInN1Y2Nlc3MiICJmYWlsdXJlIiAiY29tbWl0IiAicm9sbGJhY2siICJjb250aW51ZSIg
+ImNvbW1pdCIgInJvbGxiYWNrIiAibm9uZSIpKQogICAgKCJ3aGVuZXZlciBzcWxlcnJvciIKICAg
+ICAoZm9udC1sb2NrLWtleXdvcmQtZmFjZSAiZXhpdCIgInN1Y2Nlc3MiICJmYWlsdXJlIiAid2Fy
+bmluZyIgImNvbW1pdCIgInJvbGxiYWNrIiAiY29udGludWUiICJub25lIikpKSkKCihkZWZ2YXIg
+cGxzcWwtbW9kZS1tYXAgbmlsKQoKKGRlZnN0cnVjdCBzcWxwbHVzLWdsb2JhbC1zdHJ1Y3QKICBm
+b250LWxvY2stcmVnZXhwcwogIG9iamVjdHMtYWxpc3QKICBzaWRlLXZpZXctYnVmZmVyCiAgcm9v
+dC1kaXIKKQoKKGRlZnZhciBzcWxwbHVzLWdsb2JhbC1zdHJ1Y3R1cmVzIChtYWtlLWhhc2gtdGFi
+bGUgOnRlc3QgJ2VxdWFsKQogICJDb25uZWN0IHN0cmluZyAtPiBzcWxwbHVzLWdsb2JhbC1zdHJ1
+Y3QiKQoKKGRlZnVuIHNxbHBsdXMtZ2V0LW9iamVjdHMtYWxpc3QgKCZvcHRpb25hbCBjb25uZWN0
+LXN0cmluZykKICAobGV0ICgoc3RydWN0IChnZXRoYXNoIChjYXIgKHJlZmluZS1jb25uZWN0LXN0
+cmluZyAob3IgY29ubmVjdC1zdHJpbmcgc3FscGx1cy1jb25uZWN0LXN0cmluZyBzcWxwbHVzLXBy
+b2Nlc3MtcCkpKQoJCQkgc3FscGx1cy1nbG9iYWwtc3RydWN0dXJlcykpKQogICAgKHdoZW4gc3Ry
+dWN0CiAgICAgIChzcWxwbHVzLWdsb2JhbC1zdHJ1Y3Qtb2JqZWN0cy1hbGlzdCBzdHJ1Y3QpKSkp
+CgooZGVmdW4gc3FscGx1cy1zZXQtb2JqZWN0cy1hbGlzdCAob2JqZWN0cy1hbGlzdCAmb3B0aW9u
+YWwgY29ubmVjdC1zdHJpbmcpCiAgKGxldCAoKHN0cnVjdCAoZ2V0aGFzaCAoY2FyIChyZWZpbmUt
+Y29ubmVjdC1zdHJpbmcgKG9yIGNvbm5lY3Qtc3RyaW5nIHNxbHBsdXMtY29ubmVjdC1zdHJpbmcg
+c3FscGx1cy1wcm9jZXNzLXApKSkKCQkJIHNxbHBsdXMtZ2xvYmFsLXN0cnVjdHVyZXMpKSkKICAg
+ICh3aGVuIHN0cnVjdAogICAgICAoc2V0ZiAoc3FscGx1cy1nbG9iYWwtc3RydWN0LW9iamVjdHMt
+YWxpc3Qgc3RydWN0KSBvYmplY3RzLWFsaXN0KSkpKQoKKGRlZnVuIHNxbHBsdXMtZ2V0LWZvbnQt
+bG9jay1yZWdleHBzICgmb3B0aW9uYWwgY29ubmVjdC1zdHJpbmcpCiAgKGxldCAoKHN0cnVjdCAo
+Z2V0aGFzaCAoY2FyIChyZWZpbmUtY29ubmVjdC1zdHJpbmcgKG9yIGNvbm5lY3Qtc3RyaW5nIHNx
+bHBsdXMtY29ubmVjdC1zdHJpbmcgc3FscGx1cy1wcm9jZXNzLXApKSkKCQkJIHNxbHBsdXMtZ2xv
+YmFsLXN0cnVjdHVyZXMpKSkKICAgICh3aGVuIHN0cnVjdAogICAgICAoc3FscGx1cy1nbG9iYWwt
+c3RydWN0LWZvbnQtbG9jay1yZWdleHBzIHN0cnVjdCkpKSkKCihkZWZ1biBzcWxwbHVzLXNldC1m
+b250LWxvY2stcmVnZXhwcyAoZm9udC1sb2NrLXJlZ2V4cHMgJm9wdGlvbmFsIGNvbm5lY3Qtc3Ry
+aW5nKQogIChsZXQgKChzdHJ1Y3QgKGdldGhhc2ggKGNhciAocmVmaW5lLWNvbm5lY3Qtc3RyaW5n
+IChvciBjb25uZWN0LXN0cmluZyBzcWxwbHVzLWNvbm5lY3Qtc3RyaW5nIHNxbHBsdXMtcHJvY2Vz
+cy1wKSkpCgkJCSBzcWxwbHVzLWdsb2JhbC1zdHJ1Y3R1cmVzKSkpCiAgICAod2hlbiBzdHJ1Y3QK
+ICAgICAgKHNldGYgKHNxbHBsdXMtZ2xvYmFsLXN0cnVjdC1mb250LWxvY2stcmVnZXhwcyBzdHJ1
+Y3QpIGZvbnQtbG9jay1yZWdleHBzKSkpKQoKKGRlZnVuIHNxbHBsdXMtZ2V0LXNpZGUtdmlldy1i
+dWZmZXIgKCZvcHRpb25hbCBjb25uZWN0LXN0cmluZykKICAobGV0ICgoc3RydWN0IChnZXRoYXNo
+IChjYXIgKHJlZmluZS1jb25uZWN0LXN0cmluZyAob3IgY29ubmVjdC1zdHJpbmcgc3FscGx1cy1j
+b25uZWN0LXN0cmluZyBzcWxwbHVzLXByb2Nlc3MtcCkpKQoJCQkgc3FscGx1cy1nbG9iYWwtc3Ry
+dWN0dXJlcykpKQogICAgKHdoZW4gc3RydWN0CiAgICAgIChzcWxwbHVzLWdsb2JhbC1zdHJ1Y3Qt
+c2lkZS12aWV3LWJ1ZmZlciBzdHJ1Y3QpKSkpCiAgCihkZWZ1biBzcWxwbHVzLWdldC1yb290LWRp
+ciAoJm9wdGlvbmFsIGNvbm5lY3Qtc3RyaW5nKQogIChsZXQgKChzdHJ1Y3QgKGdldGhhc2ggKGNh
+ciAocmVmaW5lLWNvbm5lY3Qtc3RyaW5nIChvciBjb25uZWN0LXN0cmluZyBzcWxwbHVzLWNvbm5l
+Y3Qtc3RyaW5nIHNxbHBsdXMtcHJvY2Vzcy1wKSkpCgkJCSBzcWxwbHVzLWdsb2JhbC1zdHJ1Y3R1
+cmVzKSkpCiAgICAod2hlbiBzdHJ1Y3QKICAgICAgKHNxbHBsdXMtZ2xvYmFsLXN0cnVjdC1yb290
+LWRpciBzdHJ1Y3QpKSkpCgooZGVmdW4gc3FscGx1cy1zZXQtcm9vdC1kaXIgKHJvb3QtZGlyICZv
+cHRpb25hbCBjb25uZWN0LXN0cmluZykKICAobGV0ICgoc3RydWN0IChnZXRoYXNoIChjYXIgKHJl
+ZmluZS1jb25uZWN0LXN0cmluZyAob3IgY29ubmVjdC1zdHJpbmcgc3FscGx1cy1jb25uZWN0LXN0
+cmluZyBzcWxwbHVzLXByb2Nlc3MtcCkpKQoJCQkgc3FscGx1cy1nbG9iYWwtc3RydWN0dXJlcykp
+KQogICAgKHdoZW4gc3RydWN0CiAgICAgIChzZXRmIChzcWxwbHVzLWdsb2JhbC1zdHJ1Y3Qtcm9v
+dC1kaXIgc3RydWN0KSByb290LWRpcikpKSkKCjs7OyAtLS0KCihkZWZ1biBzcWxwbHVzLWluaXRp
+YWwtc3RyaW5ncyAoKQogIChhcHBlbmQgc3FscGx1cy1pbml0aWFsLXN0cmluZ3MKICAgICAgICAg
+IChsaXN0IAogICAgICAgICAgIChjb25jYXQgImJ0aXRsZSBsZWZ0ICciIHNxbHBsdXMtcGFnZS1z
+ZXBhcmF0b3IgIiciKQogICAgICAgICAgIChjb25jYXQgInJlcGZvb3RlciBsZWZ0ICciIHNxbHBs
+dXMtcmVwZm9vdGVyICInIikKICAgICAgICAgICAoY29uY2F0ICJzZXQgcGFnZXNpemUgIiAobnVt
+YmVyLXRvLXN0cmluZyBzcWxwbHVzLXBhZ2VzaXplKSkpKSkKCihkZWZ1biBzcWxwbHVzLWNvbm5l
+Y3Qtc3RyaW5nLWxlc3NwIChjczEgY3MyKQogICJDb21wYXJlIHR3byBjb25uZWN0IHN0cmluZ3Mi
+CiAgKGxldCAoKGNzMS1wYWlyIChzcGxpdC1zdHJpbmcgY3MxICJAIikpCiAgICAgICAgKGNzMi1w
+YWlyIChzcGxpdC1zdHJpbmcgY3MyICJAIikpKQogICAgKG9yIChzdHJpbmc8IChjYWRyIGNzMS1w
+YWlyKSAoY2FkciBjczItcGFpcikpCiAgICAgICAgKGFuZCAoc3RyaW5nPSAoY2FkciBjczEtcGFp
+cikgKGNhZHIgY3MyLXBhaXIpKQogICAgICAgICAgICAgKHN0cmluZzwgKGNhciBjczEtcGFpcikg
+KGNhciBjczItcGFpcikpKSkpKQoKKGRlZnVuIHNxbHBsdXMtZGl2aWRlLWNvbm5lY3Qtc3RyaW5n
+cyAoKQogICJSZXR1cm5zIChhY3RpdmUtY29ubmVjdC1zdHJpbmctbGlzdCAuIGluYWN0aXZlLWNv
+bm5lY3Qtc3RyaW5nLWxpc3QpIgogIChsZXQqICgoYWN0aXZlLWNvbm5lY3Qtc3RyaW5ncwogICAg
+ICAgICAgKHNvcnQgKGRlbHEgbmlsIChtYXBjYXIgKGxhbWJkYSAoYnVmZmVyKQogICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAod2l0aC1jdXJyZW50LWJ1ZmZlciBidWZmZXIKICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAod2hlbiAoYW5kIChlcSBtYWpvci1t
+b2RlICdzcWxwbHVzLW1vZGUpCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICBzcWxwbHVzLWNvbm5lY3Qtc3RyaW5nKQogICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgKGxldCAoKGNzIChjYXIgKHJlZmluZS1jb25uZWN0LXN0cmluZyBz
+cWxwbHVzLWNvbm5lY3Qtc3RyaW5nKSkpKQogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAod2hlbiAoYW5kIChnZXQtYnVmZmVyIChzcWxwbHVzLWdldC1wcm9jZXNzLWJ1
+ZmZlci1uYW1lIGNzKSkKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAoZ2V0LXByb2Nlc3MgKHNxbHBsdXMtZ2V0LXByb2Nlc3MtbmFtZSBjcykpKQog
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIChkb3duY2FzZSBjcykp
+KSkpKQogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgKGJ1ZmZlci1saXN0KSkpCiAg
+ICAgICAgICAgICAgICAnc3FscGx1cy1jb25uZWN0LXN0cmluZy1sZXNzcCkpCiAgICAgICAgIChp
+bmFjdGl2ZS1jb25uZWN0LXN0cmluZ3MKICAgICAgICAgIChzb3J0IChkZWxxIG5pbCAobWFwY2Fy
+IChsYW1iZGEgKHBhaXIpCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICh1bmxl
+c3MgKG1lbWJlciAoZG93bmNhc2UgKGNhciBwYWlyKSkgYWN0aXZlLWNvbm5lY3Qtc3RyaW5ncykg
+KGRvd25jYXNlIChjYXIgcGFpcikpKSApCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICBzcWxwbHVzLWNvbm5lY3Qtc3RyaW5ncy1hbGlzdCkpCiAgICAgICAgICAgICAgICAnc3FscGx1
+cy1jb25uZWN0LXN0cmluZy1sZXNzcCkpKQogICAgKHNldHEgYWN0aXZlLWNvbm5lY3Qtc3RyaW5n
+cyAocmVtb3ZlLWR1cGxpY2F0ZXMgYWN0aXZlLWNvbm5lY3Qtc3RyaW5ncyA6dGVzdCAnZXF1YWwp
+KQogICAgKHNldHEgaW5hY3RpdmUtY29ubmVjdC1zdHJpbmdzIChyZW1vdmUtZHVwbGljYXRlcyBp
+bmFjdGl2ZS1jb25uZWN0LXN0cmluZ3MgOnRlc3QgJ2VxdWFsKSkKICAgIChjb25zIGFjdGl2ZS1j
+b25uZWN0LXN0cmluZ3MgaW5hY3RpdmUtY29ubmVjdC1zdHJpbmdzKSkpCgooZGVmdW4gc3FscGx1
+cy1jb25uZWN0aW9ucy1tZW51IChtZW51KQogIChjb25kaXRpb24tY2FzZSBlcnIKICAgICAgKGxl
+dCogKChjb25uZWN0LXN0cmluZ3MtcGFpciAoc3FscGx1cy1kaXZpZGUtY29ubmVjdC1zdHJpbmdz
+KSkKICAgICAgICAgICAgIChhY3RpdmUtY29ubmVjdC1zdHJpbmdzIChjYXIgY29ubmVjdC1zdHJp
+bmdzLXBhaXIpKQogICAgICAgICAgICAgKGluYWN0aXZlLWNvbm5lY3Qtc3RyaW5ncyAoY2RyIGNv
+bm5lY3Qtc3RyaW5ncy1wYWlyKSkpCiAgICAgICAgKGFwcGVuZCAKCSAobGlzdCBbIk5ldyBjb25u
+ZWN0aW9uLi4uIiBzcWxwbHVzIHRdKQoJIChsaXN0IFsiVG5zbmFtZXMub3JhIiBzcWxwbHVzLWZp
+bmQtdG5zbmFtZXMgdF0pCgkgKGxpc3QgWyJDb21tYW5kIExpbmUiIHNxbHBsdXMtY29tbWFuZC1s
+aW5lIHRdKQoJICh3aGVuIChlcSBtYWpvci1tb2RlICdzcWxwbHVzLW1vZGUpCgkgICAobGlzdAoJ
+ICAgICItLS0tIgoJICAgIFsiRXZhbHVhdGUgU3RhdGVtZW50IiBzcWxwbHVzLXNlbmQtY3VycmVu
+dCBzcWxwbHVzLWNvbm5lY3Qtc3RyaW5nXQoJICAgIFsiRXhwbGFpbiBTdGF0ZW1lbnQiIHNxbHBs
+dXMtZXhwbGFpbiBzcWxwbHVzLWNvbm5lY3Qtc3RyaW5nXQoJICAgIFsiRXZhbHVhdGUgU3RhdGVt
+ZW50IChIVE1MKSIgc3FscGx1cy1zZW5kLWN1cnJlbnQtaHRtbCBzcWxwbHVzLWNvbm5lY3Qtc3Ry
+aW5nXQoJICAgIFsiRXZhbHVhdGUgUmVnaW9uIiBzcWxwbHVzLXNlbmQtcmVnaW9uIChhbmQgKG1h
+cmspIHNxbHBsdXMtY29ubmVjdC1zdHJpbmcpXSkpCgkgKHdoZW4gb3JjbC1tb2RlCgkgICAobGlz
+dAoJICAgICItLS0tIgoJICAgIFsiU2VuZCBDb21taXQiICAgICAgICAgICAgICBzcWxwbHVzLXNl
+bmQtY29tbWl0IHNxbHBsdXMtY29ubmVjdC1zdHJpbmddCgkgICAgWyJTZW5kIFJvbGxiYWNrIiAg
+ICAgICAgICAgIHNxbHBsdXMtc2VuZC1yb2xsYmFjayBzcWxwbHVzLWNvbm5lY3Qtc3RyaW5nXQoJ
+ICAgIFsiUmVzdGFydCBDb25uZWN0aW9uIiAgICAgICBzcWxwbHVzLXJlc3RhcnQtY29ubmVjdGlv
+biBzcWxwbHVzLWNvbm5lY3Qtc3RyaW5nXQoJICAgIFsiU2hvdyBIaXN0b3J5IiAgICAgICAgICAg
+ICBzcWxwbHVzLXNob3ctaGlzdG9yeSBzcWxwbHVzLWNvbm5lY3Qtc3RyaW5nXQoJICAgIFsiR2V0
+IFNvdXJjZSBmcm9tIERCIiAgICAgICBzcWxwbHVzLWdldC1zb3VyY2Ugc3FscGx1cy1jb25uZWN0
+LXN0cmluZ10KCSAgICBbIkludGVycnVwdCBFdmFsdWF0aW9uIiAgICAgc3FscGx1cy1zZW5kLWlu
+dGVycnVwdCBzcWxwbHVzLWNvbm5lY3Qtc3RyaW5nXQoJICAgIFsiQ29tcGFyZSBzY2hlbWEgdG8g
+ZmlsZXN5c3RlbSIgc3FscGx1cy1jb21wYXJlLXNjaGVtYS10by1maWxlc3lzdGVtIHNxbHBsdXMt
+Y29ubmVjdC1zdHJpbmddCgkgICAgIi0tLS0iCgkgICAgKGxpc3QgIk91dHB1dCIKCQkgIFsiU2hv
+dyB3aW5kb3ciICAgICAgICAgICAgIHNxbHBsdXMtYnVmZmVyLWRpc3BsYXktd2luZG93IHRdCgkJ
+ICAiLS0tLSIKCQkgIFsiUmVkaXNwbGF5IiAgICAgICAgICAgICAgIHNxbHBsdXMtYnVmZmVyLXJl
+ZGlzcGxheS1jdXJyZW50IHRdCgkJICBbIlByZXZpb3VzIiAgICAgICAgICAgICAgICBzcWxwbHVz
+LWJ1ZmZlci1wcmV2LWNvbW1hbmQgdF0KCQkgIFsiTmV4dCIgICAgICAgICAgICAgICAgICAgIHNx
+bHBsdXMtYnVmZmVyLW5leHQtY29tbWFuZCB0XQoJCSAgIi0tLS0iCgkJICBbIlNjcm9sbCBSaWdo
+dCIgICAgICAgICAgICBzcWxwbHVzLWJ1ZmZlci1zY3JvbGwtcmlnaHQgdF0KCQkgIFsiU2Nyb2xs
+IExlZnQiICAgICAgICAgICAgIHNxbHBsdXMtYnVmZmVyLXNjcm9sbC1sZWZ0IHRdCgkJICBbIlNj
+cm9sbCBEb3duIiAgICAgICAgICAgICBzcWxwbHVzLWJ1ZmZlci1zY3JvbGwtZG93biB0XQoJCSAg
+WyJTY3JvbGwgVXAiICAgICAgICAgICAgICAgc3FscGx1cy1idWZmZXItc2Nyb2xsLXVwIHRdCgkJ
+ICAiLS0tLSIKCQkgIFsiQm90dG9tIiAgICAgICAgICAgICAgICAgIHNxbHBsdXMtYnVmZmVyLWJv
+dHRvbSB0XQoJCSAgWyJUb3AiICAgICAgICAgICAgICAgICAgICAgc3FscGx1cy1idWZmZXItdG9w
+ICAgIHRdCgkJICAiLS0tLSIKCQkgIFsiRXJhc2UiICAgICAgICAgICAgICAgICAgIHNxbHBsdXMt
+YnVmZmVyLWVyYXNlICB0XSkKCSAgICApKQoJICh3aGVuIGluYWN0aXZlLWNvbm5lY3Qtc3RyaW5n
+cwoJICAgKGFwcGVuZAoJICAgIChsaXN0ICItLS0tIikKCSAgICAobGlzdCAoYXBwZW5kIChsaXN0
+ICJSZWNlbnQgQ29ubmVjdGlvbnMiKQoJCQkgIChtYXBjYXIgKGxhbWJkYSAoY29ubmVjdC1zdHJp
+bmcpCgkJCQkgICAgKHZlY3RvciBjb25uZWN0LXN0cmluZyAobGlzdCAnYXBwbHkgJydzcWxwbHVz
+CgkJCQkJCQkJIChsaXN0ICdzcWxwbHVzLXJlYWQtY29ubmVjdC1zdHJpbmcgY29ubmVjdC1zdHJp
+bmcpKSB0KSkgaW5hY3RpdmUtY29ubmVjdC1zdHJpbmdzKSkpKSkKCSAod2hlbiBhY3RpdmUtY29u
+bmVjdC1zdHJpbmdzCgkgICAoYXBwZW5kCgkgICAgKGxpc3QgIi0tLS0iKQoJICAgIChtYXBjYXIg
+KGxhbWJkYSAoY29ubmVjdC1zdHJpbmcpCgkJICAgICAgKHZlY3RvciBjb25uZWN0LXN0cmluZyAo
+bGlzdCAnYXBwbHkgJydzcWxwbHVzCgkJCQkJCSAgIChsaXN0ICdzcWxwbHVzLXJlYWQtY29ubmVj
+dC1zdHJpbmcgY29ubmVjdC1zdHJpbmcpKSB0KSkgYWN0aXZlLWNvbm5lY3Qtc3RyaW5ncykpKQoJ
+ICkpCiAgICAoZXJyb3IgKG1lc3NhZ2UgKGVycm9yLW1lc3NhZ2Utc3RyaW5nIGVycikpKSkpCgoo
+ZGVmdW4gc3FscGx1cy1zZW5kLWNvbW1pdCAoKQogICJTZW5kICdjb21taXQnIGNvbW1hbmQgdG8g
+U1FMKlByb2Nlc3MuIgogIChpbnRlcmFjdGl2ZSkKICAoc3FscGx1cy1jaGVjay1jb25uZWN0aW9u
+KQogIChzcWxwbHVzLWV4ZWN1dGUgc3FscGx1cy1jb25uZWN0LXN0cmluZyAiY29tbWl0OyIgbmls
+IG5pbCkpCgooZGVmdW4gc3FscGx1cy1zZW5kLXJvbGxiYWNrICgpCiAgIlNlbmQgJ3JvbGxiYWNr
+JyBjb21tYW5kIHRvIFNRTCpQcm9jZXNzLiIKICAoaW50ZXJhY3RpdmUpCiAgKHNxbHBsdXMtY2hl
+Y2stY29ubmVjdGlvbikKICAoc3FscGx1cy1leGVjdXRlIHNxbHBsdXMtY29ubmVjdC1zdHJpbmcg
+InJvbGxiYWNrOyIgbmlsIG5pbCkpCgooZGVmdW4gc3FscGx1cy1zaG93LWhpc3RvcnkgKCkKICAi
+U2hvdyBjb21tYW5kIGhpc3RvcnkgZm9yIGN1cnJlbnQgY29ubmVjdGlvbi4iCiAgKGludGVyYWN0
+aXZlKQogIChzcWxwbHVzLWNoZWNrLWNvbm5lY3Rpb24pCiAgKHNxbHBsdXMtdmVyaWZ5LWJ1ZmZl
+ciBzcWxwbHVzLWNvbm5lY3Qtc3RyaW5nKQogIChzd2l0Y2gtdG8tYnVmZmVyIChzcWxwbHVzLWdl
+dC1oaXN0b3J5LWJ1ZmZlciBzcWxwbHVzLWNvbm5lY3Qtc3RyaW5nKSkpCgooZGVmdW4gc3FscGx1
+cy1yZXN0YXJ0LWNvbm5lY3Rpb24gKCkKICAiS2lsbCBTUUwqUGx1cyBwcm9jZXNzIGFuZCBzdGFy
+dCBhZ2Fpbi4iCiAgKGludGVyYWN0aXZlKQogIChzcWxwbHVzLWNoZWNrLWNvbm5lY3Rpb24pCiAg
+KHNxbHBsdXMtdmVyaWZ5LWJ1ZmZlciBzcWxwbHVzLWNvbm5lY3Qtc3RyaW5nKQogIChsZXQgKChj
+b25uZWN0LXN0cmluZ29zIHNxbHBsdXMtY29ubmVjdC1zdHJpbmcpKQogICAgKHVud2luZC1wcm90
+ZWN0CiAgICAgICAgKHByb2duCiAgICAgICAgICAoc2V0cSBzcWxwbHVzLWtpbGwtZnVuY3Rpb24t
+aW5oaWJpdG9yIHQpCiAgICAgICAgICAoc3FscGx1cy1zaHV0ZG93biBjb25uZWN0LXN0cmluZ29z
+IHQpKQogICAgICAoc2V0cSBzcWxwbHVzLWtpbGwtZnVuY3Rpb24taW5oaWJpdG9yIG5pbCkpCiAg
+ICAoc3FscGx1cyBjb25uZWN0LXN0cmluZ29zIChzcWxwbHVzLWdldC1pbnB1dC1idWZmZXItbmFt
+ZSBjb25uZWN0LXN0cmluZ29zKSkpKQoKKGRlZmluZS1za2VsZXRvbiBwbHNxbC1iZWdpbgogICJi
+ZWdpbi4uZW5kIHNrZWxldG9uIgogICIiIDsgaW50ZXJhY3RvcgogICJiZWdpbiIgP1xuCiAgPiBf
+ID9cbgogICJlbmQ7IiA+KQoKKGRlZmluZS1za2VsZXRvbiBwbHNxbC1sb29wCiAgImxvb3AuLmVu
+ZCBsb29wIHNrZWxldG9uIgogICIiIDsgaW50ZXJhY3RvcgogICJsb29wIiA/XG4KICA+IF8gP1xu
+CiAgImVuZCBsb29wOyIgPikKCihkZWZpbmUtc2tlbGV0b24gcGxzcWwtaWYKICAiaWYuLmVuZCBp
+ZiBza2VsZXRvbiIKICAiIiA7IGludGVyYWN0b3IKICAiaWYgIiBfICIgdGhlbiIgP1xuCiAgPiA/
+XG4KICAiZW5kIGlmOyIgPikKCjs7OyAgU1FMUExVUy1tb2RlIEtleW1hcCAtCgoodW5sZXNzIG9y
+Y2wtbW9kZS1tYXAKICAoc2V0cSBvcmNsLW1vZGUtbWFwIChtYWtlLXNwYXJzZS1rZXltYXApKQog
+IChkZWZpbmUta2V5IG9yY2wtbW9kZS1tYXAgIlxDLWNcQy1vIiAnc3FscGx1cy1idWZmZXItZGlz
+cGxheS13aW5kb3cpCiAgKGRlZmluZS1rZXkgb3JjbC1tb2RlLW1hcCAiXEMtY1xDLWwiICdzcWxw
+bHVzLWJ1ZmZlci1yZWRpc3BsYXktY3VycmVudCkKICAoZGVmaW5lLWtleSBvcmNsLW1vZGUtbWFw
+ICJcQy1jXEMtcCIgJ3NxbHBsdXMtYnVmZmVyLXByZXYtY29tbWFuZCkKICAoZGVmaW5lLWtleSBv
+cmNsLW1vZGUtbWFwIFtDLVMtdXBdICdzcWxwbHVzLWJ1ZmZlci1wcmV2LWNvbW1hbmQpCiAgKGRl
+ZmluZS1rZXkgb3JjbC1tb2RlLW1hcCAiXEMtY1xDLW4iICdzcWxwbHVzLWJ1ZmZlci1uZXh0LWNv
+bW1hbmQpCiAgKGRlZmluZS1rZXkgb3JjbC1tb2RlLW1hcCBbQy1TLWRvd25dICdzcWxwbHVzLWJ1
+ZmZlci1uZXh0LWNvbW1hbmQpCiAgKGRlZmluZS1rZXkgb3JjbC1tb2RlLW1hcCAiXEMtY1xDLWIi
+ICdzcWxwbHVzLWJ1ZmZlci1zY3JvbGwtcmlnaHQpCiAgKGRlZmluZS1rZXkgb3JjbC1tb2RlLW1h
+cCBbQy1TLWxlZnRdICdzcWxwbHVzLWJ1ZmZlci1zY3JvbGwtcmlnaHQpCiAgKGRlZmluZS1rZXkg
+b3JjbC1tb2RlLW1hcCAiXEMtY1xDLWYiICdzcWxwbHVzLWJ1ZmZlci1zY3JvbGwtbGVmdCkKICAo
+ZGVmaW5lLWtleSBvcmNsLW1vZGUtbWFwIFtDLVMtcmlnaHRdICdzcWxwbHVzLWJ1ZmZlci1zY3Jv
+bGwtbGVmdCkKICAoZGVmaW5lLWtleSBvcmNsLW1vZGUtbWFwICJcQy1jXE0tdiIgJ3NxbHBsdXMt
+YnVmZmVyLXNjcm9sbC1kb3duKQogIChkZWZpbmUta2V5IG9yY2wtbW9kZS1tYXAgIlxDLWNcQy12
+IiAnc3FscGx1cy1idWZmZXItc2Nyb2xsLXVwKQogIChkZWZpbmUta2V5IG9yY2wtbW9kZS1tYXAg
+IlxDLWM+IiAgICAnc3FscGx1cy1idWZmZXItYm90dG9tKQogIChkZWZpbmUta2V5IG9yY2wtbW9k
+ZS1tYXAgIlxDLWM8IiAgICAnc3FscGx1cy1idWZmZXItdG9wKQogIChkZWZpbmUta2V5IG9yY2wt
+bW9kZS1tYXAgIlxDLWNcQy13IiAnc3FscGx1cy1idWZmZXItZXJhc2UpCiAgKGRlZmluZS1rZXkg
+b3JjbC1tb2RlLW1hcCAiXEMtY1xDLW0iICdzcWxwbHVzLXNlbmQtY29tbWl0KQogIChkZWZpbmUt
+a2V5IG9yY2wtbW9kZS1tYXAgIlxDLWNcQy1hIiAnc3FscGx1cy1zZW5kLXJvbGxiYWNrKQogIChk
+ZWZpbmUta2V5IG9yY2wtbW9kZS1tYXAgIlxDLWNcQy1rIiAnc3FscGx1cy1yZXN0YXJ0LWNvbm5l
+Y3Rpb24pCiAgKGRlZmluZS1rZXkgb3JjbC1tb2RlLW1hcCAiXEMtY1xDLXQiICdzcWxwbHVzLXNo
+b3ctaGlzdG9yeSkKICAoZGVmaW5lLWtleSBvcmNsLW1vZGUtbWFwICJcQy1jXEMtcyIgJ3NxbHBs
+dXMtZ2V0LXNvdXJjZSkKICAoZGVmaW5lLWtleSBvcmNsLW1vZGUtbWFwICJcQy1jXEMtaSIgJ3Nx
+bHBsdXMtc2VuZC1pbnRlcnJ1cHQpCiAgKGRlZmluZS1rZXkgb3JjbC1tb2RlLW1hcCBbUy1yZXR1
+cm5dICdzcWxwbHVzLXNlbmQtdXNlci1zdHJpbmcpCiAgKGRlZmluZS1rZXkgb3JjbC1tb2RlLW1h
+cCBbdG9vbC1iYXIgc3FscGx1cy1yZXN0YXJ0LWNvbm5lY3Rpb25dCiAgICAobGlzdCAnbWVudS1p
+dGVtICJSZXN0YXJ0IGNvbm5lY3Rpb24iICdzcWxwbHVzLXJlc3RhcnQtY29ubmVjdGlvbiA6aW1h
+Z2Ugc3FscGx1cy1raWxsLWltYWdlKSkKICAoZGVmaW5lLWtleSBvcmNsLW1vZGUtbWFwIFt0b29s
+LWJhciBzcWxwbHVzLWNhbmNlbF0KICAgIChsaXN0ICdtZW51LWl0ZW0gIkNhbmNlbCIgJ3NxbHBs
+dXMtc2VuZC1pbnRlcnJ1cHQgOmltYWdlIHNxbHBsdXMtY2FuY2VsLWltYWdlKSkKICAoZGVmaW5l
+LWtleSBvcmNsLW1vZGUtbWFwIFt0b29sLWJhciBzcWxwbHVzLXJvbGxiYWNrXQogICAgKGxpc3Qg
+J21lbnUtaXRlbSAiUm9sbGJhY2siICdzcWxwbHVzLXNlbmQtcm9sbGJhY2sgOmltYWdlIHNxbHBs
+dXMtcm9sbGJhY2staW1hZ2UpKQogIChkZWZpbmUta2V5IG9yY2wtbW9kZS1tYXAgW3Rvb2wtYmFy
+IHNxbHBsdXMtY29tbWl0XQogICAgKGxpc3QgJ21lbnUtaXRlbSAiQ29tbWl0IiAnc3FscGx1cy1z
+ZW5kLWNvbW1pdCA6aW1hZ2Ugc3FscGx1cy1jb21taXQtaW1hZ2UpKSkKCih1bmxlc3Mgc3FscGx1
+cy1tb2RlLW1hcAogIChzZXRxIHNxbHBsdXMtbW9kZS1tYXAgKG1ha2Utc3BhcnNlLWtleW1hcCkp
+CiAgKGRlZmluZS1rZXkgc3FscGx1cy1tb2RlLW1hcCAiXEMtY1xDLWciICdwbHNxbC1iZWdpbikK
+ICAoZGVmaW5lLWtleSBzcWxwbHVzLW1vZGUtbWFwICJcQy1jXEMtcSIgJ3Bsc3FsLWxvb3ApCiAg
+KGRlZmluZS1rZXkgc3FscGx1cy1tb2RlLW1hcCAiXEMtY1xDLXoiICdwbHNxbC1pZikKICAoZGVm
+aW5lLWtleSBzcWxwbHVzLW1vZGUtbWFwICJcQy1jXEMtciIgJ3NxbHBsdXMtc2VuZC1yZWdpb24p
+CiAgKGRlZmluZS1rZXkgc3FscGx1cy1tb2RlLW1hcCBbQy1yZXR1cm5dICdzcWxwbHVzLXNlbmQt
+Y3VycmVudCkKICAoZGVmaW5lLWtleSBzcWxwbHVzLW1vZGUtbWFwIFtNLXJldHVybl0gJ3NxbHBs
+dXMtZXhwbGFpbikKICAoZGVmaW5lLWtleSBzcWxwbHVzLW1vZGUtbWFwICJcQy1jXEMtZSIgJ3Nx
+bHBsdXMtc2VuZC1jdXJyZW50KQogIChkZWZpbmUta2V5IHNxbHBsdXMtbW9kZS1tYXAgIlxDLWNc
+Qy1qIiAnc3FscGx1cy1zZW5kLWN1cnJlbnQtaHRtbCkKICAoZGVmaW5lLWtleSBzcWxwbHVzLW1v
+ZGUtbWFwIFtDLVMtcmV0dXJuXSAnc3FscGx1cy1zZW5kLWN1cnJlbnQtaHRtbCkKICAoZGVmaW5l
+LWtleSBzcWxwbHVzLW1vZGUtbWFwICJcTS0uIiAnc3FscGx1cy1maWxlLWdldC1zb3VyY2UpCiAg
+KGRlZmluZS1rZXkgc3FscGx1cy1tb2RlLW1hcCBbQy1kb3duLW1vdXNlLTFdICdzcWxwbHVzLW1v
+dXNlLXNlbGVjdC1pZGVudGlmaWVyKQogIChkZWZpbmUta2V5IHNxbHBsdXMtbW9kZS1tYXAgW0Mt
+bW91c2UtMV0gJ3NxbHBsdXMtZmlsZS1nZXQtc291cmNlLW1vdXNlKQogICkKCihlYXN5LW1lbnUt
+YWRkLWl0ZW0gbmlsIG5pbCBzcWxwbHVzLWNvbm5lY3Rpb25zLW1lbnUgdCkKCih1bmxlc3Mgc3Fs
+cGx1cy1tb2RlLXN5bnRheC10YWJsZQogIChzZXRxIHNxbHBsdXMtbW9kZS1zeW50YXgtdGFibGUg
+KG1ha2Utc3ludGF4LXRhYmxlKSkKICAobW9kaWZ5LXN5bnRheC1lbnRyeSA/LyAiLiAxNCIgc3Fs
+cGx1cy1tb2RlLXN5bnRheC10YWJsZSkgOyBjb21tZW50IHN0YXJ0CiAgKG1vZGlmeS1zeW50YXgt
+ZW50cnkgPyogIi4gMjMiIHNxbHBsdXMtbW9kZS1zeW50YXgtdGFibGUpCiAgKG1vZGlmeS1zeW50
+YXgtZW50cnkgPysgIi4iICAgIHNxbHBsdXMtbW9kZS1zeW50YXgtdGFibGUpCiAgKG1vZGlmeS1z
+eW50YXgtZW50cnkgPy4gIi4iICAgIHNxbHBsdXMtbW9kZS1zeW50YXgtdGFibGUpCiAgKG1vZGlm
+eS1zeW50YXgtZW50cnkgP1wiICIuIiAgIHNxbHBsdXMtbW9kZS1zeW50YXgtdGFibGUpCiAgKG1v
+ZGlmeS1zeW50YXgtZW50cnkgP1xcICIuIiAgIHNxbHBsdXMtbW9kZS1zeW50YXgtdGFibGUpCiAg
+KG1vZGlmeS1zeW50YXgtZW50cnkgPy0gIi4gMTJiIiAgICBzcWxwbHVzLW1vZGUtc3ludGF4LXRh
+YmxlKQogIChtb2RpZnktc3ludGF4LWVudHJ5ID9cbiAiPiBiIiAgICBzcWxwbHVzLW1vZGUtc3lu
+dGF4LXRhYmxlKQogIChtb2RpZnktc3ludGF4LWVudHJ5ID89ICIuIiAgICBzcWxwbHVzLW1vZGUt
+c3ludGF4LXRhYmxlKQogIChtb2RpZnktc3ludGF4LWVudHJ5ID8lICJ3IiAgICBzcWxwbHVzLW1v
+ZGUtc3ludGF4LXRhYmxlKQogIChtb2RpZnktc3ludGF4LWVudHJ5ID88ICIuIiAgICBzcWxwbHVz
+LW1vZGUtc3ludGF4LXRhYmxlKQogIChtb2RpZnktc3ludGF4LWVudHJ5ID8+ICIuIiAgICBzcWxw
+bHVzLW1vZGUtc3ludGF4LXRhYmxlKQogIChtb2RpZnktc3ludGF4LWVudHJ5ID8mICJ3IiAgICBz
+cWxwbHVzLW1vZGUtc3ludGF4LXRhYmxlKQogIChtb2RpZnktc3ludGF4LWVudHJ5ID98ICIuIiAg
+ICBzcWxwbHVzLW1vZGUtc3ludGF4LXRhYmxlKQogIChtb2RpZnktc3ludGF4LWVudHJ5ID9fICJ3
+IiAgICBzcWxwbHVzLW1vZGUtc3ludGF4LXRhYmxlKSA7IF8gaXMgd29yZCBjaGFyCiAgKG1vZGlm
+eS1zeW50YXgtZW50cnkgP1wnICJcIiIgc3FscGx1cy1tb2RlLXN5bnRheC10YWJsZSkpCgo7Ozsg
+IFNRTCpQbHVzIG1vZGUKCihkZWZ1biBjb25uZWN0LXN0cmluZy10by1zdHJpbmcgKCkKICAobGV0
+ICgodHh0IChvciAoY2FyIChyZWZpbmUtY29ubmVjdC1zdHJpbmcgc3FscGx1cy1jb25uZWN0LXN0
+cmluZykpICJkaXNjb25uZWN0ZWQiKSkKCShyZXN1bHQpKQogICAgKGlmIChzdHJpbmctbWF0Y2gg
+Il5cXCguKj9cXClcXChcXHcqcHJvZFxcdypcXCkkIiB0eHQpCgkoaWYgKD49IGVtYWNzLW1ham9y
+LXZlcnNpb24gMjIpCgkgICAgKHNldHEgcmVzdWx0IChsaXN0IChsaXN0IDpwcm9wZXJ0aXplIChz
+dWJzdHJpbmcgdHh0IDAgKG1hdGNoLWJlZ2lubmluZyAyKSkgJ2ZhY2UgJygoOmZvcmVncm91bmQg
+ImJsdWUiKSkpCgkJCSAgICAgICAobGlzdCA6cHJvcGVydGl6ZSAoc3Vic3RyaW5nIHR4dCAobWF0
+Y2gtYmVnaW5uaW5nIDIpKSAnZmFjZSAnKCg6Zm9yZWdyb3VuZCAicmVkIikoOndlaWdodCBib2xk
+KSkpKSkKCSAgKHNldHEgcmVzdWx0IChzZXRxIHR4dCAocHJvcGVydGl6ZSB0eHQgJ2ZhY2UgJygo
+OmZvcmVncm91bmQgImJsdWUiKSkpKSkKCSAgKHB1dC10ZXh0LXByb3BlcnR5IChtYXRjaC1iZWdp
+bm5pbmcgMikgKG1hdGNoLWVuZCAyKSAnZmFjZSAnKCg6Zm9yZWdyb3VuZCAicmVkIikoOndlaWdo
+dCBib2xkKSkgdHh0KSkKICAgICAgKHNldHEgcmVzdWx0IAoJICAgIChpZiAoPj0gZW1hY3MtbWFq
+b3ItdmVyc2lvbiAyMikKCQkobGlzdCA6cHJvcGVydGl6ZSB0eHQgJ2ZhY2UgJygoOmZvcmVncm91
+bmQgImJsdWUiKSkpCgkgICAgICAoc2V0cSB0eHQgKHByb3BlcnRpemUgdHh0ICdmYWNlICcoKDpm
+b3JlZ3JvdW5kICJibHVlIikpKSkpKSkKICAgIHJlc3VsdCkpCgooZGVmdW4gc3FscGx1cy1mb250
+LWxvY2sgKHR5cGUtc3ltYm9sIGxpbWl0KQogIChsZXQgKChzcWxwbHVzLWZvbnQtbG9jay1yZWdl
+eHBzIChzcWxwbHVzLWdldC1mb250LWxvY2stcmVnZXhwcykpKQogICAgKHdoZW4gc3FscGx1cy1m
+b250LWxvY2stcmVnZXhwcwogICAgICAobGV0ICgocmVnZXhwIChnZXRoYXNoIHR5cGUtc3ltYm9s
+IHNxbHBsdXMtZm9udC1sb2NrLXJlZ2V4cHMpKSkKCSh3aGVuIHJlZ2V4cAoJICAocmUtc2VhcmNo
+LWZvcndhcmQgcmVnZXhwIGxpbWl0IHQpKSkpKSkKCjs7IExvY2FsIGluIGlucHV0IGJ1ZmZlciAo
+c3FscGx1cy1tb2RlKQooZGVmdmFyIHNxbHBsdXMtY29tbWFuZC1vdmVybGF5IG5pbCkKKG1ha2Ut
+dmFyaWFibGUtYnVmZmVyLWxvY2FsICdzcWxwbHVzLWNvbW1hbmQtb3ZlcmxheSkKKGRlZnZhciBz
+cWxwbHVzLWJlZ2luLWNvbW1hbmQtb3ZlcmxheS1hcnJvdy1wb3NpdGlvbiBuaWwpCihtYWtlLXZh
+cmlhYmxlLWJ1ZmZlci1sb2NhbCAnc3FscGx1cy1iZWdpbi1jb21tYW5kLW92ZXJsYXktYXJyb3ct
+cG9zaXRpb24pCihkZWZ2YXIgc3FscGx1cy1lbmQtY29tbWFuZC1vdmVybGF5LWFycm93LXBvc2l0
+aW9uIG5pbCkKKG1ha2UtdmFyaWFibGUtYnVmZmVyLWxvY2FsICdzcWxwbHVzLWVuZC1jb21tYW5k
+LW92ZXJsYXktYXJyb3ctcG9zaXRpb24pCgooZGVmdW4gc3FscGx1cy1oaWdobGlnaHQtY3VycmVu
+dC1zcWxwbHVzLWNvbW1hbmQoKQogICh3aGVuIChhbmQgd2luZG93LXN5c3RlbSBzcWxwbHVzLWNv
+bW1hbmQtaGlnaGxpZ2h0aW5nLXN0eWxlKQogICAgKGxldCogKChwYWlyIChzcWxwbHVzLW1hcmst
+Y3VycmVudCkpCgkgICAoYmVnaW4gKGFuZCAoY2FyIHBhaXIpIChzYXZlLWV4Y3Vyc2lvbiAoZ290
+by1jaGFyIChjYXIgcGFpcikpIChza2lwLWNoYXJzLWZvcndhcmQgIiBcdFxuIikgKHBvaW50KSkp
+KQoJICAgKGVuZCAoYW5kIChjZHIgcGFpcikgKHNhdmUtZXhjdXJzaW9uIChnb3RvLWNoYXIgKGNk
+ciBwYWlyKSkgKHNraXAtY2hhcnMtYmFja3dhcmQgIiBcdFxuIikgKGJlZ2lubmluZy1vZi1saW5l
+KSAocG9pbnQpKSkpCgkgICAocG9pbnQtbGluZS1iZWcgKHNhdmUtZXhjdXJzaW9uIChiZWdpbm5p
+bmctb2YtbGluZSkgKHBvaW50KSkpCgkgICAob3ZlcmxheS1iZWdpbiBiZWdpbikKCSAgIChvdmVy
+bGF5LWVuZCBlbmQpKQogICAgICAod2hlbiAoYW5kIGJlZ2luIGVuZCkKCSh3aGVuICg8IGVuZCBw
+b2ludC1saW5lLWJlZykKCSAgKHNhdmUtZXhjdXJzaW9uIChnb3RvLWNoYXIgcG9pbnQtbGluZS1i
+ZWcpICh3aGVuIChlb2JwKSAoaW5zZXJ0ICJcbiIpKSkKCSAgKHNldHEgZW5kIHBvaW50LWxpbmUt
+YmVnKQoJICAoc2V0cSBvdmVybGF5LWVuZCBlbmQpKQoJKHdoZW4gKG9yICg+PSBiZWdpbiBlbmQp
+ICg8IChwb2ludCkgYmVnaW4pKQoJICAod2hlbiAob3IgKDwgKHBvaW50KSBiZWdpbikgKD4gYmVn
+aW4gZW5kKSkKCSAgICAoc2V0cSBvdmVybGF5LWJlZ2luIG5pbAoJCSAgb3ZlcmxheS1lbmQgbmls
+KSkKCSAgKHNldHEgYmVnaW4gbmlsCgkJZW5kIG5pbCkpKQogICAgICAoaWYgKGFuZCBvdmVybGF5
+LWJlZ2luIG92ZXJsYXktZW5kIChtZW1xIHNxbHBsdXMtY29tbWFuZC1oaWdobGlnaHRpbmctc3R5
+bGUgJyhiYWNrZ3JvdW5kIGZyaW5nZS1hbmQtYmFja2dyb3VuZCkpKQoJICAocHJvZ24KCSAgICAo
+c2V0cSBvdmVybGF5LWVuZCAoc2F2ZS1leGN1cnNpb24KCQkJCShnb3RvLWNoYXIgb3ZlcmxheS1l
+bmQpCgkJCQkoYmVnaW5uaW5nLW9mLWxpbmUgMikKCQkJCShwb2ludCkpKQoJICAgIChtb3ZlLW92
+ZXJsYXkgc3FscGx1cy1jb21tYW5kLW92ZXJsYXkgb3ZlcmxheS1iZWdpbiBvdmVybGF5LWVuZCkp
+CgkobW92ZS1vdmVybGF5IHNxbHBsdXMtY29tbWFuZC1vdmVybGF5IDEgMSkpCiAgICAgIChpZiAo
+bWVtcSBzcWxwbHVzLWNvbW1hbmQtaGlnaGxpZ2h0aW5nLXN0eWxlICcoZnJpbmdlIGZyaW5nZS1h
+bmQtYmFja2dyb3VuZCkpCgkgIChwcm9nbgoJICAgIChwdXQgJ3NxbHBsdXMtYmVnaW4tY29tbWFu
+ZC1vdmVybGF5LWFycm93LXBvc2l0aW9uICdvdmVybGF5LWFycm93LWJpdG1hcCAndG9wLWxlZnQt
+YW5nbGUpCgkgICAgKHB1dCAnc3FscGx1cy1lbmQtY29tbWFuZC1vdmVybGF5LWFycm93LXBvc2l0
+aW9uICdvdmVybGF5LWFycm93LWJpdG1hcCAnYm90dG9tLWxlZnQtYW5nbGUpCgkgICAgKHNldC1t
+YXJrZXIgc3FscGx1cy1iZWdpbi1jb21tYW5kLW92ZXJsYXktYXJyb3ctcG9zaXRpb24gYmVnaW4p
+CgkgICAgKHNldC1tYXJrZXIgc3FscGx1cy1lbmQtY29tbWFuZC1vdmVybGF5LWFycm93LXBvc2l0
+aW9uIGVuZCkpCgkoc2V0LW1hcmtlciBzcWxwbHVzLWJlZ2luLWNvbW1hbmQtb3ZlcmxheS1hcnJv
+dy1wb3NpdGlvbiBuaWwpCgkoc2V0LW1hcmtlciBzcWxwbHVzLWVuZC1jb21tYW5kLW92ZXJsYXkt
+YXJyb3ctcG9zaXRpb24gbmlsKSkpKSkKCihkZWZ1biBzcWxwbHVzLWZpbmQtYmVnaW4tb2Ytc3Fs
+cGx1cy1jb21tYW5kICgpCiAgKHNhdmUtZXhjdXJzaW9uCiAgICAoYmVnaW5uaW5nLW9mLWxpbmUp
+CiAgICAod2hpbGUgKGFuZCAobm90IChib2JwKSkgKHNhdmUtZXhjdXJzaW9uIChlbmQtb2YtbGlu
+ZSAwKSAoc2tpcC1jaGFycy1iYWNrd2FyZCAiIFx0IikgKGVxdWFsIChjaGFyLWJlZm9yZSkgPy0p
+KSkKICAgICAgKGJlZ2lubmluZy1vZi1saW5lIDApKQogICAgKHBvaW50KSkpCgooZGVmdW4gc3Fs
+cGx1cy1maW5kLWVuZC1vZi1zcWxwbHVzLWNvbW1hbmQgKCkKICAoc2F2ZS1leGN1cnNpb24KICAg
+IChlbmQtb2YtbGluZSkKICAgICh3aGlsZSAocHJvZ24gKHNraXAtY2hhcnMtYmFja3dhcmQgIiBc
+dCIpIChhbmQgKG5vdCAoZW9icCkpIChlcXVhbCAoY2hhci1iZWZvcmUpID8tKSkpCiAgICAgIChl
+bmQtb2YtbGluZSAyKSkKICAgIChwb2ludCkpKQoKKGRlZnVuIHNxbHBsdXMtc2V0LWZvbnQtbG9j
+ay1lbWFjcy1zdHJ1Y3R1cmVzLWZvci1sZXZlbCAobGV2ZWwgbW9kZS1zeW1ib2wpCiAgKGxldCAo
+KHJlc3VsdCAoYXBwZW5kIHNxbC1tb2RlLW9yYWNsZS1mb250LWxvY2sta2V5d29yZHMKICAgICAg
+ICAgICAgICAgICAgICAgICAgKGRlZmF1bHQtdmFsdWUgKGNvbmQgKChlcXVhbCBsZXZlbCAzKSAn
+c3FscGx1cy1mb250LWxvY2sta2V5d29yZHMtMykKICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgKChlcXVhbCBsZXZlbCAyKSAnc3FscGx1cy1mb250LWxvY2sta2V5
+d29yZHMtMikKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgKChl
+cXVhbCBsZXZlbCAxKSAnc3FscGx1cy1mb250LWxvY2sta2V5d29yZHMtMSkKICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgKHQgbmlsKSkpKSkpCiAgICAod2hlbiAo
+ZmVhdHVyZXAgJ3Bsc3FsKQogICAgICAoc2V0cSByZXN1bHQgKGFwcGVuZCAoc3ltYm9sLXZhbHVl
+ICdwbHNxbC1vcmFjbGUtZm9udC1sb2NrLWZpeC1yZSkgcmVzdWx0KSkpCiAgICAoc2V0cSByZXN1
+bHQKICAgICAgICAgIChhcHBlbmQKICAgICAgICAgICA7OyBOYW1lcyBmb3Igc2NoZW1hcywgdGFi
+bGVzLCBzeW5vbnltcywgdmlld3MsIGNvbHVtbnMsIHNlcXVlbmNlcywgcGFja2FnZXMsIHRyaWdn
+ZXJzIGFuZCBpbmRleGVzCiAgICAgICAgICAgKHdoZW4gKD4gbGV2ZWwgMikKICAgICAgICAgICAg
+IChtYXBjYXIgKGxhbWJkYSAocGFpcikKICAgICAgICAgICAgICAgICAgICAgICAobGV0ICgodHlw
+ZS1zeW1ib2wgKGNhciBwYWlyKSkKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAoZmFjZSAo
+Y2FkciBwYWlyKSkpCiAgICAgICAgICAgICAgICAgICAgICAgICAoY29ucyAoZXZhbCBgKGxhbWJk
+YSAobGltaXQpIChzcWxwbHVzLWZvbnQtbG9jayAnLHR5cGUtc3ltYm9sIGxpbWl0KSkpIGZhY2Up
+KSkKICAgICAgICAgICAgICAgICAgICAgc3FscGx1cy1zeW50YXgtZmFjZXMpKQogICAgICAgICAg
+IDs7IFNRTCpQbHVzCiAgICAgICAgICAgKHdoZW4gKGVxIG1vZGUtc3ltYm9sICdzcWxwbHVzLW1v
+ZGUpCiAgICAgICAgICAgICAodW5sZXNzIHNxbHBsdXMtY29tbWFuZHMtcmVnZXhwLTEKICAgICAg
+ICAgICAgICAgKGZsZXQgKChmaXJzdC1mb3JtLWZ1biAoY21kcykgKG1hcGNhciAobGFtYmRhIChu
+YW1lKSAoY2FyIChzcWxwbHVzLWZ1bGwtZm9ybXMgbmFtZSkpKSBjbWRzKSkKICAgICAgICAgICAg
+ICAgICAgICAgIChhbGwtZm9ybXMtZnVuIChjbWRzKSAobWFwY2FuICdzcWxwbHVzLWZ1bGwtZm9y
+bXMgY21kcykpCiAgICAgICAgICAgICAgICAgICAgICAoc3FscGx1cy1jb21tYW5kcy1yZWdleHAt
+ZnVuIChmb3JtLWZ1biBjbWRzKSAoY29uY2F0ICJeIiAocmVnZXhwLW9wdCAoZnVuY2FsbCBmb3Jt
+LWZ1biBjbWRzKSB0KSAiXFxiIikpCiAgICAgICAgICAgICAgICAgICAgICAoc3FscGx1cy1zeXN0
+ZW0tdmFyaWFibGVzLWZ1biAoZm9ybS1mdW4gdmFycykgKGNvbmNhdCAiXFxiIiAocmVnZXhwLW9w
+dCAoZnVuY2FsbCBmb3JtLWZ1biB2YXJzKSB0KSAiXFxiIikpKQogICAgICAgICAgICAgICAgIChm
+bGV0ICgoc3FscGx1cy12MjItY29tbWFuZHMtZm9udC1sb2NrLWtleXdvcmRzLWZ1bgogICAgICAg
+ICAgICAgICAgICAgICAgICAgKGZvcm0tZnVuKQogICAgICAgICAgICAgICAgICAgICAgICAgKGRl
+bHEgbmlsCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAobWFwY2FyCiAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgKGxhbWJkYSAoY29tbWFuZC1pbmZvKQogICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgKGxldCogKChuYW1lcyAoY2FyIGNvbW1hbmQtaW5mbykpCiAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgKG5hbWVzLWxpc3QgKGlmIChs
+aXN0cCBuYW1lcykgbmFtZXMgKGxpc3QgbmFtZXMpKSkKICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAoc3VibGlzdHMgKGNkciBjb21tYW5kLWluZm8pKSkKICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgKHdoZW4gc3VibGlzdHMKICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAoYXBwZW5kIChsaXN0IChzcWxwbHVzLWNvbW1hbmRzLXJl
+Z2V4cC1mdW4gZm9ybS1mdW4gbmFtZXMtbGlzdCkpCiAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAobWFwY2FyIChsYW1iZGEgKHN1Ymxpc3QpCiAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgKGxldCAoKGZhY2Ug
+KGNhciBzdWJsaXN0KSkKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAocmVnZXhwIChjb25jYXQgIlxcYiIKICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgKHJlZ2V4cC1vcHQgKG1hcGNhbiAobGFtYmRhIChuYW1lKSAoc3FscGx1cy1mdWxsLWZv
+cm1zIG5hbWUpKQogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIChtYXBj
+YW4gKGxhbWJkYSAoZWxlbSkKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgKGlmIChzeW1ib2xwIGVsZW0pCiAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAoY29weS1saXN0IChzeW1ib2wtdmFsdWUgZWxl
+bSkpCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+KGxpc3QgZWxlbSkpKQogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgKGNkciBzdWJsaXN0KSkpCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIHQp
+CiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICJcXGIiKSkpCiAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAobGlzdCByZWdleHAgJyhzcWxwbHVzLWZp
+bmQtZW5kLW9mLXNxbHBsdXMtY29tbWFuZCkgbmlsIChsaXN0IDEgZmFjZSkpKSkKICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgc3VibGlzdHMpCiAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAobGlzdCAnKCJcXChc
+XHcrXFwpIiAoc3FscGx1cy1maW5kLWVuZC1vZi1zcWxwbHVzLWNvbW1hbmQpIG5pbCAoMSBmb250
+LWxvY2stc3FscGx1cy1mYWNlKSkpKSkpKQogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+IHNxbHBsdXMtY29tbWFuZHMpKSkpCiAgICAgICAgICAgICAgICAgICAobGV0ICgoY29tbWFuZHMg
+KG1hcGNhbgogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAobGFtYmRhIChjb21t
+YW5kLWluZm8pIChsZXQgKChuYW1lcyAoY2FyIGNvbW1hbmQtaW5mbykpKSAoaWYgKGxpc3RwIG5h
+bWVzKSAoY29weS1saXN0IG5hbWVzKSAobGlzdCBuYW1lcykpKSkKICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgc3FscGx1cy1jb21tYW5kcykpKQogICAgICAgICAgICAgICAgICAg
+ICAoc2V0cSBzcWxwbHVzLWNvbW1hbmRzLXJlZ2V4cC0xIChzcWxwbHVzLWNvbW1hbmRzLXJlZ2V4
+cC1mdW4gJ2ZpcnN0LWZvcm0tZnVuIGNvbW1hbmRzKSkKICAgICAgICAgICAgICAgICAgICAgKHNl
+dHEgc3FscGx1cy1jb21tYW5kcy1yZWdleHAtMjMgKHNxbHBsdXMtY29tbWFuZHMtcmVnZXhwLWZ1
+biAnYWxsLWZvcm1zLWZ1biBjb21tYW5kcykpCiAgICAgICAgICAgICAgICAgICAgIChpZiAoPD0g
+ZW1hY3MtbWFqb3ItdmVyc2lvbiAyMSkKICAgICAgICAgICAgICAgICAgICAgICAgIChzZXRxIHNx
+bHBsdXMtc3lzdGVtLXZhcmlhYmxlcy1yZWdleHAtMSAoc3FscGx1cy1zeXN0ZW0tdmFyaWFibGVz
+LWZ1biAnZmlyc3QtZm9ybS1mdW4gc3FscGx1cy1zeXN0ZW0tdmFyaWFibGVzKQogICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgc3FscGx1cy1zeXN0ZW0tdmFyaWFibGVzLXJlZ2V4cC0yMyAo
+c3FscGx1cy1zeXN0ZW0tdmFyaWFibGVzLWZ1biAnYWxsLWZvcm1zLWZ1biBzcWxwbHVzLXN5c3Rl
+bS12YXJpYWJsZXMpKQogICAgICAgICAgICAgICAgICAgICAgIChzZXRxIHNxbHBsdXMtdjIyLWNv
+bW1hbmRzLWZvbnQtbG9jay1rZXl3b3Jkcy0xIChzcWxwbHVzLXYyMi1jb21tYW5kcy1mb250LWxv
+Y2sta2V5d29yZHMtZnVuICdmaXJzdC1mb3JtLWZ1bikKICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICBzcWxwbHVzLXYyMi1jb21tYW5kcy1mb250LWxvY2sta2V5d29yZHMtMjMgKHNxbHBsdXMt
+djIyLWNvbW1hbmRzLWZvbnQtbG9jay1rZXl3b3Jkcy1mdW4gJ2FsbC1mb3Jtcy1mdW4pKSkpKSkp
+CiAgICAgICAgICAgICAoYXBwZW5kIChsaXN0CiAgICAgICAgICAgICAgICAgICAgICA7OyBDb21t
+ZW50cyAoUkVNIGNvbW1hbmQpCiAgICAgICAgICAgICAgICAgICAgICAoY29ucyAiXlxcKHJlbVxc
+KVxcYlxcKC4qP1xcKSQiICcoKDEgZm9udC1sb2NrLWtleXdvcmQtZmFjZSBuaWwgbmlsKSAoMiBm
+b250LWxvY2stY29tbWVudC1mYWNlIHQgbmlsKSkpCiAgICAgICAgICAgICAgICAgICAgICA7OyBQ
+cmVkZWZpbmVkIFNRTCpQbHVzIHZhcmlhYmxlcwogICAgICAgICAgICAgICAgICAgICAgKGNvbnMg
+KGNvbmNhdCAiXFxiIgogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAocmVnZXhw
+LW9wdCAnKCJfQ09OTkVDVF9JREVOVElGSUVSIiAiX0RBVEUiICJfRURJVE9SIiAiX09fVkVSU0lP
+TiIgIl9PX1JFTEVBU0UiICJfUFJJVklMRUdFIgogICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICJfU1FMUExVU19SRUxFQVNFIiAiX1VTRVIiKSB0KQogICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAiXFxiIikKICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICdmb250LWxvY2stYnVpbHRpbi1mYWNlKQogICAgICAgICAgICAgICAgICAgICAg
+OzsgU1FMKlBsdXMgY29tbWFuZHMgKCsgc2hvcnRjdXRzIGlmIGxldmVsID49IDIpCiAgICAgICAg
+ICAgICAgICAgICAgICAoY29ucwogICAgICAgICAgICAgICAgICAgICAgIChjb25jYXQgKGlmICg+
+PSBsZXZlbCAyKSBzcWxwbHVzLWNvbW1hbmRzLXJlZ2V4cC0yMyBzcWxwbHVzLWNvbW1hbmRzLXJl
+Z2V4cC0xKSAiXFx8XlxcKEBAXFx8QFxcfCFcXHwvXFx8XFwkXFwpIiApCiAgICAgICAgICAgICAg
+ICAgICAgICAgJ2ZvbnQtbG9jay1rZXl3b3JkLWZhY2UpKQogICAgICAgICAgICAgICAgICAgICAo
+aWYgKDw9IGVtYWNzLW1ham9yLXZlcnNpb24gMjEpCiAgICAgICAgICAgICAgICAgICAgICAgICA7
+OyBTUUwqUGx1cyBzeXN0ZW0gdmFyaWFibGVzICgrIHNob3J0Y3V0cyBpZiBsZXZlbCA+PSAyKQog
+ICAgICAgICAgICAgICAgICAgICAgICAgKGxpc3QgKGNvbnMgKGlmICg+PSBsZXZlbCAyKSBzcWxw
+bHVzLXN5c3RlbS12YXJpYWJsZXMtcmVnZXhwLTIzIHNxbHBsdXMtc3lzdGVtLXZhcmlhYmxlcy1y
+ZWdleHAtMSkgJ2ZvbnQtbG9jay1idWlsdGluLWZhY2UpKQogICAgICAgICAgICAgICAgICAgICAg
+IDs7IHZlci4gPj0gMjIKICAgICAgICAgICAgICAgICAgICAgICAoaWYgKD49IGxldmVsIDIpIHNx
+bHBsdXMtdjIyLWNvbW1hbmRzLWZvbnQtbG9jay1rZXl3b3Jkcy0yMyBzcWxwbHVzLXYyMi1jb21t
+YW5kcy1mb250LWxvY2sta2V5d29yZHMtMSkpKSkKICAgICAgICAgICAgOyAoY29ucyAiXFxiXFwo
+W2EtekEtWiRfIzAtOV0rXFwpXFxiXFwuXFwoXFxiW2EtekEtWiRfIzAtOV0rXFxiXFwpIiAnKCgx
+IGZvbnQtbG9jay10eXBlLWZhY2UgbmlsIG5pbCkoMiBmb250LWxvY2stdmFyaWFibGUtbmFtZS1m
+YWNlIG5pbCBuaWwpKSkKICAgICAgICAgICAobGlzdAogICAgICAgICAgICA7OyBFeHRyYSBPcmFj
+bGUgc3ludGF4IGhpZ2hsaWdodGluZywgbm90IHJlY29nbml6ZWQgYnkgc3FsLW1vZGUgb3IgcGxz
+cWwtbW9kZQogICAgICAgICAgICAoY29ucyBzcWxwbHVzLW9yYWNsZS1leHRyYS10eXBlcy1yZSAn
+Zm9udC1sb2NrLXR5cGUtZmFjZSkKICAgICAgICAgICAgKGNvbnMgc3FscGx1cy1vcmFjbGUtZXh0
+cmEtd2FybmluZy13b3Jkcy1yZSAnZm9udC1sb2NrLXdhcm5pbmctZmFjZSkKICAgICAgICAgICAg
+KGNvbnMgc3FscGx1cy1vcmFjbGUtZXh0cmEtdHlwZXMtcmUgJ2ZvbnQtbG9jay10eXBlLWZhY2Up
+CiAgICAgICAgICAgIChjb25zIHNxbHBsdXMtb3JhY2xlLWV4dHJhLWtleXdvcmRzLXJlICdmb250
+LWxvY2sta2V5d29yZC1mYWNlKQogICAgICAgICAgICAoY29ucyBzcWxwbHVzLW9yYWNsZS1wbHNx
+bC1leHRyYS1yZXNlcnZlZC13b3Jkcy1yZSAnZm9udC1sb2NrLWtleXdvcmQtZmFjZSkKICAgICAg
+ICAgICAgKGlmIChzdHJpbmctbWF0Y2ggIlhFbWFjc1xcfEx1Y2lkIiBlbWFjcy12ZXJzaW9uKQog
+ICAgICAgICAgICAgICAgKGNvbnMgc3FscGx1cy1vcmFjbGUtZXh0cmEtcHNldWRvY29sdW1ucy1y
+ZSAnZm9udC1sb2NrLXByZXByb2Nlc3Nvci1mYWNlKQogICAgICAgICAgICAgIChjb25zIHNxbHBs
+dXMtb3JhY2xlLWV4dHJhLXBzZXVkb2NvbHVtbnMtcmUgJ2ZvbnQtbG9jay1idWlsdGluLWZhY2Up
+KQogICAgICAgICAgICAoaWYgKHN0cmluZy1tYXRjaCAiWEVtYWNzXFx8THVjaWQiIGVtYWNzLXZl
+cnNpb24pCiAgICAgICAgICAgICAgICAoY29ucyBzcWxwbHVzLW9yYWNsZS1leHRyYS1idWlsdGlu
+LWZ1bmN0aW9ucy1yZSAnZm9udC1sb2NrLXByZXByb2Nlc3Nvci1mYWNlKQogICAgICAgICAgICAg
+IChjb25zIHNxbHBsdXMtb3JhY2xlLWV4dHJhLWJ1aWx0aW4tZnVuY3Rpb25zLXJlICdmb250LWxv
+Y2stYnVpbHRpbi1mYWNlKSkKICAgICAgICAgICAgOzsgU1FMKlBsdXMgdmFyaWFibGUgbmFtZXMs
+IGxpa2UgJyZuYW1lJyBvciAnJiZuYW1lJwogICAgICAgICAgICAoY29ucyAiXFwoXFxiJlsmYS16
+QS1aJF8jMC05XStcXGJcXCkiICdmb250LWxvY2stdmFyaWFibGUtbmFtZS1mYWNlKSkKICAgICAg
+ICAgICByZXN1bHQKICAgICAgICAgICA7OyBGdW5jdGlvbiBjYWxscwogICAgICAgICAgICh3aGVu
+ICg+PSBsZXZlbCAyKQogICAgICAgICAgICAgKGxpc3QgKGNvbnMgIlxcYlxcKFxcKFthLXpBLVok
+XyMwLTldK1xcYlxcKVxcLlxcKT9cXChcXGJbYS16QS1aJF8jMC05XStcXGJcXClcXHMtKigiCiAg
+ICAgICAgICAgICAgICAgICAgICAgICAnKCgyIGZvbnQtbG9jay10eXBlLWZhY2UgbmlsIHQpCiAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICgzIGZvbnQtbG9jay1mdW5jdGlvbi1uYW1lLWZhY2Ug
+bmlsIG5pbCkpKSkpKSkKICAgIHJlc3VsdCkpCgooZGVmdW4gc3FscGx1cy1tb2RlIG5pbAogICJN
+b2RlIGZvciBlZGl0aW5nIGFuZCBleGVjdXRpbmcgU1FMKlBsdXMgY29tbWFuZHMuICBFbnRyeSBp
+bnRvIHRoaXMgbW9kZSBydW5zIHRoZSBob29rCidzcWxwbHVzLW1vZGUtaG9vaycuCgpVc2UgXFxb
+c3FscGx1c10gdG8gc3RhcnQgdGhlIFNRTCpQbHVzIGludGVycHJldGVyLgoKSnVzdCBwb3NpdGlv
+biB0aGUgY3Vyc29yIG9uIG9yIG5lYXIgdGhlIFNRTCpQbHVzIHN0YXRlbWVudCB5b3UKd2lzaCB0
+byBzZW5kIGFuZCBwcmVzcyAnXFxbc3FscGx1cy1zZW5kLWN1cnJlbnRdJyB0byBydW4gaXQgYW5k
+CmRpc3BsYXkgdGhlIHJlc3VsdHMuCgpNb2RlIFNwZWNpZmljIEJpbmRpbmdzOgoKXFx7c3FscGx1
+cy1tb2RlLW1hcH0iCiAgKGludGVyYWN0aXZlKQogIChydW4taG9va3MgJ2NoYW5nZS1tYWpvci1t
+b2RlLWhvb2spCiAgKHNldHEgbWFqb3ItbW9kZSAnc3FscGx1cy1tb2RlCgltb2RlLW5hbWUgIlNR
+TCpQbHVzIikKICAodXNlLWxvY2FsLW1hcCBzcWxwbHVzLW1vZGUtbWFwKQogIChzZXQtc3ludGF4
+LXRhYmxlIHNxbHBsdXMtbW9kZS1zeW50YXgtdGFibGUpCiAgKG1ha2UtbG9jYWwtdmFyaWFibGUg
+J2NvbW1lbnQtc3RhcnQpCiAgKG1ha2UtbG9jYWwtdmFyaWFibGUgJ2NvbW1lbnQtZW5kKQogIChz
+ZXRxIGNvbW1lbnQtc3RhcnQgIi8qICIKICAgICAgICBjb21tZW50LWVuZCAiICovIikKICAob3Jj
+bC1tb2RlIDEpCiAgKHNldHEgc3FscGx1cy1mb250LWxvY2sta2V5d29yZHMtMSAoc3FscGx1cy1z
+ZXQtZm9udC1sb2NrLWVtYWNzLXN0cnVjdHVyZXMtZm9yLWxldmVsIDEgbWFqb3ItbW9kZSkKICAg
+ICAgICBzcWxwbHVzLWZvbnQtbG9jay1rZXl3b3Jkcy0yIChzcWxwbHVzLXNldC1mb250LWxvY2st
+ZW1hY3Mtc3RydWN0dXJlcy1mb3ItbGV2ZWwgMiBtYWpvci1tb2RlKQogICAgICAgIHNxbHBsdXMt
+Zm9udC1sb2NrLWtleXdvcmRzLTMgKHNxbHBsdXMtc2V0LWZvbnQtbG9jay1lbWFjcy1zdHJ1Y3R1
+cmVzLWZvci1sZXZlbCAzIG1ham9yLW1vZGUpKQogICh3aGVuIChmZWF0dXJlcCAncGxzcWwpCiAg
+ICAoc2V0IChtYWtlLWxvY2FsLXZhcmlhYmxlICdpbmRlbnQtbGluZS1mdW5jdGlvbikKCSAobGFt
+YmRhICgpIChpbnRlcmFjdGl2ZSkgKGNvbmRpdGlvbi1jYXNlIGVyciAoZnVuY2FsbCAoc3ltYm9s
+LWZ1bmN0aW9uICdwbHNxbC1pbmRlbnQpKSAoZXJyb3IgKG1lc3NhZ2UgIkVycm9yOiAlUyIgZXJy
+KSkpKSkKICAgIChzZXQgKG1ha2UtbG9jYWwtdmFyaWFibGUgJ2luZGVudC1yZWdpb24tZnVuY3Rp
+b24pICdwbHNxbC1pbmRlbnQtcmVnaW9uKQogICAgKHNldCAobWFrZS1sb2NhbC12YXJpYWJsZSAn
+YWxpZ24tbW9kZS1ydWxlcy1saXN0KSAncGxzcWwtYWxpZ24tcnVsZXMtbGlzdCkpCiAgKHNldHEg
+Zm9udC1sb2NrLWRlZmF1bHRzIHNxbHBsdXMtZm9udC1sb2NrLWRlZmF1bHRzKQogICh1bmxlc3Mg
+c3FscGx1cy1jb25uZWN0LXN0cmluZwogICAgKGxldCAoKHBvdGVudGlhbC1jb25uZWN0LXN0cmlu
+ZyAoc3FscGx1cy1nZXQtcG90ZW50aWFsLWNvbm5lY3Qtc3RyaW5nIChidWZmZXItZmlsZS1uYW1l
+KSkpKQogICAgICAod2hlbiAoYW5kIHBvdGVudGlhbC1jb25uZWN0LXN0cmluZwogICAgICAgICAg
+ICAgICAgIChnZXQtcHJvY2VzcyAoc3FscGx1cy1nZXQtcHJvY2Vzcy1uYW1lIHBvdGVudGlhbC1j
+b25uZWN0LXN0cmluZykpKQogICAgICAgIChzZXRxIHNxbHBsdXMtY29ubmVjdC1zdHJpbmcgcG90
+ZW50aWFsLWNvbm5lY3Qtc3RyaW5nKSkpKQogIChzZXQgKG1ha2UtbG9jYWwtdmFyaWFibGUgJ2Zv
+bnQtbG9jay1leHRlbmQtYWZ0ZXItY2hhbmdlLXJlZ2lvbi1mdW5jdGlvbikKICAgICAgIChsYW1i
+ZGEgKGJlZyBlbmQgb2xkLWxlbikKICAgICAgICAgKGNvbnMgKHNhdmUtZXhjdXJzaW9uIChnb3Rv
+LWNoYXIgYmVnKSAoc3FscGx1cy1maW5kLWJlZ2luLW9mLXNxbHBsdXMtY29tbWFuZCkpCiAgICAg
+ICAgICAgICAgIChzYXZlLWV4Y3Vyc2lvbiAoZ290by1jaGFyIGVuZCkgKHNxbHBsdXMtZmluZC1l
+bmQtb2Ytc3FscGx1cy1jb21tYW5kKSkpKSkKICAodW5sZXNzIGZvbnQtbG9jay1zcWxwbHVzLWZh
+Y2UKICAgIChjb3B5LWZhY2UgJ2RlZmF1bHQgJ2ZvbnQtbG9jay1zcWxwbHVzLWZhY2UpCiAgICAo
+c2V0cSBmb250LWxvY2stc3FscGx1cy1mYWNlICdmb250LWxvY2stc3FscGx1cy1mYWNlKSkKICAo
+dHVybi1vbi1mb250LWxvY2spCiAgKHVubGVzcyBmcmFtZS1iYWNrZ3JvdW5kLW1vZGUKICAgIChz
+ZXRxIGZyYW1lLWJhY2tncm91bmQtbW9kZSAoaWYgKDwgKHNxbHBsdXMtY29sb3ItcGVyY2VudGFn
+ZSAoZmFjZS1iYWNrZ3JvdW5kICdkZWZhdWx0KSkgNTApICdkYXJrICdsaWdodCkpKQogIChzZXRx
+IGltZW51LWdlbmVyaWMtZXhwcmVzc2lvbiAnKChuaWwgIl4tLVsgXSpcXChbXjsuXG5dKlxcKSIg
+MSkpKQogIDs7IGlmIGlucHV0IGJ1ZmZlciBoYXMgc3FscGx1cy1tb2RlIHRoZW4gcHJlcGFyZSBp
+dCBmb3IgY29tbWFuZCB1bmRlciBjdXJzb3Igc2VsZWN0aW9uCiAgKHdoZW4gKGFuZCAoZXEgbWFq
+b3ItbW9kZSAnc3FscGx1cy1tb2RlKSAobnVsbCBzcWxwbHVzLWJlZ2luLWNvbW1hbmQtb3Zlcmxh
+eS1hcnJvdy1wb3NpdGlvbikpCiAgICAoc2V0cSBzcWxwbHVzLWJlZ2luLWNvbW1hbmQtb3Zlcmxh
+eS1hcnJvdy1wb3NpdGlvbiAobWFrZS1tYXJrZXIpCgkgIHNxbHBsdXMtZW5kLWNvbW1hbmQtb3Zl
+cmxheS1hcnJvdy1wb3NpdGlvbiAobWFrZS1tYXJrZXIpCgkgIHNxbHBsdXMtY29tbWFuZC1vdmVy
+bGF5IChtYWtlLW92ZXJsYXkgMSAxKSkKICAgIChvdmVybGF5LXB1dCBzcWxwbHVzLWNvbW1hbmQt
+b3ZlcmxheSAnZmFjZSAnc3FscGx1cy1jb21tYW5kLWhpZ2hsaWdodC1mYWNlKQogICAgKHdoZW4g
+KGFuZCAoPj0gZW1hY3MtbWFqb3ItdmVyc2lvbiAyMikgKG5vdCAobWVtcSAnc3FscGx1cy1iZWdp
+bi1jb21tYW5kLW92ZXJsYXktYXJyb3ctcG9zaXRpb24gb3ZlcmxheS1hcnJvdy12YXJpYWJsZS1s
+aXN0KSkpCiAgICAgIChwdXNoICdzcWxwbHVzLWJlZ2luLWNvbW1hbmQtb3ZlcmxheS1hcnJvdy1w
+b3NpdGlvbiBvdmVybGF5LWFycm93LXZhcmlhYmxlLWxpc3QpKQogICAgKHdoZW4gKGFuZCAoPj0g
+ZW1hY3MtbWFqb3ItdmVyc2lvbiAyMikgKG5vdCAobWVtcSAnc3FscGx1cy1lbmQtY29tbWFuZC1v
+dmVybGF5LWFycm93LXBvc2l0aW9uIG92ZXJsYXktYXJyb3ctdmFyaWFibGUtbGlzdCkpKQogICAg
+ICAocHVzaCAnc3FscGx1cy1lbmQtY29tbWFuZC1vdmVybGF5LWFycm93LXBvc2l0aW9uIG92ZXJs
+YXktYXJyb3ctdmFyaWFibGUtbGlzdCkpCiAgICAoYWRkLWhvb2sgJ3ByZS1jb21tYW5kLWhvb2sg
+KGxhbWJkYSAoKQoJCQkJICAoc2V0LW1hcmtlciBzcWxwbHVzLWJlZ2luLWNvbW1hbmQtb3Zlcmxh
+eS1hcnJvdy1wb3NpdGlvbiBuaWwpCgkJCQkgIChzZXQtbWFya2VyIHNxbHBsdXMtZW5kLWNvbW1h
+bmQtb3ZlcmxheS1hcnJvdy1wb3NpdGlvbiBuaWwpKQoJICAgICAgbmlsIHQpCiAgICAoYWRkLWhv
+b2sgJ3Bvc3QtY29tbWFuZC1ob29rIChsYW1iZGEgKCkKCQkJCSAgIChzcWxwbHVzLWNsZWFyLW1v
+dXNlLXNlbGVjdGlvbikKCQkJCSAgIChzZXQtbWFya2VyIHNxbHBsdXMtYmVnaW4tY29tbWFuZC1v
+dmVybGF5LWFycm93LXBvc2l0aW9uIG5pbCkKCQkJCSAgIChzZXQtbWFya2VyIHNxbHBsdXMtZW5k
+LWNvbW1hbmQtb3ZlcmxheS1hcnJvdy1wb3NpdGlvbiBuaWwpKQoJICAgICAgbmlsIHQpKQogIChy
+dW4taG9va3MgJ3NxbHBsdXMtbW9kZS1ob29rKSkKCihkZWZ1biBzcWxwbHVzLWNvbG9yLXBlcmNl
+bnRhZ2UgKGNvbG9yKQogICh0cnVuY2F0ZSAoKiAoLyAoLyAocmVkdWNlICcrIChjb2xvci12YWx1
+ZXMgY29sb3IpKSAzLjApIDY1NTM1LjApIDEwMC4wKSkpCgooZGVmdW4gc3FscGx1cy1nZXQtcG90
+ZW50aWFsLWNvbm5lY3Qtc3RyaW5nIChmaWxlLXBhdGgpCiAgKHdoZW4gZmlsZS1wYXRoCiAgICAo
+bGV0KiAoKGZpbGUtbmFtZSAoZmlsZS1uYW1lLW5vbmRpcmVjdG9yeSBmaWxlLXBhdGgpKQogICAg
+ICAgICAgIChleHRlbnNpb24gKGZpbGUtbmFtZS1leHRlbnNpb24gZmlsZS1uYW1lKSkKICAgICAg
+ICAgICAoY2FzZS1mb2xkLXNlYXJjaCB0KSkKICAgICAgKHdoZW4gKGFuZCBleHRlbnNpb24KCQkg
+KHN0cmluZy1tYXRjaCAoY29uY2F0ICJeIiBzcWxwbHVzLXNlc3Npb24tZmlsZS1leHRlbnNpb24g
+IiQiKSBleHRlbnNpb24pCgkJIChzdHJpbmctbWF0Y2ggIkAiIGZpbGUtbmFtZSkpCgkoY2FyIChy
+ZWZpbmUtY29ubmVjdC1zdHJpbmcgKGZpbGUtbmFtZS1zYW5zLWV4dGVuc2lvbiBmaWxlLW5hbWUp
+KSkpKSkpCgooZGVmdW4gc3FscGx1cy1jaGVjay1jb25uZWN0aW9uICgpCiAgKGlmIG9yY2wtbW9k
+ZQogICAgICAodW5sZXNzIHNxbHBsdXMtY29ubmVjdC1zdHJpbmcKICAgICAgICAobGV0KiAoKHBv
+dGVudGlhbC1jb25uZWN0LXN0cmluZyAoc3FscGx1cy1nZXQtcG90ZW50aWFsLWNvbm5lY3Qtc3Ry
+aW5nIChidWZmZXItZmlsZS1uYW1lKSkpCiAgICAgICAgICAgICAgIChjb25uZWN0LXN0cmluZyAo
+Y2FyIChzcWxwbHVzLXJlYWQtY29ubmVjdC1zdHJpbmcgbmlsIChvciBwb3RlbnRpYWwtY29ubmVj
+dC1zdHJpbmcKCQkJCQkJCQkJIChjYWFyIChzcWxwbHVzLWRpdmlkZS1jb25uZWN0LXN0cmluZ3Mp
+KSkpKSkpCiAgICAgICAgICAoc3FscGx1cyBjb25uZWN0LXN0cmluZyAoYnVmZmVyLW5hbWUpKSkp
+CiAgICAoZXJyb3IgIkN1cnJlbnQgYnVmZmVyIGlzIG5vdCBkZXRlcm1pbmVkIHRvIGNvbW11bmlj
+YXRlIHdpdGggT3JhY2xlIikpKQoKOzs7ICBVdGlsaXRpdGllcwoKKGRlZnVuIHNxbHBsdXMtZWNo
+by1pbi1idWZmZXIgKGJ1ZmZlci1uYW1lIHN0cmluZyAmb3B0aW9uYWwgZm9yY2UtZGlzcGxheSBo
+aWRlLWFmdGVyLWhlYWQpCiAgIkRpc3BsYXlzIHN0cmluZyBpbiB0aGUgbmFtZWQgYnVmZmVyLCBj
+cmVhdGluZyB0aGUgYnVmZmVyIGlmIG5lZWRlZC4gIElmIGZvcmNlLWRpc3BsYXkgaXMgdHJ1ZSwg
+dGhlIGJ1ZmZlciB3aWxsIGFwcGVhcgppZiBub3QgYWxyZWFkeSBzaG93bi4iCiAgKGxldCAoKGJ1
+ZmZlciAoZ2V0LWJ1ZmZlciBidWZmZXItbmFtZSkpKQogICAgKHdoZW4gYnVmZmVyCiAgICAgIChp
+ZiBmb3JjZS1kaXNwbGF5IChkaXNwbGF5LWJ1ZmZlciBidWZmZXIpKQogICAgICAod2l0aC1jdXJy
+ZW50LWJ1ZmZlciBidWZmZXIKCSh3aGlsZSAoYW5kICg+IChidWZmZXItc2l6ZSkgc3FscGx1cy1v
+dXRwdXQtYnVmZmVyLW1heC1zaXplKQoJCSAgICAocHJvZ24gKGdvdG8tY2hhciAocG9pbnQtbWlu
+KSkKCQkJICAgKHVubGVzcyAoZW9icCkgKGZvcndhcmQtY2hhcikpCgkJCSAgIChyZS1zZWFyY2gt
+Zm9yd2FyZCAgKGNvbmNhdCAiXiIgKHJlZ2V4cC1xdW90ZSBzcWxwbHVzLW91dHB1dC1zZXBhcmF0
+b3IpKSBuaWwgdCkpKQoJICAoZGVsZXRlLXJlZ2lvbiAxICgtIChwb2ludCkgKGxlbmd0aCBzcWxw
+bHVzLW91dHB1dC1zZXBhcmF0b3IpKSkpCgoJKGdvdG8tY2hhciAocG9pbnQtbWF4KSkKCShsZXQg
+KChzdGFydC1wb2ludCAocG9pbnQpKSkKCSAgKGluc2VydCBzdHJpbmcpCgkgICh3aGVuIGhpZGUt
+YWZ0ZXItaGVhZAoJICAgIChsZXQgKChmcm9tLXBvcyAoc3RyaW5nLW1hdGNoICJcbiIgc3RyaW5n
+KSkKCQkgIChrZXltYXAgKG1ha2Utc3BhcnNlLWtleW1hcCkpCgkJICBvdmVybGF5KQoJICAgICAg
+KHdoZW4gZnJvbS1wb3MKCQkoc2V0cSBvdmVybGF5IChtYWtlLW92ZXJsYXkgKCsgc3RhcnQtcG9p
+bnQgZnJvbS1wb3MpICgtICgrIHN0YXJ0LXBvaW50IChsZW5ndGggc3RyaW5nKSkgMikpKQoJCSh3
+aGVuIChvciAobm90IChjb25zcCBidWZmZXItaW52aXNpYmlsaXR5LXNwZWMpKQoJCQkgIChub3Qg
+KGFzc3EgJ2hpZGUtc3ltYm9sIGJ1ZmZlci1pbnZpc2liaWxpdHktc3BlYykpKQoJCSAgKGFkZC10
+by1pbnZpc2liaWxpdHktc3BlYyAnKGhpZGUtc3ltYm9sIC4gdCkpKQoJCShvdmVybGF5LXB1dCBv
+dmVybGF5ICdpbnZpc2libGUgJ2hpZGUtc3ltYm9sKQoJCShwdXQtdGV4dC1wcm9wZXJ0eSBzdGFy
+dC1wb2ludCAoLSAoKyBzdGFydC1wb2ludCAobGVuZ3RoIHN0cmluZykpIDIpICdoZWxwLWVjaG8g
+c3RyaW5nKQoJCShwdXQtdGV4dC1wcm9wZXJ0eSBzdGFydC1wb2ludCAoLSAoKyBzdGFydC1wb2lu
+dCAobGVuZ3RoIHN0cmluZykpIDIpICdtb3VzZS1mYWNlICdoaWdobGlnaHQpCgkJKHB1dC10ZXh0
+LXByb3BlcnR5IHN0YXJ0LXBvaW50ICgtICgrIHN0YXJ0LXBvaW50IChsZW5ndGggc3RyaW5nKSkg
+MikgJ2tleW1hcCBzcWxwbHVzLW91dHB1dC1idWZmZXIta2V5bWFwKSkpKSkKCShpZiBmb3JjZS1k
+aXNwbGF5CgkgICAgKHNldC13aW5kb3ctcG9pbnQgKGdldC1idWZmZXItd2luZG93IGJ1ZmZlci1u
+YW1lKSAocG9pbnQtbWF4KSkpKSkpKQoKKGRlZnVuIHNxbHBsdXMtdmVyaWZ5LWJ1ZmZlciAoY29u
+bmVjdC1zdHJpbmcpCiAgKGxldCAoKG91dHB1dC1idWZmZXItbmFtZSAoc3FscGx1cy1nZXQtb3V0
+cHV0LWJ1ZmZlci1uYW1lIGNvbm5lY3Qtc3RyaW5nKSkKCShwcm9jZXNzLWJ1ZmZlci1uYW1lIChz
+cWxwbHVzLWdldC1wcm9jZXNzLWJ1ZmZlci1uYW1lIGNvbm5lY3Qtc3RyaW5nKSkpCiAgICAod2hl
+biAobm90IChnZXQtYnVmZmVyIHByb2Nlc3MtYnVmZmVyLW5hbWUpKQogICAgICAoc3FscGx1cy1z
+aHV0ZG93biBjb25uZWN0LXN0cmluZykKICAgICAgKGVycm9yICJObyBTUUwqUGx1cyBzZXNzaW9u
+ISAgVXNlICdNLXggc3FscGx1cycgdG8gc3RhcnQgdGhlIFNRTCpQbHVzIGludGVycHJldGVyIikp
+CiAgICAodW5sZXNzIChnZXQtYnVmZmVyLXByb2Nlc3MgcHJvY2Vzcy1idWZmZXItbmFtZSkKICAg
+ICAgKHNxbHBsdXMtc2h1dGRvd24gY29ubmVjdC1zdHJpbmcpCiAgICAgIChlcnJvciAiQnVmZmVy
+ICclcycgaXMgbm90IHRhbGtpbmcgdG8gYW55Ym9keSEiIG91dHB1dC1idWZmZXItbmFtZSkpKQog
+IHQpCgooZGVmdW4gc3FscGx1cy1nZXQtY29udGV4dCAoY29ubmVjdC1zdHJpbmcgJm9wdGlvbmFs
+IGlkKQogIChsZXQgKChwcm9jZXNzLWJ1ZmZlciAoc3FscGx1cy1nZXQtcHJvY2Vzcy1idWZmZXIt
+bmFtZSBjb25uZWN0LXN0cmluZykpKQogICAgKHdoZW4gcHJvY2Vzcy1idWZmZXIKICAgICAgKHdp
+dGgtY3VycmVudC1idWZmZXIgcHJvY2Vzcy1idWZmZXIKICAgICAgICAod2hlbiBpZAogICAgICAg
+ICAgKHdoaWxlIChhbmQgc3FscGx1cy1jb21tYW5kLWNvbnRleHRzCiAgICAgICAgICAgICAgICAg
+ICAgICAobm90IChlcXVhbCAoc3FscGx1cy1nZXQtY29udGV4dC12YWx1ZSAoY2FyIHNxbHBsdXMt
+Y29tbWFuZC1jb250ZXh0cykgOmlkKSBpZCkpKQogICAgICAgICAgICAoc2V0cSBzcWxwbHVzLWNv
+bW1hbmQtY29udGV4dHMgKGNkciBzcWxwbHVzLWNvbW1hbmQtY29udGV4dHMpKSkpCiAgICAgICAg
+KGNhciBzcWxwbHVzLWNvbW1hbmQtY29udGV4dHMpKSkpKQoKKGRlZnVuIHNxbHBsdXMtZ2V0LWNv
+bnRleHQtdmFsdWUgKGNvbnRleHQgdmFyLXN5bWJvbCkKICAoY2RyIChhc3NxIHZhci1zeW1ib2wg
+Y29udGV4dCkpKQoKKGRlZnVuIHNxbHBsdXMtc2V0LWNvbnRleHQtdmFsdWUgKGNvbnRleHQgdmFy
+LXN5bWJvbCB2YWx1ZSkKICAobGV0ICgoYXNzb2NpYXRpb24gKGFzc3EgdmFyLXN5bWJvbCBjb250
+ZXh0KSkpCiAgICAoaWYgYXNzb2NpYXRpb24KICAgICAgICAoc2V0Y2RyIGFzc29jaWF0aW9uIHZh
+bHVlKQogICAgICAoc2V0Y2RyIGNvbnRleHQgKGNvbnMgKGNvbnMgdmFyLXN5bWJvbCB2YWx1ZSkg
+KGNkciBjb250ZXh0KSkpKQogICAgY29udGV4dCkpCgooZGVmdW4gc3FscGx1cy1tYXJrLWN1cnJl
+bnQgKCkKICAiTWFya3MgdGhlIGN1cnJlbnQgU1FMIGZvciBzZW5kaW5nIHRvIHRoZSBTUUwqUGx1
+cyBwcm9jZXNzLiAgTWFya3MgYXJlIHBsYWNlZCBhcm91bmQgYSByZWdpb24gZGVmaW5lZCBieSBl
+bXB0eSBsaW5lcy4iCiAgKGxldCAoYmVnaW4gZW5kIGVtcHR5LWxpbmUtcCBlbXB0eS1saW5lLXAg
+bmV4dC1saW5lLWluY2x1ZGVkIHRhaWwtcCkKICAgIChzYXZlLWV4Y3Vyc2lvbgogICAgICAoYmVn
+aW5uaW5nLW9mLWxpbmUpCiAgICAgIChzZXRxIGVtcHR5LWxpbmUtcCAod2hlbiAobG9va2luZy1h
+dCAiXlsgXHRdKlxcKFxuXFx8XFwnXFwpIikgKHBvaW50KSkpCiAgICAgIChzZXRxIG5leHQtbGlu
+ZS1pbmNsdWRlZCAoYW5kIGVtcHR5LWxpbmUtcCAoc2F2ZS1leGN1cnNpb24gKHNraXAtY2hhcnMt
+Zm9yd2FyZCAiIFx0XG4iKSAoPiAoY3VycmVudC1jb2x1bW4pIDApKSkpCiAgICAgIChzZXRxIHRh
+aWwtcCAoYW5kIGVtcHR5LWxpbmUtcAoJCQkob3IgKGJvYnApIChzYXZlLWV4Y3Vyc2lvbiAoYmVn
+aW5uaW5nLW9mLWxpbmUgMCkgKGxvb2tpbmctYXQgIl5bIFx0XSpcbiIpKSkpKSkKICAgICh1bmxl
+c3MgdGFpbC1wCiAgICAgIChzYXZlLWV4Y3Vyc2lvbgoJKGVuZC1vZi1saW5lKQoJKHJlLXNlYXJj
+aC1iYWNrd2FyZCAiXFxgXFx8XG5bXHJcdCBdKlxuW14gXHRdIiBuaWwgdCkKCShza2lwLXN5bnRh
+eC1mb3J3YXJkICItIikKCShzZXRxIGJlZ2luIChwb2ludCkpKQogICAgICAoc2F2ZS1leGN1cnNp
+b24KCShiZWdpbm5pbmctb2YtbGluZSkKCShyZS1zZWFyY2gtZm9yd2FyZCAiXG5bXHJcdCBdKlxu
+W14gXHRdXFx8XFwnIiBuaWwgdCkKCSh1bmxlc3MgKHplcm9wIChsZW5ndGggKG1hdGNoLXN0cmlu
+ZyAwKSkpCgkgIChiYWNrd2FyZC1jaGFyIDEpKQoJKHNraXAtc3ludGF4LWJhY2t3YXJkICItIikK
+CShzZXRxIGVuZCAob3IgKGFuZCAobm90IG5leHQtbGluZS1pbmNsdWRlZCkgZW1wdHktbGluZS1w
+KSAocG9pbnQpKSkpKQogICAgKGNvbnMgYmVnaW4gZW5kKSkpCgo7OzsgIFRyYW5zbWlzc2lvbiBD
+b21tYW5kcwoKKGRlZnVuIHNxbHBsdXMtc2VuZC1jdXJyZW50IChhcmcgJm9wdGlvbmFsIGh0bWwp
+CiAgIlNlbmQgdGhlIGN1cnJlbnQgU1FMIGNvbW1hbmQocykgdG8gdGhlIFNRTCpQbHVzIHByb2Nl
+c3MuICBXaXRoIGFyZ3VtZW50LCBzaG93IHJlc3VsdHMgaW4gcmF3IGZvcm0uIgogIChpbnRlcmFj
+dGl2ZSAiUCIpCiAgKHNxbHBsdXMtY2hlY2stY29ubmVjdGlvbikKICAod2hlbiAoYnVmZmVyLWZp
+bGUtbmFtZSkKICAgIChjb25kaXRpb24tY2FzZSBlcnIKCShzYXZlLWJ1ZmZlcikKICAgICAgKGVy
+cm9yIChtZXNzYWdlIChlcnJvci1tZXNzYWdlLXN0cmluZyBlcnIpKSkpKQogIChsZXQgKChyZWdp
+b24gKHNxbHBsdXMtbWFyay1jdXJyZW50KSkpCiAgICAoc2V0cSBzcWxwbHVzLXJlZ2lvbi1iZWdp
+bm5pbmctcG9zIChjYXIgcmVnaW9uKQogICAgICAgICAgc3FscGx1cy1yZWdpb24tZW5kLXBvcyAo
+Y2RyIHJlZ2lvbikpKQogIChpZiAoYW5kIHNxbHBsdXMtcmVnaW9uLWJlZ2lubmluZy1wb3Mgc3Fs
+cGx1cy1yZWdpb24tZW5kLXBvcykKICAgICAgKHNxbHBsdXMtc2VuZC1yZWdpb24gYXJnIHNxbHBs
+dXMtcmVnaW9uLWJlZ2lubmluZy1wb3Mgc3FscGx1cy1yZWdpb24tZW5kLXBvcyBuaWwgaHRtbCkK
+ICAgIChlcnJvciAiUG9pbnQgZG9lc24ndCBpbmRpY2F0ZSBhbnkgY29tbWFuZCB0byBleGVjdXRl
+IikpKQoKKGRlZnVuIHNxbHBsdXMtc2VuZC1jdXJyZW50LWh0bWwgKGFyZykKICAoaW50ZXJhY3Rp
+dmUgIlAiKQogIChzcWxwbHVzLXNlbmQtY3VycmVudCBhcmcgdCkpCgoKOzs7ICBTUUxQTFVTLU91
+dHB1dCBCdWZmZXIgT3BlcmF0aW9ucyAtCgooZGVmdW4gc3FscGx1cy0tc2hvdy1idWZmZXIgKGNv
+bm5lY3Qtc3RyaW5nIGZjbiBhcmdzKQogIChsZXQqICgob3V0cHV0LWJ1ZmZlci1uYW1lIChzcWxw
+bHVzLWdldC1vdXRwdXQtYnVmZmVyLW5hbWUgY29ubmVjdC1zdHJpbmcpKSkKICAgIChzcWxwbHVz
+LXZlcmlmeS1idWZmZXIgY29ubmVjdC1zdHJpbmcpCiAgICAoaWYgc3FscGx1cy1zdXBwcmVzcy1z
+aG93LW91dHB1dC1idWZmZXIKICAgICAgICAod2l0aC1jdXJyZW50LWJ1ZmZlciAoZ2V0LWJ1ZmZl
+ciBvdXRwdXQtYnVmZmVyLW5hbWUpCiAgICAgICAgICAoaWYgZmNuIChjb25kaXRpb24tY2FzZSBl
+cnIgKGFwcGx5IGZjbiBhcmdzKSAoZXJyb3IgKG1lc3NhZ2UgKGVycm9yLW1lc3NhZ2Utc3RyaW5n
+IGVycikpKSkpKQogICAgICAoaWYgKG5vdCAoZXEgKHdpbmRvdy1idWZmZXIgKHNlbGVjdGVkLXdp
+bmRvdykpIChnZXQtYnVmZmVyIG91dHB1dC1idWZmZXItbmFtZSkpKQogICAgICAgICAgKHN3aXRj
+aC10by1idWZmZXItb3RoZXItd2luZG93IG91dHB1dC1idWZmZXItbmFtZSkpCiAgICAgIChpZiBm
+Y24gKGNvbmRpdGlvbi1jYXNlIGVyciAoYXBwbHkgZmNuIGFyZ3MpIChlcnJvciAobWVzc2FnZSAo
+ZXJyb3ItbWVzc2FnZS1zdHJpbmcgZXJyKSkpKSkpKSkKCihkZWZ1biBzcWxwbHVzLXNob3ctYnVm
+ZmVyICgmb3B0aW9uYWwgY29ubmVjdC1zdHJpbmcgZmNuICZyZXN0IGFyZ3MpCiAgIk1ha2VzIHRo
+ZSBTUUwqUGx1cyBvdXRwdXQgYnVmZmVyIHZpc2libGUgaW4gdGhlIG90aGVyIHdpbmRvdy4iCiAg
+KGludGVyYWN0aXZlKQogIChzZXRxIGNvbm5lY3Qtc3RyaW5nIChvciBjb25uZWN0LXN0cmluZyBz
+cWxwbHVzLWNvbm5lY3Qtc3RyaW5nKSkKICAodW5sZXNzIGNvbm5lY3Qtc3RyaW5nCiAgICAoZXJy
+b3IgIkN1cnJlbnQgYnVmZmVyIGlzIGRpc2Nvbm5lY3RlZCEiKSkKICAobGV0ICgob3V0cHV0LWJ1
+ZmZlci1uYW1lIChzcWxwbHVzLWdldC1vdXRwdXQtYnVmZmVyLW5hbWUgY29ubmVjdC1zdHJpbmcp
+KSkKICAgIChpZiAoYW5kIG91dHB1dC1idWZmZXItbmFtZQogICAgICAgICAgICAgKGVxIChjdXJy
+ZW50LWJ1ZmZlcikgKGdldC1idWZmZXIgb3V0cHV0LWJ1ZmZlci1uYW1lKSkpCiAgICAgICAgKHNx
+bHBsdXMtLXNob3ctYnVmZmVyIGNvbm5lY3Qtc3RyaW5nIGZjbiBhcmdzKQogICAgICAoc2F2ZS1l
+eGN1cnNpb24KICAgICAgICAoc2F2ZS1zZWxlY3RlZC13aW5kb3cKICAgICAgICAgIChzcWxwbHVz
+LS1zaG93LWJ1ZmZlciBjb25uZWN0LXN0cmluZyBmY24gYXJncykpKSkpKQoKKGZzZXQgJ3NxbHBs
+dXMtYnVmZmVyLWRpc3BsYXktd2luZG93ICdzcWxwbHVzLXNob3ctYnVmZmVyKQoKKGRlZnVuIHNx
+bHBsdXMtYnVmZmVyLXNjcm9sbC11cCAoJm9wdGlvbmFsIGNvbm5lY3Qtc3RyaW5nKQogICJTY3Jv
+bGwtdXAgaW4gdGhlIFNRTCpQbHVzIG91dHB1dCBidWZmZXIgd2luZG93LiIKICAoaW50ZXJhY3Rp
+dmUpCiAgKHNxbHBsdXMtc2hvdy1idWZmZXIgKG9yIGNvbm5lY3Qtc3RyaW5nIHNxbHBsdXMtY29u
+bmVjdC1zdHJpbmcpICdzY3JvbGwtdXApKQoKKGRlZnVuIHNxbHBsdXMtYnVmZmVyLXNjcm9sbC1k
+b3duICgmb3B0aW9uYWwgY29ubmVjdC1zdHJpbmcpCiAgIlNjcm9sbC1kb3duIGluIHRoZSBTUUwq
+UGx1cyBvdXRwdXQgYnVmZmVyIHdpbmRvdy4iCiAgKGludGVyYWN0aXZlKQogIChzcWxwbHVzLXNo
+b3ctYnVmZmVyIChvciBjb25uZWN0LXN0cmluZyBzcWxwbHVzLWNvbm5lY3Qtc3RyaW5nKSAnc2Ny
+b2xsLWRvd24pKQoKKGRlZnVuIHNxbHBsdXMtc2Nyb2xsLWxlZnQgKG51bSkKICAoY2FsbC1pbnRl
+cmFjdGl2ZWx5ICdzY3JvbGwtbGVmdCkpCgooZGVmdW4gc3FscGx1cy1zY3JvbGwtcmlnaHQgKG51
+bSkKICAoY2FsbC1pbnRlcmFjdGl2ZWx5ICdzY3JvbGwtcmlnaHQpKQoKKGRlZnVuIHNxbHBsdXMt
+YnVmZmVyLXNjcm9sbC1sZWZ0IChudW0gJm9wdGlvbmFsIGNvbm5lY3Qtc3RyaW5nKQogICJTY3Jv
+bGwtbGVmdCBpbiB0aGUgU1FMKlBsdXMgb3V0cHV0IGJ1ZmZlciB3aW5kb3cuIgogIChpbnRlcmFj
+dGl2ZSAicCIpCiAgKHNxbHBsdXMtc2hvdy1idWZmZXIgKG9yIGNvbm5lY3Qtc3RyaW5nIHNxbHBs
+dXMtY29ubmVjdC1zdHJpbmcpICdzcWxwbHVzLXNjcm9sbC1sZWZ0ICgqIG51bSAoLyAod2luZG93
+LXdpZHRoKSAyKSkpKQoKKGRlZnVuIHNxbHBsdXMtYnVmZmVyLXNjcm9sbC1yaWdodCAobnVtICZv
+cHRpb25hbCBjb25uZWN0LXN0cmluZykKICAiU2Nyb2xsLXJpZ2h0IGluIHRoZSBTUUwqUGx1cyBv
+dXRwdXQgYnVmZmVyIHdpbmRvdy4iCiAgKGludGVyYWN0aXZlICJwIikKICAoc3FscGx1cy1zaG93
+LWJ1ZmZlciAob3IgY29ubmVjdC1zdHJpbmcgc3FscGx1cy1jb25uZWN0LXN0cmluZykgJ3NxbHBs
+dXMtc2Nyb2xsLXJpZ2h0ICgqIG51bSAoLyAod2luZG93LXdpZHRoKSAyKSkpKQoKKGRlZnVuIHNx
+bHBsdXMtYnVmZmVyLW1hcmstY3VycmVudCAoJm9wdGlvbmFsIGNvbm5lY3Qtc3RyaW5nKQogICJN
+YXJrIHRoZSBjdXJyZW50IHBvc2l0aW9uIGluIHRoZSBTUUwqUGx1cyBvdXRwdXQgd2luZG93LiIK
+ICAoc3FscGx1cy1zaG93LWJ1ZmZlciAob3IgY29ubmVjdC1zdHJpbmcgc3FscGx1cy1jb25uZWN0
+LXN0cmluZykgJ3NxbHBsdXMtYnVmZmVyLW1ha2UtbWFyaykpCgooZGVmdW4gc3FscGx1cy1idWZm
+ZXItbWFrZS1tYXJrICgmb3B0aW9uYWwgY29ubmVjdC1zdHJpbmcpCiAgIlNldCB0aGUgc3FscGx1
+cy1idWZmZXItbWFya2VyLiIKICAoc2V0cSBzcWxwbHVzLWJ1ZmZlci1tYXJrIChjb3B5LW1hcmtl
+ciAocG9pbnQpKSkpCgooZGVmdW4gc3FscGx1cy1idWZmZXItcmVkaXNwbGF5LWN1cnJlbnQgKCZv
+cHRpb25hbCBjb25uZWN0LXN0cmluZykKICAiR28gdG8gdGhlIGN1cnJlbnQgc3FscGx1cy1idWZm
+ZXItbWFyay4iCiAgKGludGVyYWN0aXZlKQogIChzcWxwbHVzLXNob3ctYnVmZmVyIChvciBjb25u
+ZWN0LXN0cmluZyBzcWxwbHVzLWNvbm5lY3Qtc3RyaW5nKSAnc3FscGx1cy1nb3RvLW1hcmspKQoK
+KGRlZnVuIHNxbHBsdXMtZ290by1tYXJrICgpCiAgKGdvdG8tY2hhciBzcWxwbHVzLWJ1ZmZlci1t
+YXJrKQogIChyZWNlbnRlciAwKSkKCihkZWZ1biBzcWxwbHVzLWJ1ZmZlci10b3AgKCZvcHRpb25h
+bCBjb25uZWN0LXN0cmluZykKICAiR290byB0aGUgdG9wIG9mIHRoZSBTUUwqUGx1cyBvdXRwdXQg
+YnVmZmVyLiIKICAoaW50ZXJhY3RpdmUpCiAgKHNxbHBsdXMtc2hvdy1idWZmZXIgKG9yIGNvbm5l
+Y3Qtc3RyaW5nIHNxbHBsdXMtY29ubmVjdC1zdHJpbmcpICdzcWxwbHVzLWJlZ2lubmluZy1vZi1i
+dWZmZXIpKQoKKGRlZnVuIHNxbHBsdXMtYmVnaW5uaW5nLW9mLWJ1ZmZlciBuaWwgKGdvdG8tY2hh
+ciAocG9pbnQtbWluKSkpCgooZGVmdW4gc3FscGx1cy1idWZmZXItYm90dG9tICgmb3B0aW9uYWwg
+Y29ubmVjdC1zdHJpbmcpCiAgIkdvdG8gdGhlIGJvdHRvbSBvZiB0aGUgU1FMKlBsdXMgb3V0cHV0
+IGJ1ZmZlci4iCiAgKGludGVyYWN0aXZlKQogIChzcWxwbHVzLXNob3ctYnVmZmVyIChvciBjb25u
+ZWN0LXN0cmluZyBzcWxwbHVzLWNvbm5lY3Qtc3RyaW5nKSAnc3FscGx1cy1lbmQtb2YtYnVmZmVy
+KSkKCihkZWZ1biBzcWxwbHVzLWVuZC1vZi1idWZmZXIgbmlsIChnb3RvLWNoYXIgKHBvaW50LW1h
+eCkpICh1bmxlc3Mgc3FscGx1cy1zdXBwcmVzcy1zaG93LW91dHB1dC1idWZmZXIgKHJlY2VudGVy
+IC0xKSkpCgooZGVmdW4gc3FscGx1cy1idWZmZXItZXJhc2UgKCZvcHRpb25hbCBjb25uZWN0LXN0
+cmluZykKICAiQ2xlYXIgdGhlIFNRTCBvdXRwdXQgYnVmZmVyLiIKICAoaW50ZXJhY3RpdmUpCiAg
+KHNxbHBsdXMtc2hvdy1idWZmZXIgKG9yIGNvbm5lY3Qtc3RyaW5nIHNxbHBsdXMtY29ubmVjdC1z
+dHJpbmcpICdlcmFzZS1idWZmZXIpKQoKKGRlZnVuIHNxbHBsdXMtYnVmZmVyLW5leHQtY29tbWFu
+ZCAoJm9wdGlvbmFsIGNvbm5lY3Qtc3RyaW5nKQogICJTZWFyY2ggZm9yIHRoZSBuZXh0IGNvbW1h
+bmQgaW4gdGhlIFNRTCpQbHVzIG91dHB1dCBidWZmZXIuIgogIChpbnRlcmFjdGl2ZSkKICAoc3Fs
+cGx1cy1zaG93LWJ1ZmZlciAob3IgY29ubmVjdC1zdHJpbmcgc3FscGx1cy1jb25uZWN0LXN0cmlu
+ZykgJ3NxbHBsdXMtbmV4dC1jb21tYW5kKSkKCihkZWZ1biBzcWxwbHVzLW5leHQtY29tbWFuZCBu
+aWwKICAiU2VhcmNoIGZvciB0aGUgbmV4dCBjb21tYW5kIGluIHRoZSBTUUwqUGx1cyBvdXRwdXQg
+YnVmZmVyLiIKICAoY29uZCAoKHJlLXNlYXJjaC1mb3J3YXJkICAoY29uY2F0ICJeIiAocmVnZXhw
+LXF1b3RlIHNxbHBsdXMtb3V0cHV0LXNlcGFyYXRvcikpIG5pbCB0KQoJIChmb3J3YXJkLWxpbmUg
+MikKCSAocmVjZW50ZXIgMCkpCgkodCAoYmVlcCkgKG1lc3NhZ2UgIk5vIG1vcmUgY29tbWFuZHMu
+IikpKSkKCihkZWZ1biBzcWxwbHVzLWJ1ZmZlci1wcmV2LWNvbW1hbmQgKCZvcHRpb25hbCBjb25u
+ZWN0LXN0cmluZykKICAiU2VhcmNoIGZvciB0aGUgcHJldmlvdXMgY29tbWFuZCBpbiB0aGUgU1FM
+KlBsdXMgb3V0cHV0IGJ1ZmZlci4iCiAgKGludGVyYWN0aXZlKQogIChzcWxwbHVzLXNob3ctYnVm
+ZmVyIChvciBjb25uZWN0LXN0cmluZyBzcWxwbHVzLWNvbm5lY3Qtc3RyaW5nKSAnc3FscGx1cy1w
+cmV2aW91cy1jb21tYW5kKSkKCihkZWZ1biBzcWxwbHVzLXByZXZpb3VzLWNvbW1hbmQgbmlsCiAg
+IlNlYXJjaCBmb3IgdGhlIHByZXZpb3VzIGNvbW1hbmQgaW4gdGhlIFNRTCpQbHVzIG91dHB1dCBi
+dWZmZXIuIgogIChsZXQgKChzdGFydCAocG9pbnQpKSkKICAgIChyZS1zZWFyY2gtYmFja3dhcmQg
+KGNvbmNhdCAiXiIgKHJlZ2V4cC1xdW90ZSBzcWxwbHVzLW91dHB1dC1zZXBhcmF0b3IpKSBuaWwg
+dCkKICAgIChjb25kICgocmUtc2VhcmNoLWJhY2t3YXJkIChjb25jYXQgIl4iIChyZWdleHAtcXVv
+dGUgc3FscGx1cy1vdXRwdXQtc2VwYXJhdG9yKSkgbmlsIHQpCgkgICAoZm9yd2FyZC1saW5lIDIp
+CgkgICAocmVjZW50ZXIgMCkpCgkgICh0CgkgICAobWVzc2FnZSAiTm8gbW9yZSBjb21tYW5kcy4i
+KSAoYmVlcCkKCSAgIChnb3RvLWNoYXIgc3RhcnQpKSkpKQoKKGRlZnVuIHNxbHBsdXMtc2VuZC1p
+bnRlcnJ1cHQgbmlsCiAgIlNlbmQgYW4gaW50ZXJydXB0IHRoZSB0aGUgU1FMKlBsdXMgaW50ZXJw
+cmV0ZXIgcHJvY2Vzcy4iCiAgKGludGVyYWN0aXZlKQogIChzcWxwbHVzLWNoZWNrLWNvbm5lY3Rp
+b24pCiAgKGxldCAoKGNvbm5lY3Qtc3RyaW5nIHNxbHBsdXMtY29ubmVjdC1zdHJpbmcpKQogICAg
+KHNxbHBsdXMtdmVyaWZ5LWJ1ZmZlciBjb25uZWN0LXN0cmluZykKICAgIChpbnRlcnJ1cHQtcHJv
+Y2VzcyAoZ2V0LXByb2Nlc3MgKHNxbHBsdXMtZ2V0LXByb2Nlc3MtbmFtZSBjb25uZWN0LXN0cmlu
+ZykpKSkpCgoKOzs7ICBTUUwgSW50ZXJwcmV0ZXIKCihkZWZ1biByZWZpbmUtY29ubmVjdC1zdHJp
+bmcgKGNvbm5lY3Qtc3RyaW5nICZvcHRpb25hbCBuby1zbGFzaCkKICAiWiBjb25uZWN0IHN0cmlu
+Z2EgZG8gU1FMKlBsdXNhIHd5Y2luYSBoYXNsbywgdGouIG5wLiAncG9uYWdsZW5pYS94QFNJRCcg
+LT4gKCdwb25hZ2xlbmlhQFNJRCcgLiAneCcpLiIKICAobGV0IChyZXN1bHQgcGFzc3dkKQogICAg
+KHdoZW4gY29ubmVjdC1zdHJpbmcKICAgICAgKHNldHEgcmVzdWx0CgkgICAgKGlmIChzdHJpbmct
+bWF0Y2ggIlxcKFxcYFteQC9dKj9cXCkvXFwoW14vQDpdKlxcKVxcKC4qP1xcJ1xcKSIgY29ubmVj
+dC1zdHJpbmcpCiAgICAgICAgICAgICAgICAocHJvZ24KICAgICAgICAgICAgICAgICAgKHNldHEg
+cGFzc3dkIChtYXRjaC1zdHJpbmcgMiBjb25uZWN0LXN0cmluZykpCiAgICAgICAgICAgICAgICAg
+IChjb25jYXQgKG1hdGNoLXN0cmluZyAxIGNvbm5lY3Qtc3RyaW5nKSAobWF0Y2gtc3RyaW5nIDMg
+Y29ubmVjdC1zdHJpbmcpKSkKCSAgICAgIGNvbm5lY3Qtc3RyaW5nKSkKICAgICAgKHdoZW4gbm8t
+c2xhc2gKCSh3aGlsZSAoc3RyaW5nLW1hdGNoICIvIiByZXN1bHQpCgkgIChzZXRxIHJlc3VsdCAo
+cmVwbGFjZS1tYXRjaCAiISIgbmlsIHQgcmVzdWx0KSkpKSkKICAgIChjb25zIHJlc3VsdCBwYXNz
+d2QpKSkKCihkZWZ1biBzcWxwbHVzLWdldC1vdXRwdXQtYnVmZmVyLW5hbWUgKGNvbm5lY3Qtc3Ry
+aW5nKQogIChjb25jYXQgIioiIChjYXIgKHJlZmluZS1jb25uZWN0LXN0cmluZyBjb25uZWN0LXN0
+cmluZykpICIqIikpCgooZGVmdW4gc3FscGx1cy1nZXQtaW5wdXQtYnVmZmVyLW5hbWUgKGNvbm5l
+Y3Qtc3RyaW5nKQogIChjb25jYXQgKGNhciAocmVmaW5lLWNvbm5lY3Qtc3RyaW5nIGNvbm5lY3Qt
+c3RyaW5nKSkgKGNvbmNhdCAiLiIgc3FscGx1cy1zZXNzaW9uLWZpbGUtZXh0ZW5zaW9uKSkpCgoo
+ZGVmdW4gc3FscGx1cy1nZXQtaGlzdG9yeS1idWZmZXItbmFtZSAoY29ubmVjdC1zdHJpbmcpCiAg
+KGNvbmNhdCAiICIgKGNhciAocmVmaW5lLWNvbm5lY3Qtc3RyaW5nIGNvbm5lY3Qtc3RyaW5nKSkg
+Ii1oaXN0IikpCgooZGVmdW4gc3FscGx1cy1nZXQtcHJvY2Vzcy1idWZmZXItbmFtZSAoY29ubmVj
+dC1zdHJpbmcpCiAgKGNvbmNhdCAiICIgKGNhciAocmVmaW5lLWNvbm5lY3Qtc3RyaW5nIGNvbm5l
+Y3Qtc3RyaW5nKSkpKQoKKGRlZnVuIHNxbHBsdXMtZ2V0LXByb2Nlc3MtbmFtZSAoY29ubmVjdC1z
+dHJpbmcpCiAgKGNhciAocmVmaW5lLWNvbm5lY3Qtc3RyaW5nIGNvbm5lY3Qtc3RyaW5nKSkpCgoo
+ZGVmdW4gc3FscGx1cy1yZWFkLWNvbm5lY3Qtc3RyaW5nICgmb3B0aW9uYWwgY29ubmVjdC1zdHJp
+bmcgZGVmYXVsdC1jb25uZWN0LXN0cmluZykKICAiQXNrIHVzZXIgZm9yIGNvbm5lY3Qgc3RyaW5n
+IHdpdGggcGFzc3dvcmQsIHdpdGggREVGQVVMVC1DT05ORUNULVNUUklORyBwcm9wb3NlZC4KREVG
+QVVMVC1DT05ORUNULVNUUklORyBuaWwgbWVhbnMgZmlyc3QgaW5hY3RpdmUgY29ubmVjdC1zdHJp
+bmcgb24gc3FscGx1cy1jb25uZWN0LXN0cmluZ3MtYWxpc3QuCkNPTk5FQ1QtU1RSSU5HIG5vbiBu
+aWwgbWVhbnMgYXNrIGZvciBwYXNzd29yZCBvbmx5IGlmIENPTk5FQ1QtU1RSSU5HIGhhcyBubyBw
+YXNzd29yZCBpdHNlbGYuClJldHVybnMgKHF1YWxpZmllZC1jb25uZWN0LXN0cmluZyByZWZpbmVk
+LWNvbm5lY3Qtc3RyaW5nKS4iCiAgKHVubGVzcyBkZWZhdWx0LWNvbm5lY3Qtc3RyaW5nCiAgICAo
+bGV0ICgoaW5hY3RpdmUtY29ubmVjdC1zdHJpbmdzIChjZHIgKHNxbHBsdXMtZGl2aWRlLWNvbm5l
+Y3Qtc3RyaW5ncykpKSkKICAgICAgKHNldHEgZGVmYXVsdC1jb25uZWN0LXN0cmluZwoJICAgIChz
+b21lIChsYW1iZGEgKHBhaXIpCgkJICAgICh3aGVuIChtZW1iZXIgKGNhciBwYWlyKSBpbmFjdGl2
+ZS1jb25uZWN0LXN0cmluZ3MpIChjYXIgcGFpcikpKQoJCSAgc3FscGx1cy1jb25uZWN0LXN0cmlu
+Z3MtYWxpc3QpKSkpCiAgKGxldCogKChjcyAoZG93bmNhc2UgKG9yIGNvbm5lY3Qtc3RyaW5nIAoJ
+CQkgICAocmVhZC1zdHJpbmcgKGZvcm1hdCAiQ29ubmVjdCBzdHJpbmclczogIiAoaWYgZGVmYXVs
+dC1jb25uZWN0LXN0cmluZyAoZm9ybWF0ICIgW2RlZmF1bHQgJXNdIiBkZWZhdWx0LWNvbm5lY3Qt
+c3RyaW5nKSAiIikpCgkJCQkJbmlsICdzcWxwbHVzLWNvbm5lY3Qtc3RyaW5nLWhpc3RvcnkgZGVm
+YXVsdC1jb25uZWN0LXN0cmluZykpKSkKICAgICAgICAgKHBhaXIgKHJlZmluZS1jb25uZWN0LXN0
+cmluZyBjcykpCiAgICAgICAgIChyZWZpbmVkLWNzIChjYXIgcGFpcikpCiAgICAgICAgIChwYXNz
+d29yZCAoY2RyIHBhaXIpKQogICAgICAgICAod2FzLXBhc3N3b3JkIHBhc3N3b3JkKQogICAgICAg
+ICAoYXNzb2NpYXRpb24gKGFzc29jIHJlZmluZWQtY3Mgc3FscGx1cy1jb25uZWN0LXN0cmluZ3Mt
+YWxpc3QpKSkKICAgICh1bmxlc3MgKG9yIHBhc3N3b3JkIGN1cnJlbnQtcHJlZml4LWFyZykKICAg
+ICAgKHNldHEgcGFzc3dvcmQgKGNkciBhc3NvY2lhdGlvbikpKQogICAgKHVubGVzcyBwYXNzd29y
+ZAogICAgICAoc2V0cSBwYXNzd29yZCAocmVhZC1wYXNzd2QgKGZvcm1hdCAiUGFzc3dvcmQgZm9y
+ICVzOiAiIGNzKSkpKQogICAgKHVubGVzcyB3YXMtcGFzc3dvcmQKICAgICAgKGlmIChzdHJpbmct
+bWF0Y2ggIkAiIGNzKQogICAgICAgICAgKHNldHEgY3MgKHJlcGxhY2UtbWF0Y2ggKGNvbmNhdCAi
+LyIgcGFzc3dvcmQgIkAiKSB0IHQgY3MpKQogICAgICAgIChzZXRxIGNzIChjb25jYXQgY3MgIi8i
+IHBhc3N3b3JkKSkpKQogICAgKGxpc3QgY3MgcmVmaW5lZC1jcykpKQoKKGRlZnVuIHNxbHBsdXMg
+KGNvbm5lY3Qtc3RyaW5nICZvcHRpb25hbCBpbnB1dC1idWZmZXItbmFtZSBvdXRwdXQtYnVmZmVy
+LWZsYWcpCiAgIkNyZWF0ZSBTUUwqUGx1cyBwcm9jZXNzIGNvbm5lY3RlZCB0byBPcmFjbGUgYWNj
+b3JkaW5nIHRvCkNPTk5FQ1QtU1RSSU5HLCBvcGVuIChvciBjcmVhdGUpIGlucHV0IGJ1ZmZlciB3
+aXRoIHNwZWNpZmllZApuYW1lIChkbyBub3QgY3JlYXRlIGlmIElOUFVULUJVRkZFUi1OQU1FIGlz
+IG5pbCkuCk9VVFBVVC1CVUZGRVItRkxBRyBoYXMgbWVhbmluZ3M6IG5pbCBvciBTSE9XLU9VVFBV
+VC1CVUZGRVIgLQpjcmVhdGUgb3V0cHV0IGJ1ZmZlciBhbmQgc2hvdyBpdCwgRE9OVC1TSE9XLU9V
+VFBVVC1CVUZGRVIgLQpjcmVhdGUgb3V0cHV0IGJ1ZmZlciBidXQgZG9udCBzaG93IGl0LCBET05U
+LUNSRUFURS1PVVRQVVQtQlVGRkVSCi0gZG9udCBjcmVhdGUgb3V0cHV0IGJ1ZmZlciIKICAoaW50
+ZXJhY3RpdmUgKGxldCAoKHBhaXIgKHNxbHBsdXMtcmVhZC1jb25uZWN0LXN0cmluZykpKQoJCSAo
+bGlzdCAoY2FyIHBhaXIpIChjb25jYXQgKGNhZHIgcGFpcikgKGNvbmNhdCAiLiIgc3FscGx1cy1z
+ZXNzaW9uLWZpbGUtZXh0ZW5zaW9uKSkpKSkKICAoc2V0IChtYWtlLWxvY2FsLXZhcmlhYmxlICdj
+b21tZW50LXN0YXJ0LXNraXApICIvXFwqKyAqXFx8LS0rICoiKQogIChzZXQgKG1ha2UtbG9jYWwt
+dmFyaWFibGUgJ2NvbW1lbnQtbXVsdGktbGluZSkgdCkKICA7OyBjcmVhdGUgc3FscGx1cy1zZXNz
+aW9uLWNhY2hlLWRpciBpZiBub3QgZXhpc3RzCiAgKHdoZW4gc3FscGx1cy1zZXNzaW9uLWNhY2hl
+LWRpcgogICAgKGNvbmRpdGlvbi1jYXNlIGVycgogICAgICAgICh1bmxlc3MgKGZpbGUtZGlyZWN0
+b3J5LXAgc3FscGx1cy1zZXNzaW9uLWNhY2hlLWRpcikKICAgICAgICAgIChtYWtlLWRpcmVjdG9y
+eSBzcWxwbHVzLXNlc3Npb24tY2FjaGUtZGlyIHQpKQogICAgICAoZXJyb3IgKG1lc3NhZ2UgKGVy
+cm9yLW1lc3NhZ2Utc3RyaW5nIGVycikpKSkpCiAgKGxldCogKCh3YXMtaW5wdXQtYnVmZmVyIChh
+bmQgaW5wdXQtYnVmZmVyLW5hbWUgKGdldC1idWZmZXIgaW5wdXQtYnVmZmVyLW5hbWUpKSkKICAg
+ICAgICAgKGlucHV0LWJ1ZmZlciAob3Igd2FzLWlucHV0LWJ1ZmZlcgogICAgICAgICAgICAgICAg
+ICAgICAgICAgICAod2hlbiBpbnB1dC1idWZmZXItbmFtZQogICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgIChpZiBzcWxwbHVzLXNlc3Npb24tY2FjaGUtZGlyCiAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgIChsZXQgKChidWYgKGZpbmQtZmlsZS1ub3NlbGVjdAogICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAoY29uY2F0CiAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAoZmlsZS1uYW1lLWFzLWRpcmVjdG9yeSBzcWxw
+bHVzLXNlc3Npb24tY2FjaGUtZGlyKQogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgKGNhciAocmVmaW5lLWNvbm5lY3Qtc3RyaW5nIGNvbm5lY3Qtc3RyaW5nIHQp
+KQogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgKGNvbmNhdCAi
+LiIgc3FscGx1cy1zZXNzaW9uLWZpbGUtZXh0ZW5zaW9uKSkpKSkKICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAoY29uZGl0aW9uLWNhc2UgbmlsCiAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICh3aXRoLWN1cnJlbnQtYnVmZmVyIGJ1ZgogICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgIChyZW5hbWUtYnVmZmVyIGlucHV0LWJ1ZmZlci1u
+YW1lKSkKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIChlcnJvciBuaWwpKQog
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIGJ1ZikKICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgIChnZXQtYnVmZmVyLWNyZWF0ZSBpbnB1dC1idWZmZXItbmFtZSkpKSkpCiAg
+ICAgICAgIChvdXRwdXQtYnVmZmVyIChvciAoYW5kIChub3QgKGVxIG91dHB1dC1idWZmZXItZmxh
+ZyAnZG9udC1jcmVhdGUtb3V0cHV0LWJ1ZmZlcikpCgkJCQkgKGdldC1idWZmZXItY3JlYXRlIChz
+cWxwbHVzLWdldC1vdXRwdXQtYnVmZmVyLW5hbWUgY29ubmVjdC1zdHJpbmcpKSkKCQkJICAgIChn
+ZXQtYnVmZmVyIChzcWxwbHVzLWdldC1vdXRwdXQtYnVmZmVyLW5hbWUgY29ubmVjdC1zdHJpbmcp
+KSkpCgkgKHByb2Nlc3MtbmFtZSAoc3FscGx1cy1nZXQtcHJvY2Vzcy1uYW1lIGNvbm5lY3Qtc3Ry
+aW5nKSkKCSAocHJvY2Vzcy1idWZmZXItbmFtZSAoc3FscGx1cy1nZXQtcHJvY2Vzcy1idWZmZXIt
+bmFtZSBjb25uZWN0LXN0cmluZykpCiAgICAgICAgICh3YXMtcHJvY2VzcyAoZ2V0LXByb2Nlc3Mg
+cHJvY2Vzcy1uYW1lKSkKICAgICAgICAgcHJvY2Vzcy1jcmVhdGVkCiAgICAgICAgIChwcm9jZXNz
+IChvciB3YXMtcHJvY2VzcwogICAgICAgICAgICAgICAgICAgICAgKGxldCAocHJvYykKCQkJKHB1
+dGhhc2ggKGNhciAocmVmaW5lLWNvbm5lY3Qtc3RyaW5nIGNvbm5lY3Qtc3RyaW5nKSkKCQkJCSAo
+bWFrZS1zcWxwbHVzLWdsb2JhbC1zdHJ1Y3QgOmZvbnQtbG9jay1yZWdleHBzIChtYWtlLWhhc2gt
+dGFibGUgOnRlc3QgJ2VxdWFsKQoJCQkJCQkJICAgICA6c2lkZS12aWV3LWJ1ZmZlciAod2hlbiAo
+ZmVhdHVyZXAgJ2lkZS1za2VsKSAoc3FscGx1cy1jcmVhdGUtc2lkZS12aWV3LWJ1ZmZlciBjb25u
+ZWN0LXN0cmluZykpKQoJCQkJIHNxbHBsdXMtZ2xvYmFsLXN0cnVjdHVyZXMpCgkJCTs7IHB1c2gg
+Y3VycmVudCBjb25uZWN0IHN0cmluZyB0byB0aGUgYmVnaW5uaW5nIG9mIHNxbHBsdXMtY29ubmVj
+dC1zdHJpbmdzLWFsaXN0CgkJCShsZXQqICgocmVmaW5lZC1jcyAocmVmaW5lLWNvbm5lY3Qtc3Ry
+aW5nIGNvbm5lY3Qtc3RyaW5nKSkpCgkJCSAgKHNldHEgc3FscGx1cy1jb25uZWN0LXN0cmluZ3Mt
+YWxpc3QgKGRlbGV0ZSogKGNhciByZWZpbmVkLWNzKSBzcWxwbHVzLWNvbm5lY3Qtc3RyaW5ncy1h
+bGlzdCA6dGVzdCAnc3RyaW5nPSA6a2V5ICdjYXIpKQoJCQkgIChwdXNoIHJlZmluZWQtY3Mgc3Fs
+cGx1cy1jb25uZWN0LXN0cmluZ3MtYWxpc3QpKQoJCQkoc3FscGx1cy1nZXQtaGlzdG9yeS1idWZm
+ZXIgY29ubmVjdC1zdHJpbmcpCgkJCSh3aGVuIG91dHB1dC1idWZmZXIKCQkJICAod2l0aC1jdXJy
+ZW50LWJ1ZmZlciBvdXRwdXQtYnVmZmVyCgkJCSAgICAoZXJhc2UtYnVmZmVyKSkpCgkJCShzZXRx
+IHByb2Nlc3MtY3JlYXRlZCB0CgkJCSAgICAgIHByb2MgKHN0YXJ0LXByb2Nlc3MgcHJvY2Vzcy1u
+YW1lIHByb2Nlc3MtYnVmZmVyLW5hbWUgc3FscGx1cy1jb21tYW5kIGNvbm5lY3Qtc3RyaW5nKSkK
+CQkJKHNldC1wcm9jZXNzLXNlbnRpbmVsIHByb2MgKGxhbWJkYSAocHJvY2VzcyBldmVudCkKCQkJ
+CQkJCSAobGV0ICgocHJvYy1idWZmZXIgKGJ1ZmZlci1uYW1lIChwcm9jZXNzLWJ1ZmZlciBwcm9j
+ZXNzKSkpCgkJCQkJCQkgICAgICAgKG91dHB1dC1idWZmZXIgKGdldC1idWZmZXIgKHNxbHBsdXMt
+Z2V0LW91dHB1dC1idWZmZXItbmFtZSAocHJvY2Vzcy1uYW1lIHByb2Nlc3MpKSkpCgkJCQkJCQkg
+ICAgICAgZXJyLW1zZwoJCQkJCQkJICAgICAgIChleGl0ZWQtYWJub3JtYWxseSAoc3RyaW5nLW1h
+dGNoICJcXGBleGl0ZWQgYWJub3JtYWxseSB3aXRoIGNvZGUiIGV2ZW50KSkpCgkJCQkJCQkgICAo
+d2hlbiBvdXRwdXQtYnVmZmVyCgkJCQkJCQkgICAgICh3aXRoLWN1cnJlbnQtYnVmZmVyIG91dHB1
+dC1idWZmZXIKCQkJCQkJCSAgICAgICAoZ290by1jaGFyIChwb2ludC1tYXgpKQoJCQkJCQkJICAg
+ICAgIChpbnNlcnQgKGZvcm1hdCAiXG4lcyIgZXZlbnQpKQoJCQkJCQkJICAgICAgICh3aGVuIGV4
+aXRlZC1hYm5vcm1hbGx5CgkJCQkJCQkJIChzZXRxIHNxbHBsdXMtY29ubmVjdC1zdHJpbmdzLWFs
+aXN0CgkJCQkJCQkJICAgICAgIChkZWxldGUqIChjYXIgKHJlZmluZS1jb25uZWN0LXN0cmluZyBz
+cWxwbHVzLWNvbm5lY3Qtc3RyaW5nKSkKCQkJCQkJCQkJCXNxbHBsdXMtY29ubmVjdC1zdHJpbmdz
+LWFsaXN0IDp0ZXN0ICdzdHJpbmc9IDprZXkgJ2NhcikpCgkJCQkJCQkJICh3aGVuIHByb2MtYnVm
+ZmVyCgkJCQkJCQkJICAgKHdpdGgtY3VycmVudC1idWZmZXIgcHJvYy1idWZmZXIKCQkJCQkJCQkg
+ICAgIChzYXZlLWV4Y3Vyc2lvbgoJCQkJCQkJCSAgICAgICAoZ290by1jaGFyIChwb2ludC1taW4p
+KQoJCQkJCQkJCSAgICAgICAod2hlbiAocmUtc2VhcmNoLWZvcndhcmQgIl5PUkEtWzAtOV0rLiok
+IiBuaWwgdCkKCQkJCQkJCQkJIChzZXRxIGVyci1tc2cgKG1hdGNoLXN0cmluZyAwKSkpKQoJCQkJ
+CQkJCSAgICAgKGVyYXNlLWJ1ZmZlcikpKQoJCQkJCQkJCSAod2hlbiBlcnItbXNnCgkJCQkJCQkJ
+ICAgKGluc2VydCAoY29uY2F0ICJcbiIgZXJyLW1zZykpKSkpKSkpKQoJCQkocHJvY2Vzcy1raWxs
+LXdpdGhvdXQtcXVlcnkgcHJvYyAobm90IHNxbHBsdXMta2lsbC1wcm9jZXNzZXMtd2l0aG91dC1x
+dWVyeS1vbi1leGl0LWZsYWcpKQoJCQkoc2V0LXByb2Nlc3MtZmlsdGVyIHByb2MgJ3NxbHBsdXMt
+cHJvY2Vzcy1maWx0ZXIpCgkJCSh3aXRoLWN1cnJlbnQtYnVmZmVyIChnZXQtYnVmZmVyIHByb2Nl
+c3MtYnVmZmVyLW5hbWUpCgkJCSAgKHNldHEgc3FscGx1cy1wcm9jZXNzLXAgY29ubmVjdC1zdHJp
+bmcpKQoJCQlwcm9jKSkpKQogICAgKHdoZW4gb3V0cHV0LWJ1ZmZlcgogICAgICAod2l0aC1jdXJy
+ZW50LWJ1ZmZlciBvdXRwdXQtYnVmZmVyCgkob3JjbC1tb2RlIDEpCgkoc2V0IChtYWtlLWxvY2Fs
+LXZhcmlhYmxlICdsaW5lLW1vdmUtaWdub3JlLWludmlzaWJsZSkgdCkKCShzZXRxIHNxbHBsdXMt
+b3V0cHV0LWJ1ZmZlci1rZXltYXAgKG1ha2Utc3BhcnNlLWtleW1hcCkKCSAgICAgIHNxbHBsdXMt
+Y29ubmVjdC1zdHJpbmcgY29ubmVjdC1zdHJpbmcKCSAgICAgIHRydW5jYXRlLWxpbmVzIHQpCgko
+ZGVmaW5lLWtleSBzcWxwbHVzLW91dHB1dC1idWZmZXIta2V5bWFwICJcQy1tIiAobGFtYmRhICgp
+IChpbnRlcmFjdGl2ZSkgKHNxbHBsdXMtb3V0cHV0LWJ1ZmZlci1oaWRlLXNob3cpKSkKCShkZWZp
+bmUta2V5IHNxbHBsdXMtb3V0cHV0LWJ1ZmZlci1rZXltYXAgW1MtbW91c2UtMl0gKGxhbWJkYSAo
+ZXZlbnQpIChpbnRlcmFjdGl2ZSAiQGUiKSAoc3FscGx1cy1vdXRwdXQtYnVmZmVyLWhpZGUtc2hv
+dykpKQoJKGxvY2FsLXNldC1rZXkgW1MtcmV0dXJuXSAnc3FscGx1cy1zZW5kLXVzZXItc3RyaW5n
+KSkpCiAgICAod2hlbiBpbnB1dC1idWZmZXIKICAgICAgKHdpdGgtY3VycmVudC1idWZmZXIgaW5w
+dXQtYnVmZmVyCiAgICAgICAgKHNldHEgc3FscGx1cy1jb25uZWN0LXN0cmluZyBjb25uZWN0LXN0
+cmluZykpKQogICAgOzsgaWYgaW5wdXQgYnVmZmVyIHdhcyBjcmVhdGVkIHRoZW4gc3dpdGNoIGl0
+IHRvIHNxbHBsdXMtbW9kZQogICAgKHdoZW4gKGFuZCBpbnB1dC1idWZmZXIgKG5vdCB3YXMtaW5w
+dXQtYnVmZmVyKSkKICAgICAgKHdpdGgtY3VycmVudC1idWZmZXIgaW5wdXQtYnVmZmVyCiAgICAg
+ICAgKHVubGVzcyAoZXEgbWFqb3ItbW9kZSAnc3FscGx1cy1tb2RlKQogICAgICAgICAgKHNxbHBs
+dXMtbW9kZSkpKQogICAgICAod2hlbiBmb250LWxvY2stbW9kZSAoZm9udC1sb2NrLW1vZGUgMSkp
+CiAgICAgIChzZXQtd2luZG93LWJ1ZmZlciAoc3FscGx1cy1nZXQtd29ya2JlbmNoLXdpbmRvdykg
+aW5wdXQtYnVmZmVyKSkKICAgIDs7IGlmIHByb2Nlc3Mgd2FzIGNyZWF0ZWQgdGhlbiBnZXQgaW5m
+b3JtYXRpb24gZm9yIGZvbnQgbG9jawogICAgKHdoZW4gcHJvY2Vzcy1jcmVhdGVkCiAgICAgIChz
+cWxwbHVzLWV4ZWN1dGUgY29ubmVjdC1zdHJpbmcgbmlsIG5pbCAoc3FscGx1cy1pbml0aWFsLXN0
+cmluZ3MpICduby1lY2hvKQogICAgICAobGV0ICgocGxzcWwtZm9udC1sb2NrLWxldmVsIChzcWxw
+bHVzLWZvbnQtbG9jay12YWx1ZS1pbi1tYWpvci1tb2RlIGZvbnQtbG9jay1tYXhpbXVtLWRlY29y
+YXRpb24gJ3Bsc3FsLW1vZGUpKQogICAgICAgICAgICAoc3FscGx1cy1mb250LWxvY2stbGV2ZWwg
+KHNxbHBsdXMtZm9udC1sb2NrLXZhbHVlLWluLW1ham9yLW1vZGUgZm9udC1sb2NrLW1heGltdW0t
+ZGVjb3JhdGlvbiAnc3FscGx1cy1tb2RlKSkpCiAgICAgICAgKHdoZW4gKG9yIChlcXVhbCBwbHNx
+bC1mb250LWxvY2stbGV2ZWwgdCkgKGVxdWFsIHNxbHBsdXMtZm9udC1sb2NrLWxldmVsIHQpCiAg
+ICAgICAgICAgICAgICAgIChhbmQgKG51bWJlcnAgcGxzcWwtZm9udC1sb2NrLWxldmVsKSAoPj0g
+cGxzcWwtZm9udC1sb2NrLWxldmVsIDIpKQogICAgICAgICAgICAgICAgICAoYW5kIChudW1iZXJw
+IHNxbHBsdXMtZm9udC1sb2NrLWxldmVsKSAoPj0gc3FscGx1cy1mb250LWxvY2stbGV2ZWwgMikp
+KQogICAgICAgICAgKHNxbHBsdXMtaGlkZGVuLXNlbGVjdCBjb25uZWN0LXN0cmluZyAKICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgKGNvbmNhdCAic2VsZWN0IGRpc3RpbmN0IGNvbHVt
+bl9uYW1lLCAnQ09MVU1OJywgJyAnIGZyb20gdXNlcl90YWJfY29sdW1ucyB3aGVyZSBjb2x1bW5f
+bmFtZSBub3QgbGlrZSAnQklOJCUnXG4iCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgInVuaW9uXG4iCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgInNlbGVjdCB1c2VybmFtZSwgJ1NDSEVNQScsICcgJyBmcm9tIGFsbF91c2VycyB3aGVyZSB1
+c2VybmFtZSBub3QgbGlrZSAnQklOJCUnXG4iCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgInVuaW9uXG4iCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgInNlbGVjdCBvYmplY3RfbmFtZSwgb2JqZWN0X3R5cGUsIGRlY29kZSggc3RhdHVzLCAn
+SU5WQUxJRCcsICdJJywgJyAnICkgZnJvbSB1c2VyX29iamVjdHNcbiIKICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAid2hlcmUgb2JqZWN0X25hbWUgbm90IGxpa2UgJ0JJ
+TiQlJ1xuIgoJCQkJCSAiYW5kIG9iamVjdF90eXBlIGluICgnVklFVycsICdTRVFVRU5DRScsICdQ
+QUNLQUdFJywgJ1RSSUdHRVInLCAnVEFCTEUnLCAnU1lOT05ZTScsICdJTkRFWCcsICdGVU5DVElP
+TicsICdQUk9DRURVUkUnKTsiKQogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAnc3Fs
+cGx1cy1teS1oYW5kbGVyKSkpKQogICAgKHdoZW4gaW5wdXQtYnVmZmVyCiAgICAgIChzYXZlLXNl
+bGVjdGVkLXdpbmRvdwogICAgICAgICh3aGVuIChlcXVhbCAoc2VsZWN0ZWQtd2luZG93KSAoc3Fs
+cGx1cy1nZXQtc2lkZS13aW5kb3cpKQogICAgICAgICAgKHNlbGVjdC13aW5kb3cgKHNxbHBsdXMt
+Z2V0LXdvcmtiZW5jaC13aW5kb3cpKSkKICAgICAgICAoc3dpdGNoLXRvLWJ1ZmZlciBpbnB1dC1i
+dWZmZXIpKSkKICAgIChsZXQgKChzYXZlZC13aW5kb3cgKGNvbnMgKHNlbGVjdGVkLXdpbmRvdykg
+KHdpbmRvdy1idWZmZXIgKHNlbGVjdGVkLXdpbmRvdykpKSkKCSAgKGlucHV0LWJ1ZmZlciAoZ2V0
+LWJ1ZmZlciAoc3FscGx1cy1nZXQtaW5wdXQtYnVmZmVyLW5hbWUgY29ubmVjdC1zdHJpbmcpKSkp
+CiAgICAgICh3aGVuIChvciAoZXEgb3V0cHV0LWJ1ZmZlci1mbGFnICdzaG93LW91dHB1dC1idWZm
+ZXIpIChudWxsIG91dHB1dC1idWZmZXItZmxhZykpCgkoc3FscGx1cy1zaG93LWJ1ZmZlciBjb25u
+ZWN0LXN0cmluZykpCiAgICAgIChpZiAod2luZG93LWxpdmUtcCAoY2FyIHNhdmVkLXdpbmRvdykp
+CgkgIChzZWxlY3Qtd2luZG93IChjYXIgc2F2ZWQtd2luZG93KSkKCShpZiAoZ2V0LWJ1ZmZlci13
+aW5kb3cgKGNkciBzYXZlZC13aW5kb3cpKQoJICAgIChzZWxlY3Qtd2luZG93IChnZXQtYnVmZmVy
+LXdpbmRvdyAoY2RyIHNhdmVkLXdpbmRvdykpKQoJICAod2hlbiAoYW5kIGlucHV0LWJ1ZmZlcgoJ
+CSAgICAgKGdldC1idWZmZXItd2luZG93IGlucHV0LWJ1ZmZlcikpCgkgICAgKHNlbGVjdC13aW5k
+b3cgKGdldC1idWZmZXItd2luZG93IGlucHV0LWJ1ZmZlcikpKSkpKQogICAgOzsgZXhlY3V0aW5n
+IGluaXRpYWwgc2VxdWVuY2UgKGJldHdlZW4gLyogaW5pdCAqLyBhbmQgLyogZW5kICovKQogICAg
+KHdoZW4gKGFuZCAobm90IHdhcy1wcm9jZXNzKSBpbnB1dC1idWZmZXIpCiAgICAgICh3aXRoLWN1
+cnJlbnQtYnVmZmVyIGlucHV0LWJ1ZmZlcgogICAgICAgIChzYXZlLWV4Y3Vyc2lvbgogICAgICAg
+ICAgKGdvdG8tY2hhciAocG9pbnQtbWluKSkKICAgICAgICAgICh3aGVuIChyZS1zZWFyY2gtZm9y
+d2FyZCAoY29uY2F0ICJeIiBzcWxwbHVzLWluaXQtc2VxdWVuY2Utc3RhcnQtcmVnZXhwICJcXHMt
+KlxuXFwoXFwoLlxcfFxuXFwpKj9cXClcbiIgc3FscGx1cy1pbml0LXNlcXVlbmNlLWVuZC1yZWdl
+eHApIG5pbCB0KQogICAgICAgICAgICAod2hlbiAobWF0Y2gtc3RyaW5nIDEpCiAgICAgICAgICAg
+ICAgKHNxbHBsdXMtc2VuZC1yZWdpb24gbmlsIChtYXRjaC1iZWdpbm5pbmcgMSkgKG1hdGNoLWVu
+ZCAxKSB0KSkpKSkpKSkKCjs7IENvbW1hbmQgdW5kZXIgY3Vyc29yIHNlbGVjdGlvbiBtZWNoYW5p
+c20KKHdoZW4gd2luZG93LXN5c3RlbQogIChydW4td2l0aC1pZGxlLXRpbWVyIDAgdCAobGFtYmRh
+ICgpICh3aGVuIChlcSBtYWpvci1tb2RlICdzcWxwbHVzLW1vZGUpIChzcWxwbHVzLWhpZ2hsaWdo
+dC1jdXJyZW50LXNxbHBsdXMtY29tbWFuZCkpKSkKICAocnVuLXdpdGgtaWRsZS10aW1lciAxIHQg
+KGxhbWJkYSAoKQoJCQkgICAgICh3aGVuIChlcSBtYWpvci1tb2RlICdzcWxwbHVzLW1vZGUpCgkJ
+CSAgICAgICAoaWYgKD49IChzcWxwbHVzLWNvbG9yLXBlcmNlbnRhZ2UgKGZhY2UtYmFja2dyb3Vu
+ZCAnZGVmYXVsdCkpIDUwKQoJCQkJICAgKHNldC1mYWNlLWF0dHJpYnV0ZSAnc3FscGx1cy1jb21t
+YW5kLWhpZ2hsaWdodC1mYWNlIG5pbAoJCQkJCQkgICAgICAgOmJhY2tncm91bmQgKHNxbHBsdXMt
+c2hpbmUtY29sb3IgKGZhY2UtYmFja2dyb3VuZCAnZGVmYXVsdCkgKC0gc3FscGx1cy1jb21tYW5k
+LWhpZ2hsaWdodGluZy1wZXJjZW50YWdlKSkpCgkJCQkgKHNldC1mYWNlLWF0dHJpYnV0ZSAnc3Fs
+cGx1cy1jb21tYW5kLWhpZ2hsaWdodC1mYWNlIG5pbAoJCQkJCQkgICAgIDpiYWNrZ3JvdW5kIChz
+cWxwbHVzLXNoaW5lLWNvbG9yIChmYWNlLWJhY2tncm91bmQgJ2RlZmF1bHQpIHNxbHBsdXMtY29t
+bWFuZC1oaWdobGlnaHRpbmctcGVyY2VudGFnZSkpKSkpKSkKCihkZWZ1biBzcWxwbHVzLW91dHB1
+dC1idWZmZXItaGlkZS1zaG93ICgpCiAgKGlmIChhbmQgKGNvbnNwIGJ1ZmZlci1pbnZpc2liaWxp
+dHktc3BlYykKICAgICAgICAgICAoYXNzcSAnaGlkZS1zeW1ib2wgYnVmZmVyLWludmlzaWJpbGl0
+eS1zcGVjKSkKICAgICAgKHJlbW92ZS1mcm9tLWludmlzaWJpbGl0eS1zcGVjICcoaGlkZS1zeW1i
+b2wgLiB0KSkKICAgIChhZGQtdG8taW52aXNpYmlsaXR5LXNwZWMgJyhoaWRlLXN5bWJvbCAuIHQp
+KSkKICAobGV0ICgob3ZlcmxheSAoY2FyIChvdmVybGF5cy1hdCAocG9pbnQpKSkpKQogICAgKHdo
+ZW4gb3ZlcmxheQogICAgICAoZ290by1jaGFyIChvdmVybGF5LXN0YXJ0IG92ZXJsYXkpKQogICAg
+ICAoYmVnaW5uaW5nLW9mLWxpbmUpKSkKICAocmVjZW50ZXIgMCkpCgooZGVmdW4gc3FscGx1cy1m
+b250LWxvY2stdmFsdWUtaW4tbWFqb3ItbW9kZSAoYWxpc3QgbW9kZS1zeW1ib2wpCiAgKGlmIChj
+b25zcCBhbGlzdCkKICAgICAgKGNkciAob3IgKGFzc3EgbW9kZS1zeW1ib2wgYWxpc3QpIChhc3Nx
+IHQgYWxpc3QpKSkKICAgIGFsaXN0KSkKCihkZWZ1biBzcWxwbHVzLWdldC1oaXN0b3J5LWJ1ZmZl
+ciAoY29ubmVjdC1zdHJpbmcpCiAgKGxldCogKChoaXN0b3J5LWJ1ZmZlci1uYW1lIChzcWxwbHVz
+LWdldC1oaXN0b3J5LWJ1ZmZlci1uYW1lIGNvbm5lY3Qtc3RyaW5nKSkKICAgICAgICAgKGhpc3Rv
+cnktYnVmZmVyIChnZXQtYnVmZmVyIGhpc3RvcnktYnVmZmVyLW5hbWUpKSkKICAgICh1bmxlc3Mg
+aGlzdG9yeS1idWZmZXIKICAgICAgKHNldHEgaGlzdG9yeS1idWZmZXIgKGdldC1idWZmZXItY3Jl
+YXRlIGhpc3RvcnktYnVmZmVyLW5hbWUpKQogICAgICAod2l0aC1jdXJyZW50LWJ1ZmZlciBoaXN0
+b3J5LWJ1ZmZlcgogICAgICAgIChzZXRxIHNxbHBsdXMtY3MgY29ubmVjdC1zdHJpbmcpCiAgICAg
+ICAgKGFkZC1ob29rICdraWxsLWJ1ZmZlci1ob29rICdzcWxwbHVzLWhpc3RvcnktYnVmZmVyLWtp
+bGwtZnVuY3Rpb24gbmlsIHQpKSkKICAgIGhpc3RvcnktYnVmZmVyKSkKCihkZWZ1biBzcWxwbHVz
+LWhpc3RvcnktYnVmZmVyLWtpbGwtZnVuY3Rpb24gKCkKICAod2hlbiBzcWxwbHVzLWhpc3Rvcnkt
+ZGlyCiAgICAoY29uZGl0aW9uLWNhc2UgZXJyCiAgICAgICAgKHByb2duCiAgICAgICAgICAodW5s
+ZXNzIChmaWxlLWRpcmVjdG9yeS1wIHNxbHBsdXMtaGlzdG9yeS1kaXIpCiAgICAgICAgICAgICht
+YWtlLWRpcmVjdG9yeSBzcWxwbHVzLWhpc3RvcnktZGlyIHQpKQogICAgICAgICAgKGFwcGVuZC10
+by1maWxlIDEgKGJ1ZmZlci1zaXplKSAoY29uY2F0IChmaWxlLW5hbWUtYXMtZGlyZWN0b3J5IHNx
+bHBsdXMtaGlzdG9yeS1kaXIpIChjYXIgKHJlZmluZS1jb25uZWN0LXN0cmluZyBzcWxwbHVzLWNz
+IHQpKSAiLWhpc3QudHh0IikpKQogICAgICAoZXJyb3IgKG1lc3NhZ2UgKGVycm9yLW1lc3NhZ2Ut
+c3RyaW5nIGVycikpKSkpKQoKKGRlZnVuIHNxbHBsdXMtc29mdC1zaHV0ZG93biAoY29ubmVjdC1z
+dHJpbmcpCiAgKHVubGVzcyAoc29tZSAobGFtYmRhIChidWZmZXIpCgkJKHdpdGgtY3VycmVudC1i
+dWZmZXIgYnVmZmVyCgkJICAoYW5kIHNxbHBsdXMtY29ubmVjdC1zdHJpbmcKCQkgICAgICAgKGVx
+dWFsIChjYXIgKHJlZmluZS1jb25uZWN0LXN0cmluZyBzcWxwbHVzLWNvbm5lY3Qtc3RyaW5nKSkK
+CQkJICAgICAgKGNhciAocmVmaW5lLWNvbm5lY3Qtc3RyaW5nIGNvbm5lY3Qtc3RyaW5nKSkpKSkp
+CgkgICAgICAoYnVmZmVyLWxpc3QpKQogICAgKHNxbHBsdXMtc2h1dGRvd24gY29ubmVjdC1zdHJp
+bmcpKSkKCihkZWZ1biBzcWxwbHVzLXNodXRkb3duIChjb25uZWN0LXN0cmluZyAmb3B0aW9uYWwg
+ZG9udC1raWxsLWlucHV0LWJ1ZmZlcikKICAiS2lsbCBpbnB1dCwgb3V0cHV0IGFuZCBwcm9jZXNz
+IGJ1ZmZlciBmb3Igc3BlY2lmaWVkIENPTk5FQ1QtU1RSSU5HLiIKICAobGV0ICgoaW5wdXQtYnVm
+ZmVycyAoZGVscSBuaWwgKG1hcGNhciAobGFtYmRhIChidWZmZXIpICh3aXRoLWN1cnJlbnQtYnVm
+ZmVyIGJ1ZmZlcgogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAod2hlbiAoYW5kIChlcSBtYWpvci1tb2RlICdzcWxwbHVzLW1vZGUpCiAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgKGVxdWFsIChjYXIgKHJlZmluZS1jb25uZWN0LXN0cmluZyBzcWxwbHVzLWNv
+bm5lY3Qtc3RyaW5nKSkKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgKGNhciAocmVmaW5lLWNvbm5lY3Qt
+c3RyaW5nIGNvbm5lY3Qtc3RyaW5nKSkpKQogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIGJ1ZmZlcikpKSAoYnVmZmVyLWxpc3QpKSkp
+Cgkob3V0cHV0LWJ1ZmZlciAoZ2V0LWJ1ZmZlciAoc3FscGx1cy1nZXQtb3V0cHV0LWJ1ZmZlci1u
+YW1lIGNvbm5lY3Qtc3RyaW5nKSkpCiAgICAgICAgKGhpc3RvcnktYnVmZmVyIChnZXQtYnVmZmVy
+IChzcWxwbHVzLWdldC1oaXN0b3J5LWJ1ZmZlci1uYW1lIGNvbm5lY3Qtc3RyaW5nKSkpCgkocHJv
+Y2Vzcy1idWZmZXIgKGdldC1idWZmZXIgKHNxbHBsdXMtZ2V0LXByb2Nlc3MtYnVmZmVyLW5hbWUg
+Y29ubmVjdC1zdHJpbmcpKSkpCiAgICAod2hlbiBoaXN0b3J5LWJ1ZmZlcgogICAgICAoa2lsbC1i
+dWZmZXIgaGlzdG9yeS1idWZmZXIpKQogICAgKHdoZW4gKGFuZCBwcm9jZXNzLWJ1ZmZlcgoJICAg
+ICAgICh3aXRoLWN1cnJlbnQtYnVmZmVyIHByb2Nlc3MtYnVmZmVyIHNxbHBsdXMtcHJvY2Vzcy1w
+KSkKICAgICAgKHdoZW4gKGdldC1wcm9jZXNzIChzcWxwbHVzLWdldC1wcm9jZXNzLW5hbWUgY29u
+bmVjdC1zdHJpbmcpKQogICAgICAgIChkZWxldGUtcHJvY2VzcyAoc3FscGx1cy1nZXQtcHJvY2Vz
+cy1uYW1lIGNvbm5lY3Qtc3RyaW5nKSkpCiAgICAgIChraWxsLWJ1ZmZlciBwcm9jZXNzLWJ1ZmZl
+cikpCiAgICAod2hlbiAoYW5kIG91dHB1dC1idWZmZXIKCSAgICAgICAod2l0aC1jdXJyZW50LWJ1
+ZmZlciBvdXRwdXQtYnVmZmVyIHNxbHBsdXMtY29ubmVjdC1zdHJpbmcpKQogICAgICAod2hlbiAo
+YnVmZmVyLWZpbGUtbmFtZSBvdXRwdXQtYnVmZmVyKQoJKHdpdGgtY3VycmVudC1idWZmZXIgb3V0
+cHV0LWJ1ZmZlcgoJICAoc2F2ZS1idWZmZXIpKSkKICAgICAgKGtpbGwtYnVmZmVyIG91dHB1dC1i
+dWZmZXIpKQogICAgKGRvbGlzdCAoaW5wdXQtYnVmZmVyIGlucHV0LWJ1ZmZlcnMpCiAgICAgICh3
+aGVuIChidWZmZXItZmlsZS1uYW1lIGlucHV0LWJ1ZmZlcikKICAgICAgICAod2l0aC1jdXJyZW50
+LWJ1ZmZlciBpbnB1dC1idWZmZXIKICAgICAgICAgIChzYXZlLWJ1ZmZlcikpKQogICAgICAodW5s
+ZXNzIGRvbnQta2lsbC1pbnB1dC1idWZmZXIKICAgICAgICAoa2lsbC1idWZmZXIgaW5wdXQtYnVm
+ZmVyKSkpKSkKCihkZWZ1biBzcWxwbHVzLW1hZ2ljICgpCiAgKGxldCAoYm90dG9tLW1lc3NhZ2Ug
+cG9zKQogICAgKGRlbGV0ZS1yZWdpb24gKHBvaW50KSAocHJvZ24gKGJlZ2lubmluZy1vZi1saW5l
+IDMpIChwb2ludCkpKQogICAgKHNldHEgYm90dG9tLW1lc3NhZ2UgKGJ1ZmZlci1zdWJzdHJpbmcg
+KHBvaW50KSAoc2F2ZS1leGN1cnNpb24gKGVuZC1vZi1saW5lKSAocG9pbnQpKSkpCiAgICAoc2V0
+cSBwb3MgKHBvaW50KSkKICAgICh3aGVuIChyZS1zZWFyY2gtZm9yd2FyZCAiXi0tLS0tLS0iIG5p
+bCB0KQogICAgICAoZGVsZXRlLXJlZ2lvbiBwb3MgKHByb2duIChiZWdpbm5pbmctb2YtbGluZSAy
+KSAocG9pbnQpKSkKICAgICAgKHdoaWxlIChyZS1zZWFyY2gtZm9yd2FyZCAifCIgKHNhdmUtZXhj
+dXJzaW9uIChlbmQtb2YtbGluZSkgKHBvaW50KSkgdCkKCShzYXZlLWV4Y3Vyc2lvbgoJICAoYmFj
+a3dhcmQtY2hhcikKCSAgKGlmIChvciAoYm9scCkgKHNhdmUtZXhjdXJzaW9uIChmb3J3YXJkLWNo
+YXIpIChlb2xwKSkpCgkgICAgICAod2hpbGUgKG1lbWJlciAoY2hhci1hZnRlcikgJyg/LSA/fCkp
+CgkJKGRlbGV0ZS1jaGFyIDEpCgkJKHNxbHBsdXMtbmV4dC1saW5lKSkKCSAgICAod2hpbGUgKG1l
+bWJlciAoY2hhci1hZnRlcikgJyg/LSA/fCkpCgkgICAgICAoZGVsZXRlLWNoYXIgMSkKCSAgICAg
+IChpbnNlcnQgIiAiKQoJICAgICAgKGJhY2t3YXJkLWNoYXIpCgkgICAgICAoc3FscGx1cy1uZXh0
+LWxpbmUpKSkpKQogICAgICAoYmVnaW5uaW5nLW9mLWxpbmUgMykKICAgICAgKHJlLXNlYXJjaC1m
+b3J3YXJkICJeLS0tIiBuaWwgdCkKICAgICAgKGdvdG8tY2hhciAobWF0Y2gtYmVnaW5uaW5nIDAp
+KQogICAgICAoZGVsZXRlLXJlZ2lvbiAocG9pbnQpIChwb2ludC1tYXgpKQogICAgICAoaW5zZXJ0
+IChmb3JtYXQgIiVzXG5cbiVzXG4iIHNxbHBsdXMtcmVwZm9vdGVyIGJvdHRvbS1tZXNzYWdlKSkK
+ICAgICAgKSkpCiAgCgooZGVmdW4gc3FscGx1cy1wcm9jZXNzLWNvbW1hbmQtb3V0cHV0IChjb250
+ZXh0IGNvbm5lY3Qtc3RyaW5nIGJlZ2luIGVuZCBpbnRlcnJ1cHRlZCkKICAobGV0KiAoKG91dHB1
+dC1idWZmZXItbmFtZSAoc3FscGx1cy1nZXQtb3V0cHV0LWJ1ZmZlci1uYW1lIGNvbm5lY3Qtc3Ry
+aW5nKSkKCSAob3V0cHV0LWJ1ZmZlciAoZ2V0LWJ1ZmZlciBvdXRwdXQtYnVmZmVyLW5hbWUpKQog
+ICAgICAgICAocHJvY2Vzcy1idWZmZXIgKHNxbHBsdXMtZ2V0LXByb2Nlc3MtYnVmZmVyLW5hbWUg
+Y29ubmVjdC1zdHJpbmcpKQogICAgICAgICBzdHIKCSBlcnJvci1saXN0IHNob3ctZXJyb3JzLXAK
+CSBzbGlwcy1jb3VudAogICAgICAgICAodXNlci1mdW5jdGlvbiAoc3FscGx1cy1nZXQtY29udGV4
+dC12YWx1ZSBjb250ZXh0IDp1c2VyLWZ1bmN0aW9uKSkKICAgICAgICAgKHJlc3VsdC1mdW5jdGlv
+biAoc3FscGx1cy1nZXQtY29udGV4dC12YWx1ZSBjb250ZXh0IDpyZXN1bHQtdGFibGUtZnVuY3Rp
+b24pKQogICAgICAgICAobGFzdC1jb21waWxlZC1maWxlLXBhdGggKHNxbHBsdXMtZ2V0LWNvbnRl
+eHQtdmFsdWUgY29udGV4dCA6bGFzdC1jb21waWxlZC1maWxlLXBhdGgpKQogICAgICAgICAoY29t
+cGlsYXRpb24tZXhwZWN0ZWQgKHNxbHBsdXMtZ2V0LWNvbnRleHQtdmFsdWUgY29udGV4dCA6Y29t
+cGlsYXRpb24tZXhwZWN0ZWQpKQogICAgICAgICAoY29sdW1ucy1jb3VudCAoc3FscGx1cy1nZXQt
+Y29udGV4dC12YWx1ZSBjb250ZXh0IDpjb2x1bW5zLWNvdW50KSkKICAgICAgICAgKHNxbCAoc3Fs
+cGx1cy1nZXQtY29udGV4dC12YWx1ZSBjb250ZXh0IDpzcWwpKQoJIChvcmlnaW5hbC1idWZmZXIg
+KGN1cnJlbnQtYnVmZmVyKSkKCSBleHBsYWluLXBsYW4KCSB0YWJsZS1kYXRhKQogICAgKHNldHEg
+c2xpcHMtY291bnQgY29sdW1ucy1jb3VudCkKICAgICh3aXRoLXRlbXAtYnVmZmVyCiAgICAgIChp
+bnNlcnQtYnVmZmVyLXN1YnN0cmluZyBvcmlnaW5hbC1idWZmZXIgYmVnaW4gZW5kKQogICAgICAo
+Z290by1jaGFyIChwb2ludC1taW4pKQogICAgICAod2hpbGUgKHJlLXNlYXJjaC1mb3J3YXJkIChj
+b25jYXQgIlxuKyIgKHJlZ2V4cC1xdW90ZSBzcWxwbHVzLXBhZ2Utc2VwYXJhdG9yKSAiXG4iKSBu
+aWwgdCkKCShyZXBsYWNlLW1hdGNoICJcbiIpKQogICAgICAoZ290by1jaGFyIChwb2ludC1taW4p
+KQogICAgICAoc2V0cSBzdHIgKGJ1ZmZlci1zdHJpbmcpKQogICAgICAod2hpbGUgKHN0cmluZy1t
+YXRjaCAoY29uY2F0ICJeIiAocmVnZXhwLXF1b3RlIHNxbHBsdXMtcmVwZm9vdGVyKSAiXG4iKSBz
+dHIpCgkoc2V0cSBzdHIgKHJlcGxhY2UtbWF0Y2ggIiIgbmlsIHQgc3RyKSkpCgogICAgICA7OyBj
+b21waWxhdGlvbiBlcnJvcnM/CiAgICAgIChnb3RvLWNoYXIgKHBvaW50LW1pbikpCiAgICAgIChz
+a2lwLWNoYXJzLWZvcndhcmQgIlxuXHQgIikKICAgICAgKHdoZW4gKGFuZCA7Oyhub3QgKGVxdWFs
+IChwb2ludCkgKHBvaW50LW1heCkpKQoJICAgICBwbHNxbC1hdXRvLXBhcnNlLWVycm9ycy1mbGFn
+CgkgICAgIG91dHB1dC1idWZmZXIKCSAgICAgbGFzdC1jb21waWxlZC1maWxlLXBhdGgKCSAgICAg
+KHJlLXNlYXJjaC1mb3J3YXJkICJeXFwoTElORS9DT0xcXHxcXChTUDJcXHxDUFlcXHxPUkFcXCkt
+WzAtOV1cXHs0LDVcXH06XFx8Tm8gZXJyb3JzXFx8TmllIG1hIGIuLmQud1xcfEtlaW5lIEZlaGxl
+clxcfE5vIGhheSBlcnJvcmVzXFx8SWRlbnRpZmljYXRldXIgZXJyb25cXHxOZXNzdW4gZXJyb3Jl
+XFx8Ti4ubyBoLi4gZXJyb3NcXCkiIG5pbCB0KSkKCShnb3RvLWNoYXIgKHBvaW50LW1pbikpCgko
+c2V0cSBlcnJvci1saXN0IChwbHNxbC1wYXJzZS1lcnJvcnMgbGFzdC1jb21waWxlZC1maWxlLXBh
+dGgpCgkgICAgICBzaG93LWVycm9ycy1wIGNvbXBpbGF0aW9uLWV4cGVjdGVkKSkKCiAgICAgIDs7
+IGV4cGxhaW4/CiAgICAgIChsZXQgKChjYXNlLWZvbGQtc2VhcmNoIHQpKQoJKGdvdG8tY2hhciAo
+cG9pbnQtbWluKSkKCShza2lwLWNoYXJzLWZvcndhcmQgIlxuXHQgIikKCSh3aGVuIChhbmQgc3Fs
+CgkgICAgICAgICAgIChzdHJpbmctbWF0Y2ggIl5bXG5cdCBdKmV4cGxhaW5cXD4iIHNxbCkKCQkg
+ICAobG9va2luZy1hdCAiRXhwbGFpbmVkWy5dIikpCgkgIChkZWxldGUtcmVnaW9uIChwb2ludC1t
+aW4pIChwb2ludC1tYXgpKQoJICAoc2V0cSBzdHIgIiIpCgkgIChzcWxwbHVzLS1zZW5kIGNvbm5l
+Y3Qtc3RyaW5nCgkJCSAic2VsZWN0IHBsYW5fdGFibGVfb3V0cHV0IGZyb20gdGFibGUoZGJtc194
+cGxhbi5kaXNwbGF5KG51bGwsIG51bGwsICdUWVBJQ0FMJykpOyIKCQkJIG5pbAoJCQkgJ25vLWVj
+aG8KCQkJIG5pbCkpKQoKICAgICAgOzsgcGxhbiB0YWJsZSBvdXRwdXQ/CiAgICAgIChnb3RvLWNo
+YXIgKHBvaW50LW1pbikpCiAgICAgIChza2lwLWNoYXJzLWZvcndhcmQgIlxuXHQgIikKICAgICAg
+KHdoZW4gKGFuZCAobG9va2luZy1hdCAiXlBMQU5fVEFCTEVfT1VUUFVUXG4iKQoJCSBzcWxwbHVz
+LWZvcm1hdC1vdXRwdXQtdGFibGVzLWZsYWcKCQkgKG5vdCBjb21waWxhdGlvbi1leHBlY3RlZCkK
+CQkgKG5vdCBzaG93LWVycm9ycy1wKSkKCShzcWxwbHVzLW1hZ2ljKSA7OyBUT0RPCgkoZ290by1j
+aGFyIChwb2ludC1taW4pKQoJKHJlLXNlYXJjaC1mb3J3YXJkICJeW15cbl0rIiBuaWwgdCkKCShk
+ZWxldGUtcmVnaW9uIChwb2ludC1taW4pIChwcm9nbiAoYmVnaW5uaW5nLW9mLWxpbmUpIChwb2lu
+dCkpKQoJOzsgKHNldHEgc2xpcHMtY291bnQgMSkKCShzZXRxIGV4cGxhaW4tcGxhbiB0KQoJKHNl
+dHEgdGFibGUtZGF0YSAoc2F2ZS1leGN1cnNpb24gKHNxbHBsdXMtcGFyc2Utb3V0cHV0LXRhYmxl
+IGludGVycnVwdGVkKSkpKQoJCiAgICAgIDs7IHF1ZXJ5IHJlc3VsdD8KICAgICAgKGdvdG8tY2hh
+ciAocG9pbnQtbWluKSkKICAgICAgKHdoZW4gKGFuZCBzcWxwbHVzLWZvcm1hdC1vdXRwdXQtdGFi
+bGVzLWZsYWcKCQkgKG5vdCBjb21waWxhdGlvbi1leHBlY3RlZCkKCQkgKG5vdCB0YWJsZS1kYXRh
+KQoJCSAobm90IHNob3ctZXJyb3JzLXApCgkJIChub3QgKHJlLXNlYXJjaC1mb3J3YXJkICJeTElO
+RS9DT0xcXD4iIG5pbCB0KSkpCgkoc2V0cSB0YWJsZS1kYXRhIChzYXZlLWV4Y3Vyc2lvbiAoc3Fs
+cGx1cy1wYXJzZS1vdXRwdXQtdGFibGUgaW50ZXJydXB0ZWQpKSkpCiAgICAgIChpZiB1c2VyLWZ1
+bmN0aW9uCgkgIChmdW5jYWxsIHVzZXItZnVuY3Rpb24gY29ubmVjdC1zdHJpbmcgY29udGV4dCAo
+b3IgdGFibGUtZGF0YSBzdHIpKQoJKHdoZW4gb3V0cHV0LWJ1ZmZlcgoJICAod2l0aC1jdXJyZW50
+LWJ1ZmZlciBvdXRwdXQtYnVmZmVyCgkgICAgKHNhdmUtZXhjdXJzaW9uCgkgICAgICAoZ290by1j
+aGFyIChwb2ludC1tYXgpKQoJICAgICAgKGNvbmQgKHNob3ctZXJyb3JzLXAKCQkgICAgIChpbnNl
+cnQgc3RyKQoJCSAgICAgKHBsc3FsLWRpc3BsYXktZXJyb3JzIChmaWxlLW5hbWUtZGlyZWN0b3J5
+IGxhc3QtY29tcGlsZWQtZmlsZS1wYXRoKSBlcnJvci1saXN0KQoJCSAgICAgKGxldCogKChwbHNx
+bC1idWYgKGdldC1maWxlLWJ1ZmZlciBsYXN0LWNvbXBpbGVkLWZpbGUtcGF0aCkpCgkJCSAgICAo
+d2luICh3aGVuIHBsc3FsLWJ1ZiAoY2FyIChnZXQtYnVmZmVyLXdpbmRvdy1saXN0IHBsc3FsLWJ1
+ZikpKSkpCgkJICAgICAgICh3aGVuIHdpbgoJCQkgKHNlbGVjdC13aW5kb3cgd2luKSkpKQoJCSAg
+ICAoKGFuZCB0YWJsZS1kYXRhCgkJCSAgKGNhciB0YWJsZS1kYXRhKSkKCQkgICAgICAgKGlmIHJl
+c3VsdC1mdW5jdGlvbgoJCQkgICAoZnVuY2FsbCByZXN1bHQtZnVuY3Rpb24gY29ubmVjdC1zdHJp
+bmcgdGFibGUtZGF0YSkKCQkJIChsZXQgKChiIChwb2ludCkpCgkJCSAgICAgICAod2FybmluZy1y
+ZWdleHAgKHJlZ2V4cC1vcHQgc3FscGx1cy1leHBsYWluLXBsYW4td2FybmluZy1yZWdleHBzKSkK
+CQkJICAgICAgIGUpCgkJCSAgIChzcWxwbHVzLWRyYXctdGFibGUgdGFibGUtZGF0YSBzbGlwcy1j
+b3VudCkKCQkJICAgKHdoZW4gaW50ZXJydXB0ZWQgKGluc2VydCAiLiAuIC5cbiIpKQoJCQkgICAo
+c2V0cSBlIChwb2ludCkpCgkJCSAgICh3aGVuIGV4cGxhaW4tcGxhbgoJCQkgICAgIChzYXZlLWV4
+Y3Vyc2lvbgoJCQkgICAgICAgKGdvdG8tY2hhciBiKQoJCQkgICAgICAgKHdoaWxlIChyZS1zZWFy
+Y2gtZm9yd2FyZCB3YXJuaW5nLXJlZ2V4cCBuaWwgdCkKCQkJCSAoYWRkLXRleHQtcHJvcGVydGll
+cyAobWF0Y2gtYmVnaW5uaW5nIDApIChtYXRjaC1lbmQgMCkKCQkJCQkJICAgICAgKGxpc3QgJ2Zh
+Y2UgKGxpc3QgKGNvbnMgJ2ZvcmVncm91bmQtY29sb3IgInJlZCIpIChsaXN0IDp3ZWlnaHQgJ2Jv
+bGQpCgkJCQkJCQkJCShnZXQtdGV4dC1wcm9wZXJ0eSAobWF0Y2gtYmVnaW5uaW5nIDApICdmYWNl
+KSkpKSkpKSkpKQoJCSAgICAodAoJCSAgICAgKGluc2VydCBzdHIpKSkpKSkpKSkpCgooZGVmdW4g
+c3FscGx1cy1yZXN1bHQtb25saW5lIChjb25uZWN0LXN0cmluZyBjb250ZXh0IHN0cmluZyBsYXN0
+LWNodW5rKQogIChsZXQgKChvdXRwdXQtYnVmZmVyIChzcWxwbHVzLWdldC1vdXRwdXQtYnVmZmVy
+LW5hbWUgY29ubmVjdC1zdHJpbmcpKSkKICAgICh3aGVuIG91dHB1dC1idWZmZXIKICAgICAgKHdp
+dGgtY3VycmVudC1idWZmZXIgb3V0cHV0LWJ1ZmZlcgogICAgICAgIChzYXZlLWV4Y3Vyc2lvbgog
+ICAgICAgICAgKGdvdG8tY2hhciAocG9pbnQtbWF4KSkKICAgICAgICAgIChpbnNlcnQgc3RyaW5n
+KSkpKSkpCgooZGVmdmFyIHNxbHBsdXMtcHJvbXB0LXJlZ2V4cCAoY29uY2F0ICJeIiAocmVnZXhw
+LXF1b3RlIHNxbHBsdXMtcHJvbXB0LXByZWZpeCkgIlxcKFswLTldK1xcKSIgKHJlZ2V4cC1xdW90
+ZSBzcWxwbHVzLXByb21wdC1zdWZmaXgpKSkKCihkZWZ2YXIgc3FscGx1cy1wYWdlLXNlcGFyYXRv
+ci1yZWdleHAgKGNvbmNhdCAiXiIgKHJlZ2V4cC1xdW90ZSBzcWxwbHVzLXBhZ2Utc2VwYXJhdG9y
+KSkpCgooZGVmdW4gc3FscGx1cy1wcm9jZXNzLWZpbHRlciAocHJvY2VzcyBzdHJpbmcpCiAgKHdp
+dGgtY3VycmVudC1idWZmZXIgKHByb2Nlc3MtYnVmZmVyIHByb2Nlc3MpCiAgICAobGV0KiAoKHBy
+b21wdC1zYWZlLWxlbiAoKyAobWF4ICgrIChsZW5ndGggc3FscGx1cy1wcm9tcHQtcHJlZml4KSAo
+bGVuZ3RoIHNxbHBsdXMtcHJvbXB0LXN1ZmZpeCkpIChsZW5ndGggc3FscGx1cy1wYWdlLXNlcGFy
+YXRvcikpIDEwKSkKICAgICAgICAgICBjdXJyZW50LWNvbnRleHQtaWQgZmlsdGVyLWlucHV0LXBy
+b2Nlc3NlZAogICAgICAgICAgIChjb25uZWN0LXN0cmluZyBzcWxwbHVzLXByb2Nlc3MtcCkKICAg
+ICAgICAgICAoY2h1bmstYmVnaW4tcG9zIChtYWtlLW1hcmtlcikpCiAgICAgICAgICAgKGNodW5r
+LWVuZC1wb3MgKG1ha2UtbWFya2VyKSkKICAgICAgICAgICAocHJvbXB0LWZvdW5kIChtYWtlLW1h
+cmtlcikpCgkgICAoY29udGV4dCAoc3FscGx1cy1nZXQtY29udGV4dCBjb25uZWN0LXN0cmluZyBj
+dXJyZW50LWNvbnRleHQtaWQpKQoJICAgKGN1cnJlbnQtY29tbWFuZC1pbnB1dC1idWZmZXItbmFt
+ZSAoc3FscGx1cy1nZXQtY29udGV4dC12YWx1ZSBjb250ZXh0IDpjdXJyZW50LWNvbW1hbmQtaW5w
+dXQtYnVmZmVyLW5hbWUpKQoJICAgKGN1cnJlbnQtY29tbWFuZC1pbnB1dC1idWZmZXItbmFtZXMg
+KHdoZW4gY3VycmVudC1jb21tYW5kLWlucHV0LWJ1ZmZlci1uYW1lIChsaXN0IGN1cnJlbnQtY29t
+bWFuZC1pbnB1dC1idWZmZXItbmFtZSkpKSkKICAgICAgKHNldC1tYXJrZXIgY2h1bmstYmVnaW4t
+cG9zIChtYXggMSAoLSAocG9pbnQpIHByb21wdC1zYWZlLWxlbikpKQogICAgICAoZ290by1jaGFy
+IChwb2ludC1tYXgpKQogICAgICAoaW5zZXJ0IHN0cmluZykKICAgICAgKHVubGVzcyBjdXJyZW50
+LWNvbW1hbmQtaW5wdXQtYnVmZmVyLW5hbWVzCgkoc2V0cSBjdXJyZW50LWNvbW1hbmQtaW5wdXQt
+YnVmZmVyLW5hbWVzCgkgICAgICAoZGVscSBuaWwgKG1hcGNhciAobGFtYmRhIChidWZmZXIpICh3
+aXRoLWN1cnJlbnQtYnVmZmVyIGJ1ZmZlcgoJCQkJCQkgICAod2hlbiAoYW5kIChtZW1xIG1ham9y
+LW1vZGUgJyhzcWxwbHVzLW1vZGUgcGxzcWwtbW9kZSkpCgkJCQkJCQkgICAgICBzcWxwbHVzLWNv
+bm5lY3Qtc3RyaW5nCgkJCQkJCQkgICAgICAoZXF1YWwgKGNhciAocmVmaW5lLWNvbm5lY3Qtc3Ry
+aW5nIHNxbHBsdXMtY29ubmVjdC1zdHJpbmcpKQoJCQkJCQkJCSAgICAgKGNhciAocmVmaW5lLWNv
+bm5lY3Qtc3RyaW5nIGNvbm5lY3Qtc3RyaW5nKSkpKQoJCQkJCQkgICAgIGJ1ZmZlcikpKSAoYnVm
+ZmVyLWxpc3QpKSkpKQogICAgICA7OyBmYW4gYW5pbWF0aW9uCiAgICAgIChkb2xpc3QgKGN1cnJl
+bnQtY29tbWFuZC1pbnB1dC1idWZmZXItbmFtZSBjdXJyZW50LWNvbW1hbmQtaW5wdXQtYnVmZmVy
+LW5hbWVzKQoJKGxldCAoKGlucHV0LWJ1ZmZlciAoZ2V0LWJ1ZmZlciBjdXJyZW50LWNvbW1hbmQt
+aW5wdXQtYnVmZmVyLW5hbWUpKSkKCSAgKHdoZW4gaW5wdXQtYnVmZmVyCgkgICAgKHdpdGgtY3Vy
+cmVudC1idWZmZXIgaW5wdXQtYnVmZmVyCgkgICAgICAoc2V0cSBzcWxwbHVzLWZhbgoJCSAgICAo
+Y29uZCAoKGVxdWFsIHNxbHBsdXMtZmFuICJ8IikgIi8iKQoJCQkgICgoZXF1YWwgc3FscGx1cy1m
+YW4gIi8iKSAiLSIpCgkJCSAgKChlcXVhbCBzcWxwbHVzLWZhbiAiLSIpICJcXCIpCgkJCSAgKChl
+cXVhbCBzcWxwbHVzLWZhbiAiXFwiKSAifCIpKSkKCSAgICAgIChwdXQtdGV4dC1wcm9wZXJ0eSAw
+IChsZW5ndGggc3FscGx1cy1mYW4pICdmYWNlICcoKGZvcmVncm91bmQtY29sb3IgLiAicmVkIikp
+IHNxbHBsdXMtZmFuKQoJICAgICAgKHB1dC10ZXh0LXByb3BlcnR5IDAgKGxlbmd0aCBzcWxwbHVz
+LWZhbikgJ2hlbHAtZWNobyAoc3FscGx1cy1nZXQtY29udGV4dC12YWx1ZSBjb250ZXh0IDpzcWwp
+IHNxbHBsdXMtZmFuKQoJICAgICAgKGZvcmNlLW1vZGUtbGluZS11cGRhdGUpKSkpKQogICAgICAo
+dW53aW5kLXByb3RlY3QKICAgICAgICAgICh3aGlsZSAobm90IGZpbHRlci1pbnB1dC1wcm9jZXNz
+ZWQpCiAgICAgICAgICAgIChsZXQqICgoY29udGV4dCAoc3FscGx1cy1nZXQtY29udGV4dCBjb25u
+ZWN0LXN0cmluZyBjdXJyZW50LWNvbnRleHQtaWQpKQoJCSAgIChkb250LXBhcnNlLXJlc3VsdCAo
+c3FscGx1cy1nZXQtY29udGV4dC12YWx1ZSBjb250ZXh0IDpkb250LXBhcnNlLXJlc3VsdCkpCiAg
+ICAgICAgICAgICAgICAgICAoY3VycmVudC1jb21tYW5kLWlucHV0LWJ1ZmZlci1uYW1lIChzcWxw
+bHVzLWdldC1jb250ZXh0LXZhbHVlIGNvbnRleHQgOmN1cnJlbnQtY29tbWFuZC1pbnB1dC1idWZm
+ZXItbmFtZSkpCiAgICAgICAgICAgICAgICAgICAocmVzdWx0LWZ1bmN0aW9uIChzcWxwbHVzLWdl
+dC1jb250ZXh0LXZhbHVlIGNvbnRleHQgOnJlc3VsdC1mdW5jdGlvbikpCiAgICAgICAgICAgICAg
+ICAgICAoc2tpcC10by10aGUtZW5kLW9mLWNvbW1hbmQgKHNxbHBsdXMtZ2V0LWNvbnRleHQtdmFs
+dWUgY29udGV4dCA6c2tpcC10by10aGUtZW5kLW9mLWNvbW1hbmQpKSkKICAgICAgICAgICAgICAo
+c2V0LW1hcmtlciBwcm9tcHQtZm91bmQgbmlsKQoJICAgICAgKGdvdG8tY2hhciBjaHVuay1iZWdp
+bi1wb3MpCgkgICAgICAoc2V0LW1hcmtlciBjaHVuay1lbmQtcG9zCgkJCSAgKGlmIChvciAocmUt
+c2VhcmNoLWZvcndhcmQgc3FscGx1cy1wcm9tcHQtcmVnZXhwIG5pbCB0KQoJCQkJICAocmUtc2Vh
+cmNoLWZvcndhcmQgIl5TUUw+ICIgbmlsIHQpKQoJCQkgICAgICAocHJvZ24KCQkJCShzZXQtbWFy
+a2VyIHByb21wdC1mb3VuZCAobWF0Y2gtZW5kIDApKQoJCQkJKHdoZW4gKG1hdGNoLXN0cmluZyAx
+KQoJCQkJICAoc2V0cSBjdXJyZW50LWNvbnRleHQtaWQgKHN0cmluZy10by1udW1iZXIgKG1hdGNo
+LXN0cmluZyAxKSkpKQoJCQkJKG1hdGNoLWJlZ2lubmluZyAwKSkKCQkJICAgIChwb2ludC1tYXgp
+KSkKICAgICAgICAgICAgICAoY29uZCAoKGFuZCAoZXF1YWwgY2h1bmstYmVnaW4tcG9zIGNodW5r
+LWVuZC1wb3MpIDsgYXQgdGhlIGVuZCBvZiBjb21tYW5kCiAgICAgICAgICAgICAgICAgICAgICAg
+ICAgKG1hcmtlci1wb3NpdGlvbiBwcm9tcHQtZm91bmQpKQoJCSAgICAgOzsgZGVhY3RpdmF0ZSBm
+YW4KCQkgICAgIChkb2xpc3QgKGN1cnJlbnQtY29tbWFuZC1pbnB1dC1idWZmZXItbmFtZSBjdXJy
+ZW50LWNvbW1hbmQtaW5wdXQtYnVmZmVyLW5hbWVzKQogICAgICAgICAgICAgICAgICAgICAgIChs
+ZXQgKChpbnB1dC1idWZmZXIgKGdldC1idWZmZXIgY3VycmVudC1jb21tYW5kLWlucHV0LWJ1ZmZl
+ci1uYW1lKSkpCiAgICAgICAgICAgICAgICAgICAgICAgICAod2hlbiBpbnB1dC1idWZmZXIKICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgKHdpdGgtY3VycmVudC1idWZmZXIgaW5wdXQtYnVmZmVy
+CgkJCSAgICAgKHJlbW92ZS10ZXh0LXByb3BlcnRpZXMgMCAobGVuZ3RoIHNxbHBsdXMtZmFuKSAn
+KGZhY2UgbmlsKSBzcWxwbHVzLWZhbikKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAoZm9y
+Y2UtbW9kZS1saW5lLXVwZGF0ZSkpKSkpCiAgICAgICAgICAgICAgICAgICAgIChkZWxldGUtcmVn
+aW9uIDEgcHJvbXB0LWZvdW5kKQoJCSAgICAgKHdoZW4gZG9udC1wYXJzZS1yZXN1bHQKCQkgICAg
+ICAgKGZ1bmNhbGwgKG9yIHJlc3VsdC1mdW5jdGlvbiAnc3FscGx1cy1yZXN1bHQtb25saW5lKSBj
+b25uZWN0LXN0cmluZyBjb250ZXh0ICIiIHQpKQogICAgICAgICAgICAgICAgICAgICAoc3FscGx1
+cy1zZXQtY29udGV4dC12YWx1ZSBjb250ZXh0IDpza2lwLXRvLXRoZS1lbmQtb2YtY29tbWFuZCBu
+aWwpCiAgICAgICAgICAgICAgICAgICAgIChzZXQtbWFya2VyIGNodW5rLWJlZ2luLXBvcyAxKSkK
+ICAgICAgICAgICAgICAgICAgICAoKGVxdWFsIGNodW5rLWJlZ2luLXBvcyBjaHVuay1lbmQtcG9z
+KQoJCSAgICAgKHdoZW4gZG9udC1wYXJzZS1yZXN1bHQKCQkgICAgICAgKGRlbGV0ZS1yZWdpb24g
+MSAocG9pbnQtbWF4KSkpCiAgICAgICAgICAgICAgICAgICAgIChzZXRxIGZpbHRlci1pbnB1dC1w
+cm9jZXNzZWQgdCkpCiAgICAgICAgICAgICAgICAgICAgKGRvbnQtcGFyc2UtcmVzdWx0CiAgICAg
+ICAgICAgICAgICAgICAgIChmdW5jYWxsIChvciByZXN1bHQtZnVuY3Rpb24gJ3NxbHBsdXMtcmVz
+dWx0LW9ubGluZSkKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgY29ubmVjdC1zdHJpbmcK
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgY29udGV4dAogICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAoYnVmZmVyLXN1YnN0cmluZyBjaHVuay1iZWdpbi1wb3MgY2h1bmstZW5kLXBv
+cykKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgKG1hcmtlci1wb3NpdGlvbiBwcm9tcHQt
+Zm91bmQpKQogICAgICAgICAgICAgICAgICAgICAoc2V0LW1hcmtlciBjaHVuay1iZWdpbi1wb3Mg
+Y2h1bmstZW5kLXBvcykpCiAgICAgICAgICAgICAgICAgICAgKHQKCQkgICAgICh3aGVuIChub3Qg
+c2tpcC10by10aGUtZW5kLW9mLWNvbW1hbmQpCgkJICAgICAgIChnb3RvLWNoYXIgKG1heCAxICgt
+IGNodW5rLWJlZ2luLXBvcyA0MDEwKSkpCgkJICAgICAgIChsZXQgKChwYWdlLXNlcGFyYXRvci1m
+b3VuZCAKCQkJICAgICAgKHNhdmUtZXhjdXJzaW9uIChsZXQgKChwb3MgKHJlLXNlYXJjaC1mb3J3
+YXJkIChjb25jYXQgc3FscGx1cy1wYWdlLXNlcGFyYXRvci1yZWdleHAgIlteLV0qXFwoXi1cXHxe
+PHRoXFxiXFwpIikgbmlsIHQpKSkKCQkJCQkJKHdoZW4gKGFuZCBwb3MKCQkJCQkJCSAgIChvciAo
+bm90IChtYXJrZXItcG9zaXRpb24gcHJvbXB0LWZvdW5kKSkKCQkJCQkJCSAgICAgICAoPCBwb3Mg
+cHJvbXB0LWZvdW5kKSkpCgkJCQkJCSAgKG1hdGNoLWJlZ2lubmluZyAwKSkpKSkpCgkJCSAod2hl
+biAob3IgKG1hcmtlci1wb3NpdGlvbiBwcm9tcHQtZm91bmQpIHBhZ2Utc2VwYXJhdG9yLWZvdW5k
+KQoJCQkgICAoZ290by1jaGFyIChvciBwYWdlLXNlcGFyYXRvci1mb3VuZCBjaHVuay1lbmQtcG9z
+KSkKCQkJICAgKGxldCAoKGVuZC1wb3MgKHBvaW50KSkKCQkJCSAoY3VyLW1zZyAob3IgKGN1cnJl
+bnQtbWVzc2FnZSkgIiIpKSkKCQkJICAgICAoc3FscGx1cy1zZXQtY29udGV4dC12YWx1ZSBjb250
+ZXh0IDpza2lwLXRvLXRoZS1lbmQtb2YtY29tbWFuZCBwYWdlLXNlcGFyYXRvci1mb3VuZCkKCQkJ
+ICAgICAod2hlbiBwYWdlLXNlcGFyYXRvci1mb3VuZAoJCQkgICAgICAgKGludGVycnVwdC1wcm9j
+ZXNzKQoJCQkgICAgICAgKHNhdmUtZXhjdXJzaW9uCgkJCQkgKHJlLXNlYXJjaC1iYWNrd2FyZCAi
+W14gXHRcbl1cbiIgbmlsIHQpCgkJCQkgKHNldHEgZW5kLXBvcyAobWF0Y2gtZW5kIDApKSkpCgkJ
+CSAgICAgKGlmIHJlc3VsdC1mdW5jdGlvbgoJCQkJIChzYXZlLWV4Y3Vyc2lvbiAoZnVuY2FsbCBy
+ZXN1bHQtZnVuY3Rpb24gY29udGV4dCBjb25uZWN0LXN0cmluZyAxIGVuZC1wb3MgcGFnZS1zZXBh
+cmF0b3ItZm91bmQpKQoJCQkgICAgICAgKHdpdGgtdGVtcC1tZXNzYWdlICJGb3JtYXR0aW5nIG91
+dHB1dC4uLiIKCQkJCSAoc2F2ZS1leGN1cnNpb24gKHNxbHBsdXMtcHJvY2Vzcy1jb21tYW5kLW91
+dHB1dCBjb250ZXh0IGNvbm5lY3Qtc3RyaW5nIDEgZW5kLXBvcyBwYWdlLXNlcGFyYXRvci1mb3Vu
+ZCkpKQoJCQkgICAgICAgKG1lc3NhZ2UgIiVzIiBjdXItbXNnKSkKCQkJICAgICAod2hlbiBwYWdl
+LXNlcGFyYXRvci1mb3VuZAoJCQkgICAgICAgKGRlbGV0ZS1yZWdpb24gMSAoKyBwYWdlLXNlcGFy
+YXRvci1mb3VuZCAobGVuZ3RoIHNxbHBsdXMtcGFnZS1zZXBhcmF0b3IpKSkKCQkJICAgICAgIChz
+ZXQtbWFya2VyIGNodW5rLWVuZC1wb3MgMSkpKSkpKQoJCSAgICAgKHNldC1tYXJrZXIgY2h1bmst
+YmVnaW4tcG9zIGNodW5rLWVuZC1wb3MpKSkpKQoJKGdvdG8tY2hhciAocG9pbnQtbWF4KSkKICAg
+ICAgICAoc2V0LW1hcmtlciBjaHVuay1iZWdpbi1wb3MgbmlsKQogICAgICAgIChzZXQtbWFya2Vy
+IGNodW5rLWVuZC1wb3MgbmlsKQogICAgICAgIChzZXQtbWFya2VyIHByb21wdC1mb3VuZCBuaWwp
+KSkpKQoKKGRlZmFkdmljZSBzd2l0Y2gtdG8tYnVmZmVyIChhcm91bmQgc3dpdGNoLXRvLWJ1ZmZl
+ci1hcm91bmQtYWR2aWNlIChidWZmZXItb3ItbmFtZSAmb3B0aW9uYWwgbm9yZWNvcmQpKQogIGFk
+LWRvLWl0CiAgKHdoZW4gKGFuZCBzcWxwbHVzLWNvbm5lY3Qtc3RyaW5nCgkgICAgIChlcSBtYWpv
+ci1tb2RlICdzcWxwbHVzLW1vZGUpKQogICAgKGxldCAoKHNpZGUtd2luZG93IChzcWxwbHVzLWdl
+dC1zaWRlLXdpbmRvdykpCiAgICAgICAgICAob3V0cHV0LWJ1ZmZlciAoZ2V0LWJ1ZmZlciAoc3Fs
+cGx1cy1nZXQtb3V0cHV0LWJ1ZmZlci1uYW1lIHNxbHBsdXMtY29ubmVjdC1zdHJpbmcpKSkpCiAg
+ICAgICh3aGVuIChhbmQgc2lkZS13aW5kb3cKICAgICAgICAgICAgICAgICAobm90IChlcSAod2lu
+ZG93LWJ1ZmZlcikgb3V0cHV0LWJ1ZmZlcikpKQogICAgICAgIChzYXZlLXNlbGVjdGVkLXdpbmRv
+dwogICAgICAgICAgKHN3aXRjaC10by1idWZmZXItb3RoZXItd2luZG93IG91dHB1dC1idWZmZXIp
+KSkpKSkKKGFkLWFjdGl2YXRlICdzd2l0Y2gtdG8tYnVmZmVyKQoKKGRlZnVuIHNxbHBsdXMta2ls
+bC1mdW5jdGlvbiAoKQogICh1bmxlc3Mgc3FscGx1cy1raWxsLWZ1bmN0aW9uLWluaGliaXRvcgog
+ICAgOzsgc2h1dGRvd24gY29ubmVjdGlvbiBpZiBpdCBpcyBTUUwqUGx1cyBvdXRwdXQgYnVmZmVy
+IG9yIFNRTCpQbHVzIHByb2Nlc3MgYnVmZmVyCiAgICAoaWYgKG9yIChhbmQgc3FscGx1cy1jb25u
+ZWN0LXN0cmluZyAoZXF1YWwgKGJ1ZmZlci1uYW1lKSAoc3FscGx1cy1nZXQtb3V0cHV0LWJ1ZmZl
+ci1uYW1lIHNxbHBsdXMtY29ubmVjdC1zdHJpbmcpKSkKICAgICAgICAgICAgc3FscGx1cy1wcm9j
+ZXNzLXApCiAgICAgICAgKHNxbHBsdXMtLWVucXVldWUtdGFzayAnc3FscGx1cy1zaHV0ZG93biAo
+b3Igc3FscGx1cy1jb25uZWN0LXN0cmluZyBzcWxwbHVzLXByb2Nlc3MtcCkpCiAgICAgIDs7IGlu
+cHV0IGJ1ZmZlciBvciBhbm90aGVyIGJ1ZmZlciBjb25uZWN0ZWQgdG8gU1FMKlBsdXMgLSBwb3Nz
+aWJseSBzaHV0ZG93bgogICAgICAod2hlbiBzcWxwbHVzLWNvbm5lY3Qtc3RyaW5nCiAgICAgICAg
+KGxldCAoKGNvdW50ZXIgMCkKICAgICAgICAgICAgICAoc2NzIHNxbHBsdXMtY29ubmVjdC1zdHJp
+bmcpKQogICAgICAgICAgKGRvbGlzdCAoYnVmZmVyIChidWZmZXItbGlzdCkpCiAgICAgICAgICAg
+ICh3aXRoLWN1cnJlbnQtYnVmZmVyIGJ1ZmZlcgogICAgICAgICAgICAgICh3aGVuIChlcXVhbCBz
+cWxwbHVzLWNvbm5lY3Qtc3RyaW5nIHNjcykgKGluY2YgY291bnRlcikpKSkKICAgICAgICAgICh3
+aGVuICg8PSBjb3VudGVyIDIpCiAgICAgICAgICAgIChsZXQqICgocHJvY2VzcyAoZ2V0LXByb2Nl
+c3MgKHNxbHBsdXMtZ2V0LXByb2Nlc3MtbmFtZSBzcWxwbHVzLWNvbm5lY3Qtc3RyaW5nKSkpKQog
+ICAgICAgICAgICAgICh3aGVuIChvciAobm90IHByb2Nlc3MpCiAgICAgICAgICAgICAgICAgICAg
+ICAgIChtZW1xIChwcm9jZXNzLXN0YXR1cyBwcm9jZXNzKSAnKGV4aXQgc2lnbmFsKSkKICAgICAg
+ICAgICAgICAgICAgICAgICAgKHktb3Itbi1wIChmb3JtYXQgIktpbGwgU1FMKlBsdXMgcHJvY2Vz
+cyAlcyAiIChjYXIgKHJlZmluZS1jb25uZWN0LXN0cmluZyBzcWxwbHVzLWNvbm5lY3Qtc3RyaW5n
+KSkpKSkKICAgICAgICAgICAgICAgIChzcWxwbHVzLS1lbnF1ZXVlLXRhc2sgJ3NxbHBsdXMtc2h1
+dGRvd24gc3FscGx1cy1jb25uZWN0LXN0cmluZykpKSkpKSkpKQoKKGRlZnVuIHNxbHBsdXMtZW1h
+Y3Mta2lsbC1mdW5jdGlvbiAoKQogIDs7IHNhdmUgYW5kIGtpbGwgYWxsIHNxbHBsdXMtbW9kZSBi
+dWZmZXJzCiAgKGxldCAoYnVmZmVycy10by1raWxsKQogICAgKGRvbGlzdCAoYnVmZmVyIChidWZm
+ZXItbGlzdCkpCiAgICAgICh3aXRoLWN1cnJlbnQtYnVmZmVyIGJ1ZmZlcgoJKHdoZW4gKGFuZCBz
+cWxwbHVzLWNvbm5lY3Qtc3RyaW5nCgkJICAgKGVxIG1ham9yLW1vZGUgJ3NxbHBsdXMtbW9kZSkp
+CgkgICh3aGVuIChidWZmZXItZmlsZS1uYW1lKQoJICAgIChzYXZlLWJ1ZmZlcikpCgkgIChwdXNo
+IGJ1ZmZlciBidWZmZXJzLXRvLWtpbGwpKSkpCiAgICAoc2V0cSBzcWxwbHVzLWtpbGwtZnVuY3Rp
+b24taW5oaWJpdG9yIHQpCiAgICAoY29uZGl0aW9uLWNhc2UgbmlsCgkodW53aW5kLXByb3RlY3QK
+CSAgICAoZG9saXN0IChidWZmZXIgYnVmZmVycy10by1raWxsKQoJICAgICAgKGtpbGwtYnVmZmVy
+IGJ1ZmZlcikpCgkgIChzZXRxIHNxbHBsdXMta2lsbC1mdW5jdGlvbi1pbmhpYml0b3IgbmlsKSkK
+ICAgICAgKGVycm9yIG5pbCkpCiAgICB0KSkKCihwdXNoICdzcWxwbHVzLWVtYWNzLWtpbGwtZnVu
+Y3Rpb24ga2lsbC1lbWFjcy1xdWVyeS1mdW5jdGlvbnMpCgooYWRkLWhvb2sgJ2tpbGwtYnVmZmVy
+LWhvb2sgJ3NxbHBsdXMta2lsbC1mdW5jdGlvbikKCjs7IGtpbGwgYWxsIGhpc3RvcnkgYnVmZmVy
+cyBzbyB0aGF0IHRoZXkgY2FuIHNhdmUgdGhlbXNlbHZlcwooYWRkLWhvb2sgJ2tpbGwtZW1hY3Mt
+aG9vayAobGFtYmRhICgpCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgKGRvbGlzdCAoYnVm
+IChjb3B5LWxpc3QgKGJ1ZmZlci1saXN0KSkpCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAod2hlbiAoYW5kIChzdHJpbmctbWF0Y2ggIkAuKi1oaXN0IiAoYnVmZmVyLW5hbWUgYnVmKSkK
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgKHdpdGgtY3VycmVudC1i
+dWZmZXIgYnVmIHNxbHBsdXMtY3MpKQogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAo
+a2lsbC1idWZmZXIgYnVmKSkpKSkKCihkZWZ1biBzcWxwbHVzLWZpbmQtb3V0cHV0LXRhYmxlIChp
+bnRlcnJ1cHRlZCkKICAiU2VhcmNoIGZvciB0YWJsZSBpbiBsYXN0IFNRTCpQbHVzIGNvbW1hbmQg
+cmVzdWx0LCBhbmQgcmV0dXJuCmxpc3QgKEJFR0lOIEVORCBNU0cpIGZvciBmaXJzdCBhbmQgbGFz
+dCB0YWJsZSBjaGFyLCBvciBuaWwgaWYKdGFibGUgaXMgbm90IGZvdW5kLiIKICAobGV0IChiZWdp
+biBlbmQpCiAgICAoZ290by1jaGFyIChwb2ludC1taW4pKQogICAgKHdoZW4gKHJlLXNlYXJjaC1m
+b3J3YXJkICJeW15cbl0rXG5cXCggXFwpPy0iIG5pbCB0KQogICAgICAobGV0IChtc2cKCSAgICAo
+aW5kZW50ICh3aGVuIChtYXRjaC1zdHJpbmcgMSkgLTEpKSkgOyByZXN1bHQgb2YgJ2Rlc2NyaWJl
+JyBzcWxwbHVzIGNvbW1hbmQKCShmb3J3YXJkLWxpbmUgLTEpCgk7OyAodW50YWJpZnkgKHBvaW50
+KSAoYnVmZmVyLXNpemUpKQoJKHNldHEgYmVnaW4gKHBvaW50KSkKCSh3aGVuIGluZGVudAoJICAo
+aW5kZW50LXJpZ2lkbHkgYmVnaW4gKHBvaW50LW1heCkgaW5kZW50KQoJICAoZ290by1jaGFyIGJl
+Z2luKSkKCShpZiBpbmRlbnQKCSAgICAocHJvZ24KCSAgICAgIChnb3RvLWNoYXIgKHBvaW50LW1h
+eCkpCgkgICAgICAoc2tpcC1jaGFycy1iYWNrd2FyZCAiXG5cdCAiKQoJICAgICAgKHNldHEgZW5k
+IChwb2ludCkpCgkgICAgICAoZ290by1jaGFyIChwb2ludC1tYXgpKSkKCSAgKG9yIChyZS1zZWFy
+Y2gtZm9yd2FyZCAoY29uY2F0ICJeIiAocmVnZXhwLXF1b3RlIHNxbHBsdXMtcmVwZm9vdGVyKSAi
+XG5bXG5cdCBdKiIpIG5pbCB0KQogICAgICAgICAgICAgICh3aGVuIGludGVycnVwdGVkIChyZS1z
+ZWFyY2gtZm9yd2FyZCAiXFwnIiBuaWwgdCkpKSA7IFxcJyBtZWFucyBlbmQgb2YgYnVmZmVyCgkg
+IChzZXRxIGVuZCAobWF0Y2gtYmVnaW5uaW5nIDApKQoJICAoc2V0cSBtc2cgKGJ1ZmZlci1zdWJz
+dHJpbmcgKG1hdGNoLWVuZCAwKSAocG9pbnQtbWF4KSkpKQoJKGxpc3QgYmVnaW4gZW5kIG1zZykp
+KSkpCgooZGVmc3RydWN0IGNvbC1kZXNjCiAgaWQgICAgICAgICAgICAgIDsgZnJvbSAwCiAgbmFt
+ZSAgICAgICAgICAgIDsgY29sdW1uIG5hbWUKICBzdGFydC1wb3MgICAgICAgOyBjaGFyIGNvbHVt
+biBudW1iZXIKICBlbmQtcG9zICAgICAgICAgOyBjaGFyIGNvbHVtbiBudW1iZXIKICBtYXgtd2lk
+dGggICAgICAgOyBtYXguIGNvbHVtbiB3aWR0aAogIHByZWZlcnJlZC13aWR0aCA7IHByZWZlcnJl
+ZCBjb2x1bW4gd2lkdGgKICBtaW4tcHJlZml4LWxlbiAgOyBtaW4uIHByZWZpeCAoc3BhY2VzIG9u
+bHkpCiAgbnVtZXJpYyAgICAgICAgIDsgeSBpZiBjb2x1bW4gaXMgbnVtZXJpYywgbiBpZiBpcyBu
+b3QsIG5pbCBpZiBkb24ndCBrbm93CiAgaGFzLWVvbCAgICAgICAgIDsgdGVtcG9yYXJ5IHZhbHVl
+IGZvciBwcm9jZXNzaW5nIGN1cnJlbnQgcm93CikKCihkZWZ1biBzcWxwbHVzLXByZXZpb3VzLWxp
+bmUgKCkKICAobGV0ICgoY29sIChjdXJyZW50LWNvbHVtbikpKQogICAgKGZvcndhcmQtbGluZSAt
+MSkKICAgIChtb3ZlLXRvLWNvbHVtbiBjb2wgdCkpKQoKKGRlZnVuIHNxbHBsdXMtbmV4dC1saW5l
+ICgpCiAgKGxldCAoKGNvbCAoY3VycmVudC1jb2x1bW4pKSkKICAgIChmb3J3YXJkLWxpbmUgMSkK
+ICAgIChtb3ZlLXRvLWNvbHVtbiBjb2wgdCkpKQoKKGRlZnVuIHNxbHBsdXMtLWNvcnJlY3QtY29s
+dW1uLW5hbWUgKG1heC1jb2wtbm8pCiAgKGxldCAoKGNvdW50ZXIgMCkKCShiaWcgKDEtIChzYXZl
+LWV4Y3Vyc2lvbiAoYmVnaW5uaW5nLW9mLWxpbmUpIChwb2ludCkpKSkpCiAgICAoc2tpcC1jaGFy
+cy1mb3J3YXJkICIgIikgICAgCiAgICAod2hlbiAocmUtc2VhcmNoLWZvcndhcmQgIiAgW14gXG5d
+IiAoKyBiaWcgbWF4LWNvbC1ubykgdCkKICAgICAgKGJhY2t3YXJkLWNoYXIpCiAgICAgICh3aGls
+ZSAoPCAocG9pbnQpICgrIGJpZyBtYXgtY29sLW5vKSkKCShzZXRxIGNvdW50ZXIgKDErIGNvdW50
+ZXIpKQoJKGluc2VydCAiICIpKSkKICAgIGNvdW50ZXIpKQoKKGRlZnVuIHNxbHBsdXMtcGFyc2Ut
+b3V0cHV0LXRhYmxlIChpbnRlcnJ1cHRlZCkKICAiUGFyc2UgdGFibGUgYW5kIHJldHVybiBsaXN0
+IChDT0xVTU4tSU5GT1MgUk9XUyBNU0cpIHdoZXJlCkNPTFVNTi1JTkZPUyBpcyBhIGNvbC1kZXNj
+IHN0cnVjdHVyZXMgbGlzdCwgUk9XUyBpcyBhIHRhYmxlIG9mCnJlY29yZHMgKHJlY29yZCBpcyBh
+IGxpc3Qgb2Ygc3RyaW5ncykuICBSZXR1cm4gbmlsIGlmIHRhYmxlIGlzCm5vdCBkZXRlY3RlZC4i
+CiAgKGxldCAoKHJlZ2lvbiAoc3FscGx1cy1maW5kLW91dHB1dC10YWJsZSBpbnRlcnJ1cHRlZCkp
+KQogICAgKHdoZW4gcmVnaW9uCiAgICAgIChsZXQgKChiZWdpbiAoY2FyIHJlZ2lvbikpCgkgICAg
+KGVuZCAoY2FkciByZWdpb24pKQoJICAgIChsYXN0LW1zZyAoY2FkZHIgcmVnaW9uKSkKCSAgICAo
+Y29sLWNvdW50ZXIgMCkKCSAgICBjb2x1bW4taW5mb3Mgcm93cwoJICAgIChyZWNvcmQtbGluZXMg
+MSkKCSAgICBmaW5pc2gpCgk7OyAobWVzc2FnZSAiJyVzJ1xuJyVzJyIgKGJ1ZmZlci1zdWJzdHJp
+bmcgYmVnaW4gZW5kKSBsYXN0LW1zZykKCShnb3RvLWNoYXIgYmVnaW4pCgk7OyB3ZSBhcmUgYXQg
+dGhlIGZpcnN0IGNoYXIgb2YgY29sdW1uIG5hbWUKICAgICAgICA7OyBtb3ZlIHRvIHRoZSBmaXJz
+dCBjaGFyIG9mICctLS0tLScgY29sdW1uIHNlcGFyYXRvcgoJKGJlZ2lubmluZy1vZi1saW5lIDIp
+Cgkod2hpbGUgKG5vdCBmaW5pc2gpCgkgIChpZiAoZXF1YWwgKGNoYXItYWZ0ZXIpID8tKQogICAg
+ICAgICAgICAgIDs7IGF0IHRoZSBmaXJzdCBjb2x1bW4gc2VwYXJhdG9yIGNoYXIKCSAgICAgIChs
+ZXQqICgoYmVnIChwb2ludCkpCgkJICAgICAoY29sLWJlZ2luIChjdXJyZW50LWNvbHVtbikpCgkJ
+ICAgICAoY29sLW1heC13aWR0aCAoc2tpcC1jaGFycy1mb3J3YXJkICItIikpCiAgICAgICAgICAg
+ICAgICAgICAgIDs7IGFmdGVyIGxhc3QgY29sdW1uIHNlcGFyYXRvciBjaGFyCgkJICAgICAoZWQg
+KHBvaW50KSkKCQkgICAgIChjb2wtZW5kICgrIGNvbC1iZWdpbiBjb2wtbWF4LXdpZHRoKSkKCQkg
+ICAgIChjb2wtbmFtZSAobGV0KiAoKGIgKHByb2duCgkJCQkJICAgKGdvdG8tY2hhciBiZWcpCgkJ
+CQkJICAgKHNxbHBsdXMtcHJldmlvdXMtbGluZSkKCQkJCQkgICAoc2F2ZS1leGN1cnNpb24KCQkJ
+CQkgICAgIChsZXQgKChjb3VudGVyIChzcWxwbHVzLS1jb3JyZWN0LWNvbHVtbi1uYW1lICgxKyBj
+b2wtZW5kKSkpKQoJCQkJCSAgICAgICAoc2V0cSBiZWcgKCsgYmVnIGNvdW50ZXIpKQoJCQkJCSAg
+ICAgICAoc2V0cSBlZCAoKyBlZCBjb3VudGVyKSkpKQoJCQkJCSAgIChwb2ludCkpKQoJCQkJICAg
+ICAgKGUgKCsgYiBjb2wtbWF4LXdpZHRoKSkpCgkJCQkgKHNraXAtY2hhcnMtZm9yd2FyZCAiIFx0
+IikKCQkJCSAoc2V0cSBiIChwb2ludCkpCgkJCQkgKGdvdG8tY2hhciAobWluIChzYXZlLWV4Y3Vy
+c2lvbiAoZW5kLW9mLWxpbmUpIChwb2ludCkpIGUpKQoJCQkJIChza2lwLWNoYXJzLWJhY2t3YXJk
+ICIgXHQiKQoJCQkJIChzZXRxIGUgKHBvaW50KSkKCQkJCSAoaWYgKD4gZSBiKQoJCQkJICAgICAo
+YnVmZmVyLXN1YnN0cmluZyBiIGUpCgkJCQkgICAiIikpKQoJCSAgICAgKGNvbC1wcmVmZXJyZWQt
+d2lkdGggKHN0cmluZy13aWR0aCBjb2wtbmFtZSkpKQoJCTs7IChwdXQtdGV4dC1wcm9wZXJ0eSAw
+IChsZW5ndGggY29sLW5hbWUpICdmYWNlICcoYm9sZCkgY29sLW5hbWUpCgkJKHB1c2ggKG1ha2Ut
+Y29sLWRlc2MgOmlkIGNvbC1jb3VudGVyIDpuYW1lIGNvbC1uYW1lIDpzdGFydC1wb3MgY29sLWJl
+Z2luCgkJCQkgICAgIDplbmQtcG9zIGNvbC1lbmQgOm1heC13aWR0aCBjb2wtbWF4LXdpZHRoIDpw
+cmVmZXJyZWQtd2lkdGggY29sLXByZWZlcnJlZC13aWR0aCA6bWluLXByZWZpeC1sZW4gY29sLW1h
+eC13aWR0aCkKCQkgICAgICBjb2x1bW4taW5mb3MpCgkJKGluY2YgY29sLWNvdW50ZXIpCgkJKGdv
+dG8tY2hhciBlZCkKCQkoaWYgKGVxdWFsIChjaGFyLWFmdGVyKSA/XG4pCgkJICAgIChwcm9nbgoJ
+CSAgICAgIChiZWdpbm5pbmctb2YtbGluZSAzKQoJCSAgICAgIChpbmNmIHJlY29yZC1saW5lcykp
+CgkJICAoZm9yd2FyZC1jaGFyKSkpCgkgICAgKHNldHEgZmluaXNoIHQpKSkKCShkZWNmIHJlY29y
+ZC1saW5lcykKCShzZXRxIGNvbHVtbi1pbmZvcyAobnJldmVyc2UgY29sdW1uLWluZm9zKSkKCShm
+b3J3YXJkLWxpbmUgLTEpCgogICAgICAgIDs7IGF0IHRoZSBmaXJzdCBjaGFyIG9mIGZpcnN0IGRh
+dGEgY2VsbC4KCTs7IHRhYmxlIHBhcnNpbmcuLi4KCSh3aGlsZSAoPCAocG9pbnQpIGVuZCkKCSAg
+KGxldCAocmVjb3JkIGxhc3Qtc3RhcnQtcG9zKQoJICAgIChkb2xpc3QgKGNvbHVtbi1pbmZvIGNv
+bHVtbi1pbmZvcykKCSAgICAgIChsZXQgKChzdGFydC1wb3MgKGNvbC1kZXNjLXN0YXJ0LXBvcyBj
+b2x1bW4taW5mbykpCgkJICAgIChlbmQtcG9zIChjb2wtZGVzYy1lbmQtcG9zIGNvbHVtbi1pbmZv
+KSkKCQkgICAgd2lkdGggbGVuIHZhbHVlIGIgZSBsKQoJCSh3aGVuIChhbmQgbGFzdC1zdGFydC1w
+b3MKCQkJICAgKDw9IHN0YXJ0LXBvcyBsYXN0LXN0YXJ0LXBvcykpCgkJICAoZm9yd2FyZC1saW5l
+KSkKCQkoc2V0cSBsYXN0LXN0YXJ0LXBvcyBzdGFydC1wb3MpCgkJKG1vdmUtdG8tY29sdW1uIHN0
+YXJ0LXBvcykKCQkoc2V0cSBiIChwb2ludCkpCgkJKG1vdmUtdG8tY29sdW1uIGVuZC1wb3MpCgkJ
+KHNldHEgZSAocG9pbnQpKQoJCShtb3ZlLXRvLWNvbHVtbiBzdGFydC1wb3MpCgkJKHNldHEgbCAo
+c2tpcC1jaGFycy1mb3J3YXJkICIgIiBlKSkKCQkod2hlbiAoYW5kIChjb2wtZGVzYy1taW4tcHJl
+Zml4LWxlbiBjb2x1bW4taW5mbykKCQkJICAgKDwgbCAoLSBlIGIpKQoJCQkgICAoPCBsIChjb2wt
+ZGVzYy1taW4tcHJlZml4LWxlbiBjb2x1bW4taW5mbykpKQoJCSAgKHNldGYgKGNvbC1kZXNjLW1p
+bi1wcmVmaXgtbGVuIGNvbHVtbi1pbmZvKQoJCQkoaWYgKGxvb2tpbmctYXQgIlswLTldIikgbCBu
+aWwpKSkKCQkobW92ZS10by1jb2x1bW4gZW5kLXBvcykKCQkoc2tpcC1jaGFycy1iYWNrd2FyZCAi
+ICIgYikKCQkoc2V0cSB2YWx1ZSAoaWYgKD4gKHBvaW50KSBiKSAoYnVmZmVyLXN1YnN0cmluZyBi
+IChwb2ludCkpICIiKSkKCQkoc2V0cSBsZW4gKGxlbmd0aCB2YWx1ZSkKCQkgICAgICB3aWR0aCAo
+c3RyaW5nLXdpZHRoIHZhbHVlKSkKCQkod2hlbiAoYW5kIHNxbHBsdXMtc2VsZWN0LXJlc3VsdC1t
+YXgtY29sLXdpZHRoCgkJCSAgICg+IGxlbiBzcWxwbHVzLXNlbGVjdC1yZXN1bHQtbWF4LWNvbC13
+aWR0aCkpCgkJICAoc2V0cSB2YWx1ZSAoY29uY2F0IChzdWJzdHJpbmcgdmFsdWUgMCBzcWxwbHVz
+LXNlbGVjdC1yZXN1bHQtbWF4LWNvbC13aWR0aCkgIi4uLiIpCgkJCWxlbiAobGVuZ3RoIHZhbHVl
+KQoJCQl3aWR0aCAoc3RyaW5nLXdpZHRoIHZhbHVlKSkpCgkJKHdoZW4gKD4gd2lkdGggKGNvbC1k
+ZXNjLXByZWZlcnJlZC13aWR0aCBjb2x1bW4taW5mbykpCgkJICAoc2V0ZiAoY29sLWRlc2MtcHJl
+ZmVycmVkLXdpZHRoIGNvbHVtbi1pbmZvKSB3aWR0aCkpCiAgICAgICAgICAgICAgICAod2hlbiAo
+YW5kICg8IGwgKC0gZSBiKSkKICAgICAgICAgICAgICAgICAgICAgICAgICAgKG1lbXEgKGNvbC1k
+ZXNjLW51bWVyaWMgY29sdW1uLWluZm8pICcobmlsIHkpKSkKICAgICAgICAgICAgICAgICAgKHNl
+dGYgKGNvbC1kZXNjLW51bWVyaWMgY29sdW1uLWluZm8pCiAgICAgICAgICAgICAgICAgICAgICAg
+IChpZiAoc3RyaW5nLW1hdGNoICJcXGAgKlstKzAtOUVlLiwkXStcXCciIHZhbHVlKSAneSAnbikp
+KQoJCShwdXNoIHZhbHVlIHJlY29yZCkpKQoJICAgIChmb3J3YXJkLWxpbmUpCgkgICAgKHdoZW4g
+KD4gcmVjb3JkLWxpbmVzIDEpCgkgICAgICAoZm9yd2FyZC1saW5lKSkKCSAgICAoc2V0cSBsYXN0
+LXN0YXJ0LXBvcyBuaWwKCQkgIHJlY29yZCAobnJldmVyc2UgcmVjb3JkKSkKCSAgICAocHVzaCBy
+ZWNvcmQgcm93cykpKQoJKHNldHEgcm93cyAobnJldmVyc2Ugcm93cykpCgkobGlzdCBjb2x1bW4t
+aW5mb3Mgcm93cyBsYXN0LW1zZykpKSkpCgooZGVmdW4gc3FscGx1cy1kcmF3LXRhYmxlIChsc3Qg
+Jm9wdGlvbmFsIHNsaXBzLWNvdW50KQogICJTTElQUy1DT1VOVCAobmlsIG1lYW5zIGNvbXB1dGUg
+YXV0b21hdGljYWxseSkuIgogIDs7IGN1cnJlbnQgYnVmZmVyOiBTUUwqUGx1cyBvdXRwdXQgYnVm
+ZmVyCiAgKHdoZW4gd2luZG93LXN5c3RlbQogICAgKGlmICg+PSAoc3FscGx1cy1jb2xvci1wZXJj
+ZW50YWdlIChmYWNlLWJhY2tncm91bmQgJ2RlZmF1bHQpKSA1MCkKCShwcm9nbgoJICAoc2V0LWZh
+Y2UtYXR0cmlidXRlICdzcWxwbHVzLXRhYmxlLWhlYWQtZmFjZSBuaWwKCQkJICAgICAgOmJhY2tn
+cm91bmQgKHNxbHBsdXMtc2hpbmUtY29sb3IgKGZhY2UtYmFja2dyb3VuZCAnZGVmYXVsdCkgLTcw
+KSA6Zm9yZWdyb3VuZCAoZmFjZS1iYWNrZ3JvdW5kICdkZWZhdWx0KSkKCSAgKHNldC1mYWNlLWF0
+dHJpYnV0ZSAnc3FscGx1cy10YWJsZS1ldmVuLXJvd3MtZmFjZSBuaWwKCQkJICAgICAgOmJhY2tn
+cm91bmQgKHNxbHBsdXMtc2hpbmUtY29sb3IgKGZhY2UtYmFja2dyb3VuZCAnZGVmYXVsdCkgLTIw
+KSA6b3ZlcmxpbmUgKGZhY2UtYmFja2dyb3VuZCAnZGVmYXVsdCkpCgkgIChzZXQtZmFjZS1hdHRy
+aWJ1dGUgJ3NxbHBsdXMtdGFibGUtb2RkLXJvd3MtZmFjZSBuaWwKCQkJICAgICAgOmJhY2tncm91
+bmQgKHNxbHBsdXMtc2hpbmUtY29sb3IgKGZhY2UtYmFja2dyb3VuZCAnZGVmYXVsdCkgLTMwKSA6
+b3ZlcmxpbmUgKGZhY2UtYmFja2dyb3VuZCAnZGVmYXVsdCkpKQogICAgICAoc2V0LWZhY2UtYXR0
+cmlidXRlICdzcWxwbHVzLXRhYmxlLWhlYWQtZmFjZSBuaWwKCQkJICA6YmFja2dyb3VuZCAoc3Fs
+cGx1cy1zaGluZS1jb2xvciAoZmFjZS1iYWNrZ3JvdW5kICdkZWZhdWx0KSArNzApIDpmb3JlZ3Jv
+dW5kIChmYWNlLWJhY2tncm91bmQgJ2RlZmF1bHQpKQogICAgICAoc2V0LWZhY2UtYXR0cmlidXRl
+ICdzcWxwbHVzLXRhYmxlLWV2ZW4tcm93cy1mYWNlIG5pbAoJCQkgIDpiYWNrZ3JvdW5kIChzcWxw
+bHVzLXNoaW5lLWNvbG9yIChmYWNlLWJhY2tncm91bmQgJ2RlZmF1bHQpICsyMCkgOm92ZXJsaW5l
+IChmYWNlLWJhY2tncm91bmQgJ2RlZmF1bHQpKQogICAgICAoc2V0LWZhY2UtYXR0cmlidXRlICdz
+cWxwbHVzLXRhYmxlLW9kZC1yb3dzLWZhY2UgbmlsCgkJCSAgOmJhY2tncm91bmQgKHNxbHBsdXMt
+c2hpbmUtY29sb3IgKGZhY2UtYmFja2dyb3VuZCAnZGVmYXVsdCkgKzMwKSA6b3ZlcmxpbmUgKGZh
+Y2UtYmFja2dyb3VuZCAnZGVmYXVsdCkpKSkKICAobGV0KiAoKGNvbHVtbi1pbmZvcyAoY2FyIGxz
+dCkpCiAgICAgICAgIChyb3dzIChjYWRyIGxzdCkpCiAgICAgICAgIChzbGlwLXdpZHRoIDApCiAg
+ICAgICAgICh0YWJsZS1oZWFkZXItaGVpZ2h0IDEpCiAgICAgICAgICh0YWJsZS1hcmVhLXdpZHRo
+ICgxLSAobGV0ICgoc2lkZS13aW5kb3cgKHNxbHBsdXMtZ2V0LXNpZGUtd2luZG93KSkpIChpZiBz
+aWRlLXdpbmRvdyAod2luZG93LXdpZHRoIHNpZGUtd2luZG93KSAoZnJhbWUtd2lkdGgpKSkpKQog
+ICAgICAgICA7OyBtYXkgYmUgbmlsLCB3aGljaCBtZWFucyBubyBsaW1pdAogICAgICAgICAodGFi
+bGUtYXJlYS1oZWlnaHQgKGxldCAoKHNpZGUtd2luZG93IChzcWxwbHVzLWdldC1zaWRlLXdpbmRv
+dykpKQogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAod2hlbiBzaWRlLXdpbmRvdwogICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICgtICh3aW5kb3ctaGVpZ2h0IHNpZGUtd2luZG93
+KSAyIChpZiBtb2RlLWxpbmUtZm9ybWF0IDEgMCkgKGlmIGhlYWRlci1saW5lLWZvcm1hdCAxIDAp
+KSkpKQogICAgICAgICAoY29sdW1uLXNlcGFyYXRvci13aWR0aCAoaWYgc3FscGx1cy1lbGVnYW50
+LXN0eWxlIDEuMiAobWF4IChsZW5ndGggc3FscGx1cy10YWJsZS1jb2wtc2VwYXJhdG9yKSAobGVu
+Z3RoIHNxbHBsdXMtdGFibGUtY29sLWhlYWQtc2VwYXJhdG9yKSkpKQogICAgICAgICByb3dzLXBl
+ci1zbGlwIDs7IGRhdGEgcm93cyBwZXIgc2xpcAogICAgICAgICAoc2xpcC1zZXBhcmF0b3Itd2lk
+dGggKGlmIHNxbHBsdXMtZWxlZ2FudC1zdHlsZSAxLjUgc3FscGx1cy1zbGlwLXNlcGFyYXRvci13
+aWR0aCkpCiAgICAgICAgIChzbGlwLXNlcGFyYXRvciAobWFrZS1zdHJpbmcgKG1heCAwIChpZiBz
+cWxwbHVzLWVsZWdhbnQtc3R5bGUgMSBzcWxwbHVzLXNsaXAtc2VwYXJhdG9yLXdpZHRoKSkgP1wg
+KSkKICAgICAgICAgKGxhc3QtbXNnIChjYWRkciBsc3QpKSkKICAgICh3aGVuIHNxbHBsdXMtZWxl
+Z2FudC1zdHlsZQogICAgICAocHV0LXRleHQtcHJvcGVydHkgMCAxICdkaXNwbGF5IChjb25zICdz
+cGFjZSAobGlzdCA6d2lkdGggc2xpcC1zZXBhcmF0b3Itd2lkdGgpKSBzbGlwLXNlcGFyYXRvcikp
+CiAgICAod2hlbiAoPD0gdGFibGUtYXJlYS1oZWlnaHQgdGFibGUtaGVhZGVyLWhlaWdodCkKICAg
+ICAgKHNldHEgdGFibGUtYXJlYS1oZWlnaHQgbmlsKSkKICAgICh3aGVuIChhbmQgd2luZG93LXN5
+c3RlbSBzcWxwbHVzLWVsZWdhbnQtc3R5bGUgdGFibGUtYXJlYS1oZWlnaHQgKD4gdGFibGUtYXJl
+YS1oZWlnaHQgMykpCiAgICAgIDs7IG92ZXJsaW5lIG1ha2VzIGdseXBoIGhpZ2hlci4uLgogICAg
+ICAoc2V0cSB0YWJsZS1hcmVhLWhlaWdodCAoLSB0YWJsZS1hcmVhLWhlaWdodCAocm91bmQgKC8g
+KCogMjAuMCAoLSB0YWJsZS1hcmVhLWhlaWdodCAzKSkgKGZhY2UtYXR0cmlidXRlICdkZWZhdWx0
+IDpoZWlnaHQpKSkpKSkKICAgICh3aGVuIGNvbHVtbi1pbmZvcwogICAgICAoZ290by1jaGFyIChw
+b2ludC1tYXgpKQogICAgICAoYmVnaW5uaW5nLW9mLWxpbmUpCiAgICAgIDs7IHNsaXAgd2lkdGgg
+KHdpdGhvdXQgc2VwYXJhdG9yIGJldHdlZW4gc2xpcHMpCiAgICAgIChkb2xpc3QgKGNvbC1pbmZv
+IGNvbHVtbi1pbmZvcykKICAgICAgICAod2hlbiAoY29sLWRlc2MtbWluLXByZWZpeC1sZW4gY29s
+LWluZm8pCiAgICAgICAgICAoc2V0ZiAoY29sLWRlc2MtcHJlZmVycmVkLXdpZHRoIGNvbC1pbmZv
+KSAobWF4IChzdHJpbmctd2lkdGggKGNvbC1kZXNjLW5hbWUgY29sLWluZm8pKQogICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAoLSAoY29sLWRl
+c2MtcHJlZmVycmVkLXdpZHRoIGNvbC1pbmZvKSAoY29sLWRlc2MtbWluLXByZWZpeC1sZW4gY29s
+LWluZm8pKSkpKQoJKGluY2Ygc2xpcC13aWR0aCAoKyAoY29sLWRlc2MtcHJlZmVycmVkLXdpZHRo
+IGNvbC1pbmZvKSBjb2x1bW4tc2VwYXJhdG9yLXdpZHRoKSkpCiAgICAgICh3aGVuICg+IHNsaXAt
+d2lkdGggMCkKICAgICAgICAoc2V0cSBzbGlwLXdpZHRoICgrICgtIHNsaXAtd2lkdGggY29sdW1u
+LXNlcGFyYXRvci13aWR0aCkgKGlmIHNxbHBsdXMtZWxlZ2FudC1zdHlsZSAxLjAgMCkpKSkKICAg
+ICAgOzsgY29tcHV0aW5nIHNsaXAgY291bnQgaWYgbm90IGtub3duIHlldAogICAgICAodW5sZXNz
+IHNsaXBzLWNvdW50Cgkoc2V0cSBzbGlwcy1jb3VudAoJICAgICAgKGlmIHRhYmxlLWFyZWEtaGVp
+Z2h0IChtaW4gKGNlaWxpbmcgKC8gKGZsb2F0IChsZW5ndGggcm93cykpIChtYXggMSAoLSB0YWJs
+ZS1hcmVhLWhlaWdodCB0YWJsZS1oZWFkZXItaGVpZ2h0IDIpKSkpCgkJCQkJIChtYXggMSAoZmxv
+b3IgKC8gKGZsb2F0IHRhYmxlLWFyZWEtd2lkdGgpICgrIHNsaXAtd2lkdGggc2xpcC1zZXBhcmF0
+b3Itd2lkdGgpKSkpKQoJCTEpKSkKICAgICAgKHNldHEgc2xpcHMtY291bnQgKG1heCAxIChtaW4g
+c2xpcHMtY291bnQgKGxlbmd0aCByb3dzKSkpKSA7IHNsaXAgY291bnQgPD0gZGF0YSByb3dzCiAg
+ICAgIChzZXRxIHJvd3MtcGVyLXNsaXAgKGNlaWxpbmcgKC8gKGZsb2F0IChsZW5ndGggcm93cykp
+IHNsaXBzLWNvdW50KSkpCiAgICAgICh3aGVuICg+IHJvd3MtcGVyLXNsaXAgMCkKICAgICAgICAo
+c2V0cSBzbGlwcy1jb3VudCAobWF4IDEgKG1pbiAoY2VpbGluZyAoLyAoZmxvYXQgKGxlbmd0aCBy
+b3dzKSkgcm93cy1wZXItc2xpcCkpIHNsaXBzLWNvdW50KSkpKQoKICAgICAgKGxldCAoKHRhYmxl
+LWJlZ2luLXBvaW50IChwb2ludCkpKQoJKGRvdGltZXMgKHNsaXAtbm8gc2xpcHMtY291bnQpCgkg
+IChsZXQgKChyb3ctbm8gMCkKCQkoc2xpcC1iZWdpbi1wb2ludCAocG9pbnQpKQoJCShyb3dzLXBy
+b2Nlc3NlZCAwKSkKCSAgICA7OyBjb2x1bW4gbmFtZXMKCSAgICAoZG9saXN0IChjb2wtaW5mbyBj
+b2x1bW4taW5mb3MpCgkgICAgICAobGV0KiAoKGNvbC1uYW1lIChjb2wtZGVzYy1uYW1lIGNvbC1p
+bmZvKSkKCQkgICAgIChzcGFjZXMgKG1heCAwICgtIChjb2wtZGVzYy1wcmVmZXJyZWQtd2lkdGgg
+Y29sLWluZm8pIChzdHJpbmctd2lkdGggY29sLW5hbWUpKSkpCiAgICAgICAgICAgICAgICAgICAg
+IChsYXN0LWNvbC1wICg+PSAoMSsgKGNvbC1kZXNjLWlkIGNvbC1pbmZvKSkgKGxlbmd0aCBjb2x1
+bW4taW5mb3MpKSkKCQkgICAgICh2YWwgKGZvcm1hdCAoaWYgc3FscGx1cy1lbGVnYW50LXN0eWxl
+ICIgJXMlcyAlcyIgIiVzJXMlcyIpCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBj
+b2wtbmFtZQogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgKG1ha2Utc3RyaW5nIHNw
+YWNlcyA/XCApCgkJCQkgIChpZiBsYXN0LWNvbC1wICIiIChpZiBzcWxwbHVzLWVsZWdhbnQtc3R5
+bGUgIiAiIHNxbHBsdXMtdGFibGUtY29sLXNlcGFyYXRvcikpKSkpCiAgICAgICAgICAgICAgICAo
+cHV0LXRleHQtcHJvcGVydHkgMCAoaWYgKG9yIChub3Qgc3FscGx1cy1lbGVnYW50LXN0eWxlKSBs
+YXN0LWNvbC1wKSAobGVuZ3RoIHZhbCkgKDEtIChsZW5ndGggdmFsKSkpIAogICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICdmYWNlICdzcWxwbHVzLXRhYmxlLWhlYWQtZmFjZSB2YWwp
+CiAgICAgICAgICAgICAgICAod2hlbiBzcWxwbHVzLWVsZWdhbnQtc3R5bGUKICAgICAgICAgICAg
+ICAgICAgKHB1dC10ZXh0LXByb3BlcnR5IDAgMSAnZGlzcGxheSAnKHNwYWNlIC4gKDp3aWR0aCAw
+LjUpKSB2YWwpCiAgICAgICAgICAgICAgICAgIChwdXQtdGV4dC1wcm9wZXJ0eSAoLSAobGVuZ3Ro
+IHZhbCkgKGlmIGxhc3QtY29sLXAgMSAyKSkgKC0gKGxlbmd0aCB2YWwpIChpZiBsYXN0LWNvbC1w
+IDAgMSkpICdkaXNwbGF5ICcoc3BhY2UgLiAoOndpZHRoIDAuNSkpIHZhbCkKICAgICAgICAgICAg
+ICAgICAgKHVubGVzcyBsYXN0LWNvbC1wCiAgICAgICAgICAgICAgICAgICAgKHB1dC10ZXh0LXBy
+b3BlcnR5ICgtIChsZW5ndGggdmFsKSAxKSAobGVuZ3RoIHZhbCkgJ2Rpc3BsYXkgJyhzcGFjZSAu
+ICg6d2lkdGggMC4yKSkgdmFsKSkpCgkJKGluc2VydCB2YWwpKSkKCSAgICAoaW5zZXJ0IHNsaXAt
+c2VwYXJhdG9yKQoJICAgIChpbnNlcnQgIlxuIikKCSAgICA7OyBkYXRhIHJvd3MKCSAgICAod2hp
+bGUgKGFuZCAoPCByb3dzLXByb2Nlc3NlZCByb3dzLXBlci1zbGlwKQoJCQlyb3dzKQoJICAgICAg
+KGxldCAoKHJvdyAoY2FyIHJvd3MpKSkKCQkoc2V0cSByb3dzIChjZHIgcm93cykpCgkJKGluY2Yg
+cm93cy1wcm9jZXNzZWQpCgkJKGxldCAoKGNvbC1pbmZvcyBjb2x1bW4taW5mb3MpKQoJCSAgKGRv
+bGlzdCAodmFsdWUgcm93KQoJCSAgICAobGV0KiAoKGNvbC1pbmZvIChjYXIgY29sLWluZm9zKSkK
+CQkJICAgKG51bWVyaWMtcCAoZXEgKGNvbC1kZXNjLW51bWVyaWMgY29sLWluZm8pICd5KSkKCQkJ
+ICAgKG1pbi1wcmVmaXggKGNvbC1kZXNjLW1pbi1wcmVmaXgtbGVuIGNvbC1pbmZvKSkpCgkJICAg
+ICAgKHdoZW4gKGFuZCBtaW4tcHJlZml4CgkJCQkgdmFsdWUKCQkJCSAoPj0gKGxlbmd0aCB2YWx1
+ZSkgbWluLXByZWZpeCkpCgkJCShzZXRxIHZhbHVlIChzdWJzdHJpbmcgdmFsdWUgbWluLXByZWZp
+eCkpKQoJCSAgICAgIChsZXQqICgoc3BhY2VzIChtYXggMCAoLSAoY29sLWRlc2MtcHJlZmVycmVk
+LXdpZHRoIGNvbC1pbmZvKSAoc3RyaW5nLXdpZHRoIHZhbHVlKSkpKQoJCQkgICAgICh2YWwgKGlm
+IG51bWVyaWMtcAoJCQkJICAgICAgKGZvcm1hdCAoaWYgc3FscGx1cy1lbGVnYW50LXN0eWxlICIg
+JXMlcyAlcyIgIiVzJXMlcyIpCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAobWFrZS1zdHJpbmcgc3BhY2VzID9cICkKICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgIHZhbHVlCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAoaWYgKGNkciBjb2wtaW5mb3MpIChpZiBzcWxwbHVzLWVsZWdhbnQt
+c3R5bGUgIiAiIHNxbHBsdXMtdGFibGUtY29sLXNlcGFyYXRvcikgIiIpKQoJCQkJICAgIChmb3Jt
+YXQgKGlmIHNxbHBsdXMtZWxlZ2FudC1zdHlsZSAiICVzJXMgJXMiICIlcyVzJXMiKQogICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIHZhbHVlCiAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgKG1ha2Utc3RyaW5nIHNwYWNlcyA/XCApIAog
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIChpZiAoY2RyIGNvbC1p
+bmZvcykgKGlmIHNxbHBsdXMtZWxlZ2FudC1zdHlsZSAiICIgc3FscGx1cy10YWJsZS1jb2wtc2Vw
+YXJhdG9yKSAiIikpKSkpCgkJCShwdXQtdGV4dC1wcm9wZXJ0eSAwIChpZiAoYW5kIHNxbHBsdXMt
+ZWxlZ2FudC1zdHlsZSAoY2RyIGNvbC1pbmZvcykpICgtIChsZW5ndGggdmFsKSAxKSAobGVuZ3Ro
+IHZhbCkpCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAnZmFjZSAo
+aWYgKGV2ZW5wIHJvdy1ubykKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAnc3FscGx1cy10YWJsZS1ldmVuLXJvd3MtZmFjZQogICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAnc3FscGx1cy10YWJsZS1vZGQt
+cm93cy1mYWNlKSB2YWwpCiAgICAgICAgICAgICAgICAgICAgICAgICh3aGVuIHNxbHBsdXMtZWxl
+Z2FudC1zdHlsZQogICAgICAgICAgICAgICAgICAgICAgICAgIChwdXQtdGV4dC1wcm9wZXJ0eSAw
+IDEgJ2Rpc3BsYXkgJyhzcGFjZSAuICg6d2lkdGggMC41KSkgdmFsKQogICAgICAgICAgICAgICAg
+ICAgICAgICAgIChwdXQtdGV4dC1wcm9wZXJ0eSAoLSAobGVuZ3RoIHZhbCkgKGlmIChjZHIgY29s
+LWluZm9zKSAyIDEpKQogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAoLSAobGVuZ3RoIHZhbCkgKGlmIChjZHIgY29sLWluZm9zKSAxIDApKQogICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAnZGlzcGxheSAnKHNwYWNlIC4gKDp3aWR0
+aCAwLjUpKSB2YWwpCiAgICAgICAgICAgICAgICAgICAgICAgICAgKHdoZW4gKGNkciBjb2wtaW5m
+b3MpCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAocHV0LXRleHQtcHJvcGVydHkgKC0gKGxl
+bmd0aCB2YWwpIDEpIChsZW5ndGggdmFsKSAnZGlzcGxheSAnKHNwYWNlIC4gKDp3aWR0aCAwLjIp
+KSB2YWwpKSkKCQkJKHNldHEgY29sLWluZm9zIChjZHIgY29sLWluZm9zKSkKCQkJKGluc2VydCB2
+YWwpKSkpCgkJICAoaW5jZiByb3ctbm8pCgkJICAoaW5zZXJ0IHNsaXAtc2VwYXJhdG9yKQoJCSAg
+KGluc2VydCAiXG4iKSkpKQoJICAgICh3aGVuICg+IHNsaXAtbm8gMCkKCSAgICAgIChkZWxldGUt
+YmFja3dhcmQtY2hhciAxKQoJICAgICAgKGxldCAoKHNsaXAtZW5kLXBvaW50IChwb2ludCkpKQoJ
+CShraWxsLXJlY3RhbmdsZSBzbGlwLWJlZ2luLXBvaW50IHNsaXAtZW5kLXBvaW50KQoJCShkZWxl
+dGUtcmVnaW9uIHNsaXAtYmVnaW4tcG9pbnQgKHBvaW50LW1heCkpCgkJKGdvdG8tY2hhciB0YWJs
+ZS1iZWdpbi1wb2ludCkKCQkoZW5kLW9mLWxpbmUpCgkJKHlhbmstcmVjdGFuZ2xlKQoJCShnb3Rv
+LWNoYXIgKHBvaW50LW1heCkpCgkJKSkpKQoJKGdvdG8tY2hhciAocG9pbnQtbWF4KSkKCSh3aGVu
+IChhbmQgbGFzdC1tc2cgKD4gKGxlbmd0aCBsYXN0LW1zZykgMCkpCiAgICAgICAgICAodW5sZXNz
+IHNxbHBsdXMtZWxlZ2FudC1zdHlsZSAoaW5zZXJ0ICJcbiIpKQogICAgICAgICAgKGxldCAoKHMg
+KGZvcm1hdCAiJXNcblxuIiAocmVwbGFjZS1yZWdleHAtaW4tc3RyaW5nICJcbisiICIgIiBsYXN0
+LW1zZykpKSkKICAgICAgICAgICAgKHdoZW4gc3FscGx1cy1lbGVnYW50LXN0eWxlCiAgICAgICAg
+ICAgICAgKHB1dC10ZXh0LXByb3BlcnR5ICgtIChsZW5ndGggcykgMikgKDEtIChsZW5ndGggcykp
+ICdkaXNwbGF5ICcoc3BhY2UgLiAoOmhlaWdodCAxLjUpKSBzKSkKICAgICAgICAgICAgKGluc2Vy
+dCBzKSkpKSkpKQoKKGRlZnVuIHNxbHBsdXMtc2VuZC11c2VyLXN0cmluZyAoc3RyKQogIChpbnRl
+cmFjdGl2ZSAocHJvZ24gKHNxbHBsdXMtY2hlY2stY29ubmVjdGlvbikKICAgICAgICAgICAgICAg
+ICAgICAgIChpZiBzcWxwbHVzLWNvbm5lY3Qtc3RyaW5nCiAgICAgICAgICAgICAgICAgICAgICAg
+ICAgKGxpc3QgKHJlYWQtc3RyaW5nICJTZW5kIHRvIHByb2Nlc3M6ICIgbmlsICdzcWxwbHVzLXVz
+ZXItc3RyaW5nLWhpc3RvcnkgIiIpKQogICAgICAgICAgICAgICAgICAgICAgICAoZXJyb3IgIldv
+cmtzIG9ubHkgaW4gU1FMKlBsdXMgYnVmZmVyIikpKSkKICAobGV0ICgoY29ubmVjdC1zdHJpbmcg
+c3FscGx1cy1jb25uZWN0LXN0cmluZykpCiAgICAoc3FscGx1cy12ZXJpZnktYnVmZmVyIGNvbm5l
+Y3Qtc3RyaW5nKQogICAgKGxldCogKChwcm9jZXNzIChnZXQtcHJvY2VzcyAoc3FscGx1cy1nZXQt
+cHJvY2Vzcy1uYW1lIGNvbm5lY3Qtc3RyaW5nKSkpCiAgICAgICAgICAgKG91dHB1dC1idWZmZXIt
+bmFtZSAoc3FscGx1cy1nZXQtb3V0cHV0LWJ1ZmZlci1uYW1lIGNvbm5lY3Qtc3RyaW5nKSkpCiAg
+ICAgIChzcWxwbHVzLWVjaG8taW4tYnVmZmVyIG91dHB1dC1idWZmZXItbmFtZSAoY29uY2F0IHN0
+ciAiXG4iKSkKICAgICAgKHNlbmQtc3RyaW5nIHByb2Nlc3MgKGNvbmNhdCBzdHIgIlxuIikpKSkp
+CgooZGVmdW4gc3FscGx1cy1wcmVwYXJlLXVwZGF0ZS1hbGlzdCAodGFibGUtZGF0YSkKICAobGV0
+ICgoY29sdW1uLWluZm9zIChjYXIgdGFibGUtZGF0YSkpCiAgICAgICAgKHJvd3MgKGNhZHIgdGFi
+bGUtZGF0YSkpCiAgICAgICAgKG1zZyAoY2FkZHIgdGFibGUtZGF0YSkpCiAgICAgICAgYWxpc3Qp
+CiAgICAoZG9saXN0IChyb3cgcm93cykKICAgICAgKGxldCogKChvYmplY3QtbmFtZSAoY2FyIHJv
+dykpCiAgICAgICAgICAgICAob2JqZWN0LXR5cGUgKGludGVybiAoZG93bmNhc2UgKGNhZHIgcm93
+KSkpKQoJICAgICAoc3RhdHVzIChjYWRkciByb3cpKQogICAgICAgICAgICAgKHJlZ2V4cC1saXN0
+IChjZHIgKGFzc3Egb2JqZWN0LXR5cGUgYWxpc3QpKSkKCSAgICAgKHBhaXIgKGNvbnMgb2JqZWN0
+LW5hbWUgKGVxdWFsIHN0YXR1cyAiSSIpKSkpCiAgICAgICAgKGlmIHJlZ2V4cC1saXN0CiAgICAg
+ICAgICAgIChzZXRjZHIgcmVnZXhwLWxpc3QgKGNvbnMgcGFpciAoY2RyIHJlZ2V4cC1saXN0KSkp
+CiAgICAgICAgICAoc2V0cSByZWdleHAtbGlzdCAobGlzdCBwYWlyKSkKICAgICAgICAgIChzZXRx
+IGFsaXN0IChjb25zIChjb25zIG9iamVjdC10eXBlIHJlZ2V4cC1saXN0KSBhbGlzdCkpKSkpCiAg
+ICBhbGlzdCkpCgooZGVmdW4gc3FscGx1cy1teS11cGRhdGUtaGFuZGxlciAoY29ubmVjdC1zdHJp
+bmcgdGFibGUtZGF0YSkKICAobGV0ICgoYWxpc3QgKHNxbHBsdXMtcHJlcGFyZS11cGRhdGUtYWxp
+c3QgdGFibGUtZGF0YSkpKQogICAgKHdoZW4gKGZlYXR1cmVwICdpZGUtc2tlbCkKICAgICAgKGZ1
+bmNhbGwgJ3NxbHBsdXMtc2lkZS12aWV3LXVwZGF0ZS1kYXRhIGNvbm5lY3Qtc3RyaW5nIGFsaXN0
+KSkpKQoKKGRlZnVuIHNxbHBsdXMtbXktaGFuZGxlciAoY29ubmVjdC1zdHJpbmcgdGFibGUtZGF0
+YSkKICAobGV0ICgoYWxpc3QgKHNxbHBsdXMtcHJlcGFyZS11cGRhdGUtYWxpc3QgdGFibGUtZGF0
+YSkpCgkoc3FscGx1cy1mb250LWxvY2stcmVnZXhwcyAoc3FscGx1cy1nZXQtZm9udC1sb2NrLXJl
+Z2V4cHMgY29ubmVjdC1zdHJpbmcpKSkKICAgIChzcWxwbHVzLXNldC1vYmplY3RzLWFsaXN0IGFs
+aXN0IGNvbm5lY3Qtc3RyaW5nKQogICAgKHdoZW4gKGZlYXR1cmVwICdpZGUtc2tlbCkKICAgICAg
+KGZ1bmNhbGwgJ3NxbHBsdXMtc2lkZS12aWV3LXVwZGF0ZS1kYXRhIGNvbm5lY3Qtc3RyaW5nIGFs
+aXN0KSkKICAgIChjbHJoYXNoIHNxbHBsdXMtZm9udC1sb2NrLXJlZ2V4cHMpCiAgICAoZG9saXN0
+IChsc3Qgc3FscGx1cy1zeW50YXgtZmFjZXMpCiAgICAgIChsZXQqICgob2JqZWN0LXR5cGUgKGNh
+ciBsc3QpKQoJICAgICAocmVnZXhwLWxpc3QgKGFwcGVuZCAoY2FkZHIgbHN0KSAobWFwY2FyICdj
+YXIgKGNkciAoYXNzcSBvYmplY3QtdHlwZSBhbGlzdCkpKSkpKQoJKHdoZW4gcmVnZXhwLWxpc3QK
+CSAgKHB1dGhhc2ggb2JqZWN0LXR5cGUgKGNvbmNhdCAiXFxiIiAocmVnZXhwLW9wdCByZWdleHAt
+bGlzdCB0KSAiXFxiIikgc3FscGx1cy1mb250LWxvY2stcmVnZXhwcykpKSkKICAgIChsZXQgKCht
+YXAgc3FscGx1cy1mb250LWxvY2stcmVnZXhwcykpCiAgICAgIChtYXBjIChsYW1iZGEgKGJ1ZmZl
+cikKCSAgICAgICh3aXRoLWN1cnJlbnQtYnVmZmVyIGJ1ZmZlcgoJCSh3aGVuIChhbmQgKG1lbXEg
+bWFqb3ItbW9kZSAnKHNxbHBsdXMtbW9kZSBwbHNxbC1tb2RlKSkKCQkJICAgKGVxdWFsIHNxbHBs
+dXMtY29ubmVjdC1zdHJpbmcgY29ubmVjdC1zdHJpbmcpKQoJCSAgKHdoZW4gZm9udC1sb2NrLW1v
+ZGUgKGZvbnQtbG9jay1tb2RlIDEpKSkpKQoJICAgIChidWZmZXItbGlzdCkpKSkpCgooZGVmdW4g
+c3FscGx1cy1nZXQtc291cmNlLWZ1bmN0aW9uIChjb25uZWN0LXN0cmluZyBjb250ZXh0IHN0cmlu
+ZyBsYXN0LWNodW5rKQogIChsZXQqICgoc291cmNlLXRleHQgKHNxbHBsdXMtZ2V0LWNvbnRleHQt
+dmFsdWUgY29udGV4dCA6c291cmNlLXRleHQpKQoJIChzb3VyY2UtdHlwZSAoc3FscGx1cy1nZXQt
+Y29udGV4dC12YWx1ZSBjb250ZXh0IDpzb3VyY2UtdHlwZSkpCgkgKHNvdXJjZS1uYW1lIChzcWxw
+bHVzLWdldC1jb250ZXh0LXZhbHVlIGNvbnRleHQgOnNvdXJjZS1uYW1lKSkKCSAoc291cmNlLWV4
+dGVuc2lvbiAoc3FscGx1cy1nZXQtY29udGV4dC12YWx1ZSBjb250ZXh0IDpzb3VyY2UtZXh0ZW5z
+aW9uKSkKCSAobmFtZSAoY29uY2F0ICh1cGNhc2Ugc291cmNlLW5hbWUpICIuIiBzb3VyY2UtZXh0
+ZW5zaW9uKSkKICAgICAgICAgZmluaXNoKQogICAgKHVubGVzcyAoc3FscGx1cy1nZXQtY29udGV4
+dC12YWx1ZSBjb250ZXh0IDpmaW5pc2hlZCkKICAgICAgKHNldHEgc291cmNlLXRleHQgKGNvbmNh
+dCBzb3VyY2UtdGV4dCBzdHJpbmcpKQogICAgICAoc3FscGx1cy1zZXQtY29udGV4dC12YWx1ZSBj
+b250ZXh0IDpzb3VyY2UtdGV4dCBzb3VyY2UtdGV4dCkKICAgICAgKHdoZW4gbGFzdC1jaHVuawoJ
+KGlmIChzdHJpbmctbWF0Y2ggKHJlZ2V4cC1xdW90ZSBzcWxwbHVzLWVuZC1vZi1zb3VyY2Utc2Vu
+dGluZWwpIHNvdXJjZS10ZXh0KQoJICAgICh3aGVuICg8IChsZW5ndGggc291cmNlLXRleHQpICgr
+IChsZW5ndGggc3FscGx1cy1lbmQtb2Ytc291cmNlLXNlbnRpbmVsKSA1KSkKCSAgICAgIChzZXRx
+IGxhc3QtY2h1bmsgbmlsCgkJICAgIGZpbmlzaCAiVGhlcmUgaXMgbm8gc3VjaCBkYXRhYmFzZSBv
+YmplY3QiKSkKCSAgKHNldHEgbGFzdC1jaHVuayBuaWwpKSkKICAgICAgKHdoZW4gbGFzdC1jaHVu
+awoJKHNldHEgZmluaXNoIHQpKQogICAgICAod2hlbiBmaW5pc2gKCShzcWxwbHVzLXNldC1jb250
+ZXh0LXZhbHVlIGNvbnRleHQgOmZpbmlzaGVkIHQpCgkoaWYgKHN0cmluZ3AgZmluaXNoKQoJICAg
+IChtZXNzYWdlIGZpbmlzaCkKCSAgKHdpdGgtdGVtcC1idWZmZXIKCSAgICAoaW5zZXJ0IHNvdXJj
+ZS10ZXh0KQoJICAgIChnb3RvLWNoYXIgKHBvaW50LW1pbikpCgkgICAgKHJlLXNlYXJjaC1mb3J3
+YXJkIChyZWdleHAtcXVvdGUgc3FscGx1cy1lbmQtb2Ytc291cmNlLXNlbnRpbmVsKSBuaWwgdCkK
+CSAgICAocmVwbGFjZS1tYXRjaCAiIikKCSAgICAoZ290by1jaGFyIChwb2ludC1tYXgpKQoJICAg
+IChmb3J3YXJkLWNvbW1lbnQgKC0gKGJ1ZmZlci1zaXplKSkpCgkgICAgKHdoZW4gKGVxdWFsIHNv
+dXJjZS10eXBlICJUQUJMRSIpCgkgICAgICAoZ290by1jaGFyIChwb2ludC1taW4pKQoJICAgICAg
+KGluc2VydCAoZm9ybWF0ICJ0YWJsZSAlc1xuKFxuIiBzb3VyY2UtbmFtZSkpCgkgICAgICAoZ290
+by1jaGFyIChwb2ludC1tYXgpKQoJICAgICAgKGRlbGV0ZS1yZWdpb24gKHJlLXNlYXJjaC1iYWNr
+d2FyZCAiLCIgbmlsIHQpIChwb2ludC1tYXgpKQoJICAgICAgKGluc2VydCAiXG4pOyIpKQoJICAg
+IChpbnNlcnQgIlxuL1xuIikKCSAgICAodW5sZXNzIChtZW1iZXIgc291cmNlLXR5cGUgJygiU0VR
+VUVOQ0UiICJUQUJMRSIgIlNZTk9OWU0iICJJTkRFWCIpKQoJICAgICAgKGluc2VydCAic2hvdyBl
+cnJcbiIpKQoJICAgIChnb3RvLWNoYXIgKHBvaW50LW1pbikpCgkgICAgKGluc2VydCAiY3JlYXRl
+ICIgKGlmIChtZW1iZXIgc291cmNlLXR5cGUgJygiSU5ERVgiICJTRVFVRU5DRSIgIlRBQkxFIikp
+ICIiICJvciByZXBsYWNlICIpKQoJICAgIChzZXRxIHNvdXJjZS10ZXh0IChidWZmZXItc3RyaW5n
+KSkpCgkgICh3aXRoLWN1cnJlbnQtYnVmZmVyIChnZXQtYnVmZmVyLWNyZWF0ZSBuYW1lKQoJICAg
+IChzZXRxIGJ1ZmZlci1yZWFkLW9ubHkgbmlsKQoJICAgIChlcmFzZS1idWZmZXIpCgkgICAgKGlu
+c2VydCBzb3VyY2UtdGV4dCkKCSAgICAoZ290by1jaGFyIChwb2ludC1taW4pKQoJICAgIChzZXQt
+dmlzaXRlZC1maWxlLW5hbWUgKGNvbmNhdCAoZmlsZS1uYW1lLWFzLWRpcmVjdG9yeSB0ZW1wb3Jh
+cnktZmlsZS1kaXJlY3RvcnkpCgkJCQkJICAgKGNvbmNhdCAobWFrZS10ZW1wLW5hbWUgKHNxbHBs
+dXMtY2Fub25pemUtZmlsZS1uYW1lIChjb25jYXQgKHVwY2FzZSBzb3VyY2UtbmFtZSkgIl8iKSAi
+WyRdIikpICIuIiBzb3VyY2UtZXh0ZW5zaW9uKSkpCgkgICAgKHJlbmFtZS1idWZmZXIgbmFtZSkK
+CSAgICAoY29uZGl0aW9uLWNhc2UgZXJyCgkJKGZ1bmNhbGwgKHN5bWJvbC1mdW5jdGlvbiAncGxz
+cWwtbW9kZSkpCgkgICAgICAoZXJyb3IgbmlsKSkKCSAgICAoc2V0cSBzcWxwbHVzLWNvbm5lY3Qt
+c3RyaW5nIGNvbm5lY3Qtc3RyaW5nCgkJICBidWZmZXItcmVhZC1vbmx5IHNxbHBsdXMtc291cmNl
+LWJ1ZmZlci1yZWFkb25seS1ieS1kZWZhdWx0LWZsYWcpCgkgICAgKHNhdmUtYnVmZmVyKQoJICAg
+IChzYXZlLXNlbGVjdGVkLXdpbmRvdwoJICAgICAgKGxldCAoKHdpbiAoc2VsZWN0ZWQtd2luZG93
+KSkpCgkJKHdoZW4gKG9yIChlcXVhbCB3aW4gKHNxbHBsdXMtZ2V0LXNpZGUtd2luZG93KSkKCQkJ
+ICAoYW5kIChmYm91bmRwICdpZGUtc2tlbC1zaWRlLXZpZXctd2luZG93LXApCgkJCSAgICAgICAo
+ZnVuY2FsbCAnaWRlLXNrZWwtc2lkZS12aWV3LXdpbmRvdy1wIHdpbikpKQoJCSAgKHNldHEgd2lu
+IChzcWxwbHVzLWdldC13b3JrYmVuY2gtd2luZG93KSkpCgkJKHNldC13aW5kb3ctYnVmZmVyIHdp
+biAoY3VycmVudC1idWZmZXIpKSkpKSkpKSkpCiAgICAKKGRlZnVuIHNxbHBsdXMtZ2V0LXNvdXJj
+ZSAoY29ubmVjdC1zdHJpbmcgbmFtZSB0eXBlICZvcHRpb25hbCBzY2hlbWEtbmFtZSkKICAiRmV0
+Y2ggc291cmNlIGZvciBkYXRhYmFzZSBvYmplY3QgTkFNRSBpbiBjdXJyZW50IG9yIHNwZWNpZmll
+ZCBTQ0hFTUEtTkFNRSwgYW5kIHNob3cgdGhlIHNvdXJjZSBpbiBuZXcgYnVmZmVyLgpQb3NzaWJs
+ZSBUWVBFIHZhbHVlcyBhcmUgaW4gJ3NxbHBsdXMtb2JqZWN0LXR5cGVzJy4iCiAgKGludGVyYWN0
+aXZlIChsZXQqICgodGhpbmcgKHRoaW5nLWF0LXBvaW50ICdzeW1ib2wpKQogICAgICAgICAgICAg
+ICAgICAgICAgKG9iai1yYXctbmFtZSAocmVhZC1zdHJpbmcgKGNvbmNhdCAiT2JqZWN0IG5hbWUi
+IChpZiB0aGluZyAoY29uY2F0ICIgW2RlZmF1bHQgIiB0aGluZyAiXSIpICIiKSAiOiAiKQogICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgbmlsCiAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAnc3FscGx1cy1nZXQtc291
+cmNlLWhpc3RvcnkgKHdoZW4gdGhpbmcgdGhpbmcpKSkKICAgICAgICAgICAgICAgICAgICAgIChj
+b21wbGV0aW9uLWlnbm9yZS1jYXNlIHQpCiAgICAgICAgICAgICAgICAgICAgICAodHlwZSAoY29t
+cGxldGluZy1yZWFkICJPYmplY3QgdHlwZTogIiAobWFwY2FyIChsYW1iZGEgKHR5cGUpIChjb25z
+IHR5cGUgbmlsKSkgc3FscGx1cy1vYmplY3QtdHlwZXMpIG5pbCB0KSkpCiAgICAgICAgICAgICAg
+ICAgKHN0cmluZy1tYXRjaCAiXlxcKFxcKFteLl0rXFwpWy5dXFwpP1xcKC4qXFwpJCIgb2JqLXJh
+dy1uYW1lKQogICAgICAgICAgICAgICAgIChsaXN0IHNxbHBsdXMtY29ubmVjdC1zdHJpbmcgKG1h
+dGNoLXN0cmluZyAzIG9iai1yYXctbmFtZSkgdHlwZSAobWF0Y2gtc3RyaW5nIDIgb2JqLXJhdy1u
+YW1lKSkpKQogIChzZXRxIHR5cGUgKHVwY2FzZSB0eXBlKSkKICAobGV0KiAoKHNxbAogICAgICAg
+ICAgKGNvbmQgKChlcXVhbCB0eXBlICJTRVFVRU5DRSIpCiAgICAgICAgICAgICAgICAgKGZvcm1h
+dCAoY29uY2F0ICJzZWxlY3QgJ3NlcXVlbmNlICVzJyB8fCBzZXF1ZW5jZV9uYW1lIHx8ICIKICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgImRlY29kZSggaW5jcmVtZW50X2J5LCAxLCAn
+JywgJyBpbmNyZW1lbnQgYnkgJyB8fCBpbmNyZW1lbnRfYnkgKSB8fCAiCiAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICJjYXNlIHdoZW4gaW5jcmVtZW50X2J5ID4gMCBhbmQgbWF4X3Zh
+bHVlID49ICgxLjAwMDBFKzI3KS0xIG9yIGluY3JlbWVudF9ieSA8IDAgYW5kIG1heF92YWx1ZSA9
+IC0xIHRoZW4gJycgIgogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAiZWxzZSBkZWNv
+ZGUoIG1heF92YWx1ZSwgbnVsbCwgJyBub21heHZhbHVlJywgJyBtYXh2YWx1ZSAnIHx8IG1heF92
+YWx1ZSkgZW5kIHx8ICIKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgImNhc2Ugd2hl
+biBpbmNyZW1lbnRfYnkgPiAwIGFuZCBtaW5fdmFsdWUgPSAxIG9yIGluY3JlbWVudF9ieSA8IDAg
+YW5kIG1pbl92YWx1ZSA8PSAoLTEuMDAwMEUrMjYpKzEgdGhlbiAnJyAiCiAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICJlbHNlIGRlY29kZSggbWluX3ZhbHVlLCBudWxsLCAnIG5vbWlu
+dmFsdWUnLCAnIG1pbnZhbHVlICcgfHwgbWluX3ZhbHVlKSBlbmQgfHwgIgogICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAiZGVjb2RlKCBjeWNsZV9mbGFnLCAnWScsICcgY3ljbGUnLCAn
+JyApIHx8ICIKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgImRlY29kZSggY2FjaGVf
+c2l6ZSwgMjAsICcnLCAwLCAnIG5vY2FjaGUnLCAnIGNhY2hlICcgfHwgY2FjaGVfc2l6ZSApIHx8
+ICIKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgImRlY29kZSggb3JkZXJfZmxhZywg
+J1knLCAnIG9yZGVyJywgJycgKSAiCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICJm
+cm9tICVzIHdoZXJlIHNlcXVlbmNlX25hbWUgPSAnJXMnJXM7IikKICAgICAgICAgICAgICAgICAg
+ICAgICAgIChpZiBzY2hlbWEtbmFtZSAoY29uY2F0ICh1cGNhc2Ugc2NoZW1hLW5hbWUpICIuIikg
+IiIpCiAgICAgICAgICAgICAgICAgICAgICAgICAoaWYgc2NoZW1hLW5hbWUgImFsbF9zZXF1ZW5j
+ZXMiICJ1c2VyX3NlcXVlbmNlcyIpCiAgICAgICAgICAgICAgICAgICAgICAgICAodXBjYXNlIG5h
+bWUpCiAgICAgICAgICAgICAgICAgICAgICAgICAoaWYgc2NoZW1hLW5hbWUgKGZvcm1hdCAiIGFu
+ZCBzZXF1ZW5jZV9vd25lciA9ICclcyciICh1cGNhc2Ugc2NoZW1hLW5hbWUpKSAiIikpKQogICAg
+ICAgICAgICAgICAgKChlcXVhbCB0eXBlICJUQUJMRSIpCiAgICAgICAgICAgICAgICAgKGZvcm1h
+dCAoY29uY2F0ICJzZWxlY3QgJyAgJyB8fCBjb2x1bW5fbmFtZSB8fCAnICcgfHwgZGF0YV90eXBl
+IHx8ICIKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgImRlY29kZSggZGF0YV90eXBl
+LCIKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIiAnVkFSQ0hBUjInLCAnKCcgfHwg
+dG9fY2hhciggZGF0YV9sZW5ndGgsICdmbTk5OTknICkgfHwgJyknLCIKICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgIiAnTlVNQkVSJywgZGVjb2RlKCBkYXRhX3ByZWNpc2lvbiwiCiAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICIgICAgICAgICAgICAgbnVsbCwgJycsIgog
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAiICAgICAgICAgICAgICcoJyB8fCB0b19j
+aGFyKCBkYXRhX3ByZWNpc2lvbiwgJ2ZtOTk5OScgKSB8fCBkZWNvZGUoIGRhdGFfc2NhbGUsIgog
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAiICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgbnVsbCwgJycsIgogICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAiICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgMCwgJycsIgogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAi
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgJywn
+IHx8IGRhdGFfc2NhbGUgKSB8fCAnKScgKSwiCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICIgJycpIHx8ICIKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgImRlY29kZSgg
+bnVsbGFibGUsICdZJywgJyBub3QgbnVsbCcsICcnKSB8fCAnLCciCiAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICJmcm9tIGFsbF90YWJfY29sdW1ucyAiCiAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICJ3aGVyZSBvd25lciA9ICVzIGFuZCB0YWJsZV9uYW1lID0gJyVzJyAi
+CiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICJvcmRlciBieSBjb2x1bW5faWQ7IikK
+ICAgICAgICAgICAgICAgICAgICAgICAgIChpZiBzY2hlbWEtbmFtZSAoY29uY2F0ICInIiAodXBj
+YXNlIHNjaGVtYS1uYW1lKSAiJyIpICJ1c2VyIikKICAgICAgICAgICAgICAgICAgICAgICAgICh1
+cGNhc2UgbmFtZSkpKQogICAgICAgICAgICAgICAgKChlcXVhbCB0eXBlICJTWU5PTllNIikKICAg
+ICAgICAgICAgICAgICAoZm9ybWF0IChjb25jYXQgInNlbGVjdCAiCiAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICJkZWNvZGUoIG93bmVyLCAnUFVCTElDJywgJ3B1YmxpYyAnLCAnJyAp
+IHx8ICdzeW5vbnltICcgfHwgIgogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAiZGVj
+b2RlKCBvd25lciwgJ1BVQkxJQycsICcnLCB1c2VyLCAnJywgb3duZXIgfHwgJy4nICkgfHwgc3lu
+b255bV9uYW1lIHx8ICcgZm9yICcgfHwgIgogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAiZGVjb2RlKCB0YWJsZV9vd25lciwgdXNlciwgJycsIHRhYmxlX293bmVyIHx8ICcuJyApIHx8
+IHRhYmxlX25hbWUgfHwgIgogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAiZGVjb2Rl
+KCBkYl9saW5rLCBudWxsLCAnJywgJ0AnIHx8IGRiX2xpbmsgKSAiCiAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICJmcm9tIGFsbF9zeW5vbnltcyB3aGVyZSAob3duZXIgPSAnUFVCTElD
+JyBvciBvd25lciA9ICVzKSBhbmQgc3lub255bV9uYW1lID0gJyVzJzsiKQogICAgICAgICAgICAg
+ICAgICAgICAgICAgKGlmIHNjaGVtYS1uYW1lIChjb25jYXQgIiciICh1cGNhc2Ugc2NoZW1hLW5h
+bWUpICInIikgInVzZXIiKQogICAgICAgICAgICAgICAgICAgICAgICAgKHVwY2FzZSBuYW1lKSkp
+CiAgICAgICAgICAgICAgICAoKGVxdWFsIHR5cGUgIlZJRVciKQogICAgICAgICAgICAgICAgIChp
+ZiBzY2hlbWEtbmFtZSAoZm9ybWF0ICJzZWxlY3QgJ3ZpZXcgJXMuJyB8fCB2aWV3X25hbWUgfHwg
+JyBhcyAnLCB0ZXh0IGZyb20gYWxsX3ZpZXdzIHdoZXJlIG93bmVyID0gJyVzJyBhbmQgdmlld19u
+YW1lID0gJyVzJzsiCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgKHVw
+Y2FzZSBzY2hlbWEtbmFtZSkgKHVwY2FzZSBzY2hlbWEtbmFtZSkgKHVwY2FzZSBuYW1lKSkKICAg
+ICAgICAgICAgICAgICAgIChmb3JtYXQgInNlbGVjdCAndmlldyAnIHx8IHZpZXdfbmFtZSB8fCAn
+IGFzICcsIHRleHQgZnJvbSB1c2VyX3ZpZXdzIHdoZXJlIHZpZXdfbmFtZSA9ICclcyc7IiAodXBj
+YXNlIG5hbWUpKSkpCgkJKChvciAoZXF1YWwgdHlwZSAiUFJPQ0VEVVJFIikKCQkgICAgIChlcXVh
+bCB0eXBlICJGVU5DVElPTiIpKQoJCSAoaWYgc2NoZW1hLW5hbWUgKGZvcm1hdCAic2VsZWN0IHRl
+eHQgZnJvbSBhbGxfc291cmNlIHdoZXJlIG93bmVyID0gJyVzJyBhbmQgbmFtZSA9ICclcycgYW5k
+IHR5cGUgaW4gKCdQUk9DRURVUkUnLCAnRlVOQ1RJT04nKSBvcmRlciBieSBsaW5lOyIKICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAodXBjYXNlIHNjaGVtYS1uYW1lKSAo
+dXBjYXNlIG5hbWUpKQogICAgICAgICAgICAgICAgICAgKGZvcm1hdCAic2VsZWN0IHRleHQgZnJv
+bSB1c2VyX3NvdXJjZSB3aGVyZSBuYW1lID0gJyVzJyBhbmQgdHlwZSBpbiAoJ1BST0NFRFVSRScs
+ICdGVU5DVElPTicpIG9yZGVyIGJ5IGxpbmU7IgogICAgICAgICAgICAgICAgICAgICAgICAgICAo
+dXBjYXNlIG5hbWUpKSkpCiAgICAgICAgICAgICAgICAodAogICAgICAgICAgICAgICAgIChpZiBz
+Y2hlbWEtbmFtZSAoZm9ybWF0ICJzZWxlY3QgdGV4dCBmcm9tIGFsbF9zb3VyY2Ugd2hlcmUgb3du
+ZXIgPSAnJXMnIGFuZCBuYW1lID0gJyVzJyBhbmQgdHlwZSA9ICclcycgb3JkZXIgYnkgbGluZTsi
+CiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgKHVwY2FzZSBzY2hlbWEt
+bmFtZSkgKHVwY2FzZSBuYW1lKSAodXBjYXNlIHR5cGUpKQogICAgICAgICAgICAgICAgICAgKGZv
+cm1hdCAic2VsZWN0IHRleHQgZnJvbSB1c2VyX3NvdXJjZSB3aGVyZSBuYW1lID0gJyVzJyBhbmQg
+dHlwZSA9ICclcycgb3JkZXIgYnkgbGluZTsiCiAgICAgICAgICAgICAgICAgICAgICAgICAgICh1
+cGNhc2UgbmFtZSkgKHVwY2FzZSB0eXBlKSkpKSkpCiAgICAgICAgIChwcm9sb2ctY29tbWFuZHMg
+KGxpc3QgInNldCBlY2hvIG9mZiIKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAic2V0
+IG5ld3BhZ2UgMCIKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAic2V0IHNwYWNlIDAi
+CiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgInNldCBwYWdlc2l6ZSAwIgogICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICJzZXQgZmVlZGJhY2sgb2ZmIgogICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICJzZXQgbG9uZyA0MDAwIgogICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICJzZXQgbG9uZ2NodW5rc2l6ZSA0MDAwIgogICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICJzZXQgd3JhcCBvbiIKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAi
+c2V0IGhlYWRpbmcgb2ZmIgogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICJzZXQgdHJp
+bXNwb29sIG9uIgogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICJzZXQgbGluZXNpemUg
+NDAwMCIKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAic2V0IHRpbWluZyBvZmYiKSkK
+ICAgICAgICAgKGV4dGVuc2lvbiAoaWYgKGVxdWFsIChkb3duY2FzZSB0eXBlKSAicGFja2FnZSIp
+ICJwa3MiICJzcWwiKSkKICAgICAgICAgKHNvdXJjZS1idWZmZXItbmFtZSAoY29uY2F0ICIgIiAo
+dXBjYXNlIG5hbWUpICIuIiBleHRlbnNpb24pKQogICAgICAgICAoY29udGV4dC1vcHRpb25zIChs
+aXN0IChjb25zIDpkb250LXBhcnNlLXJlc3VsdCAnZG9udC1wYXJzZSkKICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAoY29ucyA6c291cmNlLXRleHQgbmlsKQogICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgIChjb25zIDpzb3VyY2UtdHlwZSB0eXBlKQogICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgIChjb25zIDpzb3VyY2UtbmFtZSBuYW1lKQoJCQkJKGNvbnMgOnNvdXJj
+ZS1leHRlbnNpb24gZXh0ZW5zaW9uKQogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIChj
+b25zIDpyZXN1bHQtZnVuY3Rpb24gJ3NxbHBsdXMtZ2V0LXNvdXJjZS1mdW5jdGlvbikpKSkKICAg
+IChzcWxwbHVzLWV4ZWN1dGUgY29ubmVjdC1zdHJpbmcgc3FsIGNvbnRleHQtb3B0aW9ucyBwcm9s
+b2ctY29tbWFuZHMgdCB0KQogICAgKHNxbHBsdXMtZXhlY3V0ZSBjb25uZWN0LXN0cmluZyAoZm9y
+bWF0ICJzZWxlY3QgJyVzJyBmcm9tIGR1YWw7IiBzcWxwbHVzLWVuZC1vZi1zb3VyY2Utc2VudGlu
+ZWwpIGNvbnRleHQtb3B0aW9ucyBwcm9sb2ctY29tbWFuZHMgdCB0KSkpCgooZGVmdW4gc3FscGx1
+cy1jYW5vbml6ZS1maWxlLW5hbWUgKGZpbGUtbmFtZSByZWdleHApCiAgKHdoaWxlIChzdHJpbmct
+bWF0Y2ggcmVnZXhwIGZpbGUtbmFtZSkKICAgIChzZXRxIGZpbGUtbmFtZSAocmVwbGFjZS1tYXRj
+aCAiISIgbmlsIHQgZmlsZS1uYW1lKSkpCiAgZmlsZS1uYW1lKQoKKGRlZnVuIHNxbHBsdXMtZGVm
+aW5lLXVzZXItdmFyaWFibGVzIChzdHJpbmcpCiAgKHdoZW4gc3RyaW5nCiAgICAobGV0ICh2YXJp
+YWJsZXMtbGlzdAogICAgICAgICAgZGVmaW5lLWNvbW1hbmRzCiAgICAgICAgICAoaW5kZXggMCkp
+CiAgICAgICh3aGlsZSAoc2V0cSBpbmRleCAoc3RyaW5nLW1hdGNoICImK1xcKFxcKFxcc3dcXHxc
+XHNfXFwpK1xcKSIgc3RyaW5nIGluZGV4KSkKICAgICAgICAobGV0ICgodmFyLW5hbWUgKG1hdGNo
+LXN0cmluZyAxIHN0cmluZykpKQogICAgICAgICAgKHNldHEgaW5kZXggKCsgMiBpbmRleCkpCiAg
+ICAgICAgICAodW5sZXNzIChtZW1iZXIgdmFyLW5hbWUgdmFyaWFibGVzLWxpc3QpCiAgICAgICAg
+ICAgIChwdXNoIHZhci1uYW1lIHZhcmlhYmxlcy1saXN0KSkpKQogICAgICAoZG9saXN0ICh2YXIt
+bmFtZSAocmV2ZXJzZSB2YXJpYWJsZXMtbGlzdCkpCiAgICAgICAgKGxldCogKChkZWZhdWx0LXZh
+bHVlIChnZXRoYXNoIHZhci1uYW1lIHNxbHBsdXMtdXNlci12YXJpYWJsZXMgbmlsKSkKICAgICAg
+ICAgICAgICAgKHZhbHVlIChyZWFkLXN0cmluZyAoZm9ybWF0IChjb25jYXQgIlZhcmlhYmxlIHZh
+bHVlIGZvciAlcyIgKGlmIGRlZmF1bHQtdmFsdWUgKGZvcm1hdCAiIFtkZWZhdWx0OiAlc10iIGRl
+ZmF1bHQtdmFsdWUpICIiKSAiOiAiKSB2YXItbmFtZSkKICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICBuaWwgJ3NxbHBsdXMtdXNlci12YXJpYWJsZXMtaGlzdG9yeSBkZWZhdWx0LXZh
+bHVlKSkpCiAgICAgICAgICAodW5sZXNzIHZhbHVlCiAgICAgICAgICAgIChlcnJvciAiVGhlcmUg
+aXMgbm8gdmFsdWUgZm9yICVzIGRlZmluZWQiIHZhci1uYW1lKSkKICAgICAgICAgIChzZXRxIGRl
+ZmluZS1jb21tYW5kcyAoY29ucyAoZm9ybWF0ICJkZWZpbmUgJXM9JXMiIHZhci1uYW1lIHZhbHVl
+KSBkZWZpbmUtY29tbWFuZHMpKQogICAgICAgICAgKHB1dGhhc2ggdmFyLW5hbWUgdmFsdWUgc3Fs
+cGx1cy11c2VyLXZhcmlhYmxlcykpKQogICAgICBkZWZpbmUtY29tbWFuZHMpKSkKICAgIAooZGVm
+dW4gc3FscGx1cy1wYXJzZS1yZWdpb24gKHN0YXJ0IGVuZCkKICAobGV0ICgoc3FsIChidWZmZXIt
+c3Vic3RyaW5nIHN0YXJ0IGVuZCkpKQogICAgKHNhdmUtZXhjdXJzaW9uCiAgICAgIDs7IFN0cmlw
+IHdoaXRlc3BhY2UgZnJvbSBiZWdpbm5pbmcgYW5kIGVuZCwganVzdCB0byBiZSBuZWF0LgogICAg
+ICAoaWYgKHN0cmluZy1tYXRjaCAiXFxgWyBcdFxuXSsiIHNxbCkKICAgICAgICAgIChzZXRxIHNx
+bCAoc3Vic3RyaW5nIHNxbCAobWF0Y2gtZW5kIDApKSkpCiAgICAgIChpZiAoc3RyaW5nLW1hdGNo
+ICJbIFx0XG5dK1xcJyIgc3FsKQogICAgICAgICAgKHNldHEgc3FsIChzdWJzdHJpbmcgc3FsIDAg
+KG1hdGNoLWJlZ2lubmluZyAwKSkpKQogICAgICAoc2V0cSBzcWwgKHJlcGxhY2UtcmVnZXhwLWlu
+LXN0cmluZyAiXlsgXHRdKi0tLipbXG5dPyIgIiIgc3FsKSkKICAgICAgKHdoZW4gKHplcm9wIChs
+ZW5ndGggc3FsKSkKCShlcnJvciAiTm90aGluZyB0byBzZW5kIikpCiAgICAgIDs7IE5vdyB0aGUg
+c3RyaW5nIHNob3VsZCBlbmQgd2l0aCBhbiBzcWxwbHVzLXRlcm1pbmF0b3IuCiAgICAgIChpZiAo
+bm90IChzdHJpbmctbWF0Y2ggIlxcKDtcXHwvXFx8Wy5dXFwpXFwnIiBzcWwpKQogICAgICAgICAg
+KHNldHEgc3FsIChjb25jYXQgc3FsICI7IikpKSkKICAgIHNxbCkpCgooZGVmdW4gc3FscGx1cy1z
+aG93LWh0bWwtZnVuIChjb250ZXh0IGNvbm5lY3Qtc3RyaW5nIGJlZ2luIGVuZCBpbnRlcnJ1cHRl
+ZCkKICAobGV0ICgob3V0cHV0LWZpbGUgKGV4cGFuZC1maWxlLW5hbWUgKHN1YnN0aXR1dGUtaW4t
+ZmlsZS1uYW1lIHNxbHBsdXMtaHRtbC1vdXRwdXQtZmlsZS1uYW1lKSkpCiAgICAgICAgKHNxbCAo
+c3FscGx1cy1nZXQtY29udGV4dC12YWx1ZSBjb250ZXh0IDpodG1saXplZC1odG1sLWNvbW1hbmQp
+KQogICAgICAgIChodG1sIChidWZmZXItc3Vic3RyaW5nIGJlZ2luIGVuZCkpCiAgICAgICAgKGhl
+YWRlci1odG1sIChldmFsIHNxbHBsdXMtaHRtbC1vdXRwdXQtaGVhZGVyKSkpCiAgICAobGV0ICgo
+Y2FzZS1mb2xkLXNlYXJjaCB0KSkKICAgICAgKHdoaWxlIChhbmQgKHN0cmluZy1tYXRjaCAiXFxg
+WyBcdFxuXSpcXCg8YnI+XFx8PHA+XFwpPyIgaHRtbCkgKG1hdGNoLXN0cmluZyAwIGh0bWwpICg+
+IChsZW5ndGggKG1hdGNoLXN0cmluZyAwIGh0bWwpKSAwKSkKICAgICAgICAoc2V0cSBodG1sIChy
+ZXBsYWNlLW1hdGNoICIiIG5pbCB0IGh0bWwpKSkKICAgICAgKHdoZW4gKD4gKGxlbmd0aCBodG1s
+KSAwKQogICAgICAgIChzcWxwbHVzLWV4ZWN1dGUgY29ubmVjdC1zdHJpbmcgIiIgbmlsICcoInNl
+dCBtYXJrdXAgaHRtbCBvZmYiKSAnbm8tZWNobyAnZG9udC1zaG93LW91dHB1dC1idWZmZXIpCiAg
+ICAgICAgKGZpbmQtZmlsZSBvdXRwdXQtZmlsZSkKICAgICAgICAoZXJhc2UtYnVmZmVyKQogICAg
+ICAgIChpbnNlcnQgKGNvbmNhdCAiPGh0bWw+XG4iCiAgICAgICAgICAgICAgICAgICAgICAgICI8
+aGVhZD5cbiIKICAgICAgICAgICAgICAgICAgICAgICAgIiAgPG1ldGEgaHR0cC1lcXVpdj1cImNv
+bnRlbnQtdHlwZVwiIGNvbnRlbnQ9XCJ0ZXh0L2h0bWw7IGNoYXJzZXQ9IiBzcWxwbHVzLWh0bWwt
+b3V0cHV0LWVuY29kaW5nICJcIj5cbiIKICAgICAgICAgICAgICAgICAgICAgICAgKHNxbHBsdXMt
+Z2V0LWNvbnRleHQtdmFsdWUgY29udGV4dCA6aGVhZCkgIlxuIgogICAgICAgICAgICAgICAgICAg
+ICAgICAiPC9oZWFkPlxuIgogICAgICAgICAgICAgICAgICAgICAgICAiPGJvZHkgIiAoc3FscGx1
+cy1nZXQtY29udGV4dC12YWx1ZSBjb250ZXh0IDpib2R5KSAiPlxuIgogICAgICAgICAgICAgICAg
+ICAgICAgICAoaWYgaGVhZGVyLWh0bWwgaGVhZGVyLWh0bWwgIiIpCiAgICAgICAgICAgICAgICAg
+ICAgICAgIChpZiBzcWxwbHVzLWh0bWwtb3V0cHV0LXNxbCBzcWwgIiIpCiAgICAgICAgICAgICAg
+ICAgICAgICAgICI8cD4iCiAgICAgICAgICAgICAgICAgICAgICAgIGh0bWwgIlxuIgogICAgICAg
+ICAgICAgICAgICAgICAgICAiPC9ib2R5PlxuIgogICAgICAgICAgICAgICAgICAgICAgICAiPC9o
+dG1sPiIpKQogICAgICAgIChnb3RvLWNoYXIgKHBvaW50LW1pbikpCiAgICAgICAgKHNhdmUtYnVm
+ZmVyKSkpKSkKCihkZWZ1biBzcWxwbHVzLXJlZmluZS1odG1sIChodG1sIHJlbW92ZS1lbnRpdGll
+cykKICAoc3RyaW5nLW1hdGNoICJcXGBcIj9cXChcXCguXFx8XG5cXCkqP1xcKVwiP1sgXHRcbl0q
+XFwnIiBodG1sKQogIChzZXRxIGh0bWwgKG1hdGNoLXN0cmluZyAxIGh0bWwpKQogIChpZiByZW1v
+dmUtZW50aXRpZXMKICAgICAgKHByb2duCiAgICAgICAgKHdoaWxlIChzdHJpbmctbWF0Y2ggIiZx
+dW90OyIgaHRtbCkgKHNldHEgaHRtbCAocmVwbGFjZS1tYXRjaCAiXCIiIG5pbCB0IGh0bWwpKSkK
+ICAgICAgICAod2hpbGUgKHN0cmluZy1tYXRjaCAiJmx0OyIgaHRtbCkgKHNldHEgaHRtbCAocmVw
+bGFjZS1tYXRjaCAiPCIgbmlsIHQgaHRtbCkpKQogICAgICAgICh3aGlsZSAoc3RyaW5nLW1hdGNo
+ICImZ3Q7IiBodG1sKSAoc2V0cSBodG1sIChyZXBsYWNlLW1hdGNoICI+IiBuaWwgdCBodG1sKSkp
+CiAgICAgICAgKHdoaWxlIChzdHJpbmctbWF0Y2ggIiZhbXA7IiBodG1sKSAoc2V0cSBodG1sIChy
+ZXBsYWNlLW1hdGNoICImIiBuaWwgdCBodG1sKSkpKQogICAgKHdoaWxlIChzdHJpbmctbWF0Y2gg
+IiYiIGh0bWwpIChzZXRxIGh0bWwgKHJlcGxhY2UtbWF0Y2ggIiZhbXA7IiBuaWwgdCBodG1sKSkp
+CiAgICAod2hpbGUgKHN0cmluZy1tYXRjaCAiPiIgaHRtbCkgKHNldHEgaHRtbCAocmVwbGFjZS1t
+YXRjaCAiJmd0OyIgbmlsIHQgaHRtbCkpKQogICAgKHdoaWxlIChzdHJpbmctbWF0Y2ggIjwiIGh0
+bWwpIChzZXRxIGh0bWwgKHJlcGxhY2UtbWF0Y2ggIiZsdDsiIG5pbCB0IGh0bWwpKSkKICAgICh3
+aGlsZSAoc3RyaW5nLW1hdGNoICJcIiIgaHRtbCkgKHNldHEgaHRtbCAocmVwbGFjZS1tYXRjaCAi
+JnF1b3Q7IiBuaWwgdCBodG1sKSkpKQogIChzdHJpbmctbWF0Y2ggIlxcYFwiP1xcKFxcKC5cXHxc
+blxcKSo/XFwpXCI/WyBcdFxuXSpcXCciIGh0bWwpCiAgKHNldHEgaHRtbCAobWF0Y2gtc3RyaW5n
+IDEgaHRtbCkpCiAgaHRtbCkKCihkZWZ1biBzcWxwbHVzLXNob3ctbWFya3VwLWZ1biAoY29udGV4
+dCBjb25uZWN0LXN0cmluZyBiZWdpbiBlbmQgaW50ZXJydXB0ZWQpCiAgKGdvdG8tY2hhciBiZWdp
+bikKICAobGV0ICgoaGVhZCAiIikKICAgICAgICAoYm9keSAiIikKICAgICAgICBwcmVmb3JtYXQp
+CiAgICAod2hlbiAocmUtc2VhcmNoLWZvcndhcmQgKGNvbmNhdCAiXFxiSEVBRFxcYlsgXHRcbl0q
+XFwoXFwoLlxcfFxuXFwpKlxcKVsgXHRcbl0qIgogICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgIlxcYkJPRFlcXGJbIFx0XG5dKlxcKFxcKC5cXHxcblxcKSpcXClbIFx0XG5dKiIK
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICJcXGJUQUJMRVxcYlxcKC5cXHxc
+blxcKSpQUkVGT1JNQVRbIFx0XG5dK1xcKE9OXFx8T0ZGXFwpXFxiIikgbmlsIHQpCiAgICAgIChz
+ZXRxIGhlYWQgKG1hdGNoLXN0cmluZyAxKQogICAgICAgICAgICBib2R5IChtYXRjaC1zdHJpbmcg
+MykKICAgICAgICAgICAgcHJlZm9ybWF0IChzdHJpbmc9IChkb3duY2FzZSAobWF0Y2gtc3RyaW5n
+IDYpKSAib24iKSkKICAgICAgKHNldHEgaGVhZCAoc3FscGx1cy1yZWZpbmUtaHRtbCBoZWFkIHQp
+CiAgICAgICAgICAgIGJvZHkgKHNxbHBsdXMtcmVmaW5lLWh0bWwgYm9keSB0KSkKICAgICAgKGxl
+dCAoKGNvbnRleHQtb3B0aW9ucyAobGlzdCAoY29ucyA6cmVzdWx0LWZ1bmN0aW9uICdzcWxwbHVz
+LXNob3ctaHRtbC1mdW4pCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgKGNvbnMg
+OmN1cnJlbnQtY29tbWFuZC1pbnB1dC1idWZmZXItbmFtZSAoc3FscGx1cy1nZXQtY29udGV4dC12
+YWx1ZSBjb250ZXh0IDpjdXJyZW50LWNvbW1hbmQtaW5wdXQtYnVmZmVyLW5hbWUpKQogICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgIChjb25zIDpodG1sLWNvbW1hbmQgKHNxbHBsdXMt
+Z2V0LWNvbnRleHQtdmFsdWUgY29udGV4dCA6aHRtbC1jb21tYW5kKSkKICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAoY29ucyA6aHRtbGl6ZWQtaHRtbC1jb21tYW5kIChzcWxwbHVz
+LWdldC1jb250ZXh0LXZhbHVlIGNvbnRleHQgOmh0bWxpemVkLWh0bWwtY29tbWFuZCkpCiAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgKGNvbnMgOmhlYWQgaGVhZCkKICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAoY29ucyA6Ym9keSBib2R5KSkpCiAgICAgICAgICAg
+IChwcm9sb2ctY29tbWFuZHMgKGxpc3QgInNldCB3cmFwIG9uIgogICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgIChmb3JtYXQgInNldCBsaW5lc2l6ZSAlUyIgKGlmIHByZWZvcm1hdCAo
+MS0gKGZyYW1lLXdpZHRoKSkgNDAwMCkpCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgInNldCBwYWdlc2l6ZSA1MDAwMCIKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAiYnRpdGxlIG9mZiIKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAicmVwZm9v
+dGVyIG9mZiIKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAic2V0IG1hcmt1cCBo
+dG1sIG9uIikpKQogICAgICAgIChzcWxwbHVzLWV4ZWN1dGUgY29ubmVjdC1zdHJpbmcgKHNxbHBs
+dXMtZ2V0LWNvbnRleHQtdmFsdWUgY29udGV4dCA6aHRtbC1jb21tYW5kKSBjb250ZXh0LW9wdGlv
+bnMgcHJvbG9nLWNvbW1hbmRzICduby1lY2hvICdkb250LXNob3ctb3V0cHV0LWJ1ZmZlcikpKSkp
+CgooZGVmdW4gc3FscGx1cy1odG1saXplIChiZWdpbiBlbmQpCiAgKGxldCAocmVzdWx0KQogICAg
+KHdoZW4gKGZlYXR1cmVwICdodG1saXplKQogICAgICAobGV0KiAoKGh0bWxpemUtb3V0cHV0LXR5
+cGUgJ2ZvbnQpCiAgICAgICAgICAgICAoYnVmZmVyIChmdW5jYWxsIChzeW1ib2wtZnVuY3Rpb24g
+J2h0bWxpemUtcmVnaW9uKSBiZWdpbiBlbmQpKSkKICAgICAgICAod2l0aC1jdXJyZW50LWJ1ZmZl
+ciBidWZmZXIKICAgICAgICAgIChnb3RvLWNoYXIgMSkKICAgICAgICAgIChyZS1zZWFyY2gtZm9y
+d2FyZCAiPHByZT5bIFx0XG5dKlxcKFxcKC5cXHxcblxcKSo/XFwpWyBcdFxuXSo8L3ByZT4iIG5p
+bCB0KQogICAgICAgICAgKHNldHEgcmVzdWx0IChjb25jYXQgIjxwcmU+IiAobWF0Y2gtc3RyaW5n
+IDEpICI8L3ByZT4iKSkpCiAgICAgICAgKGtpbGwtYnVmZmVyIGJ1ZmZlcikpKQogICAgKHVubGVz
+cyByZXN1bHQKICAgICAgKHNldHEgcmVzdWx0IChzcWxwbHVzLXJlZmluZS1odG1sIChidWZmZXIt
+c3Vic3RyaW5nIGJlZ2luIGVuZCkgbmlsKSkpCiAgICByZXN1bHQpKQoKKGRlZnVuIHNxbHBsdXMt
+LXNlbmQgKGNvbm5lY3Qtc3RyaW5nIHNxbCAmb3B0aW9uYWwgYXJnIG5vLWVjaG8gaHRtbCBzdGFy
+dCBlbmQpCiAgKGlmIGh0bWwKICAgICAgKGxldCogKChjb250ZXh0LW9wdGlvbnMgKGxpc3QgKGNv
+bnMgOnJlc3VsdC1mdW5jdGlvbiAnc3FscGx1cy1zaG93LW1hcmt1cC1mdW4pCiAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgIChjb25zIDpjdXJyZW50LWNvbW1hbmQtaW5wdXQtYnVm
+ZmVyLW5hbWUgKGJ1ZmZlci1uYW1lKSkKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgKGNvbnMgOmh0bWwtY29tbWFuZCBzcWwpCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgIChjb25zIDpodG1saXplZC1odG1sLWNvbW1hbmQgKGlmIChhbmQgKGVxIHNxbHBsdXMt
+aHRtbC1vdXRwdXQtc3FsICdlbGVnYW50KSAoZmVhdHVyZXAgJ2h0bWxpemUpKQogICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAoc3FscGx1cy1odG1saXplIHN0YXJ0IGVuZCkKICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIChzcWxwbHVzLXJlZmluZS1o
+dG1sIHNxbCBuaWwpKSkpKSkKCShzcWxwbHVzLWV4ZWN1dGUgY29ubmVjdC1zdHJpbmcgInNob3cg
+bWFya3VwXG4iIGNvbnRleHQtb3B0aW9ucyBuaWwgJ25vLWVjaG8gJ2RvbnQtc2hvdy1vdXRwdXQt
+YnVmZmVyKSkKICAgIChsZXQqICgobm8tcGFyc2UgKGNvbnNwIGFyZykpCgkgICAoY29udGV4dC1v
+cHRpb25zIChsaXN0IChjb25zIDpkb250LXBhcnNlLXJlc3VsdCAoY29uc3AgYXJnKSkKICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgIChjb25zIDpjb2x1bW5zLWNvdW50IChpZiAoaW50
+ZWdlcnAgYXJnKQogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgIChpZiAoemVyb3AgYXJnKSBuaWwgYXJnKQogICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAoaWYgc3FscGx1cy1tdWx0aS1v
+dXRwdXQtdGFibGVzLWRlZmF1bHQtZmxhZyBuaWwgMSkpKQogICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgKGNvbnMgOmN1cnJlbnQtY29tbWFuZC1pbnB1dC1idWZmZXItbmFtZSAoYnVm
+ZmVyLW5hbWUpKSkpCiAgICAgICAgICAgKHByb2xvZy1jb21tYW5kcyAobGlzdCAoZm9ybWF0ICJz
+ZXQgd3JhcCAlcyIgKGlmIG5vLXBhcnNlICJvbiIgc3FscGx1cy1kZWZhdWx0LXdyYXApKQogICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgKGZvcm1hdCAic2V0IGxpbmVzaXplICVzIiAo
+aWYgKGNvbnNwIGFyZykgKDEtIChmcmFtZS13aWR0aCkpIDQwMDApKQogICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgKGZvcm1hdCAic2V0IHBhZ2VzaXplICVTIiAoaWYgbm8tcGFyc2Ug
+NTAwMDAgc3FscGx1cy1wYWdlc2l6ZSkpCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAoZm9ybWF0ICJidGl0bGUgJXMiCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgIChpZiBuby1wYXJzZSAib2ZmIiAoY29uY2F0ICJsZWZ0ICciIHNxbHBsdXMtcGFnZS1z
+ZXBhcmF0b3IgIiciKSkpCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAoZm9ybWF0
+ICJyZXBmb290ZXIgJXMiCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+IChpZiBuby1wYXJzZSAib2ZmIiAoY29uY2F0ICJsZWZ0ICciIHNxbHBsdXMtcmVwZm9vdGVyICIn
+IikpKSkpKQogICAgICAoc3FscGx1cy1leGVjdXRlIGNvbm5lY3Qtc3RyaW5nIHNxbCBjb250ZXh0
+LW9wdGlvbnMgcHJvbG9nLWNvbW1hbmRzIG5vLWVjaG8pKSkpCgooZGVmdW4gc3FscGx1cy1leHBs
+YWluICgpCiAgKGludGVyYWN0aXZlKQogIChzcWxwbHVzLWNoZWNrLWNvbm5lY3Rpb24pCiAgKHdo
+ZW4gKGJ1ZmZlci1maWxlLW5hbWUpCiAgICAoY29uZGl0aW9uLWNhc2UgZXJyCgkoc2F2ZS1idWZm
+ZXIpCiAgICAgIChlcnJvciAobWVzc2FnZSAoZXJyb3ItbWVzc2FnZS1zdHJpbmcgZXJyKSkpKSkK
+ICAobGV0KiAoKHJlZ2lvbiAoc3FscGx1cy1tYXJrLWN1cnJlbnQpKSkKICAgIChzZXRxIHNxbHBs
+dXMtcmVnaW9uLWJlZ2lubmluZy1wb3MgKGNhciByZWdpb24pCiAgICAgICAgICBzcWxwbHVzLXJl
+Z2lvbi1lbmQtcG9zIChjZHIgcmVnaW9uKSkKICAgIChpZiAoYW5kIHNxbHBsdXMtcmVnaW9uLWJl
+Z2lubmluZy1wb3Mgc3FscGx1cy1yZWdpb24tZW5kLXBvcykKCShsZXQgKChzcWwgKHNxbHBsdXMt
+cGFyc2UtcmVnaW9uIChjYXIgcmVnaW9uKSAoY2RyIHJlZ2lvbikpKQoJICAgICAgKGNhc2UtZm9s
+ZC1zZWFyY2ggdCkpCgkgIChpZiAoc3RyaW5nLW1hdGNoICJeW1xuXHQgXSpleHBsYWluW1xuXHQg
+XStwbGFuW1x0XHQgXStmb3JcXD4iIHNxbCkKCSAgICAgIChzcWxwbHVzLS1zZW5kIHNxbHBsdXMt
+Y29ubmVjdC1zdHJpbmcgc3FsIG5pbCBuaWwgbmlsKQoJICAgIChzZXRxIHNxbCAoY29uY2F0IChz
+cWxwbHVzLWZvbnRpZnktc3RyaW5nIHNxbHBsdXMtY29ubmVjdC1zdHJpbmcgImV4cGxhaW4gcGxh
+biBmb3IgIikgc3FsKSkKCSAgICAoc3FscGx1cy0tc2VuZCBzcWxwbHVzLWNvbm5lY3Qtc3RyaW5n
+IHNxbCBuaWwgbmlsIG5pbCkpKQogICAgICAoZXJyb3IgIlBvaW50IGRvZXNuJ3QgaW5kaWNhdGUg
+YW55IGNvbW1hbmQgdG8gZXhlY3V0ZSIpKSkpCiAgICAgIAooZGVmdW4gc3FscGx1cy1zZW5kLXJl
+Z2lvbiAoYXJnIHN0YXJ0IGVuZCAmb3B0aW9uYWwgbm8tZWNobyBodG1sKQogICJTZW5kIGEgcmVn
+aW9uIHRvIHRoZSBTUUwqUGx1cyBwcm9jZXNzLiIKICAoaW50ZXJhY3RpdmUgIlBcbnIiKQogIChz
+cWxwbHVzLWNoZWNrLWNvbm5lY3Rpb24pCiAgKHNxbHBsdXMtLXNlbmQgc3FscGx1cy1jb25uZWN0
+LXN0cmluZyAoc3FscGx1cy1wYXJzZS1yZWdpb24gc3RhcnQgZW5kKSBhcmcgbm8tZWNobyBodG1s
+IHN0YXJ0IGVuZCkpCgooZGVmdW4gc3FscGx1cy11c2VyLWNvbW1hbmQgKGNvbm5lY3Qtc3RyaW5n
+IHNxbCByZXN1bHQtcHJvYykKICAobGV0KiAoKGNvbnRleHQtb3B0aW9ucyAobGlzdCAoY29ucyA6
+dXNlci1mdW5jdGlvbiByZXN1bHQtcHJvYykKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAoY29ucyA6Y29sdW1ucy1jb3VudCAxKSkpCiAgICAgICAgKHByb2xvZy1jb21tYW5kcyAobGlz
+dCAoZm9ybWF0ICJzZXQgd3JhcCAlcyIgc3FscGx1cy1kZWZhdWx0LXdyYXApCiAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAic2V0IGxpbmVzaXplIDQwMDAiCgkJCSAgICAgICAic2V0IHRp
+bWluZyBvZmYiCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAic2V0IHBhZ2VzaXplIDUw
+MDAwIgogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgImJ0aXRsZSBvZmYiCiAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAoZm9ybWF0ICJyZXBmb290ZXIgJXMiIChjb25jYXQgImxl
+ZnQgJyIgc3FscGx1cy1yZXBmb290ZXIgIiciKSkpKSkKICAgIChzcWxwbHVzLWV4ZWN1dGUgY29u
+bmVjdC1zdHJpbmcgc3FsIGNvbnRleHQtb3B0aW9ucyBwcm9sb2ctY29tbWFuZHMgJ25vLWVjaG8g
+J2RvbnQtc2hvdy1vdXRwdXQtYnVmZmVyKSkpCiAgCgooZGVmdW4gc3FscGx1cy1oaWRkZW4tc2Vs
+ZWN0IChjb25uZWN0LXN0cmluZyBzcWwgcmVzdWx0LXByb2MpCiAgKGxldCogKChjb250ZXh0LW9w
+dGlvbnMgKGxpc3QgKGNvbnMgOnJlc3VsdC10YWJsZS1mdW5jdGlvbiByZXN1bHQtcHJvYykKICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAoY29ucyA6Y29sdW1ucy1jb3VudCAxKSkpCiAg
+ICAgICAgKHByb2xvZy1jb21tYW5kcyAobGlzdCAoZm9ybWF0ICJzZXQgd3JhcCAlcyIgc3FscGx1
+cy1kZWZhdWx0LXdyYXApCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAic2V0IGxpbmVz
+aXplIDQwMDAiCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAic2V0IHBhZ2VzaXplIDUw
+MDAwIgogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgImJ0aXRsZSBvZmYiCiAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAoZm9ybWF0ICJyZXBmb290ZXIgJXMiIChjb25jYXQgImxl
+ZnQgJyIgc3FscGx1cy1yZXBmb290ZXIgIiciKSkpKSkKICAgIChzcWxwbHVzLWV4ZWN1dGUgY29u
+bmVjdC1zdHJpbmcgc3FsIGNvbnRleHQtb3B0aW9ucyBwcm9sb2ctY29tbWFuZHMgJ25vLWVjaG8g
+J2RvbnQtc2hvdy1vdXRwdXQtYnVmZmVyKSkpCgo7OyAiYXBwaVtuZm9dIiAtPiAnKCJhcHBpbmZv
+IiAiYXBwaSIpCihkZWZ1biBzcWxwbHVzLWZ1bGwtZm9ybXMgKG5hbWUpCiAgKGlmIChzdHJpbmct
+bWF0Y2ggIlxcYFxcKFteW10qXFwpP1xcW1xcKFteXV0rXFwpXFxdXFwoW15dXSpcXCk/XFwnIiBu
+YW1lKQogICAgICAobGlzdCAocmVwbGFjZS1tYXRjaCAiXFwxXFwyXFwzIiB0IG5pbCBuYW1lKQog
+ICAgICAgICAgICAocmVwbGFjZS1tYXRjaCAiXFwxXFwzIiB0IG5pbCBuYW1lKSkKICAgIChsaXN0
+IG5hbWUpKSkKCihkZWZ1biBzcWxwbHVzLWdldC1jYW5vbmljYWwtY29tbWFuZC1uYW1lIChuYW1l
+KQogIChsZXQgKChhc3NvY2lhdGlvbiAoYXNzb2MgKGRvd25jYXNlIG5hbWUpIHNxbHBsdXMtc3lz
+dGVtLXZhcmlhYmxlcykpKQogICAgKGlmIGFzc29jaWF0aW9uIChjZHIgYXNzb2NpYXRpb24pIG5h
+bWUpKSkKICAgIAoKKGRlZnVuIHNxbHBsdXMtZXhlY3V0ZSAoY29ubmVjdC1zdHJpbmcgc3FsIGNv
+bnRleHQtb3B0aW9ucyBwcm9sb2ctY29tbWFuZHMgJm9wdGlvbmFsIG5vLWVjaG8gZG9udC1zaG93
+LW91dHB1dC1idWZmZXIpCiAgKHNxbHBsdXMtdmVyaWZ5LWJ1ZmZlciBjb25uZWN0LXN0cmluZykK
+ICAobGV0KiAoKHByb2Nlc3MtYnVmZmVyLW5hbWUgKHNxbHBsdXMtZ2V0LXByb2Nlc3MtYnVmZmVy
+LW5hbWUgY29ubmVjdC1zdHJpbmcpKQogICAgICAgICAocHJvY2Vzcy1idWZmZXIgKGdldC1idWZm
+ZXIgcHJvY2Vzcy1idWZmZXItbmFtZSkpCiAgICAgICAgIChvdXRwdXQtYnVmZmVyLW5hbWUgKHNx
+bHBsdXMtZ2V0LW91dHB1dC1idWZmZXItbmFtZSBjb25uZWN0LXN0cmluZykpCiAgICAgICAgIChl
+Y2hvLXByb2xvZyAoY29uY2F0ICJcbiIgc3FscGx1cy1vdXRwdXQtc2VwYXJhdG9yICIgIiAoY3Vy
+cmVudC10aW1lLXN0cmluZykgIlxuXG4iKSkKICAgICAgICAgKHByb2Nlc3MgKGdldC1idWZmZXIt
+cHJvY2VzcyBwcm9jZXNzLWJ1ZmZlci1uYW1lKSkKICAgICAgICAgc2V0LXByb2xvZy1jb21tYW5k
+cyBjb21tYW5kcyBjb21tYW5kLW5vCgkgKGhpc3RvcnktYnVmZmVyIChzcWxwbHVzLWdldC1oaXN0
+b3J5LWJ1ZmZlciBjb25uZWN0LXN0cmluZykpCiAgICAgICAgIChkZWZpbmVzIChzcWxwbHVzLWRl
+ZmluZS11c2VyLXZhcmlhYmxlcyBzcWwpKSkKICAgIChzZXRxIHByb2xvZy1jb21tYW5kcyAoYXBw
+ZW5kIChzcWxwbHVzLWluaXRpYWwtc3RyaW5ncykgcHJvbG9nLWNvbW1hbmRzKSkKICAgICh3aGVu
+IHByb2Nlc3MtYnVmZmVyCiAgICAgICh3aXRoLWN1cnJlbnQtYnVmZmVyIHByb2Nlc3MtYnVmZmVy
+Cgkoc2V0cSBjb21tYW5kLW5vIHNxbHBsdXMtY29tbWFuZC1zZXEpCgkoaW5jZiBzcWxwbHVzLWNv
+bW1hbmQtc2VxKQoJKHNldHEgY29udGV4dC1vcHRpb25zIChhcHBlbmQgKGxpc3QgKGNvbnMgOmlk
+IGNvbW1hbmQtbm8pIChjb25zIDpzcWwgc3FsKSkgKGNvcHktbGlzdCBjb250ZXh0LW9wdGlvbnMp
+KSkKCShzZXRxIHNxbHBsdXMtY29tbWFuZC1jb250ZXh0cyAocmV2ZXJzZSAoY29ucyBjb250ZXh0
+LW9wdGlvbnMgKHJldmVyc2Ugc3FscGx1cy1jb21tYW5kLWNvbnRleHRzKSkpKSkpCiAgICA7OyBt
+b3ZlIGFsbCAic2V0IiBjb21tYW5kcyBmcm9tIHByb2xvZy1jb21tYW5kcyB0byBzZXQtcHJvbG9n
+LWNvbW1hbmRzCiAgICAoc2V0cSBwcm9sb2ctY29tbWFuZHMgKGRlbHEgbmlsIChtYXBjYXIgKGxh
+bWJkYSAoY29tbWFuZCkgKGlmIChzdHJpbmctbWF0Y2ggIl5cXHMtKltzU11bZUVdW3RUXVxccy0r
+IiBjb21tYW5kKQogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAocHJvZ24KICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAoc2V0cSBzZXQtcHJvbG9nLWNv
+bW1hbmRzCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgKGFwcGVuZCBzZXQtcHJvbG9nLWNvbW1hbmRzCiAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAobGlzdCAoc3Vic3RyaW5nIGNvbW1hbmQgKGxlbmd0aCAobWF0
+Y2gtc3RyaW5nIDAgY29tbWFuZCkpKSkpKQogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIG5pbCkKICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIGNvbW1hbmQp
+KQogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIHByb2xvZy1jb21t
+YW5kcykpKQogICAgOzsgcmVtb3ZlIGR1cGxpY2F0ZXMgY29tbWFuZHMgZnJvbSBwcm9sb2ctY29t
+bWFuZHMgKGxhc3QgZW50cmllcyB3aW4pCiAgICAobGV0IChzcGMtYWxpc3QpCiAgICAgIChkb2xp
+c3QgKGNvbW1hbmQgcHJvbG9nLWNvbW1hbmRzKQogICAgICAgIChsZXQqICgobmFtZSAocHJvZ24g
+KHN0cmluZy1tYXRjaCAiXlxcUy0rIiBjb21tYW5kKSAoZG93bmNhc2UgKG1hdGNoLXN0cmluZyAw
+IGNvbW1hbmQpKSkpCiAgICAgICAgICAgICAgIChhc3NvY2lhdGlvbiAoYXNzb2MgbmFtZSBzcGMt
+YWxpc3QpKSkKICAgICAgICAgIChpZiAoYW5kIGFzc29jaWF0aW9uIChub3QgKGVxdWFsIG5hbWUg
+ImRlZmluZSIpKSkKICAgICAgICAgICAgICAoc2V0Y2RyIGFzc29jaWF0aW9uIGNvbW1hbmQpCiAg
+ICAgICAgICAgIChzZXRxIHNwYy1hbGlzdCAoY29ucyAoY29ucyBuYW1lIGNvbW1hbmQpIHNwYy1h
+bGlzdCkpKSkpCiAgICAgIChzZXRxIHByb2xvZy1jb21tYW5kcyAobWFwY2FyIChsYW1iZGEgKHBh
+aXIpIChjZHIgcGFpcikpIChyZXZlcnNlIHNwYy1hbGlzdCkpKSkKCiAgICAoc2V0cSBwcm9sb2ct
+Y29tbWFuZHMgKGFwcGVuZCBwcm9sb2ctY29tbWFuZHMgZGVmaW5lcykpCiAgICAoc2V0cSBzZXQt
+cHJvbG9nLWNvbW1hbmRzIChhcHBlbmQgKGxpc3QgKGZvcm1hdCAic3FscHJvbXB0ICclcyVTJXMn
+IiBzcWxwbHVzLXByb21wdC1wcmVmaXggY29tbWFuZC1ubyBzcWxwbHVzLXByb21wdC1zdWZmaXgp
+KSBzZXQtcHJvbG9nLWNvbW1hbmRzKSkKCiAgICA7OyByZW1vdmUgZHVwbGljYXRlcyBmcm9tIHNl
+dC1wcm9sb2ctY29tbWFuZHMgKGxhc3QgZW50cmllcyB3aW4pCiAgICAobGV0IChzcGMtYWxpc3Qp
+CiAgICAgIChkb2xpc3QgKHNldC1jb21tYW5kIHNldC1wcm9sb2ctY29tbWFuZHMpCiAgICAgICAg
+KGxldCogKChuYW1lIChwcm9nbiAoc3RyaW5nLW1hdGNoICJeXFxTLSsiIHNldC1jb21tYW5kKSAo
+ZG93bmNhc2UgKHNxbHBsdXMtZ2V0LWNhbm9uaWNhbC1jb21tYW5kLW5hbWUgKG1hdGNoLXN0cmlu
+ZyAwIHNldC1jb21tYW5kKSkpKSkKICAgICAgICAgICAgICAgKGFzc29jaWF0aW9uIChhc3NvYyBu
+YW1lIHNwYy1hbGlzdCkpKQogICAgICAgICAgKGlmIGFzc29jaWF0aW9uCiAgICAgICAgICAgICAg
+KHNldGNkciBhc3NvY2lhdGlvbiBzZXQtY29tbWFuZCkKICAgICAgICAgICAgKHNldHEgc3BjLWFs
+aXN0IChjb25zIChjb25zIG5hbWUgc2V0LWNvbW1hbmQpIHNwYy1hbGlzdCkpKSkpCiAgICAgIChz
+ZXRxIHNldC1wcm9sb2ctY29tbWFuZHMgKG1hcGNhciAobGFtYmRhIChwYWlyKSAoY2RyIHBhaXIp
+KSAocmV2ZXJzZSBzcGMtYWxpc3QpKSkpCiAgICAgICAgICAKICAgIChzZXRxIGNvbW1hbmRzIChj
+b25jYXQgKG1hcGNvbmNhdCAnaWRlbnRpdHkgKGFwcGVuZAoJCQkJCQkgKGxpc3QgKGNvbmNhdCAi
+c2V0ICIgKG1hcGNvbmNhdCAnaWRlbnRpdHkgc2V0LXByb2xvZy1jb21tYW5kcyAiICIpKSkKCQkJ
+CQkJIHByb2xvZy1jb21tYW5kcwoJCQkJCQkgKGxpc3Qgc3FsKSkgIlxuIikKICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgIlxuIikpCiAgICAod2hlbiBoaXN0b3J5LWJ1ZmZlcgogICAgICAod2l0
+aC1jdXJyZW50LWJ1ZmZlciBoaXN0b3J5LWJ1ZmZlcgoJKGdvdG8tY2hhciAocG9pbnQtbWF4KSkK
+CShpbnNlcnQgZWNoby1wcm9sb2cpCgkoaW5zZXJ0IChjb25jYXQgY29tbWFuZHMgIlxuIikpKSkK
+ICAgIChsZXQgKChzYXZlZC13aW5kb3cgKGNvbnMgKHNlbGVjdGVkLXdpbmRvdykgKHdpbmRvdy1i
+dWZmZXIgKHNlbGVjdGVkLXdpbmRvdykpKSkKCSAgKGlucHV0LWJ1ZmZlciAoZ2V0LWJ1ZmZlciAo
+c3FscGx1cy1nZXQtaW5wdXQtYnVmZmVyLW5hbWUgY29ubmVjdC1zdHJpbmcpKSkpCiAgICAgICh1
+bmxlc3Mgbm8tZWNobwoJKHNxbHBsdXMtZWNoby1pbi1idWZmZXIgb3V0cHV0LWJ1ZmZlci1uYW1l
+IGVjaG8tcHJvbG9nKQoJKGxldCAoKG9sZC1zdXBwcmVzcy1zaG93LW91dHB1dC1idWZmZXIgc3Fs
+cGx1cy1zdXBwcmVzcy1zaG93LW91dHB1dC1idWZmZXIpKQoJICAodW53aW5kLXByb3RlY3QKCSAg
+ICAgIChzYXZlLXNlbGVjdGVkLXdpbmRvdwoJCShzZXRxIHNxbHBsdXMtc3VwcHJlc3Mtc2hvdy1v
+dXRwdXQtYnVmZmVyIGRvbnQtc2hvdy1vdXRwdXQtYnVmZmVyKQoJCSh3aGVuIChhbmQgb3V0cHV0
+LWJ1ZmZlci1uYW1lCgkJCSAgIChnZXQtYnVmZmVyIG91dHB1dC1idWZmZXItbmFtZSkpCgkJICAo
+d2l0aC1jdXJyZW50LWJ1ZmZlciAoZ2V0LWJ1ZmZlciBvdXRwdXQtYnVmZmVyLW5hbWUpCgkJICAg
+IChzcWxwbHVzLWJ1ZmZlci1ib3R0b20gY29ubmVjdC1zdHJpbmcpCgkJICAgIChzcWxwbHVzLWJ1
+ZmZlci1tYXJrLWN1cnJlbnQgY29ubmVjdC1zdHJpbmcpKSkpCgkgICAgKHNldHEgc3FscGx1cy1z
+dXBwcmVzcy1zaG93LW91dHB1dC1idWZmZXIgb2xkLXN1cHByZXNzLXNob3ctb3V0cHV0LWJ1ZmZl
+cikpKQoJKHNxbHBsdXMtZWNoby1pbi1idWZmZXIgb3V0cHV0LWJ1ZmZlci1uYW1lIChjb25jYXQg
+c3FsICJcblxuIikgbmlsIHQpCgkoc2F2ZS1zZWxlY3RlZC13aW5kb3cKCSAgKHVubGVzcyBkb250
+LXNob3ctb3V0cHV0LWJ1ZmZlcgoJICAgICh3aGVuIChhbmQgb3V0cHV0LWJ1ZmZlci1uYW1lCgkJ
+ICAgICAgIChnZXQtYnVmZmVyIG91dHB1dC1idWZmZXItbmFtZSkpCgkgICAgICAod2l0aC1jdXJy
+ZW50LWJ1ZmZlciAoZ2V0LWJ1ZmZlciBvdXRwdXQtYnVmZmVyLW5hbWUpCgkJKHNxbHBsdXMtYnVm
+ZmVyLXJlZGlzcGxheS1jdXJyZW50IGNvbm5lY3Qtc3RyaW5nKSkpKSkpCiAgICAgIChpZiAod2lu
+ZG93LWxpdmUtcCAoY2FyIHNhdmVkLXdpbmRvdykpCgkgIChzZWxlY3Qtd2luZG93IChjYXIgc2F2
+ZWQtd2luZG93KSkKCShpZiAoZ2V0LWJ1ZmZlci13aW5kb3cgKGNkciBzYXZlZC13aW5kb3cpKQoJ
+ICAgIChzZWxlY3Qtd2luZG93IChnZXQtYnVmZmVyLXdpbmRvdyAoY2RyIHNhdmVkLXdpbmRvdykp
+KQoJICAod2hlbiAoYW5kIGlucHV0LWJ1ZmZlcgoJCSAgICAgKGdldC1idWZmZXItd2luZG93IGlu
+cHV0LWJ1ZmZlcikpCgkgICAgKHNlbGVjdC13aW5kb3cgKGdldC1idWZmZXItd2luZG93IGlucHV0
+LWJ1ZmZlcikpKSkpKQogICAgKHNlbmQtc3RyaW5nIHByb2Nlc3MgY29tbWFuZHMpKSkKCihkZWZ1
+biBzcWxwbHVzLWZvbnRpZnktc3RyaW5nIChjb25uZWN0LXN0cmluZyBzdHJpbmcpCiAgKGxldCog
+KChpbnB1dC1idWZmZXItbmFtZSAoc3FscGx1cy1nZXQtaW5wdXQtYnVmZmVyLW5hbWUgY29ubmVj
+dC1zdHJpbmcpKQoJIChpbnB1dC1idWZmZXIgKHdoZW4gaW5wdXQtYnVmZmVyLW5hbWUgKGdldC1i
+dWZmZXIgaW5wdXQtYnVmZmVyLW5hbWUpKSkKCSAocmVzdWx0IHN0cmluZykpCiAgICAod2hlbiAo
+YW5kIGlucHV0LWJ1ZmZlciAoYnVmZmVyLWxpdmUtcCBpbnB1dC1idWZmZXIpKQogICAgICAod2l0
+aC1jdXJyZW50LWJ1ZmZlciBpbnB1dC1idWZmZXIKCShzYXZlLWV4Y3Vyc2lvbgoJICAoZ290by1j
+aGFyIChwb2ludC1tYXgpKQoJICAobGV0ICgocG9zIChwb2ludCkpKQoJICAgIChpbnNlcnQgIlxu
+XG4iKQoJICAgIChpbnNlcnQgc3RyaW5nKQoJICAgIChmb250LWxvY2stZm9udGlmeS1ibG9jayAo
+KyAoY291bnQgIlxuIiBzdHJpbmcpIDIpKQoJICAgIChzZXRxIHJlc3VsdCAoYnVmZmVyLXN1YnN0
+cmluZyAoKyBwb3MgMikgKHBvaW50LW1heCkpKQoJICAgIChkZWxldGUtcmVnaW9uIHBvcyAocG9p
+bnQtbWF4KSkpKSkpCiAgICByZXN1bHQpKQoKKGRlZnZhciBwbHNxbC1tYXJrLWJhY2t3YXJkLWxp
+c3QgbmlsKQoKKHVubGVzcyBwbHNxbC1tb2RlLW1hcAogIChzZXRxIHBsc3FsLW1vZGUtbWFwIChj
+b3B5LWtleW1hcCBzcWwtbW9kZS1tYXApKQogIChkZWZpbmUta2V5IHBsc3FsLW1vZGUtbWFwICJc
+TS0uIiAnc3FscGx1cy1maWxlLWdldC1zb3VyY2UpCiAgKGRlZmluZS1rZXkgcGxzcWwtbW9kZS1t
+YXAgW0MtZG93bi1tb3VzZS0xXSAnc3FscGx1cy1tb3VzZS1zZWxlY3QtaWRlbnRpZmllcikKICAo
+ZGVmaW5lLWtleSBwbHNxbC1tb2RlLW1hcCBbQy1tb3VzZS0xXSAnc3FscGx1cy1maWxlLWdldC1z
+b3VyY2UtbW91c2UpCiAgKGRlZmluZS1rZXkgcGxzcWwtbW9kZS1tYXAgIlxDLWNcQy1nIiAncGxz
+cWwtYmVnaW4pCiAgKGRlZmluZS1rZXkgcGxzcWwtbW9kZS1tYXAgIlxDLWNcQy1xIiAncGxzcWwt
+bG9vcCkKICAoZGVmaW5lLWtleSBwbHNxbC1tb2RlLW1hcCAiXEMtY1xDLXoiICdwbHNxbC1pZikK
+ICAoZGVmaW5lLWtleSBwbHNxbC1tb2RlLW1hcCAiXEMtY1xDLWMiICdwbHNxbC1jb21waWxlKQog
+IChkZWZpbmUta2V5IHBsc3FsLW1vZGUtbWFwIFt0b29sLWJhciBwbHNxbC1wcmV2LW1hcmtdCiAg
+ICAobGlzdCAnbWVudS1pdGVtICJQcmV2aW91cyBtYXJrIiAncGxzcWwtcHJldi1tYXJrCgkgIDpp
+bWFnZSBwbHNxbC1wcmV2LW1hcmstaW1hZ2UKCSAgOmVuYWJsZSAncGxzcWwtbWFyay1iYWNrd2Fy
+ZC1saXN0KSkpCgooZGVmdmFyIHBsc3FsLWNvbnRpbnVlLWFueXdheSBuaWwKICAiTG9jYWwgaW4g
+aW5wdXQgYnVmZmVyIChwbHNxbC1tb2RlKS4iKQoobWFrZS12YXJpYWJsZS1idWZmZXItbG9jYWwg
+J3Bsc3FsLWNvbnRpbnVlLWFueXdheSkKCihkZWZ1biBzcWxwbHVzLXN3aXRjaC10by1idWZmZXIg
+KGJ1ZmZlci1vci1wYXRoICZvcHRpb25hbCBsaW5lLW5vKQogIChpZiAoZmJvdW5kcCAnaWRlLXNr
+ZWwtc2VsZWN0LWJ1ZmZlcikKICAgICAgKGZ1bmNhbGwgJ2lkZS1za2VsLXNlbGVjdC1idWZmZXIg
+YnVmZmVyLW9yLXBhdGggbGluZS1ubykKICAgIChsZXQgKChidWZmZXIgKG9yIChhbmQgKGJ1ZmZl
+cnAgYnVmZmVyLW9yLXBhdGgpIGJ1ZmZlci1vci1wYXRoKQoJCSAgICAgIChmaW5kLWZpbGUtbm9z
+ZWxlY3QgYnVmZmVyLW9yLXBhdGgpKSkpCiAgICAgIChzd2l0Y2gtdG8tYnVmZmVyIGJ1ZmZlcikK
+ICAgICAgKGdvdG8tbGluZSBsaW5lLW5vKSkpKQoKKGRlZnVuIHBsc3FsLXByZXYtbWFyayAoKQog
+IChpbnRlcmFjdGl2ZSkKICAobGV0IChmaW5pc2gpCiAgICAod2hpbGUgKGFuZCBwbHNxbC1tYXJr
+LWJhY2t3YXJkLWxpc3QKCQkobm90IGZpbmlzaCkpCiAgICAgIChsZXQqICgobWFya2VyIChwb3Ag
+cGxzcWwtbWFyay1iYWNrd2FyZC1saXN0KSkKCSAgICAgKGJ1ZmZlciAobWFya2VyLWJ1ZmZlciBt
+YXJrZXIpKQoJICAgICAocG9pbnQgKG1hcmtlci1wb3NpdGlvbiBtYXJrZXIpKSkKCShzZXQtbWFy
+a2VyIG1hcmtlciBuaWwpCgkod2hlbiAoYW5kIGJ1ZmZlcgoJCSAgIChvciAobm90IChlcSAoY3Vy
+cmVudC1idWZmZXIpIGJ1ZmZlcikpCgkJICAgICAgIChub3QgKGVxbCAocG9pbnQpIHBvaW50KSkp
+KQoJICAoc3FscGx1cy1zd2l0Y2gtdG8tYnVmZmVyIGJ1ZmZlcikKCSAgKGdvdG8tY2hhciBwb2lu
+dCkKCSAgKHNldHEgZmluaXNoIHQpKSkpCiAgICA7OyAobWVzc2FnZSAiQkFDSzogJVMgLS0gRk9S
+V0FSRDogJVMiIHBsc3FsLW1hcmstYmFja3dhcmQtbGlzdCBwbHNxbC1tYXJrLWZvcndhcmQtbGlz
+dCkKICAgIChmb3JjZS1tb2RlLWxpbmUtdXBkYXRlKQogICAgKHNpdC1mb3IgMCkpKQoKKGRlZnVu
+IHNxbHBsdXMtbW91c2Utc2VsZWN0LWlkZW50aWZpZXIgKGV2ZW50KQogIChpbnRlcmFjdGl2ZSAi
+QGUiKQogICh3aXRoLXNlbGVjdGVkLXdpbmRvdyAocG9zbi13aW5kb3cgKGV2ZW50LXN0YXJ0IGV2
+ZW50KSkKICAgIChzYXZlLWV4Y3Vyc2lvbgogICAgICAobGV0KiAoKHBvaW50IChwb3NuLXBvaW50
+IChldmVudC1zdGFydCBldmVudCkpKQoJICAgICAoaWRlbnRpZmllciAocHJvZ24gKGdvdG8tY2hh
+ciBwb2ludCkgKHRoaW5nLWF0LXBvaW50ICdzeW1ib2wpKSkKCSAgICAgKGlkZW50LXJlZ2V4cCAo
+d2hlbiBpZGVudGlmaWVyIChyZWdleHAtcXVvdGUgaWRlbnRpZmllcikpKSkKCShwdXNoIChwb2lu
+dC1tYXJrZXIpIHBsc3FsLW1hcmstYmFja3dhcmQtbGlzdCkKCSh3aGVuIGlkZW50LXJlZ2V4cAoJ
+ICAoc2F2ZS1leGN1cnNpb24KCSAgICAod2hpbGUgKG5vdCAobG9va2luZy1hdCBpZGVudC1yZWdl
+eHApKQoJICAgICAgKGJhY2t3YXJkLWNoYXIpKQoJICAgIChzcWxwbHVzLW1vdXNlLXNldC1zZWxl
+Y3Rpb24gKGN1cnJlbnQtYnVmZmVyKSAocG9pbnQpICgrIChwb2ludCkgKGxlbmd0aCBpZGVudGlm
+aWVyKSkgJ2hpZ2hsaWdodCkpKSkpKSkKCihkZWZ1biBzcWxwbHVzLWZpbGUtZ2V0LXNvdXJjZS1t
+b3VzZSAoZXZlbnQpCiAgKGludGVyYWN0aXZlICJAZSIpCiAgKGxldCAoaWRlbnQpCiAgICAod2l0
+aC1zZWxlY3RlZC13aW5kb3cgKHBvc24td2luZG93IChldmVudC1zdGFydCBldmVudCkpCiAgICAg
+IChzYXZlLWV4Y3Vyc2lvbgoJKGdvdG8tY2hhciAocG9zbi1wb2ludCAoZXZlbnQtc3RhcnQgZXZl
+bnQpKSkKCShzZXRxIGlkZW50ICh0aGluZy1hdC1wb2ludCAnc3ltYm9sKSkpKQogICAgKHNxbHBs
+dXMtZmlsZS1nZXQtc291cmNlIHNxbHBsdXMtY29ubmVjdC1zdHJpbmcgaWRlbnQgbmlsKQogICAg
+KHNpdC1mb3IgMCkpKQoKKGRlZnVuIHBsc3FsLWNvbXBpbGUgKCZvcHRpb25hbCBhcmcpCiAgIlNh
+dmUgYnVmZmVyIGFuZCBzZW5kIGl0cyBjb250ZW50IHRvIFNRTCpQbHVzLgpZb3UgbXVzdCBlbnRl
+ciBjb25uZWN0LXN0cmluZyBpZiBidWZmZXIgaXMgZGlzY29ubmVjdGVkOyB3aXRoCmFyZ3VtZW50
+IHlvdSBjYW4gY2hhbmdlIGNvbm5lY3Qtc3RyaW5nIGV2ZW4gZm9yIGNvbm5lY3RlZApidWZmZXIu
+IgogIChpbnRlcmFjdGl2ZSAiUCIpCiAgKGxldCAoYWJvcnRlZAogICAgICAgIGV4aXN0cy1zaG93
+LWVycm9yLWNvbW1hbmQKICAgICAgICAoY2FzZS1mb2xkLXNlYXJjaCB0KSkKICAgIChzYXZlLXdp
+bmRvdy1leGN1cnNpb24KICAgICAgKHNhdmUtZXhjdXJzaW9uCiAgICAgICAgOzsgYXNrIGZvciAi
+LyIgYW5kICJzaG93IGVyciIgaWYgYWJzZW50CiAgICAgICAgKGxldCAoKG9sZC1wb2ludCAocG9p
+bnQpKQogICAgICAgICAgICAgIHNob3ctZXJyLW5lZWRlZAogICAgICAgICAgICAgIGV4aXN0cy1y
+dW4tY29tbWFuZCBiZXN0LXBvaW50IGZpbmlzaCkKICAgICAgICAgIChnb3RvLWNoYXIgKHBvaW50
+LW1pbikpCiAgICAgICAgICAoc2V0cSBzaG93LWVyci1uZWVkZWQgKGxldCAoKGNhc2UtZm9sZC1z
+ZWFyY2ggdCkpCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAocmUtc2VhcmNoLWZv
+cndhcmQgImNyZWF0ZVxcKFsgXHRcbl0rb3JbIFx0XG5dK3JlcGxhY2VcXCk/WyBcdFxuXStcXChw
+YWNrYWdlXFx8cHJvY2VkdXJlXFx8ZnVuY3Rpb25cXHx0cmlnZ2VyXFx8dmlld1xcfHR5cGVcXCki
+IG5pbCB0KSkpCiAgICAgICAgICAoZ290by1jaGFyIChwb2ludC1tYXgpKQogICAgICAgICAgKGZv
+cndhcmQtY29tbWVudCAoLSAoYnVmZmVyLXNpemUpKSkKICAgICAgICAgIChyZS1zZWFyY2gtYmFj
+a3dhcmQgIl5cXHMtKnNob3dcXHMtK2VyciIgbmlsIHQpCiAgICAgICAgICAoZm9yd2FyZC1jb21t
+ZW50ICgtIChidWZmZXItc2l6ZSkpKQogICAgICAgICAgKGNvbmRpdGlvbi1jYXNlIG5pbCAoZm9y
+d2FyZC1jaGFyKSAoZXJyb3IgbmlsKSkKICAgICAgICAgIChzZXRxIGJlc3QtcG9pbnQgKHBvaW50
+KSkKICAgICAgICAgIChnb3RvLWNoYXIgKHBvaW50LW1pbikpCiAgICAgICAgICAoc2V0cSBleGlz
+dHMtcnVuLWNvbW1hbmQgKHJlLXNlYXJjaC1mb3J3YXJkICJeXFxzLSovW14qXSIgbmlsIHQpKQog
+ICAgICAgICAgKGdvdG8tY2hhciAocG9pbnQtbWluKSkKICAgICAgICAgIChzZXRxIGV4aXN0cy1z
+aG93LWVycm9yLWNvbW1hbmQgKG9yIChub3Qgc2hvdy1lcnItbmVlZGVkKSAocmUtc2VhcmNoLWZv
+cndhcmQgIl5cXHMtKnNob3dcXHMtK2VyciIgbmlsIHQpKSkKICAgICAgICAgICh3aGlsZSAoYW5k
+IChub3QgcGxzcWwtY29udGludWUtYW55d2F5KSAob3IgKG5vdCBleGlzdHMtcnVuLWNvbW1hbmQp
+IChub3QgZXhpc3RzLXNob3ctZXJyb3ItY29tbWFuZCkpIChub3QgZmluaXNoKSkKICAgICAgICAg
+ICAgKGdvdG8tY2hhciBiZXN0LXBvaW50KQogICAgICAgICAgICAobGV0ICgoYyAocmVhZC1jaGFy
+IAogICAgICAgICAgICAgICAgICAgICAgKGZvcm1hdCAiQ2Fubm90IGZpbmQgJXMuICAoSSluc2Vy
+dCBpdCBhdCBwb2ludCwgKEEpYm9ydCwgKEMpb250aW51ZSBhbnl3YXkiCiAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgIChjb25jYXQgKHVubGVzcyBleGlzdHMtcnVuLWNvbW1hbmQgIlwiL1wi
+IikKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAodW5sZXNzIChvciBleGlz
+dHMtcnVuLWNvbW1hbmQgZXhpc3RzLXNob3ctZXJyb3ItY29tbWFuZCkgIiBhbmQgIikKICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAodW5sZXNzIGV4aXN0cy1zaG93LWVycm9y
+LWNvbW1hbmQgIlwic2hvdyBlcnJcIiIpKSkpKSkKICAgICAgICAgICAgICAoY29uZCAoKG1lbXEg
+YyAnKD9pID9JKSkKICAgICAgICAgICAgICAgICAgICAgKHVubGVzcyBleGlzdHMtcnVuLWNvbW1h
+bmQgKGluc2VydCAiL1xuIikpCiAgICAgICAgICAgICAgICAgICAgICh1bmxlc3MgZXhpc3RzLXNo
+b3ctZXJyb3ItY29tbWFuZCAoaW5zZXJ0ICJzaG93IGVyclxuIikpCiAgICAgICAgICAgICAgICAg
+ICAgIChzZXRxIGZpbmlzaCB0KSkKICAgICAgICAgICAgICAgICAgICAoKG1lbXEgYyAnKD9hID9B
+KSkKICAgICAgICAgICAgICAgICAgICAgKHNldHEgYWJvcnRlZCB0CiAgICAgICAgICAgICAgICAg
+ICAgICAgICAgIGZpbmlzaCB0KSkKICAgICAgICAgICAgICAgICAgICAoKG1lbXEgYyAnKD9jID9D
+KSkKICAgICAgICAgICAgICAgICAgICAgKHNldHEgcGxzcWwtY29udGludWUtYW55d2F5IHQpCiAg
+ICAgICAgICAgICAgICAgICAgIChzZXRxIGZpbmlzaCB0KSkpKSkpKSkKICAgICh1bmxlc3MgYWJv
+cnRlZAogICAgICAoc2F2ZS1idWZmZXIpCiAgICAgIChsZXQqICgoYnVmZmVyIChjdXJyZW50LWJ1
+ZmZlcikpCiAgICAgICAgICAgICAoaW5wdXQtYnVmZmVyLW5hbWUgKGJ1ZmZlci1uYW1lKSkKICAg
+ICAgICAgICAgIChmaWxlLXBhdGggKHNxbHBsdXMtZmlsZS10cnVlbmFtZSAoYnVmZmVyLWZpbGUt
+bmFtZSkpKQogICAgICAgICAgICAgKGNvbXBpbGF0aW9uLWJ1ZmZlciAoZ2V0LWJ1ZmZlciBzcWxw
+bHVzLXBsc3FsLWNvbXBpbGF0aW9uLXJlc3VsdHMtYnVmZmVyLW5hbWUpKQogICAgICAgICAgICAg
+KGNvbnRleHQtb3B0aW9ucyAobGlzdCAoY29ucyA6bGFzdC1jb21waWxlZC1maWxlLXBhdGggZmls
+ZS1wYXRoKQogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAoY29ucyA6Y3VycmVu
+dC1jb21tYW5kLWlucHV0LWJ1ZmZlci1uYW1lIGlucHV0LWJ1ZmZlci1uYW1lKQogICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAoY29ucyA6Y29tcGlsYXRpb24tZXhwZWN0ZWQgZXhp
+c3RzLXNob3ctZXJyb3ItY29tbWFuZCkpKQogICAgICAgICAgICAgKHByb2xvZy1jb21tYW5kcyAo
+bGlzdCAoZm9ybWF0ICJzZXQgd3JhcCAlcyIgc3FscGx1cy1kZWZhdWx0LXdyYXApCiAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICJzZXQgbGluZXNpemUgNDAwMCIKICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgKGZvcm1hdCAic2V0IHBhZ2VzaXplICVTIiBzcWxw
+bHVzLXBhZ2VzaXplKQogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAoZm9ybWF0
+ICJidGl0bGUgJXMiIChjb25jYXQgImxlZnQgJyIgc3FscGx1cy1wYWdlLXNlcGFyYXRvciAiJyIp
+KQogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAoZm9ybWF0ICJyZXBmb290ZXIg
+JXMiIChjb25jYXQgImxlZnQgJyIgc3FscGx1cy1yZXBmb290ZXIgIiciKSkpKSkKICAgICAgICAo
+d2hlbiAob3IgKG5vdCBzcWxwbHVzLWNvbm5lY3Qtc3RyaW5nKQogICAgICAgICAgICAgICAgICBh
+cmcpCiAgICAgICAgICAoc2V0cSBzcWxwbHVzLWNvbm5lY3Qtc3RyaW5nIChjYXIgKHNxbHBsdXMt
+cmVhZC1jb25uZWN0LXN0cmluZyBuaWwgKGNhYXIgKHNxbHBsdXMtZGl2aWRlLWNvbm5lY3Qtc3Ry
+aW5ncykpKSkpKQogICAgICAgIChzcWxwbHVzIHNxbHBsdXMtY29ubmVjdC1zdHJpbmcgbmlsICh3
+aGVuIHBsc3FsLWF1dG8tcGFyc2UtZXJyb3JzLWZsYWcgJ2RvbnQtc2hvdy1vdXRwdXQtYnVmZmVy
+KSkKICAgICAgICAoc2V0LWJ1ZmZlciBidWZmZXIpCiAgICAgICAgKGZvcmNlLW1vZGUtbGluZS11
+cGRhdGUpCgkod2hlbiBmb250LWxvY2stbW9kZSAoZm9udC1sb2NrLW1vZGUgMSkpCiAgICAgICAg
+KHdoZW4gY29tcGlsYXRpb24tYnVmZmVyCiAgICAgICAgICAod2l0aC1jdXJyZW50LWJ1ZmZlciBj
+b21waWxhdGlvbi1idWZmZXIKCSAgICAobGV0ICgoaW5oaWJpdC1yZWFkLW9ubHkgdCkpCgkgICAg
+ICAoZXJhc2UtYnVmZmVyKSkpKQogICAgICAgIChzZXRxIHByb2xvZy1jb21tYW5kcyAoYXBwZW5k
+IHByb2xvZy1jb21tYW5kcyAoc3FscGx1cy1kZWZpbmUtdXNlci12YXJpYWJsZXMgKGJ1ZmZlci1z
+dHJpbmcpKSkpCiAgICAgICAgKHNxbHBsdXMtZXhlY3V0ZSBzcWxwbHVzLWNvbm5lY3Qtc3RyaW5n
+IChjb25jYXQgIkAiIGZpbGUtcGF0aCkgY29udGV4dC1vcHRpb25zIHByb2xvZy1jb21tYW5kcyBu
+aWwgZXhpc3RzLXNob3ctZXJyb3ItY29tbWFuZCkpKSkpCgooZGVmdW4gcGxzcWwtcGFyc2UtZXJy
+b3JzIChsYXN0LWNvbXBpbGVkLWZpbGUtcGF0aCkKICAobGV0ICgoZmlsZS1uYW1lIChmaWxlLW5h
+bWUtbm9uZGlyZWN0b3J5IGxhc3QtY29tcGlsZWQtZmlsZS1wYXRoKSkKICAgICAgICBlcnJvci1s
+aXN0KQogICAgKHB1dC10ZXh0LXByb3BlcnR5IDAgKGxlbmd0aCBmaWxlLW5hbWUpICdmYWNlICdm
+b250LWxvY2std2FybmluZy1mYWNlIGZpbGUtbmFtZSkKICAgIChzYXZlLWV4Y3Vyc2lvbiAKICAg
+ICAgKHdoZW4gKHJlLXNlYXJjaC1mb3J3YXJkICJeTElORS9DT0xcXD4iIG5pbCB0KQogICAgICAg
+IChiZWdpbm5pbmctb2YtbGluZSAzKQogICAgICAgICh3aGlsZSAocmUtc2VhcmNoLWZvcndhcmQg
+Il5cXChbMC05XStcXCkvXFwoWzAtOV0rXFwpXFxzLSpcXChcXCguXFx8XG5cXCkqP1xcKVtcclx0
+IF0qXG5cXChbXHJcdCBdKlxcKFxuXFx8XFwnXFwpXFx8WzAtOV0rXFwpIiBuaWwgdCkKICAgICAg
+ICAgIChsZXQgKChsaW5lLW5vIChtYXRjaC1zdHJpbmcgMSkpCiAgICAgICAgICAgICAgICAoY29s
+dW1uLW5vIChtYXRjaC1zdHJpbmcgMikpCiAgICAgICAgICAgICAgICAoZXJybXNnIChtYXRjaC1z
+dHJpbmcgMykpCiAgICAgICAgICAgICAgICBsYWJlbCkKICAgICAgICAgICAgKGdvdG8tY2hhciAo
+bWF0Y2gtYmVnaW5uaW5nIDUpKQogICAgICAgICAgICAod2hpbGUgKHN0cmluZy1tYXRjaCAiXFxz
+LVxccy0rIiBlcnJtc2cpCiAgICAgICAgICAgICAgKHNldHEgZXJybXNnIChyZXBsYWNlLW1hdGNo
+ICIgIiBuaWwgdCBlcnJtc2cpKSkKICAgICAgICAgICAgKHB1dC10ZXh0LXByb3BlcnR5IDAgKGxl
+bmd0aCBsaW5lLW5vKSAnZmFjZSAnZm9udC1sb2NrLXZhcmlhYmxlLW5hbWUtZmFjZSBsaW5lLW5v
+KQogICAgICAgICAgICAocHV0LXRleHQtcHJvcGVydHkgMCAobGVuZ3RoIGNvbHVtbi1ubykgJ2Zh
+Y2UgJ2ZvbnQtbG9jay12YXJpYWJsZS1uYW1lLWZhY2UgY29sdW1uLW5vKQogICAgICAgICAgICAo
+c2V0cSBsYWJlbCAoY29uY2F0IGZpbGUtbmFtZSAiOiIgbGluZS1ubyAiOiIgY29sdW1uLW5vICI6
+ICIgZXJybXNnKSkKICAgICAgICAgICAgKHB1dC10ZXh0LXByb3BlcnR5IDAgKGxlbmd0aCBsYWJl
+bCkgJ21vdXNlLWZhY2UgJ2hpZ2hsaWdodCBsYWJlbCkKICAgICAgICAgICAgKHB1c2ggbGFiZWwg
+ZXJyb3ItbGlzdCkpKSkpCiAgICAoc2F2ZS1leGN1cnNpb24KICAgICAgKHdoaWxlIChyZS1zZWFy
+Y2gtZm9yd2FyZCAiXFxzLVxcKFswLTldK1xcKTpcblxcKE9SQS1bMC05XStbXlxuXSpcXClcbiIg
+bmlsIHQpCiAgICAgICAgKGxldCAoKGxpbmUtbm8gKG1hdGNoLXN0cmluZyAxKSkKICAgICAgICAg
+ICAgICAoZXJybXNnIChtYXRjaC1zdHJpbmcgMikpCiAgICAgICAgICAgICAgbGFiZWwpCiAgICAg
+ICAgICAocHV0LXRleHQtcHJvcGVydHkgMCAobGVuZ3RoIGxpbmUtbm8pICdmYWNlICdmb250LWxv
+Y2stdmFyaWFibGUtbmFtZS1mYWNlIGxpbmUtbm8pCiAgICAgICAgICAoc2V0cSBsYWJlbCAoY29u
+Y2F0IGZpbGUtbmFtZSAiOiIgbGluZS1ubyAiOiAiIGVycm1zZykpCiAgICAgICAgICAocHV0LXRl
+eHQtcHJvcGVydHkgMCAobGVuZ3RoIGxhYmVsKSAnbW91c2UtZmFjZSAnaGlnaGxpZ2h0IGxhYmVs
+KQogICAgICAgICAgKHB1c2ggbGFiZWwgZXJyb3ItbGlzdCkpKSkKICAgIChzYXZlLWV4Y3Vyc2lv
+bgogICAgICAod2hpbGUgKHJlLXNlYXJjaC1mb3J3YXJkICJcXChcXChTUDJcXHxDUFlcXCktWzAt
+OV0rOlteXG5dKlxcKVxuIiBuaWwgdCkKICAgICAgICAobGV0ICgoZXJybXNnIChtYXRjaC1zdHJp
+bmcgMSkpCiAgICAgICAgICAgICAgbGFiZWwpCiAgICAgICAgICAoc2V0cSBsYWJlbCAoY29uY2F0
+IGZpbGUtbmFtZSAiOiIgZXJybXNnKSkKICAgICAgICAgIChwdXQtdGV4dC1wcm9wZXJ0eSAwIChs
+ZW5ndGggbGFiZWwpICdtb3VzZS1mYWNlICdoaWdobGlnaHQgbGFiZWwpCiAgICAgICAgICAocHVz
+aCBsYWJlbCBlcnJvci1saXN0KSkpKQogICAgZXJyb3ItbGlzdCkpCgooZGVmdW4gcGxzcWwtZGlz
+cGxheS1lcnJvcnMgKGRpciBlcnJvci1saXN0KQogIChsZXQgKChidWZmZXIgKGdldC1idWZmZXIt
+Y3JlYXRlIHNxbHBsdXMtcGxzcWwtY29tcGlsYXRpb24tcmVzdWx0cy1idWZmZXItbmFtZSkpKQog
+ICAgKHNhdmUtc2VsZWN0ZWQtd2luZG93CiAgICAgIChzYXZlLWV4Y3Vyc2lvbgogICAgICAgIChz
+ZXQtYnVmZmVyIGJ1ZmZlcikKCShsZXQgKChpbmhpYml0LXJlYWQtb25seSB0KSkKCSAgKGVyYXNl
+LWJ1ZmZlcikKCSAgKHNldHEgZGVmYXVsdC1kaXJlY3RvcnkgZGlyKQoJICAoaW5zZXJ0IChmb3Jt
+YXQgImNkICVzXG4iIGRlZmF1bHQtZGlyZWN0b3J5KSkKCSAgKGluc2VydCAoZm9ybWF0ICJDb21w
+aWxhdGlvbiByZXN1bHRzXG4iKSkKCSAgKGNvbXBpbGF0aW9uLW1pbm9yLW1vZGUgMSkKCSAgKGRv
+bGlzdCAobXNnIChyZXZlcnNlIGVycm9yLWxpc3QpKQoJICAgIChpbnNlcnQgbXNnKQoJICAgIChp
+bnNlcnQgIlxuIikpCgkgIChpbnNlcnQgKGZvcm1hdCAiXG4oJXMgZXJyb3JzKVxuIiAobGVuZ3Ro
+IGVycm9yLWxpc3QpKSkpCiAgICAgICAgKHdoZW4gKGFuZCBlcnJvci1saXN0IChmYm91bmRwICdj
+b21waWxlLXJlaW5pdGlhbGl6ZS1lcnJvcnMpIChmdW5jYWxsIChzeW1ib2wtZnVuY3Rpb24gJ2Nv
+bXBpbGUtcmVpbml0aWFsaXplLWVycm9ycykgdCkpKQogICAgICAgIChzd2l0Y2gtdG8tYnVmZmVy
+LW90aGVyLXdpbmRvdyBidWZmZXIpCiAgICAgICAgKGdvdG8tbGluZSAxKQogICAgICAgIChnb3Rv
+LWxpbmUgMykpKSkpCgoKKGRlZnVuIHNxbHBsdXMtZmlsZS10cnVlbmFtZSAoZmlsZS1uYW1lKQog
+IChpZiBmaWxlLW5hbWUKICAgICAgKGZpbGUtdHJ1ZW5hbWUgZmlsZS1uYW1lKQogICAgZmlsZS1u
+YW1lKSkKCihkZWZ1biBzcWxwbHVzLS1oaWRkZW4tYnVmZmVyLW5hbWUtcCAoYnVmZmVyLW5hbWUp
+CiAgKGVxdWFsIChlbHQgYnVmZmVyLW5hbWUgMCkgMzIpKQoKKGRlZnVuIHNxbHBsdXMtZ2V0LXdv
+cmtiZW5jaC13aW5kb3cgKCkKICAiUmV0dXJuIHVwcGVyIGxlZnQgd2luZG93IgogIChpZiAoZmJv
+dW5kcCAnaWRlLWdldC13b3JrYmVuY2gtd2luZG93KQogICAgICAoZnVuY2FsbCAoc3ltYm9sLWZ1
+bmN0aW9uICdpZGUtZ2V0LXdvcmtiZW5jaC13aW5kb3cpKQogICAgKGxldCAoYmVzdC13aW5kb3cp
+CiAgICAgIChkb2xpc3QgKHdpbiAoY29weS1saXN0ICh3aW5kb3ctbGlzdCBuaWwgMSkpKQoJKHdo
+ZW4gKG5vdCAoc3FscGx1cy0taGlkZGVuLWJ1ZmZlci1uYW1lLXAgKGJ1ZmZlci1uYW1lICh3aW5k
+b3ctYnVmZmVyIHdpbikpKSkKCSAgKGlmIChudWxsIGJlc3Qtd2luZG93KQoJICAgICAgKHNldHEg
+YmVzdC13aW5kb3cgd2luKQoJICAgIChsZXQqICgoYmVzdC13aW5kb3ctY29vcmRzICh3aW5kb3ct
+ZWRnZXMgYmVzdC13aW5kb3cpKQoJCSAgICh3aW4tY29vcmRzICh3aW5kb3ctZWRnZXMgd2luKSkp
+CgkgICAgICAod2hlbiAob3IgKDwgKGNhZHIgd2luLWNvb3JkcykgKGNhZHIgYmVzdC13aW5kb3ct
+Y29vcmRzKSkKCQkJKGFuZCAoPSAoY2FkciB3aW4tY29vcmRzKSAoY2FkciBiZXN0LXdpbmRvdy1j
+b29yZHMpKQoJCQkgICAgICg8IChjYXIgd2luLWNvb3JkcykgKGNhciBiZXN0LXdpbmRvdy1jb29y
+ZHMpKSkpCgkJKHNldHEgYmVzdC13aW5kb3cgd2luKSkpKSkpCiAgICAgIDs7IChtZXNzYWdlICJC
+RVNULVdJTkRPVzogJVMiIGJlc3Qtd2luZG93KQogICAgICBiZXN0LXdpbmRvdykpKQoKKGRlZnVu
+IHNxbHBsdXMtZ2V0LXNpZGUtd2luZG93ICgpCiAgIlJldHVybiBib3R0b20gaGVscGVyIHdpbmRv
+dywgb3IgbmlsIGlmIG5vdCBmb3VuZCIKICAoaWYgKGZib3VuZHAgJ2lkZS1nZXQtc2lkZS13aW5k
+b3cpCiAgICAgIChmdW5jYWxsIChzeW1ib2wtZnVuY3Rpb24gJ2lkZS1nZXQtc2lkZS13aW5kb3cp
+KQogICAgKGxldCogKCh3b3JrYmVuY2gtd2luZG93IChzcWxwbHVzLWdldC13b3JrYmVuY2gtd2lu
+ZG93KSkKCSAgIGJlc3Qtd2luZG93KQogICAgICAoZG9saXN0ICh3aW4gKGNvcHktbGlzdCAod2lu
+ZG93LWxpc3QgbmlsIDEpKSkKCSh3aGVuIChhbmQgKG5vdCAoc3FscGx1cy0taGlkZGVuLWJ1ZmZl
+ci1uYW1lLXAgKGJ1ZmZlci1uYW1lICh3aW5kb3ctYnVmZmVyIHdpbikpKSkKCQkgICAobm90IChl
+cSB3aW4gd29ya2JlbmNoLXdpbmRvdykpKQoJICAoaWYgKG51bGwgYmVzdC13aW5kb3cpCgkgICAg
+ICAoc2V0cSBiZXN0LXdpbmRvdyB3aW4pCgkgICAgKHdoZW4gKD4gKGNhZHIgKHdpbmRvdy1lZGdl
+cyB3aW4pKSAoY2FkciAod2luZG93LWVkZ2VzIGJlc3Qtd2luZG93KSkpCgkgICAgICAoc2V0cSBi
+ZXN0LXdpbmRvdyB3aW4pKSkpKQogICAgICBiZXN0LXdpbmRvdykpKQoKKGRlZnZhciBzcWxwbHVz
+LS1pZGxlLXRhc2tzIG5pbCkKCihkZWZ1biBzcWxwbHVzLS1lbnF1ZXVlLXRhc2sgKGZ1biAmcmVz
+dCBwYXJhbXMpCiAgKHNldHEgc3FscGx1cy0taWRsZS10YXNrcyAocmV2ZXJzZSAoY29ucyAoY29u
+cyBmdW4gcGFyYW1zKSAocmV2ZXJzZSBzcWxwbHVzLS1pZGxlLXRhc2tzKSkpKSkKCihkZWZ1biBz
+cWxwbHVzLS1leGVjdXRlLXRhc2tzICgpCiAgKGRvbGlzdCAodGFzayBzcWxwbHVzLS1pZGxlLXRh
+c2tzKQogICAgKGxldCAoKGZ1biAoY2FyIHRhc2spKQogICAgICAgICAgKHBhcmFtcyAoY2RyIHRh
+c2spKSkKICAgICAgKGNvbmRpdGlvbi1jYXNlIHZhcgogICAgICAgICAgKGFwcGx5IGZ1biBwYXJh
+bXMpCiAgICAgICAgKGVycm9yIChtZXNzYWdlIChlcnJvci1tZXNzYWdlLXN0cmluZyB2YXIpKSkp
+KSkKICAoc2V0cSBzcWxwbHVzLS1pZGxlLXRhc2tzIG5pbCkpCgooYWRkLWhvb2sgJ3Bvc3QtY29t
+bWFuZC1ob29rICdzcWxwbHVzLS1leGVjdXRlLXRhc2tzKQoKKGRlZnZhciBzcWxwbHVzLW1vdXNl
+LXNlbGVjdGlvbiBuaWwpCgooZGVmdW4gc3FscGx1cy1tb3VzZS1zZXQtc2VsZWN0aW9uIChidWZm
+ZXIgYmVnaW4gZW5kIG1vdXNlLWZhY2UpCiAgKGludGVyYWN0aXZlICJAZSIpCiAgKGxldCAoKG9s
+ZC1idWZmZXItbW9kaWZpZWQtcCAoYnVmZmVyLW1vZGlmaWVkLXApKSkKICAgICh3aGVuIChidWZm
+ZXItbGl2ZS1wIGJ1ZmZlcikKICAgICAgKHdpdGgtY3VycmVudC1idWZmZXIgYnVmZmVyCgkodW53
+aW5kLXByb3RlY3QKCSAgICAocHV0LXRleHQtcHJvcGVydHkgYmVnaW4gZW5kICdtb3VzZS1mYWNl
+IG1vdXNlLWZhY2UpCgkgIChzZXQtYnVmZmVyLW1vZGlmaWVkLXAgb2xkLWJ1ZmZlci1tb2RpZmll
+ZC1wKQoJICAoc2V0cSBzcWxwbHVzLW1vdXNlLXNlbGVjdGlvbiAod2hlbiBtb3VzZS1mYWNlIChs
+aXN0IGJ1ZmZlciBiZWdpbiBlbmQpKSkpKSkpKQoKKGRlZnVuIHNxbHBsdXMtY2xlYXItbW91c2Ut
+c2VsZWN0aW9uICgpCiAgKHdoZW4gKGFuZCBzcWxwbHVzLW1vdXNlLXNlbGVjdGlvbgoJICAgICAo
+ZXEgKGV2ZW50LWJhc2ljLXR5cGUgbGFzdC1pbnB1dC1ldmVudCkgJ21vdXNlLTEpCgkgICAgIChu
+b3QgKG1lbXEgJ2Rvd24gKGV2ZW50LW1vZGlmaWVycyBsYXN0LWlucHV0LWV2ZW50KSkpKQogICAg
+KHNxbHBsdXMtbW91c2Utc2V0LXNlbGVjdGlvbiAoY2FyIHNxbHBsdXMtbW91c2Utc2VsZWN0aW9u
+KSAoY2FkciBzcWxwbHVzLW1vdXNlLXNlbGVjdGlvbikgKGNhZGRyIHNxbHBsdXMtbW91c2Utc2Vs
+ZWN0aW9uKSBuaWwpKSkKICAKKGFkZC1ob29rICdwbHNxbC1tb2RlLWhvb2sKICAgICAgICAgIChs
+YW1iZGEgKCkKICAgICAgICAgICAgKG1vZGlmeS1zeW50YXgtZW50cnkgPy4gIi4iIHNxbC1tb2Rl
+LXN5bnRheC10YWJsZSkKICAgICAgICAgICAgKHNldHEgc3FscGx1cy1mb250LWxvY2sta2V5d29y
+ZHMtMSAoc3FscGx1cy1zZXQtZm9udC1sb2NrLWVtYWNzLXN0cnVjdHVyZXMtZm9yLWxldmVsIDEg
+bWFqb3ItbW9kZSkpCiAgICAgICAgICAgIChzZXRxIHNxbHBsdXMtZm9udC1sb2NrLWtleXdvcmRz
+LTIgKHNxbHBsdXMtc2V0LWZvbnQtbG9jay1lbWFjcy1zdHJ1Y3R1cmVzLWZvci1sZXZlbCAyIG1h
+am9yLW1vZGUpKQogICAgICAgICAgICAoc2V0cSBzcWxwbHVzLWZvbnQtbG9jay1rZXl3b3Jkcy0z
+IChzcWxwbHVzLXNldC1mb250LWxvY2stZW1hY3Mtc3RydWN0dXJlcy1mb3ItbGV2ZWwgMyBtYWpv
+ci1tb2RlKSkKICAgICAgICAgICAgKHNldHEgZm9udC1sb2NrLWRlZmF1bHRzICcoKHNxbHBsdXMt
+Zm9udC1sb2NrLWtleXdvcmRzLTEgc3FscGx1cy1mb250LWxvY2sta2V5d29yZHMtMiBzcWxwbHVz
+LWZvbnQtbG9jay1rZXl3b3Jkcy0zKQogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICBuaWwgdCAoKD9fIC4gInciKSAoPyQgLiAidyIpICg/IyAuICJ3IikgKD8mIC4gInciKSkp
+KQoJICAgIChvcmNsLW1vZGUgMSkKICAgICAgICAgICAgKHVzZS1sb2NhbC1tYXAgcGxzcWwtbW9k
+ZS1tYXApIDsgc3RkCgkgICAgKGFkZC1ob29rICdwb3N0LWNvbW1hbmQtaG9vayAnc3FscGx1cy1j
+bGVhci1tb3VzZS1zZWxlY3Rpb24gbmlsIHQpKSkKCihzZXRxIHJlY2VudGYtZXhjbHVkZSAoY29u
+cyAoY29uY2F0ICJeIiAocmVnZXhwLXF1b3RlIChmaWxlLW5hbWUtYXMtZGlyZWN0b3J5IHRlbXBv
+cmFyeS1maWxlLWRpcmVjdG9yeSkpKQoJCQkgICAgKHdoZW4gKGJvdW5kcCAncmVjZW50Zi1leGNs
+dWRlKQoJCQkgICAgICByZWNlbnRmLWV4Y2x1ZGUpKSkKCih3aGVuIChmYm91bmRwICdpZGUtcmVn
+aXN0ZXItcGVyc2lzdGVudC12YXIpCiAgKGZ1bmNhbGwgKHN5bWJvbC1mdW5jdGlvbiAnaWRlLXJl
+Z2lzdGVyLXBlcnNpc3RlbnQtdmFyKSAnc3FscGx1cy1jb25uZWN0LXN0cmluZ3MtYWxpc3QKCQkJ
+ICAgICAgIDs7IHNhdmUgcHJvYwoJCQkgICAgICAgKGxhbWJkYSAoYWxpc3QpCgkJCQkgKG1hcGNh
+ciAobGFtYmRhIChwYWlyKQoJCQkJCSAgIChpZiBzcWxwbHVzLXNhdmUtcGFzc3dvcmRzCgkJCQkJ
+ICAgICAgIHBhaXIKCQkJCQkgICAgIChjb25zIChjYXIgcGFpcikgbmlsKSkpCgkJCQkJIGFsaXN0
+KSkKCQkJICAgICAgIDs7IGxvYWQgcHJvYwoJCQkgICAgICAgKGxhbWJkYSAoYWxpc3QpCgkJCQkg
+KHNldHEgc3FscGx1cy1jb25uZWN0LXN0cmluZy1oaXN0b3J5IChtYXBjYXIgKGxhbWJkYSAocGFp
+cikgKGNhciBwYWlyKSkgYWxpc3QpKQoJCQkJIGFsaXN0KSkpCgooZGVmdW4gZ2V0LWFsbC1kaXJz
+IChyb290LWRpcikKICAobGV0ICgobGlzdC10by1zZWUgKGxpc3Qgcm9vdC1kaXIpKQogICAgICAg
+IHJlc3VsdC1saXN0KQogICAgKHdoaWxlIGxpc3QtdG8tc2VlCiAgICAgIChsZXQqICgoZGlyIChw
+b3AgbGlzdC10by1zZWUpKQogICAgICAgICAgICAgKGNoaWxkcmVuIChkaXJlY3RvcnktZmlsZXMg
+ZGlyIHQpKSkKICAgICAgICAocHVzaCBkaXIgcmVzdWx0LWxpc3QpCiAgICAgICAgKGRvbGlzdCAo
+Y2hpbGQgY2hpbGRyZW4pCiAgICAgICAgICAod2hlbiAoYW5kIChub3QgKHN0cmluZy1tYXRjaCAi
+XlsuXSsiKGZpbGUtbmFtZS1ub25kaXJlY3RvcnkgY2hpbGQpKSkKICAgICAgICAgICAgICAgICAg
+ICAgKGZpbGUtZGlyZWN0b3J5LXAgY2hpbGQpKQogICAgICAgICAgICAocHVzaCBjaGlsZCBsaXN0
+LXRvLXNlZSkpKSkpCiAgICByZXN1bHQtbGlzdCkpCgooZGVmdW4gc3FscGx1cy1jb21tYW5kLWxp
+bmUgKCkKICAoaW50ZXJhY3RpdmUpCiAgKGlmIChjb21pbnQtY2hlY2stcHJvYyAiKlNRTCoiKQog
+ICAgICAocG9wLXRvLWJ1ZmZlciAiKlNRTCoiKQogICAgKGxldCogKChwYWlyIChzcWxwbHVzLXJl
+YWQtY29ubmVjdC1zdHJpbmcgbmlsICh3aGVuIHNxbHBsdXMtY29ubmVjdC1zdHJpbmcgKGNhciAo
+cmVmaW5lLWNvbm5lY3Qtc3RyaW5nIHNxbHBsdXMtY29ubmVjdC1zdHJpbmcpKSkpKQoJICAgKHF1
+YWxpZmllZC1jcyAoY2FyIHBhaXIpKQoJICAgKHJlZmluZWQtY3MgKGNhZHIgcGFpcikpCgkgICAo
+cGFzc3dvcmQgKGNkciAocmVmaW5lLWNvbm5lY3Qtc3RyaW5nIHF1YWxpZmllZC1jcykpKSkKICAg
+ICAgKGlmIChzdHJpbmctbWF0Y2ggIl5cXChbXkBdKlxcKUBcXCguKlxcKSQiIHJlZmluZWQtY3Mp
+CgkgIChsZXQgKChvbGQtc3FsLWdldC1sb2dpbi1mdW4gKHN5bWJvbC1mdW5jdGlvbiAnc3FsLWdl
+dC1sb2dpbikpKQoJICAgIChzZXRxIHNxbC11c2VyIChtYXRjaC1zdHJpbmcgMSByZWZpbmVkLWNz
+KQoJCSAgc3FsLXBhc3N3b3JkIHBhc3N3b3JkCgkJICBzcWwtZGF0YWJhc2UgKG1hdGNoLXN0cmlu
+ZyAyIHJlZmluZWQtY3MpKQoJICAgICh1bndpbmQtcHJvdGVjdAoJCShwcm9nbgoJCSAgKGZzZXQg
+J3NxbC1nZXQtbG9naW4gKGxhbWJkYSAoJnJlc3Qgd2hhdGV2ZXIpIG5pbCkpCgkJICAoc3FsLW9y
+YWNsZSkpCgkgICAgICAoZnNldCAnc3FsLWdldC1sb2dpbiBvbGQtc3FsLWdldC1sb2dpbi1mdW4p
+KSkKCShlcnJvciAiQ29ubmVjdCBzdHJpbmcgbXVzdCBiZSBpbiBmb3JtIGxvZ2luQHNpZCIpKSkp
+KQoKKGRlZnVuIHNxbHBsdXMtZmluZC10bnNuYW1lcyAoKQogIChpbnRlcmFjdGl2ZSkKICAobGV0
+KiAoKG9yYS1ob21lLWRpciAob3IgKGdldGVudiAiT1JBQ0xFX0hPTUUiKSAoZXJyb3IgIkVudmly
+b25tZW50IHZhcmlhYmxlIE9SQUNMRV9IT01FIG5vdCBzZXQiKSkpCgkgZm91bmQKCSAobGlzdC10
+by1zZWUgKGxpc3Qgb3JhLWhvbWUtZGlyKSkpCiAgICAod2hpbGUgKGFuZCAobm90IGZvdW5kKSBs
+aXN0LXRvLXNlZSkKICAgICAgKGxldCogKChkaXIgKHBvcCBsaXN0LXRvLXNlZSkpCgkgICAgIChj
+aGlsZHJlbiAoY29uZGl0aW9uLWNhc2UgbmlsIChkaXJlY3RvcnktZmlsZXMgZGlyIHQpIChlcnJv
+ciBuaWwpKSkpCgkoZG9saXN0IChjaGlsZCBjaGlsZHJlbikKCSAgKHVubGVzcyBmb3VuZAoJICAg
+IChpZiAoc3RyaW5nLW1hdGNoICJhZG1pbi50bnNuYW1lc1wub3JhJCIgY2hpbGQpCgkJKHByb2du
+CgkJICAoc2V0cSBmb3VuZCB0KQoJCSAgKGZpbmQtZmlsZSBjaGlsZCkpCgkgICAgICAoaWYgKGFu
+ZCAobm90IChzdHJpbmctbWF0Y2ggIl5bLl0rIiAoZmlsZS1uYW1lLW5vbmRpcmVjdG9yeSBjaGls
+ZCkpKQoJCSAgICAgICAoZmlsZS1kaXJlY3RvcnktcCBjaGlsZCkpCgkJICAocHVzaCBjaGlsZCBs
+aXN0LXRvLXNlZSkpKSkpKSkKICAgICh1bmxlc3MgZm91bmQKICAgICAgKG1lc3NhZ2UgIkZpbGUg
+dG5zbmFtZXMub3JhIG5vdCBmb3VuZCIpKSkpCgooZGVmdW4gc3FscGx1cy1yZW1vdmUtaGVscC1l
+Y2hvIChsaXN0KQogICJSZW1vdmUgYWxsIEhFTFAtRUNITyBwcm9wZXJ0aWVzIGZyb20gbW9kZS1s
+aW5lIGZvcm1hdCB2YWx1ZSIKICAod2hlbiAobGlzdHAgbGlzdCkKICAgICAgKGlmIChlcSAoY2Fy
+IGxpc3QpIDpwcm9wZXJ0aXplKQoJICAod2hpbGUgbGlzdAoJICAgICh3aGVuIChlcSAoY2FkciBs
+aXN0KSAnaGVscC1lY2hvKQoJICAgICAgKHNldGNkciBsaXN0IChjZGRkciBsaXN0KSkpCgkgICAg
+KHNldHEgbGlzdCAoY2RyIGxpc3QpKSkKCShkb2xpc3QgKGVsZW0gbGlzdCkgKHNxbHBsdXMtcmVt
+b3ZlLWhlbHAtZWNobyBlbGVtKSkpKSkKCih3aGVuICg+PSBlbWFjcy1tYWpvci12ZXJzaW9uIDIy
+KQogIChzcWxwbHVzLXJlbW92ZS1oZWxwLWVjaG8gbW9kZS1saW5lLW1vZGVzKSkKCihkZWZ1biBz
+cWxwbHVzLWdldC1wcm9qZWN0LXJvb3QtZGlyIChwYXRoKQogIChsZXQgKChwYXRoIChmaWxlLXRy
+dWVuYW1lIChzdWJzdGl0dXRlLWluLWZpbGUtbmFtZSBwYXRoKSkpCglkaXIpCiAgICAoaWYgKGZp
+bGUtZGlyZWN0b3J5LXAgcGF0aCkKCShwcm9nbgoJICAoc2V0cSBwYXRoIChmaWxlLW5hbWUtYXMt
+ZGlyZWN0b3J5IHBhdGgpKQoJICAoc2V0cSBkaXIgcGF0aCkpCiAgICAgIChzZXRxIGRpciAoZmls
+ZS1uYW1lLWFzLWRpcmVjdG9yeSAoZmlsZS1uYW1lLWRpcmVjdG9yeSBwYXRoKSkpKQogICAgKGxl
+dCAoKGxhc3QtcHJvamVjdC1kaXIgZGlyKQoJICAoZGlyLWxpc3QgKHNwbGl0LXN0cmluZyBkaXIg
+Ii8iKSkKCSAgaXMtcHJvamVjdCkKICAgICAgKHdoaWxlIChkaXJlY3RvcnktZmlsZXMgZGlyIHQg
+KGNvbmNhdCAiXiIgIlxcKFxcLnN2blxcfENWU1xcKSQiKSB0KQoJKHNldHEgaXMtcHJvamVjdCB0
+CgkgICAgICBsYXN0LXByb2plY3QtZGlyIChmaWxlLW5hbWUtYXMtZGlyZWN0b3J5IGRpcikKCSAg
+ICAgIGRpciAoZmlsZS1uYW1lLWFzLWRpcmVjdG9yeSAoZmlsZS1uYW1lLWRpcmVjdG9yeSAoZGly
+ZWN0b3J5LWZpbGUtbmFtZSBkaXIpKSkpKQogICAgICAod2hlbiBpcy1wcm9qZWN0CgkobGV0ICgo
+bGlzdCAobnRoY2RyICgxLSAobGVuZ3RoIChzcGxpdC1zdHJpbmcgbGFzdC1wcm9qZWN0LWRpciAi
+LyIpKSkgZGlyLWxpc3QpKSkKCSAgKGNvbmQgKChlcXVhbCAoY2FyIGxpc3QpICJ0cnVuayIpCgkJ
+IChzZXRxIGxhc3QtcHJvamVjdC1kaXIgKGNvbmNhdCBsYXN0LXByb2plY3QtZGlyICJ0cnVuay8i
+KSkpCgkJKChtZW1iZXIgKGNhciBsaXN0KSAnKCJicmFuY2hlcyIgInRhZ3MiKSkKCQkgKHNldHEg
+bGFzdC1wcm9qZWN0LWRpciAoY29uY2F0IGxhc3QtcHJvamVjdC1kaXIgKGNhciBsaXN0KSAiLyIg
+KHdoZW4gKGNkciBsaXN0KSAoY29uY2F0IChjYWRyIGxpc3QpICIvIikpKSkpCgkJKHQpKSkKCShz
+ZXRxIGRpciBsYXN0LXByb2plY3QtZGlyKSkpCiAgICBkaXIpKQoKKGRlZnZhciBzcWxwbHVzLXNl
+YXJjaC1idWZmZXItbmFtZSAiKnNlYXJjaCoiKQoKKGRlZnZhciBzcWxwbHVzLW9iamVjdC10eXBl
+cy1yZWdleHBzIAogICcoCiAgICAoIlRBQkxFIiAuICJcXGJjcmVhdGVcXHMrdGFibGVcXHMrW14o
+XSo/XFxiI1xcYiIpCiAgICAoIlZJRVciICAuICJcXGJ2aWV3XFxzKy4qP1xcYiNcXGIiKQogICAg
+KCJJTkRFWCIgLiAiXFxiKGNvbnN0cmFpbnR8aW5kZXgpXFxzKy4qP1xcYiNcXGIiKQogICAgKCJU
+UklHR0VSIiAuICJcXGJ0cmlnZ2VyXFxzKy4qP1xcYiNcXGIiKQogICAgKCJTRVFVRU5DRSIgLiAi
+XFxic2VxdWVuY2VcXHMrLio/XFxiI1xcYiIpCiAgICAoIlNZTk9OWU0iICAuICJcXGJzeW5vbnlt
+XFxzKy4qP1xcYiNcXGIiKQogICAgKCJTQ0hFTUEiICAgLiAiXFxiY3JlYXRlXFxiLio/XFxidXNl
+clxcYi4qP1xcYiNcXGIiKQogICAgKCJQUk9DRURVUkUiIC4gIlxcYihwcm9jZWR1cmV8ZnVuY3Rp
+b24pXFxiW14oXSo/XFxiI1xcYiIpCiAgICAoIlBBQ0tBR0UiICAgLiAiXFxicGFja2FnZVxccysu
+Kj9cXGIjXFxiIikpKQoKKGRlZnZhciBzcWxwbHVzLXJvb3QtZGlyLWhpc3RvcnkgbmlsKQoKKGRl
+ZnZhciBzcWxwbHVzLWNvbXBhcmUtcmVwb3J0LWJ1ZmZlci1uYW1lICIqQ29tcGFyYXRpb24gUmVw
+b3J0KiIpCgooZGVmdW4gc3FscGx1cy1jb21wYXJlLXNjaGVtYS10by1maWxlc3lzdGVtICgmb3B0
+aW9uYWwgYXJnKQogIChpbnRlcmFjdGl2ZSAiUCIpCiAgKGxldCogKChjb25uZWN0LXN0cmluZyBz
+cWxwbHVzLWNvbm5lY3Qtc3RyaW5nKQoJIChvYmplY3RzLWFsaXN0IChzcWxwbHVzLWdldC1vYmpl
+Y3RzLWFsaXN0IHNxbHBsdXMtY29ubmVjdC1zdHJpbmcpKQoJIChyZXBvcnQtYnVmZmVyIChnZXQt
+YnVmZmVyLWNyZWF0ZSBzcWxwbHVzLWNvbXBhcmUtcmVwb3J0LWJ1ZmZlci1uYW1lKSkKCSAodHlw
+ZXMtbGVuZ3RoICgtIChsZW5ndGggb2JqZWN0cy1hbGlzdCkgMikpCgkgKHJvb3QtZGlyIChvciAo
+c3FscGx1cy1nZXQtcm9vdC1kaXIgY29ubmVjdC1zdHJpbmcpCgkJICAgICAgIChzcWxwbHVzLXNl
+dC1wcm9qZWN0LWZvci1jb25uZWN0LXN0cmluZyBjb25uZWN0LXN0cmluZykKCQkgICAgICAgKGVy
+cm9yICJSb290IGRpciBub3Qgc2V0IikpKQoJIChjb3VudGVyIDApKQogICAgKHVubGVzcyBvYmpl
+Y3RzLWFsaXN0CiAgICAgIChlcnJvciAiTm90IHJlYWR5IHlldCAtIHRyeSBhZ2FpbiBsYXRlciIp
+KQogICAgKHNhdmUtZXhjdXJzaW9uCiAgICAgIChzd2l0Y2gtdG8tYnVmZmVyLW90aGVyLXdpbmRv
+dyByZXBvcnQtYnVmZmVyKSkKICAgICh3aXRoLWN1cnJlbnQtYnVmZmVyIHJlcG9ydC1idWZmZXIK
+ICAgICAgKGxldCAoKGluaGliaXQtcmVhZC1vbmx5IHQpKQoJKGVyYXNlLWJ1ZmZlcikKCShpbnNl
+cnQgKGZvcm1hdCAiJXMgJXMgdnMuICVzXG5cbiIgKGN1cnJlbnQtdGltZS1zdHJpbmcpIChjYXIg
+KHJlZmluZS1jb25uZWN0LXN0cmluZyBjb25uZWN0LXN0cmluZykpIHJvb3QtZGlyKSkKCShzaXQt
+Zm9yIDApKSkKICAgIChkb2xpc3QgKHBhaXIgb2JqZWN0cy1hbGlzdCkKICAgICAgKGxldCAoKHR5
+cGUgKHVwY2FzZSAoZm9ybWF0ICIlcyIgKGNhciBwYWlyKSkpKQoJICAgIChuYW1lcyAoY2RyIHBh
+aXIpKSkKCSh1bmxlc3MgKG1lbWJlciB0eXBlICcoIlNDSEVNQSIgIkNPTFVNTiIpKQoJICAoaW5j
+ZiBjb3VudGVyKQoJICAobWVzc2FnZSAoZm9ybWF0ICIlcyAoJWQvJWQpLi4uIiB0eXBlIGNvdW50
+ZXIgdHlwZXMtbGVuZ3RoKSkKCSAgKGRvbGlzdCAobmFtZS1wYWlyIG5hbWVzKQoJICAgIChsZXQq
+ICgobmFtZSAoY2FyIG5hbWUtcGFpcikpCgkJICAgKGdyZXAtcmVzdWx0IChzcWxwbHVzLWZpbGUt
+Z2V0LXNvdXJjZSBzcWxwbHVzLWNvbm5lY3Qtc3RyaW5nIG5hbWUgdHlwZSAnYmF0Y2gtbW9kZSkp
+KQoJICAgICAgKHdpdGgtY3VycmVudC1idWZmZXIgcmVwb3J0LWJ1ZmZlcgoJCShsZXQgKChpbmhp
+Yml0LXJlYWQtb25seSB0KSkKCQkgIChnb3RvLWNoYXIgKHBvaW50LW1heCkpCgkJICAoY29uZCAo
+KGVxbCAobGVuZ3RoIGdyZXAtcmVzdWx0KSAwKQoJCQkgKGluc2VydCAoZm9ybWF0ICIlcyAlczog
+bm90IGZvdW5kXG4iIHR5cGUgbmFtZSkpCgkJCSAoc2l0LWZvciAwKSkKCQkJKChhbmQgYXJnCgkJ
+CSAgICAgICg+IChsZW5ndGggZ3JlcC1yZXN1bHQpIDEpKQoJCQkgKGluc2VydCAoZm9ybWF0ICIl
+cyAlczpcbiIgdHlwZSBuYW1lKSkKCQkJIChkb2xpc3QgKGxpc3QgZ3JlcC1yZXN1bHQpCgkJCSAg
+IChpbnNlcnQgKGZvcm1hdCAiICAlczolZCAlc1xuIiAoY2FyIGxpc3QpIChjYWRyIGxpc3QpIChj
+YWRkciBsaXN0KSkpKQoJCQkgKHNpdC1mb3IgMCkpCgkJCSh0KSkpKSkpKSkpCiAgICAobWVzc2Fn
+ZSAiRG9uZS4iKQogICAgKHdpdGgtY3VycmVudC1idWZmZXIgcmVwb3J0LWJ1ZmZlcgogICAgICAo
+Z290by1jaGFyIChwb2ludC1taW4pKSkpKQoKKGRlZnVuIHNxbHBsdXMtcHJvai1maW5kLWZpbGVz
+IChkaXIgZmlsZS1wcmVkaWNhdGUgJm9wdGlvbmFsIGRpci1wcmVkaWNhdGUpCiAgKHNldHEgZGly
+IChmaWxlLW5hbWUtYXMtZGlyZWN0b3J5IChmaWxlLXRydWVuYW1lIChzdWJzdGl0dXRlLWluLWZp
+bGUtbmFtZSBkaXIpKSkpCiAgKGxldCAocmVzdWx0LWxpc3QpCiAgICAobWFwY2FyIChsYW1iZGEg
+KHBhdGgpCgkgICAgICAoaWYgKGZpbGUtZGlyZWN0b3J5LXAgcGF0aCkKCQkgICh3aGVuIChhbmQg
+KGZpbGUtYWNjZXNzaWJsZS1kaXJlY3RvcnktcCBwYXRoKQoJCQkgICAgIChvciAobnVsbCBkaXIt
+cHJlZGljYXRlKQoJCQkJIChmdW5jYWxsIGRpci1wcmVkaWNhdGUgcGF0aCkpKQoJCSAgICAoc2V0
+cSByZXN1bHQtbGlzdCAoYXBwZW5kIHJlc3VsdC1saXN0IChzcWxwbHVzLXByb2otZmluZC1maWxl
+cyBwYXRoIGZpbGUtcHJlZGljYXRlIGRpci1wcmVkaWNhdGUpKSkpCgkJKHdoZW4gKG9yIChudWxs
+IGZpbGUtcHJlZGljYXRlKQoJCQkgIChmdW5jYWxsIGZpbGUtcHJlZGljYXRlIHBhdGgpKQoJCSAg
+KHB1c2ggcGF0aCByZXN1bHQtbGlzdCkpKSkKCSAgICAoZGVsZXRlIChjb25jYXQgKGZpbGUtbmFt
+ZS1hcy1kaXJlY3RvcnkgZGlyKSAiLiIpIAoJCSAgICAoZGVsZXRlIChjb25jYXQgKGZpbGUtbmFt
+ZS1hcy1kaXJlY3RvcnkgZGlyKSAiLi4iKQoJCQkgICAgKGRpcmVjdG9yeS1maWxlcyBkaXIgdCBu
+aWwgdCkpKSkKICAgIHJlc3VsdC1saXN0KSkKCihkZWZ2YXIgc3FscGx1cy1wcm9qLWlnbm9yZWQt
+ZXh0ZW5zaW9ucyAnKCJzZW1hbnRpYy5jYWNoZSIpKQoKKGRlZnVuIHNxbHBsdXMtbW9kZS1maWxl
+LXJlZ2V4cC1saXN0IChtb2RlLXN5bWJvbC1saXN0KQogIChkZWxxIG5pbCAobWFwY2FyIChsYW1i
+ZGEgKGVsZW1lbnQpCgkJICAgICAgKGxldCAoKGZ1bi1uYW1lIChpZiAobGlzdHAgKGNkciBlbGVt
+ZW50KSkgKGNhZHIgZWxlbWVudCkgKGNkciBlbGVtZW50KSkpKQoJCQkod2hlbiAobWVtcSBmdW4t
+bmFtZSBtb2RlLXN5bWJvbC1saXN0KSAoY29ucyAoY2FyIGVsZW1lbnQpIGZ1bi1uYW1lKSkpKQoJ
+CSAgICBhdXRvLW1vZGUtYWxpc3QpKSkKCihkZWZ1biBzcWxwbHVzLWZpbmQtcHJvamVjdC1maWxl
+cyAocm9vdC1kaXIgbW9kZS1zeW1ib2wtbGlzdCBwcmVkaWNhdGUpCiAgKGxldCAoKG9iai1maWxl
+LXJlZ2V4cC1saXN0IChkZWxxIG5pbCAobWFwY2FyIChsYW1iZGEgKGVsZW1lbnQpCgkJCQkJCSAg
+KGxldCAoKGxlbiAobGVuZ3RoIGVsZW1lbnQpKSkKCQkJCQkJICAgICh1bmxlc3MgKGFuZCAoPiBs
+ZW4gMCkKCQkJCQkJCQkgKGVxdWFsIChlbHQgZWxlbWVudCAoMS0gbGVuKSkgPy8pKQoJCQkJCQkg
+ICAgICAoY29uY2F0IChyZWdleHAtcXVvdGUgZWxlbWVudCkgIiQiKSkpKQoJCQkJCQkoYXBwZW5k
+IHNxbHBsdXMtcHJvai1pZ25vcmVkLWV4dGVuc2lvbnMgY29tcGxldGlvbi1pZ25vcmVkLWV4dGVu
+c2lvbnMpKSkpCgkobW9kZS1maWxlLXJlZ2V4cC1saXN0IChzcWxwbHVzLW1vZGUtZmlsZS1yZWdl
+eHAtbGlzdCBtb2RlLXN5bWJvbC1saXN0KSkpIDsgKGZpbGUtcGF0aC1yZWdleHAgLiBtYWpvci1t
+b2RlLWZ1bmN0aW9uLXN5bWJvbCkKICAgICh3aGVuIChhbmQgbW9kZS1zeW1ib2wtbGlzdAoJICAg
+ICAgIChub3QgbW9kZS1maWxlLXJlZ2V4cC1saXN0KSkKICAgICAgKGVycm9yIChmb3JtYXQgIk5v
+IHJ1bGVzIGZvciAlcyBtYWpvciBtb2RlcyBpbiBhdXRvLW1vZGUtYWxpc3QuIiAobWFwY29uY2F0
+ICdpZGVudGl0eSBtb2RlLXN5bWJvbC1saXN0ICIsICIpKSkpCiAgICAoc3FscGx1cy1wcm9qLWZp
+bmQtZmlsZXMgcm9vdC1kaXIKCQkJICAgICAgKGxhbWJkYSAoZmlsZS1uYW1lKQoJCQkJKGFuZCAo
+bm90IChzdHJpbmctbWF0Y2ggIiMiIGZpbGUtbmFtZSkpCgkJCQkgICAgIChub3QgKHN0cmluZy1t
+YXRjaCAic2VtYW50aWMuY2FjaGUiIGZpbGUtbmFtZSkpCgkJCQkgICAgIChvciAoYW5kIChub3Qg
+bW9kZS1zeW1ib2wtbGlzdCkKCQkJCQkgICAgICAobm90IChzb21lIChsYW1iZGEgKHJlZ2V4cCkK
+CQkJCQkJCQkgIChzdHJpbmctbWF0Y2ggcmVnZXhwIGZpbGUtbmFtZSkpCgkJCQkJCQkJb2JqLWZp
+bGUtcmVnZXhwLWxpc3QpKSkKCQkJCQkgKGFuZCBtb2RlLXN5bWJvbC1saXN0CgkJCQkJICAgICAg
+KHNvbWUgKGxhbWJkYSAoZWxlbWVudCkKCQkJCQkJICAgICAgKGxldCAoKGZyZWcgKGlmIChzdHJp
+bmctbWF0Y2ggIlskXSIgKGNhciBlbGVtZW50KSkKCQkJCQkJCQkgICAgICAoY2FyIGVsZW1lbnQp
+CgkJCQkJCQkJICAgIChjb25jYXQgKGNhciBlbGVtZW50KSAiJCIpKSkpCgkJCQkJCQkod2hlbiAo
+c3RyaW5nLW1hdGNoIGZyZWcgZmlsZS1uYW1lKQoJCQkJCQkJICAoY2RyIGVsZW1lbnQpKSkpCgkJ
+CQkJCSAgICBtb2RlLWZpbGUtcmVnZXhwLWxpc3QpKSkKCQkJCSAgICAgKG9yIChub3QgcHJlZGlj
+YXRlKQoJCQkJCSAoZnVuY2FsbCBwcmVkaWNhdGUgZmlsZS1uYW1lKSkpKQoJCQkgICAgICAobGFt
+YmRhIChkaXItcGF0aCkKCQkJCShub3QgKHN0cmluZy1tYXRjaCAiL1xcKFxcLnN2blxcfENWU1xc
+KSQiIGRpci1wYXRoKSkpKSkpCgoKKGRlZnVuIHNxbHBsdXMtZmlsZS1nZXQtc291cmNlIChjb25u
+ZWN0LXN0cmluZyBvYmplY3QtbmFtZSBvYmplY3QtdHlwZSAmb3B0aW9uYWwgYmF0Y2gtbW9kZSkK
+ICAoaW50ZXJhY3RpdmUKICAgKHByb2duCiAgICAgKHB1c2ggKHBvaW50LW1hcmtlcikgcGxzcWwt
+bWFyay1iYWNrd2FyZC1saXN0KQogICAgIChsaXN0IHNxbHBsdXMtY29ubmVjdC1zdHJpbmcgKHRo
+aW5nLWF0LXBvaW50ICdzeW1ib2wpIG5pbCkpKQogICh1bmxlc3Mgb2JqZWN0LW5hbWUKICAgIChl
+cnJvciAiTm90aGluZyB0byBzZWFyY2giKSkKICAobGV0KiAoKHJvb3QtZGlyIChvciAoYW5kIChu
+b3Qgb2JqZWN0LXR5cGUpCgkJCSAgICAoZXEgbWFqb3ItbW9kZSAncGxzcWwtbW9kZSkKCQkJICAg
+IChidWZmZXItZmlsZS1uYW1lKQoJCQkgICAgKHNxbHBsdXMtZ2V0LXByb2plY3Qtcm9vdC1kaXIg
+KGJ1ZmZlci1maWxlLW5hbWUpKSkKCQkgICAgICAgKHNxbHBsdXMtZ2V0LXJvb3QtZGlyIGNvbm5l
+Y3Qtc3RyaW5nKQoJCSAgICAgICAoc3FscGx1cy1zZXQtcHJvamVjdC1mb3ItY29ubmVjdC1zdHJp
+bmcgY29ubmVjdC1zdHJpbmcpCgkJICAgICAgIChlcnJvciAiUm9vdCBkaXIgbm90IHNldCIpKSkK
+CSAobW9kZS1zeW1ib2wtbGlzdCAnKHBsc3FsLW1vZGUgc3FsLW1vZGUpKQoJIChmaWxlcy10by1n
+cmVwIChzcWxwbHVzLWZpbmQtcHJvamVjdC1maWxlcyByb290LWRpciBtb2RlLXN5bWJvbC1saXN0
+IG5pbCkpCgkgKHRlbXAtZmlsZS1wYXRoIChjb25jYXQgKGZpbGUtbmFtZS1hcy1kaXJlY3Rvcnkg
+dGVtcG9yYXJ5LWZpbGUtZGlyZWN0b3J5KSAobWFrZS10ZW1wLW5hbWUgImlkZS0iKSkpCgkgKHNl
+YXJjaC1idWZmZXIgKGdldC1idWZmZXIgc3FscGx1cy1zZWFyY2gtYnVmZmVyLW5hbWUpKQoJIChy
+ZWdleHAgKGxldCAoKGluZGV4IDApCgkJICAgICAgIChsZW4gKGxlbmd0aCBvYmplY3QtbmFtZSkp
+CgkJICAgICAgIHJlc3VsdCkKCQkgICAoc2V0cSByZXN1bHQKCQkJIChpZiBvYmplY3QtdHlwZQoJ
+CQkgICAgIChsZXQgKCh0eXBlIChjb25kICgoZXF1YWwgb2JqZWN0LXR5cGUgIkZVTkNUSU9OIikg
+IlBST0NFRFVSRSIpCgkJCQkJICAgICAgICgoZXF1YWwgb2JqZWN0LXR5cGUgIlBBQ0tBR0UgQk9E
+WSIpICJQQUNLQUdFIikKCQkJCQkgICAgICAgKHQgb2JqZWN0LXR5cGUpKSkpCgkJCSAgICAgICAo
+Y2RyIChhc3NvYyB0eXBlIHNxbHBsdXMtb2JqZWN0LXR5cGVzLXJlZ2V4cHMpKSkKCQkJICAgKG1h
+cGNvbmNhdCAnY2RyIHNxbHBsdXMtb2JqZWN0LXR5cGVzLXJlZ2V4cHMgInwiKSkpCgkJICAgKHVu
+bGVzcyByZXN1bHQKCQkgICAgIChlcnJvciAiTm90IGltcGxlbWVudGVkIikpCgkJICAgKHdoaWxl
+IChhbmQgKDwgaW5kZXggKGxlbmd0aCByZXN1bHQpKQoJCQkgICAgICAgKHN0cmluZy1tYXRjaCAi
+IyIgcmVzdWx0IGluZGV4KSkKCQkgICAgIChzZXRxIGluZGV4ICgrIChtYXRjaC1iZWdpbm5pbmcg
+MCkgbGVuKSkKCQkgICAgIChzZXRxIHJlc3VsdCAocmVwbGFjZS1tYXRjaCBvYmplY3QtbmFtZSB0
+IHQgcmVzdWx0KSkpCgkJICAgKHNldHEgaW5kZXggMCkKCQkgICAod2hpbGUgKGFuZCAoPCBpbmRl
+eCAobGVuZ3RoIHJlc3VsdCkpCgkJCSAgICAgICAoc3RyaW5nLW1hdGNoICJbJF1cXChcXFxcYlxc
+KT8iIHJlc3VsdCBpbmRleCkpCgkJICAgICAoc2V0cSBpbmRleCAoKyAobWF0Y2gtZW5kIDApIDEp
+KQoJCSAgICAgKHNldHEgcmVzdWx0IChyZXBsYWNlLW1hdGNoICJcXCQiIHQgdCByZXN1bHQpKSkK
+CQkgICByZXN1bHQpKQoJIGdyZXAtY29tbWFuZAoJIGdyZXAtcmVzdWx0KQogICAgKHdoZW4gc2Vh
+cmNoLWJ1ZmZlcgogICAgICAod2l0aC1jdXJyZW50LWJ1ZmZlciBzZWFyY2gtYnVmZmVyCgkobGV0
+ICgoaW5oaWJpdC1yZWFkLW9ubHkgdCkpCgkgIChlcmFzZS1idWZmZXIpKSkpCiAgICA7OyAobWVz
+c2FnZSAiT2JqZWN0IHR5cGU6ICVTLCBvYmplY3QgbmFtZTogJVMsIHJlZ2V4cDogJVMiIG9iamVj
+dC10eXBlIG9iamVjdC1uYW1lIHJlZ2V4cCkKICAgICh3aXRoLXRlbXAtZmlsZSB0ZW1wLWZpbGUt
+cGF0aAogICAgICAoZG9saXN0IChwYXRoIGZpbGVzLXRvLWdyZXApCgkoaW5zZXJ0IChjb25jYXQg
+IiciIHBhdGggIidcbiIpKSkpCiAgICAobGV0KiAoKGdyZXAtY29tbWFuZCAoZm9ybWF0ICJjYXQg
+JXMgfCB4YXJncyBncmVwIC1uSGlFIC1lICclcyciIHRlbXAtZmlsZS1wYXRoIHJlZ2V4cCkpCgkg
+ICAocmF3LWdyZXAtcmVzdWx0IChzcGxpdC1zdHJpbmcgKHNoZWxsLWNvbW1hbmQtdG8tc3RyaW5n
+IGdyZXAtY29tbWFuZCkgIlxuIiB0KSkKCSAgIChncmVwLXJlc3VsdCAoZGVscSBuaWwgKG1hcGNh
+ciAobGFtYmRhIChsaW5lKQoJCQkJCSAgICAoc3RyaW5nLW1hdGNoICJeXFwoLio/XFwpOlxcKFsw
+LTldK1xcKTpcXCguKlxcKSQiIGxpbmUpCgkJCQkJICAgIChsZXQqICgocGF0aCAobWF0Y2gtc3Ry
+aW5nIDEgbGluZSkpCgkJCQkJCSAgIChsaW5lLW5vIChzdHJpbmctdG8tbnVtYmVyIChtYXRjaC1z
+dHJpbmcgMiBsaW5lKSkpCgkJCQkJCSAgICh0ZXh0IChtYXRjaC1zdHJpbmcgMyBsaW5lKSkKCQkJ
+CQkJICAgKHRleHQyIHRleHQpCgkJCQkJCSAgIChzeW4tdGFibGUgKGNvcHktc3ludGF4LXRhYmxl
+KSkKCQkJCQkJICAgKGNhc2UtZm9sZC1zZWFyY2ggdCkpCgkJCQkJICAgICAgKG1vZGlmeS1zeW50
+YXgtZW50cnkgPyQgInciIHN5bi10YWJsZSkKCQkJCQkgICAgICAobW9kaWZ5LXN5bnRheC1lbnRy
+eSA/IyAidyIgc3luLXRhYmxlKQoJCQkJCSAgICAgIChtb2RpZnktc3ludGF4LWVudHJ5ID9fICJ3
+IiBzeW4tdGFibGUpCgkJCQkJICAgICAgKHdpdGgtc3ludGF4LXRhYmxlIHN5bi10YWJsZQoJCQkJ
+CQkod2hlbiAoYW5kIChvciAoYW5kIChub3Qgb2JqZWN0LXR5cGUpCgkJCQkJCQkJICAgICg+IChs
+ZW5ndGggcmF3LWdyZXAtcmVzdWx0KSAxKSkKCQkJCQkJCSAgICAgICAoZXF1YWwgb2JqZWN0LXR5
+cGUgIlNZTk9OWU0iKSkKCQkJCQkJCSAgIChzdHJpbmctbWF0Y2ggIlxcPFxcKGZvclxcfGZyb21c
+XHxvblxcfGFzXFwpXFw+IiB0ZXh0MikpCgkJCQkJCSAgKHNldHEgdGV4dDIgKHN1YnN0cmluZyB0
+ZXh0MiAwIChtYXRjaC1iZWdpbm5pbmcgMCkpKSkKCQkJCQkJOzsgKG1lc3NhZ2UgIkdSRVAtUkVT
+VUxUOiAlcyIgdGV4dDIpCgkJCQkJCSh1bmxlc3MgKG9yIChub3QgKHN0cmluZy1tYXRjaCAoY29u
+Y2F0ICJcXDwiIChyZWdleHAtcXVvdGUgb2JqZWN0LW5hbWUpICJcXD4iKSB0ZXh0MikpCgkJCQkJ
+CQkgICAgKHN0cmluZy1tYXRjaCAoY29uY2F0ICJcXCgtLVxcfFxcPHByb1xcPlxcfFxcPHByb21w
+dFxcPlxcfFxcPGRyb3BcXD5cXHxcXDxncmFudFxcPlxcKS4qXFw8IgoJCQkJCQkJCQkJICAocmVn
+ZXhwLXF1b3RlIG9iamVjdC1uYW1lKSAiXFw+IikgdGV4dDIpCgkJCQkJCQkgICAgKGFuZCAob3Ig
+KGFuZCAobm90IG9iamVjdC10eXBlKQoJCQkJCQkJCQkgICg+IChsZW5ndGggcmF3LWdyZXAtcmVz
+dWx0KSAxKSkKCQkJCQkJCQkgICAgIChlcXVhbCBvYmplY3QtdHlwZSAiVFJJR0dFUiIpKQoJCQkJ
+CQkJCSAoc3RyaW5nLW1hdGNoICJcXDxcXChhbHRlclxcfGRpc2FibGVcXHxlbmFibGVcXClcXD4i
+IHRleHQyKSkKCQkJCQkJCSAgICAoYW5kIChvciAoYW5kIChub3Qgb2JqZWN0LXR5cGUpCgkJCQkJ
+CQkJCSAgKHN0cmluZy1tYXRjaCAiXFw8cGFja2FnZVxcPiIgdGV4dDIpCgkJCQkJCQkJCSAgY3Vy
+cmVudC1wcmVmaXgtYXJnKQoJCQkJCQkJCSAgICAgKGVxdWFsIG9iamVjdC10eXBlICJQQUNLQUdF
+IikpCgkJCQkJCQkJIChzdHJpbmctbWF0Y2ggIlxcPGJvZHlcXD4iIHRleHQyKSkKCQkJCQkJCSAg
+ICAoYW5kIChvciAoYW5kIChub3Qgb2JqZWN0LXR5cGUpCgkJCQkJCQkJCSAgKHN0cmluZy1tYXRj
+aCAiXFw8cGFja2FnZVxcPiIgdGV4dDIpCgkJCQkJCQkJCSAgKG5vdCBjdXJyZW50LXByZWZpeC1h
+cmcpKQoJCQkJCQkJCSAgICAgKGVxdWFsIG9iamVjdC10eXBlICJQQUNLQUdFIEJPRFkiKSkKCQkJ
+CQkJCQkgKG5vdCAoc3RyaW5nLW1hdGNoICJcXDxib2R5XFw+IiB0ZXh0MikpKQoJCQkJCQkJICAg
+IChhbmQgKG5vdCBvYmplY3QtdHlwZSkKCQkJCQkJCQkgKG5vdCBjdXJyZW50LXByZWZpeC1hcmcp
+CgkJCQkJCQkJIChzdHJpbmctbWF0Y2ggIlsuXXBrcyQiIHBhdGgpKSkKCQkJCQkJICAobGlzdCBw
+YXRoIGxpbmUtbm8gdGV4dCkpKSkpCgkJCQkJICByYXctZ3JlcC1yZXN1bHQpKSkpCiAgICAgIChp
+ZiBiYXRjaC1tb2RlCgkgIGdyZXAtcmVzdWx0CgkoY29uZCAoKG5vdCBncmVwLXJlc3VsdCkKCSAg
+ICAgICAoZXJyb3IgIk5vdCBmb3VuZCIpKQoJICAgICAgKChlcWwgKGxlbmd0aCBncmVwLXJlc3Vs
+dCkgMSkKCSAgICAgICAoc3FscGx1cy1zd2l0Y2gtdG8tYnVmZmVyIChjYWFyIGdyZXAtcmVzdWx0
+KSAoY2FkYXIgZ3JlcC1yZXN1bHQpKQoJICAgICAgICh3aGVuIGNvbm5lY3Qtc3RyaW5nCgkJIChz
+ZXRxIHNxbHBsdXMtY29ubmVjdC1zdHJpbmcgY29ubmVjdC1zdHJpbmcpKSkKCSAgICAgICh0Cgkg
+ICAgICAgKGxldCAoKHNlYXJjaC1idWZmZXIgKGdldC1idWZmZXItY3JlYXRlIHNxbHBsdXMtc2Vh
+cmNoLWJ1ZmZlci1uYW1lKSkpCgkJICh3aXRoLWN1cnJlbnQtYnVmZmVyIHNlYXJjaC1idWZmZXIK
+CQkgICAoc2V0cSBidWZmZXItcmVhZC1vbmx5IHQpCgkJICAgKGxldCAoKGluaGliaXQtcmVhZC1v
+bmx5IHQpKQoJCSAgICAgKHNldHEgZGVmYXVsdC1kaXJlY3Rvcnkgcm9vdC1kaXIpCgkJICAgICAo
+ZXJhc2UtYnVmZmVyKQoJCSAgICAgKGluc2VydCAiUm9vdCBkaXI6ICIpCgkJICAgICAoc3FscGx1
+cy1wcm9qLWluc2VydC13aXRoLWZhY2Ugcm9vdC1kaXIgJ2ZvbnQtbG9jay1rZXl3b3JkLWZhY2Up
+CgkJICAgICAoaW5zZXJ0ICI7IFJhbmdlOiAiKQoJCSAgICAgKHNxbHBsdXMtcHJvai1pbnNlcnQt
+d2l0aC1mYWNlIChtYXBjb25jYXQgKGxhbWJkYSAoc3ltKSAoc3FscGx1cy1tb2RlLW5hbWUtc3Ry
+aW5naWZ5IHN5bSkpIG1vZGUtc3ltYm9sLWxpc3QgIiwgIikKCQkJCQkJICAgICAnZm9udC1sb2Nr
+LWtleXdvcmQtZmFjZSkKCQkgICAgIChpbnNlcnQgIjsgT2JqZWN0IHR5cGU6ICIpCgkJICAgICAo
+c3FscGx1cy1wcm9qLWluc2VydC13aXRoLWZhY2UgKG9yIG9iamVjdC10eXBlICJ1bnNwZWNpZmll
+ZCIpICdmb250LWxvY2sta2V5d29yZC1mYWNlKQoJCSAgICAgKGluc2VydCAiOyBPYmplY3QgbmFt
+ZTogIikKCQkgICAgIChzcWxwbHVzLXByb2otaW5zZXJ0LXdpdGgtZmFjZSBvYmplY3QtbmFtZSAn
+Zm9udC1sb2NrLWtleXdvcmQtZmFjZSkKCQkgICAgIChpbnNlcnQgIlxuXG4iKQoJCSAgICAgKGNv
+bXBpbGF0aW9uLW1pbm9yLW1vZGUgMSkKCQkgICAgIChkb2xpc3QgKHJlc3VsdCBncmVwLXJlc3Vs
+dCkKCQkgICAgICAgKGxldCAoKHJlbGF0aXZlLXBhdGggKGNvbmNhdCAiLi8iIChmaWxlLXJlbGF0
+aXZlLW5hbWUgKGNhciByZXN1bHQpIHJvb3QtZGlyKSkpCgkJCSAgICAgKGxpbmUtbm8gKGNhZHIg
+cmVzdWx0KSkKCQkJICAgICAodGV4dCAoY2FkZHIgcmVzdWx0KSkpCgkJCSAocHV0LXRleHQtcHJv
+cGVydHkgMCAobGVuZ3RoIHJlbGF0aXZlLXBhdGgpICdtb3VzZS1mYWNlICdoaWdobGlnaHQgcmVs
+YXRpdmUtcGF0aCkKCQkJIChpbnNlcnQgcmVsYXRpdmUtcGF0aCkKCQkJIChpbnNlcnQgKGZvcm1h
+dCAiOiVTOjEgJXNcbiIgbGluZS1ubyB0ZXh0KSkpKQoJCSAgICAgKGluc2VydCAoZm9ybWF0ICJc
+biVkIG1hdGNoZXMgZm91bmQuIiAobGVuZ3RoIGdyZXAtcmVzdWx0KSkpCgkJICAgICAoZ290by1j
+aGFyIChwb2ludC1taW4pKQoJCSAgICAgKHdoZW4gKGFuZCBncmVwLXJlc3VsdCAoZmJvdW5kcCAn
+Y29tcGlsZS1yZWluaXRpYWxpemUtZXJyb3JzKSAoZnVuY2FsbCAoc3ltYm9sLWZ1bmN0aW9uICdj
+b21waWxlLXJlaW5pdGlhbGl6ZS1lcnJvcnMpIHQpKSkKCQkgICAgIChzd2l0Y2gtdG8tYnVmZmVy
+LW90aGVyLXdpbmRvdyBzZWFyY2gtYnVmZmVyKQoJCSAgICAgKGdvdG8tbGluZSAxKQoJCSAgICAg
+KGdvdG8tbGluZSAzKSkpKSkpKSkpKQoKKGRlZnVuIHNxbHBsdXMtbW9kZS1uYW1lLXN0cmluZ2lm
+eSAobW9kZS1uYW1lKQogIChsZXQgKChuYW1lIChmb3JtYXQgIiVzIiBtb2RlLW5hbWUpKSkKICAg
+IChyZXBsYWNlLXJlZ2V4cC1pbi1zdHJpbmcgIi0iICIgIgoJCQkgICAgICAoY2FwaXRhbGl6ZQoJ
+CQkgICAgICAgKGlmIChzdHJpbmctbWF0Y2ggIl5cXCguKlxcKS1tb2RlIiBuYW1lKQoJCQkJICAg
+KG1hdGNoLXN0cmluZyAxIG5hbWUpCgkJCQkgbmFtZSkpKSkpCgooZGVmdW4gc3FscGx1cy1wcm9q
+LWluc2VydC13aXRoLWZhY2UgKHN0cmluZyBmYWNlKQogIChsZXQgKChwb2ludCAocG9pbnQpKSkK
+ICAgIChpbnNlcnQgc3RyaW5nKQogICAgKGxldCAoKG92ZXJsYXkgKG1ha2Utb3ZlcmxheSBwb2lu
+dCAocG9pbnQpKSkpCiAgICAgIChvdmVybGF5LXB1dCBvdmVybGF5ICdmYWNlIGZhY2UpKSkpCgoo
+ZGVmdW4gc3FscGx1cy1zZXQtcHJvamVjdC1mb3ItY29ubmVjdC1zdHJpbmcgKGNvbm5lY3Qtc3Ry
+aW5nKQogIChpZiAoZmVhdHVyZXAgJ2lkZS1za2VsKQogICAgICA7OyBQcmVwYXJlIHNxbHBsdXMt
+cm9vdC1kaXItaGlzdG9yeSAoZmlsZS1uYW1lLWhpc3RvcnkpIGZvciB1c2VyIGNvbnZlbmllbmNl
+CiAgICAgIDs7IDAuIHByZXZpb3VzIHByb2plY3Qgcm9vdAogICAgICA7OyAxLiBjdXJyZW50IGVk
+aXRvciBmaWxlIHByb2plY3Qgcm9vdAogICAgICA7OyAyLiBwcmV2aW91cyBjaG9pY2VzCiAgICAg
+IDs7IDMuIG5ldyBwcm9qZWN0IHJvb3RzCiAgICAgIChsZXQqICgocHJldi1wcm9qLXJvb3QtZGly
+IChzcWxwbHVzLWdldC1yb290LWRpciBjb25uZWN0LXN0cmluZykpCgkgICAgIChsYXN0LXNlbC13
+aW5kb3cgKGZ1bmNhbGwgJ2lkZS1za2VsLWdldC1sYXN0LXNlbGVjdGVkLXdpbmRvdykpCgkgICAg
+IChlZGl0b3ItZmlsZS1wcm9qLXJvb3QtZGlyICh3aGVuIGxhc3Qtc2VsLXdpbmRvdwoJCQkJCSAg
+KGxldCogKChidWZmZXIgKHdpbmRvdy1idWZmZXIgbGFzdC1zZWwtd2luZG93KSkKCQkJCQkJIChw
+YXRoIChhbmQgYnVmZmVyIChidWZmZXItZmlsZS1uYW1lIGJ1ZmZlcikpKQoJCQkJCQkgKHByb2pl
+Y3QgKGFuZCBwYXRoIChjYXIgKGZ1bmNhbGwgJ2lkZS1za2VsLXByb2otZ2V0LXByb2plY3QtY3Jl
+YXRlIHBhdGgpKSkpKQoJCQkJCSAgICAod2hlbiAoZnVuY2FsbCAnaWRlLXNrZWwtcHJvamVjdC1w
+IHByb2plY3QpCgkJCQkJICAgICAgKGZ1bmNhbGwgJ2lkZS1za2VsLXByb2plY3Qtcm9vdC1wYXRo
+IHByb2plY3QpKSkpKSkKCShzZXRxIHNxbHBsdXMtcm9vdC1kaXItaGlzdG9yeQoJICAgICAgKGRl
+bGV0ZS1kdXBzCgkgICAgICAgKGRlbHEgbmlsCgkJICAgICAobWFwY2FyIChsYW1iZGEgKGRpcikK
+CQkJICAgICAgICh3aGVuIGRpcgoJCQkJIChkaXJlY3RvcnktZmlsZS1uYW1lIChmaWxlLXRydWVu
+YW1lIChzdWJzdGl0dXRlLWluLWZpbGUtbmFtZSBkaXIpKSkpKQoJCQkgICAgIChhcHBlbmQKCQkJ
+ICAgICAgKGxpc3QgZWRpdG9yLWZpbGUtcHJvai1yb290LWRpciBwcmV2LXByb2otcm9vdC1kaXIp
+CgkJCSAgICAgIHNxbHBsdXMtcm9vdC1kaXItaGlzdG9yeQoJCQkgICAgICAobWFwY2FyIChsYW1i
+ZGEgKHByb2plY3QpIChmdW5jYWxsICdpZGUtc2tlbC1wcm9qZWN0LXJvb3QtcGF0aCBwcm9qZWN0
+KSkKCQkJCSAgICAgIChzeW1ib2wtdmFsdWUgJ2lkZS1za2VsLXByb2plY3RzKSkpKSkpKQoJKGxl
+dCogKChmaWxlLW5hbWUtaGlzdG9yeSAoY2RyIHNxbHBsdXMtcm9vdC1kaXItaGlzdG9yeSkpCgkg
+ICAgICAgKHVzZS1maWxlLWRpYWxvZyBuaWwpCgkgICAgICAgKGRpciAoZGlyZWN0b3J5LWZpbGUt
+bmFtZSAoZmlsZS10cnVlbmFtZSAoc3Vic3RpdHV0ZS1pbi1maWxlLW5hbWUKCQkJCQkJCSAocmVh
+ZC1kaXJlY3RvcnktbmFtZSAoZm9ybWF0ICJSb290IGRpciBmb3IgJXM6ICIgKGNhciAocmVmaW5l
+LWNvbm5lY3Qtc3RyaW5nIGNvbm5lY3Qtc3RyaW5nKSkpCgkJCQkJCQkJCSAgICAgIChjYXIgc3Fs
+cGx1cy1yb290LWRpci1oaXN0b3J5KQoJCQkJCQkJCQkgICAgICAoY2FyIHNxbHBsdXMtcm9vdC1k
+aXItaGlzdG9yeSkKCQkJCQkJCQkJICAgICAgdAoJCQkJCQkJCQkgICAgICBuaWwpKSkpKSkKCSAg
+KGZ1bmNhbGwgJ2lkZS1za2VsLXByb2otZ2V0LXByb2plY3QtY3JlYXRlIGRpcikKCSAgKHNxbHBs
+dXMtc2V0LXJvb3QtZGlyIGRpciBjb25uZWN0LXN0cmluZykKCSAgKG1lc3NhZ2UgKGZvcm1hdCAi
+Um9vdCBkaXIgZm9yICVzIHNldCB0byAlcyIgKGNhciAocmVmaW5lLWNvbm5lY3Qtc3RyaW5nIGNv
+bm5lY3Qtc3RyaW5nKSkgZGlyKSkKCSAgZGlyKSkKICAgIChsZXQqICgodXNlLWZpbGUtZGlhbG9n
+IG5pbCkKCSAgIChkaXIgKGRpcmVjdG9yeS1maWxlLW5hbWUgKGZpbGUtdHJ1ZW5hbWUgKHN1YnN0
+aXR1dGUtaW4tZmlsZS1uYW1lCgkJCQkJCSAgICAocmVhZC1kaXJlY3RvcnktbmFtZSAoZm9ybWF0
+ICJSb290IGRpciBmb3IgJXM6ICIgKGNhciAocmVmaW5lLWNvbm5lY3Qtc3RyaW5nIGNvbm5lY3Qt
+c3RyaW5nKSkpCgkJCQkJCQkJCSBuaWwgbmlsIHQgbmlsKSkpKSkpCiAgICAgIChzcWxwbHVzLXNl
+dC1yb290LWRpciBkaXIgY29ubmVjdC1zdHJpbmcpCiAgICAgIChtZXNzYWdlIChmb3JtYXQgIlJv
+b3QgZGlyIGZvciAlcyBzZXQgdG8gJXMiIChjYXIgKHJlZmluZS1jb25uZWN0LXN0cmluZyBjb25u
+ZWN0LXN0cmluZykpIGRpcikpCiAgICAgIGRpcikpKQoKOzs7IFBsdWdpbiBmb3IgaWRlLXNrZWwu
+ZWwKCihkZWZzdHJ1Y3Qgc3FscGx1cy10YWIKICBpZAogIG5hbWUgICAgICAgICAgICAgIDsgdGFi
+IG5hbWUKICBzeW1ib2wgICAgICAgICAgICA7IHZpZXcvc2VxdWVuY2Uvc2NoZW1hL3RyaWdnZXIv
+aW5kZXgvdGFibGUvcGFja2FnZS9zeW5vbnltL3Byb2NlZHVyZQogIGhlbHAtc3RyaW5nCiAgKGRp
+c3BsYXktc3RhcnQgMSkgOyBkaXNwbGF5LXN0YXJ0IGluIHNpZGUgdmlldyB3aW5kb3cKICAoZGF0
+YSBuaWwpICAgICAgICA7ICcoKCJuYW1lIiAuIHN0YXR1cykuLi4pLCB3aGVyZSBzdGF0dXMgdCBt
+ZWFucyAnaW52YWxpZCcKICBkcmF3LWZ1bmN0aW9uICAgICA7IHBhcmFtZXRlcnM6IHNxbHBsdXMt
+dGFiCiAgY2xpY2stZnVuY3Rpb24gICAgOyBwYXJhbWV0ZXJzOiBldmVudCAiQGUiCiAgKGVycm9y
+cy1jb3VudCAwKQogIChyZWZyZXNoLWluLXByb2dyZXNzIHQpCiAgdXBkYXRlLXNlbGVjdCkKCihk
+ZWZ2YXIgc3FscGx1cy1zaWRlLXZpZXctY29ubmVjdC1zdHJpbmcgbmlsKQoobWFrZS12YXJpYWJs
+ZS1idWZmZXItbG9jYWwgJ3NxbHBsdXMtc2lkZS12aWV3LWNvbm5lY3Qtc3RyaW5nKQoKKGRlZnZh
+ciBzcWxwbHVzLXNpZGUtdmlldy1hY3RpdmUtdGFiIG5pbCkKKG1ha2UtdmFyaWFibGUtYnVmZmVy
+LWxvY2FsICdzcWxwbHVzLXNpZGUtdmlldy1hY3RpdmUtdGFiKQoKKGRlZnZhciBzcWxwbHVzLXNp
+ZGUtdmlldy10YWJzZXQgbmlsKQoobWFrZS12YXJpYWJsZS1idWZmZXItbG9jYWwgJ3NxbHBsdXMt
+c2lkZS12aWV3LXRhYnNldCkKCihkZWZmYWNlIHNxbHBsdXMtc2lkZS12aWV3LWZhY2UgJygodCA6
+aW5oZXJpdCB2YXJpYWJsZS1waXRjaCA6aGVpZ2h0IDAuOCkpCiAgIkRlZmF1bHQgZmFjZSB1c2Vk
+IGluIHJpZ2h0IHZpZXciCiAgOmdyb3VwICdzcWxwbHVzKQoKKGRlZnZhciBzcWxwbHVzLXNpZGUt
+dmlldy1rZXltYXAgbmlsKQoodW5sZXNzIHNxbHBsdXMtc2lkZS12aWV3LWtleW1hcAogIChzZXRx
+IHNxbHBsdXMtc2lkZS12aWV3LWtleW1hcCAobWFrZS1zcGFyc2Uta2V5bWFwKSkKICAoZGVmaW5l
+LWtleSBzcWxwbHVzLXNpZGUtdmlldy1rZXltYXAgW21vZGUtbGluZSBkb3duLW1vdXNlLTFdICdp
+Z25vcmUpCiAgKGRlZmluZS1rZXkgc3FscGx1cy1zaWRlLXZpZXcta2V5bWFwIFttb2RlLWxpbmUg
+bW91c2UtMV0gJ3NxbHBsdXMtc2lkZS12aWV3LXRhYi1jbGljaykpCgooZGVmdW4gc3FscGx1cy1z
+aWRlLXZpZXctdGFiLWNsaWNrIChldmVudCkKICAoaW50ZXJhY3RpdmUgIkBlIikKICAod2l0aC1z
+ZWxlY3RlZC13aW5kb3cgKHBvc24td2luZG93IChldmVudC1zdGFydCBldmVudCkpCiAgICAobGV0
+KiAoKHByZXZpb3VzLXNlbC10YWItaW5mbyAobnRoIHNxbHBsdXMtc2lkZS12aWV3LWFjdGl2ZS10
+YWIgc3FscGx1cy1zaWRlLXZpZXctdGFic2V0KSkKCSAgICh0YXJnZXQgKHBvc24tc3RyaW5nIChl
+dmVudC1zdGFydCBldmVudCkpKQoJICAgKHRhYi1pbmZvIChnZXQtdGV4dC1wcm9wZXJ0eSAoY2Ry
+IHRhcmdldCkgJ3RhYi1pbmZvIChjYXIgdGFyZ2V0KSkpKQogICAgICAoc2V0ZiAoc3FscGx1cy10
+YWItZGlzcGxheS1zdGFydCBwcmV2aW91cy1zZWwtdGFiLWluZm8pIChsaW5lLW51bWJlci1hdC1w
+b3MgKHdpbmRvdy1zdGFydCkpKQogICAgICAoc2V0cSBzcWxwbHVzLXNpZGUtdmlldy1hY3RpdmUt
+dGFiIChzcWxwbHVzLXRhYi1pZCB0YWItaW5mbykpCiAgICAgIChzcWxwbHVzLXNpZGUtdmlldy1y
+ZWRyYXcgKGN1cnJlbnQtYnVmZmVyKSB0KQogICAgICAoc3FscGx1cy1zaWRlLXZpZXctYnVmZmVy
+LW1vZGUtbGluZSkpKSkKICAKKGRlZnVuIHNxbHBsdXMtc2lkZS12aWV3LWJ1ZmZlci1tb2RlLWxp
+bmUgKCkKICAobGV0KiAoKHNlcGFyYXRvciAocHJvcGVydGl6ZSAiICIKCQkJCSdmYWNlICdoZWFk
+ZXItbGluZQoJCQkJJ2Rpc3BsYXkgJyhzcGFjZSA6d2lkdGggMC4yKQoJCQkJJ3BvaW50ZXIgJ2Fy
+cm93KSkpCiAgICAoc2V0cSBtb2RlLWxpbmUtZm9ybWF0CgkgIChjb25jYXQgc2VwYXJhdG9yCgkJ
+ICAobWFwY29uY2F0IChsYW1iZGEgKHRhYikKCQkJICAgICAgIChsZXQgKChmYWNlIChpZiAoZXEg
+KHNxbHBsdXMtdGFiLWlkIHRhYikgc3FscGx1cy1zaWRlLXZpZXctYWN0aXZlLXRhYikgCgkJCQkJ
+ICAgICAgICd0YWJiYXItc2VsZWN0ZWQgCgkJCQkJICAgICAndGFiYmFyLXVuc2VsZWN0ZWQpKQoJ
+CQkJICAgICAoaGVscC1lY2hvIChjb25jYXQgKHNxbHBsdXMtdGFiLWhlbHAtc3RyaW5nIHRhYikK
+CQkJCQkJCShpZiAoPiAoc3FscGx1cy10YWItZXJyb3JzLWNvdW50IHRhYikgMCkKCQkJCQkJCSAg
+ICAoZm9ybWF0ICJcbiglcyBlcnJvciVzKSIgKHNxbHBsdXMtdGFiLWVycm9ycy1jb3VudCB0YWIp
+CgkJCQkJCQkJICAgIChpZiAoPiAoc3FscGx1cy10YWItZXJyb3JzLWNvdW50IHRhYikgMSkgInMi
+ICIiKSkKCQkJCQkJCSAgIiIpKSkpCgkJCQkgKHByb3BlcnRpemUgKGZvcm1hdCAiICVzICIgKHNx
+bHBsdXMtdGFiLW5hbWUgdGFiKSkKCQkJCQkgICAgICdsb2NhbC1tYXAgc3FscGx1cy1zaWRlLXZp
+ZXcta2V5bWFwCgkJCQkJICAgICAndGFiLWluZm8gdGFiCgkJCQkJICAgICAnaGVscC1lY2hvIGhl
+bHAtZWNobwoJCQkJCSAgICAgJ21vdXNlLWZhY2UgJ3RhYmJhci1oaWdobGlnaHQKCQkJCQkgICAg
+ICdmYWNlIChpZiAoPiAoc3FscGx1cy10YWItZXJyb3JzLWNvdW50IHRhYikgMCkKCQkJCQkJICAg
+ICAgIChsaXN0ICcoZm9yZWdyb3VuZC1jb2xvciAuICJyZWQiKSBmYWNlKQoJCQkJCQkgICAgIGZh
+Y2UpCgkJCQkJICAgICAncG9pbnRlciAnaGFuZCkpKQoJCQkgICAgIHNxbHBsdXMtc2lkZS12aWV3
+LXRhYnNldAoJCQkgICAgIHNlcGFyYXRvcikKCQkgIHNlcGFyYXRvcikpKSkKCihkZWZ1biBzcWxw
+bHVzLXNpZGUtdmlldy1jbGljay1vbi1kZWZhdWx0LWhhbmRsZXIgKGV2ZW50KQogIChpbnRlcmFj
+dGl2ZSAiQGUiKQogICh3aXRoLXNlbGVjdGVkLXdpbmRvdyAocG9zbi13aW5kb3cgKGV2ZW50LXN0
+YXJ0IGV2ZW50KSkKICAgIChsZXQqICgocG9zbi1wb2ludCAocG9zbi1wb2ludCAoZXZlbnQtc3Rh
+cnQgZXZlbnQpKSkKCSAgIChvYmplY3QtbmFtZSAoZ2V0LXRleHQtcHJvcGVydHkgcG9zbi1wb2lu
+dCAnb2JqZWN0LW5hbWUpKQoJICAgKG9iamVjdC10eXBlIChnZXQtdGV4dC1wcm9wZXJ0eSBwb3Nu
+LXBvaW50ICdvYmplY3QtdHlwZSkpCgkgICAodHlwZSAoY2FyIGV2ZW50KSkpCiAgICAgICh3aGVu
+IChlcSB0eXBlICdtb3VzZS0zKQoJKHNldHEgdHlwZSAoY2FyICh4LXBvcHVwLW1lbnUgdCAoYXBw
+ZW5kIChsaXN0ICdrZXltYXAgb2JqZWN0LW5hbWUpCgkJCQkJCSAgICAobGlzdCAnKHNxbHBsdXMt
+cmVmcmVzaC1zaWRlLXZpZXctYnVmZmVyICJSZWZyZXNoIiB0KSkKCQkJCQkJICAgIChsaXN0ICco
+bW91c2UtMSAiR2V0IHNvdXJjZSBmcm9tIE9yYWNsZSIgdCkpCgkJCQkJCSAgICAobGlzdCAnKE0t
+bW91c2UtMSAiU2VhcmNoIHNvdXJjZSBpbiBmaWxlc3lzdGVtIiB0KSkKCQkJCQkJICAgIChsaXN0
+IChsaXN0ICdDLU0tbW91c2UtMSAoY29uY2F0ICJTZXQgcm9vdCBkaXIgZm9yICIgKGNhciAocmVm
+aW5lLWNvbm5lY3Qtc3RyaW5nIHNxbHBsdXMtc2lkZS12aWV3LWNvbm5lY3Qtc3RyaW5nKSkpIHQp
+KQoJCQkJCQkgICAgKSkpKSkKICAgICAgKGNvbmQgKChlcSB0eXBlICdtb3VzZS0xKQoJICAgICAo
+c3FscGx1cy1nZXQtc291cmNlIHNxbHBsdXMtc2lkZS12aWV3LWNvbm5lY3Qtc3RyaW5nIG9iamVj
+dC1uYW1lIG9iamVjdC10eXBlKSkKCSAgICAoKGVxIHR5cGUgJ00tbW91c2UtMSkKCSAgICAgKHNx
+bHBsdXMtZmlsZS1nZXQtc291cmNlIHNxbHBsdXMtc2lkZS12aWV3LWNvbm5lY3Qtc3RyaW5nIG9i
+amVjdC1uYW1lIG9iamVjdC10eXBlKSkKCSAgICAoKGVxIHR5cGUgJ0MtTS1tb3VzZS0xKQoJICAg
+ICAoc3FscGx1cy1zZXQtcHJvamVjdC1mb3ItY29ubmVjdC1zdHJpbmcgc3FscGx1cy1zaWRlLXZp
+ZXctY29ubmVjdC1zdHJpbmcpKQoJICAgICgoZXEgdHlwZSBuaWwpKQoJICAgICh0CgkgICAgIChj
+b25kaXRpb24tY2FzZSBlcnIKCQkgKGZ1bmNhbGwgdHlwZSkKCSAgICAgICAoZXJyb3IgbmlsKSkp
+KSkpKQoKKGRlZnVuIHNxbHBsdXMtc2lkZS12aWV3LWNsaWNrLW9uLWluZGV4LWhhbmRsZXIgKGV2
+ZW50KQogIChpbnRlcmFjdGl2ZSAiQGUiKQogICh3aXRoLXNlbGVjdGVkLXdpbmRvdyAocG9zbi13
+aW5kb3cgKGV2ZW50LXN0YXJ0IGV2ZW50KSkKICAgIChsZXQqICgocG9zbi1wb2ludCAocG9zbi1w
+b2ludCAoZXZlbnQtc3RhcnQgZXZlbnQpKSkKCSAgIChvYmplY3QtbmFtZSAoZ2V0LXRleHQtcHJv
+cGVydHkgcG9zbi1wb2ludCAnb2JqZWN0LW5hbWUpKQoJICAgKG9iamVjdC10eXBlIChnZXQtdGV4
+dC1wcm9wZXJ0eSBwb3NuLXBvaW50ICdvYmplY3QtdHlwZSkpCgkgICAodHlwZSAoY2FyIGV2ZW50
+KSkpCiAgICAgICh3aGVuIChlcSB0eXBlICdtb3VzZS0zKQoJKHNldHEgdHlwZSAoY2FyICh4LXBv
+cHVwLW1lbnUgdCAoYXBwZW5kIChsaXN0ICdrZXltYXAgb2JqZWN0LW5hbWUpCgkJCQkJCSAgICAo
+bGlzdCAnKHNxbHBsdXMtcmVmcmVzaC1zaWRlLXZpZXctYnVmZmVyICJSZWZyZXNoIiB0KSkKCQkJ
+CQkJICAgIChsaXN0ICcobW91c2UtMSAiR2V0IHNvdXJjZSBmcm9tIE9yYWNsZSIgdCkpCgkJCQkJ
+CSAgICAobGlzdCAnKE0tbW91c2UtMSAiU2VhcmNoIHNvdXJjZSBpbiBmaWxlc3lzdGVtIiB0KSkK
+CQkJCQkJICAgIChsaXN0IChsaXN0ICdDLU0tbW91c2UtMSAoY29uY2F0ICJTZXQgcm9vdCBkaXIg
+Zm9yICIgKGNhciAocmVmaW5lLWNvbm5lY3Qtc3RyaW5nIHNxbHBsdXMtc2lkZS12aWV3LWNvbm5l
+Y3Qtc3RyaW5nKSkpIHQpKQoJCQkJCQkgICAgKSkpKSkKICAgICAgKGNvbmQgKChlcSB0eXBlICdt
+b3VzZS0xKQoJICAgICAoc3FscGx1cy1nZXQtc291cmNlIHNxbHBsdXMtc2lkZS12aWV3LWNvbm5l
+Y3Qtc3RyaW5nIG9iamVjdC1uYW1lIG9iamVjdC10eXBlKSkKCSAgICAoKGVxIHR5cGUgJ00tbW91
+c2UtMSkKCSAgICAgKHNxbHBsdXMtZmlsZS1nZXQtc291cmNlIHNxbHBsdXMtc2lkZS12aWV3LWNv
+bm5lY3Qtc3RyaW5nIG9iamVjdC1uYW1lIG9iamVjdC10eXBlKSkKCSAgICAoKGVxIHR5cGUgJ0Mt
+TS1tb3VzZS0xKQoJICAgICAoc3FscGx1cy1zZXQtcHJvamVjdC1mb3ItY29ubmVjdC1zdHJpbmcg
+c3FscGx1cy1zaWRlLXZpZXctY29ubmVjdC1zdHJpbmcpKQoJICAgICgoZXEgdHlwZSBuaWwpKQoJ
+ICAgICh0CgkgICAgIChjb25kaXRpb24tY2FzZSBlcnIKCQkgKGZ1bmNhbGwgdHlwZSkKCSAgICAg
+ICAoZXJyb3IgbmlsKSkpKSkpKQoKKGRlZnVuIHNxbHBsdXMtc2lkZS12aWV3LWNsaWNrLW9uLXNj
+aGVtYS1oYW5kbGVyIChldmVudCkKICAoaW50ZXJhY3RpdmUgIkBlIikKICAod2l0aC1zZWxlY3Rl
+ZC13aW5kb3cgKHBvc24td2luZG93IChldmVudC1zdGFydCBldmVudCkpCiAgICAobGV0KiAoKHBv
+c24tcG9pbnQgKHBvc24tcG9pbnQgKGV2ZW50LXN0YXJ0IGV2ZW50KSkpCgkgICAob2JqZWN0LW5h
+bWUgKGdldC10ZXh0LXByb3BlcnR5IHBvc24tcG9pbnQgJ29iamVjdC1uYW1lKSkKCSAgIChvYmpl
+Y3QtdHlwZSAoZ2V0LXRleHQtcHJvcGVydHkgcG9zbi1wb2ludCAnb2JqZWN0LXR5cGUpKQoJICAg
+KGxhc3Qtc2VsZWN0ZWQtd2luIChmdW5jYWxsICdpZGUtc2tlbC1nZXQtbGFzdC1zZWxlY3RlZC13
+aW5kb3cpKQoJICAgKHR5cGUgKGNhciBldmVudCkpKQogICAgICAod2hlbiAoZXEgdHlwZSAnbW91
+c2UtMykKCShzZXRxIHR5cGUgKGNhciAoeC1wb3B1cC1tZW51IHQgKGFwcGVuZCAobGlzdCAna2V5
+bWFwIG9iamVjdC1uYW1lKQoJCQkJCQkgICAgKGxpc3QgJyhzcWxwbHVzLXJlZnJlc2gtc2lkZS12
+aWV3LWJ1ZmZlciAiUmVmcmVzaCIgdCkpCgkJCQkJCSAgICAobGlzdCAnKG1vdXNlLTEgIkNvbm5l
+Y3QgdG8gc2NoZW1hIiB0KSkKCQkJCQkJICAgIChsaXN0ICcoTS1tb3VzZS0xICJTZWFyY2ggc291
+cmNlIGluIGZpbGVzeXN0ZW0iIHQpKQoJCQkJCQkgICAgKGxpc3QgKGxpc3QgJ0MtTS1tb3VzZS0x
+IChjb25jYXQgIlNldCByb290IGRpciBmb3IgIiAoY2FyIChyZWZpbmUtY29ubmVjdC1zdHJpbmcg
+c3FscGx1cy1zaWRlLXZpZXctY29ubmVjdC1zdHJpbmcpKSkgdCkpCgkJCQkJCSAgICApKSkpKQog
+ICAgICAoY29uZCAoKGVxIHR5cGUgJ21vdXNlLTEpCgkgICAgICh3aGVuIChzdHJpbmctbWF0Y2gg
+IkAuKiQiIHNxbHBsdXMtc2lkZS12aWV3LWNvbm5lY3Qtc3RyaW5nKQoJICAgICAgIChsZXQqICgo
+Y3MgKGRvd25jYXNlIChjb25jYXQgb2JqZWN0LW5hbWUgKG1hdGNoLXN0cmluZyAwIHNxbHBsdXMt
+c2lkZS12aWV3LWNvbm5lY3Qtc3RyaW5nKSkpKQoJCSAgICAgIChwYWlyIChzcWxwbHVzLXJlYWQt
+Y29ubmVjdC1zdHJpbmcgY3MgY3MpKSkKCQkgKHNlbGVjdC13aW5kb3cgKG9yIGxhc3Qtc2VsZWN0
+ZWQtd2luIChmdW5jYWxsICdpZGUtc2tlbC1nZXQtZWRpdG9yLXdpbmRvdykpKQoJCSAoc3FscGx1
+cyAoY2FyIHBhaXIpIChjb25jYXQgKGNhZHIgcGFpcikgKGNvbmNhdCAiLiIgc3FscGx1cy1zZXNz
+aW9uLWZpbGUtZXh0ZW5zaW9uKSkpKSkpCgkgICAgKChlcSB0eXBlICdNLW1vdXNlLTEpCgkgICAg
+IChzcWxwbHVzLWZpbGUtZ2V0LXNvdXJjZSBzcWxwbHVzLXNpZGUtdmlldy1jb25uZWN0LXN0cmlu
+ZyBvYmplY3QtbmFtZSBvYmplY3QtdHlwZSkpCgkgICAgKChlcSB0eXBlICdDLU0tbW91c2UtMSkK
+CSAgICAgKHNxbHBsdXMtc2V0LXByb2plY3QtZm9yLWNvbm5lY3Qtc3RyaW5nIHNxbHBsdXMtc2lk
+ZS12aWV3LWNvbm5lY3Qtc3RyaW5nKSkKCSAgICAoKGVxIHR5cGUgbmlsKSkKCSAgICAodAoJICAg
+ICAoY29uZGl0aW9uLWNhc2UgZXJyCgkJIChmdW5jYWxsIHR5cGUpCgkgICAgICAgKGVycm9yIG5p
+bCkpKSkKICAgICAgKHNlbGVjdC13aW5kb3cgKGZ1bmNhbGwgJ2lkZS1za2VsLWdldC1sYXN0LXNl
+bGVjdGVkLXdpbmRvdykpKSkpCgooZGVmdW4gc3FscGx1cy1zaWRlLXZpZXctY2xpY2stb24tdGFi
+bGUtaGFuZGxlciAoZXZlbnQpCiAgKGludGVyYWN0aXZlICJAZSIpCiAgKHdpdGgtc2VsZWN0ZWQt
+d2luZG93IChwb3NuLXdpbmRvdyAoZXZlbnQtc3RhcnQgZXZlbnQpKQogICAgKGxldCogKChwb3Nu
+LXBvaW50IChwb3NuLXBvaW50IChldmVudC1zdGFydCBldmVudCkpKQoJICAgKG9iamVjdC1uYW1l
+IChnZXQtdGV4dC1wcm9wZXJ0eSBwb3NuLXBvaW50ICdvYmplY3QtbmFtZSkpCgkgICAob2JqZWN0
+LXR5cGUgKGdldC10ZXh0LXByb3BlcnR5IHBvc24tcG9pbnQgJ29iamVjdC10eXBlKSkKCSAgICh0
+eXBlIChjYXIgZXZlbnQpKSkKICAgICAgKHdoZW4gKGVxIHR5cGUgJ21vdXNlLTMpCgkoc2V0cSB0
+eXBlIChjYXIgKHgtcG9wdXAtbWVudSB0IChhcHBlbmQgKGxpc3QgJ2tleW1hcCBvYmplY3QtbmFt
+ZSkKCQkJCQkJICAgIChsaXN0ICcoc3FscGx1cy1yZWZyZXNoLXNpZGUtdmlldy1idWZmZXIgIlJl
+ZnJlc2giIHQpKQoJCQkJCQkgICAgKGxpc3QgJyhtb3VzZS0xICJTaG93IGRlc2NyaXB0aW9uIiB0
+KSkKCQkJCQkJICAgIChsaXN0ICcoQy1tb3VzZS0xICJTZWxlY3QgKiIgdCkpCgkJCQkJCSAgICAo
+bGlzdCAnKFMtbW91c2UtMSAiR2V0IHNvdXJjZSBmcm9tIE9yYWNsZSIgdCkpCgkJCQkJCSAgICAo
+bGlzdCAnKE0tbW91c2UtMSAiU2VhcmNoIHNvdXJjZSBpbiBmaWxlc3lzdGVtIiB0KSkKCQkJCQkJ
+ICAgIChsaXN0IChsaXN0ICdDLU0tbW91c2UtMSAoY29uY2F0ICJTZXQgcm9vdCBkaXIgZm9yICIg
+KGNhciAocmVmaW5lLWNvbm5lY3Qtc3RyaW5nIHNxbHBsdXMtc2lkZS12aWV3LWNvbm5lY3Qtc3Ry
+aW5nKSkpIHQpKQoJCQkJCQkgICAgKSkpKSkKICAgICAgKGNvbmQgKChlcSB0eXBlICdtb3VzZS0x
+KQoJICAgICAoc3FscGx1cy1leGVjdXRlIHNxbHBsdXMtc2lkZS12aWV3LWNvbm5lY3Qtc3RyaW5n
+CgkJCSAgICAgIChzcWxwbHVzLWZvbnRpZnktc3RyaW5nIHNxbHBsdXMtc2lkZS12aWV3LWNvbm5l
+Y3Qtc3RyaW5nIChmb3JtYXQgImRlc2MgJXM7IiBvYmplY3QtbmFtZSkpCgkJCSAgICAgIG5pbCBu
+aWwpKQoJICAgICgoZXEgdHlwZSAnQy1tb3VzZS0xKQoJICAgICAoc3FscGx1cy1leGVjdXRlIHNx
+bHBsdXMtc2lkZS12aWV3LWNvbm5lY3Qtc3RyaW5nCgkJCSAgICAgIChzcWxwbHVzLWZvbnRpZnkt
+c3RyaW5nIHNxbHBsdXMtc2lkZS12aWV3LWNvbm5lY3Qtc3RyaW5nIChmb3JtYXQgInNlbGVjdCAq
+IGZyb20gJXM7IiBvYmplY3QtbmFtZSkpCgkJCSAgICAgIG5pbCBuaWwpKQoJICAgICgoZXEgdHlw
+ZSAnUy1tb3VzZS0xKQoJICAgICAoc3FscGx1cy1nZXQtc291cmNlIHNxbHBsdXMtc2lkZS12aWV3
+LWNvbm5lY3Qtc3RyaW5nIG9iamVjdC1uYW1lIG9iamVjdC10eXBlKSkKCSAgICAoKGVxIHR5cGUg
+J00tbW91c2UtMSkKCSAgICAgKHNxbHBsdXMtZmlsZS1nZXQtc291cmNlIHNxbHBsdXMtc2lkZS12
+aWV3LWNvbm5lY3Qtc3RyaW5nIG9iamVjdC1uYW1lIG9iamVjdC10eXBlKSkKCSAgICAoKGVxIHR5
+cGUgJ0MtTS1tb3VzZS0xKQoJICAgICAoc3FscGx1cy1zZXQtcHJvamVjdC1mb3ItY29ubmVjdC1z
+dHJpbmcgc3FscGx1cy1zaWRlLXZpZXctY29ubmVjdC1zdHJpbmcpKQoJICAgICgoZXEgdHlwZSBu
+aWwpKQoJICAgICh0CgkgICAgIChjb25kaXRpb24tY2FzZSBlcnIKCQkgKGZ1bmNhbGwgdHlwZSkK
+CSAgICAgICAoZXJyb3IgbmlsKSkpKQogICAgICAoc2VsZWN0LXdpbmRvdyAoZnVuY2FsbCAnaWRl
+LXNrZWwtZ2V0LWxhc3Qtc2VsZWN0ZWQtd2luZG93KSkpKSkKCihkZWZ1biBzcWxwbHVzLXNpZGUt
+dmlldy1jbGljay1vbi1wYWNrYWdlLWhhbmRsZXIgKGV2ZW50KQogIChpbnRlcmFjdGl2ZSAiQGUi
+KQogICh3aXRoLXNlbGVjdGVkLXdpbmRvdyAocG9zbi13aW5kb3cgKGV2ZW50LXN0YXJ0IGV2ZW50
+KSkKICAgIChsZXQqICgocG9zbi1wb2ludCAocG9zbi1wb2ludCAoZXZlbnQtc3RhcnQgZXZlbnQp
+KSkKCSAgIChvYmplY3QtbmFtZSAoZ2V0LXRleHQtcHJvcGVydHkgcG9zbi1wb2ludCAnb2JqZWN0
+LW5hbWUpKQoJICAgKG9iamVjdC10eXBlIChnZXQtdGV4dC1wcm9wZXJ0eSBwb3NuLXBvaW50ICdv
+YmplY3QtdHlwZSkpCgkgICAodHlwZSAoY2FyIGV2ZW50KSkpCiAgICAgICh3aGVuIChlcSB0eXBl
+ICdtb3VzZS0zKQoJKHNldHEgdHlwZSAoY2FyICh4LXBvcHVwLW1lbnUgdCAoYXBwZW5kIChsaXN0
+ICdrZXltYXAgb2JqZWN0LW5hbWUpCgkJCQkJCShsaXN0ICcoc3FscGx1cy1yZWZyZXNoLXNpZGUt
+dmlldy1idWZmZXIgIlJlZnJlc2giIHQpKQoJCQkJCQkobGlzdCAnKFMtbW91c2UtMSAiR2V0IHBh
+Y2thZ2UgaGVhZGVyIGZyb20gT3JhY2xlIiB0KSkKCQkJCQkJKGxpc3QgJyhtb3VzZS0xICJHZXQg
+cGFja2FnZSBib2R5IGZyb20gT3JhY2xlIiB0KSkKCQkJCQkJKGxpc3QgJyhTLU0tbW91c2UtMSAi
+U2VhcmNoIGhlYWRlciBzb3VyY2UgaW4gZmlsZXN5c3RlbSIgdCkpCgkJCQkJCShsaXN0ICcoTS1t
+b3VzZS0xICJTZWFyY2ggYm9keSBzb3VyY2UgaW4gZmlsZXN5c3RlbSIgdCkpCgkJCQkJCShsaXN0
+IChsaXN0ICdDLU0tbW91c2UtMSAoY29uY2F0ICJTZXQgcm9vdCBkaXIgZm9yICIgKGNhciAocmVm
+aW5lLWNvbm5lY3Qtc3RyaW5nIHNxbHBsdXMtc2lkZS12aWV3LWNvbm5lY3Qtc3RyaW5nKSkpIHQp
+KQoJCQkJCQkpKSkpKQogICAgICAoY29uZCAoKGVxIHR5cGUgJ1MtbW91c2UtMSkKCSAgICAgKHNx
+bHBsdXMtZ2V0LXNvdXJjZSBzcWxwbHVzLXNpZGUtdmlldy1jb25uZWN0LXN0cmluZyBvYmplY3Qt
+bmFtZSBvYmplY3QtdHlwZSkpCgkgICAgKChlcSB0eXBlICdtb3VzZS0xKQoJICAgICAoc3FscGx1
+cy1nZXQtc291cmNlIHNxbHBsdXMtc2lkZS12aWV3LWNvbm5lY3Qtc3RyaW5nIG9iamVjdC1uYW1l
+ICJQQUNLQUdFIEJPRFkiKSkKCSAgICAoKGVxIHR5cGUgJ00tbW91c2UtMSkKCSAgICAgKHNxbHBs
+dXMtZmlsZS1nZXQtc291cmNlIHNxbHBsdXMtc2lkZS12aWV3LWNvbm5lY3Qtc3RyaW5nIG9iamVj
+dC1uYW1lICJQQUNLQUdFIEJPRFkiKSkKCSAgICAoKGVxIHR5cGUgJ1MtTS1tb3VzZS0xKQoJICAg
+ICAoc3FscGx1cy1maWxlLWdldC1zb3VyY2Ugc3FscGx1cy1zaWRlLXZpZXctY29ubmVjdC1zdHJp
+bmcgb2JqZWN0LW5hbWUgIlBBQ0tBR0UiKSkKCSAgICAoKGVxIHR5cGUgJ0MtTS1tb3VzZS0xKQoJ
+ICAgICAoc3FscGx1cy1zZXQtcHJvamVjdC1mb3ItY29ubmVjdC1zdHJpbmcgc3FscGx1cy1zaWRl
+LXZpZXctY29ubmVjdC1zdHJpbmcpKQoJICAgICgoZXEgdHlwZSBuaWwpKQoJICAgICh0CgkgICAg
+IChjb25kaXRpb24tY2FzZSBlcnIKCQkgKGZ1bmNhbGwgdHlwZSkKCSAgICAgICAoZXJyb3Igbmls
+KSkpKSkpKQoKKGRlZnVuIHNxbHBsdXMtc2lkZS12aWV3LWRlZmF1bHQtZHJhdy1wYW5lbCAodGFi
+LWluZm8gY2xpY2stZnVuY3Rpb24pCiAgKGxldCAoKHBhaXJzIChzb3J0IChzcWxwbHVzLXRhYi1k
+YXRhIHRhYi1pbmZvKSAKCQkgICAgIChsYW1iZGEgKHBhaXIxIHBhaXIyKSAoc3RyaW5nPCAoY2Fy
+IHBhaXIxKSAoY2FyIHBhaXIyKSkpKSkKCSh0eXBlLW5hbWUgKHVwY2FzZSAoc3ltYm9sLW5hbWUg
+KHNxbHBsdXMtdGFiLXN5bWJvbCB0YWItaW5mbykpKSkpCiAgICAoZG9saXN0IChwYWlyIHBhaXJz
+KQogICAgICAobGV0KiAoKGxhYmVsIChmb3JtYXQgIiAgJSAtMTAwcyIgKGNhciBwYWlyKSkpCgkg
+ICAgIChrbSAobWFrZS1zcGFyc2Uta2V5bWFwKSkpCgkoZGVmaW5lLWtleSBrbSBbZG93bi1tb3Vz
+ZS0xXSAnaWdub3JlKQoJKGRlZmluZS1rZXkga20gW21vdXNlLTFdIGNsaWNrLWZ1bmN0aW9uKQoJ
+KGRlZmluZS1rZXkga20gW0MtZG93bi1tb3VzZS0xXSAnaWdub3JlKQoJKGRlZmluZS1rZXkga20g
+W0MtbW91c2UtMV0gY2xpY2stZnVuY3Rpb24pCgkoZGVmaW5lLWtleSBrbSBbUy1kb3duLW1vdXNl
+LTFdICdpZ25vcmUpCgkoZGVmaW5lLWtleSBrbSBbUy1tb3VzZS0xXSBjbGljay1mdW5jdGlvbikK
+CShkZWZpbmUta2V5IGttIFtkb3duLW1vdXNlLTNdICdpZ25vcmUpCgkoZGVmaW5lLWtleSBrbSBb
+bW91c2UtM10gY2xpY2stZnVuY3Rpb24pCgkoc2V0cSBsYWJlbCAocHJvcGVydGl6ZSBsYWJlbAoJ
+CQkJJ21vdXNlLWZhY2UgJ2lkZS1za2VsLWhpZ2hsaWdodC1mYWNlCgkJCQknZmFjZSAoaWYgKGNk
+ciBwYWlyKQoJCQkJCSAgJyhzcWxwbHVzLXNpZGUtdmlldy1mYWNlIChmb3JlZ3JvdW5kLWNvbG9y
+IC4gInJlZCIpKQoJCQkJCSdzcWxwbHVzLXNpZGUtdmlldy1mYWNlKQoJCQkJJ2xvY2FsLW1hcCBr
+bQoJCQkJJ3BvaW50ZXIgJ2hhbmQKCQkJCSdvYmplY3QtbmFtZSAoY2FyIHBhaXIpCgkJCQknb2Jq
+ZWN0LXR5cGUgdHlwZS1uYW1lKSkKCShpbnNlcnQgbGFiZWwpCgkoaW5zZXJ0ICJcbiIpKSkpKQoK
+KGRlZnVuIHNxbHBsdXMtcmVmcmVzaC1zaWRlLXZpZXctYnVmZmVyICgpCiAgKGxldCogKCh0YWIt
+aW5mbyAobnRoIHNxbHBsdXMtc2lkZS12aWV3LWFjdGl2ZS10YWIgc3FscGx1cy1zaWRlLXZpZXct
+dGFic2V0KSkKCSAodXBkYXRlLXNlbGVjdCAoc3FscGx1cy10YWItdXBkYXRlLXNlbGVjdCB0YWIt
+aW5mbykpKQogICAgKHVubGVzcyAoc3FscGx1cy10YWItcmVmcmVzaC1pbi1wcm9ncmVzcyB0YWIt
+aW5mbykKICAgICAgKHNxbHBsdXMtaGlkZGVuLXNlbGVjdCBzcWxwbHVzLXNpZGUtdmlldy1jb25u
+ZWN0LXN0cmluZyB1cGRhdGUtc2VsZWN0ICdzcWxwbHVzLW15LXVwZGF0ZS1oYW5kbGVyKSkpKQoJ
+CihkZWZ1biBzcWxwbHVzLWdldC1kZWZhdWx0LXVwZGF0ZS1zZWxlY3QgKHN5bWJvbCkKICAoY29u
+Y2F0ICJzZWxlY3Qgb2JqZWN0X25hbWUsIG9iamVjdF90eXBlLCBkZWNvZGUoIHN0YXR1cywgJ0lO
+VkFMSUQnLCAnSScsICcgJyApIGZyb20gdXNlcl9vYmplY3RzXG4iCgkgICJ3aGVyZSBvYmplY3Rf
+bmFtZSBub3QgbGlrZSAnQklOJCUnXG4iCgkgIChmb3JtYXQgImFuZCBvYmplY3RfdHlwZSA9ICcl
+cyc7IiAodXBjYXNlIChzeW1ib2wtbmFtZSBzeW1ib2wpKSkpKQoKKGRlZnVuIHNxbHBsdXMtY3Jl
+YXRlLXNpZGUtdmlldy1idWZmZXIgKGNvbm5lY3Qtc3RyaW5nKQogIChsZXQqICgob3JpZ2luYWwt
+Y29ubmVjdC1zdHJpbmcgY29ubmVjdC1zdHJpbmcpCgkgKGNvbm5lY3Qtc3RyaW5nIChjYXIgKHJl
+ZmluZS1jb25uZWN0LXN0cmluZyBjb25uZWN0LXN0cmluZykpKQoJIChidWZmZXIgKGZ1bmNhbGwg
+J2lkZS1za2VsLWdldC1zaWRlLXZpZXctYnVmZmVyLWNyZWF0ZQoJCSAoY29uY2F0ICIgSWRlIFNr
+ZWwgUmlnaHQgVmlldyBTUUwgIiBjb25uZWN0LXN0cmluZykKCQkgJ3JpZ2h0ICJTUUwiIChjb25j
+YXQgIlNRTCBQYW5lbCBmb3IgIiBjb25uZWN0LXN0cmluZykKCQkgKGxhbWJkYSAoZWRpdG9yLWJ1
+ZmZlcikKCQkgICAobGV0ICgoY29ubmVjdC1zdHJpbmcgc3FscGx1cy1zaWRlLXZpZXctY29ubmVj
+dC1zdHJpbmcpKQoJCSAgICAgKHdpdGgtY3VycmVudC1idWZmZXIgZWRpdG9yLWJ1ZmZlcgoJCSAg
+ICAgICAoYW5kIGNvbm5lY3Qtc3RyaW5nCgkJCSAgICAoZXF1YWwgKGNhciAocmVmaW5lLWNvbm5l
+Y3Qtc3RyaW5nIHNxbHBsdXMtY29ubmVjdC1zdHJpbmcpKQoJCQkJICAgKGNhciAocmVmaW5lLWNv
+bm5lY3Qtc3RyaW5nIGNvbm5lY3Qtc3RyaW5nKSkpCgkJCSAgICApKSkpKSkpCiAgICAod2l0aC1j
+dXJyZW50LWJ1ZmZlciBidWZmZXIKICAgICAgKHNldCAnaWRlLXNrZWwtdGFiYmFyLW1lbnUtZnVu
+Y3Rpb24KCSAgIChsYW1iZGEgKCkKCSAgICAgIChsZXQgKCh0YWItaW5mbyAobnRoIHNxbHBsdXMt
+c2lkZS12aWV3LWFjdGl2ZS10YWIgc3FscGx1cy1zaWRlLXZpZXctdGFic2V0KSkpCgkJKGxpc3QK
+CQkgKHVubGVzcyAoc3FscGx1cy10YWItcmVmcmVzaC1pbi1wcm9ncmVzcyB0YWItaW5mbykgCgkJ
+ICAgJyhzcWxwbHVzLXJlZnJlc2gtc2lkZS12aWV3LWJ1ZmZlciAiUmVmcmVzaCIgdCkpKSkpKQog
+ICAgICAoc2V0cSBzcWxwbHVzLXNpZGUtdmlldy1jb25uZWN0LXN0cmluZyBvcmlnaW5hbC1jb25u
+ZWN0LXN0cmluZwoJICAgIHNxbHBsdXMtc2lkZS12aWV3LWFjdGl2ZS10YWIgMAoJICAgIHNxbHBs
+dXMtc2lkZS12aWV3LXRhYnNldAoJICAgIChsaXN0CgkgICAgIChtYWtlLXNxbHBsdXMtdGFiIDpp
+ZCAwIDpuYW1lICJUYWIiIDpzeW1ib2wgJ3RhYmxlIDpoZWxwLXN0cmluZyAiVGFibGVzIiA6ZHJh
+dy1mdW5jdGlvbiAnc3FscGx1cy1zaWRlLXZpZXctZGVmYXVsdC1kcmF3LXBhbmVsCgkJCSAgICAg
+ICA6dXBkYXRlLXNlbGVjdCAoc3FscGx1cy1nZXQtZGVmYXVsdC11cGRhdGUtc2VsZWN0ICd0YWJs
+ZSkKCQkJICAgICAgIDpjbGljay1mdW5jdGlvbiAnc3FscGx1cy1zaWRlLXZpZXctY2xpY2stb24t
+dGFibGUtaGFuZGxlcikKCSAgICAgKG1ha2Utc3FscGx1cy10YWIgOmlkIDEgOm5hbWUgIlZpZSIg
+OnN5bWJvbCAndmlldyA6aGVscC1zdHJpbmcgIlZpZXdzIiA6ZHJhdy1mdW5jdGlvbiAnc3FscGx1
+cy1zaWRlLXZpZXctZGVmYXVsdC1kcmF3LXBhbmVsCgkJCSAgICAgICA6dXBkYXRlLXNlbGVjdCAo
+c3FscGx1cy1nZXQtZGVmYXVsdC11cGRhdGUtc2VsZWN0ICd2aWV3KQoJCQkgICAgICAgOmNsaWNr
+LWZ1bmN0aW9uICdzcWxwbHVzLXNpZGUtdmlldy1jbGljay1vbi10YWJsZS1oYW5kbGVyKQoJICAg
+ICAobWFrZS1zcWxwbHVzLXRhYiA6aWQgMiA6bmFtZSAiSWR4IiA6c3ltYm9sICdpbmRleCA6aGVs
+cC1zdHJpbmcgIkluZGV4ZXMiIDpkcmF3LWZ1bmN0aW9uICdzcWxwbHVzLXNpZGUtdmlldy1kZWZh
+dWx0LWRyYXctcGFuZWwKCQkJICAgICAgIDp1cGRhdGUtc2VsZWN0IChzcWxwbHVzLWdldC1kZWZh
+dWx0LXVwZGF0ZS1zZWxlY3QgJ2luZGV4KQoJCQkgICAgICAgOmNsaWNrLWZ1bmN0aW9uICdzcWxw
+bHVzLXNpZGUtdmlldy1jbGljay1vbi1pbmRleC1oYW5kbGVyKQoJICAgICAobWFrZS1zcWxwbHVz
+LXRhYiA6aWQgMyA6bmFtZSAiVHJpIiA6c3ltYm9sICd0cmlnZ2VyIDpoZWxwLXN0cmluZyAiVHJp
+Z2dlcnMiIDpkcmF3LWZ1bmN0aW9uICdzcWxwbHVzLXNpZGUtdmlldy1kZWZhdWx0LWRyYXctcGFu
+ZWwKCQkJICAgICAgIDp1cGRhdGUtc2VsZWN0IChzcWxwbHVzLWdldC1kZWZhdWx0LXVwZGF0ZS1z
+ZWxlY3QgJ3RyaWdnZXIpCgkJCSAgICAgICA6Y2xpY2stZnVuY3Rpb24gJ3NxbHBsdXMtc2lkZS12
+aWV3LWNsaWNrLW9uLWRlZmF1bHQtaGFuZGxlcikKCSAgICAgKG1ha2Utc3FscGx1cy10YWIgOmlk
+IDQgOm5hbWUgIlNlcSIgOnN5bWJvbCAnc2VxdWVuY2UgOmhlbHAtc3RyaW5nICJTZXF1ZW5jZXMi
+IDpkcmF3LWZ1bmN0aW9uICdzcWxwbHVzLXNpZGUtdmlldy1kZWZhdWx0LWRyYXctcGFuZWwKCQkJ
+ICAgICAgIDp1cGRhdGUtc2VsZWN0IChzcWxwbHVzLWdldC1kZWZhdWx0LXVwZGF0ZS1zZWxlY3Qg
+J3NlcXVlbmNlKQoJCQkgICAgICAgOmNsaWNrLWZ1bmN0aW9uICdzcWxwbHVzLXNpZGUtdmlldy1j
+bGljay1vbi1kZWZhdWx0LWhhbmRsZXIpCgkgICAgIChtYWtlLXNxbHBsdXMtdGFiIDppZCA1IDpu
+YW1lICJTeW4iIDpzeW1ib2wgJ3N5bm9ueW0gOmhlbHAtc3RyaW5nICJTeW5vbnltcyIgOmRyYXct
+ZnVuY3Rpb24gJ3NxbHBsdXMtc2lkZS12aWV3LWRlZmF1bHQtZHJhdy1wYW5lbAoJCQkgICAgICAg
+OnVwZGF0ZS1zZWxlY3QgKHNxbHBsdXMtZ2V0LWRlZmF1bHQtdXBkYXRlLXNlbGVjdCAnc3lub255
+bSkKCQkJICAgICAgIDpjbGljay1mdW5jdGlvbiAnc3FscGx1cy1zaWRlLXZpZXctY2xpY2stb24t
+ZGVmYXVsdC1oYW5kbGVyKQoJICAgICAobWFrZS1zcWxwbHVzLXRhYiA6aWQgNiA6bmFtZSAiUGtn
+IiA6c3ltYm9sICdwYWNrYWdlIDpoZWxwLXN0cmluZyAiUEwvU1FMIFBhY2thZ2VzIiA6ZHJhdy1m
+dW5jdGlvbiAnc3FscGx1cy1zaWRlLXZpZXctZGVmYXVsdC1kcmF3LXBhbmVsCgkJCSAgICAgICA6
+dXBkYXRlLXNlbGVjdCAoc3FscGx1cy1nZXQtZGVmYXVsdC11cGRhdGUtc2VsZWN0ICdwYWNrYWdl
+KQoJCQkgICAgICAgOmNsaWNrLWZ1bmN0aW9uICdzcWxwbHVzLXNpZGUtdmlldy1jbGljay1vbi1w
+YWNrYWdlLWhhbmRsZXIpCgkgICAgIChtYWtlLXNxbHBsdXMtdGFiIDppZCA3IDpuYW1lICJQcmMi
+IDpzeW1ib2wgJ3Byb2NlZHVyZSA6aGVscC1zdHJpbmcgIlBML1NRTCBGdW5jdGlvbnMgJiBQcm9j
+ZWR1cmVzIiA6ZHJhdy1mdW5jdGlvbiAnc3FscGx1cy1zaWRlLXZpZXctZGVmYXVsdC1kcmF3LXBh
+bmVsCgkJCSAgICAgICA6dXBkYXRlLXNlbGVjdCAoY29uY2F0ICJzZWxlY3Qgb2JqZWN0X25hbWUs
+IG9iamVjdF90eXBlLCBkZWNvZGUoIHN0YXR1cywgJ0lOVkFMSUQnLCAnSScsICcgJyApIGZyb20g
+dXNlcl9vYmplY3RzXG4iCgkJCQkJCSAgICAgICJ3aGVyZSBvYmplY3RfbmFtZSBub3QgbGlrZSAn
+QklOJCUnXG4iCgkJCQkJCSAgICAgICJhbmQgb2JqZWN0X3R5cGUgaW4gKCdGVU5DVElPTicsICdQ
+Uk9DRURVUkUnKTsiKQoJCQkgICAgICAgOmNsaWNrLWZ1bmN0aW9uICdzcWxwbHVzLXNpZGUtdmll
+dy1jbGljay1vbi1kZWZhdWx0LWhhbmRsZXIpCgkgICAgIChtYWtlLXNxbHBsdXMtdGFiIDppZCA4
+IDpuYW1lICJTY2giIDpzeW1ib2wgJ3NjaGVtYSA6aGVscC1zdHJpbmcgIlNjaGVtYXMiIDpkcmF3
+LWZ1bmN0aW9uICdzcWxwbHVzLXNpZGUtdmlldy1kZWZhdWx0LWRyYXctcGFuZWwKCQkJICAgICAg
+IDp1cGRhdGUtc2VsZWN0ICJzZWxlY3QgdXNlcm5hbWUsICdTQ0hFTUEnLCAnICcgZnJvbSBhbGxf
+dXNlcnMgd2hlcmUgdXNlcm5hbWUgbm90IGxpa2UgJ0JJTiQlJzsiCgkJCSAgICAgICA6Y2xpY2st
+ZnVuY3Rpb24gJ3NxbHBsdXMtc2lkZS12aWV3LWNsaWNrLW9uLXNjaGVtYS1oYW5kbGVyKQoJICAg
+ICApKQogICAgICAoc3FscGx1cy1zaWRlLXZpZXctYnVmZmVyLW1vZGUtbGluZSkpCiAgICBidWZm
+ZXIpKQoKKGRlZnVuIHNxbHBsdXMtc2lkZS12aWV3LXJlZHJhdyAoc3FsLXZpZXctYnVmZmVyICZv
+cHRpb25hbCB3aW5kb3ctc3RhcnQtZnJvbS10YWItaW5mbykKICAod2l0aC1jdXJyZW50LWJ1ZmZl
+ciBzcWwtdmlldy1idWZmZXIKICAgIChsZXQqICgocG9pbnQgKHBvaW50KSkKCSAgICh0YWItaW5m
+byAobnRoIHNxbHBsdXMtc2lkZS12aWV3LWFjdGl2ZS10YWIgc3FscGx1cy1zaWRlLXZpZXctdGFi
+c2V0KSkKCSAgICh3aW5kb3ctc3RhcnQgKHdoZW4gKGFuZCAoc3ltYm9sLXZhbHVlICdpZGUtc2tl
+bC1jdXJyZW50LXJpZ2h0LXZpZXctd2luZG93KQoJCQkJICAgIChlcSAod2luZG93LWJ1ZmZlciAo
+c3ltYm9sLXZhbHVlICdpZGUtc2tlbC1jdXJyZW50LXJpZ2h0LXZpZXctd2luZG93KSkgKGN1cnJl
+bnQtYnVmZmVyKSkpCgkJCSAgIChpZiB3aW5kb3ctc3RhcnQtZnJvbS10YWItaW5mbwoJCQkgICAg
+ICAgKHNxbHBsdXMtdGFiLWRpc3BsYXktc3RhcnQgdGFiLWluZm8pCgkJCSAgICAgKGxpbmUtbnVt
+YmVyLWF0LXBvcyAod2luZG93LXN0YXJ0IChzeW1ib2wtdmFsdWUgJ2lkZS1za2VsLWN1cnJlbnQt
+cmlnaHQtdmlldy13aW5kb3cpKSkpKSkpCiAgICAgIChsZXQgKChpbmhpYml0LXJlYWQtb25seSB0
+KSkKCShzZXRxIGJ1ZmZlci1yZWFkLW9ubHkgbmlsKQoJKGVyYXNlLWJ1ZmZlcikKCSh3aGVuIChz
+cWxwbHVzLXRhYi1kcmF3LWZ1bmN0aW9uIHRhYi1pbmZvKQoJICAoZnVuY2FsbCAoc3FscGx1cy10
+YWItZHJhdy1mdW5jdGlvbiB0YWItaW5mbykgdGFiLWluZm8gKHNxbHBsdXMtdGFiLWNsaWNrLWZ1
+bmN0aW9uIHRhYi1pbmZvKSkpKQogICAgICAoaWYgd2luZG93LXN0YXJ0CgkgIChsZXQgKChwb3Mg
+KHNhdmUtZXhjdXJzaW9uCgkJICAgICAgIChnb3RvLWxpbmUgd2luZG93LXN0YXJ0KQoJCSAgICAg
+ICAoYmVnaW5uaW5nLW9mLWxpbmUpCgkJICAgICAgIChwb2ludCkpKSkKCSAgICAoc2V0LXdpbmRv
+dy1zdGFydCAoc3ltYm9sLXZhbHVlICdpZGUtc2tlbC1jdXJyZW50LXJpZ2h0LXZpZXctd2luZG93
+KSBwb3MpCgkgICAgKHNldGYgKHNxbHBsdXMtdGFiLWRpc3BsYXktc3RhcnQgdGFiLWluZm8pIHdp
+bmRvdy1zdGFydCkpCgkoZ290by1jaGFyIHBvaW50KQoJKGJlZ2lubmluZy1vZi1saW5lKSkpKSkK
+CihkZWZ1biBzcWxwbHVzLXNpZGUtdmlldy11cGRhdGUtZGF0YSAoY29ubmVjdC1zdHJpbmcgYWxp
+c3QpCiAgKGxldCogKChjb25uZWN0LXN0cmluZyAoY2FyIChyZWZpbmUtY29ubmVjdC1zdHJpbmcg
+Y29ubmVjdC1zdHJpbmcpKSkKCSAoc3FsLXZpZXctYnVmZmVyIChzcWxwbHVzLWdldC1zaWRlLXZp
+ZXctYnVmZmVyIGNvbm5lY3Qtc3RyaW5nKSkKCSB3YXMtcHJvYykKICAgICh3aGVuIHNxbC12aWV3
+LWJ1ZmZlcgogICAgICAod2l0aC1jdXJyZW50LWJ1ZmZlciBzcWwtdmlldy1idWZmZXIKCShkb2xp
+c3QgKHBhaXIgYWxpc3QpCgkgIChsZXQqICgoc3ltYm9sIChpZiAoZXEgKGNhciBwYWlyKSAnZnVu
+Y3Rpb24pICdwcm9jZWR1cmUgKGNhciBwYWlyKSkpCgkJIChkYXRhLWxpc3QgKGNkciBwYWlyKSkK
+CQkgKHRhYi1pbmZvIChzb21lIChsYW1iZGEgKHRhYikKCQkJCSAgICh3aGVuIChlcSAoc3FscGx1
+cy10YWItc3ltYm9sIHRhYikgc3ltYm9sKQoJCQkJICAgICB0YWIpKQoJCQkJIHNxbHBsdXMtc2lk
+ZS12aWV3LXRhYnNldCkpKQoJICAgICh3aGVuIHRhYi1pbmZvCgkgICAgICAoc2V0ZiAoc3FscGx1
+cy10YWItcmVmcmVzaC1pbi1wcm9ncmVzcyB0YWItaW5mbykgbmlsKQoJICAgICAgKHNldGYgKHNx
+bHBsdXMtdGFiLWRhdGEgdGFiLWluZm8pCgkJICAgIChpZiAoYW5kIChlcSBzeW1ib2wgJ3Byb2Nl
+ZHVyZSkKCQkJICAgICB3YXMtcHJvYykKCQkJKGFwcGVuZCAoc3FscGx1cy10YWItZGF0YSB0YWIt
+aW5mbykgKGNvcHktbGlzdCBkYXRhLWxpc3QpKQoJCSAgICBkYXRhLWxpc3QpKQoJICAgICAgKHdo
+ZW4gKGVxIHN5bWJvbCAncHJvY2VkdXJlKQoJCShzZXRxIHdhcy1wcm9jIHQpKQoJICAgICAgKHNl
+dGYgKHNxbHBsdXMtdGFiLWVycm9ycy1jb3VudCB0YWItaW5mbykKCQkgICAgKGNvdW50IHQgKG1h
+cGNhciAnY2RyIGRhdGEtbGlzdCkpKQoJICAgICAgKHdoZW4gKGVxbCBzcWxwbHVzLXNpZGUtdmll
+dy1hY3RpdmUtdGFiIChzcWxwbHVzLXRhYi1pZCB0YWItaW5mbykpCgkJKHNxbHBsdXMtc2lkZS12
+aWV3LXJlZHJhdyAoY3VycmVudC1idWZmZXIpKSkpKSkKCShzcWxwbHVzLXNpZGUtdmlldy1idWZm
+ZXItbW9kZS1saW5lKQoJKGZvcmNlLW1vZGUtbGluZS11cGRhdGUpKSkpKQoKKGRlZnVuIHNxbHBs
+dXMtc2lkZS12aWV3LXdpbmRvdy1mdW5jdGlvbiAoc2lkZSBldmVudCAmcmVzdCBsaXN0KQogICh3
+aGVuIChhbmQgKGVxIHNpZGUgJ3JpZ2h0KQoJICAgICAoc3ltYm9sLXZhbHVlICdpZGUtc2tlbC1j
+dXJyZW50LXJpZ2h0LXZpZXctd2luZG93KQoJICAgICAod2l0aC1jdXJyZW50LWJ1ZmZlciAoc3lt
+Ym9sLXZhbHVlICdpZGUtc2tlbC1jdXJyZW50LWVkaXRvci1idWZmZXIpCgkgICAgICAgc3FscGx1
+cy1jb25uZWN0LXN0cmluZykpCiAgICAoY29uZCAoKG1lbXEgZXZlbnQgJyhzaG93IGVkaXRvci1i
+dWZmZXItY2hhbmdlZCkpCgkgICAobGV0ICgoc3FsLXZpZXctYnVmZmVyIChzcWxwbHVzLWdldC1z
+aWRlLXZpZXctYnVmZmVyICh3aXRoLWN1cnJlbnQtYnVmZmVyIChzeW1ib2wtdmFsdWUgJ2lkZS1z
+a2VsLWN1cnJlbnQtZWRpdG9yLWJ1ZmZlcikKCQkJCQkJCSAgICAgc3FscGx1cy1jb25uZWN0LXN0
+cmluZykpKSkKCSAgICAgKHdoZW4gc3FsLXZpZXctYnVmZmVyCgkgICAgICAgKHdpdGgtY3VycmVu
+dC1idWZmZXIgc3FsLXZpZXctYnVmZmVyCgkJIChzZXQgJ2lkZS1za2VsLXRhYmJhci1lbmFibGVk
+IHQpCgkJIChmdW5jYWxsICdpZGUtc2tlbC1zaWRlLXdpbmRvdy1zd2l0Y2gtdG8tYnVmZmVyIChz
+eW1ib2wtdmFsdWUgJ2lkZS1za2VsLWN1cnJlbnQtcmlnaHQtdmlldy13aW5kb3cpIHNxbC12aWV3
+LWJ1ZmZlcikpKSkpKSkKICBuaWwpCgooYWRkLWhvb2sgJ2lkZS1za2VsLXNpZGUtdmlldy13aW5k
+b3ctZnVuY3Rpb25zICdzcWxwbHVzLXNpZGUtdmlldy13aW5kb3ctZnVuY3Rpb24pCgoKKHByb3Zp
+ZGUgJ3NxbHBsdXMpCgo7Ozsgc3FscGx1cy5lbCBlbmRzIGhlcmUK
