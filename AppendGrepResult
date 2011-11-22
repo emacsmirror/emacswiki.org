@@ -1,0 +1,3 @@
+== rgrep-append.el ==
+
+provide a variant version of `rgrep' command with the ability to append the search result to previous ones using the same *grep* buffer.
