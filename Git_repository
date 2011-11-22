@@ -16,7 +16,7 @@ The master branch containing the full history of all pages and libraries since t
 
 Since the 20th November 2011 this repository is integrated with Oddmuse - every edit results in a separate commit. The announcement can be found [http://www.emacswiki.org/emacs/2011-11-04 here].
 
-The package branches and repositories are created by JonasBernoulli as part of the Emacsmirror. While the Emacswiki and the Emacsmirror are separate projects the [http://github.com/emacsmirror/emacswiki.org Emacswiki repository] can be considered part of both.
+The package branches and repositories are created by JonasBernoulli as part of the Emacsmirror. While the EmacsWiki and the [[Emacsmirror]] are separate projects the [http://github.com/emacsmirror/emacswiki.org Emacswiki repository] can be considered part of both.
 
 == Discussion ==
 
