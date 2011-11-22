@@ -1,5 +1,4 @@
 [[zh:下载部分Wiki]]
-(Back to WikiDownload.)
 
 == Using wget ==
 
@@ -17,6 +16,8 @@ wget --http-user=foo --http-pass=geheim --reject "*search=*","*action=*", \
 
 ##--html-extension## adds the html extension to some PDF files, since their MIME type is thought to be text/html.
 This doesn't happen for all PDFs though.
+
+(Back to WikiDownload.)
 
 ----
 CategoryEmacsWikiSite
