@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2011, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Sun Nov 13 18:43:20 2011 (-0800)
+;; Last-Updated: Mon Nov 21 19:42:32 2011 (-0800)
 ;;           By: dradams
-;;     Update #: 7591
+;;     Update #: 7599
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-chg.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -82,6 +82,13 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd1.el'")
 ;;
+;; 2011/11/21 dadams
+;;     icicle-locate-file-1:
+;;       Do not bind current-prefix-arg, so pick up prefix arg for vanilla Emacs locate cmd.
+;;       Require locate.el in ignored binding, not first code.
+;;       No progress message (gathering...) if use external locate cmd.
+;;       Put prop icicle-fancy-candidates only if not using external locate cmd.
+;;     icicle-locate: Improved doc string.
 ;; 2011/11/13 dadams
 ;;     icicle-locate-file-1: Corrected placement of kill-buffer in unwind-protect.
 ;; 2011/11/07 dadams
