@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Tue Nov 22 13:07:05 2011 (-0800)
+;; Last-Updated: Tue Nov 22 14:37:37 2011 (-0800)
 ;;           By: dradams
-;;     Update #: 22733
+;;     Update #: 22747
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-cmd1.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -5194,7 +5194,6 @@ During completion (`*': requires library `Bookmark+'):
  *You can use `C-x a +' or `C-x a -' to add or remove tags from the
    current-candidate file.  You are prompted for the tags.
  *You can use `C-x m' to access file bookmarks (not just autofiles).
-  You can use `C-c C-d' (a la `cd') to change the `default-directory'.
   You can use `C-c +' to create a new directory.
   You can use `M-|' to open Dired on currently matching file names." ; Doc string
   (lambda (file)                        ; Function to perform the action
@@ -5223,7 +5222,6 @@ During completion (`*': requires library `Bookmark+'):
  *You can use `C-x a +' or `C-x a -' to add or remove tags from the
    current-candidate file.  You are prompted for the tags.
  *You can use `C-x m' to access file bookmarks (not just autofiles).
-  You can use `C-c C-d' (a la `cd') to change the `default-directory'.
   You can use `C-c +' to create a new directory.
   You can use `M-|' to open Dired on currently matching file names.
   You can use `S-delete' to delete a candidate file or (empty) dir." ; Doc string
@@ -5306,16 +5304,23 @@ then customize option `icicle-top-level-key-bindings'."
 
 (put 'icicle-find-file-absolute 'icicle-Completions-window-max-height 200)
 ;;;###autoload (autoload 'icicle-find-file-absolute "icicles-cmd1.el")
-(icicle-define-command icicle-find-file-absolute ; Command name
+(icicle-define-command icicle-find-file-absolute ; Bound to `C-u C-x f' in Icicle mode.
   "Visit a file or directory, given its absolute name.
 Unlike `icicle-find-file', the completion candidates are absolute, not
-relative, file names.  By default, the completion candidates are files
-in the current directory, but you can substitute other candidates by
-retrieving a saved candidate set.
+relative, file names.
+
+By default, the completion candidates are files in the current
+directory, but you can substitute other candidates by retrieving a
+saved candidate set.
 
 Note that completion here matches candidates as ordinary strings.  It
 knows nothing of file names per se.  In particular, you cannot use
 remote file-name syntax.
+
+Also, you cannot move up and down the file hierarchy the same way you
+can for ordinary (non-absolute) file-name completion.  To change to a
+different directory, with its files as candidates, use `C-c C-d' from
+the minibuffer - it prompts you for the new directory.
 
 Remember that you can use `C-x .' to hide the common match portion of
 each candidate.  That can be particularly helpful for files that are
@@ -5377,14 +5382,18 @@ Ido-like behavior."                     ; Doc string
     (when current-prefix-arg (put-text-property 0 1 'icicle-fancy-candidates t prompt))
     (icicle-highlight-lighter)
     (message "Gathering files...")
-    (icicle-bind-file-candidate-keys))
+    (icicle-bind-file-candidate-keys)
+    (define-key minibuffer-local-completion-map "\C-c\C-d" 'icicle-cd-for-abs-files)
+    (define-key minibuffer-local-must-match-map "\C-c\C-d" 'icicle-cd-for-abs-files))
   nil                                   ; Undo code
-  (icicle-unbind-file-candidate-keys))  ; Last code
+  (progn (icicle-unbind-file-candidate-keys) ; Last code
+         (define-key minibuffer-local-completion-map "\C-c\C-d" nil)
+         (define-key minibuffer-local-must-match-map "\C-c\C-d" nil)))
 
 
 (put 'icicle-find-file-absolute-other-window 'icicle-Completions-window-max-height 200)
 ;;;###autoload (autoload 'icicle-find-file-absolute-other-window "icicles-cmd1.el")
-(icicle-define-command icicle-find-file-absolute-other-window ; Command name
+(icicle-define-command icicle-find-file-absolute-other-window ; Bound to `C-u C-x 4 f'
   "Same as `icicle-find-file-absolute' except uses another window." ; Doc string
   (lambda (f) (find-file-other-window (icicle-transform-multi-completion f) 'WILDCARDS)) ; Action
   prompt icicle-abs-file-candidates nil ; `completing-read' args
@@ -5411,9 +5420,13 @@ Ido-like behavior."                     ; Doc string
     (when current-prefix-arg (put-text-property 0 1 'icicle-fancy-candidates t prompt))
     (icicle-highlight-lighter)
     (message "Gathering files...")
-    (icicle-bind-file-candidate-keys))
+    (icicle-bind-file-candidate-keys)
+    (define-key minibuffer-local-completion-map "\C-c\C-d" 'icicle-cd-for-abs-files)
+    (define-key minibuffer-local-must-match-map "\C-c\C-d" 'icicle-cd-for-abs-files))
   nil                                   ; Undo code
-  (icicle-unbind-file-candidate-keys))  ; Last code
+  (progn (icicle-unbind-file-candidate-keys) ; Last code
+         (define-key minibuffer-local-completion-map "\C-c\C-d" nil)
+         (define-key minibuffer-local-must-match-map "\C-c\C-d" nil)))
 
 ;; This is a minibuffer command.  It is in this file because it is used only here.
 ;;;###autoload
@@ -5456,7 +5469,6 @@ During completion (`*': requires library `Bookmark+'):
  *You can use `C-x a +' or `C-x a -' to add or remove tags from the
    current-candidate file.  You are prompted for the tags.
  *You can use `C-x m' to access file bookmarks (not just autofiles).
-  You can use `C-c C-d' (a la `cd') to change the `default-directory'.
   You can use `C-c +' to create a new directory.
   You can use `M-|' to open Dired on currently matching file names.
   You can use `S-delete' to delete a candidate file or (empty) dir.
@@ -5549,7 +5561,6 @@ During completion (`*': requires library `Bookmark+'):
  *You can use `C-x a +' or `C-x a -' to add or remove tags from the
    current-candidate file.  You are prompted for the tags.
  *You can use `C-x m' to access file bookmarks (not just autofiles).
-  You can use `C-c C-d' (a la `cd') to change the `default-directory'.
   You can use `C-c +' to create a new directory.
   You can use `M-|' to open Dired on currently matching file names.
   You can use `S-delete' to delete a candidate file or (empty) dir."
@@ -5585,7 +5596,6 @@ During completion (`*': requires library `Bookmark+'):
  *You can use `C-x a +' or `C-x a -' to add or remove tags from the
    current-candidate file.  You are prompted for the tags.
  *You can use `C-x m' to access file bookmarks (not just autofiles).
-  You can use `C-c C-d' (a la `cd') to change the `default-directory'.
   You can use `C-c +' to create a new directory.
   You can use `M-|' to open Dired on currently matching file names.
   You can use `S-delete' to delete a candidate file or (empty) dir.
@@ -5763,6 +5773,11 @@ Note that completion here matches candidates as ordinary strings.  It
 knows nothing of file names per se.  In particular, you cannot use
 remote file-name syntax.
 
+You cannot move up and down the file hierarchy the same way you can
+for ordinary (non-absolute) file-name completion.  To change to a
+different directory, with its files as candidates, use `C-c C-d' from
+the minibuffer - it prompts you for the new directory.
+
 During completion (`*': requires library `Bookmark+'):
 
  *You can use `C-x a +' or `C-x a -' to add or remove tags from the
@@ -5854,6 +5869,11 @@ Remember that you can save the set of files matching your input using
 Note that completion here matches candidates as ordinary strings.  It
 knows nothing of file names per se.  In particular, you cannot use
 remote file-name syntax.
+
+You cannot move up and down the file hierarchy the same way you can
+for ordinary (non-absolute) file-name completion.  To change to a
+different directory, with its files as candidates, use `C-c C-d' from
+the minibuffer - it prompts you for the new directory.
 
 During completion (`*': requires library `Bookmark+'):
 
@@ -5980,9 +6000,13 @@ could temporarily set `icicle-file-predicate' to:
     (when (and (not icicle-locate-file-use-locate-p)
                (<= (prefix-numeric-value current-prefix-arg) 0))
       (put-text-property 0 1 'icicle-fancy-candidates t prompt))
-    (icicle-bind-file-candidate-keys))
+    (icicle-bind-file-candidate-keys)
+    (define-key minibuffer-local-completion-map "\C-c\C-d" 'icicle-cd-for-loc-files)
+    (define-key minibuffer-local-must-match-map "\C-c\C-d" 'icicle-cd-for-loc-files))
   nil                                   ; Undo code
-  (icicle-unbind-file-candidate-keys)   ; Last code
+  (progn (icicle-unbind-file-candidate-keys) ; Last code
+         (define-key minibuffer-local-completion-map "\C-c\C-d" nil)
+         (define-key minibuffer-local-must-match-map "\C-c\C-d" nil))
   'NON-INTERACTIVE)                     ; This is not a real command.
 
 ;; This is a minibuffer command.  It is in this file because it is used only here.
@@ -6039,7 +6063,6 @@ During completion (`*': requires library `Bookmark+'):
  *You can use `C-x a +' or `C-x a -' to add or remove tags from the
    current-candidate file.  You are prompted for the tags.
  *You can use `C-x m' to access file bookmarks (not just autofiles).
-  You can use `C-c C-d' (a la `cd') to change the `default-directory'.
   You can use `C-c +' to create a new directory.
   You can use `M-|' to open Dired on currently matching file names.
   You can use `S-delete' to delete a candidate file or (empty) dir.
@@ -6512,7 +6535,6 @@ During completion (`*': requires library `Bookmark+'):
  *You can use `C-x a +' or `C-x a -' to add or remove tags from the
    current-candidate file.  You are prompted for the tags.
  *You can use `C-x m' to access file bookmarks (not just autofiles).
-  You can use `C-c C-d' (a la `cd') to change the `default-directory'.
   You can use `C-c +' to create a new directory.
   You can use `M-|' to open Dired on currently matching file names.
   You can use `S-delete' to delete a candidate file or (empty) dir.
@@ -6567,7 +6589,6 @@ During completion (`*': requires library `Bookmark+'):
  *You can use `C-x a +' or `C-x a -' to add or remove tags from the
    current-candidate file.  You are prompted for the tags.
  *You can use `C-x m' to access file bookmarks (not just autofiles).
-  You can use `C-c C-d' (a la `cd') to change the `default-directory'.
   You can use `C-c +' to create a new directory.
   You can use `M-|' to open Dired on currently matching file names.
   You can use `S-delete' to delete a candidate file or (empty) dir.
