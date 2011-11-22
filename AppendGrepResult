@@ -3,5 +3,13 @@
 Lisp:rgrep-append.el (AppendGrepResult)
 
 provide a variant version of `rgrep' command with the ability to append the search result to previous ones using the same *grep* buffer.
+<<<<<<< 你的
 
 If you get used to source insight way to handle the found result, you will find the similar way using the `rgrep' in the extension.
+
+My first extension to emacs. -- JustinJiang
+||||||| 之前的
+=======
+
+If you get used to source insight way to handle the found result, you will find the similar way using the `rgrep' in the extension.
+>>>>>>> 別人的
