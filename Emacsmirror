@@ -1,25 +1,18 @@
 The Emacsmirror *collects* Emacs Lisp packages and *distributes* them in
-form of [[Git]] repositories --- one per package.  Additionally *metadata*
-is extracted from the packages and made available in human and machine
-readable formats.
-
-This is an *alpha release*.
-
-Please see the projects [http://github.com/emacsmirror/p/wiki homepage] for more
-information.  I also used to maintain a nicer [http://www.emacsmirror.org homepage]
-with pages for each package, but that is currently not being updated.
+form of [[Git]] repositories --- one per package. The Emacsmirror can be
+found [http://github.com/emacsmirror here] on github.
 
 == Mirroring the Emacswiki ==
 
-Most of the packages from the EmacsWiki are being mirrored like packages
+Most of the packages from the EmacsWiki are being mirrored just like packages
 distributed elsewhere.  A few have have been left out for various reasons.
 
 The respective repositories on the mirror contain the full history
 beginning with the 30th August 2009 though the commit messages are just
-timestamps.
+timestamps. Since the 20th November 2011 are potentially meaningful.
 
 You might also be interested in the [[Git repository]] which mirrors all
-pages and files from the EmacsWiki.
+pages and files from the Emacswiki.
 
 == Contributing ==
 
@@ -41,12 +34,6 @@ Please feel free to discuss this project here or send
 emails about missing packages you may also report them here.
 -- JonasBernoulli
 
-The list of missing packages that used to be here has been removed.  Many
-packages have since been imported; even from http://www.archive.org/. The
-rest probably isn't worth making yet another effort to locate them.
-
-Having a github page mean these projects also get a wiki, nonetheless, a
-project might also have an emacswiki page.
-
+[new]
 Maybe githubs 'gist' could be used to host many of the elisp snippets
 found here on emacswiki? --CH
