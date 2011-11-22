@@ -53,6 +53,7 @@
         (idomenu--read (cdr choice) prompt nil)
       choice)))
 
+;;;###autoload
 (defun idomenu ()
   "Switch to a buffer-local tag from Imenu via Ido."
   (interactive)
