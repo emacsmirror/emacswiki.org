@@ -1,22 +1,24 @@
-[http://github.com/emacsmirror/emacswiki.org This] repository mirrors the
-[[SVN repository]], it contains the raw text of all Emacswiki pages.  It uses
-[[Git]] and can be found [http://github.com/emacsmirror/emacswiki.org here].
+The EmacsWiki [[Git]] repository checks in every change on the Emacswiki (with username and summary being used as author and commit message). It contains the raw text of all Emacswiki pages, except for pages marked as deleted.
+
+It uses [[Git]] and can be found [http://github.com/emacsmirror/emacswiki.org here] on github.
 
 == Package Branches ==
 
-Additionally individual packages distributed on the EmacsWiki are available
-from the [[Emacsmirror]] - each in it's own _repository_.
+Additionally individual packages distributed on the Emacswiki are available from this repository in separate _branches_ (named pkg/NAME). Such a branch contains the full history of all files that are part of a particular package but purges all other history. These branches can lag behind a few days.
 
-These packages are also
-[http://github.com/emacsmirror/emacswiki.org/branches available]
-as individual _branches_ directly from the EmacsWiki mirror repository.
+_Most_ of these package branches are also available as individual _repositories_ from the [[Emacsmirror]] (http://github.com/emacsmirror/NAME), which is probably more convenient if you just need a few packages. 
 
-== Categorization ==
+Also, if you are already comfortable using git and need to make changes to a package which can't be merged right away, branch that package's repository from the Emacsmirror and hack away without having to worry about stepping on somebodies tows (as it can happen when you edit somebodies package here on the Emacswiki without prior approval). As always when you fork: don't forget to ask upstream to merge once you are satisfied with your changes!
 
-The EmacsWiki repository also contains a
-[http://github.com/emacsmirror/emacswiki.org/tree/categorization branch],
-which categorizes all pages on the EmacsWiki.
+== Technical Details ==
+
+The master branch containing the full history of all pages and libraries since the 8th August 2009. The first 800 commits have been created by importing from the [[SVN_repository]]. Each of these commits contains all changes of a complete day and have no meaningful commit messages.
+
+Since the 20th November 2011 this repository is integrated with Oddmuse - every edit results in a separate commit. The announcement can be found [http://www.emacswiki.org/emacs/2011-11-04 here].
+
+The package branches and repositories are created by JonasBernoulli as part of the Emacsmirror. While the Emacswiki and the Emacsmirror are separate projects the [http://github.com/emacsmirror/emacswiki.org Emacswiki repository] can be considered part of both.
 
 ----
+WikiDownload
 CategoryEmacsWikiSite
 
