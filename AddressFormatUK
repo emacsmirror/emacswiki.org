@@ -42,6 +42,9 @@ The result looks like this:
          (indent-to indent) (insert str "\n")))))
 </pre>
 
+[new:PhilHudson:2011-11-22 14:25 UTC]
+Note that this code requires BBDB 2.x. ATOW (2011-11-22) it breaks under 3.x.
+
 == Making this work automatically ==
 
 Add this to your .emacs also:
@@ -67,3 +70,4 @@ Should this node be on <nowiki>BBDBAddressFormatUK</nowiki>? Just followed the e
 
 ----
 CategoryBbdb
+>
