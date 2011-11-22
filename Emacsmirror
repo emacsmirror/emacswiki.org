@@ -37,3 +37,12 @@ emails about missing packages you may also report them here.
 [new]
 Maybe githubs 'gist' could be used to host many of the elisp snippets
 found here on emacswiki? --CH
+
+[new]
+I agree this would be nice. But it is unlikely to happen because many
+of the most active Emacswiki contributers don't use git regularly and
+have likely never used github. (How can I tell? Well they are not fans,
+so...). In any regard, if you want gist integration the only way to make
+it happen is to start working on it yourself. If we had a nice implementation
+then people might actually like it - otherwise it will be hard to
+convince anybody. -- JonasBernoulli
