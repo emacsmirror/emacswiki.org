@@ -196,5 +196,9 @@ Nice plugin.  Exactly what I was looking for.  One small nit.  In both graphical
 
 Thanks for pointing that out.  I have a fix, but I'd like to test it a little before posting a new version.  Check back after the weekend. -AA
 
+[new:AlpAker:2011-11-22 19:54 UTC]
+
+I've uploaded a new version (1.77) with a fix.  On NextStep (OS X) it appears to be possible to confuse it if you rapidly resize the frame several times in the space of a second; on X it seems solid.   I can't reproduce the problem reliably, though; I'm guessing that there's a subtle bug in the way the NextStep port communicates with the window manager.  In any case, this should (I hope :) be robust enough for normal usage. --AA
+
 ----
 CategoryFilling 
