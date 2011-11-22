@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Mon Nov 21 19:33:05 2011 (-0800)
+;; Last-Updated: Tue Nov 22 11:09:21 2011 (-0800)
 ;;           By: dradams
-;;     Update #: 22721
+;;     Update #: 22730
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-cmd1.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -5749,7 +5749,11 @@ names will take some time.
 See also command `icicle-locate-file-no-symlinks', which does the same
 thing but without following symbolic links.
 
+If you use Emacs on a platform that has an external program `locate',
+then consider using `icicle-locate' instead of `icicle-locate-file'.
+
 Remember that you can save the set of files matching your input using
+\\<minibuffer-local-completion-map>\
 `\\[icicle-candidate-set-save]' or \
 `\\[icicle-candidate-set-save-persistently]'.  You can then retrieve quickly them later using
 `\\[icicle-candidate-set-retrieve]' or \
@@ -5782,7 +5786,8 @@ addition, these options control candidate matching and filtering:
 For example, to show only names of files larger than 5000 bytes, set
 `icicle-file-predicate' to:
 
-  (lambda (file) (> (nth 5 (file-attributes file)) 5000))"
+  (lambda (file) (and (numberp (nth 7 (file-attributes file)))
+                      (> (nth 5 (file-attributes file)) 5000)))"
   (interactive)
   (let ((icicle-locate-file-action-fn      'icicle-locate-file-action)
         (icicle-locate-file-no-symlinks-p  nil))
@@ -5808,9 +5813,9 @@ Unlike `icicle-locate-file' this is a wrapper for the external program
 is normally created by external program `updatedb'.  Because of this
 indexing, this command can be much faster than `icicle-locate-file'.
 
-`icicle-locate' first prompts for a `locate' search pattern, which it
-passes to `locate'.  The absolute file names that match this pattern
-are targets for Icicles completion.
+`icicle-locate' first prompts for a search pattern for program
+`locate', which it passes to that program.  The absolute file names
+that match this pattern are targets for Icicles completion.
 
 `icicle-locate' uses settings from library `locate.el' where
 appropriate.  In particular, you can customize
@@ -5820,9 +5825,9 @@ globbing.  Here is an example of a setup to use regexp matching:
 \(setq locate-make-command-line
       (lambda (ss) (list locate-command \"--regex\" ss)))
 
-Which particular options `locate' accepts, and how matching is
-performed, depend on your operating system and its implementation of
-`locate'.
+Which particular options the external program `locate' accepts, and
+how matching is performed, depend on your operating system and its
+implementation of that program.
 
 A prefix argument has the same meaning as for vanilla Emacs command
 `locate': prompt for a shell command to run instead of program
@@ -5830,16 +5835,17 @@ A prefix argument has the same meaning as for vanilla Emacs command
 option `locate-prompt-for-command' for the duration of the command
 invocation.
 
-After you input the `locate' search pattern, normal Icicles input
-pattern matching is available for completion.  This is absolute
-file-name completion, so your input can match any parts of the name,
-including directory components.
+After you input the search pattern for program `locate', normal
+Icicles input pattern matching is available for completion.  This is
+absolute file-name completion, so your input can match any parts of
+the name, including directory components.
 
 Remember that you can use `C-x .' to hide the common match portion of
 each candidate.  That can be particularly helpful for files that are
 in a common directory.
 
 Remember that you can save the set of files matching your input using
+\\<minibuffer-local-completion-map>\
 `\\[icicle-candidate-set-save]' or \
 `\\[icicle-candidate-set-save-persistently]'.  You can then retrieve quickly them later using
 `\\[icicle-candidate-set-retrieve]' or \
@@ -5872,7 +5878,7 @@ For example, to show only names of files larger than 5000 bytes, set
 `icicle-file-predicate' to:
 
   (lambda (file) (and (numberp (nth 7 (file-attributes file)))
-                      (> (nth 7 (file-attributes file)) 5000))"
+                      (> (nth 7 (file-attributes file)) 5000)))"
   (interactive)
   (let ((icicle-locate-file-action-fn      'icicle-locate-file-action)
         (icicle-locate-file-use-locate-p   t))
