@@ -21,7 +21,9 @@ The package branches and repositories are created by JonasBernoulli as part of t
 == Discussion ==
 
 [new]
-I have moved this conversation here from [[SVN_repository]] because git would be more appropriate to implement this and because the git repository is now also an official repository. I personally don't think that it is _necessary_ to implement the below suggestion but do think it would be _nice to have_. But like Alex I don't feel like working on it.
+I have moved this conversation here from [[SVN_repository]] because git would be more appropriate to implement this and because the git repository is now also an official repository.
+
+I personally don't think that it is _necessary_ to implement the below suggestion but do think it would be _nice to have_. But like Alex I don't feel like working on it.
 
 My preference (if someone else implemented it) would be a switch to org-mode and something like the worg wiki (http://orgmode.org/worg/) but that would mean that all pages need to be converted to org-mode and support for editing through the webpage would have to be implemented.
 
