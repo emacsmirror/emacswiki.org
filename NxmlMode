@@ -310,6 +310,11 @@ instead.
 
 -- Daniel
 
+[new]
+That is not an error in nXML, but in GNU Emacs proper (newcomment.el, to be exact). Nested comments are mangled by inserting the ##\## character after the first character of the comment string, so ##<!--## becomes ##<\!--##, as you said. However, in XML comments, the string ##--## may not appear. The correct way to nest comments in XML would be to change it to ##<!-\-##. This is also broken in GNU Emacs 24 (last time I checked was early October 2011). I have written [[Lisp:mz-comment-fix.el]] to fix the problem.
+
+-- Josse
+
 ----
 MarkupModes
 CategoryXML
