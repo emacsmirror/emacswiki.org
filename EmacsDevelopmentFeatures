@@ -1,0 +1,20 @@
+What are some new and cool features available in the spooky Git/Bazaar tree?
+
+* SupportBiDi
+* Improved Gtk support
+* Improved SELinux support
+* New modes: OccurEditMode, SecretServiceMode
+* Minor modes: ElectricPairMode, ElectricIndentMode, ElectricLayoutMode, EmacsLockMode
+* TabulatedMode generic mode
+* LexicalBinding for Lisp
+* ErtTestLibrary
+* [[ELPA]]
+* ProgMode is a GenericMode for ProgrammingModes
+
+The easiest way to find new stuff is to read [http://repo.or.cz/w/emacs.git/blob/HEAD:/etc/NEWS the Emacs NEWS file in Git]
+
+See also EmacsDevelopmentSources.
+
+----
+CategoryBuilding
+CategoryWishList
