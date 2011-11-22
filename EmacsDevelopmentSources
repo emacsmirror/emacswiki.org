@@ -10,6 +10,8 @@ For information on how to get them directly, see:
 
 See BuildingEmacs for how to build Emacs from the source package.
 
+See EmacsDevelopmentFeatures to find out what the new features are.
+
 Binary packages built from Bazaar snapshots are available for various systems:
 
 * EmacsPretest -- sources snapshots made by the Emacs maintainers before a release.
