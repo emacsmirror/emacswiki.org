@@ -2,6 +2,8 @@ MinEmacs wants to help the OneTrueEditor become a lighter and yet even more inst
 
 Striving for core functionality to meet the constraints of small LiveCD or USB GNU+Linux|*BSD distros - and I suppose WinPE if you must.
 
+[[DELPS]] is being investigated as the preferred packaging system.
+
 <pre>
 MakeMinEmacs -- Generate MinEmacs packages based on some version of GNU Emacs.
 
