@@ -1,12 +1,14 @@
 [[ja:Wikiのダウンロード]]
 Here is how to download the wiki:
 
-* DownloadPartOfWiki -- download a small part of Emacs Wiki, using `wget'. Tricky.
+* [[Git repository]] of the raw EmacsWiki pages. Every change on the Emacswiki is checked in individually. Also contains branches for individual packages with intact history. Great in every regard ;-)
 
-* [[SVN repository]] of the raw EmacsWiki pages. This repository is read-only. Great for grepping.
+* [[SVN repository]] of the raw EmacsWiki pages. Great for grepping.
 
-* [[CVS repository]] of the elisp files uploaded to this wiki. This repository is read-only. Great for source files only.
+* [[CVS repository]] of the elisp files uploaded to this wiki. Great for source files only.
 
 * [[Rsync repository]] -- help making decentralized backups of the entire setup. Great for mirrors, forks, and the like.
 
-* [[Git repository]] of the raw EmacsWiki pages.  Also contains branches with only subsets of all pages but still full history.
+* DownloadPartOfWiki -- download a small part of Emacs Wiki, using `wget'. Tricky.
+
+All repositories are read-only.
