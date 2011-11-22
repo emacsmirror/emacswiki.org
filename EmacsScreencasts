@@ -34,7 +34,7 @@ You can pick up valuable usage patterns, just by looking over someones shoulder.
 
 * MsfAbbrev mode is very good abbreviation package. You can see it in action at [http://www.bloomington.in.us/~brutt/msf-abbrev-demo.gif here]
 
-* [http://nschum.de/src/emacs/company-mode/screencast/ A demo] of experimental CompanyMode, which offers a completion list (like intellisense) in the buffer
+* [http://nschum.de/src/emacs/company-mode/screencast/ A demo (dead link!)] of experimental CompanyMode, which offers a completion list (like intellisense) in the buffer
 
 * [http://nschum.de/src/emacs/tempo-templates/screencast/ A demo] of TempoSnippets, a snippet.el-like front-end for TempoMode.
 
