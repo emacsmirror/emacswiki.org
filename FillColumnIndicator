@@ -20,7 +20,9 @@ The following are the basic configuration options.  For further advanced options
 
 On graphical displays (displays that can display images) the fill-column rule is drawn using bitmap images.
 
-<b>Width</b>.  The width of the rule (in pixels) is determined by the value of the variable ##fci-rule-width##; the default value is 2.   
+<b>Width</b>.  The width of the rule (in pixels) is determined by the value of the variable ##fci-rule-width##; the default value is 1.   
+
+<b>Solid or Dashed Line</b>.  By default the rule is drawn as a solid line.  To use a dashed line instead set ##fci-rule-use-dashes## to a non-nil value.  The length of a dash is, by default, 0.75 of the line height.  To use a shorter or longer dash, set ##fci-dash-pattern## to the desired ratio (the value should be between 0 and 1).
 
 <b>Color</b>. The color of the rule is controlled by the variable ##fci-rule-color##, whose value can be any valid color name. 
 
