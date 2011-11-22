@@ -8,47 +8,5 @@ Sources for this stuff: [http://www.emacswiki.org/scripts/emacs-svn-update emacs
 
 (Back to WikiDownload.)
 
-== Discussion ==
-
-[new]
-Why not make this DVC be part of the "Save modification" process ?
-This would help in making it a AppropriateMedia of choice instead of
-the EmacsNewsgroups or EmacsMailingLists to discuss or to have
-know-how content on this wiki. Why ? Because we could easily browse it
-offline, edit it offline and commit our changes when online. This is
-how ikiwiki wiki engine is working and it damned efficient. -- XavierMaillard
-
-[new]
-I agree with Xavier. I think it would be really nice to have instant local access to the wiki,
-and I think at least I would be more efficient in contributing to the wiki. Is there anything we could help with to make this happen? -- JoakimVerona
-
-[new]
-At one time I had a job running that would update from SVN, and if people had made changes offline, it would edit the wiki pages, too. That was possible without having to switch the wiki backend from simple files to SVN. On the wiki where I tested it, nobody ever used it, so I disabled it again. There was also the question of usability. At the time the job would just commit changes back to the wiki, but loosing SVN username and loosing SVN commit messages (since the job only ran once every 24h).
-
-The alternative would be to write a module for Oddmuse to switch the backend from simple files to SVN. I'm assuming that will be a tricky thing to do.
-
-Yet another alternative would be to switch Emacs Wiki from Oddmuse to Ikiwiki or any other related wiki engine. In that case, however, somebody else would have to take over maintainership. If you volunteer to do that, I suggest you start with a copy of the wiki somewhere, migrate the data, and then we'll do the domain hand-over once everybody is convinced that the new wiki is cool.
-
--- AlexSchroeder
-
-[new]
-The reason the emacswiki is alive and well is because of its splendid maintainership, I think, so anything making the current maintaner uncomfortable would be 
-ruled out IMHO. Technology cant replace humans(yet).
-
-I dont now anything about OddMuse, but I can have a look since I have basically the same problem with trac based wikis at work.
-
---JoakimVerona
-
-[new]
-Do you not like the first option? A sync every 24h, simple to implement but loosing some information on the way? I must confess I like that approach best because it promises running code at all times -- we will be able to improve it incrementally. -- Alex
-
-[new]
-A 24h svn sync would be fine by me I think. Ideally it would be more often, but the important thing is that it works, and that you can edit locally and upload changes that way.
-When this basic support works, one could implement direct sync with filesystem hooks and svn hooks.
---JoakimVerona
-
-[new]
-The benefit of a wiki is, of course, that anybody can just write. Anybody who wants write access to SVN, however, needs to apply for it, the admin has to do something, and so on. I don't like it very much. Somebody else will have to work on this. -- Alex
-
 ----
 CategoryEmacsWikiSite
