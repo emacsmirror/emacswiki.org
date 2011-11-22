@@ -53,6 +53,16 @@
         (idomenu--read (cdr choice) prompt nil)
       choice)))
 
+(defun idomenu--trim (str)
+  "Trim leading and tailing whitespace from STR."
+  (let ((s (if (symbolp str) (symbol-name str) str)))
+    (replace-regexp-in-string "\\(^[[:space:]\n]*\\|[[:space:]\n]*$\\)" "" s)))
+
+(defun idomenu--trim-alist (index-alist)
+  "There must be a better way to apply a function to all cars of an alist"
+  (mapcar (lambda (pair) (cons (idomenu--trim (car pair)) (cdr pair)))
+	  index-alist))
+
 ;;;###autoload
 (defun idomenu ()
   "Switch to a buffer-local tag from Imenu via Ido."
@@ -66,7 +76,7 @@
   (let ((index-alist (cdr (imenu--make-index-alist))))
     (if (equal index-alist '(nil))
         (message "No imenu tags in buffer")
-      (imenu (idomenu--read index-alist nil t)))))
+      (imenu (idomenu--read (idomenu--trim-alist index-alist) nil t)))))
 
 (provide 'idomenu)
 ;;; idomenu.el ends here
