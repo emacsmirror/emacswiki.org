@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Tue Nov 22 11:09:21 2011 (-0800)
+;; Last-Updated: Tue Nov 22 13:07:05 2011 (-0800)
 ;;           By: dradams
-;;     Update #: 22730
+;;     Update #: 22733
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-cmd1.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -5874,22 +5874,22 @@ These Icicles options control candidate matching and filtering:
  `icicle-file-require-match-flag' - See `icicle-require-match-flag'
  `icicle-file-sort'             - Sort function for candidates
 
-For example, to show only names of files larger than 5000 bytes, set
-`icicle-file-predicate' to:
+For example, to show only names of files larger than 5000 bytes, you
+could temporarily set `icicle-file-predicate' to:
 
   (lambda (file) (and (numberp (nth 7 (file-attributes file)))
                       (> (nth 7 (file-attributes file)) 5000)))"
   (interactive)
-  (let ((icicle-locate-file-action-fn      'icicle-locate-file-action)
-        (icicle-locate-file-use-locate-p   t))
+  (let ((icicle-locate-file-action-fn     'icicle-locate-file-action)
+        (icicle-locate-file-use-locate-p  t))
     (icicle-locate-file-1)))
 
 ;;;###autoload
 (defun icicle-locate-other-window ()
   "Same as `icicle-locate' except uses another window."
   (interactive)
-  (let ((icicle-locate-file-action-fn      'icicle-locate-file-other-window-action)
-        (icicle-locate-file-use-locate-p   t))
+  (let ((icicle-locate-file-action-fn     'icicle-locate-file-other-window-action)
+        (icicle-locate-file-use-locate-p  t))
     (icicle-locate-file-1)))
 
 
@@ -6052,8 +6052,8 @@ These options, when non-nil, control candidate matching and filtering:
  `icicle-file-predicate'        - Predicate file names must satisfy
  `icicle-file-sort'             - Sort function for candidates
 
-For example, to show only names of files larger than 5000 bytes, set
-`icicle-file-predicate' to:
+For example, to show only names of files larger than 5000 bytes, you
+could temporarily set `icicle-file-predicate' to:
 
   (lambda (file) (> (nth 5 (file-attributes file)) 5000))
 
