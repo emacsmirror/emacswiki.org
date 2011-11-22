@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2011, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Mon Nov 21 19:42:32 2011 (-0800)
+;; Last-Updated: Tue Nov 22 14:54:57 2011 (-0800)
 ;;           By: dradams
-;;     Update #: 7599
+;;     Update #: 7615
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-chg.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -89,6 +89,11 @@
 ;;       No progress message (gathering...) if use external locate cmd.
 ;;       Put prop icicle-fancy-candidates only if not using external locate cmd.
 ;;     icicle-locate: Improved doc string.
+;;     icicle-find-file-absolute*, icicle-locate-file-1:
+;;       Bind C-c C-d to icicle-cd-for-(abs|loc)-files (it was mistakenly removed).
+;;     icicle-(delete|recent)-file, icicle-dired, icicle-find-file(-read-only|-in-tags-table),
+;;       icicle-(file|directory)-list:
+;;         Removed mention of C-c C-d in doc string - inappropriate here.
 ;; 2011/11/13 dadams
 ;;     icicle-locate-file-1: Corrected placement of kill-buffer in unwind-protect.
 ;; 2011/11/07 dadams
