@@ -3,16 +3,18 @@ Hello all.
 I started using GNU Emacs in 1993.
 
 == Wish list ==
-: PlainTextWiki minor-mode to navigate within emacs and to generate AutoLink-ed HTML.
+: PlainTextWiki minor-mode to navigate within emacs and generate PlainLink-ed HTML.
+:: See: http://CommunityWiki.org/en/PlainLink and http://CommunityWiki.org/en/PlainTextWiki
 : ConcurrentEmacs: Some buffers may be locked, but general input is never blocked.
-: MyopiMacs: View small portions of extremely large files using little memory or bandwidth.
+: MyopiMacs: View small portions of extremely large files using very little memory or bandwidth.
 :: Retrieve only enough data to fill screen (or maybe 3 screens to pre-cache the preceeding and following screens for quicker navigation)
 ::: Use ideas from HexviewMode for local files.
 ::: Use 'Range' specifier with HTTP 'GET' verb.
 ::: Use 'REST' verb for FTP.
 :: Network writes sent with something like xdiff, rsync if available.
-: MinEmacs: Minimal subset of license, doc, c, lisp, data files competetive with other small editors.
+: MinEmacs: Minimal subset of license, doc, c, lisp, data files competitive with other small editors.
 :: Signed and unsigned plugins and EmacsLisp are installed on demand via TCP or removable media.
+:: See: [[DELPS]]
 : Integrate FireFox rendering.  Investigating http://RobRohan.com/projects/9ne and http://JoeGanley.com/code/jslisp.html for now.
 : JIT compiler with FFI and SWIG for high performace and trivial connectivity.
 : Download RTSP or mms streams.
@@ -38,6 +40,8 @@ MinEmacs wants to help the OneTrueEditor become a lighter yet even more instantl
 
 == Archive ==
 Personal homepage: http://patware.FreeShell.org/agnu.htm
+
+Blog: http://ImputedProduction.BlogSpot.com
 
 ----
 CategoryHomepage
