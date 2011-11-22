@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Wed Nov  9 09:17:11 2011 (-0800)
+;; Last-Updated: Tue Nov 22 14:57:39 2011 (-0800)
 ;;           By: dradams
-;;     Update #: 28528
+;;     Update #: 28529
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-doc2.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -6768,9 +6768,9 @@
 ;;  (@file :file-name "icicles-doc1.el" :to "Accessing Saved Locations (Bookmarks) on the Fly").
 ;;                      (Available only if you use `bookmark+.el'.)
 ;;
-;;  During absolute file-name completion, you can use `C-c C-d' to
-;;  change the current directory on the fly (think UNIX command `cd').
-;;  See also
+;;  During some absolute file-name completion, you can use `C-c C-d'
+;;  to change the current directory on the fly (think UNIX command
+;;  `cd').  See also
 ;;  (@file :file-name "icicles-doc1.el" :to "Absolute File Names and Different Directories").
 ;;
 ;;  During buffer-name completion, the following minibuffer bindings
