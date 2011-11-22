@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Wed Nov 16 09:20:10 2011 (-0800)
+;; Last-Updated: Mon Nov 21 19:33:05 2011 (-0800)
 ;;           By: dradams
-;;     Update #: 22696
+;;     Update #: 22721
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-cmd1.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -5824,6 +5824,12 @@ Which particular options `locate' accepts, and how matching is
 performed, depend on your operating system and its implementation of
 `locate'.
 
+A prefix argument has the same meaning as for vanilla Emacs command
+`locate': prompt for a shell command to run instead of program
+`locate'.  A prefix arg has the effect of flipping the value of user
+option `locate-prompt-for-command' for the duration of the command
+invocation.
+
 After you input the `locate' search pattern, normal Icicles input
 pattern matching is available for completion.  This is absolute
 file-name completion, so your input can match any parts of the name,
@@ -5853,7 +5859,7 @@ During completion (`*': requires library `Bookmark+'):
   You can use `M-|' to open Dired on currently matching file names.
   You can use `S-delete' to delete a candidate file or (empty) dir.
 
-These options control candidate matching and filtering:
+These Icicles options control candidate matching and filtering:
 
  `icicle-file-extras'           - Extra file names to display
  `icicle-file-match-regexp'     - Regexp that file names must match
@@ -5865,7 +5871,8 @@ These options control candidate matching and filtering:
 For example, to show only names of files larger than 5000 bytes, set
 `icicle-file-predicate' to:
 
-  (lambda (file) (> (nth 7 (file-attributes file)) 5000))"
+  (lambda (file) (and (numberp (nth 7 (file-attributes file)))
+                      (> (nth 7 (file-attributes file)) 5000))"
   (interactive)
   (let ((icicle-locate-file-action-fn      'icicle-locate-file-action)
         (icicle-locate-file-use-locate-p   t))
@@ -5907,7 +5914,7 @@ For example, to show only names of files larger than 5000 bytes, set
 
 ;;;###autoload (autoload 'icicle-locate-file-1 "icicles-cmd1.el")
 (icicle-define-command icicle-locate-file-1
-  "Helper function for `icicle-locate-file(-other-window)'." ; Doc string
+  "Helper for `icicle-locate(-file(-no-symlinks))(-other-window)'." ; Doc string
   ;; `icicle-locate-file-action-fn' and `icicle-locate-file-use-locate-p' are free here.
   (lambda (f) (funcall icicle-locate-file-action-fn f)) ; Action function
   prompt icicle-abs-file-candidates nil ; `completing-read' args
@@ -5919,14 +5926,9 @@ For example, to show only names of files larger than 5000 bytes, set
                                              (if (and current-prefix-arg
                                                       (wholenump (prefix-numeric-value
                                                                   current-prefix-arg)))
-                                                 (read-file-name "Locate under which directory: " nil
-                                                                 default-directory nil)
+                                                 (read-file-name "Locate under which directory: "
+                                                                 nil default-directory nil)
                                                default-directory)))
-    (IGNORED--FOR-SIDE-EFFECT           (unless icicle-locate-file-use-locate-p
-                                          (icicle-highlight-lighter)
-                                          (message
-                                           "Gathering files within `%s' (this could take a while)..."
-                                           (icicle-propertize dir 'face 'icicle-msg-emphasis))))
     (icicle-full-cand-fn                `(lambda (file)
                                           (setq file  (if (file-directory-p file)
                                                           (file-name-as-directory file)
@@ -5934,6 +5936,16 @@ For example, to show only names of files larger than 5000 bytes, set
                                           ,(if (<= (prefix-numeric-value current-prefix-arg) 0)
                                                '(icicle-make-file+date-candidate file)
                                                '(list file))))
+    (use-dialog-box                     nil)
+    (icicle-candidate-properties-alist  (and (<= (prefix-numeric-value current-prefix-arg) 0)
+                                             '((1 (face icicle-candidate-part)))))
+    (icicle-list-use-nth-parts          (and (<= (prefix-numeric-value current-prefix-arg) 0) '(1)))
+    (IGNORED--FOR-SIDE-EFFECT
+     (progn (icicle-highlight-lighter)
+            (if icicle-locate-file-use-locate-p
+                (require 'locate)       ; Hard-require: error if not there.
+              (message "Gathering files within `%s' (this could take a while)..."
+                       (icicle-propertize dir 'face 'icicle-msg-emphasis)))))
     (icicle-abs-file-candidates
      (mapcar #'(lambda (file)
                  (if (<= (prefix-numeric-value current-prefix-arg) 0)
@@ -5944,9 +5956,8 @@ For example, to show only names of files larger than 5000 bytes, set
                         (temp-locate-buffer  (get-buffer-create locate-buffer-name)))
                    (unwind-protect
                         (with-current-buffer temp-locate-buffer
-                          (let ((current-prefix-arg  nil)
-                                (cands               ()))
-                            (call-interactively #'locate)
+                          (let ((cands  ()))
+                            (call-interactively #'locate) ; Gets `current-prefix-arg'.
                             (dired-repeat-over-lines
                              (count-lines (point-min) (point-max))
                              (lambda () (push (dired-get-filename nil t) cands)))
@@ -5954,21 +5965,15 @@ For example, to show only names of files larger than 5000 bytes, set
                      (kill-buffer temp-locate-buffer)))
                (icicle-files-within (directory-files dir 'full icicle-re-no-dot)
                                     nil icicle-locate-file-no-symlinks-p))))
-    (use-dialog-box                     nil)
-    (icicle-candidate-properties-alist  (and (<= (prefix-numeric-value current-prefix-arg) 0)
-                                             '((1 (face icicle-candidate-part)))))
-    (icicle-list-use-nth-parts          (and (<= (prefix-numeric-value current-prefix-arg) 0)
-                                             '(1)))
     (icicle-all-candidates-list-alt-action-fn ; M-|'
      (lambda (files) (let ((enable-recursive-minibuffers  t))
                        (dired-other-window (cons (read-string "Dired buffer name: ")
                                                  (mapcar #'icicle-transform-multi-completion
                                                          files))))))))
   (progn                                ; First code
-    (when (<= (prefix-numeric-value current-prefix-arg) 0)
+    (when (and (not icicle-locate-file-use-locate-p)
+               (<= (prefix-numeric-value current-prefix-arg) 0))
       (put-text-property 0 1 'icicle-fancy-candidates t prompt))
-    (icicle-highlight-lighter)
-    (message "Gathering files...")
     (icicle-bind-file-candidate-keys))
   nil                                   ; Undo code
   (icicle-unbind-file-candidate-keys)   ; Last code
