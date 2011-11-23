@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Tue Nov 22 14:37:37 2011 (-0800)
+;; Last-Updated: Tue Nov 22 16:00:25 2011 (-0800)
 ;;           By: dradams
-;;     Update #: 22747
+;;     Update #: 22749
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-cmd1.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -5880,7 +5880,6 @@ During completion (`*': requires library `Bookmark+'):
  *You can use `C-x a +' or `C-x a -' to add or remove tags from the
    current-candidate file.  You are prompted for the tags.
  *You can use `C-x m' to access file bookmarks (not just autofiles).
-  You can use `C-c C-d' (a la `cd') to change the `default-directory'.
   You can use `C-c +' to create a new directory.
   You can use `M-|' to open Dired on currently matching file names.
   You can use `S-delete' to delete a candidate file or (empty) dir.
@@ -6001,12 +6000,14 @@ could temporarily set `icicle-file-predicate' to:
                (<= (prefix-numeric-value current-prefix-arg) 0))
       (put-text-property 0 1 'icicle-fancy-candidates t prompt))
     (icicle-bind-file-candidate-keys)
-    (define-key minibuffer-local-completion-map "\C-c\C-d" 'icicle-cd-for-loc-files)
-    (define-key minibuffer-local-must-match-map "\C-c\C-d" 'icicle-cd-for-loc-files))
+    (when icicle-locate-file-use-locate-p
+      (define-key minibuffer-local-completion-map "\C-c\C-d" 'icicle-cd-for-loc-files)
+      (define-key minibuffer-local-must-match-map "\C-c\C-d" 'icicle-cd-for-loc-files)))
   nil                                   ; Undo code
   (progn (icicle-unbind-file-candidate-keys) ; Last code
-         (define-key minibuffer-local-completion-map "\C-c\C-d" nil)
-         (define-key minibuffer-local-must-match-map "\C-c\C-d" nil))
+         (when icicle-locate-file-use-locate-p
+           (define-key minibuffer-local-completion-map "\C-c\C-d" nil)
+           (define-key minibuffer-local-must-match-map "\C-c\C-d" nil)))
   'NON-INTERACTIVE)                     ; This is not a real command.
 
 ;; This is a minibuffer command.  It is in this file because it is used only here.
