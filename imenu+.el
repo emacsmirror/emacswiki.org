@@ -7,9 +7,9 @@
 ;; Copyright (C) 1999-2011, Drew Adams, all rights reserved.
 ;; Created: Thu Aug 26 16:05:01 1999
 ;; Version: 21.0
-;; Last-Updated: Wed Nov 23 13:06:11 2011 (-0800)
+;; Last-Updated: Wed Nov 23 13:39:13 2011 (-0800)
 ;;           By: dradams
-;;     Update #: 706
+;;     Update #: 711
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/imenu+.el
 ;; Keywords: tools, menus
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -43,11 +43,12 @@
 ;;    `imenu-last-sort-function'.
 ;;
 ;;
-;;  ***** NOTE: The following functions defined in `imenu.el' have
-;;              been REDEFINED HERE:
+;;  ***** NOTE: The following functions and macro defined in `imenu.el'
+;;              have been REDEFINED HERE:
 ;;
 ;;    `imenu--generic-function', `imenu--make-index-alist' (Emacs
-;;    21+), `imenu--mouse-menu', `imenu-update-menubar'.
+;;    21+), `imenu--mouse-menu', `imenu-progress-message',
+;;    `imenu-update-menubar' (Emacs <22).
 ;;
 ;;
 ;;  ***** NOTE: The following variable defined in `imenu.el' has
@@ -65,8 +66,8 @@
 ;;; Change Log:
 ;;
 ;; 2011/11/23 dadams
-;;     Make menu ignore invisible text and respect ignore-comments-flag.
-;;       Added (redefinition of) imenu--make-index-alist, imenu--generic-function.
+;;     Make menu ignore invisible text and respect ignore-comments-flag.  Added (redefinition of):
+;;       imenu--make-index-alist, imenu--generic-function, imenu-progress-message.
 ;; 2001/08/26 dadams
 ;;     imenu--sort-submenu: Copy MENU-ITEMS so sort doesn't modify it.  Thx  to Michael Heerdegen.
 ;; 2011/05/27 dadams
@@ -337,6 +338,18 @@ See `imenu' for more information."
                                                  t)))
           (setq old  (lookup-key (current-local-map) [menu-bar index]))
           (setcdr old (cdr menu1)))))))
+
+
+(eval-and-compile
+ (when (< emacs-major-version 22)
+
+   ;; REPLACE ORIGINAL in `imenu.el'.
+   ;;
+   ;; Use Emacs 22+ definition, which is vacuous.  Otherwise, if byte-compile in Emacs < 22 and use
+   ;; the byte-compiled file in Emacs 22+, then get runtime error:
+   ;; `Error in menu-bar-update-hook: (void-variable imenu-scanning-message)'.
+   ;;
+   (defmacro imenu-progress-message (prevpos &optional relpos reverse)   )))
 
 
 (eval-and-compile
