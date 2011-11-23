@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2011, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Tue Nov 22 14:54:57 2011 (-0800)
+;; Last-Updated: Wed Nov 23 14:10:28 2011 (-0800)
 ;;           By: dradams
-;;     Update #: 7615
+;;     Update #: 7618
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-chg.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -82,6 +82,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd1.el'")
 ;;
+;; 2011/11/23 dadams
+;;     icicle-locate-file-1: when -> unless icicle-locate-file-use-locate-p.
 ;; 2011/11/21 dadams
 ;;     icicle-locate-file-1:
 ;;       Do not bind current-prefix-arg, so pick up prefix arg for vanilla Emacs locate cmd.
