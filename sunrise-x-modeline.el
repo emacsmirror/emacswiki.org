@@ -7,7 +7,7 @@
 ;; Maintainer: José Alfredo Romero L. <escherdragon@gmail.com>
 ;; Created: 10 Oct 2009
 ;; Version: 2
-;; RCS Version: $Rev: 374 $
+;; RCS Version: $Rev: 388 $
 ;; Keywords: sunrise commander, modeline, path mode line
 ;; URL: http://www.emacswiki.org/emacs/sunrise-x-modeline.el
 ;; Compatibility: GNU Emacs 22+
@@ -57,7 +57,7 @@
 ;; The extension is provided as a minor mode, so you can enable / disable it
 ;; totally by issuing the command `sr-modeline'.
 
-;; This is version 2 $Rev: 374 $ of the Sunrise Commander Modeline Extension.
+;; This is version 2 $Rev: 388 $ of the Sunrise Commander Modeline Extension.
 
 ;; It was written on GNU Emacs 23 on Linux, and tested on GNU Emacs 22 and 23
 ;; for Linux and on EmacsW32 (version 22) for Windows.
@@ -76,6 +76,7 @@
 ;;; Code:
 
 (require 'sunrise-commander)
+(require 'desktop)
 (require 'easymenu)
 (eval-when-compile (require 'cl))
 
@@ -315,14 +316,17 @@ the Sunrise Commander, after module installation."
 ;;; ============================================================================
 ;;; Desktop support:
 
-(defun sr-modeline-desktop-restore-buffer (desktop-buffer-file-name
-                                           desktop-buffer-name
-                                           desktop-buffer-misc)
-  "Activate the mode line when restoring Sunrise buffers using desktop."
-  (run-with-timer 0.1 nil 'sr-modeline-toggle 1))
-(add-to-list 'sr-desktop-restore-handlers 'sr-modeline-desktop-restore-buffer)
+(add-to-list 'desktop-minor-mode-table '(sr-modeline nil))
+
+(defun sr-modeline-desktop-restore-function (&rest _)
+  "Call this instead of `sr-modeline' when restoring a desktop."
+  (sr-modeline-refresh))
+
+(add-to-list 'desktop-minor-mode-handlers
+             '(sr-modeline . sr-modeline-desktop-restore-function))
 
 (provide 'sunrise-x-modeline)
-;;;###autoload (require 'sunrise-x-modeline)
+
+;;;###autoload (eval-after-load 'sunrise-commander '(require 'sunrise-x-modeline))
 
 ;;; sunrise-x-modeline.el ends here
