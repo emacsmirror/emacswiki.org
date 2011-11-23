@@ -7,7 +7,7 @@
 ;; Maintainer: José Alfredo Romero L. <escherdragon@gmail.com>
 ;; Created: 4 May 2008
 ;; Version: 2
-;; RCS Version: $Rev: 379 $
+;; RCS Version: $Rev: 388 $
 ;; Keywords: sunrise commander, archives read/write
 ;; URL: http://www.emacswiki.org/emacs/sunrise-x-mirror.el
 ;; Compatibility: GNU Emacs 22+
@@ -201,7 +201,7 @@ contents of the original archive that is fully writeable."
   (let ((path (or (dired-get-filename nil t)
                   (concat (expand-file-name (dired-current-directory)) "/.")))
         (sr-mirror-divert-goto-dir nil)
-		(sr-avfs-root (expand-file-name sr-avfs-root))
+        (sr-avfs-root (expand-file-name sr-avfs-root))
         fname vpaths)
     (if (sr-overlapping-paths-p sr-avfs-root path)
         (unless (and sr-mirror-home (sr-overlapping-paths-p sr-mirror-home path))
@@ -566,6 +566,6 @@ so they are always writeable by default."
 
 (provide 'sunrise-x-mirror)
 
-;;;###autoload (require 'sunrise-x-mirror)
+;;;###autoload (eval-after-load 'sunrise-commander '(require 'sunrise-x-mirror))
 
 ;;; sunrise-x-mirror.el ends here
