@@ -7,7 +7,7 @@
 ;; Maintainer: José Alfredo Romero L. <escherdragon@gmail.com>
 ;; Created: 24 Oct 2009
 ;; Version: 1
-;; RCS Version: $Rev: 382 $
+;; RCS Version: $Rev: 388 $
 ;; Keywords: sunrise commander, tabs
 ;; URL: http://www.emacswiki.org/emacs/sunrise-x-tabs.el
 ;; Compatibility: GNU Emacs 22+
@@ -625,7 +625,7 @@ tabs in the Sunrise Commander (used for desktop support)."
 ;; This activates the tabs support after desktop restoration:
 (add-hook
  'desktop-after-read-hook
- (lambda ()
+ (defun sr-tabs-desktop-after-read-function ()
    (unless (assq 'sr-tabs-on desktop-globals-to-clear)
      (add-to-list 'desktop-globals-to-clear
                   '(sr-tabs-on . (sr-tabs-reset-state))))))
@@ -635,6 +635,6 @@ tabs in the Sunrise Commander (used for desktop support)."
 
 (provide 'sunrise-x-tabs)
 
-;;;###autoload (require 'sunrise-x-tabs)
+;;;###autoload (eval-after-load 'sunrise-commander '(require 'sunrise-x-tabs))
 
 ;;; sunrise-x-tabs.el ends here
