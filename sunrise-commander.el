@@ -7,7 +7,7 @@
 ;; Maintainer: José Alfredo Romero L. <escherdragon@gmail.com>
 ;; Created: 24 Sep 2007
 ;; Version: 5
-;; RCS Version: $Rev: 388 $
+;; RCS Version: $Rev: 389 $
 ;; Keywords: files, dired, midnight commander, norton, orthodox
 ;; URL: http://www.emacswiki.org/emacs/sunrise-commander.el
 ;; Compatibility: GNU Emacs 22+
@@ -408,7 +408,7 @@ Initial value is 2/3 the viewport height.")
   "Default face of the directory path (can be overridden buffer-locally).")
 
 (defvar sr-inhibit-highlight nil
-  "Liquid variable used to temporarily inhibit highlighting in panes.")
+  "Private variable used to temporarily inhibit highlighting in panes.")
 
 (defvar sr-desktop-save-handlers nil
   "List of extension-defined handlers to save Sunrise buffers with desktop.")
@@ -3515,17 +3515,30 @@ Helper macro."
      (sr-select-viewer-window t)
      (if (buffer-live-p buffer)
          (switch-to-buffer buffer)
-       ,form
-       (sr-term-minor-mode 1))
+       ,form)
      (when (and ,newterm buffer)
        (rename-uniquely)
        (setq new-name (buffer-name))
        ,form
-       (sr-term-minor-mode 1)
        (message "Sunrise: previous terminal renamed to %s" new-name))
      (setq cd (or cd (null sr-ti-openterms)))
      (unless (eq (current-buffer) (car sr-ti-openterms))
        (push (current-buffer) sr-ti-openterms))))
+
+(defun sr-term-line-mode ()
+  "Switch the current terminal to line mode.
+Apply additional Sunrise keybindings for terminal integration."
+  (interactive)
+  (term-line-mode)
+  (sr-term-line-minor-mode 1))
+
+(defun sr-term-char-mode ()
+  "Switch the current terminal to character mode.
+Bind C-j and C-k to Sunrise terminal integration commands."
+  (interactive)
+  (term-char-mode)
+  (sr-term-line-minor-mode 0)
+  (sr-term-char-minor-mode 1))
 
 (defun sr-term-extern (&optional cd newterm program)
   "Implementation of `sr-term' for external terminal programs.
@@ -3538,8 +3551,9 @@ See `sr-term' for a description of the arguments."
         (line-mode (if (buffer-live-p aterm)
                        (with-current-buffer aterm (term-in-line-mode)))))
     (sr-term-excursion newterm (term program))
-    (if (and line-mode (not (term-in-line-mode)))
-        (term-line-mode))
+    (sr-term-char-mode)
+    (when (or line-mode (term-in-line-mode))
+      (sr-term-line-mode))
     (when cd
       (term-send-raw-string
        (concat "cd " (shell-quote-wildcard-pattern dir) "
@@ -3552,7 +3566,8 @@ See `sr-term' for a description of the arguments."
     (sr-term-excursion newterm (eshell))
     (when cd
       (insert (concat "cd " (shell-quote-wildcard-pattern dir)))
-      (eshell-send-input))))
+      (eshell-send-input))
+    (sr-term-line-mode)))
 
 (defmacro sr-ti (form)
   "Evaluate FORM in the context of the selected pane.
@@ -3728,7 +3743,14 @@ by `sr-clex-start'."
                 (delete-char -2)
                 (insert expansion)))))))
 
-(define-minor-mode sr-term-minor-mode "Sunrise Commander terminal add-on."
+(define-minor-mode sr-term-char-minor-mode
+  "Sunrise Commander terminal add-on for character (raw) mode."
+  nil nil
+  '(("\C-c\C-j" . sr-term-line-mode)
+    ("\C-c\C-k" . sr-term-char-mode)))
+
+(define-minor-mode sr-term-line-minor-mode
+  "Sunrise Commander terminal add-on for line (cooked) mode."
   nil nil
   '(([M-up]        . sr-ti-previous-line)
     ([A-up]        . sr-ti-previous-line)
@@ -3759,7 +3781,7 @@ by `sr-clex-start'."
 
 (defadvice term-sentinel (around sr-advice-term-sentinel (proc msg) activate)
   "Take care of killing Sunrise terminal buffers on exit."
-  (if (and sr-term-minor-mode
+  (if (and (or sr-term-char-minor-mode sr-term-line-minor-mode)
            sr-terminal-kill-buffer-on-exit
            (memq (process-status proc) '(signal exit)))
       (let ((buffer (process-buffer proc)))
