@@ -92,8 +92,9 @@ Using `icicle-imenu' you can also combine ''semantic'' search with the purely sy
 Library <tt>[[imenu+.el]]</tt> (Imenu+) extends standard library ##imenu.el##. 
 
 * Redefines standard functions `imenu-update-menubar' and `imenu--mouse-menu' so that submenus are sorted before splitting.
+* Ignores invisible definitions.  Ignores definitions that are commented out, if [[user option]] `ignore-comments-flag' is non-`nil'.
 * Adds new commands:
-** '''`imenu-add-defs-to-menubar'''' -- Add '''Defs''' imenu to MenuBar for current local keymap.
+** '''`imenu-add-defs-to-menubar'''' -- Add '''Defs''' imenu to the [[menu bar]] for current local keymap.
 ** '''`toggle-imenu-sort'''' -- Toggle sorting.
 * Adds mode-specific '''Defs''' Imenus for Lisp mode and Emacs-Lisp mode.  These menus include [[face]]s, [[user option]]s, other [[variable]]s, functions, [[macro]]s, [[key binding]]s etc.
 
