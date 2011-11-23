@@ -7,9 +7,9 @@
 ;; Copyright (C) 2011, Drew Adams, all rights reserved.
 ;; Created: Wed May 11 07:11:30 2011 (-0700)
 ;; Version:
-;; Last-Updated: Wed May 11 07:31:36 2011 (-0700)
+;; Last-Updated: Wed Nov 23 13:18:02 2011 (-0800)
 ;;           By: dradams
-;;     Update #: 15
+;;     Update #: 18
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/hide-comnt.el
 ;; Keywords: comment, hide, show
 ;; Compatibility: GNU Emacs: 21.x, 22.x, 23.x
@@ -46,6 +46,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2011/11/23 dadams
+;;     hide/show-comments: Bug fix - ensure CEND is not past eob.
 ;; 2011/05/11 dadams
 ;;     Created: moved code here from thing-cmds.el.
 ;;
@@ -133,7 +135,7 @@ because it needs `comment-search-forward'."
              (goto-char start)
              (while (and (< start end) (setq cbeg  (comment-search-forward end 'NOERROR)))
                (setq cend  (if (string= "" comment-end)
-                               (1+ (line-end-position))
+                               (min (1+ (line-end-position)) (point-max))
                              (search-forward comment-end end 'NOERROR)))
                (when (and cbeg cend)
                  (if (eq 'hide hide/show)
