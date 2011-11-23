@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Tue Nov 22 16:00:25 2011 (-0800)
+;; Last-Updated: Wed Nov 23 14:04:53 2011 (-0800)
 ;;           By: dradams
-;;     Update #: 22749
+;;     Update #: 22752
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-cmd1.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -5802,7 +5802,7 @@ For example, to show only names of files larger than 5000 bytes, set
 `icicle-file-predicate' to:
 
   (lambda (file) (and (numberp (nth 7 (file-attributes file)))
-                      (> (nth 5 (file-attributes file)) 5000)))"
+                      (> (nth 7 (file-attributes file)) 5000)))"
   (interactive)
   (let ((icicle-locate-file-action-fn      'icicle-locate-file-action)
         (icicle-locate-file-no-symlinks-p  nil))
@@ -5869,11 +5869,6 @@ Remember that you can save the set of files matching your input using
 Note that completion here matches candidates as ordinary strings.  It
 knows nothing of file names per se.  In particular, you cannot use
 remote file-name syntax.
-
-You cannot move up and down the file hierarchy the same way you can
-for ordinary (non-absolute) file-name completion.  To change to a
-different directory, with its files as candidates, use `C-c C-d' from
-the minibuffer - it prompts you for the new directory.
 
 During completion (`*': requires library `Bookmark+'):
 
@@ -6000,12 +5995,12 @@ could temporarily set `icicle-file-predicate' to:
                (<= (prefix-numeric-value current-prefix-arg) 0))
       (put-text-property 0 1 'icicle-fancy-candidates t prompt))
     (icicle-bind-file-candidate-keys)
-    (when icicle-locate-file-use-locate-p
+    (unless icicle-locate-file-use-locate-p
       (define-key minibuffer-local-completion-map "\C-c\C-d" 'icicle-cd-for-loc-files)
       (define-key minibuffer-local-must-match-map "\C-c\C-d" 'icicle-cd-for-loc-files)))
   nil                                   ; Undo code
   (progn (icicle-unbind-file-candidate-keys) ; Last code
-         (when icicle-locate-file-use-locate-p
+         (unless icicle-locate-file-use-locate-p
            (define-key minibuffer-local-completion-map "\C-c\C-d" nil)
            (define-key minibuffer-local-must-match-map "\C-c\C-d" nil)))
   'NON-INTERACTIVE)                     ; This is not a real command.
