@@ -1,7 +1,6 @@
 Use `M-x find-grep-dired' interactively to search and replace a regex across all files in a specified directory and subdirectories which match a pattern.
 
 As described in [http://atomized.org/2009/05/emacs-nerdery-search-replace-across-files/ this blog post], basic usage is:
-
     ;; invoke, passing your search phrase
     M-x find-grep-dired RET catch (FooException RET
     ;; mark buffers of interest
@@ -19,4 +18,4 @@ See also DiredFindInLisp for `M-x find-grep-dired-lisp'.
 
 ----
 CategoryDirectories
-C03AHJ_Vuu3LJxtuap5y6ET7X_IvCrNjPLvz2fHzbVLYwEbElB8dzcs4MkkS1qauCv9hSCABgM4lwHh1zZRD9XR3W9bN3Qa5Kt-uovbsPxpMs_iJAhQNT7AlJeDUH07sBIE9qFm5QU_BlSFategorySearchAndReplace
+CategorySearchAndReplace
