@@ -7,9 +7,10 @@ You may have to define the QTDIR environment variable and extend the PATH enviro
 <pre>
 (setenv "QTDIR" "C:\\QtSDK\\Desktop\\Qt\\4.7.3\\mingw\\")
 (setq qt-base-directory "C:\\QtSDK\\")
-(setenv "PATH" (concat (getenv "PATH") ";" (concat (getenv "QTDIR") "bin" )))
-(setenv "PATH" (concat (getenv "PATH") ";" 
-                       (concat qt-base-directory "mingw\\bin")))
+(setenv "PATH" (concat (concat (getenv "QTDIR") "bin" ) "; " (getenv "PATH")))
+(setenv "PATH" (concat (concat qt-base-directory "mingw\\bin") ";" (getenv "PATH")))
+(setenv "PATH" (concat (concat qt-base-directory "Desktop\\Qt\\4.7.3\\mingw\\lib")
+		        ";" (getenv "PATH")))
 </pre>
 
 = Integration within Emacs =
