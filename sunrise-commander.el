@@ -7,7 +7,7 @@
 ;; Maintainer: José Alfredo Romero L. <escherdragon@gmail.com>
 ;; Created: 24 Sep 2007
 ;; Version: 5
-;; RCS Version: $Rev: 387 $
+;; RCS Version: $Rev: 388 $
 ;; Keywords: files, dired, midnight commander, norton, orthodox
 ;; URL: http://www.emacswiki.org/emacs/sunrise-commander.el
 ;; Compatibility: GNU Emacs 22+
@@ -408,7 +408,7 @@ Initial value is 2/3 the viewport height.")
   "Default face of the directory path (can be overridden buffer-locally).")
 
 (defvar sr-inhibit-highlight nil
-  "Liquid variable used by Sunrise to temporarily inhibit highliting in panes.")
+  "Liquid variable used to temporarily inhibit highlighting in panes.")
 
 (defvar sr-desktop-save-handlers nil
   "List of extension-defined handlers to save Sunrise buffers with desktop.")
@@ -418,6 +418,7 @@ Initial value is 2/3 the viewport height.")
 
 (defvar sr-backup-buffer nil
   "Variable holding a buffer-local value of the backup buffer.")
+(make-variable-buffer-local 'sr-backup-buffer)
 
 (defvar sr-goto-dir-function nil
   "Function to use to navigate to a given directory, or nil to do the default.
@@ -468,6 +469,10 @@ Indicates that a CLEX substitution may be about to happen."
 ;;; This is the core of Sunrise: the main idea is to apply `sr-mode' only inside
 ;;; Sunrise buffers while keeping all of `dired-mode' untouched.
 
+;;; preserve this variable when switching from `dired-mode' to another mode
+(put 'dired-subdir-alist 'permanent-local t)
+
+;;;###autoload
 (define-derived-mode sr-mode dired-mode "Sunrise Commander"
   "Two-pane file manager for Emacs based on Dired and inspired by MC.
 The following keybindings are available:
@@ -630,6 +635,7 @@ automatically:
        %% - inserts a single % sign.
 "
   :group 'sunrise
+  (rename-buffer (concat (buffer-name) " (Sunrise)") t)
   (set-keymap-parent sr-mode-map dired-mode-map)
   (sr-highlight)
   (dired-omit-mode dired-omit-mode)
@@ -648,12 +654,13 @@ automatically:
 
   (make-local-variable 'revert-buffer-function)
   (setq revert-buffer-function 'sr-revert-buffer)
- 
+
   (make-local-variable 'hl-line-sticky-flag)
   (setq hl-line-sticky-flag nil)
   (hl-line-mode 1)
 )
 
+;;;###autoload
 (define-derived-mode sr-virtual-mode dired-virtual-mode "Sunrise VIRTUAL"
   "Sunrise Commander Virtual Mode. Useful for reusing find and locate results."
   :group 'sunrise
@@ -672,7 +679,7 @@ automatically:
 
   (make-local-variable 'revert-buffer-function)
   (setq revert-buffer-function 'sr-revert-buffer)
- 
+
   (make-local-variable 'hl-line-sticky-flag)
   (setq hl-line-sticky-flag nil)
   (hl-line-mode 1)
@@ -747,6 +754,7 @@ Helper macro for passive & synchronized navigation."
 (defun sr-dired-mode ()
   "Set Sunrise mode in every Dired buffer opened in Sunrise (called in a hook)."
   (if (and sr-running
+           (eq (selected-frame) sr-current-frame)
            (sr-equal-dirs dired-directory default-directory)
            (not (eq major-mode 'sr-mode)))
       (let ((dired-listing-switches dired-listing-switches)
@@ -778,7 +786,7 @@ Helper macro for passive & synchronized navigation."
   (interactive)
   (when (eq major-mode 'sr-mode)
     (let ((focus (dired-get-filename 'verbatim t)))
-      (sr-virtual-mode)
+      (sr-save-aspect (sr-virtual-mode))
       (if focus (sr-focus-filename focus)))))
 
 (defun sr-virtual-dismiss ()
@@ -830,8 +838,7 @@ calls the function `sr-setup-windows' and tries once again."
 Used as a cache during revert operations."
   (if (buffer-live-p sr-backup-buffer) (sr-kill-backup-buffer))
   (let ((buf (current-buffer)))
-    (set (make-local-variable 'sr-backup-buffer)
-         (generate-new-buffer "*Sunrise Backup*"))
+    (setq sr-backup-buffer (generate-new-buffer "*Sunrise Backup*"))
     (with-current-buffer sr-backup-buffer
       (insert-buffer-substring buf))
     (run-hooks 'sr-refresh-hook)))
@@ -869,7 +876,7 @@ This is done so all its dired-filename attributes are kept in the file."
 (defadvice dired-dwim-target-directory
   (around sr-advice-dwim-target ())
   "Tweak the target directory guessing mechanism."
-  (if sr-running
+  (if (eq (selected-frame) sr-current-frame)
       (setq ad-return-value sr-other-directory)
     ad-do-it))
 (ad-activate 'dired-dwim-target-directory)
@@ -1088,6 +1095,7 @@ these values uses the default, ie. $HOME."
             (setq sr-right-directory right-directory))
 
         (setq sr-restore-buffer (current-buffer)
+              sr-current-frame (window-frame (selected-window))
               sr-prior-window-configuration (current-window-configuration)
               sr-running t)
         (sr-setup-windows)
@@ -1096,7 +1104,6 @@ these values uses the default, ie. $HOME."
                 (sr-focus-filename (file-name-nondirectory filename))
               (error (setq welcome (cadr description)))))
         (setq sr-this-directory default-directory)
-        (setq sr-current-frame (window-frame (selected-window)))
         (message "%s" welcome)
         (sr-highlight)) ;;<-- W32Emacs needs this
     (let ((my-frame (window-frame (selected-window))))
@@ -1602,7 +1609,7 @@ Returns nil if AVFS cannot manage this kind of file."
       (if (and sr-avfs-root
                (null (posix-string-match "#" dir)))
           (setq dir (replace-regexp-in-string
-					 (expand-file-name sr-avfs-root) "" dir)))
+                     (expand-file-name sr-avfs-root) "" dir)))
       (sr-save-aspect
        (sr-within dir (sr-alternate-buffer (dired dir))))
       (sr-history-push default-directory)
@@ -2023,9 +2030,10 @@ Kills any other buffer opened previously the same way."
         (error (message "%s" (cadr description)))))))
 
 ;; These clean up after a quick view:
-(add-hook 'sr-quit-hook (lambda () (setq other-window-scroll-buffer nil)))
+(add-hook 'sr-quit-hook (defun sr-sr-quit-function ()
+                          (setq other-window-scroll-buffer nil)))
 (add-hook 'kill-buffer-hook
-          (lambda ()
+          (defun sr-kill-buffer-function ()
             (if (eq (current-buffer) other-window-scroll-buffer)
                 (setq other-window-scroll-buffer  nil))))
 
@@ -2967,10 +2975,11 @@ as its first argument."
   (eval (sr-diff-form 'ediff)))
 
 (add-hook 'ediff-before-setup-windows-hook
-          (lambda () (setq sr-ediff-on t)))
+          (defun sr-ediff-before-setup-windows-function ()
+            (setq sr-ediff-on t)))
 
 (add-hook 'ediff-quit-hook
-          (lambda ()
+          (defun sr-ediff-quit-function ()
             (setq sr-ediff-on nil)
             (when sr-running
               (if (buffer-live-p sr-restore-buffer)
@@ -3091,6 +3100,7 @@ made only inside subdirs."
         (kill-local-variable 'sr-find-items)))
     (sr-beginning-of-buffer)
     (sr-highlight)
+    (hl-line-mode 1)
     (sr-backup-buffer)))
 (ad-activate 'find-dired-sentinel)
 
@@ -3175,7 +3185,8 @@ Used to notify about the termination status of the process."
        (insert " at " (substring (current-time-string) 0 19))
        (forward-char 1))
      (sr-beginning-of-buffer)
-     (sr-highlight)))
+     (sr-highlight)
+     (hl-line-mode 1)))
 
 (defun sr-locate-prompt ()
   "Display the message that appears when a locate process is launched."
@@ -3381,8 +3392,7 @@ file)."
   (sr-sticky-isearch t))
 
 (defun sr-sticky-post-isearch ()
-  "`isearch-mode-end-hook' function for sticky Isearch operations in Sunrise
-browse mode."
+  "`isearch-mode-end-hook' function for Sunrise sticky Isearch operations."
   (and
    (dired-get-filename nil t)
    (let* ((filename (expand-file-name (dired-get-filename nil t)))
@@ -3475,7 +3485,8 @@ and exists in `exec-path', then it will be used instead of the
 default `sr-terminal-program'."
   (interactive)
   (let ((program (or program sr-terminal-program)))
-    (hl-line-mode 1)
+    (if (memq major-mode '(sr-mode sr-virtual-mode sr-tree-mode))
+        (hl-line-mode 1))
     (if (string= program "eshell")
         (sr-term-eshell cd newterm)
       (sr-term-extern cd newterm program))))
@@ -3499,16 +3510,18 @@ cd's to the current directory of the active pane."
 
 (defmacro sr-term-excursion (newterm form)
   "Take care of the common mechanics of launching or switching to a terminal.
-Helper macro. "
+Helper macro."
   `(let ((buffer (car sr-ti-openterms)) (new-name))
      (sr-select-viewer-window t)
      (if (buffer-live-p buffer)
          (switch-to-buffer buffer)
-       ,form)
+       ,form
+       (sr-term-minor-mode 1))
      (when (and ,newterm buffer)
        (rename-uniquely)
        (setq new-name (buffer-name))
        ,form
+       (sr-term-minor-mode 1)
        (message "Sunrise: previous terminal renamed to %s" new-name))
      (setq cd (or cd (null sr-ti-openterms)))
      (unless (eq (current-buffer) (car sr-ti-openterms))
@@ -3715,50 +3728,45 @@ by `sr-clex-start'."
                 (delete-char -2)
                 (insert expansion)))))))
 
-(defvar sr-term-keys '(([M-up]        . sr-ti-previous-line)
-                       ([A-up]        . sr-ti-previous-line)
-                       ("\M-P"        . sr-ti-previous-line)
-                       ([M-down]      . sr-ti-next-line)
-                       ([A-down]      . sr-ti-next-line)
-                       ("\M-N"        . sr-ti-next-line)
-                       ("\M-\C-m"     . sr-ti-select)
-                       ("\C-\M-j"     . sr-ti-select)
-                       ([M-return]    . sr-ti-select)
-                       ("\M-M"        . sr-ti-mark)
-                       ([M-backspace] . sr-ti-unmark)
-                       ("\M-\d"       . sr-ti-unmark)
-                       ("\M-J"        . sr-ti-prev-subdir)
-                       ("\M-U"        . sr-ti-unmark-all-marks)
-                       ([C-tab]       . sr-ti-change-window)
-                       ("\C-c\t"      . sr-ti-change-window)
-                       ("\M-\t"       . sr-ti-change-pane)
-                       ("\C-ct"       . sr-term-cd-newterm)
-                       ("\C-c;"       . sr-follow-viewer)
-                       ("\M-\S-g"     . sr-ti-revert-buffer)
-                       ("%"           . sr-clex-start)
-                       ("\t"          . term-dynamic-complete)
-                       ("\C-c\\"      . sr-ti-lock-panes)
-                       ("\C-c{"       . sr-ti-min-lock-panes)
-                       ("\C-c}"       . sr-ti-max-lock-panes))
-  "Keybindings for terminal integration and command line expansion.")
+(define-minor-mode sr-term-minor-mode "Sunrise Commander terminal add-on."
+  nil nil
+  '(([M-up]        . sr-ti-previous-line)
+    ([A-up]        . sr-ti-previous-line)
+    ("\M-P"        . sr-ti-previous-line)
+    ([M-down]      . sr-ti-next-line)
+    ([A-down]      . sr-ti-next-line)
+    ("\M-N"        . sr-ti-next-line)
+    ("\M-\C-m"     . sr-ti-select)
+    ("\C-\M-j"     . sr-ti-select)
+    ([M-return]    . sr-ti-select)
+    ("\M-M"        . sr-ti-mark)
+    ([M-backspace] . sr-ti-unmark)
+    ("\M-\d"       . sr-ti-unmark)
+    ("\M-J"        . sr-ti-prev-subdir)
+    ("\M-U"        . sr-ti-unmark-all-marks)
+    ([C-tab]       . sr-ti-change-window)
+    ("\C-c\t"      . sr-ti-change-window)
+    ("\M-\t"       . sr-ti-change-pane)
+    ("\C-ct"       . sr-term-cd-newterm)
+    ("\C-c;"       . sr-follow-viewer)
+    ("\M-\S-g"     . sr-ti-revert-buffer)
+    ("%"           . sr-clex-start)
+    ("\t"          . term-dynamic-complete)
+    ("\C-c\\"      . sr-ti-lock-panes)
+    ("\C-c{"       . sr-ti-min-lock-panes)
+    ("\C-c}"       . sr-ti-max-lock-panes))
+  :group 'sunrise)
 
-(defun sr-define-ti-keys (mode-map)
-  (mapcar (lambda (key)
-            (define-key mode-map (car key) (cdr key)))
-          sr-term-keys))
-(add-hook 'eshell-mode-hook (lambda () (sr-define-ti-keys eshell-mode-map)))
-(add-hook 'term-mode-hook (lambda () (sr-define-ti-keys term-mode-map)))
-
-(defadvice term-sentinel (around sr-advice-term-sentinel (proc msg))
-  (if (and sr-terminal-kill-buffer-on-exit
-  "Take care of killing terminal buffers on exit."
+(defadvice term-sentinel (around sr-advice-term-sentinel (proc msg) activate)
+  "Take care of killing Sunrise terminal buffers on exit."
+  (if (and sr-term-minor-mode
+           sr-terminal-kill-buffer-on-exit
            (memq (process-status proc) '(signal exit)))
       (let ((buffer (process-buffer proc)))
         ad-do-it
         (bury-buffer buffer)
         (kill-buffer buffer))
     ad-do-it))
-(ad-activate 'term-sentinel)
 
 ;;; ============================================================================
 ;;; Desktop support:
@@ -3799,25 +3807,28 @@ file in the file system."
          (is-virtual (assoc 'virtual desktop-buffer-misc))
          (buffer
           (if (not is-virtual)
-              (dired-restore-desktop-buffer desktop-buffer-file-name
-                                            desktop-buffer-name
-                                            misc-data)
+              (with-current-buffer
+                  (dired-restore-desktop-buffer desktop-buffer-file-name
+                                                desktop-buffer-name
+                                                misc-data)
+                (sr-mode)
+                (current-buffer))
             (desktop-restore-file-buffer (car misc-data)
                                          desktop-buffer-name
                                          misc-data))))
-    (if is-virtual
-        (set-visited-file-name nil t))
-    (mapc (lambda (side)
-            (when (cdr (assoc side desktop-buffer-misc))
-              (set (sr-symbol side 'buffer) (current-buffer))
-              (set (sr-symbol side 'directory) default-directory)))
-          '(left right))
-    (mapc (lambda (fun)
-            (funcall fun
-                     desktop-buffer-file-name
-                     desktop-buffer-name
-                     desktop-buffer-misc))
-          sr-desktop-restore-handlers)
+    (with-current-buffer buffer
+      (when is-virtual (set-visited-file-name nil t))
+      (mapc (lambda (side)
+              (when (cdr (assq side desktop-buffer-misc))
+                (set (sr-symbol side 'buffer) buffer)
+                (set (sr-symbol side 'directory) default-directory)))
+            '(left right))
+      (mapc (lambda (fun)
+              (funcall fun
+                       desktop-buffer-file-name
+                       desktop-buffer-name
+                       desktop-buffer-misc))
+            sr-desktop-restore-handlers))
     buffer))
 
 (defun sr-reset-state ()
@@ -3836,7 +3847,7 @@ Used for desktop support."
 
 ;; This initializes (and sometimes starts) Sunrise after desktop restoration:
 (add-hook 'desktop-after-read-hook
-          (lambda ()
+          (defun sr-desktop-after-read-function ()
             (unless (assoc 'sr-running desktop-globals-to-clear)
               (add-to-list 'desktop-globals-to-clear
                            '(sr-running . (sr-reset-state))))
@@ -3980,8 +3991,9 @@ with advice matching REGEXP."
 (defmacro sr-rainbow (symbol spec regexp)
   `(progn
      (defface ,symbol '((t ,spec)) "Sunrise rainbow face" :group 'sunrise)
-     (font-lock-add-keywords 'sr-mode '((,regexp 1 (quote ,symbol))))
-     (font-lock-add-keywords 'sr-virtual-mode '((,regexp 1 (quote ,symbol))))))
+     ,@(mapcar (lambda (m)
+                 `(font-lock-add-keywords ',m '((,regexp 1 ',symbol))))
+               '(sr-mode sr-virtual-mode))))
 
 (sr-rainbow sr-html-face              (:foreground "DarkOliveGreen")        "\\(^..[^d].*\\.x?html?$\\)")
 (sr-rainbow sr-xml-face               (:foreground "DarkGreen")             "\\(^..[^d].*\\.\\(xml\\|xsd\\|xslt?\\|wsdl\\)$\\)")
@@ -3990,13 +4002,13 @@ with advice matching REGEXP."
 (sr-rainbow sr-packaged-face          (:foreground "DarkMagenta")           "\\(^..[^d].*\\.\\(deb\\|rpm\\)$\\)")
 (sr-rainbow sr-encrypted-face         (:foreground "DarkOrange1")           "\\(^..[^d].*\\.\\(gpg\\|pgp\\)$\\)")
 
-(sr-rainbow sr-directory-face         (:foreground "blue1" :bold t)         "\\(^..d.*\\)")
-(sr-rainbow sr-symlink-face           (:foreground "DeepSkyBlue" :italic t) "\\(^..l.*[^/]$\\)")
-(sr-rainbow sr-symlink-directory-face (:foreground "blue1" :italic t)       "\\(^..l.*/$\\)")
+(sr-rainbow sr-directory-face         (:inherit dired-directory :bold t)    "\\(^..d.*\\)")
+(sr-rainbow sr-symlink-face           (:inherit dired-symlink :italic t)    "\\(^..l.*[^/]$\\)")
+(sr-rainbow sr-symlink-directory-face (:inherit dired-directory :italic t)  "\\(^..l.*/$\\)")
 (sr-rainbow sr-alt-marked-dir-face    (:foreground "DeepPink" :bold t)      "\\(^[^ *D].d.*$\\)")
 (sr-rainbow sr-alt-marked-file-face   (:foreground "DeepPink")              "\\(^[^ *D].[^d].*$\\)")
-(sr-rainbow sr-marked-dir-face        (:foreground "red" :bold t)           "\\(^[*D].d.*$\\)")
-(sr-rainbow sr-marked-file-face       (:foreground "red")                   "\\(^[*D].[^d].*$\\)")
+(sr-rainbow sr-marked-dir-face        (:inherit dired-marked)               "\\(^[*D].d.*$\\)")
+(sr-rainbow sr-marked-file-face       (:inherit dired-marked :bold nil)     "\\(^[*D].[^d].*$\\)")
 
 (provide 'sunrise-commander)
 
