@@ -7,7 +7,7 @@
 ;; Maintainer: José Alfredo Romero L. <escherdragon@gmail.com>
 ;; Created: 4 May 2010
 ;; Version: 1
-;; RCS Version: $Rev: 386 $
+;; RCS Version: $Rev: 388 $
 ;; Keywords: sunrise commander, directories tree navigation
 ;; URL: http://www.emacswiki.org/emacs/sunrise-x-tree.el
 ;; Compatibility: GNU Emacs 22+
@@ -902,6 +902,7 @@ Moves files from the active pane to the passive pane."
        (file-name-as-directory (file-name-nondirectory expanded)) nil t)
       (sr-tree-update-cursor))))
 
+;;;###autoload
 (define-derived-mode sr-tree-mode nil "Sunrise Tree View"
   "Tree view for the Sunrise Commander file manager."
   :group 'sunrise
@@ -1201,6 +1202,6 @@ switch to normal mode, then execute."
 
 (provide 'sunrise-x-tree)
 
-;;;###autoload (require 'sunrise-x-tree)
+;;;###autoload (eval-after-load 'sunrise-commander '(require 'sunrise-x-tree))
 
 ;;; sunrise-x-tree.el ends here
