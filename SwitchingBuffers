@@ -24,7 +24,13 @@ Nothing is simpler or quicker. You are not limited to cycling: you can also use 
 [new]
 [[Ido]] is already in recent emacs versions and the `C-x b' functionality includes name-based searching and quick selection with arrow keys and the enter key. -- [[DThompson]]
 
+[new]
+[[https://github.com/renard/quick-buffer-switch|quick-buffer-switch]] can be used in addition to [[Ido]]. quick-buffer-switch allows buffer limitation using predicate functions. Some of them are predefined, such as switching among buffers:
 
+* visiting files, directories
+* ERC channels
+* buffer running processes
+* etc...
 
 
 
