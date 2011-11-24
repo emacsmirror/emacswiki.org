@@ -1,8 +1,8 @@
-This package implements tempbuf-mode, a minor mode that enables
+''tempbuf-mode'' is a minor mode that enables
 buffers to get automatically deleted in the background when it can
 be deduced that they are no longer of any use.
 
-It could be common for example to apply this mode to dired-mode buffers
+It could be common for example to apply this mode to DiredMode buffers
 or read-only buffers visiting files, relieving you from having to
 delete each of them manually when the buffer list grows too large.
 
