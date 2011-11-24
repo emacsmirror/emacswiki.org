@@ -7,9 +7,9 @@
 ;; Copyright (C) 1999-2011, Drew Adams, all rights reserved.
 ;; Created: Thu Aug 26 16:05:01 1999
 ;; Version: 21.0
-;; Last-Updated: Wed Nov 23 13:39:13 2011 (-0800)
+;; Last-Updated: Wed Nov 23 16:52:25 2011 (-0800)
 ;;           By: dradams
-;;     Update #: 711
+;;     Update #: 712
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/imenu+.el
 ;; Keywords: tools, menus
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -464,7 +464,7 @@ depending on PATTERNS."
                                     (or (not invis)
                                         (progn
                                           (while (and invis  (not (bobp)))
-                                            (setq invis  (not (re-search-backward regexp nil t))))
+                                            (setq invis  (not (re-search-backward regexp nil 'MOVE))))
                                           (not invis))))))
                            ;; Exit loop if empty match -it means a bad regexp was specified.
                            (not (= (match-beginning 0) (match-end 0))))
