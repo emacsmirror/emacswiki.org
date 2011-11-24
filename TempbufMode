@@ -8,7 +8,8 @@ delete each of them manually when the buffer list grows too large.
 
 This package is not part of GNU Emacs, and is currently hosted by the EmacsWiki.
 
-Elisp code: Lisp:tempbuf.el.
+Elisp code: Lisp:tempbuf.el
+VCS archive: https://gitorious.org/tempbuf-mode
 
 To enable this mode on dired buffers, put this line in your .emacs:
   (add-hook 'dired-mode-hook 'turn-on-tempbuf-mode)
@@ -21,6 +22,8 @@ documentation buffers, and any buffer with view-mode activated.
   (add-hook 'w3-mode-hook 'turn-on-tempbuf-mode)
   (add-hook 'Man-mode-hook 'turn-on-tempbuf-mode)
   (add-hook 'view-mode-hook 'turn-on-tempbuf-mode)
+
+----
 
 [new:rubikitch:2009-04-09 21:20 UTC]
 Do you know midnight.el in Emacs distribution?
@@ -55,6 +58,8 @@ diff -r 2e783f454a3b .emacs.d/vendor/tempbuf.el
  (defun tempbuf-post-command ()
    "Update `tempbuf-last-time'."
 </pre>
+
+[new:MicheleBini:2011-11-24 21:25 UTC] I have included the patch in the latest tempbuf.el so you can now use M-x customize-variable tempbuf-kill-message-function to choose your favorite message notification function. --MicheleBini
 
 ------
 CategoryModes
