@@ -7,9 +7,9 @@
 ;; Copyright (C) 1999-2011, Drew Adams, all rights reserved.
 ;; Created: Thu Aug 26 16:05:01 1999
 ;; Version: 21.0
-;; Last-Updated: Wed Nov 23 16:52:25 2011 (-0800)
+;; Last-Updated: Thu Nov 24 08:21:58 2011 (-0800)
 ;;           By: dradams
-;;     Update #: 712
+;;     Update #: 719
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/imenu+.el
 ;; Keywords: tools, menus
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -27,7 +27,7 @@
 ;;   New functions defined here:
 ;;
 ;;    `imenu-add-defs-to-menubar', `imenu--sort-submenu',
-;;    `toggle-imenu-sort'.
+;;    `imenup-invisible-p', `toggle-imenu-sort'.
 ;;
 ;;   New user options (variables) defined here:
 ;;
@@ -65,6 +65,9 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2011/11/24 dadams
+;;     Added: imenup-invisible-p.
+;;     imenu--generic-function: Use imenup-invisible-p, not just get-text-property (so overlays too).
 ;; 2011/11/23 dadams
 ;;     Make menu ignore invisible text and respect ignore-comments-flag.  Added (redefinition of):
 ;;       imenu--make-index-alist, imenu--generic-function, imenu-progress-message.
@@ -385,6 +388,16 @@ See `imenu--index-alist' for the format of the index alist."
      (or imenu--index-alist (setq imenu--index-alist  (list nil)))
      (cons imenu--rescan-item imenu--index-alist)))) ; Add `*Rescan*' to index.
 
+;; Same as `thgcmd-invisible-p' in `thing-cmds.el', and `icicle-invisible-p' in `icicles-cmd2.el'.
+(defun imenup-invisible-p (position)
+  "Return non-nil if the character at POSITION is invisible."
+  (if (fboundp 'invisible-p)            ; Emacs 22+
+      (invisible-p position)
+    (let ((prop  (get-char-property position 'invisible))) ; Overlay or text property.
+      (if (eq buffer-invisibility-spec t)
+          prop
+        (or (memq prop buffer-invisibility-spec) (assq prop buffer-invisibility-spec))))))
+
 
 ;; REPLACE ORIGINAL  in `imenu.el'.
 ;;
@@ -460,7 +473,7 @@ depending on PATTERNS."
                                (funcall regexp)
                              (and (re-search-backward regexp nil t)
                                   ;; Do not count invisible definitions.
-                                  (let ((invis  (get-text-property (point) 'invisible)))
+                                  (let ((invis  (imenup-invisible-p (point))))
                                     (or (not invis)
                                         (progn
                                           (while (and invis  (not (bobp)))
