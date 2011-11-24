@@ -66,6 +66,8 @@ VM is very well documented. It comes with a fine set of info pages, and there ar
 
 * Francois Flueret, [[http://www.idiap.ch/~fleuret/files/fleuret.vm|VM configuration file]]
 
+* Glen Morris, [[http://www.stanford.edu/~rgm/comp.html|Computer stuff]] (includes VM configuration file).
+
 * [[http://lists.gnu.org/archive/html/bug-gnu-emacs/2000-09/msg00037.html|VM and the FSF]], Sep 22, 2000.  bug-gnu-emacs mailing list discussion about why VM is not included with Emacs.
 
 ----
