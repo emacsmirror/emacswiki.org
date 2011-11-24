@@ -8,8 +8,8 @@ delete each of them manually when the buffer list grows too large.
 
 This package is not part of GNU Emacs, and is currently hosted by the EmacsWiki.
 
-Elisp code: Lisp:tempbuf.el
-VCS archive: https://gitorious.org/tempbuf-mode
+* Elisp code: Lisp:tempbuf.el
+* VCS archive: https://gitorious.org/tempbuf-mode
 
 To enable this mode on dired buffers, put this line in your .emacs:
   (add-hook 'dired-mode-hook 'turn-on-tempbuf-mode)
