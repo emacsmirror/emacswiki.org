@@ -46,7 +46,7 @@ VM is very well documented. It comes with a fine set of info pages, and there ar
 
 * [[http://www.wonderworks.com/vm/vm-procmail.html| FAQ: Using VM with Procmail]], Samuel Mikes at Wonderworks,  April 1998.  Explanation of integrating VM with external mail filtering.
 
-== External tutorials and blogs ==
+== External Links (tutorials, blogs and configuration files) ==
 
 * V. L. Simpson, [[http://linuxgazette.net/109/simpson.html| Emacs and Email: The VM Mail Package]], Linux Gazette, December 2004.  A very nice tutorial, which is still valuable despite its age.
 
@@ -69,6 +69,8 @@ VM is very well documented. It comes with a fine set of info pages, and there ar
 * Glen Morris, [[http://www.stanford.edu/~rgm/comp.html|Computer stuff]] (includes VM configuration file).
 
 * Umesh Nair, [[http://www.usvishakh.net/umesh/emacs/upn-mail-vm-settings.el.html|VM configuration file]].
+
+* Eli Barzilay, [[https://github.com/elibarzilay/eliemacs/blob/master/extras/vm/eli-vm.el|VM configuration file]] on Github.
 
 * [[http://lists.gnu.org/archive/html/bug-gnu-emacs/2000-09/msg00037.html|VM and the FSF]], Sep 22, 2000.  bug-gnu-emacs mailing list discussion about why VM is not included with Emacs.
 
