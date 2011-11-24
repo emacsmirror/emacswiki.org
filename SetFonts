@@ -26,7 +26,7 @@ This should work on all platforms.  As of Emacs 23, all of your system fonts inc
 
 ====Global Fonts, .Xresources, and Emacs Daemon====
 
-I found that the only way to set fonts so that they remain consistent in emacs -nw, emacs23(-gtk), emacsclient -t, emacsclient -c, was to declare them in .Xresources. Otherwise, emacs --daemon complains. It doesn't like (set-face-attribute 'default nil :font FONT) and the like.
+I found that the only way to set fonts so that they remain consistent across emacs -nw, emacs23(-gtk), emacsclient -t, emacsclient -c, was to declare them in .Xresources. Otherwise, emacs --daemon complains. It doesn't like (set-face-attribute 'default nil :font FONT) and the like.
 
 [:ChangingFontSize]
 == Changing Font Size ==
