@@ -543,4 +543,9 @@ to your .emacs-w3m file or
 
 before loading w3m.
 
+For making arbitrary use of result of link numbering selection within
+Elisp, take a look at `w3m-lnum-get-action'.  It takes a prompt and
+type of elements, does a selection and returns list of properties of
+the selection.
+ 
 -- Andrey Kotlarski
