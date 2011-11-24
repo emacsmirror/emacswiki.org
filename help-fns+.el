@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2011, Drew Adams, all rights reserved.
 ;; Created: Sat Sep 01 11:01:42 2007
 ;; Version: 22.1
-;; Last-Updated: Sun Nov  6 15:18:19 2011 (-0800)
+;; Last-Updated: Thu Nov 24 13:35:27 2011 (-0800)
 ;;           By: dradams
-;;     Update #: 1057
+;;     Update #: 1062
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/help-fns+.el
 ;; Keywords: help, faces
 ;; Compatibility: GNU Emacs: 22.x, 23.x
@@ -105,6 +105,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2011/11/24 dadams
+;;     Added Emacs 24 version of with-help-window.  They changed the signature of help-window-setup.
 ;; 2011/10/14 dadams
 ;;     describe-mode: Call help-documentation while in mode's buffer, in case no \\<...>.
 ;; 2011/10/08 dadams
@@ -1266,8 +1268,8 @@ it is displayed along with the global value."
               (print-help-return-message)
               (with-current-buffer standard-output (buffer-string))))))))); Return the text displayed.
 
-;;; These two macros are no different from what is in vanilla Emacs 23.
-;;; Add them here so this file can be byte-compiled with Emacs 22 and used with Emacs 23.
+;;; This macro is no different from what is in vanilla Emacs 23+.
+;;; Add it here so this file can be byte-compiled with Emacs 22 and used with Emacs 23+.
 (defmacro with-selected-frame (frame &rest body)
   "Execute the forms in BODY with FRAME as the selected frame.
 Save the selected frame, select FRAME, execute BODY, then restore the
@@ -1286,38 +1288,63 @@ See also `with-temp-buffer'."
          (when (frame-live-p ,old-frame) (select-frame ,old-frame))
          (when (buffer-live-p ,old-buffer) (set-buffer ,old-buffer))))))
 
-(defmacro with-help-window (buffer-name &rest body)
-  "Display buffer BUFFER-NAME in a help window evaluating BODY.
+;;; This macro is no different from what is in vanilla Emacs 23.
+;;; Add it here so this file can be byte-compiled with Emacs 22 and used with Emacs 23.
+(when (< emacs-major-version 24)
+  (defmacro with-help-window (buffer-name &rest body)
+    "Display buffer BUFFER-NAME in a help window evaluating BODY.
 Select help window if the actual value of the user option
 `help-window-select' says so.  Return last value in BODY."
-  (declare (indent 1) (debug t))
-  ;; Bind list-of-frames to `frame-list' and list-of-window-tuples to a
-  ;; list of one <window window-buffer window-start window-point> tuple
-  ;; for each live window.
-  `(let ((list-of-frames         (frame-list))
-         (list-of-window-tuples  (let (list)
-                                   (walk-windows (lambda (window)
-                                                   (push (list window
-                                                               (window-buffer window)
-                                                               (window-start window)
-                                                               (window-point window))
-                                                         list))
-                                                 'no-mini t)
-                                   list)))
-     ;; Make `help-window' t to trigger `help-mode-finish' to set `help-window' to the actual
-     ;; help window.
-     (setq help-window  t)
-     ;; Make `help-window-point-marker' point nowhere
-     ;; (the only place where this should be set to a buffer position is within BODY).
-     (set-marker help-window-point-marker nil)
-     (prog1
+    (declare (indent 1) (debug t))
+    ;; Bind list-of-frames to `frame-list' and list-of-window-tuples to a
+    ;; list of one <window window-buffer window-start window-point> tuple
+    ;; for each live window.
+    `(let ((list-of-frames         (frame-list))
+           (list-of-window-tuples  (let (list)
+                                     (walk-windows (lambda (window)
+                                                     (push (list window
+                                                                 (window-buffer window)
+                                                                 (window-start window)
+                                                                 (window-point window))
+                                                           list))
+                                                   'no-mini t)
+                                     list)))
+       ;; Make `help-window' t to trigger `help-mode-finish' to set `help-window' to the actual
+       ;; help window.
+       (setq help-window  t)
+       ;; Make `help-window-point-marker' point nowhere
+       ;; (the only place where this should be set to a buffer position is within BODY).
+       (set-marker help-window-point-marker nil)
+       (prog1
+           ;; Return value returned by `with-output-to-temp-buffer'.
+           (with-output-to-temp-buffer ,buffer-name (progn ,@body))
+         (when (windowp help-window)
+           (help-window-setup list-of-frames list-of-window-tuples)) ; Set up help window.
+         ;; Reset `help-window' to nil to avoid confusing future calls of `help-mode-finish' with
+         ;; plain `with-output-to-temp-buffer'.
+         (setq help-window  nil)))))
+
+;;; This macro is no different from what is in vanilla Emacs 24.
+;;; Add it here so this file can be byte-compiled with Emacs 22 and used with Emacs 24.
+(when (> emacs-major-version 23)
+  (defmacro with-help-window (buffer-name &rest body)
+    "Display buffer with name BUFFER-NAME in a help window evaluating BODY.
+Select help window if the actual value of the user option
+`help-window-select' says so.  Return last value in BODY."
+    (declare (indent 1) (debug t))
+    `(progn
+       ;; Make `help-window-point-marker' point nowhere.  The only place
+       ;; where this should be set to a buffer position is within BODY.
+       (set-marker help-window-point-marker nil)
+       (let* (help-window
+              (temp-buffer-show-hook
+               (cons (lambda () (setq help-window (selected-window)))
+                     temp-buffer-show-hook)))
          ;; Return value returned by `with-output-to-temp-buffer'.
-         (with-output-to-temp-buffer ,buffer-name (progn ,@body))
-       (when (windowp help-window)
-         (help-window-setup list-of-frames list-of-window-tuples)); Set up help window.
-       ;; Reset `help-window' to nil to avoid confusing future calls of `help-mode-finish' with
-       ;; plain `with-output-to-temp-buffer'.
-       (setq help-window  nil))))
+         (prog1
+             (with-output-to-temp-buffer ,buffer-name
+               (progn ,@body))
+           (help-window-setup help-window))))))
 
 
 ;; REPLACE ORIGINAL in `help.el':
