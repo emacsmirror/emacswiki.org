@@ -59,7 +59,7 @@ diff -r 2e783f454a3b .emacs.d/vendor/tempbuf.el
    "Update `tempbuf-last-time'."
 </pre>
 
-[new:MicheleBini:2011-11-24 21:25 UTC] I have included the patch in the latest tempbuf.el so you can now use M-x customize-variable tempbuf-kill-message-function to choose your favorite message notification function. --MicheleBini
+[new:MicheleBini:2011-11-24 21:40 UTC] I have included the patch in the latest tempbuf.el so you can now use ''M-x customize-variable tempbuf-kill-message-function'' to choose your favorite message notification function, i.e. ''growl'', from Lisp:growl.el --MicheleBini
 
 ------
 CategoryModes
