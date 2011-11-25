@@ -7,6 +7,7 @@ and offer similar functionality, e.g. execute arbitrary EmacsLisp code from the 
 
 = Starting Server With Emacs 23 : Easy Way =
 === Bash Shells ===
+
 RichardRiley : With emacs 23 simply do something like
 
 <pre>
@@ -25,6 +26,8 @@ Where "edit" is the small script above. The key is the "" for alternate-editor. 
 OweAndersson : Think this works fine, only I get a warning: "Emacsclient ERROR, No connection could be made because the target machine actively refused it"
 
 RobDavenport : Owe - I believe that error means the file ~/.emacs.d/server/server is for an old emacs process.  I delete that file and then it works. (On Windows at least.)
+
+* In Linux, I find the absolute easiest way to start the daemon and a new frame is to bind the command <tt>emacsclient -c -a ""</tt> to a keyboard command or in some menu. This attempts to start a new client, fails to detect a running daemon, starts the daemon, and finally starts the client with <tt>""</tt> as the argument/file. If a daemon is running it doesn't get past the <tt>-c</tt> switch.
 
 === Windows ===
 Create an emacs.bat file in your Emacs "bin" directory. (Perhaps something like "\Program Files\emacs-23.1\bin" if you've used an installer.) Add the following commands:
