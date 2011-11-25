@@ -116,6 +116,11 @@ Coming back to free/open software development -- By analogy, what is the "glue" 
 
 
 
+
+
+
+
+
 [new]
 <pre>
 
@@ -138,6 +143,19 @@ The downside of doing a lot of customization is having to ''redo'' it when a new
 
 And Emacs has improved greatly over the years. I still use Emacs 20, for the most part, but I've finally converted most of my customizations to run on Emacs 20, 21, 22, and 23 (see the list at DrewsElispLibraries). Sometimes I work at converting some of the rest, when I get the chance.
 
+
+
+
+
+
+
+
+
+
+
+
+
+
 [new]
 <pre>
 
@@ -154,6 +172,7 @@ This page describes my Emacs Lisp libraries: '''DrewsElispLibraries'''.
 [new]
 * '''[[Icicles]]''' --  [[minibuffer]] input [[completion]] and [[Icicles - Cycling Completions|cycling]] like you've never seen 
 * '''LaCarte'''  --  execute ''menu'' commands using the keyboard, with [[completion]]
+* '''[[Bookmark+]]''' -- record places and things, tag stuff
 * '''DoReMi'''   -- define [[command]]s to use the arrow keys or mouse wheel to change things incrementally
 * '''ColorPalette''' -- examine color properties or choose colors
 * '''[[Synonyms]]'''  -- search and browse a hyperlinked thesaurus for synonyms
