@@ -2,7 +2,7 @@
 
 ;; Description: auto update TAGS using exuberant-ctags
 ;; Created: 2011-10-16 13:17
-;; Last Updated: Joseph 2011-11-25 11:24:10 星期五
+;; Last Updated: Joseph 2011-11-25 11:46:04 星期五
 ;; Version: 0.1.3
 ;; Author: 纪秀峰  jixiuf@gmail.com
 ;; Maintainer:  纪秀峰  jixiuf@gmail.com
@@ -175,7 +175,9 @@ not visiting a file"
         (cond
          ((file-exists-p possible-tags-file) (throw 'found-it possible-tags-file))
          ((string-match "^/TAGS\\|^[a-zA-Z]:/TAGS" possible-tags-file) nil)
-         (t (find-tags-file-r (file-name-directory path))))))
+         (t (find-tags-file-r
+             (file-name-directory
+              (substring (expand-file-name  path) 0 (1- (length  (expand-file-name  path) )))))))))
     (catch 'found-it
       (find-tags-file-r default-directory))))
 
