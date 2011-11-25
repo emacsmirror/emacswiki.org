@@ -7,17 +7,17 @@
 ;; Copyright (C) 2007-2011, Drew Adams, all rights reserved.
 ;; Created: Sat Sep 01 11:01:42 2007
 ;; Version: 22.1
-;; Last-Updated: Thu Nov 24 13:35:27 2011 (-0800)
+;; Last-Updated: Fri Nov 25 10:11:21 2011 (-0800)
 ;;           By: dradams
-;;     Update #: 1062
+;;     Update #: 1101
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/help-fns+.el
-;; Keywords: help, faces
+;; Keywords: help, faces, characters, packages, description
 ;; Compatibility: GNU Emacs: 22.x, 23.x
 ;;
 ;; Features that might be required by this library:
 ;;
-;;   `button', `help-fns', `help-mode', `naked', `view', `wid-edit',
-;;   `wid-edit+'.
+;;   `button', `help-fns', `help-mode', `info', `naked', `view',
+;;   `wid-edit', `wid-edit+'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -25,6 +25,17 @@
 ;;
 ;;    Extensions to `help-fns.el'.  Also includes a redefinition of
 ;;    `describe-face', which is from `faces.el'.
+;;
+;;    ************************** IMPORTANT ***************************
+;;    *                                                              *
+;;    *  Byte-compiling this file in one Emacs version and using the *
+;;    *  compiled file in another version works ONLY as follows:     *
+;;    *                                                              *
+;;    *  If you compile in Emacs 22, use it only for Emacs 22.       *
+;;    *  If you compile in Emacs 23. use it for Emacs 22, 23, or 24. *
+;;    *  If you compile in Emacs 24, use it only for Emacs 24.       *
+;;    *                                                              *
+;;    ****************************************************************
 ;;
 ;;
 ;;  Keys bound here:
@@ -68,25 +79,25 @@
 ;;    23.2+), `variable-name-history'.
 ;;
 ;;
+;;  ***** NOTE: The following command defined in `faces.el'
+;;              has been REDEFINED HERE:
+;;
+;;  `describe-face'.
+;;
+;;
+;;  ***** NOTE: The following command defined in `help.el'
+;;              has been REDEFINED HERE:
+;;
+;;  `describe-mode'.
+;;
+;;
 ;;  ***** NOTE: The following functions defined in `help-fns.el'
 ;;              have been REDEFINED HERE:
 ;;
 ;;  `describe-function', `describe-function-1', `describe-variable'.
 ;;
 ;;
-;;  ***** NOTE: The following function defined in `help.el'
-;;              has been REDEFINED HERE:
-;;
-;;  `describe-mode'.
-;;
-;;
-;;  ***** NOTE: The following function defined in `faces.el'
-;;              has been REDEFINED HERE:
-;;
-;;  `describe-face'.
-;;
-;;
-;;  ***** NOTE: The following function defined in `package.el'
+;;  ***** NOTE: The following command defined in `package.el'
 ;;              has been REDEFINED HERE:
 ;;
 ;;  `describe-package'.
@@ -105,6 +116,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2011/11/25 dadams
+;;     Reverted yesterday's change and added IMPORTANT note to Commentary.
 ;; 2011/11/24 dadams
 ;;     Added Emacs 24 version of with-help-window.  They changed the signature of help-window-setup.
 ;; 2011/10/14 dadams
@@ -254,6 +267,7 @@
 ;;
 ;;; Code:
 
+
 (require 'help-fns)
 
 (require 'wid-edit+ nil t) ;; (no error if not found):
@@ -273,8 +287,6 @@
 (defvar dir-local-variables-alist)
 (defvar dir-locals-file)
 (defvar file-local-variables-alist)
-(defvar help-window)
-(defvar help-window-point-marker)
 (defvar Info-indexed-nodes)             ; In `info.el'
 (defvar help-cross-reference-manuals)   ; For Emacs < 23.2
 (defvar package-alist)
@@ -1287,64 +1299,6 @@ See also `with-temp-buffer'."
             (progn (select-frame ,frame) ,@body)
          (when (frame-live-p ,old-frame) (select-frame ,old-frame))
          (when (buffer-live-p ,old-buffer) (set-buffer ,old-buffer))))))
-
-;;; This macro is no different from what is in vanilla Emacs 23.
-;;; Add it here so this file can be byte-compiled with Emacs 22 and used with Emacs 23.
-(when (< emacs-major-version 24)
-  (defmacro with-help-window (buffer-name &rest body)
-    "Display buffer BUFFER-NAME in a help window evaluating BODY.
-Select help window if the actual value of the user option
-`help-window-select' says so.  Return last value in BODY."
-    (declare (indent 1) (debug t))
-    ;; Bind list-of-frames to `frame-list' and list-of-window-tuples to a
-    ;; list of one <window window-buffer window-start window-point> tuple
-    ;; for each live window.
-    `(let ((list-of-frames         (frame-list))
-           (list-of-window-tuples  (let (list)
-                                     (walk-windows (lambda (window)
-                                                     (push (list window
-                                                                 (window-buffer window)
-                                                                 (window-start window)
-                                                                 (window-point window))
-                                                           list))
-                                                   'no-mini t)
-                                     list)))
-       ;; Make `help-window' t to trigger `help-mode-finish' to set `help-window' to the actual
-       ;; help window.
-       (setq help-window  t)
-       ;; Make `help-window-point-marker' point nowhere
-       ;; (the only place where this should be set to a buffer position is within BODY).
-       (set-marker help-window-point-marker nil)
-       (prog1
-           ;; Return value returned by `with-output-to-temp-buffer'.
-           (with-output-to-temp-buffer ,buffer-name (progn ,@body))
-         (when (windowp help-window)
-           (help-window-setup list-of-frames list-of-window-tuples)) ; Set up help window.
-         ;; Reset `help-window' to nil to avoid confusing future calls of `help-mode-finish' with
-         ;; plain `with-output-to-temp-buffer'.
-         (setq help-window  nil)))))
-
-;;; This macro is no different from what is in vanilla Emacs 24.
-;;; Add it here so this file can be byte-compiled with Emacs 22 and used with Emacs 24.
-(when (> emacs-major-version 23)
-  (defmacro with-help-window (buffer-name &rest body)
-    "Display buffer with name BUFFER-NAME in a help window evaluating BODY.
-Select help window if the actual value of the user option
-`help-window-select' says so.  Return last value in BODY."
-    (declare (indent 1) (debug t))
-    `(progn
-       ;; Make `help-window-point-marker' point nowhere.  The only place
-       ;; where this should be set to a buffer position is within BODY.
-       (set-marker help-window-point-marker nil)
-       (let* (help-window
-              (temp-buffer-show-hook
-               (cons (lambda () (setq help-window (selected-window)))
-                     temp-buffer-show-hook)))
-         ;; Return value returned by `with-output-to-temp-buffer'.
-         (prog1
-             (with-output-to-temp-buffer ,buffer-name
-               (progn ,@body))
-           (help-window-setup help-window))))))
 
 
 ;; REPLACE ORIGINAL in `help.el':
