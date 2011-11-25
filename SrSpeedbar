@@ -63,6 +63,7 @@ Setting the width doesn't appear to work (Emacs 23.1, Ubuntu 8.10).
 
 In Emacs 23.3 and 24 it works, but in 24 a new problem appear, when clicking a file in speedbar it allways open a split window, it should use the same window one was previously editing in the same frame. -- AlvaroMartinez
 
+Setting pop-up-windows to nil fixed this problem for me. See http://www.gnu.org/s/emacs/manual/html_node/elisp/Displaying-Buffers.html. -- Ben Booth
 
 [new:DrewAdams:2011-11-04 14:20 UTC]
 Please report an Emacs bug: `M-x report-emacs-bug'.  They've made lots of changes to the code affecting windows.  They would no doubt like to know about this problem. -- DrewAdams
