@@ -67,7 +67,7 @@ The face <code>rainbow-delimiters-unmatched-face</code> is used for unmatched cl
 *Color-theme.el users:* Further information is available in the Lisp:rainbow-delimiters.el file.
 
 
-=== Stop Highlighting Certain Delimiters: ===
+=== Stop Highlighting Certain Delimiters ===
 You can *disable highlighting* of any of the supported delimiter types through the customize interface, in the *Toggle Delimiters* section.
 
 
