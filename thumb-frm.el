@@ -7,9 +7,9 @@
 ;; Copyright (C) 2004-2011, Drew Adams, all rights reserved.
 ;; Created: Fri Dec 10 16:44:55 2004
 ;; Version: 21.0
-;; Last-Updated: Sat Apr 16 09:54:06 2011 (-0700)
+;; Last-Updated: Fri Nov 25 08:19:12 2011 (-0800)
 ;;           By: dradams
-;;     Update #: 1371
+;;     Update #: 1375
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/thumb-frm.el
 ;; Keywords: frame, icon
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -245,6 +245,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2011/11/25 dadams
+;;     menu-bar-mode, tool-bar-mode, scroll-bar-mode, fringe-mode: Ensure frame is live.
 ;; 2011/04/16 dadams
 ;;     iconify-frame: Fix for lexbind Emacs 24: replace named arg FRAME by (ad-get-arg 0).
 ;; 2011/01/04 dadams
@@ -1006,21 +1008,21 @@ of window creation."
   (let ((def  (assq 'menu-bar-lines thumfr-frame-parameters)))
     (when (and menu-bar-mode def)
       (dolist (frm  thumfr-thumbnail-frames)
-        (modify-frame-parameters (car frm) (list def))))))
+        (when (frame-live-p frm) (modify-frame-parameters (car frm) (list def)))))))
     
 (defadvice tool-bar-mode (after thumfr-restore-tool-bar-setting activate)
   "Restore tool bar setting for thumbnail frames."
   (let ((def  (assq 'tool-bar-lines thumfr-frame-parameters)))
     (when (and tool-bar-mode def)
       (dolist (frm  thumfr-thumbnail-frames)
-        (modify-frame-parameters (car frm) (list def))))))
+        (when (frame-live-p frm) (modify-frame-parameters (car frm) (list def)))))))
     
 (defadvice scroll-bar-mode (after thumfr-restore-scroll-bar-setting activate)
   "Restore scroll bar setting for thumbnail frames."
   (let ((def  (assq 'vertical-scroll-bars thumfr-frame-parameters)))
     (when (and scroll-bar-mode def)
       (dolist (frm  thumfr-thumbnail-frames)
-        (modify-frame-parameters (car frm) (list def))))))
+        (when (frame-live-p frm) (modify-frame-parameters (car frm) (list def)))))))
 
 (defadvice fringe-mode (after thumfr-restore-fringe-setting activate)
   "Restore fringe setting for thumbnail frames."
@@ -1028,8 +1030,8 @@ of window creation."
         (def2  (assq 'right-fringe thumfr-frame-parameters)))
     (when (and fringe-mode (or def1 def2))
       (dolist (frm  thumfr-thumbnail-frames)
-        (when def1 (modify-frame-parameters (car frm) (list def1)))
-        (when def2 (modify-frame-parameters (car frm) (list def2)))))))
+        (when (and def1 (frame-live-p frm)) (modify-frame-parameters (car frm) (list def1)))
+        (when (and def2 (frame-live-p frm)) (modify-frame-parameters (car frm) (list def2)))))))
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;
