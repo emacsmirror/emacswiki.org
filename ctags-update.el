@@ -231,6 +231,6 @@ generate a new TAGS file in directory"
 
 ;; Local Variables:
 ;; coding: utf-8
-;; End:
+;; End: 
 
 ;;; ctags-update.el ends here
