@@ -8,7 +8,8 @@ You can customize the colors [[RainbowDelimiters]] uses. The default colors are 
 = Download: =
 * Lisp:rainbow-delimiters.el
 
-* Current release: <b>1.3.2</b> (2011-10-21)
+* Current release: <b>1.3.3</b> (2011-11-25)
+** Backwards compatibility with Emacs versions prior to 23.2.
 ** Correct highlighting for non-Lisp languages (/Perl, C, etc./). Respects syntax of the buffer major-mode.
 ** Add global-rainbow-delimiters mode.
 ** Checkboxes to enable/disable highlighting of each type of delimiter.
@@ -80,11 +81,7 @@ The light/dark color schemes differ only in their brightness level.
 == Development Version/Contributing ==
 The current development version will always be at github, under [http://github.com/jlr/rainbow-delimiters jlr/rainbow-delimiters]. Please communicate before starting work on significant changes to be sure we avoid duplicate effort.
 
-== Emacs Versions ==
 
-This seems to require at least GNU Emacs 23.2, because with-silent-modifications was not available ealier.  At least that's what I read from commit messages on the 'net. 
-
-/I'll make it backwards-compatible in the next release. Thanks for the heads up. --JeremyRayman/
 <pre>
 
 
