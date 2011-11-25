@@ -25,6 +25,13 @@ At the bottom of the page (see [[#AllLibraries]]), there is a complete list of a
 
 
 
+
+
+
+
+
+
+
 === Which Emacs Version? ===
 
 I use several Emacs versions, including (yes) Emacs 20. If a particular feature in one of my libraries doesn't seem to work right for the Emacs version you use, please let me know. 
@@ -38,6 +45,12 @@ You can try to juggle the branches of such tests yourself -- that is, try differ
 
 
 
+
+
+
+
+
+
 === What's New? ===
 
 The newest of my libraries are these (in alphabetical order):
@@ -48,6 +61,7 @@ The newest of my libraries are these (in alphabetical order):
 * <tt>[[crosshairs.el]]</tt> -- highlight the current line and the current column, like a pair of cross hairs, letting you easily locate the [[cursor]] -- see CrosshairHighlighting
 * <tt>[[cursor-chg.el]]</tt> -- automatically change the [[cursor]], depending on the context -- see ChangingCursorDynamically
 * <tt>[[cus-edit+.el]]</tt> -- extensions to standard library `cus-edit' to make Customize play better with the rest of Emacs -- see '''CustomizingAndSaving'''
+* <tt>[[descr-text+.el]]</tt> -- extensions to standard library `descr-text'
 * <tt>[[diff-mode-.el]]</tt> -- extensions to standard library `diff-mode' -- see '''DiffEnhancements'''
 * <tt>[[dired-details+.el]]</tt> -- extensions to library Lisp:dired-details.el -- see '''DiredDetails'''
 * <tt>[[doremi-frm.el]]</tt> -- incrementally adjust [[frame]] properties using arrow keys and/or mouse wheel -- see also '''DoReMi'''
@@ -89,6 +103,7 @@ I make minor changes to some libraries often, so check for the latest versions.
 
 === Emacs 23 and Later ===
 
+* <tt>[[descr-text+.el]]</tt> -- extensions to standard library `descr-text'
 * <tt>[[ucs-cmds.el]]</tt> -- macro to define commands that insert Unicode characters
 
 
@@ -110,6 +125,7 @@ I make minor changes to some libraries often, so check for the latest versions.
 * <tt>[[cus-edit+.el]]</tt> -- extensions to standard library `cus-edit' to make Customize play better with the rest of Emacs -- see CustomizingAndSaving
 * <tt>[[def-face-const.el]]</tt> -- macro for defining [[face]]s & their variables; see also '''DefineFaceConstant''' (this library is now obsolete; just use `defface')
 * <tt>[[delsel.el]]</tt> -- improvements to standard libary `<code>delsel.el</code>' so it works better with `<code>completion.el</code>' 
+* <tt>[[descr-text+.el]]</tt> -- extensions to standard library `descr-text' (Emacs 22+ only)
 * <tt>[[dired+.el]]</tt> -- extensions to standard libraries `dired', `dired-aux', and `dired-x'; see also '''DiredPlus'''
 * <tt>[[dired-details+.el]]</tt> -- extensions to library Lisp:dired-details.el -- see '''DiredDetails'''
 * <tt>[[dired-sort-menu+.el]]</tt> -- extensions to library `dired-sort-menu', written by FrancisJWright
