@@ -2,7 +2,7 @@
 
 ;; Description: auto update TAGS using exuberant-ctags
 ;; Created: 2011-10-16 13:17
-;; Last Updated: Joseph 2011-11-25 10:51:48 星期五
+;; Last Updated: Joseph 2011-11-25 11:24:10 星期五
 ;; Version: 0.1.3
 ;; Author: 纪秀峰  jixiuf@gmail.com
 ;; Maintainer:  纪秀峰  jixiuf@gmail.com
@@ -171,11 +171,11 @@ not visiting a file"
   (progn
     (defun find-tags-file-r (path)
       "find the tags file from the parent directories"
-      (let* ((possible-tags-file (concat path "TAGS")))
+      (let* ((possible-tags-file (expand-file-name "TAGS" path)))
         (cond
          ((file-exists-p possible-tags-file) (throw 'found-it possible-tags-file))
          ((string-match "^/TAGS\\|^[a-zA-Z]:/TAGS" possible-tags-file) nil)
-         (t (find-tags-file-r (directory-file-name path))))))
+         (t (find-tags-file-r (file-name-directory path))))))
     (catch 'found-it
       (find-tags-file-r default-directory))))
 
@@ -231,6 +231,6 @@ generate a new TAGS file in directory"
 
 ;; Local Variables:
 ;; coding: utf-8
-;; End: 
+;; End:
 
 ;;; ctags-update.el ends here
