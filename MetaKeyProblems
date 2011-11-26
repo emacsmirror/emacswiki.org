@@ -2,7 +2,7 @@
 
 If your Emacs does not recognize your Alt key as the Meta key anymore,
 then you probably have some other key bound to Meta.  In some
-distributions, this is the [http://www.logodesignmaestro.com custom logo design] Windows key, or a Penguin key on some
+distributions, this is the Windows key, or a Penguin key on some
 keyboards.  On Macintoshes meta is often the <code>Option</code> key,
 which often is caught for other purposes.
 
@@ -51,13 +51,13 @@ Put the following into your ~/.Xmodmap file (create if necessary).
  ! Super_L is already mod4 on my system, but Super_R is not
  add mod4 = Super_R
 
-This will make [http://www.writers-write.co.uk/custom-assignment-help.php Help With Assignment Writing Service] your Windows/Penguin key the Super key.  Thus, Emacs
+This will make your Windows/Penguin key the Super key.  Thus, Emacs
 notices that no key will be Meta and accepts Alt instead of Meta.
 
 This is because Meta and Alt are different and you can bind things to
 M-a and to A-a and they should not be confused.  But in the case where
 there is no Meta binding, it's preferable to treat Alt as Meta since
-Alt bindings are much more [http://www.writers-write.co.uk/custom-coursework.php UK Coursework Help Online] rare than Meta bindings in Emacs.
+Alt bindings are much more rare than Meta bindings in Emacs.
 
 === Just clear mod4 ===
 
@@ -102,10 +102,10 @@ There are several terms and concepts which can be confusing.
    in the modifier map.  It will produce one of the eight modifiers
    while pressed.
 
-Note there are two types [http://www.writers-write.co.uk/Article-Assignment.php Online Assignment  Help] of mappings xmodmap can handle: keycode
+Note there are two types of mappings xmodmap can handle: keycode
 to keysym and keycode to modifier.  The latter are somewhat
 unique to X, and are the most common source of confusion.  In
-fact xmodmap makes it somewhat [http://www.writers-write.co.uk/statistics-help.php Help With Statistics] confusing because it's configuration
+fact xmodmap makes it somewhat confusing because it's configuration
 directives for modifiers are based on keysyms, which it internally
 resolves into keycodes. 
 
@@ -115,9 +115,9 @@ reported to the application as one of the five generic modifiers.
 It is up to the application to determine the meaning of the
 modifier.
 
-The way applications are [http://www.writers-write.co.uk UK Expert Essay Writing Tips] supposed to do this is to inspect the
+The way applications are supposed to do this is to inspect the
 list of keysyms for the keycodes assigned to that modifier.  For
-example upon receiving a key [http://www.writers-write.co.uk/university-essays.php UK University Essays Writing Service] press event with mod1, if mod1's
+example upon receiving a key press event with mod1, if mod1's
 keycode list includes a keycode with a mapping to Alt_L, this
 would mean mod1 is the Alt modifier.  Some applications instead
 follow static mapping conventions.  For example mod1 might be
@@ -147,7 +147,7 @@ Here's the output of xmodmap:
  mod5        Scroll_Lock (0x4e)
 
 As you can see, the Shift keys act as a shift modifier, the Control
-keys act as a control [http://www.writers-write.co.uk/dissertation-writing-help.php UK Dissertation Writing Services] modifier, and the left Alt key acts as mod1
+keys act as a control modifier, and the left Alt key acts as mod1
 modifier.  And in addition to that, you can see that the
 "Use Super for mod4" solution has been used in this setup.  There is
 no mention of Meta for any modifier, so Emacs will use the Alt
