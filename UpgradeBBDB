@@ -14,3 +14,4 @@
 || bbdb-address-zip |||| ? bbdb-address-postcode ? ||
 || bbdb-address-location |||| ? ||
 || bbdb-format-streets |||| ? ||
+|| bbdb-dwim-net-address-allow-redundancy |||| bbdb-mail-avoid-redundancy ||
