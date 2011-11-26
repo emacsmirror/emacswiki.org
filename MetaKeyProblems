@@ -115,7 +115,7 @@ reported to the application as one of the five generic modifiers.
 It is up to the application to determine the meaning of the
 modifier.
 
-The way applications are supposed to do this is to inspect the
+The way applications are [http://www.writers-write.co.uk UK Expert Essay Writing Tips] supposed to do this is to inspect the
 list of keysyms for the keycodes assigned to that modifier.  For
 example upon receiving a key press event with mod1, if mod1's
 keycode list includes a keycode with a mapping to Alt_L, this
