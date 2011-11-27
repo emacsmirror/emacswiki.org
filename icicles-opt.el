@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:22:14 2006
 ;; Version: 22.0
-;; Last-Updated: Thu Nov 10 13:51:53 2011 (-0800)
+;; Last-Updated: Sat Nov 26 14:54:39 2011 (-0800)
 ;;           By: dradams
-;;     Update #: 4709
+;;     Update #: 4713
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-opt.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -3878,8 +3878,8 @@ The particular non-nil value determines the appearance:
   candidate,  to serve as a color swatch.
 
 Some commands might override a string value with different text.  This
-is the case for `icicle-read-color', for instance: the color swatch
-text is always the color's RGB code.
+is the case for `icicle-read-color-wysiwyg', for instance: the color
+swatch text is always the color's RGB code.
 
 Note that, starting with Emacs 22, if this option is non-nil, then
 command `describe-face' does not use `completing-read-multiple', since
