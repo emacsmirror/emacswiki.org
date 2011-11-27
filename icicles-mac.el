@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:24:28 2006
 ;; Version: 22.0
-;; Last-Updated: Fri Oct 21 13:20:31 2011 (-0700)
+;; Last-Updated: Sun Nov 27 14:53:38 2011 (-0800)
 ;;           By: dradams
-;;     Update #: 933
+;;     Update #: 936
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-mac.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -878,6 +878,9 @@ You need library `Bookmark+' for this command."
                                                (error "You need library `Bookmark+' for this command")))
      (IGNORED2                               (bookmark-maybe-load-default-file)) ; `bookmark-alist'.
      (enable-recursive-minibuffers           t) ; In case we read input, e.g. File changed on disk...
+     (bmk-alist                              (bmkp-sort-omit
+                                              (funcall ',(intern (format "bmkp-%s-alist-only" type))
+                                               ,@args)))
      (completion-ignore-case                 bookmark-completion-ignore-case)
      (prompt1                                ,(or prompt
                                                   (format "%s%s bookmark: "
@@ -967,7 +970,7 @@ You need library `Bookmark+' for this command."
                                  (icicle-bookmark-propertize-candidate bname))
                                 guts))
                       (error nil))))
-       (bmkp-sort-omit (funcall ',(intern (format "bmkp-%s-alist-only" type)) ,@args)))))
+       bmk-alist)))
     nil                                 ; First code
     (icicle-bookmark-cleanup-on-quit)	; Undo code
     (icicle-bookmark-cleanup)))         ; Last code
