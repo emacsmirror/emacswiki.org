@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2011, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Sat Nov 26 17:54:53 2011 (-0800)
+;; Last-Updated: Sun Nov 27 15:03:12 2011 (-0800)
 ;;           By: dradams
-;;     Update #: 7632
+;;     Update #: 7636
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-chg.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -2660,6 +2660,10 @@
 ;;       macros needs to be byte-compiled anew after loading the updated macros.
 ;; ****************************************************************************************************
 ;;
+;; 2011/11/27 dadams
+;;     icicle-define-bookmark-command-1:
+;;       Calculate the alist first, before binding things like icicle-list-use-nth-parts, that are
+;;       inappropriate for the completing-read used to define the alist (in specific-file|buffer case).
 ;; 2011/10/21 dadams
 ;;     icicle-define-sort-command: Use icicle-propertize.
 ;; 2011/10/12 dadams
