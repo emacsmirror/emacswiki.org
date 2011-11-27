@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2011, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Sat Nov 19 08:00:02 2011 (-0800)
+;; Last-Updated: Sun Nov 27 13:49:29 2011 (-0800)
 ;;           By: dradams
-;;     Update #: 13872
+;;     Update #: 13874
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-chg.el
 ;; Keywords: bookmarks, bookmark+
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -120,6 +120,8 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-1.el'")
 ;;
+;; 2011/11/27 dadams
+;;     bookmark-write-file: If write error, do not overwrite message.  And show error msg for 4 sec.
 ;; 2011/11/18 dadams
 ;;     Renamed: bmkp-bookmark-image-bookmark-p to bmkp-image-bookmark-p.
 ;;     Added: bmkp-image-alist-only, bmkp-image-jump(-other-window), bmkp-image-history.
