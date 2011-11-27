@@ -488,9 +488,9 @@ See the variable trashcan-patch-delete-stuff-p"
 	  (string-match "^#.*#$" (file-name-nondirectory directory))
           ;; following three lines added by me (Joe Bloggs) since I have home dir in seperate partition
           ;; and it gets stuck in an infinite loop without these lines
-          (and (file-name-directory filename)
-               (not (or (string-match (concat "^" (expand-file-name "~") "/") (file-name-directory filename))
-                        (string-match "^~/" (file-name-directory filename))))))
+          (and (file-name-directory directory)
+               (not (or (string-match (concat "^" (expand-file-name "~") "/") (file-name-directory directory))
+                        (string-match "^~/" (file-name-directory directory))))))
       ad-do-it
     (setq directory (trashcan--make-absolute directory))
     ;;(debug)
