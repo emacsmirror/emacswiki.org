@@ -7,7 +7,7 @@
 ;; Maintainer: José Alfredo Romero L. <escherdragon@gmail.com>
 ;; Created: 24 Sep 2007
 ;; Version: 5
-;; RCS Version: $Rev: 390 $
+;; RCS Version: $Rev: 391 $
 ;; Keywords: files, dired, midnight commander, norton, orthodox
 ;; URL: http://www.emacswiki.org/emacs/sunrise-commander.el
 ;; Compatibility: GNU Emacs 22+
@@ -3484,19 +3484,19 @@ forces the creation of a new terminal. If PROGRAM is provided
 and exists in `exec-path', then it will be used instead of the
 default `sr-terminal-program'."
   (interactive)
-  (let ((aterm (car sr-ti-openterms))
-        (program (or program sr-terminal-program)))
-    (if (and (not program)
+  (let ((aterm (car sr-ti-openterms)))
+    (if (and (null program)
              (or (eq major-mode 'eshell-mode)
                  (and (buffer-live-p aterm)
                       (with-current-buffer aterm
                         (eq major-mode 'eshell-mode)))))
-        (setq program "eshell"))
-    (if (memq major-mode '(sr-mode sr-virtual-mode sr-tree-mode))
-        (hl-line-mode 1))
-    (if (string= program "eshell")
-        (sr-term-eshell cd newterm)
-      (sr-term-extern cd newterm program))))
+        (setq program "eshell")
+      (setq program (or program sr-terminal-program))))
+  (if (memq major-mode '(sr-mode sr-virtual-mode sr-tree-mode))
+      (hl-line-mode 1))
+  (if (string= program "eshell")
+      (sr-term-eshell cd newterm)
+    (sr-term-extern cd newterm program)))
 
 (defun sr-term-cd ()
   "Run terminal in a new buffer or switch to an existing one.
