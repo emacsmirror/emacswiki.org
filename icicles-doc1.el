@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Fri Oct 14 16:21:27 2011 (-0700)
+;; Last-Updated: Sat Nov 26 13:42:56 2011 (-0800)
 ;;           By: dradams
-;;     Update #: 26310
+;;     Update #: 26314
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-doc1.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -3208,7 +3208,7 @@
 ;;       You can choose such a proxy candidate to use its value.  (All
 ;;       candidates are proxy candidates for these functions.)
 ;;
-;;     . When you use command `icicle-read-color', the proxy
+;;     . When you use command `icicle-read-color-wysiwyg', the proxy
 ;;       candidates include the following:
 ;;
 ;;       - `*point foreground*' - proxy for the foreground color at
@@ -3829,11 +3829,11 @@
 ;;  weight.  Eventually a fixed point is reached: `C-M-+' produces no
 ;;  further change in the order.
 ;;
-;;  For example, consider `icicle-read-color'.  With user option
-;;  `icicle-WYSIWYG-Completions-flag' non-`nil' (e.g. a string) it
-;;  lets you see the effect of `C-M-+' in a striking, graphical way.
-;;  However, to see the effect you will first want to use `S-pause'
-;;  (`icicle-toggle-highlight-saved-candidates') to turn off
+;;  For example, consider `icicle-read-color-wysiwyg'.  With user
+;;  option `icicle-WYSIWYG-Completions-flag' non-`nil' (e.g. a string)
+;;  it lets you see the effect of `C-M-+' in a striking, graphical
+;;  way.  However, to see the effect you will first want to use
+;;  `S-pause' (`icicle-toggle-highlight-saved-candidates') to turn off
 ;;  highlighting of the saved candidates, since that highlighting
 ;;  obscures the color highlighting.
 ;;
@@ -3844,11 +3844,11 @@
 ;;  brightest colors followed by dimmer and dimmer colors, down to the
 ;;  dimmest (black).
 ;;
-;;  Try `M-x icicle-read-color', sorting (`C-u C-,') first by hue.
-;;  Save the completion candidates (`C-M->').  Now sort by brightness
-;;  (`C-u C-,' again).  Now use `C-M-+' to add/merge the two sort
-;;  orders.  You now see essentially a series of rainbows, from
-;;  brighter to dimmer and dimmer.
+;;  Try `M-x icicle-read-color-wysiwyg', sorting (`C-u C-,') first by
+;;  hue.  Save the completion candidates (`C-M->').  Now sort by
+;;  brightness (`C-u C-,' again).  Now use `C-M-+' to add/merge the
+;;  two sort orders.  You now see essentially a series of rainbows,
+;;  from brighter to dimmer and dimmer.
 ;;
 ;;  Use `C-M-+' again, to give hue more prominence in the merged sort
 ;;  order.  And again.  Keep hitting `C-M-+' until there is no more
