@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2011, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Wed Nov 23 14:10:28 2011 (-0800)
+;; Last-Updated: Sat Nov 26 17:54:53 2011 (-0800)
 ;;           By: dradams
-;;     Update #: 7618
+;;     Update #: 7632
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-chg.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -500,6 +500,13 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd2.el'")
 ;;
+;; 2011/11/26 dadams
+;;     Renamed icicle-read-color to icicle-read-color-wysiwyg.
+;;     Added icicle-read-color (args compatible with vanilla read-color), for *-functions-to-redefine.
+;;     icicle-read-color-wysiwyg: Added MSGP arg.  Updated hexrgb-read-color call (new arg list).
+;;     icicle-color-help: Corrected for different cases of icicle-list-use-nth-parts (not just (1 2)).
+;;     icicle-color-distance-(rgb|hsv)-lessp, icicle-choose-candidate-of-type:
+;;       Applied renaming: icicle-read-color-wysiwyg.
 ;; 2011/11/02 dadams
 ;;     Added: icicle-search-autonamed-bookmark, icicle-search-temporary-bookmark.
 ;;     *-full search commands:
