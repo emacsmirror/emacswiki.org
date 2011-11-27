@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Thu May 21 13:31:43 2009 (-0700)
 ;; Version: 22.0
-;; Last-Updated: Wed Nov 16 09:26:19 2011 (-0800)
+;; Last-Updated: Sat Nov 26 16:48:30 2011 (-0800)
 ;;           By: dradams
-;;     Update #: 4818
+;;     Update #: 4903
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-cmd2.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -102,8 +102,9 @@
 ;;    `icicle-non-whitespace-string-p', (+)`icicle-object-action',
 ;;    (+)`icicle-occur', (+)`icicle-pick-color-by-name',
 ;;    (+)`icicle-plist', `icicle-previous-visible-thing',
-;;    `icicle-read-color', `icicle-save-string-to-variable',
-;;    (+)`icicle-search', (+)`icicle-search-all-tags-bookmark',
+;;    `icicle-read-color', `icicle-read-color-wysiwyg',
+;;    `icicle-save-string-to-variable', (+)`icicle-search',
+;;    (+)`icicle-search-all-tags-bookmark',
 ;;    (+)`icicle-search-all-tags-regexp-bookmark',
 ;;    (+)`icicle-search-autofile-bookmark',
 ;;    (+)`icicle-search-autonamed-bookmark',
@@ -860,11 +861,59 @@ at point, or if none then the visited file."
     (defalias 'old-read-color (symbol-function 'read-color))) ; Not used, but save it anyway.
 
   ;; See also `hexrgb-read-color' in `hexrgb.el'.
-  (defun icicle-read-color (&optional arg prompt)
+  (defun icicle-read-color (&optional prompt convert-to-RGB-p allow-empty-name-p msgp)
+    "Read a color name or hex RGB hexadecimal color value #RRRRGGGGBBBB.
+Return the name or the RGB hex string for the chosen color.
+
+By default (see option `icicle-functions-to-redefine'), this is used
+in place of standard command `read-color' when you are in Icicle mode,
+so that any existing code that calls that command invokes this one
+instead.
+
+`icicle-read-color' has the advantage of being an Icicles
+multi-command that provides WYSIWYG completion, color-variable proxy
+candidates, alternate candidate actions, candidate help, and multiple
+color-related candidate sort orders.
+
+In this it is like command `icicle-read-color-wysiwyg' (which see),
+but it is less flexible and powerful than that command.
+`icicle-read-color' always returns the RGB hex string, and your input
+cannot be an arbitrary string - it must match a color candidate (or be
+empty if ALLOW-EMPTY-NAME-P is non-nil).
+
+In Lisp code that you write, and for interactive use,
+`icicle-read-color-wysiwyg' is generally a better choice than
+`icicle-read-color'.
+
+Optional argument PROMPT is the prompt to use (default \"Color: \").
+
+Interactively, or if CONVERT-TO-RGB-P is non-nil, return the RGB hex
+string for the chosen color.  If nil, return the color name.
+
+Optional arg ALLOW-EMPTY-NAME-P controls what happens if you enter an
+empty color name (that is, you just hit `RET').  If non-nil, then
+`icicle-read-color' returns an empty color name, \"\".  If nil, then
+it raises an error.  Calling programs must test for \"\" if
+ALLOW-EMPTY-NAME-P is non-nil.  They can then perform an appropriate
+action in case of empty input.
+
+Interactively, or with non-nil MSGP, show chosen color in echo area."
+    (interactive "i\np\ni\np")             ; Always convert to RGB interactively.
+    (let* ((icicle-require-match-p  (not allow-empty-name-p))
+           (color                   (icicle-read-color-wysiwyg (if convert-to-RGB-p 2 1) prompt)))
+      (when (and (not allow-empty-name-p) (string= "" color))
+        (error "No such color: %S" color))
+      (let ((icicle-list-use-nth-parts  (if convert-to-RGB-p '(2) '(1)))
+            (colr                       (icicle-transform-multi-completion color)))
+        (when msgp (message "Color: `%s'" (icicle-propertize colr 'face 'icicle-msg-emphasis)))
+        colr)))
+
+  (defun icicle-read-color-wysiwyg (&optional arg prompt msgp)
     "Read a color name or hex RGB color value #RRRRGGGGBBBB.
-A string value is returned.
+Return a string value.
 Interactively, optional argument ARG is the prefix arg.
 Optional argument PROMPT is the prompt to use (default \"Color: \").
+Interactively, or with non-nil MSGP, show chosen color in echo area.
 
 In addition to standard color names and RGB (red, green, blue) hex
 values, the following are also available as proxy color candidates,
@@ -927,11 +976,11 @@ and HSV (hue, saturation, value) color components.
 
 This command is intended only for use in Icicle mode (but it can be
 used with `C-u', with Icicle mode turned off)."
-    (interactive "P")
-    (unless (featurep 'hexrgb) (error "`icicle-read-color' requires library `hexrgb.el'"))
+    (interactive "P\ni\np")
+    (unless (featurep 'hexrgb) (error "`icicle-read-color-wysiwyg' requires library `hexrgb.el'"))
     (let (color)
-      (if (consp arg)                   ; Plain `C-u': complete against color name only,
-          (setq color  (hexrgb-read-color t)) ; and be able to input any valid RGB string.
+      (if (consp arg)                   ; Plain `C-u': complete against color name only, and be able to
+          (setq color  (hexrgb-read-color nil 'CONVERT-TO-RGB)) ; input any valid RGB string.
 
         ;; Complete against name+RGB pairs, but user can enter invalid value without completing.
         (let ((icicle-list-use-nth-parts
@@ -994,10 +1043,10 @@ used with `C-u', with Icicle mode turned off)."
                        '(1 2))))        ; Both parts, by default.
               (setq color  (icicle-transform-multi-completion
                             (concat color ": " (hexrgb-color-name-to-hex color))))))))
-      (when (interactive-p) (message "Color: `%s'" (icicle-propertize color 'face 'icicle-msg-emphasis)))
+      (when msgp (message "Color: `%s'" (icicle-propertize color 'face 'icicle-msg-emphasis)))
       color))
 
-  (icicle-maybe-byte-compile-after-load icicle-read-color)
+  (icicle-maybe-byte-compile-after-load icicle-read-color-wysiwyg)
 
 
   (icicle-define-command icicle-frame-bg ; Command name
@@ -1188,18 +1237,23 @@ Puts property `icicle-fancy-candidates' on string `icicle-prompt'."
 
 
   (defun icicle-color-help (color)
-    "Display help on COLOR."
-    (let ((icicle-list-use-nth-parts  '(1 2)))
+    "Display help on COLOR.
+COLOR is a color name, an RGB string, or a multi-completion of both.
+If only a color name, then just say \"No help\"."
+    (if (not (member icicle-list-use-nth-parts '((1 2) (2))))
+        (icicle-msg-maybe-in-minibuffer "No help")
       (with-output-to-temp-buffer "*Help*"
-        (setq icicle-list-use-nth-parts  '(2)
-              color                      (icicle-transform-multi-completion color))
         (princ (format "Color: %s" color)) (terpri) (terpri)
-        (let* ((rgb  (hexrgb-hex-to-rgb color))
-               (hsv  (apply #'hexrgb-rgb-to-hsv rgb)))
-          (princ "RGB:") (mapcar (lambda (component) (princ (format "  %.18f" component))) rgb)
+        (let* ((icicle-list-use-nth-parts  '(2))
+               (colr                       (icicle-transform-multi-completion color))
+               (rgb                        (hexrgb-hex-to-rgb colr))
+               (hsv                        (apply #'hexrgb-rgb-to-hsv rgb)))
+          (princ "RGB:")
+          (mapcar (lambda (component) (princ (format "  %.18f" component))) rgb)
           (terpri) (terpri)
-          (princ "HSV:") (mapcar (lambda (component) (princ (format "  %.18f" component))) hsv)))))
-
+          (princ "HSV:")
+          (mapcar (lambda (component) (princ (format "  %.18f" component))) hsv)))))
+          
   (icicle-maybe-byte-compile-after-load icicle-color-help)
 
 
@@ -1207,8 +1261,8 @@ Puts property `icicle-fancy-candidates' on string `icicle-prompt'."
     "Return multi-completion candidate of COLOR-NAME and its hex RGB string.
 If `icicle-WYSIWYG-Completions-flag' is non-nil, then the hex RGB
 string has the color as its background text property.
-Optional arg HEX-RGB is the hex RGB string.
-If nil, then COLOR-NAME is used to determine the hex RGB string."
+Optional arg HEX-RGB is the hex RGB string.  If HEX-RGB is nil, then
+COLOR-NAME is used to determine the hex RGB string."
     (let* ((rgb-string  (or hex-rgb (hexrgb-color-name-to-hex color-name)))
            (value       (hexrgb-value rgb-string)))
       (when icicle-WYSIWYG-Completions-flag
@@ -1291,7 +1345,8 @@ name to use."
                                      (cons 'rgb-dist
                                            (let ((enable-recursive-minibuffers  t)
                                                  (icicle-sort-comparer          nil))
-                                             (icicle-read-color 0 "With RGB close to color: ")))))))
+                                             (icicle-read-color-wysiwyg ; Use the color name only.
+                                              0 "With RGB close to color: ")))))))
            (base-rgb    (hexrgb-hex-to-rgb (hexrgb-color-name-to-hex base-color)))
            (base-red    (nth 0 base-rgb))
            (base-green  (nth 1 base-rgb))
@@ -1393,7 +1448,8 @@ name to use."
                                      (cons 'hsv-dist
                                            (let ((enable-recursive-minibuffers  t)
                                                  (icicle-sort-comparer          nil))
-                                             (icicle-read-color 0 "With HSV close to color: ")))))))
+                                             (icicle-read-color-wysiwyg ; Use the color name only.
+                                              0 "With HSV close to color: ")))))))
            (base-hsv    (hexrgb-hex-to-hsv (hexrgb-color-name-to-hex base-color)))
            (base-hue    (nth 0 base-hsv))
            (base-sat    (nth 1 base-hsv))
@@ -7066,7 +7122,7 @@ filtering:
                            (and (fboundp 'confirm-nonexistent-file-or-buffer) ; Emacs 23.
                                 (confirm-nonexistent-file-or-buffer))
                            nil 'buffer-name-history nil nil))))
-      (color (icicle-read-color 1))     ; Use the color name (only).
+      (color (icicle-read-color-wysiwyg 1)) ; Use the color name (only).
       (command (let ((icicle-must-pass-after-match-predicate  #'(lambda (s) (commandp (intern s))))
                      (icicle-candidate-alt-action-fn
                       (or icicle-candidate-alt-action-fn
