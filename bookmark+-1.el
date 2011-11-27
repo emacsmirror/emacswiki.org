@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2011, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 13:43:55 2010 (-0700)
-;; Last-Updated: Fri Nov 18 16:53:40 2011 (-0800)
+;; Last-Updated: Sun Nov 27 13:42:03 2011 (-0800)
 ;;           By: dradams
-;;     Update #: 2411
+;;     Update #: 2412
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-1.el
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -2263,12 +2263,13 @@ contain a `%s' construct, so that it can be passed along with FILE to
                                   ((nil)      nil)
                                   (never      'never)
                                   (nospecial  version-control)
-                                  (t          t))))
+                                  (t          t)))
+              (errorp           nil))
           (condition-case nil
               (write-region (point-min) (point-max) file)
-            (file-error (message "Cannot write file `%s'" file)))
+            (file-error (setq errorp  t) (message "CANNOT WRITE FILE `%s'" file) (sit-for 4)))
           (kill-buffer (current-buffer))
-          (bookmark-maybe-message (concat msg "done") file))))))
+          (unless errorp (bookmark-maybe-message (concat msg "done") file)))))))
 
 
 ;; REPLACES ORIGINAL in `bookmark.el'.
