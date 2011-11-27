@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Tue Nov 22 14:57:39 2011 (-0800)
+;; Last-Updated: Sat Nov 26 13:42:43 2011 (-0800)
 ;;           By: dradams
-;;     Update #: 28529
+;;     Update #: 28539
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-doc2.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -4102,21 +4102,21 @@
 ;;  default choice of methods for the target command.
 ;;
 ;;  For example, this sets the available `TAB' methods for command
-;;  `icicle-read-color' to fuzzy (the default for this command) and
-;;  basic:
+;;  `icicle-read-color-wysiwyg' to fuzzy (the default for this
+;;  command) and basic:
 ;;
 ;;    M-x icicle-set-TAB-methods-for-command RET
-;;    Command: icicle-read-color RET
+;;    Command: icicle-read-color-wysiwyg RET
 ;;    TAB methods: fuzzy RET
 ;;    TAB methods: basic RET
 ;;    TAB methods: RET
 ;;      
 ;;  And this removes the special treatment for `C-(' during
-;;  `icicle-read-color', restoring the default `TAB' methods that are
-;;  defined by option `icicle-TAB-completion-methods':
+;;  `icicle-read-color-wysiwyg', restoring the default `TAB' methods
+;;  that are defined by option `icicle-TAB-completion-methods':
 ;;
 ;;    C-- M-x icicle-set-TAB-methods-for-command RET
-;;    Command: icicle-read-color RET
+;;    Command: icicle-read-color-wysiwyg RET
 ;;
 ;;(@* "Partial Completion")
 ;;  ** Partial Completion **
@@ -7699,9 +7699,9 @@
 ;;  dealing with multi-completions.  Function `icicle-read-file-name'
 ;;  provides an example: file names that match ".+/$", that is,
 ;;  directory names, are highlighted as special candidates.  Function
-;;  `icicle-read-color' provides another example (using the similar,
-;;  but internal, variable `icicle-proxy-candidate-regexp'): proxy
-;;  color-name candidates such as `*point foreground*' and
+;;  `icicle-read-color-wysiwyg' provides another example (using the
+;;  similar, but internal, variable `icicle-proxy-candidate-regexp'):
+;;  proxy color-name candidates such as `*point foreground*' and
 ;;  `'icicle-region-background'' are highlighted, but not their color
 ;;  swatches.
 ;;
@@ -7797,21 +7797,21 @@
 ;;  `display-completion-list' so that it retains text properties.
 ;;  Emacs should do the same, but it does not (yet).
 ;;
-;;  Icicles command `icicle-read-color' presents an illustration,
-;;  using the `face' property.  (It also uses properties
+;;  Icicles command `icicle-read-color-wysiwyg' presents an
+;;  illustration, using the `face' property.  (It also uses properties
 ;;  `icicle-mode-line-help' and `help-echo', to provide RGB and HSV
 ;;  information in the mode-line and via tooltip.)
 ;;
-;;  In `icicle-read-color', a multi-completion candidate is used,
-;;  composed of an unpropertized string that names a color and a
+;;  In `icicle-read-color-wysiwyg', a multi-completion candidate is
+;;  used, composed of an unpropertized string that names a color and a
 ;;  propertized string that names its RGB (red, green, blue) value.
 ;;  The RGB string, by default, has a background of the same color -
 ;;  each completion candidate is thus accompanied by its own color
 ;;  swatch.
 ;;
 ;;  The code that does this is function `icicle-make-color-candidate',
-;;  which is used by `icicle-read-color' and other Icicles commands
-;;  that read colors.  Here is a simplified definition:
+;;  which is used by `icicle-read-color-wysiwyg' and other Icicles
+;;  commands that read colors.  Here is a simplified definition:
 ;;
 ;;   (defun icicle-make-color-candidate (color-name)
 ;;     "Return candidate of COLOR-NAME and its hex RGB string.
@@ -7830,8 +7830,8 @@
 ;;  (The new value takes effect for the next act of completion.)
 ;;
 ;;  You can match any part of the multi-completion: color name or RGB
-;;  value.  Command `icicle-read-color' defines a set of sort orders
-;;  that are pertinent to the color candidates.
+;;  value.  Command `icicle-read-color-wysiwyg' defines a set of sort
+;;  orders that are pertinent to the color candidates.
 ;;
 ;;  You can use `C-,' to sort by color name, amount of red, blue,
 ;;  green, all RGB components (in order), RGB distance from a base
@@ -7839,9 +7839,10 @@
 ;;  HSV distance from a base color.
 ;;
 ;;  If option `icicle-add-proxy-candidates-flag' is non-`nil', then
-;;  command `icicle-read-color' includes proxy completion candidates
-;;  that are not color-name-and-RGB pairs.  As always, you can toggle
-;;  the use of proxy candidates using `C-M-_' in the minibuffer.
+;;  command `icicle-read-color-wysiwyg' includes proxy completion
+;;  candidates that are not color-name-and-RGB pairs.  As always, you
+;;  can toggle the use of proxy candidates using `C-M-_' in the
+;;  minibuffer.
 ;;
 ;;  The proxy candidates for colors include the single-quoted names of
 ;;  user options (variables) whose custom type is `color'.  So, for
