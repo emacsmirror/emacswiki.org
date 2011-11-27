@@ -7,7 +7,7 @@
 ;; Maintainer: José Alfredo Romero L. <escherdragon@gmail.com>
 ;; Created: 24 Sep 2007
 ;; Version: 5
-;; RCS Version: $Rev: 389 $
+;; RCS Version: $Rev: 390 $
 ;; Keywords: files, dired, midnight commander, norton, orthodox
 ;; URL: http://www.emacswiki.org/emacs/sunrise-commander.el
 ;; Compatibility: GNU Emacs 22+
@@ -3484,7 +3484,14 @@ forces the creation of a new terminal. If PROGRAM is provided
 and exists in `exec-path', then it will be used instead of the
 default `sr-terminal-program'."
   (interactive)
-  (let ((program (or program sr-terminal-program)))
+  (let ((aterm (car sr-ti-openterms))
+        (program (or program sr-terminal-program)))
+    (if (and (not program)
+             (or (eq major-mode 'eshell-mode)
+                 (and (buffer-live-p aterm)
+                      (with-current-buffer aterm
+                        (eq major-mode 'eshell-mode)))))
+        (setq program "eshell"))
     (if (memq major-mode '(sr-mode sr-virtual-mode sr-tree-mode))
         (hl-line-mode 1))
     (if (string= program "eshell")
@@ -3575,12 +3582,10 @@ Helper macro for implementing terminal integration in Sunrise."
   `(if sr-running
        (progn
          (sr-select-window sr-selected-window)
-         (hl-line-mode 0)
+         (hl-line-unhighlight)
          (unwind-protect
              ,form
-           (progn
-             (sr-highlight)
-             (hl-line-mode 1)
+           (when sr-running
              (sr-select-viewer-window))))))
 
 (defun sr-ti-previous-line ()
@@ -3642,7 +3647,9 @@ Helper macro for implementing terminal integration in Sunrise."
                  (buffer-live-p (car sr-ti-openterms)))
         (rename-uniquely)
         (set-buffer (car sr-ti-openterms))
-        (rename-buffer name))))
+        (when (string-match "<[0-9]+>\\'" (buffer-name))
+          (setq name (substring (buffer-name) 0 (match-beginning 0)))
+          (rename-buffer name)))))
 (add-hook 'kill-buffer-hook 'sr-ti-restore-previous-term)
 
 (defun sr-ti-revert-buffer ()
@@ -3767,9 +3774,11 @@ by `sr-clex-start'."
     ("\M-J"        . sr-ti-prev-subdir)
     ("\M-U"        . sr-ti-unmark-all-marks)
     ([C-tab]       . sr-ti-change-window)
+    ([M-tab]       . sr-ti-change-pane)
     ("\C-c\t"      . sr-ti-change-window)
-    ("\M-\t"       . sr-ti-change-pane)
-    ("\C-ct"       . sr-term-cd-newterm)
+    ("\C-cT"       . sr-term-cd)
+    ("\C-c\C-t"    . sr-term-cd-newterm)
+    ("\C-c\M-t"    . sr-term-cd-program)
     ("\C-c;"       . sr-follow-viewer)
     ("\M-\S-g"     . sr-ti-revert-buffer)
     ("%"           . sr-clex-start)
