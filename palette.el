@@ -7,9 +7,9 @@
 ;; Copyright (C) 2006-2011, Drew Adams, all rights reserved.
 ;; Created: Sat May 20 07:56:06 2006
 ;; Version: 22.0
-;; Last-Updated: Thu Feb 24 15:46:59 2011 (-0800)
+;; Last-Updated: Sat Nov 26 17:27:23 2011 (-0800)
 ;;           By: dradams
-;;     Update #: 553 4
+;;     Update #: 587 4
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/palette.el
 ;; Keywords: color, rgb, hsv, hexadecimal, face, frame
 ;; Compatibility: GNU Emacs: 22.x, 23.x
@@ -263,8 +263,7 @@
 ;;    `palette-left', `palette-left+pick',
 ;;    `palette-pick-background-at-mouse',
 ;;    `palette-pick-background-at-point', `palette-pick-color-by-hsv',
-;;    `palette-pick-color-by-name',
-;;    `palette-pick-color-by-name-multi', `palette-pick-color-by-rgb',
+;;    `palette-pick-color-by-name', `palette-pick-color-by-rgb',
 ;;    `palette-pick-color-complement',
 ;;    `palette-pick-foreground-at-mouse',
 ;;    `palette-pick-foreground-at-point', `palette-popup-menu',
@@ -301,36 +300,22 @@
 ;;  Compatibility: You really need Emacs 22 for this, but reduced
 ;;  functionality is available for Emacs 20 and 21.
 ;;
-;;  Byte-compilation:
-;;
-;;  If you byte-compile `palette.el' without Icicles (`icicles.el')
-;;  loaded, then you will likely get warnings such as the following.
-;;  These warnings are all benign.
-;;
-;;    palette.el:861:1:Warning: `(completion-ignore-case t)' is a
-;;      malformed function
-;;    palette.el:863:26:Warning: reference to free variable
-;;      `palette-pick-color-by-name-multi'
-;;    palette.el:870:26:Warning: reference to free variable
-;;      `palette-pick-by-name-action'
-;;
-;;    In end of data:
-;;    palette.el:1475:1:Warning: the function `palette-mode' is not
-;;      known to be defined.
-;;
-;;  You can byte-compile `palette.el' with Icicles loaded, and then
-;;  use `palette.elc' in Emacs with or without Icicles.  If Icicles is
-;;  loaded at runtime, then `c' is bound to an Icicles multi-command;
-;;  otherwise, it is bound to a simple command.
-;;
-;;  To be able to use this library with Icicles, you must compile it
-;;  with Icicles loaded.  Otherwise, you will not be able to load the
-;;  byte-compiled file into an Emacs session that has loaded Icicles.
-;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;;; Change Log:
 ;;
+;; 2011/11/26 dadams
+;;     palette-pick-color-by-name, palette-where-is-color, palette, palette-(hex|rgb|hsv)-info:
+;;       Use new arg order for hexrgb-read-color.
+;; 2011/07/24 dadams
+;;     Fixed calls to make-string of SPC chars.
+;;     palette-pick-color-by-name-multi, palette-pick-by-name-action:
+;;       Moved to icicles-cmd2.el and renamed with prefix icicle-.
+;;       Removed key bindings for them.
+;;     Removed soft require of icicles for icicle-define-command.
+;;     define-key-after -> define-key (no AFTER arg anyway).
+;;     Removed commentary note about byte-compilation.
+;;     palette(-swatch|-brightness-scale): Fixed make-string escape char: \s SPC, not \s- SPC.
 ;; 2011/01/04 dadams
 ;;     Added autoload cookies (for defgroup, defcustom, and commands).
 ;; 2009/11/18 dadams
@@ -443,8 +428,6 @@
 ;;; Code:
 
 (eval-when-compile (require 'cl)) ;; case
-
-(eval-when-compile (require 'icicles nil t)) ;; icicle-define-command
 
 (require 'hexrgb) ;; hexrgb-approx-equal, hexrgb-blue, hexrgb-color-name-to-hex,
                   ;; hexrgb-complement, hexrgb-defined-colors,
@@ -613,20 +596,18 @@ user updates `blink-cursor-mode'.")
     (define-key map "~"    'palette-pick-color-complement)
     (define-key map "B"    'palette-increase-blue) ; B, b = blue
     (define-key map "b"    'palette-decrease-blue)
-    (if (featurep 'icicles)             ; c = color
-        (define-key map "c"  'palette-pick-color-by-name-multi) ; Icicles multi-command
-      (define-key map "c"   'palette-pick-color-by-name))
+    (define-key map "c"    'palette-pick-color-by-name)
     (define-key map "e"    'palette-toggle-cursor-color) ; e = enhanced cursor color
     (define-key map "f"    'palette-toggle-verbose) ; f = frequent feedback
     (define-key map "G"    'palette-increase-green) ;G, g = green
     (define-key map "g"    'palette-decrease-green)
     (define-key map "H"    'palette-increase-hue) ; H, h = hue
     (define-key map "h"    'palette-decrease-hue)
-    (define-key map "l"    'palette-swap-last-color)     ; l = last
-    (define-key map "n"    'palette-save-new-color)      ; n = new
-    (define-key map "o"    'palette-restore-old-color)   ; o = old
-    (define-key map "q"    'palette-quit)                ; q = quit
-    (define-key map "R"    'palette-increase-red)        ; R, r = red
+    (define-key map "l"    'palette-swap-last-color)   ; l = last
+    (define-key map "n"    'palette-save-new-color)    ; n = new
+    (define-key map "o"    'palette-restore-old-color) ; o = old
+    (define-key map "q"    'palette-quit)              ; q = quit
+    (define-key map "R"    'palette-increase-red)      ; R, r = red
     (define-key map "r"    'palette-decrease-red)
     (define-key map "S"    'palette-increase-saturation) ; S, s = saturation
     (define-key map "s"    'palette-decrease-saturation)
@@ -638,8 +619,8 @@ user updates `blink-cursor-mode'.")
     (define-key map "\C-hm" 'palette-help)
     (define-key map "\C-l" 'palette-refresh)
     (define-key map "\r"   'palette-pick-background-at-point)
-    (define-key map "\C-o" 'palette-restore-old-color) ; o = old
-    (define-key map "\C-s" 'palette-save-new-color)    ; s = save
+    (define-key map "\C-o" 'palette-restore-old-color)  ; o = old
+    (define-key map "\C-s" 'palette-save-new-color)     ; s = save
     (define-key map "\M-c" 'palette-pick-color-by-name) ; c = color
     (define-key map "\M-h" 'palette-pick-color-by-hsv)  ; h = HSV
     (define-key map "\M-r" 'palette-pick-color-by-rgb)  ; r = RGB
@@ -653,89 +634,87 @@ user updates `blink-cursor-mode'.")
     (define-key map [(shift up)]        'palette-up+pick)
     (define-key map [down-mouse-3]      'palette-popup-menu)
 
-    (define-key-after popup-map [current-color]
+    (define-key popup-map [current-color]
       '(menu-item "Current Color Info" palette-current-color
         :help "Return the current color and show info about it"))
-    (define-key-after popup-map [bg-at-point]
+    (define-key popup-map [bg-at-point]
       '(menu-item "Info at Cursor" palette-background-at-point
         :help "Return the background color under the text cursor"))
-    (define-key-after popup-map [separator-1] '(menu-item "--"))
-    (define-key-after popup-map [pick-color-by-name]
-      `(menu-item "Choose Color By Name"
-                  ,(if (featurep 'icicles) 'palette-pick-color-by-name-multi 
-                       'palette-pick-color-by-name)
+    (define-key popup-map [separator-1] '(menu-item "--"))
+    (define-key popup-map [pick-color-by-name]
+      `(menu-item "Choose Color By Name" palette-pick-color-by-name
                   :help "Set the current color to a color you name"))
-    (define-key-after popup-map [pick-color-by-hsv]
+    (define-key popup-map [pick-color-by-hsv]
       '(menu-item "Choose Color By HSV" palette-pick-color-by-hsv
         :help "Set the current color by providing hue, saturation, and value"))
-    (define-key-after popup-map [pick-color-by-rgb]
+    (define-key popup-map [pick-color-by-rgb]
       '(menu-item "Choose Color By RGB" palette-pick-color-by-rgb
         :help "Set the current color by providing red, green, and blue components"))
-    (define-key-after popup-map [separator-2] '(menu-item "--"))
-    (define-key-after popup-map [swap-last-color]
+    (define-key popup-map [separator-2] '(menu-item "--"))
+    (define-key popup-map [swap-last-color]
       '(menu-item "Swap Last Color (Undo)" palette-swap-last-color
         :help "Swap the last color and the current color"))
-    (define-key-after popup-map [save-new-color]
+    (define-key popup-map [save-new-color]
       '(menu-item "Save Current Color" palette-save-new-color
         :help "Save the current color as the old (original) color"))
-    (define-key-after popup-map [restore-old-color]
+    (define-key popup-map [restore-old-color]
       '(menu-item "Restore Old Color" palette-restore-old-color
         :help "Restore the old (original) color as the current color"))
-    (define-key-after popup-map [separator-3] '(menu-item "--"))
-    (define-key-after popup-map [complement]
+    (define-key popup-map [separator-3] '(menu-item "--"))
+    (define-key popup-map [complement]
       '(menu-item "Complement" palette-pick-color-complement
         :help "Set the current color to its complement."))
-    (define-key-after popup-map [increase-red]
+    (define-key popup-map [increase-red]
       '(menu-item "Increase Red" palette-increase-red
         :help "Increase the red component of the current color by ARG/100"))
-    (define-key-after popup-map [decrease-red]
+    (define-key popup-map [decrease-red]
       '(menu-item "  Decrease Red" palette-decrease-red
         :help "Decrease the red component of the current color by ARG/100"))
-    (define-key-after popup-map [increase-green]
+    (define-key popup-map [increase-green]
       '(menu-item "Increase Green" palette-increase-green
         :help "Increase the green component of the current color by ARG/100"))
-    (define-key-after popup-map [decrease-green]
+    (define-key popup-map [decrease-green]
       '(menu-item "  Decrease Green" palette-decrease-green
         :help "Decrease the green component of the current color by ARG/100"))
-    (define-key-after popup-map [increase-blue]
+    (define-key popup-map [increase-blue]
       '(menu-item "Increase Blue" palette-increase-blue
         :help "Increase the blue component of the current color by ARG/100"))
-    (define-key-after popup-map [decrease-blue]
+    (define-key popup-map [decrease-blue]
       '(menu-item "  Decrease Blue" palette-decrease-blue
         :help "Decrease the blue component of the current color by ARG/100"))
-    (define-key-after popup-map [increase-hue]
+    (define-key popup-map [increase-hue]
       '(menu-item "Increase Hue" palette-increase-hue
         :help "Increase the hue component of the current color by ARG/100"))
-    (define-key-after popup-map [decrease-hue]
+    (define-key popup-map [decrease-hue]
       '(menu-item "  Decrease Hue" palette-decrease-hue
         :help "Decrease the hue component of the current color by ARG/100"))
-    (define-key-after popup-map [increase-saturation]
+    (define-key popup-map [increase-saturation]
       '(menu-item "Increase Saturation" palette-increase-saturation
         :help "Increase the saturation component of the current color by ARG/100"))
-    (define-key-after popup-map [decrease-saturation]
+    (define-key popup-map [decrease-saturation]
       '(menu-item "  Decrease Saturation" palette-decrease-saturation
         :help "Decrease the saturation component of the current color by ARG/100"))
-    (define-key-after popup-map [increase-value]
+    (define-key popup-map [increase-value]
       '(menu-item "Increase Value" palette-increase-value
         :help "Increase the value component of the current color by ARG/100"))
-    (define-key-after popup-map [decrease-value]
+    (define-key popup-map [decrease-value]
       '(menu-item "  Decrease Value" palette-decrease-value
         :help "Decrease the value component of the current color by ARG/100"))
-    (define-key-after popup-map [separator-4] '(menu-item "--"))
-    (define-key-after popup-map [toggle-verbose]
+    (define-key popup-map [separator-4] '(menu-item "--"))
+    (define-key popup-map [toggle-verbose]
       '(menu-item "Toggle Frequent Feedback" palette-toggle-verbose
         :help "Toggle using frequent color info feedback (`palette-toggle-verbose-flag')"))
-    (define-key-after popup-map [toggle-cursor-color]
+    (define-key popup-map [toggle-cursor-color]
       '(menu-item "Toggle Enhanced Cursor Color" palette-toggle-cursor-color
         :help "Toggle updating the cursor color so the cursor stands out \
 \(`palette-update-cursor-color-flag')"))
-    (define-key-after popup-map [refresh]
+    (define-key popup-map [refresh]
       '(menu-item "Refresh" palette-refresh
         :help "Refresh the color palette"))
-    (define-key-after popup-map [exit]
+    (define-key popup-map [exit]
       '(menu-item "Exit (Update Action)" palette-exit
         :help "Exit the color palette with exit action, if defined."))
-    (define-key-after popup-map [quit]
+    (define-key popup-map [quit]
       '(menu-item "Quit (Cancel)" palette-quit
         :help "Quit the color palette without any exit action."))
 
@@ -1004,7 +983,7 @@ No update is made if we are in the palette."
 With prefix arg, prompts for color name.
 Otherwise, uses the color at the cursor."
   (interactive
-   (list (if current-prefix-arg (hexrgb-read-color) (palette-background-at-point))))
+   (list (if current-prefix-arg (hexrgb-read-color nil t) (palette-background-at-point))))
   (message "RGB hex: %s" color))
 
 ;;;###autoload
@@ -1013,7 +992,7 @@ Otherwise, uses the color at the cursor."
 With prefix arg, prompts for color name.
 Otherwise, uses the color at the cursor."
   (interactive
-   (list (if current-prefix-arg (hexrgb-read-color) (palette-background-at-point))))
+   (list (if current-prefix-arg (hexrgb-read-color nil t) (palette-background-at-point))))
   (message "HSV: %s" (hexrgb-hex-to-hsv color)))
 
 ;;;###autoload
@@ -1022,7 +1001,7 @@ Otherwise, uses the color at the cursor."
 With prefix arg, prompts for color name.
 Otherwise, uses the color at the cursor."
   (interactive
-   (list (if current-prefix-arg (hexrgb-read-color) (palette-background-at-point))))
+   (list (if current-prefix-arg (hexrgb-read-color nil t) (palette-background-at-point))))
   (message "RGB: %s" (hexrgb-hex-to-rgb color)))
 
 ;;;###autoload
@@ -1282,7 +1261,7 @@ where each X is a hex digit.  The number of Xs must be a multiple of
 3, with the same number of Xs for each of red, green, and blue.
 If you enter an empty color name, then a color is picked randomly.
 The new current color is returned."
-  (interactive (list (hexrgb-read-color t t)))
+  (interactive (list (hexrgb-read-color nil nil t)))
   (when (string= "" color)              ; User doesn't care - why not use a random color?
     (let* ((colors  (hexrgb-defined-colors))
            (rand    (random (length colors))))
@@ -1295,42 +1274,6 @@ The new current color is returned."
     (palette-brightness-scale)
     (palette-swatch))
   palette-current-color)
-
-(eval-after-load 'icicles
-  '(icicle-define-command palette-pick-color-by-name-multi ; Bound to `c'.
-    "Set the current color to a color you name.
-Instead of a color name, you can use an RGB string #XXXXXXXXXXXX,
-where each X is a hex digit.  The number of Xs must be a multiple of
-3, with the same number of Xs for each of red, green, and blue.
-If you enter an empty color name, then a color is picked randomly.
-The new current color is returned."     ; Doc string
-    palette-pick-by-name-action         ; Action function
-    "Color (name or #R+G+B+): "         ; `completing-read' arguments
-    (hexrgb-defined-colors-alist) nil nil nil nil nil nil
-    ((completion-ignore-case t))))
-
-(defun palette-pick-by-name-action (color)
-  "Helper function for `palette-pick-color-by-name-multi'.
-This is the action function, when `palette.el' is used with Icicles."
-  (if (string= "" color)
-      (let* ((colors  (hexrgb-defined-colors))
-             (rand    (random (length colors)))) ; Random color.
-        (setq color  (elt colors rand)))
-    (let ((hex-string  (hexrgb-rgb-hex-string-p color t)))
-      (when (and hex-string (not (eq 0 hex-string))) (setq color  (concat "#" color))) ; Add #.
-      (if (not (or hex-string (if (fboundp 'test-completion) ; Not defined in Emacs 20.
-                                  (test-completion color (hexrgb-defined-colors-alist))
-                                (try-completion color (hexrgb-defined-colors-alist)))))
-          (error "No such color: %S" color)
-        (setq color  (hexrgb-color-name-to-hex color))))
-    (setq palette-last-color  palette-current-color)
-    (save-selected-window
-      (setq color  (hexrgb-color-name-to-hex color)) ; Needed if not interactive.
-      (palette-set-current-color color)
-      (palette-where-is-color color)
-      (palette-brightness-scale)
-      (palette-swatch))
-    palette-current-color))
 
 ;;;###autoload
 (defalias 'rgb 'palette-pick-color-by-rgb)
@@ -1468,7 +1411,7 @@ Return `palette-current-color'."
 (defun palette-where-is-color (color &optional cursor-color) ; Bound to `w'.
   "Move to the palette location of COLOR.
 This does not change the current color."
-  (interactive (list (hexrgb-read-color t)))
+  (interactive (list (hexrgb-read-color nil t)))
   (setq color  (hexrgb-color-name-to-hex color)) ; Needed if not interactive.
   (let ((target-hue              (hexrgb-hue color))
         (target-sat              (hexrgb-saturation color))
@@ -1761,7 +1704,7 @@ This includes these areas:
 COLOR is the color used for both swatches.
 If you enter an empty color name, then a color is picked randomly.
 See `palette-mode' for more information."
-  (interactive (list (hexrgb-read-color nil t)))
+  (interactive (list (hexrgb-read-color nil nil t)))
   (message "Loading palette...")
   (when (string= "" color)              ; User doesn't care - why not use a random color?
     (let* ((colors  (hexrgb-defined-colors))
@@ -1793,7 +1736,7 @@ See `palette-mode' for more information."
         (cursor-color . "Black") ,(cons 'font palette-font)))
      '((1on1-change-cursor-on-input-method-flag)))
     (with-output-to-temp-buffer "Palette (Hue x Saturation)"
-      (let* ((cells  (make-string stringlen ?\s- ))
+      (let* ((cells  (make-string stringlen ?\   ))
              (hue    0.999999)
              (sat    1.0)
              (index  0)
@@ -1858,7 +1801,7 @@ If a color palette is already displayed, then just update it."
         (palette-pick-color-by-name color)
       (let ((split-window-preferred-function  (lambda (w) (eq w (get-lru-window)))))
         (with-output-to-temp-buffer "Brightness"
-          (let* ((cells  (make-string stringlen ?\s- ))
+          (let* ((cells  (make-string stringlen ?\   ))
                  (hue    (hexrgb-hue color))
                  (sat    (hexrgb-saturation color))
                  (index  0)
@@ -1939,7 +1882,7 @@ If a color palette is already displayed, then just update it."
         (palette-pick-color-by-name color)
       (setq color  (or color (hexrgb-color-name-to-hex ; Needed if not interactive.
                               (if oldp palette-old-color palette-current-color))))
-      (let* ((cells  (make-string stringlen ?\s- ))
+      (let* ((cells  (make-string stringlen ?\   ))
              (hue    (hexrgb-hue color))
              (sat    (hexrgb-saturation color))
              (val    1.0)
