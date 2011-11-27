@@ -7,9 +7,9 @@
 ;; Copyright (C) 2005-2011, Drew Adams, all rights reserved.
 ;; Created: Sat Jun 25 14:42:07 2005
 ;; Version:
-;; Last-Updated: Sun Jul 24 10:18:18 2011 (-0700)
+;; Last-Updated: Sat Nov 26 17:47:59 2011 (-0800)
 ;;           By: dradams
-;;     Update #: 1741
+;;     Update #: 1756
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/facemenu+.el
 ;; Keywords: faces, extensions, convenience, menus, local
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -188,8 +188,11 @@
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
-;;; Change log:
+;;; Change Log:
 ;;
+;; 2011/11/26 dadams
+;;     facemenu-read-color: Applied renaming of icicle-read-color to icicle-read-color-wysiwyg.
+;;                          Use new arg order for hexrgb-read-color.
 ;; 2011/07/24 dadams
 ;;     facemenu-remove-(face-props|all): Add them to Edit > Region menu, if available.
 ;;                                       Disable them if no active region (Emacs bug #9162).
@@ -330,7 +333,7 @@
   (require 'eyedropper))
 
 ;; (require 'icicles nil t) ;; (no error if not found):
-                            ;; icicle-read-color, icicle-read-string-completing
+                            ;; icicle-read-color-wysiwyg, icicle-read-string-completing
 
 (require 'easymenu) ;; easy-menu-add-item, easy-menu-create-menu,
 (when (> emacs-major-version 21) (require 'help-mode)) ;; help-xref (button type)
@@ -1228,16 +1231,17 @@ For Emacs 22+, this is `face-foreground' inheriting from `default'."
 
 
 ;; REPLACES ORIGINAL in `facemenu.el':
-;; Use `icicle-read-color' if defined.  If not, use `hexrgb-read-color' if defined.
+;;
+;; Use `icicle-read-color-wysiwyg' if defined.  If not, use `hexrgb-read-color' if defined.
 ;;
 (defun facemenu-read-color (&optional prompt)
   "Read a color using the minibuffer."
   (setq prompt  (or prompt "Color: "))
   (let* ((completion-ignore-case  t)
          (col                     (cond ((and (boundp 'icicle-mode) icicle-mode)
-                                         (icicle-read-color 0 prompt))
+                                         (icicle-read-color-wysiwyg 0 prompt))
                                         ((fboundp 'hexrgb-read-color)
-                                         (hexrgb-read-color nil t prompt))
+                                         (hexrgb-read-color prompt nil t))
                                         (t
                                          (completing-read
                                           prompt
@@ -1252,6 +1256,7 @@ For Emacs 22+, this is `face-foreground' inheriting from `default'."
 (when (>= emacs-major-version 22)
 
   ;; REPLACES ORIGINAL in `facemenu.el':
+  ;;
   ;; Interactively, numeric prefix arg means show face list for user to choose face by
   ;; clicking a face sample.
   ;;
@@ -1403,6 +1408,7 @@ Also, close the *Faces* display."
 
 
   ;; REPLACES ORIGINAL in `facemenu.el':
+  ;;
   ;; 1. Add hyperlink to open palette on the color.
   ;; 2. Use RGB format that reflects the display's degree of color support.
   ;; 3. Tooltip on RGB hex code shows decimal RGB and HSV values.
@@ -1527,6 +1533,7 @@ Also, close the *Faces* display."
 
 
   ;; REPLACES ORIGINAL in `facemenu.el':
+  ;;
   ;; Also put text property `font-lock-ignore' on the highlighted text.
   ;;
   (defun facemenu-add-face (face &optional start end)
