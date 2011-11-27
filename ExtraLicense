@@ -61,7 +61,7 @@ To add a custom keyword, modify `##license-keywords-alist##' in the source.
 ##xlicense.el## is poorly written, yet it works -- CinSK
 ----
 
-CateogoryComments
+== Bugs ==
 
 There is a tiny bug in xlicence. In licence/GPL-3.0, line 4
 
@@ -71,4 +71,5 @@ should be
 
 the Free Software Foundation, either version 3 of the License, or (at
 
-CategoryModes
+----
+CategoryModes CategoryComments
