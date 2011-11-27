@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Wed Nov  2 16:43:25 2011 (-0700)
+;; Last-Updated: Sat Nov 26 13:42:32 2011 (-0800)
 ;;           By: dradams
-;;     Update #: 23035
+;;     Update #: 23037
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -289,8 +289,9 @@
 ;;    `icicle-other-window-or-frame', `icicle-pick-color-by-name',
 ;;    `icicle-plist', `icicle-pop-tag-mark',
 ;;    `icicle-pp-eval-expression', `icicle-previous-visible-thing',
-;;    `icicle-read-color', `icicle-read-kbd-macro',
-;;    `icicle-recent-file', `icicle-recent-file-other-window',
+;;    `icicle-read-color', `icicle-read-color-wysiwyg',
+;;    `icicle-read-kbd-macro', `icicle-recent-file',
+;;    `icicle-recent-file-other-window',
 ;;    `icicle-recompute-shell-command-candidates',
 ;;    `icicle-regexp-list', `icicle-remove-buffer-candidate',
 ;;    `icicle-remove-buffer-config',
