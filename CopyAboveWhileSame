@@ -2,8 +2,8 @@ The following is a variation of the CopyFromAbove command that notices
 if there is duplication in the previous two lines and continues
 copying from above until where they differ.
 
-Try the following command in EmacsLisp by EvaluatingExpressions in
-Emacs or by adding it code to your InitFile:
+Try the following command written in EmacsLisp by
+EvaluatingExpressions in Emacs or by adding the code to your InitFile:
 
   (autoload 'copy-from-above-command "misc"
     "Copy characters from previous nonblank line, starting just above point.
@@ -44,7 +44,7 @@ Assuming the following similar lines of code in
   grid $f.name   -row 0 -column 1 -padx 5 -pady 5 -sticky ew
   grid $f.l_age  -row 1 -column 0 -padx 5 -pady 5 -sticky e
   !
-  
+
 Running the command once gives.
 
   grid $f.l_name -row 0 -column 0 -padx 5 -pady 5 -sticky e
