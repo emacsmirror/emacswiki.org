@@ -70,3 +70,6 @@ I bind this to ##ESC Space## via the command in my ##.emacs##
     (global-set-key (kbd "<ESC>SPC") 'insert-same-line)
 
 Hope you enjoy!
+
+[new]
+This page is very similar to LineCopyChar.  I think we should clean up that page and move the useful bits here there.  What do you think? -- AaronHawley
