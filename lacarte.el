@@ -7,9 +7,9 @@
 ;; Copyright (C) 2005-2011, Drew Adams, all rights reserved.
 ;; Created: Fri Aug 12 17:18:02 2005
 ;; Version: 22.0
-;; Last-Updated: Sun Oct 30 13:08:00 2011 (-0700)
+;; Last-Updated: Mon Nov 28 12:47:10 2011 (-0800)
 ;;           By: dradams
-;;     Update #: 668
+;;     Update #: 671
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/lacarte.el
 ;; Keywords: menu-bar, menu, command, help, abbrev, minibuffer, keys,
 ;;           completion, matching, local, internal, extensions,
@@ -258,6 +258,9 @@
 ;;
 ;;(@* "Change log")
 ;;
+;; 2011/11/28 dadams
+;;     lacarte-get-a-menu-item-alist-1:
+;;       Added optional DONE arg, to handle recursive structures.  Thx to Michael Heerdegen.
 ;; 2011/10/30 dadams
 ;;     lacarte-get-a-menu-item-alist-1:
 ;;       Add keys using internal-where-is, not cached key string.  Thx to Michael Heerdegen.
@@ -515,7 +518,7 @@ Returns `lacarte-menu-items-alist' which it modifies."
   (lacarte-get-a-menu-item-alist-1 keymap)
   (setq lacarte-menu-items-alist  (nreverse lacarte-menu-items-alist)))
 
-(defun lacarte-get-a-menu-item-alist-1 (keymap &optional root)
+(defun lacarte-get-a-menu-item-alist-1 (keymap &optional root done)
   "Helper function for `lacarte-get-a-menu-item-alist'.
 This calls itself recursively, to process submenus.
 Returns `lacarte-menu-items-alist', which it modifies."
@@ -578,9 +581,10 @@ Returns `lacarte-menu-items-alist', which it modifies."
             ;; Follow indirections to ultimate symbol naming a command.
             (while (and (symbolp defn) (fboundp defn) (keymapp (symbol-function defn)))
               (setq defn  (symbol-function defn)))
-            (if (eq 'keymap (car-safe defn))
-                (lacarte-get-a-menu-item-alist-1 (cdr defn) composite-name)
-              (lacarte-get-a-menu-item-alist-1 (symbol-function defn) composite-name)))
+            (unless (memq defn done)
+              (if (eq 'keymap (car-safe defn))
+                  (lacarte-get-a-menu-item-alist-1 (cdr defn) composite-name (cons defn done))
+                (lacarte-get-a-menu-item-alist-1 (symbol-function defn) composite-name (cons defn done)))))
 
           ;; Add menu item + command pair to `lacarte-menu-items-alist' alist.
           ;; Don't add it if `composite-name' is nil - that's a non-selectable item.
