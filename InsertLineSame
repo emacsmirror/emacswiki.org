@@ -1,6 +1,6 @@
 = Introduction =
 
-In some coding situations you find yourself entering repetitive but different data line after line after line. For example, using grid with Tcl/Tk:
+In some coding situations you find yourself entering repetitive but different data line after line after line. For example, using grid with Tcl/Tk[http://tcl.tk]:
 
     grid $f.l_name -row 0 -column 0 -padx 5 -pady 5 -sticky e
     grid $f.name   -row 0 -column 1 -padx 5 -pady 5 -sticky ew
