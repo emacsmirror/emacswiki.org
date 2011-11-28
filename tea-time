@@ -45,3 +45,7 @@ or simply  put <code>(setq tea-time-sound "path-to-sound-file")</code> in .emacs
 * Use <code>M-x tea-timer-cancel</code> to cancel currently running timer.
 
 * Suggested binding: <code>(define-key global-map "\C-ct" 'tea-time)</code>
+
+= See Also: =
+
+See TaskTimer for the inverse, i.e. start the timer (0:00) and then be able to determine how long the timer has been running (2 min 5 secs).
