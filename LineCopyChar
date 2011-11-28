@@ -27,36 +27,17 @@ This seems to be a rather esoteric function.  Maybe I'm missing its utility?  Ho
 
 It is similar to `<up> <C-k> <C-y> <down> <C-y>', perhaps. -- AlexSchroeder
 
-There is a package called vcursor which might be what you want. You
-can set a "virtual cursor" to somewhere in a buffer, then copy
-characters, words, and lines from the virtual cursor position to
-point. -- MattHodges  
-
-VcursorPackage is in GNU Emacs since version 21.2.
+There is the VcursorPackage which might be what you want. It is in GNU
+Emacs since version 21.2 and you can set a "virtual cursor" to
+somewhere in a buffer, then copy characters, words, and lines from the
+virtual cursor position to point. -- MattHodges
 
 This functionality is similar to that found in MS Excel, and many other Windows-based applications that deal with tabular data.  It's typically bound to C-'.  -- EricHanchrow
 
 Vim has C-y and C-e for copying a character from above and below, respectively. -- DanielBrockman
 
-There `copy-from-above-command' in misc.el, which copies ARG characters from above. If used without prefix, copy entire string. So M-1 M-x copy-from-above-command RET will copy 1 character from above. --ZajcevEvgeny
+There is CopyFromAbove command in ##misc.el##.
 
-Here is another play on the same theme:
-<pre>
-(defun copy-to-char (arg char)
-  "Copy all characters from the previous line beginning with the
-character currently above the cursor up to the first occurrence
-of CHAR."
-  (interactive "p\ncCopy to char: ")
-  (let ((text))
-    (save-excursion
-      (previous-line 1)
-      (let ((oldpoint (point)))
-        (search-forward (char-to-string char))
-        (setq text (buffer-substring oldpoint (point)))))
-    (insert text)))
-</pre>
-This is extremely useful when editing "tabular data" like include statements in C and many other programming constructs.  For example, if the cursor is below the following line
-<pre>
-#include <stdio.h>
-</pre>
-copy-to-char allows you to easily copy everything up to and including the "less than" character, without having to count the number of characters to be copied.
+----
+CategoryEditing
+
