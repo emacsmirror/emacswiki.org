@@ -11,6 +11,8 @@ This category is about editing, not modes.  See CategoryModes, instead.
 ** [[LRU-yank]] -- maintain [[kill ring]] as LRU (Least Recently Used) stack.  Similar to the application stack (M-tab) on MS Windows
 ** MousePlus -- highlight the [[yank]] position while you press `mouse-2', so you hit the right spot
 ** WholeLineOrRegion -- operate on current [[line]] if [[region]] is undefined
+** CopyFromAbove -- Copy line or characters from previous line
+** CopyingWholeLines -- Copying whole lines
 ** ZapToChar -- Delete the characters from [[point]] to a character you specify.
 ** KillOrCopyToIsearch -- [[kill|Kill]] or copy from [[point]] up to where you are Isearching 
 ** Motion/kill do-what-I-mean -- [[cursor]] movement and [[kill|killing]] [[DWIM]] functions.  Lisp:motion-and-kill-dwim.el
