@@ -1,0 +1,87 @@
+One way to duplicate a line in Emacs is with KillingAndYanking.
+
+  C-p C-k C-n C-y
+
+Go to the previous line, kill it, then go back to the next line and
+yank it.
+
+There is a `copy-from-above-command' in ##misc.el## which copies
+''ARG'' characters from the line above. If used without a prefix, it
+copies the entire string.
+
+To use it, add the following `autoload' to your InitFile.
+
+  (autoload 'copy-from-above-command 'misc
+    "Copy characters from previous nonblank line, starting just above point.
+  
+  \(fn &optional arg)"
+    'interactive)
+
+Then, `M-1 M-x copy-from-above-command' will copy 1 character from above.
+
+For demonstration purposes, the command will be bound to the
+ArrowKeys.
+
+The up arrow key will copy the rest of the line forward -- the default
+behavior.
+
+  (global-set-key [up] 'copy-from-above-command)
+
+The down arrow will copy the current key on to a newly opened line.
+
+  (global-set-key [down] (lambda ()
+                           (interactive)
+                           (forward-line 1)
+                           (open-line 1)
+                           (copy-from-above-command)))
+
+The right arrow will copy one character from above.
+
+  (global-set-key [right] (lambda ()
+                            (interactive)
+                            (copy-from-above-command 1)))
+
+And the left arrow will copy characters from above, backwards!!
+
+  (global-set-key [left] (lambda ()
+                           (interactive)
+                            (copy-from-above-command -1)
+                            (forward-char -1)
+                            (delete-char -1)))
+
+Assume the following two lines with point at !.
+
+  abcdefghijklmnopqrstuvwxyz
+  01234!
+
+Hitting <right> copies one character
+
+  abcdefghijklmnopqrstuvwxyz
+  01234f!
+
+Hitting <left> twice copies characters backwards
+
+  abcdefghijklmnopqrstuvwxyz
+  0123!ef
+
+Hitting `C-e' moves point back to the end of the line
+
+  abcdefghijklmnopqrstuvwxyz
+  0123ef!
+
+Hitting <up> copies the rest of the line
+
+  abcdefghijklmnopqrstuvwxyz
+  0123efghijklmnopqrstuvwxyz!
+
+Hitting <down> copies the whole line
+
+  abcdefghijklmnopqrstuvwxyz
+  0123efghijklmnopqrstuvwxyz!
+  0123efghijklmnopqrstuvwxyz
+
+See also DuplicateStartOfLineOrRegion, InsertLineSame, VcursorPackage
+and other EmacsNiftyTricks.
+
+----
+CategoryEditing
