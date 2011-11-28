@@ -90,3 +90,6 @@ That would (in one call) insert into the current line "Hello J", fill in "ack" a
     Hello Jack. How are you doing?
 
 It's your call though, I'm happy with whatever you decide. Both do deal with copying characters from another line just in a different manner and for a different use case.
+
+[new]
+I didn't see how yours was different.  I'll try to see if I can incorporate it. -- AaronHawley
