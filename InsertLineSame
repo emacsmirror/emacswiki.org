@@ -71,5 +71,22 @@ I bind this to ##ESC Space## via the command in my ##.emacs##
 
 Hope you enjoy!
 
+= Discussion =
+
 [new]
 This page is very similar to LineCopyChar.  I think we should clean up that page and move the useful bits here there.  What do you think? -- AaronHawley
+
+[new]
+I see a similarity but they are also quite different. It seems that LineCopyChar simply copies what is above the cursor, character by character? This duplicates whole blocks at a time of what is the same between the previous two lines. For example:
+
+    Hello John. How are you doing?
+    Hello Jane. How are you doing?
+    ^ESC Space
+
+That would (in one call) insert into the current line "Hello J", fill in "ack" and press ESC Space again and it would copy in one call, ". How are you doing?" Thus, the end result (after pressing ESC Space, ack, ESC Space) would be:
+
+    Hello John. How are you doing?
+    Hello Jane. How are you doing?
+    Hello Jack. How are you doing?
+
+It's your call though, I'm happy with whatever you decide. Both do deal with copying characters from another line just in a different manner and for a different use case.
