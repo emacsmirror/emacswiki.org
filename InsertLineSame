@@ -1,3 +1,5 @@
+DeletedPage
+
 = Introduction =
 
 In some coding situations you find yourself entering repetitive but different data line after line after line. For example, using grid with Tcl/Tk[http://tcl.tk]:
@@ -99,3 +101,6 @@ I rewrote your command to use Emacs's `copy-from-above-command' to accomplish th
 
 [new]
 Yes, that is fine. Thanks for the work on this! -- JeremyCowgar
+
+[new]
+Ok, this page is marked for deletion.  Your command was a very smart idea.  I've added it to my collection regardless if I'll ever use it or not.  At the least, I'll show it to folks to say, "Look what you can do".
