@@ -1,0 +1,81 @@
+The following is a variation of the CopyFromAbove command that notices
+if there is duplication in the previous two lines and continues
+copying from above until where they differ.
+
+Try the following command in EmacsLisp by EvaluatingExpressions in
+Emacs or by adding it code to your InitFile:
+
+  (autoload 'copy-from-above-command "misc"
+    "Copy characters from previous nonblank line, starting just above point.
+  
+  \(fn &optional arg)"
+    'interactive)
+  
+  (defun copy-above-while-same ()
+    "Copy from the previous two lines until the first difference."
+    (interactive)
+    (let* ((col (current-column))
+           (n (compare-buffer-substrings
+               (current-buffer) ;; This buffer
+               (save-excursion
+                 (forward-line -2)
+                 (move-to-column col)
+                 (point)) ;; Start 1
+               (line-end-position -1) ;; End 1
+               (current-buffer) ;; Still this buffer
+               (save-excursion
+                 (forward-line -1)
+                 (move-to-column col)
+                 (point)) ;; Start 2
+               (line-end-position 0)))) ;; End 2
+      (if (and (integerp n)
+               (> (abs n) 1))
+          (copy-from-above-command (1- (abs n) ))
+        (copy-from-above-command 1))))
+
+It could be bound to the shift-right arrow key.
+
+  (global-set-key [S-right] 'copy-above-while-same)
+
+Assuming the following similar lines of code in
+[http://tcl.tk/ Tcl/Tk] where ! is point.
+
+  grid $f.l_name -row 0 -column 0 -padx 5 -pady 5 -sticky e
+  grid $f.name   -row 0 -column 1 -padx 5 -pady 5 -sticky ew
+  grid $f.l_age  -row 1 -column 0 -padx 5 -pady 5 -sticky e
+  !
+  
+Running the command once gives.
+
+  grid $f.l_name -row 0 -column 0 -padx 5 -pady 5 -sticky e
+  grid $f.name   -row 0 -column 1 -padx 5 -pady 5 -sticky ew
+  grid $f.l_age  -row 1 -column 0 -padx 5 -pady 5 -sticky e
+  grid $f.!
+
+Notice how only what was the same in the previous two lines was
+copied? Let's continue by typing in our age widget followed by spaces:
+
+  grid $f.l_name -row 0 -column 0 -padx 5 -pady 5 -sticky e
+  grid $f.name   -row 0 -column 1 -padx 5 -pady 5 -sticky ew
+  grid $f.l_age  -row 1 -column 0 -padx 5 -pady 5 -sticky e
+  grid $f.age   !
+
+Running the command again gives.
+
+  grid $f.l_name -row 0 -column 0 -padx 5 -pady 5 -sticky e
+  grid $f.name   -row 0 -column 1 -padx 5 -pady 5 -sticky ew
+  grid $f.l_age  -row 1 -column 0 -padx 5 -pady 5 -sticky e
+  grid $f.age    -row !
+
+This would then complete the ##-row## and notice that the ##-row 0##
+and ##-row 1## are different, so it stops to allow you to enter the
+proper row. Continue right down the line and you eventually wind up
+with:
+
+  grid $f.l_name -row 0 -column 0 -padx 5 -pady 5 -sticky e
+  grid $f.name   -row 0 -column 1 -padx 5 -pady 5 -sticky ew
+  grid $f.l_age  -row 1 -column 0 -padx 5 -pady 5 -sticky e
+  grid $f.age    -row 1 -column 1 -padx 5 -pady 5 -sticky ew
+
+----
+CategoryEditing
