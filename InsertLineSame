@@ -93,3 +93,6 @@ It's your call though, I'm happy with whatever you decide. Both do deal with cop
 
 [new]
 I didn't see how yours was different.  I'll try to see if I can incorporate it. -- AaronHawley
+
+[new]
+I rewrote your command to use Emacs's `copy-from-above-command' to accomplish the same task.  The final result is posted on CopyAboveWhileSame (along with adding documentation for CopyFromAbove command).  If you think it's ok, we can delete this page. -- AaronHawley
