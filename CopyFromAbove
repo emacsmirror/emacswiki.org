@@ -11,7 +11,7 @@ copies the entire string.
 
 To use it, add the following `autoload' to your InitFile.
 
-  (autoload 'copy-from-above-command 'misc
+  (autoload 'copy-from-above-command "misc"
     "Copy characters from previous nonblank line, starting just above point.
   
   \(fn &optional arg)"
@@ -77,11 +77,38 @@ Hitting <up> copies the rest of the line
 Hitting <down> copies the whole line
 
   abcdefghijklmnopqrstuvwxyz
-  0123efghijklmnopqrstuvwxyz!
   0123efghijklmnopqrstuvwxyz
+  0123efghijklmnopqrstuvwxyz!
 
-See also DuplicateStartOfLineOrRegion, InsertLineSame, VcursorPackage
-and other EmacsNiftyTricks.
+See also DuplicateStartOfLineOrRegion, CopyingWholeLines,
+CopyAboveWhileSame, VcursorPackage and other EmacsNiftyTricks.
+
+[new]
+Here is another play on the same theme:
+
+{{{
+(defun copy-above-to-char (arg char)
+  "Copy all characters from the previous line beginning with the
+character currently above the cursor up to the ARGth occurrence
+of CHAR."
+  (interactive "p\ncCopy to char: ")
+  (let* ((col (current-column))
+         (n (save-excursion
+              (forward-line -1)
+              (move-to-column col)
+              (search-forward (char-to-string char)
+                              (line-end-position) nil arg)
+              (- (current-column) col))))
+    (copy-from-above-command n)))
+}}}
+
+This is extremely useful when editing "tabular data" like include statements in C and many other programming constructs.  For example, if the cursor is below the following line
+
+{{{
+#include <stdio.h>
+}}}
+
+`copy-above-to-char allows you to easily copy everything up to and including the "less than" character, without having to count the number of characters to be copied.
 
 ----
 CategoryEditing
