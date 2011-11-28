@@ -1,4 +1,4 @@
-The following gives multiple approaches in EmacsLisp code for managing duplicate lines in a file.  Try them out by EvaluatingExpressions or by adding to your InitFile.
+The following gives multiple approaches in EmacsLisp code for managing duplicate lines in a file.  Try them out by EvaluatingExpressions or by adding to your InitFile.  For duplicating lines see CopyFromAbove.
 
 Here's how to find duplicate lines and keep only the first occurrence.
 
