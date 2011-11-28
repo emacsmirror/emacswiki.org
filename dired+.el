@@ -7,9 +7,9 @@
 ;; Copyright (C) 1999-2011, Drew Adams, all rights reserved.
 ;; Created: Fri Mar 19 15:58:58 1999
 ;; Version: 21.2
-;; Last-Updated: Thu Nov 10 13:42:14 2011 (-0800)
+;; Last-Updated: Mon Nov 28 15:53:03 2011 (-0800)
 ;;           By: dradams
-;;     Update #: 4188
+;;     Update #: 4192
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/dired+.el
 ;; Keywords: unix, mouse, directories, diredp, dired
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -3027,11 +3027,12 @@ bookmark-file bookmark for BOOKMARK-FILE."
     (error "You must be in a Dired buffer to use this command"))
   (list (let* ((insert-default-directory  t)
                (bmk-file                  (expand-file-name
-                                           (read-file-name "Use bookmark file: " nil
-                                                           (if (> emacs-major-version 22)
-                                                               (list ".emacs.bmk"
-                                                                     bookmark-default-file)
-                                                             ".emacs.bmk")))))
+                                           (read-file-name
+                                            "Use bookmark file (default is in CURRENT dir): " nil
+                                            (if (> emacs-major-version 22)
+                                                (list ".emacs.bmk"
+                                                      bookmark-default-file)
+                                              ".emacs.bmk")))))
           bmk-file)
         (and diredp-prompt-for-bookmark-prefix-flag
              (read-string "Prefix for autofile bookmark names: "))
