@@ -1,0 +1,72 @@
+= Introduction =
+
+In some coding situations you find yourself entering repetitive but different data line after line after line. For example, using grid with Tcl/Tk:
+
+    grid $f.l_name -row 0 -column 0 -padx 5 -pady 5 -sticky e
+    grid $f.name   -row 0 -column 1 -padx 5 -pady 5 -sticky ew
+    grid $f.l_age  -row 1 -column 0 -padx 5 -pady 5 -sticky e
+    # etc...
+
+To help me work less I created the ##insert-line-same## function.
+
+= Code =
+
+    (defun get-relative-line-content (num)
+      "Return the string content of line `num' relative to the current line"
+      (save-excursion
+        (forward-line num)
+        (buffer-substring-no-properties
+         (line-beginning-position) (line-end-position))))
+    
+    (defun insert-line-same ()
+      "Insert the content up to the first difference of the previous two lines."
+      (interactive)
+      (let* ((line1 (get-relative-line-content -2))
+        (line2 (get-relative-line-content -1))
+          (beg (current-column))
+          (end (compare-strings line1 beg nil line2 beg nil)))
+        (insert-string
+         (substring line1 beg
+                (if (integerp end)
+                    (+ beg (- (abs end) 1))
+                  (length line1))))))
+
+= Explanation and Example =
+
+This looks at the previous two lines and inserts at the current cursor position what is the same between the two. It then stops allowing you to fill in the variant. If properly aligned, you can then initiate the ##insert-line-same## method again as it works based on your current column position. For example having ##insert-line-same## bound to ##ESC Space## and ##^## begin your cursor position:
+
+    grid $f.l_name -row 0 -column 0 -padx 5 -pady 5 -sticky e
+    grid $f.name   -row 0 -column 1 -padx 5 -pady 5 -sticky ew
+    grid $f.l_age  -row 1 -column 0 -padx 5 -pady 5 -sticky e
+    ^ESC Space
+
+This would yield:
+
+    grid $f.l_name -row 0 -column 0 -padx 5 -pady 5 -sticky e
+    grid $f.name   -row 0 -column 1 -padx 5 -pady 5 -sticky ew
+    grid $f.l_age  -row 1 -column 0 -padx 5 -pady 5 -sticky e
+    grid $f.^
+
+Notice how only what was the same in the previous two lines was copied? Let's continue by typing in our age widget:
+
+    grid $f.l_name -row 0 -column 0 -padx 5 -pady 5 -sticky e
+    grid $f.name   -row 0 -column 1 -padx 5 -pady 5 -sticky ew
+    grid $f.l_age  -row 1 -column 0 -padx 5 -pady 5 -sticky e
+    grid $f.age   ^ESC Space
+
+This would then complete the ##-row## and notice that the ##-row 0## and ##-row 1## are different, so it stops to allow you to enter the proper row. Continue right down the line and you eventually wind up with:
+
+    grid $f.l_name -row 0 -column 0 -padx 5 -pady 5 -sticky e
+    grid $f.name   -row 0 -column 1 -padx 5 -pady 5 -sticky ew
+    grid $f.l_age  -row 1 -column 0 -padx 5 -pady 5 -sticky e
+    grid $f.age    -row 1 -column 1 -padx 5 -pady 5 -sticky ew
+
+All this with very little typing.
+
+= Binding =
+
+I bind this to ##ESC Space## via the command in my ##.emacs##
+
+    (global-set-key (kbd "<ESC>SPC") 'insert-same-line)
+
+Hope you enjoy!
