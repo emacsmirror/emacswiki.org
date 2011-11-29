@@ -7,9 +7,9 @@
 ;; Copyright (C) 1995-2011, Drew Adams, all rights reserved.
 ;; Created: Thu Dec 28 09:15:00 1995
 ;; Version: 21.0
-;; Last-Updated: Sun Aug  7 14:06:28 2011 (-0700)
+;; Last-Updated: Tue Nov 29 09:30:01 2011 (-0800)
 ;;           By: dradams
-;;     Update #: 1936
+;;     Update #: 1939
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/start-opt.el
 ;; Keywords: local, init
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -22,7 +22,7 @@
 ;;   `help+20', `hexrgb', `highlight', `info', `info+', `isearch+',
 ;;   `iso-transl', `lib-requires', `loadhist', `menu-bar',
 ;;   `menu-bar+', `misc-cmds', `misc-fns', `mouse', `mouse+',
-;;   `mwheel', `pp', `pp+', `replace+', `ring', `ring+',
+;;   `mwheel', `naked', `pp', `pp+', `replace+', `ring', `ring+',
 ;;   `second-sel', `setup-keys', `simple+', `strings', `thingatpt',
 ;;   `thingatpt+', `unaccent', `w32browser-dlgopen', `wid-edit',
 ;;   `wid-edit+', `widget', `wimpy-del'.
@@ -56,6 +56,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2011/11/29 dadams
+;;     Add *.bmk to auto-mode-alist for emacs-lisp-mode (for editing/viewing bookmarks files).
 ;; 2011/08/07 dadams
 ;;     ls-lisp: Use featurep, not eval-after-load: doesn't work otherwise for Emacs 20.
 ;;              Use MS-Windows, not Microsoft, as the value of ls-emulation.
@@ -418,6 +420,7 @@
 
 (setq auto-mode-alist  (append (list    ; Defined in `files.el'.
                                 '("\\.te?xt\\'" . indented-text-mode)
+                                '("\\.bmk\\'" . emacs-lisp-mode)
                                 '("\\.elc\\'" . emacs-lisp-mode)
                                 '("\\.tex\\'" . LaTeX-mode)
                                 '("\\.aux\\'" . LaTeX-mode)
