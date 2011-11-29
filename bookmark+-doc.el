@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2011, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Sat Nov 19 08:54:30 2011 (-0800)
+;; Last-Updated: Tue Nov 29 14:23:46 2011 (-0800)
 ;;           By: dradams
-;;     Update #: 13948
+;;     Update #: 13949
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-doc.el
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search,
 ;;           info, url, w3m, gnus
@@ -264,8 +264,9 @@
 ;;
 ;;     - Bookmark-list bookmarks.  You can bookmark the current state
 ;;       of buffer `*Bookmark List*' - a list of bookmarks.  Jumping
-;;       to such a bookmark restores the recorded sort order, filter,
-;;       title, and omit list.  See (@> "Omitting Bookmarks from Display").
+;;       to such a bookmark restores the recorded sort order,
+;;       markings, filter, title, and omit list.
+;;       See (@> "Omitting Bookmarks from Display").
 ;;
 ;;     - Bookmark-file bookmarks.  You can bookmark a bookmark file.
 ;;       Jumping to such a bookmark loads the bookmarks in the file.
