@@ -36,7 +36,7 @@ Learning About Emacs:
 [:DownloadAndInstallEmacs]
 Downloading and Installing Emacs:
 
-* [[CategoryPorts|Ports]][[http://goo.gl/nNBUb|gemscool]] -- binaries for MS Windows, Mac, GNU/Linux and the free BSDs
+* [[CategoryPorts|Ports]] -- binaries for MS Windows, Mac, GNU/Linux and the free BSDs
 * [[CategoryWThirtyTwo|W32]] -- obtaining and using Emacs for MS Windows
 * [[CategoryBuilding|Building]] -- building Emacs from ''source code''.
 
