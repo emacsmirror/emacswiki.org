@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2011, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 13:43:55 2010 (-0700)
-;; Last-Updated: Sun Nov 27 13:42:03 2011 (-0800)
+;; Last-Updated: Mon Nov 28 16:00:01 2011 (-0800)
 ;;           By: dradams
-;;     Update #: 2412
+;;     Update #: 2417
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-1.el
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -6036,8 +6036,10 @@ You are prompted for the names of the bookmark file and the bookmark."
         (progn (bookmark-maybe-upgrade-file-format)
                (unless (listp (bookmark-alist-from-buffer)) (error "")))
       (error (error "Not a valid bookmark file: `%s'" file))))
-  (let ((bookmark-make-record-function  #'(lambda () (bmkp-make-bookmark-file-record file))))
-    (call-interactively #'bookmark-set))
+  (let ((bookmark-make-record-function  #'(lambda () (bmkp-make-bookmark-file-record file)))
+        (bookmark-name                  (bmkp-completing-read-lax
+                                         "Bookmark-file BOOKMARK name " file nil nil 'bookmark-history)))
+    (bookmark-set bookmark-name 99 'interactivep))
   (when msgp (message "Set bookmark-file bookmark")))
 
 (defun bmkp-make-bookmark-file-record (bookmark-file)
