@@ -237,6 +237,18 @@ in my .emacs. -- Randolf Schultz
 
 A simple example of moving the desktop file save locations ~/.emacs.desktop(.lock) to ~/.emacs.d/desktop/emacs.desktop(.lock) would be very helpful.
 
+[new]
+
+Presuming you want to MOVE (ie you've already used desktop) then the steps I did for this are
+
+# Save to a new desktop and lock file. Use `M-x desktop-save' and emacs asks you for a `Directory to save desktop file', so enter your new location
+# Set desktop-path so that next time you start emacs, it will find the desktop in the new location. Either put '''`setq desktop-path '("~/.emacs.d/desktop"))'''' in your .emacs, or set it by `M-h v desktop-path' and then choose the Customise option, set the value and "Save for future session"
+# Check the desktop file is in the new location :)
+# Remove the old desktop file. Desktop will search along the desktop-path var at startup and use the first desktop file it finds, so I exited emacs, renamed the desktop file, then restarted
+
+And that was me all done -- TimMeadowcroft
+
+
 ----
 [new]
 Look, let's just be honest. It doesn't work, does it?
