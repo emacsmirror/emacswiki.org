@@ -47,7 +47,7 @@ A new user could adapt to `zap-to-char', but I could understand your preference.
 KeyboardMacros could replace your functions, see also OpenNextLine. -- AaronHawley
 
 [new]
-Another addition to my .emacs file that I enjoy quite a bit is InsertLineSame.
+Another addition to my .emacs file that I enjoy quite a bit is CopyAboveWhileSame which is a rewrite of my original ##insert-line-same## method by AlexSchroeder.
 
 ----
 CategoryHomepage
