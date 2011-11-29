@@ -7,9 +7,9 @@
 ;; Copyright (C) 1999-2011, Drew Adams, all rights reserved.
 ;; Created: Fri Mar 19 15:58:58 1999
 ;; Version: 21.2
-;; Last-Updated: Mon Nov 28 15:53:03 2011 (-0800)
+;; Last-Updated: Tue Nov 29 09:42:22 2011 (-0800)
 ;;           By: dradams
-;;     Update #: 4192
+;;     Update #: 4194
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/dired+.el
 ;; Keywords: unix, mouse, directories, diredp, dired
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -255,6 +255,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2011/11/29 dadams
+;;     diredp-read-bookmark-file-args: Corrected use of list of default file names: > Emacs 23.1.
 ;; 2011/10/31 dadams
 ;;     dired-mode-hook: Call font-lock-refresh-defaults - see Emacs 24 bugs #6662 and #9919.
 ;; 2011/10/24 dadams
@@ -3029,7 +3031,9 @@ bookmark-file bookmark for BOOKMARK-FILE."
                (bmk-file                  (expand-file-name
                                            (read-file-name
                                             "Use bookmark file (default is in CURRENT dir): " nil
-                                            (if (> emacs-major-version 22)
+                                            (if (or (> emacs-major-version 23)
+                                                    (and (= emacs-major-version 23)
+                                                         (> emacs-minor-version 1)))
                                                 (list ".emacs.bmk"
                                                       bookmark-default-file)
                                               ".emacs.bmk")))))
