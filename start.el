@@ -7,9 +7,9 @@
 ;; Copyright (C) 1995-2011, Drew Adams, all rights reserved.
 ;; Created: Wed Aug  2 11:12:24 1995
 ;; Version: 21.1
-;; Last-Updated: Tue Sep 27 11:06:31 2011 (-0700)
+;; Last-Updated: Wed Nov 30 08:18:55 2011 (-0800)
 ;;           By: dradams
-;;     Update #: 2894
+;;     Update #: 2896
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/start.el
 ;; Keywords: abbrev, internal, local, init
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -38,20 +38,20 @@
 ;;   `frame+', `frame-cmds', `frame-fns', `fuzzy', `fuzzy-match',
 ;;   `header2', `help+20', `hexrgb', `hide-comnt', `highlight',
 ;;   `icicles', `icicles-cmd1', `icicles-cmd2', `icicles-face',
-;;   `icicles-fn', `icicles-mac', `icicles-mcmd', `icicles-mode',
-;;   `icicles-opt', `icicles-var', `icomplete', `icomplete+',
-;;   `image-dired', `imenu', `imenu+', `info', `info+', `isearch+',
-;;   `iso-transl', `kmacro', `lacarte', `levenshtein',
-;;   `lib-requires', `lisp-float-type', `lisp-mnt', `loadhist',
-;;   `local-lpr', `local-ps-print', `lpr', `ls-lisp', `ls-lisp+',
+;;   `icicles-fn', `icicles-mcmd', `icicles-mode', `icicles-opt',
+;;   `icicles-var', `icomplete', `icomplete+', `image-dired',
+;;   `imenu', `imenu+', `info', `info+', `isearch+', `iso-transl',
+;;   `kmacro', `lacarte', `levenshtein', `lib-requires',
+;;   `lisp-float-type', `lisp-mnt', `loadhist', `local-lpr',
+;;   `local-ps-print', `lpr', `ls-lisp', `ls-lisp+',
 ;;   `ls-lisp-verbosity', `menu-bar', `menu-bar+', `misc-cmds',
 ;;   `misc-fns', `mkhtml', `mkhtml-htmlize', `moccur-edit', `mouse',
-;;   `mouse+', `mouse3', `mwheel', `occur-schroeder', `oneonone',
-;;   `paren', `pcmpl-auto', `pp', `pp+', `pp-c-l', `printing',
-;;   `ps-print', `regexp-opt', `replace+', `ring', `ring+',
-;;   `savehist-20+', `second-sel', `sendmail', `setup', `setup-keys',
-;;   `simple+', `solar', `speedbar', `start', `strings',
-;;   `swiss-move', `synonyms', `thing-cmds', `thingatpt',
+;;   `mouse+', `mouse3', `mwheel', `naked', `occur-schroeder',
+;;   `oneonone', `paren', `pcmpl-auto', `pp', `pp+', `pp-c-l',
+;;   `printing', `ps-print', `regexp-opt', `replace+', `ring',
+;;   `ring+', `savehist-20+', `second-sel', `sendmail', `setup',
+;;   `setup-keys', `simple+', `solar', `speedbar', `start',
+;;   `strings', `swiss-move', `synonyms', `thing-cmds', `thingatpt',
 ;;   `thingatpt+', `thumb-frm', `timer', `timer+', `unaccent', `vc',
 ;;   `vc+', `vc-', `vc-hooks', `vc-hooks+', `w32-browser',
 ;;   `w32browser-dlgopen', `wid-edit', `wid-edit+', `widget',
@@ -91,6 +91,8 @@
 ;;
 ;; Change Log:
 ;;
+;; 2011/11/30 dadams
+;;     Added soft require of descr-text+.el (new library).
 ;; 2011/09/27 dadams
 ;;     Use eval-after-load for isearch+.el.
 ;;     Require color-moccur only for Emacs 22+.  It needs ibuffer-unmark-all.
@@ -481,7 +483,8 @@ See the Dired-X Info pages (type \\[info]) for information on this package.")
 (when (> emacs-major-version 21)
   (require 'help+ nil t)                ; Extensions to `help.el'.
   (require 'help-mode+ nil t)           ; Extensions to `help-mode.el'.
-  (require 'help-fns+ nil t))           ; Extensions to `help-fns.el'.
+  (require 'help-fns+ nil t)            ; Extensions to `help-fns.el'.
+  (require 'descr-text+ nil t))         ; Extensions to `descr-text.el'.
 (if (< emacs-major-version 22)
     (require 'compile+20 nil t)         ; Highlighting, etc.
   (require 'compile+ nil t)             ; Highlighting.
