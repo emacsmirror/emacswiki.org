@@ -7,16 +7,16 @@
 ;; Copyright (C) 2011, Drew Adams, all rights reserved.
 ;; Created: Thu Nov 24 11:57:04 2011 (-0800)
 ;; Version: 23.1
-;; Last-Updated: Fri Nov 25 10:15:41 2011 (-0800)
+;; Last-Updated: Wed Nov 30 08:29:56 2011 (-0800)
 ;;           By: dradams
-;;     Update #: 53
+;;     Update #: 55
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/descr-text+.el
 ;; Keywords: help, characters, description
 ;; Compatibility: GNU Emacs: 22.x, 23.x, 24.x
 ;;
 ;; Features that might be required by this library:
 ;;
-;;   `button', `descr-text', `help-mode', `view'.
+;;   `button', `descr-text', `help-fns', `help-mode', `view'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -50,6 +50,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2011/11/30
+;;     Added compile-time require of mule.el for Emacs 22 (charset-description was a macro).
 ;; 2011/11/24 dadams
 ;;     Created.
 ;;
@@ -76,6 +78,9 @@
 
 
 (require 'descr-text)
+
+(eval-when-compile
+  (when (< emacs-major-version 23) (require 'mule))) ; charset-description (macro)
 
 
 ;; Quiet the byte-compiler.
