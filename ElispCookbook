@@ -410,6 +410,30 @@ the [Lisp:sunrise-commander.el Sunrise Commander]):
             (setq result (concat "," result)))
         (setq result (concat (pop digits) result)))))
 
+Here is another way that also preserves the stuff after the decimal point:
+
+  (defun my-thousands-separate (num)
+    "Formats the (possibly floating point) number with a thousands
+  separator."
+    (let* ((nstr (number-to-string num))
+           (dot-ind (string-match "\\." nstr))
+           (nstr-no-decimal (if dot-ind
+                                 (substring nstr 0 dot-ind)
+                               nstr))
+           (nrest (if dot-ind
+                      (substring nstr dot-ind)
+                    nil))
+           (pretty nil)
+           (cnt 0))
+      (dolist (c (reverse (append nstr-no-decimal nil)))
+        (if (and (zerop (% cnt 3)) (> cnt 0))
+            (setq pretty (cons ?, pretty)))
+        (setq pretty (cons c pretty))
+        (setq cnt (1+ cnt)))
+      (concat pretty nrest)))
+
+(Usage and more info [http://mgalgs.github.com/2011/11/30/elisp-pretty-numbers.html here])
+
 === Incrementing numbers ===
 
 See IncrementNumber.
