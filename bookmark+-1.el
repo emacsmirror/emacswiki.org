@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2011, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 13:43:55 2010 (-0700)
-;; Last-Updated: Wed Nov 30 13:17:36 2011 (-0800)
+;; Last-Updated: Wed Nov 30 14:42:19 2011 (-0800)
 ;;           By: dradams
-;;     Update #: 2423
+;;     Update #: 2426
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-1.el
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -4330,7 +4330,19 @@ binary data (weird chars)."
   "Return non-nil if FILE1 and FILE2 name the same file.
 If either name is not absolute, then it is considered relative to
 `default-directory'."
-  (string= (file-truename (expand-file-name file1)) (file-truename (expand-file-name file2))))
+  (setq file1  (expand-file-name file1)
+        file2  (expand-file-name file2))
+  (if (not (require 'tramp nil t))
+      (string= (file-truename file1) (file-truename file2))
+    ;; Try to avoid having Tramp access remote files to determine whether the same.
+    (or (and (not (file-remote-p file1)) (not (file-remote-p file2))
+             (string= (file-truename file1) (file-truename file2)))
+        (and (file-remote-p file1) (file-remote-p file2)
+             (string= (tramp-file-name-host (tramp-dissect-file-name file1))
+                      (tramp-file-name-host (tramp-dissect-file-name file2)))
+             ;; Cannot be avoided in this case (same host).  Let Tramp do its remote thing.
+             (string= (file-truename file1) (file-truename file2))))))
+
 
 (defun bmkp-file-remote-p (file-name)
   "Returns non-nil if string FILE-NAME is likely to name a remote file."
