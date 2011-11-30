@@ -370,48 +370,6 @@ Alternatively, replacing the `let' with `save-excursion'.
 
 === Put commas in numbers ===
 
-Using the Common Lisp package:
-
-  (require 'cl)
-  (let ((number (/ (random) (expt 2.0 28))))
-    (substitute ?\, ?\. (format "%g" number)))
-
-=== Break up large numbers with commas ===
-
-(This does what I expected the previous recipe to do.)
-
-  (progn
-    (defun commafy (n)
-      "Put commas in an integer"
-      (let ((chunks ()))
-        (do ((chunk (mod (abs n) 1000) (mod rest 1000))
-             (rest (floor (abs n) 1000) (floor rest 1000)))
-            ((and (zerop chunk) (zerop rest)))
-          (push (number-to-string chunk) chunks)
-          (when (< chunk 100) (push "0" chunks))
-          (when (< chunk 10) (push "0" chunks))
-          (when (plusp rest) (push "," chunks)))
-        (while (string= (first chunks) "0") (pop chunks))
-        (when (minusp n) (push "-" chunks))
-        (apply 'concat chunks)))
-    (commafy (random)))
-
-Here is another way, treating the input as a string from the start (taken from
-the [Lisp:sunrise-commander.el Sunrise Commander]):
-
-  (defun sr-size-format (size)
-    "Formats the given (floating) number as a string representation of an integer
-    with separating commas for thousands, millions, etc."
-    (let* ((num (replace-regexp-in-string "\\..*$" "" (number-to-string size)))
-           (digits (reverse (split-string num "" t)))
-           result)
-      (dotimes (n (length digits) result)
-        (if (and (< 0 n) (zerop (% n 3)))
-            (setq result (concat "," result)))
-        (setq result (concat (pop digits) result)))))
-
-Here is another way that also preserves the stuff after the decimal point:
-
   (defun my-thousands-separate (num)
     "Formats the (possibly floating point) number with a thousands
   separator."
