@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2011, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Sun Nov 27 13:49:29 2011 (-0800)
+;; Last-Updated: Wed Nov 30 13:18:16 2011 (-0800)
 ;;           By: dradams
-;;     Update #: 13874
+;;     Update #: 13879
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-chg.el
 ;; Keywords: bookmarks, bookmark+
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -120,6 +120,10 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-1.el'")
 ;;
+;; 2011/11/30 dadams
+;;     bmkp-toggle-autotemp-on-set: Removed ARG (copy/paste typos).
+;; 2011/11/28 dadams
+;;     bmkp-set-bookmark-file-bookmark: Prompt user for bookmark name here, to make clear what it is.
 ;; 2011/11/27 dadams
 ;;     bookmark-write-file: If write error, do not overwrite message.  And show error msg for 4 sec.
 ;; 2011/11/18 dadams
