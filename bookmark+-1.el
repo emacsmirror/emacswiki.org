@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2011, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 13:43:55 2010 (-0700)
-;; Last-Updated: Mon Nov 28 16:00:01 2011 (-0800)
+;; Last-Updated: Wed Nov 30 13:17:36 2011 (-0800)
 ;;           By: dradams
-;;     Update #: 2417
+;;     Update #: 2423
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-1.el
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -8245,12 +8245,10 @@ is `TEMPORARY ONLY' when this mode is on."
            (setq bmkp-temporary-bookmarking-mode  nil)))))
 
 ;;;###autoload
-(defun bmkp-toggle-autotemp-on-set (arg &optional msgp) ; Bound to `C-x p x'
+(defun bmkp-toggle-autotemp-on-set (&optional msgp) ; Bound to `C-x p x'
   "Toggle automatically making any bookmark temporary whenever it is set."
-  (interactive "p\nt")
-  (setq bmkp-autotemp-all-when-set-p  (if arg
-                                          (> (prefix-numeric-value arg) 0)
-                                        (not bmkp-autotemp-all-when-set-p)))
+  (interactive "p")
+  (setq bmkp-autotemp-all-when-set-p  (not bmkp-autotemp-all-when-set-p))
   (when msgp (message "Automatically making bookmarks temporary when set is now %s"
                       (if bmkp-autotemp-all-when-set-p "ON" "OFF"))))
 
