@@ -115,6 +115,10 @@ them. -- MathiasDahl
 
 See also [[GrowShrinkWindows]], with similar functionality. -- DavidHouse.
 
+[new:IanYang:2011-11-30 14:33 UTC]
+
+Where does the magic number 4 in ##(+ fr-width 4)## come from? I have to use 2 instead.
+
 = Interactively Resizing Windows =
 
 Note: For CVS Emacs (version 22) you may want to try winsize.el that is part of [NxhtmlMode nXhtml] or windresize.el from http://www.cognition.ens.fr/~guerry/u/windresize.el
