@@ -103,28 +103,11 @@ Trim whitespace from the end of a string:
 Trim whitespace from a string with a perl-like chomp function:
 
     (defun chomp (str)
-     "..."
-     (let ((s (if (symbolp str)(symbol-name str) str)))
-        (save-excursion
-          (while (and
-                  (not (null (string-match "^\\( \\|\f\\|\t\\|\n\\)" s)))
-                  (> (length s) (string-match "^\\( \\|\f\\|\t\\|\n\\)" s)))
-            (setq s (replace-match "" t nil s)))
-          (while (and
-                  (not (null (string-match "\\( \\|\f\\|\t\\|\n\\)$" s)))
-                  (> (length s) (string-match "\\( \\|\f\\|\t\\|\n\\)$" s)))
-            (setq s (replace-match "" t nil s))))
-        s))
-
-A more concise version:
-
-    (defun chomp (str)
       "Chomp leading and tailing whitespace from STR."
-      (let ((s (if (symbolp str) (symbol-name str) str)))
-        (replace-regexp-in-string "\\(^[[:space:]\n]*\\|[[:space:]\n]*$\\)" "" s)))
-
-[new]
-None of these seem to work if I there is a newline inside the text, because then the $ anchor find the internal newline instead of the last one. These functions should be improved to take that case into account.
+      (while (string-match "^[[:space:]\n]+\\|[[:space:]\n]+$"
+                           str)
+        (setq str (replace-match "" t t str)))
+      str)
 
 === Splitting strings ===
 
