@@ -2,6 +2,19 @@ Hello all.
 
 I started using GNU Emacs in 1993.
 
+== Problems with Emacs 24 ==
+
+I want to use the newer (not yet released) version of Emacs, but it gives me trouble on my work machine (Windows 7 x64 Enterprise N):
+
+Everything seems fine when I start a new instance, but after a while I start getting errors when attempting to launch external programs.
+
+For example, using svn.exe from within EShell causes: ''Creating pipe: no error''
+
+Invoking `browse-url-of-dired-file' to launch explorer.exe against a directory gives: ''Debugger entered--Lisp error: (error "ShellExecute failed: Not enough storage is available to process this command.")''
+
+
+
+
 == Wish list ==
 : PlainTextWiki minor-mode to navigate within emacs and generate PlainLink-ed HTML.
 :: See: http://CommunityWiki.org/en/PlainLink and http://CommunityWiki.org/en/PlainTextWiki
