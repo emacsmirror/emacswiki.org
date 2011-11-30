@@ -100,11 +100,11 @@ Trim whitespace from the end of a string:
     (when (string-match "[ \t]*$" test-str)
       (message (concat "[" (replace-match "" nil nil test-str) "]")))
 
-Trim whitespace from a string with a perl-like chomp function:
+Trim whitespace from a string with a Perl-like chomp function:
 
     (defun chomp (str)
       "Chomp leading and tailing whitespace from STR."
-      (while (string-match "^[[:space:]\n]+\\|[[:space:]\n]+$"
+      (while (string-match "\\`\n+\\|^\\s-+\\|\\s-+$\\|\n+\\'"
                            str)
         (setq str (replace-match "" t t str)))
       str)
