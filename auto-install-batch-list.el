@@ -96,10 +96,10 @@
          ;; AutoComplete development version.
          ("auto-complete development version" nil nil
           (
-           "https://github.com/m2ym/auto-complete/raw/master/popup.el"
-           "https://github.com/m2ym/auto-complete/raw/master/fuzzy.el"
-           "https://github.com/m2ym/auto-complete/raw/master/auto-complete.el"
-           "https://github.com/m2ym/auto-complete/raw/master/auto-complete-config.el"
+           "https://raw.github.com/m2ym/auto-complete/master/popup.el"
+           "https://raw.github.com/m2ym/auto-complete/master/fuzzy.el"
+           "https://raw.github.com/m2ym/auto-complete/master/auto-complete.el"
+           "https://raw.github.com/m2ym/auto-complete/master/auto-complete-config.el"
            ))
          ;; Anything
          ("anything-minimal" nil nil
