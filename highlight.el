@@ -7,9 +7,9 @@
 ;; Copyright (C) 1995-2011, Drew Adams, all rights reserved.
 ;; Created: Wed Oct 11 15:07:46 1995
 ;; Version: 21.0
-;; Last-Updated: Thu Dec  1 09:07:00 2011 (-0800)
+;; Last-Updated: Thu Dec  1 09:19:12 2011 (-0800)
 ;;           By: dradams
-;;     Update #: 3086
+;;     Update #: 3091
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/highlight.el
 ;; Keywords: faces, help, local
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -962,10 +962,10 @@ for the last face and text properties for all faces."
               (let ((posn-point  (posn-point (event-end event))))
                 (setq end    (max end posn-point)
                       start  (min start posn-point))))
-            (when hlt-use-overlays-flag
+            (when hlt-use-overlays-flag ; Erase overlay properties
               (dolist (ov  (overlays-in start end))
                 (hlt-unhighlight-for-overlay ov start end hlt-last-face)))
-            (unless (eq 'only hlt-use-overlays-flag)
+            (unless (eq 'only hlt-use-overlays-flag) ; Erase text properties
               (remove-text-properties
                start end '(face nil hlt-highlight nil font-lock-ignore nil)))))
         (setq buffer-read-only  read-only)
@@ -1188,10 +1188,10 @@ Optional 5th arg MOUSE-P non-nil means use `mouse-face' property, not
   (let ((read-only-p  buffer-read-only)
         (modified-p   (buffer-modified-p)))
     (setq buffer-read-only  nil)
-    (when hlt-use-overlays-flag
+    (when hlt-use-overlays-flag         ; Unhighlight overlay properties.
       (dolist (ov  (overlays-in start end))
         (hlt-unhighlight-for-overlay ov start end face)))
-    (unless (eq 'only hlt-use-overlays-flag)
+    (unless (eq 'only hlt-use-overlays-flag) ; Unhighlight text properties.
       (let ((beg  start)
             hi-face)
         (while (< beg end)
@@ -1584,7 +1584,7 @@ the invisibility criteria specified by that value are accumulated."
       (let ((start  (point-min))
             (end    (point-max))
             spec)
-        (dolist (ov (overlays-in start end))
+        (dolist (ov  (overlays-in start end))
           (when (setq spec  (overlay-get ov 'invisible))
             (unless (listp spec) (setq spec  (list spec)))
             (setq buffer-invisibility-spec
