@@ -272,6 +272,10 @@ Fullscreen mode is not offered in either 23.3 or 24+.  In trying to adapt the "m
 
 -pmr
 
+You can also use Right Zoom ( http://www.macupdate.com/app/mac/30591/right-zoom ) with 
+
+-dwd
+
 === Command to Maximize Emacs 23.1 (vanilla) ===
 
 Fullscreen mode doesn't work in Vanilla Emacs 23.1.  This at least maximizes your session to take up as much room as possible.
