@@ -8,9 +8,12 @@ I want to use the newer (not yet released) version of Emacs, but it gives me tro
 
 Everything seems fine when I start a new instance, but after a while I start getting errors when attempting to launch external programs.
 
-For example, using svn.exe from within EShell causes: ''Creating pipe: no error''
+* Using svn.exe from within EShell causes: ''Creating pipe: no error''
 
-Invoking `browse-url-of-dired-file' to launch explorer.exe against a directory gives: ''Debugger entered--Lisp error: (error "ShellExecute failed: Not enough storage is available to process this command.")''
+* Invoking `browse-url-of-dired-file' to launch explorer.exe against a directory gives: ''Debugger entered--Lisp error: (error "ShellExecute failed: Not enough storage is available to process this command.")''
+
+* Invoking `browse-url-of-dired-file' against a .cmd file gives ''Debugger entered--Lisp error: (file-error "Spawning child process" "resource temporarily unavailable")''
+
 
 
 
