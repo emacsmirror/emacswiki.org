@@ -7,9 +7,9 @@
 ;; Copyright (C) 1995-2011, Drew Adams, all rights reserved.
 ;; Created: Wed Oct 11 15:07:46 1995
 ;; Version: 21.0
-;; Last-Updated: Fri Nov  4 10:44:49 2011 (-0700)
+;; Last-Updated: Thu Dec  1 09:07:00 2011 (-0800)
 ;;           By: dradams
-;;     Update #: 3076
+;;     Update #: 3086
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/highlight.el
 ;; Keywords: faces, help, local
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -540,6 +540,9 @@
 ;;
 ;;(@* "Change log")
 ;;
+;; 2011/12/01 dadams
+;;     hlt-eraser: Fixed so it works backwards too.  Thx to Michael Heerdegen.
+;;     hlt-unhighlight-region, hlt-replace-highlight-face, hlt-eraser: Use dolist, not mapcar.
 ;; 2011/11/04 dadams
 ;;     hlt-default-copy/yank-props: Allow a value of t, for all props.
 ;;     hlt-props-to-copy/yank: Handle t value of hlt-default-copy/yank-props.
@@ -956,10 +959,12 @@ for the last face and text properties for all faces."
                         (or (mouse-movement-p event)
                             (memq (car-safe event) '(switch-frame select-window))))
             (unless (memq (car-safe event) '(switch-frame select-window))
-              (setq end  (posn-point (event-end event))))
+              (let ((posn-point  (posn-point (event-end event))))
+                (setq end    (max end posn-point)
+                      start  (min start posn-point))))
             (when hlt-use-overlays-flag
-              (mapcar (lambda (o) (hlt-unhighlight-for-overlay o start end hlt-last-face))
-                      (overlays-in start end)))
+              (dolist (ov  (overlays-in start end))
+                (hlt-unhighlight-for-overlay ov start end hlt-last-face)))
             (unless (eq 'only hlt-use-overlays-flag)
               (remove-text-properties
                start end '(face nil hlt-highlight nil font-lock-ignore nil)))))
@@ -1184,8 +1189,8 @@ Optional 5th arg MOUSE-P non-nil means use `mouse-face' property, not
         (modified-p   (buffer-modified-p)))
     (setq buffer-read-only  nil)
     (when hlt-use-overlays-flag
-      (mapcar (lambda (o) (hlt-unhighlight-for-overlay o start end face))
-              (overlays-in start end)))
+      (dolist (ov  (overlays-in start end))
+        (hlt-unhighlight-for-overlay ov start end face)))
     (unless (eq 'only hlt-use-overlays-flag)
       (let ((beg  start)
             hi-face)
@@ -1316,8 +1321,8 @@ Optional 6th arg MOUSE-P non-nil means use `mouse-face' property, not
 This works only for overlay highlighting, not text-property
 highlighting."
   (interactive `(,(read-face-name "Replace face in region highlights. Old face: ")
-                  ,(read-face-name "New face: ")
-                  ,@(hlt-region-or-buffer-limits) t ,current-prefix-arg))
+                 ,(read-face-name "New face: ")
+                 ,@(hlt-region-or-buffer-limits) t ,current-prefix-arg))
   (unless (and start end) (let ((start-end  (hlt-region-or-buffer-limits)))
                             (setq start  (car start-end)
                                   end    (cadr start-end))))
@@ -1325,11 +1330,10 @@ highlighting."
   (let ((read-only-p  buffer-read-only)
         (modified-p   (buffer-modified-p)))
     (setq buffer-read-only  nil)
-    (mapcar (lambda (o)
-              (when (eq old-face (overlay-get o (if mouse-p 'mouse-face 'face)))
-                (overlay-put o (if mouse-p 'mouse-face 'face) new-face)
-                (overlay-put o 'hlt-highlight                 new-face)))
-            (overlays-in start end))
+    (dolist (ov  (overlays-in start end))
+      (when (eq old-face (overlay-get ov (if mouse-p 'mouse-face 'face)))
+        (overlay-put ov (if mouse-p 'mouse-face 'face) new-face)
+        (overlay-put ov 'hlt-highlight                 new-face)))
     (setq buffer-read-only  read-only-p)
     (set-buffer-modified-p modified-p))
   (setq hlt-last-face  new-face)
