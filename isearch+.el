@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Fri Dec 15 10:44:14 1995
 ;; Version: 21.0
-;; Last-Updated: Mon Nov 14 14:45:36 2011 (-0800)
+;; Last-Updated: Thu Dec  1 07:29:15 2011 (-0800)
 ;;           By: dradams
-;;     Update #: 1070
+;;     Update #: 1101
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/isearch+.el
 ;; Keywords: help, matching, internal, local
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -98,6 +98,8 @@
 ;;                          echo area, in face `isearch-fail'.
 ;;  `isearch-mouse-2'     - Respect `isearchp-mouse-2-flag'(Emacs 21+)
 ;;  `isearch-toggle-case-fold' - Show case sensitivity in mode-line.
+;;                               Message.
+;;  `isearch-toggle-word' - Message, and turn off regexp search.
 ;;  `isearch-yank-string' - Respect `isearchp-regexp-quote-yank-flag'.
 ;;
 ;;
@@ -240,6 +242,12 @@
 ;;
 ;;(@* "Change log")
 ;;
+;; 2011/12/01 dadams
+;;     isearchp-toggle-(invisible|regexp-quote-yank|set-region|case-fold):
+;;       Added sit-for after message.
+;;     isearchp-toggle-(regexp-quote-yank|set-region): Added isearch-update after message + sit-for.
+;;     isearch-toggle-word: Redefine even for Emacs versions that have it, to get message etc.
+;;                          Added message and sit-for.
 ;; 2011/11/14 dadams
 ;;     Bind switch-frame event to ignore in Isearch.
 ;;     Added and commented out: isearchp-switch-frame-or-exit.
@@ -583,44 +591,59 @@ This is used only for Transient Mark mode."
 
 ;;; Commands ---------------------------------------------------------
 ;;;###autoload
-(defun isearchp-toggle-invisible ()
+(defun isearchp-toggle-invisible ()     ; Bound to `C-+'
   "Toggle `search-invisible'."
   (interactive)
   (when search-invisible (setq isearchp-last-non-nil-invisible  search-invisible))
   (setq search-invisible  (if search-invisible nil isearchp-last-non-nil-invisible))
   (if search-invisible
       (message "Searching invisible text is now ON")
-    (message "Searching invisible text is now OFF")))
+    (message "Searching invisible text is now OFF"))
+  (sit-for 1)
+  (isearch-update))
 
 ;;;###autoload
-(defun isearchp-toggle-regexp-quote-yank ()
+(defun isearchp-toggle-regexp-quote-yank () ; Bound to `C-`'
   "Toggle `isearchp-regexp-quote-yank-flag'."
   (interactive)
   (setq isearchp-regexp-quote-yank-flag (not isearchp-regexp-quote-yank-flag))
   (if isearchp-regexp-quote-yank-flag
       (message "Escaping regexp special chars for yank is now ON")
-    (message "Escaping regexp special chars for yank is now OFF")))
+    (message "Escaping regexp special chars for yank is now OFF"))
+  (sit-for 1)
+  (isearch-update))
 
 ;;;###autoload
-(defun isearchp-toggle-set-region ()
+(defun isearchp-toggle-set-region ()    ; Bound to `C-SPC'
   "Toggle `isearchp-set-region-flag'."
   (interactive)
   (setq isearchp-set-region-flag (not isearchp-set-region-flag))
   (if isearchp-set-region-flag
       (message "Setting region around search target is now ON")
-    (message "Setting region around search target is now OFF")))
+    (message "Setting region around search target is now OFF"))
+  (sit-for 1)
+  (isearch-update))
 
+
+;; REPLACE ORIGINAL in `isearch.el' (Emacs 22+).
+;;
+;; 1. Turn off `isearch-regexp' when `isearch-word'.
+;; 2. Show message about new state.
+;;
 ;; From Juri Linkov, 2006-10-29, to emacs-devel@gnu.org
 ;; From Stefan Monnier, 2006-11-23, to help-gnu-emacs@gnu.org
-(unless (fboundp 'isearch-toggle-word)
-  (defun isearch-toggle-word ()
-    "Toggle word searching on or off."
-    ;; The status stack is left unchanged.
-    (interactive)
-    (setq isearch-word (not isearch-word))
-    (when isearch-word (setq isearch-regexp nil)) ; Added to Juri's code by Stefan.
-    (setq isearch-success t isearch-adjusted t)
-    (isearch-update)))
+(defun isearch-toggle-word ()           ; Bound to `M-w'
+  "Toggle word searching on or off."
+  ;; The status stack is left unchanged.
+  (interactive)
+  (setq isearch-word (not isearch-word))
+  (when isearch-word (setq isearch-regexp  nil)) ; Added to Juri's code by Stefan.
+  (setq isearch-success t isearch-adjusted t)
+  (if isearch-word
+      (message "Whole word search is now ON")
+    (message "Whole word search is now OFF"))
+  (sit-for 1)
+  (isearch-update))
 
 ;;;###autoload
 (defun isearchp-set-region-around-search-target ()
@@ -638,19 +661,19 @@ This is used only for Transient Mark mode."
 ;; Update minor-mode mode-line lighter to reflect case sensitivity.
 ;;
 ;;;###autoload
-(defun isearch-toggle-case-fold ()
+(defun isearch-toggle-case-fold ()      ; Bound to `C-c'
   "Toggle case folding in searching on or off.
 The minor-mode lighter is `ISEARCH' for case-insensitive, `Isearch'
 for case-sensitive."
   (interactive)
   (setq isearch-case-fold-search  (if isearch-case-fold-search nil 'yes))
-  (let ((message-log-max  nil))
-    (message "%s%s [case %ssensitive]" (isearch-message-prefix nil nil isearch-nonincremental)
-	     isearch-message (if isearch-case-fold-search "in" "")))
   (setq isearch-success   t
         isearch-adjusted  t)
   (isearchp-highlight-lighter)
-  ;; (sit-for 1)
+  (let ((message-log-max  nil))
+    (message "%s%s [case %ssensitive]" (isearch-message-prefix nil nil isearch-nonincremental)
+	     isearch-message (if isearch-case-fold-search "in" "")))
+  (sit-for 1)
   (isearch-update))
 
 
