@@ -10,6 +10,9 @@ It works where a line ends with a newline character ("\n") and paragraphs are se
       (let ((fill-column (point-max)))
         (fill-paragraph nil)))
 
+    ;; Handy key definition
+    (define-key global-map "\M-Q" 'unfill-paragraph)
+
 See also UnfillRegion, UnwrapLine.
 
 [new]
