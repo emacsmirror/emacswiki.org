@@ -7,9 +7,9 @@
 ;; Copyright (C) 1999-2011, Drew Adams, all rights reserved.
 ;; Created: Fri Mar 19 15:58:58 1999
 ;; Version: 21.2
-;; Last-Updated: Tue Nov 29 09:42:22 2011 (-0800)
+;; Last-Updated: Fri Dec  2 06:52:04 2011 (-0800)
 ;;           By: dradams
-;;     Update #: 4194
+;;     Update #: 4213
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/dired+.el
 ;; Keywords: unix, mouse, directories, diredp, dired
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -22,8 +22,7 @@
 ;;   `ediff-diff', `ediff-help', `ediff-init', `ediff-merg',
 ;;   `ediff-mult', `ediff-util', `ediff-wind', `ffap', `fit-frame',
 ;;   `info', `info+', `misc-fns', `mkhtml', `mkhtml-htmlize', `pp',
-;;   `pp+', `strings', `thingatpt', `thingatpt+', `w32-browser',
-;;   `widget'.
+;;   `pp+', `strings', `thingatpt', `thingatpt+', `w32-browser'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -171,6 +170,7 @@
 ;;    `diredp-dired-plus-description+links',
 ;;    `diredp-dired-plus-help-link', `diredp-dired-union-1',
 ;;    `diredp-dired-union-interactive-spec',
+;;    `diredp-internal-do-deletions',
 ;;    `diredp-make-find-file-keys-reuse-dirs',
 ;;    `diredp-make-find-file-keys-not-reuse-dirs',
 ;;    `diredp-mark-files-tagged-all/none',
@@ -255,6 +255,9 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2011/12//02 dadams
+;;     Added diredp-internal-do-deletions.
+;;     dired(-mouse)-do(-flagged)-delete, : Use diredp-internal-do-deletions, for trash.
 ;; 2011/11/29 dadams
 ;;     diredp-read-bookmark-file-args: Corrected use of list of default file names: > Emacs 23.1.
 ;; 2011/10/31 dadams
@@ -3871,7 +3874,8 @@ Otherwise, an error occurs in these cases."
 
 ;; REPLACE ORIGINAL in `dired.el':
 ;;
-;; Display a message to warn that flagged, not marked, files will be deleted.
+;; 1. Display a message to warn that flagged, not marked, files will be deleted.
+;; 2. Use `diredp-internal-do-deletions', so it works with all Emacs versions.
 ;;
 ;;;###autoload
 (defun dired-do-flagged-delete (&optional no-msg) ; Bound to `x'
@@ -3892,16 +3896,18 @@ non-empty directories is allowed."
          (regexp             (dired-marker-regexp))
          case-fold-search)
     (if (save-excursion (goto-char (point-min)) (re-search-forward regexp nil t))
-        (dired-internal-do-deletions
+        (diredp-internal-do-deletions
          ;; This cannot move point since last arg is nil.
          (dired-map-over-marks (cons (dired-get-filename) (point)) nil)
-         nil)
+         nil
+         'USE-TRASH-CAN)                ; This arg is for Emacs 24+ only.
       (unless no-msg (message "(No deletions requested.)")))))
 
 
 ;; REPLACE ORIGINAL in `dired.el':
 ;;
-;; Display a message to warn that marked, not flagged, files will be deleted.
+;; 1. Display a message to warn that marked, not flagged, files will be deleted.
+;; 2. Use `diredp-internal-do-deletions', so it works with all Emacs versions.
 ;;
 ;;;###autoload
 (defun dired-do-delete (&optional arg)  ; Bound to `D'
@@ -3918,10 +3924,17 @@ non-empty directories is allowed."
     (ding)
     (message "NOTE: Deletion of files marked `%c' (not those flagged `%c')."
              dired-marker-char dired-del-marker))
-  (dired-internal-do-deletions
-   ;; This may move point if ARG is an integer.
+  (diredp-internal-do-deletions
+   ;; This can move point if ARG is an integer.
    (dired-map-over-marks (cons (dired-get-filename) (point)) arg)
-   arg))
+   arg
+   'USE-TRASH-CAN))                     ; This arg is for Emacs 24+ only.
+
+(defun diredp-internal-do-deletions (l arg &optional trash)
+  "`dired-internal-do-deletions', but for any Emacs version."
+  (if (> emacs-major-version 23)
+      (dired-internal-do-deletions l arg trash)
+    (dired-internal-do-deletions l arg)))
 
 ;;;###autoload
 (defun diredp-capitalize (&optional arg) ; Not bound
@@ -4765,9 +4778,10 @@ This normally preserves the last-modified date when copying."
   (let ((mouse-pos  (event-start event)))
     (select-window (posn-window mouse-pos))
     (goto-char (posn-point mouse-pos)))
-  (dired-internal-do-deletions (dired-map-over-marks (cons (dired-get-filename)
-                                                           (point)) 1)
-                               1)
+  (diredp-internal-do-deletions (dired-map-over-marks (cons (dired-get-filename)
+                                                            (point)) 1)
+                                1
+                                'USE-TRASH-CAN) ; This arg is for Emacs 24+ only.
   (dired-previous-line 1))
 
 ;;;###autoload
