@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2011, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 13:43:55 2010 (-0700)
-;; Last-Updated: Wed Nov 30 14:42:19 2011 (-0800)
+;; Last-Updated: Fri Dec  2 09:04:25 2011 (-0800)
 ;;           By: dradams
-;;     Update #: 2426
+;;     Update #: 2477
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-1.el
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -1572,7 +1572,7 @@ Non-nil VISITS means record it as the `visits' entry."
 ;; 8. Run `bmkp-after-set-hook'.
 ;;
 ;;;###autoload
-(defun bookmark-set (&optional name parg interactivep) ; `C-x r m'
+(defun bookmark-set (&optional name parg interactivep) ; `C-x r m', `C-x p c m'
   "Set a bookmark named NAME, then run `bmkp-after-set-hook'.
 If the region is active (`transient-mark-mode') and nonempty, then
 record the region limits in the bookmark.
@@ -1811,7 +1811,8 @@ Non-nil USE-REGION-P flips the value of `bmkp-use-region'."
 ;; 3. Use `bmkp-jump-1'.
 ;;
 ;;;###autoload
-(defun bookmark-jump-other-window (bookmark &optional use-region-p) ; `C-x 4 j j', `C-x p o'
+(defun bookmark-jump-other-window (bookmark &optional use-region-p)
+                                        ; Bound to `C-x 4 j j', `C-x p j', `C-x p o', `C-x p q'
   "Jump to bookmark BOOKMARK in another window.
 See `bookmark-jump', in particular for info about using a prefix arg."
   (interactive (list (bookmark-completing-read "Jump to bookmark (in another window)"
@@ -2862,7 +2863,7 @@ Returns the new bookmark (internal record)."
     new))
 
 ;;;###autoload
-(defun bmkp-switch-bookmark-file (file &optional no-msg) ; Bound to `L' in bookmark list
+(defun bmkp-switch-bookmark-file (file &optional no-msg) ; Bound to `C-x p L', (`L' in bookmark list)
   "Switch to a different bookmark file, FILE.
 Interactively, you are prompted for FILE.
 Replace all currently existing bookmarks with the newly loaded
@@ -2925,7 +2926,7 @@ The other args are the same as for `read-file-name'."
                      require-match))))
 
 ;;;###autoload
-(defun bmkp-empty-file (file &optional confirmp)           ; Bound to `C-x p 0'
+(defun bmkp-empty-file (file &optional confirmp) ; Bound to `C-x p 0'
   "Empty the bookmark file FILE, or create FILE (empty) if it does not exist.
 In either case, FILE will become an empty bookmark file.  Return FILE.
 
@@ -3355,7 +3356,7 @@ Non-nil UPDATE-TAGS-ALIST-P means update var `bmkp-tags-alist'."
     (nreverse btags)))
 
 ;;;###autoload
-(defun bmkp-list-all-tags (fullp)       ; Bound to `T l' in bookmark list, `C-x p t l' elsewhere
+(defun bmkp-list-all-tags (fullp)       ; Bound to `C-x p t l', (`T l' in bookmark list)
   "List all tags used for any bookmarks.
 With a prefix argument, list the full alist of tags.
 Otherwise, list only the tag names.
@@ -3391,9 +3392,9 @@ Otherwise, return an alist of the full tags and set variable
   "Full cons entry for TAG.  If TAG is a cons, then TAG, else (list TAG)."
   (if (consp tag) tag (list tag)))
 
-;; `T 0' in bookmark list, `C-x p t 0' elsewhere.
 ;;;###autoload
 (defun bmkp-remove-all-tags (bookmark &optional msgp no-cache-update-p)
+                                        ; Bound to `C-x p t 0', (`T 0' in bookmark list)
   "Remove all tags from BOOKMARK.
 Non-nil optional arg MSGP means display a message about the removal.
 Non-nil NO-CACHE-UPDATE-P means do not update `bmkp-tags-alist'."
@@ -3408,9 +3409,9 @@ Non-nil NO-CACHE-UPDATE-P means do not update `bmkp-tags-alist'."
     (with-current-buffer (get-buffer "*Bookmark List*")
       (bmkp-refresh-menu-list bookmark)))) ; So the `t' markers are removed.
 
-;; `T +' in bookmark list, `C-x p t + b' elsewhere (`b' for bookmark)
 ;;;###autoload
 (defun bmkp-add-tags (bookmark tags &optional msgp no-cache-update-p)
+                                        ; `C-x p t + b' (`b' for bookmark), (`T +' in bookmark list)
   "Add TAGS to BOOKMARK.
 Hit `RET' to enter each tag, then hit `RET' again after the last tag.
 You can use completion to enter the bookmark name and each tag.
@@ -3469,9 +3470,9 @@ If BOOKMARK has no tag named TAG, then add one with value VALUE."
     (bookmark-prop-set bookmark 'tags newtags))
   (when msgp "Tag value added"))
 
-;; `T -' in bookmark list, `C-x p t - b' elsewhere (`b' for bookmark)
 ;;;###autoload
-(defun bmkp-remove-tags (bookmark tags &optional msgp no-cache-update-p) ; `T -' in bookmark list
+(defun bmkp-remove-tags (bookmark tags &optional msgp no-cache-update-p)
+                                        ; `C-x p t - b' (`b' for bookmark), (`T -' in bookmark list)
   "Remove TAGS from BOOKMARK.
 Hit `RET' to enter each tag, then hit `RET' again after the last tag.
 You can use completion to enter the bookmark name and each tag.
@@ -3504,7 +3505,7 @@ Return the number of tags removed."
         nb-removed))))
 
 ;;;###autoload
-(defun bmkp-remove-tags-from-all (tags &optional msgp) ; Bound to `T d' in bookmark list
+(defun bmkp-remove-tags-from-all (tags &optional msgp) ; Bound to `C-x p t d', (`T d' in bookmark list)
   "Remove TAGS from all bookmarks.
 Hit `RET' to enter each tag, then hit `RET' again after the last tag.
 You can use completion to enter each tag.
@@ -3521,7 +3522,7 @@ Non-nil optional arg MSGP means display a message about the deletion."
   (when msgp (message "Tags removed from all bookmarks: %S" tags)))
 
 ;;;###autoload
-(defun bmkp-rename-tag (tag newname &optional msgp) ; Bound to `T r' in bookmark list, `C-x p t r' elsewhere
+(defun bmkp-rename-tag (tag newname &optional msgp) ; Bound to `C-x p t r', (`T r' in bookmark list)
   "Rename TAG to NEWNAME in all bookmarks, even those not showing.
 Non-nil optional arg MSGP means display a message about the deletion."
   (interactive (list (bmkp-read-tag-completing "Tag (old name): ")
@@ -3544,7 +3545,7 @@ Non-nil optional arg MSGP means display a message about the deletion."
     (when msgp (message "Renamed"))))
 
 ;;;###autoload
-(defun bmkp-copy-tags (bookmark &optional msgp) ; `C-x p t c',  `C-x p t M-w'
+(defun bmkp-copy-tags (bookmark &optional msgp) ; Bound to `C-x p t c', `C-x p t M-w'
   "Copy tags from BOOKMARK, so you can paste them to another bookmark.
 Note that you can copy from a BOOKMARK that has no tags or has an
 empty tags list.  In that case, the copied-tags list is empty, so if
@@ -3559,7 +3560,7 @@ tags copied."
     (when msgp (message "%d tags now available for pasting" (length btags)))))
 
 ;;;###autoload
-(defun bmkp-paste-add-tags (bookmark &optional msgp no-cache-update-p) ; `C-x p t p',  ; `C-x p t C-y'
+(defun bmkp-paste-add-tags (bookmark &optional msgp no-cache-update-p) ; Bound to `C-x p t p', `C-x p t C-y'
   "Add tags to BOOKMARK that were previously copied from another bookmark.
 The tags are copied from `bmkp-copied-tags'.
 Non-nil MSGP means display a message about the addition.
@@ -3571,7 +3572,7 @@ Return the number of tags added."
   (bmkp-add-tags bookmark bmkp-copied-tags msgp no-cache-update-p))
 
 ;;;###autoload
-(defun bmkp-paste-replace-tags (bookmark &optional msgp no-cache-update-p) ; `C-x p t q'
+(defun bmkp-paste-replace-tags (bookmark &optional msgp no-cache-update-p) ; Bound to `C-x p t q'
   "Replace tags for BOOKMARK with those copied from another bookmark.
 The tags are copied from `bmkp-copied-tags'.
 Any previously existing tags for BOOKMARK are lost.
@@ -4335,6 +4336,7 @@ If either name is not absolute, then it is considered relative to
   (if (not (require 'tramp nil t))
       (string= (file-truename file1) (file-truename file2))
     ;; Try to avoid having Tramp access remote files to determine whether the same.
+    ;; Also, use `file-remote-p' with only one argument (for Emacs 22 compatibility).
     (or (and (not (file-remote-p file1)) (not (file-remote-p file2))
              (string= (file-truename file1) (file-truename file2)))
         (and (file-remote-p file1) (file-remote-p file2)
@@ -5104,9 +5106,9 @@ bookmark name is the prefix followed by the URL."
         bmk                             ; Return the bookmark.
       (error "Failed to create bookmark for `%s':\n%s\n" url failure))))
 
-;;; Bound to `C-x p c f'
 ;;;###autoload
 (defun bmkp-file-target-set (file &optional prefix-only-p name/prefix no-overwrite msgp)
+                                        ; Bound to `C-x p c f'
   "Set a bookmark for FILE.  Return the bookmark.
 The bookmarked position is the beginning of the file.
 Interactively you are prompted for FILE.  Completion is available.
@@ -5415,7 +5417,7 @@ The value is based on `bmkp-default-handler-associations'."
   (play-sound-file (bookmark-get-filename bookmark)))
 
 (when (> emacs-major-version 21)
-  (defun bmkp-compilation-target-set (&optional prefix) ; `C-c C-b'
+  (defun bmkp-compilation-target-set (&optional prefix) ; Bound to `C-c C-b' in compilation mode
     "Set a bookmark at the start of the line for this compilation hit.
 You are prompted for the bookmark name.  But with a prefix arg, you
 are prompted only for a PREFIX string.  In that case, and in Lisp
@@ -5450,7 +5452,7 @@ POSITION is the beginning of the line indicated by the message."
       (cons (expand-file-name filename spec-dir) line))))
     
 (when (> emacs-major-version 21)
-  (defun bmkp-compilation-target-set-all (prefix &optional msgp) ; `C-c C-M-b'
+  (defun bmkp-compilation-target-set-all (prefix &optional msgp) ; Bound to `C-c C-M-b' in compilation mode
     "Set a bookmark for each hit of a compilation buffer.
 NOTE: You can use `C-x C-q' to make the buffer writable and then
       remove any hits that you do not want to bookmark.  Only the hits
@@ -5483,7 +5485,7 @@ number."
 ;; delete some occurrences and bookmark only the remaining ones.
 
 (when (> emacs-major-version 21)
-  (defun bmkp-occur-target-set (&optional prefix) ; `C-c C-b'
+  (defun bmkp-occur-target-set (&optional prefix) ; Bound to `C-c C-b' in Occur mode
     "Set a bookmark at the start of the line for this `(multi-)occur' hit.
 You are prompted for the bookmark name.  But with a prefix arg, you
 are prompted only for a PREFIX string.  In that case, and in Lisp
@@ -5514,7 +5516,7 @@ You can use this only in `Occur' mode (commands such as `occur' and
                           (bookmark-set (format "%s%s, line %s" prefix buf line) 99 'INTERACTIVEP)))))))
 
 (when (> emacs-major-version 21)
-  (defun bmkp-occur-target-set-all (&optional prefix msgp) ; `C-c C-M-b'
+  (defun bmkp-occur-target-set-all (&optional prefix msgp) ; Bound to `C-c C-M-b' in Occur mode
     "Set a bookmark for each hit of a `(multi-)occur' buffer.
 NOTE: You can use `C-x C-q' to make the buffer writable and then
       remove any hits that you do not want to bookmark.  Only the hits
@@ -5549,7 +5551,7 @@ creates autonamed bookmarks to all `occur' and `multi-occur' hits."
 ;;  *** Other Bookmark+ Functions (`bmkp-*') ***
 
 ;;;###autoload
-(defun bmkp-describe-bookmark (bookmark &optional defn)
+(defun bmkp-describe-bookmark (bookmark &optional defn) ; Bound to `C-x p ?'
   "Describe BOOKMARK.
 With a prefix argument, show the internal definition of the bookmark.
 BOOKMARK is a bookmark name or a bookmark record.
@@ -6703,7 +6705,7 @@ for info about using a prefix argument."
   (bmkp-jump-1 bookmark-name 'switch-to-buffer use-region-p))
 
 ;;;###autoload
-(defun bmkp-dired-jump (bookmark-name &optional use-region-p) ; `C-x j d'
+(defun bmkp-dired-jump (bookmark-name &optional use-region-p) ; `C-x j d', (`j' in Dired)
   "Jump to a Dired bookmark.
 This is a specialization of `bookmark-jump' - see that, in particular
 for info about using a prefix argument."
@@ -6723,7 +6725,7 @@ for info about using a prefix argument."
   (bmkp-jump-1 bookmark-name 'bmkp-select-buffer-other-window use-region-p))
 
 ;;;###autoload
-(defun bmkp-dired-this-dir-jump (bookmark-name &optional use-region-p) ; `C-x j C-d'
+(defun bmkp-dired-this-dir-jump (bookmark-name &optional use-region-p) ; `C-x j C-d', (`C-j' in Dired)
   "Jump to a Dired bookmark for the `default-directory'.
 This is a specialization of `bookmark-jump' - see that, in particular
 for info about using a prefix argument."
@@ -6783,7 +6785,7 @@ for info about using a prefix argument."
   (bmkp-jump-1 bookmark-name 'bmkp-select-buffer-other-window use-region-p))
 
 ;;;###autoload
-(defun bmkp-gnus-jump (bookmark-name &optional use-region-p) ; `C-x j g'
+(defun bmkp-gnus-jump (bookmark-name &optional use-region-p) ; `C-x j g', (`j' in Gnus summary mode)
   "Jump to a Gnus bookmark.
 This is a specialization of `bookmark-jump' - see that, in particular
 for info about using a prefix argument."
@@ -6803,7 +6805,7 @@ for info about using a prefix argument."
   (bmkp-jump-1 bookmark-name 'bmkp-select-buffer-other-window use-region-p))
 
 ;;;###autoload
-(defun bmkp-image-jump (bookmark-name &optional use-region-p) ; `C-x j I'
+(defun bmkp-image-jump (bookmark-name &optional use-region-p) ; `C-x j M-i'
   "Jump to an image-file bookmark.
 This is a specialization of `bookmark-jump' - see that, in particular
 for info about using a prefix argument."
@@ -6814,7 +6816,7 @@ for info about using a prefix argument."
   (bmkp-jump-1 bookmark-name 'switch-to-buffer use-region-p))
 
 ;;;###autoload
-(defun bmkp-image-jump-other-window (bookmark-name &optional use-region-p) ; `C-x j I'
+(defun bmkp-image-jump-other-window (bookmark-name &optional use-region-p) ; `C-x j M-i'
   "`bmkp-image-jump', but in another window."
   (interactive
    (let ((alist  (bmkp-image-alist-only)))
@@ -6823,7 +6825,7 @@ for info about using a prefix argument."
   (bmkp-jump-1 bookmark-name 'switch-to-buffer use-region-p))
 
 ;;;###autoload
-(defun bmkp-info-jump (bookmark-name &optional use-region-p) ; `C-x j i'
+(defun bmkp-info-jump (bookmark-name &optional use-region-p) ; `C-x j i', (`j' in Info)
   "Jump to an Info bookmark.
 This is a specialization of `bookmark-jump' - see that, in particular
 for info about using a prefix argument."
@@ -6863,7 +6865,7 @@ for info about using a prefix argument."
   (bmkp-jump-1 bookmark-name 'bmkp-select-buffer-other-window use-region-p))
 
 ;;;###autoload
-(defun bmkp-man-jump (bookmark-name &optional use-region-p) ; `C-x j m'
+(defun bmkp-man-jump (bookmark-name &optional use-region-p) ; `C-x j m', (`j' in Man)
   "Jump to a `man'-page bookmark.
 This is a specialization of `bookmark-jump' - see that, in particular
 for info about using a prefix argument."
@@ -6883,7 +6885,7 @@ for info about using a prefix argument."
   (bmkp-jump-1 bookmark-name 'bmkp-select-buffer-other-window use-region-p))
 
 ;;;###autoload
-(defun bmkp-non-file-jump (bookmark-name &optional use-region-p) ; `C-x j b'
+(defun bmkp-non-file-jump (bookmark-name &optional use-region-p) ; `C-x j b', (`j' in Buffer Menu)
   "Jump to a non-file (buffer) bookmark.
 This is a specialization of `bookmark-jump' - see that, in particular
 for info about using a prefix argument."
@@ -7102,7 +7104,7 @@ for info about using a prefix argument."
   (bmkp-jump-1 bookmark-name 'bmkp-select-buffer-other-window use-region-p))
 
 ;;;###autoload
-(defun bmkp-w3m-jump (bookmark-name &optional use-region-p) ; `C-x j w'
+(defun bmkp-w3m-jump (bookmark-name &optional use-region-p) ; `C-x j w', (`j' in W3M)
   "Jump to a W3M bookmark.
 This is a specialization of `bookmark-jump' - see that, in particular
 for info about using a prefix argument."
@@ -7831,7 +7833,8 @@ See `bmkp-next-bookmark-this-file/buffer'."
   (bmkp-cycle-this-file/buffer (- n) nil startoverp))
 
 ;;;###autoload
-(defun bmkp-next-bookmark-this-file/buffer-repeat (arg) ; `C-x p down', `C-x p n', `C-x p C-n'
+(defun bmkp-next-bookmark-this-file/buffer-repeat (arg)
+                                        ; `C-x p down', `C-x p n', `C-x p C-n', `C-x p mouse-wheel-up'
   "Jump to the Nth next bookmark for the current file/buffer.
 This is a repeatable version of `bmkp-next-bookmark-this-file/buffer'.
 N defaults to 1, meaning the next one.
@@ -7841,7 +7844,8 @@ Plain `C-u' means start over at the first one (and no repeat)."
   (bmkp-repeat-command 'bmkp-next-bookmark-this-file/buffer))
 
 ;;;###autoload
-(defun bmkp-previous-bookmark-this-file/buffer-repeat (arg) ; `C-x p up', `C-x p p', `C-x p C-p'
+(defun bmkp-previous-bookmark-this-file/buffer-repeat (arg)
+                                        ; `C-x p up', `C-x p p', `C-x p C-p', `C-x p mouse-wheel-down'
   "Jump to the Nth previous bookmark for the current file/buffer.
 See `bmkp-next-bookmark-this-file/buffer-repeat'."
   (interactive "P")
@@ -8043,7 +8047,8 @@ See `bmkp-next-bookmark-w32-repeat'."
 (bmkp-define-next+prev-cycle-commands "url")
 
 ;;;###autoload
-(defun bmkp-toggle-autonamed-bookmark-set/delete (position &optional allp) ; Bound to `C-x p RET'
+(defun bmkp-toggle-autonamed-bookmark-set/delete (position &optional allp)
+                                        ; Bound to `C-x p RET', `C-x p c RET'
   "If there is an autonamed bookmark at point, delete it, else create one.
 The bookmark created has no region.  Its name is formatted according
 to option `bmkp-autoname-bookmark-function'.
@@ -8085,7 +8090,7 @@ Non-interactively, act at POSITION, not point."
     (bmkp-set-autonamed-bookmark (point))))
 
 (when (> emacs-major-version 21)
-  (defun bmkp-occur-create-autonamed-bookmarks ( &optional msgp)
+  (defun bmkp-occur-create-autonamed-bookmarks ( &optional msgp) ; Bound to `C-c C-M-B' (aka `C-c C-M-S-b')
     "Create an autonamed bookmark for each `occur' hit.
 You can use this only in `Occur' mode (commands such as `occur' and
 `multi-occur')."
