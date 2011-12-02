@@ -33,6 +33,15 @@ I am also improving and extending the [[https://github.com/nicferrier/elnode/blo
 
 It's pretty good. I hope people pick it up because it's an interesting way to leverage Emacs.
 
+== WikiCreole ==
+
+WikiCreole is a Wiki markup language very like the one used here on EmacsWiki. 
+
+I am writing and maintaining an EmacsLisp version of a WikiCreole parser and HTML exporter.
+
+I am doing this mainly so Elnode can have a decent Wiki implementation.
+
+
 == Emacs under Mercurial ==
 
 I host a mercurial copy of the emacs bzr repo at [https://bitbucket.org/nic/emacs bitbucket].
