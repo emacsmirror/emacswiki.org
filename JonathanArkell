@@ -13,6 +13,7 @@ Emacs projects are:
 * Lisp:org-jira.el - A simple package to hook up jira with org.  Right now provides a org to jira link.  More coming later.
 * Lisp:i-ching.el - i-ching for Emacs.
 * MojoSdk - Helper functions for interacting with the mojo SDK development tools. 
+* Lisp:flip-tables.el  goofy fun. Put an emoji table flipper on your kill ring.
 
 ----
 For one job I do Web Development.  My weapons of choice are org-mode, moz-repl, js2 and nxhtml.
