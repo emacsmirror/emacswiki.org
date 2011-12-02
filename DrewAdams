@@ -430,6 +430,14 @@ You're welcome.
 
 #3 was already the case: keys are sorted by length (but disregarding any prefix/non-prefix, which I think makes sense).  HTH -- DrewAdams
 
+
+
+
+
+
+
+
+-----
 [new]
 hi, DrewAdams. I find a problem in dired+.el long time.  The two `dired-do-delete` and `dired-do-flagged-delete` function replace in `dired.el` show a different behaviour On Windows .
 
@@ -441,7 +449,17 @@ hi, DrewAdams. I find a problem in dired+.el long time.  The two `dired-do-delet
 
 4. I comment the two function `dired-do-delete` and `dired-do-flagged-delete` in `dired+`.el. Then reboot emacs, when i delete files/directories in dired mode, emacs will delete files into windeows's Recycle Bin directory correctly.
 
-please fixed it. Thank you. -- pocoyo
+please fixed it. Thank you. -- [[pocoyo]]
+
+
+[new:DrewAdams:2011-12-02 15:00 UTC]
+Thanks for the report.  Should be fixed now.  Note: this is a new feature, for Emacs 24, which has not yet been released.  Since it is not released, I do not necessarily support it yet.  -- DrewAdams
+
+
+
+
+
+
 
 ----
 
