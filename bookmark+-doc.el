@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2011, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Tue Nov 29 14:23:46 2011 (-0800)
+;; Last-Updated: Fri Dec  2 07:53:33 2011 (-0800)
 ;;           By: dradams
-;;     Update #: 13949
+;;     Update #: 13994
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-doc.el
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search,
 ;;           info, url, w3m, gnus
@@ -118,6 +118,7 @@
 ;;  (@> "Documentation")
 ;;    (@> "Installing Bookmark+")
 ;;    (@> "Bookmark+ Features")
+;;    (@> "Bookmark Basics")
 ;;    (@> "Different Types of Jump Commands")
 ;;    (@> "Bookmark Tags")
 ;;    (@> "Bookmark Tags Can Have Values")
@@ -490,6 +491,84 @@
 ;;       jumping (visiting), setting, and help.  It gives you a
 ;;       bookmark browser.  See (@> "Use Bookmark+ with Icicles") and
 ;;       http://www.emacswiki.org/cgi-bin/wiki/Icicles.
+ 
+;;(@* "Bookmark Basics")
+;;  ** Bookmark Basics **
+;;
+;;  Bookmark+ builds on vanilla Emacs bookmarks.  If you are familiar
+;;  with the latter, then you can skip this section, which mostly
+;;  reviews the former.  However, this section also introduces some
+;;  Bookmark+ concepts and features that are detailed in other
+;;  sections.
+;;
+;;  In Emacs bookmarking these three things are different but related:
+;;
+;;  1. the bookmark list
+;;  2. the bookmark file
+;;  3. the bookmark-list display (buffer `*Bookmark List*', aka the
+;;     bookmark "menu list", a misnomer)
+;;
+;;  It is important to keep these three straight and understand their
+;;  differences in practice, in particular, when they do and do not
+;;  represent the same set of bookmarks.
+;;
+;;  #1 is in memory.  It is the current set of bookmarks.  When you
+;;  add, rename, delete, etc. a bookmark, this list is updated.
+;;
+;;  #2 is on disk.  It is a persistent record of a set of bookmarks.
+;;
+;;  The bookmark list (#1) is the current value of internal variable
+;;  `bookmark-alist'.  The bookmark file (#2)can be anywhere.  Its
+;;  default filename is the value of user option
+;;  `bookmark-default-file'.
+;;
+;;  The bookmark list is typically initialized from the bookmark file
+;;  - referred to as loading your bookmarks, but you can also create
+;;  bookmarks (adding them to the list) without ever saving them to
+;;  disk.
+;;
+;;  The bookmark list can be saved to the bookmark file - referred to
+;;  as saving your bookmarks - either automatically or on demand.  But
+;;  it is not necessarily saved.  Even if it has been saved in the
+;;  past, that does not mean that at any given time the bookmark list
+;;  corresponds exactly to the bookmark file.
+;;
+;;  The list and the file can often be out of sync.  In an Emacs
+;;  session, the bookmark list rules.  After an Emacs session, the
+;;  bookmark file rules (it is all there is).
+;;
+;;  The bookmark-list display (#3) is a snapshot view of the bookmarks
+;;  in the bookmark list.  As such, what you see there reflects the
+;;  state of the bookmark list at some point in time.  So here again,
+;;  the two, list and display, can be out of sync.  Hitting `g' in the
+;;  bookmark-list display refreshes it to accurately reflect the
+;;  current bookmark list.  Some other operations in the display also
+;;  keep it synched.
+;;
+;;  You can load different bookmark files, either adding their
+;;  bookmarks to those already in the current bookmark list or
+;;  replacing them.
+;;
+;;  The most important takeaway from this section is that #1, #2, and
+;;  #3 can be out of sync, and they often are.  And that can be
+;;  useful.
+;;
+;;  Until now, everything said in this section is true of vanilla
+;;  Emacs as well as Bookmark+.  Bookmark+ adds some flexibility
+;;  regarding the use of multiple bookmark files, and it can save the
+;;  last state of the bookmark-list display for later reuse.
+;;
+;;  The saved state of the display is restored when you show the
+;;  display after quitting it (`q') in the same session or quitting
+;;  Emacs, but only if the bookmark file whose location it recorded is
+;;  the same as the current bookmark file.
+;;
+;;  It would not make sense to display a completely different set of
+;;  bookmarks from those that are currently loaded.  The display must
+;;  always reflect the current bookmark list (even if it sometimes
+;;  reflects it imperfectly, because it is a snapshot).  So if the
+;;  bookmark file that is loaded is different from the one that was
+;;  recorded for the display state, the recorded state is ignored.
  
 ;;(@* "Different Types of Jump Commands")
 ;;  ** Different Types of Jump Commands **
