@@ -17,7 +17,7 @@ below.
         (fill-region beg end)))
     
     ;; Handy key definition
-    (define-key global-map "\C-\M-Q" 'unfill-paragraph)
+    (define-key global-map "\C-\M-Q" 'unfill-region)
 
 [new]
 For those that needs those functions, they are in the file ##util/ourcomments-util.el## in [NxhtmlMode nXhtml]. You can grab that file from the repository if you like. (But I think the functions should be in Emacs so we do not have to reinvent them so often as we do now ...)
