@@ -430,6 +430,18 @@ You're welcome.
 
 #3 was already the case: keys are sorted by length (but disregarding any prefix/non-prefix, which I think makes sense).  HTH -- DrewAdams
 
+[new]
+hi, DrewAdams. I find a problem in dired+.el long time.  The two `dired-do-delete` and `dired-do-flagged-delete` function replace in `dired.el` show a different behaviour On Windows .
+
+1. First, I setup (setq delete-by-moving-to-trash t) to using-systems-trash-when-deleting-files.
+
+2. when I do not use the dired+.el, in the dired mode , when I press `D` on some files/directories, emacs can delete files into the Recycle Bin directory correctly. 
+
+3. Then I require dired.el, in the dired mode, when I press `D` on some files/directories, emacs will delete files/directorys directly from disk, and do not delete files into the Recycle Bin directory.
+
+4. I comment the two function `dired-do-delete` and `dired-do-flagged-delete` in `dired+`.el. Then reboot emacs, when i delete files/directories in dired mode, emacs will delete files into windeows's Recycle Bin directory correctly.
+
+please fixed it. Thank you. -- pocoyo
 
 ----
 
