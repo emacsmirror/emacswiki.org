@@ -2,6 +2,6 @@
 
 A standardized Wiki markup language. 
 
-Standardization of version 1.0 is documented here [[http://www.wikicreole.org/]]
+Standardization of version 1.0 is documented here [[http://www.wikicreole.org/|http://www.wikicreole.org/]]
 
 NicFerrier is writing EmacsLisp handling of WikiCreole. His current package is in [[http://marmalade-repo.org/packages/creole/0.7.2|marmalade]].
