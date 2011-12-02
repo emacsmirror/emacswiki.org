@@ -5,7 +5,9 @@ This page is about Emacs '''[::bookmark]s'''. Bookmarks record locations so you 
 
 == Introduction ==
 
-Some commands to get you started:
+Emacs bookmarking makes use of three things that are related but different: a bookmark ''list'', a bookmark ''file'', and a bookmark-list ''display''.  Understanding these is important to using Emacs bookmarks.  They are explained at [[BookmarkPlus#BookmarkBasics|Bookmark Basics]].
+
+Some bookmarking commands to get you started:
 
 * `C-x r m' -- set a bookmark at the current location (e.g. in a file)
 * `C-x r b' -- jump to a bookmark
