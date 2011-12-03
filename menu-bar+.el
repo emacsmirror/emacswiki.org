@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Thu Aug 17 10:05:46 1995
 ;; Version: 21.1
-;; Last-Updated: Fri Nov  4 09:37:55 2011 (-0700)
+;; Last-Updated: Sat Dec  3 08:44:01 2011 (-0800)
 ;;           By: dradams
-;;     Update #: 3454
+;;     Update #: 3545
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/menu-bar+.el
 ;; Keywords: internal, local, convenience
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -101,6 +101,9 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2011/12/03 dadams
+;;     All region commands: Enable only if region is also nonempty.
+;;     All editing commands: Enable only if buffer is not read-only.
 ;; 2011/11/04 dadams
 ;;     Wrap (x-get-selection 'SECONDARY) everywhere in condition-case (Emacs 21 bug).
 ;; 2011/07/24 dadams
@@ -730,12 +733,15 @@ submenu of the \"Help\" menu."))
 (define-key-after menu-bar-edit-menu [separator-edit-cut] '("--") 'undo)
 (define-key-after menu-bar-edit-menu [cut]
   '(menu-item "Cut" kill-region
-    :help "Cut (kill) text in region between mark and current position"
-    :enable (and mark-active (not buffer-read-only))) 'separator-edit-cut)
+    :help "Cut (kill) text in nonempty region between mark and current position"
+    :enable (and (not buffer-read-only) mark-active (> (region-end) (region-beginning))))
+  'separator-edit-cut)
 (define-key-after menu-bar-edit-menu [copy]
   '(menu-item "Copy" menu-bar-kill-ring-save
-    :help "Copy text in region between mark and current position"
-    :enable mark-active :keys "\\[kill-ring-save]") 'cut)
+    :help "Copy text in nonempty region between mark and current position"
+    :enable (and mark-active (> (region-end) (region-beginning)))
+    :keys "\\[kill-ring-save]")
+  'cut)
 
 ;; Use `x-get-selection', not `x-selection-exists-p', because of Emacs bugs on Windows etc.
 ;; See thread "x-selection-exists-p  vs  x-get-selection", emacs-devel@gnu.org, 2008-05-04.
@@ -743,28 +749,27 @@ submenu of the \"Help\" menu."))
   '(menu-item "Paste" yank
     :help "Paste (yank) text most recently cut/copied"
     :enable
-    (and
-     (or
-      (and (fboundp 'x-selection-exists-p) (x-selection-exists-p))
-      (and x-select-enable-clipboard (x-selection-exists-p 'CLIPBOARD)))
-     (not buffer-read-only))) 'copy)
-(when (fboundp 'yank-secondary)
-  (define-key-after menu-bar-edit-menu [yank-secondary] ; In `second-sel.el'
-    '(menu-item "Paste Secondary" yank-secondary
+    (and (not buffer-read-only)
+     (or (and (fboundp 'x-selection-exists-p) (x-selection-exists-p))
+      (and x-select-enable-clipboard (x-selection-exists-p 'CLIPBOARD)))))
+  'copy)
+(when (fboundp 'secondary-dwim)
+  (define-key-after menu-bar-edit-menu [secondary-dwim] ; In `second-sel.el'
+    '(menu-item "Paste Secondary" secondary-dwim
       :help "Paste (yank) secondary selection."
       :enable
-      (and (fboundp 'x-get-selection)
+      (and (not buffer-read-only)
+       (fboundp 'x-get-selection)
        (condition-case nil              ; Need ignore error - Emacs 21 raises error internally.
            (x-get-selection 'SECONDARY)
-         (error nil))
-       (not buffer-read-only))
+         (error nil)))
       :keys "\\[secondary-dwim]")
     'paste)
   (define-key-after menu-bar-edit-menu [primary-to-secondary] ; In `second-sel.el'
     '(menu-item "Move Secondary to Region" primary-to-secondary
       :help "Make the region in the current buffer into the secondary selection."
       :enable mark-active :keys "C-1 \\[secondary-dwim]")
-    'yank-secondary)
+    'secondary-dwim)
   (define-key-after menu-bar-edit-menu [secondary-swap-region] ; In `second-sel.el'
     '(menu-item "Swap Region and Secondary" secondary-swap-region
       :help "Make region into secondary selection, and vice versa."
@@ -791,12 +796,13 @@ submenu of the \"Help\" menu."))
 
 (define-key-after menu-bar-edit-menu [select-paste]
   '(menu-item "Select and Paste" yank-menu :help "Paste (yank) text cut or copied earlier"
-    :enable (and (cdr yank-menu) (not buffer-read-only)))
+    :enable (and (not buffer-read-only)  (cdr yank-menu)))
   (if (fboundp 'secondary-to-primary) 'secondary-to-primary 'paste))
 (define-key-after menu-bar-edit-menu [clear]
   '(menu-item "Clear" delete-region
-    :help "Delete the text in region between mark and current position"
-    :enable (and mark-active (not buffer-read-only) (not (mouse-region-match))))
+    :help "Delete the text in nonempty region between mark and current position"
+    :enable (and  (not buffer-read-only)  mark-active  (> (region-end) (region-beginning))
+             (not (mouse-region-match))))
   'select-paste)
 (define-key-after menu-bar-edit-menu [mark-whole-buffer]
   '(menu-item "Select All" mark-whole-buffer
@@ -807,18 +813,21 @@ submenu of the \"Help\" menu."))
 
 (define-key-after menu-bar-edit-menu [flush-lines] ; In `replace+.el' for Emacs 20.
   '(menu-item "Delete Matching Lines..." flush-lines
-    :help "Delete all lines after cursor that match a regular expression")
+    :help "Delete all lines after cursor that match a regular expression"
+    :enable (not buffer-read-only))
   'separator-edit-delete-lines)
 (define-key-after menu-bar-edit-menu [keep-lines] ; In `replace+.el' for Emacs 20.
   '(menu-item "Delete Non-Matching Lines..." keep-lines
-    :help "Delete all lines after cursor that do not match a regular expression")
+    :help "Delete all lines after cursor that do not match a regular expression"
+    :enable (not buffer-read-only))
   'flush-lines)
 ;;--------------------
 (define-key-after menu-bar-edit-menu [separator-edit-select-all] '("--") 'keep-lines)
 
 (defvar menu-bar-edit-fill-menu (make-sparse-keymap "Fill"))
 (define-key-after menu-bar-edit-menu [props]
-  '(menu-item "Text Properties" facemenu-menu :help "Change properties of text in region")
+  '(menu-item "Text Properties" facemenu-menu :help "Change properties of text in region"
+    :enable (not buffer-read-only))
   'separator-edit-select-all)
 (define-key-after menu-bar-edit-menu [fill]
   (cons "Fill" menu-bar-edit-fill-menu) 'props)
@@ -826,30 +835,35 @@ submenu of the \"Help\" menu."))
 (defvar menu-bar-edit-region-menu (make-sparse-keymap "Edit Region"))
 (defalias 'menu-bar-edit-region-menu (symbol-value 'menu-bar-edit-region-menu))
 (define-key-after menu-bar-edit-menu [region]
-  '(menu-item "Edit Region" menu-bar-edit-region-menu :enable mark-active)
+  '(menu-item "Edit Region" menu-bar-edit-region-menu
+    :help "Edit the nonempty region"
+    :enable (and (not buffer-read-only)  mark-active  (> (region-end) (region-beginning))))
   'fill)
 (defvar menu-bar-edit-sort-menu (make-sparse-keymap "Sort Region"))
 (defalias 'menu-bar-edit-sort-menu (symbol-value 'menu-bar-edit-sort-menu))
 (define-key-after menu-bar-edit-menu [sort]
-  '(menu-item "Sort Region" menu-bar-edit-sort-menu :enable mark-active)
+  '(menu-item "Sort Region" menu-bar-edit-sort-menu
+    :help "Sort the nonempty region"
+    :enable (and (not buffer-read-only)  mark-active  (> (region-end) (region-beginning))))
   'region)
 
 ;; `Edit' > `Fill' submenu.
 (define-key menu-bar-edit-fill-menu [fill-nonuniform-para]
   '(menu-item "Fill Non-Uniform ¶s" fill-nonuniform-paragraphs
-    :help "Fill paragraphs in selection, allowing varying indentation"
-    :enable (and mark-active (not buffer-read-only))))
+    :help "Fill paragraphs in nonempty region, allowing varying indentation"
+    :enable (and (not buffer-read-only)  mark-active  (> (region-end) (region-beginning)))))
 (define-key menu-bar-edit-fill-menu [fill-indiv-para]
   '(menu-item "Fill Uniform ¶s" fill-individual-paragraphs
-    :help "Fill paragraphs of uniform indentation within selection"
-    :enable (and mark-active (not buffer-read-only))))
+    :help "Fill paragraphs of uniform indentation within nonempty region"
+    :enable (and (not buffer-read-only)  mark-active  (> (region-end) (region-beginning)))))
 (define-key menu-bar-edit-fill-menu [fill-region]
   '(menu-item "Fill ¶s" fill-region
-    :help "Fill text in region to fit between left and right margin"
-    :enable (and mark-active (not buffer-read-only))))
+    :help "Fill text in the nonempty region to fit between left and right margin"
+    :enable (and (not buffer-read-only)  mark-active  (> (region-end) (region-beginning)))))
 (define-key menu-bar-edit-fill-menu [fill-para]
   '(menu-item "Fill ¶" fill-paragraph-ala-mode
-    :help "Fill the paragraph, doing what `M-q' does (if bound)"))
+    :help "Fill the paragraph, doing what `M-q' does (if bound)"
+    :enable (not buffer-read-only)))
 
 (defun fill-paragraph-ala-mode (&optional arg)
   "Do whatever `M-q' does, if it is bound.  Else, `fill-paragraph'.
@@ -866,84 +880,89 @@ ARG means justify as well as fill."
 (when (fboundp 'unaccent-region)
   (define-key menu-bar-edit-region-menu [unaccent-region]
     '(menu-item "Unaccent" unaccent-region ; Defined in `unaccent'.
-      :help "Replace accented chars in selection by unaccented chars"
-      :enable (and mark-active (not buffer-read-only)))))
+      :help "Replace accented chars in the nonempty region by unaccented chars"
+      :enable (and (not buffer-read-only)  mark-active  (> (region-end) (region-beginning))))))
 (define-key menu-bar-edit-region-menu [capitalize-region]
   '(menu-item "Capitalize" capitalize-region
-    :help "Capitalize (initial caps) words in the selection"
-    :enable (and mark-active (not buffer-read-only))))
+    :help "Capitalize (initial caps) words in the nonempty region"
+    :enable (and (not buffer-read-only)  mark-active  (> (region-end) (region-beginning)))))
 (define-key menu-bar-edit-region-menu [downcase-region]
-  '(menu-item "Downcase" downcase-region :help "Make words in the selection lower-case"
-    :enable (and mark-active (not buffer-read-only))))
+  '(menu-item "Downcase" downcase-region :help "Make words in the nonempty region lower-case"
+    :enable (and (not buffer-read-only)  mark-active  (> (region-end) (region-beginning)))))
 (define-key menu-bar-edit-region-menu [upcase-region]
-  '(menu-item "Upcase" upcase-region :help "Make words in the selection upper-case"
-    :enable (and mark-active (not buffer-read-only))))
+  '(menu-item "Upcase" upcase-region :help "Make words in the nonempty region upper-case"
+    :enable (and (not buffer-read-only)  mark-active  (> (region-end) (region-beginning)))))
 ;;--------------------
 (define-key menu-bar-edit-region-menu [separator-chars] '("--"))
 (define-key menu-bar-edit-region-menu [untabifyn]
   '(menu-item "Untabify" untabify
-    :help "Convert all tabs in region (selection) to multiple spaces"
-    :enable mark-active))
+    :help "Convert all tabs in the nonempty region to multiple spaces"
+    :enable (and (not buffer-read-only)  mark-active  (> (region-end) (region-beginning)))))
 (define-key menu-bar-edit-region-menu [tabify-region]
-  '(menu-item "Tabify" tabify :help "Convert multiple spaces in region to tabs when possible"
-    :enable mark-active))
+  '(menu-item "Tabify" tabify
+    :help "Convert multiple spaces in the nonempty region to tabs when possible"
+    :enable (and (not buffer-read-only)  mark-active  (> (region-end) (region-beginning)))))
 (define-key menu-bar-edit-region-menu [comment-region]
   '(menu-item "(Un)Comment" comment-region
-    :help "Comment or uncomment each line in the selection"
-    :enable (and mark-active comment-start (not buffer-read-only))))
+    :help "Comment or uncomment each line in the nonempty region"
+    :enable (and comment-start  (not buffer-read-only)  mark-active
+             (> (region-end) (region-beginning)))))
 (define-key menu-bar-edit-region-menu [center-region]
   '(menu-item "Center" center-region
-    :help "Center each nonblank line that starts in the selection"
-    :enable (and mark-active (not buffer-read-only))))
+    :help "Center each nonblank line that starts in the nonempty region"
+    :enable (and (not buffer-read-only)  mark-active  (> (region-end) (region-beginning)))))
 (define-key menu-bar-edit-region-menu [indent-rigidly-region]
   '(menu-item "Rigid Indent" indent-rigidly
-    :help "Indent each line that starts in the selection"
-    :enable (and mark-active (not buffer-read-only))))
+    :help "Indent each line that starts in the nonempty region"
+    :enable (and (not buffer-read-only)  mark-active  (> (region-end) (region-beginning)))))
 (define-key menu-bar-edit-region-menu [indent-region]
   '(menu-item "Column/Mode Indent" indent-region
-    :help "Indent each nonblank line in the selection"
-    :enable (and mark-active (not buffer-read-only))))
+    :help "Indent each nonblank line in the nonempty region"
+    :enable (and (not buffer-read-only)  mark-active  (> (region-end) (region-beginning)))))
 
 ;;--------------------
 (define-key menu-bar-edit-region-menu [separator-indent] '("--"))
 (define-key menu-bar-edit-region-menu [abbrevs-region]
-  '(menu-item "Expand Abbrevs" expand-region-abbrevs
-    :help "Expand each abbrev in the selection (with confirmation)"
-    :enable (and mark-active (not buffer-read-only))))
+  '(menu-item "Expand Abbrevs..." expand-region-abbrevs
+    :help "Expand each abbrev in the nonempty region (with confirmation)"
+    :enable (and (not buffer-read-only)  mark-active  (> (region-end) (region-beginning)))))
 (define-key menu-bar-edit-region-menu [macro-region]
   '(menu-item "Exec Keyboard Macro" apply-macro-to-region-lines ; In `macros+.el'.
-    :help "Run keyboard macro at start of each line in selection"
-    :enable (and last-kbd-macro mark-active (not buffer-read-only))))
+    :help "Run keyboard macro at start of each line in the nonempty region"
+    :enable (and last-kbd-macro mark-active  (not buffer-read-only)
+             (> (region-end) (region-beginning)))))
 
 ;; `Edit' > `Sort' submenu.
 (define-key menu-bar-edit-sort-menu [sort-regexp-fields]
-  '(menu-item "Regexp Fields..." sort-regexp-fields :help "Sort the selection lexicographically"
-    :enable (and last-kbd-macro mark-active (not buffer-read-only))))
+  '(menu-item "Regexp Fields..." sort-regexp-fields
+    :help "Sort the nonempty region lexicographically"
+    :enable (and last-kbd-macro  (not buffer-read-only)  mark-active
+             (> (region-end) (region-beginning)))))
 (define-key menu-bar-edit-sort-menu [sort-pages]
-  '(menu-item "Pages" sort-pages :help "Sort pages in the selection alphabetically"
-    :enable (and mark-active (not buffer-read-only))))
+  '(menu-item "Pages" sort-pages :help "Sort pages in the nonempty region alphabetically"
+    :enable (and (not buffer-read-only)  mark-active  (> (region-end) (region-beginning)))))
 (define-key menu-bar-edit-sort-menu [sort-paragraphs]
   '(menu-item "Paragraphs" sort-paragraphs
-    :help "Sort paragraphs in the selection alphabetically"
-    :enable (and mark-active (not buffer-read-only))))
+    :help "Sort paragraphs in the nonempty region alphabetically"
+    :enable (and (not buffer-read-only)  mark-active  (> (region-end) (region-beginning)))))
 (define-key menu-bar-edit-sort-menu [sort-numeric-fields]
   '(menu-item "Numeric Field" sort-numeric-fields
-    :help "Sort lines in selection numerically by the Nth field"
-    :enable (and mark-active (not buffer-read-only))))
+    :help "Sort lines in the nonempty region numerically by the Nth field"
+    :enable (and (not buffer-read-only)  mark-active  (> (region-end) (region-beginning)))))
 (define-key menu-bar-edit-sort-menu [sort-fields]
   '(menu-item "Field" sort-fields
-    :help "Sort lines in selection lexicographically by the Nth field"
-    :enable (and mark-active (not buffer-read-only))))
+    :help "Sort lines in the nonempty region lexicographically by the Nth field"
+    :enable (and (not buffer-read-only)  mark-active  (> (region-end) (region-beginning)))))
 (define-key menu-bar-edit-sort-menu [sort-columns]
   '(menu-item "Columns" sort-columns
-    :help "Sort lines in selection alphabetically, by a certain range of columns"
-    :enable (and mark-active (not buffer-read-only))))
+    :help "Sort lines in the nonempty region alphabetically, by a certain range of columns"
+    :enable (and (not buffer-read-only)  mark-active  (> (region-end) (region-beginning)))))
 (define-key menu-bar-edit-sort-menu [sort-lines]
-  '(menu-item "Lines" sort-lines :help "Sort lines in selection alphabetically"
-    :enable (and mark-active (not buffer-read-only))))
+  '(menu-item "Lines" sort-lines :help "Sort lines in the nonempty region alphabetically"
+    :enable (and (not buffer-read-only)  mark-active  (> (region-end) (region-beginning)))))
 (define-key menu-bar-edit-sort-menu [reverse-region]
   '(menu-item "Reverse" reverse-region :help "Reverse the order of the selected lines"
-    :enable (and mark-active (not buffer-read-only))))
+    :enable (and (not buffer-read-only)  mark-active  (> (region-end) (region-beginning)))))
 
 ;;; `Search' menu.
 (when (< emacs-major-version 22)
