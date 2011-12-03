@@ -57,6 +57,9 @@ You have of course to install Anything on your emacs.
 
 
 -- ThierryVolpiatto
+
+[new] There is now app-emacs/anything in the Portage tree. -- ulm
+
 ----
 See also: EmacsForDebian
 ----
