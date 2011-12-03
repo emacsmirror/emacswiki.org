@@ -79,7 +79,6 @@ Current crontab:
 17  1  *  *  *  /home/aschroeder/bin/sitemap
 14  2  *  *  *  /home/aschroeder/bin/maintenance
 54  3  *  *  *  /home/aschroeder/bin/update-ell
-51  4  *  *  *  /home/aschroeder/bin/reindex-wikis
 47 6,12 * *  *  /home/aschroeder/bin/backup
 23  9  *  *  *  /home/aschroeder/bin/emacs-cvs-update
 38 10  *  *  *  /home/aschroeder/bin/emacs-svn-update
@@ -92,7 +91,6 @@ Current crontab:
 * [http://www.emacswiki.org/scripts/sitemap sitemap] -- create a sitemap for Google
 * [http://www.emacswiki.org/scripts/maintenance maintenance] -- run maintenance for the wiki
 * [http://www.emacswiki.org/scripts/update-ell update-ell] -- update the WikifiedEmacsLispList
-* [http://www.emacswiki.org/scripts/reindex-wikis reindex-wikis] -- update the indexes for alex and oddmuse (not used for EmacsWiki as we now use [[Google Custom Search]])
 * [http://www.emacswiki.org/scripts/backup backup] -- update the [[Rsync repository]]
 * [http://www.emacswiki.org/scripts/emacs-cvs-update emacs-cvs-update] -- update the [[CVS repository]]
 * [http://www.emacswiki.org/scripts/emacs-svn-update emacs-svn-update] -- update the [[SVN repository]]
