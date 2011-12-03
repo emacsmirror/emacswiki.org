@@ -7,7 +7,7 @@
 ;; Maintainer: José Alfredo Romero L. <escherdragon@gmail.com>
 ;; Created: 20 Aug 2008
 ;; Version: 2
-;; RCS Version: $Rev: 388 $
+;; RCS Version: $Rev: 392 $
 ;; Keywords: sunrise commander, windows, accessibility, viewer
 ;; URL: http://www.emacswiki.org/emacs/sunrise-x-popviewer.el
 ;; Compatibility: GNU Emacs 22+
@@ -69,11 +69,17 @@
   :group 'sunrise
   :type 'boolean)
 
-(defcustom sr-popviewer-reuse-frame nil
-  "If non-nil, always display the viewer window in the same frame (if any).
-Only makes sense when `sr-popviewer-mode' is enabled."
+(defcustom sr-popviewer-style 'dedicated-frames
+  "Determines the way frames are used for quick viewing files:
+
+* Single Frame: reuse the same frame whenever possible.
+* Multiple Frames: use a new frame for every new file (or terminal) displayed.
+* Dedicated Frames: use a new frame and close it whenever its buffer is killed."
   :group 'sunrise
-  :type 'boolean)
+  :type '(choice
+          (const single-frame)
+          (const multiple-frames)
+          (const dedicated-frames)))
 
 ;; Putting this directly into the advice definition would produce a runtime
 ;; error due to mysterious behaviour of the byte-compiler. Advice welcome.
@@ -112,10 +118,24 @@ directories visits the selected directory in the passive pane,
 and on symlinks follows the file the link points to in the
 passive pane."
   (interactive "P")
-  (let ((sr-popviewer-reuse-frame
-         (if arg (not sr-popviewer-reuse-frame) sr-popviewer-reuse-frame)))
+  (let ((other-window-scroll-buffer (eq sr-popviewer-style 'single-frame)))
     (sr-quick-view (and (null window-system) arg))
+    (select-frame (cdr (assoc "Sunrise Viewer" (make-frame-names-alist))))
+    (set-window-dedicated-p
+     (selected-window)
+     (eq sr-popviewer-style 'dedicated-frames))
     (sr-select-window sr-selected-window)))
+
+(defadvice sr-term
+  (around sr-popviewer-advice-term (&optional cd newterm program))
+  "Make terminal windows dedicated when using multiple viewers."
+  (let ((sr-popviewer-style (if (or newterm program)
+                                sr-popviewer-style
+                              'single-frame)))
+    ad-do-it)
+  (set-window-dedicated-p
+   (selected-window)
+   (eq sr-popviewer-style 'dedicated-frames)))
 
 (defadvice sr-select-viewer-window
   (around sr-popviewer-advice-select-viewer-window)
@@ -129,13 +149,14 @@ passive pane."
            (target-frame))
       (when vframe
         (select-frame vframe)
-        (if sr-popviewer-reuse-frame
+        (if (eq sr-popviewer-style 'single-frame)
             (setq target-frame vframe)
           (set-frame-name (buffer-name))))
       (unless target-frame
         (setq other-window-scroll-buffer nil)
         (setq target-frame (make-frame `((name . ,frame-name)))))
       (select-frame target-frame)
+      (set-window-dedicated-p (selected-window) nil)
       (raise-frame))))
 
 (define-minor-mode sr-popviewer-mode "Use a floating viewer window."
