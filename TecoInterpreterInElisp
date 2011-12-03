@@ -7,5 +7,5 @@ Setting 'teco:prompt' to "" works around it.
 
 [new:ulm:2011-11-20 10:59 UTC]
 The following patch should fix the above mentioned prompt problem:
-https://overlays.gentoo.org/proj/emacs/browser/emacs-overlay/app-emacs/teco/files/teco-7-minibuffer-prompt.patch?rev=1744
+http://sources.gentoo.org/cgi-bin/viewvc.cgi/gentoo-x86/app-emacs/teco/files/teco-7-minibuffer-prompt.patch?view=markup
 I've tested it with GNU Emacs 23.3 and 24.0.91. -- [[ulm]]
