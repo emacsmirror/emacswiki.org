@@ -1,6 +1,6 @@
 GNU Emacs includes a package, rmail-mime, for reading attachments in [[Rmail]].  Two other external packages also exist: [http://www.cinti.net/~rmoody/rmime/ rmime.el] and [http://rulnick.com/etach/details.html etach.el].
 
-Note that Rmail MIME and RMIME support only *reading* attachments, but Etach allows both reading (detaching) and composing (attaching) MIME messages.
+For *attaching* messages, GNU Emacs includes the mml-attach-file command.  Etach additionally creates its own command for attaching files to emails.
 
 == Rmail MIME ==
 
