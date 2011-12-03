@@ -5,5 +5,5 @@ The software is maintained by AlexSchroeder.
 ** WikiModeDiscussion -- more information if you need some context
 
 * WikiDownload – how to download parts of this wiki (including all the stuff you need to fork it)
-* [Selfaction=version Wiki Version] -- see what modules this wiki has installed (important if you want to fork it)
+* [Self:action=version Wiki Version] -- see what modules this wiki has installed (important if you want to fork it)
 * [http://www.emacswiki.org/emacs/config Config File] -- see what config this wiki has installed (also important if you want to fork it)
