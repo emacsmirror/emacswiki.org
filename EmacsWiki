@@ -62,7 +62,7 @@ See EmacsWikiAdministrators.
 
 = Wiki Engine =
 
-This wiki runs Oddmuse; see the [http://www.emacswiki.org/cgi-bin/wiki.pl?action=version version] page.
+This wiki runs [[Oddmuse]].
 
 Using a wiki engine written in Lisp or Scheme would have been more in
 the spirit of Emacs and XEmacs, but Perl is ubiquitous, and
