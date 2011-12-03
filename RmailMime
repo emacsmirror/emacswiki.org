@@ -1,8 +1,12 @@
-There are three packages out there to handle attachments for [[Rmail]]: [http://www.cinti.net/~rmoody/rmime/ rmime.el], rmail-mime.el and [http://rulnick.com/etach/details.html etach.el].  rmail-mime requires [[SEMI]] and [[APEL]] and some other library.
+GNU Emacs includes a package, rmail-mime, for reading attachments in [[Rmail]].  Two other external packages also exist: [http://www.cinti.net/~rmoody/rmime/ rmime.el] and [http://rulnick.com/etach/details.html etach.el].
 
 Note that Rmail MIME and RMIME support only *reading* attachments, but Etach allows both reading (detaching) and composing (attaching) MIME messages.
 
 == Rmail MIME ==
+
+Rmail MIME is now part of GNU Emacs.  Press 'v' when viewing a message to see a list of its attachments.  Press RET with point on an attachment to get the option to save it somewhere.
+
+When it existed as an external package, it required [[SEMI]], [[APEL]], and some other library.
 
 A mirror of the RMAIL MIME package is available from m17n.org:
 
