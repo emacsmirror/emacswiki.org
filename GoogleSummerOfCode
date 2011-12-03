@@ -142,7 +142,7 @@ We need just *one* versatile find/grep interface, and obsolete the others for cl
 == Accepted Emacs-related projects ==
 
 * [[GDB-MI|Emacs GDB/MI migration]]
-* [http://socghop.appspot.com/student_project/show/google/gsoc2009/karlberry/t124022551748 Emacs Lisp support for Guile]
+* GuileEmacs (in 2009, 2010 and 2011)
 
 ----
 CategoryWishList
