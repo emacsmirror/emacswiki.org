@@ -90,7 +90,7 @@ Current crontab:
 
 * [http://www.emacswiki.org/scripts/update-changelog update-changelog] -- update the Oddmuse:ChangeLog -- has nothing to do with EmacsWiki
 * [http://www.emacswiki.org/scripts/sitemap sitemap] -- create a sitemap for Google
-* [http://www.emacswiki.org/scripts/maintenance maintenance] -- run maintenance for the wiki ([http://www.emacswiki.org/scripts/maintenance see the result]) 
+* [http://www.emacswiki.org/scripts/maintenance maintenance] -- run maintenance for the wiki
 * [http://www.emacswiki.org/scripts/update-ell update-ell] -- update the WikifiedEmacsLispList
 * [http://www.emacswiki.org/scripts/reindex-wikis reindex-wikis] -- update the indexes for alex and oddmuse (not used for EmacsWiki as we now use [[Google Custom Search]])
 * [http://www.emacswiki.org/scripts/backup backup] -- update the [[Rsync repository]]
