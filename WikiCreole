@@ -4,7 +4,7 @@ Standardization of version 1.0 is documented here [[http://www.wikicreole.org/|h
 
 NicFerrier is writing EmacsLisp handling of WikiCreole. His current package is in [[http://marmalade-repo.org/packages/creole/0.7.2|marmalade]].
 
-More information about Creole related to OddMuse, the software that runs EmacsWiki, see [[Oddmuse:Creole Markup Extension]]
+More information about Creole related to [[Oddmuse]], the software that runs EmacsWiki, see [[Oddmuse:Creole Markup Extension]]
 
 ----
 CategoryHypermedia
