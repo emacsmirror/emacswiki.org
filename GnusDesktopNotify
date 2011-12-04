@@ -1,4 +1,4 @@
-GnusDesktopNotify is a mode that displays little popup notifications using [http://www.galago-project.org/screenshots/index.php Galago's libnotify] when receiving new mail through GnusDemon (you probably already saw these, they are used in many modern desktop applications).
+GnusDesktopNotify is a mode that displays little popup notifications using [http://developer.gnome.org/libnotify/ libnotify] when receiving new mail through GnusDemon (you probably already saw these, they are used natively in many modern desktop applications). GnusDesktopNotify can be used also on OSX via Growl, and generally call any executable/function in response to new messages.
 
 GnusDesktopNotify can be downloaded at [http://www.thregr.org/~wavexx/hacks/gnus-desktop-notify/]. Usage instructions can be found on the web site and in the source.
 
