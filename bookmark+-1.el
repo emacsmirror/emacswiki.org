@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2011, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 13:43:55 2010 (-0700)
-;; Last-Updated: Sat Dec  3 16:11:02 2011 (-0800)
+;; Last-Updated: Sat Dec  3 19:55:26 2011 (-0800)
 ;;           By: dradams
-;;     Update #: 2641
+;;     Update #: 2645
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-1.el
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -5229,7 +5229,7 @@ The bookmarked position will be the beginning of the file."
   "Set a bookmark for FILE, autonaming the bookmark for the file.
 Return the bookmark.
 Interactively, you are prompted for FILE.  You can use `M-n' to pick
-up the file name at point, or if none then the visited file.
+up the file name at point or the visited file.
 
 The bookmark name is the non-directory part of FILE, but with a prefix
 arg you are also prompted for a PREFIX string to prepend to the
@@ -5253,18 +5253,30 @@ relative file name (non-directory part), but with different absolute
 file names."
   (interactive
    (list (read-file-name "File: " nil
-                         (or (if (boundp 'file-name-at-point-functions) ; In `files.el', Emacs 23.2+.
-                                 (run-hook-with-args-until-success 'file-name-at-point-functions)
-                               (ffap-guesser))
-                             (thing-at-point 'filename)
-                             (buffer-file-name)))
+                         (if (or (> emacs-major-version 23)
+                                 (and (= emacs-major-version 23) (> emacs-minor-version 1)))
+                             (let ((deflts  ())
+                                   def)
+                               (when (setq def  (buffer-file-name)) (push def deflts))
+                               (when (setq def  (thing-at-point 'filename)) (push def deflts))
+                               (when (setq def  (ffap-guesser)) (push def deflts))
+                               (when (and (boundp 'file-name-at-point-functions)
+                                          (setq def  (run-hook-with-args-until-success
+                                                      'file-name-at-point-functions)))
+                                 (push def deflts))
+                               deflts)
+                           (or (if (boundp 'file-name-at-point-functions) ; In `files.el', Emacs 23.2+.
+                                   (run-hook-with-args-until-success 'file-name-at-point-functions)
+                                 (ffap-guesser))
+                               (thing-at-point 'filename)
+                               (buffer-file-name))))
          nil
          (and current-prefix-arg (read-string "Prefix for bookmark name: "))
          'MSG))
   (let* ((dir-to-use  (if (file-name-absolute-p file)
-                         (file-name-directory file)
-                       (or dir default-directory)))
-        ;; Look for existing bookmark with same name, same file, in `dir-to-use'.
+                          (file-name-directory file)
+                        (or dir default-directory)))
+         ;; Look for existing bookmark with same name, same file, in `dir-to-use'.
          (bmk         (bmkp-get-autofile-bookmark file dir-to-use prefix)))
     ;; If BMK was found, then instead of doing nothing we could replace the existing BMK with a new
     ;; one, as follows:
