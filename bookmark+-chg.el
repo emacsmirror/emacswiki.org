@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2011, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Sat Dec  3 16:23:43 2011 (-0800)
+;; Last-Updated: Sat Dec  3 19:50:33 2011 (-0800)
 ;;           By: dradams
-;;     Update #: 13924
+;;     Update #: 13925
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-chg.el
 ;; Keywords: bookmarks, bookmark+
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -136,6 +136,7 @@
 ;;                                      New default for reading file name.
 ;;     bmkp-temporary-bookmarking-mode: Use bookmark-load, not bmkp-switch-bookmark-file.
 ;;     Removed: bookmark-maybe-message.  Use only message now, not bookmark-maybe-message.
+;;     bmkp-autofile-set: For Emacs 23.3+, provide multiple defaults for file name.
 ;; 2011/11/30 dadams
 ;;     bmkp-same-file-p: Avoid having Tramp prompt for passwords, when possible.  Thx to M. Heerdegen.
 ;;     bmkp-toggle-autotemp-on-set: Removed ARG (copy/paste typos).
