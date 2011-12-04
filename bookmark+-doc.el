@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2011, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Fri Dec  2 07:53:33 2011 (-0800)
+;; Last-Updated: Sat Dec  3 16:46:40 2011 (-0800)
 ;;           By: dradams
-;;     Update #: 13994
+;;     Update #: 14020
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-doc.el
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search,
 ;;           info, url, w3m, gnus
@@ -386,8 +386,9 @@
 ;;       contradictory.  With Bookmark+ you can easily (a) switch
 ;;       among alternative bookmark files or (b) load multiple files
 ;;       into the same session, accumulating their bookmark
-;;       definitions.  The last file you used is the default, so it is
-;;       easy to go back and forth between two bookmark files.
+;;       definitions.  The last file you used is the default when you
+;;       choose a file to switch to, so it is easy to go back and
+;;       forth between two bookmark files.
 ;;       See (@> "Using Multiple Bookmark Files").
 ;;
 ;;  * Type-specific jump commands.
@@ -543,7 +544,7 @@
 ;;  the two, list and display, can be out of sync.  Hitting `g' in the
 ;;  bookmark-list display refreshes it to accurately reflect the
 ;;  current bookmark list.  Some other operations in the display also
-;;  keep it synched.
+;;  keep it synced.
 ;;
 ;;  You can load different bookmark files, either adding their
 ;;  bookmarks to those already in the current bookmark list or
@@ -1381,29 +1382,42 @@
 ;;
 ;;  The bookmarks available to you are defined in a bookmark file.  By
 ;;  default, they are stored in the file named by option
-;;  `bookmark-default-file' (`~/.emacs.bmk', by default).  You do not
-;;  need to load or save this file manually; Emacs does that for you
-;;  automatically.
+;;  `bmkp-last-as-first-bookmark-file', if non-`nil', otherwise in the
+;;  file named by option `bookmark-default-file' (`~/.emacs.bmk', by
+;;  default).
 ;;
-;;  But you can also have extra, alternative bookmark files if you
-;;  want, and at any time you can change the bookmark file that is
-;;  current.  To do that, use `C-x p L' (uppercase `L'), which is
-;;  bound to command `bmkp-switch-bookmark-file'.
+;;  If you use only one bookmark file then you never need to load or
+;;  save it manually.  Emacs does that for you automatically.
 ;;
+;;  But you can have multiple bookmark files if you want, and at any
+;;  time you can change the bookmark file that is current.  To do
+;;  that, use `C-x p L' (or just `L' in the bookmark-list display),
+;;  which is bound to command `bmkp-switch-bookmark-file-create'.
 ;;  Having multiple bookmark files gives you an added degree of
-;;  flexibility.  You can see which file is current at any time by
-;;  using `?' or `C-h m' in the buffer `*Bookmark List*' (or anywhere
-;;  else using `M-x bmkp-bmenu-mode-status-help').
+;;  flexibility.
 ;;
-;;  When you switch to another bookmark file, the default file to
-;;  switch to is the last bookmark file you used (in the same
-;;  session).  So it is trivial to toggle back and forth between two
-;;  bookmark files: just hit `RET' to accept the default.
+;;  By default, the last bookmark file you used, in your last Emacs
+;;  session, is the initial bookmark file that is loaded automatically
+;;  in your next session.  But if you prefer, you can make Bookmark+
+;;  always start with the same bookmark file
+;;  (`bookmark-default-file').  User option
+;;  `bmkp-last-as-first-bookmark-file' controls this.
+;;
+;;  You can easily see which bookmark file is current at any time: It
+;;  is shown at the top of buffer `*Bookmark List*', and it is near
+;;  the top of the help output from command
+;;  `bmkp-bmenu-mode-status-help', which is what is bound to `?' and
+;;  `C-h m' in buffer `*Bookmark List*'.
+;;
+;;  When you switch to another bookmark file, the default choice for
+;;  the file to switch to is the last bookmark file you used (in the
+;;  same session).  So it is trivial to toggle back and forth between
+;;  two bookmark files: just hit `RET' to accept the default.
 ;;
 ;;  When bookmarks are saved automatically, or when you save them
-;;  using `bookmark-save' (`S' in the bookmark list or `C-x p s'
-;;  globally) and you don't use a prefix argument, they are saved in
-;;  the current bookmark file.
+;;  using `bookmark-save' (`S' in the bookmark-list display or `C-x p
+;;  s' globally) and you don't use a prefix argument, they are saved
+;;  in the current bookmark file.
 ;;
 ;;  You can turn off the automatic saving of the current bookmark
 ;;  file, by customizing option `bookmark-save-flag' to nil.  And you
@@ -1431,9 +1445,9 @@
 ;;
 ;;  However a bookmark file was created, you can switch to it and then
 ;;  add or delete bookmarks selectively, to change its content.
-;;  Remember that you can delete bookmarks from the current set using
-;;  command `bookmark-delete' (`C-x p d') or, in the bookmark list,
-;;  using `d' plus `x' or marking then `D'.
+;;  Remember too that you can delete bookmarks from the current set
+;;  using command `bookmark-delete' (`C-x p d') or, in the bookmark
+;;  list, using `d' plus `x' or marking then `D'.
 ;;
 ;;
 ;;(@* "Bookmark-File Bookmarks")
@@ -2333,8 +2347,8 @@
 ;;  1. Use `C-x p 0' (`bmkp-empty-file') to create a new, empty
 ;;     bookmark file.
 ;;
-;;  2. Use `C-x p L' (`bmkp-switch-bookmark-file') to switch to using
-;;     that new, empty bookmark file.
+;;  2. Use `C-x p L' (`bmkp-switch-bookmark-file-create') to switch to
+;;     using that new, empty bookmark file.
 ;;
 ;;  3. Use `M-x bmkp-toggle-saving-bookmark-file' to turn off
 ;;     auto-saving bookmarks to disk.
