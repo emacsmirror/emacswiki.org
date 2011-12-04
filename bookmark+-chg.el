@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2011, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Wed Nov 30 13:18:16 2011 (-0800)
+;; Last-Updated: Sat Dec  3 16:23:43 2011 (-0800)
 ;;           By: dradams
-;;     Update #: 13879
+;;     Update #: 13924
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-chg.el
 ;; Keywords: bookmarks, bookmark+
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -120,7 +120,24 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-1.el'")
 ;;
+;; 2011/12/03 dadams
+;;     Renamed: bmkp-use-bookmark-file-create to bmkp-switch-bookmark-file-create.
+;;     Added: bmkp-last-as-first-bookmark-file, bookmark-maybe-load-default-file (redefinition),
+;;            bookmarks-already-loaded (redefinition), bmkp-default-bookmark-file.
+;;     bookmark-save: Update and save bmkp-last-as-first-bookmark-file.
+;;     bookmark-load: New default for reading file name, and require an existing file (match).
+;;                    Update and save bmkp-last-as-first-bookmark-file.  Update bmkp-sorted-alist.
+;;     bmkp-switch-bookmark-file (no longer used): New default for reading file name.
+;;     bmkp-switch-bookmark-file-create: Added optional arg INTERACTIVEP.  New default for reading
+;;       file name.  Use bookmark-load, not bmkp-switch-bookmark-file.  Require confirmation only for
+;;       new, empty file.  Added final message.
+;;     bmkp-switch-to-last-bookmark-file: Use bmkp-last-as-first-bookmark-file as first fallback.
+;;     bmkp-set-bookmark-file-bookmark: Use bmkp-read-bookmark-file-name, not read-file-name.
+;;                                      New default for reading file name.
+;;     bmkp-temporary-bookmarking-mode: Use bookmark-load, not bmkp-switch-bookmark-file.
+;;     Removed: bookmark-maybe-message.  Use only message now, not bookmark-maybe-message.
 ;; 2011/11/30 dadams
+;;     bmkp-same-file-p: Avoid having Tramp prompt for passwords, when possible.  Thx to M. Heerdegen.
 ;;     bmkp-toggle-autotemp-on-set: Removed ARG (copy/paste typos).
 ;; 2011/11/28 dadams
 ;;     bmkp-set-bookmark-file-bookmark: Prompt user for bookmark name here, to make clear what it is.
@@ -406,6 +423,13 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-bmu.el'")
 ;;
+;; 2011/12/03 dadams
+;;     bmkp-bmenu-list-1: Print current bookmark file at top of display.
+;;     Increased bmkp-bmenu-header-lines to 5.
+;;     bookmark-bmenu-mode: Updated doc string for binding changes and new option.
+;;     bmkp-bmenu-regexp-mark: Mention right-padding of bookmark names in doc string.
+;;     bmkp-bmenu-mode-status-help: Reorder Current Status items, to put bookmark file first.
+;;     Bind L to bmkp-switch-bookmark-file-create, not bmkp-switch-bookmark-file.
 ;; 2011/11/19 dadams
 ;;     bmkp-bmenu-image-bookmark-icon-file: Default to an existing Emacs image file, not nil.
 ;; 2011/11/18 dadams
@@ -550,6 +574,9 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-key.el'")
 ;;
+;; 2011/12/03 dadams
+;;     Bind C-x p L to bmkp-switch-bookmark-file-create, not bmkp-switch-bookmark-file.
+;;     Reordered bookmark-file items in menu-bar-bookmark-map.
 ;; 2011/11/18 dadams
 ;;     Bind bmkp-image-jump(-other-window) to C-x (4) j M-i.
 ;;     bmkp-jump-menu: Add bmkp-image-jump-other-window.
