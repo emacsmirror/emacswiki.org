@@ -1,9 +1,18 @@
+== You will need these lines in your .emacs file ==
+<pre>(require 'flymake)
+(add-hook 'java-mode-hook 'flymake-mode-on)
+</pre>
+
 == Adhoc single files ==
 To use flymake with individual Java files use the following init function, along with the stock flymake-simple-cleanup function:
 
 <pre>(defun my-java-flymake-init ()
   (list "javac" (list (flymake-init-create-temp-buffer-copy
                        'flymake-create-temp-with-folder-structure))))
+</pre>
+
+Then, to use this function:
+<pre>(add-to-list 'flymake-allowed-file-name-masks '("\\.java$" my-java-flymake-init flymake-simple-cleanup))
 </pre>
 
 == Java syntax checking with Make ==
