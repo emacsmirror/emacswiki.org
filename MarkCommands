@@ -5,7 +5,7 @@ Here are some common commands for manipulating and using the [[mark]], in partic
 
 Use `C-SPC' to set the mark, and  `C-x C-x' to go back.  A nice but often unknown feature is using universal argument: `C-u C-SPC'.  It's an easy way to navigate back to your previous editing spots by jumping to the positions stored in the buffer's local mark ring. Repeated calls will ''cycle through the ring of marks''.
 
-If you use TransientMarkMode and you want to set the mark but don't want to subsequently see the [[region]] highlighting, you can use `C-SPC C-g' to set the mark and then deactivate it.
+If you use TransientMarkMode and you want to set the mark but don't want to subsequently see the [[region]] highlighting, you can use `C-SPC C-g' to set the mark and then deactivate it.  You can also use `C-SPC C-SPC`, which may be faster for most people to type.
 
 Unfortunately, traversing the mark ring with `C-u C-SPC' can make you lose your last point if it is different from the mark.  This happens when you fail to set the mark with `C-SPC' before hitting `C-u C-SPC'. 
 
