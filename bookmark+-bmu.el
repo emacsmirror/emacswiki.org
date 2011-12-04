@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2011, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 09:05:21 2010 (-0700)
-;; Last-Updated: Sat Nov 19 07:58:37 2011 (-0800)
+;; Last-Updated: Sat Dec  3 14:27:49 2011 (-0800)
 ;;           By: dradams
-;;     Update #: 949
+;;     Update #: 975
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-bmu.el
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -235,9 +235,7 @@
 ;;    `bmkp-bmenu-menubar-menu', `bmkp-bmenu-omit-menu',
 ;;    `bmkp-bmenu-show-menu', `bmkp-bmenu-sort-menu',
 ;;    `bmkp-bmenu-tags-menu', `bmkp-bmenu-title',
-;;    `bmkp-current-bookmark-file', `bmkp-current-nav-bookmark',
-;;    `bmkp-highlight-menu', `bmkp-isearch-bookmarks' (Emacs 23+),
-;;    `bmkp-jump-display-function', `bmkp-last-bmenu-bookmark'.
+;;    `bmkp-last-bmenu-bookmark'.
 ;;
 ;;
 ;;  ***** NOTE: The following commands defined in `bookmark.el'
@@ -334,7 +332,7 @@
 ;; bmkp-set-tag-value, bmkp-set-tag-value-for-bookmarks,
 ;; bmkp-set-union, bmkp-some, bmkp-some-marked-p,
 ;; bmkp-some-unmarked-p, bmkp-sort-omit, bmkp-sort-comparer, bmkp-sorted-alist,
-;; bmkp-sort-orders-for-cycling-alist, bmkp-su-or-sudo-regexp,
+;; bmkp-su-or-sudo-regexp,
 ;; bmkp-tag-name, bmkp-tags-list, bmkp-url-bookmark-p, bmkp-url-cp,
 ;; bmkp-unmarked-bookmarks-only, bmkp-variable-list-bookmark-p,
 ;; bmkp-visited-more-cp
@@ -348,8 +346,6 @@
 (defvar dired-re-mark)                  ; Defined in `dired.el'.
 (defvar tramp-file-name-regexp)         ; Defined in `tramp.el'.
 
-(defvar bmkp-sort-orders-alist)         ; Defined in `bookmark+-1.el'.
-(defvar bmkp-sort-orders-for-cycling-alist) ; Defined in `bookmark+-1.el'.
 (defvar bmkp-temporary-bookmarking-mode) ; Defined in `bookmark+-1.el'.
  
 ;;(@* "Faces (Customizable)")
@@ -668,7 +664,7 @@ bookmark-save'."
 ;;(@* "Internal Variables")
 ;;; Internal Variables -----------------------------------------------
 
-(defconst bmkp-bmenu-header-lines 2
+(defconst bmkp-bmenu-header-lines 5
   "Number of lines used for the `*Bookmark List*' header.")
 
 (defconst bmkp-bmenu-marks-width 4
@@ -826,6 +822,7 @@ the deletions."
 ;;     (or the last Emacs session) restores the last menu-list state.
 ;; 5. If option `bmkp-bmenu-commands-file' is non-nil, then read that file, which contains
 ;;    user-defined `*Bookmark List*' commands.
+;; 6. Many differences in the display itself - see the doc.
 ;;
 ;;;###autoload
 (defalias 'list-bookmarks 'bookmark-bmenu-list)
@@ -947,6 +944,9 @@ Non-nil INTERACTIVEP means `bookmark-bmenu-list' was called
     (when (fboundp 'remove-images) (remove-images (point-min) (point-max)))
     (insert (format "%s\n%s\n" title (make-string (length title) ?-)))
     (add-text-properties (point-min) (point) (bmkp-face-prop 'bmkp-heading))
+    (goto-char (point-min))
+    (insert (format "Bookmark file:\n%s\n\n" bmkp-current-bookmark-file))
+    (forward-line bmkp-bmenu-header-lines)
     (let ((max-width  0)
           name markedp tags annotation temporaryp start)
       (setq bmkp-sorted-alist  (bmkp-sort-omit bookmark-alist
@@ -1052,8 +1052,8 @@ General
 \\[bmkp-bmenu-dired-marked]\t- Open Dired for the marked files and directories
 
 \\[bookmark-bmenu-load]\t- Add bookmarks from a different bookmark file (extra load)
-\\[bmkp-switch-bookmark-file]\t- Switch to a different bookmark file      (overwrite load)
-C-u \\[bmkp-switch-bookmark-file]\t- Switch back to the last bookmark file    (overwrite load)
+\\[bmkp-switch-bookmark-file-create]\t- Switch to a different bookmark file      (overwrite load)
+C-u \\[bmkp-switch-bookmark-file-create]\t- Switch back to the last bookmark file    (overwrite load)
 \\[bmkp-toggle-autotemp-on-set]\t- Toggle making bookmarks temporary when setting them
 \\[bmkp-temporary-bookmarking-mode]\t- Toggle temporary-only bookmarking (new, empty bookmark file)
 \\[bmkp-set-bookmark-file-bookmark]\t- Create a bookmark to a bookmark file \
@@ -1393,6 +1393,7 @@ bookmark-use-annotations         - Query for annotation when saving?
 bookmark-version-control         - Numbered backups of bookmark file?
 
 bmkp-autoname-format        - Format of autonamed bookmark name
+bmkp-last-as-first-bookmark-file - Whether to start with last b. file
 bmkp-crosshairs-flag        - Highlight position when visit?
 bmkp-menu-popup-max-length  - Use menus to choose bookmarks?
 bmkp-save-new-location-flag - Save if bookmark relocated?
@@ -2184,7 +2185,9 @@ Use `\\[help-command]' during querying for help."
 ;;;###autoload
 (defun bmkp-bmenu-regexp-mark (regexp)  ; Bound to `% m' in bookmark list
   "Mark bookmarks that match REGEXP.
-The entire bookmark line is tested: bookmark name and possibly file name."
+The entire bookmark line is tested: bookmark name and possibly file name.
+Note too that if file names are not shown currently then the bookmark
+name is padded at the right with spaces."
   (interactive "sRegexp: ")
   (bmkp-bmenu-barf-if-not-in-menu-list)
   (save-excursion
@@ -3076,8 +3079,9 @@ unmark those that have no tags at all."
             (forward-line 2))
           (goto-char top)
           (insert (format
-                   "\nCurrent Status\n-------------------------------\n
-Sorted:\t\t%s\nFiltering:\t%s\nMarked:\t\t%d\nOmitted:\t%d\nBookmark file:\t%s\n\n\n"
+                   "\nCurrent Status\n--------------\n
+Bookmark file:\t%s\nSorted:\t\t%s\nFiltering:\t%s\nMarked:\t\t%d\nOmitted:\t%d\n\n\n"
+                   bmkp-current-bookmark-file
                    (if (not bmkp-sort-comparer)
                        "no"
                      (format "%s%s" (bmkp-current-sort-order)
@@ -3110,8 +3114,7 @@ Sorted:\t\t%s\nFiltering:\t%s\nMarked:\t\t%d\nOmitted:\t%d\nBookmark file:\t%s\n
                                        (t ""))))))
                    (or (and bmkp-bmenu-filter-function (downcase bmkp-bmenu-title)) "None")
                    (length bmkp-bmenu-marked-bookmarks)
-                   (length bmkp-bmenu-omitted-bookmarks)
-                   bmkp-current-bookmark-file))
+                   (length bmkp-bmenu-omitted-bookmarks)))
           ;; Add face legend.
           (let ((gnus             "Gnus\n")
                 (info             "Info node\n")
@@ -3957,7 +3960,7 @@ Marked bookmarks that have no associated file are ignored."
 (define-key bookmark-bmenu-mode-map "K"                    nil) ; For Emacs 20
 (define-key bookmark-bmenu-mode-map "KM"                   'bmkp-bmenu-mark-desktop-bookmarks)
 (define-key bookmark-bmenu-mode-map "KS"                   'bmkp-bmenu-show-only-desktops)
-(define-key bookmark-bmenu-mode-map "L"                    'bmkp-switch-bookmark-file)
+(define-key bookmark-bmenu-mode-map "L"                    'bmkp-switch-bookmark-file-create)
 (define-key bookmark-bmenu-mode-map "\M-L"                 'bmkp-temporary-bookmarking-mode)
 (define-key bookmark-bmenu-mode-map "M"                    nil) ; For Emacs 20
 (define-key bookmark-bmenu-mode-map "MM"                   'bmkp-bmenu-mark-man-bookmarks)
@@ -4092,8 +4095,8 @@ Marked bookmarks that have no associated file are ignored."
   '(menu-item "Toggle Autosaving Bookmark File" bmkp-toggle-saving-bookmark-file
     :help "Toggle the value of option `bookmark-save-flag'"))
 
-(define-key bmkp-bmenu-menubar-menu [bmkp-switch-bookmark-file]
-  '(menu-item "Switch to Bookmark File..." bmkp-switch-bookmark-file
+(define-key bmkp-bmenu-menubar-menu [bmkp-switch-bookmark-file-create]
+  '(menu-item "Switch to Bookmark File..." bmkp-switch-bookmark-file-create
     :help "Switch to a different bookmark file, *replacing* the current set of bookmarks"))
 (define-key bmkp-bmenu-menubar-menu [bookmark-bmenu-load]
   '(menu-item "Add Bookmarks from File..." bookmark-bmenu-load
