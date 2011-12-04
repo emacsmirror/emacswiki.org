@@ -7,9 +7,9 @@
 ;; Copyright (C) 2010-2011, Drew Adams, all rights reserved.
 ;; Created: Fri Apr  1 15:34:50 2011 (-0700)
 ;; Version:
-;; Last-Updated: Fri Nov 18 17:27:16 2011 (-0800)
+;; Last-Updated: Sat Dec  3 14:07:47 2011 (-0800)
 ;;           By: dradams
-;;     Update #: 324
+;;     Update #: 331
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-key.el
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -116,7 +116,7 @@
 ;; The original `bookmark-insert-location' in `bookmark.el' was `f'.
 (define-key bookmark-map "I"      'bookmark-insert-location) ; `C-x p I'
 (define-key bookmark-map "K"      'bmkp-set-desktop-bookmark) ; `C-x p K' (also `C-x r K', `C-x p c K')
-(define-key bookmark-map "L"      'bmkp-switch-bookmark-file) ; `C-x p L'
+(define-key bookmark-map "L"      'bmkp-switch-bookmark-file-create) ; `C-x p L'
 (define-key bookmark-map "N"      'bmkp-navlist-bmenu-list) ; `C-x p N'
 (define-key bookmark-map "o"      'bookmark-jump-other-window) ; `C-x p o' (also `C-x 4 j j')
 (define-key bookmark-map "q"      'bookmark-jump-other-window) ; `C-x p q' (also `C-x 4 j j')
@@ -569,18 +569,18 @@
   '(menu-item "Save Bookmarks As..." bookmark-write
     :help "Write current bookmarks to a bookmark file")
   'save)
-(define-key-after menu-bar-bookmark-map [bmkp-empty-file]
-  '(menu-item "New (Empty) Bookmark File..." bmkp-empty-file
-    :help "Create a new, empty bookmark file, or empty an existing bookmark file")
-  'write)
+(define-key-after menu-bar-bookmark-map [bmkp-switch-bookmark-file-create]
+  '(menu-item "Switch to Bookmark File..." bmkp-switch-bookmark-file-create
+    :help "Switch to a different bookmark file, *replacing* the current set of bookmarks")
+  'load)
 (define-key-after menu-bar-bookmark-map [load]
   '(menu-item "Add Bookmarks from File..." bookmark-load
     :help "Load additional bookmarks from a bookmark file")
   'bmkp-empty-file)
-(define-key-after menu-bar-bookmark-map [load-read-only]
-  '(menu-item "Switch to Bookmark File..." bmkp-switch-bookmark-file
-    :help "Switch to a different bookmark file, *replacing* the current set of bookmarks")
-  'load)
+(define-key-after menu-bar-bookmark-map [bmkp-empty-file]
+  '(menu-item "Empty a Bookmark File..." bmkp-empty-file
+    :help "Empty an existing bookmark file or create a new, empty bookmark file")
+  'write)
 (define-key-after menu-bar-bookmark-map [bmkp-toggle-autotemp-on-set]
   '(menu-item "Toggle Automatically Making Temporary" bmkp-toggle-autotemp-on-set
     :help "Toggle automatically making any bookmark temporary whenever it is set")
