@@ -34,5 +34,6 @@ Debugging other programs using Emacs:
 ** [http://bashdb.sf.net/remake remake]  --  GNU make debugger
 ** [https://github.com/rocky/rb-trepanning/wiki trepan]  --  Ruby 1.9 YARV debugger
 ** [https://github.com/rocky/rbx-trepanning/wiki trepanx] --  Ruby debugger for Rubinius
+** [https://github.com/rocky/Perl-Devel-Trepan/wiki trepan.pl] --  Trepanning Debugger Perl
 ** [https://github.com/rocky/zshdb/wiki/ zshdb]  --  Zsh debugger 
 * VisualCDebugger -- interfacing with the Visual C++ debugger
