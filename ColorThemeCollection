@@ -4,7 +4,7 @@ To add your color theme edit this page and add <code>Lisp:color-theme-<name here
 
 * Lisp:color-theme-ahei.el
 * Lisp:color-theme-domq.el
-* [http://edward.oconnor.cx/elisp/color-theme-hober2.el color-theme-hober2.el] ([http://edward.oconnor.cx/elisp/hober2-theme.el hober2-theme.el] is the same theme, but it uses the built-in CustomTheme functionality and doesn't rely on ColorTheme)
+* [http://edward.oconnor.cx/elisp/color-theme-hober2.el color-theme-hober2.el] ([http://edward.oconnor.cx/config/elisp/hober2-theme.el hober2-theme.el] is the same theme, but it uses the built-in CustomTheme functionality and doesn't rely on ColorTheme)
 * Lisp:color-theme-inkpot.el
 * Lisp:color-theme-maker.el
 * Lisp:color-theme-reg.el
