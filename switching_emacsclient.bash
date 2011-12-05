@@ -97,7 +97,7 @@ if [ $# -eq 0 ] || { [ $# -eq 1 ] && [ "$1" = -n ]; }; then
 fi
 
 if [ "$DO_PIPE" = true ];then
-    TEMPFILE=$(mktemp stdin.XXX)
+    TEMPFILE=$(mktemp --tmpdir stdin.XXX)
     cat > $TEMPFILE
     set -- "$@" $TEMPFILE;
 fi
