@@ -49,7 +49,7 @@ if [[ "$DISPLAY" == :? ]];then
 fi
 
 if [ -n "$EMACS_SERVER" ];then
-    EMACS_ARGS="-f $EMACS_SERVER"
+    EMACS_ARGS="$EMACS_ARGS -f $EMACS_SERVER"
 fi
 
 EMACS_CLIENT="$EMACS_CLIENT $EMACS_ARGS"
