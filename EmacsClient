@@ -927,5 +927,9 @@ cat myfile > (switch-to-buffer "*my-buf*")
 See: SettingFrameColorsForEmacsClient
 
 -- GeoffreyTeale
+
+== Automatically switch focus between client -> emacs and back. ==
+
+Lisp:switching_emacsclient.bash
 ----
 CategoryExternalUtilities
