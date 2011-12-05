@@ -83,7 +83,6 @@ Current crontab:
 23  9  *  *  *  /home/aschroeder/bin/emacs-cvs-update
 38 10  *  *  *  /home/aschroeder/bin/emacs-svn-update
 32  *  *  *  *  /home/aschroeder/bin/emacs-git-update
-25  3  *  *  0  /home/aschroeder/bin/elisp-archive
 57  1,3,5,7,9,11,13,15,17,19,21,23 * * * /home/aschroeder/bin/emacs-rss
 </pre>
 
@@ -96,7 +95,6 @@ Current crontab:
 * [http://www.emacswiki.org/scripts/emacs-svn-update emacs-svn-update] -- update the [[SVN repository]]
 * [http://www.emacswiki.org/scripts/emacs-git-update emacs-git-update] -- update the [[Git repository]] (push)
 * [http://www.emacswiki.org/scripts/archives archives] -- create the tarballs alex.tar.gz and oddmuse.tar.gz -- we no longer do this for EmacsWiki
-* [http://www.emacswiki.org/scripts/elisp-archive elisp-archive] -- create the elisp archive
 * [http://www.emacswiki.org/scripts/emacs-rss emacs-rss] -- create static copies of the most commonly used RSS files
 
 ----
