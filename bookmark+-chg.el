@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2011, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Mon Dec  5 08:40:08 2011 (-0800)
+;; Last-Updated: Mon Dec  5 10:36:00 2011 (-0800)
 ;;           By: dradams
-;;     Update #: 13928
+;;     Update #: 13933
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-chg.el
 ;; Keywords: bookmarks, bookmark+
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -120,6 +120,8 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-1.el'")
 ;;
+;; 2011/12/05 dadams
+;;     bookmark-save: Swap write order, so last message is about the bookmark file, not customize.
 ;; 2011/12/03 dadams
 ;;     Renamed: bmkp-use-bookmark-file-create to bmkp-switch-bookmark-file-create.
 ;;     Added: bmkp-last-as-first-bookmark-file, bookmark-maybe-load-default-file (redefinition),
@@ -425,6 +427,7 @@
 ;;;(@* "CHANGE LOG FOR `bookmark+-bmu.el'")
 ;;
 ;; 2011/12/05 dadams
+;;     bmkp-bmenu-menubar-menu: Reordered items regarding bookmark files.
 ;;     bmkp-bmenu-mode-status-help: Correct intro text, reorder, use marker for position TOP.
 ;;     bookmark-bmenu-mode: Changed intro text slightly.
 ;; 2011/12/03 dadams
@@ -578,6 +581,8 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-key.el'")
 ;;
+;; 2011/12/05 dadams
+;;     menu-bar-bookmark-map: Reordered items regarding bookmark files.
 ;; 2011/12/03 dadams
 ;;     Bind C-x p L to bmkp-switch-bookmark-file-create, not bmkp-switch-bookmark-file.
 ;;     Reordered bookmark-file items in menu-bar-bookmark-map.
