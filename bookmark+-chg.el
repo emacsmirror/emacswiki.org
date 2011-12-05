@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2011, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Mon Dec  5 08:14:03 2011 (-0800)
+;; Last-Updated: Mon Dec  5 08:40:08 2011 (-0800)
 ;;           By: dradams
-;;     Update #: 13927
+;;     Update #: 13928
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-chg.el
 ;; Keywords: bookmarks, bookmark+
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -426,6 +426,7 @@
 ;;
 ;; 2011/12/05 dadams
 ;;     bmkp-bmenu-mode-status-help: Correct intro text, reorder, use marker for position TOP.
+;;     bookmark-bmenu-mode: Changed intro text slightly.
 ;; 2011/12/03 dadams
 ;;     bmkp-bmenu-list-1: Print current bookmark file at top of display.
 ;;     Increased bmkp-bmenu-header-lines to 5.
