@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:22:14 2006
 ;; Version: 22.0
-;; Last-Updated: Sat Nov 26 14:54:39 2011 (-0800)
+;; Last-Updated: Mon Dec  5 15:10:33 2011 (-0800)
 ;;           By: dradams
-;;     Update #: 4713
+;;     Update #: 4714
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-opt.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -1445,7 +1445,7 @@ argument, a candidate, and only candidates that satisfy the predicate
 are displayed.  For example, this value will show only names of files
 with more than 5000 bytes:
 
-  (lambda (fil) (> (nth 5 (file-attributes file)) 5000))
+  (lambda (file) (> (nth 7 (file-attributes file)) 5000))
 
 This predicate is applied after matching against user input.  It thus
 corresponds to `icicle-must-pass-after-match-predicate', not to
