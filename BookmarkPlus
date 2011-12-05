@@ -3083,9 +3083,28 @@ The vanilla '''Bookmarks''' menu provided by Emacs is typically a submenu of the
 
 
 
+
+
+
+
+
+
+
+
+
+[:BookmarkListHelpScreenshots]
+== `*Bookmark List*' Help Screenshots==
+
+Here are screenshots for the `##*Bookmark List*##' help display (available via `?' or `C-h m').  Yes, the help is so long that several screenshots are required to capture it all.
+
+[[image:BookmarkPlusHelp1]]
+[[image:BookmarkPlusHelp2]]
+[[image:BookmarkPlusHelp3]]
+[[image:BookmarkPlusHelp4]]
+
 ----
 
-Here is an icon you can to indicate image-file bookmarks in the `##*Bookmark List*##' display, if you don't have another that you prefer.  Save it and set option `bmkp-image-bookmark-image-file' to its location.
+Here is an icon you can use to indicate image-file bookmarks in the `##*Bookmark List*##' display, if you don't have another that you prefer.  Save it and set option `bmkp-image-bookmark-image-file' to its location.
 
 [[image:BookmarkPlusImageFileDefaultIcon]]
 
