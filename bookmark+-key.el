@@ -7,9 +7,9 @@
 ;; Copyright (C) 2010-2011, Drew Adams, all rights reserved.
 ;; Created: Fri Apr  1 15:34:50 2011 (-0700)
 ;; Version:
-;; Last-Updated: Sat Dec  3 14:07:47 2011 (-0800)
+;; Last-Updated: Mon Dec  5 10:13:20 2011 (-0800)
 ;;           By: dradams
-;;     Update #: 331
+;;     Update #: 333
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-key.el
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -572,19 +572,19 @@
 (define-key-after menu-bar-bookmark-map [bmkp-switch-bookmark-file-create]
   '(menu-item "Switch to Bookmark File..." bmkp-switch-bookmark-file-create
     :help "Switch to a different bookmark file, *replacing* the current set of bookmarks")
-  'load)
+  'write)
 (define-key-after menu-bar-bookmark-map [load]
   '(menu-item "Add Bookmarks from File..." bookmark-load
     :help "Load additional bookmarks from a bookmark file")
-  'bmkp-empty-file)
+  'bmkp-switch-bookmark-file-create)
 (define-key-after menu-bar-bookmark-map [bmkp-empty-file]
-  '(menu-item "Empty a Bookmark File..." bmkp-empty-file
+  '(menu-item "Empty Bookmark File..." bmkp-empty-file
     :help "Empty an existing bookmark file or create a new, empty bookmark file")
-  'write)
+  'load)
 (define-key-after menu-bar-bookmark-map [bmkp-toggle-autotemp-on-set]
   '(menu-item "Toggle Automatically Making Temporary" bmkp-toggle-autotemp-on-set
     :help "Toggle automatically making any bookmark temporary whenever it is set")
-  'load-read-only)
+  'bmkp-empty-file)
 (define-key-after menu-bar-bookmark-map [bmkp-temporary-bookmarking-mode]
   '(menu-item "Toggle Temporary Bookmarking Mode..." bmkp-temporary-bookmarking-mode
     :help "Toggle temporary-only bookmarking (empty bookmark file *replaces* current bookmarks)")
