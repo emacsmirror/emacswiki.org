@@ -732,6 +732,7 @@ wmctrl -ia $client_winid
 
 The really nice thing about this is that it supports multiple emacsclients running at once, and it doesn't matter which order you complete editing of the emacsclient buffers.
 
+Alternative: Lisp:switching_emacsclient.bash
 = Saveplace and Emacs server: remembering last point position in files opened with emacsclient(w) =
 
 If you use the package saveplace.el (http://www.emacswiki.org/cgi-bin/wiki/SavePlace) to remember the last position a file was visited at, you may have noticed that opening files with emacsclient(w) the cursor always goes at the beginning of buffer, that is, it looks like emacsclient (or better, emacs server) does not care about save-place being active. I suppose this is a bug. A temporary workaround to this is to set
@@ -927,9 +928,5 @@ cat myfile > (switch-to-buffer "*my-buf*")
 See: SettingFrameColorsForEmacsClient
 
 -- GeoffreyTeale
-
-== Automatically switch focus between client -> emacs and back. ==
-
-Lisp:switching_emacsclient.bash
 ----
 CategoryExternalUtilities
