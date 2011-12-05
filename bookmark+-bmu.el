@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2011, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 09:05:21 2010 (-0700)
-;; Last-Updated: Sat Dec  3 14:27:49 2011 (-0800)
+;; Last-Updated: Mon Dec  5 08:14:11 2011 (-0800)
 ;;           By: dradams
-;;     Update #: 975
+;;     Update #: 981
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-bmu.el
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -1021,7 +1021,7 @@ Non-nil optional FULL means return the bookmark record, not the name."
 ;;
 (defun bookmark-bmenu-mode ()
   "Major mode for editing a list of bookmarks.
-Each line represents an Emacs bookmark.\\<bookmark-bmenu-mode-map>
+Each line represents an Emacs bookmark.
 
 More bookmarking help below.  Keys without prefix `C-x' are available
 only in buffer `*Bookmark List*'.  Others are available everywhere.
@@ -1030,6 +1030,7 @@ only in buffer `*Bookmark List*'.  Others are available everywhere.
 Help (Describe)
 ---------------
 
+\\<bookmark-bmenu-mode-map>\
 \\[bmkp-bmenu-describe-this-bookmark]\t- Show information about this bookmark (`C-u': \
 internal form)
 \\[bmkp-bmenu-describe-this+move-down]\t- Show the info, then move to next bookmark
@@ -3049,24 +3050,24 @@ unmark those that have no tags at all."
           (help-setup-xref (list #'bmkp-bmenu-mode-status-help) (interactive-p))
           (goto-char (point-min))
           ;; This text must be the same as the last line of `bookmark-bmenu-mode' doc string.
-          (search-forward "Each line represents an Emacs bookmark.\n\n\n" nil t)
+          (search-forward "Each line represents an Emacs bookmark.\n\n" nil t)
           (delete-region (point-min) (point)) ; Get rid of intro from `describe-function'.
           (insert "*************************** Bookmark List ***************************\n\n")
           (insert "Major mode for editing a list of bookmarks.\n")
           (insert "Each line represents an Emacs bookmark.\n\n")
-          (setq top  (point))
+          (setq top  (copy-marker (point)))
           ;; Add buttons to access help and Customize.
           ;; Not for Emacs 21.3 - its `help-insert-xref-button' signature is different.
           (when (and (> emacs-major-version 21) ; In `help-mode.el'.
                      (condition-case nil (require 'help-mode nil t) (error nil))
                      (fboundp 'help-insert-xref-button))
+            (goto-char (point-min))
             (help-insert-xref-button "[Doc in Commentary]" 'bmkp-commentary-button)
             (insert "           ")
             (help-insert-xref-button "[Doc on the Web]" 'bmkp-help-button)
             (insert "           ")
             (help-insert-xref-button "[Customize]" 'bmkp-customize-button)
             (insert "\n\n")
-            (setq top  (point))
             (goto-char (point-max))
             (insert "\nSend a Bookmark+ bug report: `\\[icicle-send-bug-report]'.\n\n")
             (help-insert-xref-button "[Doc in Commentary]" 'bmkp-commentary-button)
