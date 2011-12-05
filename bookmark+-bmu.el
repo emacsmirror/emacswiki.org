@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2011, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 09:05:21 2010 (-0700)
-;; Last-Updated: Mon Dec  5 08:39:50 2011 (-0800)
+;; Last-Updated: Mon Dec  5 10:11:11 2011 (-0800)
 ;;           By: dradams
-;;     Update #: 1003
+;;     Update #: 1004
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-bmu.el
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -4097,15 +4097,15 @@ Marked bookmarks that have no associated file are ignored."
   '(menu-item "Toggle Autosaving Bookmark File" bmkp-toggle-saving-bookmark-file
     :help "Toggle the value of option `bookmark-save-flag'"))
 
-(define-key bmkp-bmenu-menubar-menu [bmkp-switch-bookmark-file-create]
-  '(menu-item "Switch to Bookmark File..." bmkp-switch-bookmark-file-create
-    :help "Switch to a different bookmark file, *replacing* the current set of bookmarks"))
+(define-key bmkp-bmenu-menubar-menu [bmkp-empty-file]
+  '(menu-item "Empty Bookmark File..." bmkp-empty-file
+    :help "Empty an existing bookmark file or create a new, empty bookmark file"))
 (define-key bmkp-bmenu-menubar-menu [bookmark-bmenu-load]
   '(menu-item "Add Bookmarks from File..." bookmark-bmenu-load
     :help "Load additional bookmarks from a bookmark file"))
-(define-key bmkp-bmenu-menubar-menu [bmkp-empty-file]
-  '(menu-item "New (Empty) Bookmark File..." bmkp-empty-file
-    :help "Create a new, empty bookmark file, or empty an existing bookmark file"))
+(define-key bmkp-bmenu-menubar-menu [bmkp-switch-bookmark-file-create]
+  '(menu-item "Switch to Bookmark File..." bmkp-switch-bookmark-file-create
+    :help "Switch to a different bookmark file, *replacing* the current set of bookmarks"))
 
 (define-key bmkp-bmenu-menubar-menu [bookmark-write]
   '(menu-item "Save As..." bookmark-write
