@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2011, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 13:43:55 2010 (-0700)
-;; Last-Updated: Sat Dec  3 19:55:26 2011 (-0800)
+;; Last-Updated: Mon Dec  5 10:26:46 2011 (-0800)
 ;;           By: dradams
-;;     Update #: 2645
+;;     Update #: 2646
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-1.el
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -2224,10 +2224,10 @@ If called from Lisp:
          (cond ((and (not parg) (not file)) bmkp-current-bookmark-file)
                ((and (not parg) file) file)
                ((and parg (not file)) (bmkp-read-bookmark-file-name "File to save bookmarks in: ")))))
-    (bookmark-write-file file-to-save)
     (when (and bmkp-last-as-first-bookmark-file
                bookmark-save-flag)      ; nil if temporary bookmarking mode.
-      (customize-save-variable 'bmkp-last-as-first-bookmark-file file-to-save)))
+      (customize-save-variable 'bmkp-last-as-first-bookmark-file file-to-save))
+    (bookmark-write-file file-to-save))
   ;; Indicate by the count that we have synced the current bookmark file.
   ;; If an error has already occurred somewhere, the count will not be set, which is what we want.
   (setq bookmark-alist-modification-count 0))
