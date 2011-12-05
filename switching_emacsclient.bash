@@ -2,7 +2,7 @@
 
 # Switch between emacs frame and its clients.  Also support piping to emacs.
 
-EMACS_CLIENT=emacsclient
+EMACS_CLIENT=${EMACS_CLIENT:-emacsclient}
 # The server to use.
 EMACS_SERVER=
 # Additional arguments for emacsclient.
@@ -21,6 +21,10 @@ Supports the following additional options :
     --do-return      Do return to the client, if necessary (default, unless -n is present).
     --dont-return    Don't return to the client.
     -                Read stdin and append it as a file to the argument list.
+
+For the switching to work properly, you need to put this in your init file :
+
+        (setq server-raise-frame nil)
 
 emacslient --help output follows.
 ---
@@ -60,6 +64,7 @@ DO_PIPE=false                   # Read from stdin ?
 
 for arg; do
     case $arg in
+        --) break ;;
         -[cte]|--eval) DO_SWITCH=false ;;
         -n) DO_RETURN=false ;;
         --help) usage; exit 0 ;;
@@ -68,13 +73,19 @@ done
 
 # Handle and remove extra options.
 ARGS=()
+EOA=false                       # Handle -- special argument.
 for arg; do
+    if [ "$EOA" = true ];then
+        ARGS[${#ARGS[@]}]="$arg"
+        continue
+    fi
     case $arg in
         --do-switch) DO_SWITCH=true ;;
         --dont-switch) DO_SWITCH=false ;;
         --do-return) DO_RETURN=true ;;
         --dont-return) DO_RETURN=false ;;
         -) DO_PIPE=true ;;
+        --) EOA=true ;&     # fall through
         *) ARGS[${#ARGS[@]}]="$arg" ;;
     esac
 done
