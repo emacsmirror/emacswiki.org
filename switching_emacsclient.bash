@@ -22,7 +22,7 @@ Supports the following additional options :
     --dont-return    Don't return to the client.
     -                Read stdin and append it as a file to the argument list.
 
-For the switching to work properly, you need to put this in your init file :
+If you want to be able to not switch, you need to put this in your init file :
 
         (setq server-raise-frame nil)
 
