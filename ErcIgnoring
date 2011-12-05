@@ -20,6 +20,11 @@ The list contains regular expressions which are matched against "nick!login@host
 
     (setq erc-ignore-list '("^j[a-z]*bot!" "^fussbot!" "^shorten!"))
 
+If you use BitlBee or another jabber to irc gateway and are on Google+, you might want to ignore the "all of the people in my circles" presence:
+
+    (setq erc-ignore-list '("*@public.talk.google.com"))
+
+
 == Conference mode snippet ==
 
 Got the idea from X-Chat, conference mode disables joins, parts and quits in channels where it's turned on.  Unfortunately it doesn't work, i think because functions somewhere don't respect the buffer local setting of ERC-HIDE-LIST, or maybe it's just my ERC that's old, I'll investigate later. :-)  (Join ignore works.)  RichardKlinda
