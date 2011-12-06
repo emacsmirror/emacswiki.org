@@ -24,6 +24,10 @@ In short, I think we should replace all instances of ##AutoHotKey## with ##[http
 
 [new:JonasOster:2011-10-21 19:54 UTC]
 
+I agree with the above from Jonas, except what I **would** like to see if not here then somewhere, is a HowTo make use of AHK to generalize the emacs keystrokes to the entire windoze environment.
+
+[new:HCH: 2011-12-06T19:20+7]
+
 So, on-topic for this page would be, e.g. information about how to use Autohotkey in conjunction with Emacs. I use the US keyboard layout, since I am a programmer, but I frequently need to type European diacritical characters when I write German or Swedish, or type my name. I have an Autohotkey setup with things like
 <pre>
 :*?:ae/::ä
