@@ -188,6 +188,11 @@ It's also possible to build the development version of GNU Emacs with ATSUI -- A
 
 == Tips ==
 
+=== Visit Mac files with native Mac app in dired ===
+
+Use the shell mode. Make sure cursor is at the file, then type:
+! open <RET>
+
 === Use Alt/Option as Meta Key under terminal emulators ===
 
 For Terminal.app, starting from Snow Leopard: Go to  Preferences > Settings > Keyboard > Use option as meta key.
