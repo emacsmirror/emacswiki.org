@@ -333,6 +333,57 @@ I think i found the issue: if i open something in my home directory ($HOME in li
 
 --PasJa
 
+[new:DrewAdams:2011-12-06 22:44 UTC]
+Thanks for hanging in there, PasJa.  Sorry for your trouble.  I can't reproduce this at my end, but I'm using Windows.  I suggest you do this (temporarily), in the code of `icicle-keep-only-past-inputs':
+
+Just after this line:
+
+  (when (consp (symbol-value minibuffer-history-variable))
+
+Add this line:
+
+  (message "hist: %S" minibuffer-history-variable)
+
+In this part of the code:
+
+  (lambda (candidate)
+    (when (icicle-file-name-input-p)
+      (setq candidate  (expand-file-name
+                        candidate
+                        (icicle-file-name-directory
+                         icicle-last-input))))
+    (member candidate
+            (symbol-value minibuffer-history-variable)))
+
+Just before the `when' line, add this:
+
+   (message "111, cand: %S" candidate)
+
+Just before the `member' line, add this:
+
+   (message "222, cand: %S" candidate)
+
+Then evaluate the modified definition of `icicle-keep-only-past-inputs' (e.g. `C-M-x' inside the definition).
+
+The try your recipe again, but preferably in a directory that doesn't have too many files and subdirs (so it's easier to read the output).
+
+The messages will be written to buffer `*Messages*'.  Show that buffer (e.g. in a separate frame, with `C-x 5 b') before following your recipe, and put the cursor at the buffer end to begin with.
+
+What is printed to `*Messages*' should show you (a) what the candidate files names look like, versus (b) what the history entries look like.  The `111' and `222' lines for a given candidate show how the raw candidate is transformed to be compared with a history element.  You will presumably see that a transformed candidate that should correspond to a history element does not have the right form (the two are compared as plain strings, so they need to match exactly).
+
+Do this in both a directory where `M-pause' works and in one where it does not work.  Let me know what you find.  Thx -- DrewAdams
+
+
+
+
+
+
+
+
+
+
+
+
 <pre>
 
 </pre>
