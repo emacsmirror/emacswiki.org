@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2011, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Mon Dec  5 17:05:21 2011 (-0800)
+;; Last-Updated: Tue Dec  6 10:46:14 2011 (-0800)
 ;;           By: dradams
-;;     Update #: 13934
+;;     Update #: 13936
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-chg.el
 ;; Keywords: bookmarks, bookmark+
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -120,6 +120,8 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-1.el'")
 ;;
+;; 2011/12/06 dadams
+;;     bmkp-edit-bookmark, bookmark-rename: Use bmkp-completing-read-lax, not read-from-minibuffer.
 ;; 2011/12/05 dadams
 ;;     bmkp-this-buffer-p:
 ;;       Do not use buffer-file-name (for Dired).  Wrap bookmark-buffer-file-name with condition-case.
