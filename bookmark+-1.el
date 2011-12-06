@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2011, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 13:43:55 2010 (-0700)
-;; Last-Updated: Tue Dec  6 11:24:23 2011 (-0800)
+;; Last-Updated: Tue Dec  6 14:06:03 2011 (-0800)
 ;;           By: dradams
-;;     Update #: 2662
+;;     Update #: 2663
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-1.el
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -736,7 +736,7 @@ the save (only)."
   "*Seconds to wait before updating display when filtering bookmarks."
   :type 'number :group 'bookmark-plus)
 
-;;;###autoload
+;; Remove autoload cookie to avoid (void-variable bookmark-default-file) ;;;###autoload
 (defcustom bmkp-last-as-first-bookmark-file bookmark-default-file
   "*Whether to use the last-used bookmark file as the first used.
 If nil then Emacs always uses the value of `bookmark-default-file' as
