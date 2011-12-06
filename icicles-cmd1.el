@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Wed Nov 23 14:04:53 2011 (-0800)
+;; Last-Updated: Mon Nov 28 16:54:32 2011 (-0800)
 ;;           By: dradams
-;;     Update #: 22752
+;;     Update #: 22754
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-cmd1.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -1401,8 +1401,7 @@ control completion behaviour using `bbdb-completion-type'."
                                                (member (intern-soft (downcase net) ht)
                                                        all-the-completions)))
                                          ;; (name-or-)primary
-                                         ((and (member bbdb-completion-type
-                                                       '(name-or-primary))
+                                         ((and (member bbdb-completion-type '(name-or-primary))
                                                (let ((cname  (symbol-name sym)))
                                                  (or (string= cname name)
                                                      (member cname akas))))
@@ -5350,7 +5349,8 @@ These options, when non-nil, control candidate matching and filtering:
 For example, to show only names of files larger than 5000 bytes, set
 `icicle-file-predicate' to:
 
-  (lambda (file) (> (nth 5 (file-attributes file)) 5000))
+  (lambda (file) (and (numberp (nth 7 (file-attributes file)))
+                      (> (nth 7 (file-attributes file)) 5000)))
 
 Option `icicle-file-require-match-flag' can be used to override
 option `icicle-require-match-flag'.
@@ -5484,7 +5484,8 @@ These options, when non-nil, control candidate matching and filtering:
 For example, to show only names of files larger than 5000 bytes, set
 `icicle-file-predicate' to:
 
-  (lambda (file) (> (nth 5 (file-attributes file)) 5000))
+  (lambda (file) (and (numberp (nth 7 (file-attributes file)))
+                      (> (nth 7 (file-attributes file)) 5000)))
 
 Option `icicle-file-require-match-flag' can be used to override
 option `icicle-require-match-flag'.
@@ -5615,7 +5616,8 @@ These options, when non-nil, control candidate matching and filtering:
 For example, to show only names of files larger than 5000 bytes, set
 `icicle-file-predicate' to:
 
-  (lambda (file) (> (nth 5 (file-attributes file)) 5000))
+  (lambda (file) (and (numberp (nth 7 (file-attributes file)))
+                      (> (nth 7 (file-attributes file)) 5000)))
 
 Option `icicle-file-require-match-flag' can be used to override
 option `icicle-require-match-flag'.
@@ -6074,7 +6076,8 @@ These options, when non-nil, control candidate matching and filtering:
 For example, to show only names of files larger than 5000 bytes, you
 could temporarily set `icicle-file-predicate' to:
 
-  (lambda (file) (> (nth 5 (file-attributes file)) 5000))
+  (lambda (file) (and (numberp (nth 7 (file-attributes file)))
+                      (> (nth 7 (file-attributes file)) 5000)))
 
 Option `icicle-file-require-match-flag' can be used to override
 option `icicle-require-match-flag'.
@@ -6546,7 +6549,8 @@ These options, when non-nil, control candidate matching and filtering:
 For example, to show only names of files larger than 5000 bytes, set
 `icicle-file-predicate' to:
 
-  (lambda (file) (> (nth 5 (file-attributes file)) 5000))
+  (lambda (file) (and (numberp (nth 7 (file-attributes file)))
+                      (> (nth 7 (file-attributes file)) 5000)))
 
 Option `icicle-file-require-match-flag' can be used to override
 option `icicle-require-match-flag'.
