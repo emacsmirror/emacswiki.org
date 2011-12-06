@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2011, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 13:43:55 2010 (-0700)
-;; Last-Updated: Mon Dec  5 17:04:27 2011 (-0800)
+;; Last-Updated: Tue Dec  6 11:24:23 2011 (-0800)
 ;;           By: dradams
-;;     Update #: 2649
+;;     Update #: 2662
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-1.el
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -2072,9 +2072,9 @@ Return \"-- Unknown location --\" if no such name can be found."
 
 ;; REPLACES ORIGINAL in `bookmark.el'.
 ;;
-;; 1. Added bookmark default for interactive use.
-;; 2. Added note about `S-delete' to doc string.
-;; 3. Added BATCH arg.
+;; 1. Added BATCH arg.
+;; 2. Use `bmkp-completing-read-lax', not `read-from-minibuffer'.  (Do not bother with offering `C-w'.)
+;; 3. Added note about `S-delete' to doc string.
 ;; 4. Put `bmkp-full-record' property on new name.
 ;; 5. Refresh menu list, to show new name.
 ;;
@@ -2085,6 +2085,8 @@ Interactively:
  If called from the keyboard, then prompt for OLD.
  If called from the menubar, select OLD from a menu.
 If NEW is nil, then prompt for its string value.
+ Completion against existing bookmark names is available, but is lax
+ so you can easily edit an existing name.
 
 If BATCH is non-nil, then do not rebuild the bookmark list.
 
@@ -2100,11 +2102,12 @@ candidate."
   (setq bookmark-current-point  (point)) ; `bookmark-current-point' is a free var here.
   (save-excursion (skip-chars-forward " ") (setq bookmark-yank-point  (point)))
   (setq bookmark-current-buffer  (current-buffer))
-  (let ((newname  (or new  (read-from-minibuffer "New name: " nil
-                                                 (let ((now-map  (copy-keymap minibuffer-local-map)))
-                                                   (define-key now-map  "\C-w" 'bookmark-yank-word)
-                                                   now-map)
-                                                 nil 'bookmark-history))))
+  (let ((newname  (or new  (bmkp-completing-read-lax "New name: " old))))
+;;; $$$$$$  (read-from-minibuffer "New name: " nil
+;;;           (let ((now-map  (copy-keymap minibuffer-local-map)))
+;;;             (define-key now-map  "\C-w" 'bookmark-yank-word)
+;;;             now-map)
+;;;           nil 'bookmark-history))))
     (bookmark-set-name old newname)
     (when (and (> emacs-major-version 20) ; Emacs 21+.  Cannot just use (boundp 'print-circle).
                bmkp-propertize-bookmark-names-flag)
@@ -2457,7 +2460,8 @@ that option is non-nil."
 
 (defun bmkp-completing-read-lax (prompt &optional default alist pred hist)
   "Read a bookmark name, prompting with PROMPT.
-Same as `bookmark-completing-read', but completion is lax."
+Same as `bookmark-completing-read', but completion is lax: your input
+need not match any existing bookmark name."
   (unwind-protect
        (progn (define-key minibuffer-local-completion-map "\C-w" 'bookmark-yank-word)
               (define-key minibuffer-local-completion-map "\C-u" 'bookmark-insert-current-bookmark)
@@ -2520,10 +2524,13 @@ If `bmkp-other-window-pop-to-flag' is non-nil, then use
 ;;;###autoload
 (defun bmkp-edit-bookmark (bookmark &optional internalp) ; Bound to `C-x p E'
   "Edit BOOKMARK's name and file name, and maybe save them.
+Return a list of the new bookmark name and new file name.
 BOOKMARK is a bookmark name (a string) or a bookmark record.
-With a prefix argument, edit the complete bookmark record (the
-internal, Lisp form).
-Return a list of the new bookmark name and new file name."
+Without a prefix arg, you are prompted for the new bookmark name and
+ the new file name.  Completion against existing bookmark names is
+ available, but is lax so you can easily edit an existing name.
+With a prefix arg, edit the complete bookmark record (the
+ internal, Lisp form)."
   (interactive
    (list (bookmark-completing-read
           (concat "Edit " (and current-prefix-arg "internal record for ") "bookmark")
@@ -2534,8 +2541,7 @@ Return a list of the new bookmark name and new file name."
       (bmkp-edit-bookmark-record bookmark)
     (let* ((bookmark-name      (bookmark-name-from-full-record bookmark))
            (bookmark-filename  (bookmark-get-filename bookmark-name))
-           (new-bmk-name       (read-from-minibuffer "New bookmark name: " nil nil nil nil
-                                                     bookmark-name))
+           (new-bmk-name       (bmkp-completing-read-lax "New bookmark name: " bookmark-name))
            (new-filename       (read-file-name "New file name (location): "
                                                (and bookmark-filename
                                                     (file-name-directory bookmark-filename)))))
