@@ -1,0 +1,4 @@
+I use Emacs. ... except for mailing with mutt. In that case (typically in a Putty terminal) I use vi.
+Okay, sometimes I have emacs running in that putty session and read the mails with ansi-term mode and mutt.
+In this case my editor is emacsclient. Though I am still curious what will happen if vi opens in an
+ansi-term buffer.
