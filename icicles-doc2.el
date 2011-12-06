@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Sat Nov 26 13:42:43 2011 (-0800)
+;; Last-Updated: Tue Dec  6 11:45:35 2011 (-0800)
 ;;           By: dradams
-;;     Update #: 28539
+;;     Update #: 28544
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-doc2.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -4758,18 +4758,34 @@
 ;;    default value for minibuffer input.  This includes not only
 ;;    functions that read input with completion (`completing-read',
 ;;    `read-file-name'), but also other input-reading functions:
-;;    `read-from-minibuffer' and `read-string'.  The default value of
-;;    `t' gives the vanilla Emacs behavior: `completing-read' adds the
-;;    default input value to the prompt as a hint (but
-;;    `read-file-name' does not).  Non-`nil' and non-`t' means to
-;;    automatically insert the default input value into the minibuffer
-;;    as the initial value.  I prefer to have it inserted, as I often
-;;    use the default value (perhaps editing it).  A value of `nil'
-;;    neither inserts the default value nor adds it to the prompt.  If
-;;    the value is `t' or `nil', remember that you can always insert
-;;    the default value manually with `M-n'.  If the value is neither
-;;    `t' nor `nil', you can always use `M-p' to remove the default
-;;    value from the minibuffer.
+;;    `read-from-minibuffer' and `read-string'.
+;;
+;;    The default value of `t' gives the behavior you typically find
+;;    in vanilla Emacs: The default input value is added to the prompt
+;;    between parentheses as a hint, and it is not inserted in the
+;;    minibuffer as initial input.  Vanilla Emacs does not add the
+;;    default value to the prompt in these standard input-reading
+;;    functions themselves.  Instead, it does that in the functions
+;;    that call these functions.  That hard-codes the choice, taking
+;;    it away from users.  Icicles provides this option to give you a
+;;    choice.
+;;
+;;    Exception: Functions `(icicle-)read-file-name' and
+;;    `(icicle-)read-from-minibuffer' do not insert the default value
+;;    into the prompt, even with a value of `t'.  This is in keeping
+;;    with how these functions treat empty user input (just `RET')
+;;    with respect to the default value in vanilla Emacs.  See the doc
+;;    for those functions for more information.
+;;
+;;    Non-`nil' and non-`t' means to automatically insert the default
+;;    input value into the minibuffer as the initial value.  I prefer
+;;    to have it inserted, as I often use the default value (perhaps
+;;    editing it).  A value of `nil' neither inserts the default value
+;;    nor adds it to the prompt.  If the value is `t' or `nil',
+;;    remember that you can always insert the default value manually
+;;    with `M-n'.  If the value is neither `t' nor `nil', you can
+;;    always use `M-p' to remove the default value from the
+;;    minibuffer.
 ;;
 ;;    A non-`nil', non-`t' value of `icicle-default-value' controls
 ;;    also whether or not the initial value is preselected, and where
