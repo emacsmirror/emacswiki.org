@@ -5,6 +5,12 @@ Stuff moved to other pages: CocoAspell.
 
 == Integration with Mac OS Programs ==
 
+=== Installation ===
+
+You can use the pre-built package from [http://emacsformacosx.com/]. Although Aquamacs is also available, there is some funky behavior that's different from regular emacs.
+
+For future installation of *.el files and other cool stuff, you also want to install xcode from Mac Appstore. It is freely available. It is required for Macports, which in turn is required for many packages.
+
 === Printing ====
 
 See MacPrintMode.
