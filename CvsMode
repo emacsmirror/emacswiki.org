@@ -23,4 +23,20 @@ For use with putty and plink.
 这样就可以用了.
 
 ----
+I realized that PCL-CVS is quite slow on win32 systems. The same box booted into Linux
+needs less than a second for a project of 30 files with 50 revisions per file and quite
+a lot of tags while on win32 the same project needs 4 seconds or even longer. The protocol
+used by cvs to communicate with the server is pserver in both cases. The server is located
+in the local network. I first thought the bottleneck is the extra parsing effort in elisp
+due to the large number of tags in output of cvs status. But that's the same task for both
+Windows and Linux.
+
+So now I would go for process creation, which is known to be a lot slower
+on win32 systems. But is PCL-CVS starting a process for each directory?
+A single ''cvs status'' command for the complete directory tree should be sufficient.
+Maybe I have to dig into the elisp code ..
+
+-- RolfUnger
+
+----
 CategoryVersionControl
