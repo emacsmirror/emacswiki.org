@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:22:14 2006
 ;; Version: 22.0
-;; Last-Updated: Tue Dec  6 07:10:20 2011 (-0800)
+;; Last-Updated: Tue Dec  6 11:08:24 2011 (-0800)
 ;;           By: dradams
-;;     Update #: 4715
+;;     Update #: 4731
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-opt.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -1298,32 +1298,49 @@ inserted."
 ;;;###autoload
 (defcustom icicle-default-value t
   "*How to treat the default value when reading minibuffer input.
-
 When the default value argument to functions such as
 `completing-read', `read-file-name', `read-from-minibuffer', and
 `read-string' is non-nil and the initial-input argument is nil or
 \"\", the default value can be added to the prompt as a hint or
 inserted into the minibuffer as the initial input.
 
-Adding it to the prompt is the default behavior and corresponds to the
-behavior of vanilla Emacs.
+Adding it to the prompt is the default behavior (except for
+`read-file-name' and `read-from-minibuffer').  This corresponds to the
+more or less conventional behavior of vanilla Emacs.  But vanilla
+Emacs does not do this systematically via these input-reading
+functions themselves.  Instead, it hard-codes default values into
+prompts in the functions that call these functions.
+
+Note that Icicles commands never add the default value to the prompt.
+This includes Icicles versions of standard commands that might do so.
+Icicles instead tries to give you the choice, via
+`icicle-default-value'.
+
+Note the exception for `(icicle-)read-from-minibuffer' and
+`(icicle-)read-file-name'.  This is because these functions treat
+empty input (just `RET') specially - see their doc for details.
 
 Inserting the default value in the minibuffer as the initial input has
 the advantage of not requiring you to use `M-n' to retrieve it.  It
 has the disadvantage of making you use `M-p' (or do something else) to
 get rid of the default value in the minibuffer if you do not want to
-use or edit it.  If you often want to use or edit the default value,
-then set `icicle-default-value' to non-nil and non-t.  If you rarely
-do so, then set it to nil or t.
+use or edit it.
 
-If inserted in the minibuffer, the value of this option also
-determines whether or not the inserted text is preselected and where
-the cursor is left: at the beginning or end of the text.
+If you often want to use or edit the default value, then set
+`icicle-default-value' to non-nil and non-t.  If you rarely do so,
+then set it to nil or t.
+
+If the default value is to be inserted in the minibuffer, the value of
+this option also determines whether or not the inserted text is
+preselected, and where the cursor is left: at the beginning or end of
+the text.
 
 These are the possible option values:
 
   nil               - Do not insert default value or add it to prompt.
-  t                 - Add default value to prompt.  Do not insert it.
+  t                 - Add default value to prompt (except for
+                      `read-file-name' and `read-from-minibuffer').
+                      Do not insert it.
   `insert-start'    - Insert default value and leave cursor at start.
   `insert-end'      - Insert default value and leave cursor at end.
   `preselect-start' - Insert and preselect default value;
