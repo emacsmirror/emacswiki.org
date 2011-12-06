@@ -382,7 +382,7 @@ You may, for example, enable urgency hint when the activity list is updated and 
     (setcar wm-hints
 	    (if arg
 		(logior flags #x00000100)
-	      (logand flags #xFFFFFEFF)))
+	      (logand flags #x1ffffeff)))
     (x-change-window-property "WM_HINTS" wm-hints frame "WM_HINTS" 32 t)))
 
 ;; usage example
