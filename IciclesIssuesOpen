@@ -325,8 +325,13 @@ Any news on this?  -- DrewAdams
 
 Sorry, i have a busy IRL period. I try to get some time to debug this issue.
 
+[new]
 
+Hi Drew!
 
+I think i found the issue: if i open something in my home directory ($HOME in linux) then `M-pause' does not work. But if i open something else ex.: /tmp/test.txt then it works correctly! Maybe you should start search the problem around the '~/' vs. absolute notation/highlighting/searching. There should be some difference in windows or icicles path handling, that prevents this issue. Screenshots: TmP TmpMetapause
+
+--PasJa
 
 <pre>
 
