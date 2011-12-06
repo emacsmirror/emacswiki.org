@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:53 2006
 ;; Version: 22.0
-;; Last-Updated: Fri Oct 21 18:40:51 2011 (-0700)
+;; Last-Updated: Tue Dec  6 10:23:29 2011 (-0800)
 ;;           By: dradams
-;;     Update #: 12702
+;;     Update #: 12708
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-fn.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -1340,12 +1340,13 @@ functions, which use zero-indexing for POSITION."
       (setq initial-contents  (if (integerp def-value) ; Character
                                   (char-to-string def-value)
                                 def-value)))
-    (when (and def-value (eq icicle-default-value t)) ; Add DEFAULT-VALUE to PROMPT.
-      (when (icicle-file-name-input-p) (setq def-value  (file-name-nondirectory def-value)))
-      (setq prompt  (if (string-match "\\(.*\\)\\(: *\\)$" prompt)
-                        (concat (substring prompt (match-beginning 1) (match-end 1)) " (" def-value
-                                ")" (substring prompt (match-beginning 2) (match-end 2)))
-                      (concat prompt def-value)))))
+;;; $$$$$$    (when (and def-value (eq icicle-default-value t)) ; Add DEFAULT-VALUE to PROMPT.
+;;;       (when (icicle-file-name-input-p) (setq def-value  (file-name-nondirectory def-value)))
+;;;       (setq prompt  (if (string-match "\\(.*\\)\\(: *\\)$" prompt)
+;;;                         (concat (substring prompt (match-beginning 1) (match-end 1)) " (" def-value
+;;;                                 ")" (substring prompt (match-beginning 2) (match-end 2)))
+;;;                       (concat prompt def-value))))
+    )
   (old-read-from-minibuffer
    prompt initial-contents keymap read hist-m@%=!$+&^*z default-value inherit-input-method))
 
@@ -2651,13 +2652,13 @@ and file c:/Program Files/My Dir/mycmd.exe exists, then this returns
 (defun icicle-recentf-make-menu-items (&optional menu)
   "Make menu items from the recent list.
 This is a menu filter function which ignores the MENU argument."
-  (setq recentf-menu-filter-commands nil)
-  (let* ((recentf-menu-shortcuts 0)
-         (file-items  (icicle-condition-case-no-debug err
-                          (mapcar 'recentf-make-menu-item
-                                  (recentf-apply-menu-filter recentf-menu-filter
-                                                             (recentf-menu-elements
-                                                              recentf-max-menu-items)))
+  (setq recentf-menu-filter-commands  ())
+  (let* ((recentf-menu-shortcuts  0)
+         (file-items              (icicle-condition-case-no-debug err
+                                      (mapcar 'recentf-make-menu-item
+                                              (recentf-apply-menu-filter recentf-menu-filter
+                                                                         (recentf-menu-elements
+                                                                          recentf-max-menu-items)))
                         (error (message "recentf update menu failed: %s" (error-message-string err))))))
     (append (or file-items '(["No files" t :help "No recent file to open" :active nil]))
             (if recentf-menu-open-all-flag
@@ -2665,7 +2666,7 @@ This is a menu filter function which ignores the MENU argument."
               (and (< recentf-max-menu-items (length recentf-list)) ; `recentf-list' is free here.
                    '(["More..." recentf-open-more-files
                       :help "Open files not in the menu through a dialog" :active t])))
-            (and recentf-menu-filter-commands '("---")) recentf-menu-filter-commands
+            (and recentf-menu-filter-commands    '("---")) recentf-menu-filter-commands
             (and recentf-menu-items-for-commands '("---")) recentf-menu-items-for-commands
             (and icicle-mode
                  '(("Icicles"
