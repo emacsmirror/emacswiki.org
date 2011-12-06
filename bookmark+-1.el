@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2011, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 13:43:55 2010 (-0700)
-;; Last-Updated: Mon Dec  5 10:26:46 2011 (-0800)
+;; Last-Updated: Mon Dec  5 17:04:27 2011 (-0800)
 ;;           By: dradams
-;;     Update #: 2646
+;;     Update #: 2649
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-1.el
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -3799,7 +3799,7 @@ But return nil if BOOKMARK has an associated file, but it is not the
 And return nil for bookmarks, such as desktops, that are not really
  associated with a buffer, even if they have a `buffer-name' entry.
 BOOKMARK is a bookmark name or a bookmark record."
-  (and (let ((this-file  (and (buffer-file-name)  (bookmark-buffer-file-name)))
+  (and (let ((this-file  (condition-case nil (bookmark-buffer-file-name) (error nil)))
              (bmk-file   (and (bmkp-file-bookmark-p bookmark)  (bookmark-get-filename bookmark))))
          ;; Two possibilities:
          ;; * Neither buffer nor bookmark has a file, and the buffer names are the same.
