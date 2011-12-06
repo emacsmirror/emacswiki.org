@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2011, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Sun Nov 27 15:03:12 2011 (-0800)
+;; Last-Updated: Tue Dec  6 11:11:57 2011 (-0800)
 ;;           By: dradams
-;;     Update #: 7636
+;;     Update #: 7640
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-chg.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -1097,6 +1097,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-fn.el'")
 ;;
+;; 2011/12/06 dadams
+;;     icicle-read-from-minibuffer: Do not add default value to prompt.
 ;; 2011/10/21 dadams
 ;;     Added: icicle-propertize.
 ;;     Renamed: icicle-unpropertize to icicle-unpropertize-completion.  Applied renaming everywhere.
@@ -5152,6 +5154,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-opt.el'")
 ;;
+;; 2011/12/06 dadams
+;;     icicle-default-value: Updated doc wrt new behavior for icicle-read-from-minibuffer.
 ;; 2011/11/01 dadams
 ;;     icicle-top-level-key-bindings: Added: icicle-bookmark-(autonamed(-this-buffer)|autofile|
 ;;                                                            bookmark-file|temporary)(-other-window). 
