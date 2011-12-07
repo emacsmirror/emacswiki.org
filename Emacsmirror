@@ -46,3 +46,5 @@ so...). In any regard, if you want gist integration the only way to make
 it happen is to start working on it yourself. If we had a nice implementation
 then people might actually like it - otherwise it will be hard to
 convince anybody. -- JonasBernoulli
+
+[new] Color theme solarized is not in the repo: https://github.com/sellout/emacs-color-theme-solarized
