@@ -2,14 +2,15 @@ Move between paragraphs with ##`M-{'## and ##`M-}'##.
 
 Mark a paragraph with `M-h'.
 
-See the section on "Paragraphs" in the EmacsManual.  ##(info "(emacs)
-Paragraphs")##
+See the section on "Paragraphs" in the EmacsManual ##(info "(emacs)
+Paragraphs")##.
 
 See also:
 
-* FillParagraph
-* ReverseParagraphs
-* UnfillParagraph
+* FillParagraph -- LineWrap the text to a width.
+* UnfillParagraph -- Put the paragraph on one line.
+* [[Sorting]] -- Paragraphs can be sorted.
+* ReverseParagraphs -- Change the order of paragraphs.
 
 ----
 CategoryEditing
