@@ -364,7 +364,8 @@ This will show something like:
 (defun autohide-tabbar ()
 "Make tabbar briefly show itself while 
 you are switching buffers with shortcuts.
-Tested with GNU Emacs 23"
+Tested with GNU Emacs 23
+- Sabof"
   (defvar *tabbar-autohide-delay* 3)
 
   (interactive)
@@ -376,9 +377,9 @@ Tested with GNU Emacs 23"
 	(setf *tabbar-autohide-timer*
 		  (run-with-timer
 		   3 nil (lambda ()
-				   (tabbar-mode nil)
-				   (setf *tabbar-autohide-timer*
-						 nil)))))
+				 (tabbar-mode nil)
+				 (setf *tabbar-autohide-timer*
+					nil)))))
   
   (global-set-key
    [C-next]
@@ -391,10 +392,10 @@ Tested with GNU Emacs 23"
   (global-set-key
    [C-prior]
    (lambda ()
-	 (interactive)
-	 (if tabbar-mode
-		 (tabbar-backward)
-		 (tabbar-mode t))
+	(interactive)
+	(if tabbar-mode
+		(tabbar-backward)
+		(tabbar-mode t))
 	 (renew-tabbar-autohide-timer))))
 
 (autohide-tabbar)
