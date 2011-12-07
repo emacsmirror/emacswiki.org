@@ -47,8 +47,7 @@ Lisp:sentence-highlight.el
 
 (Also available as an [ELPA] package: http://marmalade-repo.org/packages/sentence-highlight/)
 
-[new::sbelak]
-Note: the above code relies on Emacs's sentence detection, which by default expects sentences to end with terminal punctuation followed by *two* spaces or a new line. The former can be changed by setting sentence-end-double-space to nil. See http://www.gnu.org/software/libtool/manual/emacs/Sentences.html for more details.
+See [[Sentences]] for information on how Emacs recognizes them.
 
 ----
 CategoryWriting
