@@ -119,7 +119,9 @@ Directions to build and install may be found in the file newly downloaded to ema
 Note: Carbon emacs has been replaced with Cocoa Emacs in Emacs 23.x.
 
 
-== Packages ==
+== Installing Emacs with a Package Managers ==
+
+Package managers provide a connective way to install and maintain/upgrade software.
 
 === Fink ===
 
