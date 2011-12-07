@@ -1,0 +1,16 @@
+Move between paragraphs with `M-{' and `M-}'.
+
+Mark a paragraph with `M-h'.
+
+See the section on "Paragraphs" in the EmacsManual.  ##(info "(emacs)
+Paragraphs")##
+
+See also:
+
+* FillParagraph
+* ReverseParagraphs
+* UnfillParagraph
+
+----
+CategoryEditing
+CategoryWriting
