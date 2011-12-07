@@ -1,6 +1,6 @@
 == Binaries for OS X ==
 
-Here are some Emacs and XEmacs binaries for OS X.
+A copy of GNU Emacs 22 without GUI support compiled in is available on all recent versions of Mac OS X via the shell. However, there are other Emacs distributions geared towards Mac OS X that include GUI support as well as other distinctions that may make it a more appropriate choice for some.
 
 Cocoa is the Objective-C API (originally developed by !NeXT) that is used for native OS X applications (included in Emacs 23.2).  Aquamacs and Emacs.app (GNU Emacs/Cocoa) both run under Cocoa.  Note that Emacs.app, GNU Emacs/Cocoa, and GNU Emacs/nextstep refer to the same thing.
 
