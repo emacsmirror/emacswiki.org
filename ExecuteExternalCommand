@@ -72,6 +72,10 @@ Here is a some EmacsLisp code that modifies `shell-command' to allow many comman
 
 ----
 
+== Asynchronous Processes ==
+
+Another way to run commands asynchronously, without Emacs stopping at all when the process is started, is using [http://www.gnu.org/software/emacs/elisp/html_node/Asynchronous-Processes.html Asynchronous Processes].
+
 == Discussion ==
 
 === Parent shell ===
