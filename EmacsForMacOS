@@ -191,9 +191,11 @@ The various emacs packages <nowiki>MacPorts</nowiki> offers (e.g., org-mode) wil
 Note that Mac OS X Lion comes with GNU Emacs 22.1.1, located at:
 <code>/usr/bin/emacs</code>
 
-Linux users, add this to your //.profile// (or //.bashrc//, etc.) to feel at home:
+Linux users, add these lines to your //.profile// (or //.bashrc//, etc.) to feel at home:
 
-<code>alias emacs='/Applications/MacPorts/Emacs.app/Contents/MacOS/Emacs'</code>
+<code>alias emacs='/Applications/MacPorts/Emacs.app/Contents/MacOS/Emacs'
+
+alias emacsclient='/Applications/MacPorts/Emacs.app/Contents/MacOS/bin/emacsclient'</code>
 
 For the OS X native (Cocoa) versions, once you've got !MacPorts installed, run
 
