@@ -167,13 +167,30 @@ http://github.com/mxcl/homebrew/commits/master/Library/Formula/emacs.rb
 === MacPorts ===
 
 !MacPorts [http://www.macports.org/ http://www.macports.org/] is another means of installing Emacs on OS X 
-(and other unix-alikes for that matter). 
-As of May 8th, 2010 it provides the following packages:
+(and other unix-alikes for that matter).
 
-* Emacs -- 23.2 (X11 Xaw3d)
-* Emacs-app -- 23.2 (Cocoa)
-* Emacs-app-devel  -- same as Emacs-app, but with a BZR development version (20090104 !!! as of 2010-05-08)
-* XEmacs -- 21.4.21 (X11)
+As of December 6, 2011 it provides the following packages:
+* emacs 23.3
+* emacs-app 23.3 <<-- Cocoa native
+* emacs-app-devel 20091101
+* emacs-snapshot 20110705
+* emacs22 22.3
+* xemacs 21.4.22
+
+See [http://www.macports.org/ports.php?by=name&substr=emacs Available Ports] for the current list.
+
+The emacs executable installs to:
+<code>/opt/local/bin/emacs</code>
+The emacs-app executable installs to:
+<code>/Applications/MacPorts/Emacs.app/Contents/MacOS/Emacs</code>
+The various emacs packages <nowiki>MacPorts</nowiki> offers (e.g., org-mode) will install to:
+<code>/opt/local/share/emacs/site-lisp/</code>
+Note that Mac OS X Lion comes with GNU Emacs 22.1.1, located at:
+<code>/usr/bin/emacs</code>
+
+Linux users, add this to your //.profile// (or //.bashrc//, etc.) to feel at home:
+
+<code>alias emacs='/Applications/MacPorts/Emacs.app/Contents/MacOS/Emacs'</code>
 
 For the OS X native (Cocoa) versions, once you've got !MacPorts installed, run
 
@@ -184,7 +201,6 @@ or (if you prefer a -- usually more recent-- development version)
    sudo port install emacs-app-devel
 
 It's also possible to build the development version of GNU Emacs with ATSUI -- Apple Type Services for Unicode Imaging. 
-
 
 == Tips ==
 
