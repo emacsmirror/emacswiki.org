@@ -116,6 +116,6 @@ Another variation when running under cygwin (to ensure that shell scripts are sa
 (add-hook 'before-save-hook 'my-before-save-hook)
 </pre>
 ----
-Reece Hart wrote [http://harts.net/reece/emacs/shebang.el shebang.el] doing the same job. Works in Emacsen 22 and 23.
+Reece Hart wrote [http://harts.net/reece/emacs/shebang.el shebang.el] doing the same job. A previous editor claimed it works in Emacsen 22 and 23, but actually it doesn't work in Emacs 23.3.1.
 ----
 CategoryProgrammerUtils
