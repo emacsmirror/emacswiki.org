@@ -143,5 +143,7 @@ preventing me from upgrading from 22 to 23. -- RyanDavis
 
 ** The above still blows up for me on 10.6.1, trying to compile 23.1, as does trying to just run 'make' after the configure step.
 
+[new]
+I did not encounter the PATH issue w/ <nowiki>MacPorts</nowiki>' emacs-app on Lion --[[gerber]] 2011/12/07
 ----
 CategoryPorts
