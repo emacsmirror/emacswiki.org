@@ -7,7 +7,7 @@ Here's my [http://github.com/hsjunnesson/.emacs.d emacs.d];
 
 = Current status =
 
-My lord this is crazy... how to make a [http://bit.ly/vuz3bB bouncing animation].
+Pushed up [https://github.com/hsjunnesson/wolfram.el wolfram.el]. Some functions to download and show results of queries run on [http://www.wolframalpha.com/ WolframAlpha].
 
 [http://twitter.com/home?status=http://www.emacswiki.org/emacs/HansSjunnesson Tweet this]
 
