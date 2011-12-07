@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2011, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Tue Dec  6 11:11:57 2011 (-0800)
+;; Last-Updated: Tue Dec  6 19:04:38 2011 (-0800)
 ;;           By: dradams
-;;     Update #: 7640
+;;     Update #: 7641
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-chg.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -500,6 +500,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd2.el'")
 ;;
+;; 2011/12/06 dadams
+;;     icicle-send-signal-to-process: Add process name to prompt.  Thx to Michael Heerdegen.
 ;; 2011/11/26 dadams
 ;;     Renamed icicle-read-color to icicle-read-color-wysiwyg.
 ;;     Added icicle-read-color (args compatible with vanilla read-color), for *-functions-to-redefine.
