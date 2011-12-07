@@ -193,9 +193,9 @@ Note that Mac OS X Lion comes with GNU Emacs 22.1.1, located at:
 
 Linux users, add these lines to your //.profile// (or //.bashrc//, etc.) to feel at home:
 
-<code>alias emacs='/Applications/MacPorts/Emacs.app/Contents/MacOS/Emacs'
+<code>alias emacs='/Applications/MacPorts/Emacs.app/Contents/MacOS/Emacs'</code>
 
-alias emacsclient='/Applications/MacPorts/Emacs.app/Contents/MacOS/bin/emacsclient'</code>
+<code>alias emacsclient='/Applications/MacPorts/Emacs.app/Contents/MacOS/bin/emacsclient'</code>
 
 For the OS X native (Cocoa) versions, once you've got !MacPorts installed, run
 
