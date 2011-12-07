@@ -1,4 +1,4 @@
-Move between paragraphs with `M-{' and `M-}'.
+Move between paragraphs with ##`M-{'## and ##`M-}'##.
 
 Mark a paragraph with `M-h'.
 
