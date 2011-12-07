@@ -119,9 +119,9 @@ Directions to build and install may be found in the file newly downloaded to ema
 Note: Carbon emacs has been replaced with Cocoa Emacs in Emacs 23.x.
 
 
-== Installing Emacs with a Package Managers ==
+== Installing Emacs with a Package Manager ==
 
-Package managers provide a connective way to install and maintain/upgrade software.
+Package managers provide a convenient way to install and maintain/upgrade software.
 
 === Fink ===
 
@@ -173,7 +173,7 @@ http://github.com/mxcl/homebrew/commits/master/Library/Formula/emacs.rb
 
 As of December 6, 2011 it provides the following packages:
 * emacs 23.3
-* emacs-app 23.3 <<-- Cocoa native
+* emacs-app 23.3 <-- Cocoa native
 * emacs-app-devel 20091101
 * emacs-snapshot 20110705
 * emacs22 22.3
