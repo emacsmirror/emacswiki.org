@@ -181,10 +181,13 @@ See [http://www.macports.org/ports.php?by=name&substr=emacs Available Ports] for
 
 The emacs executable installs to:
 <code>/opt/local/bin/emacs</code>
+
 The emacs-app executable installs to:
 <code>/Applications/MacPorts/Emacs.app/Contents/MacOS/Emacs</code>
+
 The various emacs packages <nowiki>MacPorts</nowiki> offers (e.g., org-mode) will install to:
 <code>/opt/local/share/emacs/site-lisp/</code>
+
 Note that Mac OS X Lion comes with GNU Emacs 22.1.1, located at:
 <code>/usr/bin/emacs</code>
 
