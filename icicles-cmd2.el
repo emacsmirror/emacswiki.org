@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Thu May 21 13:31:43 2009 (-0700)
 ;; Version: 22.0
-;; Last-Updated: Sat Nov 26 16:48:30 2011 (-0800)
+;; Last-Updated: Tue Dec  6 19:03:26 2011 (-0800)
 ;;           By: dradams
-;;     Update #: 4903
+;;     Update #: 4904
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-cmd2.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -7733,9 +7733,12 @@ You can match an input regexp against any combination of the parts.
 Use `C-M-j' (equivalent here to `C-q C-g C-j') to input the default
 separator."
     (lambda (cand)                      ; Action function
-      (let ((process  (string-to-number (icicle-transform-multi-completion cand)))
-            (sigcode  (let ((enable-recursive-minibuffers  t))
-                        (completing-read "Send signal: " proced-signal-list nil nil nil nil "TERM"))))
+      (let* ((process  (string-to-number (icicle-transform-multi-completion cand)))
+             (process-name (cdr-safe (assoc 'comm (process-attributes process))))
+             (sigcode  (let ((enable-recursive-minibuffers  t))
+                         (completing-read
+                          (format "Send signal to process %s: " process-name)
+                          proced-signal-list nil nil nil nil "TERM"))))
         (setq sigcode  (and (stringp sigcode)  (if (string-match "\\`[0-9]+\\'" sigcode)
                                                    (string-to-number sigcode)
                                                  (make-symbol sigcode))))
