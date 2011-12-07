@@ -1,0 +1,24 @@
+Move between sentences with ##`M-a'## and ##`M-e'##.
+
+Mark a sentence forward with `M-x mark-end-of-sentence'.
+
+Kill a sentence forward with `M-k'.
+
+Kill a sentence backward with `C-x DEL'
+
+See the section on "Sentences" in the EmacsManual.  ##(info "(emacs)
+Sentences")##
+
+'''Note''': Emacs's sentence detection, by default, expects sentences
+to end with terminal punctuation followed by *two* spaces or a new
+line. The former can be changed by setting `sentence-end-double-space'
+to `nil'. See the section of manual mentioned above for more.
+
+See also:
+
+* SentenceHighlight -- Visibly highlight the current sentence. 
+* SentenceFragments -- Operate on the minor punctuation characters like commas,  dashes and semicolons.
+
+----
+CategoryEditing
+CategoryWriting
