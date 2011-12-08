@@ -16,7 +16,7 @@ to `nil'. See the section of manual mentioned above for more.
 
 See also:
 
-* Command `<tt>[[Icicles - Other Search Commands#SearchingThingAtPointThings|icicle-search-sentences]]</tt>' -- Sentences as search contexts: search within sentences, ignoring non-sentence text. Various kinds of search patterns ([[regexp]]s etc.).
+* Command `<tt>[[Icicles - Other Search Commands#SearchingThingAtPointThings|icicle-search-sentences]]</tt>' -- Sentences as search contexts: search within selected or all sentences, ignoring non-sentence text. Various kinds of search patterns ([[regexp]]s etc.).
 * SentenceHighlight -- Visibly highlight the current sentence. 
 * SentenceFragments -- Operate on the minor punctuation characters like commas,  dashes and semicolons.
 
