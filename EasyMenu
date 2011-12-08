@@ -6,9 +6,10 @@ are implemented as keymaps.  This is why you add a menu definition to
 the mode-map of a mode, for example.  Whenever the mode is active, its
 mode-map is also active, and your menu therefore visible.
 
-Here is some basic example code how to use EasyMenu.  my-menu is the
-symbol used to identify your menu, and my-mode-map identifies the mode-map
-for your mode where you want the menu to be visible.
+== Simple Example of Defining a Menu ==
+
+Here is a basic example showing how to use EasyMenu.  `my-menu' is the
+symbol used to identify your menu, and `my-mode-map' identifies the [[keymap]] for the mode where you want the menu to be visible.
 
     (easy-menu-define my-menu my-mode-map "My own menu"
 		      '("My Stuff"
@@ -16,26 +17,40 @@ for your mode where you want the menu to be visible.
 			("Sub Menu"
 			 ["My subentry" my-obscure-function t])))
 
-SO, and here comes the pitfall. If you are using GNU Emacs, you are done
-with this piece of code. XEmacs, however, requires you to 
+== XEmacs Requirement ==
+
+If you are using GNU Emacs, you are done
+with this piece of code.  [[XEmacs]], however, requires you to 
 add the menu explicitly, so do it anyway, and it works in
 both flavours:
 
     (easy-menu-add my-menu my-mode-map)
 
-You can also add menus and menu items to the global MenuBar.
+== A Menu-Bar Menu ==
+
+You can also add menus and menu items to the global [[menu bar]].
 Here is an example that adds an entry to the Tools menu.
-Watch out, the name of the menu where you want to add the item (the PATH
+Watch out, the name of the menu where you want to add the item (the ##PATH##
 parameter) is case sensitive.
 
     (require 'easymenu)
     (easy-menu-add-item nil '("tools") ["IRC" erc-select t])
 
-One way to determine PATH is to use C-h C-k and click on a menu item close to
-where you want your entry to appear.  The *Help* buffer then says something like:
+One way to determine ##PATH## is to use C-h C-k and click on a menu item close to
+where you want your entry to appear.  The `*Help*' buffer then says something like:
 
     <menu-bar> <tools> <games> <tetris> runs the command tetris
        which is an interactive autoloaded Lisp function in `tetris'.
+
+== Conditionalize a Separator Line ==
+
+Finally, something that is not documented and not so obvious: how to conditionalize showing a separator line.
+
+You normally define a separator line using just ##"--"## --- that is, just a string, not a vector.  But in that case there's no way to add a ##:visible## keyword to conditionalize when the separator should be shown.  To do that, you can use a vector, binding the command `ignore' to the menu-item name `--':
+
+    ["--" 'ignore :visible (featurep 'bookmark+-lit)]
+
+In this case, the separator is visible only when library <tt>[[bookmark+-lit.el]]</tt> has been loaded.  This is useful when you have a group of menu items that are all conditionalized the same way and when they are shown you want them to be set off with a separator.  (But you don't want the separator to show when the items are not shown.)
 
 ----
 CategoryCode
