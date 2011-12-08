@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams
 ;; Copyright (C) 2010-2111, Drew Adams, all rights reserved.
 ;; Created: Wed Jun 23 07:49:32 2010 (-0700)
-;; Last-Updated: Tue Nov 15 10:49:36 2011 (-0800)
+;; Last-Updated: Thu Dec  8 09:05:21 2011 (-0800)
 ;;           By: dradams
-;;     Update #: 739
+;;     Update #: 740
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-lit.el
 ;; Keywords: bookmarks, highlighting, bookmark+
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -389,7 +389,7 @@ This option is not used for Emacs versions before Emacs 22."
 
 ;;;###autoload
 (defun bmkp-bmenu-unlight ()            ; `H U' in bookmark list
-  "Highlight the location of this line's bookmark."
+  "Unhighlight the location of this line's bookmark."
   (interactive)
   (bmkp-bmenu-barf-if-not-in-menu-list)
   (bmkp-unlight-bookmark (bookmark-bmenu-bookmark) 'NOERROR))
