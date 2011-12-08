@@ -46,14 +46,14 @@ When you search for issues, list issues or projects, and the like, issue keys, p
 # Currently, some tasks seem to run a bit slow, especially logging in. I believe this has to do with the connection xmlrpc has to establish. It seems that once the connection is established things run much more quickly and smoothly. However, the connection will timeout, which can cause the next action to take longer again. 
 
 # Atlassian does not support all functions over XMLRPC. For instance, ticket resolution and changing ticket status can not be performed over XMLRPC. This is a part of Jira by design and I can do nothing about it. I have looked into possibly using SOAP instead of XMLRPC, as SOAP seems to support more functions, but have not done more than a little reading and research.
-
-Have a look at http://code.google.com/p/emacs-soap-client/, I use it to access the JIRA SOAP interface and supports ticket resolution and ticket status and all the rest of the stuff :-)
+  Have a look at http://code.google.com/p/emacs-soap-client/, I use it to access the JIRA SOAP interface and supports ticket resolution and ticket status and all the rest of the stuff :-)
 
 # If the jira system not the newest, you may get "Exception: java.lang.NoSuchMethodException: com.atlassian.jira.rpc.xmlrpc.JiraXmlRpcService.getProjectsNoScheme(java.lang.String)" exception, you can just replace the getProjectsNoScheme with getProjects method in jira.el, which is a old interface, which may cause the list efficiency is low, but you can use;) - fireinice
 
 # I got following error when opening a ticket.
-let: Wrong type argument: buffer-or-string-p, ((("name" . "Client - Search List Detail") ("id" . "10482")))
 Please let me know further information for analyse.
+{{{
+let: Wrong type argument: buffer-or-string-p, ((("name" . "Client - Search List Detail") ("id" . "10482")))
 my emacs: GNU Emacs 23.1.1 (i486-pc-linux-gnu, GTK+ Version 2.20.1) of 2011-03-05 on palmer, modified by Debian
-
+}}}
 
