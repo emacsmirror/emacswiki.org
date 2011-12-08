@@ -141,6 +141,8 @@ If you're using session.el (EmacsSession), you need to excempt a circular data s
 
     (add-to-list 'session-globals-exclude 'org-mark-ring)
 
+If you're using Emacs 23 and Org 7.5, then you can also have some pseudo-compatability while maintaining CUA support with lisp:org-cua-dwim.el
+
 == Related elisp code ==
 
 === Dragging URLs ===
