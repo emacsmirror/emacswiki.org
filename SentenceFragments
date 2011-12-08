@@ -1,4 +1,4 @@
-One way to recognize sentence fragments, in addition to full sentences,
+One way to recognize sentence fragments, in addition to full [[Sentences]],
 is with this crude solution.
 
   (add-hook 'text-mode-hook
