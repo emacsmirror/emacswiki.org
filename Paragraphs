@@ -8,9 +8,11 @@ Paragraphs")##.
 See also:
 
 * FillParagraph -- LineWrap the text to a width.
-* UnfillParagraph -- Put the paragraph on one line.
-* [[Sorting]] -- Paragraphs can be sorted.
+* Command `<tt>[[Icicles - Other Search Commands#SearchingThingAtPointThings|icicle-search-paragraphs]]</tt>' -- Paragraphs as search contexts: search within selected or all paragraphs, ignoring non-paragraph text. Various kinds of search patterns ([[regexp]]s etc.).
+
 * ReverseParagraphs -- Change the order of paragraphs.
+* [[Sorting]] -- Paragraphs can be sorted.
+* UnfillParagraph -- Put the paragraph on one line.
 
 ----
 CategoryEditing
