@@ -14,7 +14,6 @@ Clicking the title heading to search for pages about writing in natural language
 * !RDictCc -- is an english-german (and vice versa) dictionary written in Ruby. It includes an emacs module which integrates it into emacs. Get it from apps section at the author's [http://www.tsdh.de homepage].
 * ScreenPlay -- Write a dramatic screenplay.
 * [[Sentences]] -- Editing sentences. 
-** SentenceHighlight -- a simple mode for highlighting the current sentence, useful for writers and copyeditors
 * ThesauriAndSynonyms -- Finding roughly equivalent words in natural languages.  Lists applications to other related information and tasks.
 * TypographicalPunctuationMarks -- insert ‘smart’ quotes
 * UnDoc -- Convert Word files to plain text.
