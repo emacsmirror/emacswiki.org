@@ -1,0 +1,33 @@
+One way to recognize sentence fragments, in addition to full sentences,
+is with this crude solution.
+
+  (add-hook 'text-mode-hook
+            (lambda ()
+              (setq sentence-end-double-space nil)
+              (when (string-match "^\\[" sentence-end-base)
+                (setq sentence-end-base
+                      (replace-match "--\\|[,;/" t t sentence-end-base)))))
+
+Now, hitting `M-a' or `M-e' will It disables finding sentences when
+they end with double spaces.
+
+  The following paragraph has some example sentences in it. This is a
+  sentence; but with two clauses. This says something -- includes
+  something related -- but then ends. Then we list one, two and a
+  third thing. In poetry/ one could/ use slashes/ to represent pauses.
+
+The complete version that you could put in your InitFile.
+
+  (eval-after-load "text-mode"
+    '(add-hook 'text-mode-hook
+               (lambda ()
+                 (eval-after-load "paragraphs"
+                   '(progn
+                      (setq sentence-end-double-space nil)
+                      (when (string-match "^\\[" sentence-end-base)
+                        (setq sentence-end-base
+                              (replace-match "--\\|[,;/" t t sentence-end-base))))))))
+
+----
+CategoryEditing
+CategoryWriting
