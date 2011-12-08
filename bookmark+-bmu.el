@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2011, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 09:05:21 2010 (-0700)
-;; Last-Updated: Mon Dec  5 10:11:11 2011 (-0800)
+;; Last-Updated: Thu Dec  8 11:32:40 2011 (-0800)
 ;;           By: dradams
-;;     Update #: 1004
+;;     Update #: 1040
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-bmu.el
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -283,7 +283,8 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;
 
-(eval-when-compile (require 'cl)) ;; case
+(eval-when-compile (require 'cl)) ;; case'
+(eval-when-compile (require 'easymenu)) ;; easy-menu-create-menu
 
 (require 'bookmark)
 ;; bookmark-alist, bookmark-bmenu-file-column,
@@ -4510,7 +4511,8 @@ Marked bookmarks that have no associated file are ignored."
 
 (defvar bmkp-bmenu-line-overlay nil
   "Overlay to highlight the current line for `bmkp-bmenu-mouse-3-menu'.")
-(define-key bookmark-bmenu-mode-map [mouse-3] 'bmkp-bmenu-mouse-3-menu)
+(define-key bookmark-bmenu-mode-map [down-mouse-3] 'bmkp-bmenu-mouse-3-menu)
+(define-key bookmark-bmenu-mode-map [mouse-3]      'ignore)
 
 ;;;###autoload
 (defun bmkp-bmenu-mouse-3-menu (event)
@@ -4518,70 +4520,73 @@ Marked bookmarks that have no associated file are ignored."
   (interactive "e")
   (let* ((mouse-pos                  (event-start event))
          (inhibit-field-text-motion  t) ; Just in case.
-         bol eol
-         (bmk-name                   (save-excursion
-                                       (with-current-buffer (window-buffer (posn-window mouse-pos))
-                                         (save-excursion
-                                           (goto-char (posn-point mouse-pos))
-                                           (save-excursion
-                                             (setq bol  (progn (beginning-of-line) (point))
-                                                   eol  (progn (end-of-line) (point))))
-                                           (if bmkp-bmenu-line-overlay ; Don't recreate.
-                                               (move-overlay bmkp-bmenu-line-overlay bol eol
-                                                             (current-buffer))
-                                             (setq bmkp-bmenu-line-overlay  (make-overlay bol eol))
-                                             (overlay-put bmkp-bmenu-line-overlay 'face 'region))
-                                           (bookmark-bmenu-bookmark))))))
-    (sit-for 0)
-    (let ((menu-choice
-           (x-popup-menu event
-                         (list "This Bookmark"
-                               (if bmk-name
-                                   (list bmk-name
-                                         (if (bmkp-bookmark-name-member bmk-name
-                                                                        bmkp-bmenu-marked-bookmarks)
-                                             '("Unmark" . bookmark-bmenu-unmark)
-                                           '("Mark" . bookmark-bmenu-mark))
-                                         (save-excursion
-                                           (goto-char (posn-point mouse-pos))
-                                           (beginning-of-line)
-                                           (if (looking-at "^D")
-                                               '("Unmark" . bookmark-bmenu-unmark)
-                                             '("Flag for Deletion" . bookmark-bmenu-delete)))
-                                         '("Omit" . bmkp-bmenu-omit)
-                                         '("--") ; ----------------------------------------
-                                         '("Jump To" . bookmark-bmenu-this-window)
-                                         '("Jump To in Other Window" . bookmark-bmenu-other-window)
-                                         '("--") ; ----------------------------------------
-                                         '("Copy Tags" . bmkp-bmenu-copy-tags)
-                                         '("Paste Tags (Add)" . bmkp-bmenu-paste-add-tags)
-                                         '("Paste Tags (Replace)" . bmkp-bmenu-paste-replace-tags)
-                                         '("Add Some Tags..." . bmkp-bmenu-add-tags)
-                                         '("Remove Some Tags..." . bmkp-bmenu-remove-tags)
-                                         '("Remove All Tags..." . bmkp-bmenu-remove-all-tags)
-                                         '("Rename Tag..." . bmkp-rename-tag)
-                                         '("Set Tag Value..." . bmkp-bmenu-set-tag-value)
-                                         (and (featurep 'bookmark+-lit)
-                                              '("--")) ; ----------------------------------------
-                                         (and (featurep 'bookmark+-lit)
-                                              '("Highlight"   . bmkp-bmenu-light))
-                                         (and (featurep 'bookmark+-lit)
-                                              '("Unhighlight" . bmkp-bmenu-unlight))
-                                         (and (featurep 'bookmark+-lit)
-                                              '("Set Lighting" . bmkp-bmenu-set-lighting))
-                                         '("--") ; ----------------------------------------
-                                         '("Show Annotation" . bookmark-bmenu-show-annotation)
-                                         '("Edit Annotation..." . bookmark-bmenu-edit-annotation)
-                                         '("Edit Name, File Name..." . bmkp-bmenu-edit-bookmark)
-                                         '("Rename..." . bookmark-bmenu-rename)
-                                         '("Relocate..." . bookmark-bmenu-relocate)
-                                         '("Toggle Temporary/Savable" . bmkp-bmenu-toggle-temporary)
-                                         '("--") ; ----------------------------------------
-                                         '("Describe" . bmkp-bmenu-describe-this-bookmark))
-                                 '("" (""))))))) ; No menu: not on a bookmark line.
-      (when bmkp-bmenu-line-overlay (delete-overlay bmkp-bmenu-line-overlay))
-      (and menu-choice  (save-excursion (goto-char (posn-point mouse-pos))
-                                        (call-interactively menu-choice))))))
+         bol eol bmk-name)
+    (with-current-buffer (window-buffer (posn-window mouse-pos))
+      (save-excursion
+        (goto-char (posn-point mouse-pos))
+        (save-excursion
+          (setq bol  (progn (beginning-of-line) (point))
+                eol  (progn (end-of-line) (point))))
+        (unwind-protect
+             (progn
+               (if bmkp-bmenu-line-overlay ; Don't recreate.
+                   (move-overlay bmkp-bmenu-line-overlay bol eol (current-buffer))
+                 (setq bmkp-bmenu-line-overlay  (make-overlay bol eol))
+                 (overlay-put bmkp-bmenu-line-overlay 'face 'region))
+               (setq bmk-name (bookmark-bmenu-bookmark))
+               (when bmk-name
+                 (sit-for 0)
+                 (let* ((map (easy-menu-create-menu
+                              "This Bookmark"
+                              `(,(if (bmkp-bookmark-name-member bmk-name bmkp-bmenu-marked-bookmarks)
+                                     ["Unmark" bookmark-bmenu-unmark]
+                                     ["Mark" bookmark-bmenu-mark])
+                                ,(save-excursion
+                                  (goto-char (posn-point mouse-pos))
+                                  (beginning-of-line)
+                                  (if (looking-at "^D")
+                                      ["Unmark" bookmark-bmenu-unmark]
+                                    ["Flag for Deletion" bookmark-bmenu-delete]))
+                                ["Omit" bmkp-bmenu-omit]
+                                ["Jump To" bookmark-bmenu-this-window]
+                                ["Jump To in Other Window" bookmark-bmenu-other-window]
+                                "--"    ; ---------------------------------------
+                                ["Copy Tags" bmkp-bmenu-copy-tags
+                                 :active (bmkp-get-tags bmk-name)]
+                                ["Paste Tags (Add)" bmkp-bmenu-paste-add-tags]
+                                ["Paste Tags (Replace)" bmkp-bmenu-paste-replace-tags]
+                                ["Add Some Tags..." bmkp-bmenu-add-tags]
+                                ["Remove Some Tags..." bmkp-bmenu-remove-tags
+                                 :active (bmkp-get-tags bmk-name)]
+                                ["Remove All Tags..." bmkp-bmenu-remove-all-tags
+                                 :active (bmkp-get-tags bmk-name)]
+                                ["Rename Tag..." bmkp-rename-tag
+                                 :active (bmkp-get-tags bmk-name)]
+                                ["Set Tag Value..." bmkp-bmenu-set-tag-value
+                                 :active (bmkp-get-tags bmk-name)]
+                                ["--" 'ignore :visible (featurep 'bookmark+-lit)] ; -----------------
+                                ["Highlight" bmkp-bmenu-light
+                                 :visible (featurep 'bookmark+-lit)
+                                 :active (not (bmkp-lighted-p bmk-name))]
+                                ["Unhighlight" bmkp-bmenu-unlight
+                                 :visible (featurep 'bookmark+-lit)
+                                 :active (bmkp-lighted-p bmk-name)]
+                                ["Set Lighting" bmkp-bmenu-set-lighting
+                                 :visible (featurep 'bookmark+-lit)]
+                                "--"    ; ----------------------------------------
+                                ["Show Annotation" bookmark-bmenu-show-annotation
+                                 :active (bookmark-get-annotation bmk-name)]
+                                ["Add/Edit Annotation..." bookmark-bmenu-edit-annotation]
+                                ["Edit Name, File Name..." bmkp-bmenu-edit-bookmark]
+                                ["Rename..." bookmark-bmenu-rename]
+                                ["Relocate..." bookmark-bmenu-relocate]
+                                ["Toggle Temporary/Savable" bmkp-bmenu-toggle-temporary]
+                                "--"    ; ----------------------------------------
+                                ["Describe" bmkp-bmenu-describe-this-bookmark])))
+                        (user-selection (x-popup-menu event map)))
+                   (when user-selection
+                     (call-interactively (lookup-key map (apply 'vector user-selection)))))))
+          (when bmkp-bmenu-line-overlay (delete-overlay bmkp-bmenu-line-overlay)))))))
 
 ;;;;;;;;;;;;;;;;;;;;;
 
