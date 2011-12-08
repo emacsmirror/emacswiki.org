@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2011, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Tue Dec  6 14:12:51 2011 (-0800)
+;; Last-Updated: Thu Dec  8 11:38:46 2011 (-0800)
 ;;           By: dradams
-;;     Update #: 13938
+;;     Update #: 13943
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-chg.el
 ;; Keywords: bookmarks, bookmark+
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -432,6 +432,10 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-bmu.el'")
 ;;
+;; 2011/12/08 dadams
+;;     bmkp-bmenu-mouse-3-menu: Use easymenu to build the menu.  Conditionalize some items.
+;;     Bind down-mouse-3, not mouse-3, to bmkp-bmenu-mouse-3-menu.  (bind mouse-3 to ignore).
+;;     Added eval-when-compile for easymenu.el.
 ;; 2011/12/05 dadams
 ;;     bmkp-bmenu-menubar-menu: Reordered items regarding bookmark files.
 ;;     bmkp-bmenu-mode-status-help: Correct intro text, reorder, use marker for position TOP.
