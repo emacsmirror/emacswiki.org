@@ -7,9 +7,9 @@
 ;; Copyright (C) 2006-2011, Drew Adams, all rights reserved.
 ;; Created: Sat May 20 07:56:06 2006
 ;; Version: 22.0
-;; Last-Updated: Sat Nov 26 17:27:23 2011 (-0800)
+;; Last-Updated: Thu Dec  8 08:47:56 2011 (-0800)
 ;;           By: dradams
-;;     Update #: 587 4
+;;     Update #: 588 4
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/palette.el
 ;; Keywords: color, rgb, hsv, hexadecimal, face, frame
 ;; Compatibility: GNU Emacs: 22.x, 23.x
@@ -589,8 +589,8 @@ user updates `blink-cursor-mode'.")
     (define-key map [down-mouse-2] 'ignore)
     (define-key map [drag-mouse-2] 'ignore)
     (define-key map [mouse-2]      'palette-pick-background-at-mouse)
-    (define-key map [mouse-3]      'ignore)
     (define-key map [down-mouse-3] 'palette-popup-menu)
+    (define-key map [mouse-3]      'ignore)
     (define-key map "?"    'palette-background-at-point)
     (define-key map "."    'palette-current-color)
     (define-key map "~"    'palette-pick-color-complement)
@@ -632,7 +632,6 @@ user updates `blink-cursor-mode'.")
     (define-key map [(shift down)]      'palette-down+pick)
     (define-key map [(shift control p)] 'palette-up+pick)
     (define-key map [(shift up)]        'palette-up+pick)
-    (define-key map [down-mouse-3]      'palette-popup-menu)
 
     (define-key popup-map [current-color]
       '(menu-item "Current Color Info" palette-current-color
