@@ -1,4 +1,8 @@
-This page is about package '''[::Bookmark+]''' , which enhances vanilla Emacs [[bookmark]]s in many ways. 
+This page is about package '''[::Bookmark+]''' , which enhances vanilla Emacs [[bookmark]]s in many ways.  For background about Emacs bookmarks, see the following:
+
+* Emacs manual, node `Bookmarks': Manual:Bookmarks
+* [[#BookmarkBasics|Bookmark Basics]], below
+* [[BookMarks|Bookmarks]]
 
 The internal bookmark format (data structure) used by '''Bookmark+''' is compatible with that of vanilla GnuEmacs. It extends that structure in new ways, to accommodate new bookmark types.
 
@@ -3463,6 +3467,11 @@ Thanks for the heads-up.  That should be fixed now.  Emacs Dev, in its infinite 
 I haven't used bookmarks in Emacs before, and followed a recommendation to use Bookmark+ instead of the stock bookmark library.
 
 I read through this page, but one thing it fails to state clearly is how to actually create a bookmark inside a file. I eventually did figure out the key combination `C-x r m'. -- akaihola
+
+
+[new:DrewAdams:2011-12-08 14:32 UTC]
+Yes.  This page does not try to be a one-stop description of both '''Bookmark+''' and Emacs bookmarks in general.  I already had a link to the BookMarks page (which gives an overview) in the first sentence, but to make things more clear I now point to the Emacs manual for background info about bookmarks.  Thanks for the feedback. -- DrewAdams
+
 
 
 ----
