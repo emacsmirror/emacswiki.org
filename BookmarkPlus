@@ -3459,6 +3459,13 @@ Thanks for the heads-up.  That should be fixed now.  Emacs Dev, in its infinite 
 
 
 ----
+[new:akaihola:2011-12-08 08:51 UTC]
+I haven't used bookmarks in Emacs before, and followed a recommendation to use Bookmark+ instead of the stock bookmark library.
+
+I read through this page, but one thing it fails to state clearly is how to actually create a bookmark inside a file. I eventually did figure out the key combination `C-x r m'. -- akaihola
+
+
+----
 CategoryBookmarking CategoryHypermedia CategoryPersistence 
 CategoryProgramming CategoryRegion CategoryWThirtyTwo
 CategoryProgrammerUtils SessionManagement CategoryDirectories
