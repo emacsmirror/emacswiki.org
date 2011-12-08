@@ -203,7 +203,7 @@ The differences mean that '''Icicles''' Imenu commands do not provide a substitu
 
 Command '''`icicle-search-thing'''' lets you search the content of
 buffer zones whose text represents things of a particular kind:
-`sexp', `defun', `sentence', and so on.
+`[[sexp]]', `defun', `<tt>[[Sentences|sentence]]</tt>', `<tt>[[Paragraphs|paragraph]]</tt>', and so on.
 
 Library [[ThingAtPoint+]] provides many enhancements and some bug
 fixes for the basic `thing-at-point' functionality provided by
