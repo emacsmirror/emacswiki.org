@@ -7,9 +7,9 @@
 ;; Copyright (C) 1999-2011, Drew Adams, all rights reserved.
 ;; Created: Fri Mar 19 15:58:58 1999
 ;; Version: 21.2
-;; Last-Updated: Fri Dec  2 06:52:04 2011 (-0800)
+;; Last-Updated: Fri Dec  9 10:00:04 2011 (-0800)
 ;;           By: dradams
-;;     Update #: 4213
+;;     Update #: 4258
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/dired+.el
 ;; Keywords: unix, mouse, directories, diredp, dired
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -22,7 +22,8 @@
 ;;   `ediff-diff', `ediff-help', `ediff-init', `ediff-merg',
 ;;   `ediff-mult', `ediff-util', `ediff-wind', `ffap', `fit-frame',
 ;;   `info', `info+', `misc-fns', `mkhtml', `mkhtml-htmlize', `pp',
-;;   `pp+', `strings', `thingatpt', `thingatpt+', `w32-browser'.
+;;   `pp+', `strings', `thingatpt', `thingatpt+', `w32-browser',
+;;   `widget'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -255,6 +256,11 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2011/12/09 dadams
+;;     diredp-w32-drives: Use dolist, not mapcar.
+;;     diredp-mouse-3-menu: Use easymenu to build the menu.  Conditionalize some items.
+;;     Bind down-mouse-3, not mouse-3, to diredp-mouse-3-menu.  (bind mouse-3 to ignore).
+;;     Added eval-when-compile for easymenu.el.
 ;; 2011/12//02 dadams
 ;;     Added diredp-internal-do-deletions.
 ;;     dired(-mouse)-do(-flagged)-delete, : Use diredp-internal-do-deletions, for trash.
@@ -574,6 +580,7 @@
 
 (and (< emacs-major-version 21)
      (eval-when-compile (require 'cl))) ;; pop (plus, for Emacs <20: when, unless)
+(eval-when-compile (require 'easymenu)) ;; easy-menu-create-menu
 
 (require 'dired) ;; dired-revert
 (require 'dired-aux) ;; dired-bunch-files, dired-do-chxxx, dired-do-create-files,
@@ -1581,8 +1588,8 @@ If HDR is non-nil, insert a header line with the directory name."
 
 
 ;;; Mouse-3 menu binding.
-(define-key dired-mode-map [mouse-3] 'diredp-mouse-3-menu)
-;;;;;;;;(define-key dired-mode-map [mouse-3] 'ignore)
+(define-key dired-mode-map [down-mouse-3] 'diredp-mouse-3-menu)
+(define-key dired-mode-map [mouse-3]      'ignore)
 
 
 ;;; Suggested bindings.
@@ -3398,13 +3405,12 @@ Note: When you are in Dired at the root of a drive (e.g. directory
     (if other-window-p (pop-to-buffer "*Windows Drives*") (switch-to-buffer "*Windows Drives*"))
     (erase-buffer)
     (widget-minor-mode 1)
-    (mapcar (lambda (x)
-              (lexical-let ((x  x))
-                (widget-create 'push-button
-                               :notify (lambda (widget &rest ignore) (dired (car x)))
-                               (concat (car x) "  " (cadr x))))
-              (widget-insert "\n"))
-            (sort drive (lambda (a b) (string-lessp (car a) (car b)))))
+    (dolist (drv  (sort drive (lambda (a b) (string-lessp (car a) (car b)))))
+      (lexical-let ((drv  drv))
+        (widget-create 'push-button
+                       :notify (lambda (widget &rest ignore) (dired (car drv)))
+                       (concat (car drv) "  " (cadr drv))))
+      (widget-insert "\n"))
     (goto-char (point-min))
     (diredp-w32-drives-mode)))
 
@@ -4398,99 +4404,110 @@ With non-nil prefix arg, mark them instead."
   (interactive "e")
   (if (not (and (fboundp 'mouse3-dired-use-menu)
                 transient-mark-mode mark-active (not (eq (mark) (point)))))
-      (let (choice)                     ; No `mouse3.el' or no region.
-        (if (and transient-mark-mode mark-active (not (eq (mark) (point))))
-            (setq choice  (x-popup-menu
-                           event
-                           (list "Files in Region"
-                                 (list ""
-                                       '("Mark" . diredp-mark-region-files)
-                                       '("Unmark" . diredp-unmark-region-files)
-                                       '("Toggle Marked/Unmarked" .
-                                         diredp-toggle-marks-in-region)
-                                       '("Flag for Deletion" .
-                                         diredp-flag-region-files-for-deletion)))))
-          (let* ((mouse-pos                  (event-start event))
-                 (inhibit-field-text-motion  t) ; Just in case.
-                 bol eol
-                 (file/dir-name
-                  (with-current-buffer (window-buffer (posn-window mouse-pos))
-                    (save-excursion
-                      (goto-char (posn-point mouse-pos))
-                      (save-excursion (setq bol  (progn (beginning-of-line) (point))
-                                            eol  (progn (end-of-line) (point))))
-                      (if diredp-file-line-overlay ; Don't re-create if exists.
-                          (move-overlay diredp-file-line-overlay bol eol (current-buffer))
-                        (setq diredp-file-line-overlay  (make-overlay bol eol))
-                        (overlay-put diredp-file-line-overlay 'face 'region))
-                      (and (not (eobp)) (dired-get-filename nil t))))))
-            (sit-for 0)
-            (setq choice
-                  (x-popup-menu
-                   (and file/dir-name event)
-                   (list
-                    "This File"
-                    (if file/dir-name
-                        (list
-                         file/dir-name
-
-                         ;; Stuff from `Mark' menu.
-                         (if (dired-file-marker file/dir-name)
-                             '("Unmark" . diredp-mouse-unmark) ; It's now marked.
-                           '("Mark" . diredp-mouse-mark)) ;  It's now unmarked.
-                         '("Flag for Deletion" . diredp-mouse-flag-file-deletion)
-
-                         '("--")        ; Separator.
-                         ;; Stuff from `Single' / `Multiple' menus.
-                         '("Open" . diredp-mouse-find-file)
-                         '("Open in Other Window" . dired-mouse-find-file-other-window)
-                         '("Open in Other Frame" . diredp-mouse-find-file-other-frame)
-                         (and (fboundp 'dired-mouse-w32-browser) ; In `w32-browser.el'.
-                              '("Open Associated Windows App" . dired-mouse-w32-browser))
-                         (and (fboundp 'dired-mouse-w32explore) ; In `w32-browser.el'.
-                              '("Open in Windows Explorer" . dired-mouse-w32explore))
-                         '("View (Read Only)" . diredp-mouse-view-file)
-
-                         '("--")        ; Separator.
-                         '("Compare..." . diredp-mouse-ediff)
-                         '("Diff..." . diredp-mouse-diff)
-                         '("Diff with Backup" . diredp-mouse-backup-diff)
-
-                         '("--")        ; Separator.
-                         '("Bookmark..." . diredp-mouse-do-bookmark)
-                         '("Tag..." . diredp-mouse-do-tag)
-                         '("Untag..." . diredp-mouse-do-untag)
-                         '("Remove All Tags" . diredp-mouse-do-remove-all-tags)
-                         '("Copy Tags" . diredp-mouse-copy-tags)
-                         '("Paste Tags (Add)" . diredp-mouse-do-paste-add-tags)
-                         '("Paste Tags (Replace)" . diredp-mouse-do-paste-replace-tags)
-                         '("Set Tag Value..." . diredp-mouse-do-set-tag-value)
-
-                         '("--")        ; Separator.
-                         '("Copy to..." . diredp-mouse-do-copy)
-                         '("Rename to..." . diredp-mouse-do-rename)
-                         '("Upcase" . diredp-mouse-upcase)
-                         '("Downcase" . diredp-mouse-downcase)
-                         '("Delete" . diredp-mouse-do-delete)
-                         '("Shell Command..." . diredp-mouse-do-shell-command)
-                         (and (fboundp 'dired-do-relsymlink)
-                              '("Symlink to (Relative)..." . dired-do-relsymlink))
-                         '("Symlink to..." . diredp-mouse-do-symlink)
-                         '("Hardlink to..." . diredp-mouse-do-hardlink)
-                         '("Print" . diredp-mouse-do-print)
-                         '("Grep" . diredp-mouse-do-grep)
-                         '("Compress/Uncompress" . diredp-mouse-do-compress)
-                         '("Byte Compile" . diredp-mouse-do-byte-compile)
-                         '("Load" . diredp-mouse-do-load)
-                         '("Change Mode..." . diredp-mouse-do-chmod)
-                         '("Change Group..." . diredp-mouse-do-chgrp)
-                         '("Change Owner..." . diredp-mouse-do-chown)
-                         '("Describe" . diredp-mouse-describe-file)
-                         )
-                      '("" (""))))))    ; No menu: not on a file line.
-            (when diredp-file-line-overlay
-              (delete-overlay diredp-file-line-overlay))))
-        (and choice (call-interactively choice)))
+      ;; No `mouse3.el' or no region.
+      (if (and transient-mark-mode mark-active (not (eq (mark) (point))))
+          ;; Region
+          (let ((reg-choice  (x-popup-menu
+                              event
+                              (list "Files in Region"
+                                    (list ""
+                                          '("Mark" . diredp-mark-region-files)
+                                          '("Unmark" . diredp-unmark-region-files)
+                                          '("Toggle Marked/Unmarked" .
+                                            diredp-toggle-marks-in-region)
+                                          '("Flag for Deletion" .
+                                            diredp-flag-region-files-for-deletion))))))
+            (when reg-choice (call-interactively reg-choice)))
+        ;; Single file/dir (no region).
+        (let ((mouse-pos                  (event-start event))
+              (inhibit-field-text-motion  t) ; Just in case.
+              choice bol  eol  file/dir-name)
+          (with-current-buffer (window-buffer (posn-window mouse-pos))
+            (save-excursion
+              (goto-char (posn-point mouse-pos))
+              (save-excursion (setq bol  (progn (beginning-of-line) (point))
+                                    eol  (progn (end-of-line) (point))))
+              (unwind-protect
+                   (progn
+                     (if diredp-file-line-overlay ; Don't re-create if exists.
+                         (move-overlay diredp-file-line-overlay bol eol (current-buffer))
+                       (setq diredp-file-line-overlay  (make-overlay bol eol))
+                       (overlay-put diredp-file-line-overlay 'face 'region))
+                     (setq file/dir-name  (and (not (eobp)) (dired-get-filename nil t)))
+                     (when file/dir-name
+                       (sit-for 0)
+                       (let ((map
+                              (easy-menu-create-menu
+                               "This File"
+                               ;; Stuff from `Mark' menu.
+                               `(["Describe" diredp-mouse-describe-file]
+                                 "--"   ; -----------------------------------------------
+                                 ,(if (dired-file-marker file/dir-name)
+                                      ["Unmark" diredp-mouse-unmark] ; It's now marked.
+                                      ["Mark"  diredp-mouse-mark]) ;  It's now unmarked.
+                                 ,(save-excursion
+                                   (goto-char (posn-point mouse-pos))
+                                   (beginning-of-line)
+                                   (if (looking-at "^D")
+                                       ["Unmark" diredp-mouse-unmark]
+                                     ["Flag for Deletion" diredp-mouse-flag-file-deletion]))
+                                 ["Delete..." diredp-mouse-do-delete]
+                                 "--"   ; -----------------------------------------------
+                                 ;; Stuff from `Single' / `Multiple' menus.
+                                 ["Open" diredp-mouse-find-file]
+                                 ["Open in Other Window"
+                                  dired-mouse-find-file-other-window]
+                                 ["Open in Other Frame" diredp-mouse-find-file-other-frame]
+                                 ["Open Associated Windows App" dired-mouse-w32-browser
+                                  :visible (featurep 'w32-browser)]
+                                 ["Open in Windows Explorer" dired-mouse-w32explore
+                                  :visible (featurep 'w32-browser)]
+                                 ["View (Read Only)" diredp-mouse-view-file]
+                                 "--"   ; -----------------------------------------------
+                                 ["Compare..." diredp-mouse-ediff]
+                                 ["Diff..." diredp-mouse-diff]
+                                 ["Diff with Backup" diredp-mouse-backup-diff]
+                                 ["--" 'ignore :visible (featurep 'bookmark+)] ; -----------
+                                 ["Bookmark..." diredp-mouse-do-bookmark]
+                                 ["Tag..." diredp-mouse-do-tag
+                                  :visible (featurep 'bookmark+)]
+                                 ["Untag..." diredp-mouse-do-untag
+                                  :visible (featurep 'bookmark+)]
+                                 ["Remove All Tags" diredp-mouse-do-remove-all-tags
+                                  :visible (featurep 'bookmark+)]
+                                 ["Copy Tags" diredp-mouse-copy-tags
+                                  :visible (featurep 'bookmark+)]
+                                 ["Paste Tags (Add)" diredp-mouse-do-paste-add-tags
+                                  :visible (featurep 'bookmark+)]
+                                 ["Paste Tags (Replace)" diredp-mouse-do-paste-replace-tags
+                                  :visible (featurep 'bookmark+)]
+                                 ["Set Tag Value..." diredp-mouse-do-set-tag-value
+                                  :visible (featurep 'bookmark+)]
+                                 "--"   ; -----------------------------------------------
+                                 ["Copy to..." diredp-mouse-do-copy]
+                                 ["Rename to..." diredp-mouse-do-rename]
+                                 ["Upcase" diredp-mouse-upcase]
+                                 ["Downcase" diredp-mouse-downcase]
+                                 ["Symlink to (Relative)..." dired-do-relsymlink
+                                  :visible (fboundp 'dired-do-relsymlink)] ; In `dired-x.el'.
+                                 ["Symlink to..." diredp-mouse-do-symlink]
+                                 ["Hardlink to..." diredp-mouse-do-hardlink]
+                                 "--"   ; -----------------------------------------------
+                                 ["Shell Command..." diredp-mouse-do-shell-command]
+                                 ["Print..." diredp-mouse-do-print]
+                                 ["Grep" diredp-mouse-do-grep]
+                                 ["Compress/Uncompress" diredp-mouse-do-compress]
+                                 ["Byte Compile" diredp-mouse-do-byte-compile]
+                                 ["Load" diredp-mouse-do-load]
+                                 "--"   ; -----------------------------------------------
+                                 ["Change Mode..." diredp-mouse-do-chmod]
+                                 ["Change Group..." diredp-mouse-do-chgrp]
+                                 ["Change Owner..." diredp-mouse-do-chown]))))
+                         (when diredp-file-line-overlay
+                           (delete-overlay diredp-file-line-overlay))
+                         (setq choice  (x-popup-menu event map))
+                         (when choice
+                           (call-interactively (lookup-key map (apply 'vector choice))))))))))))
     ;; `mouse3.el' and active region.
     (unless (eq mouse3-dired-function 'mouse3-dired-use-menu)
       (funcall #'mouse3-dired-use-menu)
