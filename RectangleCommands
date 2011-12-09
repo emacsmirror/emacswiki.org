@@ -115,4 +115,23 @@ Contrast:
 Unfortunately, the design of registers in Emacs is to "do the right thing" with what ever "object" is in the register -- point, window, frame, number, text or rectangle.  I can understand your point.  You're probably suggesting there be a method for inserting a rectangle on *lines of their own*.  It would be desirable for registers to behave this way with rectangles to handle your wish.  I know I have to run `open-line' many times to make room, instead. -- AaronHawley
 
 ----
+
+== copy-rectangle function ==
+
+Sometimes one wishes to copy a rectangle to the kill ring without actually deleting it, and although it's certainly trivial enough to undo the `kill-rectangle' command immediately afterwards, I thought it nicer to write a function to perform this function (which simply takes advantage of what kill-rectangle does in a read-only situation).
+
+The suggested key binding is for consistency with C-k and M-w.
+
+ (defun my-copy-rectangle (start end &optional fill)
+   "Trigger the read-only behaviour of `kill-rectangle'."
+   (interactive "r\nP")
+   (let ((read-only-state buffer-read-only)
+         (kill-read-only-ok t))
+     (setq buffer-read-only t)
+     (kill-rectangle start end fill)
+     (setq buffer-read-only read-only-state)))
+
+ (global-set-key (kbd "C-x r M-w") 'my-copy-rectangle)
+
+----
 CategoryRegion
