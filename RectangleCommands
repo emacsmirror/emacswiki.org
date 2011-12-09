@@ -29,21 +29,21 @@ Rectangle commands were originally part of Emacs's PictureMode.
 See also RectangleMark
 and ColumnNumberMode.
 
-== Use case: Copying from a Web browser ==
+== Use case: Copying tables from a Web browser ==
 
-When copying and pasting tabular data from a Web page rendered in a Web browser, you often will get more than just what you want copied to the clipboard.  Bring the text into Emacs -- unless you were browsing in Emacs already.  If you want only one or more columns of the data, use the rectangle commands of Emacs.  Hit `C-SPC' at the beginning of the first entry in the column you want, and then move to the final entry in the last tabular column you want, then hit `C-x r k'.  This kills the rows of the column(s) you're interested in.
+When copying and pasting tabular data from a Web page rendered in a Web browser, you often will get more than just what you want copied to the clipboard.  Bring the text into Emacs -- unless you were in Emacs already.  If you want only one or some of the columns of the data, use the rectangle commands of Emacs.  Hit `C-SPC' at the beginning of the first entry in the column you want, and then move to the final entry in the last tabular column you want, then hit `C-x r k'.  This kills the rows of the column(s) you're interested in.
 
-To move the columns you want to an external application like !OpenOffice.org or Gnumeric, you'll need to normally yank and kill the text in Emacs so that it makes it to the windowing system's (Gnome, X, etc.) clipboard -- it won't make it there with the rectangle kill command.  Switch to the *scratch* buffer or open some temporary buffer and yank the rectangular text with `C-x r y', then kill the result regularly with `C-k'.  It's then ready to paste into the application.  A little bit of trouble, but it's well worth it.
+To move the columns you want to an external application like !LibreOffice, Gnumeric or back to the Web browser, you'll need to kill the text in Emacs so it is in the  clipboard -- it won't make it there with the rectangle kill command.  Switch to the ##*scratch*## buffer or open some temporary buffer and yank the rectangular text with `C-x r y', then kill the result regularly with `C-k'.  It's then ready to paste into the application.  A little bit of trouble, but it's well worth it.
 
 == Use case: Results from a database ==
 
 A similar scenario where rectangular commands are useful is working with a database like !MySQL or !PostgreSQL.
 
-Say you're running some quick database queries that someone else needs.  You run a query that selects a lot of columns for your verification, but the recipient was interested in only one or just a few of the columns.  Rather than rewriting the query and re-executing it, or using Unix tools to programmatically extract the values, use the interactive rectangle commands of Emacs to extract the column(s) needed.  Why bang on your database when your data is right there in the Emacs buffer ready for manipulation?
+After running some quick database queries that someone else needs, you run a query that selects a lot of columns for your verification but you're only interested in only one or just a few of the columns.  Rather than rewriting the query and re-executing it, or using Unix tools to programmatically extract the values, use the interactive rectangle commands of Emacs to extract the column(s) needed.  Why bang on your database when your data is right there in the Emacs buffer ready for manipulation?
 
 == Use case: Output from shell commands ==
 
-Many commands in the shell produce output in a column delimited format, for example the data of processes managed by the operating system or the long, verbose format of file listings.  Another fixed-column format are files located in a common path.  For example,
+Many commands in the shell produce output in a column delimited format, for example the information and statistics about processes running in the operating system or the long, verbose format of file listings.  Another fixed-column format are list of files located in a common path.  For example,
 
 {{{
 /usr/share/emacs/22.2/etc/images/icons/emacs_32.png
@@ -116,11 +116,9 @@ Unfortunately, the design of registers in Emacs is to "do the right thing" with 
 
 ----
 
-== copy-rectangle function ==
+== Copy rectangle ==
 
-Sometimes one wishes to copy a rectangle to the kill ring without actually deleting it, and although it's certainly trivial enough to undo the `kill-rectangle' command immediately afterwards, I thought it nicer to write a function to perform this function (which simply takes advantage of what kill-rectangle does in a read-only situation).
-
-The suggested key binding is for consistency with C-k and M-w.
+Sometimes one wishes to kill a rectangle without actually deleting it.  It's certainly trivial enough to undo the `kill-rectangle' command immediately afterwards and there is a way to copy a rectangle into [[Registers]] with `C-x r r', but here is a function (which simply takes advantage of what kill-rectangle does in a read-only situation) and a suggested key binding for consistency with `C-k' and `M-w'.
 
  (defun my-copy-rectangle (start end &optional fill)
    "Trigger the read-only behaviour of `kill-rectangle'."
@@ -130,7 +128,7 @@ The suggested key binding is for consistency with C-k and M-w.
      (setq buffer-read-only t)
      (kill-rectangle start end fill)
      (setq buffer-read-only read-only-state)))
-
+ 
  (global-set-key (kbd "C-x r M-w") 'my-copy-rectangle)
 
 ----
