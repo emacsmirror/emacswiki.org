@@ -8,7 +8,10 @@ ErcNickNotify is a mode that popup notify window when someone call you in [[ERC]
 
 * Put Lisp:erc-nick-notify.el in your load-path, add
 {{{
-    (require 'erc-nick-notify)
+(autoload 'erc-nick-notify-mode "erc-nick-notify"
+  "Minor mode that calls `erc-nick-notify-cmd' when his nick gets
+mentioned in an erc channel" t)
+(eval-after-load 'erc '(erc-nick-notify-mode t))
 }}}    
 : in ~/.emacs
 
@@ -19,6 +22,8 @@ Note: BEWARE OF INSTALLING THIS!  This means that every notification you get is 
 }}}
 
 ... there goes your home directory.
+
+This has been *fixed in 0.3.1* (2011-12-09), upgrading is *strongly recommended!*
 
 ==Customize==
 * `erc-nick-notify-delay'
