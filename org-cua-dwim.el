@@ -5,17 +5,17 @@
 ;; Author: Matthew L. Fidler
 ;; Maintainer: Matthew L. Fidler
 ;; Created: Thu Dec  8 15:06:13 2011 (-0600)
-;; Version: 0.1
-;; Last-Updated: Thu Dec  8 17:04:25 2011 (-0600)
+;; Version: 0.2
+;; Last-Updated: Fri Dec  9 09:14:32 2011 (-0600)
 ;;           By: Matthew L. Fidler
-;;     Update #: 7
+;;     Update #: 70
 ;; URL: 
 ;; Keywords: org-mode cua-mode
 ;; Compatibility: 
 ;; 
 ;; Features that might be required by this library:
 ;;
-;;   Cannot open load file: org-cua-dwim.
+;;   None
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; 
@@ -26,6 +26,11 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; 
 ;;; Change Log:
+;; 09-Dec-2011    Matthew L. Fidler  
+;;    Last-Updated: Fri Dec  9 09:13:37 2011 (-0600) #69 (Matthew L. Fidler)
+;;    Last time the system worked because an error removed the
+;;    pre-command-hook. This time the system works without turning off
+;;    the pre-command-hook.
 ;; 08-Dec-2011    Matthew L. Fidler  
 ;;    Last-Updated: Thu Dec  8 17:00:24 2011 (-0600) #6 (Matthew L. Fidler)
 ;;    Initial Release
@@ -57,36 +62,38 @@
   "This turns on org-mode cua-mode partial support; Assumes
 shift-selection-mode is available."
   (interactive)
+  (cua-mode 1)
+  (add-hook 'pre-command-hook 'cua--pre-command-handler nil t)
+  (add-hook 'post-command-hook 'cua--post-command-handler nil t)
   (set (make-local-variable 'cua-mode) t)
-  (set (make-local-variable 'shift-select-mode) t))
+  (set (make-local-variable 'org-cua-dwim-was-move) nil)
+  (set (make-local-variable 'shift-select-mode) nil))
 
 ;;;###autoload
 (add-hook 'org-mode-hook 'turn-on-org-cua-mode-partial-support)
 
-(defadvice cua--pre-command-handler (around org-cua-dwim)
-  (if (and (eq major-mode 'org-mode)
-           (eq (get this-command 'CUA) 'move)
-           (memq 'shift (event-modifiers
-                         (aref (this-single-command-raw-keys) 0))))
-      (progn
-        (setq cua-mode t)
-        (setq shift-select-mode t)
-        (setq cua--last-region-shifted t)
-        (setq cua--explicit-region-start nil))
-    ad-do-it))
-(defadvice cua--post-command-handler (around org-cua-dwim)
-  (if (and (eq major-mode 'org-mode)
-           (eq (get this-command 'CUA) 'move)
-           (memq 'shift (event-modifiers
-                         (aref (this-single-command-raw-keys) 0))))
-      (progn
-        (setq cua-mode t)
-        (setq shift-select-mode t)
-        (setq cua--last-region-shifted t)
-        (setq cua--explicit-region-start nil))
-    ad-do-it))
-(ad-activate 'cua--pre-command-handler)
-(ad-activate 'cua--post-command-handler)
+(defvar org-cua-dwim-was-move nil)
+
+(defadvice handle-shift-selection (around org-cua-dwim)
+  (let ((is-org-mode (and (not (minibufferp))
+                          (eq major-mode 'org-mode)))
+        (do-it t))
+    (when (and is-org-mode this-command-keys-shift-translated
+               (not org-cua-dwim-was-move))
+      (setq shift-select-mode t)
+      (setq cua-mode nil)
+      (setq org-cua-dwim-was-move t)
+      (setq cua--last-region-shifted t)
+      (setq cua--explicit-region-start nil))
+    (when (and is-org-mode (not this-command-keys-shift-translated)
+               org-cua-dwim-was-move)
+      (setq shift-select-mode nil)
+      (setq cua-mode t)
+      (setq org-cua-dwim-was-move nil))
+    (when do-it
+      ad-do-it)))
+
+(ad-activate 'handle-shift-selection)
 (provide 'org-cua-dwim)
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; org-cua-dwim.el ends here
