@@ -7,16 +7,16 @@
 ;; Copyright (C) 2010-2011, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 30 15:22:56 2010 (-0800)
 ;; Version: 
-;; Last-Updated: Fri Oct  7 17:37:54 2011 (-0700)
+;; Last-Updated: Fri Dec  9 09:48:39 2011 (-0800)
 ;;           By: dradams
-;;     Update #: 1375
+;;     Update #: 1442
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/mouse3.el
 ;; Keywords: mouse menu keymap kill rectangle region
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
 ;; 
 ;; Features that might be required by this library:
 ;;
-;;   None
+;;   `naked'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; 
@@ -287,7 +287,6 @@
 ;;   `mouse3-region-popup-change-text-submenu',
 ;;   `mouse3-region-popup-check-convert-submenu',
 ;;   `mouse3-region-popup-copy-submenu',
-;;   `mouse3-region-popup-count-submenu',
 ;;   `mouse3-region-popup-highlight-submenu',
 ;;   `mouse3-region-popup-misc-submenu',
 ;;   `mouse3-region-popup-print-submenu',
@@ -308,6 +307,12 @@
 ;; 
 ;;; Change Log:
 ;;
+;; 2011/12/09 dadams
+;;     Removed mouse3-region-popup-count-submenu.
+;;     mouse3-region-popup-x-popup-panes:
+;;       Use count-(words|lines)-region.  Use call-interactively and sleep-for.
+;;     mouse3-region-popup-misc-submenu: Added count-(words|lines)-region, similarly.
+;;     mouse3-region-popup-entries: Removed mouse3-region-popup-count-submenu..
 ;; 2011/10/07 dadams
 ;;     Added soft require of naked.el.
 ;;     mouse3-region-popup-(remove/replace-items|rectangle-submenu): Use naked-key-description if available.
@@ -634,7 +639,7 @@ restore it by yanking."
      ("EPA Decrypt"                             . epa-decrypt-region)
      ("PGG Encrypt"                             . pgg-encrypt-region)
      ("PGG Decrypt"                             . pgg-decrypt-region))
-     ;; This will appear only if library `highlight.el' was already loaded.
+    ;; This will appear only if library `highlight.el' was already loaded.
     ,@(and (fboundp 'hlt-highlight-region) ; Defined in `highlight.el'.
            '(("Highlight"
               ("Highlight"                      . hlt-highlight-region)
@@ -658,13 +663,19 @@ restore it by yanking."
               '(("BNF PostScript Print "        . ebnf-print-region)))
      ,@`,(and (fboundp 'ebnf-print-region) ; Defined in `ebnf2ps.el'.
               '(("BNF PostScript Save"          . ebnf-eps-region))))
-    ("Count"
-     ;; This will appear only if library `misc-cmds.el' was already loaded.
-     ,@`,(and (fboundp 'region-length)  ; Defined in `misc-cmds.el'.
-              '(("Characters"                   . region-length)))
-     ("Words"                                   . count-words-region)
-     ("Lines"                                   . count-lines-region))
     ("Misc"
+     ,@`,(and (fboundp 'count-words-region) ; Emacs 24+
+              '(("Count Lines, Words, Chars"
+                 . (lambda ()
+                     (interactive)
+                     (call-interactively #'count-words-region)
+                     (sleep-for 3)))))
+     ,@`,(and (not (fboundp 'count-words-region)) ; Emacs < 24
+              '(("Count Lines and Chars"
+                 . (lambda ()
+                     (interactive)
+                     (call-interactively #'count-lines-region)
+                     (sleep-for 3)))))
      ("Narrow"                                  . narrow-to-region)
      ("Eval"                                    . eval-region)
      ("Key-Macro on Region Lines"               . apply-macro-to-region-lines)
@@ -973,22 +984,22 @@ restore it by yanking."
   "Submenu for printing the mouse selection.")
 
 ;;;###autoload
-(defconst mouse3-region-popup-count-submenu
-    '(count-menu
-      menu-item "Count"
-      (keymap
-       (region-length      menu-item "Characters" region-length
-        :visible (fboundp 'region-length))
-       (count-words-region menu-item "Words" count-words-region)
-       (count-lines-region menu-item "Lines" count-lines-region))
-      :enable (mouse3-nonempty-region-p)) ; Disable this submenu if the region is empty.
-  "Submenu for counting text objects in the mouse selection.")
-
-;;;###autoload
 (defconst mouse3-region-popup-misc-submenu
     '(misc-menu
       menu-item "Misc"
       (keymap
+       (count-words-region menu-item "Count Lines, Words, Chars"
+        (lambda ()
+          (interactive)
+          (call-interactively #'count-words-region)
+          (sleep-for 3))
+        :visible (fboundp 'count-words-region)) ; Emacs 24+
+       (count-lines-region menu-item "Count Lines and Chars"
+        (lambda ()
+          (interactive)
+          (call-interactively #'count-lines-region)
+          (sleep-for 3))
+        :visible (not (fboundp 'count-words-region))) ; Emacs < 24
        (narrow-to-region            menu-item "Narrow" narrow-to-region)
        (eval-region                 menu-item "Eval" eval-region)
        (apply-macro-to-region-lines menu-item "Key-Macro on Region Lines" apply-macro-to-region-lines
@@ -1018,7 +1029,6 @@ restore it by yanking."
                                          ,(and (fboundp 'hlt-highlight-region)
                                                mouse3-region-popup-highlight-submenu)
                                          ,mouse3-region-popup-print-submenu
-                                         ,mouse3-region-popup-count-submenu
                                          ,mouse3-region-popup-misc-submenu
                                          )
   "*Entries for the `mouse-3' popup menu.
