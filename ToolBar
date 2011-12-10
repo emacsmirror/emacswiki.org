@@ -6,6 +6,11 @@ To disable the toolbar completely, turn off `tool-bar-mode'. Add the following t
 
     (tool-bar-mode -1)
 
+or Customize the tool-bar-mode variable:
+
+    M-x customize-option RET tool-bar-mode
+    then toggle the mode and save for future sessions
+
 or this, for [[XEmacs]]:
 
     (set-specifier default-toolbar-visible-p nil)
