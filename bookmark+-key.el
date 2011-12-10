@@ -7,9 +7,9 @@
 ;; Copyright (C) 2010-2011, Drew Adams, all rights reserved.
 ;; Created: Fri Apr  1 15:34:50 2011 (-0700)
 ;; Version:
-;; Last-Updated: Mon Dec  5 10:13:20 2011 (-0800)
+;; Last-Updated: Fri Dec  9 16:43:56 2011 (-0800)
 ;;           By: dradams
-;;     Update #: 333
+;;     Update #: 378
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-key.el
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -488,11 +488,24 @@
   '(menu-item "Delete All Temporaries..." bmkp-delete-all-temporary-bookmarks
     :help "Delete the temporary bookmarks, (`X') whether visible here or not")
   'separator-delete)
+
+;;; $$$$$$ NOTE: Here and below, the definitions with logically correct `:enable' filters are
+;;;              commented out and replaced by less refined definitions whose `:enable' filters just
+;;;              check that `bookmark-alist' is non-nil.  This is because evaluation of the more exact
+;;;              filters is too slow, especially in older Emacs versions.  If you want to try some or
+;;;              all of the definitions with the more exact `:enable' conditions, just uncomment them
+;;;              and comment out or remove the corresponding definitions with less exact conditions.
+
+;;;;; (define-key-after menu-bar-bookmark-map [bmkp-delete-all-autonamed-for-this-buffer]
+;;;;;   '(menu-item "Delete All Autonamed Bookmarks Here..."
+;;;;;     bmkp-delete-all-autonamed-for-this-buffer
+;;;;;     :help "Delete all autonamed bookmarks for the current buffer"
+;;;;;     :enable (mapcar #'bookmark-name-from-full-record (bmkp-autonamed-this-buffer-alist-only)))
+;;;;;   'bmkp-delete-all-temporary-bookmarks)
 (define-key-after menu-bar-bookmark-map [bmkp-delete-all-autonamed-for-this-buffer]
   '(menu-item "Delete All Autonamed Bookmarks Here..."
     bmkp-delete-all-autonamed-for-this-buffer
-    :help "Delete all autonamed bookmarks for the current buffer"
-    :enable (mapcar #'bookmark-name-from-full-record (bmkp-autonamed-this-buffer-alist-only)))
+    :help "Delete all autonamed bookmarks for the current buffer" :enable bookmark-alist)
   'bmkp-delete-all-temporary-bookmarks)
 (define-key-after menu-bar-bookmark-map [bmkp-toggle-autoname-bookmark-delete]
   '(menu-item "Delete Autonamed Bookmark" bmkp-toggle-autonamed-bookmark-set/delete
@@ -500,10 +513,15 @@
     :visible (bookmark-get-bookmark (funcall bmkp-autoname-bookmark-function (point))
               'noerror))
   'bmkp-toggle-autonamed-bookmark-set/delete)
+;;;;; (define-key-after menu-bar-bookmark-map [bmkp-delete-bookmarks]
+;;;;;   '(menu-item "Delete Bookmarks Here..." bmkp-delete-bookmarks
+;;;;;     :help "Delete some bookmarks at point or, with `C-u', all bookmarks in the buffer"
+;;;;;     :enable (mapcar #'bookmark-name-from-full-record (bmkp-this-buffer-alist-only)))
+;;;;;   'bmkp-delete-all-autonamed-for-this-buffer)
 (define-key-after menu-bar-bookmark-map [bmkp-delete-bookmarks]
   '(menu-item "Delete Bookmarks Here..." bmkp-delete-bookmarks
     :help "Delete some bookmarks at point or, with `C-u', all bookmarks in the buffer"
-    :enable (mapcar #'bookmark-name-from-full-record (bmkp-this-buffer-alist-only)))
+    :enable bookmark-alist)
   'bmkp-delete-all-autonamed-for-this-buffer)
 (define-key-after menu-bar-bookmark-map [delete]
   '(menu-item "Delete Bookmark..." bookmark-delete
@@ -523,10 +541,15 @@
   '(menu-item "Show Bookmark List" bookmark-bmenu-list
     :help "Open the list of bookmarks in buffer `*Bookmark List*'")
   'separator-0)
+;;;;; (define-key-after menu-bar-bookmark-map [bmkp-this-file/buffer-bmenu-list]
+;;;;;   '(menu-item "Show Bookmark List for This File/Buffer" bmkp-this-buffer-file/bmenu-list
+;;;;;     :help "Open `*Bookmark List*' for the bookmarks in the current file or buffer (only)"
+;;;;;     :enable (mapcar #'bookmark-name-from-full-record (bmkp-this-file/buffer-alist-only)))
+;;;;;   'edit)
 (define-key-after menu-bar-bookmark-map [bmkp-this-file/buffer-bmenu-list]
   '(menu-item "Show Bookmark List for This File/Buffer" bmkp-this-buffer-file/bmenu-list
     :help "Open `*Bookmark List*' for the bookmarks in the current file or buffer (only)"
-    :enable (mapcar #'bookmark-name-from-full-record (bmkp-this-file/buffer-alist-only)))
+    :enable bookmark-alist)
   'edit)
 (define-key-after menu-bar-bookmark-map [bmkp-navlist-bmenu-list]
   '(menu-item "Show Bookmark List for Navlist" bmkp-navlist-bmenu-list
@@ -756,73 +779,134 @@
 (define-key bmkp-jump-menu [bmkp-specific-buffers-jump-other-window]
   '(menu-item "For Specific Buffers..." bmkp-specific-buffers-jump-other-window
     :help "Jump to a bookmark for specific buffers"))
+;;;;; (define-key bmkp-jump-menu [bmkp-this-buffer-jump]
+;;;;;   '(menu-item "For This Buffer..." bmkp-this-buffer-jump
+;;;;;     :help "Jump to a bookmark for the current buffer"
+;;;;;     :enable (mapcar #'bookmark-name-from-full-record (bmkp-this-buffer-alist-only))))
 (define-key bmkp-jump-menu [bmkp-this-buffer-jump]
   '(menu-item "For This Buffer..." bmkp-this-buffer-jump
-    :help "Jump to a bookmark for the current buffer"
-    :enable (mapcar #'bookmark-name-from-full-record (bmkp-this-buffer-alist-only))))
+    :help "Jump to a bookmark for the current buffer" :enable bookmark-alist))
+;;;;; (when (featurep 'bookmark+-lit)
+;;;;;   (define-key bmkp-jump-menu [bmkp-lighted-jump-other-window]
+;;;;;     '(menu-item "Highlighted..." bmkp-lighted-jump-other-window
+;;;;;       :help "Jump to a highlighted bookmark"
+;;;;;       :enable (bmkp-lighted-alist-only))))
 (when (featurep 'bookmark+-lit)
   (define-key bmkp-jump-menu [bmkp-lighted-jump-other-window]
     '(menu-item "Highlighted..." bmkp-lighted-jump-other-window
-      :help "Jump to a highlighted bookmark"
-      :enable (bmkp-lighted-alist-only))))
+      :help "Jump to a highlighted bookmark" :enable bookmark-alist)))
 (define-key bmkp-jump-menu [bmkp-jump-in-navlist-other-window]
   '(menu-item "In Navigation List..." bmkp-jump-in-navlist-other-window
     :help "Jump to a bookmark that is in the navigation list" :enable bmkp-nav-alist))
 (define-key bmkp-jump-menu [jump-sep0] '("--"))
+;;;;; (define-key bmkp-jump-menu [bmkp-url-jump-other-window]
+;;;;;   '(menu-item "URL..." bmkp-url-jump-other-window :help "Jump to a URL bookmark"
+;;;;;     :enable (bmkp-url-alist-only)))
 (define-key bmkp-jump-menu [bmkp-url-jump-other-window]
   '(menu-item "URL..." bmkp-url-jump-other-window :help "Jump to a URL bookmark"
-    :enable (bmkp-url-alist-only)))
+    :enable bookmark-alist))
+;;;;; (define-key bmkp-jump-menu [bmkp-gnus-jump-other-window]
+;;;;;   '(menu-item "Gnus..." bmkp-gnus-jump-other-window :help "Jump to a Gnus bookmark"
+;;;;;     :enable (bmkp-gnus-alist-only)))
 (define-key bmkp-jump-menu [bmkp-gnus-jump-other-window]
   '(menu-item "Gnus..." bmkp-gnus-jump-other-window :help "Jump to a Gnus bookmark"
-    :enable (bmkp-gnus-alist-only)))
+    :enable bookmark-alist))
+;;;;; (define-key bmkp-jump-menu [bmkp-man-jump-other-window]
+;;;;;   '(menu-item "Man Page..." bmkp-man-jump-other-window :help "Jump to a `man'-page bookmark"
+;;;;;     :enable (bmkp-man-alist-only)))
 (define-key bmkp-jump-menu [bmkp-man-jump-other-window]
   '(menu-item "Man Page..." bmkp-man-jump-other-window :help "Jump to a `man'-page bookmark"
-    :enable (bmkp-man-alist-only)))
+    :enable bookmark-alist))
+;;;;; (define-key bmkp-jump-menu [bmkp-info-jump-other-window]
+;;;;;   '(menu-item "Info Node..." bmkp-info-jump-other-window :help "Jump to an Info bookmark"
+;;;;;     :enable (bmkp-info-alist-only)))
 (define-key bmkp-jump-menu [bmkp-info-jump-other-window]
   '(menu-item "Info Node..." bmkp-info-jump-other-window :help "Jump to an Info bookmark"
-    :enable (bmkp-info-alist-only)))
+    :enable bookmark-alist))
+;;;;; (define-key bmkp-jump-menu [bmkp-image-jump-other-window]
+;;;;;   '(menu-item "Image..." bmkp-image-jump-other-window :help "Jump to an image-file bookmark"
+;;;;;     :enable (bmkp-image-alist-only)))
 (define-key bmkp-jump-menu [bmkp-image-jump-other-window]
   '(menu-item "Image..." bmkp-image-jump-other-window :help "Jump to an image-file bookmark"
-    :enable (bmkp-image-alist-only)))
+    :enable bookmark-alist))
+;;;;; (define-key bmkp-jump-menu [bmkp-non-file-jump-other-window]
+;;;;;   '(menu-item "Buffer (Non-File)..." bmkp-non-file-jump-other-window
+;;;;;     :help "Jump to a non-file (buffer) bookmark" :enable (bmkp-non-file-alist-only)))
 (define-key bmkp-jump-menu [bmkp-non-file-jump-other-window]
   '(menu-item "Buffer (Non-File)..." bmkp-non-file-jump-other-window
-    :help "Jump to a non-file (buffer) bookmark" :enable (bmkp-non-file-alist-only)))
+    :help "Jump to a non-file (buffer) bookmark" :enable bookmark-alist))
+;;;;; (define-key bmkp-jump-menu [bmkp-region-jump-other-window]
+;;;;;   '(menu-item "Region..." bmkp-region-jump-other-window
+;;;;;     :help "Jump to a bookmark that defines the active region" :enable (bmkp-region-alist-only)))
 (define-key bmkp-jump-menu [bmkp-region-jump-other-window]
   '(menu-item "Region..." bmkp-region-jump-other-window
-    :help "Jump to a bookmark that defines the active region" :enable (bmkp-region-alist-only)))
+    :help "Jump to a bookmark that defines the active region" :enable bookmark-alist))
+;;;;; (define-key bmkp-jump-menu [bmkp-remote-file-jump-other-window]
+;;;;;   '(menu-item "Remote File..." bmkp-remote-file-jump-other-window
+;;;;;     :help "Jump to a remote file or directory bookmark" :enable (bmkp-remote-file-alist-only)))
 (define-key bmkp-jump-menu [bmkp-remote-file-jump-other-window]
   '(menu-item "Remote File..." bmkp-remote-file-jump-other-window
-    :help "Jump to a remote file or directory bookmark" :enable (bmkp-remote-file-alist-only)))
+    :help "Jump to a remote file or directory bookmark" :enable bookmark-alist))
+;;;;; (define-key bmkp-jump-menu [bmkp-local-file-jump-other-window]
+;;;;;   '(menu-item "Local File..." bmkp-local-file-jump-other-window
+;;;;;     :help "Jump to a local file or directory bookmark" :enable (bmkp-local-file-alist-only)))
 (define-key bmkp-jump-menu [bmkp-local-file-jump-other-window]
   '(menu-item "Local File..." bmkp-local-file-jump-other-window
-    :help "Jump to a local file or directory bookmark" :enable (bmkp-local-file-alist-only)))
+    :help "Jump to a local file or directory bookmark" :enable bookmark-alist))
+;;;;; (define-key bmkp-jump-menu [bmkp-file-this-dir-jump-other-window]
+;;;;;   '(menu-item "File in This Dir..." bmkp-file-this-dir-jump-other-window
+;;;;;     :help "Jump to a bookmark for a file or subdirectory in the `default-directory'."
+;;;;;     :enable (bmkp-file-alist-only)))
 (define-key bmkp-jump-menu [bmkp-file-this-dir-jump-other-window]
   '(menu-item "File in This Dir..." bmkp-file-this-dir-jump-other-window
     :help "Jump to a bookmark for a file or subdirectory in the `default-directory'."
-    :enable (bmkp-file-alist-only)))
+    :enable bookmark-alist))
+;;;;; (define-key bmkp-jump-menu [bmkp-file-jump-other-window]
+;;;;;   '(menu-item "File..." bmkp-file-jump-other-window :help "Jump to a file or directory bookmark"
+;;;;;     :enable (bmkp-file-alist-only)))
 (define-key bmkp-jump-menu [bmkp-file-jump-other-window]
   '(menu-item "File..." bmkp-file-jump-other-window :help "Jump to a file or directory bookmark"
-    :enable (bmkp-file-alist-only)))
+    :enable bookmark-alist))
+;;;;; (define-key bmkp-jump-menu [bmkp-dired-this-dir-jump-other-window]
+;;;;;   '(menu-item "Dired for This Dir..." bmkp-dired-this-dir-jump-other-window
+;;;;;     :help "Jump to a Dired bookmark for `default-directory', restoring recorded state"
+;;;;;     :enable (bmkp-dired-alist-only)))
 (define-key bmkp-jump-menu [bmkp-dired-this-dir-jump-other-window]
   '(menu-item "Dired for This Dir..." bmkp-dired-this-dir-jump-other-window
     :help "Jump to a Dired bookmark for `default-directory', restoring recorded state"
-    :enable (bmkp-dired-alist-only)))
+    :enable bookmark-alist))
+;;;;; (define-key bmkp-jump-menu [bmkp-dired-jump-other-window]
+;;;;;   '(menu-item "Dired..." bmkp-dired-jump-other-window
+;;;;;     :help "Jump to a Dired bookmark, restoring the recorded Dired state"
+;;;;;     :enable (bmkp-dired-alist-only)))
 (define-key bmkp-jump-menu [bmkp-dired-jump-other-window]
   '(menu-item "Dired..." bmkp-dired-jump-other-window
     :help "Jump to a Dired bookmark, restoring the recorded Dired state"
-    :enable (bmkp-dired-alist-only)))
+    :enable bookmark-alist))
+;;;;; (define-key bmkp-jump-menu [bmkp-variable-list-jump]
+;;;;;   '(menu-item "Variable List..." bmkp-variable-list-jump :help "Jump to a variable-list bookmark"
+;;;;;     :enable (bmkp-variable-list-alist-only)))
 (define-key bmkp-jump-menu [bmkp-variable-list-jump]
   '(menu-item "Variable List..." bmkp-variable-list-jump :help "Jump to a variable-list bookmark"
-    :enable (bmkp-variable-list-alist-only)))
+    :enable bookmark-alist))
+;;;;; (define-key bmkp-jump-menu [bmkp-bookmark-file-jump]
+;;;;;   '(menu-item "Bookmark File..." bmkp-bookmark-file-jump
+;;;;;     :help "Jump to (load) a bookmark-file bookmark" :enable (bmkp-bookmark-file-alist-only)))
 (define-key bmkp-jump-menu [bmkp-bookmark-file-jump]
   '(menu-item "Bookmark File..." bmkp-bookmark-file-jump
-    :help "Jump to (load) a bookmark-file bookmark" :enable (bmkp-bookmark-file-alist-only)))
+    :help "Jump to (load) a bookmark-file bookmark" :enable bookmark-alist))
+;;;;; (define-key bmkp-jump-menu [bmkp-bookmark-list-jump]
+;;;;;   '(menu-item "Bookmark List..." bmkp-bookmark-list-jump :help "Jump to a bookmark-list bookmark"
+;;;;;     :enable (bmkp-bookmark-list-alist-only)))
 (define-key bmkp-jump-menu [bmkp-bookmark-list-jump]
   '(menu-item "Bookmark List..." bmkp-bookmark-list-jump :help "Jump to a bookmark-list bookmark"
-    :enable (bmkp-bookmark-list-alist-only)))
+    :enable bookmark-alist))
+;;;;; (define-key bmkp-jump-menu [bmkp-desktop-jump]
+;;;;;   '(menu-item "Desktop..." bmkp-desktop-jump :help "Jump to a desktop bookmark"
+;;;;;     :enable (bmkp-desktop-alist-only)))
 (define-key bmkp-jump-menu [bmkp-desktop-jump]
   '(menu-item "Desktop..." bmkp-desktop-jump :help "Jump to a desktop bookmark"
-    :enable (bmkp-desktop-alist-only)))
+    :enable bookmark-alist))
 (define-key bmkp-jump-menu [bmkp-jump-to-type-other-window]
   '(menu-item "Of Type..." bmkp-jump-to-type-other-window
     :help "Jump to a bookmark of a type that you specify"))
