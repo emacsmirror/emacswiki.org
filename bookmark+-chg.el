@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2011, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Thu Dec  8 11:38:46 2011 (-0800)
+;; Last-Updated: Fri Dec  9 16:36:24 2011 (-0800)
 ;;           By: dradams
-;;     Update #: 13943
+;;     Update #: 13945
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-chg.el
 ;; Keywords: bookmarks, bookmark+
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -591,6 +591,9 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-key.el'")
 ;;
+;; 2011/12/09 dadams
+;;     Commented out menu items with complex :enable conditions, replacing them with simple ones.
+;;       Reason: too slow, especially in Emacs 20.
 ;; 2011/12/05 dadams
 ;;     menu-bar-bookmark-map: Reordered items regarding bookmark files.
 ;; 2011/12/03 dadams
