@@ -1,31 +1,37 @@
 ;;; org-cua-dwim.el --- Org-mode and Cua mode compatibility layer
-;; 
+;;
 ;; Filename: org-cua-dwim.el
 ;; Description: Org-mode and Cua mode compatibility layer
 ;; Author: Matthew L. Fidler
 ;; Maintainer: Matthew L. Fidler
 ;; Created: Thu Dec  8 15:06:13 2011 (-0600)
-;; Version: 0.2
-;; Last-Updated: Fri Dec  9 09:14:32 2011 (-0600)
+;; Version: 0.4
+;; Last-Updated: Sun Dec 11 00:21:48 2011 (-0600)
 ;;           By: Matthew L. Fidler
-;;     Update #: 70
+;;     Update #: 186
 ;; URL: 
 ;; Keywords: org-mode cua-mode
 ;; Compatibility: 
 ;; 
 ;; Features that might be required by this library:
 ;;
-;;   None
+;;   `help-fns'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; 
 ;;; Commentary: 
 ;; 
 ;;  To use this, just install via elpa or (require 'org-cua-dwim)
-;; 
+;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; 
 ;;; Change Log:
+;; 11-Dec-2011    Matthew L. Fidler  
+;;    Last-Updated: Sun Dec 11 00:20:36 2011 (-0600) #185 (Matthew L. Fidler)
+;;    Another major bug fix.  It seems to work now.
+;; 10-Dec-2011    Matthew L. Fidler  
+;;    Last-Updated: Sat Dec 10 23:14:30 2011 (-0600) #133 (Matthew L. Fidler)
+;;    Another Major bug fix when woring on a Mac.  Hopefully this works.
 ;; 09-Dec-2011    Matthew L. Fidler  
 ;;    Last-Updated: Fri Dec  9 09:13:37 2011 (-0600) #69 (Matthew L. Fidler)
 ;;    Last time the system worked because an error removed the
@@ -73,27 +79,57 @@ shift-selection-mode is available."
 (add-hook 'org-mode-hook 'turn-on-org-cua-mode-partial-support)
 
 (defvar org-cua-dwim-was-move nil)
+(defvar org-cua-dwim-debug nil)
 
 (defadvice handle-shift-selection (around org-cua-dwim)
   (let ((is-org-mode (and (not (minibufferp))
                           (eq major-mode 'org-mode)))
         (do-it t))
+    (setq org-cua-dwim-shift-translated this-command-keys-shift-translated)
     (when (and is-org-mode this-command-keys-shift-translated
                (not org-cua-dwim-was-move))
-      (setq shift-select-mode t)
-      (setq cua-mode nil)
-      (setq org-cua-dwim-was-move t)
-      (setq cua--last-region-shifted t)
-      (setq cua--explicit-region-start nil))
+      (when org-cua-dwim-debug
+        (message "Turn ON shift-select-mode"))
+      (set (make-local-variable 'org-cua-dwim-was-move) t)
+      (set (make-local-variable 'cua--last-region-shifted) t)
+      (set (make-local-variable 'cua--explicit-region-start) nil)
+      ;;(setq cua--prefix-override-timer nil)
+      (set (make-local-variable 'shift-select-mode) t)
+      (set (make-local-variable 'cua-mode) nil)
+      )
     (when (and is-org-mode (not this-command-keys-shift-translated)
                org-cua-dwim-was-move)
-      (setq shift-select-mode nil)
-      (setq cua-mode t)
-      (setq org-cua-dwim-was-move nil))
+      (when org-cua-dwim-debug
+        (message "Turn Off shift-select-mode"))
+      (set (make-local-variable 'shift-select-mode) nil)
+      (set (make-local-variable 'cua-mode) t)
+      (set (make-local-variable 'org-cua-dwim-was-move) nil)
+      ;;(setq cua--prefix-override-timer nil)
+      )
     (when do-it
-      ad-do-it)))
+      ad-do-it)
+    (when mark-active
+      (cua--select-keymaps))))
 
-(ad-activate 'handle-shift-selection)
+(defadvice cua--prefix-override-handler (around org-cua-dwim)
+  "Try to fix the org copy and paste problem."
+  (when (and (not (minibufferp)) (not cua-mode)
+             (eq major-mode 'org-mode))
+    (when org-cua-dwim-debug
+      (message "Turn Off shift-select-mode"))
+    (set (make-local-variable 'shift-select-mode) nil)
+    (set (make-local-variable 'cua-mode) t)
+    (set (make-local-variable 'org-cua-dwim-was-move) nil)
+    (cua--pre-command-handler))
+  ad-do-it)
+
+
+(ad-deactivate 'handle-shift-selection)
+(ad-activate   'handle-shift-selection)
+
+(ad-deactivate 'cua--prefix-override-handler)
+(ad-activate   'cua--prefix-override-handler)
+
 (provide 'org-cua-dwim)
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; org-cua-dwim.el ends here
