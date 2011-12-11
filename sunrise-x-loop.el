@@ -7,7 +7,7 @@
 ;; Maintainer: José Alfredo Romero L. <escherdragon@gmail.com>
 ;; Created: 27 Jun 2008
 ;; Version: 3
-;; RCS Version: $Rev: 388 $
+;; RCS Version: $Rev: 394 $
 ;; Keywords: sunrise commander, background copy rename move
 ;; URL: http://www.emacswiki.org/emacs/sunrise-x-loop.el
 ;; Compatibility: GNU Emacs 22+
@@ -340,6 +340,6 @@ triggered by `sr-do-rename' inside a loop scope."
 
 (provide 'sunrise-x-loop)
 
-;;;###autoload (eval-after-load 'sunrise-commander '(require 'sunrise-x-loop))
+;;;###autoload (eval-after-load 'sunrise-commander '(sr-extend-with 'sunrise-x-loop))
 
 ;;; sunrise-x-loop.el ends here
