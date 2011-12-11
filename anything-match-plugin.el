@@ -154,16 +154,6 @@
 (require 'anything)
 (require 'cl)
 
-(let ((version "1.283"))
-  (when (and (string= "1." (substring version 0 2))
-             (string-match "1\.\\([0-9]+\\)" anything-version)
-             (< (string-to-number (match-string 1 anything-version))
-                (string-to-number (substring version 2))))
-    (error "Please update anything.el!!
-
-http://www.emacswiki.org/cgi-bin/wiki/download/anything.el
-
-or  M-x install-elisp-from-emacswiki anything.el")))
 
 (defcustom anything-grep-candidates-fast-directory-regexp nil
   "*Directory regexp where a RAM disk (or tmpfs) is mounted.
@@ -319,7 +309,7 @@ For example, to list candidats of \"foo\" source, input pattern as \"foo .\".")
   (anything-mp-handle-source-name-maybe
    pattern (apply-partially 'anything-mp-3p-match str)
    (lambda ()
-     (declare (special first-pred first-re))
+     (declare (special first-pred first-re rest))
      (and (funcall first-pred (anything-prefix-match str first-re))
           (loop for (pred . re) in rest
                 always (funcall pred (string-match re str)))))))
