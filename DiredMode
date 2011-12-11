@@ -30,6 +30,7 @@ These pages describe Dired tips and additional features:
 * DiredSortMenu -- Lets you sort Dired listings in various ways. Provides a [[menu bar]] menu and a popup menu for this.
 * DiredTweaks -- Small Dired tweaks.
 * DiredView -- Browse and select files using the first character of their names.
+* [http://user42.tuxfamily.org/dired-visit-history/index.html dired-visit-history.el] -- add dired visits to <code>file-name-history</code>
 * DiredSync -- Synchronize directories within dired
 * [[Files+]] -- 
 ** Integrates `find-file' (`C-x C-f') and related commands with Dired
