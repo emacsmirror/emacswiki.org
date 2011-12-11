@@ -1,3 +1,36 @@
+<<<<<<< you
+=Emacs speaks bash=
+
+==Overview==
+
+This is a package for providing extra functionality when writing in sh-mode (eg bash). It is designed to emulate what ESS (emacs speaks statistics) is to R.
+
+==Where is it?==
+
+You can find the package below.
+
+==Notes==
+I am quite new to elisp, so I am sure the package may not be written in the most efficient way...but it gets the job done. Any recommendations are always welcome!
+
+==Discussion==
+If you put your questions here, I'll try to address them.
+||||||| ancestor
+=Emacs speaks bash=
+
+==Overview==
+
+This is a package for providing extra functionality when writing in bash mode. It is designed to emulate what ESS (emacs speaks statistics) is to R.
+
+==Where is it?==
+
+You can find the package below.
+
+==Notes==
+I am quite new to elisp, so I am sure the package may not be written in the most efficient way...but it gets the job done. Any recommendations are always welcome!
+
+==Discussion==
+If you put your questions here, I'll try to address them.
+=======
 #FILE text/x-emacs-lisp 
 Ozs7IGVzYmFzaC5lbCAtLS0gYSBzZXQgb2YgY29tbWFuZHMgdGhhdCBlbXVsYXRlIGZvciBiYXNo
 IHdoYXQgRVNTIGlzIHRvIFIuCgo7OyBGaWxlbmFtZTogZXNiYXNoLmVsCgoKOzsgLS0tLS0tLS0t
@@ -86,3 +119,4 @@ cy1vdXRwdXQgc3Byb2Nlc3MgMCAxMCkKICAgICkpIAoKCihkZWZ1biBwaXBlLWJ1ZmZlci10by1z
 aGVsbCAoKQogICJFdmFsdWF0ZSB3aG9sZSBidWZmZXIgdG8gdGhlIHNoZWxsLiIKICAoaW50ZXJh
 Y3RpdmUpCiAgKHBpcGUtcmVnaW9uLXRvLXNoZWxsIChwb2ludC1taW4pIChwb2ludC1tYXgpKSkK
 CiAgCihwcm92aWRlICdlc2Jhc2gpCg==
+>>>>>>> other
