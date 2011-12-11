@@ -1,15 +1,1 @@
-=Emacs speaks SHELL=
 
-==Overview==
-
-This is a package for providing extra functionality when writing in sh-mode (eg bash). It is designed to emulate what ESS (emacs speaks statistics) is to R.
-
-==Where is it?==
-
-You can find the package below.
-
-==Notes==
-I am quite new to elisp, so I am sure the package may not be written in the most efficient way...but it gets the job done. Any recommendations are always welcome!
-
-==Discussion==
-If you put your questions here, I'll try to address them.
