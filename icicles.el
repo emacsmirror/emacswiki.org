@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Sat Nov 26 13:42:32 2011 (-0800)
+;; Last-Updated: Sun Dec 11 13:32:35 2011 (-0800)
 ;;           By: dradams
-;;     Update #: 23037
+;;     Update #: 23041
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -1375,7 +1375,15 @@ byte-compiled.  This compilation adds a bit to the load time, in
 effect, but it means that the functions run faster."
   :type 'boolean :group 'Icicles-Miscellaneous)
 
-(require 'icicles-face) ;; Requires mac
+(eval-when-compile
+ (or (condition-case nil
+         ;; Use load-library to ensure latest .elc.
+         (load-library "icicles-mac")
+       (error nil))
+     ;; Require, so can load separately if not on `load-path'.
+     (require 'icicles-mac)))
+
+(require 'icicles-face)
 (require 'icicles-opt)  ;; Requires face
 (require 'icicles-var)  ;; Requires opt
 (require 'icicles-fn)   ;; Requires mac, opt, var
