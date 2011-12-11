@@ -7,7 +7,7 @@
 ;; Maintainer: José Alfredo Romero L. <escherdragon@gmail.com>
 ;; Created: 24 Oct 2009
 ;; Version: 1
-;; RCS Version: $Rev: 388 $
+;; RCS Version: $Rev: 394 $
 ;; Keywords: sunrise commander, tabs
 ;; URL: http://www.emacswiki.org/emacs/sunrise-x-tabs.el
 ;; Compatibility: GNU Emacs 22+
@@ -635,6 +635,6 @@ tabs in the Sunrise Commander (used for desktop support)."
 
 (provide 'sunrise-x-tabs)
 
-;;;###autoload (eval-after-load 'sunrise-commander '(require 'sunrise-x-tabs))
+;;;###autoload (eval-after-load 'sunrise-commander '(sr-extend-with 'sunrise-x-tabs))
 
 ;;; sunrise-x-tabs.el ends here
