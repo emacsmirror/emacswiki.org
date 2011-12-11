@@ -7,7 +7,7 @@
 ;; Maintainer: José Alfredo Romero L. <escherdragon@gmail.com>
 ;; Created: 14 May 2011
 ;; Version: 1
-;; RCS Version: $Rev: 388 $
+;; RCS Version: $Rev: 394 $
 ;; Keywords: sunrise commander, w32, ms windows
 ;; URL: http://www.emacswiki.org/emacs/sunrise-x-w32-addons.el
 ;; Compatibility: GNU Emacs 23+
@@ -271,6 +271,6 @@ End Function")
 
 (provide 'sunrise-x-w32-addons)
 
-;;;###autoload (eval-after-load 'sunrise-commander '(require 'sunrise-x-w32-addons))
+;;;###autoload (eval-after-load 'sunrise-commander '(sr-extend-with 'sunrise-x-w32-addons))
 
 ;;; sunrise-x-w32-addons.el ends here
