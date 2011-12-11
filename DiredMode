@@ -28,10 +28,10 @@ These pages describe Dired tips and additional features:
 * DiredPower -- Various Dired tips and features.
 * DiredReuseDirectoryBuffer – Make Dired reuse an existing Dired buffer
 * DiredSortMenu -- Lets you sort Dired listings in various ways. Provides a [[menu bar]] menu and a popup menu for this.
+* DiredSync -- Synchronize directories within dired
 * DiredTweaks -- Small Dired tweaks.
 * DiredView -- Browse and select files using the first character of their names.
 * [http://user42.tuxfamily.org/dired-visit-history/index.html dired-visit-history.el] -- add dired visits to <code>file-name-history</code>
-* DiredSync -- Synchronize directories within dired
 * [[Files+]] -- 
 ** Integrates `find-file' (`C-x C-f') and related commands with Dired
 ** Together with <tt>[[ls-lisp+.el]]</tt>, modifies `insert-directory' so that Dired's second header line lists the number of files:
