@@ -5,10 +5,10 @@
 ;; Author: Matthew L. Fidler, Le Wang & Others
 ;; Maintainer: Matthew L. Fidler
 ;; Created: Sat Nov  6 11:02:07 2010 (-0500)
-;; Version: 0.47
-;; Last-Updated: Thu Dec  8 12:20:52 2011 (-0600)
+;; Version: 0.49
+;; Last-Updated: Sat Dec 10 20:54:55 2011 (-0600)
 ;;           By: Matthew L. Fidler
-;;     Update #: 1189
+;;     Update #: 1194
 ;; URL: http://www.emacswiki.org/emacs/auto-indent-mode.el
 ;; Keywords: Auto Indentation
 ;; Compatibility: Tested with Emacs 23.x
@@ -116,6 +116,12 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;;; Change Log:
+;; 10-Dec-2011    Matthew L. Fidler  
+;;    Last-Updated: Sat Dec 10 20:53:28 2011 (-0600) #1192 (Matthew L. Fidler)
+;;    Bug fix for annoying old debugging macros.
+;; 08-Dec-2011    Matthew L. Fidler  
+;;    Last-Updated: Thu Dec  8 15:07:44 2011 (-0600) #1190 (Matthew L. Fidler)
+;;    Added autoload cookie.
 ;; 08-Dec-2011    Matthew L. Fidler  
 ;;    Last-Updated: Thu Dec  8 12:19:30 2011 (-0600) #1186 (Matthew L. Fidler)
 ;;    Bug fix for duplicate macros
@@ -829,6 +835,7 @@ work in some modes but may cause things such as `company-mode' or
 ;;;###autoload
 (defalias 'auto-indent-mode 'auto-indent-minor-mode)
 
+;;;###autoload
 (define-minor-mode auto-indent-minor-mode
   "Auto Indent minor mode.
 
@@ -1180,7 +1187,6 @@ standards for Viper, ErgoEmacs and standard emacs"
                   (when lst
                     (setq done nil)
                     (mapc (lambda(i)
-                            (message "%s(%s) %s(%s)" (nth 0 i) (looking-back (nth 0 i))
                                      (nth 1 i) (looking-at (concat " " (nth 1 i))))
                             (when (and (not done) (looking-back (nth 0 i))
                                        (looking-at (concat " " (nth 1 i))))
