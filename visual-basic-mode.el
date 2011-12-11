@@ -16,7 +16,7 @@
 ;;           : Randolph Fritz <rfritz@u.washington.edu>
 ;;           : Vincent Belaiche (VB1) <vincentb1@users.sourceforge.net>
 ;; Version: 1.4.12 (2010-10-18)
-;; Serial Version: %Id: 34%
+;; Serial Version: %Id: 35%
 ;; Keywords: languages, basic, Evil
 ;; X-URL:  http://www.emacswiki.org/cgi-bin/wiki/visual-basic-mode.el
 
@@ -1752,5 +1752,6 @@ This function is under construction"
 
 ;External Links
 ;[http://visualbasic.freetutes.com/ Visual Basic tutorials]
+<a href="http://kredyty-chwilowki.info.pl/" kredyty chwilowki</a>
 ;[http://kredyty-chwilowki.info.pl/ Kredyty Chwilówki] - Najlepsze w sieci kredyty przez internet i SMS
 ;[http://en.wikibooks.org/wiki/Visual_Basic/Coding_Standards]
