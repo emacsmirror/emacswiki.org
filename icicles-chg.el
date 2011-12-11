@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2011, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Tue Dec  6 19:04:38 2011 (-0800)
+;; Last-Updated: Sun Dec 11 13:40:52 2011 (-0800)
 ;;           By: dradams
-;;     Update #: 7641
+;;     Update #: 7643
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-chg.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -6149,6 +6149,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles.el'")
 ;;
+;; 2011/12/11 dadams
+;;     Ensure icicles-mac is loaded if icicles.el is not byte-compiled, and is loaded when compiled.
 ;; 2011/10/12 dadams
 ;;     Moved the Miscellaneous stuff here from icicles-mac.el: indent & font-lock for macros etc.
 ;; 2011/10/10 dadams
