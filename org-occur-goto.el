@@ -21,7 +21,7 @@
 ;;; Usage: M-x oog, then start typing
 ;;; 
 ;;; select from the occur matches with up/down/pgup/pgdown and press enter
-;;; (you can navigaye the history with M-p/M-n) 
+;;; (you can navigate the history with M-p/M-n) 
 ;;; 
 ;;; the search string must be at least 3 characters long (by default)
 ;;;
