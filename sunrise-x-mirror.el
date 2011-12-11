@@ -7,7 +7,7 @@
 ;; Maintainer: José Alfredo Romero L. <escherdragon@gmail.com>
 ;; Created: 4 May 2008
 ;; Version: 2
-;; RCS Version: $Rev: 388 $
+;; RCS Version: $Rev: 394 $
 ;; Keywords: sunrise commander, archives read/write
 ;; URL: http://www.emacswiki.org/emacs/sunrise-x-mirror.el
 ;; Compatibility: GNU Emacs 22+
@@ -566,6 +566,6 @@ so they are always writeable by default."
 
 (provide 'sunrise-x-mirror)
 
-;;;###autoload (eval-after-load 'sunrise-commander '(require 'sunrise-x-mirror))
+;;;###autoload (eval-after-load 'sunrise-commander '(sr-extend-with 'sunrise-x-mirror))
 
 ;;; sunrise-x-mirror.el ends here
