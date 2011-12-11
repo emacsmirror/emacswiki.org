@@ -7,7 +7,7 @@
 ;; Maintainer: José Alfredo Romero L. <escherdragon@gmail.com>
 ;; Created: 24 Sep 2007
 ;; Version: 5
-;; RCS Version: $Rev: 393 $
+;; RCS Version: $Rev: 394 $
 ;; Keywords: files, dired, midnight commander, norton, orthodox
 ;; URL: http://www.emacswiki.org/emacs/sunrise-commander.el
 ;; Compatibility: GNU Emacs 22+
@@ -220,6 +220,12 @@
 (defcustom sr-show-file-attributes t
   "Whether to initially display file attributes in Sunrise panes.
 You can always toggle file attributes display pressing \\<sr-mode-map>\\[sr-toggle-attributes]."
+  :group 'sunrise
+  :type 'boolean)
+
+(defcustom sr-autoload-extensions t
+  "Whether to load extensions immediately after their declaration, or when the
+SC core is loaded (e.g. when using autoload cookies)."
   :group 'sunrise
   :type 'boolean)
 
@@ -874,6 +880,13 @@ This is done so all its dired-filename attributes are kept in the file."
   (if (memq major-mode '(sr-mode sr-virtual-mode))
       (enriched-mode 1)))
 (add-hook 'before-save-hook 'sr-enrich-buffer)
+
+(defun sr-extend-with (extension &optional filename)
+  "Try to enhance Sunrise with EXTENSION (argument must be a symbol).
+An extension can be loaded from optional FILENAME. If found, the extension is
+immediately loaded, but only if `sr-autoload-extensions' is not nil."
+  (when sr-autoload-extensions
+    (require extension filename t)))
 
 (defadvice dired-find-buffer-nocreate
   (before sr-advice-findbuffer (dirname &optional mode))
@@ -3769,7 +3782,14 @@ by `sr-clex-start'."
   "Sunrise Commander terminal add-on for character (raw) mode."
   nil nil
   '(("\C-c\C-j" . sr-term-line-mode)
-    ("\C-c\C-k" . sr-term-char-mode)))
+    ("\C-c\C-k" . sr-term-char-mode)
+    ("\C-c\t"   . sr-ti-change-window)
+    ("\C-cT"    . sr-term-cd)
+    ("\C-c\C-t" . sr-term-cd-newterm)
+    ("\C-c;"    . sr-follow-viewer)
+    ("\C-c\\"   . sr-ti-lock-panes)
+    ("\C-c{"    . sr-ti-min-lock-panes)
+    ("\C-c}"    . sr-ti-max-lock-panes)))
 
 (define-minor-mode sr-term-line-minor-mode
   "Sunrise Commander terminal add-on for line (cooked) mode."
