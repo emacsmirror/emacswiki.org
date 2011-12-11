@@ -1,0 +1,12 @@
+=Emacs speaks bash=
+
+==Overview==
+
+This is a package for providing extra functionality for emacs and bash shells. It is designed to emulate what ESS (emacs speaks statistics) is to R.
+
+==Where is it?==
+
+You can find the package below.
+
+==Discussion==
+If you put your questions here, I'll try to address them.
