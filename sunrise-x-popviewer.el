@@ -7,7 +7,7 @@
 ;; Maintainer: José Alfredo Romero L. <escherdragon@gmail.com>
 ;; Created: 20 Aug 2008
 ;; Version: 2
-;; RCS Version: $Rev: 392 $
+;; RCS Version: $Rev: 394 $
 ;; Keywords: sunrise commander, windows, accessibility, viewer
 ;; URL: http://www.emacswiki.org/emacs/sunrise-x-popviewer.el
 ;; Compatibility: GNU Emacs 22+
@@ -180,6 +180,6 @@ passive pane."
 (sr-popviewer-mode (if sr-popviewer-enabled 1 -1))
 (provide 'sunrise-x-popviewer)
 
-;;;###autoload (eval-after-load 'sunrise-commander '(require 'sunrise-x-popviewer))
+;;;###autoload (eval-after-load 'sunrise-commander '(sr-extend-with 'sunrise-x-popviewer))
 
 ;;; sunrise-x-popviewer.el ends here
