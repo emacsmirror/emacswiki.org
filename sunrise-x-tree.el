@@ -7,7 +7,7 @@
 ;; Maintainer: José Alfredo Romero L. <escherdragon@gmail.com>
 ;; Created: 4 May 2010
 ;; Version: 1
-;; RCS Version: $Rev: 388 $
+;; RCS Version: $Rev: 394 $
 ;; Keywords: sunrise commander, directories tree navigation
 ;; URL: http://www.emacswiki.org/emacs/sunrise-x-tree.el
 ;; Compatibility: GNU Emacs 22+
@@ -1202,6 +1202,6 @@ switch to normal mode, then execute."
 
 (provide 'sunrise-x-tree)
 
-;;;###autoload (eval-after-load 'sunrise-commander '(require 'sunrise-x-tree))
+;;;###autoload (eval-after-load 'sunrise-commander '(sr-extend-with 'sunrise-x-tree))
 
 ;;; sunrise-x-tree.el ends here
