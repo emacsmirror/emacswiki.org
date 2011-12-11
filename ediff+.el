@@ -7,9 +7,9 @@
 ;; Copyright (C) 2005-2011, Drew Adams, all rights reserved.
 ;; Created: Thu Jan 26 11:14:34 2006
 ;; Version: 20
-;; Last-Updated: Tue Jan  4 08:48:54 2011 (-0800)
+;; Last-Updated: Sun Dec 11 14:06:19 2011 (-0800)
 ;;           By: dradams
-;;     Update #: 99
+;;     Update #: 117
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/ediff+.el
 ;; Keywords: comparing, merging, patching, version control
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -46,7 +46,7 @@
 ;;  ***** NOTE: The following functions defined in `ediff-help.el' have
 ;;              been REDEFINED HERE:
 ;;
-;;  `ediff-help-for-quick-help'.
+;;  `ediff-help-for-quick-help' (Emacs 20, 21 only).
 ;;
 ;;
 ;;  ***** NOTE: The following constants defined in `ediff-help.el' have
@@ -60,8 +60,10 @@
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
-;;; Change log:
+;;; Change Log:
 ;;
+;; 2011/12/11 dadams
+;;     ediff-help-for-quick-help: Define it only for Emacs < 22.  Distinguish $ cases.
 ;; 2011/01/04 dadams
 ;;     Added autoload cookies for commands.
 ;; 2008/04/24 dadams
@@ -341,73 +343,74 @@ Normally, not a user option. See `ediff-help-message' for details.")
 
 
 ;; REPLACE ORIGINAL in `ediff-help.el'
+;;
 ;; Include `#c'.
 ;;
 ;;;###autoload
-(defun ediff-help-for-quick-help ()
-  "Explain Ediff commands in more detail."
-  (interactive)
-  (ediff-barf-if-not-control-buffer)
-  (let ((pos (ediff-event-point last-command-event))
-        overl cmd)
-
-    (if ediff-xemacs-p
-        (setq overl (extent-at pos (current-buffer) 'ediff-help-info)
-              cmd   (ediff-overlay-get overl 'ediff-help-info))
-      (setq cmd (car (mapcar (function (lambda (elt)
-                                         (overlay-get elt 'ediff-help-info)))
-                             (overlays-at pos)))))
-
-    (if (not (stringp cmd))
-        (error "Hmm... I don't see an Ediff command around here..."))
-
-    (ediff-documentation "Quick Help Commands")
-
-    (let (case-fold-search)
-      (cond ((string= cmd "?") (re-search-forward "^`\\?'"))
-            ((string= cmd "G") (re-search-forward "^`G'"))
-            ((string= cmd "E") (re-search-forward "^`E'"))
-            ((string= cmd "wd") (re-search-forward "^`wd'"))
-            ((string= cmd "wx") (re-search-forward "^`wa'"))
-            ((string= cmd "a/b") (re-search-forward "^`a'"))
-            ((string= cmd "x") (re-search-forward "^`a'"))
-            ((string= cmd "xy") (re-search-forward "^`ab'"))
-            ((string= cmd "p,DEL") (re-search-forward "^`p'"))
-            ((string= cmd "n,SPC") (re-search-forward "^`n'"))
-            ((string= cmd "j") (re-search-forward "^`j'"))
-            ((string= cmd "gx") (re-search-forward "^`ga'"))
-            ((string= cmd "!") (re-search-forward "^`!'"))
-            ((string= cmd "*") (re-search-forward "^`\\*'"))
-            ((string= cmd "m") (re-search-forward "^`m'"))
-            ((string= cmd "|") (re-search-forward "^`|'"))
-            ((string= cmd "@") (re-search-forward "^`@'"))
-            ((string= cmd "h") (re-search-forward "^`h'"))
-            ((string= cmd "r") (re-search-forward "^`r'"))
-            ((string= cmd "rx") (re-search-forward "^`ra'"))
-            ((string= cmd "##") (re-search-forward "^`##'"))
-            ((string= cmd "#c") (re-search-forward "^`#c'"))
-            ((string= cmd "#f/#h") (re-search-forward "^`#f'"))
-            ((string= cmd "X") (re-search-forward "^`A'"))
-            ((string= cmd "v/V") (re-search-forward "^`v'"))
-            ((string= cmd "</>") (re-search-forward "^`<'"))
-            ((string= cmd "~") (re-search-forward "^`~'"))
-            ((string= cmd "i") (re-search-forward "^`i'"))
-            ((string= cmd "D") (re-search-forward "^`D'"))
-            ((string= cmd "R") (re-search-forward "^`R'"))
-            ((string= cmd "M") (re-search-forward "^`M'"))
-            ((string= cmd "z/q") (re-search-forward "^`z'"))
-            ((string= cmd "%") (re-search-forward "^`%'"))
-            ((string= cmd "C-l") (re-search-forward "^`C-l'"))
-            ((string= cmd "$") (re-search-forward "^`\\$'"))
-            ((string= cmd "/") (re-search-forward "^`/'"))
-            ((string= cmd "&") (re-search-forward "^`&'"))
-            ((string= cmd "s") (re-search-forward "^`s'"))
-            ((string= cmd "+") (re-search-forward "^`\\+'"))
-            ((string= cmd "=") (re-search-forward "^`='"))
-            (t (error "Undocumented command! Type `G' in Ediff Control Panel \
-to drop a note to the Ediff maintainer")))
-      ) ; let case-fold-search
-    ))
+(when (< emacs-major-version 22)
+  (defun ediff-help-for-quick-help ()
+    "Explain Ediff commands in more detail."
+    (interactive)
+    (ediff-barf-if-not-control-buffer)
+    (let ((pos  (ediff-event-point last-command-event))
+          overl cmd)
+      (if ediff-xemacs-p
+          (setq overl  (extent-at pos (current-buffer) 'ediff-help-info)
+                cmd    (ediff-overlay-get overl 'ediff-help-info))
+        (setq cmd (car (mapcar (function (lambda (elt)
+                                 (overlay-get elt 'ediff-help-info)))
+                               (overlays-at pos)))))
+      (if (not (stringp cmd))
+          (error "Hmm... I don't see an Ediff command around here..."))
+      (ediff-documentation "Quick Help Commands")
+      (let ((case-fold-search nil))
+        (cond ((string= cmd "?") (re-search-forward "^`\\?'"))
+              ((string= cmd "G") (re-search-forward "^`G'"))
+              ((string= cmd "E") (re-search-forward "^`E'"))
+              ((string= cmd "wd") (re-search-forward "^`wd'"))
+              ((string= cmd "wx") (re-search-forward "^`wa'"))
+              ((string= cmd "a/b") (re-search-forward "^`a'"))
+              ((string= cmd "x") (re-search-forward "^`a'"))
+              ((string= cmd "xy") (re-search-forward "^`ab'"))
+              ((string= cmd "p,DEL") (re-search-forward "^`p'"))
+              ((string= cmd "n,SPC") (re-search-forward "^`n'"))
+              ((string= cmd "j") (re-search-forward "^`j'"))
+              ((string= cmd "gx") (re-search-forward "^`ga'"))
+              ((string= cmd "!") (re-search-forward "^`!'"))
+              ((string= cmd "*") (re-search-forward "^`\\*'"))
+              ((string= cmd "m") (re-search-forward "^`m'"))
+              ((string= cmd "|") (re-search-forward "^`|'"))
+              ((string= cmd "@") (re-search-forward "^`@'"))
+              ((string= cmd "h") (re-search-forward "^`h'"))
+              ((string= cmd "r") (re-search-forward "^`r'"))
+              ((string= cmd "rx") (re-search-forward "^`ra'"))
+              ((string= cmd "##") (re-search-forward "^`##'"))
+              ((string= cmd "#c") (re-search-forward "^`#c'"))
+              ((string= cmd "#f/#h") (re-search-forward "^`#f'"))
+              ((string= cmd "X") (re-search-forward "^`A'"))
+              ((string= cmd "v/V") (re-search-forward "^`v'"))
+              ((string= cmd "</>") (re-search-forward "^`<'"))
+              ((string= cmd "~") (re-search-forward "^`~'"))
+              ((string= cmd "i") (re-search-forward "^`i'"))
+              ((string= cmd "D") (re-search-forward "^`D'"))
+              ((string= cmd "R") (re-search-forward "^`R'"))
+              ((string= cmd "M") (re-search-forward "^`M'"))
+              ((string= cmd "z/q") (re-search-forward "^`z'"))
+              ((string= cmd "%") (re-search-forward "^`%'"))
+              ((string= cmd "C-l") (re-search-forward "^`C-l'"))
+              ((and (> emacs-major-version 20) (string= cmd "$$"))
+               (re-search-forward "^`\\$\\$'"))
+              ((and (> emacs-major-version 20) (string= cmd "$*"))
+               (re-search-forward "^`\\$\\*'"))
+              ((and (< emacs-major-version 21) (string= cmd "$"))
+               (re-search-forward "^`\\$'"))
+              ((string= cmd "/") (re-search-forward "^`/'"))
+              ((string= cmd "&") (re-search-forward "^`&'"))
+              ((string= cmd "s") (re-search-forward "^`s'"))
+              ((string= cmd "+") (re-search-forward "^`\\+'"))
+              ((string= cmd "=") (re-search-forward "^`='"))
+              (t (error "Undocumented command! Type `G' in Ediff Control Panel \
+to drop a note to the Ediff maintainer")))))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;
 
