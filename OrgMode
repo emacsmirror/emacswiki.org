@@ -67,6 +67,8 @@ There is a Ubuntu repository with the latest for non-cvs Emacs.  Add the followi
 * OrgOutlook lets you integrate with Microsoft Outlook
 * Lisp:org-table-comment.el provides orgtbl-mode (via orgtbl-comment-mode) support for modes that don't support block comments. 
 * Lisp:org-occur-goto.el allows you to jump quickly anywhere in your open org buffers using a dynamic version of the multi-occur interface
+* Lisp:org-search-goto.el a variant of the above package which supports matching multiple substrings given in any order
+
 
 == Texts on using org-mode ==
 
