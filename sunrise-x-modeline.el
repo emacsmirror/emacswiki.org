@@ -7,7 +7,7 @@
 ;; Maintainer: José Alfredo Romero L. <escherdragon@gmail.com>
 ;; Created: 10 Oct 2009
 ;; Version: 2
-;; RCS Version: $Rev: 388 $
+;; RCS Version: $Rev: 394 $
 ;; Keywords: sunrise commander, modeline, path mode line
 ;; URL: http://www.emacswiki.org/emacs/sunrise-x-modeline.el
 ;; Compatibility: GNU Emacs 22+
@@ -57,9 +57,7 @@
 ;; The extension is provided as a minor mode, so you can enable / disable it
 ;; totally by issuing the command `sr-modeline'.
 
-;; This is version 2 $Rev: 388 $ of the Sunrise Commander Modeline Extension.
-
-;; It was written on GNU Emacs 23 on Linux, and tested on GNU Emacs 22 and 23
+;; It was written on GNU Emacs 24 on Linux, and tested on GNU Emacs 22 and 23
 ;; for Linux and on EmacsW32 (version 22) for Windows.
 
 ;;; Installation and Usage:
@@ -303,7 +301,6 @@ This is a minor mode that provides a single keybinding:
     (define-key menu-map [disable] '("Toggle" . sr-modeline-toggle))))
 
 (defun sr-modeline-start-once ()
-  ;; FIXME
   "Bootstrap the navigation mode line on the first execution of
 the Sunrise Commander, after module installation."
   (sr-modeline t)
@@ -327,6 +324,6 @@ the Sunrise Commander, after module installation."
 
 (provide 'sunrise-x-modeline)
 
-;;;###autoload (eval-after-load 'sunrise-commander '(require 'sunrise-x-modeline))
+;;;###autoload (eval-after-load 'sunrise-commander '(sr-extend-with 'sunrise-x-modeline))
 
 ;;; sunrise-x-modeline.el ends here
