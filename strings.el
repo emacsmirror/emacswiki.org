@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Tue Mar  5 17:09:08 1996
 ;; Version: 21.0
-;; Last-Updated: Mon Dec 12 09:34:46 2011 (-0800)
+;; Last-Updated: Mon Dec 12 15:56:35 2011 (-0800)
 ;;           By: dradams
-;;     Update #: 518
+;;     Update #: 532
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/strings.el
 ;; Keywords: internal, strings, text
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -64,6 +64,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2011/12/12 dadams
+;;     read-buffer: Use internal-complete-buffer for Emacs 22+.
 ;; 2011/01/04 dadams
 ;;     Removed autoload cookies from non-interactive functions.
 ;; 2010/06/28 dadams
@@ -461,18 +463,29 @@ NOTE: For versions of Emacs that do not have faces, a list of
 ;; REPLACE ORIGINAL `read-buffer' (built-in).
 ;;
 ;; 1. Interactively, uses `another-buffer' or `other-buffer' if no default.
-;; 3. Emacs 23+ compatible: handles `read-buffer-function'
+;; 2. Emacs 23+ compatible: handles `read-buffer-function'
 ;;    and `read-buffer-completion-ignore-case'.
 ;;
 (defun read-buffer (prompt &optional default require-match)
   "Read the name of a buffer and return it as a string.
-Prompts with first arg, PROMPT (a string).
+Prompt with first arg, PROMPT (a string).
 
-Non-nil DEFAULT names the default buffer.
-Otherwise, `another-buffer' is used as the default.
-If `another-buffer' is undefined, then `other-buffer' is the default.
+If the user input is empty (just `RET') the the default value is
+returned, which is:
 
-Non-nil REQUIRE-MATCH means to allow only names of existing buffers."
+ - optional second arg DEFAULT, if non-nil
+ - `another-buffer' or `other-buffer', otherwise.
+
+If `another-buffer' is undefined, then `other-buffer' is used.
+Starting with Emacs 23, DEFAULT can be a list of names (strings), in
+which case the first name in the list is returned on empty input.
+
+Non-nil REQUIRE-MATCH means to allow only names of existing buffers.
+It is the same as for `completing-read'.
+
+Case sensitivity is determined by
+`read-buffer-completion-ignore-case', if defined, or
+`completion-ignore-case' otherwise."
   (if (and (boundp 'read-buffer-function) read-buffer-function)
       (funcall read-buffer-function prompt)
     (when (interactive-p)
@@ -485,8 +498,11 @@ Non-nil REQUIRE-MATCH means to allow only names of existing buffers."
                                        read-buffer-completion-ignore-case
                                      completion-ignore-case)))
       (completing-read
-       prompt (mapcar (lambda (b) (list (buffer-name b))) (buffer-list))
-       nil require-match nil 'minibuffer-history default t))))
+       prompt (if (fboundp 'internal-complete-buffer)
+                  'internal-complete-buffer ; Emacs 22+
+                (mapcar (lambda (b) (and (buffer-live-p b) (list (buffer-name b))))
+                        (buffer-list)))
+       nil require-match nil 'buffer-name-history default t))))
 
 (defun buffer-alist (&optional nospacep)
   "Alist of (BUF-NAME . BUF) items, where BUF-NAME (a string) names BUF,
