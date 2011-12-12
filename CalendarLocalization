@@ -70,9 +70,8 @@ names.
 
 === Russian ===
 
-    (setq calendar-week-start-day 0
-          calendar-day-name-array ["Понедельник" "Вторник" "Среда" "Четверг"
-                                   "Пятница" "Суббота" "Воскресенье"]
+    (setq calendar-week-start-day 1
+          calendar-day-name-array ["Вс" "Пн" "Вт" "Ср" "Чт" "Пт" "Сб"]
           calendar-month-name-array ["Январь" "Февраль" "Март" "Апрель" "Май" 
                                      "Июнь" "Июль" "Август" "Сентябрь"
                                      "Октябрь" "Ноябрь" "Декабрь"])
