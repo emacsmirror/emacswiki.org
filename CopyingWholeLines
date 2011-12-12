@@ -81,6 +81,22 @@ Originally by GregReagle; improvements by [[Bodhi]].
 
 I bind this command to ##<f11>##. Hitting ##<f11>## multiple times appends each line to the [[kill ring]] (which is why the command moves to the beginning of the next line). This makes it really quick and easy to copy multiple lines.
 
+==== quick-cut-line ====
+{{{
+(defun quick-cut-line ()
+  "Cut the whole line that point is on.  Consecutive calls to this command append each line to the kill-ring."
+  (interactive)
+  (let ((beg (line-beginning-position 1))
+	(end (line-beginning-position 2)))
+    (if (eq last-command 'quick-cut-line)
+	(kill-append (buffer-substring beg end) (< end beg))
+      (kill-new (buffer-substring beg end)))
+    (delete-region beg end))
+  (beginning-of-line 1)
+  (setq this-command 'quick-cut-line))
+}}}
+Similar to the ##quick-copy-line##, I define the function ##quick-cut-line## to quickly cut multiple lines and append them to the kill-ring. I bind it to ##\M-f11##.
+
 ==== avi-kill-line-save ====
 
 I too always wondered why stock Emacs didn't have a convenient line copying keybinding, or even a function. There are ##C-w## (##kill-region##) and ##M-w## (##kill-ring-save##), but ##C-k## (##kill-line##) doesn't seem to have a counterpart that just saves the lines into the kill ring.
