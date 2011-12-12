@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Wed Aug  2 11:20:41 1995
 ;; Version: 21.1
-;; Last-Updated: Tue Sep  6 09:52:46 2011 (-0700)
+;; Last-Updated: Mon Dec 12 15:58:24 2011 (-0800)
 ;;           By: dradams
-;;     Update #: 2955
+;;     Update #: 3006
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/misc-cmds.el
 ;; Keywords: internal, unix, extensions, maint, local
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -34,15 +34,21 @@
 ;;    `forward-char-same-line', `forward-overlay',
 ;;    `goto-previous-mark', `indirect-buffer',
 ;;    `kill-buffer-and-its-windows', `mark-buffer-after-point',
-;;    `mark-buffer-before-point', `recenter-top-bottom',
-;;    `recenter-top-bottom-1', `recenter-top-bottom-2',
-;;    `region-length', `region-to-buffer', `region-to-file',
-;;    `resolve-file-name', `revert-buffer-no-confirm',
-;;    `selection-length', `view-X11-colors'.
+;;    `mark-buffer-before-point', `old-rename-buffer',
+;;    `recenter-top-bottom', `recenter-top-bottom-1',
+;;    `recenter-top-bottom-2', `region-length', `region-to-buffer',
+;;    `region-to-file', `resolve-file-name',
+;;    `revert-buffer-no-confirm', `selection-length',
+;;    `view-X11-colors'.
 ;;
 ;;  Non-interactive functions defined here:
 ;;
 ;;    `line-number-at-pos', `read-shell-file-command'.
+;;
+;;
+;;  ***** NOTE: These EMACS PRIMITIVES have been REDEFINED HERE:
+;;
+;;    `rename-buffer' - Uses (lax) completion.
 ;;
 ;;  Suggested key bindings:
 ;;
@@ -61,8 +67,11 @@
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
-;;; Change log:
+;;; Change Log:
 ;;
+;; 2011/12/12 dadams
+;;     Added (redefinition of) rename-buffer.
+;;     Soft require strings.el.
 ;; 2011/09/06 dadams
 ;;     Added: resolve-file-name.
 ;; 2011/05/10 dadams
@@ -252,7 +261,8 @@
 (eval-when-compile (require 'cl)) ;; flet, plus for Emacs < 21: dolist, pop, case
 
 (require 'frame-fns nil t) ;; (no error if not found): flash-ding
-(require 'misc-fns nil t) ;; (no error if not found) another-buffer
+(require 'misc-fns nil t) ;; (no error if not found): another-buffer
+(require 'strings nil t) ;; (no error if not found): read-buffer
 
 ;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -260,6 +270,29 @@
 (require 'misc-cmds)                 ; Ensure loaded before compile this.
 
 ;;;;;;;;;;;;;;;;;;;;;;;
+
+
+;; REPLACE ORIGINAL `rename-buffer' (built-in).
+;;
+;; 1. Provide (lax) completion for new buffer name.
+;; 2. Use name of current buffer as default (< Emacs 23).
+;;;
+(unless (fboundp 'old-rename-buffer)
+  (defalias 'old-rename-buffer (symbol-function 'rename-buffer)))
+
+;;;###autoload
+(defun rename-buffer (newname &optional unique)
+  "Change current buffer's name to NEWNAME (a string).
+Return the name actually given to the buffer.
+If second arg UNIQUE is nil or omitted, it is an error if a buffer
+named NEWNAME already exists.  If UNIQUE is non-nil, come up with a
+new name using `generate-new-buffer-name'.
+Interactively, you can set UNIQUE with a prefix argument.
+If visiting a file, this does not change the name of the visited file."
+  (interactive
+   (list (read-buffer "Rename buffer (to new name): " (buffer-name))
+         current-prefix-arg))
+  (funcall 'old-rename-buffer newname unique))
 
 ;;;###autoload
 (defun view-X11-colors ()
@@ -281,13 +314,12 @@ If there are no more overlay boundaries, move to (point-max)."
   "Move forward a max of ARG chars on the same line, or backward if ARG < 0.
 Returns the signed number of chars moved if /= ARG, else returns nil."
   (interactive "p")
-  (let* ((start (point))
-         (fwd-p (natnump arg))
-         (inhibit-field-text-motion t)  ; Just to be sure, for end-of-line.
-         (max (save-excursion
-                (if fwd-p (end-of-line) (beginning-of-line))
-                (- (point) start))))
-    (setq arg (prefix-numeric-value arg))
+  (let* ((start                      (point))
+         (fwd-p                      (natnump arg))
+         (inhibit-field-text-motion  t) ; Just to be sure, for end-of-line.
+         (max (save-excursion (if fwd-p (end-of-line) (beginning-of-line))
+                              (- (point) start))))
+    (setq arg  (prefix-numeric-value arg))
     (forward-char (if fwd-p (min max arg) (max max arg)))
     (and (< (abs max) (abs arg)) max)))
 
@@ -307,8 +339,7 @@ This is similar to `end-of-line', but:
   (if (and (eq this-command last-command) (not current-prefix-arg))
       (forward-line 1)
     (forward-line n))
-  (let ((inhibit-field-text-motion t))
-    (end-of-line)))
+  (let ((inhibit-field-text-motion  t))  (end-of-line)))
 
 ;;;###autoload
 (defun beginning-of-line+ (&optional n)
@@ -367,30 +398,30 @@ from true window top and bottom."
       (recenter arg)
     (case last-command
       (recenter-tb-top                  ; Top -> middle -> bottom
-       (setq this-command 'recenter-tb-middle)
+       (setq this-command  'recenter-tb-middle)
        (recenter))
       (recenter-tb-middle
-       (setq this-command 'recenter-tb-bottom)
+       (setq this-command  'recenter-tb-bottom)
        (recenter (1- (- scroll-conservatively))))
       (recenter-tb-bottom
-       (setq this-command 'recenter-tb-top)
+       (setq this-command  'recenter-tb-top)
        (recenter scroll-conservatively))
       (recenter-tb-bottom-1             ; Bottom -> middle -> top
-       (setq this-command 'recenter-tb-middle-1)
+       (setq this-command  'recenter-tb-middle-1)
        (recenter))
       (recenter-tb-middle-1
-       (setq this-command 'recenter-tb-top-1)
+       (setq this-command  'recenter-tb-top-1)
        (recenter scroll-conservatively))
       (recenter-tb-top-1
-       (setq this-command 'recenter-tb-bottom-1)
+       (setq this-command  'recenter-tb-bottom-1)
        (recenter (1- (- scroll-conservatively))))
       (otherwise                        ; First time - save mode and recenter.
-       (let ((top (1+ (count-lines 1 (window-start))))
-             (current (1+ (count-lines 1 (point))))
-             (total (window-height)))
-         (if (< (- current top) (/ total 3))
-             (setq this-command 'recenter-tb-middle)
-           (setq this-command 'recenter-tb-middle-1)))
+       (let ((top      (1+ (count-lines 1 (window-start))))
+             (current  (1+ (count-lines 1 (point))))
+             (total    (window-height)))
+         (setq this-command  (if (< (- current top) (/ total 3))
+                                 'recenter-tb-middle
+                               'recenter-tb-middle-1)))
        (recenter)))))
 
 ;; An alternative.
@@ -425,12 +456,12 @@ Otherwise, the window starting position determines the next position:
 Top and bottom destinations are actually `scroll-conservatively' lines
 from true top and bottom."
   (interactive "P")
-  (cond (arg (recenter arg))
+  (cond (arg  (recenter arg))
         (t
-         (let* ((top (1+ (count-lines 1 (window-start))))
-                (bottom (1+ (count-lines 1 (window-end))))
-                (current (1+ (count-lines 1 (point))))
-                (total (window-height)))
+         (let* ((top      (1+ (count-lines 1 (window-start))))
+                (bottom   (1+ (count-lines 1 (window-end))))
+                (current  (1+ (count-lines 1 (point))))
+                (total    (window-height)))
            (cond ((< (- current top) (/ total 3))
                   (recenter (1- (- scroll-conservatively))))
                  ((< (- bottom current) (/ total 3)) (recenter '(4)))
@@ -442,7 +473,7 @@ from true top and bottom."
 With a prefix argument, select the part before point."
   (interactive "P")
   (push-mark (if reversep (point-min) (point-max)) nil t)
-  (setq deactivate-mark nil))
+  (setq deactivate-mark  nil))
 
 ;;;###autoload
 (defun mark-buffer-before-point (reversep)
@@ -459,7 +490,7 @@ With a prefix argument, select the part after point."
 (defun region-length ()
   "Display the number of characters in the region in a message."
   (interactive)
-  (let ((len (abs (- (mark) (point)))))
+  (let ((len  (abs (- (mark) (point)))))
     (message "Region contains %s characters" len)
     len))
 
@@ -514,56 +545,53 @@ buffer, you can use `C-SPC' to set the mark, then use this
   (goto-char beg)
   (when (eobp) (error "End of buffer"))
   (cond ((<= end (save-excursion (goto-char beg) (forward-line 1) (point)))
-         (let ((inhibit-field-text-motion t)) (beginning-of-line))
+         (let ((inhibit-field-text-motion  t))  (beginning-of-line))
          (when (and (> emacs-major-version 21) (require 'hl-line nil t))
-           (let ((hl-line-mode t)) (hl-line-highlight))
+           (let ((hl-line-mode  t))  (hl-line-highlight))
            (add-hook 'pre-command-hook #'hl-line-unhighlight nil t))
-         (let ((lineno (line-number-at-pos))
-               (chars (let ((inhibit-field-text-motion t))
-                        (save-excursion (end-of-line) (current-column)))))
+         (let ((lineno  (line-number-at-pos))
+               (chars   (let ((inhibit-field-text-motion t))
+                          (save-excursion (end-of-line) (current-column)))))
            (message "Only line %d: %d chars" lineno chars)
-           (let ((visible-bell t)) (ding))
-           (setq mark-active nil)
+           (let ((visible-bell  t))  (ding))
+           (setq mark-active  nil)
            (list lineno chars nil 1)))
         (t
-         (let* ((start-line (line-number-at-pos))
-                (max-width 0)
-                (line start-line)
-                (inhibit-field-text-motion t)
+         (let* ((start-line                 (line-number-at-pos))
+                (max-width                  0)
+                (line                       start-line)
+                (inhibit-field-text-motion  t)
                 long-lines col)
            (when (eobp) (error "End of buffer"))
            (while (and (not (eobp)) (< (point) end))
              (end-of-line)
-             (setq col (current-column))
+             (setq col  (current-column))
              (when (>= col max-width)
-               (if (= col max-width)
-                   (setq long-lines (cons line long-lines))
-                 (setq long-lines (list line)))
-               (setq max-width col))
+               (setq long-lines  (if (= col max-width)
+                                     (cons line long-lines)
+                                   (list line))
+                     max-width   col))
              (forward-line 1)
-             (setq line (1+ line)))
-           (setq long-lines (nreverse long-lines))
-           (let ((lines long-lines))
+             (setq line  (1+ line)))
+           (setq long-lines  (nreverse long-lines))
+           (let ((lines  long-lines))
              (while (and lines (> start-line (car lines))) (pop lines))
              (goto-char (point-min))
              (when (car lines) (forward-line (1- (car lines)))))
            (when (and (> emacs-major-version 21) (require 'hl-line nil t))
-             (let ((hl-line-mode t)) (hl-line-highlight))
+             (let ((hl-line-mode  t))  (hl-line-highlight))
              (add-hook 'pre-command-hook #'hl-line-unhighlight nil t))
            (when (interactive-p)
-             (let ((others (cdr long-lines)))
-               (message
-                "Line %d: %d chars%s (%d lines measured)"
+             (let ((others  (cdr long-lines)))
+               (message "Line %d: %d chars%s (%d lines measured)"
                 (car long-lines) max-width
                 (concat
                  (and others
-                      (format ", Others: {%s}"
-                              (mapconcat
-                               (lambda (line) (format "%d" line))
-                               (cdr long-lines) ", "))))
+                      (format ", Others: {%s}" (mapconcat
+                                                (lambda (line) (format "%d" line))
+                                                (cdr long-lines) ", "))))
                 (- line start-line))))
-           (list (car long-lines) max-width (cdr long-lines)
-                 (- line start-line))))))
+           (list (car long-lines) max-width (cdr long-lines) (- line start-line))))))
 
 ;;;###autoload
 (defun goto-long-line (len)
@@ -571,22 +599,20 @@ buffer, you can use `C-SPC' to set the mark, then use this
 Use a prefix arg to provide LEN.
 Plain `C-u' (no number) uses `fill-column' as LEN."
   (interactive "P")
-  (setq len (if (consp len) fill-column (prefix-numeric-value len)))
-  (let ((start-line (line-number-at-pos))
-        (len-found 0)
-        (found nil)
-        (inhibit-field-text-motion t))
+  (setq len  (if (consp len) fill-column (prefix-numeric-value len)))
+  (let ((start-line                 (line-number-at-pos))
+        (len-found                  0)
+        (found                      nil)
+        (inhibit-field-text-motion  t))
     (while (and (not found) (not (eobp)))
       (forward-line 1)
-      (setq found
-            (< len (setq len-found
-                         (- (save-excursion (end-of-line) (point)) (point))))))
-    (cond (found
-           (when (interactive-p)
-             (message "Line %d: %d chars" (line-number-at-pos) len-found)))
-          (t
-           (goto-line start-line)
-           (message "Not found")))))
+      (setq found  (< len (setq len-found
+                                (- (save-excursion (end-of-line) (point)) (point))))))
+    (if found
+        (when (interactive-p)
+          (message "Line %d: %d chars" (line-number-at-pos) len-found))
+      (goto-line start-line)
+      (message "Not found"))))
 
 ;;;###autoload
 (defun delete-lines (num-lines)
@@ -596,11 +622,11 @@ With positive prefix arg, deletion is forward.
 With negative prefix arg, deletion is backward."
   (interactive "p")
   (when (not (zerop num-lines))
-    (let ((column (current-column))
-          (forward-p (natnump num-lines))
-          (inhibit-field-text-motion t))
+    (let ((column                     (current-column))
+          (forward-p                  (natnump num-lines))
+          (inhibit-field-text-motion  t))
       (if forward-p (beginning-of-line) (end-of-line))
-      (let ((beg (point)))
+      (let ((beg  (point)))
         (forward-line (if forward-p (1- num-lines) (1+ num-lines)))
         (if forward-p (end-of-line) (beginning-of-line))
         (delete-region beg (point)))
@@ -832,9 +858,9 @@ With prefix ARG < 0:  `prepend-to-buffer':
 With no prefix ARG (nil): `copy-to-buffer'.
   Write region to BUFFER, replacing any previous contents."
   (interactive
-   (let ((arg (and current-prefix-arg
-                   (prefix-numeric-value current-prefix-arg))))
-     (list (region-beginning) (region-end)
+   (let ((arg  (and current-prefix-arg (prefix-numeric-value current-prefix-arg))))
+     (list (region-beginning)
+           (region-end)
            (read-buffer (concat (if arg
                                     (if (natnump arg) "Append" "Prepend")
                                   "Write")
@@ -843,9 +869,8 @@ With no prefix ARG (nil): `copy-to-buffer'.
                             (another-buffer nil t)
                           (other-buffer (current-buffer))))
            arg)))
-  (setq buffer (get-buffer-create buffer)) ; Convert to buffer.
-  (when (eq buffer (current-buffer))
-    (error "Cannot copy region to its own buffer"))
+  (setq buffer  (get-buffer-create buffer)) ; Convert to buffer.
+  (when (eq buffer (current-buffer)) (error "Cannot copy region to its own buffer"))
   (cond ((natnump arg)
          (with-current-buffer buffer (goto-char (point-max)))
          (append-to-buffer buffer start end))
@@ -861,20 +886,20 @@ START and END are the region boundaries.
 Prefix ARG non-nil means append region to end of file FILENAME.
 Prefix ARG nil means write region to FILENAME, replacing contents."
   (interactive
-   (list (region-beginning) (region-end)
+   (list (region-beginning)
+         (region-end)
          (read-file-name (concat (if current-prefix-arg "Append" "Write")
                                  " region to file: "))
          current-prefix-arg))
-  (let* ((curr-file (buffer-file-name))
-         (same-file-p (and curr-file (string= curr-file filename))))
+  (let* ((curr-file    (buffer-file-name))
+         (same-file-p  (and curr-file  (string= curr-file filename))))
     (cond ((or (not same-file-p)
-               (progn
-                 (when (fboundp 'flash-ding) (flash-ding))
-                 (yes-or-no-p
-                  (format
-                   "Do you really want to REPLACE the contents of `%s' by \
+               (progn (when (fboundp 'flash-ding) (flash-ding))
+                      (yes-or-no-p
+                       (format
+                        "Do you really want to REPLACE the contents of `%s' by \
 just the REGION? "
-                   (file-name-nondirectory curr-file)))))
+                        (file-name-nondirectory curr-file)))))
            (write-region start end filename arg)
            (when same-file-p (revert-buffer t t)))
           (t (message "OK.  Not written.")))))
@@ -980,11 +1005,10 @@ region was active then its content was already added to the ring.)"
 If buffer is not associated with a file, you are prompted for a file.
 COMMAND is a symbol."
   (let ((file (or (buffer-file-name) (read-file-name "File: "))))
-    (setq file (and file (file-name-nondirectory file)))
-    (setq command (format "%s  " command)) ; Convert to string.
+    (setq file     (and file (file-name-nondirectory file))
+          command  (format "%s  " command)) ; Convert to string.
     (read-from-minibuffer
-     "" (cons (concat command (and file (concat " " file)))
-              (length command)))))
+     "" (cons (concat command (and file (concat " " file)))  (length command)))))
 
 ;;;###autoload
 (defun chmod (cmd)
@@ -1045,17 +1069,17 @@ CMD is the command to execute (interactively, `chown')."
   "Kill BUFFER and delete its windows.  Default is `current-buffer'.
 BUFFER may be either a buffer or its name (a string)."
   (interactive (list (read-buffer "Kill buffer: " (current-buffer) 'existing)))
-  (setq buffer (get-buffer buffer))
-  (cond ((buffer-live-p buffer)         ; Kill live buffer only.
-         (let ((wins (get-buffer-window-list buffer nil t))) ; On all frames.
-           (when (and (buffer-modified-p buffer)
-                      (fboundp '1on1-flash-ding-minibuffer-frame))
-             (1on1-flash-ding-minibuffer-frame t)) ; Defined in `oneonone.el'.
-           (when (kill-buffer buffer)   ; Only delete windows if buffer killed.
-             (dolist (win wins)         ; (User might keep buffer if modified.)
-               (when (window-live-p win) (delete-window win))))))
-        ((interactive-p)
-         (error "Cannot kill buffer.  Not a live buffer: `%s'" buffer))))
+  (setq buffer  (get-buffer buffer))
+  (if (buffer-live-p buffer)            ; Kill live buffer only.
+      (let ((wins  (get-buffer-window-list buffer nil t))) ; On all frames.
+        (when (and (buffer-modified-p buffer)
+                   (fboundp '1on1-flash-ding-minibuffer-frame))
+          (1on1-flash-ding-minibuffer-frame t)) ; Defined in `oneonone.el'.
+        (when (kill-buffer buffer)      ; Only delete windows if buffer killed.
+          (dolist (win  wins)           ; (User might keep buffer if modified.)
+            (when (window-live-p win) (delete-window win)))))
+    (when (interactive-p)
+      (error "Cannot kill buffer.  Not a live buffer: `%s'" buffer))))
 
 ;;; Like `clone-indirect-buffer' of Emacs 21.
 ;;;###autoload
@@ -1063,7 +1087,7 @@ BUFFER may be either a buffer or its name (a string)."
   "Edit stuff in this buffer in an indirect-buffer window.
 The indirect buffer can have a different major mode from current."
   (interactive)
-  (let ((buffer-name (generate-new-buffer-name "*indirect*")))
+  (let ((buffer-name  (generate-new-buffer-name "*indirect*")))
     (pop-to-buffer (make-indirect-buffer (current-buffer) buffer-name))))
 
 ;;;###autoload
@@ -1073,7 +1097,7 @@ The indirect buffer can have a different major mode from current."
   "Clear the search history (empty it).
 With prefix arg, clear also the regular-expression search history."
   (interactive "P")
-  (setq search-ring nil)
+  (setq search-ring  ())
   (when regexp-too-p (setq regexp-search-ring nil)))
 
 ;;;###autoload
@@ -1083,14 +1107,14 @@ With prefix arg, clear also the regular-expression search history."
   "Clear the regular-expression search history (empty it).
 With prefix arg, clear also the simple search history."
   (interactive "P")
-  (setq regexp-search-ring nil)
+  (setq regexp-search-ring ())
   (when simple-too-p (setq search-ring nil)))
 
 ;;;###autoload
 (defun clear-search-histories ()
   "Clear both search histories: simple search and regexp search."
   (interactive)
-  (setq regexp-search-ring nil)
+  (setq regexp-search-ring ())
   (setq search-ring nil))
 
 ;;;###autoload
