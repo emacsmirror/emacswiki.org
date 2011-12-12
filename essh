@@ -2,7 +2,7 @@
 
 ==Overview==
 
-This is a package for providing extra functionality when writing in sh-mode (eg bash). It allows to send/pipe lines or regions of code to shell processes in a similar way to ESS (emacs speaks statistics).
+This is a package that provides extra functionality when writing in sh-mode (eg bash). It allows to send/pipe lines or regions of code to shell processes in a similar way to ESS (emacs speaks statistics).
 
 ==Where is it?==
 
