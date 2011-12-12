@@ -1,5 +1,8 @@
 This page features mostly stuff available in malabar-mode's [http://github.com/espenhw/malabar-mode/blob/master/README.md README]. To be sure you're reading up to date instructions you might want to visit it instead.
 
+==== 2011-11-01 maintainer of malabar-mode wanted ====
+[http://blog.grumblesmurf.org/2011/11/maintenance-of-malabar-mode.html blog]
+
 == malabar-mode :: A better Java mode for Emacs ==
 
 You may want to skip to Installation
@@ -183,103 +186,4 @@ malabar-install-project : C-c C-v C-b
   cleans the project first (``mvn clean install``).
 
 malabar-override-method : C-c C-v C-o
-  Prompts for an eligible method from the superclass of the class at
-  point and adds a stub implementation of that method.  If the chosen
-  method is one of ``Object.equals`` or ``Object.hashCode``, override both of them.
-
-malabar-run-all-tests : C-c C-v M-t
-  Runs ``mvn test`` on your project.  With prefix argument (C-u),
-  cleans the project first (``mvn clean test``).
-  
-malabar-run-junit-test-no-maven : C-c C-v C-t
-  Compiles the current file, performs
-  ``malabar-visit-corresponding-test``, compiles that file (if not the
-  same as where we started) and runs the now-current buffer as a
-  standalone JUnit test.
-
-malabar-run-test : C-c C-v t
-  Runs the corresponding test to this buffer using Maven (``mvn test -Dtest=classname``)
-
-malabar-update-package
-  Updates the package statement of the current buffer to match its place
-  in the source directory.
-
-malabar-visit-corresponding-test
-  Visits the corresponding test class; that is, the file in the
-  parallel src/test/java hierarchy that matches the class in the
-  current buffer (with ``malabar-test-class-suffix`` appended).
-
-  E.g., ``M-x malabar-visit-corresponding-test`` in a buffer visiting
-  ``src/main/java/org/grumblesmurf/malabar/MvnServer.java`` will visit
-  the file
-  ``src/test/java/org/grumblesmurf/malabar/MvnServerTest.java`` with
-  the default value of ``malabar-test-class-suffix``.
-
-  If the current buffer looks like a test class, this command does nothing.
-
-malabar-visit-project-file : C-c C-v C-p
-  Visit the project file, that is the closest file named ``pom.xml``
-  searching upwards in the directory structure.
-
-malabar-jump-to-thing : C-c C-v C-y
-  Jumps to the definition of the 'thing' at point. More technically,
-  uses ``semantic-analyze-current-context`` output to identify an origin
-  for the code at point, taking type membership into account.  This
-  function is much like ``semantic-ia-fast-jump``, only a little
-  smarter.
-
-malabar-refactor-extract-constant : C-c C-v C-r C-c
-  Extracts the thing at point as a named constant.  The scope of the
-  constant will default to
-  ``malabar-refactor-extract-constant-default-scope``, but with a
-  prefix arg will prompt for the scope.
-
-In addition, [http://cedet.sourceforge.net/intellisense.shtml standard Semantic code completion] is available; trigger
-this however you wish.  By default, ``semantic-ia-complete-symbol`` is
-bound to ``C-c C-v C-.`` and ``semantic-ia-complete-symbol-menu`` is
-bound to ``C-c C-v .``.
-
-== Abbrevs ==
-
-Some default abbrevs are set up, see the variable
-``malabar-case-fixed-abbrevs`` for the current list.
-
-Note the presence of the ``#Test`` abbrev; this expands to::
-
-     @Test
-     public void |() throws Exception {
-         fail("Unfinished test");
-     }
-
-With point left at the position marked with ``|``.
-
-== Electric expansions ==
-
-In addition to the electric insertion offered by CC-mode, malabar-mode
-offers an expansion that simulates the [http://groovy.codehaus.org/Operators#Operators-ElvisOperator%28%3F%3A%29 Elvis operator], although the
-generated code is not as efficient as a language-provided Elvis
-operator would be.  This expansion is controlled by the variable
-``malabar-electric-elvis-p``.
-
-== This is cool, I want to help ==
-
-Github has excellent support for forking!  If you don't want to go
-that far, git is, after all, a *distributed* VCS.  Just commit to your
-local repository and then use git-format-patch to extract patches in a
-useful format.
-
-=== But where do I send patches? ===
-
-To the [http://github.com/espenhw/malabar-mode/issues issue tracker] (see the next section).
-
-=== I found a bug! ===
-
-Good for you.  Create a ticket in the [http://github.com/espenhw/malabar-mode/issues issue tracker] and stuff will happen.
-
-Hint #1:  Tell me what you did, what you expected to happen and what
-actually happened.  Include any error messages (Emacs backtraces,
-output in the buffers named starting with ``*Malabar``, interesting
-stuff from ``*Messages*`` etc.).
-
-Hint #2:  Bugs with patches tend to be fixed faster (see the previous
-section).
+  Prompts for an eligible method from the sup
