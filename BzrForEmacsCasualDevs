@@ -2,14 +2,15 @@
 
 This document describes some workflows by which a casual contributor can follow Emacs development, without having the full developer setup.
 
-We still recommend that even casual developers eventually migrate to the the regular developer's workflow described at [[BzrForEmacsDevs]].  If you have time to set that up, please do so now instead of reading this page; it offers a superset of what this page describes, and is more standard (therefore better supported).
+If you want a simple CVS-style workflow, please follow [[BzrQuickStartForEmacsDevs]] 
+and we still recommend that even casual developers eventually migrate to the the regular developer's workflow described at [[BzrForEmacsDevs]].  If you have time to set that up, please do so now instead of reading this page; it offers a superset of what this page describes, and is more standard (therefore better supported).
 
 Nevertheless, if you just need a quick-and-easy way to follow bleeding edge Emacs, or to make a one-time patch contribution, etc, then this page may help.
 
 [:BleedingEdgeBuilds]
 === How To Follow Bleeding-Edge Emacs ===
 
-If you just want to run bleeding-edge code (perhaps so you can report bugs against the latest development sources), and do not expect to make code changes to Emacs, then you can save a little bit of time and space by using a /stacked branch/.  This workflow is very similar to CVS:
+If you just want to run bleeding-edge code (perhaps so you can report bugs against the latest development sources), and do not expect to make code changes to Emacs, then you can save a little bit of time and space by using a /stacked branch/:
 
       cd /home/jrandom/projects                    # or wherever
       bzr branch --stacked bzr://bzr.savannah.gnu.org/emacs/trunk emacs-trunk
@@ -45,6 +46,7 @@ The merge may fail due to a change that conflicts with yours.  You'll need to fi
       bzr commit -m "Merge from upstream master."
 
 You will have to continue merging in this way until you code is merged.
+[ We very rarely merge code like that, so don't expect this workflow to work the way it's described.  --Stefan Monnier ]
 
 But really, if you find yourself making one code change to Emacs, you'll probably make more, so you should just take the time set to yourself up in the way described for [[BzrForEmacsDevs]].  Then you can follow the workflows described there (/i.e./, create a repository and mirror branch), and do:
 
