@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Tue Mar  5 17:09:08 1996
 ;; Version: 21.0
-;; Last-Updated: Tue Aug 30 17:49:31 2011 (-0700)
+;; Last-Updated: Mon Dec 12 09:34:46 2011 (-0800)
 ;;           By: dradams
-;;     Update #: 515
+;;     Update #: 518
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/strings.el
 ;; Keywords: internal, strings, text
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -458,10 +458,10 @@ NOTE: For versions of Emacs that do not have faces, a list of
   (message nil) (sit-for 0))            ; Clear any messages & show minibuf.
 
 
-;; REPLACES ORIGINAL (built-in):
-;; 1. Uses `completing-read'.
-;; 2. Interactively, uses `another-buffer' or `other-buffer' if no default.
-;; 3. Emacs 23 compatible: handles `read-buffer-function'
+;; REPLACE ORIGINAL `read-buffer' (built-in).
+;;
+;; 1. Interactively, uses `another-buffer' or `other-buffer' if no default.
+;; 3. Emacs 23+ compatible: handles `read-buffer-function'
 ;;    and `read-buffer-completion-ignore-case'.
 ;;
 (defun read-buffer (prompt &optional default require-match)
