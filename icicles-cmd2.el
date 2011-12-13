@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Thu May 21 13:31:43 2009 (-0700)
 ;; Version: 22.0
-;; Last-Updated: Tue Dec  6 19:03:26 2011 (-0800)
+;; Last-Updated: Tue Dec 13 13:55:28 2011 (-0800)
 ;;           By: dradams
-;;     Update #: 4904
+;;     Update #: 4905
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-cmd2.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -3870,7 +3870,7 @@ The arguments are the same as for `icicle-search'."
                    buf      (car buf+beg)
                    beg      (cdr buf+beg)
                    end      (bmkp-get-end-position bmk))
-             (when (= beg end)          ; Search whole buffer if bookmarked region is empty.
+             (when (and beg end (= beg end)) ; Search whole buffer if bookmarked region is empty.
                (setq beg  nil
                      end  nil))
              (if (bufferp buf)
