@@ -22,5 +22,11 @@ If you want to use emerge as git-mergetool, and want to start emacs using emacs 
 
 Now git-mergetool should start emacs using emacs -Q. I still don't know how to use emacsclient for emerge.
 
+* Experiment:
+    For emacsclient I put like this in ~/bin/edif
+    emacsclient -t --eval "(ediff-files \"$1\" \"$2\")" 
+    
+    But I have not tried integrating this with git yet.
+
 ----
 CategoryExternalUtilities CategoryProgrammerUtils
