@@ -837,14 +837,16 @@ Run a command and put its output in the current buffer.
   8
   9
 
-Run a command return its output as a string.
-
-  (shell-command-to-string "seq 8 12 | sort")
+Run a command and put its output in a new buffer.
 
   (shell-command "seq 8 12 | sort"
                  (get-buffer-create "*Standard output*"))
 
-XEmacs also comes with exec-to-string:
+Run a command return its output as a string.
+
+  (shell-command-to-string "seq 8 12 | sort")
+
+XEmacs also comes with `exec-to-string'.
 
 === Handling signals ===
 
