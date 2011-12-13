@@ -383,43 +383,46 @@ Modified `icicle-keep-only-past-inputs': ModIcMP
 
 Where it does not works: 
 
-my home directory($HOME) is /root/ it has a sub directory '1' and has 3 files 'a','b','c' 
+my home directory($HOME) is `/root/' it has a sub directory '1' and has 3 files 'a','b','c' 
 
-root
-└── 1
-    ├── a
-    ├── b
-    └── c
+    root
+    └── 1
+        ├── a
+        ├── b
+        └── c
 
-Content of the *Messages* buffer, after i open /root/1/a,/root/1/b,/root/1/c:
+Content of the `*Messages*' buffer, after i open /root/1/a,/root/1/b,/root/1/c:
 
-hist: file-name-history
-111, cand: "a"
-222, cand: "/root/1/a"
-111, cand: "b"
-222, cand: "/root/1/b"
-111, cand: "c"
-222, cand: "/root/1/c"
+    hist: file-name-history
+    111, cand: "a"
+    222, cand: "/root/1/a"
+    111, cand: "b"
+    222, cand: "/root/1/b"
+    111, cand: "c"
+    222, cand: "/root/1/c"
 
 
 Where it works (similar setup):
 
-tmp
-|
-── 2
-   ├── a
-   ├── b
-   └── c
+    tmp
+    ├── 2
+        ├── a
+        ├── b
+        ├── c
 
-Content of the *Messages* buffer, after i open /tmp/2/a,/tmp/2/b,/tmp/2/c:
 
-hist: file-name-history
-111, cand: "a"
-222, cand: "/tmp/2/a"
-111, cand: "b"
-222, cand: "/tmp/2/b"
-111, cand: "c"
-222, cand: "/tmp/2/c"
+
+Content of the `*Messages*' buffer, after i open /tmp/2/a,/tmp/2/b,/tmp/2/c:
+
+
+    hist: file-name-history
+    111, cand: "a"
+    222, cand: "/tmp/2/a"
+    111, cand: "b"
+    222, cand: "/tmp/2/b"
+    111, cand: "c"
+    222, cand: "/tmp/2/c"
+
 
 So strange, there is no difference between the outputs...
 
