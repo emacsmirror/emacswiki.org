@@ -7,7 +7,11 @@ You will need pcl-cvs/pcvs and add-log packages to do this. pcl-cvs is great fro
 
 Note as of 2003-11-26, this apparently will only work with [[XEmacs]], as GnuEmacs does not contain the <tt>patch-to-change-log</tt> function in its <tt>add-log.el</tt> package (even in Emacs 22).  As of 2007-06-02, Emacs 22 has a `diff-current-defun' function provided by DiffMode.
 
-The new name for pcl-cvs is pcvs and comes with Emacs starting with version 21.  See GIT:pcvs.el. http://repo.or.cz/w/emacs.git/history/HEAD:/lisp/pcvs.el It comes with a manual.  Visit it in [[Info]]: `C-h i m pcl-cvs RET'.
+The new name for pcl-cvs is pcvs and comes with Emacs starting with version 21.  
+
+See GIT:pcvs.el. http://repo.or.cz/w/emacs.git/history/HEAD:/lisp/vc/pcvs.el  
+
+It comes with a manual.  Visit it in [[Info]]: `C-h i m pcl-cvs RET'.
 
 <pre>
 (require 'pcl-cvs)
