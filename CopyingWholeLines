@@ -96,6 +96,8 @@ I bind this command to ##<f11>##. Hitting ##<f11>## multiple times appends each 
   (setq this-command 'quick-cut-line))
 }}}
 Similar to the ##quick-copy-line##, I define the function ##quick-cut-line## to quickly cut multiple lines and append them to the kill-ring. I bind it to ##\M-f11##.
+[new]
+This is the same behavior as hitting `C-S-DEL', the binding for `kill-whole-line'.
 
 ==== avi-kill-line-save ====
 
