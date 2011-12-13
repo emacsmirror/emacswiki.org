@@ -1,0 +1,87 @@
+;;;###autoload
+(defun icicle-keep-only-past-inputs (&optional recent-first) ; Bound to`M-pause' in minibuffer.
+  "Narrow completion candidates to those that have been used previously.
+This filters the set of current completion candidates, keeping only
+those that have been used before.  (You must first use `TAB' or
+`S-TAB' to establish an explicit candidate set.)
+
+With a prefix arg, the previous inputs are sorted chronologically,
+most recent first.
+
+Note that whatever completion mode (prefix or apropos) was in effect
+before you use `\\<minibuffer-local-completion-map>\
+\\[icicle-keep-only-past-inputs]' remains in \ effect for
+`icicle-keep-only-past-inputs'.  This command does not use a recursive
+minibuffer; it simply co-opts the current completion, changing it to
+completion against the history.
+
+You can use this command only from the minibuffer \
+\(`\\[icicle-keep-only-past-inputs]').
+
+See also `\\[icicle-history]' (`icicle-history')."
+  (interactive "P")
+  (when (interactive-p) (icicle-barf-if-outside-Completions-and-minibuffer))
+  (if (and recent-first (interactive-p) icicle-inhibit-sort-p)
+      (icicle-msg-maybe-in-minibuffer "Cannot sort candidates now")
+    (let ((icicle-sort-comparer  (if recent-first 'icicle-most-recent-first-p icicle-sort-comparer)))
+      (when (or recent-first (eq icicle-last-completion-command 'icicle-keep-only-past-inputs))
+        (icicle-complete-again-update 'no-display))
+      (if (null icicle-completion-candidates)
+          (minibuffer-message "  [No completion candidates to filter]")
+        (unless (boundp minibuffer-history-variable) (set minibuffer-history-variable nil))
+        (when (consp (symbol-value minibuffer-history-variable))
+	  (message "hist: %S" minibuffer-history-variable)
+          (setq icicle-completion-candidates
+                (icicle-remove-if-not
+                 (lambda (candidate)
+		   (message "111, cand: %S" candidate)
+                   (when (icicle-file-name-input-p)
+                     (setq candidate  (expand-file-name
+                                       candidate (icicle-file-name-directory icicle-last-input))))
+		   (message "222, cand: %S" candidate)
+                   (member candidate (symbol-value minibuffer-history-variable)))
+                 icicle-completion-candidates))
+          (cond ((null icicle-completion-candidates)
+                 (save-selected-window (icicle-remove-Completions-window))
+                 (minibuffer-message "  [None of the completions have been used before]"))
+                (t
+                 (cond ((and (symbolp last-command) (get last-command 'icicle-cycling-command))
+                        (setq icicle-current-input  icicle-last-input)
+                        (icicle-retrieve-last-input))
+                       (t
+                        (setq icicle-current-input  (icicle-input-from-minibuffer))))
+                 (cond ((null icicle-completion-candidates)
+                        (setq icicle-nb-of-other-cycle-candidates  0)
+                        (save-selected-window (icicle-remove-Completions-window))
+                        (minibuffer-message "  [No matching history element]"))
+                       ((null (cdr icicle-completion-candidates)) ; Single cand. Update minibuffer.
+                        (setq icicle-nb-of-other-cycle-candidates  0)
+                        (icicle-clear-minibuffer)
+                        (setq icicle-last-completion-candidate  (car icicle-completion-candidates))
+                        (let ((inserted  (if (and (icicle-file-name-input-p) insert-default-directory
+                                                  (or (not (member icicle-last-completion-candidate
+                                                                   icicle-extra-candidates))
+                                                      icicle-extra-candidates-dir-insert-p))
+                                             (icicle-abbreviate-or-expand-file-name
+                                              icicle-last-completion-candidate
+                                              (icicle-file-name-directory-w-default
+                                               icicle-current-input))
+                                           icicle-last-completion-candidate)))
+                          (insert inserted))
+                        (save-selected-window (icicle-remove-Completions-window))
+                        (icicle-highlight-complete-input)
+                        (icicle-show-help-in-mode-line icicle-last-completion-candidate)
+                        (minibuffer-message (format "  [One matching history element]")))
+                       (t
+                        (when (member icicle-current-input icicle-completion-candidates)
+                          (icicle-highlight-complete-input)
+                          (icicle-show-help-in-mode-line icicle-current-input))
+                        (icicle-display-candidates-in-Completions)
+                        (save-window-excursion
+                          (select-window (active-minibuffer-window))
+                          (minibuffer-message
+                           (concat "  [Filtered to (matching) historical candidates"
+                                   (and recent-first ", most recent first")
+                                   "]")))))
+                 (setq icicle-last-completion-command  'icicle-keep-only-past-inputs)))))
+      icicle-completion-candidates)))
