@@ -5,10 +5,10 @@
 ;; Author: Matthew L. Fidler, Le Wang & Others
 ;; Maintainer: Matthew L. Fidler
 ;; Created: Sat Nov  6 11:02:07 2010 (-0500)
-;; Version: 0.49
-;; Last-Updated: Sat Dec 10 20:54:55 2011 (-0600)
-;;           By: Matthew L. Fidler
-;;     Update #: 1194
+;; Version: 0.50
+;; Last-Updated: Tue Dec 13 13:43:46 2011 (-0600)
+;;           By: us041375
+;;     Update #: 1199
 ;; URL: http://www.emacswiki.org/emacs/auto-indent-mode.el
 ;; Keywords: Auto Indentation
 ;; Compatibility: Tested with Emacs 23.x
@@ -1150,6 +1150,7 @@ standards for Viper, ErgoEmacs and standard emacs"
 	  (key-binding (kbd "<deletechar>"))
 	  (key-binding (kbd "C-d"))))))
 
+
 (defmacro auto-indent-def-del-forward-char (&optional function)
   "Defines advices and commands for `delete-char'"
   (let ((do-it (if function
@@ -1157,64 +1158,66 @@ standards for Viper, ErgoEmacs and standard emacs"
                         (delete-char n (if n t nil))
                       (delete-char n killflag))
                  'ad-do-it)))
-  `(,(if function 'defun 'defadvice)
-    ,(if function 'auto-indent-delete-char 'delete-char)
-    ,(if function '(n &optional killflag) '(around auto-indent-minor-mode-advice))
-    "If at the end of the line, take out whitespace after deleting character"
-    ,(if function '(interactive "p") nil)
-    (save-match-data
-      (if ,(if function t '(and
-                            (not (auto-indent-remove-advice-p))
-                            (or (not auto-indent-force-interactive-advices)
-                                (called-interactively-p 'any)
-                                (auto-indent-is-del-key-p))))
-          (let ((del-eol (eolp))
-                (prog-mode (auto-indent-is-prog-mode-p)))
-            ,do-it
-            (when (and del-eol
-                       auto-indent-minor-mode (not (minibufferp))
-                       auto-indent-delete-line-char-remove-extra-spaces)
-              (save-excursion
-                (skip-chars-backward " \t")
-                (when (looking-at "[ \t]+")
-                  (replace-match " ")))
-              (let (done lst)
-                (when auto-indent-delete-line-char-remove-last-space
-                  (if prog-mode
-                      (setq lst auto-indent-delete-line-char-remove-last-space-prog-mode-regs)
-                    (setq lst auto-indent-delete-line-char-remove-last-space-text-mode-regs))
-                  
-                  (when lst
-                    (setq done nil)
-                    (mapc (lambda(i)
-                                     (nth 1 i) (looking-at (concat " " (nth 1 i))))
+    `(,(if function 'defun 'defadvice)
+      ,(if function 'auto-indent-delete-char 'delete-char)
+      ,(if function '(n &optional killflag) '(around auto-indent-minor-mode-advice))
+      "If at the end of the line, take out whitespace after deleting character"
+      ,(if function '(interactive "p") nil)
+      (save-match-data
+        (if ,(if function t '(and
+                              (not (auto-indent-remove-advice-p))
+                              (or (not auto-indent-force-interactive-advices)
+                                  (called-interactively-p 'any)
+                                  (auto-indent-is-del-key-p))))
+            (let ((del-eol (eolp))
+                  (prog-mode (auto-indent-is-prog-mode-p)))
+              ,do-it
+              (when (and del-eol
+                         auto-indent-minor-mode (not (minibufferp))
+                         auto-indent-delete-line-char-remove-extra-spaces)
+                (save-excursion
+                  (skip-chars-backward " \t")
+                  (when (looking-at "[ \t]+")
+                    (replace-match " ")))
+                (let (done lst)
+                  (when auto-indent-delete-line-char-remove-last-space
+                    (if prog-mode
+                        (setq lst auto-indent-delete-line-char-remove-last-space-prog-mode-regs)
+                      (setq lst auto-indent-delete-line-char-remove-last-space-text-mode-regs))
+                    
+                    (when lst
+                      (setq done nil)
+                      (mapc (lambda(i)
+                              (nth 1 i) (looking-at (concat " " (nth 1 i))))
                             (when (and (not done) (looking-back (nth 0 i))
                                        (looking-at (concat " " (nth 1 i))))
                               (delete-char 1)
                               (setq done t)))
-                          lst))))
+                      lst))))
               (when (and (eolp) (looking-back "[ \t]+" nil t))
-                (replace-match "")))
-            (when (and del-eol
-                       auto-indent-minor-mode (not (minibufferp))
-                       auto-indent-delete-line-char-add-extra-spaces)
-              (let (done lst)
-                (if prog-mode
-                    (setq lst auto-indent-delete-line-char-add-extra-spaces-prog-mode-regs)
-                  (setq lst auto-indent-delete-line-char-add-extra-spaces-text-mode-regs))
-                (when lst
-                  (mapc (lambda(i)
-                          (when (and (not done)
-                                     (looking-back (nth 0 i))
-                                     (looking-at (nth 1 i)))
-                            (save-excursion
-                              (insert " ")
-                              (setq done t))))
-                        lst)))))
-        ,do-it)))))
+                (replace-match ""))
+              (when (and del-eol
+                         auto-indent-minor-mode (not (minibufferp))
+                         auto-indent-delete-line-char-add-extra-spaces)
+                (let (done lst)
+                  (if prog-mode
+                      (setq lst auto-indent-delete-line-char-add-extra-spaces-prog-mode-regs)
+                    (setq lst auto-indent-delete-line-char-add-extra-spaces-text-mode-regs))
+                  (when lst
+                    (mapc (lambda(i)
+                            (when (and (not done)
+                                       (looking-back (nth 0 i))
+                                       (looking-at (nth 1 i)))
+                              (save-excursion
+                                (insert " ")
+                                (setq done t))))
+                          lst)))))
+          ,do-it)))))
+
 
 (auto-indent-def-del-forward-char)
 (auto-indent-def-del-forward-char t)
+
 
 (defun auto-indent-is-kill-line-p (&optional command)
   "Determines if the delete key was pressed.  This is based on
