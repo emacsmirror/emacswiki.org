@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2011, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 13:43:55 2010 (-0700)
-;; Last-Updated: Tue Dec  6 14:06:03 2011 (-0800)
+;; Last-Updated: Tue Dec 13 11:02:17 2011 (-0800)
 ;;           By: dradams
-;;     Update #: 2663
+;;     Update #: 2668
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-1.el
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -5947,12 +5947,10 @@ If region was relocated, save it if user confirms saving."
          (end-pos          (bmkp-get-end-position bmk))
          (reg-retrieved-p  t)
          (reg-relocated-p  nil))
-    (unless (and (string= bor-str (buffer-substring-no-properties (point) (+ (point)
-                                                                             (length bor-str))))
-                 (save-excursion
-                   (goto-char end-pos)
-                   (string= eor-str (buffer-substring-no-properties (point) (- (point)
-                                                                               (length bor-str))))))
+    (unless (and (string= bor-str (buffer-substring-no-properties
+                                   (point) (min (point-max) (+ (point) (length bor-str)))))
+                 (string= eor-str (buffer-substring-no-properties
+                                   end-pos (max (point-min) (- end-pos (length bor-str))))))
       ;; Relocate region by searching from beginning (and possibly from end) of buffer.
       (let ((beg  nil)
             (end  nil))
