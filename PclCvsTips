@@ -9,7 +9,7 @@ Note as of 2003-11-26, this apparently will only work with [[XEmacs]], as GnuEma
 
 The new name for pcl-cvs is pcvs and comes with Emacs starting with version 21.  
 
-See GIT:pcvs.el. http://repo.or.cz/w/emacs.git/history/HEAD:/lisp/vc/pcvs.el  
+See GIT:vc/pcvs.el. http://repo.or.cz/w/emacs.git/history/HEAD:/lisp/vc/pcvs.el  
 
 It comes with a manual.  Visit it in [[Info]]: `C-h i m pcl-cvs RET'.
 
