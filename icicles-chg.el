@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2011, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Sun Dec 11 13:40:52 2011 (-0800)
+;; Last-Updated: Tue Dec 13 13:56:42 2011 (-0800)
 ;;           By: dradams
-;;     Update #: 7643
+;;     Update #: 7644
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-chg.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -500,6 +500,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd2.el'")
 ;;
+;; 2011/12/13 dadams
+;;     icicle-search-define-candidates: In bookmarks part, test BEG =? END only if both are non-nil.
 ;; 2011/12/06 dadams
 ;;     icicle-send-signal-to-process: Add process name to prompt.  Thx to Michael Heerdegen.
 ;; 2011/11/26 dadams
