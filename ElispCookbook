@@ -359,8 +359,7 @@ Alternatively, replacing the `let' with `save-excursion'.
            (char (or char ","))
            (str (if (stringp num)
                     num
-                  (number-to-string num)
-                  ))
+                  (number-to-string num)))
            (pt (or (string-match "[^0-9a-zA-Z]" str) (length str))))
       (while (> pt size)
         (setq str (concat (substring str 0 (- pt size))
@@ -368,7 +367,12 @@ Alternatively, replacing the `let' with `save-excursion'.
                           (substring str (- pt size)))
               pt (- pt size)))
       str))
-  
+
+  (group-number 299792458)
+  ==> "299,792,458"
+  (group-number "149597870691" 4 " ")
+  ==> "1495 9787 0691"
+
 === Incrementing numbers ===
 
 See IncrementNumber.
