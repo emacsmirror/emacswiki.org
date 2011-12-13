@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2011, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Fri Dec  9 16:36:24 2011 (-0800)
+;; Last-Updated: Tue Dec 13 11:05:04 2011 (-0800)
 ;;           By: dradams
-;;     Update #: 13945
+;;     Update #: 13948
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-chg.el
 ;; Keywords: bookmarks, bookmark+
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -120,6 +120,8 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-1.el'")
 ;;
+;; 2011/12/13 dadams
+;;     bmkp-handle-region-default: Limit buffer-substring-no-properties positions to point-min/max.
 ;; 2011/12/06 dadams
 ;;     bmkp-last-as-first-bookmark-file:
 ;;       Removed autoload cookie to avoid void-variable error for bookmark-default-file.
