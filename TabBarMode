@@ -6,6 +6,11 @@ Tabbar is a package originally written by David Ponce from 2003 to 2005, and now
 
 The download location is originally at: http://sourceforge.net/projects/emhacks/
 Note: the version on sourceforge is outdated by a few years. For the latest version, check with GNU emacs CVS.
+
+[new:DrewAdams:2011-12-13 17:22 UTC]
+That does not seem right.  `M-x find-library' does not find it in ##emacs -Q##. -- DrewAdams
+[new]
+
 Debian also includes tabbar.el in the [[http://packages.debian.org/search?keywords=emacs-goodies-el emacs-goodies-el]] package.
 
 The tabbar.el is extensively modified and used by AquamacsEmacs to be
@@ -404,6 +409,15 @@ Tested with GNU Emacs 23
 
 ==Questions and Answers==
 
+
+----
+
+Any way to turn off the tabbar for a specific window/frame, i.e., not globally and not per a specific buffer? -- DrewAdams
+
+
+
+----
+
 Where is it on the GNU emacs CVS site? I was unable to find it (but have to confess to not being interested in spending all afternoon looking for it...).
 
 - Alan
@@ -412,22 +426,24 @@ Where is it on the GNU emacs CVS site? I was unable to find it (but have to conf
 : 
 : - PaulTipper
 
-[new]
-I'm having trouble combining tabbar with color-theme mode. If I load a color-theme at startup, it isn't applied to tabbar. Only if I manually change the color-theme mode, using M-x color-theme-charcoal-black, is the styling applied to tabbar. If anybpdy knoqws why this may be, please comment back here.
+----
 
-- TroelsKn
+[new]
+I'm having trouble combining tabbar with color-theme mode. If I load a color-theme at startup, it isn't applied to tabbar. Only if I manually change the color-theme mode, using M-x color-theme-charcoal-black, is the styling applied to tabbar. If anybpdy knoqws why this may be, please comment back here. -- TroelsKn
+
+----
 
 [new]
 I would like to change this mode's behaviour. I want to show only the most N recent files for each mode, which get re-ordered each time i change buffer. Would it be possible to do this? Can anyone tell me which functions should i modify? I've been reading tabbar.el but i am not suere where to start with.
 
-Thanks!
-
--- Matiyam
+Thanks! -- Matiyam
 
 [new]
-You could follow the defadvice defined in "Add a buffer modification state indicator in the label", and instead of adding a + sign to mark modified buffers, you could sort the list according to the buffer's last visit time. I don't know if the last visit time is stored somewhere. If not, add a variable to each buffer and hook a function that updates that variable with the current time to the hook that's executed when one leaves a buffer (couldn't find what hook it is).
+You could follow the defadvice defined in "Add a buffer modification state indicator in the label", and instead of adding a + sign to mark modified buffers, you could sort the list according to the buffer's last visit time. I don't know if the last visit time is stored somewhere. If not, add a variable to each buffer and hook a function that updates that variable with the current time to the hook that's executed when one leaves a buffer (couldn't find what hook it is). -- js
 
--- js
+
+----
+
 
 [new]
 Is there a way to stop emacs from splitting the window when opening multiple files from the command line?  (i.e. "emacs file1 file2")  The tabbar makes the window splitting unnecessary, but there doesn't seem to be any command line arguments to stop this from happening.  Thanks in advance.
@@ -441,6 +457,9 @@ You could put something like (delete-other-windows) at the end of your .emacs or
 -- from http://stackoverflow.com/questions/1144729/how-do-i-prevent-emacs-from-horizontally-splitting-the-screen-when-opening-multip
 
 Matiyam -- sounds like swbuff/swbuff-y. It's a different interface, though, but I've used shift-left/right to switch buffers with swbuff for awhile. I didn't like the re-ordering, which is what led me to tabbar...
+
+
+----
 
 For emacs 23.1 I have to changed above codes to get list all buffers as one group:
 
@@ -456,20 +475,18 @@ The function expects one argument; the buffer name. Here is how the example abov
         (cond ((string-match "^\\*.+\\*$" a-buffer-name) '("Emacs"))
               (t '("Rest"))))
 </pre>
-- Grant Rettke
 
-Grant, should the above work in xemacs?  I cannot get xemacs to force all files to a single buffer with multiple tabs.
+-- Grant Rettke
 
--Russell
+Grant, should the above work in xemacs?  I cannot get xemacs to force all files to a single buffer with multiple tabs. -- Russell
+
 ----
 
-Aquamacs tabbar work with standard emacs.Just check it out.
-- Emmett
+Aquamacs tabbar work with standard emacs.Just check it out. -- Emmett
 
 Has anyone else managed to get the aquamacs tabbar mode working with gnu emacs, and could provide further instructions? Thanks - Josh
 
-Aquamacs tabbar and even the fork doesn't work with the recent bzr emacs. Need help!
-- Emmett
+Aquamacs tabbar and even the fork doesn't work with the recent bzr emacs. Need help! -- Emmett
 
 ----
 CategoryModes
