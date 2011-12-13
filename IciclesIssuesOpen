@@ -426,9 +426,27 @@ Content of the `*Messages*' buffer, after i open /tmp/2/a,/tmp/2/b,/tmp/2/c:
 
 So strange, there is no difference between the outputs...
 
-If i modify my $HOME ex.: `$HOME=/tmp' and i start emacs, than /tmp is bad and /root is good.
+If i modify my $HOME ex.: `$HOME=/tmp' and i start emacs, than /tmp is bad and /root is good. -- PasJa
 
--- PasJa
+[new:DrewAdams:2011-12-13 14:40 UTC]
+Thanks for going to that trouble. This info is missing: the value of `file-name-history'.  Can you please change 
+
+  (message "hist: %S" minibuffer-history-variable)
+
+to
+
+  (message "hist: %S" (symbol-value minibuffer-history-variable))
+
+And see what that value looks like.  Evidently, for some reason it has entries that match absolute file names except when the files are in your home dir. Most likely `file-name-history' is showing home-dir files as ##~/filename##, for some reason.  On Windows, it has only absolute file names, no ##~/filename## names, and this problem has not been reported before.  
+
+Please make this test and let me know.  That will help me know the best way to fix this.  Most likely I need to map over the history to ensure absolute names, but I'd like to see for sure what it looks like.  No need to print the whole `file-name-history' value -- just enough to see how it represents files in both your home dir and other dirs.  Thx -- Drew.
+
+
+
+
+
+
+
 
 
 
