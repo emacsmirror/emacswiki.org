@@ -36,7 +36,6 @@ The empty string (zero-length string, null string, ...):
 As a space and performance optimization, Emacs keeps an intern-ed copy
 of the empty string as a single object
 
-
     (eq "" (purecopy ""))
     ==> t
 
@@ -353,28 +352,23 @@ Alternatively, replacing the `let' with `save-excursion'.
 
 === Put commas in numbers ===
 
-  (defun my-thousands-separate (num)
-    "Formats the (possibly floating point) number with a thousands
-  separator."
-    (let* ((nstr (number-to-string num))
-           (dot-ind (string-match "\\." nstr))
-           (nstr-no-decimal (if dot-ind
-                                 (substring nstr 0 dot-ind)
-                               nstr))
-           (nrest (if dot-ind
-                      (substring nstr dot-ind)
-                    nil))
-           (pretty nil)
-           (cnt 0))
-      (dolist (c (reverse (append nstr-no-decimal nil)))
-        (if (and (zerop (% cnt 3)) (> cnt 0))
-            (setq pretty (cons ?, pretty)))
-        (setq pretty (cons c pretty))
-        (setq cnt (1+ cnt)))
-      (concat pretty nrest)))
-
-(Usage and more info [http://mgalgs.github.com/2011/11/30/elisp-pretty-numbers.html here])
-
+  (defun group-number (num &optional size char)
+    "Format NUM as string grouped to SIZE with CHAR."
+    ;; Based on code for `math-group-float' in calc-ext.el
+    (let* ((size (or size 3))
+           (char (or char ","))
+           (str (if (stringp num)
+                    num
+                  (number-to-string num)
+                  ))
+           (pt (or (string-match "[^0-9a-zA-Z]" str) (length str))))
+      (while (> pt size)
+        (setq str (concat (substring str 0 (- pt size))
+                          char
+                          (substring str (- pt size)))
+              pt (- pt size)))
+      str))
+  
 === Incrementing numbers ===
 
 See IncrementNumber.
@@ -391,7 +385,7 @@ See StrPTime.
 
 === Formatting dates ===
 
-Use the function <code>format-time-string</code> which is a build in function in both Emacsen and works like <code>strftime</code>:
+Use the function `format-time-string' which is a build in function in both Emacsen and works like `strftime':
 
     ;; Year-Month-Day:
     (insert (format-time-string "%Y-%m-%d"))
@@ -400,7 +394,7 @@ Use the function <code>format-time-string</code> which is a build in function in
 
 === Timers ===
 
-See [[IdleTimers]]
+See IdleTimers
 
 == Pattern matching ==
 
@@ -568,7 +562,7 @@ For example:
     (my-filter 'numberp num-list))
   ==> (1 2 3 4)
 
-Actually the package cl-seq contains the functions <i>remove-if</i> and <i>remove-if-not</i>.  The latter can be used instead of <i>my-filter</i>.
+Actually the package cl-seq contains the functions `remove-if' and `remove-if-not'.  The latter can be used instead of `my-filter'.
 
   (let ((num-list '(1 'a 2 "nil" 3 nil 4)))
     (remove-if-not 'numberp num-list))
@@ -830,32 +824,27 @@ For splitting a path variable, Emacs already has the `parse-colon-path' function
 
 === Running a program ===
 
-=== Collecting output from a running program ===
+Run a command without caring about its output.
 
-Again you have to make a difference between capturing the output in a string variable or in a buffer.
+  (async-shell-command "emacs")
 
-* shell-command-to-string:
+Run a command and put its output in the current buffer.
 
- (defun insert-output (command)
-   (interactive "sCommand: ")
-   (insert (shell-command-to-string command)))
+  (shell-command "seq 8 12 | sort" t)
+  10
+  11
+  12
+  8
+  9
 
-* call-process which can be called with a buffer to insert the output to:
+Run a command return its output as a string.
 
- (defun output-to-buffer (buffer command)
-   (interactive "sBuffer name: \nsCommand: ")
-   (get-buffer-create buffer)
-   (call-process command nil buffer)
-   (switch-to-buffer (get-buffer buffer)))
+  (shell-command-to-string "seq 8 12 | sort")
 
-* The function start-process can be used to insert the output of a program into a buffer, too.  See e.g. GlobalFF for an example.
-* XEmacs also comes with exec-to-string:
+  (shell-command "seq 8 12 | sort"
+                 (get-buffer-create "*Standard output*"))
 
-  (defun test-insert-exec-text (command)
-    "Insert the output of an executable program at the
-  current cursor postion."
-    (interactive "sEnter command-string: ")
-    (insert (exec-to-string command)))
+XEmacs also comes with exec-to-string:
 
 === Handling signals ===
 
@@ -873,7 +862,7 @@ Perhaps EmacsEchoServer and EmacsDaytimeServer can be useful here.
 
   (funcall (key-binding (kbd "M-TAB")))
 
-  or
+or
 
   (call-interactively (key-binding (kbd "M-TAB")))
 
