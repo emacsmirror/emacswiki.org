@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Mon Nov 28 16:54:32 2011 (-0800)
+;; Last-Updated: Wed Dec 14 11:00:04 2011 (-0800)
 ;;           By: dradams
-;;     Update #: 22754
+;;     Update #: 22858
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-cmd1.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -396,11 +396,27 @@
   ;; icicle-buffer-sort, icicle-color-themes, icicle-saved-completion-sets,
   ;; icicle-sort-comparer, icicle-transform-function
 (require 'icicles-var)                  ; (This is required anyway by `icicles-fn.el'.)
-  ;; icicle-candidate-action-fn, icicle-candidate-nb, icicle-candidates-alist,
-  ;; icicle-completion-candidates, icicle-current-input, icicle-extra-candidates,
-  ;; icicle-get-alist-candidate-function, icicle-incremental-completion-p, icicle-kmacro-alist,
+  ;; icicle-abs-file-candidates, icicle-all-candidates-list-action-fn,
+  ;; icicle-all-candidates-list-alt-action-fn, icicle-bookmark-history,
+  ;; icicle-bookmark-list-names-only-p, icicle-bookmark-types, icicle-buffer-config-history,
+  ;; icicle-bufflist, icicle-candidate-action-fn, icicle-candidate-alt-action-fn,
+  ;; icicle-candidate-help-fn, icicle-candidate-nb, icicle-candidate-properties-alist,
+  ;; icicle-candidates-alist, icicle-color-theme-history, icicle-command-abbrev-history,
+  ;; icicle-commands-for-abbrev, icicle-comp-base-is-default-dir-p, icicle-completion-candidates,
+  ;; icicle-completion-set-history, icicle-current-input, icicle-delete-candidate-object,
+  ;; icicle-explore-final-choice, icicle-explore-final-choice-full, icicle-extra-candidates,
+  ;; icicle-face-name-history, icicle-frame-alist, icicle-frame-name-history, icicle-full-cand-fn,
+  ;; icicle-function-name-history, icicle-get-alist-candidate-function, icicle-hist-var,
+  ;; icicle-incremental-completion-p, icicle-inhibit-sort-p, icicle-inhibit-try-switch-buffer,
+  ;; icicle-kill-history, icicle-kmacro-alist, icicle-kmacro-history,icicle-list-use-nth-parts, 
   ;; icicle-must-match-regexp, icicle-must-not-match-regexp, icicle-must-pass-after-match-predicate,
-  ;; icicle-re-no-dot, icicle-saved-completion-candidates
+  ;; icicle-new-last-cmd, icicle-orig-buff, icicle-orig-must-pass-after-match-pred,
+  ;; icicle-orig-pt-explore, icicle-orig-window, icicle-orig-win-explore, icicle-pref-arg,
+  ;; icicle-previous-raw-file-name-inputs, icicle-previous-raw-non-file-name-inputs, icicle-prompt,
+  ;; icicle-proxy-candidates, icicle-read-expression-map, icicle-remove-icicles-props-p,
+  ;; icicle-re-no-dot, icicle-saved-completion-candidates, icicle-search-history,
+  ;; icicle-transform-before-sort-p, icicle-use-candidates-only-once-alt-p,
+  ;; icicle-whole-candidate-as-text-prop-p, icicle-variable-name-history
 (require 'icicles-fn)                   ; (This is required anyway by `icicles-mcmd.el'.)
   ;; icicle-delete-dups, icicle-highlight-lighter, icicle-read-from-minibuf-nil-default
 
@@ -6353,47 +6369,76 @@ the behavior."                          ; Doc string
 
 ;;;###autoload (autoload 'icicle-bookmark-list "icicles-cmd1.el")
 (icicle-define-command icicle-bookmark-list ; Command name
-  "Choose a list of bookmark names.
-If `icicle-bookmark-types' is non-nil, then it is a list of bookmark
-types and only bookmarks of those types are candidates.
+  "Choose a list of bookmarks.
+This is an alist whose entries are bookmark entries.  The entries have
+the bookmark names as their key.  You can use the return value as a
+bookmark alist or as a COLLECTION argument for `completing-read'.
+
+With a prefix argument, this is a list of the bookmark names, not an
+alist of the full bookmarks.
 
 If `icicle-show-multi-completion-flag' is non-nil, then completion
-candidates are multi-completions, with first part the bookmark name
-and second part the bookmark's file or buffer name.  Otherwise, the
-candidates are just the bookmark names.
+candidates are multi-completions, with the first part being the
+bookmark name and the second part being the bookmark's file or buffer
+name.  Otherwise, the candidates are just the bookmark names.
+
+If you also use library Bookmark+ (`bookmark+.el') then:
+
+ * Candidates displayed in `*Completions*' are color-coded by type.
+ * You can sort the candidates (e.g. `C-,') in many more ways.
+ * When you ask for help on a candidate (e.g. `C-M-RET'), detailed
+   information about the bookmark is shown in `*Help*'.  If you use a
+   prefix arg for this (e.g. `C-u C-M-RET') then the full, internal
+   form of the bookmark is shown.
 
 Use multi-command action keys (e.g. `C-RET', `C-mouse-2') to choose,
 and a final-choice key (e.g. `RET', `mouse-2') to choose the last one.
 
 You can use `S-delete' during completion to delete a candidate bookmark.
-The list of bookmark names (strings) is returned." ; Doc string
+The list of bookmark names (strings) is returned.
+
+Non-interactively:
+
+ * If `icicle-bookmark-list-names-only-p' is non-nil, then return a
+   list of the bookmark names (just as if a prefix arg were used).
+ * If `icicle-bookmark-types' is non-nil, and you use Bookmark+,
+   then only bookmarks of those types are used.  You can thus bind
+   this variable around the function call to specialize the behavior
+   to only certain types."              ; Doc string
   (lambda (name)                        ; Action function
     (let ((temp  (icicle-transform-multi-completion name)))
-      (push (icicle-substring-no-properties temp) bmk-names)
+      (push (if names-only-p
+                (icicle-unpropertize-completion temp)
+              (bookmark-get-bookmark (icicle-unpropertize-completion temp)))
+            chosen-bmks)
       (when (interactive-p)
-        (message "Added bookmark name `%s'" (icicle-propertize temp 'face 'icicle-msg-emphasis))
+        (message "Added bookmark `%s'" (icicle-propertize temp 'face 'icicle-msg-emphasis))
         (sit-for 1))))
   prompt icicle-candidates-alist nil (not icicle-show-multi-completion-flag) ; `completing-read' args
   nil (if (boundp 'bookmark-history) 'bookmark-history 'icicle-bookmark-history)
   (and (boundp 'bookmark-current-bookmark) bookmark-current-bookmark) nil
-  ((prompt                                 (or icicle-prompt ; Allow override.
-                                               "Choose bookmark name (`RET' when done): "))
-   (enable-recursive-minibuffers           t) ; In case we read input, e.g. File changed on disk...
-   (completion-ignore-case                 bookmark-completion-ignore-case)
-   (icicle-list-use-nth-parts              '(1))
-   (icicle-candidate-properties-alist      (if (not icicle-show-multi-completion-flag)
-                                               nil
-                                             (if (facep 'file-name-shadow)
-                                                 '((2 (face file-name-shadow))
-                                                   (3 (face bookmark-menu-heading)))
-                                               '((3 (face bookmark-menu-heading))))))
-   (icicle-transform-function              (if (interactive-p) nil icicle-transform-function))
-   (icicle-whole-candidate-as-text-prop-p  t)
-   (icicle-transform-before-sort-p         t)
-   (icicle-delete-candidate-object         'icicle-bookmark-delete-action)
-   (types                                  icicle-bookmark-types)
-   (icicle-candidates-alist                ())
-   (bmk-names                              ())
+  ((prompt                                      (or icicle-prompt ; Allow override.
+                                                    "Choose bookmark (`RET' when done): "))
+   (enable-recursive-minibuffers                t) ; In case we read input, e.g. File changed on disk...
+   (completion-ignore-case                      bookmark-completion-ignore-case)
+   (icicle-list-use-nth-parts                   '(1))
+   (icicle-candidate-properties-alist           (if (not icicle-show-multi-completion-flag)
+                                                    nil
+                                                  (if (facep 'file-name-shadow)
+                                                      '((2 (face file-name-shadow))
+                                                        (3 (face bookmark-menu-heading)))
+                                                    '((3 (face bookmark-menu-heading))))))
+   (icicle-transform-function                   (if (interactive-p) nil icicle-transform-function))
+   (icicle-whole-candidate-as-text-prop-p       t)
+   (icicle-transform-before-sort-p              t)
+   (icicle-delete-candidate-object              'icicle-bookmark-delete-action)
+   (types                                       icicle-bookmark-types)
+   (names-only-p                                (if (interactive-p)
+                                                    current-prefix-arg
+                                                  icicle-bookmark-list-names-only-p))
+   (icicle-candidates-alist                     ())
+   (chosen-bmks                                 ())
+   (icicle-unpropertize-completion-result-flag  nil) ; Remove only Icicles internal text properties.
    (icicle-sort-orders-alist
     (append '(("in *Bookmark List* order") ; Renamed from "turned OFF'.
               ("by bookmark name" . icicle-alpha-p))
@@ -6446,18 +6491,16 @@ The list of bookmark names (strings) is returned." ; Doc string
           (icicle-msg-maybe-in-minibuffer (icicle-bookmark-help-string cand))))))
   (progn                                ; First code
     (message "Gathering bookmarks...")
-    (unless types  (setq types '(all)))
-    (dolist (type  types)
-      (setq icicle-candidates-alist
-            (nconc icicle-candidates-alist
-                   (if (not (featurep 'bookmark+))
-                       (mapcar #'(lambda (cand) (list (icicle-candidate-short-help
-                                                       (icicle-bookmark-help-string cand)
-                                                       (icicle-bookmark-propertize-candidate cand))))
-                               (if (eq type 'all)
-                                   bookmark-alist
-                                 (funcall (intern (format "bmkp-%s-alist-only" type)))))
-                     (bookmark-maybe-load-default-file) ; Load bookmarks, define `bookmark-alist'.
+    (bookmark-maybe-load-default-file)  ; Load bookmarks, define `bookmark-alist'.
+    (if (not (featurep 'bookmark+))
+        (mapcar #'(lambda (cand) (list (icicle-candidate-short-help
+                                        (icicle-bookmark-help-string cand)
+                                        (icicle-bookmark-propertize-candidate cand))))
+                bookmark-alist)
+      (unless types  (setq types '(all)))
+      (dolist (type  types)
+        (setq icicle-candidates-alist
+              (nconc icicle-candidates-alist
                      (mapcar (if icicle-show-multi-completion-flag
                                  #'(lambda (bmk)
                                      ;; Ignore errors, e.g. from bad bookmark.
@@ -6493,9 +6536,10 @@ The list of bookmark names (strings) is returned." ; Doc string
                                   bookmark-alist
                                 (funcall (intern (format "bmkp-%s-alist-only" type)))))))))))
   (icicle-bookmark-cleanup-on-quit)     ; Undo code
-  (prog1 (setq bmk-names  (nreverse (delete "" bmk-names))) ; Last code - return the list.
+  (prog1 (setq chosen-bmks  (nreverse (delete "" chosen-bmks))) ; Last code - return the list.
     (icicle-bookmark-cleanup)
-    (when (interactive-p) (message "Bookmark names: %S" bmk-names))))
+    (when (interactive-p)
+      (message "Bookmarks: %S" (if names-only-p chosen-bmks (mapcar #'car chosen-bmks))))))
 
 ;; $$$$$ (icicle-define-command icicle-file-list ; Command name
 ;;   "Choose a list of file names.
