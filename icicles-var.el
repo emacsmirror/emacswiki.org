@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:23:26 2006
 ;; Version: 22.0
-;; Last-Updated: Fri Oct 21 09:42:05 2011 (-0700)
+;; Last-Updated: Wed Dec 14 08:52:18 2011 (-0800)
 ;;           By: dradams
-;;     Update #: 1585
+;;     Update #: 1588
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-var.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -38,8 +38,8 @@
 ;;    `icicle-all-candidates-list-action-fn',
 ;;    `icicle-all-candidates-list-alt-action-fn',
 ;;    `icicle-apply-nomsg', `icicle-apropos-complete-match-fn',
-;;    `icicle-bookmark-history', `icicle-bookmark-types',
-;;    `icicle-buffer-config-history',
+;;    `icicle-bookmark-history', `icicle-bookmark-list-names-only-p',
+;;    `icicle-bookmark-types', `icicle-buffer-config-history',
 ;;    `icicle-buffer-sort-first-time-p', `icicle-bufflist',
 ;;    `icicle-candidate-action-fn', `icicle-candidate-alt-action-fn',
 ;;    `icicle-candidate-entry-fn', `icicle-candidate-help-fn',
@@ -235,11 +235,11 @@ activation state when you turn off Icicle mode.")
 That is, `icicle-all-candidates-action-1' is in progress.
 If neither nil nor t, then the value is the action function to use.")
 
-(defvar icicle-all-candidates-list-alt-action-fn nil
-  "Alternative action function to apply to a list of matching completions.")
-
 (defvar icicle-all-candidates-list-action-fn nil
   "Action function to apply to a list of all matching completions.")
+
+(defvar icicle-all-candidates-list-alt-action-fn nil
+  "Alternative action function to apply to a list of matching completions.")
 
 (defvar icicle-apply-nomsg nil
   "Non-nil means `icicle-apply' does not show status of applying function.")
@@ -254,6 +254,9 @@ not filtered by the input, except possibly by a function-valued
 `minibuffer-completion-table'.")
 
 (defvar icicle-bookmark-history nil "History for bookmark names.")
+
+(defvar icicle-bookmark-list-names-only-p nil
+  "Non-nil means `icicle-bookmark-list' returns names, not bookmarks.")
 
 (defvar icicle-bookmark-types ()
   "List of strings naming bookmark types.
