@@ -72,6 +72,11 @@ Here is my two cents
    (eval-after-load "log-view"
      '(define-key log-view-mode-map "v" 'my-log-view-revision))
 
+[new]
+if you use colordiff in svn, maybe you need this
+<pre>
+(add-hook 'diff-mode-hook '(lambda () (require 'ansi-color)(ansi-color-apply-on-region (point-min) (point-max))))
+</pre>
 ----
 See also
 VersionControlAlways.
