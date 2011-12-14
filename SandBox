@@ -21,3 +21,8 @@ done things. Then come back here to experiment. Note that you need not save your
 ----
 
 (your test stuff goes here... don't forget the minor change checkbox!)
+
+Look to list of external tools for finding duplicate code:
+
+ * [http://en.wikipedia.org/wiki/Duplicate_code Wikipedia "duplicate code" article]
+ * [http://students.cis.uab.edu/tairasr/clones/literature/#standalone Large list of standalone duplication searching tools]
