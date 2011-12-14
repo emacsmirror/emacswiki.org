@@ -11,6 +11,16 @@ Try the following if european-calendar is not recognized:
 
 == Localized Day and Month Names ==
 
+=== Catalan ===
+Unfortunately, if you use the long day names, their 2-letter abbreviation will always be "di" :-)
+
+   (setq
+    calendar-week-start-day 1
+    ;; calendar-day-name-array ["diumenge" "dilluns" "dimarts" "dimecres" "dijous" "divendres" "dissabte"]
+    calendar-day-name-array ["dg" "dll" "dm" "dx" "dj" "dv" "ds"]
+    calendar-month-name-array ["gener" "febrer" "març" "abril" "maig" "juny" "juliol" "agost" "setembre" "octubre" "novembre" "desembre"]
+   )
+
 === Chinese ===
 
 Here is how to display the 'celestial-stem' (天干)
