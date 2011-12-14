@@ -9,7 +9,7 @@ Auto-completion for Inf-Ruby (IRB) buffers.
 [http://gist.github.com/610104 Gist page]
 
 == Installation ==
-1. Install [[CompanyMode]] and get the latest inf-ruby from [http://marmalade-repo.org/packages/inf-ruby ELPA] or [http://github.com/nonsequitur/inf-ruby/raw/master//inf-ruby.el GitHub]
+1. Install [[CompanyMode]] and get the latest inf-ruby from [http://marmalade-repo.org/packages/inf-ruby package.el] or [http://github.com/nonsequitur/inf-ruby/raw/master//inf-ruby.el GitHub]
 
 2. Add Inf-Ruby-Company to your load path, like
 
