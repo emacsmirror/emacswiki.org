@@ -36,7 +36,7 @@ uses *yast* [3]. So why not make one for Emacs as well.
 
 === Concepts ===
 
-The /epackages/ are in the form of distributed[1] Git[2]
+The /epackages/ are in the form of distributed[1] [[Git]][2]
 version control repositories. The traditional packaging
 methods, like [[ELPA]], rely on archives like *.tar.gz. In
 contrast, the DVCS approach offers interesting features over
