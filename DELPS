@@ -6,6 +6,28 @@ DELPS - *Distributed Emacs Lisp Package System* by JariAalto. The
 DELPS is the framework, the blueprint of the design concepts.
 Emacs extensions in DELPS format are called [[Epackage]]s.
 
+== Project Links ==
+
+The DELPS reference package manager epackage.el is available
+from "main project hub" which points to Savannah Git repository. There
+rest of the framework (Yellow pages, epackage repositories, developer
+templates) are also available below.
+
+* Epackage main project hub (epackage.el):
+  http://freecode.com/projects/emacs-epackage
+
+To make an Emacs extension available in /epackage/ format, read manual
+about the the directory layout and used files.
+After that, clone "Template files" mentioned below.
+The "Template files" link points to README
+that explain explain the procedure step-by-step.
+
+* Epackage manual: http://www.nongnu.org/emacs-epackage/manual
+* Template files:
+  https://github.com/jaalto/project--emacs-epackage-template
+* Sources List, the Yellow Pages:
+  https://github.com/jaalto/project--emacs-epackage-sources-list
+
 === History ===
 
 Emacs has been around for decades now. Many new version have come and
@@ -87,32 +109,6 @@ only deltas are transferred.
 * [2] http://git-scm.org
 * [3] http://www.debian.org/doc/developers-reference/best-pkging-practices.html#bpp-debian-control
 
-== Developers ==
-
-To make an Emacs extension available in /epackage/ format, read the
-specification to understand the directory layout and used files.
-After that, clone "Epackage template files" mentioned below.
-The "Epackage template files" link also contains README at Github
-to quickly explain the procedure.
-
-== Specification ==
-
-* Epackage manual: http://www.nongnu.org/emacs-epackage/manual
-
-== Implementation ==
-
-The DELPS package manager has been implemented in epackage.el available
-from "main project hub" which points to Savannah Git repository. There
-rest of the framework (Yellow pages, epackage repositories, developer
-templates) are also available below.
-
-* Epackage main project hub (epackage.el):
-  http://freecode.com/projects/emacs-epackage
-* Epackage template files for developers:
-  https://github.com/jaalto/project--emacs-epackage-template
-* Epackage sources list Yellow Pages for developers:
-  https://github.com/jaalto/project--emacs-epackage-sources-list
-
 == Download and Install ==
 
 The reference implementation is available at Savannah. Mirror at Github:
@@ -136,8 +132,8 @@ Add following to your `~/.emacs' startup file:
     ;; Automatically generated. Do not edit.
     (load "~/.emacs.d/epackage/00conf/epackage-loader" 'noerr)
 
-    ;; M-x epackage* interactive user functions
-    (autoload 'epackage "epackage" "" t)
+    ;; M-x epackage-manager to start UI
+    (autoload 'epackage-manager "epackage" "" t)
 
     (autoload 'epackage-loader-file-byte-compile    "epackage" "" t)
     (autoload 'epackage-loader-file-generate        "epackage" "" t)
@@ -163,17 +159,23 @@ The epackage manager can also be called from command line UI:
 == Contact ==
 
 Please send comments, suggestion, ideas, bug reports to me directly
-or to the bug tracker. Please Do not send questions to this page.
-Thanks --Jari.
+or to the bug tracker. Please do not send questions to this page as it 
+can not be monitored.
+Thanks --Jari.Aalto(at)cante.net.
 
-* Bug Tracker: https://savannah.nongnu.org/bugs/?group=emacs-epackage
+* Bug tracker (primary)
+  https://github.com/jaalto/project--emacs-epackage/issues
+* Bug Tracker (secondary):
+  https://savannah.nongnu.org/bugs/?group=emacs-epackage
 * Email: jari dot aalto A cante net. Help me to notice your mail by starting
   subject with "Emacs epackage:"
 
-== Pictures ==
+== Pictures and History ==
 
-2010-12. A rudimentary implementation of early concept of the software
-is available for testing. The full buffer mode based UI (like in ELPA)
+2010-12 A rudimentary implementation of early concept of the software below.
+2011-12 M-x epackage-manager available (just the "bare bones").
+
+The full buffer mode based UI (like in ELPA)
 is planned to be ready somewhere around 2012.
 
 [[image:EpackagePictureUiCommandLine]]
