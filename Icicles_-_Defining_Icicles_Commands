@@ -238,6 +238,122 @@ and then restore (lines 11-12) the original font and frame.
 Several top-level '''Icicles''' commands have been defined using
 `icicle-define-command' and `icicle-define-file-command'.  You can use their definitions as models for your own multi-commands.
 
+
+
+
+
+[:clear-option]
+[:icicle-add-buffer-candidate]
+[:icicle-add-buffer-config]
+[:icicle-bookmark]
+[:icicle-bookmark-all-tags]
+[:icicle-bookmark-all-tags-regexp]
+[:icicle-bookmark-bookmark-list]
+[:icicle-bookmark-desktop]
+[:icicle-bookmark-dired]
+[:icicle-bookmark-file]
+[:icicle-bookmark-gnus]
+[:icicle-bookmark-info]
+[:icicle-bookmark-list]
+[:icicle-bookmark-local-file]
+[:icicle-bookmark-man]
+[:icicle-bookmark-non-file]
+[:icicle-bookmark-region]
+[:icicle-bookmark-remote-file]
+[:icicle-bookmark-some-tags]
+[:icicle-bookmark-some-tags-regexp]
+[:icicle-bookmark-specific-buffers]
+[:icicle-bookmark-specific-files]
+[:icicle-bookmark-this-buffer]
+[:icicle-bookmark-url]
+[:icicle-bookmark-w3m]
+[:icicle-buffer]
+[:icicle-buffer-config]
+[:icicle-buffer-list]
+[:icicle-choose-faces]
+[:icicle-choose-invisible-faces]
+[:icicle-choose-visible-faces]
+[:icicle-clear-history]
+[:icicle-clear-current-history]
+[:icicle-color-theme]
+[:icicle-comint-command]
+[:icicle-command-abbrev]
+[:icicle-command-abbrev-command]
+[:icicle-completing-yank]
+[:icicle-delete-file]
+[:icicle-delete-windows]
+[:icicle-describe-option-of-type]
+[:icicle-directory-list]
+[:icicle-dired]
+[:icicle-doc]
+[:icicle-execute-extended-command]
+[:icicle-execute-named-keyboard-macro]
+[:icicle-face-list]
+[:icicle-file-list]
+[:icicle-file]
+[:icicle-find-file]
+[:icicle-find-file-absolute]
+[:icicle-find-file-all-tags]
+[:icicle-find-file-all-tags-regexp]
+[:icicle-find-file-in-tags-table]
+[:icicle-find-file-read-only]
+[:icicle-find-file-some-tags]
+[:icicle-find-file-some-tags-regexp]
+[:icicle-find-file-tagged]
+[:icicle-find-first-tag]
+[:icicle-font]
+[:icicle-frame-bg]
+[:icicle-frame-fg]
+[:icicle-fundoc]
+[:icicle-Info-menu]
+[:icicle-increment-option]
+[:icicle-increment-variable]
+[:icicle-insert-buffer]
+[:icicle-insert-thesaurus-entry]
+[:icicle-keyword-list]
+[:icicle-kill-buffer]
+[:icicle-kmacro]
+[:icicle-locate-file]
+[:icicle-pick-color-by-name]
+[:icicle-plist]
+[:icicle-recent-file]
+[:icicle-remove-buffer-candidate]
+[:icicle-remove-buffer-config]
+[:icicle-remove-file-from-recentf-list]
+[:icicle-remove-saved-completion-set]
+[:icicle-reset-option-to-nil]
+[:icicle-search-all-tags-bookmark]
+[:icicle-search-all-tags-regexp-bookmark]
+[:icicle-search-autofile-bookmark]
+[:icicle-search-bookmark]
+[:icicle-search-bookmark-list-bookmark]
+[:icicle-search-desktop-bookmark]
+[:icicle-search-dired-bookmark]
+[:icicle-search-file-bookmark]
+[:icicle-search-gnus-bookmark]
+[:icicle-search-info-bookmark]
+[:icicle-search-local-file-bookmark]
+[:icicle-search-man-bookmark]
+[:icicle-search-non-file-bookmark]
+[:icicle-search-region-bookmark]
+[:icicle-search-remote-file-bookmark]
+[:icicle-search-some-tags-bookmark]
+[:icicle-search-some-tags-regexp-bookmark]
+[:icicle-search-specific-buffers-bookmark]
+[:icicle-search-specific-files-bookmark]
+[:icicle-search-this-buffer-bookmark]
+[:icicle-search-url-bookmark]
+[:icicle-search-w3m-bookmark]
+[:icicle-select-frame]
+[:icicle-select-window]
+[:icicle-send-signal-to-process]
+[:icicle-set-option-to-t]
+[:icicle-synonyms]
+[:icicle-tag-a-file]
+[:icicle-toggle-option]
+[:icicle-untag-a-file]
+[:icicle-vardoc]
+[:icicle-where-is]
 * '''`clear-option'''' (alias) -- Set value of a binary option to `nil'
 * '''`icicle-add-buffer-candidate'''' -- Add buffer to those always shown for completion
 * '''`icicle-add-buffer-config'''' -- Add config to `icicle-buffer-configs'
@@ -250,7 +366,7 @@ Several top-level '''Icicles''' commands have been defined using
 * '''`icicle-bookmark-file'''' -- Jump to a bookmarked file
 * '''`icicle-bookmark-gnus'''' -- Jump to a bookmarked Gnus message
 * '''`icicle-bookmark-info'''' -- Jump to a bookmarked [[Info]] node
-* '''`icicle-bookmark-list'''' -- Choose a list of bookmark names
+* '''`icicle-bookmark-list'''' -- Choose a list of bookmarks or their names
 * '''`icicle-bookmark-local-file'''' -- Jump to a bookmarked local file
 * '''`icicle-bookmark-man'''' -- Jump to a bookmarked `man' page
 * '''`icicle-bookmark-non-file'''' -- Jump to a bookmarked non-file [[buffer]]
@@ -365,6 +481,14 @@ define a multi-command in a simple way.  Sometimes you will need a
 little more flexibility.  In that case, you can use higher-order
 functions `icicle-explore' and `icicle-apply' to define a
 multi-command.  See [[Icicles - Defining Tripping Commands]].
+
+
+
+
+
+
+
+
 
 
 
