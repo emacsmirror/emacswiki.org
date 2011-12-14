@@ -8,7 +8,7 @@ Emacs extensions in DELPS format are called [[Epackage]]s.
 
 == Project Links ==
 
-The DELPS reference package manager `epackage.el' is available
+The reference package manager `epackage.el' is available
 from "main project hub" which points to Git a repository.
 
 * Project hub (never moves, bookmark this):
