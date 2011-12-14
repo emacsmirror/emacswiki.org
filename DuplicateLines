@@ -136,4 +136,10 @@ It is important to note that functions which find duplicate lines don't always s
 This function, while inefficient (note cons in tail of while form) is quite handy for locating duplicates _before_ removing them, i.e. situations of type: `uniquify-maybe'. Extend `find-duplicate-lines' by comparing its result list with one or more of the list comparison procedures `set-difference', `union', `intersection', etc. from the CL package (require 'cl).
 
 ----
+Look to list of external tools for finding duplicate code:
+
+ * http://en.wikipedia.org/wiki/Duplicate_code/
+ * http://students.cis.uab.edu/tairasr/clones/literature/#standalone
+
+----
 CategoryEditing
