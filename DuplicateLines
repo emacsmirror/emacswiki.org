@@ -143,6 +143,6 @@ Look to list of external tools for finding duplicate code:
 * [http://students.cis.uab.edu/tairasr/clones/literature/#standalone Large list of standalone duplication searching tools]
 
 [new:gavenkoa:2011-12-14 20:23 UTC]
-Many duplicate search tools are commercial. There are no any good open/free source tools. Most of them bundled with or part of another package (like Checkstyle, PMD) or specific to syntax (only for Java, Python, etc. sources)
+Many duplicate search tools are commercial. There are no any good command line open/free source tools. Most of them bundled with or part of another package (like Checkstyle, PMD) or specific to syntax (only for Java, Python, etc. sources)
 ----
 CategoryEditing
