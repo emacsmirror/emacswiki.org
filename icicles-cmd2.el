@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Thu May 21 13:31:43 2009 (-0700)
 ;; Version: 22.0
-;; Last-Updated: Tue Dec 13 13:55:28 2011 (-0800)
+;; Last-Updated: Wed Dec 14 11:05:35 2011 (-0800)
 ;;           By: dradams
-;;     Update #: 4905
+;;     Update #: 4996
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-cmd2.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -346,20 +346,43 @@
   ;; icicle-search-highlight-threshold, icicle-search-hook, icicle-sort-comparer,
   ;; icicle-transform-function
 (require 'icicles-var)                  ; (This is required anyway by `icicles-fn.el'.)
-  ;; icicle-candidate-action-fn, icicle-candidate-entry-fn, icicle-candidate-nb,
-  ;; icicle-candidates-alist, icicle-char-property-value-history, icicle-complete-keys-alist,
-  ;; icicle-completion-candidates, icicle-current-input, icicle-extra-candidates,
-  ;; icicle-get-alist-candidate-function, icicle-must-match-regexp, icicle-must-not-match-regexp,
-  ;; icicle-must-pass-predicate, icicle-saved-completion-candidates, icicle-search-command,
-  ;; icicle-search-current-overlay, icicle-search-final-choice, icicle-search-overlays,
-  ;; icicle-search-refined-overlays
+  ;; icicle-abs-file-candidates, icicle-acting-on-next/prev, icicle-all-candidates-action,
+  ;; icicle-all-candidates-list-action-fn, icicle-all-candidates-list-alt-action-fn,
+  ;; icicle-apply-nomsg, icicle-apropos-complete-match-fn, icicle-bookmark-history,
+  ;; icicle-buffer-sort-first-time-p, icicle-candidate-action-fn, icicle-candidate-alt-action-fn,
+  ;; icicle-candidate-entry-fn, icicle-candidate-help-fn, icicle-candidate-nb,
+  ;; icicle-candidate-properties-alist, icicle-candidates-alist, icicle-char-property-value-history,
+  ;; icicle-color-history, icicle-complete-keys-alist, icicle-completing-keys-p,
+  ;; icicle-completion-candidates, icicle-completion-set-history, icicle-current-completion-mode,
+  ;; icicle-current-input, icicle-delete-candidate-object, icicle-dictionary-history,
+  ;; icicle-doc-last-initial-cand-set, icicle-explore-final-choice, icicle-explore-final-choice-full,
+  ;; icicle-extra-candidates, icicle-extra-candidates-dir-insert-p, icicle-face-name-history,
+  ;; icicle-fancy-candidates-p, icicle-font-name-history, icicle-full-cand-fn,
+  ;; icicle-function-name-history, icicle-fundoc-last-initial-cand-set,
+  ;; icicle-get-alist-candidate-function, icicle-hist-cands-no-highlight, icicle-hist-var,
+  ;; icicle-Info-only-rest-of-book-p, icicle-key-prefix-description, icicle-last-completion-candidate,
+  ;; icicle-last-completion-command, icicle-last-input, icicle-last-sort-comparer,
+  ;; icicle-last-transform-function, icicle-list-use-nth-parts, icicle-minibuffer-message-ok-p,
+  ;; icicle-must-match-regexp, icicle-must-not-match-regexp, icicle-must-pass-after-match-predicate,
+  ;; icicle-nb-of-other-cycle-candidates, icicle-orig-buff, icicle-orig-pt-explore, icicle-orig-window,
+  ;; icicle-orig-win-explore, icicle-other-window, icicle-plist-last-initial-cand-set,
+  ;; icicle-predicate-types-alist, icicle-pref-arg, icicle-prompt, icicle-proxy-candidate-regexp,
+  ;; icicle-proxy-candidates, icicle-require-match-p, icicle-saved-completion-candidate,
+  ;; icicle-saved-completion-candidates, icicle-scan-fn-or-regexp, icicle-search-command,
+  ;; icicle-search-complement-domain-p, icicle-search-context-level, icicle-search-context-regexp,
+  ;; icicle-search-current-overlay, icicle-search-final-choice, icicle-search-history,
+  ;; icicle-search-in-context-fn, icicle-searching-p, icicle-search-level-overlays, icicle-search-modes,
+  ;; icicle-search-overlays, icicle-search-refined-overlays, icicle-search-replacement,
+  ;; icicle-transform-before-sort-p, icicle-vardoc-last-initial-cand-set,
+  ;; icicle-vardoc-last-initial-option-cand-set, icicle-variable-name-history,
+  ;; icicle-whole-candidate-as-text-prop-p
 (require 'icicles-fn)                   ; (This is required anyway by `icicles-mcmd.el'.)
   ;; icicle-candidate-short-help, icicle-completing-read-history,
   ;; icicle-highlight-lighter, icicle-insert-cand-in-minibuffer, icicle-kill-a-buffer, icicle-some
 (require 'icicles-cmd1)
   ;; custom-variable-p, icicle-bookmark-cleanup,
   ;; icicle-bookmark-cleanup-on-quit, icicle-bookmark-cmd, icicle-bookmark-help-string,
-  ;; icicle-bookmark-history, icicle-bookmark-propertize-candidate, icicle-buffer-list,
+  ;; icicle-bookmark-propertize-candidate, icicle-buffer-list,
   ;; icicle-explore, icicle-face-list, icicle-file-list, icicle-keyword-list, icicle-make-frame-alist,
   ;; icicle-select-bookmarked-region
 
@@ -3762,11 +3785,12 @@ The arguments are for use by `completing-read' to read the regexp.
   (cond ((consp current-prefix-arg)
          (unless (require 'bookmark+ nil t) (error "This requires library `Bookmark+'"))
          (message "Searching multiple bookmarks...") (sit-for 1)
+         ;; $$$$$$ Originally, we just did this: (bmkp-region-alist-only)).  Now we let users choose.
          (let ((icicle-show-Completions-initially-flag  t)
-               (icicle-bookmark-types                   '(all))
                (icicle-prompt
-                "Choose bookmark to search (`RET' when done): "))
+                "Choose bookmarks to search (`RET' when done): "))
            (save-selected-window (icicle-bookmark-list))))
+
         ((= 0 (prefix-numeric-value current-prefix-arg)) (icicle-search-modes))
         ((wholenump current-prefix-arg)
          (message "Searching multiple buffers...") (sit-for 1)
@@ -3861,7 +3885,7 @@ The arguments are the same as for `icicle-search'."
          (dolist (file  where)
            (icicle-search-define-candidates-1 (find-file-noselect file 'nowarn) nil nil
                                               scan-fn-or-regexp args)))
-        ((consp where)                  ; Search bookmarks - just their regions if defined.
+        ((and (consp where) (consp (car where))) ; Search bookmarks - or just their regions if defined.
          (unless (require 'bookmark+ nil t) (error "This requires library `Bookmark+'"))
          (let ((non-existent-buffers  ())
                buf+beg buf beg end)
