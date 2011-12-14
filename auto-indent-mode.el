@@ -6,9 +6,9 @@
 ;; Maintainer: Matthew L. Fidler
 ;; Created: Sat Nov  6 11:02:07 2010 (-0500)
 ;; Version: 0.52
-;; Last-Updated: Wed Dec 14 14:06:47 2011 (-0600)
+;; Last-Updated: Wed Dec 14 14:08:24 2011 (-0600)
 ;;           By: Matthew L. Fidler
-;;     Update #: 1203
+;;     Update #: 1204
 ;; URL: http://www.emacswiki.org/emacs/auto-indent-mode.el
 ;; Keywords: Auto Indentation
 ;; Compatibility: Tested with Emacs 23.x
@@ -116,6 +116,9 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;;; Change Log:
+;; 14-Dec-2011    Matthew L. Fidler  
+;;    Last-Updated: Wed Dec 14 14:06:47 2011 (-0600) #1203 (Matthew L. Fidler)
+;;    Paren Bug Fix.
 ;; 14-Dec-2011    Matthew L. Fidler  
 ;;    Last-Updated: Tue Dec 13 13:43:46 2011 (-0600) #1199 (us041375)
 ;;    Changed the `auto-indent-kill-remove-extra-spaces' default to
