@@ -8,12 +8,12 @@ Emacs extensions in DELPS format are called [[Epackage]]s.
 
 == Project Links ==
 
-The DELPS reference package manager epackage.el is available
+The DELPS reference package manager `epackage.el' is available
 from "main project hub" which points to Savannah Git repository. There
 rest of the framework (Yellow pages, epackage repositories, developer
 templates) are also available below.
 
-* Epackage main project hub (epackage.el):
+* Project hub (never moves, bookmark this):
   http://freecode.com/projects/emacs-epackage
 
 To make an Emacs extension available in /epackage/ format, read manual
@@ -22,7 +22,7 @@ After that, clone "Template files" mentioned below.
 The "Template files" link points to README
 that explain explain the procedure step-by-step.
 
-* Epackage manual: http://www.nongnu.org/emacs-epackage/manual
+* Manual: http://www.nongnu.org/emacs-epackage/manual
 * Template files:
   https://github.com/jaalto/project--emacs-epackage-template
 * Sources List, the Yellow Pages:
