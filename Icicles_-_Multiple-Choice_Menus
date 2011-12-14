@@ -113,7 +113,7 @@ user hits `##C-?##'.
 
 One common use of a multiple-choice menu is letting the user select a [[list]] of items from a larger list of candidates.  The list is returned, with the items in the order selected.  Examples of this include these multi-commands:
 
-* '''`icicle-bookmark-list'''' -- [[bookmark]] names
+* '''`icicle-bookmark-list'''' -- [[bookmark]]s (bookmark names, with `C-u')
 * '''`icicle-buffer-list'''' -- [[buffer]] names, selected from `buffer-list' (possibly after filtering)
 * '''`icicle-directory-list'''' -- directory names, selected from subdirectories in the current directory and any directories you navigate to
 * '''`icicle-face-list'''' -- [[face]] names, selected from `face-list'
