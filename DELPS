@@ -159,9 +159,9 @@ The epackage manager can also be called from command line UI:
 Please send comments, suggestion, ideas, bug reports to me directly
 or to the bug tracker. Please do not send questions to this page as it 
 can not be monitored.
-Thanks --Jari.Aalto(at)cante.net.
+Thanks --Jari
 
-* Bug tracker (primary)
+* Bug Tracker (primary)
   https://github.com/jaalto/project--emacs-epackage/issues
 * Bug Tracker (secondary):
   https://savannah.nongnu.org/bugs/?group=emacs-epackage
@@ -171,8 +171,7 @@ Thanks --Jari.Aalto(at)cante.net.
 == Pictures and History ==
 
 2010-12 A rudimentary implementation of early concept of the software below.
-2011-12 M-x epackage-manager available (just the "bare bones").
-
+2011-12 `M-x' `epackage-manager' available, just the "bare bones". 
 The full buffer mode based UI (like in ELPA)
 is planned to be ready somewhere around 2012.
 
@@ -180,3 +179,4 @@ is planned to be ready somewhere around 2012.
 
 ----
 CategoryPackaging
+epackage
