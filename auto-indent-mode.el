@@ -6,9 +6,9 @@
 ;; Maintainer: Matthew L. Fidler
 ;; Created: Sat Nov  6 11:02:07 2010 (-0500)
 ;; Version: 0.52
-;; Last-Updated: Wed Dec 14 14:08:24 2011 (-0600)
+;; Last-Updated: Wed Dec 14 15:33:25 2011 (-0600)
 ;;           By: Matthew L. Fidler
-;;     Update #: 1204
+;;     Update #: 1207
 ;; URL: http://www.emacswiki.org/emacs/auto-indent-mode.el
 ;; Keywords: Auto Indentation
 ;; Compatibility: Tested with Emacs 23.x
@@ -116,6 +116,13 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;;; Change Log:
+;; 14-Dec-2011    Matthew L. Fidler  
+;;    Last-Updated: Wed Dec 14 15:32:30 2011 (-0600) #1206 (Matthew L. Fidler)
+;;    Went back to last known working
+;;    `auto-indent-def-del-forward-char' and deleted message.
+;; 14-Dec-2011    Matthew L. Fidler  
+;;    Last-Updated: Wed Dec 14 15:28:12 2011 (-0600) #1205 (Matthew L. Fidler)
+;;    Another Paren
 ;; 14-Dec-2011    Matthew L. Fidler  
 ;;    Last-Updated: Wed Dec 14 14:06:47 2011 (-0600) #1203 (Matthew L. Fidler)
 ;;    Paren Bug Fix.
@@ -1191,18 +1198,17 @@ standards for Viper, ErgoEmacs and standard emacs"
                     (if prog-mode
                         (setq lst auto-indent-delete-line-char-remove-last-space-prog-mode-regs)
                       (setq lst auto-indent-delete-line-char-remove-last-space-text-mode-regs))
-                    
+
                     (when lst
                       (setq done nil)
                       (mapc (lambda(i)
-                              (nth 1 i) (looking-at (concat " " (nth 1 i))))
-                            (when (and (not done) (looking-back (nth 0 i))
-                                       (looking-at (concat " " (nth 1 i))))
-                              (delete-char 1)
-                              (setq done t))
-                            lst)))
-                  (when (and (eolp) (looking-back "[ \t]+" nil t))
-                    (replace-match ""))
+                              (when (and (not done) (looking-back (nth 0 i))
+                                         (looking-at (concat " " (nth 1 i))))
+                                (delete-char 1)
+                                (setq done t)))
+                            lst))))
+                (when (and (eolp) (looking-back "[ \t]+" nil t))
+                  (replace-match "")))
               (when (and del-eol
                          auto-indent-minor-mode (not (minibufferp))
                          auto-indent-delete-line-char-add-extra-spaces)
@@ -1220,6 +1226,7 @@ standards for Viper, ErgoEmacs and standard emacs"
                                 (setq done t))))
                           lst)))))
           ,do-it)))))
+
 
 
 (auto-indent-def-del-forward-char)
