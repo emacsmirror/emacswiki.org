@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Tue Dec  6 11:45:35 2011 (-0800)
+;; Last-Updated: Wed Dec 14 11:22:55 2011 (-0800)
 ;;           By: dradams
-;;     Update #: 28544
+;;     Update #: 28548
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-doc2.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -2008,7 +2008,8 @@
 ;;  candidates.
 ;;
 ;;  (Multi-command `icicle-bookmark-list' similarly lets you choose
-;;  bookmark names.  It returns them as a Lisp list of strings.)
+;;  bookmarks (or bookmark names, with a prefix arg).  It returns them
+;;  in a Lisp list.)
 ;;
 ;;  When you search the text of a region bookmark, the search is
 ;;  limited to the region.
@@ -8187,7 +8188,7 @@
 ;;  `icicle-bookmark-file' - Jump: bookmarked file
 ;;  `icicle-bookmark-gnus' - Jump: bookmarked Gnus message
 ;;  `icicle-bookmark-info' - Jump: bookmarked Info node
-;;  `icicle-bookmark-list' - Choose a list of bookmark names
+;;  `icicle-bookmark-list' - Choose a list of bookmarks or their names
 ;;  `icicle-bookmark-local-file' - Jump: bookmarked local file
 ;;  `icicle-bookmark-man' - Jump: bookmarked `man' page
 ;;  `icicle-bookmark-non-file' - Jump: bookmarked non-file buffer
@@ -8609,7 +8610,7 @@
 ;;  is returned, with the items in the order selected.  Examples of
 ;;  this include these multi-commands:
 ;;
-;;  * `icicle-bookmark-list' - bookmark names
+;;  * `icicle-bookmark-list' - bookmarks (bookmark names, with `C-u')
 ;;
 ;;  * `icicle-buffer-list' - buffer names, selected from `buffer-list'
 ;;    (possibly after filtering)
