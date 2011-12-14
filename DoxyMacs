@@ -32,6 +32,9 @@ Doxymacs' author is RyanTSammartino.
 ----
 CategoryProgrammerUtils
 
+----
+Used with yard DoxyMacsYard
+
 ------
 I made a small function that is inspired by Eclipse editing of the Java files.
 When the point is inside a multiline comment it automatically adds an asterisk 
