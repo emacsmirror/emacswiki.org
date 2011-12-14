@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2011, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Tue Dec 13 13:56:42 2011 (-0800)
+;; Last-Updated: Wed Dec 14 11:07:31 2011 (-0800)
 ;;           By: dradams
-;;     Update #: 7644
+;;     Update #: 7657
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-chg.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -82,6 +82,13 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd1.el'")
 ;;
+;; 2011/12/14 dadams
+;;     icicle-bookmark-list:
+;;       Return bookmarks, not their names, unless prefix arg or icicle-bookmark-list-names-only-p.
+;;       Bind icicle-unpropertize-completion-result-flag.  Use icicle-unpropertize-completion, not
+;;         icicle-substring-no-properties, so remove only Icicles internal properties.
+;;       Call bookmark-maybe-load-default-file whether Bookmark+ or not.
+;;       Use icicle-bookmark-types only for Bookmark+.  Use all bookmarks otherwise.
 ;; 2011/11/23 dadams
 ;;     icicle-locate-file-1: when -> unless icicle-locate-file-use-locate-p.
 ;; 2011/11/21 dadams
@@ -500,6 +507,9 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd2.el'")
 ;;
+;; 2011/12/14 dadams
+;;     icicle-search-where-arg: Do not bind icicle-bookmark-types here.
+;;     icicle-search-define-candidates: For bookmarks, WHERE is a cons of conses (not just a cons).
 ;; 2011/12/13 dadams
 ;;     icicle-search-define-candidates: In bookmarks part, test BEG =? END only if both are non-nil.
 ;; 2011/12/06 dadams
@@ -5794,6 +5804,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-var.el'")
 ;;
+;; 2011/12/14 dadams
+;;     Added: icicle-bookmark-list-names-only-p.
 ;; 2011/10/14 dadams
 ;;     icicle-search-map: Bound x and X to the XML-element search commands.
 ;; 2011/10/08 dadams
