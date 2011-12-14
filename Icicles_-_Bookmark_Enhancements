@@ -46,6 +46,10 @@ however, the '''Bookmark+''' doc is your friend.
 
 
 
+
+
+
+
 [:TaggingFiles]
 == Tagging Files and Jumping to Them ==
 
@@ -111,6 +115,11 @@ E.g., type:
 
 : `##2011 C-M-j red M-SPC blue##'    to match files tagged `red' and
 `blue' that have `2011' in their names
+
+
+
+
+
 
 
 
@@ -388,7 +397,7 @@ bookmarks, you type a search pattern to narrow the set of
 candidates.
 
 (Multi-command '''`icicle-bookmark-list'''' similarly lets you choose
-bookmark names.  It returns them as a Lisp list of strings.)
+bookmarks (or bookmark names, with a prefix arg).  It returns them in a Lisp list.)
 
 When you search the text of a ''region'' bookmark, the search is
 limited to the region.
