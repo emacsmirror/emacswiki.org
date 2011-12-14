@@ -36,11 +36,11 @@ uses *yast* [3]. So why not make one for Emacs as well.
 
 === Concepts ===
 
-The DELPS /epackages/ are in the form of distributed[1] git[2] version
-control repositories. The traditional packaging methods, like
-[[ELPA]], have previously relied on archives like *.tar.gz to hold the
-code. In contrast, the DVCS approach offers interesting features over
-traditional archive distribution approach:
+The /epackages/ are in the form of distributed[1] Git[2]
+version control repositories. The traditional packaging
+methods, like [[ELPA]], rely on archives like *.tar.gz. In
+contrast, the DVCS approach offers interesting features over
+the traditional archive distribution approach:
 
 *   Efficient downloads; fast, only deltas are transferred.
 *   Local modifications are possible; users can create their own
