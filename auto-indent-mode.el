@@ -5,10 +5,10 @@
 ;; Author: Matthew L. Fidler, Le Wang & Others
 ;; Maintainer: Matthew L. Fidler
 ;; Created: Sat Nov  6 11:02:07 2010 (-0500)
-;; Version: 0.52
-;; Last-Updated: Wed Dec 14 15:33:25 2011 (-0600)
+;; Version: 0.53
+;; Last-Updated: Wed Dec 14 15:34:36 2011 (-0600)
 ;;           By: Matthew L. Fidler
-;;     Update #: 1207
+;;     Update #: 1208
 ;; URL: http://www.emacswiki.org/emacs/auto-indent-mode.el
 ;; Keywords: Auto Indentation
 ;; Compatibility: Tested with Emacs 23.x
