@@ -1,0 +1,26 @@
+13:07 <impaktor> Is there a command/key like C-e but ignore
+      comments? Like "(lisp-code-here)      ;;comment"
+
+There is not, but here's an example:
+
+{{{
+(defun impaktor-move-end-of-line ()
+  (interactive)
+  (skip-syntax-forward "^<" (line-end-position))
+  (skip-syntax-backward " " (line-beginning-position)))
+}}}
+
+How does it work?
+
+##(skip-syntax-forward "^<" (line-end-position))## will skip forward up to the end of the line, stopping at a comment start character.
+
+##(skip-syntax-backward " " (line-beginning-position))## will skip backward over trailing whitespace.
+
+To install, copy it into your InitFile and add something like the following to your init file:
+
+{{{
+(add-hook 'emacs-lisp-mode (lambda () (local-set-key (kbd "C-c C-e") 'impaktor-move-end-of-line))
+}}}
+
+----
+CategoryEditing
