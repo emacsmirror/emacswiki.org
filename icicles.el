@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Wed Dec 14 11:11:55 2011 (-0800)
+;; Last-Updated: Wed Dec 14 20:28:44 2011 (-0800)
 ;;           By: dradams
-;;     Update #: 23042
+;;     Update #: 23045
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -158,6 +158,7 @@
 ;;    `icicle-bookmark-file-this-dir-some-tags-regexp',
 ;;    `icicle-bookmark-file-this-dir-some-tags-regexp-other-window',
 ;;    `icicle-bookmark-gnus', `icicle-bookmark-gnus-other-window',
+;;    `icicle-bookmark-image', `icicle-bookmark-image-other-window',
 ;;    `icicle-bookmark-info', `icicle-bookmark-info-other-window',
 ;;    `icicle-bookmark-jump', `icicle-bookmark-jump-other-window',
 ;;    `icicle-bookmark-list', `icicle-bookmark-local-file',
@@ -427,6 +428,7 @@
 ;;    `icicle-backward-kill-paragraph',
 ;;    `icicle-backward-kill-sentence', `icicle-backward-kill-sexp',
 ;;    `icicle-backward-kill-word', `icicle-beginning-of-line+',
+;;    `icicle-bookmark-bookmark-file-narrow',
 ;;    `icicle-bookmark-bookmark-list-narrow',
 ;;    `icicle-bookmark-desktop-narrow',
 ;;    `icicle-bookmark-dired-narrow',`icicle-bookmark-file-narrow',
@@ -484,8 +486,8 @@
 ;;    `icicle-help-on-previous-apropos-candidate',
 ;;    `icicle-help-on-previous-prefix-candidate',
 ;;    `icicle-help-string-non-completion', `icicle-history',
-;;    `icicle-insert-completion', `icicle-insert-dot-command',
-;;    `icicle-insert-history-element',
+;;    `icicle-bookmark-image-narrow', `icicle-insert-completion',
+;;    `icicle-insert-dot-command', `icicle-insert-history-element',
 ;;    `icicle-insert-key-description',
 ;;    `icicle-insert-list-join-string',
 ;;    `icicle-insert-newline-in-minibuffer',
