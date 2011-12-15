@@ -81,6 +81,11 @@ The light/dark color schemes differ only in their brightness level.
 == Development Version/Contributing ==
 The current development version will always be at github, under [http://github.com/jlr/rainbow-delimiters jlr/rainbow-delimiters]. Please communicate before starting work on significant changes to be sure we avoid duplicate effort.
 
+== Reporting Issues ==
+You can either add a bug report on the rainbow-delimiters [http://github.com/jlr/rainbow-delimiters github] page, or you're welcome to leave any comments at all here on this page. I (JeremyRayman) check this page from time to time and would be glad to hear any feature requests, problem reports or other feedback.
+
+
+
 
 <pre>
 
