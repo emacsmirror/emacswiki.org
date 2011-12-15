@@ -454,6 +454,85 @@ Add the below code to your .emacs file.  Call it w/ <code>M-x server-shutdown</c
   )
 </pre>
 
+== Color coding (multiple) emacs server instances ==
+
+You can start different emacs server instances w/ different color schemes (so you instantly know which one your using).
+
+This works to set the background color:
+
+<pre>
+emacs --daemon=todo --background-color='#93DB80'
+emacs --daemon=edit --background-color=yellow
+</pre>
+
+But if you try setting the cursor color -- it fails miserably.
+
+Another, more flexible option:
+
+=== starting emacs server (daemon) ===
+Example scripts for starting different instances of emacs server:
+<pre>
+#!/bin/bash
+
+export ESRVNAME=todo
+emacs --daemon=$ESRVNAME
+</pre>
+or
+<pre>
+#!/bin/bash
+
+export ESRVNAME=edit
+emacs --daemon=$ESRVNAME
+ps -ef | grep -i 'emacs --daemon'
+</pre>
+
+Also see http://www.gnu.org/s/libtool/manual/emacs/Emacs-Server.html#Emacs-Server
+
+=== set color choices in .emacs ===
+Set your color choices in your .emacs file:
+<pre>
+;; set colors for my emacs server instances
+(defvar esrvname (getenv "ESRVNAME")) ;; is there a var that provides the server-name?
+(ignore-errors ;; this prevents error when environment variable is not set
+  (when (string-match "todo" esrvname)
+    (setq default-frame-alist
+          (append default-frame-alist
+                  '((background-color . "#93DB80")
+                    (cursor-color . "yellow")
+                    )))
+    ;; or set a color-theme, e.g., (color-theme-classic)
+    )
+  (when (string-match "edit" esrvname)
+    (setq default-frame-alist
+          (append default-frame-alist
+                  '((background-color . "yellow")
+                    ;; (foreground-color . "black")
+                    (cursor-color . "blue")
+                    )))
+    )
+  )
+</pre>
+
+=== starting emacsclient ===
+An example script for starting emacsclient (for different instances of emacs server):
+<pre>
+#!/bin/bash
+
+emacsclient -s edit -c $@
+</pre>
+
+This allows you to pass any parameters to emacsclient, e.g., filenames, or even the '-t' (or '-nw') option (it will override the '-c')
+
+Another example:
+<pre>
+#!/bin/bash
+
+umask 0007 # you can set a different umask than your default for emcas session
+cd ~/docs/todo/
+emacsclient -s todo -c ~/docs/todo/work.org &
+</pre>
+
+Also see: http://www.gnu.org/s/libtool/manual/emacs/emacsclient-Options.html#emacsclient-Options
 
 ----
 
