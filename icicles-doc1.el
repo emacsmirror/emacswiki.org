@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Sat Nov 26 13:42:56 2011 (-0800)
+;; Last-Updated: Wed Dec 14 17:16:25 2011 (-0800)
 ;;           By: dradams
-;;     Update #: 26314
+;;     Update #: 26316
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-doc1.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -6075,14 +6075,14 @@
 ;;    prompted for the Dired buffer name.  See (@> "Alternative Actions").
 ;;  * `C-x m' (`icicle-bookmark-file-other-window') to visit a
 ;;    bookmarked file or directory.  This is available only if you use
-;;    library Bookmark+ (`bookmark+.el').  It is a multi-command, so
+;;    library `Bookmark+' (`bookmark+.el').  It is a multi-command, so
 ;;    you can actually visit any number of file bookmarks.  When
 ;;    finished, you can continue with non-bookmark file-name
 ;;    completion.
 ;;
 ;;  * `C-x a +' or `C-x a -' to add or remove tags for a file.  These
 ;;    are delicious-style tags - any labels you like.  You need
-;;    library Bookmark+ for this feature.  See also
+;;    library `Bookmark+' for this feature.  See also
 ;;    (@file :file-name "icicles-doc2.el" :to "Tagging Files and Jumping to Them").
 ;;
 ;;  In many cases for Icicles multi-commands that read a file name,
