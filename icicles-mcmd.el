@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Sat Nov  5 11:51:52 2011 (-0700)
+;; Last-Updated: Thu Dec 15 10:06:57 2011 (-0800)
 ;;           By: dradams
-;;     Update #: 17446
+;;     Update #: 17458
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-mcmd.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -6498,13 +6498,23 @@ See also `\\[icicle-history]' (`icicle-history')."
         (unless (boundp minibuffer-history-variable) (set minibuffer-history-variable nil))
         (when (consp (symbol-value minibuffer-history-variable))
           (setq icicle-completion-candidates
-                (icicle-remove-if-not
-                 (lambda (candidate)
-                   (when (icicle-file-name-input-p)
-                     (setq candidate  (expand-file-name
-                                       candidate (icicle-file-name-directory icicle-last-input))))
-                   (member candidate (symbol-value minibuffer-history-variable)))
-                 icicle-completion-candidates))
+                (lexical-let* ((filep    (or (icicle-file-name-input-p)  icicle-abs-file-candidates))
+                               (dir      (and filep  icicle-last-input
+                                              (icicle-file-name-directory icicle-last-input)))
+                               (histvar  (and (symbolp minibuffer-history-variable)
+                                              (boundp minibuffer-history-variable)
+                                              minibuffer-history-variable))
+                               (hist     (and histvar
+                                              (if filep
+                                                  (let ((default-directory  dir))
+                                                    (mapcar #'expand-file-name (symbol-value histvar)))
+                                                (symbol-value histvar)))))
+                  (icicle-remove-if-not
+                   (lambda (candidate)
+                     (if filep
+                         (let ((default-directory  dir))  (member (expand-file-name candidate) hist))
+                       (member candidate hist)))
+                   icicle-completion-candidates)))
           (cond ((null icicle-completion-candidates)
                  (save-selected-window (icicle-remove-Completions-window))
                  (minibuffer-message "  [None of the completions have been used before]"))
