@@ -251,9 +251,6 @@ Why bind this function to M-Pause. They have been placed far from each other on 
 
 
 
-
-
-
 [new:DrewAdams:2011-10-13 14:35 UTC]
 
 I don't know what you mean by "In the variables it displays correctly in blue and M-Pause works correctly.", but maybe it's not important.
@@ -269,7 +266,6 @@ Try removing those variables from savehist, to take savehist out of the equation
 The choice of `M-pause' was nothing special, IIRC.  Lots of the '''Icicles''' default choices for keys were based on things like (a) associations, including with historical Emacs defaults, (b) key placement, (c) whether the key needs to be repeatable by holding it down, (d) mnemonic aid, (e) relations to other keys (e.g. `RET', `C-RET', `C-M-RET', `S-RET'...).  But I don't recall any special logic behind the choice of `M-pause'.
 
 You can email me, if you like.  It would probably be easier to dialog that way about your problem.  Sorry for your trouble.  -- DrewAdams
-
 
 
 
@@ -484,6 +480,18 @@ p.s.: Would you consider the use of an official, publicly accessible VCS. It's a
 2. (VCS) Nope, sorry.  But `ediff' is your friend, if you want to compare versions of a particular file.  -- DrewAdams
 
 
+
+[new:DrewAdams:2011-12-15 19:04 UTC]
+OK, I've uploaded a fix -- please let me know how it goes.
+
+FYI, here's the story: The Emacs history lists record exactly the input you enter (e.g. using `RET').  Emacs itself never compares entries of this list.  '''Icicles''' compares them against current candidates for two purposes: (1) highlighting with face `icicle-historical-candidate' and (2) `M-pause' (`icicle-keep-only-past-inputs').
+
+Until now, the comparison was literal, including for file names.  If you enter "~foo/bar.el" then exactly that string is recorded in the history.  Candidates that are later compared against the history are expanded in the current directory, to become absolute file names (e.g. "/home/foo/bar.el").  The matching is literal, syntactic.
+
+I've now enhanced this to try to accommodate input entries such as "~foo/bar.el", by expanding not only the current set of candidates but also everything in the history list (for only this purpose -- the list itself is not changed).  Obviously, this can mean a performance hit.  If there is a long history list and there are lots of current candidates, the slowdown from this file-name expansion might be noticeable.
+
+Anyway, it should work now.  Let me know.
+Thanks for your patience and your careful reporting. -- DrewAdams
 
 
 
