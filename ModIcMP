@@ -30,7 +30,7 @@ See also `\\[icicle-history]' (`icicle-history')."
           (minibuffer-message "  [No completion candidates to filter]")
         (unless (boundp minibuffer-history-variable) (set minibuffer-history-variable nil))
         (when (consp (symbol-value minibuffer-history-variable))
-	  (message "hist: %S" minibuffer-history-variable)
+	  (message "hist: %S" (symbol-value minibuffer-history-variable))
           (setq icicle-completion-candidates
                 (icicle-remove-if-not
                  (lambda (candidate)
