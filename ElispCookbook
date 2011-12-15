@@ -429,11 +429,14 @@ That's why the result is 10 instead of 6!
 
 Move to the beginning of the current comment:
 
+    (require 'newcomment)
     (comment-beginning)
 
 Move to the text after a comment:
 
     (comment-search-forward (line-end-position) t)
+
+See also EndOfLineNoComments.
 
 === Search and replace ===
 
