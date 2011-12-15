@@ -1,10 +1,12 @@
 This like an automatic PackageManager, but is based on COMMANDS within packages instead of on packages themselves.
 
-During the 'update' phase, this PackageManager contacts a known URL to download a list of user-executable COMMANDS and the files containing those COMMANDS, and the files that are dependencies of those COMMANDS.  This will require no change to those packages.
+During the 'update' phase, a client machine contacts a publicly accessible server to download a list of user-executable COMMANDS.
 
-The COMMAND list is updated - say daily - (on publicly accessible server) by a script that downloads any out-of-date packages from a list of trusted package repos (for now only semi-trusted repos such as ELPA, DELPS, the EmacsWiki ElispArea, the EmacsLispList, the EmacsMirror, etc.).
+Each COMMAND in the list has an associated URL to the file containing that COMMAND, and URLs to any dependencies of that file.  This will require no change to those packages.
 
-The script opens every file within each package looking for any `defun' using the `interactive' special form.  All such COMMANDS are written to an generated elisp file as arguments to `autodownload'.  Later, when the client machine runs this script, those COMMANDS then appear available when attempted through Meta-x or through a keyboard shortcut.
+The public server will be quite busy updating the COMMAND list (perhaps daily) using a script that downloads any out-of-date packages from a set of trusted package repos (for now only semi-trusted repos such as ELPA, DELPS, the EmacsWiki ElispArea, the EmacsLispList, the EmacsMirror, etc.).
+
+The script opens every file looking for any `defun' using the `interactive' special form.  All such COMMANDS are written to an generated elisp file as arguments to `autodownload'.  Later, when the client machine runs this script, those COMMANDS then appear available when attempted through Meta-x or through a keyboard shortcut.
 
 Once the client machine downloads and executes this COMMAND list, for each attempted COMMAND, if the file associated with that COMMAND is not available locally, it is retreived over the network and stored in a 'cache' area on the client machine, and then loaded into memory and the COMMAND finally executed.
 
