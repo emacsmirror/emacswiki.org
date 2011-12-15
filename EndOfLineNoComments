@@ -25,5 +25,7 @@ To install, copy it into your InitFile and add something like the following to y
 [new]
 Didn't know that about skip-syntax for comments.  Must be GIT:newcomment.el existed before it was introduced. -- AaronHawley
 
+[new]
+The ##skip-syntax-forward## command shown above works fine for me in Lisp mode, but not in C mode.  There, it just moves to end of line. -- ChrisLeyon
 ----
 CategoryComments
