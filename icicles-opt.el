@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:22:14 2006
 ;; Version: 22.0
-;; Last-Updated: Tue Dec  6 11:08:24 2011 (-0800)
+;; Last-Updated: Wed Dec 14 17:43:31 2011 (-0800)
 ;;           By: dradams
-;;     Update #: 4731
+;;     Update #: 4743
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-opt.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -3370,6 +3370,9 @@ toggle Icicle mode off and then back on."
      (fboundp 'bmkp-find-file-some-tags-regexp-other-window)) ; `C-x 4 j t a % +'
 
     ;; Bookmark jump commands
+    (bmkp-autofile-jump icicle-bookmark-autofile (fboundp 'bmkp-autofile-jump)) ; `C-x j a'
+    (bmkp-autofile-jump-other-window
+     icicle-bookmark-autofile-other-window (fboundp 'bmkp-autofile-jump)) ; `C-x 4 j a'
     (bmkp-autonamed-jump icicle-bookmark-autonamed (fboundp 'bmkp-autonamed-jump)) ; `C-x j # #'
     (bmkp-autonamed-jump-other-window
      icicle-bookmark-autonamed-other-window (fboundp 'bmkp-autonamed-jump)) ; `C-x 4 j # #'
@@ -3377,14 +3380,13 @@ toggle Icicle mode off and then back on."
      icicle-bookmark-autonamed-this-buffer (fboundp 'bmkp-autonamed-jump-this-buffer)) ; `C-x j # .'
     (bmkp-autonamed-jump-this-buffer-other-window
      icicle-bookmark-autonamed-this-buffer-other-window (fboundp 'bmkp-autonamed-jump)) ; `C-x 4 j # .'
-    (bmkp-autofile-jump icicle-bookmark-autofile (fboundp 'bmkp-autofile-jump)) ; `C-x j a'
-    (bmkp-autofile-jump-other-window
-     icicle-bookmark-autofile-other-window (fboundp 'bmkp-autofile-jump)) ; `C-x 4 j a'
-    ;;   (Other-window means nothing for a bookmark file, bookmark list, or desktop.)
+    ;;   (Other-window means nothing for a bookmark file.)
     (bmkp-bookmark-file-jump
      icicle-bookmark-bookmark-file (fboundp 'bmkp-bookmark-file-jump)) ; `C-x j y'
+    ;;   (Other-window means nothing for a bookmark list.)
     (bmkp-bookmark-list-jump
      icicle-bookmark-bookmark-list (fboundp 'bmkp-bookmark-list-jump)) ; `C-x j B'
+    ;;   (Other-window means nothing for a desktop.)
     (bmkp-desktop-jump icicle-bookmark-desktop (fboundp 'bmkp-desktop-jump)) ; `C-x j K'
     (bmkp-dired-jump icicle-bookmark-dired (fboundp 'bmkp-dired-jump)) ; `C-x j d'
     (bmkp-dired-jump-other-window
@@ -3399,6 +3401,9 @@ toggle Icicle mode off and then back on."
     (bmkp-gnus-jump icicle-bookmark-gnus (fboundp 'bmkp-gnus-jump)) ; `C-x j g'
     (bmkp-gnus-jump-other-window
      icicle-bookmark-gnus-other-window (fboundp 'bmkp-gnus-jump)) ; `C-x 4 j g'
+    (bmkp-image-jump icicle-bookmark-image (fboundp 'bmkp-image-jump)) ; `C-x j M-i'
+    (bmkp-image-jump-other-window
+     icicle-bookmark-image-other-window (fboundp 'bmkp-image-jump)) ; `C-x 4 j M-i'
     (bmkp-info-jump icicle-bookmark-info (fboundp 'bmkp-info-jump)) ; `C-x j i'
     (bmkp-info-jump-other-window
      icicle-bookmark-info-other-window (fboundp 'bmkp-info-jump)) ; `C-x 4 j i'
