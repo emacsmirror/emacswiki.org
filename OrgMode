@@ -68,6 +68,7 @@ There is a Ubuntu repository with the latest for non-cvs Emacs.  Add the followi
 * Lisp:org-table-comment.el provides orgtbl-mode (via orgtbl-comment-mode) support for modes that don't support block comments. 
 * Lisp:org-occur-goto.el allows you to jump quickly anywhere in your open org buffers using a dynamic version of the multi-occur interface
 * Lisp:org-search-goto.el a variant of the above package which supports matching multiple substrings given in any order
+* Lisp:org-search-goto-ml.el a variant of the above package which supports matches across line boundaries in the whole entry
 
 
 == Texts on using org-mode ==
