@@ -21,6 +21,6 @@ Comments in code depend on the programming language used.
 * SemanticRecoder -- create or fill comments based on local context
 * UncommentSexp -- comment/uncomment a [[sexp]]
 * [[VimMode - Examples]] -- comment/uncomment the [[region]]
-
+* EndOfLineNoComments -- a command to move to the end of your code, not the end of your line
 
 ----
