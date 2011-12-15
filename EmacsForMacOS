@@ -258,6 +258,34 @@ Preferences>>Settings>>Keyboard. Select the "+" button and you will see that you
 key with the "control" modifier. Select "send string to shell", and enter "ESCp", i.e., emacs M-p. Similarly,
 define control cursor up to send "ESCn" to the shell.
 
+=== Binding modifier keys ===
+
+The variables available for binding the modifier keys: 
+<pre>
+mac-function-modifier
+mac-control-modifier
+mac-command-modifier
+mac-option-modifier
+mac-right-command-modifier
+mac-right-control-modifier
+mac-right-option-modifier
+</pre>
+
+values can be <code>'control, 'alt, 'meta, 'super, 'hyper, nil</code> (setting to nil allows the OS to assign values)
+
+Also see http://lists.gnu.org/archive/html/help-gnu-emacs/2011-02/msg00019.html
+
+example usage:
+<pre>
+;; key bindings
+(when (eq system-type 'darwin) ;; mac specific settings
+  (setq mac-option-key-is-meta t)
+  (setq mac-command-key-is-meta nil)
+  (setq mac-command-modifier 'control)
+  (global-set-key [kp-delete] 'delete-char) ;; sets fn-delete to be right-delete
+  )
+</pre>
+
 === Emacs keybindings in Cocoa Apps ===
 
 This information does not regard the actual use of emacs, but I think many people will be happy to find out that some cursor movement / text editing keybindings can be used in Cocoa Apps. If you ever happen to use any other application on your Mac ... You can also set up additional keybindings as described in [http://developer.apple.com/documentation/Cocoa/Conceptual/EventOverview/TextDefaultsBindings/TextDefaultsBindings.html this document].
