@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:53 2006
 ;; Version: 22.0
-;; Last-Updated: Tue Dec  6 10:23:29 2011 (-0800)
+;; Last-Updated: Thu Dec 15 10:21:37 2011 (-0800)
 ;;           By: dradams
-;;     Update #: 12708
+;;     Update #: 12731
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-fn.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -2798,19 +2798,26 @@ NO-DISPLAY-P non-nil means do not display the candidates; just
            (save-excursion
              (save-window-excursion
                (with-current-buffer (get-buffer "*Completions*")
-                 (let ((buffer-read-only  nil)
-                       (eob               (point-max))
-                       (dir               (and (icicle-file-name-input-p) icicle-last-input
-                                               (icicle-file-name-directory icicle-last-input)))
-                       (hist              (and (symbolp minibuffer-history-variable)
-                                               (boundp minibuffer-history-variable)
-                                               (symbol-value minibuffer-history-variable)))
-                       (case-fold-search
-                        ;; Don't bother with buffer completion, `read-buffer-completion-ignore-case'.
-                        (if (and (or (icicle-file-name-input-p) icicle-abs-file-candidates)
-                                 (boundp 'read-file-name-completion-ignore-case))
-                            read-file-name-completion-ignore-case
-                          completion-ignore-case)))
+                 (let* ((buffer-read-only  nil)
+                        (eob               (point-max))
+                        (filep             (or (icicle-file-name-input-p)  icicle-abs-file-candidates))
+                        (dir               (and filep  icicle-last-input
+                                                (icicle-file-name-directory icicle-last-input)))
+                        (histvar           (and (symbolp minibuffer-history-variable)
+                                                (boundp minibuffer-history-variable)
+                                                minibuffer-history-variable))
+                        (hist              (and histvar
+                                                (if filep
+                                                    (let ((default-directory  dir))
+                                                      (mapcar #'expand-file-name
+                                                              (symbol-value histvar)))
+                                                  (symbol-value histvar))))
+                        (case-fold-search
+                         ;; Don't bother with buffer completion, `read-buffer-completion-ignore-case'.
+                         (if (and (or (icicle-file-name-input-p) icicle-abs-file-candidates)
+                                  (boundp 'read-file-name-completion-ignore-case))
+                             read-file-name-completion-ignore-case
+                           completion-ignore-case)))
                    (goto-char (icicle-start-of-candidates-in-Completions))
                    (while (not (eobp))
                      (let* ((beg    (point))
@@ -2853,12 +2860,13 @@ NO-DISPLAY-P non-nil means do not display the candidates; just
                        ;; Highlight candidate (`*-historical-candidate') if it was used previously.
                        (when icicle-highlight-historical-candidates-flag
                          (let ((candidate  (icicle-current-completion-in-Completions)))
-                           (when dir (setq candidate  (expand-file-name candidate dir)))
-                           (when (and (consp hist) (member candidate hist)
+                           (when (and (consp hist)
                                       (not (member candidate icicle-hist-cands-no-highlight)))
-                             (add-text-properties
-                              beg end
-                              `(face ,(setq faces  (cons 'icicle-historical-candidate faces)))))))
+                             (let ((default-directory  dir))
+                               (when (member (if filep (expand-file-name candidate) candidate) hist)
+                                 (add-text-properties
+                                  beg end
+                                  `(face ,(setq faces  (cons 'icicle-historical-candidate faces)))))))))
 
                        ;; Highlight, inside the candidate, the expanded common match.
                        (when (and (or icicle-expand-input-to-common-match-flag
@@ -2898,15 +2906,14 @@ NO-DISPLAY-P non-nil means do not display the candidates; just
                                             'search-forward
                                           (case icicle-apropos-complete-match-fn
                                             (icicle-scatter-match
-                                             (lambda (input bound noerror)
-                                               (re-search-forward (icicle-scatter input)
-                                                                  bound noerror)))
+                                             (lambda (input bound noerr)
+                                               (re-search-forward (icicle-scatter input) bound noerr)))
                                             (icicle-levenshtein-match
                                              (if (= icicle-levenshtein-distance 1)
-                                                 (lambda (input bound noerror)
-                                                   (re-search-forward (icicle-levenshtein-one-regexp
-                                                                       input)
-                                                                      bound noerror))
+                                                 (lambda (input bound noerr)
+                                                   (re-search-forward
+                                                    (icicle-levenshtein-one-regexp input)
+                                                    bound noerr))
                                                're-search-forward))
                                             (otherwise 're-search-forward)))))
                                (save-excursion
