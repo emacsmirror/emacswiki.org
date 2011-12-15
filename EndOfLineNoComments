@@ -27,5 +27,20 @@ Didn't know that about skip-syntax for comments.  Must be GIT:newcomment.el exis
 
 [new]
 The ##skip-syntax-forward## command shown above works fine for me in Lisp mode, but not in C mode.  There, it just moves to end of line. -- ChrisLeyon
+
+[new]
+Yeah, I could not get `skip-syntax-forward' to work on syntax flags – it only works on syntax classes. Bummer! But Aaron pointed in the right direction:
+use newcomment.el!
+
+{{{
+(defun impaktor-move-end-of-line ()
+  (interactive)
+  (when (comment-search-forward (line-end-position) t)
+    (goto-char (match-beginning 0))
+    (skip-syntax-backward " " (line-beginning-position))))
+}}}
+
+-- Alex
+
 ----
 CategoryComments
