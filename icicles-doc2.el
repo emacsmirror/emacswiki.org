@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Wed Dec 14 11:22:55 2011 (-0800)
+;; Last-Updated: Wed Dec 14 17:19:22 2011 (-0800)
 ;;           By: dradams
-;;     Update #: 28548
+;;     Update #: 28568
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-doc2.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -1680,15 +1680,15 @@
 ;;
 ;;  Many of the enhancements described in this section are available
 ;;  only if you also use library `bookmark+.el' (which I recommend).
-;;  Bookmark+ is compatible with vanilla Emacs bookmarks across
+;;  `Bookmark+' is compatible with vanilla Emacs bookmarks across
 ;;  multiple Emacs versions.  It enhances the use of bookmarks in many
 ;;  ways.  The explanation here does not attempt to describe the
-;;  Bookmark+ enhancements; it describes only the Icicles features
+;;  `Bookmark+' enhancements; it describes only the Icicles features
 ;;  that make use of them.
 ;;
-;;  One of the main Bookmark+ enhancements is support for new bookmark
-;;  types.  Icicles provides type-specific bookmark commands and
-;;  bookmark-candidate filtering.
+;;  One of the main `Bookmark+' enhancements is support for new
+;;  bookmark types.  Icicles provides type-specific bookmark commands
+;;  and bookmark-candidate filtering.
 ;;
 ;;  In addition, when you complete the names of some kinds of objects,
 ;;  you can use `C-x m' to choose objects of that type.  For example,
@@ -1696,7 +1696,7 @@
 ;;  name, you can use `C-x m' to choose among your Dired bookmarks.
 ;;  See (@file :file-name "icicles-doc1.el" :to "Accessing Saved Locations (Bookmarks) on the Fly").
 
-;;  Regardless of the bookmark type, another Bookmark+ feature that
+;;  Regardless of the bookmark type, another `Bookmark+' feature that
 ;;  Icicles takes advantage of is the fact that a bookmark (any
 ;;  bookmark) can save not only a single position but a region, that
 ;;  is, two positions.  You can think of this as bookmarking, or
@@ -1711,12 +1711,12 @@
 ;;  * Searching the text of a bookmark's buffer or region
 ;;
 ;;  Each is described in a little more detail below.  More generally,
-;;  however, the Bookmark+ doc is your friend.
+;;  however, the `Bookmark+' doc is your friend.
 ;;
 ;;(@* "Tagging Files and Jumping to Them")
 ;;  ** Tagging Files and Jumping to Them **
 ;;
-;;  Bookmark+ lets you easily tag files with delicious-style tags of
+;;  `Bookmark+' lets you easily tag files with delicious-style tags of
 ;;  your choice.  You need not visit the files to do this.  Icicles
 ;;  makes this tagging even easier.  Tagging a file creates an
 ;;  autofile bookmark that records the tags (metadata).  Tags are
@@ -1724,18 +1724,18 @@
 ;;  with them.  Besides tagging files, you can add tags to any kind of
 ;;  bookmark.
 ;;
-;;  In Icicle mode, the Bookmark+ keys for tagging and untagging files
-;;  are bound to multi-commands `icicle-tag-a-file' and
+;;  In Icicle mode, the `Bookmark+' keys for tagging and untagging
+;;  files are bound to multi-commands `icicle-tag-a-file' and
 ;;  `icicle-untag-a-file'.  In addition, all Icicles file commands let
 ;;  you tag or untag files on the fly, during file-name completion,
 ;;  using the keys `C-x a +' and `C-x a -' respectively (`a' for
 ;;  autofile).
 ;;
 ;;  There are several Icicles multi-commands for jumping to tagged
-;;  files.  They are all on the Bookmark+ keymaps `bmkp-jump-map' and
-;;  `bmkp-jump-other-window-map': prefixes `C-x j a' and `C-x 4 j a'
-;;  (`a' for autofile).  The latter is for the `-other-window' version
-;;  of each command.
+;;  files.  They are all on the `Bookmark+' keymaps `bmkp-jump-map'
+;;  and `bmkp-jump-other-window-map': prefixes `C-x j a' and `C-x 4 j
+;;  a' (`a' for autofile).  The latter is for the `-other-window'
+;;  version of each command.
 ;;
 ;;(@* "`icicle-find-file-tagged'")
 ;;  *** `icicle-find-file-tagged' ***
@@ -1794,8 +1794,8 @@
 ;;  `icicle-find-file-some-tags' (`+') - Match some tag (>= 1) exactly
 ;;  `icicle-find-file-some-tags-regexp' (`% *') - Regexp-match some
 ;;
-;;  See these sections of the Bookmark+ doc for more information about
-;;  bookmark tags:
+;;  See these sections of the `Bookmark+' doc for more information
+;;  about bookmark tags:
 ;;
 ;;  * (@file :file-name "bookmark+-doc.el" :to "Bookmark Tags")
 ;;  * (@file :file-name "bookmark+-doc.el" :to "Autofile Bookmarks")
@@ -1847,7 +1847,7 @@
 ;;
 ;;  * With no prefix arg or a plain prefix arg (`C-u'), `C-x r m' acts
 ;;    like `icicle-bookmark-set'.  This is similar to `bookmark-set',
-;;    but if you use Bookmark+ then you can use (lax) completion,
+;;    but if you use `Bookmark+' then you can use (lax) completion,
 ;;    choosing from existing bookmarks for the same buffer.  This
 ;;    makes it easy to update a nearby bookmark.
 ;;
@@ -1883,7 +1883,7 @@
 ;;
 ;;  Bookmark names are highlighted in buffer `*Completions*' to
 ;;  indicate the bookmark type.  The faces used are those defined by
-;;  Bookmark+.
+;;  `Bookmark+'.
 ;;
 ;;  If option `icicle-show-multi-completion-flag' is non-`nil', then
 ;;  each completion candidate is a multi-completion, with up to three
@@ -1933,34 +1933,37 @@
 ;;  The most general Icicles jump commands are `icicle-bookmark' and
 ;;  `icicle-bookmark-other-window'.  In Icicle mode these are bound to
 ;;  whatever `bookmark-jump' and `bookmark-jump-other-window' are
-;;  normally bound to.  If you use Bookmark+, the default bindings are
-;;  `C-x j j' and `C-x 4 j j', respectively.
+;;  normally bound to.  If you use `Bookmark+', the default bindings
+;;  are `C-x j j' and `C-x 4 j j', respectively.
 ;;
 ;;  When you use these commands, you can narrow the completion
-;;  candidates to bookmarks of a specific type using these keys:
+;;  candidates to bookmarks of a specific type using the following
+;;  keys.
 ;;
-;;  `C-M-b'   - non-file (buffer) bookmarks
-;;  `C-M-B'   - bookmark-list bookmarks
-;;  `C-M-d'   - Dired bookmarks
-;;  `C-M-f'   - file bookmarks
-;;  `C-M-F'   - local-file bookmarks
-;;  `C-M-g'   - Gnus bookmarks
-;;  `C-M-I'   - Info bookmarks
-;;  `C-M-K'   - desktop bookmarks
-;;  `C-M-m'   - `man' pages
-;;  `C-M-r'   - bookmarks with regions
-;;  `C-M-u'   - URL bookmarks
-;;  `C-M-w'   - W3M (URL) bookmarks
-;;  `C-M-@'   - remote-file bookmarks
-;;  `C-M-= b' - bookmarks for a specific buffer
-;;  `C-M-= f' - bookmarks for a specific file
-;;  `C-M-= .' - bookmarks for the current buffer
+;;  `C-x j b'   - non-file (buffer) bookmarks
+;;  `C-x j B'   - bookmark-list bookmarks
+;;  `C-x j d'   - Dired bookmarks
+;;  `C-x j f'   - file bookmarks
+;;  `C-x j g'   - Gnus bookmarks
+;;  `C-x j i'   - Info bookmarks
+;;  `C-x j M-i' - image bookmarks
+;;  `C-x j K'   - desktop bookmarks
+;;  `C-x j l'   - local-file bookmarks
+;;  `C-x j m'   - `man' pages
+;;  `C-x j n'   - remote-file bookmarks
+;;  `C-x j r'   - bookmarks with regions
+;;  `C-x j u'   - URL bookmarks
+;;  `C-x j w'   - W3M (URL) bookmarks
+;;  `C-x j y'   - bookmark-file bookmarks
+;;  `C-x j .'   - bookmarks for the current buffer
+;;  `C-x j = b' - bookmarks for specific buffers
+;;  `C-x j = f' - bookmarks for specific files
 ;;
-;;  In addition, there are individual jump commands for bookmarks of
-;;  each of each type, and these commands are bound by default to keys
-;;  with the prefix `C-x 4 j' that use the same mnemonic characters as
-;;  for narrowing.  For example, `icicle-bookmark-info-other-window'
-;;  is bound to `C-x 4 j i'.
+;;  These same keys are used at the top level for individual jump
+;;  commands for bookmarks of each of each type.  For example,
+;;  `icicle-bookmark-info' is bound to `C-x j i'.  Other-window jump
+;;  commands are the same, but use the prefix key `C-x 4 j' instead of
+;;  `C-x j'.
 ;;
 ;;  Commands `icicle-bookmark' and `icicle-bookmark-other-window' can
 ;;  use a cache for the set of available bookmarks.  This improves
@@ -2057,7 +2060,7 @@
 ;;  bookmarks last shown in the `*Bookmark List*' display (list
 ;;  `bmkp-sorted-alist', to be precise).
 ;;
-;;  You can use the Bookmark+ features of `*Bookmark List*' to limit
+;;  You can use the `Bookmark+' features of `*Bookmark List*' to limit
 ;;  the candidates to bookmarks of a certain type (e.g., only
 ;;  autofiles, using `A S'), bookmarks with certain tags (e.g., only
 ;;  those with tags matching a regexp using `T m %' followed by `>'),
@@ -2805,7 +2808,7 @@
 ;;(@* "Bookmarks for Project Access and Organization")
 ;;  ** Bookmarks for Project Access and Organization **
 ;;
-;;  If you use Bookmark+ (library `bookmark+.el'), then you can use
+;;  If you use `Bookmark+' (library `bookmark+.el'), then you can use
 ;;  bookmarks of various types, including the following, to help
 ;;  manage software projects:
 ;;
@@ -2833,7 +2836,7 @@
 ;;  And tags can be more than just names: they can be user-defined
 ;;  attributes, with Emacs-Lisp objects as their values.
 ;;
-;;  These and other Bookmark+ features give you different ways to
+;;  These and other `Bookmark+' features give you different ways to
 ;;  save, restore, filter, access, and otherwise organize projects, as
 ;;  collections of information about source-code components and
 ;;  related software.
@@ -2916,10 +2919,10 @@
 ;;  Note: Bookmarks are also persistent references to files and
 ;;  buffers, and you can use sets of bookmarks similarly.  Bookmarking
 ;;  is a vanilla Emacs feature.  Being able to manipulate explicit
-;;  sets of bookmarks is a Bookmark+ feature (library `bookmark+.el').
-;;  Bookmarking features are described elsewhere, but they work in
-;;  concert with Icicles to offer very good project support.
-;;  See (@> "Icicles Bookmark Enhancements").
+;;  sets of bookmarks is a `Bookmark+' feature (library
+;;  `bookmark+.el').  Bookmarking features are described elsewhere,
+;;  but they work in concert with Icicles to offer very good project
+;;  support.  See (@> "Icicles Bookmark Enhancements").
 ;;
 ;;  Before you can name and save a set of file or buffer names, you
 ;;  must define its members: pick the file and buffer names that you
@@ -7031,7 +7034,7 @@
 ;;    buffers, directories, Info nodes), `C-x m' lets you complete
 ;;    against bookmarks that have the same type as those objects (file
 ;;    bookmarks, buffer bookmarks, Dired bookmarks, Info bookmarks).
-;;    This feature requires use of package Bookmark+.
+;;    This feature requires use of package `Bookmark+'.
 ;;
 ;;  * During completion of file names, `C-backspace' is bound to
 ;;    `icicle-up-directory', which navigates to the parent directory
