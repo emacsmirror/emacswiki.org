@@ -1,0 +1,14 @@
+This like an automatic PackageManager, but is based on COMMANDS within packages instead of on packages themselves.
+
+During the 'update' phase, this PackageManager contacts a known URL to download a list of user-executable COMMANDS and the files containing those COMMANDS, and the files that are dependencies of those COMMANDS.  This will require no change to those packages.
+
+The COMMAND list is updated - say daily - (on publicly accessible server) by a script that downloads any out-of-date packages from a list of trusted package repos (for now only semi-trusted repos such as ELPA, DELPS, the EmacsWiki ElispArea, the EmacsLispList, the EmacsMirror, etc.).
+
+The script opens every file within each package looking for any `defun' using the `interactive' special form.  All such COMMANDS are written to an elisp as arguments to `autoload'.  When the client machine runs this script, those COMMANDS then appear available when attempted through Meta-x or through a keyboard shortcut.
+
+Once the client machine downloads and executes this COMMAND list, `autoload' is augmented (or maybe `autodownload' is written and used instead) so if the file associated with that COMMAND is not available locally, it is retreived over the network and stored in a 'cache' area on the client machine, and then loaded into memory and the COMMAND finally executed.
+
+The user is prompted to download and execute the COMMAND unless some configurable variable (say `prompt-before-downloading-COMMAND') is set to nil.
+
+----
+CategoryPackaging MinEmacs
