@@ -47,7 +47,7 @@ You can resize (text-scale) the text in a buffer (in all windows showing it), or
 
 Starting with GnuEmacs 23, you can zoom the text in the current [[buffer]], in all frames displaying it:
 
-* Vanilla Emacs: You can use `##C-x C-+##' and `C-x C--' to increase or decrease the buffer text size (`##C-+##' or `C--' to repeat). `S-mouse-1' pops up a menu where you can choose these same actions.
+* Vanilla Emacs: You can use `##C-x C-+##' and `C-x C--' to increase or decrease the buffer text size (`##C-+##' or `C--' to repeat).  To restore the default (global) face height, type C-x C-0.  `S-mouse-1' pops up a menu where you can choose these same actions.
 
 [new]
 : If you use a fontset with Xft, `##C-x C-+##` this does not scale the secondary font.  For example, If you use a fontset -- ##dejavu-sans-mono## for latin, ##NanumGothic_Coding## for hangul(Korean) --, increasing the text size does not scale the Korean characters. --cinsk
