@@ -38,7 +38,7 @@
 ;; To start using Sentence Highlight Mode, place it somewhere in your Emacs
 ;; load-path and add the line
 
-;;    (require 'sentece-highlight)
+;;    (require 'sentence-highlight)
 
 ;; in your `.emacs` file.
 
@@ -125,7 +125,7 @@
     (remove-hook 'post-command-hook 'sentence-highlight-current t)))
 
 (unless (assq 'sentence-highlight-mode minor-mode-alist)
-  (setq minor-mode-alist (cons '(sentence-highlight-mode " Sentece")
+  (setq minor-mode-alist (cons '(sentence-highlight-mode " Sentence")
 			       minor-mode-alist)))
 
 (provide 'sentence-highlight)
