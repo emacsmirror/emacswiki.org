@@ -7,9 +7,9 @@
 ;; Copyright (C) 2006-2011, Drew Adams, all rights reserved.
 ;; Created: Sun Jul 30 16:40:29 2006
 ;; Version: 20.1
-;; Last-Updated: Sat Jul  2 16:32:16 2011 (-0700)
+;; Last-Updated: Thu Dec 15 15:34:33 2011 (-0800)
 ;;           By: dradams
-;;     Update #: 661
+;;     Update #: 667
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/thing-cmds.el
 ;; Keywords: thingatpt, thing, region, selection
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -64,6 +64,10 @@
 ;; 
 ;;; Change Log:
 ;;
+;; 2011/12/15 dadams
+;;     mark-thing:
+;;       If not on a thing, use thing-region to capture one.  If in a thing and not extending
+;;       existing region, then extend region back to beginning. to select the whole thing.
 ;; 2011/07/02 dadams
 ;;     Removed autoload cookie from thing-types.  Thx to Michael Heerdegen.
 ;; 2011/05/24 dadams
@@ -252,8 +256,8 @@ successive things of the same type, but to do that you must first use
 ;;;###autoload
 (defun mark-thing (thing &optional arg allow-extend)
   "Set point at one end of THING and set mark ARG THINGs from point.
-Put mark at the same place command `forward-'THING would put it with
-the same prefix argument.
+Put mark at the same place command `forward-'THING would move point
+with the same prefix argument.
 
 Put point at the beginning of THING, unless the prefix argument (ARG)
 is negative, in which case put it at the end of THING.
@@ -272,7 +276,8 @@ just use `C-SPC' to activate an empty region and then use `mark-thing'
 to select more THINGS of the last kind selected."
   (interactive "i\nP\np")               ; THING arg is nil (ignored) interactively.
   (let ((this-cmd  this-command)
-        (last-cmd  last-command))
+        (last-cmd  last-command)
+        (regionp   mark-active))
     (cond ((and allow-extend  (or (and (eq last-cmd this-cmd)  (mark t))
                                   (and transient-mark-mode  mark-active)))
            (setq arg  (if arg  (prefix-numeric-value arg)  (if (< (mark) (point)) -1 1)))
@@ -291,8 +296,18 @@ to select more THINGS of the last kind selected."
                         (forward-thing thgcmd-last-thing-type (prefix-numeric-value arg))
                         (point))
                       nil t)))
-    (unless (memq this-cmd (list last-cmd 'cycle-thing-region))
-      (forward-thing thgcmd-last-thing-type (if (< (mark) (point)) 1 -1))))
+    (let ((bnds  (bounds-of-thing-at-point thgcmd-last-thing-type)))
+      (unless (or regionp bnds)
+        ;; If we are not on a thing, use `thing-region' to capture one.
+        ;; Because it always puts point after mark, flip them if necessary.
+        (thing-region (symbol-name thgcmd-last-thing-type))
+        (when (natnump (prefix-numeric-value arg)) (exchange-point-and-mark)))
+      ;; If we are not extending existing region, and we are in a thing (BNDS non-nil), then:
+      ;; We have moved forward (or backward if ARG < 0) to the end of the thing.
+      ;; Now we extend the region backward (or forward if ARG < 0) up to its beginning
+      ;; (or end if ARG < 0), to select the whole thing.
+      (unless (or regionp  (not bnds)  (eql (point) (car bnds)))
+        (forward-thing thgcmd-last-thing-type (if (< (mark) (point)) 1 -1)))))
   (setq deactivate-mark  nil))
 
 ;;;###autoload
