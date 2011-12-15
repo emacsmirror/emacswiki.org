@@ -1,11 +1,9 @@
-Doxygen is a system for extracting documentation from source code. It supports a variety of programming languages, human languages, and output formats. You can find it at http://www.doxygen.org.
+Doxygen is a system for extracting documentation from source code. It supports a variety of programming languages, human languages and output formats. You can find it at http://www.doxygen.org.
 
-Try http://www.xeqt.com/doxygen/ if the link above does not work. - Veronica Loell 
+Doxymacs, authored by RyanTSammartino, is a minor-mode for (X)Emacs to edit files containing Doxygen documentation.  You can find it at http://doxymacs.sourceforge.net.
 
-Doxymacs is a minor-mode for (X)emacs to edit files with doxygen documentation. You can find it at http://doxymacs.sourceforge.net.
-
-With doxymacs minor-mode, you can insert doxygen tempo templates, start a browser to see
-a symbol's documentation, and you get a nice font-lock mode.
+With the doxymacs minor-mode, you can insert doxygen tempo templates, start a browser to see
+a symbol's documentation etc.  It also provides syntax highlight.
 
 To generate the doxygen 'tags file' needed by doxymacs, put something like:  
 
@@ -27,15 +25,7 @@ the `doxymacs-font-lock' function should be implemented as follows (or at leat I
 -- YannHodique
 
 -------
-Doxymacs' author is RyanTSammartino.
 
-----
-CategoryProgrammerUtils
-
-----
-Used with yard DoxyMacsYard
-
-------
 I made a small function that is inspired by Eclipse editing of the Java files.
 When the point is inside a multiline comment it automatically adds an asterisk 
 when you enter a newline. There may be some minor glitches if you have 
@@ -46,46 +36,41 @@ of code at the end that binds the function to return key, use it if you want.
 
 <pre>
 (defun my-javadoc-return () 
-  "Advanced C-m for Javadoc multiline comments.   
+  "Advanced `newline' command for Javadoc multiline comments.   
+Insert a `*' at the beggining of the new line if inside of a comment."
+  (interactive "*")
+  (let* ((last (point))
+         (is-inside
+          (if (search-backward "*/" nil t)
+              ;; there are some comment endings - search forward
+              (search-forward "/*" last t)
+            ;; it's the only comment - search backward
+            (goto-char last)
+            (search-backward "/*" nil t))))
 
-Inserts `*' at the beggining of the new line if 
-unless return was pressed outside the comment"
-  (interactive)
+    ;; go to last char position
+    (goto-char last)
 
-  (setq last (point))
+    ;; the point is inside some comment, insert `*'
+    (if is-inside
+        (progn
+          (newline-and-indent)
+          (insert "*"))
+      ;; else insert only new-line
+      (newline))))
 
-  (setq is-inside
-	(if (search-backward "*/" nil t)
-	    ;; there are some comment endings - search forward
-	    (if (search-forward "/*" last t)
-		't
-	      'nil)
-	
-	  ;; it's the only comment - search backward
-	  (goto-char last)
-	  (if (search-backward "/*" nil t)
-	      't
-	    'nil
-	    )
-	  )
-	)
-
-  ;; go to last char position
-  (goto-char last)
-
-  ;; the point is inside some comment, insert `*'
-  (if is-inside
-      (progn 
-	(insert "\n*")
-	(indent-for-tab-command))
-    
-    ;; else insert only new-line
-    (insert "\n"))
-      
-  )
-
-(add-hook 'c++-mode-hook (lambda () 
-				     (local-set-key "\r" 'my-javadoc-return)				     
-))
+(add-hook 'c++-mode-hook
+          (lambda ()
+            (local-set-key (kbd "<RET>") 'my-javadoc-return)))
 </pre>
 
+-------
+
+== See also ==
+
+DoxyMacsYard can be used to create YARD comments in Ruby buffers and
+highlight them to the extent the YARD tags match with the Doxygen
+ones.
+
+----
+CategoryProgrammerUtils
