@@ -442,11 +442,41 @@ And see what that value looks like.  Evidently, for some reason it has entries t
 Please make this test and let me know.  That will help me know the best way to fix this.  Most likely I need to map over the history to ensure absolute names, but I'd like to see for sure what it looks like.  No need to print the whole `file-name-history' value -- just enough to see how it represents files in both your home dir and other dirs.  Thx -- Drew.
 
 
+[new]
 
 
+Hello Drew!
+
+Updated version: ModIcMP
+
+I've created the same directory structure. Here is the output from the `*Messages*' buffer:
+
+from /tmp/2:
+
+    Computing completion candidates... [3 times]
+    hist: ("/tmp/2/b" "/tmp/2/a" "/tmp/2" "/tmp/")
+    111, cand: "a"
+    222, cand: "/tmp/2/a"
+    111, cand: "b"
+    222, cand: "/tmp/2/b"
+    111, cand: "c"
+    222, cand: "/tmp/2/c"
+
+from /home/pasja/1 ($HOME=/home/pasja):
+
+    Computing completion candidates... [4 times]
+    hist: ("~/1/b" "~/1/a" "~/1" "~/" "/tmp/2/b" "/tmp/2/a" "/tmp/2" "/tmp/")
+    111, cand: "a"
+    222, cand: "/home/pasja/1/a"
+    111, cand: "b"
+    222, cand: "/home/pasja/1/b"
+    111, cand: "c"
+    222, cand: "/home/pasja/1/c"
+
+-- PasJa
 
 
-
+p.s.: Would you consider the use of an official, publicly accessible VCS. It's a little hard to follow the *actual* code changes in icicles(not the changelog)
 
 
 
