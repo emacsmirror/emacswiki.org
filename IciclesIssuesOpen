@@ -478,6 +478,17 @@ from /home/pasja/1 ($HOME=/home/pasja):
 
 p.s.: Would you consider the use of an official, publicly accessible VCS. It's a little hard to follow the *actual* code changes in icicles(not the changelog)
 
+[new:DrewAdams:2011-12-15 14:55 UTC]
+1. OK, thanks. That's what I thought.  I'll take care of it, probably in a day or two.
+
+2. (VCS) Nope, sorry.  But `ediff' is your friend, if you want to compare versions of a particular file.  -- DrewAdams
+
+
+
+
+
+
+
 
 
 
