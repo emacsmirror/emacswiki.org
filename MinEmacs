@@ -1,74 +1,31 @@
-MinEmacs wants to help the OneTrueEditor become a lighter and yet even more instantly extendable environment by repackaging GNU Emacs as a carefully minimized bundle.
+MinEmacs is an initially minimal yet infinitely extensible variant of the One True Editor
 
-Striving for core functionality to meet the constraints of small LiveCD or USB GNU+Linux|*BSD distros - and I suppose WinPE if you must.
-
-[[DELPS]] is being investigated as the preferred packaging system.
-
-<pre>
-MakeMinEmacs -- Generate MinEmacs packages based on some version of GNU Emacs.
-
-1. Download GNU Emacs source-code snapshot from Version Control
-
-2. Apply patches to allow Emacs to compile with a severly reduced subset of packages
-
-3. Add autodownload.el -- autoload from https or email or whatever using https://github.com/emacsmirror/epkgs or whatever is best.
-
-4. Compile.
-
-5. Could make any or all: .ebuild .deb, .rpm, .msi, .exe, .pkg, .dmg
-</pre>
+The first release will be a simple script that removes non-critical packages from the core distribution and adds InstallCommandOnAttempt bootstrap code - so all the original COMMANDS and all those available from various package repos *appear* to be available from Meta-x and/or keyboard shortcuts, but are actually seamlessly downloaded when attempted.
 
 
+==Candidates for removal from core==
 
-I'm considering going ahead with this now, but just wanted to know if anyone is already working on the minimization part of this?
+''Please write your worries or explanations after each file or fileset, and add others with explanations''
 
-== Discussion ==
+* lisp/calc
+* lisp/cedet
+* lisp/emulation
+* lisp/erc
+* lisp/gnus
+* lisp/ldefs-boot.el -- Is this a copy of loaddefs.el?
+* lisp/mail
+* lisp/mh-e
+* lisp/obsolete
+* lisp/org
+* lisp/play
+* lisp/language
+* lisp/{many more non-critical files to consider}
 
-
-
-
-
-MinEmacs is a term (probably) introduced by PatrickAnderson to describe the idea that the user should be able to select a subset of the packages distributed with Emacs at compile time and/or be able to add or remove these packages later on. This would make the OneTrueEditor become a lighter yet even more instantly extended environment.
-
-This idea is somewhat related to the idea of a package manager for Emacs Lisp packages. However while there are some areas that overlap these two ideas can be implemented separately.
-
-=== Implementation outline ===
-
-First it has to be decided *which files belong to which package*. There has to be one special package which contains the files that are absolutely necessary for Emacs to work properly.
-
-Then these *packages have to be separated* somehow. Currently the lisp subdirectory of the Emacs source contains some subdirectories. But these are not related to individual packages. While it is not absolutely necessary to split the packages into subdirectories, this seams like a reasonable choice.
-
-I (JonasBernoulli) believe it would be a good idea to not only use separate directories for packages but even give each package it's own (git) *submodule*.
-
-It has been decided that Emacs development will switch to bzr at some point in the futur. From my limited experience with bzr I do not know if bzr supports something like submodules in git, but have a feeling that it doesn't (shared repositories isn't the same thing). Of course these submodules would have to *retain the history* of the contained files since the dawn of time.
-
-(So if you really like this idea and git you better get going implementing it because it might otherwise stay a fork forever. It's probably a very bad idea to ask rms to reconsider git for Emacs, unless you have an extremly good reason. Implementing MinEmacs might be such a reason. Might!)
-
-So now that you have carefully split-up packages into submodules the build system has to be adapted to cope with the new situation. As a start it might be enough to *modify the Makefiles* so that one can select packages by *editing some variable*.
-
-Last but not least there has to be an *easy way for users to select packages* using some interface. Possibly a package manager internal to Emacs.  As a start it is probable better to extend the normal build steps with an additional step (some shell script) to disable packages.
-
-PatrickAnderson proposed building native packages for various GNU/Linux distributions et cetera. I don't think that's such a good idea as the "et cetera" at the end of the last line suggests. A also think that all sources should be distributed with Emacs with no regard to what packages the user is allowed to exclude (not only in the vc tree but also in archives). And in that case native packages just wouldn't make much sense, while causing lots of problems.
+* etc/ -- Probably not everything can go, but there is quite a bit of silliness here
+* info/ -- This would require we first write `InstallInfoOnAttempt'
+* lisp/ChangeLog* -- hmm...
 
 
+==Future==
+Later releases may patch the source-code and recompile a smaller executable with a plugin interface which will allow us to augment the editor in a far more vigorous manner - allowing the possiblity of Video Editing, 3D-Modeling, Gaming, etc. while remaining within this great environment.
 
-
-== Messages ==
-[new]
-http://github.com/tarsius/emacs-internal contains branches for individual packages distributed with GNU Emacs. However these branches do not contain any useful commit messages. However the master branch of contains file packages.spec which assigns files to packages. This hasn't been done very carefully but might still serve as a starting point.
-
-This repository has been created for different purposes where history isn't important and some errors in file to package mapping isn't a big problem. While I find the idea of MinEmacs interesting, my focus is on packages *not* distributed with Emacs. -- JonasBernoulli
-
-[new]
-Hi PatrickAnderson. I am working an the [[Emacs Lisp Mirror]] [...]. -- JonasBernoulli
-
-[new]
-Thanks Jonas.  I'd like read-access as soon as you have something to share, and might be able to contribute if we find our goals align enough.  -- PatrickAnderson
-
-[new]
-You might be interested in http://github.com/tarsius/emacs-internal (finally something available...). -- JonasBernoulli
-
-[new]
-Thanks for the update Jonas.  I've temporarily lost steam for this project, so I'm glad you're pressing ahead. -- PatrickAnderson
-
-[new] You should consider working with Upstream on this. There is now the GNU ELPA package repository. For instance it should now be easy to remove Org from MinEmacs, because its also available as a Gnu Elpa package. etc. IMHO more packages should move from core to elpa. --JoakimVerona
