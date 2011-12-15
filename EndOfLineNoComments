@@ -1,7 +1,7 @@
 13:07 <impaktor> Is there a command/key like C-e but ignore
       comments? Like "(lisp-code-here)      ;;comment"
 
-There is not, but here's an example:
+There is not, but here's how you could write one yourself:
 
 {{{
 (defun impaktor-move-end-of-line ()
