@@ -13,8 +13,10 @@ from "main project hub" which points to Git a repository.
 
 * Project hub (never moves, bookmark this):
   http://freecode.com/projects/emacs-epackage
-* Suggest what Emacs extensions to package:
+* You can suggest what Emacs extensions you would like to see packaged at
   https://gist.github.com/1478886
+* Ongoing list of [https://github.com/jaalto/project--emacs-epackage-sources-list/blob/master/epackage.lst available packages for install]
+  
 
 To make an Emacs extension available in /epackage/ format, read manual
 about the the directory layout and used files.
