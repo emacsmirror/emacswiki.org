@@ -19,7 +19,7 @@ The first release will be a simple script that removes non-critical packages fro
 * lisp/org
 * lisp/play
 * lisp/language
-* lisp/{many more non-critical files to consider}
+* lisp/(many more non-critical files to consider)
 
 * etc/ -- Probably not everything can go, but there is quite a bit of silliness here
 * info/ -- This would require we first write `InstallInfoOnAttempt'
