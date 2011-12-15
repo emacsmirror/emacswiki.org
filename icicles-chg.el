@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2011, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Wed Dec 14 11:07:31 2011 (-0800)
+;; Last-Updated: Wed Dec 14 20:20:51 2011 (-0800)
 ;;           By: dradams
-;;     Update #: 7657
+;;     Update #: 7675
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-chg.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -83,6 +83,11 @@
 ;;;(@* "CHANGE LOG FOR `icicles-cmd1.el'")
 ;;
 ;; 2011/12/14 dadams
+;;     Added: icicle-bookmark-bookmark-file-narrow, icicle-bookmark-image-narrow,
+;;            icicle-bookmark-image(-other-window).
+;;     icicle-bookmark-set, icicle-bookmark(-other-window):
+;;       Changed bindings to be the same as top-level jump bindings.
+;;       Added bindings: icicle-bookmark-bookmark-file-narrow, icicle-bookmark-image-narrow.
 ;;     icicle-bookmark-list:
 ;;       Return bookmarks, not their names, unless prefix arg or icicle-bookmark-list-names-only-p.
 ;;       Bind icicle-unpropertize-completion-result-flag.  Use icicle-unpropertize-completion, not
@@ -5168,6 +5173,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-opt.el'")
 ;;
+;; 2011/12/14 dadams
+;;     icicle-top-level-key-bindings: Added icicle-bookmark-image(-other-window).
 ;; 2011/12/06 dadams
 ;;     icicle-default-value: Updated doc wrt new behavior for icicle-read-from-minibuffer.
 ;; 2011/11/01 dadams
