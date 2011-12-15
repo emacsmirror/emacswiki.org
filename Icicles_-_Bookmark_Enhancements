@@ -321,30 +321,33 @@ normally bound to.  If you use '''Bookmark+''', the default bindings are
 '''`C-x j j'''' and '''`C-x 4 j j'''', respectively.
 
 When you use these commands, you can ''narrow'' the completion
-candidates to bookmarks of a specific ''type'' using these keys:
+candidates to bookmarks of a specific ''type'' using the following keys:
 
-* '''`C-M-b'''' -- non-file ('''<u>b</u>'''uffer) bookmarks
-* '''`C-M-B'''' -- '''<u>B</u>'''ookmark-list bookmarks
-* '''`C-M-d'''' -- '''<u>D</u>'''ired bookmarks
-* '''`C-M-f'''' -- '''<u>f</u>'''ile bookmarks
-* '''`C-M-F'''' -- local-'''<u>F</u>'''ile bookmarks
-* '''`C-M-g'''' -- '''<u>g</u>'''nus bookmarks
-* '''`C-M-I'''' -- '''<u>I</u>'''nfo bookmarks
-* '''`C-M-K'''' -- des'''<u>K</u>'''top bookmarks
-* '''`C-M-m'''' -- '''<u>m</u>'''an' pages
-* '''`C-M-r'''' -- bookmarks with '''<u>r</u>'''egions
-* '''`C-M-u'''' -- '''<u>u</u>'''rl bookmarks
-* '''`C-M-w'''' -- '''<u>w</u>'''3m bookmarks
-* '''`##C-M-@##'''' -- remote-file bookmarks
-* '''`##C-M-= b##'''' -- bookmarks for a specific '''<u>b</u>'''uffer
-* '''`##C-M-= f##'''' -- bookmarks for a specific '''<u>f</u>'''ile
-* '''`##C-M-= .##'''' -- bookmarks for the current buffer ('''`##.##'''' as in UNIX "here": current location)
+* '''`C-x j b'''' -- non-file ('''<u>b</u>'''uffer) bookmarks
+* '''`C-x j B'''' -- '''<u>B</u>'''ookmark-list bookmarks
+* '''`C-x j d'''' -- '''<u>d</u>'''ired bookmarks
+* '''`C-x j f'''' -- '''<u>f</u>'''ile bookmarks
+* '''`C-x j g'''' -- '''<u>g</u>'''nus bookmarks
+* '''`C-x j i'''' -- '''<u>i</u>'''nfo bookmarks
+* '''`C-x j M-i'''' -- '''<u>i</u>'''mage bookmarks
+* '''`C-x j K'''' -- des'''<u>K</u>'''top bookmarks
+* '''`C-x j l'''' -- '''<u>l</u>'''ocal-file bookmarks
+* '''`C-x j m'''' -- '''<u>m</u>'''an' pages
+* '''`C-x j n'''' -- remote-file bookmarks ('''<u>n</u>'''etwork)
+* '''`C-x j r'''' -- bookmarks with '''<u>r</u>'''egions
+* '''`C-x j u'''' -- '''<u>u</u>'''rl bookmarks
+* '''`C-x j w'''' -- '''<u>w</u>'''3m bookmarks
+* '''`C-x j y'''' -- bookmark-file bookmarks
+* '''`##C-x .##'''' -- bookmarks for the current buffer ('''`<u>##.##</u>'''' as in UNIX "here": current location)
+* '''`##C-x = b##'''' -- bookmarks for a specific '''<u>b</u>'''uffer
+* '''`##C-x = f##'''' -- bookmarks for a specific '''<u>f</u>'''ile
 
-In addition, there are individual ''jump'' commands for bookmarks of
-each of each type, and these commands are bound by default to keys
-with the prefix '''`C-x 4 j'''' that use the same mnemonic characters as
-for narrowing.  For example, `<tt>icicle-bookmark-</tt>'''<tt><u>i</u></tt>'''<tt>nfo-other-window</tt>'
-is bound to `C-x 4 j i'.
+These same keys are used at the top level for individual ''jump''
+commands for bookmarks of each of each type.  For example,
+`<tt>icicle-bookmark-</tt>'''<tt><u>i</u></tt>'''<tt>nfo</tt>'
+ is bound to `C-x j i'.  Other-window jump
+commands are the same, but use the prefix key '''`C-x 4 j'''' instead of
+`C-x j'.
 
 Commands `icicle-bookmark' and
 `icicle-bookmark-other-window' can use a ''cache'' for the set of
