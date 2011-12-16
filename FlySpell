@@ -113,5 +113,34 @@ I used "M x ispell-region", and the words that ispell considered having incorrec
 
 -- Namo Amitabha
 
+== Easy Spell Check: key bindings and function to make FlySpell/ispell/aspell easy to use w/ out a mouse ==
+
+Place the below code in your .emacs
+
+F8 will call [http://www.emacswiki.org/emacs/InteractiveSpell ispell] (or aspell, etc) for the word the cursor is on (or near)
+
+Ctrl-Shift-F8 enables/disables FlySpell for your current buffer (highlights misspelled words as you type)
+
+Crtl-Meta-F8 runs FlySpell on your current buffer (highlights all misspelled words in the buffer)
+
+Ctrl-F8 calls ispell for the FlySpell highlighted word prior to the cursor's position
+
+Meta-F8 calls ispell for the FlySpell highlighted word after the cursor's position
+
+<pre>
+;; easy spell check
+(global-set-key (kbd "<f8>") 'ispell-word)
+(global-set-key (kbd "C-S-<f8>") 'flyspell-mode)
+(global-set-key (kbd "C-M-<f8>") 'flyspell-buffer)
+(global-set-key (kbd "C-<f8>") 'flyspell-check-previous-highlighted-word)
+(defun flyspell-check-next-highlighted-word ()
+  "Custom function to spell check next highlighted word"
+  (interactive)
+  (flyspell-goto-next-error)
+  (ispell-word)
+  )
+(global-set-key (kbd "M-<f8>") 'flyspell-check-next-highlighted-word)
+</pre>
+
 ----
 CategoryModes | CategorySpelling
