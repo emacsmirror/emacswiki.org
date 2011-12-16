@@ -7,8 +7,9 @@ The first release will be a simple script that removes non-critical packages fro
 
 ''Please write your worries or explanations after each file or fileset, and add others with explanations''
 
-* etc/DOC-X Emacs will not start without this 2MB file.
-* etc/DOC this file is identical to etc/DOC-X!
+* etc/DOC-X -- Emacs will not start without this 2MB file.
+* etc/DOC -- This file is identical to etc/DOC-X!
+* etc/tutorials/TUTORIAL -- Emacs will not start without this file.
 * lisp/calc
 * lisp/cedet
 * lisp/emulation
