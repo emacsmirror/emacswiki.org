@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2011, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Wed Dec 14 15:56:14 2011 (-0800)
+;; Last-Updated: Thu Dec 15 22:04:42 2011 (-0800)
 ;;           By: dradams
-;;     Update #: 13951
+;;     Update #: 13958
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-chg.el
 ;; Keywords: bookmarks, bookmark+
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -120,6 +120,8 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-1.el'")
 ;;
+;; 2011/12/15 dadams
+;;     bmkp-dired-this-dir-bookmark-p: Use file-name-directory, in case filename has wildcards.
 ;; 2011/12/13 dadams
 ;;     bmkp-handle-region-default: Limit buffer-substring-no-properties positions to point-min/max.
 ;; 2011/12/06 dadams
@@ -434,6 +436,9 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-bmu.el'")
 ;;
+;; 2011/12/15 dadams
+;;     bmkp-bmenu-propertize-item: Use bmkp-local-directory face also for Dired (e.g. with wildcards).
+;;     bmkp-bmenu-mode-status-help: Clarify legend for remote and local dirs/Dired.
 ;; 2011/12/08 dadams
 ;;     bmkp-bmenu-mouse-3-menu: Use easymenu to build the menu.  Conditionalize some items.
 ;;     Bind down-mouse-3, not mouse-3, to bmkp-bmenu-mouse-3-menu.  (bind mouse-3 to ignore).
