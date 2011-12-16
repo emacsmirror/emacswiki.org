@@ -83,6 +83,9 @@ Now you should have a jslint command on your path, you can set it up in a simila
                '("\\.js\\'" flymake-jslint-init)))
 </pre>
 
+[new]
+Latest versions of node-jslint (as of 10-dec-2011) have changed the error reporting format, breaking the pattern regexp above and, even worse, reporting errors on two lines. See http://lapin-bleu.net/riviera/?p=191
+
 
 == With JSLint server on node.js (lintnode) ==
 
@@ -128,6 +131,7 @@ You'll need Karl's [[JavaScriptMode]], spidermonkey 1.5 or greater and emacs 22.
 
   (add-hook 'javascript-mode-hook '(lambda () (flymake-js-load)))
 </pre>
+
 
 == With Rhino ==
 
