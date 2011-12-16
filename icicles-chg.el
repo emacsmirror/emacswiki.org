@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2011, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Thu Dec 15 10:52:29 2011 (-0800)
+;; Last-Updated: Fri Dec 16 14:53:16 2011 (-0800)
 ;;           By: dradams
-;;     Update #: 7680
+;;     Update #: 7681
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-chg.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -82,9 +82,6 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd1.el'")
 ;;
-;; 2011/12/15 dadams
-;;     icicle-display-candidates-in-Completions:
-;;       For face icicle-historical-candidate, expand file names before comparing.
 ;; 2011/12/14 dadams
 ;;     Added: icicle-bookmark-bookmark-file-narrow, icicle-bookmark-image-narrow,
 ;;            icicle-bookmark-image(-other-window).
@@ -1119,6 +1116,9 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-fn.el'")
 ;;
+;; 2011/12/15 dadams
+;;     icicle-display-candidates-in-Completions:
+;;       For face icicle-historical-candidate, expand file names before comparing.
 ;; 2011/12/06 dadams
 ;;     icicle-read-from-minibuffer: Do not add default value to prompt.
 ;; 2011/10/21 dadams
