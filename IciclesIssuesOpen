@@ -524,9 +524,9 @@ OK, I've uploaded a fix -- please let me know how it goes.
 
 FYI, here's the story: The Emacs history lists record exactly the input you enter (e.g. using `RET').  Emacs itself never compares entries of this list.  '''Icicles''' compares them against current candidates for two purposes: (1) highlighting with face `icicle-historical-candidate' and (2) `M-pause' (`icicle-keep-only-past-inputs').
 
-Until now, the comparison was literal, including for file names.  If you enter "~foo/bar.el" then exactly that string is recorded in the history.  Candidates that are later compared against the history are expanded in the current directory, to become absolute file names (e.g. "/home/foo/bar.el").  The matching is literal, syntactic.
+Until now, the comparison was literal, including for file names.  If you enter "##~foo/bar.el##" then exactly that string is recorded in the history.  Candidates that are later compared against the history are expanded in the current directory, to become absolute file names (e.g. "##/home/foo/bar.el##").  The matching is literal, syntactic.
 
-I've now enhanced this to try to accommodate input entries such as "~foo/bar.el", by expanding not only the current set of candidates but also everything in the history list (for only this purpose -- the list itself is not changed).  Obviously, this can mean a performance hit.  If there is a long history list and there are lots of current candidates, the slowdown from this file-name expansion might be noticeable.
+I've now enhanced this to try to accommodate input entries such as "##~foo/bar.el##", by expanding not only the current set of candidates but also everything in the history list (for only this purpose -- the list itself is not changed).  Obviously, this can mean a performance hit.  If there is a long history list and there are lots of current candidates, the slowdown from this file-name expansion might be noticeable.
 
 Anyway, it should work now.  Let me know.
 Thanks for your patience and your careful reporting. -- DrewAdams
