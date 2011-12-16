@@ -7,9 +7,9 @@
 ;; Copyright (C) 1999-2011, Drew Adams, all rights reserved.
 ;; Created: Fri Mar 19 15:58:58 1999
 ;; Version: 21.2
-;; Last-Updated: Fri Dec 16 09:40:29 2011 (-0800)
+;; Last-Updated: Fri Dec 16 14:16:13 2011 (-0800)
 ;;           By: dradams
-;;     Update #: 4328
+;;     Update #: 4350
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/dired+.el
 ;; Keywords: unix, mouse, directories, diredp, dired
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -257,6 +257,8 @@
 ;;; Change Log:
 ;;
 ;; 2011/12/16 dadams
+;;     diredp-menu-bar-mark-menu: Removed Revert item.
+;;     diredp-menu-bar-subdir-menu: Added: image-dired-dired-toggle-marked-thumbs.
 ;;     diredp-mouse-3-menu:
 ;;       Use commands bound to keys, so the keys show up in the menu.  Prefer *-this-file.
 ;;       Correct the mark/unmark/flag menu-item visibility.  Added Capitalize.
@@ -1054,14 +1056,6 @@ If HDR is non-nil, insert a header line with the directory name."
 (define-key diredp-menu-bar-immediate-menu [diredp-describe-file]
   '(menu-item "Describe" diredp-describe-file
     :help "Describe the file or directory at cursor"))
-(when (fboundp 'image-dired-dired-display-external) ; Emacs 22+
-  (define-key diredp-menu-bar-immediate-menu [image-dired-dired-display-external]
-    '(menu-item "Display Image Externally" image-dired-dired-display-external
-      :help "Display image in external viewer"))
-  (define-key diredp-menu-bar-immediate-menu [image-dired-dired-display-image]
-    '(menu-item "Display Image" image-dired-dired-display-image
-      :help "Display image in a separate window"))
-  (define-key diredp-menu-bar-immediate-menu [separator-image] '("--")))
 (define-key diredp-menu-bar-immediate-menu [chown]
   '(menu-item "Change Owner..." diredp-chown-this-file
     :visible (not (memq system-type '(ms-dos windows-nt)))
@@ -1167,6 +1161,13 @@ If HDR is non-nil, insert a header line with the directory name."
 (define-key diredp-menu-bar-immediate-menu [insert-subdir]
   '(menu-item "Insert This Subdir" dired-maybe-insert-subdir
     :enable (atom (diredp-this-subdir)) :help "Insert a listing of this subdirectory"))
+(when (fboundp 'image-dired-dired-display-image) ; Emacs 22+
+    (define-key diredp-menu-bar-immediate-menu [image-dired-dired-display-external]
+      '(menu-item "Display Image Externally" image-dired-dired-display-external
+                  :help "Display image in external viewer"))
+    (define-key diredp-menu-bar-immediate-menu [image-dired-dired-display-image]
+      '(menu-item "Display Image" image-dired-dired-display-image
+                  :help "Display sized image in a separate window")))
 (define-key diredp-menu-bar-immediate-menu [view]
   '(menu-item "View (Read Only)" dired-view-file
     :help "Examine file at cursor in read-only mode"))
@@ -1425,8 +1426,6 @@ If HDR is non-nil, insert a header line with the directory name."
 (define-key diredp-menu-bar-mark-menu [marks]
   '(menu-item "Change Marks..." dired-change-marks
     :help "Replace marker with another character"))
-(define-key diredp-menu-bar-mark-menu [revert]
-  '(menu-item "Refresh (Show All)" revert-buffer :help "Update directory contents"))
 (define-key diredp-menu-bar-mark-menu [omit-unmarked]
   '(menu-item "Omit Unmarked" diredp-omit-unmarked :help "Hide lines of unmarked files"))
 (define-key diredp-menu-bar-mark-menu [omit-marked]
@@ -1536,6 +1535,8 @@ If HDR is non-nil, insert a header line with the directory name."
   '(menu-item "Tree Down" dired-tree-down :help "Go to first subdirectory header down the tree"))
 (define-key diredp-menu-bar-subdir-menu [tree-up]
   '(menu-item "Tree Up" dired-tree-up :help "Go to first subdirectory header up the tree"))
+(define-key diredp-menu-bar-subdir-menu [up]
+  '(menu-item "Up Directory" dired-up-directory :help "Dired the parent directory"))
 (define-key diredp-menu-bar-subdir-menu [prev-subdir]
   '(menu-item "Prev Subdir" dired-prev-subdir :help "Go to previous subdirectory header line"))
 (define-key diredp-menu-bar-subdir-menu [next-subdir]
@@ -1548,8 +1549,10 @@ If HDR is non-nil, insert a header line with the directory name."
   '(menu-item "This Subdir" dired-maybe-insert-subdir
     :help "Move to subdirectory line or listing"))
 (define-key diredp-menu-bar-subdir-menu [separator-subdir] '("--"))
-(define-key diredp-menu-bar-mark-menu [revert]
-  '(menu-item "Refresh" revert-buffer :help "Update directory contents"))
+(when (fboundp 'image-dired-dired-toggle-marked-thumbs) ; Emacs 24+
+  (define-key diredp-menu-bar-subdir-menu [image-dired-dired-toggle-marked-thumbs]
+    '(menu-item "Toggle Image Thumbnails" image-dired-dired-toggle-marked-thumbs
+      :help "Add or remove image thumbnails in front of marked file names")))
 (when (fboundp 'dired-isearch-filenames) ; Emacs 23+
   (define-key diredp-menu-bar-subdir-menu [isearch-filenames-regexp]
     '(menu-item "Isearch Regexp in File Names..." dired-isearch-filenames-regexp
@@ -1559,18 +1562,18 @@ If HDR is non-nil, insert a header line with the directory name."
       :help "Incrementally search for literal text in file names only.")))
 (when (or (> emacs-major-version 21) (fboundp 'wdired-change-to-wdired-mode))
   (define-key diredp-menu-bar-subdir-menu [wdired-mode]
-    '(menu-item "Edit File Names (Wdired)" wdired-change-to-wdired-mode
+    '(menu-item "Edit File Names (WDired)" wdired-change-to-wdired-mode
       :help "Put a dired buffer in a mode in which filenames are editable"
       :keys "C-x C-q" :filter (lambda (x) (if (eq major-mode 'dired-mode) x)))))
 (when (fboundp 'dired-compare-directories) ; Emacs 22+
   (define-key diredp-menu-bar-subdir-menu [compare-directories]
     '(menu-item "Compare Directories..." dired-compare-directories
       :help "Mark files with different attributes in two Dired buffers")))
-(define-key diredp-menu-bar-subdir-menu [up]
-  '(menu-item "Up Directory" dired-up-directory :help "Dired the parent directory"))
 (define-key diredp-menu-bar-subdir-menu [create-directory] ; Moved from "Immediate".
   '(menu-item "New Directory..." dired-create-directory :help "Create a directory"))
 (define-key diredp-menu-bar-subdir-menu [separator-dired-on-set] '("--"))
+(define-key diredp-menu-bar-subdir-menu [revert]
+  '(menu-item "Refresh (Sync & Show All)" revert-buffer :help "Update directory contents"))
 (define-key diredp-menu-bar-subdir-menu [diredp-fileset]
   '(menu-item "Dired Fileset..." diredp-fileset
     :enable (> emacs-major-version 21) :help "Open Dired on an Emacs fileset"))
