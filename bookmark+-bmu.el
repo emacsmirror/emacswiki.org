@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2011, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 09:05:21 2010 (-0700)
-;; Last-Updated: Thu Dec  8 11:32:40 2011 (-0800)
+;; Last-Updated: Thu Dec 15 21:57:09 2011 (-0800)
 ;;           By: dradams
-;;     Update #: 1040
+;;     Update #: 1050
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-bmu.el
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -3125,9 +3125,9 @@ Bookmark file:\t%s\nSorted:\t\t%s\nFiltering:\t%s\nMarked:\t\t%d\nOmitted:\t%d\n
                 (buffer           "Buffer\n")
                 (no-buf           "No current buffer\n")
                 (bad              "Possibly invalid bookmark\n")
-                (remote           "Remote file or directory\n")
+                (remote           "Remote file/directory or Dired buffer (could have wildcards)\n")
                 (sudo             "Remote accessed by `su' or `sudo'\n")
-                (local-dir        "Local directory\n")
+                (local-dir        "Local directory or Dired buffer (could have wildcards)\n")
                 (bookmark-list    "*Bookmark List*\n")
                 (bookmark-file    "Bookmark file\n")
                 (desktop          "Desktop\n")
@@ -3512,7 +3512,8 @@ Return the propertized string (the bookmark name)."
             (append (bmkp-face-prop 'bmkp-remote-file)
                     `(mouse-face highlight follow-link t
                       help-echo (format "mouse-2: Jump to (visit) remote file `%s'" ,filep))))
-           ((and filep (file-directory-p filep)) ; Local directory
+           ((and filep                  ; Local directory or local Dired buffer (could be wildcards)
+                 (or (file-directory-p filep) (bmkp-dired-bookmark-p bookmark)))
             (append (bmkp-face-prop 'bmkp-local-directory)
                     `(mouse-face highlight follow-link t
                       help-echo (format "mouse-2: Dired directory `%s'" ,filep))))
@@ -4536,56 +4537,57 @@ Marked bookmarks that have no associated file are ignored."
                (setq bmk-name (bookmark-bmenu-bookmark))
                (when bmk-name
                  (sit-for 0)
-                 (let* ((map (easy-menu-create-menu
-                              "This Bookmark"
-                              `(,(if (bmkp-bookmark-name-member bmk-name bmkp-bmenu-marked-bookmarks)
-                                     ["Unmark" bookmark-bmenu-unmark]
-                                     ["Mark" bookmark-bmenu-mark])
-                                ,(save-excursion
-                                  (goto-char (posn-point mouse-pos))
-                                  (beginning-of-line)
-                                  (if (looking-at "^D")
-                                      ["Unmark" bookmark-bmenu-unmark]
-                                    ["Flag for Deletion" bookmark-bmenu-delete]))
-                                ["Omit" bmkp-bmenu-omit]
-                                ["Jump To" bookmark-bmenu-this-window]
-                                ["Jump To in Other Window" bookmark-bmenu-other-window]
-                                "--"    ; ---------------------------------------
-                                ["Copy Tags" bmkp-bmenu-copy-tags
-                                 :active (bmkp-get-tags bmk-name)]
-                                ["Paste Tags (Add)" bmkp-bmenu-paste-add-tags]
-                                ["Paste Tags (Replace)" bmkp-bmenu-paste-replace-tags]
-                                ["Add Some Tags..." bmkp-bmenu-add-tags]
-                                ["Remove Some Tags..." bmkp-bmenu-remove-tags
-                                 :active (bmkp-get-tags bmk-name)]
-                                ["Remove All Tags..." bmkp-bmenu-remove-all-tags
-                                 :active (bmkp-get-tags bmk-name)]
-                                ["Rename Tag..." bmkp-rename-tag
-                                 :active (bmkp-get-tags bmk-name)]
-                                ["Set Tag Value..." bmkp-bmenu-set-tag-value
-                                 :active (bmkp-get-tags bmk-name)]
-                                ["--" 'ignore :visible (featurep 'bookmark+-lit)] ; -----------------
-                                ["Highlight" bmkp-bmenu-light
-                                 :visible (featurep 'bookmark+-lit)
-                                 :active (not (bmkp-lighted-p bmk-name))]
-                                ["Unhighlight" bmkp-bmenu-unlight
-                                 :visible (featurep 'bookmark+-lit)
-                                 :active (bmkp-lighted-p bmk-name)]
-                                ["Set Lighting" bmkp-bmenu-set-lighting
-                                 :visible (featurep 'bookmark+-lit)]
-                                "--"    ; ----------------------------------------
-                                ["Show Annotation" bookmark-bmenu-show-annotation
-                                 :active (bookmark-get-annotation bmk-name)]
-                                ["Add/Edit Annotation..." bookmark-bmenu-edit-annotation]
-                                ["Edit Name, File Name..." bmkp-bmenu-edit-bookmark]
-                                ["Rename..." bookmark-bmenu-rename]
-                                ["Relocate..." bookmark-bmenu-relocate]
-                                ["Toggle Temporary/Savable" bmkp-bmenu-toggle-temporary]
-                                "--"    ; ----------------------------------------
-                                ["Describe" bmkp-bmenu-describe-this-bookmark])))
-                        (user-selection (x-popup-menu event map)))
-                   (when user-selection
-                     (call-interactively (lookup-key map (apply 'vector user-selection)))))))
+                 (let* ((map     (easy-menu-create-menu
+                                  "This Bookmark"
+                                  `(,(if (bmkp-bookmark-name-member bmk-name
+                                                                    bmkp-bmenu-marked-bookmarks)
+                                         ["Unmark" bookmark-bmenu-unmark]
+                                         ["Mark" bookmark-bmenu-mark])
+                                    ,(save-excursion
+                                      (goto-char (posn-point mouse-pos))
+                                      (beginning-of-line)
+                                      (if (looking-at "^D")
+                                          ["Unmark" bookmark-bmenu-unmark]
+                                        ["Flag for Deletion" bookmark-bmenu-delete]))
+                                    ["Omit" bmkp-bmenu-omit]
+                                    ["Jump To" bookmark-bmenu-this-window]
+                                    ["Jump To in Other Window" bookmark-bmenu-other-window]
+                                    "--" ; ----------------------------------------------------
+                                    ["Copy Tags" bmkp-bmenu-copy-tags
+                                     :active (bmkp-get-tags bmk-name)]
+                                    ["Paste Tags (Add)" bmkp-bmenu-paste-add-tags]
+                                    ["Paste Tags (Replace)" bmkp-bmenu-paste-replace-tags]
+                                    ["Add Some Tags..." bmkp-bmenu-add-tags]
+                                    ["Remove Some Tags..." bmkp-bmenu-remove-tags
+                                     :active (bmkp-get-tags bmk-name)]
+                                    ["Remove All Tags..." bmkp-bmenu-remove-all-tags
+                                     :active (bmkp-get-tags bmk-name)]
+                                    ["Rename Tag..." bmkp-rename-tag
+                                     :active (bmkp-get-tags bmk-name)]
+                                    ["Set Tag Value..." bmkp-bmenu-set-tag-value
+                                     :active (bmkp-get-tags bmk-name)]
+                                    ["--" 'ignore :visible (featurep 'bookmark+-lit)] ; ---------------
+                                    ["Highlight" bmkp-bmenu-light
+                                     :visible (featurep 'bookmark+-lit)
+                                     :active (not (bmkp-lighted-p bmk-name))]
+                                    ["Unhighlight" bmkp-bmenu-unlight
+                                     :visible (featurep 'bookmark+-lit)
+                                     :active (bmkp-lighted-p bmk-name)]
+                                    ["Set Lighting" bmkp-bmenu-set-lighting
+                                     :visible (featurep 'bookmark+-lit)]
+                                    "--" ; ----------------------------------------------------
+                                    ["Show Annotation" bookmark-bmenu-show-annotation
+                                     :active (bookmark-get-annotation bmk-name)]
+                                    ["Add/Edit Annotation..." bookmark-bmenu-edit-annotation]
+                                    ["Edit Name, File Name..." bmkp-bmenu-edit-bookmark]
+                                    ["Rename..." bookmark-bmenu-rename]
+                                    ["Relocate..." bookmark-bmenu-relocate]
+                                    ["Toggle Temporary/Savable" bmkp-bmenu-toggle-temporary]
+                                    "--" ; ----------------------------------------------------
+                                    ["Describe" bmkp-bmenu-describe-this-bookmark])))
+                        (choice  (x-popup-menu event map)))
+                   (when choice
+                     (call-interactively (lookup-key map (apply 'vector choice)))))))
           (when bmkp-bmenu-line-overlay (delete-overlay bmkp-bmenu-line-overlay)))))))
 
 ;;;;;;;;;;;;;;;;;;;;;
