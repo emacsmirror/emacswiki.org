@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:53 2006
 ;; Version: 22.0
-;; Last-Updated: Thu Dec 15 10:21:37 2011 (-0800)
+;; Last-Updated: Fri Dec 16 15:04:47 2011 (-0800)
 ;;           By: dradams
-;;     Update #: 12731
+;;     Update #: 12734
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-fn.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -2814,8 +2814,7 @@ NO-DISPLAY-P non-nil means do not display the candidates; just
                                                   (symbol-value histvar))))
                         (case-fold-search
                          ;; Don't bother with buffer completion, `read-buffer-completion-ignore-case'.
-                         (if (and (or (icicle-file-name-input-p) icicle-abs-file-candidates)
-                                  (boundp 'read-file-name-completion-ignore-case))
+                         (if (and filep  (boundp 'read-file-name-completion-ignore-case))
                              read-file-name-completion-ignore-case
                            completion-ignore-case)))
                    (goto-char (icicle-start-of-candidates-in-Completions))
@@ -3000,8 +2999,7 @@ NO-DISPLAY-P non-nil means do not display the candidates; just
                                          start    (match-end 0))))))))
 
                        ;; Show thumbnail for an image file.
-                       (when (and (or (icicle-file-name-input-p) icicle-abs-file-candidates)
-                                  (fboundp 'image-file-name-regexp)
+                       (when (and filep  (fboundp 'image-file-name-regexp)
                                   icicle-image-files-in-Completions
                                   (if (fboundp 'display-graphic-p) (display-graphic-p) window-system))
                          (let ((image-file  (icicle-transform-multi-completion
