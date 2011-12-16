@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2011, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 13:43:55 2010 (-0700)
-;; Last-Updated: Tue Dec 13 11:02:17 2011 (-0800)
+;; Last-Updated: Thu Dec 15 21:44:25 2011 (-0800)
 ;;           By: dradams
-;;     Update #: 2668
+;;     Update #: 2669
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-1.el
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -3684,8 +3684,9 @@ BOOKMARK is a bookmark name or a bookmark record."
 (defun bmkp-dired-this-dir-bookmark-p (bookmark)
   "Return non-nil if BOOKMARK is a Dired bookmark for the `default-directory'.
 BOOKMARK is a bookmark name or a bookmark record."
-  (and (bmkp-dired-bookmark-p bookmark)  (let ((dir  (bookmark-get-filename bookmark)))
-                                           (bmkp-same-file-p dir default-directory))))
+  (and (bmkp-dired-bookmark-p bookmark)
+       (let ((dir  (file-name-directory (bookmark-get-filename bookmark))))
+         (bmkp-same-file-p dir default-directory))))
 
 (defun bmkp-file-bookmark-p (bookmark)
   "Return non-nil if BOOKMARK bookmarks a file or directory.
