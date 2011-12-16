@@ -17,6 +17,16 @@ See also:
 * IciclesDiscussion -- General discussion about the library, feedback, possible uses, and possible enhancements.
 
 
+
+
+
+
+
+
+
+
+
+
 === How To Report an Icicles Issue ===
 
 You can report an '''Icicles''' issue (bug) on this page -- please follow the formatting suggestion provided below ([[#HowToUseThisPage]]).
@@ -31,6 +41,12 @@ one of the following:
 Always mention your Emacs version and platform (e.g. Windows, GNU/Linux). If you aren't using the latest '''Icicles''' files, let me know which you are using. '''Icicles''' files each have an <code>Update #</code> field in the header, which identifies the file exactly.
 
 The advantage of reporting a bug here is that others can share in the discussion. The advantage of reporting a bug by email is that I will see it immediately. Sometimes I don't notice a bug report on this page for a while.
+
+
+
+
+
+
 
 
 
@@ -81,6 +97,22 @@ Better yet, use this to separate threads (puts space before and after the horizo
 
 
 ''Enter your report below.''
+
+
+
+
+
+
+<pre>
+
+</pre>
+----
+<pre>
+
+</pre>
+
+[new] I'm having a problem that is really frustrating me. I've got a new version of icicles from git. The old version I had when I did M-x cir TAB would instantly complete to circe. Now i have to hit tab multiple times. It's really frustrating me that I can't figure out how to fix this problem. -- DaveKerschner
+
 
 
 
