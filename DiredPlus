@@ -57,7 +57,15 @@ Things to notice in this screenshot:
 
 * Files that are marked and files that are flagged for deletion have the mark/flag highlighted differently (e.g. '''<code>Makefile</code>''' versus '''<code>psgml-api.elc</code>'''). 
 
-Here is a screenshot showing that the entire line is highlighted on mouse-over, regardless of where on the line the mouse is. Click `mouse-2' anywhere on the line to open its file or directory.
+
+
+If you also use library <tt>[[mouse3.el]]</tt> then you can choose to use its popup menu, which is specially adapted for Dired, whenever there is an active region, rather than the simpler menu shown above.  Here is a screenshot. 
+
+[[image:DrewsEmacsDiredRegionMouse3]]
+
+You can try ##mouse3.el## if you want to see what is in each of the submenus.  I'll just mention that the first one ('''Dired by name''' in the screenshot) duplicates the complete Dired menu-bar, so you don't really need to show the menu-bar at all. The others provide various operations on the selected (region) files.
+
+Coming back to just '''Dired+''' (with or without <tt>[[mouse3.el]]</tt>), here is a screenshot showing that the entire line is highlighted on mouse-over, regardless of where on the line the mouse is. Click `mouse-2' anywhere on the line to open its file or directory.
 
 [[image:DrewsEmacsDiredLine]]
 
@@ -69,7 +77,7 @@ And here is a screenshot showing the `mouse-3' popup menu available when no regi
 
 [[image:DrewsEmacsDiredThisFile]]
 
-(This screenshot is not up-to-date -- the menu now includes items '''Bookmark''', '''Tag''', '''Untag''', and '''Grep'''. See [[#MenuScreenshots]] for more up-to-date menu screenshots.)
+(Some of the menu items shown here are available onlyif you also use '''[[Bookmark+]]'''.)
 
 
 
