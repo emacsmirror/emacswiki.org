@@ -7,9 +7,9 @@
 ;; Copyright (C) 1999-2011, Drew Adams, all rights reserved.
 ;; Created: Fri Mar 19 15:58:58 1999
 ;; Version: 21.2
-;; Last-Updated: Fri Dec  9 10:00:04 2011 (-0800)
+;; Last-Updated: Fri Dec 16 09:40:29 2011 (-0800)
 ;;           By: dradams
-;;     Update #: 4258
+;;     Update #: 4328
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/dired+.el
 ;; Keywords: unix, mouse, directories, diredp, dired
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -256,6 +256,10 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2011/12/16 dadams
+;;     diredp-mouse-3-menu:
+;;       Use commands bound to keys, so the keys show up in the menu.  Prefer *-this-file.
+;;       Correct the mark/unmark/flag menu-item visibility.  Added Capitalize.
 ;; 2011/12/09 dadams
 ;;     diredp-w32-drives: Use dolist, not mapcar.
 ;;     diredp-mouse-3-menu: Use easymenu to build the menu.  Conditionalize some items.
@@ -4440,69 +4444,70 @@ With non-nil prefix arg, mark them instead."
                               (easy-menu-create-menu
                                "This File"
                                ;; Stuff from `Mark' menu.
-                               `(["Describe" diredp-mouse-describe-file]
+                               `(
+                                 ["Describe" diredp-describe-file]
                                  "--"   ; -----------------------------------------------
-                                 ,(if (dired-file-marker file/dir-name)
-                                      ["Unmark" diredp-mouse-unmark] ; It's now marked.
-                                      ["Mark"  diredp-mouse-mark]) ;  It's now unmarked.
-                                 ,(save-excursion
-                                   (goto-char (posn-point mouse-pos))
-                                   (beginning-of-line)
-                                   (if (looking-at "^D")
-                                       ["Unmark" diredp-mouse-unmark]
-                                     ["Flag for Deletion" diredp-mouse-flag-file-deletion]))
-                                 ["Delete..." diredp-mouse-do-delete]
+                                 ["Mark"  dired-mark
+                                  :visible (not (eql (dired-file-marker file/dir-name)
+                                                 dired-marker-char))]
+                                 ["Unmark" dired-unmark
+                                  :visible (dired-file-marker file/dir-name)]
+                                 ["Flag for Deletion" dired-flag-file-deletion
+                                  :visible (not (eql (dired-file-marker file/dir-name)
+                                                 dired-del-marker))]
+                                 ["Delete..." diredp-delete-this-file]
                                  "--"   ; -----------------------------------------------
                                  ;; Stuff from `Single' / `Multiple' menus.
-                                 ["Open" diredp-mouse-find-file]
-                                 ["Open in Other Window"
-                                  dired-mouse-find-file-other-window]
-                                 ["Open in Other Frame" diredp-mouse-find-file-other-frame]
-                                 ["Open Associated Windows App" dired-mouse-w32-browser
+                                 ["Open" dired-find-file]
+                                 ["Open in Other Window" dired-find-file-other-window]
+                                 ["Open in Other Frame" diredp-find-file-other-frame]
+                                 ["Open Associated Windows App" dired-w32-browser
                                   :visible (featurep 'w32-browser)]
-                                 ["Open in Windows Explorer" dired-mouse-w32explore
+                                 ["Open in Windows Explorer" dired-w32explore
                                   :visible (featurep 'w32-browser)]
-                                 ["View (Read Only)" diredp-mouse-view-file]
+                                 ["View (Read Only)" dired-view-file]
                                  "--"   ; -----------------------------------------------
-                                 ["Compare..." diredp-mouse-ediff]
-                                 ["Diff..." diredp-mouse-diff]
-                                 ["Diff with Backup" diredp-mouse-backup-diff]
+                                 ["Compare..." diredp-ediff]
+                                 ["Diff..." dired-diff]
+                                 ["Diff with Backup" dired-backup-diff]
                                  ["--" 'ignore :visible (featurep 'bookmark+)] ; -----------
-                                 ["Bookmark..." diredp-mouse-do-bookmark]
-                                 ["Tag..." diredp-mouse-do-tag
+                                 ["Bookmark..." diredp-bookmark-this-file]
+                                 ["Tag..." diredp-tag-this-file
                                   :visible (featurep 'bookmark+)]
-                                 ["Untag..." diredp-mouse-do-untag
+                                 ["Untag..." diredp-untag-this-file
                                   :visible (featurep 'bookmark+)]
-                                 ["Remove All Tags" diredp-mouse-do-remove-all-tags
+                                 ["Remove All Tags" diredp-remove-all-tags-this-file
                                   :visible (featurep 'bookmark+)]
-                                 ["Copy Tags" diredp-mouse-copy-tags
+                                 ["Copy Tags" diredp-copy-tags-this-file
                                   :visible (featurep 'bookmark+)]
-                                 ["Paste Tags (Add)" diredp-mouse-do-paste-add-tags
+                                 ["Paste Tags (Add)" diredp-paste-add-tags-this-file
                                   :visible (featurep 'bookmark+)]
-                                 ["Paste Tags (Replace)" diredp-mouse-do-paste-replace-tags
+                                 ["Paste Tags (Replace)" diredp-paste-replace-tags-this-file
                                   :visible (featurep 'bookmark+)]
-                                 ["Set Tag Value..." diredp-mouse-do-set-tag-value
+                                 ["Set Tag Value..." diredp-set-tag-value-this-file
                                   :visible (featurep 'bookmark+)]
                                  "--"   ; -----------------------------------------------
-                                 ["Copy to..." diredp-mouse-do-copy]
-                                 ["Rename to..." diredp-mouse-do-rename]
-                                 ["Upcase" diredp-mouse-upcase]
-                                 ["Downcase" diredp-mouse-downcase]
-                                 ["Symlink to (Relative)..." dired-do-relsymlink
+                                 ["Copy to..." dired-do-copy]
+                                 ["Rename to..." diredp-rename-this-file]
+                                 ["Upcase" diredp-upcase-this-file]
+                                 ["Downcase" diredp-downcase-this-file]
+                                 ["Capitalize" diredp-capitalize-this-file]
+                                 "--"   ; -----------------------------------------------
+                                 ["Symlink to (Relative)..." diredp-relsymlink-this-file
                                   :visible (fboundp 'dired-do-relsymlink)] ; In `dired-x.el'.
-                                 ["Symlink to..." diredp-mouse-do-symlink]
-                                 ["Hardlink to..." diredp-mouse-do-hardlink]
+                                 ["Symlink to..." dired-do-symlink]
+                                 ["Hardlink to..." dired-do-hardlink]
                                  "--"   ; -----------------------------------------------
-                                 ["Shell Command..." diredp-mouse-do-shell-command]
-                                 ["Print..." diredp-mouse-do-print]
-                                 ["Grep" diredp-mouse-do-grep]
-                                 ["Compress/Uncompress" diredp-mouse-do-compress]
-                                 ["Byte Compile" diredp-mouse-do-byte-compile]
-                                 ["Load" diredp-mouse-do-load]
+                                 ["Shell Command..." dired-do-shell-command]
+                                 ["Print..." diredp-print-this-file]
+                                 ["Grep" diredp-do-grep]
+                                 ["Compress/Uncompress" diredp-compress-this-file]
+                                 ["Byte-Compile" diredp-byte-compile-this-file]
+                                 ["Load" dired-do-load]
                                  "--"   ; -----------------------------------------------
-                                 ["Change Mode..." diredp-mouse-do-chmod]
-                                 ["Change Group..." diredp-mouse-do-chgrp]
-                                 ["Change Owner..." diredp-mouse-do-chown]))))
+                                 ["Change Mode..." diredp-chmod-this-file]
+                                 ["Change Group..." dired-do-chgrp]
+                                 ["Change Owner..." dired-do-chown]))))
                          (when diredp-file-line-overlay
                            (delete-overlay diredp-file-line-overlay))
                          (setq choice  (x-popup-menu event map))
