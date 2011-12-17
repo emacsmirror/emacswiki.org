@@ -23,7 +23,7 @@ with a line like the following one in your ~/.authinfo
 machine imap.gmail.com login username@gmail.com password secret port 993
 </pre>
 
-If you prefer enable Gmail as primary select method:
+If you prefer enable Gmail as primary select method (if you choose this, there is no need to put the previous section in ~/.gnus):
 <pre>
 (setq gnus-select-method '(nnimap "gmail"
 				  (nnimap-address "imap.gmail.com")
