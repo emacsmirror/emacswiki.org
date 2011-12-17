@@ -17,7 +17,7 @@ third parties can't snoop around.)
 <code>PORT</code> is the port number on which you talk to the server.
 For <code>imap</code>, it is normally 143.  
 For <code>imap-ssl</code>, it is normally 993.  If your server
-administrator wants you to some othe port number, they should tell
+administrator wants you to some other port number, they should tell
 you.
 
 <code>MAILBOX</code> is the mailbox or folder that this long-winded
