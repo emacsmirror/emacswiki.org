@@ -7,7 +7,7 @@
 ;; Maintainer: José Alfredo Romero L. <escherdragon@gmail.com>
 ;; Created: 24 Sep 2007
 ;; Version: 5
-;; RCS Version: $Rev: 394 $
+;; RCS Version: $Rev: 395 $
 ;; Keywords: files, dired, midnight commander, norton, orthodox
 ;; URL: http://www.emacswiki.org/emacs/sunrise-commander.el
 ;; Compatibility: GNU Emacs 22+
@@ -274,8 +274,10 @@ Setting this value activates AVFS support."
 
 (defcustom sr-avfs-handlers-alist '(("\\.[jwesh]ar$"   . "#uzip/")
                                     ("\\.xpi$"         . "#uzip/")
+                                    ("\\.apk$"         . "#uzip/")
                                     ("\\.iso$"         . "#iso9660/")
                                     ("\\.patch$"       . "#/")
+                                    ("\\.tar.xz$"      . "#uxze#utar/")
                                     ("."               . "#/"))
   "List of AVFS handlers to manage specific file extensions."
   :group 'sunrise
@@ -668,6 +670,8 @@ automatically:
 
   (make-local-variable 'revert-buffer-function)
   (setq revert-buffer-function 'sr-revert-buffer)
+ 
+  (set (make-local-variable 'sr-show-file-attributes) sr-show-file-attributes)
 
   (make-local-variable 'hl-line-sticky-flag)
   (setq hl-line-sticky-flag nil)
@@ -693,6 +697,8 @@ automatically:
 
   (make-local-variable 'revert-buffer-function)
   (setq revert-buffer-function 'sr-revert-buffer)
+  
+  (set (make-local-variable 'sr-show-file-attributes) sr-show-file-attributes)
 
   (make-local-variable 'hl-line-sticky-flag)
   (setq hl-line-sticky-flag nil)
@@ -715,7 +721,7 @@ automatically:
   "Restore omit mode, hidden attributes and point after a directory transition."
   `(let ((inhibit-read-only t)
          (omit (or dired-omit-mode -1))
-         (hidden-attrs (not (null (get sr-selected-window 'hidden-attrs))))
+         (attrs (eval 'sr-show-file-attributes))
          (path-face sr-current-path-face))
      ,@body
      (dired-omit-mode omit)
@@ -725,7 +731,8 @@ automatically:
          (sr-sort-by-operation 'sr-numerical-sort-op))
      (if (get sr-selected-window 'sorting-reverse)
          (sr-reverse-pane))
-     (if hidden-attrs (sr-hide-attributes))
+     (setq sr-show-file-attributes attrs)
+     (sr-display-attributes (point-min) (point-max) sr-show-file-attributes)
      (sr-restore-point-if-same-buffer)))
 
 (defmacro sr-alternate-buffer (form)
@@ -865,15 +872,7 @@ Used as a cache during revert operations."
 (add-hook 'kill-buffer-hook       'sr-kill-backup-buffer)
 (add-hook 'change-major-mode-hook 'sr-kill-backup-buffer)
 
-(defun sr-insert-directory (file switches &optional wildcard full-directory-p)
-  (let ((beg (point)))
-    (insert-directory file switches wildcard full-directory-p)
-    (dired-align-file beg (point))
-    (save-excursion
-      (search-backward file)
-      (add-text-properties (point) (point-at-eol) '(dired-filename t)))))
-
-(add-to-list 'enriched-translations '(dired-filename (t "x-dired-filename")))
+(add-to-list 'enriched-translations '(invisible (t "x-invisible")))
 (defun sr-enrich-buffer ()
   "Activate `enriched-mode' before saving a Sunrise buffer to a file.
 This is done so all its dired-filename attributes are kept in the file."
@@ -893,6 +892,7 @@ immediately loaded, but only if `sr-autoload-extensions' is not nil."
   "A hack to avoid some Dired mode quirks."
   (if (sr-equal-dirs sr-dired-directory dirname)
       (setq mode 'sr-mode)))
+;; ^--- activated by sr-within macro
 
 (defadvice dired-dwim-target-directory
   (around sr-advice-dwim-target ())
@@ -922,6 +922,13 @@ immediately loaded, but only if `sr-autoload-extensions' is not nil."
         ad-do-it)
     ad-do-it))
 (ad-activate 'use-hard-newlines)
+
+(defadvice dired-insert-set-properties
+  (after sr-advice-dired-insert-set-properties (beg end))
+  "Manage hidden attributes in files added externally (e.g. from find-dired)"
+  (when (memq major-mode '(sr-mode sr-virtual-mode))
+    (sr-display-attributes beg end sr-show-file-attributes)))
+(ad-activate 'dired-insert-set-properties)
 
 ;;; ============================================================================
 ;;; Sunrise Commander keybindings:
@@ -969,6 +976,7 @@ immediately loaded, but only if `sr-autoload-extensions' is not nil."
 (define-key sr-mode-map "\C-y"        'sr-scroll-down)
 (define-key sr-mode-map " "           'sr-scroll-quick-view)
 (define-key sr-mode-map "\M- "        'sr-scroll-quick-view-down)
+(define-key sr-mode-map [?\S- ]       'sr-scroll-quick-view-down)
 
 (define-key sr-mode-map "C"           'sr-do-copy)
 (define-key sr-mode-map "K"           'sr-do-clone)
@@ -1179,7 +1187,7 @@ buffer or window."
             (sr-listing-switches (or switches sr-listing-switches)))
         (unless sr-running (sunrise))
         (sr-goto-dir directory)
-        (unless sr-show-file-attributes (sr-hide-attributes))
+        (sr-display-attributes (point-min) (point-max) sr-show-file-attributes)
         (sr-this 'buffer))))
 
 ;;; ============================================================================
@@ -1281,16 +1289,14 @@ buffer or window."
 (defun sr-hide-avfs-root ()
   "Hide the AVFS virtual filesystem root (if any) on the path line."
   (if sr-avfs-root
-      (let ((start nil) (end nil) (overlay nil)
+      (let ((start nil) (end nil)
             (next (search-forward sr-avfs-root (point-at-eol) t)))
         (if next (setq start (- next (length sr-avfs-root))))
         (while next
           (setq end (point)
                 next (search-forward sr-avfs-root (point-at-eol) t)))
         (when end
-          (setq overlay (make-overlay start end))
-          (overlay-put overlay 'invisible t)
-          (overlay-put overlay 'intangible t)))))
+          (add-text-properties start end '(invisible t intangible t))))))
 
 (defun sr-highlight-broken-links ()
   "Mark broken symlinks with an exclamation mark and a special face."
@@ -1317,7 +1323,7 @@ Returns t if the overlay is no longer valid and should be replaced."
   "Set up the graphical path line in the current buffer.
 \(Fancy fonts and clickable path.)"
   (let ((my-face (or face sr-current-path-face))
-        (begin) (end))
+        (begin) (end) (inhibit-read-only t))
     (when (sr-invalid-overlayp)
       ;;determine begining and end
       (save-excursion
@@ -1332,14 +1338,12 @@ Returns t if the overlay is no longer valid and should be replaced."
            (make-overlay begin end))
 
       ;;path line hover effect:
-      (toggle-read-only -1)
       (add-text-properties
        begin
        end
        '(mouse-face sr-highlight-path-face
                     help-echo "mouse-2: move up")
-       nil)
-      (toggle-read-only 1))
+       nil))
 
     ;;only refresh existing overlay:
     (overlay-put sr-current-window-overlay 'window (selected-window))
@@ -1373,7 +1377,7 @@ With optional argument REVERT, executes `revert-buffer' on the passive buffer."
             (if (buffer-live-p sr-restore-buffer)
                 (set-buffer sr-restore-buffer))))
         (sr-bury-panes)
-        (toggle-read-only -1)
+        (setq buffer-read-only nil)
         (run-hooks 'sr-quit-hook)
         (setq sr-current-frame nil))
     (bury-buffer)))
@@ -1997,7 +2001,7 @@ If the buffer is non-virtual the backup buffer is killed."
           (sr-sort-by-number t)
         (if (get sr-selected-window 'sorting-reverse)
             (sr-reverse-pane)))))
-  (if (get sr-selected-window 'hidden-attrs) (sr-hide-attributes))
+  (sr-display-attributes (point-min) (point-max) sr-show-file-attributes)
   (sr-highlight))
 
 (defun sr-quick-view (&optional arg)
@@ -2058,47 +2062,30 @@ Kills any other buffer opened previously the same way."
             (if (eq (current-buffer) other-window-scroll-buffer)
                 (setq other-window-scroll-buffer  nil))))
 
-(defun sr-hide-attributes ()
-  "Hide the attributes of all files in the active pane."
-  (save-excursion
-    (sr-unhide-attributes)
-    (goto-char (point-min))
-    (re-search-forward directory-listing-before-filename-regexp nil t)
-    (beginning-of-line)
-    (let ((next (next-single-property-change (point) 'dired-filename))
-          (attr-list nil)
-          (overlay nil))
-      (while next
+(defun sr-display-attributes (beg end visiblep)
+  "Manage the display of file attributes in the region from BEG to END.
+if VISIBLEP is nil then shows file attributes in region, otherwise hides them."
+  (let ((inhibit-read-only t) (next))
+    (save-excursion
+      (goto-char beg)
+      (forward-line -1)
+      (while (and (null next) (< (point) end))
+        (forward-line 1)
+        (setq next (dired-move-to-filename)))
+      (while (and next (< next end))
         (beginning-of-line)
-        (setq overlay (make-overlay (+ 2 (point)) next))
-        (setq attr-list (cons overlay attr-list))
-        (overlay-put overlay 'invisible t)
-        (overlay-put overlay 'intangible t)
-        (forward-line)
-        (setq next (next-single-property-change (point) 'dired-filename)))
-      (put sr-selected-window 'hidden-attrs attr-list))))
-
-(defun sr-unhide-attributes ()
-  "Show the (hidden) attributes of all files in the active pane."
-  (let ((attr-list (get sr-selected-window 'hidden-attrs)))
-    (if attr-list
-        (progn
-          (mapc 'delete-overlay attr-list)
-          (put sr-selected-window 'hidden-attrs nil)))))
-;; (add-hook 'dired-after-readin-hook 'sr-unhide-attributes)
+        (forward-char 2)
+        (if visiblep
+            (remove-text-properties (point) next '(invisible t))
+          (add-text-properties (point) next '(invisible t)))
+        (forward-line 1)
+        (setq next (dired-move-to-filename))))))
 
 (defun sr-toggle-attributes ()
   "Hide/Show the attributes of all files in the active pane."
   (interactive)
-  (if (null (get sr-selected-window 'hidden-attrs))
-      (progn
-        (sr-hide-attributes)
-        (message "Sunrise: hiding attributes in %s pane"
-                 (symbol-name sr-selected-window)))
-    (progn
-      (sr-unhide-attributes)
-      (message "Sunrise: displaying attributes in %s pane"
-               (symbol-name sr-selected-window)))))
+  (setq sr-show-file-attributes (not sr-show-file-attributes))
+  (sr-display-attributes (point-min) (point-max) sr-show-file-attributes))
 
 (defun sr-toggle-truncate-lines ()
   "Enable/Disable truncation of long lines in the active pane."
@@ -2160,8 +2147,7 @@ Displays entries containing unpadded numbers in a more logical
 order than when sorted alphabetically by name."
   (interactive)
   (sr-sort-by-operation 'sr-numerical-sort-op (unless inhibit-label "NUMBER"))
-  (if (get sr-selected-window 'sorting-reverse) (sr-reverse-pane))
-  (if (get sr-selected-window 'hidden-attrs) (sr-hide-attributes)))
+  (if (get sr-selected-window 'sorting-reverse) (sr-reverse-pane)))
 
 (defun sr-interactive-sort (order)
   "Prompt for a new sorting order for the active pane and apply it."
@@ -2182,7 +2168,6 @@ order than when sorted alphabetically by name."
         (reverse (get sr-selected-window 'sorting-reverse)))
     (sr-sort-by-operation 'identity)
     (when interactively
-      (if (get sr-selected-window 'hidden-attrs) (sr-hide-attributes))
       (put sr-selected-window 'sorting-reverse (not reverse))
       (goto-char (point-min)) (forward-line (1- line))
       (re-search-forward directory-listing-before-filename-regexp nil t))))
@@ -2801,19 +2786,20 @@ Otherwise returns nil."
 (defun sr-copy-virtual ()
   "Manage copying of files or directories to buffers in VIRTUAL mode."
   (let ((fileset (dired-get-marked-files nil))
-        (inhibit-read-only t))
+        (inhibit-read-only t) (beg))
     (sr-change-window)
     (goto-char (point-max))
+    (setq beg (point))
     (mapc (lambda (file)
             (insert-char 32 2)
             (setq file (dired-make-relative file default-directory)
                   file (sr-chop ?/ file))
-            (sr-insert-directory file sr-virtual-listing-switches))
+            (insert-directory file sr-virtual-listing-switches))
           fileset)
+    (sr-display-attributes beg (point-at-eol) sr-show-file-attributes)
     (unwind-protect
         (delete-region (point) (line-end-position))
       (progn
-        (revert-buffer)
         (sr-change-window)
         (dired-unmark-all-marks)))))
 
@@ -3186,15 +3172,17 @@ pane."
   "Return a filter function for the background `locate' process."
   `(lambda (process output)
      (let ((inhibit-read-only t)
-           (search-regexp ,(regexp-quote search-string)))
+           (search-regexp ,(regexp-quote search-string))
+           (beg (point-max)))
        (set-buffer ,locate-buffer)
        (save-excursion
          (mapc (lambda (x)
                  (when (and (string-match search-regexp x) (file-exists-p x))
                    (goto-char (point-max))
                    (insert-char 32 2)
-                   (sr-insert-directory x sr-virtual-listing-switches nil nil)))
-               (split-string output "[\r\n]" t))))))
+                   (insert-directory x sr-virtual-listing-switches nil nil)))
+               (split-string output "[\r\n]" t))
+         (sr-display-attributes beg (point-at-eol) sr-show-file-attributes)))))
 
 (defun sr-locate-sentinel (locate-buffer)
   "Return a sentinel function for the background locate process.
@@ -3297,7 +3285,7 @@ Used to notify about the termination status of the process."
      (insert "Recently Visited Files: \n")
      (dolist (file recentf-list)
        (condition-case nil
-           (sr-insert-directory file sr-virtual-listing-switches nil nil)
+           (insert-directory file sr-virtual-listing-switches nil nil)
          (error (ignore))))
      (sr-virtual-mode)
      (sr-keep-buffer))))
@@ -3318,7 +3306,7 @@ Used to notify about the termination status of the process."
            (when dir
              (setq dir (sr-chop ?/ (expand-file-name dir))
                    beg (point))
-             (sr-insert-directory dir switches nil nil))
+             (insert-directory dir switches nil nil))
          (error (ignore))))
      (sr-virtual-mode))))
 
@@ -4028,6 +4016,7 @@ when any of the options -p or -F is used with ls."
 
 ;;; ============================================================================
 ;;; Advice
+
 (defun sr-ad-enable (regexp &optional function)
   "Put all or FUNCTION-specific advice matching REGEXP into effect.
 If provided, only update FUNCTION itself, otherwise all functions
@@ -4048,7 +4037,6 @@ with advice matching REGEXP."
     (ad-disable-regexp regexp)
     (ad-update-regexp regexp)))
 
-
 (defun sunrise-commander-unload-function ()
   (sr-ad-disable "^sr-advice-"))
 
@@ -4065,7 +4053,7 @@ with advice matching REGEXP."
 (sr-rainbow sr-html-face              (:foreground "DarkOliveGreen")        "\\(^..[^d].*\\.x?html?$\\)")
 (sr-rainbow sr-xml-face               (:foreground "DarkGreen")             "\\(^..[^d].*\\.\\(xml\\|xsd\\|xslt?\\|wsdl\\)$\\)")
 (sr-rainbow sr-log-face               (:foreground "brown")                 "\\(^..[^d].*\\.log$\\)")
-(sr-rainbow sr-compressed-face        (:foreground "magenta")               "\\(^..[^d].*\\.\\(zip\\|bz2\\|t?gz\\|[zZ]\\|[jwers]?ar\\|xpi\\)$\\)")
+(sr-rainbow sr-compressed-face        (:foreground "magenta")               "\\(^..[^d].*\\.\\(zip\\|bz2\\|t?gz\\|[zZ]\\|[jwers]?ar\\|xpi\\|apk\\|xz\\)$\\)")
 (sr-rainbow sr-packaged-face          (:foreground "DarkMagenta")           "\\(^..[^d].*\\.\\(deb\\|rpm\\)$\\)")
 (sr-rainbow sr-encrypted-face         (:foreground "DarkOrange1")           "\\(^..[^d].*\\.\\(gpg\\|pgp\\)$\\)")
 
