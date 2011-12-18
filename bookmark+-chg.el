@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2011, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Thu Dec 15 22:04:42 2011 (-0800)
+;; Last-Updated: Sat Dec 17 18:34:43 2011 (-0800)
 ;;           By: dradams
-;;     Update #: 13958
+;;     Update #: 13963
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-chg.el
 ;; Keywords: bookmarks, bookmark+
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -120,6 +120,10 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-1.el'")
 ;;
+;; 2011/12/17 dadams
+;;     bmkp-remote-file-p:
+;;       If file-remote-p not available, match /...: (same as ffap-ftp-regexp).  Return match.
+;;     bmkp-same-file-p: Redefined to use new bmkp-remote-file-p.  Thx to M. Heerdegen & M. Albinus.
 ;; 2011/12/15 dadams
 ;;     bmkp-dired-this-dir-bookmark-p: Use file-name-directory, in case filename has wildcards.
 ;; 2011/12/13 dadams
