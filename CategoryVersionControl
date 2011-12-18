@@ -30,6 +30,7 @@ This is information on specific distributed version control systems.
 * [[Git]] -- Supported by VC, but git.el comes with the package and there are many other Git-specific modes.
 * [[Mercurial]] (##hg##)
 * MonoTone -- Partially supported by DVC, but a mode is distributed with Monotone.
+* [[GitShow]] -- Quick git way to see an revision version of a file.
 
 This is information on Emacs interacting with proprietary version control systems.
 
