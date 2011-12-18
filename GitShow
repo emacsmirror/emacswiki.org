@@ -4,7 +4,7 @@ git-show(1) for Emacs
 
 This mode exists to allow Emacs execute git-show(1) processes dumping
 the results into a buffer attempting to use its same mode. For
-example; if its a shell script it should open the buffer in sh-mode).
+example; if it's a shell script it should open the new buffer in sh-mode.
 
 == Installation: ==
 
