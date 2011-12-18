@@ -36,3 +36,5 @@ Consider using the prefix "ESS" for new ESS-related pages. -- PaulJohnson
 * [[ac-R.el|Autocomplete source for R]]
 
 * [[ess-smart-underscore.el|Smarter Ess Underscore behavior]] 
+
+* [[ESSRParser|R parser]] -- How to use the R parser to format R code (by Vitalie Spinu).
