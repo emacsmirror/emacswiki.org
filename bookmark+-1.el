@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2011, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 13:43:55 2010 (-0700)
-;; Last-Updated: Sat Dec 17 18:21:22 2011 (-0800)
+;; Last-Updated: Sun Dec 18 13:25:37 2011 (-0800)
 ;;           By: dradams
-;;     Update #: 2677
+;;     Update #: 2678
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-1.el
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -4396,7 +4396,7 @@ If either name is not absolute, then it is expanded relative to
 
 (defun bmkp-file-remote-p (file)
   "Test whether FILE specifies a location on a remote system.
-A file is considered remote\if accessing it is likely to be slower or
+A file is considered remote if accessing it is likely to be slower or
 less reliable than accessing local files.
 
 This is `file-remote-p', if that function is available.  If not, use a
