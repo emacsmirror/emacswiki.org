@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2011, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 13:43:55 2010 (-0700)
-;; Last-Updated: Thu Dec 15 21:44:25 2011 (-0800)
+;; Last-Updated: Sat Dec 17 18:21:22 2011 (-0800)
 ;;           By: dradams
-;;     Update #: 2669
+;;     Update #: 2677
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-1.el
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -4382,28 +4382,36 @@ binary data (weird chars)."
 
 (defun bmkp-same-file-p (file1 file2)
   "Return non-nil if FILE1 and FILE2 name the same file.
-If either name is not absolute, then it is considered relative to
-`default-directory'."
-  (setq file1  (expand-file-name file1)
-        file2  (expand-file-name file2))
-  (if (not (require 'tramp nil t))
-      (string= (file-truename file1) (file-truename file2))
-    ;; Try to avoid having Tramp access remote files to determine whether the same.
-    ;; Also, use `file-remote-p' with only one argument (for Emacs 22 compatibility).
-    (or (and (not (file-remote-p file1)) (not (file-remote-p file2))
-             (string= (file-truename file1) (file-truename file2)))
-        (and (file-remote-p file1) (file-remote-p file2)
-             (string= (tramp-file-name-host (tramp-dissect-file-name file1))
-                      (tramp-file-name-host (tramp-dissect-file-name file2)))
-             ;; Cannot be avoided in this case (same host).  Let Tramp do its remote thing.
-             (string= (file-truename file1) (file-truename file2))))))
+If either name is not absolute, then it is expanded relative to
+`default-directory' for the test."
+  (and (equal (bmkp-file-remote-p file1) (bmkp-file-remote-p file2))
+       (string= (file-truename (expand-file-name file1))
+                (file-truename (expand-file-name file2)))))
 
+;;; $$$$$$ (defun bmkp-file-remote-p (file-name)
+;;;   "Returns non-nil if string FILE-NAME is likely to name a remote file."
+;;;   (if (fboundp 'file-remote-p)
+;;;       (file-remote-p file-name)
+;;;     (and (fboundp 'ffap-file-remote-p) (ffap-file-remote-p file-name))))
 
-(defun bmkp-file-remote-p (file-name)
-  "Returns non-nil if string FILE-NAME is likely to name a remote file."
+(defun bmkp-file-remote-p (file)
+  "Test whether FILE specifies a location on a remote system.
+A file is considered remote\if accessing it is likely to be slower or
+less reliable than accessing local files.
+
+This is `file-remote-p', if that function is available.  If not, use a
+simple match against rough remote file syntax: `/...:'.
+
+Unless `file-remote-p' is available and FILE has a `file-remote-p'
+handler that opens a remote connection, `bmkp-file-remote-p' does not
+open a remote connection.
+
+Return nil or a string identifying the remote connection (ideally a
+prefix of FILE)."
   (if (fboundp 'file-remote-p)
-      (file-remote-p file-name)
-    (and (fboundp 'ffap-file-remote-p) (ffap-file-remote-p file-name))))
+      (file-remote-p file)
+    (and (stringp file) (string-match "\\`/[^/]+:" file)
+         (match-string 0 file))))
 
 (defun bmkp-float-time (&optional specified-time)
   "Same as `float-time'.  (Needed for Emacs 20.)"
