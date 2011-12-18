@@ -5,6 +5,9 @@ Disclaimer: This is a Work-in-Progress page.
 Apl comes under Debian under the Aplus packages.  These supposedly work 
 under xemacs or the shell.
 
+For playing with the interactive shell there are broadly 3 ways: shell, xemacs, gnuemacs.
+This page mainly focuses on gnu-emacs but for (a little) completeness mentions links to the others.
+
 == Apl under the shell ==
 
 See this thread http://groups.google.com/group/comp.lang.apl/browse_thread/thread/00dda3821da693bb#
