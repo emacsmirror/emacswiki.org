@@ -15,4 +15,7 @@ In your emacs config:
     (require 'git-show)
 </pre>
 
+== Download ==
+
+https://github.com/jpablobr/git-show
 
