@@ -1,0 +1,18 @@
+git-show(1) for Emacs
+
+== Features: ==
+
+This mode exists to allow Emacs execute git-show(1) processes dumping
+the results into a buffer attempting to use its same mode. For
+example; if its a shell script it should open the buffer in sh-mode).
+
+== Installation: ==
+
+In your emacs config:
+
+<pre>
+    (add-to-list 'load-path "~/.emacs.d/load/path/git-show.el")
+    (require 'git-show)
+</pre>
+
+
