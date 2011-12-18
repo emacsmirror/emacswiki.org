@@ -1,0 +1,34 @@
+== How to use the R parser to format R code (by Vitalie Spinu) ==
+
+Add the following to your .emacs file (from [[https://stat.ethz.ch/pipermail/ess-help/2011-December/007360.html|ESS mailing list]]):
+
+<pre>
+(defun ess-indent-region-as-R-function (beg end)
+  (let ((string (replace-regexp-in-string
+		 "\"" "\\\\\\&"
+		 (replace-regexp-in-string ;; how to avoid this double matching?
+		  "\\\\\"" "\\\\\\&" (buffer-substring-no-properties beg end))))
+	(buf (get-buffer-create "*ess-command-output*")))
+    (ess-force-buffer-current "Process to load into:")
+    (ess-command (format "local({oo<-options(keep.source=FALSE);
+cat('\n',paste(deparse(parse(text=\"%s\")[[1L]]),collapse='\n'),'\n',sep='')
+options(oo)})\n"  string) buf)
+    (with-current-buffer buf
+      (goto-char (point-max))
+      ;; (skip-chars-backward "\n")
+      (let ((end (point)))
+	(goto-char (point-min))
+	(goto-char (1+ (point-at-eol)))
+	(setq string (buffer-substring-no-properties (point) end))
+	))
+  (delete-region beg end)
+  (insert string)
+  ))
+</pre>
+
+It is then possible to format R code with the R parser: select a region, and press 'C-M-\' ('M-x indent-region'). If there is no R process associated to the buffer, a new one is launched. Note that the code in the region should be
+syntactically correct.
+
+
+----
+CategoryESS 
