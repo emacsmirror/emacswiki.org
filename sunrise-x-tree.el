@@ -7,7 +7,7 @@
 ;; Maintainer: José Alfredo Romero L. <escherdragon@gmail.com>
 ;; Created: 4 May 2010
 ;; Version: 1
-;; RCS Version: $Rev: 394 $
+;; RCS Version: $Rev: 395 $
 ;; Keywords: sunrise commander, directories tree navigation
 ;; URL: http://www.emacswiki.org/emacs/sunrise-x-tree.el
 ;; Compatibility: GNU Emacs 22+
@@ -816,7 +816,7 @@ nil."
     (save-selected-window
       (select-window (sr-other 'window))
       (sr-goto-dir target)
-      (if  (get side 'hidden-attrs) (sr-hide-attributes))
+      (sr-display-attributes (point-min) (point-max) sr-show-file-attributes)
       (sr-keep-buffer side)
       (if (fboundp 'sr-tabs-refresh) (sr-tabs-refresh)))))
 
