@@ -7,7 +7,7 @@
 ;; Maintainer: José Alfredo Romero L. <escherdragon@gmail.com>
 ;; Created: 4 May 2008
 ;; Version: 2
-;; RCS Version: $Rev: 394 $
+;; RCS Version: $Rev: 395 $
 ;; Keywords: sunrise commander, archives read/write
 ;; URL: http://www.emacswiki.org/emacs/sunrise-x-mirror.el
 ;; Compatibility: GNU Emacs 22+
@@ -127,10 +127,12 @@
 
 (defcustom sr-mirror-pack-commands-alist
   '(
-    ("\\.zip$" .                    "zip -r   %f *")
-    ("\\.[jwesh]ar$" .              "zip -r   %f *")
-    ("\\.\\(?:tar\\.gz\\|tgz\\)$" . "tar cvzf %f *")
-    ("\\.tar\\.bz2$" .              "tar cvjf %f *")
+    ("\\.\\(?:zip\\|xpi\\|apk\\)$" . "zip -r   %f *")
+    ("\\.[jwesh]ar$"               . "zip -r   %f *")
+    ("\\.tar$"                     . "tar cvf  %f *")
+    ("\\.\\(?:tar\\.gz\\|tgz\\)$"  . "tar cvzf %f *")
+    ("\\.tar\\.bz2$"               . "tar cvjf %f *")
+    ("\\.tar\\.xz$"                . "tar cvJf %f *")
    )
   "List of shell commands to repack particular archive contents.
 Used when repacking contents from a mirror area into a compressed
@@ -365,7 +367,7 @@ On success, returns a string containing the full path to the newly
 packed archive, otherwise throws an error."
   (message "Sunrise: repacking mirror, please wait...")
   (let* ((target-home (concat sr-mirror-home ".repacked/"))
-         (archive (replace-regexp-in-string "#[a-z0-9]*$" "" mirror))
+         (archive (replace-regexp-in-string "#[a-z0-9#]*$" "" mirror))
          (target (replace-regexp-in-string
                   "/?$" ""
                   (car (last (split-string archive "+")))))
@@ -399,7 +401,7 @@ Opposite of `sr-mirror-mangle'."
           (replace-regexp-in-string
            "{\\+}" "+" (replace-regexp-in-string
                         "\\+\\([^}]\\)" "/\\1" (replace-regexp-in-string
-                                                "#[a-z0-9]*$" "" path)))))
+                                                "#[a-z0-9#]*$" "" path)))))
 
 (defun sr-mirror-full-demangle (path)
   "Demangle PATH recursively to obtain the current path of the original archive.
@@ -558,7 +560,7 @@ so they are always writeable by default."
       (let* ((orig (buffer-file-name))
              (target (sr-mirror-overlay-redir orig)))
         (if (> (length target) (length orig))
-            (toggle-read-only -1)))))
+            (setq buffer-read-only nil)))))
 (add-hook 'find-file-hook 'sr-mirror-toggle-read-only)
 
 (defun sunrise-x-mirror-unload-function ()
