@@ -104,3 +104,12 @@ I still like to see a fix to the above though and avoid setting my terminal to a
 Two cursors
 
 Recompiling the term entry to enable the software cursor works provided I stay on the console.  If I switch to X and return to the console the hardware cursor reappears and I see both cursors (they don't point to the same place - the hardware cursor seems to track what's displayed, rather than the actual cursor position).  Unfortunately, resending the echo codes doesn't make the hardware cursor go away.  I have not found a solution to this yet.  (X.Org X Server 1.5.0, Linux 2.6.26.6-79.fc9.i686, SiS chipset - id:1633) -- BrianGough
+
+----
+Easier if root
+
+If you have root permissions you can just type:
+
+~$ echo 0 > /sys/class/graphics/fbcon/cursor_blink
+
+-- duraid
