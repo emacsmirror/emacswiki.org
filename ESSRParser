@@ -1,4 +1,4 @@
-== How to use the R parser to format R code (by Vitalie Spinu) ==
+== How to use the R parser to format R code ==
 
 Add the following to your .emacs file (from [[https://stat.ethz.ch/pipermail/ess-help/2011-December/007360.html|ESS mailing list]]):
 
