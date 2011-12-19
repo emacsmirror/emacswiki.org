@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2011, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Fri Dec 16 14:53:16 2011 (-0800)
+;; Last-Updated: Mon Dec 19 09:58:38 2011 (-0800)
 ;;           By: dradams
-;;     Update #: 7681
+;;     Update #: 7683
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-chg.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -82,6 +82,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd1.el'")
 ;;
+;; 2011/12/19 dadams
+;;     icicle-find-file-absolute(-other-window): Do not insert default directory as initial input.
 ;; 2011/12/14 dadams
 ;;     Added: icicle-bookmark-bookmark-file-narrow, icicle-bookmark-image-narrow,
 ;;            icicle-bookmark-image(-other-window).
