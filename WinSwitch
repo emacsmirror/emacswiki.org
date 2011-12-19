@@ -160,7 +160,7 @@ modifying the keys associated with particular commands.
 * <code>win-switch-setup-keys-ijkl</code>
 :: Sets the default keys centered around the i-j-k-l
 directional keys. Accepts as argument one or more
-key-sequences to bind to <code>win-switch-dispath</code>, as
+key-sequences to bind to <code>win-switch-dispatch</code>, as
 in
 <pre>
         (win-switch-setup-keys-ijkl "\C-xo" "\C-x\C-o")
