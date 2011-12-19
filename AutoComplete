@@ -403,7 +403,7 @@ I changed the yasnippet source to support the lastest SVN version of Yasnippet. 
 --MatthewFidler
 
 [new]
-The following made yasnippet 0.7.0 and autocomplete 1.4 (retrieved using el-get) work nicely in Emacs 24.0.92.
+The following made yasnippet 0.7.0 and autocomplete 1.4 (both retrieved using el-get) work nicely in Emacs 24.0.92.
 <pre>
 ;;
 ;; Put this in your .emacs:
