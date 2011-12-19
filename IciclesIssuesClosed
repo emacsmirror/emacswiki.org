@@ -67,6 +67,342 @@ Better yet, use this to separate threads (puts space before and after the horizo
 <pre>
 
 </pre>
+----
+<pre>
+
+</pre>
+[new]
+Hi Drew,
+You made a small mistake and uploaded icicles-chg.el as icicles-mac.el, so icicles stopped working for me :) 
+
+Another, completely different issue:
+
+I use: GNU Emacs 23.2.1 (i486-pc-linux-gnu, GTK+ Version 2.20.0) of 2010-12-11 on raven, modified by Debian and icicles latest version.
+
+The historical candidates feature stopped working for files. Actually M-h works fine, but M-Pause stopped working, only for files.
+I use savehist to save icicle-previous-raw-file-name-inputs and icicle-previous-raw-non-file-name-inputs variables, if it matters something.
+Please notice me here if you need more precise describe of the problem. -- PasJa
+
+[new:DrewAdams:2011-10-11 13:46 UTC]
+Sorry about that -- <tt>[[icicles-mac.el]]</tt> should be OK now.
+
+'''''Make sure''''' that you (a) load ##icicles-mac.el##, (b) byte-compile ##icicles-mac.el## (if you byte-compile files -- recommended), then (c) byte-compile all of the other '''Icicles''' files.  It is important to re-byte-compile all files after loading ##icicles-mac.el##, whenever ##icicles-mac.el## has changed.
+
+Dunno about your problem with using `M-pause' with file-name reading.  It works fine for me, with all Emacs versions through a Sept 19 build of Emacs 24 (the latest build I have).  Be sure that you have used `TAB' or `S-TAB' before you hit `M-pause' (or a message will tell you to).
+
+You can try `M-x debug-on-entry icicle-keep-only-past-inputs', perhaps (after loading <tt>[[icicles-mcmd.el]]</tt> -- not the ##.elc##).  The main thing to check when doint that is the value of the value of `minibuffer-history-variable' (which should itself be `file-name-history').  Let me know what you find out.  (Of course, without the correct latest ##icicles-mac.el##, nothing should work well at all.) Thx -- Drew
+
+
+[new]
+
+Hi Drew, 
+
+I set up a testing enviroment and i've got some more strange errors:
+
+a.) test init.el
+
+    (setq debug-on-error 1)
+    (add-to-list 'load-path "/tmp/.emacs.d/") ; start emacs with HOME=/tmp, do not clobber my prod setup
+
+b. content of "/tmp/.emacs.d/"
+...
+    
+ M-x load library RET icicles RET
+
+Then:
+
+   require(icicles-var)
+    Debugger entered--Lisp error: (void-function incf)
+...
+I've stopped here. If we could solve this problem, i will continue to investigate the previous problem. --PasJa
+
+[new:DrewAdams:2011-10-12 13:22 UTC]
+My bad.  I made some substantial changes recently that moved things around a bit.  I moved some things to <tt>[[icicles-mac.el]]</tt> and that meant that that file needed to require ##cl.el[c]## when byte-compiling.  This should be OK now.  Please load the latest version of that file, byte-compile all of the '''Icicles''' files (if you use them byte-compiled, which I recommend), then restart Emacs.  Sorry for the trouble.  Thx -- DrewAdams
+
+
+[new]
+So, icicles loading correctly. I use the 'canonical' method to load icicles. My init.el:
+
+    (add-to-list 'load-path "/tmp/.emacs.d/")
+    (require 'icicles)
+    (icy-mode 1)
+
+Icicles has been downloaded today.
+Content of //tmp//.emacs.d/
+
+    -rw-rw-r-- 1 pasja pasja 491787 Oct 12 15:16 icicles-chg.el
+    -rw-rw-r-- 1 pasja pasja 359710 Oct 10 23:19 icicles-cmd1.el
+    -rw-rw-r-- 1 pasja pasja 408344 Oct 10 23:38 icicles-cmd2.el
+    -rw-rw-r-- 1 pasja pasja 359098 Oct  9 17:15 icicles-doc1.el
+    -rw-rw-r-- 1 pasja pasja 459966 Oct  9 19:46 icicles-doc2.el
+    -rw-rw-r-- 1 pasja pasja  70167 Oct 12 18:09 icicles.el
+    -rw-rw-r-- 1 pasja pasja  34134 Oct 11 00:27 icicles-face.el
+    -rw-rw-r-- 1 pasja pasja 366856 Oct 10 23:00 icicles-fn.el
+    -rw-rw-r-- 1 pasja pasja  59985 Oct 12 18:08 icicles-mac.el
+    -rw-rw-r-- 1 pasja pasja 408090 Oct  9 03:41 icicles-mcmd.el
+    -rw-rw-r-- 1 pasja pasja 271907 Oct  9 03:39 icicles-mode.el
+    -rw-rw-r-- 1 pasja pasja 191423 Oct 10 22:48 icicles-opt.el
+    -rw-rw-r-- 1 pasja pasja  76484 Oct  8 19:15 icicles-var.el
+    -rw-rw-r-- 1 pasja pasja     97 Oct 13 12:32 init.el
+
+Turned on  `debug-on-entry icicle-keep-only-past-inputs'
+The debug output is a little overwhelming :) 
+I checked the values with `C-h v' 
+
+minibuffer-history-variable value is file-name-history
+
+file-name-history value is ("~/.emacs.d/icicles-face.el" "~/.emacs.d/icicles-doc1.el" "~/.emacs.d/icicles-chg.el")
+
+I noticed that when i hit S-Tab or Tab the face (blue by default) is not set correctly, so maybe the problem lies somwhere else. In the variables it displays correctly in blue and M-Pause works correctly. 
+
+Another question: 
+
+Why bind this function to M-Pause. They have been placed far from each other on the keyboard. Yeah, i could rebind it, but i try to understand the motivation. --PasJa
+
+
+
+[new:DrewAdams:2011-10-13 14:35 UTC]
+I don't know what you mean by "In the variables it displays correctly in blue and M-Pause works correctly.", but maybe it's not important.
+
+Check the variable values in the debugger, using `e', not just outside using `C-h v'.  If you want, you can step through the debugger (`d' to step, `c' to skip over a step (evaluate it completely)), to see what happens.
+
+For '''Icicles''', I believe there should be nothing special about file-name completion that would make `M-pause' work in general but not for file names.
+
+Dunno what to suggest.  (I assume that you used `TAB' or `S-TAB' prior to hitting `M-pause'.  I assume that you have used `C-pause' once or twice to be sure that past-entry highlighting is turned on.)
+
+Try removing those variables from savehist, to take savehist out of the equation.  Perhaps try clearing the history (e.g. `M-i') and starting over, entering some file names (using `RET') etc. 
+
+The choice of `M-pause' was nothing special, IIRC.  Lots of the '''Icicles''' default choices for keys were based on things like (a) associations, including with historical Emacs defaults, (b) key placement, (c) whether the key needs to be repeatable by holding it down, (d) mnemonic aid, (e) relations to other keys (e.g. `RET', `C-RET', `C-M-RET', `S-RET'...).  But I don't recall any special logic behind the choice of `M-pause'.
+
+You can email me, if you like.  It would probably be easier to dialog that way about your problem.  Sorry for your trouble.  -- DrewAdams
+
+
+
+
+[new]
+Hi Drew!
+If i understood correctly, `icicle-keep-only-past-inputs' is just some kind of filter function. And if the files don't have the marking ''opened before'', the filter function does not work. That was what i tried to describe.
+
+Used my test enviroment, what i've described before. I've already taken out `savehist' and i've hit `C-Pause' many times.
+But, if i hit `M-i' i see the previous files!!
+Thanks for the explanation about your key choiches!
+I've uploaded some screenshots: MetaI MetaPause
+I will mess the debugger later... -- PasJa
+
+
+
+
+
+[new:DrewAdams:2011-10-20 13:21 UTC]
+I think you're saying that `file-name-history' is correct, but that `M-pause' does not restrict the current set of candidates to just names that are in `file-name-history'.  From your screenshots I see that, but I also see that there is ''no'' highlighting (blue) of any history candidates in your MetaPause screenshot, whereas ''all'' history candidates (hence all candidates showing after `M-pause') should be highlighted.
+
+(There is also no alignment of candidates, but I don't know if that indicates anything here. Maybe this is because of your settings of `icicle-candidate-width-factor' and
+`icicle-inter-candidates-min-spaces'.)
+
+I cannot reproduce the problem -- I see history highlighting, and `M-pause' immediately filters the current set of candidates to only those that are also history candidates (which all appear blue).
+
+You will need to provide a complete recipe, I guess, starting preferably from ##emacs -Q##.  (I assume that you first hit `TAB' or `S-TAB' before hitting `M-pause'.  If not, please see the doc.)  I will try to reproduce the problem if you can give me more info (a recipe) -- so far, I cannot repro it.  Sorry.  I've tested with the first Emacs 24 pretest, Emacs 23, 22, and 20 (on Windows). -- DrewAdams
+
+
+[new]
+OK, i will give you the complete recipe. --PasJa
+
+
+[new:DrewAdams:2011-11-13 19:08 UTC]
+Any news on this?  -- DrewAdams
+
+
+[new]
+Sorry, i have a busy IRL period. I try to get some time to debug this issue.
+
+[new]
+Hi Drew!
+I think i found the issue: if i open something in my home directory ($HOME in linux) then `M-pause' does not work. But if i open something else ex.: /tmp/test.txt then it works correctly! Maybe you should start search the problem around the '~/' vs. absolute notation/highlighting/searching. There should be some difference in windows or icicles path handling, that prevents this issue. Screenshots: TmP TmpMetapause --PasJa
+
+
+
+
+[new:DrewAdams:2011-12-06 22:44 UTC]
+Thanks for hanging in there, PasJa.  Sorry for your trouble.  I can't reproduce this at my end, but I'm using Windows.  I suggest you do this (temporarily), in the code of `icicle-keep-only-past-inputs':
+
+Just after this line:
+
+  (when (consp (symbol-value minibuffer-history-variable))
+
+Add this line:
+
+  (message "hist: %S" minibuffer-history-variable)
+
+In this part of the code:
+
+  (lambda (candidate)
+    (when (icicle-file-name-input-p)
+      (setq candidate  (expand-file-name
+                        candidate
+                        (icicle-file-name-directory
+                         icicle-last-input))))
+    (member candidate
+            (symbol-value minibuffer-history-variable)))
+
+Just before the `when' line, add this:
+
+   (message "111, cand: %S" candidate)
+
+Just before the `member' line, add this:
+
+   (message "222, cand: %S" candidate)
+
+Then evaluate the modified definition of `icicle-keep-only-past-inputs' (e.g. `C-M-x' inside the definition).
+
+The try your recipe again, but preferably in a directory that doesn't have too many files and subdirs (so it's easier to read the output).
+The messages will be written to buffer `*Messages*'.  Show that buffer (e.g. in a separate frame, with `C-x 5 b') before following your recipe, and put the cursor at the buffer end to begin with.
+
+What is printed to `*Messages*' should show you (a) what the candidate files names look like, versus (b) what the history entries look like.  The `111' and `222' lines for a given candidate show how the raw candidate is transformed to be compared with a history element.  You will presumably see that a transformed candidate that should correspond to a history element does not have the right form (the two are compared as plain strings, so they need to match exactly).
+
+Do this in both a directory where `M-pause' works and in one where it does not work.  Let me know what you find.  Thx -- DrewAdams
+
+
+
+[new]
+
+Hi Drew!
+Modified `icicle-keep-only-past-inputs': ModIcMP
+Where it does not works: 
+my home directory($HOME) is `/root/' it has a sub directory '1' and has 3 files 'a','b','c' 
+
+    root
+    └── 1
+        ├── a
+        ├── b
+        └── c
+
+Content of the `*Messages*' buffer, after i open /root/1/a,/root/1/b,/root/1/c:
+
+    hist: file-name-history
+    111, cand: "a"
+    222, cand: "/root/1/a"
+    111, cand: "b"
+    222, cand: "/root/1/b"
+    111, cand: "c"
+    222, cand: "/root/1/c"
+
+
+Where it works (similar setup):
+
+    tmp
+    ├── 2
+        ├── a
+        ├── b
+        ├── c
+
+
+Content of the `*Messages*' buffer, after i open /tmp/2/a,/tmp/2/b,/tmp/2/c:
+
+    hist: file-name-history
+    111, cand: "a"
+    222, cand: "/tmp/2/a"
+    111, cand: "b"
+    222, cand: "/tmp/2/b"
+    111, cand: "c"
+    222, cand: "/tmp/2/c"
+
+So strange, there is no difference between the outputs...
+
+If i modify my $HOME ex.: `$HOME=/tmp' and i start emacs, than /tmp is bad and /root is good. -- PasJa
+
+
+[new:DrewAdams:2011-12-13 14:40 UTC]
+Thanks for going to that trouble. This info is missing: the value of `file-name-history'.  Can you please change 
+
+  (message "hist: %S" minibuffer-history-variable)
+
+to
+
+  (message "hist: %S" (symbol-value minibuffer-history-variable))
+
+And see what that value looks like.  Evidently, for some reason it has entries that match absolute file names except when the files are in your home dir. Most likely `file-name-history' is showing home-dir files as ##~/filename##, for some reason.  On Windows, it has only absolute file names, no ##~/filename## names, and this problem has not been reported before.  
+
+Please make this test and let me know.  That will help me know the best way to fix this.  Most likely I need to map over the history to ensure absolute names, but I'd like to see for sure what it looks like.  No need to print the whole `file-name-history' value -- just enough to see how it represents files in both your home dir and other dirs.  Thx -- Drew.
+
+
+[new]
+
+
+Hello Drew!
+Updated version: ModIcMP
+I've created the same directory structure. Here is the output from the `*Messages*' buffer:
+
+from /tmp/2:
+
+    Computing completion candidates... [3 times]
+    hist: ("/tmp/2/b" "/tmp/2/a" "/tmp/2" "/tmp/")
+    111, cand: "a"
+    222, cand: "/tmp/2/a"
+    111, cand: "b"
+    222, cand: "/tmp/2/b"
+    111, cand: "c"
+    222, cand: "/tmp/2/c"
+
+from /home/pasja/1 ($HOME=/home/pasja):
+
+    Computing completion candidates... [4 times]
+    hist: ("~/1/b" "~/1/a" "~/1" "~/" "/tmp/2/b" "/tmp/2/a" "/tmp/2" "/tmp/")
+    111, cand: "a"
+    222, cand: "/home/pasja/1/a"
+    111, cand: "b"
+    222, cand: "/home/pasja/1/b"
+    111, cand: "c"
+    222, cand: "/home/pasja/1/c"
+
+-- PasJa
+
+
+p.s.: Would you consider the use of an official, publicly accessible VCS. It's a little hard to follow the *actual* code changes in icicles(not the changelog)
+
+
+
+[new:DrewAdams:2011-12-15 14:55 UTC]
+1. OK, thanks. That's what I thought.  I'll take care of it, probably in a day or two.
+
+2. (VCS) Nope, sorry.  But `ediff' is your friend, if you want to compare versions of a particular file.  -- DrewAdams
+
+
+
+[new:DrewAdams:2011-12-15 19:04 UTC]
+OK, I've uploaded a fix -- please let me know how it goes.
+
+FYI, here's the story: The Emacs history lists record exactly the input you enter (e.g. using `RET').  Emacs itself never compares entries of this list.  '''Icicles''' compares them against current candidates for two purposes: (1) highlighting with face `icicle-historical-candidate' and (2) `M-pause' (`icicle-keep-only-past-inputs').
+
+Until now, the comparison was literal, including for file names.  If you enter "##~foo/bar.el##" then exactly that string is recorded in the history.  Candidates that are later compared against the history are expanded in the current directory, to become absolute file names (e.g. "##/home/foo/bar.el##").  The matching is literal, syntactic.
+
+I've now enhanced this to try to accommodate input entries such as "##~foo/bar.el##", by expanding not only the current set of candidates but also everything in the history list (for only this purpose -- the list itself is not changed).  Obviously, this can mean a performance hit.  If there is a long history list and there are lots of current candidates, the slowdown from this file-name expansion might be noticeable.
+
+Anyway, it should work now.  Let me know.
+Thanks for your patience and your careful reporting. -- DrewAdams
+
+
+[new]
+Hi Drew!
+Works perfectly! It can be moved to IciclesIssuesClosed 
+I would like to hear your arguments against VCS! 
+It's a pleasure to work with such a responsive developer!
+Regards, --PasJa
+
+
+[new:DrewAdams:2011-12-19 17:13 UTC]
+Thanks for the report and your help debugging.  I have no arguments against VCS; I simply prefer to use the wiki.  There are some mirrors of some of my libraries (including '''Icicles''') on various GIT etc. VCS sites here and there, and there will likely be more in the future.  The latest source files are here on the wiki.  Thx -- DrewAdams
+
+
+
+
+
+
+
+
+
+<pre>
+
+</pre>
 
 ----
 <pre>
