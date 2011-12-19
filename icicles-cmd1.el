@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Wed Dec 14 20:25:33 2011 (-0800)
+;; Last-Updated: Mon Dec 19 09:53:31 2011 (-0800)
 ;;           By: dradams
-;;     Update #: 22953
+;;     Update #: 22955
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-cmd1.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -5417,7 +5417,7 @@ Ido-like behavior."                     ; Doc string
   (lambda (f) (find-file (icicle-transform-multi-completion f) 'WILDCARDS)) ; Action function
   prompt icicle-abs-file-candidates nil ; `completing-read' args
   (and (fboundp 'confirm-nonexistent-file-or-buffer) (confirm-nonexistent-file-or-buffer)) ;Emacs23.
-  default-directory 'file-name-history default-directory nil
+  nil 'file-name-history default-directory nil
   (icicle-file-bindings                 ; Bindings
    ((prompt                             "File or dir (absolute): ")
     (icicle-full-cand-fn                `(lambda (file)
@@ -5455,7 +5455,7 @@ Ido-like behavior."                     ; Doc string
   (lambda (f) (find-file-other-window (icicle-transform-multi-completion f) 'WILDCARDS)) ; Action
   prompt icicle-abs-file-candidates nil ; `completing-read' args
   (and (fboundp 'confirm-nonexistent-file-or-buffer) (confirm-nonexistent-file-or-buffer)) ;Emacs23.
-  default-directory 'file-name-history default-directory nil
+  nil 'file-name-history default-directory nil
   (icicle-file-bindings                 ; Bindings
    ((prompt                             "File or dir (absolute): ")
     (icicle-full-cand-fn                `(lambda (file)
