@@ -24,6 +24,11 @@ options(oo)})\n"  string) buf)
   (delete-region beg end)
   (insert string)
   ))
+
+
+(add-hook 'ess-mode-hook '(lambda () (set (make-local-variable 'indent-region-function)
+					  'ess-indent-region-as-R-function)))
+
 </pre>
 
 It is then possible to format R code with the R parser: select a region, and press 'C-M-\' ('M-x indent-region'). If there is no R process associated to the buffer, a new one is launched. Note that the code in the region should be
