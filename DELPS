@@ -129,7 +129,7 @@ The reference implementation is available at Savannah. Mirror at Github:
     # to get new updates from time to time
     git pull
 
-Add following to your `~/.emacs' startup file:
+Add following to your `~/.emacs' startup InitFile:
 
     ;; One big file to boot all installed epackages
     ;; Automatically generated. Do not edit.
