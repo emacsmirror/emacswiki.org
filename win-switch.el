@@ -7,13 +7,13 @@
 ;; URL: http://www.stat.cmu.edu/~genovese/emacs/
 
 ;; Version: 1.0
-;; Update#: 10
+;; Update#: 11
 ;; Created:      Wed 28 Jul 2011 at 00:27 EDT
-;; Last-Updated: Sun 11 Sep 2011 at 14:46 EDT
+;; Last-Updated: Mon 19 Dec 2011 at 11:40 EST
 ;; By: Christopher R. Genovese
 
 ;; Keywords: window, switch, key bindings, ergonomic, efficient
-;; Package-Requires: ((windmove))
+;; Package-Requires: ((windmove "21.1"))
 ;; Compatibility: GNU Emacs 22, GNU Emacs 23, Gnu Emacs 24.0.50
 ;;                Tested on these versions on Mac OS X 10.5.
 ;;                Testing or feedback for other platforms/versions
@@ -202,8 +202,17 @@
 
 ;;; Change Log:
 ;;
+;;  * 18 Dec 2011 -- Fixed error in keylist management functions that
+;;                   masked changes to keys on other lists. This
+;;                   affected `win-switch-custom-set-keys',
+;;                   `win-switch-add-key', and `win-switch-delete-key'.
+;;                   Also fixed a few documentation typos.
+;;                   Thanks to Mark Hepburn and Brett Presnell for
+;;                   finding the error.
+;;                   
 ;;  * 11 Sep 2011 -- Fixed typo in `win-switch-setup-keys-arrow-ctrl'
-;;                   and `win-switch-setup-keys-arrow-meta'
+;;                   and `win-switch-setup-keys-arrow-meta'.
+;;                   Thanks to mpdflaccuesupport.
 ;;                   
 ;;  * 27 Aug 2011 -- Fixed missing hyphen in `win-switch-authors-configuration'
 ;;
@@ -983,23 +992,57 @@ an exit command event."
 
 ;; (@* "Customization Initializers and Option Setters")
 
+(defun win-switch-clear-from-keylists (key-list)
+  "Remove each key in KEY-LIST from all predefined keylists.
+
+This is used to keep the predefined keylists synchronized with
+updates, additions, and deletions. KEY-LIST should be a list of
+keybindings. The predefined keylists are the customizable
+variables listed as the keys in `win-switch-commands'. No keymap
+changes are made by this function."
+  (let ((keyvars (mapcar 'first win-switch-commands)))
+    (dolist (keyvar keyvars)
+      (let ((keys (symbol-value keyvar)))
+        (dolist (key key-list)
+          (when (member key keys)
+            (set keyvar (delete key keys))))))))
+    
+
 ;;;###autoload
 (defun win-switch-custom-set-keys (key-sym key-list)
-  "Set specified key list and adjust `win-switch-map'.
+  "Set specified key list and adjust `win-switch-map' and other key lists.
+
+This is the most general function for changing the bindings of
+commands represented in the predefined key lists. See also
+`win-switch-set-keys', which is the API entry point to this
+function, along with `win-switch-add-key' and
+`win-switch-delete-key'. Note that changing `win-switch-map'
+directly need not be reliable, and also see
+`win-switch-define-key' for a safe way to make general bindings.
 
 KEY-SYM is a symbol that must be represented in the alist
 `win-switch-commands'. The corresponding list of keys will be set
 to KEY-LIST, which should be a list of keybindings, and each key
 in the list will be bound to the corresponding commands.
-An error is raised when trying to empty the exit list
-and a warning when trying to empty the emergency-exit list."
+An error is raised when trying to empty the exit list."
   (let ((cmd (cdr (assoc key-sym win-switch-commands))))
     (unless cmd
       (error "Symbol %s is not a valid win-switch key list" key-sym))
     (when (and (null key-list) (eq key-sym 'win-switch-exit-keys))
       (error "The exit keys list for win-switch must remain non-empty"))
+    ;; Remove old bindings for the command before rebinding
+    ;; | ATTN: Could use
+    ;; |  (substitute-key-definition cmd 'win-switch-exit-and-redo
+    ;; |                                 win-switch-map)
+    ;; | here but that would also clear user bindings made directly by
+    ;; | user and not in the corresponding key list. It might still be
+    ;; | a good idea, though, but now keeping key lists in better sync.
     (dolist (oldkey (symbol-value key-sym))
-      (define-key win-switch-map oldkey 'win-switch-exit-and-redo)) ; bindings effectively erased
+      (when (eq cmd (lookup-key win-switch-map oldkey))
+        (define-key win-switch-map oldkey 'win-switch-exit-and-redo)))
+    ;; Remove keys in key-list from all key lists to keep lists in sync
+    (win-switch-clear-from-keylists key-list)
+    ;; Set new keylist and rebind
     (set key-sym key-list)
     (dolist (newkey key-list)
       (define-key win-switch-map newkey cmd)))
@@ -1050,13 +1093,17 @@ NAME should be a symbol or string for which the variable
       (error "%s is not a valid win-switch key type" name))
     (if (member key lst)
         lst
+      ;; ATTN: Should probably use win-switch-custom-set-keys here instead
+      ;;       of what follows, even though it would do extra work. E.g.,
+      ;;       (win-switch-custom-set-keys sym (cons key lst))
       (define-key win-switch-map key cmd)
+      (win-switch-clear-from-keylists (list key))
       (set sym (cons key lst))))
   (setq win-switch-map (win-switch-fix-keymap-defaults win-switch-map)))
 
 ;;;###autoload
 (defun win-switch-delete-key (key name)
-  "Remove KEY to command list associated with NAME.
+  "Remove KEY from command list associated with NAME.
 NAME should be a symbol or string for which the variable
 `win-switch-NAME-keys' is defined. KEY is a key binding in any
 form acceptable to `define-key'. Removing the last exit key
@@ -1065,8 +1112,7 @@ message."
   (interactive "KKey sequence: \nSDelete key %s from win-switch command name: ")
   (let* ((sym (win-switch-name-to-command-sym name))
          (cmd (cdr (assoc sym win-switch-commands)))
-         (lst (and cmd (symbol-value sym)))
-         (newlist nil))
+         (lst (and cmd (symbol-value sym))))
     (unless cmd
       (error "%s is not a valid win-switch key type" name))
     (unless (member key lst)
@@ -1076,10 +1122,8 @@ message."
           (error "The exit keys list for win-switch must remain non-empty")
         (message "Removing last key from command list win-switch-%s-keys" name)))
     (define-key win-switch-map key 'win-switch-exit-and-redo)
-    (dolist (k lst)
-      (unless (equal key k)
-        (push k newlist)))
-    (set sym (nreverse newlist))))
+    (set sym (delete key lst))
+    (setq win-switch-map (win-switch-fix-keymap-defaults win-switch-map))))
 
 ;;;###autoload
 (defun win-switch-define-key (key def &optional force-no-default)
@@ -1095,11 +1139,10 @@ non-nil."
              (member key win-switch-exit-keys)
              (not (eq def 'win-switch-exit)))
     (error "The exit keys list for win-switch must remain non-empty"))
-  (dolist (cmdpair win-switch-commands)
-    (when (member key (symbol-value (first cmdpair)))
-      (win-switch-delete-key key (first cmdpair))))
+  (win-switch-clear-from-keylists (list key))
   (define-key win-switch-map key def)
-  (setq win-switch-map (win-switch-fix-keymap-defaults win-switch-map)))
+  (unless force-no-default
+    (setq win-switch-map (win-switch-fix-keymap-defaults win-switch-map))))
 
 ;; Ideally, setting the once keys would be integrated into key setting
 ;; interface for the regular commands. But this would add nontrivial
@@ -1356,8 +1399,9 @@ non-nil, should be a list of keys that will be bound globally to
   "Set left-handed keys mirroring defaults and bind global dispatch keys.
 Under this setup, keys e, s, d, and f will switch windows,
 respectively, up, left, down, and right, with other functionality
-The arguments DISPATCH-KEYS, if non-nil, should be a list of keys
-that will be bound globally to `win-switch-dispatch'."
+bound to nearby keys. The arguments DISPATCH-KEYS, if non-nil,
+should be a list of keys that will be bound globally to
+`win-switch-dispatch'."
   (interactive)
   (win-switch-set-keys '("e") 'up)
   (win-switch-set-keys '("d") 'down)
