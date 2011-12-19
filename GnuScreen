@@ -54,9 +54,7 @@ I ([[piyo]]) use C-T because it doesn't collide with anything else other than M-
   escape "^T^T"
 
 
-Is there anyway to use C-; ?? I've tried a million combinations including RTFM but can't seem to get it working ([[nimms]]).  Yes:
-
-  # escape ;;
+Is there anyway to use C-; ?? I've tried a million combinations including RTFM but can't seem to get it working ([[nimms]]).
 
 == Common Usage ==
 
