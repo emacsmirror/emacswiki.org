@@ -163,7 +163,7 @@ directional keys. Accepts as argument one or more
 key-sequences to bind to <code>win-switch-dispath</code>, as
 in
 <pre>
-        (win-switch-setup-keys "\C-xo" "\C-x\C-o")
+        (win-switch-setup-keys-ijkl "\C-xo" "\C-x\C-o")
 </pre>
 
 * <code>win-switch-set-keys-arrow-ctrl</code>,
