@@ -10,9 +10,9 @@
 ;; Copyright (C) 1988 Lynn Randolph Slater, Jr.
 ;; Created: Tue Aug  4 17:06:46 1987
 ;; Version: 21.0
-;; Last-Updated: Tue Nov 15 13:49:12 2011 (-0800)
+;; Last-Updated: Mon Dec 19 23:31:57 2011 (-0800)
 ;;           By: dradams
-;;     Update #: 1811
+;;     Update #: 1815
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/header2.el
 ;; Keywords: tools, docs, maint, abbrev, local
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -163,6 +163,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2011/12/19 dadams
+;;     delete-and-forget-line: Use line-end-position, not end-of-line + point.
 ;; 2011/11/15 dadams
 ;;     header-date-string:
 ;;       Use UTC format from http://www.w3.org/TR/NOTE-datetime.  Thx to Lennart Borgman.
@@ -975,9 +977,9 @@ Return nil, for use on a hook."
 ;; blocks of automatic header maintenance.
 ;; -----------------------------------------------------------------------
 (defsubst delete-and-forget-line ()
-  "Delete current line.  Do not add it to the `kill-ring'."
+  "Delete current line and return it.  Do not add it to the `kill-ring'."
   (let* ((start  (point))
-         (stop   (progn (end-of-line) (point)))
+         (stop   (line-end-position))
          (str    (buffer-substring start stop)))
     (delete-region start stop)
     str))
@@ -999,7 +1001,7 @@ Return nil, for use on a hook."
 ;;; incremented."
 ;;;   (interactive)
 ;;;   (let* ((beg  (point))
-;;;          (eol  (save-excursion (end-of-line) (point)))
+;;;          (eol  (line-end-position))
 ;;;          (end  (re-search-forward "\\([^\\\"]+\\)\"" eol t))
 ;;;          (str  (buffer-substring beg (1- end)))
 ;;;          (num  (car (condition-case err
