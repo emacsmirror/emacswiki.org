@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2011, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Sat Dec 17 18:34:43 2011 (-0800)
+;; Last-Updated: Mon Dec 19 23:06:37 2011 (-0800)
 ;;           By: dradams
-;;     Update #: 13963
+;;     Update #: 13970
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-chg.el
 ;; Keywords: bookmarks, bookmark+
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -440,6 +440,11 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-bmu.el'")
 ;;
+;; 2011/12/19 dadams
+;;     Added: with-buffer-modified-unmodified.
+;;     bookmark-bmenu-((un)mark|delete), bookmark-bmenu-(show|hide)-filenames:
+;;       Use with-buffer-modified-unmodified.
+;;     bookmark-bmenu-show-filenames, bmkp-bmenu-mouse-3-menu: Use line-(beginning|end)-position.
 ;; 2011/12/15 dadams
 ;;     bmkp-bmenu-propertize-item: Use bmkp-local-directory face also for Dired (e.g. with wildcards).
 ;;     bmkp-bmenu-mode-status-help: Clarify legend for remote and local dirs/Dired.
