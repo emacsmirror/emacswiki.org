@@ -39,6 +39,7 @@ I wrote:
 * Lisp:oracle-table2entity-4java.el  -- generate entity for java  from oracle tables [2011-09-27 14:26] 
 * Lisp:oracle-table2entity-4csharp.el   -- generate entity for csharp from oracle tables [2011-09-27 14:26] 
 * Lisp:joseph-util.el     --  some useful functions and macros . [2011-09-13]
+* Lisp:erlang-dired-mode.el     --  binding some key if Emakefile is in erlang project root . [2011-12-20 23:16]
 
 * DefineKeyLazy  (define-key-lazy) defined in Lisp:joseph-util.el   [2011-09-09]
 
