@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Mon Dec 19 09:53:31 2011 (-0800)
+;; Last-Updated: Mon Dec 19 23:43:56 2011 (-0800)
 ;;           By: dradams
-;;     Update #: 22955
+;;     Update #: 22960
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-cmd1.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -1004,16 +1004,16 @@ Completion in R."
   (interactive)
   (ess-make-buffer-current)
   (let* ((comint-completion-addsuffix  nil)
-         (beg-of-line                  (save-excursion (comint-bol nil) (point)))
-         (end-of-line                  (point-at-eol))
-         (line-buffer                  (buffer-substring beg-of-line end-of-line))
+         (bol                          (save-excursion (comint-bol nil) (point)))
+         (eol                          (line-end-position))
+         (line-buffer                  (buffer-substring bol eol))
          (NS                           (if (ess-current-R-at-least '2.7.0)
                                            "utils:::"
                                          "rcompgen:::"))
          (token-string                  ; Setup, including computation of the token
           (progn
             (ess-command (format (concat NS ".assignLinebuffer('%s')\n") line-buffer))
-            (ess-command (format (concat NS ".assignEnd(%d)\n") (- (point) beg-of-line)))
+            (ess-command (format (concat NS ".assignEnd(%d)\n") (- (point) bol)))
             (car (ess-get-words-from-vector (concat NS ".guessTokenFromLine()\n")))))
          (possible-completions          ; Compute and retrieve possible completions
           (progn
@@ -1357,8 +1357,7 @@ control completion behaviour using `bbdb-completion-type'."
            (let ((p  (point))
                  bol)
              (save-excursion
-               (beginning-of-line)
-               (setq bol  (point))
+               (setq bol  (line-beginning-position))
                (goto-char p)
                (when (search-backward "," bol t) (forward-char 1) (insert "\n   ")))))
          ;; Update the *BBDB* buffer if desired.
@@ -3152,7 +3151,7 @@ In particular, you might prefer to remap `bookmark-set' to
       (let* ((regionp    (and (featurep 'bookmark+)  transient-mark-mode  mark-active
                               (not (eq (region-beginning) (region-end)))))
              (name-beg   (if regionp (region-beginning) (point)))
-             (name-end   (if regionp (region-end) (save-excursion (end-of-line) (point))))
+             (name-end   (if regionp (region-end) (line-end-position)))
              (def-name   (concat (buffer-name) ": " (buffer-substring name-beg name-end)))
              (trim-name  (replace-regexp-in-string
                           "\n" " " (substring def-name 0 (min icicle-bookmark-name-length-max
@@ -3313,7 +3312,7 @@ Without library `Bookmark+', this is the same as vanilla Emacs
                                     (buffer-substring (if regionp (region-beginning) (point))
                                                       (if regionp
                                                           (region-end)
-                                                        (save-excursion (end-of-line) (point))))))
+                                                        (line-end-position)))))
                   (defname  (bmkp-replace-regexp-in-string
                              "\n" " "
                              (cond (regionp
