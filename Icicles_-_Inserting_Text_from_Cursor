@@ -26,6 +26,9 @@ the text is a URL, you might want to visit it using a Web browser.
 
 
 
+
+
+
 [:ffap]
 === FFAP: Find File At Point ===
 
@@ -65,6 +68,9 @@ Another way is to use one of the [[Icicles - Completions Display#ProxyCandidates
 Using `##M-.##' or a proxy candidate on demand, instead of binding keys to ffap commands,
 lets you control which [[buffer]] text you use as minibuffer input and
 how that text should be interpreted (file name, URL, and so on).  You can change the behavior of `##M-.##' (which string-inserting functions are used) by customizing [[user option]] '''`<tt>[[Icicles - Customization and General Tips#icicle-thing-at-point-functions|icicle-thing-at-point-functions]]</tt>''''.
+
+'''See Also:''' [[Icicles - Completions Display#ProxyCandidates|Completions Display]] for more about using proxy candidates.
+
 
 
 
