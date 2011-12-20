@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Tue Jan 30 15:01:06 1996
 ;; Version: 21.0
-;; Last-Updated: Thu Sep 22 16:30:07 2011 (-0700)
+;; Last-Updated: Tue Dec 20 00:31:13 2011 (-0800)
 ;;           By: dradams
-;;     Update #: 1144
+;;     Update #: 1174
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/replace+.el
 ;; Keywords: matching, help, internal, tools, local
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -19,9 +19,9 @@
 ;;   `apropos', `apropos+', `avoid', `faces', `faces+', `fit-frame',
 ;;   `frame-cmds', `frame-fns', `help+20', `highlight', `info',
 ;;   `info+', `isearch+', `menu-bar', `menu-bar+', `misc-cmds',
-;;   `misc-fns', `second-sel', `strings', `thingatpt', `thingatpt+',
-;;   `unaccent', `w32browser-dlgopen', `wid-edit', `wid-edit+',
-;;   `widget'.
+;;   `misc-fns', `naked', `second-sel', `strings', `thingatpt',
+;;   `thingatpt+', `unaccent', `w32browser-dlgopen', `wid-edit',
+;;   `wid-edit+', `widget'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -96,6 +96,9 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2011/12/19 dadams
+;;     (keep|flush)-lines, occur(-mode-(mouse-goto|goto-occurrence(-other-window)|display-occurrence)):
+;;       Use line-(beginning|end)-position, not (beginning|end)-of-line + point.
 ;; 2011/09/22 dadams
 ;;     Applied renaming of set-region-around-search-target to isearchp-set-region-around-search-target.
 ;; 2011/08/30 dadams
@@ -571,7 +574,7 @@ the matching is case-sensitive."
           ;; Start is first char not preserved by previous match.
           (if (not (re-search-forward regexp nil 'move))
               (delete-region start (point-max))
-            (let ((end  (save-excursion (goto-char (match-beginning 0)) (beginning-of-line) (point))))
+            (let ((end  (save-excursion (goto-char (match-beginning 0)) (line-beginning-position))))
               ;; Now end is first char preserved by the new match.
               (when (< start end) (delete-region start end))))
           (setq start  (save-excursion (forward-line 1) (point)))
@@ -605,7 +608,7 @@ the matching is case-sensitive."
     (let ((case-fold-search  (and case-fold-search (isearch-no-upper-case-p regexp t))))
       (save-excursion
         (while (and (not (eobp)) (re-search-forward regexp nil t))
-          (delete-region (save-excursion (goto-char (match-beginning 0)) (beginning-of-line) (point))
+          (delete-region (save-excursion (goto-char (match-beginning 0)) (line-beginning-position))
                          (progn (forward-line 1) (point))))))
     (when (interactive-p) (message "Deleting matching lines...done"))))
 
@@ -688,10 +691,9 @@ the matching is case-sensitive."
            ;; Marker to the start of context immediately following
            ;; the matched text in *Occur*.
            (make-marker)))
-;;;     (save-excursion
-;;;       (beginning-of-line)
-;;;       (setq linenum  (1+ (count-lines (point-min) (point))))
-;;;       (setq prevpos  (point)))
+;;;     (save-excursion (beginning-of-line)
+;;;                     (setq linenum  (1+ (count-lines (point-min) (point)))
+;;;                           prevpos  (point)))
       (save-excursion
         (goto-char (point-min))
         ;; Check first whether there are any matches at all.
@@ -773,10 +775,9 @@ the matching is case-sensitive."
                         (insert "\n"))
                     (set-marker final-context-start (+ (- (point) (- end (match-end 0)))
                                                        (if (with-current-buffer buffer
-                                                             (save-excursion
-                                                               (goto-char (match-end 0))
-                                                               (end-of-line)
-                                                               (bolp)))
+                                                             (save-excursion (goto-char (match-end 0))
+                                                                             (end-of-line)
+                                                                             (bolp)))
                                                            1 0)))
                     (set-marker text-end (point))
 
@@ -812,16 +813,12 @@ the matching is case-sensitive."
                           (setq tag  (format "%5d" this-linenum)))
                         (insert tag ?:)
 ;;;                    ;; DDA: Add mouse-face to line
-;;;                    (put-text-property (save-excursion
-;;;                                         (beginning-of-line) (point))
-;;;                                       (save-excursion (end-of-line) (point))
+;;;                    (put-text-property (line-beginning-position) (line-end-position)
 ;;;                                       'mouse-face 'underline)
 ;;;                    ;; DDA: Highlight `grep-pattern' in compilation buffer, if possible.
 ;;;                    (when (fboundp 'hlt-highlight-regexp-region)
-;;;                      (hlt-highlight-regexp-region
-;;;                       (save-excursion (beginning-of-line) (point))
-;;;                       (save-excursion (end-of-line) (point))
-;;;                       occur-regexp list-matching-lines-face))
+;;;                      (hlt-highlight-regexp-region (line-beginning-position) (line-end-position)
+;;;                                                   occur-regexp list-matching-lines-face))
                         (forward-line 1)
                         (setq tag  nil)
                         (incf this-linenum))
@@ -903,17 +900,15 @@ Alo highlight occur regexp in source buffer."
     (save-excursion
       (goto-char (posn-point (event-end (ad-get-arg 0))))
       (when (fboundp 'hlt-highlight-regexp-region) ; Highlight goto lineno.
-        (let ((bol  (save-excursion (beginning-of-line) (point))))
-          (hlt-highlight-regexp-region bol
-                                       (save-excursion
-                                         (beginning-of-line) (search-forward ":" (+ bol 20) t) (point))
-                                       "[0-9]+:"
-                                       'occur-highlight-linenum)))))
+        (let ((bol  (line-beginning-position)))
+          (hlt-highlight-regexp-region bol (save-excursion (beginning-of-line)
+                                                           (search-forward ":" (+ bol 20) t)
+                                                           (point))
+                                       "[0-9]+:" 'occur-highlight-linenum)))))
   ad-do-it
   (when (fboundp 'hlt-highlight-regexp-region)
-    (let ((inhibit-field-text-motion  t)) ; Just to be sure, for end-of-line.
-      (hlt-highlight-regexp-region (save-excursion (beginning-of-line) (point))
-                                   (save-excursion (end-of-line) (point))
+    (let ((inhibit-field-text-motion  t)) ; Just to be sure, for `line-end-position'.
+      (hlt-highlight-regexp-region (line-beginning-position) (line-end-position)
                                    occur-regexp list-matching-lines-face))))
 
 
@@ -925,17 +920,15 @@ Alo highlight occur regexp in source buffer."
   "Highlight visited line number in occur buffer.
 Also highlight occur regexp in source buffer."
   (when (fboundp 'hlt-highlight-regexp-region) ; Highlight goto lineno.
-    (let ((bol  (save-excursion (beginning-of-line) (point))))
-      (hlt-highlight-regexp-region bol
-                                   (save-excursion
-                                     (beginning-of-line) (search-forward ":" (+ bol 20) t) (point))
-                                   "[0-9]+:"
-                                   'occur-highlight-linenum)))
+    (let ((bol  (line-beginning-position)))
+      (hlt-highlight-regexp-region bol (save-excursion (beginning-of-line)
+                                                       (search-forward ":" (+ bol 20) t)
+                                                       (point))
+                                   "[0-9]+:" 'occur-highlight-linenum)))
   ad-do-it
   (when (fboundp 'hlt-highlight-regexp-region)
-    (let ((inhibit-field-text-motion  t)) ; Just to be sure, for end-of-line.
-      (hlt-highlight-regexp-region (save-excursion (beginning-of-line) (point))
-                                   (save-excursion (end-of-line) (point))
+    (let ((inhibit-field-text-motion  t)) ; Just to be sure, for `line-end-position'.
+      (hlt-highlight-regexp-region (line-beginning-position) (line-end-position)
                                    occur-regexp list-matching-lines-face))))
 
 ;; Bindings for Emacs prior to version 22.
@@ -953,19 +946,17 @@ Also highlight occur regexp in source buffer."
   "Go to the occurrence the current line describes, in another window."
   (interactive)
   (when (fboundp 'hlt-highlight-regexp-region) ; Highlight goto lineno.
-    (let ((bol  (save-excursion (beginning-of-line) (point))))
-      (hlt-highlight-regexp-region bol
-                                   (save-excursion
-                                     (beginning-of-line) (search-forward ":" (+ bol 20) t) (point))
-                                   "[0-9]+:"
-                                   'occur-highlight-linenum)))
+    (let ((bol  (line-beginning-position)))
+      (hlt-highlight-regexp-region bol (save-excursion (beginning-of-line)
+                                                       (search-forward ":" (+ bol 20) t)
+                                                       (point))
+                                   "[0-9]+:" 'occur-highlight-linenum)))
   (let ((pos  (occur-mode-find-occurrence)))
     (switch-to-buffer-other-window (marker-buffer pos))
     (goto-char pos)
     (when (fboundp 'hlt-highlight-regexp-region)
-      (let ((inhibit-field-text-motion  t)) ; Just to be sure, for end-of-line.
-        (hlt-highlight-regexp-region (save-excursion (beginning-of-line) (point))
-                                     (save-excursion (end-of-line) (point))
+      (let ((inhibit-field-text-motion  t)) ; Just to be sure, for `line-end-position'.
+        (hlt-highlight-regexp-region (line-beginning-position) (line-end-position)
                                      occur-regexp list-matching-lines-face)))))
 
 
@@ -978,12 +969,11 @@ Also highlight occur regexp in source buffer."
   "Display in another window the occurrence the current line describes."
   (interactive)
   (when (fboundp 'hlt-highlight-regexp-region) ; Highlight goto lineno.
-    (let ((bol  (save-excursion (beginning-of-line) (point))))
-      (hlt-highlight-regexp-region bol
-                                   (save-excursion
-                                     (beginning-of-line) (search-forward ":" (+ bol 20) t) (point))
-                                   "[0-9]+:"
-                                   'occur-highlight-linenum)))
+    (let ((bol  (line-beginning-position)))
+      (hlt-highlight-regexp-region bol (save-excursion (beginning-of-line)
+                                                       (search-forward ":" (+ bol 20) t)
+                                                       (point))
+                                   "[0-9]+:" 'occur-highlight-linenum)))
   (let ((pos  (occur-mode-find-occurrence))
         window
         ;; Bind these to ensure `display-buffer' puts it in another window.
@@ -995,9 +985,8 @@ Also highlight occur regexp in source buffer."
       (select-window window)
       (goto-char pos)
       (when (fboundp 'hlt-highlight-regexp-region)
-        (let ((inhibit-field-text-motion  t)) ; Just to be sure, for end-of-line.
-          (hlt-highlight-regexp-region (save-excursion (beginning-of-line) (point))
-                                       (save-excursion (end-of-line) (point))
+        (let ((inhibit-field-text-motion  t)) ; Just to be sure, for `line-end-position'.
+          (hlt-highlight-regexp-region (line-beginning-position) (line-end-position)
                                        occur-regexp list-matching-lines-face))))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;
