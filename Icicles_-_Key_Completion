@@ -240,8 +240,7 @@ contexts.  To do that, you can customize options '''`<tt>[[Icicles - Customizati
 
 '''Icicles''' key completion piles a lot of stuff into `S-TAB'.  Just
 as `M-x' lets you execute any Emacs command, so does `S-TAB'.  But
-`S-TAB' also lets you insert characters.  With the exception of
-inserting multi-byte characters, you might say that it gives you ''all of Emacs in one key binding''.
+`S-TAB' also lets you insert characters.  You might say that it gives you ''all of Emacs in one key binding''.
 
 Of course, you need a couple other keys, as well. How many? Suppose you had limited accessibility in terms of input devices. Maybe you use Emacs on a cell phone, without voice recognition -- or whatever.  '''''How many keys, buttons, or whatnot do you need to use Emacs?'''''
 
