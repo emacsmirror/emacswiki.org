@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Wed Dec 14 17:16:25 2011 (-0800)
+;; Last-Updated: Tue Dec 20 09:30:42 2011 (-0800)
 ;;           By: dradams
-;;     Update #: 26316
+;;     Update #: 26324
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-doc1.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -1535,7 +1535,7 @@
 ;;(@* "Proxy Candidates, `M-.'")
 ;;  ** Proxy Candidates, `M-.' **)
 ;;
-;;;;  Another way is to use one of the proxy completion candidates
+;;  Another way is to use one of the proxy completion candidates
 ;;  `*point file name*' or `*mouse-2 file name*' whenever Emacs asks
 ;;  you to input a file name (provided option
 ;;  `icicle-add-proxy-candidates-flag' is non-`nil' - toggle with
@@ -1549,6 +1549,8 @@
 ;;  name, URL, and so on).  You can change the behavior of `M-.'
 ;;  (which string-inserting functions are used) by customizing user
 ;;  option `icicle-thing-at-point-functions'.
+;;
+;;  See Also: (@> "*Completions* Display").
 ;;
 ;;(@* "Repeat `M-.' To Grab More or Different")
 ;;  ** Repeat `M-.' To Grab More or Different **
@@ -3176,7 +3178,7 @@
 ;;  * In some cases, Icicles adds one or more additional, proxy
 ;;    completion candidates.  These are placeholders for real
 ;;    candidates.  If you choose a proxy candidate, then the real
-;;    candidate that is referred to is used.  Typical proxy candidates
+;;    candidate that it refers to is used.  Typical proxy candidates
 ;;    include a reference to a name under the cursor, a reference to
 ;;    whatever you then click `mouse-2' on, and a reference to a name
 ;;    that is the value of a variable.
@@ -3232,12 +3234,24 @@
 ;;    for information about using `C-M-{' in the minibuffer to
 ;;    retrieve the value of any variable as minibuffer input.
 ;;
-;;    Gotcha: Your minibuffer input is matched against proxy
+;;    Proxy Gotcha #1: Your minibuffer input is matched against proxy
 ;;    candidates, as usual.  If `insert-default-directory' is
-;;    non-`nil' when you use `C-x d' (`icicle-dired') then the default
-;;    directory is inserted as part of your input.  If you use `TAB'
-;;    for completion then you will first need to use `M-k' to remove
-;;    the directory, as it will not match any of the proxy candidates.
+;;    non-`nil' when you use `C-x d' (`icicle-dired'), then the
+;;    default directory is inserted as part of your input.  If you
+;;    then use `TAB' for completion then you will first need to use
+;;    `M-k' to remove the inserted directory, as it will not match any
+;;    of the proxy candidates.
+;;
+;;    Proxy Gotcha #2: If you enter text that matches a proxy
+;;    candidate then the value of that proxy is taken as the real
+;;    input - that's the whole point of proxy candidates.  But
+;;    suppose, in Info, you want to (non-incrementally) search for the
+;;    text `ftp-program', which is the name of a variable?  If you
+;;    type `s ftp-program RET' then the *value* of that variable
+;;    (typically `ftp') is taken as the text to search for, instead of
+;;    the literal text `ftp-program'.  To take care of this, use
+;;    `C-M-_' in the minibuffer to turn off including proxy
+;;    candidates.
 ;;
 ;;  * Clicking `C-mouse-3' on a candidate in `*Completions*' pops up a
 ;;    contextual menu for acting on completion candidates.  You can
