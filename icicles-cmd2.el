@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Thu May 21 13:31:43 2009 (-0700)
 ;; Version: 22.0
-;; Last-Updated: Wed Dec 14 11:05:35 2011 (-0800)
+;; Last-Updated: Mon Dec 19 23:50:56 2011 (-0800)
 ;;           By: dradams
-;;     Update #: 4996
+;;     Update #: 5001
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-cmd2.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -3282,9 +3282,8 @@ prefixed by MARKER's buffer name."
   (with-current-buffer (marker-buffer marker)
     (save-excursion
       (goto-char marker)
-      (let ((line  (let ((inhibit-field-text-motion  t)) ; Just to be sure, for `end-of-line'.
-                     (buffer-substring-no-properties (save-excursion (beginning-of-line) (point))
-                                                     (save-excursion (end-of-line) (point)))))
+      (let ((line  (let ((inhibit-field-text-motion  t)) ; Just to be sure, for `line-end-position'.
+                     (buffer-substring-no-properties (line-beginning-position) (line-end-position))))
             (buff  (and globalp icicle-show-multi-completion-flag (buffer-name)))
             (help  (and (or (> icicle-help-in-mode-line-delay 0) ; Get it only if user will see it.
                             (and (boundp 'tooltip-mode) tooltip-mode))
@@ -6101,8 +6100,8 @@ If `crosshairs.el' is loaded, then the target position is highlighted."
     (compilation-next-error-function 0 nil))
   (save-excursion
     (save-restriction
-      (let ((inhibit-field-text-motion  t)) ; Just to be sure, for `end-of-line'.
-        (narrow-to-region (progn (beginning-of-line) (point)) (progn (end-of-line) (point))))
+      (let ((inhibit-field-text-motion  t)) ; Just to be sure, for `line-end-position'.
+        (narrow-to-region (line-beginning-position) (line-end-position)))
       (icicle-search-highlight-and-maybe-replace cand+mrker replace-string)))
   (when (fboundp 'crosshairs-highlight) (crosshairs-highlight 'line-only 'nomsg))
   (let ((icicle-candidate-nb  icicle-candidate-nb)) (icicle-complete-again-update)))
