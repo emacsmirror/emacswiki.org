@@ -7,16 +7,17 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Mon Sep 11 10:29:56 1995
 ;; Version: 21.0
-;; Last-Updated: Thu Oct 27 15:58:30 2011 (-0700)
+;; Last-Updated: Mon Dec 19 23:14:29 2011 (-0800)
 ;;           By: dradams
-;;     Update #: 2736
+;;     Update #: 2742
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/buff-menu+.el
 ;; Keywords: mouse, local, convenience
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
 ;;
 ;; Features that might be required by this library:
 ;;
-;;   `avoid', `fit-frame', `frame-fns', `misc-cmds', `misc-fns'.
+;;   `avoid', `fit-frame', `frame-fns', `misc-cmds', `misc-fns',
+;;   `strings', `thingatpt', `thingatpt+'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -141,6 +142,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2011/12/19 dadams
+;;     Buffer-menu-mode, Buffer-menu-mouse-3-menu: Use line-end-position, not end-of-line + point.
 ;; 2011/10/27 dadams
 ;;     Handle Dired buffers like file buffers, e.g., wrt arg FILES-ONLY.
 ;; 2011/06/29 dadams
@@ -999,9 +1002,7 @@ Bindings in Buffer Menu mode:
       (when (or (not (boundp 'Buffer-menu-use-header-line)) (not Buffer-menu-use-header-line))
         (forward-line 2))               ; First two lines are title, unless use header line.
       (while (not (eobp))
-        (put-text-property (point)
-                           (save-excursion (end-of-line) (point))
-                           'mouse-face 'highlight)
+        (put-text-property (point) (line-end-position) 'mouse-face 'highlight)
         (forward-line 1)))
     (set (make-local-variable 'revert-buffer-function) 'Buffer-menu-revert-function)
     (when (> emacs-major-version 21)
@@ -1125,8 +1126,7 @@ Bindings in Buffer Menu mode:
         (when (or (not (boundp 'Buffer-menu-use-header-line)) (not Buffer-menu-use-header-line))
           (forward-line 2))             ; First two lines are title, unless use header line.
         (while (not (eobp))
-          (put-text-property (point) (save-excursion (end-of-line) (point))
-                             'mouse-face 'highlight)
+          (put-text-property (point) (line-end-position) 'mouse-face 'highlight)
           (forward-line 1))))
     (set (make-local-variable 'revert-buffer-function) 'Buffer-menu-revert-function)
     (set (make-local-variable 'buffer-stale-function) #'(lambda (&optional noconfirm) 'fast))
@@ -1616,8 +1616,8 @@ For more information, see the function `buffer-menu'."
                          (set-buffer (window-buffer (posn-window mouse-pos)))
                          (save-excursion
                            (goto-char (posn-point mouse-pos))
-                           (save-excursion (setq bol  (progn (beginning-of-line) (point))
-                                                 eol  (progn (end-of-line) (point))))
+                           (setq bol  (line-beginning-position)
+                                 eol  (line-end-position))
                            (if Buffer-menu-overlay ; Don't recreate if exists.
                                (move-overlay Buffer-menu-overlay bol eol (current-buffer))
                              (setq Buffer-menu-overlay  (make-overlay bol eol))
