@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Fri Jun 28 14:47:12 1996
 ;; Version: 21.0
-;; Last-Updated: Fri Nov  4 08:50:56 2011 (-0700)
+;; Last-Updated: Tue Dec 20 00:59:26 2011 (-0800)
 ;;           By: dradams
-;;     Update #: 538
+;;     Update #: 547
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/mouse+.el
 ;; Keywords: mouse
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -96,6 +96,8 @@
 ;; 
 ;;; Change Log:
 ;;
+;; 2011/12/19 dadams
+;;     mouse-scan-lines: Use line-(beginning|end)-position, not (beginning|end)-of-line.
 ;; 2011/01/04 dadams
 ;;     Removed autoload cookie from non def* sexp.  Added for defface.
 ;; 2010/10/12 dadams
@@ -234,10 +236,10 @@
            (start-posn                 (event-start start-event))
            (start-point                (posn-point start-posn))
            (start-window               (posn-window start-posn))
-           (inhibit-field-text-motion  t)) ; Just to be sure, for end-of-line.
+           (inhibit-field-text-motion  t)) ; Just to be sure, for `end-of-line'.
       (move-overlay mouse-scan-lines-overlay
-                    (save-excursion (goto-char start-point) (beginning-of-line) (point))
-                    (save-excursion (goto-char start-point) (end-of-line) (point)))
+                    (save-excursion (goto-char start-point) (line-beginning-position))
+                    (save-excursion (goto-char start-point) (line-end-position)))
       (let (event end  end-point)
         (track-mouse
           (while (progn (setq event  (read-event))
@@ -249,8 +251,8 @@
               (when (and (eq (posn-window end) start-window) (integer-or-marker-p end-point))
                 (move-overlay
                  mouse-scan-lines-overlay
-                 (save-excursion (goto-char end-point) (beginning-of-line) (point))
-                 (save-excursion (goto-char end-point) (end-of-line) (point)))))))
+                 (save-excursion (goto-char end-point) (line-beginning-position))
+                 (save-excursion (goto-char end-point) (line-end-position)))))))
         (delete-overlay mouse-scan-lines-overlay)))))
 
 (defun mouse-move-flash-posn-overlay (ol start end)
