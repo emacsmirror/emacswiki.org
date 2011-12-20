@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Thu Dec 15 10:06:57 2011 (-0800)
+;; Last-Updated: Mon Dec 19 23:56:14 2011 (-0800)
 ;;           By: dradams
-;;     Update #: 17458
+;;     Update #: 17460
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-mcmd.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -3996,7 +3996,7 @@ You can use this command only from buffer `*Completions*' (`\\<completion-list-m
   (let ((opoint          (point))
         (curr-col        1)
         (next-line-cols  1)
-        (eol             (save-excursion (end-of-line) (point))))
+        (eol             (line-end-position)))
     (save-excursion
       (beginning-of-line)
       (while (and (< (point) opoint) (re-search-forward "[^ ] +" eol t))
@@ -4004,7 +4004,7 @@ You can use this command only from buffer `*Completions*' (`\\<completion-list-m
     (forward-line -1)
     (when (< (point) (icicle-start-of-candidates-in-Completions))
       (goto-char (point-max)) (beginning-of-line)) ; Wrap around
-    (let ((eol  (save-excursion (end-of-line) (point))))
+    (let ((eol  (line-end-position)))
       (save-excursion
         (beginning-of-line)
         (while (re-search-forward "[^ ] +[^ ]" eol t) (setq next-line-cols  (1+ next-line-cols)))))
@@ -4022,14 +4022,14 @@ You can use this command only from buffer `*Completions*' (`\\<completion-list-m
   (let ((opoint          (point))
         (curr-col        1)
         (next-line-cols  1)
-        (eol             (save-excursion (end-of-line) (point))))
+        (eol             (line-end-position)))
     (save-excursion
       (beginning-of-line)
       (while (and (< (point) opoint) (re-search-forward "[^ ] +" eol t))
         (setq curr-col  (1+ curr-col))))
     (forward-line 1)
     (when (eobp) (goto-char (icicle-start-of-candidates-in-Completions))) ; Wrap around
-    (let ((eol  (save-excursion (end-of-line) (point))))
+    (let ((eol  (line-end-position)))
       (save-excursion
         (beginning-of-line)
         (while (re-search-forward "[^ ] +[^ ]" eol t) (setq next-line-cols  (1+ next-line-cols)))))
