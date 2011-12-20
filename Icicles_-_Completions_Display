@@ -21,12 +21,17 @@ the cursor) is highlighted.
 
 
 
+
+
 [:CurrentCandidate]
 === Current Candidate ===
 
 When you cycle completion candidates in the [[minibuffer]]:
 * The current candidate is highlighted in `*Completions*'.
 * Help on the current candidate (typically, the first line of a [[doc string]]) is displayed in the [[mode line]], provided [[user option]] '''`<tt>[[Icicles - Customization and General Tips#icicle-help-in-mode-line-delay|icicle-help-in-mode-line-delay]]</tt>'''' is greater than zero.
+
+
+
 
 
 
@@ -38,6 +43,8 @@ If the number of candidates is currently truncated (because of
 option '''`<tt>[[Icicles - Customization and General Tips#icicle-max-candidates|icicle-max-candidates]]</tt>''''),
 then the total number of candidates before truncation is also
 shown -- e.g. `##149 shown / 567##'.
+
+
 
 
 
@@ -55,10 +62,16 @@ after you hit `C-insert' the current input in the minibuffer is
 
 
 
+
+
+
 [:CompletionsDisplayAsAproposIcompletion]
 === *Completions* Display as Apropos Icompletion ===
 
 `*Completions*' can also serve as apropos icompletion help -- see [[Icicles - Icompletion]].
+
+
+
 
 
 [:ChooseMultipleCandidates]
@@ -68,6 +81,10 @@ You can choose multiple candidates during completion, by
 clicking them with `mouse-2' while holding the Control key
 pressed.  See [[Icicles - Multi-Commands]].  You can choose a set of
 candidates in additional ways, and then act on all of them -- see [[Icicles - Candidate Sets]]).
+
+
+
+
 
 
 [:AutoResizeOfCompletionsWindow]
@@ -102,16 +119,15 @@ of the height for command `bar'. If you use such code, evaluate it after you loa
     (put 'bar 'icicle-Completions-window-max-height nil)
 
 
+
+
+
+
+
+
 [:icicle-Completions-text-scale-decrease]
 [:text-scale-resize-window']
 [:1on1-completions-frame-zoom-font-difference]
-
-
-
-
-
-
-
 [:TextSizeInCompletions]
 === Smaller Text in *Completions* ===
 
@@ -143,6 +159,9 @@ resize it only horizontally.)
 If you use library <tt>[[oneonone.el]]</tt> with a standalone
 `*Completions*' [[frame]], then see option
 '''`1on1-completions-frame-zoom-font-difference''''.
+
+
+
 
 
 
@@ -206,6 +225,10 @@ portion that is common to all candidates.
 
 
 
+
+
+
+
 [:ThumbnailImages]
 === Show Thumbnails for Image Files ===
 
@@ -221,12 +244,17 @@ completion.
 
 
 
+
+
+
 [:ScrollCompletions]
 === Scroll *Completions* ===
 You can scroll `*Completions*' down using `C-v', and up using
 `M-v'.  You can use '''`C-u'''' at any time to reverse the scroll
 directions.  In Emacs 22 or later, you can also use the mouse
 wheel to scroll `*Completions*'.
+
+
 
 
 
@@ -262,7 +290,7 @@ See [[Icicles - Customization and General Tips#icicle-completions-format|Customi
 
 [:ProxyCandidates]
 === Proxy Candidates ===
-In some cases, '''Icicles''' adds one or more additional, '''proxy''' completion candidates.  These are placeholders for real candidates.  If you choose a [::proxy candidate], then the real candidate that is referred to is used.  Typical proxy candidates include a reference to a name under the cursor, a reference to whatever you then click `mouse-2' on, and a reference to a name that is the value of a [[variable]].
+In some cases, '''Icicles''' adds one or more additional, '''proxy''' completion candidates.  These are placeholders for real candidates.  If you choose a [::proxy candidate], then the real candidate that it refers to is used.  Typical proxy candidates include a reference to a name under the cursor, a reference to whatever you then click `mouse-2' on, and a reference to a name that is the value of a [[variable]].
 
 The inclusion of proxy candidates is controlled by user option '''`<tt>[[Icicles - Customization and General Tips#icicle-add-proxy-candidates-flag|icicle-add-proxy-candidates-flag]]</tt>''''.  You can toggle this inclusion at any time during completion, using '''`##C-M-_##''''.    For
 performance reasons, you must re-invoke some commands after toggling the flag on, to make the proxy candidates available.  Examples:
@@ -298,12 +326,24 @@ information about using `##C-M-{##' in the minibuffer to retrieve the
 value of any variable as minibuffer input.
 
 
-'''Gotcha:''' Your minibuffer input is matched against proxy
+'''Proxy Gotcha #1:''' Your minibuffer input is matched against proxy
 candidates, as usual.  If `insert-default-directory' is non-`nil'
-when you use `C-x d' (`icicle-dired') then the default directory
+when you use `C-x d' (`icicle-dired'), then the default directory
 is inserted as part of your input.  If you use `TAB' for
-completion then you will first need to use `M-k' to remove the
-directory, as it will not match any of the proxy candidates.
+completion then you will first need to use `M-k' to remove the inserted directory, as it will not match any of the proxy candidates.
+
+
+'''Proxy Gotcha #2:''' If you enter text that matches a proxy
+candidate then the value of that proxy is taken as the real
+input -- that's the whole point of proxy candidates.  But
+suppose, in [[Info]], you want to (non-incrementally) search for the
+text `ftp-program', which is the name of a variable?  If you
+type `##s ftp-program RET##' then the ''value'' of that variable
+(typically `ftp') is taken as the text to search for, instead of
+the literal text `ftp-program'.  To take care of this, use `##C-M-_##' in the minibuffer to turn off including proxy candidates.
+
+
+
 
 
 
