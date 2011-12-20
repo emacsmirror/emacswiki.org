@@ -7,9 +7,9 @@
 ;; Copyright (C) 2010-2011, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 30 15:22:56 2010 (-0800)
 ;; Version: 
-;; Last-Updated: Fri Dec  9 09:48:39 2011 (-0800)
+;; Last-Updated: Tue Dec 20 00:08:53 2011 (-0800)
 ;;           By: dradams
-;;     Update #: 1442
+;;     Update #: 1447
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/mouse3.el
 ;; Keywords: mouse menu keymap kill rectangle region
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -307,6 +307,9 @@
 ;; 
 ;;; Change Log:
 ;;
+;; 2011/12/19 dadams
+;;     mouse3-dired-(un)mark-region-files, mouse3-dired-flag-region-files-for-deletion:
+;;       Use line-(beginning|end)-position, not (beginning|end)-of-line + point.
 ;; 2011/12/09 dadams
 ;;     Removed mouse3-region-popup-count-submenu.
 ;;     mouse3-region-popup-x-popup-panes:
@@ -1449,8 +1452,8 @@ With non-nil prefix arg, unmark them instead."
   (let ((beg                        (min (point) (mark)))
         (end                        (max (point) (mark)))
         (inhibit-field-text-motion  t)) ; Just in case.
-    (setq beg  (save-excursion (goto-char beg) (beginning-of-line) (point))
-          end  (save-excursion (goto-char end) (end-of-line) (point)))
+    (setq beg  (save-excursion (goto-char beg) (line-beginning-position))
+          end  (save-excursion (goto-char end) (line-end-position)))
     (let ((dired-marker-char  (if unmark-p ?\040 dired-marker-char)))
       (dired-mark-if (and (<= (point) end) (>= (point) beg) (mouse3-dired-this-file-unmarked-p))
                      "region file"))))
@@ -1463,8 +1466,8 @@ With non-nil prefix arg, mark them instead."
   (let ((beg                        (min (point) (mark)))
         (end                        (max (point) (mark)))
         (inhibit-field-text-motion  t)) ; Just in case.
-    (setq beg  (save-excursion (goto-char beg) (beginning-of-line) (point))
-          end  (save-excursion (goto-char end) (end-of-line) (point)))
+    (setq beg  (save-excursion (goto-char beg) (line-beginning-position))
+          end  (save-excursion (goto-char end) (line-end-position)))
     (let ((dired-marker-char  (if mark-p dired-marker-char ?\040)))
       (dired-mark-if (and (<= (point) end) (>= (point) beg) (mouse3-dired-this-file-marked-p))
                      "region file"))))
@@ -1476,8 +1479,8 @@ With non-nil prefix arg, mark them instead."
   (let ((beg                        (min (point) (mark)))
         (end                        (max (point) (mark)))
         (inhibit-field-text-motion  t)) ; Just in case.
-    (setq beg  (save-excursion (goto-char beg) (beginning-of-line) (point))
-          end  (save-excursion (goto-char end) (end-of-line) (point)))
+    (setq beg  (save-excursion (goto-char beg) (line-beginning-position))
+          end  (save-excursion (goto-char end) (line-end-position)))
     (let ((dired-marker-char  dired-del-marker))
       (dired-mark-if (and (<= (point) end) (>= (point) beg) (mouse3-dired-this-file-unmarked-p ?\D))
                      "region file"))))
