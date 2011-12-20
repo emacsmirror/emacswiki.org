@@ -7,16 +7,17 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Wed Aug  2 11:20:41 1995
 ;; Version: 21.1
-;; Last-Updated: Mon Dec 12 15:58:24 2011 (-0800)
+;; Last-Updated: Tue Dec 20 00:55:51 2011 (-0800)
 ;;           By: dradams
-;;     Update #: 3006
+;;     Update #: 3008
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/misc-cmds.el
 ;; Keywords: internal, unix, extensions, maint, local
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
 ;;
 ;; Features that might be required by this library:
 ;;
-;;   `avoid', `frame-fns', `misc-cmds', `misc-fns'.
+;;   `avoid', `frame-fns', `misc-cmds', `misc-fns', `strings',
+;;   `thingatpt', `thingatpt+'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -69,6 +70,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2011/12/19 dadams
+;;     goto-long-line: Use line-end-position, not end-of-line + point.
 ;; 2011/12/12 dadams
 ;;     Added (redefinition of) rename-buffer.
 ;;     Soft require strings.el.
@@ -316,7 +319,7 @@ Returns the signed number of chars moved if /= ARG, else returns nil."
   (interactive "p")
   (let* ((start                      (point))
          (fwd-p                      (natnump arg))
-         (inhibit-field-text-motion  t) ; Just to be sure, for end-of-line.
+         (inhibit-field-text-motion  t) ; Just to be sure, for `end-of-line'.
          (max (save-excursion (if fwd-p (end-of-line) (beginning-of-line))
                               (- (point) start))))
     (setq arg  (prefix-numeric-value arg))
@@ -606,8 +609,7 @@ Plain `C-u' (no number) uses `fill-column' as LEN."
         (inhibit-field-text-motion  t))
     (while (and (not found) (not (eobp)))
       (forward-line 1)
-      (setq found  (< len (setq len-found
-                                (- (save-excursion (end-of-line) (point)) (point))))))
+      (setq found  (< len (setq len-found  (- (line-end-position) (point))))))
     (if found
         (when (interactive-p)
           (message "Line %d: %d chars" (line-number-at-pos) len-found))
