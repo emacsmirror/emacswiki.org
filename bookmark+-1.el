@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2011, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 13:43:55 2010 (-0700)
-;; Last-Updated: Sun Dec 18 13:25:37 2011 (-0800)
+;; Last-Updated: Tue Dec 20 00:38:24 2011 (-0800)
 ;;           By: dradams
-;;     Update #: 2678
+;;     Update #: 2681
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-1.el
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -1665,9 +1665,7 @@ bookmarks)."
          (regionp  (and transient-mark-mode mark-active (not (eq (mark) (point)))))
          (regname  (concat (buffer-name) ": "
                            (buffer-substring (if regionp (region-beginning) (point))
-                                             (if regionp
-                                                 (region-end)
-                                               (save-excursion (end-of-line) (point))))))
+                                             (if regionp  (region-end)  (line-end-position)))))
          (defname  (bmkp-replace-regexp-in-string
                     "\n" " "
                     (cond (regionp (save-excursion (goto-char (region-beginning))
@@ -5993,7 +5991,7 @@ If region was relocated, save it if user confirms saving."
            (push-mark end-pos 'nomsg 'activate)
            (setq deactivate-mark  nil)
            (when bmkp-show-end-of-region
-             (let ((end-win  (save-excursion (forward-line (window-height)) (end-of-line) (point))))
+             (let ((end-win  (save-excursion (forward-line (window-height)) (line-end-position))))
                ;; Bounce point and mark.
                (save-excursion (sit-for 0.6) (exchange-point-and-mark) (sit-for 1))
                ;; Recenter if region end is not visible.
