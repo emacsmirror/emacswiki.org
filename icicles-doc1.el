@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Tue Dec 20 09:30:42 2011 (-0800)
+;; Last-Updated: Tue Dec 20 13:39:05 2011 (-0800)
 ;;           By: dradams
-;;     Update #: 26324
+;;     Update #: 26325
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-doc1.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -5104,9 +5104,8 @@
 ;;
 ;;  Icicles key completion piles a lot of stuff into `S-TAB'.  Just as
 ;;  `M-x' lets you execute any Emacs command, so does `S-TAB'.  But
-;;  `S-TAB' also lets you insert characters.  With the exception of
-;;  inserting multi-byte characters, you might say that it gives you
-;;  all of Emacs in one key binding.
+;;  `S-TAB' also lets you insert characters.  You might say that it
+;;  gives you all of Emacs in one key binding.
 ;;
 ;;  Of course, you need a couple other keys, as well.  How many?
 ;;  Suppose you had limited accessibility in terms of input devices.
