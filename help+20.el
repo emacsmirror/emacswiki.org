@@ -7,9 +7,9 @@
 ;; Copyright (C) 1999-2011, Drew Adams, all rights reserved.
 ;; Created: Tue Mar 16 14:18:11 1999
 ;; Version: 20.0
-;; Last-Updated: Fri Oct  7 17:13:23 2011 (-0700)
+;; Last-Updated: Mon Dec 19 23:39:02 2011 (-0800)
 ;;           By: dradams
-;;     Update #: 2166
+;;     Update #: 2178
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/help+20.el
 ;; Keywords: help
 ;; Compatibility: GNU Emacs 20.x
@@ -17,8 +17,8 @@
 ;; Features that might be required by this library:
 ;;
 ;;   `avoid', `fit-frame', `frame-fns', `info', `info+', `misc-fns',
-;;   `strings', `thingatpt', `thingatpt+', `wid-edit', `wid-edit+',
-;;   `widget'.
+;;   `naked', `strings', `thingatpt', `thingatpt+', `wid-edit',
+;;   `wid-edit+', `widget'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -90,6 +90,9 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2011/12/19 dadams
+;;     help-with-tutorial, describe-variable: Use line-end-position, not end-of-line + point.
+;;     describe-variable: if -> when.
 ;; 2011/10/07 dadams
 ;;     Added soft require of naked.el.
 ;;     describe-key, where-is, help-on-click/key-lookup: Use naked-key-description if available.
@@ -346,7 +349,7 @@ With prefix ARG, you are asked to choose which language."
       (goto-char (point-min))
       (search-forward "\n<<")
       (beginning-of-line)
-      (delete-region (point) (progn (end-of-line) (point)))
+      (delete-region (point) (line-end-position))
       (let ((n  (- (window-height (selected-window))
                    (count-lines (point-min) (point))
                    6)))
@@ -637,28 +640,25 @@ Return the documentation, as a string."
         (terpri)
         (pp (symbol-value variable))
         (terpri))
-      (if (local-variable-p variable)
-          (progn
-            (princ (format "Local in buffer %s; " (buffer-name)))
-            (if (not (default-boundp variable))
-                (princ "globally void")
-              (princ "global value is ")
-              (terpri)
-              (pp (default-value variable)))
-            (terpri)))
+      (when (local-variable-p variable)
+        (princ (format "Local in buffer %s; " (buffer-name)))
+        (if (not (default-boundp variable))
+            (princ "globally void")
+          (princ "global value is ")
+          (terpri)
+          (pp (default-value variable)))
+        (terpri))
       (terpri)
       (save-current-buffer
         (set-buffer standard-output)
-        (if (> (count-lines (point-min) (point-max)) 10)
-            (progn
-              (goto-char (point-min))
-              (if valvoid
-                  (forward-line 1)
-                (forward-sexp 1)
-                (delete-region (point) (progn (end-of-line) (point)))
-                (insert "'s value is shown below.\n\n")
-                (save-excursion
-                  (insert "\n\nValue:"))))))
+        (when (> (count-lines (point-min) (point-max)) 10)
+          (goto-char (point-min))
+          (if valvoid
+              (forward-line 1)
+            (forward-sexp 1)
+            (delete-region (point) (line-end-position))
+            (insert "'s value is shown below.\n\n")
+            (save-excursion (insert "\n\nValue:")))))
       (princ "Documentation:")
       (terpri)
       (let ((doc  (documentation-property variable 'variable-documentation)))
@@ -670,19 +670,18 @@ Return the documentation, as a string."
       ;; Note, it is not reliable to test only for a custom-type property
       ;; because those are only present after the var's definition
       ;; has been loaded.
-      (if (or (get variable 'custom-type) ; after defcustom
-              (get variable 'custom-loads) ; from loaddefs.el
-              (get variable 'standard-value)) ; from cus-start.el
-          (let ((customize-label  "customize"))
-            (terpri)
-            (terpri)
-            (princ (concat "You can " customize-label " this variable."))
-            (with-current-buffer "*Help*"
-              (save-excursion
-                (re-search-backward
-                 (concat "\\(" customize-label "\\)") nil t)
-                (help-xref-button 1 #'(lambda (v)
-                                        (customize-variable v)) variable)))))
+      (when (or (get variable 'custom-type) ; after defcustom
+                (get variable 'custom-loads) ; from loaddefs.el
+                (get variable 'standard-value)) ; from cus-start.el
+        (let ((customize-label  "customize"))
+          (terpri)
+          (terpri)
+          (princ (concat "You can " customize-label " this variable."))
+          (with-current-buffer "*Help*"
+            (save-excursion  (re-search-backward
+                              (concat "\\(" customize-label "\\)") nil t)
+                             (help-xref-button 1 #'(lambda (v)
+                                                     (customize-variable v)) variable)))))
       ;; Make a hyperlink to the library if appropriate.  (Don't
       ;; change the format of the buffer's initial line in case
       ;; anything expects the current format.)
