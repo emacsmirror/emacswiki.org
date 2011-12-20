@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2011, Drew Adams, all rights reserved.
 ;; Created: Thu Dec  7 09:32:12 2000
 ;; Version: 21.0
-;; Last-Updated: Tue Jan  4 14:59:37 2011 (-0800)
+;; Last-Updated: Tue Dec 20 00:35:01 2011 (-0800)
 ;;           By: dradams
-;;     Update #: 178
+;;     Update #: 180
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/w32browser-dlgopen.el
 ;; Keywords: files, extensions, convenience, dialog
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -47,6 +47,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2011/12/19 dadams
+;;     get-current-line: Use line-(beginning|end)-position.
 ;; 2010/01/12 dadams
 ;;     dlgopen-open-files: set-buffer -> with-current-buffer.
 ;; 2009/04/26 dadams
@@ -93,8 +95,7 @@ Nil => display a single chosen file in the current window;
 
 (defsubst get-current-line ()
   (let ((inhibit-field-text-motion  t))
-    (buffer-substring (save-excursion (beginning-of-line) (point))
-                      (save-excursion (end-of-line) (point)))))
+    (buffer-substring (line-beginning-position) (line-end-position))))
 
 ;;;###autoload
 (defun dlgopen-open-files (&optional flip)
