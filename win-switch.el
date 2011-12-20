@@ -6,7 +6,7 @@
 ;; Maintainer: Christopher R. Genovese <genovese@cmu.edu>
 ;; URL: http://www.stat.cmu.edu/~genovese/emacs/
 
-;; Version: 1.0
+;; Version: 1.0.1
 ;; Update#: 11
 ;; Created:      Wed 28 Jul 2011 at 00:27 EDT
 ;; Last-Updated: Mon 19 Dec 2011 at 11:40 EST
