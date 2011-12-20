@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2011, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 09:05:21 2010 (-0700)
-;; Last-Updated: Thu Dec 15 21:57:09 2011 (-0800)
+;; Last-Updated: Mon Dec 19 23:02:36 2011 (-0800)
 ;;           By: dradams
-;;     Update #: 1050
+;;     Update #: 1073
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-bmu.el
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -250,15 +250,16 @@
 ;;    `bookmark-bmenu-switch-other-window', `bookmark-bmenu-unmark'.
 ;;
 ;;
-;;  ***** NOTE: The following non-interactive functions defined in
-;;              `bookmark.el' have been REDEFINED HERE:
+;;  ***** NOTE: The following non-interactive functions and macros
+;;              defined in `bookmark.el' have been REDEFINED HERE:
 ;;
 ;;    `bookmark-bmenu-bookmark', `bookmark-bmenu-check-position',
 ;;    `bookmark-bmenu-delete', `bookmark-bmenu-ensure-position' (Emacs
 ;;    23.2+), `bookmark-bmenu-hide-filenames', `bookmark-bmenu-mode',
 ;;    `bookmark-bmenu-show-filenames',
 ;;    `bookmark-bmenu-surreptitiously-rebuild-list',
-;;    `bookmark-bmenu-switch-other-window' (Emacs 20-22).
+;;    `bookmark-bmenu-switch-other-window' (Emacs < 23),
+;;    `with-buffer-modified-unmodified' (Emacs < 23).
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; 
@@ -703,6 +704,14 @@ The first time the list is displayed, it is set to nil.")
 ;;(@* "Compatibility Code for Older Emacs Versions")
 ;;; Compatibility Code for Older Emacs Versions ----------------------
 
+(when (< emacs-major-version 23)
+  (defmacro with-buffer-modified-unmodified (&rest body)
+    "Save and restore `buffer-modified-p' state around BODY."
+    (let ((was-modified  (make-symbol "was-modified")))
+      `(let ((,was-modified  (buffer-modified-p)))
+        (unwind-protect (progn ,@body)
+          (set-buffer-modified-p ,was-modified))))))
+
 (when (< emacs-major-version 22)
   (defun bookmark-bmenu-relocate ()
     "Change the file path of the bookmark on the current line,
@@ -740,6 +749,7 @@ The first time the list is displayed, it is set to nil.")
 ;; 1. Add bookmark to `bmkp-bmenu-marked-bookmarks'.
 ;; 2. Don't call `bookmark-bmenu-ensure-position' again at end.
 ;; 3. Raise error if not in `*Bookmark List*'.
+;; 4. Narrower scope for `with-buffer-modified-unmodified' and `let'.
 ;;
 ;;;###autoload
 (defun bookmark-bmenu-mark ()           ; Bound to `m' in bookmark list
@@ -748,10 +758,11 @@ The first time the list is displayed, it is set to nil.")
   (bmkp-bmenu-barf-if-not-in-menu-list)
   (bookmark-bmenu-ensure-position)
   (beginning-of-line)
-  (let ((inhibit-read-only  t))
-    (push (bookmark-bmenu-bookmark) bmkp-bmenu-marked-bookmarks)
-    (delete-char 1) (insert ?>) (put-text-property (1- (point)) (point) 'face 'bmkp->-mark)
-    (forward-line 1)))
+  (with-buffer-modified-unmodified
+      (let ((inhibit-read-only  t))
+        (delete-char 1) (insert ?>) (put-text-property (1- (point)) (point) 'face 'bmkp->-mark)))
+  (push (bookmark-bmenu-bookmark) bmkp-bmenu-marked-bookmarks)
+  (forward-line 1))
 
 
 ;; REPLACES ORIGINAL in `bookmark.el'.
@@ -760,6 +771,7 @@ The first time the list is displayed, it is set to nil.")
 ;; 2. Use `bmkp-delete-bookmark-name-from-list', not `delete'.
 ;; 3. Don't call `bookmark-bmenu-ensure-position' again at end.
 ;; 4. Raise error if not in `*Bookmark List*'.
+;; 5. Narrower scope for `with-buffer-modified-unmodified' and `let'.
 ;;
 ;;;###autoload
 (defun bookmark-bmenu-unmark (&optional backup) ; Bound to `u' in bookmark list
@@ -769,10 +781,11 @@ Optional BACKUP means move up instead."
   (bmkp-bmenu-barf-if-not-in-menu-list)
   (bookmark-bmenu-ensure-position)
   (beginning-of-line)
-  (let ((inhibit-read-only  t))
-    (delete-char 1) (insert " ")
-    (setq bmkp-bmenu-marked-bookmarks  (bmkp-delete-bookmark-name-from-list
-                                        (bookmark-bmenu-bookmark) bmkp-bmenu-marked-bookmarks)))
+  (with-buffer-modified-unmodified
+      (let ((inhibit-read-only  t))
+        (delete-char 1) (insert " ")))
+  (setq bmkp-bmenu-marked-bookmarks  (bmkp-delete-bookmark-name-from-list
+                                      (bookmark-bmenu-bookmark) bmkp-bmenu-marked-bookmarks))
   (forward-line (if backup -1 1)))
 
 
@@ -794,8 +807,9 @@ the deletions."
   (bmkp-bmenu-barf-if-not-in-menu-list)
   (beginning-of-line)
   (bookmark-bmenu-ensure-position)
-  (let ((inhibit-read-only  t))
-    (delete-char 1) (insert ?D) (put-text-property (1- (point)) (point) 'face 'bmkp-D-mark))
+  (with-buffer-modified-unmodified
+      (let ((inhibit-read-only  t))
+        (delete-char 1) (insert ?D) (put-text-property (1- (point)) (point) 'face 'bmkp-D-mark)))
   (setq bmkp-bmenu-marked-bookmarks  (bmkp-delete-bookmark-name-from-list
                                       (bookmark-bmenu-bookmark) bmkp-bmenu-marked-bookmarks))
   (forward-line 1))
@@ -1424,29 +1438,30 @@ bmkp-use-region             - Activate saved region when visit?"
   "Show file names."
   (if (and (not force) bookmark-bmenu-toggle-filenames)
       nil                               ; Already shown, so do nothing.
-    (save-excursion
-      (save-window-excursion
-        (goto-char (point-min)) (forward-line bmkp-bmenu-header-lines)
-        (setq bookmark-bmenu-hidden-bookmarks  ())
-        (let ((inhibit-read-only  t))
-          (while (< (point) (point-max))
-            (let ((bmk  (bookmark-bmenu-bookmark)))
-              (setq bookmark-bmenu-hidden-bookmarks  (cons bmk bookmark-bmenu-hidden-bookmarks))
-	      (let ((start  (save-excursion (end-of-line) (point))))
-		(move-to-column bookmark-bmenu-file-column t))
-	      (delete-region (point) (progn (end-of-line) (point)))
-              (insert "  ")
-              (bookmark-insert-location bmk t) ; Pass the NO-HISTORY arg.
-              (when (if (fboundp 'display-color-p) ; Emacs 21+.
-                        (and (display-color-p) (display-mouse-p))
-                      window-system)
-                (let ((help  (get-text-property (+ bmkp-bmenu-marks-width
-                                                   (line-beginning-position)) 'help-echo)))
-                  (put-text-property (+ bmkp-bmenu-marks-width (line-beginning-position))
-                                     (point) 'mouse-face 'highlight)
-                  (when help  (put-text-property (+ bmkp-bmenu-marks-width (line-beginning-position))
-                                                 (point) 'help-echo help))))
-              (forward-line 1))))))
+    (with-buffer-modified-unmodified
+        (save-excursion
+          (save-window-excursion
+            (goto-char (point-min)) (forward-line bmkp-bmenu-header-lines)
+            (setq bookmark-bmenu-hidden-bookmarks  ())
+            (let ((inhibit-read-only  t))
+              (while (< (point) (point-max))
+                (let ((bmk  (bookmark-bmenu-bookmark)))
+                  (setq bookmark-bmenu-hidden-bookmarks  (cons bmk bookmark-bmenu-hidden-bookmarks))
+                  (move-to-column bookmark-bmenu-file-column t)
+                  (delete-region (point) (line-end-position))
+                  (insert "  ")
+                  (bookmark-insert-location bmk t) ; Pass the NO-HISTORY arg.
+                  (when (if (fboundp 'display-color-p) ; Emacs 21+.
+                            (and (display-color-p) (display-mouse-p))
+                          window-system)
+                    (let ((help  (get-text-property (+ bmkp-bmenu-marks-width
+                                                       (line-beginning-position)) 'help-echo)))
+                      (put-text-property (+ bmkp-bmenu-marks-width (line-beginning-position))
+                                         (point) 'mouse-face 'highlight)
+                      (when help  (put-text-property (+ bmkp-bmenu-marks-width
+                                                        (line-beginning-position))
+                                                     (point) 'help-echo help))))
+                  (forward-line 1)))))))
     (when (and (fboundp 'fit-frame-if-one-window)
                (eq (selected-window) (get-buffer-window (get-buffer-create "*Bookmark List*") 0)))
       (fit-frame-if-one-window))))
@@ -1463,29 +1478,30 @@ bmkp-use-region             - Activate saved region when visit?"
   "Hide filenames in bookmark-list buffer.
 If either optional arg FORCE or `bookmark-bmenu-toggle-filenames' is
 non-nil, then do nothing."
-  (when (and (not force)  bookmark-bmenu-toggle-filenames)
-    (save-excursion
-      (save-window-excursion
-        (goto-char (point-min)) (forward-line bmkp-bmenu-header-lines)
-        (setq bookmark-bmenu-hidden-bookmarks  (nreverse bookmark-bmenu-hidden-bookmarks))
-        (let ((max-width  0))
-          (dolist (name  bookmark-bmenu-hidden-bookmarks)
-            (setq max-width  (max max-width (length name))))
-          (setq max-width  (+ max-width bmkp-bmenu-marks-width))
-          (save-excursion
-            (let ((inhibit-read-only  t))
-              (while bookmark-bmenu-hidden-bookmarks
-                (move-to-column bmkp-bmenu-marks-width t)
-                (bookmark-kill-line)
-                (let ((name   (car bookmark-bmenu-hidden-bookmarks))
-                      (start  (point))
-                      end)
-                  (insert name)
-                  (move-to-column max-width t)
-                  (setq end  (point))
-                  (bmkp-bmenu-propertize-item name start end))
-                (setq bookmark-bmenu-hidden-bookmarks  (cdr bookmark-bmenu-hidden-bookmarks))
-                (forward-line 1)))))))
+  (when (and (not force)  bookmark-bmenu-toggle-filenames) ; Nothing to hide if nil.
+    (with-buffer-modified-unmodified
+        (save-excursion
+          (save-window-excursion
+            (goto-char (point-min)) (forward-line bmkp-bmenu-header-lines)
+            (setq bookmark-bmenu-hidden-bookmarks  (nreverse bookmark-bmenu-hidden-bookmarks))
+            (let ((max-width  0))
+              (dolist (name  bookmark-bmenu-hidden-bookmarks)
+                (setq max-width  (max max-width (length name))))
+              (setq max-width  (+ max-width bmkp-bmenu-marks-width))
+              (save-excursion
+                (let ((inhibit-read-only  t))
+                  (while bookmark-bmenu-hidden-bookmarks
+                    (move-to-column bmkp-bmenu-marks-width t)
+                    (bookmark-kill-line)
+                    (let ((name   (car bookmark-bmenu-hidden-bookmarks))
+                          (start  (point))
+                          end)
+                      (insert name)
+                      (move-to-column max-width t)
+                      (setq end  (point))
+                      (bmkp-bmenu-propertize-item name start end))
+                    (setq bookmark-bmenu-hidden-bookmarks  (cdr bookmark-bmenu-hidden-bookmarks))
+                    (forward-line 1))))))))
     (when (and (fboundp 'fit-frame-if-one-window)
                (eq (selected-window) (get-buffer-window (get-buffer-create "*Bookmark List*") 0)))
       (fit-frame-if-one-window))))
@@ -4525,9 +4541,8 @@ Marked bookmarks that have no associated file are ignored."
     (with-current-buffer (window-buffer (posn-window mouse-pos))
       (save-excursion
         (goto-char (posn-point mouse-pos))
-        (save-excursion
-          (setq bol  (progn (beginning-of-line) (point))
-                eol  (progn (end-of-line) (point))))
+        (setq bol  (line-beginning-position)
+              eol  (line-end-position))
         (unwind-protect
              (progn
                (if bmkp-bmenu-line-overlay ; Don't recreate.
