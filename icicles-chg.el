@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2011, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Mon Dec 19 09:58:38 2011 (-0800)
+;; Last-Updated: Tue Dec 20 00:10:40 2011 (-0800)
 ;;           By: dradams
-;;     Update #: 7683
+;;     Update #: 7695
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-chg.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -84,6 +84,8 @@
 ;;
 ;; 2011/12/19 dadams
 ;;     icicle-find-file-absolute(-other-window): Do not insert default directory as initial input.
+;;     icicle-ess-R-complete-object-name: Use line-end-position, not point-at-eol (not in Emacs 20).
+;;     icicle-bookmark-(cmd|set), icicle-bbdb-complete-name: Use line-(beginning|end)-position.
 ;; 2011/12/14 dadams
 ;;     Added: icicle-bookmark-bookmark-file-narrow, icicle-bookmark-image-narrow,
 ;;            icicle-bookmark-image(-other-window).
@@ -514,6 +516,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd2.el'")
 ;;
+;; 2011/12/19 dadams
+;;     icicle-marker+text, icicle-compilation-search-in-context-fn: Use line-(beginning|end)-position.
 ;; 2011/12/14 dadams
 ;;     icicle-search-where-arg: Do not bind icicle-bookmark-types here.
 ;;     icicle-search-define-candidates: For bookmarks, WHERE is a cons of conses (not just a cons).
@@ -2852,6 +2856,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-mcmd.el'")
 ;;
+;; 2011/12/19 dadams
+;;     icicle-(next|previous)-line: Use line-end-position, not end-of-line + point.
 ;; 2011/12/15 dadams
 ;;     icicle-keep-only-past-inputs: For file-name candidates, expand file names before comparing.
 ;; 2011/11/05 dadams
