@@ -7,9 +7,9 @@
 ;; Copyright (C) 1999-2011, Drew Adams, all rights reserved.
 ;; Created: Fri Apr  2 16:55:16 1999
 ;; Version: 20.0
-;; Last-Updated: Tue Aug 30 17:16:24 2011 (-0700)
+;; Last-Updated: Tue Dec 20 00:47:33 2011 (-0800)
 ;;           By: dradams
-;;     Update #: 902
+;;     Update #: 924
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/compile+20.el
 ;; Keywords: tools, processes
 ;; Compatibility: GNU Emacs 20.x, GNU Emacs 21.x
@@ -19,9 +19,9 @@
 ;;   `apropos', `apropos+', `avoid', `compile', `compile-20',
 ;;   `faces', `faces+', `fit-frame', `font-lock', `frame-fns',
 ;;   `help+20', `highlight', `info', `info+', `menu-bar',
-;;   `menu-bar+', `misc-cmds', `misc-fns', `second-sel', `strings',
-;;   `thingatpt', `thingatpt+', `unaccent', `w32browser-dlgopen',
-;;   `wid-edit', `wid-edit+', `widget'.
+;;   `menu-bar+', `misc-cmds', `misc-fns', `naked', `second-sel',
+;;   `strings', `thingatpt', `thingatpt+', `unaccent',
+;;   `w32browser-dlgopen', `wid-edit', `wid-edit+', `widget'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -78,8 +78,11 @@
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
-;;; Change log:
+;;; Change Log:
 ;;
+;; 2011/12/19 dadams
+;;     grep: Use buffer-substring-no-properties, not buffer-substring.
+;;     compilation-goto-locus, compile-reinitialize-errors: Use line-(beginning|end)-position.
 ;; 2011/08/30 dadams
 ;;     grep-default-regexp-fn:
 ;;       symbol-name-nearest-point -> non-nil-symbol-name-nearest-point.
@@ -355,7 +358,8 @@ files to search are used as the last time."
                       (if (and transient-mark-mode mark-active
                                (not (eq (region-beginning) (region-end))))
                           ;; Use double-quoted region text.
-                          (concat "\"" (buffer-substring (region-beginning) (region-end)) "\"")
+                          (concat "\"" (buffer-substring-no-properties (region-beginning)
+                                                                       (region-end)) "\"")
                         (and (grep-default-regexp-fn) (funcall (grep-default-regexp-fn))))
                       " "))
             nil nil 'grep-history))))
@@ -671,8 +675,7 @@ NEXT-ERROR is the locus of the next compilation error."
     (set-window-start w (car next-error))
     ;; Highlight `grep-pattern' in compilation buffer, if possible.
     (when (and (fboundp 'hlt-highlight-regexp-region) grep-pattern)
-      (hlt-highlight-regexp-region (save-excursion (beginning-of-line) (point))
-                                   (save-excursion (end-of-line) (point))
+      (hlt-highlight-regexp-region (line-beginning-position) (line-end-position)
                                    grep-pattern grep-regexp-face)
       (message (format "Line %s. %s"
                        (+ (count-lines (point-min) (point))
@@ -739,7 +742,7 @@ if the user has asked for that."
                 deactivate-mark)
             (while error-list
               (save-excursion (put-text-property (goto-char (car (car error-list)))
-                                                 (progn (end-of-line) (point))
+                                                 (line-end-position)
                                                  'mouse-face compile-buffer-mouse-face))
               (setq error-list  (cdr error-list)))))))))
 
