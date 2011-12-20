@@ -7,9 +7,9 @@
 ;; Copyright (C) 1999-2011, Drew Adams, all rights reserved.
 ;; Created: Fri Mar 19 15:58:58 1999
 ;; Version: 21.2
-;; Last-Updated: Fri Dec 16 14:16:13 2011 (-0800)
+;; Last-Updated: Mon Dec 19 23:23:40 2011 (-0800)
 ;;           By: dradams
-;;     Update #: 4350
+;;     Update #: 4362
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/dired+.el
 ;; Keywords: unix, mouse, directories, diredp, dired
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -256,6 +256,10 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2011/12/19 dadams
+;;     dired-insert-set-properties, dired-mark-sexp, diredp-(un)mark-region-files,
+;;       diredp-flag-region-files-for-deletion, diredp-mouse-3-menu:
+;;         Use line-(beginning|end)-position.
 ;; 2011/12/16 dadams
 ;;     diredp-menu-bar-mark-menu: Removed Revert item.
 ;;     diredp-menu-bar-subdir-menu: Added: image-dired-dired-toggle-marked-thumbs.
@@ -3718,8 +3722,7 @@ Add text property `dired-filename' to the file name."
       (while (< (point) end)
         (condition-case nil
             (when (dired-move-to-filename)
-              (add-text-properties (save-excursion (beginning-of-line) (point))
-                                   (save-excursion (end-of-line) (point))
+              (add-text-properties (line-beginning-position) (line-end-position)
                                    '(mouse-face highlight
                                      help-echo "mouse-2: visit this file in other window"))
               (put-text-property (point) (save-excursion (dired-move-to-end-of-filename) (point))
@@ -4307,7 +4310,7 @@ Examples:
                 name  (buffer-substring (point) (or (dired-move-to-end-of-filename t) (point)))
                 sym   (if (looking-at " -> ")
                           (buffer-substring (progn (forward-char 4) (point))
-                                            (progn (end-of-line) (point)))
+                                            (line-end-position))
                         "")))
         (eval predicate)))
      (format "'%s file" predicate))))
@@ -4342,8 +4345,8 @@ With non-nil prefix arg, unmark them instead."
   (let ((beg                        (min (point) (mark)))
         (end                        (max (point) (mark)))
         (inhibit-field-text-motion  t)) ; Just in case.
-    (setq beg  (save-excursion (goto-char beg) (beginning-of-line) (point))
-          end  (save-excursion (goto-char end) (end-of-line) (point)))
+    (setq beg  (save-excursion (goto-char beg) (line-beginning-position))
+          end  (save-excursion (goto-char end) (line-end-position)))
     (let ((dired-marker-char  (if unmark-p ?\040 dired-marker-char)))
       (dired-mark-if (and (<= (point) end) (>= (point) beg) (diredp-this-file-unmarked-p))
                      "region file"))))
@@ -4356,8 +4359,8 @@ With non-nil prefix arg, mark them instead."
   (let ((beg                        (min (point) (mark)))
         (end                        (max (point) (mark)))
         (inhibit-field-text-motion  t)) ; Just in case.
-    (setq beg  (save-excursion (goto-char beg) (beginning-of-line) (point))
-          end  (save-excursion (goto-char end) (end-of-line) (point)))
+    (setq beg  (save-excursion (goto-char beg) (line-beginning-position))
+          end  (save-excursion (goto-char end) (line-end-position)))
     (let ((dired-marker-char  (if mark-p dired-marker-char ?\040)))
       (dired-mark-if (and (<= (point) end) (>= (point) beg) (diredp-this-file-marked-p))
                      "region file"))))
@@ -4369,8 +4372,8 @@ With non-nil prefix arg, mark them instead."
   (let ((beg                        (min (point) (mark)))
         (end                        (max (point) (mark)))
         (inhibit-field-text-motion  t)) ; Just in case.
-    (setq beg  (save-excursion (goto-char beg) (beginning-of-line) (point))
-          end  (save-excursion (goto-char end) (end-of-line) (point)))
+    (setq beg  (save-excursion (goto-char beg) (line-beginning-position))
+          end  (save-excursion (goto-char end) (line-end-position)))
     (let ((dired-marker-char  dired-del-marker))
       (dired-mark-if (and (<= (point) end) (>= (point) beg) (diredp-this-file-unmarked-p ?\D))
                      "region file"))))
@@ -4432,8 +4435,8 @@ With non-nil prefix arg, mark them instead."
           (with-current-buffer (window-buffer (posn-window mouse-pos))
             (save-excursion
               (goto-char (posn-point mouse-pos))
-              (save-excursion (setq bol  (progn (beginning-of-line) (point))
-                                    eol  (progn (end-of-line) (point))))
+              (setq bol  (line-beginning-position)
+                    eol  (line-end-position))
               (unwind-protect
                    (progn
                      (if diredp-file-line-overlay ; Don't re-create if exists.
