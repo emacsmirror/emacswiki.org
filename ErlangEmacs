@@ -14,5 +14,6 @@ it all.
 
 http://fresh.homeunix.net/~luke/ermacs/ermacs.jpg
 
+Lisp:erlang-dired-mode.el     --  binding some key in dired mode  if Emakefile is in current dired or parent dired . -- by [[Joseph]]
 ----
 CategoryExtensionLanguage EmacsImplementations
