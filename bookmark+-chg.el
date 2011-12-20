@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2011, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Mon Dec 19 23:06:37 2011 (-0800)
+;; Last-Updated: Tue Dec 20 00:42:21 2011 (-0800)
 ;;           By: dradams
-;;     Update #: 13970
+;;     Update #: 13974
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-chg.el
 ;; Keywords: bookmarks, bookmark+
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -120,6 +120,8 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-1.el'")
 ;;
+;; 2011/12/19 dadams
+;;     bookmark-set, bmkp-handle-region-default:  Use line-end-position, not end-of-line + point.
 ;; 2011/12/17 dadams
 ;;     bmkp-remote-file-p:
 ;;       If file-remote-p not available, match /...: (same as ffap-ftp-regexp).  Return match.
