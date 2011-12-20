@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Fri Aug 11 14:24:13 1995
 ;; Version: 21.0
-;; Last-Updated: Wed Sep 21 19:15:11 2011 (-0700)
+;; Last-Updated: Mon Dec 19 23:27:27 2011 (-0800)
 ;;           By: dradams
-;;     Update #: 592
+;;     Update #: 595
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/files+.el
 ;; Keywords: internal, extensions, local
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -57,8 +57,10 @@
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
-;;; Change log:
+;;; Change Log:
 ;;
+;; 2011/12/19 dadams
+;;     insert-directory: Use line-end-position, not end-of-line + point.
 ;; 2011/09/21 dadams
 ;;     update-dired-files-count: Ignore any error when adding mouse-face.
 ;; 2011/04/25 dadams
@@ -629,10 +631,9 @@ normally equivalent short `-D' option is just passed on to
                    `(mouse-face highlight keymap ,map
                      help-echo "Files shown / total files in directory \
 \[RET, mouse-2: more info]"))
-                  (add-text-properties
-                   (match-beginning 1) (save-excursion (end-of-line) (point))
-                   `(mouse-face highlight keymap ,map
-                     help-echo "Kbytes used in directory, Kbytes \
+                  (add-text-properties (match-beginning 1) (line-end-position)
+                                       `(mouse-face highlight keymap ,map
+                                         help-echo "Kbytes used in directory, Kbytes \
 available on disk [RET, mouse-2: more info]")))))))))))
 
 (defun count-dired-files ()
