@@ -7,9 +7,9 @@
 ;; Copyright (C) 2006-2011, Drew Adams, all rights reserved.
 ;; Created: Sat May 20 07:56:06 2006
 ;; Version: 22.0
-;; Last-Updated: Thu Dec  8 08:47:56 2011 (-0800)
+;; Last-Updated: Tue Dec 20 00:17:12 2011 (-0800)
 ;;           By: dradams
-;;     Update #: 588 4
+;;     Update #: 589 4
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/palette.el
 ;; Keywords: color, rgb, hsv, hexadecimal, face, frame
 ;; Compatibility: GNU Emacs: 22.x, 23.x
@@ -1476,7 +1476,7 @@ ARG < 0 means move up, wrapping around from the bottom."
   (let* ((fwd-p   (wholenump arg))
          ;;(redisplay-dont-pause) ;; I don't really see any difference.
          (column  (current-column))
-         (start   (progn (beginning-of-line) (point)))
+         (start   (line-beginning-position))
          (max     (save-excursion (if (not fwd-p)
                                       (goto-char (point-min))
                                     (goto-char (point-max))
