@@ -41,3 +41,19 @@ into the main dumped emacs"
 ----
 
 Optimizing emacs startup on another front: i wrote a library that helps optimize the startup times of your InitFile:  http://www.gnufans.net/~deego/pub/emacspub/lisp-mine/dope/ --- deego
+
+Other useful references:
+
+* http://stackoverflow.com/questions/778716/how-can-i-make-emacs-start-up-faster
+* http://tychoish.com/rhizome/decreasing-emacs-start-times/
+* http://a-nickels-worth.blogspot.com/2007/11/effective-emacs.html
+
+It all boils down to:
+
+* put less stuff in your .emacs, separate the files in different places and use LoadingLispFiles
+* use autoload (AutoLoad) and eval-after-load (EvalAfterLoad) instead of load (LoadingLispFiles) and require
+* byte-compile files (see AutoRecompile)
+* never quit emacs (with EmacsClient)
+
+----
+CategoryDotEmacs
