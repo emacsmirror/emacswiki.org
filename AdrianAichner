@@ -53,8 +53,8 @@ See [[Exhibit2005-08-22Z224639]]
 * Currently adding support for multiple swish-e index files in nnir.el
 * Lisp:hsv2rgb.el
 * Lisp:gnuslog.el (GnusLog of incoming mail via nndoc group)
-* Lisp:strptime.el (StrPTime -- partial POSIX date and time parsing)
 ** An original work by Johan Bockgård
+* Lisp:strptime.el (StrPTime -- partial POSIX date and time parsing)
 * [http://cvs.xemacs.org/viewcvs.cgi/XEmacs/packages/xemacs-packages/re-builder/ XEmacs CVS re-builder] now supports perl syntax regexps
 * [[apa-get-ip-addresses]]
 * http://www.xemacs.org/About/Website.html#ARA
