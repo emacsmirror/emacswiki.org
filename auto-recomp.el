@@ -1,23 +1,57 @@
-#FILE text/x-emacs-lisp 
-PGh0bWw+CjxoZWFkPgo8dGl0bGU+S3VydWtzaGV0cmE8L3RpdGxlPgo8bWV0YSBuYW1lPSJkZXNj
-cmlwdGlvbiIgY29udGVudD0iIj4KPG1ldGEgbmFtZT0ia2V5d29yZHMiIGNvbnRlbnQ9IiI+Cjxs
-aW5rIHJlbD0ic2hvcnRjdXQgaWNvbiIgaHJlZj0iaHR0cDovL3dlYi5hcmNoaXZlLm9yZy93ZWIv
-MjAwMjEyMTYwNzA3NTNpbV8vaHR0cDovL3d3dy51Z2NzLmNhbHRlY2guZWR1L35zaHVsbWFuL2Zh
-dmljb24uaWNvIj4KPC9oZWFkPgo8c2NyaXB0IGxhbmd1YWdlPSJKYXZhU2NyaXB0IiBzcmM9Imh0
-dHA6Ly93ZWIuYXJjaGl2ZS5vcmcvd2ViLzIwMDIxMjE2MDcwNzUzanNfL2h0dHA6Ly9wb3AubWly
-Y3guY29tL3BvcC9jamIvc2NyaXB0LzEwNDAwMjI0NzQ5NjM2NCI+Cjwvc2NyaXB0Pgo8ZnJhbWVz
-ZXQgYm9yZGVyPSIwIiByb3dzPSIxMDAlLCoiPgo8ZnJhbWUgbmFtZT0iZnJhbWUiIHNyYz0iaHR0
-cDovL3dlYi5hcmNoaXZlLm9yZy93ZWIvMjAwMjEyMTYwNzA3NTNmd18vaHR0cDovL3d3dy51Z2Nz
-LmNhbHRlY2guZWR1L35zaHVsbWFuL2VsaXNwL2F1dG8tcmVjb21wLmVsIj4KPC9mcmFtZXNldD4K
-PG5vZnJhbWVzPgo8bWV0YSBodHRwLWVxdWl2PSJyZWZyZXNoIiBjb250ZW50PSIwOyB1cmw9aHR0
-cDovL3dlYi5hcmNoaXZlLm9yZy93ZWIvMjAwMjEyMTYwNzA3NTMvaHR0cDovL3d3dy51Z2NzLmNh
-bHRlY2guZWR1L35zaHVsbWFuL2VsaXNwL2F1dG8tcmVjb21wLmVsIj4KPGJvZHk+CjxwPjxhIGhy
-ZWY9Imh0dHA6Ly93ZWIuYXJjaGl2ZS5vcmcvd2ViLzIwMDIxMjE2MDcwNzUzL2h0dHA6Ly93d3cu
-dWdjcy5jYWx0ZWNoLmVkdS9+c2h1bG1hbi9lbGlzcC9hdXRvLXJlY29tcC5lbCI+Q2xpY2sgaGVy
-ZSB0byBjb250aW51ZS48L2E+PC9wPgo8cD5LdXJ1a3NoZXRyYTwvcD4KPHA+PC9wPgo8cD48L3A+
-CjwvYm9keT4KPC9ub2ZyYW1lcz4KPC9odG1sPgoKCgoKCjwhLS0KICAgICBGSUxFIEFSQ0hJVkVE
-IE9OIDc6MDc6NTMgZMOpYy4gMTYsIDIwMDIgQU5EIFJFVFJJRVZFRCBGUk9NIFRIRQogICAgIElO
-VEVSTkVUIEFSQ0hJVkUgT04gNjo1NjoyOSBkw6ljLiAyMSwgMjAxMS4KICAgICBKQVZBU0NSSVBU
-IEFQUEVOREVEIEJZIFdBWUJBQ0sgTUFDSElORSwgQ09QWVJJR0hUIElOVEVSTkVUIEFSQ0hJVkUu
-CgogICAgIEFMTCBPVEhFUiBDT05URU5UIE1BWSBBTFNPIEJFIFBST1RFQ1RFRCBCWSBDT1BZUklH
-SFQgKDE3IFUuUy5DLgogICAgIFNFQ1RJT04gMTA4KGEpKDMpKS4KLS0+Cg==
+;;; auto-recomp.el --- Automatically recompile Emacs Lisp files
+
+;; Copyright (C) 1999 by Michael Abraham Shulman
+
+;; Emacs Lisp Archive Entry
+;; Filename: auto-recomp.el
+;; Author: Michael Abraham Shulman <viritrilbia@users.sourceforge.net>
+;; Version: 1.1
+;; Keywords: extensions, tools
+
+;;{{{ GPL
+
+;; This file is free software; you can redistribute it and/or modify
+;; it under the terms of the GNU General Public License as published by
+;; the Free Software Foundation; either version 2, or (at your option)
+;; any later version.
+
+;; This file is distributed in the hope that it will be useful,
+;; but WITHOUT ANY WARRANTY; without even the implied warranty of
+;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+;; GNU General Public License for more details.
+
+;; You should have received a copy of the GNU General Public License
+;; along with GNU Emacs; see the file COPYING.  If not, write to
+;; the Free Software Foundation, Inc., 59 Temple Place - Suite 330,
+;; Boston, MA 02111-1307, USA.
+
+;;}}}
+
+;;; Commentary:
+
+;; This file allows you to set up Emacs Lisp files to be automatically
+;; byte-compiled whenever they are saved.  Mark such files by giving
+;; them a local variable named `auto-recompile' set to a non-nil
+;; value.  See the Emacs Manual for how to make file local variables.
+;; Then, if this file is loaded, whenever such a file is saved it will
+;; be byte-compiled.
+
+;;; Code:
+
+(defvar auto-recompile nil
+  "Automatically byte-recompile this file whenever it is saved.")
+(make-variable-buffer-local 'auto-recompile)
+
+(defun auto-recompile-file-maybe ()
+  (when auto-recompile
+    (byte-compile-file buffer-file-name)))
+
+(defun add-after-save-hook ()
+  (make-local-hook 'after-save-hook)
+  (add-hook 'after-save-hook 'auto-recompile-file-maybe))
+
+(add-hook 'emacs-lisp-mode-hook 'add-after-save-hook)
+
+(provide 'auto-recomp)
+
+;;; auto-recomp.el ends here
