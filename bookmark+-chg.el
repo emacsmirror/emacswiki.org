@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2011, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Wed Dec 21 11:02:19 2011 (-0800)
+;; Last-Updated: Wed Dec 21 14:34:16 2011 (-0800)
 ;;           By: dradams
-;;     Update #: 13996
+;;     Update #: 13999
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-chg.el
 ;; Keywords: bookmarks, bookmark+
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -123,6 +123,8 @@
 ;; 2011/12/21 dadams
 ;;     Added: bmkp-orphaned(-local|-remote)-file-(alist-only|bookmark-p),
 ;;            bmkp-dired-wildcards-bookmark-p.
+;;     bookmark-load:
+;;       Call (bmkp-refresh-menu-list (bookmark-bmenu-bookmark)), not (bmkp-bmenu-refresh-menu-list).
 ;; 2011/12/19 dadams
 ;;     bookmark-set, bmkp-handle-region-default:  Use line-end-position, not end-of-line + point.
 ;; 2011/12/17 dadams
@@ -448,6 +450,7 @@
 ;; 2011/12/21 dadams
 ;;     Added: bmkp-bmenu-mark-orphaned-local-file-bookmarks,
 ;;            bmkp-bmenu-show-only-orphaned-local-files, bmkp-bmenu-mark-variable-list-bookmarks.
+;;     bmkp-bmenu-refresh-menu-list: Added optional args ARG and MSGP, so you can revert from file.
 ;;     bookmark-bmenu-mode: Updated and reordered doc string.
 ;;     Bind O M, O S to orphaned commands, not omit commands.  Changed omit bindings to use -, not O.
 ;;     Bind bmkp-bmenu-mark-variable-list-bookmarks to V M.
