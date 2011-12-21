@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2011, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 09:05:21 2010 (-0700)
-;; Last-Updated: Mon Dec 19 23:02:36 2011 (-0800)
+;; Last-Updated: Wed Dec 21 10:54:09 2011 (-0800)
 ;;           By: dradams
-;;     Update #: 1073
+;;     Update #: 1150
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-bmu.el
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -127,10 +127,12 @@
 ;;    `bmkp-bmenu-mark-lighted-bookmarks',
 ;;    `bmkp-bmenu-mark-man-bookmarks',
 ;;    `bmkp-bmenu-mark-non-file-bookmarks',
+;;    `bmkp-bmenu-mark-orphaned-local-file-bookmarks',
 ;;    `bmkp-bmenu-mark-region-bookmarks',
 ;;    `bmkp-bmenu-mark-specific-buffer-bookmarks',
 ;;    `bmkp-bmenu-mark-specific-file-bookmarks',
 ;;    `bmkp-bmenu-mark-url-bookmarks',
+;;    `bmkp-bmenu-mark-variable-list-bookmarks',
 ;;    `bmkp-bmenu-mark-w3m-bookmarks', `bmkp-bmenu-mouse-3-menu',
 ;;    `bmkp-bmenu-mode-status-help', `bmkp-bmenu-omit',
 ;;    `bmkp-bmenu-omit-marked', `bmkp-bmenu-omit/unomit-marked',
@@ -155,7 +157,9 @@
 ;;    `bmkp-bmenu-show-only-info-nodes',
 ;;    `bmkp-bmenu-show-only-man-pages',
 ;;    `bmkp-bmenu-show-only-non-files',
-;;    `bmkp-bmenu-show-only-omitted', `bmkp-bmenu-show-only-regions',
+;;    `bmkp-bmenu-show-only-omitted',
+;;    `bmkp-bmenu-show-only-orphaned-local-files',
+;;    `bmkp-bmenu-show-only-regions',
 ;;    `bmkp-bmenu-show-only-specific-buffer',
 ;;    `bmkp-bmenu-show-only-specific-file',
 ;;    `bmkp-bmenu-show-only-tagged', `bmkp-bmenu-show-only-urls',
@@ -1209,17 +1213,19 @@ Mark/Unmark
 \\[bmkp-bmenu-mark-autonamed-bookmarks]\t- Mark autonamed bookmarks
 \\[bmkp-bmenu-mark-temporary-bookmarks]\t- Mark temporary bookmarks
 \\[bmkp-bmenu-mark-lighted-bookmarks]\t- Mark highlighted bookmarks (requires `bookmark+-lit.el)
-\\[bmkp-bmenu-mark-non-file-bookmarks]\t- Mark non-file (i.e. buffer) bookmarks
 \\[bmkp-bmenu-mark-dired-bookmarks]\t- Mark Dired bookmarks
 \\[bmkp-bmenu-mark-file-bookmarks]\t- Mark file & directory bookmarks (`C-u': local only)
-\\[bmkp-bmenu-mark-gnus-bookmarks]\t- Mark Gnus bookmarks
-\\[bmkp-bmenu-mark-lighted-bookmarks]\t- Mark the highlighted bookmarks
 \\[bmkp-bmenu-mark-image-bookmarks]\t- Mark image-file bookmarks
-\\[bmkp-bmenu-mark-info-bookmarks]\t- Mark Info bookmarks
-\\[bmkp-bmenu-mark-desktop-bookmarks]\t- Mark desktop bookmarks
-\\[bmkp-bmenu-mark-bookmark-file-bookmarks]\t- Mark bookmark-file bookmarks
-\\[bmkp-bmenu-mark-man-bookmarks]\t- Mark `man' page bookmarks (that's `M' twice, not Meta-M)
+\\[bmkp-bmenu-mark-orphaned-local-file-bookmarks]\t- Mark orphaned local file/dir bookmarks (`C-u': \
+remote also)
+\\[bmkp-bmenu-mark-non-file-bookmarks]\t- Mark non-file (i.e. buffer) bookmarks
 \\[bmkp-bmenu-mark-region-bookmarks]\t- Mark region bookmarks
+\\[bmkp-bmenu-mark-bookmark-file-bookmarks]\t- Mark bookmark-file bookmarks
+\\[bmkp-bmenu-mark-variable-list-bookmarks]\t- Mark variable-list bookmarks
+\\[bmkp-bmenu-mark-desktop-bookmarks]\t- Mark desktop bookmarks
+\\[bmkp-bmenu-mark-info-bookmarks]\t- Mark Info bookmarks
+\\[bmkp-bmenu-mark-man-bookmarks]\t- Mark `man' page bookmarks (that's `M' twice, not Meta-M)
+\\[bmkp-bmenu-mark-gnus-bookmarks]\t- Mark Gnus bookmarks
 \\[bmkp-bmenu-mark-url-bookmarks]\t- Mark URL bookmarks
 \\[bmkp-bmenu-mark-w3m-bookmarks]\t- Mark W3M (URL) bookmarks
 
@@ -1337,17 +1343,19 @@ Hide/Show
 \\[bmkp-bmenu-show-only-autofiles]\t- Show only autofile bookmarks
 \\[bmkp-bmenu-show-only-autonamed]\t- Show only autonamed bookmarks
 \\[bmkp-bmenu-show-only-temporary]\t- Show only temporary bookmarks
-\\[bmkp-bmenu-show-only-non-files]\t- Show only non-file (i.e. buffer) bookmarks
 \\[bmkp-bmenu-show-only-dired]\t- Show only Dired bookmarks
 \\[bmkp-bmenu-show-only-files]\t- Show only file & directory bookmarks (`C-u': local only)
-\\[bmkp-bmenu-show-only-gnus]\t- Show only Gnus bookmarks
 \\[bmkp-bmenu-show-only-image-files]\t- Show only image-file bookmarks
-\\[bmkp-bmenu-show-only-info-nodes]\t- Show only Info bookmarks
-\\[bmkp-bmenu-show-only-desktops]\t- Show only desktop bookmarks
-\\[bmkp-bmenu-show-only-bookmark-files]\t- Show only bookmark-file bookmarks
-\\[bmkp-bmenu-show-only-man-pages]\t- Show only `man' page bookmarks
+\\[bmkp-bmenu-show-only-orphaned-local-files]\t- Show only orphaned local file bookmarks (`C-u': \
+remote also)
+\\[bmkp-bmenu-show-only-non-files]\t- Show only non-file (i.e. buffer) bookmarks
 \\[bmkp-bmenu-show-only-regions]\t- Show only region bookmarks
+\\[bmkp-bmenu-show-only-bookmark-files]\t- Show only bookmark-file bookmarks
 \\[bmkp-bmenu-show-only-variable-lists]\t- Show only variable-list bookmarks
+\\[bmkp-bmenu-show-only-desktops]\t- Show only desktop bookmarks
+\\[bmkp-bmenu-show-only-info-nodes]\t- Show only Info bookmarks
+\\[bmkp-bmenu-show-only-man-pages]\t- Show only `man' page bookmarks
+\\[bmkp-bmenu-show-only-gnus]\t- Show only Gnus bookmarks
 \\[bmkp-bmenu-show-only-urls]\t- Show only URL bookmarks
 \\[bmkp-bmenu-show-only-w3m-urls]\t- Show only W3M (URL) bookmarks
 \\[bmkp-bmenu-filter-bookmark-name-incrementally]\t- Incrementally show only bookmarks \
@@ -1784,6 +1792,24 @@ With a prefix argument, do not include remote files or directories."
     (bmkp-msg-about-sort-order (bmkp-current-sort-order) "Only file bookmarks are shown")))
 
 ;;;###autoload
+(defun bmkp-bmenu-show-only-orphaned-local-files (arg) ; Bound to `O S' in bookmark list
+  "Display a list of orphaned file and directory bookmarks (only).
+With a prefix argument, do not include remote files or directories."
+  (interactive "P")
+  (bmkp-bmenu-barf-if-not-in-menu-list)
+  (setq bmkp-bmenu-filter-function  (if arg
+                                        'bmkp-orphaned-file-alist-only
+                                      'bmkp-orphaned-local-file-alist-only)
+        bmkp-bmenu-title            (if arg
+                                        "Orphaned File and Directory Bookmarks"
+                                      "Local Orphaned File and Directory Bookmarks"))
+  (let ((bookmark-alist  (funcall bmkp-bmenu-filter-function)))
+    (setq bmkp-latest-bookmark-alist  bookmark-alist)
+    (bookmark-bmenu-list 'filteredp))
+  (when (interactive-p)
+    (bmkp-msg-about-sort-order (bmkp-current-sort-order) "Only orphaned file bookmarks are shown")))
+
+;;;###autoload
 (defun bmkp-bmenu-show-only-non-files () ; Bound to `B S' in bookmark list
   "Display (only) the non-file bookmarks."
   (interactive)
@@ -1881,7 +1907,7 @@ With a prefix argument, do not include remote files or directories."
   (interactive)
   (bmkp-bmenu-barf-if-not-in-menu-list)
   (setq bmkp-bmenu-filter-function  'bmkp-variable-list-alist-only
-        bmkp-bmenu-title            "Variable-list Bookmarks")
+        bmkp-bmenu-title            "Variable-List Bookmarks")
   (let ((bookmark-alist  (funcall bmkp-bmenu-filter-function)))
     (setq bmkp-latest-bookmark-alist  bookmark-alist)
     (bookmark-bmenu-list 'filteredp))
@@ -2289,6 +2315,14 @@ With a prefix argument, do not mark remote files or directories."
   (bmkp-bmenu-mark-bookmarks-satisfying 'bmkp-non-file-bookmark-p))
 
 ;;;###autoload
+(defun bmkp-bmenu-mark-orphaned-local-file-bookmarks (arg) ; Bound to `O M' in bookmark list
+  "Mark orphaned local-file bookmarks (their recorded files are not readable).
+With a prefix argument, mark also remote orphaned files or directories."
+  (interactive "P")
+  (bmkp-bmenu-mark-bookmarks-satisfying
+   (if arg 'bmkp-orphaned-file-bookmark-p 'bmkp-orphaned-local-file-bookmark-p)))
+
+;;;###autoload
 (defun bmkp-bmenu-mark-region-bookmarks () ; Bound to `R M' in bookmark list
   "Mark bookmarks that record a region."
   (interactive)
@@ -2323,6 +2357,12 @@ If FILE is non-nil, set `bmkp-last-specific-file' to it."
   "Mark temporary bookmarks."
   (interactive)
   (bmkp-bmenu-mark-bookmarks-satisfying 'bmkp-temporary-bookmark-p))
+
+;;;###autoload
+(defun bmkp-bmenu-mark-variable-list-bookmarks () ; Bound to `V M' in bookmark list
+  "Mark variable-list bookmarks."
+  (interactive)
+  (bmkp-bmenu-mark-bookmarks-satisfying 'bmkp-variable-list-bookmark-p))
 
 ;;;###autoload
 (defun bmkp-bmenu-mark-url-bookmarks () ; Bound to `M-u M-m' in bookmark list
@@ -2528,7 +2568,7 @@ Returns the bookmark (internal record) created or updated."
   (message "Omitted 1 bookmark"))
 
 ;;;###autoload
-(defun bmkp-bmenu-omit/unomit-marked () ; Bound to `O >' in bookmark list
+(defun bmkp-bmenu-omit/unomit-marked () ; Bound to `- >' in bookmark list
   "Omit all marked bookmarks or, if showing only omitted ones, unomit."
   (interactive)
   (bmkp-bmenu-barf-if-not-in-menu-list)
@@ -2537,7 +2577,7 @@ Returns the bookmark (internal record) created or updated."
     (bmkp-bmenu-omit-marked)))
 
 ;;;###autoload
-(defun bmkp-bmenu-omit-marked ()        ; Bound to `O >' in bookmark list
+(defun bmkp-bmenu-omit-marked ()        ; Bound to `- >' in bookmark list
   "Omit all marked bookmarks.
 They will henceforth be invisible to the bookmark list.
 You can, however, use \\<bookmark-bmenu-mode-map>`\\[bmkp-bmenu-show-only-omitted]' to see them.
@@ -2566,7 +2606,7 @@ You can then mark some of them and use `\\[bmkp-bmenu-omit/unomit-marked]' to ma
     (fit-frame-if-one-window)))
 
 ;;;###autoload
-(defun bmkp-bmenu-unomit-marked ()      ; `O >' in bookmark list when showing omitted bookmarks
+(defun bmkp-bmenu-unomit-marked ()      ; `- >' in bookmark list when showing omitted bookmarks
   "Remove all marked bookmarks from the list of omitted bookmarks.
 They will henceforth be available for display in the bookmark list.
 \(In order to see and then mark omitted bookmarks you must use \\<bookmark-bmenu-mode-map>\
@@ -2597,7 +2637,7 @@ They will henceforth be available for display in the bookmark list.
     (fit-frame-if-one-window)))
 
 ;;;###autoload
-(defun bmkp-bmenu-show-only-omitted ()  ; Bound to `O S' in bookmark list to show only omitted
+(defun bmkp-bmenu-show-only-omitted ()  ; Bound to `- S' in bookmark list to show only omitted
   "Show only the omitted bookmarks.
 You can then mark some of them and use `bmkp-bmenu-unomit-marked' to
  make those that are marked available again for the bookmark list."
@@ -3912,6 +3952,10 @@ Marked bookmarks that have no associated file are ignored."
 (define-key bookmark-bmenu-mode-map ">"                    'bmkp-bmenu-toggle-show-only-marked)
 (define-key bookmark-bmenu-mode-map "<"                    'bmkp-bmenu-toggle-show-only-unmarked)
 (define-key bookmark-bmenu-mode-map (kbd "M-<DEL>")        'bmkp-bmenu-unmark-all)
+(define-key bookmark-bmenu-mode-map "-"                    nil) ; For Emacs 20
+(define-key bookmark-bmenu-mode-map "->"                   'bmkp-bmenu-omit/unomit-marked)
+(define-key bookmark-bmenu-mode-map "-S"                   'bmkp-bmenu-show-only-omitted)
+(define-key bookmark-bmenu-mode-map "-U"                   'bmkp-unomit-all)
 (define-key bookmark-bmenu-mode-map "="                    nil) ; For Emacs 20
 (define-key bookmark-bmenu-mode-map "=bM"                  'bmkp-bmenu-mark-specific-buffer-bookmarks)
 (define-key bookmark-bmenu-mode-map "=fM"                  'bmkp-bmenu-mark-specific-file-bookmarks)
@@ -3987,9 +4031,8 @@ Marked bookmarks that have no associated file are ignored."
 (define-key bookmark-bmenu-mode-map "MS"                   'bmkp-bmenu-show-only-man-pages)
 (define-key bookmark-bmenu-mode-map "\M-m"                 'bmkp-bmenu-mark-all)
 (define-key bookmark-bmenu-mode-map "O"                    nil) ; For Emacs 20
-(define-key bookmark-bmenu-mode-map "O>"                   'bmkp-bmenu-omit/unomit-marked)
-(define-key bookmark-bmenu-mode-map "OS"                   'bmkp-bmenu-show-only-omitted)
-(define-key bookmark-bmenu-mode-map "OU"                   'bmkp-unomit-all)
+(define-key bookmark-bmenu-mode-map "OM"               'bmkp-bmenu-mark-orphaned-local-file-bookmarks)
+(define-key bookmark-bmenu-mode-map "OS"                   'bmkp-bmenu-show-only-orphaned-local-files)
 (define-key bookmark-bmenu-mode-map "P"                    nil) ; For Emacs 20
 (define-key bookmark-bmenu-mode-map "PA"                  'bmkp-bmenu-filter-annotation-incrementally)
 (define-key bookmark-bmenu-mode-map "PB"               'bmkp-bmenu-filter-bookmark-name-incrementally)
@@ -4053,7 +4096,7 @@ Marked bookmarks that have no associated file are ignored."
 (define-key bookmark-bmenu-mode-map "Tu*"                  'bmkp-bmenu-unmark-bookmarks-tagged-all)
 (define-key bookmark-bmenu-mode-map "Tu%"                  'bmkp-bmenu-unmark-bookmarks-tagged-regexp)
 (define-key bookmark-bmenu-mode-map "Tu+"                  'bmkp-bmenu-unmark-bookmarks-tagged-some)
-(define-key bookmark-bmenu-mode-map "Tu~*"                'bmkp-bmenu-unmark-bookmarks-tagged-not-all)
+(define-key bookmark-bmenu-mode-map "Tu~*"                 'bmkp-bmenu-unmark-bookmarks-tagged-not-all)
 (define-key bookmark-bmenu-mode-map "Tu~+"                 'bmkp-bmenu-unmark-bookmarks-tagged-none)
 (define-key bookmark-bmenu-mode-map "Tv"                   'bmkp-bmenu-set-tag-value)
 (define-key bookmark-bmenu-mode-map "T\M-w"                'bmkp-bmenu-copy-tags)
@@ -4067,6 +4110,7 @@ Marked bookmarks that have no associated file are ignored."
 (define-key bookmark-bmenu-mode-map "\M-u\M-m"             'bmkp-bmenu-mark-url-bookmarks)
 (define-key bookmark-bmenu-mode-map "\M-u\M-s"             'bmkp-bmenu-show-only-urls)
 (define-key bookmark-bmenu-mode-map "V"                    nil) ; For Emacs20
+(define-key bookmark-bmenu-mode-map "VM"                   'bmkp-bmenu-mark-variable-list-bookmarks)
 (define-key bookmark-bmenu-mode-map "VS"                   'bmkp-bmenu-show-only-variable-lists)
 (define-key bookmark-bmenu-mode-map "\M-o"                 'bmkp-bmenu-w32-open-select)
 (define-key bookmark-bmenu-mode-map "W"                    nil) ; For Emacs 20
@@ -4101,7 +4145,8 @@ Marked bookmarks that have no associated file are ignored."
 (define-key bmkp-bmenu-menubar-menu [bmkp-bmenu-mode-status-help]
   '(menu-item "Current Status, Mode Help" bmkp-bmenu-mode-status-help :keys "?"
     :help "Describe `*Bookmark List*' and show its current status"))
-(define-key bmkp-bmenu-menubar-menu [top-sep2] '("--"))
+
+(define-key bmkp-bmenu-menubar-menu [top-sep2] '("--")) ; --------------------------------
 (define-key bmkp-bmenu-menubar-menu [bmkp-temporary-bookmarking-mode]
   '(menu-item "Toggle Temporary Bookmarking Mode..." bmkp-temporary-bookmarking-mode
     :help "Toggle temporary-only bookmarking (empty bookmark file *replaces* current bookmarks)"))
@@ -4134,8 +4179,8 @@ Marked bookmarks that have no associated file are ignored."
 (define-key bmkp-bmenu-menubar-menu [bmkp-bmenu-refresh-menu-list]
   '(menu-item "Refresh (Revert)" bmkp-bmenu-refresh-menu-list
     :help "Update the displayed bookmark list to reflect the currently defined bookmarks"))
-(define-key bmkp-bmenu-menubar-menu [top-sep1] '("--"))
 
+(define-key bmkp-bmenu-menubar-menu [top-sep1] '("--")) ; --------------------------------
 (define-key bmkp-bmenu-menubar-menu [bmkp-make-function-bookmark]
   '(menu-item "New Function Bookmark..." bmkp-make-function-bookmark
     :help "Create a bookmark that will invoke FUNCTION when \"jumped\" to"))
@@ -4287,7 +4332,8 @@ Marked bookmarks that have no associated file are ignored."
 (define-key bmkp-bmenu-show-menu [bookmark-bmenu-toggle-filenames]
   '(menu-item "Show/Hide File Names" bookmark-bmenu-toggle-filenames
     :help "Toggle whether filenames are shown in the bookmark list"))
-(define-key bmkp-bmenu-show-menu [show-sep3] '("--"))
+
+(define-key bmkp-bmenu-show-menu [show-sep5] '("--")) ; ----------------------------------
 (define-key bmkp-bmenu-show-menu [bmkp-bmenu-filter-tags-incrementally]
   '(menu-item "Show Only Tag Matches..." bmkp-bmenu-filter-tags-incrementally
     :help "Incrementally filter bookmarks by tags using a regexp"))
@@ -4300,12 +4346,11 @@ Marked bookmarks that have no associated file are ignored."
 (define-key bmkp-bmenu-show-menu [bmkp-bmenu-filter-bookmark-name-incrementally]
   '(menu-item "Show Only Name Matches..." bmkp-bmenu-filter-bookmark-name-incrementally
     :help "Incrementally filter bookmarks by bookmark name using a regexp"))
-(define-key bmkp-bmenu-show-menu [bmkp-bmenu-show-only-specific-file]
-  '(menu-item "Show Only for Specific File" bmkp-bmenu-show-only-specific-file
-    :help "Display (only) the bookmarks for a specific file"))
-(define-key bmkp-bmenu-show-menu [bmkp-bmenu-show-only-specific-buffer]
-  '(menu-item "Show Only for Specific Buffer" bmkp-bmenu-show-only-specific-buffer
-    :help "Display (only) the bookmarks for a specific buffer"))
+
+(define-key bmkp-bmenu-show-menu [show-sep4] '("--")) ; ----------------------------------
+(define-key bmkp-bmenu-show-menu [bmkp-bmenu-show-only-w3m-urls]
+  '(menu-item "Show Only W3M URLs" bmkp-bmenu-show-only-w3m-urls
+    :help "Display (only) the W3M URL bookmarks"))
 (define-key bmkp-bmenu-show-menu [bmkp-bmenu-show-only-urls]
   '(menu-item "Show Only URLs" bmkp-bmenu-show-only-urls
     :help "Display (only) the URL bookmarks"))
@@ -4318,28 +4363,43 @@ Marked bookmarks that have no associated file are ignored."
 (define-key bmkp-bmenu-show-menu [bmkp-bmenu-show-only-info-nodes]
   '(menu-item "Show Only Info Nodes" bmkp-bmenu-show-only-info-nodes
     :help "Display (only) the Info bookmarks"))
-(define-key bmkp-bmenu-show-menu [bmkp-bmenu-show-only-image-files]
-  '(menu-item "Show Only Image Files" bmkp-bmenu-show-only-image-files
-    :help "Display (only) image-file bookmarks"))
-(define-key bmkp-bmenu-show-menu [bmkp-bmenu-show-only-dired]
-  '(menu-item "Show Only Dired Buffers" bmkp-bmenu-show-only-dired
-    :help "Display (only) the Dired bookmarks"))
-(define-key bmkp-bmenu-show-menu [bmkp-bmenu-show-only-bookmark-files]
-  '(menu-item "Show Only Bookmark Files" bmkp-bmenu-show-only-bookmark-files
-    :help "Display (only) the bookmark-file bookmarks"))
 (define-key bmkp-bmenu-show-menu [bmkp-bmenu-show-only-desktops]
   '(menu-item "Show Only Desktops" bmkp-bmenu-show-only-desktops
     :help "Display (only) the desktop bookmarks"))
+(define-key bmkp-bmenu-show-menu [bmkp-bmenu-show-only-variable-lists]
+  '(menu-item "Show Only Variable Lists" bmkp-bmenu-show-only-variable-lists
+    :help "Display (only) the variable-list bookmarks"))
+(define-key bmkp-bmenu-show-menu [bmkp-bmenu-show-only-bookmark-files]
+  '(menu-item "Show Only Bookmark Files" bmkp-bmenu-show-only-bookmark-files
+    :help "Display (only) the bookmark-file bookmarks"))
 (define-key bmkp-bmenu-show-menu [bmkp-bmenu-show-only-regions]
   '(menu-item "Show Only Regions" bmkp-bmenu-show-only-regions
     :help "Display (only) the bookmarks that record a region"))
 (define-key bmkp-bmenu-show-menu [bmkp-bmenu-show-only-non-files]
   '(menu-item "Show Only Non-Files (Buffers)" bmkp-bmenu-show-only-non-files
     :help "Display (only) the non-file bookmarks"))
+(define-key bmkp-bmenu-show-menu [bmkp-bmenu-show-only-orphaned-local-files]
+  '(menu-item "Show Only Orphaned Local Files" bmkp-bmenu-show-only-orphaned-files
+    :help "Display (only) orphaned local-file bookmarks (`C-u': show remote also)"))
+(define-key bmkp-bmenu-show-menu [bmkp-bmenu-show-only-image-files]
+  '(menu-item "Show Only Image Files" bmkp-bmenu-show-only-image-files
+    :help "Display (only) image-file bookmarks"))
 (define-key bmkp-bmenu-show-menu [bmkp-bmenu-show-only-files]
   '(menu-item "Show Only Files" bmkp-bmenu-show-only-files
     :help "Display (only) the file and directory bookmarks"))
-(define-key bmkp-bmenu-show-menu [show-sep2] '("--"))
+(define-key bmkp-bmenu-show-menu [bmkp-bmenu-show-only-dired]
+  '(menu-item "Show Only Dired Buffers" bmkp-bmenu-show-only-dired
+    :help "Display (only) the Dired bookmarks"))
+
+(define-key bmkp-bmenu-show-menu [show-sep3] '("--")) ; ----------------------------------
+(define-key bmkp-bmenu-show-menu [bmkp-bmenu-show-only-specific-file]
+  '(menu-item "Show Only for Specific File" bmkp-bmenu-show-only-specific-file
+    :help "Display (only) the bookmarks for a specific file"))
+(define-key bmkp-bmenu-show-menu [bmkp-bmenu-show-only-specific-buffer]
+  '(menu-item "Show Only for Specific Buffer" bmkp-bmenu-show-only-specific-buffer
+    :help "Display (only) the bookmarks for a specific buffer"))
+
+(define-key bmkp-bmenu-show-menu [show-sep2] '("--")) ; ----------------------------------
 (when (featurep 'bookmark+-lit)
   (define-key bmkp-bmenu-show-menu [bmkp-bmenu-show-only-lighted]
     '(menu-item "Show Only Highlighted" bmkp-bmenu-show-only-lighted
@@ -4347,13 +4407,14 @@ Marked bookmarks that have no associated file are ignored."
 (define-key bmkp-bmenu-show-menu [bmkp-bmenu-show-only-temporary]
   '(menu-item "Show Only Temporaries" bmkp-bmenu-show-only-temporary
     :help "Display (only) the temporary bookmarks (`X')"))
-(define-key bmkp-bmenu-show-menu [bmkp-bmenu-show-only-autofiles]
-  '(menu-item "Show Only Autofiles" bmkp-bmenu-show-only-autofiles
-    :help "Display (only) the autofile bookmarks: those named the same as their files"))
 (define-key bmkp-bmenu-show-menu [bmkp-bmenu-show-only-autonamed]
   '(menu-item "Show Only Autonamed" bmkp-bmenu-show-only-autonamed
     :help "Display (only) the autonamed bookmarks"))
-(define-key bmkp-bmenu-show-menu [show-sep1] '("--"))
+(define-key bmkp-bmenu-show-menu [bmkp-bmenu-show-only-autofiles]
+  '(menu-item "Show Only Autofiles" bmkp-bmenu-show-only-autofiles
+    :help "Display (only) the autofile bookmarks: those named the same as their files"))
+
+(define-key bmkp-bmenu-show-menu [show-sep1] '("--")) ; ----------------------------------
 (define-key bmkp-bmenu-show-menu [bmkp-bmenu-toggle-show-only-unmarked]
   '(menu-item "Show Only Unmarked" bmkp-bmenu-toggle-show-only-unmarked
     :help "Hide all marked bookmarks.  Repeat to toggle, showing all"))
@@ -4428,13 +4489,9 @@ Marked bookmarks that have no associated file are ignored."
   '(menu-item "Mark If Tagged Matching Regexp..." bmkp-bmenu-mark-bookmarks-tagged-regexp
     :help "Mark bookmarks any of whose tags match a regexp you enter"))
 
-(define-key bmkp-bmenu-mark-menu [mark-sep3] '("--"))
-(define-key bmkp-bmenu-mark-menu [bmkp-bmenu-mark-specific-file-bookmarks]
-  '(menu-item "Mark for Specific File" bmkp-bmenu-mark-specific-file-bookmarks
-    :help "Mark bookmarks for a specific file"))
-(define-key bmkp-bmenu-mark-menu [bmkp-bmenu-mark-specific-buffer-bookmarks]
-  '(menu-item "Mark for Specific Buffer" bmkp-bmenu-mark-specific-buffer-bookmarks
-    :help "Mark bookmarks for a specific buffer"))
+(define-key bmkp-bmenu-mark-menu [mark-sep4] '("--")) ; ----------------------------------
+(define-key bmkp-bmenu-mark-menu [bmkp-bmenu-mark-w3m-bookmarks]
+  '(menu-item "Mark W3M URLs" bmkp-bmenu-mark-w3m-bookmarks :help "Mark W3M URL bookmarks"))
 (define-key bmkp-bmenu-mark-menu [bmkp-bmenu-mark-url-bookmarks]
   '(menu-item "Mark URLs" bmkp-bmenu-mark-url-bookmarks :help "Mark URL bookmarks"))
 (define-key bmkp-bmenu-mark-menu [bmkp-bmenu-mark-gnus-bookmarks]
@@ -4444,26 +4501,40 @@ Marked bookmarks that have no associated file are ignored."
     :help "Mark `man' page bookmarks"))
 (define-key bmkp-bmenu-mark-menu [bmkp-bmenu-mark-info-bookmarks]
   '(menu-item "Mark Info Nodes" bmkp-bmenu-mark-info-bookmarks :help "Mark Info bookmarks"))
-(define-key bmkp-bmenu-mark-menu [bmkp-bmenu-mark-image-bookmarks]
-  '(menu-item "Mark Images" bmkp-bmenu-mark-image-bookmarks :help "Mark image-file bookmarks"))
-(define-key bmkp-bmenu-mark-menu [bmkp-bmenu-mark-dired-bookmarks]
-  '(menu-item "Mark Dired Buffers" bmkp-bmenu-mark-dired-bookmarks :help "Mark Dired bookmarks"))
-(define-key bmkp-bmenu-mark-menu [bmkp-bmenu-mark-bookmark-file-bookmarks]
-  '(menu-item "Mark Bookmark Files" bmkp-bmenu-mark-bookmark-file-bookmarks
-    :help "Mark the bookmark-file bookmarks"))
 (define-key bmkp-bmenu-mark-menu [bmkp-bmenu-mark-desktop-bookmarks]
   '(menu-item "Mark Desktops" bmkp-bmenu-mark-desktop-bookmarks
     :help "Mark desktop bookmarks"))
+(define-key bmkp-bmenu-mark-menu [bmkp-bmenu-mark-variable-list-bookmarks]
+  '(menu-item "Mark Variable Lists" bmkp-bmenu-mark-variable-list-bookmarks
+    :help "Mark the variable-list bookmarks"))
+(define-key bmkp-bmenu-mark-menu [bmkp-bmenu-mark-bookmark-file-bookmarks]
+  '(menu-item "Mark Bookmark Files" bmkp-bmenu-mark-bookmark-file-bookmarks
+    :help "Mark the bookmark-file bookmarks"))
 (define-key bmkp-bmenu-mark-menu [bmkp-bmenu-mark-region-bookmarks]
   '(menu-item "Mark Regions" bmkp-bmenu-mark-region-bookmarks
     :help "Mark bookmarks that record a region"))
 (define-key bmkp-bmenu-mark-menu [bmkp-bmenu-mark-non-file-bookmarks]
   '(menu-item "Mark Non-Files (Buffers)" bmkp-bmenu-mark-non-file-bookmarks
     :help "Mark non-file bookmarks"))
+(define-key bmkp-bmenu-mark-menu [bmkp-bmenu-mark-orphaned-local-file-bookmarks]
+  '(menu-item "Mark Orphaned Local Files" bmkp-bmenu-mark-orphaned-local-file-bookmarks
+    :help "Mark orphaned local-file bookmarks (`C-u': remote also)"))
+(define-key bmkp-bmenu-mark-menu [bmkp-bmenu-mark-image-bookmarks]
+  '(menu-item "Mark Images" bmkp-bmenu-mark-image-bookmarks :help "Mark image-file bookmarks"))
 (define-key bmkp-bmenu-mark-menu [bmkp-bmenu-mark-file-bookmarks]
   '(menu-item "Mark Files" bmkp-bmenu-mark-file-bookmarks :help "Mark file bookmarks"))
+(define-key bmkp-bmenu-mark-menu [bmkp-bmenu-mark-dired-bookmarks]
+  '(menu-item "Mark Dired Buffers" bmkp-bmenu-mark-dired-bookmarks :help "Mark Dired bookmarks"))
 
-(define-key bmkp-bmenu-mark-menu [mark-sep2] '("--"))
+(define-key bmkp-bmenu-mark-menu [mark-sep3] '("--")) ; ----------------------------------
+(define-key bmkp-bmenu-mark-menu [bmkp-bmenu-mark-specific-file-bookmarks]
+  '(menu-item "Mark for Specific File" bmkp-bmenu-mark-specific-file-bookmarks
+    :help "Mark bookmarks for a specific file"))
+(define-key bmkp-bmenu-mark-menu [bmkp-bmenu-mark-specific-buffer-bookmarks]
+  '(menu-item "Mark for Specific Buffer" bmkp-bmenu-mark-specific-buffer-bookmarks
+    :help "Mark bookmarks for a specific buffer"))
+
+(define-key bmkp-bmenu-mark-menu [mark-sep2] '("--")) ; ----------------------------------
 (when (featurep 'bookmark+-lit)
   (define-key bmkp-bmenu-mark-menu [bmkp-bmenu-mark-lighted-bookmarks]
     '(menu-item "Mark Highlighted" bmkp-bmenu-mark-lighted-bookmarks
@@ -4471,14 +4542,14 @@ Marked bookmarks that have no associated file are ignored."
 (define-key bmkp-bmenu-mark-menu [bmkp-bmenu-mark-temporary-bookmarks]
   '(menu-item "Mark Temporaries" bmkp-bmenu-mark-temporary-bookmarks
     :help "Mark temporary bookmarks (those with `X')"))
-(define-key bmkp-bmenu-mark-menu [bmkp-bmenu-mark-autofile-bookmarks]
-  '(menu-item "Mark Autofiles" bmkp-bmenu-mark-autofile-bookmarks
-    :help "Mark autofile bookmarks: those whose names are the same as their files"))
 (define-key bmkp-bmenu-mark-menu [bmkp-bmenu-mark-autonamed-bookmarks]
   '(menu-item "Mark Autonamed" bmkp-bmenu-mark-autonamed-bookmarks
     :help "Mark autonamed bookmarks"))
+(define-key bmkp-bmenu-mark-menu [bmkp-bmenu-mark-autofile-bookmarks]
+  '(menu-item "Mark Autofiles" bmkp-bmenu-mark-autofile-bookmarks
+    :help "Mark autofile bookmarks: those whose names are the same as their files"))
 
-(define-key bmkp-bmenu-mark-menu [mark-sep1] '("--"))
+(define-key bmkp-bmenu-mark-menu [mark-sep1] '("--")) ; ----------------------------------
 (define-key bmkp-bmenu-mark-menu [bmkp-bmenu-unmark-all]
   '(menu-item "Unmark All" bmkp-bmenu-unmark-all
     :help "Remove a mark you specify (> or D) from each bookmark (RET to remove both kinds)"))
@@ -4567,6 +4638,7 @@ Marked bookmarks that have no associated file are ignored."
                                     ["Omit" bmkp-bmenu-omit]
                                     ["Jump To" bookmark-bmenu-this-window]
                                     ["Jump To in Other Window" bookmark-bmenu-other-window]
+
                                     "--" ; ----------------------------------------------------
                                     ["Copy Tags" bmkp-bmenu-copy-tags
                                      :active (bmkp-get-tags bmk-name)]
@@ -4581,6 +4653,7 @@ Marked bookmarks that have no associated file are ignored."
                                      :active (bmkp-get-tags bmk-name)]
                                     ["Set Tag Value..." bmkp-bmenu-set-tag-value
                                      :active (bmkp-get-tags bmk-name)]
+
                                     ["--" 'ignore :visible (featurep 'bookmark+-lit)] ; ---------------
                                     ["Highlight" bmkp-bmenu-light
                                      :visible (featurep 'bookmark+-lit)
@@ -4590,6 +4663,7 @@ Marked bookmarks that have no associated file are ignored."
                                      :active (bmkp-lighted-p bmk-name)]
                                     ["Set Lighting" bmkp-bmenu-set-lighting
                                      :visible (featurep 'bookmark+-lit)]
+
                                     "--" ; ----------------------------------------------------
                                     ["Show Annotation" bookmark-bmenu-show-annotation
                                      :active (bookmark-get-annotation bmk-name)]
@@ -4598,6 +4672,7 @@ Marked bookmarks that have no associated file are ignored."
                                     ["Rename..." bookmark-bmenu-rename]
                                     ["Relocate..." bookmark-bmenu-relocate]
                                     ["Toggle Temporary/Savable" bmkp-bmenu-toggle-temporary]
+
                                     "--" ; ----------------------------------------------------
                                     ["Describe" bmkp-bmenu-describe-this-bookmark])))
                         (choice  (x-popup-menu event map)))
