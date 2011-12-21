@@ -1,3 +1,20 @@
+[new:TheAnarcat:2011-12-21 02:45 EST]
+
+Most of the links in this page were dead last time I checked. Here are more recent references.
+
+* http://stackoverflow.com/questions/778716/how-can-i-make-emacs-start-up-faster
+* http://tychoish.com/rhizome/decreasing-emacs-start-times/
+* http://a-nickels-worth.blogspot.com/2007/11/effective-emacs.html
+
+It all boils down to:
+
+* put less stuff in your .emacs, separate the files in different places and use LoadingLispFiles to load them
+* use autoload (AutoLoad) and eval-after-load (EvalAfterLoad) instead of load (LoadingLispFiles) and require
+* byte-compile files (see AutoRecompile)
+* never quit emacs (with EmacsClient)
+
+----
+
 Here is an article I wrote about optimizing Emacs startup times.  Rather than posting the whole text of the article, I will just give the link to my site (feel free to edit and post the text here if you feel that would be more approriate):
 
 http://metashell-v1.blogspot.com/2006/04/howto-lightning-fast-emacs-startup.html
@@ -41,19 +58,6 @@ into the main dumped emacs"
 ----
 
 Optimizing emacs startup on another front: i wrote a library that helps optimize the startup times of your InitFile:  http://www.gnufans.net/~deego/pub/emacspub/lisp-mine/dope/ --- deego
-
-Other useful references:
-
-* http://stackoverflow.com/questions/778716/how-can-i-make-emacs-start-up-faster
-* http://tychoish.com/rhizome/decreasing-emacs-start-times/
-* http://a-nickels-worth.blogspot.com/2007/11/effective-emacs.html
-
-It all boils down to:
-
-* put less stuff in your .emacs, separate the files in different places and use LoadingLispFiles
-* use autoload (AutoLoad) and eval-after-load (EvalAfterLoad) instead of load (LoadingLispFiles) and require
-* byte-compile files (see AutoRecompile)
-* never quit emacs (with EmacsClient)
 
 ----
 CategoryDotEmacs
