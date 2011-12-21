@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2011, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 09:05:21 2010 (-0700)
-;; Last-Updated: Wed Dec 21 11:43:36 2011 (-0800)
+;; Last-Updated: Wed Dec 21 14:34:54 2011 (-0800)
 ;;           By: dradams
-;;     Update #: 1154
+;;     Update #: 1179
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-bmu.el
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -1066,7 +1066,7 @@ internal form)
 General
 -------
 
-\\[bmkp-bmenu-refresh-menu-list]\t- Refresh (revert) to up-to-date bookmark list
+\\[bmkp-bmenu-refresh-menu-list]\t- Refresh display to current bookmark list (`C-u': from file)
 \\[bmkp-bmenu-quit]\t- Quit (`*Bookmark List*')
 \\[bmkp-bmenu-dired-marked]\t- Open Dired for the marked files and directories
 
@@ -1992,16 +1992,28 @@ To revert the list, use `\\<bookmark-bmenu-mode-map>\\[bmkp-bmenu-refresh-menu-l
     (bmkp-msg-about-sort-order (bmkp-current-sort-order) "All bookmarks are shown")))
 
 ;;;###autoload
-(defun bmkp-bmenu-refresh-menu-list ()  ; Bound to `g' in bookmark list
-  "Refresh (revert) the bookmark list (\"menu list\").
-This brings the displayed list up to date.  It does not change the
-current filtering or sorting of the displayed list.
+(defun bmkp-bmenu-refresh-menu-list (&optional arg msgp) ; Bound to `g' in bookmark list
+  "Refresh (revert) the bookmark list display (aka \"menu list\").
+This brings the displayed list up to date with respect to the current
+bookmark list.  It does not change the filtering or sorting of the
+displayed list.
+
+With a prefix argument and upon confirmation, refresh the bookmark
+list and its display from the current bookmark file.  IOW, it reloads
+the file, overwriting the current bookmark list.
 
 If you want setting a bookmark to refresh the list automatically, you
 can use command `bmkp-toggle-bookmark-set-refreshes'."
-  (interactive)
+  (interactive "P\np")
   (bmkp-bmenu-barf-if-not-in-menu-list)
-  (bmkp-refresh-menu-list (bookmark-bmenu-bookmark)))
+  (let ((msg  "Refreshing from bookmark "))
+    (cond ((and arg (y-or-n-p (format "Revert to bookmarks in file `%s'? " bmkp-current-bookmark-file)))
+           (when msgp (message (setq msg  (concat msg "file..."))))
+           (bookmark-load bmkp-current-bookmark-file 'OVERWRITE 'NOMSGP))
+          (t
+           (when msgp (message (setq msg  (concat msg "list in memory..."))))
+           (bmkp-refresh-menu-list (bookmark-bmenu-bookmark))))
+    (when msgp (message (concat msg "done")))))
 
 ;;;###autoload
 (defun bmkp-bmenu-filter-bookmark-name-incrementally () ; Bound to `P B' in bookmark list
@@ -4178,7 +4190,7 @@ Marked bookmarks that have no associated file are ignored."
     :help "Save the current set of bookmarks to the current bookmark file"))
 (define-key bmkp-bmenu-menubar-menu [bmkp-bmenu-refresh-menu-list]
   '(menu-item "Refresh (Revert)" bmkp-bmenu-refresh-menu-list
-    :help "Update the displayed bookmark list to reflect the currently defined bookmarks"))
+    :help "Update display to reflect current bookmark list (`C-u': revert from file)"))
 
 (define-key bmkp-bmenu-menubar-menu [top-sep1] '("--")) ; --------------------------------
 (define-key bmkp-bmenu-menubar-menu [bmkp-make-function-bookmark]
