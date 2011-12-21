@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2011, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Sat Dec  3 16:46:40 2011 (-0800)
+;; Last-Updated: Wed Dec 21 11:16:28 2011 (-0800)
 ;;           By: dradams
-;;     Update #: 14020
+;;     Update #: 14031
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-doc.el
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search,
 ;;           info, url, w3m, gnus
@@ -136,7 +136,7 @@
 ;;      (@> "Opening Bookmarks Using Windows File Associations")
 ;;    (@> "Using Multiple Bookmark Files")
 ;;      (@> "Bookmark-File Bookmarks")
-;;    (@> "The Bookmark List (Display)")
+;;    (@> "The Bookmark List Display")
 ;;      (@> "Tag Commands and Keys")
 ;;      (@> "Tags: Sets of Bookmarks")
 ;;      (@> "Open Dired for the Marked File Bookmarks")
@@ -336,7 +336,7 @@
 ;;
 ;;    This is buffer `*Bookmark List*', aka the bookmark "menu list"
 ;;    (a misnomer), which you display using `C-x r l'.  See
-;;    (@> "The Bookmark List (Display)").
+;;    (@> "The Bookmark List Display").
 ;;
 ;;     - The last display state is saved (by default), and is restored
 ;;       the next time you show the list.  (Tip: Use the bookmark list
@@ -469,6 +469,15 @@
 ;;
 ;;       . From the Emacs-Wiki Web site,
 ;;         http://www.emacswiki.org/cgi-bin/wiki/BookmarkPlus.
+;;
+;;     - Easily recognize orphaned and invalid bookmarks.
+;;
+;;       . Invalid bookmarks are shown in a special face in the
+;;         bookmark-list display.
+;;
+;;       . You can easily mark all of the orphaned bookmarks, that is,
+;;         those whose recorded files have been renamed or deleted.
+;;         You can then relocate or delete those bookmarks.
 ;;
 ;;  * Jump-destination highlighting.
 ;;
@@ -932,7 +941,7 @@
 ;;
 ;;  The bookmark list (buffer `*Bookmark List*') provides a view into
 ;;  the set of bookmarks.  You can mark, sort, and hide (filter, omit)
-;;  bookmarks - see (@> "The Bookmark List (Display)").  The state of
+;;  bookmarks - see (@> "The Bookmark List Display").  The state of
 ;;  the displayed bookmark list can thus change.
 ;;
 ;;  At different times, and in different contexts, different views can
@@ -988,7 +997,7 @@
 ;;  List*' to create a bookmark-list bookmark, the current sort order,
 ;;  filter, regexp pattern, title, and omit list are saved as part of
 ;;  the bookmark.  (These concepts are described below - see
-;;  (@> "Bookmark List (Display)").)  Jumping to such a bookmark
+;;  (@> "Bookmark List Display").)  Jumping to such a bookmark
 ;;  restores all of these.
 ;;
 ;;  Alternatively, you can define a command that does the same thing,
@@ -1491,8 +1500,8 @@
 ;;  the new bookmark-file bookmark created is recorded in the current
 ;;  bookmark file, whatever that might be (e.g. `~/.emacs.bmk').
  
-;;(@* "The Bookmark List (Display)")
-;;  ** The Bookmark List (Display) **
+;;(@* "The Bookmark List Display")
+;;  ** The Bookmark List Display **
 ;;
 ;;  Bookmark+ enhances the bookmark list (aka the bookmark "menu
 ;;  list", a misnomer) that is displayed in buffer `*Bookmark List*'
@@ -1749,6 +1758,10 @@
 ;;    bookmarks etc.  (The first key here is the same as the
 ;;    corresponding filter key, e.g. `F' for files - see next topic.)
 ;;
+;;  * `O M' to mark the orphaned bookmarks, that is, those whose
+;;    recorded files have been renamed or deleted.  You can then
+;;    relocate or delete the bookmarks, as appropriate.
+;;
 ;;
 ;;(@* "Filtering Bookmarks (Hiding and Showing)")
 ;;  *** Filtering Bookmarks (Hiding and Showing) ***
@@ -1821,7 +1834,7 @@
 ;;
 ;;  Omitted bookmarks are not shown in the bookmark list, no matter
 ;;  what filtering is used.  The only way to show omitted bookmarks is
-;;  to show all of them and only them, using `O S', which is bound to
+;;  to show all of them and only them, using `- S', which is bound to
 ;;  command `bmkp-bmenu-show-only-omitted'.
 ;;
 ;;  Omitted bookmarks are still available even if they are not shown,
@@ -1835,15 +1848,15 @@
 ;;  default behavior when you create a sequence bookmark is in fact to
 ;;  omit its component bookmarks from the displayed list.
 ;;
-;;  You can omit any bookmarks by marking them and then using `O >'
+;;  You can omit any bookmarks by marking them and then using `- >'
 ;;  (`bmkp-bmenu-omit/unomit-marked').  If you are looking at the
-;;  omitted bookmarks (after using `O S'), then `O >' un-omits the
+;;  omitted bookmarks (after using `- S'), then `- >' un-omits the
 ;;  bookmarks marked there.  Think of two complementary spaces: the
 ;;  normal bookmark list and the omitted bookmark list.  When you use
-;;  `O >', the marked bookmarks that are currently shown are moved to
+;;  `- >', the marked bookmarks that are currently shown are moved to
 ;;  the opposite space.
 ;;
-;;  You can un-omit all of the omitted bookmarks at once, using `O U'
+;;  You can un-omit all of the omitted bookmarks at once, using `- U'
 ;;  (`bmkp-unomit-all').  You can also call this command from outside
 ;;  the bookmark-list display.
 ;;
@@ -2643,7 +2656,7 @@
 ;;  * Plain `C-u' (as usual): Prompt for name; no bookmark overwrite.
 ;;
 ;;  During completion of a bookmark name, many features of the
-;;  bookmark-list display (see (@> "The Bookmark List (Display)")) are
+;;  bookmark-list display (see (@> "The Bookmark List Display")) are
 ;;  available on the fly.  Buffer `*Completions*' acts like a dynamic
 ;;  version of `*Bookmark List*':
 ;;
