@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Wed Aug  2 11:20:41 1995
 ;; Version: 21.1
-;; Last-Updated: Tue Dec 20 00:55:51 2011 (-0800)
+;; Last-Updated: Wed Dec 21 08:13:18 2011 (-0800)
 ;;           By: dradams
-;;     Update #: 3008
+;;     Update #: 3015
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/misc-cmds.el
 ;; Keywords: internal, unix, extensions, maint, local
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -70,6 +70,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2011/12/21 dadams
+;;     Replaced redefinition of rename-buffer with defadvice.
 ;; 2011/12/19 dadams
 ;;     goto-long-line: Use line-end-position, not end-of-line + point.
 ;; 2011/12/12 dadams
@@ -275,27 +277,15 @@
 ;;;;;;;;;;;;;;;;;;;;;;;
 
 
-;; REPLACE ORIGINAL `rename-buffer' (built-in).
+;; ADVISE ORIGINAL `rename-buffer' (built-in).
 ;;
 ;; 1. Provide (lax) completion for new buffer name.
 ;; 2. Use name of current buffer as default (< Emacs 23).
-;;;
-(unless (fboundp 'old-rename-buffer)
-  (defalias 'old-rename-buffer (symbol-function 'rename-buffer)))
-
-;;;###autoload
-(defun rename-buffer (newname &optional unique)
-  "Change current buffer's name to NEWNAME (a string).
-Return the name actually given to the buffer.
-If second arg UNIQUE is nil or omitted, it is an error if a buffer
-named NEWNAME already exists.  If UNIQUE is non-nil, come up with a
-new name using `generate-new-buffer-name'.
-Interactively, you can set UNIQUE with a prefix argument.
-If visiting a file, this does not change the name of the visited file."
-  (interactive
-   (list (read-buffer "Rename buffer (to new name): " (buffer-name))
-         current-prefix-arg))
-  (funcall 'old-rename-buffer newname unique))
+;;
+(defadvice rename-buffer (before read-buffer-completing activate)
+  "Interactively, (lax) completion is available for the buffer name."
+  (interactive (list (read-buffer "Rename buffer (to new name): " (buffer-name))
+                     current-prefix-arg)))
 
 ;;;###autoload
 (defun view-X11-colors ()
