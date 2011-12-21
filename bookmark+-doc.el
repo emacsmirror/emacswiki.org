@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2011, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Wed Dec 21 11:16:28 2011 (-0800)
+;; Last-Updated: Wed Dec 21 14:49:39 2011 (-0800)
 ;;           By: dradams
-;;     Update #: 14031
+;;     Update #: 14042
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-doc.el
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search,
 ;;           info, url, w3m, gnus
@@ -543,17 +543,24 @@
 ;;  past, that does not mean that at any given time the bookmark list
 ;;  corresponds exactly to the bookmark file.
 ;;
-;;  The list and the file can often be out of sync.  In an Emacs
+;;  The list and the file can often become out of sync.  In an Emacs
 ;;  session, the bookmark list rules.  After an Emacs session, the
-;;  bookmark file rules (it is all there is).
+;;  bookmark file rules (it is all there is).  You can use `C-x p L'
+;;  (`bmkp-switch-bookmark-file-create') to sync (revert) the list to
+;;  reflect the file - just accept the default value, "switching" to
+;;  the same file.
 ;;
 ;;  The bookmark-list display (#3) is a snapshot view of the bookmarks
 ;;  in the bookmark list.  As such, what you see there reflects the
 ;;  state of the bookmark list at some point in time.  So here again,
 ;;  the two, list and display, can be out of sync.  Hitting `g' in the
 ;;  bookmark-list display refreshes it to accurately reflect the
-;;  current bookmark list.  Some other operations in the display also
-;;  keep it synced.
+;;  current bookmark list (#1).  Some other operations in the display
+;;  also keep it synced with the list.
+;;
+;;  Using a prefix argument (`C-u g') syncs the display (#3) and the
+;;  list (#1) to the file (#2).  This can be useful when some other
+;;  process (e.g., another Emacs session) updates the bookmark file.
 ;;
 ;;  You can load different bookmark files, either adding their
 ;;  bookmarks to those already in the current bookmark list or
