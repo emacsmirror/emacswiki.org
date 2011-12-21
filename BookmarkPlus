@@ -189,7 +189,7 @@ The same menu is available on '''`C-mouse-3''''. It has submenus '''Jump To''', 
 [:BookmarkListImprovements]
 === Improvements for the bookmark list. ===
 
-This is buffer `##*Bookmark List*##', aka the bookmark "menu list" (a misnomer), which you display using '''`C-x r l''''.  See [[#BookmarkListDisplay|Bookmark List (Display)]].
+This is buffer `##*Bookmark List*##', aka the bookmark "menu list" (a misnomer), which you display using '''`C-x r l''''.  See [[#BookmarkListDisplay|Bookmark List Display]].
 
 
 * The last display ''state is saved'' (by default), and is restored
@@ -354,7 +354,13 @@ access the complete documentation.  (Use button `Customize' to customize all '''
 
 ** In the `bookmark-plus' group customization buffer (`M-x customize-group bookmark-plus'), click button `Commentary'.
 
+* Easily recognize orphaned and invalid bookmarks.
 
+** Invalid bookmarks are shown in a special face in the bookmark-list display.
+
+** You can easily mark all of the orphaned bookmarks, that is,
+those whose recorded files have been renamed or deleted.
+You can then relocate or delete those bookmarks.
 
 
 
@@ -1537,7 +1543,7 @@ bookmark file, whatever that might be (e.g. `##~/.emacs.bmk##').
 
 
 [:BookmarkListDisplay]
-== The Bookmark List (Display) ==
+== The Bookmark List Display ==
 
 '''Bookmark+''' enhances the bookmark list (aka the bookmark "menu list", a misnomer) that is displayed in buffer `##*Bookmark List*##' when you use `C-x r l' (command `bookmark-bmenu-list').
 
@@ -1797,6 +1803,10 @@ is, both the bookmark name and the file name, if shown.
 bookmarks etc.  (The first key here is the same as the
 corresponding filter key, e.g. `F' for files -- see [[#FilteringBookmarks]], below.)
 
+* '''`##O M##'''' to mark the orphaned bookmarks, that is, those whose
+recorded files have been renamed or deleted.  You can then
+relocate or delete the bookmarks, as appropriate.
+
 
 
 
@@ -1913,7 +1923,7 @@ about a different kind of hiding, called '''omitting'''.
 
 Omitted bookmarks are not shown in the bookmark list, no matter
 what filtering is used.  The only way to show omitted bookmarks is
-to show all of them and only them, using '''`##O S##'''', which is bound to
+to show all of them and only them, using '''`##- S##'''', which is bound to
 command '''`bmkp-bmenu-show-only-omitted''''.
 
 Omitted bookmarks are still available even if they are not shown, and you can still jump to
@@ -1926,15 +1936,15 @@ bookmarks that make up a sequence bookmark (see [[#FunctionSequenceVarlistBookma
 you create a sequence bookmark is in fact to omit its component
 bookmarks from the displayed list.
 
-You can omit any bookmarks by marking them and then using '''`##O >##''''
+You can omit any bookmarks by marking them and then using '''`##- >##''''
 ('''`bmkp-bmenu-omit/unomit-marked'''').  If you are looking at the
-omitted bookmarks (after using `##O S##'), then `##O >##' '''''un'''''-omits the
+omitted bookmarks (after using `##- S##'), then `##- >##' '''''un'''''-omits the
 bookmarks marked there.  Think of two complementary spaces: the
 normal bookmark list and the omitted bookmark list.  When you use
-`##O >##', the marked bookmarks that are currently shown are moved to
+`##- >##', the marked bookmarks that are currently shown are moved to
 the opposite space.
 
-You can un-omit ''all'' of the omitted bookmarks at once, using '''`##O U##''''
+You can un-omit ''all'' of the omitted bookmarks at once, using '''`##- U##''''
 ('''`bmkp-unomit-all'''').  You can also call this command from
 outside the bookmark-list display.
 
@@ -2854,7 +2864,7 @@ as follows:
 * Plain `C-u' (as usual): Prompt for name; no bookmark overwrite.
 
 During completion of a bookmark name, most features of the
-bookmark-list display (see [[#BookmarkListDisplay|The Bookmark List (Display)]]) are available on the fly.  Buffer `*Completions*' acts like a dynamic version of `##*Bookmark List*##':
+bookmark-list display (see [[#BookmarkListDisplay|The Bookmark List Display]]) are available on the fly.  Buffer `*Completions*' acts like a dynamic version of `##*Bookmark List*##':
 
 * Candidates are highlighted in the `*Completions*' window
   according to their bookmark type.
