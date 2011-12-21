@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2011, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 13:43:55 2010 (-0700)
-;; Last-Updated: Wed Dec 21 10:46:00 2011 (-0800)
+;; Last-Updated: Wed Dec 21 13:29:09 2011 (-0800)
 ;;           By: dradams
-;;     Update #: 2725
+;;     Update #: 2726
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-1.el
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -2379,7 +2379,8 @@ bookmark files that were created using the bookmark functions."
     (kill-buffer (current-buffer)))
   (unless no-msg (message "%s bookmarks in `%s'" (if overwrite "Switched to" "Added") file))
   (let ((bmklistbuf  (get-buffer "*Bookmark List*")))
-    (when bmklistbuf (with-current-buffer bmklistbuf (bmkp-bmenu-refresh-menu-list)))))
+    (when bmklistbuf
+      (with-current-buffer bmklistbuf (bmkp-refresh-menu-list (bookmark-bmenu-bookmark))))))
 
 
 ;; REPLACES ORIGINAL in `bookmark.el'.
