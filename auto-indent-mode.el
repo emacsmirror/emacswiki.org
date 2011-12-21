@@ -5,10 +5,10 @@
 ;; Author: Matthew L. Fidler, Le Wang & Others
 ;; Maintainer: Matthew L. Fidler
 ;; Created: Sat Nov  6 11:02:07 2010 (-0500)
-;; Version: 0.53
-;; Last-Updated: Wed Dec 14 15:34:36 2011 (-0600)
+;; Version: 0.54
+;; Last-Updated: Wed Dec 21 11:18:23 2011 (-0600)
 ;;           By: Matthew L. Fidler
-;;     Update #: 1208
+;;     Update #: 1210
 ;; URL: http://www.emacswiki.org/emacs/auto-indent-mode.el
 ;; Keywords: Auto Indentation
 ;; Compatibility: Tested with Emacs 23.x
@@ -116,6 +116,9 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;;; Change Log:
+;; 21-Dec-2011    Matthew L. Fidler  
+;;    Last-Updated: Wed Dec 21 11:17:02 2011 (-0600) #1209 (Matthew L. Fidler)
+;;    Added another smart delete case.
 ;; 14-Dec-2011    Matthew L. Fidler  
 ;;    Last-Updated: Wed Dec 14 15:32:30 2011 (-0600) #1206 (Matthew L. Fidler)
 ;;    Went back to last known working
@@ -592,7 +595,7 @@ expressions defined in
 
 (defcustom auto-indent-delete-line-char-remove-last-space-prog-mode-regs
   '(("\\(\\s.\\|\\s-\\)" "\\(\\s\"\\|\\sw\\)")
-    ("\\s(" "\\s(")
+    ("\\s(" "\\(\\s(\\|\\s_\\|\\sw\\)")
     ("\\s)" "\\s)"))
   "* Regular expressions for use with `auto-indent-delete-line-char-remove-last-space'.  This is used for programming modes as determined by `auto-indent-is-prog-mode-p'."
   :type '(repeat
