@@ -117,7 +117,9 @@ External Programs and Remote Services:
 * [[CategoryRelated|Related]] -- Emacs environments run in other programs (browsers, terminal emulators,...)
 * [[CategoryRemoteEmacs|RemoteEmacs]] -- running Emacs on a remote host
 * [[CategoryWebBrowser|WebBrowser]] -- browsing Web files and sites
-* [[CategoryTTS|TTS]] -- free text to speech, speech recognition software
+
+[:ProgrammingEmacs]
+Programming Emacs in Lisp and C Source Code:
 
 * [[CategoryCode|Code]] -- EmacsLisp coding tips
 * [[CategoryDebug|Debug]] -- debugging Emacs, debugging with Emacs, debugging EmacsLisp
