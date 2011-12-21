@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2011, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 09:05:21 2010 (-0700)
-;; Last-Updated: Wed Dec 21 10:54:09 2011 (-0800)
+;; Last-Updated: Wed Dec 21 11:43:36 2011 (-0800)
 ;;           By: dradams
-;;     Update #: 1150
+;;     Update #: 1154
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-bmu.el
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -1793,8 +1793,8 @@ With a prefix argument, do not include remote files or directories."
 
 ;;;###autoload
 (defun bmkp-bmenu-show-only-orphaned-local-files (arg) ; Bound to `O S' in bookmark list
-  "Display a list of orphaned file and directory bookmarks (only).
-With a prefix argument, do not include remote files or directories."
+  "Display a list of orphaned local file and directory bookmarks (only).
+With a prefix argument, include remote orphans as well."
   (interactive "P")
   (bmkp-bmenu-barf-if-not-in-menu-list)
   (setq bmkp-bmenu-filter-function  (if arg
@@ -4379,7 +4379,7 @@ Marked bookmarks that have no associated file are ignored."
   '(menu-item "Show Only Non-Files (Buffers)" bmkp-bmenu-show-only-non-files
     :help "Display (only) the non-file bookmarks"))
 (define-key bmkp-bmenu-show-menu [bmkp-bmenu-show-only-orphaned-local-files]
-  '(menu-item "Show Only Orphaned Local Files" bmkp-bmenu-show-only-orphaned-files
+  '(menu-item "Show Only Orphaned Local Files" bmkp-bmenu-show-only-orphaned-local-files
     :help "Display (only) orphaned local-file bookmarks (`C-u': show remote also)"))
 (define-key bmkp-bmenu-show-menu [bmkp-bmenu-show-only-image-files]
   '(menu-item "Show Only Image Files" bmkp-bmenu-show-only-image-files
