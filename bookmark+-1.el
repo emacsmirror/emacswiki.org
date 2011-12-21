@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2011, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 13:43:55 2010 (-0700)
-;; Last-Updated: Tue Dec 20 00:38:24 2011 (-0800)
+;; Last-Updated: Wed Dec 21 10:46:00 2011 (-0800)
 ;;           By: dradams
-;;     Update #: 2681
+;;     Update #: 2725
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-1.el
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -314,7 +314,8 @@
 ;;    `bmkp-desktop-bookmark-p', `bmkp-desktop-kill',
 ;;    `bmkp-dired-alist-only', `bmkp-dired-bookmark-p',
 ;;    `bmkp-dired-subdirs', `bmkp-dired-this-dir-alist-only',
-;;    `bmkp-dired-this-dir-bookmark-p', `bmkp-edit-tags-mode',
+;;    `bmkp-dired-this-dir-bookmark-p',
+;;    `bmkp-dired-wildcards-bookmark-p', `bmkp-edit-tags-mode',
 ;;    `bmkp-end-position-post-context',
 ;;    `bmkp-end-position-pre-context', `bmkp-every', `bmkp-face-prop',
 ;;    `bmkp-file-alist-only', `bmkp-file-all-tags-alist-only',
@@ -373,7 +374,13 @@
 ;;    `bmkp-msg-about-sort-order', `bmkp-multi-sort',
 ;;    `bmkp-names-same-bookmark-p', `bmkp-non-autonamed-alist-only',
 ;;    `bmkp-non-file-alist-only', `bmkp-non-file-bookmark-p',
-;;    `bmkp-omitted-alist-only', `bmkp-position-after-whitespace',
+;;    `bmkp-omitted-alist-only', `bmkp-orphaned-file-alist-only',
+;;    `bmkp-orphaned-file-bookmark-p',
+;;    `bmkp-orphaned-local-file-alist-only',
+;;    `bmkp-orphaned-local-file-bookmark-p',
+;;    `bmkp-orphaned-remote-file-alist-only',
+;;    `bmkp-orphaned-remote-file-bookmark-p',
+;;    `bmkp-position-after-whitespace',
 ;;    `bmkp-position-before-whitespace', `bmkp-position-cp',
 ;;    `bmkp-position-post-context',
 ;;    `bmkp-position-post-context-region',
@@ -2216,7 +2223,7 @@ To load bookmarks from a specific file, use `\\[bookmark-load]'
 \(`bookmark-load').
 
 If called from Lisp:
- Witn nil PARG, use file `bmkp-current-bookmark-file'.
+ With nil PARG, use file `bmkp-current-bookmark-file'.
  With non-nil PARG and non-nil FILE, use file FILE.
  With non-nil PARG and nil FILE, prompt the user for the file to use."
   (interactive "P")
@@ -3686,6 +3693,16 @@ BOOKMARK is a bookmark name or a bookmark record."
        (let ((dir  (file-name-directory (bookmark-get-filename bookmark))))
          (bmkp-same-file-p dir default-directory))))
 
+(defun bmkp-dired-wildcards-bookmark-p (bookmark)
+  "Return non-nil if BOOKMARK bookmarks a Dired buffer with wildcards.
+BOOKMARK is a bookmark name or a bookmark record."
+  (setq bookmark  (bookmark-get-bookmark bookmark))
+  (and (bmkp-dired-bookmark-p bookmark)
+       (let ((file  (bookmark-get-filename bookmark)))
+         (and (stringp file) (if (fboundp 'string-match-p)
+                                 (string-match-p (regexp-quote "*") file)
+                               (save-match-data (string-match (regexp-quote "*") file)))))))
+
 (defun bmkp-file-bookmark-p (bookmark)
   "Return non-nil if BOOKMARK bookmarks a file or directory.
 BOOKMARK is a bookmark name or a bookmark record.
@@ -3763,6 +3780,7 @@ BOOKMARK is a bookmark name or a bookmark record."
 
 (defun bmkp-non-file-bookmark-p (bookmark)
   "Return non-nil if BOOKMARK is a non-file bookmark (e.g *scratch*).
+BOOKMARK is a bookmark name or a bookmark record.
 This excludes bookmarks of a more specific kind (e.g. Info, Gnus).
 It includes bookmarks to existing buffers, as well as bookmarks
 defined for buffers that do not currently exist."
@@ -3773,6 +3791,45 @@ defined for buffers that do not currently exist."
              ;; Ensure not remote before calling `file-exists-p'.  (Do not prompt for password.)
              (and (not (bmkp-file-remote-p filename)) (not (file-exists-p filename))))
          (not (bookmark-get-handler bookmark)))))
+
+(defun bmkp-orphaned-file-bookmark-p (bookmark)
+  "Return non-nil if BOOKMARK is an orphaned file or directory bookmark.
+BOOKMARK is a bookmark name or a bookmark record.
+This means that the file recorded for BOOKMARK does not exist or is
+not readable.  But a Dired bookmark with wildcards in the file name is
+assumed to be readable."
+  (setq bookmark  (bookmark-get-bookmark bookmark))
+  (and (bmkp-file-bookmark-p bookmark)
+       (if (bmkp-dired-bookmark-p bookmark)
+           (and (not (bmkp-dired-wildcards-bookmark-p bookmark))
+                (not (file-readable-p (bookmark-get-filename bookmark))))
+         (not (file-readable-p (bookmark-get-filename bookmark))))))
+
+(defun bmkp-orphaned-local-file-bookmark-p (bookmark)
+  "Return non-nil if BOOKMARK is an orphaned local-file bookmark.
+BOOKMARK is a bookmark name or a bookmark record.
+This means that the file name recorded for BOOKMARK is not remote, and
+the file does not exist or is not readable.  But a Dired bookmark with
+wildcards in the file name is assumed to be readable."
+  (setq bookmark  (bookmark-get-bookmark bookmark))
+  (and (bmkp-local-file-bookmark-p bookmark)
+       (if (bmkp-dired-bookmark-p bookmark)
+           (and (not (bmkp-dired-wildcards-bookmark-p bookmark))
+                (not (file-readable-p (bookmark-get-filename bookmark))))
+         (not (file-readable-p (bookmark-get-filename bookmark))))))
+
+(defun bmkp-orphaned-remote-file-bookmark-p (bookmark)
+  "Return non-nil if BOOKMARK is an orphaned remote-file bookmark.
+BOOKMARK is a bookmark name or a bookmark record.
+This means that the file name recorded for BOOKMARK is remote, and the
+file does not exist or is not readable.  But a Dired bookmark with
+wildcards in the file name is assumed to be readable."
+  (setq bookmark  (bookmark-get-bookmark bookmark))
+  (and (bmkp-remote-file-bookmark-p bookmark)
+       (if (bmkp-dired-bookmark-p bookmark)
+           (and (not (bmkp-dired-wildcards-bookmark-p bookmark))
+                (not (file-readable-p (bookmark-get-filename bookmark))))
+         (not (file-readable-p (bookmark-get-filename bookmark))))))
 
 (defun bmkp-region-bookmark-p (bookmark)
   "Return non-nil if BOOKMARK has region information.
@@ -3792,18 +3849,18 @@ with handlers (e.g. Info, Gnus)."
 
 (defun bmkp-temporary-bookmark-p (bookmark)
   "Return non-nil if BOOKMARK is temporary.
-That means that it has a non-nil `bmkp-temp' property.
-BOOKMARK is a bookmark name or a bookmark record."
+BOOKMARK is a bookmark name or a bookmark record.
+That means that it has a non-nil `bmkp-temp' property."
   (setq bookmark  (bookmark-get-bookmark bookmark 'NOERROR))
   (if (not bookmark) nil (bookmark-prop-get bookmark 'bmkp-temp)))
 
 (defun bmkp-this-buffer-p (bookmark)
   "Return non-nil if BOOKMARK's buffer is the current buffer.
+BOOKMARK is a bookmark name or a bookmark record.
 But return nil if BOOKMARK has an associated file, but it is not the
  buffer's file.
 And return nil for bookmarks, such as desktops, that are not really
- associated with a buffer, even if they have a `buffer-name' entry.
-BOOKMARK is a bookmark name or a bookmark record."
+ associated with a buffer, even if they have a `buffer-name' entry."
   (and (let ((this-file  (condition-case nil (bookmark-buffer-file-name) (error nil)))
              (bmk-file   (and (bmkp-file-bookmark-p bookmark)  (bookmark-get-filename bookmark))))
          ;; Two possibilities:
@@ -3829,10 +3886,10 @@ BOOKMARK is a bookmark name or a bookmark record."
 
 (defun bmkp-last-specific-buffer-p (bookmark)
   "Return t if BOOKMARK's `buffer-name' is `bmkp-last-specific-buffer'.
+BOOKMARK is a bookmark name or a bookmark record.
 But return nil for bookmarks, such as desktops, that are not really
 associated with a buffer, even if they have a `buffer-name' entry.
-It does not matter whether the buffer exists.
-BOOKMARK is a bookmark name or a bookmark record."
+It does not matter whether the buffer exists."
   (let ((buf  (bmkp-get-buffer-name bookmark)))
     (and buf (string= buf bmkp-last-specific-buffer)
          (not (bmkp-desktop-bookmark-p        bookmark))
@@ -3854,9 +3911,9 @@ BOOKMARK is a bookmark name or a bookmark record."
 
 (defun bmkp-url-bookmark-p (bookmark)
   "Return non-nil if BOOKMARK is a URL bookmark.
+BOOKMARK is a bookmark name or a bookmark record.
 That means that it satifies either `bmkp-url-browse-bookmark-p' or
-`bmkp-w3m-bookmark-p'.
-BOOKMARK is a bookmark name or a bookmark record."
+`bmkp-w3m-bookmark-p'."
   (or (bmkp-url-browse-bookmark-p bookmark) (bmkp-w3m-bookmark-p bookmark)))
 
 (defun bmkp-url-browse-bookmark-p (bookmark)
@@ -4109,6 +4166,21 @@ A new list is returned (no side effects)."
 A new list is returned (no side effects)."
   (bookmark-maybe-load-default-file)
   (bmkp-remove-if-not #'bmkp-non-file-bookmark-p bookmark-alist))
+
+(defun bmkp-orphaned-file-alist-only ()
+  "`bookmark-alist', filtered to retain only orphaned file bookmarks."
+  (bookmark-maybe-load-default-file)
+  (bmkp-remove-if-not #'bmkp-orphaned-file-bookmark-p bookmark-alist))
+
+(defun bmkp-orphaned-local-file-alist-only ()
+  "`bookmark-alist', but retaining only orphaned local-file bookmarks."
+  (bookmark-maybe-load-default-file)
+  (bmkp-remove-if-not #'bmkp-orphaned-local-file-bookmark-p bookmark-alist))
+
+(defun bmkp-orphaned-remote-file-alist-only ()
+  "`bookmark-alist', but retaining only orphaned remote-file bookmarks."
+  (bookmark-maybe-load-default-file)
+  (bmkp-remove-if-not #'bmkp-orphaned-remote-file-bookmark-p bookmark-alist))
 
 (defun bmkp-regexp-filtered-annotation-alist-only ()
   "`bookmark-alist' for annotations matching `bmkp-bmenu-filter-pattern'."
