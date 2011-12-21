@@ -53,6 +53,24 @@ E.g. it is present on 24.0.50.1 (i386-apple-darwin10.7.1, NS apple-appkit-1038.3
 I have found that the bug seems to create the vertical white line artifact through what are the margin characters second from the left.
 A temporary fix is to do something like: <code>(setq linum-format "    %d ")</code>; while creating a larger margin, this seems to alleviate the problem on my system.
 
+Another workaround that keeps the appearance of the dynamic linum-format is to use this function which replaces the spaces on the left with zeroes that have the same foreground and background color.
+
+(eval-after-load 'linum
+  '(progn
+     (defun linum-format-func (line)
+       (let ((w (length
+                 (number-to-string (count-lines (point-min) (point-max))))))
+         (concat
+          (propertize (make-string (- w (length (number-to-string line))) ?0)
+                      'face
+                      `(:foreground
+                        ,(face-attribute 'linum :background nil t)))
+          (propertize (number-to-string line) 'face 'linum))))
+
+     (setq linum-format 'linum-format-func)))
+
+--Michael Hoffman
+
 == LinumPlus ==
 LinumPlus
 
