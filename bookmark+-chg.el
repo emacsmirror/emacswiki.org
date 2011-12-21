@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2011, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Tue Dec 20 00:42:21 2011 (-0800)
+;; Last-Updated: Wed Dec 21 11:02:19 2011 (-0800)
 ;;           By: dradams
-;;     Update #: 13974
+;;     Update #: 13996
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-chg.el
 ;; Keywords: bookmarks, bookmark+
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -120,6 +120,9 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-1.el'")
 ;;
+;; 2011/12/21 dadams
+;;     Added: bmkp-orphaned(-local|-remote)-file-(alist-only|bookmark-p),
+;;            bmkp-dired-wildcards-bookmark-p.
 ;; 2011/12/19 dadams
 ;;     bookmark-set, bmkp-handle-region-default:  Use line-end-position, not end-of-line + point.
 ;; 2011/12/17 dadams
@@ -442,6 +445,14 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-bmu.el'")
 ;;
+;; 2011/12/21 dadams
+;;     Added: bmkp-bmenu-mark-orphaned-local-file-bookmarks,
+;;            bmkp-bmenu-show-only-orphaned-local-files, bmkp-bmenu-mark-variable-list-bookmarks.
+;;     bookmark-bmenu-mode: Updated and reordered doc string.
+;;     Bind O M, O S to orphaned commands, not omit commands.  Changed omit bindings to use -, not O.
+;;     Bind bmkp-bmenu-mark-variable-list-bookmarks to V M.
+;;     bmkp-bmenu-show-menu: Reordered.  Added: *-w3m-urls, *-variable-lists, *-orphaned-local-files.
+;;     bmkp-bmenu-mark-menu: Reordered.  Added: *-w3m-*, *-variable-list-*, *-orphaned-local-file-*.
 ;; 2011/12/19 dadams
 ;;     Added: with-buffer-modified-unmodified.
 ;;     bookmark-bmenu-((un)mark|delete), bookmark-bmenu-(show|hide)-filenames:
