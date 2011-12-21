@@ -22,7 +22,11 @@ If you want to set truncate-partial-width-windows just for a certain mode, you n
 to put the setting in a hook:
 
     (add-hook 'diff-mode-hook (lambda () (setq truncate-lines t)))
-
+[new] 
+Nano truncates lines so that when you scroll toward the end of one,
+the line itself moves to the left independently of the rest of the
+text.  I've had a surprisingly hard time finding any talk of this 
+feature in emacs.  Is it possible?
 ----
 CategoryDisplay
 CategoryFilling
