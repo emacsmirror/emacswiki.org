@@ -76,5 +76,8 @@ Here's a bit of code i use to time my .emacs:
 
 .. modified from http://a-nickels-worth.blogspot.com/2007/11/effective-emacs.html. -- TheAnarcat
 
+[new]
+Emacs already comes with `M-x emacs-init-time'.
+
 ----
 CategoryDotEmacs
