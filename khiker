@@ -13,6 +13,7 @@ I'm Japanese. I use GNU Emacs 23.1.92.2
 * Lisp:popup-kill-ring.el -- interactively insert selected item from kill-ring by `popup.el' and `pos-tip.el'
 * Lisp:elscreen-edit-server.el
 * Lisp:popup-select-window.el -- selecting a window by popup-menu* (vertical inline-overlay).
+* Lisp:sl.el -- sl for emacs
 
 = Repository =
 
