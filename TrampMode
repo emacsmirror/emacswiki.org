@@ -759,7 +759,7 @@ I guess the simplest way would be a hook, but I can't figure out what the name o
 try here: http://www.gnu.org/software/tramp/#Auto_002dsave-and-Backup --EmorySmith
 
 [new]
-how about just overwriting tramp-auto-save ?
+how about just overwriting tramp-auto-save ? -- [[Gyom]]
 
 {{{
 (require 'tramp)
