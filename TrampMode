@@ -755,7 +755,18 @@ This is a similar advice for DVC mode (thanks to folks at ru_emacs):
 [new]
 I guess the simplest way would be a hook, but I can't figure out what the name of the Tramp hook is. tramp-mode-hook doesn't seem to work -- [[bkhl]]
 
+[new]
 try here: http://www.gnu.org/software/tramp/#Auto_002dsave-and-Backup --EmorySmith
+
+[new]
+how about just overwriting tramp-auto-save ?
+
+{{{{
+(require 'tramp)
+(defun tramp-set-auto-save ()
+  (auto-save-mode -1))
+}}}
+
 
 ----
 
