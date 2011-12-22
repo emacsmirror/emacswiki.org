@@ -5,10 +5,10 @@
 ;; Author: Matthew L. Fidler, Le Wang & Others
 ;; Maintainer: Matthew L. Fidler
 ;; Created: Sat Nov  6 11:02:07 2010 (-0500)
-;; Version: 0.54
-;; Last-Updated: Wed Dec 21 11:18:23 2011 (-0600)
+;; Version: 0.55
+;; Last-Updated: Thu Dec 22 13:48:33 2011 (-0600)
 ;;           By: Matthew L. Fidler
-;;     Update #: 1210
+;;     Update #: 1213
 ;; URL: http://www.emacswiki.org/emacs/auto-indent-mode.el
 ;; Keywords: Auto Indentation
 ;; Compatibility: Tested with Emacs 23.x
@@ -116,6 +116,9 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;;; Change Log:
+;; 22-Dec-2011    Matthew L. Fidler  
+;;    Last-Updated: Thu Dec 22 13:47:07 2011 (-0600) #1211 (Matthew L. Fidler)
+;;    Added bug fix for home-key
 ;; 21-Dec-2011    Matthew L. Fidler  
 ;;    Last-Updated: Wed Dec 21 11:17:02 2011 (-0600) #1209 (Matthew L. Fidler)
 ;;    Added another smart delete case.
@@ -1034,7 +1037,10 @@ http://www.emacswiki.org/emacs/AutoIndentation
                    (called-interactively-p 'any))
                (not (auto-indent-remove-advice-p))
                (not current-prefix-arg))
-      (indent-according-to-mode))))
+      (indent-according-to-mode)
+      (when (not (looking-back "^[ \t]*"))
+        (beginning-of-line)
+        (skip-chars-forward " \t")))))
 
 (defmacro auto-indent-advice-command (command)
   "Define advices and functions for yank and yank-pop."
