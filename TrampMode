@@ -761,7 +761,7 @@ try here: http://www.gnu.org/software/tramp/#Auto_002dsave-and-Backup --EmorySmi
 [new]
 how about just overwriting tramp-auto-save ?
 
-{{{{
+{{{
 (require 'tramp)
 (defun tramp-set-auto-save ()
   (auto-save-mode -1))
