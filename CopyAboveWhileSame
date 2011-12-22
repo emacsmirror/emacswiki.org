@@ -28,10 +28,12 @@ EvaluatingExpressions in Emacs or by adding the code to your InitFile:
                  (move-to-column col)
                  (point)) ;; Start 2
                (line-end-position 0)))) ;; End 2
-      (if (and (integerp n)
-               (> (abs n) 1))
-          (copy-from-above-command (1- (abs n) ))
-        (copy-from-above-command 1))))
+      (cond ((not (integerp n))
+             (copy-from-above-command 1))
+            ((> (abs n) 1)
+             (copy-from-above-command (1- (abs n) )))
+            (t ;; (zerop n)
+             (copy-from-above-command)))))
 
 It could be bound to the shift-right arrow key.
 
@@ -52,8 +54,8 @@ Running the command once gives.
   grid $f.l_age  -row 1 -column 0 -padx 5 -pady 5 -sticky e
   grid $f.!
 
-Notice how only what was the same in the previous two lines was
-copied? Let's continue by typing in our age widget followed by spaces:
+Only what was the same in the previous two lines was
+copied. Let's continue by typing in our age widget followed by spaces:
 
   grid $f.l_name -row 0 -column 0 -padx 5 -pady 5 -sticky e
   grid $f.name   -row 0 -column 1 -padx 5 -pady 5 -sticky ew
