@@ -60,4 +60,21 @@ into the main dumped emacs"
 Optimizing emacs startup on another front: i wrote a library that helps optimize the startup times of your InitFile:  http://www.gnufans.net/~deego/pub/emacspub/lisp-mine/dope/ --- deego
 
 ----
+
+Here's a bit of code i use to time my .emacs:
+
+<pre>
+;; time the loading of the .emacs
+;; keep this on top of your .emacs
+(defvar *emacs-load-start* (current-time))
+(defun anarcat/time-to-ms (time)
+  (+ (* (+ (* (car time) (expt 2 16)) (car (cdr time))) 1000000) (car (cdr (cdr time)))))
+(defun anarcat/display-timing ()
+  (message ".emacs loaded in %fms" (/ (- (anarcat/time-to-ms (current-time)) (anarcat/time-to-ms *emacs-load-start*)) 1000000.0)))
+(add-hook 'after-init-hook 'anarcat/display-timing t)
+</pre>
+
+.. modified from http://a-nickels-worth.blogspot.com/2007/11/effective-emacs.html. -- TheAnarcat
+
+----
 CategoryDotEmacs
