@@ -365,6 +365,14 @@ I recently had to calculate the differences between log file timestamps.  Eventu
 
 Agree, org-mode ".org" export to MoinMoin ".wiki" format would be fantastic.  I don't think the original request was made clearly enough, I am just reiterating that there is a need.
 
+[new]
+
+shouldDo.org is an Org-Mode "spreadsheet" to help you focus on your <nowiki>ShouldDOs</nowiki>, activities you should be doing to achieve results/outcomes/impact.
+
+shouldDo.org tracks your weekly progress as a "score" (where perfect equals 100) as you perform these activities.
+
+http://shouldDo.org
+
 ----
 CategoryOutline CategoryPersonalInformationManager CategoryCalendar
 
