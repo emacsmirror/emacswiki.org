@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:53 2006
 ;; Version: 22.0
-;; Last-Updated: Fri Dec 16 15:04:47 2011 (-0800)
+;; Last-Updated: Sat Dec 24 11:02:25 2011 (-0800)
 ;;           By: dradams
-;;     Update #: 12734
+;;     Update #: 12742
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-fn.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -3127,7 +3127,7 @@ The optional second arg is ignored."
                                  (if (consp cand)
                                      (or (string-match "\n" (car cand))
                                          (string-match "\n" (cdr cand)))
-                                  (string-match "\n" cand))))
+                                   (string-match "\n" cand))))
            (any-multiline-p  (loop for cand in candidates
                                    if (funcall multilinep cand) return t
                                    finally return nil))
@@ -3149,14 +3149,16 @@ The optional second arg is ignored."
            (nb-cands         (length candidates))
            (columns          (if any-multiline-p
                                  1
-                               (max 1 (min (/ (* 100 wwidth)
-                                              (* icicle-candidate-width-factor max-cand-len))
-                                           nb-cands))))
+                               (or icicle-Completions-max-columns
+                                   (max 1 (min (/ (* 100 wwidth)
+                                                  (* icicle-candidate-width-factor max-cand-len))
+                                               nb-cands)))))
            (colwidth         (if (eq 1 columns) (min max-cand-len wwidth) (/ wwidth columns)))
            (column-nb        0)
            (rows             (ceiling nb-cands columns))
  	   (row              0)
            startpos endpos string)
+      (when (eq 1 columns) (setq wwidth  colwidth))
       (dolist (cand  candidates)
         (setq endpos  (point))
         (cond ((eq icicle-completions-format 'vertical) ; Vertical layout.
@@ -3223,17 +3225,21 @@ The optional second arg is ignored."
         (when (and any-multiline-p (not (string-match "\n\'" cand)))
           (insert (if (eq 'vertical icicle-completions-format) "\n" "\n\n")))))))
 
-;; ARG is not used yet/currently.
+;; ARG is not used in any calls yet/currently.
 (defun icicle-fit-completions-window (&optional arg)
-  "Fit the window that is showing completions to its contents.
+  "Fit the height of the window that is showing completions to its contents.
 Optional ARG determines what the effect is, as follows:
 
- nil        - scale text size and fit window to contents
- fit-only   - fit window to contents, but do not scale text size
- scale-only - scale text size but do not fit window to contents
+ `fit-only'    - fit window to contents, but do not scale text size
+ `scale-only'  - scale text size but do not fit window to contents
+ anything else - scale text size and fit window to contents
+
+Window fitting is available only for Emacs 24+, because
+`fit-window-to-buffer' is broken for Emacs 21-23 (it can remove
+windows).
 
 Text size scaling uses `icicle-Completions-text-scale-decrease' and is
-only available for Emacs 23+.  (Do not scale in any case if using
+available only for Emacs 23+.  (No scaling in any case if using
 `oneonone.el' with a `*Completions*' frame.)."
   (unless (or (eq arg 'scale-only)
               (= emacs-major-version 23) ; `fit-window-to-buffer' is broken before 24: removes windows.
