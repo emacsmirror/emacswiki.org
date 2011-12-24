@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2011, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Tue Dec 20 00:10:40 2011 (-0800)
+;; Last-Updated: Sat Dec 24 11:21:40 2011 (-0800)
 ;;           By: dradams
-;;     Update #: 7695
+;;     Update #: 7701
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-chg.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -1122,6 +1122,11 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-fn.el'")
 ;;
+;; 2011/12/24 dadams
+;;     icicle-insert-candidates:
+;;       When only one column, set window width to column width.
+;;       Use option icicle-Completions-max-columns.
+;;     icicle-fit-completions-window: Clarify doc string.
 ;; 2011/12/15 dadams
 ;;     icicle-display-candidates-in-Completions:
 ;;       For face icicle-historical-candidate, expand file names before comparing.
@@ -5186,6 +5191,9 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-opt.el'")
 ;;
+;; 2011/12/24 dadams
+;;     Added: icicle-Completions-max-columns.
+;;     icicle-recenter: Changed the :value setting to -4 from nil.
 ;; 2011/12/14 dadams
 ;;     icicle-top-level-key-bindings: Added icicle-bookmark-image(-other-window).
 ;; 2011/12/06 dadams
