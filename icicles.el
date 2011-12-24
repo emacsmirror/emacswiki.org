@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Wed Dec 14 20:28:44 2011 (-0800)
+;; Last-Updated: Sat Dec 24 10:58:41 2011 (-0800)
 ;;           By: dradams
-;;     Update #: 23045
+;;     Update #: 23046
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -680,6 +680,7 @@
 ;;    `icicle-Completions-display-min-input-chars',
 ;;    `icicle-completions-format',
 ;;    `icicle-Completions-mouse-3-menu-entries',
+;;    `icicle-Completions-max-columns',
 ;;    `icicle-Completions-text-scale-decrease',
 ;;    `icicle-Completions-window-max-height',
 ;;    `icicle-customize-save-flag',
