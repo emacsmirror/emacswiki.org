@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Tue Dec 20 13:39:05 2011 (-0800)
+;; Last-Updated: Sat Dec 24 09:59:21 2011 (-0800)
 ;;           By: dradams
-;;     Update #: 26325
+;;     Update #: 26329
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-doc1.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -3170,10 +3170,13 @@
 ;;    (e.g. as currently sorted).  This also means that candidate
 ;;    cycling acts properly for a vertical layout.
 ;;
-;;    Note: For visual clarity, a `vertical' value is overridden
-;;    (ignored) when multi-line multi-completions are used - the
-;;    layout is horizontal.  See (@> "Customization and General Tips")
-;;    for more information.
+;;    Note: For visual clarity, when multi-line candidates are used
+;;    (and this includes multi-line multi-completions) the candidates
+;;    are displayed in a single column.  When this is the case, the
+;;    completions format (horizontal or vertical) makes no difference
+;;    – the effect is the same. (Icicles also inserts an empty line
+;;    after each multi-line candidate, for readability.)
+;;    See also (@file :file-name "icicles-doc2.el" :to "Icicles User Options and Faces")
 ;;
 ;;  * In some cases, Icicles adds one or more additional, proxy
 ;;    completion candidates.  These are placeholders for real
