@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Wed Dec 14 17:19:22 2011 (-0800)
+;; Last-Updated: Sat Dec 24 11:16:21 2011 (-0800)
 ;;           By: dradams
-;;     Update #: 28568
+;;     Update #: 28572
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-doc2.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -2300,7 +2300,7 @@
 ;;  are available during file-name completion.  You can easily
 ;;  recognize Icicles proxy candidates in buffer `*Completions*': they
 ;;  have face `icicle-proxy-candidates'.  See 
-;;  (@file :file-name "icicles-doc1.el" :to "Completions Display").
+;;  (@file :file-name "icicles-doc1.el" :to "*Completions* Display").
 ;;
 ;;  If `icicle-guess-commands-in-path' is non-`nil', the list of
 ;;  search-path candidate commands is computed once and cached as the
@@ -2522,7 +2522,7 @@
 ;;
 ;;  Any candidates that are specific to the marked files are Icicles
 ;;  proxy candidates - see
-;;  (@file :file-name "icicles-doc1.el" :to "Completions Display").
+;;  (@file :file-name "icicles-doc1.el" :to "*Completions* Display").
 ;;  These are available regardless of the current default-directory.
 ;;  They are not treated as file-name candidates, even though they are
 ;;  available during file-name completion.  Icicles proxy candidates
@@ -5224,6 +5224,15 @@
 ;;    mouse wheel to increment and decrement the value.  You can at
 ;;    the same time use the `left' and `right' keys to adjust the
 ;;    value of `icicle-candidate-width-factor'.  WYSIWYG.
+;;
+;;  * Option `icicle-Completions-max-columns' imposes a maximum number
+;;    of columns for the `*Completions*' display, thus preventing
+;;    Icicles from automatically calculating the number of columns.
+;;    It is available in case you really want to do that, but I
+;;    recommend that you leave the value of this option `nil' and you
+;;    use only options `icicle-inter-candidates-min-spaces' and
+;;    `icicle-candidate-width-factor' to control columns and candidate
+;;    spacing.
 ;;
 ;;  * Non-`nil' option `icicle-image-files-in-Completions' means that
 ;;    thumbnail images are shown in `*Completions*' for candidates
