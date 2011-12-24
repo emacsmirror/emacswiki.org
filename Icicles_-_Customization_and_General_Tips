@@ -911,6 +911,21 @@ mouse wheel to increment and decrement the value.  You can at the same time use 
 
 
 ----
+[:icicle-Completions-max-columns]
+==== Option icicle-Completions-max-columns ====
+
+Option '''`icicle-Completions-max-columns'''' imposes a maximum number
+of columns for the `*Completions*' [[Icicles - Completions Display|display]], thus preventing
+'''Icicles''' from automatically calculating the number of columns.
+It is available in case you really want to do that, but I
+recommend that you leave the value of this option `nil' and you
+use only options <tt>`[[#icicle-inter-candidates-min-spaces]]'</tt> and
+<tt>`[[#icicle-candidate-width-factor]]'</tt> to control columns and candidate
+spacing.
+
+
+
+----
 [:icicle-image-files-in-Completions]
 ==== Option icicle-image-files-in-Completions ====
 
