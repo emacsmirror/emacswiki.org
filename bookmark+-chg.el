@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2011, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Wed Dec 21 14:34:16 2011 (-0800)
+;; Last-Updated: Sat Dec 24 09:21:13 2011 (-0800)
 ;;           By: dradams
-;;     Update #: 13999
+;;     Update #: 14019
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-chg.el
 ;; Keywords: bookmarks, bookmark+
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -120,6 +120,13 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-1.el'")
 ;;
+;; 2011/12/24 dadams
+;;     bookmark-load: Call bmkp-refresh-menu-list only if display is visible, and with NO-MSG-P arg.
+;;     bmkp-edit-bookmark-record:
+;;       Raise error if invalid bookmark to start with.
+;;       Call bookmark-maybe-historicize-string and bookmark-maybe-load-default-file.
+;;     bmkp-refresh-menu-list: Added progress message.
+;;     bmkp-jump-bookmark-file: Pass NO-MSG-P arg to bookmark-load.
 ;; 2011/12/21 dadams
 ;;     Added: bmkp-orphaned(-local|-remote)-file-(alist-only|bookmark-p),
 ;;            bmkp-dired-wildcards-bookmark-p.
@@ -447,6 +454,13 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-bmu.el'")
 ;;
+;; 2011/12/24 dadams
+;;     Added: bookmark-bmenu-toggle-filenames, with optional arg NO-MSG-P.
+;;     bookmark-bmenu-surreptitiously-rebuild-list, bookmark-bmenu-(show|hide)-filenames:
+;;       Added progress messages and optional arg NO-MSG-P.
+;;     bookmark-bmenu-(show|hide)-filenames, bookmark-bmenu-toggle-filenames:
+;;       Correct FORCE behavior and doc strings.
+;;     bmkp-bmenu-refresh-menu-list: Pass (not) MSG-P to bmkp-refresh-menu-list.
 ;; 2011/12/21 dadams
 ;;     Added: bmkp-bmenu-mark-orphaned-local-file-bookmarks,
 ;;            bmkp-bmenu-show-only-orphaned-local-files, bmkp-bmenu-mark-variable-list-bookmarks.
