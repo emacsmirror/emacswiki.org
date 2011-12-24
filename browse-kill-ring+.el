@@ -7,16 +7,16 @@
 ;; Copyright (C) 2006-2010, Drew Adams, all rights reserved.
 ;; Created: Tue May 25 16:35:05 2004
 ;; Version: 21.0
-;; Last-Updated: Tue Mar 22 09:37:24 2011 (-0700)
+;; Last-Updated: Sat Dec 24 00:58:14 2011 (-0800)
 ;;           By: dradams
-;;     Update #: 862
+;;     Update #: 868
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/browse-kill-ring+.el
 ;; Keywords: convenience
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
 ;;
 ;; Features that might be required by this library:
 ;;
-;;   `browse-kill-ring'.
+;;   `browse-kill-ring', `second-sel'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -132,8 +132,10 @@
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
-;;; Change log:
+;;; Change Log:
 ;;
+;; 2011/12/23 dadams
+;;     browse-kill-ring-do-insert: Delete active region before inserting, if in delete-seletion-mode.
 ;; 2011/03/22 dadams
 ;;     Added: browse-kill-ring(-append|-prepend)-insert-and-move,
 ;;            browse-kill-ring-alternative-push-function.
@@ -383,7 +385,8 @@ If no such overlay, raise an error."
 ;; 3. Move to bol first, so can use this at eol (after the selection's overlay).
 ;; 4. Just use `with-current-buffer'.  No need for explicit `unwind-protect' etc.
 ;; 5. Let `yank-excluded-properties' reflect `browse-kill-ring-depropertize'.  Emacs 22+.
-;; 6. (Bug fix) Set window point after inserting.
+;; 6. Delete active region before inserting, if in `delete-seletion-mode'.
+;; 7. (Bug fix) Set window point after inserting.
 ;;
 (defun browse-kill-ring-do-insert (bkr-buf sel-pos &optional append/prepend)
   "Insert the selection that is at position SEL-POS in buffer BKR-BUF.
@@ -405,6 +408,9 @@ Insert the selection at point unless optional arg APPEND/PREPEND is:
                                            (prepend  (point-min))
                                            (t        (point)))))
           (goto-char insert-pos)
+          (when (and delete-selection-mode (not buffer-read-only) transient-mark-mode mark-active
+                     (not (memq append/prepend '(append prepend))))
+            (delete-active-region))
           (insert (if browse-kill-ring-depropertize
                       (browse-kill-ring-depropertize-string sel-string)
                     sel-string))
