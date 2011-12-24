@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:22:14 2006
 ;; Version: 22.0
-;; Last-Updated: Wed Dec 14 17:43:31 2011 (-0800)
+;; Last-Updated: Sat Dec 24 10:57:55 2011 (-0800)
 ;;           By: dradams
-;;     Update #: 4743
+;;     Update #: 4746
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-opt.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -81,7 +81,7 @@
 ;;    `icicle-completing-read+insert-keys',
 ;;    `icicle-completion-history-max-length',
 ;;    `icicle-Completions-display-min-input-chars',
-;;    `icicle-completions-format',
+;;    `icicle-completions-format', `icicle-Completions-max-columns',
 ;;    `icicle-Completions-mouse-3-menu-entries',
 ;;    `icicle-Completions-text-scale-decrease',
 ;;    `icicle-Completions-window-max-height',
@@ -1075,6 +1075,18 @@ Possible values are `right', `left', and nil (do not move)."
           (const :tag "Move to right edge"  right)
           (const :tag "Move to right edge"  left)
           (const :tag "Do not move"         nil))
+  :group 'Icicles-Completions-Display)
+
+;;;###autoload
+(defcustom icicle-Completions-max-columns nil
+  "Maximum number of columns to use in buffer `*Completions*'.
+If nil, the number is calculated automatically.  I recommend that you
+leave this nil and use options `icicle-inter-candidates-min-spaces'
+and `icicle-candidate-width-factor' to control columns and candidate
+spacing."
+  :type '(choice
+          (const   :tag "Calculate columns automatically"  nil)
+          (integer :tag "Maximum number of columns" :value 1))
   :group 'Icicles-Completions-Display)
 
 ;;;###autoload
@@ -3136,7 +3148,7 @@ Used during functions such as `icicle-search' when the destination to
 visit would otherwise be off-screen."
   :type '(choice
 	  (const   :tag "To mid-window" nil)
-	  (integer :tag "On this line number (negative: from bottom)" nil))
+	  (integer :tag "On this line number (negative: from bottom)" -4))
   :group 'Icicles-Miscellaneous)
 
 ;;;###autoload
