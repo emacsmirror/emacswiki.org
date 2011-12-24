@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Sat Dec 24 09:59:21 2011 (-0800)
+;; Last-Updated: Sat Dec 24 11:09:45 2011 (-0800)
 ;;           By: dradams
-;;     Update #: 26329
+;;     Update #: 26331
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-doc1.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -3126,6 +3126,10 @@
 ;;    Because different sets of candidates have different candidate
 ;;    lengths and distributions of those lengths.  Play with it a bit
 ;;    and you will see.  One size does not fit all in an ideal way.
+;;
+;;    (You can use option `icicle-Completions-max-columns' to prevent
+;;    Icicles from automatically calculating the number of columns to
+;;    display, but I do not recommend this.)
 ;;
 ;;  * You can use `C-x .' (`icicle-toggle-hiding-common-match') in the
 ;;    minibuffer at any time during completion to toggle hiding of the
