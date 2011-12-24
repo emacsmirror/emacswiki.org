@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2011, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 09:05:21 2010 (-0700)
-;; Last-Updated: Wed Dec 21 14:34:54 2011 (-0800)
+;; Last-Updated: Sat Dec 24 09:02:51 2011 (-0800)
 ;;           By: dradams
-;;     Update #: 1179
+;;     Update #: 1237
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-bmu.el
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -249,9 +249,10 @@
 ;;    `bookmark-bmenu-mark', `bookmark-bmenu-1-window',
 ;;    `bookmark-bmenu-2-window', `bookmark-bmenu-other-window',
 ;;    `bookmark-bmenu-other-window-with-mouse',
-;;    `bookmark-bmenu-this-window', `bookmark-bmenu-rename',
-;;    `bookmark-bmenu-show-annotation',
-;;    `bookmark-bmenu-switch-other-window', `bookmark-bmenu-unmark'.
+;;    `bookmark-bmenu-rename', `bookmark-bmenu-show-annotation',
+;;    `bookmark-bmenu-switch-other-window',
+;;    `bookmark-bmenu-this-window', `bookmark-bmenu-toggle-filenames',
+;;    `bookmark-bmenu-unmark'.
 ;;
 ;;
 ;;  ***** NOTE: The following non-interactive functions and macros
@@ -294,12 +295,11 @@
 (require 'bookmark)
 ;; bookmark-alist, bookmark-bmenu-file-column,
 ;; bookmark-bmenu-hidden-bookmarks, bookmark-bmenu-mode-map,
-;; bookmark-bmenu-select, bookmark-bmenu-toggle-filenames,
-;; bookmark-get-annotation, bookmark-get-bookmark,
-;; bookmark-get-filename, bookmark-get-handler, bookmark-kill-line,
-;; bookmark-maybe-load-default-file, bookmark-name-from-full-record,
-;; bookmark-name-from-record, bookmark-prop-get,
-;; bookmark-show-annotation, bookmark-store
+;; bookmark-bmenu-select, bookmark-get-annotation,
+;; bookmark-get-bookmark, bookmark-get-filename, bookmark-get-handler,
+;; bookmark-kill-line, bookmark-maybe-load-default-file,
+;; bookmark-name-from-full-record, bookmark-name-from-record,
+;; bookmark-prop-get
 
 ;;; Fix incompatibility introduced by gratuitous Emacs name change.
 (cond ((and (fboundp 'bookmark-name-from-record) (not (fboundp 'bookmark-name-from-full-record)))
@@ -341,7 +341,7 @@
 ;; bmkp-su-or-sudo-regexp,
 ;; bmkp-tag-name, bmkp-tags-list, bmkp-url-bookmark-p, bmkp-url-cp,
 ;; bmkp-unmarked-bookmarks-only, bmkp-variable-list-bookmark-p,
-;; bmkp-visited-more-cp
+;; bmkp-visited-more-cp, bookmark-store
 
 ;; (eval-when-compile (require 'bookmark+-lit nil t))
 ;; bmkp-get-lighting
@@ -821,14 +821,18 @@ the deletions."
 
 ;; REPLACES ORIGINAL in `bookmark.el'.
 ;;
-;; 1. Rebuild the menu list using the last filtered alist in use, `bmkp-latest-bookmark-alist'.
-;; 2. Update the menu-list title.
+;; 1. Added optional arg NO-MSG-P.
+;; 2. Rebuild the menu list using the last filtered alist in use, `bmkp-latest-bookmark-alist'.
+;; 3. Update the menu-list title.
 ;;
-(defun bookmark-bmenu-surreptitiously-rebuild-list ()
-  "Rebuild the bookmark list, if it exists."
+(defun bookmark-bmenu-surreptitiously-rebuild-list (&optional no-msg-p)
+  "Rebuild the bookmark list, if it exists.
+Non-nil optional arg NO-MSG-P means do not show progress messages."
   (when (get-buffer "*Bookmark List*")
+    (unless no-msg-p (message "Updating bookmark list..."))
     (save-excursion (save-window-excursion (let ((bookmark-alist  bmkp-latest-bookmark-alist))
-                                             (bookmark-bmenu-list 'filteredp))))))
+                                             (bookmark-bmenu-list 'filteredp))))
+    (unless no-msg-p (message "Updating bookmark list...done"))))
 
 
 ;; REPLACES ORIGINAL in `bookmark.el'.
@@ -1438,14 +1442,40 @@ bmkp-use-region             - Activate saved region when visit?"
 
 ;; REPLACES ORIGINAL in `bookmark.el'.
 ;;
-;; 1. Put `mouse-face' on whole line, with the same help-echo as for the bookmark name.
-;; 2. Fit one-window frame.
-;; 3. Added doc string.
+;; 1. Corrected (rewrote).  Toggle var first (unless SHOW).  Call fn according to the var (& to SHOW).
+;; 2. Added optional arg NO-MSG-P.
 ;;
-(defun bookmark-bmenu-show-filenames (&optional force)
-  "Show file names."
-  (if (and (not force) bookmark-bmenu-toggle-filenames)
-      nil                               ; Already shown, so do nothing.
+(defun bookmark-bmenu-toggle-filenames (&optional show no-msg-p)
+  "Toggle whether filenames are shown in the bookmark list.
+Toggle the value of `bookmark-bmenu-toggle-filenames', unless SHOW is
+non-nil.
+Optional argument SHOW means show them unconditionally.
+
+Non-nil optional arg NO-MSG-P means do not show progress messages."
+  (interactive)
+  (unless show  (setq bookmark-bmenu-toggle-filenames  (not bookmark-bmenu-toggle-filenames)))
+  (let ((bookmark-bmenu-toggle-filenames  (or show bookmark-bmenu-toggle-filenames)))
+    (if bookmark-bmenu-toggle-filenames
+        (bookmark-bmenu-show-filenames no-msg-p)
+      (bookmark-bmenu-hide-filenames no-msg-p))))
+
+
+;; REPLACES ORIGINAL in `bookmark.el'.
+;;
+;; 1. Put `mouse-face' on whole line, with the same help-echo as for the bookmark name.
+;; 2. Correct FORCE behavior.
+;; 3. Correct doc string.
+;; 4. Added optional arg NO-MSG-P and progress message.
+;; 5. Fit one-window frame.
+;;
+(defun bookmark-bmenu-show-filenames (&optional force no-msg-p)
+  "Show file names if `bookmark-bmenu-toggle-filenames' is non-nil.
+Otherwise do nothing, except non-nil optional argument FORCE has the
+same effect as non-nil `bookmark-bmenu-toggle-filenames'.  FORCE is
+mainly for debugging.
+Non-nil optional arg NO-MSG-P means do not show progress messages."
+  (when (or force  bookmark-bmenu-toggle-filenames)
+    (unless no-msg-p (message "Showing file names..."))
     (with-buffer-modified-unmodified
         (save-excursion
           (save-window-excursion
@@ -1470,6 +1500,7 @@ bmkp-use-region             - Activate saved region when visit?"
                                                         (line-beginning-position))
                                                      (point) 'help-echo help))))
                   (forward-line 1)))))))
+    (unless no-msg-p (message "Showing file names...done"))
     (when (and (fboundp 'fit-frame-if-one-window)
                (eq (selected-window) (get-buffer-window (get-buffer-create "*Bookmark List*") 0)))
       (fit-frame-if-one-window))))
@@ -1479,14 +1510,19 @@ bmkp-use-region             - Activate saved region when visit?"
 ;;
 ;; 1. Add text properties when hiding filenames.
 ;; 2. Do not set or use `bookmark-bmenu-bookmark-column' - use `bmkp-bmenu-marks-width' always.
-;; 3. Fit one-window frame.
-;; 4. Added doc string.
+;; 3. Correct FORCE behavior.
+;; 4. Correct doc string.
+;; 5. Added optional arg NO-MSG-P and progress message.
+;; 6. Fit one-window frame.
 ;;
-(defun bookmark-bmenu-hide-filenames (&optional force)
-  "Hide filenames in bookmark-list buffer.
-If either optional arg FORCE or `bookmark-bmenu-toggle-filenames' is
-non-nil, then do nothing."
-  (when (and (not force)  bookmark-bmenu-toggle-filenames) ; Nothing to hide if nil.
+(defun bookmark-bmenu-hide-filenames (&optional force no-msg-p)
+  "Hide filenames if `bookmark-bmenu-toggle-filenames' is nil.
+Otherwise do nothing, except non-nil optional argument FORCE has the
+same effect as nil `bookmark-bmenu-toggle-filenames'.  FORCE is mainly
+for debugging.
+Non-nil optional arg NO-MSG-P means do not show progress messages."
+  (when (or force  (not bookmark-bmenu-toggle-filenames))
+    (unless no-msg-p (message "Hiding file names..."))
     (with-buffer-modified-unmodified
         (save-excursion
           (save-window-excursion
@@ -1510,6 +1546,7 @@ non-nil, then do nothing."
                       (bmkp-bmenu-propertize-item name start end))
                     (setq bookmark-bmenu-hidden-bookmarks  (cdr bookmark-bmenu-hidden-bookmarks))
                     (forward-line 1))))))))
+    (unless no-msg-p (message "Hiding file names...done"))
     (when (and (fboundp 'fit-frame-if-one-window)
                (eq (selected-window) (get-buffer-window (get-buffer-create "*Bookmark List*") 0)))
       (fit-frame-if-one-window))))
@@ -1992,7 +2029,7 @@ To revert the list, use `\\<bookmark-bmenu-mode-map>\\[bmkp-bmenu-refresh-menu-l
     (bmkp-msg-about-sort-order (bmkp-current-sort-order) "All bookmarks are shown")))
 
 ;;;###autoload
-(defun bmkp-bmenu-refresh-menu-list (&optional arg msgp) ; Bound to `g' in bookmark list
+(defun bmkp-bmenu-refresh-menu-list (&optional arg msg-p) ; Bound to `g' in bookmark list
   "Refresh (revert) the bookmark list display (aka \"menu list\").
 This brings the displayed list up to date with respect to the current
 bookmark list.  It does not change the filtering or sorting of the
@@ -2003,17 +2040,19 @@ list and its display from the current bookmark file.  IOW, it reloads
 the file, overwriting the current bookmark list.
 
 If you want setting a bookmark to refresh the list automatically, you
-can use command `bmkp-toggle-bookmark-set-refreshes'."
+can use command `bmkp-toggle-bookmark-set-refreshes'.
+
+From Lisp, non-nil optional arg MSG-P means show progress messages."
   (interactive "P\np")
   (bmkp-bmenu-barf-if-not-in-menu-list)
   (let ((msg  "Refreshing from bookmark "))
     (cond ((and arg (y-or-n-p (format "Revert to bookmarks in file `%s'? " bmkp-current-bookmark-file)))
-           (when msgp (message (setq msg  (concat msg "file..."))))
+           (when msg-p (message (setq msg  (concat msg "file..."))))
            (bookmark-load bmkp-current-bookmark-file 'OVERWRITE 'NOMSGP))
           (t
-           (when msgp (message (setq msg  (concat msg "list in memory..."))))
-           (bmkp-refresh-menu-list (bookmark-bmenu-bookmark))))
-    (when msgp (message (concat msg "done")))))
+           (when msg-p (message (setq msg  (concat msg "list in memory..."))))
+           (bmkp-refresh-menu-list (bookmark-bmenu-bookmark) (not msg-p))))
+    (when msg-p (message (concat msg "done")))))
 
 ;;;###autoload
 (defun bmkp-bmenu-filter-bookmark-name-incrementally () ; Bound to `P B' in bookmark list
