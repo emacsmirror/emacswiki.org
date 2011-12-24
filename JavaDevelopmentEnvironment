@@ -311,6 +311,10 @@ So, what is the problem? When processing efc.el (eieio foundation classes), the 
 </pre>
 is being processed. When the (typep item) is passed to byte-optimize-form (and on down to byte-optimize-form-walker and compiler-macroexpand) things go badly awry. I have not hacked elisp for many a moon so I am lost, lost, lost. Any hints would be greatly appreciated. It took me most of a day to get this much information and I don't have a lot of time to go deeper, though I really want jdee to work with 23.
 -- drbcladd
+
+The problem seems to be a typo, looks like whoever wrote that error message intended to write <pre>(type-of item)</pre>, not <pre>(typep item)</pre>. The former would naturally fit the error's description and would, in fact require only one parameter (typep requires two).
+This said, it complied for me with the above *fix*.
+-- wvxvw
 ----
 CategoryProgrammerUtils
 CategoryModes
