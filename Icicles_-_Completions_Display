@@ -278,9 +278,14 @@ buffer `*Completions*' correctly reflect the candidate order
 (e.g. as currently sorted).  This also means that candidate cycling acts
 properly for a vertical layout.
 
-'''Note:''' For visual clarity, a `vertical' value is overridden (ignored) when ''multi-line''
-[[multi-completion]]s are used -- the layout is horizontal.
-See [[Icicles - Customization and General Tips#icicle-completions-format|Customization and General Tips]] for more information.
+'''Note:''' For visual clarity, when multi-line candidates are used
+(and this includes multi-line [[multi-completion]]s) the candidates
+are displayed in a single column.  When this is the case, the
+completions format (horizontal or vertical) makes no difference -- the effect is the same. ('''Icicles''' also inserts an empty line
+after each multi-line candidate, for readability.)  See also [[Icicles - Customization and General Tips#icicle-completions-format|Customization and General Tips]].
+
+
+
 
 
 
