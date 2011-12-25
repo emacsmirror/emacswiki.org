@@ -54,6 +54,31 @@ To use this for BSBufferSelection, consider the following keybinding:
 
 See also: KillKey
 
+
+== Simple Command for killing buffer in a pane and also closing the pane ==
+
+Many times a temporary window comes up for help or compilation results, auto complete, buffer list, etc. To close that one has to switch to the other window and kill the buffer. After killing the buffer, another buffer gets shown in that window and so we need to close the window to restore the original buffer with full size. 
+
+These two functions solve this problem. You can bind your un-used keys to these functions for quick access. 
+
+;; close other window and kill the buffer also
+(defun close-and-kill-next-pane ()
+  "Close the other pane and kill the buffer in it also."
+  (interactive)
+  (other-window 1)
+	(close-current-buffer)
+	(delete-window)
+  )
+
+;; close this window and kill the buffer also
+(defun close-and-kill-this-pane ()
+  "Close this pane and kill the buffer in it also."
+  (interactive)
+	(close-current-buffer)
+	(delete-window)
+  )
+
+
 [:UsingIbufferMode]
 
 === Using IbufferMode ===
