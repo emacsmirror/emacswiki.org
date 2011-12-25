@@ -61,14 +61,13 @@ Many times a temporary window comes up for help or compilation results, auto com
 
 These two functions solve this problem. You can bind your un-used keys to these functions for quick access. 
 
-;; close other window and kill the buffer also
-(defun close-and-kill-next-pane ()
-  "Close the other pane and kill the buffer in it also."
-  (interactive)
-  (other-window 1)
-	(close-current-buffer)
-	(delete-window)
-  )
+    (defun close-and-kill-next-pane ()
+      "Close the other pane and kill the buffer in it also."
+      (interactive)
+      (other-window 1)
+      (close-current-buffer)
+      (delete-window)
+    )
 
 ;; close this window and kill the buffer also
 (defun close-and-kill-this-pane ()
