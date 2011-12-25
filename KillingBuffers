@@ -1,11 +1,13 @@
-This page is about functions that delete, or "kill" buffers. The standard function to kill a buffer is `kill-buffer'. This page goes beyond `kill-buffer'.
+This page is about functions that delete, or "kill" [[buffer]]s. The standard [[command]] to kill a buffer is `kill-buffer'. This page goes beyond `kill-buffer'.
 
-: '''Note:''' "killing" a buffer has nothing to do with "killing" text. After you "kill" (aka "cut") text, you can "yank" (aka "paste") it back again. After you kill a buffer, it is gone forever.
+: '''Note:''' "killing" a buffer has nothing to do with killing text. After you [[kill]] (aka "cut") text, you can [[yank]] (aka "paste") it back again. After you "kill" a buffer, it is gone forever.
+
+
 
 [:kill-buffer-and-its-windows]
 == Kill Buffer and Delete Its Windows ==
 
-DrewAdams has written command `kill-buffer-and-its-windows', available in library Lisp:misc-cmds.el, which kills the buffer and ''deletes all of its windows''.  The default buffer to kill is `current-buffer'. The argument to the command may be either a buffer or its name (a string).
+Command `kill-buffer-and-its-windows', available in library Lisp:misc-cmds.el, kills the buffer and ''deletes all of its windows''.  The default buffer to kill is `current-buffer'. The argument to the command may be either a buffer or its name (a string).
 
 This command is especially useful as a replacement for command `kill-buffer' when using Emacs ''[[Frame]]s'' -- see OneOnOneEmacs. Used with other frame-oriented functions, it also deletes the frame if the buffer is alone in the frame.
 
