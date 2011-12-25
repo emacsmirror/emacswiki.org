@@ -55,7 +55,7 @@ To use this for BSBufferSelection, consider the following keybinding:
 See also: KillKey
 
 
-== Simple Command for killing buffer in a pane and also closing the pane ==
+== Close and Kill Buffer in a Pane ==
 
 Many times a temporary window comes up for help or compilation results, auto complete, buffer list, etc. To close that one has to switch to the other window and kill the buffer. After killing the buffer, another buffer gets shown in that window and so we need to close the window to restore the original buffer with full size. 
 
