@@ -69,13 +69,14 @@ These two functions solve this problem. You can bind your un-used keys to these 
       (delete-window)
     )
 
-;; close this window and kill the buffer also
-(defun close-and-kill-this-pane ()
-  "Close this pane and kill the buffer in it also."
-  (interactive)
-	(close-current-buffer)
-	(delete-window)
-  )
+
+    (defun close-and-kill-this-pane ()
+      "Close this pane and kill the buffer in it also."
+      (interactive)
+      (other-window 1)
+      (close-current-buffer)
+      (delete-window)
+    )
 
 
 [:UsingIbufferMode]
