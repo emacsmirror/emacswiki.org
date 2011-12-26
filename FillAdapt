@@ -52,6 +52,7 @@ All you have to do is tell cc-mode to prepare for filladapt:
 	      (c-setup-filladapt))))
 </pre>
 
+
 ----
 CategoryFilling
 CategoryComments
