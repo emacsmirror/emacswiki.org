@@ -56,6 +56,8 @@ VM is very well documented. It comes with a fine set of info pages, and there ar
 
 * Josh Braun, [[http://wideaperture.net/blog/?p=3270: Setting up a VM Mail Client in Emacs]], June 22, 2011.  Basic but adequate instructions for setting up VM.
 
+* Robert Adesam, [[http://robert-adesam.blogspot.com/2011/06/issue-with-vm-and-imap-over-sslstunnel.html: Issue with VM and IMAP over SSL/stunnel]], June 23, 2011.  Reports that stunnel version 4.35 does not work correctly.
+
 * Joe Bayes, [[http://www.cs.oberlin.edu/students/public/unixhelp-local/vm.html|vm: Emacs's mail reader]], date unknown.  A simple introduction to using VM.
 
 * Alley Stoughton, [[http://people.cis.ksu.edu/~stough/emacs-vm-mac/|Support for Using Emacs/VM for Reading and Sending Mail on a Mac]], undated.
