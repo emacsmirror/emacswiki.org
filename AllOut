@@ -54,7 +54,7 @@ the keybindings.''
 
 ----
 
-This is the (old - see below) documented way of setting it up:
+This is the (old - see just below) documented way of setting it up:
 
     (require 'allout)
     (outline-init t)
