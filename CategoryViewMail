@@ -54,6 +54,8 @@ VM is very well documented. It comes with a fine set of info pages, and there ar
 
 * Arik Mitschang, [[http://www.arikm.com/tidbits/?id=6|emacs: VM Mail Reader]], December 29, 2009.  Help for setting up VM.
 
+* Josh Braun, [[http://wideaperture.net/blog/?p=3270: Setting up a VM Mail Client in Emacs]], June 22, 2011.  Basic but adequate instructions for setting up VM.
+
 * Joe Bayes, [[http://www.cs.oberlin.edu/students/public/unixhelp-local/vm.html|vm: Emacs's mail reader]], date unknown.  A simple introduction to using VM.
 
 * Alley Stoughton, [[http://people.cis.ksu.edu/~stough/emacs-vm-mac/|Support for Using Emacs/VM for Reading and Sending Mail on a Mac]], undated.
