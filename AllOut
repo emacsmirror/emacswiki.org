@@ -21,9 +21,9 @@ In addition to outline navigation and exposure, allout includes:
 
 and many other features.
 
-The most recent version of allout, plus ancillary stuff, is available at the author's site:
-
-http://myriadicity.net/Sundry/EmacsAllout
+The most recent version of allout, plus ancillary stuff, is available at
+[http://myriadicity.net/software-and-systems/craft/emacs-allout the author's site].
+That also has instructions for getting an addon, allout-widgets, which provides outline structure visual highlighting.
 
 == Quick Start ==
 
@@ -54,10 +54,14 @@ the keybindings.''
 
 ----
 
-This is the documented way of setting it up:
+This is the (old - see below) documented way of setting it up:
 
     (require 'allout)
     (outline-init t)
+
+* Recent versions of allout are activated just by customizing the `allout-auto-activation' variable.
+  You can get the latest version from the Emacs source code repository - see 
+  [http://myriadicity.net/software-and-systems/craft/emacs-allout#section-0 Ken's instructions].
 
 ''I found I had to use (allout-init t) instead'' -- DamienElmes
 
@@ -266,7 +270,7 @@ As of Emacs 22, Emacs' alternative, comprehensive outline mode, Allout, provides
 
 * conveniences like user-provided key hinting, key caching, and key reuse verification help prevent accidents where symmetric keys are forgotten or misspelled.
 
-Allout encryption requires installation of gpg on your system, but otherwise depends only on packages that come with Emacs 22.
+Allout encryption requires installation of gpg on your system, but otherwise depends only on packages that come with Emacs.
 
 (Allout non-encryption functionality is not disrupted by the absence of gpg, and has extensive outline editing features as well as navigation features, including topic-oriented promotion, demotion, cut and paste, incremental search with dynamic exposure and re-concealment, automatic topic numbering, "hot-spot" navigation for easy outline browsing, TeX formatting, and much much more.)
 
