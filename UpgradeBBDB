@@ -32,3 +32,4 @@
 || bbdb-notice-hook |||| bbdb-notice-mail-hook ||
 || bbdb-auto-notes-hook |||| bbdb-auto-notes ||
 || bbdb-offer-save |||| gone ||
+|| *-company |||| *-organization ||
