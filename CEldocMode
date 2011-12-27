@@ -2,6 +2,10 @@
 
 c-eldoc mode displays the arguments of C functions while one is programming.
 
+<pre>
+git clone https://github.com/nflath/c-eldoc
+</pre>
+
 === Advantages ===
 This version takes the function declarations from preprocessor output, thus allowing one to use it with system-dependent functions from any library.  This was developed as a response to [[CEDET]], which I was unable to use.  If you know how to make this feature work in [[CEDET]] (I believe it is called `summary-mode'), please post the method here.  This approach is somewhat simpler than that of [[CEDET]].
 
