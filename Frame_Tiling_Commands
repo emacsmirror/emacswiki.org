@@ -1,17 +1,16 @@
 [[fr:Carrelage de Frames]]
 
-'''This page is part of the description of OneOnOneEmacs, by DrewAdams'''
+'''This page is part of the description of OneOnOneEmacs.
 
-I created two commands to tile the visible [[frame]]s either horizontally
-or vertically: `tile-frames-horizontally' and
-`tile-frames-vertically'. I use these especially just
-before using ediff commands to compare or merge buffers.
+You can tile the visible [[frame]]s either horizontally
+or vertically: `tile-frames-horizontally' or
+`tile-frames-vertically'.  One use of this feature is for comparing or merging [[buffer]]s using '''ediff''' commands.
 
-Here's a screenshot of my Windows desktop showing comparison, using `ediff', of two buffers previously tiled horizontally: 
+Here's a screenshot showing comparison using `ediff' of two buffers in frames that are tiled horizontally: 
 
 [[image:DrewsEmacsTileSS]]
 
-'''See Library:''' <tt>[[frame-cmds.el]]</tt>.  It also has frame other commands, such as commands to maximize and restore (toggle maximize) in different directions.
+'''See Library:''' <tt>[[frame-cmds.el]]</tt>.  It also has other frame commands, such as commands to maximize and restore (toggle maximize) in different directions.
 
 '''See Also:''' FisheyeWithThumbs for tiling frame thumbnails.
 
