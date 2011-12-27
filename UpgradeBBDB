@@ -15,3 +15,20 @@
 || bbdb-address-location |||| ? ||
 || bbdb-format-streets |||| ? ||
 || bbdb-dwim-net-address-allow-redundancy |||| bbdb-mail-avoid-redundancy ||
+|| bbdb-hashtable-size |||| gone ||
+|| bbdb-initialize |||| same + bbdb-mua-auto-update-init ||
+|| bbdb-get-field |||| bbdb-record-note ||
+|| bbdb-*-location |||| bbdb-*-label ||
+|| bbdb-record-phones |||| bbdb-record-phone ||
+|| bbdb-record-addresses |||| bbdb-record-address ||
+|| bbdb-timestamp-hook |||| bbdb-timestamp ||
+|| bbdb-creation-date-hook |||| bbdb-creation-date ||
+|| bbdb-display-layout |||| bbdb-layout ||
+|| bbdb-pop-up-display-layout |||| bbdb-pop-up-layout ||
+|| bbdb-get-only-first-address-p |||| bbdb-message-all-addresses ||
+|| bbdb-completion-type |||| bbdb-completion-list ||
+|| bbdb-save-db-timeout |||| gone ||
+|| bbdb-gui |||| gone ||
+|| bbdb-notice-hook |||| bbdb-notice-mail-hook ||
+|| bbdb-auto-notes-hook |||| bbdb-auto-notes ||
+|| bbdb-offer-save |||| gone ||
