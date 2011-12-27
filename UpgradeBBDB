@@ -1,16 +1,16 @@
 * How to upgrade from BBDB 2.x to 3.x
 
-|| 2.x |||| 3.x||
-|| bbdb-complete-name-allow-cycling  ||||  bbdb-complete-mail-allow-cycling||
-|| bbdb-electric-p  ||||  bbdb-electric||
-|| bbdb-send-mail-style  ||||  bbdb-mail-user-agent||
-|| bbdb-phones-label-list  ||||  bbdb-phone-label-list||
-|| bbdb-quiet-about-name-mismatches  ||||  bbdb-accept-name-mismatch||
-|| bbdb-north-american-phone-numbers-p  ||||  bbdb-phone-style||
-|| bbdb-check-zip-codes-p  ||||  bbdb-check-postcode||
-|| bbdb-use-pop-up  ||||  bbdb-pop-up-layout||
-|| bbdb-pop-up-target-lines  ||||  bbdb-pop-up-window-size||
-|| bbdb-canonicalize-net-hook  ||||  bbdb-canonicalize-mail-function||
+|| 2.x |||| 3.x ||
+|| bbdb-complete-name-allow-cycling |||| bbdb-complete-mail-allow-cycling ||
+|| bbdb-electric-p |||| bbdb-electric ||
+|| bbdb-send-mail-style |||| bbdb-mail-user-agent ||
+|| bbdb-phones-label-list |||| bbdb-phone-label-list ||
+|| bbdb-quiet-about-name-mismatches |||| bbdb-accept-name-mismatch ||
+|| bbdb-north-american-phone-numbers-p |||| bbdb-phone-style ||
+|| bbdb-check-zip-codes-p |||| bbdb-check-postcode ||
+|| bbdb-use-pop-up |||| bbdb-pop-up-layout ||
+|| bbdb-pop-up-target-lines |||| bbdb-pop-up-window-size ||
+|| bbdb-canonicalize-net-hook |||| bbdb-canonicalize-mail-function ||
 || bbdb-address-zip |||| ? bbdb-address-postcode ? ||
 || bbdb-address-location |||| ? ||
 || bbdb-format-streets |||| ? ||
