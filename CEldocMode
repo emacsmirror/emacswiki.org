@@ -3,7 +3,7 @@
 c-eldoc mode displays the arguments of C functions while one is programming.
 
 <pre>
-git clone https://github.com/nflath/c-eldoc
+git clone git://github.com/nflath/c-eldoc.git
 </pre>
 
 === Advantages ===
