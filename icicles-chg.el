@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2011, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Sat Dec 24 11:21:40 2011 (-0800)
+;; Last-Updated: Wed Dec 28 10:57:09 2011 (-0800)
 ;;           By: dradams
-;;     Update #: 7701
+;;     Update #: 7705
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-chg.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -1122,6 +1122,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-fn.el'")
 ;;
+;; 2011/12/28 dadams
+;;     Removed mention of obsolete option icicle-cycle-into-subdirs-flag.
 ;; 2011/12/24 dadams
 ;;     icicle-insert-candidates:
 ;;       When only one column, set window width to column width.
@@ -5191,6 +5193,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-opt.el'")
 ;;
+;; 2011/12/28 dadams
+;;     Removed obsolete option icicle-cycle-into-subdirs-flag and all mention of it.
 ;; 2011/12/24 dadams
 ;;     Added: icicle-Completions-max-columns.
 ;;     icicle-recenter: Changed the :value setting to -4 from nil.
@@ -5832,6 +5836,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-var.el'")
 ;;
+;; 2011/12/28 dadams
+;;     Removed mention of obsolete option icicle-cycle-into-subdirs-flag.
 ;; 2011/12/14 dadams
 ;;     Added: icicle-bookmark-list-names-only-p.
 ;; 2011/10/14 dadams
