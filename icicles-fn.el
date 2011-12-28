@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:53 2006
 ;; Version: 22.0
-;; Last-Updated: Sat Dec 24 11:02:25 2011 (-0800)
+;; Last-Updated: Wed Dec 28 10:45:21 2011 (-0800)
 ;;           By: dradams
-;;     Update #: 12742
+;;     Update #: 12745
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-fn.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -271,17 +271,18 @@
        (error nil))
      (require 'icicles-mac)))           ; Require, so can load separately if not on `load-path'.
   ;; icicle-with-selected-window
+
 (require 'icicles-opt)                  ; (This is required anyway by `icicles-var.el'.)
-  ;; icicle-Completions-display-min-input-chars, icicle-cycle-into-subdirs-flag,
-  ;; icicle-expand-input-to-common-match-flag, icicle-hide-common-match-in-Completions-flag,
-  ;; icicle-hide-non-matching-lines-flag, icicle-highlight-historical-candidates-flag,
-  ;; icicle-highlight-input-initial-whitespace-flag, icicle-ignore-space-prefix-flag,
-  ;; icicle-incremental-completion-delay, icicle-incremental-completion-flag,
-  ;; icicle-incremental-completion-threshold, icicle-default-value, icicle-list-join-string,
-  ;; icicle-mark-position-in-candidate, icicle-point-position-in-candidate, icicle-regexp-quote-flag,
-  ;; icicle-require-match-flag, 
+  ;; icicle-Completions-display-min-input-chars, icicle-expand-input-to-common-match-flag,
+  ;; icicle-hide-common-match-in-Completions-flag, icicle-hide-non-matching-lines-flag,
+  ;; icicle-highlight-historical-candidates-flag, icicle-highlight-input-initial-whitespace-flag,
+  ;; icicle-ignore-space-prefix-flag, icicle-incremental-completion-delay,
+  ;; icicle-incremental-completion-flag, icicle-incremental-completion-threshold,
+  ;; icicle-default-value, icicle-list-join-string, icicle-mark-position-in-candidate,
+  ;; icicle-point-position-in-candidate, icicle-regexp-quote-flag, icicle-require-match-flag,
   ;; icicle-show-Completions-help-flag, icicle-sort-comparer, icicle-special-candidate-regexp,
   ;; icicle-transform-function, icicle-use-~-for-home-dir-flag
+
 (require 'icicles-var)
   ;; icicle-candidate-nb, icicle-candidate-action-fn, icicle-candidate-properties-alist,
   ;; icicle-cmd-calling-for-completion, icicle-common-match-string, icicle-complete-input-overlay,
@@ -1094,11 +1095,6 @@ Directory names are highlighted in `*Completions*' using face
 
 If option `icicle-require-match-flag' is non-nil, it overrides the
 value of REQUIRE-MATCH.
-
-Cycling into subdirectories is determined by option
-`icicle-cycle-into-subdirs-flag'.  Case is ignored if
-`read-file-name-completion-ignore-case' is non-nil.  See also
-`read-file-name-function'.
 
 If option `icicle-add-proxy-candidates-flag' is non-nil, then the
 following proxy file-name candidates are included.  (This inclusion
@@ -6237,9 +6233,6 @@ If not doing file-name completion, then this is the same as
 ;; This predicate is used for file-name completion.
 (defun icicle-dirs-last-p (s1 s2)
   "Non-nil means S1 is a file and S2 a dir, or S1 < S2 (alphabet).
-This is especially useful when `icicle-cycle-into-subdirs-flag' is
-non-nil.  Otherwise, cycling into subdirectories is depth-first, not
-breadth-first.
 If not doing file-name completion, then this is the same as
 `icicle-case-string-less-p'."
   (if (icicle-file-name-input-p)
