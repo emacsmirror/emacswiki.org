@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:22:14 2006
 ;; Version: 22.0
-;; Last-Updated: Sat Dec 24 10:57:55 2011 (-0800)
+;; Last-Updated: Wed Dec 28 10:49:38 2011 (-0800)
 ;;           By: dradams
-;;     Update #: 4746
+;;     Update #: 4750
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-opt.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -87,9 +87,8 @@
 ;;    `icicle-Completions-window-max-height',
 ;;    `icicle-customize-save-flag',
 ;;    `icicle-customize-save-variable-function',
-;;    `icicle-cycle-into-subdirs-flag', `icicle-default-cycling-mode',
-;;    `icicle-default-thing-insertion', `icicle-default-value',
-;;    `icicle-define-alias-commands-flag',
+;;    `icicle-default-cycling-mode', `icicle-default-thing-insertion',
+;;    `icicle-default-value', `icicle-define-alias-commands-flag',
 ;;    `icicle-deletion-action-flag', `icicle-dot-show-regexp-flag',
 ;;    `icicle-dot-string', `icicle-expand-input-to-common-match-flag',
 ;;    `icicle-file-extras', `icicle-file-match-regexp',
@@ -1079,7 +1078,7 @@ Possible values are `right', `left', and nil (do not move)."
 
 ;;;###autoload
 (defcustom icicle-Completions-max-columns nil
-  "Maximum number of columns to use in buffer `*Completions*'.
+  "*Maximum number of columns to use in buffer `*Completions*'.
 If nil, the number is calculated automatically.  I recommend that you
 leave this nil and use options `icicle-inter-candidates-min-spaces'
 and `icicle-candidate-width-factor' to control columns and candidate
@@ -1223,15 +1222,6 @@ options to be saved automatically, you can set this to the function
 \(symbol) `ignore'.  If you want to use your own function to somehow
 save the current value, you can set this to your function."
   :type 'function :group 'Icicles-Miscellaneous)
-
-;;;###autoload
-(defcustom icicle-cycle-into-subdirs-flag nil
-  "*Non-nil means minibuffer-input cycling explores subdirectories.
-If this is non-nil, then you might want to use a function such as
-`icicle-dirs-last-p' for option `icicle-sort-comparer', to prevent
-cycling into subdirectories depth first.  Command
-`icicle-sort-by-directories-last' does that."
-  :type 'boolean :group 'Icicles-Miscellaneous)
 
 ;;;###autoload
 (defcustom icicle-default-cycling-mode 'prefix
@@ -2730,11 +2720,6 @@ command)."
 Used in particular to sort completion candidates.  In that case, this
 determines the order of candidates when cycling and their order in
 buffer `*Completions*'.
-
-When `icicle-cycle-into-subdirs-flag' is non-nil, you might want to
-use a function such as `icicle-dirs-last-p' for this option, to
-prevent cycling into subdirectories depth first.  Command
-`icicle-sort-by-directories-last' does that.
 
 You can cycle completion sort orders at any time using `C-,' in the
 minibuffer.
