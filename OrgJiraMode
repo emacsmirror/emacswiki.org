@@ -1,18 +1,3 @@
-=org-jira=
-
-==Table of Contents==
-
-* [#sec-1 1 Introduction ]
-* [#sec-2 2 Features ]
-** [#sec-2.1 2.1 Sync Jira tickets into Org-mode todo items in a batch mode. ]
-** [#sec-2.2 2.2 description: SANDBOX-22]
-** [#sec-2.3 2.3 Comment: Bao Haojun]
-** [#sec-2.4 2.4 Update Org-mode new edits back to Jira ]
-** [#sec-2.5 2.5 Create new Jira issue in org mode ]
-** [#sec-2.6 2.6 Convert existing org mode TODO item into Jira ticket ]
-** [#sec-2.7 2.7 Edit existing Jira comments / add new comment ]
-* [#sec-3 3 Usage ]
-
 ==1 Introduction ==
 
 [http://orgmode.org Org-mode] is the best GTD (get things done) tool I have used. If you didn't use it, please consider give it a shot.
@@ -40,6 +25,7 @@ Jira ticket attributes such as priority, status, resolution, summary, descriptio
 
 See the following example. Jira ticket summary has been used as the Org TODO headline; most Jira ticket attributes have been made into Org entry; Jira description attribute is made into a separate subtitle because unlike most attributes it is multi-line.
 
+<pre>
 * TODO test summary                                          :SANDBOX_22:
   :PROPERTIES:
   :assignee: hjbao
@@ -57,6 +43,7 @@ test description
    :ID:       21322
    :END:
 test comment
+</pre>
 
 Also note the ID Org entry, both the Jira issue and Jira comment has an attribute ideal for this entry. Org-mode has an API for finding heading from ID entry.
 
@@ -82,9 +69,11 @@ To use org-jira.el, you need download all the .el files under [http://github.com
 
 (You can get the soap files from emacs-soap project, but I fixed an utf-8 encoding bug in it so that I can post comments in Chinese).
 
+<pre>
 (setq jira2-url "http://jira-host")
 (require 'jira2)
 (require 'org-jira)
+</pre>
 
 (For the latest verion of this page, visit [http://baohaojun.github.com/org-jira.html this github page].
 
