@@ -51,6 +51,8 @@ I prefer NoTabs, but sometimes I work on a project that does use tab indentation
     (setq indent-tabs-mode nil)
     (infer-indentation-style)
 
+[new]
+You might also want to check out GuessStyle
 
 ----
 CategoryIndentation
