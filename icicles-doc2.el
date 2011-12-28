@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Sat Dec 24 11:16:21 2011 (-0800)
+;; Last-Updated: Wed Dec 28 10:43:12 2011 (-0800)
 ;;           By: dradams
-;;     Update #: 28572
+;;     Update #: 28573
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-doc2.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -6099,30 +6099,6 @@
 ;;    non-directories by file type (extension) alphabetically.  For
 ;;    non-file-name input these all act like
 ;;    `icicle-case-string-less-p'.
-;;
-;;  * User option `icicle-cycle-into-subdirs-flag' controls whether or
-;;    not minibuffer-input cycling explores subdirectories.  By
-;;    default, it is `nil', meaning that cycling does not descend into
-;;    subdirectories.
-;;
-;;    non-`nil' - When this option is non-nil, you might want to use a
-;;          function such as `icicle-dirs-last-p' for option
-;;          `icicle-sort-comparer', to prevent cycling depth-first
-;;          into the subdirectories.
-;;
-;;    `nil' - When this option is `nil', you can still choose to cycle
-;;          into a given directory (which is why `nil' is the default
-;;          value).  When cycling reaches a candidate directory that
-;;          you want to cycle through, just: 1) move the cursor
-;;          (e.g. `C-e'), 2) hit `TAB' or `S-TAB' to "complete" the
-;;          candidate, and then 3) use any of the cycle keys, such as
-;;          `down', to cycle within the candidate directory.
-;;
-;;          Although the candidate directory was already completed by
-;;          cycling, moving the cursor and explicitly "completing" it
-;;          tells Icicles that you want to treat the candidate in the
-;;          minibuffer as real input, just as if you had typed it, not
-;;          merely as a cycling candidate.
 ;;
 ;;  * You can use `..' during completion to access a parent directory,
 ;;    and you can use `/' and `~/' to shadow input to the left.  There
