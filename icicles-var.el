@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:23:26 2006
 ;; Version: 22.0
-;; Last-Updated: Wed Dec 14 08:52:18 2011 (-0800)
+;; Last-Updated: Wed Dec 28 10:50:35 2011 (-0800)
 ;;           By: dradams
-;;     Update #: 1588
+;;     Update #: 1589
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-var.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -558,7 +558,6 @@ noted in parentheses.
 * `icicle-Completions-text-scale-decrease'- `*Completions*' shrink
 * `icicle-Completions-window-max-height' - Max lines, `*Completions*'
 * `icicle-customize-save-flag'           - Save some options on quit?
-* `icicle-cycle-into-subdirs-flag'       - Explore subdirectories?
 * `icicle-default-cycling-mode'          - Default completion mode for
                                            per-mode cycling
 * `icicle-default-thing-insertion'       - Control behavior of \
