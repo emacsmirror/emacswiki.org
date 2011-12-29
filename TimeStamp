@@ -12,7 +12,7 @@ it is read, add the following to your InitFile.
 
   (setq time-stamp-pattern nil)
 
-By default, Emacs will can update the time stamp for the following two
+By default, Emacs can update the time stamp for the following two
 formats if *one* exists in the first 8 lines of the file.
 
    Time-stamp: <2011-12-29 18:18:47 Aaron S. Hawley>
@@ -24,12 +24,12 @@ The default `time-stamp-pattern' in Emacs is roughly this,
 
 The format starts with a number and then a slash.  This is the number
 of lines to search from the beginning.  It can be negative for the
-number of lines from the bottom of the file.  Then it contains a
-regular expression for finding the Time-stamp in the file, then a time
-format string which you is based on the format more precisely
-described in GIT:time-format.el and not `format-time-string'.  The
-pattern ends with the regular expression that matches the end of the
-timestamp.
+number of lines from the bottom of the file.  After the slash, a
+regular expression will find the beginning of the time stamp in the
+file, followeed by the time format string which you provide and is
+based on the format more precisely described in GIT:time-format.el and
+not the Lisp function `format-time-string'.  The pattern ends with
+another regular expression.  It matches the end of the time stamp.
 
 According to the documentation for this variable, it's important to
 not change the default value for `time-stamp-pattern' globally.  It's
@@ -66,7 +66,8 @@ date with the `time-stamp-time-zone' variable.
   <!-- End: -->
 
 You might not want to pollute all your HTML files with the local
-variables.  Customize HtmlMode with the following hook.
+variables.  Customize HtmlMode to affect all your HTML files with the
+following hook.
 
   (eval-after-load 'sgml-mode
     '(add-hook 'html-mode-hook (lambda ()
@@ -76,7 +77,7 @@ variables.  Customize HtmlMode with the following hook.
 
 See also:
 
-* Library <tt>[[header2.el]]</tt> has code to insert and update a date and time field in a file header. Unlike vanilla Emacs timestamps, such a time stamp need not be within the first eight lines of the file. The default timestamp format used by ##header2.el## looks like this, but you can customize it any way you like (option `header-date-format'):
+* Library <tt>[[header2.el]]</tt> has code to insert and update a date and time field in a file header. Unlike vanilla Emacs time stamps, such a time stamp need not be within the first eight lines of the file. The default time stamp format used by ##header2.el## looks like this, but you can customize it any way you like (option `header-date-format'):
 
           Sun Dec 04 13:46:31 2005 (Pacific Standard Time)
 
