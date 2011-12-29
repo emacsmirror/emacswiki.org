@@ -15,7 +15,7 @@ it is read, add the following to your InitFile.
 By default, Emacs can update the time stamp for the following two
 formats if *one* exists in the first 8 lines of the file.
 
-   Time-stamp: <2011-12-29 18:18:47 Aaron S. Hawley>
+   Time-stamp: <>
    Time-stamp: " "
 
 The default `time-stamp-pattern' in Emacs is roughly this,
