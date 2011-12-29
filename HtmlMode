@@ -24,6 +24,7 @@ Here are some things which enhance <code>html-mode</code>,
 
 [new]
 * [[SkeletonMode#XhtmlSkeleton]] -- A skeleton for inserting an XHTML file with the proper encoding attributes.
+* [http://user42.tuxfamily.org/weblint/index.html weblint.el] -- run <code>weblint</code> checking on save or on request
 
 If you find <code>html-mode</code> too basic, here are some alternatives,
 
@@ -60,6 +61,8 @@ You can do the same with <code><p></code>, if you write
                 (set (make-local-variable 'filladapt-token-table)
                      (append filladapt-token-table
                              '(("<li>[ \t]" bullet))))))
+
+See also [http://user42.tuxfamily.org/filladapt-pat/index.html filladapt-pat.el] which has commands to setup <code><li></code>, <code><p></code> and <code><!--</code> as bullets.
 
 == No line break after tag (Emacs 21) ==
 
