@@ -82,6 +82,9 @@ Debugger entered--Lisp error: (wrong-type-argument characterp sgml-xml-mode)
 
 Something is passing ##'(sgml-xml-mode "XHTML" "HTML")## to `concat'.  It tries to process that list as a list of chars, which it is not (it is a list of a symbol and two strings). -- DrewAdams
 
+----
+[new]
+Buffer-Menu+ does not work with Emacs 24. Anyone know of any plans to make it do so?
 
 ----
 CategoryBufferSwitching
