@@ -18,6 +18,7 @@ Here are some other libraries and modes extending <code>ffap</code>,
 * [[Icicles - Inserting Text from Cursor]] -- using FFAP with [[Icicles]]
 * [http://user42.tuxfamily.org/ffap-gcc-path/index.html ffap-gcc-path.el] -- <code>ffap-c-path</code> from GCC include path
 * [http://user42.tuxfamily.org/ffap-href/index.html ffap-href.el] -- URL/file in <code><a href=""></code> etc
+* [http://user42.tuxfamily.org/ffap-I-option/index.html ffap-I-option.el] -- directory of <code>-I/usr/include/foo</code>
 * [http://user42.tuxfamily.org/ffap-include-start/index.html ffap-include-start.el] -- at start of C <code>#include</code>
 * [http://user42.tuxfamily.org/ffap-makefile-vars/index.html ffap-makefile-vars.el] -- expand <code>$(FOO)</code>
 * [http://user42.tuxfamily.org/ffap-mml/index.html ffap-mml.el] -- Gnus MML <code><#part></code> files
