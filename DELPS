@@ -75,7 +75,7 @@ the traditional archive distribution approach:
 
 *   Modern: no central package archive site to be maintained. No single
     point of failure.
-*   Simple: anyone with disk space and git can put packages avalable.
+*   Simple: anyone with disk space and git can put packages available.
 *   Efficient downloads; fast, only deltas are transferred.
 *   Local modifications are possible; users can create their own
     customizations and track them easily,
@@ -198,3 +198,4 @@ CategoryPackaging
 epackage
 bare bones
 Template files
+ 
