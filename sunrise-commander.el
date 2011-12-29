@@ -7,7 +7,7 @@
 ;; Maintainer: José Alfredo Romero L. <escherdragon@gmail.com>
 ;; Created: 24 Sep 2007
 ;; Version: 5
-;; RCS Version: $Rev: 396 $
+;; RCS Version: $Rev: 397 $
 ;; Keywords: files, dired, midnight commander, norton, orthodox
 ;; URL: http://www.emacswiki.org/emacs/sunrise-commander.el
 ;; Compatibility: GNU Emacs 22+
@@ -465,11 +465,6 @@ The function receives one argument DIR, which is the directory to go to.")
 (defface sr-highlight-path-face
   '((t :background "yellow" :foreground "#ace6ac" :bold t :height 120))
   "Face of the directory path on mouse hover."
-  :group 'sunrise)
-
-(defface sr-broken-link-face
-  '((t :foreground "red" :italic t))
-  "Face to highlight broken symbolic links."
   :group 'sunrise)
 
 (defface sr-clex-hotchar-face
@@ -1300,16 +1295,12 @@ buffer or window."
           (add-text-properties start end '(invisible t intangible t))))))
 
 (defun sr-highlight-broken-links ()
-  "Mark broken symlinks with an exclamation mark and a special face."
-  (let ((pos (search-forward-regexp dired-re-sym nil t))
-        (dired-marker-char ?!) bol eol)
-    (while pos
-      (unless (file-exists-p (dired-get-filename))
-        (setq bol (line-beginning-position) eol (line-end-position))
-        (if (eq 32 (char-after bol))
-            (save-excursion (dired-mark 1)))
-        (overlay-put (make-overlay bol eol) 'face 'sr-broken-link-face))
-      (setq pos (search-forward-regexp dired-re-sym nil t)))))
+  "Mark broken symlinks with an exclamation mark."
+  (let ((dired-marker-char ?!))
+    (while (search-forward-regexp dired-re-sym nil t)
+      (unless (or (not (eq 32 (char-after (line-beginning-position))))
+                  (file-exists-p (dired-get-filename)))
+        (dired-mark 1)))))
 
 (defsubst sr-invalid-overlayp ()
   "Test for invalidity of the current buffer's graphical path line overlay.
@@ -4051,20 +4042,21 @@ with advice matching REGEXP."
                  `(font-lock-add-keywords ',m '((,regexp 1 ',symbol))))
                '(sr-mode sr-virtual-mode))))
 
-(sr-rainbow sr-html-face              (:foreground "DarkOliveGreen")        "\\(^..[^d].*\\.x?html?$\\)")
-(sr-rainbow sr-xml-face               (:foreground "DarkGreen")             "\\(^..[^d].*\\.\\(xml\\|xsd\\|xslt?\\|wsdl\\)$\\)")
-(sr-rainbow sr-log-face               (:foreground "brown")                 "\\(^..[^d].*\\.log$\\)")
-(sr-rainbow sr-compressed-face        (:foreground "magenta")               "\\(^..[^d].*\\.\\(zip\\|bz2\\|t?[gx]z\\|[zZ]\\|[jwers]?ar\\|xpi\\|apk\\|xz\\)$\\)")
-(sr-rainbow sr-packaged-face          (:foreground "DarkMagenta")           "\\(^..[^d].*\\.\\(deb\\|rpm\\)$\\)")
-(sr-rainbow sr-encrypted-face         (:foreground "DarkOrange1")           "\\(^..[^d].*\\.\\(gpg\\|pgp\\)$\\)")
+(sr-rainbow sr-html-face              (:foreground "DarkOliveGreen")        "\\(^[^!].[^d].*\\.x?html?$\\)")
+(sr-rainbow sr-xml-face               (:foreground "DarkGreen")             "\\(^[^!].[^d].*\\.\\(xml\\|xsd\\|xslt?\\|wsdl\\)$\\)")
+(sr-rainbow sr-log-face               (:foreground "brown")                 "\\(^[^!].[^d].*\\.log$\\)")
+(sr-rainbow sr-compressed-face        (:foreground "magenta")               "\\(^[^!].[^d].*\\.\\(zip\\|bz2\\|t?[gx]z\\|[zZ]\\|[jwers]?ar\\|xpi\\|apk\\|xz\\)$\\)")
+(sr-rainbow sr-packaged-face          (:foreground "DarkMagenta")           "\\(^[^!].[^d].*\\.\\(deb\\|rpm\\)$\\)")
+(sr-rainbow sr-encrypted-face         (:foreground "DarkOrange1")           "\\(^[^!].[^d].*\\.\\(gpg\\|pgp\\)$\\)")
 
-(sr-rainbow sr-directory-face         (:inherit dired-directory :bold t)    "\\(^..d.*\\)")
-(sr-rainbow sr-symlink-face           (:inherit dired-symlink :italic t)    "\\(^..l.*[^/]$\\)")
-(sr-rainbow sr-symlink-directory-face (:inherit dired-directory :italic t)  "\\(^..l.*/$\\)")
-(sr-rainbow sr-alt-marked-dir-face    (:foreground "DeepPink" :bold t)      "\\(^[^ *D].d.*$\\)")
-(sr-rainbow sr-alt-marked-file-face   (:foreground "DeepPink")              "\\(^[^ *D].[^d].*$\\)")
-(sr-rainbow sr-marked-dir-face        (:inherit dired-marked)               "\\(^[*D].d.*$\\)")
-(sr-rainbow sr-marked-file-face       (:inherit dired-marked :bold nil)     "\\(^[*D].[^d].*$\\)")
+(sr-rainbow sr-directory-face         (:inherit dired-directory :bold t)    "\\(^[^!].d.*\\)")
+(sr-rainbow sr-symlink-face           (:inherit dired-symlink :italic t)    "\\(^[^!].l.*[^/]$\\)")
+(sr-rainbow sr-symlink-directory-face (:inherit dired-directory :italic t)  "\\(^[^!].l.*/$\\)")
+(sr-rainbow sr-alt-marked-dir-face    (:foreground "DeepPink" :bold t)      "\\(^[^ *!D].d.*$\\)")
+(sr-rainbow sr-alt-marked-file-face   (:foreground "DeepPink")              "\\(^[^ *!D].[^d].*$\\)")
+(sr-rainbow sr-marked-dir-face        (:inherit dired-marked)               "\\(^[*!D].d.*$\\)")
+(sr-rainbow sr-marked-file-face       (:inherit dired-marked :bold nil)     "\\(^[*!D].[^d].*$\\)")
+(sr-rainbow sr-broken-link-face       (:inherit dired-warning :italic t)    "\\(^[!].l.*$\\)")
 
 (provide 'sunrise-commander)
 
