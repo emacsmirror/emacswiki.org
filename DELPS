@@ -1,12 +1,14 @@
 == Description ==
 
-=== Terminology ===
-
 DELPS - *Distributed Emacs Lisp Package System* by JariAalto. The
 DELPS is the framework, the blueprint of the design concepts.
-Emacs extensions in DELPS format are called [[Epackage]]s.
+Emacs extensions in DELPS format are called [[Epackage]]s. 
+With it, you can install Emacs extensions that have been
+put available as git DVCS repositories.
 
 == Project Links ==
+
+=== For Regular Users ===
 
 The reference package manager `epackage.el' is available
 from "main project hub" which points to Git a repository.
@@ -18,12 +20,16 @@ from "main project hub" which points to Git a repository.
   https://gist.github.com/1478886
 * Constantly updated list of [https://github.com/jaalto/project--emacs-epackage-sources-list/blob/master/epackage.lst available packages for install]
   
+=== For Package Developers ===
 
 To make an Emacs extension available in /epackage/ format, read manual
 about the the directory layout and used files.
 After that, clone "Template files" mentioned below.
 The "Template files" link points to README
-that explain explain the procedure step-by-step.
+that explains the procedure step-by-step. In "Template files" repository 
+see `*.shellrc' that provides functions which help in doing the packaging work.
+You must be familiar with Git, somewhat in Emacs Lisp. Under windows, you need 
+<http://cygwin.com> and its command line shell.
 
 * Manual: http://www.nongnu.org/emacs-epackage/manual
 * Template files:
@@ -31,7 +37,7 @@ that explain explain the procedure step-by-step.
 * Sources List, the Yellow Pages:
   https://github.com/jaalto/project--emacs-epackage-sources-list
 
-=== History ===
+== History ==
 
 Emacs has been around for decades now. Many new version have come and
 gone. And yet there are wealth of useful extensions available e.g. et
@@ -59,7 +65,7 @@ uses *yast* [3]. So why not make one for Emacs as well.
 * [3] http://en.wikipedia.org/wiki/YaST See also
   http://en.wikipedia.org/wiki/Yellowdog_Updater,_Modified
 
-=== Concepts ===
+== Concepts ==
 
 The /epackages/ are in the form of distributed[1] [[Git]][2]
 version control repositories. The traditional packaging
@@ -185,3 +191,5 @@ is planned to be ready somewhere around 2012.
 ----
 CategoryPackaging
 epackage
+bare bones
+Template files
