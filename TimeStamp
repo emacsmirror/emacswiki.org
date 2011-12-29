@@ -1,8 +1,81 @@
-This page is about storing the current date and time in a file and keeping it updated automatically. 
+Emacs can insert the current date and time in a file and keep it updated automatically.  See [[Manual:Time Stamps]].
 
-Time stamps in Emacs:
+Add the following Lisp to your InitFile.
 
-* Emacs (version 21 or later) has time-stamp support (See [[Manual:Time Stamps]]). 
+  (add-hook 'before-save-hook 'time-stamp)
+
+Even with this added, if you happen to open a file that has
+`time-stamp-pattern' as one of its FileLocalVariables before starting
+Emacs and before ever saving a file or running `time-stamp',
+`time-stamp-pattern' will not have been noticed by Emacs.  To make sure
+it is read, add the following to your InitFile.
+
+  (setq time-stamp-pattern nil)
+
+By default, Emacs will can update the time stamp for the following two
+formats if *one* exists in the first 8 lines of the file.
+
+   Time-stamp: <2011-12-29 18:18:47 Aaron S. Hawley>
+   Time-stamp: " "
+
+The default `time-stamp-pattern' in Emacs is roughly this,
+
+  "8/Time-stamp:[ \t]+\\\\?[\"<]+%:y-%02m-%02d %02H:%02M:%02S %u\\\\?[\">]"
+
+The format starts with a number and then a slash.  This is the number
+of lines to search from the beginning.  It can be negative for the
+number of lines from the bottom of the file.  Then it contains a
+regular expression for finding the Time-stamp in the file, then a time
+format string which you is based on the format more precisely
+described in GIT:time-format.el and not `format-time-string'.  The
+pattern ends with the regular expression that matches the end of the
+timestamp.
+
+According to the documentation for this variable, it's important to
+not change the default value for `time-stamp-pattern' globally.  It's
+better to change it with FileLocalVariables.
+
+For example, to maintain a time stamp for a string constant in the
+third line of a C program, add this section of file local variables
+found at the end of this C source file.
+
+  #include <stdio.h>
+  
+  static char const *ts = "f.c 1993/11/09 17:40:15 eggert";
+  
+  int main()
+  {
+    return printf("%s\n", ts) == EOF;
+  }
+  
+  /* Local Variables: */
+  /* time-stamp-pattern: "4/static char const \\*ts = \"%f %:y/%02m/%02d %02H:%02M:%02S %u\";" */
+  /* End: */
+
+To add a time stamp to the end of an HTML file set the
+`time-stamp-pattern' to search in the last eight lines (-8) for a
+paragraph element with "Last modified".  Also, this uses a universal
+date with the `time-stamp-time-zone' variable.
+
+     <p>Last modified: </p>
+    </body>
+  </html>
+  <!-- Local Variables: -->
+  <!-- time-stamp-pattern: "-8/<p>Last modified:[ \t]+%3a %3b %02H:%02M:%02S %Z %:y by %u</p>" -->
+  <!-- time-stamp-time-zone: "UTC" -->
+  <!-- End: -->
+
+You might not want to pollute all your HTML files with the local
+variables.  Customize HtmlMode with the following hook.
+
+  (eval-after-load 'sgml-mode
+    '(add-hook 'html-mode-hook (lambda ()
+                                 (set (make-local-variable 'time-stamp-pattern)
+                                      "-8/<p>Last modified:[ \t]+%3a %3b %02H:%02M:%02S %Z %:y by %u</p>")
+                                 (set (make-local-variable 'time-stamp-time-zone) "UTC"))))
+
+See also:
+
 * Library <tt>[[header2.el]]</tt> has code to insert and update a date and time field in a file header. Unlike vanilla Emacs timestamps, such a time stamp need not be within the first eight lines of the file. The default timestamp format used by ##header2.el## looks like this, but you can customize it any way you like (option `header-date-format'):
 
           Sun Dec 04 13:46:31 2005 (Pacific Standard Time)
@@ -12,7 +85,7 @@ Time stamps in Emacs:
 
 See also InsertingAndUpdatingDates for ways to insert dates in buffers manually. 
 
-
-
 ----
-CategoryFiles CategoryCalendar CategoryEditing
+CategoryCalendar
+CategoryEditing
+CategoryFiles
