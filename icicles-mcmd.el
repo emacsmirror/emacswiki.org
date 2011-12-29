@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Mon Dec 19 23:56:14 2011 (-0800)
+;; Last-Updated: Wed Dec 28 15:47:17 2011 (-0800)
 ;;           By: dradams
-;;     Update #: 17460
+;;     Update #: 17466
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-mcmd.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -412,6 +412,7 @@
 (defvar doremi-down-keys)               ; In `doremi.el'
 (defvar doremi-up-keys)                 ; In `doremi.el'
 (defvar filesets-data)                  ; In `filesets.el'.
+(defvar icicle-ido-like-mode)           ; In `icicles-cmd2.el' (implicit)
 (defvar ignore-comments-flag)           ; In `thing-cmds.el'.
 (defvar minibuffer-confirm-exit-commands) ; In `minibuffer.el' in Emacs 23+.
 (defvar minibuffer-local-filename-completion-map) ; In Emacs 22+.
@@ -3400,6 +3401,13 @@ Optional argument WORD-P non-nil means complete only a word at a time."
              (unless (boundp 'icicle-prefix-complete-and-exit-p)
                (icicle-highlight-complete-input)
                (cond ((and icicle-top-level-when-sole-completion-flag
+                           (or (not icicle-ido-like-mode)
+                               (and (not (icicle-file-name-input-p))
+                                    (not icicle-abs-file-candidates))
+                               (string= "" (car icicle-completion-candidates)) ; Empty directory
+                               (not (eq ?\/
+                                        (aref (car icicle-completion-candidates)
+                                              (1- (length (car icicle-completion-candidates)))))))
                            (sit-for icicle-top-level-when-sole-completion-delay))
                       (set minibuffer-history-variable
                            (cons icicle-current-input
@@ -3707,6 +3715,14 @@ message either.  NO-DISPLAY-P is passed to
            (unless (boundp 'icicle-apropos-complete-and-exit-p)
              (icicle-highlight-complete-input)
              (cond ((and icicle-top-level-when-sole-completion-flag
+                         (or (not icicle-ido-like-mode)
+                             (and (not (icicle-file-name-input-p))
+                                  (not icicle-abs-file-candidates))
+                             icicle-edit-update-p
+                             (string= "" (car icicle-completion-candidates)) ; Empty directory
+                             (not (eq ?\/
+                                      (aref (car icicle-completion-candidates)
+                                            (1- (length (car icicle-completion-candidates)))))))
                          (sit-for icicle-top-level-when-sole-completion-delay))
                     (set minibuffer-history-variable (cons (car icicle-completion-candidates)
                                                            (symbol-value minibuffer-history-variable)))
