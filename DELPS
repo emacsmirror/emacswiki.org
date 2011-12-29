@@ -73,10 +73,9 @@ methods, like [[ELPA]], rely on archives like *.tar.gz. In
 contrast, the DVCS approach offers interesting features over
 the traditional archive distribution approach:
 
-*   Modern: no central package archive site needed to maintain. Simple:
-    anyone with disk space and git can put packages avalable. Does not
-    depend on specific API protocols like
-    what [[ELPA]] and [http://marmalade-repo.org Marmalade] use.
+*   Modern: no central package archive site to be maintained. No single
+    point of failure.
+*   Simple: anyone with disk space and git can put packages avalable.
 *   Efficient downloads; fast, only deltas are transferred.
 *   Local modifications are possible; users can create their own
     customizations and track them easily,
@@ -91,6 +90,8 @@ the traditional archive distribution approach:
 *   Encourages social collaboration; more easier interacting
     with the upstream e.g. through http://github.com
     push/pull.
+*   Does not depend on specific API protocols like JSON that is used
+    in communicating with [[ELPA]] and [http://marmalade-repo.org Marmalade].
 
 [[image:EpackagePictureDelpsDiagram]]
 
