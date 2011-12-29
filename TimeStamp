@@ -54,8 +54,8 @@ found at the end of this C source file.
 
 To add a time stamp to the end of an HTML file set the
 `time-stamp-pattern' to search in the last eight lines (-8) for a
-paragraph element with "Last modified".  Also, this uses a universal
-date with the `time-stamp-time-zone' variable.
+paragraph element containing "Last modified".  Also, this inserts a
+universal date with the `time-stamp-time-zone' variable.
 
      <p>Last modified: </p>
     </body>
