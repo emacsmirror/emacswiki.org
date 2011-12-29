@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2011, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Wed Dec 28 10:57:09 2011 (-0800)
+;; Last-Updated: Wed Dec 28 15:44:13 2011 (-0800)
 ;;           By: dradams
-;;     Update #: 7705
+;;     Update #: 7708
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-chg.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -2863,6 +2863,10 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-mcmd.el'")
 ;;
+;; 2011/12/28 dadams
+;;     icicle-(prefix|apropos)-complete-1:
+;;       If icicle-ido-like-mode and icicle-top-level-when-sole-completion-flag do not throw to top
+;;       if sole candidate is a directory.
 ;; 2011/12/19 dadams
 ;;     icicle-(next|previous)-line: Use line-end-position, not end-of-line + point.
 ;; 2011/12/15 dadams
