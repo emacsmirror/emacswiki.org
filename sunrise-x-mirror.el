@@ -7,7 +7,7 @@
 ;; Maintainer: José Alfredo Romero L. <escherdragon@gmail.com>
 ;; Created: 4 May 2008
 ;; Version: 2
-;; RCS Version: $Rev: 395 $
+;; RCS Version: $Rev: 396 $
 ;; Keywords: sunrise commander, archives read/write
 ;; URL: http://www.emacswiki.org/emacs/sunrise-x-mirror.el
 ;; Compatibility: GNU Emacs 22+
@@ -132,7 +132,7 @@
     ("\\.tar$"                     . "tar cvf  %f *")
     ("\\.\\(?:tar\\.gz\\|tgz\\)$"  . "tar cvzf %f *")
     ("\\.tar\\.bz2$"               . "tar cvjf %f *")
-    ("\\.tar\\.xz$"                . "tar cvJf %f *")
+    ("\\.\\(?:tar\\.xz\\|txz\\)$"  . "tar cvJf %f *")
    )
   "List of shell commands to repack particular archive contents.
 Used when repacking contents from a mirror area into a compressed
