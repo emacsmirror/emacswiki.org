@@ -84,7 +84,14 @@ Something is passing ##'(sgml-xml-mode "XHTML" "HTML")## to `concat'.  It tries 
 
 ----
 [new]
-Buffer-Menu+ does not work with Emacs 24. Anyone know of any plans to make it do so?
+Buffer-Menu+ does not work with Emacs 24. Anyone know of any plans to make it do so? -- ScottRandby
+
+[new:DrewAdams:2011-12-29 07:10 UTC]
+1. Emacs 24 has not been released.  I don't claim to support at present.  
+
+2. That said, it works for me.
+
+3. Be specific about what problem you think you see.  "''Does not work''" does not help.  Provide a recipe to reproduce the problem, preferably from ##emacs -Q##. Send a bug report by clicking the '''Send Bug Report''' link in the `Buffer-Menu-Plus' `customize-group' buffer.  -- DrewAdams
 
 ----
 CategoryBufferSwitching
