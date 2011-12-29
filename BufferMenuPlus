@@ -96,7 +96,9 @@ Buffer-Menu+ does not work with Emacs 24. Anyone know of any plans to make it do
 [new]
 I'm very sorry for not being more specific. I downloaded v21 update 2742 of ##buff-menu+.el## and now it works perfectly. I was using v21 update 2716 and the following message appeared in the minibuffer whenever I did ##C-x C-b## from ##emacs -Q##.
 
-<pre>Wrong type argument: characterp, 8388640</pre>
+<pre>
+Wrong type argument: characterp, 8388640
+</pre>
 
 I am using Emacs 24 because Emacs 23.3 won't compile on Xubuntu 11.10 without a lot of work and I don't want to use the version in the repository. It would be nice if ##buff-menu+## was part of GNU Emacs. -- Scott Randby
 
