@@ -15,26 +15,15 @@ Later, consider adding this to your ~/.emacs file:
 (On a [[Debian]] system such files are under <code>/usr/share/dictd</code>.) 
 They're gzip format, but arranged to allow random access, ie. direct access to chunks in the middle of the file instead of always reading from the start.
 
-Emacs 22 has support for <code>.dz</code> in auto compression mode, so you can visit a <code>.dict.dz</code> and look at the whole thing instead of doing an actual <code>dict</code> search (see CategoryInterface for <code>dict</code> searches).  You can get the same in Emacs 21 with the following.
+Emacs 22 has support for <code>.dz</code> in auto compression mode, so you can visit a <code>.dict.dz</code> and look at the whole thing instead of doing an actual <code>dict</code> search (see CategoryInterface for <code>dict</code> searches).  You can get the same in Emacs 21 by copying the <code>jka-compr-compression-info-list</code> entry from Emacs 22, or with a little package
 
-    (eval-after-load "jka-compr"
-      '(unless (member "\\.dz\\'" (mapcar (lambda (vec) (elt vec 0))
-                                          jka-compr-compression-info-list))
-         (add-to-list 'jka-compr-compression-info-list
-                      ;; this element from emacs 22
-                      ["\\.dz\\'"
-                       nil              nil     nil
-                       "uncompressing"  "gzip"  ("-c" "-q" "-d")
-                       nil t "\037\213"])
-         ;; if already enabled then toggle to get our addition recognised (note
-         ;; no `auto-compression-mode' variable in xemacs 21)
-         (when jka-compr-added-to-file-coding-system-alist
-           (auto-compression-mode 0)
-           (auto-compression-mode 1))))
+* [http://user42.tuxfamily.org/jka-compr-dictzip/index.html jka-compr-dictzip.el] -- <code>.dz</code> for Emacs21/XEmacs21
 
 And <code>.dict</code> files are UTF-8, so
 
-    (modify-coding-system-alist 'file "\\.dict\\'" 'utf-8)
+    (add-to-list 'file-coding-system-alist '("\\.dict\\'" . utf-8))
+
+(Preferring <code>add-to-list</code> over <code>modify-coding-system-alist</code> as the latter fails in XEmacs 21 if you don't have utf-8 from MuleUCS or similar.)
 
 == gunzip in dired no longer working in ubuntu ==
 
