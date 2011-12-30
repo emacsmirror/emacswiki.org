@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2011, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Wed Dec 28 15:44:13 2011 (-0800)
+;; Last-Updated: Thu Dec 29 17:31:17 2011 (-0800)
 ;;           By: dradams
-;;     Update #: 7708
+;;     Update #: 7712
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-chg.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -2863,6 +2863,11 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-mcmd.el'")
 ;;
+;; 2011/12/29 dadams
+;;     Added: icicle-(prefix|apropos)-complete-2.
+;;     icicle-(prefix|apropos)-complete-1:
+;;       When completing initially or icicle-incremental-completion-flag is non-nil & non-t, expand
+;;       input to common match.
 ;; 2011/12/28 dadams
 ;;     icicle-(prefix|apropos)-complete-1:
 ;;       If icicle-ido-like-mode and icicle-top-level-when-sole-completion-flag do not throw to top
