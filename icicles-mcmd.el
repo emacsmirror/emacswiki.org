@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Wed Dec 28 15:47:17 2011 (-0800)
+;; Last-Updated: Thu Dec 29 17:33:16 2011 (-0800)
 ;;           By: dradams
-;;     Update #: 17466
+;;     Update #: 17475
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-mcmd.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -238,7 +238,7 @@
 ;;    `icicle-add/remove-tags-and-refresh',
 ;;    `icicle-all-candidates-action-1', `icicle-all-exif-data',
 ;;    `icicle-anychar-regexp', `icicle-apply-to-saved-candidate',
-;;    `icicle-apropos-complete-1',
+;;    `icicle-apropos-complete-1', `icicle-apropos-complete-2',
 ;;    `icicle-backward-delete-char-untabify-dots',
 ;;    `icicle-bind-file-candidate-keys', `icicle-candidate-action-1',
 ;;    `icicle-candidate-set-retrieve-1',
@@ -262,7 +262,8 @@
 ;;    `icicle-mouse-candidate-action-1', `icicle-nb-Completions-cols',
 ;;    `icicle-nb-of-cand-at-Completions-pos',
 ;;    `icicle-nb-of-cand-in-Completions-horiz',
-;;    `icicle-prefix-complete-1', `icicle-raise-Completions-frame',
+;;    `icicle-prefix-complete-1', `icicle-prefix-complete-2',
+;;    `icicle-raise-Completions-frame',
 ;;    `icicle-remove-cand-from-lists',
 ;;    `icicle-remove-candidate-display-others',
 ;;    `icicle-replace-input-w-parent-dir',
@@ -3371,7 +3372,9 @@ Optional argument WORD-P non-nil means complete only a word at a time."
                                                (car icicle-completion-candidates)
                                                (icicle-file-name-directory icicle-current-input))))))
              (setq icicle-nb-of-other-cycle-candidates  0)
-             (unless icicle-edit-update-p
+             (unless (and icicle-edit-update-p
+                          (or (not icicle-incremental-completion-p)
+                              (not (sit-for icicle-incremental-completion-delay))))
                (icicle-clear-minibuffer)
                (let ((cand  (car icicle-completion-candidates)))
                  (if (icicle-file-name-input-p)
@@ -3442,30 +3445,16 @@ Optional argument WORD-P non-nil means complete only a word at a time."
                       (setq mode-line-help  icicle-current-input)))))
             (t                          ; Multiple candidates.
              (if icicle-edit-update-p
-                 (icicle-display-candidates-in-Completions nil no-display-p)
-               (unless word-p
-                 (icicle-clear-minibuffer)
-                 (save-window-excursion
-                   ;; Shouldn't need to explicitly select minibuffer like this, since `*Completions*'
-                   ;; input is directed there.  But there seems to be an Emacs bug somewhere, because
-                   ;; although using just `insert' inserts the input in the minibuffer OK, in some
-                   ;; cases the cursor might not follow the insertion.
-                   (select-window (active-minibuffer-window))
-                   (insert icicle-current-input))
-                 ;; Shouldn't need to do this if it is on `post-command-hook', but it seems we need to.
-                 (when (and (boundp '1on1-fit-minibuffer-frame-flag) 1on1-fit-minibuffer-frame-flag
-                            (require 'fit-frame nil t))
-                   (1on1-fit-minibuffer-frame))) ; In `oneonone.el'.
-               (deactivate-mark)
-               (icicle-highlight-initial-whitespace icicle-current-input)
-               (when (and (icicle-file-name-input-p)
-                          (icicle-file-directory-p icicle-last-completion-candidate))
-                 (setq icicle-default-directory  (icicle-abbreviate-or-expand-file-name
-                                                  icicle-last-completion-candidate)))
-               (when (and (icicle-input-is-a-completion-p icicle-current-input)
-                          (not (boundp 'icicle-prefix-complete-and-exit-p)))
-                 (icicle-highlight-complete-input)
-                 (setq mode-line-help  (icicle-minibuf-input-sans-dir icicle-current-input)))
+                 (if (or (not icicle-incremental-completion-p)
+                         (not (sit-for icicle-incremental-completion-delay)))
+                     ;; Even though we do this unconditionally, we need to do it after the `sit-for',
+                     ;; not before, because displaying causes Emacs to think that user input might be
+                     ;; pending.
+                     (icicle-display-candidates-in-Completions nil no-display-p)
+                   (icicle-display-candidates-in-Completions nil no-display-p)
+                   (icicle-prefix-complete-2 mode-line-help word-p)
+                   )
+               (icicle-prefix-complete-2 mode-line-help word-p)
                (cond (;; Candidates visible.  If second prefix complete, cycle, else update candidates.
                       (get-buffer-window "*Completions*" 0)
                       (if (and (or ipc1-was-cycling-p icicle-next-prefix-complete-cycles-p)
@@ -3532,6 +3521,31 @@ Optional argument WORD-P non-nil means complete only a word at a time."
                                                          (icicle-input-from-minibuffer 'leave-envvars)))
       (when mode-line-help (icicle-show-help-in-mode-line mode-line-help))
       return-value)))
+
+(defun icicle-prefix-complete-2 (mode-line-help word-p)
+  (unless word-p
+    (icicle-clear-minibuffer)
+    (save-window-excursion
+      ;; Shouldn't need to explicitly select minibuffer like this, since `*Completions*' input is
+      ;; directed there.  But there seems to be an Emacs bug somewhere, because although using just
+      ;; `insert' inserts the input in the minibuffer OK, in some cases the cursor might not follow the
+      ;; insertion.
+      (select-window (active-minibuffer-window))
+      (insert icicle-current-input))
+    ;; Shouldn't need to do this if it is on `post-command-hook', but it seems we need to.
+    (when (and (boundp '1on1-fit-minibuffer-frame-flag) 1on1-fit-minibuffer-frame-flag
+               (require 'fit-frame nil t))
+      (1on1-fit-minibuffer-frame)))
+  (deactivate-mark)
+  (icicle-highlight-initial-whitespace icicle-current-input)
+  (when (and (icicle-file-name-input-p)
+             (icicle-file-directory-p icicle-last-completion-candidate))
+    (setq icicle-default-directory  (icicle-abbreviate-or-expand-file-name
+                                     icicle-last-completion-candidate)))
+  (when (and (icicle-input-is-a-completion-p icicle-current-input)
+             (not (boundp 'icicle-prefix-complete-and-exit-p)))
+    (icicle-highlight-complete-input)
+    (setq mode-line-help  (icicle-minibuf-input-sans-dir icicle-current-input))))
 
 (defun icicle-input-is-a-completion-p (&optional input)
   "Return non-nil if the input is a valid completion.
@@ -3685,7 +3699,9 @@ message either.  NO-DISPLAY-P is passed to
                                              (car icicle-completion-candidates)
                                              (icicle-file-name-directory icicle-current-input))))))
            (setq icicle-nb-of-other-cycle-candidates  0)
-           (unless icicle-edit-update-p
+           (unless (and icicle-edit-update-p
+                        (or (not icicle-incremental-completion-p)
+                            (not (sit-for icicle-incremental-completion-delay))))
              (icicle-clear-minibuffer)
              (if (icicle-file-name-input-p)
                  (let ((cand  (car icicle-completion-candidates)))
@@ -3747,26 +3763,16 @@ message either.  NO-DISPLAY-P is passed to
                     (setq mode-line-help  (car icicle-completion-candidates))))))
           (t                            ; Multiple candidates.
            (if icicle-edit-update-p
-               (icicle-display-candidates-in-Completions nil no-display-p)
-             (icicle-clear-minibuffer)
-             (insert icicle-current-input) ; Update minibuffer.
-             ;; Shouldn't need to do this if it is on `post-command-hook', but it seems we need to.
-             (when (and (boundp '1on1-fit-minibuffer-frame-flag) 1on1-fit-minibuffer-frame-flag
-                        (require 'fit-frame nil t))
-               (1on1-fit-minibuffer-frame)) ; In `oneonone.el'.
-             (deactivate-mark)
-             (icicle-highlight-initial-whitespace icicle-current-input)
-             (when (and (icicle-file-name-input-p)
-                        (icicle-file-directory-p icicle-last-completion-candidate))
-               (setq icicle-default-directory  (icicle-abbreviate-or-expand-file-name
-                                                icicle-last-completion-candidate)))
-             (let ((input-sans-dir  (icicle-minibuf-input-sans-dir icicle-current-input)))
-               (when (and (member (icicle-upcase-if-ignore-case input-sans-dir)
-                                  (mapcar #'icicle-upcase-if-ignore-case icicle-completion-candidates))
-                          (not (boundp 'icicle-apropos-complete-and-exit-p)))
-                 (icicle-highlight-complete-input)
-                 (setq mode-line-help  input-sans-dir)))
-             (cond (;; Candidates already displayed.  If second `S-TAB', cycle, else update candidates.
+               (progn
+                 (if (or (not icicle-incremental-completion-p)
+                         (not (sit-for icicle-incremental-completion-delay)))
+                     ;; Need to do this after, not before the `sit-for', because displaying causes
+                     ;; Emacs to think that user input might be pending.
+                     (icicle-display-candidates-in-Completions nil no-display-p)
+                   (icicle-display-candidates-in-Completions nil no-display-p)
+                   (icicle-apropos-complete-2 mode-line-help)))
+             (icicle-apropos-complete-2 mode-line-help)
+             (cond ( ;; Candidates already displayed.  If second `S-TAB', cycle, else update candidates.
                     (get-buffer-window "*Completions*" 0)
                     (if (and (or iac1-was-cycling-p icicle-next-apropos-complete-cycles-p)
                              (get icicle-last-completion-command 'icicle-apropos-completing-command)
@@ -3799,6 +3805,25 @@ message either.  NO-DISPLAY-P is passed to
                                                         (icicle-input-from-minibuffer)))
     (when mode-line-help (icicle-show-help-in-mode-line mode-line-help))
     icicle-completion-candidates))
+
+(defun icicle-apropos-complete-2 (mode-line-help)
+  (icicle-clear-minibuffer)
+  (insert icicle-current-input)         ; Update minibuffer.
+  ;; Shouldn't need to do this if it is on `post-command-hook', but it seems we need to.
+  (when (and (boundp '1on1-fit-minibuffer-frame-flag) 1on1-fit-minibuffer-frame-flag
+             (require 'fit-frame nil t))
+    (1on1-fit-minibuffer-frame))        ; In `oneonone.el'.
+  (deactivate-mark)
+  (icicle-highlight-initial-whitespace icicle-current-input)
+  (when (and (icicle-file-name-input-p)  (icicle-file-directory-p icicle-last-completion-candidate))
+    (setq icicle-default-directory  (icicle-abbreviate-or-expand-file-name
+                                     icicle-last-completion-candidate)))
+  (let ((input-sans-dir  (icicle-minibuf-input-sans-dir icicle-current-input)))
+    (when (and (member (icicle-upcase-if-ignore-case input-sans-dir)
+                       (mapcar #'icicle-upcase-if-ignore-case icicle-completion-candidates))
+               (not (boundp 'icicle-apropos-complete-and-exit-p)))
+      (icicle-highlight-complete-input)
+      (setq mode-line-help  input-sans-dir))))
 
 (defun icicle-transform-sole-candidate ()
   "Transform matching candidate according to `icicle-list-use-nth-parts'."
