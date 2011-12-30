@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams
 ;; Copyright (C) 2000-2011, Drew Adams, all rights reserved.
 ;; Created: Sun Aug 15 11:12:30 2010 (-0700)
-;; Last-Updated: Fri Apr  1 16:24:04 2011 (-0700)
+;; Last-Updated: Fri Dec 30 13:58:32 2011 (-0800)
 ;;           By: dradams
-;;     Update #: 78
+;;     Update #: 84
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-mac.el
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -53,6 +53,29 @@
 ;;
 ;;    (The commentary links in #1 and #3 work only if you have library
 ;;    `bookmark+-doc.el' in your `load-path'.)
+;;
+;;
+;;    ****** NOTE ******
+;;
+;;      WHENEVER you update Bookmark+ (i.e., download new versions of
+;;      Bookmark+ source files), I recommend that you do the
+;;      following:
+;;
+;;      1. Delete ALL existing BYTE-COMPILED Bookmark+ files
+;;         (bookmark+*.elc).
+;;      2. Load Bookmark+ (`load-library' or `require').
+;;      3. Byte-compile the source files.
+;;
+;;      In particular, ALWAYS LOAD `bookmark+-mac.el' (not
+;;      `bookmark+-mac.elc') BEFORE YOU BYTE-COMPILE new versions of
+;;      the files, in case there have been any changes to Lisp macros
+;;      (in `bookmark+-mac.el').
+;;
+;;      (This is standard procedure for Lisp: code that depends on
+;;      macros needs to be byte-compiled anew after loading the
+;;      updated macros.)
+;;
+;;    ******************
  
 ;;(@> "Index")
 ;;
@@ -110,6 +133,23 @@
 ;; bookmark-bmenu-bookmark, bookmark-bmenu-ensure-position,
 ;; bookmark-bmenu-surreptitiously-rebuild-list, bookmark-get-bookmark,
 ;; bookmark-get-filename
+
+
+;; Some general Renamings.
+;;
+;; 1. Fix incompatibility introduced by gratuitous Emacs name change.
+;;
+(cond ((and (fboundp 'bookmark-name-from-record) (not (fboundp 'bookmark-name-from-full-record)))
+       (defalias 'bookmark-name-from-full-record 'bookmark-name-from-record))
+      ((and (fboundp 'bookmark-name-from-full-record) (not (fboundp 'bookmark-name-from-record)))
+       (defalias 'bookmark-name-from-record 'bookmark-name-from-full-record)))
+
+;; 2. The vanilla name of the first is misleading, as it returns only the cdr of the record.
+;;    The second is for consistency.
+;;
+(defalias 'bmkp-bookmark-data-from-record 'bookmark-get-bookmark-record)
+(defalias 'bmkp-bookmark-name-from-record 'bookmark-name-from-full-record)
+
 
 ;; (eval-when-compile (require 'bookmark+-bmu))
 ;; bmkp-bmenu-barf-if-not-in-menu-list,
@@ -174,8 +214,7 @@ In Lisp code:
     (interactive (let ((startovr  (consp current-prefix-arg)))
                    (list (if startovr 1 (prefix-numeric-value current-prefix-arg))
                          startovr)))
-    (let ((bmkp-nav-alist  (bmkp-sort-and-remove-dups
-                            (,(intern (format "bmkp-%s-alist-only" type))))))
+    (let ((bmkp-nav-alist  (bmkp-sort-omit (,(intern (format "bmkp-%s-alist-only" type))))))
       (bmkp-cycle increment ,otherp startoverp))))
 
 ;;;###autoload
@@ -291,10 +330,12 @@ files are tested for attributes - remote-file bookmarks are treated
 here like non-file bookmarks."
   `(defun ,(intern (format "bmkp-file-attribute-%d-cp" att-nb)) (b1 b2)
     ,(format "Sort file bookmarks by attribute %d.
-B1 and B2 are bookmarks or bookmark names.
 Sort bookmarks with file attributes before those without attributes
 Sort file bookmarks before non-file bookmarks.
-Treat remote file bookmarks like non-file bookmarks."
+Treat remote file bookmarks like non-file bookmarks.
+
+B1 and B2 are full bookmarks (records) or bookmark names.
+If either is a record then it need not belong to `bookmark-alist'."
              att-nb)
     (setq b1  (bookmark-get-bookmark b1))
     (setq b2  (bookmark-get-bookmark b2))
