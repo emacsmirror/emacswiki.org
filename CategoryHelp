@@ -46,6 +46,7 @@ This category is about help with '''''Emacs'''''. See also CategoryDocumentation
 * InfoLook -- lookup info documentation for functions, variables etc. in many major modes
 * ReferenceSheetHelpUtils -- Help Emacs help you help Emacs help you...
 * UsageMemo -- integration of Emacs help system and memo
+* [http://user42.tuxfamily.org/help-xref-elfiles/index.html help-xref-elfiles.el] -- buttonize <code>foo.el</code> and <code>.emacs</code> in docstrings
 
 ----
 
