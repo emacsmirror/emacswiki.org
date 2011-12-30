@@ -36,7 +36,9 @@ http://code.google.com/p/yasnippet/issues/detail?id=143
 
 Here's what I use every day:
 
-* [https://github.com/genehack/smart-tab smart-tab.el] (Please consider using DanielHackney or JohnAnderson's enhanced versions, see below)
+* Latest maintained by JohnAnderson at https://github.com/genehack/smart-tab
+* See also DanielHackney's version below
+* Original 2009 version at http://github.com/sroccaserra/emacs
 
 It feels very natural (to me at least), ##<tab>## always do what I mean.
 
