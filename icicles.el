@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Wed Dec 28 10:49:13 2011 (-0800)
+;; Last-Updated: Thu Dec 29 17:32:34 2011 (-0800)
 ;;           By: dradams
-;;     Update #: 23048
+;;     Update #: 23049
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -801,6 +801,7 @@
 ;;    `icicle-apropos-any-candidates-p',
 ;;    `icicle-apropos-any-file-name-candidates-p',
 ;;    `icicle-apropos-candidates', `icicle-apropos-complete-1',
+;;    `icicle-apropos-complete-2',
 ;;    `icicle-backward-delete-char-untabify-dots',
 ;;    `icicle-barf-if-outside-Completions',
 ;;    `icicle-barf-if-outside-Completions-and-minibuffer',
@@ -1007,7 +1008,7 @@
 ;;    `icicle-prefix-any-candidates-p',
 ;;    `icicle-prefix-any-file-name-candidates-p',
 ;;    `icicle-prefix-candidates', `icicle-prefix-complete-1',
-;;    `icicle-prefix-keys-first-p',
+;;    `icicle-prefix-complete-2', `icicle-prefix-keys-first-p',
 ;;    `icicle-previous-single-char-property-change',
 ;;    `icicle-propertize', `icicle-proxy-candidate-first-p',
 ;;    `icicle-put-at-head', `icicle-put-whole-cand-prop',
