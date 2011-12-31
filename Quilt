@@ -1,5 +1,7 @@
-[http://packages.debian.org/quilt Quilt] is a patch management system previously used 
-to maintain Linux Kernel management.
-Matt Mackall has written an Emacs interface for quilt, available at:
+[http://en.wikipedia.org/wiki/Quilt_(software) Quilt] is a patch management system to maintain features in 
+[http://en.wikipedia.org/wiki/Patch_(Unix) patch(1)] format over original code.
 
-* http://www.selenic.com/quilt
+* 2011 by JariAalto https://github.com/jaalto/emacs-epkg--quilt
+* 2005 by Matt Mackall <mpm(at)selenic.com> was at <http://www.selenic.com/quilt>.
+  The code was abandoned because the author did no longer use quilt but
+  Mercurial queues. Matt is the creator of [http://en.wikipedia.org/wiki/Mercurial Mercurial DVCS] project.
