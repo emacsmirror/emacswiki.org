@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2011, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Fri Dec 30 16:53:40 2011 (-0800)
+;; Last-Updated: Sat Dec 31 14:16:07 2011 (-0800)
 ;;           By: dradams
-;;     Update #: 14209
+;;     Update #: 14211
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-chg.el
 ;; Keywords: bookmarks, bookmark+
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -517,6 +517,8 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-bmu.el'")
 ;;
+;; 2011/12/31 dadams
+;;     Define macro with-buffer-modified-unmodified for Emacs 23.1, in addition to Emacs < 23.
 ;; 2011/12/30 dadams
 ;;     Added aliases: bmkp-bookmark-(data|name)-from-record.
 ;;     Added: bmkp-bmenu-show-or-edit-annotation, bmkp-bmenu-edit-bookmark-record,
