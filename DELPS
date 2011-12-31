@@ -2,7 +2,7 @@
 
 DELPS - *Distributed Emacs Lisp Package System* by JariAalto. The
 DELPS is the framework, the blueprint of the design concepts.
-Emacs extensions in DELPS format are called [[Epackage]]s. 
+Emacs extensions in DELPS format are called [[Epackage]]s.
 With it, you can install Emacs extensions that have been
 put available as git DVCS repositories.
 
@@ -19,16 +19,16 @@ from "main project hub" which points to Git a repository.
   you would like to see packaged at
   https://gist.github.com/1478886
 * List of [https://github.com/jaalto/project--emacs-epackage-sources-list/blob/master/epackage.lst available packages for install]
-  
+
 === For Package Developers ===
 
 To make an Emacs extension available in /epackage/ format, read manual
 about the the directory layout and used files.
 After that, clone "Template files" mentioned below.
 The "Template files" link points to README
-that explains the procedure step-by-step. In "Template files" repository 
+that explains the procedure step-by-step. In "Template files" repository
 see `*.shellrc' that provides functions which help in doing the packaging work.
-You must be familiar with Git, somewhat in Emacs Lisp. Under windows, you need 
+You must be familiar with Git, somewhat in Emacs Lisp. Under windows, you need
 <http://cygwin.com> and its command line shell.
 
 * Manual: http://www.nongnu.org/emacs-epackage/manual
@@ -125,14 +125,14 @@ only deltas are transferred.
 
 == Download and Install ==
 
-The reference implementation is available at Savannah. Mirror at Github:
+The reference implementation is available at Github. Mirror at Savannah:
 
     #  Location where you keep your Emacs extensions
     mkdir -p $HOME/emacs.d/packages
     cd $HOME/emacs.d/packages
 
-    # Or use Github URL: git://github.com/jaalto/project--emacs-epackage.git
-    git clone git://git.savannah.nongnu.org/emacs-epackage.git epackage
+    # Or use mirror: git://git.savannah.nongnu.org/emacs-epackage.git
+    git clone git://github.com/jaalto/project--emacs-epackage.git epackage
 
     cd epackage
     git checkout --track -b devel origin/devel
@@ -173,21 +173,19 @@ The epackage manager can also be called from command line UI:
 == Contact ==
 
 Please send comments, suggestion, ideas, bug reports to me directly
-or to the bug tracker. Please do not send questions to this page as it 
+or to the bug tracker. Please do not send questions to this page as it
 can not be monitored.
 Thanks --Jari
 
-* Bug Tracker (primary)
+* Bug Tracker
   https://github.com/jaalto/project--emacs-epackage/issues
-* Bug Tracker (secondary):
-  https://savannah.nongnu.org/bugs/?group=emacs-epackage
 * Email: jari dot aalto A cante net. Help me to notice your mail by starting
   subject with "Emacs epackage:"
 
 == Pictures and History ==
 
 2010-12 A rudimentary implementation of early concept of the software below.
-2011-12 `M-x' `epackage-manager' available, just the "bare bones". 
+2011-12 `M-x' `epackage-manager' available, just the "bare bones".
 The full buffer mode based UI (like in ELPA)
 is planned to be ready somewhere around 2012.
 
@@ -198,5 +196,5 @@ CategoryPackaging
 epackage
 bare bones
 Template files
- 
- 
+
+
