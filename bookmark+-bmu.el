@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2011, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 09:05:21 2010 (-0700)
-;; Last-Updated: Fri Dec 30 16:17:31 2011 (-0800)
+;; Last-Updated: Sat Dec 31 14:17:47 2011 (-0800)
 ;;           By: dradams
-;;     Update #: 1433
+;;     Update #: 1436
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-bmu.el
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -263,8 +263,8 @@
 ;;    23.2+), `bookmark-bmenu-hide-filenames', `bookmark-bmenu-mode',
 ;;    `bookmark-bmenu-show-filenames',
 ;;    `bookmark-bmenu-surreptitiously-rebuild-list',
-;;    `bookmark-bmenu-switch-other-window' (Emacs < 23),
-;;    `with-buffer-modified-unmodified' (Emacs < 23).
+;;    `bookmark-bmenu-switch-other-window',
+;;    `with-buffer-modified-unmodified' (Emacs < 23.2).
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -724,7 +724,7 @@ This includes possibly omitted bookmarks, that is, bookmarks listed in
 ;;(@* "Compatibility Code for Older Emacs Versions")
 ;;; Compatibility Code for Older Emacs Versions ----------------------
 
-(when (< emacs-major-version 23)
+(when (or (< emacs-major-version 23) (and (= emacs-major-version 23) (= emacs-minor-version 1)))
   (defmacro with-buffer-modified-unmodified (&rest body)
     "Save and restore `buffer-modified-p' state around BODY."
     (let ((was-modified  (make-symbol "was-modified")))
