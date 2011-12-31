@@ -154,26 +154,9 @@ Add following to your `~/.emacs' startup InitFile:
     ;; M-x epackage-manager to start UI
     (autoload 'epackage-manager "epackage" "" t)
 
-    (autoload 'epackage-loader-file-byte-compile    "epackage" "" t)
-    (autoload 'epackage-loader-file-generate        "epackage" "" t)
-    (autoload 'epackage-cmd-autoload-package        "epackage" "" t)
-    (autoload 'epackage-cmd-enable-package          "epackage" "" t)
-    (autoload 'epackage-cmd-disable-package         "epackage" "" t)
-    (autoload 'epackage-cmd-activate-package        "epackage" "" t)
-    (autoload 'epackage-cmd-deactivate-package      "epackage" "" t)
-    (autoload 'epackage-cmd-clean-package           "epackage" "" t)
-    (autoload 'epackage-cmd-remove-package          "epackage" "" t)
-    (autoload 'epackage-cmd-upgrade-package         "epackage" "" t)
-    (autoload 'epackage-cmd-upgrade-all-packages    "epackage" "" t)
-    (autoload 'epackage-cmd-download-sources-list   "epackage" "" t)
-    (autoload 'epackage-cmd-download-package        "epackage" "" t)
-    (autoload 'epackage-initialize                  "epackage" "" t)
-    (autoload 'epackage-version                     "epackage" "" t)
-    (autoload 'epackage-documentation               "epackage" "" t)
-
 The epackage manager can also be called from command line UI:
 
-    emacs --batch -Q -l /path/to/epackage.el -f epackage-batch-ui-menu
+    emacs --batch -Q -l ~/.emacs.d/packages/epackage/epackage.el -f epackage-batch-ui-menu
 
 == Contact ==
 
