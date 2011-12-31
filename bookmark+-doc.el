@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2011, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Wed Dec 21 14:49:39 2011 (-0800)
+;; Last-Updated: Fri Dec 30 17:15:42 2011 (-0800)
 ;;           By: dradams
-;;     Update #: 14042
+;;     Update #: 14074
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-doc.el
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search,
 ;;           info, url, w3m, gnus
@@ -40,7 +40,7 @@
 ;;    The documentation includes how to byte-compile and install
 ;;    Bookmark+.  It is also available in these ways:
 ;;
-;;    1. From the bookmark list (`C-x r l'):
+;;    1. From the bookmark list (`C-x p e' or `C-x r l'):
 ;;       Use `?' to show the current bookmark-list status and general
 ;;       help, then click link `Doc in Commentary' or link `Doc on the
 ;;       Web'.
@@ -335,8 +335,8 @@
 ;;  * Improvements for the bookmark list.
 ;;
 ;;    This is buffer `*Bookmark List*', aka the bookmark "menu list"
-;;    (a misnomer), which you display using `C-x r l'.  See
-;;    (@> "The Bookmark List Display").
+;;    (a misnomer), which you display using `C-x p e' (or `C-x r l').
+;;    See (@> "The Bookmark List Display").
 ;;
 ;;     - The last display state is saved (by default), and is restored
 ;;       the next time you show the list.  (Tip: Use the bookmark list
@@ -910,38 +910,46 @@
 ;;(@* "Editing Bookmarks")
 ;;  ** Editing Bookmarks **
 ;;
-;;  In vanilla Emacs, you can use `e' in the bookmark list display to
-;;  edit the annotation associated with a bookmark.  And you can use
-;;  `r' to rename a bookmark.  But that is all.  There is no easy way
-;;  to really edit a bookmark.
+;;  In vanilla Emacs, you can edit the annotation associated with a
+;;  bookmark.  And you can rename a bookmark.  But that is all.  There
+;;  is no easy way to really edit a bookmark.
 ;;
-;;  With Bookmark+, in addition to `e' and `r', you can use `E' in the
-;;  bookmark list, or `C-x p E' anywhere, to edit the bookmark name
-;;  and the target file name (bookmarked location).  You are prompted
-;;  for the new names.
+;;  With Bookmark+:
 ;;
-;;  If you use a prefix argument (`C-u E' in the bookmark list or `C-u
-;;  C-x p E' elsewhere), then you can edit the complete internal
-;;  bookmark record - the Lisp definition.  This is the same internal
-;;  definition that you see when you use `C-u C-h RET' in the bookmark
-;;  list.
+;;  * You can use `r' in the bookmark-list display (or `C-x p r'
+;;    elsewhere) to edit the name and the target file name (bookmarked
+;;    location) of a bookmark.  You are prompted for the new names.
 ;;
-;;  Use `C-c C-c' when you are done editing the bookmark record, to
-;;  save your changes.  The number of visits and the time last visited
-;;  for the bookmark are updated automatically (unless you use a
-;;  prefix argument: `C-u C-c C-c').
+;;  * You can use `e' in the bookmark-list display (or `C-x p E'
+;;    elsewhere) to edit a complete bookmark - all of its information.
+;;    You edit the internal Lisp sexp that represents the bookmark
+;;    record.  This is the same internal definition that you see when
+;;    you use `C-u C-h RET' in the bookmark list.
 ;;
-;;  When you use `C-c C-c', Bookmark+ does a quick check to see if it
-;;  recognizes the bookmark type as valid.  This is not a complete
-;;  bookmark validity check, but it can help to let you know if you
-;;  make an editing mistake that renders the bookmark record invalid.
+;;  * You can use `E' in the bookmark-list display to edit the
+;;    bookmark records of all of the marked bookmarks.  Again, this
+;;    means editing their internal Lisp sexps.  In particular, this
+;;    gives you an easy way to edit tags across multiple bookmarks.
+;;    All of the editing power of Emacs is available.
 ;;
-;;  In that case, you are asked whether you want to save the changes
-;;  anyway.  Remember that you can use `undo' to reverse particular
-;;  changes or simply kill the edit buffer to abandon all changes.
+;;  * You can use `T e' in the bookmark list (or `C-x p t e'
+;;    elsewhere), to edit a bookmark's tags.
 ;;
-;;  In a similar way, you can use `T e' in the bookmark list or `C-x p
-;;  t e' elsewhere, to edit a bookmark's tags.
+;;  For all but the first of these, you are placed in a separate
+;;  editing buffer.  Use `C-c C-c' when you are done editing, to save
+;;  your changes.  (To cancel, just kill the buffer: `C-x k'.)
+;;
+;;  There are many more keys and commands for editing bookmark tags.
+;;  You can copy tags (`C-x p t c') from one bookmark and paste them
+;;  to others, either replacing the original tags (`C-x p t C-y') or
+;;  adding to them (`C-x p t q').  You can be prompted for some tags
+;;  to add (`T +') or remove (`T -') from a bookmark.  You can delete
+;;  a tag from all bookmarks (`T d').  You can rename a tag everywhere
+;;  (`T r').  And you can set a tag's value.
+;;
+;;  As usual, all such commands are also available on the Bookmark+
+;;  menus.  The menus provide quick reminders of the available keys,
+;;  as does the help from `?' in the bookmark-list display.
  
 ;;(@* "Bookmark-List Views - Saving and Restoring State")
 ;;  ** Bookmark-List Views - Saving and Restoring State **
@@ -1163,10 +1171,10 @@
 ;;
 ;;  You can later "jump" to that bookmark to load its set of
 ;;  bookmarks.  If you use `C-u' when you jump to it, then you switch
-;;  bookmark files, so that `C-x r l' displays only the bookmarks
-;;  created from the marked files.  Without `C-u', jumping to the
-;;  bookmark-file bookmark simply loads its bookmarks into the current
-;;  set of bookmarks.
+;;  bookmark files, so that `C-x p e' (or `C-x r l') displays only the
+;;  bookmarks created from the marked files.  Without `C-u', jumping
+;;  to the bookmark-file bookmark simply loads its bookmarks into the
+;;  current set of bookmarks.
 ;;
 ;;  
 ;;(@* "Bookmarking Compilation, Grep, and Occur Hits")
@@ -1512,7 +1520,8 @@
 ;;
 ;;  Bookmark+ enhances the bookmark list (aka the bookmark "menu
 ;;  list", a misnomer) that is displayed in buffer `*Bookmark List*'
-;;  when you use `C-x r l' (command `bookmark-bmenu-list').
+;;  when you use `C-x p e' or `C-x r l' (command
+;;  `bookmark-bmenu-list').
 ;;
 ;;  Bookmarks are highlighted to indicate their type. You can mark and
 ;;  unmark bookmarks, show or hide bookmarks of particular types, and
@@ -2161,10 +2170,10 @@
 ;;
 ;;  So you can not only choose any set of bookmarks for cycling at any
 ;;  given time, you can also cycle among them in an order you choose.
-;;  For example, if in the bookmark list display (`C-x r l') you show
-;;  only those file bookmarks that belong to a given project, and you
-;;  have them sorted by file size, then cycling moves among only those
-;;  files, in file-size order.
+;;  For example, if in the bookmark list display (`C-x p e' or `C-x r
+;;  l') you show only those file bookmarks that belong to a given
+;;  project, and you have them sorted by file size, then cycling moves
+;;  among only those files, in file-size order.
 ;;
 ;;  This is a main reason you will want to define bookmark-list
 ;;  bookmarks, which record a specific set of bookmarks and their sort
@@ -2736,7 +2745,7 @@
 ;;  However, Emacs 20 cannot read a serialized version of the bookmark
 ;;  list if it has such propertized names (the property value is a
 ;;  list that contains the propertized string, hence circular) - it
-;;  will raise a read error.  To avoid this, when Bookmark+ in Emacs
+;;  will raise a `read' error.  To avoid this, when Bookmark+ in Emacs
 ;;  20 saves bookmarks or a full snapshot of the bookmark-list display
 ;;  state, it unpropertizes the bookmark names.  You can read the
 ;;  resulting files in any Emacs version.
@@ -2749,7 +2758,7 @@
 ;;
 ;;  1. `M-x set-variable bmkp-propertize-bookmark-names-flag nil',
 ;;     to stop using propertized bookmark names.
-;;  2. `C-x r l' to display the bookmark list.
+;;  2. `C-x p e' or `C-x r l' to display the bookmark list.
 ;;  3. `g', to refresh the display.
 ;;  4. `S' to save the bookmark list.
 ;;  5. `M-x bmkp-save-menu-list-state', to save the display state.
