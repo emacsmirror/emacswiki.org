@@ -1,21 +1,22 @@
-This page is about '''[::IswitchB]''', an alternative to using `C-x b'.  
+= Overview =
 
+/Note:/ '''[::IswitchB]''' package is part of standard Emacs; 
 
-== Overview of IswitchB ==
+By default, `C-x b' calls `switch-to-buffer'. An alternative, `iswitchb-buffer', is also available.  As you type the buffer name, the list of options is reduced to the buffers matching what you type.  And it is not limited to the beginning of the buffer name, either.  That means you could type "tch" to switch to the "*scratch*" buffer.
 
-By default, `C-x b' calls `switch-to-buffer'.
-There, you can enter a buffer name, with completion. Some people prefer
-`iswitchb-buffer' to `switch-to-buffer'.  As you type the buffer name, the list of options is reduced to the buffers matching what you type.  And it is not limited to the beginning of the buffer name, either.  That means you could type "tch" to switch to the "*scratch*" buffer.
+= Install =
 
-If you are using GNU Emacs older than 21, put this in your .emacs:
-
-    (iswitchb-default-keybindings)
-
-Or, if you're using GNU Emacs 21 or newer, you can use this:
+For latest Emacs, use:
 
     (iswitchb-mode 1)
 
-If you want to prevent certain buffers from showing up in the completion list, set `iswitchb-buffer-ignore'.  Example:
+If you are using GNU Emacs older than 21, put this in your [[InitFile]]:
+
+    (iswitchb-default-keybindings)
+
+= Configuration =
+
+To prevent certain buffers from showing up in the completion list, set `iswitchb-buffer-ignore':
 
     (setq iswitchb-buffer-ignore '("^ " "*Buffer"))
 
@@ -29,8 +30,7 @@ To prevent switching to another frame, you can add the following to your configu
 
 For more about iswitch-buffer, see UseIswitchBuffer.
 
-
-= Using the arrow keys to select a buffer =
+== Using the arrow keys to select a buffer ==
 
 The default key bindings to select a buffer might annoy some.
 Even more annoying is the fact that the left/right keys don't work, and the up/down keys unhelpfully bring up old iswitchb lists which might even be out of date. With that in mind:
@@ -51,9 +51,7 @@ in your .emacs will allow left/right arrow key navigation of the buffer list, an
 [new]
 If the above fails with "define-key: Symbol's function definition is void: edmacro-parse-keys" you need to load the package defining edmacro with  ##(require 'edmacro)##. -- [[Caldrin]]
 
-
-= IswitchBuffers and Uniquify =
-
+== IswitchBuffers and Uniquify ==
 
 The library [[uniquify]] overrides Emacs' default mechanism for making buffer names unique (using suffixes like <code><2></code>, <code><3></code> etc.) with a more sensible behaviour which use parts of the file names to make the buffer names distinguishable.
 
@@ -89,3 +87,5 @@ Additionally one can configure [[uniquify]] to rework the buffer names whenever 
 ----
 CategoryBufferSwitching
 
+code
+/code
