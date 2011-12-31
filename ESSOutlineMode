@@ -38,7 +38,7 @@ In order to enable Emacs' standard OutlineMode for ##.R## files:
 (global-set-key (kbd "s-N") 'outline-next-heading) 
 </pre>
 
-This is what Andrei sent to the ess-help mailing list on 2010-08-18. It is based on an adapted (by me, Sven) version of Heinz Tuechler's outline suggestion he posted to the ESS-help mailing list on 2007-05-11.
+This is what Andrei sent to the ess-help mailing list on 2010-08-18. Thank you, Andrei! It is based on an adapted (by me, Sven) version of Heinz Tuechler's outline suggestion he posted to the ESS-help mailing list on 2007-05-11.
 
 The above will define the following heading levels in ##.R## files:
 <pre>
