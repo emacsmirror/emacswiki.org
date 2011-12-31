@@ -26,7 +26,7 @@ Here are descriptions of all commonly used (or proposed) sections:
 ** <code>;; Created: <creation date></code>, for example <code>14 Jul 1992</code>
 ** <code>;; Version: <library version></code>, for example <code>1.11</code>
 ** <code>;; RCS version: $Revision: x.yy $</code> or equivalent (configuration-control version; the example is for RCS and CVS, updated automatically by VersionControl software when committing changes)
-** <code>;; Keywords: <finder keywords, separated by commas></code>. This line lists keywords for the help command `finder-by-keyword' (see FinderByKeyword).
+** <code>;; Keywords: <M-x finder-list-keywords>, separated by commas></code>. This line lists keywords for the help command `finder-by-keyword' (see FinderByKeyword).
 ** <code>;; URL: <location of the file></code> -- use <code>http://www.emacswiki.org/emacs/name.el</code> or <code>http://www.emacswiki.org/cgi-bin/emacs/download/name.el</code> if you want to host it here
 ** <code>;; Compatibility: <target Emacs versions></code> and <code>;; Incompatibility:</code>
 * *Proposition* -- Use <code>;; EmacsWiki:</code> (EmacsWiki page that describes the library). For example, this would be <code>;; EmacsWiki: OccurBuffer</code> for Lisp:color-moccur.el (OccurBuffer). A good place for this is just after <code>;; URL</code>.
