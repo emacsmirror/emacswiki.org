@@ -1,6 +1,6 @@
 == Overview ==
 
-*NOTE:* *xml-rpc.el* *is* *included* *in* *latest* *Emacs* (24+; package manager)
+*NOTE:* xml-rpc.el is available at: Emacs 24 package manager repository [[ELPA]]/Marmalade
 
 XMLRPC (XML Remote Procedure Calls) is a protocol for remote procedure calling using HTTP as the transport and XML as the encoding. XML-RPC is designed to be as simple as possible, while allowing complex data structures to be transmitted, processed and returned.
 
