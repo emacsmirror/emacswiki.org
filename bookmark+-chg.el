@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2011, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Sat Dec 24 09:21:13 2011 (-0800)
+;; Last-Updated: Fri Dec 30 16:53:40 2011 (-0800)
 ;;           By: dradams
-;;     Update #: 14019
+;;     Update #: 14209
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-chg.el
 ;; Keywords: bookmarks, bookmark+
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -54,7 +54,30 @@
 ;;       `Commentary'.
 ;;
 ;;    (The commentary links in #1 and #3 work only if you put library
- ;;    `bookmark+-doc.el' in your `load-path'.)
+;;    `bookmark+-doc.el' in your `load-path'.)
+;;
+;;
+;;    ****** NOTE ******
+;;
+;;      WHENEVER you update Bookmark+ (i.e., download new versions of
+;;      Bookmark+ source files), I recommend that you do the
+;;      following:
+;;
+;;      1. Delete ALL existing BYTE-COMPILED Bookmark+ files
+;;         (bookmark+*.elc).
+;;      2. Load Bookmark+ (`load-library' or `require').
+;;      3. Byte-compile the source files.
+;;
+;;      In particular, ALWAYS LOAD `bookmark+-mac.el' (not
+;;      `bookmark+-mac.elc') BEFORE YOU BYTE-COMPILE new versions of
+;;      the files, in case there have been any changes to Lisp macros
+;;      (in `bookmark+-mac.el').
+;;
+;;      (This is standard procedure for Lisp: code that depends on
+;;      macros needs to be byte-compiled anew after loading the
+;;      updated macros.)
+;;
+;;    ******************
 ;;
 ;;
 ;;    ****** NOTE ******
@@ -101,6 +124,8 @@
 ;;
 ;;
 ;;      Again, sorry for this inconvenience.
+;;
+;;    ******************
  
 ;;(@> "Index")
 ;;
@@ -120,11 +145,49 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-1.el'")
 ;;
-;; 2011/12/24 dadams
+;; 2011/12/30 dadams
+;;     Renamed bmkp-edit-bookmark to bmkp-edit-bookmark-name-and-file.
+;;     Added aliases: bmkp-bookmark-(data|name)-from-record.
+;;     Added: bmkp-get-bookmark-in-alist, bmkp-bookmark-record-from-name,
+;;            bmkp-edit-bookmark-records-(number|send|mode(-map)),
+;;            bookmark-alist-from-buffer (redefinition), bmkp-edit-bookmark-orig-record,
+;;            bmkp-rename-for-marked-and-omitted-lists.
+;;     Use new names (aliases) bmkp-bookmark-(data|name)-from-record.
+;;     bookmark-get-bookmark-record: Use redefinition for all Emacs versions (updated doc string).
+;;     bookmark-get-bookmark: Use bmkp-bookmark-record-from-name, with no MEMP check.
+;;     bookmark-store: Use bmkp-get-bookmark-in-alist to test whether bookmark exists.
+;;                     Set the bookmark name also, not just the data, for an existing bookmark.
+;;                     Unconditionally always put full bookmark on name as property bmkp-full-record.
+;;     bookmark-send-edited-annotation, bookmark-rename:
+;;       Do bookmark-bmenu-surreptitiously-rebuild-list only if no bmenu display window.
+;;     bookmark-rename:
+;;       Return OLD if no NEWNAME (batch).  Do not prompt for name if batch.
+;;       Use bmkp-rename-for-marked-and-omitted-lists (rename in those lists too).
+;;       Unconditionally always put full bookmark on name as property bmkp-full-record.
+;;       Use bmkp-bookmark-record-from-name, not bookmark-get-bookmark, to get full record.
+;;     bookmark-delete, bmkp-edit-bookmark-name-and-file, bmkp-edit-bookmark-record,
+;;       bmkp-edit-tags(-send), bmkp-toggle-autonamed-bookmark-set/delete:
+;;         Use bmkp-get-bookmark-in-alist, not bookmark-get-bookmark.
 ;;     bookmark-load: Call bmkp-refresh-menu-list only if display is visible, and with NO-MSG-P arg.
-;;     bmkp-edit-bookmark-record:
-;;       Raise error if invalid bookmark to start with.
-;;       Call bookmark-maybe-historicize-string and bookmark-maybe-load-default-file.
+;;     bookmark-show-annotation: Do not raise error if not a valid bookmark.
+;;     bmkp-edit-bookmark-record: Record bmkp-edit-bookmark-orig-record.  Strip properties from name.
+;;                                Updated edit-buffer text.
+;;     bmkp-edit-bookmark-record-send: Rewrote similarly to bmkp-edit-bookmark-records-send.  No args.
+;;     bmkp-default-bookmark-name:
+;;       Use bmkp-bookmark-record-from-name, not bookmark-get-bookmark, requiring membership in ALIST.
+;;     bmkp-save-menu-list-state, bmkp-get-tag-value: Added optional arg MSGP, and status messages.
+;;     bmkp-make-function-bookmark: Use bmkp-bookmark-record-from-name, not bookmark-get-bookmark.
+;;     bmkp-autonamed-bookmark(-for-buffer)-p:
+;;       Use bmkp-bookmark-name-from-record, not bookmark-get-bookmark and bookmark-name-from-*.
+;;     bmkp-get-tag-value, bmkp-has-tag-p: Removed unused arg MSGP.
+;;     bmkp-delete-bookmark-name-from-list:
+;;       For unpropertized DELNAME, Set BNAMES to result of delete call.
+;;       For propertized DELNAME, delete also unpropertized matches.
+;;     bmkp-(compilation|occur)-target-set-all: Do not prompt or show message unless MSGP.
+;;     bmkp-describe-bookmark-internals: Use a copy of the bookmark.  Strip properties from name.
+;;     bmkp-set-autonamed-regexp-buffer: Pass MSGP, do not hardcode.n
+;;     Doc string improvements.
+;; 2011/12/24 dadams
 ;;     bmkp-refresh-menu-list: Added progress message.
 ;;     bmkp-jump-bookmark-file: Pass NO-MSG-P arg to bookmark-load.
 ;; 2011/12/21 dadams
@@ -454,6 +517,27 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-bmu.el'")
 ;;
+;; 2011/12/30 dadams
+;;     Added aliases: bmkp-bookmark-(data|name)-from-record.
+;;     Added: bmkp-bmenu-show-or-edit-annotation, bmkp-bmenu-edit-bookmark-record,
+;;            bmkp-bmenu-edit-marked.
+;;     Renamed bmkp-bmenu-edit-bookmark to bmkp-bmenu-edit-bookmark-name-and-file.
+;;     bookmark-bmenu-mark: Propertize bookmark name with bmkp-full-record before adding to list.
+;;     bookmark-bmenu-list:
+;;       Added optional arg MSGP.  Show status messages.
+;;       Propertize bookmark names if not already propertized, in marked and omitted lists.
+;;     bookmark-bmenu-mode: Updated doc string.
+;;     bmkp-bmenu-make-sequence-from-marked:
+;;       Use bmkp-get-bookmark-in-alist, not bookmark-get-bookmark.
+;;     Bind bmkp-bmenu-show-or-edit-annotation (not *-show-annotation) to a.
+;;     Bind bmkp-bmenu-edit-bookmark-name-and-file to r now, not E.
+;;     Bind bmkp-bmenu-edit-marked to E and T > e.
+;;     Bind bmkp-bmenu-edit-bookmark-record to e.
+;;     bmkp-bmenu-quit: Show progress messages.
+;;     bmkp-bmenu-tags-menu: Added bmkp-bmenu-edit-marked.
+;;     bmkp-bmenu-mouse-3-menu:
+;;       Added: bmkp-bmenu-edit-tags.
+;;       Replaced *-rename and *-relocate with bmkp-bmenu-edit-bookmark-name-and-file. 
 ;; 2011/12/24 dadams
 ;;     Added: bookmark-bmenu-toggle-filenames, with optional arg NO-MSG-P.
 ;;     bookmark-bmenu-surreptitiously-rebuild-list, bookmark-bmenu-(show|hide)-filenames:
@@ -637,6 +721,13 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-key.el'")
 ;;
+;; 2011/12/30 dadams
+;;     Added aliases: bmkp-bookmark-(data|name)-from-record.
+;;     Bind E to bmkp-edit-bookmark-record, not bmkp-edit-bookmark.
+;;     Bind r to bmkp-edit-bookmark-name-and-file, not bookmark-rename.  Ditto in menu.
+;;     Use bmkp-get-bookmark-in-alist, not bookmark-get-bookmark in :visible conditions.
+;;     menu-bar-bookmark-map: Added bmkp-edit-bookmark-record.
+;;     bmkp-tags-menu: Added bmkp-edit-tags.
 ;; 2011/12/14 dadams
 ;;     Removed conditions :enable bookmark-alist.
 ;; 2011/12/09 dadams
@@ -691,6 +782,11 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-lit.el'")
 ;;
+;; 2011/12/30 dadams
+;;     Added aliases: bmkp-bookmark-(data|name)-from-record.
+;;     bmkp-bookmarks-lighted-at-point: Include only bookmarks in bookmark-alist.
+;;     bmkp-light-bookmark: Do nothing if BOOKMARK is not a bookmark or bookmark name.
+;;     bmkp-a-bookmark-lighted-at-pos: Return nil if no bookmark (at POS) in bookmark-alist.
 ;; 2011/11/15 dadams
 ;;     Applied renaming: bmkp-this-buffer-cycle-sort-comparer to *-this-file/buffer*.
 ;; 2011/08/09 dadams
@@ -725,6 +821,17 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-mac.el'")
 ;;
+;; **************************************************************************************************
+;; NOTE: If you byte-compile Bookmark+ (recommended), then WHENEVER `bookmark+-mac.el' is updated,
+;;       you      must load `bookmark+-mac.el' (not just `bookmark+-mac.elc'), then compile it, then
+;;       RECOMPILE *ALL* of the other Bookmark+ source files as well.  This is normal for Lisp: code
+;;       that depends on macros needs to be byte-compiled anew after loading the updated macros.
+;; **************************************************************************************************
+;;
+;; 2011/12/30 dadams
+;;     bmkp-define-cycle-command: Applied renaming of bmkp-sort-and-remove-dups to bmkp-sort-omit.
+;;     bmkp-define-file-sort-predicate: Updated doc string of generated functions.
+;;     Added renamings of bookmark-name-from(-full)-record, bookmark-get-bookmark-record.
 ;; 2011/04/12
 ;;     bmkp-define-cycle-command: Use bmkp-sort-omit, not bmkp-sort-and-remove-dups.
 ;; 2011/01/03 dadams
@@ -740,6 +847,8 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+.el'")
 ;;
+;; 2011/12/30 dadams
+;;     Version 3.3.0.
 ;; 2011/04/12 dadams
 ;;     Version 3.2.2.
 ;; 2011/04/01 dadams
