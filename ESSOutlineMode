@@ -1,25 +1,52 @@
 == Outline mode for .R files ==
 
-I now have the following in my [[init file]] to enable Emacs' standard OutlineMode for ##.R## files:
+In order to enable Emacs' standard OutlineMode for ##.R## files:
 
 <pre>
-  (add-hook 'ess-mode-hook
-            '(lambda ()
-               (outline-minor-mode)
-               (setq outline-regexp "\\(^#\\{4,5\\} \\)\\|\\(^[a-zA-Z0-9_\.]+ ?<- ?function(.*{\\)")
-               (defun outline-level
-                 (lambda () (interactive) (cond ((looking-at "^##### ") 1)((looking-at "^#### ") 2)((looking-at "^[a-zA-Z0-9_\.]+ ?<- ?function(.*{") 3) (t 1000)))
-               )))
+(add-hook 'ess-mode-hook
+      '(lambda ()
+         (outline-minor-mode)
+         (setq outline-regexp "\\(^#\\{4,5\\} \\)\\|\\(^[a-zA-Z0-9_\.]+ ?<-
+?function(.*{\\)")
+         (defun outline-level ()
+           (cond ((looking-at "^##### ") 1)
+             ((looking-at "^#### ") 2)
+             ((looking-at "^[a-zA-Z0-9_\.]+ ?<- ?function(.*{") 3)
+             (t 1000)))
+         ))
+
+;; Simpler keybindings with the win key: (global for now, FIXME!!)
+;; probably some might not work right on actual windows...
+
+(global-set-key (kbd "s-a") 'show-all)
+
+(global-set-key (kbd "s-T") 'hide-body)     ;; Hide all body but not subh.
+(global-set-key (kbd "s-t") 'hide-other)    ;; Hide all but current+top
+
+(global-set-key (kbd "s-d") 'hide-subtree)  ;; hide body and subh.
+(global-set-key (kbd "s-s") 'show-subtree)  ;; show body and subheadings
+(global-set-key (kbd "s-D") 'hide-leaves)   ;; hide body from subheadings
+(global-set-key (kbd "s-S") 'show-branches) ;; show subheadings w/o body
+
+(global-set-key (kbd "s-b") 'outline-backward-same-level)
+(global-set-key (kbd "s-f") 'outline-forward-same-level)
+(global-set-key (kbd "s-B") 'outline-up-heading)
+
+(global-set-key (kbd "s-p") 'outline-previous-visible-heading)
+(global-set-key (kbd "s-n") 'outline-next-visible-heading)
+(global-set-key (kbd "s-P") 'outline-previous-heading)
+(global-set-key (kbd "s-N") 'outline-next-heading) 
 </pre>
-This can be seen as an adapted version of Heinz Tuechler's outline suggestion he posted to the ESS-help mailing list on 2007-05-11. The above will define the following heading levels in ##.R## files:
+
+This is what Andrei sent to the ess-help mailing list on 2010-08-18. It is based on an adapted (by me, Sven) version of Heinz Tuechler's outline suggestion he posted to the ESS-help mailing list on 2007-05-11.
+
+The above will define the following heading levels in ##.R## files:
 <pre>
   lines starting with #####  --> level 1
   lines starting with ####   --> level 2
   R functions                --> level 3
 </pre>
 Although R functions are not "headings" really, I still imagine this could be a nice way of getting an overview over a larger ##.R## file. I can't yet say whether it will prove useful for me in the long run. -- Sven
-
-
 
 ----
 CategoryESS
