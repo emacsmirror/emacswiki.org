@@ -35,7 +35,7 @@ You must be familiar with Git, somewhat in Emacs Lisp. In Windows, you need
 * Manual: http://www.nongnu.org/emacs-epackage/manual
 * Template files:
   https://github.com/jaalto/project--emacs-epackage-template
-* Sources List, the Yellow Pages:
+* Sources List (yellow pages):
   https://github.com/jaalto/project--emacs-epackage-sources-list
 * Bookmark this for all related links (always up-to-date):
   http://pinboard.in/u:jariaalto/t:emacs/t:epackage
@@ -98,13 +98,15 @@ the traditional archive distribution approach:
 
 [[image:EpackagePictureDelpsDiagram]]
 
-In the picture above, the user downloads *yellow pages* that contains
-information about available packages. At upper right: when a prospective developer
-wants to make an epackage available for others, he first
+In the picture above, the user downloads *Sources List* yellow pages that
+contains information about available packages. At upper right: when a
+prospective developer wants to make an epackage available for others,
+he first
+
 [http://help.github.com/forking/ forks] the
-current *yellow pages*, adds new information to it and sends a
+current *Sources List* (yellow pages), adds new information to it and sends a
 [http://help.github.com/pull-requests/ pull request]
-inside [http://github.com Github.com] to ask to merge changes back to the master *yellow pages*.
+inside [http://github.com Github.com] to ask to merge changes back to the master.
 The epackage maintainer keeps an eye on new upstream releases and provides new
 epackages by updating his publicly available Git repository.
 To the lower right: it is possible that upstream and the epackage maintainer is
@@ -116,7 +118,7 @@ control directory named <code>epackage/</code> is used for all the
 packaging details: activation, autoloads and installation etc.
 In addition, each /epackage/ is imported in and deployed using
 Git Distributed Version Control System (DVCS). A specific
-"Yellow pages" file lists the available Git repositories where
+/Sources List/ file lists the available Git repositories where
 user can download packages. Once an /epackage/ has been
 downloaded, subsequent downloads are very efficient because
 only deltas are transferred.
