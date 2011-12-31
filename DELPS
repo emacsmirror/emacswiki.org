@@ -18,7 +18,7 @@ from "main project hub" which points to Git a repository.
 * If you have free time, suggest what Emacs extensions
   you would like to see packaged at
   https://gist.github.com/1478886
-* Constantly updated list of [https://github.com/jaalto/project--emacs-epackage-sources-list/blob/master/epackage.lst available packages for install]
+* List of [https://github.com/jaalto/project--emacs-epackage-sources-list/blob/master/epackage.lst available packages for install]
   
 === For Package Developers ===
 
@@ -198,4 +198,5 @@ CategoryPackaging
 epackage
 bare bones
 Template files
+ 
  
