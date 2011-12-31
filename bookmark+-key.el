@@ -7,9 +7,9 @@
 ;; Copyright (C) 2010-2011, Drew Adams, all rights reserved.
 ;; Created: Fri Apr  1 15:34:50 2011 (-0700)
 ;; Version:
-;; Last-Updated: Wed Dec 14 15:54:24 2011 (-0800)
+;; Last-Updated: Fri Dec 30 13:14:19 2011 (-0800)
 ;;           By: dradams
-;;     Update #: 397
+;;     Update #: 458
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-key.el
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -84,8 +84,24 @@
 
 ;;;;;;;;;;;;;;;;;;;;;
 
-;; Quiet the byte-compiler
 
+;; Some general Renamings.
+;;
+;; 1. Fix incompatibility introduced by gratuitous Emacs name change.
+;;
+(cond ((and (fboundp 'bookmark-name-from-record) (not (fboundp 'bookmark-name-from-full-record)))
+       (defalias 'bookmark-name-from-full-record 'bookmark-name-from-record))
+      ((and (fboundp 'bookmark-name-from-full-record) (not (fboundp 'bookmark-name-from-record)))
+       (defalias 'bookmark-name-from-record 'bookmark-name-from-full-record)))
+
+;; 2. The vanilla name of the first is misleading, as it returns only the cdr of the record.
+;;    The second is for consistency.
+;;
+(defalias 'bmkp-bookmark-data-from-record 'bookmark-get-bookmark-record)
+(defalias 'bmkp-bookmark-name-from-record 'bookmark-name-from-full-record)
+
+
+;; Quiet the byte-compiler
 (defvar bmkp-bmenu-menubar-menu)        ; Defined in `bookmark+-bmu.el'.
 (defvar bmkp-crosshairs-flag)           ; Defined in `bookmark+-1.el'.
 (defvar bmkp-prompt-for-tags-flag)      ; Defined in `bookmark+-1.el'.
@@ -112,7 +128,8 @@
 (define-key ctl-x-map "rK" 'bmkp-set-desktop-bookmark) ; `C-x r K' (also `C-x p K', `C-x p c K')
 (define-key bookmark-map "0"      'bmkp-empty-file) ; `C-x p 0'
 (define-key bookmark-map "B"      'bmkp-choose-navlist-from-bookmark-list) ; `C-x p B'
-(define-key bookmark-map "E"      'bmkp-edit-bookmark) ; `C-x p E'
+;; `e' is `edit-bookmarks' (aka `bookmark-bmenu-list', from vanilla Emacs.
+(define-key bookmark-map "E"      'bmkp-edit-bookmark-record) ; `C-x p E'
 ;; The original `bookmark-insert-location' in `bookmark.el' was `f'.
 (define-key bookmark-map "I"      'bookmark-insert-location) ; `C-x p I'
 (define-key bookmark-map "K"      'bmkp-set-desktop-bookmark) ; `C-x p K' (also `C-x r K', `C-x p c K')
@@ -120,6 +137,7 @@
 (define-key bookmark-map "N"      'bmkp-navlist-bmenu-list) ; `C-x p N'
 (define-key bookmark-map "o"      'bookmark-jump-other-window) ; `C-x p o' (also `C-x 4 j j')
 (define-key bookmark-map "q"      'bookmark-jump-other-window) ; `C-x p q' (also `C-x 4 j j')
+(define-key bookmark-map "r"      'bmkp-edit-bookmark-name-and-file) ; `C-x p r'
 (define-key bookmark-map "x"      'bmkp-toggle-autotemp-on-set) ; `C-x p x'
 (define-key bookmark-map "y"      'bmkp-set-bookmark-file-bookmark) ; `C-x p y'
 (when (featurep 'bookmark+-lit)
@@ -413,7 +431,7 @@
                         sep   (cddr sep)
                         bdj   (cddr bdj)
                         bdjc  (cddr bdjc)))
-                (define-key map (apply #'vector sep) '("--"))
+                (define-key map (apply #'vector sep) '("--")) ;-------------------------------------
                 (define-key map (apply #'vector bdj)
                   '(menu-item "Jump to a Dired Bookmark" bmkp-dired-jump
                     :help "Jump to a bookmarked Dired buffer"))
@@ -452,10 +470,10 @@
 
 ;;; Vanilla Emacs `Bookmarks' menu (see also [jump] from `Bookmark+' menu, below).
 
-(define-key-after menu-bar-bookmark-map [separator-set] '("--") 'jump)
+(define-key-after menu-bar-bookmark-map [separator-set] '("--") 'jump) ;----------------------------
 (define-key-after menu-bar-bookmark-map [set]
   '(menu-item "Set Bookmark..." (lambda () (interactive) (call-interactively #'bookmark-set))
-    :help "Set a bookmark at point")
+    :help "Set a bookmark at point" :keys "C-x p m")
   'separator-set)
 (define-key-after menu-bar-bookmark-map [bmkp-autofile-set]
   '(menu-item "Set Autofile Bookmark..." bmkp-autofile-set
@@ -480,10 +498,12 @@
 (define-key-after menu-bar-bookmark-map [bmkp-toggle-autoname-bookmark-set]
   '(menu-item "Set Autonamed Bookmark" bmkp-toggle-autonamed-bookmark-set/delete
     :help "Set an autonamed bookmark at point"
-    :visible (not (bookmark-get-bookmark (funcall bmkp-autoname-bookmark-function (point))
+    :visible (not (bmkp-get-bookmark-in-alist (funcall bmkp-autoname-bookmark-function (point))
                    'noerror)))
   'bmkp-set-bookmark-file-bookmark)
-(define-key-after menu-bar-bookmark-map [separator-delete] '("--") 'bmkp-toggle-autoname-bookmark-set)
+
+(define-key-after menu-bar-bookmark-map [separator-delete] '("--") ;--------------------------------
+                  'bmkp-toggle-autoname-bookmark-set)
 (define-key-after menu-bar-bookmark-map [bmkp-delete-all-temporary-bookmarks]
   '(menu-item "Delete All Temporaries..." bmkp-delete-all-temporary-bookmarks
     :help "Delete the temporary bookmarks, (`X') whether visible here or not")
@@ -499,7 +519,7 @@
 ;;;;;   '(menu-item "Delete All Autonamed Bookmarks Here..."
 ;;;;;     bmkp-delete-all-autonamed-for-this-buffer
 ;;;;;     :help "Delete all autonamed bookmarks for the current buffer"
-;;;;;     :enable (mapcar #'bookmark-name-from-full-record (bmkp-autonamed-this-buffer-alist-only)))
+;;;;;     :enable (mapcar #'bmkp-bookmark-name-from-record (bmkp-autonamed-this-buffer-alist-only)))
 ;;;;;   'bmkp-delete-all-temporary-bookmarks)
 (define-key-after menu-bar-bookmark-map [bmkp-delete-all-autonamed-for-this-buffer]
   '(menu-item "Delete All Autonamed Bookmarks Here..."
@@ -509,13 +529,13 @@
 (define-key-after menu-bar-bookmark-map [bmkp-toggle-autoname-bookmark-delete]
   '(menu-item "Delete Autonamed Bookmark" bmkp-toggle-autonamed-bookmark-set/delete
     :help "Delete the autonamed bookmark at point"
-    :visible (bookmark-get-bookmark (funcall bmkp-autoname-bookmark-function (point))
+    :visible (bmkp-get-bookmark-in-alist (funcall bmkp-autoname-bookmark-function (point))
               'noerror))
   'bmkp-toggle-autonamed-bookmark-set/delete)
 ;;;;; (define-key-after menu-bar-bookmark-map [bmkp-delete-bookmarks]
 ;;;;;   '(menu-item "Delete Bookmarks Here..." bmkp-delete-bookmarks
 ;;;;;     :help "Delete some bookmarks at point or, with `C-u', all bookmarks in the buffer"
-;;;;;     :enable (mapcar #'bookmark-name-from-full-record (bmkp-this-buffer-alist-only)))
+;;;;;     :enable (mapcar #'bmkp-bookmark-name-from-record (bmkp-this-buffer-alist-only)))
 ;;;;;   'bmkp-delete-all-autonamed-for-this-buffer)
 (define-key-after menu-bar-bookmark-map [bmkp-delete-bookmarks]
   '(menu-item "Delete Bookmarks Here..." bmkp-delete-bookmarks
@@ -524,23 +544,35 @@
 (define-key-after menu-bar-bookmark-map [delete]
   '(menu-item "Delete Bookmark..." bookmark-delete :help "Delete the bookmark you choose by name")
   'bmkp-delete-bookmarks)
-(define-key-after menu-bar-bookmark-map [rename]
-  '(menu-item "Rename Bookmark..." bookmark-rename :help "Rename the bookmark you choose by name")
-  'delete)
 (define-key-after menu-bar-bookmark-map [bmkp-purge-notags-autofiles]
   '(menu-item "Purge Autofiles with No Tags..." bmkp-purge-notags-autofiles
     :help "Delete all autofile bookmarks that have no tags")
-  'rename)
+  'delete)
 
-(define-key-after menu-bar-bookmark-map [separator-0] '("--") 'bmkp-purge-notags-autofiles)
+(define-key-after menu-bar-bookmark-map [separator-edit] '("--") ;-------------------------------------
+                  'bmkp-purge-notags-autofiles)
+;; Remove this predefined item - we use `bmkp-edit-bookmark-name-and-file' instead.
+(define-key menu-bar-bookmark-map [rename] nil)
+
+(define-key-after menu-bar-bookmark-map [bmkp-edit-bookmark-name-and-file]
+  '(menu-item "Rename or Relocate Bookmark..." bmkp-edit-bookmark-name-and-file
+    :help "Rename and/or relocate a bookmark")
+  'separator-edit)
+(define-key-after menu-bar-bookmark-map [bmkp-edit-bookmark-record]
+  '(menu-item "Edit Bookmark Record (Lisp)..." bmkp-edit-bookmark-record
+    :help "Edit the internal record of a bookmark,a Lisp sexp")
+  'bmkp-edit-bookmark-name-and-file)
+
+(define-key-after menu-bar-bookmark-map [separator-show] '("--") ;-------------------------------------
+                  'bmkp-edit-bookmark-record)
 (define-key-after menu-bar-bookmark-map [edit]
   '(menu-item "Show Bookmark List" bookmark-bmenu-list
     :help "Open the list of bookmarks in buffer `*Bookmark List*'")
-  'separator-0)
+  'separator-show)
 ;;;;; (define-key-after menu-bar-bookmark-map [bmkp-this-file/buffer-bmenu-list]
 ;;;;;   '(menu-item "Show Bookmark List for This File/Buffer" bmkp-this-buffer-file/bmenu-list
 ;;;;;     :help "Open `*Bookmark List*' for the bookmarks in the current file or buffer (only)"
-;;;;;     :enable (mapcar #'bookmark-name-from-full-record (bmkp-this-file/buffer-alist-only)))
+;;;;;     :enable (mapcar #'bmkp-bookmark-name-from-record (bmkp-this-file/buffer-alist-only)))
 ;;;;;   'edit)
 (define-key-after menu-bar-bookmark-map [bmkp-this-file/buffer-bmenu-list]
   '(menu-item "Show Bookmark List for This File/Buffer" bmkp-this-buffer-file/bmenu-list
@@ -551,7 +583,8 @@
     :help "Open `*Bookmark List*' for bookmarks in navlist (only)")
   'bmkp-this-file/buffer-bmenu-list)
 
-(define-key-after menu-bar-bookmark-map [separator-2] '("--") 'bmkp-navlist-bmenu-list)
+(define-key-after menu-bar-bookmark-map [separator-2] '("--") ;-------------------------------------
+                  'bmkp-navlist-bmenu-list)
 (define-key-after menu-bar-bookmark-map [bmkp-choose-navlist-of-type]
   '(menu-item "Set Navlist to Bookmarks of Type..." bmkp-choose-navlist-of-type
     :help "Set the navigation list to the bookmarks of a certain type")
@@ -578,7 +611,8 @@
     :help "Insert a bookmark's file or buffer name")
   'insert)
 
-(define-key-after menu-bar-bookmark-map [separator-3] '("--") 'locate)
+(define-key-after menu-bar-bookmark-map [separator-3] '("--") ;-------------------------------------
+                  'locate)
 (define-key-after menu-bar-bookmark-map [save]
   '(menu-item "Save Bookmarks" bookmark-save :help "Save currently defined bookmarks")
   'separator-3)
@@ -608,7 +642,7 @@
   'bmkp-toggle-autotemp-on-set)
 
 
-;; `bmkp-highlight-menu' of `Bookmarks' menu
+;; `bmkp-highlight-menu' of vanilla `Bookmarks' menu: `Highlight'
 
 (when (featurep 'bookmark+-lit)
   (defvar bmkp-highlight-menu (make-sparse-keymap)
@@ -636,7 +670,8 @@
   (define-key bmkp-highlight-menu [bmkp-unlight-bookmark-here]
     '(menu-item "Unhighlight This One" bmkp-unlight-bookmark-here
       :help "Unhighlight a bookmark at point or on its line."))
-  (define-key bmkp-highlight-menu [separator-1] '("--"))
+
+  (define-key bmkp-highlight-menu [separator-1] '("--")) ;------------------------------------------
   (define-key bmkp-highlight-menu [bmkp-light-bookmarks-in-region]
     '(menu-item "Highlight All in Region" bmkp-light-bookmarks-in-region
       :help "Highlight all bookmarks in the region."))
@@ -658,7 +693,8 @@
   (define-key bmkp-highlight-menu [bmkp-light-bookmark]
     '(menu-item "Highlight One..." bmkp-light-bookmark
       :help "Highlight a bookmark."))
-  (define-key bmkp-highlight-menu [separator-0] '("--"))
+
+  (define-key bmkp-highlight-menu [separator-0] '("--")) ;------------------------------------------
   (define-key bmkp-highlight-menu [bmkp-next-lighted-this-buffer]
     '(menu-item "Next in Buffer" bmkp-next-lighted-this-buffer
       :help "Cycle to the next highlighted bookmark in this buffer."))
@@ -673,7 +709,7 @@
       :help "Set individual highlighting for a bookmark.")))
 
 
-;; `bmkp-options-menu' of `Bookmarks' menu
+;; `bmkp-options-menu' of vanilla `Bookmarks' menu: `Toggle Option'
 
 (defvar bmkp-options-menu (make-sparse-keymap)
   "`Toggle Option' submenu for menu-bar `Bookmarks' menu.")
@@ -705,7 +741,7 @@
                              "Prompting for tags when setting a bookmark is %s"
                              "Prompt for tags when setting a bookmark interactively"))
 
-;; `bmkp-tags-menu' of `Bookmarks' menu
+;; `bmkp-tags-menu' of vanilla `Bookmarks' menu: `Tags'
 
 (defvar bmkp-tags-menu (make-sparse-keymap)
   "`Tags' submenu for menu-bar `Bookmarks' menu.")
@@ -722,6 +758,8 @@
 (define-key bmkp-tags-menu [bmkp-tag-a-file]
   '(menu-item "Tag a File (Add Some)..." bmkp-tag-a-file
     :help "Add some tags to the autofile bookmark for a file"))
+
+(define-key bmkp-tags-menu [tags-sep1] '("--")) ;----------------------------------------------
 (define-key bmkp-tags-menu [bmkp-rename-tag]
   '(menu-item "Rename Tag..." bmkp-rename-tag :help "Rename a tag in all bookmarks"))
 (define-key bmkp-tags-menu [bmkp-set-tag-value]
@@ -742,8 +780,10 @@
 (define-key bmkp-tags-menu [bmkp-copy-tags]
   '(menu-item "Copy Tags..." bmkp-copy-tags
     :help "Copy the tags from a bookmark, so you can paste them to another"))
+(define-key bmkp-tags-menu [bmkp-edit-tags]
+  '(menu-item "Edit Tags..." bmkp-edit-tags :help "Edit the tags of a bookmark"))
 
-;; `bmkp-jump-menu' of `Bookmarks' menu
+;; `bmkp-jump-menu' of vanilla `Bookmarks' menu: `Jump To'
 
 (defvar bmkp-jump-menu (make-sparse-keymap)
   "`Jump To' submenu for menu-bar `Bookmarks' menu.")
@@ -776,7 +816,7 @@
 ;;;;; (define-key bmkp-jump-menu [bmkp-this-buffer-jump]
 ;;;;;   '(menu-item "For This Buffer..." bmkp-this-buffer-jump
 ;;;;;     :help "Jump to a bookmark for the current buffer"
-;;;;;     :enable (mapcar #'bookmark-name-from-full-record (bmkp-this-buffer-alist-only))))
+;;;;;     :enable (mapcar #'bmkp-bookmark-name-from-record (bmkp-this-buffer-alist-only))))
 (define-key bmkp-jump-menu [bmkp-this-buffer-jump]
   '(menu-item "For This Buffer..." bmkp-this-buffer-jump
     :help "Jump to a bookmark for the current buffer"))
@@ -792,7 +832,8 @@
 (define-key bmkp-jump-menu [bmkp-jump-in-navlist-other-window]
   '(menu-item "In Navigation List..." bmkp-jump-in-navlist-other-window
     :help "Jump to a bookmark that is in the navigation list" :enable bmkp-nav-alist))
-(define-key bmkp-jump-menu [jump-sep0] '("--"))
+
+(define-key bmkp-jump-menu [jump-sep0] '("--")) ;---------------------------------------------------
 ;;;;; (define-key bmkp-jump-menu [bmkp-url-jump-other-window]
 ;;;;;   '(menu-item "URL..." bmkp-url-jump-other-window :help "Jump to a URL bookmark"
 ;;;;;     :enable (bmkp-url-alist-only)))
@@ -893,6 +934,8 @@
   '(menu-item "Of Type..." bmkp-jump-to-type-other-window
     :help "Jump to a bookmark of a type that you specify"))
 
+;; `bmkp-jump-tags-menu' of vanilla `Bookmarks' menu: `Jump To' > `With Tags'
+
 (defvar bmkp-jump-tags-menu (make-sparse-keymap)
   "`With Tags' submenu for `Jump To' submenu of `Bookmarks' menu.")
 (define-key bmkp-jump-menu [bmkp-tags] (cons "With Tags" bmkp-jump-tags-menu))
@@ -910,7 +953,8 @@
 (define-key bmkp-jump-tags-menu [bmkp-file-this-dir-some-tags-jump-other-window]
   '(menu-item "File in This Dir, Any Tag in Set..." bmkp-file-this-dir-some-tags-jump-other-window
     :help "Jump to a file bookmark in this dir that has some of a set of tags that you enter"))
-(define-key bmkp-jump-tags-menu [jump-sep4] '("--"))
+
+(define-key bmkp-jump-tags-menu [jump-sep4] '("--")) ;----------------------------------------------
 (define-key bmkp-jump-tags-menu [bmkp-file-all-tags-regexp-jump-other-window]
   '(menu-item "File, All Tags Matching Regexp..." bmkp-file-all-tags-regexp-jump-other-window
     :help "Jump to a file or dir bookmark where each tag matches a regexp that you enter"))
@@ -923,7 +967,8 @@
 (define-key bmkp-jump-tags-menu [bmkp-file-some-tags-jump-other-window]
   '(menu-item "File, Any Tag in Set..." bmkp-file-some-tags-jump-other-window
     :help "Jump to a file or dir bookmark that has some of a set of tags that you enter"))
-(define-key bmkp-jump-tags-menu [jump-sep3] '("--"))
+
+(define-key bmkp-jump-tags-menu [jump-sep3] '("--")) ;----------------------------------------------
 (define-key bmkp-jump-tags-menu [bmkp-find-file-all-tags-regexp-other-window]
   '(menu-item "Autofile, All Tags Matching Regexp..." bmkp-find-file-all-tags-regexp-other-window
     :help "Jump to a file or dir bookmark where each tag matches a regexp that you enter"))
@@ -936,7 +981,8 @@
 (define-key bmkp-jump-tags-menu [bmkp-find-file-some-tags-other-window]
   '(menu-item "Autofile, Any Tag in Set..." bmkp-find-file-some-tags-other-window
     :help "Jump to a file or dir bookmark that has some of a set of tags that you enter"))
-(define-key bmkp-jump-tags-menu [jump-sep2] '("--"))
+
+(define-key bmkp-jump-tags-menu [jump-sep2] '("--")) ;----------------------------------------------
 (define-key bmkp-jump-tags-menu [bmkp-all-tags-regexp-jump-other-window]
   '(menu-item "All Tags Matching Regexp..." bmkp-all-tags-regexp-jump-other-window
     :help "Jump to a bookmark that has each tag matching a regexp that you enter"))
