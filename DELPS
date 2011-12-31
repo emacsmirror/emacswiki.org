@@ -29,8 +29,8 @@ After that, clone "Template files" mentioned below.
 The "Template files" link points to README
 that explains the procedure step-by-step. In "Template files" repository
 see `*.shellrc' that provides functions which help in doing the packaging work.
-You must be familiar with Git, somewhat in Emacs Lisp. Under windows, you need
-<http://cygwin.com> and its command line shell.
+You must be familiar with Git, somewhat in Emacs Lisp. In Windows, you need
+<http://cygwin.com> and its command line Bash shell.
 
 * Manual: http://www.nongnu.org/emacs-epackage/manual
 * Template files:
