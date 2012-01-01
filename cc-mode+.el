@@ -4,12 +4,12 @@
 ;; Description: Extensions to `c-mode.el' & `cc-mode.el'.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams
-;; Copyright (C) 1999-2011, Drew Adams, all rights reserved.
+;; Copyright (C) 1999-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Aug 30 13:01:25 1999
 ;; Version: 20.0
-;; Last-Updated: Mon Jan  3 15:52:56 2011 (-0800)
+;; Last-Updated: Sun Jan  1 14:28:55 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 66
+;;     Update #: 68
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/cc-mode+.el
 ;; Keywords: c, c++, programming
 ;; Compatibility: GNU Emacs 20.x
@@ -18,7 +18,7 @@
 ;;
 ;;   `cc-align', `cc-cmds', `cc-defs', `cc-engine', `cc-langs',
 ;;   `cc-menus', `cc-mode', `cc-styles', `cc-vars', `custom',
-;;   `derived', `easymenu', `imenu', `imenu+', `outline', `widget'.
+;;   `derived', `easymenu', `imenu', `imenu+', `widget'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -32,7 +32,7 @@
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
-;;; Change log:
+;;; Change Log:
 ;;
 ;; 2007/05/18 dadams
 ;;     Require cl.el only at compile time, and only for Emacs < 20.
