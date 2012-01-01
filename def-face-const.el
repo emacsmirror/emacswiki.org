@@ -4,12 +4,12 @@
 ;; Description: Macro for defining faces & their variables.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams
-;; Copyright (C) 1999-2011, Drew Adams, all rights reserved.
+;; Copyright (C) 1999-2012, Drew Adams, all rights reserved.
 ;; Created: Fri Apr  2 09:08:55 1999
 ;; Version: 21.0
-;; Last-Updated: Mon Jan  3 20:47:59 2011 (-0800)
+;; Last-Updated: Sun Jan  1 14:27:33 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 86
+;;     Update #: 88
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/def-face-const.el
 ;; Keywords: faces
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -35,7 +35,7 @@
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
-;;; Change log:
+;;; Change Log:
 ;;
 ;; 2005/12/30 dadams
 ;;     Added note in Commentary about this being obsolete.
