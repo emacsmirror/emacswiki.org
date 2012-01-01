@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Sat Dec 24 11:09:45 2011 (-0800)
+;; Last-Updated: Sun Jan  1 11:54:28 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 26331
+;;     Update #: 26374
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-doc1.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -203,7 +203,7 @@
 ;;  (@> "Apropos Completions")
 ;;  (@> "Expanded-Common-Match Completion")
 ;;  (@> "Progressive Completion")
-;;    (@> "`M-*': Matching Additional Regexps")
+;;    (@> "`M-*' and `S-SPC': Matching Additional Regexps")
 ;;    (@> "Successive Approximation...")
 ;;    (@> "`M-&': Satisfying Additional Predicates")
 ;;
@@ -2183,12 +2183,17 @@
 ;;
 ;;   4... And so on.
 ;;
-;;(@* "`M-*': Matching Additional Regexps")
-;;  ** `M-*': Matching Additional Regexps **
+;;(@* "`M-*' and `S-SPC': Matching Additional Regexps")
+;;  ** `M-*' and `S-SPC': Matching Additional Regexps **
 ;;
 ;;  During completion, `M-*' is bound in the minibuffer to command
 ;;  `icicle-narrow-candidates', which prompts for a new regexp and
 ;;  matches it against the current set of completion candidates.
+;;
+;;  As is often the case in Icicles, you can think of the `*' in `M-*'
+;;  as mnemonic for Boolean multiplication, that is, AND, or set
+;;  intersection.  (It is more common and handier to use `S-SPC' than
+;;  `M-*' - see (@> "Successive Approximation...").)
 ;;
 ;;  For example, suppose that you want to know about an Emacs function
 ;;  that deletes the character to the left of point (that is,
@@ -2228,13 +2233,14 @@
 ;;
 ;;  You can use as many invocations of `M-*' (and of `M-&', described
 ;;  in the next section) as you like, in any order.  It works with
-;;  both prefix completion and apropos completion.  You can, for
-;;  instance, first use `TAB' to require the target to start with some
-;;  string, and then use `M-*' to specify other patterns that parts of
-;;  it must also match.  However, it of course makes no sense to use
-;;  `TAB' instead of `S-TAB' after you use `M-*': once you've said
-;;  that the target must start with "fo" there is no sense saying that
-;;  it also starts with "ti"!
+;;  both prefix completion and apropos completion.
+;;
+;;  You can, for instance, first use `TAB' to require the target to
+;;  start with some string, and then use `M-*' to specify other
+;;  patterns that parts of it must also match.  However, it of course
+;;  makes no sense to use `TAB' instead of `S-TAB' after you use
+;;  `M-*': once you've said that the target must start with "fo" there
+;;  is no sense saying that it also starts with "ti"!
 ;;
 ;;  As a shortcut, instead of using `S-TAB' followed by `M-*', you can
 ;;  use `S-SPC' (command `icicle-apropos-complete-and-narrow') to do
@@ -2256,16 +2262,16 @@
 ;;  Progressive completion is a set of mini-completions that are wired
 ;;  in series, not in parallel.
 ;;
-;;  Note that when you use `M-*' (or `S-SPC') in the minibuffer, it
+;;  Note that when you use `M-*' or `S-SPC' in the minibuffer, it
 ;;  calls `completing-read' or `read-file-name', which creates a
 ;;  recursive minibuffer.  That is, the minibuffer depth is increased.
 ;;  (This is not the case for `M-&', however.)  In vanilla Emacs,
 ;;  there is no indicator of the current minibuffer depth, and this
-;;  can sometimes be disorienting.  Each time you use `M-*' you push
-;;  down one level of minibuffer recursion (that is, minibuffer depth
-;;  is incremented).  Each time you use, say, `C-g', you pop up one
-;;  level of minibuffer recursion (that is, minibuffer depth is
-;;  decremented).
+;;  can sometimes be disorienting.  Each time you use `M-*' or `S-SPC'
+;;  you push down one level of minibuffer recursion (that is,
+;;  minibuffer depth is incremented).  Each time you use, say, `C-g',
+;;  you pop up one level of minibuffer recursion (that is, minibuffer
+;;  depth is decremented).
 ;;
 ;;  If you use library `mb-depth.el', which is included with Emacs 23
 ;;  and which also works with Emacs 22, Icicle mode takes advantage of
@@ -2278,11 +2284,11 @@
 ;;  standalone minibuffer frame, and it changes the background hue
 ;;  (color) of that frame slightly with each change in minibuffer
 ;;  depth.  This is especially helpful with Icicles, where use of
-;;  `M-*' (or `S-SPC') is common.
+;;  `M-*' or `S-SPC' is common.
 ;;
 ;;  There is a slight difference in behavior between Icicles commands
-;;  and some other Emacs commands when you accept input after `M-*'.
-;;  When possible, Icicles accepts your input and passes it
+;;  and some other Emacs commands when you accept input after `M-*' or
+;;  `SPC'.  When possible, Icicles accepts your input and passes it
 ;;  immediately to the top level, bypassing any intermediate recursive
 ;;  minibuffer levels that are waiting for input.  However, Emacs
 ;;  commands that are defined with literal-string `interactive' specs,
@@ -2296,13 +2302,14 @@
 ;;  when you write commands that use completion.
 ;;
 ;;  Note: If you use progressive completion with file names in Emacs
-;;  20 or 21, `M-*' calls `completing-read', not `read-file-name'.
-;;  This is because `read-file-name' does not accept a PREDICATE
-;;  argument before Emacs 22.  The effect is that instead of there
-;;  being a default directory for completion, the current directory at
-;;  the time you hit `M-*' is tacked onto each file name, to become
-;;  part of the completion candidates themselves.  Yes, this is a
-;;  hack.  It works, but be aware of the behavior.
+;;  20 or 21, `M-*' or `S-SPC' calls `completing-read', not
+;;  `read-file-name'.  This is because `read-file-name' does not
+;;  accept a PREDICATE argument before Emacs 22.  The effect is that
+;;  instead of there being a default directory for completion, the
+;;  current directory at the time you hit `M-*' or `S-SPC' is tacked
+;;  onto each file name, to become part of the completion candidates
+;;  themselves.  Yes, this is a hack.  It works, but be aware of the
+;;  behavior.
 ;;
 ;;  Progressive completion lets you match multiple regexps, some of
 ;;  which could of course be literal substrings, with their regexp
@@ -2317,18 +2324,18 @@
 ;;(@* "`M-&': Satisfying Additional Predicates")
 ;;  ** `M-&': Satisfying Additional Predicates **
 ;;
-;;  If you use Icicles, then you will use `M-*' very often.  This
-;;  section describes a seldom-used feature that can be useful in
+;;  If you use Icicles, then you will use `M-*' or `S-SPC' very often.
+;;  This section describes a seldom-used feature that can be useful in
 ;;  certain contexts.  If you are new to Icicles or you are unfamiliar
 ;;  with Emacs Lisp, then you might want to just skim this section or
 ;;  skip it and come back to it later.
 ;;
-;;  Just as you can use `M-*' to narrow the set of candidates by
-;;  matching an additional regexp, so you can use `M-&' (bound to
-;;  `icicle-narrow-candidates-with-predicate') to narrow by satisfying
-;;  an additional predicate.  The idea is the same; the only
-;;  difference is that, instead of typing a regexp to match, you type
-;;  a predicate to satisfy.
+;;  Just as you can use `M-*' or `S-SPC' to narrow the set of
+;;  candidates by matching an additional regexp, so you can use `M-&'
+;;  (bound to `icicle-narrow-candidates-with-predicate') to narrow by
+;;  satisfying an additional predicate.  The idea is the same; the
+;;  only difference is that, instead of typing a regexp to match, you
+;;  type a predicate to satisfy.
 ;;
 ;;  The predicate is a Boolean function of a single completion
 ;;  candidate.  At the prompt, you enter its name or its
@@ -5598,9 +5605,9 @@
 ;;  commands that also act, not on individual completion candidates,
 ;;  but on one or more sets of completion candidates.
 ;;
-;;  One of these is `M-*', which effectively narrows the set of
-;;  completion candidates by taking the intersection of the candidate
-;;  sets defined by various input regexps.
+;;  One of these is `M-*' or `S-SPC', which effectively narrows the
+;;  set of completion candidates by taking the intersection of the
+;;  candidate sets defined by various input regexps.
 ;;
 ;;  This section presents some more Icicles commands that act on sets
 ;;  of completion candidates.  The basic idea is that you can perform
@@ -5796,10 +5803,10 @@
 ;;    the current set of candidates: replace the current candidate set
 ;;    with its set complement.  This means all possible completions of
 ;;    the appropriate type that do *not* match the current input.  You
-;;    can combine this with progressive completion (`M-*') to
-;;    progressively eliminate candidates that match different inputs.
-;;    This process-of-elimination matching is a common Icicles usage
-;;    idiom.
+;;    can combine this with progressive completion (`M-*' or `S-SPC')
+;;    to progressively eliminate candidates that match different
+;;    inputs.  This process-of-elimination matching is a common
+;;    Icicles usage idiom.
 ;;
 ;;  * `icicle-candidate-set-union', bound to `C-+'.  Replace the
 ;;    current candidate set by its union with the saved set of
@@ -5816,16 +5823,17 @@
 ;;
 ;;  * `icicle-candidate-set-intersection', bound to `C-*'.  Replace
 ;;    the current candidate set by its intersection with the saved set
-;;    of candidates.  Unlike the set intersection provided by `M-*',
-;;    `C-*' is, in itself, a one-time operation.  `M-*' can be
-;;    repeated, using the previous intersection as one of the sets to
-;;    be intersected in a new operation.  Both `C-*' and `M-*' use the
-;;    current set of matching candidates as one of the sets being
-;;    intersected.  But `M-*' reads another input regexp to define the
-;;    other set to be intersected, whereas `C-*' uses the saved
-;;    candidates set as the other set.  `M-*' is useful for chaining,
-;;    to achieve progressive approximation.  `C-*' is useful to
-;;    perform an intersection on a set from a previous input reading.
+;;    of candidates.  Unlike the set intersection provided by `M-*'
+;;    (or `S-SPC'), `C-*' is, in itself, a one-time operation.  `M-*'
+;;    (or `S-SPC') can be repeated, using the previous intersection as
+;;    one of the sets to be intersected in a new operation.  Both
+;;    `C-*' and `M-*' use the current set of matching candidates as
+;;    one of the sets being intersected.  But `M-*' reads another
+;;    input regexp to define the other set to be intersected, whereas
+;;    `C-*' uses the saved candidates set as the other set.  `M-*' (or
+;;    `S-SPC') is useful for chaining, to achieve progressive
+;;    approximation.  `C-*' is useful to perform an intersection on a
+;;    set from a previous input reading.
 ;;
 ;;  * `icicle-candidate-set-truncate', bound to `M-$'.  Truncate the
 ;;    set of completion candidates, so that it includes only the first
@@ -5889,7 +5897,8 @@
 ;;  * (@> "Choose All Completion Candidates") for information about
 ;;    `C-!'.
 ;;
-;;  * (@> "Progressive Completion") for information about `M-*'.
+;;  * (@> "Progressive Completion") for information about `M-*' and
+;;    `S-SPC'.
 ;;
 ;;  * (@> "File-Name Input and Locating Files Anywhere") and
 ;;    (@> "Persistent Sets of Completion Candidates"), for information
@@ -5979,7 +5988,7 @@
 ;;  words") and OR matching ("with at least one of the words").
 ;;
 ;;  In Icicles, you can use progressive completion to perform AND
-;;  matching: use `M-*' to introduce each term to match.
+;;  matching: use `M-*' or `S-SPC' to introduce each term to match.
 ;;  Alternatively, you can use `C-*'
 ;;  (`icicle-candidate-set-intersection').  You can use `C-+'
 ;;  (`icicle-candidate-set-union') to perform OR matching.  Note that,
@@ -5994,15 +6003,16 @@
 ;;  hits: "without the words".
 ;;
 ;;  In Icicles, you can use `C-~' (`icicle-candidate-set-complement')
-;;  to exclude matching completion candidates.  You can combine this
-;;  with progressive completion, to exclude any number of terms: `toto
-;;  C-~ M-* titi C-~ M-* foobar' excludes all candidates matching
-;;  toto, titi, or foobar.  Use this process-of-eliminiation technique
-;;  to progressively pare down the set of possible candidates.  Note
-;;  that such generalized complementing (as opposed to complementing a
-;;  character set) is not possible using a single regexp - you cannot
-;;  use a regular expression to say "Show me everything that does
-;;  *not* match this".  See (@> "Sets of Completion Candidates") and
+;;  to exclude matching completion candidates.  You can chain this
+;;  operation, as a form of progressive completion, to exclude any
+;;  number of terms: `toto S-TAB C-~ titi C-~ foobar C-~' excludes all
+;;  candidates matching toto, titi, or foobar.  Use this
+;;  process-of-eliminiation technique to progressively pare down the
+;;  set of possible candidates.  Note that such generalized
+;;  complementing (as opposed to complementing a character set) is not
+;;  possible using a single regexp - you cannot use a regular
+;;  expression to say "Show me everything that does *not* match this".
+;;  See (@> "Sets of Completion Candidates") and
 ;;  (@> "Progressive Completion").
  
 ;;(@* "Buffer-Name Input")
@@ -6426,9 +6436,10 @@
 ;;  combined with Icicles features for sculpting the current set of
 ;;  matching candidates.  As far as I know, Icicles is the only
 ;;  package to offer this feature.  You spend a few moments to
-;;  fine-tune a set of candidates, using, for example, `M-*', `C-~',
-;;  and `delete', and then save it for later use.  From then on, you
-;;  can match against exactly those candidates anytime you want.
+;;  fine-tune a set of candidates, using, for example, `M-*' or
+;;  `S-SPC', `C-~', and `delete', and then save it for later use.
+;;  From then on, you can match against exactly those candidates
+;;  anytime you want.
 ;;
 ;;  For example, you might have a software project that involves only
 ;;  certain directories and perhaps only certain kinds of files in
