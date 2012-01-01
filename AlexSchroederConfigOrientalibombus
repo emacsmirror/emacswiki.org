@@ -32,7 +32,7 @@
 ;; Paths, since my .bashrc is not being read
 (add-to-list 'exec-path "~/bin")
 (add-to-list 'load-path "~/elisp")
-(setenv "WikiDataDir" "/Users/alex/oddmuse/test-data")
+(setenv "WikiDataDir" "/home/alex/src/oddmuse/test-data")
 
 (require 'cl)
 (defalias 'yes-or-no-p 'y-or-n-p)
@@ -539,15 +539,17 @@ feed address and the blog title."
       rcirc-server-alist
       '(("irc.freenode.net" :channels
 	 ("#emacs" "#emacs-ops" "#rcirc" "#wiki" "#oddmuse" "#epfarms"
-	  "#perl6"))
-	;; "#clojure" "#clojure.de"
-	("ircnet.eversible.com" :channels ("#drsrm"))
-	("irc.ch.euirc.net" :channels ("#tanelorn"))
+	  ;; "#perl6"
+	  ))
+	;; "#clojure" "#clojure.de" "#xubuntu"
+	;; ("ircnet.eversible.com" :channels ("#drsrm"))
+	;; ("irc.ch.euirc.net" :channels ("#tanelorn"))
 	("irc.perl.org" :channels ("#perlde" "#oddmuse"))
 	;; ("irc.sorcery.net" :channels ("#rpmn"))
 	("localhost" :channels ("&bitlbee" "&bsi" "&roleplaying" "&emacs"
 				"&facebook"))
-	("irc.oftc.net" :channels ("#bitlbee")))
+	;; ("irc.oftc.net" :channels ("#bitlbee"))
+	)
       rcirc-decode-coding-system 'undecided
       rcirc-coding-system-alist
       '(("#nihongo" undecided . iso-2022-jp))
@@ -672,6 +674,30 @@ Returns the list of windows."
 (defface rcirc-prompt '((t (:foreground "orchid")))
   "My prompt for rcirc.")
 
+;; (t.co-resolve "http://t.co/AvQV2dTP")
+
+(defun t.co-resolve (url)
+  "Resolve t.co URL by launching `curl --head' and parsing the result."
+  (assert (string-match (concat "^" rcirc-url-regexp "$") url))
+  (let* ((curl (shell-command-to-string (format "curl --silent --head %s" url)))
+	 (location (when (and (string-match "\\`HTTP/1\.1 301" curl)
+			      (string-match (concat "^Location: "
+						    rcirc-url-regexp) curl))
+		     (match-string 1 curl))))
+    (or location url)))
+
+;; (with-temp-buffer (insert "hallo http://t.co/AvQV2dTP hallo") (goto-char (point-min)) (t.co-url-replace nil nil) (buffer-string))
+
+(defun t.co-url-replace (sender response)
+  "Call `t.co-resolve' on every matching URL."
+  (let ((re "http://t\\.co/[a-z0-9]+"))
+    (while (re-search-forward re nil t)
+      (replace-match (save-match-data (t.co-resolve (match-string 0)))))))
+
+(eval-after-load 'rcirc
+  '(add-to-list 'rcirc-markup-text-functions
+		't.co-url-replace))
+
 ;;; elim / garak
 ;; (add-to-list 'load-path "~/elisp/elim")
 ;; (autoload 'garak "garak.el" "Instant messaging client." t)
@@ -793,8 +819,7 @@ Otherwise, use the value of said variable as argument to a funcall."
 	("CommunityWiki" "http://www.communitywiki.org/cw" utf-8 "question")
 	("OddmuseWiki" "http://www.oddmuse.org/cgi-bin/oddmuse" utf-8 "question")
 	("Alex" "http://www.emacswiki.org/cgi-bin/alex" utf-8 "question")
-	("GoldenLanterns" "http://www.campaignwiki.org/wiki/GoldenLanterns" utf-8)
-	("Kaylash" "http://campaignwiki.org/wiki/Kaylash" utf-8)))
+	("DungeonMaps" "http://www.campaignwiki.org/wiki/DungeonMaps" utf-8)))
 
 (add-hook 'text-mode-hook
 	  (lambda ()
