@@ -202,5 +202,35 @@ I know it really is an ugly hack, because it supposes that you make all your con
 
 :: BitlBee 1.2: use <tt>account set</tt>
 
+== Twitter's URL shortener t.co for rcirc ==
+
+Here's how to expand all t.co links by running ##curl --silent --head## on each one of them.
+
+{{{
+
+;; (t.co-resolve "http://t.co/AvQV2dTP")
+(defun t.co-resolve (url)
+  "Resolve t.co URL by launching `curl --head' and parsing the result."
+  (assert (string-match (concat "^" rcirc-url-regexp "$") url))
+  (let* ((curl (shell-command-to-string (format "curl --silent --head %s" url)))
+	 (location (when (and (string-match "\\`HTTP/1\.1 301" curl)
+			      (string-match (concat "^Location: "
+						    rcirc-url-regexp) curl))
+		     (match-string 1 curl))))
+    (or location url)))
+
+;; (with-temp-buffer (insert "hallo http://t.co/AvQV2dTP hallo") (goto-char (point-min)) (t.co-url-replace nil nil) (buffer-string))
+
+(defun t.co-url-replace (sender response)
+  "Call `t.co-resolve' on every matching URL."
+  (let ((re "http://t\\.co/[a-z0-9]+"))
+    (while (re-search-forward re nil t)
+      (replace-match (save-match-data (t.co-resolve (match-string 0)))))))
+
+(add-to-list 'rcirc-markup-text-functions
+	     't.co-url-replace)
+
+}}}
+
 ----
 CategoryChatClient
