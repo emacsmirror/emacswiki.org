@@ -43,14 +43,14 @@ By default, '''Icicles''' ([[apropos completion|apropos]]-)matches [[regexp]]s, 
 
 Google has search fields for AND matching ("with '''all''' of the words") and OR matching ("with '''at least one''' of the words"). 
 
-In '''Icicles''', you can use [[progressive completion]] to perform AND matching: use '''`##M-*##'''' to introduce each term to match. Alternatively, you can use '''`##C-*##'''' (`icicle-candidate-set-intersection'). You can use '''`##C-+##'''' (`icicle-candidate-set-union') to perform OR matching.  Note that, by definition, unordered
+In '''Icicles''', you can use [[progressive completion]] to perform AND matching: use '''`##M-*##'''' or `S-SPC' to introduce each term to match. Alternatively, you can use '''`##C-*##'''' (`icicle-candidate-set-intersection'). You can use '''`##C-+##'''' (`icicle-candidate-set-union') to perform OR matching.  Note that, by definition, unordered
 AND matching is not possible using a single regexp.  See [[Icicles - Progressive Completion]] and [[Icicles - Candidate Sets]].
 
 === NOT Matching ===
 
 Google has a search field for terms that must not occur in search hits: "'''without''' the words".
 
-In '''Icicles''', you can use '''`##C-~##'''' (`icicle-candidate-set-complement') to exclude matching completion candidates. You can combine this with progressive completion, to exclude any number of terms: `##toto C-~ M-* titi C-~ M-* foobar##' excludes all candidates matching ##toto##, ##titi##, or ##foobar##. Use this process-of-eliminiation technique to progressively pare down the set of possible candidates.  Note
+In '''Icicles''', you can use '''`##C-~##'''' (`icicle-candidate-set-complement') to ''exclude'' matching completion candidates. You can chain this operation, as a form of progressive completion, to exclude any number of terms: `##toto S-TAB ##'''##C-~ ##'''##titi ##'''##C-~ ##'''##foobar ##'''##C-~##'''' excludes all candidates matching ##toto##, ##titi##, or ##foobar##. Use this process-of-eliminiation technique to progressively pare down the set of possible candidates.  Note
 that such generalized complementing (as opposed to complementing a
 character set) is not possible using a single regexp -- you cannot
 use a regular expression to say "Show me everything that does
