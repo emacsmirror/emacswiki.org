@@ -9,7 +9,7 @@
 Whereas `C-RET' (see [[Icicles - Multi-Commands]]) acts 
 on individual objects, `##C-!##' acts on an entire set of objects at once, via their ''names'': the ''set of all current [[completion]] candidates''.  There are additional '''Icicles''' [[command]]s that also act, not on individual completion candidates, but on one or more sets of completion candidates.
 
-One of these is '''`M-*'''', which effectively narrows the set of
+One of these is '''`M-*'''' or `S-SPC', which effectively narrows the set of
 completion candidates by taking the intersection of the candidate
 sets defined by various input [[regexp]]s.  
 
@@ -209,7 +209,7 @@ command, they must be [[command]] names.
 the current set of candidates: replace the current candidate set
 with its set complement.  This means all possible completions of
 the appropriate type that do '''''not''''' match the current input.  You
-can combine this with [[progressive completion]] (`##M-*##') to progressively eliminate candidates that
+can combine this with [[progressive completion]] (`M-*' or `S-SPC') to progressively eliminate candidates that
 match different inputs. This ''process-of-elimination matching'' is a common '''Icicles''' usage idiom. 
 
 * '''`icicle-candidate-set-union'''', bound to '''`##C-+##''''.  Replace the
@@ -227,14 +227,14 @@ just use `icicle-candidate-set-swap' followed by
 
 * '''`icicle-candidate-set-intersection'''', bound to '''`C-*''''.  Replace
 the current candidate set by its '''''intersection''''' with the saved
-set of candidates.  Unlike the set intersection provided by `M-*',
-`C-*' is, in itself, a one-time operation.  `M-*' can be
+set of candidates.  Unlike the set intersection provided by `M-*' (or `S-SPC'),
+`C-*' is, in itself, a one-time operation.  `M-*' (or `S-SPC') can be
 repeated, using the previous intersection as one of the sets to
 be intersected in a new operation.  Both `C-*' and `M-*' use the
 current set of matching candidates as one of the sets being
 intersected.  But `M-*' reads another input regexp to define the
 other set to be intersected, whereas `C-*' uses the saved
-candidates set as the other set.  `M-*' is useful for chaining,
+candidates set as the other set.  `M-*' (or `S-SPC') is useful for chaining,
 to achieve progressive approximation.  `C-*' is useful to
 perform an intersection on a set from a previous input reading.
 
@@ -289,7 +289,7 @@ is a possibly signed integer.
 
 * [[Icicles - Multi-Commands]] for information about `C-RET'.
 * [[Icicles - Choose All Candidates]] for information about `##C-!##'.
-* [[Icicles - Progressive Completion]] for information about `##M-*##'.
+* [[Icicles - Progressive Completion]] for information about `M-*' and `S-SPC'.
 * [[Icicles - File-Name Input]] and [[Icicles - Persistent Completions]] for information about saving completion candidates persistently and retrieving
 them later.
 * [[Icicles - History Enhancements]], [[Icicles - Search Commands, Overview]], and [[Icicles - Google Matching]] for examples of other set operations on input candidates.
