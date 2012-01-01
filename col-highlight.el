@@ -4,12 +4,12 @@
 ;; Description: Highlight the current column.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams
-;; Copyright (C) 2006-2011, Drew Adams, all rights reserved.
+;; Copyright (C) 2006-2012, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 08 11:06:35 2006
 ;; Version: 22.0
-;; Last-Updated: Mon Jan  3 19:55:33 2011 (-0800)
+;; Last-Updated: Sun Jan  1 14:28:33 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 320
+;;     Update #: 323
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/col-highlight.el
 ;; Keywords: faces, frames, emulation, highlight, cursor, accessibility
 ;; Compatibility: GNU Emacs: 22.x, 23.x
@@ -109,7 +109,7 @@
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; 
-;;; Change log:
+;;; Change Log:
 ;;
 ;; 2011/01/03 dadams
 ;;     Added autoload cookies for defgroup, defcustom, defface, and commands.
