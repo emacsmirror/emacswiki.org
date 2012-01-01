@@ -2,6 +2,7 @@
 
 ;; Copyright © 2011 Richard Kim
 ;; Author: Richard Y. Kim, <emacs18@gmail.com>
+;; Version: 0.2
 ;;
 ;; This program is free software: you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -15,7 +16,14 @@
 ;;
 ;; You should have received a copy of the GNU General Public License
 ;; along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+;;; Change Log:
 ;;
+;; 2011/12/31 version 0.1 - initial release
+;; 2011/12/31 version 0.2 - improvments from Michael Heerdegen to use
+;;      locate-library function rather than exec-directory to find elisp files
+;;      as well as other tweaks.
+
 ;;; Commentary:
 ;;
 ;; Forthcoming emacs 24 introduces elisp packaging system which is not
@@ -51,33 +59,32 @@
   "Copy package.el and other related files from emacs 24 lisp directory to
 current directory while making necessary changes so that the copied files can
 be used in emacs 23."
-  (let ((lisp-directory (expand-file-name "../lisp" exec-directory))
-        (dest-directory (expand-file-name "."))
-        text-to-copy)
+  (let ((dest-directory default-directory)
+        text-to-copy
+        (make-backup-files nil))
+
+    (auto-compression-mode +1)          ;sources may be .gz like on Debian
 
     ;; First copy three files to current directory.
-    (copy-file (expand-file-name "emacs-lisp/package.el" lisp-directory)
-               (expand-file-name "package.el" dest-directory)
-               'overwrite-if-already-exists)
-    (copy-file (expand-file-name "emacs-lisp/tabulated-list.el" lisp-directory)
-               (expand-file-name "tabulated-list.el" dest-directory)
-               'overwrite-if-already-exists)
-    (copy-file (expand-file-name "help-mode.el" lisp-directory)
-               (expand-file-name "help-mode.el" dest-directory)
-               'overwrite-if-already-exists)
+    (copy-file (locate-library "package.el") dest-directory
+               'ok-if-already-exists)
+    (copy-file (locate-library "tabulated-list.el") dest-directory
+               'ok-if-already-exists)
+    (copy-file (locate-library "help-mode.el") dest-directory
+               'ok-if-already-exists)
 
     ;; Edit package.el by copying one sexp from startup.el.
     ;; package-subdirectory-regexp is defined in startup.el, but used in
     ;; package.el, so simply lift that one sexp out of startup.el and pluck it
-    ;; into package.el.
-    (find-file (expand-file-name "startup.el" lisp-directory))
+    ;; into package.el
+    (find-file (locate-library "startup.el"))
     (re-search-forward "^(defconst package-subdirectory-regexp" nil t)
     (beginning-of-line)
     (setq text-to-copy
           (buffer-substring (point) (progn (forward-sexp) (1+ (point)))))
     (kill-buffer)
     ;; Paste the copied text into package.el
-    (find-file (expand-file-name "package.el" dest-directory))
+    (find-file (locate-library "package.el" nil (list dest-directory)))
     (re-search-forward "^(defgroup package" nil t)
     (beginning-of-line)
     (insert text-to-copy)
@@ -86,16 +93,16 @@ be used in emacs 23."
     (kill-buffer)
 
     ;; Copy one sexp from subr.el to be pasted into help-mode.el
-    ;; make-composed-keymap is defined in subr.el, but used in help-mode.el,
-    ;; so lift that one sexp and add it to help-mode.el.
-    (find-file (expand-file-name "subr.el" lisp-directory))
+    ;; make-composed-keymap is defined in subr.el, but used in help-mode.el, so
+    ;; lift that one sexp and add it to help-mode.el.
+    (find-file (locate-library "subr.el"))
     (re-search-forward "^(defun make-composed-keymap " nil t)
     (beginning-of-line)
     (setq text-to-copy
           (buffer-substring (point) (progn (forward-sexp) (1+ (point)))))
     (kill-buffer)
     ;; Paste the copied text into help-mode.el.
-    (find-file (expand-file-name "help-mode.el" dest-directory))
+    (find-file (locate-library "help-mode.el" nil (list dest-directory)))
     (re-search-forward "^(defvar help-mode-map" nil t)
     (beginning-of-line)
     (insert text-to-copy)
@@ -108,7 +115,7 @@ be used in emacs 23."
     ;; tabulated-list-glyphless-char-display to nil.  This does not seem to
     ;; cause any problems.  Also define bidi-string-mark-left-to-right to just
     ;; return its argument.
-    (find-file (expand-file-name "tabulated-list.el" dest-directory))
+    (find-file (locate-library "tabulated-list.el" nil (list dest-directory)))
     (re-search-forward "^(defvar " nil t)
     (beginning-of-line)
     (insert ";; bidi-string-mark-left-to-right exists only in emacs 24\n")
