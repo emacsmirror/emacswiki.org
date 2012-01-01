@@ -4,12 +4,12 @@
 ;; Description: Extensions to `help-mode.el'
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams
-;; Copyright (C) 2004-2011, Drew Adams, all rights reserved.
+;; Copyright (C) 2004-2012, Drew Adams, all rights reserved.
 ;; Created: Sat Nov 06 15:14:12 2004
 ;; Version: 21.0
-;; Last-Updated: Tue Jan  4 10:12:48 2011 (-0800)
+;; Last-Updated: Sun Jan  1 14:36:20 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 100
+;;     Update #: 104
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/help-mode+.el
 ;; Keywords: help
 ;; Compatibility: GNU Emacs: 22.x, 23.x
@@ -38,7 +38,7 @@
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
-;;; Change log:
+;;; Change Log:
 ;;
 ;; 2011/01/04 dadams
 ;;     Removed autoload cookie from non-interactive function.
