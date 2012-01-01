@@ -89,12 +89,12 @@ to search ''sentences'', "##\\(.+\n\\)+##" to search ''paragraphs'', or
 respectively.  See [[Icicles - Dot, Dot, Dot]] for information about
 ''multi-line dot'' ('''`##.##''''), which matches also newline.
 
-Again, you can use [[progressive completion]] (`##M-*##' or `S-SPC') to match several
+Again, you can use [[progressive completion]] (`M-*' or `S-SPC') to match several
 different regexps within the same page or the same sentence.  For
 example, you could find all sentences that contain `character',
 `delete', and `backward', in any order, as follows:
 
-  C-c ` [A-Z][^.?!]+[.?!] RET character M-* delete M-* backward
+  C-c ` [A-Z][^.?!]+[.?!] RET character S-SPC delete S-SPC backward
 
 When you visit a search context, both
 `icicle-occur' and `icicle-search' highlight that hit.  For
@@ -814,7 +814,7 @@ candidate set -- how to match the regexp.
 * [[Icicles - Search-And-Replace]] for information about replacing search hits or parts of search hits.
 * [[Icicles - Customization and General Tips]] for information about the
 `icicle-search-*' [[face]]s, which control '''Icicles''' search.
-* [[Icicles - Progressive Completion]] for information about `##M-*##' and `##M-&##'.
+* [[Icicles - Progressive Completion]] for information about `M-*', `S-SPC, and `##M-&##'.
 * [[Icicles - Multi-Commands]] for information about `C-RET', `C-mouse-2', `C-next', and `C-prior'.
 * [[Icicles - Bookmark Enhancements]] for information about searching bookmarks.
 * [[Icicles - Inserting a Regexp from a Variable or Register]] for more about inserting a saved string.
