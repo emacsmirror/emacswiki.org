@@ -4,12 +4,12 @@
 ;; Description: Extensions to `apropos.el'
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams
-;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
+;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Thu Jun 22 15:07:30 2000
 ;; Version: 21.0
-;; Last-Updated: Mon Jan  3 14:47:59 2011 (-0800)
+;; Last-Updated: Sun Jan  1 14:29:41 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 46
+;;     Update #: 49
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/apropos+.el
 ;; Keywords: help
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -24,11 +24,11 @@
 ;;
 ;; New command `apropos-user-options'.
 ;;
-;;  It only lists user-definable variables.
+;;  It lists only user-definable variables.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
-;;; Change log:
+;;; Change Log:
 ;;
 ;; 2007/11/27 dadams
 ;;     apropos-user-options: If available, use icicle-read-string-completing.
