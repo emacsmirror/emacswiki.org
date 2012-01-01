@@ -48,12 +48,28 @@ that does what you want, try getting there a step at a time:
 # ... And so on.
 
 
+
+
+
+
+
+
+
+
+
+
+
 [:Regexps]
-=== `M-*': Matching Additional Regexps ===
+=== `M-*' and `S-SPC': Matching Additional Regexps ===
 
 During [[completion]], '''`M-*'''' is bound in the [[minibuffer]] to [[command]]
 '''`icicle-narrow-candidates'''', which prompts for a new regexp and
 matches it against the current set of completion candidates.
+
+As is often the case in '''Icicles''', you can think of the '''`*'''' in `M-*'
+as mnemonic for Boolean multiplication, that is, AND, or set
+intersection.  (It is more common and handier to use `S-SPC' than
+`M-*' -- see [[#SuccessiveApproximation|Successive Approximation]].)
 
 For example, suppose that you want to know about an Emacs function that deletes the character to the left of [[point]] (that is,
 backward).  You do not recall if it is `delete-character-back',
@@ -89,12 +105,19 @@ once, and you'll be hooked.''
 
 
 
+
+
+
+
+
+
 [:SuccessiveApproximation]
 === Successive Approximation... ===
 
-You can use as many invocations of `##M-*##' (and of `##M-&##', described
+You can use as many invocations of `M-*' (and of `##M-&##', described
 in the next section) as you like, in
 any order.  It works with both [[prefix completion]] and [[apropos completion]].
+
 You can, for instance, first use `TAB' to require the target to start with some
 string, and then use `M-*' to specify other patterns that parts of
 it must also match.  However, it of course makes no sense to
@@ -103,7 +126,7 @@ that the target must start with "##fo##" there is no sense saying that
 it also starts with "##ti##"! 
 
 As a shortcut, instead of using `S-TAB'
-followed by `##M-*##', you can use '''`S-SPC'''' (command
+followed by `M-*', you can use '''`S-SPC'''' (command
 '''`icicle-apropos-complete-and-narrow'''') to do the same thing.    You can thus use only `S-SPC', any number of
 times, to choose a candidate by narrowing down the matches.
 
@@ -121,12 +144,12 @@ multiple parts of a compound target, which is something different
 (see [[Icicles - Multi-Completions]]).  Progressive completion is a set of mini-completions that
 are wired in series, not in parallel.
 
-Note that when you use `##M-*##' (or `S-SPC') in the minibuffer, it calls
+Note that when you use `M-*' or `S-SPC' in the minibuffer, it calls
 `completing-read', which creates a ''recursive minibuffer''.  That is,
 the minibuffer depth is increased.    (This is not the case
 for `##M-&##', however.)  In vanilla Emacs, there is no indicator
 of the current minibuffer depth, and this can sometimes be
-disorienting.  Each time you use `##M-*##' you push down one level of
+disorienting.  Each time you use `M-*' or `S-SPC' you push down one level of
 minibuffer recursion (that is, minibuffer depth is incremented).
 Each time you use, say, `C-g', you pop up one level of minibuffer
 recursion (that is, minibuffer depth is decremented).
@@ -142,11 +165,11 @@ feedback on the current minibuffer depth.  '''OneOnOneEmacs''' gives you a
 standalone minibuffer frame, and it changes the background hue
 (color) of that frame slightly with each change in minibuffer
 depth.  This is especially helpful with '''Icicles''', where use of
-`##M-*##' (or `S-SPC') is common.  See [[Dedicated Minibuffer Frame]].
+`M-*' or `S-SPC' is common.  See [[Dedicated Minibuffer Frame]].
 
 There is a slight difference in behavior between
 '''Icicles''' commands and some other Emacs commands when you accept
-input after `##M-*##'.  When possible, '''Icicles''' accepts your input and
+input after `M-*' or `S-SPC'.  When possible, '''Icicles''' accepts your input and
 passes it immediately to the top level, bypassing any intermediate
 recursive minibuffer levels that are waiting for input.  However,
 Emacs commands that are defined with `interactive' specs, such as
@@ -160,11 +183,11 @@ this is one reason to use `completing-read' and `read-file-name'
 when you write commands that use completion.
 
 Note: If you use progressive completion with file names in Emacs
-20 or 21, `##M-*##' calls `completing-read', not `read-file-name'.
+20 or 21, `M-*' or `S-SPC' calls `completing-read', not `read-file-name'.
 This is because `read-file-name' does not accept a ##PREDICATE##
 argument before Emacs 22.  The effect is that instead of there
 being a default directory for completion, the current directory at
-the time you hit `##M-*##' is tacked onto each file name, to become
+the time you hit `M-*' or `S-SPC' is tacked onto each file name, to become
 part of the completion candidates themselves.  Yes, this is a hack.
 It works, but be aware of the behavior.
 
@@ -180,16 +203,26 @@ See [[Icicles - Special Characters in Input Patterns#Escaping|Escaping Special C
 
 
 
+
+
+
+
+
+
+
+
+
+
 [:Predicates]
 === `M-&': Satisfying Additional Predicates ===
 
-If you use '''Icicles''', then you will use `##M-*##' very often.  This
+If you use '''Icicles''', then you will use `M-*' or `S-SPC' very often.  This
 section describes a seldom-used feature that can be useful in
 certain contexts.  If you are new to '''Icicles''' or you are unfamiliar
 with EmacsLisp, then you might want to just ''skim this section'' or
 skip it and come back to it later.
 
-Just as you can use `##M-*##' to narrow the set of candidates by
+Just as you can use `M-*' or `S-SPC' to narrow the set of candidates by
 matching an additional regexp, so you can use '''`##M-&##'''' (bound to
 '''`icicle-narrow-candidates-with-predicate'''') to narrow by satisfying
 an additional predicate.  The idea is the same; the only
