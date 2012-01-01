@@ -37,6 +37,11 @@ actions defined for the object.  See [[Icicles - Anything]] for more information
 
 
 
+
+
+
+
+
 === Apropos Completion ===
 
 You can use [[apropos completion]] with `M-x' to narrow the set of
@@ -50,8 +55,8 @@ but you might not have thought about it in these terms.  If you
 want to invoke some command on a [[buffer]], you might start by typing
 `M-x buffer S-TAB' or `M-x buff S-TAB'.  This is simple, but it
 really does get you most of the way toward object-action
-interaction.  And you can of course then use [[progressive completion]] (`##M-*##') to filter the matching commands for additional
-object-type names; for example `##M-* window##' keeps only those
+interaction.  And you can of course then use [[progressive completion]] (`M-*' or `S-SPC') to filter the matching commands for additional
+object-type names; for example `##S-SPC window##' keeps only those
 commands whose names contain both `buffer' and `window'.
 
 Of
