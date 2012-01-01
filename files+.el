@@ -4,12 +4,12 @@
 ;; Description: Enhancements of standard library `files.el'.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams
-;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
+;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Fri Aug 11 14:24:13 1995
 ;; Version: 21.0
-;; Last-Updated: Mon Dec 19 23:27:27 2011 (-0800)
+;; Last-Updated: Sun Jan  1 14:22:44 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 595
+;;     Update #: 597
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/files+.el
 ;; Keywords: internal, extensions, local
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -766,9 +766,7 @@ and `..'."
 ;;         (progn
 ;;           (skip-chars-forward " \t")
 ;;           (setq beg (point))
-;;           (search-forward "-*-"
-;;                           (save-excursion (end-of-line) (point))
-;;                           t))
+;;           (search-forward "-*-" (line-end-position) t))
 ;;         (progn
 ;;           (forward-char -3)
 ;;           (skip-chars-backward " \t")
