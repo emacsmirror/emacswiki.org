@@ -209,6 +209,7 @@ Here's how to expand all t.co links by running ##curl --silent --head## on each 
 {{{
 
 ;; (t.co-resolve "http://t.co/AvQV2dTP")
+
 (defun t.co-resolve (url)
   "Resolve t.co URL by launching `curl --head' and parsing the result."
   (assert (string-match (concat "^" rcirc-url-regexp "$") url))
