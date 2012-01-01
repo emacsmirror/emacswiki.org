@@ -4,35 +4,38 @@
 ;; Description: Set various calendar, diary etc. options.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams
-;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
+;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Wed Nov 15 12:47:13 1995
 ;; Version: 20.0
-;; Last-Updated: Mon Jan  3 15:46:05 2011 (-0800)
+;; Last-Updated: Sun Jan  1 14:28:58 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 114
+;;     Update #: 116
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/cal-opts.el
 ;; Keywords: calendar, local
 ;; Compatibility: GNU Emacs 20.x
 ;;
 ;; Features that might be required by this library:
 ;;
-;;   `appt', `apropos', `apropos+', `apropos-fn+var', `avoid',
-;;   `cal-dst', `cal-julian', `cal-menu', `cal-persia', `calendar',
-;;   `calendar+', `cl', `cus-edit', `cus-face', `cus-load',
-;;   `cus-start', `custom', `diary-lib', `dired', `dired+',
-;;   `dired-aux', `dired-x', `doremi', `easymenu', `ediff-diff',
-;;   `ediff-help', `ediff-init', `ediff-merg', `ediff-mult',
-;;   `ediff-util', `ediff-wind', `el-swank-fuzzy', `faces', `ffap',
-;;   `ffap-', `fit-frame', `frame-cmds', `frame-fns', `fuzzy',
-;;   `fuzzy-match', `help+20', `hexrgb', `icicles', `icicles-cmd1',
-;;   `icicles-cmd2', `icicles-face', `icicles-fn', `icicles-mac',
-;;   `icicles-mcmd', `icicles-mode', `icicles-opt', `icicles-var',
-;;   `info', `info+', `kmacro', `levenshtein', `lisp-float-type',
-;;   `menu-bar', `menu-bar+', `misc-cmds', `misc-fns', `mkhtml',
-;;   `mkhtml-htmlize', `mouse3', `mwheel', `pp', `pp+', `regexp-opt',
-;;   `ring', `ring+', `second-sel', `solar', `strings', `thingatpt',
-;;   `thingatpt+', `unaccent', `w32-browser', `w32browser-dlgopen',
-;;   `wid-edit', `wid-edit+', `widget'.
+;;   `advice', `advice-preload', `appt', `apropos', `apropos+',
+;;   `apropos-fn+var', `avoid', `backquote', `bookmark', `bookmark+',
+;;   `bookmark+-1', `bookmark+-bmu', `bookmark+-key',
+;;   `bookmark+-lit', `bookmark+-mac', `bytecomp', `cal-dst',
+;;   `cal-julian', `cal-menu', `cal-persia', `calendar', `calendar+',
+;;   `cl', `cus-edit', `cus-face', `cus-load', `cus-start', `custom',
+;;   `diary-lib', `dired', `dired+', `dired-aux', `dired-x',
+;;   `doremi', `easymenu', `ediff-diff', `ediff-help', `ediff-init',
+;;   `ediff-merg', `ediff-mult', `ediff-util', `ediff-wind',
+;;   `el-swank-fuzzy', `faces', `ffap', `ffap-', `fit-frame',
+;;   `frame-cmds', `frame-fns', `fuzzy', `fuzzy-match', `help+20',
+;;   `hexrgb', `icicles', `icicles-cmd1', `icicles-cmd2',
+;;   `icicles-face', `icicles-fn', `icicles-mcmd', `icicles-mode',
+;;   `icicles-opt', `icicles-var', `image-dired', `info', `info+',
+;;   `kmacro', `levenshtein', `lisp-float-type', `menu-bar',
+;;   `menu-bar+', `misc-cmds', `misc-fns', `mkhtml',
+;;   `mkhtml-htmlize', `mouse3', `mwheel', `naked', `pp', `pp+',
+;;   `regexp-opt', `ring', `ring+', `second-sel', `solar', `strings',
+;;   `thingatpt', `thingatpt+', `unaccent', `w32-browser',
+;;   `w32browser-dlgopen', `wid-edit', `wid-edit+', `widget'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -55,7 +58,7 @@
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
-;;; Change log:
+;;; Change Log:
 ;;
 ;; RCS $Log: cal-opts.el,v $
 ;; RCS Revision 1.7  2001/01/08 22:25:11  dadams
