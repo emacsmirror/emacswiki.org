@@ -1,4 +1,10 @@
+=org-jira=
+
+==Table of Contents==
+
 ==1 Introduction ==
+
+(For the latest verion of this page, visit [http://baohaojun.github.com/org-jira.html this github page].
 
 [http://orgmode.org Org-mode] is the best GTD (get things done) tool I have used. If you didn't use it, please consider give it a shot.
 
@@ -13,18 +19,17 @@ For xml-rpc, there is already a [http://www.emacswiki.org/emacs/org-jira.el jira
 * xml-rpc is not as well supported as soap by Jira.
 * jira.el is a stand-alone tool, while I want to integrate with org-mode.
 
-Luckily, the emacs-soap-client guy(s) already provided a sample jira2.el, so I started hacking by combining jira.el and jira2.el, the new jira2.el is [http://github.com/baohaojun/windows-config/raw/master/.emacs_d/org-jira/jira2.el here].
+Luckily, the emacs-soap-client guy(s) already provided a sample jira2.el, so I started hacking by combining jira.el and jira2.el, the new jira2.el is [http://github.com/baohaojun/org-jira/raw/master/jira2.el here].
 
-After browsing Jira with jira2.el is implemented, I checked [https://github.com/punchagan/org2blog org2blog] for ideas of how to hack on org-mode, and started from his org2blog.el and hacked into a new [http://github.com/baohaojun/windows-config/raw/master/.emacs_d/org-jira/org-jira.el org-jira.el].
+After browsing Jira with jira2.el is implemented, I checked [https://github.com/punchagan/org2blog org2blog] for ideas of how to hack on org-mode, and started from his org2blog.el and hacked into a new [http://github.com/baohaojun/org-jira/raw/master/org-jira.el org-jira.el].
 
 ==2 Features ==
 
-===2.1 Sync Jira tickets into Org-mode todo items in a batch mode. ===
+===2.1 Sync Jira tickets into Org-mode todo items in a batch mode ===
 
 Jira ticket attributes such as priority, status, resolution, summary, description, etc. are supported. New ones can be added if desired by hacking the elisp.
 
 See the following example. Jira ticket summary has been used as the Org TODO headline; most Jira ticket attributes have been made into Org entry; Jira description attribute is made into a separate subtitle because unlike most attributes it is multi-line.
-
 <pre>
 * TODO test summary                                          :SANDBOX_22:
   :PROPERTIES:
@@ -44,41 +49,50 @@ test description
    :END:
 test comment
 </pre>
-
 Also note the ID Org entry, both the Jira issue and Jira comment has an attribute ideal for this entry. Org-mode has an API for finding heading from ID entry.
 
 ===2.2 Update Org-mode new edits back to Jira ===
 
 After you edit the attributes, such as change priority from "Major" to "Minor", you can post it back the Jira.
 
-===2.3 Create new Jira issue in org mode ===
+===2.3 Progress Jira ticket workflow in Org-mode ===
+
+You can Resolve/Close/Reopen the jira ticket and so on, without leaving org-mode!
+
+===2.4 Create new Jira issue in org mode ===
 
 You can create new Jira issue within org mode. You will be prompted for Jira ticket information such as create in which project, assign to whom, and one-line summary, etc.
 
-===2.4 Convert existing org mode TODO item into Jira ticket ===
+===2.5 Convert existing org mode TODO item into Jira ticket ===
 
 This one is similar to the create-new-issue case, except the existing TODO headline can be used for Jira ticket summary.
 
-===2.5 Edit existing Jira comments / add new comment ===
+The old TODO is deleted. But you will not lose a TODO entry, instead, you will trade a normal TODO for a Jira ticket tracked TODO.
+
+===2.6 Edit existing Jira comments / add new comment ===
 
 These are also supported.
 
 ==3 Usage ==
 
-To use org-jira.el, you need download all the .el files under [http://github.com/baohaojun/windows-config/tree/master/.emacs_d/org-jira org-jira].
-
-(You can get the soap files from emacs-soap project, but I fixed an utf-8 encoding bug in it so that I can post comments in Chinese).
-
+* To use org-jira.el, get the .el files from [https://github.com/baohaojun/org-jira org-jira on github]. 
+<pre>
+git clone git://github.com/baohaojun/org-jira.git
+</pre>
+(In my repository, I have included the emacs-soap files, which you can get from its project, but in my version I fixed an utf-8 encoding bug in it so that I can post comments in Chinese).
+* Then put the following in your .emacs, 
 <pre>
 (setq jira2-url "http://jira-host")
 (require 'jira2)
 (require 'org-jira)
 </pre>
+If you have a ~/.authinfo file and corresponding entry for jira-host, the username and password will be computed from that; or else you will be prompted for password.
+* Then start syncing with M-x org-jira-get-issues . (Currently there is a bug in my code, so that you need to run the above command twice).
 
-(For the latest verion of this page, visit [http://baohaojun.github.com/org-jira.html this github page].
+Date: 2012-01-01 23:10:47 China Standard Time
 
-Author: baohaojun [mailto:baohaojun@gmail.com &lt;baohaojun@gmail.com&gt;]
+Author:
 
-Date: 2011-12-28 22:35:21 CST
+Org version 7.7 with Emacs version 24
 
-HTML generated by org-mode 6.33x in emacs 23
+[http://validator.w3.org/check?uri=referer Validate XHTML 1.0]
