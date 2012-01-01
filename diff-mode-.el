@@ -4,12 +4,12 @@
 ;; Description: Extensions to `diff-mode.el'.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams
-;; Copyright (C) 2004-2011, Drew Adams, all rights reserved.
+;; Copyright (C) 2004-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Nov 08 16:36:09 2004
 ;; Version: 21.0
-;; Last-Updated: Fri Feb 11 14:40:11 2011 (-0800)
+;; Last-Updated: Sun Jan  1 14:26:39 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 699
+;;     Update #: 702
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/diff-mode-.el
 ;; Keywords: data, matching, tools, unix, local, font, face
 ;; Compatibility: GNU Emacs: 21.x, 22.x, 23.x
@@ -76,7 +76,7 @@
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
-;;; Change log:
+;;; Change Log:
 ;;
 ;; 2011/02/11 dadams
 ;;     Better defaults for faces on dark background.
