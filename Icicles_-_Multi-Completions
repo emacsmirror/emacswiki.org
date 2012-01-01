@@ -275,7 +275,7 @@ complete several different variable names at the same minibuffer
 prompt, but they each complete against the same set of variable
 names.
 
-Multi-completion matches a list of regexps in ''parallel''.  See also the description of `M-*', which matches a list of regexps in ''series'': [[Icicles - Progressive Completion]].  You can combine these features, of course. 
+Multi-completion matches a list of regexps in ''parallel''.  See also the descriptions of `M-*' and `S-SPC', which match a list of regexps in ''series'': [[Icicles - Progressive Completion]].  You can combine these features, of course. 
 
 
 
