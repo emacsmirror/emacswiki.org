@@ -550,6 +550,9 @@ current candidate in buffer `*Completions*'.
 [:icicle-narrow-candidates]
 * '''`M-*'''' -- `icicle-narrow-candidates': Narrow the set of completion candidates using another input regexp.
 
+[:icicle-widen-candidates]
+* '''`##M-+##'''' -- `icicle-widen-candidates': Widen the set of completion candidates using another input regexp.
+
 [:icicle-prefix-word-complete]
 * '''`M-SPC'''' -- `icicle-prefix-word-complete': Complete current input
 in minibuffer, as a prefix, a single word at a time.
@@ -560,6 +563,13 @@ are bound to this command; `M-SPC' is by default.
 [:icicle-apropos-complete-and-narrow]
 * '''`S-SPC'''' -- `icicle-apropos-complete-and-narrow': Same as
 `S-TAB' followed by `M-*'.
+
+
+[:icicle-apropos-complete-and-widen]
+* '''`S-backspace'''' -- `icicle-apropos-complete-and-widen': Same as
+`S-TAB' followed by `##M-+##'.
+
+
 
 [:icicle-prefix-complete]
 * '''`TAB'''' -- `icicle-prefix-complete': Complete current input in minibuffer, as a prefix.  If there is more than one [[prefix completion]] candidate,
