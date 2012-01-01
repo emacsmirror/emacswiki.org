@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:53 2006
 ;; Version: 22.0
-;; Last-Updated: Wed Dec 28 10:45:21 2011 (-0800)
+;; Last-Updated: Sat Dec 31 17:36:43 2011 (-0800)
 ;;           By: dradams
-;;     Update #: 12745
+;;     Update #: 12755
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-fn.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -3421,16 +3421,15 @@ Candidates can be directories.  Each candidate is a string."
 This also sets `icicle-common-match-string' to the expanded common
 prefix over all candidates."
   (condition-case nil
-      (let* ((candidates
+      (let* ((pred  (if (< emacs-major-version 23) default-directory minibuffer-completion-predicate))
+             (candidates
               (if (icicle-not-basic-prefix-completion-p)
-                  (icicle-completion-all-completions input minibuffer-completion-table
-                                                     minibuffer-completion-predicate
+                  (icicle-completion-all-completions input minibuffer-completion-table pred
                                                      (length input)
                                                      (and (fboundp 'completion--field-metadata) ;Emacs24
                                                           (completion--field-metadata
                                                            (field-beginning))))
-                (icicle-all-completions input minibuffer-completion-table
-                                        minibuffer-completion-predicate
+                (icicle-all-completions input minibuffer-completion-table pred
                                         icicle-ignore-space-prefix-flag)))
              (icicle-extra-candidates
               (icicle-remove-if-not
@@ -3558,17 +3557,16 @@ input over all candidates."
   (condition-case nil
       (progn
         (when icicle-regexp-quote-flag (setq input  (regexp-quote input)))
-        (let* ((candidates
+        (let* ((pred  (if (< emacs-major-version 23) default-directory minibuffer-completion-predicate))
+               (candidates
                 ;; $$$$$ Should we remove string test for Emacs 23?
                 (if (and (not (stringp minibuffer-completion-predicate))
                          (not icicle-apropos-complete-match-fn)
                          (functionp minibuffer-completion-table))
                     ;; Let the function do it all.
-                    (icicle-all-completions input minibuffer-completion-table
-                                            minibuffer-completion-predicate
+                    (icicle-all-completions input minibuffer-completion-table pred
                                             icicle-ignore-space-prefix-flag)
-                  (icicle-all-completions "" minibuffer-completion-table
-                                          minibuffer-completion-predicate
+                  (icicle-all-completions "" minibuffer-completion-table pred
                                           icicle-ignore-space-prefix-flag)))
                (icicle-extra-candidates
                 (icicle-remove-if-not
@@ -5209,12 +5207,15 @@ defined)."
     (setq input  (or (icicle-file-name-nondirectory input)  ""))
     (condition-case nil
         (progn (when icicle-regexp-quote-flag (setq input  (regexp-quote input)))
-               (let ((candidates        (icicle-all-completions "" minibuffer-completion-table
-                                                                minibuffer-completion-predicate
-                                                                icicle-ignore-space-prefix-flag))
-                     (case-fold-search  (if (boundp 'read-file-name-completion-ignore-case)
-                                            read-file-name-completion-ignore-case
-                                          completion-ignore-case)))
+               (let* ((pred              (if (< emacs-major-version 23)
+                                             default-directory
+                                           minibuffer-completion-predicate))
+                      (candidates        (icicle-all-completions "" minibuffer-completion-table
+                                                                 pred
+                                                                 icicle-ignore-space-prefix-flag))
+                      (case-fold-search  (if (boundp 'read-file-name-completion-ignore-case)
+                                             read-file-name-completion-ignore-case
+                                           completion-ignore-case)))
                  (catch 'icicle-apropos-any-file-name-candidates-p
                    (dolist (cand candidates)
                      (when (if (member cand '("../" "./"))
