@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Thu Dec 29 17:33:16 2011 (-0800)
+;; Last-Updated: Sat Dec 31 13:42:54 2011 (-0800)
 ;;           By: dradams
-;;     Update #: 17475
+;;     Update #: 17479
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-mcmd.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -3404,7 +3404,8 @@ Optional argument WORD-P non-nil means complete only a word at a time."
              (unless (boundp 'icicle-prefix-complete-and-exit-p)
                (icicle-highlight-complete-input)
                (cond ((and icicle-top-level-when-sole-completion-flag
-                           (or (not icicle-ido-like-mode)
+                           (or (and (not icicle-ido-like-mode)
+                                    (not icicle-files-ido-like-flag))
                                (and (not (icicle-file-name-input-p))
                                     (not icicle-abs-file-candidates))
                                (string= "" (car icicle-completion-candidates)) ; Empty directory
@@ -3731,10 +3732,10 @@ message either.  NO-DISPLAY-P is passed to
            (unless (boundp 'icicle-apropos-complete-and-exit-p)
              (icicle-highlight-complete-input)
              (cond ((and icicle-top-level-when-sole-completion-flag
-                         (or (not icicle-ido-like-mode)
+                         (or (and (not icicle-ido-like-mode)
+                                  (not icicle-files-ido-like-flag))
                              (and (not (icicle-file-name-input-p))
                                   (not icicle-abs-file-candidates))
-                             icicle-edit-update-p
                              (string= "" (car icicle-completion-candidates)) ; Empty directory
                              (not (eq ?\/
                                       (aref (car icicle-completion-candidates)
