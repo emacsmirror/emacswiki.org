@@ -140,7 +140,7 @@ were current when you saved it is a considerable advantage when
 combined with '''Icicles''' features for sculpting the current set of
 matching candidates.  As far as I know, '''Icicles''' is the only
 package to offer this feature.  You spend a few moments to
-fine-tune a set of candidates, using, for example, `##M-*##', `##C-~##',
+fine-tune a set of candidates, using, for example, `##M-*##' or `S-SPC', `##C-~##',
 and `delete', and then save it for later use.  From then on, you
 can match against exactly those candidates anytime you want.
 
