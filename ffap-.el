@@ -4,12 +4,12 @@
 ;; Description: Extensions to library `ffap.el'
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams
-;; Copyright (C) 2005-2011, Drew Adams, all rights reserved.
+;; Copyright (C) 2005-2012, Drew Adams, all rights reserved.
 ;; Created: Wed Feb 08 10:47:56 2006
 ;; Version: 20
-;; Last-Updated: Thu Feb 24 15:11:51 2011 (-0800)
+;; Last-Updated: Sun Jan  1 14:22:56 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 107
+;;     Update #: 109
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/ffap-.el
 ;; Keywords: files, hypermedia, matching, mouse, convenience
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -81,7 +81,7 @@
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; 
-;;; Change log:
+;;; Change Log:
 ;;
 ;; 2011/01/04 dadams
 ;;     Added autoload cookies for defcustom.
