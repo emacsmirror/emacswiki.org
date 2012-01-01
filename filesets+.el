@@ -4,12 +4,12 @@
 ;; Description: Extensions to `filesets.el'.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams
-;; Copyright (C) 2008-2011, Drew Adams, all rights reserved.
+;; Copyright (C) 2008-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Sep 16 14:11:36 2008 (-0700)
 ;; Version: 22.0
-;; Last-Updated: Tue Jan  4 09:22:30 2011 (-0800)
+;; Last-Updated: Sun Jan  1 14:22:13 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 35
+;;     Update #: 38
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/filesets+.el
 ;; Keywords:
 ;; Compatibility: GNU Emacs: 22.x, 23.x
@@ -45,7 +45,7 @@
 ;; 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
-;;; Change log:
+;;; Change Log:
 ;;
 ;; 2008/09/16 dadams
 ;;     Created.
