@@ -4,13 +4,13 @@
 ;; Description: Delete the region (selection) upon char insertion or DEL.
 ;; Author: Matthieu Devin <devin@lucid.com>, Drew Adams
 ;; Maintainer: D. ADAMS
-;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
+;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Copyright (C) 1992 Free Software Foundation, Inc.
 ;; Created: Fri Dec  1 13:51:31 1995
 ;; Version: 21.0
-;; Last-Updated: Thu Feb 24 14:55:39 2011 (-0800)
+;; Last-Updated: Sun Jan  1 14:27:33 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 327
+;;     Update #: 329
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/delsel.el
 ;; Keywords: abbrev, emulations, local, convenience
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -86,7 +86,7 @@
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
-;;; Change log:
+;;; Change Log:
 ;;
 ;; 2011/01/03 dadams
 ;;     Added autoload cookie for command.
