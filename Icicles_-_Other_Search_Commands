@@ -260,7 +260,7 @@ result set (search hits).  This is similar to `icicle-search', but when you use 
 set of [[search context]]s by typing a regexp.
 
 Using `icicle-compilation-search' with `grep' gives you two levels
-of regexp searching: 1) the `grep' regexp and 2) your current input regexp. And you can of course use [[progressive completion]] (`##M-*##') to add any number of additional levels. (And, starting with Emacs 22, you can pipe to other `grep' commands in the same `M-x grep'.)
+of regexp searching: 1) the `grep' regexp and 2) your current input regexp. And you can of course use [[progressive completion]] (`M-*' or `S-SPC') to add any number of additional levels. (And, starting with Emacs 22, you can pipe to other `grep' commands in the same `M-x grep'.)
 
 
 
@@ -367,7 +367,7 @@ functions.
 `C-next', `C-prior', `C-end', and `C-home'.
 
 * [[Icicles - Progressive Completion]] for information about using any
-number of search regexps with `##M-*##' and any number of search predicates with `##M-&##'.
+number of search regexps with `M-*' or `S-SPC' and any number of search predicates with `##M-&##'.
 
 * [[Icicles - Info Enhancements]] for information about using '''Icicles''' with InfoMode.
 
