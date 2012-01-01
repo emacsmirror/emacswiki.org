@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Wed Dec 28 10:43:12 2011 (-0800)
+;; Last-Updated: Sun Jan  1 12:11:23 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 28573
+;;     Update #: 28588
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-doc2.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -82,7 +82,7 @@
 ;;  (@file :file-name "icicles-doc1.el" :to "Apropos Completions")
 ;;  (@file :file-name "icicles-doc1.el" :to "Expanded-Common-Match Completion")
 ;;  (@file :file-name "icicles-doc1.el" :to "Progressive Completion")
-;;    (@file :file-name "icicles-doc1.el" :to "`M-*': Matching Additional Regexps")
+;;    (@file :file-name "icicles-doc1.el" :to "`M-*' and `S-SPC': Matching Additional Regexps")
 ;;    (@file :file-name "icicles-doc1.el" :to "Successive Approximation...")
 ;;    (@file :file-name "icicles-doc1.el" :to "`M-&': Satisfying Additional Predicates")
 ;;
@@ -411,7 +411,7 @@
 ;;  `character', `delete', and `backward', in any order, as follows:
 ;;
 ;;    C-c ` [A-Z][^.?!]+[.?!] RET
-;;    character M-* delete M-* backward
+;;    character S-SPC delete S-SPC backward
 ;;
 ;;  When you visit a search context, both `icicle-occur' and
 ;;  `icicle-search' highlight that hit.  For `icicle-occur', the
@@ -1098,7 +1098,7 @@
 ;;    `icicle-search-*' faces, which control Icicles search.
 ;;
 ;;  * (@file :file-name "icicles-doc1.el" :to "Progressive Completion")
-;;    for information about `M-*' and `M-&'.
+;;    for information about `M-*', `S-SPC' and `M-&'.
 ;;
 ;;  * (@file :file-name "icicles-doc1.el" :to "Multi-Commands") for
 ;;    information about `C-RET', `C-mouse-2', `C-next', and `C-prior'.
@@ -1571,9 +1571,9 @@
 ;;  Using `icicle-compilation-search' with `grep' gives you two levels
 ;;  of regexp searching: 1) the `grep' regexp and 2) your current
 ;;  input regexp.  And you can of course use progressive completion
-;;  (`M-*') to add any number of additional levels.  (And, starting
-;;  with Emacs 22, you can pipe to other `grep' commands in the same
-;;  `M-x grep'.)
+;;  (`M-*' or `S-SPC') to add any number of additional levels.  (And,
+;;  starting with Emacs 22, you can pipe to other `grep' commands in
+;;  the same `M-x grep'.)
 ;;
 ;;  In Emacs 22 and later, you can also replace search-hit text.  You
 ;;  can replace the entire grep regexp match or just the part of it
@@ -1668,7 +1668,7 @@
 ;;
 ;;  * (@file :file-name "icicles-doc1.el" :to "Progressive Completion")
 ;;    for information about using any number of search regexps with
-;;    `M-*' and any number of search predicates with `M-&'.
+;;    `M-*' or `S-SPC' and any number of search predicates with `M-&'.
 ;;
 ;;  * (@> "Icicles Info Enhancements") for information about using
 ;;    Icicles with Info mode.
@@ -3283,9 +3283,10 @@
 ;;  `M-x buffer S-TAB' or `M-x buff S-TAB'.  This is simple, but it
 ;;  really does get you most of the way toward object-action
 ;;  interaction.  And you can of course then use progressive
-;;  completion (`M-*') to filter the matching commands for additional
-;;  object-type names; for example `M-* window' keeps only those
-;;  commands whose names contain both `buffer' and `window'.
+;;  completion (`M-*' or `S-SPC') to filter the matching commands for
+;;  additional object-type names; for example `S-SPC window' keeps
+;;  only those commands whose names contain both `buffer' and
+;;  `window'.
 ;;
 ;;  Of course, this approach requires the command name to actually
 ;;  advertise truthfully the object types that it operates on.  There
@@ -3861,8 +3862,9 @@
 ;;  complete against the same set of variable names.
 ;;
 ;;  Multi-completion matches a list of regexps in parallel.  See also
-;;  the description of `M-*', which matches a list of regexps in
-;;  series: (@file :file-name "icicles-doc1.el" :to "Progressive Completion").
+;;  the descriptions of `M-*' and `S-SPC', which match a list of
+;;  regexps in series:
+;;  (@file :file-name "icicles-doc1.el" :to "Progressive Completion").
 ;;  You can combine these features, of course.
 ;;
 ;;(@* "Sorting Candidates by Their Second Part")
@@ -6612,6 +6614,9 @@
 ;;    `M-*'    - `icicle-narrow-candidates': Narrow the set of
 ;;               completion candidates using another input regexp.
 ;;
+;;    `M-+'    - `icicle-widen-candidates': Widen the set of
+;;               completion candidates using another input regexp.
+;;
 ;;    `M-SPC'  - `icicle-prefix-word-complete': Complete current input
 ;;               in minibuffer, as a prefix, a single word at a time.
 ;;               This replaces `minibuffer-complete-word'.  In fact,
@@ -6620,6 +6625,9 @@
 ;;
 ;;    `S-SPC'  - `icicle-apropos-complete-and-narrow': Same as
 ;;               `S-TAB' followed by `M-*'.
+;;
+;;    `S-backspace' - `icicle-apropos-complete-and-widen': Same as
+;;               `S-TAB' followed by `M-+'.
 ;;
 ;;    `TAB' -    `icicle-prefix-complete': Complete current input in
 ;;               minibuffer, as a prefix.  If there is more than one
