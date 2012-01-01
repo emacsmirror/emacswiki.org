@@ -4,28 +4,29 @@
 ;; Description: Emacs init file for use with libraries from Drew Adams
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams
-;; Copyright (C) 1995-2011, Drew Adams, all rights reserved.
+;; Copyright (C) 1995-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Sep 12 15:54:33 1995
 ;; Version: 20.0
-;; Last-Updated: Tue Jan  4 08:50:07 2011 (-0800)
+;; Last-Updated: Sun Jan  1 14:25:28 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 2145
+;;     Update #: 2146
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/emacs-init.el
 ;; Keywords: init, .emacs, _emacs, dotemacs
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
 ;;
 ;; Features that might be required by this library:
 ;;
-;;   `ange-ftp', `appt', `apropos', `apropos+', `apropos-fn+var',
-;;   `assoc', `autofit-frame', `avoid', `backquote', `bookmark',
-;;   `bookmark+', `bookmark+-1', `bookmark+-bmu', `bookmark+-lit',
+;;   `advice', `advice-preload', `ange-ftp', `appt', `apropos',
+;;   `apropos+', `apropos-fn+var', `assoc', `autofit-frame', `avoid',
+;;   `backquote', `bookmark', `bookmark+', `bookmark+-1',
+;;   `bookmark+-bmu', `bookmark+-key', `bookmark+-lit',
 ;;   `bookmark+-mac', `browse-kill-ring', `browse-kill-ring+',
-;;   `buff-menu+', `cal-dst', `cal-julian', `cal-menu', `cal-opts',
-;;   `cal-persia', `calendar', `calendar+', `chistory', `cl',
-;;   `color-moccur', `comint', `compile', `compile+20', `compile-20',
-;;   `cus-edit', `cus-edit+', `cus-face', `cus-load', `cus-start',
-;;   `custom', `cygwin-mount', `diary-lib', `dired', `dired+',
-;;   `dired-aux', `dired-details', `dired-details+',
+;;   `buff-menu+', `bytecomp', `cal-dst', `cal-julian', `cal-menu',
+;;   `cal-opts', `cal-persia', `calendar', `calendar+', `chistory',
+;;   `cl', `color-moccur', `comint', `compile', `compile+20',
+;;   `compile-20', `cus-edit', `cus-edit+', `cus-face', `cus-load',
+;;   `cus-start', `custom', `cygwin-mount', `diary-lib', `dired',
+;;   `dired+', `dired-aux', `dired-details', `dired-details+',
 ;;   `dired-sort-menu', `dired-sort-menu+', `dired-x', `doremi',
 ;;   `doremi-cmd', `doremi-frm', `easymenu', `ediff', `ediff+',
 ;;   `ediff-diff', `ediff-help', `ediff-init', `ediff-merg',
@@ -35,26 +36,26 @@
 ;;   `find-dired', `find-dired+', `find-dired-', `finder', `finder+',
 ;;   `finder-inf', `fit-frame', `font-lock', `font-menus', `frame',
 ;;   `frame+', `frame-cmds', `frame-fns', `fuzzy', `fuzzy-match',
-;;   `header2', `help+20', `hexrgb', `highlight', `icicles',
-;;   `icicles-cmd1', `icicles-cmd2', `icicles-face', `icicles-fn',
-;;   `icicles-mac', `icicles-mcmd', `icicles-mode', `icicles-opt',
-;;   `icicles-var', `icomplete', `icomplete+', `imenu', `imenu+',
-;;   `info', `info+', `isearch+', `iso-transl', `kmacro', `lacarte',
-;;   `levenshtein', `lib-requires', `lisp-float-type', `lisp-mnt',
-;;   `loadhist', `local-lpr', `local-ps-print', `lpr', `ls-lisp',
-;;   `ls-lisp+', `ls-lisp-verbosity', `menu-bar', `menu-bar+',
-;;   `misc-cmds', `misc-fns', `mkhtml', `mkhtml-htmlize',
-;;   `moccur-edit', `mouse', `mouse+', `mouse3', `mwheel',
-;;   `occur-schroeder', `oneonone', `paren', `pcmpl-auto', `pp',
-;;   `pp+', `pp-c-l', `printing', `ps-print', `regexp-opt',
-;;   `replace+', `ring', `ring+', `savehist-20+', `second-sel',
-;;   `sendmail', `setup', `setup-cygwin', `setup-keys', `simple+',
-;;   `solar', `speedbar', `start', `start-opt', `strings',
-;;   `swiss-move', `synonyms', `thing-cmds', `thingatpt',
-;;   `thingatpt+', `thumb-frm', `timer', `timer+', `unaccent', `vc',
-;;   `vc+', `vc-', `vc-hooks', `vc-hooks+', `w32-browser',
-;;   `w32browser-dlgopen', `wid-edit', `wid-edit+', `widget',
-;;   `wimpy-del', `window+', `zoom-frm'.
+;;   `header2', `help+20', `hexrgb', `hide-comnt', `highlight',
+;;   `icicles', `icicles-cmd1', `icicles-cmd2', `icicles-face',
+;;   `icicles-fn', `icicles-mcmd', `icicles-mode', `icicles-opt',
+;;   `icicles-var', `icomplete', `icomplete+', `image-dired',
+;;   `imenu', `imenu+', `info', `info+', `isearch+', `iso-transl',
+;;   `kmacro', `lacarte', `levenshtein', `lib-requires',
+;;   `lisp-float-type', `lisp-mnt', `loadhist', `local-lpr',
+;;   `local-ps-print', `lpr', `ls-lisp', `ls-lisp+',
+;;   `ls-lisp-verbosity', `menu-bar', `menu-bar+', `misc-cmds',
+;;   `misc-fns', `mkhtml', `mkhtml-htmlize', `moccur-edit', `mouse',
+;;   `mouse+', `mouse3', `mwheel', `naked', `occur-schroeder',
+;;   `oneonone', `paren', `pcmpl-auto', `pp', `pp+', `pp-c-l',
+;;   `printing', `ps-print', `regexp-opt', `replace+', `ring',
+;;   `ring+', `savehist-20+', `second-sel', `sendmail', `setup',
+;;   `setup-cygwin', `setup-keys', `simple+', `solar', `speedbar',
+;;   `start', `start-opt', `strings', `swiss-move', `synonyms',
+;;   `thing-cmds', `thingatpt', `thingatpt+', `thumb-frm', `timer',
+;;   `timer+', `unaccent', `vc', `vc+', `vc-', `vc-hooks',
+;;   `vc-hooks+', `w32-browser', `w32browser-dlgopen', `wid-edit',
+;;   `wid-edit+', `widget', `wimpy-del', `window+', `zoom-frm'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
