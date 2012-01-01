@@ -228,9 +228,9 @@ Here's how to expand all t.co links by running ##curl --silent --head## on each 
     (while (re-search-forward re nil t)
       (replace-match (save-match-data (t.co-resolve (match-string 0)))))))
 
-(add-to-list 'rcirc-markup-text-functions
-	     't.co-url-replace)
-
+(eval-after-load 'rcirc
+  '(add-to-list 'rcirc-markup-text-functions
+		't.co-url-replace))
 }}}
 
 ----
