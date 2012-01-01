@@ -75,21 +75,26 @@ These are also supported.
 
 ==3 Usage ==
 
-* To use org-jira.el, get the .el files from [https://github.com/baohaojun/org-jira org-jira on github]. 
+To use org-jira.el, get the .el files from [https://github.com/baohaojun/org-jira org-jira on github].
+
 <pre>
 git clone git://github.com/baohaojun/org-jira.git
 </pre>
 (In my repository, I have included the emacs-soap files, which you can get from its project, but in my version I fixed an utf-8 encoding bug in it so that I can post comments in Chinese).
-* Then put the following in your .emacs, 
+
+Then put the following in your .emacs,
 <pre>
 (setq jira2-url "http://jira-host")
 (require 'jira2)
 (require 'org-jira)
 </pre>
-If you have a ~/.authinfo file and corresponding entry for jira-host, the username and password will be computed from that; or else you will be prompted for password.
-* Then start syncing with M-x org-jira-get-issues . (Currently there is a bug in my code, so that you need to run the above command twice).
+(If you have a ~/.authinfo file and corresponding entry for jira-host, the username and password will be computed from that; or else you will be prompted for password).
 
-Date: 2012-01-01 23:10:47 China Standard Time
+Then start syncing with M-x org-jira-get-issues .
+
+(Currently there is a bug in my code, so that you need to run the above command twice).
+
+Date: 2012-01-01 23:23:36 China Standard Time
 
 Author:
 
