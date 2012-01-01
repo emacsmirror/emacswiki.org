@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2011, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Thu Dec 29 17:31:17 2011 (-0800)
+;; Last-Updated: Sat Dec 31 17:40:13 2011 (-0800)
 ;;           By: dradams
-;;     Update #: 7712
+;;     Update #: 7715
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-chg.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -1122,6 +1122,10 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-fn.el'")
 ;;
+;; 2011/12/31 dadams
+;;     Reversed fix of 2011/04/12 for Emacs < 23:
+;;       icicle-unsorted-file-name-*, icicle-apropos-any-file-name-candidates-p:
+;;         Use default-directory, not minibuffer-completion-predicate, for Emacs < 23.
 ;; 2011/12/28 dadams
 ;;     Removed mention of obsolete option icicle-cycle-into-subdirs-flag.
 ;; 2011/12/24 dadams
@@ -2863,6 +2867,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-mcmd.el'")
 ;;
+;; 2011/12/31 dadams
+;;     icicle-apropos-complete-1: Remove extra icicle-edit-update-p (typo) in condition.
 ;; 2011/12/29 dadams
 ;;     Added: icicle-(prefix|apropos)-complete-2.
 ;;     icicle-(prefix|apropos)-complete-1:
