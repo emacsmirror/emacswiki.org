@@ -6,12 +6,12 @@
 ;;      Sebastian Kremer <sk@thp.uni-koeln.de>,
 ;;      Drew Adams
 ;; Maintainer: Drew Adams
-;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
+;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Wed Jan 10 14:31:50 1996
 ;; Version: 20.0
-;; Last-Updated: Tue Aug 30 17:28:50 2011 (-0700)
+;; Last-Updated: Sun Jan  1 14:22:36 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 607
+;;     Update #: 610
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/find-dired+.el
 ;; Keywords: internal, unix, tools, matching, local
 ;; Compatibility: GNU Emacs 20.x
@@ -75,7 +75,7 @@
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
-;;; Change log:
+;;; Change Log:
 ;;
 ;; 2011/08/30 dadams
 ;;     find-dired-default-fn:
@@ -301,8 +301,7 @@ Thus REGEXP can also contain additional grep options."
   ;; We use -type f, not ! -type d, to avoid getting screwed
   ;; by FIFOs and devices.  I'm not sure what's best to do
   ;; about symlinks, so as far as I know this is not wrong.
-  (find-dired dir
-              (concat "-type f -exec grep " find-grep-options " " regexp " {} \\\; ")))
+  (find-dired dir (concat "-type f -exec grep " find-grep-options " " regexp " {} \\\; ")))
 
 
 ;; REPLACES ORIGINAL in `find-dired.el':
