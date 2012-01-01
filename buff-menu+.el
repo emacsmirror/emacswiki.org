@@ -4,12 +4,12 @@
 ;; Description: Extensions to `buff-menu.el'
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
-;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
+;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Sep 11 10:29:56 1995
 ;; Version: 21.0
-;; Last-Updated: Mon Dec 19 23:14:29 2011 (-0800)
+;; Last-Updated: Sun Jan  1 15:13:35 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 2742
+;;     Update #: 2744
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/buff-menu+.el
 ;; Keywords: mouse, local, convenience
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
