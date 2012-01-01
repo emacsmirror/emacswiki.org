@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2011, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Fri Dec 30 17:15:42 2011 (-0800)
+;; Last-Updated: Sat Dec 31 16:35:42 2011 (-0800)
 ;;           By: dradams
-;;     Update #: 14074
+;;     Update #: 14194
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-doc.el
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search,
 ;;           info, url, w3m, gnus
@@ -798,6 +798,7 @@
 ;;
 ;;  See Also:
 ;;
+;;  * (@> "Bookmark Records: What A Bookmark Looks Like")
 ;;  * (@> "Bookmarking the Marked Files in Dired")
 ;;  * (@> "Opening Bookmarks Using Windows File Associations")
 ;;  * (@> "Tag Commands and Keys")
@@ -950,6 +951,106 @@
 ;;  As usual, all such commands are also available on the Bookmark+
 ;;  menus.  The menus provide quick reminders of the available keys,
 ;;  as does the help from `?' in the bookmark-list display.
+;;
+;;(@* "Bookmark Records: What A Bookmark Looks Like")
+;;  *** Bookmark Records: What A Bookmark Looks Like ***
+;;
+;;  It's worth dispelling some of the mystery about what a bookmark is
+;;  by mentioning what it looks like.  This can help when you edit a
+;;  bookmark record.  The first thing to mention is that the basic
+;;  structure of a bookmark record is described in the doc string of
+;;  variable `bookmark-alist' - but I'll repeat some of that info
+;;  here.
+;;
+;;  A bookmark record is nothing more than a list whose first element
+;;  is a string, the bookmark name.  The other list elements can be
+;;  thought of as attributes that define the bookmark: its data.  Each
+;;  such attribute is a cons: a nonempty list or a dotted list.
+;;
+;;  The car of the attribute is its name (a Lisp symbol).  The cdr is
+;;  its value.  What the value can be depends on the attribute - in
+;;  general it can be any Lisp value (number, string, list, symbol,
+;;  etc.).  An attribute with a null cdr means the same thing as
+;;  having no such attribute present.  For example, having the empty
+;;  attribute `(tags)' is the same as having to `tags' attribute at
+;;  all.
+;;
+;;  There is nothing more to it: attributes can be anything you like,
+;;  provided you provide some code to recognize them and do something
+;;  with them.
+;;
+;;  Of course, the types of attributes you use most (maybe always) are
+;;  predefined, and the vanilla `bookmark.el' code and the Bookmark+
+;;  code recognize and use them.  The most important and most typical
+;;  attribute is this: `(filename . "/some/file/name.txt")', that is,
+;;  a cons whose car is the symbol `filename' and whose cdr is the
+;;  name (a string) of the bookmarked file.
+;;
+;;  With that in mind, you can see that renaming a bookmark just means
+;;  changing the string that is its car.  And relocating a bookmark
+;;  just means changing the string that is its `filename' - e.g., from
+;;  `(filename . "/home/foo.el")' to `(filename . "/some/other.xml")'.
+;;
+;;  If you already have a bookmark file, typically `~/.emacs.bmk',
+;;  take a look at the bookmark records in it.  A typical bookmark
+;;  also has these attributes, in addition to `filename': `position',
+;;  `front-context-string', and `rear-context-string'.  You can guess
+;;  what they are - if not, see the doc string of `bookmark-alist'.
+;;
+;;  A Bookmark+ bookmark typically has some additional attributes that
+;;  you can also guess.  Attributes `time' and `visits' are updated
+;;  automatically each time you access the bookmark.
+;;
+;;  Some bookmarks have a `handler' attribute whose value is a
+;;  function that "jumps" to the bookmark "location".  I put those two
+;;  terms in quotes here because a handler is really just any function
+;;  - it can do anything you like, and there need not be any
+;;  associated location.
+;;
+;;  Remember: A bookmark is just a persistent bit of information,
+;;  typically meta-information about a file and a position in that
+;;  file.
+;;
+;;  I'm mentioning all of this to make the point that you cannot
+;;  really hurt anything if you edit a bookmark record and you mess
+;;  things up.  The worst you can do is mess up all of your bookmarks
+;;  by making the file unreadable as Lisp data.  (It's always a good
+;;  idea to back up your bookmark file from time to time.)
+;;
+;;  And if each bookmark record after you edit it is a cons with a
+;;  string car then your bookmarks are generally OK, even if you might
+;;  have ruined the details of one or two of them.  Suppose you
+;;  somehow mistakenly delete the `a' in a `filename' attribute, for
+;;  instance.  No big deal - that bookmark no longer has a
+;;  recognizable target location, but the other bookmarks are still
+;;  OK.
+;;
+;;  The most important attribute for Bookmark+ users is probably
+;;  `tags'.  Its value (the cdr) is a list of strings or conses - the
+;;  bookmark's tags.  When you create a tag, it is typically a string
+;;  (just its name) - e.g. "blue".  If you then give it a value as
+;;  well, it becomes a cons with that string (the name) as car and the
+;;  value as cdr - e.g. `("blue" . 42)' or `("blue" moonbeam 42)' -
+;;  here the cdr is the list `(moonbeam 42)'.  Here is an example
+;;  `tags' attribute: `(tags "hegel" ("blue" . honeypot) "darwin")'.
+;;  Most of the time you will use strings as tags.  See also
+;;  (@> "Bookmark Tags Can Have Values").
+;;
+;;  When you edit bookmark records, just try to stay away from
+;;  changing any attributes that you are not familiar with.  And make
+;;  sure that when you're done you have a proper Lisp list (open
+;;  parens closed etc.).  If you've never played with Lisp before, do
+;;  not panic.
+;;
+;;  Be aware if you see dots (`.') that they are important, and they
+;;  must be surrounded by whitespace: ` . '.  The amount of whitespace
+;;  never matters in Lisp (except inside a string etc.).
+;;
+;;  Such a dot just separates the car of a cons from its cdr.  (What's
+;;  a cons?  Just a car with a cdr!)  If the cdr is a list then we
+;;  typically drop the dot and the list's parens: We write `(b)'
+;;  instead of `(b . ())' and `(a b)' instead of `(a . (b))' or `(a
+;;  . (b . ()))'.
  
 ;;(@* "Bookmark-List Views - Saving and Restoring State")
 ;;  ** Bookmark-List Views - Saving and Restoring State **
