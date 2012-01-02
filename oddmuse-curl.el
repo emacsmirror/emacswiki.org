@@ -1,36 +1,47 @@
 ;;; oddmuse-curl.el -- edit pages on an Oddmuse wiki using curl
+<<<<<<< you
+;; $Id: oddmuse-curl.el,v 1.1 2012/01/01 22:37:59 alex Exp alex $
+||||||| ancestor
+;; $Id: oddmuse-curl.el,v 1.1 2009/08/26 21:37:47 alex Exp alex $
+=======
 ;; $Id: oddmuse-curl.el,v 1.2 2009/08/26 23:18:30 alex Exp alex $
+>>>>>>> other
 
+<<<<<<< you
+;; Copyright (C) 2006, 2009, 2011  Alex Schroeder <alex@gnu.org>
+||||||| ancestor
+;; Copyright (C) 2006  Alex Schroeder
+=======
 ;; Copyright (C) 2006, 2009  Alex Schroeder <alex@gnu.org>
+>>>>>>> other
 ;;           (C) 2007  rubikitch <rubikitch@ruby-lang.org>
 
 ;; Latest version:
 ;;   http://www.emacswiki.org/cgi-bin/wiki/download/oddmuse-curl.el
+;;   (oddmuse-edit "EmacsWiki" "oddmuse-curl.el")
 ;; Discussion, feedback:
 ;;   http://www.emacswiki.org/cgi-bin/wiki/OddmuseMode
 
-;; This program is free software; you can redistribute it and/or
-;; modify it under the terms of the GNU General Public License as
-;; published by the Free Software Foundation; either version 2 of
-;; the License, or (at your option) any later version.
+;; This program is free software: you can redistribute it and/or modify it under
+;; the terms of the GNU General Public License as published by the Free Software
+;; Foundation, either version 3 of the License, or (at your option) any later
+;; version.
 
-;; This program is distributed in the hope that it will be
-;; useful, but WITHOUT ANY WARRANTY; without even the implied
-;; warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-;; PURPOSE.  See the GNU General Public License for more details.
+;; This program is distributed in the hope that it will be useful, but WITHOUT
+;; ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+;; FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more
+;; details.
 
-;; You should have received a copy of the GNU General Public
-;; License along with this program; if not, write to the Free
-;; Software Foundation, Inc., 59 Temple Place, Suite 330, Boston,
-;; MA 02111-1307 USA
+;; You should have received a copy of the GNU General Public License along with
+;; GNU Emacs.  If not, see <http://www.gnu.org/licenses/>.
 
 ;;; Commentary:
 
-;; A simple mode to edit pages on Oddmuse wikis using Emacs and a
-;; command-line HTTP client such as curl.
+;; A simple mode to edit pages on Oddmuse wikis using Emacs and the command-line
+;; HTTP client `curl'.
 
-;; Since text formatting rules depend on the wiki you're writing for,
-;; the font-locking can only be an approximation.
+;; Since text formatting rules depend on the wiki you're writing for, the
+;; font-locking can only be an approximation.
 
 ;; Put this file in a directory on your `load-path' and 
 ;; add this to your init file:
@@ -38,8 +49,97 @@
 ;; (oddmuse-mode-initialize)
 ;; And then use M-x oddmuse-edit to start editing.
 
-;;; History:
+;;; Code:
 
+<<<<<<< you
+(eval-when-compile
+  (require 'cl)
+  (require 'sgml-mode)
+  (require 'skeleton))
+||||||| ancestor
+;; [2007/11/16] merged from oddmuse.el
+;; Changed command behavior: oddmuse-post
+;;  With prefix argument, prompts pagename, otherwise set pagename as basename of `buffer-file-name'.
+
+;; $Log: oddmuse-curl.el,v $
+;; Revision 1.1  2009/08/26 21:37:47  alex
+;; Initial revision
+;;
+;; Revision 1.23  2007/11/08 16:55:12  rubikitch
+;; oddmuse-make-completion-table: bugfix
+;;
+;; Revision 1.22  2007/10/27 08:39:45  rubikitch
+;; New command: oddmuse-compute-pagename-completion-table (patch by Stefan Kamphausen)
+;;
+;; Revision 1.21  2007/10/27 08:20:47  rubikitch
+;; fixed shell-quoting problem: "unmatched '"
+;;
+;; Revision 1.20  2007/10/27 07:39:47  rubikitch
+;; New functions: oddmuse-read-wiki-and-pagename, oddmuse-url
+;; New commands: oddmuse-browse-page, oddmuse-browse-this-page, oddmuse-kill-url
+;;
+;; Revision 1.19  2007/10/27 03:08:44  rubikitch
+;; * s/egrep/grep -E/
+;; * oddmuse-revision-check-command test
+;;
+;; Revision 1.18  2007/07/12 06:52:56  rubikitch
+;; new command: emacswiki-post
+;; Use emacswiki-post at `How to save'.
+;;
+;; Revision 1.17  2007/07/11 20:01:20  rubikitch
+;; oddmuse-revision-check-command: use curl instead of w3m
+;;
+;; Revision 1.16  2007/06/16 15:12:09  rubikitch
+;; oddmuse-current-free-link-contents: s/ /_/g
+;;
+;; Revision 1.15  2007/06/16 14:53:59  rubikitch
+;; * refactored `oddmuse-follow'.
+;; * fixed WikiName determination bug.
+;;
+;; Revision 1.14  2007/06/16 14:21:35  rubikitch
+;; added RatpoisonWiki and StumpwmWiki to oddmuse-wikis.
+;;
+;; Revision 1.13  2007/04/24 10:13:26  rubikitch
+;; * silence byte compiler (free variables)
+;; * `C-u C-c C-o' uses `oddmuse-read-pagename' now.
+;;
+;; Revision 1.12  2007/04/12 09:02:28  rubikitch
+;; applied `Enable "this is a minor change"' patch by Xavier Maillard.
+;; new command: oddmuse-toggle-minor (C-c C-m)
+;; new variable: oddmuse-use-always-minor
+;;
+;; Revision 1.11  2007/04/10 16:40:25  rubikitch
+;; use autoload cookies. use eval-when-compile. (patch by Xavier Maillard)
+;;
+;; Revision 1.10  2007/01/17 16:30:11  rubikitch
+;; added URLs
+;;
+;; Revision 1.9  2007/01/17 16:28:20  rubikitch
+;; added `(set-buffer-modified-p nil)' in oddmuse-edit.
+;;
+;; Revision 1.8  2007/01/15 14:28:42  rubikitch
+;; new command `oddmuse-insert-pagename'
+;;
+;; Revision 1.7  2007/01/14 18:15:05  rubikitch
+;; fixed `rename-buffer' problem
+;;
+;; Revision 1.6  2007/01/14 18:07:22  rubikitch
+;; fixed typo
+;;
+;; Revision 1.5  2007/01/14 18:05:02  rubikitch
+;; Pages are stored in files. (for fault tolerance)
+;;
+;; Revision 1.4  2007/01/14 17:31:42  rubikitch
+;; refactored.
+;; `oddmuse-wikis' is a list of triplets(wikiname url coding-system).
+;;
+;; Revision 1.3  2007/01/14 16:57:59  rubikitch
+;; Maintained by rubikitch
+;;
+
+;;; Code:
+(eval-when-compile (require 'cl) (require 'sgml-mode) (require 'skeleton))
+=======
 ;; [2007/11/16] merged from oddmuse.el
 ;; Changed command behavior: oddmuse-post
 ;;  With prefix argument, prompts pagename, otherwise set pagename as basename of `buffer-file-name'.
@@ -125,6 +225,7 @@
 
 ;;; Code:
 (eval-when-compile (require 'cl) (require 'sgml-mode) (require 'skeleton))
+>>>>>>> other
 
 (defcustom oddmuse-directory "~/emacs/oddmuse"
   "Directory to store oddmuse pages."
@@ -132,17 +233,29 @@
   :group 'oddmuse)
 
 (defcustom oddmuse-wikis
-  '(("TestWiki" "http://www.emacswiki.org/cgi-bin/test" utf-8 "question")
-    ("EmacsWiki" "http://www.emacswiki.org/cgi-bin/emacs" utf-8 "uihnscuskc")
-    ("CommunityWiki" "http://www.communitywiki.org/cw" utf-8 "question")
-    ("OddmuseWiki" "http://www.oddmuse.org/cgi-bin/oddmuse" utf-8 "question"))
-  "Alist mapping wiki names to URLs."
+  '(("TestWiki" "http://www.emacswiki.org/cgi-bin/test" utf-8 "question" nil)
+    ("EmacsWiki" "http://www.emacswiki.org/cgi-bin/emacs" utf-8 "uihnscuskc" nil)
+    ("CommunityWiki" "http://www.communitywiki.org/cw" utf-8 "question" nil)
+    ("OddmuseWiki" "http://www.oddmuse.org/cgi-bin/oddmuse" utf-8 "question" nil)
+    ("CampaignWiki" "http://www.campaignwiki.org/wiki/NameOfYourWiki" utf-8 "ts" nil))
+  "Alist mapping wiki names to URLs.
+The username is optional and defaults to `oddmuse-username'."
   :type '(repeat (list (string :tag "Wiki")
                        (string :tag "URL")
-                       (symbol :tag "Coding System")
-		       (string :tag "Secret"
-			       :match (lambda (widget value)
-					(> (length value) 0)))))
+                       (choice :tag "Coding System"
+			       (const :tag "default" utf-8)
+			       (symbol :tag "specify"
+				       :validate (lambda (widget)
+						   (unless (coding-system-p
+							    (widget-value widget))
+						     (widget-put widget :error
+								 "Not a valid coding system")))))
+		       (choice :tag "Secret"
+			       (const :tag "default" "question")
+			       (string :tag "specify"))
+		       (choice  :tag "Username"
+				(const :tag "default" nil)
+				(string :tag "specify"))))
   :group 'oddmuse)
 
 (defcustom oddmuse-username user-full-name
@@ -173,13 +286,27 @@ It must print the page to stdout.
 %w  URL of the wiki as provided by `oddmuse-wikis'
 %t  URL encoded pagename, eg. HowTo, How_To, or How%20To")
 
+(defvar oddmuse-rc-command
+  "curl --silent %w\"?action=rc&raw=1\""
+  "Command to use for Recent Changes.
+It must print the RSS 3.0 text format to stdout.
+
+%?  '?' character
+%w  URL of the wiki as provided by `oddmuse-wikis'")
+
+(defvar oddmuse-ts-command
+  (concat "date --date=\"`curl --silent --head %w"
+	  "| grep '^Date: '"
+	  "| cut -c 7-`\" +%s")
+  "Command to use for requesting a timestamp from the server.")
+
 (defvar oddmuse-post-command
   (concat "curl --silent --write-out '%{http_code}'"
           " --form title=%t"
           " --form summary=%s"
           " --form username=%u"
           " --form password=%p"
-	  " --form %q=1"
+	  " --form %q=%n"
           " --form recent_edit=%m"
 	  " --form oldtime=%o"
           " --form text=\"<-\""
@@ -195,6 +322,7 @@ It must accept the page on stdin.
 %q  question-asker cookie
 %m  minor edit
 %o  oldtime, a timestamp provided by Oddmuse
+%n  now, the current time sometimes required by Oddmuse
 %w  URL of the wiki as provided by `oddmuse-wikis'")
 
 (defvar oddmuse-link-pattern
@@ -311,15 +439,21 @@ Customize `oddmuse-wikis' to add more wikis to the list.
   "Internal: Substitute oddmuse format flags according to `url',
 `oddmuse-page-name', `summary', `oddmuse-username', `question',
 `oddmuse-password', `oddmuse-revision'."
-  (let ((hatena "?"))
-    (dolist (pair '(("%w" . url)
-		    ("%t" . oddmuse-page-name)
-		    ("%s" . summary)
-                    ("%u" . oddmuse-username)
-		    ("%m" . oddmuse-minor)
+  (let ((hatena "?")
+	(oddmuse-ts (if (string-match "%n" command)
+			(replace-regexp-in-string
+			 "\n" ""
+			 (shell-command-to-string oddmuse-ts-command))
+		      "1")))
+    (dolist (pair '(("%m" . oddmuse-minor)
+		    ("%n" . oddmuse-ts)
+		    ("%o" . oddmuse-revision)
                     ("%p" . oddmuse-password)
                     ("%q" . question)
-		    ("%o" . oddmuse-revision)
+		    ("%s" . summary)
+		    ("%t" . oddmuse-page-name)
+                    ("%u" . oddmuse-username)
+		    ("%w" . url)
 		    ("%\\?" . hatena)))
       (when (and (boundp (cdr pair)) (stringp (symbol-value (cdr pair))))
         (setq command (replace-regexp-in-string (car pair)
@@ -424,6 +558,8 @@ The current wiki is taken from `oddmuse-wiki'."
          (coding-system-for-read coding)
          (coding-system-for-write coding)
 	 (question (nth 3 list))
+	 (oddmuse-username (or (nth 4 list)
+			       oddmuse-username))
          (command (oddmuse-format-command oddmuse-post-command))
 	 (buf (get-buffer-create " *oddmuse-response*"))
 	 (text (buffer-string)))
@@ -452,6 +588,50 @@ This command is used to reflect new pages to `oddmuse-pages-hash'."
 (defun oddmuse-read-pagename (wiki)
   "Read a pagename of WIKI with completion."
   (completing-read "Pagename: " (oddmuse-make-completion-table wiki)))
+
+;;;###autoload
+(defun oddmuse-rc (&optional include-minor-edits)
+  "Show Recent Changes.
+With universal argument, reload."
+  (interactive "P")
+  (let* ((wiki (or oddmuse-wiki
+		   (completing-read "Wiki: " oddmuse-wikis nil t)))
+	 (name (concat "*" wiki " RC*")))
+    (if (and (get-buffer name)
+             (not current-prefix-arg))
+        (pop-to-buffer (get-buffer name))
+      (let* ((wiki-data (assoc oddmuse-wiki oddmuse-wikis))
+             (url (nth 1 wiki-data))
+             (command (oddmuse-format-command oddmuse-rc-command))
+             (coding (nth 2 wiki-data))
+             (buf (get-buffer-create name))
+             (coding-system-for-read coding)
+             (coding-system-for-write coding))
+	(set-buffer buf)
+        (unless (equal name (buffer-name)) (rename-buffer name))
+        (erase-buffer)
+	(let ((max-mini-window-height 1))
+	  (shell-command command buf))
+        (pop-to-buffer buf)
+	(oddmuse-rc-buffer)
+	(set (make-local-variable 'oddmuse-wiki) wiki)))))
+
+(defun oddmuse-rc-buffer ()
+  "Parse current buffer as RSS 3.0 and display it correctly."
+  (let (result)
+    (dolist (item (cdr (split-string (buffer-string) "\n\n")));; skip first item
+      (let ((data (mapcar (lambda (line)
+			    (when (string-match "^\\(.*?\\): \\(.*\\)" line)
+			      (cons (match-string 1 line)
+				    (match-string 2 line))))
+			  (split-string item "\n"))))
+	(setq result (cons data result))))
+    (erase-buffer)
+    (dolist (item (nreverse result))
+      (insert "[[" (cdr (assoc "title" item)) "]] – "
+	      (cdr (assoc "generator" item)) "\n"))
+    (goto-char (point-min))
+    (oddmuse-mode)))
 
 ;;;###autoload
 (defun oddmuse-revert ()
