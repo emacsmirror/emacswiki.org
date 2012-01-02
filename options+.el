@@ -4,12 +4,12 @@
 ;; Description: Extensions to `options.el'.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams
-;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
+;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Feb  6 16:50:23 1996
 ;; Version: 20.0
-;; Last-Updated: Tue Jan  4 12:54:19 2011 (-0800)
+;; Last-Updated: Sun Jan  1 14:05:13 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 90
+;;     Update #: 91
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/options+.el
 ;; Keywords: docs, help, internal
 ;; Compatibility: GNU Emacs 20.x
