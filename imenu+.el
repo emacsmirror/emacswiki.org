@@ -4,12 +4,12 @@
 ;; Description: Extensions to `imenu.el'.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams
-;; Copyright (C) 1999-2011, Drew Adams, all rights reserved.
+;; Copyright (C) 1999-2012, Drew Adams, all rights reserved.
 ;; Created: Thu Aug 26 16:05:01 1999
 ;; Version: 21.0
-;; Last-Updated: Thu Nov 24 08:21:58 2011 (-0800)
+;; Last-Updated: Sun Jan  1 16:24:16 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 719
+;;     Update #: 725
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/imenu+.el
 ;; Keywords: tools, menus
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -65,6 +65,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2012/01/01 dadams
+;;     imenu-update-menubar: buffer-modified-tick -> buffer-chars-modified-tick.  (Sync w/ vanilla.)
 ;; 2011/11/24 dadams
 ;;     Added: imenup-invisible-p.
 ;;     imenu--generic-function: Use imenup-invisible-p, not just get-text-property (so overlays too).
@@ -309,10 +311,9 @@ See `imenu' for more information."
   (when (and (current-local-map)
              (keymapp (lookup-key (current-local-map) [menu-bar index]))
              (or (not (boundp 'imenu-menubar-modified-tick))
-                 (not (eq (buffer-modified-tick)
-                          imenu-menubar-modified-tick))))
-    (when (boundp 'imenu-menubar-modified-tick)
-      (setq imenu-menubar-modified-tick  (buffer-modified-tick)))
+                 (/= (buffer-chars-modified-tick) imenu-menubar-modified-tick))) ; Emacs 22+
+    (when (boundp 'imenu-menubar-modified-tick) ; Emacs 22+
+      (setq imenu-menubar-modified-tick  (buffer-chars-modified-tick)))
     (let ((index-alist  (imenu--make-index-alist t)))
       ;; Don't bother updating if the index-alist has not changed
       ;; since the last time we did it.
