@@ -4,12 +4,12 @@
 ;; Description: Extensions to hl-line.el.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams
-;; Copyright (C) 2006-2011, Drew Adams, all rights reserved.
+;; Copyright (C) 2006-2012, Drew Adams, all rights reserved.
 ;; Created: Sat Aug 26 18:17:18 2006
 ;; Version: 22.0
-;; Last-Updated: Thu Feb 24 15:22:18 2011 (-0800)
+;; Last-Updated: Sun Jan  1 14:36:51 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 434
+;;     Update #: 437
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/hl-line+.el
 ;; Keywords: highlight, cursor, accessibility
 ;; Compatibility: GNU Emacs: 22.x, 23.x
@@ -98,7 +98,7 @@
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; 
-;;; Change log:
+;;; Change Log:
 ;;
 ;; 2011/01/04 dadams
 ;;     Added autoload cookies for defcustom, defface and commands.
