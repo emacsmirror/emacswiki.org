@@ -13,16 +13,15 @@ My emacs configurations:
   http://code.google.com/p/bamanzi-misc/source/browse/trunk/_emacs.d/
 
 Some my stuff:
-  * [http://www.cnblogs.com/bamanzi/archive/2011/03/07/emacs-auto-complete-scite-api.html auto-complete-scite-api] auto-completion source with scite API files  (please read the [http://bamanzi-misc.googlecode.com/svn/trunk/_emacs.d/lisp/auto-complete-scite-api.el source code] for English introduction.)
-  * [http://bamanzi.iteye.com/blog/635812 imenu parser for emacs delphi-mode]
-  * [http://www.cnblogs.com/bamanzi/archive/2011/04/06/emacs-delphi-jump-to-decl-impl.html jump to function declation/implementation in delphi-mode]
-  * more to come...
+* [http://www.cnblogs.com/bamanzi/archive/2011/03/07/emacs-auto-complete-scite-api.html auto-complete-scite-api] - auto-completion source with scite API files  (please read the [http://bamanzi-misc.googlecode.com/svn/trunk/_emacs.d/lisp/auto-complete-scite-api.el source code] for English introduction.)
+* [http://www.cnblogs.com/bamanzi/archive/2010/04/07/delphi-imenu-parser-emacs.html imenu parser for emacs delphi-mode]
+* [http://www.cnblogs.com/bamanzi/archive/2011/04/06/emacs-delphi-jump-to-decl-impl.html jump to function declaration/implementation in delphi-mode]
+* [http://www.cnblogs.com/bamanzi/archive/2011/10/09/emacs-outline-org-like.html OutlineOrgLike] - Use OrgMode like headings in any major-mode (e.g. in emacs-lisp-mode, any line starting with ";;*" would be section heading. Based on code stolen from [http://www.mygooglest.com/fni/dot-emacs.html FabriceNiessen's dotemacs file].)  Refer [http://code.google.com/p/bamanzi-misc/source/browse/trunk/_emacs.d/lisp/outline-org-like.el source code file] for English instructions.
 
 
 
 [new:DrewAdams:2011-06-11 14:15 UTC]
 Welcome to the wiki. -- DrewAdams
-
 
 
 
