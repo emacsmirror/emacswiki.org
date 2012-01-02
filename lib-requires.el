@@ -4,12 +4,12 @@
 ;; Description: Commands to list Emacs Lisp library dependencies.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams
-;; Copyright (C) 2004-2011, Drew Adams, all rights reserved.
+;; Copyright (C) 2004-2012, Drew Adams, all rights reserved.
 ;; Created: Thu Dec 30 12:29:29 2004
 ;; Version: 21.0
-;; Last-Updated: Tue Jan  4 11:02:08 2011 (-0800)
+;; Last-Updated: Sun Jan  1 14:05:15 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 735
+;;     Update #: 737
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/lib-requires.el
 ;; Keywords: libraries, files
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -41,7 +41,7 @@
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; 
-;;; Change log:
+;;; Change Log:
 ;;
 ;; 2011/01/04 dadams
 ;;     Added autoload cookie for defgroup.
