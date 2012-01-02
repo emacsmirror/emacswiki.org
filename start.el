@@ -4,12 +4,12 @@
 ;; Description: Main Emacs startup file: require/autoload other files.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams
-;; Copyright (C) 1995-2011, Drew Adams, all rights reserved.
+;; Copyright (C) 1995-2012, Drew Adams, all rights reserved.
 ;; Created: Wed Aug  2 11:12:24 1995
 ;; Version: 21.1
-;; Last-Updated: Wed Nov 30 08:18:55 2011 (-0800)
+;; Last-Updated: Sun Jan  1 14:05:11 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 2896
+;;     Update #: 2905
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/start.el
 ;; Keywords: abbrev, internal, local, init
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -152,7 +152,7 @@
 ;; 2008/03/21 dadams
 ;;     Soft require finder+.el
 ;; 2008/03/11 dadams
-;;     Sort require tabbar.el.
+;;     Soft require tabbar.el.
 ;; 2008/02/29 dadams
 ;;     Soft require ls-lisp+, not files+.  Load FJW's ls-lisp before that.
 ;; 2007/12/27 dadams
