@@ -4,12 +4,12 @@
 ;; Description: Extensions to `pp.el'.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams
-;; Copyright (C) 1999-2011, Drew Adams, all rights reserved.
+;; Copyright (C) 1999-2012, Drew Adams, all rights reserved.
 ;; Created: Fri Sep  3 13:45:40 1999
 ;; Version: 21.0
-;; Last-Updated: Thu Feb 24 15:48:30 2011 (-0800)
+;; Last-Updated: Sun Jan  1 14:05:12 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 201
+;;     Update #: 202
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/pp+.el
 ;; Keywords: lisp
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
