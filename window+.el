@@ -4,12 +4,12 @@
 ;; Description: Extensions to `window.el'.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams
-;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
+;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Thu Jan 25 14:22:13 1996
 ;; Version: 21.0
-;; Last-Updated: Wed Jun 29 14:07:17 2011 (-0700)
+;; Last-Updated: Sun Jan  1 14:05:07 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 107
+;;     Update #: 108
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/window+.el
 ;; Keywords: internal, window
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
