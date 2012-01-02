@@ -4,12 +4,12 @@
 ;; Description: Miscellaneous commands (interactive functions).
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams
-;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
+;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Wed Aug  2 11:20:41 1995
 ;; Version: 21.1
-;; Last-Updated: Wed Dec 21 08:13:18 2011 (-0800)
+;; Last-Updated: Sun Jan  1 14:05:14 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 3015
+;;     Update #: 3016
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/misc-cmds.el
 ;; Keywords: internal, unix, extensions, maint, local
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
