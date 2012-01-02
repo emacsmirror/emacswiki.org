@@ -4,12 +4,12 @@
 ;; Description: Extensions to `menu-bar.el'.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams
-;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
+;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Thu Aug 17 10:05:46 1995
 ;; Version: 21.1
-;; Last-Updated: Sat Dec  3 08:44:01 2011 (-0800)
+;; Last-Updated: Sun Jan  1 14:05:14 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 3545
+;;     Update #: 3550
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/menu-bar+.el
 ;; Keywords: internal, local, convenience
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
