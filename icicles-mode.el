@@ -4,12 +4,12 @@
 ;; Description: Icicle Mode definition for Icicles
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams
-;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
+;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 10:21:10 2006
 ;; Version: 22.0
-;; Last-Updated: Fri Oct 21 14:05:38 2011 (-0700)
+;; Last-Updated: Sun Jan  1 14:05:17 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 8056
+;;     Update #: 8059
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-mode.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -237,7 +237,7 @@
 ;; Emacs 20 only
 (unless (fboundp 'define-minor-mode)
   (defcustom icicle-mode nil
-    "*Toggle minibuffer input completion and cycling.
+    "*Non-nil means use Icicles minibuffer input completion and cycling.
 Setting this variable directly does not take effect;
 use either \\[customize] or command `icy-mode' (aka `icicle-mode')."
     :set (lambda (symbol value) (icicle-mode (if value 1 -1)))
@@ -289,6 +289,8 @@ cannot take advantage of WYSIWYG)."
       (interactive (list (read-face-name "Describe face" "= `default' face"
                                          (not icicle-WYSIWYG-Completions-flag))))))
 
+  ;; Eval this so that even if the library is byte-compiled with Emacs 20,
+  ;; loading it into Emacs 21+ will define variable `icicle-mode'.
   (eval '(define-minor-mode icicle-mode
           "Icicle mode: Toggle minibuffer input completion and cycling.
 Non-nil prefix ARG turns mode on if ARG > 0, else turns it off.
