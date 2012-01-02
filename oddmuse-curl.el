@@ -1,5 +1,5 @@
 ;;; oddmuse-curl.el -- edit pages on an Oddmuse wiki using curl
-;; $Id: oddmuse-curl.el,v 1.2 2012/01/02 00:08:36 alex Exp $
+;; $Id: oddmuse-curl.el,v 1.2 2012/01/02 00:08:36 alex Exp alex $
 
 ;; Copyright (C) 2006, 2009, 2011  Alex Schroeder <alex@gnu.org>
 ;;           (C) 2007  rubikitch <rubikitch@ruby-lang.org>
@@ -7,6 +7,7 @@
 ;; Latest version:
 ;;   http://www.emacswiki.org/cgi-bin/wiki/download/oddmuse-curl.el
 ;;   (oddmuse-edit "EmacsWiki" "oddmuse-curl.el")
+;;   or save using (emacswiki-post "oddmuse-curl.el")
 ;; Discussion, feedback:
 ;;   http://www.emacswiki.org/cgi-bin/wiki/OddmuseMode
 
@@ -111,19 +112,13 @@ It must print the RSS 3.0 text format to stdout.
 %?  '?' character
 %w  URL of the wiki as provided by `oddmuse-wikis'")
 
-(defvar oddmuse-ts-command
-  (concat "date --date=\"`curl --silent --head %w"
-	  "| grep '^Date: '"
-	  "| cut -c 7-`\" +%s")
-  "Command to use for requesting a timestamp from the server.")
-
 (defvar oddmuse-post-command
   (concat "curl --silent --write-out '%{http_code}'"
           " --form title=%t"
           " --form summary=%s"
           " --form username=%u"
           " --form password=%p"
-	  " --form %q=%n"
+	  " --form %q=1"
           " --form recent_edit=%m"
 	  " --form oldtime=%o"
           " --form text=\"<-\""
@@ -139,7 +134,6 @@ It must accept the page on stdin.
 %q  question-asker cookie
 %m  minor edit
 %o  oldtime, a timestamp provided by Oddmuse
-%n  now, the current time sometimes required by Oddmuse
 %w  URL of the wiki as provided by `oddmuse-wikis'")
 
 (defvar oddmuse-link-pattern
@@ -256,21 +250,15 @@ Customize `oddmuse-wikis' to add more wikis to the list.
   "Internal: Substitute oddmuse format flags according to `url',
 `oddmuse-page-name', `summary', `oddmuse-username', `question',
 `oddmuse-password', `oddmuse-revision'."
-  (let ((hatena "?")
-	(oddmuse-ts (if (string-match "%n" command)
-			(replace-regexp-in-string
-			 "\n" ""
-			 (shell-command-to-string oddmuse-ts-command))
-		      "1")))
-    (dolist (pair '(("%m" . oddmuse-minor)
-		    ("%n" . oddmuse-ts)
-		    ("%o" . oddmuse-revision)
+  (let ((hatena "?"))
+    (dolist (pair '(("%w" . url)
+		    ("%t" . oddmuse-page-name)
+		    ("%s" . summary)
+                    ("%u" . oddmuse-username)
+		    ("%m" . oddmuse-minor)
                     ("%p" . oddmuse-password)
                     ("%q" . question)
-		    ("%s" . summary)
-		    ("%t" . oddmuse-page-name)
-                    ("%u" . oddmuse-username)
-		    ("%w" . url)
+		    ("%o" . oddmuse-revision)
 		    ("%\\?" . hatena)))
       (when (and (boundp (cdr pair)) (stringp (symbol-value (cdr pair))))
         (setq command (replace-regexp-in-string (car pair)
@@ -375,8 +363,6 @@ The current wiki is taken from `oddmuse-wiki'."
          (coding-system-for-read coding)
          (coding-system-for-write coding)
 	 (question (nth 3 list))
-	 (oddmuse-username (or (nth 4 list)
-			       oddmuse-username))
          (command (oddmuse-format-command oddmuse-post-command))
 	 (buf (get-buffer-create " *oddmuse-response*"))
 	 (text (buffer-string)))
@@ -511,6 +497,4 @@ PAGENAME is the pagename of the page you want to browse."
 
 (provide 'oddmuse)
 
-;; How to save (DO NOT REMOVE!!)
-;; (emacswiki-post "oddmuse-curl.el")
 ;;; oddmuse-curl.el ends here
