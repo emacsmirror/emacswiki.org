@@ -4,12 +4,12 @@
 ;; Description: Hide/show comments in code.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams
-;; Copyright (C) 2011, Drew Adams, all rights reserved.
+;; Copyright (C) 2011-2012, Drew Adams, all rights reserved.
 ;; Created: Wed May 11 07:11:30 2011 (-0700)
 ;; Version:
-;; Last-Updated: Wed Nov 23 13:18:02 2011 (-0800)
+;; Last-Updated: Sun Jan  1 16:00:08 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 18
+;;     Update #: 19
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/hide-comnt.el
 ;; Keywords: comment, hide, show
 ;; Compatibility: GNU Emacs: 21.x, 22.x, 23.x
