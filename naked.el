@@ -4,12 +4,12 @@
 ;; Description: Provide for naked key descriptions: no angle brackets.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams
-;; Copyright (C) 2011, Drew Adams, all rights reserved.
+;; Copyright (C) 2011-2012, Drew Adams, all rights reserved.
 ;; Created: Fri Oct  7 13:12:52 2011 (-0700)
 ;; Version: 21.0
-;; Last-Updated: Sat Oct  8 00:06:57 2011 (-0700)
+;; Last-Updated: Sun Jan  1 16:35:50 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 97
+;;     Update #: 102
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/
 ;; Keywords: lisp, key, print, format, help
 ;; Compatibility: GNU Emacs 20.x, 21.x, 22.x, 23.x
@@ -112,6 +112,7 @@
 ;;
 ;;; Code:
 
+;; Same as `icicle-key-description' in `icicles-fn.el'.
 (defun naked-key-description (keys &optional prefix angles)
   "Like `key-description', but does not use angle brackets, by default.
 Non-nil optional arg ANGLES means use angle brackets."
@@ -122,6 +123,7 @@ Non-nil optional arg ANGLES means use angle brackets."
       (setq result  (replace-regexp-in-string "<\\([^>]+\\)>" "\\1" result 'fixed-case)))
     result))
 
+;; Same as `icicle-edmacro-parse-keys' in `icicles-mac.el'.
 (defun naked-edmacro-parse-keys (string &optional need-vector angles)
   "Like `edmacro-parse-keys', but does not use angle brackets, by default.
 Non-nil optional arg ANGLES means to use angle brackets, exactly like
@@ -214,6 +216,7 @@ ANGLES."
 	(concat (loop for ch across res collect (if (= (logand ch ?\M-\^@) 0)  ch  (+ ch 128))))
       res)))
 
+;; Same as `icicle-read-kbd-macro' in `icicles-mac.el'.
 ;;;###autoload
 (defun naked-read-kbd-macro (start &optional end angles)
   "Read the region as a keyboard macro definition.
@@ -231,6 +234,7 @@ brackets.  For example:
       (naked-edmacro-parse-keys start end angles)
     (setq last-kbd-macro  (naked-edmacro-parse-keys (buffer-substring start end) nil angles))))
 
+;; Same as `icicle-kbd' in `icicles-mac.el'.
 (defmacro naked (keys &optional angles)
   "Like `kbd', but does not use angle brackets, by default.
 With non-nil optional arg ANGLES, expect key descriptions to use angle
