@@ -4,12 +4,12 @@
 ;; Description: Look up synonyms for a word or phrase in a thesaurus.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams
-;; Copyright (C) 2005-2011, Drew Adams, all rights reserved.
+;; Copyright (C) 2005-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Dec 20 14:39:26 2005
 ;; Version: 1.0
-;; Last-Updated: Sat Jul 30 11:36:00 2011 (-0700)
+;; Last-Updated: Sun Jan  1 14:05:08 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 2497
+;;     Update #: 2498
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/synonyms.el
 ;; Keywords: text, dictionary, thesaurus, spelling, apropos, help
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
