@@ -4,12 +4,12 @@
 ;; Description: Highlight whitespace of various kinds.
 ;; Author: Peter Steiner <unistein@isbe.ch>, Drew Adams
 ;; Maintainer: Drew Adams
-;; Copyright (C) 2000-2011, Drew Adams, all rights reserved.
+;; Copyright (C) 2000-2012, Drew Adams, all rights reserved.
 ;; Created: Wed Jun 21 08:54:53 2000
 ;; Version: 21.0
-;; Last-Updated: Tue Jan  4 14:05:38 2011 (-0800)
+;; Last-Updated: Sun Jan  1 14:05:11 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 286
+;;     Update #: 287
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/show-wspace.el
 ;; Keywords: highlight, whitespace
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -259,7 +259,5 @@ Uses face `show-ws-trailing-whitespace'."
 
 (provide 'show-wspace)
 
-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; show-wspace.el ends here
-
