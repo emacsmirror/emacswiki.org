@@ -4,12 +4,12 @@
 ;; Description: Indicate minibuffer-depth in prompt
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams
-;; Copyright (C) 2006-2011, Drew Adams, all rights reserved.
+;; Copyright (C) 2006-2012, Drew Adams, all rights reserved.
 ;; Created: Sat Nov 18 16:37:53 2006
 ;; Version: 
-;; Last-Updated: Thu Feb 24 15:42:48 2011 (-0800)
+;; Last-Updated: Sun Jan  1 14:39:00 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 69
+;;     Update #: 72
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/mb-depth+.el
 ;; Keywords: convenience
 ;; Compatibility: GNU Emacs: 22.x, 23.x
@@ -49,7 +49,7 @@
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; 
-;;; Change log:
+;;; Change Log:
 ;;
 ;; 2008/08/04
 ;;     Added Commentary note about using condition-case when requiring mb-depth+.el.
