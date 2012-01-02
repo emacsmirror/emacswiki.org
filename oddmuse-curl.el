@@ -1,5 +1,5 @@
 ;;; oddmuse-curl.el -- edit pages on an Oddmuse wiki using curl
-;; $Id: oddmuse-curl.el,v 1.2 2012/01/02 00:08:36 alex Exp alex $
+;; $Id: oddmuse-curl.el,v 1.3 2012/01/02 23:03:02 alex Exp $
 
 ;; Copyright (C) 2006, 2009, 2011  Alex Schroeder <alex@gnu.org>
 ;;           (C) 2007  rubikitch <rubikitch@ruby-lang.org>
@@ -363,6 +363,8 @@ The current wiki is taken from `oddmuse-wiki'."
          (coding-system-for-read coding)
          (coding-system-for-write coding)
 	 (question (nth 3 list))
+	 (oddmuse-username (or (nth 4 list)
+			       oddmuse-username))
          (command (oddmuse-format-command oddmuse-post-command))
 	 (buf (get-buffer-create " *oddmuse-response*"))
 	 (text (buffer-string)))
