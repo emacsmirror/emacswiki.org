@@ -4,12 +4,12 @@
 ;; Description: Commands for thumbnail frames.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams
-;; Copyright (C) 2004-2011, Drew Adams, all rights reserved.
+;; Copyright (C) 2004-2012, Drew Adams, all rights reserved.
 ;; Created: Fri Dec 10 16:44:55 2004
 ;; Version: 21.0
-;; Last-Updated: Sat Dec  3 10:03:21 2011 (-0800)
+;; Last-Updated: Sun Jan  1 17:25:37 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 1383
+;;     Update #: 1443
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/thumb-frm.el
 ;; Keywords: frame, icon
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -558,8 +558,8 @@ everywhere, except for `thumfr-really-iconify-frame' and
 (defun thumfr-really-iconify-frame (&optional frame)
   "Iconify FRAME, even if `thumfr-thumbify-dont-iconify-flag' is non-nil."
   (interactive)
-  (setq frame (or frame (selected-frame)))
-  (let ((thumfr-thumbify-dont-iconify-flag nil))
+  (setq frame  (or frame (selected-frame)))
+  (let ((thumfr-thumbify-dont-iconify-flag  nil))
     ;; Ensure we iconify, even if [iconify-frame] is bound in `special-event-map'.
     (iconify-frame frame)
     (while (not (input-pending-p)) (sit-for 0))
@@ -572,7 +572,7 @@ everywhere, except for `thumfr-really-iconify-frame' and
   "Iconify or deiconify frame, even if `thumfr-thumbify-dont-iconify-flag'
 is non-nil."
   (interactive)
-  (let ((thumfr-thumbify-dont-iconify-flag nil))
+  (let ((thumfr-thumbify-dont-iconify-flag  nil))
     (iconify-or-deiconify-frame)
     ;; Ensure we iconify, even if [iconify-frame] is bound in `special-event-map'.
     (while (not (input-pending-p)) (sit-for 0))
@@ -584,15 +584,15 @@ is non-nil."
 Variable `thumfr-frame-parameters' is used to determine
 which frame parameters (such as menu-bar) to remove."
   (interactive)
-  (setq frame (or frame (selected-frame)))
-  (let* ((fr+tf-params (assoc frame thumfr-non-thumbnail-frames))
-         (tf-params (cdr fr+tf-params))
-         (non-tf-params (frame-parameters frame))
-         (fr+non-tf-params (cons frame non-tf-params)))
+  (setq frame  (or frame (selected-frame)))
+  (let* ((fr+tf-params      (assoc frame thumfr-non-thumbnail-frames))
+         (tf-params         (cdr fr+tf-params))
+         (non-tf-params     (frame-parameters frame))
+         (fr+non-tf-params  (cons frame non-tf-params)))
     (when thumfr-rename-when-thumbify-flag (rename-non-minibuffer-frame))
     (unless (assoc frame thumfr-thumbnail-frames) ; No-op if already a thumbnail.
       (add-to-list 'thumfr-thumbnail-frames fr+non-tf-params)
-      (setq thumfr-non-thumbnail-frames (delq fr+tf-params thumfr-non-thumbnail-frames))
+      (setq thumfr-non-thumbnail-frames  (delq fr+tf-params thumfr-non-thumbnail-frames))
       (condition-case thumfr-thumbify-frame
           (progn
             (enlarge-font (- thumfr-font-difference) frame) ; In `frame-cmds.el'.
@@ -600,34 +600,33 @@ which frame parameters (such as menu-bar) to remove."
             (when thumfr-next-stack-xoffset
               (set-frame-position frame thumfr-next-stack-xoffset
                                   thumfr-next-stack-yoffset)
-              (setq thumfr-next-stack-xoffset nil
-                    thumfr-next-stack-yoffset nil))
+              (setq thumfr-next-stack-xoffset  nil
+                    thumfr-next-stack-yoffset  nil))
             (modify-frame-parameters frame thumfr-frame-parameters))
         (error
          (when fr+tf-params (add-to-list 'thumfr-non-thumbnail-frames fr+tf-params))
-         (setq thumfr-thumbnail-frames (delq fr+non-tf-params thumfr-thumbnail-frames))
+         (setq thumfr-thumbnail-frames  (delq fr+non-tf-params thumfr-thumbnail-frames))
          (error (error-message-string thumfr-thumbify-frame)))))))
 
 ;;;###autoload
 (defun thumfr-dethumbify-frame (&optional frame)
   "Restore thumbnail FRAME to original size (default: selected frame)."
   (interactive)
-  (setq frame (or frame (selected-frame)))
-  (let* ((fr+non-tf-params (assoc frame thumfr-thumbnail-frames))
-         (non-tf-params (cdr fr+non-tf-params))
-         (tf-params (frame-parameters frame))
-         (fr+tf-params (cons frame tf-params)))
+  (setq frame  (or frame (selected-frame)))
+  (let* ((fr+non-tf-params  (assoc frame thumfr-thumbnail-frames))
+         (non-tf-params     (cdr fr+non-tf-params))
+         (tf-params         (frame-parameters frame))
+         (fr+tf-params      (cons frame tf-params)))
     (when fr+non-tf-params              ; No-op if not a thumbnail.
       (add-to-list 'thumfr-non-thumbnail-frames fr+tf-params)
-      (setq thumfr-thumbnail-frames (delq fr+non-tf-params thumfr-thumbnail-frames))
+      (setq thumfr-thumbnail-frames  (delq fr+non-tf-params thumfr-thumbnail-frames))
       (condition-case thumfr-dethumbify-frame
           (progn
             (enlarge-font thumfr-font-difference frame) ; In `frame-cmds.el'.
             (modify-frame-parameters frame non-tf-params))
         (error
          (when fr+non-tf-params (add-to-list 'thumfr-thumbnail-frames fr+non-tf-params))
-         (setq thumfr-non-thumbnail-frames
-               (delq fr+tf-params thumfr-non-thumbnail-frames))
+         (setq thumfr-non-thumbnail-frames  (delq fr+tf-params thumfr-non-thumbnail-frames))
          (error (error-message-string thumfr-dethumbify-frame))))
       (select-frame-set-input-focus frame)
       (thumfr-only-raise-frame frame))))
@@ -654,7 +653,7 @@ If you don't specify a frame, the selected frame is used.
 
 If Emacs is displaying on an ordinary terminal or other device that
 does not support multiple overlapping frames, then do nothing."
-  (unless frame (setq frame (selected-frame)))
+  (unless frame (setq frame  (selected-frame)))
   (thumfr-only-raise-frame frame)
   (thumfr-dethumbify-frame frame))
 
@@ -663,7 +662,7 @@ does not support multiple overlapping frames, then do nothing."
   "If FRAME is a thumbnail, restore it; else thumbify it.
 FRAME defaults to the selected frame."
   (interactive)
-  (setq frame (or frame (selected-frame)))
+  (setq frame  (or frame (selected-frame)))
   (if (assoc frame thumfr-thumbnail-frames)
       (thumfr-dethumbify-frame frame)
     (thumfr-thumbify-frame frame)))
@@ -676,12 +675,12 @@ FRAME defaults to the selected frame."
 Dethumbify FRAME, if it is a thumbnail frame.
 FRAME is the selected frame, by default."
   (interactive)
-  (setq frame (or frame (selected-frame)))
+  (setq frame  (or frame (selected-frame)))
   (thumfr-dethumbify-frame frame)
-  (let ((other-frames (visible-frame-list)))
-    (setq other-frames (delq frame other-frames))
-    (setq other-frames (delq 1on1-minibuffer-frame other-frames))
-    (dolist (fr (nset-difference other-frames (mapcar 'car thumfr-thumbnail-frames)))
+  (let ((other-frames  (visible-frame-list)))
+    (setq other-frames  (delq frame other-frames))
+    (setq other-frames  (delq 1on1-minibuffer-frame other-frames))
+    (dolist (fr  (nset-difference other-frames (mapcar 'car thumfr-thumbnail-frames)))
       (thumfr-thumbify-frame fr))
     (thumfr-stack-thumbnail-frames))
   frame)                                ; Return frame.
@@ -710,7 +709,7 @@ Dethumbify the next frame (if it is a thumbnail frame)."
 restoring them to their states before they were thumbified."
   (interactive)
   (dolist (fr (mapcar 'car (thumfr-cull-thumbnail-frames))) (thumfr-dethumbify-frame fr))
-  (setq thumfr-thumbnail-frames nil))          ; Make sure.
+  (setq thumfr-thumbnail-frames  ()))   ; Make sure.
 
 
 ;; New row (or column) offset is based on the size of the previous
@@ -723,179 +722,191 @@ restoring them to their states before they were thumbified."
   "Stack thumbnail frames along edge of display
 according to the direction of `thumfr-stack-display-edge'."
   (interactive)
-  (let* ((display-width (x-display-pixel-width))
-         (display-height (if (boundp '1on1-minibuffer-frame)
-                             (cdr (assq 'top (frame-parameters 1on1-minibuffer-frame)))
-                           (x-display-pixel-height)))
-         (xstart (if (memq thumfr-stack-display-edge
-                           '(right+down right+up top+to-left bottom+to-left))
-                     display-width
-                   0))
-         (ystart (if (memq thumfr-stack-display-edge
-                           '(bottom+to-right bottom+to-left left+up right+up))
-                     display-height
-                   0))
-         (xoffset xstart)
-         (yoffset ystart)
-         (thumb-frs (copy-sequence (thumfr-cull-thumbnail-frames)))
+  (let* ((display-width   (x-display-pixel-width))
+         (display-height  (if (boundp '1on1-minibuffer-frame)
+                              (cdr (assq 'top (frame-parameters 1on1-minibuffer-frame)))
+                            (x-display-pixel-height)))
+         (xstart          (if (memq thumfr-stack-display-edge
+                                    '(right+down right+up top+to-left bottom+to-left))
+                              display-width
+                            0))
+         (ystart          (if (memq thumfr-stack-display-edge
+                                    '(bottom+to-right bottom+to-left left+up right+up))
+                              display-height
+                            0))
+         (xoffset         xstart)
+         (yoffset         ystart)
+         (thumb-frs       (copy-sequence (thumfr-cull-thumbnail-frames)))
          last-fr)
     (when thumfr-sort-function
-      (setq thumb-frs (sort thumb-frs thumfr-sort-function)))
+      (setq thumb-frs  (sort thumb-frs thumfr-sort-function)))
 
     ;; These loops are similar, more or less symmetric.
     (case thumfr-stack-display-edge
       (left+down
-       (dolist (fr (mapcar 'car thumb-frs))
+       (dolist (fr  (mapcar 'car thumb-frs))
          (set-frame-position fr xoffset yoffset)
-         (let ((next-position
-                (thumfr-next-stack-position
-                 yoffset ystart (- display-height
-                                   window-mgr-title-bar-pixel-width
-                                   ;;(frame-pixel-height fr)
-                                   )
-                 #'+ (+ (frame-pixel-height fr) window-mgr-title-bar-pixel-width) #'>
-                 xoffset xstart (- display-width (frame-pixel-width fr))
-                 #'+ (frame-pixel-width fr) #'>)))
-           (setq yoffset (cdr next-position) xoffset (car next-position)))
+         (let ((next-position  (thumfr-next-stack-position
+                                yoffset ystart (- display-height
+                                                  window-mgr-title-bar-pixel-width
+                                                  ;;(frame-pixel-height fr)
+                                                  )
+                                #'+ (+ (frame-pixel-height fr)
+                                       window-mgr-title-bar-pixel-width) #'>
+                                xoffset xstart (- display-width (frame-pixel-width fr))
+                                #'+ (frame-pixel-width fr) #'>)))
+           (setq yoffset  (cdr next-position)
+                 xoffset  (car next-position)))
          (thumfr-only-raise-frame fr))
        (when thumb-frs
-         (setq thumfr-next-stack-xoffset xoffset)
-         (setq thumfr-next-stack-yoffset yoffset)))
+         (setq thumfr-next-stack-xoffset  xoffset
+               thumfr-next-stack-yoffset  yoffset)))
       (left+up
-       (dolist (fr (mapcar 'car thumb-frs))
-         (setq last-fr fr)
+       (dolist (fr  (mapcar 'car thumb-frs))
+         (setq last-fr  fr)
          (set-frame-position
           fr
           xoffset
           (max 0 (- yoffset window-mgr-title-bar-pixel-width (frame-pixel-height fr))))
-         (let ((next-position
-                (thumfr-next-stack-position
-                 yoffset ystart (truncate (* (frame-pixel-height fr) thumfr-last-row-show))
-                 #'- (+ (frame-pixel-height fr) window-mgr-title-bar-pixel-width) #'<
-                 xoffset xstart (- display-width (frame-pixel-width fr))
-                 #'+ (frame-pixel-width fr) #'>)))
-           (setq yoffset (cdr next-position) xoffset (car next-position))))
-       (dolist (fr (mapcar 'car (nreverse thumb-frs)))
+         (let ((next-position  (thumfr-next-stack-position
+                                yoffset ystart (truncate (* (frame-pixel-height fr)
+                                                            thumfr-last-row-show))
+                                #'- (+ (frame-pixel-height fr)
+                                       window-mgr-title-bar-pixel-width) #'<
+                                       xoffset xstart (- display-width (frame-pixel-width fr))
+                                       #'+ (frame-pixel-width fr) #'>)))
+           (setq yoffset  (cdr next-position)
+                 xoffset  (car next-position))))
+       (dolist (fr  (mapcar 'car (nreverse thumb-frs)))
          (thumfr-only-raise-frame fr))
        (when thumb-frs
-         (setq thumfr-next-stack-xoffset xoffset)
-         (setq thumfr-next-stack-yoffset (max 0 (- yoffset window-mgr-title-bar-pixel-width
-                                                     (frame-pixel-height last-fr))))))
+         (setq thumfr-next-stack-xoffset  xoffset
+               thumfr-next-stack-yoffset  (max 0 (- yoffset window-mgr-title-bar-pixel-width
+                                                    (frame-pixel-height last-fr))))))
       (right+down
-       (dolist (fr (mapcar 'car thumb-frs))
-         (setq last-fr fr)
+       (dolist (fr  (mapcar 'car thumb-frs))
+         (setq last-fr  fr)
          (set-frame-position fr (- xoffset (frame-pixel-width fr)) yoffset)
-         (let ((next-position
-                (thumfr-next-stack-position
-                 yoffset ystart (- display-height
-                                   window-mgr-title-bar-pixel-width
+         (let ((next-position  (thumfr-next-stack-position
+                                yoffset ystart (- display-height
+                                                  window-mgr-title-bar-pixel-width
                                    ;;;(frame-pixel-height fr)
-                                   )
-                 #'+ (+ (frame-pixel-height fr) window-mgr-title-bar-pixel-width) #'>
-                 xoffset xstart 0
-                 #'- (frame-pixel-width fr) #'<)))
-           (setq yoffset (cdr next-position) xoffset (car next-position)))
+                                                  )
+                                #'+ (+ (frame-pixel-height fr)
+                                       window-mgr-title-bar-pixel-width) #'>
+                                       xoffset xstart 0
+                                       #'- (frame-pixel-width fr) #'<)))
+           (setq yoffset  (cdr next-position)
+                 xoffset  (car next-position)))
          (thumfr-only-raise-frame fr))
        (when thumb-frs
-         (setq thumfr-next-stack-xoffset (- xoffset (frame-pixel-width last-fr)))
-         (setq thumfr-next-stack-yoffset yoffset)))
+         (setq thumfr-next-stack-xoffset  (- xoffset (frame-pixel-width last-fr))
+               thumfr-next-stack-yoffset  yoffset)))
       (right+up
-       (dolist (fr (mapcar 'car thumb-frs))
-         (setq last-fr fr)
+       (dolist (fr  (mapcar 'car thumb-frs))
+         (setq last-fr  fr)
          (set-frame-position
           fr
           (max 0 (- xoffset (frame-pixel-width fr)))
           (max 0 (- yoffset window-mgr-title-bar-pixel-width (frame-pixel-height fr))))
-         (let ((next-position
-                (thumfr-next-stack-position
-                 yoffset ystart (truncate (* (frame-pixel-height fr) thumfr-last-row-show))
-                 #'- (+ (frame-pixel-height fr) window-mgr-title-bar-pixel-width) #'<
-                 xoffset xstart 0
-                 #'- (frame-pixel-width fr) #'<)))
-           (setq yoffset (cdr next-position) xoffset (car next-position))))
-       (dolist (fr (mapcar 'car (nreverse thumb-frs)))
+         (let ((next-position  (thumfr-next-stack-position
+                                yoffset ystart (truncate (* (frame-pixel-height fr)
+                                                            thumfr-last-row-show))
+                                #'- (+ (frame-pixel-height fr)
+                                       window-mgr-title-bar-pixel-width) #'<
+                                       xoffset xstart 0
+                                       #'- (frame-pixel-width fr) #'<)))
+           (setq yoffset  (cdr next-position)
+                 xoffset  (car next-position))))
+       (dolist (fr  (mapcar 'car (nreverse thumb-frs)))
          (thumfr-only-raise-frame fr))
        (when thumb-frs
-         (setq thumfr-next-stack-xoffset (max 0 (- xoffset (frame-pixel-width last-fr))))
-         (setq thumfr-next-stack-yoffset (max 0 (- yoffset window-mgr-title-bar-pixel-width
-                                                     (frame-pixel-height last-fr))))))
+         (setq thumfr-next-stack-xoffset  (max 0 (- xoffset (frame-pixel-width last-fr)))
+               thumfr-next-stack-yoffset  (max 0 (- yoffset window-mgr-title-bar-pixel-width
+                                                    (frame-pixel-height last-fr))))))
       (top+to-right
-       (dolist (fr (mapcar 'car thumb-frs))
+       (dolist (fr  (mapcar 'car thumb-frs))
          (set-frame-position fr xoffset yoffset)
-         (let ((next-position
-                (thumfr-next-stack-position
-                 xoffset xstart (- display-width (frame-pixel-width fr))
-                 #'+ (frame-pixel-width fr) #'>
-                 yoffset ystart (- display-height
-                                   window-mgr-title-bar-pixel-width
-                                   (frame-pixel-height fr))
-                 #'+ (+ (frame-pixel-height fr) window-mgr-title-bar-pixel-width) #'>)))
-           (setq yoffset (car next-position) xoffset (cdr next-position)))
+         (let ((next-position  (thumfr-next-stack-position
+                                xoffset xstart (- display-width (frame-pixel-width fr))
+                                #'+ (frame-pixel-width fr) #'>
+                                yoffset ystart (- display-height
+                                                  window-mgr-title-bar-pixel-width
+                                                  (frame-pixel-height fr))
+                                #'+ (+ (frame-pixel-height fr)
+                                       window-mgr-title-bar-pixel-width) #'>)))
+           (setq yoffset  (car next-position)
+                 xoffset  (cdr next-position)))
          (thumfr-only-raise-frame fr))
        (when thumb-frs
-         (setq thumfr-next-stack-xoffset xoffset)
-         (setq thumfr-next-stack-yoffset yoffset)))
+         (setq thumfr-next-stack-xoffset  xoffset
+               thumfr-next-stack-yoffset  yoffset)))
       (top+to-left
-       (dolist (fr (mapcar 'car thumb-frs))
-         (setq last-fr fr)
+       (dolist (fr  (mapcar 'car thumb-frs))
+         (setq last-fr  fr)
          (set-frame-position fr (max 0 (- xoffset (frame-pixel-width fr))) yoffset)
-         (let ((next-position
-                (thumfr-next-stack-position
-                 xoffset xstart (truncate (* (frame-pixel-width fr) thumfr-last-row-show))
-                 #'- (frame-pixel-width fr) #'<
-                 yoffset ystart (- display-height
-                                   window-mgr-title-bar-pixel-width
-                                   (frame-pixel-height fr))
-                 #'+ (+ (frame-pixel-height fr) window-mgr-title-bar-pixel-width) #'>)))
-           (setq yoffset (car next-position) xoffset (cdr next-position)))
+         (let ((next-position  (thumfr-next-stack-position
+                                xoffset xstart (truncate (* (frame-pixel-width fr)
+                                                            thumfr-last-row-show))
+                                #'- (frame-pixel-width fr) #'<
+                                yoffset ystart (- display-height
+                                                  window-mgr-title-bar-pixel-width
+                                                  (frame-pixel-height fr))
+                                #'+ (+ (frame-pixel-height fr)
+                                       window-mgr-title-bar-pixel-width) #'>)))
+           (setq yoffset  (car next-position)
+                 xoffset  (cdr next-position)))
          (thumfr-only-raise-frame fr))
        (when thumb-frs
-         (setq thumfr-next-stack-xoffset (max 0 (- xoffset (frame-pixel-width last-fr))))
-         (setq thumfr-next-stack-yoffset yoffset)))
+         (setq thumfr-next-stack-xoffset  (max 0 (- xoffset (frame-pixel-width last-fr)))
+               thumfr-next-stack-yoffset  yoffset)))
       (bottom+to-right
-       (dolist (fr (mapcar 'car thumb-frs))
-         (setq last-fr fr)
+       (dolist (fr  (mapcar 'car thumb-frs))
+         (setq last-fr  fr)
          (set-frame-position
           fr
           xoffset
           (max 0 (- yoffset window-mgr-title-bar-pixel-width (frame-pixel-height fr))))
-         (let ((next-position
-                (thumfr-next-stack-position
-                 xoffset xstart (- display-width (frame-pixel-width fr))
-                 #'+ (frame-pixel-width fr) #'>
-                 yoffset ystart (- display-height
-                                   window-mgr-title-bar-pixel-width
-                                   (frame-pixel-height fr))
-                 #'- (+ (frame-pixel-height fr) window-mgr-title-bar-pixel-width) #'<)))
-           (setq yoffset (car next-position) xoffset (cdr next-position))))
-       (dolist (fr (mapcar 'car (nreverse thumb-frs)))
+         (let ((next-position  (thumfr-next-stack-position
+                                xoffset xstart (- display-width (frame-pixel-width fr))
+                                #'+ (frame-pixel-width fr) #'>
+                                yoffset ystart (- display-height
+                                                  window-mgr-title-bar-pixel-width
+                                                  (frame-pixel-height fr))
+                                #'- (+ (frame-pixel-height fr)
+                                       window-mgr-title-bar-pixel-width) #'<)))
+           (setq yoffset  (car next-position)
+                 xoffset  (cdr next-position))))
+       (dolist (fr  (mapcar 'car (nreverse thumb-frs)))
          (thumfr-only-raise-frame fr))
        (when thumb-frs
-         (setq thumfr-next-stack-xoffset xoffset)
-         (setq thumfr-next-stack-yoffset (max 0 (- yoffset window-mgr-title-bar-pixel-width
-                                                     (frame-pixel-height last-fr))))))
+         (setq thumfr-next-stack-xoffset  xoffset
+               thumfr-next-stack-yoffset  (max 0 (- yoffset window-mgr-title-bar-pixel-width
+                                                    (frame-pixel-height last-fr))))))
       (bottom+to-left
-       (dolist (fr (mapcar 'car thumb-frs))
-         (setq last-fr fr)
+       (dolist (fr  (mapcar 'car thumb-frs))
+         (setq last-fr  fr)
          (set-frame-position
           fr
           (max 0 (- xoffset (frame-pixel-width fr)))
           (max 0 (- yoffset window-mgr-title-bar-pixel-width (frame-pixel-height fr))))
-         (let ((next-position
-                (thumfr-next-stack-position
-                 xoffset xstart (* (truncate (frame-pixel-width fr) thumfr-last-row-show))
-                 #'- (frame-pixel-width fr) #'<
-                 yoffset ystart (- display-height
-                                   window-mgr-title-bar-pixel-width
-                                   (frame-pixel-height fr))
-                 #'- (+ (frame-pixel-height fr) window-mgr-title-bar-pixel-width) #'<)))
-           (setq yoffset (car next-position) xoffset (cdr next-position))))
-       (dolist (fr (mapcar 'car (nreverse thumb-frs)))
+         (let ((next-position  (thumfr-next-stack-position
+                                xoffset xstart (* (truncate (frame-pixel-width fr)
+                                                            thumfr-last-row-show))
+                                #'- (frame-pixel-width fr) #'<
+                                yoffset ystart (- display-height
+                                                  window-mgr-title-bar-pixel-width
+                                                  (frame-pixel-height fr))
+                                #'- (+ (frame-pixel-height fr)
+                                       window-mgr-title-bar-pixel-width) #'<)))
+           (setq yoffset  (car next-position)
+                 xoffset  (cdr next-position))))
+       (dolist (fr  (mapcar 'car (nreverse thumb-frs)))
          (thumfr-only-raise-frame fr))
        (when thumb-frs
-         (setq thumfr-next-stack-xoffset (max 0 (- xoffset (frame-pixel-width last-fr))))
-         (setq thumfr-next-stack-yoffset (max 0 (- yoffset window-mgr-title-bar-pixel-width
-                                                     (frame-pixel-height last-fr)))))))))
+         (setq thumfr-next-stack-xoffset  (max 0 (- xoffset (frame-pixel-width last-fr)))
+               thumfr-next-stack-yoffset  (max 0 (- yoffset window-mgr-title-bar-pixel-width
+                                                    (frame-pixel-height last-fr)))))))))
 
 ;; Helper function for `thumfr-stack-thumbnail-frames'.
 (defun thumfr-next-stack-position
@@ -911,12 +922,12 @@ New position is returned as a cons: (MINOR-POSITION . MAJOR-POSITION).
 *-LIMIT are the maximum positions on the display.
 *-+/- are functions `+' or `-', used to increment or decrement.
 *-</> are functions `<' or `>', used to compare."
-  (setq major-position (funcall major-+/- major-position major-increment))
+  (setq major-position  (funcall major-+/- major-position major-increment))
   (when (funcall major-</> major-position major-limit)
-    (setq major-position major-start)
-    (setq minor-position (funcall minor-+/- minor-position minor-increment))
+    (setq major-position  major-start
+          minor-position  (funcall minor-+/- minor-position minor-increment))
     (when (funcall minor-</> minor-position minor-limit)
-      (setq minor-position minor-start)))
+      (setq minor-position  minor-start)))
   (cons minor-position major-position))
 
 ;;;###autoload
@@ -925,12 +936,12 @@ New position is returned as a cons: (MINOR-POSITION . MAJOR-POSITION).
 Non-nil prefix FORCE-P => Sort iff FORCE-P >= 0."
   (interactive "P")
   (cond (thumfr-sort-function
-         (setq thumfr-last-sort-function thumfr-sort-function) ; Save it.
-         (when (or (null force-p) (<= (prefix-numeric-value force-p) 0))
-           (setq thumfr-sort-function nil))) ; Don't sort.
+         (setq thumfr-last-sort-function  thumfr-sort-function) ; Save it.
+         (when (or (null force-p)  (<= (prefix-numeric-value force-p) 0))
+           (setq thumfr-sort-function  nil))) ; Don't sort.
         ((or (null force-p) (> (prefix-numeric-value force-p) 0)) ; Ask to sort
          (if thumfr-last-sort-function ; Sort using saved sort fn.
-             (setq thumfr-sort-function thumfr-last-sort-function)
+             (setq thumfr-sort-function  thumfr-last-sort-function)
            (error "You first need to set `thumfr-sort-function'"))))
   (if thumfr-sort-function
       (message "Stacking of thumbnail frames is now sorted using `%s'."
@@ -941,7 +952,7 @@ Non-nil prefix FORCE-P => Sort iff FORCE-P >= 0."
 (defun thumfr-iconify-thumbnail-frames ()
   "Iconify all thumbnail frames."
   (interactive)
-  (let ((thumfr-thumbify-dont-iconify-flag nil))
+  (let ((thumfr-thumbify-dont-iconify-flag  nil))
     (mapcar (lambda (fr-spec) (iconify-frame (car fr-spec)))
             (thumfr-cull-thumbnail-frames))))
 
@@ -955,11 +966,11 @@ Non-nil prefix FORCE-P => Sort iff FORCE-P >= 0."
 (defun thumfr-cull-thumbnail-frames ()
   "Remove iconified and useless frames from `thumfr-thumbnail-frames'.
 This includes dead and invisible frames."
-  (setq thumfr-thumbnail-frames
-        (delete-if-not
-         (lambda (fr+params) (and (frame-live-p (car fr+params))
-                                  (eq t (frame-visible-p (car fr+params)))))
-         thumfr-thumbnail-frames)))
+  (setq thumfr-thumbnail-frames  (delete-if-not
+                                  (lambda (fr+params)
+                                    (and (frame-live-p (car fr+params))
+                                         (eq t (frame-visible-p (car fr+params)))))
+                                  thumfr-thumbnail-frames)))
 
 ;;;###autoload
 (defun thumfr-doremi-thumbnail-frames+ ()
@@ -967,8 +978,8 @@ This includes dead and invisible frames."
   (interactive)
   (unless (require 'doremi-frm nil t)
     (error "You need library `doremi-frm.el' to use this command"))
-  (let ((other-frames (visible-frame-list)))
-    (setq other-frames (delq 1on1-minibuffer-frame other-frames))
+  (let ((other-frames  (visible-frame-list)))
+    (setq other-frames  (delq 1on1-minibuffer-frame other-frames))
     (doremi (lambda (fr) (thumfr-thumbify-other-frames fr) fr)
             (selected-frame)
             nil                         ; ignored
@@ -1005,39 +1016,53 @@ of window creation."
   (string-lessp (cdr (assq 'window-id (cdr framespec1)))
                 (cdr (assq 'window-id (cdr framespec2)))))
 
+
+;;; After toggling these modes, make thumbnail frames respect `thumfr-frame-parameters'.
+
 (defadvice menu-bar-mode (after thumfr-restore-menu-bar-setting activate)
   "Restore menu bar setting for thumbnail frames."
   (let ((def  (assq 'menu-bar-lines thumfr-frame-parameters)))
-    (when (and menu-bar-mode def)
+    (when def
       (dolist (frm  thumfr-thumbnail-frames)
         (setq frm  (car frm))
-        (when (frame-live-p frm) (modify-frame-parameters frm (list def)))))))
+        (when (and (frame-live-p frm)
+                   (not (equal (cdr def) (cdr (assq 'menu-bar-lines (frame-parameters frm))))))
+          (modify-frame-parameters frm (list def)))))))
     
 (defadvice tool-bar-mode (after thumfr-restore-tool-bar-setting activate)
   "Restore tool bar setting for thumbnail frames."
   (let ((def  (assq 'tool-bar-lines thumfr-frame-parameters)))
-    (when (and tool-bar-mode def)
+    (when def
       (dolist (frm  thumfr-thumbnail-frames)
         (setq frm  (car frm))
-        (when (frame-live-p frm) (modify-frame-parameters frm (list def)))))))
-    
+        (when (and (frame-live-p frm)
+                   (not (equal (cdr def) (cdr (assq 'tool-bar-lines (frame-parameters frm))))))
+          (modify-frame-parameters frm (list def)))))))
+
 (defadvice scroll-bar-mode (after thumfr-restore-scroll-bar-setting activate)
   "Restore scroll bar setting for thumbnail frames."
   (let ((def  (assq 'vertical-scroll-bars thumfr-frame-parameters)))
-    (when (and scroll-bar-mode def)
+    (when def
       (dolist (frm  thumfr-thumbnail-frames)
         (setq frm  (car frm))
-        (when (frame-live-p frm) (modify-frame-parameters frm (list def)))))))
+        (when (and (frame-live-p frm)
+                   (not (equal (cdr def)
+                               (cdr (assq 'vertical-scroll-bars (frame-parameters frm))))))
+          (modify-frame-parameters frm (list def)))))))
 
 (defadvice fringe-mode (after thumfr-restore-fringe-setting activate)
   "Restore fringe setting for thumbnail frames."
   (let ((def1  (assq 'left-fringe thumfr-frame-parameters))
         (def2  (assq 'right-fringe thumfr-frame-parameters)))
-    (when (and fringe-mode (or def1 def2))
+    (when (or def1 def2)
       (dolist (frm  thumfr-thumbnail-frames)
         (setq frm  (car frm))
-        (when (and def1 (frame-live-p frm)) (modify-frame-parameters frm (list def1)))
-        (when (and def2 (frame-live-p frm)) (modify-frame-parameters frm (list def2)))))))
+        (when (and (frame-live-p frm)
+                   (not (equal (cdr def1) (cdr (assq 'left-fringe (frame-parameters frm))))))
+          (modify-frame-parameters frm (list def1)))
+        (when (and (frame-live-p frm)
+                   (not (equal (cdr def2) (cdr (assq 'right-fringe (frame-parameters frm))))))
+          (modify-frame-parameters frm (list def2)))))))
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;
