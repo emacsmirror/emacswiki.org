@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:22:14 2006
 ;; Version: 22.0
-;; Last-Updated: Sun Jan  1 14:05:16 2012 (-0800)
+;; Last-Updated: Mon Jan  2 13:14:32 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 4751
+;;     Update #: 4757
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-opt.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -1050,7 +1050,7 @@ removed based only on the number of input characters."
 ;;;###autoload
 (defcustom icicle-completions-format (if (boundp 'completions-format) ; Defined in Emacs 23+.
                                          completions-format
-                                       'horizontal)  
+                                       'horizontal)
   "*Layout of completion candidates in buffer `*Completions*'.
 `vertical' means display down columns first, then to the right.
 `horizontal' or nil means display across rows first, then down.
@@ -1534,7 +1534,7 @@ and you must load library `filesets.el'."
     customize-face-other-window          dabbrev-completion
     ;; Use these two if you want Icicles completion for shell commands.
     ;; See http://www.emacswiki.org/emacs/Icicles_-_Shell-Command_Enhancements.
-    ;; 
+    ;;
     ;; dired-read-shell-command
     ;; read-shell-command
     ess-complete-object-name
@@ -2973,7 +2973,7 @@ prefix argument (or else start a new Emacs session)."
                (icicle-set-S-TAB-methods-for-command (car entry) (cdr entry)))))
   :initialize #'custom-initialize-default
   :group 'Icicles-matching)
-            
+
 ;;;###autoload
 (defcustom icicle-swank-prefix-length 1
   "*Length (chars) of symbol prefix that much match, for swank completion."
@@ -3253,8 +3253,10 @@ whatever OLD is bound to in MAP, or in OLDMAP, if provided."
 ;; Must be before `icicle-top-level-key-bindings'.
 (defun icicle-bind-top-level-commands (&optional defs)
   "Bind top-level commands for Icicle mode."
-  (unless defs (setq defs  icicle-top-level-key-bindings))
-  (let (key command condition)
+  (let ((icicle-mode  (and (boundp 'icicle-mode) icicle-mode))
+        key command condition)
+    (unless icicle-mode  (icy-mode 1))  ; Need `icicle-mode-map', which is unbound unless in Icicle mode.
+    (unless defs  (setq defs  icicle-top-level-key-bindings))
     (dolist (key-def defs)
       (setq key        (car key-def)
             command    (cadr key-def)
@@ -3262,7 +3264,7 @@ whatever OLD is bound to in MAP, or in OLDMAP, if provided."
       (when (eval condition)
         (if (symbolp key)
             (icicle-remap key command icicle-mode-map (current-global-map))
-          (define-key icicle-mode-map key command))))))            
+          (define-key icicle-mode-map key command))))))
 
 ;; Must be before `icicle-top-level-key-bindings'.
 ;;;###autoload
@@ -3437,7 +3439,7 @@ toggle Icicle mode off and then back on."
     (bmkp-w3m-jump icicle-bookmark-w3m (fboundp 'bmkp-w3m-jump)) ; `C-x j w'
     (bmkp-w3m-jump-other-window icicle-bookmark-w3m-other-window (fboundp 'bmkp-w3m-jump)) ; `C-x 4 j w'
 
-    ;; Bookmark tags jump commands 
+    ;; Bookmark tags jump commands
     (bmkp-all-tags-jump icicle-bookmark-all-tags (fboundp 'bmkp-all-tags-jump)) ; `C-x j t *'
     (bmkp-all-tags-jump-other-window
      icicle-bookmark-all-tags-other-window (fboundp 'bmkp-all-tags-jump)) ; `C-x 4 j t *'
@@ -3666,7 +3668,7 @@ duplicates, by binding it to `icicle-remove-duplicates' or
      moccur-face-check  modify-face  ps-face-attributes  read-all-face-attributes
      read-face-font)
     ("file"
-     abbreviate-file-name  ange-ftp-chase-symlinks  ange-ftp-file-modtime  apropos-library  
+     abbreviate-file-name  ange-ftp-chase-symlinks  ange-ftp-file-modtime  apropos-library
      auto-coding-alist-lookup  bookmark-file-or-variation-thereof  bookmark-load
      browse-url-of-file  byte-compile-file  check-declare-file  comint-append-output-to-file
      comint-quote-filename  comint-substitute-in-file-name  comint-unquote-filename
@@ -3698,7 +3700,7 @@ duplicates, by binding it to `icicle-remove-duplicates' or
      pr-ps-file-ps-print  pr-ps-file-using-ghostscript  recentf-add-file  recentf-push
      recentf-remove-if-non-kept  recover-file  rmail-input  rmail-output  set-file-times
      set-visited-file-name  substitute-in-file-name  system-move-file-to-trash
-     untranslated-canonical-name  untranslated-file-p  url-basepath  vc-backend  
+     untranslated-canonical-name  untranslated-file-p  url-basepath  vc-backend
      vc-delete-automatic-version-backups  vc-file-clearprops  vc-insert-file
      vc-make-version-backup  vc-name  vc-state  vc-working-revision  view-file
      view-file-other-frame  view-file-other-window  visit-tags-table  w32-browser
