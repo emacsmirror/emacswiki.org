@@ -4,12 +4,12 @@
 ;; Description: Top-level commands for Icicles
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams
-;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
+;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Thu May 21 13:31:43 2009 (-0700)
 ;; Version: 22.0
-;; Last-Updated: Mon Dec 19 23:50:56 2011 (-0800)
+;; Last-Updated: Sun Jan  1 14:05:18 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 5001
+;;     Update #: 5005
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-cmd2.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
