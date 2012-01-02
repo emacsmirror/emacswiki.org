@@ -548,7 +548,7 @@ feed address and the blog title."
 	;; ("irc.sorcery.net" :channels ("#rpmn"))
 	("localhost" :channels ("&bitlbee" "&bsi" "&roleplaying" "&emacs"
 				"&facebook"))
-	;; ("irc.oftc.net" :channels ("#bitlbee"))
+	("irc.oftc.net" :channels ("#bitlbee"))
 	)
       rcirc-decode-coding-system 'undecided
       rcirc-coding-system-alist
@@ -814,12 +814,12 @@ Otherwise, use the value of said variable as argument to a funcall."
   "Post the current buffer to an Oddmuse wiki." t)
 (autoload 'oddmuse-mode "oddmuse-curl" "Yadda yadda." t)
 (setq oddmuse-wikis
-      '(("TestWiki" "http://www.emacswiki.org/cgi-bin/test" utf-8 "question")
-	("EmacsWiki" "http://www.emacswiki.org/cgi-bin/emacs" utf-8 "uihnscuskc")
-	("CommunityWiki" "http://www.communitywiki.org/cw" utf-8 "question")
-	("OddmuseWiki" "http://www.oddmuse.org/cgi-bin/oddmuse" utf-8 "question")
-	("Alex" "http://www.emacswiki.org/cgi-bin/alex" utf-8 "question")
-	("DungeonMaps" "http://www.campaignwiki.org/wiki/DungeonMaps" utf-8)))
+      '(;; ("TestWiki" "http://www.emacswiki.org/cgi-bin/test" utf-8 "question" nil)
+	("EmacsWiki" "http://www.emacswiki.org/cgi-bin/emacs" utf-8 "uihnscuskc" nil)
+	;; ("CommunityWiki" "http://www.communitywiki.org/cw" utf-8 "question" nil)
+	("OddmuseWiki" "http://www.oddmuse.org/cgi-bin/oddmuse" utf-8 "question" nil)
+	("Anlex" "http://www.emacswiki.org/cgi-bin/alex" utf-8 "question" nil)
+	("DungeonMaps" "http://www.campaignwiki.org/wiki/DungeonMaps" utf-8 "ts" "Alex")))
 
 (add-hook 'text-mode-hook
 	  (lambda ()
