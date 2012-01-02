@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams
 ;; Created: Sun Oct 19 20:27:23 2003
 ;; Version: 20.0
-;; Last-Updated: Fri Oct 12 09:54:43 2007 (-25200 Pacific Daylight Time)
+;; Last-Updated: Thu Sep 22 13:33:24 2011 (-0700)
 ;;           By: dradams
-;;     Update #: 27
+;;     Update #: 28
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/subr-21.el
 ;; Keywords: compatibility
 ;; Compatibility: Emacs 20.x
@@ -29,7 +29,7 @@
 ;; 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; 
-;;; Change log:
+;;; Change Log:
 ;;
 ;; 2006/06/24 dadams
 ;;     Added keywordp.
