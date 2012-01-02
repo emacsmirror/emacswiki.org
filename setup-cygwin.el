@@ -4,12 +4,12 @@
 ;; Description:
 ;; Author: Markus Hoenika
 ;; Maintainer: Drew Adams
-;; Copyright (C) 2004-2011, Drew Adams, all rights reserved.
+;; Copyright (C) 2004-2012, Drew Adams, all rights reserved.
 ;; Created: Thu Jan 15 11:13:38 2004
 ;; Version: 21.0
-;; Last-Updated: Tue Jan  4 13:57:04 2011 (-0800)
+;; Last-Updated: Sun Jan  1 17:08:55 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 100
+;;     Update #: 106
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/setup-cygwin.el
 ;; Keywords: os, unix, cygwin
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -29,6 +29,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2011/08/11 dadams
+;;     Made settings that are based on Cygwin install directory conditional, per input from Tom Popovich.
 ;; 2011/01/04 dadams
 ;;     Added autoload cookies for commands.
 ;; 2009/10-15 dadams
@@ -101,14 +103,20 @@ loaded as such.)"
 (setq Info-default-directory-list (append Info-default-directory-list (list "c:/cygwin/usr/info/")))
 
 
+;;; TO DO: have an option for the Cygwin installation directory, instead of fiddling this way.
+(unless (or (file-directory-p "C:/cygwin/bin") (file-directory-p "C:/bin"))
+  (error "Edit `setup-cygwin.el' - not known where Cygwin is installed"))
+
 ;;; Use `bash' as the default shell in Emacs.
-(setq exec-path (cons "C:/cygwin/bin" exec-path))
-(setq shell-file-name "C:/cygwin/bin/bash.exe") ; Subprocesses invoked via the shell.
+(push (if (file-directory-p "C:/cygwin/bin") "C:/cygwin/bin" "C:/bin") exec-path)
+(setq shell-file-name  (concat (if (file-directory-p "C:/cygwin/bin") "C:/cygwin/bin" "C:/bin")
+                               "/bash.exe")) ; Subprocesses invoked via the shell.
 (setenv "SHELL" shell-file-name)
-(setenv "PATH" (concat (getenv "PATH") ";C:\\cygwin\\bin"))
-(setq explicit-shell-file-name shell-file-name) ; Interactive shell
-(setq ediff-shell shell-file-name)      ; Ediff shell
-(setq explicit-shell-args '("--login" "-i"))
+(setenv "PATH" (concat (getenv "PATH") (if (file-directory-p "C:/cygwin/bin") ";C:\\cygwin\\bin" ";C:\\bin" )))
+(setq explicit-shell-file-name  shell-file-name) ; Interactive shell
+(setq ediff-shell               shell-file-name)    ; Ediff shell
+(setq explicit-shell-args       '("--login" "-i"))
+
 ;;;;; (setq shell-command-switch "-ic") ; SHOULD THIS BE "-c" or "-ic"?
 (setq w32-quote-process-args ?\") ;; " @@@ IS THIS BETTER? ;@@@ WAS THIS BEFORE: (setq w32-quote-process-args t)
 
@@ -168,21 +176,3 @@ loaded as such.)"
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; setup-cygwin.el ends here
-;;;; === Tom Popovich suggests the following as /bin might be the cygwin install directory
-;;;;     so replace the following block into the the file where setq exec-path ... to setq explicit-shell-args
-;;;;     resides
-(let (cygwin-is-in-/cygwin/bin)
-  (cond
-   ((directoryp "C:/cygwin/bin")  (setq  cygwin-is-in-/cygwin/bin t))
-   ((directoryp "C:/bin")         (setq  cygwin-is-in-/cygwin/bin nil))
-   (t     (error "unknown where cygwin is installed")))
-
-  ;;; Use `bash' as the default shell in Emacs.
-  (setq exec-path (cons (if cygwin-is-in-/cygwin/bin "C:/cygwin/bin" "C:/bin") exec-path))
-  (setq shell-file-name (concat (if cygwin-is-in-/cygwin/bin "C:/cygwin/bin" "C:/bin") "/bash.exe")) ; Subprocesses invoked via the shell.
-  (setenv "SHELL" shell-file-name)
-  (setenv "PATH" (concat (getenv "PATH") (if cygwin-is-in-/cygwin/bin ";C:\\cygwin\\bin" ";C:\\bin" )))
-  (setq explicit-shell-file-name shell-file-name) ; Interactive shell
-  (setq ediff-shell shell-file-name)		  ; Ediff shell
-  (setq explicit-shell-args '("--login" "-i")))
-;;;  
