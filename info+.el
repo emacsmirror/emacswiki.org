@@ -4,12 +4,12 @@
 ;; Description: Extensions to `info.el'.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams
-;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
+;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Sep 12 16:30:11 1995
 ;; Version: 21.1
-;; Last-Updated: Tue Nov 15 12:42:02 2011 (-0800)
+;; Last-Updated: Sun Jan  1 14:05:15 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 4486
+;;     Update #: 4488
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/info+.el
 ;; Keywords: help, docs, internal
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -4758,7 +4758,7 @@ subnodes (outside Info)? ")
                 (buffer-enable-undo) (undo-start) ; chars to underline.
                 (untabify (point) (save-excursion (forward-line 1) (point)))
                 (setq menu-item-line  (buffer-substring-no-properties
-                                       (save-excursion (beginning-of-line)(forward-char 2) (point))
+                                       (save-excursion (beginning-of-line) (forward-char 2) (point))
                                        (save-excursion (forward-line 1) (point))))
                 (when pending-undo-list (undo-more 1)) ; Only if did something.
                 (buffer-disable-undo))
