@@ -4,19 +4,20 @@
 ;; Description: Extensions to `isearch.el'.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams
-;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
+;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Fri Dec 15 10:44:14 1995
 ;; Version: 21.0
-;; Last-Updated: Thu Dec  1 07:29:15 2011 (-0800)
+;; Last-Updated: Sun Jan  1 14:05:15 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 1101
+;;     Update #: 1102
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/isearch+.el
 ;; Keywords: help, matching, internal, local
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
 ;;
 ;; Features that might be required by this library:
 ;;
-;;   `avoid', `frame-fns', `misc-cmds', `misc-fns'.
+;;   `avoid', `frame-fns', `misc-cmds', `misc-fns', `strings',
+;;   `thingatpt', `thingatpt+'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
