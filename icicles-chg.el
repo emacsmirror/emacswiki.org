@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Sun Jan  1 14:05:18 2012 (-0800)
+;; Last-Updated: Mon Jan  2 13:19:41 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 7716
+;;     Update #: 7721
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-chg.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -5208,6 +5208,10 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-opt.el'")
 ;;
+;; 2012/01/02 dadams
+;;     icicle-bind-top-level-commands:
+;;       Must be in Icicle mode, so icicle-mode-map is defined.  Otherwise you cannot customize
+;;         icicle-top-level-key-bindings outside Icicle mode.
 ;; 2011/12/28 dadams
 ;;     Removed obsolete option icicle-cycle-into-subdirs-flag and all mention of it.
 ;; 2011/12/24 dadams
