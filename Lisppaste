@@ -4,4 +4,4 @@
 
 = Notes =
 
-* 2012-01-02 XML-RPC service is no longer available at port 8185, so the *.el file no longer works.
+2012-01-02 The utility is dead due to XML-RPC service no longer reposnding: "telnet common-lisp.net 8185"
