@@ -1,0 +1,10 @@
+== OSX
+
+If you want a file dragged into Emacs to open in a separate buffer instead of inserting into the current buffer, use the following:
+
+{{{
+(define-key global-map [ns-drag-file] 'ns-find-file)
+}}}
+
+----
+CategoryMouse
