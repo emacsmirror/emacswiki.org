@@ -2,7 +2,7 @@
 
 [[http://www.methods.co.nz/asciidoc AsciiDoc]] is set of document formatting rules for text documents. The documents can be converted into variety of formats , like HTML, manual pages etc with the <code>asciidoc</code> command line program (Python). 
 
-To edit Asciidoc formatted text files in Emacs, there is [[http://xpt.sourceforge.net/tools/doc-mode/ doc-mode]] or [[http://code.google.com/p/sensorflo-emacs/source/browse/trunk/adoc-mode.el adoc-mode]]
+To edit Asciidoc formatted text files in Emacs, there is [[http://xpt.sourceforge.net/tools/doc-mode/ doc-mode]] or [[http://code.google.com/p/sensorflo-emacs/wiki/AsciiDoc adoc-mode.el]]
 
 Lisp:asciidoc.el is a set of templates which eases the creation of AsciiDoc documents. It is also available at:
 * http://github.com/metaperl/asciidoc-el 
