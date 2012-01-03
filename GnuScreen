@@ -138,5 +138,7 @@ Thanks to [http://www.xvx.ca/~awg/emacs-colors-howto.txt] for helping find some 
 == Multiple EMACS within screen ==
 How do people handle multiple emacs sessions within screen. I often have two or more emacs sessions within screen looking at different files. What method do people use to copy between multiple sessions? Screen's copy capabilities? Or is there a way to use the kill-ring between emacs sessions? If I use Screen's copy I cannot scroll through the emacs buffer. If I use the emacs kill-ring I cannot paste on a different emacs session. Does anyone have a solution for this?
 
+ You coloud use emacs as server : `emacs --daemon` and `emacsclient -t`.
+
 ----
 CategoryRelated
