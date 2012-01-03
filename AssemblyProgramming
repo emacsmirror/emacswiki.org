@@ -4,6 +4,7 @@ Programming in assembly in Emacs is possible.  See these pages.
 * [[Asm86Mode]] -- Asm86 assembly mode.
 * GasMode -- A more advanced version of asm-mode written from scratch.
 * MixalMode -- Programming in MIX assembly.
+* PicAsmMode -- Assembly mode for PIC microcontrollers.
 
 ----
 CategoryProgramming
