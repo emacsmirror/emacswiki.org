@@ -1,4 +1,4 @@
-== OSX
+== OSX ==
 
 If you want a file dragged into Emacs to open in a separate buffer instead of inserting into the current buffer, use the following:
 
