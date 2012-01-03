@@ -35,6 +35,8 @@ Move among windows -- alternatives to `C-x o' (`other-window').
 * WindowResize -- Resize windows using simple keybindings
 * ThreeWindows -- Enjoy your work in three windows per [[Frame]]. One big and two small. 
 * QuickTiling -- If you like xmonad, tmux etc., chances are you'll this too.
+* GridLayout -- how to quickly split the frame into a grid
+
 == Switching Window Configurations ==
 
 * WinnerMode -- Undo and redo changes to the window configuration
