@@ -1,7 +1,19 @@
+= Overview =
+
 [http://nschum.de/src/emacs/doc-mode/ doc-mode] allows easy creation and editing of !JavaDoc or Doxygen comment blocks in your code.  It also greatly improves readability of code by folding the blocks, so they don't take up precious screen lines.
 
 http://nschum.de/src/emacs/doc-mode/doc-mode.png 
 http://nschum.de/src/emacs/doc-mode/doc-mode-folding.png
+
+= Install =
+
+{{{
+(add-to-list 'load-path "/path/to/doc-mode")
+(require 'doc-mode)
+(add-hook 'c-mode-common-hook 'doc-mode)
+}}}
+
+= Notes =
 
 This is not the same as the AsciiDoc [http://xpt.sourceforge.net/tools/doc-mode/ doc-mode], although they share the same generic name.
 
