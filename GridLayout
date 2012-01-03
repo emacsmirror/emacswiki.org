@@ -24,5 +24,31 @@ Try it:
 
 The problem is that all of the windows will show the same window. You probably want to distribute your open files amongst the open windows next. Once you have written the necessary code, please post it here.
 
+== By Major Mode ==
+
+{{{
+(defun windows-show-mode (mode)
+  "Fill all windows of the current frame with buffers using major-mode MODE."
+  (interactive
+   (let* ((modes (loop for buf being the buffers
+		       collect (symbol-name (with-current-buffer buf
+					      major-mode)))))
+     (list (intern (completing-read "Mode: " modes)))))
+  (let ((buffers (loop for buf being the buffers
+		       when (eq mode (with-current-buffer buf
+				       major-mode))
+		       collect buf)))
+    (dolist (win (window-list))
+      (when buffers
+	(show-buffer win (car buffers))
+	(setq buffers (cdr buffers))))))
+}}}
+
+If you use [[rcirc]] to chat on [[IRC]], use the following:
+
+{{{
+(windows-show-mode 'rcirc-mode)
+}}}
+
 ----
 CategoryWindows
