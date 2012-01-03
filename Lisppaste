@@ -1,0 +1,7 @@
+= Overview =
+
+[[lisppaste.el]] is interface to http://common-lisp.net to send text "pastes".
+
+= Notes =
+
+* 2012-01-02 XML-RPC service is no longer available at port 8185, so the *.el file no longer works.
