@@ -27,7 +27,7 @@ The problem is that all of the windows will show the same window. You probably w
 == By Major Mode ==
 
 {{{
-(defun windows-show-mode (mode)
+(defun show-buffers-with-major-mode (mode)
   "Fill all windows of the current frame with buffers using major-mode MODE."
   (interactive
    (let* ((modes (loop for buf being the buffers
@@ -47,7 +47,7 @@ The problem is that all of the windows will show the same window. You probably w
 If you use [[rcirc]] to chat on [[IRC]], use the following:
 
 {{{
-(windows-show-mode 'rcirc-mode)
+(show-buffers-with-major-mode 'rcirc-mode)
 }}}
 
 ----
