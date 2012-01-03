@@ -112,6 +112,9 @@ I use this to temporarily unset the GPG_AGENT_INFO environment variable if runni
           (setenv "GPG_AGENT_INFO" agent))))
 
 ----
+[new]
+I have removed 'gpg-agent'. Of course, it totally solved the problem with the GUI dialog. In Ubuntu, 'gpg-agent' is used by default as a replacement for 'ssh-agent'. When 'gpg-agent' is deleted, 'ssh-agent' is used. So, no visible losses. --[[DmitriMinaev]]
+
 == Problems Decrypting == 
 
 With Emacs 23 and the default epg that comes bundled.  I am able to save (and encrypt) a *.gpg file, but when I try to reopen it in emacs, I get the following:  'File exists, but cannot be read'.  I am able to decrypt it fine outside of emacs with gpg -d
