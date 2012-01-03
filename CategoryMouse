@@ -19,6 +19,7 @@ These pages are in category Mouse:
 * CopyingWholeLines -- Use the mouse to copy lines.
 * [[Dired+]] -- Use the mouse to mark files, including in ways similar to Windows Explorer.
 * DoReMi -- Use the mouse wheel to repeat commands, run commands in sequence, increment things, or cycle through enumerations.
+* DragAndDrop -- how to control what happens when you drag stuff into Emacs
 * EmacsNewbie -- Background about mouse actions and other [[key sequence]]s
 * <tt>[[follow-mouse.el]]</tt> -- Make the [[frame]] focus follow the pointer.
 * GrabAndDrag -- Scroll a window by mouse dragging
