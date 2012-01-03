@@ -2,7 +2,7 @@ The Automatic Overlays package allows you to define [[overlay]]s that are create
 
 The overlays are updated just before any buffer modification. The built-in overlay classes update only as much as is necessary to ensure that overlays covering the [[point]] are consistent. Therefore the overlays at the point are guaranteed to be correct before any buffer modification takes place there, but updating the overlays takes very little time and causes no noticeable delay. (See also PredictiveMode.)
 
-The latest version 0.10.6 (released January 2011) can be obtained from:
+The latest version 0.10.7 (released January 2012) can be obtained from:
 
 * Automatic Overlays package download: http://www.dr-qubit.org/download.php?file=predictive/auto-overlays.tar.gz
 * Automatic Overlays git repository: <code>http://www.dr-qubit.org/git/predictive.git</code>
