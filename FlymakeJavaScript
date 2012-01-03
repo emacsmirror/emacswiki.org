@@ -86,6 +86,19 @@ Now you should have a jslint command on your path, you can set it up in a simila
 [new]
 Latest versions of node-jslint (as of 10-dec-2011) have changed the error reporting format, breaking the pattern regexp above and, even worse, reporting errors on two lines. See http://lapin-bleu.net/riviera/?p=191
 
+[new]
+You can do 
+<pre>
+$ npm -g install jshint
+</pre>
+and then install flymake-jshint using marmalade (http://marmalade-repo.org/).  You may need to do the following in /usr/local/bin:
+<pre>
+ln -s /usr/local/Cellar/node/0.6.6/lib/node_modules/csslint/cli.js
+</pre>
+and then put (add-to-list 'exec-path "/usr/local/bin") somwhere in your .emacs.
+
+-Dave Dreisigmeyer
+
 
 == With JSLint server on node.js (lintnode) ==
 
