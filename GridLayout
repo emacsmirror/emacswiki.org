@@ -1,0 +1,28 @@
+Here is how to split the frame into multiple windows using a grid layout:
+
+{{{
+(defun split-window-multiple-ways (x y)
+  "Split the current frame into a grid of X columns and Y rows."
+  (interactive "nColumns: \nnRows: ")
+  ;; one window
+  (delete-other-windows)
+  (dotimes (i (1- x))
+      (split-window-horizontally)
+      (dotimes (j (1- y))
+	(split-window-vertically))
+      (other-window y))
+  (dotimes (j (1- y))
+    (split-window-vertically))
+  (balance-windows))
+}}}
+
+Try it:
+
+{{{
+(split-window-multiple-ways 3 4)
+}}}
+
+The problem is that all of the windows will show the same window. You probably want to distribute your open files amongst the open windows next. Once you have written the necessary code, please post it here.
+
+----
+CategoryWindows
