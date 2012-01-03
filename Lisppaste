@@ -1,4 +1,4 @@
-= Overview =
+= Description  =
 
 [[lisppaste.el]] is interface to http://common-lisp.net to send text "pastes".
 
