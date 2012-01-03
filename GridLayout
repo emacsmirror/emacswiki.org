@@ -22,7 +22,57 @@ Try it:
 (split-window-multiple-ways 3 4)
 }}}
 
-The problem is that all of the windows will show the same window. You probably want to distribute your open files amongst the open windows next. Once you have written the necessary code, please post it here.
+The problem is that all of the windows will show the same window. You probably want to distribute your open files amongst the open windows next.  Here are some functions that can assign windows in the grid to buffers.
+
+{{{
+(autoload 'windmove-find-other-window "windmove"
+"Return the window object in direction DIR.
+
+\(fn dir &optional arg window)")
+
+(declare-function windmove-find-other-window "windmove" (dir &optional arg window))
+
+(defun get-window-in-frame (x y &optional frame)
+  "Find Xth horizontal and Yth vertical window from top-left of FRAME."
+  (let ((orig-x x) (orig-y y)
+        (w (window-at 0 0 frame)))
+    (while (and (windowp w) (> x 0))
+      (setq w (windmove-find-other-window 'right 1 w)
+            x (1- x)))
+    (while (and (windowp w) (> y 0))
+      (setq w (windmove-find-other-window 'down 1 w)
+            y (1- y)))
+    (unless (windowp w)
+      (error "No window at (%d, %d)" orig-x orig-y))
+    w))
+
+(defun set-window-buffer-in-frame (x y buffer &optional frame)
+  "Set Xth horizontal and Yth vertical window to BUFFER from top-left of FRAME."
+  (set-window-buffer (get-window-in-frame x y frame) buffer))
+}}}
+
+This is what you could add to your InitFile to customize your window configuration when Emacs opens.
+
+{{{
+(erc)
+(info)
+(calendar)
+(ielm)
+(defun my-reset-windows ()
+  "Bring back 3x3 window configuration with my favorite buffers."
+  (interactive)
+  (split-window-multiple-ways 3 3)
+  (set-window-buffer-in-frame 0 0 (get-buffer "*scratch*"))
+  (set-window-buffer-in-frame 1 0 (find-file-noselect "~/.emacs"))
+  (set-window-buffer-in-frame 2 0 (get-buffer "#emacs"))
+  (set-window-buffer-in-frame 0 1 (get-buffer "*info*"))
+  (set-window-buffer-in-frame 1 1 (get-buffer "*Calendar*"))
+  (set-window-buffer-in-frame 2 1 (dired "~/"))
+  (set-window-buffer-in-frame 0 2 (eshell))
+  (set-window-buffer-in-frame 1 2 (get-buffer "*Messages*"))
+  (set-window-buffer-in-frame 2 2 (get-buffer "*ielm*")))
+(my-reset-windows)
+}}}
 
 == By Major Mode ==
 
