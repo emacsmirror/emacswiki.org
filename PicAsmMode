@@ -1,0 +1,17 @@
+[http://code.google.com/p/picasm picasm] is a little assembler development environment for [http://www.microchip.com Microchip]'s PIC series of microcontrollers. At present it supports the PIC10, PIC12 and PIC16 instruction sets. Feature list:
+
+* Indentation
+* Syntax highlighting
+* Bundled chip database
+* Assembler/Linker support for GNU [http://gputils.sourceforge.net gputils] (gpasm) as well as Microchip's MPASM
+* Programmer support for the pk2cmd program
+* Delay loop calculation
+* "Electric" comment key
+
+picasm is at release 1.1 and still probably has bugs, but is under active development. Comments (and patches!) welcome.
+
+Available at http://code.google.com/p/picasm/
+
+----
+CategoryModes
+ProgrammingModes
