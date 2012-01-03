@@ -47,6 +47,3 @@ Indentation implementation details:
 
 * TabStopList -- the fallback usually used when no other indentation seems to work
 
-Unrelated (but homonymous):
-
-* TabBarMode -- add a tab-bar to emacs giving each buffer its own tab
