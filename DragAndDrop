@@ -1,6 +1,6 @@
 == OSX ==
 
-If you want a file dragged into Emacs to open in a separate buffer instead of inserting into the current buffer, use the following:
+Emacs 23 and 24 append files dragged over emacs' window to the current buffer.  If you want Emacs to open the file in a separate buffer like it does in older versions of emacs, use the following:
 
 {{{
 (define-key global-map [ns-drag-file] 'ns-find-file)
