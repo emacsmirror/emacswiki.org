@@ -7,7 +7,7 @@
 ;; Maintainer: José Alfredo Romero L. <escherdragon@gmail.com>
 ;; Created: 24 Sep 2007
 ;; Version: 5
-;; RCS Version: $Rev: 397 $
+;; RCS Version: $Rev: 398 $
 ;; Keywords: files, dired, midnight commander, norton, orthodox
 ;; URL: http://www.emacswiki.org/emacs/sunrise-commander.el
 ;; Compatibility: GNU Emacs 22+
@@ -305,10 +305,27 @@ May be `horizontal', `vertical' or `top'."
   :group 'sunrise
   :type 'boolean)
 
+(defcustom sr-windows-default-ratio 66
+  "Percentage of the total height of the frame to use by default for the Sunrise
+Commander panes."
+  :group 'sunrise
+  :type 'integer
+  :set (defun sr-set-windows-default-ratio (symbol value)
+         "Setter function for the `sr-windows-default-ratio' custom option."
+         (if (and (integerp value) (>= value 0) (<= value 100))
+             (set-default symbol value)
+           (error "Invalid value: %s" value))))
+
 (defcustom sr-history-length 20
   "Number of entries to keep in each pane's history rings."
   :group 'sunrise
   :type 'integer)
+
+(defcustom sr-confirm-kill-viewer t
+  "Whether to ask for confirmation before killing a buffer opened in quick-view
+mode."
+  :group 'sunrise
+  :type 'boolean)
 
 (defcustom sr-fuzzy-negation-character ?!
   "Character to use for negating patterns when fuzzy-narrowing a pane."
@@ -1080,20 +1097,18 @@ immediately loaded, but only if `sr-autoload-extensions' is not nil."
     ([(control prior)] . sr-dired-prev-subdir))
   "Traditional commander-style keybindings for the Sunrise Commander.")
 
-(defun sr-set-commander-keys (symbol value)
-  "Setter function for the `sr-use-commander-keys' custom option."
-  (if value
-      (mapc (lambda (x)
-              (define-key sr-mode-map (car x) (cdr x))) sr-commander-keys)
-    (mapc (lambda (x)
-            (define-key sr-mode-map (car x) nil)) sr-commander-keys))
-  (set-default symbol value))
-
 (defcustom sr-use-commander-keys t
   "Whether to use the traditional commander-style keys (F5 = copy, etc)."
   :group 'sunrise
   :type 'boolean
-  :set 'sr-set-commander-keys)
+  :set (defun sr-set-commander-keys (symbol value)
+         "Setter function for the `sr-use-commander-keys' custom option."
+         (if value
+             (mapc (lambda (x)
+                     (define-key sr-mode-map (car x) (cdr x))) sr-commander-keys)
+           (mapc (lambda (x)
+                   (define-key sr-mode-map (car x) nil)) sr-commander-keys))
+         (set-default symbol value)))
 
 ;; These are for backward compatibility:
 (defun sunrise-mc-keys () "Currently does nothing" (interactive) (ignore))
@@ -1445,7 +1460,7 @@ With optional argument REVERT, executes `revert-buffer' on the passive buffer."
     (case size
       (max (max (- frame window-min-height 1) 5))
       (min (min (1+ window-min-height) 5))
-      (t  (/ (* 2 (frame-height)) 3)))))
+      (t  (/ (* sr-windows-default-ratio (frame-height)) 100)))))
 
 (defun sr-enlarge-panes ()
   "Enlarge both panes vertically."
@@ -1601,11 +1616,11 @@ AVFS."
   "Deactivate Sunrise and visit FILENAME as a regular file with WILDCARDS.
 \(See `find-file' for more details on wildcard expansion.)"
   (condition-case description
-      (progn
+      (let ((buff (find-file-noselect filename nil nil wildcards)))
         (sr-save-panes-width)
         (sr-quit)
         (set-window-configuration sr-prior-window-configuration)
-        (find-file filename wildcards))
+        (switch-to-buffer buff))
     (error (message "%s" (cadr description)))))
 
 (defun sr-avfs-dir (filename)
@@ -2015,7 +2030,8 @@ buffer."
   "Kill the last buffer opened using quick view (if any)."
   (let ((buf other-window-scroll-buffer))
     (when (and (buffer-live-p buf)
-               (y-or-n-p (format "Kill buffer %s? " (buffer-name buf))))
+               (or (not sr-confirm-kill-viewer)
+                   (y-or-n-p (format "Kill buffer %s? " (buffer-name buf)))))
       (setq other-window-scroll-buffer nil)
       (save-window-excursion (kill-buffer buf)))))
 
@@ -2039,10 +2055,10 @@ Kills any other buffer opened previously the same way."
     (save-selected-window
       (condition-case description
           (progn
-            (if (buffer-live-p other-window-scroll-buffer)
-                (kill-buffer other-window-scroll-buffer))
             (sr-select-viewer-window)
             (find-file filename)
+            (if (buffer-live-p other-window-scroll-buffer)
+                (kill-buffer other-window-scroll-buffer))
             (sr-scrollable-viewer (current-buffer)))
         (error (message "%s" (cadr description)))))))
 
