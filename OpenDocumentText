@@ -1,7 +1,7 @@
 [[OpenDocument]] text files carry the <code>.odt</code> extension.   Emacs provides varied support for working with such files.
 
 ==Create==
-[[OrgMode]] files can be exported to OpenDocumentText. Install Org-7.8 to get this support.
+[[OrgMode]] files can be exported to OpenDocumentText. You need Org > 7.8 or Emacs >= 24.1.
 
 ==View and edit==
 
