@@ -2,8 +2,7 @@ Click the page title to find all pages related to undoing.
 
 In Emacs, '''[::undo]''' means undoing changes to buffers. However, this page includes discussion of related ways to "undo" other aspects of your Emacs session.
 
-= Undoing Buffer Changes =
-
+* UndoCommands -- Commands available in Emacs
 * GotoLastChange, GotoChg  -- move [[point]] through `buffer-undo-list' positions
 * RedoMode -- simplify the current undo mechanism to be more MS Windows like (and thus less powerful)
 * RedoPlus -- a fork of redo.el which can correctly work in newer version of Emacs
@@ -13,22 +12,6 @@ In Emacs, '''[::undo]''' means undoing changes to buffers. However, this page in
 * RevertBuffer -- how to refresh the [[buffer]] content without closing and reopening the file
 * BackupFiles -- Let Emacs keep old copies of the file around.
 * UndoTree -- replace Emacs' undo system with one that treats undo history as what it is: a branching tree of changes
-
-== Repeated undos ==
-
-Having once undone a change with `C-x u' or `##C-_##', you can repeat the undo command by pressing `C-x z', which is `repeat'.  So the overall sequence of `C-x u C-x z z z z z' undoes changes back through time, and may be easier to type than `##C-_ C-_## ...'.
-
-It works with GnuEmacs, yet it does not work with xemacs. Is there any similar trick in it?
-
-Try adding something like
-
-(global-unset-key "\C-z")
-(global-set-key "\C-z" 'advertised-undo)
-
-to your .emacs, now undo (for me much more important than iconifying emacs) will be one of the easiest commands
-to reach, and iconifying is still bound to C-xz - very convenient I think.
-
-[new] C-/ is also bound to undo. -- DavidHouse
 
 = Temporary Changes =
 [:temporary-invisible-change]
@@ -74,16 +57,6 @@ See MarkCommands for commands to pop local and global mark rings, undoing the cu
 Use BreadcrumbForEmacs to leave breadcrumb bookmarks in the buffers, and jump back to them quickly.
 
 Use AtimUnscroll to restore buffer look as it was before you scrolled the text.
-
-== Undo at point Level ==
-
-Is there an undo at the point level ? I would like to undo [[point]] movement too. Right now it's very hard to tell what is about to be undone. 
-[new]
-Does `C-u C-SPC' do what you want? It's not clear what you're looking for. 
-[new]
-To me it sounds like GotoLastChange is the answer being sought.
-[new]
-Try Lisp:point-undo.el
 
 == Viewing undo information ==
 
