@@ -1,0 +1,77 @@
+Undo changes in Emacs with `C-/', `C-x u' or `C-_'.
+
+Quoting the EmacsManual,
+
+: ''Consecutive repetitions of `C-/' (or its aliases) undo earlier and
+earlier changes in the current buffer.  If all the recorded changes
+have already been undone, the undo command signals an error.''
+
+: ''Any command other than an undo command breaks the sequence of undo
+commands.  Starting from that moment, the entire sequence of undo
+commands that you have just performed are themselves placed into the
+undo record, as a single set of changes.  Therefore, to re-apply
+changes you have undone, type `C-f' or any other command that
+harmlessly breaks the sequence of undoing; then type `C-/' to undo the
+undo command.''
+
+: ''On the other hand, if you want to resume undoing, without redoing
+previous undo commands, use `M-x undo-only'.  This is like `undo', but
+will not redo changes you have just undone.''
+
+When there is an active region, SelectiveUndo is performed on the
+region.
+
+By default, Emacs only keeps a few dozen undo entries.  Increase it by
+adding the following to your InitFile.
+
+  (setq undo-limit 3600)
+
+Having once undone a change with `C-x u' or `##C-_##', you can repeat the undo command by pressing `C-x z', which is `repeat'.  So the overall sequence of `C-x u C-x z z z z z' undoes changes back through time, and may be easier to type than `##C-_ C-_## ...'.
+
+[new]
+It works with GnuEmacs, yet it does not work with xemacs. Is there any similar trick in it?
+
+----
+[new]
+Try adding something like
+
+(global-unset-key "\C-z")
+(global-set-key "\C-z" 'advertised-undo)
+
+to your .emacs, now undo (for me much more important than iconifying emacs) will be one of the easiest commands
+to reach, and iconifying is still bound to C-xz - very convenient I think.
+
+[new]
+C-/ is also bound to undo. -- DavidHouse
+
+----
+
+Is there an undo at the point level ? I would like to undo [[point]] movement too. Right now it's very hard to tell what is about to be undone. 
+[new]
+Does `C-u C-SPC' do what you want? It's not clear what you're looking for. 
+[new]
+To me it sounds like GotoLastChange is the answer being sought.
+[new]
+Try Lisp:point-undo.el
+
+----
+
+Here's a command that will do all the possible undo actions available
+in the buffer.  Use it by EvaluatingExpressions or adding it to your
+InitFile.
+
+{{{
+(defun undo-all ()
+  "Undo all edits."
+  (interactive)
+  (when (listp pending-undo-list)
+    (undo))
+  (while (listp pending-undo-list)
+    (undo-more 1))
+  (message "Buffer was completely undone"))
+}}}
+
+See also RevertBuffer.
+
+----
+CategoryUndo
