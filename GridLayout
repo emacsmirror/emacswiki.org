@@ -35,7 +35,7 @@ The problem is that all of the windows will show the same window. You probably w
 (defun get-window-in-frame (x y &optional frame)
   "Find Xth horizontal and Yth vertical window from top-left of FRAME."
   (let ((orig-x x) (orig-y y)
-        (w (window-at 0 0 frame)))
+        (w (frame-first-window frame)))
     (while (and (windowp w) (> x 0))
       (setq w (windmove-find-other-window 'right 1 w)
             x (1- x)))
