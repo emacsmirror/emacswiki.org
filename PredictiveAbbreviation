@@ -1,3 +1,5 @@
+= Description =
+
 This is another abbreviation expansion in the line of DynamicAbbreviations.
 The difference is that this minor mode will analyse text
 during idle time. Thus, the *abbreviations are always displayed*!
@@ -6,6 +8,8 @@ pabbrev's main entry point is through the minor mode
 `pabbrev-mode'.  There is also a global minor mode, called
 `global-pabbrev-mode', which does the same in all appropriate
 buffers.
+
+= Download =
 
 Lisp:pabbrev.el
 
