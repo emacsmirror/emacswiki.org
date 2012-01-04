@@ -23,6 +23,8 @@ In addition to doing this manually, which was explained by other posters, you ca
 
 we have found that an awful lot of our network traffic can be people visiting multiple files across the network and having global-auto-revert-mode on so no longer use it all the time
 
+See AutoRevertMode.
+
 == No confirmation ==
 
 In <tt>[[misc-cmds.el]]</tt> you will find this extremely complex command definition:
@@ -32,7 +34,7 @@ In <tt>[[misc-cmds.el]]</tt> you will find this extremely complex command defini
     (interactive) (revert-buffer t t))
 
 I bind it to `##<F5>##'. -- DrewAdams
- 
+
 == Revert all buffers that are visiting a file ==
 
 This is a litte function that is useful when editing several files that might for any reason change on disk (update from VersionControl).  It reverts all buffers that are visiting a file.
