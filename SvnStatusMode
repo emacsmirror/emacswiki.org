@@ -1,3 +1,5 @@
+= Foreword =
+
 SubVersion, like other revision control systems starting with [[CVS]], can manage groups of files and entire directory trees, rather than just one file at a time like preceding systems like [[RCS]] and CSSC.  The design of Emacs' VersionControl mode unfortunately only supports these single-file operations.  PclCvs was the first Emacs mode to support aggregate operations on CVS files.  The following are modes that can also operate on many files in a SubVersion repository.
 
 == Psvn ==
