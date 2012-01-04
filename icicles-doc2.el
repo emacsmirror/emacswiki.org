@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Sun Jan  1 14:05:17 2012 (-0800)
+;; Last-Updated: Wed Jan  4 09:15:57 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 28589
+;;     Update #: 28595
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-doc2.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -5067,18 +5067,18 @@
 ;;    truncation.
 ;;
 ;;  * Non-`nil' user option `icicle-expand-input-to-common-match-flag'
-;;    means that completion commands `TAB' and `S-TAB' expand your
-;;    minibuffer input to (typically) the longest substring common to
-;;    all completion candidates and that matches your (complete) input
-;;    pattern.  This replaces the input you typed.  If you want to
-;;    edit your original, raw input, use `C-l'.  If your input has
-;;    been expanded, then hit `C-l' twice: once to replace a
-;;    completion candidate (from, say, `next') with the common match
-;;    string, and a second time to replace the common match string
-;;    with your original input.  The main reason you might want to set
-;;    this to `nil' is for apropos completion, if you want to always
-;;    work with a regexp in the minibuffer.  You can toggle this
-;;    option at any time using `C-;' in the minibuffer.
+;;    means that completion expands your minibuffer input to
+;;    (typically) the longest substring common to all completion
+;;    candidates and that matches your (complete) input pattern.  This
+;;    expansion replaces the input you typed.  If you want to edit
+;;    your original, raw input, use `C-l'.  If your input has been
+;;    expanded, then hit `C-l' twice: once to replace a completion
+;;    candidate (from, say, `next') with the common match string, and
+;;    a second time to replace the common match string with your
+;;    original input.  The main reason you might want to set this to
+;;    `nil' is for apropos completion, if you want to always work with
+;;    a regexp in the minibuffer.  You can toggle this option at any
+;;    time using `C-;' in the minibuffer.
 ;;    See (@file :file-name "icicles-doc1.el" :to "Expanded-Common-Match Completion").
 ;;
 ;;  * Non-`nil' user option
