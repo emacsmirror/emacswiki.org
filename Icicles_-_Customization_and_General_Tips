@@ -702,14 +702,17 @@ truncation.
 
 
 
+
+
+
 ----
 [:icicle-expand-input-to-common-match-flag]
 ==== Option icicle-expand-input-to-common-match-flag ====
 
 Non-`nil' user option '''`icicle-expand-input-to-common-match-flag''''
-means that completion commands `TAB' and `S-TAB' expand your minibuffer
+means that completion expands your minibuffer
 input to (typically) the longest common substring common to all completion
-candidates and that matches your (complete) input pattern.  This ''replaces the input you typed''.  If you want to edit your original, raw
+candidates and that matches your (complete) input pattern.  This ''expansion replaces the input you typed''.  If you want to edit your original, raw
 input, use `C-l'.  If your input has been expanded, then hit
 `C-l' twice: once to replace a completion candidate (from, say,
 `next') with the common match string, and a second time to
