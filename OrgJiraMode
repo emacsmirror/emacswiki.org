@@ -1,4 +1,3 @@
-
 ==1 Introduction ==
 
 (For the latest verion of this page, visit [http://baohaojun.github.com/org-jira.html this github page].
@@ -11,7 +10,7 @@ As an emacs enthusiast, I very much want to be able to use Jira within Emacs. Th
 
 To use Jira without the browser, you can use a) xmp-rpc, b) soap, c) REST. I don't know what the last one is, but their supported degree by Jira is in ascending order. The former 2 protocols has both been supported by Emacs plugin: [https://launchpad.net/xml-rpc-el xml-rpc] and [http://code.google.com/p/emacs-soap-client/ soap].
 
-For xml-rpc, there is already a [http://www.emacswiki.org/emacs/org-jira.el jira.el], but it is not satisfactory for me:
+For xml-rpc, there is already a [http://www.emacswiki.org/emacs/jira.el jira.el], but it is not satisfactory for me:
 
 * xml-rpc is not as well supported as soap by Jira.
 * jira.el is a stand-alone tool, while I want to integrate with org-mode.
