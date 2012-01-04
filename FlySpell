@@ -117,7 +117,7 @@ I used "M x ispell-region", and the words that ispell considered having incorrec
 
 Place the below code in your .emacs
 
-F8 will call [http://www.emacswiki.org/emacs/InteractiveSpell ispell] (or aspell, etc) for the word the cursor is on (or near)
+F8 will call [http://www.emacswiki.org/emacs/InteractiveSpell ispell] (or aspell, etc) for the word the cursor is on (or near).  You can also use the built-in key binding M-$.
 
 Ctrl-Shift-F8 enables/disables FlySpell for your current buffer (highlights misspelled words as you type)
 
