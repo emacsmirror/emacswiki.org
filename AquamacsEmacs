@@ -40,18 +40,6 @@ Aquamacs is maintained by DavidReitter. A number of people have contributed.
 The Aquamacs website lists support options besides the manuals and Google, primarily the Emacs on OS X mailing list, and an e-mail address for bug reports.
 Users have started an (inofficial) IRC channel,  #aquamacs on Freenode.
 
-== Help I'm in an infinite loop...==
-
-[new]
-I downloaded the latest, but when I run it it says something like "This version of Aquamacs won't work on this version of the os" or words to that effect. (I have MacOS X 10.4.11 on ppc). When I go to the bug page, it says "download the latest version".... Why not display on the download page which versions of OS each version works with?
-
-And on the reporting-bug page it says please use the bug-reporting feature of Aquamacs to report the bug.
-
-Begin reading this message, unless you have already begun to read it. (Knuth , Art of Computer Programing Vol1)
-
-
-[new:decaf:2011-09-26 09:23 UTC]
-I switched from Aquamacs for similar hassles. Why not use the plain [http://emacsformacosx.com/ emacs for mac]. Most "improvements" from Aquamacs are just configure options. At first I just copied them - but in the end it's easiest to just pick the ones you need. In my case all are options of the regular emacs.  -- decaf
 ----
 CategoryPorts
 EmacsForMacOS
