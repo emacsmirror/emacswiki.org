@@ -57,9 +57,7 @@ By default, '''Icicles''' does not turn on
    '''`<tt>[[Icicles - Customization and General Tips#icicle-show-Completions-initially-flag|icicle-show-Completions-initially-flag]]</tt>'''' to `t'.
 
 You can get an intermediate behavior in this regard by instead
-   setting option '''`<tt>[[Icicles - Customization and General Tips#icicle-incremental-completion-flag|icicle-incremental-completion-flag]]</tt>'''' to a value
-   other than `nil' and `t'.  That makes '''Icicles''' show the matching
-   candidates as soon as you start typing input.  See also option '''`<tt>[[Icicles - Customization and General Tips#icicle-incremental-completion-delay|icicle-incremental-completion-delay]]</tt>''''.
+   setting option '''`<tt>[[Icicles - Customization and General Tips#icicle-incremental-completion-flag|icicle-incremental-completion-flag]]</tt>'''' to a value that is neither `nil' nor `t'.  That makes '''Icicles''' show the matching candidates as soon as you start typing input, but not before that.  See also [[Icicles - Icompletion]] and option '''`<tt>[[Icicles - Customization and General Tips#icicle-incremental-completion-delay|icicle-incremental-completion-delay]]</tt>''''.
 
 
 
