@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Sun Jan  1 14:05:18 2012 (-0800)
+;; Last-Updated: Wed Jan  4 09:59:21 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 26375
+;;     Update #: 26405
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-doc1.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -2890,8 +2890,9 @@
 ;;
 ;;     You can get an intermediate behavior in this regard by instead
 ;;     setting option `icicle-incremental-completion-flag' to a value
-;;     other than `nil' and `t'.  That makes Icicles show the matching
-;;     candidates as soon as you start typing input.  See also option
+;;     that is neither `nil' nor `t'.  That makes Icicles show the
+;;     matching candidates as soon as you start typing input, but not
+;;     before that.  See also (@> "Icompletion") and option
 ;;     `icicle-incremental-completion-delay'.
 ;;
 ;;  2. Matching.  By default, Ido uses substring matching for
@@ -3362,18 +3363,18 @@
 ;;  updating of `*Completions*'.
 ;;
 ;;  If `icicle-incremental-completion-flag' is non-`nil', then
-;;  `*Completions*' is automatically updated when you change your
+;;  `*Completions*' is automatically updated whenever you change your
 ;;  input in the minibuffer - that is, with each character that you
 ;;  type or delete.  This is another form of icompletion, unique to
-;;  Icicles.  It uses buffer `*Completions*', instead of the
-;;  minibuffer, to show the completion help.
+;;  Icicles.  Unlike vanilla icompletion, it uses buffer
+;;  `*Completions*', not the minibuffer, to show the completion help.
 ;;
 ;;  The particular non-`nil' value of
 ;;  `icicle-incremental-completion-flag' determines when
 ;;  `*Completions*' is displayed and updated.  The default value, `t',
 ;;  means that `*Completions*' is updated only if it is already
 ;;  displayed.  Use `t' if you do not want `*Completions*' to be too
-;;  intrusive but you want it to provide the most help when you ask
+;;  intrusive, but you want it to provide the most help when you ask
 ;;  for help (via `TAB' or `S-TAB').
 ;;
 ;;  Any other non-`nil' value displays and updates `*Completions*'
@@ -3384,13 +3385,23 @@
 ;;  good compromise, providing help when I ask for it, and then
 ;;  continuing to help until I've finished choosing a candidate.
 ;;
-;;  Option `icicle-incremental-completion-delay' is the number of
-;;  seconds to wait before updating `*Completions*' incrementally.  It
-;;  has an effect only when the number of completion candidates is
-;;  greater than `icicle-incremental-completion-threshold'.  This
-;;  delay can improve performance when there are many candidates.  It
-;;  lets you type ahead before any redisplay occurs; otherwise,
-;;  redisplay occurs for each character you type or delete.
+;;  A completion behavior even more eager than that produced by
+;;  setting `icicle-incremental-completion-flag' to non`nil' and
+;;  non-`t' can be had by setting option
+;;  `icicle-show-Completions-initially-flag' to non-nil.  In that
+;;  case, completions are shown even before you type any input.  You
+;;  see all of the possible candidates initially, unfiltered by any
+;;  typed input.  In this regard, see also (@> "Ido and IswitchB").
+;;
+;;  When you are editing, Icicles normally does not interrupt you to
+;;  recalculate and redisplay the matches after each character you
+;;  type or delete.  Option `icicle-incremental-completion-delay' is
+;;  the number of seconds to wait before updating `*Completions*'
+;;  incrementally.  It has an effect only when the number of
+;;  completion candidates is greater than
+;;  `icicle-incremental-completion-threshold'.  This delay can improve
+;;  performance when there are many candidates.  It lets you type
+;;  ahead before candidate redisplay occurs.
 ;;
 ;;  You can toggle incremental completion at any time (changing
 ;;  `icicle-incremental-completion-flag' between `nil' and `t') using
@@ -3406,7 +3417,7 @@
 ;;  matches a remote-file syntax.
 ;;
 ;;  There are several advantages of using `*Completions*' for
-;;  icompletion, as opposed to the minibuffer:
+;;  icompletion, as opposed to the minibuffer as in vanilla Emacs:
 ;;
 ;;  1. Many more candidates can be displayed in `*Completions*' than
 ;;     can be displayed by standard icompletion, which uses the
