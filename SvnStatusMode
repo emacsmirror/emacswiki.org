@@ -4,7 +4,7 @@ SubVersion, like other revision control systems starting with [[CVS]], can manag
 
 == Psvn ==
 
-StefanReichoer provides a SubVersion mode called [::psvn], which is similar to [[pcvs]]/pcl-cvs for the ConcurrentVersionsSystem. The main advantages to this mode over the official mode is: 
+StefanReichoer provides a SubVersion mode called [::psvn].el, which is similar to [[pcvs]]/pcl-cvs for the ConcurrentVersionsSystem. The main advantages to this mode over the official mode is: 
 
 # It is in the standard Subversion install and "blessed" by the Subversion maintainers since the pre-1.0 days.
 # It can commit over more than one file at time.
