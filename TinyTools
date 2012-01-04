@@ -4,9 +4,10 @@ The "Tiny Tools" is JariAalto's large collection of
 small emacs customizations implemented as one
 monolithic package:
 
-* http://freecode.com/projects/emacs-tiny-tools (The project HUB; never changes)
-* http://savannah.nongnu.org/projects/emacs-tiny-tools (devel site main)
-* http://www.nongnu.org/emacs-tiny-tools (devel site homepage)
+* http://freecode.com/projects/emacs-tiny-tools (The project HUB; never changes. Bookmark this)
+* https://github.com/jaalto/project--emacs-tiny-tools (devel site; PRIMARY)
+* http://savannah.nongnu.org/projects/emacs-tiny-tools (devel site; secondary)
+* http://www.nongnu.org/emacs-tiny-tools (documentation)
 
 == Download and Install ==
 
@@ -17,7 +18,10 @@ The latest code can be found from Git version control. Run these commands:
   mkdir -p ~/emacs.d/packages
   cd ~/emacs.d/packages
 
-  git clone git://git.savannah.nongnu.org/emacs-tiny-tools.git
+  # mirror: git://git.savannah.nongnu.org/emacs-tiny-tools.git
+  git clone git://github.com/jaalto/project--emacs-tiny-tools.git tiny-tools
+
+  cd tiny-tools
   git checkout --track -b devel origin/devel
 
   #   from time to time, upgrade to latest
@@ -25,8 +29,8 @@ The latest code can be found from Git version control. Run these commands:
 
 To install, add this to your <code>~/.emacs</code> InitFile:
 
-  (add-to-list 'load-path "~/emacs.d/packages/emacs-tiny-tools/lisp/tiny")
-  (add-to-list 'load-path "~/emacs.d/packages/emacs-tiny-tools/lisp/other")
+  (add-to-list 'load-path "~/emacs.d/packages/tiny-tools/lisp/tiny")
+  (add-to-list 'load-path "~/emacs.d/packages/tiny-tools/lisp/other")
 
 === From Savannah snapshot tarball ===
 
@@ -50,8 +54,7 @@ Add following to your Emacs InitFile:
 == Reporting Features and Bugs ==
 
 Please report any suggestions or bugs to
-[https://savannah.nongnu.org/bugs/?group=emacs-tiny-tools Savannah's bug tracker].
-Note that Savannah requires registration in order to use its resources.
+[https://github.com/jaalto/project--emacs-tiny-tools/issues Github's bug tracker].
 
 == Packages included ==
 
