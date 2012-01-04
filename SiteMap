@@ -32,7 +32,6 @@ Learning About Emacs:
 * [[CategoryGlossary|Glossary]] -- Emacs terminology
 * EmacsNiftyTricks -- tips you might not have found otherwise.
 * RandomPage -- for serendipitous visitors
-* [[http://itshumour.blogspot.com/2010/06/twenty-hilarious-funny-quotes.html Funny quotes]]
 
 [:DownloadAndInstallEmacs]
 Downloading and Installing Emacs:
@@ -70,7 +69,6 @@ General Use:
 ** [[CategorySpelling|Spelling]] -- spell-checking
 ** [[CategoryTemplates|Templates]] -- using canned text (file headers, templates, forms)
 ** [[CategoryUndo|Undo]] -- undoing, redoing and finding changes
-** [[http://itshumour.blogspot.com/2011/08/funny-statuses-quotes-for-facebook.html Funny facebook status]]
 * [[CategoryFiles|Files]] -- files and directories: local, remote, backup
 ** [[CategoryDirectories|Directories]] -- '''Dired''' and operating on files and directories (folders)
 * [[CategoryHideStuff|HideStuff]] -- hiding parts of a [[buffer]]
@@ -141,7 +139,7 @@ Emacs Community:
 * EmacsImplementations -- a list of Emacsen and their impersonators
 * [[CategoryHistory|History]] -- history of Emacs
 * [[CategoryHomepage|Homepage]] -- home pages of Emacs friends, including '''you'''
-* [[CategoryHumor|Humor]] -- when some Emacs users are not customizing Emacs, they make funnies [[http://itshumour.blogspot.com/2009/09/top-10-hilarious-quotes.html hilarious quotes]]
+* [[CategoryHumor|Humor]] -- when some Emacs users are not customizing Emacs, they make funnies
 
 ----
 CategoryEmacsWikiSite
