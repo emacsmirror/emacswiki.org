@@ -1,0 +1,82 @@
+GNU Emacs 22.x provides the M-x auto-revert-mode and M-x auto-revert-tail-mode. The latter acts like the often used UNIX command "tail -f file".
+
+For a command for manually reloading a file in Emacs, see RevertBuffer.
+
+== auto-revert-tail-mode just like "tail -f file" ==
+
+How do I make M-x auto-revert-tail-mode scrolling just like "tail -f file"?
+
+Currently at 22.0.50 it uses (goto-char (point-max)) which forces the screen to update like (recenter nil), not (recenter -1).
+
+Here's a patch (not fully tested) to autorevert.el to Emacs 22.0.50 that will make auto-revert-tail-mode do window scrolling with point at the bottom of the screen. (contributed by [[piyo]])
+
+ --- lisp/autorevert.el.org	2006-10-30 22:29:19.001000000 +0900
+ +++ lisp/autorevert.el	2007-01-16 20:52:22.356234800 +0900
+ @@ -436,14 +436,31 @@
+  	  (let ((buffer-read-only buffer-read-only))
+  	    (revert-buffer 'ignore-auto 'dont-ask 'preserve-modes)))
+  	(when buffer-file-name
+ -	  (when eob (goto-char (point-max)))
+  	  (dolist (window eoblist)
+ -	    (set-window-point window (point-max)))))
+ +	    (set-window-point window (point-max))
+ +            ;; force scroll to bottom in this window
+ +            (when eob (auto-revert-scroll-to-bottom window)))))
+        ;; `preserve-modes' avoids changing the (minor) modes.  But we
+        ;; do want to reset the mode for VC, so we do it manually.
+        (when (or revert auto-revert-check-vc-info)
+  	(vc-find-file-hook)))))
+  
+ +(defun auto-revert-scroll-to-bottom (window)
+ +  "Emulates 'tail -f file' behavior on auto-revert-tail-mode,
+ +ie. ensures (recenter -1).
+ +This function copied from erc-goodies.el::erc-scroll-to-bottom.
+ +Some unsightly flickering of the ModeLine, though."
+ +  (if (and window (window-live-p window))
+ +      (let ((resize-mini-windows nil))
+ +        (save-selected-window
+ +          (select-window window)
+ +          (save-restriction
+ +            (widen)
+ +            (save-excursion
+ +              (goto-char (point-max))
+ +              (recenter -1)
+ +              (sit-for 0)))))))
+ +
+  (defun auto-revert-tail-handler ()
+    (let ((size (nth 7 (file-attributes buffer-file-name)))
+  	(modified (buffer-modified-p))
+
+== Put a marker on reloaded files, instead of reloading right away
+
+This is experimental code, use it with care. Todo: display the correct binding or a buffer name
+
+  (defun shk-deferred-auto-revert (&optional ignore-auto noconfirm)
+    (interactive)
+    (if (called-interactively-p)
+        (progn
+          (setq header-line-format nil)
+          (let ((revert-buffer-function nil))
+            (revert-buffer ignore-auto t)))
+      (setq header-line-format
+            (format "%s. Press C-c R to reload it"
+                    (propertize "This file has changed on disk"
+                                'face '(:foreground "#f00"))))))
+  (setq revert-buffer-function 'shk-deferred-auto-revert)
+  (global-set-key [(control c)(R)] 'shk-deferred-auto-revert)
+  
+  (global-auto-revert-mode t)
+
+TODO: figure out how to use where-is programmatically to display actual bindings/function name in all cases
+
+-- shjk
+
+== Auto revert even after you changed the file in Emacs ==
+If you open a file, turn auto-revert-mode on, and modify it (without saving), then it won't be reverted anymore even if an external program updates it. I'd like to lose my changes automatically and get the latest state of the file. How to do it?
+
+[new]
+Binding revert-buffer-function to a function discarding changes and then reverting might work
+
+----
+CategoryFiles
+CategoryUndo
