@@ -498,6 +498,70 @@ For me, this works pretty well in practice.
      (interactive)
      (other-window 1))
 
+
+----
+
+[new]
+//From Guido Van Hoecke://
+
+I use SC on my iMac which has a very large screen, and one of the
+halves is used by my Emacs. That provides me with a frame of some 180+
+cols and 90+ rows.
+
+This is large enough to split it into four equal parts: the two
+sunrise commander panes on the top half, the emacs shell in the bottom
+left pane and some other stuff in the right pane.
+
+José was kind enough to implement two new variables to help me
+enforcing this layout: sr-confirm-kill-viewer and
+sr-default-window-ratio. I do not want to be prompted when killing the
+viewer, so the former has value nil. And from the above it will be
+clear that my desired default ratio is set to 50 (which is a
+percentage of the available frame height).
+
+I want this layout to be restored when I finish editing a file from the
+SC panes. José provided following elisp code to assist me with that:
+
+    (defun guivho/sunrise ()
+      "Invokes SC the Guido's way ;-)"
+      (interactive)
+      (unless sr-running
+        (sunrise-cd)
+        (sr-select-viewer-window)
+        (split-window-horizontally)
+        (sr-lock-panes)
+        (sr-term)))
+
+    (add-hook 'find-file-hook
+              (lambda () (add-hook 'kill-buffer-hook 'guivho/sunrise t t)))
+
+I call guivho/sunrise at the bottom of my .emacs, so this layout is
+present when I start a new Emacs session. The hook code calls this
+setup whenever I quit editing a file. I have following related key
+settings:
+
+    (global-set-key (kbd "s-.") 'sunrise-cd)
+    (global-set-key (kbd "s-/") 'guivho/sunrise)
+
+The "s-" stands for the Apple/Cmd key on my iMac keyboard.
+
+The window configuration does get lost from time to time, it isn't
+perfect yet. But hey, most of the time it works and I can easily
+restore it by pressing "s-/" or "s-.".
+ 	
+This setup puts the file management and eshell window in a
+configuration which surpasses my earlier usage pattern with Midnight
+Commander on the Mac and on Linux, Total Commander on the Microsoft
+environment. The idea is that the heart of the app is the file manager
+and the eshell, and whenever I finish with an action that obscured this
+setup, it should preferably be restored automagically.
+
+As a related side note, my hot key to switch to the eshell buffer no
+longer calls <code>eshell</code> but <code>sr-term</code>. This selects the eshell buffer in
+the viewer window, thereby helping in preserving the layout on the one
+hand, and providing stability in my setup: eshell is always located in
+the viewer pane, and not in the SC panes.
+
 ----
 CategoryDirectories
 CategoryEmulation
