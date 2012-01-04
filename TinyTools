@@ -36,17 +36,14 @@ To install, add this to your <code>~/.emacs</code> InitFile:
 
 The Savannah contains a link to snapshot tarball, if you prefer it over the Git:
 
-  #   or if you prefer traditional: ~/elisp
-
-  INSTALL=$HOME/.emacs.d
-  mkdir $INSTALL
+  mkdir -p ~/.emacs.d/packages/tiny-tools
 
   #   cd to directory where you unpacked the tarball
-  install -m 644 lisp/tiny/*.el lisp/other/*.el $INSTALL/
+  install -m 644 lisp/tiny/*.el lisp/other/*.el ~/.emacs.d/packages/tiny-tools/
 
 Add following to your Emacs InitFile:
 
- (add-to-list 'load-path "~/emacs.d")
+ (add-to-list 'load-path "~/emacs.d/packages/tiny-tools")
 
  ;; Optional
  ;; (require 'tinypath)
