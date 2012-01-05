@@ -1,0 +1,65 @@
+Execute editing buffer and show its output quickly.
+
+Repository and documenatation are found at the following page:
+
+https://github.com/syohex/emacs-quickrun
+
+== quickrun.el ==
+
+quickrun.el is inspired by [https://github.com/thinca/vim-quickrun quickrun.vim].
+
+You can run editing buffer in each programming languages within Emacs using quickrun.el. quickrun.el is similar to executable-interpret, but quickrun.el provides more convenient functions. quickrun.el executes not only script languages(Python, Ruby, Perl etc), but also compiled languages(C, C++, Java, Go lang etc).
+
+
+== Default Support Languages ==
+
+quickrun.el supports following programming languages and markup languages. (You need to install commands in parentheses for executing the language).
+
+* C(gcc or clang or Visual C++)
+* C++(g++ or clang++ or Visual C++)
+* Objective-C(gcc -objc)
+* D Language(dmd)
+* Java(javac and java)
+* Perl(perl)
+* Ruby(ruby)
+* Python(python)
+* PHP(php)
+* Emacs Lisp(emacs)
+* Scheme(gosh)
+* Common Lisp(clisp)
+* Clojure(jark or clj-env-dir)
+* Javascript(node or v8 or js or jrunscript or cscript)
+* Coffee Script(coffee)
+* Markdown(Markdown.pl or bluecloth or kramdown or pandoc or redcarpet)
+* Haskell(runghc)
+* Go Language(8g or 6g or 5g)
+* Io(io)
+* Lua(lua)
+* Groovy(groovy)
+* Scala(scala)
+* SASS(sass)
+* LESS(lessc)
+* Erlang(escript)
+* Ocaml(ocamlc)
+* shellscript(sheban's shell)
+* AWK(awk)
+
+You can add settings for other languages and situations.
+
+== Installation ==
+
+* https://raw.github.com/syohex/emacs-quickrun/master/quickrun.el
+
+Download quickrun.el and put it to load-path. And add following S-exp in your configuration file.
+
+<pre>
+(require 'quickrun)
+</pre>
+
+== Using quickrun.el ==
+
+You run M-x quickrun. quickrun.el chooses commands for executing editing buffer.
+
+== More infomation ==
+
+Please see https://github.com/syohex/emacs-quickrun
