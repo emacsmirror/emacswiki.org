@@ -3,6 +3,9 @@
 ;; Copyright (c)2008 Jonathan Arkell. (by)(nc)(sa)  Some rights reserved.
 ;; Author: Jonathan Arkell <jonnay@jonnay.net>
 
+;; Honestly, you are probably looking for this instaed:
+;; http://www.emacswiki.org/emacs/OrgJiraMode
+
 ;; This file is not part of GNU Emacs.
 
 ;; This program is free software; you can redistribute it and/or
@@ -21,6 +24,9 @@
 ;;; Commentary:
 ;; This adds a jira protocol to org mode.
 
+;; Honestly, you are probably looking for this instaed:
+;; http://www.emacswiki.org/emacs/OrgJiraMode
+
 ;;; Commands:
 ;;
 ;; Below are complete command list:
@@ -36,15 +42,15 @@
 ;; tickets assigned to you as a task.  However, I am no longer working
 ;; with JIRA, so this is now abandonware.
 
+;; Honestly, you are probably looking for this instaed:
+;; http://www.emacswiki.org/emacs/OrgJiraMode
+
 ;;; Installation:
 ;; Put org-jira.el somewhere in your load-path.
 ;; (Use M-x show-variable RET load-path to see what your load path is.)
 ;; Add this to your emacs init file, preferably after you load org mode.
 ;(require 'org-jira)
 
-;;; TODO:
-;; - bi-directional links
-;; - deeper importing, like tasks...?
 
 ;;; CHANGELOG:
 ;; v 0.2 - ran through checkdoc
