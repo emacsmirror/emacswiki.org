@@ -1,5 +1,4 @@
-;;;
-;; bm-ext.el
+;;; bm-ext.el --- List all bookmarks in all buffers
 ;;
 ;; An extension for bm.el that adds a function that lists all bookmarks in all
 ;; buffers. 
