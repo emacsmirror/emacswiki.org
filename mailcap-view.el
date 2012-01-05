@@ -1,4 +1,4 @@
-;;; mailcap-view.el - View files based on the mime-type of the file extension
+;;; mailcap-view.el --- View files based on the mime-type of the file extension
 
 ;; Copyright (C) 2003 Doug Alcorn <doug@lathi.net>
 ;; Author: Doug Alcorn <doug@lathi.net>
