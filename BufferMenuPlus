@@ -103,4 +103,30 @@ Wrong type argument: characterp, 8388640
 I am using Emacs 24 because Emacs 23.3 won't compile on Xubuntu 11.10 without a lot of work and I don't want to use the version in the repository. It would be nice if ##buff-menu+## was part of GNU Emacs. -- Scott Randby
 
 ----
+[new]
+I am using version 21.0, update 2742 of ##buff-menu+.el## on GNU Emacs 24.0.92.1. When I don't have the package loaded and do ##M-x buffer-menu## and sort the buffer menu by file, I get the following (which is what I want).
+
+<pre>
+Directory1
+File1
+Directory2
+File2
+*scratch*
+*Message*
+</pre>
+
+If I load ##buff-menu+.el## and sort the buffer menu by file (ascending), I get this (which I don't want):
+
+<pre>
+File1
+File2
+*scratch*
+*Message*
+Directory1
+Directory2
+</pre>
+
+Older versions of ##buff-menu+.el## that I used with Emacs 23 sorted files the first way. Has file sorting been changed? If so, is there any way that file sorting can be done the first way? -- Scott Randby
+
+----
 CategoryBufferSwitching
