@@ -1,4 +1,4 @@
-;;; esv.el
+;;; esv.el --- Recognize and retrive ESV passages
 
 ;;; Copyright: (C) 2008, 2009, 2011 Charles Sebold
 ;; 
