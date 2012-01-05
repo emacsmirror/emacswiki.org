@@ -1,5 +1,4 @@
-;;; -*- coding: utf-8 -*-
-;;; flydoc.el --- on-the-fly documentation
+;;; flydoc.el --- on-the-fly documentation -*- coding: utf-8 -*-
 
 ;; Copyright (C) 2008  MATSUYAMA Tomohiro
 
