@@ -1,4 +1,4 @@
-;;; buffer-stack-suppl.el ---
+;;; buffer-stack-suppl.el --- Bubble though buffers of the same major-mode
 
 ;; Copyright 2010 Le Wang
 ;;
