@@ -100,7 +100,7 @@ I'm very sorry for not being more specific. I downloaded v21 update 2742 of ##bu
 Wrong type argument: characterp, 8388640
 </pre>
 
-I am using Emacs 24 because Emacs 23.3 won't compile on Xubuntu 11.10 without a lot of work and I don't want to use the version in the repository. It would be nice if ##buff-menu+## was part of GNU Emacs. -- Scott Randby
+I am using Emacs 24 because Emacs 23.3 won't compile on Xubuntu 11.10 without a lot of work and I don't want to use the version in the repository. It would be nice if ##buff-menu+## was part of GNU Emacs. -- ScottRandby
 
 ----
 [new]
@@ -126,7 +126,14 @@ Directory1
 Directory2
 </pre>
 
-Older versions of ##buff-menu+.el## that I used with Emacs 23 sorted files the first way. Has file sorting been changed? If so, is there any way that file sorting can be done the first way? -- Scott Randby
+Older versions of ##buff-menu+.el## that I used with Emacs 23 sorted files the first way. Has file sorting been changed? If so, is there any way that file sorting can be done the first way? -- ScottRandby
+
+[new:DrewAdams:2012-01-05 14:19 UTC]
+I cannot reproduce the problem.  If you are talking about sorting by file/dir name, then that still works (for me) the same as always: the file and dir names are sorted lexicographically (alphabetically), either ascending or descending.  File and dir names are treated the same.
+
+Anyway, the lists you show here are ''not'' file/dir names -- they are ''buffer'' names.  By sorting by ''file'' name I assume you mean just that, which you do by clicking the '''File''' column header.
+
+Perhaps I'm misunderstanding you.  Please elaborate/clarify.  Thx -- DrewAdams
 
 ----
 CategoryBufferSwitching
