@@ -149,6 +149,18 @@ Yes, the names are buffer names and the sort is done when I click on the '''File
 
 None of this has changed in any way.  And it works the same (AFAICT) in all Emacs versions.  HTH -- DrewAdams
 
+[new]
+I will address each of your points.
+
+1. If the library is not loaded, the sorting by file name works as it should. If I load the library and then sort by file name, then I get the weird list.
+
+2. I have the '''Buffer-menu-sort-column''' set to 6.
+
+3. You may get the lexicographical sort, but I am not.
+
+4. No, the case issue isn't the problem. All my files and directories begin with capital letters.
+
+Since you can't reproduce the problem, I don't know what to do. For now, I won't use the package. -- ScottRandby
 
 ----
 CategoryBufferSwitching
