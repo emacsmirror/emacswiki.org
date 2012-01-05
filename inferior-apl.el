@@ -1,4 +1,4 @@
-;;; Basic Apl (Aplus) in a buffer functionality
+;;; inferior-apl.el --- Basic Apl (Aplus) in a buffer functionality
 ;;; copyright Rusi Mody
 
 ;;; Font lock and other fancy functionality currently incomplete
