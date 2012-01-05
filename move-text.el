@@ -1,6 +1,6 @@
-;;; Filename: move-text.el
 ;;; move-text.el --- Move current line or region with M-up or M-down.
 
+;; Filename: move-text.el
 ;; Description: Move current line or region with M-up or M-down.
 ;; Author: Jason M <jasonm23@gmail.com>
 ;; Extracted from basic-edit-toolkit.el by Andy Stewart.
