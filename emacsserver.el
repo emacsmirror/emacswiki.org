@@ -1,4 +1,4 @@
-;;; emacsserver.el ---
+;;; emacsserver.el --- A server in emacs-lisp
 
 ;; emacsserver.el is free software
 ;; -*-mode:Emacs-Lisp;tab-width:4;indent-tabs-mode:nil-*-
