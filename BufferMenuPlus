@@ -135,5 +135,8 @@ Anyway, the lists you show here are ''not'' file/dir names -- they are ''buffer'
 
 Perhaps I'm misunderstanding you.  Please elaborate/clarify.  Thx -- DrewAdams
 
+[new]
+Yes, the names are buffer names and the sort is done when I click on the '''File''' column header. So what is happening is that all the buffer names associated with files appear at the top of the list and all the buffer names associated with directories appear at the bottom of the list when ##buff-menu+.el## is loaded. Does this help? 
+
 ----
 CategoryBufferSwitching
