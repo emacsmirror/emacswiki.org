@@ -47,8 +47,7 @@ Here's a patch (not fully tested) to autorevert.el to Emacs 22.0.50 that will ma
     (let ((size (nth 7 (file-attributes buffer-file-name)))
   	(modified (buffer-modified-p))
 
-== Put a marker on reloaded files, instead of reloading right away
-
+== Put a marker on reloaded files, instead of reloading right away ==
 This is experimental code, use it with care. Todo: display the correct binding or a buffer name
 
   (defun shk-deferred-auto-revert (&optional ignore-auto noconfirm)
