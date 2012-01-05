@@ -1,4 +1,4 @@
-;;; keep-end.el --- 
+;;; keep-end.el --- Keep some buffer always at end
 
 ;; Copyright 2006 Ye Wenbin
 ;;
