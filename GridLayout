@@ -22,7 +22,7 @@ Try it:
 (split-window-multiple-ways 3 4)
 }}}
 
-The problem is that all of the windows will show the same window. You probably want to distribute your open files amongst the open windows next.  Here are some functions that can assign windows in the grid to buffers.
+The problem is that all of the windows will show the same buffer.  You probably want to distribute your buffers amongst the open windows next.  Here are some functions that can assign windows in the grid to buffers.
 
 {{{
 (autoload 'windmove-find-other-window "windmove"
