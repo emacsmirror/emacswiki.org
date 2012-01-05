@@ -1,4 +1,4 @@
-;;; autotest.el - ZenTest's autotest integration with emacs.
+;;; autotest.el --- ZenTest's autotest integration with emacs.
 
 ;; Copyright (C) 2006-2007 by Ryan Davis
 
