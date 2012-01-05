@@ -1,4 +1,5 @@
-;;; Repetitititive insertion functions.
+;;; repeat-insert.el --- Repetitititive insertion functions.
+
 ;;; Copyright (C) 1990 Bard Bloom
 
 
