@@ -1,4 +1,4 @@
-;;; list-processes+.el --- 
+;;; list-processes+.el --- Add process management to `list-processes'
 
 ;; Copyright 2006 Ye Wenbin
 ;;
