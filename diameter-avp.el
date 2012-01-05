@@ -1,4 +1,4 @@
-;;; diameter-avp.el --- 
+;;; diameter-avp.el --- Compute diameter-avp in hexadecimal-form
 ;;
 ;; Filename: diameter-avp.el
 ;; -----------------------------------------------------------------------------
