@@ -1,4 +1,4 @@
-;;; directly open files referenced in TAGS files
+;;; find-file-in-tags.el --- directly open files referenced in TAGS files
 ;;;
 ;;; Copyright (C) 2010 Trey Jackson
 ;;;
