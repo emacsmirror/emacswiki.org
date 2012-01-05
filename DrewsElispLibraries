@@ -66,7 +66,7 @@ The newest of my libraries are these (in alphabetical order):
 * <tt>[[dired-details+.el]]</tt> -- extensions to library Lisp:dired-details.el -- see '''DiredDetails'''
 * <tt>[[doremi-frm.el]]</tt> -- incrementally adjust [[frame]] properties using arrow keys and/or mouse wheel -- see also '''DoReMi'''
 * <tt>[[ediff+.el]]</tt> -- extensions to standard library `ediff': toggle case sensitivity (not needed for GNU Emacs 22 or later)
-* <tt>[[eyedropper.el]]</tt> -- pick up foreground or background colors
+* <tt>[[eyedropper.el]]</tt> -- pick up foreground or background colors (see also <tt>[[palette.el]]</tt>)
 * <tt>[[facemenu+.el]]</tt> -- extensions to standard library `facemenu' -- see '''FaceMenuPlus'''
 * <tt>[[ffap-.el]]</tt> -- extensions to standard library `ffap' (see FindFileAtPoint)
 * <tt>[[finder+.el]]</tt> -- extensions to standard library `finder'
@@ -84,7 +84,7 @@ The newest of my libraries are these (in alphabetical order):
 * <tt>[[lib-requires.el]]</tt> -- list Emacs Lisp library dependencies (extends standard library `loadhist') -- see '''LibraryDependencies'''
 * <tt>[[ls-lisp+.el]]</tt> -- extensions to standard library `ls-lisp'
 * <tt>[[modeline-posn.el]]</tt> -- enhanced [[mode line]] information -- see '''ModeLinePosition'''
-* <tt>[[palette.el]]</tt> -- examine color properties or choose colors -- see '''ColorPalette'''
+* <tt>[[palette.el]]</tt> -- examine color properties or choose colors -- see '''ColorPalette''' (see also <tt>[[eyedropper.el]]</tt>)
 * <tt>[[pp-c-l.el]]</tt> -- display Control-l characters in a pretty way -- see '''PrettyControlL'''
 * <tt>[[savehist-20+.el]]</tt> -- a version of `##savehist.el##' that works with Emacs 20, in addition to the later versions -- see SaveHist.
 * <tt>[[second-sel.el]]</tt> -- secondary-selection enhancements -- see '''[[SecondarySelection]]'''
@@ -134,7 +134,7 @@ I make minor changes to some libraries often, so check for the latest versions.
 * <tt>[[doremi-frm.el]]</tt> -- incrementally adjust frame properties using arrow keys and/or mouse wheel
 * <tt>[[doremi-mac.el]]</tt> -- macro for defining DoReMi commands
 * <tt>[[ediff+.el]]</tt> -- extensions to standard library `ediff': toggle case sensitivity (not needed for GNU Emacs 22 or later)
-* <tt>[[eyedropper.el]]</tt> -- pick up foreground or background colors
+* <tt>[[eyedropper.el]]</tt> -- pick up foreground or background colors (see also <tt>[[palette.el]]</tt>)
 * <tt>[[facemenu+.el]]</tt> -- extensions to standard library `facemenu' -- see '''FaceMenuPlus'''
 * <tt>[[faces+.el]]</tt> -- extensions to standard library `faces'
 * <tt>[[ffap-.el]]</tt> -- extensions to standard library `ffap'
@@ -219,7 +219,8 @@ I make minor changes to some libraries often, so check for the latest versions.
 * <tt>[[hl-line+.el]]</tt> -- extensions to standard library `hl-line' -- see HighlightCurrentLine
 * <tt>[[hl-spotlight.el]]</tt> -- spotlight the lines around the [[cursor]]; see [[Highlight#HlSpotlight|HL Spotlight]]
 * <tt>[[modeline-posn.el]]</tt> -- enhanced [[mode line]] information -- see '''ModeLinePosition'''
-* <tt>[[palette.el]]</tt> -- examine color properties or choose colors -- see '''ColorPalette'''
+* <tt>[[palette.el]]</tt> -- examine color properties or choose colors -- see '''ColorPalette''' (see also <tt>[[eyedropper.el]]</tt>)
+
 
 
 
