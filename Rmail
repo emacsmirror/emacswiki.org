@@ -150,5 +150,7 @@ SSL, only TLS encryption.
 
 How do you use Emacs to sort RMAIL email based on SpamAssassin headers?...
 
+Please list instructions for a Postfix Maildir mailbox. These don't work: http://support.cs.utah.edu/index.php?option=com_content&view=article&id=26&Itemid=52 I tried without the "mdmovemail" line since there's a "movemail" in the /usr filesystem. Regards
+
 ----
 CategoryMail
