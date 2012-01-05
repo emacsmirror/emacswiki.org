@@ -162,5 +162,21 @@ I will address each of your points.
 
 Since you can't reproduce the problem, I don't know what to do. For now, I won't use the package. -- ScottRandby
 
+[new:DrewAdams:2012-01-05 21:49 UTC]
+a. Maybe your Emacs 24 version is different from mine.  I get the same results (same as Emacs prior to 24) with both the second Emacs 24 pretest and a later snapshot (Dec 06, 2011). 
+
+b. '''''6''''' is not a valid value for `Buffer-menu-sort-column'.  If you were to use either Customize or `M-x set-variable' you would see that.  Customize is your friend: it does type-checking.  Valid values are '''0-5'''.  For file-name sorting, you want ''''''5''''''.
+
+c. If that's not the problem, and if you're interested, you can try doing this:
+
+## Load ##buff-menu.el## (not .elc).
+
+## In the definition of `list-buffers-noselect', just before the last `dolist', insert this: ##(debug)##, then evaluate the definition using `C-M-x' (then you can remove the ##(debug)##).
+
+## That will enter the debugger just before sorting. Use `d' to step or `c' to skip through a step.  Keep the source code open in another window to be able to follow it easily.  You should be able to see what happens -- let me know.
+
+d. It's OK for me if you don't use the package -- I'll even give you your money back. ;-)  If you do find out more about the problem or how to reproduce it, please let me know.  Thx -- DrewAdams
+
+
 ----
 CategoryBufferSwitching
