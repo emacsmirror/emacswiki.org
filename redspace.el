@@ -1,4 +1,4 @@
-;;;; redspace mode --- a minor mode for highlighting empty space at end of lines
+;;; redspace.el --- a minor mode for highlighting empty space at end of lines
 
 ;; Copyright (C) 2008  Kristian Rumberg
 
