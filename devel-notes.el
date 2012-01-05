@@ -1,4 +1,3 @@
-;;;
 ;;; devel-notes.el --- Add annotation to sources and track them in an org file.
 
 ;; Copyright (C) 2011 Iñigo Serna, all rights reserved.
