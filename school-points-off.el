@@ -1,5 +1,4 @@
-;;; school-points-off.el - A program to display grades based on number
-;;;                        of problems on the test
+;;; school-points-off.el --- Display grades based on number of problems on the test
 
 ;;; This is free software and in the public domain.
 ;;; Written by Terrence Brannon
