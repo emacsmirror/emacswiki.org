@@ -1,4 +1,4 @@
-;;; eform.el ---
+;;; eform.el --- Web form like forms
 ;;
 ;; This file is free software.
 ;; Copyright Greg Novak (novak@ucolick.org) December 2004
