@@ -137,7 +137,11 @@ Off topic but, I browsed the Introduction to Emacs Lisp manual and was surprised
 I just finished reading Doug Hoyte's [http://letoverlambda.com/index.cl/guest/chap5.html#sec_1 Lisp is not functional]. I am convinced. -- Alex
 
 [new]
-Never heard of him.  The book looks like it's just self-published on Lulu.  I have nothing against Lulu, a questionable source. -- AaronHawley
+Never heard of him.  The book looks like it's just self-published on Lulu.  I have nothing against Lulu, but a questionable source.
+
+According to Anton van Straaten in a similar discussion on Lisp (and Scheme), his response is that Lisp's "functional capabilities are complete - it's not lacking anything that a functional language needs to be considered functional."[http://people.csail.mit.edu/gregs/ll1-discuss-archive-html/msg03242.html]
+
+-- AaronHawley
 
 ----
 CategoryCode
