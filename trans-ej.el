@@ -1,7 +1,5 @@
-[[de:English]]
-;;; -*- Mode: Emacs-Lisp ; Coding: utf-8 -*-
+;;; trans-ej.el --- English-Japanese translator using web translation service -*- Coding: utf-8 -*-
 
-;;; trans-ej.el --- English-Japanese translator using web translation service
 
 ;; Copyright (c) 2009, 2010, 2011  S. Irie
 
