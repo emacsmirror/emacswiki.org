@@ -1,5 +1,4 @@
-;;; xsl-mode.el
-;; XSL Mode
+;;; xsl-mode.el --- XSL Mode
 
 ;; Version 0.9, for XEmacs 21.4+
 ;; By Chuck Adams <cja987@yahoo.com>
@@ -26,7 +25,7 @@
 ;; it, the GPL allows you to redistribute it, but please don't without
 ;; asking for a more recent version.  Thank you.
 
-
+ 
 ;; BUGS
 ;; 
 ;;   * Numerous FIXME items throughout source, none show-stopping
@@ -39,7 +38,7 @@
 ;;   * Make xsl font-lock cooperate more with psgml font lock
 ;;   * Search path for xml doc and xsl sheet
 
-
+ 
 
 ;;;; Requirements
 
@@ -47,7 +46,7 @@
 (require 'advice)
 (require 'psgml)
 
-
+ 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Variables
 (defcustom xsl-initial-stylesheet-file
@@ -87,7 +86,7 @@
     (insert-file-contents xsl-initial-stylesheet-file)
     (goto-char xsl-initial-stylesheet-initial-point)))
 
-
+ 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;; Variables
 
@@ -1168,7 +1167,7 @@ Prompts for settings if none have been specified for this buffer"
   "Running XSL processors from XSL mode."
   :group 'xsl)
 
-
+ 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Keybindings
 
@@ -1198,7 +1197,7 @@ Prompts for settings if none have been specified for this buffer"
       (delete-backward-char 2)
       (xsl-insert-end-tag))))
   
-
+ 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Syntax table
 
@@ -1229,7 +1228,7 @@ Prompts for settings if none have been specified for this buffer"
 (modify-syntax-entry ?* "." xsl-mode-syntax-table)
 (modify-syntax-entry ?/ "." xsl-mode-syntax-table)
 
-
+ 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Smart abbrev expansion
 
@@ -1479,6 +1478,6 @@ unnecessary parsing for determining context information"
 (make-local-hook 'post-abbrev-expand-hook)
 (add-hook 'post-abbrev-expand-hook 'xsl-priv-post-abbrev-expand-function)
 
-
+ 
 (provide 'xsl-mode)
 ;;; xsl-mode.el ends here
