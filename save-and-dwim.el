@@ -1,4 +1,4 @@
-;;; save-and-dwim.el - save, then do something after saving.
+;;; save-and-dwim.el --- save, then do something after saving.
 (defconst sdwim-version "0.1a")
 ;; Copyright (c) 2008 Jonathan Arkell. (by)(nc)(sa)  Some rights reserved.
 ;; Author: Jonathan Arkell <jonnay@jonnay.net>
