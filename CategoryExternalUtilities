@@ -73,6 +73,7 @@ Command-line tools:
 * EukleidesMode -- Full featured major mode to edit [http://eukleides.org eukleides] files
 * [[Sdcv]] -- A interface for *sdcv* (StarDict console version).
 * [[CheatFuMode]] -- cheat_fu mode
+* QuickRun -- Run editing buffer and show its output quickly.
 
 Unclassified:
 
