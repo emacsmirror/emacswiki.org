@@ -1,9 +1,9 @@
-;;; pdftools: a collection of pdf tools to mimic ps-spool- functions
+;;; pdftools.el --- a collection of pdf tools to mimic ps-spool- functions
 
 ;; Copyright (C) 2011 Peter H. Mao
 
 ;; Author: Peter H. Mao <peter.mao@gmail.com> <peterm@srl.caltech.edu>
-;; Version %Id: 1%
+;; Version %Id: 2%
 
 ;;; CHANGE LOG
 
