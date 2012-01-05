@@ -1,4 +1,4 @@
-;;;
+;;; javacc-mode.el --- A major mode for editing javacc and jjtree files.
 ;;* ----------------------------------------------------------------------------
 ;;* "THE BEER-WARE LICENSE" (Revision 42):
 ;;* <bwaite@connect.carleton.ca> wrote this file.
