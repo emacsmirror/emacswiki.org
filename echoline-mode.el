@@ -1,5 +1,5 @@
-;;;; echoline mode - a minor mode for octave which highlights "echoing"
-;; lines that does not end with a ";" or that do not cause echo
+;;; echoline-mode.el --- A minor mode for octave which highlights "echoing" lines
+;; that does not end with a ";" or that do not cause echo
 ;; such as "plot" or "figure"
 ;; Copyright (C) 2008,  Kristian Rumberg (kristianrumberg@gmail.com)
 
