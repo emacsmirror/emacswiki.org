@@ -1,6 +1,4 @@
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; -*- mode: EMACS-LISP; -*-
-;;; this is ebay-template-mode.el
+;;; ebay-template-mode.el --- A handy template for editing auction listings.
 ;;; ================================================================
 ;;; DESCRIPTION:
 ;;; ebay-template-mode provides a handy template for editing auction listings.
