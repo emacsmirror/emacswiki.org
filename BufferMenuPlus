@@ -136,7 +136,19 @@ Anyway, the lists you show here are ''not'' file/dir names -- they are ''buffer'
 Perhaps I'm misunderstanding you.  Please elaborate/clarify.  Thx -- DrewAdams
 
 [new]
-Yes, the names are buffer names and the sort is done when I click on the '''File''' column header. So what is happening is that all the buffer names associated with files appear at the top of the list and all the buffer names associated with directories appear at the bottom of the list when ##buff-menu+.el## is loaded. Does this help? 
+Yes, the names are buffer names and the sort is done when I click on the '''File''' column header. So what is happening is that all the buffer names associated with files appear at the top of the list and all the buffer names associated with directories appear at the bottom of the list when ##buff-menu+.el## is loaded. Does this help? -- ScottRandby
+
+[new:DrewAdams:2012-01-05 16:45 UTC]
+1. When the library is ''loaded''? Or ''after sorting'' by file name?  Just what is the problem you mean?
+
+2. When the library is loaded, the default sort is by last-visit time.  But this default is controlled by [[user option]] '''`Buffer-menu-sort-column'''', so you can have it start up with a sort of any of the columns.
+
+3. When you sort by file name, it does ''not'' happen (for me, at least) that buffers associated with files are at the top and buffers associated with directories are at the bottom.  What happens is that buffers associated with files and dirs are at the top, and buffers with no file/dir are at the bottom (or vice versa, depending on whether the sort is ascending/descending).  And the buffers with a file or dir are sorted lexicographically, followed by the buffers with no file or dir, also sorted lexicographically.
+
+4. Case is significant (respected) for sorting.  Perhaps that is what is confusing you -- perhaps your directories have a different letter case than your non-directory files?
+
+None of this has changed in any way.  And it works the same (AFAICT) in all Emacs versions.  HTH -- DrewAdams
+
 
 ----
 CategoryBufferSwitching
