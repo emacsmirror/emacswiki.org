@@ -1,5 +1,4 @@
-;;; -*- local-enable-local-variables: nil -*-
-;;; dirvars.el --- Local variables that apply to an entire directory
+;;; dirvars.el --- Local variables that apply to an entire directory -*- local-enable-local-variables: nil -*-
 
 ;; Copyright (C) 2002  Matt Armstrong
 
