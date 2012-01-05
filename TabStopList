@@ -11,37 +11,15 @@ The default tab stops are 8 spaces appart:
 
     (8 16 24 32 40 48 56 64 72 80 88 96 104 112 120)
 
-Using a little piece of elisp or some manual editing, you can change
-this:
+Using some manual editing, you can change this:
 
     (setq tab-stop-list '(4 8 12 16 20 24 28 32 36 40 44 48 52 56 60
                           64 68 72 76 80 84 88 92 96 100 104 108 112
                           116 120))
 
-Here is the little fragment I used:
+Or have elisp generate the list for you:
 
-    (let ((i 4))
-      (while (< i 124)
-        (insert (number-to-string i) " ")
-        (setq i (+ 4 i))))
-
-Or even this:
-
-    (setq tab-stop-list (let ((stops '(8)))
-                          (while (< (car stops) 120)
-                            (setq stops (cons (+ 8 (car stops)) stops)))
-                          (nreverse stops)))
-
-Or just:
-
-    (setq tab-stop-list (mapcar (lambda (x) (* 4 x))
-                                (number-sequence 1 (/ 120 4))))
-
-Or perhaps:
-
-    (setq tab-stop-list (loop for i from 4 to 120 by 4 collect i))
-
-The last only if you have used the CommonLisp package.
+    (setq tab-stop-list (number-sequence 4 120 4))
 
 Here's a command to set the tab stop width.
 
