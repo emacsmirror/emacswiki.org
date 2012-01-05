@@ -7,9 +7,9 @@
 ;; Copyright (C) 2006-2012, Drew Adams, all rights reserved.
 ;; Created: Sat May 20 07:56:06 2006
 ;; Version: 22.0
-;; Last-Updated: Thu Jan  5 07:18:02 2012 (-0800)
+;; Last-Updated: Thu Jan  5 09:01:49 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 640 4
+;;     Update #: 645 4
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/palette.el
 ;; Keywords: color, rgb, hsv, hexadecimal, face, frame
 ;; Compatibility: GNU Emacs: 22.x, 23.x
@@ -466,10 +466,9 @@ This can cause redisplay of the palette frame, which means a slowdown."
 
 ;;;###autoload
 (defcustom palette-verbose-flag nil
-  "*How often to display color information.
-Non-nil means display color info often; nil means display it only on
-demand.  Non-nil slows things down to recalculate color components
-often."
+  "*Non-nil means display color info often.
+Otherwise, display it only on demand.
+Non-nil slows things down to recalculate color components often."
   :type 'boolean :group 'Color-Palette :group 'doremi)
 
 ;;;###autoload
@@ -1157,10 +1156,10 @@ informative message."
   "Set the current color to the background color under the mouse pointer.
 The background color is saved in `palette-picked-background' and
 `palette-last-picked-color'.  The new current color is returned.
-Non-nil optional arg SHOW-P (prefix arg) means display the palette.
-If called from the color palette, update the current color there.
 
 EVENT is a mouse event.
+Non-nil optional arg SHOW-P (prefix arg) means display the palette.
+If called from the color palette, update the current color there.
 Non-interactively, non-nil optional arg MSG-P means show an
 informative message."
   (interactive "e\nP\p")
@@ -1195,10 +1194,10 @@ Use this everywhere instead of (setq palette-current-color new-value)."
   "Set the current color to the foreground color under the mouse pointer.
 The foreground color is saved in `palette-picked-foreground' and
 `palette-last-picked-color'.  The new current color is returned.
-Non-nil optional arg SHOW-P (prefix arg) means display the palette.
-If called from the color palette, update the current color there.
 
 EVENT is a mouse event.
+Non-nil optional arg SHOW-P (prefix arg) means display the palette.
+If called from the color palette, update the current color there.
 Non-interactively, non-nil optional arg MSG-P means show an
 informative message."
   (interactive "e\nP\p")
