@@ -1,5 +1,4 @@
-;;; -*- coding: utf-8; -*-
-;;; insert-time-string.el --- Insert the current time.
+;;; insert-time-string.el --- Insert the current time. -*- coding: utf-8; -*-
 
 ;; Copyright © 2010 Kevin Rodgers
 
