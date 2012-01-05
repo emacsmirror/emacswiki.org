@@ -1,5 +1,3 @@
-;;; -*- Mode: Emacs-Lisp -*-
-
 ;;; transpose-frame.el --- Transpose windows arrangement in a frame
 
 ;; Copyright (c) 2011  S. Irie
