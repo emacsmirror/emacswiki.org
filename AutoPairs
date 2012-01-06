@@ -2,6 +2,10 @@ It can be useful to insert parentheses, braces, quotes and the like in matching 
 
 == Implementations ==
 
+=== electric-pair-mode ===
+
+Emacs-24 comes with a new simple global minor mode electric-pair-mode which uses the new post-self-insert-hook.
+
 === autopair.el ===
 
 Autopair.el (hosted here [http://autopair.googlecode.com/svn/trunk/autopair.el autopair.el] in http://autopair.googlecode.com) is a minor-mode that works with almost all major modes.  This is probably most likely the easiest (and best) way to achieve autopairs functionality in all your favorite modes.
