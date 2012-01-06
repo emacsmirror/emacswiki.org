@@ -174,7 +174,7 @@ is the promising future in both the concept (distributed) and the use of tools
 
 * Faster updates (massive package updates are instantaneous due to Git delta)
 * Easier bug reporting (each package has contact information metadata)
-* Personal contacts. Someone is there behind the package (just like in Debian).
+* Personal contacts. Someone is there behind packages (just like in Debian).
   Each package has a person behind it: either the Packager or Upstream.
   It's not just a bunch of code in archive that might be bit-rotting.
   Packages die naturally if there is no interest for anybody maintaining it.
