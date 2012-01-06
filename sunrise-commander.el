@@ -7,7 +7,7 @@
 ;; Maintainer: José Alfredo Romero L. <escherdragon@gmail.com>
 ;; Created: 24 Sep 2007
 ;; Version: 5
-;; RCS Version: $Rev: 398 $
+;; RCS Version: $Rev: 399 $
 ;; Keywords: files, dired, midnight commander, norton, orthodox
 ;; URL: http://www.emacswiki.org/emacs/sunrise-commander.el
 ;; Compatibility: GNU Emacs 22+
@@ -3495,6 +3495,7 @@ Uses comma as the thousands separator."
 ;;; ============================================================================
 ;;; TI (Terminal Integration) and CLEX (Command Line EXpansion) functions:
 
+;;;###autoload
 (defun sr-term (&optional cd newterm program)
   "Run terminal in a new buffer or switch to an existing one.
 If the optional argument CD is non-nil, directory is changed to
@@ -3517,18 +3518,21 @@ default `sr-terminal-program'."
       (sr-term-eshell cd newterm)
     (sr-term-extern cd newterm program)))
 
+;;;###autoload
 (defun sr-term-cd ()
   "Run terminal in a new buffer or switch to an existing one.
 cd's to the current directory of the active pane."
   (interactive)
   (sr-term t))
 
+;;;###autoload
 (defun sr-term-cd-newterm ()
   "Open a NEW terminal (don't switch to an existing one).
 cd's to the current directory of the active pane."
   (interactive)
   (sr-term t t))
 
+;;;###autoload
 (defun sr-term-cd-program (&optional program)
   "Open a NEW terminal using PROGRAM as the shell."
   (interactive "sShell program to use: ")
