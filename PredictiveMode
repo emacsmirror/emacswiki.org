@@ -161,7 +161,7 @@ There are two aspects to completion: which completions are offered, and how to c
 
 === Actual Usefulness ===
 
-PredictiveMode doesn't really make typing much quicker, especially typing prose. It's very hard to maintain the flow of the sentence when your editor keeps interrupting you with the wrong words.
+PredictiveMode doesn't really make typing much quicker, especially typing prose. It's very hard to maintain the flow of the sentence when your editor keeps interrupting you with the wrong words. It's even harder if you attempt to use any of the completion UIs to select anything other than the first choice; the process of cycling through a list of other words is very disruptive.
 
 ----
 CategoryModes | CategoryCompletion | CategorySpelling
