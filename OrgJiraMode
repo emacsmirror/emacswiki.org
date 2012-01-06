@@ -15,7 +15,11 @@ For xml-rpc, there is already a [http://www.emacswiki.org/emacs/jira.el jira.el]
 * xml-rpc is not as well supported as soap by Jira.
 * jira.el is a stand-alone tool, while I want to integrate with org-mode.
 
-Luckily, the emacs-soap-client guy(s) already provided a sample jira2.el, so I started hacking by combining jira.el and jira2.el, the new jira2.el is [http://github.com/baohaojun/org-jira/raw/master/jira2.el here].
+Luckily, the emacs-soap-client guy(s) already provided a sample
+jira2.el, so I started hacking by combining jira.el and jira2.el, the
+result is jiralib.el [http://github.com/baohaojun/org-jira/raw/master/jiralib.el here] (people suggested jira2.el is not a good
+name, as it can be quite confusing what the 2 means, and I totally
+agree, thus the name jiralib).
 
 After browsing Jira with jira2.el is implemented, I checked [https://github.com/punchagan/org2blog org2blog] for ideas of how to hack on org-mode, and started from his org2blog.el and hacked into a new [http://github.com/baohaojun/org-jira/raw/master/org-jira.el org-jira.el].
 
@@ -80,15 +84,12 @@ git clone git://github.com/baohaojun/org-jira.git
 
 Then put the following in your .emacs,
 <pre>
-(setq jira2-url "http://jira-host")
-(require 'jira2)
-(require 'org-jira)
+(setq jiralib-url "http://jira-host")
+(require 'org-jira) ;jiralib is not explicitly required, since org-jira will load it
 </pre>
 (If you have a ~/.authinfo file and corresponding entry for jira-host, the username and password will be computed from that; or else you will be prompted for password).
 
 Then start syncing with M-x org-jira-get-issues .
-
-(Currently there is a bug in my code, so that you need to run the above command twice).
 
 Date: 2012-01-01 23:23:36 China Standard Time
 
