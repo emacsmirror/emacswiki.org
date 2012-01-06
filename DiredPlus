@@ -613,16 +613,42 @@ This means that if there are spaces in any of the file names they will not be re
 [new:DrewAdams:2011-09-03 21:34 UTC]
 Should be OK now.  Thx -- DrewAdams
 
+----
+
 
 [new]
-Helllo, I'm using emacs from bzr, and some recent changes in trunk broke dired+ fancy highlighting. Rest of functionality seems to work fine.  -- [[Anonymous]]
+Hello, I'm using emacs from bzr, and some recent changes in trunk broke dired+ fancy highlighting. Rest of functionality seems to work fine.  -- [[Anonymous]]
 
 
 [new:DrewAdams:2011-11-01 14:25 UTC]
 Yes, they broke font-locking in the latest Emacs 24 pretest.  See Emacs bugs #9919 and #6662.
 http://debbugs.gnu.org/cgi/bugreport.cgi?bug=9919
+http://debbugs.gnu.org/cgi/bugreport.cgi?bug=6662
 
-Anyway, I fixed this in the latest <tt>[[dired+.el]]</tt> yesterday, so it should be OK now.  Unfortunately, because of their change font-locking is now done twice: once with the default highlighting, once with the correct ('''Dired+''') highlighting.  You don't see this as a user, but it does theoretically slow things down a bit.  If they fix the bug then I'll be able to remove the call to refresh font-locking.  Be aware too that this will also affect other libraries that set font-lock highlighting. -- DrewAdams
+Anyway, I fixed this in the latest <tt>[[dired+.el]]</tt> on 2011-10-31, so it should be OK now.  Unfortunately, because of their change font-locking is now done twice: once with the default highlighting, once with the correct ('''Dired+''') highlighting.  You don't see this as a user, but it does theoretically slow things down a bit.  If they fix the bug then I'll be able to remove the call to refresh font-locking.  Be aware too that this will also affect other libraries that set font-lock highlighting. -- DrewAdams
+
+
+
+----
+
+[new]
+Mmh, I cannot see that fancy highlighting is fixed with current versions of dired+ and emacs (from bzr).
+Sure there is some highlighting done. But customizing the face of the owner and the group of a file is not possible unless you won't change the default face.  -- [[henry]]
+
+[new:DrewAdams:2012-01-06 17:35 UTC]
+Sorry, I have no idea what you're saying, Henry.  Please try to provide a recipe to reproduce your problem, preferably starting from ##emacs -Q##.
+
+There is nothing in '''Dired+''' involving faces for owner or group.  The privilege faces are the same for owner, group, and world.  They are for _privileges_: none (`-'), exec (`x'), read (`r'), and write (`w').  These are used in all positions: owner, group, and world.
+
+And I don't know who "you" is in "you won't change the default face" (is it me or a user?).  What do you mean to say?  Please clarify/elaborate.  Thx -- DrewAdams
+
+
+
+
+
+
+
+----
 
 [new]
 Hi,  I also had issues using dired+ with zenburn. Instead of shutting off the extra highlighting I set up some (very rough) face customizations that I edited:
@@ -649,11 +675,8 @@ Hi,  I also had issues using dired+ with zenburn. Instead of shutting off the ex
 
 -- [[Anonymous]]
 
-[new]
-Mmh, I cannot see that fancy highlighting is fixed with current versions of dired+ and emacs (from bzr).
-Sure there is some highlighting done. But customizing the face of the owner and the group of a file is not possible unless you won't change the default face.
-
--- henry
+[new:DrewAdams:2012-01-06 17:20 UTC]
+You do not say anything about what the issues are that you ran into, or how your customization takes care of them.  So I have no idea what the problem is, so I cannot try to fix it. Please elaborate.  Thx -- DrewAdams
 
 
 
