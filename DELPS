@@ -2,9 +2,11 @@
 
 DELPS - *Distributed Emacs Lisp Package System* by JariAalto. The
 DELPS is the framework, the blueprint of the design concepts.
-Emacs extensions in DELPS format are called [[Epackage]]s.
-With it, you can install Emacs extensions that have been
-put available as git DVCS repositories.
+An implementation of DELPS in Git is called [[Epackage]] which
+follows the proven Debian packaging concepts applied to Emacs Lisp
+packages. The Git reference implementation is available in /epackage.el/.
+With it, you can install Emacs extensions that have been put available
+as Git DVCS repositories.
 
 == Project Links ==
 
@@ -158,38 +160,40 @@ The epackage manager can also be called from command line UI:
 
     emacs --batch --quick --load ~/.emacs.d/packages/epackage/epackage.el --funcall epackage-batch-ui-menu
 
-== ELPA and DELPS - What's the difference? ==
+== ELPA and Epackages - What's the difference? ==
 
 The big question probably is: "What's different to ELPA". Where do we
-need DELPS when Emacs 24 already comes with ELPA built-in? The DVCS
-approach is completely different and changes the scene dramatically.
-The ELPA is old design (yes, perfectly working), but DVCS is the
-promising future.
+need Epackages when Emacs 24 already comes with ELPA built-in? The
+DVCS approach is completely different and changes the scene
+dramatically. The ELPA is older in design (yes, perfectly working)
+but the DVCS is the promising future.
 
 /For the user/
 
 * Faster updates (massive package updates are instanteneous due to Git delta)
-* Easier bug reporting (each package has contact information in metadata)
-* Personal contacts (no faceless archive admin). Someone is there. Each
-  package has a person behind it: either packager or Upstream, or both
-  caring for it. It's not just a bunch of bit-rotten code in archive.
+* Easier bug reporting (each package has contact information metadata)
+* Personal contacts. Someone is there behind the package (just like in Debian).
+  Each package is taken cared of by either the Packager or Upstream.
+  It's not just a bunch of code in archive that might be bit-rotting.
 
 /For the developer/
 
-* No more "submitting" code to "archive". Set up a Git repository
-  and you're sharing your code to everyone else with minimal initial
-  setup (setting up epackage/ directoy). See
-  section /When upstream IS also the packager/
+* No more "submitting" code to "archive". Set up a Git repository and
+  you're sharing your code to everyone else with minimal initial
+  setup.See section /When upstream IS also the packager/
   in [https://github.com/jaalto/project--emacs-epackage-template Epackage Primer]
-* Users can request updates directly from your Git repository.
-  No need to send announcements or notifications. Just concentrate on
-  doing what you do best, improving your Emacs Lisp utility.
+* Users receive updates directly from your Git repository.
+  No need to send announcements or notifications. No more outdated
+  versions in archive.
+* Low maintenence. Just concentrate on doing what you do best,
+  improving your Emacs Lisp utility. No distribution hassles.
 
 /Downsides/
 
 * It's not traditional *.tar.gz any more. You need to learn Git.
 * You need to install Git (as a user, to download packages; as a
-  developer to distribute your code).
+  developer to distribute your code). In Windows, the best and easiest
+  is to use <http://cygwin.com>.
 * ...other than that, sharing and distributong packages has never been this
   easy.
 
