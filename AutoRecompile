@@ -1,20 +1,43 @@
 == General Tips ==
 
-* When automatically compiling files, you should set both font-lock-verbose and byte-compile-verbose to nil.  The progress information can increase the compile time ten-fold. -- [[nschum]]
+* When automatically compiling files, you should set both
+  font-lock-verbose and byte-compile-verbose to nil. The progress
+  information can increase the compile time ten-fold. -- [[nschum]]
 
-* Don't forget that you can also use `M-x byte-recompile-directory' to update all files in and under a directory. `C-u' means ask about subdirectories; otherwise, they are treated recursively. Keep in mind, however, that this does not compile any source files that were not already compiled. This a bit off-topic -- it is not the same as automatic recompilation, but it's good to keep in mind. (It's all I use, BTW.) -- DrewAdams
+* Don't forget that you can also use `M-x byte-recompile-directory' to
+  update all files in and under a directory. `C-u' means ask about
+  subdirectories; otherwise, they are treated recursively. Keep in
+  mind, however, that this does not compile any source files that were
+  not already compiled. This a bit off-topic -- it is not the same as
+  automatic recompilation, but it's good to keep in mind. (It's all I
+  use, BTW.) -- DrewAdams
 
-* A 0 prefix-arg to byte-recompile-directory will force compilation of all files even if they were not previously compiled.
+* A *0* prefix-arg to `M-x byte-recompile-directory' will force
+  compilation of all files even if they were not previously compiled.
 
 == Byte Compile on Emacs Startup ==
 
-Use the [http://code.google.com/p/elisp-cache/ elisp-cache] library, by DominiqueQuatravaux.  Instructions are included.
+Use the [http://code.google.com/p/elisp-cache/ elisp-cache] library,
+by DominiqueQuatravaux. Instructions are included.
 
 == Byte Compile on Load ==
-[[byte-code-cache.el]] will automatically compile ##.el## files as they're loaded. It keeps the compiled files in ##~/.emacs.d/byte-cache## by default, and will automatically recompile any files that change, even if they're loaded more than once in the same session. Recompiling files manually is a pain, and other Lisp systems don't make you do it. :-)
+
+[[byte-code-cache.el]] will automatically compile ##.el## files as
+they're loaded. It keeps the compiled files in
+##~/.emacs.d/byte-cache## by default, and will automatically recompile
+any files that change, even if they're loaded more than once in the
+same session. Recompiling files manually is a pain, and other Lisp
+systems don't make you do it. :-)
 
 [new:DaveAbrahams:2011-09-23 02:52 UTC]
-This package would do exactly what I want if it worked, and for the longest time I thought it did, but sadly it doesn't seem to be working properly on emacs 22, 23, or 24.  packages that are require'd during initialization when byte-code-cache is enabled don't seem to get loaded.  To reproduce, put this .emacs file in a temporary directory along with byte-code-cache.el:
+
+This package would do exactly what I want if it worked, and for the
+longest time I thought it did, but sadly it doesn't seem to be working
+properly on emacs 22, 23, or 24. packages that are require'd during
+initialization when byte-code-cache is enabled don't seem to get
+loaded. To reproduce, put this .emacs file in a temporary directory
+along with byte-code-cache.el:
+
 {{{
 (add-to-list 'load-path "~")
 (with-temp-file "~/foo.el"
@@ -206,7 +229,7 @@ I like the idea of compile the file when kill the buffer. So I write a more gene
 I use the following, rather massive piece of code to automatically compile my ##.emacs## and ##.gnus## files.
 
  (require 'bytecomp)
- 
+
  (defvar auto-byte-compile-files-list
    (let ((ghd (or (and (boundp 'gnus-home-directory) gnus-home-directory)
                   (expand-file-name "~"))))
@@ -221,7 +244,7 @@ I use the following, rather massive piece of code to automatically compile my ##
              (concat ghd "/.gnus")
              (concat ghd "/.gnus.el")))))
    "List of files to auto compile")
- 
+
  (defun auto-byte-compile-file (&optional file match regexp)
    "file can be
  - nil in which case value returned by `buffer-file-name' will be used
@@ -231,44 +254,44 @@ I use the following, rather massive piece of code to automatically compile my ##
  - a list of strings representing file names; or
  - anything else which is equivalent to passing
    `auto-byte-compile-files-list'.
- 
+
  Entries equal to \".\", \"..\" or ending with \"/.\" or \"/..\"
  are ignored.  If element is a directory it will be processed
  recursively but if regexp is nil only files ending with \".el\"
  will be processed.
- 
+
  match can be
  - nil which is equivalent to passing `auto-byte-compile-files-list';
  - a string which is equivalent to passing list with that string as the
    only element;
  - a list in which case file have to be in that list to be processed; or
  - anything else in which case file will be processed regardless of name.
- 
+
  If any element of match is a string ending with a slash ('/') it
  is treated as directory name (no checking is done if it is really
  a directory or even if it exists) and file is said to match such
  entry if it begins with it thus all files in given directory will
  match.
- 
+
  If called interacivelly without prefix arg will behave as with
  match equal t.  With prefix arg will behave as with match equal
  nil.
- 
+
  regexp must be nil which is equivalent with passing a list
  containing only empty string or a list of regular expressions
  which file have to match to be processed.
- 
+
  So the default is to auto-compile the current file iff it exists
  in `auto-byte-compile-files-list'.
- 
+
  Non-string elements in list will be ignored.
- 
+
  Auto-compilation means that file will be byte-compiled iff the
  compiled version does not exits or is older then the file
  itself."
    (interactive (list (read-file-name "Auto byte compile file:" nil nil t)
                       (not current-prefix-arg)))
- 
+
    (if (not (or file (setq file (buffer-file-name))))
        0
      (setq file  (cond ((stringp file)  (list file))
@@ -279,7 +302,7 @@ I use the following, rather massive piece of code to automatically compile my ##
                                ((stringp match) (list match))
                                ((listp match)   match)
                                (t               nil))))
- 
+
      (let (f (n 0))
        (while (setq f (car file))
          (setq file (cdr file) f (expand-file-name f))
@@ -303,13 +326,13 @@ I use the following, rather massive piece of code to automatically compile my ##
                 (byte-compile-file f)
                 (setq n (1+ n))))))
        n)))
- 
+
  (defun auto-byte-compile-buffer (&optional match buffer)
    "Auto compiles file in given buffer (if buffer is nil current
  buffer is used) providing that major mode of the buffer is
  lisp-mode or emacs-lisp-mode.  match has the same meaning as in
  `auto-byte-compile-file'.
- 
+
  If called interacivelly will behave as with match equal t and
  buffer equal nil unless prefix argument was given in which case
  match will equal nil."
@@ -319,8 +342,8 @@ I use the following, rather massive piece of code to automatically compile my ##
                                               major-mode) major-mode)
                 '(lisp-mode emacs-lisp-mode))
         (auto-byte-compile-file (buffer-file-name buffer) match)))
- 
- 
+
+
  (add-hook 'kill-buffer-hook 'auto-byte-compile-buffer)
  (add-hook 'kill-emacs-hook (function (lambda () (auto-byte-compile-file t))))
 
