@@ -1,0 +1,20 @@
+A great textbook that uses [[Scheme]] is ''Structure and Interpretation of
+Computer Programs'' ([::SICP]) by HaroldAbelson, GeraldSussman and JulieSussman.  It is available online:
+
+* http://www-mitpress.mit.edu/sicp/
+
+and in Texinfo format:
+
+* http://www.neilvandyke.org/sicp-texi/
+
+Improved PDF with source:
+
+* http://sicpebook.wordpress.com/
+
+Some of the code has been implemented in EmacsLisp:
+
+* Lisp:constraint.el
+* Lisp:stream.el
+
+----
+CategoryProgramming
