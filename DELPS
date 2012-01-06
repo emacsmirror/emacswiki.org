@@ -162,19 +162,26 @@ The epackage manager can also be called from command line UI:
 
 == ELPA and Epackages - What's the difference? ==
 
-The big question probably is: "What's different to ELPA". Where do we
-need Epackages when Emacs 24 already comes with ELPA built-in? The
+The big question probably is: "What's different to ELPA? Where do we
+need Epackages when Emacs 24 already comes with ELPA built-in?" Lots. The
 DVCS approach is completely different and changes the scene
-dramatically. The ELPA is older in design (yes, perfectly working)
-but the DVCS is the promising future.
+dramatically. The ELPA is based on old design (centralized, need 
+for server and administration, use of static files). In contrast, the DVCS
+is the promising future in both the concept (distributed) and the use of tools
+(version control).
 
 /For the user/
 
-* Faster updates (massive package updates are instanteneous due to Git delta)
+* Faster updates (massive package updates are instantaneous due to Git delta)
 * Easier bug reporting (each package has contact information metadata)
 * Personal contacts. Someone is there behind the package (just like in Debian).
-  Each package is taken cared of by either the Packager or Upstream.
+  Each package has a person behind it: either the Packager or Upstream.
   It's not just a bunch of code in archive that might be bit-rotting.
+  Packages die naturally if there is no interest for anybody maintaining it.
+  (in Debian packages are "orphaned", and finally "removed", unless new
+  maintainer takes over)
+* Command line package management. Packages can be batch installed etc.
+  without launching Emacs GUI first.
 
 /For the developer/
 
