@@ -1,23 +1,28 @@
-== What is? ==
+== Description ==
 
-Lisp:vline.el -- Provides a vertical line displaying that follows cursor.
+Lisp:vline.el -- Provides a vertical line at cursor position
 
 [[image:VlineScreenShot]]
 
-
 '''See Also:''' HighlightCurrentColumn
 
-
-
 == Usage ==
-=== use vline buffer locally ===
-Type `M-x vline-mode'.
 
-=== use vline all buffers ===
-Type `M-x vline-global-mode'.
-
+* For current buffer, `M-x vline-mode'.
+* For all buffer, `M-x vline-global-mode'.
 
 == Discussion ==
+
+[new:MichaelWilson:2010-8-24 17:23 UTC]
+
+Love it! I just came across this and have been using it in conjunction
+with highline-mode.
+
+It has, however, some very entertaining behavior when combined with
+linum.el. I'm trying to codify the exact behavior, as it's a bit tough
+to describe. -- MichaelWilson
+
+== Resolved ==
 
 [new:DrewAdams:2008-10-16 21:41 UTC]
 It seems that Emacs 23 cannot load <tt>[[vline.el]]</tt>, at least in Windows:
@@ -33,15 +38,12 @@ I get this error when I try to load it. Any ideas?
 
   Invalid read syntax: "?"
 
-I filed bug [[http://emacsbugs.donarmstrong.com/cgi-bin/bugreport.cgi?bug=1187|#1187]], but you never know if they will fix it. Perhaps a fix is (also) in order for ##vline.el## itself? -- DrewAdams
+I filed bug
+[[http://emacsbugs.donarmstrong.com/cgi-bin/bugreport.cgi?bug=1187|#1187]],
+but you never know if they will fix it. Perhaps a fix is (also) in
+order for ##vline.el## itself? -- DrewAdams
 
 I fixed it by your mail. Thanks! -- Sugawara
-
-[new:MichaelWilson:2010-8-24 17:23 UTC]
-
-Love it!  I just came across this and have been using it in conjunction with highline-mode.
-
-It has, however, some very entertaining behavior when combined with linum.el.  I'm trying to codify the exact behavior, as it's a bit tough to describe. -- MichaelWilson
 
 ----
 CategoryDisplay CategoryEditing CategoryAccessibility CategoryFaces HighlightTemporarily
