@@ -653,7 +653,7 @@ Hi,  I also had issues using dired+ with zenburn. Instead of shutting off the ex
 Mmh, I cannot see that fancy highlighting is fixed with current versions of dired+ and emacs (from bzr).
 Sure there is some highlighting done. But customizing the face of the owner and the group of a file is not possible unless you won't change the default face.
 
--- [[henry]]
+-- henry
 
 
 
