@@ -116,7 +116,7 @@ Directions to build and install may be found in the file newly downloaded to ema
     sudo make install
 </pre>
 
-Note: Carbon emacs has been replaced with Cocoa Emacs in Emacs 23.x.
+Note: Carbon emacs has been replaced with Cocoa Emacs in Emacs 23.x. This is why the option --enable-carbon-app is no longer recognised by configure.
 
 
 == Installing Emacs with a Package Manager ==
