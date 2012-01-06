@@ -178,10 +178,12 @@ promising future.
 
 * No more "submitting" code to "archive". Set up a Git repository
   and you're sharing your code to everyone else with minimal initial
-  setup (setting up epackage/ directoy).
-* User's automatically get your updates. No need to send announcements
-  or notifications to anybody. Just concentrate on doing what you do
-  best, improving your Emacs Lisp utility, in your own Git repository.
+  setup (setting up epackage/ directoy). See
+  section /When upstream IS also the packager/
+  in [https://github.com/jaalto/project--emacs-epackage-template Epackage Primer]
+* Users can request updates directly from your Git repository.
+  No need to send announcements or notifications. Just concentrate on
+  doing what you do best, improving your Emacs Lisp utility.
 
 /Downsides/
 
