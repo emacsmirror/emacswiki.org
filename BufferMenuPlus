@@ -177,6 +177,24 @@ c. If that's not the problem, and if you're interested, you can try doing this:
 
 d. It's OK for me if you don't use the package -- I'll even give you your money back. ;-)  If you do find out more about the problem or how to reproduce it, please let me know.  Thx -- DrewAdams
 
+[new]
+When I do ##M-x customize-group## and go to the '''Buffer-menu-plus''' group, I get this:
+
+<pre>
+ Buffer-menu-sort-column: 1
+    State : CHANGED outside Customize. (mismatch)
+   Sorted by (1) visit, (2) buffer, (3) size, (4) time, (5) mode, (6) file. More
+</pre>
+
+So now I'm confused. But it doesn't matter, because setting ##Buffer-menu-sort-column## to 1 and then clicking on '''File''' in the buffer menu still gives the bad sorting.
+
+I agree that the problem might stem from the version of Emacs 24 I'm using. But I don't have time right now to compile the latest version.
+
+I will try the steps you mentioned when I have time, maybe next week. Do you mean for me to load ##buff-menu+.el## instead of ##buff-menu.el##?
+
+I really would like to get the package working. I have a hard time using the buffer menu without the syntax highlighting. --ScottRandby
+
+
 
 ----
 CategoryBufferSwitching
