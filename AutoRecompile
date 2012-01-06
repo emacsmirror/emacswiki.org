@@ -12,7 +12,7 @@
   automatic recompilation, but it's good to keep in mind. (It's all I
   use, BTW.) -- DrewAdams
 
-* A *0* prefix-arg to `M-x byte-recompile-directory' will force
+* A ##0## prefix-arg to `M-x byte-recompile-directory' will force
   compilation of all files even if they were not previously compiled.
 
 == Byte Compile on Emacs Startup ==
