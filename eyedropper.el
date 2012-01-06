@@ -7,9 +7,9 @@
 ;; Copyright (C) 2006-2012, Drew Adams, all rights reserved.
 ;; Created: Fri Jun 23 08:07:15 2006
 ;; Version: 20
-;; Last-Updated: Sun Jan  1 14:25:01 2012 (-0800)
+;; Last-Updated: Fri Jan  6 08:54:14 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 167
+;;     Update #: 170
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/eyedropper.el
 ;; Keywords: color, rgb, hsv, hexadecimal, face, frame
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -32,13 +32,21 @@
 ;;
 ;;  If you have Emacs 22 or later, all of the functionality provided
 ;;  here, and much more, is provided in library `palette.el'.  Use
-;;  library `eyedropper' instead of `palette.el' if you do not want to
-;;  use the color palette or if your Emacs version is older than Emacs
-;;  22.  If you load `palette.el', there is no reason to also load
+;;  library `eyedropper' instead of `palette.el' if either of these
+;;  applies:
+;;
+;;  * You do not want to use the color palette itself.  You want only
+;;    the functionality provided by `eyedropper.el'.
+;;
+;;  * Your Emacs version is older than Emacs 22 (`palette.el' requires
+;;    22 or later).
+;;
+;;  If you load `palette.el', there is no reason to also load
 ;;  `eyedropper.el'.  However, if for some reason you do load both
-;;  `palette.el' and `eyedropper.el', load `palette.el' second, so
-;;  that its definitions will override those provided here, providing
-;;  additional functionality for the color palette.
+;;  `palette.el' and `eyedropper.el' then load `palette.el' second, so
+;;  that its definitions will override those provided in
+;;  `eyedropper.el', providing additional functionality for the color
+;;  palette.
 ;;
 ;;  To use this library:
 ;;
