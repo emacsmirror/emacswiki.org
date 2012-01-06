@@ -35,7 +35,7 @@ It was forked from Magit and uses many of its core ideas. Both modes have evolve
 * Documentation: 
 ** http://bogolisk.blogspot.com/ (older version, still useful and includes screenshots)
 
-*Magit* is another interface to git:
+*[[Magit]]* is another interface to git:
 
 * Get it from: http://magit.github.com/magit
 * Manual: http://magit.github.com/magit/magit.html
