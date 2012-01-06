@@ -177,6 +177,9 @@ c. If that's not the problem, and if you're interested, you can try doing this:
 
 d. It's OK for me if you don't use the package -- I'll even give you your money back. ;-)  If you do find out more about the problem or how to reproduce it, please let me know.  Thx -- DrewAdams
 
+
+
+
 [new]
 When I do ##M-x customize-group## and go to the '''Buffer-menu-plus''' group, I get this:
 
@@ -193,6 +196,32 @@ I agree that the problem might stem from the version of Emacs 24 I'm using. But 
 I will try the steps you mentioned when I have time, maybe next week. Do you mean for me to load ##buff-menu+.el## instead of ##buff-menu.el##?
 
 I really would like to get the package working. I have a hard time using the buffer menu without the syntax highlighting. --ScottRandby
+
+
+[new:DrewAdams:2012-01-06 20:46 UTC]
+With patience we will find the solution. ;-)
+
+1. What you show from the Customize buffer is very wrong.  I suspect it comes from your Emacs version, but I do not know.  The fact that it says ##(mismatch)## indicates that the current value (shown as ##STANDARD##, which means the original definition) does not have the right custom type.
+
+And what you show indicates that the current value is `1'.  While `1' is a valid value, you should never see that in Customize.  Why?  Because the `defcustom' uses ##:tag## and ##:choice##.  What you should see is (a) a '''Value Menu''' button followed by the text ##Sort by time of last visit## or some such (that's the default choice, which corresponds to value `1').
+
+2. The fact that it says the value was ##CHANGED outside Customize## indicates that you are not starting with ##emacs -Q## or that you have already somehow changed the value, without using Customize.
+
+3. Vanilla ##buff-menu.el## defines the same variable, but using a `defvar', not `defcustom', so it is not a [[user option]] there.  The `defcustom' in ##buff-menu+.el## should override the `defvar' in ##buff-menu.el##.  Perhaps that is not happening, for some reason.  (Both libraries provide `1' as the default value.)
+
+4. "''But it doesn't matter, because setting ##Buffer-menu-sort-column## to 1 and then...''" --- How are you setting it?  If you use Customize, it must show you the '''Value Menu''' button and you must use that to choose.  If you use `M-x set-variable', that too should work.  Even ##(setq Buffer-menu-sort-column 1)## should work.  But it sounds like something is broken in your setup or your Emacs version.  Or perhaps you are doing more than you say, perhaps not starting with ##emacs -Q## or something.
+
+5. You need only put ##buff-menu+.el## in your `load-path' and load it (using ##(require 'buff-menu+)## in your [[init file]] or `##M-x load-library buff-menu+##' interactively).  It will automatically load ##buff-menu## first.
+
+Please take another look, and let me know.  Thx -- DrewAdams
+
+
+
+
+
+
+
+
 
 
 
