@@ -172,10 +172,10 @@ is the promising future in both the concept (distributed) and the use of tools
 
 /For the user/
 
-* Epackages truly install and get going (they contain install and
+* Epackages are true installs (they contain install and
   uninstall control files just like in Debian *.deb). ELPA packages
-  are simle downloads. You have to configure each ELPA package
-  manually after download.
+  are in contrast simple downloads. You have to configure
+  each ELPA package manually after download.
 * Faster updates (massive package updates are instantaneous due to Git delta)
 * Easier bug reporting (each package has contact information metadata)
 * Personal contacts. Someone is there behind packages (just like in Debian).
