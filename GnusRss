@@ -1,7 +1,8 @@
 RSS feed support in Gnus is implemented with the 'nnrss' backend.
 
 == Supported versions ==
-You can read RSS feeds in CVS Gnus and in the latest release (at least since 5.10.6).  In order to parse ISO 8601 dates correctly, you need a trivial patch to timezone.el which is part of EmacsCvs. [http://savannah.gnu.org/cgi-bin/viewcvs/*checkout*/emacs/emacs/lisp/timezone.el?rev=1.31]
+
+You can read RSS feeds in latest Gnus (since 5.10.6; 2009).  If you have older Emacs, in order to parse ISO 8601 dates correctly, you need a trivial patch to timezone.el which is part of EmacsCvs. [http://savannah.gnu.org/cgi-bin/viewcvs/*checkout*/emacs/emacs/lisp/timezone.el?rev=1.31]
 
 == Common tasks ==
 
