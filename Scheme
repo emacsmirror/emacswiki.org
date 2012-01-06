@@ -1,5 +1,5 @@
 Scheme is a dialect of the LispLanguage concentrating on the "functional" subset of Lisp that introduced lexical scoping, closures, first class continuations (to Lisp).  Originally developed by GeraldSussman and GuySteele, the language has a very concise and clear standard
-(see [http://www.schemers.org/Documents/Standards/R5RS/ R5RS].  Many schemers are proud of the fact that the R5RS Scheme standard is about 50 pages, shorter than the index table of the CommonLisp specification (see [Groups:scheme+standard&selm=sfwwvh5hxxh.fsf%40world.std.com KentPitman's post] for another opinion.)
+(see [http://www.schemers.org/Documents/Standards/R5RS/ R5RS].  Many schemers are proud of the fact that the R5RS Scheme standard is about 50 pages, shorter than the index table of the CommonLisp specification (see KentPitman's posts for another opinion[http://groups.google.com/groups?selm=sfwk87xe5rv.fsf@world.std.com][http://groups.google.com/groups?selm=sfwwvh5hxxh.fsf@world.std.com][http://groups.google.com/groups?selm=sfwvgf5d6f0.fsf@shell01.TheWorld.com]).
 
 * http://www.schemers.org/
 
@@ -9,26 +9,13 @@ It is widely used for teaching and research of programming language semantics, a
 
 An existing implementation of [[Emacsen]] in Scheme is called EdWin and exists as part of the MitSlashGnuScheme implementation. 
 
-== Interpreting Scheme in EmacsLisp ==
-
-There is a Scheme interpreter written in EmacsLisp by NoahFriedman:
-
-* http://www.splode.com/~friedman/software/emacs-lisp/src/czscm.el
-
-A simpler interpeter written in EmacsLisp that supports a smaller ''core'' set of Scheme was written by KalleOlaviNiemitalo.
-
-* Lisp:sie.el
-
-== Running Scheme within Emacs ==
-
 `M-x run-scheme' will run an external Scheme program for you. It is provided by CmuScheme. 
 
 The default program name is `scheme'.  If your copy of scheme is called `guile' or something other, customize the variable `scheme-program-name'.
 
 For a really good interface, check ILispMode. 
 
-For a really nice mode for PLT Scheme (<nowiki>MzScheme, MrEd and
-DrScheme</nowiki>) and other Schemes ([[Guile]]), see QuackMode.
+For a really nice mode for Racket Scheme and other Schemes ([[Guile]]), see QuackMode.
 
 There is also a hacked up completion mode for Plt Scheme which does
 what the plt help desk does: PltCompletions
@@ -39,28 +26,15 @@ SchemeComplete provides R5Rs and some SRFI symbols completion and ElDoc support.
 
 For running R6RS scripts with [[Ikarus]] and jumping to source locations displayed as part of a error message from Ikarus, there is [http://github.com/rotty/dotfiles/tree/master/.emacs.d/lisp/ikarus-script.el|ikarus-script.el].
 
-For PLT Scheme/Racket and Guile-2.x, a new Emacs mode is available: [http://www.nongnu.org/geiser/ Geiser] (also supports Guile). On Debian or Ubuntu, it can be installed with ##sudo apt-get install geiser##.
+For Scheme, a new Emacs mode is available: [http://www.nongnu.org/geiser/ Geiser].  It supports Guile and Racket (previously known as PLT). On Debian or Ubuntu, it can be installed with ##sudo apt-get install geiser##.
 
-[:SICP]
-== SICP ==
+A great textbook that uses Scheme is StructureAndInterpretationOfComputerPrograms.
 
-A great textbook that uses Scheme is "Structure and Interpretation of
-Computer Programs" (SICP) by HaroldAbelson, GeraldSussman and JulieSussman.  It is available online:
+There is a Scheme interpreter written in EmacsLisp by NoahFriedman:
 
-* http://www-mitpress.mit.edu/sicp/
+* http://www.splode.com/~friedman/software/emacs-lisp/src/czscm.el
 
-and in Texinfo format:
-
-* http://www.neilvandyke.org/sicp-texi/
-
-Improved PDF with source:
-
-* http://sicpebook.wordpress.com/
-
-Some of the code has been implemented in EmacsLisp:
-
-* Lisp:constraint.el
-* Lisp:stream.el
+A simpler interpreter written in EmacsLisp that supports a smaller ''core'' set of Scheme was written by KalleOlaviNiemitalo (''q.v.'' follow the link).
 
 ----
 CategoryProgramming
