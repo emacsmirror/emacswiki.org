@@ -7,7 +7,7 @@
 ;; Maintainer: José Alfredo Romero L. <escherdragon@gmail.com>
 ;; Created: 24 Sep 2007
 ;; Version: 5
-;; RCS Version: $Rev: 399 $
+;; RCS Version: $Rev: 400 $
 ;; Keywords: files, dired, midnight commander, norton, orthodox
 ;; URL: http://www.emacswiki.org/emacs/sunrise-commander.el
 ;; Compatibility: GNU Emacs 22+
@@ -41,7 +41,7 @@
 ;; derives originally from the Dired extensions written by Kurt Nørmark for LAML
 ;; (http://www.cs.aau.dk/~normark/scheme/distribution/laml/).
 
-;; I have added to the mix several useful functions:
+;; I have added to the mix many useful functions:
 
 ;; * Sunrise is implemented as a derived major mode confined inside the pane
 ;; buffers, so its buffers and Dired ones can live together without easymenu or
@@ -57,7 +57,7 @@
 
 ;; * Press C-= for "smart" file comparison using `ediff'. It compares together
 ;; the first two files marked on each pane or, if no files have been marked, it
-;; as- sumes that the second pane contains a file with the same name as the
+;; assumes that the second pane contains a file with the same name as the
 ;; selected one and tries to compare these two. You can also mark whole lists of
 ;; files to be compared and then just press C-= for comparing the next pair.
 
@@ -104,9 +104,14 @@
 ;; * Opening terminals directly from Sunrise:
 ;;    - Press C-c C-t to inconditionally open a new terminal into the currently
 ;;      selected directory in the active pane.
-;;    - Press C-c t to switch to the last opened terminal.
+;;    - Use C-c t to switch to the last opened terminal, or (when already inside
+;;      a terminal) to cycle through all open terminals.
 ;;    - Press C-c T to switch to the last opened terminal and change directory
 ;;      to the one in the current directory.
+;;    - Press C-c M-t to be prompted for a program name, and then open a new
+;;      terminal using that program into the currently selected directory
+;;      (eshell is a valid value; if no program can be found with the given name
+;;      then the value of `sr-terminal-program' is used instead).
 
 ;; * Terminal integration and Command line expansion: integrates tightly with
 ;; `eshell' or `term-mode' to allow interaction between terminal emulators in
@@ -564,13 +569,13 @@ The following keybindings are available:
         C-c C-s ....... change panes layout (vertical/horizontal/top-only)
         [ ............. enlarges the right pane by 5 columns
         ] ............. enlarges the left pane by 5 columns
-        } ............. enlarges both panes vertically by 1 row
-        C-} ........... enlarges both panes vertically as much as it can
-        C-c } ......... enlarges both panes vertically as much as it can
-        { ............. shrinks both panes vertically by 1 row
-        C-{ ........... shrinks both panes vertically as much as it can
-        C-c { ......... shrinks both panes vertically as much as it can
-        \\ ............. sets size of all windows back to «normal»
+        } ............. enlarges the panes vertically by 1 row
+        C-} ........... enlarges the panes vertically as much as it can
+        C-c } ......... enlarges the panes vertically as much as it can
+        { ............. shrinks the panes vertically by 1 row
+        C-{ ........... shrinks the panes vertically as much as it can
+        C-c { ......... shrinks the panes vertically as much as it can
+        \\ ............. restores the size of all windows back to «normal»
         C-c C-z ....... enable/disable synchronized navigation
 
         C-= ........... smart compare files (ediff)
@@ -630,21 +635,33 @@ Additionally, the following traditional commander-style keybindings are provided
 Any other dired keybinding (not overridden by any of the above) can be used in
 Sunrise, like G for changing group, M for changing mode and so on.
 
-Some more bindings are provided for terminals in line mode, most useful after
-opening a terminal in the viewer window (with C-c t):
+Some more bindings are available in terminals opened using any of the Sunrise
+functions (i.e. one of: C-c t, C-c T, C-c C-t, C-c M-t):
 
-       (these two are only for external shells - bash, ksh, etc. not for eshell)
+        C-c Tab ....... switch focus to the active pane
+        C-c t ......... cycle through all currently open terminals
+        C-c T ......... cd to the directory in the active pane
+        C-c C-t ....... open new terminal, cd to directory in the active pane
+        C-c ; ......... follow the current directory in the active pane
+        C-c { ......... shrink the panes vertically as much as possible
+        C-c } ......... enlarge the panes vertically as much as possible
+        C-c \\ ......... restore the size of all windows back to «normal»
         C-c C-j ....... put terminal in line mode
         C-c C-k ....... put terminal back in char mode
 
-        M-<up>, M-P ... move cursor up in active pane
-        M-<down>, M-N . move cursor down in active pane
-        M-Return ...... visit selected file/directory in active pane
-        M-J ........... go to parent directory in active pane
-        M-M ........... mark selected file/directory in active pane
-        M-Backspace ... unmark previous file/directory in active pane
-        M-U ........... remove all marks from active pane
-        C-Tab ......... switch focus to active pane
+The following bindings are available only in line mode (eshell is considered to
+be *always* in line mode):
+
+        M-<up>, M-P ... move cursor up in the active pane
+        M-<down>, M-N . move cursor down in the active pane
+        M-Return ...... visit selected file/directory in the active pane
+        M-J ........... go to parent directory in the active pane
+        M-G ........... refresh active pane
+        M-Tab ......... switch to passive pane (without leaving the terminal)
+        M-M ........... mark selected file/directory in the active pane
+        M-Backspace ... unmark previous file/directory in the active pane
+        M-U ........... remove all marks from the active pane
+        C-Tab ......... switch focus to the active pane
 
 In a terminal in line mode the following substitutions are also performed
 automatically:
@@ -3541,18 +3558,19 @@ cd's to the current directory of the active pane."
 (defmacro sr-term-excursion (newterm form)
   "Take care of the common mechanics of launching or switching to a terminal.
 Helper macro."
-  `(let ((buffer (car sr-ti-openterms)) (new-name))
+  `(let* ((start-buffer (current-buffer)) (term-buffer (car sr-ti-openterms))
+          (new-term (or (null term-buffer) ,newterm)) (new-name))
      (sr-select-viewer-window t)
-     (if (buffer-live-p buffer)
-         (switch-to-buffer buffer)
-       ,form)
-     (when (and ,newterm buffer)
-       (rename-uniquely)
-       (setq new-name (buffer-name))
+     (if (not new-term)
+         (switch-to-buffer (or (cadr (memq start-buffer sr-ti-openterms))
+                               (car sr-ti-openterms)))
+       (when (buffer-live-p term-buffer)
+         (switch-to-buffer term-buffer)
+         (rename-uniquely)
+         (setq new-name (buffer-name)))
        ,form
-       (message "Sunrise: previous terminal renamed to %s" new-name))
-     (setq cd (or cd (null sr-ti-openterms)))
-     (unless (eq (current-buffer) (car sr-ti-openterms))
+       (when new-name
+         (message "Sunrise: previous terminal renamed to %s" new-name))
        (push (current-buffer) sr-ti-openterms))))
 
 (defun sr-term-line-mode ()
@@ -3584,7 +3602,7 @@ See `sr-term' for a description of the arguments."
     (sr-term-char-mode)
     (when (or line-mode (term-in-line-mode))
       (sr-term-line-mode))
-    (when cd
+    (when (or cd (null sr-ti-openterms))
       (term-send-raw-string
        (concat "cd " (shell-quote-wildcard-pattern dir) "
 ")))))
@@ -3594,7 +3612,7 @@ See `sr-term' for a description of the arguments."
   (let ((dir (expand-file-name
               (if sr-running sr-this-directory default-directory))))
     (sr-term-excursion newterm (eshell))
-    (when cd
+    (when (or cd (null sr-ti-openterms))
       (insert (concat "cd " (shell-quote-wildcard-pattern dir)))
       (eshell-send-input))
     (sr-term-line-mode)))
@@ -3661,18 +3679,16 @@ Helper macro for implementing terminal integration in Sunrise."
   "Rename the last open terminal (if any) to the default terminal buffer name."
   (let ((found nil)
         (name (buffer-name)))
-    (while (and sr-ti-openterms
-                (not (buffer-live-p (car sr-ti-openterms))))
-      (pop sr-ti-openterms))
-      (when (and (string= (buffer-name (car sr-ti-openterms)) name)
-                 (car sr-ti-openterms)
-                 (pop sr-ti-openterms)
-                 (buffer-live-p (car sr-ti-openterms)))
-        (rename-uniquely)
-        (set-buffer (car sr-ti-openterms))
-        (when (string-match "<[0-9]+>\\'" (buffer-name))
-          (setq name (substring (buffer-name) 0 (match-beginning 0)))
-          (rename-buffer name)))))
+    (setq sr-ti-openterms (delete (current-buffer) sr-ti-openterms))
+    (when (and (string= (buffer-name (car sr-ti-openterms)) name)
+               (car sr-ti-openterms)
+               (pop sr-ti-openterms)
+               (buffer-live-p (car sr-ti-openterms)))
+      (rename-uniquely)
+      (set-buffer (car sr-ti-openterms))
+      (when (string-match "<[0-9]+>\\'" (buffer-name))
+        (setq name (substring (buffer-name) 0 (match-beginning 0)))
+        (rename-buffer name)))))
 (add-hook 'kill-buffer-hook 'sr-ti-restore-previous-term)
 
 (defun sr-ti-revert-buffer ()
@@ -3747,7 +3763,8 @@ Puts `sr-clex-commit' into local `after-change-functions'."
             (setq sr-clex-on t)
             (setq sr-clex-hotchar-overlay (make-overlay (point) (1- (point))))
             (overlay-put sr-clex-hotchar-overlay 'face 'sr-clex-hotchar-face)
-            (message "Sunrise: CLEX is now ON for keys: m f n d M F N D %%"))))))
+            (message
+             "Sunrise: CLEX is now ON for keys: m f n d a p M F N D A P %%"))))))
 
 (defun sr-clex-commit (&optional beg end range)
   "Commit the current CLEX operation (if any).
@@ -3784,8 +3801,10 @@ by `sr-clex-start'."
   '(("\C-c\C-j" . sr-term-line-mode)
     ("\C-c\C-k" . sr-term-char-mode)
     ("\C-c\t"   . sr-ti-change-window)
+    ("\C-ct"    . sr-term)
     ("\C-cT"    . sr-term-cd)
     ("\C-c\C-t" . sr-term-cd-newterm)
+    ("\C-c\M-t" . sr-term-cd-program)
     ("\C-c;"    . sr-follow-viewer)
     ("\C-c\\"   . sr-ti-lock-panes)
     ("\C-c{"    . sr-ti-min-lock-panes)
@@ -3812,6 +3831,7 @@ by `sr-clex-start'."
     ([C-tab]       . sr-ti-change-window)
     ([M-tab]       . sr-ti-change-pane)
     ("\C-c\t"      . sr-ti-change-window)
+    ("\C-ct"       . sr-term)
     ("\C-cT"       . sr-term-cd)
     ("\C-c\C-t"    . sr-term-cd-newterm)
     ("\C-c\M-t"    . sr-term-cd-program)
