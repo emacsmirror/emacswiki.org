@@ -97,7 +97,7 @@ Library <tt>[[setup-keys.el]]</tt> binds command '''`yank-pop-commands'''' to ''
 * If the previous command was a normal yank, then cycle the `kill-ring'.
 * If the previous command yanked the secondary selection, then cycle the secondary-selection ring.
 
-In addition, if you also use library <tt>[[browse-kill-ring+.el]]</tt>, then if the previous command was not a yank at all, browse the last-used selection ring. With a prefix arg, switch to the other selection ring and browse it.
+In addition, if you also use library <tt>[[browse-kill-ring+.el]]</tt>, then if the previous command was not a yank at all, browse the last-used selection ring. With a [[prefix argument]], or if you are already in a selection-ring browse buffer, switch to the other selection ring and browse it.
 
 
 
