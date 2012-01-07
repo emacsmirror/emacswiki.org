@@ -303,6 +303,13 @@ Add the following to .conkerorrc:
     url_remoting_fn = load_url_in_new_buffer;
 
 
+=== IceCat ===
+Add the following to .emacs:
+
+    (setq browse-url-browser-function 'browse-url-generic
+          browse-url-generic-program "icecat")
+
+
 == Feeling Lucky? ==
 
 Let Google figure out the most appropriate web site for the stuff in your region:
