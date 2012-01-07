@@ -163,40 +163,41 @@ The epackage manager can also be called from command line UI:
 == ELPA and Epackages - What's the difference? ==
 
 The big question probably is: "What's different to ELPA? Where do we
-need Epackages when Emacs 24 already comes with ELPA built-in?" Lots. The
-DVCS approach is completely different and changes the scene
-dramatically. The ELPA is based on old design (centralized, need
-for server and administration, use of static files). In contrast, the DVCS
-is the promising future in both the concept (distributed) and the use of tools
-(version control).
+need Epackages when Emacs 24 already comes with ELPA built-in?" Lots.
+The DVCS approach is completely different and changes the scene
+dramatically. The ELPA is based on old design (centralized, need for
+server and administration). In contrast, the DVCS is the future in
+both the concept (distributed) and the use of tools (version control).
 
 /For the user/
 
-* Epackages are true installs (they contain install and
-  uninstall control files just like in Debian *.deb). ELPA packages
-  are in contrast simple downloads. You have to configure
-  each ELPA package manually after download.
+* Epackages are true installs (they contain **install and uninstall
+  control files**; C.f. Debian /*.deb/). ELPA packages don't. After
+  you download ELPA package, it byte compiles the package and sets up
+  `load-path'. You have to configure each ELPA package manually after
+  download. With Epackage, the **control files**, add all the necesary
+  hooks etc. so that if you visit some file, the feature you installed
+  is automatically turned on. No need to edit ~/.emacs InitFile.
 * Faster updates (massive package updates are instantaneous due to Git delta)
 * Easier bug reporting (each package has contact information metadata)
-* Personal contacts. Someone is there behind packages (just like in Debian).
-  Each package has a person behind it: either the Packager or Upstream.
-  It's not just a bunch of code in archive that might be bit-rotting.
-  Packages die naturally if there is no interest for anybody maintaining it.
-  (in Debian packages are "orphaned", and finally "removed", unless new
-  maintainer takes over)
-* Command line package management. Packages can be batch installed etc.
-  without launching Emacs GUI first.
+* Personal contacts. Someone is there to contact about package
+  inssues (just like in Debian). It's not just a bunch of code in
+  archive that might be bit-rotting. Packages die naturally if there
+  is no interest for anybody maintaining it. (in Debian packages are
+  "orphaned", and finally "removed", unless new maintainer takes over)
+* Command line package management. Packages can be batch installed,
+  removed etc. without launching Emacs GUI first.
 
 /For the developer/
 
 * No more "submitting" code to "archive". Set up a Git repository and
-  you're sharing your code to everyone else with minimal initial
-  setup.See section /When upstream IS also the packager/
+  you're sharing your code to everyone with minimal initial
+  setup. See section /When upstream IS also the packager/
   in [https://github.com/jaalto/project--emacs-epackage-template Epackage Primer]
 * Users receive updates directly from your Git repository.
   No need to send announcements or notifications. No more outdated
-  versions in archive.
-* Low maintenence. Just concentrate on doing what you do best,
+  versions in archive sites.
+* Low maintenence. Just concentrate on doing what you do best:
   improving your Emacs Lisp utility. No distribution hassles.
 
 /Downsides/
@@ -212,7 +213,7 @@ is the promising future in both the concept (distributed) and the use of tools
 
 Please send comments, suggestion, ideas, bug reports to me directly
 or to the bug tracker. Please do not send questions to this page as it
-can not be monitored.
+is not be monitored.
 Thanks --Jari
 
 * Bug Tracker
