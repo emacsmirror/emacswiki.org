@@ -11,9 +11,10 @@ This page is about ways to browse the [[kill ring]], choosing a kill to [[yank]]
 ** http://www.todesschaf.org/files/browse-kill-ring.el -- Another link, though I have no idea whether it is "official" in any way.   -- OliverScholz
 ** It used to be at [http://opensource.cis.ohio-state.edu/~hurley/browse-kill-ring.el], but this link seems dead.
 
-* <tt>[[browse-kill-ring+.el]]</tt> -- Enhancements to ##browse-kill-ring.el##. (Sent to NickHurley for possible inclusion in ##browse-kill-ring.el##.)
+* <tt>[[browse-kill-ring+.el]]</tt> -- Enhancements to ##browse-kill-ring.el##. (Offered to NickHurley for possible inclusion in ##browse-kill-ring.el##.)
 ** You can toggle the display style (new command and key binding).
-** You can browse (or pop) other rings, in addition to the `kill-ring'. For example, the `secondary-selection-ring' (see [[SecondarySelection#secondary-sel.el|secondary-sel.el]]).
+** You can browse (or pop) other rings, in addition to the `kill-ring'. In particular, the `secondary-selection-ring' (see [[SecondarySelection#secondary-sel.el|secondary-sel.el]]).
+** You can copy or move selections from one ring to another (using `c').
 ** Does the right thing when you use DeleteSelectionMode: deletes (replaces) the [[active region]] whenever you insert a kill.
 
 * [[Icicles]] -- `C-- C-y' completes against the kill ring. You can clean up the ring selectively, deleting entries on the fly. You can sort completions in various ways. [[progressive completion|Progressive]] completion.
