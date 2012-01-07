@@ -1,3 +1,5 @@
+= Description =
+
 This page is dedicated to the '''emacs-w3m''', also known on this wiki as [::WThreeM],
 an Emacs interface to
 the [[w3m]] text browser.  Note that it has nothing to do
@@ -593,3 +595,5 @@ Thus, I define below standalone function, for the case that we want to browse ur
 ----
 CategoryExternalUtilities
 CategoryHypermedia
+)
+                (
