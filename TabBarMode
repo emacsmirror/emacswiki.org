@@ -1,31 +1,41 @@
-Tabbar is an emacs minor mode that displays a tab bar at the top, similar to the idea of web browser's tabs.
+== Description ==
+
+Tabbar is an emacs minor mode that displays a tab bar at the top,
+similar to the idea of web browser's tabs.
+
+== Doenload ==
+
+The original code is at: http://sourceforge.net/projects/emhacks/
+Note: the version on sourceforge is outdated by a few years. Check if
+Debian has newer version in
+[http://packages.debian.org/search?keywords=emacs-goodies-el
+emacs-goodies-el] package.
 
 == Introduction ==
 
-Tabbar is a package originally written by David Ponce from 2003 to 2005, and now maintained by others.
-
-The download location is originally at: http://sourceforge.net/projects/emhacks/
-Note: the version on sourceforge is outdated by a few years. For the latest version, check with GNU emacs CVS.
-
-[new:DrewAdams:2011-12-13 17:22 UTC]
-That does not seem right.  `M-x find-library' does not find it in ##emacs -Q##. -- DrewAdams
-[new]
-
-Debian also includes tabbar.el in the [[http://packages.debian.org/search?keywords=emacs-goodies-el emacs-goodies-el]] package.
+Tabbar is a package originally written by David Ponce from 2003 to
+2005, and now maintained by others.
 
 The tabbar.el is extensively modified and used by AquamacsEmacs to be
-as close to modern UI's tab bar as possible. A fork of the Aquamacs version of TabBarMode which is intended to be Emacs agnostic is available [[https://github.com/dholm/tabbar here]]. (see AquamacsEmacs's [[http://aquamacs.org/images/smaller-home-ss.png official
-website screenshot]] for a look. You can also try to get the [[http://github.com/davidswelt/aquamacs-emacs/tree/master/aquamacs/src/site-lisp/tabbar/tabbar.el source code]] from AquamacsEmacs, but it may not work with standard emacs.)
+as close to modern UI's tab bar as possible. A fork of the Aquamacs
+version of TabBarMode which is intended to be Emacs agnostic is
+available [[https://github.com/dholm/tabbar here]]. (see
+AquamacsEmacs's [[http://aquamacs.org/images/smaller-home-ss.png
+official website screenshot]] for a look. You can also try to get the
+[[http://github.com/davidswelt/aquamacs-emacs/tree/master/aquamacs/src/site-lisp/tabbar/tabbar.el
+source code]] from AquamacsEmacs, but it may not work with standard
+emacs.)
 
 Note that tabbar mode as implemented in Emacs is a bit different than
 tabs in web browsers or IDEs. In a web browser, each window may have
 several tabs, and each window's tabs stay with that window. Namely,
 you cannot have Window A's tab jump to window B, unless you drag it
-over (Firefox 3 support this, for example. Safari 3.2 does
-not.). However, the tabs implemented in emacs with tabbar mode is more
-like a GUI-based display of buffer listing, displayed on top of the
-window. In particular, tabs does not stick to a particular emacs's
-Frame, and conversely, each Emacs Frame can display a tab that is also shown in another Emacs Frame.
+over (Firefox 3 support this, for example. Safari 3.2 does not.).
+However, the tabs implemented in emacs with tabbar mode is more like a
+GUI-based display of buffer listing, displayed on top of the window.
+In particular, tabs does not stick to a particular emacs's Frame, and
+conversely, each Emacs Frame can display a tab that is also shown in
+another Emacs Frame.
 
 Also, emacs's tabbar mode's tab can be hidden, as if showing
 only the current “page” of a tab set, called a “group”. By default,
@@ -94,13 +104,13 @@ Here's a example of tab group function that define all tabs to be one of 3 possi
         tabs
       (let ((tab (tabbar-make-tab object tabset)))
         (tabbar-set-template tabset nil)
-        (set tabset (sort (cons tab tabs) 
+        (set tabset (sort (cons tab tabs)
                           (lambda (a b) (string< (buffer-name (car a)) (buffer-name (car b))))))))))
 
 
 == Discussions ==
 
-The code above doesn't work in emacs 23.2 & tabbar v. 1.3. Here is correct version: 
+The code above doesn't work in emacs 23.2 & tabbar v. 1.3. Here is correct version:
 
  (defun tabbar-buffer-groups (buffer)
    "Return the list of group names BUFFER belongs to.
@@ -143,7 +153,7 @@ The following will provide windows style (shift-)control tab behaviour and autol
 
     (dolist (func '(tabbar-mode tabbar-forward-tab tabbar-forward-group tabbar-backward-tab tabbar-backward-group))
       (autoload func "tabbar" "Tabs at the top of buffers and easy control-tab navigation"))
-     
+
     (defmacro defun-prefix-alt (name on-no-prefix on-prefix &optional do-always)
       `(defun ,name (arg)
          (interactive "P")
@@ -151,10 +161,10 @@ The following will provide windows style (shift-)control tab behaviour and autol
          (if (equal nil arg)
              ,on-no-prefix
            ,on-prefix)))
-     
+
     (defun-prefix-alt shk-tabbar-next (tabbar-forward-tab) (tabbar-forward-group) (tabbar-mode 1))
     (defun-prefix-alt shk-tabbar-prev (tabbar-backward-tab) (tabbar-backward-group) (tabbar-mode 1))
-     
+
     (global-set-key [(control tab)] 'shk-tabbar-next)
     (global-set-key [(control shift tab)] 'shk-tabbar-prev)
 
@@ -223,7 +233,7 @@ So, I use the following configuration to display the tabbar on certain buffers o
   (when (require 'tabbar nil t)
     ;; Enable tabbars globally:
     (tabbar-mode 1)
-  
+
     ;; I use this minor-mode mainly as a global mode (see below):
     (define-minor-mode tabbar-on-term-only-mode
         "Display tabbar on terminals and buffers in fundamental mode only."
@@ -237,19 +247,19 @@ So, I use the following configuration to display the tabbar on certain buffers o
   	    (tabbar-local-mode 1))
   	;; always activate tabbar locally when we disable the minor mode:
   	(tabbar-local-mode -1)))
-  
+
     (defun tabbar-on-term-only-mode-on ()
       "Turn on tabbar if current buffer is a terminal."
       (unless (minibufferp) (tabbar-on-term-only-mode 1)))
-  
+
     ;; Define a global switch for the mode. Note that this is not set for buffers
     ;; in fundamental mode.
-    ;; 
+    ;;
     ;; I use it 'cause some major modes do not run the
     ;; `after-change-major-mode-hook'...
     (define-globalized-minor-mode global-tabbar-on-term-only-mode
         tabbar-on-term-only-mode tabbar-on-term-only-mode-on)
-  
+
     ;; Eventually, switch on this global filter for tabbars:
     (global-tabbar-on-term-only-mode 1))
 
@@ -367,7 +377,7 @@ This will show something like:
 ==Autohide tabbar==
 {{{
 (defun autohide-tabbar ()
-"Make tabbar briefly show itself while 
+"Make tabbar briefly show itself while
 you are switching buffers with shortcuts.
 Tested with GNU Emacs 23
 - Sabof"
@@ -385,7 +395,7 @@ Tested with GNU Emacs 23
 				 (tabbar-mode nil)
 				 (setf *tabbar-autohide-timer*
 					nil)))))
-  
+
   (global-set-key
    [C-next]
    (lambda ()
@@ -423,7 +433,7 @@ Where is it on the GNU emacs CVS site? I was unable to find it (but have to conf
 - Alan
 [new:PaulTipper:2009-06-05 21:51 UTC]
 : I don't believe its in GNU Emacs CVS,  [http://www.google.co.uk/search?q=tabbar+site%3Ahttp%3A%2F%2Fcvs.savannah.gnu.org%2Fviewvc%2Femacs%2F%3Froot%3Demacs&btnG=Search a quick search]  : and a look in my CVS copy of emacs seems to confirm this (so I think the page is wrong above).  Aquamacs has it, as does emhacks.  They both claim to be tabbar 2.0 from a quick look, I've got tabbar 1.3 and it seems okay with GNU Emacs 23.0.60.1
-: 
+:
 : - PaulTipper
 
 ----
@@ -464,7 +474,7 @@ Matiyam -- sounds like swbuff/swbuff-y. It's a different interface, though, but 
 For emacs 23.1 I have to changed above codes to get list all buffers as one group:
 
  (setq tabbar-buffer-groups-function
-           (lambda (b)     ;; b added here. I don't know why 
+           (lambda (b)     ;; b added here. I don't know why
             (list "All")))
 
 - dixiecko
