@@ -7,9 +7,9 @@
 ;; Copyright (C) 2008-2012, Drew Adams, all rights reserved.
 ;; Created: Fri May 23 09:58:41 2008 ()
 ;; Version: 22.0
-;; Last-Updated: Sun Jan  1 14:05:12 2012 (-0800)
+;; Last-Updated: Sat Jan  7 10:10:14 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 259
+;;     Update #: 272
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/second-sel.el
 ;; Keywords: region, selection, yank, paste, edit
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -60,13 +60,15 @@
 ;;   (define-key isearch-mode-map "\C-\M-y"  'isearch-yank-secondary)
 ;;
 ;;  You might want to also use library `browse-kill-ring+.el' (and
-;;  `browse-kill-ring.el').  I do.  If you do that, then load
-;;  `second-sel.el' first.
+;;  `browse-kill-ring.el').  If you do that, then load `second-sel.el'
+;;  first.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;;; Change Log:
 ;;
+;; 2012/01/07 dadams
+;;     yank-pop-commands: If in a browse-kill-ring sel-ring buffer, browse other ring.
 ;; 2011/05/03 dadams
 ;;     mouse-secondary-save-then-kill: Better error message.
 ;; 2011/01/04 dadams
@@ -137,6 +139,10 @@
 ;;
 ;;; Code:
 
+;; Quiet the byte-compiler.
+
+(defvar yank-window-start)
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;;###autoload
@@ -177,7 +183,7 @@ the value of the mark and point; it is guaranteed that START <= END.
 Normally set from the UNDO element of a yank-handler; see `insert-for-yank'."))
 
 ;;;###autoload
-(defun secondary-dwim (arg)
+(defun secondary-dwim (arg)             ; Suggested binding: `C-M-y'
   "Do-What-I-Mean with the secondary selection.
 Prefix arg:
 
@@ -242,7 +248,7 @@ selection yanked."
   nil)
 
 ;;;###autoload
-(defun isearch-yank-secondary ()
+(defun isearch-yank-secondary ()        ; Suggested Isearch binding: `C-M-y'
   "Yank string from secondary-selection ring into search string."
   (interactive)
   (isearch-yank-string (current-secondary-selection 0)))
@@ -360,12 +366,14 @@ argument should still be a useful string for such uses."
   (setq secondary-selection-ring-yank-pointer  secondary-selection-ring))
 
 ;;;###autoload
-(defun yank-pop-commands (&optional arg)
+(defun yank-pop-commands (&optional arg) ; Suggested binding: `M-y'
   "`yank-pop' or `yank-pop-secondary', depending on previous command.
 If previous command was a yank-secondary command, then
    `yank-pop-secondary'.
 Else if previous command was a yank command, then `yank-pop'.
 Else if `browse-kill-ring' is defined, then `browse-kill-ring'.
+ If in a `browse-kill-ring' selection-ring buffer, then browse the
+  other selection ring.
 Suggestion: Bind this command to `M-y'."
   (interactive "p")
   ;; Disable `browse-kill-ring's advice, since we handle such things here instead.
@@ -379,9 +387,11 @@ Suggestion: Bind this command to `M-y'."
         ((memq last-command secondary-selection-yank-commands)
          (when buffer-read-only (error "Buffer is read-only: %S" (current-buffer)))
          (yank-pop arg))
-        ((boundp 'browse-kill-ring-alternative-ring) ; `browse-ring+.el'.
-         (browse-kill-ring current-prefix-arg))
-        ((fboundp 'browse-kill-ring) (browse-kill-ring)))) ; `browse-ring.el'.
+        ((boundp 'browse-kill-ring-alternative-ring) ; `browse-kill-ring+.el'.
+         (let ((use-alt-ring-p  (or current-prefix-arg
+                                    (eq major-mode 'browse-kill-ring-mode))))
+           (browse-kill-ring use-alt-ring-p)))
+        ((fboundp 'browse-kill-ring) (browse-kill-ring)))) ; `browse-kill-ring.el'.
 
 ;;;###autoload
 (defun yank-pop-secondary (&optional arg)
@@ -450,10 +460,9 @@ With prefix arg, rotate that many kills forward or backward."
   (and (overlayp mouse-secondary-overlay)
        (overlay-buffer mouse-secondary-overlay)
        (add-secondary-to-ring
-        (x-set-selection
-         'SECONDARY
-         (buffer-substring (overlay-start mouse-secondary-overlay)
-                           (overlay-end mouse-secondary-overlay))))))
+        (x-set-selection 'SECONDARY
+                         (buffer-substring (overlay-start mouse-secondary-overlay)
+                                           (overlay-end   mouse-secondary-overlay))))))
 
 
 ;;; REPLACES ORIGINAL in `mouse.el'.
