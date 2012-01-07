@@ -2,11 +2,11 @@
 
 Lisp:csharp-mode.el
 
-Provides an editing mode for C# code.  Includes code indentation, fontification, codedoc generation, and integration with compile.el, flymake.el, yasnippet.el, and imenu.el.  
+Provides an editing mode for C# code.  Includes code indentation, fontification, codedoc generation, and integration with compile.el, flymake.el, yasnippet.el, and imenu.el.
 
 [new]
 
-Here's a view of a c# buffer using csharp-mode.  In addition to the fontification and indenting, this animated gif shows off the Imenu integration, new, for v0.8.3 of csharp-mode.el 
+Here's a view of a c# buffer using csharp-mode.  In addition to the fontification and indenting, this animated gif shows off the Imenu integration, new, for v0.8.3 of csharp-mode.el
 
 http://3mb.us/images/359_csharp_imenu.gif
 
@@ -15,7 +15,7 @@ As of May 2010, the latest version is available at  http://code.google.com/p/csh
 
 [new]
 
-v0.7.3 now correctly indents and fontifies instance initializers, enum types including those that explicitly derive from a base type, and verbatim literal strings that end in slash. 
+v0.7.3 now correctly indents and fontifies instance initializers, enum types including those that explicitly derive from a base type, and verbatim literal strings that end in slash.
 
 http://i42.tinypic.com/a5bwhw.jpg
 
@@ -34,28 +34,28 @@ Imenu support is new for v0.8.3.  It indexes the entire .cs buffer and produces 
 
 === Flymake ===
 
-To use flymake, just open a C# file.  If you have flymake loaded (you can do (require 'flymake) in your csharp-mode-hook fn) then it will automatically start working. The flymake stuff in csharp-mode assumes csc.exe is on your path; if it is not, you can 
-explicitly specify the flymake command to use in code comments, like this: 
+To use flymake, just open a C# file.  If you have flymake loaded (you can do (require 'flymake) in your csharp-mode-hook fn) then it will automatically start working. The flymake stuff in csharp-mode assumes csc.exe is on your path; if it is not, you can
+explicitly specify the flymake command to use in code comments, like this:
 
 http://i.imgur.com/28V7e.png
 
-You can run [http://msdn.microsoft.com/en-us/library/bb429476(VS.80).aspx FxCop] for your flymake. This is really handy.  To do so, you need at least v0.8.3, and you need a comment like this near the top of your file: 
+You can run [http://msdn.microsoft.com/en-us/library/bb429476(VS.80).aspx FxCop] for your flymake. This is really handy.  To do so, you need at least v0.8.3, and you need a comment like this near the top of your file:
 
 <pre>
 // flymake: c:\fxcop\FxCopcmd.exe /c /rid:-Microsoft.Naming#CA1704  /f:Base64stream.dll
 </pre>
 
-All of the issues found by flymake will be highlighted in the buffer. 
+All of the issues found by flymake will be highlighted in the buffer.
 
 If you use Flymake - with any language - you may want to check out some complementary stuff.
 
-* FlymakeCursor automatically displays the flymake error for the current line in the minibuffer. The default flymake behavior is to display the message on mouse hover, so the FlymakeCursor thing is nice for keyboard jockeys.  
+* FlymakeCursor automatically displays the flymake error for the current line in the minibuffer. The default flymake behavior is to display the message on mouse hover, so the FlymakeCursor thing is nice for keyboard jockeys.
 
-* [http://www.emacswiki.org/emacs/RFringe RFringe] displays buffer-relative locations in the fringe. It gives you a visual summary of the flymake issues, and their approximate locations.  
+* [http://www.emacswiki.org/emacs/RFringe RFringe] displays buffer-relative locations in the fringe. It gives you a visual summary of the flymake issues, and their approximate locations.
 
 http://i.imgur.com/SgoLa.png
 
-Neither FlymakeCursor nor RFringe is part of csharp-mode *or* flymake; they are complementary, add-on things. 
+Neither FlymakeCursor nor RFringe is part of csharp-mode *or* flymake; they are complementary, add-on things.
 
 === Compile ===
 
@@ -65,7 +65,7 @@ csharp-mode sets the '''`compilation-error-regexp-alist-alist'''', so that error
 // compile: c:\.NET3.5\csc.exe /t:module /r:MyAssembly.dll file.cs
 </pre>
 
-Example: 
+Example:
 
 http://i.imgur.com/28V7e.png
 
@@ -79,7 +79,7 @@ You can replace that compile command with whatever you like. For example:
 
 === YASnippet ===
 
-yasnippet is a nice snippet expansion package, available elsewhere. csharp-mode defines some snippets automatically for you, and makes them available if you have yasnippet.  This means you can type for<TAB> and get a template of a for loop. There are snips for switch statements, properties, while loops, and so on. Pretty handy. You can also define your own snips.  
+yasnippet is a nice snippet expansion package, available elsewhere. csharp-mode defines some snippets automatically for you, and makes them available if you have yasnippet.  This means you can type for<TAB> and get a template of a for loop. There are snips for switch statements, properties, while loops, and so on. Pretty handy. You can also define your own snips.
 
 === Other tidbits ===
 
@@ -89,13 +89,13 @@ Example:
 
 http://imgur.com/vFvf3.gif
 
-It tries to be smart about which template to insert.  If you type 3 slashes after a closing </para>, then you'll get another set of <para></para> . 
+It tries to be smart about which template to insert.  If you type 3 slashes after a closing </para>, then you'll get another set of <para></para> .
 
 http://i44.tinypic.com/zl99bc.jpg
 
 [new]
 
-csharp-mode Works with Linum.el : 
+csharp-mode Works with Linum.el :
 
 http://i42.tinypic.com/29pdmjd.jpg
 
@@ -104,7 +104,7 @@ http://i42.tinypic.com/29pdmjd.jpg
 ----
 == Complementary Stuff / Minor Modes ==
 
-||[http://code.google.com/p/yasnippet/v yasnippet.el]||||dynamically expand snippets, like dabbrev on steroids. [http://blogs.msdn.com/dotnetinterop/archive/2008/04/15/c-snippets-for-yasnippet-el-emacs-snippets.aspx How to use yasnippet with C#.]||
+||[http://code.google.com/p/yasnippet/ yasnippet.el]||||dynamically expand snippets, like dabbrev on steroids. [http://blogs.msdn.com/dotnetinterop/archive/2008/04/15/c-snippets-for-yasnippet-el-emacs-snippets.aspx How to use yasnippet with C#.]||
 ||ImenuMode||||produce an index of the contents of a C# buffer.||
 ||HideShow||||hide and show regions of code.[http://blogs.msdn.com/dotnetinterop/archive/2008/04/14/making-hideshow-el-work-with-csharp-mode-el-and-region-endregion.aspx How to use hideshow.el with C#]||
 ||FlymakeCsharp||||now included with csharp-mode. check syntax more-or-less continually, and use overlays to highlight syntax problems in the code.||
@@ -132,15 +132,15 @@ I currently use csharp-mode 0.7.5, on GNU emacs 22.2, on Windows (Vista). Every 
 
 === Regarding Ongoing Maintenance ===
 
-The mode works well today, but there are plenty of opportunities for improvement.  Among them: better codedoc generation - for example automatically emit <param> elements for each parameter.   
+The mode works well today, but there are plenty of opportunities for improvement.  Among them: better codedoc generation - for example automatically emit <param> elements for each parameter.
 
-In May 2010, I put this up on a project hosted on googlecode:  https://code.google.com/p/csharpmode/ .  If you have requests, file them there.  If you have changes you'd like to see added, submit them there.  
+In May 2010, I put this up on a project hosted on googlecode:  https://code.google.com/p/csharpmode/ .  If you have requests, file them there.  If you have changes you'd like to see added, submit them there.
 
-Also, you can subscribe to updates [http://freshmeat.net/projects/csharp-mode/ via Freshmeat].  Thanks to Dylan Moonfire for setting that up. 
+Also, you can subscribe to updates [http://freshmeat.net/projects/csharp-mode/ via Freshmeat].  Thanks to Dylan Moonfire for setting that up.
 
 === Inclusion into Emacs ===
 
-An additional idea is to get this included into emacs formally. I think I know how to get started on that.  I'm interested in assistance on that as well. 
+An additional idea is to get this included into emacs formally. I think I know how to get started on that.  I'm interested in assistance on that as well.
 
 === Trouble on Xemacs ===
 
@@ -239,7 +239,7 @@ Thanks for all the helpful comments on this page and elsewhere!
 -- DanMuller
 
 [new]
-2011 may 18 - For minor glitches, please report them to http://code.google.com/p/csharpmode/issues/list .  Also, as of v0.8.2, you do not need to modify the error/warning regexps -- these are automatically added by csharp-mode when it starts. 
+2011 may 18 - For minor glitches, please report them to http://code.google.com/p/csharpmode/issues/list .  Also, as of v0.8.2, you do not need to modify the error/warning regexps -- these are automatically added by csharp-mode when it starts.
 
 
 [new]
@@ -300,7 +300,7 @@ Use for the statement-cont option in c-offsets-alist.  I use it like so:
 
 [new]
 
-2010 October 25. FYI: The v0.7.4 csharp-mode automatically and correctly lines up multiline strings.  No external code is necessary. 
+2010 October 25. FYI: The v0.7.4 csharp-mode automatically and correctly lines up multiline strings.  No external code is necessary.
 
 --DinoChiesa
 
@@ -322,7 +322,7 @@ Anyway to fix this?
 
 [new]
 
-v0.7.1 fixes this. 
+v0.7.1 fixes this.
 
 [new]
 Awesome, that fixed it. Thanks Alex.
@@ -414,7 +414,7 @@ This is still true with csharp-mode 0.7.2.
 
 [new]
 
-This is noted in the elisp file: 
+This is noted in the elisp file:
 
     ;;   This code doesn't seem to work when you compile it, then
     ;;   load/require in the emacs file. You will get an error (error
@@ -424,10 +424,10 @@ This is noted in the elisp file:
     ;;   it works properly. Interestingly enough, this doesn't happen if
     ;;   you don't byte-compile cc-mode.
 
-I think if you put (require 'cc-mode) in your .emacs, or possibly at the top of csharp-mode.el, 
+I think if you put (require 'cc-mode) in your .emacs, or possibly at the top of csharp-mode.el,
 it may solve this problem.
 
-Also see above, where a comment from AZ says that there was a problem fixed in cc-mode to correct this. 
+Also see above, where a comment from AZ says that there was a problem fixed in cc-mode to correct this.
 
 RJK: I've had (require 'cc-mode) in my .emacs for ages.  I tried the autoload suggestion and the result is:
 
@@ -445,7 +445,7 @@ Also (and this is true in Emacs 22 as well) if I type "/" I get "Wrong number of
 
 -- Richard Kettlewell.
 
-csharp-mode v0.7.3 now includes a (require 'cc-mode) at the top.  I don't know if this will fix it for you. Try it. Or try the latest cc-mode. 
+csharp-mode v0.7.3 now includes a (require 'cc-mode) at the top.  I don't know if this will fix it for you. Try it. Or try the latest cc-mode.
 
 [new]
 
@@ -499,13 +499,13 @@ I get a "Symbol's function definition is void: line number-at-pos" when typing t
 
 --GM/LIAR
 
-[new] 
+[new]
 I believe that is fixed in v0.7.4 and later.  If still a problem, raise the issue on the googlecode repository.  http://code.google.com/p/csharpmode/issues/list
 
 
 === Incorrect indentation ===
 
-When not setting c-set-style "bsd" the indentation is incorrect for 
+When not setting c-set-style "bsd" the indentation is incorrect for
 <pre>
 get {} set {} if {} else {} else if {}
 </pre>
@@ -516,9 +516,9 @@ http://i30.tinypic.com/29da3hj.png
 
 http://i26.tinypic.com/2exuis3.jpg
 
-[new] 
+[new]
 
-2010 October 25.   Have you set the appropriate offsets with c-set-offset?  The pictures here seem to just show code indented according to a particular style.  (I don't see any incorrect indenting of comments, for example)  If you don't like that indenting style you can change the offsets. Would that solve it?   If not, in what version of csharp-mode do you see this behavior?  There have been some changes in the indentation for v0.7.4, that may fix this for you. 
+2010 October 25.   Have you set the appropriate offsets with c-set-offset?  The pictures here seem to just show code indented according to a particular style.  (I don't see any incorrect indenting of comments, for example)  If you don't like that indenting style you can change the offsets. Would that solve it?   If not, in what version of csharp-mode do you see this behavior?  There have been some changes in the indentation for v0.7.4, that may fix this for you.
 
 --DinoChiesa
 
@@ -537,13 +537,13 @@ http://i26.tinypic.com/2exuis3.jpg
 * please send me a more detailed description of the problem reported here? Thanks mailto:zbrad@cybercom.net
 
 ; http://davh.dk/script/
-:Is a mod of zbrad's original. Collects all the changes into a single file.  It also doesn't solve the @"\" problem.  
+:Is a mod of zbrad's original. Collects all the changes into a single file.  It also doesn't solve the @"\" problem.
 [http://lists.ximian.com/pipermail/mono-list/2002-May/006182.html]
 
 ; http://csde.sourceforge.net/
-:Based on JavaDevelopmentEnvironment.  Appears to be abandonware.  Not sure if this has a C# mode or not. 
+:Based on JavaDevelopmentEnvironment.  Appears to be abandonware.  Not sure if this has a C# mode or not.
 
-; http://www.devhood.com/tools/tool_details.aspx?tool_id=643 : this is just a link to zbrad's code. 
+; http://www.devhood.com/tools/tool_details.aspx?tool_id=643 : this is just a link to zbrad's code.
 
 ; http://www.loveshack.ukfsn.org/emacs/index.html#cc-php-js
 :A modified CC mode from Emacs 22, with .elcs for Emacs 21.  Done by someone who doesn't use C#, but reported deficiencies will probably get fixed.
