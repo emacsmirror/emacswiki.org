@@ -1,7 +1,7 @@
 ;;; diatheke.el
 
 ;; DTK: grab and insert, into current buffer, a Bible verse
-;; - ensure diatheke is installed
+;; - ensure diatheke (a SWORD CLI -- see http://www.crosswire.org/wiki/Frontends:Diatheke) is installed
 (defun dtk ()
   (interactive)
   (let* ((book
