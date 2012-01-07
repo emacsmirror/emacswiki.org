@@ -17,11 +17,12 @@ http://fresh.homeunix.net/~luke/ermacs/ermacs.jpg
 Lisp:erlang-dired-mode.el     --  binding some key in dired mode  if Emakefile is in current dired or parent dired . -- by [[Joseph]]
 
 <pre>
+
 (defun erlang-export-current-function()
   "export current function."
   (interactive)
   (save-excursion
-    (beginning-of-defun)
+    (goto-char (car (bounds-of-thing-at-point 'defun)))
     (when (re-search-forward "(\\(.*\\))") ;search params
       (let ((params (match-string 1))
             param-count
@@ -51,12 +52,7 @@ Lisp:erlang-dired-mode.el     --  binding some key in dired mode  if Emakefile i
 
             (goto-char (point-min))
             (insert "-export([" fun-declare "]).\n")
-            )
-          )
-        )
-      )
-    )
-  )
+            ))))))
 
 </pre>
 by [[Joseph]]
