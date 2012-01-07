@@ -6,8 +6,11 @@ similar to the idea of web browser's tabs.
 == Download ==
 
 The original code is at: http://sourceforge.net/projects/emhacks/
-Note: the version on sourceforge is outdated by a few years. Check if
-Debian has newer version in
+Note: the version on
+[http://emhacks.cvs.sourceforge.net/viewvc/emhacks/emhacks/ Sourceforge]
+is really old.
+
+Check if Debian has newer version in
 [http://packages.debian.org/search?keywords=emacs-goodies-el
 emacs-goodies-el] package.
 
