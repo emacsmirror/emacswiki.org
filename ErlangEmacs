@@ -15,5 +15,50 @@ it all.
 http://fresh.homeunix.net/~luke/ermacs/ermacs.jpg
 
 Lisp:erlang-dired-mode.el     --  binding some key in dired mode  if Emakefile is in current dired or parent dired . -- by [[Joseph]]
+
+<pre>
+(defun erlang-export-current-function()
+  "export current function."
+  (interactive)
+  (save-excursion
+    (beginning-of-defun)
+    (when (re-search-forward "(\\(.*\\))") ;search params
+      (let ((params (match-string 1))
+            param-count
+            funname
+            fun-declare
+            )
+        (backward-sexp)
+        (skip-chars-backward " \t")
+        (setq funname (thing-at-point 'symbol))
+        (if (string-match "^[ \t]*$" params)
+            (setq param-count 0)
+          (setq param-count (length  (split-string params ",")))
+          )
+        (setq fun-declare (format "%s/%d" funname param-count))
+        (message "export function:%s" fun-declare)
+        (goto-char (point-min))
+        (if (re-search-forward "[ \t]*-export[ \t]*([ \t]*\\[" (point-max) t)
+            (if (looking-at "[ \t]*\\]")
+                (insert fun-declare )
+              (insert fun-declare ",")
+              )
+          (goto-char (point-min))
+          (if (re-search-forward "[ \t]*-module[ \t]*(" (point-max) t)
+              (progn
+                (end-of-line)
+                (insert "\n-export([" fun-declare "]).\n"))
+
+            (goto-char (point-min))
+            (insert "-export([" fun-declare "]).\n")
+            )
+          )
+        )
+      )
+    )
+  )
+
+</pre>
+by [[Joseph]]
 ----
 CategoryExtensionLanguage EmacsImplementations
