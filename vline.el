@@ -6,7 +6,7 @@
 ;; Maintainer: Taiki SUGAWARA <buzz.taiki@gmail.com>
 ;; Keywords: faces, editing, emulating
 ;; Version: 1.11
-;; Time-stamp: <2012-01-08 12:31:35 UTC taiki>
+;; Time-stamp: <2012-01-08 12:40:18 UTC taiki>
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/vline.el
 ;; URL: http://bitbucket.org/buzztaiki/elisp/src/tip/vline.el
 
@@ -47,7 +47,7 @@
 
 ;;; Change Log:
 
-;; 2011-01-08 taiki
+;; 2012-01-08 taiki
 ;; fix for the Lint warnings.
 
 ;; 2010-02-02 taiki
