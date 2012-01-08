@@ -158,6 +158,20 @@ I use this:
 
 -MichaelChen
 
+Also I use this:
+
+  (find-font (font-spec :name font-name))
+
+And so..
+
+  (require 'cl)
+  (defun font-candidate (&rest fonts)
+     "Return existing font which first match."
+     (find-if (lambda (f) (find-font (font-spec :name f))) fonts))
+
+  ;; Emacs23 style font setting.
+  (set-face-attribute 'default nil :font (font-candidate '("Consolas-10:weight=normal" "DejaVu Sans Mono-10:weight=normal")))
+
 == True type fonts? ==
 
 [new]
