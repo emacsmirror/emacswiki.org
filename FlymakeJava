@@ -11,7 +11,7 @@ To use flymake with individual Java files use the following init function, along
                        'flymake-create-temp-with-folder-structure))))
 </pre>
 
-Then, to use this function:
+Then, to use these functions:
 <pre>(add-to-list 'flymake-allowed-file-name-masks '("\\.java$" my-java-flymake-init flymake-simple-cleanup))
 </pre>
 
