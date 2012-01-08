@@ -7,7 +7,7 @@
 ;; Maintainer: José Alfredo Romero L. <escherdragon@gmail.com>
 ;; Created: 24 Sep 2007
 ;; Version: 5
-;; RCS Version: $Rev: 400 $
+;; RCS Version: $Rev: 401 $
 ;; Keywords: files, dired, midnight commander, norton, orthodox
 ;; URL: http://www.emacswiki.org/emacs/sunrise-commander.el
 ;; Compatibility: GNU Emacs 22+
@@ -3596,13 +3596,14 @@ See `sr-term' for a description of the arguments."
          (dir (expand-file-name
               (if sr-running sr-this-directory default-directory)))
         (aterm (car sr-ti-openterms))
+        (cd (or cd (null sr-ti-openterms)))
         (line-mode (if (buffer-live-p aterm)
                        (with-current-buffer aterm (term-in-line-mode)))))
     (sr-term-excursion newterm (term program))
     (sr-term-char-mode)
     (when (or line-mode (term-in-line-mode))
       (sr-term-line-mode))
-    (when (or cd (null sr-ti-openterms))
+    (when cd
       (term-send-raw-string
        (concat "cd " (shell-quote-wildcard-pattern dir) "
 ")))))
@@ -3610,9 +3611,10 @@ See `sr-term' for a description of the arguments."
 (defun sr-term-eshell (&optional cd newterm)
   "Implementation of `sr-term' when using `eshell'."
   (let ((dir (expand-file-name
-              (if sr-running sr-this-directory default-directory))))
+              (if sr-running sr-this-directory default-directory)))
+        (cd (or cd (null sr-ti-openterms))))
     (sr-term-excursion newterm (eshell))
-    (when (or cd (null sr-ti-openterms))
+    (when cd
       (insert (concat "cd " (shell-quote-wildcard-pattern dir)))
       (eshell-send-input))
     (sr-term-line-mode)))
