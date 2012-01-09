@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Sun Jan  1 14:05:18 2012 (-0800)
+;; Last-Updated: Sun Jan  8 17:40:07 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 22961
+;;     Update #: 23164
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-cmd1.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -59,10 +59,13 @@
 ;;    (+)`icicle-bookmark-all-tags-regexp',
 ;;    (+)`icicle-bookmark-all-tags-regexp-other-window',
 ;;    (+)`icicle-bookmark-autofile',
+;;    `icicle-bookmark-autofile-narrow',
 ;;    (+)`icicle-bookmark-autofile-other-window',
 ;;    (+)`icicle-bookmark-autonamed',
+;;    `icicle-bookmark-autonamed-narrow',
 ;;    (+)`icicle-bookmark-autonamed-other-window',
 ;;    (+)`icicle-bookmark-autonamed-this-buffer',
+;;    `icicle-bookmark-autonamed-this-buffer-narrow',
 ;;    (+)`icicle-bookmark-autonamed-this-buffer-other-window',
 ;;    (+)`icicle-bookmark-bookmark-file',
 ;;    `icicle-bookmark-bookmark-file-narrow',
@@ -90,6 +93,7 @@
 ;;    (+)`icicle-bookmark-file-this-dir-all-tags-other-window',
 ;;    (+)`icicle-bookmark-file-this-dir-all-tags-regexp',
 ;;    (+)`icicle-bookmark-file-this-dir-all-tags-regexp-other-window',
+;;    `icicle-bookmark-file-this-dir-narrow',
 ;;    (+)`icicle-bookmark-file-this-dir-some-tags',
 ;;    (+)`icicle-bookmark-file-this-dir-some-tags-other-window',
 ;;    (+)`icicle-bookmark-file-this-dir-some-tags-regexp',
@@ -131,6 +135,7 @@
 ;;    `icicle-bookmark-specific-files-narrow',
 ;;    (+)`icicle-bookmark-specific-files-other-window',
 ;;    (+)`icicle-bookmark-temporary',
+;;    `icicle-bookmark-temporary-narrow',
 ;;    (+)`icicle-bookmark-temporary-other-window',
 ;;    (+)`icicle-bookmark-this-buffer',
 ;;    `icicle-bookmark-this-buffer-narrow',
@@ -215,11 +220,13 @@
 ;;    `icicle-shell-dynamic-complete-environment-variable',
 ;;    `icicle-shell-dynamic-complete-filename',
 ;;    (+)`icicle-string-list', (+)`icicle-toggle-option',
-;;    (+)`icicle-yank-maybe-completing', (+)`toggle'.
+;;    (+)`icicle-yank-maybe-completing',
+;;    (+)`icicle-yank-pop-commands', (+)`toggle'.
 ;;
 ;;  Non-interactive functions defined here:
 ;;
 ;;    `custom-variable-p', `icicle-binary-option-p',
+;;    `icicle-bookmark-bind-narrow-commands',
 ;;    `icicle-bookmark-cleanup', `icicle-bookmark-cleanup-on-quit',
 ;;    `icicle-bookmark-delete-action', `icicle-bookmark-help-string',
 ;;    `icicle-bookmark-jump-1', `icicle-clear-history-1',
@@ -379,6 +386,9 @@
   ;; customize-face-other-window, custom-sort-items
 (require 'misc-fns nil t)   ;; (no error if not found): another-buffer
 (require 'frame-cmds nil t) ;; (no error if not found): delete-windows-on (my version)
+(require 'second-sel nil t) ;; (no error if not found):
+  ;; secondary-selection-yank-commands, secondary-selection-yank-secondary-commands,
+  ;; yank-pop-secondary
 
 (eval-when-compile
  (or (condition-case nil
@@ -3165,7 +3175,12 @@ In particular, you might prefer to remap `bookmark-set' to
   "With `Bookmark+', this is `bookmark-set' with Icicles multi-completions.
 In particular, you can use (lax) completion for the bookmark name.
 Without library `Bookmark+', this is the same as vanilla Emacs
-`bookmark-set'."
+`bookmark-set'.
+
+If you use library `Bookmark+', then you can narrow the current
+completion candidates to bookmarks of a given type.  The keys for this
+are the same as for `icicle-bookmark' and for the bookmark-jumping
+keys at the top level."
   (interactive (list nil current-prefix-arg t))
   (if (not (featurep 'bookmark+))
       (bookmark-set name parg)
@@ -3266,43 +3281,7 @@ Without library `Bookmark+', this is the same as vanilla Emacs
            (when (featurep 'bookmark+)
              ;; Bind keys to narrow bookmark candidates by type.  Lax is for multi-completion case.
              (dolist (map  '(minibuffer-local-must-match-map minibuffer-local-completion-map))
-               (define-key (symbol-value map) (icicle-kbd "C-x j b") ; `C-x j b'
-                 'icicle-bookmark-non-file-narrow)
-               (define-key (symbol-value map) (icicle-kbd "C-x j B") ; `C-x j B'
-                 'icicle-bookmark-bookmark-list-narrow)
-               (define-key (symbol-value map) (icicle-kbd "C-x j d") ; `C-x j d'
-                 'icicle-bookmark-dired-narrow)
-               (define-key (symbol-value map) (icicle-kbd "C-x j f") ; `C-x j f'
-                 'icicle-bookmark-file-narrow)
-               (define-key (symbol-value map) (icicle-kbd "C-x j g") ; `C-x j g'
-                 'icicle-bookmark-gnus-narrow)
-               (define-key (symbol-value map) (icicle-kbd "C-x j i") ; `C-x j i'
-                 'icicle-bookmark-info-narrow)
-               (define-key (symbol-value map) (icicle-kbd "C-x j M-i") ; `C-x j M-i'
-                 'icicle-bookmark-image-narrow)
-               (define-key (symbol-value map) (icicle-kbd "C-x j K") ; `C-x j K'
-                 'icicle-bookmark-desktop-narrow)
-               (define-key (symbol-value map) (icicle-kbd "C-x j l") ; `C-x j l'
-                 'icicle-bookmark-local-file-narrow)
-               (define-key (symbol-value map) (icicle-kbd "C-x j m") ; `C-x j m'
-                 'icicle-bookmark-man-narrow)
-               (define-key (symbol-value map) (icicle-kbd "C-x j n") ; `C-x j n'
-                 'icicle-bookmark-remote-file-narrow)
-               (define-key (symbol-value map) (icicle-kbd "C-x j r") ; `C-x j r'
-                 'icicle-bookmark-region-narrow)
-               (define-key (symbol-value map) (icicle-kbd "C-x j u") ; `C-x j u'
-                 'icicle-bookmark-url-narrow)
-               (define-key (symbol-value map) (icicle-kbd "C-x j w") ; `C-x j w'
-                 'icicle-bookmark-w3m-narrow)
-               (define-key (symbol-value map) (icicle-kbd "C-x j y") ; `C-x j y'
-                 'icicle-bookmark-bookmark-file-narrow)
-               (define-key (symbol-value map) (icicle-kbd "C-x j .") ; `C-x j .'
-                 'icicle-bookmark-this-buffer-narrow)
-               (define-key (symbol-value map) (icicle-kbd "C-x j = b") ; `C-x j = b'
-                 'icicle-bookmark-specific-buffers-narrow)
-               (define-key (symbol-value map) (icicle-kbd "C-x j = f") ; `C-x j = f'
-                 'icicle-bookmark-specific-files-narrow)
-               ))
+               (icicle-bookmark-bind-narrow-commands map)))
            (setq bookmark-current-point   (point)
                  bookmark-current-buffer  (current-buffer))
            (save-excursion (skip-chars-forward " ") (setq bookmark-yank-point  (point)))
@@ -3361,10 +3340,13 @@ Without library `Bookmark+', this is the same as vanilla Emacs
       (icicle-bookmark-cleanup))))
 
 ;;;###autoload (autoload 'icicle-bookmark "icicles-cmd1.el")
-(icicle-define-command icicle-bookmark  ; Command name
+(icicle-define-command icicle-bookmark  ; Bound to `C-x j j', `C-x p b', `C-x r b'.
   "Jump to a bookmark.
 With a plain prefix argument (`C-u'), reverse the effect of option
-`icicle-bookmark-refresh-cache-flag'.
+`icicle-bookmark-refresh-cache-flag'.  See the doc for that option.
+In particular, if the option value is nil and you try to jump to a
+bookmark that is not up to date or does not exist, then try using a
+prefix arg to refresh the cache.
 
 During completion, you can use `S-delete' on a bookmark to delete it.
 
@@ -3416,10 +3398,12 @@ If you also use library `Bookmark+', then:
    given type.  The keys for this are the same as the bookmark-jumping
    keys at the top level.
 
+   `C-x j a'   - autofile bookmarks
    `C-x j b'   - non-file (buffer) bookmarks
    `C-x j B'   - bookmark-list bookmarks
    `C-x j d'   - Dired bookmarks
    `C-x j f'   - file bookmarks
+   `C-x j C-f' - bookmarks to files in the current directory
    `C-x j g'   - Gnus bookmarks
    `C-x j i'   - Info bookmarks
    `C-x j M-i' - image bookmarks
@@ -3430,10 +3414,13 @@ If you also use library `Bookmark+', then:
    `C-x j r'   - bookmarks with regions
    `C-x j u'   - URL bookmarks
    `C-x j w'   - W3M (URL) bookmarks
+   `C-x j x'   - temporary bookmarks
    `C-x j y'   - bookmark-file bookmarks
    `C-x j .'   - bookmarks for the current buffer
    `C-x j = b' - bookmarks for specific buffers
    `C-x j = f' - bookmarks for specific files
+   `C-x j # #' - autonamed bookmarks
+   `C-x j # .' - autonamed bookmarks for the current buffer
 
    See also the individual multi-commands for different bookmark
    types: `icicle-bookmark-info-other-window' etc.
@@ -3540,48 +3527,13 @@ position is highlighted."               ; Doc string
     (when (featurep 'bookmark+)
       ;; Bind keys to narrow bookmark candidates by type.  Lax is for multi-completion case.
       (dolist (map  '(minibuffer-local-must-match-map minibuffer-local-completion-map))
-        (define-key (symbol-value map) (icicle-kbd "C-x j b") ; `C-x j b'
-          'icicle-bookmark-non-file-narrow)
-        (define-key (symbol-value map) (icicle-kbd "C-x j B") ; `C-x j B'
-          'icicle-bookmark-bookmark-list-narrow)
-        (define-key (symbol-value map) (icicle-kbd "C-x j d") ; `C-x j d'
-          'icicle-bookmark-dired-narrow)
-        (define-key (symbol-value map) (icicle-kbd "C-x j f") ; `C-x j f'
-          'icicle-bookmark-file-narrow)
-        (define-key (symbol-value map) (icicle-kbd "C-x j g") ; `C-x j g'
-          'icicle-bookmark-gnus-narrow)
-        (define-key (symbol-value map) (icicle-kbd "C-x j i") ; `C-x j i'
-          'icicle-bookmark-info-narrow)
-        (define-key (symbol-value map) (icicle-kbd "C-x j M-i") ; `C-x j M-i'
-          'icicle-bookmark-image-narrow)
-        (define-key (symbol-value map) (icicle-kbd "C-x j K") ; `C-x j K'
-          'icicle-bookmark-desktop-narrow)
-        (define-key (symbol-value map) (icicle-kbd "C-x j l") ; `C-x j l'
-          'icicle-bookmark-local-file-narrow)
-        (define-key (symbol-value map) (icicle-kbd "C-x j m") ; `C-x j m'
-          'icicle-bookmark-man-narrow)
-        (define-key (symbol-value map) (icicle-kbd "C-x j n") ; `C-x j n'
-          'icicle-bookmark-remote-file-narrow)
-        (define-key (symbol-value map) (icicle-kbd "C-x j r") ; `C-x j r'
-          'icicle-bookmark-region-narrow)
-        (define-key (symbol-value map) (icicle-kbd "C-x j u") ; `C-x j u'
-          'icicle-bookmark-url-narrow)
-        (define-key (symbol-value map) (icicle-kbd "C-x j w") ; `C-x j w'
-          'icicle-bookmark-w3m-narrow)
-        (define-key (symbol-value map) (icicle-kbd "C-x j y") ; `C-x j y'
-          'icicle-bookmark-bookmark-file-narrow)
-        (define-key (symbol-value map) (icicle-kbd "C-x j .") ; `C-x j .'
-          'icicle-bookmark-this-buffer-narrow)
-        (define-key (symbol-value map) (icicle-kbd "C-x j = b") ; `C-x j = b'
-          'icicle-bookmark-specific-buffers-narrow)
-        (define-key (symbol-value map) (icicle-kbd "C-x j = f") ; `C-x j = f'
-          'icicle-bookmark-specific-files-narrow)
-        )))
+        (icicle-bookmark-bind-narrow-commands map))))
   (icicle-bookmark-cleanup-on-quit)     ; Undo code
   (icicle-bookmark-cleanup))            ; Last code
 
 ;;;###autoload (autoload 'icicle-bookmark-other-window "icicles-cmd1.el")
-(icicle-define-command icicle-bookmark-other-window ; Command name
+(icicle-define-command icicle-bookmark-other-window
+                                        ; Bound to `C-x 4 j j', `C-x p j', `C-x p o', `C-x p q'.
   "Jump to a bookmark in another window.
 Same as `icicle-bookmark', but uses another window." ; Doc string
   (lambda (cand) (icicle-bookmark-jump-other-window (icicle-transform-multi-completion cand)))
@@ -3684,45 +3636,61 @@ Same as `icicle-bookmark', but uses another window." ; Doc string
     (when (featurep 'bookmark+)
       ;; Bind keys to narrow bookmark candidates by type.  Lax is for multi-completion case.
       (dolist (map  '(minibuffer-local-must-match-map minibuffer-local-completion-map))
-        (define-key (symbol-value map) (icicle-kbd "C-x j b") ; `C-x j b'
-          'icicle-bookmark-non-file-narrow)
-        (define-key (symbol-value map) (icicle-kbd "C-x j B") ; `C-x j B'
-          'icicle-bookmark-bookmark-list-narrow)
-        (define-key (symbol-value map) (icicle-kbd "C-x j d") ; `C-x j d'
-          'icicle-bookmark-dired-narrow)
-        (define-key (symbol-value map) (icicle-kbd "C-x j f") ; `C-x j f'
-          'icicle-bookmark-file-narrow)
-        (define-key (symbol-value map) (icicle-kbd "C-x j g") ; `C-x j g'
-          'icicle-bookmark-gnus-narrow)
-        (define-key (symbol-value map) (icicle-kbd "C-x j i") ; `C-x j i'
-          'icicle-bookmark-info-narrow)
-        (define-key (symbol-value map) (icicle-kbd "C-x j M-i") ; `C-x j M-i'
-          'icicle-bookmark-image-narrow)
-        (define-key (symbol-value map) (icicle-kbd "C-x j K") ; `C-x j K'
-          'icicle-bookmark-desktop-narrow)
-        (define-key (symbol-value map) (icicle-kbd "C-x j l") ; `C-x j l'
-          'icicle-bookmark-local-file-narrow)
-        (define-key (symbol-value map) (icicle-kbd "C-x j m") ; `C-x j m'
-          'icicle-bookmark-man-narrow)
-        (define-key (symbol-value map) (icicle-kbd "C-x j n") ; `C-x j n'
-          'icicle-bookmark-remote-file-narrow)
-        (define-key (symbol-value map) (icicle-kbd "C-x j r") ; `C-x j r'
-          'icicle-bookmark-region-narrow)
-        (define-key (symbol-value map) (icicle-kbd "C-x j u") ; `C-x j u'
-          'icicle-bookmark-url-narrow)
-        (define-key (symbol-value map) (icicle-kbd "C-x j w") ; `C-x j w'
-          'icicle-bookmark-w3m-narrow)
-        (define-key (symbol-value map) (icicle-kbd "C-x j y") ; `C-x j y'
-          'icicle-bookmark-bookmark-file-narrow)
-        (define-key (symbol-value map) (icicle-kbd "C-x j .") ; `C-x j .'
-          'icicle-bookmark-this-buffer-narrow)
-        (define-key (symbol-value map) (icicle-kbd "C-x j = b") ; `C-x j = b'
-          'icicle-bookmark-specific-buffers-narrow)
-        (define-key (symbol-value map) (icicle-kbd "C-x j = f") ; `C-x j = f'
-          'icicle-bookmark-specific-files-narrow)
-        )))
+        (icicle-bookmark-bind-narrow-commands map))))
   (icicle-bookmark-cleanup-on-quit)     ; Undo code
   (icicle-bookmark-cleanup))            ; Last code
+
+(defun icicle-bookmark-bind-narrow-commands (map)
+  "Bind keys to narrow bookmark candidates by type."
+  (when (featurep 'bookmark+)
+    ;; Lax completion is for multi-completion case.
+    (dolist (map  '(minibuffer-local-must-match-map  minibuffer-local-completion-map))
+      (define-key (symbol-value map) (icicle-kbd "C-x j # #") ; `C-x j # #'
+        'icicle-bookmark-autonamed-narrow)
+      (define-key (symbol-value map) (icicle-kbd "C-x j # .") ; `C-x j # .'
+        'icicle-bookmark-autonamed-this-buffer-narrow)
+      (define-key (symbol-value map) (icicle-kbd "C-x j a") ; `C-x j a'
+        'icicle-bookmark-autofile-narrow)
+      (define-key (symbol-value map) (icicle-kbd "C-x j b") ; `C-x j b'
+        'icicle-bookmark-non-file-narrow)
+      (define-key (symbol-value map) (icicle-kbd "C-x j B") ; `C-x j B'
+        'icicle-bookmark-bookmark-list-narrow)
+      (define-key (symbol-value map) (icicle-kbd "C-x j d") ; `C-x j d'
+        'icicle-bookmark-dired-narrow)
+      (define-key (symbol-value map) (icicle-kbd "C-x j f") ; `C-x j f'
+        'icicle-bookmark-file-narrow)
+      (define-key (symbol-value map) (icicle-kbd "C-x j C-f") ; `C-x j C-f'
+        'icicle-bookmark-file-this-dir-narrow)
+      (define-key (symbol-value map) (icicle-kbd "C-x j g") ; `C-x j g'
+        'icicle-bookmark-gnus-narrow)
+      (define-key (symbol-value map) (icicle-kbd "C-x j i") ; `C-x j i'
+        'icicle-bookmark-info-narrow)
+      (define-key (symbol-value map) (icicle-kbd "C-x j M-i") ; `C-x j M-i'
+        'icicle-bookmark-image-narrow)
+      (define-key (symbol-value map) (icicle-kbd "C-x j K") ; `C-x j K'
+        'icicle-bookmark-desktop-narrow)
+      (define-key (symbol-value map) (icicle-kbd "C-x j l") ; `C-x j l'
+        'icicle-bookmark-local-file-narrow)
+      (define-key (symbol-value map) (icicle-kbd "C-x j m") ; `C-x j m'
+        'icicle-bookmark-man-narrow)
+      (define-key (symbol-value map) (icicle-kbd "C-x j n") ; `C-x j n'
+        'icicle-bookmark-remote-file-narrow)
+      (define-key (symbol-value map) (icicle-kbd "C-x j r") ; `C-x j r'
+        'icicle-bookmark-region-narrow)
+      (define-key (symbol-value map) (icicle-kbd "C-x j u") ; `C-x j u'
+        'icicle-bookmark-url-narrow)
+      (define-key (symbol-value map) (icicle-kbd "C-x j w") ; `C-x j w'
+        'icicle-bookmark-w3m-narrow)
+      (define-key (symbol-value map) (icicle-kbd "C-x j x") ; `C-x j x'
+        'icicle-bookmark-temporary-narrow)
+      (define-key (symbol-value map) (icicle-kbd "C-x j y") ; `C-x j y'
+        'icicle-bookmark-bookmark-file-narrow)
+      (define-key (symbol-value map) (icicle-kbd "C-x j .") ; `C-x j .'
+        'icicle-bookmark-this-buffer-narrow)
+      (define-key (symbol-value map) (icicle-kbd "C-x j = b") ; `C-x j = b'
+        'icicle-bookmark-specific-buffers-narrow)
+      (define-key (symbol-value map) (icicle-kbd "C-x j = f") ; `C-x j = f'
+        'icicle-bookmark-specific-files-narrow))))
 
 (defun icicle-bookmark-delete-action (cand)
   "Delete bookmark candidate CAND, then update `bmkp-sorted-alist'."
@@ -3890,103 +3858,128 @@ Remove crosshairs highlighting and unbind filtering keys."
 ;;; These are minibuffer commands, but we define them here instead of in `icicles-mcmd.el'.
 
 ;;;###autoload
+(defun icicle-bookmark-autofile-narrow () ; Bound to `C-x j a' in minibuffer for completion.
+  "Narrow the bookmark candidates to autofile bookmarks."
+  (interactive)
+  (icicle-narrow-candidates-with-predicate
+   #'(lambda (x) (bmkp-autofile-bookmark-p (icicle-mctized-display-candidate (car x))))))
+
+;;;###autoload
+(defun icicle-bookmark-autonamed-narrow () ; Bound to `C-x j # #' in minibuffer for completion.
+  "Narrow the bookmark candidates to autonamed bookmarks."
+  (interactive)
+  (icicle-narrow-candidates-with-predicate
+   #'(lambda (x)
+       (bmkp-autonamed-bookmark-p (icicle-mctized-display-candidate (car x))))))
+
+;;;###autoload
+(defun icicle-bookmark-autonamed-this-buffer-narrow ()
+                                        ; Bound to `C-x j # .' in minibuffer for completion.
+  "Narrow bookmark candidates to autonamed bookmarks in current buffer."
+  (interactive)
+  (icicle-narrow-candidates-with-predicate
+   #'(lambda (x)
+       (with-current-buffer icicle-orig-buff
+         (bmkp-autonamed-this-buffer-bookmark-p
+          (icicle-transform-multi-completion (car x)))))))
+
+;;;###autoload
 (defun icicle-bookmark-bookmark-file-narrow () ; Bound to `C-x j y' in minibuffer for completion.
   "Narrow the bookmark candidates to bookmark-file bookmarks."
   (interactive)
   (icicle-narrow-candidates-with-predicate
-   #'(lambda (x) (bmkp-bookmark-file-bookmark-p
-                  (funcall icicle-get-alist-candidate-function (car x))))))
+   #'(lambda (x) (bmkp-bookmark-file-bookmark-p (icicle-transform-multi-completion (car x))))))
 
 ;;;###autoload
 (defun icicle-bookmark-bookmark-list-narrow () ; Bound to `C-x j B' in minibuffer for completion.
   "Narrow the bookmark candidates to bookmark-list bookmarks."
   (interactive)
   (icicle-narrow-candidates-with-predicate
-   #'(lambda (x) (bmkp-bookmark-list-bookmark-p
-                  (funcall icicle-get-alist-candidate-function (car x))))))
+   #'(lambda (x) (bmkp-bookmark-list-bookmark-p (icicle-transform-multi-completion (car x))))))
 
 ;;;###autoload
 (defun icicle-bookmark-desktop-narrow ()   ; Bound to `C-x j K' in minibuffer for bookmark completion.
   "Narrow the bookmark candidates to desktop bookmarks."
   (interactive)
   (icicle-narrow-candidates-with-predicate
-   #'(lambda (x) (bmkp-desktop-bookmark-p
-                  (funcall icicle-get-alist-candidate-function (car x))))))
+   #'(lambda (x) (bmkp-desktop-bookmark-p (icicle-transform-multi-completion (car x))))))
 
 ;;;###autoload
 (defun icicle-bookmark-dired-narrow ()   ; Bound to `C-x j d' in minibuffer for bookmark completion.
   "Narrow the bookmark candidates to Dired bookmarks."
   (interactive)
   (icicle-narrow-candidates-with-predicate
-   #'(lambda (x) (bmkp-dired-bookmark-p
-                  (funcall icicle-get-alist-candidate-function (car x))))))
+   #'(lambda (x) (bmkp-dired-bookmark-p (icicle-transform-multi-completion (car x))))))
 
 ;;;###autoload
 (defun icicle-bookmark-file-narrow ()   ; Bound to `C-x j f' in minibuffer for bookmark completion.
   "Narrow the bookmark candidates to file bookmarks."
   (interactive)
   (icicle-narrow-candidates-with-predicate
-   #'(lambda (x) (bmkp-file-bookmark-p (funcall icicle-get-alist-candidate-function (car x))))))
+   #'(lambda (x) (bmkp-file-bookmark-p (icicle-transform-multi-completion (car x))))))
+
+;;;###autoload
+(defun icicle-bookmark-file-this-dir-narrow () ; Bound to `C-x j C-f' in minibuffer for completion.
+  "Narrow the bookmark candidates to bookmarked files in `default-directory'."
+  (interactive)
+  (icicle-narrow-candidates-with-predicate
+   #'(lambda (x) (bmkp-file-this-dir-bookmark-p (icicle-transform-multi-completion (car x))))))
 
 ;;;###autoload
 (defun icicle-bookmark-gnus-narrow ()   ; Bound to `C-x j g' in minibuffer for bookmark completion.
   "Narrow the bookmark candidates to Gnus bookmarks."
   (interactive)
   (icicle-narrow-candidates-with-predicate
-   #'(lambda (x) (bmkp-gnus-bookmark-p (funcall icicle-get-alist-candidate-function (car x))))))
+   #'(lambda (x) (bmkp-gnus-bookmark-p (icicle-transform-multi-completion (car x))))))
 
 ;;;###autoload
 (defun icicle-bookmark-image-narrow ()   ; Bound to `C-x j M-i' in minibuffer for bookmark completion.
   "Narrow the bookmark candidates to image bookmarks."
   (interactive)
   (icicle-narrow-candidates-with-predicate
-   #'(lambda (x) (bmkp-image-bookmark-p (funcall icicle-get-alist-candidate-function (car x))))))
+   #'(lambda (x) (bmkp-image-bookmark-p (icicle-transform-multi-completion (car x))))))
 
 ;;;###autoload
 (defun icicle-bookmark-info-narrow ()   ; Bound to `C-x j i' in minibuffer for bookmark completion.
   "Narrow the bookmark candidates to Info bookmarks."
   (interactive)
   (icicle-narrow-candidates-with-predicate
-   #'(lambda (x) (bmkp-info-bookmark-p (funcall icicle-get-alist-candidate-function (car x))))))
+   #'(lambda (x) (bmkp-info-bookmark-p (icicle-transform-multi-completion (car x))))))
 
 ;;;###autoload
 (defun icicle-bookmark-local-file-narrow () ; Bound to `C-x j l' for bookmark completion.
   "Narrow the bookmark candidates to local-file bookmarks."
   (interactive)
   (icicle-narrow-candidates-with-predicate
-   #'(lambda (x) (bmkp-local-file-bookmark-p
-                  (funcall icicle-get-alist-candidate-function (car x))))))
+   #'(lambda (x) (bmkp-local-file-bookmark-p (icicle-transform-multi-completion (car x))))))
 
 ;;;###autoload
 (defun icicle-bookmark-man-narrow () ; Bound to `C-x j m' in minibuffer for bookmark completion.
   "Narrow the bookmark candidates to `man'-page bookmarks."
   (interactive)
   (icicle-narrow-candidates-with-predicate
-   #'(lambda (x) (bmkp-man-bookmark-p (funcall icicle-get-alist-candidate-function (car x))))))
+   #'(lambda (x) (bmkp-man-bookmark-p (icicle-transform-multi-completion (car x))))))
 
 ;;;###autoload
 (defun icicle-bookmark-non-file-narrow () ; Bound to `C-x j b' in minibuffer for bookmark completion.
   "Narrow the bookmark candidates to non-file (buffer-only) bookmarks."
   (interactive)
   (icicle-narrow-candidates-with-predicate
-   #'(lambda (x) (bmkp-non-file-bookmark-p
-                  (funcall icicle-get-alist-candidate-function (car x))))))
+   #'(lambda (x) (bmkp-non-file-bookmark-p (icicle-transform-multi-completion (car x))))))
 
 ;;;###autoload
 (defun icicle-bookmark-region-narrow () ; Bound to `C-x j r' in minibuffer for bookmark completion.
   "Narrow the bookmark candidates to bookmarks with regions."
   (interactive)
   (icicle-narrow-candidates-with-predicate
-   #'(lambda (x) (bmkp-region-bookmark-p
-                  (funcall icicle-get-alist-candidate-function (car x))))))
+   #'(lambda (x) (bmkp-region-bookmark-p (icicle-transform-multi-completion (car x))))))
 
 ;;;###autoload
 (defun icicle-bookmark-remote-file-narrow () ; Bound to `C-x j n' in minibuf for bookmark completion.
   "Narrow the bookmark candidates to remote-file bookmarks."
   (interactive)
   (icicle-narrow-candidates-with-predicate
-   #'(lambda (x) (bmkp-remote-file-bookmark-p
-                  (funcall icicle-get-alist-candidate-function (car x))))))
+   #'(lambda (x) (bmkp-remote-file-bookmark-p (icicle-transform-multi-completion (car x))))))
 
 ;;;###autoload
 (defun icicle-bookmark-specific-buffers-narrow (buffers) ; `C-x j = b' for bookmark completion.
@@ -3996,8 +3989,7 @@ You are prompted for the BUFFERS."
                  (list (icicle-bookmarked-buffer-list))))
   (icicle-narrow-candidates-with-predicate
    `(lambda (x)
-     (member (bmkp-get-buffer-name (funcall icicle-get-alist-candidate-function (car x)))
-      ',buffers))))
+     (member (bmkp-get-buffer-name (icicle-transform-multi-completion (car x))) ',buffers))))
 
 ;;;###autoload
 (defun icicle-bookmark-specific-files-narrow (files) ; `C-x j = f' in minibuf for bookmark completion.
@@ -4006,8 +3998,14 @@ You are prompted for the FILES."
   (interactive (list (icicle-bookmarked-file-list)))
   (icicle-narrow-candidates-with-predicate
    `(lambda (x)
-     (member (bookmark-get-filename (funcall icicle-get-alist-candidate-function (car x)))
-      ',files))))
+     (member (bookmark-get-filename (icicle-transform-multi-completion (car x))) ',files))))
+
+;;;###autoload
+(defun icicle-bookmark-temporary-narrow () ; Bound to `C-x j x' in minibuffer for completion.
+  "Narrow the bookmark candidates to temporary bookmarks."
+  (interactive)
+  (icicle-narrow-candidates-with-predicate
+   #'(lambda (x) (bmkp-temporary-bookmark-p (icicle-transform-multi-completion (car x))))))
 
 ;;;###autoload
 (defun icicle-bookmark-this-buffer-narrow () ; `C-x j .' in minibuffer for bookmark completion.
@@ -4016,21 +4014,21 @@ You are prompted for the FILES."
   (icicle-narrow-candidates-with-predicate
    #'(lambda (x)
        (with-current-buffer icicle-orig-buff
-         (bmkp-this-buffer-p (funcall icicle-get-alist-candidate-function (car x)))))))
+         (bmkp-this-buffer-p (icicle-transform-multi-completion (car x)))))))
 
 ;;;###autoload
 (defun icicle-bookmark-url-narrow ()    ; Bound to `C-x j u' in minibuffer for bookmark completion.
   "Narrow the bookmark candidates to URL bookmarks."
   (interactive)
   (icicle-narrow-candidates-with-predicate
-   #'(lambda (x) (bmkp-url-bookmark-p (funcall icicle-get-alist-candidate-function (car x))))))
+   #'(lambda (x) (bmkp-url-bookmark-p (icicle-transform-multi-completion (car x))))))
 
 ;;;###autoload
 (defun icicle-bookmark-w3m-narrow ()    ; Bound to `C-x j w' in minibuffer for bookmark completion.
   "Narrow the bookmark candidates to W3M (URL) bookmarks."
   (interactive)
   (icicle-narrow-candidates-with-predicate
-   #'(lambda (x) (bmkp-w3m-bookmark-p (funcall icicle-get-alist-candidate-function (car x))))))
+   #'(lambda (x) (bmkp-w3m-bookmark-p (icicle-transform-multi-completion (car x))))))
 
 
 ;; The following sexps macro-expand to define these commands:
@@ -5191,26 +5189,85 @@ available from http://www.emacswiki.org/cgi-bin/wiki.pl?ColorTheme." ; Doc strin
                                        color-themes))))
   (color-theme-snapshot))               ; Undo code
 
+;; Make delete-selection mode recognize yanking, so it replaces region text.
+(put 'icicle-yank-pop-commands 'delete-selection 'yank)
+(defun icicle-yank-pop-commands (&optional arg) ; Bound to `M-y'.
+  "`yank-pop', `yank-pop-secondary', or `icicle-completing-yank'.
+Which of these is used depends on the previous command, as follows:
+
+ * If the previous command was a yank-secondary command, then
+   `yank-pop-secondary'.
+
+ * Else if the previous command was a yank command (i.e. using the
+   kill ring), then `yank-pop'.
+
+ * Else `icicle-completing-yank'.
+
+In the last case (`icicle-completing-yank'), you can use `C-,' to sort
+the candidates to yank in different ways (repeat).  And you can use
+`S-delete' during completion to remove a candidate entry from the
+selection ring.
+
+You need library `second-sel.el' for this command."
+  (interactive "p")
+  (unless (featurep 'second-sel) (error "You need library `second-sel.el' for this command"))
+  ;; Disable `browse-kill-ring's advice, since we handle such things here instead.
+  (when (fboundp 'browse-kill-ring)
+    (condition-case nil
+        (ad-disable-advice 'yank-pop 'around 'kill-ring-browse-maybe)
+      (error nil)))
+  (cond ((memq last-command secondary-selection-yank-secondary-commands)
+         (when buffer-read-only (error "Buffer is read-only: %S" (current-buffer)))
+         (yank-pop-secondary arg))
+        ((memq last-command secondary-selection-yank-commands)
+         (when buffer-read-only (error "Buffer is read-only: %S" (current-buffer)))
+         (yank-pop arg))
+        (t
+         (icicle-completing-yank)
+         ;; Need to do this because `icicle-completing-yank' sets it to `yank'.
+         (setq this-command  'icicle-yank-pop-commands))))
+
 
 ;; Make delete-selection mode recognize yanking, so it replaces region text.
 (put 'icicle-completing-yank 'delete-selection 'yank)
 ;; Bound to `C-- C-y' via `icicle-yank-maybe-completing'.
 ;;;###autoload (autoload 'icicle-completing-yank "icicles-cmd1.el")
-(icicle-define-command icicle-completing-yank
-  "Yank an entry from the `kill-ring', choosing it using completion.
-This is like `yank', but it does not rotate the `kill-ring'.
-The mark is pushed first, so the yanked text becomes the region.
-You can sort the candidates to yank - use `C-,'.
+(icicle-define-command icicle-completing-yank ; Bound to `M-y' unless previous command was a yank.
+  "Yank an entry from a selection ring, choosing it using completion.
+By default, the selection ring used is the kill ring.
+
+If you also use library `browse-kill-ring+.el' or library
+`second-sel.el' then an alternative selection ring is used if you
+provide a prefix argument: `browse-kill-ring-alternative-ring' or
+`secondary-selection-ring'.  This gives you a way to yank chosen items
+from two different sets of selections.
+
+When the kill ring is used, this is similar to `yank', but this does
+not rotate the ring.  The mark is pushed first, so the yanked text
+becomes the region.
+
+You can use `C-,' to sort the candidates to yank in different ways
+\(repeat).
+
 You can use `S-delete' during completion to remove a candidate entry
-from the `kill-ring'."                  ; Doc string
+from the selection ring."               ; Doc string
   icicle-insert-for-yank                ; Action function
   "Insert: " (mapcar #'list kills-in-order) nil t nil 'icicle-kill-history ; `completing-read' args
   (car kills-in-order) nil
   ((icicle-transform-function       'icicle-remove-duplicates) ; Bindings
    (icicle-sort-comparer            nil)
-   (icicle-delete-candidate-object  'kill-ring)
+   (selection-ring                  (if (not current-prefix-arg)
+                                        'kill-ring
+                                      (if (boundp 'browse-kill-ring-alternative-ring)
+                                          browse-kill-ring-alternative-ring
+                                        (if (boundp 'secondary-selection-ring)
+                                            'secondary-selection-ring)
+                                        'kill-ring)))
+   (icicle-delete-candidate-object  selection-ring)
    (kills-in-order                  (icicle-delete-dups
-                                     (append kill-ring-yank-pointer kill-ring nil)))))
+                                     (if (eq selection-ring 'kill-ring)
+                                         (append kill-ring-yank-pointer kill-ring nil)
+                                       (copy-sequence (symbol-value selection-ring)))))))
 
 (defun icicle-insert-for-yank (string)
   "`insert-for-yank', if defined; else, `insert' with `read-only' removed.
@@ -5239,7 +5296,7 @@ Otherwise:
       (icicle-yank arg)
     (if (wholenump (prefix-numeric-value arg))
         (funcall icicle-yank-function arg)
-      (icicle-completing-yank))))
+      (let ((current-prefix-arg  nil))  (icicle-completing-yank)))))
 
 ;;;###autoload (autoload 'icicle-delete-file "icicles-cmd1.el")
 (icicle-define-file-command icicle-delete-file ; Command name
