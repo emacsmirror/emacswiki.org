@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Sun Jan  1 14:05:17 2012 (-0800)
+;; Last-Updated: Sun Jan  8 20:49:24 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 17481
+;;     Update #: 17482
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-mcmd.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -3404,7 +3404,7 @@ Optional argument WORD-P non-nil means complete only a word at a time."
              (unless (boundp 'icicle-prefix-complete-and-exit-p)
                (icicle-highlight-complete-input)
                (cond ((and icicle-top-level-when-sole-completion-flag
-                           (or (and (not icicle-ido-like-mode)
+                           (or (and (not (and (boundp 'icicle-ido-like-mode) icicle-ido-like-mode))
                                     (not icicle-files-ido-like-flag))
                                (and (not (icicle-file-name-input-p))
                                     (not icicle-abs-file-candidates))
@@ -3732,7 +3732,7 @@ message either.  NO-DISPLAY-P is passed to
            (unless (boundp 'icicle-apropos-complete-and-exit-p)
              (icicle-highlight-complete-input)
              (cond ((and icicle-top-level-when-sole-completion-flag
-                         (or (and (not icicle-ido-like-mode)
+                         (or (and (not (and (boundp 'icicle-ido-like-mode) icicle-ido-like-mode))
                                   (not icicle-files-ido-like-flag))
                              (and (not (icicle-file-name-input-p))
                                   (not icicle-abs-file-candidates))
