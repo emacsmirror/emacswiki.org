@@ -7,9 +7,9 @@
 ;; Copyright (C) 2008-2012, Drew Adams, all rights reserved.
 ;; Created: Fri May 23 09:58:41 2008 ()
 ;; Version: 22.0
-;; Last-Updated: Sat Jan  7 10:10:14 2012 (-0800)
+;; Last-Updated: Sun Jan  8 16:37:43 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 272
+;;     Update #: 283
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/second-sel.el
 ;; Keywords: region, selection, yank, paste, edit
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -23,6 +23,34 @@
 ;;; Commentary:
 ;;
 ;;    Commands that use the secondary selection.
+;;
+;;  You can enhance what `second-sel.el' offers in these ways:
+;;
+;;  1. Use library `browse-kill-ring+.el'.
+;;
+;;     This lets you use `M-y' at the top level to browse either the
+;;     `kill-ring' or the `secondary-selection-ring', or both, to
+;;     choose a selection to yank.
+;;
+;;     And `M-y' following a yank from either of these rings replaces
+;;     that yank with the next (or prefix-argth) ring entry.  IOW, it
+;;     does a `yank-pop' or a `yank-pop-secondary', as appropriate.
+;;
+;;     (If you use `browse-kill-ring+.el', load `second-sel.el'
+;;     first.)
+;;
+;;  2. Use Icicles (library `icicles.el').
+;;
+;;     If you do that then the behavior is similar to that provided by
+;;     `browse-kill-ring+.el', except that `M-y' at the top level lets
+;;     you choose a selection from either ring using completion
+;;     against the ring entries.  And during completion you can use
+;;     `S-delete' to delete entries from the ring.
+;;
+;;     (This is the case by default, but you can customize Icicles to
+;;     not do this by removing the `M-y' binding, if, for example, you
+;;     prefer the `browse-kill-ring+.el' behavior to completing.
+;;
 ;;
 ;;  Commands defined here:
 ;;
@@ -58,10 +86,6 @@
 ;;   (global-set-key [(control meta ?y)]     'secondary-dwim)
 ;;   (define-key esc-map "y"                 'yank-pop-commands)
 ;;   (define-key isearch-mode-map "\C-\M-y"  'isearch-yank-secondary)
-;;
-;;  You might want to also use library `browse-kill-ring+.el' (and
-;;  `browse-kill-ring.el').  If you do that, then load `second-sel.el'
-;;  first.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
