@@ -7,9 +7,9 @@
 ;; Copyright (C) 2006-2012, Drew Adams, all rights reserved.
 ;; Created: Tue May 25 16:35:05 2004
 ;; Version: 21.0
-;; Last-Updated: Sat Jan  7 10:22:24 2012 (-0800)
+;; Last-Updated: Sun Jan  8 17:00:34 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 946
+;;     Update #: 951
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/browse-kill-ring+.el
 ;; Keywords: convenience
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -53,8 +53,8 @@
 ;;  `second-sel.el'.
 ;;
 ;;  Following a yank command or alternative yank command, `M-y' pops
-;;  the appropriate type of selection.  A prefix arg N chooses the Nth
-;;  previous selection in the ring.
+;;  and yanks the appropriate type of selection.  A prefix arg N
+;;  chooses the Nth previous selection in the ring.
 ;;
 ;;  Otherwise (not following a yank or alternative yank), `M-y'
 ;;  browses the current selection ring.  A prefix arg switches to the
@@ -69,6 +69,17 @@
 ;;  `browse-kill-ring-quit-deletes-window/frame'.  This is similar to
 ;;  the default behavior, except that if the window is dedicated, then
 ;;  the frame is deleted.
+;;
+;;  Icicles offers an alternative: completion vs browsing.
+;;
+;;    You might want to use the Icicles (library `icicles.el') binding
+;;    of `M-y' as an alternative to the `browse-kill-ring+.el'
+;;    behavior of `M-y'.  If you do that you can of course still use
+;;    `browse-kill-ring+.el' to browse the selection rings.  Just bind
+;;    `browse-kill-ring'.
+;;
+;;    What Icicles offers is the ability to yank by completing against
+;;    the selection rings, instead of browsing them.
 ;;
 ;;
 ;;  Commands defined here:
