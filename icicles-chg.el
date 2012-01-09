@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Sun Jan  8 17:41:50 2012 (-0800)
+;; Last-Updated: Sun Jan  8 20:57:35 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 7748
+;;     Update #: 7754
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-chg.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -93,6 +93,7 @@
 ;;     icicle-bookmark-*-narrow:
 ;;       Use icicle-transform-multi-completion, not funcall icicle-get-alist-candidate-function.
 ;;     icicle-completing-yank: Add prefix arg behavior: use secondary-selection-ring.  Update doc.
+;;                             Add alt action of copying to other selection ring.
 ;;     icicle-yank-maybe-completing: Bind current-prefix-arg to nil around icicle-completing-yank.
 ;; 2011/12/19 dadams
 ;;     icicle-find-file-absolute(-other-window): Do not insert default directory as initial input.
@@ -2879,6 +2880,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-mcmd.el'")
 ;;
+;; 2012/01/08 dadams
+;;     icicle-(prefix|apropos)-complete-1: Protect icicle-ido-like-mode with boundp for Emacs 20.
 ;; 2011/12/31 dadams
 ;;     icicle-apropos-complete-1: Remove extra icicle-edit-update-p (typo) in condition.
 ;; 2011/12/29 dadams
@@ -5223,6 +5226,7 @@
 ;; 2012/01/08 dadams
 ;;     icicle-top-level-key-bindings: Added remappings to icicle-yank-pop-commands.
 ;;                                    Typo: bmkp-autonamed-this-buffer-jump (name).
+;;     icicle-files-ido-like-flag: Mention in doc string that it has no effect for Emacs 20.
 ;; 2012/01/02 dadams
 ;;     icicle-bind-top-level-commands:
 ;;       Must be in Icicle mode, so icicle-mode-map is defined.  Otherwise you cannot customize
