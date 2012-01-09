@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:53 2006
 ;; Version: 22.0
-;; Last-Updated: Sun Jan  1 14:05:17 2012 (-0800)
+;; Last-Updated: Wed Jan  4 09:38:48 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 12756
+;;     Update #: 12758
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-fn.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -4953,7 +4953,8 @@ unless it exists."
         ;;        or we're not completing file names
         ;;        or user said not to test for remote file names
         ;;        or we check now and it's not a remote file,
-        ;;   * `*Completions*' is already displayed or `icicle-incremental-completion-p' is not t,
+        ;;   * `*Completions*' is already displayed
+        ;;        or `icicle-incremental-completion-p' is neither t nor nil,
         ;;   * there are not too many candidates or we have waited the full delay.
         (when (and icicle-incremental-completion-p
                    (or (memq remote-test '(file-local-p file-remote-p))
