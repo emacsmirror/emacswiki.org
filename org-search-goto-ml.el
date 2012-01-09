@@ -34,7 +34,7 @@
 ;;; the substrings can match in any part of an org entry.
 ;;;
 ;;; If the heading is not matching, only the body, the heading is added
-;;; to the results anyway to indicated which entry is matched.
+;;; to the results anyway to indicate which entry is matched.
 ;;;
 
 ;; 
@@ -298,5 +298,5 @@
 
 
 
-(provide 'org-search-goto)
-;;; org-search-goto.el ends here
+(provide 'org-search-goto-ml)
+;;; org-search-goto-ml.el ends here
