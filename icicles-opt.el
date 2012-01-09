@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:22:14 2006
 ;; Version: 22.0
-;; Last-Updated: Mon Jan  2 13:14:32 2012 (-0800)
+;; Last-Updated: Sun Jan  8 09:25:20 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 4757
+;;     Update #: 4764
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-opt.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -3306,8 +3306,10 @@ toggle Icicle mode off and then back on."
     ,@(and (require 'kmacro nil t)      ; (Emacs 22+)
            '(([S-f4]               icicle-kmacro                       t))) ; `S-f4'
     (abort-recursive-edit          icicle-abort-recursive-edit         t) ; `C-]'
-    (bookmark-jump                 icicle-bookmark                     t) ; `C-x r b'
-    (bookmark-jump-other-window    icicle-bookmark-other-window        t) ; `C-x 4 j j'
+    (bookmark-jump                 icicle-bookmark
+     t)                                 ; `C-x j j', `C-x p b', `C-x r b'
+    (bookmark-jump-other-window    icicle-bookmark-other-window
+     t)                                 ; `C-x 4 j j', `C-x p j', `C-x p o', `C-x p q'
     (bookmark-set                  icicle-bookmark-cmd                 t) ; `C-x r m'
     (minibuffer-keyboard-quit      icicle-abort-recursive-edit ; `C-g' (minibuffer - `delsel.el')
      (fboundp 'minibuffer-keyboard-quit))
@@ -3337,6 +3339,8 @@ toggle Icicle mode off and then back on."
     (switch-to-buffer-other-window icicle-buffer-other-window          t) ; `C-x 4 b'
     (where-is                      icicle-where-is                     t) ; `C-h w'
     (,icicle-yank-function         icicle-yank-maybe-completing        t) ; `C-y'
+    (yank-pop                      icicle-yank-pop-commands            (featurep 'second-sel)) ; `M-y'
+    (yank-pop-commands             icicle-yank-pop-commands            (featurep 'second-sel)) ; `M-y'  
 
     ;; The following are available only if you use library `bookmark+.el'.
 
@@ -3376,9 +3380,10 @@ toggle Icicle mode off and then back on."
     (bmkp-autonamed-jump-other-window
      icicle-bookmark-autonamed-other-window (fboundp 'bmkp-autonamed-jump)) ; `C-x 4 j # #'
     (bmkp-autonamed-this-buffer-jump
-     icicle-bookmark-autonamed-this-buffer (fboundp 'bmkp-autonamed-jump-this-buffer)) ; `C-x j # .'
+     icicle-bookmark-autonamed-this-buffer (fboundp 'bmkp-autonamed-this-buffer-jump)) ; `C-x j # .'
     (bmkp-autonamed-jump-this-buffer-other-window
-     icicle-bookmark-autonamed-this-buffer-other-window (fboundp 'bmkp-autonamed-jump)) ; `C-x 4 j # .'
+     icicle-bookmark-autonamed-this-buffer-other-window
+     (fboundp 'bmkp-autonamed-jump-this-buffer-other-window)) ; `C-x 4 j # .'
     ;;   (Other-window means nothing for a bookmark file.)
     (bmkp-bookmark-file-jump
      icicle-bookmark-bookmark-file (fboundp 'bmkp-bookmark-file-jump)) ; `C-x j y'
