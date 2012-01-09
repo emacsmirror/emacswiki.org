@@ -21,7 +21,7 @@ This page is about ways to browse the [[kill ring]], choosing a kill to [[yank]]
 
 ** `M-y' at top level (i.e., not after a yank from either the kill ring or the `secondary-selection-ring' of <tt>[[second-sel.el]]</tt>) yanks from one of those rings using completion.  It yanks a kill by default, but a secondary selection if you use a [[prefix argument]].
 
-:: In both cases you can clean up the ring selectively during completion, deleting entries on the fly. And you can sort completions in various ways.  All '''Icicles''' completion features are available, including [[progressive completion|Progressive]] completion.
+:: In both cases you can clean up the ring selectively during completion, deleting entries on the fly. And you can sort completions in various ways.  All '''Icicles''' completion features are available, including [[progressive completion]].
 
 
 
