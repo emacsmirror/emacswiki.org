@@ -3,6 +3,11 @@ Emacs has a primary selection, called the [[region]]. It also has a '''[::second
 Use the secondary selection for, well, a second selection. This lets you use the region for other things, while keeping another selection available for [[yank|yanking]] etc. IOW, think of the secondary selection as something less ephemeral than the region, something that is unaffected by changes in the region.
 
 
+
+
+
+
+
 == Using the Secondary Selection (Vanilla Emacs) ==
 
 How do you use the secondary selection? See the Emacs manual, node '''Secondary Selection''' (duh...). Selection and yanking are the same as for the region, except that you use the Meta modifier key.
@@ -85,9 +90,19 @@ DWIM summary: Use `C-M-y':
 ** And put the secondary where the region is now ('''`C-- C-M-y''''), so you can easily bounce back.
 
 
+
+
+
+
+
 === `isearch-yank-secondary' (`C-M-y' in Isearch) ===
 
 In [[Isearch]], `M-y' yanks the current kill into the Isearch string.  Library <tt>[[setup-keys.el]]</tt> binds command '''`isearch-yank-secondary'''' to '''`C-M-y'''' for Isearch, so you can yank the current secondary selection.
+
+
+
+
+
 
 
 === `yank-pop-commands' (`M-y') ===
@@ -97,7 +112,24 @@ Library <tt>[[setup-keys.el]]</tt> binds command '''`yank-pop-commands'''' to ''
 * If the previous command was a normal yank, then cycle the `kill-ring'.
 * If the previous command yanked the secondary selection, then cycle the secondary-selection ring.
 
-In addition, if you also use library <tt>[[browse-kill-ring+.el]]</tt>, then if the previous command was not a yank at all, browse the last-used selection ring. With a [[prefix argument]], or if you are already in a selection-ring browse buffer, switch to the other selection ring and browse it.
+
+
+
+
+
+=== `M-y' at Top Level ===
+
+If the previous command was not a yank at all (from either the `kill-ring' or the `secondary-selection-ring'), then `M-y' does nothing in vanilla Emacs.  Here are two alternative enhancements that work together with ##second-sel.el## to let you yank arbitrary entries from either selection ring.
+
+
+
+
+* If you use library <tt>[[browse-kill-ring+.el]]</tt> then a top-level `M-y' means browse the last-used selection ring.  With a [[prefix argument]], or if you are already in a selection-ring browse buffer, it browses the other selection ring.
+
+
+
+
+* If you use '''[[Icicles]]''' then a top-level `M-y' means yank by completing against either the `kill-ring' or (with a [[prefix argument]]) the `secondary-selection-ring'.  IOW `M-y' yanks a kill using completion, and `C-u M-y' yanks a secondary selection using completion.
 
 
 
