@@ -70,7 +70,7 @@ That is all and with this you have the full power of Viper.
 
 '''mlessvim.el'''[http://tat.wright.name/mlessvim] (modeless Vim) tries to add many of the text editing functions of vi, but without using modal insertion and without overriding the default Emacs bindings. Instead a prefix key is used before Vim-like key sequences.
 
-'''modal-mode'''[http://jjfoerch.com/git/modal-mode/] is an effort to provide modal editing to Emacs, but remain light, and not step too far into the territory of vi emulation. Its default bindings are based on vi, but its design accommodates the creation of other modality styles. It has explicit support for vi-like text-objects through transient modes that turn movement keys into selection keys, in order to provide compound commands like those of vi's ##d##, ##y## and ##c## keys.
+'''modal-mode'''[http://retroj.net/modal-mode] is an effort to provide modal editing to Emacs, but remain light, and not step too far into the territory of vi emulation. Its default bindings are based on vi, but its design accommodates the creation of other modality styles. It has explicit support for vi-like text-objects through transient modes that turn movement keys into selection keys, in order to provide compound commands like those of vi's ##d##, ##y## and ##c## keys.
 
 '''vim-mode'''[http://www.tu-chemnitz.de/~fifr/repos/vim-mode] is an early implementation of new Vim-like mode.
 
