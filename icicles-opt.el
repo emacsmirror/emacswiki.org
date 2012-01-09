@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:22:14 2006
 ;; Version: 22.0
-;; Last-Updated: Sun Jan  8 09:25:20 2012 (-0800)
+;; Last-Updated: Sun Jan  8 20:50:24 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 4764
+;;     Update #: 4765
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-opt.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -1509,7 +1509,8 @@ sorted."
 Specifically, those commands then bind these options to t:
  `icicle-show-Completions-initially-flag'
  `icicle-top-level-when-sole-completion-flag'
- `icicle-default-value'"
+ `icicle-default-value'
+This option has no effect for Emacs 20."
   :type 'boolean
   :group 'Icicles-Files :group 'Icicles-Completions-Display :group 'Icicles-Matching)
 
