@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Sun Jan  1 14:05:16 2012 (-0800)
+;; Last-Updated: Sun Jan  8 17:36:21 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 23050
+;;     Update #: 23056
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -127,11 +127,12 @@
 ;;    `icicle-bookmark-all-tags-other-window',
 ;;    `icicle-bookmark-all-tags-regexp',
 ;;    `icicle-bookmark-all-tags-regexp-other-window',
-;;    `icicle-bookmark-autofile',
+;;    `icicle-bookmark-autofile', `icicle-bookmark-autofile-narrow',
 ;;    `icicle-bookmark-autofile-other-window',
-;;    `icicle-bookmark-autonamed',
+;;    `icicle-bookmark-autonamed', `icicle-bookmark-autonamed-narrow',
 ;;    `icicle-bookmark-autonamed-other-window',
 ;;    `icicle-bookmark-autonamed-this-buffer',
+;;    `icicle-bookmark-autonamed-this-buffer-narrow',
 ;;    `icicle-bookmark-autonamed-this-buffer-other-window',
 ;;    `icicle-bookmark-bookmark-file',
 ;;    `icicle-bookmark-bookmark-list', `icicle-bookmark-cmd',
@@ -153,6 +154,7 @@
 ;;    `icicle-bookmark-file-this-dir-all-tags-other-window',
 ;;    `icicle-bookmark-file-this-dir-all-tags-regexp',
 ;;    `icicle-bookmark-file-this-dir-all-tags-regexp-other-window',
+;;    `icicle-bookmark-file-this-dir-narrow',
 ;;    `icicle-bookmark-file-this-dir-some-tags',
 ;;    `icicle-bookmark-file-this-dir-some-tags-other-window',
 ;;    `icicle-bookmark-file-this-dir-some-tags-regexp',
@@ -183,7 +185,7 @@
 ;;    `icicle-bookmark-specific-buffers-other-window',
 ;;    `icicle-bookmark-specific-files',
 ;;    `icicle-bookmark-specific-files-other-window',
-;;    `icicle-bookmark-temporary',
+;;    `icicle-bookmark-temporary', `icicle-bookmark-temporary-narrow',
 ;;    `icicle-bookmark-temporary-other-window',
 ;;    `icicle-bookmark-this-buffer',
 ;;    `icicle-bookmark-this-buffer-other-window',
@@ -381,8 +383,8 @@
 ;;    `icicle-toggle-transforming',
 ;;    `icicle-toggle-WYSIWYG-Completions', `icicle-untag-a-file',
 ;;    `icicle-vardoc', `icicle-where-is',
-;;    `icicle-yank-maybe-completing', `old-bbdb-complete-name',
-;;    `old-comint-dynamic-complete',
+;;    `icicle-yank-maybe-completing', `icicle-yank-pop-commands',
+;;    `old-bbdb-complete-name', `old-comint-dynamic-complete',
 ;;    `old-comint-dynamic-complete-filename',
 ;;    `old-comint-replace-by-expanded-filename',
 ;;    `old-dired-read-shell-command', `old-ess-complete-object-name',
@@ -811,8 +813,9 @@
 ;;    `icicle-bind-key-completion-keys-for-map-var',
 ;;    `icicle-bind-key-completion-keys-in-keymaps-from',
 ;;    `icicle-bind-other-keymap-keys',
-;;    `icicle-bind-top-level-commands', `icicle-bookmark-cleanup',
-;;    `icicle-bookmark-cleanup-on-quit',
+;;    `icicle-bind-top-level-commands',
+;;    `icicle-bookmark-bind-narrow-commands',
+;;    `icicle-bookmark-cleanup', `icicle-bookmark-cleanup-on-quit',
 ;;    `icicle-bookmark-delete-action', `icicle-bookmark-help-string',
 ;;    `icicle-bookmark-jump-1',
 ;;    `icicle-buffer-file/process-name-less-p',
