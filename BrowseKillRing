@@ -15,22 +15,22 @@ This page is about ways to browse the [[kill ring]], choosing a kill to [[yank]]
 
 
 
-* <tt>[[browse-kill-ring+.el]]</tt> -- Enhancements to ##browse-kill-ring.el##.
-** You can toggle the display style (new command and key binding).
-** You can browse (or pop) other rings, in addition to the `kill-ring' --- in particular, the `secondary-selection-ring' (see [[SecondarySelection#secondary-sel.el|secondary-sel.el]]).
-** You can copy or move selections from one ring to another (using `c').
-** Does the right thing when you use DeleteSelectionMode: deletes (replaces) the [[active region]] whenever you insert a kill.
-
-
-
 * [[Icicles]]
 
 ** `C-- C-y' yanks from the kill ring using completion.
 
 ** `M-y' at top level (i.e., not after a yank from either the kill ring or the `secondary-selection-ring' of <tt>[[second-sel.el]]</tt>) yanks from one of those rings using completion.  It yanks a kill by default, but a secondary selection if you use a [[prefix argument]].
 
-In both cases you can clean up the ring selectively during completion, deleting entries on the fly. And you can sort completions in various ways.  All '''Icicles''' completion features are available, including [[progressive completion|Progressive]] completion.
+:: In both cases you can clean up the ring selectively during completion, deleting entries on the fly. And you can sort completions in various ways.  All '''Icicles''' completion features are available, including [[progressive completion|Progressive]] completion.
 
+
+
+
+* <tt>[[browse-kill-ring+.el]]</tt> -- Enhancements to ##browse-kill-ring.el##.
+** You can browse (or pop) other rings, in addition to the `kill-ring' --- in particular, the `secondary-selection-ring' (see [[SecondarySelection#secondary-sel.el|secondary-sel.el]]).
+** You can copy or move selections from one ring to another (using `c').
+** You can toggle the display style (new command and key binding).
+** Does the right thing when you use DeleteSelectionMode: deletes (replaces) the [[active region]] whenever you insert a kill.
 
 
 
