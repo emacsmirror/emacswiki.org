@@ -7,7 +7,7 @@
 ;; Maintainer: José Alfredo Romero L. <escherdragon@gmail.com>
 ;; Created: 24 Sep 2007
 ;; Version: 5
-;; RCS Version: $Rev: 401 $
+;; RCS Version: $Rev: 402 $
 ;; Keywords: files, dired, midnight commander, norton, orthodox
 ;; URL: http://www.emacswiki.org/emacs/sunrise-commander.el
 ;; Compatibility: GNU Emacs 22+
@@ -1174,16 +1174,16 @@ these values uses the default, ie. $HOME."
 (defun sunrise-cd ()
   "Run Sunrise but give it the current directory to use."
   (interactive)
-  (if (not sr-running)
+  (if (not (and sr-running
+                (eq (window-frame sr-left-window) (selected-frame))))
       (let ((target-dir default-directory)
             (target-file (sr-directory-name-proper (buffer-file-name))))
         (sunrise)
         (sr-goto-dir target-dir)
         (if target-file
             (sr-focus-filename target-file)))
-    (progn
-      (sr-quit t)
-      (message "Hast thou a charm to stay the morning-star in his deep course?"))))
+    (sr-quit t)
+    (message "Hast thou a charm to stay the morning-star in his deep course?")))
 
 (defun sr-this (&optional type)
   "Return object of type TYPE corresponding to the active side of the manager.
