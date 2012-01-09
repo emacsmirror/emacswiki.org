@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2012, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Sun Jan  1 14:28:58 2012 (-0800)
+;; Last-Updated: Sun Jan  8 17:16:44 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 14212
+;;     Update #: 14217
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-chg.el
 ;; Keywords: bookmarks, bookmark+
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -145,6 +145,12 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-1.el'")
 ;;
+;; 2012/01/08 dadams
+;;     Added: bmkp-autonamed-this-buffer-bookmark-p.
+;;     bmkp-autotemp-bookmark-predicates: Updated doc string for *-autonamed-this-buffer-bookmark-p.
+;;     bmkp-autonamed-bookmark-for-buffer-p: Updated doc string to mention it just checks the name.
+;;     bmkp-autonamed-this-buffer-alist-only:
+;;       Use bmkp-this-buffer-p, not bmkp-autonamed-bookmark-for-buffer-p.
 ;; 2011/12/30 dadams
 ;;     Renamed bmkp-edit-bookmark to bmkp-edit-bookmark-name-and-file.
 ;;     Added aliases: bmkp-bookmark-(data|name)-from-record.
