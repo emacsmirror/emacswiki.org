@@ -152,4 +152,26 @@ Ok, here's my cycling variant:
 	(if cml (progn (delete-region beg end) (insert cml))) ))
 
 ----
+Bind the following to some-key, write as snake case, then press the key!
+
+Dependency: camelize
+
+    (defun camelize-previous-snake (&optional beg end)
+      "Camelize the previous snake cased string.
+    
+    If transient-mark-mode is active and a region is activated,
+    camelize the region."
+      (interactive "r")
+      (unless (and (boundp 'transient-mark-mode) transient-mark-mode mark-active)
+        (setq end (point)
+              beg (+ (point) (skip-chars-backward "[:alnum:]_"))))
+      (save-excursion
+        (let ((c (camelize (buffer-substring-no-properties beg end))))
+          (delete-region beg end)
+          (goto-char beg)
+          (insert c))))
+
+-- tomykaira
+
+----
 CategoryModes
