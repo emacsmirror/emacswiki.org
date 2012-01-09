@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Sun Jan  8 17:40:07 2012 (-0800)
+;; Last-Updated: Sun Jan  8 20:44:57 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 23164
+;;     Update #: 23188
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-cmd1.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -5246,11 +5246,12 @@ When the kill ring is used, this is similar to `yank', but this does
 not rotate the ring.  The mark is pushed first, so the yanked text
 becomes the region.
 
-You can use `C-,' to sort the candidates to yank in different ways
-\(repeat).
+During completion, you can:
 
-You can use `S-delete' during completion to remove a candidate entry
-from the selection ring."               ; Doc string
+ * Use \\<minibuffer-local-completion-map>`\\[icicle-change-sort-order]' to sort the \
+candidates to yank in different ways (repeat)
+ * Use `\\[icicle-delete-candidate-object]' to remove a candidate entry from the selection ring
+ * Use `\\[icicle-candidate-alt-action]' to copy a candidate to the other selection ring" ; Doc string
   icicle-insert-for-yank                ; Action function
   "Insert: " (mapcar #'list kills-in-order) nil t nil 'icicle-kill-history ; `completing-read' args
   (car kills-in-order) nil
@@ -5263,6 +5264,25 @@ from the selection ring."               ; Doc string
                                         (if (boundp 'secondary-selection-ring)
                                             'secondary-selection-ring)
                                         'kill-ring)))
+   (icicle-candidate-alt-action-fn  (lambda (seln) ; Add selection to the front of the other ring.
+                                      (let ((other-ring  (if (eq 'kill-ring selection-ring)
+                                                             (if (fboundp 'browse-kill-ring)
+                                                                 browse-kill-ring-alternative-ring
+                                                               (if (boundp 'secondary-selection-ring)
+                                                                   'secondary-selection-ring
+                                                                 nil))
+                                                           'kill-ring)))
+                                        (if (eq 'kill-ring selection-ring)
+                                            (if (fboundp 'browse-kill-ring-alternative-push-function)
+                                                (funcall browse-kill-ring-alternative-push-function
+                                                         seln)
+                                              (when (boundp 'secondary-selection-ring)
+                                                (add-secondary-to-ring seln)))
+                                          (kill-new seln))
+                                        (icicle-msg-maybe-in-minibuffer
+                                         (if (null other-ring)
+                                             "No other selection ring"
+                                           (format "Copied to `%s'" other-ring))))))
    (icicle-delete-candidate-object  selection-ring)
    (kills-in-order                  (icicle-delete-dups
                                      (if (eq selection-ring 'kill-ring)
