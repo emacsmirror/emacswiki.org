@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2012, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 13:43:55 2010 (-0700)
-;; Last-Updated: Sun Jan  1 14:28:58 2012 (-0800)
+;; Last-Updated: Sun Jan  8 10:30:34 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 3412
+;;     Update #: 3427
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-1.el
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -295,6 +295,7 @@
 ;;    `bmkp-autonamed-bookmark-for-buffer-p',
 ;;    `bmkp-autonamed-bookmark-p',
 ;;    `bmkp-autonamed-this-buffer-alist-only',
+;;    `bmkp-autonamed-this-buffer-bookmark-p',
 ;;    `bmkp-bookmark-creation-cp', `bmkp-bookmark-data-from-record',
 ;;    `bmkp-bookmark-description', `bmkp-bookmark-last-access-cp',
 ;;    `bmkp-bookmark-file-alist-only',
@@ -652,20 +653,20 @@ Each is typically a type predicate, but it can be any function that
 accepts as its (first) argument a bookmark or bookmark name.
 These are the predefined type predicates:
  `bmkp-autofile-bookmark-p', `bmkp-autonamed-bookmark-for-buffer-p',
- `bmkp-autonamed-bookmark-p', `bmkp-bookmark-file-bookmark-p',
- `bmkp-bookmark-list-bookmark-p', `bmkp-desktop-bookmark-p',
- `bmkp-dired-bookmark-p', `bmkp-dired-this-dir-bookmark-p',
- `bmkp-file-bookmark-p', `bmkp-file-remote-p',
- `bmkp-file-this-dir-bookmark-p', `bmkp-function-bookmark-p',
- `bmkp-gnus-bookmark-p', `bmkp-image-bookmark-p',
- `bmkp-info-bookmark-p', `bmkp-last-specific-buffer-p',
- `bmkp-last-specific-file-p', `bmkp-local-directory-bookmark-p',
- `bmkp-local-file-bookmark-p', `bmkp-man-bookmark-p',
- `bmkp-non-file-bookmark-p', `bmkp-region-bookmark-p',
- `bmkp-remote-file-bookmark-p', `bmkp-sequence-bookmark-p',
- `bmkp-this-buffer-p', `bmkp-this-file-p', `bmkp-url-bookmark-p',
- `bmkp-url-browse-bookmark-p', `bmkp-variable-list-bookmark-p',
- `bmkp-w3m-bookmark-p'"
+ `bmkp-autonamed-bookmark-p', `bmkp-autonamed-this-buffer-bookmark-p',
+ `bmkp-bookmark-file-bookmark-p', `bmkp-bookmark-list-bookmark-p',
+ `bmkp-desktop-bookmark-p', `bmkp-dired-bookmark-p',
+ `bmkp-dired-this-dir-bookmark-p', `bmkp-file-bookmark-p',
+ `bmkp-file-remote-p', `bmkp-file-this-dir-bookmark-p',
+ `bmkp-function-bookmark-p', `bmkp-gnus-bookmark-p',
+ `bmkp-image-bookmark-p', `bmkp-info-bookmark-p',
+ `bmkp-last-specific-buffer-p', `bmkp-last-specific-file-p',
+ `bmkp-local-directory-bookmark-p', `bmkp-local-file-bookmark-p',
+ `bmkp-man-bookmark-p', `bmkp-non-file-bookmark-p',
+ `bmkp-region-bookmark-p', `bmkp-remote-file-bookmark-p',
+ `bmkp-sequence-bookmark-p', `bmkp-this-buffer-p', `bmkp-this-file-p',
+ `bmkp-url-bookmark-p', `bmkp-url-browse-bookmark-p',
+ `bmkp-variable-list-bookmark-p', `bmkp-w3m-bookmark-p'"
   :type '(repeat symbol) :group 'bookmark-plus)
 
 ;;;###autoload
@@ -1843,7 +1844,7 @@ BOOKMARK is a bookmark name or a bookmark record."
     (let ((win  (get-buffer-window (current-buffer) 0)))
       (when win (set-window-point win (point))))
     ;; If this is an autonamed bookmark, update its name and position, in case it moved.
-    ;; But don't do it if we're using w32, since we might not have moved to the bookmark position.
+    ;; But don't do this if we're using w32, since we might not have moved to the bookmark position.
     (when (and (bmkp-autonamed-bookmark-for-buffer-p bookmark (buffer-name))
                (not bmkp-use-w32-browser-p))
       (setq bookmark  (bmkp-update-autonamed-bookmark bookmark)))
@@ -3333,10 +3334,17 @@ BOOKMARK is a bookmark name or a bookmark record."
   (unless (stringp bookmark) (setq bookmark  (bmkp-bookmark-name-from-record bookmark)))
   (string-match (format bmkp-autoname-format ".*") bookmark))
 
+(defun bmkp-autonamed-this-buffer-bookmark-p (bookmark)
+  "Return non-nil if BOOKMARK is an autonamed bookmark for this buffer."
+  (unless (stringp bookmark) (setq bookmark  (bmkp-bookmark-name-from-record bookmark)))
+  (and (bmkp-autonamed-bookmark-p bookmark)  (bmkp-this-buffer-p bookmark)))
+
 (defun bmkp-autonamed-bookmark-for-buffer-p (bookmark buffer-name)
   "Return non-nil if BOOKMARK is an autonamed bookmark for BUFFER.
 BOOKMARK is a bookmark name or a bookmark record.
-BUFFER-NAME is a string matching the buffer-name part of an autoname."
+BUFFER-NAME is a string matching the buffer-name part of an autoname.
+This does not check the `buffer-name' entry of BOOKMARK.  It checks
+only the buffer indicated by the bookmark name."
   (unless (stringp bookmark) (setq bookmark  (bmkp-bookmark-name-from-record bookmark)))
   (string-match (format bmkp-autoname-format (regexp-quote buffer-name)) bookmark))
 
@@ -4270,8 +4278,7 @@ A new list is returned (no side effects)."
   "`bookmark-alist', with only autonamed bookmarks for the current buffer.
 A new list is returned (no side effects)."
   (bookmark-maybe-load-default-file)
-  (bmkp-remove-if-not (lambda (bmk) (bmkp-autonamed-bookmark-for-buffer-p bmk (buffer-name)))
-                      bookmark-alist))
+  (bmkp-remove-if-not (lambda (bmk) (bmkp-this-buffer-p bmk)) bookmark-alist))
 
 (defun bmkp-bookmark-file-alist-only ()
   "`bookmark-alist', filtered to retain only bookmark-file bookmarks.
