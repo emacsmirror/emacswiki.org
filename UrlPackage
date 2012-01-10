@@ -124,6 +124,40 @@ Example (borrowed from PaulTipper)
 	("no_proxy" . "^.*example.com")))
 }}}
 
+== Debugging ==
+
+=== url-debug and *URL-DEBUG* ===
+
+You can set `url-debug' to a variety of values that log information to the buffer `*URL-DEBUG*'
+
+{{{
+(defcustom url-debug nil
+  "What types of debug messages from the URL library to show.
+Debug messages are logged to the *URL-DEBUG* buffer.
+
+If t, all messages will be logged.
+If a number, all messages will be logged, as well shown via `message'.
+If a list, it is a list of the types of messages to be logged."
+  :type '(choice (const :tag "none" nil)
+		 (const :tag "all" t)
+		 (checklist :tag "custom"
+			    (const :tag "HTTP" :value http)
+			    (const :tag "DAV" :value dav)
+			    (const :tag "General" :value retrieval)
+			    (const :tag "Filename handlers" :value handlers)
+			    (symbol :tag "Other")))
+  :group 'url-hairy)
+}}}
+
+=== HTTP Debugging Proxies ===
+
+There are a variety of HTTP Debugging Proxies out there, depending on your platform.  Install one, and set the `url-proxy-services' to point to it.  The proxy will then capture the data streaming between emacs and your server.
+
+On Windows, a good HTTP Debugging Proxy is [http://www.fiddler2.com/fiddler2/ Fiddler] and it installs at localhost:8888, so set url-proxy-services to
+
+{{{
+(setq url-proxy-services '(("http" . "localhost:8888")))
+}}}
 == Alternatives to URL ==
 
 If you just want to download HTTP documents but you don't have url.el yet,
