@@ -7,9 +7,9 @@
 ;; Copyright (C) 1999-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Mar 16 14:18:11 1999
 ;; Version: 20.0
-;; Last-Updated: Sun Jan  1 14:05:19 2012 (-0800)
+;; Last-Updated: Tue Jan 10 14:07:34 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 2179
+;;     Update #: 2184
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/help+20.el
 ;; Keywords: help
 ;; Compatibility: GNU Emacs 20.x
@@ -90,6 +90,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2012/01/10 dadams
+;;     describe-variable: Remove * from beginning of doc string.
 ;; 2011/12/19 dadams
 ;;     help-with-tutorial, describe-variable: Use line-end-position, not end-of-line + point.
 ;;     describe-variable: if -> when.
@@ -607,9 +609,11 @@ Same as using a prefix arg with `describe-function'."
 
 
 ;; REPLACES ORIGINAL in `help.el':
-;; Preferred candidate is `symbol-nearest-point'.
-;; Uses `substitute-command-keys' on doc string.
-;; With a prefix argument, candidates are user variables (options) only.
+;;
+;; 1. Preferred candidate is `symbol-nearest-point'.
+;; 2. Use `substitute-command-keys' on doc string.
+;; 3. Remove initial `*' from doc string (indicates it is a user variable).
+;; 4. With a prefix argument, candidates are user variables (options) only.
 ;;
 ;;;###autoload
 (defun describe-variable (variable &optional optionp)
@@ -662,9 +666,10 @@ Return the documentation, as a string."
       (princ "Documentation:")
       (terpri)
       (let ((doc  (documentation-property variable 'variable-documentation)))
-        (if (and doc (not (string= "" doc)))
-            (princ (substitute-command-keys doc))
-          (princ "Not documented as a variable.")))
+        (if (or (null doc)  (string= "" doc))
+            (princ "Not documented as a variable.")
+          (when (eq ?* (elt doc 0))  (setq doc  (substring doc 1))) ; Remove user-variable `*'.
+          (princ (substitute-command-keys doc))))
       (help-setup-xref (list #'describe-variable variable) (interactive-p))
       ;; Make a link to customize if this variable can be customized.
       ;; Note, it is not reliable to test only for a custom-type property
