@@ -7,7 +7,7 @@
 ;; Maintainer: José Alfredo Romero L. <escherdragon@gmail.com>
 ;; Created: 24 Sep 2007
 ;; Version: 5
-;; RCS Version: $Rev: 402 $
+;; RCS Version: $Rev: 404 $
 ;; Keywords: files, dired, midnight commander, norton, orthodox
 ;; URL: http://www.emacswiki.org/emacs/sunrise-commander.el
 ;; Compatibility: GNU Emacs 22+
@@ -1324,7 +1324,7 @@ buffer or window."
           (setq end (point)
                 next (search-forward sr-avfs-root (point-at-eol) t)))
         (when end
-          (add-text-properties start end '(invisible t intangible t))))))
+          (add-text-properties start end '(invisible t))))))
 
 (defun sr-highlight-broken-links ()
   "Mark broken symlinks with an exclamation mark."
