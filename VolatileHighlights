@@ -1,0 +1,71 @@
+= Volatile Highlights Mode =
+VolatileHighlights highlights changes to the buffer caused by commands such as 'undo', 'yank'/'yank-pop', etc. The highlight disappears at the next command. The highlighting gives useful visual feedback for what your operation actually changed in the buffer.
+
+It is available at Lisp:volatile-highlights.el
+
+From the file:
+
+<pre>
+;;; Commentary:
+;;
+;; Overview
+;; ========
+;; This library provides minor mode `volatile-highlight-mode', which
+;; brings visual feedback to some operations by highlighting portions
+;; relating to the operations.
+;;
+;; All of highlights made by this library will be removed
+;; when any new command is executed.
+;;
+;;
+;; INSTALLING
+;; ==========
+;; To install this library, save this file to a directory in your
+;; `load-path' (you can view the current `load-path' using "C-h v
+;; load-path" within Emacs), then add the following line to your
+;; .emacs start up file:
+;;
+;;    (require 'volatile-highlights)
+;;    (volatile-highlights-mode t)
+;;
+;; USING
+;; =====
+;; To toggle volatile highlighting, type `M-x volatile-highlights-mode RET'.
+;;
+;; Currently, operations listed below will be highlighted While the minor mode
+;; `volatile-highlights-mode' is on:
+;;
+;;    - `undo':
+;;      Volatile highlights will be put on the text inserted by `undo'.
+;;
+;;    - `yank' and `yank-pop':
+;;      Volatile highlights will be put on the text inserted by `yank'
+;;      or `yank-pop'.
+;;
+;;    - `find-tag':
+;;      Volatile highlights will be put on the tag name which was found
+;;      by `find-tag'.
+;;
+;;    - `occur-mode-goto-occurrence' and `occur-mode-display-occurrence':
+;;      Volatile highlights will be put on the occurrence which is selected
+;;      by `occur-mode-goto-occurrence' or `occur-mode-display-occurrence'.
+;;
+;;    - Non incremental search operations:
+;;      Volatile highlights will be put on the the text found by
+;;      commands listed below:
+;;
+;;        `nonincremental-search-forward'
+;;        `nonincremental-search-backward'
+;;        `nonincremental-re-search-forward'
+;;        `nonincremental-re-search-backward'
+;;        `nonincremental-repeat-search-forward'
+;;        `nonincremental-repeat-search-backwar'
+;;        `alien-search/nonincremental/re-search-forward'
+;;        `alien-search/nonincremental/re-search-backward'
+;;
+;; Highlighting support for each operations can be turned on/off individually
+;; via customization. Also check out the customization group
+;;
+;;   `M-x customize-group RET volatile-highlights RET'
+
+</pre>
