@@ -7,9 +7,9 @@
 ;; Copyright (C) 1999-2012, Drew Adams, all rights reserved.
 ;; Created: Fri Mar 19 15:58:58 1999
 ;; Version: 21.2
-;; Last-Updated: Sun Jan  1 14:26:16 2012 (-0800)
+;; Last-Updated: Tue Jan 10 13:01:25 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 4363
+;;     Update #: 4398
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/dired+.el
 ;; Keywords: unix, mouse, directories, diredp, dired
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -256,6 +256,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2012/01/10 dadams
+;;     diredp-font-lock-keywords-1: Corrected for date/time when locale is used, not iso.
 ;; 2011/12/19 dadams
 ;;     dired-insert-set-properties, dired-mark-sexp, diredp-(un)mark-region-files,
 ;;       diredp-flag-region-files-for-deletion, diredp-mouse-3-menu:
@@ -1914,12 +1916,17 @@ In particular, inode number, number of hard links, and file size."
    '("^  (No match).*$" 0 'default)     ; Override others, e.g. `t' for `diredp-other-priv'.
    '("[^ .]\\.\\([^. /]+\\)$" 1 diredp-file-suffix) ; Suffix
    '("\\([^ ]+\\) -> [^ ]+$" 1 diredp-symlink) ; Symbolic links
-   ;; 1) Date/time and 2) filename w/o suffix:
-   (list dired-move-to-filename-regexp
-         (if (or (not (fboundp 'version<)) (version< emacs-version "23.2"))
-             (list 1 'diredp-date-time t t)
-           (list 2 'diredp-date-time t t)) ; Date/time
-         (list "\\(.+\\)$" nil nil (list 0 diredp-file-name 'keep t))) ; Filename
+
+   ;; 1) Date/time and 2) filename w/o suffix.
+   ;;    This is a bear, and it is fragile - Emacs can change `dired-move-to-filename-regexp'.
+   (if (or (not (fboundp 'version<)) (version< emacs-version "23.2"))
+       (list dired-move-to-filename-regexp
+             (list 1 'diredp-date-time t t) ; Date/time
+             (list "\\(.+\\)$" nil nil (list 0 diredp-file-name 'keep t))) ; Filename
+     (list dired-move-to-filename-regexp
+           (list 7 'diredp-date-time t t) ; Date/time, locale (western or eastern)
+           (list 2 'diredp-date-time t t) ; Date/time, ISO
+           (list "\\(.+\\)$" nil nil (list 0 diredp-file-name 'keep t)))) ; Filename
 
    ;; Files to ignore
    (list (concat "^  \\(.*\\(" (concat (mapconcat 'regexp-quote
@@ -1971,7 +1978,7 @@ In particular, inode number, number of hard links, and file size."
             (set (make-local-variable 'font-lock-defaults)
              (cons '(dired-font-lock-keywords diredp-font-lock-keywords-1) ; Two levels.
               (cdr font-lock-defaults)))
-            ;; Emacs 24+: Need to refresh `font-lock-keywords' from `font-lock-defaults'.
+            ;; Refresh `font-lock-keywords' from `font-lock-defaults'
             (when (fboundp 'font-lock-refresh-defaults) (font-lock-refresh-defaults))))
  
 ;;; Function Definitions
