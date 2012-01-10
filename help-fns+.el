@@ -7,17 +7,17 @@
 ;; Copyright (C) 2007-2012, Drew Adams, all rights reserved.
 ;; Created: Sat Sep 01 11:01:42 2007
 ;; Version: 22.1
-;; Last-Updated: Sun Jan  1 14:35:25 2012 (-0800)
+;; Last-Updated: Tue Jan 10 14:05:51 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 1104
+;;     Update #: 1114
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/help-fns+.el
 ;; Keywords: help, faces, characters, packages, description
 ;; Compatibility: GNU Emacs: 22.x, 23.x
 ;;
 ;; Features that might be required by this library:
 ;;
-;;   `button', `help-fns', `help-mode', `info', `naked', `view',
-;;   `wid-edit', `wid-edit+'.
+;;   `button', `help-fns', `help-mode', `naked', `view', `wid-edit',
+;;   `wid-edit+'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -116,6 +116,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2012/01/10 dadams
+;;     describe-variable: Remove * from beginning of doc string.
 ;; 2011/11/25 dadams
 ;;     Reverted yesterday's change and added IMPORTANT note to Commentary.
 ;; 2011/11/24 dadams
@@ -1116,10 +1118,11 @@ Same as using a prefix arg with `describe-function'."
 
 ;; REPLACE ORIGINAL in `help.el':
 ;;
-;; With a prefix argument, candidates are user variables (options) only.
-;; Preferred default candidate is `symbol-nearest-point'.
-;; Uses `substitute-command-keys' on doc string.
-;; Preserves text properties.
+;; 1. With a prefix argument, candidates are user variables (options) only.
+;; 2. Preferred default candidate is `symbol-nearest-point'.
+;; 3. Remove initial `*' from doc string (indicates it is a user variable).
+;; 4. Use `substitute-command-keys' on doc string.
+;; 5. Preserve text properties.
 ;;
 (when (< emacs-major-version 23)
   (defun describe-variable (variable &optional buffer optionp)
@@ -1247,6 +1250,7 @@ it is displayed along with the global value."
                      (safe-var  (get variable 'safe-local-variable))
                      (doc       (or (documentation-property variable 'variable-documentation)
                                     (documentation-property alias 'variable-documentation))))
+                (when (eq ?* (elt doc 0))  (setq doc  (substring doc 1))) ; Remove user-variable `*'.
                 (unless (eq alias variable)
                   (princ (format "\nThis variable is an alias for `%s'.\n" alias)))
                 (when (or obsolete safe-var) (terpri))
@@ -1266,7 +1270,7 @@ it is displayed along with the global value."
                            (format "`%s'.\n" safe-var))))
                 (princ "\nDocumentation:\n")
                 ;; Use `insert', not `princ', to keep text properties.
-                ;; (princ (or doc "Not documented as a variable.")))
+                ;; Was: (princ (or doc "Not documented as a variable.")))
                 (with-current-buffer standard-output
                   (insert (or (substitute-command-keys doc)
                               "Not documented as a variable."))))
@@ -1305,9 +1309,10 @@ See also `with-temp-buffer'."
 ;;
 ;; 1. With a prefix argument, candidates are user variables (options) only.
 ;; 2. Preferred default candidate is `symbol-nearest-point'.
-;; 3. Preserves text properties.
-;; 4. Call `Info-make-manuals-xref' to create a cross-ref link to manuals (Emacs 23.3).
-;; 5. Add key-description buttons to command help.  Use `insert', not `princ'.
+;; 3. Preserve text properties.
+;; 4. Remove initial `*' from doc string (indicates it is a user variable).
+;; 5. Call `Info-make-manuals-xref' to create a cross-ref link to manuals (Emacs 23.3).
+;; 6. Add key-description buttons to command help.  Use `insert', not `princ'.
 ;;
 (when (= emacs-major-version 23)
   (defun describe-variable (variable &optional buffer frame optionp)
@@ -1429,6 +1434,7 @@ it is displayed along with the global value."
                                       (help-documentation-property alias 'variable-documentation
                                                                    nil 'ADD-HELP-BUTTONS)))
                      (extra-line  nil))
+                (when (eq ?* (elt doc 0))  (setq doc  (substring doc 1))) ; Remove user-variable `*'.
                 ;; Add a note for variables that have been `make-var-buffer-local'.
                 (when (and (local-variable-if-set-p variable)
                            (or (not (local-variable-p variable))
@@ -1503,9 +1509,10 @@ file local variable.\n")
 ;;
 ;; 1. With a prefix argument, candidates are user variables (options) only.
 ;; 2. Preferred default candidate is `symbol-nearest-point'.
-;; 3. Preserves text properties.
-;; 4. Call `Info-make-manuals-xref' to create a cross-ref link to manuals (Emacs 23.3).
-;; 5. Add key-description buttons to command help.  Use `insert', not `princ'.
+;; 3. Preserve text properties.
+;; 4. Remove initial `*' from doc string (indicates it is a user variable).
+;; 5. Call `Info-make-manuals-xref' to create a cross-ref link to manuals (Emacs 23.3).
+;; 6. Add key-description buttons to command help.  Use `insert', not `princ'.
 ;;
 (when (> emacs-major-version 23)
   (defun describe-variable (variable &optional buffer frame optionp)
@@ -1638,6 +1645,7 @@ it is displayed along with the global value."
                                       (help-documentation-property alias 'variable-documentation
                                                                    nil 'ADD-HELP-BUTTONS)))
                      (extra-line  nil))
+                (when (eq ?* (elt doc 0))  (setq doc  (substring doc 1))) ; Remove user-variable `*'.
                 ;; Add a note for variables that have been `make-var-buffer-local'.
                 (when (and (local-variable-if-set-p variable)
                            (or (not (local-variable-p variable))
