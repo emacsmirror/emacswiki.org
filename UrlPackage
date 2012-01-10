@@ -94,6 +94,8 @@ following regular expression instead:
     (setq url-cookie-trusted-urls '("^http://\\(www\\.\\)?emacswiki\\.org/.*")
           url-cookie-untrusted-urls '("^https?://"))
 
+Each cookie is a defstruct, and all cookies are stored in a list defined by `url-cookie-storage' and persistently in the file `url-cookie-file'.  Cookies are automatically saved to this file once every `url-cookie-save-interval` seconds.
+
 === Supported authentication schemes ===
 
 Out of the box, url supports HTTP basic and digest authentication. Other schemes can be added using `url-register-auth-scheme'. For example, if you're after NTLM support, try [http://code.google.com/p/url-http-ntlm/ url-http-ntlm].
