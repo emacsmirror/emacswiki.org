@@ -100,6 +100,30 @@ Each cookie is a defstruct, and all cookies are stored in a list defined by `url
 
 Out of the box, url supports HTTP basic and digest authentication. Other schemes can be added using `url-register-auth-scheme'. For example, if you're after NTLM support, try [http://code.google.com/p/url-http-ntlm/ url-http-ntlm].
 
+=== URL Proxy Services ===
+
+Proxies are supported by UrlPackage, by setting `url-proxy-services' to an assoc list mapping url services and the proxy servers that support them.
+
+{{{
+(defcustom url-proxy-services nil
+  "An alist of schemes and proxy servers that gateway them.
+Looks like ((\"http\" . \"hostname:portnumber\") ...).  This is set up
+from the ACCESS_proxy environment variables."
+  :type '(repeat (cons :format "%v"
+		       (string :tag "Protocol")
+		       (string :tag "Proxy")))
+  :group 'url)
+}}}
+
+Example (borrowed from PaulTipper)
+
+{{{
+(setq url-proxy-services
+      '(("http"     . "http://proxy.example.com:8080")
+	("ftp"      . "proxy.example.com:8080")
+	("no_proxy" . "^.*example.com")))
+}}}
+
 == Alternatives to URL ==
 
 If you just want to download HTTP documents but you don't have url.el yet,
