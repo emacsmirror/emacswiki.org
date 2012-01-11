@@ -102,6 +102,8 @@ Putting the following in your .emacs yields almost the same result without modif
 
 (setq linum-format "%d ")
 
+: I like how "%d " uses only as much space as is needed for what is shown in the buffer. For example, if the largest visible line number is 50, it only uses two characters for the numbers (plus one for the space), even if there are 1000 lines in the file.  But I don't like how it left aligns the numbers. Is there a way to get this behavior with right alignment? dynamic right aligns, but it wastes space. --Aaron
+
 Or you can set it as a function like the following if you'd like it right justified. The body of the function is modified from linum-0.9x.
 
 (setq linum-format
