@@ -1,0 +1,75 @@
+cl-format is a port of CL's format function to Emacs.  It's
+partially based on CLISP's format routines and implements most of
+CL's format directive.  It's available on [http://marmalade-repo.org Marmalade].
+
+== Examples ==
+
+{{{
+(cl-format nil "~v$" 3 pi)
+  => "3.142"
+
+(cl-format nil "~@:c" ?\C-\M-a)
+  => "Control-Meta-a"
+
+(cl-format nil "~4,'0d-~2,'0d-~2,'0d" 2005 6 10)
+  => "2005-06-10"
+
+(cl-format nil "~@r" 1234)
+  => "MCCXXXIV"
+
+(cl-format nil "~{~r~#[.~; and ~:;, ~]~}" '(1 2 3 4))
+  => "one, two, three and four."
+}}}
+
+It's fairly easy to extend it by writing new directives.  Here is
+a silly example.  Note, all standard CL directives use lowercase
+characters.
+
+{{{
+(define-cl-format-directive ?R (args)
+  "Format ARG encoding it with rot13."
+  (princ (rot13 (with-output-to-string (princ (pop args)))))
+  args)
+
+(cl-format nil "~R" "Secret")
+  => "Frperg"
+
+(cl-format nil "~R" (cl-format nil "~R" "Secret"))
+  => "Secret"
+}}}
+
+Slightly more useful example: fontifying strings.  This uses the
+only extension to CL's format syntax, a generalized form of
+~[~],~{~}, etc.
+
+{{{
+(defvar faces-for-F '(success warning error))
+
+(define-cl-format-directive (?F) (args at-flag colon-flag
+                                       (color 0) &contained region)
+  (let ((face (or (nth color faces-for-F)
+                  'default))
+        (beg (point)))
+    (setq args (funcall region args))
+    (put-text-property
+     beg (point) 'face
+     (append `(:inherit ,face)
+             (if at-flag '(:weight bold))
+             (if colon-flag '(:slant italic))
+             nil))
+    args))
+
+(cl-format nil "~@F(~a~) ~2F(~a~)" "Ok." "Error.")
+  => #("Ok. Error."
+       0 3
+       (face
+        (:inherit success :weight bold))
+       4 10
+       (face
+        (:inherit error)))
+                          
+}}}
+                                  
+    
+    
+                                       
