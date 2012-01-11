@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Fri Dec 15 10:44:14 1995
 ;; Version: 21.0
-;; Last-Updated: Sun Jan  1 14:05:15 2012 (-0800)
+;; Last-Updated: Wed Jan 11 10:44:05 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 1102
+;;     Update #: 1178
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/isearch+.el
 ;; Keywords: help, matching, internal, local
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -97,6 +97,8 @@
 ;;  `isearch-mode-help'   - End isearch.  List bindings.
 ;;  `isearch-message'     - Highlight failed part of search string in
 ;;                          echo area, in face `isearch-fail'.
+;;  `isearch-message-prefix' - Highlight prompt keywords:
+;;                             wrapped, regexp, word, multi
 ;;  `isearch-mouse-2'     - Respect `isearchp-mouse-2-flag'(Emacs 21+)
 ;;  `isearch-toggle-case-fold' - Show case sensitivity in mode-line.
 ;;                               Message.
@@ -145,6 +147,13 @@
 ;;  * Case-sensitivity is indicated in the mode line minor-mode
 ;;    lighter: `ISEARCH' for case-insensitive; `Isearch' for
 ;;    case-sensitive.
+;;
+;;  * Highlighting of the mode-line lighter when search has wrapped
+;;    around (Emacs 24+ only).
+;;
+;;  * Highlighting of parts of the prompt, to indicate the type of
+;;    search: regexp, word, multiple-buffer, and whether searching has
+;;    wrapped around the buffer (Emacs 22+ only).
 ;;
 ;;  * Ability to search ''within character-property zones''.  Example:
 ;;    search within zones having a `face' text property with a value
@@ -243,6 +252,10 @@
 ;;
 ;;(@* "Change log")
 ;;
+;; 2012/01/11 dadams
+;;     Added isearch-message-prefix (redefinition).
+;;     Added faces: isearchp-(wrapped|regexp|word|multi).
+;;     isearchp-highlight-lighter: Propertize lighter if wrapped.
 ;; 2011/12/01 dadams
 ;;     isearchp-toggle-(invisible|regexp-quote-yank|set-region|case-fold):
 ;;       Added sit-for after message.
@@ -386,7 +399,11 @@
 (defvar subword-mode)
 (defvar isearch-error)                  ; In `isearch.el'.
 (defvar isearch-filter-predicate)       ; In `isearch.el'.
+(defvar isearch-message-prefix-add)     ; In `isearch.el'.
 (defvar isearch-original-minibuffer-message-timeout) ; In `isearch.el'.
+(defvar isearch-wrap-function)          ; In `isearch.el'.
+(defvar multi-isearch-next-buffer-current-function) ; In `isearch.el'.
+
 (defvar isearchp-initiate-edit-commands) ; Below.
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -416,6 +433,26 @@ Don't forget to mention your Emacs and library versions."))
         (((type tty) (class mono)) :inverse-video t)
         (t :background "gray"))
     "*Face for highlighting failed part in Isearch echo-area message."
+    :group 'isearch-plus)
+  (defface isearchp-wrapped
+      '((((class color) (min-colors 88)) (:foreground "DeepPink"))
+        (t :underline t))
+    "*Face for highlighting wrapped-search indicator in Isearch echo-area message."
+    :group 'isearch-plus)
+  (defface isearchp-regexp
+      '((((class color) (min-colors 8)) (:foreground "Firebrick"))
+        (t :underline t))
+    "*Face for highlighting regexp-search indicator in Isearch echo-area message."
+    :group 'isearch-plus)
+  (defface isearchp-word
+      '((((class color) (min-colors 8)) (:foreground "DarkGreen"))
+        (t :underline t))
+    "*Face for highlighting word-search indicator in Isearch echo-area message."
+    :group 'isearch-plus)
+  (defface isearchp-multi
+      '((((class color) (min-colors 8)) (:foreground "DarkViolet"))
+        (t :underline t))
+    "*Face for highlighting multi-buffer indicator in Isearch echo-area message."
     :group 'isearch-plus))
 
 (when (fboundp 'isearch-unread-key-sequence) ; Emacs 22+
@@ -581,12 +618,18 @@ This is used only for Transient Mark mode."
     (setq minor-mode-alist  (delete '(isearch-mode isearch-mode) minor-mode-alist)
           minor-mode-alist  (delete '(isearch-mode " ISEARCH")   minor-mode-alist)
           minor-mode-alist  (delete '(isearch-mode " Isearch")   minor-mode-alist))
-    (add-to-list 'minor-mode-alist `(isearch-mode ,(if case-fold-search " ISEARCH" " Isearch"))))
+    (let ((lighter  (if case-fold-search " ISEARCH" " Isearch")))
+      (add-to-list
+       'minor-mode-alist
+       `(isearch-mode ,(if (and (fboundp 'propertize) isearch-wrapped) ;Emacs 22+
+                           (propertize lighter 'face 'isearchp-wrapped)
+                           lighter)))))
   (condition-case nil
       (if (fboundp 'redisplay) (redisplay t) (force-mode-line-update t))
     (error nil)))
 
-(add-hook 'isearch-update-post-hook 'isearchp-highlight-lighter)
+(when (boundp 'isearch-update-post-hook) ; Emacs 24+
+  (add-hook 'isearch-update-post-hook 'isearchp-highlight-lighter))
  
 ;;(@* "Commands")
 
@@ -1037,6 +1080,52 @@ outside of Isearch."
                  (equal succ-msg (substring isearch-string 0 (length succ-msg))))
             (length succ-msg)
           0)))))
+
+
+;; REPLACE ORIGINAL in `isearch.el'.
+;;
+;; Highlight message according to search characteristics.
+;;
+(when (> emacs-major-version 21)        ; Emacs 22+
+  (defun isearch-message-prefix (&optional _c-q-hack ellipsis nonincremental)
+    ;; If about to search, and previous search regexp was invalid,
+    ;; check that it still is.  If it is valid now,
+    ;; let the message we display while searching say that it is valid.
+    (and isearch-error ellipsis
+         (condition-case ()
+             (progn (re-search-forward isearch-string (point) t)
+                    (setq isearch-error nil))
+           (error nil)))
+    ;; If currently failing, display no ellipsis.
+    (or isearch-success (setq ellipsis nil))
+    (let ((m (concat (and (not isearch-success) (propertize "failing " 'face 'minibuffer-prompt))
+                     (and isearch-adjusted (propertize "pending " 'face 'minibuffer-prompt))
+                     (and isearch-wrapped
+                          (not isearch-wrap-function)
+                          (if isearch-forward
+                              (> (point) isearch-opoint)
+                            (< (point) isearch-opoint))
+                          (propertize "over" 'face 'isearchp-wrapped))
+                     (and isearch-wrapped (propertize "wrapped " 'face 'isearchp-wrapped))
+                     (and isearch-word (propertize "word " 'face 'isearchp-word))
+                     (and isearch-regexp (propertize "regexp " 'face 'isearchp-regexp))
+                     (and (boundp 'multi-isearch-next-buffer-current-function) ; Emacs 23+
+                          multi-isearch-next-buffer-current-function
+                          (propertize "multi " 'face 'isearchp-multi))
+                     (and (boundp 'isearch-message-prefix-add) ; Emacs 23+
+                          isearch-message-prefix-add
+                          (propertize isearch-message-prefix-add 'face 'minibuffer-prompt))
+                     (propertize (if nonincremental "search" "I-search") 'face 'minibuffer-prompt)
+                     (and (not isearch-forward) (propertize " backward" 'face 'minibuffer-prompt))
+                     (propertize (if (and (boundp 'bidi-display-reordering) ; Emacs 24+
+                                          current-input-method)
+                                     ;; Input methods for RTL languages use RTL chars for their
+                                     ;; title.  That messes up display of search text after prompt.
+                                     (bidi-string-mark-left-to-right
+                                      (concat " [" current-input-method-title "]: "))
+                                   ": ")
+                                 'face 'minibuffer-prompt))))
+      (concat (upcase (substring m 0 1)) (substring m 1)))))
 
 (defun isearchp-read-face-names  (&optional empty-means-none-p only-one-p)
   "Read face names with completion, and return a list of their symbols.
