@@ -4,6 +4,13 @@ Features:
 
 * Case-sensitivity is indicated in the [[mode line]] minor-mode lighter: '''`ISEARCH'''' for case-insensitive; '''`Isearch'''' for case-sensitive.
 
+* Highlighting of the mode-line minor-mode lighter when search has wrapped around (Emacs 24+ only).
+
+* Highlighting of parts of the prompt, to indicate the type of
+search: regexp, word, multiple-buffer, and whether searching has
+wrapped around the buffer (Emacs 22+ only).
+
+
 [:isearchp-char-prop-forward]
 [:isearchp-char-prop-forward-regexp]
 * Ability to search ''within character-property zones''.  Example: search within zones having a `face' text property with a value of `font-lock-comment-face' or `font-lock-string-face'.  Search [[overlay]]s or [[text property|text properties]]. From within Isearch: '''`C-t'''' (or '''`C-M-t'''' for [[regexp]] search).  First time, or with a [[prefix argument]], you are prompted for the property and its values.  See the doc string of command '''`isearchp-char-prop-forward''''.
