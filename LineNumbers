@@ -17,6 +17,14 @@ Check out this image: Geocities:gchen275/xemacs/line-numbers-mode.gif.
 
 [[line-num.el]]
 
+== LinumPlus ==
+LinumPlus
+
+
+
+
+
+
 == Linum ==
 
 Library ##linum.el## works incrementally and can number large files very quickly.
@@ -77,11 +85,15 @@ Another workaround that keeps the appearance of the dynamic linum-format is to u
 
 --Michael Hoffman
 
-== LinumPlus ==
-LinumPlus
+
+
+
+
+
+
 
 == Linum: Separating line numbers from text ==
-[new:ChrisDone:26-March-2008]
+
 I, personally, wanted a one-space separation between the line number display and the buffer contents. Couldn't find a way through the customisation settings. Perhaps it can only be done in Emacs in X, but I don't use X-based. I've found a simple way to do it, however:
 
 : On line 157 (in version "0.9wza") of <code>linum.el</code>, change 
@@ -102,8 +114,14 @@ Putting the following in your .emacs yields almost the same result without modif
 
 (setq linum-format "%d ")
 
-: I like how "%d " uses only as much space as is needed for what is shown in the buffer. For example, if the largest visible line number is 50, it only uses two characters for the numbers (plus one for the space), even if there are 1000 lines in the file.  But I don't like how it left aligns the numbers. Is there a way to get this behavior with right alignment? dynamic right aligns, but it wastes space. --Aaron
+[new]
+: I like how "%d " uses only as much space as is needed for what is shown in the buffer. For example, if the largest visible line number is 50, it only uses two characters for the numbers (plus one for the space), even if there are 1000 lines in the file.  But I don't like how it left aligns the numbers. Is there a way to get this behavior with right alignment? dynamic right aligns, but it wastes space. -- [[Aaron]]
 
+:: I guess I don't see what you see.  Using the version of ##linum.el## that is in Emacs 24 (a build from Dec 2011), the default value of `line-format' is ##"%6d "##, and the digits are right-aligned.  -- DrewAdams
+
+
+
+[new]
 Or you can set it as a function like the following if you'd like it right justified. The body of the function is modified from linum-0.9x.
 
 (setq linum-format
