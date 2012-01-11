@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2012, Drew Adams, all rights reserved.
 ;; Created: Sat Sep 01 11:01:42 2007
 ;; Version: 22.1
-;; Last-Updated: Tue Jan 10 14:05:51 2012 (-0800)
+;; Last-Updated: Wed Jan 11 06:29:33 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 1114
+;;     Update #: 1121
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/help-fns+.el
 ;; Keywords: help, faces, characters, packages, description
 ;; Compatibility: GNU Emacs: 22.x, 23.x
@@ -116,7 +116,7 @@
 ;;
 ;;; Change Log:
 ;;
-;; 2012/01/10 dadams
+;; 2012/01/11 dadams
 ;;     describe-variable: Remove * from beginning of doc string.
 ;; 2011/11/25 dadams
 ;;     Reverted yesterday's change and added IMPORTANT note to Commentary.
@@ -1250,7 +1250,8 @@ it is displayed along with the global value."
                      (safe-var  (get variable 'safe-local-variable))
                      (doc       (or (documentation-property variable 'variable-documentation)
                                     (documentation-property alias 'variable-documentation))))
-                (when (eq ?* (elt doc 0))  (setq doc  (substring doc 1))) ; Remove user-variable `*'.
+                (when (and (> (length doc) 1)  (eq ?* (elt doc 0)))
+                  (setq doc  (substring doc 1))) ; Remove any user-variable prefix `*'.
                 (unless (eq alias variable)
                   (princ (format "\nThis variable is an alias for `%s'.\n" alias)))
                 (when (or obsolete safe-var) (terpri))
@@ -1434,7 +1435,8 @@ it is displayed along with the global value."
                                       (help-documentation-property alias 'variable-documentation
                                                                    nil 'ADD-HELP-BUTTONS)))
                      (extra-line  nil))
-                (when (eq ?* (elt doc 0))  (setq doc  (substring doc 1))) ; Remove user-variable `*'.
+                (when (and (> (length doc) 1)  (eq ?* (elt doc 0)))
+                  (setq doc  (substring doc 1))) ; Remove any user-variable prefix `*'.
                 ;; Add a note for variables that have been `make-var-buffer-local'.
                 (when (and (local-variable-if-set-p variable)
                            (or (not (local-variable-p variable))
@@ -1645,7 +1647,8 @@ it is displayed along with the global value."
                                       (help-documentation-property alias 'variable-documentation
                                                                    nil 'ADD-HELP-BUTTONS)))
                      (extra-line  nil))
-                (when (eq ?* (elt doc 0))  (setq doc  (substring doc 1))) ; Remove user-variable `*'.
+                (when (and (> (length doc) 1)  (eq ?* (elt doc 0)))
+                  (setq doc  (substring doc 1))) ; Remove any user-variable prefix `*'.
                 ;; Add a note for variables that have been `make-var-buffer-local'.
                 (when (and (local-variable-if-set-p variable)
                            (or (not (local-variable-p variable))
