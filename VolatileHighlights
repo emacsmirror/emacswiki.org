@@ -1,7 +1,7 @@
 = Volatile Highlights Mode =
 VolatileHighlights highlights changes to the buffer caused by commands such as 'undo', 'yank'/'yank-pop', etc. The highlight disappears at the next command. The highlighting gives useful visual feedback for what your operation actually changed in the buffer.
 
-It is available at Lisp:volatile-highlights.el
+It is available at Lisp:volatile-highlights.el and https://github.com/k-talo/volatile-highlights.el
 
 From the file:
 
