@@ -7,9 +7,9 @@
 ;; Copyright (C) 1999-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Mar 16 14:18:11 1999
 ;; Version: 20.0
-;; Last-Updated: Tue Jan 10 14:07:34 2012 (-0800)
+;; Last-Updated: Wed Jan 11 06:33:03 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 2184
+;;     Update #: 2187
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/help+20.el
 ;; Keywords: help
 ;; Compatibility: GNU Emacs 20.x
@@ -90,7 +90,7 @@
 ;;
 ;;; Change Log:
 ;;
-;; 2012/01/10 dadams
+;; 2012/01/11 dadams
 ;;     describe-variable: Remove * from beginning of doc string.
 ;; 2011/12/19 dadams
 ;;     help-with-tutorial, describe-variable: Use line-end-position, not end-of-line + point.
@@ -256,6 +256,11 @@
   (require 'help-macro nil t) ;; (no error if not found) make-help-screen
   (require 'help-macro+ nil t)) ;; (no error if not found): make-help-screen
 ;; (require 'icicles nil t) ;; (no error if not found): icicle-read-string-completing
+
+
+;; Quiet the byte-compiler.
+(defvar view-no-disable-on-exit)
+(defvar view-exit-action)
 
 ;;;;;;;;;;;;;;;;;;;;
 
@@ -668,7 +673,8 @@ Return the documentation, as a string."
       (let ((doc  (documentation-property variable 'variable-documentation)))
         (if (or (null doc)  (string= "" doc))
             (princ "Not documented as a variable.")
-          (when (eq ?* (elt doc 0))  (setq doc  (substring doc 1))) ; Remove user-variable `*'.
+          (when (and (> (length doc) 1)  (eq ?* (elt doc 0)))
+            (setq doc  (substring doc 1))) ; Remove any user-variable prefix `*'.
           (princ (substitute-command-keys doc))))
       (help-setup-xref (list #'describe-variable variable) (interactive-p))
       ;; Make a link to customize if this variable can be customized.
