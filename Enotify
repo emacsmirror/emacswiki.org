@@ -36,7 +36,7 @@ The message size is intended as the length in characters of the message body. In
         |22|(:register "MySlotID")
 }}}
 
-== Enotify slots ==
+=== Enotify slots ===
 
 An application that wants to send notifications should register a *slot*
 - the equivalent of an icon in a system tray - before sending any notification message.
@@ -54,7 +54,7 @@ The function passed as :handler-fn is of the form
 }}}
 whose purpose of the :handler-fn parameter will be clarified in the following section.
 
-### Notifications
+=== Notifications ===
 
 The message used to send a notification has the form 
 
