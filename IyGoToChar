@@ -8,3 +8,9 @@ documents embeded in the file.
 
 ----
 Author: IanYang
+
+
+== See Also ==
+[https://github.com/lewang/jump-char jump-char]
+
+Reimplementation of iy-go-to-char with lazy highlighting and integration with ace-jump-mode, and other imporvements.
