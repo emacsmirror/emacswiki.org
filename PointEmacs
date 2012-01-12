@@ -7,7 +7,7 @@ Vous êtes bien sûr invités à proposer des modifications. Afin que celles-ci 
 * mettre un maximum de liens afin de pouvoir comprendre (et donc personnaliser le fichier) ;
 * essayez de garder un même style pour le fichier.
 
-Voir aussi: PointEmacs (fr)
+Voir aussi : PointEmacs (fr)
 
 La distribution Debian inclut de nombreux paquets qui permettent un bon début sans toucher à son InitFile :
     apt-get install happycoders-emacs emacs-goodies-el
