@@ -1,4 +1,16 @@
 EMACS and SQLITE as a rapid application development environment
 
 item 3 at http://mysite.verizon.net/mbcladwell/
-   
+
+---------------------------------------------------------------------------------
+
+My attempt to clean up and use Cladwell's SQLite code pointed
+out some major flaws in it:
+
+* It sprays temp buffers everywhere
+* It can only "connect" to a single database
+* It doesn't return all the rows in the result set
+
+In the process of fixing it, I rewrote it and added more features.
+It and a demo form using Emacs widgets can be found on 
+[http://www.jasonfruit.com/page/emacs_sqlite_and_widgets this page of my website].
