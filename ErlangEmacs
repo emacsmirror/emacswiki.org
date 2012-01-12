@@ -23,7 +23,7 @@ Lisp:erlang-dired-mode.el     --  binding some key in dired mode  if Emakefile i
   (interactive)
   (save-excursion
     (goto-char (car (bounds-of-thing-at-point 'defun)))
-    (when (re-search-forward "(\\(.*\\))") ;search params
+    (when (re-search-forward "(\\(.*?\\))") ;search params
       (let ((params (match-string 1))
             param-count
             funname
