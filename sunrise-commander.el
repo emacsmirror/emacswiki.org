@@ -7,7 +7,7 @@
 ;; Maintainer: José Alfredo Romero L. <escherdragon@gmail.com>
 ;; Created: 24 Sep 2007
 ;; Version: 5
-;; RCS Version: $Rev: 404 $
+;; RCS Version: $Rev: 405 $
 ;; Keywords: files, dired, midnight commander, norton, orthodox
 ;; URL: http://www.emacswiki.org/emacs/sunrise-commander.el
 ;; Compatibility: GNU Emacs 22+
@@ -3555,20 +3555,28 @@ cd's to the current directory of the active pane."
   (interactive "sShell program to use: ")
   (sr-term t t program))
 
-(defmacro sr-term-excursion (newterm form)
+(defmacro sr-term-excursion (newterm form &optional is-external)
   "Take care of the common mechanics of launching or switching to a terminal.
 Helper macro."
-  `(let* ((start-buffer (current-buffer)) (term-buffer (car sr-ti-openterms))
-          (new-term (or (null term-buffer) ,newterm)) (new-name))
+  `(let* ((start-buffer (current-buffer))
+          (new-term (or (null sr-ti-openterms) ,newterm))
+          (next-buffer (or (cadr (memq start-buffer sr-ti-openterms))
+                           (car sr-ti-openterms)))
+          (new-name) (is-line-mode))
      (sr-select-viewer-window t)
      (if (not new-term)
-         (switch-to-buffer (or (cadr (memq start-buffer sr-ti-openterms))
-                               (car sr-ti-openterms)))
-       (when (buffer-live-p term-buffer)
-         (switch-to-buffer term-buffer)
-         (rename-uniquely)
-         (setq new-name (buffer-name)))
+         (switch-to-buffer next-buffer)
+       (when next-buffer
+         (with-current-buffer next-buffer
+           (setq is-line-mode (and (boundp 'sr-term-line-minor-mode)
+                                   (symbol-value 'sr-term-line-minor-mode)))))
        ,form
+       (if ,is-external (sr-term-char-mode))
+       (if is-line-mode (sr-term-line-mode))
+       (when (memq (current-buffer) sr-ti-openterms)
+         (rename-uniquely)
+         (setq new-name (buffer-name))
+         ,form)
        (when new-name
          (message "Sunrise: previous terminal renamed to %s" new-name))
        (push (current-buffer) sr-ti-openterms))))
@@ -3599,7 +3607,7 @@ See `sr-term' for a description of the arguments."
         (cd (or cd (null sr-ti-openterms)))
         (line-mode (if (buffer-live-p aterm)
                        (with-current-buffer aterm (term-in-line-mode)))))
-    (sr-term-excursion newterm (term program))
+    (sr-term-excursion newterm (term program) t)
     (sr-term-char-mode)
     (when (or line-mode (term-in-line-mode))
       (sr-term-line-mode))
@@ -3677,21 +3685,11 @@ Helper macro for implementing terminal integration in Sunrise."
   (interactive)
   (sr-ti (sr-change-window)))
 
-(defun sr-ti-restore-previous-term ()
-  "Rename the last open terminal (if any) to the default terminal buffer name."
-  (let ((found nil)
-        (name (buffer-name)))
-    (setq sr-ti-openterms (delete (current-buffer) sr-ti-openterms))
-    (when (and (string= (buffer-name (car sr-ti-openterms)) name)
-               (car sr-ti-openterms)
-               (pop sr-ti-openterms)
-               (buffer-live-p (car sr-ti-openterms)))
-      (rename-uniquely)
-      (set-buffer (car sr-ti-openterms))
-      (when (string-match "<[0-9]+>\\'" (buffer-name))
-        (setq name (substring (buffer-name) 0 (match-beginning 0)))
-        (rename-buffer name)))))
-(add-hook 'kill-buffer-hook 'sr-ti-restore-previous-term)
+(add-hook
+ 'kill-buffer-hook
+ (defun sr-ti-cleanup-openterms ()
+   "FIXME: add comment"
+   (setq sr-ti-openterms (delete (current-buffer) sr-ti-openterms))))
 
 (defun sr-ti-revert-buffer ()
   "Refresh the currently active pane."
