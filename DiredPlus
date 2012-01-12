@@ -629,23 +629,6 @@ Anyway, I fixed this in the latest <tt>[[dired+.el]]</tt> on 2011-10-31, so it s
 
 
 
-----
-
-[new]
-Mmh, I cannot see that fancy highlighting is fixed with current versions of dired+ and emacs (from bzr).
-Sure there is some highlighting done. But customizing the face of the owner and the group of a file is not possible unless you won't change the default face.  -- [[henry]]
-
-[new:DrewAdams:2012-01-06 17:35 UTC]
-Sorry, I have no idea what you're saying, Henry.  Please try to provide a recipe to reproduce your problem, preferably starting from ##emacs -Q##.
-
-There is nothing in '''Dired+''' involving faces for owner or group.  The privilege faces are the same for owner, group, and world.  They are for _privileges_: none (`-'), exec (`x'), read (`r'), and write (`w').  These are used in all positions: owner, group, and world.
-
-And I don't know who "you" is in "you won't change the default face" (is it me or a user?).  What do you mean to say?  Please clarify/elaborate.  Thx -- DrewAdams
-
-
-
-
-
 
 
 ----
