@@ -31,7 +31,10 @@ Message bodies have the form of a keyword argument list, like
 	(:register "MySlotID")
 }}}
 
-The message size is intended as the length in characters of the message body.
+The message size is intended as the length in characters of the message body. In the last example, this would be
+{{{
+        |22|(:register "MySlotID")
+}}}
 
 == Enotify slots ==
 
