@@ -1,4 +1,4 @@
-Le but de cette page est de proposer un InitFile (fichier ##~/.emacs##) qui puisse constituer un bon début pour quelqun débutant sous InitFile.
+Le but de cette page est de proposer un InitFile (fichier ##~/.emacs##) qui puisse constituer un bon début pour quelqu’un débutant sous InitFile.
 Vous êtes bien sûr invités à proposer des modifications. Afin que celles-ci ne remettent pas en cause le but premier de ce fichier (à savoir ne donner qu'une base), il serait bien de respecter les règles suivantes :
 
 * Aucune modification ne doit bloquer (police manquante, mode manquant, ...)
