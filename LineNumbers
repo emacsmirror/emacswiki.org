@@ -115,11 +115,11 @@ Putting the following in your .emacs yields almost the same result without modif
 (setq linum-format "%d ")
 
 [new]
-: I like how "%d " uses only as much space as is needed for what is shown in the buffer. For example, if the largest visible line number is 50, it only uses two characters for the numbers (plus one for the space), even if there are 1000 lines in the file.  But I don't like how it left aligns the numbers. Is there a way to get this behavior with right alignment? dynamic right aligns, but it wastes space. -- [[Aaron]]
+: I like how "%d " uses only as much space as is needed for what is shown in the buffer. For example, if the largest visible line number is 50, it only uses two characters for the numbers (plus one for the space), even if there are 1000 lines in the file.  But I don't like how it left aligns the numbers. Is there a way to get this behavior with right alignment? dynamic right aligns, but it wastes space. -- [[AaronMeurer]]
 
 :: I guess I don't see what you see.  Using the version of ##linum.el## that is in Emacs 24 (a build from Dec 2011), the default value of `line-format' is ##"%6d "##, and the digits are right-aligned.  -- DrewAdams
 
-
+: No, I think you are misunderstanding the question.  %6d right aligns for me too.  But this adds a bunch of unnecessary whitespace to the left of the numbers.  %d (no number) uses only as much space as is needed, but it left aligns (this is the printf standard, I think).  dynamic right aligns, but it does so by setting N in %Nd to be length of number of lines in the file, which still wastes space if you are at the top.  Does this make sense?  I can give an example if that would help. -- [[AaronMeurer]]
 
 [new]
 Or you can set it as a function like the following if you'd like it right justified. The body of the function is modified from linum-0.9x.
