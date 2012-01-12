@@ -121,6 +121,13 @@ Putting the following in your .emacs yields almost the same result without modif
 
 : No, I think you are misunderstanding the question.  %6d right aligns for me too.  But this adds a bunch of unnecessary whitespace to the left of the numbers.  %d (no number) uses only as much space as is needed, but it left aligns (this is the printf standard, I think).  dynamic right aligns, but it does so by setting N in %Nd to be length of number of lines in the file, which still wastes space if you are at the top.  Does this make sense?  I can give an example if that would help. -- [[AaronMeurer]]
 
+:: With ##emacs -Q## (Emacs 24), I see no extra space at the left.  The the last line number, which has the most digits, is flush with the left side, and all line numbers are right aligned. Here are two images, from the top and bottom of the buffer. What am I missing? -- DrewAdams
+
+[[image:linum-align1]]
+[[image:linum-align2]]
+
+
+
 [new]
 Or you can set it as a function like the following if you'd like it right justified. The body of the function is modified from linum-0.9x.
 
