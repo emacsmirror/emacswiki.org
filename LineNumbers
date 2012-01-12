@@ -126,7 +126,15 @@ Putting the following in your .emacs yields almost the same result without modif
 [[image:linum-align1]]
 [[image:linum-align2]]
 
-: There is extra space in the first picture, where the largest visible line number is two digits long. With %d, you get the following (sorry, I don't know how to upload images to this wiki; feel free to upload them here if you want).  See https://gist.github.com/1602365.  Notice how in the first and second, only two spaces are used for the numbering (three if you count the padding space on the right; but you should use the mode line plus the cursor to see where column 0 is).  In the third, I've moved down two lines, and it automatically uses three spaces.  All three of these screen shots were taken without editing the file in between (as you can tell from the percentage in the mode line in the second image).  This is the behavior I like, but I want it to right align the numbers. -- [[AaronMeurer]]  
+: There is extra space in the first picture, where the largest visible line number is two digits long. With %d, you get the following (sorry, I don't know how to upload images to this wiki; feel free to upload them here if you want).  See https://gist.github.com/1602365.  Notice how in the first and second, only two spaces are used for the numbering (three if you count the padding space on the right; but you should use the mode line plus the cursor to see where column 0 is).  In the third, I've moved down two lines, and it automatically uses three spaces.  All three of these screen shots were taken without editing the file in between (as you can tell from the percentage in the mode line in the second image).  This is the behavior I like, but I want it to right align the numbers. -- [[AaronMeurer]]
+
+:: 1. I see what you mean, but don't have an answer for you.  -- DrewAdams 
+
+:: 2. To upload an image to the wiki, check this page's source code for examples.  You use the source code ##[[image:SomePageName]]#.  Then click `Preview' to show the page and that source text will show you a `##?##' link in the previewed page.  Click that link to get to an upload page. -- DrewAdams
+
+
+
+
 
 
 [new]
