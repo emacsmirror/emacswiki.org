@@ -1,11 +1,11 @@
 Le but de cette page est de proposer un InitFile (fichier ##~/.emacs##) qui puisse constituer un bon début pour quelqu’un débutant sous InitFile.
 Vous êtes bien sûr invités à proposer des modifications. Afin que celles-ci ne remettent pas en cause le but premier de ce fichier (à savoir ne donner qu'une base), il serait bien de respecter les règles suivantes :
 
-* Aucune modification ne doit bloquer (police manquante, mode manquant, ...)
-* Aucune modification ne doit être spécifique à un utilisateur, ni trop compliquée : elle doit être susceptible d'intéresser tout le monde
-* Il serait bien de commenter (en français) de la manière la plus précise qui soit afin que les gens qui ne connaissent pas, par exemple, ce que c'est que l'auto-fill puisse s'y retrouver.
-* Mettre un maximum de liens afin de pouvoir comprendre (et donc personnaliser le fichier)
-* Essayez de garder un même style pour le fichier
+* aucune modification ne doit bloquer (police manquante, mode manquant, ...) ;
+* aucune modification ne doit être spécifique à un utilisateur, ni trop compliquée : elle doit être susceptible d'intéresser tout le monde ;
+* il serait bien de commenter (en français) de la manière la plus précise qui soit afin que les gens qui ne connaissent pas, par exemple, ce que c'est que l'auto-fill puisse s'y retrouver ;
+* mettre un maximum de liens afin de pouvoir comprendre (et donc personnaliser le fichier) ;
+* essayez de garder un même style pour le fichier.
 
 Voir aussi: PointEmacs (fr)
 
