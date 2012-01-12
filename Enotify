@@ -8,7 +8,7 @@ An application can connect to enotify and send a notification message, that will
 
 == INSTALLATION ==
 
-Get the code, add the enotify directory to your emacs load-path and require enotify:
+Get the code from [https://github.com/laynor/enotify the github repository], add the enotify directory to your emacs load-path and require enotify:
 
 {{{
 (add-to-list 'load-path "path/to/enotify")
