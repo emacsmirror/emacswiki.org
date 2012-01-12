@@ -4,9 +4,9 @@
 ;; Description: Support sequential operation which omitted prefix keys.
 ;; Author: myuhe <yuhei.maeda_at_gmail.com>
 ;; Maintainer: myuhe
-;; Copyright (C) :2011, myuhe all rights reserved.
+;; Copyright (C) :2011,2012 myuhe all rights reserved.
 ;; Created: :2011-12-19
-;; Version: 0.0.1
+;; Version: 0.0.2
 ;; Keywords: convenience
 ;; URL: https://github.com/myuhe/smartrep.el
 
@@ -33,8 +33,15 @@
 ;;   And add to .emacs: (require 'smartrep)
 
 ;;; Changelog:
-;;
-;;
+
+;; 2012-01-06 read-key is replaced read-event for compatibility. thanks @tomy_kaira !!
+;; 2012-01-11 Support function calling form. (buzztaiki)
+;;            Call interactively when command. (buzztaiki) 
+;;            Support unquoted function. (buzztaiki)
+;; 2012-01-11 new command `smartrep-restore-original-position' `smartrep-quit' (rubikitch)
+;;            add mode line notification (rubikitch)
+;; 2012-01-12 add mode-line-color notification
+;;            
 
 ;;; Code:
 (eval-when-compile
@@ -42,60 +49,165 @@
 
 (defvar smartrep-key-string nil)
 
+(defvar smartrep-mode-line-string nil
+  "Mode line indicator for smartrep.")
+
+(defvar smartrep-mode-line-string-activated "========== SMARTREP ==========")
+
+(defvar smartrep-global-alist-hash (make-hash-table :test 'equal))
+
+(defvar smartrep-mode-line-original-bg (face-background 'mode-line))
+
+(defvar smartrep-mode-line-active-bg (face-background 'highlight))
+
+(let ((cell (or (memq 'mode-line-position mode-line-format) 
+		(memq 'mode-line-buffer-identification mode-line-format))) 
+      (newcdr 'smartrep-mode-line-string))
+  (unless (member newcdr mode-line-format) 
+    (setcdr cell (cons newcdr (cdr cell)))))
+
 (defun smartrep-define-key (keymap prefix alist)
-  (mapcar (lambda(x)
-            (define-key keymap
-              (read-kbd-macro 
-               (concat prefix " " (car x))) (smartrep-map alist)))
-          alist))
+  (when (eq keymap global-map)
+    (puthash prefix alist smartrep-global-alist-hash))
+  (setq alist
+        (if (eq keymap global-map)
+            alist
+          (append alist (gethash prefix smartrep-global-alist-hash))))
+  (mapc (lambda(x)
+          (define-key keymap
+            (read-kbd-macro 
+             (concat prefix " " (car x))) (smartrep-map alist)))
+        alist))
+(put 'smartrep-define-key 'lisp-indent-function 2)
 
 (defun smartrep-map (alist)
   (lexical-let ((lst alist))
-    (lambda ()
-      (interactive)
-      (let ((repeat-repeat-char last-command-event))
-        (if (memq last-repeatable-command
-                  '(exit-minibuffer
-                    minibuffer-complete-and-exit
-                    self-insert-and-exit))
-            (let ((repeat-command (car command-history)))
-              (eval repeat-command))
-          (progn
-            (run-hooks 'pre-command-hook)
-            (smartrep-extract-fun repeat-repeat-char lst)
-            (run-hooks 'post-command-hook)))
+    (lambda () (interactive) (smartrep-map-internal lst))))
+
+(defun smartrep-restore-original-position ()
+  (interactive)
+  (destructuring-bind (pt . wstart) smartrep-original-position
+    (goto-char pt)
+    (set-window-start (selected-window) wstart)))
+
+(defun smartrep-quit ()
+  (interactive)
+  (setq smartrep-mode-line-string "")
+  (smartrep-restore-original-position)
+  (keyboard-quit))
+
+(defun smartrep-map-internal (lst)
+  (interactive)
+  (setq smartrep-mode-line-string smartrep-mode-line-string-activated)
+  (force-mode-line-update)
+  (set-face-background 'mode-line smartrep-mode-line-active-bg)
+  (setq smartrep-original-position (cons (point) (window-start)))
+  (let ((repeat-repeat-char last-command-event))
+    (if (memq last-repeatable-command
+              '(exit-minibuffer
+                minibuffer-complete-and-exit
+                self-insert-and-exit))
+        (let ((repeat-command (car command-history)))
+          (eval repeat-command))
+      (smartrep-do-fun repeat-repeat-char lst))
+    (unwind-protect
         (when repeat-repeat-char
-          (lexical-let ((undo-inhibit-record-point t))
-            (unwind-protect
-                (while 
-                    (lexical-let ((evt (read-key)))
-                      ;; (eq (or (car-safe evt) evt)
-                      ;;     (or (car-safe repeat-repeat-char)
-                      ;;         repeat-repeat-char))
-                      (setq smartrep-key-string evt)
-                      (smartrep-extract-char evt lst))
-                  (condition-case nil
-                      (smartrep-extract-fun smartrep-key-string lst)
-                    (error nil))))
-            (setq unread-command-events (list last-input-event))))))))
+          (smartrep-read-event-loop lst))
+      (setq smartrep-mode-line-string "")
+      (force-mode-line-update)
+      (set-face-background 'mode-line smartrep-mode-line-original-bg))))
+
+(defun smartrep-read-event-loop (lst)
+  (lexical-let ((undo-inhibit-record-point t))
+    (unwind-protect
+        (while
+            (lexical-let ((evt (read-key)))
+              ;; (eq (or (car-safe evt) evt)
+              ;;     (or (car-safe repeat-repeat-char)
+              ;;         repeat-repeat-char))
+              (setq smartrep-key-string evt)
+              (smartrep-extract-char evt lst))
+          (ignore-errors (smartrep-do-fun smartrep-key-string lst))))
+    (setq unread-command-events (list last-input-event))))
 
 (defun smartrep-extract-char (char alist)
   (car (smartrep-filter char alist)))
 
 (defun smartrep-extract-fun (char alist)
-  (funcall
-   (eval (cdr (smartrep-filter char alist)))))
+  (let* ((rawform (cdr (smartrep-filter char alist)))
+         (form (smartrep-unquote rawform)))
+    (cond
+     ((commandp form) 
+      (setq this-command form)
+      (unwind-protect
+          (call-interactively form)
+        (setq last-command form)))
+     ((functionp form) (funcall form))
+     ((and (listp form) (symbolp (car form))) (eval form))
+     (t (error "Unsupported form %c %s" char rawform)))))
+
+(defun smartrep-do-fun (char alist)
+  (run-hooks 'pre-command-hook)
+  (smartrep-extract-fun char alist)
+  (run-hooks 'post-command-hook))
+
+(defun smartrep-unquote (form)
+  (if (and (listp form) (memq (car form) '(quote function)))
+      (eval form)
+    form))
 
 (defun smartrep-filter (char alist)
-  (assoc 
-   char
-   (mapcar (lambda (x)
-             (cons 
-              (if (vectorp (read-kbd-macro (car x)))
-                  (aref (read-kbd-macro (car x)) 0)
-                (string-to-char (read-kbd-macro (car x))))
-              (cdr x)))
-           alist)))
+  (loop for (key . form) in alist
+        for rkm = (read-kbd-macro key)
+        for number = (if (vectorp rkm)
+                         (aref rkm 0)
+                       (string-to-char rkm))
+        if (eq char number)
+        return (cons number form)))
+
+(dont-compile
+  (when (fboundp 'expectations)
+    (defun smartrep-test-func (&optional arg)
+      (or arg 1))
+    (defun smartrep-test-command ()
+      (interactive)
+      (if (interactive-p) 2 1))
+
+    (expectations
+      (desc "smartrep-unquote")
+      (expect 'hoge
+	(smartrep-unquote '(quote hoge)))
+      (expect 'hoge
+	(smartrep-unquote '(function hoge)))
+      (expect 'hoge
+	(smartrep-unquote 'hoge))
+      
+      (desc "smartrep-extract-fun")
+      (expect 1
+	(smartrep-extract-fun ?a '(("a" . smartrep-test-func))))
+      (expect 1
+	(smartrep-extract-fun ?a '(("a" . (lambda () (smartrep-test-func))))))
+      (expect 1
+	(smartrep-extract-fun ?a '(("a" . (smartrep-test-func)))))
+      (expect 2
+	(smartrep-extract-fun ?a '(("a" . (smartrep-test-func 2)))))
+      (expect 2
+	(smartrep-extract-fun ?a '(("a" . smartrep-test-command))))
+
+      (desc "smartrep-extract-fun with quote")
+      (expect 1
+	(smartrep-extract-fun ?a '(("a" . 'smartrep-test-func))))
+      (expect 1
+	(smartrep-extract-fun ?a '(("a" . '(lambda () (smartrep-test-func))))))
+      (expect 1
+	(smartrep-extract-fun ?a '(("a" . #'(lambda () (smartrep-test-func))))))
+      (expect 1
+	(smartrep-extract-fun ?a '(("a" . '(smartrep-test-func)))))
+      (expect 2
+	(smartrep-extract-fun ?a '(("a" . '(smartrep-test-func 2)))))
+      (expect 2
+	(smartrep-extract-fun ?a '(("a" . 'smartrep-test-command))))
+      )))
 
 (provide 'smartrep)
 
