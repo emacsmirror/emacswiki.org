@@ -81,7 +81,7 @@ The message used to send a notification has the form
 	       ----
 
 == Ruby/Rails/Rspec/Watchr TDD application ==
-As of now, [https://github.com/laynor/spectator laynor/spectator] this is the only application for enotify.
+As of now, [https://github.com/laynor/espectator laynor/espectator] this is the only application for enotify.
 If you are interested, you can look at the code and see how does it work.
 
 It's best used together with [https://github.com/laynor/rspec_org_formatter Rspec Org Formatter], that provides
