@@ -47,25 +47,6 @@ This is a litte function that is useful when editing several files that might fo
           (revert-buffer t t t) )))
     (message "Refreshed open files.") )
 
-== Inform that the modified file was reverted ==
-
-Inform that modified file was reverted in "real time" for win32
-
-    ;; Automatically reload files was modified by external program
-    (global-auto-revert-mode 1)
-    ;; and display "half modal" warning about it
-    (require 'w32-msgbox)
-    (defun inform-revert-modified-file (&optional p1 p2)
-      "bdimych custom function"
-      (let ((revert-buffer-function nil))
-            (revert-buffer p1 p2)
-        (w32-msgbox (buffer-file-name) "Emacs: Modified file automatically reverted" 'vb-ok-only 'vb-information nil t)
-      )
-    )
-    (setq revert-buffer-function 'inform-revert-modified-file)
-
---bdimych
-
 == Reverting, but protecting undo ==
 
 There's no way to save the undo history if the file is changed behind Emacs's back.   Emacs needs to re-read the file from disk and reverting a buffer with `revert-buffer' or reopening the file with `C-x C-v RET' will lose the undo history.  If you only want to revert the buffer to undo your own changes, you can hit the UndoCommands repeatedly until the buffer is no longer modified.  In addition to preserving the UndoList, it uses `undo' to revert the command as far as possible until the last time the file was saved.
