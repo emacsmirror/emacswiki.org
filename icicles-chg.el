@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Sun Jan  8 20:57:35 2012 (-0800)
+;; Last-Updated: Fri Jan 13 10:08:13 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 7754
+;;     Update #: 7757
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-chg.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -2880,6 +2880,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-mcmd.el'")
 ;;
+;; 2012/01/13 dadams
+;;     icicle-(un)bind-file-candidate-keys: Corrected to handle also minibuffer-local-must-match-map.
 ;; 2012/01/08 dadams
 ;;     icicle-(prefix|apropos)-complete-1: Protect icicle-ido-like-mode with boundp for Emacs 20.
 ;; 2011/12/31 dadams
