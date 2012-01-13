@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Sun Jan  8 20:49:24 2012 (-0800)
+;; Last-Updated: Fri Jan 13 09:53:46 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 17482
+;;     Update #: 17487
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-mcmd.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -5680,14 +5680,14 @@ Return the string that was inserted."
            (define-key minibuffer-local-must-match-filename-map (icicle-kbd "C-x a -") ; `C-x a -'
              (icicle-add/remove-tags-and-refresh 'remove)))
           (t
-           (define-key minibuffer-local-completion-map (icicle-kbd "C-x m") ; `C-x m'
+           (define-key minibuffer-local-must-match-map (icicle-kbd "C-x m") ; `C-x m'
              'icicle-bookmark-file-other-window)
-           (define-key minibuffer-local-completion-map (icicle-kbd "C-x a +") ; `C-x a +'
+           (define-key minibuffer-local-must-match-map (icicle-kbd "C-x a +") ; `C-x a +'
              (icicle-add/remove-tags-and-refresh 'add))
-           (define-key minibuffer-local-completion-map (icicle-kbd "C-x a -") ; `C-x a -'
+           (define-key minibuffer-local-must-match-map (icicle-kbd "C-x a -") ; `C-x a -'
              (icicle-add/remove-tags-and-refresh 'remove)))))
   ;; When using `completing-read', not `read-file-name', regardless of the Emacs version.
-  (when (not (icicle-file-name-input-p))
+  (unless (icicle-file-name-input-p)
     (define-key minibuffer-local-completion-map (icicle-kbd "C-backspace") ; `C-backspace'
       'icicle-up-directory)
     (define-key minibuffer-local-completion-map (icicle-kbd "C-c +") ; `C-c +'
@@ -5697,6 +5697,17 @@ Return the string that was inserted."
     (define-key minibuffer-local-completion-map (icicle-kbd "C-x a +") ; `C-x a +'
       (icicle-add/remove-tags-and-refresh 'add))
     (define-key minibuffer-local-completion-map (icicle-kbd "C-x a -") ; `C-x a -'
+      (icicle-add/remove-tags-and-refresh 'remove))
+
+    (define-key minibuffer-local-must-match-map (icicle-kbd "C-backspace") ; `C-backspace'
+      'icicle-up-directory)
+    (define-key minibuffer-local-must-match-map (icicle-kbd "C-c +") ; `C-c +'
+      'icicle-make-directory)
+    (define-key minibuffer-local-must-match-map (icicle-kbd "C-x m") ; `C-x m'
+      'icicle-bookmark-file-other-window)
+    (define-key minibuffer-local-must-match-map (icicle-kbd "C-x a +") ; `C-x a +'
+      (icicle-add/remove-tags-and-refresh 'add))
+    (define-key minibuffer-local-must-match-map (icicle-kbd "C-x a -") ; `C-x a -'
       (icicle-add/remove-tags-and-refresh 'remove))))
 
 ;;;###autoload
@@ -5728,8 +5739,14 @@ Return the string that was inserted."
   (define-key minibuffer-local-completion-map (icicle-kbd "C-x m")                  nil)
   (define-key minibuffer-local-completion-map (icicle-kbd "C-x a +")                nil)
   (define-key minibuffer-local-completion-map (icicle-kbd "C-x a -")                nil)
-  (define-key minibuffer-local-completion-map (icicle-kbd "C-x a")                  nil))
+  (define-key minibuffer-local-completion-map (icicle-kbd "C-x a")                  nil)
 
+  (define-key minibuffer-local-must-match-map (icicle-kbd "C-backspace")            nil)
+  (define-key minibuffer-local-must-match-map (icicle-kbd "C-c +")                  nil)
+  (define-key minibuffer-local-must-match-map (icicle-kbd "C-x m")                  nil)
+  (define-key minibuffer-local-must-match-map (icicle-kbd "C-x a +")                nil)
+  (define-key minibuffer-local-must-match-map (icicle-kbd "C-x a -")                nil)
+  (define-key minibuffer-local-must-match-map (icicle-kbd "C-x a")                  nil))
 
 ;;;###autoload
 (defun icicle-candidate-set-swap ()     ; Bound to `C-%' in minibuffer.
