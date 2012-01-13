@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Fri Jan 13 10:08:13 2012 (-0800)
+;; Last-Updated: Fri Jan 13 10:25:46 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 7757
+;;     Update #: 7758
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-chg.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -5225,6 +5225,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-opt.el'")
 ;;
+;; 2012/01/13 dadams
+;;     icicle-prefix-complete-keys: Added ?\t.
 ;; 2012/01/08 dadams
 ;;     icicle-top-level-key-bindings: Added remappings to icicle-yank-pop-commands.
 ;;                                    Typo: bmkp-autonamed-this-buffer-jump (name).
