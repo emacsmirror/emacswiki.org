@@ -76,6 +76,25 @@ If you open a file, turn auto-revert-mode on, and modify it (without saving), th
 [new]
 Binding revert-buffer-function to a function discarding changes and then reverting might work
 
+== Notify that a file was reverted ==
+
+Inform that modified file was reverted in "real time" for win32
+
+    ;; Automatically reload files was modified by external program
+    (global-auto-revert-mode 1)
+    ;; and display "half modal" warning about it
+    (require 'w32-msgbox)
+    (defun inform-revert-modified-file (&optional p1 p2)
+      "bdimych custom function"
+      (let ((revert-buffer-function nil))
+            (revert-buffer p1 p2)
+        (w32-msgbox (buffer-file-name) "Emacs: Modified file automatically reverted" 'vb-ok-only 'vb-information nil t)
+      )
+    )
+    (setq revert-buffer-function 'inform-revert-modified-file)
+
+--bdimych
+
 ----
 CategoryFiles
 CategoryUndo
