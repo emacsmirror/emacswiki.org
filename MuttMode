@@ -17,6 +17,8 @@ Download link is dead. Anybody has an alternative location of mutt.el?
 
 [new]
 : Maybe http://www.lemis.com/grog/programs/emacs/emacs/mutt.el ? Not sure it's the same file.
+[new]
+Yes, it is, but il looks like an older revision. I've retrieved a more recent copy via archive.org, and saved it here: Lisp:mutt.el
 
 ----
 CategoryMailAddons | CategoryModes
