@@ -7,7 +7,7 @@
 ;; Maintainer: José Alfredo Romero L. <escherdragon@gmail.com>
 ;; Created: 24 Sep 2007
 ;; Version: 5
-;; RCS Version: $Rev: 405 $
+;; RCS Version: $Rev: 406 $
 ;; Keywords: files, dired, midnight commander, norton, orthodox
 ;; URL: http://www.emacswiki.org/emacs/sunrise-commander.el
 ;; Compatibility: GNU Emacs 22+
@@ -2074,7 +2074,8 @@ Kills any other buffer opened previously the same way."
           (progn
             (sr-select-viewer-window)
             (find-file filename)
-            (if (buffer-live-p other-window-scroll-buffer)
+            (if (and (not (eq (current-buffer) other-window-scroll-buffer))
+                          (buffer-live-p other-window-scroll-buffer))
                 (kill-buffer other-window-scroll-buffer))
             (sr-scrollable-viewer (current-buffer)))
         (error (message "%s" (cadr description)))))))
