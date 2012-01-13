@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2012, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Sun Jan  8 17:16:44 2012 (-0800)
+;; Last-Updated: Fri Jan 13 09:15:08 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 14217
+;;     Update #: 14220
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-chg.el
 ;; Keywords: bookmarks, bookmark+
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -145,6 +145,8 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-1.el'")
 ;;
+;; 2012/01/13 dadams
+;;     bmkp-same-file-p: Handle case-sensitivity for local files, at least (not yet done for remote).
 ;; 2012/01/08 dadams
 ;;     Added: bmkp-autonamed-this-buffer-bookmark-p.
 ;;     bmkp-autotemp-bookmark-predicates: Updated doc string for *-autonamed-this-buffer-bookmark-p.
