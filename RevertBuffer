@@ -1,5 +1,4 @@
 Is there a quick way or re-visiting the file in current buffer? This is useful when it was modified by an external program.
-
  From: MichaelSlassto
  Subject: Re: revisit-file
  Newsgroups: comp.emacs
@@ -66,6 +65,23 @@ Inform that modified file was reverted in "real time" for win32
     (setq revert-buffer-function 'inform-revert-modified-file)
 
 --bdimych
+
+== Reverting, but protecting undo ==
+
+There's no way to save the undo history if the file is changed behind Emacs's back.   Emacs needs to re-read the file from disk and reverting a buffer with `revert-buffer' or reopening the file with `C-x C-v RET' will lose the undo history.  If you only want to revert the buffer to undo your own changes, you can hit the UndoCommands repeatedly until the buffer is no longer modified.  In addition to preserving the UndoList, it uses `undo' to revert the command as far as possible until the last time the file was saved.
+
+{{{
+(defun undo-until-reverted ()
+  "Undo all edits until the buffer is unmodified."
+  (interactive)
+  (when (buffer-modified-p)
+    (undo))
+  (while (buffer-modified-p)
+    (undo-more 1))
+  (message "Buffer was undone until no longer modified"))
+}}}
+
+It can even undo changes to a buffer that was modified and not even associated with a file.
 
 ----
 CategoryFiles
