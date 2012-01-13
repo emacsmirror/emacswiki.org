@@ -1,4 +1,4 @@
-;; mutt.el --- Use Emacs 20 as an external editor for the Mutt mailer
+;;; mutt.el --- Use Emacs 20 as an external editor for the Mutt mailer
 ;; Copyright 1998 Eric Kidd
 
 ;; Author: Eric Kidd <eric.kidd@pobox.com>
