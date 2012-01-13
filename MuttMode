@@ -6,6 +6,8 @@ Put mutt.el in your load-path and add the following line to the .emacs file:
 
  (require 'mutt)
 
+See Also MuttInEmacs.
+
 [new]
 I'm using Emacs as the editor for Mutt, and I'd like to use Supercite while doing so; however, I have not been able to get Supercite to work in this context. I have this feeling that it shouldn't be too hard... Has anybody succeeded? --DirkJanBinnema
 
