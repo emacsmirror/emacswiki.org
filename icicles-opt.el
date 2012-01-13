@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:22:14 2006
 ;; Version: 22.0
-;; Last-Updated: Fri Jan 13 10:25:04 2012 (-0800)
+;; Last-Updated: Sun Jan  8 20:50:24 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 4767
+;;     Update #: 4765
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-opt.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -2275,7 +2275,7 @@ A value of nil means no limit."
   :type '(choice (const :tag "No Limit" nil) integer) :group 'Icicles-Miscellaneous)
 
 ;;;###autoload
-(defcustom icicle-prefix-complete-keys '(?\t  [tab]  [(control ?i)]) ; `C-i' is `TAB'.
+(defcustom icicle-prefix-complete-keys '([tab] [(control ?i)]) ; `C-i' is `TAB'.
   "*Key sequences to use for `icicle-prefix-complete'.
 A list of values that each has the same form as a key-sequence
 argument to `define-key'.  It is a list mainly in order to accommodate
