@@ -49,7 +49,7 @@ This is a litte function that is useful when editing several files that might fo
 
 == Reverting, but protecting undo ==
 
-There's no way to save the undo history if the file is changed behind Emacs's back.   Emacs needs to re-read the file from disk and reverting a buffer with `revert-buffer' or reopening the file with `C-x C-v RET' will lose the undo history.  If you only want to revert the buffer to undo your own changes, you can hit the UndoCommands repeatedly until the buffer is no longer modified.  Sometimes this is too onerous.  This command will run undo iteratively in the buffer and as far as possible or until the last time the file was saved.
+There's no way to save the undo history if the file is changed behind Emacs's back.   Emacs needs to re-read the file from disk and reverting a buffer with `revert-buffer' or reopening the file with `C-x C-v RET' will lose the buffer's undo history.  If you only want to revert the buffer to undo just your own changes, you can hit the UndoCommands repeatedly until the buffer is no longer modified. Sometimes this is too onerous.  The following command will run undo iteratively in the buffer for you and as far as possible or until the last time the file was saved.
 
 {{{
 (defun undo-until-reverted ()
