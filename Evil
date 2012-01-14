@@ -8,7 +8,7 @@ Evil lives in a Git repository. To download Evil, do:
 
     git clone git://gitorious.org/evil/evil.git
 
-If you don't have Git, just head over to [https://gitorious.org/evil/evil/commits/master Gitorious] and click the ''"Download master as tar.gz"'' link (and extract it with ##tar -xzf master.tar.gz##).
+If you don't have Git, just head over to [https://gitorious.org/evil/evil/commits/master Gitorious] and click the ''"Download master as tar.gz"'' link (extract with ##tar -xzf master.tar.gz##).
 
 == Install ==
 
