@@ -7,9 +7,9 @@
 ;; Copyright (C) 2011-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Oct  4 07:32:20 2011 (-0700)
 ;; Version: 23.0
-;; Last-Updated: Sun Jan  1 17:29:28 2012 (-0800)
+;; Last-Updated: Sat Jan 14 07:58:01 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 88
+;;     Update #: 92
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/ucs-cmds.el
 ;; Keywords: unicode, characters, encoding, commands, ucs-names
 ;; Compatibility: GNU Emacs 23.x
@@ -73,6 +73,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2012/01/14 dadams
+;;     ucs-make-commands: Improve doc string.
 ;; 2011/10/04 dadams
 ;;     Created.
 ;;
@@ -101,9 +103,14 @@
 (defmacro ucs-make-commands (regexp)
   "Create commands to insert Unicode characters whose names match REGEXP.
 Letter case is ignored for matching.
-The set of character names used is taken from `ucs-names'.  There are
-*many* such characters, so consider using a tighter regexp to limit
-the number of commands created."
+
+The set of char names used is taken from `ucs-names'.  There are
+*many* such chars, so consider using a tighter regexp to limit the
+number of commands created.
+
+The commands created have the same names as the chars they insert,
+except that `SPC' chars in the character names are replaced by
+hyphens (`-'), and the command names are lowercase."
   (dolist (name.code  (ucs-names))
     (when (let ((case-fold-search  t))
             (string-match (upcase regexp) (car name.code)))
