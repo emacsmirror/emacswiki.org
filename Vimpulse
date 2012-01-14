@@ -1,14 +1,12 @@
 '''Vimpulse''' augments [ViperMode Viper] with Vim features like Visual mode and text objects.
 
-Vimpulse has been superseeded by [[Evil]].[https://lists.ourproject.org/pipermail/implementations-list/2011-April/000756.html]
+Vimpulse has been superseded by [[Evil]].[https://lists.ourproject.org/pipermail/implementations-list/2011-April/000756.html]
 
 == Download ==
 
-: '''Latest release: [[vimpulse.el|Vimpulse 0.5]]''' (always on !EmacsWiki)
+[[vimpulse.el|Vimpulse 0.5]] (available on !EmacsWiki).
 
-Alternatively, you can clone the [http://gitorious.org/vimpulse/vimpulse Git repository]:
-
-    git clone git://gitorious.org/vimpulse/vimpulse.git
+Alternatively, clone the [http://gitorious.org/vimpulse/vimpulse Git repository] with ##git clone git://gitorious.org/vimpulse/vimpulse.git##.
 
 == Installation ==
 
@@ -21,7 +19,7 @@ If you want linear undo/redo, download and install UndoTree.
 
 Vimpulse automatically enables [ViperMode Viper]. You can temporarily disable Viper (and Vimpulse) with `C-z'.
 
-== News ==
+== Features ==
 
 * By popular request, we have moved to [http://gitorious.org/vimpulse/vimpulse Git] as our version control system.
 * Emacs-compatible Visual selection (characterwise, linewise and blockwise).
@@ -36,16 +34,12 @@ Vimpulse prehistory started with [http://common-lisp.net/project/vial/darcs/exte
 
 Vimpulse history began when Jason Spiro split vimper into two parts to make two projects: viper-in-more-modes 0.1 and Vimpulse 0.1.
 
-Jason was maintainer of Vimpulse from 0.1 (May 2007) until he passed the maintainership on. Alessandro inherited the maintainership from him in June 2009.[http://thread.gmane.org/gmane.emacs.vim-emulation/39] Vegard Øye inherited it from Alessandro in April 2010.[http://thread.gmane.org/gmane.emacs.vim-emulation/309] 
+Jason was maintainer of Vimpulse from 0.1 (May 2007) until he passed the maintainership on. Alessandro inherited the maintainership from him in June 2009.[http://thread.gmane.org/gmane.emacs.vim-emulation/39] Vegard Øye inherited it from Alessandro in April 2010.[http://thread.gmane.org/gmane.emacs.vim-emulation/309] In February 2011, Frank Fischer proposed to merge the Vimpulse and vim-mode projects.[http://article.gmane.org/gmane.emacs.vim-emulation/692] Frank's initiative culminated in a new project, Evil.[https://lists.ourproject.org/pipermail/implementations-list/2011-April/000756.html]
 
 == External links ==
 
 * [http://gitorious.org/vimpulse Gitorious project]
-** '''[http://gitorious.org/vimpulse/vimpulse Git repository]'''
-** [http://gitorious.org/vimpulse/pages/Home Documentation wiki]
-* '''[http://lists.ourproject.org/cgi-bin/mailman/listinfo/implementations-list Mailing list]'''
-** [nntp://news.gmane.org/gmane.emacs.vim-emulation gmane.emacs.vim-emulation newsgroup]
-** [http://dir.gmane.org/gmane.emacs.vim-emulation gmane.emacs.vim-emulation web archives]
+* [http://lists.ourproject.org/cgi-bin/mailman/listinfo/implementations-list Mailing list]
 
 ----
 CategoryKeys CategoryEmulation
