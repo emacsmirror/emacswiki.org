@@ -78,8 +78,8 @@ one, simply set ALTERNATE_EDITOR.  In your .bash_profile (or similar):
 Alternatively, the following script can be used to open Emacs in the background if not already present, giving more consistent behaviour:
 
 <pre>
-tempuid=`id -u`
-temphost=`hostname`
+tempuid=$(id -u)
+temphost=$(hostname)
 if [ ! -e "/tmp/esrv$tempuid-$temphost" ]
 then
     emacs &
@@ -536,7 +536,7 @@ And in my InitFile I have:
     (add-hook 'server-done-hook
               (lambda ()
                 (shell-command
-                 "screen -r -X select `cat ~/tmp/emacsclient-caller`")))
+                 "screen -r -X select $(cat ~/tmp/emacsclient-caller)")))
 
 Now I only need to set my EDITOR environment variable
 to ~/bin/emacs.
@@ -699,7 +699,7 @@ First you need wmctrl installed, and a helper script called
 # Only ttys have $WINDOWID set correctly? Firefox doesn't, anyway.
 
 if ! which wmctrl >/dev/null 2>&1; then
-  me=`basename $0`
+  me=$(basename $0)
   echo "$me: wmctrl not found; aborting." >&2
   exit 1
 fi
@@ -720,7 +720,7 @@ Then all you need is an emacsclient wrapper script (e.g. call it
 #!/bin/sh
 
 # Save the current winid so we know what to switch back to from emacs.
-client_winid=`current-winid`
+client_winid=$(current-winid)
 
 # Switch to emacs and wait for editing to be completed.
 wmctrl -xa emacs
@@ -892,7 +892,7 @@ I defined the following function within .bashrc and start emacs under cygwin wit
 e() {
     local TMP;
     if [[ "$1" == "-" ]]; then
-        TMP="`mktemp /tmp/emacsstdinXXX`";
+        TMP="$(mktemp /tmp/emacsstdinXXX)";
         cat >"$TMP";
         if ! emacsclient --alternate-editor /usr/bin/false --eval "(let ((b (create-file-buffer \"*stdin*\"))) (switch-to-buffer b) (insert-file-contents \"${TMP}\") (delete-file \"${TMP}\"))"  > /dev/null 2>&1; then
             emacs --eval "(let ((b (create-file-buffer \"*stdin*\"))) (switch-to-buffer b) (insert-file-contents \"${TMP}\") (delete-file \"${TMP}\"))" &
