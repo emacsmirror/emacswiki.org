@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Fri Jan 13 15:02:49 2012 (-0800)
+;; Last-Updated: Sat Jan 14 14:57:09 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 7759
+;;     Update #: 7770
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-chg.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -82,6 +82,9 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd1.el'")
 ;;
+;; 2012/01/14 dadams
+;;     Added: icicle-zap-to-char, icicle-char-cands-from-charlist, icicle-read-char-by-name,
+;;            icicle-read-char-completing, icicle-ucs-names, icicle-read-char-history.
 ;; 2012/01/08 dadams
 ;;     Added: icicle-yank-pop-commands, icicle-bookmark-bind-narrow-commands,
 ;;            icicle-bookmark-(autofile|autonamed(-this-buffer)|file-this-dir|temporary)-narrow.
@@ -5225,6 +5228,9 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-opt.el'")
 ;;
+;; 2012/01/14 dadams
+;;     Added: icicle-zap-to-char-candidates.
+;;     icicle-top-level-key-bindings: Added entry for icicle-zap-to-char (M-z).
 ;; 2012/01/13 dadams
 ;;     icicle-prefix-complete-keys: Added [?\t].
 ;; 2012/01/08 dadams
