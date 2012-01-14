@@ -103,17 +103,17 @@ Aquí hay algunos lugares para descargar y distribuir código elisp:
 ** Varios vcs --
    [http://savannah.gnu.org/search/?words=emacs&type_of_search=soft&Search=Search&exact=1#options savannah], [http://savannah.nongnu.org/ savannah nongnu], [http://sourceforge.net/search/?type_of_search=soft&words=emacs&search=Search sourceforge]
 
-== Concejos ==
+== Consejos ==
 
-Podés encontrar concejos adicionales en ElispAreaDiscussions
+Puedes encontrar consejos adicionales en ElispAreaDiscussions
 
 === Versionar ===
 
-Si en una página de código elisp ponés un signo de porciento (%), luego "Id:" (los dos puntos son necesarios) y a continuación otro %, se expandirá en un número de revisión y se verá así:
+Si en una página de código elisp pones un signo de porciento (%), luego "Id:" (los dos puntos son necesarios) y a continuación otro %, se expandirá en un número de revisión y se verá así:
 
-%Id: 3%
+%Id: 4%
 
-De esta manera podés tener archivos lisp  en la Wiki con números de versión automáticos.
+De esta manera puedes tener archivos lisp en la Wiki con números de versión automáticos.
 
 === Conflictos con los Nombres ===
 
