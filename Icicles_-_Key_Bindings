@@ -161,6 +161,7 @@ by '''Icicles''' commands:
 [:icicle-select-window-or-frame]
 [:icicle-where-is]
 [:icicle-yank-maybe-completing]
+[:icicle-yank-pop-commands]
 
  Standard Command                   Icicles Command
 
@@ -197,6 +198,7 @@ by '''Icicles''' commands:
  `switch-to-buffer-other-window'....`icicle-buffer-other-window' (`C-x 4 b')
  `where-is'.........................`icicle-where-is' (`C-h w')
  `yank'.............................`icicle-yank-maybe-completing' (`C-y')
+ `yank-pop'.........................`icicle-yank-pop-commands' (`M-y')
 
 Actually, by default, '''Icicles''' binds `icicle-yank-maybe-completing'
 to whatever the value of option '''`<tt>[[Icicles - Customization and General Tips#icicle-yank-function|icicle-yank-function]]</tt>'''' is.  By
