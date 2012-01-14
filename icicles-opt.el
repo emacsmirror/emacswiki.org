@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:22:14 2006
 ;; Version: 22.0
-;; Last-Updated: Fri Jan 13 13:20:23 2012 (-0800)
+;; Last-Updated: Sat Jan 14 13:44:37 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 4769
+;;     Update #: 4772
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-opt.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -185,7 +185,8 @@
 ;;    `icicle-use-anything-candidates-flag',
 ;;    `icicle-use-candidates-only-once-flag',
 ;;    `icicle-word-completion-keys',
-;;    `icicle-WYSIWYG-Completions-flag', `icicle-yank-function'.
+;;    `icicle-WYSIWYG-Completions-flag', `icicle-yank-function',
+;;    `icicle-zap-to-char-candidates'.
 ;;
 ;;  Functions defined here:
 ;;
@@ -3341,7 +3342,8 @@ toggle Icicle mode off and then back on."
     (where-is                      icicle-where-is                     t) ; `C-h w'
     (,icicle-yank-function         icicle-yank-maybe-completing        t) ; `C-y'
     (yank-pop                      icicle-yank-pop-commands            (featurep 'second-sel)) ; `M-y'
-    (yank-pop-commands             icicle-yank-pop-commands            (featurep 'second-sel)) ; `M-y'  
+    (yank-pop-commands             icicle-yank-pop-commands            (featurep 'second-sel)) ; `M-y'
+    (zap-to-char                   icicle-zap-to-char (fboundp 'read-char-by-name)) ; `M-z' (Emacs 23+)
 
     ;; The following are available only if you use library `bookmark+.el'.
 
@@ -3917,6 +3919,17 @@ that (non-Icicles) function does not support WYSIWYG candidates."
           (const  :tag "Show candidate itself using WYSIWYG"                t)
           (const  :tag "Show candidate as is, with no text properties"      nil))
   :group 'Icicles-Completions-Display)
+
+(when (fboundp 'read-char-by-name)
+  (defcustom icicle-zap-to-char-candidates nil
+    "*Names to use for `icicle-zap-to-char' when completing.
+Either a function that returns a list of the same form as `ucs-names',
+or nil, which means the Unicode chars that have been read previously."
+    :type '(choice
+            (const    :tag "All Unicode chars"      icicle-ucs-names)
+            (const    :tag "Previously used chars"  nil)
+            (function :tag "Invoke function"        icicle-ucs-names))
+    :group 'Icicles-Matching))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
