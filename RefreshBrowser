@@ -1,1 +1,5 @@
+RefreshBrowser is a minor mode to automatically refresh a web browser.
+
+It works with multiple browsers.
+
 Lisp:refresh-browser.el
