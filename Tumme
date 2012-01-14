@@ -57,6 +57,11 @@ That's it. Simple. Works. I guess that it doesn't get more sexy :), at least not
 
 Btw, if my server is up (you can see the URL in the screenshots, I won't place a link to it in pure text because I'm not sure I want much traffic in there), you can test it live.
 
+----
+
+== EXIF rotation ==
+
+By default, image-dired does not respect the EXIF rotation field when displaying thumbnails or images.  However, it's easy to add.  Customize the variables image-dired-cmd-create-temp-image-options and image-dired-cmd-create-thumbnail-options and add -auto-orient to the command lines for convert.
 
 ----
 
