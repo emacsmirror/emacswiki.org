@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Sun Jan  8 17:36:21 2012 (-0800)
+;; Last-Updated: Sat Jan 14 14:50:38 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 23056
+;;     Update #: 23064
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -384,7 +384,8 @@
 ;;    `icicle-toggle-WYSIWYG-Completions', `icicle-untag-a-file',
 ;;    `icicle-vardoc', `icicle-where-is',
 ;;    `icicle-yank-maybe-completing', `icicle-yank-pop-commands',
-;;    `old-bbdb-complete-name', `old-comint-dynamic-complete',
+;;    `icicle-zap-to-char', `old-bbdb-complete-name',
+;;    `old-comint-dynamic-complete',
 ;;    `old-comint-dynamic-complete-filename',
 ;;    `old-comint-replace-by-expanded-filename',
 ;;    `old-dired-read-shell-command', `old-ess-complete-object-name',
@@ -786,7 +787,8 @@
 ;;    `icicle-use-anything-candidates-flag',
 ;;    `icicle-use-candidates-only-once-flag',
 ;;    `icicle-word-completion-keys',
-;;    `icicle-WYSIWYG-Completions-flag', `icicle-yank-function'.
+;;    `icicle-WYSIWYG-Completions-flag', `icicle-yank-function',
+;;    `icicle-zap-to-char-candidates'.
 ;;
 ;;  Non-interactive functions in Icicles:
 ;;
@@ -828,6 +830,7 @@
 ;;    `icicle-candidate-short-help',
 ;;    `icicle-case-insensitive-string-less-p',
 ;;    `icicle-case-string-less-p', `icicle-cdr-lessp',
+;;    `icicle-char-cands-from-charlist',
 ;;    `icicle-char-properties-in-buffer',
 ;;    `icicle-char-properties-in-buffers',
 ;;    `icicle-choose-anything-candidate',
@@ -1017,10 +1020,11 @@
 ;;    `icicle-put-at-head', `icicle-put-whole-cand-prop',
 ;;    `icicle-quote-file-name-part-of-cmd',
 ;;    `icicle-raise-Completions-frame', `icicle-readable-to-markers',
+;;    `icicle-read-char-by-name',
 ;;    `icicle-read-args-for-set-completion-methods',
-;;    `icicle-read-char-exclusive', `icicle-read-char-by-name',
-;;    `icicle-read-face-name', `icicle-read-file-name',
-;;    `icicle-read-from-minibuffer',
+;;    `icicle-read-char-completing', `icicle-read-char-exclusive',
+;;    `icicle-read-char-by-name', `icicle-read-face-name',
+;;    `icicle-read-file-name', `icicle-read-from-minibuffer',
 ;;    `icicle-read-from-minibuf-nil-default', `icicle-read-number',
 ;;    `icicle-read-shell-command',
 ;;    `icicle-read-shell-command-completing', `icicle-read-string',
@@ -1100,7 +1104,7 @@
 ;;    `icicle-transform-multi-completion',
 ;;    `icicle-transform-sole-candidate',
 ;;    `icicle-transpose-chars-dots', `icicle-try-switch-buffer',
-;;    `icicle-unbind-file-candidate-keys',
+;;    `icicle-ucs-names', `icicle-unbind-file-candidate-keys',
 ;;    `icicle-unbind-isearch-keys',
 ;;    `icicle-unbind-key-completion-keys-for-map-var',
 ;;    `icicle-unbind-key-completion-keys-in-keymaps-from',
@@ -1229,10 +1233,10 @@
 ;;    `icicle-previous-raw-non-file-name-inputs',
 ;;    `icicle-progressive-completing-p', `icicle-prompt',
 ;;    `icicle-proxy-candidate-regexp', `icicle-proxy-candidates',
-;;    `icicle-read-expression-map', `icicle-remove-icicles-props-p',
-;;    `icicle-re-no-dot', `icicle-require-match-p',
-;;    `icicle-reverse-multi-sort-p', `icicle-reverse-sort-p',
-;;    `icicle-saved-candidate-overlays',
+;;    `icicle-read-expression-map', `icicle-read-char-history',
+;;    `icicle-remove-icicles-props-p', `icicle-re-no-dot',
+;;    `icicle-require-match-p', `icicle-reverse-multi-sort-p',
+;;    `icicle-reverse-sort-p', `icicle-saved-candidate-overlays',
 ;;    `icicle-saved-candidates-variables-obarray',
 ;;    `icicle-saved-completion-candidate',
 ;;    `icicle-saved-completion-candidates',
