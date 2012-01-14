@@ -2076,6 +2076,30 @@ to `ignore', or users who might want to manage such option
 saving using their own function instead of the default value,
 `customize-save-variable'.
 
+
+
+----
+[:icicle-zap-to-char-candidates]
+==== Option icicle-zap-to-char-candidates ====
+
+Option '''`icicle-zap-to-char-candidates'''' determines which
+character names are used for `icicle-zap-to-char' (bound to
+'''`M-z'''' by default) when completing.  The default value of `nil'
+means complete against character names that you have already
+entered.  You can instead set the value to '''`icicle-ucs-names'''' to
+complete against all Unicode character names.  Or you can set it
+to any function that returns a value of the same form at that
+returned by `icicle-ucs-names' (hence `ucs-names').
+
+
+
+
+
+
+
+
+
+
 ----
 
 || *Previous:*  [[Icicles - Completion in Other Buffers]] || '''[[Icicles]]''' || IciclesIndex || *Next:* [[Icicles - File-Name Completion Tips]] ||
