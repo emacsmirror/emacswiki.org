@@ -1,6 +1,6 @@
 [[image/right:EvilLogo]]
 
-'''Evil''' is an __e__xtensible __vi__ __l__ayer for Emacs. It is the successor of [[Vimpulse]] and [VimMode vim-mode].
+'''Evil''' is an __e__xtensible __vi__ __l__ayer for Emacs. It provides Vim features like Visual mode and text objects, and is the successor of [[Vimpulse]] and [VimMode vim-mode].
 
 == Download ==
 
