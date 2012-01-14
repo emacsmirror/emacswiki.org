@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Wed Jan  4 09:15:57 2012 (-0800)
+;; Last-Updated: Sat Jan 14 15:06:47 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 28595
+;;     Update #: 28597
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-doc2.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -6082,6 +6082,15 @@
 ;;    by setting this to `ignore', or users who might want to manage
 ;;    such option saving using their own function instead of the
 ;;    default value, `customize-save-variable'.
+;;
+;;  * Option `icicle-zap-to-char-candidates' determines which
+;;    character names are used for `icicle-zap-to-char' (bound to
+;;    `M-z' by default) when completing.  The default value of `nil'
+;;    means complete against character names that you have already
+;;    entered.  You can instead set the value to `icicle-ucs-names' to
+;;    complete against all Unicode character names.  Or you can set it
+;;    to any function that returns a value of the same form at that
+;;    returned by `icicle-ucs-names' (hence `ucs-names').
  
 ;;(@* "File-Name and Directory-Name Completion Tips")
 ;;
@@ -6379,6 +6388,8 @@
 ;;  `where-is'.........................`icicle-where-is' (`C-h w')
 ;;  `yank'.............................`icicle-yank-maybe-completing'
 ;;                                     (`C-y')
+;;  `yank-pop'.........................`icicle-yank-pop-commands'
+;;                                     (`M-y')
 ;;
 ;;  Actually, by default, Icicles binds `icicle-yank-maybe-completing'
 ;;  to whatever the value of option `icicle-yank-function' is.  By
