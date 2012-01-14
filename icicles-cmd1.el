@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Sat Jan 14 14:56:12 2012 (-0800)
+;; Last-Updated: Sat Jan 14 15:52:08 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 23213
+;;     Update #: 23222
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-cmd1.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -6352,6 +6352,9 @@ Go backward if ARG is negative.  Raise an error if CHAR is not found.
 This is the same as `zap-to-char', except if you hit a completing key
 such as `TAB' then you can complete against the char names in NAMES.
 
+If you need to zap up to a completing-key char such as `TAB', escape
+the char with `C-q'.  E.g., use `C-q TAB' instead of `TAB'.
+
 NAMES has the same form as `ucs-names'.  Interactively, NAMES is
 determined by option `icicle-zap-to-char-candidates'.  By default, it
 is the subset of `ucs-names' that corresponds to the characters that
@@ -6372,7 +6375,10 @@ Unicode chars, then customize option `icicle-zap-to-char-candidates'."
 
   (defun icicle-read-char-completing (&optional prompt names inherit-input-method seconds)
     "Read a char with PROMPT, possibly completing against character NAMES.
-If the character read is a completing key (e.g. `TAB'), then complete.
+If the character read is `C-q' then read another character.
+Otherwise, if the character read is a completing key (e.g. `TAB'),
+then complete.
+
 Elements of alist NAMES have the form of `ucs-names' elements:
  (CHAR-NAME . CHAR-CODE)
 NAMES defaults to the subset of `ucs-names' that corresponds to the
@@ -6380,16 +6386,11 @@ NAMES defaults to the subset of `ucs-names' that corresponds to the
 The other arguments are as in `read-char-by-name'."
     (unless names (setq names  (or (icicle-char-cands-from-charlist)  (icicle-ucs-names))))
     (let ((chr  (read-char prompt inherit-input-method seconds)))
-      (when (if (boundp 'icicle-prefix-complete-keys)
-                (member (vector chr) (append icicle-prefix-complete-keys icicle-apropos-complete-keys))
-              (eq chr ?\t))
-        (add-to-list 'unread-command-events chr)
-        (if (fboundp 'icicle-read-char-by-name)
-            (setq chr  (icicle-read-char-by-name prompt names))
-          (setq chr  (condition-case nil
-                         (read-char-by-name prompt names)
-                       (error (read-char-by-name prompt))))
-          (add-to-list 'icicle-read-char-history chr)))
+      (if (eq chr ?\C-q)
+          (setq chr  (read-char prompt inherit-input-method seconds)) ; ^Q - read next
+        (when (member (vector chr) (append icicle-prefix-complete-keys icicle-apropos-complete-keys))
+          (add-to-list 'unread-command-events chr)
+          (setq chr  (icicle-read-char-by-name prompt names))))
       chr))
 
   (defun icicle-char-cands-from-charlist (&optional chars)
