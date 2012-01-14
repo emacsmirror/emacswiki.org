@@ -1,16 +1,47 @@
-"Evil is an extensible vi layer for Emacs. It will emulate the main features of Vim, and provide facilities for writing custom extensions."
+[[image/right:EvilLogo]]
 
-Evil will be the successor to [[Vimpulse]]: https://lists.ourproject.org/pipermail/implementations-list/2011-April/000756.html and to [[VimMode]]
+'''Evil''' is an __e__xtensible __vi__ __l__ayer for Emacs. It is the successor of [[Vimpulse]] and [VimMode vim-mode].
 
-Homepage: http://gitorious.org/evil/pages/Home
+== Download ==
 
-=Plugins for evil=
+Evil lives in a Git repository. To download Evil, do:
 
-[https://github.com/timcharper/evil-surround evil-surround] Port of Vim's surround script.
+    git clone git://gitorious.org/evil/evil.git
 
-[https://github.com/cofi/evil-numbers evil-numbers] Vim-like increment and decrement.
+If you don't have Git, just head over to [https://gitorious.org/evil/evil/commits/master Gitorious] and click the ''"Download master as tar.gz"'' link (extract with ##tar -xzf master.tar.gz##).
+
+== Install ==
+
+Move Evil to ##~/.emacs.d/evil## (or somewhere else in your ##load-path##). Then add the following lines to ~/.emacs:
+
+    (add-to-list 'load-path "~/.emacs.d/evil")
+    (require 'evil)
+    (evil-mode 1)
+
+Evil requires [UndoTree undo-tree.el] in the ##load-path## for linear undo and undo branches. Otherwise, Evil uses regular Emacs undo.
+
+== Documentation ==
+
+A brief [https://gitorious.org/evil/evil/blobs/raw/doc/doc/evil.pdf PDF manual] is available in the ##/doc## subdirectory.
+
+== Plug-ins ==
+
+* [https://github.com/timcharper/evil-surround evil-surround]: Port of Vim's surround script.
+
+* [https://github.com/cofi/evil-numbers evil-numbers]: Vim-like increment and decrement.
+
+== Bug tracker ==
+
+If you have bug reports or suggestions, please submit them at the [https://bitbucket.org/lyro/evil/issues?status=new&status=open bug tracker] (open for all).
+
+== Discussion ==
+
+: ''(Evil is also discussed at the [http://lists.ourproject.org/cgi-bin/mailman/listinfo/implementations-list gmane.emacs.vim-emulation] mailing list.)''
+
+[new]
+It would be nice with a brief overview over the objectives and difference to [ViperMode Viper].
+
+: The main difference is that while Viper emulates classical vi, Evil emulates Vim. It therefore sports additional features like Visual selection and text objects. Evil also attempts to integrate with Emacs: for example, repetition is implemented in terms of keyboard macros. At the most basic level, Evil is just a collection of key bindings that can be extended and adapted to any Emacs mode.
 
 ----
-It would be nice with a brief overview over the objectives and difference to ViperMode.
-
-Answer: Well, Viper is a Vi clone, whilst Evil looks like a Vim clone.
+CategoryKeys CategoryEmulation
