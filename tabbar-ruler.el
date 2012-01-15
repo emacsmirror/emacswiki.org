@@ -5,10 +5,10 @@
 ;; Author: Matthew Fidler, Nathaniel Cunningham
 ;; Maintainer: Matthew L. Fidler
 ;; Created: Mon Oct 18 17:06:07 2010 (-0500)
-;; Version: 0.3
-;; Last-Updated: Tue Feb  8 15:01:27 2011 (-0600)
+;; Version: 0.4
+;; Last-Updated: Sat Jan 14 21:49:53 2012 (-0600)
 ;;           By: Matthew L. Fidler
-;;     Update #: 639
+;;     Update #: 646
 ;; URL:
 ;; Keywords: Tabbar, Ruler Mode, Menu, Tool Bar.
 ;; Compatibility: Windows Emacs 23.x
@@ -39,6 +39,10 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;;; Change Log:
+;; 14-Jan-2012    Matthew L. Fidler  
+;;    Last-Updated: Sat Jan 14 21:44:32 2012 (-0600) #641 (Matthew L. Fidler)
+;;    Added more ruler commands.   It works a bit better
+;;    now. Additionally I have changed the ep- to tabbar-ruler-.
 ;; 14-Jan-2012    Matthew L. Fidler  
 ;;    Last-Updated: Tue Feb  8 15:01:27 2011 (-0600) #639 (Matthew L. Fidler)
 ;;    Changed EmacsPortable to tabbar-ruler
@@ -555,14 +559,14 @@ Call `tabbar-tab-label-function' to obtain a label for TAB."
 
 ;; Hooks based on yswzing's hooks, but modified for this function state.
 ;; called each time the modification state of the buffer changed
-(defun ep-modification-state-change ()
+(defun tabbar-ruler-modification-state-change ()
   (tabbar-set-template tabbar-current-tabset nil)
   (tabbar-display-update))
 ;; first-change-hook is called BEFORE the change is made
-(defun ep-on-buffer-modification ()
+(defun tabbar-ruler-on-buffer-modification ()
   (set-buffer-modified-p t)
-  (ep-modification-state-change))
-(add-hook 'after-save-hook 'ep-modification-state-change)
+  (tabbar-ruler-modification-state-change))
+(add-hook 'after-save-hook 'tabbar-ruler-modification-state-change)
 
 (defcustom tabbar-ruler-global-tabbar 't
   "* Should tabbar-ruler have a global tabbar?"
@@ -605,182 +609,176 @@ Call `tabbar-tab-label-function' to obtain a label for TAB."
   :type '(repeat (string :tag "Buffer Name"))
   :group 'tabbar-ruler)
 
-(defvar ep-tabbar-off 't
+(defvar tabbar-ruler-tabbar-off 't
   )
-(defvar ep-ruler-off 't
+(defvar tabbar-ruler-ruler-off 't
   )
-(set (make-variable-buffer-local 'ep-toolbar-off) nil)
-(set (make-variable-buffer-local 'ep-ruler-off) nil)
+(set (make-variable-buffer-local 'tabbar-ruler-toolbar-off) nil)
+(set (make-variable-buffer-local 'tabbar-ruler-ruler-off) nil)
 
-(defvar ep-toolbar-off nil
+(defvar tabbar-ruler-toolbar-off nil
   )
-(defvar ep-menu-off nil
+(defvar tabbar-ruler-menu-off nil
   )
-
-                                        ;(make-variable-frame-local 'ep-menu-off)
-                                        ;(make-variable-frame-local 'ep-toolbar-off)
-(add-hook 'find-file-hook (lambda() (interactive) (ep-tabbar-ruler-fight 't)))
-(defcustom ep-ruler-display-commands '(
-                                       ac-trigger-commands
+(add-hook 'find-file-hook (lambda() (interactive) (tabbar-ruler-tabbar-ruler-fight 't)))
+(defcustom tabbar-ruler-ruler-display-commands '(ac-trigger-commands
                                        esn-upcase-char-self-insert
                                        esn-magic-$
-                                       )
+                                       self-insert-command)
   "* Ruler display commands."
   :group 'tabbar-ruler
   :type '(repeat symbol)
   )
-(defun ep-tabbar-ruler-fight (&optional initialize)
+(defun tabbar-ruler-tabbar-ruler-fight (&optional initialize)
   "* Defines the fighting behavior of the tabbar-ruler ruler and tabbar."
   (condition-case error
       (progn
         (cond
          ( (eq last-command 'mouse-drag-region)
-           (ep-mouse-movement)
-           )
+           (tabbar-ruler-mouse-movement))
          ( (and tabbar-ruler-global-ruler tabbar-ruler-global-tabbar)
            (cond
-            ( (memq last-command ep-ruler-display-commands)
-              (when ep-ruler-off
+            ( (memq last-command tabbar-ruler-ruler-display-commands)
+              (when tabbar-ruler-ruler-off
                 (ruler-mode 1)
-                (setq ep-ruler-off nil)
-                )
-              (unless ep-tabbar-off
+                (setq tabbar-ruler-ruler-off nil))
+              (unless tabbar-ruler-tabbar-off
                 (tabbar-mode -1)
-                (setq ep-tabbar-off 't)
+                (setq tabbar-ruler-tabbar-off 't)
                 )
               (when tabbar-ruler-popup-menu
-                (unless ep-menu-off
+                (unless tabbar-ruler-menu-off
                   (menu-bar-mode -1)
-                  (setq ep-menu-off 't)
+                  (setq tabbar-ruler-menu-off 't)
                   )
                 )
               (when tabbar-ruler-popup-toolbar
-                (unless ep-toolbar-off
+                (unless tabbar-ruler-toolbar-off
                   (tool-bar-mode -1)
-                  (setq ep-toolbar-off 't)
+                  (setq tabbar-ruler-toolbar-off 't)
                   )
                 )
               )
             ( (string-match "\\(mouse\\|ignore\\|window\\|frame\\)" (format "%s" last-command))
               (when nil ;; Took this out;  Afterward it works much better...
-                (unless ep-ruler-off
+                (unless tabbar-ruler-ruler-off
                   (ruler-mode -1)
-                  (setq ep-ruler-off 't)
+                  (setq tabbar-ruler-ruler-off 't)
                   )
-                (when ep-tabbar-off
+                (when tabbar-ruler-tabbar-off
                   (tabbar-mode 1)
-                  (setq ep-tabbar-off nil)
+                  (setq tabbar-ruler-tabbar-off nil)
                   )
                 )
               )
             ( 't
-              (when (or initialize (and ep-ruler-off ep-tabbar-off))
-                (when ep-ruler-off
+              (when (or initialize (and tabbar-ruler-ruler-off tabbar-ruler-tabbar-off))
+                (when tabbar-ruler-ruler-off
                   (ruler-mode 1)
-                  (setq ep-ruler-off nil)
+                  (setq tabbar-ruler-ruler-off nil)
                   )
-                (unless ep-tabbar-off
+                (unless tabbar-ruler-tabbar-off
                   (tabbar-mode -1)
-                  (setq ep-tabbar-off 't)
+                  (setq tabbar-ruler-tabbar-off 't)
                   )
                 )
               )
             )
            )
          ( tabbar-ruler-global-ruler
-           (when ep-ruler-off
+           (when tabbar-ruler-ruler-off
              (ruler-mode 1)
-             (setq ep-ruler-off nil)
+             (setq tabbar-ruler-ruler-off nil)
              )
            )
          ( tabbar-ruler-global-tabbar
-           (when ep-tabbar-off
+           (when tabbar-ruler-tabbar-off
              (tabbar-mode 1)
-             (setq ep-tabbar-off nil)
+             (setq tabbar-ruler-tabbar-off nil)
              )
            )
          ))
 	(error
 	(message "Error in post-command-hook for Ruler/Tabbar: %s" (error-message-string error)))))
 
-(add-hook 'post-command-hook 'ep-tabbar-ruler-fight)
-(defvar ep-movement-timer nil
+(add-hook 'post-command-hook 'tabbar-ruler-tabbar-ruler-fight)
+(defvar tabbar-ruler-movement-timer nil
   )
-(defvar ep-movement-x nil
+(defvar tabbar-ruler-movement-x nil
   )
-(defvar ep-movement-y nil
+(defvar tabbar-ruler-movement-y nil
   )
 
-(defun ep-mouse-movement ()
+(defun tabbar-ruler-mouse-movement ()
   "* Mouse Movement function"
   (interactive)
-  (when ep-movement-timer
-    (cancel-timer ep-movement-timer)
+  (when tabbar-ruler-movement-timer
+    (cancel-timer tabbar-ruler-movement-timer)
     )
   (let* (
          (y-pos (cddr (mouse-pixel-position)))
          (x-pos (cadr (mouse-pixel-position)))
          )
     (unless y-pos
-      (setq y-pos ep-movement-y)
+      (setq y-pos tabbar-ruler-movement-y)
       )
     (unless x-pos
-      (setq x-pos ep-movement-x)
+      (setq x-pos tabbar-ruler-movement-x)
       )
-    (when (or (not ep-movement-x) (not ep-movement-y)
-              (and ep-movement-x ep-movement-y
+    (when (or (not tabbar-ruler-movement-x) (not tabbar-ruler-movement-y)
+              (and tabbar-ruler-movement-x tabbar-ruler-movement-y
                    (not
                     (and
-                     (= ep-movement-x x-pos)
-                     (= ep-movement-y y-pos)
+                     (= tabbar-ruler-movement-x x-pos)
+                     (= tabbar-ruler-movement-y y-pos)
                      )
                     )
                    )
               )
       (when (and x-pos y-pos)
-        (setq ep-movement-x x-pos)
-        (setq ep-movement-y y-pos)
-        (unless ep-ruler-off
+        (setq tabbar-ruler-movement-x x-pos)
+        (setq tabbar-ruler-movement-y y-pos)
+        (unless tabbar-ruler-ruler-off
           (ruler-mode -1)
-          (setq ep-ruler-off 't))
-        (when ep-tabbar-off
+          (setq tabbar-ruler-ruler-off 't))
+        (when tabbar-ruler-tabbar-off
           (tabbar-mode 1)
-          (setq ep-tabbar-off nil))
-        (if (>= (if (or ep-menu-off ep-toolbar-off)
+          (setq tabbar-ruler-tabbar-off nil))
+        (if (>= (if (or tabbar-ruler-menu-off tabbar-ruler-toolbar-off)
                     tabbar-ruler-popup-menu-min-y
                   tabbar-ruler-popup-menu-min-y-leave) y-pos)
             (progn
               (when tabbar-ruler-popup-menu
-                (when ep-menu-off
+                (when tabbar-ruler-menu-off
                   (menu-bar-mode 1)
-                  (setq ep-menu-off nil)))
+                  (setq tabbar-ruler-menu-off nil)))
               (when tabbar-ruler-popup-toolbar
-                (when ep-toolbar-off
+                (when tabbar-ruler-toolbar-off
                   (tool-bar-mode 1)
-                  (setq ep-toolbar-off nil))))
+                  (setq tabbar-ruler-toolbar-off nil))))
           (when tabbar-ruler-popup-menu
-            (unless ep-menu-off
+            (unless tabbar-ruler-menu-off
               (menu-bar-mode -1)
-              (setq ep-menu-off 't)))
+              (setq tabbar-ruler-menu-off 't)))
           (when tabbar-ruler-popup-toolbar
-            (unless ep-toolbar-off
+            (unless tabbar-ruler-toolbar-off
               (tool-bar-mode -1)
-              (setq ep-toolbar-off 't))))))
-    (setq ep-movement-timer (run-with-timer
-                             0.5
+              (setq tabbar-ruler-toolbar-off 't))))))
+    (setq tabbar-ruler-movement-timer (run-with-timer
+                             0.01
                              nil
-                             'ep-mouse-movement))))
-(ep-mouse-movement)
+                             'tabbar-ruler-mouse-movement))))
+(tabbar-ruler-mouse-movement)
 
 
 (setq tabbar-buffer-groups-function 'tabbar-buffer-groups)
 
-(defun last-ep-tabbar-buffer-groups nil)
+(defun last-tabbar-ruler-tabbar-buffer-groups nil)
 
-(defun ep-tabbar-buffer-groups ()
+(defun tabbar-ruler-tabbar-buffer-groups ()
   "Return the list of group names the current buffer belongs to.
 Return a list of one element based on major mode."
-  (setq last-ep-tabbar-buffer-groups
+  (setq last-tabbar-ruler-tabbar-buffer-groups
         (list
          (cond
           ;;          ((or (get-buffer-process (current-buffer))
@@ -807,10 +805,10 @@ Return a list of one element based on major mode."
           (t
            "Files"
            ))))
-  (symbol-value 'last-ep-tabbar-buffer-groups))
-(setq tabbar-buffer-groups-function 'ep-tabbar-buffer-groups)
+  (symbol-value 'last-tabbar-ruler-tabbar-buffer-groups))
+(setq tabbar-buffer-groups-function 'tabbar-ruler-tabbar-buffer-groups)
 
-(defun ep-tabbar-buffer-list ()
+(defun tabbar-ruler-tabbar-buffer-list ()
   "Return the list of buffers to show in tabs.
 Exclude buffers whose name starts with a space or *, when they are not
 visiting a file.  The current buffer is always included."
@@ -826,7 +824,7 @@ visiting a file.  The current buffer is always included."
                      ;;((char-equal ?* (aref (buffer-name b) 0)) nil)
                      ((buffer-live-p b) b)))
                 (buffer-list))))
-(setq tabbar-buffer-list-function 'ep-tabbar-buffer-list)
+(setq tabbar-buffer-list-function 'tabbar-ruler-tabbar-buffer-list)
 (provide 'tabbar-ruler)
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; tabbar-ruler.el ends here
