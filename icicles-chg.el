@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Sat Jan 14 17:08:59 2012 (-0800)
+;; Last-Updated: Sun Jan 15 13:49:42 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 7776
+;;     Update #: 7778
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-chg.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -82,6 +82,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd1.el'")
 ;;
+;; 2012/01/15 dadams
+;;     icicle-bookmark-set: Added missing quote mark for (icicle-)bookmark-history.
 ;; 2012/01/14 dadams
 ;;     Added: icicle-zap-to-char.
 ;; 2012/01/08 dadams
