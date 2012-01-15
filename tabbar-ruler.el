@@ -5,10 +5,10 @@
 ;; Author: Matthew Fidler, Nathaniel Cunningham
 ;; Maintainer: Matthew L. Fidler
 ;; Created: Mon Oct 18 17:06:07 2010 (-0500)
-;; Version: 0.2
-;; Last-Updated: Tue Feb  8 15:02:36 2011 (-0600)
+;; Version: 0.3
+;; Last-Updated: Tue Feb  8 15:01:27 2011 (-0600)
 ;;           By: Matthew L. Fidler
-;;     Update #: 640
+;;     Update #: 639
 ;; URL:
 ;; Keywords: Tabbar, Ruler Mode, Menu, Tool Bar.
 ;; Compatibility: Windows Emacs 23.x
@@ -29,19 +29,22 @@
 ;; To use this, put the library in your load path and use
 ;;
 ;;
-;; (setq EmacsPortable-global-tabbar 't) ; If you want tabbar
-;; (setq EmacsPortable-global-ruler 't) ; if you want a global ruler
-;; (setq EmacsPortable-popup-menu 't) ; If you want a popup menu.
-;; (setq EmacsPortable-popup-toolbar 't) ; If you want a popup toolbar
+;; (setq tabbar-ruler-global-tabbar 't) ; If you want tabbar
+;; (setq tabbar-ruler-global-ruler 't) ; if you want a global ruler
+;; (setq tabbar-ruler-popup-menu 't) ; If you want a popup menu.
+;; (setq tabbar-ruler-popup-toolbar 't) ; If you want a popup toolbar
 ;;
 ;; (require 'tabbar-ruler)
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;;; Change Log:
+;; 14-Jan-2012    Matthew L. Fidler  
+;;    Last-Updated: Tue Feb  8 15:01:27 2011 (-0600) #639 (Matthew L. Fidler)
+;;    Changed EmacsPortable to tabbar-ruler
 ;; 08-Feb-2011    Matthew L. Fidler  
 ;;    Last-Updated: Tue Feb  8 14:59:57 2011 (-0600) #638 (Matthew L. Fidler)
-;;    Added ELPA tags.
+;;    Added ELPA tags.  
 ;; 08-Feb-2011    Matthew L. Fidler  
 ;;    Last-Updated: Tue Feb  8 12:47:09 2011 (-0600) #604 (Matthew L. Fidler)
 ;;    Removed xpm dependencies.  Now no images are required, they are built by the library.
@@ -561,46 +564,46 @@ Call `tabbar-tab-label-function' to obtain a label for TAB."
   (ep-modification-state-change))
 (add-hook 'after-save-hook 'ep-modification-state-change)
 
-(defcustom EmacsPortable-global-tabbar 't
-  "* Should EmacsPortable have a global tabbar?"
+(defcustom tabbar-ruler-global-tabbar 't
+  "* Should tabbar-ruler have a global tabbar?"
   :type 'boolean
-  :group 'EmacsPortable
+  :group 'tabbar-ruler
   )
-(defcustom EmacsPortable-global-ruler nil
-  "* Should EmacsPortable have a global ruler?"
+(defcustom tabbar-ruler-global-ruler nil
+  "* Should tabbar-ruler have a global ruler?"
   :type 'boolean
-  :group 'EmacsPortable
+  :group 'tabbar-ruler
   )
-(defcustom EmacsPortable-popup-menu nil
-  "* Should EmacsPortable have a popup menu.  As mouse moves toward top of window, the menu pops up."
+(defcustom tabbar-ruler-popup-menu nil
+  "* Should tabbar-ruler have a popup menu.  As mouse moves toward top of window, the menu pops up."
   :type 'boolean
-  :group 'EmacsPortable
+  :group 'tabbar-ruler
   )
-(defcustom EmacsPortable-popup-toolbar nil
-  "* Should EmacsPortable have a popup toolbar.  As mouse moves toward top of window, the toolbar pops up."
+(defcustom tabbar-ruler-popup-toolbar nil
+  "* Should tabbar-ruler have a popup toolbar.  As mouse moves toward top of window, the toolbar pops up."
   :type 'boolean
-  :group 'EmacsPortable
+  :group 'tabbar-ruler
   )
-(defcustom EmacsPortable-popup-menu-min-y 5 ;
+(defcustom tabbar-ruler-popup-menu-min-y 5 ;
   "* Minimum number of pixels from the top before a menu/toolbar pops up."
   :type 'integer
-  :group 'EmacsPortable
+  :group 'tabbar-ruler
   )
-(defcustom EmacsPortable-popup-menu-min-y-leave 50
+(defcustom tabbar-ruler-popup-menu-min-y-leave 50
   "* Minimum number of pixels form the top before a menu/toolbar disappears."
   :type 'integer
-  :group 'EmacsPortable
+  :group 'tabbar-ruler
   )
-(defcustom EmacsPortable-do-not-switch-on-ruler-when-tabbar-is-on-y 75
+(defcustom tabbar-ruler-do-not-switch-on-ruler-when-tabbar-is-on-y 75
   "* Minimum number of pixels to switch on ruler when tabbar is on."
   :type 'integer
-  :group 'EmacsPortable
+  :group 'tabbar-ruler
   )
 
-(defcustom EmacsPortable-excluded-buffers '("*Messages*" "*Completions*" "*ESS*")
+(defcustom tabbar-ruler-excluded-buffers '("*Messages*" "*Completions*" "*ESS*")
   "* Excluded buffers in tabbar."
   :type '(repeat (string :tag "Buffer Name"))
-  :group 'EmacsPortable)
+  :group 'tabbar-ruler)
 
 (defvar ep-tabbar-off 't
   )
@@ -623,18 +626,18 @@ Call `tabbar-tab-label-function' to obtain a label for TAB."
                                        esn-magic-$
                                        )
   "* Ruler display commands."
-  :group 'EmacsPortable
+  :group 'tabbar-ruler
   :type '(repeat symbol)
   )
 (defun ep-tabbar-ruler-fight (&optional initialize)
-  "* Defines the fighting behavior of the EmacsPortable ruler and tabbar."
+  "* Defines the fighting behavior of the tabbar-ruler ruler and tabbar."
   (condition-case error
       (progn
         (cond
          ( (eq last-command 'mouse-drag-region)
            (ep-mouse-movement)
            )
-         ( (and EmacsPortable-global-ruler EmacsPortable-global-tabbar)
+         ( (and tabbar-ruler-global-ruler tabbar-ruler-global-tabbar)
            (cond
             ( (memq last-command ep-ruler-display-commands)
               (when ep-ruler-off
@@ -645,13 +648,13 @@ Call `tabbar-tab-label-function' to obtain a label for TAB."
                 (tabbar-mode -1)
                 (setq ep-tabbar-off 't)
                 )
-              (when EmacsPortable-popup-menu
+              (when tabbar-ruler-popup-menu
                 (unless ep-menu-off
                   (menu-bar-mode -1)
                   (setq ep-menu-off 't)
                   )
                 )
-              (when EmacsPortable-popup-toolbar
+              (when tabbar-ruler-popup-toolbar
                 (unless ep-toolbar-off
                   (tool-bar-mode -1)
                   (setq ep-toolbar-off 't)
@@ -684,13 +687,13 @@ Call `tabbar-tab-label-function' to obtain a label for TAB."
               )
             )
            )
-         ( EmacsPortable-global-ruler
+         ( tabbar-ruler-global-ruler
            (when ep-ruler-off
              (ruler-mode 1)
              (setq ep-ruler-off nil)
              )
            )
-         ( EmacsPortable-global-tabbar
+         ( tabbar-ruler-global-tabbar
            (when ep-tabbar-off
              (tabbar-mode 1)
              (setq ep-tabbar-off nil)
@@ -744,22 +747,22 @@ Call `tabbar-tab-label-function' to obtain a label for TAB."
           (tabbar-mode 1)
           (setq ep-tabbar-off nil))
         (if (>= (if (or ep-menu-off ep-toolbar-off)
-                    EmacsPortable-popup-menu-min-y
-                  EmacsPortable-popup-menu-min-y-leave) y-pos)
+                    tabbar-ruler-popup-menu-min-y
+                  tabbar-ruler-popup-menu-min-y-leave) y-pos)
             (progn
-              (when EmacsPortable-popup-menu
+              (when tabbar-ruler-popup-menu
                 (when ep-menu-off
                   (menu-bar-mode 1)
                   (setq ep-menu-off nil)))
-              (when EmacsPortable-popup-toolbar
+              (when tabbar-ruler-popup-toolbar
                 (when ep-toolbar-off
                   (tool-bar-mode 1)
                   (setq ep-toolbar-off nil))))
-          (when EmacsPortable-popup-menu
+          (when tabbar-ruler-popup-menu
             (unless ep-menu-off
               (menu-bar-mode -1)
               (setq ep-menu-off 't)))
-          (when EmacsPortable-popup-toolbar
+          (when tabbar-ruler-popup-toolbar
             (unless ep-toolbar-off
               (tool-bar-mode -1)
               (setq ep-toolbar-off 't))))))
@@ -817,7 +820,7 @@ visiting a file.  The current buffer is always included."
                      ;; Always include the current buffer.
                      ((eq (current-buffer) b) b)
                      ((buffer-file-name b) b)
-                     ((member (buffer-name b) EmacsPortable-excluded-buffers) nil)
+                     ((member (buffer-name b) tabbar-ruler-excluded-buffers) nil)
                      ;; ((string= "*Messages*" (format "%s" (buffer-name b))))
                      ((char-equal ?\  (aref (buffer-name b) 0)) nil)
                      ;;((char-equal ?* (aref (buffer-name b) 0)) nil)
