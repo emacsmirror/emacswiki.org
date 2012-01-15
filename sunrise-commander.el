@@ -77,6 +77,9 @@
 ;; Once narrowed and accepted, you can restore the original contents of the pane
 ;; by pressing g (revert-buffer).
 
+;; * Sticky search: press C-c s to launch an interactive search that will remain
+;; active from directory to directory, until you hit a regular file or press C-g
+
 ;; * Press C-x C-q to put the current pane in Editable Dired mode (allows to
 ;; edit the pane as if it were a regular file -- press C-c C-c to commit your
 ;; changes to the filesystem, or C-c C-k to abort).
@@ -96,8 +99,8 @@
 ;;    - list all recently visited files (press C-c C-r -- requires recentf),
 ;;    - list all directories in active pane's history ring (press C-c C-d).
 
-;; * Supports AVFS (http://www.inf.bme.hu/~mszeredi/avfs/) for transparent navi-
-;; gation inside compressed archives (*.zip, *.tgz, *.tar.bz2, *.deb, etc. etc.)
+;; * Supports AVFS (http://avf.sourceforge.net/) for transparent navigation
+;; inside compressed archives (*.zip, *.tgz, *.tar.bz2, *.deb, etc. etc.)
 ;; You need to have AVFS with coda or fuse installed and running on your system
 ;; for this to work, though.
 
@@ -114,12 +117,12 @@
 ;;      then the value of `sr-terminal-program' is used instead).
 
 ;; * Terminal integration and Command line expansion: integrates tightly with
-;; `eshell' or `term-mode' to allow interaction between terminal emulators in
+;; `eshell' and `term-mode' to allow interaction between terminal emulators in
 ;; line mode (C-c C-j) and the panes: the most important navigation commands
 ;; (up, down, mark, unmark, go to parent dir) can be executed on the active pane
 ;; directly from the terminal by pressing the usual keys with Meta: <M-up>,
 ;; <M-down>, etc. Additionally, the following substitutions are automagically
-;; performed in `term-line-mode':
+;; performed in `eshell' and `term-line-mode':
 ;;     %f - expands to the currently selected file in the left pane
 ;;     %F - expands to the currently selected file in the right pane
 ;;     %m - expands to the list of paths of all marked files in the left pane
@@ -155,23 +158,16 @@
 ;; very large directory trees one needs something on the lines of diff -r
 ;; though).
 
-;; * Sticky search: press C-c s to launch an interactive search that will remain
-;; active from directory to directory, until you hit a regular file or press C-g
-;; to abort the operation.
+;; * And much more -- press ? while in Sunrise mode for basic help, or h for a
+;; complete list of all keybindings available (use C-e and C-y to scroll).
 
-;; * etc. ;-)
+;; There is no help window like in MC, but if you really miss it, just get and
+;; install the sunrise-x-buttons extension.
 
-;; It doesn't even try to look like MC, so the help window is gone (you're in
-;; Emacs, so you know your bindings, right?), though if you really miss it, just
-;; get and install the sunrise-x-buttons extension.
-
-;; It was written on GNU Emacs 23 on Linux, and tested on GNU Emacs 22 and 23
+;; It was written on GNU Emacs 24 on Linux and tested on GNU Emacs 22, 23 and 24
 ;; for Linux and on EmacsW32 (version 23) for Windows. I have also received
-;; feedback from a user reporting it works OK on the Mac (GNU Emacs 22.2 on Mac
-;; OS X Leopard). I *am* aware that there are several functions (including,
-;; alas, file and directory comparison) that simply will not work on GNU Emacs
-;; 21, but unfortunately I do not have the time to port them back. It doesn't
-;; work either on XEmacs -- please drop me a line if you would like to help
+;; feedback from users reporting it works OK on the Mac. It does not work either
+;; on GNU Emacs 21 or XEmacs -- please drop me a line if you would like to help
 ;; porting it. All contributions and/or bug reports will be very welcome.
 
 ;; For more details on the file manager, extensions and cool tips & tricks visit
