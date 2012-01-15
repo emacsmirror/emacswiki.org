@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Sat Jan 14 15:52:08 2012 (-0800)
+;; Last-Updated: Sat Jan 14 16:37:42 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 23222
+;;     Update #: 23237
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-cmd1.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -230,8 +230,8 @@
 ;;    `icicle-bookmark-bind-narrow-commands',
 ;;    `icicle-bookmark-cleanup', `icicle-bookmark-cleanup-on-quit',
 ;;    `icicle-bookmark-delete-action', `icicle-bookmark-help-string',
-;;    `icicle-bookmark-jump-1', `icicle-char-cands-from-charlist',
-;;    `icicle-clear-history-1', `icicle-clear-history-entry',
+;;    `icicle-bookmark-jump-1', `icicle-clear-history-1',
+;;    `icicle-clear-history-entry',
 ;;    `icicle-comint-dynamic-complete-as-filename',
 ;;    `icicle-comint-dynamic-simple-complete',
 ;;    `icicle-comint-replace-orig-completion-fns',
@@ -255,22 +255,20 @@
 ;;    `icicle-make-file+date-candidate', `icicle-make-frame-alist',
 ;;    `icicle-make-window-alist',
 ;;    `icicle-bookmark-propertize-candidate',
-;;    `icicle-pp-display-expression', `icicle-read-char-by-name',
-;;    `icicle-read-char-completing',
+;;    `icicle-pp-display-expression',
 ;;    `icicle-remove-buffer-candidate-action',
 ;;    `icicle-remove-buffer-config-action',
 ;;    `icicle-remove-from-recentf-candidate-action',
 ;;    `icicle-remove-saved-set-action',
 ;;    `icicle-shell-command-on-file',
 ;;    `icicle-shell-dynamic-complete-as-command',
-;;    `icicle-shell-dynamic-complete-as-environment-variable',
-;;    `icicle-ucs-names'.
+;;    `icicle-shell-dynamic-complete-as-environment-variable'.
 ;;
 ;;  Internal variables defined here:
 ;;
 ;;    `icicle-locate-file-action-fn',
 ;;    `icicle-locate-file-no-symlinks-p',
-;;    `icicle-locate-file-use-locate-p', `icicle-read-char-history'.
+;;    `icicle-locate-file-use-locate-p'.
 ;;
 ;;
 ;;  ***** NOTE: The following functions defined in `dabbrev.el' have
@@ -485,7 +483,6 @@
 (defvar locate-make-command-line)       ; In `locate.el'
 (defvar shell-completion-execonly)      ; In `shell.el'
 (defvar snarf-tag-function)             ; In `etags.el'
-(defvar ucs-names)                      ; In `mule-cmds.el'.
 (defvar translation-table-for-input)    ; Built-in, Emacs 21+.
 (defvar w3m-current-title)              ; In `w3m.el'.
 
@@ -6339,11 +6336,6 @@ custom type is compatible with type `string'." ; Doc string
     (when (interactive-p) (message "Strings: %S" strings))))
 
 (when (fboundp 'read-char-by-name)
-  (defvar icicle-read-char-history ()
-    "History list for reading characters by name.
-Augmented by `icicle-read-char-completing' and
-`icicle-read-char-by-name'.")
-
   (defun icicle-zap-to-char (arg char &optional names)
     "Kill up to and including ARGth occurrence of CHAR.
 Case is ignored if `case-fold-search' is non-nil in the current buffer.
@@ -6371,101 +6363,7 @@ Unicode chars, then customize option `icicle-zap-to-char-candidates'."
           (setq char  (or (aref translation-table-for-input char)  char))))
     (kill-region (point) (progn (search-forward (char-to-string char) nil nil arg)
                                 ;; (goto-char (if (> arg 0) (1- (point)) (1+ (point)))) ; (vanilla)
-                                (point))))
-
-  (defun icicle-read-char-completing (&optional prompt names inherit-input-method seconds)
-    "Read a char with PROMPT, possibly completing against character NAMES.
-If the character read is `C-q' then read another character.
-Otherwise, if the character read is a completing key (e.g. `TAB'),
-then complete.
-
-Elements of alist NAMES have the form of `ucs-names' elements:
- (CHAR-NAME . CHAR-CODE)
-NAMES defaults to the subset of `ucs-names' that corresponds to the
- characters that have been read previously.
-The other arguments are as in `read-char-by-name'."
-    (unless names (setq names  (or (icicle-char-cands-from-charlist)  (icicle-ucs-names))))
-    (let ((chr  (read-char prompt inherit-input-method seconds)))
-      (if (eq chr ?\C-q)
-          (setq chr  (read-char prompt inherit-input-method seconds)) ; ^Q - read next
-        (when (member (vector chr) (append icicle-prefix-complete-keys icicle-apropos-complete-keys))
-          (add-to-list 'unread-command-events chr)
-          (setq chr  (icicle-read-char-by-name prompt names))))
-      chr))
-
-  (defun icicle-char-cands-from-charlist (&optional chars)
-    "Characters in list CHARS that are listed in `icicle-ucs-names'.
-CHARS defaults to the value of `icicle-read-char-history'."
-    (unless chars (setq chars  icicle-read-char-history))
-    (let ((cands  ())
-          name.char)
-      (dolist (char  chars)
-        (when (setq name.char  (rassq char (icicle-ucs-names)))
-          (push name.char cands)))
-      cands))
-
-  ;; This should not be necessary, if there were not Emacs bug #9653.
-  (defun icicle-ucs-names ()
-    "Same as `ucs-names', except remove entries with an empty name: \"\"."
-    (setq ucs-names  (assq-delete-all "" (ucs-names)))) ; Free var here: `ucs-names'.
-
-  (defun icicle-read-char-by-name (prompt &optional names)
-    "Read a character by its Unicode name or hex number string.
-Display PROMPT and read a string that represents a character by its
-Unicode property `name' or `old-name'.  Return the char as a number.
-
-You can use Icicles completion against the Unicode name.
-
-A completion candidate is a Unicode name.  In Icicle mode, the Unicode
-character is also displayed next to the name, even though it is not
-part of the completion candidate.
-
-If you use a dedicated `*Completions*' frame, then the font used in
-`*Completions*' is the same as the frame from which you invoked
-completion.
-
-If you use library `doremi-frm.el' then you can increase the font size
-for `*Completions*' dynamically using `C-x -'.
-
-As an alternative to completing the Unicode name, you can input a
-number for the Unicode code point: a hexidecimal number or a number in
-hash notation: #o21430 for octal, #x2318 for hex, or #10r8984 for
-decimal.
-
-Non-nil optional arg NAMES is an alist of names to use in place of the
-value returned by `icicle-ucs-names'.  It must have the same form as
-such a return value: (CHAR-NAME . CHAR-CODE)."
-    (unless names  (setq names  (icicle-ucs-names)))
-    (dolist (name.char  names)
-      ;; $$$$$$  (when (and (not (string= "" (car name.char)))
-      ;;                    ;; $$$$$$ Maybe make this optional?
-      ;;                    (not (string-match "\\`VARIATION SELECTOR" (car name.char))))
-      (unless (string= "" (car name.char))
-        ;; Display char itself after the name, in `*Completions*'.
-        (let* ((disp-string  (concat (car name.char) "\t"
-                                     (propertize (char-to-string (cdr name.char))
-                                                 'face 'icicle-extra-candidate)))
-               (symb         (intern (car name.char))))
-          (put symb 'icicle-display-string disp-string)
-          (put-text-property 0 1 'icicle-orig-cand symb disp-string))))
-    (let* ((new-prompt              (copy-sequence prompt))
-           (IGNORE-1                (put-text-property 0 1 'icicle-fancy-candidates t new-prompt))
-           (completion-ignore-case  t)
-           (input                   (completing-read
-                                     new-prompt
-                                     `(lambda (string pred action)
-                                       (if (eq action 'metadata)
-                                           '(metadata (category . unicode-name))
-                                         (complete-with-action action ',names string pred)))))
-           chr)
-      (let ((orig-cand  (get-text-property 0 'icicle-orig-cand input)))
-        (when orig-cand  (setq input  (symbol-name orig-cand))))
-      (setq chr  (cond ((string-match-p "^[0-9a-fA-F]+$" input)  (string-to-number input 16))
-                       ((string-match-p "^#" input)              (read input))
-                       (t                                        (cdr (assoc-string input names t)))))
-      (add-to-list 'icicle-read-char-history chr)
-      chr))
-  )
+                                (point)))))
 
 ;;;###autoload (autoload 'icicle-sexp-list "icicles-cmd1.el")
 (icicle-define-command icicle-sexp-list ; Command name
