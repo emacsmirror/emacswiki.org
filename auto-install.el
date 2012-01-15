@@ -1,5 +1,5 @@
 ;;; auto-install.el --- Auto install elisp file
-;; $Id: auto-install.el,v 1.53 2011/04/12 06:28:20 rubikitch Exp $
+;; $Id: auto-install.el,v 1.54 2012/01/15 12:10:20 rubikitch Exp $
 
 ;; Filename: auto-install.el
 ;; Description: Auto install elisp file
@@ -9,7 +9,7 @@
 ;; Copyright (C) 2008, 2009, Andy Stewart, all rights reserved.
 ;; Copyright (C) 2009, rubikitch, all rights reserved.
 ;; Created: 2008-12-11 13:56:50
-;; Version: $Revision: 1.53 $
+;; Version: $Revision: 1.54 $
 ;; URL: http://www.emacswiki.org/emacs/download/auto-install.el
 ;; Keywords: auto-install
 ;; Compatibility: GNU Emacs 22 ~ 23
@@ -24,7 +24,7 @@
 ;;   `url-util', `url-vars'.
 ;;
 
-(defvar auto-install-version "$Id: auto-install.el,v 1.53 2011/04/12 06:28:20 rubikitch Exp $")
+(defvar auto-install-version "$Id: auto-install.el,v 1.54 2012/01/15 12:10:20 rubikitch Exp $")
 ;;; This file is NOT part of GNU Emacs
 
 ;;; License
@@ -130,7 +130,7 @@
 ;;    default = "wget"
 ;;  `auto-install-use-wget'
 ;;    *Use wget instead of `url-retrieve'.
-;;    default = t
+;;    default = (executable-find "wget")
 ;;  `auto-install-batch-list'
 ;;    This list contain packages information for batch install.
 ;;    default = nil
@@ -296,6 +296,9 @@
 ;;; Change log:
 ;;
 ;; $Log: auto-install.el,v $
+;; Revision 1.54  2012/01/15 12:10:20  rubikitch
+;; Default value of `auto-install-use-wget' is whether wget exists or not.
+;;
 ;; Revision 1.53  2011/04/12 06:28:20  rubikitch
 ;; fix for proxy
 ;;
@@ -705,7 +708,7 @@ Nil means no confirmation is needed."
   :type 'string  
   :group 'auto-install)
 
-(defcustom auto-install-use-wget t
+(defcustom auto-install-use-wget (executable-find "wget")
   "*Use wget instead of `url-retrieve'.
 
 It is enabled by default when wget is found."
