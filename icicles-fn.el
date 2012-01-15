@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:53 2006
 ;; Version: 22.0
-;; Last-Updated: Sat Jan 14 16:47:20 2012 (-0800)
+;; Last-Updated: Sat Jan 14 17:09:54 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 12781
+;;     Update #: 12783
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-fn.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -137,7 +137,7 @@
 ;;    `icicle-put-at-head', `icicle-put-whole-cand-prop',
 ;;    `icicle-quote-file-name-part-of-cmd',
 ;;    `icicle-readable-to-markers', `icicle-char-cands-from-charlist',
-;;    `icicle-read-char-by-name', `icicle-read-char-completing',
+;;    `icicle-read-char-by-name', `icicle-read-char-maybe-completing',
 ;;    `icicle-read-char-exclusive', `icicle-read-face-name',
 ;;    `icicle-read-file-name', `icicle-read-from-minibuffer',
 ;;    `icicle-read-from-minibuf-nil-default', `icicle-read-number',
@@ -1640,7 +1640,7 @@ before you call this function."
            (progn (custom-load-symbol variable) (get variable 'custom-type)))))
 
 (when (fboundp 'read-char-by-name)      ; Emacs 23+
-  (defun icicle-read-char-completing (&optional prompt names inherit-input-method seconds)
+  (defun icicle-read-char-maybe-completing (&optional prompt names inherit-input-method seconds)
     "Read a char with PROMPT, possibly completing against character NAMES.
 If the character read is `C-q' then read another character.
 Otherwise, if the character read is a completing key (e.g. `TAB'),
