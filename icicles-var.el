@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:23:26 2006
 ;; Version: 22.0
-;; Last-Updated: Sat Jan 14 16:28:11 2012 (-0800)
+;; Last-Updated: Sat Jan 14 17:10:09 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 1594
+;;     Update #: 1595
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-var.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -1171,7 +1171,7 @@ The candidates are highlighted in buffer `*Completions*' using face
 (when (fboundp 'read-char-by-name)      ; Emacs 23+
   (defvar icicle-read-char-history ()
     "History list for reading characters by name.
-Augmented by `icicle-read-char-completing' and
+Augmented by `icicle-read-char-maybe-completing' and
 `icicle-read-char-by-name'."))
 
 (defvar icicle-read-expression-map nil
