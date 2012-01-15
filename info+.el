@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Sep 12 16:30:11 1995
 ;; Version: 21.1
-;; Last-Updated: Sun Jan  1 14:05:15 2012 (-0800)
+;; Last-Updated: Sun Jan 15 00:40:28 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 4488
+;;     Update #: 4491
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/info+.el
 ;; Keywords: help, docs, internal
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -179,6 +179,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2012/01/15 dadams
+;;     Info-find-file: Do not define for < Emacs 23.2 - no virtual books.
 ;; 2011/11/15 dadams
 ;;     Added: redefinition of Info-find-file for Emacs 23+, to handle virtual books.
 ;; 2011/08/23 dadams
@@ -958,9 +960,9 @@ For example, type `^Q^L^Q^J* ' to set this to \"\\f\\n* \"."
 
 ;; REPLACE ORIGINAL in `info.el':
 ;; 
-;; Added final clause to `cond', to handle virtual books.
+;; Added final clause to `cond', to handle virtual books.  (Emacs 23.2+)
 ;;
-(when (> emacs-major-version 22)
+(when (or (> emacs-major-version 23) (and (= emacs-major-version 23) (> emacs-minor-version 1)))
   (defun Info-find-file (filename &optional noerror)
     "Return expanded FILENAME, or t if FILENAME is \"dir\".
 Optional second argument NOERROR, if t, means if file is not found
