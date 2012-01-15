@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Sat Jan 14 16:46:08 2012 (-0800)
+;; Last-Updated: Sat Jan 14 17:08:59 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 7775
+;;     Update #: 7776
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-chg.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -1138,7 +1138,7 @@
 ;;;(@* "CHANGE LOG FOR `icicles-fn.el'")
 ;;
 ;; 2012/01/14 dadams
-;;     Added: icicle-char-cands-from-charlist, icicle-read-char-completing, icicle-ucs-names.
+;;     Added: icicle-char-cands-from-charlist, icicle-read-char-maybe-completing, icicle-ucs-names.
 ;;     icicle-read-char-by-name: Added optional arg NAMES.  Use icicle-ucs-names, not ucs-names.
 ;; 2011/12/31 dadams
 ;;     Reversed fix of 2011/04/12 for Emacs < 23:
