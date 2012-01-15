@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:53 2006
 ;; Version: 22.0
-;; Last-Updated: Sat Jan 14 17:09:54 2012 (-0800)
+;; Last-Updated: Sat Jan 14 17:17:34 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 12783
+;;     Update #: 12784
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-fn.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -137,8 +137,8 @@
 ;;    `icicle-put-at-head', `icicle-put-whole-cand-prop',
 ;;    `icicle-quote-file-name-part-of-cmd',
 ;;    `icicle-readable-to-markers', `icicle-char-cands-from-charlist',
-;;    `icicle-read-char-by-name', `icicle-read-char-maybe-completing',
-;;    `icicle-read-char-exclusive', `icicle-read-face-name',
+;;    `icicle-read-char-by-name', `icicle-read-char-exclusive',
+;;    `icicle-read-char-maybe-completing', `icicle-read-face-name',
 ;;    `icicle-read-file-name', `icicle-read-from-minibuffer',
 ;;    `icicle-read-from-minibuf-nil-default', `icicle-read-number',
 ;;    `icicle-read-shell-command',
