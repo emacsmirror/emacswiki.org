@@ -57,6 +57,8 @@
 ;;
 ;;; Change log:
 ;;
+;; 2012/01/14 dadams
+;;     icicle-files-to-download-list: Added ring+.el (needed by doremi.el).
 ;; 2009/05/22 dadams
 ;;     Split icicles-cmd.el into icicles-cmd1.el and icicles-cmd2.el.
 ;; 2008/08/16 dadams
@@ -125,7 +127,7 @@ Default value is the Emacs Wiki site."
   (list
    "col-highlight.el"           ; Column highlighting
    "crosshairs.el"              ; Crosshairs highlighting
-   "doremi.el"                  ; Change *Completions* incrementally
+   "doremi.el"                  ; Change incrementally (requires ring+.el)
    "hexrgb.el"                  ; Color manipulation
    "hl-line+.el"                ; Line highlighting
    "icicles.el"                 ; Main library - just loads the others
@@ -143,6 +145,7 @@ Default value is the Emacs Wiki site."
    "icicles-var.el"             ; Internal variables
    "icomplete+.el"              ; Enhancements to `icomplete.el'
    "lacarte.el"                 ; Menu-bar access from keyboard
+   "ring+.el"                   ; Ring stuff (required by doremi.el
    "synonyms.el"                ; Synonym lookup
    "vline.el"                   ; Column highlighting
   )
