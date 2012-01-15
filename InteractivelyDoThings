@@ -288,6 +288,10 @@ To use this, if you've already ##(require 'ibuffer)##'d, ##(define-key ibuffer-m
 
 -- BrandonWMaister
 
+=== Use ido everywhere ===
+
+The Ido Ubiquitous module allows you set up to use ido with almost anything that uses completion. Extremely useful. Although for Alt-X there is the improbed [smex] package.
+
 == Ido Hacks (modifying Ido's behavior) ==
 
 === Display Completions Vertically ===
