@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Sat Jan 14 14:57:09 2012 (-0800)
+;; Last-Updated: Sat Jan 14 16:46:08 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 7770
+;;     Update #: 7775
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-chg.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -83,8 +83,7 @@
 ;;;(@* "CHANGE LOG FOR `icicles-cmd1.el'")
 ;;
 ;; 2012/01/14 dadams
-;;     Added: icicle-zap-to-char, icicle-char-cands-from-charlist, icicle-read-char-by-name,
-;;            icicle-read-char-completing, icicle-ucs-names, icicle-read-char-history.
+;;     Added: icicle-zap-to-char.
 ;; 2012/01/08 dadams
 ;;     Added: icicle-yank-pop-commands, icicle-bookmark-bind-narrow-commands,
 ;;            icicle-bookmark-(autofile|autonamed(-this-buffer)|file-this-dir|temporary)-narrow.
@@ -1138,6 +1137,9 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-fn.el'")
 ;;
+;; 2012/01/14 dadams
+;;     Added: icicle-char-cands-from-charlist, icicle-read-char-completing, icicle-ucs-names.
+;;     icicle-read-char-by-name: Added optional arg NAMES.  Use icicle-ucs-names, not ucs-names.
 ;; 2011/12/31 dadams
 ;;     Reversed fix of 2011/04/12 for Emacs < 23:
 ;;       icicle-unsorted-file-name-*, icicle-apropos-any-file-name-candidates-p:
@@ -5884,6 +5886,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-var.el'")
 ;;
+;; 2012/01/14 dadams
+;;     Added: icicle-read-char-history.
 ;; 2011/12/28 dadams
 ;;     Removed mention of obsolete option icicle-cycle-into-subdirs-flag.
 ;; 2011/12/14 dadams
