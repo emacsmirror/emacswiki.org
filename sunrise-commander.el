@@ -3696,7 +3696,7 @@ Helper macro for implementing terminal integration in Sunrise."
 (add-hook
  'kill-buffer-hook
  (defun sr-ti-cleanup-openterms ()
-   "FIXME: add comment"
+   "Remove the current buffer from the list of open terminals."
    (setq sr-ti-openterms (delete (current-buffer) sr-ti-openterms))))
 
 (defun sr-ti-revert-buffer ()
