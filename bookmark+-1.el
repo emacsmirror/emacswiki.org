@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2012, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 13:43:55 2010 (-0700)
-;; Last-Updated: Fri Jan 13 08:55:54 2012 (-0800)
+;; Last-Updated: Sat Jan 14 19:38:09 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 3443
+;;     Update #: 3445
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-1.el
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -4766,8 +4766,9 @@ If either name is not absolute, then it is expanded relative to
                                 ;; From the Emacs 24 definition of `read-file-name-completion-ignore-case'.
                                 (memq system-type '(ms-dos windows-nt darwin cygwin))))))
     (and (equal remote1 remote2)
-         (compare-strings (file-truename (expand-file-name file1)) (file-truename (expand-file-name file2))
-                          ignore-case-p))))
+         (let ((ft1  (file-truename (expand-file-name file1)))
+               (ft2  (file-truename (expand-file-name file2))))
+           (compare-strings ft1 0 (length ft1) ft2 0 (length ft2) ignore-case-p)))))
 
 ;;; $$$$$$
 ;;; (defun bmkp-same-file-p (file1 file2)
