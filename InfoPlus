@@ -7,6 +7,10 @@ DrewAdams has written library <tt>[[info+.el]]</tt> ('''info+'''), which extends
 * Breadcrumbs in the header (just below the header line). This was added to vanilla Emacs 23. Turned off by default. See `##Toggle Breadcrumbs in Header Line##' in `Info' menu. Be aware that unlike breadcrumbs in the mode line, this can occasionally throw off the destination accuracy of cross references and searches slightly. (Available for Emacs 22+ only.)
 
 * New key bindings, commands, and menus.
+* Improved standard commands.  For example:
+** `info-display-manual': Completion for manual name.
+** `Info-goto-emacs-key-command-node': If the key's [[command]] is not found, then it searches for the KeySequence in the text.
+
 * Additional, finer-grained highlighting, with new faces:
 ** Quoted names, like this: `name-stands-out', and strings, like this: "<code>string-stands-out</code>" are highlighted if '''`Info-fontify-quotations-flag'''' is non-`nil'.
 ** Isolated single quotes, like this: ##'foobar##, are highlighted if '''`Info-fontify-single-quote-flag'''' and `Info-fontify-quotations-flag' are non-`nil'.
@@ -21,7 +25,6 @@ DrewAdams has written library <tt>[[info+.el]]</tt> ('''info+'''), which extends
 * Syntax table that respects EmacsLisp: apostrophe ('''##'##''') and non-breaking space have ''punctuation'' syntax, not ''word'' syntax.  So for example, you can easily use `C-s C-w' to select text between ##`##...##'## without also grabbing the ##'## at the end. (I reported this as Emacs bug [[http://emacsbugs.donarmstrong.com/cgi-bin/bugreport.cgi?bug=3312|#3312]], but so far it hasn't been fixed.)
 
 * Redefinitions of some standard Emacs functions
-** `Info-goto-emacs-key-command-node': If the key's [[command]] is not found, then it searches for the KeySequence in the text.
 ** Info [[Frame]] is dynamically shrink-wrapped to fit each node individually (if `Info-fit-frame-flag' is non-`nil').
 ** Searching highlights the found regexp (if `search-highlight' is non-`nil').
 ** Better default values for input.
