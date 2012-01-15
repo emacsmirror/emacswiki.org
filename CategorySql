@@ -29,6 +29,8 @@ Click on the header to list all SQL related pages.
 * Lisp:sqlserver-query.el -- execute sql query using sqlcmd.exe or osql.exe * for sql server 
 * Lisp:sqlserver-table2entity-4java.el -- generate entity for java from sqlserver tables [2011-09-27 14:26] 
 * Lisp:sqlserver-table2entity-4csharp.el  -- generate entity for csharp from sqlserver tables [2011-09-27 14:26]  
+* Lisp:mysql-table2entity-4java.el -- generate entity for java from mysql tables [2012-01-16 00:16] 
+* Lisp:mysql-table2entity-4csharp.el  -- generate entity for csharp from mysql tables [2012-01-16 00:16]  
 * Lisp:oracle-table2entity-4java.el  -- generate entity for java  from oracle tables [2011-09-27 14:26] 
 * Lisp:oracle-table2entity-4csharp.el   -- generate entity for csharp from oracle tables [2011-09-27 14:26] 
 
