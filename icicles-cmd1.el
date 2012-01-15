@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Sat Jan 14 16:37:42 2012 (-0800)
+;; Last-Updated: Sat Jan 14 17:09:21 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 23237
+;;     Update #: 23238
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-cmd1.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -6353,10 +6353,11 @@ is the subset of `ucs-names' that corresponds to the characters that
 have been read previously (`icicle-read-char-history'), that is, the
 Unicode names you entered.  If you want to complete against all
 Unicode chars, then customize option `icicle-zap-to-char-candidates'."
-    (interactive (list (prefix-numeric-value current-prefix-arg)
-                       (icicle-read-char-completing "Zap to char: "
-                                                    (and (functionp icicle-zap-to-char-candidates)
-                                                         (funcall icicle-zap-to-char-candidates)))))
+    (interactive
+     (list (prefix-numeric-value current-prefix-arg)
+           (icicle-read-char-maybe-completing "Zap to char: "
+                                              (and (functionp icicle-zap-to-char-candidates)
+                                                   (funcall icicle-zap-to-char-candidates)))))
     (unless names (setq names  (or (icicle-char-cands-from-charlist)  (icicle-ucs-names))))
     (with-no-warnings                   ; Avoid "obsolete" warning for `translation-table-for-input'.
         (when (char-table-p translation-table-for-input) ; Free var here.
