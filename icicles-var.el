@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:23:26 2006
 ;; Version: 22.0
-;; Last-Updated: Sun Jan  1 14:05:16 2012 (-0800)
+;; Last-Updated: Sat Jan 14 16:28:11 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 1590
+;;     Update #: 1594
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-var.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -115,10 +115,10 @@
 ;;    `icicle-previous-raw-non-file-name-inputs',
 ;;    `icicle-progressive-completing-p', `icicle-prompt',
 ;;    `icicle-proxy-candidate-regexp', `icicle-proxy-candidates',
-;;    `icicle-read-expression-map', `icicle-remove-icicles-props-p',
-;;    `icicle-re-no-dot', `icicle-require-match-p',
-;;    `icicle-reverse-multi-sort-p', `icicle-reverse-sort-p',
-;;    `icicle-saved-candidate-overlays',
+;;    `icicle-read-char-history', `icicle-read-expression-map',
+;;    `icicle-remove-icicles-props-p', `icicle-re-no-dot',
+;;    `icicle-require-match-p', `icicle-reverse-multi-sort-p',
+;;    `icicle-reverse-sort-p', `icicle-saved-candidate-overlays',
 ;;    `icicle-saved-candidates-variables-obarray',
 ;;    `icicle-saved-completion-candidate',
 ;;    `icicle-saved-completion-candidates',
@@ -1167,6 +1167,12 @@ The candidates are highlighted in buffer `*Completions*' using face
 `icicle-proxy-candidate'.")
 
 (defvar icicle-proxy-candidates nil "List of proxy completion candidates (strings).")
+
+(when (fboundp 'read-char-by-name)      ; Emacs 23+
+  (defvar icicle-read-char-history ()
+    "History list for reading characters by name.
+Augmented by `icicle-read-char-completing' and
+`icicle-read-char-by-name'."))
 
 (defvar icicle-read-expression-map nil
   "Icicle mode version of `read-expression-map'.
