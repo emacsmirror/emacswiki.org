@@ -7,7 +7,7 @@
 ;; Maintainer: José Alfredo Romero L. <escherdragon@gmail.com>
 ;; Created: 24 Sep 2007
 ;; Version: 5
-;; RCS Version: $Rev: 406 $
+;; RCS Version: $Rev: 407 $
 ;; Keywords: files, dired, midnight commander, norton, orthodox
 ;; URL: http://www.emacswiki.org/emacs/sunrise-commander.el
 ;; Compatibility: GNU Emacs 22+
@@ -1137,7 +1137,7 @@ immediately loaded, but only if `sr-autoload-extensions' is not nil."
 
 ;;;###autoload
 (defun sunrise (&optional left-directory right-directory filename)
-  "Start the Sunrise Commander.
+  "Toggle the Sunrise Commander FM.
 If LEFT-DIRECTORY is given, the left window will display that
 directory (same for RIGHT-DIRECTORY). Specifying nil for any of
 these values uses the default, ie. $HOME."
@@ -1162,26 +1162,47 @@ these values uses the default, ie. $HOME."
               (error (setq welcome (cadr description)))))
         (setq sr-this-directory default-directory)
         (message "%s" welcome)
-        (sr-highlight)) ;;<-- W32Emacs needs this
+        (sr-highlight) ;;<-- W32Emacs needs this
+        (hl-line-mode 1))
     (let ((my-frame (window-frame (selected-window))))
       (sr-quit)
       (message "All life leaps out to greet the light...")
       (unless (eq my-frame (window-frame (selected-window)))
         (select-frame my-frame)
         (sunrise left-directory right-directory filename)))))
+ 
+;;;###autoload
+(defun sr-dired (&optional target switches)
+  "Visit the given target (file or directory) in `sr-mode'."
+  (interactive
+   (list
+    (read-file-name "Visit (file or directory): " nil nil nil)))
+  (let* ((target (expand-file-name (or target default-directory)))
+         (file (if (file-directory-p target) nil target))
+         (directory (if file (file-name-directory target) target))
+         (dired-omit-mode (if sr-show-hidden-files -1 1))
+         (sr-listing-switches (or switches sr-listing-switches)))
+    (unless (file-readable-p directory) 
+      (error "%s is not readable!" (sr-directory-name-proper directory)))
+    (unless sr-running (sunrise))
+    (sr-select-window sr-selected-window)
+    (if file
+        (sr-follow-file file)
+      (sr-goto-dir directory))
+    (hl-line-mode 1)
+    (sr-display-attributes (point-min) (point-max) sr-show-file-attributes)
+    (sr-this 'buffer)))
 
 ;;;###autoload
 (defun sunrise-cd ()
-  "Run Sunrise but give it the current directory to use."
+  "Toggle the Sunrise Commander FM keeping the current file in focus.
+If Sunrise is off, enable it and focus the file displayed in the current buffer.
+If Sunrise is on, disable it and switch to the buffer currently displayed in the
+viewer window."
   (interactive)
   (if (not (and sr-running
                 (eq (window-frame sr-left-window) (selected-frame))))
-      (let ((target-dir default-directory)
-            (target-file (sr-directory-name-proper (buffer-file-name))))
-        (sunrise)
-        (sr-goto-dir target-dir)
-        (if target-file
-            (sr-focus-filename target-file)))
+      (sr-dired (or (buffer-file-name) default-directory))
     (sr-quit t)
     (message "Hast thou a charm to stay the morning-star in his deep course?")))
 
@@ -1203,20 +1224,6 @@ buffer or window."
     (if type
         (symbol-value (sr-symbol side type))
       side)))
-
-;;;###autoload
-(defun sr-dired (directory &optional switches)
-  "Visit the given directory in `sr-mode'."
-  (interactive
-   (list
-    (read-file-name "Change directory (file or pattern): " nil nil nil)))
-  (if (and (file-readable-p directory) (file-directory-p directory))
-      (let ((dired-omit-mode (if sr-show-hidden-files -1 1))
-            (sr-listing-switches (or switches sr-listing-switches)))
-        (unless sr-running (sunrise))
-        (sr-goto-dir directory)
-        (sr-display-attributes (point-min) (point-max) sr-show-file-attributes)
-        (sr-this 'buffer))))
 
 ;;; ============================================================================
 ;;; Window management functions:
