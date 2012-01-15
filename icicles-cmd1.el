@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Sat Jan 14 17:09:21 2012 (-0800)
+;; Last-Updated: Sun Jan 15 13:47:14 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 23238
+;;     Update #: 23240
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-cmd1.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -3314,8 +3314,10 @@ keys at the top level."
                   (bname    (or name
                                 (icicle-transform-multi-completion
                                  (bmkp-completing-read-lax "Set bookmark " defname
-                                                                icicle-candidates-alist
-                                                                nil bookmark-history)))))
+                                                           icicle-candidates-alist
+                                                           nil (if (boundp 'bookmark-history)
+                                                                   'bookmark-history
+                                                                 'icicle-bookmark-history))))))
              (when (string-equal bname "") (setq bname  defname))
              (bookmark-store bname (cdr record) (consp parg))
              (when (and bmkp-prompt-for-tags-flag interactivep)
