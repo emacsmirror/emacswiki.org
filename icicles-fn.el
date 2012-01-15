@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:53 2006
 ;; Version: 22.0
-;; Last-Updated: Wed Jan  4 09:38:48 2012 (-0800)
+;; Last-Updated: Sat Jan 14 16:47:20 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 12758
+;;     Update #: 12781
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-fn.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -136,8 +136,9 @@
 ;;    `icicle-propertize', `icicle-proxy-candidate-first-p',
 ;;    `icicle-put-at-head', `icicle-put-whole-cand-prop',
 ;;    `icicle-quote-file-name-part-of-cmd',
-;;    `icicle-readable-to-markers', `icicle-read-char-exclusive',
-;;    `icicle-read-char-by-name', `icicle-read-face-name',
+;;    `icicle-readable-to-markers', `icicle-char-cands-from-charlist',
+;;    `icicle-read-char-by-name', `icicle-read-char-completing',
+;;    `icicle-read-char-exclusive', `icicle-read-face-name',
 ;;    `icicle-read-file-name', `icicle-read-from-minibuffer',
 ;;    `icicle-read-from-minibuf-nil-default', `icicle-read-number',
 ;;    `icicle-read-shell-command',
@@ -168,7 +169,8 @@
 ;;    `icicle-take', `icicle-toggle-icicle-mode-twice',
 ;;    `icicle-transform-candidates',
 ;;    `icicle-transform-multi-completion', `icicle-try-switch-buffer',
-;;    `icicle-unhighlight-lighter', `icicle-unpropertize-completion',
+;;    `icicle-ucs-names', `icicle-unhighlight-lighter',
+;;    `icicle-unpropertize-completion',
 ;;    `icicle-unsorted-apropos-candidates',
 ;;    `icicle-unsorted-file-name-apropos-candidates',
 ;;    `icicle-unsorted-file-name-prefix-candidates',
@@ -333,6 +335,7 @@
 (defvar font-width-table)               ; In C code.
 (defvar font-weight-table)              ; In C code.
 (defvar font-slant-table)               ; In C code.
+(defvar icicle-read-char-history)       ; In `icicles-var.el' for Emacs 23+.
 (defvar list-colors-sort)               ; In `facemenu.el'
 (defvar 1on1-*Completions*-frame-flag)  ; In `oneonone.el'
 (defvar shell-completion-execonly)      ; In `shell.el'
@@ -343,6 +346,7 @@
 (defvar recentf-menu-open-all-flag)
 (defvar recentf-menu-filter-commands)
 (defvar recentf-menu-items-for-commands)
+(defvar ucs-names)                      ; In `mule-cmds.el'.
 
 ;; The name changed during development of Emacs 23.  They aliased it for 23.1, but removed it for 23.2.
 ;; Use the new name and alias the old, but don't declare old obsolete (let Emacs 23 do that.)
@@ -1635,40 +1639,81 @@ before you call this function."
        (or (get variable 'custom-type)
            (progn (custom-load-symbol variable) (get variable 'custom-type)))))
 
+(when (fboundp 'read-char-by-name)      ; Emacs 23+
+  (defun icicle-read-char-completing (&optional prompt names inherit-input-method seconds)
+    "Read a char with PROMPT, possibly completing against character NAMES.
+If the character read is `C-q' then read another character.
+Otherwise, if the character read is a completing key (e.g. `TAB'),
+then complete.
 
-;; REPLACE ORIGINAL `read-char-by-name' in `mule-cmds.el'.
+Elements of alist NAMES have the form of `ucs-names' elements:
+ (CHAR-NAME . CHAR-CODE)
+NAMES defaults to the subset of `ucs-names' that corresponds to the
+ characters that have been read previously.
+The other arguments are as in `read-char-by-name'."
+    (unless names (setq names  (or (icicle-char-cands-from-charlist)  (icicle-ucs-names))))
+    (let ((chr  (read-char prompt inherit-input-method seconds)))
+      (if (eq chr ?\C-q)
+          (setq chr  (read-char prompt inherit-input-method seconds)) ; ^Q - read next
+        (when (member (vector chr) (append icicle-prefix-complete-keys icicle-apropos-complete-keys))
+          (add-to-list 'unread-command-events chr)
+          (setq chr  (icicle-read-char-by-name prompt names))))
+      chr))
+
+  (defun icicle-char-cands-from-charlist (&optional chars)
+    "Characters in list CHARS that are listed in `icicle-ucs-names'.
+CHARS defaults to the value of `icicle-read-char-history'."
+    (unless chars (setq chars  icicle-read-char-history))
+    (let ((cands  ())
+          name.char)
+      (dolist (char  chars)
+        (when (setq name.char  (rassq char (icicle-ucs-names)))
+          (push name.char cands)))
+      cands)))
+
+
+;; REPLACE ORIGINAL `read-char-by-name' in `mule-cmds.el' (Emacs 23+).
 ;; saving it for restoration when you toggle `icicle-mode'.
 ;;
-;; 1. Exclude character names "" and "VARIATION SELECTOR*".
-;; 2. Display the character itself, after its name, in `*Completions*'.
+;; 1. Use `icicle-ucs-names', not `ucs-names'.
+;; 2. Exclude character names "" and "VARIATION SELECTOR*".
+;; 3. Display the character itself, after its name, in `*Completions*'.
+;; 4. Added optional arg NAMES.
+;; 5. Add char read to `icicle-read-char-history'.
+;; 5. See doc string for the rest.
 ;;
 (when (fboundp 'read-char-by-name)      ; Emacs 23+
   (unless (fboundp 'old-read-char-by-name)
     (defalias 'old-read-char-by-name (symbol-function 'read-char-by-name)))
 
-  (defun icicle-read-char-by-name (prompt)
+  (defun icicle-read-char-by-name (prompt &optional names)
     "Read a character by its Unicode name or hex number string.
 Display PROMPT and read a string that represents a character by its
 Unicode property `name' or `old-name'.  Return the char as a number.
 
 You can use Icicles completion against the Unicode name.
 
-A completion candidate is a Unicode name.  The Unicode character is
-also displayed next to the name, even though it is not part of the
-completion candidate.
+A completion candidate is a Unicode name.  In Icicle mode, the Unicode
+character is also displayed next to the name, even though it is not
+part of the completion candidate.
 
 If you use a dedicated `*Completions*' frame, then the font used in
 `*Completions*' is the same as the frame from which you invoked
 completion.
 
-And remember that if you use library `doremi-frm.el' then you can
-increase the font size for `*Completions*' dynamically using `C-x -'.
+If you use library `doremi-frm.el' then you can increase the font size
+for `*Completions*' dynamically using `C-x -'.
 
 As an alternative to completing the Unicode name, you can input a
 number for the Unicode code point: a hexidecimal number or a number in
 hash notation: #o21430 for octal, #x2318 for hex, or #10r8984 for
-decimal."
-    (dolist (name.char  (ucs-names))
+decimal.
+
+Non-nil optional arg NAMES is an alist of names to use in place of the
+value returned by `icicle-ucs-names'.  It must have the same form as
+such a return value: (CHAR-NAME . CHAR-CODE)."
+    (unless names  (setq names  (icicle-ucs-names)))
+    (dolist (name.char  names)
       ;; $$$$$$  (when (and (not (string= "" (car name.char)))
       ;;                    ;; $$$$$$ Maybe make this optional?
       ;;                    (not (string-match "\\`VARIATION SELECTOR" (car name.char))))
@@ -1680,20 +1725,28 @@ decimal."
                (symb         (intern (car name.char))))
           (put symb 'icicle-display-string disp-string)
           (put-text-property 0 1 'icicle-orig-cand symb disp-string))))
-    (let* ((new-prompt  (copy-sequence prompt))
-           (IGNORE-1    (put-text-property 0 1 'icicle-fancy-candidates t new-prompt))
-           (completion-ignore-case t)
-           (input (completing-read
-                   new-prompt
-                   (lambda (string pred action)
-                     (if (eq action 'metadata)
-                         '(metadata (category . unicode-name))
-                       (complete-with-action action (ucs-names) string pred))))))
+    (let* ((new-prompt              (copy-sequence prompt))
+           (IGNORE-1                (put-text-property 0 1 'icicle-fancy-candidates t new-prompt))
+           (completion-ignore-case  t)
+           (input                   (completing-read
+                                     new-prompt
+                                     `(lambda (string pred action)
+                                       (if (eq action 'metadata)
+                                           '(metadata (category . unicode-name))
+                                         (complete-with-action action ',names string pred)))))
+           chr)
       (let ((orig-cand  (get-text-property 0 'icicle-orig-cand input)))
         (when orig-cand  (setq input  (symbol-name orig-cand))))
-      (cond ((string-match-p "^[0-9a-fA-F]+$" input) (string-to-number input 16))
-            ((string-match-p "^#" input)             (read input))
-            (t                                       (cdr (assoc-string input (ucs-names) t)))))))
+      (setq chr  (cond ((string-match-p "^[0-9a-fA-F]+$" input)  (string-to-number input 16))
+                       ((string-match-p "^#" input)              (read input))
+                       (t                                        (cdr (assoc-string input names t)))))
+      (add-to-list 'icicle-read-char-history chr)
+      chr))
+
+  ;; This would not be needed if there were not Emacs bug #9653.
+  (defun icicle-ucs-names ()
+    "Same as `ucs-names', except remove entries with an empty name: \"\"."
+    (setq ucs-names  (assq-delete-all "" (ucs-names))))) ; Free var here: `ucs-names'.
 
 
 ;; REPLACE ORIGINAL `read-string' (built-in function),
