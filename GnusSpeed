@@ -101,6 +101,8 @@ E.g. use offlineimap (an IMAP synchronization tool) to pull emails from a remote
 
 Other option: use fetchmail+maildrop to get mails and deliver to local Maildir, then use nnmaildir to read mails.
 
+If you are running debian (or a derivative) and you use exim4 for smtp delivery with a smarthost, add the option '-odqs' in /etc/default/exim4 SMTPLISTENEROPTIONS (otherwise gnus still locks up your emacs when sending large attachments). Also change QUEUEINTERVAL to something smaller like 5m. If you need a message sent immediately run sudo exim4 -q.
+
 ===Keep summary buffers small===
 * Set the 'large-newsgroup-initial' group parameter to a small value  (e.g. 50), so that you get smaller summary buffers.
 * Sort articles/threads by number.
