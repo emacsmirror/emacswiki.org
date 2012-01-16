@@ -7,9 +7,9 @@
 ;; Copyright (C) 2006-2012, Drew Adams, all rights reserved.
 ;; Created: Tue May 25 16:35:05 2004
 ;; Version: 21.0
-;; Last-Updated: Sun Jan  8 17:00:34 2012 (-0800)
+;; Last-Updated: Sun Jan 15 16:15:16 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 951
+;;     Update #: 955
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/browse-kill-ring+.el
 ;; Keywords: convenience
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -147,6 +147,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2012/01/15 dadams
+;;     browse-kill-ring-mode: Call font-lock-refresh-defaults.
 ;; 2012/01/07 dadams
 ;;     Added: browse-kill-ring-copy-to-other-ring.  Bound to c in browser buffer.
 ;;     Added: browse-kill-ring-current-ring (function).
@@ -583,6 +585,7 @@ Do not call `browse-kill-ring-mode' directly - use `browse-kill-ring'.
 \\{browse-kill-ring-mode-map}"
   (set (make-local-variable 'font-lock-defaults)
        '(nil t nil nil nil (font-lock-fontify-region-function . browse-kill-ring-fontify-region)))
+  (when (fboundp 'font-lock-refresh-defaults) (font-lock-refresh-defaults))
   (use-local-map browse-kill-ring-mode-map)
   (browse-kill-ring-current-ring))      ; Use the correct ring for this `browse-kill-ring' buffer.
 
