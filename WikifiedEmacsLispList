@@ -2552,7 +2552,7 @@ This page is based on the EmacsLispList by StephenEglen and updated automaticall
 
 [http://www.newartisans.com/johnw/Emacs/xml-parse.el xml-parse.el] --- code to efficiently read/write XML data with Elisp (by John Wiegley)
 
-[http://elisp.info/package/xml-rpc/xml-rpc.el xml-rpc.el] --- An elisp implementation of clientside XML-RPC (by Mark A. Hershberger)
+[http://www.emacswiki.org/emacs/xml-rpc.el xml-rpc.el] --- An elisp implementation of clientside XML-RPC (by Mark A. Hershberger)
 
 [http://nwalsh.com/emacs/xmlchars/index.html xmlunicode.el] --- Unicode support for XML (by Norman Walsh)
 
