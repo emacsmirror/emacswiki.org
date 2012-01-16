@@ -72,5 +72,21 @@ Thank you for pointing the ''<nowiki>LoginsAreEvil</nowiki>'' link of the [[Anon
 [new]
 Thanks for picking up where I did not finish my cleanup! -- JonasBernoulli
 
+
+----
+[new]
+Drew, I saw your edit to RevertBuffer that made some wholesale changes.  I liked the previous format of the page.  Can we just roll back to [EmacsWiki:id=RevertBuffer;diff=1;revision=35;diffrevision=33 revision 35] -- my edit after your previous edit? -- AaronHawley
+
+
+[new:DrewAdams:2012-01-16 19:06 UTC]
+Sorry, I disagree.  Your edit was unhelpful.  My rewrite clarified and simplified.  It factors common parts that are repetitive and distinguishes things that are different, such as reverting and undoing.  It clarifies reverting file buffers vs non-file buffers.
+
+It removes the rambling dialog, which added nothing; distracted from the information; and was misleading, partly incorrect, and repetitive.  Attributions for code or opinions can be helpful, but the dialog here was pointless, beyond the little bit of info that it contained, which was preserved.  
+
+If you feel so strongly that you want to keep the mess that was there before, then you can roll back to revision 33, before your edits today, or to revision 28, before your addition of undoing, calling it "reverting". 
+
+If you really wanted to do something constructive, you would take my rewrite and incorporate the real info that is buried in AutoRevertMode (and delete that page). -- DrewAdams
+
+
 ----
 CategoryHomepage
