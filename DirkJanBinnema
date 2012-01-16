@@ -2,8 +2,8 @@ I'm Dirk-Jan C. Binnema (**djcb**), emacs user since '96 or so. Since that time,
 
 Some of my emacs related activities:
 * [http://emacs-fu.blogspot.com EmacsFu] - my blog with emacs tricks/tips
-* [https://github.com/djcb/sauron Sauron] -  a separate frame for tracking org-mode/ERC/dbus/... events. See this [http://emacs-fu.blogspot.com/2011/12/sauron-keeping-eye-on-whats-going-on.html emacs-fu post]
-* [http://www.djcbsoftware.nl/code/mu mu] - my email index/searcher; since 0.9.8 it includes an emacs mail client called [http://www.djcbsoftware.nl/code/mu/mu4e/ mu4e]
+* [[Sauron]] -  a little frame for tracking org-mode/ERC/dbus/... events.
+* [http://www.djcbsoftware.nl/code/mu mu] - my email index/searcher; since 0.9.8 it includes an emacs-based e-mail client called [[mu4e]].
 
 Happy hacking!
 
