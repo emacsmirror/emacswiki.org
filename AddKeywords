@@ -159,6 +159,7 @@ highlighting printf format specifier like vim ...
 				      ("\\(%%\\)" 
 				       1 font-lock-format-specifier-face t)) )))
 </pre>
+Note that this will highlight printf specifiers outside of strings, so "a=num%amount" will have the "%a" highlighted.
 
 ----
 CategoryFaces
