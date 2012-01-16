@@ -1,5 +1,5 @@
 ;;; viewer.el --- View-mode extension
-;; $Id: viewer.el,v 1.5 2010/05/04 08:56:49 rubikitch Exp $
+;; $Id: viewer.el,v 1.7 2012/01/16 14:46:49 rubikitch Exp $
 
 ;; Copyright (C) 2009  rubikitch
 
@@ -124,6 +124,12 @@
 ;;; History:
 
 ;; $Log: viewer.el,v $
+;; Revision 1.7  2012/01/16 14:46:49  rubikitch
+;; viewer-change-modeline-color-setup: Use window-configuration-change-hook
+;;
+;; Revision 1.6  2010/10/30 12:13:10  rubikitch
+;; viewer-install-extension: call only if view-mode is enabled because (view-mode -1) on emacs24 calls it. mystery.
+;;
 ;; Revision 1.5  2010/05/04 08:56:49  rubikitch
 ;; Added bug report command
 ;;
@@ -145,7 +151,7 @@
 
 ;;; Code:
 
-(defvar viewer-version "$Id: viewer.el,v 1.5 2010/05/04 08:56:49 rubikitch Exp $")
+(defvar viewer-version "$Id: viewer.el,v 1.7 2012/01/16 14:46:49 rubikitch Exp $")
 (eval-when-compile (require 'cl))
 
 ;;;; (@* "Overriding view-mode keymap")
@@ -174,8 +180,9 @@ For example, to define `view-mode' keys for `emacs-lisp-mode':
   `(define-overriding-view-mode-map-internal ',mode-name ',key-bindings))
 
 (defun viewer-install-extension ()
-  (set (make-local-variable (intern (concat (symbol-name major-mode) "-view-mode")))
-       t))
+  (when view-mode
+    (set (make-local-variable (intern (concat (symbol-name major-mode) "-view-mode")))
+         t)))
 (add-hook 'view-mode-hook 'viewer-install-extension)
 (defun viewer-uninstall-extension ()
   (kill-local-variable (intern (concat (symbol-name major-mode) "-view-mode"))))
@@ -292,30 +299,28 @@ Stay in `view-mode' when the file is unwritable."
            (view-mode
             viewer-modeline-color-view)
            (t
-            viewer-modeline-color-default)))))
+            viewer-modeline-color-default)))
+    (force-mode-line-update)))
 
 (defmacro viewer-change-modeline-color-advice (f)
   `(defadvice ,f (after change-mode-line-color activate)
-     (viewer-change-modeline-color)
-     (force-mode-line-update)))
+     (viewer-change-modeline-color)))
 
 (defun viewer-change-modeline-color-setup ()
   "Setup coloring modeline.
 See also `viewer-modeline-color-unwritable' and `viewer-modeline-color-view'."
+  (add-hook 'window-configuration-change-hook 'viewer-change-modeline-color)
   (viewer-change-modeline-color-advice toggle-read-only)
   (viewer-change-modeline-color-advice view-mode-enable)
   (viewer-change-modeline-color-advice view-mode-disable)
-  (viewer-change-modeline-color-advice kill-buffer)
-  (viewer-change-modeline-color-advice switch-to-buffer)
-  (viewer-change-modeline-color-advice pop-to-buffer)
-  (viewer-change-modeline-color-advice bury-buffer)
   (viewer-change-modeline-color-advice other-window)
-  (viewer-change-modeline-color-advice select-window)
-  (viewer-change-modeline-color-advice display-buffer)
-  (viewer-change-modeline-color-advice set-window-configuration)
+  (defadvice select-window (around change-modeline-color activate)
+    (let ((curwin (selected-window))
+          (destwin (ad-get-arg 0)))
+      ad-do-it
+      (unless (or (called-interactively-p) (eq curwin destwin))
+        (viewer-change-modeline-color))))
   (viewer-change-modeline-color-advice select-frame)
-  (viewer-change-modeline-color-advice keyboard-quit)
-  (viewer-change-modeline-color-advice exit-minibuffer)
   nil)
 
 ;;;; Bug report
