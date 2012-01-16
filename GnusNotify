@@ -1,4 +1,4 @@
-GnusNotify is mode that display gnus news number at mode-line. Combined with [[GnusDemon]], it warns you when you receive new mails or when are new news to read.
+GnusNotify is a mode that display gnus news number at mode-line. Combined with [[GnusDemon]], it warns you when you receive new mails or when there are new news to read.
 
 There are two variants (see comparison below). One of them is called gnus-notify+.
 You can get it from [[gnus-notify+.el]].
@@ -14,8 +14,8 @@ To do it: use ##G p## in the group buffer, then add ##(modeline-notify t)## to t
 
 ==Comparison and which one to choose==
 * gnus-notify allows you to select which groups you want to include in the report; see above for how
-* gnus-notify+ works with a timer, and each time it runs, slows down your Emacs for a moment
-* gnus-notify+ shows only a total count of unread messages, whereas gnus-notify shows the group names which contain unread messages but doesn't tell you hoy many
+* gnus-notify+ works with a timer, and each time it runs it slows down your Emacs for a moment
+* gnus-notify+ shows only a total count of unread messages, whereas gnus-notify shows the group names which contain unread messages but doesn't tell you how many
 
 ----
 GnusNotificationComparison, CategoryGnus
