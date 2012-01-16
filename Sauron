@@ -1,0 +1,11 @@
+==Sauron==
+
+sauron is an emacs mode for keeping track of events happening in the (emacs) world around you. Events are things like ‘appointment in 5 minutes’, ‘bob pinged you on IRC’, ‘torrent download is complete’ etc. Sauron shows those events like a list – basically like a log. You can ‘activate’ an event by either pressing RET when point is on it, or clicking it with the middle mouse button (<mouse-2>).
+
+When activated, it can execute some arbitrary function – for example in the case of IRC (ERC), it will switch you to the buffer (channel) it originated from. It’s a bit of a generalization of what tracking mode does in ERC (the emacs IRC client), and that is in fact how it started.
+
+For my work, I need to keep track of a bunch of internal ERC (IRC) channels and at the same time not forget to go to meetings, even when I’m concentrating on something else. So, I want something tweakable to provide me with the right balance between obnoxiousness and ignorability. Thus, sauron was born.
+
+There’s an increasing number of hooks and tunables in sauron, which allows you to fine-tune the behavior. However, I strive for it to be useful with minimal configuration.
+
+Sauron is being developed at [https://github.com/djcb/sauron Github], and there's an article in [http://emacs-fu.blogspot.com/2011/12/sauron-keeping-eye-on-whats-going-on.html Emacs-Fu].
