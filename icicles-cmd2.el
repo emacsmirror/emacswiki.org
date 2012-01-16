@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Thu May 21 13:31:43 2009 (-0700)
 ;; Version: 22.0
-;; Last-Updated: Sun Jan  1 14:05:18 2012 (-0800)
+;; Last-Updated: Mon Jan 16 15:27:56 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 5005
+;;     Update #: 5008
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-cmd2.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -24,8 +24,8 @@
 ;;   `icicles-face', `icicles-fn', `icicles-mcmd', `icicles-opt',
 ;;   `icicles-var', `image-dired', `kmacro', `levenshtein',
 ;;   `misc-fns', `mouse3', `mwheel', `naked', `pp', `pp+',
-;;   `regexp-opt', `ring', `ring+', `strings', `thingatpt',
-;;   `thingatpt+', `wid-edit', `wid-edit+', `widget'.
+;;   `regexp-opt', `ring', `ring+', `second-sel', `strings',
+;;   `thingatpt', `thingatpt+', `wid-edit', `wid-edit+', `widget'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -3909,8 +3909,11 @@ The arguments are the same as for `icicle-search'."
   (when (and icicle-candidates-alist  (null (cdr icicle-candidates-alist)))
     (message "Moving to sole candidate") (sit-for 1.5))
   (unless icicle-candidates-alist  (if (functionp scan-fn-or-regexp)
-                                       (error "No search hits")
-                                     (error "No search hits for `%s'" scan-fn-or-regexp)))
+                                       (error "No %ssearch hits"
+                                              (if icicle-search-complement-domain-p "COMPLEMENT " ""))
+                                     (error "No %ssearch hits for `%s'"
+                                            (if icicle-search-complement-domain-p "COMPLEMENT " "")
+                                            scan-fn-or-regexp)))
   (setq mark-active  nil))              ; Remove any region highlighting, so we can see search hits.
 
 (defun icicle-search-define-candidates-1 (buffer beg end scan-fn-or-regexp args)
