@@ -1,30 +1,32 @@
 Is there a quick way or re-visiting the file in current buffer? This is useful when it was modified by an external program.
-
  From: MichaelSlassto
  Subject: Re: revisit-file
  Newsgroups: comp.emacs
  Date: Tue, 22 May 2001 20:13:45 GMT
 
-# M-x revert-buffer RET yes RET
-# C-x C-v RET
-# (global-set-key [(control c) r] 'revert-buffer)
+# ##M-x revert-buffer RET yes RET##
+# ##C-x C-v RET##
+# ##(global-set-key [(control c) r] 'revert-buffer)##
 
-The second one is a sleazy trick, calling find-alternate-file - that prompts you for a file name, but fills in the name of the current buffer's filename as a default, so you can hit `RET' to re-read the file from disk.  Before I knew about `find-alternate-file', I wanted something faster for reverting buffers (mainly due to the problem [[XEmacs]] has with hard links; see the WishList).  That's why I bound revert-buffer into the `C-c' keymap.
+The second one is a sleazy trick, calling find-alternate-file - that prompts you for a file name, but fills in the name of the current buffer's filename as a default, so you can hit RET to re-read the file from disk.  Before I knew about find-alternate-file, I wanted something faster for reverting buffers (mainly due to the problem [[XEmacs]] has with hard links; see the WishList).  That's why I bound revert-buffer into the C-c keymap.
 
- From: RaymondZeitler
- Subject: Re: revisit-file
- Newsgroups: comp.emacs
- Date: Thu, 24 May 2001 18:00:49 GMT
+[new:DrewAdams:2012-01-13 23:22 UTC]
+Actually, `C-x C-v' is not a sleazy trick.  And it's not the same as `revert-buffer'.  To see this, in DiredMode, mark some files, flag some for deletion, or whatever.  Try `M-x revert-buffer' or `g' --- no change.  Now try `C-x C-v RET'.  `C-x C-v' is quite useful independently from `revert-buffer', for this reason. -- DrewAdams
+[new]
 
-In addition to doing this manually, which was explained by other posters, you can tell Emacs to do it automatically by putting this in your .emacs file:
+
+In addition to [using `M-x revert-buffer']..., you can tell Emacs to do it automatically by putting this in your .emacs file:
 
  (global-auto-revert-mode 1)
 
-we have found that an awful lot of our network traffic can be people visiting multiple files across the network and having global-auto-revert-mode on so no longer use it all the time
+we have found that an awful lot of our network traffic can be people visiting multiple files across the network and having global-auto-revert-mode on so no longer use it all the time -- RaymondZeitler, comp.emacs, 24 May 2001
+
 
 See AutoRevertMode.
 
-In DiredMode, `C-x C-v RET' and 'M-x revert-buffer' (bound to `g') behave differently.  Both will reload the directory structure from disk, but `revert-buffer' will keep any flags set on files, while `C-x C-v RET' will reset them.
+
+
+
 
 == No confirmation ==
 
@@ -35,6 +37,12 @@ In <tt>[[misc-cmds.el]]</tt> you will find this extremely complex command defini
     (interactive) (revert-buffer t t))
 
 I bind it to `##<F5>##' (since that's the MS Windows key for syncing things). -- DrewAdams
+
+
+
+
+
+
 
 == Revert all buffers that are visiting a file ==
 
@@ -64,7 +72,11 @@ There's no way to save the undo history if the file is changed behind Emacs's ba
   (message "Buffer was undone until no longer modified"))
 }}}
 
-It can revert all the changes to a buffer that is *not* associated to a file.
+It can undo changes to a buffer, whether or not it is associated with a file.
+
+
+
+
 
 ----
 CategoryFiles
