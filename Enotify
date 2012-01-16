@@ -16,6 +16,8 @@ Get the code from [https://github.com/laynor/enotify the github repository], add
 (enotify-minor-mode t)
 }}}
 
+or grab it from [Lisp:enotify.el here] as a single file. 
+
 == USAGE ==
 Enotify uses the TCP port 5000 by default. You can customize `enotify-port' if you want.
 
