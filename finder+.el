@@ -7,9 +7,9 @@
 ;; Copyright (C) 2008-2012, Drew Adams, all rights reserved.
 ;; Created: Wed Mar 12 10:00:16 2008 (Pacific Standard Time)
 ;; Version: 21.0
-;; Last-Updated: Sun Jan  1 14:20:41 2012 (-0800)
+;; Last-Updated: Sun Jan 15 16:18:15 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 109
+;;     Update #: 111
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/finder+.el
 ;; Keywords: help
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -28,6 +28,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2012/01/15 dadams
+;;     finder-mode: Call font-lock-refresh-defaults.
 ;; 2011/01/04 dadams
 ;;     Added autoload cookie for command.
 ;; 2010/08/28 dadams
@@ -119,6 +121,7 @@ Delete the window and kill the buffer."
     (when (boundp 'finder-font-lock-keywords) ; Emacs 23.
       (setq font-lock-defaults '(finder-font-lock-keywords nil nil
                                  (("+-*/.<>=!?$%_&~^:@" . "w")) nil)))
+    (when (fboundp 'font-lock-refresh-defaults) (font-lock-refresh-defaults))
     (setq mode-name "Finder")
     (setq major-mode 'finder-mode)
     (set (make-local-variable 'finder-headmark) nil)
