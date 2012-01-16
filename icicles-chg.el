@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Sun Jan 15 13:49:42 2012 (-0800)
+;; Last-Updated: Mon Jan 16 15:30:33 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 7778
+;;     Update #: 7780
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-chg.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -533,6 +533,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd2.el'")
 ;;
+;; 2012/01/16 dadams
+;;     icicle-search-define-candidates: Add COMPLEMENT to error msg.  Thx to Michael Heerdegen.
 ;; 2011/12/19 dadams
 ;;     icicle-marker+text, icicle-compilation-search-in-context-fn: Use line-(beginning|end)-position.
 ;; 2011/12/14 dadams
