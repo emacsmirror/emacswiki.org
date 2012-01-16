@@ -1,40 +1,47 @@
-This page is about returning the current buffer to a state prior to changes you have made to it.  Command `revert-buffer' replaces the current buffer text with the text before your changes.  In the case of a buffer visiting a file, this means your unsaved changes.
+Is there a quick way or re-visiting the file in current buffer? This is useful when it was modified by an external program.
 
-== Variable `revert-buffer-function' for Mode-Specific Behavior ==
+ From: MichaelSlassto
+ Subject: Re: revisit-file
+ Newsgroups: comp.emacs
+ Date: Tue, 22 May 2001 20:13:45 GMT
 
-If variable `revert-buffer-function' is bound to a function then `revert-buffer' just calls it.  This feature is used to implement different behaviors for `revert-buffer' in different modes.
+# M-x revert-buffer RET yes RET
+# C-x C-v RET
+# (global-set-key [(control c) r] 'revert-buffer)
 
-For example, in DiredMode `revert-buffer' revisits the directory display, updating its list of files according to the file status on disk, but it does not change Dired markings or other Dired-specific features.  Similarly for BufferMenu and other modes.
+The second one is a sleazy trick, calling find-alternate-file - that prompts you for a file name, but fills in the name of the current buffer's filename as a default, so you can hit `RET' to re-read the file from disk.  Before I knew about `find-alternate-file', I wanted something faster for reverting buffers (mainly due to the problem [[XEmacs]] has with hard links; see the WishList).  That's why I bound revert-buffer into the `C-c' keymap.
 
-== Revisiting a Directory ==
+ From: RaymondZeitler
+ Subject: Re: revisit-file
+ Newsgroups: comp.emacs
+ Date: Thu, 24 May 2001 18:00:49 GMT
 
-I you want to revisit a directory in Dired, but you do not want to keep your Dired-specific changes (markings etc.) then use `C-x C-v RET'.  That is, use `find-alternate-file' and just accept the default value, which is the same directory.  This reads the directory from disk, starting anew.
+In addition to doing this manually, which was explained by other posters, you can tell Emacs to do it automatically by putting this in your .emacs file:
 
-== Reverting without Confirmation ==
+ (global-auto-revert-mode 1)
 
-You can bind this command to a key (e.g. `##<F5>##' which is the MS Windows key for syncing things) to revert the current buffer without asking for confirmation.  (This command is in library <tt>[[misc-cmds.el]]</tt>.)
+we have found that an awful lot of our network traffic can be people visiting multiple files across the network and having global-auto-revert-mode on so no longer use it all the time
+
+See AutoRevertMode.
+
+In DiredMode, `C-x C-v RET' and 'M-x revert-buffer' (bound to `g') behave differently.  Both will reload the directory structure from disk, but `revert-buffer' will keep any flags set on files, while `C-x C-v RET' will reset them.
+
+== No confirmation ==
+
+In <tt>[[misc-cmds.el]]</tt> you will find this extremely complex command definition:
 
   (defun revert-buffer-no-confirm ()
     "Revert buffer without confirmation."
     (interactive) (revert-buffer t t))
 
-== Reverting Automatically ==
+I bind it to `##<F5>##' (since that's the MS Windows key for syncing things). -- DrewAdams
 
-You can enable minor mode `auto-revert-mode' to automatically revert the current buffer whenever the file it is visiting changes (e.g. outside Emacs).
+== Revert all buffers that are visiting a file ==
 
-You can enable global minor mode `global-auto-revert-mode' to do the same thing for all buffers visiting files.  Be aware, however, that when many users visit multiple files across the network with `global-auto-revert-mode' enabled it can increase network traffic considerably.
+This is a litte function that is useful when editing several files that might for any reason change on disk (update from VersionControl).  It reverts all buffers that are visiting a file.
 
-If [[option]] `global-auto-revert-non-file-buffers' is non-`nil', then `global-auto-revert-mode' can revert some non-file buffers as well.  See the documentation for this option.
-
-See also: AutoRevertMode.
-
-
-== Reverting All File Buffers ==
-
-This function reverts all buffers that are visiting files:
-
-  (defun revert-all-file-buffers ()
-    "Refreshes all buffers that are visiting files."
+  (defun revert-all-buffers ()
+    "Refreshes all open buffers from their respective files."
     (interactive)
     (dolist (buf (buffer-list))
       (with-current-buffer buf
@@ -42,21 +49,22 @@ This function reverts all buffers that are visiting files:
           (revert-buffer t t t) )))
     (message "Refreshed open files.") )
 
+== Reverting, but protecting undo ==
 
-
-== Undoing vs Reverting ==
-
-When a buffer is reverted, all of your changes and their history (the undo history), are lost.  If you want only to undo all of your unsaved changes, you can use this command.
+There's no way to save the undo history if the file is changed behind Emacs's back.   Emacs needs to re-read the file from disk and reverting a buffer with `revert-buffer' or reopening the file with `C-x C-v RET' will lose the buffer's undo history.  If you only want to revert the buffer to undo just your own changes, you can hit the UndoCommands repeatedly until the buffer is no longer modified. Sometimes this is too onerous.  The following command will run undo iteratively in the buffer for you and as far as possible or until the last time the file was saved.
 
 {{{
-(defun undo-unsaved-edits ()
+(defun undo-until-reverted ()
   "Undo all edits until the buffer is unmodified."
   (interactive)
-  (when (buffer-modified-p) (undo))
-  (while (buffer-modified-p) (undo-more 1))
+  (when (buffer-modified-p)
+    (undo))
+  (while (buffer-modified-p)
+    (undo-more 1))
   (message "Buffer was undone until no longer modified"))
 }}}
 
+It can revert all the changes to a buffer that is *not* associated to a file.
 
 ----
 CategoryFiles
