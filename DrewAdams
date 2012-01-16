@@ -456,10 +456,9 @@ please fixed it. Thank you. -- [[pocoyo]]
 Thanks for the report.  Should be fixed now.  Note: this is a new feature, for Emacs 24, which has not yet been released.  Since it is not released, I do not necessarily support it yet.  -- DrewAdams
 
 
-
-
-
-
+----
+[new]
+Drew, I saw your edit to RevertBuffer that made some wholesale changes.  I liked the previous format of the page.  Can we just roll back to [EmacsWiki:id=RevertBuffer;diff=1;revision=35;diffrevision=33 revision 35] -- my edit after your previous edit? -- AaronHawley
 
 ----
 
