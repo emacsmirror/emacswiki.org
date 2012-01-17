@@ -22,17 +22,20 @@
 ;;
 ;; (require 'ac-R)
 ;;
-;; Most of this was hacked from the Ess sources for completion.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;;; Change log:
+;; 17-Jan-2012 Vitalie Spinu
+;;    Replaced the completion mechanism with one the function ess-R-get-rcompletions.
+;;    Replaced regexp search by a function to recognize dots, brackets etc.
+;;    Replaced lambdas in hooks.
 ;; 7-July-2011    Zigler Zhang
 ;;    Quote local variable to avoid "Symbol nil may not be buffer-local"
 ;;    when start process of ESS
 ;; 23-Mar-2011    Timothy C. Harper
 ;;    Hook up R documentation in completion popup.
-;; 22-Oct-2010    Matthew L. Fidler  
+;; 22-Oct-2010    Matthew L. Fidler
 ;;    Added caching mechanism for 3 characters or less
 ;; 23-Aug-2010    Matthew L. Fidler
 ;;    Initial Version
@@ -62,6 +65,7 @@
   "A cache of R autocompletion.")
 
 (make-variable-buffer-local 'ac-R-cache)
+
 (defun ac-R-add-to-alist (alist-var elt-cons &optional no-replace)
   "Add to the value of ALIST-VAR an element ELT-CONS if it isn't there yet.
 If an element with the same car as the car of ELT-CONS is already present,
@@ -84,12 +88,10 @@ The test for presence of the car of ELT-CONS is done with `equal'."
     (setq present (assoc prefix ac-R-cache))
     (if present
         (setq ret (assoc prefix present))
-      (if ess-use-R-completion
-          (setq ret (ac-R-complete-object-name))
-        (setq ret (ac-internal-complete-object-name)))
+      (ess-R-get-rcompletions))
       (when (>= 3 (length prefix))
         (ac-R-add-to-alist 'ac-R-cache (list prefix ret))))
-    (symbol-value 'ret)))
+    (symbol-value 'ret))
 
 (defun ess-get-help-text (sym)
   (interactive)
@@ -97,126 +99,47 @@ The test for presence of the car of ELT-CONS is done with `equal'."
   (with-temp-buffer
     (ess-command (format inferior-ess-help-command sym) (current-buffer))
     (ess-help-underline)
-    ;; Stata is clean, so we get a big BARF from this.
-    (if (not (string= ess-language "STA"))
-        (ess-nuke-help-bs))
     (buffer-substring (point-min) (point-max))))
 
+(defun ess-get-ac-start ()
+  (let ((chars "]A-Za-z0-9.$@_:["))
+    ( (string-match (format "[%s]" chars) (char-to-string (char-before)))
+      (save-excursion
+	(re-search-backward (format "[^%s]" chars) nil t)
+	(1+ (point))) ;; else nil
+      )))
+
 (setq ac-source-R
-      '((prefix . "\\<[^ \t\n,=.$]*")
-        (requires . 1)
+      '((prefix     . ess-get-ac-start)
+        (requires   . 1)
         (candidates . ac-R)
-        (document . ess-get-help-text)
+        (document   . ess-get-help-text)
         (cache)))
 
-(defun ac-R-complete-object-name ()
-  ;; Modified from ESS
-  "Completion in R via R's completion utilities (formerly 'rcompgen').
-To be used instead of ESS' completion engine for R versions >= 2.5.0
- (or slightly older versions of R with an attached and working 'rcompgen' package)."
-  (interactive)
-  (ess-make-buffer-current)
-  (let* ((comint-completion-addsuffix nil)
-	 (beg-of-line (save-excursion (comint-bol nil) (point)))
-	 (end-of-line (point-at-eol))
-	 (line-buffer (buffer-substring beg-of-line end-of-line))
-	 (NS (if (ess-current-R-at-least '2.7.0)
-		 "utils:::"
-	       "rcompgen:::"))
-	 (token-string ;; setup, including computation of the token
-	  (progn
-	    (ess-command
-	     (format (concat NS ".assignLinebuffer('%s')\n") line-buffer))
-	    (ess-command (format (concat NS ".assignEnd(%d)\n")
-				 (- (point) beg-of-line)))
-	    (car (ess-get-words-from-vector
-		  (concat NS ".guessTokenFromLine()\n")))))
 
-	 (possible-completions ;; compute and retrieve possible completions
-	  (progn
-	    (ess-command (concat NS ".completeToken()\n"))
-	    (ess-get-words-from-vector
-	     (concat NS ".retrieveCompletions()\n")))))
-    (symbol-value 'possible-completions)))
-
-(defun ac-internal-complete-object-name (&optional listcomp)
-  "Perform completion on `ess-language' object preceding point.
-The object is compared against those objects known by
-`ess-get-object-list' and any additional characters up to ambiguity are
-inserted.  Completion only works on globally-known objects (including
-elements of attached data frames), and thus is most suitable for
-interactive command-line entry, and not so much for function editing
-since local objects (e.g. argument names) aren't known.
-
-Use \\[ess-resynch] to re-read the names of the attached directories.
-This is done automatically (and transparently) if a directory is
-modified (S only!), so the most up-to-date list of object names is always
-available.  However attached dataframes are *not* updated, so this
-command may be necessary if you modify an attached dataframe.
-
-If ARG is non-nil, no completion is attempted, but the available
-completions are listed [__UNIMPLEMENTED__]."
-  (interactive "P");; FIXME : the `listcomp' argument is NOT used
-  (ess-make-buffer-current)
-  (if (memq (char-syntax (preceding-char)) '(?w ?_))
-      (let* ((comint-completion-addsuffix nil)
-	     (end (point))
-	     (buffer-syntax (syntax-table))
-	     (beg (unwind-protect
-		      (save-excursion
-			(set-syntax-table ess-mode-syntax-table)
-			(backward-sexp 1)
-			(point))
-		    (set-syntax-table buffer-syntax)))
-	     (full-prefix (buffer-substring beg end))
-	     (pattern full-prefix)
-	     ;; See if we're indexing a list with `$'
-	     (listname (if (string-match "\\(.+\\)\\$\\(\\(\\sw\\|\\s_\\)*\\)$"
-					 full-prefix)
-			   (progn
-			     (setq pattern
-				   (if (not (match-beginning 2)) ""
-				     (substring full-prefix
-						(match-beginning 2)
-						(match-end 2))))
-			     (substring full-prefix (match-beginning 1)
-					(match-end 1)))))
-	     ;; are we trying to get a slot via `@' ?
-	     (classname (if (string-match "\\(.+\\)@\\(\\(\\sw\\|\\s_\\)*\\)$"
-					 full-prefix)
-			   (progn
-			     (setq pattern
-				   (if (not (match-beginning 2)) ""
-				     (substring full-prefix
-						(match-beginning 2)
-						(match-end 2))))
-			     (ess-write-to-dribble-buffer
-			      (format "(ess-C-O-Name : slots..) : patt=%s"
-				      pattern))
-			     (substring full-prefix (match-beginning 1)
-					(match-end 1)))))
-	     (components (if listname
-			     (ess-object-names listname)
-			   (if classname
-			       (ess-slot-names classname)
-			     ;; Default case: It hangs here when
-			     ;;    options(error=recoves) :
-			     (ess-get-object-list ess-current-process-name)))))
-	;; always return a non-nil value to prevent history expansions
-        (append classname components))))
+(defun ess-R-get-rcompletions ()
+  "Calls R internal complation utilities for posible completions"
+  (let ((beg-of-line (save-excursion (comint-bol nil) (point)))
+	(line-buffer ))
+    (ess-get-words-from-vector (format
+				"{utils:::.assignLinebuffer('%s%')
+			          utils:::.assignEnd(%d)
+			          utils:::.guessTokenFromLine()
+			          utils:::.completeToken()
+			          utils:::.retrieveCompletions()}\n"
+				(buffer-substring beg-of-line (point-at-eol))
+				(- (point) beg-of-line))
+			       )))
 
 
 (add-to-list 'ac-modes 'ess-mode)
 
-(add-hook 'ess-mode-hook
-        (lambda ()
-          (add-to-list 'ac-sources 'ac-source-R)
-          (make-local-variable 'ac-ignore-case)
-          (setq ac-ignore-case nil)))
-(add-hook 'inferior-ess-mode-hook
-        (lambda ()
-          (add-to-list 'ac-sources 'ac-source-R)
-          (make-local-variable 'ac-ignore-case)
-          (setq ac-ignore-case nil)))
+(defun ess-ac-init ()
+  (setq ac-sources '(ac-source-R ac-source-filename))
+  (make-local-variable 'ac-ignore-case)
+  (setq ac-ignore-case nil))
+
+(add-hook 'ess-mode-hook 'ess-ac-init)
+(add-hook 'inferior-ess-mode-hook 'ess-ac-init)
 
 (provide 'ac-R)
