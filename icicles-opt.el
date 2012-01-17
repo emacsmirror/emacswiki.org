@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:22:14 2006
 ;; Version: 22.0
-;; Last-Updated: Sat Jan 14 13:44:37 2012 (-0800)
+;; Last-Updated: Tue Jan 17 13:42:32 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 4772
+;;     Update #: 4774
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-opt.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -133,6 +133,7 @@
 ;;    `icicle-modal-cycle-up-help-keys',
 ;;    `icicle-move-Completions-frame', `icicle-no-match-hook',
 ;;    `icicle-option-type-prefix-arg-list',
+;;    `icicle-network-drive-means-remote-flag',
 ;;    `icicle-point-position-in-candidate',
 ;;    `icicle-populate-interactive-history-flag',
 ;;    `icicle-pp-eval-expression-print-length',
@@ -2245,6 +2246,11 @@ For the meanings of the symbols, see the doc string of
 `icicle-describe-option-of-type', which describes the default
 prefix-argument bindings for the command."
   :type '(list symbol symbol symbol symbol symbol symbol) :group 'Icicles-Key-Bindings)
+
+(defcustom icicle-network-drive-means-remote-flag t
+  "*Non-nil means that a file on a network drive is considered remote.
+This pertains to an MS Windows mapped netword drive, such as `f:'."
+  :type 'boolean :group 'Icicles-Files)
 
 (when (> emacs-major-version 22)
   (defcustom icicle-populate-interactive-history-flag nil
