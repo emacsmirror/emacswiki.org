@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:53 2006
 ;; Version: 22.0
-;; Last-Updated: Sat Jan 14 17:17:34 2012 (-0800)
+;; Last-Updated: Tue Jan 17 15:17:39 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 12784
+;;     Update #: 12849
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-fn.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -196,14 +196,20 @@
 ;;    `old-crm-local-must-match-map'.
 ;;
 ;;
+;;  ***** NOTE: This vanilla Emacs function is defined here for
+;;              Emacs 20, where it does not exist.
+;;
+;;    `replace-regexp-in-string' (Emacs 20).
+;;
+;;
 ;;  ***** NOTE: These EMACS PRIMITIVES have been REDEFINED HERE:
 ;;
-;;  `completing-read'              - (See below and doc string.)
-;;  `display-completion-list'      - (See below and doc string.)
-;;  `face-valid-attribute-values'  - (See below and doc string.)
-;;  `read-file-name' Emacs 20, 21 only - (See below and doc string.)
-;;  `read-from-minibuffer'         - (See below and doc string.)
-;;  `read-string'                  - (See below and doc string.)
+;;    `completing-read'              - (See doc string.)
+;;    `display-completion-list'      - (See doc string.)
+;;    `face-valid-attribute-values'  - (See doc string.)
+;;    `read-file-name' Emacs 20, 21 only - (See doc string.)
+;;    `read-from-minibuffer'         - (See doc string.)
+;;    `read-string'                  - (See doc string.)
 ;;
 ;;
 ;;  ***** NOTE: The following functions defined in `simple.el' have
@@ -440,9 +446,9 @@ the following is true:
      `icicle-dir-candidate-can-exit-p' is nil
    - `completion-no-auto-exit' is non-nil
    - this is just a `lisp-complete-symbol' completion."
-         (let ((buffer  (or buffer completion-reference-buffer))
-               (mini-p  (save-match-data (string-match "\\` \\*Minibuf-[0-9]+\\*\\'"
-                                                       (buffer-name buffer)))))
+         (let* ((buffer  (or buffer completion-reference-buffer))
+                (mini-p  (save-match-data (string-match "\\` \\*Minibuf-[0-9]+\\*\\'"
+                                                        (buffer-name buffer)))))
            ;; If BUFFER is a minibuffer, barf unless it's currently active.
            (if (and mini-p (or (not (active-minibuffer-window))
                                (not (equal buffer (window-buffer (active-minibuffer-window))))))
@@ -487,9 +493,9 @@ the following is true:
       `icicle-dir-candidate-can-exit-p' is nil
     - `completion-no-auto-exit' is non-nil
     - this is just a `lisp-complete-symbol' completion."
-         (let ((buffer  (or buffer completion-reference-buffer))
-               (mini-p  (save-match-data (string-match "\\` \\*Minibuf-[0-9]+\\*\\'"
-                                                       (buffer-name buffer)))))
+         (let* ((buffer  (or buffer completion-reference-buffer))
+                (mini-p  (save-match-data (string-match "\\` \\*Minibuf-[0-9]+\\*\\'"
+                                                        (buffer-name buffer)))))
            ;; If BUFFER is a minibuffer, barf unless it's currently active.
            (when (and mini-p (or (not (active-minibuffer-window))
                                  (not (equal buffer (window-buffer (active-minibuffer-window))))))
@@ -4993,7 +4999,7 @@ unless it exists."
     ;;$$$ (let ((tramp-completion-mode  t))    ; Fool Tramp into thinking it is in completion mode.
     (setq icicle-current-input   (icicle-input-from-minibuffer)
           icicle-input-fail-pos  nil)
-    (setq icicle-last-input  nil) ; $$$$$$$$ So icicle-save-or-restore-input => recompute candidates.
+    (setq icicle-last-input  nil) ;; $$$$$$$$ So icicle-save-or-restore-input => recompute candidates.
     (when (overlayp icicle-complete-input-overlay) (delete-overlay icicle-complete-input-overlay))
     (icicle-highlight-initial-whitespace icicle-current-input)
     (if (< (length icicle-current-input) icicle-Completions-display-min-input-chars)
@@ -5001,21 +5007,28 @@ unless it exists."
       ;; `icicle-highlight-input-noncompletion' return value saves call to `icicle-file-remote-p'.
       (let ((remote-test  (icicle-highlight-input-noncompletion)))
         ;; If ALL of the following are true, then update `*Completions*' (complete again):
-        ;;   * incremental completion,
-        ;;   * `icicle-highlight-input-noncompletion' determined that it's a remote or local file
-        ;;        or we're not completing file names
-        ;;        or user said not to test for remote file names
-        ;;        or we check now and it's not a remote file,
+        ;;
+        ;;   * Incremental completion is turned on.
+        ;;
+        ;;   * At LEAST ONE of the following is true:
+        ;;     - `icicle-highlight-input-noncompletion' determined that it's a local file.
+        ;;     - We're not completing file names.
+        ;;     - The user said not to test for remote file names (i.e. assume files are local).
+        ;;     - `icicle-highlight-input-noncompletion' did not determine that it is a remote file
+        ;;       AND we test and determine now that it is not a remote file.
+        ;;
         ;;   * `*Completions*' is already displayed
-        ;;        or `icicle-incremental-completion-p' is neither t nor nil,
-        ;;   * there are not too many candidates or we have waited the full delay.
+        ;;     OR `icicle-incremental-completion-p' is neither t nor nil (e.g. `always').
+        ;;
+        ;;   * There are not too many candidates
+        ;;     OR we have waited the full delay.
         (when (and icicle-incremental-completion-p
-                   (or (memq remote-test '(file-local-p file-remote-p))
+                   (or (eq remote-test 'file-local-p)
                        (not (icicle-file-name-input-p))
-                       (not icicle-test-for-remote-files-flag)
-                       ;; Might still be remote if `icicle-highlight-input-completion-failure'
-                       ;; is `always' or `explicit-remote' - cannot tell from `remote-test'.
-                       (and (not (eq remote-test 'file-local-p)) ; We don't know if it's local.
+                       (not icicle-test-for-remote-files-flag) ; This means user claims it's local.
+                       (and (not (eq remote-test 'file-remote-p))
+                            ;; Might still be remote if `icicle-highlight-input-completion-failure'
+                            ;; is `always' or `explicit-remote' - cannot tell from `remote-test'.
                             (not (icicle-file-remote-p icicle-current-input))))
                    (or (get-buffer-window "*Completions*" 0) ; Already displayed.
                        ;; If value is, say, `always' or `display' then update anyway.
@@ -5023,6 +5036,21 @@ unless it exists."
                    (let ((len  (length icicle-completion-candidates)))
                      (or (and (> len 1) (> icicle-incremental-completion-threshold len)) ; Not many
                          (sit-for icicle-incremental-completion-delay)))) ; Wait, unless input.
+;;; $$$$$$ OLD
+;;;         (when (and icicle-incremental-completion-p
+;;;                    (or (memq remote-test '(file-local-p file-remote-p))
+;;;                        (not (icicle-file-name-input-p))
+;;;                        (not icicle-test-for-remote-files-flag)
+;;;                        ;; Might still be remote if `icicle-highlight-input-completion-failure'
+;;;                        ;; is `always' or `explicit-remote' - cannot tell from `remote-test'.
+;;;                        (and (not (eq remote-test 'file-local-p)) ; We don't know if it's local.
+;;;                             (not (icicle-file-remote-p icicle-current-input))))
+;;;                    (or (get-buffer-window "*Completions*" 0) ; Already displayed.
+;;;                        ;; If value is, say, `always' or `display' then update anyway.
+;;;                        (not (eq t icicle-incremental-completion-p)))
+;;;                    (let ((len  (length icicle-completion-candidates)))
+;;;                      (or (and (> len 1) (> icicle-incremental-completion-threshold len)) ; Not many
+;;;                          (sit-for icicle-incremental-completion-delay)))) ; Wait, unless input.
           (let ((icicle-edit-update-p  t))
             (funcall (or icicle-last-completion-command
                          (if (eq icicle-current-completion-mode 'prefix)
@@ -5172,7 +5200,7 @@ If no highlighting was attempted, return nil."
   "Return result of calling MS Windows `NET USE' command on DRIVE.
 DRIVE is a Windows drive name, such as `f:'.
 A return value of zero means DRIVE is a mapped network drive."
-  (if (and (fboundp 'hash-table-p) (hash-table-p icicle-ms-windows-drive-hash))
+  (if (and (fboundp 'puthash) (hash-table-p icicle-ms-windows-drive-hash))
       (let ((lookup  (gethash drive icicle-ms-windows-drive-hash 'no-assoc)))
         (if (eq lookup 'no-assoc)
             (puthash drive (call-process shell-file-name nil nil nil shell-command-switch
@@ -5184,17 +5212,20 @@ A return value of zero means DRIVE is a mapped network drive."
 ;; $$$$$ TRYING WITHOUT `save-match-data', but probably need it.
 (defun icicle-file-remote-p (file)
   "Non-nil means FILE is likely to name a file on a remote system.
-For MS Windows, this includes a file on a mapped network drive.
-Otherwise, this uses `ffap-file-remote-p' and `file-remote-p' (if
-defined)."
-  ;; $$$$  (save-match-data        ; $$$$$ IS THIS NEEDED?
-  (if (and (eq system-type 'windows-nt)
-           (let ((case-fold-search  t)) (string-match "\\`\\([a-z]:\\)" file)))
-      (eq 0 (condition-case nil
+For MS Windows, if `icicle-network-drive-means-remote-flag' is non-nil
+then this includes a file on a mapped network drive.
+
+Otherwise, use, in order, `ffap-file-remote-p' or `file-remote-p'.  If
+those functions are not defined then return nil."
+  (or (and (eq system-type 'windows-nt)
+           ;; $$$$  (save-match-data   ; IS THIS NEEDED?
+           (let ((case-fold-search  t)) (string-match "\\`\\([a-z]:\\)" file))
+           (eq 0 (condition-case nil
                 (icicle-ms-windows-NET-USE (match-string 1 file))
               (error nil)))
-    (or (and (fboundp 'ffap-file-remote-p) (ffap-file-remote-p file))
-        (and (fboundp 'file-remote-p) (file-remote-p file)))))
+           icicle-network-drive-means-remote-flag)
+      (and (fboundp 'ffap-file-remote-p) (ffap-file-remote-p file))
+      (and (fboundp 'file-remote-p) (file-remote-p file))))
 
 ;;; $$$$$ Should these `*-any-*' fns call `icicle-transform-candidates'?  For now, no, to save time.
 (defun icicle-any-candidates-p (input)
