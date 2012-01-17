@@ -2462,7 +2462,7 @@ This page is based on the EmacsLispList by StephenEglen and updated automaticall
 
 [http://www.neilvandyke.org/webjump/ webjump-plus.el] --- supplemental Web site list for webjump (by Neil W. Van Dyke)
 
-[http://www.emacswiki.org/emacs/weblogger.el weblogger.el] --- Weblog maintenance via XML-RPC APIs (by Mark A. Hershberger)
+[http://elisp.info/package/weblogger/weblogger.el weblogger.el] --- Weblog maintenance via XML-RPC APIs (by Mark A. Hershberger)
 
 [http://relativity.yi.org/el/wget.el wget.el] --- wget interface for emacs (by Kevin A. Burton)
 
@@ -2552,7 +2552,7 @@ This page is based on the EmacsLispList by StephenEglen and updated automaticall
 
 [http://www.newartisans.com/johnw/Emacs/xml-parse.el xml-parse.el] --- code to efficiently read/write XML data with Elisp (by John Wiegley)
 
-[http://www.emacswiki.org/emacs/xml-rpc.el xml-rpc.el] --- An elisp implementation of clientside XML-RPC (by Mark A. Hershberger)
+[http://elisp.info/package/xml-rpc/xml-rpc.el xml-rpc.el] --- An elisp implementation of clientside XML-RPC (by Mark A. Hershberger)
 
 [http://nwalsh.com/emacs/xmlchars/index.html xmlunicode.el] --- Unicode support for XML (by Norman Walsh)
 
@@ -2591,3 +2591,4 @@ This page is based on the EmacsLispList by StephenEglen and updated automaticall
 = Z =
 
 [http://www.emacswiki.org/cgi-bin/wiki/download/zoom-frm.el zoom-frm.el] --- commands to zoom frame (change font size) (by Drew Adams)
+
