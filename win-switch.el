@@ -1,19 +1,18 @@
 ;;; win-switch.el --- fast, dynamic bindings for window-switching/resizing
 
-;; Copyright (C) 2011, Christopher R. Genovese, all rights reserved.
+;; Copyright (C) 2011, 2012 Christopher R. Genovese, all rights reserved.
 
 ;; Author: Christopher Genovese <genovese@cmu.edu>
 ;; Maintainer: Christopher R. Genovese <genovese@cmu.edu>
-;; URL: http://www.stat.cmu.edu/~genovese/emacs/
+;; URL: http://www.stat.cmu.edu/~genovese/emacs/win-switch/
 
-;; Version: 1.0.1
-;; Update#: 11
+;; Version: 1.0.2
+;; Update#: 12
 ;; Created:      Wed 28 Jul 2011 at 00:27 EDT
-;; Last-Updated: Mon 19 Dec 2011 at 11:40 EST
+;; Last-Updated: Tue 17 Jan 2012 at 08:33 EST
 ;; By: Christopher R. Genovese
 
 ;; Keywords: window, switch, key bindings, ergonomic, efficient
-;; Package-Requires: ((windmove "21.1"))
 ;; Compatibility: GNU Emacs 22, GNU Emacs 23, Gnu Emacs 24.0.50
 ;;                Tested on these versions on Mac OS X 10.5.
 ;;                Testing or feedback for other platforms/versions
