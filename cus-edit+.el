@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2012, Drew Adams, all rights reserved.
 ;; Created: Thu Jun 29 13:19:36 2000
 ;; Version: 21.1
-;; Last-Updated: Sun Jan  1 14:27:33 2012 (-0800)
+;; Last-Updated: Wed Jan 18 09:26:12 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 1280
+;;     Update #: 1390
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/cus-edit+.el
 ;; Keywords: help, customize, help, faces
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -81,20 +81,20 @@
 ;;  distinction (for user preferences), and it doesn't matter where or
 ;;  how a preference is changed.
 ;;
-;;  When this is the case, you can use command `customize-customized'
-;;  to check all preferences that have been changed from their
-;;  standard or saved settings, and it will take all changes into
-;;  account, no matter how or where the changes were made.
+;;  When this is the case, you can use command `customize-unsaved' to
+;;  check all preferences that have been changed from their standard
+;;  or saved settings, and it will take all changes into account, no
+;;  matter how or where the changes were made.
 ;;
-;;  Because this is useful, `customize-customized' has been modified
-;;  to be used as a hook in `kill-emacs-query-functions'.  That way,
+;;  Because this is useful, `customize-unsaved' has been modified to
+;;  be used as a hook in `kill-emacs-query-functions'.  That way,
 ;;  before you quit Emacs, you are notified of all preference changes
 ;;  you have made and given a chance to save them (individually or
 ;;  collectively).  This is analogous to Emacs asking you about files
 ;;  you've changed but not saved, before letting you exit. (If you
 ;;  also use another hook to confirm exit from Emacs, then `C-x C-c'
-;;  becomes, in effect, a key binding for `customize-customized' -
-;;  just say `n' to exiting Emacs.)
+;;  becomes, in effect, a key binding for `customize-unsaved' - just
+;;  say `n' to exiting Emacs.)
 ;;
 ;;  Updating Customize with External Changes
 ;;  ----------------------------------------
@@ -178,18 +178,18 @@
 ;;
 ;;  To deal with that, a list of ignored preferences,
 ;;  `customize-customized-ignore', is defined here.  Its preferences
-;;  (symbols) are not used by `customize-customized' at all (you can
+;;  (symbols) are not used by `customize-unsaved' at all (you can
 ;;  override that interactively with a prefix arg).  So, the other way
 ;;  to deal with the legacy Emacs preferences, besides just saving
 ;;  them in your custom file, is to add them to
-;;  `customize-customized-ignore' so `customize-customized' will
-;;  ignore them.
+;;  `customize-customized-ignore' so `customize-unsaved' will ignore
+;;  them.
 ;;
 ;;  To make it easy for you to add preferences to this ignore list,
-;;  `Ignore Unsaved Changes' menu items and buttons have been
-;;  added.  You can choose to ignore specific preferences or all
-;;  preferences in a Customize buffer - in particular, all preferences
-;;  in the Customize buffer from `customize-customized' (all changed
+;;  `Ignore Unsaved Changes' menu items and buttons have been added.
+;;  You can choose to ignore specific preferences or all preferences
+;;  in a Customize buffer - in particular, all preferences in the
+;;  Customize buffer from `customize-unsaved' (all changed
 ;;  preferences).
 ;;
 ;;  Dealing with Spurious Changes, 3: Consider Unchanged
@@ -204,9 +204,9 @@
 ;;  added here.
 ;;
 ;;  For instance, after starting Emacs, you can examine the current
-;;  preference changes (using `customize-customized') from Emacs
-;;  itself and loaded libraries, and choose `Consider Unchanged' to
-;;  let Customize know that the current values are to be treated as if
+;;  preference changes (using `customize-unsaved') from Emacs itself
+;;  and loaded libraries, and choose `Consider Unchanged' to let
+;;  Customize know that the current values are to be treated as if
 ;;  they were saved, but without actually saving them to your custom
 ;;  file.  That way, your custom file is not polluted with things that
 ;;  you are not really concerned with, yet you are not bothered by
@@ -215,11 +215,11 @@
 ;;
 ;;  However, unlike ignoring changes to certain preferences, and
 ;;  really saving current preference values, `Consider Unchanged' is
-;;  not a persistent change.  You can use it at any time to "reset" the
-;;  change counter for given preferences, so that the current change
-;;  is considered the new base value (as if it were saved), and any
-;;  further changes you make to them will show up as changes, using
-;;  `customize-customize'.
+;;  not a persistent change.  You can use it at any time to "reset"
+;;  the change counter for given preferences, so that the current
+;;  change is considered the new base value (as if it were saved), and
+;;  any further changes you make to them will show up as changes,
+;;  using `customize-unsaved'.
 ;;
 ;;  Updating, Revisited
 ;;  -------------------
@@ -283,18 +283,17 @@
 ;;  To change the number of idle seconds before automatically updating
 ;;  Customize, use command `customize-set-auto-update-timer-period'.
 ;;
-;;  To *not* have `customize-customized' check for unsaved preference
+;;  To *not* have `customize-unsaved' check for unsaved preference
 ;;  changes when you quit Emacs, add this also:
 ;;
-;;    (remove-hook 'kill-emacs-query-functions 'customize-customized)
+;;    (remove-hook 'kill-emacs-query-functions 'customize-unsaved)
 ;;
 ;;
 ;;
 ;;  Options (variables) defined here:
 ;;
-;;    `customp-buffer-create-hook', `customize-customized-ignore'.
-;;
-;;    `custom-buffer-verbose-help' (Emacs 20, 21 only).
+;;    `customp-buffer-create-hook', `custom-buffer-verbose-help'
+;;    (Emacs 20, 21 only), `customize-customized-ignore'.
 ;;
 ;;
 ;;  Commands defined here:
@@ -329,20 +328,28 @@
 ;;  ***** NOTE: The following variables defined in `cus-edit.el' have
 ;;              been REDEFINED HERE:
 ;;
-;;    `custom-face-menu', `Custom-mode-menu', `custom-variable-menu'.
+;;    `custom-commands', `custom-face-menu', `Custom-mode-menu',
+;;    `custom-variable-menu'.
 ;;
 ;;
 ;;  ***** NOTE: The following functions defined in `cus-edit.el' have
 ;;              been REDEFINED HERE:
 ;;
 ;;    `custom-add-parent-links', `custom-buffer-create-internal',
-;;    `customize-customized', `customize-group-other-window'.
+;;    `customize-group-other-window', `customize-unsaved'.
 ;;
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;;; Change Log:
 ;;
+;; 2012/01/18 dadams
+;;     Renamed customize-customized to customize-unsaved, per Emacs 22+.  Added alias.
+;;     customize-update-all, Custom-ignore-unsaved, Custom-consider-unchanged:
+;;       Added &rest ignored arg.
+;;     Custom-mode-menu: Define with easy-menu-define only for Emacs < 24.
+;;     custom-commands: Setq it for Emacs 24+.
+;;     custom-buffer-create-internal: Added different definition for Emacs 24+.
 ;; 2011/11/04 dadams
 ;;     custom-buffer-verbose-help: Defined for Emacs 21.4 also (all Emacs 21).
 ;; 2011/03/31 dadams
@@ -459,6 +466,11 @@
 (require 'wid-edit+ nil t)     ;; (no error if not found):
                                ;; redefined color widget (for custom-var-is-of-type-p)
 (require 'autofit-frame nil t) ;; (no error if not found): fit-frame-if-one-window
+
+
+;; Quiet the byte-compiler.
+(defvar custom-commands)
+(defvar custom-search-field)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -1057,14 +1069,17 @@ an integer value."
         valid))))
 
 
+(defalias 'customize-customized 'customize-unsaved) ; Emacs changed its mind. ;-)
+
 ;; REPLACES ORIGINAL in `cus-edit.el'.
-;; 1. Ignores preferences in `customize-customized-ignore'.
+;; 1. By default, ignores preferences in `customize-customized-ignore'.
 ;; 2. Added prefix arg to override `customize-customized-ignore'.
 ;; 3. When not interactive and there are changes, ask for confirmation.
 ;; 4. Always returns `t', so it can be used as a `kill-emacs-query-functions' hook.
+;; 5. Wrap in `condition-case' and reissue error.
 ;;
 ;;;###autoload
-(defun customize-customized (&optional check-all-p)
+(defun customize-unsaved (&optional check-all-p)
   "Open Customize to check all preferences currently set but not saved.
 This is useful in `kill-emacs-query-functions' to check changes you
 have made (and possibly saving them) before exiting Emacs.
@@ -1104,12 +1119,12 @@ for example, `Consider Unchanged') are always ignored here."
 
 
 (add-hook 'kill-emacs-query-functions
-          (lambda () (condition-case nil (customize-customized) (error t))))
+          (lambda () (condition-case nil (customize-unsaved) (error t))))
 
 (remove-hook 'same-window-regexps "\\`\\*Customiz.*\\*\\'")
 
 ;;;###autoload
-(defun customize-update-all ()
+(defun customize-update-all (&rest _IGNORED)
   "Tell Customize that all preferences changed outside it are now set.
 This means all changes to all preferences (faces and user variables).
 This is suitable to be run automatically as a hook or with a timer,
@@ -1235,7 +1250,7 @@ use `\\[toggle-customize-update-changes]."
                        t))
 
 ;;;###autoload
-(defun Custom-ignore-unsaved ()
+(defun Custom-ignore-unsaved (&rest _IGNORED)
   "Ignore all currently customized but unsaved preferences.
 The preferences that are currently customized but not saved are added
 to the list of preferences that `customize-customized' will ignore
@@ -1288,7 +1303,7 @@ custom file."
                                customize-customized-ignore))))
 
 ;;;###autoload
-(defun Custom-consider-unchanged ()
+(defun Custom-consider-unchanged (&rest _IGNORED)
   "Consider all preferences here as being unchanged now.
 This does not save the current values; it just considers them to be
 unchanged values.  If no further changes are made to any of these
@@ -1521,21 +1536,22 @@ variable, since it was considered unchanged."
 ;; REPLACES ORIGINAL in `cus-edit.el'.
 ;; Added `Consider Unchanged', `Ignore Unsaved Changes', `Set from External Changes'.
 ;;
-(easy-menu-define
- Custom-mode-menu
- custom-mode-map
- "Menu used in customization buffers."
- `("Custom"
-   ,(customize-menu-create 'customize)
-   ["Set" Custom-set t]
-   ["Save" Custom-save t]
-   ["Consider Unchanged" Custom-consider-unchanged t]
-   ["Ignore Unsaved Changes" Custom-ignore-unsaved t]
-   ["Set from External Changes" customize-update-all t]
-   ["Reset to Current" Custom-reset-current t]
-   ["Reset to Saved" Custom-reset-saved t]
-   ["Reset to Standard Settings" Custom-reset-standard t]
-   ["Info" (Info-goto-node "(emacs)Easy Customization") t]))
+(when (< emacs-major-version 24)
+  (easy-menu-define
+      Custom-mode-menu
+      custom-mode-map
+    "Menu used in customization buffers."
+    `("Custom"
+      ,(customize-menu-create 'customize)
+      ["Set" Custom-set t]
+      ["Save" Custom-save t]
+      ["Consider Unchanged" Custom-consider-unchanged t]
+      ["Ignore Unsaved Changes" Custom-ignore-unsaved t]
+      ["Set from External Changes" customize-update-all t]
+      ["Reset to Current" Custom-reset-current t]
+      ["Reset to Saved" Custom-reset-saved t]
+      ["Reset to Standard Settings" Custom-reset-standard t]
+      ["Info" (Info-goto-node "(emacs)Easy Customization") t])))
 
 
 ;; REPLACES ORIGINAL in `cus-edit.el'.
@@ -1543,146 +1559,315 @@ variable, since it was considered unchanged."
 ;; 2. Hard-code `quit-window' as `Finish' action.
 ;; 3. Run hook `customp-buffer-create-hook' at end.
 ;;
-(defun custom-buffer-create-internal (options &optional description)
-  (message "Creating customization buffer...")
-  (custom-mode)
-  (if custom-buffer-verbose-help
-      (progn
-        (widget-insert "This is a customization buffer")
-        (if description
-            (widget-insert description))
-        (widget-insert (format ".
+(when (>= emacs-major-version 24)       ; Emacs 24+
+  (setq custom-commands
+        '((" Set for current session " Custom-set t
+           "Apply all settings in this buffer to the current session"
+           "index"
+           "Apply")
+          (" Save for future sessions " Custom-save
+           (or custom-file user-init-file)
+           "Apply all settings in this buffer and save them for future Emacs sessions."
+           "save"
+           "Save")
+
+          ;; Added these three.
+          (" Consider unchanged" Custom-consider-unchanged t
+           "Treat changed preferences as if they were unchanged, without saving them."
+           "consider_unchanged"
+           "Consider Unchanged")
+          (" Ignore unsaved changes" Custom-ignore-unsaved t
+           "Add to the `customize-customized-ignore' preferences, whose changes \
+are ignored by `customize-customized'."
+           "ignore_unsaved"
+           "Ignore Unsaved")
+          (" Set from external changes" customize-update-all t
+           "Tell Customize that all preferences changed outside it are now set."
+           "set_from_external"
+           "Set from External Changes")
+        
+          (" Undo edits " Custom-reset-current t
+           "Restore all settings in this buffer to reflect their current values."
+           "refresh"
+           "Undo")
+          (" Reset to saved " Custom-reset-saved t
+           "Restore all settings in this buffer to their saved values (if any)."
+           "undo"
+           "Reset")
+          (" Erase customizations " Custom-reset-standard
+           (or custom-file user-init-file)
+           "Un-customize all settings in this buffer and save them with standard values."
+           "delete"
+           "Uncustomize")
+          (" Help for Customize " Custom-help t
+           "Get help for using Customize."
+           "help"
+           "Help")
+          (" Exit " Custom-buffer-done t "Exit Customize." "exit" "Exit")))
+
+  (defun custom-buffer-create-internal (options &optional _description)
+    ;; Argument _DESCRIPTION is no longer used.
+    (message "Creating customization buffer...")
+    (Custom-mode)
+    (let ((init-file (or custom-file user-init-file)))
+      ;; Insert verbose help at the top of the custom buffer.
+      (when custom-buffer-verbose-help
+        (widget-insert (if init-file
+                           "To apply changes, use the Save or Set buttons."
+                         "Custom settings cannot be saved; maybe you started Emacs with `-q'.")
+                       "\nFor details, see ")
+        (widget-create 'custom-manual
+                       :tag "Saving Customizations"
+                       "(emacs)Saving Customizations")
+        (widget-insert " in the ")
+        (widget-create 'custom-manual
+                       :tag "Emacs manual"
+                       :help-echo "Read the Emacs manual."
+                       "(emacs)Top")
+        (widget-insert "."))
+      (widget-insert "\n")
+
+      ;; Insert the search field.
+      (when custom-search-field
+        (widget-insert "\n")
+        (let* ((echo "Search for custom items")
+               (search-widget
+                (widget-create
+                 'editable-field
+                 :size 40 :help-echo echo
+                 :action `(lambda (widget &optional event)
+                            (customize-apropos (split-string (widget-value widget)))))))
+          (widget-insert " ")
+          (widget-create-child-and-convert
+           search-widget 'push-button
+           :tag " Search "
+           :help-echo echo :action
+           (lambda (widget &optional _event)
+             (customize-apropos (widget-value (widget-get widget :parent)))))
+          (widget-insert "\n")))
+
+      ;; The custom command buttons are also in the toolbar, so for a time they were not
+      ;; inserted in the buffer if the toolbar was in use.  But it can be a little confusing
+      ;; for the buffer layout to change according to whether or nor the toolbar is on, not to
+      ;; mention that a custom buffer can in theory be created in a frame with a toolbar, then
+      ;; later viewed in one without.  So now the buttons are always inserted in the buffer.
+      ;; (Bug#1326)
+      (when custom-buffer-verbose-help (widget-insert "
+ Operate on all settings in this buffer:\n"))
+      (let ((button    (lambda (tag action active help _icon _label)
+                         (widget-insert " ")
+                         (when (eval active)
+                           (widget-create 'push-button
+                                          :tag tag :help-echo help :action action))))
+            (commands  custom-commands))
+        (apply button (pop commands))   ; Set for current session
+        (apply button (pop commands))   ; Save for future sessions
+        (widget-insert "\n")
+
+        ;; Added these three.
+        (apply button (pop commands))   ; Consider Unchanged
+        (apply button (pop commands))   ; Ignore unsaved changes
+        (apply button (pop commands))   ; Set from external changes
+
+        (if custom-reset-button-menu
+            (progn (widget-insert " ")
+                   (widget-create 'push-button
+                                  :tag "Reset buffer"
+                                  :help-echo "Show a menu with reset operations."
+                                  :mouse-down-action 'ignore
+                                  :action 'custom-reset))
+          (widget-insert "\n")
+          (apply button (pop commands)) ; Undo edits
+          (apply button (pop commands)) ; Reset to saved
+          (apply button (pop commands)) ; Erase customization
+          (widget-insert "  ")
+          (pop commands)                  ; Help (omitted)
+          (apply button (pop commands)))) ; Exit
+      (widget-insert "\n\n"))
+    ;; Now populate the custom buffer.
+    (message "Creating customization items...")
+    (buffer-disable-undo)
+    (setq custom-options
+          (if (= (length options) 1)
+              (mapcar (lambda (entry)
+                        (widget-create (nth 1 entry)
+                                       :documentation-shown t
+                                       :custom-state 'unknown
+                                       :tag (custom-unlispify-tag-name
+                                             (nth 0 entry))
+                                       :value (nth 0 entry)))
+                      options)
+            (let ((count   0)
+                  (length  (length options)))
+              (mapcar (lambda (entry)
+                        (prog2 (message "Creating customization items...%2d%%"
+                                        (/ (* 100.0 count) length))
+                            (widget-create (nth 1 entry)
+                                           :tag (custom-unlispify-tag-name (nth 0 entry))
+                                           :value (nth 0 entry))
+                          (setq count  (1+ count))
+                          (unless (eq (preceding-char) ?\n) (widget-insert "\n"))
+                          (widget-insert "\n")))
+                      options))))
+    (unless (eq (preceding-char) ?\n) (widget-insert "\n"))
+    (message "Creating customization items...done")
+    (message "Resetting customization items...")
+    (unless (eq custom-buffer-style 'tree) (mapc 'custom-magic-reset custom-options))
+    (message "Resetting customization items...done")
+    (message "Creating customization setup...")
+    (widget-setup)
+    (buffer-enable-undo)
+    (goto-char (point-min))
+    (message "Creating customization setup...done")
+    (run-hooks 'customp-buffer-create-hook)))
+
+
+;; REPLACES ORIGINAL in `cus-edit.el'.
+;; 1. Added items `Consider Unchanged' and `Ignore Unsaved Changes'.
+;; 2. Hard-code `quit-window' as `Finish' action.
+;; 3. Run hook `customp-buffer-create-hook' at end.
+;;
+(unless(fboundp 'Custom-mode)           ; Emacs < 24
+  (defun custom-buffer-create-internal (options &optional description)
+    (message "Creating customization buffer...")
+    (custom-mode)
+    (if custom-buffer-verbose-help
+        (progn
+          (widget-insert "This is a customization buffer")
+          (if description
+              (widget-insert description))
+          (widget-insert (format ".
 %s show active fields; type RET or click mouse-1
 on an active field to invoke its action.  Editing an option value
 changes the text in the buffer; invoke the State button and
 choose the Set operation to set the option value.
 Invoke " (if custom-raised-buttons
              "`Raised' buttons"
-             "Square brackets")))
-        (widget-create 'info-link
-                       :tag "Help"
-                       :help-echo "Read the online help."
-                       "(emacs)Easy Customization")
-        (widget-insert " for more information.\n\n")
-        (message "Creating customization buttons...")
-        (widget-insert "Operate on everything in this buffer:\n "))
-    (widget-insert " "))
-  (widget-create 'push-button
-                 :tag "Set for Current Session"
-                 :help-echo "\
+           "Square brackets")))
+          (widget-create 'info-link
+                         :tag "Help"
+                         :help-echo "Read the online help."
+                         "(emacs)Easy Customization")
+          (widget-insert " for more information.\n\n")
+          (message "Creating customization buttons...")
+          (widget-insert "Operate on everything in this buffer:\n "))
+      (widget-insert " "))
+    (widget-create 'push-button
+                   :tag "Set for Current Session"
+                   :help-echo "\
 Make your editing in this buffer take effect for this session."
-                 :action (lambda (widget &optional event)
-                           (Custom-set)))
-  (widget-insert " ")
-  (widget-create 'push-button
-                 :tag "Save for Future Sessions"
-                 :help-echo "\
+                   :action (lambda (widget &optional event)
+                             (Custom-set)))
+    (widget-insert " ")
+    (widget-create 'push-button
+                   :tag "Save for Future Sessions"
+                   :help-echo "\
 Make your editing in this buffer take effect for future Emacs sessions."
-                 :action (lambda (widget &optional event)
-                           (Custom-save)))
-  (widget-insert "\n ")
-  (widget-create 'push-button
-                 :tag "Consider Unchanged"
-                 :help-echo "\
-Treat changed preferences as if they were unchanged, without saving them."
-                 :action (lambda (widget &optional event)
-                           (Custom-consider-unchanged)))
-  (widget-insert " ")
-  (widget-create 'push-button
-                 :tag "Ignore Unsaved Changes"
-                 :help-echo "\
-Add to the `customize-customized-ignore' preferences, whose changes \
-are ignored by `customize-customized'."
-                 :action (lambda (widget &optional event)
-                           (Custom-ignore-unsaved)))
-  (widget-insert " ")
-  (widget-create 'push-button
-                 :tag "Set from External Changes"
-                 :help-echo "\
-Tell Customize that all preferences changed outside it are now set."
-                 :action (lambda (widget &optional event)
-                           (customize-update-all)
-                           (message "Updating Customize to recognize external \
-settings...done")))
-  (if custom-reset-button-menu
-      (progn
-        (widget-insert " ")
-        (widget-create 'push-button
-                       :tag "Reset"
-                       :help-echo "Show a menu with reset operations."
-                       :mouse-down-action (lambda (&rest junk) t)
-                       :action (lambda (widget &optional event)
-                                 (custom-reset event))))
+                   :action (lambda (widget &optional event)
+                             (Custom-save)))
     (widget-insert "\n ")
     (widget-create 'push-button
-                   :tag "Reset"
+                   :tag "Consider Unchanged"
                    :help-echo "\
+Treat changed preferences as if they were unchanged, without saving them."
+                   :action (lambda (widget &optional event)
+                             (Custom-consider-unchanged)))
+    (widget-insert " ")
+    (widget-create 'push-button
+                   :tag "Ignore Unsaved Changes"
+                   :help-echo "\
+Add to the `customize-customized-ignore' preferences, whose changes \
+are ignored by `customize-customized'."
+                   :action (lambda (widget &optional event)
+                             (Custom-ignore-unsaved)))
+    (widget-insert " ")
+    (widget-create 'push-button
+                   :tag "Set from External Changes"
+                   :help-echo "\
+Tell Customize that all preferences changed outside it are now set."
+                   :action (lambda (widget &optional event)
+                             (customize-update-all)
+                             (message "Updating Customize to recognize external \
+settings...done")))
+    (if custom-reset-button-menu
+        (progn
+          (widget-insert " ")
+          (widget-create 'push-button
+                         :tag "Reset"
+                         :help-echo "Show a menu with reset operations."
+                         :mouse-down-action (lambda (&rest junk) t)
+                         :action (lambda (widget &optional event)
+                                   (custom-reset event))))
+      (widget-insert "\n ")
+      (widget-create 'push-button
+                     :tag "Reset"
+                     :help-echo "\
 Reset all edited text in this buffer to reflect current values."
-                   :action 'Custom-reset-current)
-    (widget-insert " ")
-    (widget-create 'push-button
-                   :tag "Reset to Saved"
-                   :help-echo "\
+                     :action 'Custom-reset-current)
+      (widget-insert " ")
+      (widget-create 'push-button
+                     :tag "Reset to Saved"
+                     :help-echo "\
 Reset all values in this buffer to their saved settings."
-                   :action 'Custom-reset-saved)
-    (widget-insert " ")
-    (widget-create 'push-button
-                   :tag "Reset to Standard"
-                   :help-echo "\
+                     :action 'Custom-reset-saved)
+      (widget-insert " ")
+      (widget-create 'push-button
+                     :tag "Reset to Standard"
+                     :help-echo "\
 Reset all values in buffer to standard settings, updating your custom file."
-                   :action 'Custom-reset-standard))
-  (if (not custom-buffer-verbose-help)
-      (progn
-        (widget-insert " ")
-        (widget-create 'info-link
-                       :tag "Help"
-                       :help-echo "Read the online help."
-                       "(emacs)Easy Customization")))
-  (widget-insert "   ")
-  (widget-create 'push-button
-                 :tag "Finish"
-                 :help-echo "Finish with this buffer"
-                 :action (lambda (widget &optional event)
-                           (quit-window)))
-  (widget-insert "\n\n")
-  (message "Creating customization items...")
-  (buffer-disable-undo)
-  (setq custom-options
-        (if (= (length options) 1)
-            (mapcar (lambda (entry)
-                      (widget-create (nth 1 entry)
-                                     :documentation-shown t
-                                     :custom-state 'unknown
-                                     :tag (custom-unlispify-tag-name
-                                           (nth 0 entry))
-                                     :value (nth 0 entry)))
-                    options)
-          (let ((count 0)
-                (length (length options)))
-            (mapcar (lambda (entry)
-                      (prog2
-                          (message "Creating customization items...%2d%%"
-                                   (/ (* 100.0 count) length))
-                          (widget-create (nth 1 entry)
-                                         :tag (custom-unlispify-tag-name
-                                               (nth 0 entry))
-                                         :value (nth 0 entry))
-                        (setq count (1+ count))
-                        (unless (eq (preceding-char) ?\n)
-                          (widget-insert "\n"))
-                        (widget-insert "\n")))
-                    options))))
-  (unless (eq (preceding-char) ?\n)
-    (widget-insert "\n"))
-  (message "Creating customization items...done")
-  (unless (eq custom-buffer-style 'tree)
-    (mapc 'custom-magic-reset custom-options))
-  (message "Creating customization setup...")
-  (widget-setup)
-  (buffer-enable-undo)
-  (goto-char (point-min))
-  (message "Creating customization buffer...done")
-  (run-hooks 'customp-buffer-create-hook))
+                     :action 'Custom-reset-standard))
+    (if (not custom-buffer-verbose-help)
+        (progn
+          (widget-insert " ")
+          (widget-create 'info-link
+                         :tag "Help"
+                         :help-echo "Read the online help."
+                         "(emacs)Easy Customization")))
+    (widget-insert "   ")
+    (widget-create 'push-button
+                   :tag "Finish"
+                   :help-echo "Finish with this buffer"
+                   :action (lambda (widget &optional event)
+                             (quit-window)))
+    (widget-insert "\n\n")
+    (message "Creating customization items...")
+    (buffer-disable-undo)
+    (setq custom-options
+          (if (= (length options) 1)
+              (mapcar (lambda (entry)
+                        (widget-create (nth 1 entry)
+                                       :documentation-shown t
+                                       :custom-state 'unknown
+                                       :tag (custom-unlispify-tag-name
+                                             (nth 0 entry))
+                                       :value (nth 0 entry)))
+                      options)
+            (let ((count 0)
+                  (length (length options)))
+              (mapcar (lambda (entry)
+                        (prog2
+                            (message "Creating customization items...%2d%%"
+                                     (/ (* 100.0 count) length))
+                            (widget-create (nth 1 entry)
+                                           :tag (custom-unlispify-tag-name
+                                                 (nth 0 entry))
+                                           :value (nth 0 entry))
+                          (setq count (1+ count))
+                          (unless (eq (preceding-char) ?\n)
+                            (widget-insert "\n"))
+                          (widget-insert "\n")))
+                      options))))
+    (unless (eq (preceding-char) ?\n)
+      (widget-insert "\n"))
+    (message "Creating customization items...done")
+    (unless (eq custom-buffer-style 'tree)
+      (mapc 'custom-magic-reset custom-options))
+    (message "Creating customization setup...")
+    (widget-setup)
+    (buffer-enable-undo)
+    (goto-char (point-min))
+    (message "Creating customization buffer...done")
+    (run-hooks 'customp-buffer-create-hook)))
 
 
 
