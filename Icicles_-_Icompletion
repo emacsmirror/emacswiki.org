@@ -160,7 +160,7 @@ Apropos completion -- `char-u' matches a command substring:
 
 You can use '''`C-M-l'''' to move the cursor to the start of the
 highlighted, mismatched part of your input.  Repeat `C-M-l' to
-kill the highlighted portion.  (Because it is killed, `C-y' yanks
+kill the highlighted portion.  (Because it is killed, you can use `C-y' to yank
 it back.)
 
 User options '''`<tt>[[Icicles - Customization and General Tips#icicle-incremental-completion-flag|icicle-incremental-completion-flag]]</tt>'''', '''`<tt>[[Icicles - Customization and General Tips#icicle-test-for-remote-files-flag|icicle-test-for-remote-files-flag]]</tt>'''',
@@ -248,6 +248,17 @@ treating them the same as `implicit'.  It is assumed that you use
 those values only to avoid the cost of remote file-name matching.
 
 '''See Also:''' IsearchPlus for similar highlighting of the non-matching portion of your input during Isearch.
+
+
+
+Finally, whether to treat files on MS Windows mapped network
+drives as remote or local for things like incremental completion
+is controlled by option '''`<tt>[[Icicles - Customization and General Tips#icicle-network-drive-means-remote-flag|icicle-network-drive-means-remote-flag]]</tt>''''.  Customize it to `nil' if you would like such files to be treated
+as local files.
+
+
+
+
 
 
 
