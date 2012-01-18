@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Sat Jan 14 15:06:47 2012 (-0800)
+;; Last-Updated: Tue Jan 17 19:17:50 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 28597
+;;     Update #: 28602
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-doc2.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -5379,6 +5379,11 @@
 ;;    and the highlighting of the part of your current input that does
 ;;    not complete (see `icicle-highlight-input-completion-failure').
 ;;
+;;  * Non-`nil' user option `icicle-network-drive-means-remote-flag'
+;;    means that a file on a mapped MS Windows network drive is
+;;    considered remote.  This has an effect on things like
+;;    incremental completion.
+;;
 ;;  * Non-`nil' user option `icicle-regexp-quote-flag' reduces apropos
 ;;    completion to simple substring completion and Icicles regexp
 ;;    search to literal search.  Regexp special characters are no
@@ -6112,9 +6117,17 @@
 ;;    `icicle-case-string-less-p'.
 ;;
 ;;  * You can use `..' during completion to access a parent directory,
-;;    and you can use `/' and `~/' to shadow input to the left.  There
-;;    is currently no special treatment of MS Windows drive letters
-;;    (e.g. `C:') - I use Cygwin on Windows.
+;;    and you can use `/' and `~/' to shadow input to the left.  
+;;
+;;  * By default, files on MS Windows mapped network drives are
+;;    treated by Icicles as remote files, because they can sometimes
+;;    suffer from performance similar to remote files.  This
+;;    assumption is controlled by user option
+;;    `icicle-network-drive-means-remote-flag': set it to `nil' if you
+;;    want such files to be treated as local files.
+;;
+;;    Other than this, there is no special treatment of MS Windows
+;;    drive letters (e.g. `C:') - I use Cygwin on Windows.
 ;;
 ;;  * Non-`nil' user option
 ;;    `icicle-hide-common-match-in-Completions-flag' hides the common
