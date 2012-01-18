@@ -250,7 +250,7 @@ those values only to avoid the cost of remote file-name matching.
 '''See Also:''' IsearchPlus for similar highlighting of the non-matching portion of your input during Isearch.
 
 
-
+[:icicle-network-drive-means-remote-flag]
 Finally, whether to treat files on MS Windows mapped network
 drives as remote or local for things like incremental completion
 is controlled by option '''`<tt>[[Icicles - Customization and General Tips#icicle-network-drive-means-remote-flag|icicle-network-drive-means-remote-flag]]</tt>''''.  Customize it to `nil' if you would like such files to be treated
