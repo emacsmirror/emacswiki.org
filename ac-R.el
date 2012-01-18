@@ -15,7 +15,10 @@
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
-;;; Commentary:
+;;  NOTE: an improved version of this ac-sources is now part of ESS SVN and will
+;;  be released with next v5.16. Please don't use this file if you use new
+;;  version of ESS, or it might have unpredictable consequences. 
+;;  Send a mail to ess-help for support.
 ;;
 ;;Put this file into load-path'ed directory, and byte compile it if
 ;; desired.  And put the following expression into your ~/.emacs.
