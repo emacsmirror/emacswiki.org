@@ -27,7 +27,7 @@
 ;;
 ;;; Change log:
 ;; 17-Jan-2012 Vitalie Spinu
-;;    Replaced the completion mechanism with one the function ess-R-get-rcompletions.
+;;    Replaced the completion mechanism with the function ess-R-get-rcompletions.
 ;;    Replaced regexp search by a function to recognize dots, brackets etc.
 ;;    Replaced lambdas in hooks.
 ;; 7-July-2011    Zigler Zhang
