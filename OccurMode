@@ -1,3 +1,5 @@
+== Description ==
+
 Standard Emacs command `occur' lists all lines of the current buffer that match a regexp that you give it. The matching lines are listed in buffer `*Occur*', and you can click them there to navigate to the corresponding lines in the original buffer. That is, buffer `*Occur*' acts as a hypertext index to your buffer.
 
 This is so useful that you might want to use a keybinding in your [[init file]] for it. For example:
@@ -269,3 +271,4 @@ But this solution opens an additional frame for occur by default which I don't w
 
 ----
 CategoryModes CategoryRegexp GrepMode CategorySearchAndReplace
+^[0-9]+ lines matching \
