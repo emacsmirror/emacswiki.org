@@ -1,5 +1,7 @@
 The Emacs Lisp List ([::ELL]) is the authorative source of all Emacs packages.  It is maintained by StephenEglen.
 
+Warning: as of 2012-01-13 The ELL is badly out of date. Out of the 1266 URLs it contains, more than 50% are either dead, non-responding or moved.
+
 Current locations:
 
 * http://damtp.cam.ac.uk/user/sje30/emacs/ell.html (Edinburgh 1 - UK) 
