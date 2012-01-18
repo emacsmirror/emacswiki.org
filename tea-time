@@ -3,11 +3,11 @@ Functionality of this package was integrated into org-mode (edge on May 2009).
 Check http://orgmode.org/Changes.html#sec-1.4.2 for details.
 
 = Tea-time =
-Tea-time is an extention to emacs.
+Tea-time is an extension to emacs.
 Kind of analog of gnome applet tea-time http://det.cable.nu/teatime/index.rbx?r=2.8.0
 
 It allows you to set up time intervals and after this
-interval is elapsed, Emacs will notify you with sound and    notification.
+interval is elapsed, Emacs will notify you with sound and notification.
 It could be useful if you make a tea or if you would like to
 be more productive by setting time limit for a task.
 
