@@ -1113,6 +1113,18 @@ Tramp's remote file-name handling and completion.  This can, for ''local files''
 and the highlighting of the part of your current input that does
 not complete (see `<tt>[[#icicle-highlight-input-completion-failure]]</tt>').
 
+
+----
+[:icicle-network-drive-means-remote-flag]
+==== Option icicle-network-drive-means-remote-flag ====
+
+Non-`nil' user option '''`icicle-network-drive-means-remote-flag''''
+means that a file on a mapped MS Windows network drive is considered
+remote.  This has an effect on things like [[Icicles - Icompletion#icicle-network-drive-means-remote-flag|incremental completion]].
+
+
+
+
 ----
 [:icicle-regexp-quote-flag]
 ==== Option icicle-regexp-quote-flag ====
