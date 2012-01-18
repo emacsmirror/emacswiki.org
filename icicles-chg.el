@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Tue Jan 17 15:24:09 2012 (-0800)
+;; Last-Updated: Tue Jan 17 16:26:23 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 7790
+;;     Update #: 7799
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-chg.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -1142,6 +1142,9 @@
 ;;;(@* "CHANGE LOG FOR `icicles-fn.el'")
 ;;
 ;; 2012/01/17 dadams
+;;     icicle-insert-candidates:
+;;       Put mouse-face on final \n also.  No longer use property icicle-keep-newline.
+;;       No longer treat single-newline candidate specially.  Thx to Michael Heerdegen.
 ;;     icicle-file-remote-p: Respect new var icicle-network-drive-means-remote-flag: nil means local.
 ;;     icicle-call-then-update-Completions: Corrected logic for triggering re-complete.
 ;;       In particular, REMOTE-TEST = file-remote-p prevents, rather than causes, re-completion.
@@ -2895,6 +2898,10 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-mcmd.el'")
 ;;
+;; 2012/01/17 dadams
+;;     icicle-mouse-choose-completion, icicle-mouse-candidate-action-1, icicle-mouse-remove-candidate,
+;;       icicle-current-completion-in-Completions:
+;;         No longer add back a newline if property icicle-keep-newline.  Thx to Michael Heerdegen.
 ;; 2012/01/13 dadams
 ;;     icicle-(un)bind-file-candidate-keys: Corrected to handle also minibuffer-local-must-match-map.
 ;; 2012/01/08 dadams
