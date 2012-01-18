@@ -27,6 +27,7 @@
 ;;
 ;;; Change log:
 ;; 17-Jan-2012 Vitalie Spinu
+;;    Removed caching,  it was meaningless in this context.
 ;;    Replaced the completion mechanism with the function ess-R-get-rcompletions.
 ;;    Replaced regexp search by a function to recognize dots, brackets etc.
 ;;    Replaced lambdas in hooks.
@@ -61,37 +62,6 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;;; Code:
-(defvar ac-R-cache '()
-  "A cache of R autocompletion.")
-
-(make-variable-buffer-local 'ac-R-cache)
-
-(defun ac-R-add-to-alist (alist-var elt-cons &optional no-replace)
-  "Add to the value of ALIST-VAR an element ELT-CONS if it isn't there yet.
-If an element with the same car as the car of ELT-CONS is already present,
-replace it with ELT-CONS unless NO-REPLACE is non-nil; if a matching
-element is not already present, add ELT-CONS to the front of the alist.
-The test for presence of the car of ELT-CONS is done with `equal'."
-  (let (
-	(case-fold-search 't)
-	(existing-element (assoc (car elt-cons) (symbol-value alist-var))))
-    (if existing-element
-        (or no-replace
-            (rplacd existing-element (cdr elt-cons)))
-      (set alist-var (cons elt-cons (symbol-value alist-var))))))
-
-(defun ac-R ()
-  "Returns a list of completions"
-  (let ( (prefix "") present ret)
-    (when (looking-back "\\<[^ \t\n,=.$]*")
-      (setq prefix (match-string 0)))
-    (setq present (assoc prefix ac-R-cache))
-    (if present
-        (setq ret (assoc prefix present))
-      (ess-R-get-rcompletions))
-      (when (>= 3 (length prefix))
-        (ac-R-add-to-alist 'ac-R-cache (list prefix ret))))
-    (symbol-value 'ret))
 
 (defun ess-get-help-text (sym)
   (interactive)
@@ -103,7 +73,7 @@ The test for presence of the car of ELT-CONS is done with `equal'."
 
 (defun ess-get-ac-start ()
   (let ((chars "]A-Za-z0-9.$@_:["))
-    ( (string-match (format "[%s]" chars) (char-to-string (char-before)))
+    (when (string-match (format "[%s]" chars) (char-to-string (char-before)))
       (save-excursion
 	(re-search-backward (format "[^%s]" chars) nil t)
 	(1+ (point))) ;; else nil
@@ -112,9 +82,8 @@ The test for presence of the car of ELT-CONS is done with `equal'."
 (setq ac-source-R
       '((prefix     . ess-get-ac-start)
         (requires   . 1)
-        (candidates . ac-R)
-        (document   . ess-get-help-text)
-        (cache)))
+        (candidates . ess-R-get-rcompletions)
+        (document   . ess-get-help-text)))
 
 
 (defun ess-R-get-rcompletions ()
@@ -122,7 +91,7 @@ The test for presence of the car of ELT-CONS is done with `equal'."
   (let ((beg-of-line (save-excursion (comint-bol nil) (point)))
 	(line-buffer ))
     (ess-get-words-from-vector (format
-				"{utils:::.assignLinebuffer('%s%')
+				"{utils:::.assignLinebuffer('%s')
 			          utils:::.assignEnd(%d)
 			          utils:::.guessTokenFromLine()
 			          utils:::.completeToken()
