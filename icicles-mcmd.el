@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Fri Jan 13 09:53:46 2012 (-0800)
+;; Last-Updated: Tue Jan 17 16:13:49 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 17487
+;;     Update #: 17491
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-mcmd.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -644,12 +644,6 @@ Return the number of the candidate: 0 for first, 1 for second, ..."
             (unless beg (error "No completion here"))
             (setq beg  (previous-single-property-change beg 'mouse-face)
                   end  (or (next-single-property-change end 'mouse-face) (point-max)))
-            ;; `icicle-insert-candidates' doesn't put `mouse-face' on the final \n of a candidate
-            ;; in `*Completions*'. Add the newline back. `icicle-insert-candidates' puts property
-            ;; `icicle-keep-newline' on the newline if it is part of the candidate, as opposed to
-            ;; being just part of the display in columns.
-            (when (and (eq ?\n (char-after end)) (get-text-property end 'icicle-keep-newline))
-              (setq end  (1+ end)))
             ;; $$$$$$ (setq choice  (buffer-substring-no-properties beg end)))))
             (setq choice  (buffer-substring beg end))))))
     ;; $$$$$ (if (eq icicle-orig-buff (get-buffer "*Completions*"))
@@ -3922,7 +3916,7 @@ Non-interactively, optional arg COMPLETION is the completion to insert."
 
 (defun icicle-current-completion-in-Completions ()
   "The completion candidate under the cursor in buffer `*Completions*'.
-Return the name as a string." ; See also `choose-completion' and `mouse-choose-completion'.
+Return the name as a string."           ; See also `choose-completion' and `mouse-choose-completion'.
   (let ((buffer          completion-reference-buffer)
         (base-size       completion-base-size)
         (start-of-cands  (icicle-start-of-candidates-in-Completions))
@@ -3936,12 +3930,6 @@ Return the name as a string." ; See also `choose-completion' and `mouse-choose-c
     (setq beg  (previous-single-property-change (or beg (point)) 'mouse-face nil start-of-cands)
           end  (next-single-property-change (or end (point)) 'mouse-face nil (point-max)))
     (unless beg (error "No completion here"))
-    ;; `icicle-insert-candidates' doesn't put `mouse-face' on the final \n of a candidate
-    ;; in `*Completions*'. Add the newline back. `icicle-insert-candidates' puts property
-    ;; `icicle-keep-newline' on the newline if it is part of the candidate, as opposed to
-    ;; being just part of the display in columns.
-    (when (and (eq ?\n (char-after end)) (get-text-property end 'icicle-keep-newline))
-      (setq end  (1+ end)))
     ;; $$$$ (buffer-substring-no-properties beg end)))
     (buffer-substring beg end)))
 
@@ -4462,12 +4450,6 @@ performed: display help on the candidate - see
           (unless beg (error "No completion here"))
           (setq beg  (previous-single-property-change beg 'mouse-face)
                 end  (or (next-single-property-change end 'mouse-face) (point-max)))
-          ;; `icicle-insert-candidates' doesn't put `mouse-face' on the final \n of a candidate
-          ;; in `*Completions*'. Add the newline back. `icicle-insert-candidates' puts property
-          ;; `icicle-keep-newline' on the newline if it is part of the candidate, as opposed to
-          ;; being just part of the display in columns.
-          (when (and (eq ?\n (char-after end)) (get-text-property end 'icicle-keep-newline))
-            (setq end  (1+ end)))
           (setq choice  (if (and (icicle-file-name-input-p) insert-default-directory
                                  (or (not (member (buffer-substring-no-properties beg end)
                                                   icicle-extra-candidates))
@@ -4543,12 +4525,6 @@ See `icicle-remove-candidate' for more information."
         (unless beg (error "No completion here"))
         (setq beg  (previous-single-property-change beg 'mouse-face)
               end  (or (next-single-property-change end 'mouse-face) (point-max)))
-        ;; `icicle-insert-candidates' doesn't put `mouse-face' on the final \n of a candidate
-        ;; in `*Completions*'. Add the newline back. `icicle-insert-candidates' puts property
-        ;; `icicle-keep-newline' on the newline if it is part of the candidate, as opposed to
-        ;; being just part of the display in columns.
-        (when (and (eq ?\n (char-after end)) (get-text-property end 'icicle-keep-newline))
-          (setq end  (1+ end)))
         (setq icicle-candidate-nb               (icicle-nb-of-cand-at-Completions-pos posn-pt)
               icicle-last-completion-candidate  (buffer-substring beg end)))))
   (icicle-remove-candidate-display-others))
