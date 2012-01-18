@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:53 2006
 ;; Version: 22.0
-;; Last-Updated: Tue Jan 17 15:17:39 2012 (-0800)
+;; Last-Updated: Tue Jan 17 16:09:43 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 12849
+;;     Update #: 12851
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-fn.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -3249,36 +3249,14 @@ The optional second arg is ignored."
                (setq string  (string-make-unibyte string)))
               ((and enable-multibyte-characters (not (multibyte-string-p string)))
                (setq string  (string-make-multibyte string))))
-        ;; Insert candidate (and annotation).  Mouse-face candidate, except for any newline as final
-        ;; char.  This is so that candidates are visually separate in `*Completions*'.  Instead,
-        ;; however, put property `icicle-keep-newline' on any final \n in the candidate, so
-        ;; `icicle-mouse-choose-completion' and `icicle-current-completion-in-Completions' can put
-        ;; the newline back as part of the candidate.
-        (cond ((atom cand)              ; No annotation.
-               (put-text-property (point) (progn (insert string)
-                                                 (if (and (eq ?\n (char-before (point)))
-                                                          (> (length string) 1)) ; Not just "\n".
-                                                     (1- (point))
-                                                   (point)))
-                                  'mouse-face 'highlight)
-               (when (eq ?\n (char-before (point)))
-                 (put-text-property (1- (point)) (point) 'icicle-keep-newline t)))
-              (t                        ; Candidate plus annotation.
-               (put-text-property (point) (progn (insert string)
-                                                 (if (and (eq ?\n (char-before (point)))
-                                                          (> (length string) 1)) ; Not just "\n".
-                                                     (1- (point))
-                                                   (point)))
-                                  'mouse-face 'highlight)
-               (when (eq ?\n (char-before (point)))
-                 (put-text-property (1- (point)) (point) 'icicle-keep-newline t))
-               (set-text-properties (point) (progn (insert (cadr cand)) (point)) nil)))
+        ;; Insert candidate (and annotation).
+        (put-text-property (point) (progn (insert string) (point)) 'mouse-face 'highlight)
+        (unless (atom cand) (set-text-properties (point) (progn (insert (cadr cand)) (point)) nil))
         (if (not (eq icicle-completions-format 'vertical))
             (setq column-nb  (mod (1+ column-nb) columns))
           (if (> column-nb 0) (forward-line) (insert "\n")) ; Vertical layout.
           (setq row  (1+ row)))
-        (when (and any-multiline-p (not (string-match "\n\'" cand)))
-          (insert (if (eq 'vertical icicle-completions-format) "\n" "\n\n")))))))
+        (when any-multiline-p  (insert (if (eq 'vertical icicle-completions-format) "\n" "\n\n")))))))
 
 ;; ARG is not used in any calls yet/currently.
 (defun icicle-fit-completions-window (&optional arg)
