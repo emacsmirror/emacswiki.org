@@ -27,9 +27,19 @@ non-file-name input these all act like `icicle-case-string-less-p'.
 ==== `..', `/', and `~/' ====
 
 You can use '''`##..##'''' during [[completion]] to access a parent directory,
-and you can use '''`##/##'''' and '''`##~/##'''' to shadow input to the left.  There
-is currently no special treatment of MS Windows drive letters
-(e.g. `<code>C:</code>') -- I use CygWin on Windows.
+and you can use '''`##/##'''' and '''`##~/##'''' to shadow input to the left.
+
+
+----
+[:MSWindowsNetorkDrives]
+==== MS Windows Mapped Network Drives ====
+
+By default, files on MS Windows mapped network drives are
+treated by Icicles as remote files, because they can sometimes
+suffer from performance similar to remote files.  This
+assumption is controlled by user option '''`<tt>[[Icicles - Customization and General Tips#icicle-network-drive-means-remote-flag|icicle-network-drive-means-remote-flag]]</tt>'''': set it to `nil' if you want such files to be treated as local files.
+
+Other than this, there is no special treatment of MS Windows drive letters (e.g. `<code>C:</code>') -- I use CygWin on Windows.
 
 
 ----
