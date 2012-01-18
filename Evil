@@ -43,5 +43,20 @@ It would be nice with a brief overview over the objectives and difference to [Vi
 
 : The main difference is that while Viper emulates classical vi, Evil emulates Vim. It therefore sports additional features like Visual selection and text objects. Evil also attempts to integrate with Emacs: for example, repetition is implemented in terms of keyboard macros. At the most basic level, Evil is just a collection of key bindings that can be extended and adapted to any Emacs mode.
 
+== Passthrough function ==
+
+Sometimes I want to send a single command in emacs state.  Rather than switch to emacs state, press the key, and back, I wanted a prefix-type key that would let me run a command based on the emacs keymaps, and then return to motion or normal state.  So, I wrote this:
+
+    (defun evil-passthrough ()
+      "Accept a key, switch to emacs state, process that key, and leave emacs state."
+      (interactive)
+      (let ((next-key (read-event)))
+        (progn
+          (evil-emacs-state)
+          (setq unread-command-events (list next-key))
+          (run-with-idle-timer 1 nil (lambda () (evil-exit-emacs-state))))))
+    (global-set-key (kbd "M-p") 'evil-passthrough)
+
+
 ----
 CategoryKeys CategoryEmulation
