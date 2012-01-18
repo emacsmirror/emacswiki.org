@@ -169,19 +169,22 @@ both the concept (distributed) and the use of tools (version control).
 /For the user/
 
 * Epackages are true installs (they contain **install and uninstall
-  control files**; C.f. Debian /*.deb/). ELPA packages don't. After
-  you download ELPA package, it byte compiles the package and sets up
-  `load-path'. You have to configure each ELPA package manually after
-  download. With Epackage, the **control files**, add all the necesary
-  hooks etc. so that if you visit some file, the feature you installed
-  is automatically turned on. No need to edit ~/.emacs InitFile.
-* Faster updates (massive package updates are instantaneous due to Git delta)
-* Easier bug reporting (each package has contact information metadata)
+  control files**; C.f. Debian *.deb). ELPA packages don't. After
+  you download an ELPA package, it gets byte compiled and
+  `load-path' gets updated.
+  After download (ELPA: "I"nstall button in interface), each pacakage must
+  be manually configured by adding the necessary lines to ~/.emacs InitFile.
+  In contrast, Epackages' **control files** take care of configuring the necessary
+  hooks etc. so that if you visit a file, the package you installed
+  is automatically turned on. No need to edit InitFile. Likewise for package
+  removal, all the hooks etc. are cleared.
+* Faster updates. Massive package updates are instantaneous due to Git delta.
+* Easy bug reporting. Each package contains contact information meta data.
 * Personal contacts. Someone is there to contact about package
-  inssues (just like in Debian). It's not just a bunch of code in
+  issues (just like in Debian). It's not just a bunch of code in
   archive that might be bit-rotting. Packages die naturally if there
   is no interest for anybody maintaining it. (in Debian packages are
-  "orphaned", and finally "removed", unless new maintainer takes over)
+  "orphaned", and finally "removed", unless new maintainer takes over).
 * Command line package management. Packages can be batch installed,
   removed etc. without launching Emacs GUI first.
 
@@ -194,16 +197,16 @@ both the concept (distributed) and the use of tools (version control).
 * Users receive updates directly from your Git repository.
   No need to send announcements or notifications. No more outdated
   versions in archive sites.
-* Low maintenence. Just concentrate on doing what you do best:
+* Low maintenance. Just concentrate on doing what you do best:
   improving your Emacs Lisp utility. No distribution hassles.
 
 /Downsides/
 
-* It's not traditional *.tar.gz any more. You need to learn Git.
-* You need to install Git (as a user, to download packages; as a
-  developer to distribute your code). In Windows, the best and easiest
-  is to use <http://cygwin.com>.
-* ...other than that, sharing and distributong packages has never been this
+* As a developer: It's not traditional *.tar.gz any more. You need to learn Git
+  to distribute your code.
+* As a user: you need to install Git to download packages; In Windows,
+  the best and easiest is to use Git from <http://cygwin.com>.
+* ...other than that, sharing and distributing packages has never been this
   easy.
 
 == Contact ==
