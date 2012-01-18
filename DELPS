@@ -18,9 +18,6 @@ installation instructions at the end of this page.
 
 * Project hub (never moves, bookmark this; you can subscribe project announcement):
   http://freecode.com/projects/emacs-epackage
-* If you have free time, suggest what Emacs extensions
-  you would like to see packaged at
-  https://gist.github.com/1478886
 * List of [https://github.com/jaalto/project--emacs-epackage-sources-list/blob/master/epackage.lst available packages for install]
 
 === For Package Developers ===
