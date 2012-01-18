@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Wed Jan  4 09:59:21 2012 (-0800)
+;; Last-Updated: Tue Jan 17 19:05:46 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 26405
+;;     Update #: 26409
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-doc1.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -3447,8 +3447,8 @@
 ;;
 ;;  You can use `C-M-l' to move the cursor to the start of the
 ;;  highlighted, mismatched part of your input.  Repeat `C-M-l' to
-;;  kill the highlighted portion.  (Because it is killed, `C-y' yanks
-;;  it back.)
+;;  kill the highlighted portion.  (Because it is killed, you can use
+;;  `C-y' to yank it back.)
 ;;
 ;;  User options `icicle-incremental-completion-flag',
 ;;  `icicle-test-for-remote-files-flag',
@@ -3538,6 +3538,12 @@
 ;;  `implicit-strict', and `explicit-strict' for file-name completion,
 ;;  treating them the same as `implicit'.  It is assumed that you use
 ;;  those values only to avoid the cost of remote file-name matching.
+;;
+;;  Finally, whether to treat files on MS Windows mapped network
+;;  drives as remote or local for things like incremental completion
+;;  is controlled by option `icicle-network-drive-means-remote-flag'.
+;;  Customize it to `nil' if you would like such files to be treated
+;;  as local files.
  
 ;;(@* "Sorting Candidates and Removing Duplicates")
 ;;
