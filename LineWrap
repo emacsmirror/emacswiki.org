@@ -108,6 +108,17 @@ I found this snippit on some mailing list (http://osdir.com/ml/help-gnu-emacs-gn
 
 --- Aidan McQuay
 
+RE: IainDalton's question.
+
+An easier solution is to simply use
+
+(setq org-startup-indented t)
+
+as described by http://orgmode.org/manual/Clean-view.html#Clean-view
+
+--- N.N.
+
+
 ----
 CategoryFilling
 CategoryGlossary
