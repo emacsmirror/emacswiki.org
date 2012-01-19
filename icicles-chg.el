@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Tue Jan 17 16:26:23 2012 (-0800)
+;; Last-Updated: Thu Jan 19 09:30:49 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 7799
+;;     Update #: 7806
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-chg.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -2898,6 +2898,11 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-mcmd.el'")
 ;;
+;; 2012/01/19 dadams
+;;     icicle-prefix-complete-2:
+;;       Removed first arg and setting it.  Return condition needed for setting real mode-line help.
+;;     icicle-prefix-complete-1:
+;;       Conditionally set mode-line help, using return value of icicle-prefix-complete-2.
 ;; 2012/01/17 dadams
 ;;     icicle-mouse-choose-completion, icicle-mouse-candidate-action-1, icicle-mouse-remove-candidate,
 ;;       icicle-current-completion-in-Completions:
