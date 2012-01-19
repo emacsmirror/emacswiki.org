@@ -112,7 +112,9 @@ RE: IainDalton's question.
 
 An easier solution is to simply use
 
+<code>
 (setq org-startup-indented t)
+</code>
 
 as described by http://orgmode.org/manual/Clean-view.html#Clean-view
 
