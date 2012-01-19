@@ -57,6 +57,7 @@ Sometimes I want to send a single command in emacs state.  Rather than switch to
           (run-with-idle-timer 1 nil (lambda () (evil-exit-emacs-state))))))
     (global-set-key (kbd "M-p") 'evil-passthrough)
 
+But this doesn't work when the command uses the minibuffer (evil mode gets messed up). :-(
 
 ----
 CategoryKeys CategoryEmulation
