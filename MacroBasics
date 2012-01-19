@@ -76,4 +76,40 @@ I started with the above macro, and slightly modified it. I believe all this is 
 Thanks again to kensanata from #emacs for this.
 
 ----
+
+To learn more about macros, read the macros defined in Emacs's source code.
+
+To get a list of all the currently loaded macros in Emacs,
+
+{{{
+(require 'apropos)
+(let ((macros nil))
+  (mapatoms (lambda (s)
+              (when (apropos-macrop s)
+                (setq macros (cons s macros)))))
+  (nreverse macros))
+}}}
+
+To find macros easier -- using Emacs's completion system, consider adding this command that extends `describe-function'.  Use the code by EvaluatingExpressions or adding it to your InitFile.  Run it with `M-x describe-macro' and use keys like `TAB' to find macros with MinibufferCompletion.
+
+{{{
+(autoload 'apropos-macrop "apropos"
+  "Return t if SYMBOL is a Lisp macro.
+
+\(fn symbol)")
+
+(defun describe-macro (macro)
+  "Display documentation for MACRO."
+  (interactive
+   (list
+    (intern
+     (completing-read "Macro: " obarray
+                      'apropos-macrop
+                      'require-match))))
+  (describe-function macro))
+}}}
+
+See also DefMacro.
+
+----
 CategoryCode
