@@ -113,7 +113,11 @@ If you are running debian (or a derivative) and you use exim4 for smtp delivery 
 ** TODO: Why are foreign servers slower to check mail?  Discuss/fix this on the mailing list. Maybe it's because they re-run the hook to get new news on every group.
 
 ===Specific for nnrss===
-* Use shell scripts to retrieve RSS feeds asynchronously (e.g. via cron). Set nnrss-use-local to 't' and use 'nnrss-generate-download-script' to generate the shell script for retrieving the feeds. If you use shimbuns, there's 'shimbun-use-local' and 'nnshimbun-generate-download-script' which do the same.
+* Use shell scripts to retrieve RSS feeds asynchronously (e.g. via cron). Set nnrss-use-local to 't' and use 'nnrss-generate-download-script' to generate the shell script for retrieving the feeds. If you had atom feeds by using the instructions [http://www.emacswiki.org/emacs/GnusRss#toc6 here], you need to edit the script by hand. An example for planet emacs:
+
+$WGET -q 'http://planet.emacsen.org/atom.xml' -O - | xsltproc -o "$RSSDIR"/'Planet\ Emacs.xml' ~/.emacs.d/atom2rss-exslt.xsl -
+
+If you use shimbuns, there's 'shimbun-use-local' and 'nnshimbun-generate-download-script' which do the same.
 
 The following can be used to update automatically the shimbun script created by nnshimbun-generate-download-script (useful if one has added or removed shimbun groups in Gnus):
 
