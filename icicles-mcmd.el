@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Tue Jan 17 16:13:49 2012 (-0800)
+;; Last-Updated: Thu Jan 19 09:08:03 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 17491
+;;     Update #: 17506
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-mcmd.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -3447,9 +3447,10 @@ Optional argument WORD-P non-nil means complete only a word at a time."
                      ;; pending.
                      (icicle-display-candidates-in-Completions nil no-display-p)
                    (icicle-display-candidates-in-Completions nil no-display-p)
-                   (icicle-prefix-complete-2 mode-line-help word-p)
-                   )
-               (icicle-prefix-complete-2 mode-line-help word-p)
+                   (when (icicle-prefix-complete-2 word-p)
+                     (setq mode-line-help  (icicle-minibuf-input-sans-dir icicle-current-input))))
+               (when (icicle-prefix-complete-2 word-p)
+                 (setq mode-line-help  (icicle-minibuf-input-sans-dir icicle-current-input)))
                (cond (;; Candidates visible.  If second prefix complete, cycle, else update candidates.
                       (get-buffer-window "*Completions*" 0)
                       (if (and (or ipc1-was-cycling-p icicle-next-prefix-complete-cycles-p)
@@ -3517,7 +3518,17 @@ Optional argument WORD-P non-nil means complete only a word at a time."
       (when mode-line-help (icicle-show-help-in-mode-line mode-line-help))
       return-value)))
 
-(defun icicle-prefix-complete-2 (mode-line-help word-p)
+(defun icicle-prefix-complete-2 (word-p)
+  "Replace minibuffer content with highlighted current input.
+Call `icicle-highlight-initial-whitespace'.
+If completing file name, set default dir based on current completion.
+
+If input is complete and we are not in the process of exiting the
+minibuffer, then call `icicle-highlight-complete-input'.  Return the
+value of this condition: nil or non-nil.
+
+Non-nil WORD-P means this is word completion, so just highlight
+existing content (do not replace it), and set default dir."
   (unless word-p
     (icicle-clear-minibuffer)
     (save-window-excursion
@@ -3537,10 +3548,11 @@ Optional argument WORD-P non-nil means complete only a word at a time."
              (icicle-file-directory-p icicle-last-completion-candidate))
     (setq icicle-default-directory  (icicle-abbreviate-or-expand-file-name
                                      icicle-last-completion-candidate)))
-  (when (and (icicle-input-is-a-completion-p icicle-current-input)
-             (not (boundp 'icicle-prefix-complete-and-exit-p)))
-    (icicle-highlight-complete-input)
-    (setq mode-line-help  (icicle-minibuf-input-sans-dir icicle-current-input))))
+  (let ((complete-&-not-exiting-p  nil))
+    (when (setq complete-&-not-exiting-p  (and (icicle-input-is-a-completion-p icicle-current-input)
+                                               (not (boundp 'icicle-prefix-complete-and-exit-p))))
+      (icicle-highlight-complete-input))
+    complete-&-not-exiting-p))
 
 (defun icicle-input-is-a-completion-p (&optional input)
   "Return non-nil if the input is a valid completion.
