@@ -22,7 +22,7 @@ Here is one way in which to temporarily extend the keywords used by rx for speci
                    `(ws0 . ,(rx (0+ (any " " "\t"))))
                    `(ws+ . ,(rx (+ (any " " "\t"))))
                    `(int . ,(rx (+ digit))))))
-     `(let ((rx-constituents (append ',add-ins rx-constituents)))
+     `(let ((rx-constituents (append ',add-ins rx-constituents nil)))
         ,@body-forms)))
 
 Example of using the above rx-extra macro:
