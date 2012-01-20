@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2012, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 13:43:55 2010 (-0700)
-;; Last-Updated: Sat Jan 14 19:38:09 2012 (-0800)
+;; Last-Updated: Fri Jan 20 11:20:21 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 3445
+;;     Update #: 3462
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-1.el
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -1756,7 +1756,7 @@ bookmarks)."
     (when (string-equal bname "") (setq bname  defname))
     (bookmark-store bname (cdr record) (consp parg))
     (when (and interactivep bmkp-prompt-for-tags-flag)
-      (bmkp-add-tags bname (bmkp-read-tags-completing)))
+      (bmkp-add-tags bname (bmkp-read-tags-completing))) ; Don't bother to refresh tags. (?)
     (case (and (boundp 'bmkp-auto-light-when-set) bmkp-auto-light-when-set)
       (autonamed-bookmark       (when (bmkp-autonamed-bookmark-p bname)
                                   (bmkp-light-bookmark bname)))
@@ -3717,13 +3717,16 @@ You can use completion to enter the bookmark name and each tag.
 Completion for the bookmark name is strict.
 Completion for tags is lax: you are not limited to existing tags.
 
+By default, the tag choices for completion are NOT refreshed, to save
+time.  Use a prefix argument if you want to refresh them.
+
 Non-interactively:
  - TAGS is a list of strings.
  - Non-nil MSGP means display a message about the addition.
  - Non-nil NO-CACHE-UPDATE-P means do not update `bmkp-tags-alist'.
 Return the number of tags added."
   (interactive (list (bookmark-completing-read "Bookmark" (bmkp-default-bookmark-name))
-                     (bmkp-read-tags-completing)
+                     (bmkp-read-tags-completing nil nil current-prefix-arg)
                      'msg))
   (let* ((newtags  (copy-alist (bmkp-get-tags bookmark)))
          (olen     (length newtags)))
@@ -3779,6 +3782,9 @@ updated value."
 Hit `RET' to enter each tag, then hit `RET' again after the last tag.
 You can use completion to enter the bookmark name and each tag.
 
+By default, the tag choices for completion are NOT refreshed, to save
+time.  Use a prefix argument if you want to refresh them.
+
 Non-interactively:
  - TAGS is a list of strings.  The corresponding tags are removed.
  - Non-nil MSGP means display status messages.
@@ -3786,7 +3792,8 @@ Non-interactively:
 Return the number of tags removed."
   (interactive (let ((bmk  (bookmark-completing-read "Bookmark" (bmkp-default-bookmark-name))))
                  (list bmk
-                       (bmkp-read-tags-completing (mapcar 'bmkp-full-tag (bmkp-get-tags bmk)) t)
+                       (bmkp-read-tags-completing (mapcar 'bmkp-full-tag (bmkp-get-tags bmk))
+                                                  t current-prefix-arg)
                        'msg)))
   (let* ((remtags  (copy-alist (bmkp-get-tags bookmark)))
          (olen     (length remtags)))
@@ -3814,13 +3821,16 @@ Hit `RET' to enter each tag, then hit `RET' again after the last tag.
 You can use completion to enter each tag.
 This affects all bookmarks, even those not showing in bookmark list.
 
+By default, the tag choices for completion are NOT refreshed, to save
+time.  Use a prefix argument if you want to refresh them.
+
 Non-interactively:
  - TAGS is a list of strings.  The corresponding tags are removed.
  - Non-nil optional arg MSGP means show a message about the deletion."
   (interactive
    (if (not (y-or-n-p "Delete the tags you specify from ALL bookmarks? "))
        (error "Deletion cancelled")
-     (list (bmkp-read-tags-completing nil t)  'MSG)))
+     (list (bmkp-read-tags-completing nil t current-prefix-arg)  'MSG)))
   (dolist (bmk  (bookmark-all-names)) (bmkp-remove-tags bmk tags nil 'NO-CACHE-UPDATE))
   (bmkp-tags-list)                      ; Update the tags cache (only once, at end).
   (when msgp (message "Tags removed from all bookmarks: %S" tags)))
@@ -5774,9 +5784,15 @@ Interactively, you are prompted for FILE and then TAGS.
 When prompted for FILE you can use `M-n' to pick up the file name at
 point, or if none then the visited file.
 
+With a non-negative prefix argument, you are prompted for a file-name
+prefix, as in `bmkp-autofile-set'.
+
 When prompted for tags, hit `RET' to enter each tag, then hit `RET'
 again after the last tag.  You can use completion to enter each tag.
 Completion is lax: you are not limited to existing tags.
+
+By default, the tag choices for completion are NOT refreshed, to save
+time.  Use a non-positive prefix argument if you want to refresh them.
 
 Non-interactively:
  - TAGS is a list of strings.
@@ -5791,9 +5807,11 @@ Return the number of tags added."
                                (ffap-guesser))
                              (thing-at-point 'filename)
                              (buffer-file-name)))
-         (bmkp-read-tags-completing)
+         (bmkp-read-tags-completing nil nil (and current-prefix-arg
+                                                 (< (prefix-numeric-value current-prefix-arg) 1)))
          nil
-         (and current-prefix-arg (read-string "Prefix for bookmark name: "))
+         (and current-prefix-arg (wholenump (prefix-numeric-value current-prefix-arg))
+              (read-string "Prefix for bookmark name: "))
          'msg))
   (bmkp-add-tags (bmkp-autofile-set file dir prefix) tags msgp no-cache-update-p))
 
@@ -5806,12 +5824,19 @@ Interactively, you are prompted for TAGS and then FILE.
 With Emacs 22 and later, only files with at least one of the given
 tags are candidates.
 
+When prompted for FILE you can use `M-n' to pick up the file name at
+point, or if none then the visited file.
+
+With a non-negative prefix argument, you are prompted for a file-name
+prefix, as in `bmkp-autofile-set'.
+
+
 When prompted for tags, hit `RET' to enter each tag to be removed,
 then hit `RET' again after the last tag.  You can use completion to
 enter each tag.
 
-When prompted for FILE you can use `M-n' to pick up the file name at
-point, or if none then the visited file.
+By default, the tag choices for completion are NOT refreshed, to save
+time.  Use a non-positive prefix argument if you want to refresh them.
 
 Non-interactively:
  - TAGS is a list of strings.
@@ -5820,8 +5845,10 @@ Non-interactively:
  - Non-nil NO-CACHE-UPDATE-P means do not update `bmkp-tags-alist'.
 Return the number of tags removed."
   (interactive
-   (let* ((pref  (and current-prefix-arg (read-string "Prefix for bookmark name: ")))
-          (tgs   (bmkp-read-tags-completing))
+   (let* ((pref  (and current-prefix-arg (wholenump (prefix-numeric-value current-prefix-arg))
+                      (read-string "Prefix for bookmark name: ")))
+          (tgs   (bmkp-read-tags-completing nil nil (and current-prefix-arg
+                                                         (< (prefix-numeric-value current-prefix-arg) 1))))
           (fil   (condition-case nil
                      (read-file-name
                       "File: " nil
@@ -7664,9 +7691,12 @@ for info about using a prefix argument."
 Hit `RET' to enter each tag, then hit `RET' again after the last tag.
 You can use completion to enter the bookmark name and each tag.
 If you specify no tags, then every bookmark that has some tags is a
-candidate."
+candidate.
+
+By default, the tag choices for completion are NOT refreshed, to save
+time.  Use a prefix argument if you want to refresh them."
   (interactive
-   (let* ((tgs    (bmkp-read-tags-completing))
+   (let* ((tgs    (bmkp-read-tags-completing nil nil current-prefix-arg))
           (alist  (bmkp-all-tags-alist-only tgs)))
      (unless alist (error "No bookmarks have all of the specified tags"))
      (list tgs (bookmark-completing-read "Bookmark" (bmkp-default-bookmark-name alist) alist))))
@@ -7676,7 +7706,7 @@ candidate."
 (defun bmkp-all-tags-jump-other-window (tags bookmark) ; `C-x 4 j t *'
   "`bmkp-all-tags-jump', but in another window."
   (interactive
-   (let* ((tgs    (bmkp-read-tags-completing))
+   (let* ((tgs    (bmkp-read-tags-completing nil nil current-prefix-arg))
           (alist  (bmkp-all-tags-alist-only tgs)))
      (unless alist (error "No bookmarks have all of the specified tags"))
      (list tgs (bookmark-completing-read "Bookmark" (bmkp-default-bookmark-name alist) alist))))
@@ -7708,9 +7738,12 @@ Then you are prompted for the BOOKMARK (with completion)."
 (defun bmkp-some-tags-jump (tags bookmark) ; `C-x j t +'
   "Jump to a BOOKMARK that has at least one of the TAGS.
 Hit `RET' to enter each tag, then hit `RET' again after the last tag.
-You can use completion to enter the bookmark name and each tag."
+You can use completion to enter the bookmark name and each tag.
+
+By default, the tag choices for completion are NOT refreshed, to save
+time.  Use a prefix argument if you want to refresh them."
   (interactive
-   (let* ((tgs    (bmkp-read-tags-completing))
+   (let* ((tgs    (bmkp-read-tags-completing nil nil current-prefix-arg))
           (alist  (bmkp-some-tags-alist-only tgs)))
      (unless tgs (error "You did not specify any tags"))
      (unless alist (error "No bookmarks have any of the specified tags"))
@@ -7721,7 +7754,7 @@ You can use completion to enter the bookmark name and each tag."
 (defun bmkp-some-tags-jump-other-window (tags bookmark) ; `C-x 4 j t +'
   "`bmkp-some-tags-jump', but in another window."
   (interactive
-   (let* ((tgs    (bmkp-read-tags-completing))
+   (let* ((tgs    (bmkp-read-tags-completing nil nil current-prefix-arg))
           (alist  (bmkp-some-tags-alist-only tgs)))
      (unless tgs (error "You did not specify any tags"))
      (unless alist (error "No bookmarks have any of the specified tags"))
@@ -7756,9 +7789,12 @@ Then you are prompted for the BOOKMARK (with completion)."
 Hit `RET' to enter each tag, then hit `RET' again after the last tag.
 You can use completion to enter the bookmark name and each tag.
 If you specify no tags, then every bookmark that has some tags is a
-candidate."
+candidate.
+
+By default, the tag choices for completion are NOT refreshed, to save
+time.  Use a prefix argument if you want to refresh them."
   (interactive
-   (let* ((tgs    (bmkp-read-tags-completing))
+   (let* ((tgs    (bmkp-read-tags-completing nil nil current-prefix-arg))
           (alist  (bmkp-file-all-tags-alist-only tgs)))
      (unless alist (error "No file or dir bookmarks have all of the specified tags"))
      (list tgs (bookmark-completing-read "File bookmark" (bmkp-default-bookmark-name alist) alist))))
@@ -7768,7 +7804,7 @@ candidate."
 (defun bmkp-file-all-tags-jump-other-window (tags bookmark) ; `C-x 4 j t f *'
   "`bmkp-file-all-tags-jump', but in another window."
   (interactive
-   (let* ((tgs    (bmkp-read-tags-completing))
+   (let* ((tgs    (bmkp-read-tags-completing nil nil current-prefix-arg))
           (alist  (bmkp-file-all-tags-alist-only tgs)))
      (unless alist (error "No file or dir bookmarks have all of the specified tags"))
      (list tgs (bookmark-completing-read "File bookmark" (bmkp-default-bookmark-name alist) alist))))
@@ -7800,9 +7836,12 @@ Then you are prompted for the BOOKMARK (with completion)."
 (defun bmkp-file-some-tags-jump (tags bookmark) ; `C-x j t f +'
   "Jump to a file or directory BOOKMARK that has at least one of the TAGS.
 Hit `RET' to enter each tag, then hit `RET' again after the last tag.
-You can use completion to enter the bookmark name and each tag."
+You can use completion to enter the bookmark name and each tag.
+
+By default, the tag choices for completion are NOT refreshed, to save
+time.  Use a prefix argument if you want to refresh them."
   (interactive
-   (let* ((tgs    (bmkp-read-tags-completing))
+   (let* ((tgs    (bmkp-read-tags-completing nil nil current-prefix-arg))
           (alist  (bmkp-file-some-tags-alist-only tgs)))
      (unless tgs (error "You did not specify any tags"))
      (unless alist (error "No file or dir bookmarks have any of the specified tags"))
@@ -7813,7 +7852,7 @@ You can use completion to enter the bookmark name and each tag."
 (defun bmkp-file-some-tags-jump-other-window (tags bookmark) ; `C-x 4 j t f +'
   "`bmkp-file-some-tags-jump', but in another window."
   (interactive
-   (let* ((tgs    (bmkp-read-tags-completing))
+   (let* ((tgs    (bmkp-read-tags-completing nil nil current-prefix-arg))
           (alist  (bmkp-file-some-tags-alist-only tgs)))
      (unless tgs (error "You did not specify any tags"))
      (unless alist (error "No file or dir bookmarks have any of the specified tags"))
@@ -7848,9 +7887,12 @@ Then you are prompted for the BOOKMARK (with completion)."
 Hit `RET' to enter each tag, then hit `RET' again after the last tag.
 You can use completion to enter the bookmark name and each tag.
 If you specify no tags, then every bookmark that has some tags is a
-candidate."
+candidate.
+
+By default, the tag choices for completion are NOT refreshed, to save
+time.  Use a prefix argument if you want to refresh them."
   (interactive
-   (let* ((tgs    (bmkp-read-tags-completing))
+   (let* ((tgs    (bmkp-read-tags-completing nil nil current-prefix-arg))
           (alist  (bmkp-file-this-dir-all-tags-alist-only tgs)))
      (unless alist (error "No file or dir bookmarks have all of the specified tags"))
      (list tgs (bookmark-completing-read "File bookmark" (bmkp-default-bookmark-name alist) alist))))
@@ -7860,7 +7902,7 @@ candidate."
 (defun bmkp-file-this-dir-all-tags-jump-other-window (tags bookmark) ; `C-x 4 j t C-f *'
   "`bmkp-file-this-dir-all-tags-jump', but in another window."
   (interactive
-   (let* ((tgs    (bmkp-read-tags-completing))
+   (let* ((tgs    (bmkp-read-tags-completing nil nil current-prefix-arg))
           (alist  (bmkp-file-this-dir-all-tags-alist-only tgs)))
      (unless alist (error "No file or dir bookmarks have all of the specified tags"))
      (list tgs (bookmark-completing-read "File bookmark" (bmkp-default-bookmark-name alist) alist))))
@@ -7892,9 +7934,12 @@ Then you are prompted for the BOOKMARK (with completion)."
 (defun bmkp-file-this-dir-some-tags-jump (tags bookmark) ; `C-x j t C-f +'
   "Jump to a file BOOKMARK in this dir that has at least one of the TAGS.
 Hit `RET' to enter each tag, then hit `RET' again after the last tag.
-You can use completion to enter the bookmark name and each tag."
+You can use completion to enter the bookmark name and each tag.
+
+By default, the tag choices for completion are NOT refreshed, to save
+time.  Use a prefix argument if you want to refresh them."
   (interactive
-   (let* ((tgs    (bmkp-read-tags-completing))
+   (let* ((tgs    (bmkp-read-tags-completing nil nil current-prefix-arg))
           (alist  (bmkp-file-this-dir-some-tags-alist-only tgs)))
      (unless tgs (error "You did not specify any tags"))
      (unless alist (error "No file or dir bookmarks have any of the specified tags"))
@@ -7905,7 +7950,7 @@ You can use completion to enter the bookmark name and each tag."
 (defun bmkp-file-this-dir-some-tags-jump-other-window (tags bookmark) ; `C-x 4 j t C-f +'
   "`bmkp-file-this-dir-some-tags-jump', but in another window."
   (interactive
-   (let* ((tgs    (bmkp-read-tags-completing))
+   (let* ((tgs    (bmkp-read-tags-completing nil nil current-prefix-arg))
           (alist  (bmkp-file-this-dir-some-tags-alist-only tgs)))
      (unless tgs (error "You did not specify any tags"))
      (unless alist (error "No file or dir bookmarks have any of the specified tags"))
@@ -7958,8 +8003,11 @@ Then you are prompted for the BOOKMARK (with completion)."
 Hit `RET' to enter each tag, then hit `RET' again after the last tag.
 You can use completion.
 If you specify no tags, then every file that has some tags is a
-candidate."
-    (interactive (list (bmkp-read-tags-completing)))
+candidate.
+
+By default, the tag choices for completion are NOT refreshed, to save
+time.  Use a prefix argument if you want to refresh them."
+    (interactive (list (bmkp-read-tags-completing nil nil current-prefix-arg)))
     (let ((use-file-dialog  nil)
           (pred             #'(lambda (ff)
                                 (let* ((bmk   (bmkp-get-autofile-bookmark ff))
@@ -7971,7 +8019,7 @@ candidate."
 (when (> emacs-major-version 21) ; Needs `read-file-name' with a PREDICATE arg.
   (defun bmkp-find-file-all-tags-other-window (tags) ; `C-x 4 j t a *'
     "`bmkp-find-file-all-tags', but in another window."
-    (interactive (list (bmkp-read-tags-completing)))
+    (interactive (list (bmkp-read-tags-completing nil nil current-prefix-arg)))
     (let ((use-file-dialog  nil)
           (pred             #'(lambda (ff)
                                 (let* ((bmk   (bmkp-get-autofile-bookmark ff))
@@ -8013,8 +8061,11 @@ You are prompted for the REGEXP."
   (defun bmkp-find-file-some-tags (tags) ; `C-x j t a +'
     "Visit a file or directory that has at least one of the TAGS.
 Hit `RET' to enter each tag, then hit `RET' again after the last tag.
-You can use completion."
-    (interactive (list (bmkp-read-tags-completing)))
+You can use completion.
+
+By default, the tag choices for completion are NOT refreshed, to save
+time.  Use a prefix argument if you want to refresh them."
+    (interactive (list (bmkp-read-tags-completing nil nil current-prefix-arg)))
     (let ((use-file-dialog  nil)
           (pred             #'(lambda (ff)
                                 (let* ((bmk   (bmkp-get-autofile-bookmark ff))
@@ -8026,7 +8077,7 @@ You can use completion."
 (when (> emacs-major-version 21) ; Needs `read-file-name' with a PREDICATE arg.
   (defun bmkp-find-file-some-tags-other-window (tags) ; `C-x 4 j t a +'
     "`bmkp-find-file-some-tags', but in another window."
-    (interactive (list (bmkp-read-tags-completing)))
+    (interactive (list (bmkp-read-tags-completing nil nil current-prefix-arg)))
     (let ((use-file-dialog  nil)
           (pred             #'(lambda (ff)
                                 (let* ((bmk   (bmkp-get-autofile-bookmark ff))
