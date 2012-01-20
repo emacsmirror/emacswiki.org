@@ -89,7 +89,7 @@ Any ideas as to how to debug this would be greatly appreciated.  I've got dictio
 on GNU Emacs 21.4.1 (stock Debian install). -- BrianTodd
 
 [new]
-Emacs 24 drops support for make-local-hook. The Debian package linked above includes a patch to get round this. Those unfamiliar with patching can also [http://pastebin.com/8S2rZd3s grab the updated dictionary.el]. -- ChrisPoole
+Emacs 24 drops support for make-local-hook. The Debian package linked above includes a patch to get round this. Those unfamiliar with patching can also [https://github.com/myrkr/dictionary-el grab the updated dictionary.el from git]. -- antono
  
 
 ----
