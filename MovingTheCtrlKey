@@ -1,3 +1,8 @@
+This article explains how to move Control key to your prefered position. This is a conventional, common way to avoid Emacs pinky.
+
+A virtually unknown, but powerful alternative is to use the space key /both/ as space and control. See the "Dual role modifier" section below.
+
+== Introduction ==
 For some, remapping Control and CapsLock is one of the most important customizations for computer use in general and especially for Emacs.  The CapsLock function is virtually useless, yet has prime real estate on modern keyboards, while the left Ctrl key is awkwardly situated out of easy reach for those of us without giant fingers.    When I was new to Linux and first tried emacs, I quickly gave up and went back to pico, thinking, "Who would want to use an editor that uses one of the hardest-to-reach keys for nearly everything?"
 
 Old Unix keyboards had these keys' positions inverted, and Sun keyboards always have.  It seems the current layout became standard about the same time cheap x86 hardware became ubiquitous, although why is beyond me.  [Note that the original IBM PC keyboards also had the Control key in the right place; it was only with the 101-key "enhanced" keyboards that it was moved to its currently useless position.]
@@ -80,13 +85,13 @@ In Fedora 15 you can also add a file <code>~/.Xkbmap</code> that contains comman
 
 <pre>
 -option ctrl:swapcaps
-</pre> 
+</pre>
 
 The CapsKey page has an example of moving Ctrl to Caps.
 
 == Virtual terminals ==
 
-A virtual terminal is NOT an <code>[agkux]term</code> inside of X.  It is the white-on-black text-only mode that scares some people who have been traumatized by Microsoft's COMMAND.COM shell.  If you do not use virtual terminals, there is no reason for you to read this section.  
+A virtual terminal is NOT an <code>[agkux]term</code> inside of X.  It is the white-on-black text-only mode that scares some people who have been traumatized by Microsoft's COMMAND.COM shell.  If you do not use virtual terminals, there is no reason for you to read this section.
 
 === Generic GNU/Linux Virtual Terminal (any distribution) ===
 
@@ -134,11 +139,11 @@ For more extensive editing try:
 
 === On Debian GNU/Linux (console-setup method, newer) ===
 
-To make CAPS LOCK another control key, edit the file '''/etc/default/keyboard''' and change the line which reads 
- 
+To make CAPS LOCK another control key, edit the file '''/etc/default/keyboard''' and change the line which reads
+
  XKBOPTIONS=""
 
-to 
+to
 
  XKBOPTIONS="ctrl:nocaps"		# Some people prefer "ctrl:swapcaps"
 
@@ -160,7 +165,7 @@ To make the change effective:
 
 Ubuntu Maverick
 
-Click on System > Preferences > Keyboard 
+Click on System > Preferences > Keyboard
 
 This will open the Keyboard preferences. In "Layout" tab find "options..." then locate "Ctrl key position"
 
@@ -191,7 +196,7 @@ and choose all the defaults.
 
 === On Gentoo Linux ===
 
-For i386 systems, to make Caps Lock another control: In /etc/conf.d/keymaps set 
+For i386 systems, to make Caps Lock another control: In /etc/conf.d/keymaps set
 
   KEYMAP="emacs"
 
@@ -201,7 +206,7 @@ Then run <code># /etc/init.d/keymaps restart</code> (or reboot).  See /usr/share
 
 Similar to Gentoo, you can add Caps Lock as another control key:
 
-As super-user: 
+As super-user:
 
   $ loadkeys emacs
   $ echo "loadkeys emacs" >> /etc/rc.d/rc.local
@@ -217,9 +222,9 @@ I no longer have Caps Lock key too but I have never used it before so
 I do not see the need now it has been remapped to something else ;) -- XavierMaillard
 
 [new]
-The main thing I use the CapsLock for is environment variables; I have started getting out of using it by using AbbrevMode, however I still find some instances where it's useful.  
+The main thing I use the CapsLock for is environment variables; I have started getting out of using it by using AbbrevMode, however I still find some instances where it's useful.
 
-After seeing how a friend of mine types (with her wrists flat on the table, and not moving her hands but straining to reach keys, also while holding modifier keys and depressing letters with the same hand), I'm seriously investigating whether the quirks of heavy keyboard use (dislike of CapsLock, accidentally hitting keys, RSI) are due to poor hand position instead of heavy typing use.  I've been typing heavily for years, and other than moving the CtrlKey, I've not developed any problems or developed the strong preferences indicated on some webpages.  I'd like to get a HappyHacking or Sun-style keyboard, but I'm concerned that nobody thinks it's a problem to only have one control key: the rationalization I've seen some people make is that I should use one hand to accomplish certain keystrokes (e.g., "\C-x\C-f", which I do rather more swiftly with two hands).  
+After seeing how a friend of mine types (with her wrists flat on the table, and not moving her hands but straining to reach keys, also while holding modifier keys and depressing letters with the same hand), I'm seriously investigating whether the quirks of heavy keyboard use (dislike of CapsLock, accidentally hitting keys, RSI) are due to poor hand position instead of heavy typing use.  I've been typing heavily for years, and other than moving the CtrlKey, I've not developed any problems or developed the strong preferences indicated on some webpages.  I'd like to get a HappyHacking or Sun-style keyboard, but I'm concerned that nobody thinks it's a problem to only have one control key: the rationalization I've seen some people make is that I should use one hand to accomplish certain keystrokes (e.g., "\C-x\C-f", which I do rather more swiftly with two hands).
 
 [new]
 If you don't have a CapsLock key, it's still easy to type environment variables.  Just use <code>M-b M-u</code> to uppercase the last word.  -- HackerB9
@@ -304,7 +309,7 @@ You can instead make similar changes to
 which makes the change for just the current user only.
 
 ===Keymap===
-There is a small piece of software called '''keymap''' which modifies the registry. 
+There is a small piece of software called '''keymap''' which modifies the registry.
 
 ===KeyMapper===
 It seems that keymap.exe does not work on Windows 7. KeyMapper (http://code.google.com/p/keymapper/) works fine.
@@ -314,7 +319,7 @@ I know this is fairly simple to do for emacs only, but I've never looked into ho
 
 : That is doubtful.
 
-:: I am able to get the xorg under Cygwin on windows to switch the keys via a command line argument to xwin.  Surely then it should be possible to patch emacs to do this at least at the source level.  Anyone?  
+:: I am able to get the xorg under Cygwin on windows to switch the keys via a command line argument to xwin.  Surely then it should be possible to patch emacs to do this at least at the source level.  Anyone?
 :: Also, what do you mean by "last method?" I don't see a method on here that doesn't require Administrator access.  I'd love to know one.
 
 ::: I think that when you run emacs through cygwin, it uses its own x server. When you give a command lin e switch to remap keys, you are effectively doing it across all of your X server. It just happens that your X server is only running emacs.
@@ -344,8 +349,17 @@ The source: http://www.cs.umb.edu/~wimiller/stuff/caps2ctrl.ahk
 
 Notice that it also maps right control to caps lock, maybe someone cap upload one that does not do that.
 
-[new] Another option is to use FootSwitches for Control key and other frequently used keys. For example I use two Usb pedals: one for Ctrl key, the other for Shift key, Shift+Space is bound to RET, and CapsLock for Backspace. -- SewerynKokot
+== Dual role modifier ==
+You can use the space key /both/ as space and control; if you press the space key alone, it's a space, and if you press it with another key, it's control.
 
+You can achieve it with AutoHotKey in Windows, and with [https://gitorious.org/at-home-modifier/pages/Home at-home-modifier] in X (only in Linux.)
+
+It's not limited to ctrl; shift, alt, or any other keys can be pressed with thumbs. Famous Kinesis contoured or any Japanese keyboards are recommended for this purpose, having many keys you can press with thumbs.
+
+History: This trick was invented by K. Kimura in 2001, and has been known as "!SandS", standing for "Space and Shift" (the original idea was to use the space as shift) to some users in Japan. See the [http://gitorious.org/at-home-modifier/at-home-modifier/blobs/raw/master/README README] of at-home-modifier for the full history.
+
+== Foot switch ==
+[new] Another option is to use FootSwitches for Control key and other frequently used keys. For example I use two Usb pedals: one for Ctrl key, the other for Shift key, Shift+Space is bound to RET, and CapsLock for Backspace. -- SewerynKokot
 
 ----
 CategoryKeys MovingTheMetaKey
