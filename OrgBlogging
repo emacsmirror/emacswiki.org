@@ -4,5 +4,7 @@ You can use OrgMode to blog.  There are a couple different ways to do this:
 
 * [[Blorg]] -- publish finished tasks from an org file
 
+* [http://renard.github.com/o-blog/ o-blog] -- Standalone blog publisher for org-mode (no other tool required).
+
 ----
 OrgMode
