@@ -112,3 +112,14 @@ buffer, as OrgAnnotateFile does.  Being able to displaying annotations in their
 own buffer AND inline in the file would be nothing short of magical wonderfulness.
 
 : according to the source code you can switch to the file ~/.ipa which contains the annotations, so you can see all of them there and even can press return there on an annotation to go to the location  -- Anonymous
+
+== 2012 update ==
+I liked this mode so much I updated it and posted it on github. https://github.com/idomagal/ipa.el
+
+I made the following modifications:
+
+ - defvars moved into a customization group ('ipa)
+ - I added rubikitch and CH 'above-the-line' as an option.
+ - I added support for sidecar files, so each annotated file.txt saves out its own file.txt.ipa.
+
+-Ido
