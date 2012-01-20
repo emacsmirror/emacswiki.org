@@ -76,10 +76,9 @@
   (puthash connection (get-buffer-create (format " Enotify-msg-buffer:%S" connection))
 	   enotify-mp-cmbt))
 
-(defvar enotify-mp-idle-time 5
+(defvar enotify-mp-idle-time 60
   "Idle time before calling enotify-mp-clean-garbage (internal
 message buffer cleaning for dead connections")
-
 
 (defun enotify-mp-reinit ()
   (clrhash enotify-mp-cmbt))
@@ -133,10 +132,14 @@ message buffer cleaning for dead connections")
 		 bname)))
 	   (buffer-list))))
 		
+(defvar enotify-mp-cgrbg-count 0)
 ;;; Dead connection cleaning
 (defun enotify-mp-clean-garbage ()
   "Calls delete-process for all the dead connections to the
 Enotify server and kills all the related buffers."
+  (when enotify-debug
+    (message "Calling enotify-mp-clean-garbage %S" enotify-mp-cgrbg-count)
+    (setq enotify-mp-cgrbg-count (1+ enotify-mp-cgrbg-count)))
   (let (dead-connections)
     (maphash (lambda (conn buff)
 	       (when (memq (process-status conn) '(closed failed))
@@ -147,13 +150,6 @@ Enotify server and kills all the related buffers."
     (dolist (dc dead-connections)
       (remhash dc enotify-mp-cmbt))))
 
-(defun enotify-mp-clean-garbage-timer ()
-  (when enotify-debug (message "Calling enotify-mp-clean-garbage"))
-  (enotify-mp-clean-garbage)
-  (when enotify-minor-mode
-    (run-with-idle-timer enotify-mp-idle-time nil 'enotify-mp-clean-garbage-timer)))
-
-      
 (eval-and-compile (provide 'enotify-messages))
 ;;;; Enotify mode
 
@@ -445,6 +441,7 @@ right message handler."
 (require 'enotify-mode-line)
 (require 'enotify-network)
 
+(defvar enotify-idle-timer nil)
 ;;;###autoload
 (define-minor-mode enotify-minor-mode
   "Toggle display of notifications in the mode line."
@@ -454,10 +451,15 @@ right message handler."
   (cond ((not enotify-minor-mode)
 	 (setq global-mode-string
 	       (delq 'enotify-mode-line-string global-mode-string))
+	 (when (timerp enotify-idle-timer)
+	   (cancel-timer enotify-idle-timer)
+	   (setq enotify-idle-timer nil))
 	 (delete-process enotify-connection))
 	(t (add-to-list 'global-mode-string 'enotify-mode-line-string t)
 	   (enotify-init-network)
-	   (enotify-mp-clean-garbage-timer)
+	   (setq enotify-idle-timer
+		 (run-with-timer enotify-mp-idle-time enotify-mp-idle-time
+				 'enotify-mp-clean-garbage-timer))
 	   (enotify-mode-line-update))))
 
 (defun enotify-version ()
