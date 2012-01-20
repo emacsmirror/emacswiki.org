@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:53 2006
 ;; Version: 22.0
-;; Last-Updated: Tue Jan 17 16:09:43 2012 (-0800)
+;; Last-Updated: Fri Jan 20 15:15:56 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 12851
+;;     Update #: 12853
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-fn.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -4977,7 +4977,7 @@ unless it exists."
     ;;$$$ (let ((tramp-completion-mode  t))    ; Fool Tramp into thinking it is in completion mode.
     (setq icicle-current-input   (icicle-input-from-minibuffer)
           icicle-input-fail-pos  nil)
-    (setq icicle-last-input  nil) ;; $$$$$$$$ So icicle-save-or-restore-input => recompute candidates.
+    (setq icicle-last-input  nil);; $$$$$$$$ So icicle-save-or-restore-input => recompute candidates.
     (when (overlayp icicle-complete-input-overlay) (delete-overlay icicle-complete-input-overlay))
     (icicle-highlight-initial-whitespace icicle-current-input)
     (if (< (length icicle-current-input) icicle-Completions-display-min-input-chars)
@@ -5012,7 +5012,10 @@ unless it exists."
                        ;; If value is, say, `always' or `display' then update anyway.
                        (not (eq t icicle-incremental-completion-p)))
                    (let ((len  (length icicle-completion-candidates)))
-                     (or (and (> len 1) (> icicle-incremental-completion-threshold len)) ; Not many
+
+;;; $$$$$$           (or (and (> len 1) (> icicle-incremental-completion-threshold len)) ; Not many
+;;; REPLACED PREVIOUS LINE with next one: `sit-for' even if only one candidate.
+                     (or (> icicle-incremental-completion-threshold len) ; Not many
                          (sit-for icicle-incremental-completion-delay)))) ; Wait, unless input.
 ;;; $$$$$$ OLD
 ;;;         (when (and icicle-incremental-completion-p
