@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2012, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Sat Jan 14 19:37:11 2012 (-0800)
+;; Last-Updated: Fri Jan 20 11:23:20 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 14221
+;;     Update #: 14236
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-chg.el
 ;; Keywords: bookmarks, bookmark+
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -145,6 +145,10 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-1.el'")
 ;;
+;; 2012/01/20 dadams
+;;     bmkp(-autofile)-(add|remove)-tags(-from-all), bmkp-find-file-(all|some)-tags(-other-window),
+;;       bmkp(-file(-this-dir))-(all|some)-tags-jump(-other-window):
+;;         Let user use a prefix arg to refresh tags list.  Add this info to doc string.
 ;; 2012/01/14 dadams
 ;;     Corrected bmkp-same-file-p: call to compare-strings.
 ;; 2012/01/13 dadams
