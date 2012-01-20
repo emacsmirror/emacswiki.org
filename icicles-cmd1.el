@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Sun Jan 15 13:47:14 2012 (-0800)
+;; Last-Updated: Fri Jan 20 09:28:13 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 23240
+;;     Update #: 23254
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-cmd1.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -396,11 +396,9 @@
          (load-library "icicles-mac")   ; Use load-library to ensure latest .elc.
        (error nil))
      (require 'icicles-mac)))           ; Require, so can load separately if not on `load-path'.
-  ;; icicle-assoc-delete-all, icicle-bind-file-candidate-keys, icicle-buffer-bindings,
-  ;; icicle-condition-case-no-debug, icicle-define-bookmark-command, icicle-define-bookmark-command-1.
-  ;; icicle-define-bookmark-command-other-window, icicle-define-command, icicle-define-file-command,
-  ;; icicle-define-add-to-alist-command, icicle-file-bindings, icicle-kbd,
-  ;; icicle-unbind-file-candidate-keys
+  ;; icicle-assoc-delete-all, icicle-bind-file-candidate-keys, icicle-(buffer|file)-bindings,
+  ;; icicle-condition-case-no-debug, icicle-define-bookmark(-other-window)-command, icicle-kbd, 
+  ;; icicle-define(-file)-command, icicle-define-add-to-alist-command, icicle-unbind-file-candidate-keys
 (require 'icicles-mcmd)
   ;; icicle-yank
 (require 'icicles-opt)                  ; (This is required anyway by `icicles-var.el'.)
@@ -3321,7 +3319,7 @@ keys at the top level."
              (when (string-equal bname "") (setq bname  defname))
              (bookmark-store bname (cdr record) (consp parg))
              (when (and bmkp-prompt-for-tags-flag interactivep)
-               (bmkp-add-tags bname (bmkp-read-tags-completing)))
+               (bmkp-add-tags bname (bmkp-read-tags-completing))) ; Don't bother to refresh tags. (?)
              (case (and (boundp 'bmkp-auto-light-when-set) bmkp-auto-light-when-set)
                (autonamed-bookmark       (when (bmkp-autonamed-bookmark-p bname)
                                            (bmkp-light-bookmark bname)))
@@ -4158,16 +4156,16 @@ You are prompted for the FILES."
 (icicle-define-bookmark-other-window-command "region" "Select region: ")      ; `C-x 4 j r'
 ;;;###autoload (autoload 'icicle-bookmark-all-tags "icicles-cmd1.el")
 (icicle-define-bookmark-command              "all-tags" nil                   ; `C-x j t *'
-                                             (bmkp-read-tags-completing))
+                                             (bmkp-read-tags-completing nil nil current-prefix-arg))
 ;;;###autoload (autoload 'icicle-bookmark-all-tags-other-window "icicles-cmd1.el")
 (icicle-define-bookmark-other-window-command "all-tags" nil                   ; `C-x 4 j t *'
-                                             (bmkp-read-tags-completing))
+                                             (bmkp-read-tags-completing nil nil current-prefix-arg))
 ;;;###autoload (autoload 'icicle-bookmark-some-tags "icicles-cmd1.el")
 (icicle-define-bookmark-command              "some-tags" nil                  ; `C-x j t +'
-                                             (bmkp-read-tags-completing))
+                                             (bmkp-read-tags-completing nil nil current-prefix-arg))
 ;;;###autoload (autoload 'icicle-bookmark-some-tags-other-window "icicles-cmd1.el")
 (icicle-define-bookmark-other-window-command "some-tags" nil                  ; `C-x 4 j t +'
-                                             (bmkp-read-tags-completing))
+                                             (bmkp-read-tags-completing nil nil current-prefix-arg))
 ;;;###autoload (autoload 'icicle-bookmark-all-tags-regexp "icicles-cmd1.el")
 (icicle-define-bookmark-command              "all-tags-regexp" nil            ; `C-x j t % *'
                                              (read-string "Regexp for tags: "))
@@ -4182,16 +4180,16 @@ You are prompted for the FILES."
                                              (read-string "Regexp for tags: "))
 ;;;###autoload (autoload 'icicle-bookmark-file-all-tags "icicles-cmd1.el")
 (icicle-define-bookmark-command              "file-all-tags" nil              ; `C-x j t f *'
-                                             (bmkp-read-tags-completing))
+                                             (bmkp-read-tags-completing nil nil current-prefix-arg))
 ;;;###autoload (autoload 'icicle-bookmark-file-all-tags-other-window "icicles-cmd1.el")
 (icicle-define-bookmark-other-window-command "file-all-tags" nil              ; `C-x 4 j t f *'
-                                             (bmkp-read-tags-completing))
+                                             (bmkp-read-tags-completing nil nil current-prefix-arg))
 ;;;###autoload (autoload 'icicle-bookmark-file-some-tags "icicles-cmd1.el")
 (icicle-define-bookmark-command              "file-some-tags" nil             ; `C-x j t f +'
-                                             (bmkp-read-tags-completing))
+                                             (bmkp-read-tags-completing nil nil current-prefix-arg))
 ;;;###autoload (autoload 'icicle-bookmark-file-some-tags-other-window "icicles-cmd1.el")
 (icicle-define-bookmark-other-window-command "file-some-tags" nil             ; `C-x 4 j t f +'
-                                             (bmkp-read-tags-completing))
+                                             (bmkp-read-tags-completing nil nil current-prefix-arg))
 ;;;###autoload (autoload 'icicle-bookmark-file-all-tags-regexp "icicles-cmd1.el")
 (icicle-define-bookmark-command              "file-all-tags-regexp" nil       ; `C-x j t f % *'
                                              (read-string "Regexp for tags: "))
@@ -4206,16 +4204,16 @@ You are prompted for the FILES."
                                              (read-string "Regexp for tags: "))
 ;;;###autoload (autoload 'icicle-bookmark-this-dir-file-all-tags "icicles-cmd1.el")
 (icicle-define-bookmark-command              "file-this-dir-all-tags" nil ; `C-x j t C-f *'
-                                             (bmkp-read-tags-completing))
+                                             (bmkp-read-tags-completing nil nil current-prefix-arg))
 ;;;###autoload (autoload 'icicle-bookmark-file-this-dir-all-tags-other-window "icicles-cmd1.el")
 (icicle-define-bookmark-other-window-command "file-this-dir-all-tags" nil ; `C-x 4 j t C-f *'
-                                             (bmkp-read-tags-completing))
+                                             (bmkp-read-tags-completing nil nil current-prefix-arg))
 ;;;###autoload (autoload 'icicle-bookmark-file-this-dir-some-tags "icicles-cmd1.el")
 (icicle-define-bookmark-command              "file-this-dir-some-tags" nil ; `C-x j t C-f +'
-                                             (bmkp-read-tags-completing))
+                                             (bmkp-read-tags-completing nil nil current-prefix-arg))
 ;;;###autoload (autoload 'icicle-bookmark-file-this-dir-some-tags-other-window "icicles-cmd1.el")
 (icicle-define-bookmark-other-window-command "file-this-dir-some-tags" nil ; `C-x 4 j t C-f +'
-                                             (bmkp-read-tags-completing))
+                                             (bmkp-read-tags-completing nil nil current-prefix-arg))
 ;;;###autoload (autoload 'icicle-bookmark-file-this-dir-all-tags-regexp "icicles-cmd1.el")
 (icicle-define-bookmark-command              "file-this-dir-all-tags-regexp" nil ; `C-x j t C-f % *'
                                              (read-string "Regexp for tags: "))
