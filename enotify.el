@@ -5,7 +5,7 @@
 ;; Author: Alessandro Piras <laynor@gmail.com>
 ;; Keywords: convenience
 ;; URL: https://github.com/laynor/enotify
-;; Version: 0.1.1
+;; Version: 0.1.2
 ;; Package-Requires: ()
 
 ;; This file is not part of GNU Emacs.
@@ -53,6 +53,12 @@
   "Display notifications on emacs' mode line."
   :group 'modeline)
 (eval-and-compile (provide 'enotify-group))
+
+(defvar enotify-minor-mode) ;; Silencing compiler
+
+(defcustom enotify-debug nil
+  "Enable debug messages."
+  :group 'enotify)
 ;;;;
 ;;;; Enotify Message passing
 ;;;;
@@ -67,8 +73,13 @@
 
 ;; allocate a buffer for a connection
 (defun enotify-mp-allocate-buffer (connection)
-  (puthash connection (get-buffer-create (format " %S" connection))
+  (puthash connection (get-buffer-create (format " Enotify-msg-buffer:%S" connection))
 	   enotify-mp-cmbt))
+
+(defvar enotify-mp-idle-time 5
+  "Idle time before calling enotify-mp-clean-garbage (internal
+message buffer cleaning for dead connections")
+
 
 (defun enotify-mp-reinit ()
   (clrhash enotify-mp-cmbt))
@@ -111,6 +122,37 @@
 	     (print (buffer-name v)))
 	   enotify-mp-cmbt)
   nil)
+(defun enotify-mp-lsib ()
+  (delq nil
+   (mapcar (lambda (b)
+	     (let ((bname (buffer-name b))
+		   (pattern " Enotify-msg-buffer:"))
+	       (when (and (>= (length bname) (length pattern))
+			  (string= (substring bname 0 (length pattern))
+				   pattern))
+		 bname)))
+	   (buffer-list))))
+		
+;;; Dead connection cleaning
+(defun enotify-mp-clean-garbage ()
+  "Calls delete-process for all the dead connections to the
+Enotify server and kills all the related buffers."
+  (let (dead-connections)
+    (maphash (lambda (conn buff)
+	       (when (memq (process-status conn) '(closed failed))
+		 (kill-buffer buff)
+		 (delete-process conn)
+		 (push conn dead-connections)))
+	     enotify-mp-cmbt)
+    (dolist (dc dead-connections)
+      (remhash dc enotify-mp-cmbt))))
+
+(defun enotify-mp-clean-garbage-timer ()
+  (when enotify-debug (message "Calling enotify-mp-clean-garbage"))
+  (enotify-mp-clean-garbage)
+  (when enotify-minor-mode
+    (run-with-idle-timer enotify-mp-idle-time nil 'enotify-mp-clean-garbage-timer)))
+
       
 (eval-and-compile (provide 'enotify-messages))
 ;;;; Enotify mode
@@ -281,7 +323,8 @@ slot-id of the icon clicked can be retrieved using
 (defun enotify-mode-line-remove-notification (slot-id)
   "Removes the notification \"icon\" associated with SLOT-ID from the notification area."
   (remhash slot-id enotify-mode-line-notifications-table)
-  (enotify-mode-line-update))
+  (enotify-mode-line-update)
+  (force-mode-line-update))
 
 
 (eval-and-compile (provide 'enotify-mode-line))
@@ -414,11 +457,12 @@ right message handler."
 	 (delete-process enotify-connection))
 	(t (add-to-list 'global-mode-string 'enotify-mode-line-string t)
 	   (enotify-init-network)
+	   (enotify-mp-clean-garbage-timer)
 	   (enotify-mode-line-update))))
 
 (defun enotify-version ()
   (interactive)
-  (message "0.1.1"))
+  (message "0.1.2"))
 
 (provide 'enotify)
 ;;; enotify.el ends here
