@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Fri Jan 20 09:46:27 2012 (-0800)
+;; Last-Updated: Fri Jan 20 15:32:02 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 7816
+;;     Update #: 7832
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-chg.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -1143,6 +1143,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-fn.el'")
 ;;
+;; 2012/01/20 dadams
+;;     icicle-call-then-update-Completions: Do the sit-for even if only one candidate.
 ;; 2012/01/17 dadams
 ;;     icicle-insert-candidates:
 ;;       Put mouse-face on final \n also.  No longer use property icicle-keep-newline.
@@ -2902,6 +2904,12 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-mcmd.el'")
 ;;
+;; 2012/01/20 dadams
+;;     icicle-retrieve-previous-input: Just use icicle-call-then-update-Completions.
+;;     icicle-(prefix|apropos)-complete-1:
+;;       When sole cand, icicle-edit-update-p and not icicle-expand-input-*, show cand in Completions.
+;;     icicle-apropos-complete-2:
+;;       Removed arg and setting it.  Return input-sans-dir needed for setting real mode-line help.
 ;; 2012/01/19 dadams
 ;;     icicle-prefix-complete-2:
 ;;       Removed first arg and setting it.  Return condition needed for setting real mode-line help.
