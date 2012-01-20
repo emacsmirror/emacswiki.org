@@ -19,7 +19,7 @@ this could be useful: (RichardRiley : why?)
                   'py-beginning-of-def-or-class)
              (setq outline-regexp "def\\|class ")))
 
-: It should be noted that python-mode.el, since it is part of python, doesn't usually need to be seperately installed. Also, many distros will also add relevant autoloads e.g. Gentoo adds it to site-lisp/site-gentoo.el or possibly site-lisp/site-gentoo.d  -- CH
+: It should be noted that python-mode.el, since it is part of python, doesn't usually need to be separately installed. Also, many distros will also add relevant autoloads e.g. Gentoo adds it to site-lisp/site-gentoo.el or possibly site-lisp/site-gentoo.d  -- CH
 
 For Emacs 22 and after, consider ProgrammingWithPythonDotEl
 
