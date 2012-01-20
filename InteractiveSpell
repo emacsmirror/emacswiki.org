@@ -155,6 +155,8 @@ On my setup, I have the following:
 
 (Where <code>/Users/username/.enchant/myspell/</code> contains nb_NO.dic and nb_NO.aff etc.) However, to use my English dictionaries, I have to switch back to aspell and change the dictionary-alist, which is a hassle... I'd rather figure out how to use enchant.
 
+[new]
+I have to change <code>ispell-dictionary-alist</code> to <code>ispell-dictionary-base-alist</code> to change de dictionary list.  To make it work the 1st time, I also have to remove the <code>"-a"</code> from ispell-extra-args (actually, I have it as nil).
 
 Another possibility is to use rw-hunspell by Ralf Wachinger. rw-hunspell, rw-ispell and rw-language-and-country-codes can be found [[http://www.mail-archive.com/gnu-emacs-sources@gnu.org/msg01709.html|here]].
 On my linux setup I use the following:
