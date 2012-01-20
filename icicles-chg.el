@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Thu Jan 19 09:30:49 2012 (-0800)
+;; Last-Updated: Fri Jan 20 09:46:27 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 7806
+;;     Update #: 7816
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-chg.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -82,6 +82,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd1.el'")
 ;;
+;; 2012/01/20 dadams
+;;     icicle-bookmark-*-tags(-other-window): Pass prefix arg to bmkp-read-tags-completing, to refresh.
 ;; 2012/01/15 dadams
 ;;     icicle-bookmark-set: Added missing quote mark for (icicle-)bookmark-history.
 ;; 2012/01/14 dadams
@@ -2732,6 +2734,8 @@
 ;;       macros needs to be byte-compiled anew after loading the updated macros.
 ;; ****************************************************************************************************
 ;;
+;; 2012/01/20 dadams
+;;     icicle-define-bookmark-command-1: Added info about refreshing tags to doc string of tags cmds.
 ;; 2011/11/27 dadams
 ;;     icicle-define-bookmark-command-1:
 ;;       Calculate the alist first, before binding things like icicle-list-use-nth-parts, that are
