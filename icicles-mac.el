@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:24:28 2006
 ;; Version: 22.0
-;; Last-Updated: Sun Jan  1 14:05:17 2012 (-0800)
+;; Last-Updated: Fri Jan 20 09:35:49 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 937
+;;     Update #: 952
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-mac.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -859,15 +859,26 @@ The command defined raises an error unless library `Bookmark+' can be
 loaded."
   `(icicle-define-command
     ,(intern (format "icicle-bookmark-%s%s" type (if otherp "-other-window" ""))) ; Command name
-    ,(format "Jump to a %s bookmark%s.
+    ,(format "Jump to a%s %s bookmark%s.
 Like `icicle-bookmark%s',
  but with %s bookmarks only.
 This is a multi-command version of
  `bmkp-%s-jump%s'.
+%s
 You need library `Bookmark+' for this command."
+             (if (memq (aref type 0) '(?a ?e ?i ?o ?u)) "n" "") ; `a' or `an'
              type (if otherp " in other window" "")
              (if otherp "-other-window" "") type
-             type (if otherp "-other-window" "")) ; Doc string
+             type (if otherp "-other-window" "")
+             (if (string-match "tags" type) ; Additional info about refreshing tags list.
+                 "
+By default, the tag choices for completion are NOT refreshed, to save
+time.  Use a prefix arg if you want to refresh them.  For example, use
+a prefix arg after you have switched to a different bookmark file,
+after you have added new tags to some bookmarks, or after you have
+completely removed some tags from all bookmarks.  IOW, any time the
+set of existing tags has changed, you might want to use a prefix arg,
+to update the list of tags available for completion." "")) ; Doc string
     (lambda (cand) (,(if otherp 'icicle-bookmark-jump-other-window 'icicle-bookmark-jump) ; Action fn.
                      (icicle-transform-multi-completion cand)))
     prompt1 icicle-candidates-alist nil ; `completing-read' args
