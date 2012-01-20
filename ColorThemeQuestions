@@ -148,11 +148,21 @@ The other way arround would make more sense to me. -- Andre Kuehne
 
 I use emacs on both X and terminal, color-theme is great on X, but on terminal when there are only 8 colors, some theme makes emacs looks ugly and text becomes unreadable. I'm using emacsclient. How can I disable color-theme on a terminal frame? Any hooks I can use? -- [[sylecn]]
 
-Well, you could put something in your .emacs like:
+Well, you could put something in your [[init file]] like this:
 <pre>
-(when (window-system) (color-theme-whatever))
+(when (display-graphic-p) (color-theme-whatever))
 </pre>
-You could also make it an 'if' and use an alternative color scheme on console; some work pretty wel.
+
+(Use [[variable]] `window-system' if your Emacs version does not have function `display-graphic-p'.)
+
+You could use `if' and use an alternative color scheme on console; some work pretty well.
+
+
+
+
+
+
+
 
 [new:PauloMatos:2010-01-28]
 It would be nice to have a list of color-themes that work well on a terminal.
