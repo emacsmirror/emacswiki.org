@@ -96,6 +96,10 @@ organism must evolve or perish.
 
 SteveYegge in his long rant on different programming languages, ''[http://steve.yegge.googlepages.com/tour-de-babel Tour de Babel]'', tells of the popularity of Emacs and in particular EmacsLisp for software developed and used internally at Amazon.com.
 
+== Emacs Lisp for Perl Programmers ==
+
+Some mappings between Perl and Emacs Lisp [http://obsidianrook.com/devnotes/elisp-for-perl-programmers.html here].
+
 ----
 CategoryCode
 CategoryExtensionLanguage
