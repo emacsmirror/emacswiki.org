@@ -63,16 +63,16 @@ But this doesn't work when the command uses the minibuffer (evil mode gets messe
 [new]
 It might be better to utilize the command loop in this case. Something like the following:
 
-(defun evil-passthrough (&optional arg)
-  "Execute the next command in Emacs state."
-  (interactive "p")
-  (cond
-   (arg
-    (add-hook 'post-command-hook 'evil-passthrough)
-    (evil-emacs-state))
-   ((not (eq this-command #'evil-passthrough))
-    (remove-hook 'post-command-hook 'evil-passthrough)
-    (evil-exit-emacs-state))))
+    (defun evil-passthrough (&optional arg)
+      "Execute the next command in Emacs state."
+      (interactive "p")
+      (cond
+       (arg
+        (add-hook 'post-command-hook 'evil-passthrough)
+        (evil-emacs-state))
+       ((not (eq this-command #'evil-passthrough))
+        (remove-hook 'post-command-hook 'evil-passthrough)
+        (evil-exit-emacs-state))))
 
 That will give you one full command loop cycle in Emacs state, before returning to Normal state in ##post-command-hook##. -- VegardOye
 
