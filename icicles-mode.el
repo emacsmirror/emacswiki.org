@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 10:21:10 2006
 ;; Version: 22.0
-;; Last-Updated: Sun Jan  1 14:05:17 2012 (-0800)
+;; Last-Updated: Fri Jan 20 17:37:18 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 8059
+;;     Update #: 8070
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-mode.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -357,6 +357,7 @@ In many cases there are also `other-window' versions.
 `icicle-completing-yank'               - `yank' using completion
 `icicle-customize-face'                - Multi-`customize-face'
 `icicle-customize-icicles-group'       - Customize options and faces
+`icicle-cycle-incremental-completion'  - Cycle incremental completion
 `icicle-delete-file'                   - Delete file/directory
 `icicle-delete-window'                 - Delete window (`C-u': buffer)
 `icicle-delete-windows'                - Delete all windows for buffer
@@ -472,7 +473,6 @@ In many cases there are also `other-window' versions.
 `icicle-toggle-ignored-extensions'     - Toggle ignored files
 `icicle-toggle-ignored-space-prefix'   - Toggle ignoring space prefix
 `icicle-toggle-ignoring-comments'      - Toggle ignoring comments
-`icicle-toggle-incremental-completion' - Toggle apropos icompletion
 `icicle-toggle-option'                 - Toggle binary user option
 `icicle-toggle-proxy-candidates'       - Toggle proxy candidates
 `icicle-toggle-regexp-quote'           - Toggle regexp escaping
@@ -655,6 +655,7 @@ In many cases there are also `other-window' versions.
 `icicle-completing-yank'               - `yank' using completion
 `icicle-customize-face'                - Multi-`customize-face'
 `icicle-customize-icicles-group'       - Customize options and faces
+`icicle-cycle-incremental-completion'  - Cycle incremental completion
 `icicle-delete-file'                   - Delete file/directory
 `icicle-delete-window'                 - Delete window (`C-u': buffer)
 `icicle-delete-windows'                - Delete all windows for buffer
@@ -768,7 +769,6 @@ In many cases there are also `other-window' versions.
 `icicle-toggle-ignored-extensions'     - Toggle ignored files
 `icicle-toggle-ignored-space-prefix'   - Toggle ignoring space prefix
 `icicle-toggle-ignoring-comments'      - Toggle ignoring comments
-`icicle-toggle-incremental-completion' - Toggle apropos icompletion
 `icicle-toggle-option'                 - Toggle binary user option
 `icicle-toggle-proxy-candidates'       - Toggle proxy candidates
 `icicle-toggle-regexp-quote'           - Toggle regexp escaping
@@ -1214,10 +1214,10 @@ Used on `pre-command-hook'."
              '(menu-item "Toggle `.' Matching Newlines Too" icicle-toggle-dot
                :visible icicle-mode :keys "C-M-."
                :help "Toggle `icicle-dot-string' between `.' and `icicle-anychar-regexp'"))
-           (define-key icicle-options-menu-map [icicle-toggle-incremental-completion]
-             '(menu-item "Toggle Incremental Completion"
-               icicle-toggle-incremental-completion :visible icicle-mode :keys "C-#"
-               :help "Toggle option `icicle-incremental-completion-flag'"))
+           (define-key icicle-options-menu-map [icicle-cycle-incremental-completion]
+             '(menu-item "Cycle Incremental Completion"
+               icicle-cycle-incremental-completion :visible icicle-mode :keys "C-#"
+               :help "Cycle option `icicle-incremental-completion-flag'"))
            (define-key icicle-options-menu-map [icicle-toggle-show-multi-completion]
              '(menu-item "Toggle Showing Multi-Completions"
                icicle-toggle-show-multi-completion :visible icicle-mode
@@ -1389,9 +1389,9 @@ Used on `pre-command-hook'."
            (define-key icicle-menu-map [icicle-toggle-dot]
              '(menu-item "Toggle `.' Matching Newlines Too" icicle-toggle-dot :keys "C-M-."
                :help "Toggle `icicle-dot-string' between `.' and `icicle-anychar-regexp'"))
-           (define-key icicle-menu-map [icicle-toggle-incremental-completion]
-             '(menu-item "Toggle Incremental Completion" icicle-toggle-incremental-completion
-               :keys "C-#" :help "Toggle option `icicle-incremental-completion-flag'"))
+           (define-key icicle-menu-map [icicle-cycle-incremental-completion]
+             '(menu-item "Cycle Incremental Completion" icicle-cycle-incremental-completion
+               :keys "C-#" :help "Cycle option `icicle-incremental-completion-flag'"))
            (define-key icicle-menu-map [icicle-toggle-show-multi-completion]
              '(menu-item "Toggle Showing Multi-Completions" icicle-toggle-show-multi-completion
                :help "Toggle option `icicle-show-multi-completion-flag'"))
@@ -2709,8 +2709,6 @@ keymap.  If KEYMAP-VAR is not bound to a keymap, it is ignored."
        ;; Override the binding of `C-j' to `minibuffer-complete-and-exit'.
        (define-key minibuffer-local-must-match-map (icicle-kbd "C-j") ; `C-j' (newline)
          'icicle-insert-newline-in-minibuffer))
-     (define-key minibuffer-local-must-match-map (icicle-kbd "S-return") ; `S-return'
-       'icicle-apropos-complete-and-exit)
 
      ;; `completion-list-mode-map': map for `*Completions*' buffer.
      ;; Abort on `C-g' or `q'.  Switch to minibuffer on `C-insert'.  Do not allow normal input.
@@ -2941,7 +2939,6 @@ keymap.  If KEYMAP-VAR is not bound to a keymap, it is ignored."
          (define-key minibuffer-local-must-match-map key nil))
        (define-key minibuffer-local-must-match-map (icicle-kbd "C-j") ; `C-j' (newline)
          'minibuffer-complete-and-exit))
-     (define-key minibuffer-local-must-match-map (icicle-kbd "S-return") nil)
 
      ;; `completion-list-mode-map': map for `*Completions*' buffer.
      (let ((map  completion-list-mode-map))
@@ -3357,7 +3354,7 @@ complete)"))
   (unless (eq minibuffer-local-map (keymap-parent minibuffer-local-completion-map))
     (define-key map (icicle-kbd "C-?")     'icicle-minibuffer-help)) ; `C-?'
   (define-key map (icicle-kbd "C-.")       'icicle-dispatch-C-.) ; `C-.'
-  (define-key map (icicle-kbd "C-#")       'icicle-toggle-incremental-completion) ; `C-#'
+  (define-key map (icicle-kbd "C-#")       'icicle-cycle-incremental-completion) ; `C-#'
   (define-key map (icicle-kbd "C-;")       'icicle-toggle-expand-to-common-match) ; `C-;'
   (define-key map (icicle-kbd "M-;")       'icicle-toggle-search-replace-common-match) ; `M-;'
   (define-key map (icicle-kbd "C-^")       'icicle-dispatch-C-^) ; `C-^'
@@ -3374,6 +3371,7 @@ complete)"))
   (define-key map (icicle-kbd "M-_")       'icicle-dispatch-M-_) ; `M-_'
   (define-key map (icicle-kbd "C-M-&")     'icicle-save-predicate-to-variable) ; `C-M-&'
   (define-key map (icicle-kbd "S-SPC")     'icicle-apropos-complete-and-narrow) ; `S-SPC'
+  (define-key map (icicle-kbd "S-return")  'icicle-apropos-complete-and-exit) ; `S-return'
   (define-key map (icicle-kbd "S-backspace") 'icicle-apropos-complete-and-widen) ; `S-backspace'
   (define-key map (icicle-kbd "C-v")       'icicle-scroll-Completions-forward) ; `C-v'
   (define-key map (icicle-kbd "M-v")       'icicle-scroll-Completions-backward) ; `M-v'
@@ -3624,6 +3622,7 @@ MAP is `minibuffer-local-completion-map',
   (define-key map (icicle-kbd "M-_")       nil)
   (define-key map (icicle-kbd "C-M-&")     nil)
   (define-key map (icicle-kbd "S-SPC")     nil)
+  (define-key map (icicle-kbd "S-return")  nil)
   (define-key map (icicle-kbd "S-backspace") nil)
   (define-key map (icicle-kbd "C-v")       nil)
   (define-key map (icicle-kbd "M-v")       nil)
