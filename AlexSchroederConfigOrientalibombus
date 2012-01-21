@@ -674,29 +674,67 @@ Returns the list of windows."
 (defface rcirc-prompt '((t (:foreground "orchid")))
   "My prompt for rcirc.")
 
-;; (t.co-resolve "http://t.co/AvQV2dTP")
+;; (resolve-redirect "http://t.co/AvQV2dTP")
 
-(defun t.co-resolve (url)
-  "Resolve t.co URL by launching `curl --head' and parsing the result."
+(defun resolve-redirect (url)
+  "Resolve shortened URL by launching `curl --head' and parsing the result."
   (assert (string-match (concat "^" rcirc-url-regexp "$") url))
-  (let* ((curl (shell-command-to-string (format "curl --silent --head %s" url)))
+  (let* ((curl (shell-command-to-string
+		(format "curl --silent --head %s" url)))
 	 (location (when (and (string-match "\\`HTTP/1\.1 301" curl)
 			      (string-match (concat "^Location: "
 						    rcirc-url-regexp) curl))
 		     (match-string 1 curl))))
     (or location url)))
 
-;; (with-temp-buffer (insert "hallo http://t.co/AvQV2dTP hallo") (goto-char (point-min)) (t.co-url-replace nil nil) (buffer-string))
+;; (with-temp-buffer (insert "Last week to apply to NYU's Journalism Innovation program, led by @JayRosen_NYU (and where I teach): http://bit.ly/yKbBr1 <bit.ly/yKbBr1>") (goto-char (point-min)) (url-expand nil nil) (buffer-string))
 
-(defun t.co-url-replace (sender response)
-  "Call `t.co-resolve' on every matching URL."
-  (let ((re "http://t\\.co/[a-z0-9]+"))
-    (while (re-search-forward re nil t)
-      (replace-match (save-match-data (t.co-resolve (match-string 0)))))))
+(defun url-expand (sender response)
+  "Call `resolve-redirect' on every matching URL."
+  (while (re-search-forward rcirc-url-regexp nil t)
+    (when (<= (length (match-string 0)) 25)
+      (replace-match (save-match-data
+		       (resolve-redirect (match-string 0)))))))
 
 (eval-after-load 'rcirc
   '(add-to-list 'rcirc-markup-text-functions
-		't.co-url-replace))
+		'url-expand))
+
+(defun split-window-multiple-ways (x y)
+  "Split the current frame into a grid of X columns and Y rows."
+  (interactive "nColumns: \nnRows: ")
+  ;; one window
+  (delete-other-windows)
+  (dotimes (i (1- x))
+      (split-window-horizontally)
+      (dotimes (j (1- y))
+	(split-window-vertically))
+      (other-window y))
+  (dotimes (j (1- y))
+    (split-window-vertically))
+  (balance-windows))
+
+(defun show-buffers-with-major-mode (mode)
+  "Fill all windows of the current frame with buffers using major-mode MODE."
+  (interactive
+   (let* ((modes (loop for buf being the buffers
+		       collect (symbol-name (with-current-buffer buf
+					      major-mode)))))
+     (list (intern (completing-read "Mode: " modes)))))
+  (let ((buffers (loop for buf being the buffers
+		       when (eq mode (with-current-buffer buf
+				       major-mode))
+		       collect buf)))
+    (dolist (win (window-list))
+      (when buffers
+	(show-buffer win (car buffers))
+	(setq buffers (cdr buffers))))))
+
+(defun rcirc-layout ()
+  "3x3 channels."
+  (interactive)
+  (split-window-multiple-ways 3 3)
+  (show-buffers-with-major-mode 'rcirc-mode))
 
 ;;; elim / garak
 ;; (add-to-list 'load-path "~/elisp/elim")
@@ -819,7 +857,7 @@ Otherwise, use the value of said variable as argument to a funcall."
 	;; ("CommunityWiki" "http://www.communitywiki.org/cw" utf-8 "question" nil)
 	("OddmuseWiki" "http://www.oddmuse.org/cgi-bin/oddmuse" utf-8 "question" nil)
 	("Anlex" "http://www.emacswiki.org/cgi-bin/alex" utf-8 "question" nil)
-	("DungeonMaps" "http://www.campaignwiki.org/wiki/DungeonMaps" utf-8 "ts" "Alex")))
+	("DungeonMaps" "http://www.campaignwiki.org/wiki/DungeonMaps" utf-8 "frodo" "Alex")))
 
 (add-hook 'text-mode-hook
 	  (lambda ()
@@ -951,6 +989,16 @@ The particular markup mix is specific to my preferences.")
 	  (lambda ()
 	    (set (make-local-variable 'skeleton-end-newline) nil)))
 
+
+(setq oddmuse-markup-functions
+      '(oddmuse-creole-markup
+	oddmuse-bbcode-markup
+	oddmuse-extended-markup
+	oddmuse-basic-markup))
+
+(add-hook 'oddmuse-mode-hook
+	  (lambda () (longlines-mode 1)))
+
 (defvar campaign-wiki-font-lock-list
   '(("^=[^=\n]+" . 'info-title-1)
     ("^==[^=\n]+" . 'info-title-2)
@@ -958,7 +1006,7 @@ The particular markup mix is specific to my preferences.")
     ("^====+[^=\n]+" . 'info-title-4)
     ("\\[\\[.*?\\]\\]" . 'link)
     ("\\[b\\].*?\\[/b\\]" . 'bold)
-    ("\\[i\\].*?\\[/i\\]" . 'italic)
+    ("\\[i\\]\\(.*\n\\)*?.*?\\[/i\\]" . 'italic)
     ("\\[.*\\]" . 'link)
     ("\\*\\*.*?\\*\\*" . 'bold)
     ("\\*.*?\\*" . 'bold)
