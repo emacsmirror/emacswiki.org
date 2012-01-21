@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Fri Jan 20 15:29:24 2012 (-0800)
+;; Last-Updated: Fri Jan 20 17:32:19 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 17518
+;;     Update #: 17546
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-mcmd.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -76,6 +76,7 @@
 ;;    `icicle-choose-completion', `icicle-completing-read+insert',
 ;;    `icicle-Completions-mouse-3-menu',
 ;;    `icicle-cycle-image-file-thumbnail',
+;;    `icicle-cycle-incremental-completion',
 ;;    `icicle-delete-backward-char', `icicle-delete-candidate-object',
 ;;    `icicle-delete-char', `icicle-delete-windows-on',
 ;;    `icicle-describe-file', `icicle-digit-argument',
@@ -187,7 +188,6 @@
 ;;    `icicle-toggle-ignored-extensions',
 ;;    `icicle-toggle-ignored-space-prefix',
 ;;    `icicle-toggle-ignoring-comments',
-;;    `icicle-toggle-incremental-completion',
 ;;    `icicle-toggle-literal-replacement',
 ;;    `icicle-toggle-proxy-candidates', `icicle-toggle-regexp-quote',
 ;;    `icicle-toggle-remote-file-testing',
@@ -498,7 +498,7 @@ Remove `*Completions*' window.  Remove Icicles minibuffer faces."
 (unless (fboundp 'old-minibuffer-complete-and-exit)
   (defalias 'old-minibuffer-complete-and-exit (symbol-function 'minibuffer-complete-and-exit)))
 
-;; Bound to `C-m' (`RET') in `minibuffer-local-must-match-map'.
+;; Bound to `C-m' (`RET') in must-match minibuffer completion maps.
 ;;;###autoload
 (defun icicle-minibuffer-complete-and-exit ()
   "If the minibuffer contents is a valid completion, then exit.
@@ -554,21 +554,39 @@ Otherwise try to complete it."
                    (t
                     (icicle-display-candidates-in-Completions))))))))
 
-(defun icicle-upcase-if-ignore-case (string)
-  "Return (icicle-upcase STRING) if `completion-ignore-case', else STRING."
-  (if completion-ignore-case (icicle-upcase string) string))
-
+;;; $$$$$$ Should probably rename it.  It's no longer necessarily about apropos completion.
 ;;;###autoload
-(defun icicle-apropos-complete-and-exit () ; Bound to `S-return' in `minibuffer-local-must-match-map'.
-  "If the minibuffer contents is a valid apropos completion, then exit.
-Otherwise try to complete it.  If completion leads to a valid
-completion, then exit.
-This is to `minibuffer-complete-and-exit' as `icicle-apropos-complete'
-is to `minibuffer-complete'.  That is, it is the regexp-match version."
+(defun icicle-apropos-complete-and-exit () ; Bound to `S-return' in minibuffer completion maps.
+  "If minibuffer content is a valid completion or has a single match, exit.
+If the content is not complete, try to complete it.  If completion
+leads to a valid completion, then exit.
+
+This differs from `icicle-minibuffer-complete-and-exit' (bound to
+`RET' in must-match minibuffer maps) in these ways:
+
+ * If there is only one completion, this completes the input, rather
+   than accepting it uncompleted.
+ * This does not bother with the various special cases: empty input or
+   non-nil `minibuffer-completion-confirm' values."
   (interactive)
-  (setq icicle-last-input  (icicle-input-from-minibuffer))
-  (let* ((icicle-apropos-complete-and-exit-p  t) ; Suppress the throw or the msg plus the wait.
-         (candidates                          (icicle-apropos-complete)))
+  (setq icicle-current-input  (icicle-input-from-minibuffer))
+  (let* (;; Bind these first two to suppress (a) the throw or (b) the message, highlighting,
+         ;; mode-line help, and the wait involved in completing again.
+         (icicle-expand-input-to-common-match-flag  t)
+         (icicle-prefix-complete-and-exit-p         t)
+         (icicle-apropos-complete-and-exit-p        t)
+         (candidates
+          ;; If we're not using `icicle-candidates-alist', complete the input again.
+          ;; If we're using `icicle-candidates-alist', try filtering it against just the
+          ;; input.
+          ;;   If the input is already complete, then we're done.  If not, then filtering
+          ;;   will give nil and we will just continue to display the candidates.  If there
+          ;;   are multiple matches, then the user can either cycle or complete again.
+          (if (not icicle-candidates-alist)
+              (if (eq icicle-current-completion-mode 'apropos)
+                  (icicle-apropos-complete-no-display 'nomsg)
+                (icicle-prefix-complete-no-display 'nomsg))
+            (icicle-filter-alist icicle-candidates-alist (list icicle-current-input)))))
     (when (and candidates (null (cdr candidates))) (old-exit-minibuffer)))) ; Single candidate.
 
 
@@ -1870,7 +1888,7 @@ These are the main Icicles actions and their minibuffer key bindings:
      Case sensitivity                        \\[icicle-toggle-case-sensitivity]\t%S
      `.' matching newlines too (any char)    \\[icicle-toggle-dot]\t%S
      Escaping of special regexp chars        \\[icicle-toggle-regexp-quote]\t%S
-     Incremental completion                  \\[icicle-toggle-incremental-completion]\t%S
+     Incremental completion                  \\[icicle-cycle-incremental-completion]\t%S
      Input expansion to common match         \\[icicle-toggle-expand-to-common-match]\t%S
      Hiding common match in `*Completions*'  \\[icicle-dispatch-C-x.]\t%S
      Hiding no-match lines in `*Completions*' C-u \\[icicle-dispatch-C-x.]\t%S
@@ -1914,7 +1932,7 @@ These are the main Icicles actions and their minibuffer key bindings:
        As much as possible                   \\[icicle-prefix-complete]
          Without displaying candidates       \\[icicle-prefix-complete-no-display]
        A word at a time                      \\[icicle-prefix-word-complete]
-     Complete and commit (if required match) \\<minibuffer-local-must-match-map>\
+     Complete and commit \\<minibuffer-local-must-match-map>\
 \\[icicle-apropos-complete-and-exit]\\<minibuffer-local-completion-map>
      Complete search string using past input \\[icicle-apropos-complete]
 
@@ -3569,6 +3587,10 @@ which the initial `$' is ignored."
                                (substring input-sans-dir 1))))
     (member (icicle-upcase-if-ignore-case (or env-var-name input-sans-dir))
             (mapcar #'icicle-upcase-if-ignore-case icicle-completion-candidates))))
+
+(defun icicle-upcase-if-ignore-case (string)
+  "Return (icicle-upcase STRING) if `completion-ignore-case', else STRING."
+  (if completion-ignore-case (icicle-upcase string) string))
 
 
 ;; Bound in minibuffer to keys in `icicle-apropos-complete-keys' (`S-TAB').
@@ -7030,21 +7052,29 @@ Bound to `C-$' in the minibuffer."
 
 ;; Top-level commands.  Could instead be in `icicles-cmd2.el'.
 ;;;###autoload
-(defalias 'toggle-icicle-incremental-completion 'icicle-toggle-incremental-completion)
+(defalias 'cycle-icicle-incremental-completion 'icicle-cycle-incremental-completion)
 ;;;###autoload
-(defun icicle-toggle-incremental-completion () ; Bound to `C-#' in minibuffer.
-  "Toggle the value of option `icicle-incremental-completion-flag'.
-If the current value is t or `always', then it is set to nil.
-If the current value is nil, then it is set to t.
-This command never sets the value to non-nil and non-t.
+(defun icicle-cycle-incremental-completion () ; Bound to `C-#' in minibuffer.
+  "Cycle the value of option `icicle-incremental-completion-flag'.
+If the current value is nil      then it is set to t.
+If the current value is t        then it is set to `always'.
+If the current value is `always' then it is set to nil.
 
 Bound to `C-#' in the minibuffer."
   (interactive)
-  (setq icicle-incremental-completion-flag  (not icicle-incremental-completion-flag)
+  (setq icicle-incremental-completion-flag  (case icicle-incremental-completion-flag
+                                              ((nil)      t)
+                                              ((t)        'always)
+                                              (otherwise  nil))
+
         icicle-incremental-completion-p     icicle-incremental-completion-flag)
   (icicle-msg-maybe-in-minibuffer
    "Incremental completion is now %s"
-   (icicle-propertize (if icicle-incremental-completion-flag "ON" "OFF") 'face 'icicle-msg-emphasis)))
+   (icicle-propertize (case icicle-incremental-completion-flag
+                        ((nil)      "OFF")
+                        ((t)        "ON")
+                        (otherwise  "EAGER"))
+                      'face 'icicle-msg-emphasis)))
 
 ;; Top-level commands.  Could instead be in `icicles-cmd2.el'.
 ;;;###autoload
