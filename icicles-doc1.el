@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Tue Jan 17 19:05:46 2012 (-0800)
+;; Last-Updated: Fri Jan 20 17:55:13 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 26409
+;;     Update #: 26424
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-doc1.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -2790,26 +2790,46 @@
 ;;  ** Using `S-RET' to Accept a Partial Match **
 ;;
 ;;  By default, Icicles command `icicle-buffer', not vanilla command
-;;  `switch-to-buffer', is bound to `C-x b' in Icicle mode.  The
-;;  default behavior of `icicle-buffer' is the same as the behavior of
-;;  `switch-to-buffer' with respect to `RET'.  However, you can obtain
-;;  the complete-and-exit `RET' behavior with `icicle-buffer' by
-;;  setting option `icicle-buffer-require-match-flag' to
-;;  `partial-match-ok'.  This value overrides the REQUIRE-MATCH
-;;  argument to `completing-read', in effect forcing it to `t'.
+;;  `switch-to-buffer', is bound to `C-x b' in Icicle mode.  (You can
+;;  customize option `icicle-top-level-key-bindings' to prevent this
+;;  rebinding of `C-x b' in Icicle mode.)
+;;
+;;  The default behavior of `icicle-buffer' is the same as the
+;;  behavior of `switch-to-buffer' with respect to `RET'.  However,
+;;  you can obtain the complete-and-exit `RET' behavior with
+;;  `icicle-buffer' by setting option
+;;  `icicle-buffer-require-match-flag' to `partial-match-ok'.  This
+;;  value overrides the REQUIRE-MATCH argument to `completing-read',
+;;  in effect forcing it to `t'.
 ;;
 ;;  Whenever completion is strict, requiring a match against one of
 ;;  the completion candidates (typically, an existing file or buffer
 ;;  name), you can complete and exit the minibuffer all at once, with
-;;  only partial input in the minibuffer, by using `RET'.  But what
-;;  about apropos completion?  Simply use `S-RET' (`S-return'),
-;;  `icicle-apropos-complete-and-exit', instead of `RET': `RET' is
-;;  standard in Emacs and uses prefix completion; `S-RET' is specific
-;;  to Icicles and uses apropos completion.  For example, you can type
-;;  `idea' followed by `S-RET' to switch to buffer `new-ideas.txt'.
+;;  only partial input in the minibuffer, by using `RET'.
 ;;
-;;  Note: You can customize `icicle-top-level-key-bindings' to prevent
-;;  the rebinding of `C-x b' in Icicle mode.
+;;  But what about apropos completion?  And what about non-strict
+;;  (lax) completion, whether prefix or apropos, when your input is
+;;  not automatically expanded (option
+;;  `icicle-expand-input-to-common-match-flag' is `nil')?
+;;
+;;  You can use `S-RET' (`S-return'), bound to command
+;;  `icicle-apropos-complete-and-exit', to force completion and
+;;  acceptance of the completed input.  It acts similarly to what
+;;  `RET' does for strict prefix completion.  It works for both strict
+;;  and lax completion.
+;;
+;;  `S-RET' first completes your input according to the current
+;;  completion mode (`icicle-default-cycling-mode' or the last
+;;  completion command used - prefix or apropos).  If there is only
+;;  one completion then it completes your input to that match and then
+;;  exits.
+;;
+;;  For example, if you use `C-x C-f' with input `abc' and you hit
+;;  `S-RET', then it is either prefix-completed or apropos-completed,
+;;  depending on the current completion mode.  If the only match is,
+;;  say, `abcdefg.el', for prefix completion or, say,
+;;  `123abcde456.txt' for apropos completion, then that complete file
+;;  name is entered.
 ;;
 ;;(@* "Accepting Partial Matches by Default")
 ;;  ** Accepting Partial Matches by Default **
@@ -3403,14 +3423,14 @@
 ;;  performance when there are many candidates.  It lets you type
 ;;  ahead before candidate redisplay occurs.
 ;;
-;;  You can toggle incremental completion at any time (changing
-;;  `icicle-incremental-completion-flag' between `nil' and `t') using
-;;  command `icicle-toggle-incremental-completion', which is bound to
-;;  `C-#' in the minibuffer.  If the number of completion candidates
-;;  is very large, then use `C-#' to toggle incremental completion off
-;;  - that will save time by not updating `*Completions*'.  See also
-;;  (@> "Dealing With Large Candidate Sets") for other ways to deal
-;;  with a large number of candidates.
+;;  You can cycle incremental completion at any time (changing
+;;  `icicle-incremental-completion-flag' among `nil', `t', and
+;;  `always') using command `icicle-cycle-incremental-completion',
+;;  which is bound to `C-#' in the minibuffer.  If the number of
+;;  completion candidates is very large, then use `C-#' to turn off
+;;  incremental completion - that will save time by not updating
+;;  `*Completions*'.  See also (@> "Dealing With Large Candidate Sets")
+;;  for other ways to deal with a large number of candidates.
 ;;
 ;;  Note: Incremental completion is effectively turned off when a
 ;;  remote file name is read, that is, whenever your file-name input
@@ -3461,8 +3481,8 @@
 ;;
 ;;  If either `icicle-incremental-completion-flag' or
 ;;  `icicle-highlight-input-completion-failure' is `nil', then no such
-;;  highlighting is done.  Remember that you can toggle incremental
-;;  completion using `C-#' in the minibuffer.
+;;  highlighting is done.  Remember that you can cycle incremental
+;;  completion on and off using `C-#' in the minibuffer.
 ;;
 ;;  Because this highlighting can have a negative impact on
 ;;  performance, you can fine-tune when you want it to occur.  The
