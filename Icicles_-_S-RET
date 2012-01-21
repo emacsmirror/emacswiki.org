@@ -32,24 +32,48 @@ If you use standard Emacs command `switch-to-buffer' then completion is lax:  `R
 `##new-ideas.txt##'; it simply accepts your input as is, and
 creates a new buffer with that name, `new'.  
 
+
+
+
+
+
 === Using `S-RET' to Accept a Partial Match ===
 
-By default, '''Icicles''' command '''`icicle-buffer'''', not vanilla command `switch-to-buffer', is bound to `C-x b' in ''Icicle'' mode.  The default behavior of `icicle-buffer' is the same as the behavior of `switch-to-buffer' with respect to `RET'.  However, you can obtain the complete-and-exit `RET' behavior with `icicle-buffer' by
-setting [[option]] '''`<tt>[[Icicles - Customization and General Tips#icicle-buffer-require-match-flag|icicle-buffer-require-match-flag]]</tt>'''' to
+By default, '''Icicles''' command '''`icicle-buffer'''', not vanilla command `switch-to-buffer', is bound to `C-x b' in ''Icicle'' mode.  (You can customize [[option]] '''`<tt>[[Icicles - Customization and General Tips#icicle-top-level-key-bindings|icicle-top-level-key-bindings]]</tt>'''' to prevent this rebinding of `C-x b' in ''Icicle'' mode.)
+
+The default behavior of `icicle-buffer' is the same as the behavior of `switch-to-buffer' with respect to `RET'.  However, you can obtain the complete-and-exit `RET' behavior with `icicle-buffer' by
+setting option '''`<tt>[[Icicles - Customization and General Tips#icicle-buffer-require-match-flag|icicle-buffer-require-match-flag]]</tt>'''' to
 `partial-match-ok'.  This value overrides the `REQUIRE-MATCH'
 argument to `completing-read', in effect forcing it to `t'.
 
 Whenever completion is ''strict'', requiring a match against one of the
 completion candidates (typically, an existing file or buffer
 name), you can complete and exit the minibuffer all at once, with
-only partial input in the minibuffer, by using `RET'.  But what
-about ''apropos'' completion?  Simply use '''`S-RET'''' (`S-return'), `icicle-apropos-complete-and-exit', instead of `RET': `RET' is
-standard in Emacs and uses [[prefix completion]]; `S-RET' is specific
-to '''Icicles''' and uses [[apropos completion]].  For example, you can type
-`idea' followed by `S-RET' to switch to buffer `##new-ideas.txt##'.
+only partial input in the minibuffer, by using `RET'.
 
-'''Note:''' You can customize '''`icicle-top-level-key-bindings'''' to
-prevent the rebinding of `C-x b' in ''Icicle'' mode.
+But what about ''apropos'' completion?  And what about ''non''-strict (lax)
+completion, whether prefix or apropos, when your input is not
+automatically expanded (option '''`<tt>[[Icicles - Customization and General Tips#icicle-expand-input-to-common-match-flag|icicle-expand-input-to-common-match-flag]]</tt>'''' is `nil')?
+
+You can use '''`S-RET'''' (`S-return'), bound to command
+`icicle-apropos-complete-and-exit', to force completion and
+acceptance of the completed input.  It acts similarly to what
+`RET' does for strict prefix completion.  It works for both strict
+and lax completion.
+
+`S-RET' first completes your input according to the current
+completion mode (`icicle-default-cycling-mode' or the last completion
+command used -- prefix or apropos).  If there is only one
+completion then it completes your input to that match and then exits.
+
+For example, if you use `C-x C-f' with input `abc' and you hit
+`S-RET', then it is either [[prefix completion|prefix-completed]] or [[apropos completion|apropos-completed]],
+depending on the current completion mode.  If the only match is,
+say, ##abcdefg.el##, for prefix completion or, say,
+##123abcde456.txt## for apropos completion, then that complete file
+name is entered.
+
+
 
 
 
