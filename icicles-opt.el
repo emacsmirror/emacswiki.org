@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:22:14 2006
 ;; Version: 22.0
-;; Last-Updated: Tue Jan 17 13:42:32 2012 (-0800)
+;; Last-Updated: Fri Jan 20 17:03:10 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 4774
+;;     Update #: 4775
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-opt.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -419,8 +419,8 @@
         icicle-toggle-dot)
        (literal-vs-regexp menu-item "Toggle Escaping Special Regexp Chars"
         icicle-toggle-regexp-quote)
-       (incremental-completion menu-item "Toggle Incremental Completion"
-        icicle-toggle-incremental-completion)
+       (incremental-completion menu-item "Cycle Incremental Completion"
+        icicle-cycle-incremental-completion)
        (expanding-to-common menu-item "Toggle Common Match Expansion"
         icicle-toggle-expand-to-common-match)
        (hiding-non-matching-lines menu-item "Toggle Hiding Non-Matching Lines"
