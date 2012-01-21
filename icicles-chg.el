@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Fri Jan 20 15:32:02 2012 (-0800)
+;; Last-Updated: Fri Jan 20 17:37:42 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 7832
+;;     Update #: 7842
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-chg.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -2905,6 +2905,12 @@
 ;;;(@* "CHANGE LOG FOR `icicles-mcmd.el'")
 ;;
 ;; 2012/01/20 dadams
+;;     Renamed icicle-toggle-incremental-completion to icicle-cycle-incremental-completion.
+;;     icicle-apropos-complete-and-exit: 
+;;       Bind icicle-expand-input-to-common-match-flag and icicle-prefix-complete-and-exit-p also.
+;;       Complete based on icicle-current-completion-mode, not just apropos.
+;;       Use icicle-candidates-alist if appropriate.
+;;     icicle-cycle-incremental-completion: cycle among t, nil, and always, instead of toggle t & nil.
 ;;     icicle-retrieve-previous-input: Just use icicle-call-then-update-Completions.
 ;;     icicle-(prefix|apropos)-complete-1:
 ;;       When sole cand, icicle-edit-update-p and not icicle-expand-input-*, show cand in Completions.
@@ -4227,6 +4233,9 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-mode.el'")
 ;;
+;; 2012/01/20 dadams
+;;     Bind icicle-apropos-complete-and-exit in all completion maps, not just must-match map.
+;;     Apply renaming of icicle-toggle-incremental-completion to *-cycle-*.
 ;; 2011/10/21 dadams
 ;;     icicle-(bind|restore)-completion-keys: Typo: M-g -> M-q, for icicle-dispatch-M-q.
 ;; 2011/10/08 dadams
