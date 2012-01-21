@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:23:26 2006
 ;; Version: 22.0
-;; Last-Updated: Sat Jan 14 17:10:09 2012 (-0800)
+;; Last-Updated: Fri Jan 20 17:04:00 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 1595
+;;     Update #: 1597
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-var.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -749,6 +749,7 @@ input prompt is prefixed by `+'.
 + `icicle-completing-yank'             - `yank' using completion
 + `icicle-customize-face'              - Multi-`customize-face'
   `icicle-customize-icicles-group'     - Customize options and faces
+  `icicle-cycle-incremental-completion' - Cycle incremental completion
 + `icicle-delete-file'                 - Delete file/directory
   `icicle-delete-window'               - Delete window (`C-u': buffer)
 + `icicle-delete-windows'              - Delete windows (`C-u C-x 0')
@@ -853,7 +854,6 @@ input prompt is prefixed by `+'.
                                        - Toggle highlighting saved
   `icicle-toggle-ignored-extensions'   - Toggle ignored files
   `icicle-toggle-ignored-space-prefix' - Toggle ignoring space prefix
-  `icicle-toggle-incremental-completion' - Toggle apropos icompletion
 + `icicle-toggle-option'               - Toggle binary user option
   `icicle-toggle-proxy-candidates'     - Toggle proxy candidates
   `icicle-toggle-regexp-quote'         - Toggle regexp escaping
