@@ -982,7 +982,7 @@ The following minibuffer bindings let you ''toggle'' '''Icicles''' options or cy
 [:icicle-toggle-hiding-non-matching-lines]
 [:icicle-toggle-highlight-all-current]
 [:icicle-toggle-highlight-historical-candidates]
-[:icicle-toggle-incremental-completion]
+[:icicle-cycle-incremental-completion]
 [:icicle-toggle-ignored-space-prefix]
 [:icicle-toggle-literal-replacement']
 [:icicle-toggle-proxy-candidates]
@@ -1010,7 +1010,7 @@ The following minibuffer bindings let you ''toggle'' '''Icicles''' options or cy
 * '''`##C-M-,##'''' -- `icicle-toggle-alternative-sorting' (swap with alternative)
 * '''`##C-^##'''' -- `icicle-toggle-remote-file-testing'  (toggle option `<tt>[[Icicles - Customization and General Tips#icicle-test-for-remote-files-flag|icicle-test-for-remote-files-flag]]</tt>')
 * '''`##C-^##'''' -- `icicle-toggle-highlight-all-current' (search)  (toggle option `<tt>[[Icicles - Customization and General Tips#icicle-search-highlight-all-current-flag|icicle-search-highlight-all-current-flag]]</tt>')
-* '''`<tt>C-#</tt>'''' -- `icicle-toggle-incremental-completion' (toggle option `<tt>[[Icicles - Customization and General Tips#icicle-incremental-completion-flag|icicle-incremental-completion-flag]]</tt>')
+* '''`<tt>C-#</tt>'''' -- `icicle-cycle-incremental-completion' (toggle option `<tt>[[Icicles - Customization and General Tips#icicle-incremental-completion-flag|icicle-incremental-completion-flag]]</tt>')
 * '''`##C-(##'''' -- `icicle-next-TAB-completion-method'  (next method in option `<tt>[[Icicles - Customization and General Tips#icicle-TAB-completion-methods|icicle-TAB-completion-methods]]</tt>')
 * '''`##C-`##'''' -- `icicle-toggle-regexp-quote' (toggle option `<tt>[[Icicles - Customization and General Tips#icicle-regexp-quote-flag|icicle-regexp-quote-flag]]</tt>')
 * '''`##C-M-`##'''' -- `icicle-toggle-literal-replacement' (search)  (toggle option `<tt>[[Icicles - Customization and General Tips#icicle-search-replace-literally-flag|icicle-search-replace-literally-flag]]</tt>')
