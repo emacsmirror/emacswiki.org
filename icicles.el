@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Tue Jan 17 13:50:17 2012 (-0800)
+;; Last-Updated: Fri Jan 20 17:04:43 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 23068
+;;     Update #: 23070
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -210,6 +210,7 @@
 ;;    `icicle-customize-apropos-options-of-type',
 ;;    `icicle-customize-face', `icicle-customize-icicles-group',
 ;;    `icicle-cycle-image-file-thumbnail',
+;;    `icicle-cycle-incremental-completion',
 ;;    `icicle-dabbrev-completion', `icicle-delete-file',
 ;;    `icicle-delete-window', `icicle-delete-windows',
 ;;    `icicle-delete-windows-on', `icicle-describe-file',
@@ -372,7 +373,6 @@
 ;;    `icicle-toggle-ignored-extensions',
 ;;    `icicle-toggle-ignored-space-prefix',
 ;;    `icicle-toggle-ignoring-comments',
-;;    `icicle-toggle-incremental-completion',
 ;;    `icicle-toggle-literal-replacement', `icicle-toggle-option',
 ;;    `icicle-toggle-proxy-candidates', `icicle-toggle-regexp-quote',
 ;;    `icicle-toggle-remote-file-testing',
@@ -468,6 +468,7 @@
 ;;    `icicle-completing-read+insert',
 ;;    `icicle-Completions-mouse-3-menu',
 ;;    `icicle-cycle-image-file-thumbnail',
+;;    `icicle-cycle-incremental-completion',
 ;;    `icicle-search-define-replacement',
 ;;    `icicle-delete-backward-char', `icicle-delete-candidate-object',
 ;;    `icicle-delete-char', `icicle-digit-argument',
@@ -575,7 +576,6 @@
 ;;    `icicle-toggle-ignored-extensions',
 ;;    `icicle-toggle-ignored-space-prefix',
 ;;    `icicle-toggle-ignoring-comments',
-;;    `icicle-toggle-incremental-completion',
 ;;    `icicle-toggle-literal-replacement',
 ;;    `icicle-toggle-proxy-candidates', `icicle-toggle-regexp-quote',
 ;;    `icicle-toggle-search-cleanup',
