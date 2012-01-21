@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Thu May 21 13:31:43 2009 (-0700)
 ;; Version: 22.0
-;; Last-Updated: Mon Jan 16 15:27:56 2012 (-0800)
+;; Last-Updated: Fri Jan 20 16:50:10 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 5008
+;;     Update #: 5009
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-cmd2.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -1785,7 +1785,7 @@ build a cache file of synonyms that are used for completion.  See
 `synonyms.el'.
 
 Remember that you can use `\\<minibuffer-local-completion-map>\
-\\[icicle-toggle-incremental-completion] to toggle incremental completion." ; Doc string
+\\[icicle-cycle-incremental-completion] to toggle incremental completion." ; Doc string
     icicle-insert-thesaurus-entry-cand-fn ; Action function
     "Thesaurus entry to match: " synonyms-obarray ; `completing-read' args
     nil t nil 'icicle-dictionary-history nil nil
@@ -2385,7 +2385,7 @@ character.  The second `^' is part of `^G', the printed representation
 of a Control-g character.)
 
 Remember that you can use `\\<minibuffer-local-completion-map>\
-\\[icicle-toggle-incremental-completion] to toggle incremental completion." ; Doc string
+\\[icicle-cycle-incremental-completion] to toggle incremental completion." ; Doc string
   icicle-describe-opt-action            ; Action function
   prompt                                ; `completing-read' args
   'icicle-describe-opt-of-type-complete nil nil nil nil nil nil
@@ -2506,7 +2506,7 @@ With a non-positive prefix arg, use only user variables (options) as
 candidates.
 
 Remember that you can use `\\<minibuffer-local-completion-map>\
-\\[icicle-toggle-incremental-completion] to toggle incremental completion." ; Doc string
+\\[icicle-cycle-incremental-completion] to toggle incremental completion." ; Doc string
   icicle-doc-action                     ; Action function
   prompt                                ; `completing-read' args
   (let* ((num-arg         (prefix-numeric-value pref-arg))
@@ -2565,7 +2565,7 @@ the last time `icicle-fundoc' was called.  Use a prefix arg to save
 the time that would be needed to gather the documentation.
 
 Remember that you can use `\\<minibuffer-local-completion-map>\
-\\[icicle-toggle-incremental-completion] to toggle incremental completion." ; Doc string
+\\[icicle-cycle-incremental-completion] to toggle incremental completion." ; Doc string
   icicle-doc-action                     ; Action function
   prompt                                ; `completing-read' args
   (let ((result  (and pref-arg icicle-fundoc-last-initial-cand-set)))
@@ -2625,7 +2625,7 @@ Note: Plists are never pretty-printed for Emacs 20, because that seems
 to cause an Emacs crash.
 
 Remember that you can use `\\<minibuffer-local-completion-map>\
-\\[icicle-toggle-incremental-completion] to toggle incremental completion." ; Doc string
+\\[icicle-cycle-incremental-completion] to toggle incremental completion." ; Doc string
   icicle-doc-action                     ; Action function
   prompt                                ; `completing-read' args
   (let ((result  (and pref-arg (wholenump (prefix-numeric-value pref-arg))
@@ -2674,7 +2674,7 @@ the last time `icicle-doc' was called.  Use a prefix arg to save the
 time that would be needed to gather the documentation.
 
 Remember that you can use \\<minibuffer-local-completion-map>\
-`\\[icicle-toggle-incremental-completion]' to toggle incremental completion." ; Doc string
+`\\[icicle-cycle-incremental-completion]' to toggle incremental completion." ; Doc string
   icicle-doc-action                     ; Action function: display the doc.
   prompt                                ; `completing-read' args
   (let ((result  (and pref-arg icicle-doc-last-initial-cand-set))
