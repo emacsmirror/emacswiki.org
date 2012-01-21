@@ -76,5 +76,7 @@ It might be better to utilize the command loop in this case. Something like the 
 
 That will give you one full command loop cycle in Emacs state, before returning to Normal state in ##post-command-hook##. -- VegardOye
 
+Thanks, works great! -- Volfy
+
 ----
 CategoryKeys CategoryEmulation
