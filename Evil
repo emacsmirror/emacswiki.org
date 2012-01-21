@@ -68,10 +68,10 @@ It might be better to utilize the command loop in this case. Something like the 
       (interactive "p")
       (cond
        (arg
-        (add-hook 'post-command-hook 'evil-passthrough)
+        (add-hook 'post-command-hook 'evil-passthrough nil t)
         (evil-emacs-state))
        ((not (eq this-command #'evil-passthrough))
-        (remove-hook 'post-command-hook 'evil-passthrough)
+        (remove-hook 'post-command-hook 'evil-passthrough t)
         (evil-exit-emacs-state))))
 
 That will give you one full command loop cycle in Emacs state, before returning to Normal state in ##post-command-hook##. -- VegardOye
