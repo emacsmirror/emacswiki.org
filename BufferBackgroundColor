@@ -41,5 +41,8 @@ The overlay used is stored in `chosig-background'."
 (add-hook'after-change-major-mode-hook 'chosig-choose-background)
 }}}
 
+[new]
+Here is the original: http://lmgtfy.com/?q=buffer-bg.el
+
 ----
 CategoryFaces
