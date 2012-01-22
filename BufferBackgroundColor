@@ -2,7 +2,11 @@ In Emacs you can give frames a background color, but you can not do that with wi
 There has been some discussions on Emacs devel on changing this, but so far no one has had the time to do it.
 (Volunteers are welcome! This requires some C coding skills.)
 
-Here is a work-around using an [[overlay]].
+buffer-bg.el is a work-around using an [[overlay]] and is part of nxhmtl you can get this file only
+[http://bazaar.launchpad.net/~nxhtml/nxhtml/main/view/head:/util/buffer-bg.el here]
+(click on "download file").
+
+Here is Alex's version which also demonstrates how you would use something like this:
 
 {{{
 (defvar chosig-alist
@@ -40,9 +44,6 @@ The overlay used is stored in `chosig-background'."
 
 (add-hook'after-change-major-mode-hook 'chosig-choose-background)
 }}}
-
-[new]
-Here is the original: http://lmgtfy.com/?q=buffer-bg.el
 
 ----
 CategoryFaces
