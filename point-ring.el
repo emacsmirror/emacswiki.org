@@ -1,38 +1,71 @@
-#FILE text/plain
-Ozs7IHBvaW50LXJpbmcuZWwNCjs7IFRoaXMgZmlsZSBpcyBmcmVlIHNvZnR3YXJlLg0KOzsgQ29w
-eXJpZ2h0IEZlbmdOaW5nTmluZyAoYWZlbmd0ZkAxODguY29tKSAyMDA5LTQtMTANCjs7IFJlbGVh
-c2VkIHVuZGVyIHRoZSBHUEwsIGF2YWlsYWJsZSBhdCBodHRwOi8vd3d3LmdudS5vcmcNCjs7DQo7
-OyBZb3UnbGwgcHJvYmFibHkgd2FudCB0aGUgZm9sbG93aW5nIGluIHlvdXIgLmVtYWNzIGZpbGUu
-ICANCjs7DQo7OyAocmVxdWlyZSAncG9pbnQtcmluZykgDQo7OyAoZ2xvYmFsLXNldC1rZXkgKGti
-ZCAiQy1jIGkiKSAncG9pbnQtcmluZy1pbnNlcnQpDQo7OyAoZ2xvYmFsLXNldC1rZXkgKGtiZCAi
-Qy1jIGQiKSAncG9pbnQtcmluZy1yZW1vdmUpDQo7OyAoZ2xvYmFsLXNldC1rZXkgKGtiZCAiQy0u
-IikgJ3BvaW50LXJpbmctcHJldmlvdXMpDQo7OyAoZ2xvYmFsLXNldC1rZXkgKGtiZCAiQy0sIikg
-J3BvaW50LXJpbmctbmV4dCkNCg0KKGRlZnZhciBwb2ludC1yaW5nIChtYWtlLXJpbmcgMjMpKQ0K
-DQooZGVmdW4gcG9pbnQtcmluZy1pbnNlcnQgKCkNCiAgKGludGVyYWN0aXZlKQ0KICAobWVzc2Fn
-ZSAiTG9jYXRpb24gaW5zZXJ0ZWQuIikNCiAgKHJpbmctaW5zZXJ0IHBvaW50LXJpbmcgKGxpc3Qg
-KGN1cnJlbnQtYnVmZmVyKSAocG9pbnQpKSkpDQoNCihkZWZ1biBwb2ludC1yaW5nLXJlbW92ZSAo
-KQ0KICAoaW50ZXJhY3RpdmUpDQogIChpZiAocmluZy1lbXB0eS1wIHBvaW50LXJpbmcpDQogICAg
-ICAobWVzc2FnZSAiUG9pbnQgcmluZyBlbXB0eS4iKQ0KICAgIChwcm9nbg0KICAgICAgKHJpbmct
-cmVtb3ZlIHBvaW50LXJpbmcgMCkNCiAgICAgIChtZXNzYWdlICJMb2NhdGlvbiByZW1vdmVkLiIp
-KSkpDQoNCihkZWZ1biBwb2ludC1yaW5nLXJvdGF0ZS1sZWZ0ICgpDQogIChpbnRlcmFjdGl2ZSkN
-CiAgKGlmIChyaW5nLWVtcHR5LXAgcG9pbnQtcmluZykNCiAgICAgIChtZXNzYWdlICJQb2ludCBy
-aW5nIGVtcHR5LiIpDQogICAgKHByb2duDQogICAgICAobGV0ICgoaGVhZCAocmluZy1yZWYgcG9p
-bnQtcmluZyAwKSkpDQogICAgICAgIChyaW5nLXJlbW92ZSBwb2ludC1yaW5nIDApDQogICAgICAg
-IChyaW5nLWluc2VydC1hdC1iZWdpbm5pbmcgcG9pbnQtcmluZyBoZWFkKSkpKSkNCg0KKGRlZnVu
-IHBvaW50LXJpbmctcm90YXRlLXJpZ2h0ICgpDQogIChpbnRlcmFjdGl2ZSkNCiAgICAoaWYgKHJp
-bmctZW1wdHktcCBwb2ludC1yaW5nKQ0KICAgICAgKG1lc3NhZ2UgIlBvaW50IHJpbmcgZW1wdHku
-IikNCiAgICAocHJvZ24NCiAgICAgIChsZXQgKCh0YWlsIChyaW5nLXJlZiBwb2ludC1yaW5nICAt
-MSkpKQ0KICAgICAgICAocmluZy1yZW1vdmUgcG9pbnQtcmluZykNCiAgICAgICAgKHJpbmctaW5z
-ZXJ0IHBvaW50LXJpbmcgdGFpbCkpKSkpDQoNCg0KKGRlZnVuIHBvaW50LXJpbmctbmV4dCAoKQ0K
-ICAoaW50ZXJhY3RpdmUpDQogIChpZiAocmluZy1lbXB0eS1wIHBvaW50LXJpbmcpDQogICAgICAo
-bWVzc2FnZSAiUG9pbnQgcmluZyBlbXB0eS4iKQ0KICAgIChwcm9nbg0KICAgICAgKGxldCAoKG5l
-eHQgKHJpbmctcmVmIHBvaW50LXJpbmcgMSkpKQ0KICAgICAgICAoc3dpdGNoLXRvLWJ1ZmZlciAo
-Y2FyIG5leHQpKQ0KICAgICAgICAoZ290by1jaGFyIChjYXIgKGNkciBuZXh0KSkpDQogICAgICAg
-IChwb2ludC1yaW5nLXJvdGF0ZS1sZWZ0KSkNCiAgICAgIChtZXNzYWdlICJQb2ludCByaW5nIG5l
-eHQgZW50cnkuIikpKSkNCg0KKGRlZnVuIHBvaW50LXJpbmctcHJldmlvdXMgKCkNCiAgKGludGVy
-YWN0aXZlKQ0KICAgIChpZiAocmluZy1lbXB0eS1wIHBvaW50LXJpbmcpDQogICAgICAobWVzc2Fn
-ZSAiUG9pbnQgcmluZyBlbXB0eS4iKQ0KICAgIChwcm9nbg0KICAgICAgKGxldCAoKHByZXZpb3Vz
-IChyaW5nLXJlZiBwb2ludC1yaW5nIC0xKSkpDQogICAgICAgIChzd2l0Y2gtdG8tYnVmZmVyIChj
-YXIgcHJldmlvdXMpKQ0KICAgICAgICAoZ290by1jaGFyIChjYXIgKGNkciBwcmV2aW91cykpKQ0K
-ICAgICAgICAocG9pbnQtcmluZy1yb3RhdGUtcmlnaHQpKQ0KICAgICAgKG1lc3NhZ2UgIlBvaW50
-IHJpbmcgcHJldmlvdXMgZW50cnkuIikpKSkNCg0KDQoocHJvdmlkZSAncG9pbnQtcmluZyk=
+;;; point-ring.el
+;; This file is free software.
+;; Copyright FengNingNing (afengtf@188.com) 2009-4-10
+;; Released under the GPL, available at http://www.gnu.org
+;;
+;; You'll probably want the following in your .emacs file.  
+;;
+;; (require 'point-ring) 
+;; (global-set-key (kbd "C-c i") 'point-ring-insert)
+;; (global-set-key (kbd "C-c d") 'point-ring-remove)
+;; (global-set-key (kbd "C-.") 'point-ring-previous)
+;; (global-set-key (kbd "C-,") 'point-ring-next)
+
+(defvar point-ring (make-ring 23))
+
+(defun point-ring-insert ()
+  (interactive)
+  (message "Location inserted.")
+  (ring-insert point-ring (list (current-buffer) (point))))
+
+(defun point-ring-remove ()
+  (interactive)
+  (if (ring-empty-p point-ring)
+      (message "Point ring empty.")
+    (progn
+      (ring-remove point-ring 0)
+      (message "Location removed."))))
+
+(defun point-ring-rotate-left ()
+  (interactive)
+  (if (ring-empty-p point-ring)
+      (message "Point ring empty.")
+    (progn
+      (let ((head (ring-ref point-ring 0)))
+        (ring-remove point-ring 0)
+        (ring-insert-at-beginning point-ring head)))))
+
+(defun point-ring-rotate-right ()
+  (interactive)
+    (if (ring-empty-p point-ring)
+      (message "Point ring empty.")
+    (progn
+      (let ((tail (ring-ref point-ring  -1)))
+        (ring-remove point-ring)
+        (ring-insert point-ring tail)))))
+
+
+(defun point-ring-next ()
+  (interactive)
+  (if (ring-empty-p point-ring)
+      (message "Point ring empty.")
+    (progn
+      (let ((next (ring-ref point-ring 1)))
+        (switch-to-buffer (car next))
+        (goto-char (car (cdr next)))
+        (point-ring-rotate-left))
+      (message "Point ring next entry."))))
+
+(defun point-ring-previous ()
+  (interactive)
+    (if (ring-empty-p point-ring)
+      (message "Point ring empty.")
+    (progn
+      (let ((previous (ring-ref point-ring -1)))
+        (switch-to-buffer (car previous))
+        (goto-char (car (cdr previous)))
+        (point-ring-rotate-right))
+      (message "Point ring previous entry."))))
+
+
+(provide 'point-ring)
