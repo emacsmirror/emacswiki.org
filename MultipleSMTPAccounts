@@ -166,5 +166,22 @@ using a servername:port pattern.
 [new:pank:2011-07-21]
 That is very elegant and intriguing! I tried it but it didn't work quite as well as Volkan's function, unfortunately. For some reason it did not read .authinfo.gpg. Furthermore it only worked with one of my smtp out-of-the-box. I didn't have time to investigate, but the problem must be in the advice. However, I totally believe that Marcus' idea is the way to go. It is much more intuitive and easier to extent.
 
+[new]
+I am sorry that my solution doesn't seem to work for you. Please let me know your findings if you can make some time debugging things. Meanwhile I was able to streamline the code since a lot of the functionality is provided by Gnus' companion libraries:
+
+  (eval-after-load "smtpmail"
+    '(progn
+      (defadvice smtpmail-via-smtp (around set-smtp-server-from-header activate)
+        (let ((smtpmail-smtp-server (or 
+                                     (save-restriction
+                                       (message-narrow-to-headers)
+                                       (mail-fetch-field "X-SMTP-Server"))
+                                     smtpmail-smtp-server)))
+          (message-remove-header "X-SMTP-Server")
+          ad-do-it
+          ))))
+
+See above for the additional `gnus-posting-styles' modification.
+
 ----
 CategoryGnus
