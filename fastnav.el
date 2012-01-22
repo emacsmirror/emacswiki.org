@@ -1,4 +1,4 @@
-;; fastnav.el -- Fast navigation and editing routines.
+;;; fastnav.el -- Fast navigation and editing routines.
 ;;
 ;; Version 1.05
 ;;
