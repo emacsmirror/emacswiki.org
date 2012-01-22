@@ -1,185 +1,257 @@
-#FILE text/plain
-Ozs7IGxpbmUtY29tbWVudC1iYW5uZXIuZWwgLS0tIENvbW1lbnQgYSBsaW5lIGluIGEgYmFubmVy
-IHN0eWxlLgo7Owo7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7IENvbW1lbnRhcnkg
-Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Owo7Owo7OyBUaGlzICBmaWxlIGlzIGJh
-c2ljYWxseSAgdG8gZGVmaW5lICB0aGUgY29tbWFuZCAgYGxpbmUtY29tbWVudC1iYW5uZXInLCB3
-aGljaAo7OyB0YWtlcyBhIGxpbmUgYW5kIGNvbW1lbnRzIGl0IGluIGEgImJhbm5lciBzdHlsZSIs
-IHdoaWNoIEkgdXNlLgo7Owo7OyBGb3IgZXhhbXBsZSwgaWYgd2UgYXJlIGluIGVtYWNzLWxpc3At
-bW9kZSwgc28gY29tbWVudC1zdGFydCBpcyAiOyIsIHdlIG1pZ2h0Cjs7IHdhbnQgYSBsaW5lIHRo
-YXQgbG9va2VkIGxpa2UKOzsKOzsgICAgICAgIHxIZWxsbyB3b3JsZCAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgIHwKOzsKOzsgd2hlcmUgfCBkZW5vdGVzIHRoZSBzdGFydCBhbmQg
-ZW5kIG9mIHRoZSBsaW5lLCB0byBsb29rIHNvbWV0aGluZyBsaWtlCjs7Cjs7ICAgICAgICB8Ozs7
-Ozs7IEhlbGxvIHdvcmxkIDs7Ozs7OyAgICAgICAgICAgICAgICAgICAgICB8Cjs7Cjs7IHdoaWNo
-IGlzIHRoZSBzYW1lIG1lc3NhZ2UsIGJ1dCBzdXJyb3VuZGVkIGJ5IGNvbW1lbnQgY2hhcmFjdGVy
-cyAod2l0aCBhCjs7IHByZWZpeCBhcmd1bWVudCBvZiAyNSwgdG8gc2V0IHRoZSBmaWxsIHdpZHRo
-KS4KOzsKOzsgV2l0aG91dCBhIHByZWZpeCBhcmd1bWVudCwgd2UgZGVmYXVsdCB0byBhIHdpZHRo
-IG9mIGZpbGwtY29sdW1uLgo7Owo7OyBJJ2QgbG92ZSB0byBoZWFyIGlmIGFueW9uZSB1c2VzIHRo
-aXMhIExldCBtZSBrbm93IGF0IHJzd2FyYnJpY2tAZ21haWwuY29tLgoKOzs7Ozs7Ozs7Ozs7Ozs7
-Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7OyBJbnN0YWxsaW5nIDs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7
-Ozs7Ozs7OzsKOzsKOzsgVG8gaW5zdGFsbCB0aGlzIGNvZGUsIHBsYWNlIGl0IHNvbWV3aGVyZSBp
-biB5b3VyIGxvYWQgcGF0aCBhbmQgZWl0aGVyIHVzZSB0aGUKOzsgc2ltcGxlCjs7Cjs7ICAgKHJl
-cXVpcmUgJ2xpbmUtY29tbWVudC1iYW5uZXIpCjs7Cjs7IG9yIGFuIGF1dG9sb2FkOgo7Owo7OyAg
-KGF1dG9sb2FkICdsaW5lLWNvbW1lbnQtYmFubmVyICJsaW5lLWNvbW1lbnQtYmFubmVyIiBuaWwg
-dCkKOzsKOzsgVGhlbiwgdW5sZXNzIHlvdSBsaWtlIHR5cGluZyBsb25nIE0teCBjb21tYW5kcywg
-dXNlIGdsb2JhbC1zZXQta2V5IGZvcgo7OyBzb21ldGhpbmcgbGlrZQo7Owo7OyAgKGdsb2JhbC1z
-ZXQta2V5IChrYmQgIkMtOyIpICdsaW5lLWNvbW1lbnQtYmFubmVyKQo7Owo7OyAodGhlIGxvZ2lj
-IGJlaGluZCB0aGlzIGtleWJpbmRpbmcgaXMgdGhhdCBNLTsgZG9lcyBjb21tZW50LWR3aW0pCgoK
-Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7OyBDdXN0b21pc2luZyBmb3IgY29tcGxpY2F0ZWQgbWFqb3IgbW9k
-ZXMgOzs7Ozs7Ozs7Ozs7Ozs7Ozs7OzsKOzsKOzsgVGhlIGNvZGUgaGFzICBhIHNsaWdodCBkaWZm
-aWN1bHR5IHdpdGggc29tZSAgbWFqb3IgbW9kZXMsIHNpbmNlIGNvbW1lbnQtc3RhcnQKOzsgYW5k
-IGNvbW1lbnQtZW5kICBkb24ndCB0ZWxsICB5b3Ugd2hhdCAiZmlsbCAgY2hhcmFjdGVyIiB0byB1
-c2UuICBGb3IgZXhhbXBsZSwKOzsgd2hlbiB3cml0aW5nICBDIGNvZGUsIGNvbW1lbnQtc3RhcnQg
-IGlzICIvKiAiLCAgY29tbWVudC1lbmQgaXMgIiAqLyIuICBIb3cgb24KOzsgZWFydGggZG8gd2Ug
-d29yayBvdXQgdGhhdCB0aGUgZmlsbCBjaGFyYWN0ZXIgaXMgbm9ybWFsbHkgIioiPwo7Owo7OyBX
-ZWxsLCAgdGhlICBhbnN3ZXIgaXMgIHRoYXQgIHdlICBkb24ndC4gSG93ZXZlciwgIHlvdSAgY2Fu
-ICBkbyAgdGhlIHdvcmsgIGZvcgo7OyB1cy4gIFNldHRpbmcgdGhlICB2YXJpYWJsZSBjb21tZW50
-LWZpbGwgIHdpbGwgY3VzdG9taXNlICB0aGlzICBiZWhhdmlvdXIuIFlvdQo7OyBwcm9iYWJseSB3
-YW50IHRvICBtYWtlIGl0IGJ1ZmZlci1sb2NhbC4gVG8gIGdldCBDIHRvIGRvIHRoZSAgcmlnaHQg
-dGhpbmcsIHVzZQo7OyB0aGUgZm9sbG93aW5nIGluY2FudGF0aW9uOgo7Owo7OyAgIChhZGQtaG9v
-ayAnYy1tb2RlLWNvbW1vbi1ob29rCjs7ICAgICAgICAgICAgIChsYW1iZGEgKCkgKG1ha2UtbG9j
-YWwtdmFyaWFibGUgJ2NvbW1lbnQtZmlsbCkKOzsgICAgICAgICAgICAgICAgICAgICAgICAoc2V0
-cSBjb21tZW50LWZpbGwgIioiKSkpCjs7Cjs7IGFuZCBiZWhvbGQ6Cjs7ICAgIC8qKioqKioqIENv
-bW1lbnQgKioqKioqKi8KCgo7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7OzsgQ29weXJpZ2h0IG5v
-dGljZSAoeWF3bik6IDs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Owo7Owo7OyBDb3B5cmlnaHQg
-MjAwOCBSdXBlcnQgU3dhcmJyaWNrLCBleGNlcHQgdGhlIGNob21wIGZ1bmN0aW9uLCB3aGljaCB3
-YXMKOzsgcmV0cmlldmVkIGZyb20gdGhlIEVtYWNzV2lraSBhbmQgaXMgdGh1cyBwcmVzdW1hYmx5
-IHVuZGVyIEdQTHYyLgo7Owo7OyBBcyBmYXIgYXMgdGhlIHJlc3Qgb2YgdGhlIGNvZGUgaXMgY29u
-Y2VybmVkOgo7Owo7OyBUaGlzIHByb2dyYW0gaXMgZnJlZSBzb2Z0d2FyZTogeW91IGNhbiByZWRp
-c3RyaWJ1dGUgaXQgYW5kL29yIG1vZGlmeSBpdCB1bmRlcgo7OyB0aGUgdGVybXMgb2YgdGhlIEdO
-VSBHZW5lcmFsIFB1YmxpYyBMaWNlbnNlIGFzIHB1Ymxpc2hlZCBieSB0aGUgRnJlZSBTb2Z0d2Fy
-ZQo7OyBGb3VuZGF0aW9uLCBlaXRoZXIgIHZlcnNpb24gMyBvZiB0aGUgIExpY2Vuc2UsIG9yIChh
-dCB5b3VyICBvcHRpb24pIGFueSBsYXRlcgo7OyB2ZXJzaW9uLgo7Owo7OyBUaGlzIHByb2dyYW0g
-aXMgIGRpc3RyaWJ1dGVkIGluIHRoZSBob3BlIHRoYXQgaXQgd2lsbCAgYmUgdXNlZnVsLCBidXQg
-V0lUSE9VVAo7OyBBTlkgV0FSUkFOVFk7IHdpdGhvdXQgZXZlbiB0aGUgaW1wbGllZCB3YXJyYW50
-eSBvZiBNRVJDSEFOVEFCSUxJVFkgb3IgRklUTkVTUwo7OyBGT1IgIEEgUEFSVElDVUxBUiAgUFVS
-UE9TRS4gICBTZWUgdGhlICBHTlUgIEdlbmVyYWwgUHVibGljICBMaWNlbnNlIGZvciAgbW9yZQo7
-OyBkZXRhaWxzLgo7Owo7OyBZb3Ugc2hvdWxkIGhhdmUgcmVjZWl2ZWQgYSBjb3B5ICBvZiB0aGUg
-R05VIEdlbmVyYWwgUHVibGljIExpY2Vuc2UgYWxvbmcgd2l0aAo7OyB0aGlzIHByb2dyYW0uICBJ
-ZiBub3QsIHNlZSA8aHR0cDovL3d3dy5nbnUub3JnL2xpY2Vuc2VzLz4uCjs7Ozs7Ozs7Ozs7Ozs7
-Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7
-Ozs7Ozs7Ozs7Cgo7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7OyBIaXN0b3J5IDs7
-Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Owo7OyAKOzsgVmVyc2lvbiAwLjAuMQo7
-OyAgICAxNy8wOC8wOC4gUnVwZXJ0IFN3YXJicmljay4gcnN3YXJicmlja0BnbWFpbC5jb20KOzs7
-Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7
-Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7OzsKCihyZXF1aXJlICdjbCkKCjs7OyBDb2RlOgooZGVmdW4gb24t
-YmxhbmstbGluZS1wICgpCiAgIlJldHVybiB0cnVlIGlmIHRoZSBjdXJyZW50IGxpbmUgaXMgYmxh
-bmsuIgogIChzYXZlLWV4Y3Vyc2lvbgogICAgKGJlZ2lubmluZy1vZi1saW5lKQogICAgKGxvb2tp
-bmctYXQgIl5bWzpzcGFjZTpdXSokIikpKQoKKGRlZnVuIGxvb2tpbmctYXQtbW92ZSAocmVnZXhw
-KQogICJDYWxsIGBsb29raW5nLWF0JywgYnV0IHRoZW4gbW92ZSBmb3J3YXJkIHRocm91Z2ggUkVH
-RVhQLiIKICAod2hlbiAobG9va2luZy1hdCByZWdleHApCiAgIChyZS1zZWFyY2gtZm9yd2FyZCBy
-ZWdleHApKSkKCihkZWZ1biBsb29raW5nLWJhY2stbW92ZSAocmVnZXhwKQogICJDYWxsIGBsb29r
-aW5nLWJhY2snLCBidXQgdGhlbiBtb3ZlIGJhY2sgdGhyb3VnaCBSRUdFWFAuIgogICh3aGVuIChs
-b29raW5nLWJhY2sgcmVnZXhwKQogICAgKHJlLXNlYXJjaC1iYWNrd2FyZCByZWdleHApKSkKCjs7
-IENvdXJ0ZXN5IG9mIGh0dHA6Ly93d3cuZW1hY3N3aWtpLm9yZy9jZ2ktYmluL3dpa2kvRWxpc3BD
-b29rYm9vayN0b2M1CihkZWZ1biBjaG9tcCAoc3RyKQogICJQZXJsLWxpa2UgY2hvbXAgZnVuY3Rp
-b24gdG8gcmV0dXJuIGEgdmVyc2lvbiBvZiBTVFIgd2l0aCBubyB3aGl0ZXNwYWNlLiIKICAobGV0
-ICgocyAoaWYgKHN5bWJvbHAgc3RyKShzeW1ib2wtbmFtZSBzdHIpIHN0cikpKQogICAgKHNhdmUt
-ZXhjdXJzaW9uCiAgICAgICh3aGlsZSAoYW5kCiAgICAgICAgICAgICAgKG5vdCAobnVsbCAoc3Ry
-aW5nLW1hdGNoICJeXFwoIFxcfFxmXFx8XHRcXHxcblxcKSIgcykpKQogICAgICAgICAgICAgICg+
-IChsZW5ndGggcykgKHN0cmluZy1tYXRjaCAiXlxcKCBcXHxcZlxcfFx0XFx8XG5cXCkiIHMpKSkK
-ICAgICAgICAoc2V0cSBzIChyZXBsYWNlLW1hdGNoICIiIHQgbmlsIHMpKSkKICAgICAgKHdoaWxl
-IChhbmQKICAgICAgICAgICAgICAobm90IChudWxsIChzdHJpbmctbWF0Y2ggIlxcKCBcXHxcZlxc
-fFx0XFx8XG5cXCkkIiBzKSkpCiAgICAgICAgICAgICAgKD4gKGxlbmd0aCBzKSAoc3RyaW5nLW1h
-dGNoICJcXCggXFx8XGZcXHxcdFxcfFxuXFwpJCIgcykpKQogICAgICAgIChzZXRxIHMgKHJlcGxh
-Y2UtbWF0Y2ggIiIgdCBuaWwgcykpKSkKICAgIHMpKQoKKGRlZnVuIHNraXAtdGhlc2UtcmVnZXhw
-cyAocmVzICZvcHRpb25hbCBkaXJlY3Rpb24pCiAgIlNraXAgYnVmZmVyIGRhdGEgZ2l2ZW4gYnkg
-UkVTLgoKU2tpcCBpbiB0aGUgYnVmZmVyIGZvcndhcmQgb3IgYmFja3dhcmQgZGVwZW5kaW5nIG9u
-IERJUkVDVElPTgp0aHJvdWdoIHRoZSByZWd1bGFyIGV4cHJlc3Npb25zIHNwZWNpZmllZCBieSB0
-aGUgbGlzdCBSRVMuIgogIChzZXRmIGRpcmVjdGlvbiAob3IgZGlyZWN0aW9uIDpmb3J3YXJkKSkK
-CiAgKGxldCAoKHN0aWxsLWdvaW5nIHQpCiAgICAgICAgKGxvb2tpbmctZnVuYyAoY29uZAogICAg
-ICAgICAgICAgICAgICAgICAgICgoZXEgZGlyZWN0aW9uIDpmb3J3YXJkKSAjJ2xvb2tpbmctYXQt
-bW92ZSkKICAgICAgICAgICAgICAgICAgICAgICAoKGVxIGRpcmVjdGlvbiA6YmFja3dhcmQpICMn
-bG9va2luZy1iYWNrLW1vdmUpCiAgICAgICAgICAgICAgICAgICAgICAgKHQgKGVycm9yICJESVJF
-Q1RJT04gbm90IDpmb3J3YXJkIG9yIDpiYWNrd2FyZCIpKSkpKQoKICAgICh3aGlsZSBzdGlsbC1n
-b2luZwogICAgICAobGV0ICgoZm91bmQtc29tZXRoaW5nKSkKICAgICAgICAoZG9saXN0IChyZSBy
-ZXMpCiAgICAgICAgICAod2hlbiAoZnVuY2FsbCBsb29raW5nLWZ1bmMgcmUpCiAgICAgICAgICAg
-IChzZXRmIGZvdW5kLXNvbWV0aGluZyB0KSkpCiAgICAgICAgKHVubGVzcyBmb3VuZC1zb21ldGhp
-bmcgKHNldGYgc3RpbGwtZ29pbmcgbmlsKSkpKSkpCgooZGVmdW4gbGluZS1jb21tZW50LWJhbm5l
-ciAoJm9wdGlvbmFsIHdpZHRoKQogICJDb21tZW50IHRoZSBjdXJyZW50IGxpbmUgYXMgYSBiYW5u
-ZXIuCgpTZXQgdGhlIGN1cnJlbnQgbGluZSdzIGNvbnRlbnRzIGluc2lkZSBjb21tZW50IGNoYXJh
-Y3RlcnMgc28gdGhhdAp3ZSBjcmVhdGUgYSBiYW5uZXIsIGZpbGxpbmcgdXAgdG8gV0lEVEggaWYg
-aXQncyBkZWZpbmVkIG9yCm90aGVyd2lzZSBgZmlsbC1jb2x1bW4nLiAgSW5kZW50YXRpb24gaXMg
-aW5mZXJyZWQgZnJvbSB0aGUKcG9zaXRpb24gb2YgdGhlIGZpcnN0IG5vbi13aGl0ZSBjaGFyYWN0
-ZXIgb24gdGhlIGxpbmUsIHNvIGlmIHRoZQpsaW5lIGhhZCAyIHNwYWNlcyBhbmQgdGhlbiBhICdh
-Jywgd2Ugd291bGQgcHJlc3VtZSB0aGF0IHRoZQpjb21tZW50IHNob3VsZCBiZSBpbmRlbnRlZCB0
-byB0aGUgM3JkIGNvbHVtbi4iCgogIChpbnRlcmFjdGl2ZSAicCIpCiAgOzsgbm8gcHJlZml4IGFy
-Z3VtZW50ID0+ICg9IHdpZHRoIDEpCiAgKHVubGVzcyAoPiB3aWR0aCAxKQogICAgKHNldGYgd2lk
-dGggZmlsbC1jb2x1bW4pKQoKICAod2hlbiAob24tYmxhbmstbGluZS1wKQogICAgKGVycm9yICJF
-bXB0eSBsaW5lIHRvIGNvbW1lbnQiKSkKCiAgKHVubGVzcyBjb21tZW50LXN0YXJ0CiAgICAoZXJy
-b3IgIk5vIGNvbW1lbnQgc3ludGF4IikpCgogIChsZXQqICgob3VyLWNvbW1lbnQtc3RhcnQgKGNo
-b21wIGNvbW1lbnQtc3RhcnQpKQogICAgICAgICAob3VyLWNvbW1lbnQtZW5kIChpZiAoc3RyaW5n
-PSBjb21tZW50LWVuZCAiIikKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgb3VyLWNvbW1l
-bnQtc3RhcnQKICAgICAgICAgICAgICAgICAgICAgICAgICAgIChjaG9tcCBjb21tZW50LWVuZCkp
-KQogICAgICAgICAob3VyLWNvbW1lbnQtZmlsbCAoaWYgKGFuZCAoYm91bmRwICdjb21tZW50LWZp
-bGwpCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIChzeW1ib2wtdmFsdWUgJ2Nv
-bW1lbnQtZmlsbCkKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgKG5vdCAoc3Ry
-aW5nPSAoc3ltYm9sLXZhbHVlICdjb21tZW50LWZpbGwpCiAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgIiIpKSkKICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgIChzeW1ib2wtdmFsdWUgJ2NvbW1lbnQtZmlsbCkKICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICBvdXItY29tbWVudC1zdGFydCkpKQogICAgCiAgICAoc2F2ZS1leGN1cnNpb24KICAg
-ICAgOzsgQ2FsY3VsYXRlIGJvdGggdGhlIGluZGVudCBvZiB0aGUgbGluZSAoZmlyc3Qgbm9uLWJs
-YW5rKSBhbmQgdGhlCiAgICAgIDs7IHBvc2l0aW9ucyBvZiB0aGUgc3RhcnQgYW5kIGVuZCBvZiB0
-aGUgbm9uLWNvbW1lbnQgZGF0YS4KICAgICAgKGJlZ2lubmluZy1vZi1saW5lKQogICAgICAobGV0
-ICgoaW5kZW50LXBvcyAob3IgKGxvb2tpbmctYXQtbW92ZSAiW1s6Ymxhbms6XV0rIikKICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgIChwb2ludCkpKQoKICAgICAgICAgICAgKGRhdGEtc3RhcnQt
-cG9zCiAgICAgICAgICAgICAocHJvZ24gKHNraXAtdGhlc2UtcmVnZXhwcyAobGlzdCAiW1s6Ymxh
-bms6XV0rIgogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgKHJl
-Z2V4cC1xdW90ZSBvdXItY29tbWVudC1zdGFydCkKICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgIChyZWdleHAtcXVvdGUgb3VyLWNvbW1lbnQtZmlsbCkpCiAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICA6Zm9yd2FyZCkKICAgICAgICAgICAg
-ICAgICAgICAocG9pbnQpKSkKCiAgICAgICAgICAgIChkYXRhLWVuZC1wb3MKICAgICAgICAgICAg
-IChwcm9nbiAoZW5kLW9mLWxpbmUpCiAgICAgICAgICAgICAgICAgICAgKHNraXAtdGhlc2UtcmVn
-ZXhwcyAobGlzdCAiW1s6Ymxhbms6XV0rIgogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgKHJlZ2V4cC1xdW90ZSBvdXItY29tbWVudC1lbmQpCiAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAocmVnZXhwLXF1b3RlIG91ci1jb21t
-ZW50LWZpbGwpKQogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgOmJhY2t3
-YXJkKQogICAgICAgICAgICAgICAgICAgIChwb2ludCkpKSkKCiAgICAgICAgOzsgQ2FsY3VsYXRl
-IHdoZXRoZXIgd2UgY2FuIGRvIHRoZSBqb2IuIFdlIHVzZSBjb21tZW50LWVuZCwgbm90CiAgICAg
-ICAgOzsgb3VyLWNvbW1lbnQtZW5kLCBzaW5jZSBpbnNlcnRpb24gb2YgdGhlIGVuZGluZyBjb21t
-ZW50IGlzIHNvbWV0aW1lcwogICAgICAgIDs7IG9wdGlvbmFsLgogICAgICAgIChsZXQqICgoY29u
-dGVudHMtd2lkdGggKC0gZGF0YS1lbmQtcG9zIGRhdGEtc3RhcnQtcG9zKSkKICAgICAgICAgICAg
-ICAgKGNvbW1lbnQtd2lkdGggKCsgY29udGVudHMtd2lkdGgKICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgKGxlbmd0aCBvdXItY29tbWVudC1zdGFydCkKICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgKG1pbiAobGVuZ3RoIGNvbW1lbnQtZW5kKQogICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgIChsZW5ndGggb3VyLWNvbW1lbnQtZW5kKSkpKQogICAgICAg
-ICAgICAgICAobGluZS13aWR0aCAoLSB3aWR0aCAoLSBpbmRlbnQtcG9zIChsaW5lLWJlZ2lubmlu
-Zy1wb3NpdGlvbikpKSkpCiAgICAgICAgICAKICAgICAgICAgICh3aGVuICg+IGNvbW1lbnQtd2lk
-dGggbGluZS13aWR0aCkKICAgICAgICAgICAgKGVycm9yICJUaGUgY29tbWVudCB3aWxsIGJlIHRv
-byBiaWcgKCVkKSB0byBmaXQgaW4gd2lkdGggJWQiCiAgICAgICAgICAgICAgICAgICBjb21tZW50
-LXdpZHRoIGxpbmUtd2lkdGgpKQogICAgICAgIAogICAgICAgICAgKGxldCogKChsZmlsbGluZyAo
-LyAoLSBsaW5lLXdpZHRoIGNvbnRlbnRzLXdpZHRoKSAyKSkKICAgICAgICAgICAgICAgICAocmZp
-bGxpbmcgKCsgbGZpbGxpbmcgKCUgKC0gbGluZS13aWR0aCBjb250ZW50cy13aWR0aCkgMikpKSkK
-CiAgICAgICAgICAgIDs7IFRoZSBlcnJvciBoZXJlIHNob3VsZG4ndCBiZSBhYmxlIHRvIGJlIHRy
-aWdnZXJlZDogd2Uga25vdyB3ZSBoYXZlCiAgICAgICAgICAgIDs7IGVub3VnaCBzcGFjZSBpbiB0
-b3RhbC4gU28gdHJ5IHRvIHNxdWVlemUgaW4gc29tZSBtb3JlIHNwYWNlIG9uCiAgICAgICAgICAg
-IDs7IHRoZSBsZWZ0IGlmIG5lY2Vzc2FyeS4KICAgICAgICAgICAgKHdoaWxlICg8IGxmaWxsaW5n
-IChsZW5ndGggb3VyLWNvbW1lbnQtc3RhcnQpKQogICAgICAgICAgICAgICh3aGVuICg9IHJmaWxs
-aW5nIDApCiAgICAgICAgICAgICAgICAoZXJyb3IgIkNhbid0IGZpdCBpbiBjb21tZW50IHN0YXJ0
-IikpCiAgICAgICAgICAgICAgKHNldGYgbGZpbGxpbmcgKDErIGxmaWxsaW5nKQogICAgICAgICAg
-ICAgICAgICAgIHJmaWxsaW5nICgxLSByZmlsbGluZykpKQogICAgICAgICAgCiAgICAgICAgICAg
-IDs7IERlbGV0ZSB0aGUgcmFuZG9tIGNydWZ0IGFuZCBwdXQgb3Vyc2VsdmVzIGF0IHRoZSBzdGFy
-dCBvZiB0aGUKICAgICAgICAgICAgOzsgZGF0YS4KICAgICAgICAgICAgKGRlbGV0ZS1yZWdpb24g
-ZGF0YS1lbmQtcG9zIChsaW5lLWVuZC1wb3NpdGlvbikpCiAgICAgICAgICAgIChkZWxldGUtcmVn
-aW9uIGluZGVudC1wb3MgZGF0YS1zdGFydC1wb3MpCiAgICAgICAgICAgIChnb3RvLWNoYXIgaW5k
-ZW50LXBvcykKCiAgICAgICAgICAgIDs7IEZpbGwgdXAgdGhlIGxlZnQgY29tbWVudCBjaGFycyBh
-bmQgb25lIG9yIG1vcmUgc3BhY2VzLgogICAgICAgICAgICAoaW5zZXJ0IG91ci1jb21tZW50LXN0
-YXJ0KQogICAgICAgICAgICAoc2V0ZiBsZmlsbGluZyAoLSBsZmlsbGluZyAobGVuZ3RoIG91ci1j
-b21tZW50LXN0YXJ0KSkpCiAgICAgICAgICAgICh3aGlsZSAoPiAoLSBsZmlsbGluZyAobGVuZ3Ro
-IG91ci1jb21tZW50LWZpbGwpKSAwKQogICAgICAgICAgICAgIChzZXRmIGxmaWxsaW5nICgtIGxm
-aWxsaW5nIChsZW5ndGggb3VyLWNvbW1lbnQtZmlsbCkpKQogICAgICAgICAgICAgIChpbnNlcnQg
-b3VyLWNvbW1lbnQtZmlsbCkpCiAgICAgICAgICAgICh3aGlsZSAoPiBsZmlsbGluZyAwKQogICAg
-ICAgICAgICAgIChzZXRmIGxmaWxsaW5nICgxLSBsZmlsbGluZykpCiAgICAgICAgICAgICAgKGlu
-c2VydCAiICIpKQoKICAgICAgICAgICAgOzsgTm93IGdvIHRvIHRoZSBlbmQgb2YgdGhlIGxpbmUg
-YW5kIGZpbGwgdXAgd2l0aCBjb21tZW50LWZpbGwKICAgICAgICAgICAgOzsgY2hhcmFjdGVycywg
-ZmluaXNoaW5nIHdpdGggYSBjb21tZW50LWVuZC4KICAgICAgICAgICAgKGVuZC1vZi1saW5lKQog
-ICAgICAgICAgICAod2hlbiAoPj0gcmZpbGxpbmcgKGxlbmd0aCBvdXItY29tbWVudC1lbmQpKQog
-ICAgICAgICAgICAgIChzYXZlLWV4Y3Vyc2lvbgogICAgICAgICAgICAgICAgKGluc2VydCBvdXIt
-Y29tbWVudC1lbmQpKQogICAgICAgICAgICAgIChzZXRmIHJmaWxsaW5nICgtIHJmaWxsaW5nIChs
-ZW5ndGggb3VyLWNvbW1lbnQtZW5kKSkpKQogICAgICAgICAgICAoc2F2ZS1leGN1cnNpb24KICAg
-ICAgICAgICAgICAod2hpbGUgKD4gKC0gcmZpbGxpbmcgKGxlbmd0aCBvdXItY29tbWVudC1maWxs
-KSkgMCkKICAgICAgICAgICAgICAgIChzZXRmIHJmaWxsaW5nICgtIHJmaWxsaW5nIChsZW5ndGgg
-b3VyLWNvbW1lbnQtZmlsbCkpKQogICAgICAgICAgICAgICAgKGluc2VydCBvdXItY29tbWVudC1m
-aWxsKSkpCiAgICAgICAgICAgICh3aGlsZSAoPiByZmlsbGluZyAwKQogICAgICAgICAgICAgIChz
-ZXRmIHJmaWxsaW5nICgxLSByZmlsbGluZykpCiAgICAgICAgICAgICAgKGluc2VydCAiICIpKSkp
-KSkpKQoKKHByb3ZpZGUgJ2xpbmUtY29tbWVudC1iYW5uZXIpCgo7OzsgbGluZS1jb21tZW50LWJh
-bm5lci5lbCBlbmRzIGhlcmUK
+;;; line-comment-banner.el --- Comment a line in a banner style.
+;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; Commentary ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;
+;; This  file is basically  to define  the command  `line-comment-banner', which
+;; takes a line and comments it in a "banner style", which I use.
+;;
+;; For example, if we are in emacs-lisp-mode, so comment-start is ";", we might
+;; want a line that looked like
+;;
+;;        |Hello world                                    |
+;;
+;; where | denotes the start and end of the line, to look something like
+;;
+;;        |;;;;;; Hello world ;;;;;;                      |
+;;
+;; which is the same message, but surrounded by comment characters (with a
+;; prefix argument of 25, to set the fill width).
+;;
+;; Without a prefix argument, we default to a width of fill-column.
+;;
+;; I'd love to hear if anyone uses this! Let me know at rswarbrick@gmail.com.
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; Installing ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;
+;; To install this code, place it somewhere in your load path and either use the
+;; simple
+;;
+;;   (require 'line-comment-banner)
+;;
+;; or an autoload:
+;;
+;;  (autoload 'line-comment-banner "line-comment-banner" nil t)
+;;
+;; Then, unless you like typing long M-x commands, use global-set-key for
+;; something like
+;;
+;;  (global-set-key (kbd "C-;") 'line-comment-banner)
+;;
+;; (the logic behind this keybinding is that M-; does comment-dwim)
+
+
+;;;;;;;;;;;;;;;;;;; Customising for complicated major modes ;;;;;;;;;;;;;;;;;;;;
+;;
+;; The code has  a slight difficulty with some  major modes, since comment-start
+;; and comment-end  don't tell  you what "fill  character" to use.  For example,
+;; when writing  C code, comment-start  is "/* ",  comment-end is " */".  How on
+;; earth do we work out that the fill character is normally "*"?
+;;
+;; Well,  the  answer is  that  we  don't. However,  you  can  do  the work  for
+;; us.  Setting the  variable comment-fill  will customise  this  behaviour. You
+;; probably want to  make it buffer-local. To  get C to do the  right thing, use
+;; the following incantation:
+;;
+;;   (add-hook 'c-mode-common-hook
+;;             (lambda () (make-local-variable 'comment-fill)
+;;                        (setq comment-fill "*")))
+;;
+;; and behold:
+;;    /******* Comment *******/
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;; Copyright notice (yawn): ;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;
+;; Copyright 2008 Rupert Swarbrick, except the chomp function, which was
+;; retrieved from the EmacsWiki and is thus presumably under GPLv2.
+;;
+;; As far as the rest of the code is concerned:
+;;
+;; This program is free software: you can redistribute it and/or modify it under
+;; the terms of the GNU General Public License as published by the Free Software
+;; Foundation, either  version 3 of the  License, or (at your  option) any later
+;; version.
+;;
+;; This program is  distributed in the hope that it will  be useful, but WITHOUT
+;; ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+;; FOR  A PARTICULAR  PURPOSE.   See the  GNU  General Public  License for  more
+;; details.
+;;
+;; You should have received a copy  of the GNU General Public License along with
+;; this program.  If not, see <http://www.gnu.org/licenses/>.
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; History ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; 
+;; Version 0.0.1
+;;    17/08/08. Rupert Swarbrick. rswarbrick@gmail.com
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(require 'cl)
+
+;;; Code:
+(defun on-blank-line-p ()
+  "Return true if the current line is blank."
+  (save-excursion
+    (beginning-of-line)
+    (looking-at "^[[:space:]]*$")))
+
+(defun looking-at-move (regexp)
+  "Call `looking-at', but then move forward through REGEXP."
+  (when (looking-at regexp)
+   (re-search-forward regexp)))
+
+(defun looking-back-move (regexp)
+  "Call `looking-back', but then move back through REGEXP."
+  (when (looking-back regexp)
+    (re-search-backward regexp)))
+
+;; Courtesy of http://www.emacswiki.org/cgi-bin/wiki/ElispCookbook#toc5
+(defun chomp (str)
+  "Perl-like chomp function to return a version of STR with no whitespace."
+  (let ((s (if (symbolp str)(symbol-name str) str)))
+    (save-excursion
+      (while (and
+              (not (null (string-match "^\\( \\|\f\\|\t\\|\n\\)" s)))
+              (> (length s) (string-match "^\\( \\|\f\\|\t\\|\n\\)" s)))
+        (setq s (replace-match "" t nil s)))
+      (while (and
+              (not (null (string-match "\\( \\|\f\\|\t\\|\n\\)$" s)))
+              (> (length s) (string-match "\\( \\|\f\\|\t\\|\n\\)$" s)))
+        (setq s (replace-match "" t nil s))))
+    s))
+
+(defun skip-these-regexps (res &optional direction)
+  "Skip buffer data given by RES.
+
+Skip in the buffer forward or backward depending on DIRECTION
+through the regular expressions specified by the list RES."
+  (setf direction (or direction :forward))
+
+  (let ((still-going t)
+        (looking-func (cond
+                       ((eq direction :forward) #'looking-at-move)
+                       ((eq direction :backward) #'looking-back-move)
+                       (t (error "DIRECTION not :forward or :backward")))))
+
+    (while still-going
+      (let ((found-something))
+        (dolist (re res)
+          (when (funcall looking-func re)
+            (setf found-something t)))
+        (unless found-something (setf still-going nil))))))
+
+(defun line-comment-banner (&optional width)
+  "Comment the current line as a banner.
+
+Set the current line's contents inside comment characters so that
+we create a banner, filling up to WIDTH if it's defined or
+otherwise `fill-column'.  Indentation is inferred from the
+position of the first non-white character on the line, so if the
+line had 2 spaces and then a 'a', we would presume that the
+comment should be indented to the 3rd column."
+
+  (interactive "p")
+  ;; no prefix argument => (= width 1)
+  (unless (> width 1)
+    (setf width fill-column))
+
+  (when (on-blank-line-p)
+    (error "Empty line to comment"))
+
+  (unless comment-start
+    (error "No comment syntax"))
+
+  (let* ((our-comment-start (chomp comment-start))
+         (our-comment-end (if (string= comment-end "")
+                              our-comment-start
+                            (chomp comment-end)))
+         (our-comment-fill (if (and (boundp 'comment-fill)
+                                    (symbol-value 'comment-fill)
+                                    (not (string= (symbol-value 'comment-fill)
+                                                  "")))
+                               (symbol-value 'comment-fill)
+                             our-comment-start)))
+    
+    (save-excursion
+      ;; Calculate both the indent of the line (first non-blank) and the
+      ;; positions of the start and end of the non-comment data.
+      (beginning-of-line)
+      (let ((indent-pos (or (looking-at-move "[[:blank:]]+")
+                            (point)))
+
+            (data-start-pos
+             (progn (skip-these-regexps (list "[[:blank:]]+"
+                                              (regexp-quote our-comment-start)
+                                              (regexp-quote our-comment-fill))
+                                        :forward)
+                    (point)))
+
+            (data-end-pos
+             (progn (end-of-line)
+                    (skip-these-regexps (list "[[:blank:]]+"
+                                              (regexp-quote our-comment-end)
+                                              (regexp-quote our-comment-fill))
+                                        :backward)
+                    (point))))
+
+        ;; Calculate whether we can do the job. We use comment-end, not
+        ;; our-comment-end, since insertion of the ending comment is sometimes
+        ;; optional.
+        (let* ((contents-width (- data-end-pos data-start-pos))
+               (comment-width (+ contents-width
+                                 (length our-comment-start)
+                                 (min (length comment-end)
+                                      (length our-comment-end))))
+               (line-width (- width (- indent-pos (line-beginning-position)))))
+          
+          (when (> comment-width line-width)
+            (error "The comment will be too big (%d) to fit in width %d"
+                   comment-width line-width))
+        
+          (let* ((lfilling (/ (- line-width contents-width) 2))
+                 (rfilling (+ lfilling (% (- line-width contents-width) 2))))
+
+            ;; The error here shouldn't be able to be triggered: we know we have
+            ;; enough space in total. So try to squeeze in some more space on
+            ;; the left if necessary.
+            (while (< lfilling (length our-comment-start))
+              (when (= rfilling 0)
+                (error "Can't fit in comment start"))
+              (setf lfilling (1+ lfilling)
+                    rfilling (1- rfilling)))
+          
+            ;; Delete the random cruft and put ourselves at the start of the
+            ;; data.
+            (delete-region data-end-pos (line-end-position))
+            (delete-region indent-pos data-start-pos)
+            (goto-char indent-pos)
+
+            ;; Fill up the left comment chars and one or more spaces.
+            (insert our-comment-start)
+            (setf lfilling (- lfilling (length our-comment-start)))
+            (while (> (- lfilling (length our-comment-fill)) 0)
+              (setf lfilling (- lfilling (length our-comment-fill)))
+              (insert our-comment-fill))
+            (while (> lfilling 0)
+              (setf lfilling (1- lfilling))
+              (insert " "))
+
+            ;; Now go to the end of the line and fill up with comment-fill
+            ;; characters, finishing with a comment-end.
+            (end-of-line)
+            (when (>= rfilling (length our-comment-end))
+              (save-excursion
+                (insert our-comment-end))
+              (setf rfilling (- rfilling (length our-comment-end))))
+            (save-excursion
+              (while (> (- rfilling (length our-comment-fill)) 0)
+                (setf rfilling (- rfilling (length our-comment-fill)))
+                (insert our-comment-fill)))
+            (while (> rfilling 0)
+              (setf rfilling (1- rfilling))
+              (insert " "))))))))
+
+(provide 'line-comment-banner)
+
+;;; line-comment-banner.el ends here
