@@ -1,61 +1,88 @@
-#FILE text/x-emacs-lisp
-Ozs7IHJjaXJjLWxhdGUtZml4LmVsIC0tIFJlcGxhY2Ugcy93cm9uZy9yaWdodCBzdHJpbmdzIG9u
-IHJjaXJjIGJ1ZmZlcnMKOzsgQ29weXJpZ2h0IDIwMDcgIEh1Z28gU2NobWl0dCA8aHVnb3dzQGdt
-YWlsLmNvbT4KOzsgQ29weXJpZ2h0IDIwMTEgIEVsaWFzIFBpcHBpbmcgPHBpcHBpbmdAZXhoZXJi
-by5vcmc+Cgo7OyBUaGlzIHByb2dyYW0gaXMgZnJlZSBzb2Z0d2FyZTsgeW91IGNhbiByZWRpc3Ry
-aWJ1dGUgaXQgYW5kL29yCjs7IG1vZGlmeSBpdCB1bmRlciB0aGUgdGVybXMgb2YgdGhlIEdOVSBH
-ZW5lcmFsIFB1YmxpYyBMaWNlbnNlIGFzCjs7IHB1Ymxpc2hlZCBieSB0aGUgRnJlZSBTb2Z0d2Fy
-ZSBGb3VuZGF0aW9uOyBlaXRoZXIgdmVyc2lvbiAyIG9mCjs7IHRoZSBMaWNlbnNlLCBvciAoYXQg
-eW91ciBvcHRpb24pIGFueSBsYXRlciB2ZXJzaW9uLgoKOzsgVGhpcyBwcm9ncmFtIGlzIGRpc3Ry
-aWJ1dGVkIGluIHRoZSBob3BlIHRoYXQgaXQgd2lsbCBiZQo7OyB1c2VmdWwsIGJ1dCBXSVRIT1VU
-IEFOWSBXQVJSQU5UWTsgd2l0aG91dCBldmVuIHRoZSBpbXBsaWVkCjs7IHdhcnJhbnR5IG9mIE1F
-UkNIQU5UQUJJTElUWSBvciBGSVRORVNTIEZPUiBBIFBBUlRJQ1VMQVIKOzsgUFVSUE9TRS4gIFNl
-ZSB0aGUgR05VIEdlbmVyYWwgUHVibGljIExpY2Vuc2UgZm9yIG1vcmUgZGV0YWlscy4KCjs7IFlv
-dSBzaG91bGQgaGF2ZSByZWNlaXZlZCBhIGNvcHkgb2YgdGhlIEdOVSBHZW5lcmFsIFB1YmxpYwo7
-OyBMaWNlbnNlIGFsb25nIHdpdGggdGhpcyBwcm9ncmFtOyBpZiBub3QsIHdyaXRlIHRvIHRoZSBG
-cmVlCjs7IFNvZnR3YXJlIEZvdW5kYXRpb24sIEluYy4sIDU5IFRlbXBsZSBQbGFjZSwgU3VpdGUg
-MzMwLCBCb3N0b24sCjs7IE1BIDAyMTExLTEzMDcgVVNBCgo7OzsgQ29tbWVudGFyeToKCjs7IFRo
-ZSBpZGVhIGlzIHRvIGRldGVjdCBtZXNzYWdlcyBsaWtlICdzL3RzZXQvdGVzdCcgYW5kIG92ZXJ3
-cml0ZSB0aGUKOzsgd3Jvbmcgd29yZCB3aXRoIHRoZSBjb3JyZWN0aW9uLCBvbiB0aGUgb3JpZ2lu
-YWwgcGhyYXNlLCB1c2luZwo7OyBvdmVybGF5cy4KCjs7IFBsZWFzZSBtYWlsIG1lIChodWdvd3NA
-Z21haWwuY29tKSBhYm91dCBhbnkgaW1wcm92ZW1lbnRzIG9yIGJ1Zwo7OyByZXBvcnRzIHlvdSBo
-YXZlIHJlZ2FyZGluZyB0aGlzIGZpbGUuCgo7OzsgQ2hhbmdlcyAoMTYvMDcvMjAxMSkgYnkgRWxp
-YXMgUGlwcGluZwo7OyBbeF0gVXNlIHJjaXJjLXJlc3BvbnNlLWZvcm1hdHMgZm9yIGJ1aWxkaW5n
-IHRoZSBuYW1lIHN0cmluZwo7OyBbeF0gU3VwcG9ydCBzL3dvcmQvLyBhbmQgcy93b3JkLy9nIGZv
-ciByZW1vdmluZyBtYXRjaGluZyB0ZXh0Cjs7IFt4XSBzL2EvYi9nIGJ1ZyBmb3IgaW5wdXQgImFh
-YWFhYSIgZml4ZWQKOzsKOzsgcGx1cyBzb21lIGNsZWFudXAvaW1wcm92ZW1lbnRzCgo7OzsgQ2hh
-bmdlcyAoMzEvMDEvMjAxMSkgRml4IHR3byB3YXJuaW5ncwoKOzs7IENoYW5nZXMgKDExLzEyLzIw
-MDcpIChUa3MgdHNkaCBmb3IgdGhlIHN1Z2dlc3Rpb25zKQoKOzsgW3hdIEV4Y2x1ZGUgdGhlIG5p
-Y2tuYW1lcyBmcm9tIGNvcnJlY3Rpb24uCjs7IFt4XSBTdHJpcCB0aGUgLyBmcm9tIHRoZSByZXBs
-YWNlbWVudCB0ZXh0Lgo7OyBbeF0gV2l0aCBzL2Zvby9iYXIgdGhlIGxhc3Qgb2NjdXJlbmNlIG9m
-IGZvbyBpcyByZXBsYWNlZCB3aXRoIGJhciwgbm90IHRoZSBmaXJzdC4KOzsgW3hdIFN1cHBvcnQg
-cy9mb28vYmFyL2cgdG8gcmVwbGFjZSBhbGwgb2NjdXJlbmNlcyBvZiBmb28gd2l0aCBiYXIuCjs7
-IFsgXSBVc2UgcmNpcmMtcmVzcG9uc2UtZm9ybWF0cyBmb3IgYnVpbGRpbmcgdGhlIG5hbWUgc3Ry
-aW5nCjs7IFsgXSBBIHZhcmlhYmxlIGNvdWxkIGNvbnRyb2wgd2hldGhlciBvbmx5IHdob2xlIHdv
-cmRzIGFyZSBjaGFuZ2VkICh0aGVuCjs7IGp1c3QgY29uY2F0ICI8IiB3b3JkICI+IikKOzsgWyBd
-IFN1cHBvcnQgcy93b3JkLy8gYW5kIHMvd29yZC8vZyBmb3IgcmVtb3ZpbmcgbWF0Y2hpbmcgdGV4
-dAoKOzs7IENvZGU6CgooZXZhbC13aGVuLWNvbXBpbGUgKHJlcXVpcmUgJ2NsKSkKCihyZXF1aXJl
-ICdyY2lyYykKCihhZGQtaG9vayAncmNpcmMtcHJpbnQtaG9va3MgJ3JjaXJjLWxhdGUtZml4LWhv
-b2spCgooZGVmZmFjZSByY2lyYy1sYXRlLWZpeC1mYWNlICcoKHQgKDp1bmRlcmxpbmUgdCA6Zm9y
-ZWdyb3VuZCAiQmx1ZSIpKSkKICAiRmFjZSBmb3Igc2hvd2luZyBmaXhlZCB3b3JkcyBvbiB0aGUg
-Y2hhbm5lbCBidWZmZXIuIgogIDpncm91cCAncmNpcmMtZmFjZXMpCgooZGVmdW4gcmNpcmMtbGF0
-ZS1maXgtaG9vayAocHJvY2VzcyBzZW5kZXIgcmVzcG9uc2UgdGFyZ2V0IHRleHQpCiAgKHNhdmUt
-ZXhjdXJzaW9uCiAgICAod2hlbiAoc3RyaW5nLWVxdWFsIHJlc3BvbnNlICJQUklWTVNHIikKICAg
-ICAgKHdoZW4gKHN0cmluZy1tYXRjaCAiXnMvXFwoW14vXStcXCkvXFwoW14vXSpcXCkvXFwoZz9c
-XCkkIiB0ZXh0KQoJKGxldCAoKGZyb20gKG1hdGNoLXN0cmluZyAxIHRleHQpKQoJICAgICAgKHRv
-IChwcm9wZXJ0aXplCgkJICAgKGlmIChzdHJpbmc9ICIiIChtYXRjaC1zdHJpbmcgMiB0ZXh0KSkg
-Il8iIChtYXRjaC1zdHJpbmcgMiB0ZXh0KSkKCQkgICAnZmFjZSAncmNpcmMtbGF0ZS1maXgtZmFj
-ZSkpCgkgICAgICAoZ2xvYmFsIChub3QgKHN0cmluZz0gIiIgKG1hdGNoLXN0cmluZyAzIHRleHQp
-KSkpKQoJICAoc2V0LWJ1ZmZlciAocmNpcmMtbGF0ZS1maXgtbWF0Y2hpbmctYnVmZmVyIHRhcmdl
-dCkpCgkgIChnb3RvLWNoYXIgKHBvaW50LW1heCkpCgkgICh3aGVuIChzZWFyY2gtYmFja3dhcmQt
-cmVnZXhwCgkJIChyY2lyYy1mb3JtYXQtcmVzcG9uc2Utc3RyaW5nIHByb2Nlc3Mgc2VuZGVyICJQ
-UklWTVNHIiB0YXJnZXQgIlxcKC4qXFwpIikgbmlsIHQgMikKCSAgICAoaWYgKG5vdCBnbG9iYWwp
-CgkJKGlmIChzZWFyY2gtZm9yd2FyZCBmcm9tIChzYXZlLWV4Y3Vyc2lvbiAoc2VhcmNoLWZvcndh
-cmQgIlxuIikpIHQpCgkJICAgIChyZXBsYWNlLW1hdGNoIHRvKSkKCSAgICAgICh3aGlsZSAoc2Vh
-cmNoLWZvcndhcmQgZnJvbSAoc2F2ZS1leGN1cnNpb24gKHNlYXJjaC1mb3J3YXJkICJcbiIpKSB0
-KQoJCShyZXBsYWNlLW1hdGNoIHRvKSkpKSkpKSkpCgooZGVmdW4gcmNpcmMtbGF0ZS1maXgtbWF0
-Y2hpbmctYnVmZmVyIChuYW1lKQogICJGaW5kIGJ1ZmZlciAoY2hhbm5lbCkgdGhhdCBzdGFydHMg
-d2l0aCBOQU1FLiIKICAoZmluZC1pZiAnKGxhbWJkYSAoeCkgKHN0cmluZy1tYXRjaCAoY29uY2F0
-ICJeIiBuYW1lKSB4KSkKICAgICAgICAgICAobWFwY2FyICdidWZmZXItbmFtZSAoYnVmZmVyLWxp
-c3QpKSkpCgoKCjs7OyByY2lyYy1sYXRlLWZpeC5lbCBlbmRzIGhlcmUKKHByb3ZpZGUgJ3JjaXJj
-LWxhdGUtZml4KQo=
+;;; rcirc-late-fix.el --- Replace s/wrong/right strings on rcirc buffers
+;; Copyright 2007  Hugo Schmitt <hugows@gmail.com>
+;; Copyright 2011  Elias Pipping <pipping@exherbo.org>
+
+;; This program is free software; you can redistribute it and/or
+;; modify it under the terms of the GNU General Public License as
+;; published by the Free Software Foundation; either version 2 of
+;; the License, or (at your option) any later version.
+
+;; This program is distributed in the hope that it will be
+;; useful, but WITHOUT ANY WARRANTY; without even the implied
+;; warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
+;; PURPOSE.  See the GNU General Public License for more details.
+
+;; You should have received a copy of the GNU General Public
+;; License along with this program; if not, write to the Free
+;; Software Foundation, Inc., 59 Temple Place, Suite 330, Boston,
+;; MA 02111-1307 USA
+
+;;; Commentary:
+
+;; The idea is to detect messages like 's/tset/test' and overwrite the
+;; wrong word with the correction, on the original phrase, using
+;; overlays.
+
+;; Please mail me (hugows@gmail.com) about any improvements or bug
+;; reports you have regarding this file.
+
+;;; Changes (16/07/2011) by Elias Pipping
+;; [x] Use rcirc-response-formats for building the name string
+;; [x] Support s/word// and s/word//g for removing matching text
+;; [x] s/a/b/g bug for input "aaaaaa" fixed
+;;
+;; plus some cleanup/improvements
+
+;;; Changes (31/01/2011) Fix two warnings
+
+;;; Changes (11/12/2007) (Tks tsdh for the suggestions)
+
+;; [x] Exclude the nicknames from correction.
+;; [x] Strip the / from the replacement text.
+;; [x] With s/foo/bar the last occurence of foo is replaced with bar, not the first.
+;; [x] Support s/foo/bar/g to replace all occurences of foo with bar.
+;; [ ] Use rcirc-response-formats for building the name string
+;; [ ] A variable could control whether only whole words are changed (then
+;; just concat "<" word ">")
+;; [ ] Support s/word// and s/word//g for removing matching text
+
+;;; Code:
+
+(eval-when-compile (require 'cl))
+
+(require 'rcirc)
+
+(add-hook 'rcirc-print-hooks 'rcirc-late-fix-hook)
+
+(defface rcirc-late-fix-face '((t (:underline t :foreground "Blue")))
+  "Face for showing fixed words on the channel buffer."
+  :group 'rcirc-faces)
+
+(defun rcirc-late-fix-hook (process sender response target text)
+  (save-excursion
+    (when (string-equal response "PRIVMSG")
+      (when (string-match "^s/\\([^/]+\\)/\\([^/]*\\)/\\(g?\\)$" text)
+	(let ((from (match-string 1 text))
+	      (to (propertize
+		   (if (string= "" (match-string 2 text)) "_" (match-string 2 text))
+		   'face 'rcirc-late-fix-face))
+	      (global (not (string= "" (match-string 3 text)))))
+	  (set-buffer (rcirc-late-fix-matching-buffer target))
+	  (goto-char (point-max))
+	  (when (search-backward-regexp
+		 (rcirc-format-response-string process sender "PRIVMSG" target "\\(.*\\)") nil t 2)
+	    (if (not global)
+		(if (search-forward from (save-excursion (search-forward "\n")) t)
+		    (replace-match to))
+	      (while (search-forward from (save-excursion (search-forward "\n")) t)
+		(replace-match to)))))))))
+
+(defun rcirc-late-fix-matching-buffer (name)
+  "Find buffer (channel) that starts with NAME."
+  (find-if '(lambda (x) (string-match (concat "^" name) x))
+           (mapcar 'buffer-name (buffer-list))))
+
+
+
+;;; rcirc-late-fix.el ends here
+(provide 'rcirc-late-fix)
