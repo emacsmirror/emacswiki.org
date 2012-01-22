@@ -1,231 +1,441 @@
-#FILE text/plain
-Ozs7IGNzcy1wYWxldHRlLmVsIAo7OyBDb3B5cmlnaHQgKEMpIDIwMDggTmllbHMgR2llc2VuCgo7
-OyBBdXRob3I6IE5pZWxzIEdpZXNlbiA8bmllbHNmb3JrZ2llc2VuQGdtYWlsc3Bvb25jb20sIGJ1
-dCBwbGVhc2UKOzsgcmVwbGFjZSB0aGUga2l0Y2hlbiB1dGVuc2lscyB3aXRoIGEgZG90IGJlZm9y
-ZSBoaXR0aW5nICJTZW5kIj4KOzsgS2V5d29yZHM6IHByb2Nlc3NlcywgY3NzLCBtdWx0aW1lZGlh
-LCBleHRlbnNpb25zLCB0b29scwo7OyBIb21lcGFnZTogaHR0cDovL25pZWxzLmtpY2tzLWFzcy5v
-cmcvCgo7OyBUaGlzIHByb2dyYW0gaXMgZnJlZSBzb2Z0d2FyZTogeW91IGNhbiByZWRpc3RyaWJ1
-dGUgaXQgYW5kL29yIG1vZGlmeQo7OyBpdCB1bmRlciB0aGUgdGVybXMgb2YgdGhlIEdOVSBHZW5l
-cmFsIFB1YmxpYyBMaWNlbnNlIGFzIHB1Ymxpc2hlZCBieQo7OyB0aGUgRnJlZSBTb2Z0d2FyZSBG
-b3VuZGF0aW9uLCBlaXRoZXIgdmVyc2lvbiAzIG9mIHRoZSBMaWNlbnNlLCBvcgo7OyAoYXQgeW91
-ciBvcHRpb24pIGFueSBsYXRlciB2ZXJzaW9uLgoKOzsgVGhpcyBwcm9ncmFtIGlzIGRpc3RyaWJ1
-dGVkIGluIHRoZSBob3BlIHRoYXQgaXQgd2lsbCBiZSB1c2VmdWwsCjs7IGJ1dCBXSVRIT1VUIEFO
-WSBXQVJSQU5UWTsgd2l0aG91dCBldmVuIHRoZSBpbXBsaWVkIHdhcnJhbnR5IG9mCjs7IE1FUkNI
-QU5UQUJJTElUWSBvciBGSVRORVNTIEZPUiBBIFBBUlRJQ1VMQVIgUFVSUE9TRS4gIFNlZSB0aGUK
-OzsgR05VIEdlbmVyYWwgUHVibGljIExpY2Vuc2UgZm9yIG1vcmUgZGV0YWlscy4KCjs7IFlvdSBz
-aG91bGQgaGF2ZSByZWNlaXZlZCBhIGNvcHkgb2YgdGhlIEdOVSBHZW5lcmFsIFB1YmxpYyBMaWNl
-bnNlCjs7IGFsb25nIHdpdGggdGhpcyBwcm9ncmFtLiAgSWYgbm90LCBzZWUgPGh0dHA6Ly93d3cu
-Z251Lm9yZy9saWNlbnNlcy8+LgoKOzs7IENvbW1lbnRhcnk6Cgo7OyBjc3MtcGFsZXR0ZSBkZWZp
-bmVzIGNvbW1hbmRzIHRvIGhhdmUgInBhbGV0dGVzIiBpbnNpZGUgYSBibG9jawo7OyBjb21tZW50
-IHRvIGNpcmN1bXZlbnQgdGhlIGFic2VuY2Ugb2YgKGNvbG9yIG9yIG90aGVyKSB2YXJpYWJsZQo7
-OyBkZWZpbml0aW9ucyBpbiB0aGUgQ1NTIHNwZWNpZmljYXRpb24uIEl0IGNhbiBpbXBvcnQgYW5k
-IGV4cG9ydCBHSU1QCjs7IGNvbG9yIHBhbGV0dGVzLiBTZWUgdGhlIGRvY3VtZW50YXRpb24gb2Yg
-YGNzcy1wYWxldHRlLW1pbm9yLW1vZGUnCjs7IGZvciBkZXRhaWxzIG9mIHVzYWdlLgoKOzs7IElu
-c3RhbGxhdGlvbjoKCjs7IFNvbWV0aGluZyBsaWtlOgoKOzsgcHV0IGl0IGluIHlvdXIgbG9hZC1w
-YXRoLiAKCjs7IChhdXRvbG9hZCAnY3NzLXBhbGV0dGUtbWlub3ItbW9kZSAiY3NzLXBhbGV0dGUi
-ICIiIHQpCjs7IChhZGQtaG9vayAnY3NzLW1vZGUtaG9vawo7OyAJICAobGFtYmRhICgpCjs7IAkg
-ICAgKGNzcy1wYWxldHRlLW1pbm9yLW1vZGUgdCkpKQoKOzsgTm90ZXM6Cgo7OyBjc3MtcGFsZXR0
-ZSBkZXBlbmRzIG9uIGNzcy1jb2xvci5lbCB0byBkbyBmb250LWxvY2tpbmcuCgo7OyBjY3MtcGFs
-ZXR0ZSBpcyBvcnRob2dvbmFsIHRvIGNzcy1tb2RlLCBzbyBpdCBjb3VsZCBwcm9iYWJseSBiZSB1
-c2VkCjs7IGluc2lkZSBvdGhlciBsYW5ndWFnZSBtb2RlcywgcHJvdmlkZWQgdGhleSBzdXBwb3J0
-IG11bHRpbGluZSBibG9jawo7OyBjb21tZW50cy4KCjs7OyBDb2RlOgoocmVxdWlyZSAnY3NzLWNv
-bG9yKQoocmVxdWlyZSAnY2wpCQkJCTtpJ20gYSBiYWQgYmFkIGJveS4uLgoKKGRlZmNvbnN0IGNz
-c3AtaGV4LWNoYXJzICIwMTIzNDU2Nzg5YWJjZGVmQUJDREVGIgogICJDb21wb3NpbmcgY2hhcnMg
-aW4gaGV4YWRlY2ltYWwgbm90YXRpb24sIHNhdmUgZm9yIHRoZSBoYXNoICgjKSBzaWduLiIpCgoo
-ZGVmdmFyIGNzcy1wYWxldHRlLW1pbm9yLW1vZGUtbWFwIAogIChsZXQgKChtIChtYWtlLXNwYXJz
-ZS1rZXltYXApKSkKICAgIChkZWZpbmUta2V5IG0gIlxDLWNcQy1jIiAnY3NzLXBhbGV0dGUtdXBk
-YXRlLWFsbCkKICAgIChkZWZpbmUta2V5IG0gIlxDLWNcQy1pIiAnY3NzLXBhbGV0dGUtaW5zZXJ0
-LXJlZmVyZW5jZSkKICAgIChkZWZpbmUta2V5IG0gIlxDLWNcQy1wIiAnY3NzLWltcG9ydC1HSU1Q
-LXBhbGV0dGUpCiAgICAoZGVmaW5lLWtleSBtICJcQy1jXEMtZiIgJ2Nzcy1wYWxldHRlLWluc2Vy
-dC1maWxlcykKICAgIG0pCiAgIk1vZGUgbWFwIGZvciBgY3NzLXBhbGV0dGUtbWlub3ItbW9kZSci
-KQoKKGRlZmluZS1taW5vci1tb2RlIGNzcy1wYWxldHRlLW1pbm9yLW1vZGUgCiAgIk1pbm9yIG1v
-ZGUgZm9yIHBhbGV0dGVzIGluIENTUy4gCgpUaGUgbW9kZSBgY3NzLXBhbGV0dGUtbWlub3ItbW9k
-ZScgYWN0cyBvbiB0aGUgZmlyc3QgQ09MT1JTIGRlY2xhcmF0aW9uIGluIHlvdXIKICBmaWxlIG9m
-IHRoZSBmb3JtOgoKQ09MT1JTOgpcKApjMCBcIiM2ZjVkMjVcIgk7dGFpbnRlZCBzYW5kCmMxIFwi
-IzAwMDAwMFwiCTtCbGFjawpjMiBcIiNjY2E0MmJcIgk7Z29sZGVuc2x1bWJlcgpjMyBcIiM2ODg5
-Y2JcIgk7ZmFyIG9mZiBza3kKYzQgXCIjZmZmXCIJO3N0cmFuZ2UgYWVvbnMKKQoKU3VjaCBkZWNs
-YXJhdGlvbnMgc2hvdWxkIGFwcGVhciBpbnNpZGUgYSBibG9jayBjb21tZW50LCBpbiBvcmRlcgog
-IHRvIGJlIHBhcnNlZCBwcm9wZXJseSBieSB0aGUgTElTUCByZWFkZXIuCgpUeXBlIFxcW2Nzcy1w
-YWxldHRlLXVwZGF0ZS1hbGxdLCBhbmQgYW55IG9jY3VyZW5jZSBvZiAKCiAgY29sb3I6ICNmNTU7
-IC8qW2MzXSovCgp3aWxsIGJlIHVwZGF0ZWQgd2l0aCAKCiAgY29sb3I6ICM2ODk5Y2I7IC8qW2Mz
-XSovIAoKVGhlIGZvbGxvd2luZyBjb21tYW5kcyBhcmUgYXZhaWxhYmxlIHRvIGluc2VydCBrZXkt
-dmFsdWUgcGFpcnMKICBhbmQgcGFsZXR0ZSBkZWNsYXJhdGlvbnM6CiAgXFx7Y3NzLXBhbGV0dGUt
-bWlub3ItbW9kZS1tYXB9CgpZb3UgY2FuIGV4dGVuZCBvciByZWRlZmluZSB0aGUgdHlwZXMgb2Yg
-cGFsZXR0ZXMgYnkgZGVmaW5pbmcgYQogIG5ldyBwYWxldHRlIHNwZWNpZmljYXRpb24gb2YgdGhl
-IGZvcm0gKFBBVFRFUk4gUkVHRVhQCiAgUkVGLUZPTExPV1MtVkFMVUUpLCBuYW1lZCBhY2NvcmRp
-bmcgdG8gdGhlIG5hbWluZyBzY2hlbWUKICBjc3MtcGFsZXR0ZTpteS10eXBlLCB3aGVyZQoKUEFU
-VEVSTiBpcyBhIHBhdHRlcm4gY29udGFpbmluZyB0d28gKCVzKSBmb3JtYXQgZGlyZWN0aXZlcyB3
-aGljaAogIHdpbGwgYmUgZmlsbGVkIGluIHdpdGggdGhlIHZhcmlhYmxlIGFuZCBpdHMgdmFsdWUs
-CgpSRUdFWFAgaXMgYSByZWd1bGFyIGV4cHJlc3Npb24gdG8gbWF0Y2ggYSB2YWx1ZSAtIHZhcmlh
-YmxlCiAgcGF0dGVybiwKIAphbmQgUkVGLUZPTExPV1MtVkFMVUUgZGVmaW5lZCB3aGV0aGVyIG9y
-IG5vdCB0aGUgcmVmZXJlbmNlIGNvbWVzCiAgYWZ0ZXIgdGhlIHZhbHVlLiBUaGlzIGFsbG93cyBm
-b3IgbW9yZSBmbGV4aWJpbGl0eS4KCk5vdGUgdGhhdCwgYWx0aG91Z2ggdGhlIHczYyBzcGVjIGF0
-IFVSTAogIGBodHRwOi8vd3d3LnczLm9yZy9UUi9DU1MyL3N5bmRhdGEuaHRtbCNjb21tZW50cycg
-c2F5cyB0aGF0CiAgY29tbWVudHMgXCIgbWF5IG9jY3VyIGFueXdoZXJlIGJldHdlZW4gdG9rZW5z
-LCBhbmQgdGhlaXIKICBjb250ZW50cyBoYXZlIG5vIGluZmx1ZW5jZSBvbiB0aGUgcmVuZGVyaW5n
-XCIsIEludGVybmV0CiAgRXhwbG9yZXIgZG9lcyBub3QgdGhpbmsgc28uIEJldHRlciBrZWVwIGFs
-bCB5b3VyIGNvbW1lbnRzIGFmdGVyCiAgYSBcInN0YXRlbWVudFwiLCBhcyBwZXIgdGhlIGRlZmF1
-bHQuIFRoaXMgbWVhbnMgYGNzcy1wYWxldHRlJwogIGlzIGlsbC1zdWl0ZWQgZm9yIHVzZSB3aXRo
-aW4gc2hvcnRoYW5kcy4KClNlZSB2YXJpYWJsZSBgY3NzLXBhbGV0dGU6Y29sb3JzJyBmb3IgYW4g
-ZXhhbXBsZSBvZiBhIHBhbGV0dGUKICB0eXBlLgoKVGhlIGV4dGVuc2lvbiBtZWNoYW5pc20gbWVh
-bnMgdGhhdCBwYWxldHRlIHR5cGVzIGNhbiBiZSB1c2VkIHRvCiAgY29udGFpbiBhcmJpdHJhcnkg
-a2V5LXZhbHVlIG1hcHBpbmdzLgoKQmVzaWRlcyB0aGUgY29sb3JzIHBhbGV0dGUsIGNzcy1wYWxl
-dHRlIGRlZmluZXMgdGhlIHBhbGV0dGUKICBkZWZpbml0aW9uIHZhcmlhYmxlcyBgY3NzLXBhbGV0
-dGU6Y29sb3JzLW91dHNpZGUnIGFuZAogIGBjc3MtcGFsZXR0ZTpmaWxlcycsIGZvciBjb2xvcnMg
-d2l0aCB0aGUgcmVmZXJlbmNlIG91dHNpZGUgYW5kCiAgZm9yIGZpbGUgdXJsKCkncyByZXNwZWN0
-aXZlbHkuCgpZb3UgY2FuIGZpbmUtY29udHJvbCB3aGljaCBwYWxldHRlIHR5cGVzIGNzcy1wYWxl
-dHRlIHNob3VsZCBsb29rCiAgYXQgdmlhIHRoZSB2YXJpYWJsZSBgY3NzLXBhbGV0dGUtdHlwZXMn
-LgoKIgogIG5pbAogICItcGFsZXR0ZSIgCiAgY3NzLXBhbGV0dGUtbWlub3ItbW9kZS1tYXAKICAo
-Y3NzLWNvbG9yLW1vZGUgKzEpKQoKKGRlZmdyb3VwIGNzcy1wYWxldHRlIG5pbAogICJDdXN0b21p
-emF0aW9uIGdyb3VwIGZvciBjc3MtcGFsZXR0ZSBsaWJyYXJ5LgoKU2VlIGZ1bmN0aW9uIGBjc3Mt
-cGFsZXR0ZS1taW5vci1tb2RlJyBmb3IgZG9jdW1lbnRhdGlvbiIKICA6Z3JvdXAgJ2NzcykKCihk
-ZWZjdXN0b20gY3NzLXBhbGV0dGU6Y29sb3JzCiAgYCgiJXM7IC8qWyVzXSovICIKICAgICwoY29u
-Y2F0ICJcXCgiCgkgICAgIGNzcy1jb2xvci1jb2xvci1yZQo7OyAJICAgICAgKG1hcGNvbmNhdCAK
-OzsgCSAgICAgICAnaWRlbnRpdHkgCjs7IAkgICAgICAgKGxpc3QgY3NzLWNvbG9yLWhleC1yZQo7
-OyAJCSAgICAgY3NzLWNvbG9yLWhzbC1yZQo7OyAJCSAgICAgY3NzLWNvbG9yLXJnYi1yZSkgIlxc
-fCIpCgkgICAgICAiXFwpIgoJICAgICAgIltbOnNwYWNlOl1dKjtbWzpzcGFjZTpdXSpcL1xcKlxc
-W1xcKFteWzpzcGFjZTpdXStcXClcXF1cXCpcLyIpCiAgICB0KQogICJDb2xvciBwYWxldHRlIHNw
-ZWNpZmljYXRpb24uCgpTZWUgZnVuY3Rpb24gYGNzcy1wYWxldHRlLW1pbm9yLW1vZGUnIGZvciBk
-b2N1bWVudGF0aW9uIgogIDpncm91cCAnY3NzLXBhbGV0dGUKICA6dHlwZSAnKGxpc3QgCgkgIChz
-dHJpbmcgOnRhZyAiUGF0dGVybiIpCgkgIChyZWdleHAgOnRhZyAiUmVnZXhwIikKCSAgKGJvb2xl
-YW4gOnRhZyAiUmV2ZXJzZWQiKSkpCgooZGVmY3VzdG9tIGNzcy1wYWxldHRlOmZpbGVzCiAgJygi
-dXJsKCVzKTsgLypbJXNdKi8gIgogICAgInVybChcXChbXildK1xcKSlbWzpzcGFjZTpdXSo7W1s6
-c3BhY2U6XV0qXC9cXCpcXFtcXChbXls6c3BhY2U6XV0rXFwpXFxdXFwqXC8iCiAgICB0KQogICJG
-aWxlIHBhbGV0dGUgc3BlY2lmaWNhdGlvbi4KClNlZSBmdW5jdGlvbiBgY3NzLXBhbGV0dGUtbWlu
-b3ItbW9kZScgZm9yIGRvY3VtZW50YXRpb24iCiAgOmdyb3VwICdjc3MtcGFsZXR0ZQogIDp0eXBl
-ICcobGlzdCAKCSAgKHN0cmluZyA6dGFnICJQYXR0ZXJuIikKCSAgKHJlZ2V4cCA6dGFnICJSZWdl
-eHAiKQoJICAoYm9vbGVhbiA6dGFnICJSZXZlcnNlZCIpKSkKCihkZWZjdXN0b20gY3NzLXBhbGV0
-dGUtdHlwZXMKICAnKGNvbG9ycykKICAiTGlzdCBvZiBwYWxldHRlIHR5cGVzIHRvIGNoZWNrIGZv
-ciBpbiBidWZmZXIuCgpTZWUgZnVuY3Rpb24gYGNzcy1wYWxldHRlLW1pbm9yLW1vZGUnIGZvciBk
-b2N1bWVudGF0aW9uIgogIDpncm91cCAnY3NzLXBhbGV0dGUKICA6dHlwZSAnKHJlcGVhdCAoc3lt
-Ym9sIDp0YWcgIlBhbGV0dGUgdHlwZSIpKSkKKG1ha2UtdmFyaWFibGUtYnVmZmVyLWxvY2FsICdj
-c3MtcGFsZXR0ZS10eXBlcykKCihkZWZ1biBjc3MtcGFsZXR0ZS1nZXQgKGtleSBzcGVjKQogIChw
-bGlzdC1nZXQgCiAgIChjc3MtcGFsZXR0ZS1zcGVjLXRvLXBsaXN0CiAgICAoc3ltYm9sLXZhbHVl
-CiAgICAgKGludGVybi1zb2Z0IAogICAgICAoZm9ybWF0ICJjc3MtcGFsZXR0ZTolcyIgc3BlYykp
-KSkga2V5KSkKCihkZWZ1biBjc3MtcGFsZXR0ZS1zcGVjLXRvLXBsaXN0IChwYWxldHRlKQogIChk
-ZXN0cnVjdHVyaW5nLWJpbmQgKHBhdHRlcm4gcmVnZXhwIHJlZi1mb2xsb3dzLXZhbHVlKSBwYWxl
-dHRlCiAgICAobGlzdCA6cmVnZXhwIHJlZ2V4cAoJICA6cGF0dGVybiBwYXR0ZXJuIAoJICA6cmVm
-LWZvbGxvd3MtdmFsdWUgcmVmLWZvbGxvd3MtdmFsdWUpKSkKCihkZWZ1biBjc3MtcGFsZXR0ZS1j
-aG9vc2UtdHlwZSAoKQogIChpbnRlcm4tc29mdAogICAoaWYgKG51bGwgKGNkciBjc3MtcGFsZXR0
-ZS10eXBlcykpCiAgICAgICAoY2FyIGNzcy1wYWxldHRlLXR5cGVzKQogICAgIChjb21wbGV0aW5n
-LXJlYWQgIlR5cGU6ICIKCQkgICAgICAobWFwY2FyICdzeW1ib2wtbmFtZSBjc3MtcGFsZXR0ZS10
-eXBlcykpKSkpCgooZGVmdW4gY3NzLXBhbGV0dGUtZ2V0LWRlY2xhcmF0aW9uICh0eXBlKQogICJS
-ZXR1cm4gYGNzcy1wYWxldHRlJyBkZWNsYXJhdGlvbiBvZiBUWVBFIGluIGN1cnJlbnQgYnVmZmVy
-LgoKSWYgbm9uZSBpcyBmb3VuZCwgdGhyb3cgYW4gZXJyb3IuIgogIChsZXQgKCh0eXBlIChzeW1i
-b2wtbmFtZSB0eXBlKSkpCiAgICAoc2F2ZS1leGN1cnNpb24KICAgICAgKGdvdG8tY2hhciAocG9p
-bnQtbWluKSkKICAgICAgKG9yIChyZS1zZWFyY2gtZm9yd2FyZCAoZm9ybWF0ICIlczoiCgkJCQkg
-ICAgICh1cGNhc2UgdHlwZSkpIG5pbCB0KQoJICAoZXJyb3IgIk5vICVzIGRlY2xhcmF0aW9uIGZv
-dW5kIGluIGJ1ZmZlcjsgY2hlY2sgdmFsdWUgb2YgdmFyaWFibGUKCSAgYGNzcy1wYWxldHRlLXR5
-cGVzJyIgdHlwZSkpCiAgICAgIChsZXQgKChwYWxldHRlIChyZWFkIChjdXJyZW50LWJ1ZmZlcikp
-KSkKCTs7IENoZWNrIChjb3VsZCBiZSBiZXR0ZXIuLikKCShpZiAobm90IChhbmQgCgkJICAobGlz
-dHAgcGFsZXR0ZSkKCQkgICg9IDAgKCUgKGxlbmd0aCBwYWxldHRlKSAyKSkpKQoJICAgIChlcnJv
-ciAiSW52YWxpZCAlcyAiIHR5cGUpKQoJcGFsZXR0ZSkpKSkKCihkZWZ1biBjc3MtcGFsZXR0ZS11
-cGRhdGUgKHR5cGUpCiJVcGRhdGUgYnVmZmVyIHJlZmVyZW5jZXMgZm9yIHBhbGV0dGUgb2YgVFlQ
-RS4iCiAgKGludGVyYWN0aXZlIChsaXN0IAoJCShjc3MtcGFsZXR0ZS1jaG9vc2UtdHlwZSkpKQog
-IChsZXQgKChwYWxldHRlIChjc3MtcGFsZXR0ZS1nZXQtZGVjbGFyYXRpb24gdHlwZSkpCgkocmVn
-ZXhwIChjc3MtcGFsZXR0ZS1nZXQgOnJlZ2V4cCB0eXBlKSkKCShyZWYtZm9sbG93cy12YWx1ZSAo
-Y3NzLXBhbGV0dGUtZ2V0IDpyZWYtZm9sbG93cy12YWx1ZSB0eXBlKSkpCiAgICAoZmxldCAoKGdl
-dHZhbCAoa2V5IHBhbGV0dGUpCgkJICAgICAgKGxldCAoKHZhbHVlIChwbGlzdC1nZXQgcGFsZXR0
-ZSAoaW50ZXJuLXNvZnQga2V5KSkpKQoJCQkoaWYgKG51bGwgdmFsdWUpCgkJCSAgICAoZXJyb3IK
-CQkJICAgICAiJVMgbm90IHNwZWNpZmllZCBpbiAlUyBwYWxldHRlICIKCQkJICAgICBrZXkKCQkJ
-ICAgICB0eXBlCgkJCSAgICAgOzsgIChzaWduYWwgJ2Nzcy1wYWxldHRlLW5vdC1mb3VuZC1lcnJv
-ciBuaWwpCgkJCSAgICAgKQoJCQkgIHZhbHVlKSkpKQogICAgICAoc2F2ZS1leGN1cnNpb24gCgko
-Z290by1jaGFyIChwb2ludC1taW4pKQoJKHdoaWxlIChyZS1zZWFyY2gtZm9yd2FyZCAKCQlyZWdl
-eHAKCQkocG9pbnQtbWF4KSB0KQoJICAocmVwbGFjZS1tYXRjaAoJICAgKGdldHZhbCAobWF0Y2gt
-c3RyaW5nLW5vLXByb3BlcnRpZXMgKGlmIHJlZi1mb2xsb3dzLXZhbHVlIDIgMSkpIHBhbGV0dGUp
-CgkgICBuaWwgbmlsIG5pbCAoaWYgcmVmLWZvbGxvd3MtdmFsdWUgMSAyKSkpKSkpCiAgIChjc3Mt
-Y29sb3ItbW9kZSAxKSkKCihkZWZ1biBjc3MtcGFsZXR0ZS11cGRhdGUtYWxsICgpCiAgIlVwZGF0
-ZSBhbGwgcmVmZXJlbmNlcyBmb3IgcGFsZXR0ZXMgaW4gYGNzcy1wYWxldHRlLXR5cGVzJyIKICAo
-aW50ZXJhY3RpdmUpCiAgKGNhdGNoICdlcnIKICAgIChtYXBjIChsYW1iZGEgKHR5cGUpCgkgICAg
-KGNvbmRpdGlvbi1jYXNlIGVyciAKCQkoY3NzLXBhbGV0dGUtdXBkYXRlIHR5cGUpCgkgICAgICAo
-aWYgKHktb3Itbi1wIChmb3JtYXQgIiVzLCBza2lwPyAiIGVycikpCgkJICBuaWwpKSkKCSAgY3Nz
-LXBhbGV0dGUtdHlwZXMpKSkKCjs7IFJlZmVyZW5jZSBJbnNlcnRpb24KKGRlZnVuIGNzcy1wYWxl
-dHRlLWluc2VydC1yZWZlcmVuY2UgKHR5cGUpCiAgIkluc2VydCBgY3NzLXBhbGV0dGUnIHJlZmVy
-ZW5jZSBvZiBUWVBFIGF0IHBvaW50LiIKICAoaW50ZXJhY3RpdmUKICAgIChsaXN0IChjc3MtcGFs
-ZXR0ZS1jaG9vc2UtdHlwZSkpKQogIChsZXQqICgocGFsZXR0ZSAoY3NzLXBhbGV0dGUtZ2V0LWRl
-Y2xhcmF0aW9uIHR5cGUpKQoJIChyZWYtZm9sbG93cy12YWx1ZSAoY3NzLXBhbGV0dGUtZ2V0IDpy
-ZWYtZm9sbG93cy12YWx1ZSB0eXBlKSkKCSAocGF0dGVybiAoY3NzLXBhbGV0dGUtZ2V0IDpwYXR0
-ZXJuIHR5cGUpKQoJICh2YXIKCSAgKGNvbXBsZXRpbmctcmVhZCAoZm9ybWF0ICIlcyB2YXJpYWJs
-ZTogIgoJCQkJICAgKGNhcGl0YWxpemUgCgkJCQkgICAgKHN1YnN0cmluZyAoc3ltYm9sLW5hbWUg
-dHlwZSkKCQkJCQkgICAgICAgMCAtMSkpKQoJCQkgICAobG9vcCBmb3IgaSBvbiAKCQkJCSBwYWxl
-dHRlCgkJCQkgYnkgJ2NkZHIgCgkJCQkgY29sbGVjdAoJCQkJIChjc3MtcGFsZXR0ZS1jb2xvcmlm
-eQoJCQkJICAoc3ltYm9sLW5hbWUgKGNhciBpKSkKCQkJCSAgKGNhZHIgaSkpKSkpCgkgKHZhbCAg
-KHBsaXN0LWdldCBwYWxldHRlIChyZWFkIHZhcikpKSkKICAgIChpbnNlcnQgKGFwcGx5ICdmb3Jt
-YXQKCQkgICBwYXR0ZXJuCgkJICAgKGlmIHJlZi1mb2xsb3dzLXZhbHVlIAoJCSAgICAgICAobGlz
-dCB2YWwgdmFyKQoJCSAgICAgKGxpc3QgdmFyIHZhbCkpKSkKICAgIChjc3MtY29sb3ItbW9kZSAr
-MSkpKQoKKGRlZnVuIGNzcy1oZXgtY29sb3ItcCAoc3RyKQogIChzdHJpbmctbWF0Y2ggIiNcXChb
-YS1mQS1GWzpkaWdpdDpdXVxcezZcXH1cXHxbYS1mQS1GWzpkaWdpdDpdXVxcezNcXH1cXCkiIHN0
-cikpCgooZGVmdW4gY3NzLXBhbGV0dGUtY29sb3JpZnkgKHN0cmluZyBjb2xvcikKICAobGV0ICgo
-Y29sb3IgKGlmIChjc3MtaGV4LWNvbG9yLXAgY29sb3IpCgkJICAgY29sb3IKCQkgIiMwMDAiKSkp
-CiAgKHByb3BlcnRpemUgc3RyaW5nCgkgICAgICAnZm9udC1sb2NrLWZhY2UKCSAgICAgIChsaXN0
-IDpiYWNrZ3JvdW5kIGNvbG9yCgkJICAgIDpmb3JlZ3JvdW5kIChjc3MtY29sb3ItZm9yZWdyb3Vu
-ZC1jb2xvciBjb2xvcikKCQkgICAgc3RyaW5nKQoJICAgICAgJ2ZvbnRpZmllZCB0KSkpCgo7OyBJ
-bXBvcnRzIAooZGVmdW4gY3NzLW1ha2UtcGFsZXR0ZS1mcm9tLWV4aXN0aW5nLWNvbG9ycyAoKQog
-IChpbnRlcmFjdGl2ZSkKICAobGV0ICgocGFsZXR0ZSkKCShjb3VudCAtMSkpCiAgICAoc2F2ZS1l
-eGN1cnNpb24gCiAgICAgIChnb3RvLWNoYXIgKHBvaW50LW1pbikpCiAgICAgICh3aGlsZSAocmUt
-c2VhcmNoLWZvcndhcmQgIiNbWzpkaWdpdDpdYS1mQS1GXVxcezZcXH1cXD4iIG5pbCB0KQoJKGlm
-IChub3QgKG1lbWJlciAobWF0Y2gtc3RyaW5nLW5vLXByb3BlcnRpZXMgMCkgcGFsZXR0ZSkpCgkg
-ICAgKHNldHEgcGFsZXR0ZSAoYXBwZW5kIChsaXN0IAoJCQkJICAgKG1hdGNoLXN0cmluZy1uby1w
-cm9wZXJ0aWVzIDApIAoJCQkJICAgKGludGVybihmb3JtYXQgImMlZCIgKGluY2YgY291bnQpKSkp
-CgkJCQkgIHBhbGV0dGUpKSkKCShzYXZlLW1hdGNoLWRhdGEgKHJlLXNlYXJjaC1mb3J3YXJkICI7
-IiBuaWwgdCkpCgkoaW5zZXJ0IChmb3JtYXQgIi8qWyVTXSovIiAoY2FkciAobWVtYmVyIChtYXRj
-aC1zdHJpbmctbm8tcHJvcGVydGllcyAwKSBwYWxldHRlKSkpKSkpCiAgICAoaW5zZXJ0IChmb3Jt
-YXQgIkNPTE9SUzpcbiVTIiAobnJldmVyc2UgcGFsZXR0ZSkpKQogICAgKGZvcndhcmQtc2V4cCAt
-MSkKICAgIChmb3J3YXJkLWNoYXIgMSkKICAgICh3aGlsZSAKCShub3QgKGxvb2tpbmctYXQgIiki
-KSkKICAgICAgKGZvcndhcmQtc2V4cCAyKQogICAgICAobmV3bGluZSkKICAgICAgKGluZGVudC1m
-b3ItdGFiLWNvbW1hbmQpKSkpCgooZGVmdW4gY3NzLXVzZXItZGlyICgpCiAgIlJldHVybiB1c2Vy
-IGRpcmVjdG9yeS4iCiAgKGlmIChlcSB3aW5kb3ctc3lzdGVtICd3MzIpCiAgICAgIChmb3JtYXQg
-ImM6L0RvY3VtZW50cyBhbmQgU2V0dGluZ3MvJXMvIiB1c2VyLWxvZ2luLW5hbWUpCiAgICAoZXhw
-YW5kLWZpbGUtbmFtZSAifi8iKSkpCgooZGVmdW4gY3NzLW5ld2VzdC1HSU1QLXBhbGV0dGUtZGly
-ICgpCiAgIlJldHVybiBuZXdlc3QgKHZlcnNpb24td2lzZSkgfi8uZ2ltcC1uLm4vcGFsZXR0ZXMg
-ZGlyZWN0b3J5IG9uIGRpc2suCgpSZXR1cm4gYG5pbCcgaWYgbm9uZSBzdWNoIGRpcmVjdG9yeSBp
-cyBmb3VuZC4iCiAgKGNhdGNoICdub25lCiAgICAoY29uY2F0CiAgICAgKG9yIAogICAgICAoY2Fy
-CiAgICAgICAobGFzdAoJKGRpcmVjdG9yeS1maWxlcyAoY3NzLXVzZXItZGlyKSB0ICJeLmdpbXAt
-W1s6ZGlnaXQ6XS5dXFx7MyxcXH0iKSkpCiAgICAgICh0aHJvdyAnbm9uZSAoKSkpCiAgICIvcGFs
-ZXR0ZXMvIikpKQoKKGRlZnVuIGNzcy1pbXBvcnQtR0lNUC1wYWxldHRlICgpCiAgIkltcG9ydCBH
-SU1QIHBhbGV0dGUgZmlsZSBhcyBhIGBjc3MtcGFsZXR0ZScgcGFsZXR0ZS4KCkdJTVAgcGFsZXR0
-ZXMgY2FuIGJlIG1hZGUgd2l0aCB0aGUgR0lNUCBvciBvbi1saW5lIHRvb2xzIHN1Y2ggYXMKZm91
-bmQgYXQgVVJMIGBodHRwOi8vY29sb3VybG92ZXJzLmNvbScuIgogIChpbnRlcmFjdGl2ZSkKICAo
-bGV0ICgoZmlsZSAocmVhZC1maWxlLW5hbWUgIkZpbGU6ICIgKGNzcy1uZXdlc3QtR0lNUC1wYWxl
-dHRlLWRpcikpKQoJKHRoaXMtYnVmZmVyIChjdXJyZW50LWJ1ZmZlcikpCgkoY291bnQgLTEpKQog
-ICAgKGluc2VydCAiXG5DT0xPUlM6XG4oXG4iKQogICAgKHdpdGgtdGVtcC1idWZmZXIgCiAgICAg
-IChpbnNlcnQtZmlsZS1jb250ZW50cyBmaWxlKQogICAgICAoZ290by1jaGFyIChwb2ludC1taW4p
-KQogICAgICAod2hpbGUgKHJlLXNlYXJjaC1mb3J3YXJkCgkgICAgICAoY29uY2F0IAoJICAgICAg
-ICJeIgoJICAgICAgICJbWzpzcGFjZTpdXSpcXChbWzpkaWdpdDpdXStcXCkiICA7cmVkCgkgICAg
-ICAgIltbOnNwYWNlOl1dK1xcKFtbOmRpZ2l0Ol1dK1xcKSIgIDtncmVlbgoJICAgICAgICJbWzpz
-cGFjZTpdXStcXChbWzpkaWdpdDpdXStcXCkiCSA7Ymx1ZQoJICAgICAgICJbWzpzcGFjZTpdXStc
-XCguKlxcKSQiKSA7bmFtZSAoPT4gdXNlZCBhcyBjb21tZW50KQoJICAgICAgbmlsIHQpCgkoZGVz
-dHJ1Y3R1cmluZy1iaW5kIChyYiByZSBnYiBnZSBiYiBiZSBuYiBuZSAmcmVzdCBpZ25vcmUpCgkg
-ICAgKGNkZHIgKG1hdGNoLWRhdGEgdCkpCgkgIChsZXQgKChjb2xvciAKCQkgKGFwcGx5ICdmb3Jt
-YXQgImMlZCBcIiMlMDJ4JTAyeCUwMnhcIiA7JXNcbiIKCQkJKGluY2YgY291bnQpCgkJCShhcHBl
-bmQKCQkJIChtYXBjYXIgJ3N0cmluZy10by1udW1iZXIKCQkJCSAobGlzdAoJCQkJICAoYnVmZmVy
-LXN1YnN0cmluZy1uby1wcm9wZXJ0aWVzIHJiIHJlKQoJCQkJICAoYnVmZmVyLXN1YnN0cmluZy1u
-by1wcm9wZXJ0aWVzIGdiIGdlKQoJCQkJICAoYnVmZmVyLXN1YnN0cmluZy1uby1wcm9wZXJ0aWVz
-IGJiIGJlKSkpCgkJCSAobGlzdCAoYnVmZmVyLXN1YnN0cmluZy1uby1wcm9wZXJ0aWVzIG5iIG5l
-KSkpKSkpCgkgICAgKHNhdmUtZXhjdXJzaW9uIAoJICAgICAgKHNldC1idWZmZXIgdGhpcy1idWZm
-ZXIpCgkgICAgICAoaW5zZXJ0IGNvbG9yKSkpKSkpCiAgICAoaW5zZXJ0ICIpIikKICAgIChtZXNz
-YWdlICJDLWMgQy1jIHRvIHVwZGF0ZSBjb2xvcnMiKSkpCgooZGVmdW4gY3NzLXBhbGV0dGUtaW5z
-ZXJ0LWZpbGVzIChkaXIpCiAgIkluc2VydCBhIGBjc3MtcGFsZXR0ZScgZGVjbGFyYXRpb24gZm9y
-IGFsbCBmaWxlcyBpbiBESVIuCgpGaWxlbmFtZXMgYXJlIHJlbGF0aXZlLiAKTWFpbiB1c2UtY2Fz
-ZTogYW4gaW1hZ2UgZGlyZWN0b3J5LiIKICAoaW50ZXJhY3RpdmUgIkREaXJlY3Rvcnk6ICIpCiAg
-KHNhdmUtZXhjdXJzaW9uCiAgICAobGV0ICgoaW1hZ2UtY291bnQgLTEpKQogICAgICAoaW5zZXJ0
-ICJcbkZJTEVTOlxuKFxuIikKICAgICAgKG1hcGMgCiAgICAgICAobGFtYmRhIChmKQoJIChpbnNl
-cnQKCSAgKGZvcm1hdCAiZmlsZS0lZCAlU1xuIiAKCQkgIChpbmNmIGltYWdlLWNvdW50KQoJCSAg
-KGZpbGUtcmVsYXRpdmUtbmFtZSAKCQkgICBmIAoJCSAgIChmaWxlLW5hbWUtZGlyZWN0b3J5IChi
-dWZmZXItZmlsZS1uYW1lKSkpKSkpCiAgICAgICAoZGlyZWN0b3J5LWZpbGVzIGRpciB0ICIuLi4r
-IikpCiAgICAgIChpbnNlcnQgIilcblxuIikpKSkKCjs7IEV4cG9ydHMKKGRlZnVuIGNzcy1leHBv
-cnQtR0lNUC1wYWxldHRlICh0eXBlIG5hbWUgY29sdW1ucykKICAiRXhwb3J0IHRoZSBDT0xPUlMg
-ZGVjbGFyYXRpb24gdG8gYSBHSU1QICguZ3BsKSBwYWxldHRlLgoKU2VlIGFsc28gYGdwbC1tb2Rl
-JyBhdCBVUkwKYGh0dHA6Ly9uaWVscy5raWNrcy1hc3Mub3JnL3B1YmxpYy9lbGlzcC9ncGwuZWwn
-LiIKICAoaW50ZXJhY3RpdmUgCiAgIChsaXN0IAogICAgKGNzcy1wYWxldHRlLWNob29zZS10eXBl
-KQogICAgKHJlYWQtc3RyaW5nICJOYW1lOiAiKQogICAgKHJlYWQtbnVtYmVyICJOdW1iZXIgb2Yg
-Y29sdW1uczogIiAyKSkpCiAgKGxldCAoKHBhbGV0dGUgKGNzcy1wYWxldHRlLWdldC1kZWNsYXJh
-dGlvbiB0eXBlKSkpCiAgICAoZmluZC1maWxlIAogICAgIChjb25jYXQgKGNzcy1uZXdlc3QtR0lN
-UC1wYWxldHRlLWRpcikKCSAgICAgbmFtZQoJICAgICAiLmdwbCIpKQogICAgKGluc2VydCAKICAg
-ICAoZm9ybWF0ICJHSU1QIFBhbGV0dGUKTmFtZTogJXMKQ29sdW1uczogJWQKIwoiIG5hbWUgY29s
-dW1ucykpCiAgICAobG9vcCBmb3IgaSBvbiBwYWxldHRlIAoJICBieSAnY2RkcgoJICBkbwoJICAo
-bXVsdGlwbGUtdmFsdWUtYmluZCAociBnIGIpKGNzcy1jb2xvci1oZXgtdG8tcmdiIAoJCQkJICAg
-ICAgIChjc3MtY29sb3ItaGV4aWZ5LWFueXN0cmluZyAoY2FkciBpKSkpCgkgICAgKGluc2VydCAo
-Zm9ybWF0ICIlM2QgJTNkICUzZFx0JXNcbiIKCQkJICAgIHIgZyBiIAoJCQkgICAgKGNhciBpKSkp
-KSkpCiAgKGlmIChmZWF0dXJlcCAnZ3BsKQogICAgICAoZ3BsLW1vZGUpKSkKCihwcm92aWRlICdj
-c3MtcGFsZXR0ZSkKOzsgY3NzLXBhbGV0dGUuZWwgZW5kcyBoZXJlCg==
+;;; css-palette.el 
+;; Copyright (C) 2008 Niels Giesen
+
+;; Author: Niels Giesen <nielsforkgiesen@gmailspooncom, but please
+;; replace the kitchen utensils with a dot before hitting "Send">
+;; Keywords: processes, css, multimedia, extensions, tools
+;; Homepage: http://niels.kicks-ass.org/
+
+;; This program is free software: you can redistribute it and/or modify
+;; it under the terms of the GNU General Public License as published by
+;; the Free Software Foundation, either version 3 of the License, or
+;; (at your option) any later version.
+
+;; This program is distributed in the hope that it will be useful,
+;; but WITHOUT ANY WARRANTY; without even the implied warranty of
+;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+;; GNU General Public License for more details.
+
+;; You should have received a copy of the GNU General Public License
+;; along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+;;; Commentary:
+
+;; css-palette defines commands to have "palettes" inside a block
+;; comment to circumvent the absence of (color or other) variable
+;; definitions in the CSS specification. It can import and export GIMP
+;; color palettes. See the documentation of `css-palette-minor-mode'
+;; for details of usage.
+
+;;; Installation:
+
+;; Something like:
+
+;; put it in your load-path. 
+
+;; (autoload 'css-palette-minor-mode "css-palette" "" t)
+;; (add-hook 'css-mode-hook
+;; 	  (lambda ()
+;; 	    (css-palette-minor-mode t)))
+
+;; Notes:
+
+;; css-palette depends on css-color.el to do font-locking.
+
+;; ccs-palette is orthogonal to css-mode, so it could probably be used
+;; inside other language modes, provided they support multiline block
+;; comments.
+
+;;; Code:
+(require 'css-color)
+(require 'cl)				;i'm a bad bad boy...
+
+(defconst cssp-hex-chars "0123456789abcdefABCDEF"
+  "Composing chars in hexadecimal notation, save for the hash (#) sign.")
+
+(defvar css-palette-minor-mode-map 
+  (let ((m (make-sparse-keymap)))
+    (define-key m "\C-c\C-c" 'css-palette-update-all)
+    (define-key m "\C-c\C-i" 'css-palette-insert-reference)
+    (define-key m "\C-c\C-p" 'css-import-GIMP-palette)
+    (define-key m "\C-c\C-f" 'css-palette-insert-files)
+    m)
+  "Mode map for `css-palette-minor-mode'")
+
+(define-minor-mode css-palette-minor-mode 
+  "Minor mode for palettes in CSS. 
+
+The mode `css-palette-minor-mode' acts on the first COLORS declaration in your
+  file of the form:
+
+COLORS:
+\(
+c0 \"#6f5d25\"	;tainted sand
+c1 \"#000000\"	;Black
+c2 \"#cca42b\"	;goldenslumber
+c3 \"#6889cb\"	;far off sky
+c4 \"#fff\"	;strange aeons
+)
+
+Such declarations should appear inside a block comment, in order
+  to be parsed properly by the LISP reader.
+
+Type \\[css-palette-update-all], and any occurence of 
+
+  color: #f55; /*[c3]*/
+
+will be updated with 
+
+  color: #6899cb; /*[c3]*/ 
+
+The following commands are available to insert key-value pairs
+  and palette declarations:
+  \\{css-palette-minor-mode-map}
+
+You can extend or redefine the types of palettes by defining a
+  new palette specification of the form (PATTERN REGEXP
+  REF-FOLLOWS-VALUE), named according to the naming scheme
+  css-palette:my-type, where
+
+PATTERN is a pattern containing two (%s) format directives which
+  will be filled in with the variable and its value,
+
+REGEXP is a regular expression to match a value - variable
+  pattern,
+ 
+and REF-FOLLOWS-VALUE defined whether or not the reference comes
+  after the value. This allows for more flexibility.
+
+Note that, although the w3c spec at URL
+  `http://www.w3.org/TR/CSS2/syndata.html#comments' says that
+  comments \" may occur anywhere between tokens, and their
+  contents have no influence on the rendering\", Internet
+  Explorer does not think so. Better keep all your comments after
+  a \"statement\", as per the default. This means `css-palette'
+  is ill-suited for use within shorthands.
+
+See variable `css-palette:colors' for an example of a palette
+  type.
+
+The extension mechanism means that palette types can be used to
+  contain arbitrary key-value mappings.
+
+Besides the colors palette, css-palette defines the palette
+  definition variables `css-palette:colors-outside' and
+  `css-palette:files', for colors with the reference outside and
+  for file url()'s respectively.
+
+You can fine-control which palette types css-palette should look
+  at via the variable `css-palette-types'.
+
+"
+  nil
+  "-palette" 
+  css-palette-minor-mode-map
+  (css-color-mode +1))
+
+(defgroup css-palette nil
+  "Customization group for css-palette library.
+
+See function `css-palette-minor-mode' for documentation"
+  :group 'css)
+
+(defcustom css-palette:colors
+  `("%s; /*[%s]*/ "
+    ,(concat "\\("
+	     css-color-color-re
+;; 	      (mapconcat 
+;; 	       'identity 
+;; 	       (list css-color-hex-re
+;; 		     css-color-hsl-re
+;; 		     css-color-rgb-re) "\\|")
+	      "\\)"
+	      "[[:space:]]*;[[:space:]]*\/\\*\\[\\([^[:space:]]+\\)\\]\\*\/")
+    t)
+  "Color palette specification.
+
+See function `css-palette-minor-mode' for documentation"
+  :group 'css-palette
+  :type '(list 
+	  (string :tag "Pattern")
+	  (regexp :tag "Regexp")
+	  (boolean :tag "Reversed")))
+
+(defcustom css-palette:files
+  '("url(%s); /*[%s]*/ "
+    "url(\\([^)]+\\))[[:space:]]*;[[:space:]]*\/\\*\\[\\([^[:space:]]+\\)\\]\\*\/"
+    t)
+  "File palette specification.
+
+See function `css-palette-minor-mode' for documentation"
+  :group 'css-palette
+  :type '(list 
+	  (string :tag "Pattern")
+	  (regexp :tag "Regexp")
+	  (boolean :tag "Reversed")))
+
+(defcustom css-palette-types
+  '(colors)
+  "List of palette types to check for in buffer.
+
+See function `css-palette-minor-mode' for documentation"
+  :group 'css-palette
+  :type '(repeat (symbol :tag "Palette type")))
+(make-variable-buffer-local 'css-palette-types)
+
+(defun css-palette-get (key spec)
+  (plist-get 
+   (css-palette-spec-to-plist
+    (symbol-value
+     (intern-soft 
+      (format "css-palette:%s" spec)))) key))
+
+(defun css-palette-spec-to-plist (palette)
+  (destructuring-bind (pattern regexp ref-follows-value) palette
+    (list :regexp regexp
+	  :pattern pattern 
+	  :ref-follows-value ref-follows-value)))
+
+(defun css-palette-choose-type ()
+  (intern-soft
+   (if (null (cdr css-palette-types))
+       (car css-palette-types)
+     (completing-read "Type: "
+		      (mapcar 'symbol-name css-palette-types)))))
+
+(defun css-palette-get-declaration (type)
+  "Return `css-palette' declaration of TYPE in current buffer.
+
+If none is found, throw an error."
+  (let ((type (symbol-name type)))
+    (save-excursion
+      (goto-char (point-min))
+      (or (re-search-forward (format "%s:"
+				     (upcase type)) nil t)
+	  (error "No %s declaration found in buffer; check value of variable
+	  `css-palette-types'" type))
+      (let ((palette (read (current-buffer))))
+	;; Check (could be better..)
+	(if (not (and 
+		  (listp palette)
+		  (= 0 (% (length palette) 2))))
+	    (error "Invalid %s " type))
+	palette))))
+
+(defun css-palette-update (type)
+"Update buffer references for palette of TYPE."
+  (interactive (list 
+		(css-palette-choose-type)))
+  (let ((palette (css-palette-get-declaration type))
+	(regexp (css-palette-get :regexp type))
+	(ref-follows-value (css-palette-get :ref-follows-value type)))
+    (flet ((getval (key palette)
+		      (let ((value (plist-get palette (intern-soft key))))
+			(if (null value)
+			    (error
+			     "%S not specified in %S palette "
+			     key
+			     type
+			     ;;  (signal 'css-palette-not-found-error nil)
+			     )
+			  value))))
+      (save-excursion 
+	(goto-char (point-min))
+	(while (re-search-forward 
+		regexp
+		(point-max) t)
+	  (replace-match
+	   (getval (match-string-no-properties (if ref-follows-value 2 1)) palette)
+	   nil nil nil (if ref-follows-value 1 2))))))
+   (css-color-mode 1))
+
+(defun css-palette-update-all ()
+  "Update all references for palettes in `css-palette-types'"
+  (interactive)
+  (catch 'err
+    (mapc (lambda (type)
+	    (condition-case err 
+		(css-palette-update type)
+	      (if (y-or-n-p (format "%s, skip? " err))
+		  nil)))
+	  css-palette-types)))
+
+;; Reference Insertion
+(defun css-palette-insert-reference (type)
+  "Insert `css-palette' reference of TYPE at point."
+  (interactive
+    (list (css-palette-choose-type)))
+  (let* ((palette (css-palette-get-declaration type))
+	 (ref-follows-value (css-palette-get :ref-follows-value type))
+	 (pattern (css-palette-get :pattern type))
+	 (var
+	  (completing-read (format "%s variable: "
+				   (capitalize 
+				    (substring (symbol-name type)
+					       0 -1)))
+			   (loop for i on 
+				 palette
+				 by 'cddr 
+				 collect
+				 (css-palette-colorify
+				  (symbol-name (car i))
+				  (cadr i)))))
+	 (val  (plist-get palette (read var))))
+    (insert (apply 'format
+		   pattern
+		   (if ref-follows-value 
+		       (list val var)
+		     (list var val))))
+    (css-color-mode +1)))
+
+(defun css-hex-color-p (str)
+  (string-match "#\\([a-fA-F[:digit:]]\\{6\\}\\|[a-fA-F[:digit:]]\\{3\\}\\)" str))
+
+(defun css-palette-colorify (string color)
+  (let ((color (if (css-hex-color-p color)
+		   color
+		 "#000")))
+  (propertize string
+	      'font-lock-face
+	      (list :background color
+		    :foreground (css-color-foreground-color color)
+		    string)
+	      'fontified t)))
+
+;; Imports 
+(defun css-make-palette-from-existing-colors ()
+  (interactive)
+  (let ((palette)
+	(count -1))
+    (save-excursion 
+      (goto-char (point-min))
+      (while (re-search-forward "#[[:digit:]a-fA-F]\\{6\\}\\>" nil t)
+	(if (not (member (match-string-no-properties 0) palette))
+	    (setq palette (append (list 
+				   (match-string-no-properties 0) 
+				   (intern(format "c%d" (incf count))))
+				  palette)))
+	(save-match-data (re-search-forward ";" nil t))
+	(insert (format "/*[%S]*/" (cadr (member (match-string-no-properties 0) palette))))))
+    (insert (format "COLORS:\n%S" (nreverse palette)))
+    (forward-sexp -1)
+    (forward-char 1)
+    (while 
+	(not (looking-at ")"))
+      (forward-sexp 2)
+      (newline)
+      (indent-for-tab-command))))
+
+(defun css-user-dir ()
+  "Return user directory."
+  (if (eq window-system 'w32)
+      (format "c:/Documents and Settings/%s/" user-login-name)
+    (expand-file-name "~/")))
+
+(defun css-newest-GIMP-palette-dir ()
+  "Return newest (version-wise) ~/.gimp-n.n/palettes directory on disk.
+
+Return `nil' if none such directory is found."
+  (catch 'none
+    (concat
+     (or 
+      (car
+       (last
+	(directory-files (css-user-dir) t "^.gimp-[[:digit:].]\\{3,\\}")))
+      (throw 'none ()))
+   "/palettes/")))
+
+(defun css-import-GIMP-palette ()
+  "Import GIMP palette file as a `css-palette' palette.
+
+GIMP palettes can be made with the GIMP or on-line tools such as
+found at URL `http://colourlovers.com'."
+  (interactive)
+  (let ((file (read-file-name "File: " (css-newest-GIMP-palette-dir)))
+	(this-buffer (current-buffer))
+	(count -1))
+    (insert "\nCOLORS:\n(\n")
+    (with-temp-buffer 
+      (insert-file-contents file)
+      (goto-char (point-min))
+      (while (re-search-forward
+	      (concat 
+	       "^"
+	       "[[:space:]]*\\([[:digit:]]+\\)"  ;red
+	       "[[:space:]]+\\([[:digit:]]+\\)"  ;green
+	       "[[:space:]]+\\([[:digit:]]+\\)"	 ;blue
+	       "[[:space:]]+\\(.*\\)$") ;name (=> used as comment)
+	      nil t)
+	(destructuring-bind (rb re gb ge bb be nb ne &rest ignore)
+	    (cddr (match-data t))
+	  (let ((color 
+		 (apply 'format "c%d \"#%02x%02x%02x\" ;%s\n"
+			(incf count)
+			(append
+			 (mapcar 'string-to-number
+				 (list
+				  (buffer-substring-no-properties rb re)
+				  (buffer-substring-no-properties gb ge)
+				  (buffer-substring-no-properties bb be)))
+			 (list (buffer-substring-no-properties nb ne))))))
+	    (save-excursion 
+	      (set-buffer this-buffer)
+	      (insert color))))))
+    (insert ")")
+    (message "C-c C-c to update colors")))
+
+(defun css-palette-insert-files (dir)
+  "Insert a `css-palette' declaration for all files in DIR.
+
+Filenames are relative. 
+Main use-case: an image directory."
+  (interactive "DDirectory: ")
+  (save-excursion
+    (let ((image-count -1))
+      (insert "\nFILES:\n(\n")
+      (mapc 
+       (lambda (f)
+	 (insert
+	  (format "file-%d %S\n" 
+		  (incf image-count)
+		  (file-relative-name 
+		   f 
+		   (file-name-directory (buffer-file-name))))))
+       (directory-files dir t "...+"))
+      (insert ")\n\n"))))
+
+;; Exports
+(defun css-export-GIMP-palette (type name columns)
+  "Export the COLORS declaration to a GIMP (.gpl) palette.
+
+See also `gpl-mode' at URL
+`http://niels.kicks-ass.org/public/elisp/gpl.el'."
+  (interactive 
+   (list 
+    (css-palette-choose-type)
+    (read-string "Name: ")
+    (read-number "Number of columns: " 2)))
+  (let ((palette (css-palette-get-declaration type)))
+    (find-file 
+     (concat (css-newest-GIMP-palette-dir)
+	     name
+	     ".gpl"))
+    (insert 
+     (format "GIMP Palette
+Name: %s
+Columns: %d
+#
+" name columns))
+    (loop for i on palette 
+	  by 'cddr
+	  do
+	  (multiple-value-bind (r g b)(css-color-hex-to-rgb 
+				       (css-color-hexify-anystring (cadr i)))
+	    (insert (format "%3d %3d %3d\t%s\n"
+			    r g b 
+			    (car i))))))
+  (if (featurep 'gpl)
+      (gpl-mode)))
+
+(provide 'css-palette)
+;; css-palette.el ends here
