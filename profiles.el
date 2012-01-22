@@ -1,232 +1,329 @@
-#FILE text/plain
-Ozs7IC0qLSBFbWFjcy1MaXNwIC0qLQo7OzsgcHJvZmlsZXMuZWwgLS0tIHByb2ZpbGUgbWFuYWdl
-bWVudCBzeXN0ZW0KOzs7IFZlcnNpb24gMC4zIC0gMjAwOS0wNC0wNQo7OzsKOzs7IEF1dGhvcjog
-U3lsdmFpbiBCb3VnZXJlbCA8c3lsdmFpbi5ib3VnZXJlbC5kZXZlbEBnbWFpbC5jb20+Cjs7Owo7
-OzsgVGhpcyBmaWxlIGlzIE5PVCBwYXJ0IG9mIEdOVSBFbWFjcy4gIFlvdSBtYXkgaG93ZXZlciBy
-ZWRpc3RyaWJ1dGUgaXQgYW5kL29yCjs7OyBtb2RpZnkgaXQgdW5kZXIgdGhlIHRlcm1zIG9mIHRo
-ZSBHTlUgR2VuZXJhbCBQdWJsaWMgTGljZW5zZSBhcyBwdWJsaXNoZWQgYnkKOzs7IHRoZSBGcmVl
-IFNvZnR3YXJlIEZvdW5kYXRpb247IGVpdGhlciB2ZXJzaW9uIDIsIG9yIChhdCB5b3VyIG9wdGlv
-bikgYW55Cjs7OyBsYXRlciB2ZXJzaW9uLgo7OzsKOzs7IHByb2ZpbGVzLmVsIGlzIGRpc3RyaWJ1
-dGVkIGluIHRoZSBob3BlIHRoYXQgaXQgd2lsbCBiZSB1c2VmdWwsIGJ1dCBXSVRIT1VUCjs7OyBB
-TlkgV0FSUkFOVFk7IHdpdGhvdXQgZXZlbiB0aGUgaW1wbGllZCB3YXJyYW50eSBvZiBNRVJDSEFO
-VEFCSUxJVFkgb3IKOzs7IEZJVE5FU1MgRk9SIEEgUEFSVElDVUxBUiBQVVJQT1NFLiAgU2VlIHRo
-ZSBHTlUgR2VuZXJhbCBQdWJsaWMgTGljZW5zZSBmb3IKOzs7IG1vcmUgZGV0YWlscy4KOzs7Cjs7
-OyBZb3Ugc2hvdWxkIGhhdmUgcmVjZWl2ZWQgYSBjb3B5IG9mIHRoZSBHTlUgR2VuZXJhbCBQdWJs
-aWMgTGljZW5zZSBhbG9uZyB3aXRoCjs7OyB0aGlzIHByb2dyYW07IGlmIG5vdCwgd3JpdGUgdG8g
-dGhlIEZyZWUgU29mdHdhcmUgRm91bmRhdGlvbiwgSW5jLiwgNTkgVGVtcGxlCjs7OyBQbGFjZSAt
-IFN1aXRlIDMzMCwgQm9zdG9uLCBNQSAwMjExMS0xMzA3LCBVU0EuCjs7Owo7OzsgQ29weXJpZ2h0
-IChDKSAyMDA5IFN5bHZhaW4gQm91Z2VyZWwKCjs7OyAtLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tCjs7OyBJ
-bnN0YWxsYXRpb246Cjs7Owo7OzsgQ29weSB0aGlzIGZpbGUgdW5kZXIgb25lIG9mIHRoZSBkaXJl
-Y3RvcmllcyB0aGF0IGlzIGluIHlvdXIgYGxvYWQtcGF0aCcuCgo7OzsgLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLQo7OzsgQ2hhbmdlIGxvZzoKOzs7Cjs7OyB2ZXJzaW9uIDAuMyAtIDIwMDktMDQtMDUgQWRk
-ZWQgdGhlIGN1c3RvbWlzYXRpb24gdmFyaWFibGVzLCBhbmQgZGVmaW5lZAo7OzsgYHByb2ZpbGUt
-ZGVmaW5lJyB0byByZXBsYWNlIGBwcm9maWxlLWNyZWF0ZScgYW5kIGBwcm9maWxlLXJlcGxhY2Un
-Lgo7OzsKOzs7IHZlcnNpb24gMC4yIC0gMjAwOS0wNC0wNCBgUHJvZmlsZXMnIGlzIHNldCBpbW1l
-ZGlhdGVseSBhZnRlciB0aGUgY3JlYXRpb24gb2YKOzs7ICAgIHRoZSBidWZmZXIuIFByZXZpb3Vz
-bHkgaXQgd2FzIHNldCBvbmx5IGFmdGVyIGEgZmV3IHN0ZXAgYW5kIHRoYXQgY2F1c2VkCjs7OyAg
-ICBjZXJ0YWluIHBhY2thZ2VzIG5vdCB0byB3b3JrIHdpdGggYFByb2ZpbGVzJy4KOzs7Cjs7OyB2
-ZXJzaW9uIDAuMSAtIDIwMDktMDMtMzEgLSBGaXJzdCB2ZXJzaW9uCgo7OzsgLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLQo7OzsgVG9kbzoKOzs7Cjs7Owo7OzsgQ3JlYXRlIGZ1bmN0aW9uIHByb2ZpbGUtZGVm
-aW5lIHdpdGggYm90aCBwcm9maWxlLWNyZWF0ZSBhbmQgcHJvZmlsZS1yZXBsYWNlCjs7OyBmdW5j
-dGlvbmFsaXRpZXMuCgo7OzsgLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQo7OzsgRGVzY3JpcHRpb246Cjs7
-Owo7OzsgUHJvZmlsZXMgbWFuYWdlcyB1c2VyLWRlZmluZWQgc2V0cyBvZiBnZW5lcmljIHByb3Bl
-cnRpZXMgc3VjaCBhcyB1c2VyIG5hbWUKOzs7IG9yIG1haWxpbmcgYWRkcmVzcyBhY3Jvc3MgdmFy
-aW91cyBidWZmZXJzLiBQcm9maWxlcyBhcmUgYWltZWQgdG93YXJkcwo7OzsgZGV2ZWxvcGVycyB0
-aGF0IHdvcmsgb24gZGlmZmVyZW50IHByb2plY3RzLCBzb21ldGltZXMgdW5kZXIgZGlmZmVyZW50
-IG5hbWVzLAo7OzsgZGlmZmVyZW50IG1haWxpbmcgYWRkcmVzcywgYW5kIHRoYXQgd2lzaCB0byBh
-cHBseSBzaW1pbGFyIHNldHRpbmdzIGFjcm9zcwo7OzsgZGlmZmVyZW50IGZpbGVzLgo7OzsKOzs7
-IGBQcm9maWxlcycgcHJvdmlkZXMgYSBoaWdoZXIgbGV2ZWwgZnVuY3Rpb25hbGl0eSB0aGF0IGBk
-aXJ2YXJzLmVsJywgYWxiZWl0Cjs7OyBsZXNzIGludmFzaXZlLiBXaGVyZSBgZGlydmFycy5lbCcg
-cmVxdWlyZXMgeW91IHRvIGNyZWF0ZSBhIGZpbGUgaW4gZWFjaCBvZgo7OzsgeW91ciBwcm9qZWN0
-IGZpbGVzLCBwcm9maWxlcyB0cnkgdG8gdGFrZSBhZHZlbnRhZ2Ugb2YgdGhlIGZhY3QgdGhhdCBl
-YWNoCjs7OyBwYXJ0aWN1bGFyIHByb2plY3QncyBzZXR0aW5nIGFyZSBwcm9iYWJseSBzaW1pbGFy
-IGluIHNvbWUgd2F5IG9yIHJlcXVpcmUKOzs7IG1vcmUgdGhhbiBqdXN0IHNldHRpbmcgdXNlciB2
-YXJpYWJsZXMuIEluIGFueSBjYXNlLCBgcHJvZmlsZXMnIGNhbiBiZSB1c2VkCjs7OyB0b2dldGhl
-ciB3aXRoIGBkaXJ2YXJzLmVsJy4KOzs7Cjs7OyBGb3IgZXhlbXBsZSwgdXNlciBKb2UgaXMgd29y
-a2luZyBvbiBwcm9qZWN0IFByb2pBIGFuZCBQcm9qQi4gQm90aCBwcm9qZWN0cwo7OzsgaW1wb3Nl
-cyB0aGF0IGNvZGluZyBzdHlsZSBmb2xsb3dzICJnbnUiIHN0YW5kYXJkcywgYnV0IEpvZSBnZW5l
-cmFsbHkgcHJlZmVyCjs7OyB0byB3b3JrIHdpdGggImVsZW10ZWwiIGFuZCB0aGlzIGlzIHdoYXQg
-aGUgaXMgdXNpbmcgZm9yIGFsbCBoaXMgb3RoZXIKOzs7IHByb2plY3RzLiBIZSBpcyBhbHNvIHVz
-aW5nIGEgZGlmZmVyZW50IG1haWxpbmcgYWRkcmVzcyBmb3IgYm90aCBwcm9qZWN0cywKOzs7IGFu
-ZCB3YW50cyBpdCB0byBiZSBzZXQgYXV0b21hdGljYWxseSBmb3IgaGlzIENoYW5nZUxvZy5Gb3J0
-dW5hdGx5LCBKb2UgdXNlcwo7OzsgYHByb2ZpbGVzJyBhbmQgaGUgaGFzIGNvbmZpZ3VyZWQgaGlz
-ICJ+Ly5lbWFjcyIgaW4gdGhpcyB3YXk6Cjs7Owo7OzsgICAgIChyZXF1aXJlICdwcm9maWxlcykK
-Ozs7ICAgICAocHJvZmlsZS1kZWZpbmUgInVzdWFsIiAiSm9lIiAiam9ldXNlckB1c3VhbC5jb20i
-Cjs7OyAgICAgICAgICAgICAgICAgICAgICdjb2Rpbmctc3R5bGUgImVsZW10ZWwiCjs7OyAgICAg
-ICAgICAgICAgICAgICAgIDsgYW55IHByb3BlcnR5IHZhbHVlIGNhbiBiZSBhdHRhY2hlZCEKOzs7
-ICAgICAgICAgICAgICAgICAgICAgJ3ByZWZlcmVkLWxpY2Vuc2UgIkdQTHYyIikKOzs7ICAgICAo
-cHJvZmlsZS1kZWZpbmUgInByb2otYS1hbmQtYiIgIkpvZSIgImpvZXVzZXJAcHJvai1hLWFuZC1i
-LmNvbSIKOzs7ICAgICAgICAgICAgICAgICAgICAgJ2NvZGluZy1zdHlsZSAiZ251Igo7OzsgICAg
-ICAgICAgICAgICAgICAgICAncHJlZmVyZWQtbGljZW5zZSBuaWwpCjs7OyAgICAgKHNldHEgcHJv
-ZmlsZS1wYXRoLWFsaXN0Cjs7OyAgICAgICAgICAgJygoIi9wYXRoL3RvL3Byb2ovYSIgLiAicHJv
-ai1hLWFuZC1iIikKOzs7ICAgICAgICAgICAgICgiL3BhdGgvdG8vcHJvai9iIiAuICJwcm9qLWEt
-YW5kLWIiKSkpCjs7OyAgICAgKHByb2ZpbGUtc2V0LWRlZmF1bHQgInVzdWFsIikKOzs7Cjs7OyAg
-ICAgOyAuLi5hbmQgbGF0ZXIgaW4gaGlzIGNvbmZpZyBmaWxlLi4uCjs7OyAgICAgKGFkZC1ob29r
-ICdjLW1vZGUtY29tbW9uLWhvb2sKOzs7ICAgICAgICAgICAgICAgJyhsYW1iZGEgKCkKOzs7ICAg
-ICAgICAgICAgICAgICAgIChjLXNldC1zdHlsZSAocHJvZmlsZS1jdXJyZW50LWdldCAnY29kaW5n
-LXN0eWxlKSkpKQo7OzsKOzs7ICAgICA7IC4uLmFuZCBhIGxpdHRsZSBsYXRlciB0b28uLi4KOzs7
-ICAgICAoYWRkLWhvb2sgJ2NoYW5nZS1sb2ctbW9kZS1ob29rCjs7OwkgICAgICAgICAgJyhsYW1i
-ZGEgKCkKOzs7ICAgICAgICAgICAgICAgICAgIChzZXRxIGFkZC1sb2ctZnVsbC1uYW1lCjs7OyAg
-ICAgICAgICAgICAgICAgICAgICAgICAocHJvZmlsZS1jdXJyZW50LW5hbWUpKQo7OzsgICAgICAg
-ICAgICAgICAgICAgKHNldHEgYWRkLWxvZy1tYWlsaW5nLWFkZHJlc3MKOzs7ICAgICAgICAgICAg
-ICAgICAgICAgICAgIChwcm9maWxlLWN1cnJlbnQtbWFpbGluZy1hZGRyZXNzKSkpKQo7OzsKOzs7
-IEFuZCB2b2lsYSEgSGlzIG5hbWUsIG1haWxpbmcgYWRkcmVzcyBhbmQgY29kaW5nIHN0eWxlIGFy
-ZSBub3cKOzs7IGF1dG9tYXRpY2FsbHkgc2V0IGZvciBQcm9qQSBhbmQgUHJvakIgdG8gdGhlIGRl
-c2lyZWQgdmFsdWVzLiBUaGlzIGRpZCBub3QKOzs7IHJlcXVpcmUgSm9lIHRvIG1ha2UgYW55IGFt
-ZW5kZW1lbnQgdG8gdGhlIHByb2plY3QgdGhlbXNlbHZlcy4gQWRkaW5nIG5ldwo7OzsgcHJvZmls
-ZXMgd2lsbCBiZSBlYXN5IHRvby4KOzs7Cjs7OyBTYXZpbmcgdGhlIHByb2ZpbGUgcGF0aCBpbiB5
-b3VyICJ+Ly5lbWFjcyIgaXMgbm90IHN1Y2ggYSBnb29kIGlkZWEgaG93ZXZlci4KOzs7IEluc3Rl
-YWQgeW91IGNhbiB1c2UgdGhlIGludGVyYWN0aXZlIGZ1bmN0aW9uIGBwcm9maWxlLWFkZC1yZWdl
-eHAtYW5kLXNhdmUnCjs7OyB0aGF0IHdpbGwgcG9wdWxhdGUgYHByb2ZpbGUtcGF0aC1hbGlzdCcg
-d2l0aCBhIG5ldyBlbnRyeS4gVGhpcyBzZXR0aW5nIHdpbGwKOzs7IGJlIHNhdmVkIGluIHRoZSBm
-aWxlIGBwcm9maWxlLXBhdGgtYWxpc3QtZmlsZScuCjs7Owo7OzsgWW91IGNhbiBhdXRvbWF0aWNh
-bGx5IGxvYWQgdGhlIHNldHRpbmdzIG9mIHRoaXMgZmlsZSBieSBhZGRpbmc6Cjs7Owo7OzsgICAg
-IChwcm9maWxlLWxvYWQtcGF0aC1hbGlzdCkKOzs7Cjs7OyAuLi5pbiB5b3VyICJ+Ly5lbWFjcyIu
-IFRoaXMgZmlsZSBpcyBwcmludGVkIGluIGh1bWFuIHJlYWRhYmxlIGxpc3AgYW5kIGNhbgo7Ozsg
-YmUgZWRpdGVkIG1hbnVhbGx5LCBhcyBuZWNlc3NhcnkuCgo7OzsgLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LQo7OzsgRW5qb3khCgoocmVxdWlyZSAnY3VzdG9tKQoKOzs7IC0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0K
-Ozs7IEN1c3RvbSB2YXJpYWJsZXMKCihkZWZncm91cCBwcm9maWxlcyBuaWwKICAiKlByb2ZpbGVz
-LiIKICA6Z3JvdXAgJ3Byb2ZpbGVzKQoKKGRlZmN1c3RvbSBwcm9maWxlLXBhdGgtYWxpc3QtZmls
-ZSAifi8uZW1hY3MucHJvZmlsZXMiCiAgIipUaGUgZmlsZSB0aGF0IHdpbGwgY29udGFpbiB0aGUg
-YHByb2ZpbGUtcGF0aC1hbGlzdCcuIgogIDpncm91cCAncHJvZmlsZXMKICA6dHlwZSAnZmlsZSkK
-CihkZWZjdXN0b20gcHJvZmlsZS1wYXRoLWFsaXN0IG5pbAogICIqQW4gYWxpc3Qgb2YgcGFpcnMg
-Zm9ybWVkIGJ5IChSRUdFWFAgLiBQUk9GSUxFLU5BTUUpLiBCb3RoIGFyZQpzdHJpbmdzLiBJZiB0
-aGUgcGF0aCBvZiB0aGUgZmlsZSBpbiB0aGUgY3VycmVudCBidWZmZXIgbWF0Y2hlcwpSRUdFWFAs
-IHRoZW4gdGhlIGNvcnJlc3BvbmRpbmcgcHJvZmlsZSBpcyB1c2VkLiBJZiB0aGVyZSBhcmUgbm8K
-bWF0Y2hlcywgdGhlIGRlZmF1bHQgdmFsdWUgb2YgYHByb2ZpbGUtY3VycmVudCcgaXMgdXNlZApp
-bnN0ZWFkLiIKICA6Z3JvdXAgJ3Byb2ZpbGVzCiAgOnR5cGUgJ2FsaXN0KQoKOzs7IC0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0KOzs7IFZhcmlhYmxlcwoKKGRlZnZhciBwcm9maWxlLW9iYXJyYXkKICAobGV0
-ICgoaW50ZXJuLW9iYXJyYXkgKG1ha2UtdmVjdG9yIDcgMCkpKQogICAgKGludGVybiAiZGVmYXVs
-dCIgaW50ZXJuLW9iYXJyYXkpCiAgICBpbnRlcm4tb2JhcnJheSkKICAiVGhlIGFsaXN0IG9mIGF2
-YWlsYWJsZSBwcm9maWxlcy4gVGhlIGZpcnN0IG1lbWJlciBvZiB0aGUgY29ucwppcyB0aGUgcHJv
-ZmlsZSBuYW1lIGFuZCB0aGUgc2Vjb25kIG1lbWJlciBpcyB0aGUgcHJvZmlsZQpwYXJhbWV0ZXJz
-LiIpCgooZGVmdmFyIHByb2ZpbGUtY3VycmVudCAoaW50ZXJuLXNvZnQgImRlZmF1bHQiIHByb2Zp
-bGUtb2JhcnJheSkKICAiQnVmZmVyIGxvY2FsIHZhcmlhYmxlIHRoYXQgY29udGFpbnMgdGhlIGN1
-cnJlbnQgcHJvZmlsZS4gQWRkCm1vcmUgcHJvZmlsZXMgdXNpbmcgYHByb2ZpbGUtY3JlYXRlJyBp
-biB5b3VyIFwifi8uZW1hY3NcIiBvcgppbnRlcmFjdGl2ZWx5LiIpCgo7OzsgLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLQo7OzsgRnVuY3Rpb25zCgo7OzsjIyNhdXRvbG9hZAooZGVmdW4gcHJvZmlsZXAgKGFy
-ZykKICAiUmV0dXJuIHQgaWYgYXJnIGlzIGEgcHJvZmlsZSwgbmlsIG90aGVyd2lzZS4iCiAgKGlm
-IChpbnRlcm4tc29mdCBhcmcgcHJvZmlsZS1vYmFycmF5KSB0IG5pbCkpCgo7OzsjIyNhdXRvbG9h
-ZAooZGVmdW4gcHJvZmlsZS1zZXQtY3VycmVudCAocHJvZmlsZS1uYW1lKQogICJNYWtlIFBST0ZJ
-TEUtTkFNRSB0aGUgY3VycmVudCBwcm9maWxlLiBUaGUgY3VycmVudCBwcm9maWxlIGlzCmEgYnVm
-ZmVyIGxvY2FsIHZhcmlhYmxlIgogICh1bmxlc3MgKGludGVybi1zb2Z0IHByb2ZpbGUtbmFtZSBw
-cm9maWxlLW9iYXJyYXkpCiAgICAoZXJyb3IgIlByb2ZpbGUgIiBwcm9maWxlLW5hbWUgIiBkb2Vz
-IG5vdCBleGlzdHMiKSkKICAoc2V0cSBwcm9maWxlLWN1cnJlbnQgKGludGVybi1zb2Z0IHByb2Zp
-bGUtbmFtZSBwcm9maWxlLW9iYXJyYXkpKSkKCjs7OyMjI2F1dG9sb2FkCihkZWZ1biBwcm9maWxl
-LXNldC1kZWZhdWx0IChwcm9maWxlLW5hbWUpCiAgIk1ha2UgUFJPRklMRS1OQU1FIHRoZSBkZWZh
-dWx0IHByb2ZpbGUuIFRoZSBwcm9maWxlIG11c3QgZXhpc3RzLiIKICAoaW50ZXJhY3RpdmUgImki
-KQogIChpZiAoaW50ZXJhY3RpdmUtcCkKICAgICAgKHNldHEgcHJvZmlsZS1uYW1lCiAgICAgICAg
-ICAgIChjb21wbGV0aW5nLXJlYWQgIlNldCBkZWZhdWx0IHByb2ZpbGU6ICIKICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICBwcm9maWxlLW9iYXJyYXkgbmlsIHQKICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAoc3ltYm9sLW5hbWUgcHJvZmlsZS1jdXJyZW50KSkpCiAgICAodW5sZXNzIChp
-bnRlcm4tc29mdCBwcm9maWxlLW5hbWUgcHJvZmlsZS1vYmFycmF5KQogICAgICAoZXJyb3IgIlBy
-b2ZpbGUgIiBwcm9maWxlLW5hbWUgIiBkb2VzIG5vdCBleGlzdHMiKSkpCiAgKHNldC1kZWZhdWx0
-ICdwcm9maWxlLWN1cnJlbnQgKGludGVybi1zb2Z0IHByb2ZpbGUtbmFtZSBwcm9maWxlLW9iYXJy
-YXkpKSkKCjs7OyMjI2F1dG9sb2FkCihkZWZ1biBwcm9maWxlLWRlZmluZSAocHJvZmlsZSAmb3B0
-aW9uYWwgbmFtZSBtYWlsICZyZXN0IHBsaXN0KQogICJDcmVhdGUgb3IgcmVwbGFjZSBQUk9GSUxF
-IHdpdGggTkFNRSBhbmQgTUFJTC4gUFJPRklMRSwgTkFNRQphbmQgTUFJTCBhcmUgYWxsIHJlcXVp
-cmVkIHRvIGJlIHN0cmluZyB2YWx1ZXMuIE9wdGlvbmFsIGFyZ3VtZW50ClBMSVNUIGlzIGEgcHJv
-cGVydHkgbGlzdC4iCiAgKGludGVyYWN0aXZlICJpIikKICAoaWYgKGludGVyYWN0aXZlLXApCiAg
-ICAgIChwcm9nbgogICAgICAgIChzZXRxIHByb2ZpbGUgKHJlYWQtc3RyaW5nICJOYW1lIG9mIHRo
-ZSBwcm9maWxlOiAiKSkKICAgICAgICAoc2V0cSBuYW1lIChyZWFkLXN0cmluZyAiWW91ciBuYW1l
-OiAiKSkKICAgICAgICAoc2V0cSBtYWlsIChyZWFkLXN0cmluZyAiWW91ciBtYWlsaW5nIGFkZHJl
-c3M6ICIpKSkKICAgIDsgY2hlY2sgdGhhdCBwYXJhbXMgZ2l2ZW4gaW4gcHJvZ3JhbSBhcmUgb2sK
-ICAgICh1bmxlc3MgKHN0cmluZ3AgbmFtZSkgKGVycm9yICJQYXJhbWV0ZXIgcHJvZmlsZSBpcyBu
-b3QgYSBzdHJpbmciKSkKICAgICh1bmxlc3MgKHN0cmluZy1vci1udWxsLXAgbmFtZSkgKGVycm9y
-ICJQYXJhbWV0ZXIgbmFtZSBpcyBub3QgYSBzdHJpbmciKSkKICAgICh1bmxlc3MgKHN0cmluZy1v
-ci1udWxsLXAgbWFpbCkgKGVycm9yICJQYXJhbWV0ZXIgbWFpbCBpcyBub3QgYSBzdHJpbmciKSkp
-CiAgKHNldHBsaXN0IChpbnRlcm4gcHJvZmlsZSBwcm9maWxlLW9iYXJyYXkpCiAgICAgICAgICAg
-IChhcHBlbmQgKGxpc3QgJ25hbWUgbmFtZSAnbWFpbGluZy1hZGRyZXNzIG1haWwpIHBsaXN0KSkp
-Cgo7OzsjIyNhdXRvbG9hZAooZGVmdW4gcHJvZmlsZS1wdXQgKHByb2ZpbGUgcHJvcGVydHkgdmFs
-dWUpCiAgIlB1dCBQUk9QRVJUWSdzIFZBTFVFIGludG8gUFJPRklMRSBvciByZXBsYWNlIGFueSBl
-eGlzdGluZwp2YWx1ZS4iCiAgKHVubGVzcyAoc3RyaW5ncCBwcm9maWxlKSAoZXJyb3IgIlBhcmFt
-ZXRlciBwcm9maWxlIGlzIG5vdCBhIHN0cmluZyIpKQogICh1bmxlc3MgKGludGVybi1zb2Z0IHBy
-b2ZpbGUgcHJvZmlsZS1vYmFycmF5KQogICAgKGVycm9yICJQcm9maWxlICIgcHJvZmlsZSAiIGRv
-ZXMgbm90IGV4aXN0cyIpKQogIChwdXQgKGludGVybi1zb2Z0IHByb2ZpbGUgcHJvZmlsZS1vYmFy
-cmF5KSBwcm9wZXJ0eSB2YWx1ZSkpCgo7OzsjIyNhdXRvbG9hZAooZGVmdW4gcHJvZmlsZS1nZXQg
-KHByb2ZpbGUgcHJvcGVydHkpCiAgIkdldCBQUk9QRVJUWSdzIFZBTFVFIGZyb20gYHByb2ZpbGUt
-Y3VycmVudCcuIgogICh1bmxlc3MgKHN0cmluZ3AgcHJvZmlsZSkgKGVycm9yICJQYXJhbWV0ZXIg
-cHJvZmlsZSBpcyBub3QgYSBzdHJpbmciKSkKICAodW5sZXNzIChpbnRlcm4tc29mdCBwcm9maWxl
-IHByb2ZpbGUtb2JhcnJheSkKICAgIChlcnJvciAiUHJvZmlsZSAiIHByb2ZpbGUgIiBkb2VzIG5v
-dCBleGlzdHMiKSkKICAoZ2V0IChpbnRlcm4tc29mdCBwcm9maWxlIHByb2ZpbGUtb2JhcnJheSkg
-cHJvcGVydHkpKQoKOzs7IyMjYXV0b2xvYWQKKGRlZnVuIHByb2ZpbGUtY3VycmVudC1wdXQgKHBy
-b3BlcnR5IHZhbHVlKQogICJQdXQgUFJPUEVSVFkncyBWQUxVRSBpbnRvIHRoZSBgcHJvZmlsZS1j
-dXJyZW50JyBvciByZXBsYWNlIGFueQogIGV4aXN0aW5nIHZhbHVlLiIKICAocHV0IHByb2ZpbGUt
-Y3VycmVudCBwcm9wZXJ0eSB2YWx1ZSkpCgo7OzsjIyNhdXRvbG9hZAooZGVmdW4gcHJvZmlsZS1j
-dXJyZW50LW5hbWUgbmlsCiAgIlJldHVybiB0aGUgbmFtZSBmb3IgYHByb2ZpbGUtY3VycmVudCcu
-IgogIChnZXQgcHJvZmlsZS1jdXJyZW50ICduYW1lKSkKCjs7OyMjI2F1dG9sb2FkCihkZWZ1biBw
-cm9maWxlLWN1cnJlbnQtbWFpbGluZy1hZGRyZXNzIG5pbAogICJSZXR1cm4gdGhlIG1haWxpbmcg
-YWRkcmVzcyBmb3IgYHByb2ZpbGUtY3VycmVudCcuIgogIChnZXQgcHJvZmlsZS1jdXJyZW50ICdt
-YWlsaW5nLWFkZHJlc3MpKQoKOzs7IyMjYXV0b2xvYWQKKGRlZnVuIHByb2ZpbGUtY3VycmVudC1n
-ZXQgKHByb3BlcnR5KQogICJSZXR1cm4gdGhlIHZhbHVlIG9mIFBST1BFUlRZIGZvciB0aGUgY3Vy
-cmVudCBwcm9maWxlCmBwcm9maWxlLWN1cnJlbnQnLiBUaGUgcmV0dXJuZWQgcHJvcGVydHkgaXMg
-bm90IGV2YWx1YXRlZC4iCiAgKGdldCBwcm9maWxlLWN1cnJlbnQgcHJvcGVydHkpKQoKOzs7IyMj
-YXV0b2xvYWQKKGRlZnVuIHByb2ZpbGUtY3VycmVudC1ldmFsIChwcm9wZXJ0eSkKICAiUmV0dXJu
-IHRoZSBldmFsdWF0aW9uIG9mIFBST1BFUlRZJ3MgdmFsdWUgZm9yIHRoZSBjdXJyZW50CnByb2Zp
-bGUgYHByb2ZpbGUtY3VycmVudCcuIgogIChldmFsIChnZXQgcHJvZmlsZS1jdXJyZW50IHByb3Bl
-cnR5KSkpCgo7OzsjIyNhdXRvbG9hZAooZGVmdW4gcHJvZmlsZS1sb2FkLXBhdGgtYWxpc3Qgbmls
-CiAgIkxvYWQgdGhlIHBhdGggYWxpc3QgZnJvbSBgcHJvZmlsZS1wYXRoLWFsaXN0LWZpbGUnLiIK
-ICAoaW50ZXJhY3RpdmUpCiAgKHdoZW4gKGZpbGUtcmVhZGFibGUtcCBwcm9maWxlLXBhdGgtYWxp
-c3QtZmlsZSkKICAgIChsb2FkLWZpbGUgcHJvZmlsZS1wYXRoLWFsaXN0LWZpbGUpKSkKCjs7OyMj
-I2F1dG9sb2FkCihkZWZ1biBwcm9maWxlLXNhdmUtcGF0aC1hbGlzdCBuaWwKICAiU2F2ZSB0aGUg
-cGF0aCBhbGlzdCB0byBgcHJvZmlsZS1wYXRoLWFsaXN0LWZpbGUnLiIKICAoaW50ZXJhY3RpdmUp
-CiAgKHdoZW4gKGZpbGUtd3JpdGFibGUtcCBwcm9maWxlLXBhdGgtYWxpc3QtZmlsZSkKICAgICh3
-aXRoLXRlbXAtZmlsZSBwcm9maWxlLXBhdGgtYWxpc3QtZmlsZQogICAgICAoaW5zZXJ0ICIoc2V0
-cSBwcm9maWxlLXBhdGgtYWxpc3QgKHF1b3RlIikKICAgICAgKHByaW50IHByb2ZpbGUtcGF0aC1h
-bGlzdCAoY3VycmVudC1idWZmZXIpKQogICAgICAoaW5zZXJ0ICIpKSIpKSkpCgooZGVmdW4gcHJv
-ZmlsZS1maW5kLXBhdGgtYWxpc3QgKCZvcHRpb25hbCBmaWxlbmFtZSkKICAiU2NhbnMgYHByb2Zp
-bGUtcGF0aC1hbGlzdCcgdG8gZmluZCB0aGUgbWF0Y2hpbmcgcHJvZmlsZSBmb3IKdGhlIEZJTEVO
-QU1FIG9yIHJldHVybiB0aGUgZGVmYXVsdCB2YWx1ZSBmb3IgYHByb2ZpbGUtY3VycmVudCcuCklm
-IEZJTEVOQU1FIGlzIG5pbCwgdGhlbiBtYXRjaCBhZ2FpbnN0IHRoZSBidWZmZXIncyBjdXJyZW50
-IGZpbGUKbmFtZSwgb3IgdGhlIGJ1ZmZlcidzIG5hbWUuIgogIChvcgogICAoYXNzb2MtZGVmYXVs
-dCAob3IgZmlsZW5hbWUgKGJ1ZmZlci1maWxlLW5hbWUpIChidWZmZXItbmFtZSkpCiAgICAgICAg
-ICAgICAgICAgIHByb2ZpbGUtcGF0aC1hbGlzdCAnc3RyaW5nLW1hdGNoKQogICAoc3ltYm9sLW5h
-bWUgKGRlZmF1bHQtdmFsdWUgJ3Byb2ZpbGUtY3VycmVudCkpKSkKCjs7OyMjI2F1dG9sb2FkCihk
-ZWZ1biBwcm9maWxlLWFkZC1yZWdleHAtYW5kLXNhdmUgKHJlZ2V4cCBwcm9maWxlLW5hbWUpCiAg
-IkFkZCBhbiBlbGVtZW50IHRvIHRoZSBgcHJvZmlsZS1wYXRoLWFsaXN0Jy4gUmVxdWVzdCBhIFJF
-R0VYUAphbmQgYSBzcGVjaWZpYyBQUk9GSUxFLU5BTUUgZnJvbSB0aGUgdXNlciBpZiBjYWxsZWQK
-aW50ZXJhY3RpdmVseS4iCiAgKGludGVyYWN0aXZlICJpXG5pIikgOyBpZ25vcmUgYm90aCBhcmd1
-bWVudHMsIHdlJ2xsIHNldCB0aGVtIGxhdGVyCiAgKGlmIChpbnRlcmFjdGl2ZS1wKQogICAgICAo
-cHJvZ24KICAgICAgICAoc2V0cSByZWdleHAgKHJlYWQtZmlsZS1uYW1lICJQYXRoIHJlZ2V4cDog
-IgogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgKGJ1ZmZlci1maWxlLW5hbWUp
-KSkKICAgICAgICAoc2V0cSBwcm9maWxlLW5hbWUKICAgICAgICAgICAgICAoY29tcGxldGluZy1y
-ZWFkICJBcHBseSBwcm9maWxlOiAiCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBwcm9m
-aWxlLW9iYXJyYXkgbmlsIHQKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIChzeW1ib2wt
-bmFtZSBwcm9maWxlLWN1cnJlbnQpKSkpCiAgICAodW5sZXNzIChpbnRlcm4tc29mdCBwcm9maWxl
-LW5hbWUgcHJvZmlsZS1vYmFycmF5KQogICAgICAoZXJyb3IgIlByb2ZpbGUgIiBwcm9maWxlLW5h
-bWUgIiBkb2VzIG5vdCBleGlzdHMiKSkpCiAgKHNldHEgcHJvZmlsZS1wYXRoLWFsaXN0CiAgICAg
-ICAgKGNvbnMgKGNvbnMgcmVnZXhwIHByb2ZpbGUtbmFtZSkgcHJvZmlsZS1wYXRoLWFsaXN0KSkK
-ICAocHJvZmlsZS1zYXZlLXBhdGgtYWxpc3QpKQoKOzs7IyMjYXV0b2xvYWQKKGRlZnVuIHByb2Zp
-bGUtZmluZC1maWxlIChmaWxlbmFtZSBwcm9maWxlLW5hbWUpCiAgIk1vZGlmeSBgcHJvZmlsZS1w
-YXRoLWFsaXN0JywgY2FsbCBgcHJvZmlsZS1zYXZlLXBhdGgtYWxpc3QnIHRvCnJlbWVtYmVyIHRo
-ZSBtb2RpZmljYXRpb24gYW5kIG9wZW4gYSBmaWxlIHVzaW5nIGBmaW5kLWZpbGUnLiBUaGlzCmZ1
-bmN0aW9uIGFsbG93cyBhIHVzZXIgdGhlIG9wZW4gdGhlIGZpbGUgRklMRU5BTUUgd2l0aCBhCmRp
-ZmZlcmVudCBwcm9maWxlIFBST0ZJTEUtTkFNRSB0aGFuIHRoZSBkZWZhdWx0IHByb2ZpbGUgYW5k
-CnJlbWVtYmVyIHRoaXMgc2V0dGluZy4iCiAgKGludGVyYWN0aXZlICJHRmluZCBmaWxlOiBcbmki
-KQogIChpZiAoaW50ZXJhY3RpdmUtcCkKICAgICAgKHNldHEgcHJvZmlsZS1uYW1lCiAgICAgICAg
-ICAgIChjb21wbGV0aW5nLXJlYWQgIkFwcGx5IHByb2ZpbGU6ICIKICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICBwcm9maWxlLW9iYXJyYXkgbmlsIHQKICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAoc3ltYm9sLW5hbWUgcHJvZmlsZS1jdXJyZW50KSkpCiAgICAodW5sZXNzIChpbnRlcm4t
-c29mdCBwcm9maWxlLW5hbWUgcHJvZmlsZS1vYmFycmF5KQogICAgICAoZXJyb3IgIlByb2ZpbGUg
-IiBwcm9maWxlLW5hbWUgIiBkb2VzIG5vdCBleGlzdHMiKSkpCiAgKHNldHEgcHJvZmlsZS1wYXRo
-LWFsaXN0CiAgICAgICAgKGNvbnMgKGNvbnMgZmlsZW5hbWUgcHJvZmlsZS1uYW1lKSBwcm9maWxl
-LXBhdGgtYWxpc3QpKQogIChwcm9maWxlLXNhdmUtcGF0aC1hbGlzdCkKICAoZmluZC1maWxlIGZp
-bGVuYW1lKSkKCjs7OyAtLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0KOzs7IEluaXRpYWxpemF0aW9uCgooZGVmYWR2aWNl
-IGZpbmQtZmlsZS1ub3NlbGVjdC0xCiAgKGJlZm9yZSBiZWZvcmUtZmluZC1maWxlLW5vc2VsZWN0
-LTEgYWN0aXZhdGUpCiAgIlNldCB0aGUgYnVmZmVyIGxvY2FsIHZhcmlhYmxlIGBwcm9maWxlLWN1
-cnJlbnQnIHJpZ2h0IGFmdGVyCnRoZSBjcmVhdGlvbiBvZiB0aGUgYnVmZmVyLiIKICAod2l0aC1j
-dXJyZW50LWJ1ZmZlciBidWYKICAgIChtYWtlLWxvY2FsLXZhcmlhYmxlICdwcm9maWxlLWN1cnJl
-bnQpCiAgICAocHV0ICdwcm9maWxlLWN1cnJlbnQgJ3Blcm1hbmVudC1sb2NhbCB0KQogICAgKHNl
-dHEgcHJvZmlsZS1jdXJyZW50CiAgICAgICAgICAoaW50ZXJuLXNvZnQgKHByb2ZpbGUtZmluZC1w
-YXRoLWFsaXN0IGZpbGVuYW1lKSBwcm9maWxlLW9iYXJyYXkpKSkpCgo7OzsgLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-Cjs7OyBFeHBvc2l0aW9uCgoocHJvdmlkZSAncHJvZmlsZXMp
+;;; profiles.el --- profile management system
+;;; Version 0.3 - 2009-04-05
+;;;
+;;; Author: Sylvain Bougerel <sylvain.bougerel.devel@gmail.com>
+;;;
+;;; This file is NOT part of GNU Emacs.  You may however redistribute it and/or
+;;; modify it under the terms of the GNU General Public License as published by
+;;; the Free Software Foundation; either version 2, or (at your option) any
+;;; later version.
+;;;
+;;; profiles.el is distributed in the hope that it will be useful, but WITHOUT
+;;; ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+;;; FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for
+;;; more details.
+;;;
+;;; You should have received a copy of the GNU General Public License along with
+;;; this program; if not, write to the Free Software Foundation, Inc., 59 Temple
+;;; Place - Suite 330, Boston, MA 02111-1307, USA.
+;;;
+;;; Copyright (C) 2009 Sylvain Bougerel
+
+;;; ----------------------------------------------------------------------------
+;;; Installation:
+;;;
+;;; Copy this file under one of the directories that is in your `load-path'.
+
+;;; ----------------------------------------------------------------------------
+;;; Change log:
+;;;
+;;; version 0.3 - 2009-04-05 Added the customisation variables, and defined
+;;; `profile-define' to replace `profile-create' and `profile-replace'.
+;;;
+;;; version 0.2 - 2009-04-04 `Profiles' is set immediately after the creation of
+;;;    the buffer. Previously it was set only after a few step and that caused
+;;;    certain packages not to work with `Profiles'.
+;;;
+;;; version 0.1 - 2009-03-31 - First version
+
+;;; ----------------------------------------------------------------------------
+;;; Todo:
+;;;
+;;;
+;;; Create function profile-define with both profile-create and profile-replace
+;;; functionalities.
+
+;;; ----------------------------------------------------------------------------
+;;; Description:
+;;;
+;;; Profiles manages user-defined sets of generic properties such as user name
+;;; or mailing address across various buffers. Profiles are aimed towards
+;;; developers that work on different projects, sometimes under different names,
+;;; different mailing address, and that wish to apply similar settings across
+;;; different files.
+;;;
+;;; `Profiles' provides a higher level functionality that `dirvars.el', albeit
+;;; less invasive. Where `dirvars.el' requires you to create a file in each of
+;;; your project files, profiles try to take adventage of the fact that each
+;;; particular project's setting are probably similar in some way or require
+;;; more than just setting user variables. In any case, `profiles' can be used
+;;; together with `dirvars.el'.
+;;;
+;;; For exemple, user Joe is working on project ProjA and ProjB. Both projects
+;;; imposes that coding style follows "gnu" standards, but Joe generally prefer
+;;; to work with "elemtel" and this is what he is using for all his other
+;;; projects. He is also using a different mailing address for both projects,
+;;; and wants it to be set automatically for his ChangeLog.Fortunatly, Joe uses
+;;; `profiles' and he has configured his "~/.emacs" in this way:
+;;;
+;;;     (require 'profiles)
+;;;     (profile-define "usual" "Joe" "joeuser@usual.com"
+;;;                     'coding-style "elemtel"
+;;;                     ; any property value can be attached!
+;;;                     'prefered-license "GPLv2")
+;;;     (profile-define "proj-a-and-b" "Joe" "joeuser@proj-a-and-b.com"
+;;;                     'coding-style "gnu"
+;;;                     'prefered-license nil)
+;;;     (setq profile-path-alist
+;;;           '(("/path/to/proj/a" . "proj-a-and-b")
+;;;             ("/path/to/proj/b" . "proj-a-and-b")))
+;;;     (profile-set-default "usual")
+;;;
+;;;     ; ...and later in his config file...
+;;;     (add-hook 'c-mode-common-hook
+;;;               '(lambda ()
+;;;                   (c-set-style (profile-current-get 'coding-style))))
+;;;
+;;;     ; ...and a little later too...
+;;;     (add-hook 'change-log-mode-hook
+;;;	          '(lambda ()
+;;;                   (setq add-log-full-name
+;;;                         (profile-current-name))
+;;;                   (setq add-log-mailing-address
+;;;                         (profile-current-mailing-address))))
+;;;
+;;; And voila! His name, mailing address and coding style are now
+;;; automatically set for ProjA and ProjB to the desired values. This did not
+;;; require Joe to make any amendement to the project themselves. Adding new
+;;; profiles will be easy too.
+;;;
+;;; Saving the profile path in your "~/.emacs" is not such a good idea however.
+;;; Instead you can use the interactive function `profile-add-regexp-and-save'
+;;; that will populate `profile-path-alist' with a new entry. This setting will
+;;; be saved in the file `profile-path-alist-file'.
+;;;
+;;; You can automatically load the settings of this file by adding:
+;;;
+;;;     (profile-load-path-alist)
+;;;
+;;; ...in your "~/.emacs". This file is printed in human readable lisp and can
+;;; be edited manually, as necessary.
+
+;;; ----------------------------------------------------------------------------
+;;; Enjoy!
+
+(require 'custom)
+
+;;; ----------------------------------------------------------------------------
+;;; Custom variables
+
+(defgroup profiles nil
+  "*Profiles."
+  :group 'profiles)
+
+(defcustom profile-path-alist-file "~/.emacs.profiles"
+  "*The file that will contain the `profile-path-alist'."
+  :group 'profiles
+  :type 'file)
+
+(defcustom profile-path-alist nil
+  "*An alist of pairs formed by (REGEXP . PROFILE-NAME). Both are
+strings. If the path of the file in the current buffer matches
+REGEXP, then the corresponding profile is used. If there are no
+matches, the default value of `profile-current' is used
+instead."
+  :group 'profiles
+  :type 'alist)
+
+;;; ----------------------------------------------------------------------------
+;;; Variables
+
+(defvar profile-obarray
+  (let ((intern-obarray (make-vector 7 0)))
+    (intern "default" intern-obarray)
+    intern-obarray)
+  "The alist of available profiles. The first member of the cons
+is the profile name and the second member is the profile
+parameters.")
+
+(defvar profile-current (intern-soft "default" profile-obarray)
+  "Buffer local variable that contains the current profile. Add
+more profiles using `profile-create' in your \"~/.emacs\" or
+interactively.")
+
+;;; ----------------------------------------------------------------------------
+;;; Functions
+
+;;;###autoload
+(defun profilep (arg)
+  "Return t if arg is a profile, nil otherwise."
+  (if (intern-soft arg profile-obarray) t nil))
+
+;;;###autoload
+(defun profile-set-current (profile-name)
+  "Make PROFILE-NAME the current profile. The current profile is
+a buffer local variable"
+  (unless (intern-soft profile-name profile-obarray)
+    (error "Profile " profile-name " does not exists"))
+  (setq profile-current (intern-soft profile-name profile-obarray)))
+
+;;;###autoload
+(defun profile-set-default (profile-name)
+  "Make PROFILE-NAME the default profile. The profile must exists."
+  (interactive "i")
+  (if (interactive-p)
+      (setq profile-name
+            (completing-read "Set default profile: "
+                             profile-obarray nil t
+                             (symbol-name profile-current)))
+    (unless (intern-soft profile-name profile-obarray)
+      (error "Profile " profile-name " does not exists")))
+  (set-default 'profile-current (intern-soft profile-name profile-obarray)))
+
+;;;###autoload
+(defun profile-define (profile &optional name mail &rest plist)
+  "Create or replace PROFILE with NAME and MAIL. PROFILE, NAME
+and MAIL are all required to be string values. Optional argument
+PLIST is a property list."
+  (interactive "i")
+  (if (interactive-p)
+      (progn
+        (setq profile (read-string "Name of the profile: "))
+        (setq name (read-string "Your name: "))
+        (setq mail (read-string "Your mailing address: ")))
+    ; check that params given in program are ok
+    (unless (stringp name) (error "Parameter profile is not a string"))
+    (unless (string-or-null-p name) (error "Parameter name is not a string"))
+    (unless (string-or-null-p mail) (error "Parameter mail is not a string")))
+  (setplist (intern profile profile-obarray)
+            (append (list 'name name 'mailing-address mail) plist)))
+
+;;;###autoload
+(defun profile-put (profile property value)
+  "Put PROPERTY's VALUE into PROFILE or replace any existing
+value."
+  (unless (stringp profile) (error "Parameter profile is not a string"))
+  (unless (intern-soft profile profile-obarray)
+    (error "Profile " profile " does not exists"))
+  (put (intern-soft profile profile-obarray) property value))
+
+;;;###autoload
+(defun profile-get (profile property)
+  "Get PROPERTY's VALUE from `profile-current'."
+  (unless (stringp profile) (error "Parameter profile is not a string"))
+  (unless (intern-soft profile profile-obarray)
+    (error "Profile " profile " does not exists"))
+  (get (intern-soft profile profile-obarray) property))
+
+;;;###autoload
+(defun profile-current-put (property value)
+  "Put PROPERTY's VALUE into the `profile-current' or replace any
+  existing value."
+  (put profile-current property value))
+
+;;;###autoload
+(defun profile-current-name nil
+  "Return the name for `profile-current'."
+  (get profile-current 'name))
+
+;;;###autoload
+(defun profile-current-mailing-address nil
+  "Return the mailing address for `profile-current'."
+  (get profile-current 'mailing-address))
+
+;;;###autoload
+(defun profile-current-get (property)
+  "Return the value of PROPERTY for the current profile
+`profile-current'. The returned property is not evaluated."
+  (get profile-current property))
+
+;;;###autoload
+(defun profile-current-eval (property)
+  "Return the evaluation of PROPERTY's value for the current
+profile `profile-current'."
+  (eval (get profile-current property)))
+
+;;;###autoload
+(defun profile-load-path-alist nil
+  "Load the path alist from `profile-path-alist-file'."
+  (interactive)
+  (when (file-readable-p profile-path-alist-file)
+    (load-file profile-path-alist-file)))
+
+;;;###autoload
+(defun profile-save-path-alist nil
+  "Save the path alist to `profile-path-alist-file'."
+  (interactive)
+  (when (file-writable-p profile-path-alist-file)
+    (with-temp-file profile-path-alist-file
+      (insert "(setq profile-path-alist (quote")
+      (print profile-path-alist (current-buffer))
+      (insert "))"))))
+
+(defun profile-find-path-alist (&optional filename)
+  "Scans `profile-path-alist' to find the matching profile for
+the FILENAME or return the default value for `profile-current'.
+If FILENAME is nil, then match against the buffer's current file
+name, or the buffer's name."
+  (or
+   (assoc-default (or filename (buffer-file-name) (buffer-name))
+                  profile-path-alist 'string-match)
+   (symbol-name (default-value 'profile-current))))
+
+;;;###autoload
+(defun profile-add-regexp-and-save (regexp profile-name)
+  "Add an element to the `profile-path-alist'. Request a REGEXP
+and a specific PROFILE-NAME from the user if called
+interactively."
+  (interactive "i\ni") ; ignore both arguments, we'll set them later
+  (if (interactive-p)
+      (progn
+        (setq regexp (read-file-name "Path regexp: "
+                                     (buffer-file-name)))
+        (setq profile-name
+              (completing-read "Apply profile: "
+                               profile-obarray nil t
+                               (symbol-name profile-current))))
+    (unless (intern-soft profile-name profile-obarray)
+      (error "Profile " profile-name " does not exists")))
+  (setq profile-path-alist
+        (cons (cons regexp profile-name) profile-path-alist))
+  (profile-save-path-alist))
+
+;;;###autoload
+(defun profile-find-file (filename profile-name)
+  "Modify `profile-path-alist', call `profile-save-path-alist' to
+remember the modification and open a file using `find-file'. This
+function allows a user the open the file FILENAME with a
+different profile PROFILE-NAME than the default profile and
+remember this setting."
+  (interactive "GFind file: \ni")
+  (if (interactive-p)
+      (setq profile-name
+            (completing-read "Apply profile: "
+                             profile-obarray nil t
+                             (symbol-name profile-current)))
+    (unless (intern-soft profile-name profile-obarray)
+      (error "Profile " profile-name " does not exists")))
+  (setq profile-path-alist
+        (cons (cons filename profile-name) profile-path-alist))
+  (profile-save-path-alist)
+  (find-file filename))
+
+;;; ---------------------------------------------------------------------
+;;; Initialization
+
+(defadvice find-file-noselect-1
+  (before before-find-file-noselect-1 activate)
+  "Set the buffer local variable `profile-current' right after
+the creation of the buffer."
+  (with-current-buffer buf
+    (make-local-variable 'profile-current)
+    (put 'profile-current 'permanent-local t)
+    (setq profile-current
+          (intern-soft (profile-find-path-alist filename) profile-obarray))))
+
+;;; ---------------------------------------------------------------------
+;;; Exposition
+
+(provide 'profiles)
