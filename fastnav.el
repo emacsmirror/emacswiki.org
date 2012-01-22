@@ -1,222 +1,350 @@
-#FILE text/x-emacs-lisp
-OzsgZmFzdG5hdi5lbCAtLSBGYXN0IG5hdmlnYXRpb24gYW5kIGVkaXRpbmcgcm91dGluZXMuCjs7
-Cjs7IFZlcnNpb24gMS4wNQo7Owo7OyBDb3B5cmlnaHQgKEMpIDIwMDgsIDIwMDksIDIwMTAgIFpz
-b2x0IFRlcmVrIDx6c29sdEBnb29nbGUuY29tPgo7Owo7OyBDb21wYXRpYmlsaXR5OiBHTlUgRW1h
-Y3MgMjIsIDIzLgo7Owo7OyBJbnNwaXJlZCBieSB6YXAtdG8tY2hhciwgdGhpcyBsaWJyYXJ5IGRl
-ZmluZXMgZGlmZmVyZW50IHJvdXRpbmVzIG9wZXJhdGluZyBvbgo7OyB0aGUgbmV4dC9wcmV2aW91
-cyBOJ3RoIG9jY3VycmVuY2Ugb2YgYSBjaGFyYWN0ZXIuICBXaGVuIGludm9raW5nIG9uZSBvZiB0
-aGVzZQo7OyBjb21tYW5kcywgdGhlIHVzZXIgaXMgaW50ZXJhY3RpdmVseSBxdWVyaWVkIGZvciBh
-IGNoYXJhY3RlciB3aGlsZSB0aGUKOzsgcG90ZW50aWFsIHRhcmdldCBwb3NpdGlvbnMgYXJlIGhp
-Z2hsaWdodGVkLgo7Owo7OyBGb3IgZXhhbXBsZSwgTUVUQS1zIChqdW1wLXRvLWNoYXItZm9yd2Fy
-ZCkgaGlnaGxpZ2h0cyB0aGUgbmV4dCBvY2N1cnJlbmNlcyBvZgo7OyBlYWNoIGNoYXJhY3RlciBh
-bmQgcHJvbXB0cyBmb3Igb25lLiAgT25jZSB0aGUgdXNlciBwaWNrcyBhIGNoYXIsIHRoZSBwb2lu
-dCBpcwo7OyBtb3ZlZCB0byB0aGF0IHBvc2l0aW9uLiAgU3Vic2VxdWVudCBpbnZvY2F0aW9ucyBv
-ZiBNRVRBLXMgYmVmb3JlIHBpY2tpbmcgYQo7OyBjaGFyYWN0ZXIgaW5jcmVhc2VzIE4sIHRoYXQg
-aXMsIHRoZSBzZWNvbmQsIHRoaXJkLCBldGMuIG9jY3VycmVuY2VzIGFyZQo7OyBoaWdobGlnaHRl
-ZCBhbmQgdGFyZ2V0ZWQuCjs7Cjs7IFRoZSBzcHJpbnQtZm9yd2FyZC9iYWNrd2FyZCBjb21tYW5k
-cyBhcHBseSBpdGVyYXRpdmUganVtcGluZyB1bnRpbCByZXR1cm4vQy1HCjs7IGlzIGhpdCwgbWFr
-aW5nIGl0IHBvc3NpYmxlIHRvIHJlYWNoIGFueSBwb2ludCBvZiB0aGUgdGV4dCB3aXRoIGp1c3Qg
-YSBmZXcKOzsga2V5c3Ryb2tlcy4KOzsKOzsgVG8gdXNlIGl0LCBzaW1wbHkgcHV0IHRoaXMgZmls
-ZSB1bmRlciB+Ly5lbWFjcy5kLywgYWRkIChyZXF1aXJlICdmYXN0bmF2KSB0bwo7OyB5b3VyIGVt
-YWNzIGluaXRpYWxpemF0aW9uIGZpbGUgYW5kIGRlZmluZSBzb21lIGtleSBiaW5kaW5ncywgZm9y
-IGV4YW1wbGU6Cjs7Cjs7IChnbG9iYWwtc2V0LWtleSAiXE0teiIgJ3phcC11cC10by1jaGFyLWZv
-cndhcmQpCjs7IChnbG9iYWwtc2V0LWtleSAiXE0tWiIgJ3phcC11cC10by1jaGFyLWJhY2t3YXJk
-KQo7OyAoZ2xvYmFsLXNldC1rZXkgIlxNLXMiICdqdW1wLXRvLWNoYXItZm9yd2FyZCkKOzsgKGds
-b2JhbC1zZXQta2V5ICJcTS1TIiAnanVtcC10by1jaGFyLWJhY2t3YXJkKQo7OyAoZ2xvYmFsLXNl
-dC1rZXkgIlxNLXIiICdyZXBsYWNlLWNoYXItZm9yd2FyZCkKOzsgKGdsb2JhbC1zZXQta2V5ICJc
-TS1SIiAncmVwbGFjZS1jaGFyLWJhY2t3YXJkKQo7OyAoZ2xvYmFsLXNldC1rZXkgIlxNLWkiICdp
-bnNlcnQtYXQtY2hhci1mb3J3YXJkKQo7OyAoZ2xvYmFsLXNldC1rZXkgIlxNLUkiICdpbnNlcnQt
-YXQtY2hhci1iYWNrd2FyZCkKOzsgKGdsb2JhbC1zZXQta2V5ICJcTS1qIiAnZXhlY3V0ZS1hdC1j
-aGFyLWZvcndhcmQpCjs7IChnbG9iYWwtc2V0LWtleSAiXE0tSiIgJ2V4ZWN1dGUtYXQtY2hhci1i
-YWNrd2FyZCkKOzsgKGdsb2JhbC1zZXQta2V5ICJcTS1rIiAnZGVsZXRlLWNoYXItZm9yd2FyZCkK
-OzsgKGdsb2JhbC1zZXQta2V5ICJcTS1LIiAnZGVsZXRlLWNoYXItYmFja3dhcmQpCjs7IChnbG9i
-YWwtc2V0LWtleSAiXE0tbSIgJ21hcmstdG8tY2hhci1mb3J3YXJkKQo7OyAoZ2xvYmFsLXNldC1r
-ZXkgIlxNLU0iICdtYXJrLXRvLWNoYXItYmFja3dhcmQpCjs7Cjs7IChnbG9iYWwtc2V0LWtleSAi
-XE0tcCIgJ3NwcmludC1mb3J3YXJkKQo7OyAoZ2xvYmFsLXNldC1rZXkgIlxNLVAiICdzcHJpbnQt
-YmFja3dhcmQpCjs7Cjs7IENoYW5nZXM6Cjs7ICAgMjAxMC0wMi0wNTogRml4IGZvciBvcmcgbW9k
-ZSwgYWxsIGNvbW1hbmRzIHdlcmUgYnJva2VuLgo7OyAgICAgICAgICAgICAgIEZpeCBmb3IgZWxl
-Y3RyaWMgY2hhcmFjdGVycyBpbiBjZXJ0YWluIG1vZGVzLgo7OyAgIDIwMTAtMDItMTE6IFlldCBh
-bm90aGVyIG1pbm9yIGZpeCBmb3Igc3dpdGNoaW5nIHRvIG5leHQvcHJldmlvdXMgY2hhci4KOzsg
-ICAyMDEwLTA1LTI4OiBBZGRlZCBzcHJpbnQgY29tbWFuZHMuCjs7ICAgMjAxMS0wMS0xOTogRml4
-ZWQgcmVtb3ZhbCBvZiBvdGhlciBvdmVybGF5cyAobGlrZSBib29rbWFya3MgZm9yIGV4YW1wbGUp
-Lgo7Owo7OyBUaGlzIHByb2dyYW0gaXMgZnJlZSBzb2Z0d2FyZTsgeW91IGNhbiByZWRpc3RyaWJ1
-dGUgaXQgYW5kL29yCjs7IG1vZGlmeSBpdCB1bmRlciB0aGUgdGVybXMgb2YgdGhlIEdOVSBHZW5l
-cmFsIFB1YmxpYyBMaWNlbnNlCjs7IGFzIHB1Ymxpc2hlZCBieSB0aGUgRnJlZSBTb2Z0d2FyZSBG
-b3VuZGF0aW9uOyBlaXRoZXIgdmVyc2lvbiAyCjs7IG9mIHRoZSBMaWNlbnNlLCBvciAoYXQgeW91
-ciBvcHRpb24pIGFueSBsYXRlciB2ZXJzaW9uLgo7Owo7OyBUaGlzIHByb2dyYW0gaXMgZGlzdHJp
-YnV0ZWQgaW4gdGhlIGhvcGUgdGhhdCBpdCB3aWxsIGJlIHVzZWZ1bCwKOzsgYnV0IFdJVEhPVVQg
-QU5ZIFdBUlJBTlRZOyB3aXRob3V0IGV2ZW4gdGhlIGltcGxpZWQgd2FycmFudHkgb2YKOzsgTUVS
-Q0hBTlRBQklMSVRZIG9yIEZJVE5FU1MgRk9SIEEgUEFSVElDVUxBUiBQVVJQT1NFLiAgU2VlIHRo
-ZQo7OyBHTlUgR2VuZXJhbCBQdWJsaWMgTGljZW5zZSBmb3IgbW9yZSBkZXRhaWxzLgo7Owo7OyBZ
-b3Ugc2hvdWxkIGhhdmUgcmVjZWl2ZWQgYSBjb3B5IG9mIHRoZSBHTlUgR2VuZXJhbCBQdWJsaWMg
-TGljZW5zZQo7OyBhbG9uZyB3aXRoIHRoaXMgcHJvZ3JhbTsgaWYgbm90LCB3cml0ZSB0byB0aGUg
-RnJlZSBTb2Z0d2FyZQo7OyBGb3VuZGF0aW9uLCBJbmMuLCA1OSBUZW1wbGUgUGxhY2UgLSBTdWl0
-ZSAzMzAsIEJvc3RvbiwgTUEKOzsgMDIxMTEtMTMwNywgVVNBLgoKKGRlZnVuIHNlYXJjaC1jaGFy
-LWZvcndhcmQgKGFyZyBjaGFyKQogICJNb3ZlcyB0byB0aGUgYXJnLXRoIG9jY3VycmVuY2Ugb2Yg
-Y2hhciBmb3J3YXJkIChiYWNrd2FyZCBpZiBOCmlzIG5lZ2F0aXZlKS4gIElmIHRoZXJlIGlzbid0
-IHJvb20sIGdvIGFzIGZhciBhcyBwb3NzaWJsZSAobm8KZXJyb3IpLiIKICAobGV0ICgob2xkLWNh
-c2UtZm9sZC1zZWFyY2ggY2FzZS1mb2xkLXNlYXJjaCkpCiAgICAoc2V0cSBjYXNlLWZvbGQtc2Vh
-cmNoIG5pbCkKICAgIChpZiAoPCBhcmcgMCkKCShzZWFyY2gtYmFja3dhcmQgKGNoYXItdG8tc3Ry
-aW5nIGNoYXIpIG5pbCBuaWwgKC0gYXJnKSkKICAgICAgKHByb2duCgkoZm9yd2FyZC1jaGFyIDEp
-Cgkoc2VhcmNoLWZvcndhcmQgKGNoYXItdG8tc3RyaW5nIGNoYXIpIG5pbCBuaWwgYXJnKQoJKGJh
-Y2t3YXJkLWNoYXIgMSkpKQogICAgKHNldHEgY2FzZS1mb2xkLXNlYXJjaCBvbGQtY2FzZS1mb2xk
-LXNlYXJjaCkpKQoKKGRlZnVuIHNlYXJjaC1jaGFyLWJhY2t3YXJkIChhcmcgY2hhcikKICAiTW92
-ZXMgdG8gdGhlIGFyZy10aCBvY2N1cnJlbmNlIG9mIGNoYXIgYmFja3dhcmQgKGZvcndhcmQgaWYg
-TgppcyBuZWdhdGl2ZSkuICBJZiB0aGVyZSBpc24ndCByb29tLCBnbyBhcyBmYXIgYXMgcG9zc2li
-bGUgKG5vCmVycm9yKS4iCiAgKHNlYXJjaC1jaGFyLWZvcndhcmQgKC0gYXJnKSBjaGFyKSkgIAoK
-KGRlZnVuIGdldC1udGgtY2hhcnMgKGFyZykKICAiQ29tcHV0ZXMgYW5kIHJldHVybnMgdGhlIHBv
-c2l0aW9ucyBvZiB0aGUgQVJHJ3RoIG9jY3VycmVuY2Ugb2YKY2hhcmFjdGVycyBvZiB0aGUgcmFu
-Z2UgMSAuLiAyNTUuIgogIChsZXQgKChzZXEgJygpKQoJKHJlc3VsdCAnKCkpKQogICAgOzsgQ3Jl
-YXRlIGNoYXJhY3RlciBzZXF1ZW5jZSB0byBsb29rIGZvci4KICAgIChzZXRxIGNoYXIgMjU1KQog
-ICAgKHdoaWxlICg+PSBjaGFyIDEpCiAgICAgIChzZXRxIHNlcSAoY29ucyBjaGFyIHNlcSkpCiAg
-ICAgIChzZXRxIGNoYXIgKDEtIGNoYXIpKSkKICAgIDs7IEZpbmQgb2YgbnRoIG9jY3VycmVuY2Ug
-b2YgZWFjaCBjaGFyYWN0ZXIKICAgIChsZXQgKChvbGQtY2FzZS1mb2xkLXNlYXJjaCBjYXNlLWZv
-bGQtc2VhcmNoKSkKICAgICAgKHNldHEgY2FzZS1mb2xkLXNlYXJjaCBuaWwpCiAgICAgIChzZXRx
-IHJlc3VsdAoJICAgIChtYXBjYXIgKGxhbWJkYSAoY2hhcikKCQkgICAgICAobGV0ICgob2xkLXBv
-aW50IChwb2ludCkpKQoJCQkoc2F2ZS1leGN1cnNpb24KCQkJICAoaWYgKDwgYXJnIDApCgkJCSAg
-ICAgIChzZWFyY2gtYmFja3dhcmQgKGNoYXItdG8tc3RyaW5nIGNoYXIpIG5pbCB0ICgtIGFyZykp
-CgkJCSAgICAocHJvZ24KCQkJICAgICAgKGZvcndhcmQtY2hhciAxKQoJCQkgICAgICAoc2VhcmNo
-LWZvcndhcmQgKGNoYXItdG8tc3RyaW5nIGNoYXIpIG5pbCB0IGFyZykKCQkJICAgICAgKGJhY2t3
-YXJkLWNoYXIgMSkpKQoJCQkgIChpZiAoPSAocG9pbnQpIG9sZC1wb2ludCkKCQkJICAgICAgbmls
-CgkJCSAgICAocG9pbnQpKSkpKQoJCSAgICBzZXEpKQogICAgICAoc2V0cSBjYXNlLWZvbGQtc2Vh
-cmNoIG9sZC1jYXNlLWZvbGQtc2VhcmNoKQogICAgICByZXN1bHQpKSkKCihkZWZ1biBoaWdobGln
-aHQtcmVhZC1jaGFyICh0ZXh0IGFyZyBmb3J3YXJkZXIgYmFja3dhcmRlcikKICAiSGlnaGxpZ2h0
-cyB0aGUgQVJHJ3RoIG9jY3VyZW5jZXMgb2YgZWFjaCBjaGFyYWN0ZXIgd2hpbGUKcXVlcnlpbmcg
-b25lIHVzaW5nIG1lc3NhZ2UgVEVYVC4gTmVnYXRpdmUgQVJHIG1lYW5zIGJhY2t3YXJkCnNlYXJj
-aCBvZiBvY2N1cmVuY2VzLiIKICAoaWYgKG5vdCAobWluaWJ1ZmZlcnApKQogICAgICAobWVzc2Fn
-ZSB0ZXh0KSkKICAodW53aW5kLXByb3RlY3QKICAgICAgKGxldCAoKHJlc3VsdCBuaWwpCgkgICAg
-KGZvcndhcmRlcnMgYCgsZm9yd2FyZGVyIGZvcndhcmQtY2hhciBuZXh0LWxpbmUpKQoJICAgIChi
-YWNrd2FyZGVycyBgKCxiYWNrd2FyZGVyIGJhY2t3YXJkLWNoYXIgcHJldmlvdXMtbGluZSkpKQoJ
-KHdoaWxlIChub3QgcmVzdWx0KQoJICAocmVtb3ZlLW92ZXJsYXlzIG5pbCBuaWwgJ2Zhc3RuYXYg
-dCkKCSAgKG1hcGNhciAobGFtYmRhIChwKQoJCSAgICAoaWYgcAoJCQkobGV0ICgob3YgKG1ha2Ut
-b3ZlcmxheSBwICgxKyBwKSkpKQoJCQkgIChvdmVybGF5LXB1dCBvdiAncHJpb3JpdHkgMTAwKQoJ
-CQkgIChvdmVybGF5LXB1dCBvdiAnZmFjZSBsYXp5LWhpZ2hsaWdodC1mYWNlKQoJCQkgIChvdmVy
-bGF5LXB1dCBvdiAnZmFzdG5hdiB0KQoJCQkgIG92KSkpCgkJICAoZ2V0LW50aC1jaGFycyBhcmcp
-KQoJICAobGV0KiAoKGV2ZW50IChyZWFkLWV2ZW50KSkKCQkgKGNoYXIgKGV2ZW50LWJhc2ljLXR5
-cGUgZXZlbnQpKQoJCSAoZGVsdGEgMCkKCQkgKGNvbW1hbmQgKGtleS1iaW5kaW5nICh2ZWN0b3Ig
-ZXZlbnQpKSkpCgkgICAgKGlmIChvcgoJCSAoYW5kIChudW1iZXJwIGV2ZW50KSAoPCBldmVudCAy
-NTYpKQoJCSAobWVtYmVyIGNvbW1hbmQKCQkJIDs7IHdoaWNoIGNvbW1hbmRzIGhhdmUgYSBrZXlz
-dHJva2UKCQkJIDs7IHRoYXQgaXMgdmFsaWQgZm9yIHNlYXJjaAoJCQkgJyhzZWxmLWluc2VydC1j
-b21tYW5kCgkJCSAgIG9yZy1zZWxmLWluc2VydC1jb21tYW5kCgkJCSAgIG5ld2xpbmUgbmV3bGlu
-ZS1hbmQtaW5kZW50KSkpCgkJKHNldHEgcmVzdWx0IChsaXN0IGFyZyBldmVudCkpCgkgICAgICAo
-cHJvZ24KCQkoaWYgKG1lbWJlciBjb21tYW5kIGZvcndhcmRlcnMpCgkJICAgIDs7IGluY3JlYXNl
-IGFyZ3VtZW50CgkJICAgIChzZXRxIGRlbHRhICsxKQoJCSAgKGlmIChtZW1iZXIgY29tbWFuZCBi
-YWNrd2FyZGVycykKCQkgICAgICA7OyBkZWNyZWFzZSBhcmd1bWVudAoJCSAgICAgIChzZXRxIGRl
-bHRhIC0xKQoJCSAgICAoa2V5Ym9hcmQtcXVpdCkpKQoJCTs7IGlnbm9yZSBhcmcgPSAwCgkJKHNl
-dHEgYXJnIChpZiAoPSAoKyBhcmcgZGVsdGEpIDApCgkJCSAgICAgICgrIGFyZyAoKiAyIGRlbHRh
-KSkKCQkJICAgICgrIGFyZyBkZWx0YSkpKSkpKSkKCXJlc3VsdCkKICAgIChyZW1vdmUtb3Zlcmxh
-eXMgbmlsIG5pbCAnZmFzdG5hdiB0KSkpCgo7OyBGb3IgZGVidWdnaW5nLgo7OyhrZXktYmluZGlu
-ZyAodmVjdG9yIChyZWFkLWV2ZW50KSkpCjs7KGV2ZW50LWJhc2ljLXR5cGUgKHJlYWQtZXZlbnQp
-KQoKKGRlZnVuIGhpZ2hsaWdodC1yZWFkLWNoYXItYmFja3dhcmQgKHRleHQgYXJnIGZvcndhcmRl
-ciBiYWNrd2FyZGVyKQogICJIaWdobGlnaHRzIHRoZSBiYWNrd2FyZCBBUkcndGggb2NjdXJlbmNl
-cyBvZiBlYWNoIGNoYXJhY3Rlcgp3aGlsZSBxdWVyeWluZyBvbmUgdXNpbmcgbWVzc2FnZSBURVhU
-LiIKICAobGV0ICgoYXJncyAoaGlnaGxpZ2h0LXJlYWQtY2hhciB0ZXh0ICgtIGFyZykgZm9yd2Fy
-ZGVyIGJhY2t3YXJkZXIpKSkKICAgIChsaXN0ICgtIChjYXIgYXJncykpIChjYWRyIGFyZ3MpKSkp
-CgooZGVmdW4ganVtcC10by1jaGFyLWZvcndhcmQgKGFyZykKICAiSnVtcCB0byB0aGUgQVJHJ3Ro
-IG9jY3VyZW5jZSBvZiBhIGNoYXJhY3RlciB0aGF0IGlzIHF1ZXJpZWQKaW50ZXJhY3RpdmVseSB3
-aGlsZSBoaWdobGlnaHRpbmcgdGhlIHBvc3NpYmxlIHBvc2l0aW9ucy4iCiAgKGludGVyYWN0aXZl
-ICJwIikKICAoYXBwbHkgJ3NlYXJjaC1jaGFyLWZvcndhcmQgKGhpZ2hsaWdodC1yZWFkLWNoYXIg
-Ikp1bXAgdG8gY2hhcjoiIGFyZwoJCQkJCQkgICAnanVtcC10by1jaGFyLWZvcndhcmQKCQkJCQkJ
-ICAgJ2p1bXAtdG8tY2hhci1iYWNrd2FyZCkpKQoKKGRlZnVuIGp1bXAtdG8tY2hhci1iYWNrd2Fy
-ZCAoYXJnKQogICJKdW1wIGJhY2t3YXJkIHRvIHRoZSBBUkcndGggb2NjdXJlbmNlIG9mIGEgY2hh
-cmFjdGVyIHRoYXQgaXMKcXVlcmllZCBpbnRlcmFjdGl2ZWx5IHdoaWxlIGhpZ2hsaWdodGluZyB0
-aGUgcG9zc2libGUgcG9zaXRpb25zLiIKICAoaW50ZXJhY3RpdmUgInAiKQogIChhcHBseSAnc2Vh
-cmNoLWNoYXItYmFja3dhcmQKCSAoaGlnaGxpZ2h0LXJlYWQtY2hhci1iYWNrd2FyZCAiSnVtcCB0
-byBjaGFyIGJhY2t3YXJkOiIgYXJnCgkJCQkgICAgICAgJ2p1bXAtdG8tY2hhci1mb3J3YXJkCgkJ
-CQkgICAgICAgJ2p1bXAtdG8tY2hhci1iYWNrd2FyZCkpKQoKKGRlZnVuIG1hcmstdG8tY2hhci1m
-b3J3YXJkIChhcmcpCiAgIlNldCBtYXJrIGJlZm9yZSB0aGUgQVJHJ3RoIG9jY3VyZW5jZSBvZiBh
-IGNoYXJhY3RlciBxdWVyaWVkCmludGVyYWN0aXZlbHkuIgogIChpbnRlcmFjdGl2ZSAicCIpCiAg
-KGxldCAoKGFyZ3MgKGhpZ2hsaWdodC1yZWFkLWNoYXIgIkNvcHkgdG8gY2hhcjogIiBhcmcKCQkJ
-CSAgICdtYXJrLXRvLWNoYXItZm9yd2FyZAoJCQkJICAgJ21hcmstdG8tY2hhci1iYWNrd2FyZCkp
-KQogICAgKHNldC1tYXJrIChwb2ludCkpCiAgICAoYXBwbHkgJ3NlYXJjaC1jaGFyLWZvcndhcmQg
-YXJncykKICAgIChleGNoYW5nZS1wb2ludC1hbmQtbWFyaykpKQoKKGRlZnVuIG1hcmstdG8tY2hh
-ci1iYWNrd2FyZCAoYXJnKQogICJTZXQgbWFyayBiYWNrd2FyZCBhZnRlciB0aGUgQVJHJ3RoIG9j
-Y3VyZW5jZSBvZiBhIGNoYXJhY3RlcgpxdWVyaWVkIGludGVyYWN0aXZlbHkuIgogIChpbnRlcmFj
-dGl2ZSAicCIpCiAgKGxldCAoKGFyZ3MgKGhpZ2hsaWdodC1yZWFkLWNoYXItYmFja3dhcmQgIkNv
-cHkgdG8gY2hhciBiYWNrd2FyZDogIiBhcmcKCQkJCQkgICAgJ21hcmstdG8tY2hhci1mb3J3YXJk
-CgkJCQkJICAgICdtYXJrLXRvLWNoYXItYmFja3dhcmQpKSkKICAgIChzZXQtbWFyayAocG9pbnQp
-KQogICAgKGFwcGx5ICdzZWFyY2gtY2hhci1iYWNrd2FyZCBhcmdzKQogICAgKGV4Y2hhbmdlLXBv
-aW50LWFuZC1tYXJrKSkpCgooZGVmdW4gemFwLXVwLXRvLWNoYXItZm9yd2FyZCAoYXJnKQogICJL
-aWxsIHRleHQgdXAgdG8gdGhlIEFSRyd0aCBvY2N1cmVuY2Ugb2YgYSBjaGFyYWN0ZXIgcXVlcmll
-ZAppbnRlcmFjdGl2ZWx5LiIKICAoaW50ZXJhY3RpdmUgInAiKQogIChsZXQgKChhcmdzIChoaWdo
-bGlnaHQtcmVhZC1jaGFyICJaYXAgdXAgdG8gY2hhcjogIiBhcmcKCQkJCSAgICd6YXAtdXAtdG8t
-Y2hhci1mb3J3YXJkCgkJCQkgICAnemFwLXVwLXRvLWNoYXItYmFja3dhcmQpKSkKICAgIChkZWxl
-dGUtcmVnaW9uIChwb2ludCkKCQkgICAocHJvZ24gCgkJICAgICAoYXBwbHkgJ3NlYXJjaC1jaGFy
-LWZvcndhcmQgYXJncykKCQkgICAgIChwb2ludCkpKSkpCgooZGVmdW4gemFwLXVwLXRvLWNoYXIt
-YmFja3dhcmQgKGFyZykKICAiS2lsbCB0ZXh0IGJhY2t3YXJkIHRvIHRoZSBBUkcndGggb2NjdXJl
-bmNlIG9mIGEgY2hhcmFjdGVyCnF1ZXJpZWQgaW50ZXJhY3RpdmVseS4iCiAgKGludGVyYWN0aXZl
-ICJwIikKICAobGV0ICgoYXJncyAoaGlnaGxpZ2h0LXJlYWQtY2hhci1iYWNrd2FyZCAiWmFwIHVw
-IHRvIGNoYXIgYmFja3dhcmQ6ICIgYXJnCgkJCQkJICAgICd6YXAtdXAtdG8tY2hhci1mb3J3YXJk
-CgkJCQkJICAgICd6YXAtdXAtdG8tY2hhci1iYWNrd2FyZCkpKQogICAgKGRlbGV0ZS1yZWdpb24g
-KHBvaW50KQoJCSAgIChwcm9nbiAKCQkgICAgIChhcHBseSAnc2VhcmNoLWNoYXItYmFja3dhcmQg
-YXJncykKCQkgICAgIChwb2ludCkpKSkpCgooZGVmdW4gcmVwbGFjZS1jaGFyLWZvcndhcmQgKGFy
-ZykKICAiSW50ZXJhY3RpdmVseSByZXBsYWNlcyB0aGUgQVJHJ3RoIG9jY3VyZW5jZSBvZiBhIGNo
-YXJhY3Rlci4iCiAgKGludGVyYWN0aXZlICJwIikKICAobGV0ICgoYXJncyAoaGlnaGxpZ2h0LXJl
-YWQtY2hhciAiUmVwbGFjZSBjaGFyOiAiIGFyZwoJCQkJICAgJ3JlcGxhY2UtY2hhci1mb3J3YXJk
-CgkJCQkgICAncmVwbGFjZS1jaGFyLWJhY2t3YXJkKSkpCiAgICAoc2F2ZS1leGN1cnNpb24KICAg
-ICAgKGFwcGx5ICdzZWFyY2gtY2hhci1mb3J3YXJkIGFyZ3MpCiAgICAgIChsZXQgKChjaGFyIChy
-ZWFkLWNoYXIgKGlmIChtaW5pYnVmZmVycCkgbmlsICJXaXRoIGNoYXI6ICIpKSkpCgkoZGVsZXRl
-LWNoYXIgKzEpCgkoaW5zZXJ0IGNoYXIpKSkpKQoKKGRlZnVuIHJlcGxhY2UtY2hhci1iYWNrd2Fy
-ZCAoYXJnKQogICJJbnRlcmFjdGl2ZWx5IHJlcGxhY2VzIHRoZSBBUkcndGggYmFja3dhcmQgb2Nj
-dXJlbmNlIG9mIGEKY2hhcmFjdGVyLiIKICAoaW50ZXJhY3RpdmUgInAiKQogIChsZXQgKChhcmdz
-IChoaWdobGlnaHQtcmVhZC1jaGFyLWJhY2t3YXJkICJSZXBsYWNlIGNoYXIgYmFja3dhcmQ6ICIg
-YXJnCgkJCQkJICAgICdyZXBsYWNlLWNoYXItZm9yd2FyZAoJCQkJCSAgICAncmVwbGFjZS1jaGFy
-LWJhY2t3YXJkKSkpCiAgICAoc2F2ZS1leGN1cnNpb24KICAgICAgKGFwcGx5ICdzZWFyY2gtY2hh
-ci1iYWNrd2FyZCBhcmdzKQogICAgICAobGV0ICgoY2hhciAocmVhZC1jaGFyIChpZiAobWluaWJ1
-ZmZlcnApIG5pbCAiV2l0aCBjaGFyOiAiKSkpKQoJKGRlbGV0ZS1jaGFyICsxKQoJKGluc2VydCBj
-aGFyKSkpKSkKCihkZWZ1biBpbnNlcnQtYXQtY2hhci1mb3J3YXJkIChhcmcpCiAgIlF1ZXJpZXMg
-Zm9yIGEgY2hhcmFjdGVyIGFuZCBhIHN0cmluZyB0aGF0IGlzIGluc3RlcnRlZCBhdAp0aGUgQVJH
-J3RoIG9jY3VyZW5jZSBvZiB0aGUgY2hhcmFjdGVyLiIKICAoaW50ZXJhY3RpdmUgInAiKQogIChs
-ZXQgKChhcmdzIChoaWdobGlnaHQtcmVhZC1jaGFyICJFeGVjdXRlIGZvcndhcmQgYmVmb3JlOiAi
-IGFyZwoJCQkJICAgJ2luc2VydC1hdC1jaGFyLWZvcndhcmQKCQkJCSAgICdpbnNlcnQtYXQtY2hh
-ci1iYWNrd2FyZCkpKQogICAgKHNhdmUtZXhjdXJzaW9uCiAgICAgIChhcHBseSAnc2VhcmNoLWNo
-YXItZm9yd2FyZCBhcmdzKQogICAgICAoaW5zZXJ0IChyZWFkLXN0cmluZyAiU3RyaW5nOiAiKSkp
-KSkKCihkZWZ1biBpbnNlcnQtYXQtY2hhci1iYWNrd2FyZCAoYXJnKQogICJRdWVyaWVzIGZvciBh
-IGNoYXJhY3RlciBhbmQgYSBzdHJpbmcgdGhhdCBpcyBpbnN0ZXJ0ZWQgYXQKdGhlIGJhY2t3YXJk
-IEFSRyd0aCBvY2N1cmVuY2Ugb2YgdGhlIGNoYXJhY3Rlci4iCiAgKGludGVyYWN0aXZlICJwIikK
-ICAobGV0ICgoYXJncyAoaGlnaGxpZ2h0LXJlYWQtY2hhci1iYWNrd2FyZCAiRXhlY3V0ZSBiYWNr
-d2FyZCBiZWZvcmU6ICIgYXJnCgkJCQkJICAgICdpbnNlcnQtYXQtY2hhci1mb3J3YXJkCgkJCQkJ
-ICAgICdpbnNlcnQtYXQtY2hhci1iYWNrd2FyZCkpKQogICAgKHNhdmUtZXhjdXJzaW9uCiAgICAg
-IChhcHBseSAnc2VhcmNoLWNoYXItYmFja3dhcmQgYXJncykKICAgICAgKGluc2VydCAocmVhZC1z
-dHJpbmcgIlN0cmluZzogIikpKSkpCgooZGVmdW4gZXhlY3V0ZS1hdC1jaGFyLWZvcndhcmQgKGFy
-ZykKICAiUXVlcmllcyBmb3IgYSBjaGFyYWN0ZXIgYW5kIGEga2V5IHNlcXVlbmNlIHRoYXQgaXMg
-ZXhlY3V0ZWQgYXQKdGhlIEFSRyd0aCBvY2N1cmVuY2Ugb2YgdGhlIGNoYXJhY3Rlci4iCiAgKGlu
-dGVyYWN0aXZlICJwIikKICAobGV0ICgoYXJncyAoaGlnaGxpZ2h0LXJlYWQtY2hhciAiRXhlY3V0
-ZSBmb3J3YXJkIGJlZm9yZTogIiBhcmcKCQkJCSAgICdleGVjdXRlLWF0LWNoYXItZm9yd2FyZAoJ
-CQkJICAgJ2V4ZWN1dGUtYXQtY2hhci1iYWNrd2FyZCkpKQogICAgKHNhdmUtZXhjdXJzaW9uCiAg
-ICAgIChhcHBseSAnc2VhcmNoLWNoYXItZm9yd2FyZCBhcmdzKQogICAgICAoZXhlY3V0ZS1rYmQt
-bWFjcm8gKHJlYWQta2V5LXNlcXVlbmNlLXZlY3RvcgoJCQkgIChpZiAobWluaWJ1ZmZlcnApIG5p
-bCAiS2V5IHNlcXVlbmNlOiAiKSkpKSkpCgooZGVmdW4gZXhlY3V0ZS1hdC1jaGFyLWJhY2t3YXJk
-IChhcmcpCiAgIlF1ZXJpZXMgZm9yIGEgY2hhcmFjdGVyIGFuZCBhIGtleSBzZXF1ZW5jZSB0aGF0
-IGlzIGV4ZWN1dGVkIGF0CnRoZSBiYWNrd2FyZCBBUkcndGggb2NjdXJlbmNlIG9mIHRoZSBjaGFy
-YWN0ZXIuIgogIChpbnRlcmFjdGl2ZSAicCIpCiAgKGxldCAoKGFyZ3MgKGhpZ2hsaWdodC1yZWFk
-LWNoYXItYmFja3dhcmQgIkV4ZWN1dGUgYmFja3dhcmQgYmVmb3JlOiAiIGFyZwoJCQkJCSAgICAn
-ZXhlY3V0ZS1hdC1jaGFyLWZvcndhcmQKCQkJCQkgICAgJ2V4ZWN1dGUtYXQtY2hhci1iYWNrd2Fy
-ZCkpKQogICAgKHNhdmUtZXhjdXJzaW9uCiAgICAgIChhcHBseSAnc2VhcmNoLWNoYXItYmFja3dh
-cmQgYXJncykKICAgICAgKGV4ZWN1dGUta2JkLW1hY3JvIChyZWFkLWtleS1zZXF1ZW5jZS12ZWN0
-b3IKCQkJICAoaWYgKG1pbmlidWZmZXJwKSBuaWwgIktleSBzZXF1ZW5jZTogIikpKSkpKQoKKGRl
-ZnVuIGRlbGV0ZS1jaGFyLWZvcndhcmQgKGFyZykKICAiRGVsZXRlcyB0aGUgQVJHJ3RoIG9jY3Vy
-ZW5jZSBvZiBhIGNoYXJhY3Rlciwgd2hpY2ggaXMgcXVlcmllZAppbnRlcmFjdGl2ZWx5IHdoaWxl
-IGhpZ2hsaWdodGluZyB0aGUgcG9zc2libGUgcG9zaXRpb25zLiIKICAoaW50ZXJhY3RpdmUgInAi
-KQogIChsZXQgKChhcmdzIChoaWdobGlnaHQtcmVhZC1jaGFyICJEZWxldGUgZm9yd2FyZCBiZWZv
-cmU6ICIgYXJnCgkJCQkgICAnZGVsZXRlLWNoYXItZm9yd2FyZAoJCQkJICAgJ2RlbGV0ZS1jaGFy
-LWJhY2t3YXJkKSkpCiAgICAoc2F2ZS1leGN1cnNpb24KICAgICAgKGFwcGx5ICdzZWFyY2gtY2hh
-ci1mb3J3YXJkIGFyZ3MpCiAgICAgIChkZWxldGUtY2hhciArMSkpKSkKCihkZWZ1biBkZWxldGUt
-Y2hhci1iYWNrd2FyZCAoYXJnKQogICJEZWxldGVzIHRoZSBiYWNrd2FyZCBBUkcndGggb2NjdXJl
-bmNlIG9mIGEgY2hhcmFjdGVyLCB3aGljaCBpcwpxdWVyaWVkIGludGVyYWN0aXZlbHkgd2hpbGUg
-aGlnaGxpZ2h0aW5nIHRoZSBwb3NzaWJsZSBwb3NpdGlvbnMuIgogIChpbnRlcmFjdGl2ZSAicCIp
-CiAgKGxldCAoKGFyZ3MgKGhpZ2hsaWdodC1yZWFkLWNoYXItYmFja3dhcmQgIkRlbGV0ZSBiYWNr
-d2FyZCBiZWZvcmU6IFxuIiBhcmcKCQkJCQkgICAgJ2RlbGV0ZS1jaGFyLWZvcndhcmQKCQkJCQkg
-ICAgJ2RlbGV0ZS1jaGFyLWJhY2t3YXJkKSkpCiAgICAoc2F2ZS1leGN1cnNpb24KICAgICAgKGFw
-cGx5ICdzZWFyY2gtY2hhci1iYWNrd2FyZCBhcmdzKQogICAgICAoZGVsZXRlLWNoYXIgKzEpKSkp
-CgooZGVmdW4gc3ByaW50LWZvcndhcmQgKGFyZykKICAiUGVyZm9ybXMgYSBzZXF1ZW5jZSBvZiBq
-dW1waW5nIGZvcndhcmQgdG8gdGhlIG5leHQgY2hhcmFjdGVyCm1hdGNoaW5nIHRoZSBrZXlib2Fy
-ZCBldmVudC4iCiAgKGludGVyYWN0aXZlICJwIikKICAobGV0ICgocmVzdWx0IHQpKQogICAgKHdo
-aWxlIHJlc3VsdAogICAgICAoaWYgKHNldHEgcmVzdWx0IChoaWdobGlnaHQtcmVhZC1jaGFyICJT
-cHJpbnQ6IiBhcmcKCQkJCQkgICAgJ3NwcmludC1mb3J3YXJkCgkJCQkJICAgICdzcHJpbnQtYmFj
-a3dhcmQpKQoJICAocHJvZ24KCSAgICAoYXBwbHkgJ3NlYXJjaC1jaGFyLWZvcndhcmQgcmVzdWx0
-KQoJICAgIChzZXRxIGFyZyAoaWYgKD4gKGNhciByZXN1bHQpIDApIDEgLTEpKSkpKSkpCgooZGVm
-dW4gc3ByaW50LWJhY2t3YXJkIChhcmcpCiAgIlBlcmZvcm1zIGEgc2VxdWVuY2Ugb2YganVtcGlu
-ZyBiYWNrd2FyZCB0byB0aGUgbmV4dCBjaGFyYWN0ZXIKbWF0Y2hpbmcgdGhlIGtleWJvYXJkIGV2
-ZW50LiIKICAoaW50ZXJhY3RpdmUgInAiKQogIChzcHJpbnQtZm9yd2FyZCAoLSBhcmcpKSkKCihw
-cm92aWRlICdmYXN0bmF2KQo=
+;; fastnav.el -- Fast navigation and editing routines.
+;;
+;; Version 1.05
+;;
+;; Copyright (C) 2008, 2009, 2010  Zsolt Terek <zsolt@google.com>
+;;
+;; Compatibility: GNU Emacs 22, 23.
+;;
+;; Inspired by zap-to-char, this library defines different routines operating on
+;; the next/previous N'th occurrence of a character.  When invoking one of these
+;; commands, the user is interactively queried for a character while the
+;; potential target positions are highlighted.
+;;
+;; For example, META-s (jump-to-char-forward) highlights the next occurrences of
+;; each character and prompts for one.  Once the user picks a char, the point is
+;; moved to that position.  Subsequent invocations of META-s before picking a
+;; character increases N, that is, the second, third, etc. occurrences are
+;; highlighted and targeted.
+;;
+;; The sprint-forward/backward commands apply iterative jumping until return/C-G
+;; is hit, making it possible to reach any point of the text with just a few
+;; keystrokes.
+;;
+;; To use it, simply put this file under ~/.emacs.d/, add (require 'fastnav) to
+;; your emacs initialization file and define some key bindings, for example:
+;;
+;; (global-set-key "\M-z" 'zap-up-to-char-forward)
+;; (global-set-key "\M-Z" 'zap-up-to-char-backward)
+;; (global-set-key "\M-s" 'jump-to-char-forward)
+;; (global-set-key "\M-S" 'jump-to-char-backward)
+;; (global-set-key "\M-r" 'replace-char-forward)
+;; (global-set-key "\M-R" 'replace-char-backward)
+;; (global-set-key "\M-i" 'insert-at-char-forward)
+;; (global-set-key "\M-I" 'insert-at-char-backward)
+;; (global-set-key "\M-j" 'execute-at-char-forward)
+;; (global-set-key "\M-J" 'execute-at-char-backward)
+;; (global-set-key "\M-k" 'delete-char-forward)
+;; (global-set-key "\M-K" 'delete-char-backward)
+;; (global-set-key "\M-m" 'mark-to-char-forward)
+;; (global-set-key "\M-M" 'mark-to-char-backward)
+;;
+;; (global-set-key "\M-p" 'sprint-forward)
+;; (global-set-key "\M-P" 'sprint-backward)
+;;
+;; Changes:
+;;   2010-02-05: Fix for org mode, all commands were broken.
+;;               Fix for electric characters in certain modes.
+;;   2010-02-11: Yet another minor fix for switching to next/previous char.
+;;   2010-05-28: Added sprint commands.
+;;   2011-01-19: Fixed removal of other overlays (like bookmarks for example).
+;;
+;; This program is free software; you can redistribute it and/or
+;; modify it under the terms of the GNU General Public License
+;; as published by the Free Software Foundation; either version 2
+;; of the License, or (at your option) any later version.
+;;
+;; This program is distributed in the hope that it will be useful,
+;; but WITHOUT ANY WARRANTY; without even the implied warranty of
+;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+;; GNU General Public License for more details.
+;;
+;; You should have received a copy of the GNU General Public License
+;; along with this program; if not, write to the Free Software
+;; Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
+;; 02111-1307, USA.
+
+(defun search-char-forward (arg char)
+  "Moves to the arg-th occurrence of char forward (backward if N
+is negative).  If there isn't room, go as far as possible (no
+error)."
+  (let ((old-case-fold-search case-fold-search))
+    (setq case-fold-search nil)
+    (if (< arg 0)
+	(search-backward (char-to-string char) nil nil (- arg))
+      (progn
+	(forward-char 1)
+	(search-forward (char-to-string char) nil nil arg)
+	(backward-char 1)))
+    (setq case-fold-search old-case-fold-search)))
+
+(defun search-char-backward (arg char)
+  "Moves to the arg-th occurrence of char backward (forward if N
+is negative).  If there isn't room, go as far as possible (no
+error)."
+  (search-char-forward (- arg) char))  
+
+(defun get-nth-chars (arg)
+  "Computes and returns the positions of the ARG'th occurrence of
+characters of the range 1 .. 255."
+  (let ((seq '())
+	(result '()))
+    ;; Create character sequence to look for.
+    (setq char 255)
+    (while (>= char 1)
+      (setq seq (cons char seq))
+      (setq char (1- char)))
+    ;; Find of nth occurrence of each character
+    (let ((old-case-fold-search case-fold-search))
+      (setq case-fold-search nil)
+      (setq result
+	    (mapcar (lambda (char)
+		      (let ((old-point (point)))
+			(save-excursion
+			  (if (< arg 0)
+			      (search-backward (char-to-string char) nil t (- arg))
+			    (progn
+			      (forward-char 1)
+			      (search-forward (char-to-string char) nil t arg)
+			      (backward-char 1)))
+			  (if (= (point) old-point)
+			      nil
+			    (point)))))
+		    seq))
+      (setq case-fold-search old-case-fold-search)
+      result)))
+
+(defun highlight-read-char (text arg forwarder backwarder)
+  "Highlights the ARG'th occurences of each character while
+querying one using message TEXT. Negative ARG means backward
+search of occurences."
+  (if (not (minibufferp))
+      (message text))
+  (unwind-protect
+      (let ((result nil)
+	    (forwarders `(,forwarder forward-char next-line))
+	    (backwarders `(,backwarder backward-char previous-line)))
+	(while (not result)
+	  (remove-overlays nil nil 'fastnav t)
+	  (mapcar (lambda (p)
+		    (if p
+			(let ((ov (make-overlay p (1+ p))))
+			  (overlay-put ov 'priority 100)
+			  (overlay-put ov 'face lazy-highlight-face)
+			  (overlay-put ov 'fastnav t)
+			  ov)))
+		  (get-nth-chars arg))
+	  (let* ((event (read-event))
+		 (char (event-basic-type event))
+		 (delta 0)
+		 (command (key-binding (vector event))))
+	    (if (or
+		 (and (numberp event) (< event 256))
+		 (member command
+			 ;; which commands have a keystroke
+			 ;; that is valid for search
+			 '(self-insert-command
+			   org-self-insert-command
+			   newline newline-and-indent)))
+		(setq result (list arg event))
+	      (progn
+		(if (member command forwarders)
+		    ;; increase argument
+		    (setq delta +1)
+		  (if (member command backwarders)
+		      ;; decrease argument
+		      (setq delta -1)
+		    (keyboard-quit)))
+		;; ignore arg = 0
+		(setq arg (if (= (+ arg delta) 0)
+			      (+ arg (* 2 delta))
+			    (+ arg delta)))))))
+	result)
+    (remove-overlays nil nil 'fastnav t)))
+
+;; For debugging.
+;;(key-binding (vector (read-event)))
+;;(event-basic-type (read-event))
+
+(defun highlight-read-char-backward (text arg forwarder backwarder)
+  "Highlights the backward ARG'th occurences of each character
+while querying one using message TEXT."
+  (let ((args (highlight-read-char text (- arg) forwarder backwarder)))
+    (list (- (car args)) (cadr args))))
+
+(defun jump-to-char-forward (arg)
+  "Jump to the ARG'th occurence of a character that is queried
+interactively while highlighting the possible positions."
+  (interactive "p")
+  (apply 'search-char-forward (highlight-read-char "Jump to char:" arg
+						   'jump-to-char-forward
+						   'jump-to-char-backward)))
+
+(defun jump-to-char-backward (arg)
+  "Jump backward to the ARG'th occurence of a character that is
+queried interactively while highlighting the possible positions."
+  (interactive "p")
+  (apply 'search-char-backward
+	 (highlight-read-char-backward "Jump to char backward:" arg
+				       'jump-to-char-forward
+				       'jump-to-char-backward)))
+
+(defun mark-to-char-forward (arg)
+  "Set mark before the ARG'th occurence of a character queried
+interactively."
+  (interactive "p")
+  (let ((args (highlight-read-char "Copy to char: " arg
+				   'mark-to-char-forward
+				   'mark-to-char-backward)))
+    (set-mark (point))
+    (apply 'search-char-forward args)
+    (exchange-point-and-mark)))
+
+(defun mark-to-char-backward (arg)
+  "Set mark backward after the ARG'th occurence of a character
+queried interactively."
+  (interactive "p")
+  (let ((args (highlight-read-char-backward "Copy to char backward: " arg
+					    'mark-to-char-forward
+					    'mark-to-char-backward)))
+    (set-mark (point))
+    (apply 'search-char-backward args)
+    (exchange-point-and-mark)))
+
+(defun zap-up-to-char-forward (arg)
+  "Kill text up to the ARG'th occurence of a character queried
+interactively."
+  (interactive "p")
+  (let ((args (highlight-read-char "Zap up to char: " arg
+				   'zap-up-to-char-forward
+				   'zap-up-to-char-backward)))
+    (delete-region (point)
+		   (progn 
+		     (apply 'search-char-forward args)
+		     (point)))))
+
+(defun zap-up-to-char-backward (arg)
+  "Kill text backward to the ARG'th occurence of a character
+queried interactively."
+  (interactive "p")
+  (let ((args (highlight-read-char-backward "Zap up to char backward: " arg
+					    'zap-up-to-char-forward
+					    'zap-up-to-char-backward)))
+    (delete-region (point)
+		   (progn 
+		     (apply 'search-char-backward args)
+		     (point)))))
+
+(defun replace-char-forward (arg)
+  "Interactively replaces the ARG'th occurence of a character."
+  (interactive "p")
+  (let ((args (highlight-read-char "Replace char: " arg
+				   'replace-char-forward
+				   'replace-char-backward)))
+    (save-excursion
+      (apply 'search-char-forward args)
+      (let ((char (read-char (if (minibufferp) nil "With char: "))))
+	(delete-char +1)
+	(insert char)))))
+
+(defun replace-char-backward (arg)
+  "Interactively replaces the ARG'th backward occurence of a
+character."
+  (interactive "p")
+  (let ((args (highlight-read-char-backward "Replace char backward: " arg
+					    'replace-char-forward
+					    'replace-char-backward)))
+    (save-excursion
+      (apply 'search-char-backward args)
+      (let ((char (read-char (if (minibufferp) nil "With char: "))))
+	(delete-char +1)
+	(insert char)))))
+
+(defun insert-at-char-forward (arg)
+  "Queries for a character and a string that is insterted at
+the ARG'th occurence of the character."
+  (interactive "p")
+  (let ((args (highlight-read-char "Execute forward before: " arg
+				   'insert-at-char-forward
+				   'insert-at-char-backward)))
+    (save-excursion
+      (apply 'search-char-forward args)
+      (insert (read-string "String: ")))))
+
+(defun insert-at-char-backward (arg)
+  "Queries for a character and a string that is insterted at
+the backward ARG'th occurence of the character."
+  (interactive "p")
+  (let ((args (highlight-read-char-backward "Execute backward before: " arg
+					    'insert-at-char-forward
+					    'insert-at-char-backward)))
+    (save-excursion
+      (apply 'search-char-backward args)
+      (insert (read-string "String: ")))))
+
+(defun execute-at-char-forward (arg)
+  "Queries for a character and a key sequence that is executed at
+the ARG'th occurence of the character."
+  (interactive "p")
+  (let ((args (highlight-read-char "Execute forward before: " arg
+				   'execute-at-char-forward
+				   'execute-at-char-backward)))
+    (save-excursion
+      (apply 'search-char-forward args)
+      (execute-kbd-macro (read-key-sequence-vector
+			  (if (minibufferp) nil "Key sequence: "))))))
+
+(defun execute-at-char-backward (arg)
+  "Queries for a character and a key sequence that is executed at
+the backward ARG'th occurence of the character."
+  (interactive "p")
+  (let ((args (highlight-read-char-backward "Execute backward before: " arg
+					    'execute-at-char-forward
+					    'execute-at-char-backward)))
+    (save-excursion
+      (apply 'search-char-backward args)
+      (execute-kbd-macro (read-key-sequence-vector
+			  (if (minibufferp) nil "Key sequence: "))))))
+
+(defun delete-char-forward (arg)
+  "Deletes the ARG'th occurence of a character, which is queried
+interactively while highlighting the possible positions."
+  (interactive "p")
+  (let ((args (highlight-read-char "Delete forward before: " arg
+				   'delete-char-forward
+				   'delete-char-backward)))
+    (save-excursion
+      (apply 'search-char-forward args)
+      (delete-char +1))))
+
+(defun delete-char-backward (arg)
+  "Deletes the backward ARG'th occurence of a character, which is
+queried interactively while highlighting the possible positions."
+  (interactive "p")
+  (let ((args (highlight-read-char-backward "Delete backward before: \n" arg
+					    'delete-char-forward
+					    'delete-char-backward)))
+    (save-excursion
+      (apply 'search-char-backward args)
+      (delete-char +1))))
+
+(defun sprint-forward (arg)
+  "Performs a sequence of jumping forward to the next character
+matching the keyboard event."
+  (interactive "p")
+  (let ((result t))
+    (while result
+      (if (setq result (highlight-read-char "Sprint:" arg
+					    'sprint-forward
+					    'sprint-backward))
+	  (progn
+	    (apply 'search-char-forward result)
+	    (setq arg (if (> (car result) 0) 1 -1)))))))
+
+(defun sprint-backward (arg)
+  "Performs a sequence of jumping backward to the next character
+matching the keyboard event."
+  (interactive "p")
+  (sprint-forward (- arg)))
+
+(provide 'fastnav)
