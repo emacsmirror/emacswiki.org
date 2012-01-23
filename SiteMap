@@ -53,7 +53,7 @@ General Use:
 ** [[CategoryDisplay|Display]] -- display/screen/terminal information ([[pointer]] shapes, [[frame]]s...)
 ** [[CategoryFaces|Faces]] -- text highlighting, colors, font-lock, syntax-driven highlighting
 ** [[CategoryFrames|Frames]] -- [[frame]]s (window-manager windows).
-** [[CategoryInternationalization|Internationalization]] -- natural language support, character sets 
+** [[CategoryInternationalization|Internationalization]] -- natural language support, character sets
 ** [[CategoryKeys|Keys]] -- customizing [[key]] bindings ("keyboard shortcuts")
 *** [[CategoryMouse|Mouse]] -- mouse bindings and different uses of the mouse
 ** [[CategoryPaths|Paths]] -- how to specify OS paths in Emacs
@@ -84,6 +84,7 @@ General Use:
 * [[CategoryPrinting|Printing]] -- printing files, [[buffer]]s, the [[region]] ...
 * [[CategoryProgramming|Programming]] -- using Emacs for programming
 * [[CategoryRegexp|Regexp]] -- defining and using [[regular expression]]s
+* RepeatedStrainInjury -- Hands health related issues.
 * [[CategorySearchAndReplace|SearchAndReplace]] - searching and replacing text, including [[regexp]] search
 * [[CategoryWriting|Writing]] -- using Emacs and other tools to write text
 
