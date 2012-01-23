@@ -1,5 +1,5 @@
 ;;; oddmuse-curl.el -- edit pages on an Oddmuse wiki using curl
-;; $Id: oddmuse-curl.el,v 1.3 2012/01/02 23:03:02 alex Exp $
+;; $Id: oddmuse-curl.el,v 1.5 2012/01/23 16:30:46 alex Exp $
 
 ;; Copyright (C) 2006, 2009, 2011  Alex Schroeder <alex@gnu.org>
 ;;           (C) 2007  rubikitch <rubikitch@ruby-lang.org>
@@ -170,6 +170,85 @@ This is used by Oddmuse to merge changes.")
   (add-to-list 'auto-mode-alist
                `(,(expand-file-name oddmuse-directory) . oddmuse-mode)))
 
+(defun oddmuse-creole-markup ()
+  "Implement markup rules for the Creole markup extension."
+  (font-lock-add-keywords
+   nil
+  '(("^=[^=\n]+" . 'info-title-1); = h1
+    ("^==[^=\n]+" . 'info-title-2); == h2
+    ("^===[^=\n]+" . 'info-title-3); === h3
+    ("^====+[^=\n]+" . 'info-title-4); ====h4
+    ("\\_<//\\(.*\n\\)*?.*?//" . 'italic); //italic//
+    ("\\*\\*\\(.*\n\\)*?.*?\\*\\*" . 'bold); **bold**
+    ("__\\(.*\n\\)*?.*?__" . 'underline); __underline__
+    ("|+=?" . font-lock-string-face)
+    ("\\\\\\\\[ \t]+" . font-lock-warning-face)
+    ("^#+ " . font-lock-constant-face)
+    ("^- " . font-lock-constant-face))))
+
+(defun oddmuse-bbcode-markup ()
+  "Implement markup rules for the bbcode markup extension."
+  (font-lock-add-keywords
+   nil
+  '(("\\[u\\]\\(.*\n\\)*?.*?\\[/u\\]" . 'underline)
+    ("\\[s\\(trike\\)?\\]\\(.*\n\\)*?.*?\\[/s\\(trike\\)?\\]" . 'strike)
+    ("\\[u\\]\\(.*\n\\)*?.*?\\[/u\\]" . 'underline)
+    ("\\[b\\]\\(.*\n\\)*?.*?\\[/b\\]" . 'bold)
+    ("\\[i\\]\\(.*\n\\)*?.*?\\[/i\\]" . 'italic))))
+
+(defun oddmuse-usemod-markup ()
+  "Implement markup rules for the Usemod markup extension."
+  (font-lock-add-keywords
+   nil
+  '(("^=[^=\n]+=$" . 'info-title-1); = h1 =
+    ("^==[^=\n]+==$" . 'info-title-2); == h2 ==
+    ("^===[^=\n]+===$" . 'info-title-3); === h3 ===
+    ("^====+[^=\n]+====$" . 'info-title-4); ==== h4 ====
+    ("^ .+?$" . font-lock-comment-face);       code
+    ("^[#]\\([#]+\\)" . font-lock-constant-face)
+    ("^\\([*#]\\)[^*#]" 1 font-lock-builtin-face))))
+
+(defun oddmuse-usemod-html-markup ()
+  "Implement markup rules for the HTML option in the Usemod markup extension."
+  (font-lock-add-keywords
+   nil
+   '(("<\\(/?[a-z]+\\)" 1 font-lock-function-name-face))); <strong
+  (set (make-local-variable 'sgml-tag-alist)
+       `(("b") ("code") ("em") ("i") ("strong") ("nowiki")
+	 ("pre" \n) ("tt") ("u")))
+  (set (make-local-variable 'skeleton-transformation) 'identity))
+
+(defun oddmuse-extended-markup ()
+  "Implement markup rules for the Markup extension."
+  (font-lock-add-keywords
+   nil
+   '(("\\*.*?\\*" . 'bold)
+     ("\\_</.*?/" . 'italic)
+     ("_.*?_" . 'underline))))
+
+(defun oddmuse-basic-markup ()
+  "Implement markup rules for the basic Oddmuse setup without extensions.
+This function should come come last in `oddmuse-markup-functions'
+because of such basic patterns as [.*] which are very generic."
+  (font-lock-add-keywords
+   nil
+   `((,oddmuse-link-pattern . 'link)
+     ("\\[\\[.*?\\]\\]" . 'link)
+     ("\\[.*\\]" . 'link)
+     ("^\\([*]+\\)" . 'font-lock-constant-face)))
+  (goto-address))
+
+;; Should determine this automatically based on the version? And cache it per wiki?
+;; http://emacswiki.org/wiki?action=version
+(defvar oddmuse-markup-functions
+  '(oddmuse-creole-markup
+    oddmuse-bbcode-markup
+    oddmuse-usemod-markup
+    oddmuse-extended-markup
+    oddmuse-basic-markup)
+  "The list of functions to call when `oddmuse-mode' runs.
+If you want to add your own code, use `oddmuse-mode-hook'.")
+
 (define-derived-mode oddmuse-mode text-mode "Odd"
   "Simple mode to edit wiki pages.
 
@@ -185,23 +264,11 @@ if you are already editing the page.
 
 Customize `oddmuse-wikis' to add more wikis to the list.
 
+Font-locking is controlled by `oddmuse-markup-functions'.
+
 \\{oddmuse-mode-map}"
-  (font-lock-add-keywords
-   nil
-   '(("^ .+?$" . font-lock-comment-face)
-     ("<\\(/?[a-z]+\\)" 1 font-lock-function-name-face)
-     ("^[*#]\\([*#]+\\)" . font-lock-constant-face)
-     ("^\\([*#]\\)[^*#]" 1 font-lock-builtin-face)))
-  (font-lock-add-keywords
-   nil
-   (list (cons (symbol-value 'oddmuse-link-pattern)
-               'font-lock-keyword-face)))
+  (mapc 'funcall oddmuse-markup-functions)
   (font-lock-mode 1)
-  (goto-address)
-  (set (make-local-variable 'sgml-tag-alist)
-       `(("b") ("code") ("em") ("i") ("strong") ("nowiki")
-         ("pre" \n) ("tt") ("u")))
-  (set (make-local-variable 'skeleton-transformation) 'identity)
   (when buffer-file-name
     (set (make-local-variable 'oddmuse-wiki)
 	 (file-name-nondirectory
@@ -213,7 +280,8 @@ Customize `oddmuse-wikis' to add more wikis to the list.
   (set (make-local-variable 'oddmuse-revision)
        (save-excursion
 	 (goto-char (point-min))
-	 (if (looking-at "\\([0-9]+\\) # Do not delete this line when editing!\n")
+	 (if (looking-at
+	      "\\([0-9]+\\) # Do not delete this line when editing!\n")
 	     (prog1 (match-string 1)
 	       (replace-match "")
 	       (set-buffer-modified-p nil)))))
@@ -286,10 +354,11 @@ Use a prefix argument to force a reload of the page."
         (pop-to-buffer (get-buffer name))
       (let* ((wiki-data (assoc wiki oddmuse-wikis))
              (url (nth 1 wiki-data))
-             (oddmuse-page-name pagename)
-             (command (oddmuse-format-command oddmuse-get-command))
+             (command (let ((oddmuse-page-name pagename))
+			(oddmuse-format-command oddmuse-get-command)))
              (coding (nth 2 wiki-data))
-             (buf (find-file-noselect (concat oddmuse-directory "/" wiki "/" pagename)))
+             (buf (find-file-noselect (concat oddmuse-directory "/" wiki "/"
+					      pagename)))
              (coding-system-for-read coding)
              (coding-system-for-write coding))
         (set-buffer buf)
@@ -344,6 +413,24 @@ and call `oddmuse-edit' on it."
 ;; (oddmuse-wikiname-p "not-wikiname")
 ;; (oddmuse-wikiname-p "notWikiName")
 
+(defun oddmuse-run (mesg command buf)
+  "Print MESG and run COMMAND on the current buffer.
+MESG should be appropriate for the following uses:
+  \"MESG...\"
+  \"MESG...done\"
+  \"MESG failed: REASON\"
+Save outpout in BUF and report an appropriate error."
+  (message "%s..." mesg)
+  (if (and (= 0 (shell-command-on-region (point-min) (point-max) command buf))
+	   (string= "302" (with-current-buffer buf
+			     (buffer-string))))
+      (message "%s...done" mesg)
+    (let ((err "Unknown error"))
+      (with-current-buffer buf
+	(when (re-search-forward "<h1>\\(.*?\\)\\.?</h1>" nil t)
+	  (setq err (match-string 1))))
+      (error "%s...%s" mesg err))))
+
 ;;;###autoload
 (defun oddmuse-post (summary)
   "Post the current buffer to the current wiki.
@@ -369,7 +456,7 @@ The current wiki is taken from `oddmuse-wiki'."
 	 (buf (get-buffer-create " *oddmuse-response*"))
 	 (text (buffer-string)))
     (and buffer-file-name (basic-save-buffer))
-    (shell-command-on-region (point-min) (point-max) command buf)))
+    (oddmuse-run "Posting" command buf)))
 
 (defun oddmuse-make-completion-table (wiki)
   "Create pagename completion table for WIKI. if available, return precomputed one."
