@@ -43,7 +43,7 @@ Downloading and Installing Emacs:
 [:GeneralUse]
 General Use:
 
-* [[CategoryAccessibility|Accessibility]] -- how Emacs can make a computer more accessible
+* [[CategoryAccessibility|Accessibility]] -- how Emacs can make a computer more accessible; health issues
 * [[CategoryBookmarking|Bookmarking]] -- setting persistent locations and returning to them
 * [[CategoryBufferSwitching|BufferSwitching]] -- switching among different [[buffer]]s
 * [[CategoryCommands|Commands]] -- invoking and defining Emacs [[command]]s, `M-x'
@@ -84,7 +84,6 @@ General Use:
 * [[CategoryPrinting|Printing]] -- printing files, [[buffer]]s, the [[region]] ...
 * [[CategoryProgramming|Programming]] -- using Emacs for programming
 * [[CategoryRegexp|Regexp]] -- defining and using [[regular expression]]s
-* RepeatedStrainInjury -- Hands health related issues.
 * [[CategorySearchAndReplace|SearchAndReplace]] - searching and replacing text, including [[regexp]] search
 * [[CategoryWriting|Writing]] -- using Emacs and other tools to write text
 
