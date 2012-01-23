@@ -7,7 +7,7 @@
 ;; Maintainer: José Alfredo Romero L. <escherdragon@gmail.com>
 ;; Created: 24 Sep 2007
 ;; Version: 5
-;; RCS Version: $Rev: 407 $
+;; RCS Version: $Rev: 408 $
 ;; Keywords: files, dired, midnight commander, norton, orthodox
 ;; URL: http://www.emacswiki.org/emacs/sunrise-commander.el
 ;; Compatibility: GNU Emacs 22+
@@ -212,7 +212,8 @@
                    (require 'desktop)
                    (require 'dired-aux)
                    (require 'esh-mode)
-                   (require 'recentf))
+                   (require 'recentf)
+                   (require 'tramp))
 
 (defgroup sunrise nil
   "The Sunrise Commander File Manager."
@@ -220,7 +221,8 @@
 
 (defcustom sr-show-file-attributes t
   "Whether to initially display file attributes in Sunrise panes.
-You can always toggle file attributes display pressing \\<sr-mode-map>\\[sr-toggle-attributes]."
+You can always toggle file attributes display pressing
+\\<sr-mode-map>\\[sr-toggle-attributes]."
   :group 'sunrise
   :type 'boolean)
 
@@ -232,7 +234,8 @@ SC core is loaded (e.g. when using autoload cookies)."
 
 (defcustom sr-show-hidden-files nil
   "Whether to initially display hidden files in Sunrise panes.
-You can always toggle hidden files display pressing \\<sr-mode-map>\\[dired-omit-mode].
+You can always toggle hidden files display pressing
+\\<sr-mode-map>\\[dired-omit-mode].
 You can also customize what files are considered hidden by setting
 `dired-omit-files' and `dired-omit-extensions' in your .emacs file."
   :group 'sunrise
@@ -535,8 +538,8 @@ The following keybindings are available:
         M-R ........... rename (using traditional dired-do-rename)
         M-D ........... delete (using traditional dired-do-delete)
         M-S............ soft-link (using traditional dired-do-symlink)
-        M-Y............ do relative soft-link (with traditional dired-do-relsymlink)
-        M-H............ hard-link selected file/directory (with dired-do-hardlink)
+        M-Y............ do relative soft-link (traditional dired-do-relsymlink)
+        M-H............ hard-link selected file/directory (dired-do-hardlink)
         A ............. search marked files for regular expression
         Q ............. perform query-replace-regexp on marked files
         C-c s ......... start a \"sticky\" interactive search in the current pane
@@ -586,8 +589,8 @@ The following keybindings are available:
         C-c C-l ....... execute Locate in Sunrise VIRTUAL mode
         C-c C-r ....... browse list of Recently visited files (requires recentf)
         C-c C-c ....... [after find, locate or recent] dismiss virtual buffer
-        C-c / ......... narrow the contents of the current pane using fuzzy matching
-        C-c b ......... partial Branch view of selected items in the current pane
+        C-c / ......... narrow the contents of current pane using fuzzy matching
+        C-c b ......... partial Branch view of selected items in current pane
         C-c p ......... Prune paths matching regular expression from current pane
         ; ............. follow file (go to same directory as selected file)
         M-; ........... follow file in passive pane
@@ -599,7 +602,7 @@ The following keybindings are available:
         C-c .  ........ restore named checkpoint
 
         C-x C-q ....... put pane in Editable Dired mode (commit with C-c C-c)
-        @! ............ fast backup files (but not dirs!), each to [filename].bak
+        @! ............ fast backup files (not dirs!), each to [filename].bak
 
         C-c t ......... open new terminal or switch to already open one
         C-c T ......... open terminal AND/OR change directory to current
@@ -806,9 +809,10 @@ Helper macro for passive & synchronized navigation."
            (not (eq major-mode 'sr-mode)))
       (let ((dired-listing-switches dired-listing-switches)
             (sorting-options (or (get sr-selected-window 'sorting-options) "")))
-        (if (null (string-match "^/ftp:" default-directory))
-            (setq dired-listing-switches
-                  (concat sr-listing-switches sorting-options)))
+        (unless (and (featurep 'tramp)
+                     (string-match tramp-file-name-regexp default-directory))
+          (setq dired-listing-switches
+                (concat sr-listing-switches sorting-options)))
         (sr-mode)
         (dired-unadvertise dired-directory))))
 (add-hook 'dired-before-readin-hook 'sr-dired-mode)
@@ -1057,6 +1061,8 @@ immediately loaded, but only if `sr-autoload-extensions' is not nil."
 (define-key sr-mode-map "\C-c\C-m"    'sr-advertised-find-file-other)
 (define-key sr-mode-map "\M-^"        'sr-prev-subdir-other)
 (define-key sr-mode-map "\M-J"        'sr-prev-subdir-other)
+(define-key sr-mode-map "\M-m"        'sr-mark-other)
+(define-key sr-mode-map "\M-M"        'sr-unmark-backward-other)
 (define-key sr-mode-map "\M-U"        'sr-unmark-all-marks-other)
 (define-key sr-mode-map "\M-;"        'sr-follow-file-other)
 (define-key sr-mode-map "\C-\M-y"     'sr-history-prev-other)
@@ -1283,7 +1289,8 @@ buffer or window."
   "Resize the left Sunrise pane to have the \"right\" size."
   (when sr-running
     (let ((sr-windows-locked sr-windows-locked))
-      (when (> window-min-height (- (frame-height) (window-height sr-left-window)))
+      (when (> window-min-height (- (frame-height)
+                                    (window-height sr-left-window)))
         (setq sr-windows-locked nil))
       (and sr-windows-locked
            (not sr-ediff-on)
@@ -1761,7 +1768,9 @@ visited in order, from longest path to shortest."
 
 (defun sr-history-push (element)
   "Push a new path into the history ring of the current pane."
-  (unless (null element)
+  (unless (or (null element)
+              (and (featurep 'tramp)
+                   (string-match tramp-file-name-regexp element)))
     (let* ((pane (assoc sr-selected-window sr-history-registry))
            (hist (cdr pane))
            (len (length hist)))
@@ -1860,7 +1869,7 @@ and add it to your `load-path'" name name))))
 (sr-checkpoint-command sr-checkpoint-handler (&optional arg))
 
 (defun sr-do-find-marked-files (&optional noselect)
-  "Sunrise replacement for `dired-do-marked-files'."
+  "Sunrise replacement for `dired-do-find-marked-files'."
   (interactive "P")
   (let* ((files (delq nil (mapcar (lambda (x)
                                     (and (file-regular-p x) x))
@@ -2398,23 +2407,24 @@ elements that are non-equal are found."
 (add-hook 'sr-mode-hook 'sr-mark-sync)
 
 (defun sr-next-line-other ()
-  "Move the cursor down in the other pane."
+  "Move the cursor down in the passive pane."
   (interactive)
   (sr-in-other (dired-next-line 1)))
 
 (defun sr-prev-line-other ()
-  "Move the cursor up in the other pane."
+  "Move the cursor up in the passive pane."
   (interactive)
   (sr-in-other (dired-next-line -1)))
 
 (defun sr-goto-dir-other (dir)
+  "Change the current directory in the passive pane to the given one."
   (interactive (list (read-directory-name
                       "Change directory in PASSIVE pane (file or pattern): "
                       sr-other-directory)))
   (sr-in-other (sr-goto-dir dir)))
 
 (defun sr-advertised-find-file-other ()
-  "Open the file/directory selected in the other pane."
+  "Open the file/directory selected in the passive pane."
   (interactive)
   (if sr-synchronized
       (let ((target (sr-directory-name-proper (dired-get-filename))))
@@ -2434,19 +2444,19 @@ elements that are non-equal are found."
   (sr-advertised-find-file))
 
 (defun sr-prev-subdir-other (&optional count)
-  "Go to the previous subdirectory in the other pane."
+  "Go to the previous subdirectory in the passive pane."
   (interactive "P")
   (let ((count (or count 1)))
     (sr-in-other (sr-dired-prev-subdir count))))
 
 (defun sr-follow-file-other ()
-  "Go to the directory of the selected file, but in the other pane."
+  "Go to the directory of the selected file, but in the passive pane."
   (interactive)
   (let ((filename (dired-get-filename nil t)))
     (sr-in-other (sr-follow-file filename))))
 
 (defun sr-history-prev-other ()
-  "Change to the previous directory (if any) in the passive pane's history list."
+  "Change to previous directory (if any) in the passive pane's history list."
   (interactive)
   (sr-in-other (sr-history-prev)))
 
@@ -2454,6 +2464,16 @@ elements that are non-equal are found."
   "Change to the next directory (if any) in the passive pane's history list."
   (interactive)
   (sr-in-other (sr-history-next)))
+
+(defun sr-mark-other (arg)
+  "Mark the current (or next ARG) files in the passive pane."
+  (interactive "P")
+  (setq arg (or arg 1))
+  (sr-in-other (dired-mark arg)))
+
+(defun sr-unmark-backward-other (arg)
+  (interactive "p")
+  (sr-in-other (dired-unmark-backward arg)))
 
 (defun sr-unmark-all-marks-other ()
   "Remove all marks from the passive pane."
@@ -2699,7 +2719,7 @@ are not copied."
   (revert-buffer))
 
 (defun sr-clone (items target clone-op progress mark-char)
-  "Clone all given items (files and directories) recursively into the passive pane."
+  "Clone all given items (files and dirs) recursively into the passive pane."
   (let ((names (mapcar #'file-name-nondirectory items))
         (inhibit-read-only t))
     (with-current-buffer (sr-other 'buffer)
@@ -2833,7 +2853,7 @@ Otherwise returns nil."
         (dired-unmark-all-marks)))))
 
 (defun sr-ask (prompt target files function)
-  "Use FUNCTION to ask whether to perform PROMPT on FILES with TARGET as destination."
+  "Use FUNCTION to ask whether to do PROMPT on FILES with TARGET as destination."
   (if (and files (listp files))
       (let* ((len (length files))
              (msg (if (< 1 len)
@@ -3187,15 +3207,13 @@ pane."
     (?F (sr-find "-type f"))))
 
 (defun sr-prune-paths (regexp)
-  "Kill all lines (not files) in the current pane matching REGEXP."
+  "Kill all lines (only the lines) in the current pane matching REGEXP."
   (interactive "sPrune paths matching: ")
-  (dired-unmark-all-marks)
   (save-excursion
-    (goto-char (point-min))
-    (while (search-forward-regexp regexp nil t)
-      (dired-mark 1)
-      (beginning-of-line)))
-  (dired-do-kill-lines))
+    (sr-beginning-of-buffer)
+    (while (if (string-match regexp (dired-get-filename t))
+               (dired-kill-line)
+             (dired-next-line 1)))))
 
 (defun sr-locate-filter (locate-buffer search-string)
   "Return a filter function for the background `locate' process."
