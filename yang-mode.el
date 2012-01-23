@@ -21,6 +21,9 @@
 ;; later.
 
 ;; Version:
+;;   00.5 - 2010-10-07
+;;        rfc6020 compliant
+;;        classify all keywords as decl-start gives better indentation
 ;;   00.4 - 2010-04-30
 ;;        draft-ietf-netmod-yang-12 compliant,
 ;;        added instructions for emacs 23
@@ -135,6 +138,9 @@
   yang '())
 
 (c-lang-defconst c-class-decl-kwds
+  yang '())
+
+(c-lang-defconst c-decl-start-kwds
   yang '(
 	 "anyxml"
 	 "argument"
