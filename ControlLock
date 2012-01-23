@@ -45,5 +45,9 @@ sentence by itself.  That's because the first line is what is displayed
 by commands like `apropos'.  Also: "Return whether ..." is preferred over
 "Returns whether ..." (note the verb form).  See the Elisp manual for
 more, it has a whole chapter on tips and conventions.  -- EmilioLopes
+
+
+
 ----
-RepeatedStrainInjury
+CategoryKeys
+CategoryAccessibility
