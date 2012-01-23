@@ -9,36 +9,29 @@ name of RSI.  It doesn't prove that RSI didn't exist.  In many
 countries, RSI is not recognized as a work-related injury; thus, this
 may prevent you from collecting on your damage insurance.
 
+* On devices:
+** For experiences with Emacs and particular keyboards, see GoodKeyboards and Wiki:ErgonomicKeyboard (keyboards, pedals, etc.)
+** FootSwitches for Control key and other frequently used keys. For example I use two Usb pedals: one for Ctrl key, the other for Shift key, Shift+Space is bound to RET, and CapsLock for Backspace. This way I solved the problem with RSI. -- SewerynKokot
+* Hacking keyboards:
+** Keyboard Layouts are discussed in MovingTheCtrlKey, CapsKey, Wiki:DvorakKeyboard
+*** [https://gitorious.org/at-home-modifier/pages/Home at-home-modifier] lets you use the Space key as both space and control (or shift, alt, whichever) If you press the space alone, it's a space, but if pressed with other keys, it's ctrl.  It's only for Linux, but for Windows, you can use !AutoHotKey.
+** [ViperMode Viper] whips up [ViKeys vi keys] in Emacs, [http://invisible-island.net/vile/ Vile]-like.
+** StickyModifiers reduce chording, as do FootSwitches; a GamePad controller, accessible through the JoyStick interface, can use chording but not in such a painful way
+** Functions to avoid RepeatingCommands by hand reduce repetitive movements.
+** Ergonomic keybindings for cursor movement, see ErgoMovementMode
 * ShortTalk is a SpeechToText system that may help.
-* StickyModifiers reduce chording, as do FootSwitches; a GamePad
-controller, accessible through the JoyStick interface, can use
-chording but not in such a painful way
-* Functions to avoid RepeatingCommands by hand reduce repetitive movements.
-* For ergonomic keyboards, see Wiki:ErgonomicKeyboard (keyboards,
-pedals, etc.)
-* Ergonomic keybindings for cursor movement, see ErgoMovementMode
-* For experiences with Emacs and particular keyboards, see
-GoodKeyboards.
-* Some long-term Emacs users have found that making sure the CapsKey
-is on the home row is one of the most important ways to reduce
-wrist/hand/elbow pain (*Is this a typo? I think it may refer to the CtrlKey --- JohnSturdy*)
-* Using a Wiki:DvorakKeyboard can help tons as the hands stray from
-the home row far less than with the default layout.
 * EmacsVersor (Versatile Cursor) lets you get more out of each
 keystroke of the arrow and simple command keys (DEL etc) and can be
 used to put much of your input activity onto FootSwitches
 * Software that reminds the user to take breaks every //n// minutes can be
 lifesaving.  Try TypeBreakMode.
 ** X11 Users can try xwrits [http://www.lcdf.org/~eddietwo/xwrits/],
-!DrWright, etc.  
+!DrWright, etc.
 ** GNOME 2.4 users can try Applications->Desktop
 Preferences->Keyboard->Typing Break.
 ** Another cool program is Workrave [http://www.workrave.org/welcome/]
 (shows excercises too and lot of features).
 ** Debian: apt-cache search injury
-* [ViperMode Viper] whips up [ViKeys vi keys] in Emacs, [http://invisible-island.net/vile/ Vile]-like.
-* Another option is to use FootSwitches for Control key and other frequently used keys. For example I use two Usb pedals: one for Ctrl key, the other for Shift key, Shift+Space is bound to RET, and CapsLock for Backspace. This way I solved the problem with RSI. -- SewerynKokot
-
 
 Information on the original wiki:
 
@@ -105,7 +98,7 @@ Thus, experimenting with chairs and table height might help.
 
 
 
--- 
+--
 
 John Ousterhout, UC Berkeley comp sci prof., creator of influential
 Tcl, and pioneer advocate of dynamic scripting languages (kinda like
@@ -134,7 +127,7 @@ outut to a networked Unix box's standard input, achieving speeds
 *faster* than he could ever type, and he was a fast touch typist.  He
 links to a2x, a free ascii-to-X windows utility, useful for making
 Windows-only best of breed voice recognition software talk to Unix,
-right at point in Emacs, presumably: 
+right at point in Emacs, presumably:
 http://www.cl.cam.ac.uk/a2x-voice/a2x-faq.html Good luck to all
 sufferers. -- PaulWilson
 
@@ -169,5 +162,3 @@ Now I have all the basic vi commands + an overlay of wonderful C-c commands in v
 Emacs, of course, is infinitely more powerful than vi(m). Despite emacs' painful default keybindings, customizing it to make it as comfortable as possible is well worth the effort.
 
 -- MattLundin
-
-
