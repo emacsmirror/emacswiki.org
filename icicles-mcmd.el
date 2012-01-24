@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Fri Jan 20 17:32:19 2012 (-0800)
+;; Last-Updated: Tue Jan 24 10:56:52 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 17546
+;;     Update #: 17552
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-mcmd.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -179,7 +179,8 @@
 ;;    `icicle-toggle-alternative-sorting',
 ;;    `icicle-toggle-angle-brackets',
 ;;    `icicle-toggle-case-sensitivity', `icicle-toggle-C-for-actions',
-;;    `icicle-toggle-dot', `icicle-toggle-expand-to-common-match',
+;;    `icicle-toggle-completions-format', `icicle-toggle-dot',
+;;    `icicle-toggle-expand-to-common-match',
 ;;    `icicle-toggle-hiding-common-match',
 ;;    `icicle-toggle-hiding-non-matching-lines',
 ;;    `icicle-toggle-highlight-all-current',
@@ -212,7 +213,8 @@
 ;;    `toggle-icicle-alternative-sorting',
 ;;    `toggle-icicle-angle-brackets',
 ;;    `toggle-icicle-case-sensitivity', `toggle-icicle-C-for-actions',
-;;    `toggle-icicle-dot', `toggle-icicle-expand-to-common-match',
+;;    `toggle-icicle-completions-format', `toggle-icicle-dot',
+;;    `toggle-icicle-expand-to-common-match',
 ;;    `toggle-icicle-hiding-common-match',
 ;;    `toggle-icicle-hiding-non-matching-lines',
 ;;    `toggle-icicle-highlight-all-current',
@@ -1892,6 +1894,7 @@ These are the main Icicles actions and their minibuffer key bindings:
      Input expansion to common match         \\[icicle-toggle-expand-to-common-match]\t%S
      Hiding common match in `*Completions*'  \\[icicle-dispatch-C-x.]\t%S
      Hiding no-match lines in `*Completions*' C-u \\[icicle-dispatch-C-x.]\t%S
+     Horizontal/vertical candidate layout    \\[icicle-toggle-completions-format]\t%s
      S-TAB completion method                 \\[icicle-next-S-TAB-completion-method]\t%s
      TAB completion method                   \\[icicle-next-TAB-completion-method]\t%s
      Showing image-file thumbnails (E22+)    C-x t\t%S
@@ -2074,6 +2077,7 @@ editing."
              icicle-expand-input-to-common-match-flag
              icicle-hide-common-match-in-Completions-flag
              icicle-hide-non-matching-lines-flag
+             icicle-completions-format
              (car (rassq icicle-apropos-complete-match-fn icicle-S-TAB-completion-methods-alist))
              (icicle-current-TAB-method)
              icicle-add-proxy-candidates-flag
@@ -7266,6 +7270,23 @@ Bound to `S-pause' in the minibuffer."
   (icicle-msg-maybe-in-minibuffer
    "Highlighting saved candidates in `*Completions*' is now %s"
    (icicle-propertize (if icicle-highlight-saved-candidates-flag "ON" "OFF")
+                      'face 'icicle-msg-emphasis)))
+
+;;;###autoload
+(defalias 'toggle-icicle-completions-format
+    'icicle-toggle-completions-format)
+;;;###autoload
+(defun icicle-toggle-completions-format () ; Bound to `C-%' in minibuffer.
+  "Toggle `icicle-completions-format' between vertical and horizontal.
+Bound to `C-%' in the minibuffer."
+  (interactive)
+  (setq icicle-completions-format  (if (eq 'vertical icicle-completions-format)
+                                       'horizontal
+                                     'vertical))
+  (icicle-complete-again-update)
+  (icicle-msg-maybe-in-minibuffer
+   "Layout of candidates in `*Completions*' is now %s"
+   (icicle-propertize (if (eq 'vertical icicle-completions-format) "VERTICAL" "HORIZONTAL")
                       'face 'icicle-msg-emphasis)))
 
 ;;;###autoload
