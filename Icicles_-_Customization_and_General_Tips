@@ -959,6 +959,11 @@ format (horizontal or vertical) makes no difference -- the effect
 is the same.  ('''Icicles''' also inserts an empty line after each
 multi-line candidate, for readability.)
 
+You can toggle the completions layout between horizontal and
+vertical at any time during completion, using '''`##C-%##''''.
+
+
+
 
 ----
 [:icicle-menu-items-to-history-flag]
