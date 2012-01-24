@@ -121,7 +121,7 @@ Nil's scripts didn't work for me out of the box, so I've modified them to genera
 
 -- SeanFisk
 
-SeaFisk's script has some problem because relative path issue. I re-wrote it in python at [https://github.com/redguardtoo/pycmake-flymake]. It should work out of the box now.
+SeaFisk's script has some problem because relative path issue. I re-wrote it in python at [https://github.com/redguardtoo/pycmake-flymake|HERE]. It should work out of the box now.
 -- Chen Bin
 
 === Mozart/Oz ===
