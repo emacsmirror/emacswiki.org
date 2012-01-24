@@ -21,3 +21,19 @@ Some possibilities:
 * Use [[Anything]] with `anything-el-swank-fuzzy-complete-symbol' -- AnythingApplications.
 
 -- DrewAdams
+   
+[new]
+What are the minimum requirements for `el-swank-fuzzy-completions' to return completions? In a Emacs Lisp buffer, I'm trying to expand to `multiple-value-bind' (example provided by the documentation of 'el-swank-fuzzy-completions' itself) by evaluating this code (the arrow show the expression value):
+
+ (el-swank-fuzzy-completions "mvb") -> (nil nil)
+ (el-swank-fuzzy-completions "m-v-b") -> (nil nil)
+
+This works:
+
+ (el-swank-fuzzy-completions "mu-v-b") -> ((("multiple-value-bind" "18.71" (... ... ...) "-")) nil)
+
+whilst this doesn't:
+
+  (el-swank-fuzzy-completions "m-va-b") -> (nil nil)
+
+Thanks.
