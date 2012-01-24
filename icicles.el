@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Fri Jan 20 17:04:43 2012 (-0800)
+;; Last-Updated: Tue Jan 24 10:57:28 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 23070
+;;     Update #: 23072
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -563,10 +563,11 @@
 ;;    `icicle-switch-to-Completions-buf',
 ;;    `icicle-switch-to-completions',
 ;;    `icicle-switch-to/from-minibuffer', `icicle-toggle-.',
-;;    `icicle-toggle-~-for-home-dir', `icicle-toggle-C-for-actions',
+;;    `icicle-toggle-~-for-home-dir',
 ;;    `icicle-toggle-alternative-sorting',
 ;;    `icicle-toggle-angle-brackets',
-;;    `icicle-toggle-case-sensitivity', `icicle-toggle-dot',
+;;    `icicle-toggle-case-sensitivity', `icicle-toggle-C-for-actions',
+;;    `icicle-toggle-completions-format', `icicle-toggle-dot',
 ;;    `icicle-toggle-expand-to-common-match',
 ;;    `icicle-toggle-hiding-common-match',
 ;;    `icicle-toggle-hiding-non-matching-lines',
@@ -594,10 +595,11 @@
 ;;    `icicle-yank-secondary', `old-choose-completion',
 ;;    `old-exit-minibuffer', `old-minibuffer-complete-and-exit',
 ;;    `old-sit-for', `old-switch-to-completions', `toggle-icicle-.',
-;;    `toggle-icicle-~-for-home-dir', `toggle-icicle-C-for-actions',
+;;    `toggle-icicle-~-for-home-dir',
 ;;    `toggle-icicle-alternative-sorting',
 ;;    `toggle-icicle-angle-brackets',
-;;    `toggle-icicle-case-sensitivity', `toggle-icicle-dot',
+;;    `toggle-icicle-case-sensitivity', `toggle-icicle-C-for-actions',
+;;    `toggle-icicle-completions-format', `toggle-icicle-dot',
 ;;    `toggle-icicle-expand-to-common-match',
 ;;    `toggle-icicle-fuzzy-completion',
 ;;    `toggle-icicle-hiding-common-match',
