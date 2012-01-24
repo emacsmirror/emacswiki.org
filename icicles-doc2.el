@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Fri Jan 20 16:51:16 2012 (-0800)
+;; Last-Updated: Tue Jan 24 11:08:34 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 28603
+;;     Update #: 28605
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-doc2.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -5258,6 +5258,9 @@
 ;;    is the same.  (Icicles also inserts an empty line after each
 ;;    multi-line candidate, for readability.)
 ;;
+;;    You can toggle the completions layout between horizontal and
+;;    vertical at any time during completion, using `C-%'.
+;;
 ;;  * If option `icicle-menu-items-to-history-flag' is non-`nil' (the
 ;;    default), then commands that you invoke using the menu-bar menu
 ;;    are included in the command history for `M-x'.
@@ -6985,6 +6988,7 @@
 ;;    `C-M-.'   - `icicle-toggle-dot'
 ;;    `C-x .'   - `icicle-toggle-hiding-common-match'
 ;;    `C-u C-x .' - `icicle-toggle-hiding-non-matching-lines'
+;;    `C-%'     - `icicle-toggle-completions-format'
 ;;    `C-;'     - `icicle-toggle-expand-to-common-match'
 ;;    `M-;'     - `icicle-toggle-search-replace-common-match'
 ;;    `C-M-;'   - `icicle-toggle-icicle-toggle-ignoring-comments'
