@@ -1,16 +1,16 @@
 # Emacswiki Git Repository
 
-Every change made on the Emacswiki is commited individually (with the
-username and summary being used as author and commit message) to a git
-repository on the server hosting the Emacswiki.  That repository is
-regularly pushed here.
+Every time somebody edits a page on the Emacswiki or uploads a file
+Oddmuse (Emacswiki's wiki engine) creates a commit using the provided
+username and summary.  If this information is not provided default
+values are used.  That repository is regularly pushed here.
 
 ## History
 
 The master branch containing the full history of all pages and libraries
 since the 8th August 2009. The first 800 commits have been created by
-importing from the
-[SVN_repository](http://www.emacswiki.org/emacs/SVN_repository).
+importing from the old
+[subversion repository](http://www.emacswiki.org/emacs/SVN_repository).
 Each of these commits contains all changes of a complete day and have no
 meaningful commit messages.
 
