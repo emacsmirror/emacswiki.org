@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Tue Jan 24 11:08:34 2012 (-0800)
+;; Last-Updated: Tue Jan 24 11:42:43 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 28605
+;;     Update #: 28608
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-doc2.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -5259,7 +5259,7 @@
 ;;    multi-line candidate, for readability.)
 ;;
 ;;    You can toggle the completions layout between horizontal and
-;;    vertical at any time during completion, using `C-%'.
+;;    vertical at any time during completion, using `C-M-^'.
 ;;
 ;;  * If option `icicle-menu-items-to-history-flag' is non-`nil' (the
 ;;    default), then commands that you invoke using the menu-bar menu
@@ -6988,7 +6988,6 @@
 ;;    `C-M-.'   - `icicle-toggle-dot'
 ;;    `C-x .'   - `icicle-toggle-hiding-common-match'
 ;;    `C-u C-x .' - `icicle-toggle-hiding-non-matching-lines'
-;;    `C-%'     - `icicle-toggle-completions-format'
 ;;    `C-;'     - `icicle-toggle-expand-to-common-match'
 ;;    `M-;'     - `icicle-toggle-search-replace-common-match'
 ;;    `C-M-;'   - `icicle-toggle-icicle-toggle-ignoring-comments'
@@ -6997,6 +6996,7 @@
 ;;    `C-M-,'   - `icicle-toggle-alternative-sorting'
 ;;    `C-^'     - `icicle-toggle-remote-file-testing'
 ;;    `C-^'     - `icicle-toggle-highlight-all-current' (search)
+;;    `C-M-^'   - `icicle-toggle-completions-format'
 ;;    `C-#'     - `icicle-cycle-incremental-completion'
 ;;    `C-('     - `icicle-next-TAB-completion-method'
 ;;    `C-`'     - `icicle-toggle-regexp-quote'
