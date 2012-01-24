@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 10:21:10 2006
 ;; Version: 22.0
-;; Last-Updated: Fri Jan 20 17:37:18 2012 (-0800)
+;; Last-Updated: Tue Jan 24 11:03:13 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 8070
+;;     Update #: 8075
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-mode.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -459,8 +459,9 @@ In many cases there are also `other-window' versions.
 `icicle-toggle-~-for-home-dir'         - Toggle using `~' for $HOME
 `icicle-toggle-alternative-sorting'    - Swap alternative sort
 `icicle-toggle-angle-brackets'         - Toggle using angle brackets
-`icicle-toggle-C-for-actions'          - Toggle using `C-' for actions
 `icicle-toggle-case-sensitivity'       - Toggle case sensitivity
+`icicle-toggle-C-for-actions'          - Toggle using `C-' for actions
+`icicle-toggle-completions-format'     - Toggle horizontal/vertical
 `icicle-toggle-dot'                    - Toggle `.' matching newlines
 `icicle-toggle-expand-to-common-match' - Toggle input ECM expansion
 `icicle-toggle-hiding-common-match'    - Toggle match, `*Completions*'
@@ -755,8 +756,9 @@ In many cases there are also `other-window' versions.
 `icicle-toggle-~-for-home-dir'         - Toggle using `~' for $HOME
 `icicle-toggle-alternative-sorting'    - Swap alternative sort
 `icicle-toggle-angle-brackets'         - Toggle using angle brackets
-`icicle-toggle-C-for-actions'          - Toggle using `C-' for actions
 `icicle-toggle-case-sensitivity'       - Toggle case sensitivity
+`icicle-toggle-C-for-actions'          - Toggle using `C-' for actions
+`icicle-toggle-completions-format'     - Toggle horizontal/vertical
 `icicle-toggle-dot'                    - Toggle `.' matching newlines
 `icicle-toggle-expand-to-common-match' - Toggle input ECM expansion
 `icicle-toggle-hiding-common-match'    - Toggle match, `*Completions*'
@@ -1222,6 +1224,10 @@ Used on `pre-command-hook'."
              '(menu-item "Toggle Showing Multi-Completions"
                icicle-toggle-show-multi-completion :visible icicle-mode
                :help "Toggle option `icicle-show-multi-completion-flag'"))
+           (define-key icicle-options-menu-map [icicle-toggle-completions-format]
+             '(menu-item "Toggle Horizontal/Vertical Layout"
+               icicle-toggle-completions-format :visible icicle-mode :keys "C-%"
+               :help "Toggle option `icicle-hide-non-matching-lines-flag'"))
            (define-key icicle-options-menu-map [icicle-toggle-hiding-non-matching-lines]
              '(menu-item "Toggle Hiding Non-Matching Lines"
                icicle-toggle-hiding-non-matching-lines :visible icicle-mode :keys "C-u C-x ."
@@ -1395,6 +1401,9 @@ Used on `pre-command-hook'."
            (define-key icicle-menu-map [icicle-toggle-show-multi-completion]
              '(menu-item "Toggle Showing Multi-Completions" icicle-toggle-show-multi-completion
                :help "Toggle option `icicle-show-multi-completion-flag'"))
+           (define-key icicle-menu-map [icicle-toggle-completions-format]
+             '(menu-item "Toggle Horizontal/Vertical Layout" icicle-toggle-completions-format
+               :help "Toggle option `icicle-hide-non-matching-lines-flag'"))
            (define-key icicle-menu-map [icicle-toggle-hiding-non-matching-lines]
              '(menu-item "Toggle Hiding Non-Matching Lines"
                icicle-toggle-hiding-non-matching-lines
@@ -3355,6 +3364,7 @@ complete)"))
     (define-key map (icicle-kbd "C-?")     'icicle-minibuffer-help)) ; `C-?'
   (define-key map (icicle-kbd "C-.")       'icicle-dispatch-C-.) ; `C-.'
   (define-key map (icicle-kbd "C-#")       'icicle-cycle-incremental-completion) ; `C-#'
+  (define-key map (icicle-kbd "C-%")       'icicle-toggle-completions-format) ; `C-%'
   (define-key map (icicle-kbd "C-;")       'icicle-toggle-expand-to-common-match) ; `C-;'
   (define-key map (icicle-kbd "M-;")       'icicle-toggle-search-replace-common-match) ; `M-;'
   (define-key map (icicle-kbd "C-^")       'icicle-dispatch-C-^) ; `C-^'
@@ -3606,6 +3616,7 @@ MAP is `minibuffer-local-completion-map',
     (define-key map (icicle-kbd "C-?")     nil))
   (define-key map (icicle-kbd "C-.")       nil)
   (define-key map (icicle-kbd "C-#")       nil)
+  (define-key map (icicle-kbd "C-%")       nil)
   (define-key map (icicle-kbd "C-;")       nil)
   (define-key map (icicle-kbd "M-;")       nil)
   (define-key map (icicle-kbd "C-^")       nil)
