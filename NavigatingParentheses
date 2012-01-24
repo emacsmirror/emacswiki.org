@@ -122,5 +122,16 @@ I modified my global key binding. Replaced Ctrl with Meta here because C-[ will 
 
 -- DoveYoung
 
+[new]
+Answer: In some environments, C-[ is equivalent to Esc, just like C-i is equivalent to TAB. To distinguish between them, I once used this code:
+
+ ;; This explicitly creates a separate binding for <tab>, so it doesn't conflict with C-i.
+ (global-set-key [tab] (or (key-binding [tab]) (key-binding "\C-i")))
+
+Also look here: http://stackoverflow.com/questions/1792326/how-do-i-bind-a-command-to-c-i-without-changing-tab
+
+-- RaffaeleRicciardi
+
+
 ----
 CategoryParentheses 
