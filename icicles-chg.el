@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Fri Jan 20 17:37:42 2012 (-0800)
+;; Last-Updated: Tue Jan 24 11:18:55 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 7842
+;;     Update #: 7851
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-chg.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -2904,6 +2904,9 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-mcmd.el'")
 ;;
+;; 2012/01/24 dadams
+;;     Added: icicle-toggle-completions-format.
+;;     icicle-help-string-completion: Updated to add icicle-toggle-completions-format.
 ;; 2012/01/20 dadams
 ;;     Renamed icicle-toggle-incremental-completion to icicle-cycle-incremental-completion.
 ;;     icicle-apropos-complete-and-exit: 
@@ -4233,6 +4236,10 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-mode.el'")
 ;;
+;; 2012/01/24 dadams
+;;     icicle-mode doc string: Added icicle-toggle-completions-format.
+;;     icicle-define-icicle-maps: Add icicle-toggle-completions-format to menus.
+;;     icicle-(bind|restore)-completion-keys: Bind icicle-toggle-completions-format to C-%.
 ;; 2012/01/20 dadams
 ;;     Bind icicle-apropos-complete-and-exit in all completion maps, not just must-match map.
 ;;     Apply renaming of icicle-toggle-incremental-completion to *-cycle-*.
