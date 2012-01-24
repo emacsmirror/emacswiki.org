@@ -960,7 +960,7 @@ is the same.  ('''Icicles''' also inserts an empty line after each
 multi-line candidate, for readability.)
 
 You can toggle the completions layout between horizontal and
-vertical at any time during completion, using '''`##C-%##''''.
+vertical at any time during completion, using '''`##C-M-^##''''.
 
 
 
