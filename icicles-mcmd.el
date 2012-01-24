@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Tue Jan 24 10:56:52 2012 (-0800)
+;; Last-Updated: Tue Jan 24 11:40:18 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 17552
+;;     Update #: 17553
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-mcmd.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -7276,9 +7276,9 @@ Bound to `S-pause' in the minibuffer."
 (defalias 'toggle-icicle-completions-format
     'icicle-toggle-completions-format)
 ;;;###autoload
-(defun icicle-toggle-completions-format () ; Bound to `C-%' in minibuffer.
+(defun icicle-toggle-completions-format () ; Bound to `C-M-^' in minibuffer.
   "Toggle `icicle-completions-format' between vertical and horizontal.
-Bound to `C-%' in the minibuffer."
+Bound to `C-M-^' in the minibuffer."
   (interactive)
   (setq icicle-completions-format  (if (eq 'vertical icicle-completions-format)
                                        'horizontal
