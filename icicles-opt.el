@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:22:14 2006
 ;; Version: 22.0
-;; Last-Updated: Fri Jan 20 17:03:10 2012 (-0800)
+;; Last-Updated: Tue Jan 24 10:47:26 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 4775
+;;     Update #: 4776
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-opt.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -1059,7 +1059,10 @@ removed based only on the number of input characters."
 
 Note that multi-line candidates are always displayed in a single
 column, and in this case it makes no difference what the value of the
-option is - the effect is the same."
+option is - the effect is the same.
+
+You can toggle this option at any time from the minibuffer using
+`\\<minibuffer-local-completion-map>\\[icicle-toggle-completions-format]'."
   :type '(choice
           (const :tag "Display vertically"    vertical)
           (other :tag "Display horizontally"  horizontal))
