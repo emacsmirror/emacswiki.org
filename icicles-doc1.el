@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Fri Jan 20 17:55:13 2012 (-0800)
+;; Last-Updated: Tue Jan 24 11:23:40 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 26424
+;;     Update #: 26428
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-doc1.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -3190,6 +3190,9 @@
 ;;    instead of horizontally (the default).  To do that, customize
 ;;    option `icicle-completions-format' to have the value `vertical'.
 ;;
+;;    You can toggle the completions layout between horizontal and
+;;    vertical at any time during completion, using `C-%'.
+;;
 ;;    Starting with Emacs 23.2, this is also possible in vanilla
 ;;    Emacs, and the vanilla option for this is `completions-format'.
 ;;    The default value of `icicle-completions-format' is the value of
@@ -3206,7 +3209,7 @@
 ;;    (and this includes multi-line multi-completions) the candidates
 ;;    are displayed in a single column.  When this is the case, the
 ;;    completions format (horizontal or vertical) makes no difference
-;;    – the effect is the same. (Icicles also inserts an empty line
+;;    - the effect is the same. (Icicles also inserts an empty line
 ;;    after each multi-line candidate, for readability.)
 ;;    See also (@file :file-name "icicles-doc2.el" :to "Icicles User Options and Faces")
 ;;
