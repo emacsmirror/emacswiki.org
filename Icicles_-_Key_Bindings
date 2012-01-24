@@ -1002,11 +1002,6 @@ The following minibuffer bindings let you ''toggle'' '''Icicles''' options or cy
 (toggle option `<tt>[[Icicles - Customization and General Tips#icicle-dot-string|icicle-dot-string]]</tt>')
 * '''`##C-x .##'''' -- `icicle-toggle-hiding-common-match' (toggle option `<tt>[[Icicles - Customization and General Tips#icicle-hide-common-match-in-Completions-flag|icicle-hide-common-match-in-Completions-flag]]</tt>')
 * '''`##C-u C-x .##'''' -- `icicle-toggle-hiding-non-matching-lines' (toggle option `<tt>[[Icicles - Customization and General Tips#icicle-hide-non-matching-lines-flag|icicle-hide-non-matching-lines-flag]]</tt>')
-* '''`##C-%##'''' -- `icicle-toggle-completions-format' (toggle option `<tt>[[Icicles - Customization and General Tips#icicle-toggle-completions-format|icicle-toggle-completions-format]]</tt>')
-
-
-
-
 * '''`##C-;##'''' -- `icicle-toggle-expand-to-common-match' (toggle option `<tt>[[Icicles - Customization and General Tips#icicle-expand-input-to-common-match-flag|icicle-expand-input-to-common-match-flag]]</tt>')
 * '''`##M-;##'''' -- `icicle-toggle-search-replace-common-match'  (toggle option `<tt>[[Icicles - Customization and General Tips#icicle-search-replace-common-match-flag|icicle-search-replace-common-match-flag]]</tt>')
 * '''`##C-M-;##''' -- `icicle-toggle-icicle-toggle-ignoring-comments'  (toggle option `<tt>[[Icicles - Customization and General Tips#icicle-ignore-comments-flag|icicle-ignore-comments-flag]]</tt>')
@@ -1015,6 +1010,8 @@ The following minibuffer bindings let you ''toggle'' '''Icicles''' options or cy
 * '''`##C-M-,##'''' -- `icicle-toggle-alternative-sorting' (swap with alternative)
 * '''`##C-^##'''' -- `icicle-toggle-remote-file-testing'  (toggle option `<tt>[[Icicles - Customization and General Tips#icicle-test-for-remote-files-flag|icicle-test-for-remote-files-flag]]</tt>')
 * '''`##C-^##'''' -- `icicle-toggle-highlight-all-current' (search)  (toggle option `<tt>[[Icicles - Customization and General Tips#icicle-search-highlight-all-current-flag|icicle-search-highlight-all-current-flag]]</tt>')
+* '''`##C-M-^##'''' -- `icicle-toggle-completions-format' (toggle option `<tt>[[Icicles - Customization and General Tips#icicle-toggle-completions-format|icicle-toggle-completions-format]]</tt>')
+
 * '''`<tt>C-#</tt>'''' -- `icicle-cycle-incremental-completion' (toggle option `<tt>[[Icicles - Customization and General Tips#icicle-incremental-completion-flag|icicle-incremental-completion-flag]]</tt>')
 * '''`##C-(##'''' -- `icicle-next-TAB-completion-method'  (next method in option `<tt>[[Icicles - Customization and General Tips#icicle-TAB-completion-methods|icicle-TAB-completion-methods]]</tt>')
 * '''`##C-`##'''' -- `icicle-toggle-regexp-quote' (toggle option `<tt>[[Icicles - Customization and General Tips#icicle-regexp-quote-flag|icicle-regexp-quote-flag]]</tt>')
