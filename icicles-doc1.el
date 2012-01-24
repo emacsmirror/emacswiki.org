@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Tue Jan 24 11:23:40 2012 (-0800)
+;; Last-Updated: Tue Jan 24 11:43:27 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 26428
+;;     Update #: 26429
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-doc1.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -3191,7 +3191,7 @@
 ;;    option `icicle-completions-format' to have the value `vertical'.
 ;;
 ;;    You can toggle the completions layout between horizontal and
-;;    vertical at any time during completion, using `C-%'.
+;;    vertical at any time during completion, using `C-M-^'.
 ;;
 ;;    Starting with Emacs 23.2, this is also possible in vanilla
 ;;    Emacs, and the vanilla option for this is `completions-format'.
