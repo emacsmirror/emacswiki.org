@@ -273,6 +273,9 @@ You can lay completion candidates out vertically, if you like,
 instead of horizontally (the default).  To do that, customize
 option '''`<tt>[[Icicles - Customization and General Tips#icicle-completions-format|icicle-completions-format]]</tt>'''' to have the value `vertical'.
 
+You can toggle the completions layout between horizontal and
+vertical at any time during completion, using '''`##C-%##''''.
+
 Starting with Emacs 23.2, this is also possible in vanilla
 Emacs, and the vanilla option for this is `completions-format'.
 The default value of `icicle-completions-format' is the value of
