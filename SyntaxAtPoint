@@ -4,6 +4,7 @@ To define a new thing by writing a "forward" function, consider syntax.  Emacs g
 
   (defun syntax-forward-syntax (&optional arg)
     "Move ARG times to start of a set of the same syntax characters."
+    (interactive "p")
     (setq arg (or arg 1))
     (while (and (> arg 0)
                 (not (eobp))
@@ -22,6 +23,7 @@ This tells thing-at-point about the new syntax thing.
 Backward:
 
   (defun syntax-backward-syntax (&optional arg)
+    (interactive "p")
     "Move ARG times to end of a set of the same syntax characters."
     (syntax-forward-syntax (- (or arg 1))))
 
