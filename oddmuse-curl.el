@@ -1,5 +1,5 @@
 ;;; oddmuse-curl.el -- edit pages on an Oddmuse wiki using curl
-;; $Id: oddmuse-curl.el,v 1.5 2012/01/23 16:30:46 alex Exp $
+;; $Id: oddmuse-curl.el,v 1.6 2012/01/24 00:54:09 alex Exp $
 
 ;; Copyright (C) 2006, 2009, 2011  Alex Schroeder <alex@gnu.org>
 ;;           (C) 2007  rubikitch <rubikitch@ruby-lang.org>
@@ -105,7 +105,7 @@ It must print the page to stdout.
 %t  URL encoded pagename, eg. HowTo, How_To, or How%20To")
 
 (defvar oddmuse-rc-command
-  "curl --silent %w\"?action=rc&raw=1\""
+  "curl --silent %w\"?action=rc;raw=1\""
   "Command to use for Recent Changes.
 It must print the RSS 3.0 text format to stdout.
 
@@ -174,45 +174,53 @@ This is used by Oddmuse to merge changes.")
   "Implement markup rules for the Creole markup extension."
   (font-lock-add-keywords
    nil
-  '(("^=[^=\n]+" . 'info-title-1); = h1
-    ("^==[^=\n]+" . 'info-title-2); == h2
-    ("^===[^=\n]+" . 'info-title-3); === h3
-    ("^====+[^=\n]+" . 'info-title-4); ====h4
-    ("\\_<//\\(.*\n\\)*?.*?//" . 'italic); //italic//
-    ("\\*\\*\\(.*\n\\)*?.*?\\*\\*" . 'bold); **bold**
-    ("__\\(.*\n\\)*?.*?__" . 'underline); __underline__
-    ("|+=?" . font-lock-string-face)
-    ("\\\\\\\\[ \t]+" . font-lock-warning-face)
-    ("^#+ " . font-lock-constant-face)
-    ("^- " . font-lock-constant-face))))
+  '(("^=[^=\n]+" 0 '(face info-title-1 help-echo "Creole H1")); = h1
+    ("^==[^=\n]+" 0 '(face info-title-2 help-echo "Creole H2")); == h2
+    ("^===[^=\n]+" 0 '(face info-title-3 help-echo "Creole H3")); === h3
+    ("^====+[^=\n]+" 0 '(face info-title-4 help-echo "Creole H4")); ====h4
+    ("\\_<//\\(.*\n\\)*?.*?//" 0 '(face italic help-echo "Creole italic")); //italic//
+    ("\\*\\*\\(.*\n\\)*?.*?\\*\\*" 0 '(face bold help-echo "Creole bold")); **bold**
+    ("__\\(.*\n\\)*?.*?__" 0 '(face underline help-echo "Creole underline")); __underline__
+    ("|+=?" 0 '(face font-lock-string-face help-echo "Creole table cell"))
+    ("\\\\\\\\[ \t]+" 0 '(face font-lock-warning-face help-echo "Creole line break"))
+    ("^#+ " 0 '(face font-lock-constant-face help-echo "Creole ordered list"))
+    ("^- " 0 '(face font-lock-constant-face help-echo "Creole ordered list")))))
 
 (defun oddmuse-bbcode-markup ()
   "Implement markup rules for the bbcode markup extension."
   (font-lock-add-keywords
    nil
-  '(("\\[u\\]\\(.*\n\\)*?.*?\\[/u\\]" . 'underline)
-    ("\\[s\\(trike\\)?\\]\\(.*\n\\)*?.*?\\[/s\\(trike\\)?\\]" . 'strike)
-    ("\\[u\\]\\(.*\n\\)*?.*?\\[/u\\]" . 'underline)
-    ("\\[b\\]\\(.*\n\\)*?.*?\\[/b\\]" . 'bold)
-    ("\\[i\\]\\(.*\n\\)*?.*?\\[/i\\]" . 'italic))))
+  `(("\\[b\\]\\(.*\n\\)*?.*?\\[/b\\]"
+     0 '(face bold help-echo "BB code bold"))
+    ("\\[i\\]\\(.*\n\\)*?.*?\\[/i\\]"
+     0 '(face italic help-echo "BB code italic"))
+    ("\\[u\\]\\(.*\n\\)*?.*?\\[/u\\]"
+     0 '(face underline help-echo "BB code underline"))
+    (,(concat "\\[url=" goto-address-url-regexp "\\]")
+     0 '(face font-lock-builtin-face help-echo "BB code url"))
+    ("\\[/?\\(img\\|url\\)\\]"
+     0 '(face font-lock-builtin-face help-echo "BB code url or img"))
+    ("\\[s\\(trike\\)?\\]\\(.*\n\\)*?.*?\\[/s\\(trike\\)?\\]"
+     0 '(face strike help-echo "BB code strike"))
+    ("\\[/?\\(left\\|right\\|center\\)\\]"
+     0 '(face font-lock-constant-face help-echo "BB code alignment")))))
 
 (defun oddmuse-usemod-markup ()
   "Implement markup rules for the Usemod markup extension."
   (font-lock-add-keywords
    nil
-  '(("^=[^=\n]+=$" . 'info-title-1); = h1 =
-    ("^==[^=\n]+==$" . 'info-title-2); == h2 ==
-    ("^===[^=\n]+===$" . 'info-title-3); === h3 ===
-    ("^====+[^=\n]+====$" . 'info-title-4); ==== h4 ====
-    ("^ .+?$" . font-lock-comment-face);       code
-    ("^[#]\\([#]+\\)" . font-lock-constant-face)
-    ("^\\([*#]\\)[^*#]" 1 font-lock-builtin-face))))
+  '(("^=[^=\n]+=$" 0 '(face info-title-1 help-echo "Usemod H1"))
+    ("^==[^=\n]+==$" 0 '(face info-title-2 help-echo "Usemod H2"))
+    ("^===[^=\n]+===$" 0 '(face info-title-3 help-echo "Usemod H3"))
+    ("^====+[^=\n]+====$" 0 '(face info-title-4 help-echo "Usemod H4"))
+    ("^ .+?$" 0 '(face font-lock-comment-face help-echo "Usemod block"))
+    ("^[#]+ " 0 '(face font-lock-constant-face help-echo "Usemod ordered list")))))
 
 (defun oddmuse-usemod-html-markup ()
   "Implement markup rules for the HTML option in the Usemod markup extension."
   (font-lock-add-keywords
    nil
-   '(("<\\(/?[a-z]+\\)" 1 font-lock-function-name-face))); <strong
+   '(("<\\(/?[a-z]+\\)" 1 '(face font-lock-function-name-face help-echo "Usemod HTML"))))
   (set (make-local-variable 'sgml-tag-alist)
        `(("b") ("code") ("em") ("i") ("strong") ("nowiki")
 	 ("pre" \n) ("tt") ("u")))
@@ -222,9 +230,9 @@ This is used by Oddmuse to merge changes.")
   "Implement markup rules for the Markup extension."
   (font-lock-add-keywords
    nil
-   '(("\\*.*?\\*" . 'bold)
-     ("\\_</.*?/" . 'italic)
-     ("_.*?_" . 'underline))))
+   '(("\\*\\w+\\(\\w+\\|[-%.,:;\'\"!? ]+\\)*?\\*" 0 '(face bold help-echo "Markup bold"))
+     ("\\_</\\w+\\(\\w+\\|[-%.,:;\'\"!? ]+\\)*?/" 0 '(face italic help-echo "Markup italic"))
+     ("_\\w+\\(\\w+\\|[-%.,:;\'\"!? ]+\\)*?_" 0 '(face underline help-echo "Markup underline")))))
 
 (defun oddmuse-basic-markup ()
   "Implement markup rules for the basic Oddmuse setup without extensions.
@@ -232,22 +240,23 @@ This function should come come last in `oddmuse-markup-functions'
 because of such basic patterns as [.*] which are very generic."
   (font-lock-add-keywords
    nil
-   `((,oddmuse-link-pattern . 'link)
-     ("\\[\\[.*?\\]\\]" . 'link)
-     ("\\[.*\\]" . 'link)
-     ("^\\([*]+\\)" . 'font-lock-constant-face)))
+   `((,oddmuse-link-pattern 0 '(face link help-echo "Basic wiki name"))
+     ("\\[\\[.*?\\]\\]" 0 '(face link help-echo "Basic free link"))
+     (,(concat "\\[" goto-address-url-regexp "\\( .+?\\)?\\]") 0 '(face link help-echo "Basic external free link"))
+     ("^\\([*]+\\)" 0 '(face font-lock-constant-face help-echo "Basic bullet list"))))
   (goto-address))
 
 ;; Should determine this automatically based on the version? And cache it per wiki?
 ;; http://emacswiki.org/wiki?action=version
 (defvar oddmuse-markup-functions
-  '(oddmuse-creole-markup
-    oddmuse-bbcode-markup
-    oddmuse-usemod-markup
+  '(oddmuse-basic-markup
     oddmuse-extended-markup
-    oddmuse-basic-markup)
+    oddmuse-usemod-markup
+    oddmuse-creole-markup
+    oddmuse-bbcode-markup)
   "The list of functions to call when `oddmuse-mode' runs.
-If you want to add your own code, use `oddmuse-mode-hook'.")
+Later functions take precedence because they call `font-lock-add-keywords'
+which adds the expressions to the front of the existing list.")
 
 (define-derived-mode oddmuse-mode text-mode "Odd"
   "Simple mode to edit wiki pages.
@@ -365,7 +374,7 @@ Use a prefix argument to force a reload of the page."
         (unless (equal name (buffer-name)) (rename-buffer name))
         (erase-buffer)
 	(let ((max-mini-window-height 1))
-	  (shell-command command buf))
+	  (oddmuse-run "Loading" command buf nil))
         (pop-to-buffer buf)
 	(oddmuse-mode)))))
 
@@ -413,17 +422,25 @@ and call `oddmuse-edit' on it."
 ;; (oddmuse-wikiname-p "not-wikiname")
 ;; (oddmuse-wikiname-p "notWikiName")
 
-(defun oddmuse-run (mesg command buf)
+(defun oddmuse-run (mesg command buf on-region)
   "Print MESG and run COMMAND on the current buffer.
 MESG should be appropriate for the following uses:
   \"MESG...\"
   \"MESG...done\"
   \"MESG failed: REASON\"
-Save outpout in BUF and report an appropriate error."
+Save outpout in BUF and report an appropriate error.
+ON-REGION indicates whether the commands runs on the region
+such as when posting, or whether it just runs by itself such
+as when loading a page."
   (message "%s..." mesg)
-  (if (and (= 0 (shell-command-on-region (point-min) (point-max) command buf))
-	   (string= "302" (with-current-buffer buf
-			     (buffer-string))))
+  ;; If ON-REGION, the resulting HTTP CODE is found in BUF, so check
+  ;; that, too.
+  (if (and (= 0 (if on-region
+		    (shell-command-on-region (point-min) (point-max) command buf)
+		  (shell-command command buf)))
+	   (or (not on-region)
+	       (string= "302" (with-current-buffer buf
+				(buffer-string)))))
       (message "%s...done" mesg)
     (let ((err "Unknown error"))
       (with-current-buffer buf
@@ -456,7 +473,7 @@ The current wiki is taken from `oddmuse-wiki'."
 	 (buf (get-buffer-create " *oddmuse-response*"))
 	 (text (buffer-string)))
     (and buffer-file-name (basic-save-buffer))
-    (oddmuse-run "Posting" command buf)))
+    (oddmuse-run "Posting" command buf t)))
 
 (defun oddmuse-make-completion-table (wiki)
   "Create pagename completion table for WIKI. if available, return precomputed one."
@@ -492,7 +509,7 @@ With universal argument, reload."
     (if (and (get-buffer name)
              (not current-prefix-arg))
         (pop-to-buffer (get-buffer name))
-      (let* ((wiki-data (assoc oddmuse-wiki oddmuse-wikis))
+      (let* ((wiki-data (assoc wiki oddmuse-wikis))
              (url (nth 1 wiki-data))
              (command (oddmuse-format-command oddmuse-rc-command))
              (coding (nth 2 wiki-data))
@@ -500,11 +517,9 @@ With universal argument, reload."
              (coding-system-for-read coding)
              (coding-system-for-write coding))
 	(set-buffer buf)
-        (unless (equal name (buffer-name)) (rename-buffer name))
         (erase-buffer)
 	(let ((max-mini-window-height 1))
-	  (shell-command command buf))
-        (pop-to-buffer buf)
+	  (oddmuse-run "Load recent changes" command buf nil))
 	(oddmuse-rc-buffer)
 	(set (make-local-variable 'oddmuse-wiki) wiki)))))
 
