@@ -163,7 +163,7 @@ Here are some of the '''Icicles''' tripping commands:
 ** '''`icicle-bookmark-desktop''''       ('''`C-x j K'''') -- [[DeskTop]] bookmarks
 ** '''`icicle-bookmark-local-file''''  ('''`C-x j l'''') -- Local-file bookmarks
 ** '''`icicle-bookmark-man''''         ('''`C-x j m'''') -- [[ManMode|man]]-page bookmarks
-** '''`icicle-bookmark-region''''      ('''`C-x j r'''', '''`C-u C-x C-x'''') -- [[region|Region]] bookmarks
+** '''`icicle-bookmark-region''''      ('''`C-x j r'''', '''`C-u C-u C-x C-x'''') -- [[region|Region]] bookmarks
 ** '''`icicle-bookmark-remote-file'''' ('''`C-x j n'''') -- Remote-file ([[TrampMode|Tramp]] or AngeFtp) bookmarks
 ** '''`icicle-bookmark-all-tags'''' ('''##C-x j t *##'''') -- Bookmarks having all of a set of tags
 ** '''`icicle-bookmark-some-tags'''' ('''##C-x j t +##'''') -- Bookmarks having some of a set of tags
