@@ -7,9 +7,9 @@
 ;; Copyright (C) 2011-2012, Drew Adams, all rights reserved.
 ;; Created: Thu Nov 24 11:57:04 2011 (-0800)
 ;; Version: 23.1
-;; Last-Updated: Sun Jan  1 15:26:22 2012 (-0800)
+;; Last-Updated: Wed Jan 25 09:33:57 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 56
+;;     Update #: 60
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/descr-text+.el
 ;; Keywords: help, characters, description
 ;; Compatibility: GNU Emacs: 22.x, 23.x, 24.x
@@ -50,6 +50,9 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2012/01/25 dadams
+;;     describe-char: Apply Kenichi H's Emacs 24 enhancement:
+;;       http://lists.gnu.org/archive/html/emacs-devel/2012-01/msg00785.html
 ;; 2011/11/30
 ;;     Added compile-time require of mule.el for Emacs 22 (charset-description was a macro).
 ;; 2011/11/24 dadams
@@ -157,7 +160,8 @@ as well as widgets, buttons, overlays, and text properties."
                           (format "%d of %d (%d%%), column: %d%s"
                                   pos total percent col hscroll)))))
               ("character"
-               ,(format "%s (%d, #o%o, #x%x%s)"
+               ,(format "%s (displayed as %s) (%d, #o%o, #x%x)%s"
+                        char-description
                         (apply 'propertize char-description
                                (text-properties-at pos))
                         char char char
@@ -551,7 +555,8 @@ widgets, buttons, overlays, and text properties."
                             (format "%d of %d (%d%%), column: %d%s"
                                     pos total percent col hscroll)))))
                 ("character"
-                 ,(format "%s (%d, #o%o, #x%x)"
+                 ,(format "%s (displayed as %s) (%d, #o%o, #x%x)"
+                          char-description
                           (apply 'propertize char-description
                                  (text-properties-at pos))
                           char char char))
