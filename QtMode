@@ -191,7 +191,7 @@ Here is an excerpt of Jan's code, which is still active, and I believe is cleane
 When I'm writing PyQt code I always find myself looking up the Qt class reference documentation in a web browser. I had become accustomed (but irritated) in click my way to the index each time.  Just now I decided I wanted iswitchb-like filtering on the list of classes, so why not write a little something for Emacs?  I did.  It's a quick-n-dirty hack, but it works well enough.
 
 Here it is:
-http://furius.ca/pubcode/pub/conf/common/elisp/blais/qtdoc.el
+http://furius.ca/pubcode/pub/conf/lib/elisp/blais/qtdoc.el -- EDIT: This link was previously broken, now it works.
 
 
 ----
