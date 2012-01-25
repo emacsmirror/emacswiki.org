@@ -23,6 +23,7 @@ Some possibilities:
 -- DrewAdams
    
 [new]
+--
 What are the minimum requirements for `el-swank-fuzzy-completions' to return completions? In a Emacs Lisp buffer, I'm trying to expand to `multiple-value-bind' (example provided by the documentation of 'el-swank-fuzzy-completions' itself) by evaluating this code (the arrow show the expression value):
 
  (el-swank-fuzzy-completions "mvb") -> (nil nil)
@@ -37,3 +38,4 @@ whilst this doesn't:
   (el-swank-fuzzy-completions "m-va-b") -> (nil nil)
 
 Thanks.
+--
