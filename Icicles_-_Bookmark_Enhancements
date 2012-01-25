@@ -186,10 +186,10 @@ the region is activated (provided option
 '''Icicles''' gives you quick ways to save a region and select
 (activate) a saved region.  You can do both using '''`C-x C-x''''.
 
-* With ''no'' prefix arg, `C-x C-x' exchanges point and mark
-  (activating the region), as usual.
+* With ''no'' prefix arg or with a ''single plain'' prefix arg ('''`C-u''''), `C-x C-x' acts the same as for vanilla Emacs: it exchanges point and mark, activating the region or not depending on the use of
+`C-u' and whether you are in TransientMarkMode.
 
-* With a ''plain'' prefix arg ('''`C-u''''), `C-x C-x' jumps to a region
+* With a ''multiple plain'' prefix arg ('''`C-u C-u''''), `C-x C-x' jumps to a region
   bookmark that you choose using completion, and activates it.
 
 * With a ''numeric'' prefix arg, `C-x C-x' saves the region.  If the
