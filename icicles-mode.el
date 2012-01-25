@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 10:21:10 2006
 ;; Version: 22.0
-;; Last-Updated: Tue Jan 24 11:03:13 2012 (-0800)
+;; Last-Updated: Tue Jan 24 11:41:44 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 8075
+;;     Update #: 8077
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-mode.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -1226,7 +1226,7 @@ Used on `pre-command-hook'."
                :help "Toggle option `icicle-show-multi-completion-flag'"))
            (define-key icicle-options-menu-map [icicle-toggle-completions-format]
              '(menu-item "Toggle Horizontal/Vertical Layout"
-               icicle-toggle-completions-format :visible icicle-mode :keys "C-%"
+               icicle-toggle-completions-format :visible icicle-mode :keys "C-M-^"
                :help "Toggle option `icicle-hide-non-matching-lines-flag'"))
            (define-key icicle-options-menu-map [icicle-toggle-hiding-non-matching-lines]
              '(menu-item "Toggle Hiding Non-Matching Lines"
@@ -3364,10 +3364,10 @@ complete)"))
     (define-key map (icicle-kbd "C-?")     'icicle-minibuffer-help)) ; `C-?'
   (define-key map (icicle-kbd "C-.")       'icicle-dispatch-C-.) ; `C-.'
   (define-key map (icicle-kbd "C-#")       'icicle-cycle-incremental-completion) ; `C-#'
-  (define-key map (icicle-kbd "C-%")       'icicle-toggle-completions-format) ; `C-%'
   (define-key map (icicle-kbd "C-;")       'icicle-toggle-expand-to-common-match) ; `C-;'
   (define-key map (icicle-kbd "M-;")       'icicle-toggle-search-replace-common-match) ; `M-;'
   (define-key map (icicle-kbd "C-^")       'icicle-dispatch-C-^) ; `C-^'
+  (define-key map (icicle-kbd "C-M-^")     'icicle-toggle-completions-format) ; `C-M-^'
   (define-key map (icicle-kbd "C-S-a")     'icicle-toggle-case-sensitivity) ; `C-S-a' (`C-A')
   (define-key map (icicle-kbd "M-~")       'icicle-toggle-~-for-home-dir) ; `M-~'
   (define-key map (icicle-kbd "C-M-~")     'icicle-toggle-search-complementing-domain) ; `C-M-~'
@@ -3599,7 +3599,6 @@ MAP is `minibuffer-local-completion-map',
   (define-key map (icicle-kbd "C-M-{")     nil)
   (define-key map (icicle-kbd "C-}")       nil)
   (define-key map (icicle-kbd "C-{")       nil)
-  (define-key map (icicle-kbd "C-%")       nil)
   (define-key map (icicle-kbd "M-%")       nil)
   (define-key map (icicle-kbd "C-:")       nil)
   (define-key map (icicle-kbd "C-M-j")     nil)
@@ -3620,6 +3619,7 @@ MAP is `minibuffer-local-completion-map',
   (define-key map (icicle-kbd "C-;")       nil)
   (define-key map (icicle-kbd "M-;")       nil)
   (define-key map (icicle-kbd "C-^")       nil)
+  (define-key map (icicle-kbd "C-M-^")     nil)
   (define-key map (icicle-kbd "C-S-a")     nil)
   (define-key map (icicle-kbd "M-~")       nil)
   (define-key map (icicle-kbd "C-M-~")     nil)
