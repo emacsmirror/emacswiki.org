@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Thu May 21 13:31:43 2009 (-0700)
 ;; Version: 22.0
-;; Last-Updated: Fri Jan 20 16:50:10 2012 (-0800)
+;; Last-Updated: Wed Jan 25 13:57:12 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 5009
+;;     Update #: 5018
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-cmd2.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -3313,7 +3313,12 @@ prefixed by MARKER's buffer name."
 With no prefix arg, invoke `exchange-point-and-mark'.
 If you use library `Bookmark+', then you can use a prefix arg.
 
- * Plain `C-u': select (activate) one or more bookmarked regions.
+ * Plain `C-u':
+
+   Emacs 22+: what vanilla Emacs does - temporary Transient Mark mode.
+   Emacs 20/21: same as `C-u C-u'.
+
+ * Plain `C-u C-u': select (activate) one or more bookmarked regions.
 
  * Numeric prefix arg: bookmark (save) the active region using
    `icicle-bookmark-cmd'.
@@ -3329,18 +3334,19 @@ bound to `exchange-point-and-mark' to
 `icicle-exchange-point-and-mark'.  If you do not want this remapping,
 then customize option `icicle-top-level-key-bindings'."
   (interactive "P")
-  (let ((bplus  (featurep 'bookmark+)))
-    (if (not arg)
-        (call-interactively #'exchange-point-and-mark)
-      (unless bplus (error "You must load library `Bookmark+' to use a prefix arg"))
-      (cond ((atom arg)
-             (unless (and transient-mark-mode mark-active (not (eq (mark) (point))))
-               (error "Cannot bookmark inactive region: you must activate it first"))
-             (icicle-bookmark-cmd (and (natnump (prefix-numeric-value arg)) 9)))
-            (t
-             (bookmark-maybe-load-default-file)
-             (unless (consp (bmkp-region-alist-only)) (error "No bookmarked regions"))
-             (call-interactively #'icicle-select-bookmarked-region))))))
+  (cond ((not arg) (exchange-point-and-mark))
+        ((and (consp arg) (< (prefix-numeric-value arg) 16) (> emacs-major-version 21))
+         (exchange-point-and-mark arg))
+        ((not (featurep 'bookmark+))
+         (error "You must load library `Bookmark+' to use a prefix arg"))
+        ((atom arg)
+         (unless (and transient-mark-mode mark-active (not (eq (mark) (point))))
+           (error "Cannot bookmark inactive region: you must activate it first"))
+         (icicle-bookmark-cmd (and (natnump (prefix-numeric-value arg)) 9)))
+        (t
+         (bookmark-maybe-load-default-file)
+         (unless (consp (bmkp-region-alist-only)) (error "No bookmarked regions"))
+         (call-interactively #'icicle-select-bookmarked-region))))
 
 ;;;###autoload
 (defun icicle-search-generic ()         ; Bound to `C-c `'.
