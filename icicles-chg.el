@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Tue Jan 24 11:56:00 2012 (-0800)
+;; Last-Updated: Wed Jan 25 14:13:27 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 7852
+;;     Update #: 7855
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-chg.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -535,6 +535,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd2.el'")
 ;;
+;; 2012/01/25 dadams
+;;     icicle-exchange-point-and-mark: Support also vanilla Emacs 22+ use of a prefix arg.
 ;; 2012/01/16 dadams
 ;;     icicle-search-define-candidates: Add COMPLEMENT to error msg.  Thx to Michael Heerdegen.
 ;; 2011/12/19 dadams
