@@ -1,0 +1,12 @@
+== Combined regular and balanced expressions (cexp) ==
+
+Elisp file: [[cexp.el]].
+
+Example of usage: Try the following within the scratch buffer.
+Run the first line. Thereafter, point moves to the end of the second line because it finds a match for the cexp.
+To see the calculated match data run the third line.
+<pre>
+(setq m (search-forward-cexp "f\\!([[:alpha:]]\\*\\!(.*\\!)\\!)=h\\!(.*\\!)"))
+f(x,x+a*(y+x),z)=h(x)
+(loop for x on m by 'cddr collect (buffer-substring-no-properties (car x) (cadr x)))
+</pre>
