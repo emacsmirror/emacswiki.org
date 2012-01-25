@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Tue Jan 24 11:43:27 2012 (-0800)
+;; Last-Updated: Wed Jan 25 14:04:56 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 26429
+;;     Update #: 26430
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-doc1.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -4726,7 +4726,7 @@
 ;;    `icicle-bookmark-local-file'               (`C-x j l')
 ;;    `icicle-bookmark-man'                      (`C-x j m')
 ;;    `icicle-bookmark-region'                   (`C-x j r',
-;;                                                `C-u C-x C-x')
+;;                                                `C-u C-u C-x C-x')
 ;;    `icicle-bookmark-remote-file'              (`C-x j n')
 ;;    `icicle-bookmark-all-tags'                 (`C-x j t *')
 ;;    `icicle-bookmark-some-tags'                (`C-x j t +')
