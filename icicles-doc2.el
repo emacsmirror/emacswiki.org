@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Tue Jan 24 11:42:43 2012 (-0800)
+;; Last-Updated: Wed Jan 25 14:26:18 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 28608
+;;     Update #: 28613
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-doc2.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -1815,11 +1815,14 @@
 ;;  Icicles gives you quick ways to save a region and select
 ;;  (activate) a saved region.  You can do both using `C-x C-x'.
 ;;
-;;  * With no prefix arg, `C-x C-x' exchanges point and mark
-;;    (activating the region), as usual.
+;;  * With no prefix arg or with a single plain prefix arg (`C-u'),
+;;    `C-x C-x' acts the same as for vanilla Emacs: it exchanges point
+;;    and mark, activating the region or not depending on the use of
+;;    `C-u' and whether you are in transient-mark mode.
 ;;
-;;  * With a plain prefix arg (`C-u'), `C-x C-x' jumps to a region
-;;    bookmark that you choose using completion, and activates it.
+;;  * With a multiple plain prefix arg (`C-u C-u'), `C-x C-x' jumps to
+;;    a region bookmark that you choose using completion, and
+;;    activates it.
 ;;
 ;;  * With a numeric prefix arg, `C-x C-x' saves the region.  If the
 ;;    prefix arg is negative, then you are prompted for the name to
