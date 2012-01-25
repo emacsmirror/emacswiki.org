@@ -546,6 +546,14 @@ Hi. I use autocomplete + eclim. I wrote an autocomplete source which uses eclim 
     (symbol . "f")))
 </pre>
 --Lucas Pandolfo
+[new]
+Is it possible to add some additional information in the popup menus that doesn't get inserted when the text is completed? I would like to have the additional type information semantic provides for C/C++ code in the popup menu、like 
+
+<pre>
+| l : long[] |
+| x : int    |. 
+</pre>
+--AlessandroPiras
 ----
 CategoryCompletion
 
