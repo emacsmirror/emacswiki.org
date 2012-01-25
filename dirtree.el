@@ -35,7 +35,7 @@
 ;; http://svn.halogen.kharkov.ua/svn/repos/alex-emacs-settings/emhacks/dir-tree.el
 
 ;; Put this file into your load-path and the following into your ~/.emacs:
-;;   (autoload 'dirtree "dirtree" "Add directory to tree view")
+;;   (autoload 'dirtree "dirtree" "Add directory to tree view" t)
 
 ;;; Code:
 
