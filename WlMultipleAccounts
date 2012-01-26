@@ -1,11 +1,14 @@
-NOTE: Work in progress.
+*NOTE:* Work in progress.
+
+This page describes how manage multiple email accounts with wanderlust, one of them being a Google mail account. 
+
+== Configuring folders (IMAP) ==
+The .folders file tells wanderlust how to represent the folders. The following is an example of using just IMAP folders, as opposed to download the emails (e.g. with offlineimap) for permanent storage. Note that even when you just use IMAP folders wl downloads the messages you read (and the one following) and cache them locally to ~/.elmo/cache. 
+
 
 On Gmail, the default system folders (sent, trash, etc) are locale specific, i.e. the name depends on your language settings in gmail, and these folders are placed in the folder "[Gmail]". Folders (called "filters" by Gmail) are delimited by "/".
 
 In the example of the other domain (company.com), the username is an email address itself and must be in quotation marks.
-
-== Configuring folders (IMAP) ==
-The .folders file tells wanderlust how to represent the folders. The following is an example of using just IMAP folders, as opposed to download the emails (e.g. with offlineimap) for permanent storage. Note that even when you just use IMAP folders wl downloads the messages you read (and the one following) and cache them locally to ~/.elmo/cache. 
 
 ~/.folders:
 {{{
