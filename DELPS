@@ -101,7 +101,6 @@ In the picture above, the user downloads *Sources List* yellow pages that
 contains information about available packages. At upper right: when a
 prospective developer wants to make an epackage available for others,
 he first
-
 [http://help.github.com/forking/ forks] the
 current *Sources List* (yellow pages), adds new information to it and sends a
 [http://help.github.com/pull-requests/ pull request]
