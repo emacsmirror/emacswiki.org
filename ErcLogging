@@ -194,6 +194,7 @@ Perhaps this is the right solution though, since `buffer-file-coding-system' is 
 
 I tried this and it works so long as you add it to hook 'erc-mode-hook' rather than 'erc-mode'.  Was this a typo on your part, or is there a hook called 'erc-mode' that I've missed? -- ZwaX
 : That was a typo, hooks are added to hooks, not modes :) Fixed.
+This doesn't work for me.I think erc-log doesn't care about the buffer-file-coding-system.Erc save log as emacs-mule coding-system.So (setq erc-log-file-coding-system 'utf-8) should work.
 
 Is there anyway of saving the log as HTML/XML instead of as a text file?  -- KH
 
