@@ -163,5 +163,17 @@ There are two aspects to completion: which completions are offered, and how to c
 
 PredictiveMode doesn't really make typing much quicker, especially typing prose. It's very hard to maintain the flow of the sentence when your editor keeps interrupting you with the wrong words. It's even harder if you attempt to use any of the completion UIs to select anything other than the first choice; the process of cycling through a list of other words is very disruptive.
 
+[new]
+
+Have you actually tried PredictiveMode? You say the "editor keeps interrupting you with the wrong words". But PredictiveMode doesn't interrupt you at all unless you tell it to. The default configuration lets you type as normal, ignoring the completions entirely, unless you explicitly hit a key-sequence to insert a completion or bring up a completion UI.
+
+As for the speed claims, unless you've carried out a proper study and can point to the data, this is a very subjective comment. I personally find it speeds up typing long words because I can type a few characters, sufficient to narrow down the options enough so that the word I want is the first choice, and then hit <space> to insert the word without typing the rest of it. (I have it configured so that punctuation characters accept the current completion.) Over time, my fingers have "learned" these shorter key sequences for commonly used words.
+
+Whether this speeds up my typing overall is debatable. Like you, I don't have any hard data.
+
+In any case, this discussion is somewhat moot. I originally wrote PredictiveMode partly as a spelling aid, and partly to save key-strokes when I was suffering from mild RSI. (You may well question the wisdom of writing a largish piece of software as a way of combating RSI...!) I still find those the most useful aspects.
+
+-- TobyCubitt
+
 ----
 CategoryModes | CategoryCompletion | CategorySpelling
