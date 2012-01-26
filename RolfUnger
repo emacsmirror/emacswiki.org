@@ -1,16 +1,20 @@
 I use Emacs. ... except for mailing with mutt. In that case (typically in a Putty terminal) I use vi.
 Okay, sometimes I have emacs running in that putty session and read the mails with ansi-term mode and mutt.
 In this case my editor is emacsclient. Though I am still curious what will happen if vi opens in an
-ansi-term buffer.
+ansi-term buffer. The 5 things that keep me with emacs are:
 
+ * OrgMode: Plans, notes, time tracking, trouble tickets, spreadsheet ...
+ * SqlMode in particular and ComintMode in general
+ * Completion and ''real'' history with Ctrl-r, M-r in ComintMode
+   (I don't use bash in win32, so emacs is the only way to get the incremental search through the history)
+ * VersionControl: Used to start with RCS with VC, changed to cvs with pcl-cvs and more often also to psvn
+ * Writing source code
 
-
+I never got into Mail with Gnus. And also the other MUAs (Mew, VM, Wanderlust) didn't suite me,
+so I just stick with ''mutt'' ("the one that sucks less").
 
 [new:DrewAdams:2011-12-06 14:32 UTC]
 Welcome to the wiki. -- DrewAdams
-
-
-
 
 
 
