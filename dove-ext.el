@@ -266,13 +266,49 @@
   )
 )
 
+(setq dove-auto-paste-mode-list
+      '( "shell-mode" "eshell-mode"))
+
+(defun dove-paste-condition (&optional arg)
+  "Return t if major-mode match predefined list"
+  (mapcan (lambda (x)
+            (string= x major-mode))
+  dove-auto-paste-mode-list))
 
 (defun copy-line (&optional arg)
- "Save current line into Kill-Ring without mark the line "
+ "Copy lines at point and paste them to mark"
   (interactive "P")
   (copy-thing 'beginning-of-line 'end-of-line arg)
-  (paste-to-mark (lambda () (string= "shell-mode" major-mode)) arg)
-)
+  (paste-to-mark 'dove-paste-condition arg))
+
+(defun copy-word (&optional arg)
+ "Copy words at point and paste them to mark"
+  (interactive "P")
+  (copy-thing 'backward-word 'forward-word arg)
+  (paste-to-mark 'dove-paste-condition arg))
+
+(defun copy-paragraph (&optional arg)
+ "Copy paragraphes at point and paste them to mark"
+  (interactive "P")
+  (copy-thing 'backward-paragraph 'forward-paragraph arg)
+  (paste-to-mark 'dove-paste-condition arg))
+
+(defun thing-copy-string-to-mark(&optional arg)
+  "Copy string at point or region selected and paste them to mark"
+  (interactive "P")
+  (cond 
+   ((and mark-active transient-mark-mode)
+    (pop-mark))
+   (t
+    (copy-thing 'beginning-of-string 'end-of-string arg)))
+  (paste-to-mark 'dove-paste-condition arg))
+
+(defun thing-copy-parenthesis-to-mark(&optional arg)
+ "Copy region between {[(<"''">)]} and paste them to mark"
+  (interactive "P")
+  (copy-thing 'beginning-of-parenthesis 'end-of-parenthesis arg)
+  (paste-to-mark 'dove-paste-condition arg))
+
 
 (defun duplicate-line(&optional arg)
    "duplicate current line"
@@ -284,31 +320,6 @@
      (if arg
 	 (if (> arg 1)
 	     (duplicate-line (- arg 1) -1)))))
-
-(defun copy-word (&optional arg)
- "Copy words at point into kill-ring"
-  (interactive "P")
-  (copy-thing 'backward-word 'forward-word arg)
-  (paste-to-mark (lambda () (string= "shell-mode" major-mode)) arg)
-)
-
-(defun copy-paragraph (&optional arg)
- "Copy paragraphes at point"
-  (interactive "P")
-  (copy-thing 'backward-paragraph 'forward-paragraph arg)
-  (paste-to-mark (lambda () (string= "shell-mode" major-mode)) arg)
-)
-
-
-;(defun dove-backward-kill-word (&optional arg)
-;  "Backward kill word, but do not insert it into kill-wring"
-;  (interactive "P")
-;  (let (( end (point) )
-;	( beg (progn (backward-word arg ) (point)))
-;	      )
-;    (delete-region beg end)
-;    )
-;)
 
 (defun dove-forward-kill-word (&optional arg)
   "Backward kill word, but do not insert it into kill-wring"
@@ -362,20 +373,6 @@
   (goto-char (funcall arg)))
 
 
-(defun thing-copy-string-to-mark(&optional arg)
-  " Try to copy a string at point, or a region selected  and paste it to the mark. 
-When used in shell-mode, it will paste string on shell prompt by default "
-  (interactive "P")
-  (cond 
-   ((and mark-active transient-mark-mode)
-    (pop-mark)
-    )
-   (t
-;      (message "%s" "223 456")
-    (copy-thing 'beginning-of-string 'end-of-string arg)))
-    (paste-to-mark (lambda () (string= "shell-mode" major-mode)) arg)
-)
-
 (setq dove-parenthesis-list 
       '( ("[" "]") 
          ("(" ")")
@@ -410,14 +407,6 @@ Parenthesis character was defined by beginning-of-parenthesis"
                      (line-end-position) 3 arg)
 	     (if (looking-back dove-parenthesis-end)
                  (goto-char (- (point) 1)) )
-)
-
-(defun thing-copy-parenthesis-to-mark(&optional arg)
-  " Try to copy a parenthesis and paste it to the mark
-When used in shell-mode, it will paste parenthesis on shell prompt by default "
-  (interactive "P")
-  (copy-thing 'beginning-of-parenthesis 'end-of-parenthesis arg)
-  (paste-to-mark (lambda () (string= "shell-mode" major-mode)) arg)
 )
 
 (defun backward-symbol (&optional arg)
@@ -733,10 +722,6 @@ When used in shell-mode, it will paste parenthesis on shell prompt by default "
 )
 
 
-
-;              (if arg (mapc set-buf (list (list 1stWin 2ndBuf) (list 2ndWin 3rdBuf) (list 3rdWin 1stBuf)))
-;                (mapc set-buf (list (list 1stWin 3rdBuf) (list 2ndWin 1stBuf) (list 3rdWin 2ndBuf)) )))))))
-;
 ;(defun dove-hide-shell-output()
 ;  "Hide Shell Output"
 ;  (interactive)
@@ -803,7 +788,6 @@ When used in shell-mode, it will paste parenthesis on shell prompt by default "
 
 (defun i-babel-quote-str (beg end Str)
   ""
-;    (let ((beg St) (end Ed))
     (goto-char end)
     (insert Str)
     (goto-char beg)
@@ -842,25 +826,13 @@ When used in shell-mode, it will paste parenthesis on shell prompt by default "
   ""
   (interactive "r")
   (i-babel-quote-str St Ed "=")
-
-;  (let ((beg St) (end Ed))
-;    (goto-char end)
-;    (insert "=")
-;    (goto-char beg)
-;    (insert "=")
-;    (goto-char (+ end 2)))
 )
 
 
 (defun i* (St Ed)
   ""
   (interactive "r")
-  (let ((beg St) (end Ed))
-    (goto-char end)
-    (insert "*")
-    (goto-char beg)
-    (insert "*")
-    (goto-char (+ end 2)))
+  (i-babel-quote-str St Ed "*")
 )
 
 
@@ -885,7 +857,6 @@ When used in shell-mode, it will paste parenthesis on shell prompt by default "
 (defun set-outline-minor-mode-regexp ()
   ""
   (outline-minor-mode 1)
-;  (setq outline-regexp 
   (let ((regexp-list (append outline-minor-mode-list nil))
 	(find-regexp
 	 (lambda (lst)
@@ -897,19 +868,34 @@ When used in shell-mode, it will paste parenthesis on shell prompt by default "
 		   (progn (pop lst)
 			  (funcall find-regexp lst))))
 	     ))))
-;    (message "%s  %s" major-mode regexp-list)
     (make-local-variable 'outline-regexp)
-    (setq outline-regexp (funcall find-regexp regexp-list))
-;    (message "%s" outline-regexp)
-    )
+    (setq outline-regexp (funcall find-regexp regexp-list)))
 	
   (set-key-bindings 'local-set-key
 		    (list
 		     (list (kbd "C-c C-t") 'hide-body)
 		     (list (kbd "C-c C-a") 'show-all)
-		     (list (kbd "C-c C-e") 'show-entry)
-		     ))
+		     (list (kbd "C-c C-e") 'show-entry)))
 )
+
+(add-hook 'slime-repl-mode-hook 
+          (lambda ()
+            (set-key-bindings 'local-set-key
+                              (list
+                               (list (kbd "C-c C-q") 'slime-close-all-parens-in-sexp)
+                               )))
+)
+
+
+(add-hook 'slime-mode-hook 
+          (lambda ()
+            (set-key-bindings 'local-set-key
+                              (list
+                               (list (kbd "C-c C-q") 'slime-close-all-parens-in-sexp)
+                               )))
+)
+
+
 
 (defun hs-hide-all-comments ()
   "Find all comments in the file and hide them via hs-hide-comment-region"
@@ -930,7 +916,6 @@ When used in shell-mode, it will paste parenthesis on shell prompt by default "
       )
     )
 )
-
 
 (defun goto-symbol (arg &optional flag)
   "find the next function definition"
