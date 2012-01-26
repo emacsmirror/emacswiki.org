@@ -169,14 +169,15 @@ both the concept (distributed) and the use of tools (version control).
 /For the user/
 
 * Epackages are true installs (they contain **install and uninstall
-  control files**; C.f. Debian *.deb). ELPA packages don't. After
-  you download an ELPA package, it gets byte compiled and
-  `load-path' gets updated. You must
-  manually configure each package by adding the necessary lines to ~/.emacs InitFile.
-  In contrast, Epackage **control files** take care of configuring the necessary
-  hooks etc. so that if you visit a file, the package you installed
-  is automatically turned on. Likewise for package
-  removal; all the hooks etc. are cleared.
+  control files**; C.f. Debian *.deb), that is, they are able to work
+  out of the box. Epackage **control files** take care of configuring
+  the necessary hooks etc. so that if you visit a file, the package
+  you installed is automatically turned on. Likewise for package
+  removal; all the hooks etc. are cleared. ELPA packages on the other
+  hand are simple downloads with only extra byte compilation and
+  `load-path' support added. You still have to manually configure
+  each and every ELPA package by adding the necessary lines to
+  ~/.emacs InitFile.
 * Faster updates. Massive package updates are instantaneous due to Git delta.
 * Easy bug reporting. Each package contains contact information meta data.
 * Personal contacts. Someone is there to contact about package
