@@ -6,7 +6,7 @@ Lisp:diredful.el
 
 ==Usage==
 
-Put the above file in your Emacs-Lisp load path, and add the following into your $HOME/.emacs startup file:
+Put the above file in your Emacs-Lisp load path, and add the following to your startup file (i.e., $HOME/.emacs):
 
  (require 'diredful)
 
@@ -14,11 +14,13 @@ Then Do:
 
  M-x diredful-add
 
-This will ask you to define a new name for a new file type, like "Images". You can then customize the face using a widget.el buffer (see screenshot below). Faces will be automatically generated and updated for each file type.
+This will ask you to define a new name for a new file type, like "Images". You can then customize a face using a widget.el buffer (see screenshot below). Faces will be automatically generated and updated for each file type.
 
-File Types can be added, edited, and deleted using the following three commands:
+File Types can be added, edited, or deleted using the following three commands:
 
- M-x diredful-add/delete/edit
+ M-x diredful-add
+ M-x diredful-edit
+ M-x diredful-delete
 
 Note that changes will only apply to newly created dired buffers.
 
