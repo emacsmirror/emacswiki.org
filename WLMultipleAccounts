@@ -1,0 +1,116 @@
+NOTE: Work in progress.
+
+On Gmail, the default system folders (sent, trash, etc) are locale specific, i.e. the name depends on your language settings in gmail, and these folders are placed in the folder "[Gmail]". Folders (called "filters" by Gmail) are delimited by "/".
+
+In the example of the other domain (company.com), the username is an email address itself and must be in quotation marks.
+
+== Configuring folders (IMAP) ==
+The .folders file tells wanderlust how to represent the folders. The following is an example of using just IMAP folders, as opposed to download the emails (e.g. with offlineimap) for permanent storage. Note that even when you just use IMAP folders wl downloads the messages you read (and the one following) and cache them locally to ~/.elmo/cache. 
+
+~/.folders:
+{{{
+# -*- conf-unix -*-
+GMAIL{
+   %INBOX:myname/clear@imap.gmail.com:993!         "In"
+   %[Gmail]/Sent:myname/clear@imap.gmail.com:993!  "Sent"
+   %[Gmail]/Draft:myname/clear@imap.gmail.com:993! "Draft"
+   %[Gmail]/Trash:myname/clear@imap.gmail.com:993! "Trash"
+   %[Gmail]/Spam:myname/clear@imap.gmail.com:993!  "Spam"
+
+   Buy{
+      %buy/ebay:myname/clear@imap.gmail.com:993!     "E-bay"
+      %buy/records:myname/clear@imap.gmail.com:993!  "Records"
+      %buy/books:myname/clear@imap.gmail.com:993!    "Books"
+   }
+
+   Friends{
+      %friends/work:myname/clear@imap.gmail.com:993!       "work friends"
+      %friends/university:myname/clear@imap.gmail.com:993! "university friends"
+      %friends/college:myname/clear@imap.gmail.com:993!    "old friends"
+      %friends/highschool:myname/clear@imap.gmail.com:993! "very old friends"
+   }
+}
+
+#Note: usernames with "strange" characters (like "@") must be written 
+#like: "myname@company.com". Folders at my work are delimited by dot '.'.
+WORK{
+   %INBOX:"myname@company.com"/clear@mail.company.com        "Inbox"
+   %INBOX.Sent:"myname@company.com"/clear@mail.company.com   "Sent"
+   %INBOX.Drafts:"myname@company.com"/clear@mail.company.com "Draft"
+   %INBOX.Trash:"myname@company.com"/clear@mail.company.com  "Trash"
+
+   Projects{
+      %INBOX.Project1:"myname@company.com"/clear@mail.company.com "Project 1"
+      %INBOX.Project2:"myname@company.com"/clear@mail.company.com "Project 2"
+   }
+}
+
+}}}
+
+
+== Configuring .wl ==
+
+With the following setup, wanderlust will automatically send from the right email-account when you reply to a message. If you start a new draft, you can cycle through the list in wl-template-alist with C-c C-j. Sent messages from gmail account or work account ends up in the right folder. 
+
+NOTE / TODO: This does NOT set the correct Draft folder!
+
+TODO: How do you set the wl-trash-folder variable? This should be applied in the summary-buffer (and folder buffer?). 
+
+~/.wl
+{{{
+
+;;Name of top-folder, default "Desktop".
+wl-folder-desktop-name "My email accounts"
+
+;;select correct email address when we _start_ writing a draft.
+(add-hook 'wl-mail-setup-hook 'wl-draft-config-exec)
+
+;;is run when wl-draft-send-and-exit or wl-draft-send is invoked:
+(setq wl-draft-config-alist
+      '(
+        ((string-match "company.com" wl-draft-parent-folder)
+         (template . "work"))
+        ((string-match "gmail.com" wl-draft-parent-folder)
+         (template . "gmail")
+         )))
+
+;;choose template with C-c C-j
+(setq wl-template-alist
+      '(("gmail"
+         ("From" . "My Name <myname@gmail.com>")
+         ;;(wl-from . "My Name <myname@gmail.com>")
+         (wl-smtp-posting-user . "myname")
+         (wl-smtp-posting-server . "smtp.gmail.com")
+         (wl-smtp-authenticate-type ."plain")
+         (wl-smtp-connection-type . 'starttls)
+         (wl-smtp-posting-port . 587)
+         (wl-local-domain . "gmail.com")
+         (wl-message-id-domain . "smtp.gmail.com")
+
+         ;;what does this do?
+         (wl-default-spec . "%")
+
+         (wl-fcc . "%[Gmail]/Sent:myname/clear@imap.gmail.com:993!")
+         (wl-draft-folder . "%[Gmail]/Draft:myname/clear@imap.gmail.com:993!")
+         )
+        ("work"
+         ("From" . "My Name <myname@company.com>")
+         ;;(wl-from . "My Name <myname@company.com>")
+         (wl-smtp-posting-user . "myname@company.com")
+         (wl-smtp-posting-server . "mail.company.com")
+         (wl-local-domain . "mail.company.com")
+
+         ;; sent msgs go to the "sent"-folder
+         (wl-fcc . "%INBOX.Sent:\"myname@company.com\"/clear@mail.company.com")
+         ;; store drafts in 'postponed'
+         (wl-draft-folder . "%INBOX.Drafts:\"myname@company.com\"/clear@mail.company.com"))
+        ))
+
+;;Cycle through templates with arrow keys
+(define-key wl-template-mode-map (kbd "<right>") 'wl-template-next)
+(define-key wl-template-mode-map (kbd "<left>") 'wl-template-prev)
+
+;; mark sent messages (folder carbon copy) as read.
+wl-fcc-force-as-read    t
+
+}}}
