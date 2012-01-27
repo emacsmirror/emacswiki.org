@@ -230,5 +230,10 @@ MakingMarkVisible describes how to show the mark as a cursor. This is convenient
 
 Try AutoMark if you are tired of setting the mark manually.
 
+[:expandregion]
+== expandregion.el ==
+
+expandregion.el is a very useful tool for increasing the selected region by semantic units. Download it at: https://github.com/magnars/expand-region.el
+
 ----
 CategoryEditing
