@@ -822,18 +822,36 @@ Parenthesis character was defined by beginning-of-parenthesis"
 		   )))
 
 
+
 (defun i= (St Ed)
-  ""
+  "Set string-at-point to =string-at-point= 
+
+Used in org-mode. For arbitrary content, select them first"
   (interactive "r")
-  (i-babel-quote-str St Ed "=")
+  (cond
+   ((and mark-active transient-mark-mode)
+    (i-babel-quote-str St Ed "="))
+   (t
+    (let ((St (and (beginning-of-string) (point)))
+          (Ed (and (end-of-string) (point))))
+      (i-babel-quote-str St Ed "="))))
 )
 
 
 (defun i* (St Ed)
-  ""
+  "Set string-at-point to *string-at-point*
+
+Used in org-mode. For arbitrary content, select them first"
   (interactive "r")
-  (i-babel-quote-str St Ed "*")
+  (cond
+   ((and mark-active transient-mark-mode)
+    (i-babel-quote-str St Ed "*"))
+   (t
+    (let ((St (and (beginning-of-string) (point)))
+          (Ed (and (end-of-string) (point))))
+      (i-babel-quote-str St Ed "*"))))
 )
+
 
 
 (defun action-to-list (action lst)
