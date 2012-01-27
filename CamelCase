@@ -152,6 +152,16 @@ Ok, here's my cycling variant:
 	(if cml (progn (delete-region beg end) (insert cml))) ))
 
 ----
+
+The cycling method above did not work for me, but I was able to redefine camelscore as:
+    (defun camelscore (s)	
+      (cond ((string-match-p "\:"  s)	(camelcase s))
+	    ((string-match-p "-" s)     (colonize s))
+	    ((string-match-p "_" s)	(dasherize s))
+	    (t                          (underscore s)) ))
+
+----
+
 Bind the following to some-key, write as snake case, then press the key!
 
 Dependency: camelize
