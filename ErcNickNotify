@@ -15,15 +15,13 @@ mentioned in an erc channel" t)
 }}}    
 : in ~/.emacs
 
-Note: BEWARE OF INSTALLING THIS!  This means that every notification you get is a command sent to bash.  If somone sends you the following:
+Note: BEWARE OF EARLIER VERSIONS!  They were vulnerable to shell command injection, e.g.  with a message like the following:
 
 {{{
 <foouser> yourusername: `rm -rf ~`
 }}}
 
-... there goes your home directory.
-
-This has been *fixed in 0.3.1* (2011-12-09), upgrading is *strongly recommended!*
+This was *fixed in 0.3.1* (2011-12-09), upgrading is *strongly recommended!*
 
 ==Customize==
 * `erc-nick-notify-delay'
