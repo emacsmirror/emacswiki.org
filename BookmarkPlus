@@ -3606,7 +3606,7 @@ I read through this page, but one thing it fails to state clearly is how to actu
 [new:DrewAdams:2011-12-08 14:32 UTC]
 Yes.  This page does not try to be a one-stop description of both '''Bookmark+''' and Emacs bookmarks in general.  I already had a link to the BookMarks page (which gives an overview) in the first sentence, but to make things more clear I now point to the Emacs manual for background info about bookmarks.  Thanks for the feedback. -- DrewAdams
 
-
+Hello, why don't you add a tarball to your page with all the files?  Downloading each separately is silly.
 
 ----
 CategoryBookmarking CategoryHypermedia CategoryPersistence 
