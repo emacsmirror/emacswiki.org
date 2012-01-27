@@ -97,7 +97,7 @@ Changes splitting from vertical to horizontal and vice-versa
 }}}
 
 
-== split-v ==
+=== split-v ===
 
 Deprecated
 
@@ -115,7 +115,7 @@ This function change window from vertical style into horizontal style
 
 }}}
 
-== split-h ==
+=== split-h ===
 
 Deprecated
 
