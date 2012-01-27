@@ -1,4 +1,4 @@
-;;; auto-complete-etags.el --- Autocomplete etags
+;;; auto-complete-etags.el --- Auto-completion source for etags
 
 ;; Copyright 2009 Yen-Chin,Lee
 ;;
