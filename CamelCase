@@ -154,6 +154,7 @@ Ok, here's my cycling variant:
 ----
 
 The cycling method above did not work for me, but I was able to redefine camelscore as:
+
     (defun camelscore (s)	
       (cond ((string-match-p "\:"  s)	(camelcase s))
 	    ((string-match-p "-" s)     (colonize s))
