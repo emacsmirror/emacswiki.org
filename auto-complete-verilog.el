@@ -1,10 +1,10 @@
-;;; auto-complete-verilog.el --- 
+;;; auto-complete-verilog.el --- Auto-completion source for verilog
 
 ;; Copyright 2009 Yen-Chin,Lee
 ;;
 ;; Author: Yen-Chin,Lee
 ;; Version: $Id: auto-complete-verilog.el,v 0.0 2009/04/25 17:26:34 coldnew Exp $
-;; Keywords: 
+;; Keywords:
 ;; X-URL: not distributed yet
 
 ;; This program is free software; you can redistribute it and/or modify
@@ -22,8 +22,6 @@
 ;; Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
 ;;; Commentary:
-
-;; 
 
 ;; Put this file into your load-path and the following into your ~/.emacs:
 ;;   (require 'auto-complete-verilog)
@@ -114,7 +112,7 @@
          "rtranif1" "semaphore" "time" "tran" "tranif0" "tranif1" "tri" "tri0" "tri1"
          "triand" "trior" "trireg" "wand" "wire" "wor" "xnor" "xor"
 ;; verilog-cpp-keywords
-         "module" "macromodule" "primitive" "timescale" "define" 
+         "module" "macromodule" "primitive" "timescale" "define"
          "ifdef" "ifndef" "else" "endif"
 ;; verilog-defun-keywords
          "always" "always_comb" "always_ff" "always_latch" "assign"
@@ -126,10 +124,10 @@
          "for" "fork" "if" "join" "join_any" "join_none" "repeat" "return"
          "while"
 ;; verilog-tf-keywords
-         "begin" "break" "fork" "join" "join_any" "join_none" "case" 
+         "begin" "break" "fork" "join" "join_any" "join_none" "case"
          "end" "endtask" "endfunction" "if" "else" "for" "while" "repeat"
 ;; verilog-case-keywords
-         "begin" "fork" "join" "join_any" "join_none" "case" "end" 
+         "begin" "fork" "join" "join_any" "join_none" "case" "end"
          "endcase" "if" "else" "for" "repeat"
 ;verilog-separator-keywords
          "else" "then" "begin"
