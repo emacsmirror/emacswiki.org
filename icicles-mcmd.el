@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Tue Jan 24 11:40:18 2012 (-0800)
+;; Last-Updated: Fri Jan 27 14:05:36 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 17553
+;;     Update #: 17557
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-mcmd.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -3472,68 +3472,75 @@ Optional argument WORD-P non-nil means complete only a word at a time."
                                             (t            "  [Sole prefix completion]")))
                       (setq mode-line-help  icicle-current-input)))))
             (t                          ; Multiple candidates.
-             (when (and icicle-edit-update-p icicle-incremental-completion-p
-                        (sit-for icicle-incremental-completion-delay))
-               (icicle-display-candidates-in-Completions nil no-display-p))
-             (when (icicle-prefix-complete-2 word-p)
-               (setq mode-line-help  (icicle-minibuf-input-sans-dir icicle-current-input)))
-             (cond (;; Candidates visible.  If second prefix complete, cycle, else update candidates.
-                    (get-buffer-window "*Completions*" 0)
-                    (if (and (or ipc1-was-cycling-p icicle-next-prefix-complete-cycles-p)
-                             (get icicle-last-completion-command 'icicle-prefix-completing-command)
-                             (if word-p
-                                 ;; Word completion cycles only if both of these are true:
-                                 ;; * Input is not yet complete (null `return-value').
-                                 ;; * Either last command was an edit and input does not end in `-',
-                                 ;;          or the current input is from cycling.
-                                 ;; E.g. `M-x fo M-SPC r M-SPC' cycles among foreground-color etc.
-                                 (and (not return-value)
-                                      (or (and (not (or (get last-command
-                                                             'icicle-prefix-completing-command)
-                                                        (get last-command 'icicle-action-command)))
-                                               (not (eq (aref icicle-current-input
-                                                              (1- (length icicle-current-input)))
-                                                        ?-)))
-                                          (not (string= icicle-last-input word-complete-input))))
-                               (or (get last-command 'icicle-prefix-completing-command)
-                                   (get last-command 'icicle-action-command))))
-                        ;; Second prefix complete in a row.  Cycle down.
+             (if icicle-edit-update-p
+                 (if (or (not icicle-incremental-completion-p)
+                         (not (sit-for icicle-incremental-completion-delay)))
+                     ;; Even though we do this unconditionally, we need to do it after the `sit-for',
+                     ;; not before, because displaying causes Emacs to think that user input might be
+                     ;; pending.
+                     (icicle-display-candidates-in-Completions nil no-display-p)
+                   (icicle-display-candidates-in-Completions nil no-display-p)
+                   (when (icicle-prefix-complete-2 word-p)
+                     (setq mode-line-help  (icicle-minibuf-input-sans-dir icicle-current-input))))
+               (when (icicle-prefix-complete-2 word-p)
+                 (setq mode-line-help  (icicle-minibuf-input-sans-dir icicle-current-input)))
+               (cond (;; Candidates visible.  If second prefix complete, cycle, else update candidates.
+                      (get-buffer-window "*Completions*" 0)
+                      (if (and (or ipc1-was-cycling-p icicle-next-prefix-complete-cycles-p)
+                               (get icicle-last-completion-command 'icicle-prefix-completing-command)
+                               (if word-p
+                                   ;; Word completion cycles only if both of these are true:
+                                   ;; * Input is not yet complete (null `return-value').
+                                   ;; * Either last command was an edit and input does not end in `-',
+                                   ;;          or the current input is from cycling.
+                                   ;; E.g. `M-x fo M-SPC r M-SPC' cycles among foreground-color etc.
+                                   (and (not return-value)
+                                        (or (and (not (or (get last-command
+                                                               'icicle-prefix-completing-command)
+                                                          (get last-command 'icicle-action-command)))
+                                                 (not (eq (aref icicle-current-input
+                                                                (1- (length icicle-current-input)))
+                                                          ?-)))
+                                            (not (string= icicle-last-input word-complete-input))))
+                                 (or (get last-command 'icicle-prefix-completing-command)
+                                     (get last-command 'icicle-action-command))))
+                          ;; Second prefix complete in a row.  Cycle down.
+                          (icicle-next-candidate 1 (if (icicle-file-name-input-p)
+                                                       'icicle-file-name-prefix-candidates
+                                                     'icicle-prefix-candidates))
+                        ;; User did something else (e.g. changed input).  Update the candidates.
+                        (icicle-display-candidates-in-Completions nil no-display-p)))
+                     (;; No candidates shown.  Could be first completion or could follow `C-M-(S-)TAB'.
+                      icicle-TAB-shows-candidates-flag
+                      (if (not (and (or ipc1-was-cycling-p icicle-next-prefix-complete-cycles-p)
+                                    (get icicle-last-completion-command
+                                         'icicle-prefix-completing-command)
+                                    (or (get last-command 'icicle-prefix-completing-command)
+                                        (get last-command 'icicle-action-command))
+                                    (not word-p)))
+                          ;; First prefix complete is enough to update candidates.
+                          (icicle-display-candidates-in-Completions nil no-display-p)
+                        ;; Second prefix complete.  If `TAB', then it follows `C-M-TAB', so show window.
+                        (unless no-display-p (icicle-display-candidates-in-Completions nil))
                         (icicle-next-candidate 1 (if (icicle-file-name-input-p)
                                                      'icicle-file-name-prefix-candidates
-                                                   'icicle-prefix-candidates))
-                      ;; User did something else (e.g. changed input).  Update the candidates.
-                      (icicle-display-candidates-in-Completions nil no-display-p)))
-                   (;; No candidates shown.  Could be first completion or could follow `C-M-(S-)TAB'.
-                    icicle-TAB-shows-candidates-flag
-                    (if (not (and (or ipc1-was-cycling-p icicle-next-prefix-complete-cycles-p)
-                                  (get icicle-last-completion-command
-                                       'icicle-prefix-completing-command)
-                                  (or (get last-command 'icicle-prefix-completing-command)
-                                      (get last-command 'icicle-action-command))
-                                  (not word-p)))
-                        ;; First prefix complete is enough to update candidates.
-                        (icicle-display-candidates-in-Completions nil no-display-p)
-                      ;; Second prefix complete.  If `TAB', then it follows `C-M-TAB', so show window.
-                      (unless no-display-p (icicle-display-candidates-in-Completions nil))
-                      (icicle-next-candidate 1 (if (icicle-file-name-input-p)
-                                                   'icicle-file-name-prefix-candidates
-                                                 'icicle-prefix-candidates))))
-                   (;; No candidates shown.  Second prefix complete.
-                    ;; If NO-DISPLAY-P and either not WORD-P or input is complete, then cycle down.
-                    ;; Else, vanilla Emacs: second `TAB' shows candidates.
-                    (and (get icicle-last-completion-command 'icicle-prefix-completing-command)
-                         (or (get last-command 'icicle-prefix-completing-command)
-                             (get last-command 'icicle-action-command))
-                         completion-auto-help)
-                    (if (or (not no-display-p) (and word-p (not return-value)))
-                        (icicle-display-candidates-in-Completions nil)
-                      (icicle-next-candidate 1 (if (icicle-file-name-input-p)
-                                                   'icicle-file-name-prefix-candidates
-                                                 'icicle-prefix-candidates))))
-                   ;; Input is complete, but exist other candidates with same prefix.
-                   ((and (member icicle-current-input icicle-completion-candidates)
-                         (not (eq no-display-p 'no-msg)))
-                    (minibuffer-message "  [Complete, but not unique]")))))
+                                                   'icicle-prefix-candidates))))
+                     (;; No candidates shown.  Second prefix complete.
+                      ;; If NO-DISPLAY-P and either not WORD-P or input is complete, then cycle down.
+                      ;; Else, vanilla Emacs: second `TAB' shows candidates.
+                      (and (get icicle-last-completion-command 'icicle-prefix-completing-command)
+                           (or (get last-command 'icicle-prefix-completing-command)
+                               (get last-command 'icicle-action-command))
+                           completion-auto-help)
+                      (if (or (not no-display-p) (and word-p (not return-value)))
+                          (icicle-display-candidates-in-Completions nil)
+                        (icicle-next-candidate 1 (if (icicle-file-name-input-p)
+                                                     'icicle-file-name-prefix-candidates
+                                                   'icicle-prefix-candidates))))
+                     ;; Input is complete, but exist other candidates with same prefix.
+                     ((and (member icicle-current-input icicle-completion-candidates)
+                           (not (eq no-display-p 'no-msg)))
+                      (minibuffer-message "  [Complete, but not unique]"))))))
       (setq icicle-last-completion-command        (if word-p
                                                       'icicle-prefix-word-complete
                                                     (if no-display-p
@@ -3806,37 +3813,50 @@ message either.  NO-DISPLAY-P is passed to
                     (minibuffer-message "  [Sole apropos completion]")
                     (setq mode-line-help  (car icicle-completion-candidates))))))
           (t                            ; Multiple candidates.
-           (when (and icicle-edit-update-p icicle-incremental-completion-p
-                      (sit-for icicle-incremental-completion-delay))
-             (icicle-display-candidates-in-Completions nil no-display-p))
-           (let ((complete-input-sans-dir  (icicle-apropos-complete-2)))
-             (when complete-input-sans-dir  (setq mode-line-help  complete-input-sans-dir)))
-           (cond (;; Candidates visible.  If second `S-TAB', cycle, else update candidates.
-                  (get-buffer-window "*Completions*" 0)
-                  (if (and (or iac1-was-cycling-p icicle-next-apropos-complete-cycles-p)
-                           (get icicle-last-completion-command 'icicle-apropos-completing-command)
-                           (or (get last-command 'icicle-apropos-completing-command)
-                               (get last-command 'icicle-action-command)))
-                      ;; Second `S-TAB' in a row.  Cycle down.
+           (if icicle-edit-update-p
+               (if (or (not icicle-incremental-completion-p)
+                       (not (sit-for icicle-incremental-completion-delay)))
+                   ;; Even though we do this unconditionally, we need to do it after the `sit-for',
+                   ;; not before, because displaying causes Emacs to think that user input might be
+                   ;; pending.
+                   (icicle-display-candidates-in-Completions nil no-display-p)
+                 (icicle-display-candidates-in-Completions nil no-display-p)
+                 (let ((complete-input-sans-dir  (icicle-apropos-complete-2)))
+                   (when complete-input-sans-dir  (setq mode-line-help  complete-input-sans-dir))))
+             (let ((complete-input-sans-dir  (icicle-apropos-complete-2)))
+               (when complete-input-sans-dir  (setq mode-line-help  complete-input-sans-dir)))
+
+
+
+
+
+
+             (cond (;; Candidates visible.  If second `S-TAB', cycle, else update candidates.
+                    (get-buffer-window "*Completions*" 0)
+                    (if (and (or iac1-was-cycling-p icicle-next-apropos-complete-cycles-p)
+                             (get icicle-last-completion-command 'icicle-apropos-completing-command)
+                             (or (get last-command 'icicle-apropos-completing-command)
+                                 (get last-command 'icicle-action-command)))
+                        ;; Second `S-TAB' in a row.  Cycle down.
+                        (icicle-next-candidate 1 (if (icicle-file-name-input-p)
+                                                     'icicle-file-name-apropos-candidates
+                                                   'icicle-apropos-candidates)
+                                               'regexp-p)
+                      ;; User did something else (e.g. changed input).  (Possibly) update the display.
+                      (icicle-display-candidates-in-Completions nil no-display-p)))
+                   (t
+                    (if (not (and (or iac1-was-cycling-p icicle-next-apropos-complete-cycles-p)
+                                  (get icicle-last-completion-command
+                                       'icicle-apropos-completing-command)
+                                  (or (get last-command 'icicle-apropos-completing-command)
+                                      (get last-command 'icicle-action-command))))
+                        (icicle-display-candidates-in-Completions nil no-display-p)
+                      ;; Second apropos complete.  If `S-TAB', it follows `C-M-S-TAB', so show window.
+                      (unless no-display-p (icicle-display-candidates-in-Completions nil))
                       (icicle-next-candidate 1 (if (icicle-file-name-input-p)
                                                    'icicle-file-name-apropos-candidates
                                                  'icicle-apropos-candidates)
-                                             'regexp-p)
-                    ;; User did something else (e.g. changed input).  (Possibly) update the display.
-                    (icicle-display-candidates-in-Completions nil no-display-p)))
-                 (t
-                  (if (not (and (or iac1-was-cycling-p icicle-next-apropos-complete-cycles-p)
-                                (get icicle-last-completion-command
-                                     'icicle-apropos-completing-command)
-                                (or (get last-command 'icicle-apropos-completing-command)
-                                    (get last-command 'icicle-action-command))))
-                      (icicle-display-candidates-in-Completions nil no-display-p)
-                    ;; Second apropos complete.  If `S-TAB', it follows `C-M-S-TAB', so show window.
-                    (unless no-display-p (icicle-display-candidates-in-Completions nil))
-                    (icicle-next-candidate 1 (if (icicle-file-name-input-p)
-                                                 'icicle-file-name-apropos-candidates
-                                               'icicle-apropos-candidates)
-                                           'regexp-p))))))
+                                             'regexp-p)))))))
     (setq icicle-last-completion-command         (if no-display-p
                                                      'icicle-apropos-complete-no-display
                                                    'icicle-apropos-complete)
