@@ -1,9 +1,9 @@
 ;;; fill-column-indicator.el --- graphically indicate the fill column
 
-;; Copyright (c) 2011 Alp Aker
+;; Copyright (c) 2011-2012 Alp Aker
 
 ;; Author: Alp Aker <alp.tekin.aker@gmail.com>
-;; Version: 1.77
+;; Version: 1.78
 ;; Keywords: convenience
 
 ;; This program is free software; you can redistribute it and/or
@@ -34,7 +34,7 @@
 ;;
 ;;   (require 'fill-column-indicator)
 ;;
-;; in your .emacs.
+;; in your init file.
 
 ;; To toggle graphical indication of the fill column in a buffer, use the
 ;; command `fci-mode'.
@@ -60,11 +60,11 @@
 ;; line height; the default is 0.75. (The value should be a number between 0
 ;; and 1; values outside that interval are coerced to the nearest endpoint.)
 
-;; The image formats fci-mode can use are XPM, PBM, and XBM.  If Emacs has
-;; been compiled with the appropriate library it uses XPM images by default;
-;; if not it uses PBM images, which are natively supported.  You can specify
-;; a particular format by setting `fci-rule-image-format' to either xpm,
-;; xpm, or xbm.
+;; The image formats fci-mode can use are XPM and PBM.  If Emacs has been
+;; compiled with the appropriate library it uses XPM images by default; if
+;; not it uses PBM images, which are natively supported.  You can specify a
+;; particular choice of format by setting `fci-rule-image-format' explicitly
+;; to xpm or pbm.
 
 ;; On character terminals the rule is drawn using the character specified by
 ;; `fci-rule-character'; the default is `|' (ascii 124).  If
@@ -115,12 +115,6 @@
 ;;   non-ascii characters on those lines that are being displayed using a
 ;;   non-monospaced font, or (b) your font-lock settings use bold or italics
 ;;   and those font variants aren't monospaced.
-
-;; o Although the XBM and PBM formats are natively supported by Emacs, the
-;;   implementations are different in different ports and sometimes
-;;   incomplete; for example, on some ports XBM images are always drawn in
-;;   black.  Explicitly setting `fci-rule-image-format' to a different value
-;;   will usually resolve such issues.
 
 ;; o Fci-mode in not currently compatible with Emacs's
 ;;   `show-trailing-whitespace' feature (given the way the latter is
@@ -382,24 +376,25 @@ U+E000-U+F8FF, inclusive)."
 
 ;; Hooks we use.
 (defconst fci-hook-assignments
-  '((after-change-functions fci-redraw-region t)
-    (before-change-functions fci-extend-rule-for-deletion t)
-    (window-scroll-functions fci-update-window-for-scroll t)
+  '((after-change-functions fci-redraw-region 'local)
+    (before-change-functions fci-extend-rule-for-deletion 'local)
+    (window-scroll-functions fci-update-window-for-scroll 'local)
     (window-configuration-change-hook  fci-redraw-frame)
-    (post-command-hook  fci-post-command-check t)
-    (change-major-mode-hook turn-off-fci-mode t)
-    (longlines-mode-hook  fci-update-all-windows t)))
-
-;; The display spec used in overlay before strings to pad out the rule to the
-;; fill-column.
-(defconst fci-padding-display
-  '((when (fci-defer-to-overlay-p buffer-position)
-      . (space :align-to fci-column))
-    (space :width 0)))
+    (post-command-hook  fci-post-command-check 'local)
+    (change-major-mode-hook turn-off-fci-mode 'local)
+    (longlines-mode-hook  fci-update-all-windows 'local)))
 
 ;;; ---------------------------------------------------------------------
-;;; Miscellaneous Utilities
+;;; Miscellany
 ;;; ---------------------------------------------------------------------
+
+(defun fci-get-buffer-windows (&optional all-frames)
+  "Return a list of windows displaying the current buffer."
+  (get-buffer-window-list (current-buffer) 'no-minibuf all-frames))
+
+(defun fci-posint-p (x)
+  (and (wholenump x)
+       (/= 0 x)))
 
 (if (fboundp 'characterp)
     (defalias 'fci-character-p 'characterp)
@@ -409,46 +404,6 @@ U+E000-U+F8FF, inclusive)."
          ;; MAX_CHAR in v22 is (0x1F << 14).  We don't worry about
          ;; generic chars.
          (< c 507904))))
-
-(defun fci-posint-p (x)
-  (and (wholenump x)
-       (/= 0 x)))
-
-(defun fci-mapconcat (lists sep)
-  (mapconcat #'identity (apply 'nconc lists) sep))
-
-(defun fci-map-space (&rest lists)
-  (fci-mapconcat lists " "))
-
-(defun fci-map-newline (&rest lists)
-  (fci-mapconcat lists "\n"))
-
-(defun fci-array-quote (&rest strings)
-  (concat "\"" (apply 'concat strings) "\","))
-
-(defun fci-get-buffer-windows (&optional all-frames)
-  "Return a list of windows displaying the current buffer."
-  (get-buffer-window-list (current-buffer) 'no-minibuf all-frames))
-
-(defun fci-get-visible-ranges ()
-  (mapcar #'(lambda (w) 
-              (cons (window-start w) (window-end w t)))
-          (fci-get-buffer-windows t)))
-
-(defsubst fci-posn-visible (posn ranges)
-  (memq t (mapcar #'(lambda (range) 
-                      (and (<= (car range) posn) 
-                           (< posn (cdr range))))
-                  ranges)))
-
-(defun fci-overlay-fills-background-p (olay)
-  (and (overlay-get olay 'face)
-       (not (eq (face-attribute (overlay-get olay 'face) :background nil t)
-                'unspecified))))
-
-(defun fci-defer-to-overlay-p (posn)
-  "Return true if there is an overlay at POS that fills the background."
-  (not (memq t (mapcar #'fci-overlay-fills-background-p (overlays-at posn)))))
 
 ;;; ---------------------------------------------------------------------
 ;;; Mode Definition
@@ -477,6 +432,7 @@ on troubleshooting.)"
             (fci-check-user-options)
             (fci-process-display-table)
             (fci-set-local-vars)
+            (fci-get-frame-dimens)
             (dolist (hook fci-hook-assignments)
               (add-hook (car hook) (nth 1 hook) nil (nth 2 hook)))
             (setq fci-column (or fci-rule-column fill-column)
@@ -515,7 +471,7 @@ on troubleshooting.)"
 
 (defun fci-check-user-options ()
   "Check that all user options for fci-mode have valid values."
-  (unless (memq fci-rule-image-format '(xpm xbm pbm))
+  (unless (memq fci-rule-image-format '(xpm pbm))
     (error "Unrecognized value of `fci-rule-image-format'"))
   ;; If the third element of a binding form is t, then nil is an acceptable
   ;; value for the variable; otherwise, the variable must satisfy the given
@@ -576,82 +532,65 @@ on troubleshooting.)"
   "Return a string for drawing the fill-column rule."
   (let ((color (or fci-rule-character-color
                    fci-rule-color)))
-    ;; Make sure we don't pick up weight or slant from font-lock.
+    ;; Make sure we don't inherit weight or slant from font-lock.
     (propertize (char-to-string fci-rule-character)
                 'face `(:foreground ,color :weight normal :slant normal))))
 
-(defun fci-make-img-descriptor ()
+(defun fci-img-descriptor ()
   "Make an image descriptor for the fill-column rule."
-  (unless fci-always-use-textual-rule
-    (let ((frame (catch 'found-graphic
-                   (if (display-images-p)
-                       (selected-frame)
-                     (dolist (win (fci-get-buffer-windows t))
-                       (when (display-images-p (window-frame win))
-                         (throw 'found-graphic (window-frame win))))))))
-      (setq fci-char-width (frame-char-width frame)
-            fci-char-height (frame-char-height frame))
-      ;; No point passing width, height, color etc. directly to the image
-      ;; functions: those variables have either global or buffer-local
-      ;; scope, so the image generating functions can access them directly.
-      (if frame
-          (cond
-           ((eq fci-rule-image-format 'xpm)
-            (fci-make-xpm-img))
-           ((eq fci-rule-image-format 'pbm)
-            (fci-make-pbm-img))
-           (t
-            (fci-make-xbm-img)))))))
+  (unless (or (= 0 fci-char-width)
+              fci-always-use-textual-rule)
+    ;; No point passing width, height, color etc. directly to the image
+    ;; functions: those variables have either global or buffer-local
+    ;; scope, so the image generating functions can access them directly.
+    (if (eq fci-rule-image-format 'xpm)
+        (fci-make-xpm-img)
+      (fci-make-pbm-img))))
 
-(defmacro fci-with-rule-parameters (img-width &rest body)
+(defun fci-get-frame-dimens ()
+  (let ((frame (catch 'found-graphic
+                 (if (display-images-p)
+                     (selected-frame)
+                   (dolist (win (fci-get-buffer-windows 'all-frames))
+                     (when (display-images-p (window-frame win))
+                       (throw 'found-graphic (window-frame win))))))))
+    (setq fci-char-width (frame-char-width frame)
+          fci-char-height (frame-char-height frame))))
+
+(defmacro fci-with-rule-parameters (&rest body)
   "Define various quantites used in generating rule image descriptors."
   (declare (indent defun))
   `(let* ((height-str (number-to-string fci-char-height))
           (width-str (number-to-string fci-char-width))
           (rule-width (min fci-rule-width fci-char-width))
-          (hmargin (/ (- ,img-width rule-width) 2.0))
+          (hmargin (/ (- fci-char-width rule-width) 2.0))
           (left-margin (floor hmargin))
           (right-margin (ceiling hmargin))
           (segment-ratio (if fci-rule-use-dashes fci-dash-pattern 1))
           (segment-ratio-coerced (min 1 (max 0 segment-ratio)))
           (segment-length (round (* segment-ratio-coerced fci-char-height)))
-          (gap-length (- fci-char-height segment-length))
-          (vmargin (/ gap-length 2.0))
+          (vmargin (/ (- fci-char-height segment-length) 2.0))
           (top-margin (floor vmargin))
           (bottom-margin (ceiling vmargin)))
      ,@body))
 
-(defun fci-make-xbm-img ()
-  "Return an image descriptor for the fill-column rule in XBM format."
-  (let ((img-width (* 8 (/ (+ fci-char-width 7) 8))))
-    (fci-with-rule-parameters img-width
-      (let* ((on-pixels (make-bool-vector img-width nil))
-             (off-pixels (make-bool-vector img-width nil))
-             (raster (vconcat (make-vector top-margin off-pixels)
-                              (make-vector segment-length on-pixels)
-                              (make-vector bottom-margin off-pixels))))
-        (dotimes (i rule-width)
-          (aset on-pixels (+ i left-margin) t))
-        `(image :type xbm
-                :data ,raster
-                :foreground ,fci-rule-color
-                :mask heuristic
-                :ascent center
-                :height ,fci-char-height
-                :width ,img-width)))))
+(defun fci-mapconcat (sep &rest lists)
+  (mapconcat #'identity (apply 'nconc lists) sep))
 
 (defun fci-make-pbm-img ()
   "Return an image descriptor for the fill-column rule in PBM format."
-  (fci-with-rule-parameters fci-char-width
+  (fci-with-rule-parameters 
     (let* ((identifier "P1\n")
            (dimens (concat width-str " " height-str "\n"))
-           (on-pixels (fci-map-space (make-list left-margin "0")
+           (on-pixels (fci-mapconcat " " 
+                                     (make-list left-margin "0")
                                      (make-list rule-width "1")
                                      (make-list right-margin "0")))
-           (off-pixels (fci-map-space (make-list fci-char-width "0")))
-           (raster (fci-map-newline (make-list top-margin off-pixels)
-                                    (make-list segment-length on-pixels)
-                                    (make-list bottom-margin off-pixels)))
+           (off-pixels (fci-mapconcat " " (make-list fci-char-width "0")))
+           (raster (fci-mapconcat "\n" 
+                                  (make-list top-margin off-pixels)
+                                  (make-list segment-length on-pixels)
+                                  (make-list bottom-margin off-pixels)))
            (data (concat identifier dimens raster)))
       `(image :type pbm
               :data ,data
@@ -661,44 +600,26 @@ on troubleshooting.)"
 
 (defun fci-make-xpm-img ()
   "Return an image descriptor for the fill-column rule in XPM format."
-  (fci-with-rule-parameters fci-char-width
-    (let* ((identifier "/* XPM */\nstatic char *rule[] = {\n")
-           (dims (concat "\"" width-str " " height-str " 2 1\",\n"))
-           (color-spec (concat "\"1 c " fci-rule-color "\",\n\"0 c None\",\n"))
-           (on-pixels (fci-array-quote (make-string left-margin ?0)
-                                       (make-string rule-width ?1)
-                                       (make-string right-margin ?0)))
-           (off-pixels (fci-array-quote (make-string fci-char-width ?0)))
-           (raster (fci-map-newline (make-list top-margin off-pixels)
-                                    (make-list segment-length on-pixels)
-                                    (make-list bottom-margin off-pixels)))
+  (fci-with-rule-parameters 
+    (let* ((identifier "/* XPM */\nstatic char *rule[] = {")
+           (dimens (concat "\"" width-str " " height-str " 2 1\","))
+           (color-spec (concat "\"1 c " fci-rule-color "\",\n\"0 c None\","))
+           (on-pixels (concat "\"" 
+                              (make-string left-margin ?0)
+                              (make-string rule-width ?1)
+                              (make-string right-margin ?0)
+                              "\","))
+           (off-pixels (concat "\"" (make-string fci-char-width ?0) "\","))
+           (raster (fci-mapconcat ""
+                                  (make-list top-margin off-pixels)
+                                  (make-list segment-length on-pixels)
+                                  (make-list bottom-margin off-pixels)))
            (end "};")
-           (data (concat identifier dims color-spec raster end)))
+           (data (concat identifier dimens color-spec raster end)))
       `(image :type xpm
               :data ,data
               :mask heuristic
               :ascent center))))
-
-;; Generate the display spec for the rule.  Basic idea is to use a "cascading
-;; display property" to display the textual rule if the display doesn't
-;; support images and the graphical rule if it does, but in either case only
-;; display a rule if no other overlay wants to fill the background at the
-;; relevant buffer position.
-(defun fci-rule-display (blank img str pre)
-  "Generate a display specification for a fill-column rule overlay string."
-  (let ((cursor (if (and (not pre) (not fci-newline)) 1)))
-    (propertize blank
-                'cursor cursor
-                'display (if img
-                             `((when (and (not (display-images-p))
-                                          (fci-defer-to-overlay-p buffer-position))
-                                 . ,(propertize str 'cursor cursor))
-                               (when (fci-defer-to-overlay-p buffer-position)
-                                 . ,img)
-                               (space :width 0))
-                           `((when (fci-defer-to-overlay-p buffer-position)
-                               . ,(propertize str 'cursor cursor))
-                             (space :width 0))))))
 
 (defun fci-make-overlay-strings ()
   "Generate the overlay strings used to display the fill-column rule."
@@ -745,15 +666,49 @@ on troubleshooting.)"
       (setq buffer-display-table nil))))
 
 ;;; ---------------------------------------------------------------------
-;;; Drawing and Erasing
+;;; Display Property Specs
 ;;; ---------------------------------------------------------------------
 
-(defmacro fci-sanitize-actions (&rest body)
-  "Wrap fill-column rule-drawing functions in protective special forms."
-  `(save-match-data
-     (save-excursion
-       (let ((inhibit-point-motion-hooks t))
-         ,@body))))
+(defun fci-overlay-fills-background-p (olay)
+  (and (overlay-get olay 'face)
+       (not (eq (face-attribute (overlay-get olay 'face) :background nil t)
+                'unspecified))))
+
+(defun fci-competing-overlay-p (posn)
+  "Return true if there is an overlay at POS that fills the background."
+  (memq t (mapcar #'fci-overlay-fills-background-p (overlays-at posn))))
+
+;; The display spec used in overlay before strings to pad out the rule to the
+;; fill-column.
+(defconst fci-padding-display
+  '((when (not (fci-competing-overlay-p buffer-position))
+      . (space :align-to fci-column))
+    (space :width 0)))
+
+;; Generate the display spec for the rule.  Basic idea is to use a "cascading
+;; display property" to display the textual rule if the display doesn't
+;; support images and the graphical rule if it does, but in either case only
+;; display a rule if no other overlay wants to fill the background at the
+;; relevant buffer position.
+(defun fci-rule-display (blank img str pre)
+  "Generate a display specification for a fill-column rule overlay string."
+  (let ((cursor (if (and (not pre) (not fci-newline)) 1)))
+    (propertize blank
+                'cursor cursor
+                'display (if img
+                             `((when (not (or (display-images-p)
+                                              (fci-competing-overlay-p buffer-position)))
+                                 . ,(propertize str 'cursor cursor))
+                               (when (not (fci-competing-overlay-p buffer-position))
+                                 . ,img)
+                               (space :width 0))
+                           `((when (not (fci-competing-overlay-p buffer-position))
+                               . ,(propertize str 'cursor cursor))
+                             (space :width 0))))))
+
+;;; ---------------------------------------------------------------------
+;;; Drawing and Erasing
+;;; ---------------------------------------------------------------------
 
 (defun fci-get-overlays-region (start end)
   "Return all overlays between START and END displaying the fill-column rule."
@@ -770,6 +725,17 @@ on troubleshooting.)"
   (save-restriction
     (widen)
     (fci-delete-overlays-region (point-min) (point-max))))
+
+(defsubst fci-posn-visible (posn ranges)
+  (memq t (mapcar #'(lambda (range) 
+                      (and (<= (car range) posn) 
+                           (< posn (cdr range))))
+                  ranges)))
+
+(defsubst fci-get-visible-ranges ()
+  (mapcar #'(lambda (w) 
+              (cons (window-start w) (window-end w 'updated)))
+          (fci-get-buffer-windows 'all-frames)))
 
 (defun fci-delete-unneeded ()
   "Erase the fill-column rule at buffer positions not visible in any window."
@@ -803,11 +769,13 @@ on troubleshooting.)"
 
 (defun fci-redraw-region (start end _ignored)
   "Erase and redraw the fill-column rule between START and END."
-  (fci-sanitize-actions
-   (goto-char end)
-   (setq end (line-beginning-position 2))
-   (fci-delete-overlays-region start end)
-   (fci-put-overlays-region start end)))
+  (save-match-data
+    (save-excursion
+      (let ((inhibit-point-motion-hooks t))
+        (goto-char end)
+        (setq end (line-beginning-position 2))
+        (fci-delete-overlays-region start end)
+        (fci-put-overlays-region start end)))))
 
 (defun fci-redraw-window (win &optional start)
   (fci-redraw-region (or start (window-start win)) (window-end win t) 'ignored))
@@ -825,7 +793,7 @@ on troubleshooting.)"
               (max-end 0)
               win-end)
           (mapc #'delete-overlay delenda)
-          (dolist (win (fci-get-buffer-windows t))
+          (dolist (win (fci-get-buffer-windows 'all-frames))
             ;; Do not ask for an updated value of window-end.
             (setq win-end (window-end win))
             (when (and (< 0 (- (min win-end end)
