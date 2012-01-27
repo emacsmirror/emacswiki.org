@@ -8,6 +8,42 @@ Lisp:dove-ext.el
 
 = Describe the code now =
 
+== Copy without selection ==
+
+=== copy-line ===
+
+Copy lines at point and paste them to mark
+
+With prefix 1, copy but not paste.
+with prefix N, copy N lines from the point.
+
+=== copy-word ===
+
+Copy words at point and paste them to mark
+
+With prefix 1, copy but not paste.
+with prefix N, copy N words from the point."
+
+=== copy-paragraph ===
+
+Copy paragraphs at point and paste them to mark
+
+With prefix 1, copy but not paste.
+with prefix N, copy N paragraphs from the point."
+
+=== thing-copy-string-to-mark ===
+
+Copy string at point or region selected and paste them to mark
+
+With prefix 1, copy but not paste.
+with prefix N, copy N strings from the point.
+
+=== thing-copy-parenthesis-to-mark ===
+
+Copy region between {[(<"''">)]} and paste them to mark
+
+Automatic due with nesting {[(<"''">)]} characters
+
 == matrixSum == 
 
 Calculate matrix statistics by row & column. Then insert result into current buffer.
