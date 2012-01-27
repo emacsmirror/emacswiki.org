@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Wed Jan 25 14:13:27 2012 (-0800)
+;; Last-Updated: Fri Jan 27 14:11:05 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 7855
+;;     Update #: 7858
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-chg.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -2906,6 +2906,9 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-mcmd.el'")
 ;;
+;; 2012/01/27 dadams
+;;     icicle-(prefix|apropos)-complete-1:
+;;       Reverted part of 2012-01-20 chg, for mult matches: it picked up mult keys hit with no delay.
 ;; 2012/01/24 dadams
 ;;     Added: icicle-toggle-completions-format.
 ;;     icicle-help-string-completion: Updated to add icicle-toggle-completions-format.
