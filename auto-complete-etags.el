@@ -1,10 +1,10 @@
-;;; auto-complete-etags.el --- 
+;;; auto-complete-etags.el --- Autocomplete etags
 
 ;; Copyright 2009 Yen-Chin,Lee
 ;;
 ;; Author: Yen-Chin,Lee
 ;; Version: $Id: auto-complete-etags.el,v 0.2 2009/04/23 00:38:01 coldnew Exp $
-;; Keywords: 
+;; Keywords:
 ;; X-URL: not distributed yet
 
 ;; This program is free software; you can redistribute it and/or modify
@@ -22,8 +22,6 @@
 ;; Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
 ;;; Commentary:
-
-;; 
 
 ;; Put this file into your load-path and the following into your ~/.emacs:
 ;;   (require 'auto-complete-etags)
@@ -49,8 +47,8 @@
   "Face for the etags selected candidate.")
 
 (defvar ac-source-etags
-  '((candidates . (lambda () 
-         (all-completions ac-target (tags-completion-table))))
+  '((candidates . (lambda ()
+                    (all-completions ac-target (tags-completion-table))))
     (candidate-face . ac-etags-candidate-face)
     (selection-face . ac-etags-selection-face)
     (requires . 3))
