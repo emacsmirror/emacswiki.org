@@ -22,61 +22,40 @@ with prefix N, copy N lines from the point.
 Copy words at point and paste them to mark
 
 With prefix 1, copy but not paste.
-with prefix N, copy N words from the point."
+
+with prefix N, copy N words from the point.
 
 === copy-paragraph ===
 
 Copy paragraphs at point and paste them to mark
 
 With prefix 1, copy but not paste.
-with prefix N, copy N paragraphs from the point."
+
+with prefix N, copy N paragraphs from the point.
 
 === thing-copy-string-to-mark ===
 
 Copy string at point or region selected and paste them to mark
 
 With prefix 1, copy but not paste.
+
 with prefix N, copy N strings from the point.
 
 === thing-copy-parenthesis-to-mark ===
 
-Copy region between {[(<"''">)]} and paste them to mark
+Copy region between {[(<\"''\">)]} and paste them to mark
 
-Automatic due with nesting {[(<"''">)]} characters
+Automatic due with nesting {[(<\"''\">)]} characters
 
-== matrixSum == 
+=== duplicate-line ===
 
-Calculate matrix statistics by row & column. Then insert result into current buffer.
-Calculation is doing from a predefined shell script named as 'matrixSum'
+Duplicate current line. 
 
-== come-here ==
+Used for temporary comment out line of code and replace it with something else.
 
-Bring content from specific buffer to current buffer. 
+== Window splite/rotate functions ==
 
-== jump ==
-
-Take the command at point, jump to another window, then paste it at prompt. 
-
-If the destination window is not in shell-mode, just paste it to the point over there. This makes jump useful in other text edit modes.
-
-
-== some ==
-
-Delete all output from interpreter since the one before the last input. Because comint-delete-output just could not do it for you.
-
-== exitshell ==
-
-Exit from recursive shell logins automatically.
-
-== rename-buffer-in-ssh-login ==
-
-Rename buffer to the destination hostname in ssh login
-
-== kill-shell-buffer-after-exit ==
-
-Kill shell buffer after exit from shell process.
-
-== split-window-4 ==
+=== split-window-4 ===
 
 This function splits frame into 4 windows, like following.
 {{{
@@ -93,7 +72,34 @@ This function splits frame into 4 windows, like following.
 
 I used to run shell mode in these windows.
 
+=== change-split-type ===
+
+Changes splitting from vertical to horizontal and vice-versa
+
+{{{
+
+  +------------------------+                  +----------+-----------+ 
+  |                        |            \     |          |           | 
+  |                        |    +-------+\    |          |           | 
+  +------------------------+    +-------+/    |          |           |
+  |                        |            /     |          |           | 
+  |                        |                  |          |           | 
+  +------------------------+                  +----------+-----------+ 
+
+  +----------- +-----------+                  +----------------------+ 
+  |            |           |            \     |                      | 
+  |            |           |    +-------+\    |                      | 
+  |            |           |    +-------+/    +----------------------+ 
+  |            |           |            /     |                      | 
+  |            |           |                  |                      | 
+  +----------- +-----------+                  +----------------------+ 
+
+}}}
+
+
 == split-v ==
+
+Deprecated
 
 This function change window from vertical style into horizontal style
 
@@ -111,6 +117,8 @@ This function change window from vertical style into horizontal style
 
 == split-h ==
 
+Deprecated
+
 This function splits window from horizontal style into vertical style
 
 
@@ -127,7 +135,36 @@ This function splits window from horizontal style into vertical style
 }}}
 
 
-== split-v-3 ==
+=== change-split-type-3 ===
+
+Change 3 window style from horizontal to vertical and vice-versa
+
+{{{
+
+
+  +-----------------------+                  +----------- +-----------+ 
+  |                       |            \     |            |           | 
+  |                       |    +-------+\    |            |           | 
+  +-----------------------+    +-------+/    |            |-----------|
+  |           |           |            /     |            |           | 
+  |           |           |                  |            |           | 
+  +-----------------------+                  +----------- +-----------+ 
+
+  +----------- +-----------+                 +------------------------+ 
+  |            |           |            \    |                        | 
+  |            |           |    +-------+\   |                        | 
+  |            |-----------|    +-------+/   +------------------------+ 
+  |            |           |            /    |            |           | 
+  |            |           |                 |            |           | 
+  +----------- +-----------+                 +------------------------+ 
+
+}}}
+
+
+
+=== split-v-3 ===
+
+Deprecated
 
 Similar as split-v, but works with 3 windows
 
@@ -143,7 +180,9 @@ Similar as split-v, but works with 3 windows
 
 }}}
 
-== split-h-3 ==
+=== split-h-3 ===
+
+Deprecated
 
 Similar as split-h, but works with 3 windows
 
@@ -157,7 +196,7 @@ Similar as split-h, but works with 3 windows
   +----------- +-----------+                  +------------------------+ 
 }}}
 
-== roll-v-3 ==
+=== roll-v-3 ===
 
 Rolling 3 window buffers clockwise
 
@@ -183,13 +222,27 @@ Rolling 3 window buffers clockwise
 [new]
 Latest updates about these functions could be found in ThreeWindows 
 
-== rename-buffer-in-ssh-login ==
+== Shell-mode related functions ==
+
+=== exitshell ===
+
+Exit from recursive shell logins automatically.
+
+=== rename-buffer-in-ssh-login ===
+
+Rename buffer to the destination hostname in ssh login
+
+=== kill-shell-buffer-after-exit ===
+
+Kill shell buffer after exit from shell process.
+
+=== rename-buffer-in-ssh-login ===
 
 Rename buffer to the destination hostname in ssh login
 
 Since I used to login to a lot of different machines in my daily work, I'd like to have the shell buffer name to represent the hostname of which I am working on.
 
-== rename-buffer-in-ssh-exit == 
+=== rename-buffer-in-ssh-exit === 
 
 Rename buffer to its previous name when user exit from a ssh login.
 
@@ -223,7 +276,7 @@ So I need to have the shell buffer changes accordingly when I exit from a destin
 
 Yes. It is the native way. But a host name is more meaningful than a sequence number.  A similar problem occurs when find two files with the same name from different directories.  It would be more meaningful to attach a parent directory name as prefix in the buffer name than to attach a sequence number. But I didn't have time to make it. 
 
-== kill-shell-buffer-after-exit ==
+=== kill-shell-buffer-after-exit ===
 
 Kill shell buffer after user exited from shell.
 
@@ -231,7 +284,80 @@ It is very ugly that the shell buffer will keep exist even user has already been
 
 I chose to use 'set-process-sentinel' function instead of monitor user commands. 'set-process-sentinel' is provided by shell mode itself. So it makes things simpler.
 
-== my-overwrite ==
+== Org-mode related functions ==
+
+=== isrc === 
+
+Enclose code for org-mode
+
+{{{
+#+begin_src
+some
+source code
+#+end_src
+}}}
+
+=== iexp ===
+
+Enclose example for org-mode
+
+{{{
+#+BEGIN_EXAMPLE
+some 
+examples
+#+END_EXAMPLE
+}}}
+
+=== ihtml ===
+
+Enclose code for Emacser.cn
+
+{{{
+#+BEGIN_HTML
+<pre lang="lisp" line="1">
+some
+content
+</pre>
+#+END_HTML
+}}}
+
+=== i= ===
+
+Set string-at-point to \=string-at-point\= 
+
+Used in org-mode. For arbitrary content, select them first
+
+=== i* ===
+
+Set string-at-point to \*string-at-point\*
+
+Used in org-mode. For arbitrary content, select them first
+
+
+== Arbitrary functions ==
+
+=== matrixSum ===
+
+Calculate matrix statistics by row & column. Then insert result into current buffer.
+Calculation is doing from a predefined shell script named as 'matrixSum'
+
+=== come-here ===
+
+Bring content from specific buffer to current buffer. 
+
+=== jump ===
+
+Take the command at point, jump to another window, then paste it at prompt. 
+
+If the destination window is not in shell-mode, just paste it to the point over there. This makes jump useful in other text edit modes.
+
+
+=== some ===
+
+Delete all output from interpreter since the one before the last input. Because comint-delete-output just could not do it for you.
+
+
+=== my-overwrite ===
 
 When overwrite-mode is on, display a red alert at the beginning of mode line. When overwrite-mode is off, remove the alert.
 
