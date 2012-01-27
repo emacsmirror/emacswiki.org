@@ -76,6 +76,15 @@ In GnuEmacs 21.4, it needs slightly modifications.
 
 Lisp:re-builder-from-xemacs-patched.el
 ----
+Alternate Perl support
+
+At
+
+http://cpansearch.perl.org/src/YEWENBIN/Emacs-PDE-0.2.16/lisp/re-builder-x.el
+
+you can find an alternate implimentation for perl regexes.  It works better for me than the other versions (The other version I have found won't match a space character, oddly).
+
+----
 
 The command, `C-c C-w' can yank the current regular expression to the KillRing.  As of Emacs 23, it does so as a string, reglardless of the current syntax you are using to enter the regular expression.  This is suited for Emacs Lisp programming.  It is not helpful for those who use RE-Builder for building lots of complex searches with grouping and then want to prepare it for `query-replace-regexp'.  One solution is to use this command:
 
