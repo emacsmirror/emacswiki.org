@@ -1,4 +1,4 @@
-;;; point-ring.el
+;;; point-ring.el --- Cycle between point positions
 ;; This file is free software.
 ;; Copyright FengNingNing (afengtf@188.com) 2009-4-10
 ;; Released under the GPL, available at http://www.gnu.org
