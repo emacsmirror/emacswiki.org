@@ -47,5 +47,7 @@ This is very efficient. I wonder, though, if a function could be added that jump
 [new]
 Updated (package.el compatible and prefixed function names) version is available at https://github.com/gleber/fastnav.el and has been uploaded to both ELPA and Marmalade
 
+[new]
+Why don't you use kill-region instead of delete-region in the "zap-up-to-char-" functions so that the region is also copied to the kill ring?
 ----
 CategoryKeys, CategoryEditing
