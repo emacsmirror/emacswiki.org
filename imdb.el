@@ -1,4 +1,4 @@
-;;; imdb.el --- 
+;;; imdb.el --- Interface to the Internet Movie DB
 ;; This is free software.
 
 ;; Copyright (C) 2002 Girish Bharadwaj
@@ -212,7 +212,7 @@ DESCRIPTION is a brief description of the story."
     (insert (concat "\n"))
     (set-buffer current)))
 
-
+ 
 ;;;;##########################################################################
 ;;;;  User Options, Variables
 ;;;;##########################################################################
