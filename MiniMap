@@ -127,7 +127,8 @@ I find the following function handy, maybe it would make sense to add it to mini
 (defun minimap-toggle ()
   "Show minimap if hidden, hide if present."
   (interactive)
-  (if (and minimap-bufname
+  (if (and (boundp 'minimap-bufname)
+               minimap-bufname
 	       (get-buffer minimap-bufname)
 	       (get-buffer-window (get-buffer minimap-bufname)))
       (minimap-kill)
@@ -136,6 +137,8 @@ I find the following function handy, maybe it would make sense to add it to mini
 </pre>
 
 Then I can bind single shortcut to minimap toggling, it's handy.
+
+Edited: function raised error when called first time (when minimap-bufname had not yet been bound).
 
 ----
 
