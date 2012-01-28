@@ -17,9 +17,20 @@ To be honest, I also ##(prefer-coding-system 'utf-8)##, so that I'm using the
 control character ##\366## instead of the ##ö## in the filename. ;) -- AlexSchroeder
 
 [new]
-It took me a long time to figure out that shadowfile doesn't deal with "localhost" very well when setting up a shadow via shadow-define-literal-group.  You need to use your actual hostname, which can be rather tough to figure out on Windows and Mac OS X systems.  On Windows it's usually the Netbios name/Computer name.  On Mac OS X it's usually the name under System Preferences -> Sharing -> Computer name with all punctuation and spacing removed and .local append to the name.  This is nowhere within shadow's documentation in the GNU Emacs info manual.
+Probably the most annoying thing about how this package is written is that the hostname MUST match exactly the return value of the system-name function.  This really needs to be documented in the info manual for the package as I just spent hours figuring out how to get this to work (had to run the source code though the debugger and everything).
 
-I also haven't tested it out with Tramp yet.  All in all a nice feature but its documentation needs improvement.  -- SamPeterson
+Basically I wanted to copy my .emacs file to a location where I have a git repository.  I have a Windows 7 machine using ntemacs.  My computer name is Sam-PC.
+
+I had set my shadow-literal-groups via this elisp:
+
+    (setq shadow-literal-groups
+      '(("/Sam@Sam-PC:~/.emacs" "/Sam@Sam-PC:~/../../Documents/site/.emacs")))
+
+I could not for the life of me figure out why it wouldn't work.  I finally discovered it was because (system-name) returned "SAM-PC" not "Sam-PC".
+
+Case normalization should be used against the (system-name) command, and localhost ought to be interpreted as an alias of (system-name) when matching the hostname.
+
+All in all a nice feature but its documentation needs improvement.  -- SamPeterson
 
 [new:DrewAdams:2006-10-14 16:16 UTC]
 Why not file a bug? `##M-x report-emacs-bug##' -- DrewAdams
