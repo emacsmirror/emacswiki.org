@@ -1,4 +1,4 @@
-;;; symlink-fix --- Remove symbolic links from file pathnames.
+;;; symlink-fix.el --- Remove symbolic links from file pathnames.
 ;; Copyright (C) 1989, 1990, 1991, 1993 Free Software Foundation, Inc.
 
 ;; This file is not officially part of GNU Emacs.
@@ -55,7 +55,7 @@
  
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;
-;;; Documentation (what little there is).
+;;; Commentary:
 ;;;
 
 ;; Features:
