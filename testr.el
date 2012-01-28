@@ -1,4 +1,4 @@
-;; testr-minor-mode - Quick and easy Ruby TDD
+;;; testr-minor-mode - Quick and easy Ruby TDD
 
 ;; Copyright (C) Jose Pablo Barrantes 2012 <xjpablobrx@gmail.com>
 
