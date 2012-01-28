@@ -1,4 +1,4 @@
-;;; mailrc.el
+;;; mailrc.el --- edit mailrc aliases
 
 ;; Author: Joakim Hove <joakim.hove@phys.ntnu.no>
 ;; Keywords: mailrc, adressbook
@@ -627,7 +627,6 @@ queried wether to save changes to disk."
   )
 
 
-;; Legge inn quote på alt untagen "^"
 (defun mailrc-quote-regexp (regexp)
   (concat "^" (regexp-quote regexp)))
 
@@ -688,7 +687,7 @@ exgnus source file."
 ;;  (if (let ((mail-abbrev-mode-regexp message-newgroups-header-regexp))
 ;;	  (mail-abbrev-in-expansion-header-p))
 ;;	(message-expand-group)
-;;    (mailrc-message-tab)))
+;;    (mailrc-message-tab))
 
 
 ;;(defun message-tab ()
@@ -1246,7 +1245,6 @@ Joakim Hove - hove@phys.ntnu.no
 
 
 (defun mailrc-unused-alias (prompt)
-  ;; Må ikke tillate tomme alias
   (interactive)
   (let ((new-alias)
 	(expansion))
@@ -1291,7 +1289,6 @@ Joakim Hove - hove@phys.ntnu.no
       (setq regexp-address (regexp-quote expansion)))
     
     (dolist (alias mailrc-alias-list)
-      ;; Kan gjøres på mange måter...
       (if (string-match regexp-address (nth 1 (mailrc-gethash alias mailrc-hash)))
 	  (setq found-alias-list (cons alias found-alias-list))
 	)
