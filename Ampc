@@ -1,1 +1,1 @@
-ampc (Asynchronous Music Player Controller) is an emacs application providing an interface to MPD ([http://mpd.wikia.com/]).  The code of ampc can be found here: [http://ch.ristopher.com/git/?p=ampc;f=ampc.el;hb=master]
+ampc (Asynchronous Music Player Controller) is an emacs application providing an interface to MPD ([http://mpd.wikia.com/]).  The code of ampc can be found here: [http://ch.ristopher.com/git/?p=ampc;f=ampc.el;hb=master] or here: Lisp:ampc.el
