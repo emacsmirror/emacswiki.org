@@ -275,39 +275,61 @@
             (string= x major-mode))
   dove-auto-paste-mode-list))
 
+(defmacro copy-something (begin-fn end-fn arg)
+  `(progn (copy-thing  ,begin-fn ,end-fn ,arg)
+          (paste-to-mark 'dove-paste-condition ,arg)))
+
+(macroexpand '(copy-something 
+               beginning-of-line end-of-line arg))
+
 (defun copy-line (&optional arg)
- "Copy lines at point and paste them to mark"
-  (interactive "P")
-  (copy-thing 'beginning-of-line 'end-of-line arg)
-  (paste-to-mark 'dove-paste-condition arg))
+ "Copy lines at point and paste them to mark
+
+With prefix 1, copy but not paste.
+with prefix N, copy N lines from the point."
+
+ (interactive "P")
+ (copy-something 'beginning-of-line 'end-of-line arg))
 
 (defun copy-word (&optional arg)
- "Copy words at point and paste them to mark"
+ "Copy words at point and paste them to mark
+
+With prefix 1, copy but not paste.
+with prefix N, copy N words from the point."
+
   (interactive "P")
-  (copy-thing 'backward-word 'forward-word arg)
-  (paste-to-mark 'dove-paste-condition arg))
+  (copy-something 'backward-word 'forward-word arg))
 
 (defun copy-paragraph (&optional arg)
- "Copy paragraphes at point and paste them to mark"
+ "Copy paragraphes at point and paste them to mark
+
+With prefix 1, copy but not paste.
+with prefix N, copy N paragraphs from the point."
+
   (interactive "P")
-  (copy-thing 'backward-paragraph 'forward-paragraph arg)
-  (paste-to-mark 'dove-paste-condition arg))
+  (copy-something 'backward-paragraph 'forward-paragraph arg))
 
 (defun thing-copy-string-to-mark(&optional arg)
-  "Copy string at point or region selected and paste them to mark"
+  "Copy string at point or region selected and paste them to mark
+
+With prefix 1, copy but not paste.
+with prefix N, copy N strings from the point."
+
   (interactive "P")
   (cond 
    ((and mark-active transient-mark-mode)
     (pop-mark))
    (t
-    (copy-thing 'beginning-of-string 'end-of-string arg)))
-  (paste-to-mark 'dove-paste-condition arg))
+    (copy-something 'beginning-of-string 'end-of-string arg))))
+
 
 (defun thing-copy-parenthesis-to-mark(&optional arg)
- "Copy region between {[(<"''">)]} and paste them to mark"
+ "Copy region between {[(<\"''\">)]} and paste them to mark
+
+Automatic due with nesting {[(<\"''\">)]} characters"
+
   (interactive "P")
-  (copy-thing 'beginning-of-parenthesis 'end-of-parenthesis arg)
-  (paste-to-mark 'dove-paste-condition arg))
+  (copy-something 'beginning-of-parenthesis 'end-of-parenthesis arg))
 
 
 (defun duplicate-line(&optional arg)
@@ -798,60 +820,49 @@ Parenthesis character was defined by beginning-of-parenthesis"
 (defun iexp (St Ed)
   "Enclose example for org-mode"
   (interactive "r")
-  (let ((beg St) (end Ed))
-    (message "%s %s" beg end)
-    (i-babel-quote beg end "#+BEGIN_EXAMPLE" "#+END_EXAMPLE")))
+  (i-babel-quote St Ed "#+BEGIN_EXAMPLE" "#+END_EXAMPLE"))
 
 (defun isrc (St Ed)
   "Enclose code for org-mode"
   (interactive "r")
-  (let ((beg St) (end Ed))
-    (message "%s %s" beg end)
-    (i-babel-quote beg end "#+begin_src " "#+end_src")))
+  (i-babel-quote St Ed "#+begin_src " "#+end_src"))
 
 
 (defun ihtml (St Ed)
   "Enclose code for Emacser.cn"
   (interactive "r")
-  (let ((beg St) (end Ed))
-    (message "%s %s" beg end)
-    (i-babel-quote beg end 
-		   (concat "#+BEGIN_HTML\n " "<pre lang=\"lisp\" line=\"1\">\n")
+  (i-babel-quote St Ed 
+                 (concat "#+BEGIN_HTML\n " "<pre lang=\"lisp\" line=\"1\">\n")
 
-		   (concat "</pre>\n" "#+END_HTML\n")
-		   )))
+                 (concat "</pre>\n" "#+END_HTML\n")))
 
 
+
+(defmacro dove-org-babel-shortcut (St Ed x)
+  `(cond
+   ((and mark-active transient-mark-mode)
+    (i-babel-quote-str ,St ,Ed ,x))
+   (t
+    (let ((St (and (beginning-of-string) (point)))
+          (Ed (and (end-of-string) (point))))
+      (i-babel-quote-str ,St ,Ed ,x)))))
+
+
+(macroexpand '(dove-org-babel-shortcut St Ed x))
 
 (defun i= (St Ed)
   "Set string-at-point to =string-at-point= 
 
 Used in org-mode. For arbitrary content, select them first"
   (interactive "r")
-  (cond
-   ((and mark-active transient-mark-mode)
-    (i-babel-quote-str St Ed "="))
-   (t
-    (let ((St (and (beginning-of-string) (point)))
-          (Ed (and (end-of-string) (point))))
-      (i-babel-quote-str St Ed "="))))
-)
-
+  (dove-org-babel-shortcut St Ed "="))
 
 (defun i* (St Ed)
   "Set string-at-point to *string-at-point*
 
 Used in org-mode. For arbitrary content, select them first"
   (interactive "r")
-  (cond
-   ((and mark-active transient-mark-mode)
-    (i-babel-quote-str St Ed "*"))
-   (t
-    (let ((St (and (beginning-of-string) (point)))
-          (Ed (and (end-of-string) (point))))
-      (i-babel-quote-str St Ed "*"))))
-)
-
+  (dove-org-babel-shortcut St Ed "*"))
 
 
 (defun action-to-list (action lst)
