@@ -537,3 +537,16 @@ Also see: http://www.gnu.org/s/libtool/manual/emacs/emacsclient-Options.html#ema
 ----
 
 See also EmacsClient
+
+=== problem and workaround for emacs daemon spinning w/ "back to top level" message ===
+Problem:
+During the first dozen invocations, "emacs --daemon" started up and cleanly loaded my init files.  But, after making some init file changes (including but possibly not limited to removing my prior font customizations from .emacs-custom.el, in order to go back to the default font), the subsequent invocations hung at the "Starting Emacs daemon" line.  Then, when typing "enter" at the terminal or when connecting via emacsclient, emacs continually spools out the message: "back to top level". Inspection revealed the emacs daemon was chewing up 100% of one of the cpu's.
+
+yum info emacs
+Arch        : x86_64
+Epoch       : 1
+Version     : 23.3
+Release     : 8.fc16
+
+Workaround:
+Start emacs with "emacs --daemon -q". The first time you connect via emacsclient, open your .emacs file and run 'eval-buffer'.
