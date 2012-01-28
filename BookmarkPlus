@@ -3606,7 +3606,16 @@ I read through this page, but one thing it fails to state clearly is how to actu
 [new:DrewAdams:2011-12-08 14:32 UTC]
 Yes.  This page does not try to be a one-stop description of both '''Bookmark+''' and Emacs bookmarks in general.  I already had a link to the BookMarks page (which gives an overview) in the first sentence, but to make things more clear I now point to the Emacs manual for background info about bookmarks.  Thanks for the feedback. -- DrewAdams
 
-Hello, why don't you add a tarball to your page with all the files?  Downloading each separately is silly.
+----
+[new]
+Hello, why don't you add a tarball to your page with all the files?  Downloading each separately is silly. -- [[JE]]
+
+[new:]
+Hello.  
+
+Why don't you?  That would be helpful.  While you're at it, why not periodically post multiple tar balls with different sets of files for '''Bookmark+''': for those users who want all the bells and whistles; for those users who want 75% of them; for those users who want just the bare minimum; etc.  I'm sure other users would appreciate your effort.
+
+You might even leverage <tt>[[auto-install-batch-list.el]]</tt>. Here's another thing you might leverage: https://github.com/emacsmirror/bookmark-plus.  And another: http://marmalade-repo.org/packages/bookmark+.  Have fun. -- DrewAdams
 
 ----
 CategoryBookmarking CategoryHypermedia CategoryPersistence 
