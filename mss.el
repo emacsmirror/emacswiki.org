@@ -1,4 +1,4 @@
-;;; mss.el - Make smart shortcuts to programs in your Win95/98/NT4 start menu
+;;; mss.el --- Make smart shortcuts to programs in your Win95/98/NT4 start menu
 
 ;; Copyright (C) 2000 Mathias Dahl
 
@@ -75,7 +75,7 @@
 
 ;; An example of how a shortcut tree can look like:
 
-;; (START = language dependent path to start menu, taken from the
+;; \(START = language dependent path to start menu, taken from the
 ;; registry, for example d:\winnt\profiles\mathias\Start Menu\)
 
 ;; START\
@@ -263,14 +263,13 @@ shortut is unique."
             (copy-file full-name new)))))))
 
 (defun mss-files-with-letter (directory letter)
-"Returns a list of files/dirs that begin with `letter´ in
-directory `dir´"
+"Returns a list of files/dirs that begin with LETTER in DIRECTORY"
   (directory-files directory nil (concat "^[" letter (upcase letter) "]")))
 
 (defun mss-quick-name (short-name pos)
-  "Generates the `quick-name´ of the current shortcut.  I.e
-netscape becomes E - nEtscape if it is placed under the
-sub-directory `N´"
+  "Generates the quick-name of the current shortcut.
+I.e netscape becomes E - nEtscape if it is placed under the
+sub-directory."
   (let ((char (upcase (substring short-name pos (1+ pos)))))
     (concat char
             " - " 
