@@ -125,4 +125,14 @@ Here's some code to check ERB templates with flymake. You can find a detailed ex
 </pre>
 
 ----
+A bit of code from stackoverflow[http://stackoverflow.com/questions/8746671#comments-8746930] to show the error messages:
+
+<pre>
+(defun my-flymake-show-help () 
+	(interactive)
+	(when (get-char-property (point) 'flymake-overlay) 
+		(let ((help (get-char-property (point) 'help-echo))) 
+			(if help (message "%s" help)))))
+</pre>
+----
 FlyMake
