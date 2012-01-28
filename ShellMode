@@ -86,8 +86,13 @@ First, you'll want to customize same-window-regexps to include ##"\\*shell.*\\*\
 Take a look at AnsiColor.
 
 ==Completions==
-Lisp:shell-completion.el
 
+By default, tap-completion in shell-mode can complete commands and files, but there is no support for context-sensitive completion. The following modules extend tap-completion:
+
+* Lisp:shell-completion.el lets you add command-specific completion to shell mode. The set of commands shell-completion knows about is configurable. 
+
+* [https://raw.github.com/szermatt/emacs-bash-completion/master/bash-completion.el bash-completion.el] adds support for BASH programmable completion to shell-mode. 
+ 
 ==Backgrounding a process==
 
 You might find it difficult to background a process that's started, once you're in shell mode.
