@@ -1,4 +1,4 @@
-;;; tags-tree.el --- 
+;;; tags-tree.el --- Display tree of TAGS
 
 ;; Copyright 2007 Ye Wenbin
 ;;
