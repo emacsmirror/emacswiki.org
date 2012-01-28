@@ -1,30 +1,47 @@
-;;; Author: Leo <sdl.web@gmail.com>
+;;; tellicopy.el --- A minor mode for saving the thing at point to `kill-ring'
 
-;;; GPLv3 or later
+;; Author: Leo <sdl.web@gmail.com>
 
-;;; This code is directly copied out of my init file and the code has
-;;; been in intensive daily use with incremental improvements over
-;;; some months (~ 2 years).
+;; This file is not part of GNU Emacs.
 
-;;; Originally it was just a function that encompasses all the
-;;; features I want. It has been re-designed to make it easier to
-;;; extend.
+;; This file is free software; you can redistribute it and/or modify
+;; it under the terms of the GNU General Public License as published by
+;; the Free Software Foundation; either version 3, or (at your option)
+;; any later version.
 
-;;; FEATURES:
+;; This file is distributed in the hope that it will be useful,
+;; but WITHOUT ANY WARRANTY; without even the implied warranty of
+;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+;; GNU General Public License for more details.
 
-;;; 1. M-w copies one of URL EMAIL or LINE; C-u 20 copies following 20
-;;;    lines; negative prefix is accepted as well.
+;; You should have received a copy of the GNU General Public License
+;; along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-;;; 2. M-w follow by one of the chars: l, f, w, s, d copies the
-;;;    corresponding thing at point as in `thing-at-point-alist'. For
-;;;    example, `M-w l' will copy the whole thing enclosed in
-;;;    parentheses, in LaTeX it also copies the whole inline formula
-;;;    at point if any. It accepts prefix too i.e. 'M-w 2 w' copies
-;;;    two words at point. For convenience 'C-u 2 M-w w' does the
-;;;    same.
+;;; Commentary:
 
-;;; I will develop the code to reside in the tellicopy namespace
-;;; later on. -- Leo (2010-06-04)
+;; This code is directly copied out of my init file and the code has
+;; been in intensive daily use with incremental improvements over
+;; some months (~ 2 years).
+
+;; Originally it was just a function that encompasses all the
+;; features I want. It has been re-designed to make it easier to
+;; extend.
+
+;; FEATURES:
+
+;; 1. M-w copies one of URL EMAIL or LINE; C-u 20 copies following 20
+;;    lines; negative prefix is accepted as well.
+
+;; 2. M-w follow by one of the chars: l, f, w, s, d copies the
+;;    corresponding thing at point as in `thing-at-point-alist'. For
+;;    example, `M-w l' will copy the whole thing enclosed in
+;;    parentheses, in LaTeX it also copies the whole inline formula
+;;    at point if any. It accepts prefix too i.e. 'M-w 2 w' copies
+;;    two words at point. For convenience 'C-u 2 M-w w' does the
+;;    same.
+
+;; I will develop the code to reside in the tellicopy namespace
+;; later on. -- Leo (2010-06-04)
 
 (eval-when-compile (require 'cl))
 (require 'thingatpt)
