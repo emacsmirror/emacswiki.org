@@ -114,6 +114,10 @@ Package management and installers:
 * RpmSpecMode -- Edit SPEC files for building RPMs.
 * WajigMode -- An interface for wajig.
 
+Testing:
+
+* TestR -- Minor mode for Ruby TDD.
+
 Related tools and information:
 
 * AsciiMode -- Display ASCII code.
