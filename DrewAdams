@@ -464,7 +464,26 @@ Thanks for the report.  Should be fixed now.  Note: this is a new feature, for E
 -----
 [new]
 Salut Drew,
-do you think it would be possible to restructure browse-kill-ring into a minor mode ? Especially with your extension, browse-kill-ring+, it would be nice to get be able to set a major mode for browsing a list : I set `browse-kill-ring-alternative-ring' to `read-expression-history' and it would be neat to get proper emacs-lisp-mode fontification.
+do you think it would be possible to restructure browse-kill-ring into a minor mode ? Especially with your extension, browse-kill-ring+, it would be nice to get be able to set a major mode for browsing a list : I set `browse-kill-ring-alternative-ring' to `read-expression-history' and it would be neat to get proper emacs-lisp-mode fontification. -- [[pgh]]
+
+
+[new:DrewAdams:2012-01-29 16:31 UTC]
+Salut Pgh,
+
+Possibly it would be possible ;-), but (a) I don't really have the time now and (b) I don't want to rewrite the original ##browse-kill-ring.el##.  I've submitted the <tt>[[browse-kill-ring+.el]]</tt> enhancements to the original author, but he has never answered or included any of them (so I could get rid of my enhancement library).
+
+Maybe you can convince him to take this on.  Or maybe you can send me a patch to implement the minor mode.  Or maybe I'll get around to taking a look at doing it someday.  Feel free to provide more details about how you see it working -- email is easier than dialoging via the wiki.  Thanks for the suggestion, in any case.
+
+I agree that a minor mode could make sense, and your desire to have the mode be `emacs-lisp-mode' for `read-expression-history' in order to get its font-locking is a good reason.  For now, maybe you can make use of `browse-kill-ring-hook' to at least change the font-locking etc.
+
+FWIW, I rarely use ##browse-kill-ring[+].el## myself.  Instead, I use '''[[Icicles]]''', where `C-- C-y' lets you insert kills using completion.  It is a [[multi-command]], meaning that you can yank as many kills as you like, including yanking the same kill multiple times, during a single `C-- C-y' invocation.  And you can sort the candidate yanks on the fly in various ways.  And filter them on the fly, with multiple filter patterns ([[progressive completion]]). Etc.     -- DrewAdams
+
+
+
+
+
+
+
 
 ----
 
