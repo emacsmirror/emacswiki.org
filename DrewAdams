@@ -461,6 +461,11 @@ Thanks for the report.  Should be fixed now.  Note: this is a new feature, for E
 
 
 
+-----
+[new]
+Salut Drew,
+do you think it would be possible to restructure browse-kill-ring into a minor mode ? Especially with your extension, browse-kill-ring+, it would be nice to get be able to set a major mode for browsing a list : I set `browse-kill-ring-alternative-ring' to `read-expression-history' and it would be neat to get proper emacs-lisp-mode fontification.
+
 ----
 
 Libraries referenced here: 
