@@ -6,7 +6,7 @@
 ;; Maintainer: myuhe
 ;; Copyright (C) :2011,2012 myuhe all rights reserved.
 ;; Created: :2011-12-19
-;; Version: 0.0.2
+;; Version: 0.0.3
 ;; Keywords: convenience
 ;; URL: https://github.com/myuhe/smartrep.el
 
@@ -56,8 +56,6 @@
 
 (defvar smartrep-global-alist-hash (make-hash-table :test 'equal))
 
-(defvar smartrep-mode-line-original-bg (face-background 'mode-line))
-
 (defvar smartrep-mode-line-active-bg (face-background 'highlight))
 
 (let ((cell (or (memq 'mode-line-position mode-line-format) 
@@ -73,11 +71,16 @@
         (if (eq keymap global-map)
             alist
           (append alist (gethash prefix smartrep-global-alist-hash))))
-  (mapc (lambda(x)
-          (define-key keymap
-            (read-kbd-macro 
-             (concat prefix " " (car x))) (smartrep-map alist)))
-        alist))
+  (let ((oa (make-vector 13 nil)))
+    (mapc (lambda(x)
+	    (let ((obj (intern (prin1-to-string
+				(smartrep-unquote (cdr x)))
+			       oa)))
+	      (fset obj (smartrep-map alist))
+	      (define-key keymap
+		(read-kbd-macro 
+		 (concat prefix " " (car x))) obj)))
+	  alist)))
 (put 'smartrep-define-key 'lisp-indent-function 2)
 
 (defun smartrep-map (alist)
@@ -99,23 +102,24 @@
 (defun smartrep-map-internal (lst)
   (interactive)
   (setq smartrep-mode-line-string smartrep-mode-line-string-activated)
-  (force-mode-line-update)
-  (set-face-background 'mode-line smartrep-mode-line-active-bg)
-  (setq smartrep-original-position (cons (point) (window-start)))
-  (let ((repeat-repeat-char last-command-event))
-    (if (memq last-repeatable-command
-              '(exit-minibuffer
-                minibuffer-complete-and-exit
-                self-insert-and-exit))
-        (let ((repeat-command (car command-history)))
-          (eval repeat-command))
-      (smartrep-do-fun repeat-repeat-char lst))
-    (unwind-protect
-        (when repeat-repeat-char
-          (smartrep-read-event-loop lst))
-      (setq smartrep-mode-line-string "")
+  (let ((ml-original-bg (face-background 'mode-line)))
+      (set-face-background 'mode-line smartrep-mode-line-active-bg)
       (force-mode-line-update)
-      (set-face-background 'mode-line smartrep-mode-line-original-bg))))
+      (setq smartrep-original-position (cons (point) (window-start)))
+      (unwind-protect
+          (let ((repeat-repeat-char last-command-event))
+            (if (memq last-repeatable-command
+                      '(exit-minibuffer
+                        minibuffer-complete-and-exit
+                        self-insert-and-exit))
+                (let ((repeat-command (car command-history)))
+                  (eval repeat-command))
+              (smartrep-do-fun repeat-repeat-char lst))
+            (when repeat-repeat-char
+              (smartrep-read-event-loop lst)))
+        (setq smartrep-mode-line-string "")
+        (set-face-background 'mode-line ml-original-bg)
+        (force-mode-line-update))))
 
 (defun smartrep-read-event-loop (lst)
   (lexical-let ((undo-inhibit-record-point t))
@@ -127,7 +131,7 @@
               ;;         repeat-repeat-char))
               (setq smartrep-key-string evt)
               (smartrep-extract-char evt lst))
-          (ignore-errors (smartrep-do-fun smartrep-key-string lst))))
+          (smartrep-do-fun smartrep-key-string lst)))
     (setq unread-command-events (list last-input-event))))
 
 (defun smartrep-extract-char (char alist)
@@ -147,9 +151,15 @@
      (t (error "Unsupported form %c %s" char rawform)))))
 
 (defun smartrep-do-fun (char alist)
-  (run-hooks 'pre-command-hook)
-  (smartrep-extract-fun char alist)
-  (run-hooks 'post-command-hook))
+  (condition-case err
+      (progn
+        (run-hooks 'pre-command-hook)
+        (smartrep-extract-fun char alist)
+        (run-hooks 'post-command-hook))
+    (error
+     (ding)
+     (message "%s" (cdr err)))))
+    
 
 (defun smartrep-unquote (form)
   (if (and (listp form) (memq (car form) '(quote function)))
