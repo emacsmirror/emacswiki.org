@@ -10,6 +10,8 @@ Current stable version is 2.14.0 and current unstable version is 2.15.9. The web
 
 New upstream mailing list addresses: <code>wl@ml.gentei.org</code> and <code>wl-en@ml.gentei.org</code>, respectively.
 
+There is now (as of January 2012) a #wanderlust channel at irc.freenode.net. If this does not exist, please check ##wanderlust, and ##wl.   
+
 == Features ==
 
 * Implementation in elisp only.
@@ -54,6 +56,14 @@ Other Requirements:
 [[SEMI]] 1.14.3 or later (for SEMI you need [[APEL]] and [[FLIM]]).  Recommended combination of APEL, FLIM and SEMI are following.
 
 * APEL 10.7, FLIM 1.14.5 and SEMI 1.14.5 
+
+== Basic Usage ==
+Wanderlust has four basic buffers: Folder buffer, summary buffer, message buffer/view, and draft buffer. 
+
+Wanderlust starts in folder-buffer, from which you can open a summary buffer (press "q" to close), which shows a summary of all messages in chosen folder. Navigate up/down with n/p, and N/P (only unread messages). Open a message for viewing with RET, and scroll up/down with SPC/BKSPC or RET/M-RET for line-scrolling. You can jump to the message with "j" for copying text, for instance, and press q to go back to summary buffer. Pressing "v" hides the message buffer, and "l" toggles the list of folders (folder buffer). 
+
+Pressing a/A opens the draft buffer for answering the message at point with/without citing the message. To write a new message press "w". You can auto complete email addresses (form ~/.addresses), with TAB.      
+
 
 == Configuration (Quickstart) ==
 To get started, add the following line to your InitFile:
