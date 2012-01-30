@@ -7,5 +7,13 @@ New Emacs pretest available, for those of us who like to live on the bleeding ed
 Enjoy!? :)
 
 [new]
-I've also added some more anti-spam measures. If you find yourself unable to post something, contact me:
+I've also added some more anti-spam measures:
+
+* usernames ending in a number (we've had this for a while now, maybe no longer required?)
+* the word ##по####рно## (porn) (I copied this from elsewhere, not sure whether it's a problem on this site, actually)
+* the regexp "<a\s+href=" (I know it's malformed HTML, but that's what they post...)
+
+Pages BannedContent and BannedHosts remain in effect, I think. :)
+
+If you find yourself unable to post something, contact me:
 kensanata@gmail.com -- AlexSchroeder
