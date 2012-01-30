@@ -769,6 +769,19 @@ in Emacs and its ok to edit the existing buffer.
       (save-buffer))
     (message "Writing file...done"))
 
+=== Searching ===
+
+If you don't have grep, then you may need to write some Lisp which can find a match in a file.
+
+  ;; Visit file unless its already open.
+  (with-current-buffer (find-file-noselect "~/.emacs")
+    (save-excursion ;; Don't change location of point.
+      (goto-char (point-min)) ;; From the beginning...
+      (if (re-search-forward ".*load-path.*" nil t 1)
+          (match-string-no-properties 0)
+        (error "Search failed"))))
+  ==> "(add-to-list 'load-path \"/usr/share/emacs/site-lisp/\")"
+
 === Filter ===
 
 === Locking ===
