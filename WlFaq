@@ -78,7 +78,7 @@ Add the following to your ##.wl## file:
 }}}
 
 
-=== How can I sort messages in summary buffer on reverse date ==
+== How can I sort messages in summary buffer on reverse date ==
 
 Ty adding something like the following to your .wl (note: not sure it works):
 
