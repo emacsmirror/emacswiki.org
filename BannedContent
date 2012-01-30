@@ -1,3 +1,5 @@
+These regular expressions are tested against all URLs in a page before saving it.
+
  (best|real|custom|rush)(essay|termpaper|writing)s?\.com
  dissertation\.com
  essay(writingservices|help)
