@@ -38,6 +38,24 @@ Download from Lisp:framemove.el
 
  *Done* (to some extent)
 
+5. Suggestion: fail with a more informative message than a "Wrong-type-argument-p" error on terminal frames:
+
+{{{
+--- a/.emacs.d/packages/framemove/framemove.el
++++ b/.emacs.d/packages/framemove/framemove.el
+@@ -102,7 +102,9 @@
+   (interactive (list
+                 (intern (completing-read "Which direction: " '("up" "down" "left" "right") nil t))))
+   (let* ((thisframe (selected-frame))
+-         (current-coords (fm-absolute-coords-of-position (posn-at-point)))
++         (current-coords (if (frame-parameter thisframe 'top)
++                             (fm-absolute-coords-of-position (posn-at-point))
++                           (error "Frame movement not supported on terminals.")))
+          (coords-projected-in-dir (fm-project current-coords thisframe dir))
+          (possible-frames
+           (sort
+}}}
+
 ----
 CategoryFrames CategoryWindows
 
