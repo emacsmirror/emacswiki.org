@@ -77,6 +77,36 @@ Add the following to your ##.wl## file:
 (setq mime-edit-split-message nil)
 }}}
 
+
+=== How can I sort messages in summary buffer on reverse date ==
+
+Ty adding something like the following to your .wl (note: not sure it works):
+
+{{{
+  (defun wl-summary-overview-entity-compare-by-rdate (x y)
+    (not (wl-summary-overview-entity-compare-by-date x y)))
+  (add-to-list 'wl-summary-sort-specs 'rdate)
+
+  ;; Or the infinitesimally more efficient:
+  ;; (wl-summary-overview-entity-compare-by-size y x)
+
+  ;;http://osdir.com/ml/mail.wanderlust.general/2004-06/msg00052.html
+  ;;You could define yourself a sort helper function:
+  (defun wl-summary-sort-by-rdate ()
+    (interactive)
+    (wl-summary-rescan "rdate")
+    (goto-char (point-min)))
+
+  ;;and bind that to a key, or (kludgier) define an after advice for
+  ;;wl-summary-rescan that moves the cursor if the sort argument begins
+  ;;with "r". I haven't tested this, but it would go something like:
+
+  (defadvice wl-summary-rescan (after wl-summary-rescan-move-cursor activate)
+    (if (string-match "^r" (ad-get-arg 0))
+        (goto-char (point-min))))
+}}}
+
+
 == How can I change which headers wl displays when viewing a message? ==
 
 The headers wl displays when viewing and editing a message are
@@ -113,6 +143,9 @@ variable `wl-message-sort-field-list':
    "^To:"
    "^Cc:"))
 }}}
+
+Finally, you can toggle to full header view with "H" key.
+
 
 == Can I send html messages? ==
 
