@@ -10,7 +10,9 @@ Enjoy!? :)
 I've also added some more anti-spam measures:
 
 * usernames ending in a number (we've had this for a while now, maybe no longer required?)
+
 * the word ##по####рно## (porn) (I copied this from elsewhere, not sure whether it's a problem on this site, actually)
+
 * the regexp "<a\s+href=" (I know it's malformed HTML, but that's what they post...)
 
 Pages BannedContent and BannedHosts remain in effect, I think. :)
