@@ -2,6 +2,10 @@
 
 This page describes how manage multiple email accounts with wanderlust, one of them being a Google mail account. 
 
+== TODO ==
+Trash bins can be specified through wl-dispose-folder-alist, letting you have different destinations for different mails, marked for disposal "d". Note "D" removes instantly. Code for how to implement this needs to be added. 
+
+
 == Configuring folders (IMAP) ==
 The .folders file tells wanderlust how to represent the folders. The following is an example of using just IMAP folders, as opposed to download the emails (e.g. with offlineimap) for permanent storage. Note that even when you just use IMAP folders wl downloads the messages you read (and the one following) and cache them locally to ~/.elmo/cache. 
 
@@ -90,7 +94,7 @@ wl-folder-desktop-name "My email accounts"
          (wl-local-domain . "gmail.com")
          (wl-message-id-domain . "smtp.gmail.com")
 
-         ;;what does this do?
+         ;;default folder name auto completion:
          (wl-default-spec . "%")
 
          (wl-fcc . "%[Gmail]/Sent:myname/clear@imap.gmail.com:993!")
