@@ -14,6 +14,13 @@ For GNU Emacs:
 * http://www.gnu.org/software/emacs/elisp-manual/
 * Available in print from the GnuPress.
 
+To get the manual into Emacs on Debian GNU/Linux or when you can't see an Elisp section after doing M-x info, or if you get the error "Info file elisp does not exist", then you need to:
+
+# Activate a *non-free* section in your /etc/apt/sources.list
+# Install the *emacs23-common-non-dfsg* package (or the one for your emacs version)
+
+The manual has license GFDL and thus the DFSG (Debian Free Software Guidelines) don't consider it /free/.
+
 You can link to the index entries in the manual using the Manual prefix.
 Command, Variable, and Concept index entries can be linked.
 If the entries contain punctuation or whitespace characters, you will
@@ -27,14 +34,43 @@ The XEmacs Lisp Reference Manual, as well as all the other manuals, are availabl
 * http://www.xemacs.org/Documentation/
 * http://www.dk.xemacs.org/Documentation/
 
-==How to get the manual into Emacs in some distributions==
-===Debian GNU/Linux===
-If you can't see an Elisp section after doing M-x info, or if you get the error "Info file elisp does not exist", then you need to:
+According to DanielLaLiberte, the ''[http://groups.google.com/groups?selm=6b82c009-4c0b-43d8-a17d-af485b65ac48@r66g2000hsg.googlegroups.com history of the GNU Emacs Lisp Reference Manual]'':
 
-# Activate a *non-free* section in your /etc/apt/sources.list
-# Install the *emacs22-common-non-dfsg* package (or the one for your emacs version)
+: ''Starting with Emacs 17, and transitioning to Emacs 18, I was trying to
+develop a rather substantial extension and I was forced to learn what
+I could from the very limited doc strings, and the source itself.  I
+started putting together a document for my own use of all the
+functions, variables, etc, and at some point started sharing this with
+others.  I didn't think I had time to really finish this
+documentation, but I recall announcing my offer to coordinate the
+efforts of others if they would help out.''
 
-The manual has license GFDL and thus the DFSG (Debian Free Software Guidelines) don't consider it /free/.
+: ''With a group of about a dozen volunteers, we hobbled along for a year
+or so, and then we learned that Bil Lewis had offered to write up a
+first draft of the entire manual, which he then did in cooperation
+with our group.  I received his work as it was being written and
+edited it, reorganizing the material substantially over the next year
+or two.  My graduate research work was delayed as a result, but I was
+having fun, getting into it and receiving the reward of compliments
+from grateful readers.   I'd have to say that most of the first year
+of work was overwritten a couple times by this process, so we probably
+dropped some of the minor acknowledgments as well.''
+
+: ''Although I had a major hand in every chapter, the one on the Edebug
+source-level debugger was all mine, of course, since I had written the
+software.  Having mastered everything about the language and
+environment, it became obvious to me in a flash how to build Edebug,
+and the first version was hacked out in a couple weeks.  This little
+diversion turned into a major project, and a new subject for my
+masters research.''
+
+: ''Shortly before Emacs 19 started to come out, I was finishing up the
+indexing (including a very useful permuted index) and we were "done"
+and then RMS wanted to take control.  After a few more months of his
+reediting, cleaning up all my rampant use of passive voice and such,
+it was published in a two-volume book.   Later editions by RMS and
+others incorporated the Emacs 19 features.  I got back into my
+research and lost touch.''
 
 ----
 CategoryDocumentation
