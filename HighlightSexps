@@ -3,3 +3,11 @@ HighlightSexps is based on HighlightParentheses but rather than highlighting onl
 http://david.rysdam.org/src/emacs/highlight-sexps-screenshot.png
 
 It can be downloaded [http://david.rysdam.org/src/emacs/emacs.xhtml#highlight-sexps here].
+
+
+
+See also:
+
+
+* HighlightTemporarily
+* HighlightSexp
