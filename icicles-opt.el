@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:22:14 2006
 ;; Version: 22.0
-;; Last-Updated: Tue Jan 31 06:54:53 2012 (-0800)
+;; Last-Updated: Tue Jan 31 07:02:14 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 4858
+;;     Update #: 4859
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-opt.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -1125,13 +1125,20 @@ spacing."
   :group 'Icicles-Completions-Display)
 
 ;;;###autoload
-(defcustom icicle-Completions-mouse-3-menu-entries `(,icicle-Completions-this-candidate-submenu
-                                                     ,icicle-Completions-sorting-submenu
-                                                     ,(and (fboundp 'doremi)  icicle-doremi-submenu)
-                                                     ,icicle-Completions-save/retrieve-submenu
-                                                     ,icicle-Completions-sets-submenu
-                                                     ,icicle-Completions-toggle-submenu
-                                                     ,icicle-Completions-misc-submenu)
+(defcustom icicle-Completions-mouse-3-menu-entries (if (fboundp 'doremi)
+                                                       `(,icicle-Completions-this-candidate-submenu
+                                                         ,icicle-Completions-sorting-submenu
+                                                         ,icicle-doremi-submenu
+                                                         ,icicle-Completions-save/retrieve-submenu
+                                                         ,icicle-Completions-sets-submenu
+                                                         ,icicle-Completions-toggle-submenu
+                                                         ,icicle-Completions-misc-submenu)
+                                                     `(,icicle-Completions-this-candidate-submenu
+                                                       ,icicle-Completions-sorting-submenu
+                                                       ,icicle-Completions-save/retrieve-submenu
+                                                       ,icicle-Completions-sets-submenu
+                                                       ,icicle-Completions-toggle-submenu
+                                                       ,icicle-Completions-misc-submenu))
   "*Entries for the `mouse-3' popup menu in `*Completions*'.
 The menu is created by `icicle-Completions-mouse-3-menu'.
 
