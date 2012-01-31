@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Fri Jan 20 09:28:13 2012 (-0800)
+;; Last-Updated: Mon Jan 30 13:39:41 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 23254
+;;     Update #: 23257
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-cmd1.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -5205,10 +5205,13 @@ Which of these is used depends on the previous command, as follows:
 
  * Else `icicle-completing-yank'.
 
-In the last case (`icicle-completing-yank'), you can use `C-,' to sort
-the candidates to yank in different ways (repeat).  And you can use
-`S-delete' during completion to remove a candidate entry from the
-selection ring.
+In the last case (`icicle-completing-yank'), during completion you can
+use:
+
+ * \\<minibuffer-local-completion-map>`\\[icicle-change-sort-order]' to sort the \
+candidates to yank in different ways (repeat)
+ * `\\[icicle-delete-candidate-object]' to remove a candidate entry from the selection ring
+ * `\\[icicle-candidate-alt-action]' to copy a candidate to the other selection ring
 
 You need library `second-sel.el' for this command."
   (interactive "p")
@@ -5248,12 +5251,13 @@ When the kill ring is used, this is similar to `yank', but this does
 not rotate the ring.  The mark is pushed first, so the yanked text
 becomes the region.
 
-During completion, you can:
+During completion, you can use:
 
- * Use \\<minibuffer-local-completion-map>`\\[icicle-change-sort-order]' to sort the \
+ * \\<minibuffer-local-completion-map>`\\[icicle-change-sort-order]' to sort the \
 candidates to yank in different ways (repeat)
- * Use `\\[icicle-delete-candidate-object]' to remove a candidate entry from the selection ring
- * Use `\\[icicle-candidate-alt-action]' to copy a candidate to the other selection ring" ; Doc string
+ * `\\[icicle-delete-candidate-object]' to remove a candidate entry from the selection ring
+ * `\\[icicle-candidate-alt-action]' to copy a candidate to the other selection ring
+   (requires `second-sel.el' or `browse-kill-ring+.el')" ; Doc string
   icicle-insert-for-yank                ; Action function
   "Insert: " (mapcar #'list kills-in-order) nil t nil 'icicle-kill-history ; `completing-read' args
   (car kills-in-order) nil
