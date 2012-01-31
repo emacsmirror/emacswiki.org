@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Fri Jan 27 14:11:05 2012 (-0800)
+;; Last-Updated: Tue Jan 31 07:08:54 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 7858
+;;     Update #: 7881
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-chg.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -82,6 +82,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd1.el'")
 ;;
+;; 2012/01/31 dadams
+;;     icicle-yank-pop-commands, icicle-completing-yank: Minor changes to doc strings.
 ;; 2012/01/20 dadams
 ;;     icicle-bookmark-*-tags(-other-window): Pass prefix arg to bmkp-read-tags-completing, to refresh.
 ;; 2012/01/15 dadams
@@ -4241,6 +4243,9 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-mode.el'")
 ;;
+;; 2012/01/31 dadams
+;;     icicle-define-icicle-maps: Added: icicle-cycle-image-file-thumbnail.
+;;                                Corrected typo for icicle-toggle-completions-format.
 ;; 2012/01/24 dadams
 ;;     icicle-mode doc string: Added icicle-toggle-completions-format.
 ;;     icicle-define-icicle-maps: Add icicle-toggle-completions-format to menus.
@@ -5285,6 +5290,12 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-opt.el'")
 ;;
+;; 2012/01/31 dadams
+;;     Added: icicle-doremi-submenu.  Added it to icicle-Completions-mouse-3-menu-entries.
+;;     icicle-Completions-toggle-submenu:
+;;       Added: remote-file-testing, ignoring-(space-prefix|comments), completions-format,
+;;              multi-completions, search-complementing-domain.  Rearranged.
+;;     icicle-*-submenu: Added some missing key shortcuts.
 ;; 2012/01/17 dadams
 ;;     Added: icicle-network-drive-means-remote-flag.
 ;; 2012/01/14 dadams
