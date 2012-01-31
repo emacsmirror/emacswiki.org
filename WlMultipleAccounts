@@ -1,10 +1,6 @@
 *NOTE:* Work in progress. Please add/modify code to improve the examples. 
 
-This page describes how manage multiple email accounts with wanderlust, one of them being a Google mail account. 
-
-== TODO ==
-Trash bins can be specified through wl-dispose-folder-alist, letting you have different destinations for different mails, marked for disposal "d". Note "D" removes instantly. Code for how to implement this needs to be added. 
-
+This page describes how to manage multiple email accounts with wanderlust, one of them being a Google mail account. 
 
 == Configuring folders (IMAP) ==
 The .folders file tells wanderlust how to represent the folders. The following is an example of using just IMAP folders, as opposed to download the emails (e.g. with offlineimap) for permanent storage. Note that even when you just use IMAP folders wl downloads the messages you read (and the one following) and cache them locally to ~/.elmo/cache. 
@@ -66,6 +62,17 @@ TODO: How do you set the wl-trash-folder variable? This should be applied in the
 ~/.wl
 {{{
 
+;; How messaged with disposal mark ("d") are to be handled.
+;; remove = instant removal, thrash = move to wl-trash-folder
+;; string = move to here.
+(setq wl-dispose-folder-alist
+      '(
+        ;;("^-" . remove) ;;default    ;;I don't know what this is?
+        ;;("^@" . remove) ;;default  ;;I don't know what this is?
+        ("\.\*company\\.com" . "%INBOX.Trash:\"myname@company.com\"/clear@mail.company.com")
+        ("\.\*gmail\\.com" . "%[Gmail]/Trash:myname/clear@imap.gmail.com:993!")
+        ))
+
 ;;Name of top-folder, default "Desktop".
 wl-folder-desktop-name "My email accounts"
 
@@ -73,6 +80,7 @@ wl-folder-desktop-name "My email accounts"
 (add-hook 'wl-mail-setup-hook 'wl-draft-config-exec)
 
 ;;is run when wl-draft-send-and-exit or wl-draft-send is invoked:
+;;(NOTE: "M-: wl-draft-parent-folder" => %INBOX:myname/clear@imap.gmail.com:993)
 (setq wl-draft-config-alist
       '(
         ((string-match "company.com" wl-draft-parent-folder)
