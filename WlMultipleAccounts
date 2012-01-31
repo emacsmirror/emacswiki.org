@@ -62,9 +62,9 @@ TODO: How do you set the wl-trash-folder variable? This should be applied in the
 ~/.wl
 {{{
 
-;; How messaged with disposal mark ("d") are to be handled.
-;; remove = instant removal, thrash = move to wl-trash-folder
-;; string = move to here.
+;; How messages with disposal mark ("d") are to be handled.
+;; remove = instant removal (same as "D"), thrash = move to wl-trash-folder
+;; string = move to string.
 (setq wl-dispose-folder-alist
       '(
         ;;("^-" . remove) ;;default    ;;I don't know what this is?
