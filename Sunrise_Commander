@@ -770,10 +770,10 @@ Also is there a way to restore sunrise window layout if one of the panes has bee
 Many,many thanks,
 RedBlue.
 
-[new:]
+[new]
 Hi, 
 
-It's me again. In TotalCommander there is a way to compute the sizes of the directories and display then alongside each directory (alt-shift-enter as far as i can remember). In SC one can compute the total size of the marked dirs, but apparently there is no way to display this info along side each directory.
+It's me again. In TotalCommander there is a way to compute the sizes of the directories and display then alongside each directory (alt-shift-enter as far as i can remember). In SC one can compute the total size of the marked dirs, but apparently there is no way to display this info along side each directory. On a related note, there would be nice to have sorting of directories according to their size, not only files.
 
 Any ideas?
 
