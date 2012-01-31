@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:22:14 2006
 ;; Version: 22.0
-;; Last-Updated: Tue Jan 24 10:47:26 2012 (-0800)
+;; Last-Updated: Tue Jan 31 06:54:53 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 4776
+;;     Update #: 4858
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-opt.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -41,7 +41,7 @@
 ;;    `icicle-Completions-sets-submenu',
 ;;    `icicle-Completions-sorting-submenu',
 ;;    `icicle-Completions-this-candidate-submenu',
-;;    `icicle-Completions-toggle-submenu'.
+;;    `icicle-Completions-toggle-submenu', `icicle-doremi-submenu'.
 ;;
 ;;  User options defined here (in Custom group `Icicles'):
 ;;
@@ -352,7 +352,7 @@
       menu-item
       "Sorting"
       (keymap
-       (change-sort-order menu-item "Change Sort Order" icicle-change-sort-order
+       (change-sort-order menu-item "Change Sort Order  (`C-,')" icicle-change-sort-order
         :visible (or (and icicle-change-sort-order-completion-flag (not current-prefix-arg))
                   (and (not icicle-change-sort-order-completion-flag) current-prefix-arg)))
        (next-sort-order menu-item "Next Sort Order" icicle-change-sort-order
@@ -400,13 +400,6 @@
       menu-item
       "Toggle/Cycle/Change"
       (keymap
-       (highlighting-past menu-item "Toggle Highlighting Saved Candidates"
-        icicle-toggle-highlight-saved-candidates)
-       (highlighting-past menu-item "Toggle Highlighting Past Inputs"
-        icicle-toggle-highlight-historical-candidates)
-       (removing-dups menu-item "Toggle Duplicate Removal" icicle-toggle-transforming)
-       (case-sensitivity menu-item "Toggle Case Sensitivity  (`C-A')"
-        icicle-toggle-case-sensitivity)
        ;; This one is not a toggle or cycle.
        (regexp-quote-input menu-item "Regexp-Quote Current Input"
         icicle-regexp-quote-input
@@ -415,54 +408,74 @@
        (regexp-quote-region menu-item "Regexp-Quote Input Region"
         icicle-regexp-quote-input
         :visible (and mark-active (> (region-end) (region-beginning))))
-       (matching-of-newlines menu-item "Toggle `.' Matching of Newlines Too"
-        icicle-toggle-dot)
-       (literal-vs-regexp menu-item "Toggle Escaping Special Regexp Chars"
-        icicle-toggle-regexp-quote)
-       (incremental-completion menu-item "Cycle Incremental Completion"
-        icicle-cycle-incremental-completion)
-       (expanding-to-common menu-item "Toggle Common Match Expansion"
-        icicle-toggle-expand-to-common-match)
-       (hiding-non-matching-lines menu-item "Toggle Hiding Non-Matching Lines"
-        icicle-toggle-hiding-non-matching-lines)
-       (hiding-common-match menu-item "Toggle Hiding Common Match"
-        icicle-toggle-hiding-common-match)
-       (oneoff-next-S-TAB menu-item "ONE-OFF Next S-TAB Completion Method (`C-u')"
+       (next-thumbnail-setting menu-item "Next Image-File Thumbnail Setting"
+        icicle-cycle-image-file-thumbnail
+        :visible (fboundp 'icicle-cycle-image-file-thumbnail))
+       (oneoff-next-S-TAB menu-item "ONE-OFF Next S-TAB Completion Method"
         icicle-next-S-TAB-completion-method
         :visible current-prefix-arg)
        (next-S-TAB menu-item "Next S-TAB Completion Method"
         icicle-next-S-TAB-completion-method
         :visible (not current-prefix-arg))
-       (oneoff-next-TAB menu-item "ONE-OFF Next TAB Completion Method (`C-u')"
+       (oneoff-next-TAB menu-item "ONE-OFF Next TAB Completion Method"
         icicle-next-TAB-completion-method
         :visible current-prefix-arg)
        (next-TAB menu-item "Next TAB Completion Method"
         icicle-next-TAB-completion-method
         :visible (not current-prefix-arg))
-       (next-thumbnail-setting menu-item "Next Image-File Thumbnail Setting"
-        icicle-cycle-image-file-thumbnail)
-       (proxy-candidates menu-item "Toggle Including Proxy Candidates"
-        icicle-toggle-proxy-candidates)
        (WYSIWYG menu-item "Toggle WYSIWYG for `*Completions*'" icicle-toggle-WYSIWYG-Completions)
-       (angle-brackets menu-item "Toggle Using Angle Brackets" icicle-toggle-angle-brackets)
-       (ignored-files menu-item "Toggle Ignored File Extensions  (`C-.')"
-        icicle-toggle-ignored-extensions)
-       (using-C-for-actions menu-item "Toggle Using `C-' for Actions"
-        icicle-toggle-C-for-actions)
        (using-~-for-home menu-item "Toggle Using `~' for $HOME"
         icicle-toggle-~-for-home-dir)
-       (sep-toggle-1 "--")
+       (using-C-for-actions menu-item "Toggle Using `C-' for Actions"
+        icicle-toggle-C-for-actions)
+       (removing-dups menu-item "Toggle Duplicate Removal" icicle-toggle-transforming)
+       (proxy-candidates menu-item "Toggle Including Proxy Candidates"
+        icicle-toggle-proxy-candidates)
+       (case-sensitivity menu-item "Toggle Case Sensitivity  (`C-A')"
+        icicle-toggle-case-sensitivity)
+       (highlighting-past menu-item "Toggle Highlighting Past Inputs"
+        icicle-toggle-highlight-historical-candidates)
+       (highlighting-saved menu-item "Toggle Highlighting Saved Candidates"
+        icicle-toggle-highlight-saved-candidates)
+       (angle-brackets menu-item "Toggle Using Angle Brackets" icicle-toggle-angle-brackets)
+       (remote-file-testing menu-item "Toggle Remote File Handling  (`C-^')"
+        icicle-toggle-remote-file-testing)
+       (ignored-files menu-item "Toggle Ignored File Extensions  (`C-.')"
+        icicle-toggle-ignored-extensions)
+       (ignoring-space-prefix menu-item "Toggle Ignoring Space Prefix"
+        icicle-toggle-ignored-space-prefix)
+       (ignoring-comments menu-item "Toggle Ignoring Comments"
+        icicle-toggle-ignoring-comments)
+       (expanding-to-common menu-item "Toggle Common Match Expansion"
+        icicle-toggle-expand-to-common-match)
+       (hiding-common-match menu-item "Toggle Hiding Common Match  (`C-x .')"
+        icicle-toggle-hiding-common-match)
+       (hiding-non-matching-lines menu-item "Toggle Hiding Non-Matching Lines  (`C-u C-x .')"
+        icicle-toggle-hiding-non-matching-lines)
+       (completions-format menu-item "Toggle Horizontal/Vertical Layout"
+        icicle-toggle-completions-format)
+       (multi-completions menu-item "Toggle Showing Multi-Completions"
+        icicle-toggle-show-multi-completion)
+       (incremental-completion menu-item "Cycle Incremental Completion"
+        icicle-cycle-incremental-completion)
+       (matching-of-newlines menu-item "Toggle `.' Matching of Newlines Too"
+        icicle-toggle-dot)
+       (literal-vs-regexp menu-item "Toggle Escaping Special Chars"
+        icicle-toggle-regexp-quote)
+       (sep-toggle-2 "--")
        (search-highlight-all menu-item "Toggle All-Current Search Highlighting  (`C-^')"
         icicle-toggle-highlight-all-current)
+       (search-complementing-domain menu-item "Toggle Searching Complement"
+        icicle-toggle-search-complementing-domain)
        (search-whole-word menu-item "Toggle Whole-Word Searching  (`M-q')"
         icicle-toggle-search-whole-word)
-       (search-cleanup menu-item "Toggle Removal of Search Highlighting  (`C-.')"
-        icicle-toggle-search-cleanup)
        (search-replace-whole menu-item "Toggle Replacing Whole Search Hit  (`M-_')"
         icicle-toggle-search-replace-whole)
-       (search-replace-common menu-item "Toggle Replacing Expanded Common Match"
+       (search-replace-common menu-item "Toggle Replacing Longest Common Match"
         icicle-toggle-search-replace-common-match)
-       (sep-toggle-2 "--")
+       (search-cleanup menu-item "Toggle Removal of Search Highlighting  (`C-.')"
+        icicle-toggle-search-cleanup)
+       (sep-toggle-1 "--")
        (option menu-item "+ Toggle Option..." icicle-toggle-option
         :visible (and current-prefix-arg (wholenump (prefix-numeric-value current-prefix-arg))))
        (any-var menu-item "+ Toggle Any Variable..." icicle-toggle-option
@@ -487,6 +500,24 @@
        (set-boolean-to-t menu-item "+ Set Boolean Option to `t'..." icicle-set-option-to-t
         :visible (not current-prefix-arg))))
   "Submenu for toggling, cycling or changing a variable or a behavior.")
+
+;;;###autoload
+(defconst icicle-doremi-submenu
+    '(doremi-menu
+      menu-item
+      "Do Re Mi"
+      (keymap
+       (zoom "*Completions* Zoom Factor  (`C-x -')" icicle-doremi-zoom-Completions+
+        :visible (fboundp 'text-scale-increase) ) ; Emacs 23+.
+       (spacing "*Completions* Candidate Spacing  (`C-x |')"
+        icicle-doremi-inter-candidates-min-spaces+)
+       (column-width "*Completions* Column Width  (`C-x w')" icicle-doremi-candidate-width-factor+)
+       (swank-prefix "Swank Min Match Chars  (`C-x 2')" icicle-doremi-increment-swank-prefix-length+
+        :visible (eq (icicle-current-TAB-method) 'swank))
+       (swank-timeout "Swank Timeout  (`C-x 1')" icicle-doremi-increment-swank-timeout+
+        :visible (eq (icicle-current-TAB-method) 'swank))
+       (max-completions "Max # of Completions  (`C-x #')" icicle-doremi-increment-max-candidates+)))
+  "Submenu for Do Re Mi incrementation operations.")
  
 ;;(@* "User options, organized alphabetically, except for dependencies")
 
@@ -1096,6 +1127,7 @@ spacing."
 ;;;###autoload
 (defcustom icicle-Completions-mouse-3-menu-entries `(,icicle-Completions-this-candidate-submenu
                                                      ,icicle-Completions-sorting-submenu
+                                                     ,(and (fboundp 'doremi)  icicle-doremi-submenu)
                                                      ,icicle-Completions-save/retrieve-submenu
                                                      ,icicle-Completions-sets-submenu
                                                      ,icicle-Completions-toggle-submenu
