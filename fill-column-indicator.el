@@ -171,8 +171,8 @@
 
 ;; Thanks to Ami Fischman, Christopher Genovese, Michael Hoffman, José
 ;; Alfredo Romero L., José Lombera, R. Lange, Joe Lisee, Frank Meffert,
-;; sheijk, and an anonymous BT subscriber for bug reports and
-;; suggestions.  Special thanks to lomew and Pär Wieslander for code
+;; Mitchell Peabody, sheijk, and an anonymous BT subscriber for bug reports
+;; and suggestions.  Special thanks to lomew and Pär Wieslander for code
 ;; contributions.
 
 ;;; Code:
