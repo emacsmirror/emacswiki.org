@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 10:21:10 2006
 ;; Version: 22.0
-;; Last-Updated: Tue Jan 24 11:41:44 2012 (-0800)
+;; Last-Updated: Mon Jan 30 15:34:49 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 8077
+;;     Update #: 8081
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-mode.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -1227,7 +1227,7 @@ Used on `pre-command-hook'."
            (define-key icicle-options-menu-map [icicle-toggle-completions-format]
              '(menu-item "Toggle Horizontal/Vertical Layout"
                icicle-toggle-completions-format :visible icicle-mode :keys "C-M-^"
-               :help "Toggle option `icicle-hide-non-matching-lines-flag'"))
+               :help "Toggle option `icicle-completions-format' between vertical and horizontal"))
            (define-key icicle-options-menu-map [icicle-toggle-hiding-non-matching-lines]
              '(menu-item "Toggle Hiding Non-Matching Lines"
                icicle-toggle-hiding-non-matching-lines :visible icicle-mode :keys "C-u C-x ."
@@ -1299,6 +1299,10 @@ Used on `pre-command-hook'."
              '(menu-item "Next `S-TAB' Completion Method" icicle-next-S-TAB-completion-method
                :visible icicle-mode :keys "M-("
                :help "Cycle to the next `S-TAB' completion method (C-u: ONE-OFF)"))
+           (define-key icicle-options-menu-map [icicle-cycle-image-file-thumbnail]
+             '(menu-item "Next Image-File Thumbnail Setting" icicle-cycle-image-file-thumbnail
+               :visible icicle-mode :keys "C-x t"
+               :help "Cycle Thumbnail Image File Setting"))
            (define-key icicle-options-menu-map [icicle-separator-options-sort] '("--"))
            (define-key icicle-options-menu-map [icicle-toggle-alternative-sorting]
              '(menu-item "Swap Alternative Sort" icicle-toggle-alternative-sorting
@@ -1373,6 +1377,9 @@ Used on `pre-command-hook'."
            (define-key icicle-menu-map [icicle-next-S-TAB-completion-method]
              '(menu-item "Next `S-TAB' Completion Method" icicle-next-S-TAB-completion-method
                :keys "M-(" :help "Cycle to the next `S-TAB' completion method (C-u: ONE-OFF)"))
+           (define-key icicle-menu-map [icicle-cycle-image-file-thumbnail]
+             '(menu-item "Next Image-File Thumbnail Setting" icicle-cycle-image-file-thumbnail
+               :keys "C-x t" :help "Cycle Thumbnail Image File Setting"))
            (define-key icicle-menu-map [icicle-toggle-search-cleanup]
              '(menu-item "Toggle Icicle-Search Highlighting Cleanup" icicle-toggle-search-cleanup
                :keys "C-." :help "Toggle option `icicle-search-cleanup-flag'"))
@@ -1461,17 +1468,17 @@ Used on `pre-command-hook'."
            (when (fboundp 'doremi)
              (when (fboundp 'text-scale-increase) ; Emacs 23+.
                (define-key icicle-menu-map [icicle-doremi-zoom-Completions+]
-                 '(menu-item "`*Completions*' Zoom Factor - Do Re Mi"
+                 '(menu-item "*Completions* Zoom Factor - Do Re Mi"
                    icicle-doremi-zoom-Completions+
                    :visible (get-buffer-window "*Completions*" 'visible) :keys "C-x -"
                    :help "Zoom text in `*Completions*' incrementally")))
              (define-key icicle-menu-map [icicle-doremi-inter-candidates-min-spaces+]
-               '(menu-item "Inter-Candidate Spacing - Do Re Mi"
+               '(menu-item "*Completions* Candidate Spacing - Do Re Mi"
                  icicle-doremi-inter-candidates-min-spaces+
                  :visible (get-buffer-window "*Completions*" 'visible) :keys "C-x |"
                  :help "Change `icicle-inter-candidates-min-spaces' incrementally"))
              (define-key icicle-menu-map [icicle-doremi-candidate-width-factor+]
-               '(menu-item "Candidate Column Width - Do Re Mi"
+               '(menu-item "*Completions* Column Width - Do Re Mi"
                  icicle-doremi-candidate-width-factor+
                  :visible (get-buffer-window "*Completions*" 'visible) :keys "C-x w"
                  :help "Change `icicle-candidate-width-factor' incrementally"))
