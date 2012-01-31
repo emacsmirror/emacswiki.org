@@ -1,0 +1,5 @@
+HighlightSexps is based on HighlightParentheses but rather than highlighting only the parens it highlights the entire nested s-expression(s) surrounding point.
+
+http://david.rysdam.org/src/emacs/highlight-sexps-screenshot.png
+
+It can be downloaded [http://david.rysdam.org/src/emacs/emacs.xhtml#highlight-sexps here].
