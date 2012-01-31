@@ -36,7 +36,7 @@
 (require 'linum)
 
 ;;;; Faces
-(defface linum-relative-current
+(defface linum-relative-current-face
   '((t :inherit linum :foreground "#CAE682" :background "#444444" :weight bold))
   "Face for displaying current line."
   :group 'linum)
@@ -45,7 +45,7 @@
 (defvar linum-relative-last-pos 0
   "Store last position.")
 
-(defvar linum-relative-current-line-symbol "0"
+(defvar linum-relative-current-symbol "0"
   "The symbol you want to show on the current line, by default it is 0.
    You can use any string like \"->\". ")
 
@@ -58,10 +58,10 @@
 ;;;; Functions
 (defun linum-relative (line-number)
   (let ((diff (abs (- line-number linum-relative-last-pos))))
-    (propertize (format "%3s" (cond ((zerop diff) linum-relative-current-line-symbol)
+    (propertize (format "%3s" (cond ((zerop diff) linum-relative-current-symbol)
 				    (t (number-to-string diff))
 				    ))
-		'face (cond ((zerop diff) 'linum-relative-current)
+		'face (cond ((zerop diff) 'linum-relative-current-face)
 			    (t 'linum)))))
 
 
