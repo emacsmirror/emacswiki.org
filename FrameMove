@@ -50,7 +50,7 @@ Download from Lisp:framemove.el
 -         (current-coords (fm-absolute-coords-of-position (posn-at-point)))
 +         (current-coords (if (frame-parameter thisframe 'top)
 +                             (fm-absolute-coords-of-position (posn-at-point))
-+                           (error "Frame movement not supported on terminals.")))
++                           (error "Frame movement not supported on character terminals.")))
           (coords-projected-in-dir (fm-project current-coords thisframe dir))
           (possible-frames
            (sort
