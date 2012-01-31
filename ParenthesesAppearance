@@ -47,6 +47,12 @@ You can customize the colors RainbowDelimiters uses. The default colors are inte
 
 HighlightParentheses highlights the parens surrounding the cursor, showing nesting structure.
 
+===HighlightSexps===
+
+http://david.rysdam.org/src/emacs/highlight-sexps-screenshot.png
+
+HighlightSexps is based on HighlightParentheses but rather than highlighting only the parens, it highlights the whole s-expression(s) around point.
+
 ==General Appearance==
 
 It is also possible to change the appearance of all parens possibly to
