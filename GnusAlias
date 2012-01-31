@@ -22,4 +22,6 @@ Latest version by original author can be found at: http://www.northbound-train.c
 
 Emacswiki hosts a slightly updated version: Lisp:gnus-alias.el
 
+-- The Emacswiki version does not seem to work in XEmacs 21.4.
+
 And this version adds a few goodies, including support swapping identities in multi-part MIME messages: https://github.com/altruizine/gnus-alias
