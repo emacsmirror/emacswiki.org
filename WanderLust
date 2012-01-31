@@ -186,8 +186,7 @@ Put the following in your .wl:
       ;;for when auto-compleating foldernames
       wl-default-spec "%")
 }}}
-Then you also need to set up your .folder-file. See http://www.emacswiki.org/emacs/WlMultipleAccounts
-for an example. 
+Then you also need to set up your .folder-file. See [[WlMultipleAccounts]] for an example. 
 
 
 == Wanderlust related pages ==
