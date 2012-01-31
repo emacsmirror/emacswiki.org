@@ -2,7 +2,7 @@
 
 ;; Copyright 2012 Yen-Chin,Lee
 ;;
-;; Author: coldnew coldnew.tw@gmail.com
+;; Author: coldnew <coldnew.tw@gmail.com>
 ;; Keywords: converience
 ;; X-URL: http://www.emacswiki.org/cgi-bin/wiki/download/linum-relative.el
 (defconst linum-relative-version "0.1")
