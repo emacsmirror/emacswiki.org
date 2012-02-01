@@ -215,11 +215,11 @@ Then you also need to set up your .folder-file. See [[WlMultipleAccounts]] for a
 * http://www.gnumonk.com/my-config/my-wl-1
 
 === Sources & patches ===
-* http://repo.or.cz/w/more-wl.git
-* <code>git://git.tgbit.net/wanderlust</code>
-* http://cvs.m17n.org/viewcvs/root/wanderlust/
-* https://github.com/wanderlust/wanderlust
-
+* http://repo.or.cz/w/more-wl.git -- Various patches.
+* <code>git://git.tgbit.net/wanderlust</code> -- Faster with maildir, since only update new/ (ignore cur/).
+* http://cvs.m17n.org/viewcvs/root/wanderlust/ -- Fairly up to date.
+* https://github.com/wanderlust/wanderlust -- Unofficial Wanderlust Development Repository. 
+* http://www.jpl.org/elips/wl/ -- Official according to outdated home page.
 
 ----
 CategoryMail
