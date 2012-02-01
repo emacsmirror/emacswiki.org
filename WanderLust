@@ -8,7 +8,7 @@ Current stable version is 2.14.0 and current unstable version is 2.15.9. The web
 
 [new]
 
-New upstream mailing list addresses: <code>wl@ml.gentei.org</code> and <code>wl-en@ml.gentei.org</code>, respectively. To join the mailing list, send an email to <code>wl-ctl@ml.gentei.org</code> or for English <code>wl-en-ctl@ml.gentei.org</code>, with "subscribe YOUR NAME" in the subject and body.  
+New upstream mailing list addresses: <code>wl@ml.gentei.org</code> and <code>wl-en@ml.gentei.org</code>, respectively. To join the mailing list, send an email to <code>wl-ctl@ml.gentei.org</code> or for English <code>wl-en-ctl@ml.gentei.org</code>, with "subscribe YOUR NAME" as subject and body. You can browse the new mailing list [http://news.gmane.org/gmane.mail.wanderlust.general here].
 
 == Features ==
 
@@ -198,7 +198,28 @@ Then you also need to set up your .folder-file. See [[WlMultipleAccounts]] for a
 * WlHooks -- A list of Wanderlust hooks
 * WlPgg -- using the PGG package with WanderLust
 * WlEmacsTwentyThree
+
+=== Tutorials ===
+* [http://mihai.bazon.net/articles/emacs/wanderlust-email-client Wanderlust email client.]
+* [http://emacs-fu.blogspot.com/2009/09/wanderlust-tips-and-tricks.html emacs-fu: Wanderlust tips and tricks]
+* [http://emacs-fu.blogspot.com/2009/11/showing-pop-ups.html emacs-fu: Showing pop ups]
+* [http://emacs-fu.blogspot.com/2010/02/i-have-been-using-wanderlust-e-mail.html emacs-fu: Wanderlust III]
+* [http://emacs-fu.blogspot.com/2011/03/searching-e-mails-with-wanderlust-and.html emacs-fu: Searching e-mails with wanderlust and mu]
+* [http://emacs-fu.blogspot.com/2009/08/managing-e-mail-addresses-with-bbdb.html emacs-fu: Managing e-mail addresses with bbdb]
+* [http://box.matto.nl/wanderlustgpg.html GPG and Emacs with Wanderlust]
+* [http://dis-dot-dat.blogspot.com/2010/04/ive-used-combination-of-mutt-emacs.html james blog: Customizing wanderlust. ]
+* [http://dis-dot-dat.blogspot.com/2010/04/my-wanderlust-setup.html james blog: My wanderlust setup.]
+
+=== Configuration files ===
 * [[hgw-init-wl.el]] -- very advanced Wanderlust configuration example
+* http://www.gnumonk.com/my-config/my-wl-1
+
+=== Sources & patches ===
+* http://repo.or.cz/w/more-wl.git
+* <code>git://git.tgbit.net/wanderlust</code>
+* http://cvs.m17n.org/viewcvs/root/wanderlust/
+* https://github.com/wanderlust/wanderlust
+
 
 ----
 CategoryMail
