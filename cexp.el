@@ -1,4 +1,4 @@
-;;; cexp.el
+;;; cexp.el --- Poorman's implementation of combined expressions.
 ;; Copyright (C) 2010  Tobias.Naehring
 
 ;; Author: Tobias.Naehring <i@tn-home.de>
