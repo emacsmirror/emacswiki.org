@@ -214,6 +214,7 @@ Then you also need to set up your .folder-file. See [[WlMultipleAccounts]] for a
 * [[hgw-init-wl.el]] -- very advanced Wanderlust configuration example
 * http://www.gnumonk.com/my-config/my-wl-1
 * http://www.oxyde.org/patzy/files/dot.wl
+* http://elarson.posterous.com/sending-email-with-wanderlust -- Dual account setup.
 
 === Sources & patches ===
 * http://repo.or.cz/w/more-wl.git -- Various patches.
