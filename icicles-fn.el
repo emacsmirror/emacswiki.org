@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:53 2006
 ;; Version: 22.0
-;; Last-Updated: Fri Jan 20 15:15:56 2012 (-0800)
+;; Last-Updated: Thu Feb  2 10:20:31 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 12853
+;;     Update #: 12856
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-fn.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -3360,7 +3360,7 @@ INPUT is a string.  Each candidate is a string."
                                          (car (el-swank-fuzzy-completions
                                                input icicle-swank-timeout
                                                (or minibuffer-completion-predicate 'fboundp)
-                                               icicle-swank-prefix-length)))))
+                                               (min (length input) icicle-swank-prefix-length))))))
               ((and (consp minibuffer-completion-table) (consp (car minibuffer-completion-table)))
                (dolist (cand minibuffer-completion-table)
                  (when (or (null minibuffer-completion-predicate)
