@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Tue Jan 24 10:57:28 2012 (-0800)
+;; Last-Updated: Thu Feb  2 13:10:59 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 23072
+;;     Update #: 23073
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -114,7 +114,11 @@
 ;;   Commands to be used mainly at top level:
 ;;
 ;;    `a', `any', `buffer', `clear-option',
-;;    `cycle-icicle-image-file-thumbnail', `file',
+;;    `cycle-icicle-image-file-thumbnail',
+;;    `cycle-icicle-incremental-completion',
+;;    `cycle-icicle-sort-order',
+;;    `cycle-icicle-S-TAB-completion-method',
+;;    `cycle-icicle-TAB-completion-method', `file',
 ;;    `icicle-add-buffer-candidate', `icicle-add-buffer-config',
 ;;    `icicle-add-entry-to-saved-completion-set',
 ;;    `icicle-add-file-to-fileset',
