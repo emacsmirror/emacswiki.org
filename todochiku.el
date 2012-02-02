@@ -1,4 +1,4 @@
-;;; todochiku.el - A mode for interfacing with Growl, Snarl, and the like.
+;;; todochiku.el -- A mode for interfacing with Growl, Snarl, and the like.
 (defconst todochiku-version "0.0.8")
 
 ;; Copyright (c)2008 Jonathan Arkell. (by)(nc)(sa)  Some rights reserved.
@@ -324,4 +324,4 @@ This would be better done through a customization probably."
 (provide 'growl)
 
 (provide 'todochiku)
-
+;;; todochiku.el ends here
