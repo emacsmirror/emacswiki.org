@@ -1,19 +1,14 @@
-This library allows for a set of shell commands to be linked with file or directory names. These commands can then be used in [[DiredMode]] using `dired-do-shell-command' (or pressing "!"). Since this library modifies the behavior of `dired-guess-shell-alist-user', the command syntax will follow that variable's syntax (see the documentation of `dired-guess-shell-alist-user' for more).
+This library allows for a set of shell commands to be linked with file or directory names in [[DiredMode]]. These commands can then be run using `dired-do-shell-command' (or pressing "!"). Since this library modifies the behavior of `dired-guess-shell-alist-user', the command syntax will follow that variable's syntax (see the documentation of `dired-guess-shell-alist-user' for more).
 
 Features: 
 
-* Provides a widget.el interface to add, edit, and sort shell
-  commands.
+* Provides a widget.el interface to add, edit, and sort shell commands.
 
-* Gets rid of the "A command is running - kill it? Yes or No?"
-  message.
+* Gets rid of the "A command is running - kill it? Yes or No?" message.
 
-* If `runner-run-in-background' is set to t, send the stdout buffer
-  to the background except when the command string includes
-  `{run:out}'.
+* If `runner-run-in-background' is set to t, send the stdout buffer to the background except when the command string includes `{run:out}'.
 
-* If the command string contains `{run:shell}', run the command
-  using the function specified in `runner-shell-function'.
+* If the command string contains `{run:shell}', run the command using the function specified in `runner-shell-function'.
 
 ==Download==
 
