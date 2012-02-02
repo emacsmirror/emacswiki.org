@@ -16,6 +16,7 @@
 (add-to-list 'exec-path "~/Eigene Dateien/Eigene Software")
 (add-to-list 'exec-path "C:/oracle/product/10.2.0/db_1/bin")
 (add-to-list 'exec-path "C:/oracle/product/10.2.0.3/db_1e/bin")
+(add-to-list 'exec-path "C:/Programme/Growl for Windows")
 (setenv "RSH" "SSH")
 
 (let (seen)
@@ -34,6 +35,7 @@
 (setenv "CVS_RSH" "ssh")
 (setenv "WikiDataDir" "test-data")
 (setq visible-bell t)
+(setq mouse-drag-copy-region t)
 
 ;; (set-face-attribute 'default nil :family "Garamond" :height 140)
 (set-face-attribute 'default nil :family "Consolas" :height 110)
@@ -306,9 +308,11 @@ Indent by DEPTH, if required"
 
 (global-set-key (kbd "C-c q") 'sql-oracle)
 
-(setq sql-user "ors"
+(setq sql-user "DEVUSER"
       sql-password ""
-      sql-database "hermes.vd_5023")
+      sql-database "CMT")
+;; (setenv "NLS_LANG" "AMERICAN_AMERICA.UTF8")
+;; (add-to-list 'process-coding-system-alist '("SQL" . utf-8));; no effect?
 
 (setq sql-input-ring-file-name "~/.sql_history"
       sql-product 'oracle
@@ -330,6 +334,7 @@ Indent by DEPTH, if required"
 	    (local-set-key (kbd "C-z") 'sql-oracle)
 	    (local-set-key (kbd "C-c n") 'my-insert-next-key)
 	    (local-set-key (kbd "C-c C-c") 'sql-send-modified-paragraph)
+	    (local-set-key (kbd "C-c C-d") 'sql-oracle-describe)
 	    (local-set-key (kbd "<C-return>") 'sql-send-modified-paragraph)))
 (add-hook 'sql-interactive-mode-hook
 	  (lambda ()
@@ -339,7 +344,7 @@ Indent by DEPTH, if required"
 
 (add-hook 'sql-interactive-mode-hook 'my-sql-set-buffer)
 
-(defun my-sql-quote-for-java (start end)
+(defun my-sql-quote (start end)
   (interactive "r")
   (setq end (copy-marker end))
   (goto-char end)
@@ -355,6 +360,33 @@ Indent by DEPTH, if required"
     (while (search-forward "\n" end t)
       (replace-match "'\n||' ")))
   (insert "'"))
+
+(defun my-sql-quote-for-java (start end)
+  (interactive "r")
+  (setq end (copy-marker end))
+  (goto-char end)
+  (insert "\"")
+  (goto-char start)
+  (save-excursion
+    (while (search-forward "\n" end t)
+      (replace-match " \" +\n\"")))
+  (insert "\"")
+  (untabify start end))
+
+(defun my-code-quote-for-java (start end)
+  (interactive "r")
+  (setq end (copy-marker end))
+  (goto-char end)
+  (insert "\"")
+  (goto-char start)
+  (save-excursion
+    (while (search-forward "\"" end t)
+      (replace-match "\\\\\"")))
+  (save-excursion
+    (while (search-forward "\n" end t)
+      (replace-match "\\\\n\" +\n\"")))
+  (insert "\"")
+  (untabify start end))
 
 (defun my-sql-set-buffer ()
   "Sets the SQLi buffer for all unconnected SQL buffers.
@@ -392,7 +424,7 @@ again."
     (with-temp-buffer
       (insert str)
       (goto-char (point-min))
-      (while (re-search-forward "\\(:[a-zA-Z0-9_.]+\\|\\(#\\w+#\\)\\|<eval>.*</eval>\\|\\?\\)" nil t)
+      (while (re-search-forward "\\(:[a-zA-Z0-9_.]+\\|\\(#\\w+#\\)\\|\\(@@[a-zA-Z0-9_.]+@@\\)\\|<eval>.*</eval>\\|\\?\\)" nil t)
 	(let* ((key (match-string 0))
 	       (val (cdr (assoc key sql-replacements))))
 	  (when (not val)
@@ -405,6 +437,14 @@ again."
       (goto-char (point-max))
       (recenter -1))
     (sql-send-string str)))
+
+(defun sql-oracle-describe (word)
+  "Describe object at point."
+  (interactive (list (let ((sym (symbol-at-point)))
+		       (if sym
+			   (symbol-name sym)
+			 (read-string "Object name: ")))))
+  (sql-send-string (concat "DESC " word)))
 
 (defun sql-replacement-delete (key)
   "Remove KEY from `sql-replacements'."
@@ -425,7 +465,7 @@ again."
     (insert "INSERT INTO ORS_UC (UC_UID, PARTITION_UID, CODE_TYPE, ACTIVE, PROTECTED, PARENT_UID)\n"
 	    "VALUES (" (number-to-string (+ id i)) ", 0, " (number-to-string type) ", 1, 0, 0);\n"
 	    "\n"
-	    "INSERT INTO ORS_UCL (UC_UID, LANGUAGE_ID, CODE_NAME)\n"
+	    "INSERT INTO ORS_UCL (UC_UID, LANGUAGE_UID, CODE_NAME)\n"
 	    "VALUES (" (number-to-string (+ id i)) ", 1303, '" (or (car data) "") "');\n"
 	    "\n")
     (setq data (cdr data))))
@@ -519,6 +559,7 @@ Each line consists of a lastname, a tab, and a firstname."
 
 (dolist (hook '(emacs-lisp-mode-hook
 		lisp-mode-hook
+		rcirc-mode
 		change-log-mode
 		texinfo-mode-hook))
   (add-hook hook (lambda ()
@@ -607,7 +648,8 @@ Each line consists of a lastname, a tab, and a firstname."
 (defun eshell/dired () (dired (eshell/pwd)))
 
 ;;; perl
-(setq cperl-hairy t)
+(setq cperl-hairy t
+      cperl-electric-parens 'null)
 (add-to-list 'auto-mode-alist '("\\.pl\\'" . cperl-mode))
 (add-to-list 'auto-mode-alist '("\\.t\\'" . cperl-mode))
 (add-to-list 'interpreter-mode-alist '("perl" . cperl-mode))
@@ -620,34 +662,48 @@ Each line consists of a lastname, a tab, and a firstname."
 
 (setq rcirc-prompt "%n> "; list nick
       rcirc-fill-prefix "      "
+      rcirc-nick-prefix-chars "~&@%+!"
       rcirc-fill-column 65; side-by-side on my laptop
       rcirc-default-nick "kensanata"
       rcirc-log-flag t
       rcirc-log-directory "~/IRC Logs"
-      rcirc-keywords '("ken" "kens" "kensa" "alex")
+      rcirc-keywords '("ken" "kens" "kensa" "kensanatas" "kensanta"
+		       "alex")
       rcirc-server-alist
       '(("irc.freenode.net" :channels ("#rcirc" "#wiki" "#oddmuse" "#epfarms"
-	 "#emacs" "#sql"))
-	("irc.perl.org" :channels ("#perlde" "#oddmuse"))
-	("ircnet.eversible.com" :channels ("#drsrm"))
-        ("irc.euirc.net" :channels ("#tanelorn")))
-	;; ("irc.sorcery.net" :channels ("#rpmn"))
-	;; ("irc.otherworlders.org" :channels ("#enworld" "#pathfinder"))
+	 "#emacs" "#sql" "#eclipse-de" "#osgi" "#eclipse-scout"
+	 "#eclipse-hudson"))
+	("irc.perl.org" :channels ("#perlde" "#oddmuse")))
+      ;; ("ircnet.eversible.com" :channels ("#drsrm"))
+      ;; ("irc.ch.euirc.net" :channels ("#tanelorn"))
+      ;; irc.de.euirc.net
+      ;; ("irc.sorcery.net" :channels ("#rpmn"))
+      ;; ("irc.otherworlders.org" :channels ("#enworld" "#pathfinder"))
       ;; "#scheme" "#nethack" "#atom" "#microformats" "#barcamp"
       ;; "#emacs-fu" "#haskell" "#openfire" "##jabber" "#tentacle"
-      ;; "#openbsd" "#hcoop" "#scrum" "#eclipse" "#eclipse-de" "#osgi"
+      ;; "#openbsd" "#hcoop" "#scrum" "#eclipse"
       rcirc-decode-coding-system 'undecided
-      rcirc-ignore-list '("consolers" "jordanb" "dustpuppy")
+      rcirc-ignore-list '("consolers" "jordanb" "dustpuppy" "rudybot")
+      rcirc-activity-string ""
+      frame-title-format '("%b " rcirc-activity-string)
       rcirc-authinfo (let ((file "~/.rcirc-authinfo"))
 		       (when (file-readable-p file)
 			 (with-temp-buffer
 			   (insert-file-contents-literally file)
 			   (read (current-buffer))))))
 
-(defadvice rcirc-handler-JOIN (after rcirc-handler-JOIN-emacs-ops activate)
-  "Automatically join #emacs-ops if we join #emacs."
-  (when (string= (car args) "#emacs")
-    (rcirc-send-string process (concat "JOIN " "#emacs-ops"))))
+;; (defadvice rcirc-handler-JOIN (after rcirc-handler-JOIN-emacs-ops activate)
+;;   "Automatically join #emacs-ops if we join #emacs."
+;;   (when (and (string= (car args) "#emacs")
+;; 	     (not (assoc "#emacs" (with-rcirc-server-buffer
+;; 				    rcirc-buffer-alist))))
+;;     (rcirc-send-string process (concat "JOIN " "#emacs-ops"))))
+
+;; (defun rcirc-handler-ctcp-LAG (process target sender args)
+;;   (rcirc-send-string process
+;; 		     (concat "NOTICE "
+;; 			     (rcirc-user-nick sender)
+;; 			     " :\C-aLAG you first.\C-a")))
 
 (eval-after-load 'rcirc
 '(defun-rcirc-command whois (nick)
@@ -704,6 +760,7 @@ Each line consists of a lastname, a tab, and a firstname."
 
 (eval-after-load 'rcirc '(require 'rcirc-color))
 (eval-after-load 'rcirc '(require 'rcirc-controls))
+(eval-after-load 'rcirc '(require 'rcirc-notify nil t))
 (eval-after-load 'rcirc '(require 'rcirc-pounce nil t))
 (eval-after-load 'rcirc '(require 'rcirc-groups nil t))
 
