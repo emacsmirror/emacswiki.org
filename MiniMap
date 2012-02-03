@@ -156,5 +156,12 @@ Drag to resize the windows to full screen, drag to make it 0 columns wide. Repea
 Sometimes the minimap gets as wide as the buffer, sometimes it disappears.
 Furthermore there is no way to change the width of the minimap alone. Hovering the mouse over its scrollbar changes the pointer to a double horizontal arrow and pops up "drag-mouse-1: resize", but dragging doesn't do anything.
 
+----
+
+It would be really good if the minimap would change automatically as you go through buffers.
+The link posted by the other user has 2 issues:
+- the minimap is always on the left
+- it is buggy
+
 ----  
 CategoryWindows   CategoryDisplay
