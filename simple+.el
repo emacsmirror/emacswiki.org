@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Fri Apr 12 10:56:45 1996
 ;; Version: 21.0
-;; Last-Updated: Fri Feb  3 09:58:28 2012 (-0800)
+;; Last-Updated: Fri Feb  3 11:08:20 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 442
+;;     Update #: 450
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/simple+.el
 ;; Keywords: internal, lisp, extensions, abbrev
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -68,7 +68,8 @@
 ;;; Change Log:
 ;;
 ;; 2012/02/03 dadams
-;;     read-var-and-value: Added optional arg BUFFER.
+;;     read-var-and-value:
+;;       Added optional arg BUFFER.  Use default-value if var is not local.
 ;;     set(-any)-variable:
 ;;       Add BUFFER arg in call to read-var-and-value (only for Icicles).
 ;;       Set default value, if not MAKE-LOCAL.
@@ -292,9 +293,14 @@ Optional arg BUFFER is the buffer used to determine the current value
 of the variable, which is used as the default value when reading the new value."
   (let* ((var                   (funcall read-var-fn "Set variable: "))
          (current-val           (format "%S"
-                                        (if buffer
-                                            (with-current-buffer buffer (symbol-value var))
-                                          (symbol-value var))))
+                                        (if (fboundp 'buffer-local-value) ; Emacs 22+.
+                                            (buffer-local-value var (or buffer
+                                                                        (current-buffer)))
+                                          (if (member var (buffer-local-variables buffer))
+                                              (with-current-buffer (or buffer
+                                                                       (current-buffer))
+                                                (symbol-value var))
+                                            (default-value var)))))
          (minibuffer-help-form  '(describe-variable var))
          (prompt                (format "Set %s%s to value: " var
                                         (cond ((local-variable-p var) " (buffer-local)")
