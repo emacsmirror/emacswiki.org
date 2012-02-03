@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Fri Apr 12 10:56:45 1996
 ;; Version: 21.0
-;; Last-Updated: Fri Feb  3 09:24:53 2012 (-0800)
+;; Last-Updated: Fri Feb  3 09:58:28 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 438
+;;     Update #: 442
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/simple+.el
 ;; Keywords: internal, lisp, extensions, abbrev
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -69,7 +69,9 @@
 ;;
 ;; 2012/02/03 dadams
 ;;     read-var-and-value: Added optional arg BUFFER.
-;;     set(-any)-variable: Add BUFFER arg in call to read-var-and-value (only for Icicles).
+;;     set(-any)-variable:
+;;       Add BUFFER arg in call to read-var-and-value (only for Icicles).
+;;       Set default value, if not MAKE-LOCAL.
 ;; 2011/05/16 dadams
 ;;     Added redefinition of kill-new for Emacs 20.
 ;; 2011/01/04 dadams
@@ -316,7 +318,7 @@ of the variable, which is used as the default value when reading the new value."
 ;; Uses `read-var-and-value' to get args interactively.
 ;;
 ;;;###autoload
-(defun set-variable (var val &optional make-local)
+(defun set-variable (variable value &optional make-local)
   "Set VARIABLE to VALUE.  VALUE is a Lisp object.
 When using this interactively, enter a Lisp object for VALUE.
 If you want VALUE to be a string, you must surround it with doublequotes.
@@ -335,18 +337,19 @@ With a prefix argument, set VARIABLE to VALUE buffer-locally."
                                    (and (boundp 'icicle-pre-minibuffer-buffer)
                                         icicle-mode
                                         icicle-pre-minibuffer-buffer)))
-  (and (or (not (fboundp 'custom-variable-p)) (custom-variable-p var))
-       (not (get var 'custom-type))
-       (custom-load-symbol var))
-  (let ((type  (get var 'custom-type)))
+  (and (or (not (fboundp 'custom-variable-p)) (custom-variable-p variable))
+       (not (get variable 'custom-type))
+       (custom-load-symbol variable))
+  (let ((type  (get variable 'custom-type)))
     (when type
       ;; Match with custom type.
       (require 'cus-edit)
       (setq type  (widget-convert type))
-      (unless (widget-apply type :match val)
-        (error "Value `%S' does not match type %S of %S" val (car type) var))))
-  (when make-local (make-local-variable var))
-  (set var val)
+      (unless (widget-apply type :match value)
+        (error "Value `%S' does not match type %S of %S" value (car type) variable))))
+  (if make-local
+      (set (make-local-variable variable) value)
+    (set-default variable value))
   ;; Force a thorough redisplay for the case that the variable
   ;; has an effect on the display, like `tab-width' has.
   (force-mode-line-update))
@@ -382,8 +385,9 @@ With a prefix argument, set VARIABLE to VALUE buffer-locally."
       (setq type  (widget-convert type))
       (unless (widget-apply type :match value)
         (error "Value `%S' does not match type %S of %S" value (car type) variable))))
-  (when make-local (make-local-variable variable))
-  (set variable value)
+  (if make-local
+      (set (make-local-variable variable) value)
+    (set-default variable value))
   ;; Force a thorough redisplay for the case that the variable
   ;; has an effect on the display, like `tab-width' has.
   (force-mode-line-update))
