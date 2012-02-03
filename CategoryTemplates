@@ -23,8 +23,6 @@ Overall, emacs templates packages can be divided into those whose syntax for def
 
 * SemanticRecoder -- Part of CollectionOfEmacsDevelopmentEnvironmentTools with GoogleTemplates like syntax.  Created for language agnostic code generation applications.
 
-* Lisp:auto-preamble.el -- Auto-type the preamble of source code file.
-
 === Elisp Macro Based Template Systems ===
 
 * SkeletonMode -- Bundled with Emacs 22 with full doc. See <code>(info "(autotype)Top")</code>
