@@ -18,6 +18,8 @@ If you are using GNU Emacs from a recent (as of summer 2003) CVS (the one that w
 
 ... into your .emacs.
 
+You can use "#[[:xdigit:]]\\{6\\}" instead of "#[abcdef[:digit:]]\\{6\\}", which will match ABCDEF digits too. RaffaeleRicciardi
+
 Due to some quirks in the implementation of font-lock, this won't work with Emacs 21.2 or 21.3. But you can use the package "hexcolour.el" (Lisp:hexcolour.el) to achieve this nevertheless. Read the commentary section for details.
 
 
