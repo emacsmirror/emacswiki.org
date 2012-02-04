@@ -1,11 +1,11 @@
 ;;; sqlparser-oracle-complete.el --- completing tablename,column name for oracle. -*- coding:utf-8 -*-
 
-;; Copyright (C) 2011 Joseph
+;; Copyright (C) 2011~2012 纪秀峰(Joseph) all rights reserved.
 
 ;; Created: 2011年07月31日 星期日 20时37分31秒
-;; Last Updated: Joseph 2011-11-12 09:38:09 星期六
+;; Last Updated: Joseph 2012-02-04 14:08:20 星期六
 ;; Version: 0.1.4
-;; Author: Joseph  jixiuf@gmail.com
+;; Author: 纪秀峰(Joseph)  jixiuf@gmail.com
 ;; Keywords: sql parse oracle complete
 ;; Filename: sqlparser-oracle-complete.el
 ;; Description:  completing tablename column for oracle when editing
@@ -65,6 +65,7 @@
 ;; (add-hook  'sqlplus-mode-hook 'oracle-complete-minor-mode)
 ;; or you can call M-x: oracle-complete-minor-mode
 ;;  and complete command is binded on `TAB' .
+;;  with `C-u' you can complete with new connection string.
 
 ;;; Commands:
 ;;
@@ -83,14 +84,16 @@
 ;;; Code:
 
 (require 'oracle-query)
-(require 'anything nil t)
+(require 'thingatpt)
+;; (require 'anything nil t)
 
 (defvar oracle-complete-minor-mode-map
   (let ((map (make-sparse-keymap)))
-    (if (featurep 'anything)
-        (define-key map  (quote [tab]) 'anything-oracle-complete)
-      (define-key map  (quote [tab]) 'sqlparser-oracle-complete)
-      )
+    (define-key map  (quote [tab]) 'sqlparser-oracle-complete)
+    ;; (if (featurep 'anything)
+    ;;     (define-key map  (quote [tab]) 'anything-oracle-complete)
+
+    ;;   )
     map))
 (defvar  oracle-complete-minor-mode-hook nil)
 
@@ -104,49 +107,53 @@
       (run-hooks 'oracle-complete-minor-mode-hook)))
 
 (defvar sqlparser-sqlplus-connection nil)
-(make-variable-buffer-local 'sqlparser-sqlplus-connection)
+;; (make-variable-buffer-local 'sqlparser-sqlplus-connection)
 
-(when (featurep 'anything)
-  (defvar anything-c-source-oracle-candidates nil)
-  (defvar anything-init-postion-4-oracle)
-  (defvar anything-c-source-oracle
-    '((name . "SQL Object:")
-      (init (lambda() (setq anything-init-postion-4-oracle (point))(setq anything-c-source-oracle-candidates ( sqlparser-oracle-context-candidates))))
-      (candidates . anything-c-source-oracle-candidates)
-      (action . (("Complete" . (lambda(candidate) (goto-char anything-init-postion-4-oracle)(backward-delete-char (length (sqlparser-word-before-point-4-oracle))) (insert candidate)))))))
-;;;###autoload
-  (defun anything-oracle-complete()
-    "call `anything' to complete tablename and column name for oracle."
-    (interactive)
-    (let ((anything-execute-action-at-once-if-one t)
-          (anything-quit-if-no-candidate
-           (lambda () (message "complete failed."))))
-      (anything '(anything-c-source-oracle)
-                ;; Initialize input with current symbol
-                (sqlparser-word-before-point-4-oracle)  nil nil))))
-
+;; (defvar anything-c-source-oracle-candidates nil)
+;; (defvar anything-init-postion-4-oracle)
+;; (defvar anything-c-source-oracle
+;;   '((name . "SQL Object:")
+;;     (init (lambda() (setq anything-init-postion-4-oracle (point))(setq anything-c-source-oracle-candidates ( sqlparser-oracle-context-candidates))))
+;;     (candidates . anything-c-source-oracle-candidates)
+;;     (action . (("Complete" . (lambda(candidate) (goto-char anything-init-postion-4-oracle)(backward-delete-char (length (sqlparser-word-before-point-4-oracle))) (insert candidate)))))))
+;; ;;;###autoload
+;; (defun anything-oracle-complete()
+;;   "call `anything' to complete tablename and column name for oracle."
+;;   (interactive)
+;;   (let ((anything-execute-action-at-once-if-one t)
+;;         (anything-quit-if-no-candidate
+;;          (lambda () (message "complete failed."))))
+;;     (anything '(anything-c-source-oracle)
+;;               ;; Initialize input with current symbol
+;;               (sqlparser-word-before-point-4-oracle)  nil nil)))
 
 ;;;###autoload
-(defun sqlparser-oracle-complete()
+(defun sqlparser-oracle-complete(&optional arg)
   "complete tablename or column name depending on current point
-position ."
-  (interactive)
+position . with `C-u',use a new connection string to complete."
+  (interactive "P")
   (let ((prefix  (sqlparser-word-before-point-4-oracle) )
         (init-pos (point))
+        (candidates  (sqlparser-oracle-context-candidates arg))
         last-mark)
-    (insert (completing-read "complete:" (sqlparser-oracle-context-candidates) nil t prefix ))
+    (if (= 1 (length candidates))
+        (insert (car candidates))
+      (insert (completing-read "complete:" candidates nil t prefix )))
     (setq last-mark (point-marker))
     (goto-char init-pos)
     (backward-delete-char (length prefix))
     (goto-char (marker-position last-mark))
     ))
 
-(defun  sqlparser-oracle-context-candidates()
+(defun  sqlparser-oracle-context-candidates(&optional arg)
   "it will decide to complete tablename or columnname depend on
-  current position."
-  (unless (and sqlparser-sqlplus-connection
-               (equal (process-status (nth 0  sqlparser-sqlplus-connection)) 'run))
-    (setq sqlparser-sqlplus-connection (call-interactively 'oracle-query-create-connection)))
+  current position. with `C-u' use a new connection string to complete."
+  (if arg
+      (when (oracle-query-connection-alive-p sqlparser-sqlplus-connection)
+        (oracle-query-close-connection  sqlparser-sqlplus-connection)
+        (setq sqlparser-sqlplus-connection (call-interactively 'oracle-query-create-connection)))
+    (unless  (oracle-query-connection-alive-p sqlparser-sqlplus-connection)
+      (setq sqlparser-sqlplus-connection (call-interactively 'oracle-query-create-connection))))
   (let ((context (sqlparser-parse-4-oracle)) candidats)
     (cond
      ((string= "schema" context)
@@ -168,12 +175,48 @@ position ."
 ;; select table_name from all_tab_privs where grantee = 'U1' and privilege = 'SELECT'
 (defun  sqlparser-oracle-tablename-or-schemaname-candidates ()
   "all tablename viewname i can select."
-  (mapcar 'car
-          (oracle-query
-           (format " select view_name from all_views where upper(owner)=upper('%s') union all select table_name from all_tables where upper(owner)=upper('%s') union all  select table_schema||'.'||table_name from all_tab_privs where lower(grantee) = lower('%s') and privilege = 'SELECT' union all select table_name from dict"
-                   (nth 2 sqlparser-sqlplus-connection)(nth 2 sqlparser-sqlplus-connection)(nth 2 sqlparser-sqlplus-connection))
-           sqlparser-sqlplus-connection
-           )))
+  (let* ((prefix (sqlparser-get-prefix-4-oracle))
+         (tmp-str-array (split-string prefix "\\."))
+         owner table_name sql)
+    (if  (= 2 (length tmp-str-array))
+        (progn (setq owner (car tmp-str-array))
+               (setq table_name (nth 1 tmp-str-array)))
+      (setq table_name  (car tmp-str-array)))
+
+    (if owner
+        (setq sql (format
+                   (concat " select view_name from all_views where upper(owner)=upper('%s') and upper(view_name) like upper('%s%%') "
+                           "union all select table_name from all_tables where upper(owner)=upper('%s') and upper(table_name) like upper('%s%%') "
+                           "union all  select table_schema||'.'||table_name from all_tab_privs where lower(grantee) = lower('%s') and privilege = 'SELECT' and upper(table_schema)=upper('%s') and upper(table_name) like upper('%s%%')"
+                           "union all select table_name from dict where upper(table_name) like upper('%s%%')")
+
+                   (nth 2 sqlparser-sqlplus-connection) table_name
+                   (nth 2 sqlparser-sqlplus-connection) table_name
+                   (nth 2 sqlparser-sqlplus-connection) owner table_name
+                   table_name
+                   ))
+      (setq sql (format
+                 (concat " select view_name from all_views where upper(owner)=upper('%s') and upper(view_name) like upper('%s%%') "
+                         "union all select table_name from all_tables where upper(owner)=upper('%s') and upper(table_name) like upper('%s%%') "
+                         "union all  select table_schema||'.'||table_name from all_tab_privs where lower(grantee) = lower('%s') and privilege = 'SELECT' and upper(table_name) like upper('%s%%')"
+                         "union all select table_name from dict where upper(table_name) like upper('%s%%')"
+                         "union all select USERNAME from ALL_USERS where upper(USERNAME) like upper('%s%%')"
+                         )
+
+                 (nth 2 sqlparser-sqlplus-connection) table_name
+                 (nth 2 sqlparser-sqlplus-connection) table_name
+                 (nth 2 sqlparser-sqlplus-connection) owner table_name
+                 table_name
+                 table_name           ;actual ,maybe username
+                 ))
+      )
+    (mapcar 'car
+            (oracle-query
+             sql
+             sqlparser-sqlplus-connection
+             ))
+    )
+  )
 
 (defun sqlparser-oracle-schemaname-candidates ()
   "all schema-name in oracle database"
@@ -184,7 +227,7 @@ position ."
            sqlparser-sqlplus-connection
            )))
 
-(defun  sqlparser-oracle-column-candidates ()
+(defun sqlparser-oracle-column-candidates ()
   "column name candidates of table in current sql "
   (let* ((sql "select column_name from user_tab_columns where 1=0")
          (table-names (sqlparser-fetch-tablename-from-sql-4-oracle
@@ -272,6 +315,11 @@ update sentence or alter sentence."
       (setq ele (pop result-stack))
       (with-temp-buffer
         (insert ele)
+        (goto-char (point-min))
+        (when (search-forward-regexp "\\(?:\\([a-zA-Z0-9_ ]+\\)[ \t\n\r]+\\)?\\(?:\\(?:inner[ \t\r\n]+\\|\\(?:\\(?:left\\|right\\)[ \t\r\n]+\\(?:outer[ \t\r\n]+\\)?\\)\\)join[ \t\n\r]+\\)\\([a-zA-Z0-9_ ]+\\)[ \t\r\n]+" (point-max) t)
+          (push  (match-string 1) tablename-stack)
+          (push  (match-string 2) tablename-stack)
+          )
         (goto-char (point-min))
         (when  (search-forward-regexp "[ \t]+from[ \t]+" (point-max) t)
           (delete-region (point-min) (point))
@@ -465,21 +513,19 @@ it will return 'table' ,or 'column' ,or nil.
 
 (defun sqlparser-get-prefix-4-oracle()
   "for example `tablename.col' `table.' `str'"
-  (let ((init-pos (point)) prefix)
-    (when (search-backward-regexp "[ \t\n,(;]+" (point-min) t)
-      (setq prefix (buffer-substring (match-end 0) init-pos)))
-    (goto-char init-pos)
-    (or prefix "")
-    ))
+  (with-syntax-table (copy-syntax-table (syntax-table))
+    (modify-syntax-entry ?.  "w");treat . as part of word
+    (or (thing-at-point 'word) ""))
+  )
 
 (defun sqlparser-word-before-point-4-oracle()
   "get word before current point or empty string."
-  (save-excursion
-    (let ((current-pos (point)))
-      (if (search-backward-regexp "\s-\\|[ \t]+\\|\\.\\|,\\|(" (point-at-bol) t )
-          (buffer-substring-no-properties (match-end 0) current-pos )
-        ""))))
+  (with-syntax-table (copy-syntax-table (syntax-table))
+    (modify-syntax-entry ?.  ".");treat . as punctuation character
+    (or (thing-at-point 'word) ""))
+  )
 
 
 (provide 'sqlparser-oracle-complete)
 ;;; sqlparser-oracle-complete.el ends here
+
