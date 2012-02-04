@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2012, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Sun Jan  1 14:28:58 2012 (-0800)
+;; Last-Updated: Sat Feb  4 14:20:56 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 14195
+;;     Update #: 14199
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-doc.el
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search,
 ;;           info, url, w3m, gnus
@@ -779,6 +779,22 @@
 ;;  strings as tags then you might prefer to simply edit a bookmark's
 ;;  tags in a separate buffer.  You can do that using `C-x p t e' (or
 ;;  `T e' in the bookmark-list display).
+;;
+;;  Whenever you are prompted for a tag you can use completion.  The
+;;  completion candidates available are the tag names defined by
+;;  option `bmkp-tags-for-completion'.  The default value of this
+;;  option is `current', meaning use only the tags from the bookmarks
+;;  in the current bookmark list as candidates.  You can customize the
+;;  option to include specific tags or the tags from bookmarks in
+;;  specific bookmark files.
+;;
+;;  You can use command `bmkp-list-all-tags' to list all of the tags
+;;  defined by option `bmkp-tags-for-completion' or, with a numeric
+;;  prefix argument, only the tags corresponding to the current
+;;  bookmark file.  You can list the tag names only or (using a
+;;  non-negative prefix arg) show the full tag definitions, which
+;;  include any associated tag values (see (@> "Bookmark Tags Can Have Values")
+;;  for information about tag values).
 ;;
 ;;  To make tags more useful, Bookmark+ provides *lots* of commands:
 ;;  commands for adding, removing, copying, pasting, and renaming
