@@ -13,3 +13,6 @@ Nothing should be required, except editing your
   bzr+ssh://USERNAME <at> bzr.savannah.gnu.org/emacs/trunk/
 
 }}}
+
+[new:AlexSchroeder:2012-02-04 11:55 UTC]
+Worked for me! Except now I realized "Autoconf version 2.65 or higher is required". :)
