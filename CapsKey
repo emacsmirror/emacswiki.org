@@ -4,8 +4,8 @@ This page is about the keyboard key typically labeled '''[::CapsLock]'''. It cov
 ==Discussion==
 Should we move all CTRL key hints to MovingTheCtrlKey to avoid duplicate code (text) that may become obsolete and/or out-of-sync?
 
-==Discussion==
-Beware of some PS/2 to USB adapters. The two I've used so far don't send repeat events for the Caps Lock key to the OS keyboard driver, i.e. if you want to type C-x C-f you have to release the Caps Lock key after hitting C-x and press it again for C-f (tested on windows xp and Debian).
+==Warning about PS/2 -> USB adapters==
+Beware of some PS/2 to USB adapters. The two I've used so far don't send repeat events for the Caps Lock key to the OS keyboard driver, i.e. if you want to type C-x C-f you have to release the Caps Lock key after hitting C-x and press it again for C-f (tested on Windows XP and Debian).
 
 ==Redefining as the "Undo" key.==
 
@@ -74,8 +74,8 @@ In ~/.Xmodmap, remap the Caps_Lock key to some suitable key:
  keycode 66 = nabla
 
 If you add this to your .emacs you will get an Hyper key in gtk and in an xterm!
-                                                                                                                                                       (define-key key-translation-map [8711] 'event-apply-hyper-modifier)
 
+ (define-key key-translation-map [8711] 'event-apply-hyper-modifier)
 
 == Undo / Redo mapping on win32 ==
 
@@ -87,13 +87,16 @@ Is it possible to remap, or at least get Emacs to grok, the Caps Lock key to Und
 
 Instructions are here for NT platforms above 2k:
 
-* http://www.microsoft.com/whdc/device/input/w2kscan-map.mspx and
-* http://www.microsoft.com/whdc/device/input/Scancode.mspx
+* http://www.microsoft.com/whdc/archive/w2kscan-map.mspx and
+* http://www.microsoft.com/whdc/archive/Scancode.mspx
 
 MovingTheCtrlKey has an example.
 
 [new]
 The links are dead, but you can use [http://www.autohotkey.com/ AutoHotkey].
+
+[new:SamuelBronson:2012-02-04 20:43 UTC]
+I fixed the links, so they're not dead anymore. (But you can still try AutoHotKey.)
 
 [new:JonasOster:2006-09-29 14:55 UTC]
 I remap Caps Lock to Super. This enables me to create very comfortable and intuitive key bindings without interfering with the standard Emacs bindings. See example on my wiki home page (JonasOster).
