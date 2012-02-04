@@ -1,0 +1,15 @@
+If you're an Emacs dev and had trouble updating your sources, you need to [http://permalink.gmane.org/gmane.emacs.devel/131569 follow Eli’s advice]:
+
+{{{
+Nothing should be required, except editing your
+.bzr/branch/branch.conf as I described:
+
+ Replace
+
+  sftp://USERNAME <at> bzr.savannah.gnu.org/srv/bzr/emacs/trunk/
+
+ with
+
+  bzr+ssh://USERNAME <at> bzr.savannah.gnu.org/emacs/trunk/
+
+}}}
