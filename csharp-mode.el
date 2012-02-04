@@ -5852,7 +5852,7 @@ $0" "XML Documentation" nil)
 [assembly: AssemblyTitle(\"$1\")]
 [assembly: AssemblyCompany(\"${2:YourCoName}\")]
 [assembly: AssemblyProduct(\"${3}\")]
-[assembly: AssemblyCopyright(\"Copyright � ${4:Someone} 2011\")]
+[assembly: AssemblyCopyright(\"Copyright © ${4:Someone} 2011\")]
 [assembly: AssemblyTrademark(\"\")]
 [assembly: AssemblyCulture(\"\")]
 [assembly: AssemblyConfiguration(\"\")]
