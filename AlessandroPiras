@@ -1,4 +1,7 @@
 I use emacs.
+
+
+Mail address: (apply 'string (mapcar '1- (append "mbzopsAhnbjm/dpn" nil)))
 == About me ==
 I'm an old casual emacs user, but a recent emacs convert.
 I started using emacs more seriously when I started working on [[Vimpulse]],
@@ -6,9 +9,10 @@ that I don't maintain nor develop anymore, but always use.
 
 Luckily it has found a better maintainer than me :-)
 
-I also recently switched to Windows 7, after 10 years of Linux, out of frustration.
-
-I sometimes lurk on #emacs as //laynor//.
+I am the author of [[Enotify]] and its Rspec/Rails/Watchr plugin, contained in the
+[[https://github.com/laynor/espectator espectator]] ruby gem - the gem hosted on rubygems.org is actually named rspec-rails-watchr-emacs.
+I'm using emacs both on windows 7 and linux.
+I sometimes lurk on #emacs as //ale`//.
 == Miscellaneous Emacs Configuration ==
 === Gnus + GMail on Windows (7) ===
 Accessing GMail on Windows using [[Gnus]] can be a little tricky.
