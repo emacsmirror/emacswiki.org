@@ -554,17 +554,7 @@ Ok, this is absolutely delightful.  For more than 15 years I've been pulling up 
 Also I was stuck with this for a while: so this happened and I had the view narrowed, but it was not clear how to cancel this to see all files again (C-c / would just show an empty line) -- apparently C-o C-o worked, but I would not say this was the most intuitive thing...
 
 [new]
-/If it is not essential for the matching string to be as short as possible/ -- it's not strictly essential, but helps a lot to keep the implementation simple and robust. Never mind the message, just keep typing until you see in the pane what you're looking for, then press Return. Besides, the current behavior has the advantage that for frequent narrowing operations you end remembering the shortest combination of keys that leads to the desired result (e.g. to narrow my ~/emacs directory to sunrise-commander.el and all its extensions, I usually type C-/ s (second description)))))
-
-[new]
-Hi again, laxxy,
-
-Actually it was not the  (second description)))))
-
-[new]
-Hi again, laxxy,
-
-Actually it was not the u- [RET]).
+/If it is not essential for the matching string to be as short as possible/ -- it's not strictly essential, but helps a lot to keep the implementation simple and robust. Never mind the message, just keep typing until you see in the pane what you're looking for, then press Return. Besides, the current behavior has the advantage that for frequent narrowing operations you end remembering the shortest combination of keys that leads to the desired result (e.g. to narrow my ~/emacs directory to sunrise-commander.el and all its extensions, I usually type C-/ su- [RET]).
 
 To cancel the fuzzy narrow mode and see all files again simply press *g* (revert-buffer), possibly preceded by Return (or C-n, or C-p) to terminate the pattern input. It may not be intuitive for you right now, but after you've used Emacs a bit this will make perfect sense. One of the best things about Emacs the platform is that all -- or at least most of -- its applications have similar keybindings for similar operations (though at times the similarity may be hard to discern).
 [http://www.emacswiki.org/emacs/Jos%c3%a9_Alfredo_Romero_L. j.a.]
