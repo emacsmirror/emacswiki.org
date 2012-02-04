@@ -2,10 +2,9 @@
 
 ;; Description: auto update TAGS using exuberant-ctags
 ;; Created: 2011-10-16 13:17
-;; Last Updated: Joseph 2011-11-25 11:46:04 星期五
+;; Last Updated: Joseph 2012-02-04 11:59:42 星期六
 ;; Version: 0.1.3
 ;; Author: 纪秀峰  jixiuf@gmail.com
-;; Maintainer:  纪秀峰  jixiuf@gmail.com
 ;; Keywords: exuberant-ctags etags
 ;; URL: http://www.emacswiki.org/emacs/ctags-update.el
 ;;      https://github.com/jixiuf/anything-etags-plus
@@ -168,18 +167,10 @@ to \\ when on windows"
   "recursively searches each parent directory for a file named 'TAGS' and returns the
 path to that file or nil if a tags file is not found. Returns nil if the buffer is
 not visiting a file"
-  (progn
-    (defun find-tags-file-r (path)
-      "find the tags file from the parent directories"
-      (let* ((possible-tags-file (expand-file-name "TAGS" path)))
-        (cond
-         ((file-exists-p possible-tags-file) (throw 'found-it possible-tags-file))
-         ((string-match "^/TAGS\\|^[a-zA-Z]:/TAGS" possible-tags-file) nil)
-         (t (find-tags-file-r
-             (file-name-directory
-              (substring (expand-file-name  path) 0 (1- (length  (expand-file-name  path) )))))))))
-    (catch 'found-it
-      (find-tags-file-r default-directory))))
+  (let ((tag-root-dir (locate-dominating-file default-directory "TAGS")))
+    (if tag-root-dir
+        (expand-file-name "TAGS" tag-root-dir)
+      nil)))
 
 ;;;###autoload
 (defun ctags-update(&optional args)
