@@ -87,6 +87,17 @@
 
 ;;}}}
 ;;; Codes
+
+;; (require 'dired)
+
+(declare-function dired-previous-line "dired")
+(declare-function dired-next-line "dired")
+
+(defgroup scroll-screen nil
+  "scroll screen half down or up."
+  :prefix "scroll-screen"
+  :group 'scrolling)
+
 (defcustom  joseph-scroll-half-screen-up-hook nil
   ""
   :type 'hook)
@@ -101,17 +112,11 @@
 (defcustom joseph-scroll-highlight-delay 0.3
   "*How long to highlight the tag.
   (borrowed from etags-select.el)"
-  :group 'scroll-
+  :group 'scroll-screen
   :type 'number)
 
-(defface scroll-highlight-line-face
-  '((t (:foreground "white" :background "cadetblue4" :bold t)))
-  "Font Lock mode face used to highlight tags.
-  (borrowed from etags-select.el)"
-  :group 'scroll-screen)
-
 (defface joseph-scroll-highlight-line-face
-  '((t (:foreground "white" :background "cadetblue4" :bold t)))
+  '((t (:background "cadetblue4" :foreground "white" :weight bold)))
   "Font Lock mode face used to highlight tags.
   (borrowed from etags-select.el)"
   :group 'scroll-screen)
@@ -140,7 +145,7 @@
     (if (and (not (equal (marker-position old-position) (point)))
              (equal last-command 'joseph-scroll-half-screen-up))
         (goto-char (marker-position old-position))
-      (forward-line  (round (/ (frame-height) 1.5) ))
+      (forward-visible-line  (round (/ (frame-height) 1.5) ))
       )
     (when (and (member  major-mode '(dired-mode wdired-mode))
                (equal  (point-max) (point)) )
@@ -158,7 +163,7 @@
     (if (and (not (equal (marker-position old-position) (point)))
              (equal last-command 'joseph-scroll-half-screen-down))
         (goto-char (marker-position old-position))
-      (forward-line (- 0 (round (/(frame-height) 1.5)))))
+      (forward-visible-line (- 0 (round (/(frame-height) 1.5)))))
     (when (and (member  major-mode '(dired-mode wdired-mode))
                (equal  (point-min) (point)))
       (dired-next-line 2))
@@ -170,3 +175,4 @@
 
 (provide 'joseph-scroll-screen)
 ;; joseph-scroll-screen.el ends here
+
