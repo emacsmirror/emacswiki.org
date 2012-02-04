@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2012, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 13:43:55 2010 (-0700)
-;; Last-Updated: Fri Jan 20 11:20:21 2012 (-0800)
+;; Last-Updated: Sat Feb  4 14:03:49 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 3462
+;;     Update #: 3518
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-1.el
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -278,7 +278,8 @@
 ;;    `bmkp-save-new-location-flag',
 ;;    `bmkp-sequence-jump-display-function',
 ;;    `bmkp-show-end-of-region', `bmkp-sort-comparer',
-;;    `bmkp-su-or-sudo-regexp', `bmkp-temporary-bookmarking-mode',
+;;    `bmkp-su-or-sudo-regexp', `bmkp-tags-for-completion',
+;;    `bmkp-temporary-bookmarking-mode',
 ;;    `bmkp-temporary-bookmarking-mode-hook',
 ;;    `bmkp-this-file/buffer-cycle-sort-comparer', `bmkp-use-region',
 ;;    `bmkp-w3m-allow-multi-tabs'.
@@ -417,15 +418,15 @@
 ;;    `bmkp-sort-omit', `bmkp-sound-jump',
 ;;    `bmkp-specific-buffers-alist-only',
 ;;    `bmkp-specific-files-alist-only', `bmkp-tag-name',
-;;    `bmkp-tags-list', `bmkp-temporary-alist-only',
-;;    `bmkp-temporary-bookmark-p', `bmkp-this-buffer-alist-only',
-;;    `bmkp-this-buffer-p', `bmkp-this-file-alist-only',
-;;    `bmkp-this-file/buffer-alist-only', `bmkp-this-file-p',
-;;    `bmkp-unmarked-bookmarks-only', `bmkp-upcase',
-;;    `bmkp-update-autonamed-bookmark', `bmkp-url-alist-only',
-;;    `bmkp-url-bookmark-p', `bmkp-url-browse-alist-only',
-;;    `bmkp-url-browse-bookmark-p', `bmkp-url-cp',
-;;    `bmkp-variable-list-alist-only',
+;;    `bmkp-tags-in-bookmark-file', `bmkp-tags-list',
+;;    `bmkp-temporary-alist-only', `bmkp-temporary-bookmark-p',
+;;    `bmkp-this-buffer-alist-only', `bmkp-this-buffer-p',
+;;    `bmkp-this-file-alist-only', `bmkp-this-file/buffer-alist-only',
+;;    `bmkp-this-file-p', `bmkp-unmarked-bookmarks-only',
+;;    `bmkp-upcase', `bmkp-update-autonamed-bookmark',
+;;    `bmkp-url-alist-only', `bmkp-url-bookmark-p',
+;;    `bmkp-url-browse-alist-only', `bmkp-url-browse-bookmark-p',
+;;    `bmkp-url-cp', `bmkp-variable-list-alist-only',
 ;;    `bmkp-variable-list-bookmark-p', `bmkp-visited-more-cp',
 ;;    `bmkp-w3m-alist-only', `bmkp-w3m-bookmark-p', `bmkp-w3m-cp',
 ;;    `bmkp-w3m-set-new-buffer-name'.
@@ -527,7 +528,7 @@
 (unless (fboundp 'file-remote-p) (require 'ffap)) ;; ffap-file-remote-p
 (eval-when-compile (require 'gnus)) ;; mail-header-id (really in `nnheader.el')
 (eval-when-compile (require 'gnus-sum)) ;; gnus-summary-article-header
-(eval-when-compile (require 'cl)) ;; case, multiple-value-bind
+(eval-when-compile (require 'cl)) ;; case, multiple-value-bind, typecase
 
 (require 'bookmark)
 ;; bookmark-alist, bookmark-alist-modification-count,
@@ -940,6 +941,39 @@ is tried and
   "*Regexp to recognize `su' or `sudo' Tramp bookmarks."
   :type 'regexp :group 'bookmark-plus)
 
+;;;###autoload
+(defcustom bmkp-tags-for-completion 'current
+  "*List of strings used as tags for completion (not an alist).
+The tags can be specified here individually or taken from (a) the
+current bookmark list or (b) one or more bookmark files or both.
+
+If a relative file name is specified for a bookmark file then the
+current value of `default-directory' is used to find the file."
+  :type (if (> emacs-major-version 21)
+            '(choice
+              (const :tag "From current bookmarks only" current)
+              (list :tag "From current bookmarks and other sources"
+               (const  :tag "" current)
+               (repeat :inline t :tag "Additional sources or specific tags"
+                (choice
+                 (string :tag "Specific tag")
+                 (cons   :tag "All tags from a bookmark file"
+                  (const :tag "" bmkfile) (file :must-match t)))))
+              (repeat :tag "Choose sources or specific tags"
+               (choice
+                (string :tag "Specific tag")
+                (cons   :tag "All tags from a bookmark file"
+                 (const :tag "" bmkfile) (file :must-match t)))))
+          ;; A bug in Emacs 20-21 means we must sacrifice the user choice of current plus other sources.
+          '(choice
+            (const :tag "From current bookmarks only" current)
+            (repeat :tag "Choose sources or specific tags" ; A 2nd Emacs 20-21 bug ignores `:tag' for menu.
+             (choice
+              (string :tag "Specific tag")
+              (cons   :tag "All tags from a bookmark file"
+               (const :tag "" bmkfile) (file :must-match t))))))
+  :group 'bookmark-plus)
+
 ;; Emacs 20 only.
 (unless (fboundp 'define-minor-mode)
   (defcustom bmkp-temporary-bookmarking-mode nil
@@ -1114,8 +1148,8 @@ Has the same structure as `bookmark-alist'.")
 (defvar bmkp-tag-history () "History of tags read from the user.")
 
 (defvar bmkp-tags-alist ()
-  "Alist of all tags, from all bookmarks.
-Each entry is a cons whose car is a tag name, a string.
+  "Alist of all bookmark tags, per option `bmkp-tags-for-completion'.
+Each entry is a full tag: a cons whose car is a tag name, a string.
 This is set by function `bmkp-tags-list'.
 Use that function to update the value.")
 
@@ -3608,6 +3642,9 @@ TAG is a string."
 
 (defun bmkp-read-tag-completing (&optional prompt candidate-tags require-match update-tags-alist-p)
   "Read a tag with completion, and return it as a string.
+The candidate tags available are determined by option
+`bmkp-tags-for-completion'.
+
 PROMPT is the prompt string.  If nil, then use \"Tag: \".
 CANDIDATE-TAGS is an alist of tags to use for completion.
  If nil, then all tags from all bookmarks are used for completion.
@@ -3625,12 +3662,14 @@ Non-nil UPDATE-TAGS-ALIST-P means update var `bmkp-tags-alist'."
 
 (defun bmkp-read-tags-completing (&optional candidate-tags require-match update-tags-alist-p)
   "Read tags with completion, and return them as a list of strings.
-Reads tags one by one, until you hit `RET' twice consecutively.
+Read tags one by one, until you hit `RET' twice consecutively.
+
 CANDIDATE-TAGS is an alist of tags to use for completion.
- If nil, then all tags from all bookmarks are used for completion.
- The set of all tags is taken from variable `bmkp-tags-alist'.
+ If nil then the candidate tags are taken from variable
+ `bmkp-tags-alist'.
 REQUIRE-MATCH is passed to `completing-read'.
-Non-nil UPDATE-TAGS-ALIST-P means update var `bmkp-tags-alist'."
+Non-nil UPDATE-TAGS-ALIST-P means update var `bmkp-tags-alist',
+determining the tags to use per option `bmkp-tags-for-completion'."
   (bookmark-maybe-load-default-file)
   (let ((cands                                       ())
         (btags                                       ())
@@ -3654,32 +3693,82 @@ Non-nil UPDATE-TAGS-ALIST-P means update var `bmkp-tags-alist'."
     (nreverse btags)))
 
 ;;;###autoload
-(defun bmkp-list-all-tags (fullp)       ; Bound to `C-x p t l', (`T l' in bookmark list)
-  "List all tags used for any bookmarks.
-With a prefix argument, list the full alist of tags.
-Otherwise, list only the tag names.
+(defun bmkp-list-all-tags (fullp current-only-p &optional msgp)
+                                        ; Bound to `C-x p t l', (`T l' in bookmark list)
+  "List bookmark tags.
+Show the list in the minibuffer or, if not enough space, in buffer
+`*All Tags*'.
 
-Note that when the full alist is shown, the same tag name will appear
-once for each of its different values.
+With no prefix arg or with a plain prefix arg (`C-u'), the tags listed
+are those defined by option `bmkp-tags-for-completion'.  Otherwise
+\(i.e., with a numeric prefix arg), the tags listed are those from the
+current list of bookmarks only.
 
-Show list in minibuffer or, if not enough space, buffer `*All Tags*'."
-  (interactive "P")
+With no prefix arg or with a negative prefix arg (e.g. `C--'), list
+only the tag names.  With a non-negative prefix arg (e.g. `C-1' or
+plain `C-u'), list the full alist of tags.
+
+Note that when the full tags alist is shown, the same tag name appears
+once for each of its different values."
+  (interactive (list (and current-prefix-arg (> (prefix-numeric-value current-prefix-arg) 0))
+                     (and current-prefix-arg (not (consp current-prefix-arg)))
+                     t))
   (require 'pp)
-  (pp-display-expression (bmkp-tags-list (not fullp)) "*All Tags"))
+  (when msgp (message "Gathering tags..."))
+  (pp-display-expression (bmkp-tags-list (not fullp) current-only-p) "*All Tags"))
 
-(defun bmkp-tags-list (&optional names-only-p)
-  "Current list of all tags, from all bookmarks.
+(defun bmkp-tags-list (&optional names-only-p current-only-p)
+  "List of all bookmark tags, per option `bmkp-tags-for-completion'.
 Non-nil NAMES-ONLY-P means return a list of only the tag names.
 Otherwise, return an alist of the full tags and set variable
-`bmkp-tags-alist' to that alist, as a cache."
-  (bookmark-maybe-load-default-file)
-  (let ((tags  ())
+`bmkp-tags-alist' to that alist, as a cache.
+
+Non-nil CURRENT-ONLY-P means ignore option `bmkp-tags-for-completion'
+and return only the tags for the curretly loaded bookmarks."
+  (let ((tags      ())
+        (opt-tags  bmkp-tags-for-completion)
         bmk-tags)
-    (dolist (bmk  bookmark-alist)
-      (setq bmk-tags  (bmkp-get-tags bmk))
-      (dolist (tag  bmk-tags)
-        (add-to-list 'tags (if names-only-p (bmkp-tag-name tag) (bmkp-full-tag tag)))))
+    (when (or (eq opt-tags 'current)  current-only-p)  (setq opt-tags '(current)))
+    (dolist (entry  opt-tags)
+      (typecase entry
+        (cons                           ; A bookmark file
+         (when (eq 'bmkfile (car entry))
+           (setq entry  (cdr entry)
+                 tags   (append tags (bmkp-tags-in-bookmark-file entry names-only-p)))))
+        (string (add-to-list 'tags (if names-only-p entry (list entry))))
+        (symbol (when (eq entry 'current)
+                  (bookmark-maybe-load-default-file)
+                  (dolist (bmk  bookmark-alist)
+                    (setq bmk-tags  (bmkp-get-tags bmk))
+                    (dolist (tag  bmk-tags)
+                      (add-to-list 'tags (if names-only-p (bmkp-tag-name tag) (bmkp-full-tag tag)))))))))
     (unless names-only-p (setq bmkp-tags-alist  tags))
+    tags))
+
+(defun bmkp-tags-in-bookmark-file (file &optional names-only-p)
+  "Return the list of tags from all bookmarks in bookmark-file FILE.
+If FILE is a relative file name, it is expanded in `default-directory.
+If FILE does not name a valid, bookmark file then nil is returned.
+Non-nil NAMES-ONLY-P means return a list of only the tag names.
+Otherwise, return an alist of the full tags.
+"
+  (setq file  (expand-file-name file))
+  (let ((bookmark-save-flag  nil)       ; Just to play safe.
+        (bmk-alist           ())
+        (tags                ())
+        bmk-tags)
+    (if (not (file-readable-p file))
+        (message "Cannot read bookmark file `%s'" file)
+      (with-current-buffer (let ((enable-local-variables  ())) (find-file-noselect file))
+        (goto-char (point-min))
+        (condition-case nil             ; Check whether it's a valid bookmark file.
+            (progn (bookmark-maybe-upgrade-file-format)
+                   (unless (listp (setq bmk-alist  (bookmark-alist-from-buffer))) (error "")))
+          (error (message "Not a valid bookmark file: `%s'" file))))
+      (dolist (bmk  bmk-alist)
+        (setq bmk-tags  (bmkp-get-tags bmk))
+        (dolist (tag  bmk-tags)
+          (add-to-list 'tags (if names-only-p (bmkp-tag-name tag) (bmkp-full-tag tag))))))
     tags))
 
 (defun bmkp-tag-name (tag)
@@ -7267,7 +7356,7 @@ for info about using a prefix argument."
   (bmkp-jump-1 bookmark-name 'switch-to-buffer use-region-p))
 
 ;;;###autoload
-(defun bmkp-dired-jump (bookmark-name &optional use-region-p) ; `C-x j d', (`j' in Dired)
+(defun bmkp-dired-jump (bookmark-name &optional use-region-p) ; `C-x j d', (`J' in Dired)
   "Jump to a Dired bookmark.
 This is a specialization of `bookmark-jump' - see that, in particular
 for info about using a prefix argument."
