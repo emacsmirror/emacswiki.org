@@ -1,4 +1,4 @@
-This library allows for a set of shell commands to be linked with file or directory names in [[DiredMode]]. These commands can then be run using `dired-do-shell-command' (or pressing "!"). Since this library modifies the behavior of `dired-guess-shell-alist-user', the command syntax will follow that variable's syntax (see the documentation of `dired-guess-shell-alist-user' for more).
+This library allows for a set of shell commands to be linked with file or directory names. Used in [[DiredMode]], these commands can then be run using `dired-do-shell-command' (or pressing "!").
 
 Features: 
 
@@ -6,9 +6,11 @@ Features:
 
 * Gets rid of the "A command is running - kill it? Yes or No?" message.
 
-* If `runner-run-in-background' is set to t, send the stdout buffer to the background except when the command string includes `{run:out}'.
+* Hides the stdout buffer if `runner-run-in-background' is set to t. Can be disabled for specific commands if the command string contains `{run:out}'.
 
-* If the command string contains `{run:shell}', run the command using the function specified in `runner-shell-function'.
+* Uses `runner-shell-function' instead of `shell-command' if command string contains `{run:shell}'.
+
+Since this library modifies the behavior of `dired-guess-shell-alist-user', make sure you understand the command syntax of that variable (see the documentation of `dired-guess-shell-alist-user' for more).
 
 ==Download==
 
@@ -17,7 +19,7 @@ Lisp:runner.el
 == Install ==
 
 Put this file in your Emacs-Lisp load path, and add the following
-into your $HOME/.emacs startup file.
+into your startup file (i.e., $HOME/.emacs).
 
  (require 'runner)
 
@@ -49,8 +51,4 @@ The command database will be saved to the variable
 may choose a different location by doing:
 
  M-x customize-variable runner-init-file
-
-The functions `dired-guess-default' (from dired-x.el) and
-`dired-run-shell-command' (from dired-aux.el) will be redefined.
-
 
