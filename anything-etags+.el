@@ -1,9 +1,9 @@
-;;; anything-etags+.el ---Another Etags anything.el interface
+;;; anything-etags+.el --- Another Etags anything.el interface
 
 ;; Description: Another Etags anything.el interface
 ;; Filename: anything-etags+.el
 ;; Created: 2011-02-23
-;; Last Updated: Joseph 2011-11-25 11:49:44 星期五
+;; Last Updated: Joseph 2012-02-04 11:58:20 星期六
 ;; Version: 0.1.4
 ;; Author: 纪秀峰(Joseph) <jixiuf@gmail.com>
 ;; Maintainer: Joseph <jixiuf@gmail.com>
@@ -257,10 +257,10 @@ will set this variable.")
 
 (defvar anything-etags+-previous-matched-pattern nil
   "work with `anything-etags+-candidates-cache'.
-  the value is (car (amp-mp-make-regexps anything-pattern))
+  the value is (car (anything-mp-make-regexps anything-pattern))
 :the first part of `anything-pattern', the matched
  candidates is saved in `anything-etags+-candidates-cache'. when current
-'(car (amp-mp-make-regexps anything-pattern))' is equals to this value
+'(car (anything-mp-make-regexps anything-pattern))' is equals to this value
 then the cached candidates can be reused ,needn't find from the tag file.")
 
 (defvar anything-etags+-candidates-cache nil
@@ -409,18 +409,10 @@ hits the start of file."
   "recursively searches each parent directory for a file named 'TAGS' and returns the
 path to that file or nil if a tags file is not found. Returns nil if the buffer is
 not visiting a file"
-  (progn
-    (defun find-tags-file-r (path)
-      "find the tags file from the parent directories"
-      (let* ((possible-tags-file (expand-file-name "TAGS" path)))
-        (cond
-         ((file-exists-p possible-tags-file) (throw 'found-it possible-tags-file))
-         ((string-match "^/TAGS\\|^[a-zA-Z]:/TAGS" possible-tags-file) nil)
-         (t (find-tags-file-r
-             (file-name-directory
-              (substring (expand-file-name  path) 0 (1- (length  (expand-file-name  path) )))))))))
-    (catch 'found-it
-      (find-tags-file-r default-directory))))
+(let ((tag-root-dir (locate-dominating-file default-directory "TAGS")))
+    (if tag-root-dir
+        (expand-file-name "TAGS" tag-root-dir)
+      nil)))
 
 (defun anything-etags+-get-tag-files()
   "Get tag files."
@@ -474,8 +466,8 @@ needn't search tag file again."
   (let ((pattern anything-etags+-untransformed-anything-pattern));;default use whole anything-pattern to search in tag files
     ;; first collect candidates using first part of anything-pattern
     (when (featurep 'anything-match-plugin)
-      ;;for example  (amp-mp-make-regexps "boo far") -->("boo" "far")
-      (setq pattern (car (amp-mp-make-regexps anything-etags+-untransformed-anything-pattern))))
+      ;;for example  (anything-mp-make-regexps "boo far") -->("boo" "far")
+      (setq pattern (car (anything-mp-make-regexps anything-etags+-untransformed-anything-pattern))))
     (unless (string-equal anything-etags+-previous-matched-pattern pattern)
       ;;          (setq candidates anything-etags+-candidates-cache)
       (setq anything-etags+-candidates-cache (anything-etags+-get-candidates-from-all-tag-file pattern))
