@@ -1,7 +1,8 @@
 I use emacs.
 
 
-Mail address: (apply 'string (mapcar '1- (append "mbzopsAhnbjm/dpn" nil)))
+Mail address:
+{{{ (apply 'string (mapcar '1- (append "mbzopsAhnbjm/dpn" nil))) }}}
 == About me ==
 I'm an old casual emacs user, but a recent emacs convert.
 I started using emacs more seriously when I started working on [[Vimpulse]],
