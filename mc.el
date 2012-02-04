@@ -782,3 +782,4 @@ isn't... turn it on. "
 (provide 'mc)
 
 ;;; mc.el ends here
+
