@@ -780,6 +780,16 @@ Many thanks,
 RedBlue.
 
 [new]
+
+This has been addressed in the latest version of the
+[Lisp:sunrise-x-popviewer.el PopViewer extension]. See my latest
+update in the [[Sunrise Commander Tips#toc16|Alternative Usage
+Patterns]] section of the [[Sunrise Commander Tips|Tips & Tricks
+page]] for more details.
+
+[http://www.emacswiki.org/emacs/Jos%c3%a9_Alfredo_Romero_L. j.a.]
+
+[new]
 Hi, 
 
 It's me again. In TotalCommander there is a way to compute the sizes of the directories and display then alongside each directory (alt-shift-enter as far as i can remember). In SC one can compute the total size of the marked dirs, but apparently there is no way to display this info along side each directory. On a related note, there would be nice to have sorting of directories according to their size, not only files.
@@ -790,6 +800,13 @@ Thanks,
 
 RedBlue
 
+[new]
+
+This is kind of hard, I'm afraid, as it would require fiddling with
+the way Dired displays its directory data. Give me some time to think
+about it, I'll check what can be done.
+
+[http://www.emacswiki.org/emacs/Jos%c3%a9_Alfredo_Romero_L. j.a.]
 
 ----
 CategoryDirectories
