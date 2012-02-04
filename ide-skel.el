@@ -1,4 +1,4 @@
-;;; ide-skel.el --- IDE skeleton for Emacs Lisp hackers
+;; ide-skel.el --- IDE skeleton for Emacs Lisp hackers
 
 ;; Copyright (C) 2008 Peter Karpiuk, Scott Tiger S.A.
 
@@ -4013,3 +4013,4 @@ text files) and their name (without dir) matches NAME-REGEXP."
 (tabbar-mode 1)
 
 (provide 'ide-skel)
+
