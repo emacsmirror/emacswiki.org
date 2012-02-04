@@ -1,14 +1,11 @@
-;;; dired-filetype-face.el  --- faces for different filetype in dired buffer.
-;;;  Time-stamp: <Joseph 2011-05-18 11:56:53>
+;;; dired-filetype-face.el  --- set different faces for different filetype in dired buffer.
 
-;; Filename: dired-filetype-face.el
-;; Description: set faces for different file type in dired buffer.
-;; Author: Joseph <jixiuf@gmail.com>
-;; Maintainer: Joseph <jixiuf@gmail.com>
-;; Copyright (C) 2011~, Joseph, all rights reserved.
+;; Copyright (C) 2011~2012, 纪秀峰(Joseph) all rights reserved.
 ;; Created: 2011-04-04
-;; Update: 2011/05/18 11:56:09
-;; Version: 0.2.1
+;; Last Update: Joseph 2012-01-24 15:05:34 星期二
+;; Description: set faces for different file type in dired buffer.
+;; Author: 纪秀峰(Joseph) <jixiuf@gmail.com>
+;; Version: 0.2.2
 ;; URL: http://www.emacswiki.org/emacs/download/dired-filetype-face.el
 ;; Keywords: dired filetype face custom
 ;; Compatibility: (Test on GNU Emacs 23.2.1 ,24.0.50)
@@ -17,7 +14,7 @@
 ;;
 ;; `dired' `custom'
 ;;
-;;; This file is NOT part of GNU Emacs
+;; This file is NOT part of GNU Emacs
 
 ;;; License
 ;;
@@ -85,16 +82,16 @@
 ;;    default = "^  .*\\.\\(TXT\\|txt\\|Txt\\|ini\\|INI\\|lrc\\|org\\|log\\|conf\\|CFG\\|cfg\\|properties\\|config\\|diff\\|patch\\|ebuild\\|inf\\|cnf\\|example\\|sample\\|default\\|m4\\)$"
 ;;  `dired-filetype-common-regexp'
 ;;    regexp to match common files
-;;    default = "^  .*\\(configure\\|INSTALL\\|README\\|readme\\|COPYING\\|CHANGES\\|LICENSE\\|ChangeLog\\|Makefile.in\\|MANIFEST.MF\\|NOTICE.txt\\|build.xml\\|Manifest\\|metadata.xml\\|install-sh\\|NEWS\\|HACKING\\|AUTHORS\\|todo\\|Todo\\|TODO\\|makefile\\)$"
+;;    default = "^  .*\\(configure\\|INSTALL\\|README\\|readme\\|COPYING\\|CHANGES\\|LICENSE\\|ChangeLog\\|Makefile.in\\|MANIFEST.MF\\|NOTICE.txt\\|build.xml\\|Manifest\\|metadata.xml\\|install-sh\\|NEWS\\|HACKING\\|AUTHORS\\|todo\\|Todo\\|TODO\\|makefile\\|TAGS\\|tag\\)$"
 ;;  `dired-filetype-xml-regexp'
 ;;    regexp to match xml filetype
-;;    default = "^  .*\\.\\(html?\\|HTML?\\|xml\\|XML\\|xsl\\|xsd\\|rng\\|dtd\\|mht\\|jsp\\|asp\\|js\\)$"
+;;    default = "^  .*\\.\\(html?\\|HTML?\\|xml\\|XML\\|xsl\\|xsd\\|rng\\|dtd\\|mht\\|jsp\\|asp\\|js\\|xaml\\)$"
 ;;  `dired-filetype-compress-regexp'
 ;;    regexp to match compressed filetypes
 ;;    default = "^  .*\\.\\(tar\\|zip\\|ZIP\\|rar\\|RAR\\|tgz\\|gz\\|bzip2\\|bz2\\|7z\\|7Z\\|Z\\|z\\|xz\\|XZ\\|rpm\\|deb\\|lzma\\|cab\\|gzip\\|taz\\|wim\\|iso\\|tbz2\\|xar\\|XAR\\|jar\\|war\\|img\\)$"
 ;;  `dired-filetype-source-regexp'
 ;;    regexp to match source code filetypes
-;;    default = "^  .*\\.\\(c\\|cpp\\|java\\|JAVA\\|C\\|php\\|h\\|rb\\|pl\\|css\\|el\\|lua\\)$"
+;;    default = "^  .*\\.\\(c\\|cpp\\|java\\|JAVA\\|C\\|php\\|h\\|rb\\|pl\\|css\\|el\\|lua\\|sql\\|ahk\\|cs\\|erl\\|hrl\\)$"
 ;;  `dired-filetype-execute-regexp'
 ;;    regexp to match executable filetypes
 ;;    default = "^  .*\\.\\(exe\\|EXE\\|bat\\|BAT\\|msi\\|MSI\\|\\|sh\\|run\\|reg\\|REG\\|com\\|COM\\|\\|vbx\\|VBX\\|bin\\|xpi\\|bundle\\)$"
@@ -103,7 +100,7 @@
 ;;    default = "^  .*\\.\\(mp3\\|MP3\\|wma\\|WMA\\|wav\\|WAV\\|mid\\|MID\\)$"
 ;;  `dired-filetype-video-regexp'
 ;;    regexp to match video filetypes
-;;    default = "^  .*\\.\\(flv\\|avi\\|AVI\\|mkv\\|rmvb\\|RMVB\\|mpeg\\|mpg\\|MPG\\|rm\\|RM\\|mp4\\|wmv\\|m4v\\|mov\\|ogg\\|ogv\\|3gp\\|f4v\\|swf\\)$"
+;;    default = "^  .*\\.\\(flv\\|avi\\|AVI\\|mkv\\|rmvb\\|RMVB\\|mpeg\\|mpg\\|MPG\\|rm\\|RM\\|mp4\\|wmv\\|WMV\\|m4v\\|mov\\|ogg\\|ogv\\|3gp\\|f4v\\|swf\\)$"
 ;;  `dired-filetype-image-regexp'
 ;;    regexp to match images filetypes
 ;;    default = "^  .*\\.\\(gif\\|GIF\\|jpg\\|JPG\\|bmp\\|BMP\\|jpeg?\\|JPEG?\\|png\\|PNG\\|xpm\\|svg\\)$"
@@ -156,7 +153,7 @@
   :group 'dired-filetype-face)
 
 (defface   dired-filetype-plain
-  '((t (:foreground "LightSalmon")))
+  '((t (:foreground "MediumPurple")))
   "face for plain text files "
   :group 'dired-filetype-face)
 
@@ -172,7 +169,7 @@
   :group 'dired-filetype-face)
 
 (defcustom dired-filetype-common-regexp
-  "^  .*\\(configure\\|INSTALL\\|README\\|readme\\|COPYING\\|CHANGES\\|LICENSE\\|ChangeLog\\|Makefile.in\\|MANIFEST.MF\\|NOTICE.txt\\|build.xml\\|Manifest\\|metadata.xml\\|install-sh\\|NEWS\\|HACKING\\|AUTHORS\\|todo\\|Todo\\|TODO\\|makefile\\)$"
+  "^  .*\\(configure\\|INSTALL\\|README\\|readme\\|COPYING\\|CHANGES\\|LICENSE\\|ChangeLog\\|Makefile.in\\|MANIFEST.MF\\|NOTICE.txt\\|build.xml\\|Manifest\\|metadata.xml\\|install-sh\\|NEWS\\|HACKING\\|AUTHORS\\|todo\\|Todo\\|TODO\\|makefile\\|TAGS\\|tag\\)$"
   "regexp to match common files"
   :type 'string
   :group 'dired-filetype-face)
@@ -183,7 +180,7 @@
   :group 'dired-filetype-face)
 
 (defcustom dired-filetype-xml-regexp
-  "^  .*\\.\\(html?\\|HTML?\\|xml\\|XML\\|xsl\\|xsd\\|rng\\|dtd\\|mht\\|jsp\\|asp\\|js\\)$"
+  "^  .*\\.\\(html?\\|HTML?\\|xml\\|XML\\|xsl\\|xsd\\|rng\\|dtd\\|mht\\|jsp\\|asp\\|js\\|xaml\\)$"
   "regexp to match xml filetype"
   :type 'string
   :group 'dired-filetype-face)
@@ -206,7 +203,7 @@
   :group 'dired-filetype-face)
 
 (defcustom dired-filetype-source-regexp
-  "^  .*\\.\\(c\\|cpp\\|java\\|JAVA\\|C\\|php\\|h\\|rb\\|pl\\|css\\|el\\|lua\\)$"
+  "^  .*\\.\\(c\\|cpp\\|java\\|JAVA\\|C\\|php\\|h\\|rb\\|pl\\|css\\|el\\|lua\\|sql\\|ahk\\|cs\\|erl\\|hrl\\)$"
   "regexp to match source code filetypes"
   :type 'string
   :group 'dired-filetype-face)
@@ -240,7 +237,7 @@
   :group 'dired-filetype-face)
 
 (defcustom dired-filetype-video-regexp
-  "^  .*\\.\\(flv\\|avi\\|AVI\\|mkv\\|rmvb\\|RMVB\\|mpeg\\|mpg\\|MPG\\|rm\\|RM\\|mp4\\|wmv\\|m4v\\|mov\\|ogg\\|ogv\\|3gp\\|f4v\\|swf\\)$"
+  "^  .*\\.\\(flv\\|avi\\|AVI\\|mkv\\|rmvb\\|RMVB\\|mpeg\\|mpg\\|MPG\\|rm\\|RM\\|mp4\\|wmv\\|WMV\\|m4v\\|mov\\|ogg\\|ogv\\|3gp\\|f4v\\|swf\\)$"
   "regexp to match video filetypes"
   :type 'string
   :group 'dired-filetype-face)
@@ -417,6 +414,7 @@
   )
 
 (add-hook 'dired-mode-hook 'dired-filetype-face-mode-func)
+(add-hook 'wdired-mode-hook 'dired-filetype-face-mode-func)
 
 (defadvice  dired-toggle-read-only (after  dired-filetype-face activate)
   "set different faces for different file type."
@@ -426,7 +424,10 @@
   "set different faces for different file type."
   (dired-filetype-face-mode-func)
 )
-
+(defadvice  wdired-finish-edit (after dired-filetype-face activate)
+  "set different faces for different file type."
+  (dired-filetype-face-mode-func)
+  )
 (provide 'dired-filetype-face)
 
 ;;; `dired-filetype-face.el'ends here.
