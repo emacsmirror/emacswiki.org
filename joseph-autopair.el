@@ -2,7 +2,7 @@
 
 ;; Filename: joseph-autopair.el
 ;; Created: 2011-03-02
-;; Last Updated: Joseph 2011-10-27 20:41:37 星期四
+;; Last Updated: Joseph 2011-10-27 17:31:27 星期四
 ;; Version: 0.2.0
 ;; Description:   Another autopair or skeleton.
 ;; Author: Joseph <jixiuf@gmail.com>
@@ -335,3 +335,4 @@ if not ,eval it."
 
 (provide 'joseph-autopair)
 ;;joseph-autopair.el ends here.
+
