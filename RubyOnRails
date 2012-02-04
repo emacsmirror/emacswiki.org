@@ -101,6 +101,18 @@ See also [[Icicles - Persistent Completions]] -- DrewAdams
 Many in the Ruby community use [http://pastie.org Pastie] for sharing code snippets. Emacs integration can be found here: 
 [http://pastie.org/paste/133456 pastie.el] or here Lisp:pastie.el
 
+== Rails2/Rails3 TDD: espectator + enotify ==
+Espectator, together with enotify, provide a continuous testing solution for emacs, without the annoying growl-like popups. The notifications are delivered via the emacs modeline.
+
+See [[Enotify]] and checkout the rspec-rails-watchr-emacs (espectator) gem.
+You can also grab espectator from its [https://github.com/laynor/espectator git repository].
+It provides notifications on the modeline and optional [https://github.com/jwiegley/alert alert.el] alerts.
+
+If used together with the rspec_org_formatter gem, it provides org formatted rspec output directly in an emacs buffer - just click the notification "icon" in the modeline :-)
+
+The rspec_org_formatter can be [https://github.com/laynor/rspec_org_formatter grabbed] from github as well.
+
+See the README of these packages for more info on how to set them up, or send me a mail for further help (my address can be found on my personal page - AlessandroPiras).
 == Haml Support for emacs ==
 
 See HamlMode.
