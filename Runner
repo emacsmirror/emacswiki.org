@@ -52,3 +52,5 @@ may choose a different location by doing:
 
  M-x customize-variable runner-init-file
 
+----
+CategoryDirectories
