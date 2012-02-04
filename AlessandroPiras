@@ -14,15 +14,15 @@ that I don't maintain nor develop anymore, but always use.
 Luckily it has found a better maintainer than me :-)
 
 I am the author of [[Enotify]] and its Rspec/Rails/Watchr plugin, contained in the
-[[https://github.com/laynor/espectator espectator]] ruby gem - the gem hosted on rubygems.org is actually named rspec-rails-watchr-emacs.
+[https://github.com/laynor/espectator espectator] ruby gem - the gem hosted on rubygems.org is actually named rspec-rails-watchr-emacs.
 I'm using emacs both on windows 7 and linux.
 I sometimes lurk on #emacs as //ale`//.
 == Miscellaneous Emacs Configuration ==
 === Gnus + GMail on Windows (7) ===
 Accessing GMail on Windows using [[Gnus]] can be a little tricky.
 I had to google for hours to find a working configuration.
-I use [[http://www.cygwin.com/|Cygwin]]'s openssl to access my inbox,
-and [[http://freefr.dl.sourceforge.net/project/msmtp/msmtp/1.4.20/msmtp-1.4.20-w32.zip|msmtp]]
+I use [http://www.cygwin.com/ Cygwin]'s openssl to access my inbox,
+and [http://freefr.dl.sourceforge.net/project/msmtp/msmtp/1.4.20/msmtp-1.4.20-w32.zip msmtp]
 to send messages through GMail's smtp server.
 Here's my configuration:
 ==== ~/.gnus.el ====
@@ -139,7 +139,7 @@ having the same major mode as the current buffer"
 In the Slime REPL, filename completion on windows didn't work nicely. Hitting tab completed
 the filename inserting the absolute path, and since I had spaces inside the filename, I only
 got partial completion and couldn't hit tab anymore to complete the full filename.
-I found this in the [[|lispbox]] sourcecode:
+I found this in the [http://common-lisp.net/project/lispbox/ lispbox] sourcecode:
 {{{
 (defun slime-maybe-complete-as-filename ()
   "If point is at a string starting with \", complete it as filename.
