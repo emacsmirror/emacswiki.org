@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2012, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Fri Jan 20 11:23:20 2012 (-0800)
+;; Last-Updated: Sat Feb  4 14:29:25 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 14236
+;;     Update #: 14245
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-chg.el
 ;; Keywords: bookmarks, bookmark+
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -145,6 +145,12 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-1.el'")
 ;;
+;; 2012/02/04 dadams
+;;     Added: bmkp-tags-for-completion, bmkp-tags-in-bookmark-file.
+;;     Use bmkp-tags-for-completion for tags completing everywhere - updated doc strings.
+;;     bmkp-list-all-tags: Added args current-only-p and (optional) msgp.
+;;                         Different prefix arg values for different behaviors.
+;;     bmkp-tags-list: Added optional arg current-only-p.  Use bmkp-tags-for-completion by default.
 ;; 2012/01/20 dadams
 ;;     bmkp(-autofile)-(add|remove)-tags(-from-all), bmkp-find-file-(all|some)-tags(-other-window),
 ;;       bmkp(-file(-this-dir))-(all|some)-tags-jump(-other-window):
