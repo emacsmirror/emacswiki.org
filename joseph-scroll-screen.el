@@ -5,7 +5,7 @@
 ;; Author: Joseph <jixiuf@gmail.com>
 ;; Copyright (C) 2011~, Joseph, all rights reserved.
 ;; Created: 2011-03-01
-;; Version: 0.1.2
+;; Version: 0.1.3
 ;; URL: http://www.emacswiki.org/emacs/download/joseph-scroll-screen.el
 ;; Keywords: scroll screen
 ;; Compatibility: (Test on GNU Emacs 23.2.1).
@@ -130,7 +130,7 @@
 
 (defvar joseph-scroll-screen-previous-point  (point-marker))
 
-;;;###autoload'
+;;;###autoload
 (defun joseph-scroll-half-screen-down()
   "scroll half screen down"
   (interactive)
@@ -149,7 +149,7 @@
     (joseph-scroll-highlight (point-at-bol)(1+ (point-at-eol))))
   (run-hooks 'joseph-scroll-half-screen-down-hook))
 
-;;;###autoload'
+;;;###autoload
 (defun joseph-scroll-half-screen-up()
   "scroll half screen up"
   (interactive)
@@ -171,4 +171,3 @@
 
 (provide 'joseph-scroll-screen)
 ;; joseph-scroll-screen.el ends here
-
