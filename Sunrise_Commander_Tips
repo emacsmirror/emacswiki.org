@@ -473,31 +473,26 @@ My usage is as follows:
 same as space for directories)
 * hit \ to bring back both directory window
 
-For me, this works pretty well in practice.
+//(old code removed, read the next entry for details)// [http://www.emacswiki.org/emacs/Jos%c3%a9_Alfredo_Romero_L. j.a.]
 
-    (defun sr-open-in-other (&optional arg)
-     "Opens files/directories in the other pane."
-     (interactive "P")
-     (let ((name (dired-get-filename nil t)))
-       (cond ((file-directory-p name) (sr-quick-view-directory name))
-             ((file-symlink-p name) (sr-quick-view-symlink name))
-             (t (sr-open-in-other-file)))))
-     
-    (defun sr-open-in-other-file ()
-     "Opens the selected file in the viewer window. "
-     (let ((split-width-threshold (* 10 (window-width))))
-       (save-selected-window
-         (condition-case description
-             (progn
-               (dired-find-file-other-window)
-               (sr-scrollable-viewer (current-buffer)))
-           (error (message "%s" (cadr description)))))))
-     
-    (defun sr-select-viewer-window (&optional force-setup)
-     "Tries to select a window that is not a sr pane."
-     (interactive)
-     (other-window 1))
+----
 
+[new]
+//Update: Feb 4th 2012//
+
+Version 2 of the [Lisp:sunrise-x-popviewer.el PopViewer] extension
+broke Tom's code. Version 3 fixes this shortcomming by including
+out-of-the-box support for this popular usage pattern. Once the
+[Lisp:sunrise-x-popviewer.el PopViewer] extension is installed, the
+only thing needed to instruct SC to stop using frames and start using
+the passive pane as a transient viewer is:
+
+    (setq sr-popviewer-select-viewer-action (lambda () (other-window 1)))
+
+Personally I prefer to use the M-x customize-variable interface for
+this kind of tasks, but that's just a matter of preference.
+
+[http://www.emacswiki.org/emacs/Jos%c3%a9_Alfredo_Romero_L. j.a.]
 
 ----
 
