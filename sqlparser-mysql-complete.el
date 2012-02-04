@@ -3,7 +3,7 @@
 ;; Copyright (C) 2011~2012 纪秀峰(Joseph) all rights reserved.
 
 ;; Created: 2011年07月21日 星期四 20时03分40秒
-;; Last Updated: Joseph 2012-01-15 21:57:40 星期日
+;; Last Updated: Joseph 2012-02-04 12:17:18 星期六
 ;; Version: 0.2.0
 ;; Author: 纪秀峰(Joseph)  jixiuf@gmail.com
 ;; Keywords: sql  mysql complete
@@ -133,8 +133,11 @@ with `C-uC-u' you can use another new mysql connection"
                               nil nil nil  (cdr (assoc 'dbname mysql-connection-4-complete)))))
   (let ((prefix  (sqlparser-word-before-point-4-mysql) )
         (init-pos (point))
+        (candidates (sqlparser-mysql-context-candidates))
         last-mark)
-    (insert (completing-read "complete:" (  sqlparser-mysql-context-candidates) nil t prefix ))
+    (if (= 1 (length candidates))
+        (insert (car candidates))
+    (insert (completing-read "complete:" candidates nil t prefix )))
     (setq last-mark (point-marker))
     (goto-char init-pos)
     (backward-delete-char (length prefix))
@@ -502,4 +505,5 @@ it will return 'table' ,or 'column' ,or nil.
 
 (provide 'sqlparser-mysql-complete)
 ;;; sqlparser-mysql-complete.el ends here
+
 
