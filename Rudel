@@ -150,6 +150,35 @@ project is more appropriate.
 /Parts of the contents of this section have been moved to /[[RudelDiscussionArchive]].
 
 [new]
+I'm getting serious errors on joining obby session. First:
+
+* Warning (rudel): Could not load backend `telepathy': Wrong type argument: arrayp, nil
+
+Then I get:
+
+*  Debugger entered--Lisp error: (error "Primary-only method rudel-ask-connect-info called on something not an object")
+  signal(error ("Primary-only method rudel-ask-connect-info called on something not an object"))
+  error("Primary-only method %s called on something not an object" rudel-ask-connect-info)
+  eieio-generic-call-primary-only(rudel-ask-connect-info (rudel-telepathy-backend (:name "asked" :protocol-backend (obby . [object rudel-obby-backend "obby" (0 3) (join host change-color track-subscriptions encrypt)]) :transport-backend (telepathy . rudel-telepathy-backend))))
+  rudel-ask-connect-info(rudel-telepathy-backend (:name "asked" :protocol-backend (obby . [object rudel-obby-backend "obby" (0 3) (join host change-color track-subscriptions encrypt)]) :transport-backend (telepathy . rudel-telepathy-backend)))
+  rudel-ask-protocol-backend([object rudel-ask-protocol-backend "ask-protocol" (0 2) (discover) fallback])
+  apply(rudel-ask-protocol-backend [object rudel-ask-protocol-backend "ask-protocol" (0 2) (discover) fallback])
+  eieio-generic-call-primary-only(rudel-discover ([object rudel-ask-protocol-backend "ask-protocol" (0 2) (discover) fallback]))
+  rudel-discover([object rudel-ask-protocol-backend "ask-protocol" (0 2) (discover) fallback])
+  rudel-session-initiation-discover(ask-protocol)
+  (let* ((sessions (rudel-session-initiation-discover session-initiation-backend)) (maybe-info (if (= (length sessions) 1) (car sessions) (rudel-read-session sessions "Choose Session: " (quote object))))) (if (rudel-backend-cons-p maybe-info) (setq session-initiation-backend (car maybe-info)) (setq info maybe-info)))
+  (while (not info) (message "Discovering Sessions ...") (let* ((sessions (rudel-session-initiation-discover session-initiation-backend)) (maybe-info (if (= (length sessions) 1) (car sessions) (rudel-read-session sessions "Choose Session: " (quote object))))) (if (rudel-backend-cons-p maybe-info) (setq session-initiation-backend (car maybe-info)) (setq info maybe-info))))
+  (let ((info) (session-initiation-backend)) (while (not info) (message "Discovering Sessions ...") (let* ((sessions (rudel-session-initiation-discover session-initiation-backend)) (maybe-info (if (= (length sessions) 1) (car sessions) (rudel-read-session sessions "Choose Session: " (quote object))))) (if (rudel-backend-cons-p maybe-info) (setq session-initiation-backend (car maybe-info)) (setq info maybe-info)))) info)
+  (list (let ((info) (session-initiation-backend)) (while (not info) (message "Discovering Sessions ...") (let* ((sessions (rudel-session-initiation-discover session-initiation-backend)) (maybe-info (if (= ... 1) (car sessions) (rudel-read-session sessions "Choose Session: " ...)))) (if (rudel-backend-cons-p maybe-info) (setq session-initiation-backend (car maybe-info)) (setq info maybe-info)))) info))
+  call-interactively(rudel-join-session nil nil)
+
+None of these seem fatal, as I can eventually "join" a session, open documents, and all that, but man!
+
+Oh, this is the latest version: 0.24 of Rudel or whatever it is in the repository.
+
+Thanks, Jan!
+
+[new]
 I'd really like to be able to highlight other participants' <code>(point)</code> - is this supported in the Obby protocol? Has anybody else looked into this? As a quick hack, i'm looking to notify the user that changes have been made outside of their current window (view of the buffer) - to make it easier to see if someone is editing line 1 when you're looking at line 1024 for example
 
 [new]
