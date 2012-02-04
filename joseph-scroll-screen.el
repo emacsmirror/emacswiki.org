@@ -3,17 +3,16 @@
 ;; Filename: joseph-scroll-screen.el
 ;; Description: Scroll half screen down or up, and highlight current line
 ;; Author: Joseph <jixiuf@gmail.com>
-;; Maintainer: Joseph <jixiuf@gmail.com>
 ;; Copyright (C) 2011~, Joseph, all rights reserved.
 ;; Created: 2011-03-01
 ;; Version: 0.1.2
-;; URL: http://www.emacswiki.org/joseph-scroll-screen.el
+;; URL: http://www.emacswiki.org/emacs/download/joseph-scroll-screen.el
 ;; Keywords: scroll screen
 ;; Compatibility: (Test on GNU Emacs 23.2.1).
 ;;
 ;;; This file is NOT part of GNU Emacs
 ;;
-;;{{{ License
+;; License
 ;;
 ;; This program is free software; you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -29,8 +28,6 @@
 ;; along with this program; see the file COPYING.  If not, write to
 ;; the Free Software Foundation, Inc., 51 Franklin Street, Fifth
 ;; Floor, Boston, MA 02110-1301, USA.
-;;}}}
-;;{{{ Commentary
 
 ;;; Commentary:
 
@@ -55,8 +52,6 @@
 ;;  (global-set-key "\M-v" 'joseph-scroll-half-screen-up)
 ;;
 
-;;}}}
-;;{{{ Commands and Customizable Options
 
 ;;
 ;;; Commands:
@@ -85,7 +80,6 @@
 ;;    *How long to highlight the tag.
 ;;    default = 0.3
 
-;;}}}
 ;;; Codes
 
 ;; (require 'dired)
@@ -135,7 +129,7 @@
       (delete-overlay ov))))
 
 (defvar joseph-scroll-screen-previous-point  (point-marker))
-;;{{{ scroll up down
+
 ;;;###autoload'
 (defun joseph-scroll-half-screen-down()
   "scroll half screen down"
@@ -155,6 +149,7 @@
     (joseph-scroll-highlight (point-at-bol)(1+ (point-at-eol))))
   (run-hooks 'joseph-scroll-half-screen-down-hook))
 
+;;;###autoload'
 (defun joseph-scroll-half-screen-up()
   "scroll half screen up"
   (interactive)
@@ -171,7 +166,8 @@
     (joseph-scroll-highlight (point-at-bol)(1+ (point-at-eol))))
   (run-hooks 'joseph-scroll-half-screen-up-hook))
 
-;;}}}
+(put 'joseph-scroll-half-screen-up 'scroll-command t)
+(put 'joseph-scroll-half-screen-down 'scroll-command t)
 
 (provide 'joseph-scroll-screen)
 ;; joseph-scroll-screen.el ends here
