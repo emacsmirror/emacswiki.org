@@ -16,3 +16,11 @@ Nothing should be required, except editing your
 
 [new:AlexSchroeder:2012-02-04 11:55 UTC]
 Worked for me! Except now I realized "Autoconf version 2.65 or higher is required". :)
+More strange errors and I discover I should [http://permalink.gmane.org/gmane.emacs.bugs/50675 run ./autogen.sh].
+
+{{{
+Checking for automake (need at least version 1.11)...
+too old
+}}}
+
+I think this machine no longer qualifies as an Emacs dev machine!
