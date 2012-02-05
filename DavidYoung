@@ -333,6 +333,11 @@ Set string-at-point to *string-at-point*
 
 Used in org-mode. For arbitrary content, select them first
 
+=== i: ===
+
+Insert ': ' at each line of code
+
+Used in org-mode. For operating on multiple lines, use prefix argument
 
 == Arbitrary functions ==
 
