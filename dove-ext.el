@@ -865,6 +865,18 @@ Used in org-mode. For arbitrary content, select them first"
   (interactive "r")
   (dove-org-babel-shortcut St Ed "*"))
 
+(defun i: (&optional arg)
+  "Insert ': ' at each line of code
+
+Used in org-mode. For operating on multiple lines, use prefix argument"
+  (interactive "P")
+  (beginning-of-line )
+  (insert ": ")
+  (if arg
+      (dotimes (i (- arg 1))
+        (progn 
+          (beginning-of-line 2)
+          (insert ": ")))))
 
 (defun action-to-list (action lst)
   "Perform action to each element in the list"
