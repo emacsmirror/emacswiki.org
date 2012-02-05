@@ -1,4 +1,4 @@
-;; ide-skel.el --- IDE skeleton for Emacs Lisp hackers
+;;; ide-skel.el --- IDE skeleton for Emacs Lisp hackers
 
 ;; Copyright (C) 2008 Peter Karpiuk, Scott Tiger S.A.
 
