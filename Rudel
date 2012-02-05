@@ -150,6 +150,10 @@ project is more appropriate.
 /Parts of the contents of this section have been moved to /[[RudelDiscussionArchive]].
 
 [new]
+UPDATE: Okay... Just tried to both "host" and then, when that failed, to "join" a session and neither one now works. I haven't updated either emacs or rudel, but some security software related to FireFox did get updated this morning. That's the only thing that changed.
+
+------------
+
 I'm getting serious errors on joining obby session. First:
 
 * Warning (rudel): Could not load backend `telepathy': Wrong type argument: arrayp, nil
