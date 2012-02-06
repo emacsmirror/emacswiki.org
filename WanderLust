@@ -147,7 +147,7 @@ You might also add the following to your ~/.wl file to allow you starting your b
 The file will be read when you start wl. 
 
 === Setting up with Gmail ===
-Put the following in your .wl:
+Check that you have enabled IMAP in your Gmail account settings, then put the following in your .wl:
 {{{
 ;; IMAP, gmail:
 (setq elmo-imap4-default-server "imap.gmail.com"
@@ -207,6 +207,7 @@ You can use wl as a NNTP client, and post to usenet newsgroups. To view the wand
 
 === Tutorials ===
 * [http://mihai.bazon.net/articles/emacs/wanderlust-email-client Wanderlust email client.]
+* [http://box.matto.nl/emacsgmail.html Wanderlust with Gmail.] 
 * [http://emacs-fu.blogspot.com/2009/09/wanderlust-tips-and-tricks.html emacs-fu: Wanderlust tips and tricks]
 * [http://emacs-fu.blogspot.com/2009/11/showing-pop-ups.html emacs-fu: Showing pop ups]
 * [http://emacs-fu.blogspot.com/2010/02/i-have-been-using-wanderlust-e-mail.html emacs-fu: Wanderlust III]
@@ -221,6 +222,7 @@ You can use wl as a NNTP client, and post to usenet newsgroups. To view the wand
 * http://www.gnumonk.com/my-config/my-wl-1
 * http://www.oxyde.org/patzy/files/dot.wl
 * http://elarson.posterous.com/sending-email-with-wanderlust -- Dual account setup.
+* http://thread.gmane.org/gmane.mail.wanderlust.general.japanese/8534 -- Simple setup from the mailing list.
 
 === Sources & patches ===
 * http://cvs.m17n.org/viewcvs/root/wanderlust/ -- Official CVS repository for wp, apel, semi, and film. 
