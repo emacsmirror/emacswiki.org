@@ -61,6 +61,8 @@ TODO: How do you set the wl-trash-folder variable? This should be applied in the
 
 ~/.wl
 {{{
+;; You should set this variable if you use multiple e-mail addresses.
+(setq wl-user-mail-address-list (quote ("myname@gmail.com" "myname@company.com")))
 
 ;; How messages with disposal mark ("d") are to be handled.
 ;; remove = instant removal (same as "D"), thrash = move to wl-trash-folder
@@ -68,13 +70,13 @@ TODO: How do you set the wl-trash-folder variable? This should be applied in the
 (setq wl-dispose-folder-alist
       '(
         ;;("^-" . remove) ;;default    ;;I don't know what this is?
-        ;;("^@" . remove) ;;default  ;;I don't know what this is?
+        ;;("^@" . remove) ;;default    ;;I don't know what this is?
         ("\.\*company\\.com" . "%INBOX.Trash:\"myname@company.com\"/clear@mail.company.com")
         ("\.\*gmail\\.com" . "%[Gmail]/Trash:myname/clear@imap.gmail.com:993!")
         ))
 
 ;;Name of top-folder, default "Desktop".
-wl-folder-desktop-name "My email accounts"
+(setq wl-folder-desktop-name "email")
 
 ;;select correct email address when we _start_ writing a draft.
 (add-hook 'wl-mail-setup-hook 'wl-draft-config-exec)
@@ -92,8 +94,8 @@ wl-folder-desktop-name "My email accounts"
 ;;choose template with C-c C-j
 (setq wl-template-alist
       '(("gmail"
-         ("From" . "My Name <myname@gmail.com>")
-         ;;(wl-from . "My Name <myname@gmail.com>")
+         (wl-from . "My Name <myname@gmail.com>")
+         ("From" . wl-from)
          (wl-smtp-posting-user . "myname")
          (wl-smtp-posting-server . "smtp.gmail.com")
          (wl-smtp-authenticate-type ."plain")
@@ -102,15 +104,13 @@ wl-folder-desktop-name "My email accounts"
          (wl-local-domain . "gmail.com")
          (wl-message-id-domain . "smtp.gmail.com")
 
-         ;;default folder name auto completion:
-         (wl-default-spec . "%")
 
          (wl-fcc . "%[Gmail]/Sent:myname/clear@imap.gmail.com:993!")
          (wl-draft-folder . "%[Gmail]/Draft:myname/clear@imap.gmail.com:993!")
          )
         ("work"
-         ("From" . "My Name <myname@company.com>")
-         ;;(wl-from . "My Name <myname@company.com>")
+         (wl-from . "My Name <myname@company.com>")
+         ("From" . wl-from)
          (wl-smtp-posting-user . "myname@company.com")
          (wl-smtp-posting-server . "mail.company.com")
          (wl-local-domain . "mail.company.com")
@@ -125,10 +125,15 @@ wl-folder-desktop-name "My email accounts"
 (define-key wl-template-mode-map (kbd "<right>") 'wl-template-next)
 (define-key wl-template-mode-map (kbd "<left>") 'wl-template-prev)
 
+;;default folder name auto completion:
+(sqtq wl-default-spec "%")
+
 ;; mark sent messages (folder carbon copy) as read.
-wl-fcc-force-as-read    t
+(setq wl-fcc-force-as-read    t)
 
+;;Only save draft when I tell it to! (C-x C-s or C-c C-s):
+;;(arg: seconds of idle time untill auto-save).
+(setq wl-auto-save-drafts-interval nil)
 }}}
-
 ----
 Wanderlust
