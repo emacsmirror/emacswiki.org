@@ -141,6 +141,17 @@ See also [http://www.emacswiki.org/cgi-bin/wiki/buffer-move.el buffer-move.el] w
 * RecentFiles -- saving a list of recently opened files, finding these files
 
 
+== Switching between windows ==
+
+If switching through windows rapidly would be useful...
+
+<pre>
+(global-set-key [s-left] 'windmove-left) 
+(global-set-key [s-right] 'windmove-right) 
+(global-set-key [s-up] 'windmove-up) 
+(global-set-key [s-down] 'windmove-down)
+</pre>
+
 ----
 
 == Discussion ==
