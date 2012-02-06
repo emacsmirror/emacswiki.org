@@ -5,7 +5,11 @@ Perhaps someone could explain just what that means? Does it mean simply showing 
 
 Assuming it means these things, I've added [[Icicles]] to the list. If that's not what's meant, feel free to remove it from the list. In either case, it would be good to get a sentence or two explaining what is meant (that is, what "this page is about"). -- DrewAdams
 
-[new] I looks like we've got information duplication: see SwitchingBuffers
+[new] 
+@DrewAdams:  C-tab cycling means cycling back and forth your buffer with Tab and Shift-Tab while keeping Control down.  As soon as you release Control, the selected buffer becomes your current one, whilst your previous one becomes your most recently used.  As long as you keep Control down, you are in a sort of "cycling mode".  I don't think such behavior can be achieved in Emacs which sees only isolated C-tab and C-S-tab events, unless some external application tells it when Control has been been released.  That's the reason every package in this page fails to achieve such behavior in a consistent manner. -- RaffaeleRicciardi
+
+[new] 
+I looks like we've got information duplication: see SwitchingBuffers
 Shouldn't these pages be merged?  CategoryBufferSwitching describes SwitchingBuffers as ''a discussion/comparison of the various packages.''
  -- StefanKamphausen
 
