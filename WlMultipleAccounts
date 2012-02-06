@@ -55,9 +55,9 @@ WORK{
 
 With the following setup, wanderlust will automatically send from the right email-account when you reply to a message. If you start a new draft, you can cycle through the list in wl-template-alist with C-c C-j. Sent messages from gmail account or work account ends up in the right folder. 
 
-NOTE / TODO: This does NOT set the correct Draft folder!
+TODO: This does NOT set the correct Draft folder!
 
-TODO: How do you set the wl-trash-folder variable? This should be applied in the summary-buffer (and folder buffer?). 
+TODO: What does the two first lines (commented out) do in wl-dispose-folder-alist below?  
 
 ~/.wl
 {{{
