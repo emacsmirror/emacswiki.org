@@ -1,7 +1,8 @@
 This page is about library ##iedit.el##.
 
 You can obtain it here:
-Lisp:iedit.el or https://github.com/victorhge/iedit/blob/master/iedit.el
+Lisp:iedit.el or https://github.com/victorhge/iedit/blob/master/iedit.el. 
+The latter one has the latest updates.
 
 It lets you edit one occurrence of some text in a buffer (possibly narrowed), and simultaneously have all other occurrences edited the same way. All occurrences are highlighted.
 
