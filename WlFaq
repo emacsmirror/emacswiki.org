@@ -1,9 +1,10 @@
-== If I add folders to an access group outside of Wanderlust, how do I make Wanderlust pick up those changes? ==
+== How do I install wanderlust, together with all dependencies? ==
+Check your distributions package repository for package named "wl" or "wl-beta". Alternatively install it through el-get (an emacs package repository), which will give you the latest version.
 
+== If I add folders to an access group outside of Wanderlust, how do I make Wanderlust pick up those changes? ==
 In the folder manager, close the access group, then use ##C-u <RET>## to open it again. Wanderlust will scan the access group for new folders.
 
 == How can I get WL's mail composition mode to do completion from aliases in my ~/.mailrc file? ==
-
 In your .wl:
 
 {{{
@@ -25,6 +26,18 @@ First:
 }}}
 
 Now, from the ##Folder## buffer, use the command ##wl-folder-prefetch-current-entity## (bound to ##I##) on any entity that you wish to prefetch all messages of.
+
+
+=== How does the cache work? How can I purge it? ===
+Even when using IMAP, wl caches the messages (by default it caches the message being read, and the following one), and stores them in elmo-cache-directory i.e. ~/.elmo. This cache can get quite large. Especially if you tend to run online most of the time, you may want to purge it periodically, which can be done by either doing "M-x elmo-cache-expire-by-size" or putting something similar in .wl:
+{{{
+;;days since last access, i.e atime. (default: 50)
+(elmo-cache-expire-by-age  14)
+
+;;kilobytes (default 30000)
+(elmo-cache-expire-by-size 1024)
+}}}
+
 
 == Speed ==
 
@@ -408,4 +421,26 @@ Using the [http://en.wikipedia.org/wiki/Maildir MailDir] format also has the adv
 (setq elmo-search-default-engine 'mu)
 
 }}}
+
+
+== How can I set wl to be less sensitive to glitches in my network connection? ==
+Try setting this:
+(setq elmo-network-session-idle-timeout 300)
+
+== How can I stop wl from autosaving my draft every second I make a change? ==
+Wanderlust automatically saves the draft every second there's a change. If your draft folder is an IMAP, this gets tiresome fast.
+{{{
+;;Only save draft when I tell it to (C-x C-s or C-c C-s):
+(setq wl-auto-save-drafts-interval nil)
+}}}
+
+== How can I unsubscribe from the wanderlust mailing list? ==
+For English mail list, send an email to <code>wl-en-ctl@lists.airs.net</code> with "unsubscribe" in body.
+
+== I cant see inline images in html-messages without jumping to them= ==
+In default settings, mime-w3m shows only images embedded in a message. Please check URLs of images and the value of mime-w3m-safe-url-regexp.
+
+
+== I want to contribute to Wanderlust, where can I learn more? ==
+Patches, modifications, or suggestions can be sent to the mail list. To learn Luna, the tiny OOP core that powers WL, reading Peter Seibel's "Practical Common Lisp", Chapter 16 and 17 is highly recommended [http://www.gigamonkeys.com/book/ link]. This book is worth reading not just for understanding WL.
 
