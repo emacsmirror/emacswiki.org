@@ -115,9 +115,7 @@ TODO: How do you set the wl-trash-folder variable? This should be applied in the
          (wl-smtp-posting-server . "mail.company.com")
          (wl-local-domain . "mail.company.com")
 
-         ;; sent msgs go to the "sent"-folder
          (wl-fcc . "%INBOX.Sent:\"myname@company.com\"/clear@mail.company.com")
-         ;; store drafts in 'postponed'
          (wl-draft-folder . "%INBOX.Drafts:\"myname@company.com\"/clear@mail.company.com"))
         ))
 
