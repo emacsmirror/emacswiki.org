@@ -8,7 +8,7 @@ This is the EmacsWiki elisp area where we collect EmacsLisp files.  No login req
 
 Links to EmacsLisp libraries hosted on the EmacsWiki come in two different forms.
 
-Links to the plain text library look like Download:foo.el.  To view the linked file just follow the link and to then download it use your browser's save dialog.
+Links to the plain text library look like Download:foo.el.  To view the linked file just follow the link and to then download it using your browser's save dialog.
 
 Links that look like Lisp:foo.el take you to a '''wiki pages''' which is an HTML file.  Click on the '''Download''' link on that page to view or download the plain text file.
 
@@ -123,7 +123,7 @@ Additional tips can be found on ElispAreaDiscussions.
 
 If you put a percent sign (%), then "Id:" (the colon is necessary), then another %, in a page of elisp code, it will end up being expanded into a revision number and look like this:
 
-%Id: 279%
+%Id: 280%
 
 So you can have lisp files on the wiki be version-numbered automatically instead of manually.
 
