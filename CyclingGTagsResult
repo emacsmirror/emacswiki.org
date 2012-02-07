@@ -11,7 +11,7 @@
                                  (buffer-list)) ))))
     (cond (latest-gtags-buffer
            (switch-to-buffer latest-gtags-buffer)
-           (next-line)
+           (forward-line)
            (gtags-select-it nil))
           ) ))
 </pre>
