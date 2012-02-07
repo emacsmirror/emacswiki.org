@@ -59,6 +59,10 @@ TODO: This does NOT set the correct Draft folder!
 
 TODO: What does the two first lines (commented out) do in wl-dispose-folder-alist below?  
 
+[new]
+The commented out lines are dispose settings for usenet folders ("^-") and Shimbun folders ("^@").
+
+----
 ~/.wl
 {{{
 ;; You should set this variable if you use multiple e-mail addresses.
@@ -118,6 +122,11 @@ TODO: What does the two first lines (commented out) do in wl-dispose-folder-alis
          (wl-fcc . "%INBOX.Sent:\"myname@company.com\"/clear@mail.company.com")
          (wl-draft-folder . "%INBOX.Drafts:\"myname@company.com\"/clear@mail.company.com"))
         ))
+
+;; Use different signature files based on From: address
+(setq signature-file-alist
+      `((("From" . "myname@company.com") . ,(expand-file-name "~/.emacs.d/signature.d/myname@company.com"))
+	(("From" . "myname@gmail.com") . ,(expand-file-name "~/.emacs.d/signature.d/myname@gmail.com"))))
 
 ;;Cycle through templates with arrow keys
 (define-key wl-template-mode-map (kbd "<right>") 'wl-template-next)
