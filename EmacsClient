@@ -359,6 +359,7 @@ Second way was to create a batch file like described above, put it into Emacs' b
 
 Where I am using my h-drive for my .emacs.d directory (HOME = h:\). Your path to the server file probably is different. Your path to emacsclient is probably different also. I pass all the command line arguments (upto 9) in case I use this file for another purpose.
 -- KevinBuchs 2012-02-06
+[new] You might want to use %* which is short hand for all arguments. -- shjk
 
 ==== Emacsclient and Windows 7 Taskbar ====
 Wanted to have Emacs icon on taskbar that calls runemacs to get Emacs started (without command prompt windows flashing or odd submenus and with proper icon (putting .vbs scripts on the taskbar created pinned shortcuts to wscript with the runemacs.vbs as a submenu).  I found a tip here http://superuser.com/questions/259146/why-latest-emacs-version-dont-support-windows-7-taskbar and was able to do it by:
