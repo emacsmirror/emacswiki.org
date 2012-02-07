@@ -1217,20 +1217,20 @@ W.K.R. Reutefleut
  
 
 
-
 === Windows 7 Taskbar ===
 
-[new]
+Previous versions of Windows created a taskbar button for each running program.  Windows 7 lets you "pin" a running program to the taskbar, turning its button into a shortcut to start the program.  When you start a program using a shortcut pinned to the taskbar, the shortcut's appearance changes while the program is running, but no new taskbar button is displayed.  If you start a program that is not pinned to the taskbar, a new taskbar button is created.
 
-The Windows 7 taskbar has merged the concepts of (1) a shortcut to start a program and (2) the taskbar button of the running program.  When you start a program using a shortcut pinned to the taskbar, the shortcut is displayed differently while the program is running, but no new taskbar button is displayed.  If you start a program that is not pinned to the taskbar, a new taskbar button is created.  This is different than previous versions of Windows that always created a taskbar button for each window open.
+This doesn't work with Emacs, however.  To eliminate the console window, Emacs must be started with runemacs.  However, if we pin runemacs.exe to the taskbar and use it to start Emacs, Windows recognizes that these are two different programs and, instead of highlighting the pinned icon, creates a new button for emacs.exe.
 
-This doesn't work with emacs, however.  To eliminate the console window, it must be started with runemacs.  This means we'd have to pin runemacs.exe to the taskbar to start emacs.  When it is run, however, it simply starts emacs.exe and exits.  Windows will recognize that these are two different programs and will not highlight the pinned icon and will create a new button for emacs.exe.
+There is a trick that will fix it though.  Run Emacs and pin it to the taskbar.  Then right-click its taskbar button, right click emacs, click Properties and change, e.g., "C:\Program Files\Emacs\bin\emacs.exe" to "C:\Program Files\Emacs\bin\runemacs.exe".  Can anyone explain why this work?.  --DenisHowe
 
-The "fix" is to create a non-console version of emacs.exe.
+==== Other Fixes ====
+
+Another "fix" would be to create a non-console version of emacs.exe.
 
 I'm compiling a custom version for myself right now, but this is going to become a general issue for Windows emacs users soon.  It would make sense to me to (1) stop supporting console emacs at all in /EmacsW32/, (2) provide two versions (e.g. emacs and emacsw?), or (3) patch emacs.exe to accept an option to allocate a console (or detect, if possible, if the parent is a console).
 
-[new]
 Thanks mkleehammer.
 I wonder if the situation is not even more complicated.
 With /EmacsW32/ you often start Emacs by running emacsclient.exe/emacsclientw.exe.
