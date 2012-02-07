@@ -124,21 +124,16 @@ Done. I also changed the overlay-syncing, so that only the 'face and 'invisible 
 I find the following function handy, maybe it would make sense to add it to minimap.el?
 
 <pre>
+;;;###autoload
 (defun minimap-toggle ()
-  "Show minimap if hidden, hide if present."
+  "Toggle minimap for current buffer."
   (interactive)
-  (if (and (boundp 'minimap-bufname)
-               minimap-bufname
-	       (get-buffer minimap-bufname)
-	       (get-buffer-window (get-buffer minimap-bufname)))
-      (minimap-kill)
-    (minimap-create))
-  )
+  (if (null minimap-bufname)
+      (minimap-create)
+    (minimap-kill)))
 </pre>
 
 Then I can bind single shortcut to minimap toggling, it's handy.
-
-Edited: function raised error when called first time (when minimap-bufname had not yet been bound).
 
 ----
 
