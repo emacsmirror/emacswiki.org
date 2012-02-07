@@ -85,11 +85,13 @@ when run interactively"
    (list (perl-read-library "Perldoc entry: ")))
   (cperl-perldoc library))
 
-(defun perl-find-file (library)
+;;;###autoload
+(defun perl-find-library (library)
   "Find a perl library by module name"
   (interactive
    (list (perl-read-library "Find perl library: ")))
   (find-file (perl-library-path library)))
+(defalias 'perl-find-file 'perl-find-library)
 
 (defun perl-library-path (library)
   "Returns the path to the perl library LIBRARY on disk."
