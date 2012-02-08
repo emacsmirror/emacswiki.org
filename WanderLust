@@ -1,14 +1,13 @@
-Wanderlust is a mail/news reader for Emacs(en) apparently written from the ground up for IMAP. It seems to have very good support for Japanese, but it works quite-well for this English-speaker.
+Wanderlust is a mail/news reader for Emacs(en) apparently written from the ground up for IMAP. It seems to have very good support for Japanese, and it works quite-well for this English-speaker.
 
 Homepage: http://www.gohome.org/wl/
 
 Download%%/%%Snapshots: http://www.jpl.org/elips/wl/ (ftp://ftp.gohome.org/wl/ needs authentication)
 
-Current stable version is 2.14.0 and current unstable version is 2.15.9. The website is not up to date, but you can get information and help via the mailing list at wl-en@ml.gentei.org, or (as of January 2012) the <code>#wanderlust</code> channel at irc.freenode.net. If this does not exist, please check <code>##wanderlust</code>, and <code>##wl</code>.
+Current stable version is 2.14.0 and current unstable version is 2.15.9. The website is not up to date, but you can get help through the mailing list. 
 
 [new]
-
-New upstream mailing list addresses: <code>wl@ml.gentei.org</code> and <code>wl-en@ml.gentei.org</code>, respectively. To join the mailing list, send an email to <code>wl-ctl@ml.gentei.org</code> or for English <code>wl-en-ctl@ml.gentei.org</code>, with "subscribe YOUR NAME" as subject and body. You can browse the new mailing list [http://news.gmane.org/gmane.mail.wanderlust.general here].
+New upstream mailing list addresses: <code>wl@ml.gentei.org</code> and <code>wl-en@ml.gentei.org</code>, respectively.
 
 == Features ==
 
@@ -193,6 +192,17 @@ You can use wl as a NNTP client, and post to usenet newsgroups. To view the wand
 }}}
 
 
+== Getting Help ==
+Please read the [http://www.gohome.org/wl/doc/wl_toc.html manual] carefully, as there is an enormous wealth of knowledge and variables to tweak. There is also an [http://wiki.gohome.org/wl/ FAQ] at the homepage, as well as [WlFaq here]. The most active channel of wanderlust discussion (in English) is the mailing list.
+
+=== Mailing List ===
+You can get information and help via the mailing list at wl-en@ml.gentei.org (English) or wl@ml.gentei.org (Japanese). To join the mailing list, send an email to <code>wl-ctl@ml.gentei.org</code> or for English <code>wl-en-ctl@ml.gentei.org</code>, with "subscribe YOUR NAME" as subject and body. You can browse the new mailing list [http://news.gmane.org/gmane.mail.wanderlust.general here]. To unsubscribe mail <code>wl-ctl@ml.gentei.org</code> with "unsubscribe" as body.
+
+=== IRC ===
+As of January 2012 there's an IRC channel <code>#wanderlust</code> at irc.freenode.net. If this does not exist, please check <code>##wanderlust</code>, and <code>##wl</code>.
+
+
+
 == Wanderlust related pages ==
 
 * WlFaq -- frequently asked questions
@@ -223,6 +233,7 @@ You can use wl as a NNTP client, and post to usenet newsgroups. To view the wand
 * http://www.oxyde.org/patzy/files/dot.wl
 * http://elarson.posterous.com/sending-email-with-wanderlust -- Dual account setup.
 * http://thread.gmane.org/gmane.mail.wanderlust.general.japanese/8534 -- Simple setup from the mailing list.
+* http://www.mail-archive.com/emacs-orgmode@gnu.org/msg20250/wlconfiguration.org -- Good config, in org-mode.
 
 === Sources & patches ===
 * http://cvs.m17n.org/viewcvs/root/wanderlust/ -- Official CVS repository for wp, apel, semi, and film. 
