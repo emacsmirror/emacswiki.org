@@ -437,10 +437,12 @@ Wanderlust automatically saves the draft every second there's a change. If your 
 == How can I unsubscribe from the wanderlust mailing list? ==
 For English mail list, send an email to <code>wl-en-ctl@lists.airs.net</code> with "unsubscribe" in body.
 
-== I cant see inline images in html-messages without jumping to them= ==
+== I cant see inline images in html-messages without jumping to them ==
 In default settings, mime-w3m shows only images embedded in a message. Please check URLs of images and the value of mime-w3m-safe-url-regexp.
 
 
 == I want to contribute to Wanderlust, where can I learn more? ==
 Patches, modifications, or suggestions can be sent to the mail list. To learn Luna, the tiny OOP core that powers WL, reading Peter Seibel's "Practical Common Lisp", Chapter 16 and 17 is highly recommended [http://www.gigamonkeys.com/book/ link]. This book is worth reading not just for understanding WL.
 
+== How can I remove the mime-buttons? ==
+The mime buttons is what shows up in the beginning and end of your messages as <code>[1 <text/plain; iso-8859-1 (quoted-printable)>]</code>. You can toggle on/off with C-c m (in summary buffer), or set <code>(setq mime-view-buttons-visible nil) </code>
