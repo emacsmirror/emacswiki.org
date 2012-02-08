@@ -3,7 +3,7 @@
 ;; Copyright (C) 2007  Christoffer S. Hansen
 
 ;; Author: Christoffer S. Hansen <csh@freecode.dk>
-;; Time-stamp: <2007-07-18 18:35:41 csh>
+;; Time-stamp: <2012-02-08 04:55:54 ben>
 
 ;; This file is part of policy-switch.
 
@@ -654,7 +654,7 @@ buffers."
    buffer-read-only
    ;; auxiliary information
    (when (functionp desktop-save-buffer)
-     (funcall desktop-save-buffer dirname))
+     (funcall desktop-save-buffer desktop-dirname))
    ;; local variables
    (let ((locals desktop-locals-to-save)
 	 (loclist (buffer-local-variables))
