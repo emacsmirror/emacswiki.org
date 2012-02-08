@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2012, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 13:43:55 2010 (-0700)
-;; Last-Updated: Wed Feb  8 14:08:23 2012 (-0800)
+;; Last-Updated: Wed Feb  8 15:39:55 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 3547
+;;     Update #: 3549
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-1.el
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -5849,9 +5849,11 @@ messages."
     ;; one, as follows:
     ;; (let ((bookmark-make-record-function (bmkp-make-record-for-target-file file)))
     ;;   (bmkp-replace-existing-bookmark bmk)) ; Update the existing bookmark.
-    (or bmk                             ; Do nothing, and return the bookmark.
+    (if (not bmk)
         ;; Create a new bookmark, and return it.
-        (bmkp-file-target-set (expand-file-name file dir-to-use) t prefix 'NO-OVERWRITE msgp))))
+        (bmkp-file-target-set (expand-file-name file dir-to-use) t prefix 'NO-OVERWRITE msgp)
+      (when msgp (message "Autofile bookmark set for `%s'" file))
+      bmk)))                            ; Return the bookmark.
 
 (defun bmkp-get-autofile-bookmark (file &optional dir prefix)
   "Return an existing autofile bookmark for FILE, or nil if there is none.
