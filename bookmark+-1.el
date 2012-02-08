@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2012, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 13:43:55 2010 (-0700)
-;; Last-Updated: Tue Feb  7 16:13:45 2012 (-0800)
+;; Last-Updated: Wed Feb  8 10:27:36 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 3521
+;;     Update #: 3545
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-1.el
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -4739,14 +4739,31 @@ A new list is returned (no side effects)."
 ;;(@* "General Utility Functions")
 ;;  *** General Utility Functions ***
 
-(defun bmkp-remove-dups (list)
-  "Copy of LIST with duplicate elements removed.  Tested with `equal'."
-  (let ((tail  list)
-        new)
-    (while tail
-      (unless (member (car tail) new) (push (car tail) new))
-      (pop tail))
-    (nreverse new)))
+(when (and (fboundp 'cl-puthash) (not (fboundp 'puthash))) ; Emacs 20 with `cl-extra.el' loaded.
+  (defalias 'puthash 'cl-puthash))
+
+(if (fboundp 'puthash)                  ; Emacs 21+, or Emacs 20 with `cl-extra.el' loaded.
+    (defun bmkp-remove-dups (sequence &optional test)
+      "Copy of SEQUENCE with duplicate elements removed.
+Optional arg TEST is the test function.  If nil, test with `equal'.
+See `make-hash-table' for possible values of TEST."
+      (setq test  (or test #'equal))
+      (let ((htable  (make-hash-table :test test)))
+        (loop for elt in sequence
+              unless (gethash elt htable)
+              do     (puthash elt elt htable)
+              finally return (loop for i being the hash-values in htable collect i))))
+
+  (defun bmkp-remove-dups (list &optional use-eq)
+    "Copy of LIST with duplicate elements removed.
+Test using `equal' by default, or `eq' if optional USE-EQ is non-nil."
+    (let ((tail  list)
+          new)
+      (while tail
+        (unless (if use-eq (memq (car tail) new) (member (car tail) new))
+          (push (car tail) new))
+        (pop tail))
+      (nreverse new))))
 
 ;; For a name propertized with `bmkp-full-record', this is similar to `bmkp-assoc-delete-all'.
 (defun bmkp-delete-bookmark-name-from-list (delname bnames)
