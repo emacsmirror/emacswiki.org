@@ -10,6 +10,8 @@ See also [[po-mode+.el]] by GauteHvoslefKvalnes, it adds extra features to <code
 
 Also, see [[gb-po-mode.el]] by GeorgBrandl, which (among other things) improves the behavior of the edit window and automatically rewraps message strings after edit, similar to what `po-wrap' below does.
 
+== Line Wrapping ==
+
 It is a good idea to have all lines in PO files not exceed 80 characters limit. Calling <code>fill-paragraph</code> while editing a message string makes every line end with <code>\n</code> like gettext multi-line string convention requires, which is usually not the desirable result. To wrap all long lines in <code>msgstr</code> contents of PO file currently being edited, use this function instead (shamelessly taken from [http://www.gnu.org/software/trans-coord/manual/gnun/html_node/New-Translation.html GNUnited Nations manual]):
 
      (defun po-wrap ()
@@ -40,6 +42,31 @@ If you want auto-fill feature in the sub edit window, try longlines-mode. Please
     (add-hook 'po-subedit-exit-hook '(lambda () (longlines-mode 0)))
 
 This code is also used in [[po-mode+.el]].
+
+== Spell Checking ==
+
+You can use the following code to automatically spell check translated message strings using a dictionary appropriate for the language of the PO file.
+
+    (defun po-guess-language ()
+      "Return the language related to this PO file."
+      (save-excursion
+        (goto-char (point-min))
+        (re-search-forward po-any-msgstr-block-regexp)
+        (goto-char (match-beginning 0))
+        (if (re-search-forward
+             "\n\"Language: +\\(.+\\)\\\\n\"$"
+             (match-end 0) t)
+            (po-match-string 1))))
+    
+    (defadvice po-edit-string (around setup-spell-checking (string type expand-tabs) activate)
+      "Set up spell checking in subedit buffer."
+      (let ((po-language (po-guess-language)))
+        ad-do-it
+        (if po-language
+            (progn
+              (ispell-change-dictionary po-language)
+              (turn-on-flyspell)
+              (flyspell-buffer)))))
 
 ----
 '''Is it possible make po-mode remember last keyboard layout?'''
