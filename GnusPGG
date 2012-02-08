@@ -24,6 +24,14 @@ Or if you prefer using autoload Emacs feature, you can use this :
      (autoload 'pgg-insert-key "pgg" "Insert the ASCII armored public key." t)
      (autoload 'pgg-snarf-keys-region "pgg" "Import public keys in the current region." t)
 
+If these settings make that the mail arrived empty add these lines:
+
+     (setenv "GPG_AGENT_INFO" nil)
+     (setq user-mail-address "my@mail.com"
+      user-full-name "myname")
+     ;; Sign messages by default.
+     (add-hook 'message-setup-hook 'mml-secure-message-sign-pgpmime)
+
 == Basic customisations ==
 
 Then you can tell to nmml how you want it to act when facing a signed/encrypted mail that way:
