@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2012, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 13:43:55 2010 (-0700)
-;; Last-Updated: Sat Feb  4 14:03:49 2012 (-0800)
+;; Last-Updated: Tue Feb  7 16:13:45 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 3518
+;;     Update #: 3521
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-1.el
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -3724,7 +3724,7 @@ Otherwise, return an alist of the full tags and set variable
 `bmkp-tags-alist' to that alist, as a cache.
 
 Non-nil CURRENT-ONLY-P means ignore option `bmkp-tags-for-completion'
-and return only the tags for the curretly loaded bookmarks."
+and return only the tags for the currently loaded bookmarks."
   (let ((tags      ())
         (opt-tags  bmkp-tags-for-completion)
         bmk-tags)
@@ -4867,7 +4867,7 @@ If either name is not absolute, then it is expanded relative to
     (and (equal remote1 remote2)
          (let ((ft1  (file-truename (expand-file-name file1)))
                (ft2  (file-truename (expand-file-name file2))))
-           (compare-strings ft1 0 (length ft1) ft2 0 (length ft2) ignore-case-p)))))
+           (eq t (compare-strings ft1 0 (length ft1) ft2 0 (length ft2) ignore-case-p))))))
 
 ;;; $$$$$$
 ;;; (defun bmkp-same-file-p (file1 file2)
