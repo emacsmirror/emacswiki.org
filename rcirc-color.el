@@ -1,5 +1,5 @@
 ;;; rcirc-color.el -- color nicks
-;; Copyright 2005, 2006, 2007, 2008, 2010  Alex Schroeder
+;; Copyright 2005, 2006, 2007, 2008, 2010, 2012  Alex Schroeder
 
 ;; This program is free software; you can redistribute it and/or
 ;; modify it under the terms of the GNU General Public License as
@@ -67,6 +67,13 @@ To check out the list, evaluate (list-colors-display rcirc-colors).")
 (defvar rcirc-color-mapping (make-hash-table :test 'equal)
   "Hash-map mapping nicks to color names.")
 
+(defvar rcirc-color-is-deterministic nil
+  "Normally rcirc just assigns random colors to nicks.
+These colors are based on the list in `rcirc-colors'.
+If you set this variable to a non-nil value, an md5 hash is
+computed based on the nickname and the first twelve bytes are
+used to determine the color: #rrrrggggbbbb.")
+
 (defadvice rcirc-facify (before rcirc-facify-colors activate)
   "Add colors to other nicks based on `rcirc-colors'."
   (when (and (eq face 'rcirc-other-nick)
@@ -74,7 +81,9 @@ To check out the list, evaluate (list-colors-display rcirc-colors).")
     (let ((cell (gethash string rcirc-color-mapping)))
       (unless cell
 	(setq cell (cons 'foreground-color
-			 (elt rcirc-colors (random (length rcirc-colors)))))
+			 (if rcirc-color-is-deterministic
+			     (concat "#" (substring (md5 string) 0 12))
+			   (elt rcirc-colors (random (length rcirc-colors))))))
         (puthash (substring-no-properties string) cell rcirc-color-mapping))
       (setq face (list cell)))))
 
