@@ -28,7 +28,7 @@ vc-git.el also includes support for git blame, in the vc-annotate command (C-x v
 
 *Egg* (*Emacs got Git*) is a git interface having many advanced features. These include a full log viewer able to diff against old versions, create new branches, assign tags, upload and download from remote git servers (e.g. github), etc. It can handle complex git rebase operations. When committing changes to git, it uses a commit-status window where you can cherry-pick related changes and group them as a single commit, leaving other changes in the tree untouched.
 
-It was forked from Magit and uses many of its core ideas. Both modes have evolved since then. Egg and Magit were both updated in 2011.
+It was forked from Magit and uses many of its core ideas. Both modes have evolved since then. Egg and Magit were both updated in 2012.
 
 * Homepage: http://github.com/byplayer/egg
 * Repository: ##git clone git://github.com/byplayer/egg.git ##
