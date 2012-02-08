@@ -3,7 +3,7 @@
 ;; Copyright (C) 2007  Christoffer S. Hansen
 
 ;; Author: Christoffer S. Hansen <csh@freecode.dk>
-;; Time-stamp: <2012-02-08 04:55:54 ben>
+;; Time-stamp: <2012-02-08 05:29:01 ben>
 
 ;; This file is part of policy-switch.
 
@@ -464,7 +464,7 @@ defaults to current config in current policy)."
 	;; split until first horizantal or vertical border or end reached
 	(dolist (buf-data (nthcdr (1+ index) config-data))
 	  (when (< split-num 2)
-	  ;; I should split vertically
+            ;; I should split vertically
 	    (cond ((and (not vert-split)
 			(= (car win-data) (caar buf-data)))
 		   (setq vert-split (split-window nil (- (cadar buf-data)
@@ -482,7 +482,7 @@ defaults to current config in current policy)."
 	  (setq buf-object (policy-switch-config-restore-buffer restore-string buf-name)))
 	(if buf-object
 	    (set-window-buffer nil buf-object)
-	  (setq not-restorable (append (list buffer-name) not-restorable)))
+	  (setq not-restorable (append (list buf-name) not-restorable)))
 	(cond (vert-split
 	       (select-window vert-split)
 	       (setq vert-split nil))
