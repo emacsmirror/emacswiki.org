@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2012, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 13:43:55 2010 (-0700)
-;; Last-Updated: Wed Feb  8 10:27:36 2012 (-0800)
+;; Last-Updated: Wed Feb  8 14:08:23 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 3545
+;;     Update #: 3547
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-1.el
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -5885,7 +5885,8 @@ same, except possibly for their directory parts (see previous)."
 (defalias 'bmkp-tag-a-file 'bmkp-autofile-add-tags) ; Bound to `C-x p t + a'
 ;;;###autoload
 (defun bmkp-autofile-add-tags (file tags &optional dir prefix msgp no-cache-update-p)
-  "Add TAGS to autofile bookmark for FILE.
+  "Add TAGS to the autofile bookmark for FILE.
+If there is no autofile bookmark for FILE, create one.
 Interactively, you are prompted for FILE and then TAGS.
 When prompted for FILE you can use `M-n' to pick up the file name at
 point, or if none then the visited file.
