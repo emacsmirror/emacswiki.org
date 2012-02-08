@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:53 2006
 ;; Version: 22.0
-;; Last-Updated: Thu Feb  2 10:20:31 2012 (-0800)
+;; Last-Updated: Wed Feb  8 10:55:04 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 12856
+;;     Update #: 12866
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-fn.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -5342,34 +5342,43 @@ one is kept."
         (setq tail (cdr tail))))
     list))
 
-;; Borrowed from `ps-print.el'
-(defun icicle-remove-duplicates (list)
-  "Copy of LIST with duplicate elements removed.  Tested with `equal'."
-  (let ((tail  list)
-        new)
-    (while tail
-      (unless (member (car tail) new) (push (car tail) new))
-      (pop tail))
-    (nreverse new)))
+(when (and (fboundp 'cl-puthash) (not (fboundp 'puthash))) ; Emacs 20 with `cl-extra.el' loaded.
+  (defalias 'puthash 'cl-puthash))
+
+(if (fboundp 'puthash)                  ; Emacs 21+, or Emacs 20 with `cl-extra.el' loaded.
+    (defun icicle-remove-duplicates (sequence &optional test)
+      "Copy of SEQUENCE with duplicate elements removed.
+Optional arg TEST is the test function.  If nil, test with `equal'.
+See `make-hash-table' for possible values of TEST."
+      (setq test  (or test #'equal))
+      (let ((htable  (make-hash-table :test test)))
+        (loop for elt in sequence
+              unless (gethash elt htable)
+              do     (puthash elt elt htable)
+              finally return (loop for i being the hash-values in htable collect i))))
+
+  (defun icicle-remove-duplicates (list &optional use-eq)
+    "Copy of LIST with duplicate elements removed.
+Test using `equal' by default, or `eq' if optional USE-EQ is non-nil."
+    (let ((tail  list)
+          new)
+      (while tail
+        (unless (if use-eq (memq (car tail) new) (member (car tail) new))
+          (push (car tail) new))
+        (pop tail))
+      (nreverse new))))
 
 (defun icicle-remove-dups-if-extras (list)
   "`icicle-remove-duplicates' if `icicle-extra-candidates' is non-nil.
-If `icicle-extra-candidates' is nil, then return LIST.
+If `icicle-extra-candidates' is nil, then just return LIST.
 
 Note: When you use this as the value of `icicle-transform-function',
 be aware that during completion and before applying this function,
 `icicle-extra-candidates' is redefined locally by removing its
-candidates that don't match the current input.  So this function then
+candidates that do not match the current input.  So this function then
 has the effect of removing any duplicates that match the input.  If
 there are no such matching candidates, then LIST is returned."
-  (if icicle-extra-candidates
-      (let ((tail  list)
-            new)
-        (while tail
-          (unless (member (car tail) new) (push (car tail) new))
-          (pop tail))
-        (nreverse new))
-    list))
+  (if icicle-extra-candidates  (icicle-remove-duplicates list)  list))
 
 (defun icicle-file-readable-p (file)
   "Return non-nil if FILE (a string) names a readable file."
