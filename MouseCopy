@@ -2,46 +2,4 @@ mouse-copy.el comes with Emacs 21.
 
 Normally, copy and paste require two steps: mark the region to be copied, then paste with the middle mouse button. Using mouse-copy.el, you only have to mark the region, the pasting is done automatically.
 
-It's written about in [http://carcaddar.blogspot.com/2011/01/mouse-copy-for-emacs.html Mouse-copy for Emacs], which also suggest alternative code that "[does] the right thing when it comes to spaces":
-
-{{{
-;; Adapted from http://www.mail-archive.com/gnu-emacs-sources@gnu.org/msg00393.html
-;; and http://www.foldr.org/~michaelw/projects/redshank/redshank.el
-
-(global-set-key [C-mouse-1] 'mouse-copy-ignore-event)
-(global-set-key [C-drag-mouse-1] 'mouse-copy-ignore-event)
-(global-set-key [C-down-mouse-1] 'mouse-insert-sexp-at-point)
-
-(defun mouse-copy-ignore-event (event)
-  "Ignores a (mouse) event.
-This is used to override mouse bindings in a minor mode keymap,
-but does otherwise nothing."
-  (interactive "e"))
-
-(defun mouse-insert-sexp-at-point (start-event)
-  "Insert the sexp under the mouse cursor at point.
-This command  must be bound to a mouse event."
-  (interactive "*e")
-  (let ((posn (event-start start-event)))
-    (let ((sexp-at-mouse-pos
-           (with-selected-window (posn-window posn)
-             (save-excursion
-               (goto-char (posn-point posn))
-               (thing-at-point 'sexp)))))
-      (if sexp-at-mouse-pos
-          (progn
-            (unless (or (bolp)
-                         (and (minibufferp)
-                              (= (point) (minibuffer-prompt-end)))
-                         (save-excursion
-                           (backward-char)
-                           (looking-at "\\s-\\|\\s\(")))
-              (insert " "))
-            (insert sexp-at-mouse-pos)
-            (unless (or (eolp)
-                        (and (minibufferp)
-                             (= (point) (minibuffer-prompt-end)))
-                        (looking-at "\\s-\\|\\s\)"))
-              (insert " ")))
-        (error "Mouse not at a sexp")))))
-}}}
+There is an alternative mouse-copy minor mode that more closely mimics the Zmacs/ZWEI Lisp Machine mouse copy functionality and handles spaces better at [https://github.com/vsedach/mouse-copy].
