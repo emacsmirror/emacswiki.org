@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Fri Dec 15 10:44:14 1995
 ;; Version: 21.0
-;; Last-Updated: Wed Jan 11 10:44:05 2012 (-0800)
+;; Last-Updated: Wed Feb  8 11:02:09 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 1178
+;;     Update #: 1182
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/isearch+.el
 ;; Keywords: help, matching, internal, local
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -148,8 +148,8 @@
 ;;    lighter: `ISEARCH' for case-insensitive; `Isearch' for
 ;;    case-sensitive.
 ;;
-;;  * Highlighting of the mode-line lighter when search has wrapped
-;;    around (Emacs 24+ only).
+;;  * Highlighting of the mode-line minor-mode lighter when search has
+;;    wrapped around (Emacs 24+ only).
 ;;
 ;;  * Highlighting of parts of the prompt, to indicate the type of
 ;;    search: regexp, word, multiple-buffer, and whether searching has
@@ -252,6 +252,8 @@
 ;;
 ;;(@* "Change log")
 ;;
+;; 2012/02/08 dadams
+;;     isearchp-remove-duplicates: Redefined to use a hash table.
 ;; 2012/01/11 dadams
 ;;     Added isearch-message-prefix (redefinition).
 ;;     Added faces: isearchp-(wrapped|regexp|word|multi).
@@ -1210,15 +1212,32 @@ Non-nil ONLY-ONE-P means read only one sexp and return it."
                    sexps  (mapcar (lambda (sx) (car (read-from-string sx))) sexps))
         (when (interactive-p) (message "Sexps: %S" sexps))))))
 
-;; Borrowed from `ps-print.el'
-(defun isearchp-remove-duplicates (list)
-  "Copy of LIST with duplicate elements removed.  Tested with `equal'."
-  (let ((tail  list)
-        new)
-    (while tail
-      (unless (member (car tail) new)  (push (car tail) new))
-      (pop tail))
-    (nreverse new)))
+(when (and (fboundp 'cl-puthash) (not (fboundp 'puthash))) ; Emacs 20 with `cl-extra.el' loaded.
+  (defalias 'puthash 'cl-puthash))
+
+;; Same as `icicle-remove-duplicates'.
+(if (fboundp 'puthash)                  ; Emacs 21+, or Emacs 20 with `cl-extra.el' loaded.
+    (defun isearchp-remove-duplicates (sequence &optional test)
+      "Copy of SEQUENCE with duplicate elements removed.
+Optional arg TEST is the test function.  If nil, test with `equal'.
+See `make-hash-table' for possible values of TEST."
+      (setq test  (or test #'equal))
+      (let ((htable  (make-hash-table :test test)))
+        (loop for elt in sequence
+              unless (gethash elt htable)
+              do     (puthash elt elt htable)
+              finally return (loop for i being the hash-values in htable collect i))))
+
+  (defun isearchp-remove-duplicates (list &optional use-eq)
+    "Copy of LIST with duplicate elements removed.
+Test using `equal' by default, or `eq' if optional USE-EQ is non-nil."
+    (let ((tail  list)
+          new)
+      (while tail
+        (unless (if use-eq (memq (car tail) new) (member (car tail) new))
+          (push (car tail) new))
+        (pop tail))
+      (nreverse new))))
  
 ;;(@* "Character-Property Search")
 
