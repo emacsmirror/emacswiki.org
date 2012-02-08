@@ -7,9 +7,9 @@
 ;; Copyright (C) 2004-2012, Drew Adams, all rights reserved.
 ;; Created: Thu Dec 30 12:29:29 2004
 ;; Version: 21.0
-;; Last-Updated: Sun Jan  1 14:05:15 2012 (-0800)
+;; Last-Updated: Wed Feb  8 11:06:07 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 737
+;;     Update #: 743
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/lib-requires.el
 ;; Keywords: libraries, files
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -43,6 +43,8 @@
 ;; 
 ;;; Change Log:
 ;;
+;; 2012/02/08 dadams
+;;     libreq-remove-duplicates: Redefined to use a hash table.
 ;; 2011/01/04 dadams
 ;;     Added autoload cookie for defgroup.
 ;; 2009/10/25 dadams
@@ -294,15 +296,33 @@ Also works for a consp whose cdr is non-nil."
              (setq new (cons item new)))
            (reverse new)))))
 
-;; Borrowed from `ps-print.el'
-(defun libreq-remove-duplicates (list)
-  "Copy of LIST with duplicate elements removed.  Tested with `equal'."
-  (let ((tail list)
-        new)
-    (while tail
-      (unless (member (car tail) new) (push (car tail) new))
-      (pop tail))
-    (nreverse new)))
+;; Emacs 20 with `cl-extra.el' loaded.
+(when (and (fboundp 'cl-puthash) (not (fboundp 'puthash)))
+  (defalias 'puthash 'cl-puthash))
+
+;; Same as `icicle-remove-duplicates'.
+(if (fboundp 'puthash);; Emacs 21+, or Emacs 20 with `cl-extra.el' loaded.
+    (defun libreq-remove-duplicates (sequence &optional test)
+      "Copy of SEQUENCE with duplicate elements removed.
+Optional arg TEST is the test function.  If nil, test with `equal'.
+See `make-hash-table' for possible values of TEST."
+      (setq test  (or test #'equal))
+      (let ((htable  (make-hash-table :test test)))
+        (loop for elt in sequence
+              unless (gethash elt htable)
+              do     (puthash elt elt htable)
+              finally return (loop for i being the hash-values in htable collect i))))
+
+  (defun libreq-remove-duplicates (list &optional use-eq)
+    "Copy of LIST with duplicate elements removed.
+Test using `equal' by default, or `eq' if optional USE-EQ is non-nil."
+    (let ((tail  list)
+          new)
+      (while tail
+        (unless (if use-eq (memq (car tail) new) (member (car tail) new))
+          (push (car tail) new))
+        (pop tail))
+      (nreverse new))))
 
 ;;;;;;;;;;;;;;;;;;;;;;
 
