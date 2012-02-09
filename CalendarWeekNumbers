@@ -1,20 +1,48 @@
-CalendarMode loosely supports the ISO week standard.
+GnuEmacs has support for displaying ISO weeks (WikiPedia:ISO_week_date)
+in CalendarMode since version 23.
 
-[new]
-I couldn't find a way to display the calendar week numbers - is there one?
-And does this possibilty recognize the different counting ways for 
-the week numbers (see WikiPedia:Week)
-- greetings -- Schusch (2007-05-25)
+= Displaying ISO week numbers in CalendarMode =
 
-[new]
-The command `pc' prints things like "Day 2 of week 23 of 2007".  So the logic is in there.  Unfortunately, there is no option to turn on the display of week numbers.  It's probably hackable.
+GnuEmacs 23.1 introduced the variable <code>calendar-intermonth-text</code>
+that can be used for displaying ISO week numbers in the Calendar window.
+The code bellow was adapted from this variable's documentation:
 
-[new]
-There is a hack to display week numbers in the calendar. (See [http://groups.google.com/group/gnu.emacs.sources/msg/4cf127982f70d379].) However, EdwardReingold has stated many times [http://groups.google.com/group/gnu.emacs.help/msg/1ca8598c315b7ec1] [http://groups.google.com/group/gnu.emacs.help/msg/183bd861ad342958] [http://groups.google.com/group/gnu.emacs.sources/msg/d7454ed05a464987], that it's not recommended because it can break things.
-[new]
-Well, I just wanted to mention, that the week numbers are not extraneous, as Reingold stated, in some business you need them every day (maybe emacs is too complex today to add a usefull enhancement?); and thanks for the 'pc' - that's not what I wanted but better than nothing (well and I need a working emacs installation and I am not an expert at this, so I don't dare to install the hack or the patch) -- Schusch (2007-06-21)
-[new]
-Here's a patch to Emacs 22 (2008-12-07) that provides the following view of the calendar.
+{{{
+(copy-face font-lock-constant-face 'calendar-iso-week-face)
+(set-face-attribute 'calendar-iso-week-face nil
+                    :height 0.7)
+(setq calendar-intermonth-text
+      '(propertize
+        (format "%2d"
+                (car
+                 (calendar-iso-from-absolute
+                  (calendar-absolute-from-gregorian (list month day year)))))
+        'font-lock-face 'calendar-iso-week-face))
+}}}
+
+This will display the week number in a somewhat (the factor 0.7 above)
+smaller font.  One can also add a header for the week numbers:
+{{{
+(copy-face 'default 'calendar-iso-week-header-face)
+(set-face-attribute 'calendar-iso-week-header-face nil
+                    :height 0.7)
+(setq calendar-intermonth-header
+      (propertize "Wk"                  ; or e.g. "KW" in Germany
+                  'font-lock-face 'calendar-iso-week-header-face))
+}}}
+
+= Navigating to a given ISO week =
+
+To display a given ISO week in Calendar use the command
+<code>calendar-iso-goto-week</code>, which is bound to <code>g
+w</code> in CalendarMode.
+
+
+= Support for ISO weeks in older versions of GnuEmacs =
+
+It's also possible to display week numbers in the calendar on GnuEmacs 22, see e.g. [http://groups.google.com/group/gnu.emacs.sources/msg/4cf127982f70d379].) However,  EdwardReingold, the author of the CalendarMode, has stated many times [http://groups.google.com/group/gnu.emacs.help/msg/1ca8598c315b7ec1] [http://groups.google.com/group/gnu.emacs.help/msg/183bd861ad342958] [http://groups.google.com/group/gnu.emacs.sources/msg/d7454ed05a464987], that this is not recommended since it can break things.
+
+Here's another patch to Emacs 22 (2008-12-07) that provides the following view of the calendar:
 {{{
            May 2007                June 2007                July 2007      
      Su Mo Tu We Th Fr Sa     Su Mo Tu We Th Fr Sa     Su Mo Tu We Th Fr Sa 
@@ -91,31 +119,6 @@ The patch:
  (defun calendar-insert-indented (string indent &optional newline)
    "Insert STRING at column INDENT.
 }}}
-[new]
-I like the use of the "W52" at the beginning of the week, it would be great to have this view in one of the next emacs versions -- Schusch (2007-06-21)
-
-[new]
-Has this code been introduced into core CVS ?
-
-[new]
-As of 2008-04-28, I have no knowledge that this has been accepted.  Looking at GIT:calendar/cal-iso.el and GIT:calendar/calendar.el it wouldn't appear so.  It hasn't been formally submitted, either.  I predict the patch would need some cleaning up to be accepted.  -- AaronHawley
-
-[new]
-In emacs 23.1 there is a variable calendar-intermonth-text that can be used for this purpose.  From 
-the variable's documentation:
-{{{
-  (setq calendar-week-start-day 1
-        calendar-intermonth-text
-        '(propertize
-          (format "%2d"
-                  (car
-                   (calendar-iso-from-absolute
-                    (calendar-absolute-from-gregorian (list month day year)))))
-          'font-lock-face 'font-lock-function-name-face))
-}}}
-
-
-
 
 ----
 CategoryCalendar
