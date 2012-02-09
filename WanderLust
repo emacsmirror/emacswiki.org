@@ -54,6 +54,10 @@ Other Requirements:
 
 * APEL 10.7, FLIM 1.14.5 and SEMI 1.14.5 
 
+== Installing Wanderlust ==
+Best way to get the latest wanderlust and all its dependencies is by installing it through [http://www.emacswiki.org/emacs/el-get el-get], which is an elisp package manager, that downloads and installs all dependencies automatically. You can also install wanderlust through your package manager (for GNU/Linux); search for "wanderlust", "wl", or "wl-beta" (recommended for Debian-based systems).
+
+
 == Basic Usage ==
 Wanderlust has four basic buffers: Folder buffer, summary buffer, message buffer/view, and draft buffer. 
 
