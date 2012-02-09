@@ -38,10 +38,16 @@ actually visit any number of file bookmarks.  When finished, you
 can continue with non-bookmark file-name completion.
 
 * '''`##C-x a +##'''' or '''`C-x a -'''' to add or remove tags for a file.  These
-are [[http://delicious.com|delicious]]-style tags -- any labels you like.  You need
+are [[http://delicious.com|delicious]]-style tags -- any labels you like.  If there is not
+already an autofile bookmark for the file, then one is created.
+(The autofile bookmark is where the tags are persisted.)  You need
 library '''[[Bookmark+]]''' for this feature.  See also
 [[Icicles - Bookmark Enhancements#TaggingFiles|tagging files]].
 
+* '''`C-x a a'''' to bookmark a file, that is, to create an autofile
+bookmark.  This is the same as `##C-x a +##' and `C-x a -', except
+that it does not prompt you for tags to add or remove.  You need
+library '''[[Bookmark+]]''' for this feature.
 
 In many cases for '''Icicles''' multi-commands that read a file name,
 you can use '''`M-n'''' to pick up the file name at [[point]], or if none
