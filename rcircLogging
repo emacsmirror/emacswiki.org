@@ -29,3 +29,6 @@ If you are using Emacs 23, you'll find built-in support for logging -- see `rcir
                          (concat rcirc-log-directory "/" (downcase target))
                          t 'quietly))))))
 
+ ;;; If you want to log a single channel buffer
+ (defun indio-generate-log-filename (process target) (when (string= target "#evildudes") (rcirc-generate-new-buffer-name process target)))
+ (setq rcirc-log-filename-function 'indio-generate-log-filename)
