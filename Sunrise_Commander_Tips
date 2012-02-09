@@ -99,7 +99,7 @@ C-c b
 ----
 [:ExternalApps]
 ==Opening files in external applications.==
-
+=== OpenWith ===
 The  best  emacs  module I've seen for opening files in external applications is
 Markus Triska's OpenWith. On Linux it works perfectly. On Windows  you  need  to
 apply  the  following  patch,  so  it  knows  how to use the /w32-shell-execute/
@@ -145,7 +145,35 @@ distribution soon.
 Once you've  installed OpenWith, customize  the /openwith-associations/ variable
 as needed.
 
-----
+=== System Default Application ===
+
+By default  sr-browse-file (b) opens the item under the cursor in your web-browser. You can redefine this function to open the file with the system default application like this:
+
+<pre>
+(defun sr-browse-file (&optional file)
+  "Display the selected file with the default appication."
+  (interactive)
+  (setq file (or file (dired-get-filename)))
+  (save-selected-window
+    (sr-select-viewer-window)
+    (let ((buff (current-buffer))
+	  (fname (if (file-directory-p file)
+		     file
+		   (file-name-nondirectory file)))
+	  (app (cond
+		((eq system-type 'darwin)	"open %s")
+		((eq system-type 'windows-nt)	"open %s")
+		(t				"xdg-open %s"))))
+      (start-process-shell-command "open" nil (format app file))
+      (unless (eq buff (current-buffer))
+        (sr-scrollable-viewer (current-buffer)))
+      (message "Opening \"%s\" ..." fname))))
+</pre>
+
+It should work on Windows, MacOS and GNU systems.  I've tested it on Linux only. 
+
+-- Vitalie Spinu
+
 [:OpenWithInRecentf]
 ==Adding files opened with external apps to the history of recent files.==
 
@@ -560,3 +588,19 @@ the viewer pane, and not in the SC panes.
 ----
 CategoryDirectories
 CategoryEmulation
+ utility. Finding files by name (C-c C-n) or by
+contents (C-c C-g) is cool, but it's in the raw find command (C-c C-f) where the
+real power is. Most file managers can only dream of providing such a rich search
+capability. If you need a place to get you started,
+[http://www.softpanorama.org/Tools/Find/find_mini_tutorial.shtml  here is a good
+tutorial]. Also take the time to study the manual page (M-x man
+  (interactive)
+  (setq file (or file (dired-get-filename)))
+  (save-selected-window
+    (sr-select-viewer-window)
+    (let ((buff (current-buffer))
+	  (fname (if (file-directory-p file)
+		     file
+		   (file-name-nondirectory file)))
+	  (app (cond
+		((eq system-type 'darwin)	
