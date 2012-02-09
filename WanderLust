@@ -101,6 +101,7 @@ Similarly,
 
 will show you the complete hierarchy of newsgroups available on your default nntp server. 
 
+=== Opening attachments -- Setting up .mailcap ===
 If your messages contain attachments, you can type `v' to launch an external program with it. You will be asked which method to use. Hit the tab key to see the available methods. To configure your own programs, you'll have to add/edit the mime types in the ~/.mailcap file. Here is an example (you might have to use "%s" instead of %s if you get into trouble with spaces in filenames):
 
 ~/.mailcap:
@@ -214,6 +215,7 @@ As of January 2012 there's an IRC channel <code>#wanderlust</code> at irc.freeno
 * WlHooks -- A list of Wanderlust hooks
 * WlPgg -- using the PGG package with WanderLust
 * WlEmacsTwentyThree
+* [http://www.emacswiki.org/emacs/MailtoHandler#toc5 MailtoHandler] -- Using wl for <code>mailto:</code> links
 
 === Tutorials ===
 * [http://mihai.bazon.net/articles/emacs/wanderlust-email-client Wanderlust email client.]
