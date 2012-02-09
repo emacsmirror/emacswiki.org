@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Wed Feb  8 16:38:28 2012 (-0800)
+;; Last-Updated: Thu Feb  9 08:28:51 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 26438
+;;     Update #: 26442
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-doc1.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -6831,13 +6831,17 @@
 ;;  input".
 ;;
 ;;  Because completion is so important to Icicles, because cycling
-;;  replaces the input you type in the minibuffer, and because you
-;;  sometimes need to retrieve such typed input that was never
-;;  entered, Icicles also records this input.  You can retrieve it
-;;  during completion using `C-l' (`icicle-retrieve-previous-input')
-;;  and `C-S-l', that is, `C-L', (`icicle-retrieve-next-input').  Use
-;;  these commands to cycle among your past completion inputs
-;;  (backward and forward, respectively).
+;;  replaces the input you type in the minibuffer, because Icicles
+;;  expands your input to the common match (provided option
+;;  `icicle-expand-input-to-common-match-flag' is non-`nil'), and
+;;  because you sometimes need to retrieve such typed input that was
+;;  never entered, Icicles also records this input.
+;;
+;;  You can retrieve the last such unentered input during completion
+;;  using `C-l' (`icicle-retrieve-previous-input') and `C-S-l', that
+;;  is, `C-L', (`icicle-retrieve-next-input').  Use these commands to
+;;  cycle among your past completion inputs (backward and forward,
+;;  respectively).
 ;;
 ;;  User option `icicle-completion-history-max-length' limits the
 ;;  number of completion inputs to save.
