@@ -65,8 +65,8 @@ bookmark.
 In ''Icicle'' mode, the '''Bookmark+''' keys for tagging and untagging files
 are bound to [[multi-command]]s '''`icicle-tag-a-file'''' and '''`icicle-untag-a-file''''.  In
 addition, all '''Icicles''' [[Icicles - File-Name Input|file commands]] let you tag or untag files on
-the fly, during file-name completion, using the keys `##C-x a +##' and
-`C-x a -' respectively (`a' for autofile).
+the fly, during file-name completion, using the keys '''`##C-x a +##'''' and
+'''`C-x a -'''' respectively (`a' for autofile).  Similarly, you can use '''`C-x a a'''' to create an autofile bookmark for a file without tagging it.
 
 There are several '''Icicles''' [[multi-command]]s for jumping to tagged
 files.  They are all on the '''Bookmark+''' keymaps `bmkp-jump-map' and
