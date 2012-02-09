@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Wed Jan 25 14:04:56 2012 (-0800)
+;; Last-Updated: Wed Feb  8 16:38:28 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 26430
+;;     Update #: 26438
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-doc1.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -2808,15 +2808,11 @@
 ;;  only partial input in the minibuffer, by using `RET'.
 ;;
 ;;  But what about apropos completion?  And what about non-strict
-;;  (lax) completion, whether prefix or apropos, when your input is
-;;  not automatically expanded (option
-;;  `icicle-expand-input-to-common-match-flag' is `nil')?
-;;
-;;  You can use `S-RET' (`S-return'), bound to command
-;;  `icicle-apropos-complete-and-exit', to force completion and
-;;  acceptance of the completed input.  It acts similarly to what
-;;  `RET' does for strict prefix completion.  It works for both strict
-;;  and lax completion.
+;;  (lax) completion, whether prefix or apropos?  You can use `S-RET'
+;;  (`S-return'), bound to command `icicle-apropos-complete-and-exit',
+;;  to force completion and acceptance of the completed input.  It
+;;  acts similarly to what `RET' does for strict prefix completion.
+;;  It works for both strict and lax completion.
 ;;
 ;;  `S-RET' first completes your input according to the current
 ;;  completion mode (`icicle-default-cycling-mode' or the last
@@ -6151,9 +6147,16 @@
 ;;    completion.
 ;;
 ;;  * `C-x a +' or `C-x a -' to add or remove tags for a file.  These
-;;    are delicious-style tags - any labels you like.  You need
-;;    library `Bookmark+' for this feature.  See also
+;;    are delicious-style tags - any labels you like.  If there is not
+;;    already an autofile bookmark for the file, then one is created.
+;;    (The autofile bookmark is where the tags are persisted.)  You
+;;    need library `Bookmark+' for this feature.  See also
 ;;    (@file :file-name "icicles-doc2.el" :to "Tagging Files and Jumping to Them").
+;;
+;;  * `C-x a a' to bookmark a file, that is, to create an autofile
+;;    bookmark.  This is the same as `C-x a +' and `C-x a -', except
+;;    that it does not prompt you for tags to add or remove.  You need
+;;    library `Bookmark+' for this feature.
 ;;
 ;;  In many cases for Icicles multi-commands that read a file name,
 ;;  you can use `M-n' to pick up the file name at point, or if none
