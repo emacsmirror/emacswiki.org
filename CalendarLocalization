@@ -38,6 +38,17 @@ and the 'terrestrial-branch' (地支) in Chinese:
           chinese-calendar-terrestrial-branch
           ["子" "丑" "寅" "卯" "辰" "巳" "午" "未" "申" "酉" "戌" "亥"])
 
+=== Dutch ===
+
+    (setq calendar-week-start-day 1
+          calendar-day-name-array
+          ["zondag" "maandag" "dinsdag" "woensdag" 
+           "donderdag" "vrijdag" "zaterdag"]
+          calendar-month-name-array
+          ["januari" "februari" "maart" "april" "mei" 
+           "juni" "juli" "augustus" "september" 
+           "oktober" "november" "december"])
+
 === Finnish ===
    (setq calendar-week-start-day 1
          calendar-day-name-array
