@@ -53,7 +53,7 @@ Currently I've been using following lisp code in my dot emacs.
       (defun joonhwan:dbx-mode-hook()
 		(gud-def gud-break "file \"%d%f\"; stop at %l"
 				 "\C-b" "Set breakpoint at current line.")
-		(gud-def gud-up "up %p; echo GUD#$vlineno@$vfilee"
+		(gud-def gud-up "up %p; echo GUD#$vlineno@$vfile"
 				 "<" "Up (numeric arg) stack frame.")
 		(gud-def gud-down "down %p; echo GUD#$vlineno@$vfile"
 				 ">" "Down (numeric arg) stack frame.")
