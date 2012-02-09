@@ -52,10 +52,7 @@ name), you can complete and exit the minibuffer all at once, with
 only partial input in the minibuffer, by using `RET'.
 
 But what about ''apropos'' completion?  And what about ''non''-strict (lax)
-completion, whether prefix or apropos, when your input is not
-automatically expanded (option '''`<tt>[[Icicles - Customization and General Tips#icicle-expand-input-to-common-match-flag|icicle-expand-input-to-common-match-flag]]</tt>'''' is `nil')?
-
-You can use '''`S-RET'''' (`S-return'), bound to command
+completion, whether prefix or apropos?  You can use '''`S-RET'''' (`S-return'), bound to command
 `icicle-apropos-complete-and-exit', to force completion and
 acceptance of the completed input.  It acts similarly to what
 `RET' does for strict prefix completion.  It works for both strict
