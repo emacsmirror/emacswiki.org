@@ -279,6 +279,9 @@ On the other hand, the click event seems to be stored as a <code>TOOL_BAR_EVENT<
 [new]
 * It would be very nice if TRAMP could work asynchronously. While saving a remote file, Emacs is frozen, which is pretty annoying. Generally speaking, Emacs would improve significantly when all the small freezes will be removed. More asynchronous operations would be very welcome!
 
+[new]
+* Emacs diplay images in tty,xterm.
+
 === Extensibility Wishes ===
 
 These are wishes about Emacs lisp or generally extending Emacs.
