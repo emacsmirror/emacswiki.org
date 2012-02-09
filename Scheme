@@ -13,7 +13,9 @@ An existing implementation of [[Emacsen]] in Scheme is called EdWin and exists a
 
 The default program name is `scheme'.  If your copy of scheme is called `guile' or something other, customize the variable `scheme-program-name'.
 
-For a really good interface, check ILispMode. 
+For a really good interface for writing Scheme, check SlimeMode.
+
+For Scheme, a new Emacs mode is available: [http://www.nongnu.org/geiser/ Geiser].  It supports Guile and Racket (previously known as PLT). On Debian or Ubuntu, it can be installed with ##sudo apt-get install geiser##.
 
 For a really nice mode for Racket Scheme and other Schemes ([[Guile]]), see QuackMode.
 
@@ -25,8 +27,6 @@ For Scheme documentation lookup, see InfoLook and SchemeLookup.
 SchemeComplete provides R5Rs and some SRFI symbols completion and ElDoc support.
 
 For running R6RS scripts with [[Ikarus]] and jumping to source locations displayed as part of a error message from Ikarus, there is [http://github.com/rotty/dotfiles/tree/master/.emacs.d/lisp/ikarus-script.el|ikarus-script.el].
-
-For Scheme, a new Emacs mode is available: [http://www.nongnu.org/geiser/ Geiser].  It supports Guile and Racket (previously known as PLT). On Debian or Ubuntu, it can be installed with ##sudo apt-get install geiser##.
 
 A great textbook that uses Scheme is StructureAndInterpretationOfComputerPrograms.
 
