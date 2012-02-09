@@ -39,8 +39,7 @@ Even when using IMAP, wl caches the messages (by default it caches the message b
 }}}
 
 === Integration with Offline IMAP and fast searches ===
-
-Integration with [https://github.com/nicolas33/offlineimap offlineimap] is simple and easy since wanderlust understands the [http://en.wikipedia.org/wiki/Maildir MailDir] format.  Storing emails locally improves the speed of reading messages significantly even compared to using Wanderlusts native facility for caching messages.
+Integration with [https://github.com/nicolas33/offlineimap offlineimap] is simple and easy since wanderlust understands the [http://en.wikipedia.org/wiki/Maildir MailDir] format. Storing emails locally improves the speed of reading messages significantly even compared to using Wanderlusts native facility for caching messages. You can run offlineimap from emacs by using [http://julien.danjou.info/software/offlineimap.el offlineimap.el].
 
 Using the [http://en.wikipedia.org/wiki/Maildir MailDir] format also has the advantage of being able to use native text-based search for all messages.  By default wanderlust is designed to use Namazu, but you can easily replace it with [http://www.djcbsoftware.nl/code/mu/ mu search].  Once you have mu setup you can integrate it into wanderlust with the following in either your init.el or .wl :
 
