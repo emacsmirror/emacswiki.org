@@ -38,14 +38,13 @@ Calendar arithmetic and motion:
 ; ##9 M-}##: Find out what day is 9 months from the day at point.
 ; ##. 177 C-b##: Find out what day was 177 days ago.
 ; ##8 C-n##: Move ahead 8 weeks.
-
+; ##g w##: go to a given ISO week.
 == Wishlist ==
 
 * Sync with PalmPilot -- MarceloToledo
 * Unified interface for calendar, diary etc... -- XavierMaillard
 * Category support for calendars (multiple calendars support as well) -- XavierMaillard
-* Full support of RFC2445 (import/export as provided by icalendar.el° -- XavierMaillard
-* CalendarWeekNumbers -- Schusch
+* Full support of RFC2445 (import/export as provided by icalendar.el -- XavierMaillard
 * Different colors for different types of events -- DavidArroyo
 
 == See also ==
