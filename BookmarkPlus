@@ -405,7 +405,8 @@ your `load-path' (it will then be loaded by ##bookmark+.el##).
 === Synergy with Icicles. ===
 
 '''[[Icicles]]''' works with '''Bookmark+''' to provide enhanced bookmark jumping (visiting), setting, and help.  It gives you a
-bookmark browser.  See [[#UseBookmarkPlusWithIcicles|Use Bookmark+ with Icicles]].
+bookmark browser, and lets you bookmark and tag files on the
+fly.  See [[#UseBookmarkPlusWithIcicles|Use Bookmark+ with Icicles]].
 
 
 
@@ -1461,7 +1462,9 @@ tags from a file.
 If you also use library '''[[Icicles]]''', then you can act on multiple
 files during the same command (a ''[[multi-command]]'').  You can thus
 all at once tag a set of files the same way, or act on a set of
-files that are tagged similarly.
+files that are tagged similarly.  '''Icicles''' also lets you create
+autofiles or add or remove tags, on the fly, whenever you use
+commands (e.g. `C-x C-f') that access files.
 
 If you also use library '''[[Dired+]]''' (<tt>[[dired+.el]]</tt>) then you can use '''`##C-+##'''' to add tags to the marked files and '''`##C--##'''' to remove tags
 from them.  You can use '''`##C-M-+##'''' and '''`##C-M--##'''' to do the same thing
@@ -3047,6 +3050,19 @@ customizing `<tt>[[Icicles - Customization and General Tips#icicle-show-multi-co
 
 * You can define '''Icicles''' [[Icicles - Candidate Sets|sets of bookmarks]], persistent or not, and
   act on their members in various ways.
+
+
+During file-name completion, you can do any of the following on
+the fly:
+
+
+* Jump to one or more file bookmarks, using '''`C-x m''''.
+
+* Create one or more autofile bookmarks, using '''`C-x a a''''.
+
+* Add tags to one or more files (autofile bookmarks), using '''`##C-x a +##''''.
+
+* Remove tags from one or more files (autofile bookmarks), using '''`C-x a -''''.
 
 
 '''See Also:''' [[Icicles - Bookmark Enhancements]].
