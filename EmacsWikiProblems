@@ -388,20 +388,3 @@ Thanks. I will let you know if I see any more problems. -- JonasBernoulli
 
 ----
 CategoryEmacsWikiSite
-
-== Error / dbx. Error in gud-up definition ==
-Erroneous line: 
-
-[new]
-(gud-def gud-up "up %p; echo GUD#$vlineno@$vfilee"
-
-[new]
-corrected line (what is should be):
-
-[new]
-(gud-def gud-up "up %p; echo GUD#$vlineno@$vfile"
-
--- baramij7
-
-
-
