@@ -38,6 +38,25 @@ Even when using IMAP, wl caches the messages (by default it caches the message b
 (elmo-cache-expire-by-size 1024)
 }}}
 
+=== Integration with Offline IMAP and fast searches ===
+
+Integration with [https://github.com/nicolas33/offlineimap offlineimap] is simple and easy since wanderlust understands the [http://en.wikipedia.org/wiki/Maildir MailDir] format.  Storing emails locally improves the speed of reading messages significantly even compared to using Wanderlusts native facility for caching messages.
+
+Using the [http://en.wikipedia.org/wiki/Maildir MailDir] format also has the advantage of being able to use native text-based search for all messages.  By default wanderlust is designed to use Namazu, but you can easily replace it with [http://www.djcbsoftware.nl/code/mu/ mu search].  Once you have mu setup you can integrate it into wanderlust with the following in either your init.el or .wl :
+
+
+{{{
+
+(elmo-search-register-engine
+ 'mu 'local-file
+ :prog "mu"
+ :args '("find" pattern "-o" "plain" "-f" "l")
+ :charset 'utf-8)
+
+(setq elmo-search-default-engine 'mu)
+
+}}}
+
 
 == Speed ==
 
@@ -91,7 +110,7 @@ Add the following to your ##.wl## file:
 === How can I make my "Sent" folder show TO rather than FROM in the list ===
 Provided you sent folder has the word "Sent" somewhere use:
 {{{
-(setq wl-summary-showto-folder-regexp "\.\*Sent\.\*)
+(setq wl-summary-showto-folder-regexp ".*Sent.*)
 }}}
 And also add your email-addresses to <code>wl-user-mail-address-list</code>.
 {{{
@@ -410,26 +429,6 @@ Simply tell SEMI to accept encoded sequences in header fields.
 {{{
 (setq mime-header-accept-quoted-encoded-words t)
 }}}
-
-== Integration with Offline IMAP and fast searches ==
-
-Integration with [https://github.com/nicolas33/offlineimap offlineimap] is simple and easy since wanderlust understands the [http://en.wikipedia.org/wiki/Maildir MailDir] format.  Storing emails locally improves the speed of reading messages significantly even compared to using Wanderlusts native facility for caching messages.
-
-Using the [http://en.wikipedia.org/wiki/Maildir MailDir] format also has the advantage of being able to use native text-based search for all messages.  By default wanderlust is designed to use Namazu, but you can easily replace it with [http://www.djcbsoftware.nl/code/mu/ mu search].  Once you have mu setup you can integrate it into wanderlust with the following in either your init.el or .wl :
-
-
-{{{
-
-(elmo-search-register-engine
- 'mu 'local-file
- :prog "mu"
- :args '("find" pattern "-o" "plain" "-f" "l")
- :charset 'utf-8)
-
-(setq elmo-search-default-engine 'mu)
-
-}}}
-
 
 == How can I set wl to be less sensitive to glitches in my network connection? ==
 Try setting this:
