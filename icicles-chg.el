@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Tue Jan 31 07:08:54 2012 (-0800)
+;; Last-Updated: Thu Feb  9 08:56:39 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 7881
+;;     Update #: 7909
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-chg.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -1147,6 +1147,11 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-fn.el'")
 ;;
+;; 2012/02/08 dadams
+;;     icicle-remove-duplicates: Redefined to use a hash table.
+;;     icicle-remove-dups-if-extras: Call icicle-remove-duplicates (not inlined).
+;; 2012/02/02 dadams
+;;     icicle-fuzzy-candidates: Use (min (length input) icicle-swank-prefix-length), not just the var.
 ;; 2012/01/20 dadams
 ;;     icicle-call-then-update-Completions: Do the sit-for even if only one candidate.
 ;; 2012/01/17 dadams
@@ -2908,6 +2913,25 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-mcmd.el'")
 ;;
+;; 2012/02/08 dadams
+;;     Renamed: icicle-add/remove-tags-and-refresh to icicle-autofile-action.
+;;     icicle-autofile-action: Handle create/set case too. not just add and remove.
+;;     icicle-(un)bind-file-candidate-keys: Bind C-x a a to icicle-autofile-action for create/set.
+;; 2012/02/02 dadams
+;;     Added aliases: cycle-icicle-(incremental-completion|sort-order|(S)-TAB-completion-method).
+;;     icicle-apropos-complete-and-exit: Removed binding of icicle-expand-input-to-common-match-flag.
+;;     icicle-toggle-dot: Do not call icicle-barf-if-outside-minibuffer.
+;;     icicle-cycle-image-file-thumbnail, icicle-next-(S-)TAB-completion-method,
+;;       icicle-change-sort-order:
+;;         Minibuffer message mentions also the next (following) value.
+;; 2012/01/31 dadams
+;;     icicle-retrieve-previous-input:
+;;       Do not invoke icicle-call-then-update-Completions when inserting.  IOW, do not re-complete.
+;;     icicle-(prefix|apropos)-complete-1: Reverted change for sole-completion: Expand (complete) it.
+;;     icicle-apropos-complete-1, multi-match case for file names:
+;;       Do not apply icicle-file-name-directory to icicle-last-input if it is nil.
+;;     icicle-remove-cand-from-lists: Fixed for Emacs 22 file names: compare CAND with just MCT-CAND.
+;;                                    Fixed for Emacs 23+: use minibuffer-completion-predicate always.
 ;; 2012/01/27 dadams
 ;;     icicle-(prefix|apropos)-complete-1:
 ;;       Reverted part of 2012-01-20 chg, for mult matches: it picked up mult keys hit with no delay.
