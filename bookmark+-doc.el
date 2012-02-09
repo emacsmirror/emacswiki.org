@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2012, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Sat Feb  4 14:20:56 2012 (-0800)
+;; Last-Updated: Wed Feb  8 17:04:06 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 14199
+;;     Update #: 14206
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-doc.el
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search,
 ;;           info, url, w3m, gnus
@@ -499,7 +499,8 @@
 ;;
 ;;     - Icicles works with Bookmark+ to provide enhanced bookmark
 ;;       jumping (visiting), setting, and help.  It gives you a
-;;       bookmark browser.  See (@> "Use Bookmark+ with Icicles") and
+;;       bookmark browser, and lets you bookmark and tag files on the
+;;       fly.  See (@> "Use Bookmark+ with Icicles") and
 ;;       http://www.emacswiki.org/cgi-bin/wiki/Icicles.
  
 ;;(@* "Bookmark Basics")
@@ -1443,7 +1444,9 @@
 ;;  If you also use library Icicles, then you can act on multiple
 ;;  files during the same command (a "multi-command").  You can thus
 ;;  all at once tag a set of files the same way, or act on a set of
-;;  files that are tagged similarly.
+;;  files that are tagged similarly.  Icicles also lets you create
+;;  autofiles or add or remove tags, on the fly, whenever you use
+;;  commands (e.g. `C-x C-f') that access files.
 ;;
 ;;  If you also use library Dired+ (`dired+.el') then you can use
 ;;  `C-+' to add tags to the marked files and `C--' to remove tags
@@ -2840,6 +2843,19 @@
 ;;
 ;;  * You can define Icicles sets of bookmarks, persistent or not, and
 ;;    act on their members in various ways.
+;;
+;;  During file-name completion, you can do any of the following on
+;;  the fly:
+;;
+;;  * Jump to one or more file bookmarks, using `C-x m'.
+;;
+;;  * Create one or more autofile bookmarks, using `C-x a a'.
+;;
+;;  * Add tags to one or more files (autofile bookmarks), using `C-x a
+;;    +'.
+;;
+;;  * Remove tags from one or more files (autofile bookmarks), using
+;;    `C-x a -'.
  
 ;;(@* "If you use Emacs 20 and Also a More Recent Version")
 ;;  ** If you use Emacs 20 and Also a More Recent Version **
