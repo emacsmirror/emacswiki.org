@@ -80,19 +80,28 @@ No need to M-x: mime-edit-insert-file is bound to <code>C-c C-x TAB</code>. At l
 ~~dmaus
 
 
-
-
 === How can I prevent WL from splitting large attachments into many messages? ==
-
 Add the following to your ##.wl## file:
-
 {{{
 (setq mime-edit-split-message nil)
 }}}
 
+== Summary Buffer ==
 
-== How can I sort messages in summary buffer on reverse date ==
+=== How can I make my "Sent" folder show TO rather than FROM in the list ===
+Provided you sent folder has the word "Sent" somewhere use:
+{{{
+(setq wl-summary-showto-folder-regexp "\.\*Sent\.\*)
+}}}
+And also add your email-addresses to <code>wl-user-mail-address-list</code>.
+{{{
+;; You should set this variable if you use multiple e-mail addresses.
+(setq wl-user-mail-address-list  '("my.name@gmail.com"
+                                   "myname@gmail.com"
+                                   "myname@company.com"))
+}}}
 
+=== How can I sort messages in summary buffer on reverse date ===
 Ty adding something like the following to your .wl (note: not sure it works):
 
 {{{
@@ -121,7 +130,6 @@ Ty adding something like the following to your .wl (note: not sure it works):
 
 
 == How can I change which headers wl displays when viewing a message? ==
-
 The headers wl displays when viewing and editing a message are
 controlled by two variables: `wl-message-ignored-field-list' and
 `wl-message-visible-field-list'.  Both are lists whose elements are
