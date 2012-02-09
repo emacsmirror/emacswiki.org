@@ -216,6 +216,7 @@ As of January 2012 there's an IRC channel <code>#wanderlust</code> at irc.freeno
 * WlPgg -- using the PGG package with WanderLust
 * WlEmacsTwentyThree
 * [http://www.emacswiki.org/emacs/MailtoHandler#toc5 MailtoHandler] -- Using wl for <code>mailto:</code> links
+* http://julien.danjou.info/software/offlineimap.el -- Run offlineimap from emacs
 
 === Tutorials ===
 * [http://mihai.bazon.net/articles/emacs/wanderlust-email-client Wanderlust email client.]
