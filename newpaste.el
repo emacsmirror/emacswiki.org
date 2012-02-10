@@ -175,7 +175,6 @@ one of the choices"
                  (or captcha-answer (error "Unable to find captcha"))
                  (push (cons "captcha" (format "%d" captcha-answer)) outputs))))
         (push (cons "text" text) outputs)
-        (log-sexp text-major-mode (newpaste-guess-colorization text text-major-mode))
         (push (cons "colorize"
                     (newpaste-maybe-ask-for
                      "Colorize as: " newpaste-ask-colorization
