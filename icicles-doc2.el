@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Wed Feb  8 16:39:48 2012 (-0800)
+;; Last-Updated: Fri Feb 10 07:48:43 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 28614
+;;     Update #: 28620
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-doc2.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -382,16 +382,36 @@
 ;;  called "search contexts".
 ;;
 ;;  Command `icicle-occur' is really `icicle-search' with an implicit
-;;  initial regexp of `.*' (which you do not enter, however).  That
-;;  is, the initial completion candidates for `icicle-occur' are all
-;;  of the lines of the buffer (`.' matches any character except a
-;;  newline).
+;;  initial regexp of `.*' (which you do not enter, however).  For
+;;  `icicle-occur', the search contexts, that is, the initial
+;;  completion candidates, are all of the lines of the buffer (`.'
+;;  matches any character except a newline).
 ;;
-;;  With `icicle-search', the candidates need not be single, complete
-;;  lines; they can be any strings in the buffer, including multi-line
-;;  strings.  Your initial regexp is used over and over to find the
-;;  set of matching strings in the region or buffer that you search.
-;;  These strings then serve as the completion candidates.
+;;  This means that `icicle-occur' does not, like `grep' and `occur',
+;;  give you just one chance to filter the lines by providing a regexp
+;;  to match.  It lets you dynamically change the filtering regexp,
+;;  changing the search hits on the fly.  That is the general idea of
+;;  Icicles search: define search contexts, then filter them
+;;  dynamically by matching your current minibuffer input.
+;;
+;;  What if you want to start out with only a subset of the buffer
+;;  lines, and then match those dynamically - in other words, you are
+;;  sure you want to limit your searching to only some of the lines?
+;;  In that case, you just use `icicle-search', not `icicle-occur',
+;;  providing it with a context-defining regexp that matches only the
+;;  lines you want.
+;;
+;;  For example, you might use `.*for.*', to start with only the lines
+;;  containing `for' as the contexts to search.  Again, `icicle-occur'
+;;  is just a shortcut version of `icicle-search' for the common case
+;;  where you want to dynamically match any of the lines.
+;;
+;;  More generally, with `icicle-search' the candidates need not be
+;;  single, complete lines; they can be any strings in the buffer,
+;;  including multi-line strings.  Your initial regexp is used over
+;;  and over to find the set of matching strings in the region or
+;;  buffer that you search.  These strings then serve as the
+;;  completion candidates.
 ;;
 ;;  For example, you might use a search-context regexp of
 ;;  "[A-Z][^.?!]+[.?!]" to search sentences, "\\(.+\n\\)+" to search
