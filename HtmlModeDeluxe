@@ -177,7 +177,8 @@ Any suggestions greatly appreciated.
 
 -- Peter Johansson (peter@newvillagemedia.com)
 [new]
-There is an article describing an installation of mmm-mode posted at http://www.dzr-web.com/people/darren/projects/emacs-webdev/#mmm The author uses psgml-mode with embedded CSS, Javascript and PHP --David
+There is an article describing an installation of mmm-mode posted at [http://www.dzr-web.com/people/darren/projects/emacs-webdev/#mmm The author uses psgml-mode with embedded CSS, Javascript and PHP ]--David
+The above link is broken. 2-10-2012.
 
 [new]
 Note that if your HTML file includes any <script src="..."></script> declarations, you *must* have at least one space between the opening and closing tags of those declarations in order for mmm-mode to be able to detect any subsequent blocks of embedded javascript. It looks like something in the regex handling. --Ernie Longmire
