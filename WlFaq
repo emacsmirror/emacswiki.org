@@ -203,6 +203,11 @@ on its own put this in your configuration file:
 }}}
 
 
+== I cant see inline images in html-messages without jumping to them ==
+In default settings, mime-w3m shows only images embedded in a message. 
+Please check URLs of images and the value of mime-w3m-safe-url-regexp.
+
+
 === How can I send html messages? ===
 If you have to or it is appropriate: Yes, code below does the trick of
 converting the message body into html before sending.  It requires
@@ -501,9 +506,6 @@ Wanderlust automatically saves the draft every second there's a change. If your 
 
 == How can I unsubscribe from the wanderlust mailing list? ==
 For English mail list, send an email to <code>wl-en-ctl@lists.airs.net</code> with "unsubscribe" in body.
-
-== I cant see inline images in html-messages without jumping to them ==
-In default settings, mime-w3m shows only images embedded in a message. Please check URLs of images and the value of mime-w3m-safe-url-regexp.
 
 
 == I want to contribute to Wanderlust, where can I learn more? ==
