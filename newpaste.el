@@ -217,7 +217,7 @@ one of the choices"
 (defun newpaste (beg end)
   (interactive "r")
   (let ((text (buffer-substring-no-properties beg end)))
-    (when (string-match "^[[:space:]]*$" text)
+    (when (string-match "\\`[ \t\n]*\\'" text)
       (error "Can't paste empty string"))
     (newpaste-paste-internal text major-mode)))
 
