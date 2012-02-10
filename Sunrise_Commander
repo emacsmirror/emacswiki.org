@@ -383,8 +383,11 @@ You can get a copy of the Sunrise Commander Windows Addons extension
 Is there  some mailing  list, project page or  other way to report bugs?
 
 [new]
-Currently there is no project page (other than this wiki page). Please report any
-bugs you find to the gnu.emacs.help newsgroup or directly to me: mailto:escherdragon@gmail.com
+
+There is a [https://github.com/escherdragon/sunrise-commander repository on
+github] -- if you have a github account you can report any bugs you find
+there. You can also write to the gnu.emacs.help newsgroup or directly to me:
+mailto:escherdragon@gmail.com
 
 [new]
 It would be great if sunrise commander was in [[ELPA]].
