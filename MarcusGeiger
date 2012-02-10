@@ -1,13 +1,32 @@
-Marcus Geiger (aka. [::bwolf]) is an emacs user who switches back and forth between programming languages and text editors. His main interrest is functional programming, and Scheme was his first step into it (years ago R4RS). Currently he focuses on CommonLisp as well as Haskell. He studied computer science in munich germany.
+Marcus Geiger (aka. [::bwolf]) is a programmer and emacs user.
 
-He exclusively uses *nix and prefers absolutely BSDUnix. His working environment consists among some ppc based machines, also of x86 machines and one sparc based machine.
+The current emacs version he uses is ##GNU Emacs 24.0.93.1## 
 
-The current emacs version he uses is ##GNU Emacs 22.0.50.1 (powerpc-apple-darwin8.6.0) of 2006-05-15##
+My Emacs configuration is available at [[https://github.com/bwolf/EmacsConfig]]
 
-== Emacs wishlist ==
+= TwitteringMode Stuff =
+Recently I began using TwitteringMode and for my taste the timeline display contains to much clutter. I customized the ##twittering-status-format## like this:
 
-* lexical scoping
-* faster bytecode
+MarcusGeigerTwitteringMode
+
+Relevant setting to get it: ##twittering-status-format##:
+
+<pre>
+(add-hook 'twittering-mode-hook
+          (lambda ()
+            (setq show-trailing-whitespace nil)
+            (setq twittering-timer-interval 300)
+            (setq twittering-url-show-status nil)
+            (setq twittering-icon-mode nil)
+            (setq twittering-status-format "%i %s\n%FILL[ ]{%T}\n %FACE[glyphless-char]{%@ from %f%L%r%R}\n")
+            (set-face-attribute 'twittering-username-face nil :underline nil)
+            (set-face-attribute 'twittering-username-face nil :foreground "darksalmon")))
+
+(add-hook 'twittering-edit-mode-hook
+          (lambda ()
+            (auto-fill-mode -1)))
+</pre>
+
 
 ----
 CategoryHomepage
