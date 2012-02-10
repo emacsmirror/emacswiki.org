@@ -1,3 +1,6 @@
+Please also read the [http://wiki.gohome.org/wl/ FAQ] at the home page. 
+
+
 == How do I install wanderlust, together with all dependencies? ==
 Check your distributions package repository for package named "wl" or "wl-beta". Alternatively install it through el-get (an emacs package repository), which will give you the latest version.
 
