@@ -89,8 +89,6 @@
     (c++-mode . "C++")
     (java-mode . "Java")))
 
-(setq newpaste-debug t)
-
 (defun newpaste-ask (prompt default choices)
   "Ask user for a string value, offering DEFAULT as choice. If
 CHOICES is set then completing read is used, and input must match
@@ -121,8 +119,10 @@ one of the choices"
   (let* ((url-cookie-trusted-urls '("http://paste.lisp.org/.*"))
          (buffer (url-retrieve-synchronously "http://paste.lisp.org/new")))
     (with-current-buffer buffer
-      (when (and newpaste-debug (get-buffer "*newpaste-get*"))
-        (kill-buffer "*newpaste-get*"))
+      (when newpaste-debug
+        (when (get-buffer "*newpaste-get*")
+          (kill-buffer "*newpaste-get*"))
+        (rename-buffer "*newpaste-get*"))
       (let ((inputs '())
             (captcha-answer)
             (outputs))
@@ -166,10 +166,10 @@ one of the choices"
                        outputs))
                 ((equal "title" (getf input :name))
                  (push (cons "title" (newpaste-maybe-ask-for
-                              "Title: " newpaste-ask-title
-                              (list
-                               newpaste-title
-                               (getf input :value))))
+                                      "Title: " newpaste-ask-title
+                                      (list
+                                       newpaste-title
+                                       (getf input :value))))
                        outputs))
                 ((equal "captcha" (getf input :name))
                  (or captcha-answer (error "Unable to find captcha"))
@@ -187,6 +187,8 @@ one of the choices"
                      "Expiration: " newpaste-ask-expiration
                      newpaste-expiration-list
                      newpaste-expiration-list)) outputs)
+        (unless newpaste-debug
+          (kill-buffer))
         (let ((url-request-method "POST")
               (url-request-extra-headers
                '(("Content-Type" . "application/x-www-form-urlencoded")))
@@ -198,8 +200,10 @@ one of the choices"
                           outputs
                           "&")))
           (with-current-buffer (url-retrieve-synchronously "http://paste.lisp.org/submit")
-            (when (and newpaste-debug (get-buffer "*newpaste-post*"))
-              (kill-buffer "*newpaste-post*"))
+            (when newpaste-debug
+              (when (get-buffer "*newpaste-post*")
+                (kill-buffer "*newpaste-post*"))
+              (rename-buffer "*newpaste-post*"))
             (goto-char (point-min))
             (let ((paste-num
                    (when (re-search-forward "Paste number \\([0-9]+\\) pasted" nil t)
@@ -207,11 +211,14 @@ one of the choices"
               (if paste-num
                   (let ((url (format "http://paste.lisp.org/display/%s" paste-num)))
                     (kill-new url)
+                    (unless newpaste-debug
+                      (kill-buffer))
                     (message url))
                 (message "Unable to paste, check *paste-post* buffer for errors")
-                (when (get-buffer "*paste-post*")
-                  (kill-buffer "*paste-post*")
-                  (rename-buffer "*paste-post*"))))))))))
+                (unless newpaste-debug
+                  (when (get-buffer "*paste-post*")
+                    (kill-buffer "*paste-post*")
+                    (rename-buffer "*paste-post*")))))))))))
 
 (defun newpaste (beg end)
   (interactive "r")
