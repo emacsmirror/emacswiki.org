@@ -7,7 +7,7 @@ My Emacs configuration is available at [[https://github.com/bwolf/EmacsConfig]]
 = TwitteringMode Stuff =
 Recently I began using TwitteringMode and for my taste the timeline display contains to much clutter. I customized the ##twittering-status-format## like this:
 
-MarcusGeigerTwitteringMode
+[[image:MarcusGeigerTwitteringMode]]
 
 Relevant setting to get it: ##twittering-status-format##:
 
