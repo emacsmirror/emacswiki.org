@@ -29,6 +29,7 @@
 ;;; Code:
 
 (require 'cl)
+(require 'url)
 
 (defvar newpaste-channel nil
   "Default channel")
