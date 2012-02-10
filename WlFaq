@@ -85,7 +85,7 @@ support. They can be fixed by using a snapshot from the CVS repository. For a wo
 
 == Attachments ==
 
-=== How to attach files? ===
+=== How can I attach files? ===
 There is no `wl-attach-file'.
 
 Try M-x mime-edit-insert-file RET and answer some questions (file name, content type and subtype and transfer encoding). Encoding base64 seems to work. Then don't touch the text that is added to your message. When you send the mail, the file will be included.
@@ -103,6 +103,24 @@ Add the following to your ##.wl## file:
 {{{
 (setq mime-edit-split-message nil)
 }}}
+
+
+=== Hack for v-key in message window (for attachments) ===
+Maybe another useful tip for somebody... I added this to my .emacs:
+{{{
+(add-hook
+ 'mime-view-mode-hook
+ '(lambda ()
+    "Disable 'v' for mime-play."
+    ;; Key bindings
+    (local-set-key [?v] () )
+    ))
+}}}
+Because 'v', in the summary window, hides the message-reading window, but if you hit 'v' without realizing that the cursor is in the message window, wl launches an external process which (on my machine) never produces any output and never terminates. If I get an attachment, I only want to extract it anyway by 'e' so it's no loss to me.
+
+James
+
+
 
 == Summary Buffer ==
 
@@ -146,48 +164,46 @@ Ty adding something like the following to your .wl (note: not sure it works):
         (goto-char (point-min))))
 }}}
 
-
-== How can I change which headers wl displays when viewing a message? ==
-The headers wl displays when viewing and editing a message are
-controlled by two variables: `wl-message-ignored-field-list' and
-`wl-message-visible-field-list'.  Both are lists whose elements are
-regular expressions that are used to determine which headers are
-displayed and which are not.
-
-If you for instance only want a basic set of headers like From:, To:,
-Cc:, Subject: and Date: to be displayed you could set these variables
-as followed:
-
+=== I need to resort the summary buffer by date ===
+This has been reported for when getting email with offlineimap, they
+can appear unsorted in the summary buffer, if so this will help:
 {{{
-;; ignore  all fields
-(setq wl-message-ignored-field-list '("^.*:"))
+  ;; sort the summary
+  (defun my-wl-summary-sort-hook ()
+    (wl-summary-rescan "date"))
 
-;; ..but these five
-(setq wl-message-visible-field-list
-'("^To:"
-  "^Cc:"
-  "^From:"
-  "^Subject:"
-  "^Date:"))
+  (add-hook 'wl-summary-prepared-hook 'my-wl-summary-sort-hook)
 }}}
 
-In addition you can control the order of these headers using the
-variable `wl-message-sort-field-list':
-
+=== How can I make the cursor to always move downwards ("n") when marking "d" or "o" ===
+When marking a message in the summary buffer for deletion the default behavior is to move in the last direction, that being "n" or "p". To disable this, and have it always move to next "n", put:
 {{{
-(setq wl-message-sort-field-list
- '("^From:"
-   "^Subject:"
-   "^Date:"
-   "^To:"
-   "^Cc:"))
+;;don't remember "n"/"p" direction when flagging messages:
+(setq wl-summary-move-direction-toggle nil)
 }}}
 
-Finally, you can toggle to full header view with "H" key.
+
+== Writing/reading html mails ==
+
+=== Keys in w3m are not very intuitive ===
+If you are not used to w3m key-bindings, and don't intend on using it
+on its own put this in your configuration file:
+{{{
+(eval-after-load "w3m"
+ '(progn
+ (define-key w3m-mode-map [left] 'backward-char)
+ (define-key w3m-mode-map [right] 'forward-char)
+ (define-key w3m-mode-map [up] 'previous-line)
+ (define-key w3m-mode-map [down] 'next-line)
+ (define-key w3m-minor-mode-map [left] 'backward-char)
+ (define-key w3m-minor-mode-map [right] 'forward-char)
+ (define-key w3m-minor-mode-map [up] 'previous-line)
+ (define-key w3m-minor-mode-map [down] 'next-line)
+))
+}}}
 
 
-== Can I send html messages? ==
-
+=== How can I send html messages? ===
 If you have to or it is appropriate: Yes, code below does the trick of
 converting the message body into html before sending.  It requires
 [OrgMode] to be installed because the conversion is done by Org mode's
@@ -321,6 +337,49 @@ non-nil, add `dmj/wl-send-html-message' to
 (add-hook 'wl-mail-setup-hook 'dmj/wl-send-html-message-draft-init)
 (add-hook 'wl-draft-send-hook 'dmj/wl-send-html-message-maybe)
 }}}
+
+
+
+
+== How can I change which headers wl displays when viewing a message? ==
+The headers wl displays when viewing and editing a message are
+controlled by two variables: `wl-message-ignored-field-list' and
+`wl-message-visible-field-list'.  Both are lists whose elements are
+regular expressions that are used to determine which headers are
+displayed and which are not.
+
+If you for instance only want a basic set of headers like From:, To:,
+Cc:, Subject: and Date: to be displayed you could set these variables
+as followed:
+
+{{{
+;; ignore  all fields
+(setq wl-message-ignored-field-list '("^.*:"))
+
+;; ..but these five
+(setq wl-message-visible-field-list
+'("^To:"
+  "^Cc:"
+  "^From:"
+  "^Subject:"
+  "^Date:"))
+}}}
+
+In addition you can control the order of these headers using the
+variable `wl-message-sort-field-list':
+
+{{{
+(setq wl-message-sort-field-list
+ '("^From:"
+   "^Subject:"
+   "^Date:"
+   "^To:"
+   "^Cc:"))
+}}}
+
+Finally, you can toggle to full header view with "H" key. Do note, that if you have mime-buttons turned off, you probably want to include <code>"^Content-Disposition:"</code> in the above lists, so that you can see if there's an attachment in the message.
+
+
 
 == When I open a multifolder I get an error: Wrong type argument: arrayp, nil ==
 
