@@ -1,5 +1,4 @@
 == Binaries for OS X ==
-
 A copy of GNU Emacs 22 without GUI support compiled in is available on all recent versions of Mac OS X via the shell. However, there are other Emacs distributions geared towards Mac OS X that include GUI support as well as other distinctions that may make it a more appropriate choice for some.
 
 Cocoa is the Objective-C API (originally developed by !NeXT) that is used for native OS X applications (included in Emacs 23.2).  Aquamacs and Emacs.app (GNU Emacs/Cocoa) both run under Cocoa.  Note that Emacs.app, GNU Emacs/Cocoa, and GNU Emacs/nextstep refer to the same thing.
@@ -14,7 +13,6 @@ If you've used Emacs before and already have your own emacs initialization file,
 A similar page on a German blog: [http://www.hoenn.net/blog/index.php?/archives/76-Die-Emacssituation-unter-OS-X.html Die Emacssituation unter OS X] (in German).
 
 === OS X Binary Vanilla builds ===
-
 These builds are based on the BZR version of GNU Emacs and do not contain any additional packages or patches. Popular Mac keyboard shortcuts are available though (e.g. Command-O for opening a file); these are mapped to the Super modifier (i.e., the Apple/Command key functions as Super). 
 
 * [http://emacsformacosx.com/ GNU Emacs 23.3 (Cocoa)]
@@ -279,9 +277,8 @@ example usage:
 <pre>
 ;; key bindings
 (when (eq system-type 'darwin) ;; mac specific settings
-  (setq mac-option-key-is-meta t)
-  (setq mac-command-key-is-meta nil)
-  (setq mac-command-modifier 'control)
+  (setq mac-option-modifier 'alt)
+  (setq mac-command-modifier 'meta)
   (global-set-key [kp-delete] 'delete-char) ;; sets fn-delete to be right-delete
   )
 </pre>
