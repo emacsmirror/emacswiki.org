@@ -33,6 +33,11 @@ Here's an example of how to require a "normal" diff from GNU diff with whitespac
   M-x set-variable RET vc-svn-diff-switches RET nil RET
   M-x set-variable RET vc-diff-switches RET ("--normal" "-bB") RET
 
+== Subversion 1.7 ==
+
+Emacs 24 supports Subversion 1.7, but Emacs 23 does not. If you want to use Subversion 1.7 on Emacs 23, you can use [[https://github.com/buzztaiki/vc-svn17-el/blob/master/vc-svn17.el vc-svn17.el]] for this purpose.
+
+
 == Discussion ==
 
 [new]
@@ -84,6 +89,6 @@ ediff-merge-files-with-ancestor
 }}}
 please see the following blog post: http://bit.ly/m9ozZr
 
+
 ----
 CategoryVersionControl
-
