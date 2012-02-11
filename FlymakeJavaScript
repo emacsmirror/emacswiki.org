@@ -101,7 +101,7 @@ and then put (add-to-list 'exec-path "/usr/local/bin") somwhere in your .emacs.
 
 == With JSHint command-line from Node.js ==
 
-I had trouble getting jshint-mode working properly, so I created a simple way to use JSHint from the command-line: [https://github.com/jegbjerg/flymake-node-jshint].
+I had trouble getting jshint-mode working properly, so I created a simple way to use JSHint from the command-line: [https://github.com/jegbjerg/flymake-node-jshint flymake-node-jshint].
 
 -- Henrik Jegbjerg Hansen <hjh@freecode.dk>
 
