@@ -99,6 +99,12 @@ and then put (add-to-list 'exec-path "/usr/local/bin") somwhere in your .emacs.
 
 -Dave Dreisigmeyer
 
+== With JSHint command-line from Node.js ==
+
+I had trouble getting jshint-mode working properly, so I created a simple way to use JSHint from the command-line: [https://github.com/jegbjerg/flymake-node-jshint].
+
+-- Henrik Jegbjerg Hansen <hjh@freecode.dk>
+
 
 == With JSLint server on node.js (lintnode) ==
 
