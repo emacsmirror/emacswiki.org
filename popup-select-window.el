@@ -1,6 +1,6 @@
 ;;; popup-select-window.el --- selecting a window by popup-menu*
 
-;; Copyright (C) 2010  HAMANO Kiyoto
+;; Copyright (C) 2010-2012  HAMANO Kiyoto
 
 ;; Author: HAMANO Kiyoto <khiker.mail@gmail.com>
 ;; Keywords: popup, select-window, window
@@ -24,7 +24,7 @@
 
 ;;; Requirement:
 ;;
-;; * popup.el http://github.com/m2ym/auto-complete
+;; * popup.el http://github.com/m2ym/popup-el
 
 ;;; Setting:
 ;;
@@ -41,6 +41,8 @@
 ;; * Change highlight face
 ;;
 ;;   (setq popup-select-window-window-highlight-face
+;;        '(:background "navy"))
+;;   (setq popup-select-window-window-highlight-face
 ;;        '(:foreground "white" :background "navy"))
 ;;
 ;; * Disable modeline highlight
@@ -55,18 +57,28 @@
 ;;
 ;;   (setq popup-select-window-active-modeline-bgcolor "blue")
 ;;
-;; * Chnage nonactive modeline color to gray
+;; * Change nonactive modeline color to gray
 ;;
 ;;   (setq popup-select-window-inactive-modeline-bgcolor "gray")
+;;
+;; * Change minimum number that enable popup (specifiy window
+;;   number. defaults 3).
+;;
+;;  (setq popup-select-window-popup-windows 1)
 
 ;;; Tested:
 ;;
 ;; * Emacs
-;;   * 24.0.50
+;;   * 24.0.90
 ;; * popup.el
 ;;   * 0.4
 
 ;;; ChangeLog:
+;;
+;; * 0.0.5 (2012/02/11)
+;;   Added a customizable variable
+;;   `popup-select-window-popup-windows'. This variable specifies
+;;   minumum number that enable popup.
 ;;
 ;; * 0.0.4 (2010/09/25)
 ;;   Modified a sample "Change highlight face".
@@ -90,7 +102,7 @@
 
 ;;; Variables:
 
-(defvar popup-select-window-version "0.0.3"
+(defconst popup-select-window-version "0.0.4"
   "Version of `popup-select-window'.")
 
 (defvar popup-select-window-window-highlight-face 'highlight
@@ -119,6 +131,9 @@
 
 (defvar popup-select-window-popup-width 30
   "*Value of `popup-menu*' width.")
+
+(defvar popup-select-window-popup-windows 3
+  "*A number of windows that enable popup-select-window")
 
 (defvar popup-select-window-popup-keymap
   (let ((keymap (make-sparse-keymap)))
@@ -156,11 +171,21 @@
         (inactive-modeline (face-background 'modeline-inactive))
         (mhighlight popup-select-window-use-modeline-highlight)
         (bhighlight popup-select-window-use-buffer-highlight)
+        (min-wins popup-select-window-popup-windows)
         select buf)
+    ;; If value of `popup-select-window-popup-windows' is invlaid (not
+    ;; number or less than 1), set to display minimum division number of
+    ;; the window (division number 1).
     (cond
-     ((= (length wins) 2)
+     ((or (not (numberp min-wins))
+          (>= 2 min-wins))
+      (setq min-wins 1))
+     (t
+      (setq min-wins (1- min-wins))))
+    (cond
+     ((= (length wins) min-wins)
       (call-interactively 'other-window))
-     ((> (length wins) 2)
+     ((> (length wins) min-wins)
       (unwind-protect
           (progn
             (when mhighlight
@@ -272,4 +297,3 @@
 (provide 'popup-select-window)
 
 ;;; popup-select-window.el ends here
-
