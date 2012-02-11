@@ -77,7 +77,7 @@ To ''remove trailing whitespace'' from the entire buffer, use any of the followi
 
 * [ftp://ftp.lysator.liu.se/pub/emacs/ws-trim.el ws-trim.el] - an old but still very, very good package.  Very configurable.  My only complaint is that it doesn't use the Custom library to set variables.
 
-** Emacs 24 users: Note that ws-trim.el contains calls to the obsolete function `make-local-hook' in order to provide backwards-compatibility with much older versions of Emacs (pre-21.1). This function no longer exists in Emacs 24 but, as the code is correct without them, you can simply delete those function calls to make the library operational.
+** ws-trim has been updated to provide compatibility with Emacs 24 (support for Emacs 20 and below has been dropped).
 
 * [http://github.com/glasserc/ethan-wspace ethan-wspace] - keeps whitespace clean in clean files while highlighting it in dirty files
 
