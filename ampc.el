@@ -1,14 +1,15 @@
 ;;; ampc.el --- Asynchronous Music Player Controller
 
-;; Copyright (C) 2011-2012 Christopher Schmidt
+;; Copyright (C) 2011-2012  Free Software Foundation, Inc.
 
 ;; Author: Christopher Schmidt <christopher@ch.ristopher.com>
 ;; Maintainer: Christopher Schmidt <christopher@ch.ristopher.com>
+;; Version: 0.1
 ;; Created: 2011-12-06
 ;; Keywords: mpc
 ;; Compatibility: GNU Emacs: 24.x
 
-;; This file is NOT part of GNU Emacs.
+;; This file is part of GNU Emacs.
 
 ;; This program is free software; you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -23,12 +24,14 @@
 ;; You should have received a copy of the GNU General Public License
 ;; along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+;;; Commentary:
 ;;; * description
 ;; ampc is a controller for the Music Player Daemon.
 
 ;;; ** installation
-;; Put this file somewhere in your load-path or add the directory the file is in
-;; to it, e.g.:
+;; If you use GNU ELPA, install ampc via M-x package-list-packages RET or
+;; (package-install 'ampc).  Otherwise, grab this file and put it somewhere in
+;; your load-path or add the directory the file is in to it, e.g.:
 ;;
 ;; (add-to-list 'load-path "~/.emacs.d/ampc")
 ;;
@@ -144,6 +147,7 @@
 ;; `T' (ampc-trigger-update): Trigger a database update.
 ;; `q' (ampc-quit): Quit ampc.
 
+;;; Code:
 ;;; * code
 (eval-when-compile
   (require 'easymenu)
