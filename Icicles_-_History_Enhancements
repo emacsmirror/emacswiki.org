@@ -31,12 +31,14 @@ it does not.  The context and the use
 of phrases such as "entered" and "entered with `RET'" should make
 clear what is meant.  Input that you type during completion but you do not necessarily enter is sometimes referred to in the '''Icicles''' doc as "'''completion input'''".
 
-Because ''completion'' is so important to '''Icicles''', because ''[[Icicles - Cycling Completions|cycling]]''
-replaces the input you type in the minibuffer, because '''Icicles'''
-[[Icicles - Expanded-Common-Match Completion|expands your input]] to the common match (provided [[option]] 
-'''`<tt>[[Icicles - Customization and General Tips#icicle-expand-input-to-common-match-flag|icicle-expand-input-to-common-match-flag]]</tt>'''' is non-`nil'), and because you sometimes
-need to retrieve such typed ''input that was never entered'', '''Icicles'''
-also records this input.  You can retrieve the last such unentered input during completion
+'''Icicles''' also records any input that you type during completion but you do not enter (`RET' or `mouse-2'), because you might need to
+retrieve it.  This can be because you cycled among completion
+candidates ([[Icicles - Cycling Completions|cycling]]
+replaces the input you type) or because '''Icicles''' has 
+[[Icicles - Expanded-Common-Match Completion|expanded your input]] to the common match among all matching candidates (see [[option]] 
+'''`<tt>[[Icicles - Customization and General Tips#icicle-expand-input-to-common-match|icicle-expand-input-to-common-match]]</tt>'''').
+
+You can retrieve the last such unentered input during completion
 using '''`C-l'''' ('''`icicle-retrieve-previous-input'''') and `C-S-l', that
 is, '''`C-L'''', ('''`icicle-retrieve-next-input'''').  Use these [[command]]s to
 cycle among your past completion inputs (backward and forward,
