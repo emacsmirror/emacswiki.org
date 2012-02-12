@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:53 2006
 ;; Version: 22.0
-;; Last-Updated: Wed Feb  8 10:55:04 2012 (-0800)
+;; Last-Updated: Sat Feb 11 17:13:02 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 12866
+;;     Update #: 12905
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-fn.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -281,11 +281,11 @@
   ;; icicle-with-selected-window
 
 (require 'icicles-opt)                  ; (This is required anyway by `icicles-var.el'.)
-  ;; icicle-Completions-display-min-input-chars, icicle-expand-input-to-common-match-flag,
+  ;; icicle-Completions-display-min-input-chars, icicle-expand-input-to-common-match,
   ;; icicle-hide-common-match-in-Completions-flag, icicle-hide-non-matching-lines-flag,
   ;; icicle-highlight-historical-candidates-flag, icicle-highlight-input-initial-whitespace-flag,
   ;; icicle-ignore-space-prefix-flag, icicle-incremental-completion-delay,
-  ;; icicle-incremental-completion-flag, icicle-incremental-completion-threshold,
+  ;; icicle-incremental-completion, icicle-incremental-completion-threshold,
   ;; icicle-default-value, icicle-list-join-string, icicle-mark-position-in-candidate,
   ;; icicle-point-position-in-candidate, icicle-regexp-quote-flag, icicle-require-match-flag,
   ;; icicle-show-Completions-help-flag, icicle-sort-comparer, icicle-special-candidate-regexp,
@@ -2749,7 +2749,7 @@ NO-DISPLAY-P non-nil means do not display the candidates; just
   ;;                       (if (arrayp minibuffer-completion-table) (intern cand) (list cand))))
   ;;            icicle-completion-candidates)))
 
-  ;; $$$  (case icicle-incremental-completion-flag
+  ;; $$$  (case icicle-incremental-completion
   ;;     ((t always) (setq icicle-incremental-completion-p  'always))
   ;;     ((nil) (setq icicle-incremental-completion-p  nil)))
 
@@ -2757,7 +2757,7 @@ NO-DISPLAY-P non-nil means do not display the candidates; just
 
   ;; Upgrade `icicle-incremental-completion-p' if we are redisplaying, so that completions will
   ;; be updated by `icicle-call-then-update-Completions' when you edit.
-  (setq icicle-incremental-completion-p  icicle-incremental-completion-flag)
+  (setq icicle-incremental-completion-p  icicle-incremental-completion)
   (when (and (eq t icicle-incremental-completion-p) (get-buffer-window "*Completions*" 0))
     (setq icicle-incremental-completion-p  'always))
   (let ((nb-cands             (length icicle-completion-candidates)))
@@ -2923,9 +2923,7 @@ NO-DISPLAY-P non-nil means do not display the candidates; just
                                   `(face ,(setq faces  (cons 'icicle-historical-candidate faces)))))))))
 
                        ;; Highlight, inside the candidate, the expanded common match.
-                       (when (and (or icicle-expand-input-to-common-match-flag
-                                      (eq icicle-current-completion-mode 'prefix))
-                                  icicle-current-input (not (string= "" icicle-current-input)))
+                       (when (and icicle-current-input (not (string= "" icicle-current-input)))
                          (save-excursion
                            (save-restriction
                              (narrow-to-region beg end) ; Restrict to the completion candidate.
@@ -3391,8 +3389,9 @@ INPUT is a string.  Each candidate is a string."
 
 (defun icicle-unsorted-prefix-candidates (input)
   "Unsorted list of prefix completions for the current partial INPUT.
-this also sets `icicle-common-match-string' to the expanded common
-prefix over all candidates."
+When `icicle-expand-input-to-common-match' = 3 or 4, which implies
+prefix auto-expansion, this also sets `icicle-common-match-string' to
+the expanded common match of the input over all candidates."
   (condition-case nil
       (let* ((candidates
               (if (icicle-not-basic-prefix-completion-p)
@@ -3426,7 +3425,7 @@ prefix over all candidates."
                                  (or (not icicle-must-pass-after-match-predicate)
                                      (funcall icicle-must-pass-after-match-predicate cand)))))
                         candidates)))))
-        (when (consp filtered-candidates)
+        (when (and (memq icicle-expand-input-to-common-match '(3 4))  (consp filtered-candidates))
           (let ((common-prefix
                  (if (icicle-not-basic-prefix-completion-p)
                      (icicle-completion-try-completion input minibuffer-completion-table
@@ -3455,8 +3454,9 @@ Candidates can be directories.  Each candidate is a string."
 
 (defun icicle-unsorted-file-name-prefix-candidates (input)
   "Unsorted list of prefix completions for the current file-name INPUT.
-This also sets `icicle-common-match-string' to the expanded common
-prefix over all candidates."
+When `icicle-expand-input-to-common-match' = 3 or 4, which implies
+prefix auto-expansion, this also sets `icicle-common-match-string' to
+the expanded common match of the input over all candidates."
   (condition-case nil
       (let* ((pred  (if (< emacs-major-version 23) default-directory minibuffer-completion-predicate))
              (candidates
@@ -3498,7 +3498,7 @@ prefix over all candidates."
                                (or (not icicle-must-pass-after-match-predicate)
                                    (funcall icicle-must-pass-after-match-predicate cand))))))
                         candidates)))))
-        (when (consp filtered-candidates)
+        (when (and (memq icicle-expand-input-to-common-match '(3 4))  (consp filtered-candidates))
           (let ((common-prefix
                  (if (icicle-not-basic-prefix-completion-p)
                      (icicle-completion-try-completion input minibuffer-completion-table
@@ -3532,9 +3532,9 @@ INPUT is a string.  Each candidate is a string."
 
 (defun icicle-unsorted-apropos-candidates (input)
   "Unsorted list of apropos completions for the current partial INPUT.
-When `icicle-expand-input-to-common-match-flag' is non-nil, this also
-sets `icicle-common-match-string' to the expanded common match of
-input over all candidates."
+When `icicle-expand-input-to-common-match' = 4, which implies apropos
+auto-expansion, this also sets `icicle-common-match-string' to the
+expanded common match of the input over all candidates."
   (condition-case nil
       (progn
         (when icicle-regexp-quote-flag  (setq input  (regexp-quote input)))
@@ -3571,7 +3571,7 @@ input over all candidates."
                                    (or (not icicle-must-pass-after-match-predicate)
                                        (funcall icicle-must-pass-after-match-predicate cand)))))
                           candidates)))))
-          (when (and icicle-expand-input-to-common-match-flag (consp filtered-candidates))
+          (when (and (eq icicle-expand-input-to-common-match 4)  (consp filtered-candidates))
             (setq icicle-common-match-string  (icicle-expanded-common-match input filtered-candidates)))
           (unless filtered-candidates  (setq icicle-common-match-string  nil))
           filtered-candidates))         ; Return candidates.
@@ -3588,9 +3588,9 @@ Candidates can be directories.  Each candidate is a string."
 
 (defun icicle-unsorted-file-name-apropos-candidates (input)
   "Unsorted list of apropos completions for the partial file-name INPUT.
-When `icicle-expand-input-to-common-match-flag' is non-nil, this also
-sets `icicle-common-match-string' to the expanded common match of
-input over all candidates."
+When `icicle-expand-input-to-common-match' = 4, which implies apropos
+auto-expansion, this also sets `icicle-common-match-string' to the
+expanded common match of the input over all candidates."
   (condition-case nil
       (progn
         (when icicle-regexp-quote-flag (setq input  (regexp-quote input)))
@@ -3635,7 +3635,7 @@ input over all candidates."
                                      (or (not icicle-must-pass-after-match-predicate)
                                          (funcall icicle-must-pass-after-match-predicate cand))))))
                           candidates)))))
-          (when icicle-expand-input-to-common-match-flag
+          (when (eq icicle-expand-input-to-common-match 4)
             (setq icicle-common-match-string (if (consp filtered-candidates)
                                                  (icicle-expanded-common-match
                                                   input filtered-candidates)
@@ -4106,14 +4106,16 @@ the code."
     (t
      (cond
        ;; Save the current input for `C-l', then update it to the expanded common match.
-       ;; Do NOT do this if:
-       ;;      the user doesn't want to use the expanded common match
+       ;; Do *NOT* do this if:
+       ;;      the user does not want automatic expansion to the common match for this completion mode
        ;;   or there is no common match string
        ;;   or the last command was a cycling command
        ;;   or the input and the completion mode have not changed
        ;;      (so saved regexp will not be overwritten).
-       ((not (or (and (not icicle-expand-input-to-common-match-flag)
-                      (eq icicle-current-completion-mode 'apropos))
+       ((not (or (and (eq icicle-current-completion-mode 'apropos)
+                      (not (eq icicle-expand-input-to-common-match 4)))
+                 (and (eq icicle-current-completion-mode 'prefix)
+                      (not (memq icicle-expand-input-to-common-match '(3 4))))
                  (not icicle-common-match-string)
                  (and (symbolp last-command) (get last-command 'icicle-cycling-command)
                       (not (get last-command 'icicle-completing-command))) ; Not `TAB' or `S-TAB'.
@@ -5068,7 +5070,7 @@ If no highlighting was attempted, return nil."
            (and (not (get this-command 'icicle-completing-command))
                 (memq icicle-highlight-input-completion-failure
                       '(explicit explicit-strict explicit-remote)))
-           (and (not icicle-incremental-completion-flag)
+           (and (not icicle-incremental-completion)
                 (memq icicle-highlight-input-completion-failure '(implicit implicit-strict)))
            (and (not (icicle-require-match-p))
                 icicle-test-for-remote-files-flag ; nil flag ignores strict setting for highlighting 
@@ -5342,10 +5344,7 @@ one is kept."
         (setq tail (cdr tail))))
     list))
 
-(when (and (fboundp 'cl-puthash) (not (fboundp 'puthash))) ; Emacs 20 with `cl-extra.el' loaded.
-  (defalias 'puthash 'cl-puthash))
-
-(if (fboundp 'puthash)                  ; Emacs 21+, or Emacs 20 with `cl-extra.el' loaded.
+(if (> emacs-major-version 20)          ; Emacs 21+
     (defun icicle-remove-duplicates (sequence &optional test)
       "Copy of SEQUENCE with duplicate elements removed.
 Optional arg TEST is the test function.  If nil, test with `equal'.
