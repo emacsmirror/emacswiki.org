@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Thu May 21 13:31:43 2009 (-0700)
 ;; Version: 22.0
-;; Last-Updated: Wed Jan 25 13:57:12 2012 (-0800)
+;; Last-Updated: Sat Feb 11 17:21:22 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 5018
+;;     Update #: 5029
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-cmd2.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -3615,14 +3615,14 @@ Icicles options:
  - `icicle-regexp-quote-flag' determines whether to use regexp
    matching or literal matching.
 
- - `icicle-search-highlight-all-current-flag',
-   `icicle-expand-input-to-common-match-flag' and
+ - `icicle-expand-input-to-common-match',
+   `icicle-search-highlight-all-current-flag', and
    `icicle-search-replace-common-match-flag' together determine
    whether to replace exactly what your input matches in the current
    search hit or the expanded common match (ECM) of your input among
-   all search hits.  If any of these options is nil, then your exact
-   input match is replaced; if they are all non-nil, then the ECM is
-   replaced.
+   all search hits.  If the first of these does not call for automatic
+   input expansion, or if either of the other two is nil, then your
+   exact input match is replaced.  Otherwise, the ECM is replaced.
 
 Finally, the replacement string can be nearly anything that is allowed
 as a replacement by `query-replace-regexp'.  In Emacs 22 or later,
@@ -4045,7 +4045,10 @@ Highlight the matches in face `icicle-search-main-regexp-others'."
                 (goto-char (point-min))
                 (when (condition-case nil (re-search-forward input nil 'move-to-end) (error nil))
                   (push (buffer-substring-no-properties (point-min) (point-max)) hits)))))
-          (when (and icicle-expand-input-to-common-match-flag  hits)
+          (when (and hits  (or (and (eq icicle-current-completion-mode 'apropos)
+                                    (eq icicle-expand-input-to-common-match 4))
+                               (and (eq icicle-current-completion-mode 'prefix)
+                                    (memq icicle-expand-input-to-common-match '(3 4)))))
             (setq icicle-search-ecm  (icicle-expanded-common-match input hits))
             (when (string= "" icicle-search-ecm) (setq icicle-search-ecm  nil)))
           (when (or icicle-search-ecm (and input (not (string= "" input))))
