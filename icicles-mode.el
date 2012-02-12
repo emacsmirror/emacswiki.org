@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 10:21:10 2006
 ;; Version: 22.0
-;; Last-Updated: Mon Jan 30 15:34:49 2012 (-0800)
+;; Last-Updated: Sat Feb 11 14:41:49 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 8081
+;;     Update #: 8098
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-mode.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -152,10 +152,9 @@
   ;;  icicle-kbd
 (require 'icicles-opt)                  ; (This is required anyway by `icicles-var.el'.)
   ;; icicle-buffer-configs, icicle-buffer-extras, icicle-change-region-background-flag,
-  ;; icicle-default-cycling-mode, icicle-incremental-completion-flag,
-  ;; icicle-default-value, icicle-kmacro-ring-max, icicle-minibuffer-setup-hook,
-  ;; icicle-modal-cycle-down-keys, icicle-modal-cycle-up-keys,
-  ;; icicle-functions-to-redefine, icicle-regexp-search-ring-max,
+  ;; icicle-default-cycling-mode, icicle-incremental-completion, icicle-default-value,
+  ;; icicle-kmacro-ring-max, icicle-minibuffer-setup-hook, icicle-modal-cycle-down-keys,
+  ;; icicle-modal-cycle-up-keys, icicle-functions-to-redefine, icicle-regexp-search-ring-max,
   ;; icicle-region-background, icicle-search-ring-max, icicle-show-Completions-initially-flag,
   ;; icicle-top-level-key-bindings, icicle-touche-pas-aux-menus-flag,
   ;; icicle-word-completion-keys, icicle-yank-function
@@ -357,6 +356,7 @@ In many cases there are also `other-window' versions.
 `icicle-completing-yank'               - `yank' using completion
 `icicle-customize-face'                - Multi-`customize-face'
 `icicle-customize-icicles-group'       - Customize options and faces
+`icicle-cycle-expand-to-common-match'  - Cycle input ECM expansion
 `icicle-cycle-incremental-completion'  - Cycle incremental completion
 `icicle-delete-file'                   - Delete file/directory
 `icicle-delete-window'                 - Delete window (`C-u': buffer)
@@ -656,6 +656,7 @@ In many cases there are also `other-window' versions.
 `icicle-completing-yank'               - `yank' using completion
 `icicle-customize-face'                - Multi-`customize-face'
 `icicle-customize-icicles-group'       - Customize options and faces
+`icicle-cycle-expand-to-common-match'  - Cycle input ECM expansion
 `icicle-cycle-incremental-completion'  - Cycle incremental completion
 `icicle-delete-file'                   - Delete file/directory
 `icicle-delete-window'                 - Delete window (`C-u': buffer)
@@ -1219,7 +1220,7 @@ Used on `pre-command-hook'."
            (define-key icicle-options-menu-map [icicle-cycle-incremental-completion]
              '(menu-item "Cycle Incremental Completion"
                icicle-cycle-incremental-completion :visible icicle-mode :keys "C-#"
-               :help "Cycle option `icicle-incremental-completion-flag'"))
+               :help "Cycle option `icicle-incremental-completion'"))
            (define-key icicle-options-menu-map [icicle-toggle-show-multi-completion]
              '(menu-item "Toggle Showing Multi-Completions"
                icicle-toggle-show-multi-completion :visible icicle-mode
@@ -1237,9 +1238,9 @@ Used on `pre-command-hook'."
                icicle-toggle-hiding-common-match :visible icicle-mode :keys "C-x ."
                :help "Toggle option `icicle-hide-common-match-in-Completions-flag'"))
            (define-key icicle-options-menu-map [icicle-toggle-expand-to-common-match]
-             '(menu-item "Toggle Longest Common Match"
-               icicle-toggle-expand-to-common-match :visible icicle-mode :keys "C-;"
-               :help "Toggle option `icicle-expand-input-to-common-match-flag'"))
+             '(menu-item "Toggle Expansion to Common Match"
+               icicle-toggle-expand-to-common-match :visible icicle-mode :keys "C-\""
+               :help "Toggle option `icicle-expand-input-to-common-match'"))
            (define-key icicle-options-menu-map [icicle-toggle-ignoring-comments]
              '(menu-item "Toggle Ignoring Comments" icicle-toggle-ignoring-comments
                :visible icicle-mode :keys "C-M-;"
@@ -1404,7 +1405,7 @@ Used on `pre-command-hook'."
                :help "Toggle `icicle-dot-string' between `.' and `icicle-anychar-regexp'"))
            (define-key icicle-menu-map [icicle-cycle-incremental-completion]
              '(menu-item "Cycle Incremental Completion" icicle-cycle-incremental-completion
-               :keys "C-#" :help "Cycle option `icicle-incremental-completion-flag'"))
+               :keys "C-#" :help "Cycle option `icicle-incremental-completion'"))
            (define-key icicle-menu-map [icicle-toggle-show-multi-completion]
              '(menu-item "Toggle Showing Multi-Completions" icicle-toggle-show-multi-completion
                :help "Toggle option `icicle-show-multi-completion-flag'"))
@@ -1419,8 +1420,8 @@ Used on `pre-command-hook'."
              '(menu-item "Toggle Hiding Common Match" icicle-toggle-hiding-common-match
                :keys "C-x ." :help "Toggle option `icicle-hide-common-match-in-Completions-flag'"))
            (define-key icicle-menu-map [icicle-toggle-expand-to-common-match]
-             '(menu-item "Toggle Longest Common Match" icicle-toggle-expand-to-common-match
-               :keys "C-;" :help "Toggle option `icicle-expand-input-to-common-match-flag'"))
+             '(menu-item "Toggle Expansion to Common Match" icicle-toggle-expand-to-common-match
+               :keys "C-\"" :help "Toggle option `icicle-expand-input-to-common-match'"))
            (define-key icicle-menu-map [icicle-toggle-ignoring-comments]
              '(menu-item "Toggle Ignoring Comments" icicle-toggle-ignoring-comments
                :keys "C-M-;" :help "Toggle option `icicle-ignore-comments-flag'"))
@@ -3371,7 +3372,8 @@ complete)"))
     (define-key map (icicle-kbd "C-?")     'icicle-minibuffer-help)) ; `C-?'
   (define-key map (icicle-kbd "C-.")       'icicle-dispatch-C-.) ; `C-.'
   (define-key map (icicle-kbd "C-#")       'icicle-cycle-incremental-completion) ; `C-#'
-  (define-key map (icicle-kbd "C-;")       'icicle-toggle-expand-to-common-match) ; `C-;'
+  (define-key map (icicle-kbd "C-\"")      'icicle-toggle-expand-to-common-match) ; `C-"'
+  (define-key map (icicle-kbd "C-M-\"")    'icicle-cycle-expand-to-common-match) ; `C-M-"'
   (define-key map (icicle-kbd "M-;")       'icicle-toggle-search-replace-common-match) ; `M-;'
   (define-key map (icicle-kbd "C-^")       'icicle-dispatch-C-^) ; `C-^'
   (define-key map (icicle-kbd "C-M-^")     'icicle-toggle-completions-format) ; `C-M-^'
@@ -3709,7 +3711,7 @@ Usually run by inclusion in `minibuffer-setup-hook'."
           icicle-next-apropos-complete-cycles-p  nil
           icicle-next-prefix-complete-cycles-p   nil
           icicle-default-directory               default-directory
-          icicle-incremental-completion-p        icicle-incremental-completion-flag
+          icicle-incremental-completion-p        icicle-incremental-completion
           icicle-initial-value                   nil
           icicle-cmd-reading-input               this-command
           icicle-last-completion-command         nil
