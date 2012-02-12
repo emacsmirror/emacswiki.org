@@ -228,11 +228,11 @@ highlighted, mismatched part of your input.  Repeat `C-M-l' to
 kill the highlighted portion.  (Because it is killed, you can use `C-y' to yank
 it back.)
 
-User options '''`<tt>[[Icicles - Customization and General Tips#icicle-incremental-completion-flag|icicle-incremental-completion-flag]]</tt>'''', '''`<tt>[[Icicles - Customization and General Tips#icicle-test-for-remote-files-flag|icicle-test-for-remote-files-flag]]</tt>'''',
+User options '''`<tt>[[Icicles - Customization and General Tips#icicle-incremental-completion|icicle-incremental-completion]]</tt>'''', '''`<tt>[[Icicles - Customization and General Tips#icicle-test-for-remote-files-flag|icicle-test-for-remote-files-flag]]</tt>'''',
 '''`<tt>[[Icicles - Customization and General Tips#icicle-highlight-input-completion-failure|icicle-highlight-input-completion-failure]]</tt>'''', '''`<tt>[[Icicles - Customization and General Tips#icicle-highlight-input-completion-failure-delay|icicle-highlight-input-completion-failure-delay]]</tt>'''', and '''`<tt>[[Icicles - Customization and General Tips#icicle-highlight-input-completion-failure-threshold|icicle-highlight-input-completion-failure-threshold]]</tt>'''' control this highlighting, which is done using [[face]]
 '''`icicle-input-completion-fail'''' (for strict completion) or '''`icicle-input-completion-fail-lax'''' (for [[lax]] completion).
 
-If either `icicle-incremental-completion-flag' or
+If either `icicle-incremental-completion' or
 `icicle-highlight-input-completion-failure' is `nil', then no
 such highlighting is done.  Remember that you can cycle
 incremental completion on and off using `C-#' in the minibuffer.
