@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Wed Feb  8 15:49:52 2012 (-0800)
+;; Last-Updated: Sat Feb 11 16:39:37 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 23074
+;;     Update #: 23081
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -114,6 +114,7 @@
 ;;   Commands to be used mainly at top level:
 ;;
 ;;    `a', `any', `buffer', `clear-option',
+;;    `cycle-icicle-expand-to-common-match',
 ;;    `cycle-icicle-image-file-thumbnail',
 ;;    `cycle-icicle-incremental-completion',
 ;;    `cycle-icicle-sort-order',
@@ -213,6 +214,7 @@
 ;;    `icicle-customize-apropos-options',
 ;;    `icicle-customize-apropos-options-of-type',
 ;;    `icicle-customize-face', `icicle-customize-icicles-group',
+;;    `icicle-cycle-expand-to-common-match',
 ;;    `icicle-cycle-image-file-thumbnail',
 ;;    `icicle-cycle-incremental-completion',
 ;;    `icicle-dabbrev-completion', `icicle-delete-file',
@@ -421,6 +423,7 @@
 ;;
 ;;   Commands to be used mainly in the minibuffer or `*Completions*':
 ;;
+;;    `cycle-icicle-expand-to-common-match',
 ;;    `cycle-icicle-image-file-thumbnail',
 ;;    `icicle-abort-recursive-edit', `icicle-all-candidates-action',
 ;;    `icicle-all-candidates-alt-action',
@@ -471,6 +474,7 @@
 ;;    `icicle-choose-completion', `icicle-clear-current-history',
 ;;    `icicle-completing-read+insert',
 ;;    `icicle-Completions-mouse-3-menu',
+;;    `icicle-cycle-expand-to-common-match',
 ;;    `icicle-cycle-image-file-thumbnail',
 ;;    `icicle-cycle-incremental-completion',
 ;;    `icicle-search-define-replacement',
@@ -697,11 +701,11 @@
 ;;    `icicle-default-cycling-mode', `icicle-default-thing-insertion',
 ;;    `icicle-default-value', `icicle-define-alias-commands-flag',
 ;;    `icicle-deletion-action-flag', `icicle-dot-show-regexp-flag',
-;;    `icicle-dot-string', `icicle-expand-input-to-common-match-flag',
-;;    `icicle-file-extras', `icicle-file-match-regexp',
-;;    `icicle-file-no-match-regexp', `icicle-file-predicate',
-;;    `icicle-file-require-match-flag', `icicle-file-sort',
-;;    `icicle-files-ido-like-flag',
+;;    `icicle-dot-string', `icicle-expand-input-to-common-match',
+;;    `icicle-expand-input-to-common-match-alt', `icicle-file-extras',
+;;    `icicle-file-match-regexp', `icicle-file-no-match-regexp',
+;;    `icicle-file-predicate', `icicle-file-require-match-flag',
+;;    `icicle-file-sort', `icicle-files-ido-like-flag',
 ;;    `icicle-filesets-as-saved-completion-sets-flag',
 ;;    `icicle-functions-to-redefine', `icicle-guess-commands-in-path',
 ;;    `icicle-help-in-mode-line-delay',
@@ -717,8 +721,8 @@
 ;;    `icicle-ignore-comments-flag', `icicle-ignored-directories',
 ;;    `icicle-ignore-space-prefix-flag',
 ;;    `icicle-image-files-in-Completions',
+;;    `icicle-incremental-completion',
 ;;    `icicle-incremental-completion-delay',
-;;    `icicle-incremental-completion-flag',
 ;;    `icicle-incremental-completion-threshold',
 ;;    `icicle-inhibit-advice-functions', `icicle-inhibit-ding-flag',
 ;;    `icicle-input-string', `icicle-inter-candidates-min-spaces',
