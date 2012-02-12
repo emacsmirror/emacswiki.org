@@ -335,7 +335,7 @@ See [[Icicles - Candidate Sets#SavingAndRetrieving|Saving and Retrieving Complet
 ==== Faces icicle-current-candidate-highlight, icicle-complete-input, icicle-match-highlight-minibuffer, icicle-match-highlight-Completions, icicle-common-match-highlight-Completions ====
 
 In buffer `*Completions*', face '''`icicle-current-candidate-highlight'''' highlights the current
-completion candidate, and, provided user option `<tt>[[#icicle-expand-input-to-common-match-flag]]</tt>' is non-`nil', face '''`icicle-common-match-highlight-Completions'''' highlights the [[Icicles - Expanded-Common-Match Completion|expanded common match]] among all completions.  Faces '''`icicle-match-highlight-Completions''''  and '''`icicle-match-highlight-minibuffer'''' 
+completion candidate, and face '''`icicle-common-match-highlight-Completions'''' highlights the [[Icicles - Expanded-Common-Match Completion|expanded common match]] among all completions.  Faces '''`icicle-match-highlight-Completions''''  and '''`icicle-match-highlight-minibuffer'''' 
 highlight whatever your input matches, in buffer `*Completions*' and in the minibuffer, respectively.  In the minibuffer, face '''`icicle-complete-input'''' highlights your input when it is complete.  You can customize these, as well as the other '''Icicles''' faces.
 
 
@@ -706,20 +706,59 @@ truncation.
 
 
 ----
-[:icicle-expand-input-to-common-match-flag]
-==== Option icicle-expand-input-to-common-match-flag ====
+[:icicle-expand-input-to-common-match]
+==== Option icicle-expand-input-to-common-match ====
 
-Non-`nil' user option '''`icicle-expand-input-to-common-match-flag''''
-means that completion expands your minibuffer
+User option '''`icicle-expand-input-to-common-match'''' controls whether completion expands your minibuffer
 input to (typically) the longest common substring common to all completion
-candidates and that matches your (complete) input pattern.  This ''expansion replaces the input you typed''.  If you want to edit your original, raw
-input, use `C-l'.  If your input has been expanded, then hit
-`C-l' twice: once to replace a completion candidate (from, say,
-`next') with the common match string, and a second time to
-replace the common match string with your original input.  The main reason you might want to set this to
-`nil' is for apropos completion, if you want to always work with a
-regexp in the minibuffer. You can ''toggle'' this option at any
-time using '''`##C-;##'''' in the minibuffer.  See [[Icicles - Expanded-Common-Match Completion]].
+candidates and that matches your (complete) input pattern.  The option controls whether and when such expansion takes place.  The possible values are:
+
+* '''##0##''' -- ''Never'' expand your typed input, except when you use `C-M-TAB' or `C-M-S-TAB'.
+
+* '''##1##''' -- Expand it only when you hit `TAB' or `S-TAB', that is,
+''explicit completion'', not incremental completion -- no automatic expansion.
+
+* '''##2##''' -- Same as ##1##, but also automatically expand it when it ''matches only one'' completion candidate.
+
+* '''##3##''' -- Same as ##2##, but also automatically expand it during
+''incremental prefix'' completion.
+
+* '''##4##''' -- Same as ##3##, but also automatically expand it during
+incremental apropos completion.  IOW, ''always'' expand it.
+
+
+As the value increases there are thus more contexts in which
+your input can be expanded to the common match.
+
+You can ''toggle'' the value of this option at any time using '''`##C-"##''''
+in the minibuffer.  This in fact swaps the values of this option
+and option '''`<tt>[[#icicle-expand-input-to-common-match-alt]]</tt>''''.  That is the only purpose of the latter option: to let you go switch
+`icicle-expand-input-to-common-match' back and forth between two
+values.
+
+You can ''cycle'' the value of `icicle-expand-input-to-common-match'
+among all its possible values using '''`##C-M-"##'''' in the minibuffer.
+Together with `##C-"##', this also lets you change the value of
+`icicle-expand-input-to-common-match-alt': Use `##C-M-"##' to cycle
+to the value you want as the alternative, then use `##C-"##' to
+swap.  Then use `##C-M-"##' to cycle to the value you want for
+`icicle-expand-input-to-common-match'.
+
+Input expansion ''replaces your input'' in the minibuffer.  If you
+want to edit your original, pre-expansion input, use '''`C-l''''.  If
+you are also cycling among candidates then you might need to hit
+`C-l' twice.  One reason you might want to set
+`icicle-expand-input-to-common-match' to a value other than ##4## is
+if you want to always work with a [[regexp]] in the minibuffer when
+you use [[Icicles - Apropos Completions|apropos completion]].  (With a value of ##4## the regexp is
+replaced by the match expansion.)
+
+'''See Also:'''
+
+* [[Icicles - Expanded-Common-Match Completion]]
+* [[Icicles - Icompletion#InputExpansion|Incremental Completion (Input Expansion) in the Minibuffer]]
+
+
 
 
 
@@ -728,7 +767,7 @@ time using '''`##C-;##'''' in the minibuffer.  See [[Icicles - Expanded-Common-M
 ==== Option icicle-hide-common-match-in-Completions-flag ====
 
 Non-`nil' user option '''`icicle-hide-common-match-in-Completions-flag'''' hides, in buffer `*Completions*', the common match for your current input from each candidate.  You can toggle this anytime during
-completion using '''`##C-x .##'''' (no [[prefix argument]]), which is bound to command `icicle-toggle-hiding-common-match'.    The common match used is governed by option `<tt>[[#icicle-expand-input-to-common-match-flag|icicle-expand-input-to-common-match-flag]]'.
+completion using '''`##C-x .##'''' (no [[prefix argument]]), which is bound to command `icicle-toggle-hiding-common-match'.    The common match used is governed by option `<tt>[[#icicle-expand-input-to-common-match|icicle-expand-input-to-common-match]]'.
 
 
 
@@ -760,13 +799,13 @@ meaning that `*Completions*' is not shown until you hit `TAB' or `S-TAB'.  More 
 
 For an alternative but similar behavior to using non-`nil' for
 `icicle-show-Completions-initially-flag', you can set option
-`<tt>[[#icicle-incremental-completion-flag]]</tt>' to a value that is neither
+`<tt>[[#icicle-incremental-completion]]</tt>' to a value that is neither
 `nil' nor `t'.  That displays `*Completions*' as soon as you type
 or delete input, but not initially.
 
 ----
-[:icicle-incremental-completion-flag]
-==== Option icicle-incremental-completion-flag ====
+[:icicle-incremental-completion]
+==== Option icicle-incremental-completion====
 
 User option '''`icicle-incremental-completion-flag'''' controls whether or not `*Completions*' is updated incrementally (icompletion) as you type. 
 You can ''toggle'' incremental completion at any time using '''`<tt>C-#</tt>''''. For more
@@ -1268,9 +1307,10 @@ current match is highlighted.  See [[Icicles - Search Commands, Overview]].
 
 Non-`nil' user option '''`icicle-search-highlight-all-current-flag''''
 means highlight what your current input matches inside ''all'' main search hits at
-the ''same time''.  If `<tt>[[#icicle-expand-input-to-common-match-flag]]</tt>'
-is also non-`nil', then what is highlighted for each input match is 
-the [[Icicles - Expanded-Common-Match Completion|expanded common match]] among all input matches throughout the search area.  If either is `nil', then only the exact input match is highlighted.
+the ''same time''.  If `<tt>[[#icicle-expand-input-to-common-match]]</tt>'
+is '''##3##''' or '''##4##''' (which means your input can be automatically prefix- or apropos-expanded, respectively),
+then what is highlighted for each input match is 
+the [[Icicles - Expanded-Common-Match Completion|expanded common match]] among all input matches throughout the search area.  Otherwise, only the exact input match is highlighted.
 
 The default value of `icicle-search-highlight-all-current-flag' is `nil', because non-`nil' can
 impact performance negatively if there are many search contexts -- the highlighting is
@@ -1281,12 +1321,10 @@ updated with each input change.  You can ''toggle'' the value at any time using 
 [:icicle-search-replace-common-match-flag]
 ==== Option icicle-search-replace-common-match-flag ====
 
-If, in addition to `<tt>[[#icicle-search-highlight-all-current-flag]]</tt>'
-and `<tt>[[#icicle-expand-input-to-common-match-flag]]</tt>', option
+If, in addition to `<tt>[[#icicle-expand-input-to-common-match]]</tt>' causing your input to be expanded and `<tt>[[#icicle-search-highlight-all-current-flag]]</tt>' being non-`nil', option
 '''`icicle-search-replace-common-match-flag'''' is also non-`nil', then
-a search replacement replaces the [[Icicles - Expanded-Common-Match Completion|expanded common match]];
-otherwise, it replaces only the exact match.  You can ''toggle'' the
-value at any time using '''`##M-;##'''' in the minibuffer.
+a search replacement replaces the [[Icicles - Expanded-Common-Match Completion|expanded common match]].
+Otherwise, it replaces only the exact match.  You can ''toggle'' `icicle-search-replace-common-match-flag' at any time using '''`##M-;##'''' in the minibuffer.
 
 
 
@@ -1684,7 +1722,8 @@ is non-`nil', for the `Icy' mode-line lighter as well.
 
 
 ----
-[:icicle-highlight-input-initial-whitespace-flag] [:icicle-whitespace-highlight]
+[:icicle-highlight-input-initial-whitespace-flag]
+[:icicle-whitespace-highlight]
 ==== Option icicle-highlight-input-initial-whitespace-flag, Face icicle-whitespace-highlight ====
 
 Non-`nil' option '''`icicle-highlight-input-initial-whitespace-flag''''
@@ -1707,7 +1746,7 @@ highlighting it is easy to not notice the whitespace.
 
 The part of your current input that does not complete can be
 highlighted automatically, and you can then remove that part
-using `C-M-l'.  This highlighting is controlled by options `<tt>[[#icicle-incremental-completion-flag]]</tt>', `<tt>[[#icicle-test-for-remote-files-flag]]</tt>', '''`icicle-highlight-input-completion-failure'''', '''`icicle-highlight-input-completion-failure-delay'''', and '''`icicle-highlight-input-completion-failure-threshold''''.  The highlighting uses face '''`icicle-input-completion-fail'''' (for strict completion) or `icicle-input-completion-fail-lax' (for [[lax]] completion) to highlight the part
+using `C-M-l'.  This highlighting is controlled by options `<tt>[[#icicle-incremental-completion]]</tt>', `<tt>[[#icicle-test-for-remote-files-flag]]</tt>', '''`icicle-highlight-input-completion-failure'''', '''`icicle-highlight-input-completion-failure-delay'''', and '''`icicle-highlight-input-completion-failure-threshold''''.  The highlighting uses face '''`icicle-input-completion-fail'''' (for strict completion) or `icicle-input-completion-fail-lax' (for [[lax]] completion) to highlight the part
 of your current input that does not complete.  Possible values control when highlighting can occur.  For details, see the option doc strings and [[Icicles - Icompletion#HighlightNonmatch|Highlight Nonmatch]].
 
 
