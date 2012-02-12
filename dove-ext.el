@@ -736,12 +736,12 @@ Parenthesis character was defined by beginning-of-parenthesis"
               (set-window-buffer 2ndWin ,buf_2)
               (set-window-buffer 3rdWin ,buf_3)))))))
 
-(defun roll-3-anti-clockwise ()
+(defun roll-3-buffers-anti-clockwise ()
   "Roll 3 window buffers anti-clockwise"
   (interactive)
   (dove-roll-3-buffers 3rdBuf 1stBuf 2ndBuf))
 
-(defun roll-3-clockwise ()
+(defun roll-3-buffers-clockwise ()
   "Roll 3 window buffers clockwise"
   (interactive)
   (dove-roll-3-buffers 2ndBuf 3rdBuf 1stBuf))
