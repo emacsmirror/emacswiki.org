@@ -67,25 +67,26 @@ standard library `##icomplete.el##'.)
 
 Buffer `*Completions*' shows you the current set of candidates for
 either prefix or apropos completion.  Together, [[user option]]s
-`icicle-incremental-completion-flag',
+`icicle-incremental-completion,
 `icicle-incremental-completion-delay', and
 `icicle-incremental-completion-threshold' control incremental
-updating of `*Completions*'.
+updating of `*Completions*'.  And together with option
+'''`<tt>[[Icicles - Customization and General Tips#icicle-expand-input-to-common-match|icicle-expand-input-to-common-match]]</tt>'''' they control incremental expansion (completion) of your input in the minibuffer.
 
 
-If '''`<tt>[[Icicles - Customization and General Tips#icicle-incremental-completion-flag|icicle-incremental-completion-flag]]</tt>'''' is non-`nil', then
+If option '''`<tt>[[Icicles - Customization and General Tips#icicle-incremental-completion|icicle-incremental-completion]]</tt>'''' is non-`nil', then
 `*Completions*' is ''automatically updated'' whenever you change your input
 in the minibuffer -- that is, with each character that you type or
 delete. This '''[::incremental completion]''' is another form of icompletion, unique to '''Icicles'''.  Unlike vanilla icompletion, it uses buffer `*Completions*', not the minibuffer, to show the completion help.
 
-The particular non-`nil' value of `icicle-incremental-completion-flag' determines when `*Completions*' is
+The particular non-`nil' value of `icicle-incremental-completion' determines when `*Completions*' is
 displayed and updated.  The default value, `t', means that
 `*Completions*' is updated only if it is already displayed.  Use `t'
 if you do not want `*Completions*' to be too intrusive, but you want
 it to provide the most help when you ask for help (via `TAB' or
 `S-TAB').
 
-Any other non-`nil' value displays and updates `*Completions*'
+Any other non-`nil' value is more eager.   It displays and updates `*Completions*'
 whenever there is more than one completion candidate.  That can be
 more helpful, but it can also be more distracting.  A value of `nil'
 turns off automatic updating altogether -- `*Completions*' is then
@@ -94,7 +95,7 @@ compromise, providing help when I ask for it, and then continuing
 to help until I've finished choosing a candidate.
 
 A completion behavior even more eager than that produced by
-setting `icicle-incremental-completion-flag' to non`nil' and
+setting `icicle-incremental-completion' to non`nil' and
 non-`t' can be had by setting option '''`<tt>[[Icicles - Customization and General Tips#icicle-show-Completions-initially-flag|icicle-show-Completions-initially-flag]]</tt>'''' to non-`nil'.  In that
 case, completions are shown even before you type any input.  You
 see all of the possible candidates initially, unfiltered by any
@@ -109,13 +110,13 @@ greater than '''`<tt>[[Icicles - Customization and General Tips#icicle-increment
 delay can improve performance when there are many candidates.  It
 lets you type ahead before any candidate redisplay occurs.
 
-You can cycle incremental completion at any time (changing `icicle-incremental-completion-flag' among `nil', 
+You can cycle incremental completion at any time (changing `icicle-incremental-completion' among `nil', 
 `t', and `always') using command `icicle-cycle-incremental-completion', which is bound to
 '''`C-#'''' in the minibuffer.  If the number of completion candidates
 is very large, then use `<tt>C-#</tt>' to turn off incremental completion -- that will save time by not updating `*Completions*'. See also
 [[Icicles - Large Candidate Sets]] for other ways to deal with a large number of candidates.
 
-Note: Incremental completion is effectively turned off when a
+Note: Incremental completion is effectively turned off whenever a
 remote file name is read, that is, whenever your file-name input
 matches a remote-file syntax.
 
@@ -137,6 +138,70 @@ icompletion, as opposed to the minibuffer as in vanilla Emacs:
    match root, highlighting of
 previously used candidates, and so on.  See
    [[Icicles - Completions Display]].
+
+
+
+
+
+
+
+[:InputExpansion]
+=== Incremental Completion (Input Expansion) in the Minibuffer ===
+
+As mentioned in [[#CompletionsIcompletion|Icompletion in *Completions*]],
+another '''Icicles''' option, '''`<tt>[[Icicles - Customization and General Tips#icicle-expand-input-to-common-match|icicle-expand-input-to-common-match]]</tt>'''', controls whether '''Icicles''' completes your input in the
+[[minibuffer]].  There are five levels of this expansion behavior to
+choose from: option values '''##0##''' to '''##4##'''.  When expansion occurs it is
+always the same.  See [[Icicles - Expanded-Common-Match Completion]] for
+the description.  What this option controls is whether and when
+expansion takes place.
+
+At one extreme (value '''##0##'''), your input is never expanded (except
+when you use `C-M-TAB' or `C-M-S-TAB', which do not display
+`*Completions*').  This is unlike vanilla Emacs but similar to Ido
+and IswitchB: you look to `*Completions*' for the matches, and you
+keep typing (or you cycle) narrow things down and choose.  If you
+use a non-`nil', non-`t' value for `icicle-incremental-completion'
+then you might also want to try a value of ##0## for
+`icicle-expand-input-to-common-match'.
+
+At the other extreme (value '''##4##'''), your input is expanded in the
+minibuffer ''whenever it is completed'' in `*Completions*'.  This
+includes automatic, incremental expansion, analogous to
+incremental completion.
+
+A value of '''##1##''' means expand your input only when you ''explicitly
+request completion'', using `TAB' or `S-TAB'.
+
+A value of '''##2##''' means do that, but also expand your input ''whenever it
+matches only one completion candidate''.  This lets you hit `RET' to
+choose it (instead of having to hit `S-RET').
+
+A value of '''##3##''' means do what ##2## does, but also expand your input each
+time ''prefix completion'' occurs.  It is the same as ##4##, except that
+it does not incrementally expand your input for apropos
+completion.
+
+For a long time '''Icicles''' had only the equivalent of values ##3## and ##4##,
+and I consider them the most useful.  Sometimes you will want to
+temporarily turn off expansion for apropos completion.  You can do
+that using '''`##C-"##'''' in the minibuffer: it toggles between ##3## and ##4## (by
+default - see option '''`<tt>[[Icicles - Customization and General Tips#icicle-incremental-completion-alt|icicle-incremental-completion-alt]]</tt>'''').
+
+See Also:
+
+* [[Icicles - Expanded-Common-Match Completion]]
+
+* [[Icicles - History Enhancements#Which|What Input, What History?]]
+
+* [[Icicles - Customization and General Tips#icicle-expand-input-to-common-match|icicle-expand-input-to-common-match]]
+
+
+
+
+
+
+
 
 
 
