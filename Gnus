@@ -4,7 +4,7 @@ That's the place where you can get the latest copy of Gnus.  You can find pointe
 
 The list of topics relating to Gnus is in the page '''[[CategoryGnus]]'''.
 
-Gnus is a great way to sort the high-volume 
+Gnus is a great way to sort the high-volume alt.risks.lion group.
 
 ----
 CategoryGnus CategoryMail
