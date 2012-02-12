@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Thu Feb  9 08:28:51 2012 (-0800)
+;; Last-Updated: Sun Feb 12 08:11:58 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 26442
+;;     Update #: 26486
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-doc1.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -219,6 +219,7 @@
 ;;    (@> "icomplete+.el Displays the Number of Other Prefix Candidates")
 ;;    (@> "Icicles Highlights the Input that Won't Complete")
 ;;    (@> "Icompletion in *Completions*: Apropos and Prefix Completion")
+;;    (@> "Incremental Completion (Input Expansion) in the Minibuffer")
 ;;
 ;;  (@> "Sorting Candidates and Removing Duplicates")
 ;;    (@> "Changing the Sort Order")
@@ -2073,10 +2074,11 @@
 ;;  during completion.  You can repeat `C-l' to retrieve older
 ;;  completion inputs, cycling among them, and you can use `C-S-l'
 ;;  (that is, `C-L') to cycle previous inputs in the other direction -
-;;  see (@> "History Enhancements").  You can set option
-;;  `icicle-expand-input-to-common-match-flag' to `nil' to turn off
+;;  see (@> "History Enhancements").  You can use option
+;;  `icicle-expand-input-to-common-match' to turn off
 ;;  expanded-common-match completion altogether, if you prefer.  You
-;;  can also toggle it from the minibuffer at any time, using `C-;'.
+;;  can cycle the value of this option from the minibuffer at any
+;;  time, using `C-M-"'.
 ;;
 ;;  Just what is meant by the "expanded common match" that Icicles
 ;;  finds?  It is the longest match of your input pattern that is
@@ -2905,13 +2907,21 @@
 ;;     `icicle-show-Completions-initially-flag' to `t'.
 ;;
 ;;     You can get an intermediate behavior in this regard by instead
-;;     setting option `icicle-incremental-completion-flag' to a value
-;;     that is neither `nil' nor `t'.  That makes Icicles show the
-;;     matching candidates as soon as you start typing input, but not
-;;     before that.  See also (@> "Icompletion") and option
+;;     setting option `icicle-incremental-completion' to a value that
+;;     is neither `nil' nor `t'.  That makes Icicles show the matching
+;;     candidates as soon as you start typing input, but not before
+;;     that.  See also (@> "Icompletion") and option
 ;;     `icicle-incremental-completion-delay'.
 ;;
-;;  2. Matching.  By default, Ido uses substring matching for
+;;  2. Non-expansion of minibuffer input.  By default, Icicles expands
+;;     your minibuffer input when you complete.  This is like vanilla
+;;     Emacs (for prefix completion), but it is unlike Ido, which only
+;;     shows you the available candidates but does not change your
+;;     input text.  You can get this non-expansion behavior in Icicles
+;;     by setting option `icicle-expand-input-to-common-match' to 0.
+;;     See (@> "Incremental Completion (Input Expansion) in the Minibuffer").
+;;
+;;  3. Matching.  By default, Ido uses substring matching for
 ;;     completion.  You can hit a key to switch to prefix matching,
 ;;     "flex" matching, or regexp matching.  Icicles gives you these
 ;;     same matching possibilities, and more.  (What Ido calls "flex"
@@ -2920,7 +2930,7 @@
 ;;     complete.  Regexp-matching in Ido does not work with Ido-style
 ;;     completion.
 ;;
-;;  3. Current candidate, cycling, sorting.  Both Ido and Icicles have
+;;  4. Current candidate, cycling, sorting.  Both Ido and Icicles have
 ;;     a notion of "current candidate".  In Ido, completion candidates
 ;;     are presented in a predefined sort order, most recently used
 ;;     first.  The current candidate is the first one.  You cycle
@@ -2933,14 +2943,14 @@
 ;;     then the current one is highlighted there, in place.  The
 ;;     highlight moves, not the candidate.
 ;;
-;;  4. Input editing.  In Ido, cycling does not replace your input by
+;;  5. Input editing.  In Ido, cycling does not replace your input by
 ;;     the current candidate.  To edit the current candidate you hit a
 ;;     key to enter an edit mode (recursive minibuffer).  In Icicles,
 ;;     cycling replaces your input in the minibuffer by the current
 ;;     candidate, so you can just edit it there normally.  You can use
 ;;     `C-l' to retrieve your original input.
 ;;
-;;  5. Completions shown.  In Ido, a limited number of matching
+;;  6. Completions shown.  In Ido, a limited number of matching
 ;;     completion candidates are shown in the minibuffer.  You can hit
 ;;     a key to see all matches in a separate buffer.
 ;;
@@ -3006,7 +3016,7 @@
 ;;     `icicle-deletion-action-flag',
 ;;     `icicle-file-require-match-flag',
 ;;     `icicle-show-Completions-initially-flag',
-;;     `icicle-incremental-completion-flag',
+;;     `icicle-incremental-completion',
 ;;     `icicle-incremental-completion-delay',
 ;;     `icicle-max-candidates',
 ;;     `icicle-regexp-quote-flag',
@@ -3376,38 +3386,40 @@
 ;;
 ;;  Buffer `*Completions*' shows you the current set of candidates for
 ;;  either prefix or apropos completion.  Together, user options
-;;  `icicle-incremental-completion-flag',
+;;  `icicle-incremental-completion',
 ;;  `icicle-incremental-completion-delay', and
 ;;  `icicle-incremental-completion-threshold' control incremental
-;;  updating of `*Completions*'.
+;;  updating of `*Completions*'.  And together with option
+;;  `icicle-expand-input-to-common-match' they control incremental
+;;  expansion (completion) of your input in the minibuffer.
 ;;
-;;  If `icicle-incremental-completion-flag' is non-`nil', then
+;;  If option `icicle-incremental-completion' is non-`nil', then
 ;;  `*Completions*' is automatically updated whenever you change your
 ;;  input in the minibuffer - that is, with each character that you
 ;;  type or delete.  This is another form of icompletion, unique to
 ;;  Icicles.  Unlike vanilla icompletion, it uses buffer
 ;;  `*Completions*', not the minibuffer, to show the completion help.
 ;;
-;;  The particular non-`nil' value of
-;;  `icicle-incremental-completion-flag' determines when
-;;  `*Completions*' is displayed and updated.  The default value, `t',
-;;  means that `*Completions*' is updated only if it is already
-;;  displayed.  Use `t' if you do not want `*Completions*' to be too
-;;  intrusive, but you want it to provide the most help when you ask
-;;  for help (via `TAB' or `S-TAB').
+;;  The particular non-`nil' value of `icicle-incremental-completion'
+;;  determines when `*Completions*' is displayed and updated.  The
+;;  default value, `t', means that `*Completions*' is updated only if
+;;  it is already displayed.  Use `t' if you do not want
+;;  `*Completions*' to be too intrusive, but you want it to provide
+;;  the most help when you ask for help (via `TAB' or `S-TAB').
 ;;
-;;  Any other non-`nil' value displays and updates `*Completions*'
-;;  whenever there is more than one completion candidate.  That can be
-;;  more helpful, but it can also be more distracting.  A value of
-;;  `nil' turns off automatic updating altogether - `*Completions*' is
-;;  then displayed only upon demand.  I find that `t' represents a
-;;  good compromise, providing help when I ask for it, and then
-;;  continuing to help until I've finished choosing a candidate.
+;;  Any other non-`nil' value is more eager.  It displays and updates
+;;  `*Completions*' whenever there is more than one completion
+;;  candidate.  That can be more helpful, but it can also be more
+;;  distracting.  A value of `nil' turns off automatic updating
+;;  altogether - `*Completions*' is then displayed only upon demand.
+;;  I find that `t' represents a good compromise, providing help when
+;;  I ask for it, and then continuing to help until I've finished
+;;  choosing a candidate.
 ;;
 ;;  A completion behavior even more eager than that produced by
-;;  setting `icicle-incremental-completion-flag' to non`nil' and
-;;  non-`t' can be had by setting option
-;;  `icicle-show-Completions-initially-flag' to non-nil.  In that
+;;  setting `icicle-incremental-completion' to non`nil' and non-`t'
+;;  can be had by setting option
+;;  `icicle-show-Completions-initially-flag' to non-`nil'.  In that
 ;;  case, completions are shown even before you type any input.  You
 ;;  see all of the possible candidates initially, unfiltered by any
 ;;  typed input.  In this regard, see also (@> "Ido and IswitchB").
@@ -3423,15 +3435,15 @@
 ;;  ahead before candidate redisplay occurs.
 ;;
 ;;  You can cycle incremental completion at any time (changing
-;;  `icicle-incremental-completion-flag' among `nil', `t', and
-;;  `always') using command `icicle-cycle-incremental-completion',
-;;  which is bound to `C-#' in the minibuffer.  If the number of
-;;  completion candidates is very large, then use `C-#' to turn off
-;;  incremental completion - that will save time by not updating
-;;  `*Completions*'.  See also (@> "Dealing With Large Candidate Sets")
-;;  for other ways to deal with a large number of candidates.
+;;  `icicle-incremental-completion' among `nil', `t', and `always')
+;;  using command `icicle-cycle-incremental-completion', which is
+;;  bound to `C-#' in the minibuffer.  If the number of completion
+;;  candidates is very large, then use `C-#' to turn off incremental
+;;  completion - that will save time by not updating `*Completions*'.
+;;  See also (@> "Dealing With Large Candidate Sets") for other ways
+;;  to deal with a large number of candidates.
 ;;
-;;  Note: Incremental completion is effectively turned off when a
+;;  Note: Incremental completion is effectively turned off whenever a
 ;;  remote file name is read, that is, whenever your file-name input
 ;;  matches a remote-file syntax.
 ;;
@@ -3454,6 +3466,58 @@
 ;;     of match root, highlighting of previously used candidates, and
 ;;     so on.  See (@> "*Completions* Display").
 ;;
+;;(@* "Incremental Completion (Input Expansion) in the Minibuffer")
+;;  ** Incremental Completion (Input Expansion) in the Minibuffer **
+;;
+;;  As mentioned in (@> "Icompletion in *Completions*: Apropos and Prefix Completion"),
+;;  another Icicles option, `icicle-expand-input-to-common-match',
+;;  controls whether Icicles completes your input in the minibuffer.
+;;  There are five levels of this expansion behavior to choose from:
+;;  option values 0 to 4.  When expansion occurs it is always the
+;;  same.  See (@> "Expanded-Common-Match Completion") for the
+;;  description.  What this option controls is whether and when
+;;  expansion takes place.
+;;
+;;  At one extreme (value 0), your input is never expanded (except
+;;  when you use `C-M-TAB' or `C-M-S-TAB', which do not display
+;;  `*Completions*').  This is unlike vanilla Emacs but similar to Ido
+;;  and IswitchB: you look to `*Completions*' for the matches, and you
+;;  keep typing (or you cycle) narrow things down and choose.  If you
+;;  use a non-`nil', non-`t' value for `icicle-incremental-completion'
+;;  then you might also want to try a value of 0 for
+;;  `icicle-expand-input-to-common-match'.
+;;
+;;  At the other extreme (value 4), your input is expanded in the
+;;  minibuffer whenever it is completed in `*Completions*'.  This
+;;  includes automatic, incremental expansion, analogous to
+;;  incremental completion.
+;;
+;;  A value of 1 means expand your input only when you explicitly
+;;  request completion, using `TAB' or `S-TAB'.
+;;
+;;  A value of 2 means do that, but also expand your input whenever it
+;;  matches only one completion candidate.  This lets you hit `RET' to
+;;  choose it (instead of having to hit `S-RET').
+;;
+;;  A value of 3 means do what 2 does, but also expand your input each
+;;  time prefix completion occurs.  It is the same as 4, except that
+;;  it does not incrementally expand your input for apropos
+;;  completion.
+;;
+;;  For a long time Icicles had only the equivalent of values 3 and 4,
+;;  and I consider them the most useful.  Sometimes you will want to
+;;  temporarily turn off expansion for apropos completion.  You can do
+;;  that using `C-"' in the minibuffer: it toggles between 3 and 4 (by
+;;  default - see option `icicle-incremental-completion-alt').
+;;
+;;  See Also:
+;;
+;;  * (@> "Expanded-Common-Match Completion")
+;;
+;;  * (@> "What Input, What History?")
+;;
+;;  * (@file :file-name "icicles-doc2.el" :to "Customization and General Tips")
+;;
 ;;(@* "Icicles Highlights the Input that Won't Complete")
 ;;  ** Icicles Highlights the Input that Won't Complete **
 ;;
@@ -3469,7 +3533,7 @@
 ;;  kill the highlighted portion.  (Because it is killed, you can use
 ;;  `C-y' to yank it back.)
 ;;
-;;  User options `icicle-incremental-completion-flag',
+;;  User options `icicle-incremental-completion',
 ;;  `icicle-test-for-remote-files-flag',
 ;;  `icicle-highlight-input-completion-failure',
 ;;  `icicle-highlight-input-completion-failure-delay', and
@@ -3478,7 +3542,7 @@
 ;;  `icicle-input-completion-fail' (for strict completion) or
 ;;  `icicle-input-completion-fail-lax' (for lax completion).
 ;;
-;;  If either `icicle-incremental-completion-flag' or
+;;  If either `icicle-incremental-completion' or
 ;;  `icicle-highlight-input-completion-failure' is `nil', then no such
 ;;  highlighting is done.  Remember that you can cycle incremental
 ;;  completion on and off using `C-#' in the minibuffer.
@@ -3714,7 +3778,7 @@
 ;;  During sorting, pairs of candidates are compared using the sort
 ;;  function.  And each time you change your input by typing or
 ;;  deleting a character, the new set of matching candidates is sorted
-;;  (if `icicle-incremental-completion-flag' is non-`nil').
+;;  (if `icicle-incremental-completion' is non-`nil').
 ;;
 ;;  The number of candidates to be sorted depends on the kind of
 ;;  completion and how you use Icicles.  Some Icicles users like to
@@ -6830,12 +6894,13 @@
 ;;  enter is sometimes referred to in the Icicles doc as "completion
 ;;  input".
 ;;
-;;  Because completion is so important to Icicles, because cycling
-;;  replaces the input you type in the minibuffer, because Icicles
-;;  expands your input to the common match (provided option
-;;  `icicle-expand-input-to-common-match-flag' is non-`nil'), and
-;;  because you sometimes need to retrieve such typed input that was
-;;  never entered, Icicles also records this input.
+;;  Icicles also records any input that you type during completion but
+;;  you do not enter (`RET' or `mouse-2'), because you might need to
+;;  retrieve it.  This can be because you cycled among completion
+;;  candidates (cycling replaces the input you type) or because
+;;  Icicles has expanded your input to the common match among all
+;;  matching candidates (see option
+;;  `icicle-expand-input-to-common-match').
 ;;
 ;;  You can retrieve the last such unentered input during completion
 ;;  using `C-l' (`icicle-retrieve-previous-input') and `C-S-l', that
