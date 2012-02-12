@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:22:14 2006
 ;; Version: 22.0
-;; Last-Updated: Tue Jan 31 07:02:14 2012 (-0800)
+;; Last-Updated: Sat Feb 11 16:27:41 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 4859
+;;     Update #: 4915
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-opt.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -90,11 +90,11 @@
 ;;    `icicle-default-cycling-mode', `icicle-default-thing-insertion',
 ;;    `icicle-default-value', `icicle-define-alias-commands-flag',
 ;;    `icicle-deletion-action-flag', `icicle-dot-show-regexp-flag',
-;;    `icicle-dot-string', `icicle-expand-input-to-common-match-flag',
-;;    `icicle-file-extras', `icicle-file-match-regexp',
-;;    `icicle-file-no-match-regexp', `icicle-file-predicate',
-;;    `icicle-file-require-match-flag', `icicle-file-sort',
-;;    `icicle-files-ido-like-flag',
+;;    `icicle-dot-string', `icicle-expand-input-to-common-match',
+;;    `icicle-expand-input-to-common-match-alt', `icicle-file-extras',
+;;    `icicle-file-match-regexp', `icicle-file-no-match-regexp',
+;;    `icicle-file-predicate', `icicle-file-require-match-flag',
+;;    `icicle-file-sort', `icicle-files-ido-like-flag',
 ;;    `icicle-filesets-as-saved-completion-sets-flag',
 ;;    `icicle-functions-to-redefine', `icicle-guess-commands-in-path',
 ;;    `icicle-help-in-mode-line-delay',
@@ -110,8 +110,8 @@
 ;;    `icicle-ignore-comments-flag', `icicle-ignored-directories',
 ;;    `icicle-ignore-space-prefix-flag',
 ;;    `icicle-image-files-in-Completions',
+;;    `icicle-incremental-completion',
 ;;    `icicle-incremental-completion-delay',
-;;    `icicle-incremental-completion-flag',
 ;;    `icicle-incremental-completion-threshold',
 ;;    `icicle-inhibit-advice-functions', `icicle-inhibit-ding-flag',
 ;;    `icicle-input-string', `icicle-inter-candidates-min-spaces',
@@ -1457,24 +1457,70 @@ bound to \\<minibuffer-local-completion-map>`\\[icicle-toggle-dot]' during compl
   :group 'Icicles-Matching :group 'Icicles-Minibuffer-Display)
 
 ;;;###autoload
-(defcustom icicle-expand-input-to-common-match-flag t ; Toggle with `C-;'.
-  "*Non-nil means `S-TAB' expands input, still matching all candidates.
+(defcustom icicle-expand-input-to-common-match 4 ; Cycle with `C-M-"'.
+  "*Expansion of your minibuffer input to the longest common match.
 The expansion replaces your input in the minibuffer.
 
-Your expanded input is typically the longest substring common to all
-completion candidates and that matches your (complete) input pattern.
+See the Icicles doc, section `Expanded-Common-Match Completion' for
+information about what is meant by the \"longest\" common match.
 
-If you want to edit your original input, use \\<minibuffer-local-completion-map>\
+This option controls when such expansion occurs.  You can cycle among
+the possible values using \\<minibuffer-local-completion-map>\
+`\\[icicle-cycle-expand-to-common-match]' in the minibuffer.
+
+0 `never'    - Do not expand your input, except when you use `C-M-TAB'
+             or `C-M-S-TAB', which do not display `*Completions*'.
+
+1 `explicit' - Do not expand your input automatically, during
+             incremental completion, but expand it whenever you use
+             `TAB' or `S-TAB'.
+
+2 `sole-match' - Expand your input when you use `TAB' or `S-TAB'.
+             Expand it also automatically, whenever  only one
+             candidate matches it.
+
+3 `nil'      - Expand your input when you use `TAB' or `S-TAB'.
+             Expand it also whenever  only one candidate matches it.
+             Expand it also automatically, during incremental prefix
+             completion.
+
+4 other      - Expand your input always, including for incremental
+             completion.
+
+If you want to return to your original, unexpanded input, use \\<minibuffer-local-completion-map>\
 `\\[icicle-retrieve-previous-input]'.
 
 For apropos completion, your input is, in general, a regexp.  Setting
-this option to nil will let you always work with a regexp in the
-minibuffer for apropos completion - your regexp is then never replaced
-by the expanded common match.
+the value to `never', `explicit', or `nil' lets you always work with a
+regexp in the minibuffer for apropos completion - your regexp is never
+replaced by the expanded common match.
 
-You can toggle this option at any time from the minibuffer using
-`C-;'."
-  :type 'boolean :group 'Icicles-Matching)
+If you want to just toggle between the current value of this option
+and one of the other values, then see also option
+`icicle-expand-input-to-common-match-alt'.  You can toggle between the 
+values of these two options using \\<minibuffer-local-completion-map>\
+`\\[icicle-toggle-expand-to-common-match]' in the minibuffer."
+  :type '(choice
+          (const :tag "Never expand (except for `C-M-TAB', `C-M-S-TAB')"          0)
+          (const :tag "No auto-expansion.  Expand only for explicit completion"   1)
+          (const :tag "Auto-expand when only one matching completion"             2)
+          (const :tag "Auto-expand for prefix completion or when only one match"  3)
+          (const :tag "Auto-expand always: both prefix and apropos completion"    4))
+  :group 'Icicles-Matching)
+
+;;;###autoload
+(defcustom icicle-expand-input-to-common-match-alt 3 ; Toggle with `C-"'.
+  "*Other value for toggling `icicle-expand-input-to-common-match'.
+The values of the two options should be different.  The value choices
+are the same.  You can use \\<minibuffer-local-completion-map>\
+`\\[icicle-toggle-expand-to-common-match]' to toggle between the two values."
+  :type '(choice
+          (const :tag "Never expand (except for `C-M-TAB', `C-M-S-TAB')"          0)
+          (const :tag "No auto-expansion.  Expand only for explicit completion"   1)
+          (const :tag "Auto-expand when only one matching completion"             2)
+          (const :tag "Auto-expand for prefix completion or when only one match"  3)
+          (const :tag "Auto-expand always: both prefix and apropos completion"    4))
+  :group 'Icicles-Matching)
 
 ;;;###autoload
 (defcustom icicle-file-extras nil
@@ -1684,7 +1730,7 @@ You can toggle this option during completion using `C-x .' (no prefix
 arg).  See also option `icicle-hide-non-matching-lines-flag'.
 
 The common match used here is governed by option
-`icicle-expand-input-to-common-match-flag'.  It is elided using
+`icicle-expand-input-to-common-match'.  It is elided using
 ellipsis (`...')."
   :type 'boolean :group 'Icicles-Miscellaneous)
 
@@ -1742,8 +1788,8 @@ during incremental completion.
 
 If the value is `implicit-strict' or `implicit', then highlighting
 occurs not only upon demand but also during incremental completion if
-`icicle-incremental-completion-flag' is non-nil.  Remember that you
-can toggle incremental completion, using `C-#' in the minibuffer.
+`icicle-incremental-completion' is non-nil.  Remember that you can
+cycle incremental completion, using `C-#' in the minibuffer.
 
 I use a value of `implicit' myself, but the default value is
 `implicit-strict' because, depending on your setup and use cases,
@@ -1868,17 +1914,19 @@ You can cycle the value during completion using `C-x t'."
   "*Number of seconds to wait before updating `*Completions*' incrementally.
 There is no wait if the number of completion candidates is less than
 or equal to `icicle-incremental-completion-threshold'.
-See also `icicle-incremental-completion-flag'."
+See also `icicle-incremental-completion'."
   :type 'number :group 'Icicles-Completions-Display)
 
 ;;;###autoload
-(defcustom icicle-incremental-completion-flag t ; Toggle with `C-#'.
-  "*Non-nil means update `*Completions*' buffer incrementally, as you type.
+(defcustom icicle-incremental-completion t ; Cycle with `C-#'.
+  "*Non-nil means update `*Completions*' buffer incrementally as you type.
 nil means do not update `*Completions*' incrementally, as you type.
+
 t means do nothing if `*Completions*' is not already displayed.
 Non-nil and non-t means display `*Completions*' and update it.
-You can toggle this between t and nil from the minibuffer at any time
-using `C-#'.
+
+You can cycle this among the possible values using `C-#' from the
+minibuffer at any time.
 
 Note: Incremental completion is effectively turned off when a remote
 file name is read, that is, whenever your file-name input matches a
@@ -1895,7 +1943,7 @@ See also `icicle-incremental-completion-delay' and
 ;;;###autoload
 (defcustom icicle-incremental-completion-threshold 1000
   "*More candidates means apply `icicle-incremental-completion-delay'.
-See also `icicle-incremental-completion-flag' and
+See also `icicle-incremental-completion' and
 `icicle-incremental-completion-delay'.
 This threshold is also used to decide when to display the message
  \"Displaying completion candidates...\"."
@@ -2625,11 +2673,11 @@ key is `M-s M-s' then `M-s M-s m' is bound in Dired mode to
 ;;;###autoload
 (defcustom icicle-search-replace-common-match-flag t ; Toggle with `M-;'.
   "*Non-nil means to replace the expanded common match of your input.
-This has no effect if either
-`icicle-search-highlight-all-current-flag' or
-`icicle-expand-input-to-common-match-flag' is nil.
-You can toggle those options from the minibuffer using `C-^' and
-`C-|', respectively.  You can toggle
+This has no effect if `icicle-search-highlight-all-current-flag' is
+nil or `icicle-expand-input-to-common-match' does not cause expansion.
+
+You can cycle those options from the minibuffer using `C-^' and
+`C-M-\"', respectively.  You can toggle
 `icicle-search-replace-common-match-flag' using `M-;'."
   :type 'boolean :group 'Icicles-Searching)
 
@@ -2733,9 +2781,9 @@ nil means that `*Completions*' is shown upon demand, via `TAB' or
 
 For an alternative but similar behavior to using non-nil for
 `icicle-show-Completions-initially-flag', you can set option
-`icicle-incremental-completion-flag' to a value that is neither nil
-nor t.  That displays buffer `*Completions*' as soon as you type or
-delete input, but not initially."
+`icicle-incremental-completion' to a value that is neither nil nor t.
+That displays buffer `*Completions*' as soon as you type or delete
+input, but not initially."
   :type 'boolean :group 'Icicles-Completions-Display)
 
 ;;;###autoload
