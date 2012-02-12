@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Thu Feb  9 08:57:01 2012 (-0800)
+;; Last-Updated: Sat Feb 11 17:07:37 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 17662
+;;     Update #: 17824
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-mcmd.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -38,6 +38,7 @@
 ;;
 ;;  Commands defined here:
 ;;
+;;    `cycle-icicle-expand-to-common-match',
 ;;    `cycle-icicle-image-file-thumbnail',
 ;;    `cycle-icicle-incremental-completion',
 ;;    `cycle-icicle-sort-order',
@@ -79,6 +80,7 @@
 ;;    `icicle-change-history-variable', `icicle-change-sort-order',
 ;;    `icicle-choose-completion', `icicle-completing-read+insert',
 ;;    `icicle-Completions-mouse-3-menu',
+;;    `icicle-cycle-expand-to-common-match',
 ;;    `icicle-cycle-image-file-thumbnail',
 ;;    `icicle-cycle-incremental-completion',
 ;;    `icicle-delete-backward-char', `icicle-delete-candidate-object',
@@ -362,9 +364,9 @@
 (require 'icicles-opt)                  ; (This is required anyway by `icicles-var.el'.)
   ;; icicle-alternative-sort-comparer, icicle-move-Completions-frame,
   ;; icicle-Completions-mouse-3-menu-entries, icicle-default-cycling-mode,
-  ;; icicle-default-thing-insertion, icicle-expand-input-to-common-match-flag,
+  ;; icicle-default-thing-insertion, icicle-expand-input-to-common-match,
   ;; icicle-hide-common-match-in-Completions-flag, icicle-hide-non-matching-lines-flag,
-  ;; icicle-ignore-space-prefix-flag, icicle-incremental-completion-flag, icicle-input-string,
+  ;; icicle-ignore-space-prefix-flag, icicle-incremental-completion, icicle-input-string,
   ;; icicle-key-descriptions-use-<>-flag, icicle-regexp-quote-flag, icicle-saved-completion-sets,
   ;; icicle-search-cleanup-flag, icicle-search-highlight-all-current-flag, icicle-sort-comparer,
   ;; icicle-sort-orders-alist, icicle-TAB-shows-candidates-flag, icicle-thing-at-point-functions,
@@ -1366,8 +1368,8 @@ Bound to `C-M-;' in the minibuffer."
 ;;;###autoload
 (defun icicle-toggle-search-replace-common-match () ; Bound to `M-;' in minibuffer.
   "Toggle the value of `icicle-search-replace-common-match-flag'.
-Note that that option has no effect if
-`icicle-expand-input-to-common-match-flag' is nil.
+Note that that option has no effect if the value of option
+`icicle-expand-input-to-common-match' does not imply expansion.
 Bound to `M-;' in the minibuffer."
   (interactive)
   (setq icicle-search-replace-common-match-flag  (not icicle-search-replace-common-match-flag))
@@ -1612,8 +1614,8 @@ restored as soon as you return to the top level."
     (put 'icicle-last-top-level-command 'icicle-apropos-complete-match-fn nil))
   (let ((entry  (rassq icicle-apropos-complete-match-fn icicle-S-TAB-completion-methods-alist))
         following)
-    (setq icicle-apropos-complete-match-fn       (or (cdadr (member entry
-                                                                    icicle-S-TAB-completion-methods-alist))
+    (setq icicle-apropos-complete-match-fn       (or (cdadr (member
+                                                             entry icicle-S-TAB-completion-methods-alist))
                                                      (cdar icicle-S-TAB-completion-methods-alist))
           following                              (or (caadr (member
                                                              (rassq icicle-apropos-complete-match-fn
@@ -1742,24 +1744,24 @@ Bound to `M-,' in the minibuffer."
   (save-selected-window
     (icicle-remove-Completions-window)) ; Prevent incremental completion kicking in from the get-go.
   (setq icicle-search-replacement
-        (let ((enable-recursive-minibuffers        t)
-              (icicle-incremental-completion-flag  t) ; Override current upgrade to `always'.
-              (icicle-completion-candidates        icicle-completion-candidates)
-              (icicle-current-input                icicle-current-input)
-              (icicle-candidate-nb                 icicle-candidate-nb)
-              (icicle-update-input-hook            nil))
+        (let ((enable-recursive-minibuffers   t)
+              (icicle-incremental-completion  t) ; Override current upgrade to `always'.
+              (icicle-completion-candidates   icicle-completion-candidates)
+              (icicle-current-input           icicle-current-input)
+              (icicle-candidate-nb            icicle-candidate-nb)
+              (icicle-update-input-hook       nil))
           (icicle-completing-read-history "Replace with: " 'icicle-search-replacement-history)))
   ;; Just a sanity check.  Cannot really test equivalence of two regexps.
   (while (if icicle-search-replace-whole-candidate-flag
              (equal icicle-search-replacement icicle-scan-fn-or-regexp)
            (equal icicle-search-replacement icicle-current-input))
     (setq icicle-search-replacement
-          (let ((enable-recursive-minibuffers        t)
-                (icicle-incremental-completion-flag  t) ; Override current upgrade to `always'.
-                (icicle-completion-candidates        icicle-completion-candidates)
-                (icicle-current-input                icicle-current-input)
-                (icicle-candidate-nb                 icicle-candidate-nb)
-                (icicle-update-input-hook            nil))
+          (let ((enable-recursive-minibuffers   t)
+                (icicle-incremental-completion  t) ; Override current upgrade to `always'.
+                (icicle-completion-candidates   icicle-completion-candidates)
+                (icicle-current-input           icicle-current-input)
+                (icicle-candidate-nb            icicle-candidate-nb)
+                (icicle-update-input-hook       nil))
             (icicle-completing-read-history "Replacement = replaced.  Replace with: "
                                             'icicle-search-replacement-history)))))
 
@@ -1922,7 +1924,8 @@ These are the main Icicles actions and their minibuffer key bindings:
      `.' matching newlines too (any char)    \\[icicle-toggle-dot]\t%S
      Escaping of special regexp chars        \\[icicle-toggle-regexp-quote]\t%S
      Incremental completion                  \\[icicle-cycle-incremental-completion]\t%S
-     Input expansion to common match         \\[icicle-toggle-expand-to-common-match]\t%S
+     Input expansion to common match (toggle)\\[icicle-toggle-expand-to-common-match]\t%S
+     Input expansion to common match (cycle) \\[icicle-cycle-expand-to-common-match]\t%S
      Hiding common match in `*Completions*'  \\[icicle-dispatch-C-x.]\t%S
      Hiding no-match lines in `*Completions*' C-u \\[icicle-dispatch-C-x.]\t%S
      Horizontal/vertical candidate layout    \\[icicle-toggle-completions-format]\t%s
@@ -2104,8 +2107,9 @@ editing."
              (not case-fold-search)
              (string= icicle-dot-string icicle-anychar-regexp)
              icicle-regexp-quote-flag
-             icicle-incremental-completion-flag
-             icicle-expand-input-to-common-match-flag
+             icicle-incremental-completion
+             icicle-expand-input-to-common-match
+             icicle-expand-input-to-common-match
              icicle-hide-common-match-in-Completions-flag
              icicle-hide-non-matching-lines-flag
              icicle-completions-format
@@ -2464,27 +2468,34 @@ minibuffer (`\\<minibuffer-local-completion-map>\
 ;;;###autoload
 (defun icicle-retrieve-last-input ()
   "Put the last real input into the minibuffer.
-Use this to replace a completion candidate inserted during cycling.
-If `icicle-expand-input-to-common-match-flag' is non-nil or this is
-prefix completion, then using this once restores the expanded common
-match string, and using it twice in succession restores your original
-input.
+Use this to replace a completion candidate inserted during cycling or
+because of input expansion due to the value of option
+`icicle-expand-input-to-common-match'.
 
-You can use this command only from buffer *Completions or from the
+If you are cycling and expansion is also in effect, then use this
+twice in succession: once to restore the expanded common match string,
+and a second time to restore your unexpanded original input.
+
+You can use this command only from buffer `*Completions' or from the
 minibuffer."
   (interactive)
   (when (interactive-p) (icicle-barf-if-outside-Completions-and-minibuffer))
   (save-selected-window
     (select-window (minibuffer-window))
     (icicle-clear-minibuffer)
-    (if (and (or icicle-expand-input-to-common-match-flag (eq icicle-current-completion-mode 'prefix))
-             (eq last-command 'icicle-retrieve-last-input))
+    (if (and (eq last-command 'icicle-retrieve-last-input)
+             (or (and (eq icicle-current-completion-mode 'apropos)
+                      (eq icicle-expand-input-to-common-match 4))
+                 (and (eq icicle-current-completion-mode 'prefix)
+                      (memq icicle-expand-input-to-common-match '(3 4)))))
         (insert icicle-current-raw-input)
       (insert icicle-current-input))
     ;;$$$ (when (interactive-p) (setq icicle-last-completion-command  nil))
-    (let ((input  (if (and (or icicle-expand-input-to-common-match-flag
-                               (eq icicle-current-completion-mode 'prefix))
-                           (eq last-command this-command))
+    (let ((input  (if (and (eq last-command this-command)
+                           (or (and (eq icicle-current-completion-mode 'apropos)
+                                    (eq icicle-expand-input-to-common-match 4))
+                               (and (eq icicle-current-completion-mode 'prefix)
+                                    (memq icicle-expand-input-to-common-match '(3 4)))))
                       icicle-current-raw-input
                     icicle-current-input)))
       (icicle-highlight-initial-whitespace input) ; Highlight initial whitespace (e.g. user typo).
@@ -3398,10 +3409,10 @@ Optional argument WORD-P non-nil means complete only a word at a time."
       (icicle-save-or-restore-input)
       (cond ((null icicle-completion-candidates)
              (setq icicle-nb-of-other-cycle-candidates  0)
-             (let ((icicle-incremental-completion-flag ; Upgrade if OK for explicit.
+             (let ((icicle-incremental-completion ; Upgrade if OK for explicit.
                     (or (memq icicle-highlight-input-completion-failure
                               '(explicit-strict explicit explicit-remote))
-                        icicle-incremental-completion-flag)))
+                        icicle-incremental-completion)))
                (icicle-highlight-input-noncompletion))
              (save-selected-window (icicle-remove-Completions-window))
              (run-hooks 'icicle-no-match-hook)
@@ -3411,7 +3422,9 @@ Optional argument WORD-P non-nil means complete only a word at a time."
                                      (vanilla      "  [No vanilla completions]")
                                      (swank        "  [No swank (fuzzy symbol) completions]")
                                      (t            "  [No prefix completions]")))))
-            ((null (cdr icicle-completion-candidates)) ; Single candidate.  Update minibuffer.
+
+            ;; Single matching candidate.
+            ((null (cdr icicle-completion-candidates))
              (setq icicle-current-input  (if (not (icicle-file-name-input-p))
                                              ;; Transfer any `icicle-whole-candidate' property from
                                              ;; candidate to `icicle-current-input', so things that use
@@ -3427,10 +3440,15 @@ Optional argument WORD-P non-nil means complete only a word at a time."
 
 
              (setq icicle-nb-of-other-cycle-candidates  0)
-             (cond (nil;; $$$$$$ (and icicle-edit-update-p  (not icicle-expand-input-to-common-match-flag))
+             (cond (;; Do not expand input in minibuffer - just show `*Completions*'.
+                    (and (not no-display-p) ; Always expand for NO-DISPLAY-P.
+                         (or (eq 0 icicle-expand-input-to-common-match) ; `never'
+                             (and icicle-edit-update-p ; `explicit' means no auto-expansion.
+                                  (eq 1 icicle-expand-input-to-common-match)))) ; `explicit'
                     (when icicle-incremental-completion-p  (sit-for icicle-incremental-completion-delay))
-                    (icicle-display-candidates-in-Completions nil no-display-p))
+                    (icicle-display-candidates-in-Completions))
                    (t
+                    ;; Expand input to sole match in minibuffer.
                     (unless (and icicle-edit-update-p
                                  (or (not icicle-incremental-completion-p)
                                      (not (sit-for icicle-incremental-completion-delay))))
@@ -3505,7 +3523,19 @@ Optional argument WORD-P non-nil means complete only a word at a time."
                                             (swank        "  [Sole swank (fuzzy symbol) completion]")
                                             (t            "  [Sole prefix completion]")))
                       (setq mode-line-help  icicle-current-input)))))
-            (t                          ; Multiple candidates.
+
+            ;; Multiple candidates.
+
+            (;; Do not expand input in minibuffer - just show `*Completions*'.
+             (and (not no-display-p) ; Always expand for NO-DISPLAY-P.
+                  (or (eq 0 icicle-expand-input-to-common-match) ; `never'
+                      (and icicle-edit-update-p ; No autoexpansion for `explicit', `sole-match'
+                           (memq icicle-expand-input-to-common-match '(1 2)))))
+             (when icicle-incremental-completion-p  (sit-for icicle-incremental-completion-delay))
+             (icicle-display-candidates-in-Completions))
+
+            (t
+             ;; Complete: expand input to match common prefix.
              (if icicle-edit-update-p
                  (if (or (not icicle-incremental-completion-p)
                          (not (sit-for icicle-incremental-completion-delay)))
@@ -3751,10 +3781,10 @@ message either.  NO-DISPLAY-P is passed to
     (icicle-save-or-restore-input)
     (cond ((null icicle-completion-candidates)
            (setq icicle-nb-of-other-cycle-candidates  0)
-           (let ((icicle-incremental-completion-flag ; Upgrade if OK for explicit.
+           (let ((icicle-incremental-completion ; Upgrade if OK for explicit.
                   (or (memq icicle-highlight-input-completion-failure
                             '(explicit-strict explicit explicit-remote))
-                      icicle-incremental-completion-flag)))
+                      icicle-incremental-completion)))
              (icicle-highlight-input-noncompletion))
            (save-selected-window (icicle-remove-Completions-window))
            (run-hooks 'icicle-no-match-hook)
@@ -3762,7 +3792,9 @@ message either.  NO-DISPLAY-P is passed to
              (minibuffer-message (let ((typ  (car (rassq icicle-apropos-complete-match-fn
                                                          icicle-S-TAB-completion-methods-alist))))
                                    (concat "  [No " typ (and typ " ") "completion]")))))
-          ((null (cdr icicle-completion-candidates)) ; Single candidate.  Update minibuffer.
+
+          ;; Single matching candidate.
+          ((null (cdr icicle-completion-candidates))
            (setq icicle-current-input  (if (not (icicle-file-name-input-p))
                                            ;; Transfer any `icicle-whole-candidate' property from
                                            ;; candidate to `icicle-current-input', so things that use
@@ -3775,14 +3807,15 @@ message either.  NO-DISPLAY-P is passed to
                                             (icicle-abbreviate-or-expand-file-name
                                              (car icicle-completion-candidates)
                                              (icicle-file-name-directory icicle-current-input))))))
-
-
-
            (setq icicle-nb-of-other-cycle-candidates  0)
-           (cond (nil $$$$$$ (and icicle-edit-update-p  (not icicle-expand-input-to-common-match-flag))
-                      (when icicle-incremental-completion-p  (sit-for icicle-incremental-completion-delay))
-                      (icicle-display-candidates-in-Completions nil no-display-p))
-                 (t
+           (cond (;; Do not expand input in minibuffer - just show `*Completions*'.
+                  (and (not no-display-p) ; Always expand for NO-DISPLAY-P.
+                       (or (eq 0 icicle-expand-input-to-common-match) ; `never'
+                           (and icicle-edit-update-p ; `explicit' means no auto-expansion.
+                                (eq 1 icicle-expand-input-to-common-match)))) ; `explicit'
+                  (when icicle-incremental-completion-p  (sit-for icicle-incremental-completion-delay))
+                  (icicle-display-candidates-in-Completions))
+                 (t                     ; Expand input to sole match in minibuffer.
                   (setq icicle-current-input
                         (if (not (icicle-file-name-input-p))
                             ;; Transfer any `icicle-whole-candidate' property from
@@ -3861,7 +3894,19 @@ message either.  NO-DISPLAY-P is passed to
                    ((not (eq no-display-p 'no-msg))
                     (minibuffer-message "  [Sole apropos completion]")
                     (setq mode-line-help  (car icicle-completion-candidates))))))
-          (t                            ; Multiple candidates.
+
+          ;; Multiple candidates.
+
+          (;; Do not expand input in minibuffer - just show `*Completions*'.
+           (and (not no-display-p)      ; Always expand for NO-DISPLAY-P.
+                (or (eq 0 icicle-expand-input-to-common-match) ; `never'
+                    (and icicle-edit-update-p ; No autoexpansion for `explicit', `sole-match', `prefix'
+                         (memq icicle-expand-input-to-common-match '(1 2 3)))))
+           (when icicle-incremental-completion-p  (sit-for icicle-incremental-completion-delay))
+           (icicle-display-candidates-in-Completions))
+
+          (t
+           ;; Complete: expand input to match common prefix.
            (if icicle-edit-update-p
                (if (or (not icicle-incremental-completion-p)
                        (not (sit-for icicle-incremental-completion-delay)))
@@ -3874,12 +3919,6 @@ message either.  NO-DISPLAY-P is passed to
                    (when complete-input-sans-dir  (setq mode-line-help  complete-input-sans-dir))))
              (let ((complete-input-sans-dir  (icicle-apropos-complete-2)))
                (when complete-input-sans-dir  (setq mode-line-help  complete-input-sans-dir)))
-
-
-
-
-
-
              (cond (;; Candidates visible.  If second `S-TAB', cycle, else update candidates.
                     (get-buffer-window "*Completions*" 0)
                     (if (and (or iac1-was-cycling-p icicle-next-apropos-complete-cycles-p)
@@ -5389,27 +5428,22 @@ enter it.
 To (apropos) complete using a wider set of candidates, you use this
 command after you have completed (`TAB' or `S-TAB').  A shortcut is to
 use `\\<minibuffer-local-completion-map>\\[icicle-apropos-complete-and-widen]' - \
-it is the same as `S-TAB' followed by `\\[icicle-widen-candidates]'.
-
-This command turns off `icicle-expand-input-to-common-match-flag', for
-clarity.  You can use `\\[icicle-toggle-expand-to-common-match]' \
-to toggle that option."
+it is the same as `S-TAB' followed by `\\[icicle-widen-candidates]'."
   (interactive)
   (when (interactive-p) (icicle-barf-if-outside-minibuffer))
   (unless icicle-completion-candidates
     (error "No completion candidates.  Did you use `TAB' or `S-TAB'?"))
-  (let* ((raw-input                     icicle-current-raw-input)
+  (let* ((raw-input                     (icicle-minibuf-input-sans-dir icicle-current-raw-input))
          (enable-recursive-minibuffers  t)
          (new-regexp                    (icicle-read-string "Or match alternative (use RET): "
                                                             nil regexp-history)))
     (setq icicle-current-raw-input
-          (concat (if (< emacs-major-version 22) "\\(" "\\(?:") raw-input "\\|" new-regexp "\\)")
-          icicle-expand-input-to-common-match-flag  nil))
+          (concat (if (< emacs-major-version 22) "\\(" "\\(?:") raw-input "\\|" new-regexp "\\)")))
   (icicle-clear-minibuffer)
   (insert icicle-current-raw-input)
-  (let ((icicle-edit-update-p  t)) (icicle-apropos-complete))
-  (icicle-msg-maybe-in-minibuffer "Expansion to common match is OFF. \
-`\\<minibuffer-local-completion-map>\\[icicle-toggle-expand-to-common-match]' to toggle"))
+  (let ((icicle-edit-update-p                 t)
+        (icicle-expand-input-to-common-match  2)) ; Only explicit `TAB' or `S-TAB' or sole match.
+    (icicle-apropos-complete)))
 
 ;;;###autoload
 (defun icicle-narrow-candidates ()      ; Bound to `M-*' in minibuffer.
@@ -5546,7 +5580,7 @@ You can use this command only from the minibuffer (`\\<minibuffer-local-completi
   (when (interactive-p) (icicle-barf-if-outside-minibuffer))
   ;; $$$$$ (let ((icicle-top-level-when-sole-completion-flag  t))
   (when (and (eq icicle-current-completion-mode 'prefix)
-             (eq icicle-current-TAB-method 'basic)
+             (eq (icicle-current-TAB-method) 'basic)
              icicle-last-input)
     (let ((icicle-incremental-completion-p  nil)
           (regexp-quoted-input              (regexp-quote icicle-last-input)))
@@ -6470,6 +6504,10 @@ NO-ERROR-P non-nil means don't raise an error if NEW-CANDS is nil."
                  (filesets-init)
                  (let ((icicle-completion-candidates  icicle-completion-candidates))
                    (setq where  (completing-read "Save to fileset: " filesets-data)))
+                 (unless (assoc where filesets-data)
+                   (when (y-or-n-p (format "Fileset `%s' does not exist. Create it? " where))
+                     (add-to-list 'filesets-data (list where '(:files)))
+                     (message "Fileset created.  Use `M-x filesets-save-config' to save it.")))
                  (dolist (cand  new-cands) (icicle-add-file-to-fileset cand where))
                  (when (minibuffer-window-active-p (minibuffer-window))
                    (with-output-to-temp-buffer "*Completions*" ; Redisplay.
@@ -7149,22 +7187,21 @@ Bound to `C-$' in the minibuffer."
 (defalias 'cycle-icicle-incremental-completion 'icicle-cycle-incremental-completion)
 ;;;###autoload
 (defun icicle-cycle-incremental-completion () ; Bound to `C-#' in minibuffer.
-  "Cycle the value of option `icicle-incremental-completion-flag'.
+  "Cycle the value of option `icicle-incremental-completion'.
 If the current value is nil      then it is set to t.
 If the current value is t        then it is set to `always'.
 If the current value is `always' then it is set to nil.
 
 Bound to `C-#' in the minibuffer."
   (interactive)
-  (setq icicle-incremental-completion-flag  (case icicle-incremental-completion-flag
-                                              ((nil)      t)
-                                              ((t)        'always)
-                                              (otherwise  nil))
-
-        icicle-incremental-completion-p     icicle-incremental-completion-flag)
+  (setq icicle-incremental-completion    (case icicle-incremental-completion
+                                           ((nil)      t)
+                                           ((t)        'always)
+                                           (otherwise  nil))
+        icicle-incremental-completion-p  icicle-incremental-completion)
   (icicle-msg-maybe-in-minibuffer
    "Incremental completion is now %s"
-   (icicle-propertize (case icicle-incremental-completion-flag
+   (icicle-propertize (case icicle-incremental-completion
                         ((nil)      "OFF")
                         ((t)        "ON")
                         (otherwise  "EAGER"))
@@ -7172,16 +7209,52 @@ Bound to `C-#' in the minibuffer."
 
 ;; Top-level commands.  Could instead be in `icicles-cmd2.el'.
 ;;;###autoload
-(defalias 'toggle-icicle-expand-to-common-match 'icicle-toggle-expand-to-common-match)
+(defalias 'cycle-icicle-expand-to-common-match 'icicle-cycle-expand-to-common-match)
 ;;;###autoload
-(defun icicle-toggle-expand-to-common-match () ; Bound to `C-;' in minibuffer.
-  "Toggle the value of `icicle-expand-input-to-common-match-flag'.
-Bound to `C-;' in the minibuffer."
+(defun icicle-cycle-expand-to-common-match () ; Bound to `C-M-"' in minibuffer.
+  "Cycle the value of option `icicle-expand-input-to-common-match'.
+Bound to \\<minibuffer-local-completion-map>\
+`\\[icicle-cycle-expand-to-common-match]' in the minibuffer.
+
+This cycles among all possible values of the option.  See also
+`icicle-toggle-expand-to-common-match' (\\<minibuffer-local-completion-map>\
+`\\[icicle-toggle-expand-to-common-match]' in the minibuffer)."
   (interactive)
-  (setq icicle-expand-input-to-common-match-flag  (not icicle-expand-input-to-common-match-flag))
+  (setq icicle-expand-input-to-common-match  (mod (1+ icicle-expand-input-to-common-match) 5))
   (icicle-msg-maybe-in-minibuffer
    "Expanding input to common match is now %s"
-   (icicle-propertize (if icicle-expand-input-to-common-match-flag "ON" "OFF")
+   (icicle-propertize (case icicle-expand-input-to-common-match
+                        (0  "0 - NEVER")
+                        (1  "1 - `TAB', `S-TAB' ONLY")
+                        (2  "2 - SOLE MATCH")
+                        (3  "3 - PREFIX OR SOLE MATCH")
+                        (t  "4 - ALWAYS"))
+                      'face 'icicle-msg-emphasis)))
+
+;; Top-level commands.  Could instead be in `icicles-cmd2.el'.
+;;;###autoload
+(defalias 'toggle-icicle-expand-to-common-match 'icicle-toggle-expand-to-common-match)
+;;;###autoload
+(defun icicle-toggle-expand-to-common-match () ; Bound to `C-"' in minibuffer.
+  "Toggle the value of option `icicle-expand-input-to-common-match'.
+The alternative values are those of that option and option
+`icicle-expand-input-to-common-match-alt'.
+
+Bound to \\<minibuffer-local-completion-map>\
+`\\[icicle-toggle-expand-to-common-match]' in the minibuffer."
+  (interactive)
+  (setq icicle-expand-input-to-common-match
+        (prog1 icicle-expand-input-to-common-match-alt
+          (setq icicle-expand-input-to-common-match-alt  icicle-expand-input-to-common-match)))
+
+  (icicle-msg-maybe-in-minibuffer
+   "Expanding input to common match is now %s"
+   (icicle-propertize (case icicle-expand-input-to-common-match
+                        (0  "0 - NEVER")
+                        (1  "1 - `TAB', `S-TAB' ONLY")
+                        (2  "2 - SOLE MATCH")
+                        (3  "3 - PREFIX OR SOLE MATCH")
+                        (t  "4 - ALWAYS"))
                       'face 'icicle-msg-emphasis)))
 
 ;;;###autoload
@@ -7477,10 +7550,6 @@ Bound to `C-`' in the minibuffer."
 Use this if you want to literally match all of what is currently in
 the minibuffer or selected text there, but you also want to use that
 literal text as part of a regexp for apropos completion.
-
-This turns off `icicle-expand-input-to-common-match-flag'.
-You can toggle that option using `C-;'.
-
 Bound to `M-%' in the minibuffer."
   (interactive (if (and mark-active (mark))
                    (list (region-beginning) (region-end))
@@ -7494,11 +7563,10 @@ Bound to `M-%' in the minibuffer."
         (setq quoted-part  (regexp-quote (icicle-input-from-minibuffer)))
         (delete-region (icicle-minibuffer-prompt-end) (point-max))
         (insert quoted-part))))
-  (setq icicle-current-input                      (icicle-input-from-minibuffer)
-        icicle-expand-input-to-common-match-flag  nil)
-  (icicle-apropos-complete)
-  (icicle-msg-maybe-in-minibuffer (substitute-command-keys "Expansion to common match is OFF. \
-`\\<minibuffer-local-completion-map>\\[icicle-toggle-expand-to-common-match]' to toggle")))
+  (setq icicle-current-input  (icicle-input-from-minibuffer))
+  (let ((icicle-edit-update-p                 t)
+        (icicle-expand-input-to-common-match  2)) ; Only explicit `TAB'/`S-TAB' or sole candidate match.
+    (icicle-apropos-complete)))
 
 ;; Top-level commands.  Could instead be in `icicles-cmd2.el'.
 ;;;###autoload
