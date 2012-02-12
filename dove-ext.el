@@ -722,27 +722,29 @@ Parenthesis character was defined by beginning-of-parenthesis"
 ;  |           |            |                     |           |            | 
 ;  +------------------------+                     +------------------------+ 
 
-(defun roll-v-3 ()
-  "Rolling 3 window buffers clockwise"
+(defmacro dove-roll-3-buffers (buf_1 buf_2 buf_3)
+  `(progn (select-window (get-largest-window))
+    (if (= 3 (length (window-list)))
+        (let ((winList (window-list)))
+          (let ((1stWin (car winList))
+                (2ndWin (car (cdr winList)))
+                (3rdWin (car (cdr (cdr winList)))))
+            (let ((1stBuf (window-buffer 1stWin))
+                  (2ndBuf (window-buffer 2ndWin))
+                  (3rdBuf (window-buffer 3rdWin)))
+              (set-window-buffer 1stWin ,buf_1)
+              (set-window-buffer 2ndWin ,buf_2)
+              (set-window-buffer 3rdWin ,buf_3)))))))
+
+(defun roll-3-anti-clockwise ()
+  "Roll 3 window buffers anti-clockwise"
   (interactive)
-  (select-window (get-largest-window))
-  (if (= 3 (length (window-list)))
-      (let ((winList (window-list)))
-	    (let ((1stWin (car winList))
-		  (2ndWin (car (cdr winList)))
-		  (3rdWin (car (cdr (cdr winList)))))
-	      (let ((1stBuf (window-buffer 1stWin))
-		    (2ndBuf (window-buffer 2ndWin))
-		    (3rdBuf (window-buffer 3rdWin))
-		    )
-		    (set-window-buffer 1stWin 3rdBuf)
-		    (set-window-buffer 2ndWin 1stBuf)
-		    (set-window-buffer 3rdWin 2ndBuf)
-		    )
-	      )
-	    )
-    )
-)
+  (dove-roll-3-buffers 3rdBuf 1stBuf 2ndBuf))
+
+(defun roll-3-clockwise ()
+  "Roll 3 window buffers clockwise"
+  (interactive)
+  (dove-roll-3-buffers 2ndBuf 3rdBuf 1stBuf))
 
 
 ;(defun dove-hide-shell-output()
