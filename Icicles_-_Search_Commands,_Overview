@@ -408,8 +408,7 @@ of [[Isearch]] (except that the highlighting is not in fact lazy).
 
 # User option '''`<tt>[[Icicles - Customization and General Tips#icicle-search-highlight-all-current-flag|icicle-search-highlight-all-current-flag]]</tt>''''
 controls whether the input matches are highlighted within each
-search context or only within the current context.  It,
-together with '''`icicle-expand-input-to-common-match-flag'''',
+search context or only within the current context.  Together with '''`icicle-expand-input-to-common-match'''', it
 controls whether the input-match highlighting covers an [[Icicles - Expanded-Common-Match Completion|expanded common match]] among all matches or just the exact input match.  See [[#SearchHighlighting|screenshot]], above.
 
 # If you do not use a subgroup to define the search context 
@@ -596,12 +595,22 @@ occurs, highlighted, to help orient you.  The buffer name is actually part of th
   the Emacs 22+ ''lazy search highlighting'' of [[Isearch]] (except that
   the highlighting is not in fact lazy).
 
+* If '''`<tt>[[Icicles - Customization and General Tips#icicle-search-replace-whole-candidate-flag|icicle-search-replace-whole-candidate-flag]]</tt>'''' is `nil', then
+whatever matches your current input (expanded, if `<tt>[[Icicles - Customization and General Tips#icicle-expand-input-to-common-match|icicle-expand-input-to-common-match]]</tt> causes expansion) is
+replaced, within the current search context, when you perform
+replacement (e.g. `C-S-RET').  If the value is non-`nil' (the
+default value), then the entire search context is replaced,
+instead.  You can use '''`##M-_##'''' at any time during searching and
+replacing, to toggle the value.
+
+
 * If '''`<tt>[[Icicles - Customization and General Tips#icicle-search-highlight-all-current-flag|icicle-search-highlight-all-current-flag]]</tt>'''' is non-`nil', then
  '''Icicles''' search functions highlight your current input match within ''all''
  search contexts ''at once''.  If it is non-`nil' and
-'''`<tt>[[Icicles - Customization and General Tips#icicle-expand-input-to-common-match-flag|icicle-expand-input-to-common-match-flag]]</tt>'''' is also non-`nil', then
+'''`<tt>[[Icicles - Customization and General Tips#icicle-expand-input-to-common-match|icicle-expand-input-to-common-match]]</tt>'''' is '''##3##''' or '''##4##''' (which means
+your input can be automatically expanded), then
 what is highlighted for each input match is the [[Icicles - Expanded-Common-Match Completion|expanded common match]] among all input matches throughout the search area.  If
-either is `nil', then only the exact input match is highlighted.  For example (see [[Icicles - Nutshell View#IciclesSearch|Nutshell View - Icicles Search]]), if the
+either of these conditions does not hold, then only the exact input match is highlighted.  For example (see [[Icicles - Nutshell View#IciclesSearch|Nutshell View - Icicles Search]]), if the
 initial regexp defining the search context is `##.*recursive.*##',
 and your input is `edit', then searching file <tt>[[icicles-doc1.el]]</tt>
 highlights not `edit' but `##`abort-recursive-edit'##', which
@@ -629,11 +638,12 @@ search hits are `##But then X and then Y##' and `##W and then Z##', the expanded
 not include each occurrence of `then' in the search hits, but rather
 each occurrence of `##and then##'.
 
-* If `icicle-expand-input-to-common-match-flag',
-`icicle-search-highlight-all-current-flag', and
-'''`<tt>[[Icicles - Customization and General Tips#icicle-search-replace-common-match-flag|icicle-search-replace-common-match-flag]]</tt>'''' are all non-`nil', then
-a search replacement replaces the expanded common match;
-otherwise, it replaces only the exact match. The default value of `icicle-search-highlight-all-current-flag' is `nil', because
+* When `icicle-search-replace-whole-candidate-flag' is `nil', only
+the part of the search context that matches your input is
+replaced.  That part corresponds to your expanded input if
+`icicle-expand-input-to-common-match' implies expansion and if
+`icicle-search-highlight-all-current-flag' and
+'''`<tt>[[Icicles - Customization and General Tips#icicle-search-replace-common-match-flag|icicle-search-replace-common-match-flag]]</tt>'''' are both non-`nil'.  Otherwise, it corresponds to only your exact input.  The default value of `icicle-search-highlight-all-current-flag' is `nil', because
  non-`nil' can impact performance negatively if there are
   many search contexts -- the highlighting is updated with each input change.  You can toggle the value at any time using command
 `icicle-toggle-highlight-all-current', bound to '''`##C-^##'''' in the
@@ -657,13 +667,6 @@ regexp subgroups.  The [[face]]s for these are, respectively:
 ** '''`<tt>[[Icicles - Customization and General Tips#icicle-search-highlight-input-matches-here|icicle-search-highlight-input-matches-here]]</tt>'''' (everywhere, if
 `icicle-search-highlight-all-current-flag' is non-`nil')
 ** '''`<tt>[[Icicles - Customization and General Tips#icicle-search-context-level-1|icicle-search-context-level-1]]</tt>'''' through '''`icicle-search-context-level-8''''
-
-* If '''`<tt>[[Icicles - Customization and General Tips#icicle-search-replace-whole-candidate-flag|icicle-search-replace-whole-candidate-flag]]</tt>'''' is `nil', then whatever matches your current input is
-replaced, within the current search context, when you perform
-replacement (e.g. `C-S-RET').  If the value is non-`nil' (the
-default value), then the
-entire search context is replaced, instead.  You can use '''`##M-_##'''' at
-any time during searching and replacing, to toggle the value.
 
 * Command `icicle-search-word' (bound to `##C-c $##') always searches
 for a whole word: your initial
