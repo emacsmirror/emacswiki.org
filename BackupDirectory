@@ -52,7 +52,7 @@ If you visit the backup directory from time to time to retrieve an old file vers
     (when (and (backup-file-name-p file)
                (> (- current (float-time (fifth (file-attributes file))))
                   week))
-      (message file)
+      (message "%s" file)
       (delete-file file))))
 }}}
 
