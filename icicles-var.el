@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:23:26 2006
 ;; Version: 22.0
-;; Last-Updated: Fri Jan 20 17:04:00 2012 (-0800)
+;; Last-Updated: Sat Feb 11 14:40:58 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 1597
+;;     Update #: 1606
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-var.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -405,7 +405,7 @@ Effective starting with Emacs 23.")
 
 (defvar icicle-current-raw-input "" "Current minibuffer raw (unexpanded) input.
 This can be different from `icicle-current-input' only when
-`icicle-expand-input-to-common-match-flag' is non-nil.")
+`icicle-expand-input-to-common-match' causes your input to expand.")
 
 (defvar icicle-cycling-p nil
   "Non-nil means the user is currently cycling completion candidates.")
@@ -567,7 +567,7 @@ noted in parentheses.
 * `icicle-deletion-action-flag'          - `S-delete' deletes?
 * `icicle-dot-show-regexp-flag'          - Show regexp for `.'?
 * `icicle-dot-string'                    - String that `.' inserts
-* `icicle-expand-input-to-common-match-flag'- Expand input? (`C-;')
+* `icicle-expand-input-to-common-match'  - Expand your input? (`C-\"')
 * `icicle-file-*'                        - `icicle-file' options
 * `icicle-filesets-as-saved-completion-sets-flag'- Use filesets?
 * `icicle-guess-commands-in-path'        - Shell commands to complete
@@ -581,8 +581,8 @@ noted in parentheses.
                                          - Highlight input whitespace?
 * `icicle-highlight-lighter-flag'        - Highlight mode-line `Icy'
 * `icicle-ignore-space-prefix-flag'      - See initial space? (`M-_')
+* `icicle-incremental-completion'        - Icompletion? (`C-#')
 * `icicle-incremental-completion-delay'  - Delay before update cands
-* `icicle-incremental-completion-flag'   - Icompletion? (`C-#')
 * `icicle-incremental-completion-threshold'- # of candidates for delay
 * `icicle-inhibit-advice-functions'      - Advice-inhibited functions
 * `icicle-inhibit-ding-flag'             - Suppress audible bell
@@ -749,6 +749,7 @@ input prompt is prefixed by `+'.
 + `icicle-completing-yank'             - `yank' using completion
 + `icicle-customize-face'              - Multi-`customize-face'
   `icicle-customize-icicles-group'     - Customize options and faces
+  `icicle-cycle-expand-to-common-match' - Cycle input ECM expansion
   `icicle-cycle-incremental-completion' - Cycle incremental completion
 + `icicle-delete-file'                 - Delete file/directory
   `icicle-delete-window'               - Delete window (`C-u': buffer)
@@ -845,7 +846,6 @@ input prompt is prefixed by `+'.
   `icicle-toggle-C-for-actions'        - Toggle using `C-' for actions
   `icicle-toggle-case-sensitivity'     - Toggle case sensitivity
   `icicle-toggle-dot'                  - Toggle `.' matching newlines
-  `icicle-toggle-expand-to-common-match' - Toggle input ECM expansion
   `icicle-toggle-hiding-common-match'  - Toggle match, `*Completions*'
   `icicle-toggle-highlight-all-current' - Toggle max search highlight
   `icicle-toggle-highlight-historical-candidates'
@@ -903,7 +903,7 @@ If this is nil, then no file extensions are ignored.
 The ignored file extensions come from `completion-ignored-extensions'.")
 
 (defvar icicle-incremental-completion-p nil
-  "Takes the place of `icicle-incremental-completion-flag' during input.
+  "Takes the place of `icicle-incremental-completion' during input.
 The program updates this to `always' from `t' after `*Completions*' has
 been displayed.")
 
