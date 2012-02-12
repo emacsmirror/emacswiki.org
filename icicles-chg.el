@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Thu Feb  9 08:56:39 2012 (-0800)
+;; Last-Updated: Sat Feb 11 17:24:49 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 7909
+;;     Update #: 7973
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-chg.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -82,6 +82,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd1.el'")
 ;;
+;; 2012/02/11 dadams
+;;     Applied renaming.
 ;; 2012/01/31 dadams
 ;;     icicle-yank-pop-commands, icicle-completing-yank: Minor changes to doc strings.
 ;; 2012/01/20 dadams
@@ -537,6 +539,10 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd2.el'")
 ;;
+;; 2012/02/11 dadams
+;;     icicle-search: Update doc string for new input expansion.
+;;     icicle-search-highlight-all-input-matches:
+;;       Expand when apropos and 4 or prefix and 3 or 4.
 ;; 2012/01/25 dadams
 ;;     icicle-exchange-point-and-mark: Support also vanilla Emacs 22+ use of a prefix arg.
 ;; 2012/01/16 dadams
@@ -1147,6 +1153,15 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-fn.el'")
 ;;
+;; 2012/02/11 dadams
+;;     icicle-display-candidates-in-Completions:
+;;       Always highlight expanded common match now, not just when prefix or *-expand-input is non-nil.
+;;     icicle-unsorted(-file-name)-(prefix|apropos)-candidates:
+;;       Set icicle-common-match-string to expansion only if expanding (prefix: 3 or 4, apropos: 4).
+;;     icicle-save-or-restore-input:
+;;       Do not save if apropos and not 4 or prefix and not 3 or 4. (Before: checked only for apropos.)
+;;     icicle-remove-duplicates:
+;;       Do not use hash table for Emacs 20, even if cl.el loaded, so can byte-compile and use later.
 ;; 2012/02/08 dadams
 ;;     icicle-remove-duplicates: Redefined to use a hash table.
 ;;     icicle-remove-dups-if-extras: Call icicle-remove-duplicates (not inlined).
@@ -2913,6 +2928,20 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-mcmd.el'")
 ;;
+;; 2012/02/11 dadams
+;;     Support for new values of icicle-expand-input-to-common-match (no expansion etc.).
+;;       Added: icicle-cycle-expand-to-common-match.
+;;       icicle-help-string-completion: Added icicle-cycle-expand-to-common-match.
+;;       icicle-retrieve-last-input: Handle both prefix (3) and apropos (4) incremental expansion.
+;;       icicle-(prefix|apropos)-complete-1:
+;;         Handle all cases of icicle-expand-input-to-common-match: 0,1 (display only) vs 2 vs 3,4.
+;;       icicle-toggle-expand-to-common-match: Swap with icicle-expand-input-to-common-match-alt (new).
+;;       Doc strings: Applied renamings and key changes.
+;;     icicle-widen-candidates, icicle-regexp-quote-input:
+;;       Do not turn off icicle-expand-input-to-common-match.  Just bind it while apropos-complete.
+;;     icicle-widen-candidates: Remove directory from raw input (bug fix).
+;;     icicle-apropos-complete-and-narrow: Use function, not var, icicle-current-TAB-method (bug fix).
+;;     icicle-candidate-set-save-1: Prompt to create new fileset if fileset entered does not exist.
 ;; 2012/02/08 dadams
 ;;     Renamed: icicle-add/remove-tags-and-refresh to icicle-autofile-action.
 ;;     icicle-autofile-action: Handle create/set case too. not just add and remove.
@@ -4267,6 +4296,10 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-mode.el'")
 ;;
+;; 2012/02/11 dadams
+;;     Bind icicle-toggle-expand-to-common-match to C-", not C-;.
+;;     Bind icicle-cycle-expand-to-common-match (new) to C-M-".
+;;     Doc strings: Applied renamings and key changes.
 ;; 2012/01/31 dadams
 ;;     icicle-define-icicle-maps: Added: icicle-cycle-image-file-thumbnail.
 ;;                                Corrected typo for icicle-toggle-completions-format.
@@ -5314,6 +5347,13 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-opt.el'")
 ;;
+;; 2012/02/11 dadams
+;;     ** NOTE ** Incompatible renamings and value changes.  Update any corresponding customizations.
+;;     Renamed: icicle-expand-input-to-common-match-flag to icicle-expand-input-to-common-match,
+;;              icicle-incremental-completion-flag to icicle-incremental-completion.
+;;     Added: icicle-expand-input-to-common-match-alt.
+;;     icicle-expand-input-to-common-match: Values are now 0 to 4 (split prefix and sole-match).
+;;     Doc strings: applied renamings and key changes.
 ;; 2012/01/31 dadams
 ;;     Added: icicle-doremi-submenu.  Added it to icicle-Completions-mouse-3-menu-entries.
 ;;     icicle-Completions-toggle-submenu:
@@ -5978,6 +6018,9 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-var.el'")
 ;;
+;; 2012/02/11 dadams
+;;     icicle-current-raw-input, icicle-general-help-string, icicle-incremental-completion-p:
+;;       Doc updates for input-expansion changes, including option name change (no -flag).
 ;; 2012/01/14 dadams
 ;;     Added: icicle-read-char-history.
 ;; 2011/12/28 dadams
