@@ -65,11 +65,11 @@ candidate completions, however those might be defined.
 '''8.''' If the potential number of completion candidates is enormous,
 then [[Icicles - Icompletion|icompletion]] display in `*Completions*' can be slow.  In that
 case, consider turning it off for the duration of the command,
-by binding '''`icicle-incremental-completion-flag'''' to `nil'.    An
+by binding '''`icicle-incremental-completion'''' to `nil'.    An
 alternative to turning it off is the approach taken in '''Icicles'''
 (e.g. `icicle-vardoc' and `icicle-insert-thesaurus-entry'):
 Just add a reminder to the doc string to tell users that they
-can toggle `icicle-incremental-completion-flag' with `<tt>C-#</tt>'.
+can cycle `icicle-incremental-completion' using `<tt>C-#</tt>'.
 
 '''9.''' Another of my libraries that can help programmers provide
 default values is '''<tt>[[thingatpt+.el]]</tt>'''.  It provides functions for
