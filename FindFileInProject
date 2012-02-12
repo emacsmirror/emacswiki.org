@@ -17,7 +17,7 @@ All these variables may be overridden on a per-directory basis in
 your .dir-locals.el.  See (info "(Emacs) Directory Variables") for
 details.
 
-It's available via http://marmalade-repo.org.
+It's available via [http://marmalade-repo.org/packages/find-file-in-project Marmelade Repo]
 
 == Alternatives ==
 
