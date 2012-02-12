@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Mon Jan 30 13:39:41 2012 (-0800)
+;; Last-Updated: Sat Feb 11 14:30:55 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 23257
+;;     Update #: 23258
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-cmd1.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -2478,7 +2478,7 @@ Though `icicle-explore' is typically used to define navigation
 commands, it need not be.  It can be useful anytime you need to use
 `completing-read' and also provide specific behavior for quitting
 \(`C-g'), completion errors, and final actions."
-  (let ((icicle-incremental-completion-flag     'always)
+  (let ((icicle-incremental-completion          'always)
         (icicle-whole-candidate-as-text-prop-p  t)
         (icicle-transform-function              (if (interactive-p) nil icicle-transform-function))
         (icicle-act-before-cycle-flag           icicle-act-before-cycle-flag)
