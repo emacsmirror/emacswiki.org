@@ -163,12 +163,12 @@ few '''Icicles''' [[option]]s:
 * '''`<tt>[[Icicles - Customization and General Tips#icicle-regexp-quote-flag|icicle-regexp-quote-flag]]</tt>'''' determines whether to use [[regexp]]
 matching or literal matching.
 
-* '''`<tt>[[Icicles - Customization and General Tips#icicle-search-highlight-all-current-flag|icicle-search-highlight-all-current-flag]]</tt>'''', '''`<tt>[[Icicles - Customization and General Tips#icicle-expand-input-to-common-match-flag|icicle-expand-input-to-common-match-flag]]</tt>'''', and
+* '''`<tt>[[Icicles - Customization and General Tips#icicle-expand-input-to-common-match|icicle-expand-input-to-common-match]]</tt>'''', '''`<tt>[[Icicles - Customization and General Tips#icicle-search-highlight-all-current-flag|icicle-search-highlight-all-current-flag]]</tt>'''', and
 '''`<tt>[[Icicles - Customization and General Tips#icicle-search-replace-common-match-flag|icicle-search-replace-common-match-flag]]</tt>'''' together determine
 whether to replace exactly what your input matches in the
 current search hit or the [[Icicles - Expanded-Common-Match Completion|expanded common match]] (ECM) of your
-input among all search hits.  If any of these options is `nil',
-then your exact input match is replaced; otherwise, the ECM is
+input among all search hits.  If `icicle-expand-input-to-common-match' does not cause your input to be expanded (no ECM), or if either of the other options is `nil',
+then your exact input match is replaced.  Otherwise, the ECM is
 replaced.
 
 The replacement string can be nearly anything that is
@@ -191,7 +191,7 @@ In particular, to put '''Icicles''' search-and-replace to best advantage
 you need to know ''what gets replaced'', depending on those user
 options: the whole search hit vs only input matches, an exact
 input match vs the expanded common match.  Experiment with the
-toggles `##M-_##', `##C-^##', `##C-;##', and `##M-;##'.  And you need to know how
+toggles `##M-_##', `##C-^##', `##C-"##', and `##M-;##'.  And you need to know how
 repeated `C-S-RET' works vs repeated `C-S-next'.
 
 I know it's tricky to learn.  Experimenting helps.  If something
