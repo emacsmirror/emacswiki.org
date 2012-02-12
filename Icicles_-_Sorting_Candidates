@@ -153,7 +153,7 @@ orders, that is useful for all purposes. Completion, and therefore also sorting 
 
 '''Icicles''' predefines many sort functions, and you can easily define more of your own. You can choose a different sort at any time, as mentioned above. A good sort order can be a big help, depending on the context. However, sorting is not free, and it can be helpful to think for a moment about some of the consequences of sorting, in terms of performance.
 
-What does a sort function do? It determines which of two strings should come first, that is, which is "less than" the other. During sorting, pairs of candidates are compared using the sort function.  And each time you change your input by typing or deleting a character, the new set of matching candidates is sorted (if `icicle-incremental-completion-flag' is non-`nil').
+What does a sort function do? It determines which of two strings should come first, that is, which is "less than" the other. During sorting, pairs of candidates are compared using the sort function.  And each time you change your input by typing or deleting a character, the new set of matching candidates is sorted (if `icicle-incremental-completion' is non-`nil').
 
 The number of candidates to be sorted depends on the kind of
 completion and how you use '''Icicles'''. Some '''Icicles''' users like to use cycling more and completion less, which means sorting more candidates.  Other users favor using completion to narrow down the number of matches (which I recommend).  Some commands typically
