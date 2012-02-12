@@ -196,9 +196,14 @@ Similar as split-h, but works with 3 windows
   +----------- +-----------+                  +------------------------+ 
 }}}
 
-=== roll-v-3 ===
+=== roll-3-clockwise ===
 
-Rolling 3 window buffers clockwise
+Roll 3 window buffers clockwise
+
+=== roll-3-anti-clockwise === 
+
+Roll 3 window buffers anti-clockwise
+
 
 {{{
   +----------- +-----------+                    +----------- +-----------+ 
