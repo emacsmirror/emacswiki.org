@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Fri Feb 10 07:48:43 2012 (-0800)
+;; Last-Updated: Sun Feb 12 09:09:45 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 28620
+;;     Update #: 28691
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-doc2.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -98,6 +98,7 @@
 ;;    (@file :file-name "icicles-doc1.el" :to "icomplete+.el Displays the Number of Other Prefix Candidates")
 ;;    (@file :file-name "icicles-doc1.el" :to "Icicles Highlights the Input that Won't Complete")
 ;;    (@file :file-name "icicles-doc1.el" :to "Icompletion in *Completions*: Apropos and Prefix Completion")
+;;    (@file :file-name "icicles-doc1.el" :to "Incremental Completion (Input Expansion) in the Minibuffer")
 ;;
 ;;  (@file :file-name "icicles-doc1.el" :to "Sorting Candidates and Removing Duplicates")
 ;;    (@file :file-name "icicles-doc1.el" :to "Changing the Sort Order")
@@ -687,11 +688,10 @@
 ;;
 ;;  13. User option `icicle-search-highlight-all-current-flag'
 ;;     controls whether the input matches are highlighted within each
-;;     search context or only within the current context.  It,
-;;     together with `icicle-expand-input-to-common-match-flag',
-;;     controls whether the input-match highlighting covers an
-;;     expanded common match among all matches or just the exact input
-;;     match.
+;;     search context or only within the current context.  Together
+;;     with `icicle-expand-input-to-common-match', it controls whether
+;;     the input-match highlighting covers an expanded common match
+;;     among all matches or just the exact input match.
 ;;
 ;;  14. If you do not use a subgroup to define the search context (as
 ;;     in #3, above), that is, if the search context corresponds to
@@ -845,14 +845,24 @@
 ;;    The effect is similar to the Emacs 22+ lazy search highlighting
 ;;    of Isearch (except that the highlighting is not in fact lazy).
 ;;
+;;  * If `icicle-search-replace-whole-candidate-flag' is `nil', then
+;;    whatever matches your current input (expanded, if
+;;    `icicle-expand-input-to-common-match' causes expansion) is
+;;    replaced, within the current search context, when you perform
+;;    replacement (e.g. `C-S-RET').  If the value is non-`nil' (the
+;;    default value), then the entire search context is replaced,
+;;    instead.  You can use `M-_' at any time during searching and
+;;    replacing, to toggle the value.
+;;
 ;;  * If `icicle-search-highlight-all-current-flag' is non-`nil', then
 ;;    Icicles search functions highlight your current input match
 ;;    within *all* search contexts at once.  If it is non-`nil' and
-;;    `icicle-expand-input-to-common-match-flag' is also non-`nil',
-;;    then what is highlighted for each input match is the expanded
-;;    common match among all input matches throughout the search area.
-;;    If either is `nil', then only the exact input match is
-;;    highlighted.
+;;    `icicle-expand-input-to-common-match' is 3 or 4 (which means
+;;    your input can be automatically expanded), then what is
+;;    highlighted for each input match is the expanded common match
+;;    among all input matches throughout the search area.  If either
+;;    of these conditions does not hold, then only the exact input
+;;    match is highlighted.
 ;;
 ;;    For example
 ;;    (see (@file :file-name "icicles-doc1.el" :to "Nutshell View of Icicles")),
@@ -886,11 +896,13 @@
 ;;            not include each occurrence of `then' in the search
 ;;            hits, but rather each occurrence of `and then'.
 ;;
-;;    If `icicle-expand-input-to-common-match-flag',
-;;    `icicle-search-highlight-all-current-flag', and
-;;    `icicle-search-replace-common-match-flag' are all non-`nil',
-;;    then a search replacement replaces the expanded common match;
-;;    otherwise, it replaces only the exact match.
+;;    When `icicle-search-replace-whole-candidate-flag' is `nil', only
+;;    the part of the search context that matches your input is
+;;    replaced.  That part corresponds to your expanded input if
+;;    `icicle-expand-input-to-common-match' implies expansion and if
+;;    `icicle-search-highlight-all-current-flag' and
+;;    `icicle-search-replace-common-match-flag' are both non-`nil'.
+;;    Otherwise, it corresponds to only your exact input.
 ;;
 ;;    The default value of `icicle-search-highlight-all-current-flag'
 ;;    is `nil', because non-`nil' can impact performance negatively if
@@ -922,14 +934,6 @@
 ;;      `icicle-search-highlight-all-current-flag' is non-`nil')
 ;;    - `icicle-search-context-level-1' through
 ;;      `icicle-search-context-level-8'
-;;
-;;  * If `icicle-search-replace-whole-candidate-flag' is `nil', then
-;;    whatever matches your current input is replaced, within the
-;;    current search context, when you perform replacement
-;;    (e.g. `C-S-RET').  If the value is non-`nil' (the default
-;;    value), then the entire search context is replaced, instead.
-;;    You can use `M-_' at any time during searching and replacing, to
-;;    toggle the value.
 ;;
 ;;  * Command `icicle-search-word' (bound to `C-c $') always searches
 ;;    for a whole word: your initial search string is matched only
@@ -1299,14 +1303,16 @@
 ;;  - `icicle-regexp-quote-flag' determines whether to use regexp
 ;;    matching or literal matching.
 ;;
-;;  - `icicle-search-highlight-all-current-flag',
-;;    `icicle-expand-input-to-common-match-flag' and
+;;  - `icicle-expand-input-to-common-match',
+;;    `icicle-search-highlight-all-current-flag', and
 ;;    `icicle-search-replace-common-match-flag' together determine
 ;;    whether to replace exactly what your input matches in the
 ;;    current search hit or the expanded common match (ECM) of your
-;;    input among all search hits.  If any of these options is `nil',
-;;    then your exact input match is replaced; otherwise, the ECM is
-;;    replaced.
+;;    input among all search hits.  If
+;;    `icicle-expand-input-to-common-match' does not cause your input
+;;    to be expanded (no ECM), or if either of the other options is
+;;    `nil', then your exact input match is replaced.  Otherwise, the
+;;    ECM is replaced.
 ;;
 ;;  The replacement string can be nearly anything that is allowed as a
 ;;  replacement by `query-replace-regexp'.  In Emacs 22 or later, this
@@ -1328,7 +1334,7 @@
 ;;  you need to know what gets replaced, depending on those user
 ;;  options: the whole search hit vs only input matches, an exact
 ;;  input match vs the expanded common match.  Experiment with the
-;;  toggles `M-_', `C-^', `C-;', and `M-;'.  And you need to know how
+;;  toggles `M-_', `C-^', `C-"', and `M-;'.  And you need to know how
 ;;  repeated `C-S-RET' works vs repeated `C-S-next'.
 ;;
 ;;  I know it's tricky to learn.  Experimenting helps.  If something
@@ -4863,8 +4869,7 @@
 ;;
 ;;  * In buffer `*Completions*', face
 ;;    `icicle-current-candidate-highlight' highlights the current
-;;    completion candidate, and, provided user option
-;;    `icicle-expand-input-to-common-match-flag' is non-`nil', face
+;;    completion candidate, and face
 ;;    `icicle-common-match-highlight-Completions' highlights the
 ;;    expanded common match among all completions.  Faces
 ;;    `icicle-match-highlight-Completions' and
@@ -5090,20 +5095,60 @@
 ;;    (`C-u') resets `icicle-max-candidates' to `nil', meaning no
 ;;    truncation.
 ;;
-;;  * Non-`nil' user option `icicle-expand-input-to-common-match-flag'
-;;    means that completion expands your minibuffer input to
-;;    (typically) the longest substring common to all completion
-;;    candidates and that matches your (complete) input pattern.  This
-;;    expansion replaces the input you typed.  If you want to edit
-;;    your original, raw input, use `C-l'.  If your input has been
-;;    expanded, then hit `C-l' twice: once to replace a completion
-;;    candidate (from, say, `next') with the common match string, and
-;;    a second time to replace the common match string with your
-;;    original input.  The main reason you might want to set this to
-;;    `nil' is for apropos completion, if you want to always work with
-;;    a regexp in the minibuffer.  You can toggle this option at any
-;;    time using `C-;' in the minibuffer.
-;;    See (@file :file-name "icicles-doc1.el" :to "Expanded-Common-Match Completion").
+;;  * User option `icicle-expand-input-to-common-match' controls
+;;    whether completion expands your minibuffer input to (typically)
+;;    the longest substring common to all completion candidates and
+;;    that matches your input pattern.  The option controls whether
+;;    and when such expansion takes place.  The possible values are:
+;;
+;;    0 - Never expand your typed input, except when you use `C-M-TAB'
+;;        or `C-M-S-TAB'.
+;;
+;;    1 - Expand it only when you hit `TAB' or `S-TAB', that is,
+;;        explicit completion, not incremental completion - no
+;;        automatic expansion.
+;;
+;;    2 - Same as 1, but also automatically expand it when it matches
+;;        only one completion candidate.
+;;
+;;    3 - Same as 2, but also automatically expand it during
+;;        incremental prefix completion.
+;;
+;;    4 - Same as 3, but also automatically expand it during
+;;        incremental apropos completion.  IOW, always expand it.
+;;
+;;    As the value increases there are thus more contexts in which
+;;    your input can be expanded to the common match.
+;;
+;;    You can toggle the value of this option at any time using `C-"'
+;;    in the minibuffer.  This in fact swaps the values of this option
+;;    and option `icicle-expand-input-to-common-match-alt'.  That is
+;;    the only purpose of the latter option: to let you go switch
+;;    `icicle-expand-input-to-common-match' back and forth between two
+;;    values.
+;;
+;;    You can cycle the value of `icicle-expand-input-to-common-match'
+;;    among all its possible values using `C-M-"' in the minibuffer.
+;;    Together with `C-"', this also lets you change the value of
+;;    `icicle-expand-input-to-common-match-alt': Use `C-M-"' to cycle
+;;    to the value you want as the alternative, then use `C-"' to
+;;    swap.  Then use `C-M-"' to cycle to the value you want for
+;;    `icicle-expand-input-to-common-match'.
+;;
+;;    Input expansion replaces your input in the minibuffer.  If you
+;;    want to edit your original, pre-expansion input, use `C-l'.  If
+;;    you are also cycling among candidates then you might need to hit
+;;    `C-l' twice.  One reason you might want to set
+;;    `icicle-expand-input-to-common-match' to a value other than 4 is
+;;    if you want to always work with a regexp in the minibuffer when
+;;    you use apropos completion.  (With a value of 4 the regexp is
+;;    replaced by the match expansion.)
+;;
+;;    See Also:
+;;
+;;    * (@file :file-name "icicles-doc1.el" :to "Expanded-Common-Match Completion")
+;;
+;;    * (@file :file-name "icicles-doc1.el" :to "Incremental Completion (Input Expansion) in the Minibuffer")
 ;;
 ;;  * Non-`nil' user option
 ;;    `icicle-hide-common-match-in-Completions-flag' hides, in buffer
@@ -5111,7 +5156,7 @@
 ;;    each candidate.  You can toggle this anytime during completion
 ;;    using `C-x .' (no prefix arg), which is bound to command
 ;;    `icicle-toggle-hiding-common-match'.  The common match used is
-;;    governed by option `icicle-expand-input-to-common-match-flag'.
+;;    that governed by option `icicle-expand-input-to-common-match'.
 ;;
 ;;  * Non-`nil' option `icicle-hide-non-matching-lines-flag' hides, in
 ;;    buffer `*Completions*', all lines in multi-line candidates that
@@ -5139,14 +5184,14 @@
 ;;
 ;;    For an alternative but similar behavior to using non-`nil' for
 ;;    `icicle-show-Completions-initially-flag', you can set option
-;;    `icicle-incremental-completion-flag' to a value that is neither
-;;    `nil' nor `t'.  That displays `*Completions*' as soon as you
-;;    type or delete input, but not initially.
+;;    `icicle-incremental-completion' to a value that is neither `nil'
+;;    nor `t'.  That displays `*Completions*' as soon as you type or
+;;    delete input, but not initially.
 ;;
-;;  * User option `icicle-incremental-completion-flag' controls
-;;    whether or not `*Completions*' is updated incrementally
-;;    (icompletion) as you type.  You can toggle incremental
-;;    completion at any time using `C-#'.  For more information, see
+;;  * User option `icicle-incremental-completion' controls whether or
+;;    not `*Completions*' is updated incrementally (icompletion) as
+;;    you type.  You can toggle incremental completion at any time
+;;    using `C-#'.  For more information, see
 ;;    (@file :file-name "icicles-doc1.el" :to "Icompletion").
 ;;
 ;;  * User options `icicle-incremental-completion-delay' and
@@ -5492,11 +5537,12 @@
 ;;
 ;;  * Non-`nil' user option `icicle-search-highlight-all-current-flag'
 ;;    means highlight the current input match in all main search hits
-;;    at the same time.  If `icicle-expand-input-to-common-match-flag'
-;;    is also non-`nil', then what is highlighted for each input match
-;;    is the expanded common match among all input matches throughout
-;;    the search area.  If either is `nil', then only the exact input
-;;    match is highlighted.
+;;    at the same time.  If `icicle-expand-input-to-common-match' is 3
+;;    or 4 (which means your input can be automatically prefix- or
+;;    apropos-expanded, respectively), then what is highlighted for
+;;    each input match is the expanded common match among all input
+;;    matches throughout the search area.  Otherwise, only the exact
+;;    input match is highlighted.
 ;;
 ;;    The default value of `icicle-search-highlight-all-current-flag'
 ;;    is `nil', because non-`nil' can impact performance negatively if
@@ -5505,12 +5551,14 @@
 ;;    using command `icicle-toggle-highlight-all-current', bound to
 ;;    `C-^' in the minibuffer (except during file-name completion).
 ;;
-;;  * If, in addition to `icicle-search-highlight-all-current-flag'
-;;    and `icicle-expand-input-to-common-match-flag', option
-;;    `icicle-search-replace-common-match-flag' is also non-`nil',
-;;    then a search replacement replaces the expanded common match;
-;;    otherwise, it replaces only the exact match.  You can toggle the
-;;    value at any time using `M-;' in the minibuffer.
+;;  * If, in addition to `icicle-expand-input-to-common-match' causing
+;;    your input to be expanded and
+;;    `icicle-search-highlight-all-current-flag' being non-`nil',
+;;    option `icicle-search-replace-common-match-flag' is also
+;;    non-`nil', then a search replacement replaces the expanded
+;;    common match.  Otherwise, it replaces only the exact match.  You
+;;    can toggle `icicle-search-replace-common-match-flag' at any time
+;;    using `M-;' in the minibuffer.
 ;;
 ;;  * Non-`nil' user option `icicle-search-cleanup-flag' means that
 ;;    `icicle-search' highlighting is removed after the search.  This
@@ -5829,7 +5877,7 @@
 ;;  * The part of your current input that does not complete can be
 ;;    highlighted automatically, and you can then remove that part
 ;;    using `C-M-l'.  This highlighting is controlled by options
-;;    `icicle-incremental-completion-flag',
+;;    `icicle-incremental-completion',
 ;;    `icicle-test-for-remote-files-flag',
 ;;    `icicle-highlight-input-completion-failure',
 ;;    `icicle-highlight-input-completion-failure-delay', and
@@ -7012,7 +7060,8 @@
 ;;    `C-M-.'   - `icicle-toggle-dot'
 ;;    `C-x .'   - `icicle-toggle-hiding-common-match'
 ;;    `C-u C-x .' - `icicle-toggle-hiding-non-matching-lines'
-;;    `C-;'     - `icicle-toggle-expand-to-common-match'
+;;    `C-"'     - `icicle-toggle-expand-to-common-match'
+;;    `C-M-"'   - `icicle-cycle-expand-to-common-match'
 ;;    `M-;'     - `icicle-toggle-search-replace-common-match'
 ;;    `C-M-;'   - `icicle-toggle-icicle-toggle-ignoring-comments'
 ;;    `C-,'     - `icicle-change-sort-order'
@@ -9395,12 +9444,12 @@
 ;;  8. If the potential number of completion candidates is enormous,
 ;;     then icompletion display in `*Completions*' can be slow.  In
 ;;     that case, consider turning it off for the duration of the
-;;     command, by binding `icicle-incremental-completion-flag' to
-;;     `nil'.  An alternative to turning it off is the approach taken
-;;     in Icicles (e.g. `icicle-vardoc' and
+;;     command, by binding `icicle-incremental-completion' to `nil'.
+;;     An alternative to turning it off is the approach taken in
+;;     Icicles (e.g. `icicle-vardoc' and
 ;;     `icicle-insert-thesaurus-entry'): Just add a reminder to the
-;;     doc string to tell users that they can toggle
-;;     `icicle-incremental-completion-flag' with `C-#'.
+;;     doc string to tell users that they can cycle
+;;     `icicle-incremental-completion' using `C-#'.
 ;;
 ;;  9. Another of my libraries that can help programmers provide
 ;;     default values is `thingatpt+.el'.  It provides functions for
