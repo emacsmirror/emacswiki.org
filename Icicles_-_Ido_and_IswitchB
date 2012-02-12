@@ -57,12 +57,25 @@ By default, '''Icicles''' does not turn on
    '''`<tt>[[Icicles - Customization and General Tips#icicle-show-Completions-initially-flag|icicle-show-Completions-initially-flag]]</tt>'''' to `t'.
 
 You can get an intermediate behavior in this regard by instead
-   setting option '''`<tt>[[Icicles - Customization and General Tips#icicle-incremental-completion-flag|icicle-incremental-completion-flag]]</tt>'''' to a value that is neither `nil' nor `t'.  That makes '''Icicles''' show the matching candidates as soon as you start typing input, but not before that.  See also [[Icicles - Icompletion]] and option '''`<tt>[[Icicles - Customization and General Tips#icicle-incremental-completion-delay|icicle-incremental-completion-delay]]</tt>''''.
+   setting option '''`<tt>[[Icicles - Customization and General Tips#icicle-incremental-completion|icicle-incremental-completion]]</tt>'''' to a value that is neither `nil' nor `t'.  That makes '''Icicles''' show the matching candidates as soon as you start typing input, but not before that.  See also [[Icicles - Icompletion]] and option '''`<tt>[[Icicles - Customization and General Tips#icicle-incremental-completion-delay|icicle-incremental-completion-delay]]</tt>''''.
 
 
 
 
-==== 2. Matching ====
+
+==== 2. Non-expansion of minibuffer input ====
+
+By default, '''Icicles''' expands your [[minibuffer]] input when you complete.  This is like vanilla Emacs (for prefix completion), but it is unlike Ido, which only shows you the available candidates but does not change your input text.  You can get this non-expansion behavior in '''Icicles''' by setting option '''`<tt>[[Icicles - Customization and General Tips#icicle-expand-input-to-common-match|icicle-expand-input-to-common-match]]</tt>'''' to '''##0##'''.
+See [[Icicles - Icompletion#InputExpansion|Incremental Completion (Input Expansion) in the Minibuffer]].
+
+
+
+
+
+
+
+
+==== 3. Matching ====
 
 By default, Ido uses substring matching for
    completion.  You can hit a key to switch to [[prefix completion|prefix matching]],
@@ -75,7 +88,7 @@ By default, Ido uses substring matching for
 
 
 
-==== 3. Current candidate, cycling, sorting ====
+==== 4. Current candidate, cycling, sorting ====
 
 Both Ido and '''Icicles'''
    have a notion of "'''current candidate'''".  In Ido, completion
@@ -92,7 +105,7 @@ In '''Icicles''', you can switch among any number of sort orders at
    highlight moves, not the candidate.
 
 
-==== 4. Input editing ====
+==== 5. Input editing ====
 
 In Ido, cycling does not replace your input by
    the current candidate.  To edit the current candidate you hit a
@@ -103,7 +116,7 @@ In Ido, cycling does not replace your input by
 
 
 
-==== 5. Completions shown ====
+==== 6. Completions shown ====
 
 In Ido, a limited number of matching
    completion candidates are shown in the minibuffer.  You can hit
@@ -121,7 +134,7 @@ You can also increment and decrement this truncation value on
 
 
 
-==== 6. Auto-choice of sole candidate ====
+==== 7. Auto-choice of sole candidate ====
 
 In Ido, if there is only one match for your input then `TAB',
    which normally completes, also chooses that candidate -- you do
@@ -177,7 +190,7 @@ non-`nil'.
 ** `<tt>[[Icicles - Customization and General Tips#icicle-deletion-action-flag|icicle-deletion-action-flag]]</tt>'
 ** `<tt>[[Icicles - Customization and General Tips#icicle-file-require-match-flag|icicle-file-require-match-flag]]</tt>'
 ** `<tt>[[Icicles - Customization and General Tips#icicle-show-Completions-initially-flag|icicle-show-Completions-initially-flag]]</tt>'
-** `<tt>[[Icicles - Customization and General Tips#icicle-incremental-completion-flag|icicle-incremental-completion-flag]]</tt>'
+** `<tt>[[Icicles - Customization and General Tips#icicle-incremental-completion|icicle-incremental-completion]]</tt>'
 ** `<tt>[[Icicles - Customization and General Tips#icicle-incremental-completion-delay|icicle-incremental-completion-delay]]</tt>'
 ** `<tt>[[Icicles - Customization and General Tips#icicle-max-candidates|icicle-max-candidates]]</tt>'
 ** `<tt>[[Icicles - Customization and General Tips#icicle-regexp-quote-flag|icicle-regexp-quote-flag]]</tt>'
