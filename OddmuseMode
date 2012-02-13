@@ -269,6 +269,32 @@ Awesome mode, though. :)
 [new:rubikitch:2007-04-24 10:15 UTC]
 Reflected your comment. thank you. -- [[rubikitch]]
 
+[new]
+I get an error about `defvaralias' in Emacs 24.  Requiring
+SkeletonMode fixes it.
+
+I've also found that the `require' for cl.el is spurious.  I've
+removed it and haven't seen an error after using Oddmuse Mode for 2
+years with it removed.  Emacs would probably complain during byte
+compilation if it actually was. -- AaronHawley
+
+{{{
+--- oddmuse.el	2009-06-01 15:02:55.000000000 -0400
++++ oddmuse.el	2012-02-13 15:37:42.867008300 -0500
+@@ -125,9 +125,9 @@
+ ;;
+ 
+ ;;; Code:
+-(require 'cl)
+-(eval-when-compile  (require 'sgml-mode) (require 'skeleton))
++(eval-when-compile  (require 'sgml-mode))
++(require 'skeleton)
+ (require 'url)
+ 
+ (defcustom oddmuse-directory "~/emacs/oddmuse"
+   "Directory to store oddmuse pages."
+}}}
+
 === Read Wiki name ===
 
 I was annoyed that I couldn't set the Wiki when I was in a new page without having to *post* the page first.  The following patch to oddmuse.el adds a command `M-x oddmuse-set-wiki' to set the Wiki.  I've also tried to reduce some code duplication by adding a function called `oddmuse-read-wiki' and a command `M-x oddmuse-set-pagename'. -- AaronHawley
@@ -573,7 +599,7 @@ automatically empty the buffer. I will try to add this to my TodoList -- XavierM
 == Asynchronous download and upload ==
 
 [new]
-I've tried adding support for synchronous "get" and "post" functions of Oddmuse mode.  The patch so far is preliminary and ignores interactive bits like the page name completion or the prompt for checking the revision.  I'd rather get feedback on this most minimal patch to see if it is something Oddmuse could use.  I'm sure what I've done could use some improvement, and it should be checked for bugs.  I haven't used it much myself.  Further, this change could be probably written better than I have done so myself.
+I've tried adding support for asynchronous "get" and "post" functions of Oddmuse mode.  The patch so far is preliminary and ignores interactive bits like the page name completion or the prompt for checking the revision.  I'd rather get feedback on this most minimal patch to see if it is something Oddmuse could use.  I'm sure what I've done could use some improvement, and it should be checked for bugs.  I haven't used it much myself.  Further, this change could be probably written better than I have done so myself.
 
 The patch replaces `oddmuse-retrieve' using the original but only using the asynchronous support of `url-retrieve' instead of `url-retrieve-synchronously'.  The new function added to support `url-retrieve', `oddmuse-response-callback', is also based on `oddmuse-process-response'.  So, there's a bit of code duplication here that suggests a few significant changes should be made to give asynchronous support but avoid duplication.
 
