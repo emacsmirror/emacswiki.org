@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:19:43 2006
 ;; Version: 22.0
-;; Last-Updated: Sun Jan  1 14:05:17 2012 (-0800)
+;; Last-Updated: Sun Feb 12 17:55:54 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 607
+;;     Update #: 621
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-face.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -65,6 +65,10 @@
 ;;    `icicle-search-main-regexp-others', `icicle-special-candidate',
 ;;    `icicle-whitespace-highlight', `minibuffer-prompt'.
 ;;
+;;  User options defined here:
+;;
+;;    `icicle-byte-compile-eval-after-load-flag'.
+;;
 ;;  Functions defined here:
 ;;
 ;;    `icicle-face-after-load-hexrgb', `icicle-increment-color-hue',
@@ -115,6 +119,22 @@
 ;;(@* "Icicles Commands for Other Packages")
 
 ;;; Icicles Commands for Other Packages ------------------------------
+
+;; Put this first
+
+;; Same as the definition in `icicles-cmd2.el'.
+;;;###autoload
+(defcustom icicle-byte-compile-eval-after-load-flag t
+  "*Non-nil means byte-compile definitions made within `eval-after-load'.
+Some Icicles functions (commands, in particular) work only if a given
+library is loaded.  Some such functions are defined inside an
+`eval-after-load' form, which means they are defined only, and as soon
+as, the required library is loaded.
+
+If this option is non-nil then those function definitions are
+byte-compiled.  This compilation adds a bit to the load time, in
+effect, but it means that the functions run faster."
+  :type 'boolean :group 'Icicles-Miscellaneous)
 
 ;; Same as the definition in `icicles-cmd2.el'.
 (defmacro icicle-maybe-byte-compile-after-load (function)
