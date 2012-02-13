@@ -118,6 +118,22 @@ I could not install grammar-mode, a message says: Enabling Grammar mode gave an 
 Could you provide a step by step description in order to install grammar-mode?
 I tried to do this: 1) Copy grammar.el and grammar.cc in my /.emacs.d 2)Then I include this: (require 'grammar) in my /.emacs -- Alfredo
 
+[new]
+Here is my install procedure:
+* install the packages liblink-grammar4-dev and link-grammar
+* locate the file link-includes.h (for me in /usr/include/link-grammar/)
+* dowload the files grammar.el grammar.cc and Makefile and modify the Makefile (for me INCDIRS = -I. -I/usr/include/link-grammar/)
+* execute the command make in the repertory where all the files are
+* put the repertory where you did make into your path (eg export PATH=$PATH:/home/jm/grammar )
+* I wanted to add this mode to the org-mode so I added
+(add-hook 'org-mode-hook
+    (function (lambda ()
+       (load-file "/home/jarbona/grammar/grammar.el")
+       (grammar-mode)
+       )))
+to my .emacs
 
+Good luck
+-- JM
 ----
 CategoryHomepage
