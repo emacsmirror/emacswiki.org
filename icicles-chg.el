@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Sat Feb 11 17:24:49 2012 (-0800)
+;; Last-Updated: Sun Feb 12 17:56:43 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 7973
+;;     Update #: 7978
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-chg.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -32,6 +32,9 @@
 ;;  documentation, and they do not have change logs.  Initially,
 ;;  everything was in one library, `icicles.el', so its change log is
 ;;  the oldest.
+;;
+;;  This is a long file.  To fontify it, you will likely need to
+;;  increase `font-lock-maximum-size'.  (I use the value 1024000.)
 ;;
 ;; ****************************************************************************************************
 ;; NOTE: If you byte-compile Icicles (recommended), then WHENEVER `icicles-mac.el' is updated, you
@@ -539,6 +542,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd2.el'")
 ;;
+;; 2012/02/12
+;;     Added def of icicle-byte-compile-eval-after-load-flag here too, so can load before icicles.el.
 ;; 2012/02/11 dadams
 ;;     icicle-search: Update doc string for new input expansion.
 ;;     icicle-search-highlight-all-input-matches:
@@ -1049,6 +1054,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-face.el'")
 ;;
+;; 2012/02/12
+;;     Added def of icicle-byte-compile-eval-after-load-flag here too, so can load before icicles.el.
 ;; 2011/10/21 dadams
 ;;     Added face: icicle-msg-emphasis.
 ;; 2011/10/10 dadams
