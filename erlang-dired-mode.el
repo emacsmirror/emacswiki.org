@@ -2,7 +2,7 @@
 
 ;; Description: erlang dired mode
 ;; Created: 2011-12-20 22:41
-;; Last Updated: Joseph 2012-02-10 11:50:04 金曜日
+;; Last Updated: Joseph 2012-02-13 13:49:20 月曜日
 ;; Author: Joseph(纪秀峰)  jixiuf@gmail.com
 ;; Maintainer:  Joseph(纪秀峰)  jixiuf@gmail.com
 ;; Keywords: erlang dired Emakefile
@@ -43,6 +43,8 @@
 ;;
 ;; Below are complete command list:
 ;;
+;;  `erlang-export-current-function'
+;;    export current function.
 ;;  `erlang-emake'
 ;;    run make:all(load) in project root of erlang application,if Emakefile doesn't exists ,call `erlang-compile' instead
 ;;  `erlang-make'
@@ -81,6 +83,48 @@
         (require 'comint)
         (require 'tempo)
         (require 'compile))))
+
+;;;###autoload
+(defun erlang-export-current-function()
+  "export current function."
+  (interactive)
+  (save-excursion
+    (goto-char (car (bounds-of-thing-at-point 'defun)))
+    (when (re-search-forward "(\\(.*?\\))") ;search params
+      (let ((params (match-string 1))
+            param-count funname fun-declare)
+        (backward-sexp)
+        (skip-chars-backward " \t")
+        (setq funname (thing-at-point 'symbol))
+        (if (string-match "^[ \t]*$" params)
+            (setq param-count 0)
+          (with-temp-buffer
+            (insert params)
+            (goto-char (point-min))
+            (while (re-search-forward "{\\|\\[" (point-max) t)
+              (forward-char -1)
+              (kill-sexp)
+              )
+            (setq param-count (length  (split-string (buffer-string) ",")))
+            )
+          )
+        (setq fun-declare (format "%s/%d" funname param-count))
+        (message "export function:%s" fun-declare)
+        (goto-char (point-min))
+        (if (re-search-forward "[ \t]*-export[ \t]*([ \t]*\\[" (point-max) t)
+            (if (looking-at "[ \t]*\\]")
+                (insert fun-declare )
+              (insert fun-declare ",")
+              )
+          (goto-char (point-min))
+          (if (re-search-forward "[ \t]*-module[ \t]*(" (point-max) t)
+              (progn
+                (end-of-line)
+                (insert "\n-export([" fun-declare "]).\n"))
+
+            (goto-char (point-min))
+            (insert "-export([" fun-declare "]).\n")
+            ))))))
 
 ;;;###autoload
 (defun erlang-create-project(root-dir)
