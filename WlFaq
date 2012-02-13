@@ -108,6 +108,29 @@ Add the following to your ##.wl## file:
 }}}
 
 
+=== How can I easily attach multiple files? ===
+This code will allow you to include multiple files, like "~/images*.png" or similar:
+{{{
+;;Cobbled together from posts by Erik Hetzner & Harald Judt to
+;; wl-en@lists.airs.net by Jonathan Groll (msg 4128)
+
+(defun mime-edit-insert-multiple-files ()
+  "Insert MIME parts from multiple files."
+  (interactive)
+  (let ((dir default-directory))
+    (let ((next-file (expand-file-name
+                      (read-file-name "Insert file as MIME message: "
+		      dir))))
+      (setq file-list (file-expand-wildcards next-file))
+      (while (car file-list)
+        (mime-edit-insert-file (car file-list))
+        (setq file-list (cdr file-list))))))
+
+(global-set-key "\C-c\C-x\C-a" 'mime-edit-insert-multiple-files)
+}}}
+**TODO** probably don't want this as a global key-binding. 
+
+
 === Hack for v-key in message window (for attachments) ===
 Maybe another useful tip for somebody... I added this to my .emacs:
 {{{
@@ -388,9 +411,14 @@ variable `wl-message-sort-field-list':
 Finally, you can toggle to full header view with "H" key. Do note, that if you have mime-buttons turned off, you probably want to include <code>"^Content-Disposition:"</code> in the above lists, so that you can see if there's an attachment in the message.
 
 
+=== How can I TAB-complete on the folder petname?===
+Default behavior is to give the path when completing a folder. Set
+<code>(setq wl-use-folder-petname '(modeline read-folder))</code>, to
+have it autocomplete also on folder petname when doing refiling, for
+instance.
+
 
 == When I open a multifolder I get an error: Wrong type argument: arrayp, nil ==
-
 It might be that you've hit the default limit of messages in a
 multifolder that WL will handle properly.  The current limit is 100000
 Messages -- you might have to adjust this limit by setting the
