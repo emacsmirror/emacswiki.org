@@ -18,16 +18,16 @@ too large, we'll split it up later.
 
 The empty string (zero-length string, null string, ...):
 
-    (zerop (length "")) ;; O(n)
-    ==> t
-
     (zerop (string-match "" "")) ;; O(n)
     ==> t
 
-    (string= "" "") ;; O(n)?
+    (string-equal "" "") ;; O(n)?
     ==> t
 
     (equal "" "") ;; O(n)?
+    ==> t
+
+    (zerop (length "")) ;; O(1)
     ==> t
 
     (eq "" "") ;; O(1)
@@ -377,15 +377,11 @@ Alternatively, replacing the `let' with `save-excursion'.
 
 See IncrementNumber.
 
-== Dates and Times ==
+== Dates and times ==
 
 === Get today's date ===
 
 See InsertingTodaysDate.
-
-=== Conversions ===
-
-See StrPTime.
 
 === Formatting dates ===
 
@@ -395,6 +391,61 @@ Use the function `format-time-string' which is a build in function in both Emacs
     (insert (format-time-string "%Y-%m-%d"))
     ;; Hour:Minutes:Seconds
     (insert (format-time-string "%H-%M-%S"))
+
+=== Conversions ===
+
+Read a date from a string.
+
+  (let ((time (date-to-time "Tue, 27-Sep-83 12:35:59 EST")))
+    (set-time-zone-rule t) ;; Use Universal time.
+    (prog1 (format-time-string "%Y-%m-%d %T UTC" time)
+      (set-time-zone-rule nil))) ;; Reset to default time zone.
+  ==> "1983-09-27 17:35:59 UTC"
+
+Decode a time object.
+
+  (decode-time (date-to-time "Tue, 27-Sep-83 12:35:59 EST"))
+  ==> (59 35 13 27 9 1983 2 t -14400)
+
+Get the seconds from the unix epoch.
+
+  (let ((time (date-to-time "13 Feb 2009 23:31:30 UTC")))
+    (float-time time))
+  ==> 1234585890.0
+
+Find the date for seconds from the unix epoch.
+
+  (format-time-string "%Y-%m-%d %T UTC" (seconds-to-time 1234585890))
+  ==> "2009-02-13 23:31:30 UTC"
+
+Find the date 30 seconds in the future.
+
+  (format-time-string "%Y-%m-%d %T UTC" (time-add (current-time)
+                                                  (seconds-to-time 30)))
+  ==> "2012-02-13 10:07:11 UTC"
+
+Formatting elapsed time in years, days, hours, minutes and seconds.
+
+  (format-seconds "%Y %D %h:%m:%s" (1- (* 367 24 3600)))
+  ==> "1 year 1 day 23:59:59"
+
+Find the days between two dates.
+
+  (let ((days1 (time-to-days (date-to-time "Tue, 27-Sep-83 12:35:59 EST")))
+        (days2 (time-to-days (date-to-time "2009-02-13 23:31:30 UTC"))))
+    (- days2 days1))
+  ==> 9271
+
+Getting the day in the year.
+
+  (time-to-day-in-year (current-time))
+  ==> 44
+
+Build a date based on the day of the year.
+
+  (format-time-string "%j"
+                      (encode-time 0 0 0 44 1 2012))
+  ==> "044"
 
 === Timers ===
 
