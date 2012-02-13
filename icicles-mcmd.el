@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Sat Feb 11 17:07:37 2012 (-0800)
+;; Last-Updated: Mon Feb 13 10:35:29 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 17824
+;;     Update #: 17826
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-mcmd.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -6506,7 +6506,7 @@ NO-ERROR-P non-nil means don't raise an error if NEW-CANDS is nil."
                    (setq where  (completing-read "Save to fileset: " filesets-data)))
                  (unless (assoc where filesets-data)
                    (when (y-or-n-p (format "Fileset `%s' does not exist. Create it? " where))
-                     (add-to-list 'filesets-data (list where '(:files)))
+                     (add-to-list 'filesets-data (list where (list :files)))
                      (message "Fileset created.  Use `M-x filesets-save-config' to save it.")))
                  (dolist (cand  new-cands) (icicle-add-file-to-fileset cand where))
                  (when (minibuffer-window-active-p (minibuffer-window))
@@ -6614,7 +6614,7 @@ If NAME is nil, prompt for the fileset."
   (let ((entry  (or (assoc name filesets-data)
                     (and (interactive-p)
                          (when (y-or-n-p (format "Fileset `%s' does not exist. Create it? " name))
-                           (add-to-list 'filesets-data (list name '(:files)))
+                           (add-to-list 'filesets-data (list name (list :files)))
                            (message "Fileset created.  Use `M-x filesets-save-config' to save it.")
                            (car filesets-data))))))
     (if (not entry)
