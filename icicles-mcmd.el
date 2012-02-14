@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Mon Feb 13 10:35:29 2012 (-0800)
+;; Last-Updated: Tue Feb 14 09:43:49 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 17826
+;;     Update #: 17846
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-mcmd.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -6447,6 +6447,10 @@ You can use this command only from the minibuffer (`\\<minibuffer-local-completi
       (let ((win  (get-buffer-window icicle-orig-buff 'visible)))
         (when win (select-window win))))))
 
+
+;;; Note: This can be called from the minibuffer or top level.
+;;;       It cannot make any assumptions about the selected window being the active minibuffer etc.
+;;;
 (defun icicle-candidate-set-save-1 (new-cands arg &optional morep only-selected-p no-error-p)
   "Helper function for `icicle-candidate-set-save*' functions.
 NEW-CANDS are the candidates to save.
@@ -6457,7 +6461,8 @@ ONLY-SELECTED-P non-nil means NEW-CANDS are those selected in
 NO-ERROR-P non-nil means don't raise an error if NEW-CANDS is nil."
   (unless (or new-cands no-error-p)
     (error "Cannot save empty candidates set - did you use `S-TAB' or `TAB'?"))
-  (let (where)
+  (let ((in-minibuf-p  (minibuffer-window-active-p (minibuffer-window)))
+        where)
     (if arg
         (let ((enable-recursive-minibuffers  t))
           (cond ((consp arg)
@@ -6465,10 +6470,10 @@ NO-ERROR-P non-nil means don't raise an error if NEW-CANDS is nil."
                  (let* ((file-name
                          (prog1 (let ((icicle-completion-candidates  icicle-completion-candidates))
                                   (icicle-add/update-saved-completion-set))
-                           (when (minibuffer-window-active-p (minibuffer-window))
+                           (when in-minibuf-p
                              (with-output-to-temp-buffer "*Completions*" ; Redisplay.
-                               (display-completion-list icicle-completion-candidates)))
-                           (select-window (minibuffer-window))))
+                               (display-completion-list icicle-completion-candidates)))))
+                           ;;; $$$$$$ (select-window (minibuffer-window))
                         (list-buf   (and morep (find-file-noselect file-name 'nowarn 'raw)))
                         (old-cands  ()))
                    (when morep
@@ -6476,10 +6481,8 @@ NO-ERROR-P non-nil means don't raise an error if NEW-CANDS is nil."
                           (condition-case nil
                               (setq old-cands  (read list-buf))
                             (end-of-file
-                             (save-selected-window
-                               (select-window (minibuffer-window))
-                               (minibuffer-message (format "  [No completion candidates in file `%s']"
-                                                           file-name)))))
+                             (icicle-msg-maybe-in-minibuffer "No completion candidates in file `%s'"
+                                                             file-name)))
                        (kill-buffer list-buf)))
                    ;; Convert to readable alist form, from propertized text.  Convert any markers
                    ;; to the form (icicle-file-marker FILE POS) or (icicle-marker BUFFER POS).
@@ -6505,31 +6508,33 @@ NO-ERROR-P non-nil means don't raise an error if NEW-CANDS is nil."
                  (let ((icicle-completion-candidates  icicle-completion-candidates))
                    (setq where  (completing-read "Save to fileset: " filesets-data)))
                  (unless (assoc where filesets-data)
-                   (when (y-or-n-p (format "Fileset `%s' does not exist. Create it? " where))
+                   (if (not (y-or-n-p (format "Fileset `%s' does not exist. Create it? " where)))
+                       (error "Operation cancelled - no fileset")
                      (add-to-list 'filesets-data (list where (list :files)))
-                     (message "Fileset created.  Use `M-x filesets-save-config' to save it.")))
+                     (icicle-msg-maybe-in-minibuffer
+                      "Fileset created.  Use `M-x filesets-save-config' to save it.")))
                  (dolist (cand  new-cands) (icicle-add-file-to-fileset cand where))
-                 (when (minibuffer-window-active-p (minibuffer-window))
+                 (when in-minibuf-p
                    (with-output-to-temp-buffer "*Completions*" ; Redisplay.
                      (display-completion-list icicle-completion-candidates)))
-                 (select-window (minibuffer-window))
+                 ;; $$$$$$ (select-window (minibuffer-window))
                  (setq where  (format "`%s'" where)))
                 (t                      ; Save to a variable.  Prompt for the variable to use.
                  (let* ((varname
-                         (prog1 (let ((icicle-completion-candidates
-                                       icicle-completion-candidates)
-                                      (icicle-whole-candidate-as-text-prop-p  nil))
-                                  (completing-read (if morep
-                                                       "Add candidates to variable: "
-                                                     "Save candidates in variable: ")
-                                                   icicle-saved-candidates-variables-obarray
-                                                   nil nil nil (if (boundp 'variable-name-history)
-                                                                   'variable-name-history
-                                                                 'icicle-variable-name-history)))
-                           (when (minibuffer-window-active-p (minibuffer-window))
+                         (prog1
+                             (let ((icicle-completion-candidates           icicle-completion-candidates)
+                                   (icicle-whole-candidate-as-text-prop-p  nil))
+                               (completing-read (if morep
+                                                    "Add candidates to variable: "
+                                                  "Save candidates in variable: ")
+                                                icicle-saved-candidates-variables-obarray
+                                                nil nil nil (if (boundp 'variable-name-history)
+                                                                'variable-name-history
+                                                              'icicle-variable-name-history)))
+                           (when in-minibuf-p
                              (with-output-to-temp-buffer "*Completions*"
-                               (display-completion-list icicle-completion-candidates)))
-                           (select-window (minibuffer-window))))
+                               (display-completion-list icicle-completion-candidates)))))
+                        ;; $$$$$$ (select-window (minibuffer-window))
                         (var  (intern varname))) ; Intern in standard `obarray'.
                    (intern varname icicle-saved-candidates-variables-obarray) ; For completion.
                    (set var (if (and morep (boundp var) (listp (symbol-value var)))
@@ -6543,19 +6548,17 @@ NO-ERROR-P non-nil means don't raise an error if NEW-CANDS is nil."
                 (append new-cands icicle-saved-completion-candidates)
               new-cands)))
     (deactivate-mark)
-    (when (and (minibuffer-window-active-p (minibuffer-window))
+    (when (and in-minibuf-p
                (get-buffer-window "*Completions*" 'visible))
       (icicle-display-candidates-in-Completions))
-    (save-selected-window
-      (select-window (minibuffer-window))
-      (minibuffer-message
-       (if morep
-           (if new-cands
-               (format "  [%sandidates ADDED to %s]" (if only-selected-p "Selected c" "C") where)
-             "  [NO candidates selected to add]")
+    (icicle-msg-maybe-in-minibuffer
+     (if morep
          (if new-cands
-             (format "  [%sandidates SAVED to %s]" (if only-selected-p "Selected c" "C") where)
-           "  [Saved candidates reset to NONE]"))))))
+             (format "%sandidates ADDED to %s" (if only-selected-p "Selected c" "C") where)
+           "  [NO candidates selected to add]")
+       (if new-cands
+           (format "%sandidates SAVED to %s" (if only-selected-p "Selected c" "C") where)
+         "Saved candidates reset to NONE")))))
 
 ;; This is actually a top-level command, but it is in this file because it is used by
 ;; `icicle-candidate-set-save-1'.
