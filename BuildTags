@@ -17,6 +17,13 @@ You can filter it to specific extensions if needed:
   cd /path/to/my/project
   ctags -e -R *.cpp *.hpp *.h
 
+EDIT: It seems that with recent version of ctags, there is no "-e" option. `ctags' makes an alias to `etags', and when using this alias, it creates an emacs tag file.
+The way I generate the tags for my project is (not the best, but it works!): 
+
+  cd /path/to/my/project
+  find . | grep ".*\.\(hh\|hxx\|cc\)" | xargs etags -f TAGS
+
+
 === From within Emacs ===
 
 Put this in your [[init file]]:
