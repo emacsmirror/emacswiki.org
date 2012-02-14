@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2012, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 13:43:55 2010 (-0700)
-;; Last-Updated: Tue Feb 14 06:52:36 2012 (-0800)
+;; Last-Updated: Tue Feb 14 07:46:11 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 3556
+;;     Update #: 3570
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-1.el
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -6767,13 +6767,24 @@ Otherwise, load it to supplement the current bookmark list."
 ;;;###autoload
 (defun bmkp-set-desktop-bookmark (desktop-file) ; Bound globally to `C-x p K', `C-x r K', `C-x p c K'
   "Save the desktop as a bookmark.
-You are prompted for the desktop-file location and the bookmark name."
+You are prompted for the desktop-file location and the bookmark name.
+The default value for the desktop-file location is the current value
+of `desktop-file'.  As always, you can use `M-n' to retrieve it.
+
+If you also use library Icicles, then the desktop files of all
+existing desktop bookmarks are available during the desktop file-name
+completion as proxy candidates.  To see them, use `C-M-_' to turn on
+the display of proxy candidates."
   (interactive
    (progn (unless (condition-case nil (require 'desktop nil t) (error nil))
             (error "You must have library `desktop.el' to use this command"))
-          (list (read-file-name "Save desktop in file: " nil (if (boundp 'desktop-base-file-name)
-                                                                 desktop-base-file-name
-                                                               desktop-basefilename)))))
+          (let ((icicle-proxy-candidates  (and (boundp 'icicle-mode) icicle-mode
+                                               (mapcar #'(lambda (bmk)
+                                                           (bookmark-prop-get bmk 'desktop-file))
+                                                       (bmkp-desktop-alist-only)))))
+            (list (read-file-name "Save desktop in file: " nil (if (boundp 'desktop-base-file-name)
+                                                                   desktop-base-file-name
+                                                                 desktop-basefilename))))))
   (set-text-properties 0 (length desktop-file) nil desktop-file)
   (unless (file-name-absolute-p desktop-file) (setq desktop-file  (expand-file-name desktop-file)))
   (unless (condition-case nil (require 'desktop nil t) (error nil))
