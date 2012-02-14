@@ -191,7 +191,7 @@ Check that you have enabled IMAP in your Gmail account settings, then put the fo
 Then you also need to set up your .folder-file. See [[WlMultipleAccounts]] for an example. 
 
 ===Setting up NNTP ===
-You can use wl as a NNTP client, and post to usenet newsgroups.  add this in your ~/.folders.
+You can use wl as a NNTP client, and post to usenet newsgroups.  Add this to your ~/.folders.
 {{{
 #To view the entire wanderlust mail list archive:
 -gmane.mail.wanderlust.general@news.gmane.org:563! "Wanderlust ML"
