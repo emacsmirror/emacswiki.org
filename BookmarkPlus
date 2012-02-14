@@ -3650,6 +3650,23 @@ Why don't you?  That would be helpful.  While you're at it, why not periodically
 
 You might even leverage <tt>[[auto-install-batch-list.el]]</tt>. Here's another thing you might leverage: https://github.com/emacsmirror/bookmark-plus.  And another: http://marmalade-repo.org/packages/bookmark+.  Have fun. -- DrewAdams
 
+[new]
+Hi Drew,
+
+You are an amazing developer, but i think it would be easier for you and of course your users if you can organize your work on some public VC site like github or at least google code. I am particularly interested in your work on dired. Each time I want to update I have to google for dired+plus and then search for all the related files like find-dired+ dired+ sort-dired=menu+ etc, Same story for bookmarks+ and icicles
+
+it would be just so much easier to do
+
+git clone git@github:drewadams/dired+
+
+and then to update just
+
+git pull
+
+I know you are using some fancy version control marking of your files (all these automatic version,updates,date insertion - btw, how do you do that?) but public repository might also bring you some contributors in addition to organizing your work.
+
+Best, RedBlue.
+
 ----
 CategoryBookmarking CategoryHypermedia CategoryPersistence 
 CategoryProgramming CategoryRegion CategoryWThirtyTwo
