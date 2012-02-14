@@ -201,9 +201,15 @@ You can use wl as a NNTP client, and post to usenet newsgroups.  Add this to you
 -gmane.comp.window-managers.stumpwm.devel@news.gmane.org:563! "Stumpwm"
 }}}
 
+(Note: When using comments, make sure the "#" is in the first column, or wl can, in my
+ experience, freeze on start up.)
 
 == Getting Help ==
-Please read the [http://www.gohome.org/wl/doc/wl_toc.html manual] carefully, as there is an enormous wealth of knowledge and variables to tweak. There is also an [http://wiki.gohome.org/wl/ FAQ] at the homepage, as well as [WlFaq here]. The most active channel of wanderlust discussion (in English) is the mailing list.
+Please read the [http://www.gohome.org/wl/doc/wl_toc.html manual] carefully, 
+as there is an enormous wealth of knowledge and variables to tweak. 
+There is also an [http://wiki.gohome.org/wl/ FAQ] at the homepage, as well 
+as [WlFaq here]. The most active channel of wanderlust discussion (in English) 
+is the mailing list.
 
 === Mailing List ===
 You can get information and help via the mailing list at wl-en@ml.gentei.org (English) or wl@ml.gentei.org (Japanese). To join the mailing list, send an email to <code>wl-ctl@ml.gentei.org</code> or for English <code>wl-en-ctl@ml.gentei.org</code>, with "subscribe YOUR NAME" as subject and body. You can browse the new mailing list [http://news.gmane.org/gmane.mail.wanderlust.general here]. To unsubscribe mail <code>wl-ctl@ml.gentei.org</code> with "unsubscribe" as body.
