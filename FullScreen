@@ -117,6 +117,12 @@ Here is a part of my .emacs file. Emacs will start in full-screen mode. Menu-bar
 (toggle-full-screen-and-bars)
 }}}
 
+===== Topmost window=====
+emacs_fullscreen.exe supports --topmost command line switch. If this switch is present, then Emacs window will be topmost. It will hide task bar and all other windows. The downside is that if you want to switch to other window, you cannot use Alt+Tab directly, you have to turn off the full screen mode first (see [[https://bitbucket.org/dacap/emacs-fullscreen-win32/changeset/866d015f9a7b|866d015f9a7b]] changeset).
+
+
+
+
 ==== Maximizing window (not real full-screen) ====
 To get a maximized window you can use: (w32-send-sys-command #xf030)
 
