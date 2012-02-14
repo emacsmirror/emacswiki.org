@@ -1,30 +1,30 @@
 Inspired by zap-to-char, this library defines different routines operating on the next/previous N'th occurrence of a character.  When invoking one of these commands, the user is interactively queried for a character while the potential target positions are highlighted.
 
-For example, META-s (jump-to-char-forward) highlights the next occurrences of each character and prompts for one.  Once the user picks a char, the point is moved to that position.  Subsequent invocations of META-s before picking a character increases N, that is, the second, third, etc. occurrences are highlighted and targeted.
+For example, META-s (fastnav-jump-to-char-forward) highlights the next occurrences of each character and prompts for one.  Once the user picks a char, the point is moved to that position.  Subsequent invocations of META-s before picking a character increases N, that is, the second, third, etc. occurrences are highlighted and targeted.
 
 The sprint-forward/backward commands apply iterative jumping until return/C-g is hit, making it possible to reach any point of the text with just a few keystrokes.
 
-To use it, simply put Lisp:fastnav.el under <tt>~/.emacs.d/</tt>, and add something like this to your emacs initialization file:
+To use it, simply install fastnav package from Marmalade repo, and add something like this to your emacs initialization file:
 
     (require 'fastnav)
 
-    (global-set-key "\M-z" 'zap-up-to-char-forward)
-    (global-set-key "\M-Z" 'zap-up-to-char-backward)
-    (global-set-key "\M-s" 'jump-to-char-forward)
-    (global-set-key "\M-S" 'jump-to-char-backward)
-    (global-set-key "\M-r" 'replace-char-forward)
-    (global-set-key "\M-R" 'replace-char-backward)
-    (global-set-key "\M-i" 'insert-at-char-forward)
-    (global-set-key "\M-I" 'insert-at-char-backward)
-    (global-set-key "\M-j" 'execute-at-char-forward)
-    (global-set-key "\M-J" 'execute-at-char-backward)
-    (global-set-key "\M-k" 'delete-char-forward)
-    (global-set-key "\M-K" 'delete-char-backward)
-    (global-set-key "\M-m" 'mark-to-char-forward)
-    (global-set-key "\M-M" 'mark-to-char-backward)
+    (global-set-key "\M-z" 'fastnav-zap-up-to-char-forward)
+    (global-set-key "\M-Z" 'fastnav-zap-up-to-char-backward)
+    (global-set-key "\M-s" 'fastnav-jump-to-char-forward)
+    (global-set-key "\M-S" 'fastnav-jump-to-char-backward)
+    (global-set-key "\M-r" 'fastnav-replace-char-forward)
+    (global-set-key "\M-R" 'fastnav-replace-char-backward)
+    (global-set-key "\M-i" 'fastnav-insert-at-char-forward)
+    (global-set-key "\M-I" 'fastnav-insert-at-char-backward)
+    (global-set-key "\M-j" 'fastnav-execute-at-char-forward)
+    (global-set-key "\M-J" 'fastnav-execute-at-char-backward)
+    (global-set-key "\M-k" 'fastnav-delete-char-forward)
+    (global-set-key "\M-K" 'fastnav-delete-char-backward)
+    (global-set-key "\M-m" 'fastnav-mark-to-char-forward)
+    (global-set-key "\M-M" 'fastnav-mark-to-char-backward)
 
-    (global-set-key "\M-p" 'sprint-forward)
-    (global-set-key "\M-P" 'sprint-backward)
+    (global-set-key "\M-p" 'fastnav-sprint-forward)
+    (global-set-key "\M-P" 'fastnav-sprint-backward)
 
 Below is an screenshot showing how the first occurences of each character are highlighted:
 
@@ -49,5 +49,10 @@ Updated (package.el compatible and prefixed function names) version is available
 
 [new]
 Why don't you use kill-region instead of delete-region in the "zap-up-to-char-" functions so that the region is also copied to the kill ring?
+
+[new]
+Newest version at https://github.com/gleber/fastnav.el contains changes which replaces delete-region with kill-region.
+
+
 ----
 CategoryKeys, CategoryEditing
