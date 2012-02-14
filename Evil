@@ -20,6 +20,11 @@ Move Evil to ##~/.emacs.d/evil## (or somewhere else in your ##load-path##). Then
 
 Evil requires [UndoTree undo-tree.el] in the ##load-path## for linear undo and undo branches. Otherwise, Evil uses regular Emacs undo.
 
+== Quick Install ==
+
+Using [[el-get]] you can simply M-x el-get-install RET evil RET and enjoy using it already.
+
+
 == Documentation ==
 
 A brief [https://gitorious.org/evil/evil/blobs/raw/doc/doc/evil.pdf PDF manual] is available in the ##/doc## subdirectory.
