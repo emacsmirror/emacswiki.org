@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2012, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Wed Feb  8 15:55:17 2012 (-0800)
+;; Last-Updated: Tue Feb 14 07:45:23 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 14249
+;;     Update #: 14251
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-chg.el
 ;; Keywords: bookmarks, bookmark+
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -145,6 +145,9 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-1.el'")
 ;;
+;; 2012/02/14 dadams
+;;     bmkp-set-desktop-bookmark: Provide default for read-file-name.  Thx to Markus Grunwald.
+;;                                Provide all bookmarked desktop files as Icicles proxy candidates.
 ;; 2012/02/08 dadams
 ;;     bmkp-autofile-set: Use MSGP also for the case where the bookmark already exists.
 ;;     bmkp-remove-dups: Redefined to use a hash table.
