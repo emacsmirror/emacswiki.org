@@ -38,14 +38,6 @@ To ''remove trailing whitespace'' from the entire buffer, use any of the followi
     (add-hook 'c-mode-hook
        (lambda () (add-to-list 'write-file-functions 'delete-trailing-whitespace)))
 
-        ;; this is deprecated
-        (add-hook 'c-mode-common-hook
-           (lambda()
-             (add-hook 'local-write-file-hooks
-                   '(lambda()
-                      (save-excursion
-                        (delete-trailing-whitespace))))))
-
 == Remove even the last trailing newline ==
 
        (defun my-other-delete-trailing-blank-lines ()
