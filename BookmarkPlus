@@ -3623,6 +3623,7 @@ Thanks for the heads-up.  That should be fixed now.  Emacs Dev, in its infinite 
 
 
 [new:DrewAdams:2011-07-05 13:04 UTC]
+[:BulkIciclesDownload]
 1. No.  But you could perhaps create a download script, by copying and adapting one of these scripts for downloading the '''[[Icicles]]''' files:
 [[Icicles - Libraries#BulkIciclesDownload]].
 
@@ -3650,6 +3651,10 @@ Why don't you?  That would be helpful.  While you're at it, why not periodically
 
 You might even leverage <tt>[[auto-install-batch-list.el]]</tt>. Here's another thing you might leverage: https://github.com/emacsmirror/bookmark-plus.  And another: http://marmalade-repo.org/packages/bookmark+.  Have fun. -- DrewAdams
 
+
+
+
+----
 [new]
 Hi Drew,
 
@@ -3657,15 +3662,24 @@ You are an amazing developer, but i think it would be easier for you and of cour
 
 it would be just so much easier to do
 
-git clone git@github:drewadams/dired+
+##git clone git@github:drewadams/dired+##
 
 and then to update just
 
-git pull
+##git pull##
 
 I know you are using some fancy version control marking of your files (all these automatic version,updates,date insertion - btw, how do you do that?) but public repository might also bring you some contributors in addition to organizing your work.
 
 Best, RedBlue.
+
+[new:DrewAdams:2012-02-14 23:53 UTC]
+Sorry, not interested. But I appreciate your taking the time to make the suggestion.
+
+There are plenty of ways to bulk-download a set of files from the wiki, starting with tweaking <tt>[[auto-install-batch-list.el]]</tt> for any set you want. For '''[[Icicles]]''' the work is already done for you: [[Icicles - Libraries#BulkIciclesDownload]]. As mentioned [[#BulkIciclesDownload|above]], you could do the same thing for '''%%BookmarkPlus%%''', if you were interested in that. '''[[Dired+]]''' has no hard dependencies on any of my libraries, and its only soft-dependency (optional) is for <tt>[[misc-fns.el]]</tt>.
+
+Every user of some of my libraries uses a different subset, no doubt.  Some of my libraries can optionally take advantage of others.  Whether someone who wants to use one library also wants to use all or some (which?) of the libraries that it might take advantage of is not obvious.  So much for prepackaging particular combinations.  But it should be trivial to define the set you want using something like <tt>[[auto-install-batch-list.el]]</tt>.  Beyond that, there are apparently some mirrors here and there where you can find some of my stuff in the form you prefer (Git repository).  They are not necessarily up to date, but the code is there.
+
+I don't use anything fancy for version control. I don't even use version control at all for my Emacs files anymore (haven't for a long time).  I use only (1) <tt>[[header2.el]]</tt> and <tt>[[lib-requires.el]]</tt> to update the file header, and (2) `ediff' to compare and write change logs. -- DrewAdams
 
 ----
 CategoryBookmarking CategoryHypermedia CategoryPersistence 
