@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Mon Feb 13 10:45:09 2012 (-0800)
+;; Last-Updated: Tue Feb 14 09:45:36 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 7981
+;;     Update #: 7985
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-chg.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -2935,6 +2935,9 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-mcmd.el'")
 ;;
+;; 2012/02/14 dadams
+;;     icicle-candidate-set-save-1:
+;;       Distinguish in-minibuffer use from top-level use.  Raise error if user cancels fileset create.
 ;; 2012/02/13 dadams
 ;;     icicle-candidate-set-save-1, icicle-add-file-to-fileset:
 ;;       Use (list ...), not '(...), so get a new cons cell.
