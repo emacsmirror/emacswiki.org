@@ -53,6 +53,8 @@ Why don't you use kill-region instead of delete-region in the "zap-up-to-char-" 
 [new]
 Newest version at https://github.com/gleber/fastnav.el contains changes which replaces delete-region with kill-region.
 
+[new:gleber:2012-02-14 09:02 UTC]
+As of jumping to beginning of words - this seems to be simple to implement, although it may be much more expensive than per-character sprinting, since it will have to search through much more text. I'll be glad to accept pull requests with this feature!
 
 ----
 CategoryKeys, CategoryEditing
