@@ -33,7 +33,7 @@ To ''remove trailing whitespace'' from the entire buffer, use any of the followi
         (add-hook 'before-save-hook 'delete-trailing-whitespace)
 
 
-: or you can add this hook locally for particular mode: (now obsolete)
+: or you can add this hook locally for particular mode: 
 
     (add-hook 'c-mode-hook
        (lambda () (add-to-list 'write-file-functions 'delete-trailing-whitespace)))
