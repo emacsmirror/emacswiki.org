@@ -5,10 +5,10 @@
 ;; Author: Matthew L. Fidler, Le Wang & Others
 ;; Maintainer: Matthew L. Fidler
 ;; Created: Sat Nov  6 11:02:07 2010 (-0500)
-;; Version: 0.55
-;; Last-Updated: Thu Dec 22 13:48:33 2011 (-0600)
+;; Version: 0.56
+;; Last-Updated: Tue Feb 14 19:20:14 2012 (-0600)
 ;;           By: Matthew L. Fidler
-;;     Update #: 1213
+;;     Update #: 1232
 ;; URL: http://www.emacswiki.org/emacs/auto-indent-mode.el
 ;; Keywords: Auto Indentation
 ;; Compatibility: Tested with Emacs 23.x
@@ -28,7 +28,7 @@
 ;;
 ;;  (3) Killing line will take off unneeded spaces (if enabled)
 ;;
-;;  (4) On visit file, indent appropriately, but DONT SAVE. (Pretend like
+;;  (4) On visit file, indent appropriately, but DONT SAVE.  (Pretend like
 ;;  nothing happened, if enabled)
 ;;
 ;;  (5) On save, optionally unttabify, remove trailing white-spaces, and
@@ -43,7 +43,7 @@
 ;;
 ;;  All of these options can be customized. (customize auto-indent)
 ;;
-;;  To use put this in your load path and then put the following in your emacs
+;;  To use put this in your load path and then put the following in your Emacs
 ;;  file:
 ;;
 ;;  (setq auto-indent-on-visit-file t) ;; If you want auto-indent on for files
@@ -74,7 +74,7 @@
 ;;  (require 'auto-indent-mode)
 ;;  (auto-indent-global-mode)
 ;;
-;;  This may or may not work on your system.  Many times emacs cannot
+;;  This may or may not work on your system.  Many times Emacs cannot
 ;;  distinguish between M-RET and M-S-RET, so if you don't mind a
 ;;  slight redefinition use:
 ;;
@@ -116,45 +116,51 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;;; Change Log:
-;; 22-Dec-2011    Matthew L. Fidler  
+;; 14-Feb-2012    Matthew L. Fidler  
+;;    Last-Updated: Tue Feb 14 19:16:10 2012 (-0600) #1230 (Matthew L. Fidler)
+;;    Fixing issue #2
+;; 01-Feb-2012    Matthew L. Fidler  
+;;    Last-Updated: Wed Feb  1 21:50:32 2012 (-0600) #1215 (Matthew L. Fidler)
+;;    Added makefile-gmake-mode to the excluded auto-indent modes.
+;; 22-Dec-2011    Matthew L. Fidler
 ;;    Last-Updated: Thu Dec 22 13:47:07 2011 (-0600) #1211 (Matthew L. Fidler)
 ;;    Added bug fix for home-key
-;; 21-Dec-2011    Matthew L. Fidler  
+;; 21-Dec-2011    Matthew L. Fidler
 ;;    Last-Updated: Wed Dec 21 11:17:02 2011 (-0600) #1209 (Matthew L. Fidler)
 ;;    Added another smart delete case.
-;; 14-Dec-2011    Matthew L. Fidler  
+;; 14-Dec-2011    Matthew L. Fidler
 ;;    Last-Updated: Wed Dec 14 15:32:30 2011 (-0600) #1206 (Matthew L. Fidler)
 ;;    Went back to last known working
 ;;    `auto-indent-def-del-forward-char' and deleted message.
-;; 14-Dec-2011    Matthew L. Fidler  
+;; 14-Dec-2011    Matthew L. Fidler
 ;;    Last-Updated: Wed Dec 14 15:28:12 2011 (-0600) #1205 (Matthew L. Fidler)
 ;;    Another Paren
-;; 14-Dec-2011    Matthew L. Fidler  
+;; 14-Dec-2011    Matthew L. Fidler
 ;;    Last-Updated: Wed Dec 14 14:06:47 2011 (-0600) #1203 (Matthew L. Fidler)
 ;;    Paren Bug Fix.
-;; 14-Dec-2011    Matthew L. Fidler  
+;; 14-Dec-2011    Matthew L. Fidler
 ;;    Last-Updated: Tue Dec 13 13:43:46 2011 (-0600) #1199 (us041375)
 ;;    Changed the `auto-indent-kill-remove-extra-spaces' default to
 ;;    nil so that you copy-paste what you expect.
-;; 10-Dec-2011    Matthew L. Fidler  
+;; 10-Dec-2011    Matthew L. Fidler
 ;;    Last-Updated: Sat Dec 10 20:53:28 2011 (-0600) #1192 (Matthew L. Fidler)
 ;;    Bug fix for annoying old debugging macros.
-;; 08-Dec-2011    Matthew L. Fidler  
+;; 08-Dec-2011    Matthew L. Fidler
 ;;    Last-Updated: Thu Dec  8 15:07:44 2011 (-0600) #1190 (Matthew L. Fidler)
 ;;    Added autoload cookie.
-;; 08-Dec-2011    Matthew L. Fidler  
+;; 08-Dec-2011    Matthew L. Fidler
 ;;    Last-Updated: Thu Dec  8 12:19:30 2011 (-0600) #1186 (Matthew L. Fidler)
 ;;    Bug fix for duplicate macros
-;; 08-Dec-2011    Matthew L. Fidler  
+;; 08-Dec-2011    Matthew L. Fidler
 ;;    Last-Updated: Thu Dec  8 11:04:52 2011 (-0600) #1164 (Matthew L. Fidler)
 ;;    Added (( and )) to the automatically delete extra whitespace at
 ;;    the end of a function list.
-;; 08-Dec-2011    Matthew L. Fidler  
+;; 08-Dec-2011    Matthew L. Fidler
 ;;    Last-Updated: Thu Dec  8 10:19:54 2011 (-0600) #1161 (Matthew L. Fidler)
 ;;    Added
 ;;    `auto-indent-alternate-return-function-for-end-of-line-then-newline'
 ;;    option
-;; 08-Dec-2011    Matthew L. Fidler  
+;; 08-Dec-2011    Matthew L. Fidler
 ;;    Last-Updated: Thu Dec  8 09:57:19 2011 (-0600) #1157 (Matthew L. Fidler)
 ;;    Added a possibility of adding a space if necessary.
 ;; 08-Dec-2011    Matthew L. Fidler
@@ -163,36 +169,36 @@
 ;; 08-Dec-2011    Matthew L. Fidler
 ;;    Last-Updated: Thu Dec  8 08:16:14 2011 (-0600) #1110 (Matthew L. Fidler)
 ;;    Changed default options.
-;; 29-Nov-2011    Matthew L. Fidler  
+;; 29-Nov-2011    Matthew L. Fidler
 ;;    Last-Updated: Tue Nov 29 14:05:04 2011 (-0600) #1093 (Matthew L. Fidler)
 ;;    Bug Fix in `auto-indent-mode-pre-command-hook'
-;; 28-Nov-2011    Matthew L. Fidler  
+;; 28-Nov-2011    Matthew L. Fidler
 ;;    Last-Updated: Mon Nov 28 12:52:30 2011 (-0600) #1089 (Matthew L. Fidler)
 ;;    Bugfix for auto-indent-mode
-;; 21-Nov-2011    Matthew L. Fidler  
+;; 21-Nov-2011    Matthew L. Fidler
 ;;    Last-Updated: Mon Nov 21 10:22:28 2011 (-0600) #1085 (Matthew L. Fidler)
 ;;    Changed `auto-indent-after-begin-or-finish-sexp' to be called
 ;;    after every other hook has been run.  That way autopair-mode
 ;;    should be indented correctly.
-;; 18-Nov-2011    Matthew L. Fidler  
+;; 18-Nov-2011    Matthew L. Fidler
 ;;    Last-Updated: Fri Nov 18 15:28:10 2011 (-0600) #1063 (Matthew L. Fidler)
 ;;    Added `auto-indent-after-begin-or-finish-sexp'
-;; 08-Apr-2011      
+;; 08-Apr-2011
 ;;    Last-Updated: Fri Apr  8 23:08:08 2011 (-0500) #1014 (US041375)
 
 ;;    Bug fix for when Yasnippet is disabled. Now will work with it
 ;;    disabled or enbaled.
 
-;; 08-Mar-2011    Matthew L. Fidler  
+;; 08-Mar-2011    Matthew L. Fidler
 ;;    Last-Updated: Mon Feb  7 12:50:38 2011 (-0600) #1005 (Matthew L. Fidler)
 ;;    Changed `auto-indent-delete-line-char-remove-extra-spaces' to nil by default.
-;; 16-Feb-2011    Matthew L. Fidler  
+;; 16-Feb-2011    Matthew L. Fidler
 ;;    Last-Updated: Mon Feb  7 12:50:38 2011 (-0600) #1005 (Matthew L. Fidler)
 ;;    Added a just one space function for pasting
-;; 15-Feb-2011    Matthew L. Fidler  
+;; 15-Feb-2011    Matthew L. Fidler
 ;;    Last-Updated: Mon Feb  7 12:50:38 2011 (-0600) #1005 (Matthew L. Fidler)
 ;;    Removed the deactivation of advices when this mode is turned off.  I think it was causing some issues.
-;; 10-Feb-2011    Matthew L. Fidler  
+;; 10-Feb-2011    Matthew L. Fidler
 ;;    Last-Updated: Mon Feb  7 12:50:38 2011 (-0600) #1005 (Matthew L. Fidler)
 ;;    Added check to make sure not trying to paste on indent for
 ;;    `auto-indent-disabled-modes-list'
@@ -205,13 +211,13 @@
 ;;    `auto-indent-backward-delete-char-behavior' when
 ;;    auto-indent-mode is active.
 
-;; 03-Feb-2011    Matthew L. Fidler  
+;; 03-Feb-2011    Matthew L. Fidler
 ;;    Last-Updated: Thu Feb  3 16:11:50 2011 (-0600) #943 (Matthew L. Fidler)
 
 ;;    Added definition of `cua-copy-region' to advised functions (I
 ;;    thought it would have been taken care of with `kill-ring-save')
 
-;; 03-Feb-2011    Matthew L. Fidler  
+;; 03-Feb-2011    Matthew L. Fidler
 ;;    Last-Updated: Thu Feb  3 15:45:54 2011 (-0600) #918 (Matthew L. Fidler)
 
 ;;    Added option to delete indentation when copying or cutting
@@ -219,39 +225,39 @@
 ;;    `auto-indent-kill-line-remove-extra-spaces' to
 ;;    `auto-indent-kill-remove-extra-spaces'
 
-;; 03-Feb-2011    Matthew L. Fidler  
+;; 03-Feb-2011    Matthew L. Fidler
 ;;    Last-Updated: Thu Feb  3 10:50:24 2011 (-0600) #870 (Matthew L. Fidler)
 ;;    Made sure that auto-indent-kill-line doesn't use the kill-line advice.
-;; 03-Feb-2011    Matthew L. Fidler  
+;; 03-Feb-2011    Matthew L. Fidler
 ;;    Last-Updated: Thu Feb  3 09:26:22 2011 (-0600) #837 (Matthew L. Fidler)
 ;;    
 ;; 03-Feb-2011    Matthew L. Fidler
 ;;    Last-Updated: Thu Feb  3 09:26:08 2011 (-0600) #836 (Matthew L. Fidler)
 ;;    Another kill-line bug-fix.
-;; 03-Feb-2011    Matthew L. Fidler  
+;; 03-Feb-2011    Matthew L. Fidler
 ;;    Last-Updated: Thu Feb  3 09:04:14 2011 (-0600) #821 (Matthew L. Fidler)
 ;;    Fixed the kill-line bug
-;; 03-Feb-2011    Matthew L. Fidler  
+;; 03-Feb-2011    Matthew L. Fidler
 ;;    Last-Updated: Thu Feb  3 08:35:06 2011 (-0600) #815 (Matthew L. Fidler)
 ;;    yank engine bug fix.
-;; 03-Feb-2011    Matthew L. Fidler  
+;; 03-Feb-2011    Matthew L. Fidler
 ;;    Last-Updated: Thu Feb  3 08:09:04 2011 (-0600) #782 (Matthew L. Fidler)
 ;;    Bug fix for determining if the function is a yank
-;; 02-Feb-2011    Matthew L. Fidler  
+;; 02-Feb-2011    Matthew L. Fidler
 ;;    Last-Updated: Wed Feb  2 13:22:13 2011 (-0600) #756 (Matthew L. Fidler)
 ;;    Added kill-line bug-fix from Le Wang.
 ;; 
 ;;    Also there is a the bug of when called as a function, you need
 ;;    to check for disabled modes every time.
 ;;
-;; 02-Feb-2011    Matthew L. Fidler  
+;; 02-Feb-2011    Matthew L. Fidler
 ;;    Last-Updated: Wed Feb  2 11:38:44 2011 (-0600) #736 (Matthew L. Fidler)
 
 ;;    Added interactive requriment again.  This time tried to
 ;;    back-guess if the key has been hijacked.  If so assume it was
 ;;    called interactively.
 
-;; 01-Feb-2011    Matthew L. Fidler  
+;; 01-Feb-2011    Matthew L. Fidler
 ;;    Last-Updated: Tue Feb  1 22:58:45 2011 (-0600) #667 (Matthew L. Fidler)
 ;;    Took out the interactive requirement again.  Causes bugs like
 ;;    org-delete-char below.
@@ -261,29 +267,29 @@
 ;;    delete-char to have auto-indent changed behavior when the
 ;;    command lookup is the same as the delete command (as well as if
 ;;    it is called interactively)
-;; 01-Feb-2011    Matthew L. Fidler  
+;; 01-Feb-2011    Matthew L. Fidler
 ;;    Last-Updated: Tue Feb  1 20:41:49 2011 (-0600) #570 (Matthew L. Fidler)
 ;;    Added bugfix to kill-line advice and function (from Le Wang)
-;; 01-Feb-2011    Matthew L. Fidler  
+;; 01-Feb-2011    Matthew L. Fidler
 ;;    Last-Updated: Tue Feb  1 15:45:08 2011 (-0600) #563 (Matthew L. Fidler)
 ;;    Added cua-paste and cua-paste-pop
-;; 01-Feb-2011    Matthew L. Fidler  
+;; 01-Feb-2011    Matthew L. Fidler
 ;;    Last-Updated: Tue Feb  1 13:54:36 2011 (-0600) #556 (Matthew L. Fidler)
 ;;    Added auto-indent on move up and down with the arrow keys.
-;; 01-Feb-2011    Matthew L. Fidler  
+;; 01-Feb-2011    Matthew L. Fidler
 ;;    Last-Updated: Tue Feb  1 13:20:49 2011 (-0600) #546 (Matthew L. Fidler)
 ;;    Added a keyboard engine that indents instead of using hooks and advices.
-;; 01-Feb-2011    Matthew L. Fidler  
+;; 01-Feb-2011    Matthew L. Fidler
 ;;    Last-Updated: Tue Feb  1 09:40:50 2011 (-0600) #466 (Matthew L. Fidler)
 ;;    Removed the interactivity in the hooks.  They are definitely not interactive.
-;; 01-Feb-2011    Matthew L. Fidler  
+;; 01-Feb-2011    Matthew L. Fidler
 ;;    Last-Updated: Tue Feb  1 09:28:11 2011 (-0600) #459 (Matthew L. Fidler)
 ;;    Added Le Wang's fixes:
 ;;
 ;;    * Many functions are checked for interactivity
 ;;    * Kill-line prefix argument is fixed
 ;;    * Kill region when region is active is controled by
-;;      auto-indent-kill-line-kill-region-when-active 
+;;      auto-indent-kill-line-kill-region-when-active
 ;;    * Kill-line when at eol has more options
 ;;    * Change auto-indent-indentation-function to auto-indent-newline-function
 ;;
@@ -299,25 +305,25 @@
 ;; 12-Jan-2011    Matthew L. Fidler
 ;;    Last-Updated: Wed Jan 12 16:27:21 2011 (-0600) #420 (Matthew L. Fidler)
 ;;    Added fix for ortbl-minor-mode.  Now it will work when
-;;    orgtbl-minor mode is enabled. 
+;;    orgtbl-minor mode is enabled.
 ;; 09-Dec-2010    Matthew L. Fidler
 ;;    Last-Updated: Thu Dec  9 09:17:45 2010 (-0600) #414 (Matthew L. Fidler)
 ;;    Bugfix.  Now instead of indenting the region pasted, indent the
 ;;    region-pasted + beginning of line at region begin and end of
-;;    line at region end. 
+;;    line at region end.
 ;; 02-Dec-2010    Matthew L. Fidler
 
 ;;    Last-Updated: Thu Dec  2 13:02:02 2010 (-0600) #411 (Matthew L. Fidler)
 ;;    Made ignoring of modes with indent-relative and
-;;    indent-relative-maybe apply to indenting returns as well. 
+;;    indent-relative-maybe apply to indenting returns as well.
 ;; 02-Dec-2010    Matthew L. Fidler
 ;;    Last-Updated: Thu Dec  2 11:38:37 2010 (-0600) #402 (Matthew L. Fidler)
 ;;    Removed auto-indent on paste/yank for modes with indent-relative
-;;    and indent-relative-maybe.  This has annoyed me forever. 
+;;    and indent-relative-maybe.  This has annoyed me forever.
 ;; 02-Dec-2010    Matthew L. Fidler
 ;;    Last-Updated: Thu Dec  2 10:40:05 2010 (-0600) #397 (Matthew L. Fidler)
 ;;    Added an advice to delete-char.  When deleting a new-line
-;;    character, shrink white-spaces afterward. 
+;;    character, shrink white-spaces afterward.
 ;; 02-Dec-2010    Matthew L. Fidler
 ;;    Last-Updated: Thu Dec  2 08:59:49 2010 (-0600) #386 (Matthew L. Fidler)
 ;;    Speed enhancement by checking for yasnippets only on indentation.
@@ -432,21 +438,13 @@
   :group 'editing)
 
 (defcustom auto-indent-home-is-beginning-of-indent t
-  "* The Home key, or rather the `move-beginning-of-line'
-function, will move to the beginning of the indentation when
-called interactively.  If it is already at the beginning of the
-indent, move to the beginning of the line"
+  "The Home key, or rather the `move-beginning-of-line' function, will move to the beginning of the indentation when called interactively.  If it is already at the beginning of the indent, move to the beginning of the line."
   :type 'boolean
   :group 'auto-indent)
 
 (defcustom auto-indent-home-is-beginning-of-indent-when-spaces-follow t
-  "* If `auto-indent-home-is-beginning-of-indent' is enabled, the
-Home key, or rather the `move-beginning-of-line' function, will
-move to the beginning of the indentation when called
-interactively.  If it is already at the beginning of the indent,
-and move to the beginning of the line.  When
-`auto-indent-home-is-beginning-of-indent-when-spaces-follow' is
-enabled, a home key press from
+  "If `auto-indent-home-is-beginning-of-indent' is enabled, the Home key, or rather the `move-beginning-of-line' function, will move to the beginning of the indentation when called interactively.
+If it is already at the beginning of the indent,and move to the beginning of the line.  When `auto-indent-home-is-beginning-of-indent-when-spaces-follow' is enabled, a home key press from
 
  (defadvice move-beginning-of-line (around auto-indent-minor-mode-advice)
   | (let (at-beginning)
@@ -459,8 +457,7 @@ will change to
 Another home-key will chang to cursor
 
  (defadvice move-beginning-of-line (around auto-indent-minor-mode-advice)
-|   (let (at-beginning)
-"
+|   (let (at-beginning)"
   :type 'boolean
   :group 'auto-indent)
 
@@ -619,7 +616,7 @@ expressions defined in
   :type 'boolean
   :group 'auto-indent)
 
-(defcustom auto-indent-kill-line-at-eol 'blanks
+(defcustom auto-indent-kill-line-at-eol nil
   "* When killing lines, if at the end of a line,
 
 nil - join next line to the current line. Deletes white-space at
@@ -662,6 +659,7 @@ You should also set `kill-whole-line' to do what you want.
 
 (defcustom auto-indent-disabled-modes-list
   '(eshell-mode wl-summary-mode compilation-mode org-mode
+                makefile-gmake-mode
 		text-mode dired-mode snippet-mode fundamental-mode
 		diff-mode texinfo-mode conf-windows-mode)
   "* List of modes disabled when global auto-indent-mode is on."
@@ -814,7 +812,7 @@ work in some modes but may cause things such as `company-mode' or
     (symbol-value 'ret)))
 
 ;; Keymap functions for auto-indent-mode.  Replace return with the
-;; appropriate command. 
+;; appropriate command.
 
 (defun auto-indent-setup-map ()
   "* Sets up minor mode map."
@@ -982,7 +980,7 @@ http://www.emacswiki.org/emacs/AutoIndentation
 (defun auto-indent-is-yank-p (&optional command)
   "Tests if the function was a yank."
   (let ((ret
-	 (or 
+	 (or
 	  (and (boundp 'cua-mode) cua-mode
 	       (memq (or command this-command)
 		     (list
@@ -1045,7 +1043,7 @@ http://www.emacswiki.org/emacs/AutoIndentation
 (defmacro auto-indent-advice-command (command)
   "Define advices and functions for yank and yank-pop."
   `(progn
-     (defadvice ,command (after auto-indent-minor-mode-advice) 
+     (defadvice ,command (after auto-indent-minor-mode-advice)
        (when (and (or (not auto-indent-force-interactive-advices)
 		      (called-interactively-p 'any)
 		      (auto-indent-is-yank-p))
@@ -1173,6 +1171,38 @@ standards for Viper, ErgoEmacs and standard emacs"
 	  (key-binding (kbd "<deletechar>"))
 	  (key-binding (kbd "C-d"))))))
 
+(defun auto-indent-handle-end-of-line (lst &optional add)
+  "Handle end of line operations
+
+LST is the list of regular expressions to consider.
+ADD lets auto-indent-mode know that it should add a space instead 
+"
+  (save-match-data
+    (if (or (not add)
+	    (and add (looking-back "\\S-")
+		 (looking-at "\\S-")))
+	(let (done)
+	  (unless add
+	    (save-excursion
+	      (skip-chars-backward "\\s-")
+	      (when (looking-at "\\s-+")
+		(replace-match " "))))
+	  (when auto-indent-delete-line-char-remove-last-space
+	    (when lst
+	      (setq done nil)
+	      (mapc (lambda(i)
+		      (when (and (not done) (looking-back (nth 0 i))
+                                 (looking-at (concat (if add "" " ") (nth 1 i))))
+			(if add
+			    (save-excursion
+			      (insert " "))
+			  (delete-char 1))
+			(setq done t)))
+		    lst))))
+      (unless add 
+	(when (and (eolp) (looking-back "[ \t]+" nil t))
+	  (replace-match ""))))))
+
 
 (defmacro auto-indent-def-del-forward-char (&optional function)
   "Defines advices and commands for `delete-char'"
@@ -1198,42 +1228,17 @@ standards for Viper, ErgoEmacs and standard emacs"
               (when (and del-eol
                          auto-indent-minor-mode (not (minibufferp))
                          auto-indent-delete-line-char-remove-extra-spaces)
-                (save-excursion
-                  (skip-chars-backward " \t")
-                  (when (looking-at "[ \t]+")
-                    (replace-match " ")))
-                (let (done lst)
-                  (when auto-indent-delete-line-char-remove-last-space
-                    (if prog-mode
-                        (setq lst auto-indent-delete-line-char-remove-last-space-prog-mode-regs)
-                      (setq lst auto-indent-delete-line-char-remove-last-space-text-mode-regs))
-
-                    (when lst
-                      (setq done nil)
-                      (mapc (lambda(i)
-                              (when (and (not done) (looking-back (nth 0 i))
-                                         (looking-at (concat " " (nth 1 i))))
-                                (delete-char 1)
-                                (setq done t)))
-                            lst))))
-                (when (and (eolp) (looking-back "[ \t]+" nil t))
-                  (replace-match "")))
+                (auto-indent-handle-end-of-line
+		 (if prog-mode
+                     auto-indent-delete-line-char-remove-last-space-prog-mode-regs
+                   auto-indent-delete-line-char-remove-last-space-text-mode-regs)))
               (when (and del-eol
                          auto-indent-minor-mode (not (minibufferp))
                          auto-indent-delete-line-char-add-extra-spaces)
-                (let (done lst)
-                  (if prog-mode
-                      (setq lst auto-indent-delete-line-char-add-extra-spaces-prog-mode-regs)
-                    (setq lst auto-indent-delete-line-char-add-extra-spaces-text-mode-regs))
-                  (when lst
-                    (mapc (lambda(i)
-                            (when (and (not done)
-                                       (looking-back (nth 0 i))
-                                       (looking-at (nth 1 i)))
-                              (save-excursion
-                                (insert " ")
-                                (setq done t))))
-                          lst)))))
+                (auto-indent-handle-end-of-line
+                 (if prog-mode
+                     auto-indent-delete-line-char-add-extra-spaces-prog-mode-regs
+                   auto-indent-delete-line-char-add-extra-spaces-text-mode-regs)  t)))
           ,do-it)))))
 
 
@@ -1245,7 +1250,7 @@ standards for Viper, ErgoEmacs and standard emacs"
 (defun auto-indent-is-kill-line-p (&optional command)
   "Determines if the delete key was pressed.  This is based on
 standards for Viper, ErgoEmacs and standard emacs"
-  (or 
+  (or
    (and (boundp 'viper-mode) viper-mode (eq viper-current-state 'vi-state) nil)
    (and (boundp 'ergoemacs-mode) ergoemacs-mode
 	(memq (or command this-command)
@@ -1261,7 +1266,7 @@ standards for Viper, ErgoEmacs and standard emacs"
 
 (defmacro auto-indent-def-kill-line (&optional function)
   "Defines advices and functions for `kill-line'"
-  (let ((do-it (if function 
+  (let ((do-it (if function
                    '(kill-line arg)
                  'ad-do-it)))
   `(,(if function 'defun 'defadvice)
@@ -1277,7 +1282,10 @@ If at end of line, obey `auto-indent-kill-line-at-eol'
 			  (or (not auto-indent-force-interactive-advices)
 			     (called-interactively-p 'any)
 			     (auto-indent-is-kill-line-p))))
-	(let ((can-do-it t))
+	(let ((can-do-it t)
+              (prog-mode (auto-indent-is-prog-mode-p))
+              (eolp (auto-indent-eolp))
+	      (bolp (auto-indent-bolp)))
 	  (if (and auto-indent-minor-mode
 		   (not (minibufferp)))
 	      (if (and auto-indent-kill-line-kill-region-when-active
@@ -1285,13 +1293,12 @@ If at end of line, obey `auto-indent-kill-line-at-eol'
 		  (progn
 		    (auto-indent-kill-region (region-beginning) (region-end))
 		    (setq can-do-it nil))
-		(when (auto-indent-bolp)
+		(when bolp
 		  (move-beginning-of-line 1))
-		(when (auto-indent-eolp)
+		(when eolp
 		  (cond
 		   ((eq auto-indent-kill-line-at-eol nil)
-		    (when (> (prefix-numeric-value current-prefix-arg) 0)
-		      (delete-indentation 't)
+ 		    (when (> (prefix-numeric-value current-prefix-arg) 0)
 		      (if (not kill-whole-line)
 			  (save-excursion
 			    (beginning-of-line)
@@ -1307,11 +1314,26 @@ If at end of line, obey `auto-indent-kill-line-at-eol'
 						      (skip-chars-forward " \t\n")
 						      (skip-chars-backward " \t"))))))))
 		   (t
-		    (error "Invalid `auto-indent-kill-line-at-eol' setting %s"				   
+		    (error "Invalid `auto-indent-kill-line-at-eol' setting %s"
 			   auto-indent-kill-line-at-eol))))))
 	  (when can-do-it
 	    ,do-it)
-	  (indent-according-to-mode))
+	  (indent-according-to-mode )
+          (when (and eolp (eq auto-indent-kill-line-at-eol nil))
+            (when (and eolp
+                       auto-indent-minor-mode (not (minibufferp))
+                       auto-indent-delete-line-char-remove-extra-spaces)
+              (auto-indent-handle-end-of-line
+               (if prog-mode
+                   auto-indent-delete-line-char-remove-last-space-prog-mode-regs
+                 auto-indent-delete-line-char-remove-last-space-text-mode-regs)))
+            (when (and eolp
+                       auto-indent-minor-mode (not (minibufferp))
+                       auto-indent-delete-line-char-add-extra-spaces)
+              (auto-indent-handle-end-of-line
+               (if prog-mode
+                   auto-indent-delete-line-char-add-extra-spaces-prog-mode-regs
+                 auto-indent-delete-line-char-add-extra-spaces-text-mode-regs)  t))))
       ,do-it))))
 
 (auto-indent-def-kill-line t)
@@ -1360,7 +1382,7 @@ If at end of line, obey `auto-indent-kill-line-at-eol'
     ,(if function '(interactive (list (point) (mark))) nil)
     (if (not ,(if function t
 		'(and
-		  auto-indent-mode 
+		  auto-indent-mode
                   auto-indent-kill-remove-extra-spaces
 		  (not (auto-indent-remove-advice-p))
 		  (or (not auto-indent-force-interactive-advices)
@@ -1481,7 +1503,7 @@ Allows the kill ring save to delete the beginning white-space if desired."
            ((and last-command-event
                  (fboundp 'indent-sexp)
                  auto-indent-after-begin-or-finish-sexp
-                 (condition-case err2 
+                 (condition-case err2
                      (memq (char-syntax last-command-event) '(40 41))
                    (error nil)))
             (when (looking-back "\\s(")
@@ -1490,7 +1512,7 @@ Allows the kill ring save to delete the beginning white-space if desired."
                 (indent-sexp)))
             (when (looking-back "\\s)")
               (save-excursion
-                (let (pt (point))
+                (let ((pt (point)))
                   (backward-sexp)
                   (indent-sexp pt))))))))
     (error (message "[Auto-Indent-Mode]: Ignored indentation error in `auto-indent-mode-post-command-hook-last' %s" (error-message-string err)))))
@@ -1506,7 +1528,7 @@ around and the whitespace was deleted from the line."
 	  (setq auto-indent-mode-pre-command-hook-line -1)
 	  (add-hook 'pre-command-hook 'auto-indent-mode-pre-command-hook nil t))
 	(when auto-indent-minor-mode
-	  (cond                         
+	  (cond
 	   ((and last-command-event (memq last-command-event '(10 13 return)))
 	    (when (or (not (fboundp 'yas/snippets-at-point))
 		      (and (boundp 'yas/minor-mode) (not yas/minor-mode))
