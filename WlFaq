@@ -217,6 +217,7 @@ Add this to your .wl (or .emacs):
 (require 'w3m)
 (require 'mime-w3m)
 }}}
+You should also have w3m installed and the mime-w3m.el in your load path. 
 
 === Keys in w3m are not very intuitive ===
 If you are not used to w3m key-bindings, and don't intend on using it
