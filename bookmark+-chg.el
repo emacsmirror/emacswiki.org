@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2012, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Tue Feb 14 07:45:23 2012 (-0800)
+;; Last-Updated: Wed Feb 15 15:17:57 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 14251
+;;     Update #: 14262
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-chg.el
 ;; Keywords: bookmarks, bookmark+
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -145,6 +145,11 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-1.el'")
 ;;
+;; 2012/02/15 dadams
+;;     Updated for Emacs 24:
+;;       bookmark-set: Do not set bookmark-(yank-point|current-buffer) if set.
+;;       bmkp-make-gnus-record: Be able to bookmark from article buffer, as well as summary buffer.
+;;       bmkp-jump-gnus: Go to article buffer if location field says to.
 ;; 2012/02/14 dadams
 ;;     bmkp-set-desktop-bookmark: Provide default for read-file-name.  Thx to Markus Grunwald.
 ;;                                Provide all bookmarked desktop files as Icicles proxy candidates.
