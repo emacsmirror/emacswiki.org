@@ -3692,6 +3692,11 @@ Yes, I insert change logs by hand, after diffing with `ediff' to remind myself a
 
 I believe someone else is working on putting '''Icicles''' and '''%%BookmarkPlus%%''' into an ELPA repository somewhere.  Dunno when that will be done. -- DrewAdams 
 
+[new:JoeBloggs:2012-02-15 20:19 UTC]
+Hi Drew, when I create a gnus bookmark with gnus-bookmark-set it puts it in *Gnus Bookmark List* but not *Bookmark List*.
+Is there another command to create gnus bookmarks that work with bookmarks+ ?
+Also is there a command for creating any type of bookmark (e.g. by prompting for type), or do I have to remember the key bindings for each one seperately?
+If no such function exists could you please tell me the names of all bookmark creation commands so that I can make this function. -- JoeBloggs
 
 ----
 CategoryBookmarking CategoryHypermedia CategoryPersistence 
