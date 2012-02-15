@@ -3687,6 +3687,12 @@ Cool, [[header2.el]] and [[lib-requires.el]] where what I was missing so much, t
 
 And also, how about ELPA? Emacs 24 has it by default, it would be really cool to see all your libraries there.
 
+[new:DrewAdams:2012-02-15 13:54 UTC]
+Yes, I insert change logs by hand, after diffing with `ediff' to remind myself about the changes made.  It takes a human (IMHO), preferably the same person who made the change and soon after making it, to understand and summarize a change in the best way for others (and self) to read later.
+
+I believe someone else is working on putting '''Icicles''' and '''%%BookmarkPlus%%''' into an ELPA repository somewhere.  Dunno when that will be done. -- DrewAdams 
+
+
 ----
 CategoryBookmarking CategoryHypermedia CategoryPersistence 
 CategoryProgramming CategoryRegion CategoryWThirtyTwo
