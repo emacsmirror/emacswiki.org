@@ -3692,11 +3692,39 @@ Yes, I insert change logs by hand, after diffing with `ediff' to remind myself a
 
 I believe someone else is working on putting '''Icicles''' and '''%%BookmarkPlus%%''' into an ELPA repository somewhere.  Dunno when that will be done. -- DrewAdams 
 
+
+----
 [new:JoeBloggs:2012-02-15 20:19 UTC]
 Hi Drew, when I create a gnus bookmark with gnus-bookmark-set it puts it in *Gnus Bookmark List* but not *Bookmark List*.
 Is there another command to create gnus bookmarks that work with bookmarks+ ?
 Also is there a command for creating any type of bookmark (e.g. by prompting for type), or do I have to remember the key bindings for each one seperately?
 If no such function exists could you please tell me the names of all bookmark creation commands so that I can make this function. -- JoeBloggs
+
+
+[new:DrewAdams:2012-02-15 23:33 UTC]
+Hi Joe.  I'm no expert on Gnus.  I don't use it.  However, for '''Bookmark+''', try using just the usual bookmark-setting command, '''`bookmark-set'''', which is bound to `C-x p m', `C-x r m', and `C-x p c m'.  You should be able to bookmark this way from either a Gnus article buffer or Gnus summary buffer.
+
+The general idea is that for a particular type of [[buffer]] or [[major mode]], which has its own kind of bookmark, `bookmark-set' should do the right thing automatically: it should create a bookmark of the proper type.  For example, in [[Dired]], `C-x p m' creates a Dired bookmark; in [[Info]], `C-x p m' creates an Info bookmark; etc.  
+
+The buffer/mode itself knows how to create a bookmark of the proper type, no matter how complex that might be.  For example, for a Dired bookmark, `C-x p m' needs to record the current set of file markings, omissions, etc.  When a specific kind of bookmark is created like this, it records a handler of the proper type.  The handler for a Dired bookmark reestablishes the markings and file omissions, inserted subdirectories, etc.  All of the information needed for that is recorded in the bookmark itself.
+
+If, however, you do want to create a bookmark of a specific type without being in a particular buffer/mode, you can do that using certain '''Bookmark+'''  commands (some of which have default key bindings):
+
+* ##bmkp-autofile-set##
+* ##bmkp-file-target-set##
+* ##bmkp-set-autonamed-bookmark##
+* ##bmkp-set-autonamed-bookmark-at-line##
+* ##bmkp-set-autonamed-regexp-buffer##
+* ##bmkp-set-autonamed-regexp-region##
+* ##bmkp-set-bookmark-file-bookmark##
+* ##bmkp-set-desktop-bookmark##
+* ##bmkp-set-restrictions-bookmark##  --- requires library <tt>[[wide-n.el]]</tt>
+* ##bmkp-set-variable-list-bookmark##
+* ##bmkp-toggle-autonamed-bookmark-set/delete##
+* ##bmkp-url-target-set##
+
+HTH -- DrewAdams 
+
 
 ----
 CategoryBookmarking CategoryHypermedia CategoryPersistence 
