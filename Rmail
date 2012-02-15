@@ -11,8 +11,8 @@ See GettingMail, WritingMail, and SendingMail for setup examples.
 == Basic Usage ==
 
 Start it using `M-x rmail'.  This moves all your mail from your local
-spool file and save it in the Rmail primary file pointed by
-`rmail-file-name' (default to ##~/RMAIL##)
+spool file and saves it in the Rmail primary file pointed by
+`rmail-file-name' (defaults to ##~/RMAIL##)
 
 In Emacs versions previous to 23, files are saved in a special format called 
 [[Babyl]]. Starting with Emacs 23, [[Rmail]] uses one of [http://homepage.ntlworld.com./jonathan.deboynepollard/FGA/mail-mbox-formats.html the standard mbox formats], mboxo.  Note: the mboxo format performs some irreversible conversions
@@ -24,7 +24,7 @@ of the body of the mail.  For most people this is unimportant.
 Pressing `h' makes a summary window appear.  You can navigate between
 messages with the `n' and `p' keys for next and previous respectively.  The
 space key, `SPC', scrolls down through messages.  When you get to the end of
-a message, it goes the next message.  The `DEL' key does the same but in the
+a message, it goes on to the next message.  The `DEL' key does the same but in the
 opposite direction.
 
 You can tell how many messages you want to appear in the summary buffer with `rmail-summary-window-size'.
