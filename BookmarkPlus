@@ -3681,6 +3681,11 @@ Every user of some of my libraries uses a different subset, no doubt.  Some of m
 
 I don't use anything fancy for version control. I don't even use version control at all for my Emacs files anymore (haven't for a long time).  I use only (1) <tt>[[header2.el]]</tt> and <tt>[[lib-requires.el]]</tt> to update the file header (see AutomaticFileHeaders), and (2) `ediff' to compare and write change logs. -- DrewAdams
 
+[new:RedBlue:]
+
+Cool, [[header2.el]] and [[lib-requires.el]] where what I was missing so much, thanks a bunch. But I am still not very clear about automatic changelog insertion. Ediff doesn't seem to have this functionality. Is it that you insert the timestamps and logs by hand?
+
+
 ----
 CategoryBookmarking CategoryHypermedia CategoryPersistence 
 CategoryProgramming CategoryRegion CategoryWThirtyTwo
