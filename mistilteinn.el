@@ -22,6 +22,15 @@
 ;;        '(anything-c-source-git-ticket) "*mistiltein*"))
 ;;    (define-key global-map (kbd "C-t") 'anything-for-mistiltein))
 ;;
+;;; Setup for each project:
+;;
+;; To use mistilteinn, run `mistilteinn init` at each project dirctory.
+;;
+;;    $ cd /path/to/project
+;;    $ git init
+;;    $ mistilteinn init
+;;    $ vim .mistilteinn/config.yaml
+;;
 ;;; Web sites:
 ;;
 ;;  stable verison: http://www.emacswiki.org/cgi-bin/wiki?mistilteinn.el
