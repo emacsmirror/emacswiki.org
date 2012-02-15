@@ -3685,6 +3685,7 @@ I don't use anything fancy for version control. I don't even use version control
 
 Cool, [[header2.el]] and [[lib-requires.el]] where what I was missing so much, thanks a bunch. But I am still not very clear about automatic changelog insertion. Ediff doesn't seem to have this functionality. Is it that you insert the timestamps and logs by hand?
 
+And also, how about ELPA? Emacs 24 has it by default, it would be really cool to see all your libraries there.
 
 ----
 CategoryBookmarking CategoryHypermedia CategoryPersistence 
