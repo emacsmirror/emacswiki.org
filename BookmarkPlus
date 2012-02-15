@@ -3679,7 +3679,7 @@ There are plenty of ways to bulk-download a set of files from the wiki, starting
 
 Every user of some of my libraries uses a different subset, no doubt.  Some of my libraries can optionally take advantage of others.  Whether someone who wants to use one library also wants to use all or some (which?) of the libraries that it might take advantage of is not obvious.  So much for prepackaging particular combinations.  But it should be trivial to define the set you want using something like <tt>[[auto-install-batch-list.el]]</tt>.  Beyond that, there are apparently some mirrors here and there where you can find some of my stuff in the form you prefer (Git repository).  They are not necessarily up to date, but the code is there.
 
-I don't use anything fancy for version control. I don't even use version control at all for my Emacs files anymore (haven't for a long time).  I use only (1) <tt>[[header2.el]]</tt> and <tt>[[lib-requires.el]]</tt> to update the file header, and (2) `ediff' to compare and write change logs. -- DrewAdams
+I don't use anything fancy for version control. I don't even use version control at all for my Emacs files anymore (haven't for a long time).  I use only (1) <tt>[[header2.el]]</tt> and <tt>[[lib-requires.el]]</tt> to update the file header (see AutomaticFileHeaders), and (2) `ediff' to compare and write change logs. -- DrewAdams
 
 ----
 CategoryBookmarking CategoryHypermedia CategoryPersistence 
