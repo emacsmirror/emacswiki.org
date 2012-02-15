@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2012, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 13:43:55 2010 (-0700)
-;; Last-Updated: Tue Feb 14 07:46:11 2012 (-0800)
+;; Last-Updated: Wed Feb 15 15:13:22 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 3570
+;;     Update #: 3600
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-1.el
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -1761,64 +1761,69 @@ Use `\\[bookmark-delete]' to remove bookmarks (you give it a name, and it remove
 only the first instance of a bookmark with that name from the list of
 bookmarks)."
   (interactive (list nil current-prefix-arg t))
-  (bookmark-maybe-load-default-file)
-  (setq bookmark-current-point   (point) ; `bookmark-current-point' is a free var here.
-        bookmark-current-buffer  (current-buffer))
-  (save-excursion (skip-chars-forward " ") (setq bookmark-yank-point  (point)))
-  (let* ((record   (bookmark-make-record))
-         (regionp  (and transient-mark-mode mark-active (not (eq (mark) (point)))))
-         (regname  (concat (buffer-name) ": "
-                           (buffer-substring (if regionp (region-beginning) (point))
-                                             (if regionp  (region-end)  (line-end-position)))))
-         (defname  (bmkp-replace-regexp-in-string
-                    "\n" " "
-                    (cond (regionp (save-excursion (goto-char (region-beginning))
-                                                   (skip-chars-forward " ")
-                                                   (setq bookmark-yank-point  (point)))
-                                   (substring regname 0 (min bmkp-bookmark-name-length-max
-                                                             (length regname))))
-                          ((eq major-mode 'w3m-mode) w3m-current-title)
-                          ((eq major-mode 'gnus-summary-mode) (elt (gnus-summary-article-header) 1))
-                          ((memq major-mode '(Man-mode woman-mode))
-                           (buffer-substring (point-min) (save-excursion (goto-char (point-min))
-                                                                         (skip-syntax-forward "^ ")
-                                                                         (point))))
-                          (t (car record)))))
-         (bname    (or name  (bmkp-completing-read-lax
-                              "Set bookmark " defname
-                              (and (or (not parg) (consp parg)) ; No numeric PARG: all bookmarks.
-                                   (bmkp-specific-buffers-alist-only))
-                              nil 'bookmark-history))))
-    (when (string-equal bname "") (setq bname  defname))
-    (bookmark-store bname (cdr record) (consp parg))
-    (when (and interactivep bmkp-prompt-for-tags-flag)
-      (bmkp-add-tags bname (bmkp-read-tags-completing))) ; Don't bother to refresh tags. (?)
-    (case (and (boundp 'bmkp-auto-light-when-set) bmkp-auto-light-when-set)
-      (autonamed-bookmark       (when (bmkp-autonamed-bookmark-p bname)
-                                  (bmkp-light-bookmark bname)))
-      (non-autonamed-bookmark   (unless (bmkp-autonamed-bookmark-p bname)
-                                  (bmkp-light-bookmark bname)))
-      (any-bookmark             (bmkp-light-bookmark bname))
-      (autonamed-in-buffer      (bmkp-light-bookmarks (bmkp-remove-if-not
-                                                       #'bmkp-autonamed-bookmark-p
-                                                       (bmkp-this-buffer-alist-only)) nil 'MSG))
-      (non-autonamed-in-buffer  (bmkp-light-bookmarks (bmkp-remove-if
-                                                       #'bmkp-autonamed-bookmark-p
-                                                       (bmkp-this-buffer-alist-only)) nil 'MSG))
-      (all-in-buffer            (bmkp-light-this-buffer nil 'MSG)))
-    ;; Maybe make bookmark temporary.
-    (if bmkp-autotemp-all-when-set-p
-        (bmkp-make-bookmark-temporary bname)
-      (catch 'bookmark-set
-        (dolist (pred  bmkp-autotemp-bookmark-predicates)
-          (when (and (functionp pred)  (funcall pred bname))
-            (bmkp-make-bookmark-temporary bname)
-            (throw 'bookmark-set t)))))
-    (run-hooks 'bmkp-after-set-hook)
-    (if bookmark-use-annotations
-        (bookmark-edit-annotation bname)
-      (goto-char bookmark-current-point)))) ; `bookmark-current-point' is a free var here.
-
+  (unwind-protect
+       (progn
+         (bookmark-maybe-load-default-file)
+         (setq bookmark-current-point   (point)) ; `bookmark-current-point' is a free var here.
+         ;; Do not set these if they are already set in some other buffer (e.g gnus-art).
+         (unless (and bookmark-yank-point  bookmark-current-buffer)
+           (save-excursion (skip-chars-forward " ") (setq bookmark-yank-point  (point)))
+           (setq bookmark-current-buffer  (current-buffer)))
+         (let* ((record   (bookmark-make-record))
+                (regionp  (and transient-mark-mode mark-active (not (eq (mark) (point)))))
+                (regname  (concat (buffer-name) ": "
+                                  (buffer-substring (if regionp (region-beginning) (point))
+                                                    (if regionp  (region-end)  (line-end-position)))))
+                (defname  (bmkp-replace-regexp-in-string
+                           "\n" " "
+                           (cond (regionp (save-excursion (goto-char (region-beginning))
+                                                          (skip-chars-forward " ")
+                                                          (setq bookmark-yank-point  (point)))
+                                          (substring regname 0 (min bmkp-bookmark-name-length-max
+                                                                    (length regname))))
+                                 ((eq major-mode 'w3m-mode) w3m-current-title)
+                                 ((eq major-mode 'gnus-summary-mode) (elt (gnus-summary-article-header) 1))
+                                 ((memq major-mode '(Man-mode woman-mode))
+                                  (buffer-substring (point-min) (save-excursion (goto-char (point-min))
+                                                                                (skip-syntax-forward "^ ")
+                                                                                (point))))
+                                 (t (car record)))))
+                (bname    (or name  (bmkp-completing-read-lax
+                                     "Set bookmark " defname
+                                     (and (or (not parg) (consp parg)) ; No numeric PARG: all bookmarks.
+                                          (bmkp-specific-buffers-alist-only))
+                                     nil 'bookmark-history))))
+           (when (string-equal bname "") (setq bname  defname))
+           (bookmark-store bname (cdr record) (consp parg))
+           (when (and interactivep bmkp-prompt-for-tags-flag)
+             (bmkp-add-tags bname (bmkp-read-tags-completing))) ; Don't bother to refresh tags. (?)
+           (case (and (boundp 'bmkp-auto-light-when-set) bmkp-auto-light-when-set)
+             (autonamed-bookmark       (when (bmkp-autonamed-bookmark-p bname)
+                                         (bmkp-light-bookmark bname)))
+             (non-autonamed-bookmark   (unless (bmkp-autonamed-bookmark-p bname)
+                                         (bmkp-light-bookmark bname)))
+             (any-bookmark             (bmkp-light-bookmark bname))
+             (autonamed-in-buffer      (bmkp-light-bookmarks (bmkp-remove-if-not
+                                                              #'bmkp-autonamed-bookmark-p
+                                                              (bmkp-this-buffer-alist-only)) nil 'MSG))
+             (non-autonamed-in-buffer  (bmkp-light-bookmarks (bmkp-remove-if
+                                                              #'bmkp-autonamed-bookmark-p
+                                                              (bmkp-this-buffer-alist-only)) nil 'MSG))
+             (all-in-buffer            (bmkp-light-this-buffer nil 'MSG)))
+           ;; Maybe make bookmark temporary.
+           (if bmkp-autotemp-all-when-set-p
+               (bmkp-make-bookmark-temporary bname)
+             (catch 'bookmark-set
+               (dolist (pred  bmkp-autotemp-bookmark-predicates)
+                 (when (and (functionp pred)  (funcall pred bname))
+                   (bmkp-make-bookmark-temporary bname)
+                   (throw 'bookmark-set t)))))
+           (run-hooks 'bmkp-after-set-hook)
+           (if bookmark-use-annotations
+               (bookmark-edit-annotation bname)
+             (goto-char bookmark-current-point)))) ; `bookmark-current-point' is a free var here.
+    (setq bookmark-yank-point     nil
+          bookmark-current-buffer nil)))
 
 ;; REPLACES ORIGINAL in `bookmark.el'.
 ;;
@@ -7131,18 +7136,32 @@ Use multi-tabs in W3M if `bmkp-w3m-allow-multi-tabs' is non-nil."
 ;; GNUS support for Emacs < 24.
 
 (defun bmkp-make-gnus-record ()
-  "Make a bookmark entry for a Gnus summary buffer."
+  "Make a bookmark entry for a Gnus summary buffer.
+Current buffer can be the article buffer or the summary buffer."
   (require 'gnus)
-  (unless (and (eq major-mode 'gnus-summary-mode) gnus-article-current)
-    (error "Try again, from the Gnus summary buffer"))
-  (let* ((grp   (car gnus-article-current))
-         (art   (cdr gnus-article-current))
-         (head  (gnus-summary-article-header art))
-         (id    (mail-header-id head)))
-    `((elt (gnus-summary-article-header) 1)
-      ,@(bookmark-make-record-default 'no-file)
-      (filename . ,bmkp-non-file-filename) (group . ,grp) (article . ,art) (message-id . ,id)
-      (handler . bmkp-jump-gnus))))
+  (let ((pos  nil)
+        buf)
+    ;; If in article buffer, record point and buffer, then go to summary buffer
+    ;; and record bookmark there.
+    (unless (and (if (fboundp 'derived-mode-p)
+                     (derived-mode-p 'gnus-summary-mode)
+                   (eq major-mode 'gnus-summary-mode))
+                 gnus-article-current)
+      (setq buf                      "art"
+            bookmark-yank-point      (point)
+            bookmark-current-buffer  (current-buffer))
+      (save-restriction (widen) (setq pos  (point))) ; Position in article buffer.
+      (gnus-article-show-summary))
+    (let* ((grp   (car gnus-article-current))
+           (art   (cdr gnus-article-current))
+           (head  (gnus-summary-article-header art))
+           (id    (mail-header-id head)))
+      (unless buf (setq buf  "sum"))
+      `((elt (gnus-summary-article-header) 1) ; Subject.
+        ,@(bookmark-make-record-default 'NO-FILE 'NO-CONTEXT pos) ; POS is nil if started in summary buffer.
+        (location . ,(format "Gnus-%s %s:%d:%s" buf grp art id))
+        (filename . ,bmkp-non-file-filename) (group . ,grp) (article . ,art) (message-id . ,id)
+        (handler . bmkp-jump-gnus)))))
 
 (unless (> emacs-major-version 23)      ; Emacs 24 has `gnus-summary-bookmark-make-record'.
   (add-hook 'gnus-summary-mode-hook #'(lambda ()
@@ -7163,13 +7182,17 @@ Use multi-tabs in W3M if `bmkp-w3m-allow-multi-tabs' is non-nil."
 (defun bmkp-jump-gnus (bookmark)
   "Handler function for record returned by `bmkp-make-gnus-record'.
 BOOKMARK is a bookmark name or a bookmark record."
-  (let ((group    (bookmark-prop-get bookmark 'group))
-        (article  (bookmark-prop-get bookmark 'article))
-        (id       (bookmark-prop-get bookmark 'message-id))
-        (buf      (bookmark-prop-get bookmark 'buffer)))
+  (let* ((group    (bookmark-prop-get bookmark 'group))
+         (article  (bookmark-prop-get bookmark 'article))
+         (id       (bookmark-prop-get bookmark 'message-id))
+         (loc      (bookmark-prop-get bookmark 'location))
+         (buf      (if loc (car (split-string loc)) (bookmark-prop-get bookmark 'buffer))))
     (if (< emacs-major-version 22) (gnus-fetch-group group) (gnus-fetch-group group (list article)))
     (gnus-summary-insert-cached-articles)
     (gnus-summary-goto-article id nil 'force)
+    ;; Go to article buffer if appropriate.  Wait for it to be ready, so `bookmark-default-handler' has time
+    ;; to set the right position.
+    (when (equal buf "Gnus-art")  (sit-for 1) (other-window 1))
     (bookmark-default-handler `("" (buffer . ,buf) . ,(bmkp-bookmark-data-from-record bookmark)))))
 
 
