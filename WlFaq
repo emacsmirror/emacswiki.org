@@ -211,6 +211,13 @@ When marking a message in the summary buffer for deletion the default behavior i
 
 == Writing/reading html mails ==
 
+===How can I read html-mails with a proper pager? ===
+Add this to your .wl (or .emacs):
+{{{
+(require 'w3m)
+(require 'mime-w3m)
+}}}
+
 === Keys in w3m are not very intuitive ===
 If you are not used to w3m key-bindings, and don't intend on using it
 on its own put this in your configuration file:
