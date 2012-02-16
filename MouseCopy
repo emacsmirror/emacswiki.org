@@ -2,4 +2,4 @@ mouse-copy.el comes with Emacs 21.
 
 Normally, copy and paste require two steps: mark the region to be copied, then paste with the middle mouse button. Using mouse-copy.el, you only have to mark the region, the pasting is done automatically.
 
-There is an alternative mouse-copy minor mode that more closely mimics the Zmacs/ZWEI Lisp Machine mouse copy functionality and handles spaces better at [https://github.com/vsedach/mouse-copy].
+There is an alternative mouse-copy minor mode that lets you copy or yank an s-exp under the mouse cursor to point by holding down a modifier key (C or C-M, respectively) and left-clicking. It works across windows and is frequently faster than re-positioning the pointer to select and copy a region. This more closely mimics the Lisp Machine Zmacs/ZWEI and Macintosh Common Lisp mouse copy functionality. This minor mode is available at [https://github.com/vsedach/mouse-copy].
