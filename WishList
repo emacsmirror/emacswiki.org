@@ -452,6 +452,11 @@ string including the beginning and quotes.")
 
 * Animated GIFs support.
 
+[new:DrewAdams:2012-02-16 15:11 UTC]
+:: I believe animated GIFs are supported in Emacs 24.  Maybe in 23 too; dunno. -- DrewAdams
+
+
+
 == Utopian Wishes ==
 
 This is the place for wishes, that would require a complete rewrite of
