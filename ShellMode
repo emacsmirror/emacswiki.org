@@ -9,7 +9,7 @@ Change the way ComintMode (the basis of ShellMode) treats the input by adding a 
   (add-hook 'comint-output-filter-functions
             'comint-strip-ctrl-m)
 
-However, recent cygwin-builds of bash (2001-06-06) seem to confuse Emacs.  There is an elegant solution, however:  Tell Emacs that the bash process is returning DOS end-of-line bytes:
+However, cygwin-builds of bash since 2001-06-06 seem to confuse Emacs.  There is an elegant solution, however:  Tell Emacs that the bash process is returning DOS end-of-line bytes:
 
  (add-to-list 'process-coding-system-alist
               '("bash" . (undecided-dos . undecided-unix)))
