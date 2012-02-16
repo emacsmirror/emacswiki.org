@@ -4,7 +4,7 @@ http://www.smarty.net/contribs/syntax_highlighting/emacs/smarty-mode.el
 
 This mode should probably be rewritten to inherit most of it's functionality from HtmlMode or XmlMode.
 
-A new Smarty-Mode has been written: http://www.morinie.fr/lisp/smarty/
+A new Smarty-Mode has been written: http://lisp.morinie.fr/smarty/
 This mode includes completion, highlight, menus, templates and is customizable.
 (This is the smarty-mode included in [NxhtmlMode nXhtml] that works with MuMaMo.)
 
