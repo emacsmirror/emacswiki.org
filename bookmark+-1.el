@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2012, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 13:43:55 2010 (-0700)
-;; Last-Updated: Wed Feb 15 15:13:22 2012 (-0800)
+;; Last-Updated: Thu Feb 16 10:44:44 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 3600
+;;     Update #: 3626
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-1.el
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -7133,8 +7133,14 @@ Use multi-tabs in W3M if `bmkp-w3m-allow-multi-tabs' is non-nil."
     (bmkp-jump-w3m-only-one-tab bookmark)))
 
 
-;; GNUS support for Emacs < 24.
-
+;; GNUS support for Emacs < 24.  More or less the same as `gnus-summary-bookmark-make-record' in Emacs 24+.
+;; But this:
+;;
+;; * Works for other Emacs versions as well.
+;; * Requires `gnus.el'.
+;; * Adds a `bmkp-non-file-filename' `filename' entry.
+;; * Uses `bmkp-jump-gnus', not `gnus-summary-bookmark-jump' as the handler.
+;;
 (defun bmkp-make-gnus-record ()
   "Make a bookmark entry for a Gnus summary buffer.
 Current buffer can be the article buffer or the summary buffer."
@@ -7158,27 +7164,32 @@ Current buffer can be the article buffer or the summary buffer."
            (id    (mail-header-id head)))
       (unless buf (setq buf  "sum"))
       `((elt (gnus-summary-article-header) 1) ; Subject.
-        ,@(bookmark-make-record-default 'NO-FILE 'NO-CONTEXT pos) ; POS is nil if started in summary buffer.
+        ,@(condition-case
+           nil
+           (bookmark-make-record-default 'NO-FILE 'NO-CONTEXT pos) ; POS = nil if started in summary buf.
+           (wrong-number-of-arguments (bookmark-make-record-default 'POINT-ONLY)))
         (location . ,(format "Gnus-%s %s:%d:%s" buf grp art id))
         (filename . ,bmkp-non-file-filename) (group . ,grp) (article . ,art) (message-id . ,id)
-        (handler . bmkp-jump-gnus)))))
+        (handler . bmkp-jump-gnus)))))  ; Vanilla Emacs 24+ uses `gnus-summary-bookmark-jump'.
 
-(unless (> emacs-major-version 23)      ; Emacs 24 has `gnus-summary-bookmark-make-record'.
-  (add-hook 'gnus-summary-mode-hook #'(lambda ()
-                                        (set (make-local-variable 'bookmark-make-record-function)
-                                             'bmkp-make-gnus-record))))
 
-(unless (> emacs-major-version 23)      ; Emacs 24 has `gnus-summary-bookmark-make-record'.
-  (add-hook 'gnus-article-mode-hook #'(lambda ()
-                                        (set (make-local-variable 'bookmark-make-record-function)
-                                             'bmkp-make-gnus-record))))
+;; Vanilla Emacs 24+ uses `gnus-summary-bookmark-make-record' for these hooks.
+;; Better to use `bmkp-make-gnus-record' even for Emacs 24+, because `bmkp-jump-gnus' is better than
+;; `gnus-summary-bookmark-jump' (no `sit-for' if article buffer not needed).
 
-(defun bmkext-jump-gnus (bookmark)      ; Compatibility code.
-  "`gnus-summary-bookmark-jump' if defined, else `bmkp-jump-gnus'."
-  (if (fboundp 'gnus-summary-bookmark-jump)
-      (gnus-summary-bookmark-jump bookmark) ; Emacs 24
-    (bmkp-jump-gnus bookmark)))
+;; $$$$$$ (unless (> emacs-major-version 23) ; Emacs 24 has `gnus-summary-bookmark-make-record'.
+(add-hook 'gnus-summary-mode-hook #'(lambda ()
+                                      (set (make-local-variable 'bookmark-make-record-function)
+                                           'bmkp-make-gnus-record)))
 
+;; $$$$$$ (unless (> emacs-major-version 23) ; Emacs 24 has `gnus-summary-bookmark-make-record'.
+(add-hook 'gnus-article-mode-hook #'(lambda ()
+                                      (set (make-local-variable 'bookmark-make-record-function)
+                                           'bmkp-make-gnus-record)))
+
+;; More or less the same as `gnus-summary-bookmark-jump' in Emacs 24+.
+;; But this does not `sit-for' unless BUF is "Gnus-art".
+;;
 (defun bmkp-jump-gnus (bookmark)
   "Handler function for record returned by `bmkp-make-gnus-record'.
 BOOKMARK is a bookmark name or a bookmark record."
@@ -7194,6 +7205,12 @@ BOOKMARK is a bookmark name or a bookmark record."
     ;; to set the right position.
     (when (equal buf "Gnus-art")  (sit-for 1) (other-window 1))
     (bookmark-default-handler `("" (buffer . ,buf) . ,(bmkp-bookmark-data-from-record bookmark)))))
+
+(defun bmkext-jump-gnus (bookmark)      ; Compatibility code.
+  "`gnus-summary-bookmark-jump' if defined, else `bmkp-jump-gnus'."
+  (if (fboundp 'gnus-summary-bookmark-jump)
+      (gnus-summary-bookmark-jump bookmark) ; Emacs 24
+    (bmkp-jump-gnus bookmark)))
 
 
 ;; `man' and `woman' support for Emacs < 24.
