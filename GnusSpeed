@@ -5,7 +5,7 @@ Please expand this page with more technical content from experts.
 ==What operations are slow in Gnus==
 List and discuss them here.
 
-* Checking for new mail (g in *Group* buffer)
+* Checking for new mail (g in *Group* buffer) [not true anymore 15-02-12, nnimap was rewritten, it's lightning fast now]
 * Entering an nnimap group
 * Downloading an article with big attachments -- you must wait for them
 * RSS with nnrss
@@ -65,6 +65,16 @@ So why not delegate some tasks to another process?
 
 
 ==Practical tips and tricks to improve Gnus' speed=
+
+=== Install gnutls-cli tool ===
+
+If you see a message like this in your *Messages* buffer
+
+Opening TLS connection with `gnutls-cli --insecure -p 993 imap.gmail.com'...failed
+
+that means gnutls-cli is not installed (the case of Ubuntu)
+
+Install it and you will gain preciouscouple of seconds on startup.
 
 ===Some suggestions from the official manual===
 http://www.gnu.org/software/emacs/manual/html_node/gnus/_005b9_002e2_005d.html
