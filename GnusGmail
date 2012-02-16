@@ -55,6 +55,10 @@ machine smtp.gmail.com login username@gmail.com password secret port 587
 
 If you don't wish to store your password there, just omit the "password secret" altogether and you'll be prompted when you send an email.
 
+NOTE for MS Windows users: Recent emacs or gnutls-cli may choke. Possible remedy is explained [[http://lists.gnu.org/archive/html/info-gnus-english/2011-04/msg00023.html here]]. This is confirmed to work on Emacs 24.0.93.1 from bazaar built with gcc 4.6.2 on Windows XP SP 3. The following is the exact command added
+
+    (setq tls-program "C:/PROGRA~1/Git/bin/openssl.exe s_client -connect %h:%p -no_ssl2 -ign_eof")
+
 ====Accessing the [Gmail] folders====
 
 All Gmail system labels have a prefix [Gmail], which matches the default
