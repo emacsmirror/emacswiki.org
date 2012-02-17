@@ -133,7 +133,7 @@ The commented out lines are dispose settings for usenet folders ("^-") and Shimb
 (define-key wl-template-mode-map (kbd "<left>") 'wl-template-prev)
 
 ;;default folder name auto completion:
-(sqtq wl-default-spec "%")
+(setq wl-default-spec "%")
 
 ;; mark sent messages (folder carbon copy) as read.
 (setq wl-fcc-force-as-read    t)
