@@ -32,7 +32,10 @@ i've been looking for this functionality for a long time. getting "function defi
 
 lytles
 
+[new]
+I'd love a recursive directory diff in Emacs that presented a view of two dired buffers side by side, above two file buffers. I'd like to filter the dired buffers in various ways: (a) show all files, (b) show only differing files, (c) show only files added on the lhs/rhs. The file buffers should use ediff-mode.
 
+Even better would be a three-way diff/merge with three file and dired buffers similar to the two way comparison case. -- MatthewLMcClure
 
 ----
 CategoryProgrammerUtils
