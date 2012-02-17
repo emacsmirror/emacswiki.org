@@ -7,9 +7,9 @@
 ;; Copyright (C) 1995-2012, Drew Adams, all rights reserved.
 ;; Created: Wed Oct 11 15:07:46 1995
 ;; Version: 21.0
-;; Last-Updated: Sun Jan  1 14:05:19 2012 (-0800)
+;; Last-Updated: Fri Feb 17 09:41:31 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 3092
+;;     Update #: 3141
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/highlight.el
 ;; Keywords: faces, help, local
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -906,7 +906,7 @@ You can use command `hlt-choose-default-face' to choose a different face."
             (inhibit-modification-hooks         t)
             (overlay                            (and hlt-use-overlays-flag
                                                      (make-overlay start-point start-point)))
-            ;; Otherwise, `put-text-property' calls this, which removes highlight.
+            ;; Otherwise, `put-text-property' calls this, which would remove highlight.
             (font-lock-fontify-region-function  'ignore)
             event)
         (setq buffer-read-only  nil)
@@ -931,13 +931,13 @@ You can use command `hlt-choose-default-face' to choose a different face."
 ;;;###autoload
 (defun hlt-eraser (start-event)         ; Suggested binding: `C-x S-mouse-2'.
   "Erase highlights that you click or drag the mouse over.
-If `hlt-use-overlays-flag' is non-nil, then overlay highlighting is
-removed for the last face that was used for highlighting.  (You can
-use command `hlt-choose-default-face' first to choose a different
-face.)  If `hlt-use-overlays-flag' is not `only', then text-property
-highlighting is removed for *ALL* faces (not just highlighting faces).
-This means, in particular, that a value of nil erases both overlays
-for the last face and text properties for all faces."
+If `hlt-use-overlays-flag' is non-nil, then remove overlay
+highlighting for the last face that was used for highlighting.  (You
+can use command `hlt-choose-default-face' first to choose a different
+face.)  If `hlt-use-overlays-flag' is not `only', then remove
+text-property highlighting for *ALL* faces (not just highlighting
+faces).  This means, in particular, that a value of nil erases both
+overlays for the last face and text properties for all faces."
   (interactive "e")
   (save-excursion
     (run-hooks 'mouse-leave-buffer-hook) ; Let temporary modes like isearch turn off.
@@ -1004,26 +1004,34 @@ You can use command `hlt-choose-default-face' to choose a different face."
 
 ;;;###autoload
 (defun hlt-highlight-region (&optional start end face msg-p mouse-p)
-  "Highlight the region or new input.
-Optional args START and END are the limits of the area to act on.
-  They default to the region limits.
-Optional 3rd arg FACE is the face to use.
+  "Highlight either the region/buffer or new input that you type.
+Use the region if active, or the buffer otherwise.
+
+If *all* of the following are true, the apply the last-used face as a
+text property to the next and subsequent chars that you type, and add
+that face to a facemenu menu (`Text Properties' or one of its
+submenus):
+ * You call this command interactively.
+ * You use no prefix arg.
+ * Option `prop-use-overlays-flag' is nil
+ * The last property used for highlighting was `face'.
+
+Otherwise, the behavior respects `hlt-use-overlays-flag' and depends
+on the optional arguments, as follows:
+
+ Optional args START and END are the limits of the area to act on.
+  They default to the region limits.  If the region is not active or
+  it is empty, then use the whole buffer.
+
+ Optional 3rd arg FACE is the face to use.
   Interactively, this is the last face that was used for highlighting.
   (You can use command `hlt-choose-default-face' to choose a different face.)
-Optional 4th arg MSG-P non-nil means to display a progress message.
-Optional 5th arg MOUSE-P non-nil means use the `mouse-face' property,
- not the `face' property.
-Interactively, MOUSE-P is provided by the prefix arg.
 
-If the region is not active or it is empty, then:
- - If `hlt-use-overlays-flag' is non-nil, apply FACE to the
-   entire buffer.  If MOUSE-P is non-nil, use the `mouse-face'
-   property; otherwise, use the `face' property.
- - Else, if MOUSE-P is non-nil, then apply FACE as the `mouse-face'
-   property to the whole buffer.
- - Else, if interactive, apply FACE to the next character you type,
-   and add FACE to the facemenu menu.
- - Else, apply FACE as the `face' property to the whole buffer."
+ Optional 4th arg MSG-P non-nil means to display a progress message.
+  Interactively, MSG-P is t.
+
+Optional 5th arg MOUSE-P non-nil means use property `mouse-face', not
+ `face'.  Interactively, MOUSE-P is provided by the prefix arg."
   (interactive `(,@(hlt-region-or-buffer-limits) nil t ,current-prefix-arg))
   (unless (and start end) (let ((start-end  (hlt-region-or-buffer-limits)))
                             (setq start  (car start-end)
@@ -1062,8 +1070,8 @@ If the region is not active or it is empty, then:
 
 ;;;###autoload
 (defun hlt-highlight-regexp-region (&optional start end regexp face msg-p mouse-p nth)
-  "Highlight regular expression REGEXP in region.
-If the region is not active or it is empty, then use the whole buffer.
+  "Highlight regular expression REGEXP in region/buffer.
+Use the region if active, or the buffer otherwise.
 Optional args START and END are the limits of the area to act on.
   They default to the region limits.
 Optional 4th arg FACE is the face to use.
@@ -1134,13 +1142,21 @@ things down.  Do you really want to highlight up to %d chars?  "
 ;;;###autoload
 (defun hlt-highlight-regexp-to-end (regexp &optional face msg-p mouse-p nth)
   "Highlight text after cursor that matches REGEXP.
-Optional 2nd arg FACE is the face to use.
+The behavior respects `hlt-use-overlays-flag' and depends on the
+optional arguments, as follows:
+
+ Optional 2nd arg FACE is the face to use.
   Interactively, this is the last face that was used for highlighting.
-  (You can use command `hlt-choose-default-face' to choose a different face.)
-Optional 3rd arg MSG-P non-nil means display a progress message.
-Optional 4th arg MOUSE-P non-nil means to use `mouse-face' property,
-  not `face'.  Interactively, this is provided by the prefix arg.
-Optional 5th arg NTH determines which regexp subgroup is highlighted.
+  (You can use command `hlt-choose-default-face' to choose a different
+  face.)
+
+ Optional 3rd arg MSG-P non-nil means to display a progress message.
+  Interactively, MSG-P is t.
+
+ Optional 4th arg MOUSE-P non-nil means use property `mouse-face', not
+ `face'.  Interactively, MOUSE-P is provided by the prefix arg.
+
+ Optional 5th arg NTH determines which regexp subgroup is highlighted.
   If nil or 0, the entire regexp is highlighted.  Otherwise, the NTH
   regexp subgroup (\"\\\\(...\\\\)\" expression) is highlighted.
   (NTH is not available interactively.)"
@@ -1150,7 +1166,7 @@ Optional 5th arg NTH determines which regexp subgroup is highlighted.
                           'hi-lock-regexp-history
                         'regexp-history)
                       hlt-last-regexp)
-         nil 'msg-p current-prefix-arg))
+         nil t current-prefix-arg))
   (if face (setq hlt-last-face  face) (setq face  hlt-last-face))
   (let ((remove-msg
          (and msg-p
@@ -1166,20 +1182,14 @@ Optional 5th arg NTH determines which regexp subgroup is highlighted.
 
 ;;;###autoload
 (defun hlt-unhighlight-region (&optional start end face msg-p mouse-p)
-  "Remove all highlighting in region.
-If the region is not active or it is empty, then use the whole buffer.
-If `hlt-use-overlays-flag' is non-nil, then overlay highlighting is
-removed.  If `hlt-use-overlays-flag' is not `only', then text-property
-highlighting is removed.  This means, in particular, that a value of
-nil removes both overlays and text properties.
+  "Remove all highlighting in region or buffer.
+Use the region if active, or the buffer otherwise.
+The arguments are the same as those for `hlt-highlight-region'.
 
-Optional args START and END are the limits of the area to act on.
-  They default to the region limits.
-Optional 3rd arg FACE non-nil means delete only highlighting that uses
-  FACE.  Nil means delete all highlighting.
-Optional 4th argument MSG-P non-nil means display a progress message.
-Optional 5th arg MOUSE-P non-nil means use `mouse-face' property, not
-  `face'.  Interactively, MOUSE-P is provided by the prefix arg."
+If `hlt-use-overlays-flag' is non-nil, then remove overlay highlighting.
+If `hlt-use-overlays-flag' is not `only', then remove text-property
+highlighting.  This means, in particular, that a value of nil removes
+both overlays and text properties."
   (interactive `(,@(hlt-region-or-buffer-limits) nil t ,current-prefix-arg))
   (unless (and start end) (let ((start-end  (hlt-region-or-buffer-limits)))
                             (setq start  (car start-end)
@@ -1211,7 +1221,7 @@ Optional 5th arg MOUSE-P non-nil means use `mouse-face' property, not
 
 ;;;###autoload
 (defun hlt-unhighlight-region-for-face (&optional face start end mouse-p)
-  "Remove highlighting that uses FACE in region.
+  "Remove any highlighting in the region that uses FACE.
 Same as `hlt-unhighlight-region', but removes only highlighting
 that uses FACE.  Interactively, you are prompted for the face.
 
@@ -1307,19 +1317,22 @@ highlighting with that FACE."
 
 ;;;###autoload
 (defun hlt-replace-highlight-face (old-face new-face &optional start end msg-p mouse-p)
-  "Replace OLD-FACE by NEW-FACE in all highlights in the region.
-If the region is not active or it is empty, then use the whole buffer.
+  "Replace OLD-FACE by NEW-FACE in overlay highlighting in the region.
+This command applies only to overlay highlighting created by library
+`highlight.el'.
+
+Update the last-used highlighting face.
+
 With a prefix argument, replace OLD-FACE as the `mouse-face' property,
  not the `face' property.
-Other arguments:
-Optional args START and END are the limits of the area to act on.
-  They default to the region limits.
-Optional 5th argument MSG-P non-nil means display a progress message.
-Optional 6th arg MOUSE-P non-nil means use `mouse-face' property, not
-  `face'.  Interactively, MOUSE-P is provided by the prefix arg.
 
-This works only for overlay highlighting, not text-property
-highlighting."
+Other arguments:
+ Optional args START and END are the limits of the area to act on.
+  They default to the region limits.  If the region is not active or
+  it is empty, then use the whole buffer.
+ Optional arg MSG-P non-nil means display a progress message.
+ Optional arg MOUSE-P non-nil means use `mouse-face' property, not
+  `face'.  Interactively, MOUSE-P is provided by the prefix arg."
   (interactive `(,(read-face-name "Replace face in region highlights. Old face: ")
                  ,(read-face-name "New face: ")
                  ,@(hlt-region-or-buffer-limits) t ,current-prefix-arg))
@@ -1337,7 +1350,7 @@ highlighting."
     (setq buffer-read-only  read-only-p)
     (set-buffer-modified-p modified-p))
   (setq hlt-last-face  new-face)
-  (when msg-p (message "Replacing highlighting face `%s'... done." old-face)))
+  (when msg-p (message "Replacing overlay highlighting face `%s'... done." old-face)))
 
 ;;;###autoload
 (defun hlt-highlight-single-quotations (&optional face)
@@ -1419,7 +1432,7 @@ If the current value is nil, it is set to the last non-nil value."
 ;;;###autoload
 (defun hlt-yank-props (start end &optional arg msgp)
   "Yank (paste) copied text properties over the active region.
-Do nothing if there is no nonempty active region.
+Interactively, do nothing if there is no nonempty active region.
 By default, yank only the copied properties defined by
  `hlt-default-copy/yank-props'.
 With a plain or non-negative prefix arg, yank all copied properties.
@@ -1428,7 +1441,7 @@ With a negative prefix arg, you are prompted for the copied properties
 
 NOTE: If the list of copied text properties is empty, then yanking
       REMOVES ALL PROPERTIES from the text in the region.  This
-      provides an easy way to unpropertize text."
+      provides an easy way to UNpropertize text."
   (interactive "r\nP\np")
   ;; Do nothing if no active region.
   (unless (or (and transient-mark-mode mark-active (not (eq (mark) (point))))
@@ -1511,7 +1524,7 @@ ARG is from a raw prefix argument.
  If a plain or non-negative prefix arg, then use all properties in
   AVAIL-PROPS.
  If a negative prefix arg, then prompt for the properties
-  to use using completion with candidates in AVAIL-PROPS."
+  to use, using completion against the candidates in AVAIL-PROPS."
   (cond ((and arg (natnump (prefix-numeric-value arg)))
          (copy-sequence avail-props))   ; Copy/yank all props available.
         (arg                            ; Prompt for props, from among those available.
@@ -1983,7 +1996,7 @@ This is intended to be used on `post-command-hook'."
 
   (defun hlt-toggle-property-highlighting (prop &optional start end face
                                            msg-p mouse-p pos)
-    "Alternately highlight and unhighlight all text with property PROP.
+    "Alternately highlight/unhighlight all text that has property PROP.
 Highlighting is done using overlays.
 Optional arg POS is a buffer position.  If it is the same as the
   position recorded in `hlt-prop-highlighting-state', then do not
