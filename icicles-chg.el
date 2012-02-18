@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Tue Feb 14 09:45:36 2012 (-0800)
+;; Last-Updated: Sat Feb 18 14:53:30 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 7985
+;;     Update #: 7986
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-chg.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -1160,6 +1160,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-fn.el'")
 ;;
+;; 2012/02/18 dadams
+;;     icicle-show-help-in-mode-line: Use property help-echo if icicle-mode-line-help is nil.
 ;; 2012/02/11 dadams
 ;;     icicle-display-candidates-in-Completions:
 ;;       Always highlight expanded common match now, not just when prefix or *-expand-input is non-nil.
