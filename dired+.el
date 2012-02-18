@@ -7,9 +7,9 @@
 ;; Copyright (C) 1999-2012, Drew Adams, all rights reserved.
 ;; Created: Fri Mar 19 15:58:58 1999
 ;; Version: 21.2
-;; Last-Updated: Tue Jan 10 13:01:25 2012 (-0800)
+;; Last-Updated: Sat Feb 18 13:05:25 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 4398
+;;     Update #: 4399
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/dired+.el
 ;; Keywords: unix, mouse, directories, diredp, dired
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -256,6 +256,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2012/02/18 dadams
+;;     Swapped keys for dired-w32(-browser|explore), so the former is M-RET, as in Bookmark+.
 ;; 2012/01/10 dadams
 ;;     diredp-font-lock-keywords-1: Corrected for date/time when locale is used, not iso.
 ;; 2011/12/19 dadams
@@ -1705,8 +1707,8 @@ If HDR is non-nil, insert a header line with the directory name."
 ;; On Windows, bind some more keys.
 (eval-after-load "w32-browser"
   '(progn
-    (define-key dired-mode-map [(control return)] 'dired-w32-browser) ; `C-RET'
-    (define-key dired-mode-map [(meta return)] 'dired-w32explore) ; `M-RET'
+    (define-key dired-mode-map [(control return)] 'dired-w32explore) ; `C-RET'
+    (define-key dired-mode-map [(meta return)] 'dired-w32-browser) ; `M-RET'
     (define-key diredp-menu-bar-immediate-menu [dired-w32-browser]
       '(menu-item "Open Associated Windows App" dired-w32-browser
         :help "Open file using the Windows app associated with its file type"))
