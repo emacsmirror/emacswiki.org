@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Sun Feb 12 09:09:45 2012 (-0800)
+;; Last-Updated: Sat Feb 18 14:51:26 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 28691
+;;     Update #: 28693
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-doc2.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -7891,8 +7891,10 @@
 ;;    first character of a candidate string is tested for this text
 ;;    property)
 ;;
-;;  * `help-echo' - candidate help shown in a mouseover tooltip,
-;;    provided `tooltip-mode' is on
+;;  * `help-echo':
+;;     - same as `icicle-mode-line-help', if that property is `nil'
+;;     - candidate help shown in a mouseover tooltip, provided
+;;       `tooltip-mode' is on
 ;;
 ;;  * `keymap' and `pointer' - for individualized mouse treatment of
 ;;    candidates
