@@ -1,5 +1,5 @@
-[[variable|Variable]] `load-path' lists all directories where Emacs
-should look for EmacsLisp libraries. The first matching file found is used, therefore
+The [[variable]] `load-path' lists all the directories where Emacs
+should look for Elisp files. The first file found is used, therefore
 the order of the directories is relevant.
 
 Preference is given to byte-compiled files (##*.elc##) when both a byte-compiled file and a
@@ -15,27 +15,18 @@ To add a single directory to the front of your `load-path' (the final slash is n
 
     (add-to-list 'load-path "~/.emacs.d/lisp/")
 
-
-Interactively:
-
-* You can use `M-:' to evaluate `add-to-list'.  In particular, to add the current directory (that is, the value of `default-directory'), type this:
-
-            M-: (add-to-list 'load-path ".")
-
-* To change `default-directory' to a particular directory, use [[Dired]], visit a file in that directory, or use Emacs command `cd' to make it current:
-
-            M-x cd ~/my/favorite/dir/
-
-
-
 [:AddSubDirectories]
 == Adding subdirectories ==
 
-Adding a directory to variable `load-path' does not also add its
-subdirectories.  To recursively add the subdirectories of 
-`default-directory' to the end of `load-path' do this:
+Adding a directory to the variable `load-path' does not also add its
+subdirectories.  The current directory is the directory containing the
+currently visited file, or if the current buffer does not visit a file
+the directory from which Emacs was started.  To add a directory to the
+`load-path' the current directory has to be temporarily changed by
+binding `default-directory'. To recursively add the sub-directories of
+the current directory to the end of the `load-path' do this:
 
-    (let ((default-directory  "~/.emacs.d/lisp/"))
+    (let ((default-directory "~/.emacs.d/lisp/"))
       (normal-top-level-add-subdirs-to-load-path))
 
 This avoids subdirectories not starting with letters or digits, those named
@@ -43,13 +34,13 @@ This avoids subdirectories not starting with letters or digits, those named
 
 To add only some subdirectories, pass the list as a second argument.  For example:
 
-    (let ((default-directory  "~/.emacs.d/lisp/"))
+    (let ((default-directory "~/.emacs.d/lisp/"))
       (normal-top-level-add-to-load-path '("emms" "erc" "planner" "w3")))
 
 To have libraries in particular paths take precedence over other libraries elsewhere with the same name, put those
 paths at the beginning of `load-path'.
 
-    (let ((default-directory  "~/.emacs.d/lisp/"))
+    (let ((default-directory "~/.emacs.d/lisp/"))
       (setq load-path
             (append
              (let ((load-path (copy-sequence load-path))) ;; Shadow
