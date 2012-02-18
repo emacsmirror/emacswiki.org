@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:53 2006
 ;; Version: 22.0
-;; Last-Updated: Sat Feb 11 17:13:02 2012 (-0800)
+;; Last-Updated: Sat Feb 18 14:55:25 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 12905
+;;     Update #: 12909
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-fn.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -3943,7 +3943,12 @@ occurrence of `*'.  Otherwise, this is just `file-name-directory'."
       
 (defun icicle-show-help-in-mode-line (candidate)
   "If short help for CANDIDATE is available, show it in the mode-line.
-Do this only if `icicle-help-in-mode-line-delay' is positive."
+Do this only if `icicle-help-in-mode-line-delay' is positive.
+
+For a string or symbol CANDIDATE: Use the help from property
+`icicle-mode-line-help', if that is non-nil, or the help from
+property `help-echo' if that is non-nil.  For a string CANDIDATE,
+check only the first char for the property."
   (when (> icicle-help-in-mode-line-delay 0)
     (let* ((cand       (cond (;; Call to `lacarte-execute(-menu)-command' (in `lacarte.el').
                               ;; Use command associated with menu item.
@@ -3968,9 +3973,11 @@ Do this only if `icicle-help-in-mode-line-delay' is positive."
            (doc        (progn (when (stringp candidate)
                                 (setq candidate  (icicle-transform-multi-completion candidate)))
                               (cond ((and (stringp candidate) ; String with help as property.
-                                          (get-text-property 0 'icicle-mode-line-help candidate)))
+                                          (or (get-text-property 0 'icicle-mode-line-help candidate)
+                                              (get-text-property 0 'help-echo candidate))))
                                     ((and cand (symbolp cand) ; Symbol.
-                                          (cond ((get cand 'icicle-mode-line-help)) ; Help prop.
+                                          (cond ((get cand 'icicle-mode-line-help)) ; Icicles help prop.
+                                                ((get cand 'help-echo)) ; General help prop.
                                                 ((fboundp cand) ; Function.
                                                  (or (documentation cand t) ; Functon's doc string.
                                                      (if (string-match ; Easy-menu item.
