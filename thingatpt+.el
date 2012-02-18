@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Feb 13 16:47:45 1996
 ;; Version: 21.0
-;; Last-Updated: Sun Jan  1 14:05:08 2012 (-0800)
+;; Last-Updated: Sat Feb 18 12:49:38 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 1356
+;;     Update #: 1363
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/thingatpt+.el
 ;; Keywords: extensions, matching, mouse
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -97,6 +97,9 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2012/02/18 dadams
+;;     thing/form-nearest-point-with-bounds:
+;;       Fixed infloop: set [be]obp when finished sole line in both directions.
 ;; 2011/09/06 dadams
 ;;     thing/form-nearest-point-with-bounds: If only one line then do not try to access others.
 ;;     bounds-of-thing-at-point-1, thing-at-point, thing/form-nearest-point-with-bounds:
@@ -415,7 +418,6 @@ Other arguments are as for `thing-nearest-point-with-bounds'."
               ;; until either found thing/form or both line limits reached.
               (while (and (not (and bolp eolp))
                           (<= ind1 max-x)
-
                           (not f-or-t+bds))
                 (unless bolp (save-excursion ; Left.
                                (setq bolp        (prog1 (forward-char-same-line (- ind1))
@@ -433,8 +435,10 @@ Other arguments are as for `thing-nearest-point-with-bounds'."
                                         (funcall fn thing syntax-table)))
                     (constrain-to-field nil opoint)))
                 (setq ind1  (1+ ind1)))
-              (setq bobp  (or (eq (field-beginning nil) (point)) (bobp))
-                    eobp  (or (eq (field-end nil) (point)) (eobp))))))
+              (setq bobp  (or (eq (field-beginning nil) (point)) (bobp)
+                              (< max-y 2)) ; If only one line, fake `bobp'.
+                    eobp  (or (eq (field-end nil) (point)) (eobp)
+                              (< max-y 2)))))) ; If only one line, fake `eobp'.
         ;; Increase search line distance every second time (once up, once down).
         (when (and (> max-y 1) (or (< updown 0) (zerop ind2))) ; 0,1,1,2,2...
           (setq ind2  (1+ ind2))))
