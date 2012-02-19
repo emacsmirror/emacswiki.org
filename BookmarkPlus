@@ -3728,9 +3728,7 @@ HTH -- DrewAdams
 [new]
 
 OK thanks I guess I should've checked a bit more carefully first. 
-Btw, your gnus bookmarks only seem to work when the corresponding summary mode is already open. With the bookmarks that come with gnus it will automatically open the correct summary buffer if it's not already open (and start gnus if not already started). Is there any way of integrating gnus builtin bookmarks with bookmarks plus?
-
- -- JoeBloggs
+Btw, your gnus bookmarks only seem to work when the corresponding summary mode is already open. With the bookmarks that come with gnus it will automatically open the correct summary buffer if it's not already open (and start gnus if not already started). Is there any way of integrating gnus builtin bookmarks with bookmarks plus? -- JoeBloggs
 
 ----
 CategoryBookmarking CategoryHypermedia CategoryPersistence 
