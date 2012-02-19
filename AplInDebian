@@ -28,6 +28,7 @@ http://groups.google.com/group/gnu.emacs.help/browse_thread/thread/1c6284278d371
 
 # You are running a recent gnuemacs under a recent debian.
 In my case this is emacs 23 and 24 with debian unstable.
+# You start emacs like LANG=C emacs
 # You have the aplus-fsf packages installed. This is the list
 aplus-fsf, xfonts-kapl and aplus-fsf-{doc,el,dev}
 To test that aplus is running run a+ (not aplus) at a shell prompt
