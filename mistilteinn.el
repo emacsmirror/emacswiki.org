@@ -154,6 +154,11 @@
   (interactive)
   (shell-command "git now --compact"))
 
+(defun mi:git-now ()
+  (interactive)
+  (when mistilteinn-minor-mode
+    (mistilteinn-git-now)))
+
 (defun mi:branch-list ()
   "Get branch list for current repository."
   (remove-if '(lambda (s) (string= "" s))
@@ -230,7 +235,7 @@
   :group mistilteinn-mode
   (funcall (if mistilteinn-minor-mode 'add-hook 'remove-hook)
            'after-save-hook
-           'mistilteinn-git-now))
+           'mi:git-now))
 
 (defmacro mi:with-cd (path &rest body)
   (let ((var (make-symbol "path")))
