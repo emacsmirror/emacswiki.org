@@ -3730,6 +3730,25 @@ HTH -- DrewAdams
 OK thanks I guess I should've checked a bit more carefully first. 
 Btw, your gnus bookmarks only seem to work when the corresponding summary mode is already open. With the bookmarks that come with gnus it will automatically open the correct summary buffer if it's not already open (and start gnus if not already started). Is there any way of integrating gnus builtin bookmarks with bookmarks plus? -- JoeBloggs
 
+[new:DrewAdams:2012-02-19 02:23 UTC]
+Hi Joe,
+
+Dunno.  As I said, I'm no expert on Gnus and I don't use it.  Perhaps you'd like to take a look at the gnus code and propose a patch.  Sorry, but this is not a priority for me.  
+
+FWIW, the '''Bookmark+''' code for creating and jumping to Gnus bookmarks is essentially the same as the latest (Emacs 24) vanilla Emacs code in ##gnus-sum.el##, with one minor improvement (no `sit-for' to wait 1 sec if the buffer is not an article buffer).
+
+I have no idea why Gnus apparently has an additional, separate bookmarking facility, or why that is not integrated (yet) with ordinary bookmarks ('''Bookmark+''' or vanilla).  Which was your original question, IIUC.  Perhaps there is some good reason to keep some Gnus bookmarks separate? dunno.
+
+That said, '''Bookmark+''' should recognize and correctly handle the bookmarks created by the Gnus code (which use handler `gnus-summary-bookmark-jump') -- it's pretty much the same code.  I guess the problem seems to be to get your Gnus-code created bookmarks into your standard bookmark file?  Try copying one of them into your bookmark file, to see how it's handled by '''Bookmark+''', as a start.
+
+I can understand your motivation, but please understand that (a) I do not have the time to investigate this and (b) I do not even have Gnus installed (and have no intention of installing it), so implementing and testing something for it in '''Bookmark+''' would be an added chore for me.
+
+For bookmarking alone there are 415 lines of the Gnus code to examine (`##grep bookmark *.el##').  And before that, a thorough understanding of Gnus is probably called for, to understand (a) why it treats bookmarking the way it does, and (b) whether and how some of it might profit from '''Bookmark+''' features etc.
+
+I welcome someone else, such as yourself, making such an effort.  What's needed is to spend some time with Gnus and the Gnus bookmarking code.  Another possibility might be to interest BastienGuerry in taking a look at '''Bookmark+''' -- he apparently wrote ##gnus-bookmark.el##.
+
+(BTW, for something like this it's usually a lot easier to follow up by email.) -- DrewAdams
+
 ----
 CategoryBookmarking CategoryHypermedia CategoryPersistence 
 CategoryProgramming CategoryRegion CategoryWThirtyTwo
