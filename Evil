@@ -2,9 +2,13 @@
 
 '''Evil''' is an '''e'''xtensible '''vi''' '''l'''ayer for Emacs. It provides Vim features like Visual selection and text objects, and is the successor to [[Vimpulse]] and [VimMode vim-mode].
 
+== Quick install ==
+
+Using [[el-get]], Evil can be downloaded and installed with: ##M-x el-get-install RET evil RET##.
+
 == Download ==
 
-Evil lives in a Git repository. To download Evil, do:
+Alternatively, Evil lives in a Git repository. To download Evil, do:
 
     git clone git://gitorious.org/evil/evil.git
 
@@ -19,11 +23,6 @@ Move Evil to ##~/.emacs.d/evil## (or somewhere else in your ##load-path##). Then
     (evil-mode 1)
 
 Evil requires [UndoTree undo-tree.el] in the ##load-path## for linear undo and undo branches. Otherwise, Evil uses regular Emacs undo.
-
-== Quick Install ==
-
-Using [[el-get]] you can simply M-x el-get-install RET evil RET and enjoy using it already.
-
 
 == Documentation ==
 
