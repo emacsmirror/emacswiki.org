@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2012, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Wed Feb  8 17:04:06 2012 (-0800)
+;; Last-Updated: Sun Feb 19 17:26:38 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 14206
+;;     Update #: 14229
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-doc.el
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search,
 ;;           info, url, w3m, gnus
@@ -1415,6 +1415,33 @@
 ;;  PostScript, while your `bmkp-default-handler-associations'
 ;;  association for PostScript might use GhostView to display it
 ;;  directly.
+;;
+;;  Besides using `M-RET' etc. in buffer `*Bookmark List*', if in
+;;  `bmkp-default-handler-associations' you register `w32-browser' as
+;;  the association to use for a given file pattern, then you can use
+;;  command `bmkp-w32-browser-jump' (not bound, by default) anywhere
+;;  to open a bookmark whose file name matches that pattern, using its
+;;  Windows file-association program.
+;;
+;;  You can also specify `w32-browser' as the bookmark "type" when you
+;;  use command `bmkp-jump-to-type' (`C-x j :').  Either of these
+;;  approaches gives you a way to use completion to choose a bookmark
+;;  to open using a Windows file association.
+;;
+;;  Specifying such an association in
+;;  `bmkp-default-handler-associations' means that bookmarks for such
+;;  a file will have a handler that uses function `w32-browser' to
+;;  "jump" to (i.e., open) the file.
+;;
+;;  To set up a given file extension for use this way, add an entry
+;;  (REGEXP . w32-browser) to option
+;;  `bmkp-default-handler-associations', where REGEXP matches the file
+;;  extension.
+;;
+;;  For example, to make a command such as `bmkp-bookmark-a-file'
+;;  (`C-x p c a') automatically bookmark `*.doc' files using the
+;;  associated MS Windows program (typically MS Word), add this entry:
+;;  ("\\.doc$" . w32-browser).
  
 ;;(@* "Tagging Files")
 ;;  ** Tagging Files **
