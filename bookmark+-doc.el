@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2012, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Sun Feb 19 17:26:38 2012 (-0800)
+;; Last-Updated: Mon Feb 20 14:42:24 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 14229
+;;     Update #: 14238
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-doc.el
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search,
 ;;           info, url, w3m, gnus
@@ -1024,6 +1024,17 @@
 ;;  - it can do anything you like, and there need not be any
 ;;  associated location.
 ;;
+;;  Some Bookmark+ bookmarks, including autofile bookmarks, just
+;;  "jump" to a file.  The position in the file is unimportant, and
+;;  "jumping" does not necessarily mean visiting the file with Emacs.
+;;  In effect, such bookmarks are just wrappers around the file,
+;;  letting you get the advantage of Bookmark+ features (tags etc.)
+;;  for a file.  Such bookmarks, which you can create using `C-x p c
+;;  a' or `C-x p c f', contain a `file-handler' attribute instead of a
+;;  `handler' attribute.  The difference between the two is that the
+;;  `file-handler' value is a function (Lisp function or shell
+;;  command) to be applied to the file, not to the bookmark.
+;;
 ;;  Remember: A bookmark is just a persistent bit of information,
 ;;  typically meta-information about a file and a position in that
 ;;  file.
@@ -1363,13 +1374,20 @@
 ;;  Here is an example option value:
 ;;
 ;;   (("\\.ps$" . "gsview32.exe")
-;;    ("\\.html?$" . browse-url))
+;;    ("\\.html?$" . browse-url)
+;;    ("\\.doc$" . w32-browser))
 ;;
-;;  This value creates a bookmark that, when you jump to it, invokes
-;;  shell command `gsview32.exe' on the bookmark's target file if it
-;;  is PostScript (extension `.ps'), and invokes Emacs Lisp function
-;;  `browse-url' on the file if it is HTML (extension `.htm' or
-;;  `.html').
+;;  This value causes creation of bookmarks that, when you jump to
+;;  them, invoke:
+;;
+;;   * shell command `gsview32.exe' on the bookmark's
+;;     target file if it is PostScript (extension `.ps')
+;;
+;;   * Emacs Lisp function `browse-url' on the file if it is HTML
+;;     (extension `.htm' or `.html')
+;;
+;;   * Emacs Lisp function `w32-browser' on the file if the file
+;;     extension is `.doc' (e.g., a Microsoft Word file)
 ;;
 ;;  The default value of `bmkp-default-handler-associations' is taken
 ;;  from the value of option `dired-guess-shell-alist-user' (from
@@ -1378,11 +1396,16 @@
 ;;  If no matching file association is found in
 ;;  `bmkp-default-handler-associations', and if option
 ;;  `bmkp-guess-default-handler-for-file-flag' is non-nil (it is nil
-;;  by default), then Bookmark+ will guess a shell command to use in
-;;  the handler.  It does this by matching the file name against
+;;  by default), then Bookmark+ will guess a shell command to use.  It
+;;  does this by matching the file name against
 ;;  `dired-guess-shell-alist-default' (also from Dired X).  In Emacs
 ;;  23+, if it finds no shell command that way then it guesses one
 ;;  based on mailcap entries.
+;;
+;;  When a bookmark is created using `C-x p c f' or `C-x p c a' for a
+;;  file that matches `bmkp-default-handler-associations', the shell
+;;  command or Lisp function that "jumps to" (opens) the file is saved
+;;  in the bookmark as attribute `file-handler' (not `handler').
 ;;
 ;;
 ;;(@* "Opening Bookmarks Using Windows File Associations")
@@ -1430,7 +1453,7 @@
 ;;
 ;;  Specifying such an association in
 ;;  `bmkp-default-handler-associations' means that bookmarks for such
-;;  a file will have a handler that uses function `w32-browser' to
+;;  a file will have a `file-handler' value of `w32-browser', to
 ;;  "jump" to (i.e., open) the file.
 ;;
 ;;  To set up a given file extension for use this way, add an entry
