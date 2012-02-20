@@ -249,7 +249,7 @@ the bzr mirror anymore.  Michael does not update the tarball anymore
 but a zip file can still be downloaded from github.  It seems github
 does not offer tarball downloads anymore.
 
-I have updated point 3 and 4 to reflect this.
+I have updated point 3, 4 and 7 to reflect this.
 
 
 
@@ -274,37 +274,6 @@ http://www.emacswiki.org/emacs/download/icicles{,-chg,-cmd1,-cmd2,-doc1,-doc2,-f
 ##wget
 http://www.emacswiki.org/emacs/download/{apropos-fn%2bvar,bookmark%2b,col-highlight,crosshairs,doremi,doremi-frm,frame-cmds,fuzzy-match,hexrgb,hl-line%2b,icomplete%2b,info%2b,lacarte,mb-depth%2b,pp%2b,synonyms,thingatpt%2b,vline}.el##
 
--- JoniDiMontago
-
-'''7.''' '''Using a bzr repository:''' that should stay in sync with
-'''Icicles''' (updated every 24 hours -- no; see below): ##bzr branch
-http://archives.hodique.info/bzr/icicles/##  Thanks to YannHodique for
-that.
-
-[new:DrewAdams:2007-10-09 02:48 UTC]
-:: Yann -- Does that work? If so, how?
-[http://archives.hodique.info/bzr/icicles/
-http://archives.hodique.info/bzr/icicles/] seems to be an empty
-directory. -- DrewAdams
-
-[new:YannHodique:2007-10-09 10:05 UTC]
-:: Yes it works. The repository was not updated for some time (lost my
-internet connection for a few weeks), but now everything is up again.
-The directory is actually not empty, it contains a single .bzr
-directory. This is how bzr works : there is no need for a "working
-tree" to be able to checkout a project. So  ##bzr branch
-http://archives.hodique.info/bzr/icicles/## works just fine :)
-
-[new:DrewAdams:2007-11-05 15:27 UTC]
-:: Thanks, Yann. Could you maybe post a URL to some simple
-instructions for using it, assuming that exists somewhere? --
-DrewAdams
-
-[new:Sebastien Delafond:2009-01-25 12:34:56 PST]
-:: I don't think this is updated anymore: I can check-out a copy using
-##bzr branch http://archives.hodique.info/bzr/icicles/##, but for
-instance the icicles-mcmd.el in there is update #10816, from
-2008-03-02. --SebastienDelafond
 
 ----
 
