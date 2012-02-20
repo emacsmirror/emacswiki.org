@@ -219,14 +219,14 @@ how many files you can download per second.
 
 
 
-'''3.''' '''Using git''' The Emacsmirror contains many packages hosted
-on the Emacsmirror - including [[http://github.com/emacsmirror/icicles
-Icicles]] -  in the form of git repositories.  The Icicles
-repositories contains the full history of the Icicles libraries but
-none of Icicles' dependencies (and also no meaningful commit
-messages).  The dependencies are also available as '''separate''' git
-repositories. (Note that repository names on github can't contain +,
-so e.g. [[Bookmark+]] is available from
+'''3.''' '''Using git''': The Emacsmirror contains many packages
+hosted on the Emacsmirror - including
+[[http://github.com/emacsmirror/icicles Icicles]] -  in the form of
+git repositories.  The Icicles repositories contains the full history
+of the Icicles libraries but none of Icicles' dependencies (and also
+no meaningful commit messages).  The dependencies are also available
+as '''separate''' git repositories. (Note that repository names on
+github can't contain +, so e.g. [[Bookmark+]] is available from
 http://github.com/emacsmirror/bookmark-plus.
 
 
@@ -253,7 +253,7 @@ I have updated point 3, 4 and 7 to reflect this.
 
 
 
-'''4.''' '''Using zip file''' An automatically generated zip file can
+'''4.''' '''Using zip file''': An automatically generated zip file can
 be downloaded from the git [[http://github.com/emacsmirror/icicles
 repository]] on github. The link is at the left side about 2cm away
 from the smiley face.  Like the git repository this only contains the
