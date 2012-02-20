@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2012, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Sun Feb 19 16:49:23 2012 (-0800)
+;; Last-Updated: Mon Feb 20 13:59:54 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 14284
+;;     Update #: 14301
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-chg.el
 ;; Keywords: bookmarks, bookmark+
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -145,6 +145,17 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-1.el'")
 ;;
+;; 2012/02/20 dadams
+;;     bookmark-handle-bookmark: Handle, in priority, new property file-handler.
+;;     bookmark-default-handler: Handle new property file-handler.
+;;     bmkp-make-record-for-target-file:
+;;       Use new property file-handler, not handler, for default handler.
+;;       Use file-handler with play-sound-file, not handler with bmkp-sound-jump (deprecated).
+;;     bmkp-default-handler-for-file: Return function bmkp-user, not a lambda that applies it to file.
+;;     bmkp-handler-pred:
+;;       Return t if TYPE is handler or file-handler.  Do not match a lambda that applies the handler.
+;;     bmkp-default-handler-associations, bookmark-alist, bmkp-jump-to-type:
+;;       Updated doc string to reflect new implementation of file handlers using prop file-handler.
 ;; 2012/02/19 dadams
 ;;     Added: bmkp-handler-pred, bmkp-temporary-history, bmkp-w32-browser-jump.
 ;;     bmkp-types-alist: Added bmkp-temporary-history.
