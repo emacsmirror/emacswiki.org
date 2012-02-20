@@ -4,5 +4,47 @@ BBDBV3-Wl integrates BBDB in its third version into Wanderlust.
 
 As BBDB-Wl does for BBDB version 2, this try to do the same for the third version of this personal database.
 
----
-[[CategoryBBDB]]
+It's in alpha stage and is in intense developing.
+
+== Getting it ==
+You can get this searching the project in GNA! 
+
+* [https://gna.org/projects/bbdbv3-wl/ The project] link.
+* [http://home.gna.org/bbdbv3-wl/ Home page] of the project.
+* [http://download.gna.org/bbdbv3-wl/ Download page] where the more stable version is.
+
+== Installing and Configuring==
+If you want to install it you just have to download one of the files from the [http://download.gna.org/bbdbv3-wl/ download page], and decompress.
+
+Once you have all the files you have to tell emacs where to find them, this is accomplish adding the following in the .emacs file:
+
+    ((setq load-path (cons "~/emacsstuff/bbdbv3-wl/lisp" load-path))
+
+Change the <code>"~/emacsstuff/bbdbv3-wl/lisp"</code> with the path where you have just decompressed the tar file and there are the emacs-lisp files(those ones that ends with ".el").
+
+
+After that, you have to tell emacs to load it at every start, this is done by adding after the last code inserted:
+
+    (require 'bbdbV3-wl)
+
+
+Summarizing, download, decompress, and add in the .emacs file the following:
+
+    ((setq load-path (cons "~/emacsstuff/bbdbv3-wl/lisp" load-path))
+    (require 'bbdbV3-wl)
+
+
+== Using it ==
+
+Just run wanderlust as usual and when you read an e-mail you find a new buffer below with the sender's information in the BBDB.
+If the sender's information doesn't exists in the database, it will request if you like to add it.
+
+== Comming ==
+=== Revision 11 ===
+This revision has added more integration with the Wanderlust's address manager, so you can get its addresses and add it into BBDB with <code>bbdb-wl-take-data-from-addressbook</code>.
+
+Also it has modularized everything a bit better.
+
+
+----
+[[CategoryBbdb]]
