@@ -1,14 +1,15 @@
-Known to the EmacsChannel as [::twb], Trent Buck is a fanatic user of Emacs, Screen, Darcs, Ratpoison and Debian.  Emacs is his desktop environment, including WThreeM, empc, [[rcirc]], ParEdit, SlimeMode.  His [http://twb.ath.cx/~twb/canon/cv/cv.html curriculum vitæ] is online.
+Known to the EmacsChannel as [::twb], Trent Buck is a fanatic user of Emacs, Screen, Darcs (waning), Ratpoison (waning) and Debian.  Emacs is his desktop environment, including WThreeM, empc, [[rcirc]], ParEdit, SlimeMode.  His [http://cyber.com.au/~twb/doc/cv.txt curriculum vitæ] is online.
 
 Author of SchemeLookup and empc.  Some Emacs content:
 
-* ftp://twb.ath.cx/profile/
-* ftp://twb.ath.cx/empc/
-* ftp://twb.ath.cx/sticky-repl/
-* ftp://twb.ath.cx/scheme-lookup/
-* ftp://twb.ath.cx/words/emacs-desktop.html
-* ftp://twb.ath.cx/words/term256.html
+* http://cyber.com.au/~twb/.emacs (and similar URLs for other dotfiles)
+* darcs get http://cyber.com.au/~twb
+* ftp://twb.ath.cx/empc/ (lost)
+* ftp://twb.ath.cx/sticky-repl/ (lost)
+* ftp://twb.ath.cx/scheme-lookup/ (lost)
+* ftp://twb.ath.cx/words/emacs-desktop.html (lost)
+* http://cyber.com.au/~twb/doc/term256.txt
 
-This information was last verified in May, 2007.  It may no longer be accurate.
+This information was last verified in Feb 2012.  It may no longer be accurate.
 ----
 CategoryHomepage
