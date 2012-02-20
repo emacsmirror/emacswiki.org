@@ -1,13 +1,18 @@
 : [[image:iciclesimage]]
 
 
-|| *Previous:* '''[[Icicles]]''' || IciclesIndex || *Next:* [[Icicles - Screenshots]] ||
+|| *Previous:* '''[[Icicles]]''' || IciclesIndex || *Next:* [[Icicles
+- Screenshots]] ||
 
 ----
 
 == Icicles Libraries ==
 
-"'''Icicles'''" refers to a set of libraries that enhance [[minibuffer]] input, providing [[Icicles - Cycling Completions|cycling]] among completion candidates and more powerful [[completion]]. It is composed of the following '''''required''''' libraries:
+"'''Icicles'''" refers to a set of libraries that enhance
+[[minibuffer]] input, providing [[Icicles - Cycling
+Completions|cycling]] among completion candidates and more powerful
+[[completion]]. It is composed of the following '''''required'''''
+libraries:
 
 
 
@@ -17,17 +22,24 @@
 * <tt>[[icicles-chg.el]]</tt> -- change logs (no code)
 * <tt>[[icicles-cmd1.el]]</tt> -- top-level [[command]]s, part 1
 * <tt>[[icicles-cmd2.el]]</tt> -- top-level commands, part 2
-* <tt>[[icicles-doc1.el]]</tt> -- first part of the doc (##Commentary##, no code)
-* <tt>[[icicles-doc2.el]]</tt> -- second part of the doc (##Commentary##, no code)
+* <tt>[[icicles-doc1.el]]</tt> -- first part of the doc
+(##Commentary##, no code)
+* <tt>[[icicles-doc2.el]]</tt> -- second part of the doc
+(##Commentary##, no code)
 * <tt>[[icicles-face.el]]</tt> -- [[face]]s (customizable)
 * <tt>[[icicles-fn.el]]</tt> -- non-interactive functions
 * <tt>[[icicles-mac.el]]</tt> -- macros
 * <tt>[[icicles-mcmd.el]]</tt> -- minibuffer commands
 * <tt>[[icicles-mode.el]]</tt> -- ''Icicle'' mode definition
-* <tt>[[icicles-opt.el]]</tt> -- [[user option]]s (customizable [[variable]]s)
+* <tt>[[icicles-opt.el]]</tt> -- [[user option]]s (customizable
+[[variable]]s)
 * <tt>[[icicles-var.el]]</tt> -- internal variables
 
-When you load (e.g. `load-library' or `require') the driver library, '''<tt>[[icicles.el]]</tt>''', the others are all loaded automatically, except for ##icicles-chg.el##, ##icicles-doc1.el## and ##icicles-doc2.el##, which need not be loaded (they contain only a change log and documentation, as comments).
+When you load (e.g. `load-library' or `require') the driver library,
+'''<tt>[[icicles.el]]</tt>''', the others are all loaded
+automatically, except for ##icicles-chg.el##, ##icicles-doc1.el## and
+##icicles-doc2.el##, which need not be loaded (they contain only a
+change log and documentation, as comments).
 
 
 
@@ -35,29 +47,56 @@ When you load (e.g. `load-library' or `require') the driver library, '''<tt>[[ic
 
 [:Optional]
 === Optional, But Recommended ===
-The following libraries are recommended but '''''optional''''' (loaded by <tt>[[icicles.el]]</tt> if
-in your `load-path', otherwise ignored).  They are enhanced by '''Icicles''', or '''Icicles''' is enhanced by them, or both.
+The following libraries are recommended but '''''optional''''' (loaded
+by <tt>[[icicles.el]]</tt> if
+in your `load-path', otherwise ignored).  They are enhanced by
+'''Icicles''', or '''Icicles''' is enhanced by them, or both.
 
 
-||<tt>[[apropos-fn+var.el]]</tt> ||Apropos enhancements for functions and [[variable]]s. ||
-||<tt>[[bookmark+.el]]</tt> etc.||Many bookmark enhancements. See '''[[Bookmark+]]''' and [[Icicles - Bookmark Enhancements]].||
-||<tt>[[col-highlight.el]]</tt> ||Required by ##crosshairs.el## (Emacs 22+). See HighlightCurrentColumn.||
-||<tt>[[crosshairs.el]]</tt> ||Highlight target positions -- see CrosshairHighlighting.||
-||<tt>[[doremi.el]]</tt>, <tt>[[doremi-frm.el]]</tt> ||Incremental changes -- see [[Icicles - Completions Display]], [[Icicles - Fuzzy Completion#SwankCompletion|Icicles - Fuzzy Symbol Completion]], and [[option]] <tt>[[Icicles - Customization and General Tips#icicle-max-candidates|icicle-max-candidates]]</tt>.||
-||<tt>[[frame-cmds.el]]</tt> ||[[FrameModes#frame-cmds.el|Frame and window commands]].||
+||<tt>[[apropos-fn+var.el]]</tt> ||Apropos enhancements for functions
+and [[variable]]s. ||
+||<tt>[[bookmark+.el]]</tt> etc.||Many bookmark enhancements. See
+'''[[Bookmark+]]''' and [[Icicles - Bookmark Enhancements]].||
+||<tt>[[col-highlight.el]]</tt> ||Required by ##crosshairs.el## (Emacs
+22+). See HighlightCurrentColumn.||
+||<tt>[[crosshairs.el]]</tt> ||Highlight target positions -- see
+CrosshairHighlighting.||
+||<tt>[[doremi.el]]</tt>, <tt>[[doremi-frm.el]]</tt> ||Incremental
+changes -- see [[Icicles - Completions Display]], [[Icicles - Fuzzy
+Completion#SwankCompletion|Icicles - Fuzzy Symbol Completion]], and
+[[option]] <tt>[[Icicles - Customization and General
+Tips#icicle-max-candidates|icicle-max-candidates]]</tt>.||
+||<tt>[[frame-cmds.el]]</tt> ||[[FrameModes#frame-cmds.el|Frame and
+window commands]].||
 ||<tt>[[fuzzy-match.el]]</tt> ||See [[Icicles - Fuzzy Completion]].||
-||<tt>[[hexrgb.el]]</tt> ||Color manipulation.  I strongly recommend that you include this library.||
-||<tt>[[hl-line+.el]]</tt> ||Required by ##crosshairs.el## (Emacs 22+). See HighlightCurrentLine.||
-||<tt>[[icomplete+.el]]</tt> ||See [[Icicles - Icompletion]] and '''[[IcompleteMode#IcompleteModePlus|Icomplete+]]'''.||
-||<tt>[[info+.el]]</tt> ||See [[Icicles - Info Enhancements]] and '''[[Info+]]'''.||
-||<tt>[[lacarte.el]]</tt> ||Keyboard access to the [[menu bar]] menus -- see '''LaCarte'''.  Used with '''Icicles''', you can type a substring or a [[regexp]] that matches any part of a [[menu bar]] menu tree, and you can cycle among [[completion]] candidates to easily navigate menus and choose a menu item.||
-||<tt>[[mb-depth+.el]]</tt> ||MinibufferDepthIndicator, for recursive [[minibuffer]]s (Emacs 22 and later).||
-||<tt>[[pp+.el]]</tt> ||Pretty-printing for `##M-:##'.  See '''[[EvaluatingExpressions#PpPlus|Pp+]]'''.||
-||<tt>[[synonyms.el]]</tt> ||A hypertext thesaurus.  See '''[[Synonyms]]'''.||
-||<tt>[[thingatpt+.el]]</tt> ||Better defaults when using commands; better possibilities for `##M-.##'. See '''[[ThingAtPoint+]]''' and [[Icicles - Inserting Text from Cursor]].||
-||<tt>[[vline.el]]</tt> ||Required by ##crosshairs.el## (Emacs 22+). See VlineMode.||
+||<tt>[[hexrgb.el]]</tt> ||Color manipulation.  I strongly recommend
+that you include this library.||
+||<tt>[[hl-line+.el]]</tt> ||Required by ##crosshairs.el## (Emacs
+22+). See HighlightCurrentLine.||
+||<tt>[[icomplete+.el]]</tt> ||See [[Icicles - Icompletion]] and
+'''[[IcompleteMode#IcompleteModePlus|Icomplete+]]'''.||
+||<tt>[[info+.el]]</tt> ||See [[Icicles - Info Enhancements]] and
+'''[[Info+]]'''.||
+||<tt>[[lacarte.el]]</tt> ||Keyboard access to the [[menu bar]] menus
+-- see '''LaCarte'''.  Used with '''Icicles''', you can type a
+substring or a [[regexp]] that matches any part of a [[menu bar]] menu
+tree, and you can cycle among [[completion]] candidates to easily
+navigate menus and choose a menu item.||
+||<tt>[[mb-depth+.el]]</tt> ||MinibufferDepthIndicator, for recursive
+[[minibuffer]]s (Emacs 22 and later).||
+||<tt>[[pp+.el]]</tt> ||Pretty-printing for `##M-:##'.  See
+'''[[EvaluatingExpressions#PpPlus|Pp+]]'''.||
+||<tt>[[synonyms.el]]</tt> ||A hypertext thesaurus.  See
+'''[[Synonyms]]'''.||
+||<tt>[[thingatpt+.el]]</tt> ||Better defaults when using commands;
+better possibilities for `##M-.##'. See '''[[ThingAtPoint+]]''' and
+[[Icicles - Inserting Text from Cursor]].||
+||<tt>[[vline.el]]</tt> ||Required by ##crosshairs.el## (Emacs 22+).
+See VlineMode.||
 
-Be aware that some of these libraries in turn require other libraries.  For example, library ##frame-cmds.el## requires library <tt>[[frame-fns.el]]</tt>
+Be aware that some of these libraries in turn require other libraries. 
+For example, library ##frame-cmds.el## requires library
+<tt>[[frame-fns.el]]</tt>
 
 Depending on your platform, if you use '''Icicles''' in a text
 terminal (that is, without a window system/manager), then you
@@ -67,14 +106,18 @@ default bindings are not available to you.
 If on your platform, for example, Emacs in a text terminal does
 not recognize a key such as `S-TAB' (as something different from
 `TAB'), then you will want to change that key binding.  To
-customize '''Icicles''' key bindings, see [[Icicles - Customizing Key Bindings]].  You
+customize '''Icicles''' key bindings, see [[Icicles - Customizing Key
+Bindings]].  You
 might also want to customize some of the '''Icicles''' faces, since a
 text terminal is sometimes limited in the colors it can handle.
 
 [:byte-compile]
-It is of course best to byte-compile all of the libraries (except ##icicles-chg.el##, ##icicles-doc1.el##, and ##icicles-doc2.el##).  You
+It is of course best to byte-compile all of the libraries (except
+##icicles-chg.el##, ##icicles-doc1.el##, and ##icicles-doc2.el##). 
+You
 will likely get some byte-compiler warning messages.  These are
-probably benign -- ignore them.  '''Icicles''' is designed to work with
+probably benign -- ignore them.  '''Icicles''' is designed to work
+with
 multiple versions of Emacs, and that fact provokes compiler
 warnings.  If you get byte-compiler errors (not warnings), then
 please report a bug, using `M-x icicle-send-bug-report'.
@@ -82,11 +125,13 @@ please report a bug, using `M-x icicle-send-bug-report'.
 Whenever you update '''Icicles''' (i.e., download new versions of
 '''Icicle''' source files), I recommend that you do the following:
 
-# Delete all existing byte-compiled '''Icicles''' files (##icicles*.elc##).
+# Delete all existing byte-compiled '''Icicles''' files
+(##icicles*.elc##).
 # Load '''Icicles''' (`load-library' or `require').
 # Byte-compile the source files.
 
-In particular, always load ##icicles-mac.el## (''not'' ##icicles-mac.el##<u>##c##</u>)
+In particular, always load ##icicles-mac.el## (''not''
+##icicles-mac.el##<u>##c##</u>)
 before you byte-compile new versions of the files, in case there
 have been any changes to Lisp macros (in ##icicles-mac.el##).
 
@@ -95,7 +140,9 @@ interactively, using command '''`icy-mode'''' (aka `icicle-mode' --
 prefix `icy' is unique to this command, so it is easier to
 complete).
 
-'''Note:''' If you turn on ''Icicle'' mode in your [[init file]], it's generally best to do so as late as possible -- after you or any libraries that you
+'''Note:''' If you turn on ''Icicle'' mode in your [[init file]], it's
+generally best to do so as late as possible -- after you or any
+libraries that you
 load do any key binding.  This is because '''Icicles''' uses the
 current global key bindings to determine which keys to bind for
 minibuffer completion and cycling.  To pick up the latest
@@ -103,12 +150,14 @@ bindings at any time, you can of course enter ''Icicle'' mode
 interactively using command `icy-mode' (if necessary, exit, then
 re-enter).
 
-'''Note:''' '''Icicles''' redefines some functions when you are in ''Icicle''
+'''Note:''' '''Icicles''' redefines some functions when you are in
+''Icicle''
 mode (it restores them when you leave ''Icicle'' mode).  It
 generally does not use `defadvice' to alter the functions; it
 redefines them instead.  Because of this, there can be
 incompatibilities with other libraries that also change the same
-functions (using `defadvice' or otherwise).  An example is ViperMode.  If you load Viper before '''Icicles''', then you will run into
+functions (using `defadvice' or otherwise).  An example is ViperMode. 
+If you load Viper before '''Icicles''', then you will run into
 problems with function `read-file-name' because it is tweaked by
 both Viper and Icicles.  If you load '''Icicles''' before Viper, you
 should not encounter this problem (but you might encounter other
@@ -119,7 +168,10 @@ problems: both '''Icicles''' and Viper try to control the minibuffer).
 
 == Checking What Has Changed ==
 
-Here's one way to check which '''Icicles''' libraries have changed recently: '''[http://www.emacswiki.org/cgi-bin/emacs?action=rc;match=%5Cicicles.*.el?$;days=28;all=1;showedit=1 Latest Icicles Changes]'''
+Here's one way to check which '''Icicles''' libraries have changed
+recently:
+'''[http://www.emacswiki.org/cgi-bin/emacs?action=rc;match=%5Cicicles.*.el?$;days=28;all=1;showedit=1
+Latest Icicles Changes]'''
 
 
 
@@ -127,73 +179,143 @@ Here's one way to check which '''Icicles''' libraries have changed recently: '''
 [:BulkIciclesDownload]
 == Downloading Icicles Libraries ==
 
-You can download the '''Icicles''' files individually, by right-clicking the Download link for each and choosing `Save As' in your browser.  You will need to do that on ''each'' file page.
+You can download the '''Icicles''' files individually, by
+right-clicking the Download link for each and choosing `Save As' in
+your browser.  You will need to do that on ''each'' file page.
 
-Alternatively, there are a few ways you can download all of the files at once. Some of these means were provided by '''Icicles''' users.
+Alternatively, there are a few ways you can download all of the files
+at once. Some of these means were provided by '''Icicles''' users.
 
 [new:DrewAdams:2009-04-17 07:54 UTC]
-'''Note:''' The %%EmacsWiki%% ElispArea always has the latest version of '''Icicles'''.  If you want to be sure to have the latest version, then either download the files individually there or use one of the first two methods described below (within Emacs and using a shell script).  The files obtained by the other methods are updated only periodically (e.g. once a week).
+'''Note:''' The %%EmacsWiki%% ElispArea always has the latest version
+of '''Icicles'''.  If you want to be sure to have the latest version,
+then either download the files individually there or use one of the
+first two methods described below (within Emacs and using a shell
+script).  The files obtained by the other methods are updated only
+periodically (e.g. once a week).
 [new]
 
 
 
 '''1.''' '''Within Emacs''' -- Two alternative ways:
 
-* Use library <tt>[[icicles-install.el]]</tt>. See the simple instructions in the file header. Based on the [[ELPA]] initialization code. It uses [[UrlPackage]], if available; else it uses `wget'. Thanks to AnupamSengupta for this.
+* Use library <tt>[[icicles-install.el]]</tt>. See the simple
+instructions in the file header. Based on the [[ELPA]] initialization
+code. It uses [[UrlPackage]], if available; else it uses `wget'.
+Thanks to AnupamSengupta for this.
 
-* Use library <tt>[[auto-install.el]]</tt>. Setup like this: ##(setq auto-install-save-confirm nil)##. Do `M-x auto-install-batch', then enter `icicles'.  -- Thanks to AndyStewart for this.
-
-
-
-
-'''2.''' '''Using a shell script:''' (UNIX, GNU/Linux) Use `wget': <tt>[[get-icicles.sh]]</tt>. Thanks to LeWang for that. Thanks to MishaGorodnitzky for tweaking it to get around an EmacsWiki limit on how many files you can download per second.
-
-
+* Use library <tt>[[auto-install.el]]</tt>. Setup like this: ##(setq
+auto-install-save-confirm nil)##. Do `M-x auto-install-batch', then
+enter `icicles'.  -- Thanks to AndyStewart for this.
 
 
-'''3.''' '''[[http://github.com/emacsmirror/icicles Icicles on GitHubMirror]]'''.  Download the ##icicles*.el## files only, as a zip or tar archive.  You will need to download the other '''Icicles''' libraries (e.g <tt>[[hexrgb.el]]</tt>) separately. (''All'' EmacsWiki files are available on GitHubMirror for download, however: http://github.com/emacsmirror/emacswiki.org).
+
+
+'''2.''' '''Using a shell script:''' (UNIX, GNU/Linux) Use `wget':
+<tt>[[get-icicles.sh]]</tt>. Thanks to LeWang for that. Thanks to
+MishaGorodnitzky for tweaking it to get around an EmacsWiki limit on
+how many files you can download per second.
+
+
+
+
+'''3.''' '''Using git''' The Emacsmirror contains many packages hosted
+on the Emacsmirror - including [[http://github.com/emacsmirror/icicles
+Icicles]] -  in the form of git repositories.  The Icicles
+repositories contains the full history of the Icicles libraries but
+none of Icicles' dependencies (and also no meaningful commit
+messages).  The dependencies are also available as '''separate''' git
+repositories. (Note that repository names on github can't contain +,
+so e.g. [[Bookmark+]] is available from
+http://github.com/emacsmirror/bookmark-plus.
+
 
 [new:DrewAdams:2010-10-07 16:46 UTC]
-:: Could someone who knows about these things please add <tt>[[hexrgb.el]]</tt> and perhaps the other recommended libraries (see above) to the mirror list for '''Icicles'''? Thx -- DrewAdams
+:: Could someone who knows about these things please add
+<tt>[[hexrgb.el]]</tt> and perhaps the other recommended libraries
+(see above) to the mirror list for '''Icicles'''? Thx -- DrewAdams
+
 [new]
+No, the Emacsmirror is for packages and not for bundles of related
+libraries - actually I have put a lot of work into breaking up such
+bundles.  Most of your libraries (except some obsolete ones) are also
+available from github.  This might not be as convenient as a
+repository containing all your libraries but... if you want that then
+you should do it yourself (no offence, I would be happy to help you
+(still hoping you will switch to git)).
+
+Yann does not use bzr anymore (he uses git now) and does not maintain
+the bzr mirror anymore.  Michael does not update the tarball anymore
+but a zip file can still be downloaded from github.  It seems github
+does not offer tarball downloads anymore.
+
+I have updated point 3 and 4 to reflect this.
 
 
 
-'''4.''' '''Compressed tar ball:''' <tt>[[Icicles.tar.gz]]</tt>.  Thanks to MichaelHeerdegen for periodic updates.
+'''4.''' '''Using zip file''' An automatically generated zip file can
+be downloaded from the git [[http://github.com/emacsmirror/icicles
+repository]] on github. (The link is at the left side about 2cm away
+from the smiley face.)
 
 
 
 
 
-'''5'''. '''Python script''': <tt>[[icicles_dler.py]]</tt>.  Runs under python2.5.2. Thanks to DarrenYin.  (Script is still "somewhat sketchy". -- DarrenYin)
+'''5'''. '''Python script''': <tt>[[icicles_dler.py]]</tt>.  Runs
+under python2.5.2. Thanks to DarrenYin.  (Script is still "somewhat
+sketchy". -- DarrenYin)
 
 '''6.''' '''Using `wget' directly :''' 
 * Required libraries:
-##wget http://www.emacswiki.org/emacs/download/icicles{,-chg,-cmd1,-cmd2,-doc1,-doc2,-face,-fn,-mac,-mcmd,-mode,-opt,-var}.el##
+##wget
+http://www.emacswiki.org/emacs/download/icicles{,-chg,-cmd1,-cmd2,-doc1,-doc2,-face,-fn,-mac,-mcmd,-mode,-opt,-var}.el##
 * Optional libraries:
-##wget http://www.emacswiki.org/emacs/download/{apropos-fn%2bvar,bookmark%2b,col-highlight,crosshairs,doremi,doremi-frm,frame-cmds,fuzzy-match,hexrgb,hl-line%2b,icomplete%2b,info%2b,lacarte,mb-depth%2b,pp%2b,synonyms,thingatpt%2b,vline}.el##
+##wget
+http://www.emacswiki.org/emacs/download/{apropos-fn%2bvar,bookmark%2b,col-highlight,crosshairs,doremi,doremi-frm,frame-cmds,fuzzy-match,hexrgb,hl-line%2b,icomplete%2b,info%2b,lacarte,mb-depth%2b,pp%2b,synonyms,thingatpt%2b,vline}.el##
 
 -- JoniDiMontago
 
-'''7.''' '''Using a bzr repository:''' that should stay in sync with '''Icicles''' (updated every 24 hours -- no; see below): ##bzr branch http://archives.hodique.info/bzr/icicles/##  Thanks to YannHodique for that.
+'''7.''' '''Using a bzr repository:''' that should stay in sync with
+'''Icicles''' (updated every 24 hours -- no; see below): ##bzr branch
+http://archives.hodique.info/bzr/icicles/##  Thanks to YannHodique for
+that.
 
 [new:DrewAdams:2007-10-09 02:48 UTC]
-:: Yann -- Does that work? If so, how? [http://archives.hodique.info/bzr/icicles/ http://archives.hodique.info/bzr/icicles/] seems to be an empty directory. -- DrewAdams
+:: Yann -- Does that work? If so, how?
+[http://archives.hodique.info/bzr/icicles/
+http://archives.hodique.info/bzr/icicles/] seems to be an empty
+directory. -- DrewAdams
 
 [new:YannHodique:2007-10-09 10:05 UTC]
-:: Yes it works. The repository was not updated for some time (lost my internet connection for a few weeks), but now everything is up again. The directory is actually not empty, it contains a single .bzr directory. This is how bzr works : there is no need for a "working tree" to be able to checkout a project. So  ##bzr branch http://archives.hodique.info/bzr/icicles/## works just fine :)
+:: Yes it works. The repository was not updated for some time (lost my
+internet connection for a few weeks), but now everything is up again.
+The directory is actually not empty, it contains a single .bzr
+directory. This is how bzr works : there is no need for a "working
+tree" to be able to checkout a project. So  ##bzr branch
+http://archives.hodique.info/bzr/icicles/## works just fine :)
 
 [new:DrewAdams:2007-11-05 15:27 UTC]
-:: Thanks, Yann. Could you maybe post a URL to some simple instructions for using it, assuming that exists somewhere? -- DrewAdams
+:: Thanks, Yann. Could you maybe post a URL to some simple
+instructions for using it, assuming that exists somewhere? --
+DrewAdams
 
 [new:Sebastien Delafond:2009-01-25 12:34:56 PST]
-:: I don't think this is updated anymore: I can check-out a copy using ##bzr branch http://archives.hodique.info/bzr/icicles/##, but for instance the icicles-mcmd.el in there is update #10816, from 2008-03-02. --SebastienDelafond
+:: I don't think this is updated anymore: I can check-out a copy using
+##bzr branch http://archives.hodique.info/bzr/icicles/##, but for
+instance the icicles-mcmd.el in there is update #10816, from
+2008-03-02. --SebastienDelafond
 
 ----
 
-|| *Previous:* '''[[Icicles]]''' || IciclesIndex || *Next:* [[Icicles - Screenshots]] ||
+|| *Previous:* '''[[Icicles]]''' || IciclesIndex || *Next:* [[Icicles
+- Screenshots]] ||
 
-DrewsElispLibraries referenced here: Lisp:lacarte.el, Lisp:icicles.el, Lisp:icicles-chg.el, Lisp:icicles-cmd1.el, Lisp:icicles-cmd2.el, Lisp:icicles-face.el, Lisp:icicles-fn.el, Lisp:icicles-mac.el, Lisp:icicles-mode.el, Lisp:icicles-opt.el, Lisp:icicles-var.el, Lisp:icomplete+.el 
+DrewsElispLibraries referenced here: Lisp:lacarte.el, Lisp:icicles.el,
+Lisp:icicles-chg.el, Lisp:icicles-cmd1.el, Lisp:icicles-cmd2.el,
+Lisp:icicles-face.el, Lisp:icicles-fn.el, Lisp:icicles-mac.el,
+Lisp:icicles-mode.el, Lisp:icicles-opt.el, Lisp:icicles-var.el,
+Lisp:icomplete+.el 
 
 ----
 
