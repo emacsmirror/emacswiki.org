@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2012, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Thu Feb 16 10:44:20 2012 (-0800)
+;; Last-Updated: Sun Feb 19 16:49:23 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 14266
+;;     Update #: 14284
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-chg.el
 ;; Keywords: bookmarks, bookmark+
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -145,6 +145,18 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-1.el'")
 ;;
+;; 2012/02/19 dadams
+;;     Added: bmkp-handler-pred, bmkp-temporary-history, bmkp-w32-browser-jump.
+;;     bmkp-types-alist: Added bmkp-temporary-history.
+;;     bmkp-read-bookmark-for-type: Prepend a space before "bookmark" in prompt.
+;;     bmkp-jump-to-type:
+;;       Use lax completion.
+;;       When call bmkp-read-bookmark-for-type:
+;;        Do not append a space to TYPE name passed.
+;;        Pass a predicate arg returned by bmkp-handler-pred when TYPE is not a known type.
+;;     bmkp-*-jump(-other-window): Remove space after TYPE name passed to bmkp-read-bookmark-for-type.
+;;     bmkp-(specific-(buffers|files)|temporary)-jump(-other-window):
+;;       Pass specific HIST arg to bmkp-read-bookmark-for-type.
 ;; 2012/02/16 dadams
 ;;     Updated for Emacs 24+:
 ;;       bookmark-set: Do not set bookmark-(yank-point|current-buffer) if set.
