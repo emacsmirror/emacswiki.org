@@ -66,20 +66,7 @@ Sometimes I want to send a single command in emacs state.  Rather than switch to
 But this doesn't work when the command uses the minibuffer (evil mode gets messed up). :-(
 
 [new]
-It might be better to utilize the command loop in this case. Something like the following:
-
-    (defun evil-passthrough (&optional arg)
-      "Execute the next command in Emacs state."
-      (interactive "p")
-      (cond
-       (arg
-        (add-hook 'post-command-hook 'evil-passthrough nil t)
-        (evil-emacs-state))
-       ((not (eq this-command #'evil-passthrough))
-        (remove-hook 'post-command-hook 'evil-passthrough t)
-        (evil-exit-emacs-state))))
-
-That will give you one full command loop cycle in Emacs state, before returning to Normal state in ##post-command-hook##. -- VegardOye
+In Normal state, you can use the ##\## key to switch to Emacs state for the duration of one command: e.g., ##\e## executes ##e## in Emacs state. You can also switch indefinitely to Emacs state with ##C-z##; press ##C-z## again to switch back to Normal state. -- VegardOye
 
 [new]
 Thanks, works great! -- Volfy
