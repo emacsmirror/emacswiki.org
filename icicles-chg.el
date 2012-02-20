@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Sat Feb 18 14:53:30 2012 (-0800)
+;; Last-Updated: Mon Feb 20 09:50:37 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 7986
+;;     Update #: 7991
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-chg.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -542,6 +542,10 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd2.el'")
 ;;
+;; 2012/02/20 dadams
+;;     Added: icicle-Info-menu-cmd.  Actually, renamed icicle-Info-menu to icicle-Info-menu-cmd and
+;;            added non-interactive icicle-Info-menu with args for compatibility with vanilla Emacs.
+;;     icicle-Info-index: Added optional arg for non-interactive compatibility with vanilla Emacs.
 ;; 2012/02/12
 ;;     Added def of icicle-byte-compile-eval-after-load-flag here too, so can load before icicles.el.
 ;; 2012/02/11 dadams
