@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2012, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 13:43:55 2010 (-0700)
-;; Last-Updated: Sun Feb 19 16:49:05 2012 (-0800)
+;; Last-Updated: Mon Feb 20 13:58:28 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 3747
+;;     Update #: 3811
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-1.el
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -727,25 +727,28 @@ of the following, if available:
 Each element of the alist is (REGEXP . COMMAND).
 REGEXP matches a file name.
 COMMAND is a sexp that evaluates to either a shell command (a string)
- or an Emacs function (a symbol or a lambda form).
+ or an Emacs function (a symbol or a lambda form).  The shell command
+ or Lisp function must accept a file-name argument.
 
 Example value:
 
- ((\"\\.pdf$\" . \"AcroRd32.exe\") ; Adobe Acrobat Reader
-  (\"\\.ps$\" . \"gsview32.exe\")) ; Ghostview (PostScript viewer)
+ ((\"\\.pdf$\"   . \"AcroRd32.exe\") ; Adobe Acrobat Reader
+  (\"\\.ps$\"    . \"gsview32.exe\") ; Ghostview (PostScript viewer)
+  (\"\\.html?$\" . browse-url)       ; Use Lisp function `browse-url'
+  (\"\\.doc$\"   . w32-browser))     ; Use Lisp function `w32-browser'
 
 When you change this option using Customize, if you want to use a
 literal string as COMMAND then you must double-quote the text:
 \"...\".  (But do not use double-quotes for the REGEXP.)  If you want
-to use a symbol as COMMAND, then single-quote it - e.g. 'foo.
+to use a symbol as COMMAND, just type the symbol name (no quotes).
 
 This option is used by `bmkp-default-handler-for-file' to determine
-the default handler for a given file.  If a given file name does not
-match this option, and if `bmkp-guess-default-handler-for-file-flag'
-is non-nil, then then `bmkp-default-handler-for-file' tries to guess a
-shell command to use in the default handler.  For that it uses
-`dired-guess-default' and (Emacs 23+ only) mailcap entries, in that
-order."
+the default `file-handler' property for a given file bookmark.  If a
+given file name does not match this option, and if
+`bmkp-guess-default-handler-for-file-flag' is non-nil, then
+`bmkp-default-handler-for-file' tries to guess a shell command to use
+in the default handler.  For that it uses `dired-guess-default' and
+(Emacs 23+ only) mailcap entries, in that order."
   :type '(alist :key-type
           regexp :value-type
           (sexp :tag "Shell command (string) or Emacs function (symbol or lambda form)"))
@@ -1139,7 +1142,7 @@ general reverse that order.  The order within each group is unchanged
 (defvar bmkp-use-w32-browser-p nil
   "Non-nil means use `w32-browser' in the default bookmark handler.
 That is, use the default Windows application for the bookmarked file.
-This has no effect if `w32-browser' is not defined.")
+This has no effect if function `w32-browser' is not defined.")
 
 (defvar bmkp-latest-bookmark-alist () "Copy of `bookmark-alist' as last filtered.")
 
@@ -1235,7 +1238,14 @@ using entry `tags':
 
  TAGS-ALIST is an alist with string keys.
 
-5. Bookmarks can have individual highlighting, provided by users.
+5. A bookmark can be simply a wrapper for a file, in which case it has
+entry `file-handler' instead of `handler'.  When you \"jump\" to such
+a bookmark, the `file-handler' function or shell-command is applied to
+the `filename' entry.  Any `handler' entry present is ignored, as are
+entries such as `position'.  It is only the target file that is
+important.
+
+6. Bookmarks can have individual highlighting, provided by users.
 This overrides any default highlighting.
 
  (lighting . HIGHLIGHTING)
@@ -1249,7 +1259,7 @@ This overrides any default highlighting.
    `:when'  - A sexp to be evaluated.  Return value of `:no-light'
               means do not highlight.
 
-6. The following additional entries are used to record region
+7. The following additional entries are used to record region
 information.  When a region is bookmarked, POS represents the region
 start position.
 
@@ -1270,7 +1280,7 @@ bookmarked.
  `front-context-string' is the text that *follows* `position', but
  `front-context-region-string' *precedes* `end-position'.
 
-7. The following additional entries are used for a Dired bookmark.
+8. The following additional entries are used for a Dired bookmark.
 
  (dired-marked . MARKED-FILES)
  (dired-switches . SWITCHES)
@@ -1278,7 +1288,7 @@ bookmarked.
  MARKED-FILES is the list of files that were marked.
  SWITCHES is the string of `dired-listing-switches'.
 
-8. The following additional entries are used for a Gnus bookmark.
+9. The following additional entries are used for a Gnus bookmark.
 
  (group . GNUS-GROUP-NAME)
  (article . GNUS-ARTICLE-NUMBER)
@@ -1288,20 +1298,20 @@ bookmarked.
  GNUS-ARTICLE-NUMBER is the number of a Gnus article.
  GNUS-MESSAGE-ID is the identifier of a Gnus message.
 
-9. For a URL bookmark, FILENAME or LOCATION is a URL.
+10. For a URL bookmark, FILENAME or LOCATION is a URL.
 
-10. A sequence bookmark has this additional entry:
+11. A sequence bookmark has this additional entry:
 
  (sequence . COMPONENT-BOOKMARKS)
 
  COMPONENT-BOOKMARKS is the list of component bookmark names.
 
-11. A function bookmark has this additional entry, which records the
+12. A function bookmark has this additional entry, which records the
 FUNCTION:
 
  (function . FUNCTION)
 
-12. A bookmark-list bookmark has this additional entry, which records
+13. A bookmark-list bookmark has this additional entry, which records
 the state of buffer `*Bookmark List*' at the time it is created:
 
  (bookmark-list . STATE)
@@ -1988,52 +1998,69 @@ See `bookmark-jump', in particular for info about using a prefix arg."
 
 ;; REPLACES ORIGINAL in `bookmark.el'.
 ;;
-;; 1. If bookmark has its own handler but that is not a defined function, use the default handler.
+;; 1. Privilege property `file-handler' over `handler'.  If the former is available, apply it to the file.
+;;
+;; 2. If BOOKMARK has its own handler but that is not a defined function, then use the default handler.
 ;;    This lets Emacs 22, for instance, handle Emacs 23+ image bookmarks.
 ;;
-;; 2. Different relocation message for non-file bookmark.
+;; 3. Different relocation message for non-file bookmark.
 ;;
 (defun bookmark-handle-bookmark (bookmark)
   "Call BOOKMARK's handler, or `bookmark-default-handler' if it has none.
-The default handler changes the current buffer and point.
 BOOKMARK is a bookmark name or a bookmark record.
-Returns nil or raises an error.
+Return nil or raise an error.
+
+More precisely:
+
+  If BOOKMARK has both `file-handler' and `filename' entries then
+  apply the former to the latter.
+
+  Else, if BOOKMARK has a `handler' property that is a defined
+  function then apply it to BOOKMARK.
+
+  Else, apply the default bookmark handler,
+  `bookmark-default-handler', to BOOKMARK.
+
+The default handler changes the current buffer and point.
 
 If the default handler is used and a file error is raised, the error
 is handled as follows:
  If BOOKMARK has no `filename' entry, do nothing.
  Else prompt to relocate the file.
    If relocated, then try again to handle.  Else raise a file error."
-  (if (functionp (bookmark-get-handler bookmark))
-      (funcall (bookmark-get-handler bookmark) (bookmark-get-bookmark bookmark))
-    (condition-case err
-        (funcall 'bookmark-default-handler (bookmark-get-bookmark bookmark))
-      (bookmark-error-no-filename         ; `file-error'
-       ;; BOOKMARK can be either a bookmark name or a bookmark record.
-       ;; If a record, do nothing - assume it is a bookmark used internally by some other package.
-       (when (stringp bookmark)
-         (let ((file             (bookmark-get-filename bookmark))
-               (use-dialog-box   nil)
-               (use-file-dialog  nil))
-           (when file
-             ;; Ask user whether to relocate the file.  If no, signal the file error.
-             (unless (string= file bmkp-non-file-filename) (setq file  (expand-file-name file)))
-             (ding)
-             (cond ((y-or-n-p (if (and (string= file bmkp-non-file-filename)
-                                       (bmkp-get-buffer-name bookmark))
-                                  "Bookmark's buffer does not exist.  Re-create it? "
-                                (concat (file-name-nondirectory file) " nonexistent.  Relocate \""
-                                        bookmark "\"? ")))
-                    (if (string= file bmkp-non-file-filename)
-                        ;; This is probably not the right way to get the correct buffer, but it's
-                        ;; better than nothing, and it gives the user a chance to DTRT.
-                        (pop-to-buffer (bmkp-get-buffer-name bookmark)) ; Create buffer.
-                      (bookmark-relocate bookmark)) ; Relocate to file.
-                    (funcall (or (bookmark-get-handler bookmark) 'bookmark-default-handler)
-                             (bookmark-get-bookmark bookmark))) ; Try again
-                   (t
-                    (message "Bookmark not relocated: `%s'" bookmark)
-                    (signal (car err) (cdr err))))))))))
+  (cond ((functionp (bookmark-prop-get bookmark 'file-handler))
+         (funcall (bookmark-prop-get bookmark 'file-handler) (bookmark-get-filename bookmark)))
+        ((functionp (bookmark-get-handler bookmark))
+         (funcall (bookmark-get-handler bookmark) (bookmark-get-bookmark bookmark)))
+        (t
+         (condition-case err
+             (funcall 'bookmark-default-handler (bookmark-get-bookmark bookmark))
+           (bookmark-error-no-filename  ; `file-error'
+            ;; BOOKMARK can be either a bookmark name or a bookmark record.
+            ;; If a record, do nothing - assume it is a bookmark used internally by some other package.
+            (when (stringp bookmark)
+              (let ((file             (bookmark-get-filename bookmark))
+                    (use-dialog-box   nil)
+                    (use-file-dialog  nil))
+                (when file
+                  ;; Ask user whether to relocate the file.  If no, signal the file error.
+                  (unless (string= file bmkp-non-file-filename) (setq file  (expand-file-name file)))
+                  (ding)
+                  (cond ((y-or-n-p (if (and (string= file bmkp-non-file-filename)
+                                            (bmkp-get-buffer-name bookmark))
+                                       "Bookmark's buffer does not exist.  Re-create it? "
+                                     (concat (file-name-nondirectory file) " nonexistent.  Relocate \""
+                                             bookmark "\"? ")))
+                         (if (string= file bmkp-non-file-filename)
+                             ;; This is probably not the right way to get the correct buffer, but it's
+                             ;; better than nothing, and it gives the user a chance to DTRT.
+                             (pop-to-buffer (bmkp-get-buffer-name bookmark)) ; Create buffer.
+                           (bookmark-relocate bookmark)) ; Relocate to file.
+                         (funcall (or (bookmark-get-handler bookmark) 'bookmark-default-handler)
+                                  (bookmark-get-bookmark bookmark))) ; Try again
+                        (t
+                         (message "Bookmark not relocated: `%s'" bookmark)
+                         (signal (car err) (cdr err)))))))))))
   (when (stringp bookmark) (setq bookmark-current-bookmark  bookmark))
   ;; $$$$$$ The vanilla code returns nil, but there is no explanation of why and no code seems
   ;; to use the return value.  Perhaps we should return the bookmark instead?
@@ -2046,54 +2073,63 @@ is handled as follows:
 
 ;; REPLACES ORIGINAL in `bookmark.el'.
 ;;
-;; 1. Support regions and buffer names.
-;; 2. Handles w32 `Open' command if `bmkp-use-w32-browser-p' and if `w32-browser' is defined.
+;; 1. Support regions, buffer names, and property `file-handler'.
+;; 2. Handle MS Windows `Open' command if `bmkp-use-w32-browser-p' and if `w32-browser' is defined.
 ;;
 (defun bookmark-default-handler (bookmark)
   "Default handler to jump to the location of BOOKMARK.
 BOOKMARK is a bookmark name or a bookmark record.
 If it is a record then it need not belong to `bookmark-alist'.
 
-If BOOKMARK records a nonempty region, and `bmkp-use-region' is
- non-nil, then activate the region.
+If `bmkp-use-w32-browser-p' is non-nil and function `w32-browser' is
+defined, then call `w32-browser'.  That is, use the default MS Windows
+application for the bookmarked file.
 
-Non-nil `bmkp-use-w32-browser-p' means just call `w32-browser'
- (if defined).  That is, use the default MS Windows application for
- the bookmarked file.
+If BOOKMARK has properties `file-handler' and `filename', then apply
+the value of the former to the latter.
 
-Return nil or raise an error."
+If BOOKMARK is an old-style Info bookmark, then go to the Info node.
+
+If BOOKMARK records a nonempty region and `bmkp-use-region' is
+ non-nil then activate the region.
+
+Otherwise, call `bmkp-goto-position' to go to the recorded position.
+
+Return nil (or raise an error)."
   (let* ((bmk            (bookmark-get-bookmark bookmark))
          (file           (bookmark-get-filename bmk))
          (buf            (bookmark-prop-get bmk 'buffer))
          (bufname        (bmkp-get-buffer-name bmk))
          (pos            (bookmark-get-position bmk))
          (end-pos        (bmkp-get-end-position bmk))
-         (old-info-node  (and (not (bookmark-get-handler bookmark))
-                              (bookmark-prop-get bmk 'info-node))))
-    (if (and bmkp-use-w32-browser-p (fboundp 'w32-browser) file)
-        (w32-browser file)
-      (if old-info-node                 ; Emacs 20-21 Info bookmarks - no handler entry.
-          (progn (require 'info) (Info-find-node file old-info-node) (goto-char pos))
-        (if (not (and bmkp-use-region end-pos (/= pos end-pos)))
-            ;; Single-position bookmark (no region).  Go to it.
-            (bmkp-goto-position bmk file buf bufname pos
-                                (bookmark-get-front-context-string bmk)
-                                (bookmark-get-rear-context-string bmk))
-          ;; Bookmark with a region.  Go to it and activate the region.
-          (if (and file (file-readable-p file) (not (buffer-live-p buf)))
-              (with-current-buffer (find-file-noselect file) (setq buf  (buffer-name)))
-            ;; No file found.  If no buffer either, then signal that file doesn't exist.
-            (unless (or (and buf (get-buffer buf))
-                        (and bufname (get-buffer bufname) (not (string= buf bufname))))
-              (signal 'bookmark-error-no-filename (list 'stringp file))))
-          (set-buffer (or buf bufname))
-          (when bmkp-jump-display-function
-            (save-current-buffer (funcall bmkp-jump-display-function (current-buffer)))
-            (raise-frame))
-          (goto-char (min pos (point-max)))
-          (when (> pos (point-max)) (error "Bookmark position is beyond buffer end"))
-          ;; Activate region.  Relocate it if it moved.  Save relocated bookmark if confirm.
-          (funcall bmkp-handle-region-function bmk))))
+         (old-info-node  (and (not (bookmark-get-handler bookmark))  (bookmark-prop-get bmk 'info-node))))
+
+    (cond ((and bmkp-use-w32-browser-p (fboundp 'w32-browser) file)  (w32-browser file))
+          ((and (bookmark-prop-get bookmark 'file-handler) file)
+           (funcall (bookmark-prop-get bookmark 'file-handler) file))
+          (old-info-node                ; Emacs 20-21 Info bookmarks - no handler entry.
+           (progn (require 'info) (Info-find-node file old-info-node) (goto-char pos)))
+          ((not (and bmkp-use-region end-pos (/= pos end-pos)))
+           ;; Single-position bookmark (no region).  Go to it.
+           (bmkp-goto-position bmk file buf bufname pos
+                               (bookmark-get-front-context-string bmk)
+                               (bookmark-get-rear-context-string bmk)))
+          (t
+           ;; Bookmark with a region.  Go to it and activate the region.
+           (if (and file (file-readable-p file) (not (buffer-live-p buf)))
+               (with-current-buffer (find-file-noselect file) (setq buf  (buffer-name)))
+             ;; No file found.  If no buffer either, then signal that file doesn't exist.
+             (unless (or (and buf (get-buffer buf))
+                         (and bufname (get-buffer bufname) (not (string= buf bufname))))
+               (signal 'bookmark-error-no-filename (list 'stringp file))))
+           (set-buffer (or buf bufname))
+           (when bmkp-jump-display-function
+             (save-current-buffer (funcall bmkp-jump-display-function (current-buffer)))
+             (raise-frame))
+           (goto-char (min pos (point-max)))
+           (when (> pos (point-max)) (error "Bookmark position is beyond buffer end"))
+           ;; Activate region.  Relocate it if it moved.  Save relocated bookmark if confirm.
+           (funcall bmkp-handle-region-function bmk)))
     ;; $$$$$$ The vanilla code returns nil, but there is no explanation of why and no code seems
     ;; to use the return value.  Perhaps we should return the bookmark instead?
     nil))                               ; Return nil if no file error.
@@ -5776,7 +5812,7 @@ The bookmarked position will be the beginning of the file."
   ;;        Doesn't seem to make much sense to use a handler such as a shell cmd in this context. (?)
   (let ((default-handler  (condition-case nil (bmkp-default-handler-for-file file) (error nil))))
     (cond (default-handler              ; User default handler
-              `(lambda () '((filename . ,file) (position . 0) (handler . ,default-handler))))
+              `(lambda () '((filename . ,file) (position . 0) (file-handler . ,default-handler))))
           ;; Non-user defaults.
           ((and (require 'image nil t) (require 'image-mode nil t) ; Image
                 (condition-case nil (image-type file) (error nil)))
@@ -5791,7 +5827,8 @@ The bookmarked position will be the beginning of the file."
                (image-type . ,(image-type file))
                (handler    . image-bookmark-jump))))
           ((let ((case-fold-search  t)) (string-match "\\([.]au$\\|[.]wav$\\)" file)) ; Sound
-           `(lambda () '((filename . ,file) (handler . bmkp-sound-jump))))
+           ;; Obsolete: `(lambda () '((filename . ,file) (handler . bmkp-sound-jump))))
+           `(lambda () '((filename . ,file) (file-handler . play-sound-file))))
           (t
            `(lambda () '((filename . ,file) (position . 0)))))))
 
@@ -6035,7 +6072,7 @@ If non-nil, it is a Lisp function, determined as follows:
 
 1. Match FILENAME against `bmkp-default-handler-associations'.  If it
 matches a Lisp function, return that function.  If it matches a shell
-command, return a Lisp function that invokes that command.
+command, return a Lisp function that invokes that shell command.
 
 2. If no match is found and `bmkp-guess-default-handler-for-file-flag'
 is non-nil, then try to find an appropriate shell command using, in
@@ -6058,7 +6095,7 @@ Lisp function that invokes that shell command."
                                      (car (mailcap-file-default-commands (list filename)))))))))
     (cond ((stringp shell-cmd) `(lambda (bmk) (dired-do-shell-command ,shell-cmd nil ',(list filename))))
           ((or (functionp bmkp-user) (and bmkp-user (symbolp bmkp-user)))
-           `(lambda (bmk) (funcall #',bmkp-user ,filename)))
+           bmkp-user)
           (t nil))))
 
 (defun bmkp-default-handler-user (filename)
@@ -6070,8 +6107,12 @@ The value is based on `bmkp-default-handler-associations'."
         (throw 'bmkp-default-handler-user (cdr assn))))
     nil))
 
+;; Keep this only for compatibility with existing bookmarks that have `bmkp-sound-jump' as `handler' prop.
 (defun bmkp-sound-jump (bookmark)
-  "Handler for sound files: play the sound file that is BOOKMARK's file."
+  "Handler for sound files: play the sound file that is BOOKMARK's file.
+This is deprecated.  It is kept only for old bookmarks that already
+use this as the `handler' property.  New sound bookmarks use
+`play-sound-file' as property `file-handler'."
   (play-sound-file (bookmark-get-filename bookmark)))
 
 (when (> emacs-major-version 21)
@@ -7351,11 +7392,11 @@ Otherwise, this is the same as `bookmark-jump' - see that, in
 particular, for info about using a prefix argument.
 
 When prompted for the type, you can use completion against the known
-bookmark types (see `bmkp-types-alist').  Completion is lax, so you
-can also enter the name of a handler function, meaning that bookmarks
-with that handler are the jump candidates.  The type can also be a
-function, such as `w32-browser', that the handler applies to the
-bookmark's target file."
+bookmark types (see `bmkp-types-alist').
+
+Completion is lax, so you can also enter the name of a bookmark
+`handler' or `file-handler' function, without completion.  Bookmarks
+with that property value are then the jump candidates."
   (interactive
    (let* ((completion-ignore-case                      t)
           (type-cands                                  bmkp-types-alist)
@@ -7395,25 +7436,10 @@ bookmark's target file."
 
 (defun bmkp-handler-pred (type)
   "Return a bookmark predicate that tests bookmarks with handler TYPE.
-More precisely, the predicate returns non-nil if the handler is either
-TYPE or a function that applies TYPE to the bookmark's target file.
-For the latter case, assume the function is from
-`bmkp-default-handler-for-file' and has this form:
-
- (lambda (bmk) (funcall (function TYPE) TARGET-FILE))"
+More precisely, the predicate returns non-nil if TYPE is either the
+bookmark's `handler' or `file-handler' property value."
   `(lambda (bmk)
-    (let ((hndlr  (bookmark-get-handler bmk)))
-      (or (eq ',type  hndlr)            ;  The bookmark handler is TYPE.
-          ;; The bookmark handler is TYPE applied to the bookmark's target file.
-          (and (consp hndlr) (consp (cdr hndlr)) (consp (cddr hndlr))
-               (consp (car (cddr hndlr))) (consp (cdar (cddr hndlr)))
-               (consp (car (cdar (cddr hndlr))))
-               (consp (cdar (cdar (cddr hndlr))))
-               (eq 'lambda         (car hndlr))                           ;;; car
-               (equal '(bmk)       (cadr hndlr))                          ;;; cadr
-               (eq 'funcall        (caar (cddr hndlr)))                   ;;; caaddr
-               (eq 'function       (caar (cdar (cddr hndlr))))            ;;; caadaddr
-               (eq ',type (car (cdar (cdar (cddr hndlr))))))))))
+    (member ',type `(,(bookmark-prop-get bmk 'file-handler) ,(bookmark-get-handler bmk)))))
 
 ;;;###autoload
 (defun bmkp-autonamed-jump (bookmark-name) ; `C-x j # #'
