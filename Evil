@@ -34,6 +34,8 @@ A brief [https://gitorious.org/evil/evil/blobs/raw/doc/doc/evil.pdf PDF manual] 
 
 * [https://github.com/cofi/evil-numbers evil-numbers]: Vim-like increment and decrement.
 
+* [https://github.com/cofi/evil-leader evil-leader]: Port of Vim's mapleader.
+
 == Bug tracker ==
 
 If you have bug reports or suggestions, please submit them at the [https://bitbucket.org/lyro/evil/issues?status=new&status=open BitBucket bug tracker] (open for all).
