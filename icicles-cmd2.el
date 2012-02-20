@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Thu May 21 13:31:43 2009 (-0700)
 ;; Version: 22.0
-;; Last-Updated: Sun Feb 12 17:58:22 2012 (-0800)
+;; Last-Updated: Mon Feb 20 09:39:56 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 5031
+;;     Update #: 5045
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-cmd2.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -97,14 +97,14 @@
 ;;    (+)`icicle-imenu-variable-full', `icicle-ido-like-mode',
 ;;    (+)`icicle-Info-goto-node', (+)`icicle-Info-index',
 ;;    (+)`icicle-Info-index-20', (+)`icicle-Info-menu',
-;;    `icicle-Info-virtual-book', (+)`icicle-insert-thesaurus-entry',
-;;    (+)`icicle-map', `icicle-next-visible-thing',
-;;    `icicle-non-whitespace-string-p', (+)`icicle-object-action',
-;;    (+)`icicle-occur', (+)`icicle-pick-color-by-name',
-;;    (+)`icicle-plist', `icicle-previous-visible-thing',
-;;    `icicle-read-color', `icicle-read-color-wysiwyg',
-;;    `icicle-save-string-to-variable', (+)`icicle-search',
-;;    (+)`icicle-search-all-tags-bookmark',
+;;    (+)`icicle-Info-menu-cmd', `icicle-Info-virtual-book',
+;;    (+)`icicle-insert-thesaurus-entry', (+)`icicle-map',
+;;    `icicle-next-visible-thing', `icicle-non-whitespace-string-p',
+;;    (+)`icicle-object-action', (+)`icicle-occur',
+;;    (+)`icicle-pick-color-by-name', (+)`icicle-plist',
+;;    `icicle-previous-visible-thing', `icicle-read-color',
+;;    `icicle-read-color-wysiwyg', `icicle-save-string-to-variable',
+;;    (+)`icicle-search', (+)`icicle-search-all-tags-bookmark',
 ;;    (+)`icicle-search-all-tags-regexp-bookmark',
 ;;    (+)`icicle-search-autofile-bookmark',
 ;;    (+)`icicle-search-autonamed-bookmark',
@@ -1990,8 +1990,9 @@ Return nil if `x-decompose-font-name' returns nil for FONT.
   "Info window before command was invoked.")
 
 ;;;###autoload
-(defun icicle-Info-index ()
+(defun icicle-Info-index (&optional topic)
   "Like vanilla `Info-index', but you can use multi-command keys `C-RET', `C-up' etc."
+  ;; We allow an arg only for non-interactive use.  E.g., `Info-virtual-index' calls (Info-index TOPIC).
   (interactive)
   (when (and (boundp 'Info-current-file) (equal Info-current-file "dir"))
     (error "The Info directory node has no index; use `m' to select a manual"))
@@ -2003,7 +2004,9 @@ Return nil if `x-decompose-font-name' returns nil for FONT.
       (define-key minibuffer-local-completion-map (icicle-kbd "C-x m")
         'icicle-bookmark-info-other-window))
     (unwind-protect
-         (call-interactively (if (> emacs-major-version 21) 'old-Info-index 'icicle-Info-index-20))
+         (if topic
+             (old-Info-index topic)
+           (call-interactively (if (> emacs-major-version 21) 'old-Info-index 'icicle-Info-index-20)))
       (define-key minibuffer-local-completion-map (icicle-kbd "C-x m") C-x-m))))
 
 ;; Thx to Tamas Patrovics for this Emacs 20 version.
@@ -2031,8 +2034,18 @@ Return nil if `x-decompose-font-name' returns nil for FONT.
     (old-Info-index topic)
     (select-window minibuf-win)))
 
+(defun icicle-Info-menu (&optional menu-item fork)
+  "Go to a menu node.
+See `old-Info-menu'."
+  (interactive)
+  (if menu-item
+      (if (< emacs-major-version 21)
+          (old-Info-menu menu-item)
+        (old-Info-menu menu-item fork))
+    (call-interactively #'icicle-Info-menu-cmd)))
+
 ;; Free vars here: `Info-menu-entry-name-re' is bound in `info.el'.
-(icicle-define-command icicle-Info-menu
+(icicle-define-command icicle-Info-menu-cmd
   "Go to a menu node."                  ; Doc string
   (lambda (m) (icicle-Info-goto-node (cdr (funcall icicle-get-alist-candidate-function m)))) ; Action
   "Menu item: " icicle-candidates-alist ; `completing-read' args
