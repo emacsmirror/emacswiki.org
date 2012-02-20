@@ -1391,7 +1391,7 @@ entries.
 
 
 
-
+[:bmkp-w32-browser-jump]
 [:WindowsFileAssociations]
 === Opening Bookmarks Using Windows File Associations ===
 
@@ -1422,7 +1422,32 @@ might, for example, use Adobe Distiller to create a PDF file from
 association for Postcript might use %%GhostView%% to display it
 directly.
 
+Besides using `M-RET' etc. in buffer `##*Bookmark List*##', if in
+`bmkp-default-handler-associations' you register `w32-browser' as
+the association to use for a given file pattern, then you can use
+command '''`bmkp-w32-browser-jump'''' (not bound, by default) anywhere
+to open a bookmark whose file name matches that pattern, using its
+Windows file-association program.
 
+You can also specify '''`w32-browser'''' as the bookmark "type" when you
+use command `bmkp-jump-to-type' (`C-x j :').  Either of these
+approaches gives you a way to use completion to choose a bookmark
+to open using a Windows file association.
+
+Specifying such an association in
+`bmkp-default-handler-associations' means that bookmarks for such
+a file will have a handler that uses function `w32-browser' to
+"jump" to (i.e., open) the file.
+
+To set up a given file extension for use this way, add an entry
+##(REGEXP . w32-browser)## to option
+`bmkp-default-handler-associations', where ##REGEXP## matches the file
+extension.
+
+For example, to make a command such as `bmkp-bookmark-a-file'
+(`C-x p c a') automatically bookmark '''`##*.doc##'''' files using the
+associated MS Windows program (typically MS Word), add this entry:
+##("\\.doc$" . w32-browser)##.
 
 
 
