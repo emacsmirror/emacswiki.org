@@ -152,19 +152,19 @@ Alternatively, there are a few ways you can download all of the files at once. S
 
 
 '''3.''' '''Using git''': The GitHubMirror
-contains a git repository that includes the '''[[http://github.com/emacsmirror/icicles Icicles files]]''' (http://github.com/emacsmirror/icicles), as well as other repositories.
+contains a git repository that includes the '''[[https://github.com/emacsmirror/icicles Icicles files]]''' (https://github.com/emacsmirror/icicles), as well as other repositories.
 
 The '''Icicles''' repository contains the full git history of each '''Icicles''' file, but it does not include any of the other libraries on which '''Icicles''' depends or which '''Icicles''' can take advantage of.  (The git commit messages themselves are not meaningful.)  Those related libraries are also available on the GitHubMirror, but
 in ''separate'' git repositories.
 
 Note that repository names on
 github cannot contain a plus character (`##+##').  So, for example, '''[[Bookmark+]]''' files are available from repository
-http://github.com/emacsmirror/bookmark-plus, not ##http://github.com/emacsmirror/bookmark+##.
+https://github.com/emacsmirror/bookmark-plus, not ##https://github.com/emacsmirror/bookmark+##.
 
 
 
 
-'''4.''' '''Using a zip file:''' You can download an automatically generated zip file of '''Icicles''' files from the '''[[http://github.com/emacsmirror/icicles
+'''4.''' '''Using a zip file:''' You can download an automatically generated zip file of '''Icicles''' files from the '''[[https://github.com/emacsmirror/icicles
 Icicles repository]]''' on the GitHubMirror. The zip-archive link is at the left margin, about 2cm from the smiley face.  The zip file contains only the '''Icicles''' files, not any related files (see #'''3''').
 
 
