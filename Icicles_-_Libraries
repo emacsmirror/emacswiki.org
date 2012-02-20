@@ -255,9 +255,9 @@ I have updated point 3, 4 and 7 to reflect this.
 
 '''4.''' '''Using zip file''' An automatically generated zip file can
 be downloaded from the git [[http://github.com/emacsmirror/icicles
-repository]] on github. (The link is at the left side about 2cm away
-from the smiley face.)
-
+repository]] on github. The link is at the left side about 2cm away
+from the smiley face.  Like the git repository this only contains the
+Icicles libraries themselves.
 
 
 
