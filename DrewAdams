@@ -478,7 +478,9 @@ I agree that a minor mode could make sense, and your desire to have the mode be 
 
 FWIW, I rarely use ##browse-kill-ring[+].el## myself.  Instead, I use '''[[Icicles]]''', where `C-- C-y' lets you insert kills using completion.  It is a [[multi-command]], meaning that you can yank as many kills as you like, including yanking the same kill multiple times, during a single `C-- C-y' invocation.  And you can sort the candidate yanks on the fly in various ways.  And filter them on the fly, with multiple filter patterns ([[progressive completion]]). Etc.     -- DrewAdams
 
+----
 
+Sorry about the mess. Now I know: yaoddmuse does not get along with longlines-mode :-( -- JonasBernoulli
 
 
 
