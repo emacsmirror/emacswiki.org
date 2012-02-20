@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Sat Feb 11 16:39:37 2012 (-0800)
+;; Last-Updated: Mon Feb 20 09:25:09 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 23081
+;;     Update #: 23082
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -287,9 +287,9 @@
 ;;    `icicle-increment-option', `icicle-increment-variable',
 ;;    `icicle-Info-goto-node', `icicle-Info-index',
 ;;    `icicle-Info-index-20', `icicle-Info-menu',
-;;    `icicle-Info-virtual-book', `icicle-insert-buffer',
-;;    `icicle-insert-thesaurus-entry', `icicle-keyword-list',
-;;    `icicle-kill-buffer', `icicle-kmacro',
+;;    `icicle-Info-menu-cmd', `icicle-Info-virtual-book',
+;;    `icicle-insert-buffer', `icicle-insert-thesaurus-entry',
+;;    `icicle-keyword-list', `icicle-kill-buffer', `icicle-kmacro',
 ;;    `icicle-lisp-complete-symbol', `icicle-locate',
 ;;    `icicle-locate-file', `icicle-locate-file-no-symlinks',
 ;;    `icicle-locate-file-no-symlinks-other-window',
