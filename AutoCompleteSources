@@ -50,9 +50,9 @@ Completion for python using [[http://rope.sourceforge.net/ropemacs.html|rope]].
 
 == R mode completions ==
 
-Lisp:ac-R.el (0.1)
+New [[ESSAuto-complete]] 
 
--- [[MatthewFidler]]
+And older Lisp:ac-R.el (0.1)
 
 [new:IstaZahn:2011-03-29 21:59 UTC] ac-R.el interferes with mode switching between LaTeX and R in noweb mode. This interference can be eliminated by commenting out
 
