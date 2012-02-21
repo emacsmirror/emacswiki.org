@@ -46,6 +46,16 @@ Ac binds M-n, and M-p for navigation in the completion menu, which might be inco
 (define-key ac-completing-map "\M-k" 'ac-previous)
 }}}
 
+== Colors ==
+
+Example of dark config as in  the snapshot:
+
+{{{
+(set-face-attribute 'ac-candidate-face nil   :background "#00222c" :foreground "light gray")
+(set-face-attribute 'ac-selection-face nil   :background "SteelBlue4" :foreground "white")
+(set-face-attribute 'popup-tip-face    nil   :background "#003A4E" :foreground "light gray")
+}}}
+
 == Misc customization ==
 
 You can play with [[http://cx4a.org/software/auto-complete/manual.html#Configuration AC settings]] to adjust the completion to your needs:
