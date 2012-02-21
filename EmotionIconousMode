@@ -1,0 +1,75 @@
+=Emotion Iconous Mode=
+<i>Also known as emoicon-mode</i>.
+
+This is a minor mode for Emacs 23.x (and <i>maybe</i> earlier) for adding emoticons.
+
+It also integrates with JabberEl changing all emoticons texts into its respective image. 
+
+== Download ==
+You find the necessary in [http://download.gna.org/emoicon-mode/ this page], and the latest version from the [http://svn.gna.org/viewcvs/emoicon-mode/trunk/ GNA! SVN repository].
+
+== Installing ==
+For using this you have to:
+
+0 Download
+0 Decompress files
+0 Copy some code into the .emacs file(or InitFile)
+
+First, in the .emacs file you have to tell emacs where to find the files you have just decompressed, this is accomplish by the following code:
+
+    (setq load-path (cons "~/emacsstuff/emotion-iconous/" load-path))
+
+
+Please, change <code>"~/emacsstuff/emotion-iconous/"</code> with the correct path where you have the decompressed files(where lays the elisp files, those ones that its name finish with ".el"). 
+
+After that, you have to tell emacs that you want them to be loaded at start-up. So, add this code:
+
+    (require 'emoicon-load-all)
+
+
+Summarizing, add this code to .emacs changing the path accordingly:
+
+    (setq load-path (cons "~/emacsstuff/emotion-iconous/" load-path))
+    (require 'emoicon-load-all)
+
+
+
+===Themes===
+After installing the package you may want to add a theme. Just use the pidgin default theme! 
+
+Usually you can find the pidgin theme in the following path <code>/usr/share/pixmaps/pidgin/emotes</code>, copy one directory(that in turn is a theme) somewhere more easier and reachable, like in a folder in your home directory(for example: <code>~/emoticons-themes/...</code>).
+
+Then, customize emotion-iconous-mode by M-x <code>customize-group</code> and writing <code>emotion-iconous-mode</code>. 
+
+
+Supported themes are those that are in Pidgin theme format and in plist format.
+For more information see [http://home.gna.org/emoicon-mode/theme-format.html theme-format.org page].
+
+== Using ==
+
+== With Files ==
+For using with files, just call the minor mode by M-x <code>emotion-iconous-mode</code>. Once called, all images necessary will be loaded and every emoticon texts (like this ":-)" ) will be changed with its corresponding image.
+
+== With JabberEL ==
+Don't do anything, just chat! :-)
+
+== Changing Theme ==
+You have to change the value of the variable <code>emoicon-theme</code> with the name of the theme you want. You can use the customization tool doing M-x <code>customize-group</code> and writing <code>emotion-iconous-mode</code>.
+
+Remember that you must have the Pidgin or Plist theme files in the path determined by the variable <code>emoicon-path-themes</code>(also editable in the customization page).
+
+
+
+For example, if your path is <code>~/emacsstuff/emoticons</code> and you download a Pidging theme called "fantastic-theme" you copy the directory with all the files into the path. Then, you'll have this path with full of PNG or image files: <code>~/emacsstuff/emoticons/fantastic-theme</code>.
+
+Now, you have to configure the variables, do M-x <code>customize-group</code> <code>emotion-iconous-mode</code> and then change the <i>Emoicon Path Themes</i> with the value <code>~/emacsstuff/emoticons</code> and the <i>Emoicon Theme</i> with the value <code>fantastic-theme</code>.
+
+As soon as you use the emoicon minor mode it has to reload the theme, if not use M-x <code>emoicon-load-emoticon-theme</code> to reload it.
+
+Use M-x <code>emoicon-list-emoticons</code> if the theme has loaded successfully.
+
+
+
+== More Info ==
+
+See the [http://home.gna.org/emoicon-mode/readme.html readme file] at the project home page.
