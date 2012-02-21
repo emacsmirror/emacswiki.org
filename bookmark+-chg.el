@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2012, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Mon Feb 20 13:59:54 2012 (-0800)
+;; Last-Updated: Tue Feb 21 13:14:24 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 14301
+;;     Update #: 14304
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-chg.el
 ;; Keywords: bookmarks, bookmark+
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -145,6 +145,8 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-1.el'")
 ;;
+;; 2012/02/21 dadams
+;;     bmkp-jump-to-type(-other-window): Corrected ALIST: If no HISTORY do not call *-alist-only.
 ;; 2012/02/20 dadams
 ;;     bookmark-handle-bookmark: Handle, in priority, new property file-handler.
 ;;     bookmark-default-handler: Handle new property file-handler.
