@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2012, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 13:43:55 2010 (-0700)
-;; Last-Updated: Mon Feb 20 13:58:28 2012 (-0800)
+;; Last-Updated: Tue Feb 21 13:12:04 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 3811
+;;     Update #: 3813
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-1.el
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -7403,8 +7403,10 @@ with that property value are then the jump candidates."
           (icicle-unpropertize-completion-result-flag  t)
           (type                                        (completing-read "Type of bookmark: " type-cands))
           (history                                     (assoc-default type type-cands))
-          (alist                                       (funcall
-                                                        (intern (format "bmkp-%s-alist-only" type))))
+          (alist                                       (if history
+                                                           (funcall
+                                                            (intern (format "bmkp-%s-alist-only" type)))
+                                                         bookmark-alist))
           (bmk-name                                    (bmkp-read-bookmark-for-type
                                                         type alist nil
                                                         ;; PREDICATE if not a recognized type name.
@@ -7423,8 +7425,10 @@ with that property value are then the jump candidates."
           (icicle-unpropertize-completion-result-flag  t)
           (type                                        (completing-read "Type of bookmark: " type-cands))
           (history                                     (assoc-default type type-cands))
-          (alist                                       (funcall
-                                                        (intern (format "bmkp-%s-alist-only" type))))
+          (alist                                       (if history
+                                                           (funcall
+                                                            (intern (format "bmkp-%s-alist-only" type)))
+                                                         bookmark-alist))
           (bmk-name                                    (bmkp-read-bookmark-for-type
                                                         type alist t
                                                         ;; PREDICATE if not a recognized type name.
