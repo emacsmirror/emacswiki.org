@@ -2,8 +2,11 @@ Recent version of ESS integrates out of the box with [[http://cx4a.org/software/
 
 There are threes sources included `ac-source-R-args', `ac-source-R-objects' and `ess-ac-source-R'. The latest combines previous two to play nicely together.
 
-[[image:ess-ac1]][[image:ess-ac2]]
-[[image:ess-ac3]][[image:ess-ac4]]
+== Screenshots ==
+
+[[image:ess-ac3]][[image:ess-ac1]]
+
+[[image:ess-ac2]]
 
 == Initialization ==
 
