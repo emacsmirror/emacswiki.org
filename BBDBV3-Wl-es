@@ -1,7 +1,7 @@
 [[en:BBDBV3-Wl]]
 = BBBDBV3-Wl =
 
-BBDBV3-Wl integra BBDB en su tercera versión junto con Wanderlust.
+BBDBV3-Wl integra BBDB en su tercera versión junto con WanderLust.
 Como BBDB-Wl hace para BBDB versión 2, éste intenta hacer lo mismo pero para la tercera versión de esta base de datos personal.
 
 Está en un estado alfa y en intenso desarrollo.
@@ -16,7 +16,7 @@ Es posible obtenerlo buscando dentro de los proyectos de GNA!
 == Instalando y Configurando ==
 Si deseas instalarlo, sólo debes descargar uno de los archivos desde la [http://download.gna.org/bbdbv3-wl/ página de descarga], y luego descomprimirlo.
 
-Una vez que tienes todos los archivos, deberás decirle a emacs donde encontrarlos. Esto se realiza agregando lo siguiente en el archivo .emacs:
+Una vez que tienes todos los archivos, deberás decirle a emacs donde encontrarlos. Esto se realiza agregando lo siguiente en el archivo .emacs(o en tu InitFile):
 
     (setq load-path (cons "~/emacsstuff/bbdbv3-wl/lisp" load-path))
 
@@ -27,7 +27,7 @@ Luego, debés decirle a emacs que los cargue al principio, esto se realiza agreg
     (require 'bbdbV3-wl)
 
 
-En resumen, descargá, descomprimí y agregá en el archivo .emacs lo siguiente:
+En resumen, descargá, descomprimí y agregá en el archivo .emacs(o en tu InitFile) lo siguiente:
 
     (setq load-path (cons "~/emacsstuff/bbdbv3-wl/lisp" load-path))
     (require 'bbdbV3-wl)
@@ -40,7 +40,7 @@ Si la información del remitente no existe en la base de datos, se te preguntar�
 
 == Lo que Vendrá ==
 === Revisión 11 ===
-Esta revisión ha agregado más integración con el administrador de direcciones de Wanderlust(Address Manager), así podrás obtener sus direcciones y agregarlos a BBDB con el comando <code>bbdb-wl-take-data-from-addressbook</code>.
+Esta revisión ha agregado más integración con el administrador de direcciones de WanderLust(Address Manager), así podrás obtener sus direcciones y agregarlos a BBDB con el comando <code>bbdb-wl-take-data-from-addressbook</code>.
 
 También se ha modularizado todo un poco mejor.
 
