@@ -1,14 +1,14 @@
 [[es:BBDBV3-Wl-es]]
 = BBBDBV3-Wl =
 
-BBDBV3-Wl integrates BBDB in its third version into Wanderlust. 
+BBDBV3-Wl integrates BBDB in its third version into WanderLust. 
 
 As BBDB-Wl does for BBDB version 2, this try to do the same for the third version of this personal database.
 
 It's in alpha stage and is in intense developing.
 
 == Getting it ==
-You can get this searching the project in GNA! 
+You can get this searching the project at GNA! 
 
 * [https://gna.org/projects/bbdbv3-wl/ The project] link.
 * [http://home.gna.org/bbdbv3-wl/ Home page] of the project.
@@ -17,7 +17,7 @@ You can get this searching the project in GNA!
 == Installing and Configuring==
 If you want to install it you just have to download one of the files from the [http://download.gna.org/bbdbv3-wl/ download page], and decompress.
 
-Once you have all the files you have to tell emacs where to find them, this is accomplish adding the following in the .emacs file:
+Once you have all the files you have to tell emacs where to find them, this is accomplish adding the following in the .emacs file(or your InitFile):
 
     (setq load-path (cons "~/emacsstuff/bbdbv3-wl/lisp" load-path))
 
@@ -29,7 +29,7 @@ After that, you have to tell emacs to load it at every start, this is done by ad
     (require 'bbdbV3-wl)
 
 
-Summarizing, download, decompress, and add in the .emacs file the following:
+Summarizing, download, decompress, and add in the .emacs file (or in the InitFile) the following:
 
     (setq load-path (cons "~/emacsstuff/bbdbv3-wl/lisp" load-path))
     (require 'bbdbV3-wl)
@@ -37,12 +37,12 @@ Summarizing, download, decompress, and add in the .emacs file the following:
 
 == Using it ==
 
-Just run wanderlust as usual and when you read an e-mail you find a new buffer below with the sender's information in the BBDB.
+Just run WanderLust as usual and when you read an e-mail you find a new buffer below with the sender's information in the BBDB.
 If the sender's information doesn't exists in the database, it will request if you like to add it.
 
 == Comming ==
 === Revision 11 ===
-This revision has added more integration with the Wanderlust's address manager, so you can get its addresses and add it into BBDB with <code>bbdb-wl-take-data-from-addressbook</code>.
+This revision has added more integration with the WanderLust's address manager, so you can get its addresses and add it into BBDB with <code>bbdb-wl-take-data-from-addressbook</code>.
 
 Also it has modularized everything a bit better.
 
