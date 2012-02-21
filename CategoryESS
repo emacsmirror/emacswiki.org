@@ -33,7 +33,7 @@ Consider using the prefix "ESS" for new ESS-related pages. -- PaulJohnson
 
 * [[ESSr-autoyas|Automatic YASnippets for function arguments]] -- Easy insertion and editing of arguments and values of a R function.
 
-* [[ac-R.el|Autocomplete source for R]]
+* [[ESSAuto-complete|Auto-complete ESS integration]]
 
 * [[ess-smart-underscore.el|Smarter Ess Underscore behavior]] 
 
