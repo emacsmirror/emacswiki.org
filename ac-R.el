@@ -15,8 +15,10 @@
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
-;;  NOTE: an improved version of this ac-sources is now part of ESS SVN and will
-;;  be released with next v5.16. Please don't use this file if you use new
+;;  NOTE:  ESS SVN has out-of-the-box integration with AC and will
+;;  be released with next v5.16. See http://www.emacswiki.org/emacs/ESSAuto-complete for details.
+;;
+;;  Please don't use this file if you use new
 ;;  version of ESS, or it might have unpredictable consequences. 
 ;;  Send a mail to ess-help for support.
 ;;
