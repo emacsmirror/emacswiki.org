@@ -1,6 +1,4 @@
 [[es:BBDBV3-Wl-es]]
-[[es:BBDBV3-Wl-es]]
-[[es:BBDBV3-Wl-es]]
 = BBBDBV3-Wl =
 
 BBDBV3-Wl integrates BBDB in its third version into Wanderlust. 
@@ -21,7 +19,7 @@ If you want to install it you just have to download one of the files from the [h
 
 Once you have all the files you have to tell emacs where to find them, this is accomplish adding the following in the .emacs file:
 
-    ((setq load-path (cons "~/emacsstuff/bbdbv3-wl/lisp" load-path))
+    (setq load-path (cons "~/emacsstuff/bbdbv3-wl/lisp" load-path))
 
 Change the <code>"~/emacsstuff/bbdbv3-wl/lisp"</code> with the path where you have just decompressed the tar file and there are the emacs-lisp files(those ones that ends with ".el").
 
@@ -33,7 +31,7 @@ After that, you have to tell emacs to load it at every start, this is done by ad
 
 Summarizing, download, decompress, and add in the .emacs file the following:
 
-    ((setq load-path (cons "~/emacsstuff/bbdbv3-wl/lisp" load-path))
+    (setq load-path (cons "~/emacsstuff/bbdbv3-wl/lisp" load-path))
     (require 'bbdbV3-wl)
 
 
