@@ -1,6 +1,6 @@
 ;;; texlabel.el --- Auto insertion of equation labels in TeX
 
-;; Copyright (C) 2011 tama.sh
+;; Copyright (C) 2012 tama.sh
 
 ;; Author: tama.sh <tama.csh@gmail.com>
 ;; Version: 1.0.0
