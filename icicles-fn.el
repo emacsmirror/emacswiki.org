@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:53 2006
 ;; Version: 22.0
-;; Last-Updated: Sat Feb 18 14:55:25 2012 (-0800)
+;; Last-Updated: Wed Feb 22 08:28:17 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 12909
+;;     Update #: 12911
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-fn.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -1743,9 +1743,10 @@ such a return value: (CHAR-NAME . CHAR-CODE)."
            chr)
       (let ((orig-cand  (get-text-property 0 'icicle-orig-cand input)))
         (when orig-cand  (setq input  (symbol-name orig-cand))))
-      (setq chr  (cond ((string-match-p "^[0-9a-fA-F]+$" input)  (string-to-number input 16))
-                       ((string-match-p "^#" input)              (read input))
-                       (t                                        (cdr (assoc-string input names t)))))
+      (setq chr  (cond ((string-match-p "\\`[0-9a-fA-F]+\\'" input)  (string-to-number input 16))
+                       ((string-match-p "^#" input)                  (read input))
+                       (t                                            (cdr (assoc-string input
+                                                                                        names t)))))
       (add-to-list 'icicle-read-char-history chr)
       chr))
 
