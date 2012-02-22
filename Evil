@@ -36,7 +36,7 @@ A brief [https://gitorious.org/evil/evil/blobs/raw/doc/doc/evil.pdf PDF manual] 
 
 * [https://github.com/cofi/evil-leader evil-leader]: Port of Vim's mapleader.
 
-* [https://github.com/antono/evil-rails]: Port of rails.vim.
+* [https://github.com/antono/evil-rails evil-rails]: Port of rails.vim.
 
 == Bug tracker ==
 
