@@ -840,6 +840,23 @@ Parenthesis character was defined by beginning-of-parenthesis"
                  (concat "</pre>\n" "#+END_HTML\n")))
 
 
+(defmacro dove-org-babel-shortcut-para (str-begin str-end)
+  `(i-babel-quote (+ (progn (backward-paragraph) (point)) 1)
+                   (- (progn (forward-paragraph arg) (point)) 1)
+                   ,str-begin ,str-end))
+               
+(defun iexp-para (&optional arg)
+  "Enclose code for org-mode"
+  (interactive "P")
+  (dove-org-babel-shortcut-para "#+BEGIN_EXAMPLE" "#+END_EXAMPLE"))
+
+
+(defun isrc-para (&optional arg)
+  "Enclose code for org-mode"
+  (interactive "P")
+  (dove-org-babel-shortcut-para "#+begin_src " "#+end_src"))
+
+
 
 (defmacro dove-org-babel-shortcut (St Ed x)
   `(cond
