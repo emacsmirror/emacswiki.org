@@ -1,6 +1,6 @@
 ;;; texlabel.el --- Auto insertion of equation labels in TeX
 
-;; Copyright (C) 2012 tama.sh
+;; Copyright (C) 2011 tama.sh
 
 ;; Author: tama.sh <tama.csh@gmail.com>
 ;; Version: 1.0.0
@@ -60,7 +60,7 @@
 ;;; Customize variables:
 
 (defgroup texlabel nil
-  "LaTeX label insertion support."
+  "TeX label insertion support."
   :group 'tex
   :prefix "texlabel-" )
 
