@@ -326,6 +326,17 @@ content
 #+END_HTML
 }}}
 
+
+=== isrc-para ===
+
+Like isrc but enclose code at point for org-mode
+
+
+=== iexp-para ===
+
+Like iexp but enclose code at point for org-mode
+
+
 === i(equal sign) ===
 
 Set string-at-point to =string-at-point= 
