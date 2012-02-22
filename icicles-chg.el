@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Mon Feb 20 09:50:37 2012 (-0800)
+;; Last-Updated: Wed Feb 22 08:21:03 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 7991
+;;     Update #: 7993
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-chg.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -1164,6 +1164,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-fn.el'")
 ;;
+;; 2012/02/22 dadams
+;;     icicle-read-char-by-name: Updated per Juri's Emacs 24 patch (see Emacs bug #10857).
 ;; 2012/02/18 dadams
 ;;     icicle-show-help-in-mode-line: Use property help-echo if icicle-mode-line-help is nil.
 ;; 2012/02/11 dadams
