@@ -12,6 +12,8 @@ There are included three sources `ac-source-R-args', `ac-source-R-objects' and `
 
 == Initialization ==
 
+**This is subject to change in the official release**
+
 The easiest way to initialize in R-mode
 
 {{{
