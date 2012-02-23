@@ -5,17 +5,18 @@
 ;; Author: Matthew L. Fidler
 ;; Maintainer: Matthew Fidler
 ;; Created: Thu Jul 14 11:04:42 2011 (-0500)
-;; Version: 0.72
-;; Last-Updated: Wed Aug  3 15:05:44 2011 (-0500)
+;; Version: 0.73
+;; Last-Updated: Wed Feb 22 20:30:20 2012 (-0600)
 ;;           By: Matthew L. Fidler
-;;     Update #: 114
+;;     Update #: 122
 ;; URL: http://www.emacswiki.org/emacs/ess-smart-underscore.el
 ;; Keywords: ESS, underscore
 ;; Compatibility:
 ;; 
 ;; Features that might be required by this library:
 ;;
-;;   None
+;;   `custom', `easymenu', `ess', `ess-compat', `ess-custom',
+;;   `font-lock', `syntax', `widget'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; 
@@ -26,6 +27,13 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;;; Change Log:
+;; 22-Feb-2012    Matthew L. Fidler  
+;;    Last-Updated: Wed Feb 22 20:27:04 2012 (-0600) #120 (Matthew L. Fidler)
+;;    Support unbalanced sexps.
+;; 02-Feb-2012    Matthew L. Fidler  
+;;    Last-Updated: Thu Feb  2 21:06:52 2012 (-0600) #117 (Matthew L. Fidler)
+;;    Took out auto-installing.  Most package managers don't want you
+;;    to do this.
 ;; 03-Aug-2011    Matthew L. Fidler  
 ;;    Last-Updated: Wed Aug  3 15:05:15 2011 (-0500) #112 (Matthew L. Fidler)
 ;;    Bug fix for parenthetical statement
@@ -95,6 +103,16 @@ Used by \\[ess-smart-underscore]."
   :group 'ess-S
   :type 'boolean)
 
+(defcustom ess-S-underscore-when-inside-unbalanced-parenthesis t
+  "Should an underscore be produced instead of `ess-S-assign' when inside an unbalanced parenthetical expression such as:
+
+  foo(bar_
+
+This requires `ess-S-underscore-when-inside-paren' to be true.
+"
+  :group 'ess-S
+  :type 'boolean)
+
 ;;;###autoload
 (defun ess-smart-underscore ()
   "Smart \"_\" key: insert `ess-S-assign', unless:
@@ -161,9 +179,14 @@ an underscore is always inserted. "
 		(let ((pt (point))
 		      ret)
 		  (when (re-search-backward "\\((\\|\\[\\).*\\=" nil t)
-		    (forward-sexp)
-		    (when (> (point) pt)
-		      (setq ret t)))
+		    (condition-case err
+                        (progn
+                          (forward-sexp)
+                          (when (> (point) pt)
+                            (setq ret t)))
+                      (error
+                       (when ess-S-underscore-when-inside-unbalanced-parenthesis
+                         (setq ret 't)))))
 		  (symbol-value 'ret))))))
       (insert "_")
     ;; Else one keypress produces ess-S-assign; a second keypress will delete
@@ -180,11 +203,6 @@ an underscore is always inserted. "
 	    (insert "_"))
 	(delete-horizontal-space)
 	(insert ess-S-assign)))))
-
-;;;###autoload
-(add-hook 'ess-mode-hook
-          '(lambda ()
-             (require 'ess-smart-underscore)))
 
 (provide 'ess-smart-underscore)
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
