@@ -28,7 +28,7 @@ or if you want AC in your inferior as well:
 
 ESS provides AC help both for arguments and objects (default keys: `C-?` or `<f1>`)
 
-You can bind `M-h` to quick help (requires a fairly recent version of AC https://github.com/m2ym/auto-complete):
+You can bind `M-h` to display quick help pop-ups as in screen-shots above (requires a fairly recent version of AC https://github.com/m2ym/auto-complete):
 
 {{{
 (define-key ac-completing-map (kbd "M-h") 'ac-quick-help)
