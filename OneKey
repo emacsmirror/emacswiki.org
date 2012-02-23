@@ -2,6 +2,11 @@ OneKey is designed to help you remember keybindings.  It saves you time and free
 
 : Please send suggestions and bug reports to [http://www.emacswiki.org/emacs/JoeBloggs JoeBloggs], he's the new maintainer. Thanks! -- AndyStewart
 
+[new:JoeBloggs:2012-02-23 04:38 UTC]
+: OneKey is currently undergoing some major improvements, however it's going to take a while for me to write up the documentation. Stay tuned... -- JoeBloggs
+
+
+
 ==What is OneKey ?==
 OneKey is a popup help window which appears when you type a *Top Key*.
 It shows *Keystrokes* and *Commands* in a help window.
