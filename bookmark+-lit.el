@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams
 ;; Copyright (C) 2010-2112, Drew Adams, all rights reserved.
 ;; Created: Wed Jun 23 07:49:32 2010 (-0700)
-;; Last-Updated: Sun Jan  1 15:08:24 2012 (-0800)
+;; Last-Updated: Thu Feb 23 09:03:25 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 773
+;;     Update #: 776
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-lit.el
 ;; Keywords: bookmarks, highlighting, bookmark+
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -268,7 +268,13 @@ is `point'."
 
 ;;;###autoload
 (defcustom bmkp-auto-light-when-jump nil
-  "*Which bookmarks to automatically highlight when jumped to."
+  "*Which bookmarks to automatically highlight when jumped to.
+NOTE: The values that specify highlighting in the current buffer
+highlight bookmarks in the buffer that is current after jumping.  If
+the bookmark does not really have an associated buffer, for example a
+bookmark with a handler such as `w32-browser' that just invokes a
+separate, non-Emacs program, then the current buffer after jumping
+will be the buffer before jumping."
   :type '(choice
           (const :tag "Autonamed bookmark"                 autonamed-bookmark)
           (const :tag "Non-autonamed bookmark"             non-autonamed-bookmark)
