@@ -188,6 +188,59 @@ For expansion on `goto-line', adding the following code to your InitFile will do
 
 Similar solutions can most likely be found for the `find-tag' and `revert-file' problem questions below (unless you want to preserve all expanded/compressed parts of the code in the latter case).
 
+=== Hiding all leaf nodes in a file ===
+When I work on larger source files, I often have a good idea of the spatial arrangement of classes and methods in the file but find no suitable facilities in Emacs that allow me to make use of that knowledge.  What I think is missing is a kind of bird's eye view of the file where only the first line of class, method, or function definition is shown.  Here is an example illustrating what I have in mind using Python:
+
+    class Meter(Canvas):
+        def __init__(self, **opts):
+        def update(self):
+
+    class Controller:
+        def __init__(self):
+
+    def util():
+
+This is the skeleton of the file but the bodies of the methods and functions are hidden.  HideShow has `hs-hide-level' which hides all code blocks at a specified nesting level but in the example above this would either hide the content of the methods or the content of the function and the complete content of the classes.  What is needed is a way to hide blocks that do not contain nested blocks, that is, the leaf nodes.  Here is code that provides the function `hs-hide-leafs' which does exactly that:
+
+    (defun hs-hide-leafs-recursive (minp maxp)
+      "Hide blocks below point that do not contain further blocks in
+    region (MINP MAXP)."
+      (when (hs-find-block-beginning)
+        (setq minp (1+ (point)))
+        (funcall hs-forward-sexp-func 1)
+        (setq maxp (1- (point))))
+      (unless hs-allow-nesting
+        (hs-discard-overlays minp maxp))
+      (goto-char minp)
+      (let ((leaf t))
+        (while (progn
+                 (forward-comment (buffer-size))
+                 (and (< (point) maxp)
+                      (re-search-forward hs-block-start-regexp maxp t)))
+          (setq pos (match-beginning hs-block-start-mdata-select))
+          (if (hs-hide-leafs-recursive minp maxp)
+              (save-excursion
+                (goto-char pos)
+                (hs-hide-block-at-point t)))
+          (setq leaf nil))
+        (goto-char maxp)
+        leaf))
+
+    (defun hs-hide-leafs ()
+      "Hide all blocks in the buffer that do not contain subordinate
+    blocks.  The hook `hs-hide-hook' is run; see `run-hooks'."
+      (interactive)
+      (hs-life-goes-on
+       (save-excursion
+         (message "Hiding blocks ...")
+         (save-excursion
+           (goto-char (point-min))
+           (hs-hide-leafs-recursive (point-min) (point-max)))
+         (message "Hiding blocks ... done"))
+       (run-hooks 'hs-hide-hook)))
+
+
+
 == Questions ==
 
 === Suggestion for a (vastly) more powerful folding mode ===
@@ -353,4 +406,3 @@ Why isn't that a standard part of hide-show?
 ----
 CategoryHideStuff
 CategoryComments
-
