@@ -226,8 +226,7 @@ And since there are different size of windows, things must be able to be changed
   (if (= 2 (length (window-list)))
       (let ((thisBuf (window-buffer))
             (nextBuf (progn (other-window 1) (buffer-name)))
-            (split-type (if (= (window-width)
-                               (frame-width))
+            (split-type (if (window-full-width-p)
                             'split-window-horizontally
                             'split-window-vertically)))
         (progn
@@ -283,7 +282,7 @@ And since there are different size of windows, things must be able to be changed
 		  (split-type-1 nil)
 		  (split-type-2 nil)
 		  )
-	      (if (= (window-width) (frame-width))
+	      (if (window-full-width-p)
 		  (setq split-type-1 'split-window-horizontally split-type-2 'split-window-vertically)
 		(setq split-type-1 'split-window-vertically  split-type-2 'split-window-horizontally))
 	      (funcall split-3 1stBuf 2ndBuf 3rdBuf split-type-1 split-type-2)
