@@ -1,0 +1,1 @@
+Recently, I switched to Emacs after using Vim for over ten years.  I like Vim's editing philosophy but Emacs has more powerful and mature extensions.  The solution for me is to use [[Evil]], a fantastic Vim emulation in Emacs.  Evil made almost all my dreams come true -- at least those related to text editing.
