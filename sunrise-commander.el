@@ -1,13 +1,13 @@
 ;;; sunrise-commander.el --- two-pane file manager for Emacs based on Dired and inspired by MC
 
-;; Copyright (C) 2007-2011 José Alfredo Romero Latouche.
+;; Copyright (C) 2007-2012 José Alfredo Romero Latouche.
 
 ;; Author: José Alfredo Romero L. <escherdragon@gmail.com>
 ;;	Štěpán Němec <stepnem@gmail.com>
 ;; Maintainer: José Alfredo Romero L. <escherdragon@gmail.com>
 ;; Created: 24 Sep 2007
 ;; Version: 5
-;; RCS Version: $Rev: 410 $
+;; RCS Version: $Rev: 411 $
 ;; Keywords: files, dired, midnight commander, norton, orthodox
 ;; URL: http://www.emacswiki.org/emacs/sunrise-commander.el
 ;; Compatibility: GNU Emacs 22+
@@ -586,6 +586,7 @@ The following keybindings are available:
         C-c C-f ....... execute Find-dired in Sunrise VIRTUAL mode
         C-c C-n ....... execute find-Name-dired in Sunrise VIRTUAL mode
         C-c C-g ....... execute find-Grep-dired in Sunrise VIRTUAL mode
+        C-u C-c C-g ... execute find-Grep-dired with additional grep options
         C-c C-l ....... execute Locate in Sunrise VIRTUAL mode
         C-c C-r ....... browse list of Recently visited files (requires recentf)
         C-c C-c ....... [after find, locate or recent] dismiss virtual buffer
@@ -920,29 +921,37 @@ immediately loaded, but only if `sr-autoload-extensions' is not nil."
 
 (defadvice dired-find-buffer-nocreate
   (before sr-advice-findbuffer (dirname &optional mode))
-  "A hack to avoid some Dired mode quirks."
+  "A hack to avoid some Dired mode quirks in the Sunrise Commander."
   (if (sr-equal-dirs sr-dired-directory dirname)
       (setq mode 'sr-mode)))
 ;; ^--- activated by sr-within macro
 
 (defadvice dired-dwim-target-directory
   (around sr-advice-dwim-target ())
-  "Tweak the target directory guessing mechanism."
-  (if (eq (selected-frame) sr-current-frame)
+  "Tweak the target directory guessing mechanism when Sunrise Commander is on."
+  (if (and sr-running (eq (selected-frame) sr-current-frame))
       (setq ad-return-value sr-other-directory)
     ad-do-it))
 (ad-activate 'dired-dwim-target-directory)
 
 (defadvice other-window
-  (after sr-advice-other-window (count &optional all-frames))
-  "Selects the correct pane when switching from other windows."
-  (when (and sr-running (eq (selected-window) (sr-other 'window)))
-      (sr-change-window)))
+  (around sr-advice-other-window (count &optional all-frames))
+  "Select the correct Sunrise Commander pane when switching from other windows."
+  (if (not sr-running)
+      ad-do-it
+    (let ((from (selected-window)))
+      ad-do-it
+      (unless (memq from (list sr-left-window sr-right-window))
+        ;; switching from outside
+        (sr-select-window sr-selected-window))
+      (when (eq (selected-window) (sr-other 'window))
+        ;; switching from the other pane
+        (sr-change-window)))))
 (ad-activate 'other-window)
 
 (defadvice use-hard-newlines
   (around sr-advice-use-hard-newlines (&optional arg insert))
-  "Stop pestering me with questions whether I want hard lines, just guess."
+  "Stop asking if I want hard lines the in Sunrise Commander, just guess."
   (if (memq major-mode '(sr-mode sr-virtual-mode))
       (let ((inhibit-read-only t))
         (setq insert 'guess)
@@ -952,7 +961,8 @@ immediately loaded, but only if `sr-autoload-extensions' is not nil."
 
 (defadvice dired-insert-set-properties
   (after sr-advice-dired-insert-set-properties (beg end))
-  "Manage hidden attributes in files added externally (e.g. from find-dired)"
+  "Manage hidden attributes in files added externally (e.g. from find-dired) to
+the Sunrise Commander."
   (when (memq major-mode '(sr-mode sr-virtual-mode))
     (sr-display-attributes beg end sr-show-file-attributes)))
 (ad-activate 'dired-insert-set-properties)
@@ -3131,15 +3141,22 @@ as its first argument."
   (sr-find-apply 'find-name-dired pattern))
 
 (defun sr-find-grep (pattern)
-  "Run `find-grep-dired' passing the current directory as first parameter."
+  "Run `find-grep-dired' passing the current directory as first
+parameter. Called with prefix asks for additional grep options."
   (interactive "sFind files containing pattern: ")
-  (sr-find-apply 'find-grep-dired pattern))
+  (let ((find-grep-options
+         (if current-prefix-arg
+             (concat find-grep-options
+                     " "
+                     (read-string "Additional Grep Options: "))
+         find-grep-options)))
+    (sr-find-apply 'find-grep-dired pattern)))
 
 (defadvice find-dired-sentinel
   (after sr-advice-find-dired-sentinel (proc state))
-  "Automatically rename the *Find* buffer after every find
-operation and replace the status line if the find operation was
-made only inside subdirs."
+  "Automatically rename the *Find* buffer after every find operation in the
+Sunrise Commander and replace the status line if the find operation was made
+only inside subdirs."
   (when (eq 'sr-virtual-mode major-mode)
     (rename-uniquely)
     (let* ((find-items (and (boundp 'sr-find-items) (symbol-value 'sr-find-items)))
@@ -3163,9 +3180,9 @@ made only inside subdirs."
 
 (defadvice find-dired-filter
   (around sr-advice-find-dired-filter (proc string))
-  "Disable the \"non-foolproof\" padding mechanism in
-`find-dired-filter' that breaks Dired when using ls options that
-omit some columns (like g or G)."
+  "Disable the \"non-foolproof\" padding mechanism in `find-dired-filter' that
+breaks Dired when using ls options that omit some columns (like g or G). Defined
+by the Sunrise Commander."
   (if (and (eq 'sr-virtual-mode major-mode)
            (or (string-match "g" sr-virtual-listing-switches)
                (string-match "G" sr-virtual-listing-switches)))
@@ -3866,7 +3883,7 @@ by `sr-clex-start'."
   :group 'sunrise)
 
 (defadvice term-sentinel (around sr-advice-term-sentinel (proc msg) activate)
-  "Take care of killing Sunrise terminal buffers on exit."
+  "Take care of killing Sunrise Commander terminal buffers on exit."
   (if (and (or sr-term-char-minor-mode sr-term-line-minor-mode)
            sr-terminal-kill-buffer-on-exit
            (memq (process-status proc) '(signal exit)))
