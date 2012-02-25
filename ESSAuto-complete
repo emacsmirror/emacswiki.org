@@ -1,6 +1,6 @@
 Recent version of ESS integrates out of the box with [[http://cx4a.org/software/auto-complete/ auto-complete]] package.
 
-There are included three sources `ac-source-R-args', `ac-source-R-objects' and `ess-ac-source-R'. The latest combines previous two and makes them play nicely together.
+Three sources `ac-source-R-args', `ac-source-R-objects' and `ess-ac-source-R' are included in ESS distribution. The latest combines previous two and makes them play nicely together.
 
 == Screenshots ==
 
