@@ -72,7 +72,7 @@ Contextual menu '''Completion''' pops up when you use `C-mouse-3' in buffer `*Co
 === Bookmarks Menu: Icicles Submenu ===
 : [[image:drew-icicles-Bookmarks-submenu]]
 
-'''Icicles''' augments the standard '''Bookmarks''' menu (typically a submenu of the '''Edit''' menu), adding an '''Icicles''' submenu that provides [[multi-command]]s for navigating to and among different kinds of bookmarks or markers.  The bookmark menu items are avaible only if you also use '''[[Bookmark+]]''', but the go-to items are always available.
+'''Icicles''' augments the standard '''Bookmarks''' menu (typically a submenu of the '''Edit''' menu), adding an '''Icicles''' submenu that provides [[multi-command]]s for navigating to and among different kinds of bookmarks or markers.  The bookmark and tags menu items are avaible only if you also use '''[[Bookmark+]]''', but the go-to items are always available.
 
 
 
