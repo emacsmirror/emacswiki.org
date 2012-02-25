@@ -3273,7 +3273,7 @@ It has submenus '''Icicles''' (if you use '''[[Icicles]]'''), '''Jump To''', '''
 ;; '''Icicles''': [[image:BookmarkPlusMenuBarMenuIcicles]]
 [:JumpToMenu]
 ;; '''Jump To''': [[image:BookmarkPlusMenuBarMenuJump]]
-;;; '''With Tags''': [[image:BookmarkPlusMenuBarMenuWithTags]]
+;;; '''With Tags''' (Emacs 21+ only): [[image:BookmarkPlusMenuBarMenuWithTags]]
 ;; '''Mark''': [[image:BookmarkPlusMenuBarMenuMark]]
 ;; '''Omit''': [[image:BookmarkPlusMenuBarMenuOmit]]
 ;; '''Show''': [[image:BookmarkPlusMenuBarMenuShow]]
@@ -3295,6 +3295,24 @@ The vanilla '''Bookmarks''' menu provided by Emacs is typically a submenu of the
 ;; '''Tags''': [[image:BookmarkPlusBookmarksTagsMenu]]
 ;; '''Toggle Option''': [[image:BookmarkPlusBookmarksToggleOptionMenu]]
 ;; '''Highlight''': [[image:BookmarkPlusBookmarksHighlightMenu]]
+
+
+
+
+
+
+
+
+
+
+
+
+[:VanillaFileMenu]
+=== Vanilla File Menu ===
+
+'''Bookmark+''' adds submenu `Bookmarked File' to the vanilla '''File''' menu provided by Emacs.  
+
+[[image:BookmarkPlusBookmarkedFileMenu]]
 
 
 
