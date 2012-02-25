@@ -4,21 +4,44 @@ You can obtain it here:
 Lisp:iedit.el or https://github.com/victorhge/iedit/blob/master/iedit.el. 
 The latter one has the latest updates.
 
-It lets you edit one occurrence of some text in a buffer (possibly narrowed), and simultaneously have all other occurrences edited the same way. All occurrences are highlighted.
+This package is an Emacs minor mode and allows you to edit one occurrence of
+some text in a buffer or region, and simultaneously have other occurrences
+edited in the same way, with visual feedback as you type.
 
-In Iedit mode, you can use `TAB' and `S-TAB' to move through the occurrences (e.g. so you can see different contexts better). (They wrap around from the last and first occurrence.)
+Normal scenario of Iedit mode is like:
 
-You can also use Iedit mode as a quick way to temporarily show only the buffer lines that match the current text being edited. This gives you the effect of a temporary `keep-lines' or `occur'. To get this effect, hit `##C-'##' when in Iedit mode -- it toggles hiding non-matching lines.
+ - Highlight certain contents - by press C-;
+   All occurrences of a symbol, string or a rectangle in the buffer or a region
+   may be highlighted corresponding to current mark, point and prefix
+   argument. Refer to the document of `iedit-mode' for details.
 
+ - Edit one of the occurrences
+   The change is applied to other occurrences simultaneously.
 
+ - Finish - by pressing C-; again
 
+This package also provides rectangle support with *visible rectangle*
+highlighting, which is similar with cua mode rectangle support.
 
+You can also use Iedit mode as a quick way to temporarily show only the
+buffer lines that match the current text being edited.  This gives you the
+effect of a temporary 'keep-lines' or 'occur'.  To get this effect, hit `C-'
+when in Iedit mode - it toggles hiding non-matching lines.
 
+Renaming refactoring is convenient in Iedit mode
 
+ - The symbol under point is selected as occurrence by default and only complete
+  symbols are matched
 
+ - With digit prefix argument 0, only symbols in current function are matched
 
+ - Restricting symbols in current region can be done by pressing C-; again
 
+ - Last renaming refactoring is remembered and can be applied to other buffers
+   later
 
+There are also some other facilities you may never think about.  Refer to the
+document of function `iedit-mode' (C-h f iedit-mode RET) for more details.
 
 ----
 CategorySearchAndReplace
