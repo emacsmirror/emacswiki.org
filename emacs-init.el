@@ -7,9 +7,9 @@
 ;; Copyright (C) 1995-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Sep 12 15:54:33 1995
 ;; Version: 20.0
-;; Last-Updated: Sun Jan  1 14:25:28 2012 (-0800)
+;; Last-Updated: Sun Feb 26 11:17:48 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 2146
+;;     Update #: 2165
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/emacs-init.el
 ;; Keywords: init, .emacs, _emacs, dotemacs
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -465,12 +465,13 @@
 
 ;;; COMMENT OUT IF YOU DO *NOT* WANT THE GIVEN EFFECT.
 (setq inhibit-startup-message t)        ; Do without annoying startup msg.
-(put 'scroll-left 'disabled nil)
-(put 'eval-expression 'disabled nil)    ; Enable eval of Lisp sexps.
-(put 'narrow-to-region 'disabled nil)   ; Enable region narrowing & widening.
-(put 'downcase-region 'disabled nil)    ; Enable case changes of region text.
-(put 'upcase-region 'disabled nil)      ;   "     "
-(put 'capitalize-region 'disabled nil)  ;   "     "
+(put 'scroll-left               'disabled nil)
+(put 'eval-expression           'disabled nil) ; Enable eval of Lisp sexps.
+(put 'narrow-to-region          'disabled nil) ; Enable region narrowing & widening.
+(put 'narrow-to-page            'disabled nil) ; Enable region narrowing & widening.
+(put 'downcase-region           'disabled nil) ; Enable case changes of region text.
+(put 'upcase-region             'disabled nil) ;   "     "
+(put 'capitalize-region         'disabled nil) ;   "     "
 (put 'dired-find-alternate-file 'disabled nil)
 (auto-compression-mode 1)               ; Auto decompress compressed files.
 (setq delete-selection-mode t)          ; Use delete-selection mode.
@@ -545,10 +546,6 @@
                  ;; (list (concat drews-lisp-dir "/CONTRIB/ps-print")) ; PostScript printing
                  ;; (list (concat drews-lisp-dir "/CONTRIB/ebnf2ps")) ; BNF to PostScript
                  ;; (list (concat drews-lisp-dir "/CONTRIB/gnuserv")) ; Emacs server/client
-                 ;; (list (concat drews-lisp-dir "/CONTRIB/cc-mode-5.27")) ; C code
-                 ;; (list (concat drews-lisp-dir "/CONTRIB/html-helper-mode")) ; HTML code
-                 ;;  ; SGML code
-                 ;; (list (concat drews-lisp-dir "/CONTRIB/tdtd")) ; DTD mode
                  load-path))
 
 
@@ -649,29 +646,9 @@
 ;;; (server-start)
 
 
-;;; UNCOMMENT THIS IF YOU HAVE AND WANT TO USE ISPELL
-;;; (if (and (< emacs-major-version 21) (eq system-type 'windows-nt)) (require 'ispell))
-
-
-;;; UNCOMMENT AND MODIFY AS NEEDED, FOR ISPELL SPELLING DICTIONARIES
-;;; (if (and (eq system-type 'windows-nt) (featurep 'ispell))
-;;;     (setq ispell-local-dictionary-alist
-;;;           '((nil                        ; default (english.aff)
-;;;              "[A-Za-z]" "[^A-Za-z]" "[']" nil ("-B") nil iso-8859-1)
-;;;             ("UK-xlg"                   ; english large version
-;;;              "[A-Za-z]" "[^A-Za-z]" "[']" nil ("-B" "-d" "UK-xlg") nil iso-8859-1)
-;;;             ("US-xlg"                   ; american large version
-;;;              "[A-Za-z]" "[^A-Za-z]" "[']" nil ("-B" "-d" "US-xlg") nil iso-8859-1)
-;;;             ("francais"                 ; french
-;;;              "[A-Za-z]" "[^A-Za-z]" "[']" nil ("-B" "-d" "francais") nil iso-8859-1)
-;;;             ("german"                   ; german
-;;;              "[A-Za-z]" "[^A-Za-z]" "[']" nil ("-B" "-d" "german") nil iso-8859-1)
-;;;             ("germanold"                ; germanold
-;;;              "[A-Za-z]" "[^A-Za-z]" "[']" nil ("-B" "-d" "germanold") nil iso-8859-1))))
-
-
 ;;; COMMENT THIS OUT IF YOU DO *NOT* HAVE OR USE CYGWIN
-(when (and (eq system-type 'windows-nt) (require 'cygwin-mount nil t)) (require 'setup-cygwin))
+(when (and (eq system-type 'windows-nt)  (require 'cygwin-mount nil t))
+  (require 'setup-cygwin nil t))
 
 ;;; COMMENT THIS OUT IF YOU WANT Windows, NOT Emacs, to use M-TAB.
 (when (fboundp 'w32-register-hot-key) (w32-register-hot-key [M-tab]))
@@ -703,12 +680,11 @@
 ;;;    automatically fit.  To inhibit this, do
 ;;;    (remove-hook 'temp-buffer-show-hook 'fit-frame-if-one-window)
 
-(require 'start-opt)                    ; Optional startup assignments.
-
+(require 'start-opt nil t)              ; Optional startup assignments.
 
 ;;; COMMENT THIS OUT IF YOU DO *NOT* WANT THE WINDOW-MANAGER
 ;;; "Minimize" BUTTON TO THUMBIFY INSTEAD OF ICONIFY.
-(when (fboundp 'thumfr-thumbify-frame-upon-event)
+(when (and (eq system-type 'windows-nt) (fboundp 'thumfr-thumbify-frame-upon-event))
   (define-key special-event-map [iconify-frame] 'thumfr-thumbify-frame-upon-event))
 
 
@@ -734,11 +710,6 @@
 
 
 
-;;; ******************************************************************
-;;; DO THIS *AFTER* SETTING ANY KEY BINDINGS, SO IT CAN PICK UP ALL
-;;; CURRENT KEY DEFINITIONS.
-;;;
-(when (fboundp 'icicle-mode) (icicle-mode 1)) ; Defined in `icicles.el'.
 ;;;
 ;;; ******************************************************************
 
@@ -749,14 +720,30 @@
   (add-hook 'window-setup-hook 'rename-frame)) ; Defined in `frame-cmds.el'.
 
 
-;;; ******************************************************************
-;;; IMPORTANT - DO THIS *LAST*
 
-;;; UNCOMMENT AND DEFINE `custom-file' TO LOAD YOUR CUSTOM FILE.  IT
-;;; IS A GOOD IDEA TO USE A SEPARATE CUSTOM FILE, SO AS TO KEEP YOUR
-;;; INIT FILE FREE OF CUSTOMIZE STUFF.
-;;; (setq custom-file YOUR-CUSTOM-FILE-NAME)
+
+
+;;; ******************************************************************
+;;; IMPORTANT - DO THE REST *LAST*
+;;; ******************************************************************
+
+;;; UNCOMMENT and define variable `custom-file' to load your custom
+;;; file.  This tells Customize to put your customizations in this
+;;; file, not in your `~/.emacs'.  This keeps your init file free of
+;;; Customize stuff.
+
+;;; (setq custom-file  YOUR-CUSTOM-FILE-LOCATION) ; An absolute file name.
 ;;; (load-file custom-file)
+
+
+;;; ******************************************************************
+;;; Load Icicles and turn on Icicle mode AFTER loading your
+;;; `custom-file', so Icicles will pick up certain option values, such
+;;; as `icicle-touche-pas-aux-menus-flag', and will correctly pick up
+;;; all current key definitions, bind the mouse wheel etc.
+
+(require 'icicles nil t)
+(when (fboundp 'icicle-mode) (icicle-mode 1)) ; Defined in `icicles.el'.
 
 ;;; UNCOMMENT TO TELL CUSTOMIZE THAT THE PRESENT STATE IS THE BASE-LINE:
 ;;; Consider current option values as unchanged (pseudo-saved).
