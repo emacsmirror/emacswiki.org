@@ -105,11 +105,8 @@ For <tt>[PythonMode python.el]</tt>, add
 For <tt>[PythonMode python-mode.el]</tt>, add
 
     (smart-tabs-advice py-indent-line py-indent-offset)
-    (add-hook 'python-mode-hook
-              (lambda ()
-                (smart-tabs-mode-enable)
-                (define-key python-mode-map (kbd "RET") 'newline-and-indent)
-                (define-key python-mode-map (kbd "C-j") 'newline-and-indent)))
+    (smart-tabs-advice py-newline-and-indent py-indent-offset)
+    (smart-tabs-advice py-indent-region py-indent-offset)
 
 Smart tabs are, of course, fully Python compliant, as the interpreter ignores the leading whitespace of continuation lines. However, in accordance with [http://www.python.org/dev/peps/pep-0008/ PEP 8], you should probably use tabs only when maintaining old code.
 
