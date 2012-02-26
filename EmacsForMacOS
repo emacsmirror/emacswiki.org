@@ -220,7 +220,7 @@ For Terminal.app, starting from Snow Leopard: Go to  Preferences > Settings > Ke
 
 For iTerm: Go to Manage Profiles > Keyboard profiles > (your profile) > Option Key as...
 
-If you want to use Option key for both international characters and [MetaKeyProblems Meta key] in Emacs, see [http://swissarmyhammer.wordpress.com/2010/06/07/osx-terminal-meta-key-national-characters/ this page] for iTerm 0.10.x patch and/or binary.
+If you want to use Option key for both international characters and [MetaKeyProblems Meta key] in Emacs, see [http://swissarmyhammer.wordpress.com/2010/06/07/osx-terminal-meta-key-national-characters/ this page] for iTerm 0.10.x patch and/or binary. [http://auslandsaufenhalt.1x.de/ Aufenthalt] [medizinische-uebersetzung.co.de Medizin]
 
 Alt-b and Alt-f for navigating by word also works for your shell now.
 
