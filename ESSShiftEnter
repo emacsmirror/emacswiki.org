@@ -1,4 +1,3 @@
-
 The following lines in my [[init file]] allow me to do three things with just one [[key binding]]:
 
 * if R if not running, it starts automatically and opens an inferior frame
@@ -52,5 +51,5 @@ This is quite useful, saving keystrokes, especially starting R.
 
 
 ----
-CategoryESS
+EmacsSpeaksStatistics
 
