@@ -1,6 +1,6 @@
 Recent version of ESS integrates out of the box with [[http://cx4a.org/software/auto-complete/ auto-complete]] package.
 
-Three sources `ac-source-R-args', `ac-source-R-objects' and `ess-ac-source-R' are included in ESS distribution. The latest combines previous two and makes them play nicely together.
+Three sources `ac-source-R-args', `ac-source-R-objects' and `ac-source-R' are included in ESS distribution. The latest combines previous two and makes them play nicely together.
 
 == Screenshots ==
 
@@ -12,7 +12,7 @@ Three sources `ac-source-R-args', `ac-source-R-objects' and `ess-ac-source-R' ar
 
 == Initialization ==
 
-The easiest way to initialize in R-mode
+The easiest way to initialize (this activates `ac-source-R`):
 
 {{{
 (setq ess-use-auto-complete t)
@@ -78,3 +78,4 @@ You can play with [[http://cx4a.org/software/auto-complete/manual.html#Configura
 ----
 
 EmacsSpeaksStatistics
+AutoComplete
