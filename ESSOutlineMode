@@ -49,4 +49,4 @@ The above will define the following heading levels in ##.R## files:
 Although R functions are not "headings" really, I still imagine this could be a nice way of getting an overview over a larger ##.R## file. I can't yet say whether it will prove useful for me in the long run. -- Sven
 
 ----
-CategoryESS
+EmacsSpeaksStatistics
