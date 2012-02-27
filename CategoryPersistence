@@ -15,3 +15,4 @@ Similar to SessionManagement but includes all things that are saved between sess
 * EmacsSession
 * [http://www.thoughtspark.org/node/50 Simple Location/Geometry Persistence] - Persists window location/geometry at quit and loads at startup
 * [WorkgroupsForWindows Workgroups] - A window-configuration persistence package, providing storage/restoration, saving/loading, animated window config morphing, and lots more.
+* [https://github.com/VincentToups/emacs-utils/blob/master/persistent-hash-tables.el persistent hash tables] -- persistent hash tables
