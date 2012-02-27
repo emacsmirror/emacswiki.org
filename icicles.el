@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Mon Feb 20 09:25:09 2012 (-0800)
+;; Last-Updated: Sun Feb 26 18:33:49 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 23082
+;;     Update #: 23085
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -132,8 +132,16 @@
 ;;    `icicle-bookmark-all-tags-other-window',
 ;;    `icicle-bookmark-all-tags-regexp',
 ;;    `icicle-bookmark-all-tags-regexp-other-window',
-;;    `icicle-bookmark-autofile', `icicle-bookmark-autofile-narrow',
+;;    `icicle-bookmark-autofile', `icicle-bookmark-autofile-all-tags',
+;;    `icicle-bookmark-autofile-all-tags-other-window',
+;;    `icicle-bookmark-autofile-all-tags-regexp',
+;;    `icicle-bookmark-autofile-all-tags-regexp-other-window',
+;;    `icicle-bookmark-autofile-narrow',
 ;;    `icicle-bookmark-autofile-other-window',
+;;    `icicle-bookmark-autofile-some-tags',
+;;    `icicle-bookmark-autofile-some-tags-other-window',
+;;    `icicle-bookmark-autofile-some-tags-regexp',
+;;    `icicle-bookmark-autofile-some-tags-regexp-other-window',
 ;;    `icicle-bookmark-autonamed', `icicle-bookmark-autonamed-narrow',
 ;;    `icicle-bookmark-autonamed-other-window',
 ;;    `icicle-bookmark-autonamed-this-buffer',
@@ -253,6 +261,8 @@
 ;;    `icicle-find-file-all-tags-other-window',
 ;;    `icicle-find-file-all-tags-regexp',
 ;;    `icicle-find-file-all-tags-regexp-other-window',
+;;    `icicle-find-file-handle-bookmark',
+;;    `icicle-find-file-handle-bookmark-other-window',
 ;;    `icicle-find-file-in-tags-table',
 ;;    `icicle-find-file-in-tags-table-other-window',
 ;;    `icicle-find-file-other-window', `icicle-find-file-read-only',
