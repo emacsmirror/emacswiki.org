@@ -12,13 +12,13 @@ Three sources `ac-source-R-args', `ac-source-R-objects' and `ac-source-R' are in
 
 == Initialization ==
 
-The easiest way to initialize (this activates `ac-source-R`):
+The easiest way to initialize:
 
 {{{
 (setq ess-use-auto-complete t)
 }}}
 
-or if you don't want AC in your inferior buffer:
+This activates 'ac-source-R in both ESS and iESS buffers. If you want AC only in your ESS buffers do:
 
 {{{
 (setq ess-use-auto-complete 'script-only)
