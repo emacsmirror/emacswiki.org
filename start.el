@@ -7,9 +7,9 @@
 ;; Copyright (C) 1995-2012, Drew Adams, all rights reserved.
 ;; Created: Wed Aug  2 11:12:24 1995
 ;; Version: 21.1
-;; Last-Updated: Sun Jan  1 14:05:11 2012 (-0800)
+;; Last-Updated: Sun Feb 26 10:03:29 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 2905
+;;     Update #: 2913
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/start.el
 ;; Keywords: abbrev, internal, local, init
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -91,6 +91,9 @@
 ;;
 ;; Change Log:
 ;;
+;; 2012/02/26 dadams
+;;     Removed soft require of Icicles.
+;;     Added soft require of pretty-lambdada.
 ;; 2011/11/30 dadams
 ;;     Added soft require of descr-text+.el (new library).
 ;; 2011/09/27 dadams
@@ -580,6 +583,9 @@ See the Dired-X Info pages (type \\[info]) for information on this package.")
 (when (> emacs-major-version 21)
   (require 'hl-spotlight nil t))        ; Extends `hl-line.el' by spotlighting lines.
 (require 'pp-c-l nil t)                 ; Pretty display of `^L' characters.
+(when (> emacs-major-version 21)        ; Lambda symbol (char) replaces `lambda' text.
+  (require 'pretty-lambdada nil t)
+  (when (fboundp 'pretty-lambda-for-modes) (pretty-lambda-for-modes)))
 (require 'setup nil t)                  ; Startup assignments and such.
 (require 'local-lpr nil t)              ; Local settings for `lpr.el'.
 (require 'local-ps-print nil t)         ; Local settings for PostScript printing.
@@ -599,7 +605,10 @@ See the Dired-X Info pages (type \\[info]) for information on this package.")
 (require 'setup-keys nil t)             ; Key bindings.
 (require 'replace+ nil t)               ; Redefinitions, corrections.
 (require 'apropos-fn+var nil t)         ; Extensions to `apropos.el'.
-(require 'icicles nil t)                ; Minibuffer completion, completion-candidate cycling.
+
+;; Removed soft require of Icicles.  Load it separately, preferably after you load your `custom-file'.
+;; (require 'icicles nil t)                ; Minibuffer completion, completion-candidate cycling.
+
 (require 'lacarte nil t)                ; Menu-bar menu-command completion and execution via keyboard.
 (require 'synonyms nil t)               ; Thesaurus.
 (when (> emacs-major-version 20) (require 'tool-bar+ nil t)) ; Extensions to `tool-bar.el'.
