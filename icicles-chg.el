@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Wed Feb 22 08:21:03 2012 (-0800)
+;; Last-Updated: Sun Feb 26 18:44:15 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 7993
+;;     Update #: 8046
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-chg.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -85,6 +85,13 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd1.el'")
 ;;
+;; 2012/02/26 dadams
+;;     Update to reflect Bookmark+ changes (bindings etc.).
+;;       Added: icicle-bookmark-autofile-(all|some)-tags(-regexp)(-other-window).
+;;       icicle-bookmark: Update doc string for binding changes.
+;;       icicle-bookmark-bind-narrow-commands: Update bindings to reflect Bookmark+ changes.
+;;       icicle-bookmark-help-string: Initialize no-position-p from bookmark, so it works if no pos.
+;;     Typo: icicle-bookmark-this-dir-file-all-tags -> icicle-bookmark-file-this-dir-all-tags.
 ;; 2012/02/11 dadams
 ;;     Applied renaming.
 ;; 2012/01/31 dadams
@@ -542,6 +549,11 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd2.el'")
 ;;
+;; 2012/02/26 dadams
+;;     Update to reflect Bookmark+ changes (bindings etc.).
+;;       Added icicle-find-file-handle-bookmark(-other-window), as nontagging C-f commands.
+;;       icicle-find-file-tagged*: Use bmkp-find-file*, not find-file*, as action fn.
+;;                                 Pass prefix arg to bmkp-read-tags-completing, to update cache.
 ;; 2012/02/20 dadams
 ;;     Added: icicle-Info-menu-cmd.  Actually, renamed icicle-Info-menu to icicle-Info-menu-cmd and
 ;;            added non-interactive icicle-Info-menu with args for compatibility with vanilla Emacs.
@@ -4317,6 +4329,17 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-mode.el'")
 ;;
+;; 2012/02/26 dadams
+;;     Update to reflect Bookmark+ changes (bindings etc.).
+;;       icicle-bookmark-menu-map: Major changes.
+;;         Added items:
+;;          *-bookmark-(file-this-dir|autofile)-(all|some)-tags(-regexp),
+;;          *-bookmark-(temporary|autofile), *-bookmark(-autonamed)(-this-buffer),
+;;          *-bookmark-specific-(files|buffers), *-bookmark-(image|bookmark-file).
+;;         For icicle-touche-pas-aux-menus-flag case also: put bookmarks items on a submenu now.
+;;         Share the submenus - write only once.
+;;         Reuse (copy of) bmkp-* menu items, so Icicles cmds replace similar Bookmark+ cmds, in place.
+;;     icicle-define-icicle-maps: Reordered.
 ;; 2012/02/11 dadams
 ;;     Bind icicle-toggle-expand-to-common-match to C-", not C-;.
 ;;     Bind icicle-cycle-expand-to-common-match (new) to C-M-".
@@ -5368,6 +5391,9 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-opt.el'")
 ;;
+;; 2012/02/26 dadams
+;;     icicle-top-level-key-bindings: Update to reflect Bookmark+ changes (bindings).
+;;     icicle-touche-pas-aux-menus-flag: Clarify doc string.
 ;; 2012/02/11 dadams
 ;;     ** NOTE ** Incompatible renamings and value changes.  Update any corresponding customizations.
 ;;     Renamed: icicle-expand-input-to-common-match-flag to icicle-expand-input-to-common-match,
