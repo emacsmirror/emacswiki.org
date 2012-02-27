@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Sun Feb 26 18:44:15 2012 (-0800)
+;; Last-Updated: Mon Feb 27 10:31:19 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 8046
+;;     Update #: 8049
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-chg.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -2955,6 +2955,9 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-mcmd.el'")
 ;;
+;; 2012/02/27 dadams
+;;     icicle-input-is-a-completion-p: If icicle-last-completion-candidate is nil, compute candidates.
+;;                                     Fix for bug: entering a candidate without hitting (S-)TAB.
 ;; 2012/02/14 dadams
 ;;     icicle-candidate-set-save-1:
 ;;       Distinguish in-minibuffer use from top-level use.  Raise error if user cancels fileset create.
