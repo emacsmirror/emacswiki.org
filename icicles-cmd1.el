@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Sat Feb 11 14:30:55 2012 (-0800)
+;; Last-Updated: Sun Feb 26 18:24:47 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 23258
+;;     Update #: 23297
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-cmd1.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -59,8 +59,16 @@
 ;;    (+)`icicle-bookmark-all-tags-regexp',
 ;;    (+)`icicle-bookmark-all-tags-regexp-other-window',
 ;;    (+)`icicle-bookmark-autofile',
+;;    (+)`icicle-bookmark-autofile-all-tags',
+;;    (+)`icicle-bookmark-autofile-all-tags-other-window',
+;;    (+)`icicle-bookmark-autofile-all-tags-regexp',
+;;    (+)`icicle-bookmark-autofile-all-tags-regexp-other-window',
 ;;    `icicle-bookmark-autofile-narrow',
 ;;    (+)`icicle-bookmark-autofile-other-window',
+;;    (+)`icicle-bookmark-autofile-some-tags',
+;;    (+)`icicle-bookmark-autofile-some-tags-other-window',
+;;    (+)`icicle-bookmark-autofile-some-tags-regexp',
+;;    (+)`icicle-bookmark-autofile-some-tags-regexp-other-window',
 ;;    (+)`icicle-bookmark-autonamed',
 ;;    `icicle-bookmark-autonamed-narrow',
 ;;    (+)`icicle-bookmark-autonamed-other-window',
@@ -3405,7 +3413,7 @@ If you also use library `Bookmark+', then:
    `C-x j B'   - bookmark-list bookmarks
    `C-x j d'   - Dired bookmarks
    `C-x j f'   - file bookmarks
-   `C-x j C-f' - bookmarks to files in the current directory
+   `C-x j . f' - bookmarks to files in the current directory
    `C-x j g'   - Gnus bookmarks
    `C-x j i'   - Info bookmarks
    `C-x j M-i' - image bookmarks
@@ -3418,11 +3426,11 @@ If you also use library `Bookmark+', then:
    `C-x j w'   - W3M (URL) bookmarks
    `C-x j x'   - temporary bookmarks
    `C-x j y'   - bookmark-file bookmarks
-   `C-x j .'   - bookmarks for the current buffer
+   `C-x j , ,' - bookmarks for the current buffer
    `C-x j = b' - bookmarks for specific buffers
    `C-x j = f' - bookmarks for specific files
-   `C-x j # #' - autonamed bookmarks
-   `C-x j # .' - autonamed bookmarks for the current buffer
+   `C-x j #'   - autonamed bookmarks
+   `C-x j , #' - autonamed bookmarks for the current buffer
 
    See also the individual multi-commands for different bookmark
    types: `icicle-bookmark-info-other-window' etc.
@@ -3647,9 +3655,9 @@ Same as `icicle-bookmark', but uses another window." ; Doc string
   (when (featurep 'bookmark+)
     ;; Lax completion is for multi-completion case.
     (dolist (map  '(minibuffer-local-must-match-map  minibuffer-local-completion-map))
-      (define-key (symbol-value map) (icicle-kbd "C-x j # #") ; `C-x j # #'
+      (define-key (symbol-value map) (icicle-kbd "C-x j #") ; `C-x j #'
         'icicle-bookmark-autonamed-narrow)
-      (define-key (symbol-value map) (icicle-kbd "C-x j # .") ; `C-x j # .'
+      (define-key (symbol-value map) (icicle-kbd "C-x j , #") ; `C-x j , #'
         'icicle-bookmark-autonamed-this-buffer-narrow)
       (define-key (symbol-value map) (icicle-kbd "C-x j a") ; `C-x j a'
         'icicle-bookmark-autofile-narrow)
@@ -3661,7 +3669,7 @@ Same as `icicle-bookmark', but uses another window." ; Doc string
         'icicle-bookmark-dired-narrow)
       (define-key (symbol-value map) (icicle-kbd "C-x j f") ; `C-x j f'
         'icicle-bookmark-file-narrow)
-      (define-key (symbol-value map) (icicle-kbd "C-x j C-f") ; `C-x j C-f'
+      (define-key (symbol-value map) (icicle-kbd "C-x j . f") ; `C-x j . f'
         'icicle-bookmark-file-this-dir-narrow)
       (define-key (symbol-value map) (icicle-kbd "C-x j g") ; `C-x j g'
         'icicle-bookmark-gnus-narrow)
@@ -3687,7 +3695,7 @@ Same as `icicle-bookmark', but uses another window." ; Doc string
         'icicle-bookmark-temporary-narrow)
       (define-key (symbol-value map) (icicle-kbd "C-x j y") ; `C-x j y'
         'icicle-bookmark-bookmark-file-narrow)
-      (define-key (symbol-value map) (icicle-kbd "C-x j .") ; `C-x j .'
+      (define-key (symbol-value map) (icicle-kbd "C-x j , ,") ; `C-x j , ,'
         'icicle-bookmark-this-buffer-narrow)
       (define-key (symbol-value map) (icicle-kbd "C-x j = b") ; `C-x j = b'
         'icicle-bookmark-specific-buffers-narrow)
@@ -3776,26 +3784,27 @@ You probably don't want to use this.  Use
 (defun icicle-bookmark-help-string (bookmark-name)
   "Return a help string for BOOKMARK-NAME." ; `bmkp-*' functions are defined in `Bookmark+'.
   ;; Use BOOKMARK-NAME, not full bookmark BMK, as arg to vanilla bookmark functions, for Emacs < 23.
-  (let* ((bmk         (bookmark-get-bookmark bookmark-name))
-         (buf         (and (fboundp 'bmkp-get-buffer-name) (bmkp-get-buffer-name bmk)))
-         (file        (bookmark-get-filename bookmark-name))
-         (start       (bookmark-get-position bookmark-name))
-         (end         (and (fboundp 'bmkp-get-end-position) (bmkp-get-end-position bmk)))
-         (annot       (bookmark-get-annotation bookmark-name))
-         (sequence-p  (and (fboundp 'bmkp-sequence-bookmark-p)
-                           (bmkp-sequence-bookmark-p bmk)))
-         (function-p  (and (fboundp 'bmkp-function-bookmark-p)
-                           (bmkp-function-bookmark-p bmk)))
-         (blist-p     (and (fboundp 'bmkp-bookmark-list-bookmark-p)
-                           (bmkp-bookmark-list-bookmark-p bmk)))
-         (desktop-p   (and (fboundp 'bmkp-desktop-bookmark-p)
-                           (bmkp-desktop-bookmark-p bmk)))
-         (dired-p     (and (fboundp 'bmkp-dired-bookmark-p) (bmkp-dired-bookmark-p bmk)))
-         (gnus-p      (and (fboundp 'bmkp-gnus-bookmark-p) (bmkp-gnus-bookmark-p bmk)))
-         (info-p      (and (fboundp 'bmkp-info-bookmark-p) (bmkp-info-bookmark-p bmk)))
-         (man-p       (and (fboundp 'bmkp-man-bookmark-p) (bmkp-man-bookmark-p bmk)))
-         (url-p       (and (fboundp 'bmkp-url-bookmark-p) (bmkp-url-bookmark-p bmk)))
-         type-info-p no-position-p)
+  (let* ((bmk            (bookmark-get-bookmark bookmark-name))
+         (buf            (and (fboundp 'bmkp-get-buffer-name) (bmkp-get-buffer-name bmk)))
+         (file           (bookmark-get-filename bookmark-name))
+         (start          (bookmark-get-position bookmark-name))
+         (no-position-p  (not start))
+         (end            (and (fboundp 'bmkp-get-end-position) (bmkp-get-end-position bmk)))
+         (annot          (bookmark-get-annotation bookmark-name))
+         (sequence-p     (and (fboundp 'bmkp-sequence-bookmark-p)
+                              (bmkp-sequence-bookmark-p bmk)))
+         (function-p     (and (fboundp 'bmkp-function-bookmark-p)
+                              (bmkp-function-bookmark-p bmk)))
+         (blist-p        (and (fboundp 'bmkp-bookmark-list-bookmark-p)
+                              (bmkp-bookmark-list-bookmark-p bmk)))
+         (desktop-p      (and (fboundp 'bmkp-desktop-bookmark-p)
+                              (bmkp-desktop-bookmark-p bmk)))
+         (dired-p        (and (fboundp 'bmkp-dired-bookmark-p) (bmkp-dired-bookmark-p bmk)))
+         (gnus-p         (and (fboundp 'bmkp-gnus-bookmark-p) (bmkp-gnus-bookmark-p bmk)))
+         (info-p         (and (fboundp 'bmkp-info-bookmark-p) (bmkp-info-bookmark-p bmk)))
+         (man-p          (and (fboundp 'bmkp-man-bookmark-p) (bmkp-man-bookmark-p bmk)))
+         (url-p          (and (fboundp 'bmkp-url-bookmark-p) (bmkp-url-bookmark-p bmk)))
+         type-info-p)
     (when (or sequence-p function-p) (setq no-position-p  t))
     (concat (setq type-info-p
                   (cond (sequence-p (format "Sequence: %S" (bookmark-prop-get bmk 'sequence)))
@@ -3867,7 +3876,7 @@ Remove crosshairs highlighting and unbind filtering keys."
    #'(lambda (x) (bmkp-autofile-bookmark-p (icicle-mctized-display-candidate (car x))))))
 
 ;;;###autoload
-(defun icicle-bookmark-autonamed-narrow () ; Bound to `C-x j # #' in minibuffer for completion.
+(defun icicle-bookmark-autonamed-narrow () ; Bound to `C-x j #' in minibuffer for completion.
   "Narrow the bookmark candidates to autonamed bookmarks."
   (interactive)
   (icicle-narrow-candidates-with-predicate
@@ -3876,7 +3885,7 @@ Remove crosshairs highlighting and unbind filtering keys."
 
 ;;;###autoload
 (defun icicle-bookmark-autonamed-this-buffer-narrow ()
-                                        ; Bound to `C-x j # .' in minibuffer for completion.
+                                        ; Bound to `C-x j , #' in minibuffer for completion.
   "Narrow bookmark candidates to autonamed bookmarks in current buffer."
   (interactive)
   (icicle-narrow-candidates-with-predicate
@@ -3921,7 +3930,7 @@ Remove crosshairs highlighting and unbind filtering keys."
    #'(lambda (x) (bmkp-file-bookmark-p (icicle-transform-multi-completion (car x))))))
 
 ;;;###autoload
-(defun icicle-bookmark-file-this-dir-narrow () ; Bound to `C-x j C-f' in minibuffer for completion.
+(defun icicle-bookmark-file-this-dir-narrow () ; Bound to `C-x j . f' in minibuffer for completion.
   "Narrow the bookmark candidates to bookmarked files in `default-directory'."
   (interactive)
   (icicle-narrow-candidates-with-predicate
@@ -4010,7 +4019,7 @@ You are prompted for the FILES."
    #'(lambda (x) (bmkp-temporary-bookmark-p (icicle-transform-multi-completion (car x))))))
 
 ;;;###autoload
-(defun icicle-bookmark-this-buffer-narrow () ; `C-x j .' in minibuffer for bookmark completion.
+(defun icicle-bookmark-this-buffer-narrow () ; `C-x j , ,' in minibuffer for bookmark completion.
   "Narrow the bookmark candidates to bookmarks for the current buffer."
   (interactive)
   (icicle-narrow-candidates-with-predicate
@@ -4034,19 +4043,23 @@ You are prompted for the FILES."
 
 
 ;; The following sexps macro-expand to define these commands:
-;;  `icicle-bookmark-autofile'               `icicle-bookmark-autofile-other-window'
-;;  `icicle-bookmark-autonamed'              `icicle-bookmark-autonamed-other-window'
-;;  `icicle-bookmark-autonamed-this-buffer'  `icicle-bookmark-autonamed-this-buffer-other-window'
+;;  `icicle-bookmark-autofile'                   `icicle-bookmark-autofile-other-window'
+;;  `icicle-bookmark-autofile-all-tags',         `icicle-bookmark-autofile-all-tags-other-window',
+;;  `icicle-bookmark-autofile-all-tags-regexp',  `icicle-bookmark-autofile-all-tags-regexp-other-window',
+;;  `icicle-bookmark-autofile-some-tags',        `icicle-bookmark-autofile-some-tags-other-window',
+;;  `icicle-bookmark-autofile-some-tags-regexp', `icicle-bookmark-autofile-some-tags-regexp-other-window',
+;;  `icicle-bookmark-autonamed'                  `icicle-bookmark-autonamed-other-window'
+;;  `icicle-bookmark-autonamed-this-buffer'      `icicle-bookmark-autonamed-this-buffer-other-window'
 ;;  `icicle-bookmark-bookmark-file',
 ;;  `icicle-bookmark-bookmark-list',
 ;;  `icicle-bookmark-desktop',
-;;  `icicle-bookmark-dired',                 `icicle-bookmark-dired-other-window',
-;;  `icicle-bookmark-file',                  `icicle-bookmark-file-other-window',
-;;  `icicle-bookmark-file-all-tags',         `icicle-bookmark-file-all-tags-other-window',
-;;  `icicle-bookmark-file-all-tags-regexp',  `icicle-bookmark-file-all-tags-regexp-other-window',
-;;  `icicle-bookmark-file-some-tags',        `icicle-bookmark-file-some-tags-other-window',
-;;  `icicle-bookmark-file-some-tags-regexp', `icicle-bookmark-file-some-tags-regexp-other-window',
-;;  `icicle-bookmark-file-this-dir',         `icicle-bookmark-file-this-dir-other-window',
+;;  `icicle-bookmark-dired',                     `icicle-bookmark-dired-other-window',
+;;  `icicle-bookmark-file',                      `icicle-bookmark-file-other-window',
+;;  `icicle-bookmark-file-all-tags',             `icicle-bookmark-file-all-tags-other-window',
+;;  `icicle-bookmark-file-all-tags-regexp',      `icicle-bookmark-file-all-tags-regexp-other-window',
+;;  `icicle-bookmark-file-some-tags',            `icicle-bookmark-file-some-tags-other-window',
+;;  `icicle-bookmark-file-some-tags-regexp',     `icicle-bookmark-file-some-tags-regexp-other-window',
+;;  `icicle-bookmark-file-this-dir',             `icicle-bookmark-file-this-dir-other-window',
 ;;  `icicle-bookmark-file-this-dir-all-tags',
 ;;  `icicle-bookmark-file-this-dir-all-tags-other-window',
 ;;  `icicle-bookmark-file-this-dir-all-tags-regexp',
@@ -4055,27 +4068,27 @@ You are prompted for the FILES."
 ;;  `icicle-bookmark-file-this-dir-some-tags-other-window',
 ;;  `icicle-bookmark-file-this-dir-some-tags-regexp',
 ;;  `icicle-bookmark-file-this-dir-some-tags-regexp-other-window',
-;;  `icicle-bookmark-gnus',                  `icicle-bookmark-gnus-other-window',
-;;  `icicle-bookmark-image',                 `icicle-bookmark-image-other-window',
-;;  `icicle-bookmark-info',                  `icicle-bookmark-info-other-window',
-;;  `icicle-bookmark-local-file',            `icicle-bookmark-local-file-other-window',
-;;  `icicle-bookmark-man',                   `icicle-bookmark-man-other-window',
-;;  `icicle-bookmark-non-file',              `icicle-bookmark-non-file-other-window',
-;;  `icicle-bookmark-region',                `icicle-bookmark-region-other-window',
-;;  `icicle-bookmark-remote-file',           `icicle-bookmark-remote-file-other-window',
-;;  `icicle-bookmark-specific-buffers',      `icicle-bookmark-specific-buffers-other-window'
-;;  `icicle-bookmark-specific-files',        `icicle-bookmark-specific-files-other-window'
-;;  `icicle-bookmark-all-tags',              `icicle-bookmark-all-tags-other-window'
-;;  `icicle-bookmark-all-tags-regexp',       `icicle-bookmark-all-tags-regexp-other-window'
-;;  `icicle-bookmark-some-tags',             `icicle-bookmark-some-tags-other-window'
-;;  `icicle-bookmark-some-tags-regexp',      `icicle-bookmark-some-tags-regexp-other-window'
-;;  `icicle-bookmark-temporary'              `icicle-bookmark-temporary-other-window'
-;;  `icicle-bookmark-this-buffer',           `icicle-bookmark-this-buffer-other-window'
-;;  `icicle-bookmark-url',                   `icicle-bookmark-url-other-window'
-;;  `icicle-bookmark-w3m',                   `icicle-bookmark-w3m-other-window'
+;;  `icicle-bookmark-gnus',                      `icicle-bookmark-gnus-other-window',
+;;  `icicle-bookmark-image',                     `icicle-bookmark-image-other-window',
+;;  `icicle-bookmark-info',                      `icicle-bookmark-info-other-window',
+;;  `icicle-bookmark-local-file',                `icicle-bookmark-local-file-other-window',
+;;  `icicle-bookmark-man',                       `icicle-bookmark-man-other-window',
+;;  `icicle-bookmark-non-file',                  `icicle-bookmark-non-file-other-window',
+;;  `icicle-bookmark-region',                    `icicle-bookmark-region-other-window',
+;;  `icicle-bookmark-remote-file',               `icicle-bookmark-remote-file-other-window',
+;;  `icicle-bookmark-specific-buffers',          `icicle-bookmark-specific-buffers-other-window'
+;;  `icicle-bookmark-specific-files',            `icicle-bookmark-specific-files-other-window'
+;;  `icicle-bookmark-all-tags',                  `icicle-bookmark-all-tags-other-window'
+;;  `icicle-bookmark-all-tags-regexp',           `icicle-bookmark-all-tags-regexp-other-window'
+;;  `icicle-bookmark-some-tags',                 `icicle-bookmark-some-tags-other-window'
+;;  `icicle-bookmark-some-tags-regexp',          `icicle-bookmark-some-tags-regexp-other-window'
+;;  `icicle-bookmark-temporary'                  `icicle-bookmark-temporary-other-window'
+;;  `icicle-bookmark-this-buffer',               `icicle-bookmark-this-buffer-other-window'
+;;  `icicle-bookmark-url',                       `icicle-bookmark-url-other-window'
+;;  `icicle-bookmark-w3m',                       `icicle-bookmark-w3m-other-window'
 
 ;;;###autoload (autoload 'icicle-bookmark-this-buffer "icicles-cmd1.el")
-(icicle-define-bookmark-command              "this-buffer")                   ; `C-x j .'
+(icicle-define-bookmark-command              "this-buffer")                   ; `C-x j , ,'
 ;;;###autoload (autoload 'icicle-bookmark-this-buffer-other-window "icicles-cmd1.el")
 (icicle-define-bookmark-other-window-command "this-buffer")                   ; `C-x 4 j .'
 ;;;###autoload (autoload 'icicle-bookmark-specific-buffers "icicles-cmd1.el")
@@ -4094,12 +4107,36 @@ You are prompted for the FILES."
 (icicle-define-bookmark-command              "autofile")                      ; `C-x j a'
 ;;;###autoload (autoload 'icicle-bookmark-autofile-other-window "icicles-cmd1.el")
 (icicle-define-bookmark-other-window-command "autofile")                      ; `C-x 4 j a'
+;;;###autoload (autoload 'icicle-bookmark-autofile-all-tags "icicles-cmd1.el")
+(icicle-define-bookmark-command              "autofile-all-tags" nil          ; `C-x j t a *'
+                                             (bmkp-read-tags-completing nil nil current-prefix-arg))
+;;;###autoload (autoload 'icicle-bookmark-autofile-all-tags-other-window "icicles-cmd1.el")
+(icicle-define-bookmark-other-window-command "autofile-all-tags" nil          ; `C-x 4 j t a *'
+                                             (bmkp-read-tags-completing nil nil current-prefix-arg))
+;;;###autoload (autoload 'icicle-bookmark-autofile-all-tags-regexp "icicles-cmd1.el")
+(icicle-define-bookmark-command              "autofile-all-tags-regexp" nil   ; `C-x j t a % *'
+                                             (bmkp-read-tags-completing nil nil current-prefix-arg))
+;;;###autoload (autoload 'icicle-bookmark-autofile-all-tags-regexp-other-window "icicles-cmd1.el")
+(icicle-define-bookmark-other-window-command "autofile-all-tags-regexp" nil   ; `C-x 4 j t a % *'
+                                             (bmkp-read-tags-completing nil nil current-prefix-arg))
+;;;###autoload (autoload 'icicle-bookmark-autofile-some-tags "icicles-cmd1.el")
+(icicle-define-bookmark-command              "autofile-some-tags" nil         ; `C-x j t a +'
+                                             (bmkp-read-tags-completing nil nil current-prefix-arg))
+;;;###autoload (autoload 'icicle-bookmark-autofile-some-tags-other-window "icicles-cmd1.el")
+(icicle-define-bookmark-other-window-command "autofile-some-tags" nil         ; `C-x 4 j t a +'
+                                             (bmkp-read-tags-completing nil nil current-prefix-arg))
+;;;###autoload (autoload 'icicle-bookmark-autofile-some-tags-regexp "icicles-cmd1.el")
+(icicle-define-bookmark-command              "autofile-some-tags-regexp" nil  ; `C-x j t a % +'
+                                             (bmkp-read-tags-completing nil nil current-prefix-arg))
+;;;###autoload (autoload 'icicle-bookmark-autofile-some-tags-regexp-other-window "icicles-cmd1.el")
+(icicle-define-bookmark-other-window-command "autofile-some-tags-regexp" nil  ; `C-x 4 j t a % +'
+                                             (bmkp-read-tags-completing nil nil current-prefix-arg))
 ;;;###autoload (autoload 'icicle-bookmark-autonamed "icicles-cmd1.el")
-(icicle-define-bookmark-command              "autonamed") ; `C-x j # #'
+(icicle-define-bookmark-command              "autonamed") ; `C-x j #'
 ;;;###autoload (autoload 'icicle-bookmark-autonamed-other-window "icicles-cmd1.el")
 (icicle-define-bookmark-other-window-command "autonamed") ; `C-x 4 j # #'
 ;;;###autoload (autoload 'icicle-bookmark-autonamed-this-buffer "icicles-cmd1.el")
-(icicle-define-bookmark-command              "autonamed-this-buffer") ; `C-x j # .'
+(icicle-define-bookmark-command              "autonamed-this-buffer") ; `C-x j , #'
 ;;;###autoload (autoload 'icicle-bookmark-autonamed-this-buffer-other-window "icicles-cmd1.el")
 (icicle-define-bookmark-other-window-command "autonamed-this-buffer") ; `C-x 4 j # .'
 ;;;###autoload (autoload 'icicle-bookmark-non-file "icicles-cmd1.el")
@@ -4119,9 +4156,9 @@ You are prompted for the FILES."
 ;;;###autoload (autoload 'icicle-bookmark-file-other-window "icicles-cmd1.el")
 (icicle-define-bookmark-other-window-command "file")                          ; `C-x 4 j f'
 ;;;###autoload (autoload 'icicle-bookmark-file-this-dir "icicles-cmd1.el")
-(icicle-define-bookmark-command              "file-this-dir")                 ; `C-x j C-f'
+(icicle-define-bookmark-command              "file-this-dir")                 ; `C-x j . f'
 ;;;###autoload (autoload 'icicle-bookmark-file-this-dir-other-window "icicles-cmd1.el")
-(icicle-define-bookmark-other-window-command "file-this-dir")                 ; `C-x 4 j C-f'
+(icicle-define-bookmark-other-window-command "file-this-dir")                 ; `C-x 4 j . f'
 ;;;###autoload (autoload 'icicle-bookmark-gnus "icicles-cmd1.el")
 (icicle-define-bookmark-command              "gnus")                          ; `C-x j g'
 ;;;###autoload (autoload 'icicle-bookmark-gnus-other-window "icicles-cmd1.el")
@@ -4202,29 +4239,29 @@ You are prompted for the FILES."
 ;;;###autoload (autoload 'icicle-bookmark-file-some-tags-regexp-other-window "icicles-cmd1.el")
 (icicle-define-bookmark-other-window-command "file-some-tags-regexp" nil      ; `C-x 4 j t f % +'
                                              (read-string "Regexp for tags: "))
-;;;###autoload (autoload 'icicle-bookmark-this-dir-file-all-tags "icicles-cmd1.el")
-(icicle-define-bookmark-command              "file-this-dir-all-tags" nil ; `C-x j t C-f *'
+;;;###autoload (autoload 'icicle-bookmark-file-this-dir-all-tags "icicles-cmd1.el")
+(icicle-define-bookmark-command              "file-this-dir-all-tags" nil ; `C-x j t . f *'
                                              (bmkp-read-tags-completing nil nil current-prefix-arg))
 ;;;###autoload (autoload 'icicle-bookmark-file-this-dir-all-tags-other-window "icicles-cmd1.el")
-(icicle-define-bookmark-other-window-command "file-this-dir-all-tags" nil ; `C-x 4 j t C-f *'
+(icicle-define-bookmark-other-window-command "file-this-dir-all-tags" nil ; `C-x 4 j t . f *'
                                              (bmkp-read-tags-completing nil nil current-prefix-arg))
 ;;;###autoload (autoload 'icicle-bookmark-file-this-dir-some-tags "icicles-cmd1.el")
-(icicle-define-bookmark-command              "file-this-dir-some-tags" nil ; `C-x j t C-f +'
+(icicle-define-bookmark-command              "file-this-dir-some-tags" nil ; `C-x j t . f +'
                                              (bmkp-read-tags-completing nil nil current-prefix-arg))
 ;;;###autoload (autoload 'icicle-bookmark-file-this-dir-some-tags-other-window "icicles-cmd1.el")
-(icicle-define-bookmark-other-window-command "file-this-dir-some-tags" nil ; `C-x 4 j t C-f +'
+(icicle-define-bookmark-other-window-command "file-this-dir-some-tags" nil ; `C-x 4 j t . f +'
                                              (bmkp-read-tags-completing nil nil current-prefix-arg))
 ;;;###autoload (autoload 'icicle-bookmark-file-this-dir-all-tags-regexp "icicles-cmd1.el")
-(icicle-define-bookmark-command              "file-this-dir-all-tags-regexp" nil ; `C-x j t C-f % *'
+(icicle-define-bookmark-command              "file-this-dir-all-tags-regexp" nil ; `C-x j t . f % *'
                                              (read-string "Regexp for tags: "))
 ;;;###autoload (autoload 'icicle-bookmark-file-this-dir-all-tags-regexp-other-window "icicles-cmd1.el")
-(icicle-define-bookmark-other-window-command "file-this-dir-all-tags-regexp" nil ; `C-x 4 j t C-f % *'
+(icicle-define-bookmark-other-window-command "file-this-dir-all-tags-regexp" nil ; `C-x 4 j t . f % *'
                                              (read-string "Regexp for tags: "))
 ;;;###autoload (autoload 'icicle-bookmark-file-this-dir-some-tags-regexp "icicles-cmd1.el")
-(icicle-define-bookmark-command              "file-this-dir-some-tags-regexp" nil ; `C-x j t C-f % +'
+(icicle-define-bookmark-command              "file-this-dir-some-tags-regexp" nil ; `C-x j t . f % +'
                                              (read-string "Regexp for tags: "))
 ;;;###autoload (autoload 'icicle-bookmark-file-this-dir-some-tags-regexp-other-window "icicles-cmd1.el")
-(icicle-define-bookmark-other-window-command "file-this-dir-some-tags-regexp" nil ; `C-x 4 j t C-f % +'
+(icicle-define-bookmark-other-window-command "file-this-dir-some-tags-regexp" nil ; `C-x 4 j t . f % +'
                                              (read-string "Regexp for tags: "))
 ;;;###autoload (autoload 'icicle-bookmark-url "icicles-cmd1.el")
 (icicle-define-bookmark-command              "url")                           ; `C-x j u'
