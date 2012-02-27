@@ -3,6 +3,7 @@ Click the header to search for pages that reference CategoryPersistence.
 Similar to SessionManagement but includes all things that are saved between sessions.
 
 * DeskTop
+* DictionaryTrees 
 * SavePlace
 * BookMarks
 * RecentFiles
