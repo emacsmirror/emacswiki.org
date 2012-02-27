@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Mon Feb 27 10:01:34 2012 (-0800)
+;; Last-Updated: Tue Feb 14 09:43:49 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 17850
+;;     Update #: 17846
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-mcmd.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -3660,12 +3660,6 @@ which the initial `$' is ignored."
                                (> (length input-sans-dir) 0)
                                (eq ?\$ (aref input-sans-dir 0))
                                (substring input-sans-dir 1))))
-    (unless icicle-completion-candidates
-      (setq icicle-completion-candidates
-            (funcall (or icicle-last-completion-command  (if (eq icicle-current-completion-mode 'prefix)
-                                                             #'icicle-prefix-candidates
-                                                           #'icicle-apropos-candidates))
-                     input-sans-dir)))
     (member (icicle-upcase-if-ignore-case (or env-var-name input-sans-dir))
             (mapcar #'icicle-upcase-if-ignore-case icicle-completion-candidates))))
 
