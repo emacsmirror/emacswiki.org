@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2012, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Tue Feb 21 13:14:24 2012 (-0800)
+;; Last-Updated: Sun Feb 26 18:04:40 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 14304
+;;     Update #: 14390
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-chg.el
 ;; Keywords: bookmarks, bookmark+
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -145,6 +145,23 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-1.el'")
 ;;
+;; 2012/02/26 dadams
+;;     Added: bmkp-(autofile|autonamed)-history, bmkp-autofile-(all|some)-tags(-regexp)-alist-only,
+;;            bmkp-autofile(-(all|some)-tags(-regexp))-jump(-other-window).
+;;     bmkp-types-alist: Added entries for (autofile|autonamed).
+;;     Everywhere that read-file-name is used:
+;;       Bind icicle-unpropertize-completion-result-flag to t, for read-file-name.
+;;     No longer alias bmkp-autofile*-jump to bmkp-find-file.  The *-autofile-*jump commands use
+;;       bmkp-read-bookmark-for-type and bmkp-jump-1, not read-file-name and find-file.
+;;     bmkp-find-file(-other-window):
+;;       Added optional args FILE MUST-EXIST-P.
+;;       Use read-file-name and either bookmark-jump or find-file, not just find-file (and no PRED).
+;;     bmkp-find-file-*-tags(-regexp)(-other-window):
+;;       Added optional FILE arg.
+;;       Use bookmark-jump, not find-file - so only autofiles with the tags are candidates.
+;;       Bind icicle-must-pass-after-match-predicate.  Use PRED for read-file-name only if no Icicles.
+;;     The new bmkp-find-file* commands are bound to ... C-f, not ... a.
+;;     bmkp-default-handler-associations: Correct docstring: double backslashes.
 ;; 2012/02/21 dadams
 ;;     bmkp-jump-to-type(-other-window): Corrected ALIST: If no HISTORY do not call *-alist-only.
 ;; 2012/02/20 dadams
@@ -782,6 +799,28 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-key.el'")
 ;;
+;; 2012/02/26 dadams
+;;     Bind:
+;;       bmkp-this-file/buffer-bmenu-list to C-x p , not C-x p ..
+;;       bmkp-(file|dired)-this-dir-jump* to C-x j . f|d not C-x j C-f|C-d.
+;;       bmkp-file-this-dir-*-tags(-regexp)-jump* to C-x j t . [%][*+] not C-x j t C-f [%][*+].
+;;       bmkp-this-buffer-jump* to C-x j , , not C-x j ..
+;;       bmkp-autonamed-this-buffer-jump* to C-x j , # not C-x j # ..
+;;       bmkp-autonamed-jump* to C-x j # not C-x j # #.
+;;       bmkp-autofile-jump* in all Emacs versions.
+;;       bmkp-find-file(-other-window), which is new, to C-x j C-f.
+;;       new autofile tags jump commands bmkp-autofile-(all|some)-tags(-regexp)-jump* to
+;;         C-x j t a [%][*+], which was for bmkp-find-file-*-tags*.
+;;       bmkp-find-file-(all|some)-tags(-regexp)* to C-x j t C-f [%] [*+] not C-x j t a [%] [*+].
+;;     Add to menus: bmkp-autofile-*.  Rename menu items for bmkp-find-file: Find Autofile....
+;;     Rename menu Bookmarked File to Find File or Autofile.  For Emacs 20-21, make it a single item.
+;;     bmkp-jump-tags-menu, bmkp-find-file-menu: Do not add Autofile tags items for Emacs 20.
+;; 2012/02/21 dadams
+;;     Added bindings for: bmkp-autofile-(all|some)-tags(-regexp)-jump(-other-window),
+;;                         bmkp-find-file(-other-window) (was same as *autofile*).
+;;     Changed bindings:
+;;       *-this-dir*: . [df] (was C-d/C-f), *this-buffer*: , (was .), *find-file*tags*: C-f (was a).
+;;     Define *autofile* for all Emacs versions.  Separate bindings from *find-file* cmds.
 ;; 2011/12/30 dadams
 ;;     Added aliases: bmkp-bookmark-(data|name)-from-record.
 ;;     Bind E to bmkp-edit-bookmark-record, not bmkp-edit-bookmark.
@@ -908,6 +947,8 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+.el'")
 ;;
+;; 2012/02/26 dadams
+;;     Version 3.4.0.
 ;; 2011/12/30 dadams
 ;;     Version 3.3.0.
 ;; 2011/04/12 dadams
