@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Thu May 21 13:31:43 2009 (-0700)
 ;; Version: 22.0
-;; Last-Updated: Mon Feb 20 09:39:56 2012 (-0800)
+;; Last-Updated: Sun Feb 26 18:33:10 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 5045
+;;     Update #: 5149
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-cmd2.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -70,6 +70,8 @@
 ;;    (+)`icicle-find-file-all-tags-other-window',
 ;;    (+)`icicle-find-file-all-tags-regexp',
 ;;    (+)`icicle-find-file-all-tags-regexp-other-window',
+;;    (+)`icicle-find-file-handle-bookmark',
+;;    (+)`icicle-find-file-handle-bookmark-other-window',
 ;;    (+)`icicle-find-file-some-tags',
 ;;    (+)`icicle-find-file-some-tags-other-window',
 ;;    (+)`icicle-find-file-some-tags-regexp',
@@ -562,7 +564,7 @@ all of the given input tags are completion candidates."
 
 
   ;;$$$  Do not bother with autofiles that have a PREFIX.
-  (icicle-define-command icicle-find-file-tagged ; `C-x j t a a'.
+  (icicle-define-command icicle-find-file-tagged ; `C-x j t C-f C-f'.
     "Find one or more files with tags that match your input.
 By default, only tagged files are candidates.  With a prefix argument,
 all autofiles are candidates.  (Autofiles are autofile bookmarks - you
@@ -607,7 +609,7 @@ During completion (`*': requires library `Bookmark+'):
   You can use `C-c +' to create a new directory.
   You can use `M-|' to open Dired on currently matching file names.
   You can use `S-delete' to delete a candidate file or (empty) dir." ; Doc string
-    (lambda (f) (find-file (icicle-transform-multi-completion f) 'WILDCARDS)) ; Action function
+    (lambda (f) (bmkp-find-file (icicle-transform-multi-completion f) 'WILDCARDS)) ; Action function
     prompt icicle-abs-file-candidates   ; `completing-read' args
     nil nil nil 'icicle-filetags-history nil nil
     (icicle-file-bindings               ; Bindings
@@ -638,9 +640,9 @@ During completion (`*': requires library `Bookmark+'):
   (icicle-maybe-byte-compile-after-load icicle-find-file-tagged)
 
 
-  (icicle-define-command icicle-find-file-tagged-other-window ; `C-x 4 j t a a'
+  (icicle-define-command icicle-find-file-tagged-other-window ; `C-x 4 j t C-f C-f'
     "Same as `icicle-find-file-tagged', except uses another window." ; Doc string
-    (lambda (f) (find-file-other-window (icicle-transform-multi-completion f) 'WILDCARDS)) ; Action
+    (lambda (f) (bmkp-find-file-other-window (icicle-transform-multi-completion f) 'WILDCARDS)) ; Action
     prompt icicle-abs-file-candidates   ; `completing-read' args
     nil nil nil 'icicle-filetags-history nil nil
     (icicle-file-bindings               ; Bindings
@@ -671,31 +673,96 @@ During completion (`*': requires library `Bookmark+'):
   (icicle-maybe-byte-compile-after-load icicle-find-file-tagged-other-window)
 
 
-;;; These are like multi-command versions of `bmkp-find-file-all-tags' etc.,
-;;; except that the predicate is applied after matching the user's input
-;;; (`icicle-must-pass-after-match-predicate').
+  (icicle-define-file-command icicle-find-file-handle-bookmark ; `C-x j C-f'
+    "Visit a file or directory, respecting any autofile bookmark for it..
+This is similar to `icicle-find-file' - see that command for
+on-the-fly Icicles keys and the treatment of a prefix arg.
 
-  (icicle-define-file-command icicle-find-file-all-tags ; `C-x j t a *'
-    "Visit a file or directory that has all of the tags you enter.
-This is otherwise like `icicle-find-file'.
-You are prompted for the tags, then the file name.
-Hit `RET' to enter each tag, then hit `RET' again after the last tag.
-You can use completion to enter each tag.  Completion is lax: you are
-not limited to existing tags.
+But the file is accessed using `bmkp-find-file', which means that if
+it is an autofile with a bookmark handler then the handler is used
+when \"jumping\" to the bookmark.
 
-When prompted for the file you can use `M-n' to pick up the file name
-at point, or if none then the visited file."
-    (lambda (file)                      ; Function to perform the action
+When prompted for the file name you can use `M-n' to pick up the file
+name at point, or if none then the visited file."
+    (lambda (file)
       (let* ((r-o  (if (eq this-command 'icicle-candidate-action)
                        (or (and init-pref-arg        (not current-prefix-arg))
                            (and (not init-pref-arg)  current-prefix-arg))
                      init-pref-arg))
-             (fn   (if r-o 'find-file-read-only 'find-file)))
-        (funcall fn file 'WILDCARDS)))
-    "Find file: " nil nil t nil nil
+             (bmk  (bmkp-get-autofile-bookmark file))
+             ;; This is the real action.  `find-file' returns the buffer(s).  But having a return value is
+             ;; undocumented and might change at some point.
+             (buf  (bmkp-find-file file)))
+        ;; Handle read-only status and return the bookmark or the buffer(s) visited.
+        (if bmk
+            bmk
+          (when r-o (mapcar (lambda (bf) (with-current-buffer bf (toggle-read-only 1)))
+                            (if (listp buf) buf (list buf))))
+          buf)))                        ; Function to perform the action
+    "Find file: " nil nil t nil nil     ; `read-file-name' args
     (icicle-file-bindings               ; Bindings
      ((init-pref-arg  current-prefix-arg) ; Pre bindings
-      (tags           (bmkp-read-tags-completing))
+      (icicle-all-candidates-list-alt-action-fn ; `M-|'
+       (lambda (files) (let ((enable-recursive-minibuffers  t))
+                         (dired-other-window (cons (read-string "Dired buffer name: ") files))))))))
+
+  (icicle-maybe-byte-compile-after-load icicle-find-file-handle-bookmark)
+
+
+  (icicle-define-file-command icicle-find-file-handle-bookmark-other-window ; `C-x 4 j C-f'
+    "Same as `icicle-find-file-handle-bookmark', except uses another window."
+    (lambda (file)
+      (let* ((r-o  (if (eq this-command 'icicle-candidate-action)
+                       (or (and init-pref-arg        (not current-prefix-arg))
+                           (and (not init-pref-arg)  current-prefix-arg))
+                     init-pref-arg))
+             (bmk  (bmkp-get-autofile-bookmark file))
+             ;; This is the real action.  `find-file' returns the buffer(s).  But having a return value is
+             ;; undocumented and might change at some point.
+             (buf  (bmkp-find-file-other-window file)))
+        ;; Handle read-only status and return the bookmark or the buffer(s) visited.
+        (if bmk
+            bmk
+          (when r-o (mapcar (lambda (bf) (with-current-buffer bf (toggle-read-only 1)))
+                            (if (listp buf) buf (list buf))))
+          buf)))                        ; Function to perform the action
+    "Find file: " nil nil t nil nil     ; `read-file-name' args
+    (icicle-file-bindings               ; Bindings
+     ((init-pref-arg  current-prefix-arg) ; Pre bindings
+      (icicle-all-candidates-list-alt-action-fn ; `M-|'
+       (lambda (files) (let ((enable-recursive-minibuffers  t))
+                         (dired-other-window (cons (read-string "Dired buffer name: ") files))))))))
+
+  (icicle-maybe-byte-compile-after-load icicle-find-file-handle-bookmark-other-window)
+
+
+  (icicle-define-file-command icicle-find-file-all-tags ; `C-x j t C-f *'
+    "Visit a file or directory that has all of the tags you enter.
+Only tagged autofiles are candidates.
+
+This is essentially a multi-command versions of `bmkp-find-file-all-tags'.
+
+You are prompted first for the tags.  Hit `RET' to enter each tag,
+then hit `RET' again after the last tag.  You can use completion to
+enter each tag.  This completion is lax: you are not limited to
+existing tags.
+
+By default, the tag choices for completion are NOT refreshed, to save
+time.  Use a prefix argument if you want to refresh them.
+
+You are then prompted for the file name.  This is read using
+`read-file-name', so you can browse up and down the file hierarchy.
+\(The completion candidates are file names, not bookmark names.)
+
+If you specify no tags, then every file that has some tags is a
+candidate.
+
+When prompted for the file you can use `M-n' to pick up the file name
+at point, or if none then the visited file."
+    (lambda (file) (bmkp-find-file file 'MUST-EXIST)) ; Function to perform the action
+    "Find file: " nil nil t nil nil     ; `read-file-name' args
+    (icicle-file-bindings               ; Bindings
+     ((tags  (bmkp-read-tags-completing nil nil current-prefix-arg)) ; Pre bindings
       (icicle-all-candidates-list-alt-action-fn ; `M-|'
        (lambda (files) (let ((enable-recursive-minibuffers  t))
                          (dired-other-window (cons (read-string "Dired buffer name: ") files))))))
@@ -707,19 +774,12 @@ at point, or if none then the visited file."
   (icicle-maybe-byte-compile-after-load icicle-find-file-all-tags)
 
 
-  (icicle-define-file-command icicle-find-file-all-tags-other-window ; `C-x 4 j t a *'
+  (icicle-define-file-command icicle-find-file-all-tags-other-window ; `C-x 4 j t C-f *'
     "Same as `icicle-find-file-all-tags', except uses another window."
-    (lambda (file)                      ; Function to perform the action
-      (let* ((r-o  (if (eq this-command 'icicle-candidate-action)
-                       (or (and init-pref-arg        (not current-prefix-arg))
-                           (and (not init-pref-arg)  current-prefix-arg))
-                     init-pref-arg))
-             (fn   (if r-o 'find-file-read-only-other-window 'find-file-other-window)))
-        (funcall fn file 'WILDCARDS)))
-    "Find file: " nil nil t nil nil
+    (lambda (file) (bmkp-find-file-other-window file 'MUST-EXIST)) ; Function to perform the action
+    "Find file: " nil nil t nil nil     ; `read-file-name' args
     (icicle-file-bindings               ; Bindings
-     ((init-pref-arg  current-prefix-arg) ; Pre bindings
-      (tags           (bmkp-read-tags-completing))
+     ((tags  (bmkp-read-tags-completing nil nil current-prefix-arg)) ; Pre bindings
       (icicle-all-candidates-list-alt-action-fn ; `M-|'
        (lambda (files) (let ((enable-recursive-minibuffers  t))
                          (dired-other-window (cons (read-string "Dired buffer name: ") files))))))
@@ -731,21 +791,14 @@ at point, or if none then the visited file."
   (icicle-maybe-byte-compile-after-load icicle-find-file-all-tags-other-window)
 
 
-  (icicle-define-file-command icicle-find-file-all-tags-regexp ; `C-x j t a % *'
+  (icicle-define-file-command icicle-find-file-all-tags-regexp ; `C-x j t C-f % *'
     "Visit a file or directory that has each tag matching a regexp you enter.
 When prompted for the file you can use `M-n' to pick up the file name
 at point, or if none then the visited file."
-    (lambda (file)                      ; Function to perform the action
-      (let* ((r-o  (if (eq this-command 'icicle-candidate-action)
-                       (or (and init-pref-arg        (not current-prefix-arg))
-                           (and (not init-pref-arg)  current-prefix-arg))
-                     init-pref-arg))
-             (fn   (if r-o 'find-file-read-only 'find-file)))
-        (funcall fn file 'WILDCARDS)))
-    "Find file: " nil nil t nil nil
+    (lambda (file) (bmkp-find-file file 'MUST-EXIST)) ; Function to perform the action
+    "Find file: " nil nil t nil nil     ; `read-file-name' args
     (icicle-file-bindings               ; Bindings
-     ((init-pref-arg  current-prefix-arg) ; Pre bindings
-      (regexp         (read-string "Regexp for tags: "))
+     ((regexp  (read-string "Regexp for tags: ")) ; Pre bindings
       (icicle-all-candidates-list-alt-action-fn ; `M-|'
        (lambda (files) (let ((enable-recursive-minibuffers  t))
                          (dired-other-window (cons (read-string "Dired buffer name: ") files))))))
@@ -759,19 +812,12 @@ at point, or if none then the visited file."
   (icicle-maybe-byte-compile-after-load icicle-find-file-all-tags-regexp)
 
 
-  (icicle-define-file-command icicle-find-file-all-tags-regexp-other-window ; `C-x 4 j t a % *'
+  (icicle-define-file-command icicle-find-file-all-tags-regexp-other-window ; `C-x 4 j t C-f % *'
     "Same as `icicle-find-file-all-tags-regexp', except uses another window."
-    (lambda (file)                      ; Function to perform the action
-      (let* ((r-o  (if (eq this-command 'icicle-candidate-action)
-                       (or (and init-pref-arg        (not current-prefix-arg))
-                           (and (not init-pref-arg)  current-prefix-arg))
-                     init-pref-arg))
-             (fn   (if r-o 'find-file-read-only-other-window 'find-file-other-window)))
-        (funcall fn file 'WILDCARDS)))
-    "Find file: " nil nil t nil nil
+    (lambda (file) (bmkp-find-file-other-window file 'MUST-EXIST)) ; Function to perform the action
+    "Find file: " nil nil t nil nil     ; `read-file-name' args
     (icicle-file-bindings               ; Bindings
-     ((init-pref-arg  current-prefix-arg) ; Pre bindings
-      (regexp         (read-string "Regexp for tags: "))
+     ((regexp  (read-string "Regexp for tags: ")) ; Pre bindings
       (icicle-all-candidates-list-alt-action-fn ; `M-|'
        (lambda (files) (let ((enable-recursive-minibuffers  t))
                          (dired-other-window (cons (read-string "Dired buffer name: ") files))))))
@@ -785,9 +831,8 @@ at point, or if none then the visited file."
   (icicle-maybe-byte-compile-after-load icicle-find-file-all-tags-regexp-other-window)
 
 
-  (icicle-define-file-command icicle-find-file-some-tags ; `C-x j t a +'
+  (icicle-define-file-command icicle-find-file-some-tags ; `C-x j t C-f +'
     "Visit a file or directory that has at least one of the tags you enter.
-This is otherwise like `icicle-find-file'.
 You are prompted for the tags, then the file name.
 Hit `RET' to enter each tag, then hit `RET' again after the last tag.
 You can use completion to enter each tag.  Completion is lax: you are
@@ -795,17 +840,10 @@ not limited to existing tags.
 
 When prompted for the file you can use `M-n' to pick up the file name
 at point, or if none then the visited file."
-    (lambda (file)                      ; Function to perform the action
-      (let* ((r-o  (if (eq this-command 'icicle-candidate-action)
-                       (or (and init-pref-arg        (not current-prefix-arg))
-                           (and (not init-pref-arg)  current-prefix-arg))
-                     init-pref-arg))
-             (fn   (if r-o 'find-file-read-only 'find-file)))
-        (funcall fn file 'WILDCARDS)))
-    "Find file: " nil nil t nil nil
+    (lambda (file) (bmkp-find-file file 'MUST-EXIST)) ; Function to perform the action
+    "Find file: " nil nil t nil nil     ; `read-file-name' args
     (icicle-file-bindings               ; Bindings
-     ((init-pref-arg  current-prefix-arg) ; Pre bindings
-      (tags           (bmkp-read-tags-completing))
+     ((tags  (bmkp-read-tags-completing nil nil current-prefix-arg)) ; Pre bindings
       (icicle-all-candidates-list-alt-action-fn ; `M-|'
        (lambda (files) (let ((enable-recursive-minibuffers  t))
                          (dired-other-window (cons (read-string "Dired buffer name: ") files))))))
@@ -817,19 +855,12 @@ at point, or if none then the visited file."
   (icicle-maybe-byte-compile-after-load icicle-find-file-some-tags)
 
 
-  (icicle-define-file-command icicle-find-file-some-tags-other-window ; `C-x 4 j t a +'
+  (icicle-define-file-command icicle-find-file-some-tags-other-window ; `C-x 4 j t C-f +'
     "Same as `icicle-find-file-some-tags', except uses another window."
-    (lambda (file)                      ; Function to perform the action
-      (let* ((r-o  (if (eq this-command 'icicle-candidate-action)
-                       (or (and init-pref-arg        (not current-prefix-arg))
-                           (and (not init-pref-arg)  current-prefix-arg))
-                     init-pref-arg))
-             (fn   (if r-o 'find-file-read-only-other-window 'find-file-other-window)))
-        (funcall fn file 'WILDCARDS)))
-    "Find file: " nil nil t nil nil
+    (lambda (file) (bmkp-find-file-other-window file 'MUST-EXIST)) ; Function to perform the action
+    "Find file: " nil nil t nil nil     ; `read-file-name' args
     (icicle-file-bindings               ; Bindings
-     ((init-pref-arg  current-prefix-arg) ; Pre bindings
-      (tags           (bmkp-read-tags-completing))
+     ((tags  (bmkp-read-tags-completing nil nil current-prefix-arg)) ; Pre bindings
       (icicle-all-candidates-list-alt-action-fn ; `M-|'
        (lambda (files) (let ((enable-recursive-minibuffers  t))
                          (dired-other-window (cons (read-string "Dired buffer name: ") files))))))
@@ -841,21 +872,14 @@ at point, or if none then the visited file."
   (icicle-maybe-byte-compile-after-load icicle-find-file-some-tags-other-window)
 
 
-  (icicle-define-file-command icicle-find-file-some-tags-regexp ; `C-x j t a % +'
+  (icicle-define-file-command icicle-find-file-some-tags-regexp ; `C-x j t C-f % +'
     "Visit a file or directory that has a tag matching a regexp you enter.
 When prompted for the file you can use `M-n' to pick up the file name
 at point, or if none then the visited file."
-    (lambda (file)                      ; Function to perform the action
-      (let* ((r-o  (if (eq this-command 'icicle-candidate-action)
-                       (or (and init-pref-arg        (not current-prefix-arg))
-                           (and (not init-pref-arg)  current-prefix-arg))
-                     init-pref-arg))
-             (fn   (if r-o 'find-file-read-only 'find-file)))
-        (funcall fn file 'WILDCARDS)))
-    "Find file: " nil nil t nil nil
+    (lambda (file) (bmkp-find-file-other-window file 'MUST-EXIST)) ; Function to perform the action
+    "Find file: " nil nil t nil nil     ; `read-file-name' args
     (icicle-file-bindings               ; Bindings
-     ((init-pref-arg  current-prefix-arg) ; Pre bindings
-      (regexp         (read-string "Regexp for tags: "))
+     ((regexp  (read-string "Regexp for tags: ")) ; Pre bindings
       (icicle-all-candidates-list-alt-action-fn ; `M-|'
        (lambda (files) (let ((enable-recursive-minibuffers  t))
                          (dired-other-window (cons (read-string "Dired buffer name: ") files))))))
@@ -869,19 +893,12 @@ at point, or if none then the visited file."
   (icicle-maybe-byte-compile-after-load icicle-find-file-some-tags-regexp)
 
 
-  (icicle-define-file-command icicle-find-file-some-tags-regexp-other-window ; `C-x 4 j t a % +'
+  (icicle-define-file-command icicle-find-file-some-tags-regexp-other-window ; `C-x 4 j t C-f % +'
     "Same as `icicle-find-file-some-tags-regexp', except uses another window."
-    (lambda (file)                      ; Function to perform the action
-      (let* ((r-o  (if (eq this-command 'icicle-candidate-action)
-                       (or (and init-pref-arg        (not current-prefix-arg))
-                           (and (not init-pref-arg)  current-prefix-arg))
-                     init-pref-arg))
-             (fn   (if r-o 'find-file-read-only-other-window 'find-file-other-window)))
-        (funcall fn file 'WILDCARDS)))
-    "Find file: " nil nil t nil nil
+    (lambda (file) (bmkp-find-file-other-window file 'MUST-EXIST)) ; Function to perform the action
+    "Find file: " nil nil t nil nil     ; `read-file-name' args
     (icicle-file-bindings               ; Bindings
-     ((init-pref-arg  current-prefix-arg) ; Pre bindings
-      (regexp         (read-string "Regexp for tags: "))
+     ((regexp  (read-string "Regexp for tags: ")) ; Pre bindings
       (icicle-all-candidates-list-alt-action-fn ; `M-|'
        (lambda (files) (let ((enable-recursive-minibuffers  t))
                          (dired-other-window (cons (read-string "Dired buffer name: ") files))))))
@@ -1867,6 +1884,8 @@ build a cache file of synonyms that are used for completion.  See
 ;;;
 ;;;###autoload (autoload 'icicle-tag-a-file                              "icicles-cmd2.el")
 ;;;###autoload (autoload 'icicle-untag-a-file                            "icicles-cmd2.el")
+;;;###autoload (autoload 'icicle-find-file-handle-bookmark               "icicles-cmd2.el")
+;;;###autoload (autoload 'icicle-find-file-handle-bookmark-other-window  "icicles-cmd2.el")
 ;;;###autoload (autoload 'icicle-find-file-tagged                        "icicles-cmd2.el")
 ;;;###autoload (autoload 'icicle-find-file-tagged-other-window           "icicles-cmd2.el")
 ;;;###autoload (autoload 'icicle-find-file-all-tags                      "icicles-cmd2.el")
