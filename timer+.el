@@ -7,33 +7,16 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Jul 15 08:45:19 1996
 ;; Version: 20.0
-;; Last-Updated: Sun Jan  1 14:05:08 2012 (-0800)
+;; Last-Updated: Sun Feb 26 17:01:27 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 80
+;;     Update #: 82
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/timer+.el
 ;; Keywords: processes, calendar
 ;; Compatibility: GNU Emacs 20.x
 ;;
 ;; Features that might be required by this library:
 ;;
-;;   `advice', `advice-preload', `apropos', `apropos+',
-;;   `apropos-fn+var', `avoid', `backquote', `bookmark', `bookmark+',
-;;   `bookmark+-1', `bookmark+-bmu', `bookmark+-key',
-;;   `bookmark+-lit', `bookmark+-mac', `bytecomp', `cl', `cus-edit',
-;;   `cus-face', `cus-load', `cus-start', `custom', `dired',
-;;   `dired+', `dired-aux', `dired-x', `doremi', `easymenu',
-;;   `ediff-diff', `ediff-help', `ediff-init', `ediff-merg',
-;;   `ediff-mult', `ediff-util', `ediff-wind', `el-swank-fuzzy',
-;;   `ffap', `ffap-', `fit-frame', `frame-cmds', `frame-fns',
-;;   `fuzzy', `fuzzy-match', `help+20', `hexrgb', `icicles',
-;;   `icicles-cmd1', `icicles-cmd2', `icicles-face', `icicles-fn',
-;;   `icicles-mcmd', `icicles-mode', `icicles-opt', `icicles-var',
-;;   `image-dired', `info', `info+', `kmacro', `levenshtein',
-;;   `menu-bar', `menu-bar+', `misc-cmds', `misc-fns', `mkhtml',
-;;   `mkhtml-htmlize', `mouse3', `mwheel', `naked', `pp', `pp+',
-;;   `regexp-opt', `ring', `ring+', `second-sel', `strings',
-;;   `thingatpt', `thingatpt+', `timer', `unaccent', `w32-browser',
-;;   `w32browser-dlgopen', `wid-edit', `wid-edit+', `widget'.
+;;   `thingatpt', `thingatpt+', `timer'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -58,6 +41,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2012/02/25 dadams
+;;     Removed soft require of Icicles.
 ;; 2005/10/31 dadams
 ;;     Use nil as init-value arg in calls to completing-read, everywhere.
 ;; 1999/03/17 dadams
@@ -91,7 +76,8 @@
 
 (require 'thingatpt nil t) ;; (no error if not found): symbol-at-point
 (require 'thingatpt+ nil t) ;; (no error if not found): symbol-nearest-point
-(require 'icicles nil t) ;; (no error if not found): completing-read
+
+;; (require 'icicles nil t) ;; (no error if not found): completing-read
 
 ;;;;;;;;;;;;;;;;;;;;;;;
 
