@@ -401,6 +401,29 @@ Move point to the beginning of the line, and run the normal hook
 </pre>
 Why isn't that a standard part of hide-show?
 
+[new]
+Until tuareg support is added to tuareg.el as promised in
+http://caml.inria.fr/pub/ml-archives/caml-list/2004/01/d6b65abbef1eeb2c8af24ae8342d6bb9.en.html
+this will do usable tuareg hideshow support:
+<pre>
+(add-hook 'tuareg-load-hook
+          (lambda ()
+            (when (require 'hideshow nil t)
+              (unless (assq 'tuareg-mode hs-special-modes-alist)
+                (add-to-list 'hs-special-modes-alist
+                             `(tuareg-mode
+                               ,(concat "^" tuareg-definitions-regexp)
+                               ,tuareg-semicolon-match-stop-regexp
+                               nil ;; nil means to use `comment-start'
+                               (lambda (_arg)
+                                 (tuareg-next-phrase t nil)
+                                 (tuareg-skip-back-blank-and-comments))
+                               nil))))))
+(add-hook 'tuareg-mode-hook
+          (lambda ()
+            (when (featurep 'hideshow)
+              (hs-minor-mode 1))))
+</pre>
 
 
 ----
