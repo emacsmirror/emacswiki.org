@@ -1,0 +1,64 @@
+'''Form 1040''' is for filing a U.S. individual federal income tax return.
+Taxes for the previous year need to submitted to the Internal Revenue
+Service (IRS) by April 15.
+
+Here's an Emacs library with functions that can estimate your expected
+tax obligation or rate.  It does not consider deductions, credits or
+any other adjustments.
+
+The library can only be expected to work in the last year it was
+updated, since the US Congress changes the tax schedule on an annual
+basis.  ''Use at your own risk!''
+
+See InstallingPackages for how to installing a Lisp file.
+
+* Lisp:1040tt.el
+
+Add the following to your InitFile to use it.
+
+{{{
+(autoload '1040tt-income-tax "1040tt"
+  "Compute tax for INCOME when filing as STATUS.
+
+\(fn income status)"
+  'interactive)
+
+(autoload '1040tt-tax-rate "1040tt"
+  "Display tax rate for INCOME when filing as STATUS.
+
+\(fn income status)"
+  'interactive)
+
+(autoload '1040tt-tax-level "1040tt"
+  "Display income level for INCOME when filing as STATUS.
+
+\(fn income status)"
+  'interactive)
+}}}
+
+Many of the following commands ask for a "Filing status".  This must
+be one of the following:
+
+* `filing-jointly'
+* `filing-separately'
+* `head-of-household'
+* `single'
+
+; ##M-x 1040tt-income-tax##:
+Calculate the tax for a household income.
+Prompts for an amount of taxable income and a filing status.
+; ##M-x 1040tt-tax-rate##:
+Determine the marginal tax for the last dollar of your income.
+Prompts for an amount of taxable income and a filing status.
+; ##M-x 1040tt-tax-level##:
+Determine the highest income tax level for your income.
+Prompts for an amount of taxable income and a filing status.
+
+See also
+
+* [http://www.irs.gov/pub/irs-pdf/f1040.pdf Form 1040] (f1040.pdf)
+* [http://www.irs.gov/pub/irs-pdf/i1040tt.pdf Form 1040 tax tables] (i1040tt.pdf)
+* [[WikiPedia:IRS tax forms]]
+
+----
+CategoryFinancials
