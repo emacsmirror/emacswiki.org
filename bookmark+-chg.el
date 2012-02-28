@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2012, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Tue Feb 28 07:54:56 2012 (-0800)
+;; Last-Updated: Tue Feb 28 10:58:15 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 14404
+;;     Update #: 14409
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-chg.el
 ;; Keywords: bookmarks, bookmark+
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -600,6 +600,10 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-bmu.el'")
 ;;
+;; 2012/02/28 dadams
+;;     Added face bmkp-file-handler.
+;;     bmkp-bmenu-mode-status-help: Added bmkp-file-handler to face legend.
+;;     bmkp-bmenu-propertize-item: Propertize file-handler bookmarks, with bmkp-file-handler.
 ;; 2011/12/31 dadams
 ;;     Define macro with-buffer-modified-unmodified for Emacs 23.1, in addition to Emacs < 23.
 ;; 2011/12/30 dadams
