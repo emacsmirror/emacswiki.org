@@ -44,6 +44,10 @@ navigate.
 
 [:icicle-bookmark]
 [:icicle-bookmark-other-window]
+[:icicle-bookmark-autofile-all-tags]
+[:icicle-bookmark-autofile-all-tags-regexp]
+[:icicle-bookmark-autofile-some-tags]
+[:icicle-bookmark-autofile-some-tags-regexp]
 [:icicle-bookmark-non-file]
 [:icicle-bookmark-bookmark-list]
 [:icicle-bookmark-dired]
@@ -140,14 +144,27 @@ navigate.
 
 Here are some of the '''Icicles''' tripping commands:
 
-* Trips among tagged files ([[http://delicious.com|delicious]]-style tagging -- requires library '''[[Bookmark+]]''').  (The `a' stands for "autofile".)
+* Trips among tagged files ([[http://delicious.com|delicious]]-style tagging -- requires library '''[[Bookmark+]]''').  (The `C-f' is a reminder that the command uses `read-file-name', like `find-file'.
+The '''`a'''' indicates that the command completes an [[autofile bookmark]] name.)
+
 (Use prefix key `C-x 4 j' for other-window commands.)
 
-** '''`icicle-find-file-tagged''''  ('''`##C-x j t a a##'''') -- Tagged files (like `icicle-fundoc': match file name and tags dynamically)
-** '''`icicle-find-file-all-tags''''  ('''`##C-x j t a *##'''') -- Files that have ''all'' of a given set of tags
-** '''`icicle-find-file-all-tags-regexp''''     ('''`##C-x j t a % *##'''') -- Files ''all'' of whose tags match a [[regexp]]
-** '''`icicle-find-file-some-tags''''    ('''`##C-x j t a +##'''') -- Files that have at least one of a given set of tags
-** '''`icicle-find-file-some-tags-regexp''''   ('''`##C-x j t a % +##'''') -- Files that have at least one tag that matches a regexp
+** '''`icicle-find-file-tagged''''  ('''`##C-x j t C-f C-f##'''') -- Tagged files (like `icicle-fundoc': match file name and tags dynamically)
+** '''`icicle-find-file-all-tags''''  ('''`##C-x j t C-f *##'''') -- Files that have ''all'' of a given set of tags
+** '''`icicle-find-file-all-tags-regexp''''     ('''`##C-x j t C-f % *##'''') -- Files ''all'' of whose tags match a [[regexp]]
+** '''`icicle-find-file-some-tags''''    ('''`##C-x j t C-f +##'''') -- Files that have at least one of a given set of tags
+** '''`icicle-find-file-some-tags-regexp''''   ('''`##C-x j t C-f % +##'''') -- Files that have at least one tag that matches a regexp
+
+
+** '''`icicle-bookmark-autofile-all-tags''''  ('''`##C-x j t a *##'''') -- Files that have ''all'' of a given set of tags
+** '''`icicle-bookmark-autofile-all-tags-regexp''''     ('''`##C-x j t a % *##'''') -- Files ''all'' of whose tags match a [[regexp]]
+** '''`icicle-bookmark-autofile-some-tags''''    ('''`##C-x j t a +##'''') -- Files that have at least one of a given set of tags
+** '''`icicle-bookmark-autofile-some-tags-regexp''''   ('''`##C-x j t a % +##'''') -- Files that have at least one tag that matches a regexp
+
+
+
+
+
 
 
 * '''`icicle-bookmark-other-window'''' ('''`C-- C-x r m'''') -- Trip among [[bookmark]]s of all types.  (Also bound to '''`C-x 4 j j'''' if library <tt>[[bookmark+.el]]</tt> is used.)
@@ -170,12 +187,12 @@ Here are some of the '''Icicles''' tripping commands:
 ** '''`icicle-bookmark-all-tags-regexp'''' ('''##C-x j t % *##'''') -- Bookmarks having all tags match a [[regexp]]
 ** '''`icicle-bookmark-some-tags-regexp'''' ('''##C-x j t % +##'''') -- Bookmarks having some tags that match a regexp
 ** '''`icicle-bookmark-file-all-tags'''' ('''##C-x j t f *##'''') -- File and directory bookmarks having all of a set of tags
-** '''`icicle-bookmark-file-some-tags'''' ('''##C-x j t f +##'''') -- File and directory bookmarks having some of a set of tags
 ** '''`icicle-bookmark-file-all-tags-regexp'''' ('''##C-x j t f % *##'''') -- File and directory bookmarks having all tags match a [[regexp]]
+** '''`icicle-bookmark-file-some-tags'''' ('''##C-x j t f +##'''') -- File and directory bookmarks having some of a set of tags
 ** '''`icicle-bookmark-file-some-tags-regexp'''' ('''##C-x j t f % +##'''') -- File and directory bookmarks having some tags that match a regexp
 ** '''`icicle-bookmark-url''''         ('''`C-x j u'''') -- URL bookmarks
 ** '''`icicle-bookmark-w3m''''         ('''`C-x j w'''') -- [[w3m|W3M]] bookmarks
-** '''`icicle-bookmark-this-buffer''''  ('''`##C-x j .##'''') -- Bookmarks for the current buffer
+** '''`icicle-bookmark-this-buffer''''  ('''`##C-x j , ,##'''') -- Bookmarks for the current buffer
 ** '''`icicle-bookmark-specific-buffers'''' ('''`##C-x j = b##'''') -- Bookmarks for specific buffers
 ** '''`icicle-bookmark-specific-files'''' ('''`##C-x j = f##'''') -- Bookmarks for specific files
 * '''`icicle-buffer'''' ('''`C-x b'''') -- Trip among [[buffer]]s
