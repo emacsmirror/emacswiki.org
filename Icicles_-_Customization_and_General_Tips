@@ -347,10 +347,18 @@ highlight whatever your input matches, in buffer `*Completions*' and in the mini
 Non-`nil' user option '''`icicle-touche-pas-aux-menus-flag'''' means
 that '''Icicles''' will not add menu items to [[menu bar]] menus, except
 for the '''Icicles''' and '''Minibuf''' menus.  Default value `nil' means
-that whenever an appropriate menu-bar menu exists, '''Icicles''' items
-are added to it (when in ''Icicle'' mode).  For example, if `nil', then '''Delete File''' is
+that whenever a relevant menu already exists, '''Icicles''' items
+are added to it (when in ''Icicle'' mode).  Put differently,
+non-`nil' means consolidate all '''Icicles''' menu items in a single
+'''Icicles''' menu.
+
+
+For example, if `nil' then item '''Delete File''' is
 added to the '''File''' menu; otherwise it is added to the '''Icicles'''
-menu.  The value of this option is used only when ''Icicle'' mode is initially
+menu.
+
+
+The value of this option is used only when ''Icicle'' mode is initially
 established, so changing it has no effect after '''Icicles''' has
 been loaded.  However, you can change it and save the new value,
 so that it will be used next time. See [[Icicles - Nutshell View]] for more about the '''Icicles''' and '''Minibuf''' menus.
