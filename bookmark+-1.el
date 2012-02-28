@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2012, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 13:43:55 2010 (-0700)
-;; Last-Updated: Sun Feb 26 17:38:40 2012 (-0800)
+;; Last-Updated: Tue Feb 28 07:49:23 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 3965
+;;     Update #: 4010
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-1.el
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -275,7 +275,7 @@
 ;;    `bmkp-autotemp-bookmark-predicates',
 ;;    `bmkp-bookmark-name-length-max', `bmkp-crosshairs-flag',
 ;;    `bmkp-default-bookmark-name',
-;;    `bmkp-default-handler-associations',
+;;    `bmkp-default-handlers-for-file-types',
 ;;    `bmkp-desktop-no-save-vars',
 ;;    `bmkp-guess-default-handler-for-file-flag',
 ;;    `bmkp-handle-region-function', `bmkp-incremental-filter-delay',
@@ -729,8 +729,15 @@ of the following, if available:
           (const :tag "Last used bookmark in same file"  last-used))
   :group 'bookmark-plus)
 
+;; We do not use `define-obsolete-variable-alias' so that byte-compilation in older Emacs
+;; works for newer Emacs too.
+(when (fboundp 'defvaralias)            ; Emacs 22+
+  (defvaralias 'bmkp-default-handler-associations 'bmkp-default-handlers-for-file-types)
+  (make-obsolete-variable 'bmkp-default-handler-associations 'bmkp-default-handlers-for-file-types
+                          "2012-02-27"))
+
 ;;;###autoload
-(defcustom bmkp-default-handler-associations
+(defcustom bmkp-default-handlers-for-file-types
   (and (require 'dired-x)               ; It in turn requires `dired-aux.el'
        (let ((assns  ()))
          (dolist (shell-assn  dired-guess-shell-alist-user)
@@ -1033,7 +1040,7 @@ See `bmkp-sort-comparer'."
 (defcustom bmkp-guess-default-handler-for-file-flag nil
   "*Non-nil means guess the default handler when creating a file bookmark.
 This is ignored if a handler can be found using option
-`bmkp-default-handler-associations'.  Otherwise, this is used by
+`bmkp-default-handlers-for-file-types'.  Otherwise, this is used by
 function `bmkp-default-handler-for-file' to determine the default
 handler for a given file."
   :type 'boolean :group 'bookmark-plus)
@@ -4984,6 +4991,7 @@ This works around an Emacs 20 problem that occurs if STRING contains
 binary data (weird chars)."
   (condition-case nil (upcase string) (error string)))
 
+;; Thx to Michael Heerdegen and Michael Albinus for help with this one.
 (defun bmkp-same-file-p (file1 file2)
   "Return non-nil if FILE1 and FILE2 name the same file.
 If either name is not absolute, then it is expanded relative to
@@ -4997,9 +5005,11 @@ If either name is not absolute, then it is expanded relative to
                                 ;; From the Emacs 24 definition of `read-file-name-completion-ignore-case'.
                                 (memq system-type '(ms-dos windows-nt darwin cygwin))))))
     (and (equal remote1 remote2)
-         (let ((ft1  (file-truename (expand-file-name file1)))
-               (ft2  (file-truename (expand-file-name file2))))
-           (eq t (compare-strings ft1 0 (length ft1) ft2 0 (length ft2) ignore-case-p))))))
+         (if (fboundp 'file-equal-p)
+             (file-equal-p file1 file2)
+           (let ((ft1  (file-truename (expand-file-name file1)))
+                 (ft2  (file-truename (expand-file-name file2))))
+             (eq t (compare-strings ft1 0 (length ft1) ft2 0 (length ft2) ignore-case-p)))))))
 
 ;;; $$$$$$
 ;;; (defun bmkp-same-file-p (file1 file2)
@@ -5844,12 +5854,12 @@ bookmark name is the prefix followed by the non-directory part of
 FILE.
 
 Non-interactively:
- - Optional arg PREFIX-ONLY-P means prompt for a name prefix.
+ - Non-nil optional arg PREFIX-ONLY-P means prompt for a name prefix.
  - Optional arg NAME/PREFIX is the name or name prefix string.
  - Optional arg NO-OVERWRITE is passed to `bookmark-store': non-nil
    means do not overwrite an existing bookmark that has the same name.
- - Optional arg MSGP means MSGP means show a warning message if file
-   does not exist."
+ - Non-nil optional arg MSGP means MSGP means show a warning message
+   if file does not exist."
   (interactive
    (list (let ((icicle-unpropertize-completion-result-flag  t))
            (read-file-name "File: " nil
@@ -6146,9 +6156,9 @@ is unchanged."
   "Return a default bookmark handler for FILENAME, or nil.
 If non-nil, it is a Lisp function, determined as follows:
 
-1. Match FILENAME against `bmkp-default-handler-associations'.  If it
-matches a Lisp function, return that function.  If it matches a shell
-command, return a Lisp function that invokes that shell command.
+1. Match FILENAME against `bmkp-default-handlers-for-file-types'.  If
+it matches a Lisp function, return that function.  If it matches a
+shell command, return a Lisp function that invokes that shell command.
 
 2. If no match is found and `bmkp-guess-default-handler-for-file-flag'
 is non-nil, then try to find an appropriate shell command using, in
@@ -6176,9 +6186,9 @@ Lisp function that invokes that shell command."
 
 (defun bmkp-default-handler-user (filename)
   "Return default handler for FILENAME.
-The value is based on `bmkp-default-handler-associations'."
+The value is based on `bmkp-default-handlers-for-file-types'."
   (catch 'bmkp-default-handler-user
-    (dolist (assn  bmkp-default-handler-associations)
+    (dolist (assn  bmkp-default-handlers-for-file-types)
       (when (string-match (car assn) filename)
         (throw 'bmkp-default-handler-user (cdr assn))))
     nil))
@@ -8425,36 +8435,60 @@ Then you are prompted for the BOOKMARK (with completion)."
      (list rgx (bookmark-completing-read "File bookmark" (bmkp-default-bookmark-name alist) alist))))
   (bookmark-jump-other-window bookmark))
 
-(defun bmkp-find-file (&optional file must-exist-p) ; `C-x j C-f'
-  "Visit a file or directory, respecting any autofile bookmark for it.
-If FILE has an autofile bookmark, use its handler, if any.
+(defun bmkp-find-file (&optional file create-autofile-p must-exist-p msgp) ; `C-x j C-f'
+  "Visit a file or directory, respecting any associated autofile handlers.
+You are prompted for the file or directory name, FILE.
+
+If FILE matches an entry in `bmkp-default-handlers-for-file-types'
+then use the associated default handler to access the file.
 Otherwise, just use `find-file'.
 
-Non-nil optional arg MUST-EXIST-P means raise an error if FILE has no
-autofile bookmark."
-  (interactive)
+With a prefix arg, create an autofile bookmark if FILE does not
+already have one.
+
+Non-interactively, non-nil optional arg MUST-EXIST-P means raise an
+error if FILE has no autofile bookmark."
+  (interactive "i\nP\ni\np")
   (let* ((use-file-dialog                             nil)
          (icicle-unpropertize-completion-result-flag  t) ; For `read-file-name'.
          (fil                                         (or file  (read-file-name "Find file: " nil nil t)))
+         (dir-to-use                                  (if (file-name-absolute-p fil)
+                                                          (file-name-directory fil)
+                                                        default-directory))
          (bmk                                         (bmkp-get-autofile-bookmark fil)))
     (if bmk
         (bookmark-jump bmk)
       (if must-exist-p
           (error "File `%s' is not an autofile (no bookmark)")
-        (find-file fil 'WILDCARDS)))))
+        (when create-autofile-p         ; Create a new bookmark.
+          (bmkp-file-target-set (expand-file-name fil dir-to-use) t nil 'NO-OVERWRITE msgp)
+          (when msgp (message "Autofile bookmark set for `%s'" fil)))
+        (let ((default-handler  (condition-case nil (bmkp-default-handler-for-file fil) (error nil))))
+          (if default-handler
+              (funcall default-handler fil)
+            (find-file fil 'WILDCARDS)))))))
 
-(defun bmkp-find-file-other-window (&optional file must-exist-p) ; `C-x 4 j C-f'
+(defun bmkp-find-file-other-window (&optional file create-autofile-p must-exist-p msgp) ; `C-x 4 j C-f'
   "`bmkp-find-file', but in another window."
-  (interactive)
+  (interactive "i\nP\ni\np")
   (let* ((use-file-dialog                             nil)
          (icicle-unpropertize-completion-result-flag  t) ; For `read-file-name'.
          (fil                                         (or file  (read-file-name "Find file: " nil nil t)))
-         (bmk                                         (bmkp-get-autofile-bookmark fil)))
+         (dir-to-use                                  (if (file-name-absolute-p fil)
+                                                          (file-name-directory fil)
+                                                        default-directory))
+         (bmk                                         (bmkp-get-autofile-bookmark fil dir-to-use)))
     (if bmk
         (bookmark-jump-other-window bmk)
       (if must-exist-p
           (error "File `%s' is not an autofile (no bookmark)")
-        (find-file-other-window fil 'WILDCARDS)))))
+        (when create-autofile-p         ; Create a new bookmark.
+          (bmkp-file-target-set (expand-file-name fil dir-to-use) t nil 'NO-OVERWRITE msgp)
+          (when msgp (message "Autofile bookmark created for `%s'" fil)))
+        (let ((default-handler  (condition-case nil (bmkp-default-handler-for-file fil) (error nil))))
+          (if default-handler
+              (funcall default-handler fil)
+            (find-file-other-window fil 'WILDCARDS)))))))
 
 
 ;;; We could allow these even for Emacs 20 for Icicles users,
