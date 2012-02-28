@@ -3813,8 +3813,23 @@ I welcome someone else, such as yourself, making such an effort.  What's needed 
 (BTW, for something like this it's usually a lot easier to follow up by email.) -- DrewAdams
 
 [new]
-
 I will look into it, cheers. -- JoeBloggs
+
+[new:DrewAdams:2012-02-28 15:32 UTC]
+Joe, it just occurred to me that maybe the only problem is that '''Bookmark+''' (and vanilla Emacs ##bookmark.el##) don't know about the Gnus bookmark file(s).  IOW, maybe there is no problem handling their bookmarks, but you just have to explicitly load their bookmark file(s).
+
+Can you try that, to see?  Just use `C-x p L' (`bmkp-switch-bookmark-file' to load such a file (you presumably know where it is located; I don't).  Then try to use its bookmarks, to see if they are handled OK.  This should be the first thing to try.  Let me know what you find out.  Be sure to back up your bookmark file(s) before such experimenting, just in case.  
+
+Also, I contacted BastienGuerry by email, who I think wrote the Gnus bookmarks code.  He may be able to help.  If you want to follow up by email, feel free -- that's probably easier than communicating this way.  Thx -- DrewAdams
+
+
+
+
+
+
+
+
+
 ----
 CategoryBookmarking CategoryHypermedia CategoryPersistence 
 CategoryProgramming CategoryRegion CategoryWThirtyTwo
