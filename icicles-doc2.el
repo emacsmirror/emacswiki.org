@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Sat Feb 18 14:51:26 2012 (-0800)
+;; Last-Updated: Tue Feb 28 09:52:44 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 28693
+;;     Update #: 28706
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-doc2.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -1755,8 +1755,9 @@
 ;;  `icicle-untag-a-file'.  In addition, all Icicles file commands let
 ;;  you tag or untag files on the fly, during file-name completion,
 ;;  using the keys `C-x a +' and `C-x a -' respectively (`a' for
-;;  autofile).  Similarly, you can use `C-x a a' to create an autofile
-;;  bookmark for a file without tagging it.
+;;  autofile).  Similarly, you can use `C-x a a' during file-name
+;;  completion to create an autofile bookmark for a file without
+;;  tagging it.
 ;;
 ;;  There are several Icicles multi-commands for jumping to tagged
 ;;  files.  They are all on the `Bookmark+' keymaps `bmkp-jump-map'
@@ -1767,12 +1768,12 @@
 ;;(@* "`icicle-find-file-tagged'")
 ;;  *** `icicle-find-file-tagged' ***
 ;;
-;;  Command `icicle-find-file-tagged' (`C-x j t a a') matches tags as
-;;  part of a multi-completion candidate.  Each candidate is composed
-;;  of these fields: an absolute file name plus the file's tags, all
-;;  separated by `icicle-list-join-string' ("^G^J", by default).  As
-;;  always, you can type `C-M-j' to insert this separator into the
-;;  minibuffer.
+;;  Command `icicle-find-file-tagged' (`C-x j t C-f C-f') matches tags
+;;  as part of a multi-completion candidate.  Each candidate is
+;;  composed of these fields: an absolute file name plus the file's
+;;  tags, all separated by `icicle-list-join-string' ("^G^J", by
+;;  default).  As always, you can type `C-M-j' to insert this
+;;  separator into the minibuffer.
 ;;
 ;;  For this command, by default `.' in your input matches any
 ;;  character, including a newline.  As always, you can use `C-M-.'
@@ -1814,7 +1815,7 @@
 ;;  indicated by `*' in the key binding.  Union is indicated by `+'.
 ;;  The regexp-matching commands have `%' in the key binding.  And
 ;;  again, there is an `-other-window' version of each, on prefix key
-;;  `C-x 4 j t a' instead of `C-x j t a'.
+;;  `C-x 4 j t C-f' instead of `C-x j t C-f'.
 ;;
 ;;  `icicle-find-file-all-tags' (`*') - Match each tag exactly
 ;;  `icicle-find-file-all-tags-regexp' (`% *') - Regexp-match each tag
@@ -1974,6 +1975,7 @@
 ;;  `C-x j B'   - bookmark-list bookmarks
 ;;  `C-x j d'   - Dired bookmarks
 ;;  `C-x j f'   - file bookmarks
+;;  `C-x j . f' - file bookmarks for the current directory
 ;;  `C-x j g'   - Gnus bookmarks
 ;;  `C-x j i'   - Info bookmarks
 ;;  `C-x j M-i' - image bookmarks
@@ -1984,8 +1986,9 @@
 ;;  `C-x j r'   - bookmarks with regions
 ;;  `C-x j u'   - URL bookmarks
 ;;  `C-x j w'   - W3M (URL) bookmarks
+;;  `C-x j x'   - temporary bookmarks
 ;;  `C-x j y'   - bookmark-file bookmarks
-;;  `C-x j .'   - bookmarks for the current buffer
+;;  `C-x j , ,' - bookmarks for the current buffer
 ;;  `C-x j = b' - bookmarks for specific buffers
 ;;  `C-x j = f' - bookmarks for specific files
 ;;
@@ -4880,14 +4883,19 @@
 ;;
 ;;  * Non-`nil' user option `icicle-touche-pas-aux-menus-flag' means
 ;;    that Icicles will not add menu items to menu-bar menus, except
-;;    for the Icicles and Minibuf menus.  Default value `nil' means
-;;    that whenever an appropriate menu-bar menu exists, Icicles items
-;;    are added to it (when in Icicle mode).  For example, if `nil',
-;;    then Delete File is added to the File menu; otherwise it is
-;;    added to the Icicles menu.  The value of this option is used
-;;    only when Icicle mode is initially established, so changing it
-;;    has no effect after Icicles has been loaded.  However, you can
-;;    change it and save the new value, so it will be used next time.
+;;    for the `Icicles' and `Minibuf' menus.  Default value `nil'
+;;    means that whenever a relevant menu already exists, Icicles
+;;    items are added to it (when in Icicle mode).  Put differently,
+;;    non-`nil' means consolidate all Icicles menu items in a single
+;;    `Icicles' menu.
+;;
+;;    For example, if `nil' then item `Delete File' is added to the
+;;    `File' menu; otherwise it is added to the `Icicles' menu.
+;;
+;;    The value of this option is used only when Icicle mode is
+;;    initially established, so changing it has no effect after
+;;    Icicles has been loaded.  However, you can change it and save
+;;    the new value, so it will be used next time.
 ;;
 ;;  * User option `icicle-functions-to-redefine' controls whether
 ;;    Icicles redefines some standard functions, enhancing them to use
