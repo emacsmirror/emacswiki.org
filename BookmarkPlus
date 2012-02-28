@@ -1321,6 +1321,12 @@ matching a file name, and with each associated value being a Lisp [[sexp]] that 
 a shell command (a string) or an Emacs function (a [[symbol]] or
 lambda form).
 
+You can think of `bmkp-default-handlers-for-file-types' as
+somewhat analogous to `auto-mode-alist'.  But it maps file-name
+patterns to file actions instead of mapping them to
+buffer modes.  And it has an effect only when you use certain
+commands.
+
 The handler for the bookmark created invokes the shell command or
 the Emacs function with the file name as argument.
 
