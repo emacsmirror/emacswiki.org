@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2012, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Tue Feb 28 10:58:15 2012 (-0800)
+;; Last-Updated: Tue Feb 28 14:21:30 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 14409
+;;     Update #: 14411
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-chg.el
 ;; Keywords: bookmarks, bookmark+
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -146,6 +146,7 @@
 ;;;(@* "CHANGE LOG FOR `bookmark+-1.el'")
 ;;
 ;; 2012/02/28 dadams
+;;     bmkp-file-target-set: Call bmkp-refresh-menu-list if Bookmark List is displayed.
 ;;     Renamed option bmkp-default-handler-associations to bmkp-default-handlers-for-file-types.
 ;;       bmkp-default-handler-associations is NOW OBSOLETE - RENAME IT IF YOU HAVE CUSTOMIZED IT.
 ;;     bmkp-same-file-p: Take advantage of Emacs 24 function, file-equal-p.  Thx to Michael Albinus.
