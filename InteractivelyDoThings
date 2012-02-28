@@ -131,6 +131,37 @@ Did you ever want to use [[bookmark]]s from within ido? I just did a little mash
 
 If you don't want to set recursive minibuffers globally, you could also activate them locally in the above function using a let declaration.
 
+[new]
+The problem with this function is, if my bookmark is a directory, whose path I already started typing before realizing I could invoke it, the last path component will be appended to the bookmark path.
+
+Eg. if I have a bookmark for path "/Users/gael/Documents/code/2012/my-super-project" and I had typed "/Users/gael/Docu" before invoking the bookmark, then IDO will display the path: "/Users/gael/Documents/code/2012/my-super-project/Docu" and I have to delete "Docu" by hand.
+
+Here is a better way:
+
+  (require 'bookmark)
+  (setq enable-recursive-minibuffers t)
+  (define-key ido-file-dir-completion-map [(meta control ?b)] 'ido-goto-bookmark)
+  (defun ido-goto-bookmark (bookmark)
+    (interactive
+     (list (bookmark-completing-read "Jump to bookmark"
+      				   bookmark-current-bookmark)))
+    (unless bookmark
+      (error "No bookmark specified"))
+    (let ((filename (bookmark-get-filename bookmark)))
+      (if (file-directory-p filename)
+  	(progn
+  	  (ido-set-current-directory filename)
+  	  (setq ido-text ""))
+        (progn
+  	(ido-set-current-directory (file-name-directory filename))))
+      (setq ido-exit        'refresh
+  	  ido-text-init   ido-text
+  	  ido-rotate-temp t)
+      (exit-minibuffer)))
+
+--Gaël Deest
+
+
 See also [[#InvokeBookmarks]].
 
 === Complete find-tag using ido ===
