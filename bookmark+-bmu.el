@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2012, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 09:05:21 2010 (-0700)
-;; Last-Updated: Sun Jan  1 14:28:58 2012 (-0800)
+;; Last-Updated: Tue Feb 28 10:49:25 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 1437
+;;     Update #: 1454
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-bmu.el
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -195,12 +195,12 @@
 ;;
 ;;    `bmkp->-mark', `bmkp-a-mark', `bmkp-bad-bookmark',
 ;;    `bmkp-bookmark-file', `bmkp-bookmark-list', `bmkp-buffer',
-;;    `bmkp-D-mark', `bmkp-desktop', `bmkp-function', `bmkp-gnus',
-;;    `bmkp-heading', `bmkp-info', `bmkp-local-directory',
-;;    `bmkp-local-file-with-region', `bmkp-local-file-without-region',
-;;    `bmkp-man', `bmkp-non-file', `bmkp-remote-file',
-;;    `bmkp-sequence', `bmkp-su-or-sudo', `bmkp-t-mark', `bmkp-url',
-;;    `bmkp-variable-list', `bmkp-X-mark'.
+;;    `bmkp-D-mark', `bmkp-desktop', `bmkp-file-handler',
+;;    `bmkp-function', `bmkp-gnus', `bmkp-heading', `bmkp-info',
+;;    `bmkp-local-directory', `bmkp-local-file-with-region',
+;;    `bmkp-local-file-without-region', `bmkp-man', `bmkp-non-file',
+;;    `bmkp-remote-file', `bmkp-sequence', `bmkp-su-or-sudo',
+;;    `bmkp-t-mark', `bmkp-url', `bmkp-variable-list', `bmkp-X-mark'.
 ;;
 ;;  User options defined here:
 ;;
@@ -426,6 +426,12 @@ Don't forget to mention your Emacs and library versions."))
     '((((background dark)) (:foreground "Orange" :background "DarkSlateBlue"))
       (t (:foreground "DarkBlue" :background "PaleGoldenrod")))
   "*Face used for a bookmarked desktop."
+  :group 'bookmark-plus :group 'faces)
+
+(defface bmkp-file-handler
+    '((((background dark)) (:background "#272740402727")) ; ~ dark green
+      (t (:background "Thistle")))
+  "*Face used for a bookmark that has a `file-handler' attribute."
   :group 'bookmark-plus :group 'faces)
 
 (defface bmkp-function
@@ -883,11 +889,11 @@ The following faces are used for the list entries.
 Use `customize-face' if you want to change the appearance.
 
  `bmkp-bad-bookmark', `bmkp-bookmark-list', `bmkp-buffer',
- `bmkp-desktop', `bmkp-function', `bmkp-gnus', `bmkp-info',
- `bmkp-local-directory', `bmkp-local-file-without-region',
- `bmkp-local-file-with-region', `bmkp-man', `bmkp-non-file',
- `bmkp-remote-file', `bmkp-sequence', `bmkp-su-or-sudo', `bmkp-url',
- `bmkp-variable-list'.
+ `bmkp-desktop', `bmkp-file-handler', `bmkp-function', `bmkp-gnus',
+ `bmkp-info', `bmkp-local-directory',
+ `bmkp-local-file-without-region', `bmkp-local-file-with-region',
+ `bmkp-man', `bmkp-non-file', `bmkp-remote-file', `bmkp-sequence',
+ `bmkp-su-or-sudo', `bmkp-url', `bmkp-variable-list'.
 
 If option `bmkp-bmenu-state-file' is non-nil then the state of the
 displayed bookmark-list is saved when you quit it, and it is restored
@@ -3301,27 +3307,29 @@ Bookmark file:\t%s\nSorted:\t\t%s\nFiltering:\t%s\nMarked:\t\t%d\nOmitted:\t%d\n
                 (remote           "Remote file/directory or Dired buffer (could have wildcards)\n")
                 (sudo             "Remote accessed by `su' or `sudo'\n")
                 (local-dir        "Local directory or Dired buffer (could have wildcards)\n")
+                (file-handler     "Bookmark with property `file-handler'\n")
                 (bookmark-list    "*Bookmark List*\n")
                 (bookmark-file    "Bookmark file\n")
                 (desktop          "Desktop\n")
                 (sequence         "Sequence\n")
                 (variable-list    "Variable list\n")
                 (function         "Function\n"))
-            (put-text-property 0 (1- (length gnus))     'face 'bmkp-gnus         gnus)
-            (put-text-property 0 (1- (length info))     'face 'bmkp-info         info)
-            (put-text-property 0 (1- (length man))      'face 'bmkp-man          man)
-            (put-text-property 0 (1- (length url))      'face 'bmkp-url          url)
+            (put-text-property 0 (1- (length gnus))          'face 'bmkp-gnus         gnus)
+            (put-text-property 0 (1- (length info))          'face 'bmkp-info         info)
+            (put-text-property 0 (1- (length man))           'face 'bmkp-man          man)
+            (put-text-property 0 (1- (length url))           'face 'bmkp-url          url)
             (put-text-property 0 (1- (length local-no-region))
                                'face 'bmkp-local-file-without-region             local-no-region)
             (put-text-property 0 (1- (length local-w-region))
                                'face 'bmkp-local-file-with-region                local-w-region)
-            (put-text-property 0 (1- (length buffer))   'face 'bmkp-buffer       buffer)
-            (put-text-property 0 (1- (length no-buf))   'face 'bmkp-non-file     no-buf)
-            (put-text-property 0 (1- (length bad))      'face 'bmkp-bad-bookmark bad)
-            (put-text-property 0 (1- (length remote))   'face 'bmkp-remote-file  remote)
-            (put-text-property 0 (1- (length sudo))     'face 'bmkp-su-or-sudo   sudo)
+            (put-text-property 0 (1- (length buffer))        'face 'bmkp-buffer       buffer)
+            (put-text-property 0 (1- (length no-buf))        'face 'bmkp-non-file     no-buf)
+            (put-text-property 0 (1- (length bad))           'face 'bmkp-bad-bookmark bad)
+            (put-text-property 0 (1- (length remote))        'face 'bmkp-remote-file  remote)
+            (put-text-property 0 (1- (length sudo))          'face 'bmkp-su-or-sudo   sudo)
             (put-text-property 0 (1- (length local-dir))
                                'face 'bmkp-local-directory                       local-dir)
+            (put-text-property 0 (1- (length file-handler))  'face 'bmkp-file-handler file-handler)
             (put-text-property 0 (1- (length bookmark-list))
                                'face 'bmkp-bookmark-list                         bookmark-list)
             (put-text-property 0 (1- (length bookmark-file))
@@ -3337,9 +3345,10 @@ Bookmark file:\t%s\nSorted:\t\t%s\nFiltering:\t%s\nMarked:\t\t%d\nOmitted:\t%d\n
               (insert-image (create-image bmkp-bmenu-image-bookmark-icon-file nil nil :ascent 95))
               (insert "Image file\n"))
             (insert gnus) (insert info) (insert man) (insert url) (insert local-no-region)
-            (insert local-w-region) (insert buffer) (insert no-buf) (insert bad) (insert remote)
-            (insert sudo) (insert local-dir) (insert bookmark-list) (insert bookmark-file)
-            (insert desktop) (insert sequence) (insert variable-list) (insert function)
+            (insert local-w-region) (insert buffer) (insert no-buf) (insert remote)
+            (insert sudo) (insert local-dir) (insert file-handler) (insert bookmark-list)
+            (insert bookmark-file) (insert desktop) (insert sequence) (insert variable-list)
+            (insert function) (insert bad) 
             (insert "\n")
             (insert "More bookmarking help below.  Each line represents an Emacs bookmark.\n")
             (insert "Keys without prefix `C-x' are available only in `*Bookmark List*'.\n")
@@ -3663,13 +3672,13 @@ car.
 
 Return the propertized string (the bookmark name)."
   (setq bookmark  (bookmark-get-bookmark bookmark))
-  (let* ((bookmark-name  (bmkp-bookmark-name-from-record bookmark))
-         (buffp          (bmkp-get-buffer-name bookmark))
+  (let* ((bookmark-name   (bmkp-bookmark-name-from-record bookmark))
+         (buffp           (bmkp-get-buffer-name bookmark))
 
-         (filep          (bookmark-get-filename bookmark))
-         (sudop          (and filep  (boundp 'tramp-file-name-regexp)
-                              (string-match tramp-file-name-regexp filep)
-                              (string-match bmkp-su-or-sudo-regexp filep))))
+         (filep           (bookmark-get-filename bookmark))
+         (sudop           (and filep  (boundp 'tramp-file-name-regexp)
+                               (string-match tramp-file-name-regexp filep)
+                               (string-match bmkp-su-or-sudo-regexp filep))))
     ;; Put the full bookmark itself on string `bookmark-name' as property `bmkp-full-record'.
     ;; Then put that string on the name in the buffer text as property `bmkp-bookmark-name'.
     (put-text-property 0 (length bookmark-name) 'bmkp-full-record bookmark bookmark-name)
@@ -3677,7 +3686,11 @@ Return the propertized string (the bookmark name)."
     ;; Add faces, mouse face, and tooltips, to characterize the bookmark type.
     (add-text-properties
      start  end
-     (cond ((bmkp-sequence-bookmark-p bookmark) ; Sequence bookmark
+     (cond ((bookmark-prop-get bookmark 'file-handler) ; `file-handler' bookmark
+            (append (bmkp-face-prop 'bmkp-file-handler)
+                    '(mouse-face highlight follow-link t
+                      help-echo "mouse-2: Invoke the `file-handler' for this bookmark")))
+           ((bmkp-sequence-bookmark-p bookmark) ; Sequence bookmark
             (append (bmkp-face-prop 'bmkp-sequence)
                     '(mouse-face highlight follow-link t
                       help-echo "mouse-2: Invoke the bookmarks in this sequence")))
