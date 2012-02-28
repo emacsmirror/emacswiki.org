@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2012, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Tue Feb 28 09:22:29 2012 (-0800)
+;; Last-Updated: Tue Feb 28 10:03:09 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 14424
+;;     Update #: 14429
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-doc.el
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search,
 ;;           info, url, w3m, gnus
@@ -1329,6 +1329,11 @@
 ;;  matching a file name, and with each associated value being a Lisp
 ;;  sexp that evaluates to either a shell command (a string) or an
 ;;  Emacs function (a symbol or lambda form).
+;;
+;;  You can think of `bmkp-default-handlers-for-file-types' as
+;;  somewhat analogous to `auto-mode-alist'.  But it maps file-name
+;;  patterns to file actions instead of mapping them to buffer modes.
+;;  And it has an effect only when you use certain commands.
 ;;
 ;;  The handler for the bookmark created invokes the shell command or
 ;;  the Emacs function with the file name as argument.
