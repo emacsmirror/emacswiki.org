@@ -66,7 +66,7 @@ In ''Icicle'' mode, the '''Bookmark+''' keys for tagging and untagging files
 are bound to [[multi-command]]s '''`icicle-tag-a-file'''' and '''`icicle-untag-a-file''''.  In
 addition, all '''Icicles''' [[Icicles - File-Name Input|file commands]] let you tag or untag files on
 the fly, during file-name completion, using the keys '''`##C-x a +##'''' and
-'''`C-x a -'''' respectively (`a' for autofile).  Similarly, you can use '''`C-x a a'''' to create an autofile bookmark for a file without tagging it.
+'''`C-x a -'''' respectively (`a' for autofile).  Similarly, you can use '''`C-x a a'''' during file-name completion to create an autofile bookmark for a file without tagging it.
 
 There are several '''Icicles''' [[multi-command]]s for jumping to tagged
 files.  They are all on the '''Bookmark+''' keymaps `bmkp-jump-map' and
@@ -84,7 +84,7 @@ latter is for the `-other-window' version of each command.
 [:icicle-find-file-tagged-other-window]
 === `icicle-find-file-tagged' ===
 
-Command '''`icicle-find-file-tagged'''' ('''`C-x j t a a'''') matches tags as
+Command '''`icicle-find-file-tagged'''' ('''`C-x j t C-f C-f'''') matches tags as
 part of a [[multi-completion]] completion candidate.  Each candidate
 is composed of these fields: an absolute file name plus the file's
 tags, all separated by '''`<tt>[[Icicles - Customization and General Tips#icicle-list-join-string|icicle-list-join-string]]</tt>'''' (##"^G^J"##, by
@@ -147,7 +147,7 @@ followed by `RET', ending with `##RET RET##'.  Intersection is
 indicated by '''`##*##'''' in the key binding.  Union is indicated by '''`##+##''''.
 The regexp-matching commands have '''`##%##'''' in the key binding.  And
 again, there is an `-other-window' version of each, on prefix key
-'''`C-x 4 j t a'''' instead of '''`C-x j t a''''.
+'''`C-x 4 j t C-f'''' instead of '''`C-x j t C-f''''.
 
 * '''`icicle-find-file-all-tags'''' ('''`##*##'''') -- Match each tag exactly
 * '''`icicle-find-file-all-tags-regexp'''' ('''`##% *##'''') -- Regexp-match each tag
@@ -327,6 +327,8 @@ candidates to bookmarks of a specific ''type'' using the following keys:
 * '''`C-x j B'''' -- '''<u>B</u>'''ookmark-list bookmarks
 * '''`C-x j d'''' -- '''<u>d</u>'''ired bookmarks
 * '''`C-x j f'''' -- '''<u>f</u>'''ile bookmarks
+* '''`##C-x j . f##'''' -- file bookmarks for the current directory (think '''`.'''' as in UNIX)
+
 * '''`C-x j g'''' -- '''<u>g</u>'''nus bookmarks
 * '''`C-x j i'''' -- '''<u>i</u>'''nfo bookmarks
 * '''`C-x j M-i'''' -- '''<u>i</u>'''mage bookmarks
@@ -337,8 +339,9 @@ candidates to bookmarks of a specific ''type'' using the following keys:
 * '''`C-x j r'''' -- bookmarks with '''<u>r</u>'''egions
 * '''`C-x j u'''' -- '''<u>u</u>'''rl bookmarks
 * '''`C-x j w'''' -- '''<u>w</u>'''3m bookmarks
+* '''`C-x j x'''' -- temporary bookmarks
 * '''`C-x j y'''' -- bookmark-file bookmarks
-* '''`##C-x .##'''' -- bookmarks for the current buffer ('''`<u>##.##</u>'''' as in UNIX "here": current location)
+* '''`##C-x , ,##'''' -- bookmarks for the current buffer 
 * '''`##C-x = b##'''' -- bookmarks for a specific '''<u>b</u>'''uffer
 * '''`##C-x = f##'''' -- bookmarks for a specific '''<u>f</u>'''ile
 
