@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2012, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Mon Feb 20 14:42:24 2012 (-0800)
+;; Last-Updated: Tue Feb 28 09:22:29 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 14238
+;;     Update #: 14424
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-doc.el
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search,
 ;;           info, url, w3m, gnus
@@ -124,16 +124,19 @@
 ;;    (@> "Bookmark Tags Can Have Values")
 ;;    (@> "Function, Sequence, and Variable-List Bookmarks")
 ;;    (@> "Editing Bookmarks")
+;;      (@> "Bookmark Records: What A Bookmark Looks Like")
 ;;    (@> "Bookmark-List Views - Saving and Restoring State")
 ;;      (@> "Quitting Saves the Bookmark-List State")
 ;;      (@> "State-Restoring Commands and Bookmarks")
 ;;    (@> "Bookmarking without Visiting the Target")
 ;;      (@> "Bookmarking a File or a URL")
-;;      (@> "Autofile Bookmarks")
 ;;      (@> "Bookmarking the Marked Files in Dired")
 ;;      (@> "Bookmarking Compilation, Grep, and Occur Hits")
-;;      (@> "Bookmarking Files That You Cannot Visit")
+;;      (@> "Bookmarking Files That You Cannot Visit with Emacs")
 ;;      (@> "Opening Bookmarks Using Windows File Associations")
+;;      (@> "Autofile Bookmarks")
+;;      (@> "A Type-Aware `find-file'")
+;;    (@> "Tagging Files")
 ;;    (@> "Using Multiple Bookmark Files")
 ;;      (@> "Bookmark-File Bookmarks")
 ;;    (@> "The Bookmark List Display")
@@ -159,7 +162,7 @@
 ;;      (@> "Defining How to Highlight")
 ;;      (@> "Highlighting On Demand")
 ;;      (@> "Highlighting Automatically")
-;;      (@> "Using Highlighted Bookmarks")
+;;    (@> "Using Highlighted Bookmarks")
 ;;    (@> "Use Bookmark+ with Icicles")
 ;;    (@> "If you use Emacs 20 and Also a More Recent Version")
 ;;    (@> "Bookmark Compatibility with Vanilla Emacs (`bookmark.el')")
@@ -649,8 +652,12 @@
 ;;  For example, `C-x j t f % *' jumps to a file or directory bookmark
 ;;  you choose, where all of its tags match a regexp, and `C-x j t a
 ;;  +' finds a file tagged with at least one of the tags you input.
-;;  The autofile "jump" commands are really `find-file' commands: they
-;;  read a file name using `read-file-name' - see (@> "Autofile Bookmarks").
+;;
+;;  In addition to the ordinary autofile "jump" commands, there are
+;;  `find-file' versions: they read a file name using
+;;  `read-file-name', instead of completing a bookmark name.  - see
+;;  (@> "Autofile Bookmarks").  These commands are available starting
+;;  with Emacs 22.
 ;;
 ;;  Bookmark names are global.  File names are not; that is, the
 ;;  non-directory portion is not.  Suppose you have two similar
@@ -659,14 +666,14 @@
 ;;  different directories by year.  It is sometimes useful to narrow
 ;;  your focus to the file bookmarks in one directory.
 ;;
-;;  Commands such as `bmkp-file-this-dir-jump' (`C-x j C-f') offer as
+;;  Commands such as `bmkp-file-this-dir-jump' (`C-x j . f') offer as
 ;;  completion candidates only bookmarks for files and subdirs in the
 ;;  current directory (`default-directory').  For tags, there are
-;;  equivalent commands.  For example, `C-x j t C-f % *' is the same
-;;  as `C-x j t f % *', but the destinations are limited to files in
-;;  the current directory.  All of the "this-dir" file jump commands
-;;  are bound to the same keys as the general file jump commands, but
-;;  with `C-f' instead of `f'.
+;;  equivalent commands.  For example, `C-x j t . % *' is the same as
+;;  `C-x j t f % *', but the destinations are limited to files in the
+;;  current directory.  All of the "this-dir" file jump commands are
+;;  bound to the same keys as the general file jump commands, but with
+;;  `.' instead of `f'.
 ;;
 ;;  Remember that Bookmark+ collects lots of commands on only a few
 ;;  predefined prefix keys, primarily as a mnemonic device.  Nothing
@@ -1188,7 +1195,7 @@
 ;;(@* "Bookmarking without Visiting the Target")
 ;;  ** Bookmarking without Visiting the Target **
 ;;
-;;  There are several use cases for bookmarking a target without first
+;;  There are several use cases for bookmarking a target without
 ;;  visiting it:
 ;;
 ;;  1. In an Emacs buffer you come across a reference or a link to a
@@ -1199,16 +1206,15 @@
 ;;  2. In Dired, you mark certain files and then bookmark all (each)
 ;;     of them, in one operation.
 ;;
-;;  3. As a special case of #1 and #2, you bookmark a file that you
-;;     cannot visit in Emacs (in the sense of editing it in a buffer)
-;;     - for example, a music file.  "Jumping" to the bookmark
-;;     performs an operation appropriate to the file - for example,
-;;     playing music.
-;;
-;;  4. In a compilation buffer (e.g. `*grep*', `*compile*') or an
+;;  3. In a compilation buffer (e.g. `*grep*', `*compile*') or an
 ;;     occur or multi-occur buffer (`*Occur*'), you bookmark one or
 ;;     more of the hits.  Such a bookmark takes you to the appropriate
 ;;     position in the target file or buffer.
+;;
+;;  4. You bookmark a file that you might not even be able to visit in
+;;     Emacs (in the sense of editing it in a buffer) - for example, a
+;;     music file.  "Jumping" to the bookmark performs an operation
+;;     appropriate to the file - for example, playing music.
 ;;
 ;; 
 ;;(@* "Bookmarking a File or a URL")
@@ -1221,50 +1227,6 @@
 ;;  In addition to the file or URL, you are prompted for the bookmark
 ;;  name.  (In general, the keys `f' and `u' are used in key sequences
 ;;  for file and URL bookmarks, respectively.)
-;;
-;;
-;;(@* "Autofile Bookmarks")
-;;  *** Autofile Bookmarks ***
-;;
-;;  Autofile bookmarking represents a special case of bookmarking a
-;;  file without visiting it.  For an autofile bookmark you need not
-;;  provide the bookmark name - you specify only the file to bookmark.
-;;  You can create a new autofile bookmark, or set an existing one,
-;;  using `bmkp-bookmark-a-file' (aka `bmkp-autofile-set'), which is
-;;  bound by default to `C-x p c a'.  (In general, the key `a' is used
-;;  in key sequences for autofile bookmarks.)
-;;
-;;  If user option `bmkp-propertize-bookmark-names-flag' is non-nil,
-;;  which it is by default with Emacs 21 and later, then you can have
-;;  multiple bookmarks with the same name.  This is important for
-;;  autofile bookmarks because the bookmark name is only the
-;;  non-directory part of the file name.  This Bookmark+ feature lets
-;;  you have different autofile bookmarks for files of the same name
-;;  in different directories.
-;;
-;;  Because an autofile bookmark name is the same as its
-;;  (non-directory) file name, you can define and use file-visiting
-;;  commands where the file name is read using `read-file-name' with a
-;;  predicate that tests various bookmark fields.
-;;
-;;  For example, by default (for Emacs 21 or later), you can use `C-x
-;;  j a' or `C-x 4 j a' to visit an autofile bookmark.  These keys are
-;;  bound to `bmkp-find-file' and `bmkp-find-file-other-window',
-;;  respectively (which are also known as `bmkp-autofile-jump' and
-;;  `bmkp-autofile-jump-other-window').
-;;
-;;  Similarly, you can use prefix key `C-x j t a' followed by the
-;;  usual tags-command suffix keys (e.g. `+', `% *') to visit a file
-;;  or directory (that is, jump to an autofile bookmark) that is
-;;  tagged in a particular way.  See (@> "Tagging Files").  All of the
-;;  autofile "jump" commands are really `find-file' commands: they
-;;  read a file name using `read-file-name', letting you navigate up
-;;  and down the file hierarchy.
-;;
-;;  In addition to the single autofile bookmark you can create for a
-;;  given absolute file location, you can of course create additional
-;;  bookmarks to the same file, using different bookmark names.  Among
-;;  other things, this lets you tag the same file in different ways.
 ;;
 ;;  
 ;;(@* "Bookmarking the Marked Files in Dired")
@@ -1331,12 +1293,12 @@
 ;;  bookmarking occur hits using autonamed bookmarks.
 ;;
 ;;
-;;(@* "Bookmarking Files That You Cannot Visit")
-;;  *** Bookmarking Files That You Cannot Visit ***
+;;(@* "Bookmarking Files That You Cannot Visit with Emacs")
+;;  *** Bookmarking Files That You Cannot Visit with Emacs ***
 ;;
-;;  There are lots of files that you use that you never visit, but
-;;  that you might like to keep track of or access in other ways
-;;  besides opening them in Emacs: music files, image files, whatever.
+;;  You use lots of files that you never visit using Emacs, but that
+;;  you might like to keep track of or access in other ways: music
+;;  files, image files, whatever.
 ;;
 ;;  You can define a new kind of bookmark for any file type you are
 ;;  interested in, implementing a bookmark handler for it that
@@ -1361,21 +1323,21 @@
 ;;  Together with the use of bookmark tags, this gives you a handy way
 ;;  to organize and access objects of any kind.  See (@> "Bookmark Tags").
 ;;
-;;  You use option `bmkp-default-handler-associations' to control
-;;  which operation (bookmark handler) to use for which file type.
-;;  This is a set of associations (an alist) with key a regexp
-;;  matching a file name and with value a Lisp sexp that evaluates to
-;;  either a shell command (a string) or an Emacs function (a symbol
-;;  or lambda form).
+;;  You use option `bmkp-default-handlers-for-file-types' to control
+;;  which operation (handler) to use for which file type.  This is a
+;;  set of associations (an alist) with each key being a regexp
+;;  matching a file name, and with each associated value being a Lisp
+;;  sexp that evaluates to either a shell command (a string) or an
+;;  Emacs function (a symbol or lambda form).
 ;;
 ;;  The handler for the bookmark created invokes the shell command or
 ;;  the Emacs function with the file name as argument.
 ;;
 ;;  Here is an example option value:
 ;;
-;;   (("\\.ps$" . "gsview32.exe")
+;;   (("\\.ps$"    . "gsview32.exe")
 ;;    ("\\.html?$" . browse-url)
-;;    ("\\.doc$" . w32-browser))
+;;    ("\\.doc$"   . w32-browser))
 ;;
 ;;  This value causes creation of bookmarks that, when you jump to
 ;;  them, invoke:
@@ -1389,12 +1351,16 @@
 ;;   * Emacs Lisp function `w32-browser' on the file if the file
 ;;     extension is `.doc' (e.g., a Microsoft Word file)
 ;;
-;;  The default value of `bmkp-default-handler-associations' is taken
-;;  from the value of option `dired-guess-shell-alist-user' (from
-;;  Dired X).
+;;  The default value of `bmkp-default-handlers-for-file-types' is
+;;  taken from the value of option `dired-guess-shell-alist-user'
+;;  (from Dired X).
+;;
+;;  The associations are checked in order, and the first one that
+;;  matches the given file name is used.  You can thus order them to
+;;  deal with overlapping file-name patterns.
 ;;
 ;;  If no matching file association is found in
-;;  `bmkp-default-handler-associations', and if option
+;;  `bmkp-default-handlers-for-file-types', and if option
 ;;  `bmkp-guess-default-handler-for-file-flag' is non-nil (it is nil
 ;;  by default), then Bookmark+ will guess a shell command to use.  It
 ;;  does this by matching the file name against
@@ -1403,9 +1369,9 @@
 ;;  based on mailcap entries.
 ;;
 ;;  When a bookmark is created using `C-x p c f' or `C-x p c a' for a
-;;  file that matches `bmkp-default-handler-associations', the shell
-;;  command or Lisp function that "jumps to" (opens) the file is saved
-;;  in the bookmark as attribute `file-handler' (not `handler').
+;;  file that matches `bmkp-default-handlers-for-file-types', the
+;;  shell command or Lisp function that "jumps to" (opens) the file is
+;;  saved in the bookmark as attribute `file-handler' (not `handler').
 ;;
 ;;
 ;;(@* "Opening Bookmarks Using Windows File Associations")
@@ -1429,22 +1395,22 @@
 ;;
 ;;  Windows file associations are always available to you, in addition
 ;;  to any other file associations that you define using
-;;  `bmkp-default-handler-associations' (see
-;;  (@> "Bookmarking Files That You Cannot Visit")).
+;;  `bmkp-default-handlers-for-file-types' (see
+;;  (@> "Bookmarking Files That You Cannot Visit with Emacs")).
 ;;
 ;;  You can thus have two different programs associated with the same
 ;;  kind of file.  Your MS Windows file association for PostScript
 ;;  might, for example, use Adobe Distiller to create a PDF file from
-;;  PostScript, while your `bmkp-default-handler-associations'
+;;  PostScript, while your `bmkp-default-handlers-for-file-types'
 ;;  association for PostScript might use GhostView to display it
 ;;  directly.
 ;;
 ;;  Besides using `M-RET' etc. in buffer `*Bookmark List*', if in
-;;  `bmkp-default-handler-associations' you register `w32-browser' as
-;;  the association to use for a given file pattern, then you can use
-;;  command `bmkp-w32-browser-jump' (not bound, by default) anywhere
-;;  to open a bookmark whose file name matches that pattern, using its
-;;  Windows file-association program.
+;;  `bmkp-default-handlers-for-file-types' you register `w32-browser'
+;;  as the association to use for a given file pattern, then you can
+;;  use command `bmkp-w32-browser-jump' (not bound, by default)
+;;  anywhere to open a bookmark whose file name matches that pattern,
+;;  using its Windows file-association program.
 ;;
 ;;  You can also specify `w32-browser' as the bookmark "type" when you
 ;;  use command `bmkp-jump-to-type' (`C-x j :').  Either of these
@@ -1452,19 +1418,152 @@
 ;;  to open using a Windows file association.
 ;;
 ;;  Specifying such an association in
-;;  `bmkp-default-handler-associations' means that bookmarks for such
-;;  a file will have a `file-handler' value of `w32-browser', to
+;;  `bmkp-default-handlers-for-file-types' means that bookmarks for
+;;  such a file will have a `file-handler' value of `w32-browser', to
 ;;  "jump" to (i.e., open) the file.
 ;;
 ;;  To set up a given file extension for use this way, add an entry
 ;;  (REGEXP . w32-browser) to option
-;;  `bmkp-default-handler-associations', where REGEXP matches the file
-;;  extension.
+;;  `bmkp-default-handlers-for-file-types', where REGEXP matches the
+;;  file extension.
 ;;
 ;;  For example, to make a command such as `bmkp-bookmark-a-file'
 ;;  (`C-x p c a') automatically bookmark `*.doc' files using the
 ;;  associated MS Windows program (typically MS Word), add this entry:
 ;;  ("\\.doc$" . w32-browser).
+;;
+;;
+;;(@* "Autofile Bookmarks")
+;;  *** Autofile Bookmarks ***
+;;
+;;  An autofile bookmark, or just autofile, is a bookmark that uses
+;;  the non-directory part of its file name as its bookmark name.
+;;
+;;  You can look at an autofile bookmark as just a file wrapper: a way
+;;  to attach meta information (such as tags) to a file.  But you can
+;;  use an autofile bookmark much as you would use a file.
+;;
+;;  To create a new autofile bookmark, you can use
+;;  `bmkp-bookmark-a-file' (aka `bmkp-autofile-set'), which is bound
+;;  by default to `C-x p c a'.  (In general, the key `a' is used in
+;;  key sequences for autofile bookmarks.)
+;;
+;;  If user option `bmkp-propertize-bookmark-names-flag' is non-nil,
+;;  which it is by default with Emacs 21 and later, then you can have
+;;  multiple bookmarks with the same name.  This is important for
+;;  autofile bookmarks because the bookmark name is only the
+;;  non-directory part of the file name.  This Bookmark+ feature lets
+;;  you have different autofile bookmarks for files of the same name
+;;  in different directories.
+;;
+;;  In addition to the single autofile bookmark that you can create
+;;  for a given absolute file location, you can of course create
+;;  additional bookmarks to the same file, using different bookmark
+;;  names.  Among other things, this lets you tag the same file in
+;;  different ways.
+;;
+;;  You can use `C-x j a' (`bmkp-autofile-jump') or `C-x 4 j a'
+;;  (`bmkp-autofile-jump-other-window') to visit an autofile bookmark.
+;;  And there are commands for visiting an autofile that is tagged in
+;;  certain ways.  For example, `bmkp-autofile-some-tags-regexp-jump'
+;;  (`C-x j t a % +') jumps to an autofile bookmark that has at least
+;;  one tag matching a given regexp.  See (@> "Tagging Files").
+;;
+;;
+;;(@* "A Type-Aware `find-file'")
+;;  *** A Type-Aware `find-file' ***
+;;
+;;  User option `bmkp-default-handlers-for-file-types' (see
+;;  (@> "Bookmarking Files That You Cannot Visit with Emacs")) gives
+;;  you a way to associate a file type, as determined by the file
+;;  name (typically its extension) with a default file action.  This
+;;  is like MS Windows file associations, but it is specific to Emacs
+;;  and Bookmark+.  And it is useful for more than just bookmarks.
+;;
+;;  Commands `bmkp-find-file' (`C-x j C-f') and
+;;  `bmkp-find-file-other-window' (`C-x 4 j C-f') take advantage of
+;;  this association to open files.  If a file name matches no pattern
+;;  in `bmkp-default-handlers-for-file-types' then these commands act
+;;  like `find-file' and `find-file-other-window'.  Otherwise, the
+;;  invoke the associated file handler in
+;;  `bmkp-default-handlers-for-file-types'.
+;;
+;;  Invoking the handler is just what the ordinary autofile jump
+;;  commands (e.g. `C-x j a') do.  But `bmkp-find-file' is different
+;;  in a couple of ways.
+;;
+;;  Like vanilla `find-file' (`C-x C-f'), `C-x j C-f' and `C-x 4 j
+;;  C-f' use `read-file-name' to prompt you for the file name.  The
+;;  completion candidates are the names of all of the files in the
+;;  current directory (`default-directory'), that is, the directory of
+;;  your current minibuffer input.  This includes the names of any
+;;  autofile bookmarks in the same directory.  And like `C-x C-f' you
+;;  can change directory, navigating up and down the file hierarchy.
+;;  In sum, these commands are file-aware.
+;;
+;;  The ordinary autofile jump commands on the other hand use
+;;  `completing-read' to complete your input against all autofile
+;;  bookmark names, regardless of directory.  And since the bookmark
+;;  names reflect only the relative file names, it is not so easy to
+;;  distinguish two autofiles with the same name but in different
+;;  directories.  (Icicles can help here, BTW.)
+;;
+;;  There is a `bmkp-find-file-' command that corresponds to each
+;;  `bmkp-autofile-' command.  For example,
+;;  `bmkp-find-file-some-tags-regexp' (`C-x j t C-f % +') corresponds
+;;  to `bmkp-autofile-some-tags-regexp-jump' (`C-x j t a % +').  All
+;;  `bmkp-find-file' commands use `C-f' in their key bindings, as a
+;;  reminder of their reading file names a la `find-file'.
+;;
+;;  But whereas `C-x j C-f' and `C-x 4 j C-f' let you access any file,
+;;  the other `bmkp-find-file-' commands, which find files that have
+;;  certain tags, provide only autofiles as completion candidates.
+;;  That's obvious, since files are tagged by bookmarking them.
+;;
+;;  You can thus use the `C-f' commands to take advantage of
+;;  file-action associations that you define.  But if you want to
+;;  associate metadata (e.g. tags) with files, then you will want to
+;;  create autofiles.  You can do this when you invoke these commands,
+;;  by providing a prefix argument.  Thus, for example, `C-u C-x j C-f
+;;  foo.doc' opens file `foo.doc', respecting any handler recorded for
+;;  it via option `bmkp-default-handlers-for-file-types' - but it also
+;;  creates an autofile bookmark for it.
+;;
+;;  Whenever an autofile bookmark is used, regardless of whether you
+;;  access it using a `bmkp-autofile*' command or a `bmkp-find-file*'
+;;  command, the full bookmark record (including handler) is taken
+;;  into account.
+;;
+;;  Note, however, that the `C-f' tag commands differ from the `a' tag
+;;  commands in how the completion candidates are filtered.
+;;
+;;  For the former, `read-file-name' is passed a predicate that is
+;;  applied to each file name in the directory, filtering out any such
+;;  candidates that do not satisfy it (e.g., do not have the required
+;;  tags).
+;;
+;;  This happens before you type any input to match the file name.
+;;  The predicate checks for a corresponding autofile and checks its
+;;  tags (depending on the command).  If there are lots of files in
+;;  the current directory, this can take a while.
+;;
+;;  For the latter, similar tests are made, but instead of testing
+;;  each file in the current directory, these commands test each
+;;  bookmark in the current bookmark list.  If there are lots of
+;;  bookmarks this can take a while.
+;;
+;;  In some cases a `C-f' command is quicker; in some cases a `a'
+;;  command is quicker.
+;;
+;;  If you use Icicles, then the performance hit for `C-f' when there
+;;  are lots of files in a directory is greatly reduced.  This is
+;;  because Icicles applies the filtering predicate after, not before,
+;;  you type text in the minibuffer.  In other words, instead of
+;;  testing each file in the directory, it tests only the files that
+;;  match your input.  (In addition, if you use Icicles then you get
+;;  multi-command versions of each of these bookmark commands, which
+;;  means that you can visit more than one file per command
+;;  invocation.)
  
 ;;(@* "Tagging Files")
 ;;  ** Tagging Files **
@@ -1509,42 +1608,59 @@
 ;;
 ;;  The first kind uses bookmarks directly: you choose a bookmark
 ;;  name, not a file name, but the candidates are only file and
-;;  directory bookmarks.  These commands have the prefix `bmkp-file-'.
+;;  directory bookmarks.  These commands have the prefix `bmkp-file-'
+;;  or `bmkp-autofile-'.
 ;;
 ;;  As a special case, commands with the prefix `bmkp-file-this-dir-'
 ;;  limit the choices to bookmarks for files and subdirectories of the
 ;;  current directory.  By default, the commands across all
-;;  directories are on prefix key `C-x 4 j t f' and those for the
-;;  current directory only are on prefix key `C-x j t C-f'.  See
+;;  directories are on prefix key `C-x j t f', and those for the
+;;  current directory only are on prefix key `C-x j t .'.  See
 ;;  (@> "Different Types of Jump Commands") for more about these
 ;;  commands.
 ;;
 ;;  The second kind of command is for visiting tagged files, that is,
-;;  autofile bookmarks.  These commands are available only for Emacs
-;;  21 and later (because they use `read-file-name' with a PREDICATE
-;;  argument, not available for Emacs 20).  The candidates are file
-;;  names, not bookmark names.  These commands have the prefix
-;;  `bmkp-find-file-', and by default they are on the prefix key `C-x
-;;  j t a'.  (In general, the keys `f' and `a' are used in key
-;;  sequences for file and autofile bookmarks, respectively.)
+;;  autofile bookmarks, just like the commands with prefix
+;;  `bmkp-autofile-'.  However, these commands do not handle the
+;;  bookmark as such, but only its file name.  They recognize its
+;;  tags, but they pay no attention to any special handler or other
+;;  recorded information.
+;;
+;;  These commands have the prefix `bmkp-find-file-', and they are on
+;;  the prefix key `C-x j t C-f'.  The `C-f' here is intended to
+;;  remind you of command `find-file' (`C-x C-f').  Like `find-file',
+;;  they use `read-file-name' to read the bookmark's file name,
+;;  instead of using `completing-read' to read the bookmark name.
+;;
+;;  Yes, for an autofile bookmark the bookmark name and the (relative)
+;;  file name are the same.  But `read-file-name' is file-aware, and
+;;  lets you browse up and down the directory hierarchy.
+;;
+;;  The `bmkp-find-file-' commands are available only for Emacs 22 and
+;;  later (because they use `read-file-name' with a PREDICATE
+;;  argument).
 ;;
 ;;  For example:
 ;;
-;;    `C-x j t f % +'   is `bmkp-file-some-tags-regexp-jump'
-;;    `C-x j t C-f % +' is `bmkp-file-this-dir-some-tags-regexp-jump'
-;;    `C-x j t a % +'   is `bmkp-find-file-some-tags-regexp'
+;;    `C-x j t f   % +' is `bmkp-file-some-tags-regexp-jump'
+;;    `C-x j t .   % +' is `bmkp-file-this-dir-some-tags-regexp-jump'
+;;    `C-x j t a   % +' is `bmkp-autofile-some-tags-regexp-jump'
+;;    `C-x j t C-f % +' is `bmkp-find-file-some-tags-regexp'
 ;;
 ;;  * The first of these visits any file bookmark that has at least
 ;;    one tag among the tags you specify, and you choose among
 ;;    bookmark names.  The files can be in any directories.
 ;;
 ;;  * The second is similar to the first, but only bookmarks for files
-;;    in the current directory are candidates.
+;;    in the current directory are completion candidates.
 ;;
-;;  * The third is similar regarding tags, but it uses
-;;    `read-file-name', so you can browse among all files, up and down
-;;    the file hierarchy.  The candidates are file names, not bookmark
-;;    names.
+;;  * The third is similar to the first, but only autofile bookmarks
+;;    are completion candidates.
+;;
+;;  * The fourth is similar to the third regarding tags, but it uses
+;;    `read-file-name', so you can browse up and down the file
+;;    hierarchy.  The completion candidates are file names, not
+;;    bookmark names.
 ;;
 ;;  If you use Icicles, there are similar sets of commands, but they
 ;;  all let you act on multiple files at the same time
@@ -2156,15 +2272,16 @@
 ;;  For navigation, the following keys jump to bookmarks for
 ;;  particular files or buffers.  (Use `C-x 4 j' for other-window.)
 ;;
-;;  * `C-x j .'                   - current buffer
+;;  * `C-x j ,,'                  - current buffer
 ;;  * `C-x j = f' and `C-x j = b' - specified file(s) or buffer(s)
 ;;
 ;;  For the `=' keys you are prompted for one or more file names or
 ;;  buffer names.
 ;;
 ;;  Finally, because the bookmarks in the current buffer can be of
-;;  particular interest, `C-x p .' opens the bookmark-list display for
-;;  only those bookmarks.
+;;  particular interest, `C-x p ,' opens the bookmark-list display for
+;;  only those bookmarks.  (`,' stands generally for "this-buffer" in
+;;  Bookmark+ key bindings.)
  
 ;;(@* "Cycling, Navigation List")
 ;;  ** "Cycling, Navigation List" **
@@ -2210,7 +2327,7 @@
 ;;  If you use MS Windows, you can take advantage of your existing
 ;;  file associations to open your bookmarks using the appropriate
 ;;  program - no need to define a new bookmark type and handler.  See
-;;  (@> "Bookmarking Files That You Cannot Visit").
+;;  (@> "Bookmarking Files That You Cannot Visit with Emacs").
 ;;
 ;;  Note: The default value of option `bmkp-use-region' is `t', not
 ;;  `cycling-too', which means that when you cycle to a bookmark its
@@ -2416,7 +2533,7 @@
 ;;  want a different order, you can customize option
 ;;  `bmkp-this-file/buffer-cycle-sort-comparer'.
 ;;
-;;  Alternatively, you can use `C-x p .' to display the `*Bookmark
+;;  Alternatively, you can use `C-x p ,' to display the `*Bookmark
 ;;  List*' with only the current file/buffer's bookmarks, sort them
 ;;  there, and then use `C-x p B' to set the navigation list to
 ;;  `CURRENT *Bookmark List*'.  In that case, you use the navlist
