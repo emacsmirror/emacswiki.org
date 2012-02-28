@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2012, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 13:43:55 2010 (-0700)
-;; Last-Updated: Tue Feb 28 07:49:23 2012 (-0800)
+;; Last-Updated: Tue Feb 28 14:16:29 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 4010
+;;     Update #: 4015
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-1.el
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -5883,6 +5883,9 @@ Non-interactively:
       (error (setq failure  (error-message-string err))))
     (if (not failure)
         (prog1 bmk                      ; Return the bookmark.
+          (when (and (get-buffer "*Bookmark List*") (get-buffer-window (get-buffer "*Bookmark List*") 0))
+            (with-current-buffer (get-buffer "*Bookmark List*")
+              (bmkp-refresh-menu-list bmk)))
           (when (and msgp  (not (file-exists-p file)))
             (message "File name is now bookmarked, but no such file yet: `%s'" (expand-file-name file))))
       (error "Failed to create bookmark for `%s':\n%s\n" file failure))))
