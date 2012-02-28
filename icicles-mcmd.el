@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Tue Feb 28 13:20:01 2012 (-0800)
+;; Last-Updated: Tue Feb 28 13:24:32 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 17867
+;;     Update #: 17868
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-mcmd.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
