@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:22:14 2006
 ;; Version: 22.0
-;; Last-Updated: Sun Feb 26 17:32:03 2012 (-0800)
+;; Last-Updated: Tue Feb 28 17:56:30 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 4950
+;;     Update #: 4951
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-opt.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -241,7 +241,7 @@
 ;; Emacs 20 does not DTRT wrt `:type' and `:set' sexps at compile time,
 ;; so there seems no way around this, short of coding without push and dolist.
 ;; For Emacs < 21: dolist, push
-(eval-and-compile (when (< emacs-major-version 21) (require 'cl)))
+(eval-when-compile (when (< emacs-major-version 21) (require 'cl)))
 
 (require 'thingatpt)        ;; symbol-at-point, thing-at-point, thing-at-point-url-at-point
 (require 'thingatpt+ nil t) ;; (no error if not found): list-nearest-point-as-string,
