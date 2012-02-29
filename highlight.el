@@ -7,9 +7,9 @@
 ;; Copyright (C) 1995-2012, Drew Adams, all rights reserved.
 ;; Created: Wed Oct 11 15:07:46 1995
 ;; Version: 21.0
-;; Last-Updated: Fri Feb 17 09:41:31 2012 (-0800)
+;; Last-Updated: Wed Feb 29 10:36:21 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 3141
+;;     Update #: 3143
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/highlight.el
 ;; Keywords: faces, help, local
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -1611,7 +1611,6 @@ the invisibility criteria specified by that value are accumulated."
     buffer-invisibility-spec)
 
   ;; From `cl-seq.el', function `union', without keyword treatment.
-  ;; Same as `simple-set-union' in `misc-fns.el'.
   (defun hlt-set-union (list1 list2)
     "Combine LIST1 and LIST2 using a set-union operation.
 The result list contains all items that appear in either LIST1 or
@@ -1630,7 +1629,6 @@ necessary."
            list1)))
 
   ;; From `cl-seq.el', function `intersection', without keyword treatment.
-  ;; Same as `simple-set-intersection' in `misc-fns.el'.
   (defun hlt-set-intersection (list1 list2)
     "Set intersection of lists LIST1 and LIST2.
 This is a non-destructive operation: it copies the data if necessary."
