@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Mar  5 17:21:28 1996
 ;; Version: 21.0
-;; Last-Updated: Sun Jan  1 14:05:14 2012 (-0800)
+;; Last-Updated: Wed Feb 29 10:38:45 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 573
+;;     Update #: 579
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/misc-fns.el
 ;; Keywords: internal, unix, lisp, extensions, local
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -49,14 +49,15 @@
 ;;    `interesting-buffer-p', `live-buffer-name',
 ;;    `make-transient-mark-mode-buffer-local', `mod-signed',
 ;;    `notify-user-of-mode', `region-or-buffer-limits', `signum',
-;;    `simple-set-difference', `simple-set-intersection',
-;;    `simple-set-union', `undefine-keys-bound-to',
-;;    `undefine-killer-commands', `unique-name'.
+;;    `undefine-keys-bound-to', `undefine-killer-commands',
+;;    `unique-name'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;;; Change Log:
 ;;
+;; 2012/02/29 dadams
+;;     Removed: simple-set-(intersection|union|difference).
 ;; 2011/01/04 dadams
 ;;     Removed autoload cookies from non-interactive fns.  Added for defcustom.
 ;; 2010/05/25 dadams
@@ -511,58 +512,6 @@ Also works for a consp whose cdr is non-nil."
                (setq item (car item)))
              (setq new (cons item new)))
            (reverse new)))))
-
-;; From `cl-seq.el', function `union', without keyword treatment.
-(defun simple-set-union (list1 list2)
-  "Combine LIST1 and LIST2 using a set-union operation.
-The result list contains all items that appear in either LIST1 or
-LIST2.  This is a non-destructive function; it copies the data if
-necessary."
-  (cond ((null list1) list2)
-        ((null list2) list1)
-        ((equal list1 list2) list1)
-        (t
-         (or (>= (length list1) (length list2))
-             (setq list1 (prog1 list2 (setq list2 list1)))) ; Swap them.
-         (while list2
-           (unless (member (car list2) list1)
-               (setq list1 (cons (car list2) list1)))
-           (setq list2 (cdr list2)))
-         list1)))
-
-;; From `cl-seq.el', function `intersection', without keyword treatment.
-(defun simple-set-intersection (list1 list2)
-  "Set intersection of lists LIST1 and LIST2.
-This is a non-destructive operation: it copies the data if necessary."
-  (and list1 list2
-       (if (equal list1 list2)
-           list1
-         (let ((result nil))
-           (unless (>= (length list1) (length list2))
-             (setq list1 (prog1 list2 (setq list2 list1)))) ; Swap them.
-           (while list2
-             (when (member (car list2) list1)
-               (setq result (cons (car list2) result)))
-             (setq list2 (cdr list2)))
-           result))))
-
-;; From `cl-seq.el', function `set-difference', without keyword treatment.
-(defun simple-set-difference (list1 list2 &rest cl-keys)
-  "Combine LIST1 and LIST2 using a set-difference operation.
-The result list contains all items that appear in LIST1 but not LIST2.
-This is a non-destructive function; it copies the data if necessary."
-  (if (or (null list1) (null list2))
-      list1
-    (let ((result nil))
-      (while list1
-        (unless (member (car list1) list2) (setq result (cons (car list1) result)))
-        (setq list1 (cdr list1)))
-      result)))
-
-;; from `cl-extra.el'.
-(defun signum (num)
-  "Return 1 if NUM is positive, -1 if negative, 0 if zero."
-  (cond ((< num 0) -1) ((> num 0) 1) (t 0)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; misc-fns.el ends here
