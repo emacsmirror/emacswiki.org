@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Mon Feb 27 10:31:19 2012 (-0800)
+;; Last-Updated: Tue Feb 28 19:08:15 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 8049
+;;     Update #: 8059
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-chg.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -2955,6 +2955,9 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-mcmd.el'")
 ;;
+;; 2012/02/28 dadams
+;;     Reverted last change - it broke completion (called from *-prefix-*).
+;;       Trying a thoughtless hack: If INPUT then do not recompute completions.
 ;; 2012/02/27 dadams
 ;;     icicle-input-is-a-completion-p: If icicle-last-completion-candidate is nil, compute candidates.
 ;;                                     Fix for bug: entering a candidate without hitting (S-)TAB.
@@ -4332,6 +4335,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-mode.el'")
 ;;
+;; 2012/02/28 dadams
+;;     icicle-unbind-key-completion-keys-in-keymaps-from: Handle symbol keymaps: follow until a list.
 ;; 2012/02/26 dadams
 ;;     Update to reflect Bookmark+ changes (bindings etc.).
 ;;       icicle-bookmark-menu-map: Major changes.
@@ -5394,6 +5399,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-opt.el'")
 ;;
+;; 2012/02/28 dadams
+;;     for Emacs 20: Use eval-when-compile, not eval-and-compile, to require cl.el.
 ;; 2012/02/26 dadams
 ;;     icicle-top-level-key-bindings: Update to reflect Bookmark+ changes (bindings).
 ;;     icicle-touche-pas-aux-menus-flag: Clarify doc string.
@@ -6434,6 +6441,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles.el'")
 ;;
+;; 2012/02/28 dadams
+;;     Removed eval-when-compile for Emacs < 20.
 ;; 2011/12/11 dadams
 ;;     Ensure icicles-mac is loaded if icicles.el is not byte-compiled, and is loaded when compiled.
 ;; 2011/10/12 dadams
