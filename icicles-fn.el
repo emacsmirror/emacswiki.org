@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:53 2006
 ;; Version: 22.0
-;; Last-Updated: Wed Feb 22 08:28:17 2012 (-0800)
+;; Last-Updated: Wed Feb 29 10:27:03 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 12911
+;;     Update #: 12916
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-fn.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -4757,17 +4757,24 @@ This is a non-destructive operation: it copies the data if necessary."
              (setq list2  (cdr list2)))
            result))))
 
-;; From `cl-seq.el', function `set-difference', without keyword treatment.
-;; Same as `simple-set-difference' in `misc-fns.el'.
-(defun icicle-set-difference (list1 list2)
+;; Like `cl-seq.el', function `set-difference', but without keyword treatment.  No TEST arg, just KEY.
+;; Same as `frame-cmds-set-difference' in `frame-cmds.el'.
+(defun icicle-set-difference (list1 list2 &optional key)
   "Combine LIST1 and LIST2 using a set-difference operation.
+Optional arg KEY is a function used to extract the part of each list
+item to compare.
+
 The result list contains all items that appear in LIST1 but not LIST2.
 This is non-destructive; it makes a copy of the data if necessary, to
 avoid corrupting the original LIST1 and LIST2."
   (if (or (null list1) (null list2)) list1
-    (let ((result  ()))
+    (let ((keyed-list2  (and key  (mapcar key list2)))
+          (result       ()))
       (while list1
-        (unless (member (car list1) list2)  (setq result  (cons (car list1) result)))
+        (unless (if key
+                    (member (funcall key (car list1)) keyed-list2)
+                  (member (car list1) list2))
+          (setq result  (cons (car list1) result)))
         (setq list1  (cdr list1)))
       result)))
 
