@@ -1,10 +1,10 @@
 ;;; judge-indent.el --- judge indent and tab widths
 
-;;; Copyright (C) 2011 yascentur
+;;; Copyright (C) 2012 yascentur
 
 ;; Author:   yascentur <screenname at gmail dot com>
 ;; Keywords: indent tab
-;; Version:  1.1.1b
+;; Version:  1.1.1
 
 ;; This program is free software; you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -61,6 +61,9 @@
 ;; Set search limit for large size files.
 ;; Default: 30000 chars (equal to ca. 1000 lines).
 ;;     (setq judge-indent-search-limit 60000)
+;;
+;; Set additional variable holding indent width
+;;     (add-to-list 'judge-indent-variables-indent-width 'c-basic-offset)
 
 ;;; Functions:
 
@@ -124,6 +127,36 @@
   :type  'number
   :group 'judge-indent)
 
+(defcustom judge-indent-variables-indent-width
+  '(c-basic-offset
+    indent-level
+    standard-indent
+    c-indent-level
+    perl-indent-level
+    cperl-indent-level
+    python-indent
+    ruby-indent-level
+    sh-basic-offset
+    awk-indent-level
+    lua-indent-level
+    pascal-indent-level
+    delphi-indent-level
+    erlang-indent-level
+    smalltalk-indent-amount
+    html-basic-offset
+    sgml-basic-offset
+    html-helper-basic-offset
+    yahtml-environment-indent
+    nxml-child-indent
+    css-indent-level
+    cssm-indent-level
+    javascript-indent-level
+    js-indent-level
+    js2-basic-offset)
+  "Variables of indent width"
+  :type  'list
+  :group 'judge-indent)
+
 (defvar judge-indent-indent-width judge-indent-default-indent-width
   "Indent width")
 (defvar judge-indent-tab-width judge-indent-default-tab-width
@@ -150,61 +183,19 @@
   (setcar (cdr (assq 'judge-indent-mode minor-mode-alist))
           'judge-indent-minor-mode-lighter))
 
+(defun judge-indent-set-to-list (list value)
+  "Set value to variables list"
+  (when list
+    (when (boundp (car list))
+      (set (car list) value))
+    (judge-indent-set-to-list (cdr list) value)))
+
 ;; set indent width
 
 (defun judge-indent-set-indent-width-without-message (indent)
   "Set indent width without message"
   (setq judge-indent-indent-width indent)
-  (when (boundp 'c-basic-offset)
-    (setq c-basic-offset                    indent))
-  (when (boundp 'indent-level)
-    (setq indent-level                      indent))
-  (when (boundp 'standard-indent)
-    (setq standard-indent                   indent))
-  (when (boundp 'c-indent-level)
-    (setq c-indent-level                    indent))
-  (when (boundp 'perl-indent-level)
-    (setq perl-indent-level                 indent))
-  (when (boundp 'cperl-indent-level)
-    (setq cperl-indent-level                indent))
-  (when (boundp 'python-indent)
-    (setq python-indent                     indent))
-  (when (boundp 'ruby-indent-level)
-    (setq ruby-indent-level                 indent))
-  (when (boundp 'sh-basic-offset)
-    (setq sh-basic-offset                   indent))
-  (when (boundp 'awk-indent-level)
-    (setq awk-indent-level                  indent))
-  (when (boundp 'lua-indent-level)
-    (setq lua-indent-level                  indent))
-  (when (boundp 'pascal-indent-level)
-    (setq pascal-indent-level               indent))
-  (when (boundp 'delphi-indent-level)
-    (setq delphi-indent-level               indent))
-  (when (boundp 'erlang-indent-level)
-    (setq erlang-indent-level               indent))
-  (when (boundp 'smalltalk-indent-amount)
-    (setq smalltalk-indent-amount           indent))
-  (when (boundp 'html-basic-offset)
-    (setq html-basic-offset                 indent))
-  (when (boundp 'sgml-basic-offset)
-    (setq sgml-basic-offset                 indent))
-  (when (boundp 'html-helper-basic-offset)
-    (setq html-helper-basic-offset          indent))
-  (when (boundp 'yahtml-environment-indent)
-    (setq yahtml-environment-indent         indent))
-  (when (boundp 'nxml-child-indent)
-    (setq nxml-child-indent                 indent))
-  (when (boundp 'css-indent-level)
-    (setq css-indent-level                  indent))
-  (when (boundp 'cssm-indent-level)
-    (setq cssm-indent-level                 indent))
-  (when (boundp 'javascript-indent-level)
-    (setq javascript-indent-level           indent))
-  (when (boundp 'js-indent-level)
-    (setq js-indent-level                   indent))
-  (when (boundp 'js2-basic-offset)
-    (setq js2-basic-offset                  indent)))
+  (judge-indent-set-to-list judge-indent-variables-indent-width indent))
 
 (defun judge-indent-set-indent-width (indent)
   "Set indent width"
