@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Wed Feb 29 06:55:27 2012 (-0800)
+;; Last-Updated: Wed Feb 29 10:28:50 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 8060
+;;     Update #: 8061
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-chg.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -1176,6 +1176,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-fn.el'")
 ;;
+;; 2012/02/29 dadams
+;;     icicle-set-difference.  Added optional KEY arg.
 ;; 2012/02/22 dadams
 ;;     icicle-read-char-by-name: Updated per Juri's Emacs 24 patch (see Emacs bug #10857).
 ;; 2012/02/18 dadams
