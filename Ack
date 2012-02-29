@@ -1,17 +1,34 @@
-[http://search.cpan.org/search?q=App::ack ack] is a replacement for 99% of the uses of <tt>grep</tt>, written in Perl.
+[http://betterthangrep.com/ ack] is a replacement for 99% of the uses of <code>grep</code>, written in Perl.  Ack searches recursively through directories by default, while ignoring backup files, binary files, SubVersion, [[CVS]] and other [CategoryVersionControl VCS] directories. 
 
-There is a grep-like compilation mode for Ack named [http://www.shellarchive.co.uk/content/emacs.html ack.el], as well as FullAck.
-An alternative implementation of a grep-like compilation mode is [http://rooijan.za.net/code/emacs-lisp/ack-el here (ack.el)].  Alternatively, one can use <tt>M-x rgrep</tt> with ack thusly:
+There are several GrepMode-like interfaces for Ack:
 
+* [http://www.shellarchive.co.uk/content/emacs.html ack.el]
+* [http://rooijan.za.net/code/emacs-lisp/ack-el Another ack.el]
+* FullAck
+* [https://github.com/jhelwig/ack-and-a-half ack-and-a-half]
+
+A minimalistic interface to Ack is:
 {{{
-(custom-set-variables '(grep-program "ack -H -a --nogroup"))
+(defvar ack-history nil
+  "History for the `ack' command.")
+
+(defun ack (command-args)
+  (interactive
+   (let ((ack-command "ack --nogroup --with-filename --all "))
+     (list (read-shell-command "Run ack (like this): "
+                               ack-command
+                               'ack-history))))
+  (let ((compilation-disable-input t))
+    (compilation-start (concat command-args " < " null-device)
+                       'grep-mode)))
 }}}
 
----
+Alternatively, one can use <code>M-x rgrep</code> with ack thusly:
+{{{
+(grep-apply-setting grep-command "ack --with-filename --nogroup --all")
+}}}
 
-On emacs 24, it appears to be `grep-command`, not `grep-program`, unless I'm not loading the right library. -- RyanDavis
-
-Ah, no... it `grep-program` is defined in grep.el, but it isn't a customized var. Looks like it needs to be set via `grep-setup-hook` . -- RyanDavis
+Beware of problems with ack's automatic detection of filter mode!  You might need to set <code>compilation-disable-input</code> to <code>t</code> and/or redirect the standard input of the <code>ack</code> command to <code>/dev/null</code>.
 
 ----
 CategoryExternalUtilities CategoryRegexp
