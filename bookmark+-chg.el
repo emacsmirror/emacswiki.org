@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2012, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Tue Feb 28 14:21:30 2012 (-0800)
+;; Last-Updated: Wed Feb 29 14:09:19 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 14411
+;;     Update #: 14412
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-chg.el
 ;; Keywords: bookmarks, bookmark+
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -145,6 +145,8 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-1.el'")
 ;;
+;; 2012/02/29 dadams
+;;     bmkp-completing-read-lax: Bind & restore C-M-w, C-M-u, SPC, and ? (so can insert SPC, ? etc.).
 ;; 2012/02/28 dadams
 ;;     bmkp-file-target-set: Call bmkp-refresh-menu-list if Bookmark List is displayed.
 ;;     Renamed option bmkp-default-handler-associations to bmkp-default-handlers-for-file-types.
