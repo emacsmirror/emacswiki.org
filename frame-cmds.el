@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Mar  5 16:30:45 1996
 ;; Version: 21.0
-;; Last-Updated: Wed Feb 29 10:13:17 2012 (-0800)
+;; Last-Updated: Wed Feb 29 10:26:51 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 2666
+;;     Update #: 2667
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/frame-cmds.el
 ;; Keywords: internal, extensions, mouse, frames, windows, convenience
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -1473,7 +1473,7 @@ Elements of ALIST that are not conses are ignored."
           (setq tail tail-cdr))))
     alist))
 
-;; Define this to avoid requiring `cl.el' at runtime.
+;; Define this to avoid requiring `cl.el' at runtime.  Same as `icicle-set-difference'.
 (defun frame-cmds-set-difference (list1 list2 &optional key)
   "Combine LIST1 and LIST2 using a set-difference operation.
 Optional arg KEY is a function used to extract the part of each list
