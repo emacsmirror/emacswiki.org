@@ -166,8 +166,8 @@ nil
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (defun ascope-init (dir)
 (interactive "DCscope Initial Directory: ")
-(if (get-process "ascope") (kill-process ((get-process "ascope"))))
-(if (get-buffer "*ascope*") (kill-buffer (get-buffer "*ascope*")))
+(if (get-process "ascope") (kill-process (get-process "ascope")))
+(if (get-buffer "*ascope*") (kill-buffer (get-buffer "*ascope*"))))
 
 (setq default-directory dir)
 (start-process "ascope" "*ascope*" "cscope" "-ld" "-f" "cscope.out")
