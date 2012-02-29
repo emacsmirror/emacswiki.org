@@ -76,6 +76,7 @@ approach.
 == Icon Annotations ==
 I like using an icon instead of displaying text directly in the buffer.
 Here is my modification of function ipa-set-overlay-text
+<pre>
 (defun ipa-set-overlay-text (overlay text)
   (if (string-match ipa-annotation-id-regexp text)
       (setq text (match-string 2 text)))
@@ -87,7 +88,7 @@ Here is my modification of function ipa-set-overlay-text
                                      :file "~/button-annotation-up.png"
                                      :ascent center)
                              'help-echo text))))
-
+</pre>
 
 == Problem with VisibleLines ==
 InPlaceAnnotations does not work with VisibleLines in some condition. This advice solves the problem.
