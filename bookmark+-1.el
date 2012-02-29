@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2012, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 13:43:55 2010 (-0700)
-;; Last-Updated: Tue Feb 28 14:16:29 2012 (-0800)
+;; Last-Updated: Wed Feb 29 14:21:44 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 4015
+;;     Update #: 4072
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-1.el
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -1777,13 +1777,14 @@ While entering a bookmark name at the prompt:
    are completion candidates.  (See also below, about a numeric prefix
    argument.)
 
- * You can use `C-w' to yank words from the buffer to the minibuffer.
-   Repeating `C-w' yanks successive words.
+ * You can use `C-M-w' to yank words from the buffer to the
+   minibuffer.  Repeating `C-M-w' yanks successive words (newlines
+   between yanked words are stripped out).
 
- * You can use `C-u' to insert the name of the last bookmark used in
+ * You can use `C-M-u' to insert the name of the last bookmark used in
    the buffer.  This can be useful as an aid to track your progress
    through a large file.  (If no bookmark has yet been used, then
-   `C-u' inserts the name of the visited file.)
+   `C-M-u' inserts the name of the visited file.)
 
 A prefix argument changes the behavior as follows:
 
@@ -1866,15 +1867,17 @@ bookmarks)."
     (setq bookmark-yank-point     nil
           bookmark-current-buffer nil)))
 
+
 ;; REPLACES ORIGINAL in `bookmark.el'.
 ;;
 ;; Prevent adding a newline in a bookmark name when yanking.
 ;;
 ;;;###autoload
-(defun bookmark-yank-word ()            ; Bound to `C-w' in minibuffer when setting bookmark.
+(defun bookmark-yank-word ()            ; Bound to `C-M-w' in minibuffer when setting bookmark.
   "Yank the word at point in `bookmark-current-buffer'.
-Repeat to yank subsequent words from the buffer, appending them.
-Newline characters are stripped out."
+Repeat to yank consecutive words from the current buffer, appending
+them to the minibuffer.  However, newline characters between yanked
+words are stripped out."
   (interactive)
   (let ((string  (with-current-buffer bookmark-current-buffer
                    (goto-char bookmark-yank-point)
@@ -2256,7 +2259,7 @@ Return \"-- Unknown location --\" if no location name can be found."
 ;; 1. Added BATCH arg.  Return OLD if no NEWNAME (batch).
 ;; 2. Rename also in marked and omitted lists.
 ;; 3. Use `bmkp-bookmark-record-from-name', not `bookmark-get-bookmark'.
-;; 4. Use `bmkp-completing-read-lax', not `read-from-minibuffer'.  (Do not bother with offering `C-w'.)
+;; 4. Use `bmkp-completing-read-lax', not `read-from-minibuffer'.
 ;; 5. Put `bmkp-full-record' property on new name.
 ;; 3. Use `bmkp-bookmark-record-from-name', not `bookmark-get-bookmark'.
 ;; 4. Added note about `S-delete' to doc string.
@@ -2269,14 +2272,14 @@ Interactively:
  If called from the keyboard, then prompt for OLD.
  If called from the menubar, select OLD from a menu.
 If NEW is nil, then prompt for its string value (unless BATCH).
- Completion against existing bookmark names is available, but is lax
- so you can easily edit an existing name.
+
+When entering the NEW name you can use completion against existing
+bookmark names.  This completion is lax, so you can easily edit an
+existing name.  See `bookmark-set' for particular keys available
+during this input.
 
 If BATCH is non-nil, then do not rebuild the bookmark list.  (NEW
 should be non-nil if BATCH is non-nil.)
-
-While you enter the new name, you can use `C-w' to insert consecutive
-words from the buffer into the new bookmark name.
 
 If you use Icicles then you can use `S-delete' during completion of a
 bookmark name to delete the bookmark named by the current completion
@@ -2714,14 +2717,31 @@ for its existence, as is `bmkp-get-bookmark-in-alist'."
 
 (defun bmkp-completing-read-lax (prompt &optional default alist pred hist)
   "Read a bookmark name, prompting with PROMPT.
-Same as `bookmark-completing-read', but completion is lax: your input
-need not match any existing bookmark name."
-  (unwind-protect
-       (progn (define-key minibuffer-local-completion-map "\C-w" 'bookmark-yank-word)
-              (define-key minibuffer-local-completion-map "\C-u" 'bookmark-insert-current-bookmark)
-              (bmkp-completing-read-1 prompt default alist pred hist t))
-    (define-key minibuffer-local-completion-map "\C-w" nil)
-    (define-key minibuffer-local-completion-map "\C-u" nil)))
+Like `bookmark-completing-read', but completion is lax: your input
+need not match any existing bookmark name.
+
+In addition:
+ * You can use `SPC' and `?' freely when typing the name.
+ * You can use `C-M-w' repeatedly to yank consecutive words from the
+   current buffer (see `bookmark-yank-word')."
+  (let ((orig-C-M-w  (lookup-key minibuffer-local-completion-map (kbd "C-M-w")))
+        (orig-C-M-u  (lookup-key minibuffer-local-completion-map (kbd "C-M-u")))
+        (orig-SPC    (lookup-key minibuffer-local-completion-map (kbd "SPC")))
+        (orig-qmark  (lookup-key minibuffer-local-completion-map (kbd "?"))))
+    (unwind-protect
+         (progn (define-key minibuffer-local-completion-map (kbd "C-M-w") 'bookmark-yank-word)
+                (define-key minibuffer-local-completion-map (kbd "C-M-u") 'bookmark-insert-current-bookmark)
+                (unless (and (boundp 'icicle-mode)  icicle-mode
+                             (eq orig-SPC 'icicle-self-insert))
+                  (define-key minibuffer-local-completion-map (kbd "SPC") 'self-insert-command))
+                (unless (and (boundp 'icicle-mode)  icicle-mode
+                             (eq orig-qmark 'icicle-self-insert))
+                  (define-key minibuffer-local-completion-map   (kbd "?") 'self-insert-command))
+                (bmkp-completing-read-1 prompt default alist pred hist t))
+      (define-key minibuffer-local-completion-map (kbd "C-M-w") orig-C-M-w)
+      (define-key minibuffer-local-completion-map (kbd "C-M-u") orig-C-M-u)
+      (define-key minibuffer-local-completion-map (kbd "SPC")   orig-SPC)
+      (define-key minibuffer-local-completion-map (kbd "?")     orig-qmark))))
 
 (defun bmkp-completing-read-1 (prompt default alist pred hist laxp)
   "Helper for `bookmark-completing-read(-lax)'.
@@ -2780,9 +2800,13 @@ If `bmkp-other-window-pop-to-flag' is non-nil, then use
   "Edit BOOKMARK's name and file name, and maybe save them.
 Return a list of the new bookmark name and new file name.
 BOOKMARK is a bookmark name (a string) or a bookmark record.
+
 Without a prefix arg, you are prompted for the new bookmark name and
- the new file name.  Completion against existing bookmark names is
- available, but is lax so you can easily edit an existing name.
+ the new file name.  When entering the new name you can use completion
+ against existing names.  This completion is lax, so you can easily
+ edit an existing name.  See `bookmark-set' for particular keys
+available during this input.
+
 With a prefix arg, edit the complete bookmark record (the
  internal, Lisp form)."
   (interactive
@@ -4968,7 +4992,7 @@ Return the first non-nil value returned by PREDICATE."
     res))
 
 ;; From `cl-seq.el', function `union', without keyword treatment.
-;; (Same as `simple-set-union' in `misc-fns.el' and `icicle-set-union' in `icicles-fn.el'.)
+;; (Same as `icicle-set-union' in `icicles-fn.el'.)
 (defun bmkp-set-union (list1 list2)
   "Combine LIST1 and LIST2 using a set-union operation.
 The result list contains all items that appear in either LIST1 or
@@ -5814,7 +5838,12 @@ Use `M-n' to pick up the url at point as the default.
 
 You are also prompted for the bookmark name.  But with a prefix arg,
 you are prompted only for a bookmark-name prefix.  In that case, the
-bookmark name is the prefix followed by the URL."
+bookmark name is the prefix followed by the URL.
+
+When entering a bookmark name you can use completion against existing
+names.  This completion is lax, so you can easily edit an existing
+name.  See `bookmark-set' for particular keys available during this
+input."
   (interactive
    (list (if (require 'ffap nil t)
              (ffap-read-file-or-url "URL: " (or (thing-at-point 'url)  (and (fboundp 'url-get-url-at-point)
@@ -5852,6 +5881,11 @@ You are also prompted for the bookmark name.  But with a prefix arg,
 you are prompted only for a bookmark-name prefix.  In that case, the
 bookmark name is the prefix followed by the non-directory part of
 FILE.
+
+When entering a bookmark name you can use completion against existing
+names.  This completion is lax, so you can easily edit an existing
+name.  See `bookmark-set' for particular keys available during this
+input.
 
 Non-interactively:
  - Non-nil optional arg PREFIX-ONLY-P means prompt for a name prefix.
@@ -6833,6 +6867,11 @@ BOOKMARK is a bookmark name or a bookmark record."
 (defun bmkp-set-bookmark-file-bookmark (file &optional msgp) ; Bound to `C-x p y'
   "Create a bookmark that loads bookmark-file FILE when \"jumped\" to.
 You are prompted for the names of the bookmark file and the bookmark.
+When entering the bookmark name you can use completion against
+existing names.  This completion is lax, so you can easily edit an
+existing name.  See `bookmark-set' for particular keys available
+during this input.
+
 Non-interactively, non-nil optional arg MSGP means display a status message."
   (interactive
    (list (let* ((insert-default-directory  t)
