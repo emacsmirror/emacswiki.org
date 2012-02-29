@@ -165,26 +165,25 @@ nil
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (defun ascope-init (dir)
-(interactive "DCscope Initial Directory: ")
-(if (get-process "ascope") (kill-process (get-process "ascope")))
-(if (get-buffer "*ascope*") (kill-buffer (get-buffer "*ascope*"))))
-
-(setq default-directory dir)
-(start-process "ascope" "*ascope*" "cscope" "-ld" "-f" "cscope.out")
-(set-process-filter (get-process "ascope") 'ascope-filter)
-(with-current-buffer "*ascope*"
-(accept-process-output (get-process "ascope") 3)
-(if (looking-at ".*cannot open.*cscope\.out.*")
-(progn
-(setq buf (get-buffer "*ascope*"))
-(if buf
-(kill-buffer buf))
-(message "ascope: no cscope.out file here"))
-(progn
-(ascope-wait-for-output)
-(message "ascope: load ok"))
-))
-)
+  (interactive "DCscope Initial Directory: ")
+  (if (get-process "ascope") (kill-process (get-process "ascope")))
+  (if (get-buffer "*ascope*") (kill-buffer (get-buffer "*ascope*")))
+  (setq default-directory dir)
+  (start-process "ascope" "*ascope*" "cscope" "-ld" "-f" "cscope.out")
+  (set-process-filter (get-process "ascope") 'ascope-filter)
+  (with-current-buffer "*ascope*"
+    (accept-process-output (get-process "ascope") 3)
+    (if (looking-at ".*cannot open.*cscope\.out.*")
+	(progn
+	  (setq buf (get-buffer "*ascope*"))
+	  (if buf
+	      (kill-buffer buf))
+	  (message "ascope: no cscope.out file here"))
+      (progn
+	(ascope-wait-for-output)
+	(message "ascope: load ok"))
+      ))
+  )
 
 (defun ascope-find-this-symbol (symbol)
 "Locate a symbol in source code."
