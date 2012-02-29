@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:53 2006
 ;; Version: 22.0
-;; Last-Updated: Wed Feb 29 10:27:03 2012 (-0800)
+;; Last-Updated: Wed Feb 29 10:36:53 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 12916
+;;     Update #: 12918
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-fn.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -4724,7 +4724,6 @@ No error handling.  NUM must be in the range 0 to (length XS)."
            new-xs))))
 
 ;; From `cl-seq.el', function `union', without keyword treatment.
-;; Same as `simple-set-union' in `misc-fns.el'.
 (defun icicle-set-union (list1 list2)
   "Combine LIST1 and LIST2 using a set-union operation.
 The result list contains all items that appear in either LIST1 or
@@ -4742,7 +4741,6 @@ necessary."
          list1)))
 
 ;; From `cl-seq.el', function `intersection', without keyword treatment.
-;; Same as `simple-set-intersection' in `misc-fns.el'.
 (defun icicle-set-intersection (list1 list2)
   "Set intersection of lists LIST1 and LIST2.
 This is a non-destructive operation: it copies the data if necessary."
