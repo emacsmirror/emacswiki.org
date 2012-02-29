@@ -150,6 +150,9 @@ project is more appropriate.
 /Parts of the contents of this section have been moved to /[[RudelDiscussionArchive]].
 
 [new]
+Can't get rudel to a join a session more than once. If emacs is exited and reloaded, it will neither recognize a session nor host one, nor is it able to join a session even if the host is specified. It returns a "join denied" error or something like that. It joins exactly one file where the spell checker and flyspell are operable. Additional files create errors.
+
+[new]
 I'd really like to be able to highlight other participants' <code>(point)</code> - is this supported in the Obby protocol? Has anybody else looked into this? As a quick hack, i'm looking to notify the user that changes have been made outside of their current window (view of the buffer) - to make it easier to see if someone is editing line 1 when you're looking at line 1024 for example
 
 [new]
