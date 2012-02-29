@@ -7,9 +7,9 @@
 ;; Copyright (C) 1999-2012, Drew Adams, all rights reserved.
 ;; Created: Fri Mar 19 15:58:58 1999
 ;; Version: 21.2
-;; Last-Updated: Sat Feb 18 13:05:25 2012 (-0800)
+;; Last-Updated: Tue Feb 28 17:49:39 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 4399
+;;     Update #: 4400
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/dired+.el
 ;; Keywords: unix, mouse, directories, diredp, dired
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -256,6 +256,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2012/02/28 dadams
+;;     Do not bother to soft-require mkhtml.el anymore.
 ;; 2012/02/18 dadams
 ;;     Swapped keys for dired-w32(-browser|explore), so the former is M-RET, as in Bookmark+.
 ;; 2012/01/10 dadams
@@ -607,8 +609,8 @@
 (when (eq system-type 'windows-nt) ;; (no error if not found):
   (require 'w32-browser nil t)) ;; dired-w32explore, dired-w32-browser, dired-mouse-w32-browser,
                                 ;; dired-multiple-w32-browser
-(when (< emacs-major-version 21)
-  (require 'mkhtml nil t)) ;; (no error if not found): mkhtml-dired-files
+;;; (when (< emacs-major-version 21)
+;;;   (require 'mkhtml nil t)) ;; (no error if not found): mkhtml-dired-files
 
 ;; Don't require Icicles, else get recursive requires.
 ;; (require 'icicles nil t) ;; (no error if not found): icicle-read-string-completing
