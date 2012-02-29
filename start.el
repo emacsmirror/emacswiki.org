@@ -7,9 +7,9 @@
 ;; Copyright (C) 1995-2012, Drew Adams, all rights reserved.
 ;; Created: Wed Aug  2 11:12:24 1995
 ;; Version: 21.1
-;; Last-Updated: Sun Feb 26 10:03:29 2012 (-0800)
+;; Last-Updated: Tue Feb 28 17:50:09 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 2913
+;;     Update #: 2916
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/start.el
 ;; Keywords: abbrev, internal, local, init
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -51,11 +51,11 @@
 ;;   `printing', `ps-print', `regexp-opt', `replace+', `ring',
 ;;   `ring+', `savehist-20+', `second-sel', `sendmail', `setup',
 ;;   `setup-keys', `simple+', `solar', `speedbar', `start',
-;;   `strings', `swiss-move', `synonyms', `thing-cmds', `thingatpt',
-;;   `thingatpt+', `thumb-frm', `timer', `timer+', `unaccent', `vc',
-;;   `vc+', `vc-', `vc-hooks', `vc-hooks+', `w32-browser',
-;;   `w32browser-dlgopen', `wid-edit', `wid-edit+', `widget',
-;;   `window+', `zoom-frm'.
+;;   `strings', `subr-21', `swiss-move', `synonyms', `thing-cmds',
+;;   `thingatpt', `thingatpt+', `thumb-frm', `timer', `timer+',
+;;   `unaccent', `vc', `vc+', `vc-', `vc-hooks', `vc-hooks+',
+;;   `w32-browser', `w32browser-dlgopen', `wid-edit', `wid-edit+',
+;;   `widget', `window+', `zoom-frm'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -91,6 +91,8 @@
 ;;
 ;; Change Log:
 ;;
+;; 2012/02/28 dadams
+;;     Don't bother requiring calendar stuff and mkhtml anymore.
 ;; 2012/02/26 dadams
 ;;     Removed soft require of Icicles.
 ;;     Added soft require of pretty-lambdada.
@@ -407,10 +409,6 @@
 (require 'wid-edit+ nil t)              ; Extensions to `wid-edit.el'.
 (require 'cus-edit+ nil t)              ; Extensions to `cus-edit.el'.
 
-;; LOAD `oneonone.el' BEFORE load `htmlize.el', because `htmlize.el' breaks
-;; something so that frames like help-frame remain invisible.
-;; LOAD `oneonone.el' BEFORE load `find-dired+', because that loads `mkhtml.el',
-;; which loads `htmlize.el'.
 (when (if (fboundp 'display-graphic-p) (display-graphic-p) window-system)
   (require 'oneonone nil t))            ; Default frame configuration.
 (when (boundp 'mode-line-position)      ; Emacs 22+ - Mode line position highlighting.
@@ -460,7 +458,7 @@ See the Dired-X Info pages (type \\[info]) for information on this package.")
 ;;;                        ;; (setq dired-omit-files-p t))))
   )
 
-;; Note: `find-dired+.el' loads `dired+.el', which loads `mkhtml.el'.
+;; Note: `find-dired+.el' loads `dired+.el'.
 (when (< emacs-major-version 21)
   (require 'find-dired+ nil t))         ; Improvements.
 (require 'frame-fns nil t)              ; Non-interactive frame and window functions.
@@ -613,12 +611,12 @@ See the Dired-X Info pages (type \\[info]) for information on this package.")
 (require 'synonyms nil t)               ; Thesaurus.
 (when (> emacs-major-version 20) (require 'tool-bar+ nil t)) ; Extensions to `tool-bar.el'.
 (require 'icomplete+ nil t)             ; Sorted, colored icompletion
-(when (< emacs-major-version 21)
-  (require 'mkhtml nil t)               ; Create HTML from Emacs buffers/files.
-  (require 'cal-opts nil t)             ; Calendar and diary options.
-  (eval-after-load "calendar" '(require 'calendar+ nil t)) ; Calendar, diary, appointment stuff.
-  (eval-after-load "cal-french" '(require 'calendar+ nil t))
-  (eval-after-load "diary-lib" '(require 'calendar+ nil t)))
+;;; (when (< emacs-major-version 21)
+;;;   (require 'mkhtml nil t)               ; Create HTML from Emacs buffers/files.
+;;;   (require 'cal-opts nil t)             ; Calendar and diary options.
+;;;   (eval-after-load "calendar" '(require 'calendar+ nil t)) ; Calendar, diary, appointment stuff.
+;;;   (eval-after-load "cal-french" '(require 'calendar+ nil t))
+;;;   (eval-after-load "diary-lib" '(require 'calendar+ nil t)))
 (cond ((> emacs-major-version 21)
        (eval-after-load "diff" '(require 'diff+ nil t)) ; Extensions to `diff.el'.
        (require 'diff-mode- nil t))     ; Extensions to `diff-mode.el'.
