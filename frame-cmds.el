@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Mar  5 16:30:45 1996
 ;; Version: 21.0
-;; Last-Updated: Sun Jan  1 14:05:19 2012 (-0800)
+;; Last-Updated: Wed Feb 29 10:13:17 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 2644
+;;     Update #: 2666
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/frame-cmds.el
 ;; Keywords: internal, extensions, mouse, frames, windows, convenience
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -121,11 +121,12 @@
 ;;
 ;;    `assq-delete-all' (Emacs 20), `available-screen-pixel-bounds',
 ;;    `available-screen-pixel-height', `available-screen-pixel-width',
-;;    `effective-screen-pixel-bounds', `enlarged-font-name',
-;;    `frame-alist-var-names', `frame-iconified-p',
-;;    `frame-parameter-names', `new-frame-position',
-;;    `read-args-for-tile-frames', `read-buffer-for-delete-windows',
-;;    `smart-tool-bar-pixel-height'.
+;;    `butlast' (Emacs 20), `effective-screen-pixel-bounds',
+;;    `enlarged-font-name', `frame-alist-var-names',
+;;    `frame-cmds-set-difference', `frame-iconified-p',
+;;    `frame-parameter-names', `nbutlast' (Emacs 20),
+;;    `new-frame-position', `read-args-for-tile-frames',
+;;    `read-buffer-for-delete-windows', `smart-tool-bar-pixel-height'.
 ;;
 ;;
 ;;
@@ -245,6 +246,10 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2012/02/29 dadams
+;;     Added, for Emacs 20 only: nbutlast, butlast.  To avoid runtime load of cl.el.
+;;     Added frame-cmds-set-difference, to avoid runtime load of cl.el.
+;;     set-all-frame-alist-parameters-from-frame: Use frame-cmds-set-difference.
 ;; 2011/07/25 dadams
 ;;     save-frame-config: Use fboundp, not featurep.
 ;; 2011/01/04 dadams
@@ -440,8 +445,7 @@
 ;;
 ;;; Code:
 
-(eval-when-compile (require 'cl)) ;; butlast, case, incf, set-difference
-                                  ;; (plus, for Emacs 20: dolist and, for Emacs <20: when, unless)
+(eval-when-compile (require 'cl)) ;; case, incf (plus, for Emacs 20: dolist)
 (require 'frame-fns) ;; frame-geom-value-numeric, frames-on, get-frame-name, get-a-frame, read-frame
 (require 'strings nil t) ;; (no error if not found) read-buffer
 (require 'misc-fns nil t) ;; (no error if not found) another-buffer
@@ -1246,6 +1250,19 @@ This represents the currently available screen area."
           (mac-display-available-pixel-bounds)
         (list 0 0 (x-display-pixel-width) (x-display-pixel-height)))))
 
+; Emacs 20 doesn't have `butlast'.  Define it to avoid requiring `cl.el' at runtime.  From `subr.el'.
+(unless (fboundp 'butlast)
+  (defun nbutlast (list &optional n)
+    "Modifies LIST to remove the last N elements."
+    (let ((m  (length list)))
+      (or n (setq n  1))
+      (and (< n m)  (progn (when (> n 0) (setcdr (nthcdr (- (1- m) n) list) ()))
+                           list))))
+
+  (defun butlast (list &optional n)
+    "Return a copy of LIST with the last N elements removed."
+    (if (and n (<= n 0))  list  (nbutlast (copy-sequence list) n))))
+
 (defun effective-screen-pixel-bounds ()
   "Upper left and lower right of available screen space for tiling frames.
 This is `available-screen-pixel-bounds', possibly adjusted to allow
@@ -1456,6 +1473,26 @@ Elements of ALIST that are not conses are ignored."
           (setq tail tail-cdr))))
     alist))
 
+;; Define this to avoid requiring `cl.el' at runtime.
+(defun frame-cmds-set-difference (list1 list2 &optional key)
+  "Combine LIST1 and LIST2 using a set-difference operation.
+Optional arg KEY is a function used to extract the part of each list
+item to compare.
+
+The result list contains all items that appear in LIST1 but not LIST2.
+This is non-destructive; it makes a copy of the data if necessary, to
+avoid corrupting the original LIST1 and LIST2."
+  (if (or (null list1) (null list2)) list1
+    (let ((keyed-list2  (and key  (mapcar key list2)))
+          (result       ()))
+      (while list1
+        (unless (if key
+                    (member (funcall key (car list1)) keyed-list2)
+                  (member (car list1) list2))
+          (setq result  (cons (car list1) result)))
+        (setq list1  (cdr list1)))
+      result)))
+
 ;;;###autoload
 (defun set-all-frame-alist-parameters-from-frame (alist &optional frame really-all-p)
   "Set frame parameters of ALIST to their current values in FRAME.
@@ -1474,9 +1511,9 @@ FRAME defaults to the selected frame."
            current-prefix-arg)))
   (unless (boundp alist)
     (error "Not a defined Emacs variable: `%s'" alist))
-  (set alist (set-difference (frame-parameters frame)
-                             (and (not really-all-p) frame-parameters-to-exclude)
-                             :key 'car))
+  (set alist (frame-cmds-set-difference (frame-parameters frame)
+                                        (and (not really-all-p) frame-parameters-to-exclude)
+                                        #'car))
   (tell-customize-var-has-changed alist))
 
 (defun frame-alist-var-names ()
