@@ -38,7 +38,7 @@ I didn't see such a feature in the php-mode I use so I whipped up a quick soluti
 
 == C/C++ ==
 
-Use <tt>[http://furius.ca/pubcode/pub/conf/common/elisp/blais/qtdoc.el qtdoc.el]</tt> to look up in Qt documentation.
+Use <tt>[http://furius.ca/pubcode/pub/conf/lib/elisp/blais/qtdoc.el qtdoc.el]</tt> to look up in Qt documentation.
 
 CCLookup (Searching cppreference): http://taesoo.org/Opensource/CClookup
 
