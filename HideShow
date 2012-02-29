@@ -107,6 +107,7 @@ This is more robust than the mere <code>hs-toggle-hiding</code> function. Specif
 
 Finally, set up key bindings and automatically activate <code>hs-minor-mode</code> for the desired major modes:
 
+    (load-library "hideshow")
     (global-set-key (kbd "C-+") 'toggle-hiding)
     (global-set-key (kbd "C-\\") 'toggle-selective-display)
 
@@ -118,18 +119,6 @@ Finally, set up key bindings and automatically activate <code>hs-minor-mode</cod
     (add-hook 'sh-mode-hook         'hs-minor-mode)
 
 Now we have (rudimentary) code folding for /all/ modes, not just the ones listed above.
-
-== Automatically Activating ==
-
-Does anyone else have trouble viewing the text after this next paragraph?
-
-SteveWainstead contributes the following code for Emacs 20, which automatically activates HideShow for Perl, Java, or Lisp sources.
-
-    ;; hideshow for programming
-    (load-library "hideshow")
-    (add-hook 'java-mode-hook 'hs-minor-mode)
-    (add-hook 'perl-mode-hook 'hs-minor-mode)
-    (add-hook 'emacs-lisp-mode-hook 'hs-minor-mode)
 
 == Hiding initial comment block ==
 
