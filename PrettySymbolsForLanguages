@@ -159,6 +159,42 @@ And for Haskell:
 --MikaelBrockman
 
 Brilliant!
+---
+Here's F# version:
+
+  (defun fsharp-unicode ()
+    (interactive)
+    (substitute-patterns-with-unicode
+     (list (cons "\\(<-\\)" 'left-arrow)
+           (cons "\\(->\\)" 'right-arrow)
+           (cons "\\[^=\\]\\(=\\)\\[^=\\]" 'equal)
+           (cons "\\(==\\)" 'identical)
+           (cons "\\(\\!=\\)" 'not-identical)
+           (cons "\\(<>\\)" 'not-equal)
+           (cons "\\<\\(sqrt\\)\\>" 'square-root)
+           (cons "\\(&&\\)" 'logical-and)
+           (cons "\\(||\\)" 'logical-or)
+           (cons "\\<\\(not\\)\\>" 'logical-neg)
+           (cons "\\(>\\)\\[^=\\]" 'greater-than)
+           (cons "\\(<\\)\\[^=\\]" 'less-than)
+           (cons "\\(>=\\)" 'greater-than-or-equal-to)
+           (cons "\\(<=\\)" 'less-than-or-equal-to)
+           (cons "\\<\\(alpha\\)\\>" 'alpha)
+           (cons "\\<\\(beta\\)\\>" 'beta)
+           (cons "\\<\\(gamma\\)\\>" 'gamma)
+           (cons "\\<\\(delta\\)\\>" 'delta)
+           (cons "\\(''\\)" 'double-prime)
+           (cons "\\('\\)" 'prime)
+           (cons "\\<\\(List.forall\\)\\>" 'for-all)
+           (cons "\\<\\(List.exists\\)\\>" 'there-exists)
+           (cons "\\(>>\\)" 'much-greater-than)
+           (cons "\\(<<\\)" 'much-less-than)
+           ;;(cons "\\(|>\\)" 'right-triangle)
+           ;;(cons "\\(<|\\)" 'left-triangle)
+           (cons "^ +\\(|\\)" 'double-vertical-bar))))
+  (add-hook 'fsharp-mode-hook 'fsharp-unicode)
+
+
 ----
 Gorgeous! -- ShaeErisson
 ----
