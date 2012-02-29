@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 10:21:10 2006
 ;; Version: 22.0
-;; Last-Updated: Sun Feb 26 16:50:19 2012 (-0800)
+;; Last-Updated: Tue Feb 28 18:59:42 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 8492
+;;     Update #: 8496
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-mode.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -2116,10 +2116,12 @@ keymap.  If KEYMAP-VAR is not bound to a keymap, it is ignored."
   "Unbind `icicle-key-complete-keys' in keymaps accessible from MAP."
   (dolist (key+map (accessible-keymaps map))
     (let ((map  (cdr key+map)))
-      (when (and (keymapp map) (not (stringp (car-safe (last map))))) ; Try to exclude menu maps.
-        (dolist (key icicle-key-complete-keys)
-          (when (eq (lookup-key map key) 'icicle-complete-keys)
-            (condition-case nil (define-key map key nil) (error nil))))))))
+      (when (keymapp map)
+        (while (and (symbolp map) (fboundp map)) (setq map  (symbol-function map))) ; Get a list.
+        (when (not (stringp (car-safe (last map)))) ; Try to exclude menu maps.
+          (dolist (key icicle-key-complete-keys)
+            (when (eq (lookup-key map key) 'icicle-complete-keys)
+              (condition-case nil (define-key map key nil) (error nil)))))))))
  
 ;;(@* "Other Icicles functions that define Icicle mode")
 
