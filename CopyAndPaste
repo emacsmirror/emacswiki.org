@@ -103,7 +103,7 @@ Instead of relying on the above, you can install the xsel program for manipulati
   (interactive)
   (if (region-active-p)
 	  (progn
-		(shell-command-on-region (region-beginning) (region-end) "xsel -i")
+		(shell-command-on-region (region-beginning) (region-end) "xsel -i -b")
 		(message "Yanked region to clipboard!")
 		(deactivate-mark))
 	(message "No region active; can't yank to clipboard!")))
@@ -111,6 +111,7 @@ Instead of relying on the above, you can install the xsel program for manipulati
 (global-set-key [f8] 'yank-to-x-clipboard)
 </pre>
 
+Delete '-b' from the 'xsel' command above if you want the default behaviour of copying to the 'Primary Selection' rather than the 'Clipboard Selection'.
 
 ----
 AlexSchroeder originally reported in CategoryRegion:
