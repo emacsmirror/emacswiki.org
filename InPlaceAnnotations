@@ -89,6 +89,7 @@ Here is my modification of function ipa-set-overlay-text
                                      :ascent center)
                              'help-echo text))))
 </pre>
+-- Jingtao xu
 
 == Problem with VisibleLines ==
 InPlaceAnnotations does not work with VisibleLines in some condition. This advice solves the problem.
