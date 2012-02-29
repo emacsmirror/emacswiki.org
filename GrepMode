@@ -23,6 +23,10 @@ The ##-n##, which makes `grep' add line numbers to the output, is necessary to m
 
 Hits from `##M-x grep##' can be iterated through using `##C-x `##'. This runs Emacs command `next-error'.
 
+== Ack ==
+
+[[Ack]] is a replacement for ##grep##, written in Perl, with some powerful features.
+
 
 == Using `grep' and `find' on MS Windows ==
 
