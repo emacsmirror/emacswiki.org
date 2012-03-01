@@ -207,6 +207,9 @@ for a nice quick-and-dirty PreviewLaTeX.
 Check out x-symbol (http://x-symbol.sourceforge.net/) for a LaTeX symbol package. --AmitPatel
 
 ----
+
+VitomirKovanovic
+
 This is my take on LaTeX fontifycation. 
 
 http://img811.imageshack.us/img811/7069/latexpretty.png
@@ -292,7 +295,6 @@ and this is the function
     (add-hook 'LaTeX-mode-hook 'latex-unicode)
 
 
-Vitomir (kovanovic -> gmail.com)
 ----
 AlexOtt
 
