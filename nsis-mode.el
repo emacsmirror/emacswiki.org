@@ -5,11 +5,11 @@
 ;; Author: Matthew L. Fidler
 ;; Maintainer: Matthew L. Fidler
 ;; Created: Tue Nov 16 15:48:02 2010 (-0600)
-;; Version: 0.1
-;; Last-Updated: Mon Feb  7 11:04:22 2011 (-0600)
+;; Version: 0.42
+;; Last-Updated: Thu Mar  1 14:51:46 2012 (-0600)
 ;;           By: Matthew L. Fidler
-;;     Update #: 1414
-;; URL: http://www.emacswiki.org/emacs/download/nsis-mode.el
+;;     Update #: 1453
+;; URL: http://github.com/mlf176f2/nsis-mode
 ;; Keywords: NSIS
 ;; Compatibility: Emacs 23.2
 ;;
@@ -37,6 +37,18 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;;; Change Log:
+;; 01-Mar-2012    Matthew L. Fidler  
+;;    Last-Updated: Thu Mar  1 14:49:14 2012 (-0600) #1450 (Matthew L. Fidler)
+;;    Added website.
+;; 01-Mar-2012    Matthew L. Fidler  
+;;    Last-Updated: Thu Mar  1 14:49:14 2012 (-0600) #1450 (Matthew L. Fidler)
+;;    Bug fix for syntax table.
+;; 19-Dec-2011    Matthew L. Fidler  
+;;    Last-Updated: Mon Dec 19 09:23:37 2011 (-0600) #1441 (Matthew L. Fidler)
+;;    Looks for makensis if can't find in program files.
+;; 19-Dec-2011    Matthew L. Fidler  
+;;    Last-Updated: Mon Nov 21 10:00:35 2011 (-0600) #1440 (Matthew L. Fidler)
+;;    Added .nsi and .nsh autoload
 ;; 07-Feb-2011    Matthew L. Fidler  
 ;;    Last-Updated: Mon Feb  7 11:03:14 2011 (-0600) #1413 (Matthew L. Fidler)
 ;;    Added check to make sure compile went OK before launching executable.
@@ -84,8 +96,14 @@
 (require 'font-lock)
 (require 'cl)
 
-(defvar nsis-version "0.1"
+(defvar nsis-version "0.3"
   "NSIS-mode version")
+;;;###autoload
+(setq auto-mode-alist (append '(("\\.\\([Nn][Ss][Ii]\\)$" .
+                                 nsis-mode)) auto-mode-alist))
+;;;###autoload
+(setq auto-mode-alist (append '(("\\.\\([Nn][Ss][Hh]\\)$" .
+                                 nsis-mode)) auto-mode-alist))
 
 ;; ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Keywords from HM NIS Edit source Syntax.ini and the manuals.  Added logic lib
@@ -515,27 +533,28 @@
      ))
   "* nsis syntax variables"
   )
-(defvar nsis-syntax-callback
-  '(
-    ".onGUIEnd"
-    ".onGUIInit"
-    ".onInit"
-    ".onInstFailed"
-    ".onInstSuccess"
-    ".onMouseOverSection"
-    ".onRebootFailed"
-    ".onSelChange"
-    ".onUserAbort"
-    ".onVerifyInstDir"
-    "un.onGUIEnd"
-    "un.onGUIInit"
-    "un.onInit"
-    "un.onRebootFailed"
-    "un.onUninstFailed"
-    "un.onUninstSuccess"
-    "un.onUserAbort"
-    )
-  "nsis callback syntax")
+(eval-when-compile 
+  (defvar nsis-syntax-callback
+    '(
+      ".onGUIEnd"
+      ".onGUIInit"
+      ".onInit"
+      ".onInstFailed"
+      ".onInstSuccess"
+      ".onMouseOverSection"
+      ".onRebootFailed"
+      ".onSelChange"
+      ".onUserAbort"
+      ".onVerifyInstDir"
+      "un.onGUIEnd"
+      "un.onGUIInit"
+      "un.onInit"
+      "un.onRebootFailed"
+      "un.onUninstFailed"
+      "un.onUninstSuccess"
+      "un.onUserAbort"
+      )
+    "nsis callback syntax"))
 ;; ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Other Keywords from Logic Lib
 ;; ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -696,21 +715,28 @@
   (interactive)
   (condition-case error
       (progn
-        (let (ret tmp end
+        (let (ret tmp end star-begin
                   (debug-on-error t))
           (save-excursion
             (if (boundp 'font-lock-beg)
                 (goto-char font-lock-beg))
+            ;; (save-excursion
+            ;;   (setq star-begin (re-search-backward "\\([/][*]\\|[*][/]\\)" nil t))
+            ;;   (if (and star-begin (string= (match-string 1) "/*"))
+            ;;       (progn
+            ;;         (setq ret t)
+            ;;         (setq font-lock-beg (point)))
+            ;;     (setq star-begin nil)))
             (beginning-of-line)
             (while (re-search-backward "[\\][ \t]*\n\=" nil t)
               (setq ret t)
               (beginning-of-line)))
-          (if ret
+          (if (and ret (not star-begin))
               (setq font-lock-beg (point)))
           (symbol-value 'ret)))
     (error
-     (message "Error in `nsis-font-lock-extended-region-continue': %s" (error-message-string error))
-     nil)))
+     (message "Error in `nsis-font-lock-extended-region-continue': %s"
+              (error-message-string error) nil))))
 
 (defface nsis-font-lock-bold-string-face nil
   "Font lock bold string face."
@@ -772,6 +798,7 @@
     (error
      (message "font-lock-error `nsis-font-lock-section-quote': %s" (error-message-string error))
      nil)))
+
 (defun nsis-font-lock-section-no-quote (limit)
   "Font locking for section without quotes"
   (interactive (list (point-max)))
@@ -849,8 +876,7 @@
        (message "Font Lock Error `nsis-font-lock-no-comment': %s" (error-message-string error))
        (setq ret nil))
       )
-    (symbol-value 'ret)
-    ))
+    (symbol-value 'ret)))
 
 (defun nsis-font-lock-multi-line-string (limit)
   "Font lock for multi-line string.  Make sure the string is not in a comment."
@@ -889,14 +915,15 @@
       '(
         ("[$]\\([\\\\]\\)" 1 "\\")
         ("\\(/\\)[*]" 1 "<")
-        ("[*]\\(/\\)" 1 ">")
-        )
-      )
+        ("[*]\\(/\\)" 1 ">")))
+
 (setq nsis-font-lock-keywords
       `(
         ;; Multi-line comment #1
+        ("[/][*]\\(.\\|\n\\)*?[*][/]"
+         (0 font-lock-comment-face t))
         (,(lambda(limit)
-            (nsis-font-lock-no-comment limit "[;#]\\(.*?[\\\\][ \t]*\n\\)*.*"
+            (nsis-font-lock-no-comment limit "[;#]\\(.*?[\\\\][ \t]*\n\\)*.*" ;
                                        '(font-lock-string-face)))
          (0 font-lock-comment-face t))
         (,(eval-when-compile
@@ -916,7 +943,7 @@
          (1 font-lock-builtin-face)
          (2 font-lock-type-face)
          (3 font-lock-variable-name-face))
-        ("^[ \t]*\\([^-+!$0-9\n \t;#][^ \t\n]*?:\\)[ \t]*\\($\\|[#;]\\|/[*].*?[*]/[ \t]*$\\|/[*].*?$\\)"
+        ("^[ \t]*\\([^-+!$0-9\n \t;#][^ \t\n]*?:\\)[ \t]*\\($\\|[#;]\\|/[*].*?[*]/[ \t]*$\\|/[*].*?$\\)" ;
          (1 font-lock-type-face))
         
         ("\\<\\(Var\\|!define\\)\\>[ \t]+\\<\\([A-Za-z][A-Za-z0-9_]*\\)\\>"
@@ -1494,8 +1521,8 @@ System::Call 'kernel32::GetModuleFileNameA(i 0, t .R0, i 1024) i r1'
     (let (
           (new-dir (if (eq (type-of 'yas/root-directory) 'symbol)
                        yas/root-directory
-                     (nth 0 yas/root-directory)
-                     ))
+                       (nth 0 yas/root-directory)
+                       ))
           (debug-on-error t)
           added-snippets
           file
@@ -1610,7 +1637,7 @@ System::Call 'kernel32::GetModuleFileNameA(i 0, t .R0, i 1024) i r1'
                       "/nsis/makensisw.exe")))
     (if (file-exists-p nsis)
         nsis
-      "makensisw"))
+      (executable-find "makensisw")))
   "nsis-mode windows command"
   :type 'file
   :group 'nsis-mode)
@@ -1620,15 +1647,15 @@ System::Call 'kernel32::GetModuleFileNameA(i 0, t .R0, i 1024) i r1'
                       "/nsis/makensis.exe")))
     (if (file-exists-p nsis)
         nsis
-      "makensisw"))
+      (executable-find "makensis")))
   "nsis-mode command prompt"
   :type 'file
   :group 'nsis-mode)
+
 (defcustom nsis-run-nsis-async t
   "nsis-mode run Nsis asynchronously"
   :type 'boolean
-  :group 'nsis-mode
-  )
+  :group 'nsis-mode)
 
 (defun nsis-execute-buffer (&optional async)
   "Send the contents of the buffer to a Nsi interpreter."
@@ -1711,9 +1738,7 @@ System::Call 'kernel32::GetModuleFileNameA(i 0, t .R0, i 1024) i r1'
     (goto-char (point-max))
     (insert "================================================================================\n")
     (insert "Finished Compilation\n")
-    (insert "================================================================================\n")
-    )
-  )
+    (insert "================================================================================\n")))
 
 
 ;; ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -1722,8 +1747,7 @@ System::Call 'kernel32::GetModuleFileNameA(i 0, t .R0, i 1024) i r1'
 
 (defvar nsis-mode-syntax-table nil
   "Syntax table used in `nsis-mode' buffers.")
-(if nsis-mode-syntax-table
-    nil
+(if nsis-mode-syntax-table nil
   (setq nsis-mode-syntax-table (make-syntax-table))
   (modify-syntax-entry ?\( "()" nsis-mode-syntax-table)
   (modify-syntax-entry ?\) ")(" nsis-mode-syntax-table)
@@ -1738,7 +1762,8 @@ System::Call 'kernel32::GetModuleFileNameA(i 0, t .R0, i 1024) i r1'
   (modify-syntax-entry ?\* "."  nsis-mode-syntax-table)
   (modify-syntax-entry ?\+ "."  nsis-mode-syntax-table)
   (modify-syntax-entry ?\- "."  nsis-mode-syntax-table)
-  (modify-syntax-entry ?\/ "."  nsis-mode-syntax-table)
+  (modify-syntax-entry ?\/ ". 14"  nsis-mode-syntax-table)
+  ;;(modify-syntax-entry ?* ". 23" nsis-mode-sytax-table)
   (modify-syntax-entry ?\< "."  nsis-mode-syntax-table)
   (modify-syntax-entry ?\= "."  nsis-mode-syntax-table)
   (modify-syntax-entry ?\> "."  nsis-mode-syntax-table)
@@ -1767,8 +1792,7 @@ System::Call 'kernel32::GetModuleFileNameA(i 0, t .R0, i 1024) i r1'
   ;; comment delimiters
   (modify-syntax-entry ?\# "<"  nsis-mode-syntax-table)
   (modify-syntax-entry ?\; "<"  nsis-mode-syntax-table)
-  (modify-syntax-entry ?\n ">"  nsis-mode-syntax-table)
-  )
+  (modify-syntax-entry ?\n ">"  nsis-mode-syntax-table))
 ;; ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Indention function
 ;; ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -1927,9 +1951,13 @@ System::Call 'kernel32::GetModuleFileNameA(i 0, t .R0, i 1024) i r1'
      (looking-at (eval-when-compile (format "[ \t]*%s" nsis-end-keywords)))
      (looking-at (eval-when-compile (format "[ \t]*%s" nsis-indent-deindent-keywords))))))
 
+(defun nsis-font-lock-fontify-region-function (begin end)
+  "Fontify ")
+
 (defun nsis-comment-p ()
   "*Are we in a comment?"
   (save-match-data (or (looking-back "[;#].*") (nsis-in-multiline-comment-p))))
+
 (defun nsis-in-multiline-comment-p ()
   "* Are we in a multi-line comment?"
   (save-match-data (nsis-is-between (regexp-quote "/*") (regexp-quote "*/") t)))
@@ -2099,6 +2127,7 @@ Returns first position.
 (defvar nsis-mode-hook nil
   "*nsis mode hook")
 
+;;;###autoload
 (defun nsis-mode ()
   "Major mode for editing Nsi files."
   (interactive)
