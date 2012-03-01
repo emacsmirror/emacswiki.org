@@ -48,15 +48,8 @@ Note that unlike other transparency hacks (like the background image hack below)
 
 : Does anyone know how to disable it though? Emacs handling alpha value messes with my window manager (ie. I have such a feature configured in my WM). -- mina86
 
-== (Obsolete, OS X only) Transparent background color ==
-
-For me setting the background-colors alpha value just works with Emacs 23.1 on Mac OS X
-
-  (set-background-color "ARGBBB000000")
-: I can't get that to work on the latest Emacs from bzr... It seems that alpha is always 1.0 and that color doesn't parse...
-
-[new:Quantheory:2012-03-01 01:02 UTC]
-This was removed some time ago; it seems that it was only due to disorganization and chance that it was ever included in 23.1 in the first place. See [http://comments.gmane.org/gmane.emacs.devel/113050 the development discussion]. --Quantheory
+[new:Quantheory:2012-03-01 01:10 UTC]
+I would love to hear of a way to do this so that only the background is translucent. Unfortunately, I don't believe there's any way that doesn't involve patching the source or using an OS-specific, obsolete setting. -- Quantheory
 
 == Emacs -nw in a Transparent Term ==
 
@@ -68,8 +61,17 @@ Here's how you would start Emacs in a 256 color xterm:
 
 (Please change the above to use transparent aterm or eterm...)
 
+== (Obsolete, OS X only) Transparent background color ==
 
-== Simulating transparency with a background image ==
+For me setting the background-colors alpha value just works with Emacs 23.1 on Mac OS X
+
+  (set-background-color "ARGBBB000000")
+: I can't get that to work on the latest Emacs from bzr... It seems that alpha is always 1.0 and that color doesn't parse...
+
+[new:Quantheory:2012-03-01 01:02 UTC]
+This was removed some time ago; it seems that it was only due to disorganization and chance that it was ever included in 23.1 in the first place. See [http://comments.gmane.org/gmane.emacs.devel/113050 the development discussion]. -- Quantheory
+
+== (Obsolete/dubious?) Simulating transparency with a background image ==
 
 You can set up a background image in Emacs using the following:
 
@@ -92,7 +94,7 @@ On Mac GNU Emacs 23.2.1 I can use:
 However, once I set it, I can't set it again without first setting the stipple to nil. I also get weird drawing artifacts. I suspect this feature isn't fully baked but I don't know for sure. --AmitPatel
 
 [new:Quantheory:2012-03-01 00:55 UTC]
-My understanding is that stippling is not actually supposed to do this. Some, but not all, ports of Emacs use "tiling" instead of stippling, which is the only reason this ever worked for anyone. I wouldn't count on this continuing to work. -- Quantheory
+My understanding is that stippling is not actually supposed to do this. Some, but not all, ports of Emacs use "tiling" instead of stippling, which is the only reason this ever worked for anyone. I wouldn't count on this continuing to work. As for an actual background image, I don't know when that's ever been in the modern incarnation of GNU emacs, although it has probably been in some variants at times. Hard to know unless someone actually mentions what version they were using. -- Quantheory
 
 == (Obsolete) Transparent Emacs Branch ==
 
