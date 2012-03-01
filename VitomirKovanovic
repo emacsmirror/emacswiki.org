@@ -1,4 +1,5 @@
 I am grad student at Simon Fraser University
 
-homepage:http://blog.kovanovic.info
-email: E-mail: (concat "kovanovic" "@" "gmail.com")
+Homepage:http://blog.kovanovic.info
+
+E-mail: (concat "kovanovic" "@" "gmail.com")
