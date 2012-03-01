@@ -88,6 +88,9 @@ On Mac GNU Emacs 23.2.1 I can use:
                     :stipple "/Path/to/your/image.jpg")
 However, once I set it, I can't set it again without first setting the stipple to nil. I also get weird drawing artifacts. I suspect this feature isn't fully baked but I don't know for sure. --AmitPatel
 
+[new:quantheory:2012-03-01 00:55 UTC]
+My understanding is that stippling is not actually supposed to do this. Some, but not all, ports of Emacs use "tiling" instead of stippling, which is the only reason this ever worked for anyone. I wouldn't count on this continuing to work. -- Quantheory
+
 == (Obsolete) Transparent Emacs Branch ==
 
 If you use MilesBader transparent Emacs branch (currently only available via arch) you can make the buffer have a variety of different image backgrounds. Example [http://snogglethorpe.googlepages.com/emacs-candy-light-0.png here].
