@@ -5,11 +5,11 @@
 ;; Author: Matthew Fidler, Nathaniel Cunningham
 ;; Maintainer: Matthew L. Fidler
 ;; Created: Mon Oct 18 17:06:07 2010 (-0500)
-;; Version: 0.4
-;; Last-Updated: Sat Jan 14 21:49:53 2012 (-0600)
+;; Version: 0.5
+;; Last-Updated: Thu Mar  1 08:26:44 2012 (-0600)
 ;;           By: Matthew L. Fidler
-;;     Update #: 646
-;; URL:
+;;     Update #: 656
+;; URL: http://github.com/mlf176f2/tabbar-ruler.el
 ;; Keywords: Tabbar, Ruler Mode, Menu, Tool Bar.
 ;; Compatibility: Windows Emacs 23.x
 ;; Package-Requires: ((tabbar "2.0.1"))
@@ -39,6 +39,12 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;;; Change Log:
+;; 9-Feb-2012    Matthew L. Fidler  
+;;    Last-Updated: Thu Feb  9 19:18:21 2012 (-0600) #651 (Matthew L. Fidler)
+;;    Will not change the menu bar in a Mac.  Its always there.
+;; 14-Jan-2012    Matthew L. Fidler  
+;;    Last-Updated: Sat Jan 14 21:58:51 2012 (-0600) #648 (Matthew L. Fidler)
+;;    Added more commands that trigger the ruler.
 ;; 14-Jan-2012    Matthew L. Fidler  
 ;;    Last-Updated: Sat Jan 14 21:44:32 2012 (-0600) #641 (Matthew L. Fidler)
 ;;    Added more ruler commands.   It works a bit better
@@ -142,7 +148,7 @@
               (string-match "\\(?:\\.\\(?:Z\\|gz\\|bz2\\|tbz2?\\|tgz\\|svgz\\|sifz\\|xz\\|dz\\)\\)\\(\\(?:~\\|\\.~[0-9]+~\\)?\\)\\'"
                             (buffer-file-name (tabbar-tab-value tabbar-last-tab))))
      ]
-;;    "--"
+    ;;    "--"
     ;;    ["Print" tabbar-popup-print]
     )
   )
@@ -190,7 +196,7 @@
   "Tab-bar delete file"
   (interactive)
   (let* ((buf (tabbar-tab-value tabbar-last-tab))
-        (fn (buffer-file-name buf)))
+         (fn (buffer-file-name buf)))
     (when (yes-or-no-p (format "Are you sure you want to delete %s?" buf))
       (save-excursion
         (set-buffer buf)
@@ -308,9 +314,9 @@
         \"   .........  \",
         \"    .......   \",
         \"     .....    \"};" clr)
-	
-    (format
-     "/* XPM */
+      
+      (format
+       "/* XPM */
 static char * scroll_%s_%s_xpm[] = {
 \"17 17 2 1\",
 \"       c None\",
@@ -445,13 +451,13 @@ Optional argument TYPE is a mouse click event type (see the function
         (progn
           (setq tabbar-last-tab tab)
           (tabbar-context-menu))
-    (if (eq action 'close-tab)
-        (when (and (eq mouse-button 'mouse-1) tabbar-close-tab-function)
-          (funcall tabbar-close-tab-function tab))
-      (when tabbar-select-tab-function
-        (funcall tabbar-select-tab-function
-                 (tabbar-make-mouse-event type) tab)
-        (tabbar-display-update))))))
+      (if (eq action 'close-tab)
+          (when (and (eq mouse-button 'mouse-1) tabbar-close-tab-function)
+            (funcall tabbar-close-tab-function tab))
+        (when tabbar-select-tab-function
+          (funcall tabbar-select-tab-function
+                   (tabbar-make-mouse-event type) tab)
+          (tabbar-display-update))))))
 
 (defun tabbar-select-tab-callback (event)
   "Handle a mouse EVENT on a tab.
@@ -472,7 +478,7 @@ Call `tabbar-tab-label-function' to obtain a label for TAB."
   (let* ( (selected-p (tabbar-selected-p tab (tabbar-current-tabset)))
           (modified-p (buffer-modified-p (tabbar-tab-value tab)))
           (close-button-image (tabbar-find-image 
-	   `((:type xpm :data ,(tabbar-ruler-image :type 'close :disabled (not modified-p))))))
+                               `((:type xpm :data ,(tabbar-ruler-image :type 'close :disabled (not modified-p))))))
           (face (if selected-p
                     (if modified-p
                         'tabbar-selected-modified
@@ -622,9 +628,25 @@ Call `tabbar-tab-label-function' to obtain a label for TAB."
   )
 (add-hook 'find-file-hook (lambda() (interactive) (tabbar-ruler-tabbar-ruler-fight 't)))
 (defcustom tabbar-ruler-ruler-display-commands '(ac-trigger-commands
-                                       esn-upcase-char-self-insert
-                                       esn-magic-$
-                                       self-insert-command)
+                                                 esn-upcase-char-self-insert
+                                                 esn-magic-$
+                                                 right-char
+                                                 left-char
+                                                 previous-line
+                                                 next-line
+                                                 backward-paragraph
+                                                 forward-paragraph
+                                                 cua-scroll-down
+                                                 cua-scroll-up
+                                                 cua-paste
+                                                 cua-paste-pop
+                                                 autopair-newline
+                                                 autopair-insert-opening
+                                                 autopair-skip-close-maybe
+                                                 autopair-backspace
+                                                 backward-delete-char-untabify
+                                                 delete-backward-char
+                                                 self-insert-command)
   "* Ruler display commands."
   :group 'tabbar-ruler
   :type '(repeat symbol)
@@ -644,53 +666,37 @@ Call `tabbar-tab-label-function' to obtain a label for TAB."
                 (setq tabbar-ruler-ruler-off nil))
               (unless tabbar-ruler-tabbar-off
                 (tabbar-mode -1)
-                (setq tabbar-ruler-tabbar-off 't)
-                )
+                (setq tabbar-ruler-tabbar-off 't))
               (when tabbar-ruler-popup-menu
                 (unless tabbar-ruler-menu-off
-                  (menu-bar-mode -1)
-                  (setq tabbar-ruler-menu-off 't)
-                  )
-                )
+                  (unless (eq system-type 'darwin)
+		    (menu-bar-mode -1))
+                  (setq tabbar-ruler-menu-off 't)))
               (when tabbar-ruler-popup-toolbar
-                (unless tabbar-ruler-toolbar-off
-                  (tool-bar-mode -1)
-                  (setq tabbar-ruler-toolbar-off 't)
-                  )
-                )
-              )
+                (unless (eq system-type 'darwin)
+                  (unless tabbar-ruler-toolbar-off
+                    (tool-bar-mode -1)
+                    (setq tabbar-ruler-toolbar-off 't)))))
             ( (string-match "\\(mouse\\|ignore\\|window\\|frame\\)" (format "%s" last-command))
               (when nil ;; Took this out;  Afterward it works much better...
                 (unless tabbar-ruler-ruler-off
                   (ruler-mode -1)
-                  (setq tabbar-ruler-ruler-off 't)
-                  )
+                  (setq tabbar-ruler-ruler-off 't))
                 (when tabbar-ruler-tabbar-off
                   (tabbar-mode 1)
-                  (setq tabbar-ruler-tabbar-off nil)
-                  )
-                )
-              )
+                  (setq tabbar-ruler-tabbar-off nil))))
             ( 't
               (when (or initialize (and tabbar-ruler-ruler-off tabbar-ruler-tabbar-off))
                 (when tabbar-ruler-ruler-off
                   (ruler-mode 1)
-                  (setq tabbar-ruler-ruler-off nil)
-                  )
+                  (setq tabbar-ruler-ruler-off nil))
                 (unless tabbar-ruler-tabbar-off
                   (tabbar-mode -1)
-                  (setq tabbar-ruler-tabbar-off 't)
-                  )
-                )
-              )
-            )
-           )
+                  (setq tabbar-ruler-tabbar-off 't))))))
          ( tabbar-ruler-global-ruler
            (when tabbar-ruler-ruler-off
              (ruler-mode 1)
-             (setq tabbar-ruler-ruler-off nil)
-             )
-           )
+             (setq tabbar-ruler-ruler-off nil)))
          ( tabbar-ruler-global-tabbar
            (when tabbar-ruler-tabbar-off
              (tabbar-mode 1)
@@ -698,8 +704,8 @@ Call `tabbar-tab-label-function' to obtain a label for TAB."
              )
            )
          ))
-	(error
-	(message "Error in post-command-hook for Ruler/Tabbar: %s" (error-message-string error)))))
+    (error
+     (message "Error in post-command-hook for Ruler/Tabbar: %s" (error-message-string error)))))
 
 (add-hook 'post-command-hook 'tabbar-ruler-tabbar-ruler-fight)
 (defvar tabbar-ruler-movement-timer nil
@@ -750,22 +756,26 @@ Call `tabbar-tab-label-function' to obtain a label for TAB."
             (progn
               (when tabbar-ruler-popup-menu
                 (when tabbar-ruler-menu-off
-                  (menu-bar-mode 1)
+                  (unless (eq system-type 'darwin)
+		    (menu-bar-mode 1))
                   (setq tabbar-ruler-menu-off nil)))
               (when tabbar-ruler-popup-toolbar
-                (when tabbar-ruler-toolbar-off
-                  (tool-bar-mode 1)
-                  (setq tabbar-ruler-toolbar-off nil))))
+                (unless (eq system-type 'darwin)
+                  (when tabbar-ruler-toolbar-off
+                    (tool-bar-mode 1)
+                    (setq tabbar-ruler-toolbar-off nil)))))
           (when tabbar-ruler-popup-menu
             (unless tabbar-ruler-menu-off
-              (menu-bar-mode -1)
+              (unless (eq system-type 'darwin)
+		(menu-bar-mode -1))
               (setq tabbar-ruler-menu-off 't)))
           (when tabbar-ruler-popup-toolbar
-            (unless tabbar-ruler-toolbar-off
-              (tool-bar-mode -1)
-              (setq tabbar-ruler-toolbar-off 't))))))
+            (unless (eq system-type 'darwin)
+              (unless tabbar-ruler-toolbar-off
+                (tool-bar-mode -1)
+                (setq tabbar-ruler-toolbar-off 't)))))))
     (setq tabbar-ruler-movement-timer (run-with-timer
-                             0.01
+                                       0.01
                              nil
                              'tabbar-ruler-mouse-movement))))
 (tabbar-ruler-mouse-movement)
