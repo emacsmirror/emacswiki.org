@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Jan 30 15:01:06 1996
 ;; Version: 21.0
-;; Last-Updated: Sun Jan  1 14:05:12 2012 (-0800)
+;; Last-Updated: Fri Mar  2 08:34:59 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 1175
+;;     Update #: 1176
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/replace+.el
 ;; Keywords: matching, help, internal, tools, local
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -225,8 +225,7 @@
 ;; Don't want to do a (load-library "replace") either, because it wouldn't
 ;; allow doing (eval-after-load "replace" '(progn (require 'replace+)))
 
-(eval-when-compile (require 'cl)) ;; incf (plus, for Emacs 20: push, pop,
-                                  ;;       and, for Emacs <20: cadr, when, unless)
+(eval-when-compile (require 'cl)) ;; incf (plus, for Emacs 20: push)
 
 (require 'thingatpt nil t) ;; (no error if not found): word-at-point
 (require 'thingatpt+ nil t) ;; (no error if not found): non-nil-symbol-name-nearest-point
