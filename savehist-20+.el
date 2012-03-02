@@ -88,7 +88,8 @@
 ;;; Code:
 
 (require 'custom)
-(eval-when-compile (require 'cl))
+
+(eval-when-compile (require 'cl)) ;; loop, dolist, pop, push
 
 ;; User variables
 
