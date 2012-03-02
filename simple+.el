@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Fri Apr 12 10:56:45 1996
 ;; Version: 21.0
-;; Last-Updated: Fri Feb  3 11:08:20 2012 (-0800)
+;; Last-Updated: Fri Mar  2 08:41:00 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 450
+;;     Update #: 452
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/simple+.el
 ;; Keywords: internal, lisp, extensions, abbrev
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -135,8 +135,7 @@
 ;; Don't want to do a (load-library "simple") either, because it wouldn't
 ;; allow doing (eval-after-load "simple" '(require 'simple+))
 
-(and (< emacs-major-version 21)
-     (eval-when-compile (require 'cl))) ;; push, pop (plus, for Emacs <20: when, unless)
+(eval-when-compile (when (< emacs-major-version 21) (require 'cl))) ;; push, pop
 
 (require 'strings) ;; read-any-variable
 
