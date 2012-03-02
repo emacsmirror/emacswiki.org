@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Wed Aug  2 11:20:41 1995
 ;; Version: 21.1
-;; Last-Updated: Sun Jan  1 14:05:14 2012 (-0800)
+;; Last-Updated: Fri Mar  2 07:59:10 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 3016
+;;     Update #: 3017
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/misc-cmds.el
 ;; Keywords: internal, unix, extensions, maint, local
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -263,7 +263,7 @@
 ;;
 ;;; Code:
 
-(eval-when-compile (require 'cl)) ;; flet, plus for Emacs < 21: dolist, pop, case
+(eval-when-compile (require 'cl)) ;; case, plus for Emacs < 21: dolist, pop
 
 (require 'frame-fns nil t) ;; (no error if not found): flash-ding
 (require 'misc-fns nil t) ;; (no error if not found): another-buffer
