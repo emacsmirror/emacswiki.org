@@ -7,9 +7,9 @@
 ;; Copyright (C) 1999-2012, Drew Adams, all rights reserved.
 ;; Created: Fri Mar 19 15:58:58 1999
 ;; Version: 21.2
-;; Last-Updated: Tue Feb 28 17:49:39 2012 (-0800)
+;; Last-Updated: Fri Mar  2 08:14:34 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 4400
+;;     Update #: 4405
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/dired+.el
 ;; Keywords: unix, mouse, directories, diredp, dired
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -17,13 +17,10 @@
 ;; Features that might be required by this library:
 ;;
 ;;   `bookmark', `bookmark+', `bookmark+-1', `bookmark+-bmu',
-;;   `bookmark+-key', `bookmark+-lit', `bookmark+-mac', `cl',
-;;   `custom', `dired', `dired+', `dired-aux', `dired-x', `easymenu',
-;;   `ediff-diff', `ediff-help', `ediff-init', `ediff-merg',
-;;   `ediff-mult', `ediff-util', `ediff-wind', `ffap', `fit-frame',
-;;   `info', `info+', `misc-fns', `mkhtml', `mkhtml-htmlize', `pp',
-;;   `pp+', `strings', `thingatpt', `thingatpt+', `w32-browser',
-;;   `widget'.
+;;   `bookmark+-key', `bookmark+-lit', `bookmark+-mac', `dired',
+;;   `dired+', `dired-aux', `dired-x', `ediff-diff', `ediff-help',
+;;   `ediff-init', `ediff-merg', `ediff-mult', `ediff-util',
+;;   `ediff-wind', `ffap', `misc-fns', `pp', `pp+', `w32-browser'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -256,6 +253,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2012/03/02 dadams
+;;     Require cl.el at compile time even for Emacs 22+, for case macro.
 ;; 2012/02/28 dadams
 ;;     Do not bother to soft-require mkhtml.el anymore.
 ;; 2012/02/18 dadams
@@ -594,8 +593,7 @@
 ;;
 ;;; Code:
 
-(and (< emacs-major-version 21)
-     (eval-when-compile (require 'cl))) ;; pop (plus, for Emacs <20: when, unless)
+(eval-when-compile (require 'cl)) ;; case (plus, for Emacs 20: dolist, pop, push)
 (eval-when-compile (require 'easymenu)) ;; easy-menu-create-menu
 
 (require 'dired) ;; dired-revert
