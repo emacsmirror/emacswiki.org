@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2012, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 13:43:55 2010 (-0700)
-;; Last-Updated: Wed Feb 29 14:21:44 2012 (-0800)
+;; Last-Updated: Fri Mar  2 09:13:31 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 4072
+;;     Update #: 4084
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-1.el
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -1534,6 +1534,9 @@ Return the new bookmark."
     (bmkp-maybe-save-bookmarks)
     (setq bookmark-current-bookmark  bname)
     (bookmark-bmenu-surreptitiously-rebuild-list)
+    (when (and (get-buffer "*Bookmark List*") (get-buffer-window (get-buffer "*Bookmark List*") 0))
+      (with-current-buffer (get-buffer "*Bookmark List*")
+        (bmkp-refresh-menu-list bmk)))  ; Refresh the display.
     bmk))                               ; Return the bookmark.
 
 
@@ -3238,18 +3241,18 @@ Non-interactively, optional arg MSGP means display progress messages."
       (when msgp (message "Saving bookmark-list display state...done")))))
 
 ;;;###autoload
-(defun bmkp-toggle-saving-bookmark-file () ; Bound to `M-~' in bookmark list
+(defun bmkp-toggle-saving-bookmark-file (&optional msgp) ; Bound to `M-~' in bookmark list
   "Toggle the value of option `bookmark-save-flag'.
 If the initial value of `bookmark-save-flag' is nil, then this
 command has no effect."
-  (interactive)
+  (interactive "p")
   (unless (or bmkp-last-save-flag-value bookmark-save-flag)
     (error "Cannot toggle: initial value of `bookmark-save-flag' is nil"))
   (setq bmkp-last-save-flag-value  (prog1 bookmark-save-flag
                                      (setq bookmark-save-flag  bmkp-last-save-flag-value)))
-  (message (if bookmark-save-flag
-               "Autosaving of current bookmark file is now ON"
-             "Autosaving of current bookmark file is now OFF")))
+  (when msgp (message (if bookmark-save-flag
+                          "Autosaving of current bookmark file is now ON"
+                        "Autosaving of current bookmark file is now OFF"))))
 
 ;;;###autoload
 (defun bmkp-make-function-bookmark (bookmark-name function) ; Not bound
@@ -6864,7 +6867,7 @@ BOOKMARK is a bookmark name or a bookmark record."
 
 ;; Bookmark-file bookmarks.
 ;;;###autoload
-(defun bmkp-set-bookmark-file-bookmark (file &optional msgp) ; Bound to `C-x p y'
+(defun bmkp-set-bookmark-file-bookmark (file &optional msgp) ; Bound to `C-x p y', `C-x p c y'
   "Create a bookmark that loads bookmark-file FILE when \"jumped\" to.
 You are prompted for the names of the bookmark file and the bookmark.
 When entering the bookmark name you can use completion against
@@ -8501,7 +8504,7 @@ error if FILE has no autofile bookmark."
     (if bmk
         (bookmark-jump bmk)
       (if must-exist-p
-          (error "File `%s' is not an autofile (no bookmark)")
+          (error "File `%s' is not an autofile (no bookmark)" fil)
         (when create-autofile-p         ; Create a new bookmark.
           (bmkp-file-target-set (expand-file-name fil dir-to-use) t nil 'NO-OVERWRITE msgp)
           (when msgp (message "Autofile bookmark set for `%s'" fil)))
@@ -8523,7 +8526,7 @@ error if FILE has no autofile bookmark."
     (if bmk
         (bookmark-jump-other-window bmk)
       (if must-exist-p
-          (error "File `%s' is not an autofile (no bookmark)")
+          (error "File `%s' is not an autofile (no bookmark)" fil)
         (when create-autofile-p         ; Create a new bookmark.
           (bmkp-file-target-set (expand-file-name fil dir-to-use) t nil 'NO-OVERWRITE msgp)
           (when msgp (message "Autofile bookmark created for `%s'" fil)))
@@ -9411,7 +9414,9 @@ buffer part names the current buffer."
     (eval '(define-minor-mode bmkp-temporary-bookmarking-mode ; `M-L' in `*Bookmark List*'.
             "Toggle temporary bookmarking.
 Temporary bookmarking means that any bookmark changes (creation,
-modification, deletion) are NOT automatically saved.  Details:
+modification, deletion) are NOT automatically saved.
+
+Details:
 
  a. `bookmark-save-flag' is set to nil.
  b. `bmkp-current-bookmark-file' is set to a new, empty bookmark file
@@ -9448,7 +9453,7 @@ Don't forget to mention your Emacs and library versions."))
                    (let ((new-file  (make-temp-file "bmkp-temp-")))
                      (bmkp-empty-file new-file)
                      (bookmark-load new-file t t)
-                     (when bookmark-save-flag (bmkp-toggle-saving-bookmark-file)))
+                     (when bookmark-save-flag (bmkp-toggle-saving-bookmark-file (interactive-p))))
                    (when (interactive-p) (message "Bookmarking is now TEMPORARY")))
                   (t
                    (when (interactive-p) (message "OK, canceled - bookmarking is NOT temporary"))
@@ -9458,12 +9463,17 @@ Don't forget to mention your Emacs and library versions."))
   (defun bmkp-temporary-bookmarking-mode (&optional arg) ; `M-L' in `*Bookmark List*'.
     "Toggle temporary bookmarking.
 Temporary bookmarking means that any bookmark changes (creation,
-modification, deletion) are NOT automatically saved.  Details:
+modification, deletion) are NOT automatically saved.
+
+Details:
 
  a. `bookmark-save-flag' is set to nil.
  b. `bmkp-current-bookmark-file' is set to a new, empty bookmark file
     in directory `temporary-file-directory' (via `make-temp-file').
  c. That file is not saved automatically.
+
+Interactively, with no prefix arg, toggle the mode.  With a prefix
+arg, turn the mode on if positive, else off.
 
 Non-interactively, turn temporary bookmarking on if and only if ARG is
 positive.  Non-interactively there is no prompt for confirmation.
@@ -9490,7 +9500,7 @@ is `TEMPORARY ONLY' when this mode is on."
            (let ((new-file  (make-temp-file "bmkp-temp-")))
              (bmkp-empty-file new-file)
              (bookmark-load new-file t t)
-             (when bookmark-save-flag (bmkp-toggle-saving-bookmark-file)))
+             (when bookmark-save-flag (bmkp-toggle-saving-bookmark-file (interactive-p))))
            (run-hooks 'bmkp-temporary-bookmarking-mode-hook)
            (when (interactive-p) (message "Bookmarking is now TEMPORARY")))
           (t
