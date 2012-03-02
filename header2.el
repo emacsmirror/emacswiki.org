@@ -10,9 +10,9 @@
 ;; Copyright (C) 1988 Lynn Randolph Slater, Jr.
 ;; Created: Tue Aug  4 17:06:46 1987
 ;; Version: 21.0
-;; Last-Updated: Sun Jan  1 14:05:19 2012 (-0800)
+;; Last-Updated: Fri Mar  2 08:18:45 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 1816
+;;     Update #: 1817
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/header2.el
 ;; Keywords: tools, docs, maint, abbrev, local
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -323,7 +323,6 @@
 ;;
 ;;; Code:
 
-(and (< emacs-major-version 20) (eval-when-compile (require 'cl))) ;; when, unless
 (require 'lib-requires nil t)
   ;; (no error if not found):
   ;; libreq-insert-lib-requires-as-comment, libreq-file-header
