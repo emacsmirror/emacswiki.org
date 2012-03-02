@@ -1,4 +1,4 @@
-Maximize enable your emacs frames vertically or horizontally.
+Maximize enable your emacs frames maximize vertically or horizontally.
 Maximize drives multiple frames indivisually.
 
 = How to install =
@@ -10,7 +10,7 @@ Clone file from [https://github.com/izawa/maximize github.com] into your emacs d
     git clone git@github.com:izawa/maximize.git
 }}}
 
-Add load path subdirectory recursively
+Add load path to subdirectory
 
     (let ((default-directory "~/.emacs.d/"))
       (normal-top-level-add-subdirs-to-load-path))
