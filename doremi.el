@@ -7,9 +7,9 @@
 ;; Copyright (C) 2004-2012, Drew Adams, all rights reserved.
 ;; Created: Thu Sep 02 08:21:37 2004
 ;; Version: 21.1
-;; Last-Updated: Sun Jan  1 14:25:28 2012 (-0800)
+;; Last-Updated: Fri Mar  2 08:16:51 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 1602
+;;     Update #: 1603
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/doremi.el
 ;; Keywords: keys, cycle, repeat, higher-order
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -191,8 +191,6 @@
 (require 'ring+) ;; ring-convert-sequence-to-ring, ring-insert+extend,
                  ;; ring-member, ring-next, ring-previous
 (require 'mwheel nil t) ; (no error if not found): mwheel-event-button
-
-(and (< emacs-major-version 20) (eval-when-compile (require 'cl))) ;; when, unless
 
 ;; In Emacs 20, because `mwheel.el' is not loaded, byte-compiling
 ;; would give the following error messages, which can be ignored:
