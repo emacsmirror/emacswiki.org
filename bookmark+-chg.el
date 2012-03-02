@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2012, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Wed Feb 29 14:09:19 2012 (-0800)
+;; Last-Updated: Fri Mar  2 10:15:07 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 14412
+;;     Update #: 14421
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-chg.el
 ;; Keywords: bookmarks, bookmark+
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -145,6 +145,13 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-1.el'")
 ;;
+;; 2012/03/02 dadams
+;;     bmkp-maybe-save-bookmarks: Added optional arg SAME-COUNT-P.
+;;     bmkp-record-visit: Pass non-nil arg to bmkp-maybe-save-bookmarks to prevent changing mod count.
+;;     bookmark-store: Call bmkp-refresh-menu-list if Bookmark List is displayed.
+;;     bmkp-toggle-saving-bookmark-file: Added optional arg MSGP - show message only if non-nil.
+;;     bmkp-find-file(-other-window): Added missing FIL arg for error format string.
+;;     bmkp-temporary-bookmarking-mode: Pass a MSGP arg to bmkp-toggle-saving-bookmark-file.
 ;; 2012/02/29 dadams
 ;;     bmkp-completing-read-lax: Bind & restore C-M-w, C-M-u, SPC, and ? (so can insert SPC, ? etc.).
 ;; 2012/02/28 dadams
