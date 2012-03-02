@@ -7,9 +7,9 @@
 ;; Copyright (C) 2004-2012, Drew Adams, all rights reserved.
 ;; Created: Thu Dec 30 12:29:29 2004
 ;; Version: 21.0
-;; Last-Updated: Wed Feb  8 11:06:07 2012 (-0800)
+;; Last-Updated: Fri Mar  2 08:26:06 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 743
+;;     Update #: 744
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/lib-requires.el
 ;; Keywords: libraries, files
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -120,8 +120,8 @@
 
 (require 'loadhist)
 
-(and (< emacs-major-version 21)         ;; for Emacs 20, dolist, push, pop
-     (eval-when-compile (require 'cl))) ;; for Emacs < 20, when, unless
+(eval-when-compile (when (< emacs-major-version 21) (require 'cl)))
+ ;; dolist, push, pop
 
 ;;;;;;;;;;;;;;;;;;;;;;;;
 
