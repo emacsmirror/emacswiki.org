@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Mar  5 16:15:50 1996
 ;; Version: 21.1
-;; Last-Updated: Sun Jan  1 14:05:19 2012 (-0800)
+;; Last-Updated: Fri Mar  2 07:57:04 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 199
+;;     Update #: 201
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/frame-fns.el
 ;; Keywords: internal, extensions, local, frames
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -76,8 +76,8 @@
 ;;
 ;;; Code:
 
-(eval-when-compile (require 'cl)) ;; (plus, for Emacs 20: dolist, push
-                                  ;;  and, for Emacs <20: cadr, when, unless)
+(eval-when-compile (when (< emacs-major-version 21) (require 'cl)))
+ ;; dolist, push
 (require 'avoid nil t) ;; mouse-avoidance-point-position
 
 ;;;;;;;;;;;;;;;;;;;;;;;
