@@ -248,6 +248,11 @@ ns-toggle-fullscreen
 
 The patch is currently disabled for emacs24 (see [https://github.com/mxcl/homebrew/issues/4085 the issue on GitHub]).
 
+There is a [https://gist.github.com/1946398 working homebrew formula] that enables fullscreen mode under OS X Lion for the current git head versions (as of march 2012).
+Install using
+{{{
+brew install https://gist.github.com/raw/1946398/e7bbb52a4fe3ae0060e65df3d4a7462730ddc822/emacs.rb --force --HEAD --cocoa --use-git-head
+}}}
 Using a dark background, I get a small square of pale color in the bottom right hand corner. Anyone know why and how to get rid of it?
 ==== Resizing the window ====
 
