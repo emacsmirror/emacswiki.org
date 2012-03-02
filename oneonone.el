@@ -7,9 +7,9 @@
 ;; Copyright (C) 1999-2012, Drew Adams, all rights reserved.
 ;; Created: Fri Apr  2 12:34:20 1999
 ;; Version: 21.1
-;; Last-Updated: Sun Jan  1 14:05:13 2012 (-0800)
+;; Last-Updated: Fri Mar  2 10:36:03 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 2597
+;;     Update #: 2613
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/oneonone.el
 ;; Keywords: local, frames
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -175,69 +175,84 @@
 ;;  then fiddle with the other until they more or less cancel.
 ;;
 ;;
-;;  New functions and macros defined here (each has prefix `1on1-'):
+;;  New functions and macros defined here:
 ;;
-;;    `box-cursor-when-idle', `change-cursor-on-input-method',
-;;    `change-cursor-on-overwrite/read-only',
-;;    `color-minibuffer-frame-on-exit',
-;;    `color-minibuffer-frame-on-setup',
-;;    `color-isearch-minibuffer-frame', `display-*Completions*-frame',
-;;    `display-*Help*-frame', `emacs', `fit-minibuffer-frame',
-;;    `flash-ding-minibuffer-frame', `increment-color-hue',
-;;    `minibuffer-prompt-end', `reset-minibuffer-frame',
-;;    `set-box-cursor-when-idle-interval', `set-cursor-type',
-;;    `set-minibuffer-frame-top/bottom', `set-minibuffer-frame-width',
-;;    `setup-minibuffer-frame-coloring',
-;;    `setup-mode-line'. `toggle-box-cursor-when-idle'.
+;;    `1on1-box-cursor-when-idle',
+;;    `1on1-change-cursor-on-input-method',
+;;    `1on1-change-cursor-on-overwrite/read-only',
+;;    `1on1-color-minibuffer-frame-on-exit',
+;;    `1on1-color-minibuffer-frame-on-setup',
+;;    `1on1-color-isearch-minibuffer-frame',
+;;    `1on1-display-*Completions*-frame', `1on1-display-*Help*-frame',
+;;    `1on1-emacs', `1on1-fit-minibuffer-frame',
+;;    `1on1-flash-ding-minibuffer-frame', `1on1-increment-color-hue',
+;;    `1on1-minibuffer-prompt-end', `1on1-remove-if',
+;;    `1on1-reset-minibuffer-frame',
+;;    `1on1-set-box-cursor-when-idle-interval',
+;;    `1on1-set-cursor-type', `1on1-set-minibuffer-frame-top/bottom',
+;;    `1on1-set-minibuffer-frame-width',
+;;    `1on1-setup-minibuffer-frame-coloring', `1on1-setup-mode-line',
+;;    `1on1-toggle-box-cursor-when-idle'.
 ;;
-;;  Customizable user options defined here (each has prefix `1on1-'):
+;;  Customizable user options defined here:
 ;;
-;;    `*Completions*-frame-flag', `*Completions*-frame-at-right-flag',
-;;    `*Help*-frame-flag', `active-minibuffer-frame-background',
-;;    `active-mode-line-background',
-;;    `change-cursor-on-overwrite/read-only-flag',
-;;    `color-minibuffer-frame-on-exit-increment',
-;;    `color-minibuffer-frame-on-setup-increment',
-;;    `color-mode-line-flag', `completions-frame-background',
-;;    `completions-frame-mouse+cursor-color',
-;;    `completions-frame-width',
-;;    `completions-frame-zoom-font-difference',
-;;    `default-frame-cursor-color',
-;;    `default-frame-cursor-color-input-method',
-;;    `default-frame-cursor-type',
-;;    `default-frame-cursor-type-overwrite/read-only',
-;;    `default-frame-alist', `help-frame-background',
-;;    `help-frame-mouse+cursor-color',
-;;    `inactive-minibuffer-frame-background',
-;;    `inactive-mode-line-background',
-;;    `isearch-minibuffer-frame-background', `minibuffer-frame-alist',
-;;    `minibuffer-frame-flag', `minibuffer-frame-left',
-;;    `minibuffer-frame-top/bottom', `minibuffer-frame-width',
-;;    `minibuffer-frame-width-percent', `special-display-frame-alist'.
+;;    `1on1-*Completions*-frame-flag',
+;;    `1on1-*Completions*-frame-at-right-flag',
+;;    `1on1-*Help*-frame-flag',
+;;    `1on1-active-minibuffer-frame-background',
+;;    `1on1-active-mode-line-background',
+;;    `1on1-change-cursor-on-overwrite/read-only-flag',
+;;    `1on1-color-minibuffer-frame-on-exit-increment',
+;;    `1on1-color-minibuffer-frame-on-setup-increment',
+;;    `1on1-color-mode-line-flag',
+;;    `1on1-completions-frame-background',
+;;    `1on1-completions-frame-mouse+cursor-color',
+;;    `1on1-completions-frame-width',
+;;    `1on1-completions-frame-zoom-font-difference',
+;;    `1on1-default-frame-cursor-color',
+;;    `1on1-default-frame-cursor-color-input-method',
+;;    `1on1-default-frame-cursor-type',
+;;    `1on1-default-frame-cursor-type-overwrite/read-only',
+;;    `1on1-default-frame-alist', `1on1-help-frame-background',
+;;    `1on1-help-frame-mouse+cursor-color',
+;;    `1on1-inactive-minibuffer-frame-background',
+;;    `1on1-inactive-mode-line-background',
+;;    `isearch-minibuffer-frame-background',
+;;    `1on1-minibuffer-frame-alist', `1on1-minibuffer-frame-flag',
+;;    `1on1-minibuffer-frame-left',
+;;    `1on1-minibuffer-frame-top/bottom',
+;;    `1on1-minibuffer-frame-width',
+;;    `1on1-minibuffer-frame-width-percent',
+;;    `1on1-special-display-frame-alist'.
 ;;
-;;  Non-customizable user options defined here (prefix `1on1-'):
+;;  Non-customizable user options defined here:
 ;;
-;;    `default-frame-background', `default-frame-font',
-;;    `default-frame-foreground', `default-frame-menu-bar-lines',
-;;    `default-frame-mouse-color', `default-frame-size',
-;;    `default-frame-upper-left-corner',
-;;    `default-special-frame-background',
-;;    `default-special-frame-cursor-color',
-;;    `default-special-frame-font',
-;;    `default-special-frame-foreground',
-;;    `default-special-frame-menu-bar-lines',
-;;    `default-special-frame-mouse-color',
-;;    `default-special-frame-size',
-;;    `default-special-frame-upper-left-corner',
-;;    `minibuffer-frame-background', `minibuffer-frame-cursor-color',
-;;    `minibuffer-frame-font', `minibuffer-frame-foreground',
-;;    `minibuffer-frame-height', `minibuffer-frame-mouse-color'.
+;;    `1on1-default-frame-background', `1on1-default-frame-font',
+;;    `1on1-default-frame-foreground',
+;;    `1on1-default-frame-menu-bar-lines',
+;;    `1on1-default-frame-mouse-color', `1on1-default-frame-size',
+;;    `1on1-default-frame-upper-left-corner',
+;;    `1on1-default-special-frame-background',
+;;    `1on1-default-special-frame-cursor-color',
+;;    `1on1-default-special-frame-font',
+;;    `1on1-default-special-frame-foreground',
+;;    `1on1-default-special-frame-menu-bar-lines',
+;;    `1on1-default-special-frame-mouse-color',
+;;    `1on1-default-special-frame-size',
+;;    `1on1-default-special-frame-upper-left-corner',
+;;    `1on1-minibuffer-frame-background',
+;;    `1on1-minibuffer-frame-cursor-color',
+;;    `1on1-minibuffer-frame-font',
+;;    `1on1-minibuffer-frame-foreground',
+;;    `1on1-minibuffer-frame-height',
+;;    `1on1-minibuffer-frame-mouse-color'.
 ;;
-;;  Other new variables defined here (each has prefix `1on1-'):
+;;  Other new variables defined here:
 ;;
-;;    `box-cursor-when-idle-p', `box-cursor-when-idle-interval',
-;;    `box-cursor-when-idle-timer', `last-cursor-type',
-;;    `minibuffer-frame'.
+;;    `1on1-box-cursor-when-idle-p',
+;;    `1on1-box-cursor-when-idle-interval',
+;;    `1on1-box-cursor-when-idle-timer', `1on1-last-cursor-type',
+;;    `1on1-minibuffer-frame'.
 ;;
 ;;
 ;;  ***** NOTE: These EMACS PRIMITIVES have been REDEFINED HERE:
@@ -259,6 +274,9 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2012/03/02 dadams
+;;     Added 1on1-remove-if: to avoid runtime load of cl.el.
+;;     1on1-emacs: Use 1on1-remove-if, not remove-if.
 ;; 2011/10/05 dadams
 ;;     1on1-display-*Completions*-frame:
 ;;       Use same font family, not same font, as orig buff.  Only for Emacs 23+.
@@ -530,7 +548,8 @@
 ;;
 ;;; Code:
 
-(eval-and-compile (require 'cl)) ;; remove-if (plus, for Emacs < 20, when, unless)
+
+(eval-when-compile (when (< emacs-major-version 21) (require 'cl))) ;; dolist, push
 
 (require 'frame-cmds nil t) ;; (no error if not found): rename-frame
 (require 'zoom-frm nil t) ;; (no error if not found):
@@ -1270,8 +1289,8 @@ If `1on1-separate-minibuffer-*Completions*-flag' is non-nil, then
                    (cons 'cursor-color 1on1-help-frame-mouse+cursor-color)
                    '(height . 40))))
     (setq special-display-buffer-names
-          (remove-if (lambda (elt) (equal "*Help*" (car elt)))
-                     special-display-buffer-names)))
+          (1on1-remove-if (lambda (elt) (equal "*Help*" (car elt)))
+                          special-display-buffer-names)))
 
   ;; *Completions* frame
   ;; If `1on1-minibuffer-frame-flag' is non-nil, then *Completions* frame must be treated
@@ -1291,8 +1310,8 @@ If `1on1-separate-minibuffer-*Completions*-flag' is non-nil, then
          (add-to-list 'special-display-buffer-names
                       `("*Completions*" 1on1-display-*Completions*-frame)))
     (setq special-display-buffer-names
-          (remove-if (lambda (elt) (equal "*Completions*" (car elt)))
-                     special-display-buffer-names)))
+          (1on1-remove-if (lambda (elt) (equal "*Completions*" (car elt)))
+                          special-display-buffer-names)))
 
   ;; Minibuffer frame
   (when 1on1-minibuffer-frame-flag
@@ -1344,6 +1363,14 @@ show/hide: hold CTRL + click in window"))
   (setq w32-grab-focus-on-raise    nil
         win32-grab-focus-on-raise  nil) ; older name
   (1on1-setup-mode-line))
+
+;; Define this to avoid requiring `cl.el' at runtime.
+;; Same as in `icicle-remove-if' in `icicles-fn.el'.
+(defun 1on1-remove-if (pred xs)
+  "A copy of list XS with no elements that satisfy predicate PRED."
+  (let ((result  ()))
+    (dolist (x  xs) (unless (funcall pred x) (push x result)))
+    (nreverse result)))
 
 ;; This is inspired by code from Juri Linkov <juri@jurta.org>.
 (defun 1on1-change-cursor-on-input-method ()
