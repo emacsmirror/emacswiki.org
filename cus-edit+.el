@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2012, Drew Adams, all rights reserved.
 ;; Created: Thu Jun 29 13:19:36 2000
 ;; Version: 21.1
-;; Last-Updated: Wed Jan 18 09:26:12 2012 (-0800)
+;; Last-Updated: Fri Mar  2 08:08:32 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 1390
+;;     Update #: 1392
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/cus-edit+.el
 ;; Keywords: help, customize, help, faces
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -460,8 +460,7 @@
 
 (require 'cus-edit)
 
-(and (< emacs-major-version 21)         ;; dolist, push
-     (eval-when-compile (require 'cl))) ;; (plus, for Emacs <20: when, unless)
+(eval-when-compile (when (< emacs-major-version 21) (require 'cl))) ;; dolist, push
 
 (require 'wid-edit+ nil t)     ;; (no error if not found):
                                ;; redefined color widget (for custom-var-is-of-type-p)
