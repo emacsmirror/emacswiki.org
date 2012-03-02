@@ -7,9 +7,9 @@
 ;; Copyright (C) 1999-2012, Drew Adams, all rights reserved.
 ;; Created: Thu Aug 26 16:05:01 1999
 ;; Version: 21.0
-;; Last-Updated: Sun Jan  1 16:24:16 2012 (-0800)
+;; Last-Updated: Fri Mar  2 08:24:22 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 725
+;;     Update #: 726
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/imenu+.el
 ;; Keywords: tools, menus
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -139,8 +139,6 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;;; Code:
-
-(and (< emacs-major-version 20) (eval-when-compile (require 'cl))) ;; cadr, when, unless
 
 (require 'imenu)
 
