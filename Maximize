@@ -27,3 +27,22 @@ If you want to bind Hot-keys, add setting lines like below.
     (global-set-key [f11] 'maximize-toggle-frame-hmax)
 
 
+----
+
+'''See also:''' [[FrameModes#FrameComands|Frame Commands]] (library <tt>[[frame-cmds.el]]</tt>) for similar commands:
+* `toggle-max-frame', `toggle-max-frame-horizontally', `toggle-max-frame-vertically'
+* `maximize-frame', `maximize-frame-horizontally', `maximize-frame-vertically'
+* `restore-frame', `restore-frame-horizontally', `restore-frame-vertically'
+* plus frame tiling commands and more
+
+These commands can also take into account the actual available screen space.  E.g., they respect `mac-display-available-pixel-bounds' (for Mac OS), and they can leave room for a standalone minibuffer frame, if you use one.  (And <tt>[[frame-cmds.el]]</tt>  respects the [[GPL]].)
+
+
+
+
+
+
+
+
+-----
+CategoryFrames
