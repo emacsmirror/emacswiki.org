@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Thu Apr 18 10:16:50 1996
 ;; Version: 20.0
-;; Last-Updated: Fri Mar  2 08:43:21 2012 (-0800)
+;; Last-Updated: Fri Mar  2 08:46:13 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 92
+;;     Update #: 93
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/sort+.el
 ;; Keywords: unix, tools, sorting
 ;; Compatibility: GNU Emacs 20.x
@@ -62,7 +62,7 @@
 ;;; Code:
 
 (require 'sort)
-(eval-when-compile (when (< emacs-major-version 21) (require 'cl)) ;; pop
+(eval-when-compile (when (< emacs-major-version 21) (require 'cl))) ;; pop
 
 ;;;;;;;;;;;;;;;;;;;
 
