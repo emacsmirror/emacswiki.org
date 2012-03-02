@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2012, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 13:43:55 2010 (-0700)
-;; Last-Updated: Fri Mar  2 09:13:31 2012 (-0800)
+;; Last-Updated: Fri Mar  2 10:11:32 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 4084
+;;     Update #: 4086
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-1.el
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -2793,9 +2793,11 @@ If `bmkp-other-window-pop-to-flag' is non-nil, then use
       (pop-to-buffer buffer t)
     (switch-to-buffer-other-window buffer)))
 
-(defun bmkp-maybe-save-bookmarks ()
-  "Increment save counter and maybe save `bookmark-alist'."
-  (setq bookmark-alist-modification-count  (1+ bookmark-alist-modification-count))
+(defun bmkp-maybe-save-bookmarks (&optional same-count-p)
+  "Increment save counter and maybe save `bookmark-alist'.
+Non-nil optional arg SAME-COUNT-P means do not increment
+`bookmark-alist-modification-count'."
+  (unless same-count-p (setq bookmark-alist-modification-count  (1+ bookmark-alist-modification-count)))
   (when (bookmark-time-to-save-p) (bookmark-save)))
 
 ;;;###autoload
@@ -3106,7 +3108,7 @@ With non-nil optional arg BATCH, do not rebuild the menu list."
     (if vis  (bookmark-prop-set bookmark 'visits (1+ vis))  (bookmark-prop-set bookmark 'visits 0))
     (bookmark-prop-set bookmark 'time (current-time))
     (unless batch (bookmark-bmenu-surreptitiously-rebuild-list))
-    (let ((bookmark-save-flag  nil))  (bmkp-maybe-save-bookmarks))))
+    (let ((bookmark-save-flag  nil))  (bmkp-maybe-save-bookmarks 'SAME-COUNT-P))))
 
 (defun bmkp-default-bookmark-name (&optional alist)
   "Default bookmark name.  See option `bmkp-default-bookmark-name'.
