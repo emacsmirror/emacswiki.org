@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 10:21:10 2006
 ;; Version: 22.0
-;; Last-Updated: Wed Feb 29 06:54:38 2012 (-0800)
+;; Last-Updated: Thu Mar  1 22:40:21 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 8498
+;;     Update #: 8501
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-mode.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -20,7 +20,7 @@
 ;;   `advice', `advice-preload', `apropos', `apropos+',
 ;;   `apropos-fn+var', `avoid', `backquote', `bookmark', `bookmark+',
 ;;   `bookmark+-1', `bookmark+-bmu', `bookmark+-key',
-;;   `bookmark+-lit', `bookmark+-mac', `bytecomp', `cl', `cus-edit',
+;;   `bookmark+-lit', `bookmark+-mac', `bytecomp', `cus-edit',
 ;;   `cus-face', `cus-load', `cus-start', `dired', `dired+',
 ;;   `dired-aux', `dired-x', `doremi', `easymenu', `ediff-diff',
 ;;   `ediff-help', `ediff-init', `ediff-merg', `ediff-mult',
@@ -2115,12 +2115,13 @@ keymap.  If KEYMAP-VAR is not bound to a keymap, it is ignored."
   "Unbind `icicle-key-complete-keys' in keymaps accessible from MAP."
   (dolist (key+map (accessible-keymaps map))
     (let ((map  (cdr key+map)))
-      (when (and (keymapp map)  (not (eq 'autoload (car-safe map))))
-        (while (and (symbolp map) (fboundp map)) (setq map  (symbol-function map))) ; Get a list.
-        (when (not (stringp (car-safe (last map)))) ; Try to exclude menu maps.
-          (dolist (key icicle-key-complete-keys)
-            (when (eq (lookup-key map key) 'icicle-complete-keys)
-              (condition-case nil (define-key map key nil) (error nil)))))))))
+      (while (and (symbolp map) (fboundp map)) (setq map  (symbol-function map))) ; Get a list.
+      (when (and (keymapp map)
+                 (not (eq 'autoload (car-safe map))) ; Skip autoload keymaps.
+                 (not (stringp (car-safe (last map))))) ; Try to exclude menu maps.
+        (dolist (key icicle-key-complete-keys)
+          (when (eq (lookup-key map key) 'icicle-complete-keys)
+            (condition-case nil (define-key map key nil) (error nil))))))))
  
 ;;(@* "Other Icicles functions that define Icicle mode")
 
