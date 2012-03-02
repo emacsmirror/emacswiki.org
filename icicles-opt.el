@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:22:14 2006
 ;; Version: 22.0
-;; Last-Updated: Fri Mar  2 13:40:42 2012 (-0800)
+;; Last-Updated: Fri Mar  2 13:50:43 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 4964
+;;     Update #: 4966
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-opt.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -3085,6 +3085,8 @@ prefix argument (or else start a new Emacs session)."
 ;;;###autoload
 (defcustom icicle-TAB-completion-methods ; Cycle with `C-('.
   (let ((methods  ()))
+    ;; Unfortunately, `el-swankfuzzy.el' requires `cl.el' at runtime.
+    ;; Comment this first line out if you do not want that.
     (when (require 'el-swank-fuzzy nil t) (push 'swank        methods))
     (when (require 'fuzzy-match nil t)    (push 'fuzzy        methods))
     (when (boundp 'completion-styles)     (push 'vanilla      methods))
@@ -3162,6 +3164,8 @@ used are the value of option `icicle-prefix-complete-keys'.
 See also options `icicle-TAB-completion-methods-per-command'
 `icicle-S-TAB-completion-methods-alist'."
   :type (let ((methods  ()))
+          ;; Unfortunately, `el-swankfuzzy.el' requires `cl.el' at runtime.
+          ;; Comment this first sexp out if you do not want that.
           (when (require 'el-swank-fuzzy nil t)
             (push '(const :tag "Swank (Fuzzy Symbol)" swank) methods))
           (when (require 'fuzzy-match nil t)
@@ -3191,6 +3195,8 @@ advice for that command.  To do that you will need to explicitly
 invoke command `icicle-set-TAB-methods-for-command' using a negative
 prefix argument (or else start a new Emacs session)."
   :type (let ((methods  ()))
+          ;; Unfortunately, `el-swankfuzzy.el' requires `cl.el' at runtime.
+          ;; Comment this first sexp out if you do not want that.
           (when (require 'el-swank-fuzzy nil t)
             (push '(const :tag "Swank (Fuzzy Symbol)" swank) methods))
           (when (require 'fuzzy-match nil t)
