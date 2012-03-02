@@ -60,6 +60,10 @@ Enjoy your SSL-encrypted IRC session!
 
 == Problems ==
 === Re-connect ===
+[new]
+I followed the tutorial on creating the cert keys and I have Nick.cer, Nick.key and Nick.pem. 
+When I go to configure the tls-program variable, the -CAfile option requires CAs.pem. 
+This tutorial doesn't explain where to get this file from.
 
 [new]
 While the start-irc will initiate the cert-based ssl connection, a terminated connection
