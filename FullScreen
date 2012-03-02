@@ -187,7 +187,7 @@ and now you are GNOME HIG compliant :)
 
     (defun switch-full-screen ()
       (interactive)
-      (shell-command (concat "wmctrl -i -r " (frame-parameter nil 'outer-window-id) " -btoggle,maximize_vert,maximize_horz"))
+      (shell-command (concat "wmctrl -i -r " (frame-parameter nil 'outer-window-id) " -btoggle,maximized_vert,maximized_horz"))
 
 
 ==== External program: devilspie ====
