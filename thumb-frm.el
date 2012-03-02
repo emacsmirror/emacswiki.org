@@ -7,9 +7,9 @@
 ;; Copyright (C) 2004-2012, Drew Adams, all rights reserved.
 ;; Created: Fri Dec 10 16:44:55 2004
 ;; Version: 21.0
-;; Last-Updated: Sun Jan  1 17:25:37 2012 (-0800)
+;; Last-Updated: Fri Mar  2 07:36:25 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 1443
+;;     Update #: 1454
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/thumb-frm.el
 ;; Keywords: frame, icon
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -133,16 +133,18 @@
 ;;  Functions defined here:
 ;;
 ;;    `thumfr-cull-thumbnail-frames',
-;;    `thumfr-deiconify-thumbnail-frames',
+;;    `thumfr-deiconify-thumbnail-frames', `thumfr-delete-if-not',
 ;;    `thumfr-dethumbify-all-frames', `thumfr-dethumbify-frame',
 ;;    `thumfr-doremi-thumbnail-frames+', `thumfr-fisheye',
 ;;    `thumfr-fisheye-next-frame', `thumfr-fisheye-previous-frame',
 ;;    `thumfr-iconify-thumbnail-frames', `thumfr-only-raise-frame',
-;;    `thumfr-next-stack-position', `thumfr-really-iconify-frame',
+;;    `thumfr-nset-difference', `thumfr-next-stack-position',
+;;    `thumfr-really-iconify-frame',
 ;;    `thumfr-really-iconify-or-deiconify-frame',
-;;    `thumfr-stack-thumbnail-frames', `thumfr-sort-by-name',
-;;    `thumfr-sort-by-window-id', `thumfr-thumbify-frame',
-;;    `thumfr-thumbnail-frame-p' `thumfr-thumbify-frame-upon-event',
+;;    `thumfr-set-difference', `thumfr-stack-thumbnail-frames',
+;;    `thumfr-sort-by-name', `thumfr-sort-by-window-id',
+;;    `thumfr-thumbify-frame', `thumfr-thumbnail-frame-p'
+;;    `thumfr-thumbify-frame-upon-event',
 ;;    `thumfr-thumbify-other-frames',
 ;;    `thumfr-toggle-sort-thumbnail-frame-stack',
 ;;    `thumfr-toggle-thumbnail-frame'.
@@ -245,6 +247,10 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2012/03/02 dadams
+;;     Added thumfr-delete-if-not, thumfr-(n)set-difference: to avoid runtime load of cl.el.
+;;     thumfr-thumbify-other-frames: Use thumfr-nset-difference.
+;;     thumfr-cull-thumbnail-frames: Use thumfr-delete-if-not.
 ;; 2011/12/03 dadams
 ;;     Fixed menu-bar-mode, tool-bar-mode, scroll-bar-mode, fringe-mode: Frame is car of entry.
 ;; 2011/11/25 dadams
@@ -349,8 +355,7 @@
 ;;; Code:
 
 (require 'frame-cmds) ;; enlarge-font, rename-non-minibuffer-frame
-(eval-when-compile (require 'cl)) ;; delete-if-not, nset-difference
-                                  ;; (plus, for Emacs 20: dolist)
+(eval-when-compile (when (< emacs-major-version 21) (require 'cl))) ;; dolist
 
 ;; Quiet the byte-compiler
 (defvar read-file-name-completion-ignore-case) ; Emacs 22+
@@ -667,8 +672,8 @@ FRAME defaults to the selected frame."
       (thumfr-dethumbify-frame frame)
     (thumfr-thumbify-frame frame)))
 
+;;;###autoload
 (defalias 'thumfr-fisheye 'thumfr-thumbify-other-frames)
-
 ;;;###autoload
 (defun thumfr-thumbify-other-frames (&optional frame)
   "Thumbify all visible non-minibuffer frames except FRAME.
@@ -680,10 +685,42 @@ FRAME is the selected frame, by default."
   (let ((other-frames  (visible-frame-list)))
     (setq other-frames  (delq frame other-frames))
     (setq other-frames  (delq 1on1-minibuffer-frame other-frames))
-    (dolist (fr  (nset-difference other-frames (mapcar 'car thumfr-thumbnail-frames)))
+    (dolist (fr  (thumfr-nset-difference other-frames (mapcar 'car thumfr-thumbnail-frames)))
       (thumfr-thumbify-frame fr))
     (thumfr-stack-thumbnail-frames))
   frame)                                ; Return frame.
+
+;; Define this to avoid requiring `cl.el' at runtime.
+(defun thumfr-nset-difference (list1 list2 &optional key)
+  "Combine LIST1 and LIST2 using a set-difference operation.
+The resulting list contains all items that appear in LIST1 but not LIST2.
+This is a destructive function; it reuses the storage of LIST1 and LIST2
+whenever possible.
+
+Optional arg KEY is a function used to extract the part of each list
+element to compare."
+  (if (or (null list1) (null list2)) list1
+    (apply #'thumfr-set-difference list1 list2 key)))
+
+;; Define this to avoid requiring `cl.el' at runtime.  Same as `icicle-set-difference'.
+(defun thumfr-set-difference (list1 list2 &optional key)
+  "Combine LIST1 and LIST2 using a set-difference operation.
+Optional arg KEY is a function used to extract the part of each list
+element to compare.
+
+The result list contains all items that appear in LIST1 but not LIST2.
+This is non-destructive; it makes a copy of the data if necessary, to
+avoid corrupting the original LIST1 and LIST2."
+  (if (or (null list1) (null list2)) list1
+    (let ((keyed-list2  (and key  (mapcar key list2)))
+          (result       ()))
+      (while list1
+        (unless (if key
+                    (member (funcall key (car list1)) keyed-list2)
+                  (member (car list1) list2))
+          (setq result  (cons (car list1) result)))
+        (setq list1  (cdr list1)))
+      result)))
 
 ;;;###autoload
 (defun thumfr-fisheye-previous-frame ()
@@ -966,11 +1003,25 @@ Non-nil prefix FORCE-P => Sort iff FORCE-P >= 0."
 (defun thumfr-cull-thumbnail-frames ()
   "Remove iconified and useless frames from `thumfr-thumbnail-frames'.
 This includes dead and invisible frames."
-  (setq thumfr-thumbnail-frames  (delete-if-not
+  (setq thumfr-thumbnail-frames  (thumfr-delete-if-not
                                   (lambda (fr+params)
                                     (and (frame-live-p (car fr+params))
                                          (eq t (frame-visible-p (car fr+params)))))
                                   thumfr-thumbnail-frames)))
+
+;; Define this here to avoid requiring `cl.el' at runtime.
+(defun thumfr-delete-if-not (predicate list)
+  "Remove all occurrences of ITEM in LIST that do not satisfy PREDICATE.
+This is a destructive function: It reuses the storage of LIST whenever
+possible."
+  (while (and list  (not (funcall predicate (car list))))
+    (setq list  (cdr list)))
+  (let ((cl-p  list))
+    (while (cdr cl-p)
+      (if (not (funcall predicate (cadr cl-p)))
+          (setcdr cl-p (cddr cl-p))
+        (setq cl-p  (cdr cl-p)))))
+  list)
 
 ;;;###autoload
 (defun thumfr-doremi-thumbnail-frames+ ()
