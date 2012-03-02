@@ -7,9 +7,9 @@
 ;; Copyright (C) 2004-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Sep 14 16:45:30 2004
 ;; Version: 21.0
-;; Last-Updated: Sun Jan  1 14:25:28 2012 (-0800)
+;; Last-Updated: Fri Mar  2 08:15:46 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 210
+;;     Update #: 211
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/doremi-mac.el
 ;; Keywords: extensions, convenience, keys, repeat, cycle
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -111,8 +111,6 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; 
 ;;; Code:
-
-(and (< emacs-major-version 20) (eval-when-compile (require 'cl))) ;; when, unless
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;
  
