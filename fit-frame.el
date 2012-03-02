@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2012, Drew Adams, all rights reserved.
 ;; Created: Thu Dec  7 09:32:12 2000
 ;; Version: 22.0
-;; Last-Updated: Sun Jan  1 14:22:36 2012 (-0800)
+;; Last-Updated: Fri Mar  2 07:52:04 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 1313
+;;     Update #: 1318
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/fit-frame.el
 ;; Keywords: internal, extensions, convenience, local
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -53,7 +53,7 @@
 ;;  when determining the proper frame size:
 ;;
 ;;   - font sizes, other than the default frame font
-;;   - characters, such as TAB, that have special widths
+;;   - characters that have special widths
 ;;
 ;;  NOTE: If you also use library `frame-cmds.el', and you are on MS
 ;;  Windows, then load that library after `fit-frame.el'.  This is
@@ -271,7 +271,7 @@
 ;;
 ;;; Code:
 
-(when (< emacs-major-version 21) (eval-when-compile (require 'cl))) ;; dolist
+(eval-when-compile (when (< emacs-major-version 21) (require 'cl))) ;; dolist
 
 ;; Quiet the byte compiler.
 (defvar image-minor-mode)
@@ -735,7 +735,7 @@ Windows that are in list EXCLUDE are excluded from the result."
 (defun fit-frame-max-window-size (window)
   "Maximum size that would be needed to display the buffer in WINDOW.
 Returned as a cons: (MAX-WIDTH . MAX-HEIGHT), where:
- MAX-WIDTH is the maximum width, in characters.
+ MAX-WIDTH is the maximum width, in default characters.
  MAX-HEIGHT is the maximum height, in lines."
   (select-window window)
   (let ((hdr-lines                  (cdr (assq major-mode
