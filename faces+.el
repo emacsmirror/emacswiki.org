@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Fri Jun 28 15:07:06 1996
 ;; Version: 21.0
-;; Last-Updated: Sun Jan  1 14:23:02 2012 (-0800)
+;; Last-Updated: Fri Mar  2 07:50:13 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 277
+;;     Update #: 278
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/faces+.el
 ;; Keywords: faces, local
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -103,8 +103,7 @@
 ;;; Code:
 
 (require 'faces)
-(and (< emacs-major-version 21) ;; dolist, pop, push
-     (eval-when-compile (require 'cl))) ;; (plus, for Emacs < 20: when, unless)
+(eval-when-compile (when (< emacs-major-version 21) (require 'cl))) ;; dolist, pop, push
 
 (require 'thingatpt nil t) ;; (no error if not found): symbol-at-point
 (require 'thingatpt+ nil t) ;; (no error if not found): symbol-nearest-point
