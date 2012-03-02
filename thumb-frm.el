@@ -7,9 +7,9 @@
 ;; Copyright (C) 2004-2012, Drew Adams, all rights reserved.
 ;; Created: Fri Dec 10 16:44:55 2004
 ;; Version: 21.0
-;; Last-Updated: Fri Mar  2 07:36:25 2012 (-0800)
+;; Last-Updated: Fri Mar  2 08:57:57 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 1454
+;;     Update #: 1457
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/thumb-frm.el
 ;; Keywords: frame, icon
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -355,7 +355,7 @@
 ;;; Code:
 
 (require 'frame-cmds) ;; enlarge-font, rename-non-minibuffer-frame
-(eval-when-compile (when (< emacs-major-version 21) (require 'cl))) ;; dolist
+(eval-when-compile (require 'cl)) ;; case (plus, for Emacs 20: dolist)
 
 ;; Quiet the byte-compiler
 (defvar read-file-name-completion-ignore-case) ; Emacs 22+
