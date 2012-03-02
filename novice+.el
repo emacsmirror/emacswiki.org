@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Thu Jul 11 17:10:39 1996
 ;; Version: 21.0
-;; Last-Updated: Sun Feb 26 17:00:11 2012 (-0800)
+;; Last-Updated: Fri Mar  2 08:32:41 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 142
+;;     Update #: 143
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/novice+.el
 ;; Keywords: internal, help
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -73,8 +73,6 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;;; Code:
-
-(and (< emacs-major-version 20) (eval-when-compile (require 'cl))) ;; when, unless
 
 ;; Cannot do (require 'novice) prior to version 20, because `novice.el'
 ;; does no `provide'.  Don't want to do a (load-library "novice") either,
