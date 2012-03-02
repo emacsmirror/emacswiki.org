@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Mar  5 17:09:08 1996
 ;; Version: 21.0
-;; Last-Updated: Sun Jan  1 14:05:08 2012 (-0800)
+;; Last-Updated: Fri Mar  2 08:51:29 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 533
+;;     Update #: 534
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/strings.el
 ;; Keywords: internal, strings, text
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -144,7 +144,7 @@
 ;;
 ;;; Code:
 
-(eval-when-compile (require 'cl)) ;; psetq (plus, for Emacs <20: cadr, when, unless)
+(eval-when-compile (require 'cl)) ;; psetq
 
 (require 'thingatpt nil t) ;; (no error if not found): symbol-at-point
 (require 'thingatpt+ nil t)  ;; (no error if not found): symbol-nearest-point
