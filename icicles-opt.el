@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:22:14 2006
 ;; Version: 22.0
-;; Last-Updated: Tue Feb 28 17:56:30 2012 (-0800)
+;; Last-Updated: Fri Mar  2 08:22:58 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 4951
+;;     Update #: 4954
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-opt.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -17,10 +17,10 @@
 ;;
 ;; Features that might be required by this library:
 ;;
-;;   `backquote', `bytecomp', `cl', `el-swank-fuzzy', `ffap',
-;;   `ffap-', `fuzzy', `fuzzy-match', `hexrgb', `icicles-face',
-;;   `kmacro', `levenshtein', `regexp-opt', `thingatpt',
-;;   `thingatpt+', `wid-edit', `widget'.
+;;   `backquote', `bytecomp', `el-swank-fuzzy', `ffap', `ffap-',
+;;   `fuzzy', `fuzzy-match', `hexrgb', `icicles-face', `kmacro',
+;;   `levenshtein', `regexp-opt', `thingatpt', `thingatpt+',
+;;   `wid-edit', `widget'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -240,8 +240,7 @@
 
 ;; Emacs 20 does not DTRT wrt `:type' and `:set' sexps at compile time,
 ;; so there seems no way around this, short of coding without push and dolist.
-;; For Emacs < 21: dolist, push
-(eval-when-compile (when (< emacs-major-version 21) (require 'cl)))
+(eval-when-compile (when (< emacs-major-version 21) (require 'cl))) ;; dolist, push
 
 (require 'thingatpt)        ;; symbol-at-point, thing-at-point, thing-at-point-url-at-point
 (require 'thingatpt+ nil t) ;; (no error if not found): list-nearest-point-as-string,
