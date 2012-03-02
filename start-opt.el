@@ -7,9 +7,9 @@
 ;; Copyright (C) 1995-2012, Drew Adams, all rights reserved.
 ;; Created: Thu Dec 28 09:15:00 1995
 ;; Version: 21.0
-;; Last-Updated: Sun Jan  1 14:05:11 2012 (-0800)
+;; Last-Updated: Fri Mar  2 08:45:15 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 1940
+;;     Update #: 1941
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/start-opt.el
 ;; Keywords: local, init
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -196,7 +196,6 @@
 ;;
 ;;; Code:
 
-(and (< emacs-major-version 20) (eval-when-compile (require 'cl))) ;; when, unless
 (require 'chistory) ;; command-history-map
 (require 'header2 nil t) ;; (no error if not found): auto-make-header
 (require 'misc-cmds nil t) ;; (no error if not found): kill-buffer-and-its-windows
