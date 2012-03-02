@@ -7,9 +7,9 @@
 ;; Copyright (C) 2005-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Dec 20 14:39:26 2005
 ;; Version: 1.0
-;; Last-Updated: Sun Jan  1 14:05:08 2012 (-0800)
+;; Last-Updated: Fri Mar  2 08:53:54 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 2498
+;;     Update #: 2500
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/synonyms.el
 ;; Keywords: text, dictionary, thesaurus, spelling, apropos, help
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -469,6 +469,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2012/03/02 dadams
+;;     Require cl.el at compile time only for Emacs 20.
 ;; 2011/07/30 dadams
 ;;     Moved Icicles code to icicles-cmd2.el.  Removed soft-require of icicles.el.
 ;; 2011/02/11 dadams
@@ -578,7 +580,7 @@
 ;;
 ;;; Code:
 
-(eval-when-compile (require 'cl)) ;; push, pop
+(eval-when-compile (when (< emacs-major-version 21) (require 'cl))) ;; push, pop
 
 (require 'thingatpt+ nil t) ;; (no error if not found): word-nearest-point
 (require 'thingatpt nil t)  ;; (no error if not found): word-at-point
