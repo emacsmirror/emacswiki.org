@@ -1,0 +1,29 @@
+Maximize enable your emacs frames vertically or horizontally.
+Maximize drives multiple frames indivisually.
+
+= How to install =
+
+Clone file from github.com into your emacs directory
+
+{{{
+    cd ~/.emacs.d
+    git clone git@github.com:izawa/maximize.git
+}}}
+
+Add load path subdirectory recursively
+
+    (let ((default-directory "~/.emacs.d/"))
+      (normal-top-level-add-subdirs-to-load-path))
+
+Add require into your .emacs.
+
+    (require 'maximize)
+
+== Additional setting ==
+
+If you want to bind Hot-keys, add setting lines like below.
+
+    (global-set-key [f9] 'maximize-toggle-frame-vmax)
+    (global-set-key [f11] 'maximize-toggle-frame-hmax)
+
+
