@@ -7,55 +7,47 @@
 ;; Copyright (C) 1995-2012, Drew Adams, all rights reserved.
 ;; Created: Wed Aug  2 11:12:24 1995
 ;; Version: 21.1
-;; Last-Updated: Tue Feb 28 17:50:09 2012 (-0800)
+;; Last-Updated: Fri Mar  2 13:48:27 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 2916
+;;     Update #: 2920
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/start.el
 ;; Keywords: abbrev, internal, local, init
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
 ;;
 ;; Features that might be required by this library:
 ;;
-;;   `advice', `advice-preload', `appt', `apropos', `apropos+',
-;;   `apropos-fn+var', `assoc', `autofit-frame', `avoid',
-;;   `backquote', `bookmark', `bookmark+', `bookmark+-1',
-;;   `bookmark+-bmu', `bookmark+-key', `bookmark+-lit',
-;;   `bookmark+-mac', `browse-kill-ring', `browse-kill-ring+',
-;;   `buff-menu+', `bytecomp', `cal-dst', `cal-julian', `cal-menu',
-;;   `cal-opts', `cal-persia', `calendar', `calendar+', `cl',
-;;   `color-moccur', `compile', `compile+20', `compile-20',
-;;   `cus-edit', `cus-edit+', `cus-face', `cus-load', `cus-start',
-;;   `custom', `diary-lib', `dired', `dired+', `dired-aux',
-;;   `dired-details', `dired-details+', `dired-sort-menu',
-;;   `dired-sort-menu+', `dired-x', `doremi', `doremi-cmd',
-;;   `doremi-frm', `easymenu', `ediff', `ediff+', `ediff-diff',
-;;   `ediff-help', `ediff-init', `ediff-merg', `ediff-mult',
-;;   `ediff-util', `ediff-wind', `el-swank-fuzzy', `em-joc',
-;;   `emacsbug', `eshell-auto', `eyedropper', `facemenu',
-;;   `facemenu+', `faces', `faces+', `ffap', `ffap-', `files+',
-;;   `find-dired', `find-dired+', `find-dired-', `finder', `finder+',
-;;   `finder-inf', `fit-frame', `font-lock', `font-menus', `frame',
-;;   `frame+', `frame-cmds', `frame-fns', `fuzzy', `fuzzy-match',
-;;   `header2', `help+20', `hexrgb', `hide-comnt', `highlight',
-;;   `icicles', `icicles-cmd1', `icicles-cmd2', `icicles-face',
-;;   `icicles-fn', `icicles-mcmd', `icicles-mode', `icicles-opt',
-;;   `icicles-var', `icomplete', `icomplete+', `image-dired',
-;;   `imenu', `imenu+', `info', `info+', `isearch+', `iso-transl',
-;;   `kmacro', `lacarte', `levenshtein', `lib-requires',
-;;   `lisp-float-type', `lisp-mnt', `loadhist', `local-lpr',
+;;   `apropos', `apropos+', `apropos-fn+var', `assoc',
+;;   `autofit-frame', `avoid', `bookmark', `bookmark+',
+;;   `bookmark+-1', `bookmark+-bmu', `bookmark+-key',
+;;   `bookmark+-lit', `bookmark+-mac', `browse-kill-ring',
+;;   `browse-kill-ring+', `buff-menu+', `cl', `color-moccur',
+;;   `compile', `compile+20', `compile-20', `cus-edit', `cus-edit+',
+;;   `cus-face', `cus-load', `cus-start', `custom', `dired',
+;;   `dired+', `dired-aux', `dired-details', `dired-details+',
+;;   `dired-sort-menu', `dired-sort-menu+', `dired-x', `doremi',
+;;   `doremi-cmd', `doremi-frm', `easymenu', `ediff', `ediff+',
+;;   `ediff-diff', `ediff-help', `ediff-init', `ediff-merg',
+;;   `ediff-mult', `ediff-util', `ediff-wind', `em-joc', `emacsbug',
+;;   `eshell-auto', `eyedropper', `facemenu', `facemenu+', `faces',
+;;   `faces+', `ffap', `files+', `find-dired', `find-dired+',
+;;   `find-dired-', `finder', `finder+', `finder-inf', `fit-frame',
+;;   `font-lock', `font-menus', `frame', `frame+', `frame-cmds',
+;;   `frame-fns', `fuzzy-match', `header2', `help+20', `hexrgb',
+;;   `hide-comnt', `highlight', `icomplete', `icomplete+', `imenu',
+;;   `imenu+', `info', `info+', `isearch+', `iso-transl', `lacarte',
+;;   `lib-requires', `lisp-mnt', `loadhist', `local-lpr',
 ;;   `local-ps-print', `lpr', `ls-lisp', `ls-lisp+',
 ;;   `ls-lisp-verbosity', `menu-bar', `menu-bar+', `misc-cmds',
-;;   `misc-fns', `mkhtml', `mkhtml-htmlize', `moccur-edit', `mouse',
-;;   `mouse+', `mouse3', `mwheel', `naked', `occur-schroeder',
-;;   `oneonone', `paren', `pcmpl-auto', `pp', `pp+', `pp-c-l',
-;;   `printing', `ps-print', `regexp-opt', `replace+', `ring',
+;;   `misc-fns', `moccur-edit', `mouse', `mouse+', `mwheel', `naked',
+;;   `occur-schroeder', `oneonone', `paren', `pcmpl-auto', `pp',
+;;   `pp+', `pp-c-l', `printing', `ps-print', `replace+', `ring',
 ;;   `ring+', `savehist-20+', `second-sel', `sendmail', `setup',
-;;   `setup-keys', `simple+', `solar', `speedbar', `start',
-;;   `strings', `subr-21', `swiss-move', `synonyms', `thing-cmds',
-;;   `thingatpt', `thingatpt+', `thumb-frm', `timer', `timer+',
-;;   `unaccent', `vc', `vc+', `vc-', `vc-hooks', `vc-hooks+',
-;;   `w32-browser', `w32browser-dlgopen', `wid-edit', `wid-edit+',
-;;   `widget', `window+', `zoom-frm'.
+;;   `setup-keys', `simple+', `speedbar', `start', `strings',
+;;   `subr-21', `swiss-move', `synonyms', `thing-cmds', `thingatpt',
+;;   `thingatpt+', `thumb-frm', `timer', `timer+', `unaccent', `vc',
+;;   `vc+', `vc-', `vc-hooks', `vc-hooks+', `w32-browser',
+;;   `w32browser-dlgopen', `wid-edit', `wid-edit+', `widget',
+;;   `window+', `zoom-frm'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -517,6 +509,8 @@ See the Dired-X Info pages (type \\[info]) for information on this package.")
 ;;(setq *moccur-buffer-name-exclusion-list* '(".+TAGS.+" "*Completions*" "*Messages*"))
 (setq dmoccur-use-list t)
 (setq dmoccur-list '(("dir" default-directory (".*") dir)))
+
+;; Unfortunately, this requires `cl.el' at runtime.  Comment this out if you do not want that.
 (when (> emacs-major-version 21) (require 'color-moccur nil t)) ; Needs `ibuffer-unmark-all'.
 (require 'moccur-edit nil t)            ; Edit files by editing the Moccur buffer.
 
