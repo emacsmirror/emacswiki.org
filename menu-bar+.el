@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Thu Aug 17 10:05:46 1995
 ;; Version: 21.1
-;; Last-Updated: Sun Jan  1 14:05:14 2012 (-0800)
+;; Last-Updated: Fri Mar  2 08:28:39 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 3550
+;;     Update #: 3551
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/menu-bar+.el
 ;; Keywords: internal, local, convenience
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -333,8 +333,7 @@
 
 (require 'menu-bar)
 
-(and (< emacs-major-version 21);; dolist (plus, for Emacs <20: when, unless)
-     (eval-when-compile (require 'cl)))
+(eval-when-compile (when (< emacs-major-version 21) (require 'cl))) ;; dolist
 (when (eq system-type 'windows-nt)
   (require 'w32browser-dlgopen nil t)) ;; (no error if not found): dlgopen-open-files
                                        ;; `w32browser-dlgopen.el' is based on `dlgopen.el'
