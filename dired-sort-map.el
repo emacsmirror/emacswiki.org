@@ -1,40 +1,34 @@
-;;; dired-sort-map.el --- in Dired: press s then s, x, t or n to sort by Size, eXtension, Time or Name
-
-;; Copyright (C) 2002 -> Free Software Foundation
-
-;; Inspired by Francis J. Wright's dired-sort-menu.el
-;; Author: Patrick Anderson
-;; Version: 2.2
-
-;; Added help message suggested by Santiago Mejia
-
-;; This file is free software; you can redistribute it and/or modify
-;; it under the terms of the GNU General Public License as published by
-;; the Free Software Foundation; either version 2, or (at your option)
-;; any later version.
-
-;;; Install:
-;; Copy this file to a directory in your load path.
-;; Execute: M-x eval-buffer :so you don't have to restart.
-;; Add the line: (require 'dired-sort-map) : to your .emacs
-
-;;; Todo:
-;; (add-hook
-;;  'dired-load-hook
-;;  '(lambda ()
-;;     (progn
-
-;;; Code:
-(require 'dired)
-(defvar dired-sort-map (make-sparse-keymap))
-
-(define-key dired-mode-map "s" dired-sort-map)
-(define-key dired-sort-map "s" (lambda () "sort by Size" (interactive) (dired-sort-other (concat dired-listing-switches "S"))))
-(define-key dired-sort-map "x" (lambda () "sort by eXtension" (interactive) (dired-sort-other (concat dired-listing-switches "X"))))
-(define-key dired-sort-map "t" (lambda () "sort by Time" (interactive) (dired-sort-other (concat dired-listing-switches "t"))))
-(define-key dired-sort-map "n" (lambda () "sort by Name" (interactive) (dired-sort-other dired-listing-switches)))
-(define-key dired-sort-map "?" (lambda () "sort help" (interactive) (message "s Size; x eXtension; t Time; n Name")))
-;; )))
-
-(provide 'dired-sort-map)
-;;; dired-sort-map.el ends here
+#FILE text/x-emacs-lisp 
+Ozs7IGRpcmVkLXNvcnQtbWFwLmVsIC0tLSBpbiBEaXJlZDogcHJlc3MgcyB0aGVuIHMsIHgsIHQg
+b3IgbiB0byBzb3J0IGJ5IFNpemUsIGVYdGVuc2lvbiwgVGltZSBvciBOYW1lDQoNCjs7IENvcHly
+aWdodCAoQykgMjAwMiAtPiBGcmVlIFNvZnR3YXJlIEZvdW5kYXRpb24sIEluYy4NCg0KOzsgSW5z
+cGlyZWQgYnkgRnJhbmNpcyBKLiBXcmlnaHQncyBkaXJlZC1zb3J0LW1lbnUuZWwNCjs7IEF1dGhv
+cnM6IFBhdHJpY2sgQW5kZXJzb24sIFNhbnRpYWdvIE1lamlhLCBBbmR5IFN0ZXdhcnQsDQo7OyAg
+UHJvZi4gSmF5YW50aCBSIFZhcm1hDQoNCjs7IFZlcnNpb25zOg0KOzsgZG9uJ3QgcmVtZW1iZXIN
+Cjs7IDIuMmEgYnVuZGxlZCBpbiBOb3RlTWFjcw0KOzsgMi4yIEFkZCBoZWxwIG1lc3NhZ2Ugc3Vn
+Z2VzdGVkIGJ5IFNhbnRpYWdvIE1lamlhDQo7OyAyLjMgUHJlY2VkZSBlYWNoIHN3aXRjaCB3aXRo
+ICIgLSIgYXMgZm91bmQgYnkgUHJvZi4gSmF5YW50aCBSIFZhcm1hDQoNCjs7IFRoaXMgZmlsZSBp
+cyBmcmVlIHNvZnR3YXJlOyB5b3UgY2FuIHJlZGlzdHJpYnV0ZSBpdCBhbmQvb3IgbW9kaWZ5DQo7
+OyBpdCB1bmRlciB0aGUgdGVybXMgb2YgdGhlIEdOVSBHZW5lcmFsIFB1YmxpYyBMaWNlbnNlIGFz
+IHB1Ymxpc2hlZCBieQ0KOzsgdGhlIEZyZWUgU29mdHdhcmUgRm91bmRhdGlvbjsgZWl0aGVyIHZl
+cnNpb24gMiwgb3IgKGF0IHlvdXIgb3B0aW9uKQ0KOzsgYW55IGxhdGVyIHZlcnNpb24uDQoNCjs7
+OyBJbnN0YWxsOg0KOzsgQ29weSB0aGlzIGZpbGUgdG8gYSBkaXJlY3RvcnkgaW4geW91ciBsb2Fk
+IHBhdGguDQo7OyBFeGVjdXRlOiBNLXggZXZhbC1idWZmZXIgOnNvIHlvdSBkb24ndCBoYXZlIHRv
+IHJlc3RhcnQuDQo7OyBBZGQgdGhlIGxpbmU6IChyZXF1aXJlICdkaXJlZC1zb3J0LW1hcCkgOiB0
+byB5b3VyIC5lbWFjcw0KDQo7OzsgVG9kbzoNCjs7IChhZGQtaG9vaw0KOzsgICdkaXJlZC1sb2Fk
+LWhvb2sNCjs7ICAnKGxhbWJkYSAoKQ0KOzsgICAgIChwcm9nbg0KDQo7OzsgQ29kZToNCihyZXF1
+aXJlICdkaXJlZCkNCihkZWZ2YXIgZGlyZWQtc29ydC1tYXAgKG1ha2Utc3BhcnNlLWtleW1hcCkp
+DQoNCihkZWZpbmUta2V5IGRpcmVkLW1vZGUtbWFwICJzIiBkaXJlZC1zb3J0LW1hcCkNCg0KKGRl
+ZmluZS1rZXkgZGlyZWQtc29ydC1tYXAgInMiIChsYW1iZGEgKCkgInNvcnQgYnkgU2l6ZSIgKGlu
+dGVyYWN0aXZlKSAoZGlyZWQtc29ydC1vdGhlciAoY29uY2F0IGRpcmVkLWxpc3Rpbmctc3dpdGNo
+ZXMgIiAtUyIpKSkpDQooZGVmaW5lLWtleSBkaXJlZC1zb3J0LW1hcCAieCIgKGxhbWJkYSAoKSAi
+c29ydCBieSBlWHRlbnNpb24iIChpbnRlcmFjdGl2ZSkgKGRpcmVkLXNvcnQtb3RoZXIgKGNvbmNh
+dCBkaXJlZC1saXN0aW5nLXN3aXRjaGVzICIgLVgiKSkpKQ0KKGRlZmluZS1rZXkgZGlyZWQtc29y
+dC1tYXAgInQiIChsYW1iZGEgKCkgInNvcnQgYnkgVGltZSIgKGludGVyYWN0aXZlKSAoZGlyZWQt
+c29ydC1vdGhlciAoY29uY2F0IGRpcmVkLWxpc3Rpbmctc3dpdGNoZXMgIiAtdCIpKSkpDQooZGVm
+aW5lLWtleSBkaXJlZC1zb3J0LW1hcCAibiIgKGxhbWJkYSAoKSAic29ydCBieSBOYW1lIiAoaW50
+ZXJhY3RpdmUpIChkaXJlZC1zb3J0LW90aGVyIGRpcmVkLWxpc3Rpbmctc3dpdGNoZXMpKSkNCihk
+ZWZpbmUta2V5IGRpcmVkLXNvcnQtbWFwICI/IiAobGFtYmRhICgpICJzb3J0IGhlbHAiIChpbnRl
+cmFjdGl2ZSkgKG1lc3NhZ2UgInMgU2l6ZTsgeCBlWHRlbnNpb247IHQgVGltZTsgbiBOYW1lIikp
+KQ0KOzsgKSkpDQoNCihwcm92aWRlICdkaXJlZC1zb3J0LW1hcCkNCjs7OyBkaXJlZC1zb3J0LW1h
+cC5lbCBlbmRzIGhlcmUNCg==
