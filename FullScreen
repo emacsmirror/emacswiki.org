@@ -181,7 +181,7 @@ and now you are GNOME HIG compliant :)
 
     (defun switch-full-screen ()
       (interactive)
-      (shell-command "wmctrl -r :ACTIVE: -btoggle,maximize_vert,maximize_horz"))
+      (shell-command "wmctrl -r :ACTIVE: -btoggle,maximized_vert,maximized_horz"))
 
 * Rather than using :ACTIVE: which can do the wrong thing when you start Emacs and other programs at the same time:
 
