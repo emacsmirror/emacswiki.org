@@ -28,14 +28,16 @@ that colors and [[Face]]s belong in CategoryFaces.
 * WorkSpaces - an implementation based on registers
 * FullScreen - how to switch to fullscreen (with F11 for example)
 * MiniMap - A sidebar showing a small version of your buffer with highlighted viewport, which can be dragged with the mouse.
-* [[Maximize]] - Maximize frames vertically and or horizontally.
+
+
 == Managing Frames within Emacs ==
 
 * '''CategoryFrames'''
 * OneOnOneEmacs -- making Emacs more [[Frame]]-oriented, less Emacs window-oriented
 * Library Lisp:doremi-frm.el -- use the arrow keys and/or mouse wheel to make incremental changes to frame properties and cycle through a ring of frame configurations (undo). See DoReMi.
 * FisheyeWithThumbs -- thumbnail frames give a fisheye view of your frames and provide an alternative to iconifying
-
+* [[FrameModes#FrameCommands|Frame Commands]] -- Maximize/restore (vertically, horizontally, both); tile; iconify; move or resize incrementally; manage frame configurations; copy/paste parameters (attributes); show/hide;...
+* [[Maximize]] -- Maximize frames vertically and or horizontally.
 * WindowsAndFrames -- do several tasks with one Emacs
 * FrameConfiguration -- save, restore and switch [[Frame]] configurations (see also SessionManagement)
 * BumpWindowUp -- control the position of XEmacs frames on NT Windows
