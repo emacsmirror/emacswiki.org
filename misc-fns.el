@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Mar  5 17:21:28 1996
 ;; Version: 21.0
-;; Last-Updated: Wed Feb 29 10:38:45 2012 (-0800)
+;; Last-Updated: Fri Mar  2 08:01:03 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 579
+;;     Update #: 580
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/misc-fns.el
 ;; Keywords: internal, unix, lisp, extensions, local
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -159,8 +159,8 @@
 ;;
 ;;; Code:
 
-(and (< emacs-major-version 21)         ;; dolist, push, pop
-     (eval-when-compile (require 'cl))) ;; (plus, for Emacs <20: when, unless)
+(eval-when-compile (when (< emacs-major-version 21) (require 'cl)))
+ ;; dolist, push, pop
 
 ;;;;;;;;;;;;;;;;;;;;;
 
