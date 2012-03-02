@@ -3,7 +3,7 @@ Maximize drives multiple frames indivisually.
 
 = How to install =
 
-Clone file from github.com into your emacs directory
+Clone file from [https://github.com/izawa/maximize github.com] into your emacs directory
 
 {{{
     cd ~/.emacs.d
