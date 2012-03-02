@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Thu Apr 18 10:16:50 1996
 ;; Version: 20.0
-;; Last-Updated: Sun Jan  1 14:05:11 2012 (-0800)
+;; Last-Updated: Fri Mar  2 08:43:21 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 86
+;;     Update #: 92
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/sort+.el
 ;; Keywords: unix, tools, sorting
 ;; Compatibility: GNU Emacs 20.x
@@ -62,7 +62,7 @@
 ;;; Code:
 
 (require 'sort)
-(eval-when-compile (require 'cl)) ;; cddar (plus, for Emacs <21: pop)
+(eval-when-compile (when (< emacs-major-version 21) (require 'cl)) ;; pop
 
 ;;;;;;;;;;;;;;;;;;;
 
@@ -75,9 +75,10 @@
 ;; (insert-string (buffer-substring...))
 (defun sort-reorder-buffer (sort-lists old)
   "Helper function for `sort-subr'."
-  (let ((inhibit-quit t)
-        (last (point-min))
-        (min (point-min)) (max (point-max)))
+  (let ((inhibit-quit  t)
+        (last          (point-min))
+        (min           (point-min))
+        (max           (point-max)))
     ;; Make sure insertions done for reordering do not go after any markers
     ;; at the end of the sorted region, by inserting a space to separate them.
     (goto-char (point-max))
@@ -88,8 +89,8 @@
       (insert-string (buffer-substring last (nth 1 (car old))))
       (goto-char (point-max))
       (insert-string (buffer-substring (nth 1 (car sort-lists))
-                               (cddar sort-lists)))
-      (setq last (cddar old))
+                                       (cdr (cdar sort-lists))))
+      (setq last  (cdr (cdar old)))
       (pop sort-lists)
       (pop old))
     (goto-char (point-max))
