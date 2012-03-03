@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2012, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Fri Mar  2 10:15:07 2012 (-0800)
+;; Last-Updated: Fri Mar  2 16:54:42 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 14421
+;;     Update #: 14439
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-chg.el
 ;; Keywords: bookmarks, bookmark+
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -146,6 +146,13 @@
 ;;;(@* "CHANGE LOG FOR `bookmark+-1.el'")
 ;;
 ;; 2012/03/02 dadams
+;;     bookmark-load:
+;;       Changed last arg from NO-MSG-P to BATCHP.  If non-nil, act with no prompt, saving or not.
+;;       If nil, prompt user whether to save before loading.  If user quits with C-g, do not load.
+;;     bookmark-maybe-load-default-file: Pass symbol nosave, not t, as last arg to bookmark-load.
+;;     bmkp-switch-bookmark-file-create: Last arg is now the complement: BATCHP, not INTERACTIVEP.
+;;     bmkp-temporary-bookmarking-mode: Pass nosave as last arg to bookmark-load, since do save here.
+;;     bmkp-default-handlers-for-file-types: Added eval-when-compile to require cl.el for Emacs 20.
 ;;     bmkp-maybe-save-bookmarks: Added optional arg SAME-COUNT-P.
 ;;     bmkp-record-visit: Pass non-nil arg to bmkp-maybe-save-bookmarks to prevent changing mod count.
 ;;     bookmark-store: Call bmkp-refresh-menu-list if Bookmark List is displayed.
@@ -610,6 +617,8 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-bmu.el'")
 ;;
+;; 2012/03/02 dadams
+;;     bookmark-bmenu-list: Reset marked and omitted lists to () if a name is not a current bmk.
 ;; 2012/02/28 dadams
 ;;     Added face bmkp-file-handler.
 ;;     bmkp-bmenu-mode-status-help: Added bmkp-file-handler to face legend.
