@@ -7,7 +7,7 @@
 ;; Maintainer: José Alfredo Romero L. <escherdragon@gmail.com>
 ;; Created: 24 Sep 2007
 ;; Version: 5
-;; RCS Version: $Rev: 411 $
+;; RCS Version: $Rev: 412 $
 ;; Keywords: files, dired, midnight commander, norton, orthodox
 ;; URL: http://www.emacswiki.org/emacs/sunrise-commander.el
 ;; Compatibility: GNU Emacs 22+
@@ -937,7 +937,7 @@ immediately loaded, but only if `sr-autoload-extensions' is not nil."
 (defadvice other-window
   (around sr-advice-other-window (count &optional all-frames))
   "Select the correct Sunrise Commander pane when switching from other windows."
-  (if (not sr-running)
+  (if (or (not sr-running) sr-ediff-on)
       ad-do-it
     (let ((from (selected-window)))
       ad-do-it
