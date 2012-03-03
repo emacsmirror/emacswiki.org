@@ -138,6 +138,8 @@ esac
 
 # End
 }}}
+
+[[https://gist.github.com/1966843|Here's the GIST of the same script]].
  
 == Emacs in a screen terminal: colors ==
 
