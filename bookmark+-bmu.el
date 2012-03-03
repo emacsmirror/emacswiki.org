@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2012, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 09:05:21 2010 (-0700)
-;; Last-Updated: Tue Feb 28 10:49:25 2012 (-0800)
+;; Last-Updated: Fri Mar  2 16:55:41 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 1454
+;;     Update #: 1460
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-bmu.el
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -289,7 +289,7 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;
 
-(eval-when-compile (require 'cl)) ;; case'
+(eval-when-compile (require 'cl)) ;; case (plus, for Emacs 20: dolist)
 (eval-when-compile (require 'easymenu)) ;; easy-menu-create-menu
 
 (require 'bookmark)
@@ -978,23 +978,27 @@ list has been filtered, which means:
          (when (and (consp bmkp-bmenu-marked-bookmarks)
                     (not (get-text-property 0 'bmkp-full-record (car bmkp-bmenu-marked-bookmarks))))
            (setq bmkp-bmenu-marked-bookmarks
-                 (mapcar (lambda (bname)
-                           (if (get-text-property 0 'bmkp-full-record bname)
-                               bname
-                             (put-text-property 0 (length bname) 'bmkp-full-record
-                                                (bmkp-bookmark-record-from-name bname) bname)
-                             bname))
-                         bmkp-bmenu-marked-bookmarks)))
+                 (condition-case nil
+                     (mapcar (lambda (bname)
+                               (if (get-text-property 0 'bmkp-full-record bname)
+                                   bname
+                                 (put-text-property 0 (length bname) 'bmkp-full-record
+                                                    (bmkp-bookmark-record-from-name bname) bname)
+                                 bname))
+                             bmkp-bmenu-marked-bookmarks)
+                   (error ()))))        ; Reset to () if any name is not a current bookmark.
          (when (and (consp bmkp-bmenu-omitted-bookmarks)
                     (not (get-text-property 0 'bmkp-full-record (car bmkp-bmenu-omitted-bookmarks))))
            (setq bmkp-bmenu-omitted-bookmarks
-                 (mapcar (lambda (bname)
-                           (if (get-text-property 0 'bmkp-full-record bname)
-                               bname
-                             (put-text-property 0 (length bname) 'bmkp-full-record
-                                                (bmkp-bookmark-record-from-name bname) bname)
-                             bname))
-                         bmkp-bmenu-omitted-bookmarks)))
+                 (condition-case nil
+                     (mapcar (lambda (bname)
+                               (if (get-text-property 0 'bmkp-full-record bname)
+                                   bname
+                                 (put-text-property 0 (length bname) 'bmkp-full-record
+                                                    (bmkp-bookmark-record-from-name bname) bname)
+                                 bname))
+                             bmkp-bmenu-omitted-bookmarks)
+                   (error ()))))        ; Reset to () if any name is not a current bookmark.
          (when bmkp-last-bmenu-bookmark
            (with-current-buffer (get-buffer "*Bookmark List*")
              (bmkp-bmenu-goto-bookmark-named bmkp-last-bmenu-bookmark))))
