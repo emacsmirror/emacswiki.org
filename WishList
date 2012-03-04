@@ -104,7 +104,11 @@ your circle, box etc drawing code, and you'd write a data structure and tell ema
 *** C functions that now assume a buffer is a text-buffer would check buffer type before proceeding.  Fset_window_buffer (I think, looking at window.c) would know to call a non-text buffer's own display function. -- TomBreton
 
 * I want EmacsLisp to have more primitives to speed up. I think `replace-regexp-in-string' MUST BE primitive.
+
 * I want EmacsLisp to have Regexp object which contains compiled regexp.
+
+* I want term, shell, eshell or some other terminal emulator to properly support terminfo and ncurses, so programs like aptitude would look good inside of them.
+
 * Implement lookahead and lookbehind in regular expresions
   (regexp). The <code>\{?:</code> Syntax already works for
   non-grouping expressions, so I feel it should be extended to include
