@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2012, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Fri Mar  2 16:54:42 2012 (-0800)
+;; Last-Updated: Sun Mar  4 11:29:08 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 14439
+;;     Update #: 14509
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-chg.el
 ;; Keywords: bookmarks, bookmark+
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -145,6 +145,41 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-1.el'")
 ;;
+;; 2012/03/04 dadams
+;;     Added: bmkp-refresh/rebuild-menu-list.
+;;     bookmark-store, bookmark-send-edited-annotation, bookmark-delete,
+;;       bmkp-edit-bookmark-record(s)-send, bmkp-edit-tags-send, bmkp-update-autonamed-bookmark,
+;;       bmkp-remove(-all)-tags, bmkp-add-tags, bmkp-file-target-set, bmkp-refresh/rebuild-menu-list:
+;;         Use bmkp-refresh/rebuild-menu-list.
+;;     bookmark-load:
+;;       Pass BATCHP arg to bookmark-bmenu-surreptitiously-rebuild-list.
+;;       Use bmkp-refresh/rebuild-menu-list only if interactive.  Do not call *-surreptitiously-*.
+;;     bmkp-edit-bookmark-record(s)-send: Added optional arg MSGP.  Raise read error if batch.
+;;     bmkp-record-visit:
+;;       Added optional arg BATCHP.  Do not bookmark-bmenu-surreptitiously-rebuild-list if BATCHP.
+;;     bmkp-edit-tags-send: Added optional arg BATCHP, and pass it to bmkp-record-visit.
+;;     bmkp-refresh-menu-list: Use bmkp-bookmark-name-from-record only when BOOKMARK is non-nil.
+;;     bmkp-paste-replace-tags, bmkp-(compilation|occur)-target-set-all:
+;;       Raise error with OK message if user cancels.
+;;     bmkp-purge-notags-autofiles, bmkp-delete-all-temporary-bookmarks: Added optional arg MSGP.
+;;     bmkp-purge-notags-autofiles, bmkp-delete-all-temporary-bookmarks,
+;;       bmkp-delete-temporary-no-confirm:
+;;         Call bmkp-refresh/rebuild-menu-list after the dolist.  Inhibit refresh for bookmark-delete.
+;;     bmkp-jump-bookmark-file: Removed reference to current-prefix-arg: prompt only if SWITCHP.
+;;     bmkp-delete-all-autonamed-for-this-buffer:
+;;       Added optional arg MSGP.  Prompt for confirmation only if MSGP.
+;;     bmkp-delete-autonamed-this-buffer-no-confirm:
+;;       Added optional arg NO-REFRESH-P.  Inhibit refresh for bookmark-delete.
+;;       Unless  NO-REFRESH-P, call bmkp-refresh/rebuild-menu-list after the dolist.
+;;     bmkp-delete-autonamed-no-confirm:
+;;       Call bmkp-delete-autonamed-this-buffer-no-confirm with NO-REFRESH-P.
+;;       Call bmkp-refresh/rebuild-menu-list after the dolist.
+;;     bmkp-delete-bookmarks:
+;;       Added optional arg MSGP.  Prompt for confirmation only if MSGP.
+;;       Raise error with OK message if user cancels.
+;;       Call bmkp-refresh/rebuild-menu-list after the dolist.  Inhibit refresh for bookmark-delete.
+;;       Use bmkp-this-buffer-alist-only, not bookmark-alist, for selecting bookmarks.
+;;       Use `...', etc. when echoing deleted bookmarks.
 ;; 2012/03/02 dadams
 ;;     bookmark-load:
 ;;       Changed last arg from NO-MSG-P to BATCHP.  If non-nil, act with no prompt, saving or not.
@@ -261,7 +296,7 @@
 ;;     bookmark-send-edited-annotation, bookmark-rename:
 ;;       Do bookmark-bmenu-surreptitiously-rebuild-list only if no bmenu display window.
 ;;     bookmark-rename:
-;;       Return OLD if no NEWNAME (batch).  Do not prompt for name if batch.
+;;       Return OLD if if BATCHP is non-nil and NEW is nil.  Do not prompt for name if BATCHP.
 ;;       Use bmkp-rename-for-marked-and-omitted-lists (rename in those lists too).
 ;;       Unconditionally always put full bookmark on name as property bmkp-full-record.
 ;;       Use bmkp-bookmark-record-from-name, not bookmark-get-bookmark, to get full record.
@@ -1860,14 +1895,13 @@
 ;;                    Use error, not message.  Change value for setcdr.
 ;;                    Do not use push with non-var (cl).
 ;;                  bookmark-delete:
-;;                    Redefine, to fix vanilla bug: increment count even when batch.
+;;                    Redefine, to fix vanilla bug: increment count even when BATCHP is non-nil.
 ;;                  *-non-file-name: Change to - no file -.  *-bmenu-list: Add arg FILTER-ON.
 ;;                  *-bmenu-execute-deletions: Use delete, not remove.
 ;;                  Add: *-replace-regexp-in-string.
 ;;                  bookmark-set: Fix *-yank-point for region case.  Fix bad parens.
 ;;       2009-09-02 Add: *-non-file-filename.  *-fix-bookmark-alist-and-save: Fix msg.
 ;;                  Require cl (gensym).  *-at-bol/eol' -> line-*-position (for Emacs 20).
-;;                  bookmark-delete: increment *-count if batch arg (fixes vanilla bug).
 ;;                  Redefine *-bmenu-execute-deletions,
 ;;                           *-bmenu-surreptitiously-rebuild-list. 
 ;;                  Update current filtered display - do not reload & display all bmks.
