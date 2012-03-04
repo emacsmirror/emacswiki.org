@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Thu Mar  1 22:40:15 2012 (-0800)
+;; Last-Updated: Sat Mar  3 16:24:38 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 8062
+;;     Update #: 8063
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-chg.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -85,6 +85,9 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd1.el'")
 ;;
+;; 2012/03/03 dadams
+;;     icicle-execute-extended-command:
+;;       If in Icomplete mode, use the normal PRED arg, instead of *-must-pass-after-match-predicate.
 ;; 2012/02/26 dadams
 ;;     Update to reflect Bookmark+ changes (bindings etc.).
 ;;       Added: icicle-bookmark-autofile-(all|some)-tags(-regexp)(-other-window).
