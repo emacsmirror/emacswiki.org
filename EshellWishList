@@ -14,6 +14,8 @@ Broader wishes for Emacs should be wished at WishList.
 
 * Now that I know about EshellDirectoryHistory, I'd like an enhancement that let you "cycle" through directory history :) Let's see if I can come up with something myself. -- MathiasDahl
 
+* Eshell should have better support for terminfo and ncurses, so programs like aptitude would open and look just as nice, as in, say, gnome-terminal.
+
 * It'd be nice if eshell would do what call-interactively does with (interactive) declarations in functions.  When I type elisp-function [space] [tab] on the command line, I'd like the completions to be chosen on the basis of the arguments defined in elisp-function's (interactive "...") form.  -- JoeE
 
 ** That's likely going to be really nasty to do.  You'd have to "read" the
