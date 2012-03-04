@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Sun Feb 26 18:24:47 2012 (-0800)
+;; Last-Updated: Sat Mar  3 16:25:37 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 23297
+;;     Update #: 23302
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-cmd1.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -2539,13 +2539,17 @@ then customize option `icicle-top-level-key-bindings'." ; Doc string
           (if current-prefix-arg
               (format " (prefix %d)" (prefix-numeric-value current-prefix-arg))
             ""))
-  obarray nil t nil 'extended-command-history nil nil
+  obarray (and (boundp 'icomplete-mode)  icomplete-mode #'commandp) t nil
+  'extended-command-history nil nil
   (;; Bindings
    (last-command                            last-command) ; Save and restore the last command.
    (use-file-dialog                         nil) ; `mouse-2' in `*Completions*' won't use dialog box.
    (alt-fn                                  nil)
    (icicle-orig-must-pass-after-match-pred  icicle-must-pass-after-match-predicate)
-   (icicle-must-pass-after-match-predicate  #'(lambda (c) (commandp (intern c))))
+   ;; Icomplete mode needs the ordinary, eager predicate.  But if Icomplete mode is off it is better to
+   ;; filter for a command after the user-input filtering (fewer symbols tested with `commandp').
+   (icicle-must-pass-after-match-predicate  (and (not (and (boundp 'icomplete-mode)  icomplete-mode))
+                                                 #'(lambda (c) (commandp (intern c)))))
    (icicle-candidate-alt-action-fn
     (or icicle-candidate-alt-action-fn (setq alt-fn  (icicle-alt-act-fn-for-type "command"))))
    (icicle-all-candidates-list-alt-action-fn ; M-|'
