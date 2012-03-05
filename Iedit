@@ -21,17 +21,18 @@ Normal scenario of Iedit mode is like:
  - Finish - by pressing C-; again
 
 This package also provides rectangle support with *visible rectangle*
-highlighting, which is similar with cua mode rectangle support.
+highlighting, which is similar with cua mode rectangle support, but still quite
+different.
 
 You can also use Iedit mode as a quick way to temporarily show only the
 buffer lines that match the current text being edited.  This gives you the
-effect of a temporary 'keep-lines' or 'occur'.  To get this effect, hit `C-'
+effect of a temporary `keep-lines' or `occur'.  To get this effect, hit C-'
 when in Iedit mode - it toggles hiding non-matching lines.
 
-Renaming refactoring is convenient in Iedit mode
+Renaming refactoring is convinient in Iedit mode
 
  - The symbol under point is selected as occurrence by default and only complete
-  symbols are matched
+   symbols are matched
 
  - With digit prefix argument 0, only symbols in current function are matched
 
@@ -42,6 +43,7 @@ Renaming refactoring is convenient in Iedit mode
 
 There are also some other facilities you may never think about.  Refer to the
 document of function `iedit-mode' (C-h f iedit-mode RET) for more details.
+
 
 ----
 CategorySearchAndReplace
