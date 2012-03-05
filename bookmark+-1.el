@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2012, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 13:43:55 2010 (-0700)
-;; Last-Updated: Sun Mar  4 11:26:21 2012 (-0800)
+;; Last-Updated: Sun Mar  4 16:23:45 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 4442
+;;     Update #: 4450
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-1.el
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -2516,6 +2516,10 @@ changed to FILE and it is saved persistently, so that the next Emacs
 session will start with it as the bookmark file.  (The value of
 `bookmark-default-file' is unaffected.)
 
+Interactively, if any bookmarks have been modified since last saved
+then you are asked whether you want to first save them before loading
+FILE.  If you hit `C-g' then both saving and loading are canceled.
+
 When called from Lisp, non-nil optional arg BATCHP means this is not
 an interactive call.  In this case, do not interact with the user: do
 not ask whether to save the current (unsaved) bookmark list before
@@ -2579,8 +2583,8 @@ bookmark files that were created using the bookmark functions."
       (setq bookmarks-already-loaded  t ; Systematically, whenever any file is loaded.
             bmkp-sorted-alist         (bmkp-sort-omit bookmark-alist)))
     (kill-buffer (current-buffer)))
-  (unless batchp
-    (bmkp-refresh/rebuild-menu-list nil batchp) ; If appropriate, *CALLER* MUST refresh/rebuild, if BATCHP.
+  (unless batchp                        ; If appropriate, *CALLER* MUST refresh/rebuild, if BATCHP.
+    (bmkp-refresh/rebuild-menu-list)
     (message "%s bookmarks in `%s'" (if overwrite "Switched to" "Added") file)))
 
 ;; REPLACES ORIGINAL in `bookmark.el'.
@@ -3187,7 +3191,7 @@ Add/remove `bmkp-refresh-latest-bookmark-list' to/from
                                       bookmark-alist)))
 
 ;;;###autoload
-(defun bmkp-toggle-saving-menu-list-state () ; Bound to `M-l' in bookmark list
+(defun bmkp-toggle-saving-menu-list-state () ; Bound to `C-M-~' in bookmark list
   "Toggle the value of option `bmkp-bmenu-state-file'.
 Tip: You can use this before quitting Emacs, to not save the state.
 If the initial value of `bmkp-bmenu-state-file' is nil, then this
@@ -6185,7 +6189,7 @@ With a prefix arg, you are prompted for a PREFIX for the bookmark name."
                  (or (not tags) (null (cdr tags))))
         (bookmark-delete bmk 'BATCHP)))) ; Do not refresh list here - do it after iterate.
   (bmkp-tags-list)                      ; Update the tags cache.
-  (bmkp-refresh/rebuild-menu-list nil (not msgp)))
+  (bmkp-refresh/rebuild-menu-list nil (not msgp))) ; Now refresh, after iterate.
 
 ;; $$$$$$ Not used currently.
 (defun bmkp-replace-existing-bookmark (bookmark)
@@ -9652,7 +9656,7 @@ Non-interactively:
                   (when msgp
                     (message (if bmks-deleted
                                  (format "Deleted bookmarks: %s"
-                                         (mapconcat (lambda (bk) (format "`%s'" bk)) bmks-deleted ", "))
+                                         (mapconcat (lambda (bmk) (format "`%s'" bmk)) bmks-deleted ", "))
                                "No bookmarks deleted"))))
                  (bmks-to-delete        ; Only one bookmark at point.
                   (bookmark-delete (car bmks-to-delete))
