@@ -1786,7 +1786,7 @@ default is the name of the last bookmark file that you used.
 
 In the `##*Bookmark List*##' display you can use '''`M-l'''' to load all of
 the bookmark files corresponding to the ''marked bookmark-file
-bookmarks'', in their display order.  Any non bookmark-file
+bookmarks''.  Any non bookmark-file
 bookmarks that are marked are ignored.  Before loading, if any of
 your currently loaded bookmarks have been modified then you are
 asked if you want to save them first, before loading the others.
