@@ -109,6 +109,8 @@ your circle, box etc drawing code, and you'd write a data structure and tell ema
 
 * I want term, shell, eshell or some other terminal emulator to properly support terminfo and ncurses, so programs like aptitude would look good inside of them.
 
+* Emacs should have FFI, thus almost everything could be implemented in Emacs.
+
 * Implement lookahead and lookbehind in regular expresions
   (regexp). The <code>\{?:</code> Syntax already works for
   non-grouping expressions, so I feel it should be extended to include
