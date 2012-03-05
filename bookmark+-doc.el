@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2012, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Tue Feb 28 10:03:09 2012 (-0800)
+;; Last-Updated: Sun Mar  4 16:30:42 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 14429
+;;     Update #: 14433
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-doc.el
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search,
 ;;           info, url, w3m, gnus
@@ -94,8 +94,8 @@
 ;;      and your `*Bookmark List*' state file.  Otherwise, when you
 ;;      quit Emacs your manually edits will be overwritten.
 ;;
-;;      To turn off this automatic saving, you can use `M-~' and `M-l'
-;;      in buffer `*Bookmark List*' (commands
+;;      To turn off this automatic saving, you can use `M-~' and
+;;      `C-M-~' in buffer `*Bookmark List*' (commands
 ;;      `bmkp-toggle-saving-bookmark-file' and
 ;;      `bmkp-toggle-saving-menu-list-state' - they are also in the
 ;;      `Bookmark+' menu).
@@ -1121,12 +1121,12 @@
 ;;
 ;;  You can turn off this automatic bookmark-list display state
 ;;  saving, if you want, by customizing option `bmkp-bmenu-state-file'
-;;  to nil.  And you can toggle this option at any time, using `M-l'
+;;  to nil.  And you can toggle this option at any time, using `C-M-~'
 ;;  in the bookmark list (command
 ;;  `bmkp-toggle-saving-menu-list-state').  In particular, if you want
 ;;  your next visit to the bookmark list to start out with a
 ;;  previously recorded state instead of the current state, just hit
-;;  `M-l' before quitting the bookmark list.
+;;  `C-M-~' before quitting the bookmark list.
 ;;
 ;;
 ;;(@* "State-Restoring Commands and Bookmarks")
