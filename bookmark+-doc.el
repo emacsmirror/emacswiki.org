@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2012, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Sun Mar  4 16:30:42 2012 (-0800)
+;; Last-Updated: Sun Mar  4 16:48:13 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 14433
+;;     Update #: 14437
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-doc.el
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search,
 ;;           info, url, w3m, gnus
@@ -1746,6 +1746,16 @@
 ;;  argument.  (Using a prefix argument with `C-x p l' is the same as
 ;;  using `C-x p L': it switches bookmark files.)  Here too the
 ;;  default is the name of the last bookmark file that you used.
+;;
+;;  In the `*Bookmark List*' display you can use `M-l' to load all of
+;;  the bookmark files corresponding to the marked bookmark-file
+;;  bookmarks, in their display order.  Any non bookmark-file
+;;  bookmarks that are marked are ignored.  Before loading, if any of
+;;  your currently loaded bookmarks have been modified then you are
+;;  asked if you want to save them first, before loading the others.
+;;  After loading, to avoid confusion and possible mistakes, automatic
+;;  saving to the current bookmark file is turned off.  You can always
+;;  use `M-~' to turn it back on again.
 ;;
 ;;  To create additional bookmark files, to use either as alternatives
 ;;  or as components, you can either copy an existing bookmark file or
