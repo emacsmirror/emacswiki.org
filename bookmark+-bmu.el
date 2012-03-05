@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2012, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 09:05:21 2010 (-0700)
-;; Last-Updated: Mon Mar  5 07:58:23 2012 (-0800)
+;; Last-Updated: Mon Mar  5 09:02:03 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 1498
+;;     Update #: 1511
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-bmu.el
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -2619,9 +2619,7 @@ of the buffer is the same as that of buffer `*Bookmark List*'."
 ;;;###autoload
 (defun bmkp-bmenu-load-marked-bookmark-file-bookmarks (&optional msgp) ; Bound to `M-l' in bookmark list
   "Load the bookmark-file bookmarks that are marked.
-The files are loaded in the order of their appearance in buffer
-`*Bookmark List*'.  Non bookmark-file bookmarks that are marked are
-ignored.
+Non bookmark-file bookmarks that are marked are ignored.
 
 NOTE: Automatically saving the current bookmark list is turned OFF
 before loading, and it remains turned off until you explicitly turn it
@@ -3308,8 +3306,9 @@ With no prefix arg, show the annotation.  With a prefix arg, edit it."
             (forward-line 2))
           (goto-char top)
           (insert (format
-                   "\nCurrent Status\n--------------\n
-Bookmark file:\t%s\nSorted:\t\t%s\nFiltering:\t%s\nMarked:\t\t%d\nOmitted:\t%d\n\n\n"
+                   "\n\nCurrent Status\n--------------\n
+Bookmark file:\t%s\nSorted:\t\t\t%s\nFiltering:\t\t%s\nMarked:\t\t\t%d\nOmitted:\t\t%d\n\
+Autosave bookmarks:\t%s\nAutosave list display:\t%s\n\n\n"
                    bmkp-current-bookmark-file
                    (if (not bmkp-sort-comparer)
                        "no"
@@ -3341,9 +3340,11 @@ Bookmark file:\t%s\nSorted:\t\t%s\nFiltering:\t%s\nMarked:\t\t%d\nOmitted:\t%d\n
                                        ((and bmkp-reverse-multi-sort-p bmkp-reverse-sort-p)
                                         "; order of predicate groups reversed")
                                        (t ""))))))
-                   (or (and bmkp-bmenu-filter-function (downcase bmkp-bmenu-title)) "None")
+                   (or (and bmkp-bmenu-filter-function (downcase bmkp-bmenu-title)) "none")
                    (length bmkp-bmenu-marked-bookmarks)
-                   (length bmkp-bmenu-omitted-bookmarks)))
+                   (length bmkp-bmenu-omitted-bookmarks)
+                   (if bookmark-save-flag "yes" "no")
+                   (if bmkp-bmenu-state-file "yes" "no")))
           ;; Add face legend.
           (let ((gnus             "Gnus\n")
                 (info             "Info node\n")
@@ -3388,7 +3389,7 @@ Bookmark file:\t%s\nSorted:\t\t%s\nFiltering:\t%s\nMarked:\t\t%d\nOmitted:\t%d\n
             (put-text-property 0 (1- (length sequence))      'face 'bmkp-sequence      sequence)
             (put-text-property 0 (1- (length variable-list)) 'face 'bmkp-variable-list variable-list)
             (put-text-property 0 (1- (length function))      'face 'bmkp-function      function)
-            (insert "Legend for Bookmark Types\n-------------------------\n\n")
+            (insert "Legend for Bookmark Types\n-------------------------\n")
             (when (and (fboundp 'display-images-p) (display-images-p)
                        bmkp-bmenu-image-bookmark-icon-file
                        (file-readable-p bmkp-bmenu-image-bookmark-icon-file))
@@ -3399,7 +3400,7 @@ Bookmark file:\t%s\nSorted:\t\t%s\nFiltering:\t%s\nMarked:\t\t%d\nOmitted:\t%d\n
             (insert sudo) (insert local-dir) (insert file-handler) (insert bookmark-list)
             (insert bookmark-file) (insert desktop) (insert sequence) (insert variable-list)
             (insert function) (insert bad) 
-            (insert "\n")
+            (insert "\n\n")
             (insert "More bookmarking help below.  Each line represents an Emacs bookmark.\n")
             (insert "Keys without prefix `C-x' are available only in `*Bookmark List*'.\n")
             (insert "Other keys are available everywhere.")))))))
