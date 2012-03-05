@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2012, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 09:05:21 2010 (-0700)
-;; Last-Updated: Fri Mar  2 16:55:41 2012 (-0800)
+;; Last-Updated: Sun Mar  4 16:29:41 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 1460
+;;     Update #: 1494
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-bmu.el
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -1770,7 +1770,7 @@ confirmation."
         (while (re-search-forward mark-type (point-max) t)
           (let* ((bmk-name  (bookmark-bmenu-bookmark))
                  (bmk       (bookmark-get-bookmark bmk-name)))
-            (bookmark-delete bmk-name 'batch)
+            (bookmark-delete bmk-name 'BATCHP)
             ;; Count is misleading if the bookmark is not really in `bookmark-alist'.
             (setq count                       (1+ count)
                   bmkp-latest-bookmark-alist  (delete bmk bmkp-latest-bookmark-alist))))
@@ -2615,6 +2615,54 @@ of the buffer is the same as that of buffer `*Bookmark List*'."
   (interactive)
   (bmkp-bmenu-barf-if-not-in-menu-list)
   (bookmark-bmenu-execute-deletions 'marked))
+
+;;;###autoload
+(defun bmkp-bmenu-load-marked-bookmark-file-bookmarks (&optional msgp) ; Bound to `M-l' in bookmark list
+  "Load the bookmark-file bookmarks that are marked.
+The files are loaded in the order of their appearance in buffer
+`*Bookmark List*'.  Non bookmark-file bookmarks that are marked are
+ignored.
+
+NOTE: Automatically saving the current bookmark list is turned OFF
+before loading, and it remains turned off until you explicitly turn it
+back on.  Bookmark+ does not assume that you want to automatically
+save all of the newly loaded bookmarks in the same bookmark file.  If
+you do, just use \\<bookmark-bmenu-mode-map>`\\[bmkp-toggle-saving-bookmark-file]' \
+to turn saving back on."
+  (interactive "p")
+  (bmkp-bmenu-barf-if-not-in-menu-list)
+  (let ((bmks  (bmkp-remove-if-not #'bmkp-bookmark-file-bookmark-p (bmkp-marked-bookmarks-only))))
+    (unless bmks (error "No marked bookmark-file bookmarks"))
+    ;; Maybe save first.
+    (when (or (not msgp)
+              (and (> bookmark-alist-modification-count 0)
+                   (condition-case err
+                       (yes-or-no-p "Save current bookmarks? (`C-g': cancel) ")
+                     (quit  (error "OK, canceled"))
+                     (error (error (error-message-string err))))))
+      (bookmark-save))
+    (when (or (not msgp)
+              (condition-case err
+                  (yes-or-no-p "Load the marked bookmark-file bookmarks? (`C-g': cancel load) ")
+                (quit  (error "OK, loading canceled"))
+                (error (error (error-message-string err)))))
+      (when bookmark-save-flag          ; Turn off autosaving.
+        (bmkp-toggle-saving-bookmark-file) ; No MSGP arg - issue message below.
+        (when bookmark-save-flag  (setq bookmark-save-flag  nil)) ; Be sure it's off.
+        (when msgp (message "Autosaving of current bookmark file is now OFF")))
+      (when msgp (message "Loading marked bookmark files..."))
+
+      (dolist (bmk  bmks)               ; Load.
+        ;; USE BATCHP: Do not refresh list or display messages here - do that after iterate.
+        (bookmark-load (bookmark-get-filename bmk) nil 'BATCHP))
+
+      ;; $$$$$$ Should we do (bmkp-tags-list) here to update the tags cache?
+      
+      (bmkp-refresh/rebuild-menu-list nil (not msgp)) ; Now refresh, after iterate.
+      (when msgp (message "Bookmark-file bookmarks loaded: %s"
+                          (mapconcat (lambda (bmk) (format "`%s'" (bmkp-bookmark-name-from-record bmk)))
+                                     bmks
+                                     ", "))))))
 
 ;;;###autoload
 (defun bmkp-bmenu-make-sequence-from-marked (bookmark-name &optional dont-omit-p) ; Not bound
@@ -4126,6 +4174,8 @@ Marked bookmarks that have no associated file are ignored."
 
 (when (< emacs-major-version 21)
   (define-key bookmark-bmenu-mode-map (kbd "RET")          'bookmark-bmenu-this-window))
+(define-key bookmark-bmenu-mode-map "\M-~"                 'bmkp-toggle-saving-bookmark-file)
+(define-key bookmark-bmenu-mode-map (kbd "C-M-~")          'bmkp-toggle-saving-menu-list-state)
 (define-key bookmark-bmenu-mode-map "."                    'bmkp-bmenu-show-all)
 (define-key bookmark-bmenu-mode-map ">"                    'bmkp-bmenu-toggle-show-only-marked)
 (define-key bookmark-bmenu-mode-map "<"                    'bmkp-bmenu-toggle-show-only-unmarked)
@@ -4207,6 +4257,8 @@ Marked bookmarks that have no associated file are ignored."
 (define-key bookmark-bmenu-mode-map "KM"                   'bmkp-bmenu-mark-desktop-bookmarks)
 (define-key bookmark-bmenu-mode-map "KS"                   'bmkp-bmenu-show-only-desktops)
 (define-key bookmark-bmenu-mode-map "L"                    'bmkp-switch-bookmark-file-create)
+(define-key bookmark-bmenu-mode-map "\M-l"
+  'bmkp-bmenu-load-marked-bookmark-file-bookmarks)
 (define-key bookmark-bmenu-mode-map "\M-L"                 'bmkp-temporary-bookmarking-mode)
 (define-key bookmark-bmenu-mode-map "M"                    nil) ; For Emacs 20
 (define-key bookmark-bmenu-mode-map "MM"                   'bmkp-bmenu-mark-man-bookmarks)
@@ -4285,8 +4337,6 @@ Marked bookmarks that have no associated file are ignored."
 (define-key bookmark-bmenu-mode-map "Tv"                   'bmkp-bmenu-set-tag-value)
 (define-key bookmark-bmenu-mode-map "T\M-w"                'bmkp-bmenu-copy-tags)
 (define-key bookmark-bmenu-mode-map "T\C-y"                'bmkp-bmenu-paste-add-tags)
-(define-key bookmark-bmenu-mode-map "\M-l"                 'bmkp-toggle-saving-menu-list-state)
-(define-key bookmark-bmenu-mode-map "\M-~"                 'bmkp-toggle-saving-bookmark-file)
 (define-key bookmark-bmenu-mode-map "\M-t"            'bookmark-bmenu-toggle-filenames) ; `t' in Emacs
 (define-key bookmark-bmenu-mode-map "t"                    'bmkp-bmenu-toggle-marks)
 (define-key bookmark-bmenu-mode-map "U"                    'bmkp-bmenu-unmark-all)
@@ -4330,7 +4380,7 @@ Marked bookmarks that have no associated file are ignored."
   '(menu-item "Current Status, Mode Help" bmkp-bmenu-mode-status-help :keys "?"
     :help "Describe `*Bookmark List*' and show its current status"))
 
-(define-key bmkp-bmenu-menubar-menu [top-sep3] '("--")) ; --------------------------------
+(define-key bmkp-bmenu-menubar-menu [top-sep5] '("--")) ; --------------------------------
 (define-key bmkp-bmenu-menubar-menu [bmkp-temporary-bookmarking-mode]
   '(menu-item "Toggle Temporary Bookmarking Mode..." bmkp-temporary-bookmarking-mode
     :help "Toggle temporary-only bookmarking (empty bookmark file *replaces* current bookmarks)"))
@@ -4344,6 +4394,10 @@ Marked bookmarks that have no associated file are ignored."
   '(menu-item "Toggle Autosaving Bookmark File" bmkp-toggle-saving-bookmark-file
     :help "Toggle the value of option `bookmark-save-flag'"))
 
+(define-key bmkp-bmenu-menubar-menu [top-sep4] '("--")) ; --------------------------------
+(define-key bmkp-bmenu-menubar-menu [bmkp-bmenu-load-marked-bookmark-file-bookmarks]
+  '(menu-item "Load Marked Bookmark-File Bookmarks..." bmkp-bmenu-load-marked-bookmark-file-bookmarks
+    :help "Load the marked bookmark-file bookmarks, in order"))
 (define-key bmkp-bmenu-menubar-menu [bmkp-empty-file]
   '(menu-item "Empty Bookmark File..." bmkp-empty-file
     :help "Empty an existing bookmark file or create a new, empty bookmark file"))
@@ -4354,6 +4408,7 @@ Marked bookmarks that have no associated file are ignored."
   '(menu-item "Switch to Bookmark File..." bmkp-switch-bookmark-file-create
     :help "Switch to a different bookmark file, *replacing* the current set of bookmarks"))
 
+(define-key bmkp-bmenu-menubar-menu [top-sep3] '("--")) ; --------------------------------
 (define-key bmkp-bmenu-menubar-menu [bookmark-write]
   '(menu-item "Save As..." bookmark-write
     :help "Write the current set of bookmarks to a file whose name you enter"))
@@ -4428,7 +4483,6 @@ Marked bookmarks that have no associated file are ignored."
 (define-key bmkp-bmenu-menubar-menu [bmkp-bmenu-toggle-marked-temporary/savable]
   '(menu-item "Toggle Temporary/Savable (X) for Marked" bmkp-bmenu-toggle-marked-temporary/savable
     :help "Toggle the temporary (`X') vs. savable status of the marked bookmarks"))
-
 (define-key bmkp-bmenu-menubar-menu [bmkp-bmenu-query-replace-marked-bookmarks-regexp]
   '(menu-item "Query-Replace Marked..." bmkp-bmenu-query-replace-marked-bookmarks-regexp
     :help "`query-replace-regexp' over all files whose bookmarks are marked"))
