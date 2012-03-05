@@ -1077,7 +1077,7 @@ stepping stone to the files and directories you use most.
 
 If, for example, when you quit the bookmark list you are showing only bookmarks to [[Info]] nodes and UNIX manual pages, sorted in a particular way, and with some of them marked for particular processing, then the next time you open the list the same state is restored: the same set of bookmarks is shown, in the same order, with the same markings.
 
-You can turn off this automatic bookmark-list display state saving, if you want, by customizing option '''`bmkp-bmenu-state-file'''' to `nil'. And you can toggle this option at any time, using '''`M-l'''' in the bookmark list (command '''`bmkp-toggle-saving-menu-list-state''''). In particular, if you want your next visit to the bookmark list to start out with a ''previously'' recorded state instead of the current state, just hit `M-l' before quitting the bookmark list.
+You can turn off this automatic bookmark-list display state saving, if you want, by customizing option '''`bmkp-bmenu-state-file'''' to `nil'. And you can toggle this option at any time, using '''`##C-M-~##'''' in the bookmark list (command '''`bmkp-toggle-saving-menu-list-state''''). In particular, if you want your next visit to the bookmark list to start out with a ''previously'' recorded state instead of the current state, just hit `##C-M-~##' before quitting the bookmark list.
 
 
 
