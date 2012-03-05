@@ -3,7 +3,7 @@
 ;; Copyright (c) 2011-2012 Alp Aker
 
 ;; Author: Alp Aker <alp.tekin.aker@gmail.com>
-;; Version: 1.79
+;; Version: 1.80
 ;; Keywords: convenience
 
 ;; This program is free software; you can redistribute it and/or
@@ -237,8 +237,7 @@ function `fci-mode' is run."
   :tag "Fill-Column Rule Image Format"
   :group 'fill-column-indicator
   :type '(choice (symbol :tag "XPM" 'xpm)
-                 (symbol :tag "PBM" 'pbm)
-                 (symbol :tag "XBM" 'xbm)))
+                 (symbol :tag "PBM" 'pbm)))
 
 (defcustom fci-rule-use-dashes nil
   "Whether to show the fill-column rule as dashes or as a solid line.
@@ -337,29 +336,29 @@ U+E000-U+F8FF, inclusive)."
 ;;; ---------------------------------------------------------------------
 
 ;; Record prior state of buffer.
-(defvar fci-saved-line-move-visual nil)
-(defvar fci-line-move-visual-was-buffer-local nil)
-(defvar fci-saved-truncate-lines nil)
-(defvar fci-saved-eol nil)
-(defvar fci-made-display-table nil)
+(defvar fci-saved-line-move-visual)
+(defvar fci-line-move-visual-was-buffer-local)
+(defvar fci-saved-truncate-lines)
+(defvar fci-saved-eol)
+(defvar fci-made-display-table)
 
 ;; Record state of fci initialization in this buffer.
-(defvar fci-display-table-processed nil)
-(defvar fci-local-vars-set nil)
+(defvar fci-display-table-processed)
+(defvar fci-local-vars-set)
 
 ;; Record current state of some quantities, so we can detect changes to them.
-(defvar fci-column nil)
-(defvar fci-newline nil)
-(defvar fci-tab-width nil)
-(defvar fci-char-width nil)
-(defvar fci-char-height nil)
+(defvar fci-column)
+(defvar fci-newline)
+(defvar fci-tab-width)
+(defvar fci-char-width)
+(defvar fci-char-height)
 
 ;; Data used in setting the fill-column rule that only need to be
 ;; occasionally updated in a given buffer.
-(defvar fci-limit nil)
-(defvar fci-pre-limit-string nil)
-(defvar fci-at-limit-string nil)
-(defvar fci-post-limit-string nil)
+(defvar fci-limit)
+(defvar fci-pre-limit-string)
+(defvar fci-at-limit-string)
+(defvar fci-post-limit-string)
 
 ;; The preceding internal variables need to be buffer local and reset when
 ;; the mode is disabled.
@@ -528,7 +527,7 @@ on troubleshooting.)"
     (when (and fci-handle-line-move-visual
                (boundp 'line-move-visual))
       (if (local-variable-p 'line-move-visual)
-          (setq fci-line-move-visual-was-local t
+          (setq fci-line-move-visual-was-buffer-local t
                 fci-saved-line-move-visual line-move-visual
                 line-move-visual nil)
         (set (make-local-variable 'line-move-visual) nil)))
@@ -551,7 +550,7 @@ on troubleshooting.)"
               fci-always-use-textual-rule)
     ;; No point passing width, height, color etc. directly to the image
     ;; functions: those variables have either global or buffer-local
-    ;; scope, so the image generating functions can access them directly.
+    ;; scope, so the image-generating functions can access them directly.
     (if (eq fci-rule-image-format 'xpm)
         (fci-make-xpm-img)
       (fci-make-pbm-img))))
@@ -588,10 +587,10 @@ on troubleshooting.)"
 
 (defun fci-make-pbm-img ()
   "Return an image descriptor for the fill-column rule in PBM format."
-  (fci-with-rule-parameters 
+  (fci-with-rule-parameters
     (let* ((identifier "P1\n")
            (dimens (concat width-str " " height-str "\n"))
-           (on-pixels (fci-mapconcat " " 
+           (on-pixels (fci-mapconcat " "
                                      (make-list left-margin "0")
                                      (make-list rule-width "1")
                                      (make-list right-margin "0")))
@@ -609,11 +608,11 @@ on troubleshooting.)"
 
 (defun fci-make-xpm-img ()
   "Return an image descriptor for the fill-column rule in XPM format."
-  (fci-with-rule-parameters 
+  (fci-with-rule-parameters
     (let* ((identifier "/* XPM */\nstatic char *rule[] = {")
            (dimens (concat "\"" width-str " " height-str " 2 1\","))
            (color-spec (concat "\"1 c " fci-rule-color "\",\n\"0 c None\","))
-           (on-pixels (concat "\"" 
+           (on-pixels (concat "\""
                               (make-string left-margin ?0)
                               (make-string rule-width ?1)
                               (make-string right-margin ?0)
@@ -736,7 +735,7 @@ on troubleshooting.)"
     (fci-delete-overlays-region (point-min) (point-max))))
 
 (defsubst fci-posn-visible (posn ranges)
-  (memq t (mapcar #'(lambda (range) (and (<= (car range) posn) 
+  (memq t (mapcar #'(lambda (range) (and (<= (car range) posn)
                                          (< posn (cdr range))))
                   ranges)))
 
@@ -782,7 +781,7 @@ on troubleshooting.)"
         (goto-char end)
         (setq end (line-beginning-position 2))
         (fci-delete-overlays-region start end)
-        (fci-put-overlays-region start end)))))
+        (fci-put-overlays-region start end))))) 
 
 (defun fci-redraw-window (win &optional start)
   (fci-redraw-region (or start (window-start win)) (window-end win t) 'ignored))
