@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2012, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 09:05:21 2010 (-0700)
-;; Last-Updated: Sun Mar  4 16:29:41 2012 (-0800)
+;; Last-Updated: Mon Mar  5 07:58:23 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 1494
+;;     Update #: 1498
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-bmu.el
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -2637,15 +2637,13 @@ to turn saving back on."
     (when (or (not msgp)
               (and (> bookmark-alist-modification-count 0)
                    (condition-case err
-                       (yes-or-no-p "Save current bookmarks? (`C-g': cancel) ")
-                     (quit  (error "OK, canceled"))
+                       (yes-or-no-p "Save current bookmarks? (`C-g': cancel load too) ")
+                     (quit  (error "OK - canceled"))
                      (error (error (error-message-string err))))))
       (bookmark-save))
     (when (or (not msgp)
-              (condition-case err
-                  (yes-or-no-p "Load the marked bookmark-file bookmarks? (`C-g': cancel load) ")
-                (quit  (error "OK, loading canceled"))
-                (error (error (error-message-string err)))))
+              (yes-or-no-p "Load the marked bookmark-file bookmarks? ")
+              (error "OK - canceled"))
       (when bookmark-save-flag          ; Turn off autosaving.
         (bmkp-toggle-saving-bookmark-file) ; No MSGP arg - issue message below.
         (when bookmark-save-flag  (setq bookmark-save-flag  nil)) ; Be sure it's off.
