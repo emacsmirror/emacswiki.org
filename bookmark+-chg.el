@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2012, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Sun Mar  4 11:29:08 2012 (-0800)
+;; Last-Updated: Mon Mar  5 09:09:53 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 14509
+;;     Update #: 14520
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-chg.el
 ;; Keywords: bookmarks, bookmark+
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -152,7 +152,6 @@
 ;;       bmkp-remove(-all)-tags, bmkp-add-tags, bmkp-file-target-set, bmkp-refresh/rebuild-menu-list:
 ;;         Use bmkp-refresh/rebuild-menu-list.
 ;;     bookmark-load:
-;;       Pass BATCHP arg to bookmark-bmenu-surreptitiously-rebuild-list.
 ;;       Use bmkp-refresh/rebuild-menu-list only if interactive.  Do not call *-surreptitiously-*.
 ;;     bmkp-edit-bookmark-record(s)-send: Added optional arg MSGP.  Raise read error if batch.
 ;;     bmkp-record-visit:
@@ -652,6 +651,12 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-bmu.el'")
 ;;
+;; 2012/03/05 dadams
+;;     bmkp-bmenu-mode-status-help: Added Autosave bookmarks and Autosave list display to info at top.
+;; 2012/03/04 dadams
+;;     Added: bmkp-bmenu-load-marked-bookmark-file-bookmarks.
+;;     Bind bmkp-toggle-saving-menu-list-state to C-M-~, not M-l.
+;;     Bind bmkp-bmenu-load-marked-bookmark-file-bookmarks to M-l.  Add it to menu.
 ;; 2012/03/02 dadams
 ;;     bookmark-bmenu-list: Reset marked and omitted lists to () if a name is not a current bmk.
 ;; 2012/02/28 dadams
