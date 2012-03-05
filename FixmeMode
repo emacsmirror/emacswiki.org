@@ -7,6 +7,7 @@ And another variant Lisp:fic-mode.el where fic stands for "fixme in comments (an
 
 And *yet* another variant Lisp:fic-ext-mode.el which also supports TODO(author) style.
 
+I've given fix-ext-mode.el a github https://github.com/lewang/fic-mode with some fixes.
 
 : It does work, but not as expected: The changes it makes to the font-locking are global, so even in buffers that are not in fixme-mode FIXMEs & Co. are highlighted and there is *no* way to disable them. I also wonder whether the call to grep could/should be replaced to a call of occur. But besides that: Cool! :-) --Tim Landscheidt
 
