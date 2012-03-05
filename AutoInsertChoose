@@ -1,3 +1,7 @@
 The package Lisp:auto-insert-choose.el prompts you to choose from
 multiple auto-inserts.  You can even have multiple templates in
 different files for different projects.
+
+auto-insert-choose is used to auto-insert project-specific templates by:
+
+* The [https://sourceforge.net/projects/rosegarden/ Rosegarden] sequencer dev team.
