@@ -7,9 +7,9 @@
 ;; Copyright (C) 2010-2012, Drew Adams, all rights reserved.
 ;; Created: Fri Apr  1 15:34:50 2011 (-0700)
 ;; Version:
-;; Last-Updated: Sun Feb 26 16:04:39 2012 (-0800)
+;; Last-Updated: Sun Mar  4 14:57:25 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 563
+;;     Update #: 564
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-key.el
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -755,7 +755,7 @@
   (bmkp-menu-bar-make-toggle bmkp-bmenu-state-file bmkp-bmenu-state-file
                              "Autosave *Bookmark List* Display State"
                              "Autosaving of `*Bookmark List*' display state is %s"
-                             "Autosave `*Bookmark List*' state (aka \"menu list\") when you quit it"))
+                             "Autosave `*Bookmark List*' display state when you quit it"))
 (define-key bmkp-options-menu [bmkp-toggle-saving-bookmark-file]
   (bmkp-menu-bar-make-toggle bookmark-save-flag bookmark-save-flag
                              "Autosave Bookmark File"
