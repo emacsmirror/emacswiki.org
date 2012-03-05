@@ -38,7 +38,6 @@ There are some other user options that make it easy to customize
 bindings.
 
 
-[:icicle-kbd]
 [:icicle-modal-cycle-down-keys]
 [:icicle-modal-cycle-up-keys]
 [:icicle-apropos-cycle-next-keys]
@@ -161,7 +160,7 @@ Apropos-complete your input.
 
 
 
-
+[:icicle-kbd]
 Whenever you customize an '''Icicles''' key binding, whether via a user
 option value or using `define-key' or `global-set-key', you can
 use macro '''`icicle-kbd'''' to express the key sequence in a
