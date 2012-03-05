@@ -163,6 +163,12 @@ You can also use the functions that auto-insert uses manually, on pre-existing s
 
 The key function to know is `auto-insert' which will run the template, interactively asking you questions. 
 
+== Choosing from multiple auto-inserts ==
+
+The package [AutoInsertChoose auto-insert-choose] prompts you to
+choose from multiple auto-inserts.  You can even have multiple
+templates in different files for different projects.
+
 ----
 CategoryTemplates
 CategoryCode
