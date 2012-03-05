@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Tue Feb 28 09:52:44 2012 (-0800)
+;; Last-Updated: Mon Mar  5 08:34:27 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 28706
+;;     Update #: 28712
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-doc2.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -7303,6 +7303,17 @@
 ;;  these: (kbd "C-<delete>"), [C-delete], or [(control delete)].
 ;;  There are plenty of examples of the use of `icicle-kbd' in the
 ;;  Icicles source files.
+;;
+;;  `icicle-kbd' is a macro, defined in library `icicles-mac.el'.  Be
+;;  sure you load that library before you try to make use of the
+;;  macro.  For example, if you define a key binding in your file
+;;  `foo.el' then put the following in `foo.el' before the place where
+;;  `icicle-kbd' is used:
+;;
+;;    (eval-when-compile (require 'icicles-mac))
+;;
+;;  See the Emacs Lisp manual, nodes `Compiling Macros' and `Eval
+;;  During Compile'.
 ;;
 ;;(@* "Customizing Global Bindings")
 ;;  ** Customizing Global Bindings **
