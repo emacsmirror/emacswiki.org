@@ -38,7 +38,7 @@ There are some other user options that make it easy to customize
 bindings.
 
 
-
+[:icicle-kbd]
 [:icicle-modal-cycle-down-keys]
 [:icicle-modal-cycle-up-keys]
 [:icicle-apropos-cycle-next-keys]
@@ -173,6 +173,22 @@ So you can write, e.g., '''##(icicle-kbd "C-delete")##''' instead of one of
 these: ##(kbd "C-<delete>")##, ##[C-delete]##, or ##[(control delete)]##.
 There are plenty of examples of the use of `icicle-kbd' in the
 '''Icicles''' source files.
+
+`icicle-kbd' is a macro, defined in library <tt>[[icicles-mac.el]]</tt>.  Be
+sure you load that library before you try to make use of the macro.  For
+example, if you define a key binding in your file ##foo.el## then
+put the following in ##foo.el## before the place where `icicle-kbd'
+is used:
+
+    (eval-when-compile (require 'icicles-mac))
+
+See the Emacs Lisp manual, nodes [[Manual:Compiling Macros|Compiling Macros]] and [[Manual:Eval During Compile|Eval During Compile]].
+
+
+
+
+
+
 
 
 
