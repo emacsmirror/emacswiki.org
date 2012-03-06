@@ -100,6 +100,10 @@ SteveYegge in his long rant on different programming languages, ''[http://steve.
 
 Some mappings between Perl and Emacs Lisp [http://obsidianrook.com/devnotes/elisp-for-perl-programmers.html here].
 
+== Emacs Lisp for Common Lisp, Scheme and Clojure Programmers == 
+
+Mappings between Common Lisp, Scheme, Clojure and Emacs Lisp [http://hyperpolyglot.org/lisp a side-by-side reference sheet].
+
 ----
 CategoryCode
 CategoryExtensionLanguage
