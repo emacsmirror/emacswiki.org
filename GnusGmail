@@ -84,6 +84,10 @@ Put the following in your /gnus-init-file/ is sufficient.
 
 I have tested this with No Gnus 0.6 (2006-10-19) and XftGnuEmacs (2006-10-04).
 
+In case you want to use gnus only as a pop-mail reader, you need to add the following line before adding mail sources:
+<pre>
+(setq gnus-select-method '(nnml ""))
+</pre>
 [new]
 According to
 http://mail.google.com/support/bin/answer.py?answer=13287
