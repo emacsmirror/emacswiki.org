@@ -2,7 +2,7 @@
 
 ;; Copyright (C) 2010, 2011, 2012 Victor Ren
 
-;; Time-stamp: <2012-03-05 17:13:42 Victor Ren>
+;; Time-stamp: <2012-03-06 23:10:57 Victor Ren>
 ;; Author: Victor Ren <victorhge@gmail.com>
 ;; Keywords: occurrence region simultaneous rectangle refactoring
 ;; Version: 0.95
@@ -381,11 +381,13 @@ change are propagated to all other occurrences simultaneously.
 If region is not active, the current symbol (returns from
 `current-word') is used as the occurrence by default.  The
 occurrences of the current symbol, but not include occurrences
-that are part of other symbols, are highlighted.  With digit
-prefix argument 0, only symbols in current function are matched.
-This is good for renaming refactoring in programming.  If you
-still want to match all the occurrences, even though they are
-parts of other symbols, you may have to mark the symbol first.
+that are part of other symbols, are highlighted.  If you still
+want to match all the occurrences, even though they are parts of
+other symbols, you may have to mark the symbol first.
+
+In the above two situations, with digit prefix argument 0, only
+occurrences in current function are matched.  This is good for
+renaming refactoring in programming.
 
 You can also switch to Iedit mode from isearch mode directly. The
 current search string is used as occurrence.  All occurrences of
@@ -421,9 +423,6 @@ Commands:
           complete-symbol
           (beg (point-min))
           (end (point-max)))
-      (when (and arg (iedit-region-active))
-        (setq beg (region-beginning))
-        (setq end (region-end)))
       (cond ((and arg
                   (= 4 (prefix-numeric-value arg))
                   iedit-last-occurrence-local)
@@ -434,17 +433,6 @@ Commands:
                   iedit-last-initial-string-global)
              (setq occurrence iedit-last-initial-string-global)
              (setq complete-symbol iedit-only-complete-symbol-global))
-            ((and arg
-                  (= 0 (prefix-numeric-value arg))
-                  iedit-current-symbol-default
-                  (current-word t))
-             (setq occurrence  (current-word))
-             (when iedit-only-at-symbol-boundaries
-               (setq complete-symbol t))
-             (save-excursion
-               (mark-defun)
-               (setq beg (region-beginning))
-               (setq end (region-end))))
             ((iedit-region-active)
              (setq occurrence  (buffer-substring-no-properties
                                 (mark) (point))))
@@ -457,6 +445,15 @@ Commands:
              (when iedit-only-at-symbol-boundaries
                (setq complete-symbol t)))
             (t (error "No candidate of the occurrence, cannot enable Iedit mode")))
+      (when arg
+        (if (= 0 (prefix-numeric-value arg))
+            (save-excursion
+              (mark-defun)
+              (setq beg (region-beginning))
+              (setq end (region-end)))
+          (when (iedit-region-active)
+            (setq beg (region-beginning))
+            (setq end (region-end)))))
       (setq iedit-only-complete-symbol-local complete-symbol)
       (set-mark nil)
       (setq iedit-case-sensitive-local iedit-case-sensitive-default)
