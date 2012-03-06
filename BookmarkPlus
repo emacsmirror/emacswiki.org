@@ -499,9 +499,13 @@ bookmark-list display refreshes it to accurately reflect the
 current bookmark list (#1).  Some other operations in the display also
 keep it synced with the list.
 
+[:bmkp-revert-bookmark-file]
 Using a prefix argument (`C-u g') syncs the display (#3) and the
 list (#1) to the file (#2).  This can be useful when some other
-process (e.g., another Emacs session) updates the bookmark file.
+process (e.g., another Emacs session) updates the bookmark file or
+when you want to abandon changes to the current bookmark list and
+any of the current bookmarks.  Outside the bookmark-list display,
+you can use command '''`bmkp-revert-bookmark-file'''' to do this.
 
 You can load different bookmark files, either adding their
 bookmarks to those already in the current bookmark list or
