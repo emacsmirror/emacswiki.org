@@ -1,6 +1,8 @@
 Home page: http://angg.twu.net/
 
-Important news (march 2012): people have been pointing for ages that eev.el was too big and too weird, and that each of its well-documented ways of sending commands to external programs - see for example [http://angg.twu.net/eev-current/anim/channels.html this animation] - required a non-trivial amount of set-up to work... well, no longer! Take a look at [http://angg.twu.net/eev-current/eepitch.el.html eepitch.el].
+**Important news** (march 2012): people have been pointing out for ages that eev.el was too big and too weird, and that each of its well-documented ways of sending commands to external programs - see for example [http://angg.twu.net/eev-current/anim/channels.anim.html this animation] - required a non-trivial amount of set-up to work... well, no longer! Take a look at [http://angg.twu.net/eev-current/eepitch.el.html eepitch.el].
+
+Also, the recommended way to install [http://angg.twu.net/eev-article.html eev.el] is now through its [http://angg.twu.net/debian/README.html Debian package].
 
 (The rest of this page is from 2008...)
 
