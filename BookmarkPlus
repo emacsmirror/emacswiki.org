@@ -23,6 +23,9 @@ With '''Bookmark+''' you can use bookmarks that were created with any Emacs vers
 * <tt>[[bookmark+-doc.el]]</tt> -- documentation (essentially the same as this wiki page)
 * <tt>[[bookmark+-chg.el]]</tt> -- change log entries
 
+[new]
+I've created a github mirror of Bookmarkp+ [https://github.com/quodlibetor/bookmarkplus-github/ here] to make it easier to download. ([https://github.com/quodlibetor/bookmarkplus-github/tarball/master Direct download link]) There's an auto-update script that I'm running daily with cron, so hopefully it won't ever fall more than a day or two behind. 
+[new]
 
 The main '''Bookmark+''' library is ##bookmark+.el##.  The other required
 libraries are ##bookmark+-mac.el##, ##bookmark+-bmu.el##, ##bookmark+-1.el##, and ##bookmark+-key.el##.  If you
