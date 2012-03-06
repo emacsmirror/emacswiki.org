@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2012, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Mon Mar  5 09:09:53 2012 (-0800)
+;; Last-Updated: Tue Mar  6 07:21:16 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 14520
+;;     Update #: 14521
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-chg.el
 ;; Keywords: bookmarks, bookmark+
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -145,6 +145,8 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-1.el'")
 ;;
+;; 2012/03/06 dadams
+;;     bookmark-load: If bookmark-file buffer already existed, do not kill it after loading.
 ;; 2012/03/04 dadams
 ;;     Added: bmkp-refresh/rebuild-menu-list.
 ;;     bookmark-store, bookmark-send-edited-annotation, bookmark-delete,
