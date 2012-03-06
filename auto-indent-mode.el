@@ -5,10 +5,10 @@
 ;; Author: Matthew L. Fidler, Le Wang & Others
 ;; Maintainer: Matthew L. Fidler
 ;; Created: Sat Nov  6 11:02:07 2010 (-0500)
-;; Version: 0.57
-;; Last-Updated: Wed Feb 29 22:24:14 2012 (-0600)
+;; Version: 0.58
+;; Last-Updated: Mon Mar  5 23:13:03 2012 (-0600)
 ;;           By: Matthew L. Fidler
-;;     Update #: 1282
+;;     Update #: 1296
 ;; URL: https://github.com/mlf176f2/auto-indent-mode.el/
 ;; Keywords: Auto Indentation
 ;; Compatibility: Tested with Emacs 23.x
@@ -117,6 +117,12 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;;; Change Log:
+;; 05-Mar-2012    Matthew L. Fidler  
+;;    Last-Updated: Mon Mar  5 23:06:45 2012 (-0600) #1292 (Matthew L. Fidler)
+;;    Bug fix for autopair-backspace.
+;; 05-Mar-2012    Matthew L. Fidler  
+;;    Last-Updated: Wed Feb 29 22:24:14 2012 (-0600) #1282 (Matthew L. Fidler)
+;;    Have backspace cancel parenthetical alignment timer canceling 
 ;; 29-Feb-2012    Matthew L. Fidler  
 ;;    Last-Updated: Wed Feb 29 15:39:01 2012 (-0600) #1278 (Matthew L. Fidler)
 ;;    Bug fix for paren handling. 
@@ -1147,17 +1153,23 @@ http://www.emacswiki.org/emacs/AutoIndentation
    (and (boundp 'ergoemacs-mode) ergoemacs-mode ;; Ergoemacs
         (memq (or command this-command)
               (list
+               'autopair-backspace
+               'auto-indent-delete-backward-char
                'delete-backward-char
 	       'backward-delete-char
                (key-binding (kbd "DEL"))
-               (key-binding (kbd "M-d"))
+               ergoemacs-delete-backward-char-key
                (key-binding (kbd "<backspace>")))))
    (memq (or command this-command)
          (list
+          'autopair-backspace
+          'auto-indent-delete-backward-char
           'delete-backward-char
           'backward-delete-char
 	  (key-binding (kbd "DEL"))
 	  (key-binding (kbd "<backspace>"))))))
+
+
 
 (defmacro auto-indent-def-del-char (command &optional function)
   "Defines advices and commands for `delete-char'"
@@ -1177,6 +1189,8 @@ http://www.emacswiki.org/emacs/AutoIndentation
                                      (called-interactively-p 'any)
                                      (auto-indent-is-bs-key-p))))) ,do-it
         (let ((backward-delete-char-untabify-method auto-indent-backward-delete-char-behavior))
+          (when auto-indent-par-region-timer
+            (cancel-timer auto-indent-par-region-timer))
 	  (setq this-command 'auto-indent-delete-backward-char) ;; No recursive calls, please.
 	  ,(if (eq command 'backward-delete-char-untabify)
 	       do-it
@@ -1207,7 +1221,7 @@ standards for Viper, ErgoEmacs and standard emacs"
 	      (list
 	       'delete-char
 	       (key-binding (kbd "<delete>"))
-	       (key-binding (kbd "M-f"))
+               ergoemacs-delete-char-key
 	       (key-binding (kbd "<deletechar>")))))
    (memq (or command this-command)
 	 (list
@@ -1332,42 +1346,44 @@ If at end of line, obey `auto-indent-kill-line-at-eol'
                 (bolp (auto-indent-bolp)))
             (if (and auto-indent-minor-mode
                      (not (minibufferp)))
-                (if (and auto-indent-kill-line-kill-region-when-active
-                         (use-region-p))
-                    (progn
-                      (auto-indent-kill-region (region-beginning) (region-end))
-                      (setq can-do-it nil))
-                  (when bolp
-                    (move-beginning-of-line 1))
-                  (when eolp
-                    (cond
-                     ((eq auto-indent-kill-line-at-eol nil)
-                      (when (> (prefix-numeric-value current-prefix-arg) 0)
-                        (if (not kill-whole-line)
-                            (save-excursion
-                              (beginning-of-line)
-                              (insert " ")))))
-                     ((eq auto-indent-kill-line-at-eol 'subsequent-whole-line)
-                      (let (auto-indent-kill-line-at-eol)
-                        (if (memq last-command (list 'kill-region this-command))
-                            (progn
-                              (setq auto-indent-kill-line-at-eol 'whole-line)
-                              (kill-line (ad-get-arg 0)))
-                          (setq auto-indent-kill-line-at-eol nil)
-                          (kill-line (ad-get-arg 0)))))
-                     ((memq auto-indent-kill-line-at-eol '(whole-line blanks))
-                      (if (> (prefix-numeric-value current-prefix-arg) 0)
+                (when auto-indent-par-region-timer
+                  (cancel-timer auto-indent-par-region-timer))
+              (if (and auto-indent-kill-line-kill-region-when-active
+                       (use-region-p))
+                  (progn
+                    (auto-indent-kill-region (region-beginning) (region-end))
+                    (setq can-do-it nil))
+                (when bolp
+                  (move-beginning-of-line 1))
+                (when eolp
+                  (cond
+                   ((eq auto-indent-kill-line-at-eol nil)
+                    (when (> (prefix-numeric-value current-prefix-arg) 0)
+                      (if (not kill-whole-line)
                           (save-excursion
-                            (delete-region (point) (point-at-eol))
-                            (unless (eobp)
-                              (forward-line 1)
-                              (when (eq auto-indent-kill-line-at-eol 'blanks)
-                                (auto-indent-kill-region (point) (+ (point)
-                                                                    (skip-chars-forward " \t\n")
-                                                                    (skip-chars-backward " \t"))))))))
-                     (t
-                      (error "Invalid `auto-indent-kill-line-at-eol' setting %s"
-                             auto-indent-kill-line-at-eol))))))
+                            (beginning-of-line)
+                            (insert " ")))))
+                   ((eq auto-indent-kill-line-at-eol 'subsequent-whole-line)
+                    (let (auto-indent-kill-line-at-eol)
+                      (if (memq last-command (list 'kill-region this-command))
+                          (progn
+                            (setq auto-indent-kill-line-at-eol 'whole-line)
+                            (kill-line (ad-get-arg 0)))
+                        (setq auto-indent-kill-line-at-eol nil)
+                        (kill-line (ad-get-arg 0)))))
+                   ((memq auto-indent-kill-line-at-eol '(whole-line blanks))
+                    (if (> (prefix-numeric-value current-prefix-arg) 0)
+                        (save-excursion
+                          (delete-region (point) (point-at-eol))
+                          (unless (eobp)
+                            (forward-line 1)
+                            (when (eq auto-indent-kill-line-at-eol 'blanks)
+                              (auto-indent-kill-region (point) (+ (point)
+                                                                  (skip-chars-forward " \t\n")
+                                                                  (skip-chars-backward " \t"))))))))
+                   (t
+                    (error "Invalid `auto-indent-kill-line-at-eol' setting %s"
+                           auto-indent-kill-line-at-eol))))))
             (when can-do-it
               ,do-it)
             (indent-according-to-mode )
