@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2012, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 13:43:55 2010 (-0700)
-;; Last-Updated: Sun Mar  4 16:23:45 2012 (-0800)
+;; Last-Updated: Tue Mar  6 07:20:05 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 4450
+;;     Update #: 4456
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-1.el
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -2488,10 +2488,11 @@ contain a `%s' construct, so that it can be passed along with FILE to
 ;;    * Update `bmkp-last-bookmark-file' to `bmkp-current-bookmark-file'.
 ;;    * Update `bmkp-current-bookmark-file' to FILE .
 ;;    * If `bmkp-last-as-first-bookmark-file', then update it to FILE and save it to disk.
-;; 4  Set `bookmarks-already-loaded' regardless of FILE (not just `bookmark-default-file').
-;; 5. Update `bmkp-sorted-alist' (it's a cache).
-;; 6. Final msg says whether overwritten.
-;; 7. Call `bmkp-bmenu-refresh-menu-list' at end.
+;; 4. If the bookmark-file buffer already existed, do not kill it after loading.
+;; 5.  Set `bookmarks-already-loaded' regardless of FILE (not just `bookmark-default-file').
+;; 6. Update `bmkp-sorted-alist' (it's a cache).
+;; 7. Final msg says whether overwritten.
+;; 8. Call `bmkp-bmenu-refresh-menu-list' at end.
 ;;
 ;;;###autoload
 (defun bookmark-load (file &optional overwrite batchp) ; Bound to `C-x p l'
@@ -2565,24 +2566,25 @@ bookmark files that were created using the bookmark functions."
   (setq file  (abbreviate-file-name (expand-file-name file)))
   (unless (file-readable-p file) (error "Cannot read bookmark file `%s'" file))
   (unless batchp (message "Loading bookmarks from `%s'..." file))
-  (with-current-buffer (let ((enable-local-variables nil)) (find-file-noselect file))
-    (goto-char (point-min))
-    (bookmark-maybe-upgrade-file-format)
-    (let ((blist  (bookmark-alist-from-buffer)))
-      (unless (listp blist) (error "Invalid bookmark list in `%s'" file))
-      (cond (overwrite
-             (setq bmkp-last-bookmark-file            bmkp-current-bookmark-file
-                   bmkp-current-bookmark-file         file
-                   bookmark-alist                     blist
-                   bookmark-alist-modification-count  0)
-             (when bmkp-last-as-first-bookmark-file
-               (customize-save-variable 'bmkp-last-as-first-bookmark-file file)))
-            (t
-             (bookmark-import-new-list blist)
-             (setq bookmark-alist-modification-count  (1+ bookmark-alist-modification-count))))
-      (setq bookmarks-already-loaded  t ; Systematically, whenever any file is loaded.
-            bmkp-sorted-alist         (bmkp-sort-omit bookmark-alist)))
-    (kill-buffer (current-buffer)))
+  (let ((existing-buf  (get-file-buffer file)))
+    (with-current-buffer (let ((enable-local-variables nil)) (find-file-noselect file))
+      (goto-char (point-min))
+      (bookmark-maybe-upgrade-file-format)
+      (let ((blist  (bookmark-alist-from-buffer)))
+        (unless (listp blist) (error "Invalid bookmark list in `%s'" file))
+        (cond (overwrite
+               (setq bmkp-last-bookmark-file            bmkp-current-bookmark-file
+                     bmkp-current-bookmark-file         file
+                     bookmark-alist                     blist
+                     bookmark-alist-modification-count  0)
+               (when bmkp-last-as-first-bookmark-file
+                 (customize-save-variable 'bmkp-last-as-first-bookmark-file file)))
+              (t
+               (bookmark-import-new-list blist)
+               (setq bookmark-alist-modification-count  (1+ bookmark-alist-modification-count))))
+        (setq bookmarks-already-loaded  t ; Systematically, whenever any file is loaded.
+              bmkp-sorted-alist         (bmkp-sort-omit bookmark-alist)))
+      (unless (eq existing-buf (current-buffer)) (kill-buffer (current-buffer)))))
   (unless batchp                        ; If appropriate, *CALLER* MUST refresh/rebuild, if BATCHP.
     (bmkp-refresh/rebuild-menu-list)
     (message "%s bookmarks in `%s'" (if overwrite "Switched to" "Added") file)))
