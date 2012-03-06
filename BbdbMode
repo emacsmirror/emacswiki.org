@@ -22,7 +22,9 @@ enter multi-line descriptions, instead of using the minibuffer.
 
 If you plan on updating to BBDB 3, please note that many of the bbdb
 functions and variables have been renamed, potentially leading to
-broken configurations. For instance, if you have the following hook in
+broken configurations. For details, see UpgradeBBDB.
+
+For instance, if you have the following hook in
 your ~/.emacs:
 
         (add-hook 'message-setup-hook 'bbdb-define-all-aliases)
