@@ -95,6 +95,10 @@ a result the pyramid must stand unchanged for a millennium; the
 organism must evolve or perish.
 
 SteveYegge in his long rant on different programming languages, ''[http://steve.yegge.googlepages.com/tour-de-babel Tour de Babel]'', tells of the popularity of Emacs and in particular EmacsLisp for software developed and used internally at Amazon.com.
+ 
+== Emergency Emacs Lisp ==
+
+Are you an Emacs user but don't know Lisp? Welcome to my first Emacs Lisp primer! This should hopefully help get you over the hurdle so you can have more control over your Emacs sessions. - [http://steve-yegge.blogspot.com/2008/01/emergency-elisp.html Emergency Emacs Lisp] by Steve Yegge
 
 == Emacs Lisp for Perl Programmers ==
 
