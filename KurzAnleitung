@@ -2,14 +2,14 @@
 [[pt:ComoFazer]]
 [[zh:教导]]
 
-Dieser Wiki verwendet Oddmuse; und ein Teil der Oddmuse Anleitung wurde auch auf Deutsch übersetzt.  Hier ein paar Hinweise für den Anfang.  Mehr Info gibt es im Moment nur auf English, siehe HowTo.
+Dieses Wiki verwendet Oddmuse; ein Teil der Oddmuse Anleitung wurde auch auf Deutsch übersetzt.  Hier ein paar Hinweise für den Anfang. Mehr Info gibt es im Moment nur auf English, siehe HowTo.
 
-* Alle Besucher dürfen Seiten ändern und alle Besucher dürfen Änderungen rückgängig machen. Texte für einen Wiki schreiben ist einfach. -- [[Oddmuse:Was ist ein Wiki]]
+* Alle Besucher dürfen Seiten ändern, und alle Besucher dürfen Änderungen rückgängig machen. Texte für ein Wiki zu schreiben, ist einfach. -- [[Oddmuse:Was ist ein Wiki]]
 * Leerzeilen trennen Absätze. Einträge in Listen beginnen mit einem Stern ('*') in der ersten Spalte.  Wörter in <nowiki>[[doppelten eckigen Klammern]]</nowiki> zeigen auf lokale Seiten. URLs werden verlinkt. Zeile in == doppelten Gleichzeichen == sind Überschriften. -- Oddmuse:Formatierungsregeln
 * Neue Seiten anlegen: Eine bestehende Seite bearbeiten und einen Link auf die neue Seite einfügen, speichern, und dem Link folgen.
 
-== Neue Seiten Benennen ==
+== Neue Seiten benennen ==
 
-* Zur Unterscheidung von den Englischen Seiten empfehle ich, keine gemischte !GrossUndKleinschreibung zu verwenden.
+* Zur Unterscheidung von den englischen Seiten empfehle ich, keine gemischte !GrossUndKleinschreibung zu verwenden.
 * Zur Unterscheidung von anderen Sprachen, welche die gemischte !GrossUndKleinschreibung auch nicht verwenden, sollte man versuchen, ein deutsches Wort hinein zu schmuggeln.  Beispielsweise: [[Sql Modus]] statt SqlMode.
 * Gibt es zu einem Thema mehr als zwei oder drei Seiten, sollte man eine Kategorie Seite erstellen.  Die Kategorie Seite auf der [[Übersicht]] einfügen, und auf der Kategorie Seite selber dann die Links zum Thema.  Der Name der Kategorie Seite wäre dann beispielsweise [[Kategorie Gnus]].
