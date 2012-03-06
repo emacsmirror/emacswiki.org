@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2012, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 09:05:21 2010 (-0700)
-;; Last-Updated: Mon Mar  5 09:02:03 2012 (-0800)
+;; Last-Updated: Tue Mar  6 07:17:37 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 1511
+;;     Update #: 1512
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-bmu.el
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -2655,7 +2655,7 @@ to turn saving back on."
       ;; $$$$$$ Should we do (bmkp-tags-list) here to update the tags cache?
       
       (bmkp-refresh/rebuild-menu-list nil (not msgp)) ; Now refresh, after iterate.
-      (when msgp (message "Bookmark-file bookmarks loaded: %s"
+      (when msgp (message "Autosaving is now OFF.  Loaded: %s"
                           (mapconcat (lambda (bmk) (format "`%s'" (bmkp-bookmark-name-from-record bmk)))
                                      bmks
                                      ", "))))))
