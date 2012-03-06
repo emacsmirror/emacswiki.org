@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2012, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 13:43:55 2010 (-0700)
-;; Last-Updated: Tue Mar  6 07:20:05 2012 (-0800)
+;; Last-Updated: Tue Mar  6 13:35:13 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 4456
+;;     Update #: 4466
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-1.el
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -235,8 +235,8 @@
 ;;    `bmkp-remote-file-jump', `bmkp-remote-file-jump-other-window',
 ;;    `bmkp-remove-all-tags', `bmkp-remove-tags',
 ;;    `bmkp-remove-tags-from-all', `bmkp-rename-tag',
-;;    `bmkp-save-menu-list-state', `bmkp-send-bug-report',
-;;    `bmkp-set-autonamed-bookmark',
+;;    `bmkp-revert-bookmark-file', `bmkp-save-menu-list-state',
+;;    `bmkp-send-bug-report', `bmkp-set-autonamed-bookmark',
 ;;    `bmkp-set-autonamed-bookmark-at-line',
 ;;    `bmkp-set-autonamed-regexp-buffer',
 ;;    `bmkp-set-autonamed-regexp-region',
@@ -3289,6 +3289,20 @@ Returns the new bookmark (internal record)."
       (setq bmkp-latest-bookmark-alist  (cons new bmkp-latest-bookmark-alist)))
     (bookmark-bmenu-surreptitiously-rebuild-list)
     new))
+
+;;;###autoload
+(defun bmkp-revert-bookmark-file (&optional msgp) ; Same as `C-u g' in bookmark list (but not bound).
+  "Revert to the bookmarks in the current bookmark file.
+This discards all modifications to bookmarks and the bookmark list
+\(e.g. added/deleted bookmarks).
+This has the same effect as using `C-u \\<bookmark-bmenu-mode-map>\\[bmkp-bmenu-refresh-menu-list]' in \
+buffer `*Bookmark List*'."
+  (interactive)
+  (if (and msgp (not (yes-or-no-p (format "Revert to bookmarks in file `%s'? "
+                                          bmkp-current-bookmark-file))))
+      (error "OK - canceled")
+    (bookmark-load bmkp-current-bookmark-file 'OVERWRITE msgp)
+    (bmkp-refresh/rebuild-menu-list nil (not msgp))))
 
 ;;;###autoload
 (defun bmkp-switch-bookmark-file (file &optional batchp) ; Not bound and not used in the code now.
