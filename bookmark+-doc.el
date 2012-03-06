@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2012, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Mon Mar  5 09:02:37 2012 (-0800)
+;; Last-Updated: Tue Mar  6 13:34:02 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 14438
+;;     Update #: 14439
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-doc.el
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search,
 ;;           info, url, w3m, gnus
@@ -564,7 +564,10 @@
 ;;
 ;;  Using a prefix argument (`C-u g') syncs the display (#3) and the
 ;;  list (#1) to the file (#2).  This can be useful when some other
-;;  process (e.g., another Emacs session) updates the bookmark file.
+;;  process (e.g., another Emacs session) updates the bookmark file or
+;;  when you want to abandon changes to the current bookmark list and
+;;  any of the current bookmarks.  Outside the bookmark-list display,
+;;  you can use command `bmkp-revert-bookmark-file' to do this.
 ;;
 ;;  You can load different bookmark files, either adding their
 ;;  bookmarks to those already in the current bookmark list or
