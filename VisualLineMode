@@ -17,6 +17,38 @@ This mode will likely deprecate LongLines in a future version of Emacs.
 [new]
 But can you have visual-line-mode wrap at a given column and not just at the window border?  I like how longlines-mode keeps text at 80 columns or less.
 --BryanMurdock
+[new]
+The following code convinces visual-line-mode to wrap at a given column by expanding the right margin of the buffer's window.  It's worked pretty well for me, although it depends on being the only one that fiddles with the margins.
+--JamesWright
+
+    (defvar visual-wrap-column nil)
+
+    (defun set-visual-wrap-column (new-wrap-column &optional buffer)
+      "Force visual line wrap at NEW-WRAP-COLUMN in BUFFER (defaults
+      to current buffer) by setting the right-hand margin on every
+      window that displays BUFFER.  A value of NIL for
+      NEW-WRAP-COLUMN disables this behavior."
+      (with-current-buffer (or buffer (current-buffer))
+        (visual-line-mode t)
+        (set (make-local-variable 'visual-wrap-column) new-wrap-column)
+        (add-hook 'window-configuration-change-hook 'update-visual-wrap-column nil t)
+        (let ((windows (get-buffer-window-list)))
+          (while windows
+            (when (window-live-p (car windows))
+              (with-selected-window (car windows)
+                (update-visual-wrap-column)))
+            (setq windows (cdr windows))))))
+
+    (defun update-visual-wrap-column ()
+      (if (not visual-wrap-column)
+        (set-window-margins nil nil)
+        (let* ((current-margins (window-margins))
+               (right-margin (or (cdr current-margins) 0))
+               (current-width (window-width))
+               (current-available (+ current-width right-margin)))
+          (if (<= current-available visual-wrap-column)
+            (set-window-margins nil nil)
+            (set-window-margins nil nil (- current-available visual-wrap-column))))))
 
 [new]
 
@@ -62,4 +94,3 @@ I find this superior to enabling `visual-line-mode' globally, because I prefer t
 CategoryEditing
 CategoryFilling
 CategoryModes
-
