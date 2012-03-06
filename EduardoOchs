@@ -1,5 +1,9 @@
 Home page: http://angg.twu.net/
 
+Important news (march 2012): people have been pointing for ages that eev.el was too big and too weird, and that each of its well-documented ways of sending commands to external programs - see for example [http://angg.twu.net/eev-current/anim/channels.html this animation] - required a non-trivial amount of set-up to work... well, no longer! Take a look at [http://angg.twu.net/eev-current/eepitch.el.html eepitch.el].
+
+(The rest of this page is from 2008...)
+
 See also: [http://angg.twu.net/emacs.html my Emacs page] (esp. its [http://angg.twu.net/emacs.html#short-emacs-tutorial short Emacs tutorial])
 
 [::edrx] on IRC (channels: #emacs and #eev)
