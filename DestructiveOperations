@@ -295,7 +295,58 @@ previously to keep the examples above simpler.
     (nconc-safe a a)
     a)
   ==> (1 2 3)
-  
+
+The `nreverse' procedure was shown above.  Here's a functional
+programming version of `reverse' that doesn't modify its arguments.
+
+  (defun fpreverse (list)
+    (if (null list)
+        list
+      (append (fpreverse (cdr list)) (list (car list)))))
+
+Like `fpappend' above, it suffers from the same limitations in Emacs
+Lisp.
+
+  (fpreverse '())
+  ==> nil
+  (fpreverse '(1 2))
+  ==> (2 1)
+  (fpreverse '(1 2 3 4))
+  ==> (4 3 2 1)
+  (fpreverse (number-sequence 1 20))
+  ==> (20 19 18 17 16 15 14 13 12 11 10 9 8 7 6 5 4 3 2 1)
+  (fpreverse (number-sequence 1 2000))
+  ==> (error "Lisp nesting exceeds `max-lisp-eval-depth'")
+
+Here's an iterative version that is also destructive.
+
+  (defun nreverse-lisp (list)
+    (let ((prev nil)
+          (tail list))
+      (while tail
+        (setq next (cdr tail))
+        (setcdr tail prev)
+        (setq prev tail
+              tail next))
+      prev))
+
+It works like the primitive `nreverse'.
+
+  (nreverse-lisp '())
+  ==> nil
+  (nreverse-lisp '(1 2))
+  ==> (2 1)
+  (nreverse-lisp '(1 2 3 4))
+  ==> (4 3 2 1)
+  (let ((l '(1 2 3 4)))
+    (nreverse-lisp l)
+    l)
+  ==> (1)
+  (nreverse-lisp (number-sequence 1 20))
+  ==> (20 19 18 17 16 15 14 13 12 11 10 9 8 7 6 5 4 3 2 1)
+  (nreverse-lisp (number-sequence 1 2000))
+  ==> (2000 1999 1998 1997 1996 1995 1994 1993 1992 1991 1990 1989 ...)
+
 == Etymological Note ==
 
 Common Lisp has a lot of destructive operations like this, and their names generally begin with "n", as in "nreverse", "nsubst", "nbutlast" and so on.  It's not mentioned very often, and in fact the Hyperspec doesn't even have a glossary entry for the term, but the "n" in this context stands for "non-consing" -- that is, these are functions that work by moving node pointers around in place, rather than consing (constructing) new nodes.
