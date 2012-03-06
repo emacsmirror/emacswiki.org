@@ -19,7 +19,7 @@ Here are particular enhancements to the mode line:
 * SmlModeLine -- Indicate in the mode-line, in a scrollbar-like way, the portion of the buffer that is visible in the window.
 * ShowPointMode -- Show value of point in the mode-line.
 * NyanMode -- Indicate your position in the buffer in the mode line, with a little help from [http://en.wikipedia.org/wiki/Nyan_Cat Nyan Cat].
-* Powerline -- How to make VIM-like [https://github.com/Lokaltog/vim-powerline powerline].
+* PowerLine -- How to make VIM-like [https://github.com/Lokaltog/vim-powerline powerline].
 
 
 Customize the mode line by altering the `mode-line-format' variable.  The `header-line-format' variable customizes the HeaderLine.
