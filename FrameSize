@@ -25,11 +25,10 @@ Use the ##-mm## command line option: ##emacs -mm##, or add ##Emacs.fullscreen: m
 
 == Set Frame Size Programmatically ==
 
-You can use any of the commands and Lisp functions that work interactively (see [[#ChangeInteractively]]) to set the frame size in Lisp, of course.
+Elisp commands to set the frame size and position: ##set-frame-height##, ##set-frame-width##, ##set-frame-size##, ##set-frame-position##. This lets you do something like this:
 
-You can also set the default frame size at startup. The EmacsManual (`C-h r') has a good presentation about frame parameters (##geometry## etc.)
-
-
+    (if window-system
+      (set-frame-size (selected-frame) 80 24))
 
 === geometry ===
 
