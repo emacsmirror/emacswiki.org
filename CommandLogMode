@@ -3,7 +3,9 @@ by MichaelWeber can be used to demo Emacs to an audience.  When
 activated, keystrokes get logged into a designated buffer, along
 with the command bound to them.
 
-It is not yet a MinorMode, but maybe it will be some day.
+I've forked this on github and made it minor-mode and global-minor-mode for it:
+
+[https://github.com/lewang/command-log-mode command-log-mode]
 
 ----
 CategoryCommands
