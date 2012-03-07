@@ -31,6 +31,35 @@ It's possible to use GNU GLOBAL incremental update feature in after-save-hook in
 
   (add-hook 'after-save-hook #'gtags-update-hook)
 
+=== GNU GLOBAL update for a single file ===
+For projects with a huge amount of files, "global -u" can take a
+very long time to complete. For changes in a single file, we can 
+update the tags with "gtags --single-update" and do it in the 
+background: 
+
+    (defun gtags-update-single(filename)  
+      "Update Gtags database for changes in a single file"
+      (interactive)
+      (start-process "update-gtags" "update-gtags" "bash" "-c" (concat "cd " (gtags-root-dir) " ; gtags --single-update " filename )))
+
+
+    (defun gtags-update-current-file()
+      (interactive)
+      (defvar filename)
+      (setq filename (replace-regexp-in-string (gtags-root-dir) "." (buffer-file-name (current-buffer))))
+      (gtags-update-single filename)
+      (message "Gtags updated for %s" filename))
+
+    (defun gtags-update-hook()
+      "Update GTAGS file incrementally upon saving a file"
+      (when gtags-mode
+        (when (gtags-root-dir)
+          (gtags-update-current-file))))
+
+    (add-hook 'after-save-hook 'gtags-update-hook)
+
+
+
 ===Alternative interface to GNU GLOBAL===
 
 If, for whatever reasons, you do not feel comfortable with the
