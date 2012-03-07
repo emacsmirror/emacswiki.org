@@ -5,10 +5,10 @@
 ;; Author: Matthew L. Fidler, Le Wang & Others
 ;; Maintainer: Matthew L. Fidler
 ;; Created: Sat Nov  6 11:02:07 2010 (-0500)
-;; Version: 0.58
-;; Last-Updated: Mon Mar  5 23:13:03 2012 (-0600)
+;; Version: 0.59
+;; Last-Updated: Tue Mar  6 22:37:46 2012 (-0600)
 ;;           By: Matthew L. Fidler
-;;     Update #: 1296
+;;     Update #: 1301
 ;; URL: https://github.com/mlf176f2/auto-indent-mode.el/
 ;; Keywords: Auto Indentation
 ;; Compatibility: Tested with Emacs 23.x
@@ -117,6 +117,9 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;;; Change Log:
+;; 06-Mar-2012    Matthew L. Fidler  
+;;    Last-Updated: Tue Mar  6 22:35:39 2012 (-0600) #1299 (Matthew L. Fidler)
+;;    Speed enhancements for parenthetical statements.
 ;; 05-Mar-2012    Matthew L. Fidler  
 ;;    Last-Updated: Mon Mar  5 23:06:45 2012 (-0600) #1292 (Matthew L. Fidler)
 ;;    Bug fix for autopair-backspace.
@@ -630,7 +633,7 @@ expressions defined in
 
 (defcustom auto-indent-delete-line-char-remove-last-space-prog-mode-regs
   '(("\\(\\s.\\|\\s-\\)" "\\(\\s\"\\|\\sw\\)")
-    ("\\s(" "\\(\\s(\\|\\s_\\|\\sw\\)")
+    ("\\s(" "\\(\\s(\\|\\s_\\|\\sw\\)") 
     ("\\s)" "\\s)"))
   "* Regular expressions for use with `auto-indent-delete-line-char-remove-last-space'.  This is used for programming modes as determined by `auto-indent-is-prog-mode-p'."
   :type '(repeat
@@ -1561,11 +1564,17 @@ Allows the kill ring save to delete the beginning white-space if desired."
           (setq auto-indent-last-pre-command-hook-point (point))
           (let ((mark-active mark-active))
             (when (and auto-indent-current-pairs
+                       auto-indent-pairs-begin
+                       auto-indent-pairs-end)
+              (setq auto-indent-pairs-begin (min auto-indent-pairs-begin
+                                                 (point)))
+              (setq auto-indent-pairs-end (max auto-indent-pairs-end
+                                               (point))))
+            (when (and auto-indent-current-pairs
+                       (not auto-indent-pairs-begin)
                        (auto-indent-point-inside-pairs-p))
-              (unless auto-indent-pairs-begin
-                (setq auto-indent-pairs-begin (point))
-                (setq auto-indent-pairs-end (point)))
-              
+              (setq auto-indent-pairs-begin (point))
+              (setq auto-indent-pairs-end (point))
               (set (make-local-variable 'auto-indent-pairs-begin)
                    (min auto-indent-pairs-begin
                         (save-excursion
@@ -1597,7 +1606,8 @@ Allows the kill ring save to delete the beginning white-space if desired."
       (indent-region auto-indent-pairs-begin auto-indent-pairs-end)
       (when (or (> (point) auto-indent-pairs-end)
                 (< (point) auto-indent-pairs-begin))
-        (set (make-local-variable 'auto-indent-pairs-begin) nil)))))
+        (set (make-local-variable 'auto-indent-pairs-begin) nil)
+        (set (make-local-variable 'auto-indent-pairs-end) nil)))))
 
 (defun auto-indent-mode-post-command-hook-last ()
   "Last hook run to take care of auto-indenting that needs to be performed after all other post-command hooks have run (like sexp auto-indenting)"
@@ -1611,17 +1621,19 @@ Allows the kill ring save to delete the beginning white-space if desired."
           (add-hook 'pre-command-hook 'auto-indent-mode-pre-command-hook nil t))
         (when auto-indent-minor-mode
           (when auto-indent-next-pair
-            (unless auto-indent-pairs-begin
+            (if auto-indent-pairs-begin
+                (progn
+                  (setq auto-indent-pairs-begin (min (point)
+                                                     auto-indent-pairs-begin))
+                  (setq auto-indent-pairs-end (max (point)
+                                                   auto-indent-pairs-end)))
               (setq auto-indent-pairs-begin (point))
-              (setq auto-indent-pairs-end (point)))
-            (set (make-local-variable 'auto-indent-pairs-begin)
-                 (min auto-indent-pairs-begin (point)))
-            (set (make-local-variable 'auto-indent-pairs-end)
-                 (max auto-indent-pairs-end
-                      (save-excursion
-                        (if (not (re-search-forward "\\s(" nil t))
-                            (point)
-                          (backward-char 1)
+              (setq auto-indent-pairs-end (point))
+              (set (make-local-variable 'auto-indent-pairs-begin)
+                   (min auto-indent-pairs-begin (point)))
+              (set (make-local-variable 'auto-indent-pairs-end)
+                   (max auto-indent-pairs-end
+                        (save-excursion
                           (condition-case err
                               (progn
                                 (foward-list)
@@ -1632,6 +1644,17 @@ Allows the kill ring save to delete the beginning white-space if desired."
             (set (make-local-variable 'auto-indent-par-region-timer)
                  (run-with-timer 0.25 nil 'auto-indent-par-region)))
           (when (and auto-indent-current-pairs
+                     auto-indent-pairs-begin)
+            (setq auto-indent-pairs-begin (min (point)
+                                               auto-indent-pairs-begin))
+            (setq auto-indent-pairs-end (max (point)
+                                             auto-indent-pairs-end))
+            (if auto-indent-par-region-timer
+                (cancel-timer auto-indent-par-region-timer))
+            (set (make-local-variable 'auto-indent-par-region-timer)
+                 (run-with-timer 0.25 nil 'auto-indent-par-region)))
+          (when (and auto-indent-current-pairs
+                     (not auto-indent-pairs-begin)
                      (auto-indent-point-inside-pairs-p))
             (let* ((mark-active mark-active)
                    (p1 (save-excursion
