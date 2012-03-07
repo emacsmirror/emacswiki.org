@@ -6,10 +6,10 @@
 ;;            : Donald Curtis <dcurtis@milkbox.net>
 ;; Created    : May 2011
 ;; Modified   : March 2012
-;; Version    : 0.1.2
+;; Version    : 0.1.3
 ;; Keywords   : languages mode flymake
 ;; X-URL      : http://www.emacswiki.org/emacs/flymake-cursor.el
-;; Last-saved : <2011-May-09 16:35:59>
+;; Last-saved : <2012-Mar-06 16:35:59>
 ;;
 ;; -------------------------------------------------------
 ;;
