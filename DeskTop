@@ -286,6 +286,10 @@ Not sure where to mention this but I recommend adding the &optional release argu
 
 
 ----
+[new]
+
+Is there any way not to save the list of activated minor modes? I just want to revisit the list of files. -- Kiwon
+----
 
 See SessionManagement for other similar packages.
 
