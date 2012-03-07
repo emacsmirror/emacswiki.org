@@ -391,5 +391,16 @@ thus shell-command-to-string never returning, which of course could be
 resolved by killing stumpish, but a more robust approach would be to
 introduce an async command with timeout.  JosephGay
 
+Instead of stumpish, the following shell script can be used to achieve
+the same (i.e. output the current window class):
+
+{{{
+#!/bin/bash
+
+WINDOW_ID=$(xprop -root | grep "^_NET_ACTIVE_WINDOW(WINDOW)" | sed -e "s/^[^#]*# *//")
+CLASS=$(xprop -id $WINDOW_ID | grep "^WM_CLASS(STRING)" | sed -e 's/^[^,]*, //' -e 's/"//g')
+echo $CLASS
+}}}
+
 ----
 [[ERC]]
