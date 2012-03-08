@@ -64,6 +64,10 @@ Insert a `*' at the beggining of the new line if inside of a comment."
             (local-set-key (kbd "<RET>") 'my-javadoc-return)))
 </pre>
 
+You can use M-j (c-indent-new-comment-line) within comments to get the same effect.
+
+--- Pradeep
+
 -------
 
 == See also ==
