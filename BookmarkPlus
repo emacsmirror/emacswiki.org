@@ -1810,13 +1810,16 @@ default is the name of the last bookmark file that you used.
 
 In the `##*Bookmark List*##' display you can use '''`M-l'''' to load all of
 the bookmark files corresponding to the ''marked bookmark-file
-bookmarks''.  Any non bookmark-file
+bookmarks'', in the order in which they are
+displayed.  Any non bookmark-file
 bookmarks that are marked are ignored.  Before loading, if any of
 your currently loaded bookmarks have been modified then you are
 asked if you want to save them first, before loading the others.
+
 After loading, to avoid confusion and possible mistakes, automatic
 saving to the current bookmark file is turned off.  You can always
-use `##M-~##' to turn it back on again.
+use `##M-~##' to turn it back on again.  And remember that, as long as you have not saved bookmarks after loading, you can always use
+`C-u g' to revert to the bookmarks saved in the bookmark file.
 
 
 To ''create additional bookmark files'', to use either as alternatives
