@@ -4,7 +4,7 @@ In many respects, the minibuffer is a buffer like any other: You can edit the te
 
 Everything you enter in the minibuffer (commands, input arguments) is added to a MinibufferHistory. You can retrieve inputs from minibuffer histories to edit and reuse them.
 
-To cancel whatever you're doing in the minibuffer, use `C-g'. See also: RefocusMinibuffer.
+To cancel whatever you're doing in the minibuffer, use `C-g'. To cancel minibuffer if your focus is in another window, try Esc-Esc-Esc See also: RefocusMinibuffer.
 
 Sometimes, the area where you input commands is used to display informative messages. When this area is used this way, it is called the '''EchoArea''', not the minibuffer.
 
