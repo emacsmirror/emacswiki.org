@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2012, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Tue Mar  6 13:40:50 2012 (-0800)
+;; Last-Updated: Wed Mar  7 17:23:35 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 14529
+;;     Update #: 14531
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-chg.el
 ;; Keywords: bookmarks, bookmark+
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -654,6 +654,8 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-bmu.el'")
 ;;
+;; 2012/03/07 dadams
+;;     bmkp-bmenu-load-marked-bookmark-file-bookmarks: Use bmkp-sorted-alist to load in display order.
 ;; 2012/03/06 dadams
 ;;     bookmark-bmenu-mode: Reorg.
 ;;     bmkp-bmenu-refresh-menu-list:
