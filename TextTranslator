@@ -156,6 +156,7 @@ You could change to this function on text-translator it does something like what
     (thing-at-point 'symbol ))))
 </pre>
 
+Great package. Already available as a package in [http://www.slitaz.org SliTaz GNU/Linux].
 ----
 CategoryInterface CategoryInternationalization
 
