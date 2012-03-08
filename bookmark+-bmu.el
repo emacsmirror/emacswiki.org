@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2012, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 09:05:21 2010 (-0700)
-;; Last-Updated: Tue Mar  6 13:15:31 2012 (-0800)
+;; Last-Updated: Wed Mar  7 17:18:54 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 1603
+;;     Update #: 1606
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-bmu.el
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -2135,7 +2135,7 @@ From Lisp, non-nil optional arg MSG-P means show progress messages."
   (interactive "P\np")
   (bmkp-bmenu-barf-if-not-in-menu-list)
   (let ((msg  "Refreshing from bookmark "))
-    (cond ((and arg (yes-or-no-p (format "Revert to bookmarks in file `%s'? "
+    (cond ((and arg (yes-or-no-p (format "Revert to bookmarks saved in file `%s'? "
                                          bmkp-current-bookmark-file)))
            (when msg-p (message (setq msg  (concat msg "file..."))))
            (bookmark-load bmkp-current-bookmark-file 'OVERWRITE 'NOMSGP)
@@ -2642,8 +2642,9 @@ of the buffer is the same as that of buffer `*Bookmark List*'."
 
 ;;;###autoload
 (defun bmkp-bmenu-load-marked-bookmark-file-bookmarks (&optional msgp) ; Bound to `M-l' in bookmark list
-  "Load the bookmark-file bookmarks that are marked.
+  "Load the bookmark-file bookmarks that are marked, in display order.
 Non bookmark-file bookmarks that are marked are ignored.
+You can sort the bookmark-list display to change the load order.
 
 NOTE: Automatically saving the current bookmark list is turned OFF
 before loading, and it remains turned off until you explicitly turn it
@@ -2653,7 +2654,8 @@ you do, just use \\<bookmark-bmenu-mode-map>`\\[bmkp-toggle-saving-bookmark-file
 to turn saving back on."
   (interactive "p")
   (bmkp-bmenu-barf-if-not-in-menu-list)
-  (let ((bmks  (bmkp-remove-if-not #'bmkp-bookmark-file-bookmark-p (bmkp-marked-bookmarks-only))))
+  (let ((bmks  (bmkp-remove-if-not #'bmkp-bookmark-file-bookmark-p
+                                   (bmkp-remove-if-not 'bmkp-marked-bookmark-p bmkp-sorted-alist))))
     (unless bmks (error "No marked bookmark-file bookmarks"))
     ;; Maybe save first.
     (when (or (not msgp)
