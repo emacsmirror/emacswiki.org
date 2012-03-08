@@ -5,7 +5,7 @@ ampc (Asynchronous Music Player Controller) is an emacs application providing an
 == installation ==
 
 If you use GNU [[ELPA]], install ampc via M-x package-list-packages RET or
-(package-install 'ampc).  Otherwise, grab this file and put it somewhere in
+(package-install 'ampc).  Otherwise, grab this file (Lisp:ampc.el) and put it somewhere in
 your load-path or add the directory the file is in to it, e.g.:
 
 <pre>
