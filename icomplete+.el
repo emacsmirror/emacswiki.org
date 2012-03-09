@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Oct 16 13:33:18 1995
 ;; Version: 21.0
-;; Last-Updated: Sun Jan  1 14:05:16 2012 (-0800)
+;; Last-Updated: Fri Mar  9 08:19:49 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 1201
+;;     Update #: 1213
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icomplete+.el
 ;; Keywords: help, abbrev, internal, extensions, local
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -72,6 +72,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2012/03/09 dadams
+;;     icomplete-completions: Updated for Emacs 24: Bind non-essential and handle bug #10850.
 ;; 2011/10/13 dadams
 ;;     icomplete-get-keys: Added optional arg EXACTP.  Better spacing counts.
 ;;     icomplete-completions: Use MOST-TRY to determine exact match, pass to icomplete-get-keys.
@@ -415,11 +417,11 @@ and `minibuffer-setup-hook'."
                     ;; Delay - give some grace time for next keystroke, before
                     ;; embarking on computing completions:
                     (sit-for icomplete-compute-delay)))
-          (let ((text              (while-no-input
-                                     (icomplete-completions (field-string)
-                                                            minibuffer-completion-table
-                                                            minibuffer-completion-predicate
-                                                            (not minibuffer-completion-confirm))))
+          (let ((text              (while-no-input (icomplete-completions
+                                                    (field-string)
+                                                    minibuffer-completion-table
+                                                    minibuffer-completion-predicate
+                                                    (not minibuffer-completion-confirm))))
                 (buffer-undo-list  t)
                 deactivate-mark)
             ;; Do nothing if `while-no-input' was aborted.
@@ -563,7 +565,7 @@ following the rest of the icomplete info:
 ;; 3. Highlights key-binding text, truncating it if too long.
 ;; 4. Appends number of remaining cycle candidates (for Icicles).
 ;;
-(when (> emacs-major-version 22)        ; Emacs 23.
+(when (> emacs-major-version 22)        ; Emacs 23+.
   (defun icomplete-completions (name candidates predicate require-match)
     "Identify prospective candidates for minibuffer completion.
 NAME is the name to complete.
@@ -599,7 +601,8 @@ following the rest of the icomplete info:
   M-x forward-line   [Matched]  (13 more)."
     ;; `all-completions' doesn't like empty `minibuffer-completion-table's (ie: (nil))
     (when (and (listp candidates) (null (car candidates))) (setq candidates  ()))
-    (let* (;; Don't use `completion-all-sorted-completions' as in vanilla Emacs.
+    (let* ((non-essential  t)           ; Emacs 24+.
+           ;; Do not use `completion-all-sorted-completions' as in vanilla Emacs.
            ;; We need the number of comps, and we don't need that sort order.
            ;; (comps (completion-all-sorted-completions))
            (comps          (all-completions name candidates predicate))
@@ -659,14 +662,19 @@ following the rest of the icomplete info:
                    (window-width)))
                (prefix-len
                 ;; Find the common prefix among `comps'.
-                (if (eq t (compare-strings (car comps) nil (length most) most nil nil
-                                           completion-ignore-case))
-                    (length most)       ; Common case.
-                  (let ((comps-prefix  (try-completion "" comps)))
-                    (and (stringp comps-prefix) (length comps-prefix)))))
+                ;; Cannot use the optimization below because its assumptions
+                ;; are not always true, e.g. when completion-cycling (Emacs bug #10850):
+                ;; (if (eq t (compare-strings (car comps) nil (length most)
+                ;; 			 most nil nil completion-ignore-case))
+                ;;     ;; Common case.
+                ;;     (length most)
+                ;; Else, use try-completion.
+                (let ((comps-prefix  (try-completion "" comps)))
+                  (and (stringp comps-prefix) (length comps-prefix)))) ;;)
                prompt nb-candidates-string prompt-rest
                prospects most-is-exact comp limit)
-          (when determ (put-text-property 0 (length determ) 'face 'icompletep-determined determ))
+          (when determ
+            (put-text-property 0 (length determ) 'face 'icompletep-determined determ))
           (if (eq most-try t)           ; (or (null (cdr comps))
               (setq prospects  ())
             (while (and comps (not limit))
