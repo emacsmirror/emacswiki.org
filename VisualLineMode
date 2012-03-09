@@ -25,9 +25,13 @@ The following code convinces visual-line-mode to wrap at a given column by expan
 
     (defun set-visual-wrap-column (new-wrap-column &optional buffer)
       "Force visual line wrap at NEW-WRAP-COLUMN in BUFFER (defaults
-      to current buffer) by setting the right-hand margin on every
-      window that displays BUFFER.  A value of NIL for
-      NEW-WRAP-COLUMN disables this behavior."
+    to current buffer) by setting the right-hand margin on every
+    window that displays BUFFER.  A value of NIL or 0 for
+    NEW-WRAP-COLUMN disables this behavior."
+      (interactive (list (read-number "New visual wrap column, 0 to disable: " (or visual-wrap-column fill-column 0))))
+      (if (and (numberp new-wrap-column)
+               (zerop new-wrap-column))
+        (setq new-wrap-column nil))
       (with-current-buffer (or buffer (current-buffer))
         (visual-line-mode t)
         (set (make-local-variable 'visual-wrap-column) new-wrap-column)
@@ -47,9 +51,9 @@ The following code convinces visual-line-mode to wrap at a given column by expan
                (current-width (window-width))
                (current-available (+ current-width right-margin)))
           (if (<= current-available visual-wrap-column)
-            (set-window-margins nil nil)
-            (set-window-margins nil nil (- current-available visual-wrap-column))))))
-
+            (set-window-margins nil (car current-margins))
+            (set-window-margins nil (car current-margins)
+                                (- current-available visual-wrap-column))))))
 [new]
 
 See also LineWrap.
