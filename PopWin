@@ -16,6 +16,33 @@ Please visit a project page for downloading and full documentation.
 
 https://github.com/m2ym/popwin-el
 
+== popwin and special-display-function/special-display-regexps ==
+
+popwin disables the normal <code>special-display-function/special-display-regexps</code> functionality: E.g. when you use popwin just for display-buffer-function</code>, but you set as well <code>special-display-regexps</code> to "("\\*info\\*.*"), info buffers aren't created in their one frame anymore.
+
+My workaround is an in-between <code>display-buffer</code> function:
+
+    ;;
+    ;; to restore special-display-function with pop-win.el
+    ;;
+    (defun leo-popwin:display-buffer (buffer-or-name &optional not-this-window)
+    "Display BUFFER-OR-NAME, if possible, in a popup window, or as
+    usual. This function can be used as a value of
+    `display-buffer-function'."
+    (interactive "BDisplay buffer:\n")
+    ;; `special-display-p' returns either t or a list of frame
+    ;; parameters to pass to `special-display-function'.
+    (let ((pars (special-display-p name-of-buffer)))
+    (if (and pars special-display-function)
+    (funcall special-display-function
+    buffer (if (listp pars) pars))
+    (popwin:display-buffer buffer-or-name not-this-window))))
+
+    (setq display-buffer-function 'leo-popwin:display-buffer)
+
+This is certainly not perfect, but does the job for now. [[halloleo]] 2012-03-09 23:35 UTC
+
+
 ---
 
 This doesn't seem to work when using split buffer with one buffer being ERC. Clue? -- [new:RyanDavis:2011-03-08 10:53 UTC]
