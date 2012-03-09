@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Sat Mar  3 16:24:38 2012 (-0800)
+;; Last-Updated: Fri Mar  9 15:09:25 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 8063
+;;     Update #: 8103
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-chg.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -85,6 +85,14 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd1.el'")
 ;;
+;; 2012/03/09 dadams
+;;     icicle-bookmarked-file-list: Call bookmark-maybe-load-default-file.
+;;     icicle-customize-apropos(-faces|-groups|-options(-of-type)), icicle-(re)set-option-to-(t|nil),
+;;       icicle-toggle-option, icicle-increment-(option|variable), icicle-doremi-increment-variable+,
+;;       icicle-command-abbrev, icicle-execute-named-keyboard-macro, icicle-buffer-list:
+;;         When Icomplete mode, use normal PRED, not *-must-pass-after-match-predicate.
+;;     icicle-execute-extended-command: Likewise - redid it.
+;;     icicle-customize-apropos-options: If prefix arg, still use user-variable-p also (or).
 ;; 2012/03/03 dadams
 ;;     icicle-execute-extended-command:
 ;;       If in Icomplete mode, use the normal PRED arg, instead of *-must-pass-after-match-predicate.
@@ -552,6 +560,13 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd2.el'")
 ;;
+;; 2012/03/09 dadams
+;;     icicle-untag-a-file, icicle-find-file-(all|some)-tags(-regexp)(-other-window), icicle-where-is,
+;;       icicle-apropos-(variable|option|function|command), icicle-apply,
+;;       icicle-save-string-to-variable, icicle-choose-candidate-of-type,
+;;       icicle-read-var-value-satisfying, icicle-read-args-for-set-completion-methods:
+;;         When Icomplete mode, use normal PRED, not *-must-pass-after-match-predicate.
+;;     icicle-find-file-handle-bookmark(-other-window): Use bmkp-find-file(-other-window) as action fn.
 ;; 2012/02/26 dadams
 ;;     Update to reflect Bookmark+ changes (bindings etc.).
 ;;       Added icicle-find-file-handle-bookmark(-other-window), as nontagging C-f commands.
