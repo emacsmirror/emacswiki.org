@@ -29,3 +29,7 @@ Put Lisp:jl-smime.el and Lisp:jl-encrypt.el into your load-path and add the foll
     (load "jl-smime")
 }}}
 In general, no further configuration should be necessary.
+
+
+----
+CategoryGnus SigningMail EncryptingMail
