@@ -273,26 +273,66 @@ Reflected your comment. thank you. -- [[rubikitch]]
 I get an error about `defvaralias' in Emacs 24.  Requiring
 SkeletonMode fixes it.
 
-I've also found that the `require' for cl.el is spurious.  I've
-removed it and haven't seen an error after using Oddmuse Mode for 2
-years with it removed.  Emacs would probably complain during byte
-compilation if it actually was. -- AaronHawley
+I've also put the `require' for cl.el in an `eval-when-compile' after making removing a few cl-isms.  -- AaronHawley
 
 {{{
---- oddmuse.el	2009-06-01 15:02:55.000000000 -0400
+--- oddmuse.el	2009-02-22 18:22:58.000000000 -0400
 +++ oddmuse.el	2012-02-13 15:37:42.867008300 -0500
-@@ -125,9 +125,9 @@
+@@ -125,8 +125,8 @@
  ;;
  
  ;;; Code:
 -(require 'cl)
--(eval-when-compile  (require 'sgml-mode) (require 'skeleton))
-+(eval-when-compile  (require 'sgml-mode))
 +(require 'skeleton)
+-(eval-when-compile  (require 'sgml-mode) (require 'skeleton))
++(eval-when-compile  (require 'sgml-mode) (require 'cl))
  (require 'url)
  
  (defcustom oddmuse-directory "~/emacs/oddmuse"
-   "Directory to store oddmuse pages."
+@@ -395,7 +395,7 @@
+       (let* ((triplet (assoc wiki oddmuse-wikis))
+              (url (cadr triplet))
+              (oddmuse-page-name pagename)
+-             (coding (caddr triplet))
++             (coding (nth 2 triplet))
+              (buf (find-file-noselect
+                    (concat oddmuse-directory "/" wiki "/" pagename))))
+         (setq url (oddmuse-format-url url oddmuse-get coding))
+@@ -490,7 +490,7 @@
+   (let* ((triplet (assoc oddmuse-wiki oddmuse-wikis))
+          (url (cadr triplet))
+          (oddmuse-minor (if oddmuse-minor "on" "off"))
+-         (coding (caddr triplet))
++         (coding (nth 2 triplet))
+          (check-url (oddmuse-format-url url oddmuse-revision-check coding)))
+     (when (y-or-n-p (oddmuse-revision-check-prompt check-url coding))
+       (let ((text (buffer-string)))
+@@ -511,7 +511,7 @@
+   (let* ((wiki (or wiki-arg
+                    (completing-read "Wiki: " oddmuse-wikis nil t oddmuse-wiki)))
+          (url (cadr (assoc wiki oddmuse-wikis)))
+-         (coding (caddr (assoc wiki oddmuse-wikis)))
++         (coding (nth 2(assoc wiki oddmuse-wikis)))
+          table)
+     (setq url (oddmuse-format-url url oddmuse-index-get coding))
+     (prog1
+@@ -559,7 +559,6 @@
+       (oddmuse-edit wiki pagename)))
+   (erase-buffer)
+   (insert "DeletedPage")
+-  (setq oddmuse-dangerous-p t)
+   (oddmuse-post (concat "DeletedPage - reason: " summary)))
+ 
+ ;;;###autoload
+@@ -582,7 +581,7 @@
+ (defun oddmuse-url (wiki pagename)
+   "Get the URL of oddmuse wiki."
+   (condition-case v
+-      (concat (or (cadr (assoc wiki oddmuse-wikis)) (error)) "/" pagename)
++      (concat (or (cadr (assoc wiki oddmuse-wikis)) (error nil)) "/" pagename)
+     (error nil)))
+ 
+ ;; (oddmuse-url "EmacsWiki" "OddmuseMode")
 }}}
 
 === Read Wiki name ===
