@@ -1,0 +1,54 @@
+[https://www.gnu.org/software/emacs/manual/html_node/message/Security.html Gnus supports GnuPG]
+via the insertion of so-called MML secure tags, which contain encryption
+instructions to be performed before a message is sent.  However, in the past I
+sent plaintext e-mails (more than once, I'm afraid) that really should have
+been encrypted ones.  To prevent myself from forgetting to encrypt e-mails
+again, I wrote DefaultEncrypt.
+
+DefaultEncrypt aims for automatic insertion of MML secure tags into messages
+if public keys (either GnuPG public keys or S/MIME certificates) for
+all recipients are available.  In addition, before a message is sent,
+the user is asked if plaintext should really be sent unencryptedly when
+public keys for all recipients are available.
+This works by rebinding the standard keys for message sending
+(`C-c C-c'} and `C-c C-s') as well as by adding a check
+to `gnus-message-setup-hook'.
+
+==Installation==
+Put Lisp:jl-encrypt.el into your load-path and add the following to ~/.emacs.
+{{{
+    (require 'jl-encrypt)
+}}}
+In general, no further configuration should be necessary.
+
+==Sanity check==
+Without any further configuration, send a GnuPG encrypted e-mail to
+yourself as follows.  Enter your own e-mail address after To, choose some
+Subject, and enter `M-x spook' in the body, which will insert suitable
+text.  Then press `C-c C-c' to send the e-mail as usual (forgetting to
+encrypt).  If you own a GnuPG public for the To e-mail address then you
+will be asked whether you really want to send that e-mail as plaintext.
+Answering `no' will insert an MML secure tag for you.  Press `C-c C-c'
+again, and an encrypted e-mail will be sent.  If you receive that e-mail
+with garbled attachments read the comment for `jl-gpg-without-mime'.
+
+==Comment for `jl-gpg-without-mime'==
+Control whether MML encryption should use MIME Security with OpenPGP.
+RFC 3156 specifies how OpenPGP (and, thus, GnuPG) and MIME work together.
+In Gnus, `mml-secure-message-encrypt-pgpmime' follows that standard.
+An alternative is `mml-secure-message-encrypt-pgp', which represents a
+less powerful approach.  If you (like me in the past) happen to send
+e-mails in an environment using broken M$ SMTP servers, then your
+beautiful e-mails produced by `mml-secure-message-encrypt-pgpmime',
+following RFC 3156, will be corrupted along the way.  E.g., the SMTP
+server at my department throws away the e-mail's Content-Type
+`multipart/encrypted' and its `protocol="application/pgp-encrypted"'
+and inserts a meaningless `multipart/mixed' one.  Thus, the recipient
+will have a hard time figuring out what the e-mail's strange attachments
+are good for.  FUBAR.
+
+If this variable is set to nil (the default) then your e-mails are built
+according to RFC 3156.  I suggest that you send an encrypted e-mail to
+yourself.  Complain to your IT department if you receive garbled
+attachments.  Then set this variable to non-nil, while they are setting
+up a reasonable SMTP server.
