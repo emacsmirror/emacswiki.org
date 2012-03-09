@@ -6,5 +6,23 @@ markdown-mode version 1.8.1 was released on August 15, 2011.  Release notes can 
 
 http://jblevins.org/projects/markdown-mode/rev-1-8-1
 
+== Customization ==
+
+It can be useful to enforce certain static constraints on Markdown files; for example, the heavy use of brackets and parentheses in link syntax mean it is easy to omit a closing parentheses, especially if one is linking something inside a natural language digression (where one will have 2 or more closing parentheses). Balance can be checked with [[DebuggingParentheses|'check-parens']], and it can be automatically invoked after file saves with the usual hooks, eg.
+
+    (add-hook 'markdown-mode-hook
+            (lambda ()
+              (when buffer-file-name
+                (add-hook 'after-save-hook
+                          'check-parens
+                          nil t))))
+
+A similar logic applies to double-quotes, especially if one is frequently adding tooltips to links. 'check-parens' works off the buffer syntax table, and double-quotes are not special to markdown-mode, so one must do a more invasive hook:
+
+    ; warning, may yield wrong results in edge-cases like single double-quotes in code block.
+    ; Use only if your files usually are balanced w/r/t double-quotes
+    ; <http://stackoverflow.com/questions/9527593/customizing-check-parens-to-check-double-quotes>
+    (add-hook 'markdown-mode-hook (lambda () (modify-syntax-entry ?\" "\"" markdown-mode-syntax-table)))
+
 ----
 MarkupModes
