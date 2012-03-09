@@ -55,3 +55,6 @@ according to RFC 3156.  I suggest that you send an encrypted e-mail to
 yourself.  Complain to your IT department if you receive garbled
 attachments.  Then set this variable to non-nil, while they are setting
 up a reasonable SMTP server.
+
+----
+CategoryGnus SigningMail EncryptingMail
