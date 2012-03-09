@@ -56,5 +56,17 @@ yourself.  Complain to your IT department if you receive garbled
 attachments.  Then set this variable to non-nil, while they are setting
 up a reasonable SMTP server.
 
+==Configuration for signatures==
+The variable `jl-encrypt-without-signature' (default value t) controls
+whether MML encryption tags should also produce signatures.
+Set to nil to produce an MML tag that signs in addition to encryption.
+In general, I'm not interested in signing my e-mails.  In contrast, I
+believe that 
+[http://www.cypherpunks.ca/otr/ off-the-record communication]
+aims for the correct set of security goals:
+Confidentiality with perfect forward secrecy, integrity,
+and repudiability.
+Unfortunately, that's not an option for e-mail.
+
 ----
 CategoryGnus SigningMail EncryptingMail
