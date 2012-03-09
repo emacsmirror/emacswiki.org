@@ -178,6 +178,7 @@ But i think what it very useful function for everyone.
 * I'd like Emacs to support true word wrap and other "soft" formatting. i.e. formatting that applies to the display, but not the file. For example, VisualSlickEdit has a soft indent mode where a single long line of code in the file is displayed not only word wrapped, but also indented appropriately.  [Try LongLines]
 
 ** True word-wrap has been partially given to you (the indenting part of it, not so much).  See the instructions under LineWrap.
+** I've written a proof-of-concept implementation of SoftIndent --JamesWright
 
 * I'd like to see emacs (optionally) allow a multiline modeline, which
   automatically resizes to accomodate all text, just as the echo area
