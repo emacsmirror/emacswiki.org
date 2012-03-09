@@ -1,14 +1,10 @@
-== Focus and the Minibuffer ==
-
 Sometimes, I click in another [[window]] while the [[MiniBuffer]] is active, removing focus from the minibuffer window.  Because the minibuffer window is so narrow, it's difficult to click inside it with the mouse. And most of the time I'd like to cancel the minibuffer action rather than continue it.  This page defines [[command]]s you can bind to [[key]]s to return the focus to the minibuffer. -- [[jpkotta]]
 
 If all you want to do is cancel the minibuffer action, you can also use the command `abort-recursive-edit' which by default is bound to `##C-]##'.
 
-=== Refocus to Quit Minibuffer ===
-
 This command quits the minibuffer no matter where the current focus is.
 
-<pre>
+{{{
 (defun minibuffer-quit ()
   "Quit the minibuffer command, even when the minibuffer loses focus."
   (interactive)
@@ -17,14 +13,11 @@ This command quits the minibuffer no matter where the current focus is.
       (select-window (minibuffer-window))
       (keyboard-escape-quit))))
 (global-set-key (kbd "C-M-g") 'minibuffer-quit)
-</pre>
-
-
-=== Refocus Minibuffer ===
+}}}
 
 This command returns the focus to the minibuffer, no matter which window is currently selected.
 
-<pre>
+{{{
 (defun minibuffer-refocus ()
   "Refocus the minibuffer if it is waiting for input."
   (interactive)
@@ -32,10 +25,35 @@ This command returns the focus to the minibuffer, no matter which window is curr
     (message "") ;; clear the echo area, in case it overwrote the minibuffer
     (select-window (minibuffer-window))))
 (global-set-key (kbd "C-M-g") 'minibuffer-refocus)
-</pre>
+}}}
 
+[new]
+I agree a command for switching to the minibuffer can be more useful than iterations of `C-x o' (`other-window').  Especially since, I have `enable-recursive-minibuffers' turned on.  Here's what's in my .emacs:
 
+{{{
+(defun ash-switch-to-minibuffer ()
+  "Switch to minibuffer window."
+  (interactive)
+  (if (active-minibuffer-window)
+      (select-window (active-minibuffer-window))
+    (error "Minibuffer is not active")))
 
+(global-set-key "\C-cm" 'ash-switch-to-minibuffer)
+}}}
+
+This could be used to implement the other command.
+
+{{{
+(defun ash-minibuffer-quit ()
+  "Quit minibuffer if active."
+  (interactive)
+  (ash-switch-to-minibuffer)
+  (abort-recursive-edit))
+
+(global-set-key "\C-cg" 'ash-minibuffer-quit)
+}}}
+
+I'm not sure the point of a `minibuffer-quit' though.  As you mentioned, `C-]' seems good enough.  Are there scenarios where it is not sufficient? -- AaronHawley
 
 ----
 CategoryWindows
