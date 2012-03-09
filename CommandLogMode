@@ -3,7 +3,7 @@ by MichaelWeber can be used to demo Emacs to an audience.  When
 activated, keystrokes get logged into a designated buffer, along
 with the command bound to them.
 
-[[LeWang]] I've forked this on github and made it minor-mode and global-minor-mode for it:
+[[LeWang]] I've forked this on github and made minor-mode and global-minor-mode for it:
 
 [https://github.com/lewang/command-log-mode command-log-mode]
 
