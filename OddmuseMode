@@ -273,7 +273,7 @@ Reflected your comment. thank you. -- [[rubikitch]]
 I get an error about `defvaralias' in Emacs 24.  Requiring
 SkeletonMode fixes it.
 
-I've also put the `require' for cl.el in an `eval-when-compile' after making removing a few cl-isms.  -- AaronHawley
+I've also put the `require' for cl.el in an `eval-when-compile' after removing a few unnecessary cl-isms.  I haven't seen an error after using Oddmuse Mode for a month with this change.  Emacs would probably complain during byte compilation if a require 'cl was needed at runtime.  -- AaronHawley
 
 {{{
 --- oddmuse.el	2009-02-22 18:22:58.000000000 -0400
