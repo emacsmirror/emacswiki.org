@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Sat Mar  3 16:25:37 2012 (-0800)
+;; Last-Updated: Fri Mar  9 14:37:03 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 23302
+;;     Update #: 23388
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-cmd1.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -1699,7 +1699,7 @@ This is an Icicles command - see command `icicle-mode'."
 
 ;;;###autoload
 (defun icicle-customize-apropos (regexp &optional all)
-  "Customize all user options matching REGEXP.
+  "Customize all user preferences matching REGEXP.
 If ALL is `options', include only options.
 If ALL is `faces', include only faces.
 If ALL is `groups', include only groups.
@@ -1710,17 +1710,19 @@ Use `S-TAB', [next], and [prior], to match regexp input - this lets
 you see what items will be available in the customize buffer."
   (interactive
    (let* ((pref-arg  current-prefix-arg)
-          (icicle-must-pass-after-match-predicate
-           #'(lambda (s)
-               (setq s  (intern s))
-               (or (get s 'custom-group)
-                   (custom-facep s)
-                   (and (boundp s) (or (get s 'saved-value)
-                                       (custom-variable-p s)
-                                       (if (null pref-arg)
-                                           (user-variable-p s)
-                                         (get s 'variable-documentation))))))))
-     (list (completing-read "Customize (regexp): " obarray nil nil nil 'regexp-history)
+          (pred                                    (lambda (s)
+                                                     (unless (symbolp s)  (setq s  (intern s)))
+                                                     (or (get s 'custom-group)
+                                                         (custom-facep s)
+                                                         (and (boundp s)
+                                                              (or (get s 'saved-value)
+                                                                  (custom-variable-p s)
+                                                                  (if (null pref-arg)
+                                                                      (user-variable-p s)
+                                                                    (get s 'variable-documentation)))))))
+          (icompletep                              (and (boundp 'icomplete-mode)  icomplete-mode))
+          (icicle-must-pass-after-match-predicate  (and (not icompletep)  pred)))
+     (list (completing-read "Customize (regexp): " obarray (and icompletep pred) nil nil 'regexp-history)
            pref-arg)))
   (let ((found  nil))
     (mapatoms #'(lambda (symbol)
@@ -1765,8 +1767,13 @@ you see what items will be available in the customize buffer."
 Use `S-TAB', [next], and [prior], to match regexp input - this lets
 you see what items will be available in the customize buffer."
   (interactive
-   (let ((icicle-must-pass-after-match-predicate #'(lambda (s) (custom-facep (intern s)))))
-     (list (completing-read "Customize faces (regexp): " obarray nil nil nil 'regexp-history))))
+   (let* ((pred                                    #'(lambda (s)
+                                                       (unless (symbolp s) (setq s  (intern s)))
+                                                       (custom-facep s)))
+          (icompletep                              (and (boundp 'icomplete-mode)  icomplete-mode))
+          (icicle-must-pass-after-match-predicate  (and (not icompletep)  pred)))
+     (list (completing-read "Customize faces (regexp): " obarray (and icompletep pred)
+                            nil nil 'regexp-history))))
   (customize-apropos regexp 'faces))
 
 
@@ -1784,8 +1791,13 @@ you see what items will be available in the customize buffer."
 Use `S-TAB', [next], and [prior], to match regexp input - this lets
 you see what items will be available in the customize buffer."
   (interactive
-   (let ((icicle-must-pass-after-match-predicate  #'(lambda (s) (get (intern s) 'custom-group))))
-     (list (completing-read "Customize groups (regexp): " obarray nil nil nil 'regexp-history))))
+   (let* ((pred                                    #'(lambda (s)
+                                                       (unless (symbolp s) (setq s  (intern s)))
+                                                       (get s 'custom-group)))
+          (icompletep                              (and (boundp 'icomplete-mode)  icomplete-mode))
+          (icicle-must-pass-after-match-predicate  (and (not icompletep)  pred)))
+     (list (completing-read "Customize groups (regexp): " obarray (and icompletep pred)
+                            nil nil 'regexp-history))))
   (customize-apropos regexp 'groups))
 
 
@@ -1805,16 +1817,19 @@ With prefix argument, include options which are not user-settable.
 Use `S-TAB', [next], and [prior], to match regexp input - this lets
 you see what items will be available in the customize buffer."
   (interactive
-   (let* ((pref-arg  current-prefix-arg)
-          (icicle-must-pass-after-match-predicate
-           #'(lambda (s)
-               (setq s  (intern s))
-               (and (boundp s) (or (get s 'saved-value)
-                                   (custom-variable-p s)
-                                   (if (null pref-arg)
-                                       (user-variable-p s)
-                                     (get s 'variable-documentation)))))))
-     (list (completing-read "Customize options (regexp): " obarray nil nil nil 'regexp-history)
+   (let* ((pref-arg                                current-prefix-arg)
+          (pred                                    `(lambda (s)
+                                                     (unless (symbolp s) (setq s  (intern s)))
+                                                     (and (boundp s)
+                                                      (or (get s 'saved-value)
+                                                       (custom-variable-p s)
+                                                       (user-variable-p s)
+                                                       (and ',pref-arg
+                                                        (get s 'variable-documentation))))))
+          (icompletep                              (and (boundp 'icomplete-mode)  icomplete-mode))
+          (icicle-must-pass-after-match-predicate  (and (not icompletep)  pred)))
+     (list (completing-read "Customize options (regexp): " obarray (and icompletep pred)
+                            nil nil 'regexp-history)
            pref-arg)))
   (customize-apropos regexp (or arg 'options)))
 
@@ -1844,7 +1859,7 @@ you see which options will be available in the customize buffer."
   (interactive
    (let ((typ       (car (condition-case err
                              (read-from-string
-                              (let ((types ()))
+                              (let ((types  ()))
                                 (mapatoms
                                  #'(lambda (cand)
                                      (when (custom-variable-p cand)
@@ -1856,20 +1871,23 @@ you see which options will be available in the customize buffer."
                                                  nil nil nil nil "nil")))
                            (end-of-file (error "No such custom type")))))
          (pref-arg  current-prefix-arg))
-     (list typ  (let ((icicle-must-pass-after-match-predicate
-                       #'(lambda (s)
-                           (setq s  (intern s))
-                           (and (boundp s)
-                                (or (not (fboundp 'indirect-variable)) (eq (indirect-variable s) s))
-                                (or (get s 'saved-value) (custom-variable-p s))
-                                (or (not typ) ; `typ' = nil means use all types.
-                                    (if pref-arg
-                                        (condition-case nil
-                                            (icicle-var-is-of-type-p s (list typ))
-                                          (error nil))
-                                      (equal (get s 'custom-type) typ)))))))
+     (list typ  (let* ((pred
+                        #'(lambda (s)
+                            (unless (symbolp s) (setq s  (intern s)))
+                            (and (boundp s)
+                                 (or (not (fboundp 'indirect-variable)) (eq (indirect-variable s) s))
+                                 (or (get s 'saved-value) (custom-variable-p s))
+                                 (or (not typ) ; `typ' = nil means use all types.
+                                     (if pref-arg
+                                         (condition-case nil
+                                             (icicle-var-is-of-type-p s (list typ))
+                                           (error nil))
+                                       (equal (get s 'custom-type) typ))))))
+                       (icompletep                              (and (boundp 'icomplete-mode)
+                                                                     icomplete-mode))
+                       (icicle-must-pass-after-match-predicate  (and (not icompletep)  pred)))
                   (completing-read "Customize options matching (regexp): "
-                                   obarray nil nil nil 'regexp-history)))))
+                                   obarray (and icompletep pred) nil nil 'regexp-history)))))
   (custom-buffer-create (custom-sort-items
                          (mapcar #'(lambda (s) (list (intern s) 'custom-variable))
                                  icicle-completion-candidates)
@@ -2539,19 +2557,19 @@ then customize option `icicle-top-level-key-bindings'." ; Doc string
           (if current-prefix-arg
               (format " (prefix %d)" (prefix-numeric-value current-prefix-arg))
             ""))
-  obarray (and (boundp 'icomplete-mode)  icomplete-mode #'commandp) t nil
-  'extended-command-history nil nil
+  obarray (and icompletep pred) t nil 'extended-command-history nil nil
   (;; Bindings
    (last-command                            last-command) ; Save and restore the last command.
    (use-file-dialog                         nil) ; `mouse-2' in `*Completions*' won't use dialog box.
    (alt-fn                                  nil)
    (icicle-orig-must-pass-after-match-pred  icicle-must-pass-after-match-predicate)
-   ;; Icomplete mode needs the ordinary, eager predicate.  But if Icomplete mode is off it is better to
-   ;; filter for a command after the user-input filtering (fewer symbols tested with `commandp').
-   (icicle-must-pass-after-match-predicate  (and (not (and (boundp 'icomplete-mode)  icomplete-mode))
-                                                 #'(lambda (c) (commandp (intern c)))))
-   (icicle-candidate-alt-action-fn
-    (or icicle-candidate-alt-action-fn (setq alt-fn  (icicle-alt-act-fn-for-type "command"))))
+   (pred                                    #'(lambda (c)
+                                                (unless (symbolp c) (setq c  (intern c)))
+                                                (commandp c)))
+   (icompletep                              (and (boundp 'icomplete-mode)  icomplete-mode))
+   (icicle-must-pass-after-match-predicate  (and (not icompletep)  pred))
+   (icicle-candidate-alt-action-fn          (or icicle-candidate-alt-action-fn
+                                                (setq alt-fn  (icicle-alt-act-fn-for-type "command"))))
    (icicle-all-candidates-list-alt-action-fn ; M-|'
     (or icicle-all-candidates-list-alt-action-fn alt-fn (icicle-alt-act-fn-for-type "command")))
    icicle-new-last-cmd)                 ; Set in `icicle-execute-extended-command-1'.
@@ -2661,7 +2679,8 @@ need match only a prefix.  For example, nil means that abbreviation
 `ff' also matches `find-file-other-window' and `fg' also matches
 `find-grep-dired'."                     ; Doc string
   icicle-command-abbrev-action          ; Function to perform the action
-  prompt obarray nil nil nil 'icicle-command-abbrev-history nil nil ; `completing-read' args
+  prompt obarray (and icompletep pred) nil nil ; `completing-read' args
+  'icicle-command-abbrev-history nil nil
   ((prompt                                  "Command or abbrev: ")
    (last-command                            last-command) ; Save and restore the last command.
    (icicle-sort-comparer                    'icicle-command-abbrev-used-more-p) ; Bindings.
@@ -2673,7 +2692,11 @@ need match only a prefix.  For example, nil means that abbreviation
    (use-file-dialog                         nil) ; `mouse-2' in `*Completions*' won't use dialog box.
    (alt-fn                                  nil)
    (icicle-orig-must-pass-after-match-pred  icicle-must-pass-after-match-predicate)
-   (icicle-must-pass-after-match-predicate  #'(lambda (c) (commandp (intern c))))
+   (pred                                    #'(lambda (c)
+                                                (unless (symbolp c) (setq c  (intern c)))
+                                                (commandp c)))
+   (icompletep                              (and (boundp 'icomplete-mode)  icomplete-mode))
+   (icicle-must-pass-after-match-predicate  (and (not icompletep)  pred))
    (icicle-candidate-alt-action-fn
     (or icicle-candidate-alt-action-fn (setq alt-fn  (icicle-alt-act-fn-for-type "command"))))
    (icicle-all-candidates-list-alt-action-fn ; M-|'
@@ -2783,14 +2806,17 @@ If ABBREV-OR-CMD is not an abbreviation or a command, raise an error."
           (if current-prefix-arg
               (format " (prefix %d)" (prefix-numeric-value current-prefix-arg))
             ""))
-  obarray nil t nil 'icicle-kmacro-history nil nil
+  obarray (and icompletep pred) t nil 'icicle-kmacro-history nil nil
   ((last-command                            last-command) ; Save and restore the last command.
    (alt-fn                                  nil)
    (icicle-orig-must-pass-after-match-pred  icicle-must-pass-after-match-predicate)
-   (icicle-must-pass-after-match-predicate
-    #'(lambda (fn) (setq fn  (intern fn)) (and (commandp fn) (arrayp (symbol-function fn)))))
-   (icicle-candidate-alt-action-fn
-    (or icicle-candidate-alt-action-fn (setq alt-fn  (icicle-alt-act-fn-for-type "command"))))
+   (pred                                    #'(lambda (fn)
+                                                (unless (symbolp fn) (setq fn  (intern fn)))
+                                                (and (commandp fn)  (arrayp (symbol-function fn)))))
+   (icompletep                              (and (boundp 'icomplete-mode)  icomplete-mode))
+   (icicle-must-pass-after-match-predicate  (and (not icompletep)  pred))
+   (icicle-candidate-alt-action-fn          (or icicle-candidate-alt-action-fn
+                                                (setq alt-fn  (icicle-alt-act-fn-for-type "command"))))
    (icicle-all-candidates-list-alt-action-fn ; M-|'
     (or icicle-all-candidates-list-alt-action-fn alt-fn (icicle-alt-act-fn-for-type "command")))))
 
@@ -2856,22 +2882,26 @@ candidates, as follows:
  - With a non-negative prefix arg, all user options are candidates.
  - With a negative prefix arg, all variables are candidates." ; Doc string
   (lambda (opt) (set (intern opt) t) (message "`%s' is now `t'" opt)) ; Action function
-  "Set option to t: " obarray nil 'must-confirm nil ; `completing-read' args
+  "Set option to t: " obarray (and icompletep pred) 'must-confirm nil ; `completing-read' args
   (if (boundp 'variable-name-history) 'variable-name-history 'icicle-variable-name-history) nil nil
-  ((enable-recursive-minibuffers          t) ; Bindings
-   (icicle-use-candidates-only-once-flag  t)
-   (alt-fn                                nil)
-   (icicle-must-pass-after-match-predicate
+  ((enable-recursive-minibuffers            t) ; Bindings
+   (icicle-use-candidates-only-once-flag    t)
+   (alt-fn                                  nil)
+   (pred
     (cond ((and current-prefix-arg (wholenump (prefix-numeric-value current-prefix-arg)))
            #'(lambda (x)
-               (setq x  (intern x)) (and (boundp x) (user-variable-p x) (eq nil (symbol-value x)))))
+               (unless (symbolp x) (setq x  (intern x)))
+               (and (boundp x) (user-variable-p x) (eq nil (symbol-value x)))))
           (current-prefix-arg
            #'(lambda (x)
-               (setq x  (intern x)) (and (boundp x) (eq nil (symbol-value x)))))
+               (unless (symbolp x) (setq x  (intern x)))
+               (and (boundp x) (eq nil (symbol-value x)))))
           (t
            #'(lambda (x)
-               (setq x  (intern x))
+               (unless (symbolp x) (setq x  (intern x)))
                (and (boundp x) (icicle-binary-option-p x) (eq nil (symbol-value x)))))))
+   (icompletep                              (and (boundp 'icomplete-mode)  icomplete-mode))
+   (icicle-must-pass-after-match-predicate  (and (not icompletep)  pred))
    (icicle-candidate-alt-action-fn
     (or icicle-candidate-alt-action-fn (setq alt-fn  (icicle-alt-act-fn-for-type "option"))))
    (icicle-all-candidates-list-alt-action-fn ; M-|'
@@ -2977,16 +3007,21 @@ By default, the set of completion candidates is limited to user
 options.  Note: it is *not* limited to binary and list options.
 With a prefix arg, all variables are candidates." ; Doc string
   (lambda (opt) (set (intern opt) nil) (message "`%s' is now `nil'" opt)) ; Action function
-  "Clear option (set it to nil): " obarray nil t nil ; `completing-read' args
+  "Clear option (set it to nil): " obarray (and icompletep pred) t nil ; `completing-read' args
   (if (boundp 'variable-name-history) 'variable-name-history 'icicle-variable-name-history)
   nil nil
-  ((enable-recursive-minibuffers          t) ; Bindings
-   (icicle-use-candidates-only-once-flag  t)
-   (alt-fn                                nil)
-   (icicle-must-pass-after-match-predicate
-    (if current-prefix-arg
-        #'(lambda (x) (setq x  (intern x)) (and (boundp x) (symbol-value x)))
-      #'(lambda (x) (setq x  (intern x)) (and (boundp x) (user-variable-p x) (symbol-value x)))))
+  ((enable-recursive-minibuffers            t) ; Bindings
+   (icicle-use-candidates-only-once-flag    t)
+   (alt-fn                                  nil)
+   (pred                                    (if current-prefix-arg
+                                                #'(lambda (x)
+                                                    (unless (symbolp x) (setq x  (intern x)))
+                                                    (and (boundp x) (symbol-value x)))
+                                              #'(lambda (x)
+                                                  (unless (symbolp x) (setq x  (intern x)))
+                                                  (and (boundp x) (user-variable-p x) (symbol-value x)))))
+   (icompletep                              (and (boundp 'icomplete-mode)  icomplete-mode))
+   (icicle-must-pass-after-match-predicate  (and (not icompletep)  pred))
    (icicle-candidate-alt-action-fn
     (or icicle-candidate-alt-action-fn (setq alt-fn  (icicle-alt-act-fn-for-type "option"))))
    (icicle-all-candidates-list-alt-action-fn ; M-|'
@@ -3011,15 +3046,18 @@ candidates, as follows:
     (let ((sym  (intern opt)))
       (set sym (not (eval sym)))
       (message "`%s' is now `%s'" opt (icicle-propertize (eval sym) 'face 'icicle-msg-emphasis))))
-  "Toggle value of option: " obarray nil 'must-confirm nil ; `completing-read' args
+  "Toggle value of option: " obarray (and icompletep pred) 'must-confirm nil ; `completing-read' args
   (if (boundp 'variable-name-history) 'variable-name-history 'icicle-variable-name-history) nil nil
-  ((enable-recursive-minibuffers  t)    ; Bindings
-   (alt-fn                        nil)
-   (icicle-must-pass-after-match-predicate
+  ((enable-recursive-minibuffers            t) ; Bindings
+   (alt-fn                                  nil)
+   (pred
     (cond ((and current-prefix-arg (wholenump (prefix-numeric-value current-prefix-arg)))
-           #'(lambda (c) (user-variable-p (intern c))))
-          (current-prefix-arg #'(lambda (c) (boundp (intern c))))
-          (t                  #'(lambda (c) (icicle-binary-option-p (intern c))))))
+           #'(lambda (c) (unless (symbolp c) (setq c  (intern c))) (user-variable-p c)))
+          (current-prefix-arg #'(lambda (c) (unless (symbolp c) (setq c  (intern c))) (boundp c)))
+          (t                  #'(lambda (c)
+                                  (unless (symbolp c) (setq c  (intern c))) (icicle-binary-option-p c)))))
+   (icompletep                              (and (boundp 'icomplete-mode)  icomplete-mode))
+   (icicle-must-pass-after-match-predicate  (and (not icompletep)  pred))
    (icicle-candidate-alt-action-fn
     (or icicle-candidate-alt-action-fn (setq alt-fn  (icicle-alt-act-fn-for-type "option"))))
    (icicle-all-candidates-list-alt-action-fn ; M-|'
@@ -3041,13 +3079,16 @@ This command needs library `doremi.el'." ; Doc string
           (icicle-must-pass-after-match-predicate  icicle-orig-must-pass-after-match-pred))
       (icicle-doremi-increment-variable+ sym (icicle-read-number "Increment (amount): ") t)
       (message "`%s' is now `%s'" opt (icicle-propertize (eval sym) 'face 'icicle-msg-emphasis))))
-  "Increment value of option: " obarray nil 'must-confirm nil ; `completing-read' args
+  "Increment value of option: " obarray (and icompletep pred) 'must-confirm nil ; `completing-read' args
   (if (boundp 'variable-name-history) 'variable-name-history 'icicle-variable-name-history) nil nil
   ((enable-recursive-minibuffers            t) ; Bindings
    (alt-fn                                  nil)
    (icicle-orig-must-pass-after-match-pred  icicle-must-pass-after-match-predicate)
-   (icicle-must-pass-after-match-predicate
-    #'(lambda (s) (memq (get (intern s) 'custom-type) '(number integer float))))
+   (pred                                    #'(lambda (s)
+                                                (unless (symbolp s) (setq s  (intern s)))
+                                                (memq (get s 'custom-type) '(number integer float))))
+   (icompletep                              (and (boundp 'icomplete-mode)  icomplete-mode))
+   (icicle-must-pass-after-match-predicate  (and (not icompletep)  pred))
    (icicle-candidate-alt-action-fn
     (or icicle-candidate-alt-action-fn (setq alt-fn  (icicle-alt-act-fn-for-type "option"))))
    (icicle-all-candidates-list-alt-action-fn ; M-|'
@@ -3067,16 +3108,21 @@ This command needs library `doremi.el'." ; Doc string
           (icicle-must-pass-after-match-predicate  icicle-orig-must-pass-after-match-pred))
       (icicle-doremi-increment-variable+ sym (icicle-read-number "Increment (amount): ") prefix-arg)
       (message "`%s' is now `%s'" var (icicle-propertize (eval sym) 'face 'icicle-msg-emphasis))))
-  "Increment value of variable: " obarray nil 'must-confirm nil ; `completing-read' args
+  "Increment value of variable: " obarray (and icompletep pred) 'must-confirm nil ; `completing-read' args
   (if (boundp 'variable-name-history) 'variable-name-history 'icicle-variable-name-history) nil nil
   ((enable-recursive-minibuffers            t) ; Bindings
    (prefix-arg                              current-prefix-arg)
    (alt-fn                                  nil)
    (icicle-orig-must-pass-after-match-pred  icicle-must-pass-after-match-predicate)
-   (icicle-must-pass-after-match-predicate
-    (if prefix-arg
-        #'(lambda (s) (memq (get (intern s) 'custom-type) '(number integer float)))
-      #'(lambda (s) (boundp (intern s)))))
+   (pred                                    (if prefix-arg
+                                                #'(lambda (s)
+                                                    (unless (symbolp s) (setq s  (intern s)))
+                                                    (memq (get s 'custom-type) '(number integer float)))
+                                              #'(lambda (s)
+                                                  (unless (symbolp s) (setq s  (intern s)))
+                                                  (boundp s))))
+   (icompletep                              (and (boundp 'icomplete-mode)  icomplete-mode))
+   (icicle-must-pass-after-match-predicate  (and (not icompletep)  pred))
    (icicle-candidate-alt-action-fn
     (or icicle-candidate-alt-action-fn
         (setq alt-fn  (icicle-alt-act-fn-for-type (if prefix-arg "option" "variable")))))
@@ -3095,16 +3141,22 @@ Interactively, you can choose VARIABLE using completion.
 With a prefix arg, only user options are available to choose from.
 Raises an error if VARIABLE's value is not a number."
   (interactive
-   (let ((symb                                      (or (and (fboundp 'symbol-nearest-point)
-                                                             (symbol-nearest-point))
-                                                        (and (symbolp (variable-at-point))
-                                                             (variable-at-point))))
-         (enable-recursive-minibuffers              t)
-         (icicle-orig-must-pass-after-match-pred    icicle-must-pass-after-match-predicate)
-         (icicle-must-pass-after-match-predicate    (if current-prefix-arg
-                                                        #'(lambda (s) (user-variable-p (intern s)))
-                                                      #'(lambda (s) (boundp (intern s))))))
-     (list (intern (completing-read "Increment variable: " obarray nil t nil nil
+   (let* ((symb                                    (or (and (fboundp 'symbol-nearest-point)
+                                                            (symbol-nearest-point))
+                                                       (and (symbolp (variable-at-point))
+                                                            (variable-at-point))))
+          (enable-recursive-minibuffers            t)
+          (icicle-orig-must-pass-after-match-pred  icicle-must-pass-after-match-predicate)
+          (pred                                    (if current-prefix-arg
+                                                       #'(lambda (s)
+                                                           (unless (symbolp s) (setq s  (intern s)))
+                                                           (user-variable-p s))
+                                                     #'(lambda (s)
+                                                         (unless (symbolp s) (setq s  (intern s)))
+                                                         (boundp s))))
+          (icompletep                              (and (boundp 'icomplete-mode)  icomplete-mode))
+          (icicle-must-pass-after-match-predicate  (and (not icompletep)  pred)))
+     (list (intern (completing-read "Increment variable: " obarray (and icompletep pred) t nil nil
                                     (and symb (symbol-name symb)) t))
            ;; Restore this before we read number, since that might use completion.
            (let ((icicle-must-pass-after-match-predicate  icicle-orig-must-pass-after-match-pred))
@@ -4094,7 +4146,7 @@ You are prompted for the FILES."
 ;;;###autoload (autoload 'icicle-bookmark-this-buffer "icicles-cmd1.el")
 (icicle-define-bookmark-command              "this-buffer")                   ; `C-x j , ,'
 ;;;###autoload (autoload 'icicle-bookmark-this-buffer-other-window "icicles-cmd1.el")
-(icicle-define-bookmark-other-window-command "this-buffer")                   ; `C-x 4 j .'
+(icicle-define-bookmark-other-window-command "this-buffer")                   ; `C-x 4 j , ,'
 ;;;###autoload (autoload 'icicle-bookmark-specific-buffers "icicles-cmd1.el")
 (icicle-define-bookmark-command              "specific-buffers" nil           ; `C-x j = b'
                                              (icicle-bookmarked-buffer-list))
@@ -4299,6 +4351,7 @@ You are prompted for the FILES."
 (defun icicle-bookmarked-file-list ()
   "`icicle-file-list', but only for bookmarked files."
   (interactive)
+  (bookmark-maybe-load-default-file)
   (let ((use-file-dialog        nil)
         (icicle-file-predicate  (lambda (file) (member (expand-file-name file) (bmkp-file-names))))
         (icicle-prompt          "Choose bookmarked file (`RET' when done): "))
@@ -4821,7 +4874,7 @@ These options, when non-nil, control candidate matching and filtering:
  `icicle-buffer-extras'             - Extra buffers to display
  `icicle-buffer-match-regexp'       - Regexp that buffers must match
  `icicle-buffer-no-match-regexp'    - Regexp buffers must not match
- `icicle-buffer-predicate'          - Predicate buffer must satisfy
+ `icicle-buffer-predicate'          - Predicate buffer names satisfy
  `icicle-buffer-sort'               - Sort function for candidates
 
 By default, Icicle mode remaps all key sequences that are normally
@@ -4887,7 +4940,7 @@ These options, when non-nil, control candidate matching and filtering:
  `icicle-buffer-extras'             - Extra buffers to display
  `icicle-buffer-match-regexp'       - Regexp that buffers must match
  `icicle-buffer-no-match-regexp'    - Regexp buffers must not match
- `icicle-buffer-predicate'          - Predicate buffer must satisfy
+ `icicle-buffer-predicate'          - Predicate buffer names satisfy
  `icicle-buffer-sort'               - Sort function for candidates
 
 For example, to show only buffers that are associated with files, set
@@ -4957,9 +5010,8 @@ the behavior."                          ; Doc string
                     (mapcar (lambda (buf) (with-current-buffer buf (list (symbol-name major-mode))))
                             icicle-bufflist))
                    nil t))))
-    (setq icicle-must-pass-after-match-predicate
-          `(lambda (buf)
-            (with-current-buffer buf (eq major-mode ',mode)))))
+    (setq icicle-must-pass-after-match-predicate  `(lambda (buf)
+                                                    (with-current-buffer buf (eq major-mode ',mode)))))
   (icicle-complete-again-update))
 
 ;;;###autoload (autoload 'icicle-buffer-other-window "icicles-cmd1.el")
@@ -5008,7 +5060,7 @@ These options, when non-nil, control candidate matching and filtering:
  `icicle-buffer-extras'             - Extra buffers to display
  `icicle-buffer-match-regexp'       - Regexp that buffers must match
  `icicle-buffer-no-match-regexp'    - Regexp buffers must not match
- `icicle-buffer-predicate'          - Predicate buffer must satisfy
+ `icicle-buffer-predicate'          - Predicate buffer names satisfy
  `icicle-buffer-sort'               - Sort function for candidates
 
 For example, to show only buffers that are associated with files, set
@@ -6510,7 +6562,7 @@ These options, when non-nil, control candidate matching and filtering:
  `icicle-buffer-extras'             - Extra buffers to display
  `icicle-buffer-match-regexp'       - Regexp that buffers must match
  `icicle-buffer-no-match-regexp'    - Regexp buffers must not match
- `icicle-buffer-predicate'          - Predicate buffer must satisfy
+ `icicle-buffer-predicate'          - Predicate buffer names satisfy
  `icicle-buffer-sort'               - Sort function for candidates
 
 Note: The prefix arg is tested, even when this is called
@@ -6527,7 +6579,8 @@ the behavior."                          ; Doc string
                          (icicle-remove-if-not #'(lambda (bf) (buffer-file-name bf)) (buffer-list))
                        (cdr (assq 'buffer-list (frame-parameters))))
                    (buffer-list)))
-  nil (and (fboundp 'confirm-nonexistent-file-or-buffer) (confirm-nonexistent-file-or-buffer)) ;Emacs23.
+  (and icompletep  icicle-buffer-predicate  (lambda (buf) (funcall icicle-buffer-predicate (car buf))))
+  (and (fboundp 'confirm-nonexistent-file-or-buffer) (confirm-nonexistent-file-or-buffer)) ;Emacs23.
   nil 'buffer-name-history nil nil
   ((buf-names                               ()) ; Bindings
    (prompt                                  (or icicle-prompt ; Allow override.
@@ -6537,7 +6590,8 @@ the behavior."                          ; Doc string
                                                 completion-ignore-case))
    (icicle-must-match-regexp                icicle-buffer-match-regexp)
    (icicle-must-not-match-regexp            icicle-buffer-no-match-regexp)
-   (icicle-must-pass-after-match-predicate  icicle-buffer-predicate)
+   (icompletep                              (and (boundp 'icomplete-mode)  icomplete-mode))
+   (icicle-must-pass-after-match-predicate  (and (not icompletep)  icicle-buffer-predicate))
    (icicle-require-match-flag               icicle-buffer-require-match-flag)
    (icicle-extra-candidates                 icicle-buffer-extras)
    (icicle-ignore-space-prefix-flag         icicle-buffer-ignore-space-prefix-flag)
