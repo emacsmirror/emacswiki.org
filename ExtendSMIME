@@ -30,6 +30,20 @@ Put Lisp:jl-smime.el and Lisp:jl-encrypt.el into your load-path and add the foll
 }}}
 In general, no further configuration should be necessary.
 
+Note that jl-smime.el contains the following:
+{{{
+;; I'm searching for S/MIME certificates via LDAP at DFN-Verein.
+(require 'ldap)
+(setq ldap-default-base "O=DFN-Verein,C=DE"
+      ; -x: no SASL authentication, -tt: store result in file
+      ldap-ldapsearch-args '("-x" "-tt")
+      )
+
+;; Cache S/MIME passphrase for 600 seconds.  (Default is 16.)
+(require 'password-cache)
+(setq password-cache-expiry 600)
+}}}
+You may want to adjust those settings.
 
 ----
 CategoryGnus SigningMail EncryptingMail
