@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Thu May 21 13:31:43 2009 (-0700)
 ;; Version: 22.0
-;; Last-Updated: Sun Feb 26 18:33:10 2012 (-0800)
+;; Last-Updated: Fri Mar  9 14:58:23 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 5149
+;;     Update #: 5244
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-cmd2.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -542,23 +542,26 @@ at point, or if none then the visited file.
 The tags are removed from an autofile bookmark for the same file name
 and directory.  During file-name completion, only files tagged with
 all of the given input tags are completion candidates."
-    (lambda (file)
-      (bmkp-autofile-remove-tags file tags nil nil 'MSG))
-    "File to untag: " nil nil t nil nil ; `read-file-name' args
+    (lambda (file) (bmkp-autofile-remove-tags file tags nil nil 'MSG))
+    "File to untag: " nil nil t nil (and icompletep pred) ; `read-file-name' args
     (icicle-file-bindings               ; Bindings
-     ((tags                                  (bmkp-read-tags-completing)) ; Pre bindings
-      (icicle-use-candidates-only-once-flag  t))
-     ((icicle-must-pass-after-match-predicate ; Post bindings
-       #'(lambda (ff)
-           ;; Expand relative file name, using directory from minibuffer.
-           (setq ff  (expand-file-name ff (icicle-file-name-directory-w-default
-                                           (icicle-input-from-minibuffer))))
-           (let* ((bmk   (bmkp-get-autofile-bookmark ff))
-                  (btgs  (and bmk (bmkp-get-tags bmk))))
-             (and btgs  (catch 'icicle-untag-a-file
-                          (dolist (tag  tags) (when (not (member tag btgs))
-                                                (throw 'icicle-untag-a-file nil)))
-                          t))))))))
+     ((tags                                    (bmkp-read-tags-completing)) ; Pre bindings
+      (icicle-use-candidates-only-once-flag    t))
+     ((pred                                    #'(lambda (ff) ; Post bindings
+                                                   ;; Expand relative file name, using dir from minibuffer.
+                                                   (setq ff  (expand-file-name
+                                                              ff (icicle-file-name-directory-w-default
+                                                                  (icicle-input-from-minibuffer))))
+                                                   (let* ((bmk   (bmkp-get-autofile-bookmark ff))
+                                                          (btgs  (and bmk (bmkp-get-tags bmk))))
+                                                     (and btgs  (catch 'icicle-untag-a-file
+                                                                  (dolist (tag  tags)
+                                                                    (unless (member tag btgs)
+                                                                      (throw 'icicle-untag-a-file nil)))
+                                                                  t)))))
+      (icompletep                              (and (boundp 'icomplete-mode)  icomplete-mode))
+      (icicle-must-pass-after-match-predicate  (and (not icompletep)  pred)))))
+
 
   (icicle-maybe-byte-compile-after-load icicle-untag-a-file)
 
@@ -674,31 +677,18 @@ During completion (`*': requires library `Bookmark+'):
 
 
   (icicle-define-file-command icicle-find-file-handle-bookmark ; `C-x j C-f'
-    "Visit a file or directory, respecting any autofile bookmark for it..
-This is similar to `icicle-find-file' - see that command for
-on-the-fly Icicles keys and the treatment of a prefix arg.
+    "Visit a file or directory, respecting any associated autofile handlers.
+This is similar to `icicle-find-file', But the file is accessed using
+`bmkp-find-file', which means that if it has an associated handler in
+`bmkp-default-handlers-for-file-types' then that handler is used to
+visit the file.
 
-But the file is accessed using `bmkp-find-file', which means that if
-it is an autofile with a bookmark handler then the handler is used
-when \"jumping\" to the bookmark.
+If you use a prefix arg when acting on a completion candidate then an
+autofile bookmark is created for the file, unless it already has one.
 
 When prompted for the file name you can use `M-n' to pick up the file
 name at point, or if none then the visited file."
-    (lambda (file)
-      (let* ((r-o  (if (eq this-command 'icicle-candidate-action)
-                       (or (and init-pref-arg        (not current-prefix-arg))
-                           (and (not init-pref-arg)  current-prefix-arg))
-                     init-pref-arg))
-             (bmk  (bmkp-get-autofile-bookmark file))
-             ;; This is the real action.  `find-file' returns the buffer(s).  But having a return value is
-             ;; undocumented and might change at some point.
-             (buf  (bmkp-find-file file)))
-        ;; Handle read-only status and return the bookmark or the buffer(s) visited.
-        (if bmk
-            bmk
-          (when r-o (mapcar (lambda (bf) (with-current-buffer bf (toggle-read-only 1)))
-                            (if (listp buf) buf (list buf))))
-          buf)))                        ; Function to perform the action
+    bmkp-find-file
     "Find file: " nil nil t nil nil     ; `read-file-name' args
     (icicle-file-bindings               ; Bindings
      ((init-pref-arg  current-prefix-arg) ; Pre bindings
@@ -711,21 +701,7 @@ name at point, or if none then the visited file."
 
   (icicle-define-file-command icicle-find-file-handle-bookmark-other-window ; `C-x 4 j C-f'
     "Same as `icicle-find-file-handle-bookmark', except uses another window."
-    (lambda (file)
-      (let* ((r-o  (if (eq this-command 'icicle-candidate-action)
-                       (or (and init-pref-arg        (not current-prefix-arg))
-                           (and (not init-pref-arg)  current-prefix-arg))
-                     init-pref-arg))
-             (bmk  (bmkp-get-autofile-bookmark file))
-             ;; This is the real action.  `find-file' returns the buffer(s).  But having a return value is
-             ;; undocumented and might change at some point.
-             (buf  (bmkp-find-file-other-window file)))
-        ;; Handle read-only status and return the bookmark or the buffer(s) visited.
-        (if bmk
-            bmk
-          (when r-o (mapcar (lambda (bf) (with-current-buffer bf (toggle-read-only 1)))
-                            (if (listp buf) buf (list buf))))
-          buf)))                        ; Function to perform the action
+    bmkp-find-file-other-window
     "Find file: " nil nil t nil nil     ; `read-file-name' args
     (icicle-file-bindings               ; Bindings
      ((init-pref-arg  current-prefix-arg) ; Pre bindings
@@ -760,16 +736,20 @@ candidate.
 When prompted for the file you can use `M-n' to pick up the file name
 at point, or if none then the visited file."
     (lambda (file) (bmkp-find-file file 'MUST-EXIST)) ; Function to perform the action
-    "Find file: " nil nil t nil nil     ; `read-file-name' args
+    "Find file: " nil nil t nil (and icompletep pred) ; `read-file-name' args
     (icicle-file-bindings               ; Bindings
      ((tags  (bmkp-read-tags-completing nil nil current-prefix-arg)) ; Pre bindings
       (icicle-all-candidates-list-alt-action-fn ; `M-|'
        (lambda (files) (let ((enable-recursive-minibuffers  t))
                          (dired-other-window (cons (read-string "Dired buffer name: ") files))))))
-     ((icicle-must-pass-after-match-predicate ; Post bindings
-       (lambda (ff) (let* ((bmk   (bmkp-get-autofile-bookmark ff))
-                           (btgs  (and bmk (bmkp-get-tags bmk))))
-                      (and btgs  (bmkp-every #'(lambda (tag) (bmkp-has-tag-p bmk tag)) tags))))))))
+     ((pred                                    #'(lambda (ff) ; Post bindings
+                                                   (let* ((bmk   (bmkp-get-autofile-bookmark ff))
+                                                          (btgs  (and bmk (bmkp-get-tags bmk))))
+                                                     (and btgs
+                                                          (bmkp-every
+                                                           #'(lambda (tag) (bmkp-has-tag-p bmk tag)) tags)))))
+      (icompletep                              (and (boundp 'icomplete-mode)  icomplete-mode))
+      (icicle-must-pass-after-match-predicate  (and (not icompletep)  pred)))))
 
   (icicle-maybe-byte-compile-after-load icicle-find-file-all-tags)
 
@@ -777,16 +757,20 @@ at point, or if none then the visited file."
   (icicle-define-file-command icicle-find-file-all-tags-other-window ; `C-x 4 j t C-f *'
     "Same as `icicle-find-file-all-tags', except uses another window."
     (lambda (file) (bmkp-find-file-other-window file 'MUST-EXIST)) ; Function to perform the action
-    "Find file: " nil nil t nil nil     ; `read-file-name' args
+    "Find file: " nil nil t nil (and icompletep pred) ; `read-file-name' args
     (icicle-file-bindings               ; Bindings
      ((tags  (bmkp-read-tags-completing nil nil current-prefix-arg)) ; Pre bindings
       (icicle-all-candidates-list-alt-action-fn ; `M-|'
        (lambda (files) (let ((enable-recursive-minibuffers  t))
                          (dired-other-window (cons (read-string "Dired buffer name: ") files))))))
-     ((icicle-must-pass-after-match-predicate ; Post bindings
-       (lambda (ff) (let* ((bmk   (bmkp-get-autofile-bookmark ff))
-                           (btgs  (and bmk (bmkp-get-tags bmk))))
-                      (and btgs  (bmkp-every #'(lambda (tag) (bmkp-has-tag-p bmk tag)) tags))))))))
+     ((pred                                    #'(lambda (ff) ; Post bindings
+                                                   (let* ((bmk   (bmkp-get-autofile-bookmark ff))
+                                                          (btgs  (and bmk (bmkp-get-tags bmk))))
+                                                     (and btgs
+                                                          (bmkp-every
+                                                           #'(lambda (tag) (bmkp-has-tag-p bmk tag)) tags)))))
+      (icompletep                              (and (boundp 'icomplete-mode)  icomplete-mode))
+      (icicle-must-pass-after-match-predicate  (and (not icompletep)  pred)))))
 
   (icicle-maybe-byte-compile-after-load icicle-find-file-all-tags-other-window)
 
@@ -796,18 +780,22 @@ at point, or if none then the visited file."
 When prompted for the file you can use `M-n' to pick up the file name
 at point, or if none then the visited file."
     (lambda (file) (bmkp-find-file file 'MUST-EXIST)) ; Function to perform the action
-    "Find file: " nil nil t nil nil     ; `read-file-name' args
+    "Find file: " nil nil t nil (and icompletep pred) ; `read-file-name' args
     (icicle-file-bindings               ; Bindings
      ((regexp  (read-string "Regexp for tags: ")) ; Pre bindings
       (icicle-all-candidates-list-alt-action-fn ; `M-|'
        (lambda (files) (let ((enable-recursive-minibuffers  t))
                          (dired-other-window (cons (read-string "Dired buffer name: ") files))))))
-     ((icicle-must-pass-after-match-predicate ; Post bindings
-       (lambda (ff)
-         (let* ((bmk   (bmkp-get-autofile-bookmark ff))
-                (btgs  (and bmk (bmkp-get-tags bmk))))
-           (and btgs  (bmkp-every #'(lambda (tag) (string-match regexp (bmkp-tag-name tag)))
-                                  btgs))))))))
+     ((pred                                    #'(lambda (ff) ; Post bindings
+                                                   (let* ((bmk   (bmkp-get-autofile-bookmark ff))
+                                                          (btgs  (and bmk  (bmkp-get-tags bmk))))
+                                                     (and btgs
+                                                          (bmkp-every
+                                                           #'(lambda (tag)
+                                                               (string-match regexp (bmkp-tag-name tag)))
+                                                           btgs)))))
+      (icompletep                              (and (boundp 'icomplete-mode)  icomplete-mode))
+      (icicle-must-pass-after-match-predicate  (and (not icompletep)  pred)))))
 
   (icicle-maybe-byte-compile-after-load icicle-find-file-all-tags-regexp)
 
@@ -815,18 +803,22 @@ at point, or if none then the visited file."
   (icicle-define-file-command icicle-find-file-all-tags-regexp-other-window ; `C-x 4 j t C-f % *'
     "Same as `icicle-find-file-all-tags-regexp', except uses another window."
     (lambda (file) (bmkp-find-file-other-window file 'MUST-EXIST)) ; Function to perform the action
-    "Find file: " nil nil t nil nil     ; `read-file-name' args
+    "Find file: " nil nil t nil (and icompletep pred) ; `read-file-name' args
     (icicle-file-bindings               ; Bindings
      ((regexp  (read-string "Regexp for tags: ")) ; Pre bindings
       (icicle-all-candidates-list-alt-action-fn ; `M-|'
        (lambda (files) (let ((enable-recursive-minibuffers  t))
                          (dired-other-window (cons (read-string "Dired buffer name: ") files))))))
-     ((icicle-must-pass-after-match-predicate ; Post bindings
-       (lambda (ff)
-         (let* ((bmk   (bmkp-get-autofile-bookmark ff))
-                (btgs  (and bmk (bmkp-get-tags bmk))))
-           (and btgs  (bmkp-every #'(lambda (tag) (string-match regexp (bmkp-tag-name tag)))
-                                  btgs))))))))
+     ((pred                                    #'(lambda (ff) ; Post bindings
+                                                   (let* ((bmk   (bmkp-get-autofile-bookmark ff))
+                                                          (btgs  (and bmk  (bmkp-get-tags bmk))))
+                                                     (and btgs
+                                                          (bmkp-every
+                                                           #'(lambda (tag)
+                                                               (string-match regexp (bmkp-tag-name tag)))
+                                                           btgs)))))
+      (icompletep                              (and (boundp 'icomplete-mode)  icomplete-mode))
+      (icicle-must-pass-after-match-predicate  (and (not icompletep)  pred)))))
 
   (icicle-maybe-byte-compile-after-load icicle-find-file-all-tags-regexp-other-window)
 
@@ -841,16 +833,20 @@ not limited to existing tags.
 When prompted for the file you can use `M-n' to pick up the file name
 at point, or if none then the visited file."
     (lambda (file) (bmkp-find-file file 'MUST-EXIST)) ; Function to perform the action
-    "Find file: " nil nil t nil nil     ; `read-file-name' args
+    "Find file: " nil nil t nil (and icompletep pred) ; `read-file-name' args
     (icicle-file-bindings               ; Bindings
      ((tags  (bmkp-read-tags-completing nil nil current-prefix-arg)) ; Pre bindings
       (icicle-all-candidates-list-alt-action-fn ; `M-|'
        (lambda (files) (let ((enable-recursive-minibuffers  t))
                          (dired-other-window (cons (read-string "Dired buffer name: ") files))))))
-     ((icicle-must-pass-after-match-predicate ; Post bindings
-       (lambda (ff) (let* ((bmk   (bmkp-get-autofile-bookmark ff))
-                           (btgs  (and bmk (bmkp-get-tags bmk))))
-                      (and btgs  (bmkp-some  #'(lambda (tag) (bmkp-has-tag-p bmk tag)) tags))))))))
+     ((pred                                    #'(lambda (ff) ; Post bindings
+                                                   (let* ((bmk   (bmkp-get-autofile-bookmark ff))
+                                                          (btgs  (and bmk  (bmkp-get-tags bmk))))
+                                                     (and btgs
+                                                          (bmkp-some
+                                                           #'(lambda (tag) (bmkp-has-tag-p bmk tag)) tags)))))
+      (icompletep                              (and (boundp 'icomplete-mode)  icomplete-mode))
+      (icicle-must-pass-after-match-predicate  (and (not icompletep)  pred)))))
 
   (icicle-maybe-byte-compile-after-load icicle-find-file-some-tags)
 
@@ -858,16 +854,20 @@ at point, or if none then the visited file."
   (icicle-define-file-command icicle-find-file-some-tags-other-window ; `C-x 4 j t C-f +'
     "Same as `icicle-find-file-some-tags', except uses another window."
     (lambda (file) (bmkp-find-file-other-window file 'MUST-EXIST)) ; Function to perform the action
-    "Find file: " nil nil t nil nil     ; `read-file-name' args
+    "Find file: " nil nil t nil (and icompletep pred) ; `read-file-name' args
     (icicle-file-bindings               ; Bindings
      ((tags  (bmkp-read-tags-completing nil nil current-prefix-arg)) ; Pre bindings
       (icicle-all-candidates-list-alt-action-fn ; `M-|'
        (lambda (files) (let ((enable-recursive-minibuffers  t))
                          (dired-other-window (cons (read-string "Dired buffer name: ") files))))))
-     ((icicle-must-pass-after-match-predicate ; Post bindings
-       (lambda (ff) (let* ((bmk   (bmkp-get-autofile-bookmark ff))
-                           (btgs  (and bmk (bmkp-get-tags bmk))))
-                      (and btgs  (bmkp-some #'(lambda (tag) (bmkp-has-tag-p bmk tag)) tags))))))))
+     ((pred                                    #'(lambda (ff) ; Post bindings
+                                                   (let* ((bmk   (bmkp-get-autofile-bookmark ff))
+                                                          (btgs  (and bmk  (bmkp-get-tags bmk))))
+                                                     (and btgs
+                                                          (bmkp-some
+                                                           #'(lambda (tag) (bmkp-has-tag-p bmk tag)) tags)))))
+      (icompletep                              (and (boundp 'icomplete-mode)  icomplete-mode))
+      (icicle-must-pass-after-match-predicate  (and (not icompletep)  pred)))))
 
   (icicle-maybe-byte-compile-after-load icicle-find-file-some-tags-other-window)
 
@@ -877,18 +877,22 @@ at point, or if none then the visited file."
 When prompted for the file you can use `M-n' to pick up the file name
 at point, or if none then the visited file."
     (lambda (file) (bmkp-find-file-other-window file 'MUST-EXIST)) ; Function to perform the action
-    "Find file: " nil nil t nil nil     ; `read-file-name' args
+    "Find file: " nil nil t nil (and icompletep pred) ; `read-file-name' args
     (icicle-file-bindings               ; Bindings
      ((regexp  (read-string "Regexp for tags: ")) ; Pre bindings
       (icicle-all-candidates-list-alt-action-fn ; `M-|'
        (lambda (files) (let ((enable-recursive-minibuffers  t))
                          (dired-other-window (cons (read-string "Dired buffer name: ") files))))))
-     ((icicle-must-pass-after-match-predicate ; Post bindings
-       (lambda (ff)
-         (let* ((bmk   (bmkp-get-autofile-bookmark ff))
-                (btgs  (and bmk (bmkp-get-tags bmk))))
-           (and btgs  (bmkp-some #'(lambda (tag) (string-match regexp (bmkp-tag-name tag)))
-                                 btgs))))))))
+     ((pred                                    #'(lambda (ff) ; Post bindings
+                                                   (let* ((bmk   (bmkp-get-autofile-bookmark ff))
+                                                          (btgs  (and bmk  (bmkp-get-tags bmk))))
+                                                     (and btgs
+                                                          (bmkp-some
+                                                           #'(lambda (tag)
+                                                               (string-match regexp (bmkp-tag-name tag)))
+                                                           btgs)))))
+      (icompletep                              (and (boundp 'icomplete-mode)  icomplete-mode))
+      (icicle-must-pass-after-match-predicate  (and (not icompletep)  pred)))))
 
   (icicle-maybe-byte-compile-after-load icicle-find-file-some-tags-regexp)
 
@@ -896,18 +900,22 @@ at point, or if none then the visited file."
   (icicle-define-file-command icicle-find-file-some-tags-regexp-other-window ; `C-x 4 j t C-f % +'
     "Same as `icicle-find-file-some-tags-regexp', except uses another window."
     (lambda (file) (bmkp-find-file-other-window file 'MUST-EXIST)) ; Function to perform the action
-    "Find file: " nil nil t nil nil     ; `read-file-name' args
+    "Find file: " nil nil t nil (and icompletep pred) ; `read-file-name' args
     (icicle-file-bindings               ; Bindings
      ((regexp  (read-string "Regexp for tags: ")) ; Pre bindings
       (icicle-all-candidates-list-alt-action-fn ; `M-|'
        (lambda (files) (let ((enable-recursive-minibuffers  t))
                          (dired-other-window (cons (read-string "Dired buffer name: ") files))))))
-     ((icicle-must-pass-after-match-predicate ; Post bindings
-       (lambda (ff)
-         (let* ((bmk   (bmkp-get-autofile-bookmark ff))
-                (btgs  (and bmk (bmkp-get-tags bmk))))
-           (and btgs  (bmkp-some #'(lambda (tag) (string-match regexp (bmkp-tag-name tag)))
-                                 btgs))))))))
+     ((pred                                    #'(lambda (ff) ; Post bindings
+                                                   (let* ((bmk   (bmkp-get-autofile-bookmark ff))
+                                                          (btgs  (and bmk  (bmkp-get-tags bmk))))
+                                                     (and btgs
+                                                          (bmkp-some
+                                                           #'(lambda (tag)
+                                                               (string-match regexp (bmkp-tag-name tag)))
+                                                           btgs)))))
+      (icompletep                              (and (boundp 'icomplete-mode)  icomplete-mode))
+      (icicle-must-pass-after-match-predicate  (and (not icompletep)  pred)))))
 
   (icicle-maybe-byte-compile-after-load icicle-find-file-some-tags-regexp-other-window)
 
@@ -2325,19 +2333,24 @@ remapping, then customize option `icicle-top-level-key-bindings'." ; Doc string
   (lambda (x) (let ((symb  (intern-soft x))) ; Action function
                 (where-is symb (and pref-arg (consp pref-arg)))))
   (if pref-arg "Where is command: " "Where is bound command: ")
-  obarray nil t nil nil ; `completing-read' args
+  obarray (and icompletep pred) t nil nil ; `completing-read' args
   (let ((fn  (or (and (fboundp 'symbol-nearest-point) (symbol-nearest-point))
                  (function-called-at-point))))
     (and fn (symbol-name fn)))
   t
   ((pref-arg  current-prefix-arg)       ; Bindings
-   (icicle-must-pass-after-match-predicate
-    (if pref-arg
-        #'(lambda (c) (commandp (intern c)))
-      #'(lambda (c)
-          (setq c  (intern c))
-          (with-current-buffer icicle-orig-buff
-            (and (commandp c) (where-is-internal c overriding-local-map 'non-ascii))))))
+   (pred                                    (if pref-arg
+                                                #'(lambda (c)
+                                                    (unless (symbolp c) (setq c (intern c)))
+                                                    (commandp c))
+                                              #'(lambda (c)
+                                                  (unless (symbolp c) (setq c (intern c)))
+                                                  (with-current-buffer icicle-orig-buff
+                                                    (and (commandp c)
+                                                         (where-is-internal
+                                                          c overriding-local-map 'non-ascii))))))
+   (icompletep                              (and (boundp 'icomplete-mode)  icomplete-mode))
+   (icicle-must-pass-after-match-predicate  (and (not icompletep)  pred))
    (icicle-candidate-help-fn
     #'(lambda (c)
         (with-current-buffer icicle-orig-buff
@@ -2838,21 +2851,22 @@ See `apropos-variable' for a description of PATTERN."
             (progn
               (mapatoms #'(lambda (symb)
                             (when (user-variable-p symb) (put symb 'icicle-special-candidate t))))
-              (let ((icicle-fancy-candidates-p  t)
-                    (icicle-must-pass-after-match-predicate
-                     #'(lambda (s)
-                         (setq s  (intern s))
-                         (and (boundp s) (get s 'variable-documentation))))
-                    (icicle-candidate-alt-action-fn
-                     (or icicle-candidate-alt-action-fn
-                         (icicle-alt-act-fn-for-type "variable")))
-                    (icicle-all-candidates-list-alt-action-fn
-                     (or icicle-all-candidates-list-alt-action-fn
-                         (icicle-alt-act-fn-for-type "variable"))))
+              (let* ((icicle-fancy-candidates-p  t)
+                     (pred                                      #'(lambda (s)
+                                                                    (unless (symbolp s) (setq s  (intern s)))
+                                                                    (and (boundp s)
+                                                                         (get s 'variable-documentation))))
+                     (icompletep                                (and (boundp 'icomplete-mode)
+                                                                     icomplete-mode))
+                     (icicle-must-pass-after-match-predicate    (and (not icompletep)  pred))
+                     (icicle-candidate-alt-action-fn            (or icicle-candidate-alt-action-fn
+                                                                    (icicle-alt-act-fn-for-type "variable")))
+                     (icicle-all-candidates-list-alt-action-fn  (or icicle-all-candidates-list-alt-action-fn
+                                                                    (icicle-alt-act-fn-for-type "variable"))))
                 (completing-read
                  (concat "Apropos variable (regexp" (and (>= emacs-major-version 22) " or words")
                          "): ")
-                 obarray nil nil nil 'regexp-history)))
+                 obarray (and icompletep pred) nil nil 'regexp-history)))
          (mapatoms #'(lambda (symb) (put symb 'icicle-special-candidate nil))))))
      (apropos-variable pattern))
 
@@ -2861,10 +2875,14 @@ See `apropos-variable' for a description of PATTERN."
 You can see the list of matches with `S-TAB'.
 See `apropos-option' for a description of PATTERN."
      (interactive
-      (let ((icicle-must-pass-after-match-predicate  #'(lambda (s) (user-variable-p (intern s)))))
+      (let* ((pred                                    #'(lambda (s)
+                                                          (unless (symbolp s) (setq s  (intern s)))
+                                                          (user-variable-p s)))
+             (icompletep                              (and (boundp 'icomplete-mode) icomplete-mode))
+             (icicle-must-pass-after-match-predicate  (and (not icompletep)  pred)))
         (list (completing-read
                (concat "Apropos user option (regexp" (and (>= emacs-major-version 22) " or words")
-                       "): ") obarray nil nil nil 'regexp-history))))
+                       "): ") obarray (and icompletep pred) nil nil 'regexp-history))))
      (let ((apropos-do-all  nil)
            (icicle-candidate-alt-action-fn
             (or icicle-candidate-alt-action-fn (icicle-alt-act-fn-for-type "option")))
@@ -2884,17 +2902,20 @@ See `apropos-function' for a description of PATTERN."
             (progn
               (mapatoms #'(lambda (symb)
                             (when (commandp symb) (put symb 'icicle-special-candidate t))))
-              (let ((icicle-fancy-candidates-p               t)
-                    (icicle-must-pass-after-match-predicate  #'(lambda (s) (fboundp (intern s))))
-                    (icicle-candidate-alt-action-fn
-                     (or icicle-candidate-alt-action-fn
-                         (icicle-alt-act-fn-for-type "function")))
-                    (icicle-all-candidates-list-alt-action-fn
-                     (or icicle-all-candidates-list-alt-action-fn
-                         (icicle-alt-act-fn-for-type "function"))))
+              (let* ((icicle-fancy-candidates-p               t)
+                     (pred                                     #'(lambda (s)
+                                                                   (unless (symbolp s) (setq s  (intern s)))
+                                                                   (fboundp s)))
+                     (icompletep                              (and (boundp 'icomplete-mode) icomplete-mode))
+                     (icicle-must-pass-after-match-predicate  (and (not icompletep)  pred))
+                     (icicle-candidate-alt-action-fn          (or icicle-candidate-alt-action-fn
+                                                                  (icicle-alt-act-fn-for-type "function")))
+                     (icicle-all-candidates-list-alt-action-fn  
+                      (or icicle-all-candidates-list-alt-action-fn
+                          (icicle-alt-act-fn-for-type "function"))))
                 (completing-read
                  (concat "Apropos function (regexp" (and (>= emacs-major-version 22) " or words")
-                         "): ") obarray nil nil nil 'regexp-history)))
+                         "): ") obarray (and icompletep pred) nil nil 'regexp-history)))
          (mapatoms #'(lambda (symb) (put symb 'icicle-special-candidate nil))))))
      (apropos-function pattern))
 
@@ -2903,14 +2924,18 @@ See `apropos-function' for a description of PATTERN."
 You can see the list of matches with `S-TAB'.
 See `apropos-command' for a description of PATTERN."
      (interactive
-      (let ((icicle-must-pass-after-match-predicate  #'(lambda (s) (commandp (intern s))))
-            (icicle-candidate-alt-action-fn
-             (or icicle-candidate-alt-action-fn (icicle-alt-act-fn-for-type "command")))
-            (icicle-all-candidates-list-alt-action-fn
-             (or icicle-all-candidates-list-alt-action-fn (icicle-alt-act-fn-for-type "command"))))
+      (let* ((pred                                      #'(lambda (s)
+                                                            (unless (symbolp s) (setq s  (intern s)))
+                                                            (commandp s)))
+             (icompletep                                (and (boundp 'icomplete-mode) icomplete-mode))
+             (icicle-must-pass-after-match-predicate    (and (not icompletep)  pred))
+             (icicle-candidate-alt-action-fn            (or icicle-candidate-alt-action-fn
+                                                            (icicle-alt-act-fn-for-type "command")))
+             (icicle-all-candidates-list-alt-action-fn  (or icicle-all-candidates-list-alt-action-fn
+                                                            (icicle-alt-act-fn-for-type "command"))))
         (list (completing-read
                (concat "Apropos command (regexp" (and (>= emacs-major-version 22) " or words")
-                       "): ") obarray nil nil nil 'regexp-history))))
+                       "): ") obarray (and icompletep pred) nil nil 'regexp-history))))
      (let ((apropos-do-all  nil))  (apropos-command pattern))))
 
   ;; My versions are not available.  Use the vanilla Emacs versions of the `apropos...' commands.
@@ -2933,28 +2958,33 @@ using face `icicle-special-candidate'."
               (when (or current-prefix-arg apropos-do-all)
                 (mapatoms #'(lambda (symb)
                               (when (user-variable-p symb) (put symb 'icicle-special-candidate t)))))
-              (let ((icicle-fancy-candidates-p  (or current-prefix-arg apropos-do-all))
-                    (icicle-must-pass-after-match-predicate
-                     (if (or current-prefix-arg apropos-do-all)
-                         #'(lambda (s)
-                             (setq s  (intern s))
-                             (and (boundp s) (get s 'variable-documentation)))
-                       #'(lambda (s) (user-variable-p (intern s)))))
-                    (icicle-candidate-alt-action-fn
-                     (or icicle-candidate-alt-action-fn
-                         (icicle-alt-act-fn-for-type (if icicle-fancy-candidates-p
-                                                         "variable"
-                                                       "option"))))
-                    (icicle-all-candidates-list-alt-action-fn
-                     (or icicle-all-candidates-list-alt-action-fn
-                         (icicle-alt-act-fn-for-type (if icicle-fancy-candidates-p
-                                                         "variable"
-                                                       "option")))))
+              (let* ((icicle-fancy-candidates-p               (or current-prefix-arg apropos-do-all))
+                     (pred                                    (if (or current-prefix-arg apropos-do-all)
+                                                                  #'(lambda (s)
+                                                                      (unless (symbolp s)
+                                                                        (setq s  (intern s)))
+                                                                      (and (boundp s)
+                                                                           (get s 'variable-documentation)))
+                                                                #'(lambda (s)
+                                                                    (unless (symbolp s) (setq s  (intern s)))
+                                                                    (user-variable-p s))))
+                     (icompletep                                (and (boundp 'icomplete-mode) icomplete-mode))
+                     (icicle-must-pass-after-match-predicate  (and (not icompletep)  pred))
+                     (icicle-candidate-alt-action-fn          (or icicle-candidate-alt-action-fn
+                                                                  (icicle-alt-act-fn-for-type
+                                                                   (if icicle-fancy-candidates-p
+                                                                       "variable"
+                                                                     "option"))))
+                     (icicle-all-candidates-list-alt-action-fn
+                      (or icicle-all-candidates-list-alt-action-fn
+                          (icicle-alt-act-fn-for-type (if icicle-fancy-candidates-p
+                                                          "variable"
+                                                        "option")))))
                 (completing-read
                  (concat "Apropos " (if (or current-prefix-arg apropos-do-all)
                                         "variable" "user option")
                          " (regexp" (and (>= emacs-major-version 22) " or words") "): ")
-                 obarray nil nil nil 'regexp-history)))
+                 obarray (and icompletep pred) nil nil 'regexp-history)))
          (when (or current-prefix-arg apropos-do-all)
            (mapatoms #'(lambda (symb) (put symb 'icicle-special-candidate nil)))))
        current-prefix-arg))
@@ -2981,26 +3011,32 @@ satisfy the predicate VAR-PREDICATE."
               (when (or current-prefix-arg apropos-do-all)
                 (mapatoms #'(lambda (symb)
                               (when (commandp symb) (put symb 'icicle-special-candidate t)))))
-              (let ((icicle-fancy-candidates-p  (or current-prefix-arg apropos-do-all))
-                    (icicle-must-pass-after-match-predicate
-                     (if current-prefix-arg
-                         #'(lambda (s) (fboundp (intern s)))
-                       #'(lambda (s) (commandp (intern s)))))
-                    (icicle-candidate-alt-action-fn
-                     (or icicle-candidate-alt-action-fn
-                         (icicle-alt-act-fn-for-type (if icicle-fancy-candidates-p
-                                                         "function"
-                                                       "command"))))
-                    (icicle-all-candidates-list-alt-action-fn
-                     (or icicle-all-candidates-list-alt-action-fn
-                         (icicle-alt-act-fn-for-type (if icicle-fancy-candidates-p
-                                                         "function"
-                                                       "command")))))
+              (let* ((icicle-fancy-candidates-p               (or current-prefix-arg apropos-do-all))
+                     (pred                                    (if current-prefix-arg
+                                                                  #'(lambda (s)
+                                                                      (unless (symbolp s)
+                                                                        (setq s  (intern s)))
+                                                                      (fboundp s))
+                                                                #'(lambda (s)
+                                                                    (unless (symbolp s) (setq s  (intern s)))
+                                                                    (commandp s))))
+                     (icompletep                              (and (boundp 'icomplete-mode) icomplete-mode))
+                     (icicle-must-pass-after-match-predicate  (and (not icompletep)  pred))
+                     (icicle-candidate-alt-action-fn           (or icicle-candidate-alt-action-fn
+                                                                   (icicle-alt-act-fn-for-type
+                                                                    (if icicle-fancy-candidates-p
+                                                                        "function"
+                                                                      "command"))))
+                     (icicle-all-candidates-list-alt-action-fn
+                      (or icicle-all-candidates-list-alt-action-fn
+                          (icicle-alt-act-fn-for-type (if icicle-fancy-candidates-p
+                                                          "function"
+                                                        "command")))))
                 (completing-read
                  (concat "Apropos " (if (or current-prefix-arg apropos-do-all)
                                         "command or function" "command")
                          "(regexp" (and (>= emacs-major-version 22) " or words") "): ")
-                 obarray nil nil nil 'regexp-history)))
+                 obarray (and icompletep pred) nil nil 'regexp-history)))
          (when (or current-prefix-arg apropos-do-all)
            (mapatoms #'(lambda (symb) (put symb 'icicle-special-candidate nil)))))
        current-prefix-arg))
@@ -3118,34 +3154,37 @@ to nil so that candidates with initial spaces can be matched."
   (interactive
    (list (symbol-value
           (intern
-           (let ((icicle-must-pass-after-match-predicate
-                  `(lambda (s)
-                      (setq s  (intern s))
-                      (and (boundp s) (consp (symbol-value s))
-                           ,(if current-prefix-arg
-                                '(consp (car (symbol-value s)))
-                                '(string-match "alist$" (symbol-name s))))))
-                 (icicle-candidate-alt-action-fn
-                  (or icicle-candidate-alt-action-fn
-                      (icicle-alt-act-fn-for-type "variable")))
+           (let* ((pred                                    `(lambda (s)
+                                                             (unless (symbolp s)  (setq s  (intern s)))
+                                                             (and (boundp s) (consp (symbol-value s))
+                                                              ,(if current-prefix-arg
+                                                                   '(consp (car (symbol-value s)))
+                                                                   '(string-match "alist$"
+                                                                     (symbol-name s))))))
+                  (icompletep                              (and (boundp 'icomplete-mode) icomplete-mode))
+                  (icicle-must-pass-after-match-predicate  (and (not icompletep)  pred))
+                  (icicle-candidate-alt-action-fn          (or icicle-candidate-alt-action-fn
+                                                               (icicle-alt-act-fn-for-type "variable")))
+                  (icicle-all-candidates-list-alt-action-fn
+                   (or icicle-all-candidates-list-alt-action-fn
+                       (icicle-alt-act-fn-for-type "variable"))))
+             (completing-read
+              "Alist (variable): " obarray (and icompletep pred) t nil
+              (if (boundp 'variable-name-history) 'variable-name-history 'icicle-variable-name-history)))))
+         (read
+          (let* ((pred                                    #'(lambda (s)
+                                                              (unless (symbolp s) (setq s  (intern s)))
+                                                              (functionp s)))
+                 (icompletep                              (and (boundp 'icomplete-mode) icomplete-mode))
+                 (icicle-must-pass-after-match-predicate  (and (not icompletep)  pred))
+                 (icicle-candidate-alt-action-fn          (or icicle-candidate-alt-action-fn
+                                                              (icicle-alt-act-fn-for-type "function")))
                  (icicle-all-candidates-list-alt-action-fn
                   (or icicle-all-candidates-list-alt-action-fn
-                      (icicle-alt-act-fn-for-type "variable"))))
-             (completing-read "Alist (variable): " obarray nil t nil
-                              (if (boundp 'variable-name-history)
-                                  'variable-name-history
-                                'icicle-variable-name-history)))))
-         (read
-          (let ((icicle-must-pass-after-match-predicate  #'(lambda (s) (functionp (intern s))))
-                (icicle-candidate-alt-action-fn
-                 (or icicle-candidate-alt-action-fn
-                     (icicle-alt-act-fn-for-type "function")))
-                (icicle-all-candidates-list-alt-action-fn
-                 (or icicle-all-candidates-list-alt-action-fn
-                     (icicle-alt-act-fn-for-type "function"))))
-            (completing-read "Function: " obarray nil nil nil (if (boundp 'function-name-history)
-                                                                  'function-name-history
-                                                                'icicle-function-name-history))))))
+                      (icicle-alt-act-fn-for-type "function"))))
+            (completing-read
+             "Function: " obarray (and icompletep pred) nil nil
+             (if (boundp 'function-name-history) 'function-name-history 'icicle-function-name-history))))))
 
   (setq icicle-candidate-entry-fn  fn)  ; Save in global variable - used by `icicle-apply-action'.
   (let ((icicle-candidate-action-fn            'icicle-apply-action)
@@ -6753,7 +6792,11 @@ You can use `\\<minibuffer-local-completion-map>\
 variable."
   (interactive "P")
   (let* ((enable-recursive-minibuffers  t)
-         (icicle-must-pass-after-match-predicate  #'(lambda (s) (boundp (intern s))))
+         (pred                                    #'(lambda (s)
+                                                      (unless (symbolp s) (setq s  (intern s)))
+                                                      (boundp s)))
+         (icompletep                              (and (boundp 'icomplete-mode) icomplete-mode))
+         (icicle-must-pass-after-match-predicate  (and (not icompletep)  pred))
          (var
           (if askp
               (let ((icicle-candidate-alt-action-fn
@@ -6762,7 +6805,7 @@ variable."
                     (icicle-all-candidates-list-alt-action-fn
                      (or icicle-all-candidates-list-alt-action-fn
                          (icicle-alt-act-fn-for-type "variable"))))
-                (intern (completing-read "Variable: " obarray nil nil nil
+                (intern (completing-read "Variable: " obarray (and icompletep pred) nil nil
                                          (if (boundp 'variable-name-history)
                                              'variable-name-history
                                            'icicle-variable-name-history)
@@ -7169,6 +7212,7 @@ filtering:
                    completion-ignore-case))
               (icicle-must-match-regexp                icicle-buffer-match-regexp)
               (icicle-must-not-match-regexp            icicle-buffer-no-match-regexp)
+              (icompletep                              (and (boundp 'icomplete-mode)  icomplete-mode))
               (icicle-must-pass-after-match-predicate  icicle-buffer-predicate)
               (icicle-require-match-flag               icicle-buffer-require-match-flag)
               (icicle-extra-candidates                 icicle-buffer-extras)
@@ -7204,19 +7248,23 @@ filtering:
          (get-buffer-create
           (completing-read "Which (buffer): " (mapcar #'(lambda (buf) (list (buffer-name buf)))
                                                       (buffer-list))
-                           nil
+                           (and icompletep  icicle-buffer-predicate
+                                (lambda (buf) (funcall icicle-buffer-predicate (car buf))))
                            (and (fboundp 'confirm-nonexistent-file-or-buffer) ; Emacs 23.
                                 (confirm-nonexistent-file-or-buffer))
                            nil 'buffer-name-history nil nil))))
       (color (icicle-read-color-wysiwyg 1)) ; Use the color name (only).
-      (command (let ((icicle-must-pass-after-match-predicate  #'(lambda (s) (commandp (intern s))))
-                     (icicle-candidate-alt-action-fn
-                      (or icicle-candidate-alt-action-fn
-                          (icicle-alt-act-fn-for-type "command")))
-                     (icicle-all-candidates-list-alt-action-fn
-                      (or icicle-all-candidates-list-alt-action-fn
-                          (icicle-alt-act-fn-for-type "command"))))
-                 (intern (completing-read "Which (command): " obarray))))
+      (command (let* ((pred                                    #'(lambda (s)
+                                                                   (unless (symbolp s) (setq s  (intern s)))
+                                                                   (commandp s)))
+                      (icompletep                              (and (boundp 'icomplete-mode)  icomplete-mode))
+                      (icicle-must-pass-after-match-predicate  (and (not icompletep)  pred))
+                      (icicle-candidate-alt-action-fn          (or icicle-candidate-alt-action-fn
+                                                                   (icicle-alt-act-fn-for-type "command")))
+                      (icicle-all-candidates-list-alt-action-fn
+                       (or icicle-all-candidates-list-alt-action-fn
+                           (icicle-alt-act-fn-for-type "command"))))
+                 (intern (completing-read "Which (command): " obarray (and icompletep pred)))))
       (face (let ((icicle-candidate-alt-action-fn
                    (or icicle-candidate-alt-action-fn
                        (icicle-alt-act-fn-for-type "face")))
@@ -7246,23 +7294,30 @@ filtering:
                     (or icicle-all-candidates-list-alt-action-fn
                         (icicle-alt-act-fn-for-type "frame"))))
                (cdr (assoc (completing-read "Which (frame): " frame-alist) frame-alist))))
-      (function (let ((icicle-must-pass-after-match-predicate  #'(lambda (s) (fboundp (intern s))))
-                      (icicle-candidate-alt-action-fn
+      (function (let* ((pred                                    #'(lambda (s)
+                                                                    (unless (symbolp s) (setq s  (intern s)))
+                                                                    (fboundp s)))
+                       (icompletep                              (and (boundp 'icomplete-mode) icomplete-mode))
+                       (icicle-must-pass-after-match-predicate  (and (not icompletep)  pred))
+                       (icicle-candidate-alt-action-fn
                        (or icicle-candidate-alt-action-fn
                            (icicle-alt-act-fn-for-type "function")))
                       (icicle-all-candidates-list-alt-action-fn
                        (or icicle-all-candidates-list-alt-action-fn
                            (icicle-alt-act-fn-for-type "function"))))
-                  (intern (completing-read "Which (function): " obarray))))
-      (option (let ((icicle-must-pass-after-match-predicate  #'(lambda (s)
-                                                                 (user-variable-p (intern s))))
+                  (intern (completing-read "Which (function): " obarray (and icompletep pred)))))
+      (option (let* ((pred                                    #'(lambda (s)
+                                                                  (unless (symbolp s) (setq s  (intern s)))
+                                                                 (user-variable-p s)))
+                     (icompletep                              (and (boundp 'icomplete-mode)  icomplete-mode))
+                     (icicle-must-pass-after-match-predicate  (and (not icompletep)  pred))
                     (icicle-candidate-alt-action-fn
                      (or icicle-candidate-alt-action-fn
                          (icicle-alt-act-fn-for-type "option")))
                     (icicle-all-candidates-list-alt-action-fn
                      (or icicle-all-candidates-list-alt-action-fn
                          (icicle-alt-act-fn-for-type "option"))))
-                (intern (completing-read "Which (user option): " obarray))))
+                (intern (completing-read "Which (user option): " obarray (and icompletep pred)))))
       (process (let ((icicle-candidate-alt-action-fn
                       (or icicle-candidate-alt-action-fn
                           (icicle-alt-act-fn-for-type "process")))
@@ -7280,14 +7335,18 @@ filtering:
                      (or icicle-all-candidates-list-alt-action-fn
                          (icicle-alt-act-fn-for-type "symbol"))))
                 (intern (completing-read "Which (symbol): " obarray))))
-      (variable (let ((icicle-must-pass-after-match-predicate  #'(lambda (s) (boundp (intern s))))
-                      (icicle-candidate-alt-action-fn
-                       (or icicle-candidate-alt-action-fn
-                           (icicle-alt-act-fn-for-type "variable")))
-                      (icicle-all-candidates-list-alt-action-fn
-                       (or icicle-all-candidates-list-alt-action-fn
-                           (icicle-alt-act-fn-for-type "variable"))))
-                  (intern (completing-read "Which (variable): " obarray))))
+      (variable (let* ((pred                                    #'(lambda (s)
+                                                                    (unless (symbolp s) (setq s  (intern s)))
+                                                                    (boundp s)))
+                       (icompletep                              (and (boundp 'icomplete-mode)
+                                                                     icomplete-mode))
+                       (icicle-must-pass-after-match-predicate  (and (not icompletep)  pred))
+                       (icicle-candidate-alt-action-fn          (or icicle-candidate-alt-action-fn
+                                                                    (icicle-alt-act-fn-for-type "variable")))
+                       (icicle-all-candidates-list-alt-action-fn
+                        (or icicle-all-candidates-list-alt-action-fn
+                            (icicle-alt-act-fn-for-type "variable"))))
+                  (intern (completing-read "Which (variable): " obarray (and icompletep pred)))))
       (window (let ((icicle-candidate-alt-action-fn
                      (or icicle-candidate-alt-action-fn
                          (icicle-alt-act-fn-for-type "window")))
@@ -7301,19 +7360,22 @@ filtering:
                 (get-buffer-window (completing-read "Window showing buffer: " buffers) 0)))
       (otherwise (error "Bad object type: %S" type)))))
 
-(defun icicle-read-var-value-satisfying (pred)
-  "Read a variable that satisfies predicate PRED and returns its value."
+(defun icicle-read-var-value-satisfying (predicate)
+  "Read a variable that satisfies PREDICATE and returns its value."
   (symbol-value
-   (let ((icicle-orig-window                      (selected-window))
-         (icicle-must-pass-after-match-predicate  `(lambda (s)
-                                                    (setq s  (intern s))
-                                                    (and (boundp s)
-                                                     (funcall ',pred (symbol-value s)))))
-         (icicle-candidate-alt-action-fn          (or icicle-candidate-alt-action-fn
-                                                      (icicle-alt-act-fn-for-type "variable")))
-         (icicle-all-candidates-list-alt-action-fn
-          (or icicle-all-candidates-list-alt-action-fn (icicle-alt-act-fn-for-type "variable"))))
-     (intern (completing-read (format "Which (%s value of variable): " pred) obarray)))))
+   (let* ((icicle-orig-window                      (selected-window))
+          (pred                                    `(lambda (s)
+                                                     (unless (symbolp s) (setq s  (intern s)))
+                                                     (and (boundp s)
+                                                      (funcall ',predicate (symbol-value s)))))
+          (icompletep                              (and (boundp 'icomplete-mode)  icomplete-mode))
+          (icicle-must-pass-after-match-predicate  (and (not icompletep)  pred))
+          (icicle-candidate-alt-action-fn          (or icicle-candidate-alt-action-fn
+                                                       (icicle-alt-act-fn-for-type "variable")))
+          (icicle-all-candidates-list-alt-action-fn
+           (or icicle-all-candidates-list-alt-action-fn (icicle-alt-act-fn-for-type "variable"))))
+     (intern
+      (completing-read (format "Which (%s value of variable): " predicate) obarray (and icompletep pred))))))
 
 (defvar icicle-key-prefix nil
   "A prefix key.")
@@ -7761,9 +7823,15 @@ See also `icicle-set-TAB-methods-for-command'."
 (defun icicle-read-args-for-set-completion-methods (var)
   "Read arguments for `icicle-set-(S-)TAB-methods-for-command'.
 VAR is symbol `icicle-(S-)TAB-completion-methods(-alist)'."
-  (let ((command  (intern (let ((icicle-must-pass-after-match-predicate
-                                 #'(lambda (c) (commandp (intern c)))))
-                            (completing-read "Command: " obarray nil t))))
+  (let ((command  (intern
+                   (let* ((pred                                    #'(lambda (c)
+                                                                       (unless (symbolp c)
+                                                                         (setq c  (intern c)))
+                                                                       (commandp c)))
+                          (icompletep                              (and (boundp 'icomplete-mode)
+                                                                        icomplete-mode))
+                          (icicle-must-pass-after-match-predicate  (and (not icompletep)  pred)))
+                     (completing-read "Command: " obarray (and icompletep pred) t))))
         (methods  ()))
     (unless (< (prefix-numeric-value current-prefix-arg) 0)
       (let ((prompt  (format "%s methods (empty `RET' to end): "
