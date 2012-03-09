@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Mon Mar  5 08:34:27 2012 (-0800)
+;; Last-Updated: Fri Mar  9 15:55:49 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 28712
+;;     Update #: 28719
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-doc2.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -9148,7 +9148,29 @@
 ;;  as the PREDICATE and use `icicle-must-pass-after-match-predicate'
 ;;  instead.
 ;;
-;;  Here's a gotcha to keep in mind if you use
+;;  Here's something to keep in mind wrt
+;;  `icicle-must-pass-after-match-predicate':
+;;
+;;  It is often a good idea to use this predicate rather than pass a
+;;  PREDICATE argument to `completing-read' or `read-file-name',
+;;  especially when the initial domain of candidates is large and the
+;;  predicate is complex (costly).  It makes little sense to test each
+;;  such candidate using the predicate, rather than test only those
+;;  that match the current minibuffer input.
+;;
+;;  However, sometimes the PREDICATE argument to `completing-read' or
+;;  `read-file-name', is also used for something else, and in such a
+;;  context you will need to provide it.  In particular, Icomplete
+;;  mode uses it to compute the completions it displays.
+;;
+;;  For this reason, the Icicles predefined functions that use
+;;  `icicle-must-pass-after-match-predicate' also test for
+;;  `icomplete-mode'.  When that is turned on they use a PREDICATE
+;;  argument instead of `icicle-must-pass-after-match-predicate'.  You
+;;  might want to do the same in your code.  Just look at the Icicles
+;;  code for examples.
+;;
+;;  And here's a gotcha to keep in mind if you use either
 ;;  `icicle-must-pass-predicate' or
 ;;  `icicle-must-pass-after-match-predicate' with (non-absolute)
 ;;  file-name candidates: Since the candidate file names have no
