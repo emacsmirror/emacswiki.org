@@ -126,6 +126,7 @@ article.
 
 If you want to encrypt a mail for more than one recipient, use "C-c C-m C s". You can then add more than certificate for encryption; each certificate can be fetched from DNS or from a local file. However, note that you have to do this for every part of the message (e.g. also for attachments).
 
+Alternatively, you may want to try ExtendSMIME which allows to encrypt to multiple recipients.
 
 == Getting certificate information from the BBDB ==
 
@@ -226,7 +227,8 @@ I strongly suggest you **make a backup of your .bbdb file** before using this fu
 
 -- ''Again: tested only with gnus 5.10.8. This function does not call openssl, instead it uses the information inserted by mml-smime-verify, so this might break with newer version. --DavidEngster
 
-
+==Retrieving certificates via LDAP==
+ExtendSMIME redefines some Gnus functions and adds new ones to include proper support for multiple recipients, retrieval and caching of certificates from LDAP servers, and (via DefaultEncrypt) automatic insertion of MML tags into messages if certificates for all recipients are available.
 
 ----
 CategoryGnus GnusPGG SigningMail EncryptingMail
