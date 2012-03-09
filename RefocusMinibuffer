@@ -28,7 +28,7 @@ This command returns the focus to the minibuffer, no matter which window is curr
 }}}
 
 [new]
-I agree a command for switching to the minibuffer can be more useful than iterations of `C-x o' (`other-window').  Especially since, I have `enable-recursive-minibuffers' turned on.  Here's what's in my .emacs:
+I agree a command for switching to the minibuffer can be more useful than iterations of `C-x o' (`other-window').  Especially since, I have `enable-recursive-minibuffers' turned on.  I believe that's part of the reason for my frustrations. Here's what's in my .emacs:
 
 {{{
 (defun ash-switch-to-minibuffer ()
