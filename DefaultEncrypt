@@ -14,6 +14,9 @@ This works by rebinding the standard keys for message sending
 (`C-c C-c'} and `C-c C-s') as well as by adding a check
 to `gnus-message-setup-hook'.
 
+A signed version of jl-encrypt.el is available
+[http://www.informationelle-selbstbestimmung-im-internet.de/emacs/ over there].
+
 ==Installation==
 Put Lisp:jl-encrypt.el into your load-path and add the following to ~/.emacs.
 {{{
