@@ -1,0 +1,31 @@
+S/MIME support in Gnus is somewhat limited.  ExtendSMIME redefines some Gnus
+functions and adds new ones to include proper support for multiple
+recipients, retrieval and caching of certificates from LDAP servers, and
+(via DefaultEncrypt) automatic insertion of MML tags into messages if
+certificates for all recipients are available.
+
+A signed version of jl-encrypt.el is available
+[http://www.informationelle-selbstbestimmung-im-internet.de/emacs/ over there].
+
+For basic setup information concerning S/MIME in GNU Emacs (Gnus, in
+fact), I recommend that you read Info node
+[https://www.gnu.org/software/emacs/manual/html_node/message/Security.html(message) Security]
+and the Wiki entry GnusSMIME.
+
+==Preliminaries==
+In general, I recommend GnuPG over S/MIME (which is the default for Gnus).
+Unless you are in a restricted setting, say in a university or corporate
+setting, the trust model regarding certificate authorities is broken.
+You may want to recall the recent certificate authority failures concerning
+[https://freedom-to-tinker.com/blog/sjs/diginotar-hack-highlights-critical-failures-our-ssl-web-security-model DigiNotar]
+and [http://www.h-online.com/news/item/Trustwave-issued-a-man-in-the-middle-certificate-1429982.html Trustwave].
+Although the impact of those failures appears to be restricted to SSL
+certificates, I don't see any reason why S/MIME certificates should be more
+trustworthy.
+
+==Installation==
+Put Lisp:jl-smime.el and Lisp:jl-encrypt.el into your load-path and add the following to ~/.emacs.
+{{{
+    (load "jl-smime")
+}}}
+In general, no further configuration should be necessary.
