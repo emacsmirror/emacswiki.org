@@ -73,7 +73,30 @@ candidate) then it can sometimes be more efficient to pass `nil' as
 the ##PREDICATE## and use `icicle-must-pass-after-match-predicate'
 instead.
 
-Here's a gotcha to keep in mind if you use
+Here's something to keep in mind wrt
+`icicle-must-pass-after-match-predicate':
+
+It is often a good idea to use this predicate rather than pass a
+##PREDICATE## argument to `completing-read' or `read-file-name',
+especially when the initial domain of candidates is large and the
+predicate is complex (costly).  It makes little sense to test each
+such candidate using the predicate, rather than test only those
+that match the current minibuffer input.
+
+However, sometimes the ##PREDICATE## argument to `completing-read' or
+`read-file-name', is also used for something else, and in such a
+context you will need to provide it.  In particular, IcompleteMode
+uses it to compute the completions it displays.
+
+For this reason, the '''Icicles''' predefined functions that use
+`icicle-must-pass-after-match-predicate' also test for
+`icomplete-mode'. When that is turned on they use a
+##PREDICATE## argument instead of
+`icicle-must-pass-after-match-predicate'.  You might want to do
+the same in your code.  Just look at the '''Icicles''' code for 
+examples.
+
+And here's a gotcha to keep in mind if you use either
 '''`icicle-must-pass-predicate'''' or
 '''`icicle-must-pass-after-match-predicate'''' with (non-absolute)
 file-name candidates: Since the candidate file names have no
