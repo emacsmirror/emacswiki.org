@@ -7,9 +7,9 @@
 ;; Copyright (C) 2004-2012, Drew Adams, all rights reserved.
 ;; Created: Thu Mar 11 13:40:52 2004
 ;; Version: 21.0
-;; Last-Updated: Sun Jan  1 14:05:07 2012 (-0800)
+;; Last-Updated: Sat Mar 10 10:00:37 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 212
+;;     Update #: 218
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/w32-browser.el
 ;; Keywords: mouse, dired, w32, explorer
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -36,6 +36,9 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2012/03/10 dadams
+;;     dired-w32-browse(-reuse-dir-buffer), w32explore:
+;;       Use subst-char-in-string, not dired-replace-in-string or substitute.
 ;; 2010/01/21 dadams
 ;;     Added: dired(-mouse)-w32-browser-reuse-dir-buffer.
 ;; 2010/01/12 dadams
@@ -106,7 +109,7 @@ If no application is associated with file, then `find-file'."
     (let ((file  (dired-get-filename nil t)))
       (if (file-directory-p file)
           (dired-find-file)
-        (w32-browser (dired-replace-in-string "/" "\\" file)))))
+        (w32-browser (subst-char-in-string ?/ ?\\ file)))))
 
   (defun dired-mouse-w32-browser (event)
     "Run default Windows application associated with file under mouse.
@@ -129,7 +132,7 @@ If file is a directory or no application is associated with file, then
     (let ((file  (dired-get-filename nil t)))
       (if (file-directory-p file)
           (find-alternate-file file)
-        (w32-browser (dired-replace-in-string "/" "\\" file)))))
+        (w32-browser (subst-char-in-string ?/ ?\\ file)))))
 
   (defun dired-mouse-w32-browser-reuse-dir-buffer (event)
     "Like `dired-mouse-w32-browser', but reuse Dired buffers."
@@ -156,7 +159,7 @@ If file is a directory or no application is associated with file, then
   (defun w32explore (file)   
     "Open Windows Explorer to FILE (a file or a folder)."
     (interactive "fFile: ")
-    (let ((w32file (substitute ?\\ ?/ (expand-file-name file))))
+    (let ((w32file (subst-char-in-string ?/ ?\\ (expand-file-name file))))
       (if (file-directory-p w32file)
           (w32-shell-execute "explore" w32file "/e,/select,")
         (w32-shell-execute "open" "explorer" (concat "/e,/select," w32file)))))
