@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Thu May 21 13:31:43 2009 (-0700)
 ;; Version: 22.0
-;; Last-Updated: Fri Mar  9 14:58:23 2012 (-0800)
+;; Last-Updated: Sat Mar 10 15:08:06 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 5244
+;;     Update #: 5279
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-cmd2.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -389,8 +389,8 @@
   ;; custom-variable-p, icicle-bookmark-cleanup,
   ;; icicle-bookmark-cleanup-on-quit, icicle-bookmark-cmd, icicle-bookmark-help-string,
   ;; icicle-bookmark-propertize-candidate, icicle-buffer-list,
-  ;; icicle-explore, icicle-face-list, icicle-file-list, icicle-keyword-list, icicle-make-frame-alist,
-  ;; icicle-select-bookmarked-region
+  ;; icicle-explore, icicle-face-list, icicle-file-list, icicle-keyword-list, icicle-make-bookmark-candidate,
+  ;; icicle-make-frame-alist, icicle-select-bookmarked-region
 
 
 
@@ -473,7 +473,6 @@ Do nothing if FUNCTION has not been defined (`fboundp')."
           (byte-compile-verbose   nil))
       (byte-compile ',function))))
 
-
 (defun icicle-cmd2-after-load-bookmark+ ()
   "Things to do for `icicles-cmd2.el' after loading `bookmark+.el'."
 
@@ -496,6 +495,8 @@ During file-name completion:
     "File to bookmark (autofile): " nil nil nil nil nil ; `read-file-name' args
     (icicle-file-bindings               ; Bindings
      ((icicle-use-candidates-only-once-flag  t)
+      ;; This binding is for `icicle-autofile-action', in `icicle-bind-file-candidate-keys'.
+      (icicle-full-cand-fn                   #'icicle-make-bookmark-candidate)
       (icicle-all-candidates-list-alt-action-fn ; `M-|'
        (lambda (files) (let ((enable-recursive-minibuffers  t))
                          (dired-other-window (cons (read-string "Dired buffer name: ") files)))))))
@@ -617,10 +618,10 @@ During completion (`*': requires library `Bookmark+'):
     nil nil nil 'icicle-filetags-history nil nil
     (icicle-file-bindings               ; Bindings
      ((prompt                             "FILE `C-M-j' TAGS: ")
-      (icicle-full-cand-fn                (lambda (file)
-                                            (list (cons file
-                                                        (bmkp-get-tags
-                                                         (bmkp-get-autofile-bookmark file))))))
+      ;; This binding is for `icicle-autofile-action', in `icicle-bind-file-candidate-keys'.
+      (icicle-full-cand-fn                    #'(lambda (file)
+                                                  (list (cons file (bmkp-get-tags
+                                                                    (bmkp-get-autofile-bookmark file))))))
       (icicle-abs-file-candidates       ; An alist whose items are ((FILE TAG...)).
        (let ((result  ()))
          (dolist (autofile  (bmkp-autofile-alist-only))
@@ -650,10 +651,10 @@ During completion (`*': requires library `Bookmark+'):
     nil nil nil 'icicle-filetags-history nil nil
     (icicle-file-bindings               ; Bindings
      ((prompt                                 "FILE `C-M-j' TAGS: ")
-      (icicle-full-cand-fn                    (lambda (file)
-                                                (list (cons file
-                                                            (bmkp-get-tags
-                                                             (bmkp-get-autofile-bookmark file))))))
+      ;; This binding is for `icicle-autofile-action', in `icicle-bind-file-candidate-keys'.
+      (icicle-full-cand-fn                    #'(lambda (file)
+                                                  (list (cons file (bmkp-get-tags
+                                                                    (bmkp-get-autofile-bookmark file))))))
       (icicle-abs-file-candidates       ; An alist whose items are ((FILE TAG...)).
        (let ((result  ()))
          (dolist (autofile  (bmkp-autofile-alist-only))
@@ -694,7 +695,10 @@ name at point, or if none then the visited file."
      ((init-pref-arg  current-prefix-arg) ; Pre bindings
       (icicle-all-candidates-list-alt-action-fn ; `M-|'
        (lambda (files) (let ((enable-recursive-minibuffers  t))
-                         (dired-other-window (cons (read-string "Dired buffer name: ") files))))))))
+                         (dired-other-window (cons (read-string "Dired buffer name: ") files)))))))
+    (icicle-bind-file-candidate-keys)   ; First code.
+    nil                                 ; Undo code.
+    (icicle-unbind-file-candidate-keys)) ; Last code.
 
   (icicle-maybe-byte-compile-after-load icicle-find-file-handle-bookmark)
 
@@ -707,7 +711,10 @@ name at point, or if none then the visited file."
      ((init-pref-arg  current-prefix-arg) ; Pre bindings
       (icicle-all-candidates-list-alt-action-fn ; `M-|'
        (lambda (files) (let ((enable-recursive-minibuffers  t))
-                         (dired-other-window (cons (read-string "Dired buffer name: ") files))))))))
+                         (dired-other-window (cons (read-string "Dired buffer name: ") files)))))))
+    (icicle-bind-file-candidate-keys)   ; First code.
+    nil                                 ; Undo code.
+    (icicle-unbind-file-candidate-keys)) ; Last code.
 
   (icicle-maybe-byte-compile-after-load icicle-find-file-handle-bookmark-other-window)
 
@@ -738,7 +745,8 @@ at point, or if none then the visited file."
     (lambda (file) (bmkp-find-file file 'MUST-EXIST)) ; Function to perform the action
     "Find file: " nil nil t nil (and icompletep pred) ; `read-file-name' args
     (icicle-file-bindings               ; Bindings
-     ((tags  (bmkp-read-tags-completing nil nil current-prefix-arg)) ; Pre bindings
+     ((tags                                    (bmkp-read-tags-completing ; Pre bindings
+                                                nil nil current-prefix-arg))
       (icicle-all-candidates-list-alt-action-fn ; `M-|'
        (lambda (files) (let ((enable-recursive-minibuffers  t))
                          (dired-other-window (cons (read-string "Dired buffer name: ") files))))))
@@ -749,7 +757,10 @@ at point, or if none then the visited file."
                                                           (bmkp-every
                                                            #'(lambda (tag) (bmkp-has-tag-p bmk tag)) tags)))))
       (icompletep                              (and (boundp 'icomplete-mode)  icomplete-mode))
-      (icicle-must-pass-after-match-predicate  (and (not icompletep)  pred)))))
+      (icicle-must-pass-after-match-predicate  (and (not icompletep)  pred))))
+    (icicle-bind-file-candidate-keys)   ; First code.
+    nil                                 ; Undo code.
+    (icicle-unbind-file-candidate-keys)) ; Last code.
 
   (icicle-maybe-byte-compile-after-load icicle-find-file-all-tags)
 
@@ -759,7 +770,8 @@ at point, or if none then the visited file."
     (lambda (file) (bmkp-find-file-other-window file 'MUST-EXIST)) ; Function to perform the action
     "Find file: " nil nil t nil (and icompletep pred) ; `read-file-name' args
     (icicle-file-bindings               ; Bindings
-     ((tags  (bmkp-read-tags-completing nil nil current-prefix-arg)) ; Pre bindings
+     ((tags                                    (bmkp-read-tags-completing ; Pre bindings
+                                                nil nil current-prefix-arg))
       (icicle-all-candidates-list-alt-action-fn ; `M-|'
        (lambda (files) (let ((enable-recursive-minibuffers  t))
                          (dired-other-window (cons (read-string "Dired buffer name: ") files))))))
@@ -770,7 +782,10 @@ at point, or if none then the visited file."
                                                           (bmkp-every
                                                            #'(lambda (tag) (bmkp-has-tag-p bmk tag)) tags)))))
       (icompletep                              (and (boundp 'icomplete-mode)  icomplete-mode))
-      (icicle-must-pass-after-match-predicate  (and (not icompletep)  pred)))))
+      (icicle-must-pass-after-match-predicate  (and (not icompletep)  pred))))
+    (icicle-bind-file-candidate-keys)   ; First code.
+    nil                                 ; Undo code.
+    (icicle-unbind-file-candidate-keys)) ; Last code.
 
   (icicle-maybe-byte-compile-after-load icicle-find-file-all-tags-other-window)
 
@@ -782,7 +797,7 @@ at point, or if none then the visited file."
     (lambda (file) (bmkp-find-file file 'MUST-EXIST)) ; Function to perform the action
     "Find file: " nil nil t nil (and icompletep pred) ; `read-file-name' args
     (icicle-file-bindings               ; Bindings
-     ((regexp  (read-string "Regexp for tags: ")) ; Pre bindings
+     ((regexp                                  (read-string "Regexp for tags: ")) ; Pre bindings
       (icicle-all-candidates-list-alt-action-fn ; `M-|'
        (lambda (files) (let ((enable-recursive-minibuffers  t))
                          (dired-other-window (cons (read-string "Dired buffer name: ") files))))))
@@ -795,7 +810,10 @@ at point, or if none then the visited file."
                                                                (string-match regexp (bmkp-tag-name tag)))
                                                            btgs)))))
       (icompletep                              (and (boundp 'icomplete-mode)  icomplete-mode))
-      (icicle-must-pass-after-match-predicate  (and (not icompletep)  pred)))))
+      (icicle-must-pass-after-match-predicate  (and (not icompletep)  pred))))
+    (icicle-bind-file-candidate-keys)   ; First code.
+    nil                                 ; Undo code.
+    (icicle-unbind-file-candidate-keys)) ; Last code.
 
   (icicle-maybe-byte-compile-after-load icicle-find-file-all-tags-regexp)
 
@@ -805,7 +823,7 @@ at point, or if none then the visited file."
     (lambda (file) (bmkp-find-file-other-window file 'MUST-EXIST)) ; Function to perform the action
     "Find file: " nil nil t nil (and icompletep pred) ; `read-file-name' args
     (icicle-file-bindings               ; Bindings
-     ((regexp  (read-string "Regexp for tags: ")) ; Pre bindings
+     ((regexp                                  (read-string "Regexp for tags: ")) ; Pre bindings
       (icicle-all-candidates-list-alt-action-fn ; `M-|'
        (lambda (files) (let ((enable-recursive-minibuffers  t))
                          (dired-other-window (cons (read-string "Dired buffer name: ") files))))))
@@ -818,7 +836,10 @@ at point, or if none then the visited file."
                                                                (string-match regexp (bmkp-tag-name tag)))
                                                            btgs)))))
       (icompletep                              (and (boundp 'icomplete-mode)  icomplete-mode))
-      (icicle-must-pass-after-match-predicate  (and (not icompletep)  pred)))))
+      (icicle-must-pass-after-match-predicate  (and (not icompletep)  pred))))
+    (icicle-bind-file-candidate-keys)   ; First code.
+    nil                                 ; Undo code.
+    (icicle-unbind-file-candidate-keys)) ; Last code.
 
   (icicle-maybe-byte-compile-after-load icicle-find-file-all-tags-regexp-other-window)
 
@@ -835,7 +856,8 @@ at point, or if none then the visited file."
     (lambda (file) (bmkp-find-file file 'MUST-EXIST)) ; Function to perform the action
     "Find file: " nil nil t nil (and icompletep pred) ; `read-file-name' args
     (icicle-file-bindings               ; Bindings
-     ((tags  (bmkp-read-tags-completing nil nil current-prefix-arg)) ; Pre bindings
+     ((tags                                    (bmkp-read-tags-completing ; Pre bindings
+                                                nil nil current-prefix-arg))
       (icicle-all-candidates-list-alt-action-fn ; `M-|'
        (lambda (files) (let ((enable-recursive-minibuffers  t))
                          (dired-other-window (cons (read-string "Dired buffer name: ") files))))))
@@ -846,7 +868,10 @@ at point, or if none then the visited file."
                                                           (bmkp-some
                                                            #'(lambda (tag) (bmkp-has-tag-p bmk tag)) tags)))))
       (icompletep                              (and (boundp 'icomplete-mode)  icomplete-mode))
-      (icicle-must-pass-after-match-predicate  (and (not icompletep)  pred)))))
+      (icicle-must-pass-after-match-predicate  (and (not icompletep)  pred))))
+    (icicle-bind-file-candidate-keys)   ; First code.
+    nil                                 ; Undo code.
+    (icicle-unbind-file-candidate-keys)) ; Last code.
 
   (icicle-maybe-byte-compile-after-load icicle-find-file-some-tags)
 
@@ -856,7 +881,8 @@ at point, or if none then the visited file."
     (lambda (file) (bmkp-find-file-other-window file 'MUST-EXIST)) ; Function to perform the action
     "Find file: " nil nil t nil (and icompletep pred) ; `read-file-name' args
     (icicle-file-bindings               ; Bindings
-     ((tags  (bmkp-read-tags-completing nil nil current-prefix-arg)) ; Pre bindings
+     ((tags                                    (bmkp-read-tags-completing ; Pre bindings
+                                                nil nil current-prefix-arg))
       (icicle-all-candidates-list-alt-action-fn ; `M-|'
        (lambda (files) (let ((enable-recursive-minibuffers  t))
                          (dired-other-window (cons (read-string "Dired buffer name: ") files))))))
@@ -867,7 +893,10 @@ at point, or if none then the visited file."
                                                           (bmkp-some
                                                            #'(lambda (tag) (bmkp-has-tag-p bmk tag)) tags)))))
       (icompletep                              (and (boundp 'icomplete-mode)  icomplete-mode))
-      (icicle-must-pass-after-match-predicate  (and (not icompletep)  pred)))))
+      (icicle-must-pass-after-match-predicate  (and (not icompletep)  pred))))
+    (icicle-bind-file-candidate-keys)   ; First code.
+    nil                                 ; Undo code.
+    (icicle-unbind-file-candidate-keys)) ; Last code.
 
   (icicle-maybe-byte-compile-after-load icicle-find-file-some-tags-other-window)
 
@@ -879,7 +908,7 @@ at point, or if none then the visited file."
     (lambda (file) (bmkp-find-file-other-window file 'MUST-EXIST)) ; Function to perform the action
     "Find file: " nil nil t nil (and icompletep pred) ; `read-file-name' args
     (icicle-file-bindings               ; Bindings
-     ((regexp  (read-string "Regexp for tags: ")) ; Pre bindings
+     ((regexp                                  (read-string "Regexp for tags: ")) ; Pre bindings
       (icicle-all-candidates-list-alt-action-fn ; `M-|'
        (lambda (files) (let ((enable-recursive-minibuffers  t))
                          (dired-other-window (cons (read-string "Dired buffer name: ") files))))))
@@ -892,7 +921,10 @@ at point, or if none then the visited file."
                                                                (string-match regexp (bmkp-tag-name tag)))
                                                            btgs)))))
       (icompletep                              (and (boundp 'icomplete-mode)  icomplete-mode))
-      (icicle-must-pass-after-match-predicate  (and (not icompletep)  pred)))))
+      (icicle-must-pass-after-match-predicate  (and (not icompletep)  pred))))
+    (icicle-bind-file-candidate-keys)   ; First code.
+    nil                                 ; Undo code.
+    (icicle-unbind-file-candidate-keys)) ; Last code.
 
   (icicle-maybe-byte-compile-after-load icicle-find-file-some-tags-regexp)
 
@@ -902,7 +934,7 @@ at point, or if none then the visited file."
     (lambda (file) (bmkp-find-file-other-window file 'MUST-EXIST)) ; Function to perform the action
     "Find file: " nil nil t nil (and icompletep pred) ; `read-file-name' args
     (icicle-file-bindings               ; Bindings
-     ((regexp  (read-string "Regexp for tags: ")) ; Pre bindings
+     ((regexp                                  (read-string "Regexp for tags: ")) ; Pre bindings
       (icicle-all-candidates-list-alt-action-fn ; `M-|'
        (lambda (files) (let ((enable-recursive-minibuffers  t))
                          (dired-other-window (cons (read-string "Dired buffer name: ") files))))))
@@ -915,7 +947,10 @@ at point, or if none then the visited file."
                                                                (string-match regexp (bmkp-tag-name tag)))
                                                            btgs)))))
       (icompletep                              (and (boundp 'icomplete-mode)  icomplete-mode))
-      (icicle-must-pass-after-match-predicate  (and (not icompletep)  pred)))))
+      (icicle-must-pass-after-match-predicate  (and (not icompletep)  pred))))
+    (icicle-bind-file-candidate-keys)   ; First code.
+    nil                                 ; Undo code.
+    (icicle-unbind-file-candidate-keys)) ; Last code.
 
   (icicle-maybe-byte-compile-after-load icicle-find-file-some-tags-regexp-other-window)
 
@@ -4652,6 +4687,7 @@ future search commands, not the current one.)" ; Doc string
    (completion-ignore-case                   bookmark-completion-ignore-case)
    (prompt                                   "Search bookmark: ")
    (regexp                                   (icicle-search-read-context-regexp))
+   (bookmark-automatically-show-annotations  nil) ; Do not show annotations
    (icicle-list-use-nth-parts                '(1))
    (icicle-candidate-properties-alist        (if (not icicle-show-multi-completion-flag)
                                                  nil
@@ -4663,7 +4699,19 @@ future search commands, not the current one.)" ; Doc string
    (icicle-whole-candidate-as-text-prop-p    t)
    (icicle-transform-before-sort-p           t)
    (icicle-delete-candidate-object           'icicle-bookmark-delete-action)
-   (bookmark-automatically-show-annotations  nil) ; Do not show annotations
+   (icicle-candidates-alist
+    (if (not (featurep 'bookmark+))
+        (mapcar #'(lambda (cand)
+                    (list (icicle-candidate-short-help (icicle-bookmark-help-string cand)
+                                                       (icicle-bookmark-propertize-candidate cand))))
+                (bookmark-all-names))   ; Loads bookmarks file, defining `bookmark-alist'.
+      (bookmark-maybe-load-default-file) ; Loads bookmarks file, defining `bookmark-alist'.
+      (mapcar #'icicle-make-bookmark-candidate
+              (or (and (or (and (not icicle-bookmark-refresh-cache-flag)
+                                (not (consp current-prefix-arg)))
+                           (and icicle-bookmark-refresh-cache-flag (consp current-prefix-arg)))
+                       bmkp-sorted-alist)
+                  (setq bmkp-sorted-alist  (bmkp-sort-omit bookmark-alist))))))
    (icicle-sort-orders-alist
     (append '(("in *Bookmark List* order") ; Renamed from "turned OFF'.
               ("by bookmark name" . icicle-alpha-p))
@@ -4699,48 +4747,7 @@ future search commands, not the current one.)" ; Doc string
             (if current-prefix-arg
                 (bmkp-describe-bookmark-internals cand)
               (bmkp-describe-bookmark cand))
-          (icicle-msg-maybe-in-minibuffer (icicle-bookmark-help-string cand)))))
-   (icicle-candidates-alist
-    (if (not (featurep 'bookmark+))
-        (mapcar #'(lambda (cand)
-                    (list (icicle-candidate-short-help (icicle-bookmark-help-string cand)
-                                                       (icicle-bookmark-propertize-candidate cand))))
-                (bookmark-all-names))   ; Loads bookmarks file, defining `bookmark-alist'.
-      (bookmark-maybe-load-default-file) ; Loads bookmarks file, defining `bookmark-alist'.
-      (mapcar (if icicle-show-multi-completion-flag
-                  #'(lambda (bmk)
-                      ;; Ignore errors, e.g. from bad or stale bookmark records.
-                      (icicle-condition-case-no-debug nil
-                          (let* ((bname     (bookmark-name-from-full-record bmk))
-                                 (guts      (bookmark-get-bookmark-record bmk))
-                                 (file      (bookmark-get-filename bmk))
-                                 (buf       (bmkp-get-buffer-name bmk))
-                                 (file/buf  (if (and buf (equal file bmkp-non-file-filename))
-                                                buf
-                                              file))
-                                 (tags      (bmkp-get-tags bmk)))
-                            (cons `(,(icicle-candidate-short-help
-                                      (icicle-bookmark-help-string bname)
-                                      (icicle-bookmark-propertize-candidate bname))
-                                    ,file/buf
-                                    ,@(and tags (list (format "%S" tags))))
-                                  guts))
-                        (error nil)))
-                #'(lambda (bmk)
-                    ;; Ignore errors, e.g. from bad or stale bookmark records.
-                    (icicle-condition-case-no-debug nil
-                        (let ((bname  (bookmark-name-from-full-record bmk))
-                              (guts   (bookmark-get-bookmark-record bmk)))
-                          (cons (icicle-candidate-short-help
-                                 (icicle-bookmark-help-string bname)
-                                 (icicle-bookmark-propertize-candidate bname))
-                                guts))
-                      (error nil))))
-              (or (and (or (and (not icicle-bookmark-refresh-cache-flag)
-                                (not (consp current-prefix-arg)))
-                           (and icicle-bookmark-refresh-cache-flag (consp current-prefix-arg)))
-                       bmkp-sorted-alist)
-                  (setq bmkp-sorted-alist  (bmkp-sort-omit bookmark-alist)))))))
+          (icicle-msg-maybe-in-minibuffer (icicle-bookmark-help-string cand))))))
   (progn                                ; First code
     (require 'bookmark)
     (when (featurep 'bookmark+)
