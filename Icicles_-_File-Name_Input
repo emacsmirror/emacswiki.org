@@ -15,7 +15,7 @@ both of these, and it enhances each of them in various ways for
 use in your own EmacsLisp code. These two functions can each be used to read file-name input, but
 they do so in very different ways.
 
-'''Note:''' In addition to the usual '''Icicles''' key bindings, during file-name completion you can use the following keys:
+'''Note:''' In addition to the usual '''Icicles''' key bindings, during file-name completion you can use the following keys.  (These minibuffer bindings are also available for [[BookmarkPlus#AutofileBookmarks|autofile bookmark]] commands.)
 
 * '''`C-backspace'''' (`icicle-up-directory') to navigate up the directory hierarchy.  It removes the last directory component (and any partial file name) from your minibuffer input.  (For Emacs versions before Emacs 22, this feature is available only for completion of absolute file names.)
 
