@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Tue Feb 28 09:38:04 2012 (-0800)
+;; Last-Updated: Sat Mar 10 15:38:03 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 26495
+;;     Update #: 26501
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-doc1.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -6192,7 +6192,8 @@
 ;;  ways.
 ;;
 ;;  In addition to the usual Icicles key bindings, during file-name
-;;  completion you can use the following keys:
+;;  completion you can use the following keys.  (These minibuffer
+;;  bindings are also available for autofile bookmark commands.)
 ;;
 ;;  * `C-backspace' (`icicle-up-directory') to navigate up the
 ;;    directory hierarchy.  It removes the last directory component
