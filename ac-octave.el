@@ -1,6 +1,6 @@
 ;;; ac-octave.el --- An auto-complete source for Octave
 
-;; Copyright (c) 2011 coldnew <coldnew.tw@gmail.com>
+;; Copyright (c) 2012 coldnew <coldnew.tw@gmail.com>
 ;;
 ;; Author: coldnew <coldnew.tw@gmail.com>
 ;; Keywords: Octave, auto-complete, completion
@@ -40,6 +40,10 @@
 ;; (add-hook 'octave-mode-hook
 ;; '(lambda () (ac-octave-mode-setup)))
 ;;
+
+;;; NOTE:
+;; If you can't use ac-octave in octave-mode,
+;; check whether auto-complete-mode is running or not.
 
 ;;; Code:
 
