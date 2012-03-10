@@ -587,6 +587,35 @@ hand, and providing stability in my setup: eshell is always located in
 the viewer pane, and not in the SC panes.
 
 ----
+
+[new]
+
+\\misc customizations\\
+
+Here's a way to start SC with no attributes (in case one doesn't need them everyday):
+
+    (add-hook 'sr-start-hook (lambda ()
+                               (sr-toggle-attributes)))
+
+Here's a way to reset SC panes if one have messed them up:
+
+    (defun sr-reset-panes ()
+      "Hard-reset SC panes."
+      (interactive)
+      (when sr-running (sr-setup-windows)))
+
+Here's a way to sunrise-cd in the same dir:
+
+    (defadvice sunrise-cd
+      (after boris-advice/sunrise-cd ())
+      "Forces both SC panes into the current file's directory when using sunrise-cd"
+      (when sr-running
+        (sr-synchronize-panes)))
+    (ad-activate 'sunrise-cd)
+
+----
+
+
 CategoryDirectories
 CategoryEmulation
  utility. Finding files by name (C-c C-n) or by
