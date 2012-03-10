@@ -604,7 +604,7 @@ Here's a way to reset SC panes if one have messed them up:
       (interactive)
       (when sr-running (sr-setup-windows)))
 
-Here's a way to sunrise-cd in the same dir:
+Here's a way to have both panes in the same dir when doing sunrise-cd:
 
     (defadvice sunrise-cd
       (after boris-advice/sunrise-cd ())
