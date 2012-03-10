@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Fri Mar  9 15:09:25 2012 (-0800)
+;; Last-Updated: Sat Mar 10 15:25:44 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 8103
+;;     Update #: 8145
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-chg.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -85,6 +85,10 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd1.el'")
 ;;
+;; 2012/03/10 dadams
+;;     Added: icicle-make-bookmark-candidate (factored out).
+;;     icicle-bookmark(-set|-list|-other-window):
+;;       Use icicle-make-bookmark-candidate to define icicle-candidates-alist.
 ;; 2012/03/09 dadams
 ;;     icicle-bookmarked-file-list: Call bookmark-maybe-load-default-file.
 ;;     icicle-customize-apropos(-faces|-groups|-options(-of-type)), icicle-(re)set-option-to-(t|nil),
@@ -560,6 +564,11 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd2.el'")
 ;;
+;; 2012/03/10 dadams
+;;     icicle-bookmark-a-file, icicle-find-file-tagged(-other-window): Bind icicle-full-cand-fn.
+;;     icicle-find-file-(handle-bookmark|(all|some)-tags(-regexp))(-other-window):
+;;       First code, last code: Call icicle-(un)bind-file-candidate-keys.
+;;     icicle-search-bookmark: Use icicle-make-bookmark-candidate to define icicle-candidates-alist.
 ;; 2012/03/09 dadams
 ;;     icicle-untag-a-file, icicle-find-file-(all|some)-tags(-regexp)(-other-window), icicle-where-is,
 ;;       icicle-apropos-(variable|option|function|command), icicle-apply,
@@ -2807,6 +2816,11 @@
 ;;       macros needs to be byte-compiled anew after loading the updated macros.
 ;; ****************************************************************************************************
 ;;
+;; 2012/03/10 dadams
+;;     icicle-define-bookmark-command-1, icicle-define-search-bookmark-command:
+;;       First code, last code: When autofile, call icicle-(un)bind-file-candidate-keys.
+;;       Use icicle-make-bookmark-candidate (new) to define icicle-candidates-alist.
+;;       Bind icicle-full-cand-fn to icicle-make-bookmark-candidate, for icicle-autofile-action.
 ;; 2012/01/20 dadams
 ;;     icicle-define-bookmark-command-1: Added info about refreshing tags to doc string of tags cmds.
 ;; 2011/11/27 dadams
@@ -2975,6 +2989,12 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-mcmd.el'")
 ;;
+;; 2012/03/10 dadams
+;;     icicle-autofile-action:
+;;       Bind/restore completion vars around reading tags.
+;;       Re-complete at end, instead of icicle-update-and-next, so can see updates.
+;;     icicle-mouse-candidate-action-1:
+;;       No need to call icicle-update-and-next if called icicle-remove-candidate-display-others.
 ;; 2012/02/28 dadams
 ;;     Reverted last change - it broke completion (called from *-prefix-*).
 ;;       Trying a thoughtless hack: If INPUT then do not recompute completions.
