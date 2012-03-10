@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Fri Mar  9 14:37:03 2012 (-0800)
+;; Last-Updated: Sat Mar 10 14:53:19 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 23388
+;;     Update #: 23434
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-cmd1.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -260,6 +260,7 @@
 ;;    `icicle-kmacro-action', `icicle-lisp-completion-at-point',
 ;;    (+)`icicle-locate-file-1', `icicle-locate-file-action',
 ;;    `icicle-locate-file-other-window-action',
+;;    `icicle-make-bookmark-candidate',
 ;;    `icicle-make-file+date-candidate', `icicle-make-frame-alist',
 ;;    `icicle-make-window-alist',
 ;;    `icicle-bookmark-propertize-candidate',
@@ -3263,6 +3264,19 @@ keys at the top level."
                                                             icicle-transform-function))
                (icicle-whole-candidate-as-text-prop-p  t)
                (icicle-transform-before-sort-p         t)
+               (icicle-candidates-alist
+                (if (not (featurep 'bookmark+))
+                    (mapcar #'(lambda (cand)
+                                (list (icicle-candidate-short-help
+                                       (icicle-bookmark-help-string cand)
+                                       (icicle-bookmark-propertize-candidate cand))))
+                            (bookmark-all-names)) ; Loads bookmarks file, defining `bookmark-alist'.
+                  (bookmark-maybe-load-default-file) ; Loads bookmarks file, defining `bookmark-alist'.
+                  (mapcar #'icicle-make-bookmark-candidate
+                          (bmkp-sort-omit
+                           (and (or (not parg) (consp parg)) ; No numeric PARG: all bookmarks.
+                                (or (bmkp-specific-buffers-alist-only)
+                                    bookmark-alist))))))
                (icicle-sort-orders-alist
                 (append '(("in *Bookmark List* order") ; Renamed from "turned OFF'.
                           ("by bookmark name" . icicle-alpha-p))
@@ -3304,43 +3318,7 @@ keys at the top level."
                         (if current-prefix-arg
                             (bmkp-describe-bookmark-internals cand)
                           (bmkp-describe-bookmark cand))
-                      (icicle-msg-maybe-in-minibuffer (icicle-bookmark-help-string cand)))))
-               (icicle-candidates-alist
-                (if (not (featurep 'bookmark+))
-                    (mapcar #'(lambda (cand)
-                                (list (icicle-candidate-short-help
-                                       (icicle-bookmark-help-string cand)
-                                       (icicle-bookmark-propertize-candidate cand))))
-                            (bookmark-all-names)) ; Loads bookmarks file.
-                  (bookmark-maybe-load-default-file) ; Loads bookmarks file.
-                  (mapcar (if icicle-show-multi-completion-flag
-                              #'(lambda (bmk)
-                                  (let* ((bname     (bookmark-name-from-full-record bmk))
-                                         (guts      (bookmark-get-bookmark-record bmk))
-                                         (tags      (bmkp-get-tags bmk))
-                                         (file      (bookmark-get-filename bmk))
-                                         (buf       (bmkp-get-buffer-name bmk))
-                                         (file/buf
-                                          (if (and buf (equal file bmkp-non-file-filename))
-                                              buf
-                                            file)))
-                                    (cons `(,(icicle-candidate-short-help
-                                              (icicle-bookmark-help-string bname)
-                                              (icicle-bookmark-propertize-candidate bname))
-                                            ,file/buf
-                                            ,@(and tags (list (format "%S" tags))))
-                                          guts)))
-                            #'(lambda (bmk)
-                                (let ((bname  (bookmark-name-from-full-record bmk))
-                                      (guts   (bookmark-get-bookmark-record bmk)))
-                                  (cons (icicle-candidate-short-help
-                                         (icicle-bookmark-help-string bname)
-                                         (icicle-bookmark-propertize-candidate bname))
-                                        guts))))
-                          (bmkp-sort-omit
-                           (and (or (not parg) (consp parg)) ; No numeric PARG: all bookmarks.
-                                (or (bmkp-specific-buffers-alist-only)
-                                    bookmark-alist)))))))
+                      (icicle-msg-maybe-in-minibuffer (icicle-bookmark-help-string cand))))))
            (require 'bookmark)
            (when (featurep 'bookmark+)
              ;; Bind keys to narrow bookmark candidates by type.  Lax is for multi-completion case.
@@ -3404,6 +3382,49 @@ keys at the top level."
                  (bookmark-edit-annotation bname)
                (goto-char bookmark-current-point))))
       (icicle-bookmark-cleanup))))
+
+(defun icicle-make-bookmark-candidate (bookmark)
+  "Return a propertized full bookmark candidate for BOOKMARK.
+BOOKMARK is a bookmark name or a bookmark record.
+The return value is of the form (DISPLAY . RECORD), where:
+
+ DISPLAY is the display candidate, propertized with
+  `icicle-bookmark-help-string' and `icicle-bookmark-propertize-candidate'.
+
+ RECORD is the full BOOKMARK record.
+
+If option `icicle-show-multi-completion-flag' is non-nil then DISPLAY
+is a multi-completion with three parts:
+
+ bookmark name
+ target file for the bookmark
+ tags in the bookmark
+
+If the option value is nil then DISPLAY is just the bookmark name."
+  (setq bookmark  (bookmark-get-bookmark bookmark))
+  (icicle-condition-case-no-debug nil   ; Ignore errors, e.g. from bad or stale bookmark records.
+      (if icicle-show-multi-completion-flag
+          (let* ((bname     (bookmark-name-from-full-record bookmark))
+                 (guts      (bookmark-get-bookmark-record bookmark))
+                 (file      (bookmark-get-filename bookmark))
+                 (buf       (bmkp-get-buffer-name bookmark))
+                 (file/buf  (if (and buf (equal file bmkp-non-file-filename))
+                                buf
+                              file))
+                 (tags      (bmkp-get-tags bookmark)))
+            (cons `(,(icicle-candidate-short-help
+                      (icicle-bookmark-help-string bname)
+                      (icicle-bookmark-propertize-candidate bname))
+                    ,file/buf
+                    ,@(and tags (list (format "%S" tags))))
+                  guts))
+        (let ((bname  (bookmark-name-from-full-record bookmark))
+              (guts   (bookmark-get-bookmark-record bookmark)))
+          (cons (icicle-candidate-short-help
+                 (icicle-bookmark-help-string bname)
+                 (icicle-bookmark-propertize-candidate bname))
+                guts)))
+    (error nil)))
 
 ;;;###autoload (autoload 'icicle-bookmark "icicles-cmd1.el")
 (icicle-define-command icicle-bookmark  ; Bound to `C-x j j', `C-x p b', `C-x r b'.
@@ -3554,35 +3575,7 @@ position is highlighted."               ; Doc string
                                                        (icicle-bookmark-propertize-candidate cand))))
                 (bookmark-all-names))   ; Loads bookmarks file, defining `bookmark-alist'.
       (bookmark-maybe-load-default-file) ; Loads bookmarks file, defining `bookmark-alist'.
-      (mapcar (if icicle-show-multi-completion-flag
-                  #'(lambda (bmk)
-                      ;; Ignore errors, e.g. from bad or stale bookmark records.
-                      (icicle-condition-case-no-debug nil
-                          (let* ((bname     (bookmark-name-from-full-record bmk))
-                                 (guts      (bookmark-get-bookmark-record bmk))
-                                 (file      (bookmark-get-filename bmk))
-                                 (buf       (bmkp-get-buffer-name bmk))
-                                 (file/buf  (if (and buf (equal file bmkp-non-file-filename))
-                                                buf
-                                              file))
-                                 (tags      (bmkp-get-tags bmk)))
-                            (cons `(,(icicle-candidate-short-help
-                                      (icicle-bookmark-help-string bname)
-                                      (icicle-bookmark-propertize-candidate bname))
-                                    ,file/buf
-                                    ,@(and tags (list (format "%S" tags))))
-                                  guts))
-                        (error nil)))
-                #'(lambda (bmk)
-                    ;; Ignore errors, e.g. from bad or stale bookmark records.
-                    (icicle-condition-case-no-debug nil
-                        (let ((bname  (bookmark-name-from-full-record bmk))
-                              (guts   (bookmark-get-bookmark-record bmk)))
-                          (cons (icicle-candidate-short-help
-                                 (icicle-bookmark-help-string bname)
-                                 (icicle-bookmark-propertize-candidate bname))
-                                guts))
-                      (error nil))))
+      (mapcar #'icicle-make-bookmark-candidate
               (or (and (or (and (not icicle-bookmark-refresh-cache-flag)
                                 (not (consp current-prefix-arg)))
                            (and icicle-bookmark-refresh-cache-flag (consp current-prefix-arg)))
@@ -3663,35 +3656,7 @@ Same as `icicle-bookmark', but uses another window." ; Doc string
                                                        (icicle-bookmark-propertize-candidate cand))))
                 (bookmark-all-names))   ; Loads bookmarks file, defining `bookmark-alist'.
       (bookmark-maybe-load-default-file) ; Loads bookmarks file, defining `bookmark-alist'.
-      (mapcar (if icicle-show-multi-completion-flag
-                  #'(lambda (bmk)
-                      ;; Ignore errors, e.g. from bad or stale bookmark records.
-                      (icicle-condition-case-no-debug nil
-                          (let* ((bname     (bookmark-name-from-full-record bmk))
-                                 (guts      (bookmark-get-bookmark-record bmk))
-                                 (file      (bookmark-get-filename bmk))
-                                 (buf       (bmkp-get-buffer-name bmk))
-                                 (file/buf  (if (and buf (equal file bmkp-non-file-filename))
-                                                buf
-                                              file))
-                                 (tags      (bmkp-get-tags bmk)))
-                            (cons `(,(icicle-candidate-short-help
-                                      (icicle-bookmark-help-string bname)
-                                      (icicle-bookmark-propertize-candidate bname))
-                                    ,file/buf
-                                    ,@(and tags (list (format "%S" tags))))
-                                  guts))
-                        (error nil)))
-                #'(lambda (bmk)
-                    ;; Ignore errors, e.g. from bad or stale bookmark records.
-                    (icicle-condition-case-no-debug nil
-                        (let ((bname  (bookmark-name-from-full-record bmk))
-                              (guts   (bookmark-get-bookmark-record bmk)))
-                          (cons (icicle-candidate-short-help
-                                 (icicle-bookmark-help-string bname)
-                                 (icicle-bookmark-propertize-candidate bname))
-                                guts))
-                      (error nil))))
+      (mapcar #'icicle-make-bookmark-candidate
               (or (and (or (and (not icicle-bookmark-refresh-cache-flag)
                                 (not (consp current-prefix-arg)))
                            (and icicle-bookmark-refresh-cache-flag (consp current-prefix-arg)))
@@ -6748,42 +6713,13 @@ Non-interactively:
                 bookmark-alist)
       (unless types  (setq types '(all)))
       (dolist (type  types)
-        (setq icicle-candidates-alist
-              (nconc icicle-candidates-alist
-                     (mapcar (if icicle-show-multi-completion-flag
-                                 #'(lambda (bmk)
-                                     ;; Ignore errors, e.g. from bad bookmark.
-                                     (icicle-condition-case-no-debug nil
-                                         (let* ((bname     (bookmark-name-from-full-record bmk))
-                                                (guts      (bookmark-get-bookmark-record bmk))
-                                                (file      (bookmark-get-filename bmk))
-                                                (buf       (bmkp-get-buffer-name bmk))
-                                                (file/buf
-                                                 (if (and buf (equal file bmkp-non-file-filename))
-                                                     buf
-                                                   file))
-                                                (tags      (bmkp-get-tags bmk)))
-                                           (cons `(,(icicle-candidate-short-help
-                                                     (icicle-bookmark-help-string bname)
-                                                     (icicle-bookmark-propertize-candidate bname))
-                                                   ,file/buf
-                                                   ,@(and tags (list (format "%S" tags))))
-                                                 guts))
-                                       (error nil)))
-                               #'(lambda (bmk)
-                                   ;; Ignore errors, e.g. from bad bookmark.
-                                   (icicle-condition-case-no-debug nil
-                                       (let ((bname  (bookmark-name-from-full-record bmk))
-                                             (guts   (bookmark-get-bookmark-record bmk)))
-                                         (cons (icicle-candidate-short-help
-                                                (icicle-bookmark-help-string bname)
-                                                (icicle-bookmark-propertize-candidate bname))
-                                               guts))
-                                     (error nil))))
-                             (bmkp-sort-omit
-                              (if (eq type 'all)
-                                  bookmark-alist
-                                (funcall (intern (format "bmkp-%s-alist-only" type)))))))))))
+        (setq icicle-candidates-alist  (nconc icicle-candidates-alist
+                                              (mapcar #'icicle-make-bookmark-candidate
+                                                      (bmkp-sort-omit
+                                                       (if (eq type 'all)
+                                                           bookmark-alist
+                                                         (funcall (intern (format "bmkp-%s-alist-only"
+                                                                                  type)))))))))))
   (icicle-bookmark-cleanup-on-quit)     ; Undo code
   (prog1 (setq chosen-bmks  (nreverse (delete "" chosen-bmks))) ; Last code - return the list.
     (icicle-bookmark-cleanup)
