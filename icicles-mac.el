@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:24:28 2006
 ;; Version: 22.0
-;; Last-Updated: Fri Jan 20 09:35:49 2012 (-0800)
+;; Last-Updated: Sat Mar 10 11:23:18 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 952
+;;     Update #: 980
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-mac.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -908,6 +908,10 @@ to update the list of tags available for completion." "")) ; Doc string
      (icicle-whole-candidate-as-text-prop-p  t)
      (icicle-transform-before-sort-p         t)
      (icicle-delete-candidate-object         'icicle-bookmark-delete-action)
+     ;; This binding is for `icicle-autofile-action', in `icicle-bind-file-candidate-keys'.
+     (icicle-full-cand-fn                    (and (equal ,type "autofile")
+                                              #'icicle-make-bookmark-candidate))
+     (icicle-candidates-alist                (mapcar #'icicle-make-bookmark-candidate bmk-alist))
      (icicle-sort-orders-alist
       (append
        '(("in *Bookmark List* order")	; Renamed from "turned OFF'.
@@ -949,42 +953,11 @@ to update the list of tags available for completion." "")) ; Doc string
             (setq cand  (cons (caar cand) (cdr cand))))
           (if current-prefix-arg
               (bmkp-describe-bookmark-internals cand)
-            (bmkp-describe-bookmark cand))))
-     (icicle-candidates-alist
-      (mapcar (if icicle-show-multi-completion-flag
-                  #'(lambda (bmk)
-                      ;; Ignore errors, e.g. from bad or stale bookmark records.
-                      (icicle-condition-case-no-debug nil
-                          (let* ((bname     (bookmark-name-from-full-record bmk))
-                                 (guts      (bookmark-get-bookmark-record bmk))
-                                 (file      (bookmark-get-filename bmk))
-                                 (buf       (bmkp-get-buffer-name bmk))
-                                 (file/buf  (if (and buf (equal file bmkp-non-file-filename))
-                                                buf
-                                              file))
-                                 (tags      (bmkp-get-tags bmk)))
-                            ;; Emacs 20 byte-compiler bug prevents using backslash syntax here.
-                            (cons (append (list (icicle-candidate-short-help
-                                                 (icicle-bookmark-help-string bname)
-                                                 (icicle-bookmark-propertize-candidate bname))
-                                                file/buf)
-                                          (and tags (list (format "%S" tags))))
-                                  guts))
-                        (error nil)))
-                #'(lambda (bmk)
-                    ;; Ignore errors, e.g. from bad or stale bookmark records.
-                    (icicle-condition-case-no-debug nil
-                        (let ((bname  (bookmark-name-from-full-record bmk))
-                              (guts   (bookmark-get-bookmark-record bmk)))
-                          (cons (icicle-candidate-short-help
-                                 (icicle-bookmark-help-string bname)
-                                 (icicle-bookmark-propertize-candidate bname))
-                                guts))
-                      (error nil))))
-       bmk-alist)))
-    nil                                 ; First code
+            (bmkp-describe-bookmark cand)))))
+    (when (equal ,type "autofile") (icicle-bind-file-candidate-keys)) ; First code
     (icicle-bookmark-cleanup-on-quit)	; Undo code
-    (icicle-bookmark-cleanup)))         ; Last code
+    (progn (when (equal ,type "autofile") (icicle-unbind-file-candidate-keys))
+           (icicle-bookmark-cleanup)))) ; Last code
 
 ;; Similar to `icicle-define-bookmark-command-1'.  Could combine them.
 (defmacro icicle-define-search-bookmark-command (type &optional prompt &rest args)
@@ -1025,6 +998,13 @@ command")))
      (icicle-whole-candidate-as-text-prop-p    t)
      (icicle-transform-before-sort-p           t)
      (icicle-delete-candidate-object           'icicle-bookmark-delete-action)
+     ;; This binding is for `icicle-autofile-action', in `icicle-bind-file-candidate-keys'.
+     (icicle-full-cand-fn                      (and (equal ,type "autofile")
+                                                #'icicle-make-bookmark-candidate))
+     (icicle-candidates-alist                  (mapcar #'icicle-make-bookmark-candidate
+                                                (bmkp-sort-omit
+                                                 (funcall ',(intern (format "bmkp-%s-alist-only" type))
+                                                  ,@args))))
      (regexp                                   (icicle-search-read-context-regexp))
      (bookmark-automatically-show-annotations  nil) ; Do not show annotations
      (icicle-sort-orders-alist
@@ -1068,42 +1048,11 @@ command")))
             (setq cand  (cons (caar cand) (cdr cand))))
           (if current-prefix-arg
               (bmkp-describe-bookmark-internals cand)
-            (bmkp-describe-bookmark cand))))
-     (icicle-candidates-alist
-      (mapcar (if icicle-show-multi-completion-flag
-                  #'(lambda (bmk)
-                      ;; Ignore errors, e.g. from bad or stale bookmark records.
-                      (icicle-condition-case-no-debug nil
-                          (let* ((bname     (bookmark-name-from-full-record bmk))
-                                 (guts      (bookmark-get-bookmark-record bmk))
-                                 (file      (bookmark-get-filename bmk))
-                                 (buf       (bmkp-get-buffer-name bmk))
-                                 (file/buf  (if (and buf (equal file bmkp-non-file-filename))
-                                                buf
-                                              file))
-                                 (tags      (bmkp-get-tags bmk)))
-                            ;; Emacs 20 byte-compiler bug prevents using backslash syntax here.
-                            (cons (append (list (icicle-candidate-short-help
-                                                 (icicle-bookmark-help-string bname)
-                                                 (icicle-bookmark-propertize-candidate bname))
-                                                file/buf)
-                                          (and tags (list (format "%S" tags))))
-                                  guts))
-                        (error nil)))
-                #'(lambda (bmk)
-                    ;; Ignore errors, e.g. from bad or stale bookmark records.
-                    (icicle-condition-case-no-debug nil
-                        (let ((bname  (bookmark-name-from-full-record bmk))
-                              (guts   (bookmark-get-bookmark-record bmk)))
-                          (cons (icicle-candidate-short-help
-                                 (icicle-bookmark-help-string bname)
-                                 (icicle-bookmark-propertize-candidate bname))
-                                guts))
-                      (error nil))))
-       (bmkp-sort-omit (funcall ',(intern (format "bmkp-%s-alist-only" type)) ,@args)))))
-    nil                                 ; First code
+            (bmkp-describe-bookmark cand)))))
+    (when (equal ,type "autofile") (icicle-bind-file-candidate-keys)) ; First code
     (icicle-bookmark-cleanup-on-quit)   ; Undo code
-    (icicle-bookmark-cleanup)))         ; Last code
+    (progn (when (equal ,type "autofile") (icicle-unbind-file-candidate-keys))
+           (icicle-bookmark-cleanup)))) ; Last code
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
