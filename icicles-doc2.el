@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Fri Mar  9 15:55:49 2012 (-0800)
+;; Last-Updated: Sat Mar 10 15:50:17 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 28719
+;;     Update #: 28722
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-doc2.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -1752,12 +1752,12 @@
 ;;
 ;;  In Icicle mode, the `Bookmark+' keys for tagging and untagging
 ;;  files are bound to multi-commands `icicle-tag-a-file' and
-;;  `icicle-untag-a-file'.  In addition, all Icicles file commands let
-;;  you tag or untag files on the fly, during file-name completion,
-;;  using the keys `C-x a +' and `C-x a -' respectively (`a' for
-;;  autofile).  Similarly, you can use `C-x a a' during file-name
-;;  completion to create an autofile bookmark for a file without
-;;  tagging it.
+;;  `icicle-untag-a-file'.  In addition, all Icicles file commands
+;;  (and autofile bookmark commands) let you tag or untag files on the
+;;  fly, during file-name completion, using the keys `C-x a +' and
+;;  `C-x a -' respectively (`a' for autofile).  Similarly, you can use
+;;  `C-x a a' during file-name completion to create an autofile
+;;  bookmark for a file without tagging it.
 ;;
 ;;  There are several Icicles multi-commands for jumping to tagged
 ;;  files.  They are all on the `Bookmark+' keymaps `bmkp-jump-map'
