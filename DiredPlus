@@ -95,9 +95,9 @@ And here is a screenshot showing the `mouse-3' popup menu available when no regi
 
 * '''Dired+''' loads library <tt>[[w32-browser.el]]</tt> if Emacs is running on Microsoft Windows, using it to extend Dired in a few ways.  (In addition to being bound to the keys indicate here, these operations are added to the '''Dired+''' menus, including the `mouse-3' context menu.)
 
-** ('''`C-RET'''') You can use Windows ''file associations'' to act on a file. For example, if you have the application Adobe Acrobat associated with *.pdf files, then clicking `mouse-2' on a ##*.pdf## file in Dired will open the file in Adobe Acrobat. Typing `C-RET' on a folder opens a dired buffer on the folder.
+** ('''`M-RET'''') You can use Windows ''file associations'' to act on a file or folder. For example, if you have the application Adobe Acrobat associated with *.pdf files, then clicking `mouse-2' on a ##*.pdf## file in Dired will open the file in Adobe Acrobat.
 
-** ('''`M-RET'''') You can open '''Windows Explorer''' on a file or folder. If a file, its containing folder is opened and the file is selected (in Windows Explorer).
+** ('''`C-RET'''') You can open '''Windows Explorer''' on a file or folder. If a file, its containing folder is opened and the file is selected (in Windows Explorer).
 
 ** ('''`##^##'''') When at the root of a Windows drive (e.g. `##C:/##') and you use `##^##' (`dired-up-directory'), you get a list of drives to choose from.  (This feature is based on the contribution at WThirtyTwoBrowseNetDrives.)
 
