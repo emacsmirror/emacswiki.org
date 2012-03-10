@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Sat Mar 10 14:46:37 2012 (-0800)
+;; Last-Updated: Sat Mar 10 15:45:43 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 17883
+;;     Update #: 17885
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-mcmd.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -4938,28 +4938,30 @@ The candidate is updated as follows:
    `minibuffer-completion-table'."
   `(lambda ()
     (interactive)
-    (let ((mct-cand  (icicle-mctized-display-candidate icicle-last-completion-candidate))
-          (cand      (icicle-transform-multi-completion icicle-last-completion-candidate))
-          (tags      (and (memq ',action '(add remove))
-                          (let ((enable-recursive-minibuffers      t) ; Save and restore all of this.
-                                (minibuffer-completion-predicate   minibuffer-completion-predicate)
-                                (icicle-candidate-nb               icicle-candidate-nb)
-                                (icicle-last-completion-candidate  icicle-last-completion-candidate)
-                                (icicle-completion-candidates      icicle-completion-candidates)
-                                (icicle-current-input              icicle-current-input))
-                            (bmkp-read-tags-completing)))))
-      (if (memq ',action '(add remove))
-          (funcall ',(if (eq 'add action) 'bmkp-autofile-add-tags 'bmkp-autofile-remove-tags)
-                   cand tags nil nil 'MSG)
-        (bmkp-bookmark-a-file cand nil nil 'MSG))
-      (when (and icicle-full-cand-fn  (not (icicle-file-name-input-p)))
-        (icicle-replace-mct-cand-in-mct mct-cand (icicle-mctized-full-candidate
-                                                  (funcall icicle-full-cand-fn cand)))
-        (let ((icicle-edit-update-p  t)) ; Update the display to show changed candidate.
-          (funcall (or icicle-last-completion-command
-                       (if (eq icicle-current-completion-mode 'prefix)
-                           #'icicle-prefix-complete
-                         #'icicle-apropos-complete))))))))
+    (if (not icicle-last-completion-candidate)
+        (icicle-msg-maybe-in-minibuffer "No current candidate - cycle to one")
+      (let ((mct-cand  (icicle-mctized-display-candidate icicle-last-completion-candidate))
+            (cand      (icicle-transform-multi-completion icicle-last-completion-candidate))
+            (tags      (and (memq ',action '(add remove))
+                            (let ((enable-recursive-minibuffers      t) ; Save and restore all of this.
+                                  (minibuffer-completion-predicate   minibuffer-completion-predicate)
+                                  (icicle-candidate-nb               icicle-candidate-nb)
+                                  (icicle-last-completion-candidate  icicle-last-completion-candidate)
+                                  (icicle-completion-candidates      icicle-completion-candidates)
+                                  (icicle-current-input              icicle-current-input))
+                              (bmkp-read-tags-completing)))))
+        (if (memq ',action '(add remove))
+            (funcall ',(if (eq 'add action) 'bmkp-autofile-add-tags 'bmkp-autofile-remove-tags)
+                     cand tags nil nil 'MSG)
+          (bmkp-bookmark-a-file cand nil nil 'MSG))
+        (when (and icicle-full-cand-fn  (not (icicle-file-name-input-p)))
+          (icicle-replace-mct-cand-in-mct mct-cand (icicle-mctized-full-candidate
+                                                    (funcall icicle-full-cand-fn cand)))
+          (let ((icicle-edit-update-p  t)) ; Update the display to show changed candidate.
+            (funcall (or icicle-last-completion-command
+                         (if (eq icicle-current-completion-mode 'prefix)
+                             #'icicle-prefix-complete
+                           #'icicle-apropos-complete)))))))))
 
 
 (put 'icicle-mouse-help-on-candidate 'icicle-action-command t)
