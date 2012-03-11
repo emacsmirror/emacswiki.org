@@ -415,7 +415,7 @@ following values:
 
 :: ##integer## -> an integer number field.
 
-:: ##key##-sequence -> a key sequence field.
+:: ##key-sequence## -> a key sequence field.
 
 :: ##number## -> a number (floating point or integer) field.
 
