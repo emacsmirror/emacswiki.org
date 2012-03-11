@@ -84,7 +84,7 @@ If you like the idea of flymake for syntax checking of PHP, but want something m
 
 To do it, download CodeSniffer.  Then configure emacs to use CodeSniffer for php/flymake using lisp:flymake-dino-phpcs.el. 
 
-http://i.imgur.com/Hambb.png
+http://i.imgur.com/bkBu0.png
 
 As you can see it works nicely with flymake-cursor.el . It also works well with rfringe.el . 
 
