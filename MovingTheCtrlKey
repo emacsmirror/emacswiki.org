@@ -363,5 +363,17 @@ History: This trick was invented by K. Kimura in 2001, and has been known as "!S
 == Foot switch ==
 [new] Another option is to use FootSwitches for Control key and other frequently used keys. For example I use two Usb pedals: one for Ctrl key, the other for Shift key, Shift+Space is bound to RET, and CapsLock for Backspace. -- SewerynKokot
 
+== Keyboard and no admin privileges in MS Windows ==
+
+I was unable to find an answer to the question below.
+All the remap solutions above assume that the user has Admin privileges under Windows, which is not the case for company-issued laptops.
+
+Question: Where can I find a keyboard where CAPS LOCK can be programmed to be a CONTROL key "directly on the keyboard"?
+My configuration: 
+company-issued Laptop with Windows 7 
+no administration privileges (cannot change Windows Registry)
+normal QWERTY laptop with annoying CAPS LOCK key instead of the useful CONTROL key
+-- IanSinkrad
+
 ----
 CategoryKeys CategoryAccessibility
