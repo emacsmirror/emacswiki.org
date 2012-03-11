@@ -82,7 +82,7 @@ I use this code to let flymake-mode work with my php modules, on Windows.
 
 If you like the idea of flymake for syntax checking of PHP, but want something more rigorous than just running PHP.exe on the module, consider [http://pear.php.net/package/PHP_CodeSniffer PHP CodeSniffer].  It performs static analysis on PHP modules, and can check things like whitespace, indenting, curly brace placement, the presence and format of comments, the use of double-quotes, and many more items. 
 
-To do it, download CodeSniffer.  Then configure emacs to use CodeSniffer for php/flymake using lisp:flymake-dino-phpcs.el. 
+To do it, download !CodeSniffer (free).  Then configure emacs to use !CodeSniffer for php/flymake using lisp:flymake-dino-phpcs.el. 
 
 http://i.imgur.com/bkBu0.png
 
