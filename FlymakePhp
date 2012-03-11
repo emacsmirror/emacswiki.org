@@ -86,7 +86,7 @@ To do it, download !CodeSniffer (free).  Then configure emacs to use !CodeSniffe
 
 http://i.imgur.com/bkBu0.png
 
-As you can see it works nicely with FlymakeCursor . It also works well with rfringe.el . 
+As you can see it works nicely with FlymakeCursor . It also works well with [[RFringe]] (not shown here). 
 
 
 
