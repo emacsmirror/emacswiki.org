@@ -26,6 +26,7 @@ Before the list starts, what about a better list?  I'd like to see a way to put 
 * That lots more people use emacs -batch or xemacs -batch so that they use and
 improve command line emacs and replace usage of other languages
 for shell scripting.  I'd prefer elisp with (require 'cl) over scsh.
+* Wish for [[SXEmacs]] - make a deb package out of it, possible on PPA
 * To connect two Emacs Sessions in different machines, i mean: i have a session of emacs (with an elisp package in a freebsd box) and want to work on that but from my Aquamacs Emacs interface in my Mac. As for today i couldn't do this, i think it is quite difficult as i want to transmit images between the two instances.--AlvaroMartinez
 ** On that note, I'd like to see Emacs support the type of [[CollaborativeEditing]] that [http://www.codingmonkeys.de/subethaedit/ SubEthaEdit] has. I know there have been attempts, but they seem to have gone to ground all. [[SummerOfCode]] 2010?
 [new]
