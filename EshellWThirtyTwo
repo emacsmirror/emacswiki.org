@@ -1,18 +1,29 @@
 === Open a file like "Open" in Explorer ===
 
+Definition for Emacs 23.4.1:
+
+  (defun eshell/op (file)
+    "Invoke (w32-shell-execute \"Open\" file) and substitute
+    slashes for backslashes"
+    (w32-shell-execute "Open"
+                       (subst-char-in-string ?\\ ?/ (expand-file-name file)))
+    nil)
+
+Definition for certain versions of Emacs predating 23.4.1:
+
  (defun eshell/op (FILE)
   "Invoke (w32-shell-execute \"Open\" FILE) and substitute slashes for backslashes"
   (w32-shell-execute "Open" (substitute ?\\ ?/ (expand-file-name FILE))))
 
-use like this
+Use like this
 
  $ op my_doc.doc
 
-the following command opens current dir in Explorer
+The following command opens current dir in Explorer
 
  $ op . (same as op $PWD)
 
-same, but for c:
+Same, but for c:
 
  $ op c:
 
