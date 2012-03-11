@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2012, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 13:43:55 2010 (-0700)
-;; Last-Updated: Tue Mar  6 13:35:13 2012 (-0800)
+;; Last-Updated: Sun Mar 11 10:22:08 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 4466
+;;     Update #: 4477
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-1.el
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -2422,7 +2422,7 @@ If called from Lisp:
     (bookmark-write-file file-to-save))
   ;; Indicate by the count that we have synced the current bookmark file.
   ;; If an error has already occurred somewhere, the count will not be set, which is what we want.
-  (setq bookmark-alist-modification-count 0))
+  (setq bookmark-alist-modification-count  0))
 
 
 ;; REPLACES ORIGINAL in `bookmark.el'.
@@ -3116,7 +3116,11 @@ BOOKMARK is a bookmark name or a bookmark record.
 This increments the `visits' entry and sets the `time' entry to the
 current time.  If either an entry is not present, it is added (with 0
 value for `visits').
-With non-nil optional arg BATCHP, do not rebuild the menu list."
+With non-nil optional arg BATCHP, do not rebuild the menu list.
+
+Although this function modifies BOOKMARK, it does not increment
+`bookmark-alist-modification-count'.  This is so that simply recording
+the visit does not count toward needing to save."
   (let ((vis  (bookmark-prop-get bookmark 'visits)))
     (if vis  (bookmark-prop-set bookmark 'visits (1+ vis))  (bookmark-prop-set bookmark 'visits 0))
     (bookmark-prop-set bookmark 'time (current-time))
@@ -3297,11 +3301,11 @@ This discards all modifications to bookmarks and the bookmark list
 \(e.g. added/deleted bookmarks).
 This has the same effect as using `C-u \\<bookmark-bmenu-mode-map>\\[bmkp-bmenu-refresh-menu-list]' in \
 buffer `*Bookmark List*'."
-  (interactive)
-  (if (and msgp (not (yes-or-no-p (format "Revert to bookmarks in file `%s'? "
+  (interactive "p")
+  (if (and msgp (not (yes-or-no-p (format "Revert to bookmarks saved in file `%s'? "
                                           bmkp-current-bookmark-file))))
       (error "OK - canceled")
-    (bookmark-load bmkp-current-bookmark-file 'OVERWRITE msgp)
+    (bookmark-load bmkp-current-bookmark-file 'OVERWRITE msgp) ; Do not let `bookmark-load' ask to save.
     (bmkp-refresh/rebuild-menu-list nil (not msgp))))
 
 ;;;###autoload
@@ -6842,6 +6846,11 @@ name, recorded position, and the context strings for the position."
   (when (and (/= pos (point))  bmkp-save-new-location-flag)
     (bookmark-prop-set bookmark 'position     (point))
     (bookmark-prop-set bookmark 'end-position (point))
+    ;; Perhaps we should treat the case of a bookmark that had position 0 changing to position 1 specially,
+    ;; by passing non-nil SAME-COUNT-P arg to `bmkp-maybe-save-bookmarks'.  On the other hand, if initially
+    ;; 0 then the bookmark does not claim that the file is non-empty.  If now set to 1 then we know it is.
+    ;; Leave it this way, at least for now.  The consequence is that the user will see that bookmarks have
+    ;; modified (e.g. `Save' is enabled in the menu), even though nothing much has changed.
     (bmkp-maybe-save-bookmarks))
   (/= pos (point)))                     ; Return value indicates whether POS was accurate.
 
@@ -7314,7 +7323,7 @@ BOOKMARK is a bookmark name or a bookmark record."
   "Set the w3m buffer name according to the number of w3m buffers already open."
   (require 'w3m)                        ; For `w3m-list-buffers'.
   (let ((len  (length (w3m-list-buffers 'nosort))))
-    (if (eq len 0)  "*w3m*"  (format "*w3m*<%d>" (1+ len)))))
+    (if (= len 0)  "*w3m*"  (format "*w3m*<%d>" (1+ len)))))
 
 (defun bmkp-jump-w3m-new-session (bookmark)
   "Jump to W3M bookmark BOOKMARK, setting a new tab."
