@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2012, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 09:05:21 2010 (-0700)
-;; Last-Updated: Wed Mar  7 17:18:54 2012 (-0800)
+;; Last-Updated: Sun Mar 11 09:57:52 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 1606
+;;     Update #: 1616
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-bmu.el
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -695,7 +695,8 @@ bookmark-save'."
   "Number of lines used for the `*Bookmark List*' header.")
 
 (defconst bmkp-bmenu-marks-width 4
-  "Number of columns (chars) used for the `*Bookmark List*' marks columns.")
+  "Number of columns (chars) used for the `*Bookmark List*' marks columns.
+Bookmark names thus begin in this column number (since zero-based).")
 
 
 (defvar bmkp-bmenu-before-hide-marked-alist ()
@@ -2657,7 +2658,7 @@ to turn saving back on."
   (let ((bmks  (bmkp-remove-if-not #'bmkp-bookmark-file-bookmark-p
                                    (bmkp-remove-if-not 'bmkp-marked-bookmark-p bmkp-sorted-alist))))
     (unless bmks (error "No marked bookmark-file bookmarks"))
-    ;; Maybe save first.
+    ;; Maybe save bookmarks first.
     (when (or (not msgp)
               (and (> bookmark-alist-modification-count 0)
                    (condition-case err
@@ -4439,9 +4440,13 @@ Marked bookmarks that have no associated file are ignored."
     :help "Write the current set of bookmarks to a file whose name you enter"))
 (define-key bmkp-bmenu-menubar-menu [bookmark-bmenu-save]
   '(menu-item "Save" bookmark-bmenu-save
-    :help "Save the current set of bookmarks to the current bookmark file"))
+    :help "Save the current set of bookmarks to the current bookmark file"
+    :enable (> bookmark-alist-modification-count 0)))
+(define-key bmkp-bmenu-menubar-menu [bmkp-revert-bookmark-file]
+  '(menu-item "Revert to Saved" bmkp-revert-bookmark-file
+    :help "Revert to bookmarks in current bookmark file, as last saved" :keys "C-u g"))
 (define-key bmkp-bmenu-menubar-menu [bmkp-bmenu-refresh-menu-list]
-  '(menu-item "Refresh (Revert)" bmkp-bmenu-refresh-menu-list
+  '(menu-item "Refresh to Current" bmkp-bmenu-refresh-menu-list
     :help "Update display to reflect current bookmark list (`C-u': revert from file)"))
 
 (define-key bmkp-bmenu-menubar-menu [top-sep2] '("--")) ; --------------------------------
