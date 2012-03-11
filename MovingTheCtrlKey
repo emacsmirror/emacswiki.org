@@ -379,5 +379,10 @@ All the keyboards I have googled have programmable function keys (gamers' keyboa
 
 -- IanSinkrad
 
+[new:tuffy:2012-03-11 14:54 UTC]
+One such keyboard is Topre's Realforce 87U, which is sold at elitekeyboards.com.  It features a DIP switch setting for swapping the control and caps lock keys, and includes a keypuller and replacement keys so that the labeling will also be correct.  Though made by the same company that produces the Happy Hacking keyboards recommended on the [http://www.emacswiki.org/emacs/GoodKeyboards GoodKeyboards] page, the Realforce is a much more traditional PC keyboard and the one I most prefer to use with Emacs.
+
+-- Tuffy
+
 ----
 CategoryKeys CategoryAccessibility
