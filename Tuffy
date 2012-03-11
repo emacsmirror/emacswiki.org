@@ -1,0 +1,70 @@
+My real name is Brian Langenberger and
+I use Emacs in some form or another since 1993.
+However, I've only really started to exploit its full potential
+through customization in the past few years.
+Once one starts down the road of creating and adapting
+Emacs addons to make the editor better, it becomes difficult to stop.
+So I've put together this homepage to share some of my
+favorite tips and additions.
+
+== Source control for .emacs.d ==
+
+I use Git to manage my .emacs.d directory and most everything in it.
+This allows me to try out new features without fear.
+If new elisp code doesn't work out, I can easily revert any changes.
+But in addition to Emacs code, I also store useful things like
+monospace TrueType fonts and .screenrc files within that same directory.
+Because I do work on many different machines, it's helpful to have an entire
+development environment in one place under distributed source control.
+That way if I need to start work using a new computer,
+I'm just an Emacs install and "git clone" command away from
+having the same environment I use everyplace else.
+Or if I make changes on one machine, it's trivial to push
+those changes out to all the others.
+Whether on X11, Mac OS or Windows, Emacs looks and acts the same everywhere.
+
+== Simple customizations ==
+
+The real beauty of Emacs is the ease of creating labor-saving
+modes and functions, some simple and some not.
+For example, I was spending a lot of time adding \hyperref links
+and \label anchors to LaTeX documents.
+So rather than spend a lot of time doing that work by hand,
+I took 15 minutes to create a function to do it for me:
+
+    (defun mk-latex-ref (label)
+      "Make LaTeX label or hyperref"
+
+      (interactive "Mlabel:")
+      (if mark-active
+          (let* ((start (region-beginning))
+                 (end (region-end))
+                 (original-string (buffer-substring-no-properties start end)))
+            (completion--replace
+             start end (format "\\hyperref[%s]{%s}" label original-string)))
+        (insert (format "\\label{%s}" label))))
+
+I throw these little functions together all the time.
+If it's something I can envision that's not already in the editor,
+and someone hasn't already built it, it rarely takes much time
+to program it myself.
+
+== Favorite addons ==
+
+; [http://www.emacswiki.org/emacs/WindMove WindMove] and [http://www.emacswiki.org/emacs/FrameMove FrameMove] : it's hard to overstate just how much easier these make navigation between windows and frames
+; [http://www.emacswiki.org/emacs/OrgMode OrgMode] : helps keep my life organized
+; [http://www.emacswiki.org/emacs/EthanWhitespace EthanWhitespace] : keeps my source code clean without having to think about it
+; [http://www.emacswiki.org/emacs/HighlightSymbol HighlightSymbol] : invaluable for tracking variables, especially in dynamically-typed languages in which a typo might not show up until an error at runtime
+; [http://www.emacswiki.org/emacs/HighlightParentheses HighlightParentheses] and [http://www.emacswiki.org/emacs/joseph-autopair.el joseph-autopair] : work together to keep my parentheses balanced
+; [http://www.emacswiki.org/emacs/multiple-line-edit.el multiple-line-edit] : comes in handy whenever I need to add prefixes or suffixes to lots of text
+; [http://www.emacswiki.org/emacs/iflipb iflipb] : provides an excellent analogue for browser-style ctrl-pgup/ctrl-pgdown tab switching
+; [http://www.emacswiki.org/emacs/volatile-highlights.el volatile-highlights] : means I never have to guess where my pasted code has gone, or which line I've jumped to
+; [http://www.emacswiki.org/emacs/ColorThemeZenburn Zenburn] and [http://www.emacswiki.org/emacs/PowerLine PowerLine] : combine to make Emacs look very slick
+; [http://www.emacswiki.org/emacs/SmartTabs SmartTabs] : a very helpful way of tab indenting code that degrades gracefully
+
+I've tweaked some of these to work together in a way I prefer,
+and I'm always on the lookout for new bits to assimilate
+into my own configuration.
+
+[http://www.emacswiki.org/emacs/CategoryHomepage CategoryHomepage]
+
