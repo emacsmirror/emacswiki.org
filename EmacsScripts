@@ -113,7 +113,7 @@ The following script runs on Linux and Windows. It should also run on Mac X.
 
 1) What this means is that the first two lines, especially noting the sesquicolon trick, lets this get handled
 properly by both CMD and COMMAND, so it should be fine in the Microsoft world,  and that it also runs in bash, and sh.  dash seems to take it, too.
-The 'bash' part not only lets it run on Linux, Unix, and Cygwin, but it should also run in the bash on Mac OS X (although without a Mac, I have not
+The 'bash' part not only lets it run on Linux, Unix, Msys, and Cygwin, but it should also run in the bash on Mac OS X (although without a Mac, I have not
 been able to verify that.)  (And as for Ksh, if $_ is substituted for the $0, it should run there as well.)
 
 2) When it runs in cmd.exe and command.com, the line terminations like LF or CRLF don't seem to matter.  And emacs doesn't seem to care, either.
