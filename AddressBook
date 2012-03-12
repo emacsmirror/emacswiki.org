@@ -12,6 +12,7 @@ The homepage of the Emacs Addressbook is http://www.nongnu.org/addressbook
 == Hooks and interaction with other modes ==
 
 * [https://github.com/timotheus2/custom-emacs/blob/master/emacs-site/lisp/set-abook.el Integration with MH-E]
+* [https://github.com/thomp/wl-abook Use AddressBook with wanderlust]
 
 == Comments ==
 
