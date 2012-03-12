@@ -613,6 +613,14 @@ Here's a way to have both panes in the same dir when doing sunrise-cd:
         (sr-synchronize-panes)))
     (ad-activate 'sunrise-cd)
 
+If You want SC to list dirs first, and files after that - customize the `sr-listing-switches' variable:
+
+    (setq sr-listing-switches " --group-directories-first -al")
+
+You might also find useful the following:
+
+    (setq sr-listing-switches " --time-style=locale --group-directories-first -alDhgG")
+
 ----
 
 
