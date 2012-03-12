@@ -4,5 +4,7 @@ It will temporarily highlight all occurrences of the current symbol and also all
 
 http://nschum.de/src/emacs/highlight-symbol/highlight-symbol.png
 
+See also: AutoHighlightSymbolMode: https://github.com/mitsuo-saito/auto-highlight-symbol-mode
+
 ----
 CategoryFaces CategoryModes
