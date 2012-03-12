@@ -1,3 +1,5 @@
+DeletedPage
+
 ;;;
 ;;; dtk.el: access diatheke from emacs
 ;;;
