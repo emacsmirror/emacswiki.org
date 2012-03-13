@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2012, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Sun Mar 11 11:08:17 2012 (-0700)
+;; Last-Updated: Tue Mar 13 15:08:02 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 14535
+;;     Update #: 14542
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-chg.el
 ;; Keywords: bookmarks, bookmark+
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -145,6 +145,9 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-1.el'")
 ;;
+;; 2012/03/13 dadams
+;;     bmkp-incremental-filter-delay:
+;;       Use bookmark-search-delay as default value, if available.  Else use 0.2 (not 0.6).
 ;; 2012/03/11 dadams
 ;;     bmkp-revert-bookmark-file: Added p to interactive spec (forgot).
 ;; 2012/03/06 dadams
@@ -656,6 +659,13 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-bmu.el'")
 ;;
+;; 2012/03/13 dadams
+;;     bmkp-bmenu-read-filter-input:
+;;       If C-g then restore previous display.
+;;       Use only one catch and test while condition.
+;;       Do not try to pop an empty list.
+;;     bmkp-bmenu-filter-((bookmark|file)-name|annotation|tags)-incrementally:
+;;       Use run-with-idle-timer, not run-with-timer
 ;; 2012/03/11 dadams
 ;;     Added Revert to Saved (bmkp-revert-bookmark-file) to menu.
 ;; 2012/03/07 dadams
