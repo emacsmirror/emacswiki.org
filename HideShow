@@ -156,9 +156,6 @@ You can also use Lisp:fold-dwim-org.el to integrate other folding modes.
 
 
 [new]
-hideshowvis.el mentioned below has a serious bug when used in conjunction with auto-fill.  In this case it is nearly impossible to insert an end of line comment.  The bug is in hideshowvis-highlight-hs-regions-in-fringe.  The order of save-restriction / save-excursion needs to be reversed.  Save excursion needs to come first.  With those two lines exchanged things work nicely.  I have sent email to the author.
-
-[new]
 To get <tt>+</tt>/<tt>-</tt> markers on foldable regions, have a look at <tt>[[hideshowvis.el]]</tt>.
 
 [new]
