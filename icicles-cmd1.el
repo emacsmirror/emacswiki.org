@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Sat Mar 10 14:53:19 2012 (-0800)
+;; Last-Updated: Tue Mar 13 14:02:26 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 23434
+;;     Update #: 23444
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-cmd1.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -5385,8 +5385,7 @@ Otherwise:
 ;;;###autoload (autoload 'icicle-delete-file "icicles-cmd1.el")
 (icicle-define-file-command icicle-delete-file ; Command name
   "Delete a file or directory.
-During completion (`*': requires library `Bookmark+'):
-
+During completion (`*' means this requires library `Bookmark+'):
  *You can use `C-x a +' or `C-x a -' to add or remove tags from the
    current-candidate file.  You are prompted for the tags.
  *You can use `C-x m' to access file bookmarks (not just autofiles).
@@ -5413,8 +5412,7 @@ During completion (`*': requires library `Bookmark+'):
 ;;;###autoload (autoload 'icicle-dired "icicles-cmd1.el")
 (icicle-define-file-command icicle-dired
   "Multi-command version of `dired'.
-During completion (`*': requires library `Bookmark+'):
-
+During completion (`*' means this requires library `Bookmark+'):
  *You can use `C-x a +' or `C-x a -' to add or remove tags from the
    current-candidate file.  You are prompted for the tags.
  *You can use `C-x m' to access file bookmarks (not just autofiles).
@@ -5525,7 +5523,7 @@ in a common directory.
 With a prefix argument, you can choose also by date: Completion
 candidates include the last modification date.
 
-During completion (`*': requires library `Bookmark+'):
+During completion (`*' means this requires library `Bookmark+'):
 
  *You can use `C-x a +' or `C-x a -' to add or remove tags from the
    current-candidate file.  You are prompted for the tags.
@@ -5661,7 +5659,7 @@ a prefix arg for the command, files are visited in read-only mode by
 default and a prefix arg for an individual file visits it without
 read-only mode.
 
-During completion (`*': requires library `Bookmark+'):
+During completion (`*' means this requires library `Bookmark+'):
 
  *You can use `C-x a +' or `C-x a -' to add or remove tags from the
    current-candidate file.  You are prompted for the tags.
@@ -5754,7 +5752,7 @@ a prefix arg for the command, files are not visited in read-only mode
 by default and a prefix arg for an individual file visits it in
 read-only mode.
 
-During completion (`*': requires library `Bookmark+'):
+During completion (`*' means this requires library `Bookmark+'):
 
  *You can use `C-x a +' or `C-x a -' to add or remove tags from the
    current-candidate file.  You are prompted for the tags.
@@ -5789,7 +5787,7 @@ Remember that you can use `C-x .' to hide the common match portion of
 each candidate.  That can be particularly helpful for files that are
 in a common directory.
 
-During completion (`*': requires library `Bookmark+'):
+During completion (`*' means this requires library `Bookmark+'):
 
  *You can use `C-x a +' or `C-x a -' to add or remove tags from the
    current-candidate file.  You are prompted for the tags.
@@ -5977,7 +5975,7 @@ for ordinary (non-absolute) file-name completion.  To change to a
 different directory, with its files as candidates, use `C-c C-d' from
 the minibuffer - it prompts you for the new directory.
 
-During completion (`*': requires library `Bookmark+'):
+During completion (`*' means this requires library `Bookmark+'):
 
  *You can use `C-x a +' or `C-x a -' to add or remove tags from the
    current-candidate file.  You are prompted for the tags.
@@ -6069,7 +6067,7 @@ Note that completion here matches candidates as ordinary strings.  It
 knows nothing of file names per se.  In particular, you cannot use
 remote file-name syntax.
 
-During completion (`*': requires library `Bookmark+'):
+During completion (`*' means this requires library `Bookmark+'):
 
  *You can use `C-x a +' or `C-x a -' to add or remove tags from the
    current-candidate file.  You are prompted for the tags.
@@ -6253,7 +6251,7 @@ in a common directory.
 With a prefix argument, you can choose also by date: Completion
 candidates include the last modification date.
 
-During completion (`*': requires library `Bookmark+'):
+During completion (`*' means this requires library `Bookmark+'):
 
  *You can use `C-x a +' or `C-x a -' to add or remove tags from the
    current-candidate file.  You are prompted for the tags.
@@ -6758,7 +6756,7 @@ regexp.
 You can use either `RET' or `C-g' to finish adding file names to the
 list.
 
-During completion (`*': requires library `Bookmark+'):
+During completion (`*' means this requires library `Bookmark+'):
 
  *You can use `C-x a +' or `C-x a -' to add or remove tags from the
    current-candidate file.  You are prompted for the tags.
@@ -6813,7 +6811,7 @@ and a final-choice key (e.g. `RET', `mouse-2') to choose the last one.
 You can navigate the directory tree, picking directories anywhere in
 the tree.
 
-During completion (`*': requires library `Bookmark+'):
+During completion (`*' means this requires library `Bookmark+'):
 
  *You can use `C-x a +' or `C-x a -' to add or remove tags from the
    current-candidate file.  You are prompted for the tags.
