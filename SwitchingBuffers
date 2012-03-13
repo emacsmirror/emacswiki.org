@@ -152,6 +152,11 @@ If switching through windows rapidly would be useful...
 (global-set-key [s-down] 'windmove-down)
 </pre>
 
+See also:
+* Lisp:win-switch.el
+* WindowNavigation
+* WindMove
+
 ----
 
 == Discussion ==
