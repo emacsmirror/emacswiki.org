@@ -1,10 +1,10 @@
 ;;; hideshowvis.el --- Add markers to the fringe for regions foldable by hideshow.el
 ;;
-;; Copyright 2008-2010 Jan Rehders
+;; Copyright 2008-2012 Jan Rehders
 ;;
 ;; Author: Jan Rehders <cmdkeen@gmx.de>
-;; Version: 0.3
-;; Contributions by Bryan Waite and Michael Heerdegen
+;; Version: 0.4
+;; Contributions and bug fixes by Bryan Waite, Michael Heerdegen and John Yates.
 ;;
 ;; This file is free software; you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -56,6 +56,10 @@
 ;;
 ;;; Changelog
 ;;
+;; v0.4, 2012-03-13
+;; - fixed bug causing transpose-words to be broken as well as causing problems
+;;   when auto-fill-mode was enabled
+;;
 ;; v0.3, 2010-08-26
 ;; - added autoload cookies
 ;; - fixed bug causing major mode menu to disappear, among other things
@@ -67,7 +71,7 @@
 
 (define-fringe-bitmap 'hideshowvis-hideable-marker [0 0 0 126 126 0 0 0])
 
-(defconst hideshowvis-version "v0.2" "Version of hideshowvis minor mode")
+(defconst hideshowvis-version "v0.3" "Version of hideshowvis minor mode")
 
 (defface hideshowvis-hidable-face
   '((t (:foreground "#ccc" :box t)))
@@ -82,8 +86,8 @@
 
 (defun hideshowvis-highlight-hs-regions-in-fringe (&optional start end old-text-length)
   (when hs-minor-mode
-    (save-restriction
-      (save-excursion
+    (save-excursion
+      (save-restriction
         (when (and start end)
           (narrow-to-region start end))
         (goto-char (point-min))
