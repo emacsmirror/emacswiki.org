@@ -7,9 +7,9 @@
 ;; Copyright (C) 1999-2012, Drew Adams, all rights reserved.
 ;; Created: Fri Mar 19 15:58:58 1999
 ;; Version: 21.2
-;; Last-Updated: Wed Mar  7 09:33:19 2012 (-0800)
+;; Last-Updated: Tue Mar 13 14:49:30 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 4500
+;;     Update #: 4521
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/dired+.el
 ;; Keywords: unix, mouse, directories, diredp, dired
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -255,6 +255,11 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2012/03/13 dadams
+;;     diredp-dired(-for)-files(-other-window):
+;;       Bind: icicle-sort-comparer, icicle-all-candidates-list-alt-action-fn.
+;;       Use icicle-(un)bind-file-candidate-keys.
+;;     diredp-dired-files-interactive-spec: Updated doc strings accordingly.
 ;; 2012/03/07 dadams
 ;;     Added: dired-switches-escape-p.
 ;;     dired-get-filename: Updated wrt Emacs 24:
@@ -1996,13 +2001,23 @@ In particular, inode number, number of hard links, and file size."
 ;;;###autoload
 (defun diredp-dired-files (arg &optional switches) ; Not bound
   "Like `dired', but non-positive prefix arg prompts for files to list.
-This is the same as `dired' unless you use a non-positive prefix arg.
+This is like `dired' unless you use a non-positive prefix arg.
 In that case, you are prompted for names of files and directories to
 list, and then you are prompted for the name of the Dired buffer that
 lists them.  Use `C-g' when you are done entering file names to list.
 
 In all cases, when inputting a file or directory name you can use
-shell wildcards."
+shell wildcards.
+
+If you use Icicles, then in Icicle mode the following keys are bound
+in the minibuffer during completion (`*' means the key requires
+library `Bookmark+'):
+
+  M-|       - Open Dired on the file names matching your input
+  C-c +     - Create a new directory
+ *C-x a +   - Add tags to the current-candidate file
+ *C-x a -   - Remove tags from the current-candidate file
+ *C-x m     - Access file bookmarks (not just autofiles)"
   (interactive (diredp-dired-files-interactive-spec ""))
   (when (consp arg)
     (let ((buf  (dired-find-buffer-nocreate (car arg)))) ; Respect file list.
@@ -2026,7 +2041,17 @@ you are prompted for the name of the Dired buffer that lists them.
 Use `C-g' when you are done entering file names to list.
 
 In all cases, when inputting a file or directory name you can use
-shell wildcards."
+shell wildcards.
+
+If you use Icicles, then in Icicle mode the following keys are bound
+in the minibuffer during completion (`*' means the key requires
+library `Bookmark+'):
+
+  M-|       - Open Dired on the file names matching your input
+  C-c +     - Create a new directory
+ *C-x a +   - Add tags to the current-candidate file
+ *C-x a -   - Remove tags from the current-candidate file
+ *C-x m     - Access file bookmarks (not just autofiles)"
   (interactive
    (let ((current-prefix-arg  -1))
      (diredp-dired-files-interactive-spec "in other window ")))
@@ -2045,23 +2070,46 @@ shell wildcards."
 STR is a string appended to the prompt.
 With non-negative prefix arg, read switches.
 With non-positive prefix arg, read files and dirs to list and then the
- Dired buffer name.  User uses `C-g' when done reading files and dirs."
+ Dired buffer name.  User uses `C-g' when done reading files and dirs.
+
+If you use Icicles, then in Icicle mode the following keys are bound
+in the minibuffer during completion (`*' means the key requires
+library `Bookmark+'):
+
+  M-|       - Open Dired on the file names matching your input
+  C-c +     - Create a new directory
+ *C-x a +   - Add tags to the current-candidate file
+ *C-x a -   - Remove tags from the current-candidate file
+ *C-x m     - Access file bookmarks (not just autofiles)"
   (list
-   (if (> (prefix-numeric-value current-prefix-arg) 0)
-       ;; If a dialog box is about to be used, call `read-directory-name' so the dialog code
-       ;; knows we want directories.  Some dialog boxes can only select directories or files
-       ;; when popped up, not both.
-       (if (and (fboundp 'read-directory-name) (next-read-file-uses-dialog-p))
-           (read-directory-name (format "Dired %s(directory): " str) nil default-directory nil)
-         (read-file-name (format "Dired %s(directory): " str) nil default-directory nil))
-     (let ((insert-default-directory  nil)
-           (files                     ())
-           file)
-       (while (condition-case nil ; Use lax completion, to allow wildcards.
-                  (setq file  (read-file-name "File or dir (C-g when done): "))
-                (quit nil))
-         (push file files))
-       (cons (read-string "Dired buffer name: " nil nil default-directory) files)))
+   (unwind-protect
+        (let ((icicle-sort-comparer  (or icicle-file-sort ; If not reading files then dirs first.
+                                         (and (> (prefix-numeric-value current-prefix-arg) 0)
+                                              'icicle-dirs-first-p)
+                                         icicle-sort-comparer))
+              (icicle-all-candidates-list-alt-action-fn ; M-|'
+               (lambda (files)
+                 (let ((enable-recursive-minibuffers  t))
+                   (dired-other-window (cons (read-string "Dired buffer name: ") files))))))
+          (when (fboundp 'icicle-bind-file-candidate-keys) (icicle-bind-file-candidate-keys))
+          (if (> (prefix-numeric-value current-prefix-arg) 0)
+              ;; If a dialog box is about to be used, call `read-directory-name' so the dialog
+              ;; code knows we want directories.  Some dialog boxes can only select directories
+              ;; or files when popped up, not both.
+              (if (and (fboundp 'read-directory-name) (next-read-file-uses-dialog-p))
+                  (read-directory-name (format "Dired %s(directory): " str) nil
+                                       default-directory nil)
+                (read-file-name (format "Dired %s(directory): " str) nil default-directory nil))
+            (let ((insert-default-directory  nil)
+                  (files                     ())
+                  file)
+              (while (condition-case nil ; Use lax completion, to allow wildcards.
+                         (setq file  (read-file-name "File or dir (C-g when done): "))
+                       (quit nil))
+                (push file files))
+              (cons (read-string "Dired buffer name: " nil nil default-directory) files))))
+     (when (fboundp 'icicle-unbind-file-candidate-keys)
+       (icicle-unbind-file-candidate-keys)))
    (and current-prefix-arg (natnump (prefix-numeric-value current-prefix-arg))
         (read-string "Dired listing switches: " dired-listing-switches))))
 
