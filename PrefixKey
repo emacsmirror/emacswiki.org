@@ -1,6 +1,3 @@
-
-
-
 == Creating a prefix key ==
 
 Assume you want to add a new prefix key.  On a german keyboard, there
@@ -114,28 +111,60 @@ keymap is usually defined by each major mode.
   (add-hook 'ddl-mode-hook 'copy-C-c-to-M-lwindow)
   ...
 
-=== About using <lwindow>, <rwindow> and <apps> ===
-The [START] key on Windows systems (also called the windows key) is visible 
-to Emacs.  The one on the left is called <lwindow>.  Some keyboards have
-one on the right called <rwindow>.  They can make convenient prefix keys 
-for user functions thus making thousands of convenient unused 
-keystrokes available to users.  
-
-Some Windows keyboards don't have an <rwindow> key.  Tough luck.  
-If you have both remember that they are seperate keys and seperately 
-mappable.  So stuff you map to one key can't be reached from the
-other key unless you explicitly map the same thing to both keys.
-
-*Very IMPORTANT* Don't try to map the plain <lwindow> or <rwindow> keys.  
-Stick to the modified versions like <C-lwindow> <S-rwindow> etc which 
-should work essentially like function keys.
-
+=== About using  <apps>, <lwindow>, and <rwindow> ===
 On a Windows keyboard the key to the right of the spacebar with a picture 
 of a menu on it is the <apps> key.  It should be completely available both 
 in its plain form and the shift, alt, ... modified flavors.  For example:
 
   (global-set-key (kbd "<apps>") (lookup-key global-map (kbd "C-x")))
 
+The [START] key on Windows systems (also called the windows key) is visible 
+to Emacs.  The one on the left is called <lwindow>.  Some keyboards have
+one on the right called <rwindow>, but it's often missing on laptops. 
+They can make convenient prefix keys for user functions thus making thousands
+of convenient unused keystrokes available to users. Unfortunately under Microsoft
+Windows many keychords involving the Windows key are trapped by
+Windows itself before they ever get to Emacs - Windows-e, for example, brings
+up a new Explorer window. The number of shortcuts seems to increase with
+each new version of Windows, but it's possible to get rid of most of them
+by using a registry hack. Create a .reg file with the following contents,
+run it, and reboot.
+
+<pre>
+Windows Registry Editor Version 5.00
+
+[HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Policies\Explorer]
+"NoWinKeys"=dword:00000001
+</pre>
+
+This will get rid of *most*, but not all, of Windows' interceptions. It doesn't
+seem to be possible to get rid of Win-L (lock computer), Win-P (projector), Win-U 
+(usability/ease of access) and Win-<arrow keys> (manipulate window placement). It
+may be possible to use AutoHotKey to achieve similar results, but I haven't tried it.
+
+Once you've done that then the following bit of magic in your .emacs will make both Windows keys emit `super':
+
+<pre>
+ (when (equal window-system 'w32)
+    (setq
+       w32-pass-lwindow-to-system nil
+       w32-lwindow-modifier 'super
+       w32-pass-rwindow-to-system nil
+       w32-rwindow-modifier 'super
+       w32-pass-apps-to-system nil
+       w32-apps-modifier 'hyper
+       w32-pass-alt-to-system nil
+       w32-scroll-lock-modifier nil))
+</pre>
+
+Of course, you could make one of them emit `hyper' if you want. I chose `super'
+rather than `hyper' because I also use this .emacs on Xubuntu, and by default
+the Windows key there is mapped to `super'.
+
+Binding keys is then done in the usual way (be careful to use a lower case
+`s' for `super', upper case `S' means `Shift').
+
+  (define-key global-map (kbd "s-r") 'recentf-open-files)
 
 ----
 CategoryKeys
