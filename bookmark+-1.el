@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2012, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 13:43:55 2010 (-0700)
-;; Last-Updated: Sun Mar 11 10:22:08 2012 (-0700)
+;; Last-Updated: Tue Mar 13 11:39:23 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 4477
+;;     Update #: 4479
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-1.el
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -793,7 +793,9 @@ the save (only)."
   :type 'function :group 'bookmark-plus)
 
 ;;;###autoload
-(defcustom bmkp-incremental-filter-delay 0.6
+(defcustom bmkp-incremental-filter-delay (if (boundp 'bookmark-search-delay)
+                                             bookmark-search-delay
+                                           0.2)
   "*Seconds to wait before updating display when filtering bookmarks."
   :type 'number :group 'bookmark-plus)
 
