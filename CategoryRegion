@@ -19,7 +19,8 @@ The text between [[point]] and [[mark]] is the [[region]].  The [[active region]
 ** RectangleAdd -- Adds the numbers in a rectangle.
 * ShiftSelectMode -- Expand regions with Shift and a navigation command.
 * TransientMarkMode -- Highlights the region whenever it is active (you can activate it using `C-x C-x').
-
+* https://github.com/m2ym/thingopt-el  Expand region increases the selected region 
+* https://github.com/magnars/expand-region.el Expand region increases the selected region 
 == Region Extensions ==
 
 * ApplyFunctionOnMultipleRegions -- Applies a function to several regions at the same time.
