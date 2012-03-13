@@ -2,7 +2,7 @@ The basic mechanism for spellchecking in Emacs involves the external program isp
 
 * FlySpell mode runs ispell/aspell in the background and highlights misspelled words as you type.
 
-* SpeckMode is similar to FlySpell but it only corrects words when you stop typing and allows to use different dictionaries in the same buffer.
+* SpeckMode is similar to FlySpell but it only corrects words when you stop typing and allows you to use different dictionaries in the same buffer.
 
 * WcheckMode is a fast general-purpose on-the-fly (spell-)checker interface which can use external programs or Emacs Lisp functions as the text-checker engine. It works not only with Ispell, Enchant, Hunspell etc. but also many other line-oriented command-line text-filtering programs and shell scripts. Wcheck mode is highly configurable.
 
