@@ -2470,7 +2470,7 @@ This page is based on the EmacsLispList by StephenEglen and updated automaticall
 
 [http://www.gnusoftware.com/Emacs/Lisp/which.el which.el] --- search program in paths of variable `exec-path' (by Christoph Conrad)
 
-[http://www.splode.com/~friedman/software/emacs-lisp/src/nuke-whitespace.el nuke-whitespace.el] --- strip trailing whitespace from buffers.  This used to be called whitespace.el, but that now conflicts with a standard emacs package which does something totally different. (by Noah Friedman)
+[ftp://ftp.splode.com/pub/users/friedman/emacs-lisp/whitespace.el whitespace.el] --- strip trailing whitespace from buffers (by Noah Friedman)
 
 [http://www.dsmit.com/lisp/whitespace.el whitespace.el] --- Warn about and clean bogus whitespaces in the file. (by Rajesh Vaidheeswarran)
 
