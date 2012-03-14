@@ -907,11 +907,23 @@ Do not hesitate to ask questions or mention problems you encounter, but the doc 
 Org-mode - Icicles is great for running commands, finding files, but seems to get in the way of Org-mode e.g.
 
 1. Setting tags for a heading with C-c C-q - I want to set several tags (e.g. :book:computer:) one after another, using tab completion for each. Icicles replaces the first tag with the second - any way of avoiding this?
+
 2. There are a few other situations where key bindings clash e.g. C-c / for sparse tree - is it a question of setting key bindings for all such clashes?
 
-Thanks
+Thanks [[Nick]]
 
-Nick
+
+[new:DrewAdams:2012-03-14 23:16 UTC]
+1. I have no idea what you mean.  I do not use OrgMode.  If you want to report a problem, I will need a clear, step-by-step recipe, preferably starting from ##emacs -Q##.  
+
+The best way to report a problem is to use `M-x icicle-send-bug-report'.  Or you can do so at IciclesIssuesOpen.
+
+2. If '''Icicles''' key bindings clash with your application then change the key bindings in question.  It is easy to change '''Icicles''' keys -- see [[Icicles - Customizing Key Bindings]].
+
+3. In the case of `##C-c /##' you need only remove its entry from [[user option]] `icicle-top-level-bindings'.  Note too that `##C-c /##' falls in the category of keys that applications can use for minor modes (such as ''Icicle'' mode).  If OrgMode uses it for a major mode instead, that is not strictly prohibited, but it is not a great idea.  See [[Manual:Key Binding Conventions]].
+
+
+-- DrewAdams
 
 
 
