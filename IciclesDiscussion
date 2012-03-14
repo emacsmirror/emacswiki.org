@@ -893,6 +893,35 @@ Do not hesitate to ask questions or mention problems you encounter, but the doc 
 [:LatestEntry]
 
 
+
+
+
+<pre>
+
+</pre>
+----
+<pre>
+
+</pre>
+
+Org-mode - Icicles is great for running commands, finding files, but seems to get in the way of Org-mode e.g.
+
+1. Setting tags for a heading with C-c C-q - I want to set several tags (e.g. :book:computer:) one after another, using tab completion for each. Icicles replaces the first tag with the second - any way of avoiding this?
+2. There are a few other situations where key bindings clash e.g. C-c / for sparse tree - is it a question of setting key bindings for all such clashes?
+
+Thanks
+
+Nick
+
+
+
+
+
+
+
+
+
+
 <pre>
 
 </pre>
@@ -2086,23 +2115,6 @@ I've just added what you requested, as an option. Set option '''`icicle-expand-i
 ----
 
 See also: [[Icicles - Probably Won't Happen]]
-
-<pre>
-
-</pre>
-----
-<pre>
-
-</pre>
-
-Org-mode - Icicles is great for running commands, finding files, but seems to get in the way of Org-mode e.g.
-
-1. Setting tags for a heading with C-c C-q - I want to set several tags (e.g. :book:computer:) one after another, using tab completion for each. Icicles replaces the first tag with the second - any way of avoiding this?
-2. There are a few other situations where key bindings clash e.g. C-c / for sparse tree - is it a question of setting key bindings for all such clashes?
-
-Thanks
-
-Nick
 
 
 
