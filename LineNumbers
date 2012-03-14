@@ -81,7 +81,8 @@ Another workaround that keeps the appearance of the dynamic linum-format is to u
                       'face 'linum-leading-zero)
           (propertize (number-to-string line) 'face 'linum))))
 
-     (setq linum-format 'linum-format-func)))</pre>
+     (setq linum-format 'linum-format-func)))
+</pre>
 
 --Michael Hoffman
 
