@@ -5,7 +5,7 @@ Lisp:iedit.el or https://github.com/victorhge/iedit/blob/master/iedit.el.
 The latter one has the latest updates.
 
 This package is an Emacs minor mode and allows you to edit one occurrence of
-some text in a buffer or region, and simultaneously have other occurrences
+some text in a buffer (possibly narrowed) or region, and simultaneously have other occurrences
 edited in the same way, with visual feedback as you type.
 
 Normal scenario of Iedit mode is like:
