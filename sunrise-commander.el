@@ -7,7 +7,7 @@
 ;; Maintainer: José Alfredo Romero L. <escherdragon@gmail.com>
 ;; Created: 24 Sep 2007
 ;; Version: 5
-;; RCS Version: $Rev: 412 $
+;; RCS Version: $Rev: 413 $
 ;; Keywords: files, dired, midnight commander, norton, orthodox
 ;; URL: http://www.emacswiki.org/emacs/sunrise-commander.el
 ;; Compatibility: GNU Emacs 22+
@@ -702,6 +702,7 @@ automatically:
   (make-local-variable 'revert-buffer-function)
   (setq revert-buffer-function 'sr-revert-buffer)
  
+  (set (make-local-variable 'buffer-quit-function) 'sr-quit)
   (set (make-local-variable 'sr-show-file-attributes) sr-show-file-attributes)
 
   (make-local-variable 'hl-line-sticky-flag)
@@ -728,7 +729,8 @@ automatically:
 
   (make-local-variable 'revert-buffer-function)
   (setq revert-buffer-function 'sr-revert-buffer)
-  
+ 
+  (set (make-local-variable 'buffer-quit-function) 'sr-quit)
   (set (make-local-variable 'sr-show-file-attributes) sr-show-file-attributes)
 
   (make-local-variable 'hl-line-sticky-flag)
