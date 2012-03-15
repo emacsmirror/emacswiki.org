@@ -7,9 +7,9 @@
 ;; Copyright (C) 1999-2012, Drew Adams, all rights reserved.
 ;; Created: Thu Aug 26 16:05:01 1999
 ;; Version: 21.0
-;; Last-Updated: Fri Mar  2 08:24:22 2012 (-0800)
+;; Last-Updated: Thu Mar 15 14:13:02 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 726
+;;     Update #: 733
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/imenu+.el
 ;; Keywords: tools, menus
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -65,6 +65,9 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2012/03/15 dadams
+;;     imenu-update-menubar: Applied Emacs 24 bug fix to handle a dynamically composed keymap.
+;;     Require cl.el for Emacs 20 when byte-compile.
 ;; 2012/01/01 dadams
 ;;     imenu-update-menubar: buffer-modified-tick -> buffer-chars-modified-tick.  (Sync w/ vanilla.)
 ;; 2011/11/24 dadams
@@ -139,6 +142,8 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;;; Code:
+
+(eval-when-compile (when (< emacs-major-version 21) (require 'cl))) ;; dolist
 
 (require 'imenu)
 
@@ -339,6 +344,10 @@ See `imenu' for more information."
                                                    (cdr (car (cdr menu))))
                                                  t)))
           (setq old  (lookup-key (current-local-map) [menu-bar index]))
+	  ;; Next line was added in vanilla Emacs 24, with the comment.
+          ;; This should never happen, but in some odd cases, potentially,
+	  ;; lookup-key may return a dynamically composed keymap.
+	  (when (keymapp (cadr old)) (setq old  (cadr old)))
           (setcdr old (cdr menu1)))))))
 
 
