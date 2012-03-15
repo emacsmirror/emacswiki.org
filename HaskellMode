@@ -1,8 +1,7 @@
-Official site: [http://projects.haskell.org/haskellmode-emacs/]
+Official site: [https://github.com/haskell/haskell-mode]
 
 Haskell-mode 2.8 has different setup from earlier versions. Make sure to read the README and check it against your .emacs.
 
 
 The Haskell wiki has an interesting note on using mmm-mode (from MultipleModes) so that you can write your scholarly paper while still hacking.
 [[http://haskell.org/haskellwiki/Literate_programming#Multi-mode_support_in_Emacs]]
-
