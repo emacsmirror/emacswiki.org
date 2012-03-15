@@ -1,3 +1,7 @@
+= emacs-helm =
+
+Anything.el has been renamed to Emacs Helm. The new project is hosted under GitHub - https://github.com/thierryvolpiatto/Emacs-helm. Please, update old anything.el plugins accordingly to be used with Helm.
+
 = anything.el =
 
 ##anything.el## is a great application framework written by TamasPatrovics. It provides a totally new Emacs experience. While normal Emacs way is specifying action then selecting candidates, the ##anything## way is narrowing and selecting candidates then executing action for selected candidates. It is something like "über-extensible spotlight for emacs" or "!QuickSilver for emacs". The current maintainer of ##anything.el## is [[rubikitch]].
