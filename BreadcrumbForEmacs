@@ -2,11 +2,13 @@
 
 Breadcrumb is an add-on module for Emacs that allows you to set a series of quick bookmarks in the file buffers, and jump back to them quickly.
 
-When editing and navigating a large number of files in Emacs, it's often easy to get lost and forget which files and where in the files you have visited along the way. Breadcrumb let you leave "breadcrumb" bookmarks along the way. Going back is easy; just follow the trail of breadcrumbs to jump back to the exact locations in the files. 
+When editing and navigating a large number of files in Emacs, it's often easy to get lost and forget which files and where in the files you have visited along the way. Breadcrumb let you leave "breadcrumb" bookmarks along the way. Going back is easy; just follow the trail of breadcrumbs to jump back to the exact locations in the files.
 
 Home page: http://breadcrumbemacs.sourceforge.net/
 
 Project page: http://sourceforge.net/projects/breadcrumbemacs/
+
+Updated fork: https://github.com/pheaver/breadcrumb
 
 
 = Feature Overview =
