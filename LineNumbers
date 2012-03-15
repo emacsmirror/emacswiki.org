@@ -154,6 +154,25 @@ You can use `linum-before-numbering-hook' to count and store the number of lines
 
 (setq linum-format "%6d ")
 
+[new]
+Here's an approach based on the previous suggestion of using `linum-before-numbering-hook' to make the line counting more efficient:
+
+ (defvar my-linum-format-string "%4d")
+
+ (add-hook 'linum-before-numbering-hook 'my-linum-get-format-string)
+
+ (defun my-linum-get-format-string ()
+   (let* ((width (length (number-to-string
+                          (count-lines (point-min) (point-max)))))
+          (format (concat "%" (number-to-string width) "d")))
+     (setq my-linum-format-string format)))
+
+ (setq linum-format 'my-linum-format)
+
+ (defun my-linum-format (line-number)
+   (propertize (format my-linum-format-string line-number) 'face 'linum))
+
+
 == Linum: Numbering the last line of the buffer ==
 [new:AdamKerz:2009-05-08 01:35 UTC]
 Since most editors number the last line of a file even if it is empty (ie. no characters after the last eol char), I kept having to think about how many lines are in the file. Even Emacs lists the line number in the mode line, but no number appears in the margin. The below patch fixes this:
