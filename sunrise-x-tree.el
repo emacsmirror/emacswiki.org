@@ -1,13 +1,13 @@
 ;;; sunrise-x-tree.el --- Tree View for the Sunrise Commander File Manager
 
-;; Copyright (C) 2010 José Alfredo Romero Latouche.
+;; Copyright (C) 2010-2012 José Alfredo Romero Latouche.
 
 ;; Author: José Alfredo Romero L. <escherdragon@gmail.com>
 ;;	Štěpán Němec <stepnem@gmail.com>
 ;; Maintainer: José Alfredo Romero L. <escherdragon@gmail.com>
 ;; Created: 4 May 2010
 ;; Version: 1
-;; RCS Version: $Rev: 395 $
+;; RCS Version: $Rev: 413 $
 ;; Keywords: sunrise commander, directories tree navigation
 ;; URL: http://www.emacswiki.org/emacs/sunrise-x-tree.el
 ;; Compatibility: GNU Emacs 22+
@@ -922,6 +922,7 @@ Moves files from the active pane to the passive pane."
         sr-goto-dir-function       'sr-tree-goto-dir
         sr-buttons-command-adapter 'sr-tree-buttons-command-adapter)
   (setq dired-omit-mode t)
+  (set (make-local-variable 'buffer-quit-function) 'sr-quit)
   (hl-line-mode 1)
   (unless sr-tree-root
     (sr-tree-build default-directory)))
