@@ -1,6 +1,6 @@
 = emacs-helm =
 
-Anything.el has been renamed to Emacs Helm. The new project is hosted under GitHub - https://github.com/thierryvolpiatto/Emacs-helm. Please, update old anything.el plugins accordingly to be used with Helm.
+Anything.el has been renamed to Helm (helm will help you steer in the right direction :-) ). The new project is hosted under GitHub - https://github.com/emacs-helm/helm. Please, update old anything.el plugins accordingly to be used with Helm.
 
 = anything.el =
 
