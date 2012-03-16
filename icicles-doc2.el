@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Sat Mar 10 15:50:17 2012 (-0800)
+;; Last-Updated: Fri Mar 16 11:02:22 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 28722
+;;     Update #: 28726
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-doc2.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -5315,12 +5315,13 @@
 ;;
 ;;  * Non-`nil' option `icicle-image-files-in-Completions' means that
 ;;    thumbnail images are shown in `*Completions*' for candidates
-;;    that are (relative or absolute) names of image files.  The
-;;    default value is `t'.  If the value is `image-only', then only
-;;    the thumbnail images are shown.  If it is otherwise non-`nil'
-;;    then the file names are also shown.  You can cycle the option
-;;    value using `C-x t' in the minibuffer at any time during
-;;    completion.  This feature is available starting with Emacs 22.
+;;    that are either (relative or absolute) names of image files or
+;;    names of image-file bookmarks (see Bookmark+).  The default
+;;    value is `t'.  If the value is `image-only', then only the
+;;    thumbnail images are shown.  If it is otherwise non-`nil' then
+;;    the file names are also shown.  You can cycle the option value
+;;    using `C-x t' in the minibuffer at any time during completion.
+;;    This feature is available starting with Emacs 22.
 ;;
 ;;  * Option `icicle-completions-format' controls whether candidates
 ;;    displayed in `*Completions*' are laid out horizontally (the
@@ -6870,9 +6871,10 @@
 ;;
 ;;  The following key is bound during completion to control the
 ;;  display of thumbnail images in `*Completions*' for candidates that
-;;  name image files.  It cycles the value of option
-;;  `icicle-image-files-in-Completions' to show images and names (the
-;;  default), show only names, or show only images.
+;;  name image files or image-file bookmarks (see Bookmark+).  It
+;;  cycles the value of option `icicle-image-files-in-Completions' to
+;;  show images and names (the default), show only names, or show only
+;;  images.
 ;;
 ;;    `C-x t'         - `icicle-cycle-image-file-thumbnail'
 ;;
