@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:53 2006
 ;; Version: 22.0
-;; Last-Updated: Wed Feb 29 10:36:53 2012 (-0800)
+;; Last-Updated: Fri Mar 16 10:32:57 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 12918
+;;     Update #: 12938
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-fn.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -2873,6 +2873,7 @@ NO-DISPLAY-P non-nil means do not display the candidates; just
                          (if (and filep  (boundp 'read-file-name-completion-ignore-case))
                              read-file-name-completion-ignore-case
                            completion-ignore-case)))
+                   (when (fboundp 'remove-images)  (remove-images (point-min) (point-max)))
                    (goto-char (icicle-start-of-candidates-in-Completions))
                    (while (not (eobp))
                      (let* ((beg    (point))
@@ -3052,12 +3053,28 @@ NO-DISPLAY-P non-nil means do not display the candidates; just
                                    (setq partnum  (1+ partnum)
                                          start    (match-end 0))))))))
 
-                       ;; Show thumbnail for an image file.
-                       (when (and filep  (fboundp 'image-file-name-regexp)
-                                  icicle-image-files-in-Completions
-                                  (if (fboundp 'display-graphic-p) (display-graphic-p) window-system))
-                         (let ((image-file  (icicle-transform-multi-completion
-                                             (icicle-current-completion-in-Completions))))
+                       ;; Show thumbnail for an image file or image-file bookmark (Bookmark+).
+                       (when (and icicle-image-files-in-Completions
+                                  (if (fboundp 'display-graphic-p) (display-graphic-p) window-system)
+                                  (or (and filep  (fboundp 'image-file-name-regexp))
+                                      (and icicle-show-multi-completion-flag
+                                           (symbolp icicle-last-top-level-command)
+                                           (string-match "^icicle-bookmark-"
+                                                         (symbol-name icicle-last-top-level-command)))))
+                         (let ((image-file
+                                (if (and icicle-show-multi-completion-flag
+                                         (symbolp icicle-last-top-level-command)
+                                         ;; We could alternative put a property on such symbols and
+                                         ;; test that.  But just matching the cmd name is OK so far.
+                                         (string-match "^icicle-bookmark-"
+                                                       (symbol-name icicle-last-top-level-command)))
+                                    ;; This is bound by the bookmark commands to `(1)': bookmark name.
+                                    ;; The file name is part #2, so we rebind this here.
+                                    (let ((icicle-list-use-nth-parts  '(2)))
+                                      (icicle-transform-multi-completion
+                                       (icicle-current-completion-in-Completions)))
+                                  (icicle-transform-multi-completion
+                                   (icicle-current-completion-in-Completions)))))
                            (when (and (require 'image-dired nil t)
                                       (if (fboundp 'string-match-p)
                                           (string-match-p (image-file-name-regexp) image-file)
@@ -3083,6 +3100,7 @@ NO-DISPLAY-P non-nil means do not display the candidates; just
                                    (setq name-ov  (make-overlay beg end))  
                                    (overlay-put name-ov 'display " ")))))))
                        (goto-char next)))
+
                    ;; Remove all newlines for images-only display.
                    (when (eq icicle-image-files-in-Completions 'image-only)
                      (save-excursion (goto-char (icicle-start-of-candidates-in-Completions))
@@ -3090,6 +3108,7 @@ NO-DISPLAY-P non-nil means do not display the candidates; just
                                        (delete-char 1)))))
                  (set-buffer-modified-p nil)
                  (setq buffer-read-only  t))))
+
            (with-current-buffer (get-buffer "*Completions*")
              (set (make-local-variable 'mode-line-frame-identification)
                   (format "  %d %s  "
@@ -3104,6 +3123,7 @@ NO-DISPLAY-P non-nil means do not display the candidates; just
              (goto-char (icicle-start-of-candidates-in-Completions))
              (set-window-point (get-buffer-window "*Completions*" 0) (point))
              (icicle-fit-completions-window))
+
            ;; Use the same font family as the starting buffer.  This is particularly for picking up
            ;; the proper font for Unicode chars in `*Completions*'.  Emacs 23+ only.
            ;; But skip this if using `oneonone.el', since `1on1-display-*Completions*-frame' does it.
