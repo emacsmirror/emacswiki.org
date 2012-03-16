@@ -101,7 +101,7 @@ If you happen to need to use two separate tags programs (like rtags and ctags) t
 == See also ==
 
 * Lisp:traverselisp.el is able to build tags fast recursively in a directory tree with ` M-x traverse-build-tags-in-project' then just choose extension from prompt.
-* Lisp:ctags-update.el  is a global minor mode that will update your TAGS when you save a file ,or update by command :ctags-update .
+* [https://github.com/jixiuf/helm-etags-plus ctags-update.el]  auto or not auto update TAGS in parent directory using exuberant-ctags
 * [http://github.com/mattkeller/etags-update etags-update.el] is a global minor mode that will update your TAGS when you save a file. It can also offer to add a file to your TAGS if it is not already indexed.
 * RecursiveTags for more tips on generating tags in recursive directories.
 
