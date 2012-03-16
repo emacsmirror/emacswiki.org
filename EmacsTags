@@ -112,4 +112,32 @@ No idea, but try tags-complete-tag in etags.el. It does pretty much the same thi
 
 [new]
 `complete-tag' is bound to `M-TAB' by default but because some
-window managers use this to switch between windows, I tend to use `M-RET' instead. Which tool do you use for context symbol completion? For example, I just want to see the functions accessible from [[point]]. -- Jér
+window managers use this to switch between windows, I tend to use `M-RET' instead. Which tool do you use for context symbol completion? For example, I just want to see the functions accessible from [[point]]. -- JérômeRadix
+
+[new]
+Semantic in CEDET has a feature that might fit your needs: "Smart Completion
+Completes symbols actually available in a given context. Some tools call this intellisense." -- Martin Muggli
+
+== Use incron (Inotify cron) to generate tags automatically  ==
+
+An article document here how to use [http://inotify.aiken.cz/?section=incron&page=about&lang=en incron] to generate the tags automatically when a file changed. You can read it here :
+
+http://blog.chmouel.com/2009/07/03/update-emacsvim-tags-with-inotify/
+
+== XEmacs vs GNU Emacs Versions of etags.el ==
+
+##etags.el## is the Emacs library that defines commands for working with tags. XEmacs and GnuEmacs each have an ##etags.el## file, and they are quite different. This divergence has been a source of
+frustration on my part over the years.  In early 1990's I started
+using the XEmacs version of etags.el and grew very fond of it's
+configurability especially with regards to specifying which TAGS file
+to use based on regexp of file names, major modes, etc.  It seems like
+to me that etags.el in GNU Emacs lacks such configurability. Hence, I
+still use etags.el, lifted from Lucid emacs, that I hacked up to work
+with Emacs many years ago. Again, if someone knowledgable with Emacs
+etags.el can correct me, I would appreciate it. -- Anonymous
+
+See EtagsTable
+
+----
+CategoryProgrammerUtils
+CategoryCompletion
