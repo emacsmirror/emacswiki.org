@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Sat Mar 10 15:38:03 2012 (-0800)
+;; Last-Updated: Fri Mar 16 10:57:43 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 26501
+;;     Update #: 26508
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-doc1.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -3178,14 +3178,15 @@
 ;;    common directory, it can be convenient to hide the directory
 ;;    portion that is common to all candidates.
 ;;
-;;  * Starting with Emacs 22, thumbnail images are shown in
-;;    `*Completions*' for candidates that are (relative or absolute)
-;;    names of image files, if option
+;;  * Starting with Emacs 22, if option
 ;;    `icicle-image-files-in-Completions' is non-`nil' (it is `t' by
-;;    default).  If the option value is `image-only', then only the
-;;    thumbnail images are shown.  If it is otherwise non-`nil' then
-;;    the file names are also shown.  You can cycle the option value
-;;    using `C-x t' in the minibuffer at any time during completion.
+;;    default) then thumbnail images are shown in `*Completions*' for
+;;    candidates that are either (relative or absolute) names of image
+;;    files or names of image-file bookmarks (see Bookmark+). If the
+;;    option value is `image-only', then only the thumbnail images are
+;;    shown.  If it is otherwise non-`nil' then the file names are
+;;    also shown.  You can cycle the option value using `C-x t' in the
+;;    minibuffer at any time during completion.
 ;;
 ;;  * You can scroll `*Completions*' down using `C-v', and up using
 ;;    `M-v'.  You can use `C-u' at any time to reverse the scroll
@@ -4143,12 +4144,14 @@
 ;;  * property lists
 ;;  * buffers
 ;;  * files
+;;  * bookmarks
 ;;
-;;  Starting with Emacs 22, if the candidate names an image file and
-;;  you have command-line tool `exiftool' installed and in your
-;;  `$PATH' or `exec-path', then EXIF information (metadata) about the
-;;  image is included.  See standard Emacs library `image-dired.el'
-;;  for more information about `exiftool'.
+;;  Starting with Emacs 22, if you have command-line tool `exiftool'
+;;  installed and in your `$PATH' or `exec-path', and if the candidate
+;;  names either an image file or an image-file bookmark (see
+;;  Bookmark+), then EXIF information (metadata) about the image is
+;;  included.  See standard Emacs library `image-dired.el' for more
+;;  information about `exiftool'.
 ;;
 ;;  If the same candidate names a function, a variable, and a face, or
 ;;  any two of these, then all such documentation is shown (Emacs 22
