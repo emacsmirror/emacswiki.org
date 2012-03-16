@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:53 2006
 ;; Version: 22.0
-;; Last-Updated: Fri Mar 16 10:32:57 2012 (-0700)
+;; Last-Updated: Fri Mar 16 15:46:24 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 12938
+;;     Update #: 12942
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-fn.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -5927,18 +5927,22 @@ Otherwise remove only Icicles internal text properties:
  1. any text properties in `icicle-candidate-properties-alist'.
  2. The following internal text properties added by Icicles:
     `display', `help-echo', `icicle-fancy-candidates',
-    `icicle-keep-newline', `icicle-mode-line-help',
-    `icicle-special-candidate', `icicle-user-plain-dot',
-    `icicle-whole-candidate', `invisible'.
+    `icicle-mode-line-help', `icicle-special-candidate',
+    `icicle-user-plain-dot', `icicle-whole-candidate', `invisible'.
     \(Property `mouse-face' is removed by `choose-completion-string'.\)"
   (when (and (stringp string) icicle-remove-icicles-props-p) ; Do nothing if we're inhibiting removal.
     (let ((len  (length string)))
       (if icicle-unpropertize-completion-result-flag
           (set-text-properties 0 len nil string)
         (remove-text-properties
-         0 len '(display nil  help-echo nil  icicle-fancy-candidates  nil  icicle-keep-newline   nil
-                 icicle-mode-line-help  nil  icicle-special-candidate nil  icicle-user-plain-dot nil
-                 icicle-whole-candidate nil  invisible  nil)
+         0 len '(display                  nil
+                 help-echo                nil
+                 icicle-fancy-candidates  nil
+                 icicle-mode-line-help    nil
+                 icicle-special-candidate nil
+                 icicle-user-plain-dot    nil
+                 icicle-whole-candidate   nil
+                 invisible                nil)
          string)
         (dolist (entry  icicle-candidate-properties-alist)
           (put-text-property 0 len (car (cadr entry)) nil string)))))
