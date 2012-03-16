@@ -703,7 +703,7 @@ items: it deletes the current item from the history.
 
 The following key is bound during completion to control the
 display of thumbnail images in `*Completions*' for candidates that
-name image files.  It cycles the value of option '''`<tt>[[Icicles - Customization and General Tips#icicle-image-files-in-Completions|icicle-image-files-in-Completions]]</tt>'''' to show images and names (the default), show only names, or show only images.
+name image files or image-file bookmarks (see '''[[Bookmark+]]''').  It cycles the value of option '''`<tt>[[Icicles - Customization and General Tips#icicle-image-files-in-Completions|icicle-image-files-in-Completions]]</tt>'''' to show images and names (the default), show only names, or show only images.
 
 * '''`C-x t'''' -- `icicle-cycle-image-file-thumbnail'
 
