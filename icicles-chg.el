@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Fri Mar 16 10:45:46 2012 (-0700)
+;; Last-Updated: Fri Mar 16 15:47:21 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 8150
+;;     Update #: 8151
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-chg.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -1207,6 +1207,7 @@
 ;;     icicle-display-candidates-in-Completions:
 ;;       Show thumbnails for image-file bookmarks also (see Bookmark+).
 ;;       Call remove-images to remove left-over image overlays (bug fix).
+;;     icicle-unpropertize-completion: Removed icicle-keep-newline (no longer used).
 ;; 2012/02/29 dadams
 ;;     icicle-set-difference.  Added optional KEY arg.
 ;; 2012/02/22 dadams
