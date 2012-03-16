@@ -1,7 +1,25 @@
 NTEmacs is commonly used to denote Emacs compiled as a native w32 application.
 For precompiled versions and instructions on how to build see CategoryWThirtyTwo.
 
-Why use NTEmacs with Cygwin?
+==Current issue (as of 28 Feb 2012): NTEmacs breaks cygwin bash==
+When using precompiled *NTemacs version GNU Emacs 23.4.1* (i386-mingw-nt6.1.7601) with a Cygwin installation *with Cygwin1.dll version 1.7.11-1*, you have trouble running bash in emacs. On `M-x shell` you get: 
+
+  bash: cannot set terminal process group (-1): Inappropriate ioctl for device
+  bash: no job control in this shell
+
+This shell then is rather useless, because apart from the missing job control some commands called in that shell just hang.
+
+The helpful people from the Cygwin mailing list suggest that it is an NTEmacs problem. This issue does not seem to be resolved yet(as of 15 Mar 2012).
+
+Workarounds: 
+# Use Cygwin Emacs (under Cygwin/XFree in rootless mode)
+# Don't upgrade Cygwin above, I think Cygwin1.dll, version 1.7.9.
+
+I took route 1. and I can say, that it is quite a hassle when you are coming from NTemacs: The look-and-feel (provided by X/Free) of the frame is significant less MS Windows-like, keyboard mappings are changed, no window shortcuts, no drag-n-drop, etc.
+
+(I will try to delete this "current issue" entry once the original problem is sorted. - [[halloleo]])
+
+==Why use NTEmacs with Cygwin?==
 
 Because Cygwin is wonderful ... but the Emacsen that come with it suffer from a few problems:
 * It's kinda slow (although recent Cygwin builds of X seem faster -- 4.3.0-61, e.g.)
