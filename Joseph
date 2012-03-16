@@ -4,7 +4,7 @@ I use Emacs 23 on Gentoo(Linux) and  Windows since 2010-10
 
 I come from China; my Chinese name is 纪秀峰.
 "Joseph" sounds like my Chinese name, that's why I use it as my English name. Please forgive my poor English.
- 
+
 My Emacs config file is published on github:
 [https://github.com/jixiuf/emacs_conf MyEmacsConfigFilesOnGitHub].
 
@@ -18,10 +18,10 @@ I wrote:
 
 * AutoJavaComplete -- It can complete java class name ,method name using  AutoComplete when editing java file and jsp file.
 * DiredFileTypeFaces --- Set Different Faces for Different File Types in Dired Buffer.
-* [[anything-etags+.el]] -- Another Etags anything.el interface
-* Lisp:ctags-update.el -- auto update TAGS in parent directory using exuberant-ctags [2011-10-16 17:13]
-* [[anything-dired-history.el]] -- Show dired directories you have visited with anything.el support.[2011-03-26]
-* [[quick-jump.el]] -- Remember current position,and jump back 
+*  [https://github.com/jixiuf/helm-etags-plus ctags-update] -- auto update TAGS in parent directory using exuberant-ctags [2011-10-16 17:13]
+* [https://github.com/jixiuf/helm-etags-plus helm-etags-plus] -- Another Etags helm.el interface
+* [[https://github.com/jixiuf/helm-dired-history helm-dired-history]] -- Show dired directories you have visited with helm.el support.[2011-03-26]
+* [[quick-jump.el]] -- Remember current position,and jump back
 * [[term-toggle.el]] -- toggle "*terminal*" window ,like shell-toggle.el
 * [[joseph-single-dired.el]] --Only open a single dired buffer.[2011-04-03]
 * [[joseph-scroll-screen.el]] -- Scroll half screen down or up, and highlight current line temporarily.
@@ -38,9 +38,9 @@ I wrote:
 * Lisp:mysql-table2entity-4java.el -- generate entity for java from mysql tables [2012-01-16 00:13]
 * Lisp:mysql-table2entity-4csharp.el -- generate entity for csharp from mysql tables [2012-01-16 00:13]
 * Lisp:sqlserver-table2entity-4java.el -- generate entity for java from sqlserver tables [2011-09-27 14:26]
-* Lisp:sqlserver-table2entity-4csharp.el  -- generate entity for csharp from sqlserver tables [2011-09-27 14:26]  
-* Lisp:oracle-table2entity-4java.el  -- generate entity for java  from oracle tables [2011-09-27 14:26] 
-* Lisp:oracle-table2entity-4csharp.el   -- generate entity for csharp from oracle tables [2011-09-27 14:26] 
+* Lisp:sqlserver-table2entity-4csharp.el  -- generate entity for csharp from sqlserver tables [2011-09-27 14:26]
+* Lisp:oracle-table2entity-4java.el  -- generate entity for java  from oracle tables [2011-09-27 14:26]
+* Lisp:oracle-table2entity-4csharp.el   -- generate entity for csharp from oracle tables [2011-09-27 14:26]
 * Lisp:joseph-util.el     --  some useful functions and macros . [2011-09-13]
 * Lisp:erlang-dired-mode.el     --  binding some key in dired mode if Emakefile is in erlang project root . [2011-12-20 23:16]
 
@@ -52,5 +52,3 @@ Welcome to the wiki. -- DrewAdams
 
 ----
 CategoryHomepage
-
-
