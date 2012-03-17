@@ -1,19 +1,19 @@
-gpicker is a solution for quickly choosing file from (possibly large) project.
+gpicker is a solution for quickly choosing a file from a (possibly large) project.
 
 Files are searched by their basename, but patterns containing '/'
-automagically turn on matching of directory name.
+automagically turn on matching of the directory name.
 
 It's base filtration is similar to InteractivelyDoThings flex
-matching. But it places great emphasis on 'correctly' ordering
-matching names. It tries to place contiguous matches and matches on
+matching, but it places great emphasis on 'correctly' ordering
+matching names. It tries to place matches contiguously and matches on
 word beginnings before all other matches. It is also possible to emphasize
-word beginning in pattern by capitalizing first character (so '!ClLoad'
+the word beginning in a pattern by capitalizing first character (so '!ClLoad'
 will score hugely on '!ClassLoader'), or by placing delimiter before
 it ('s-w-m' for 'several-words-matching'). See its [http://git.savannah.gnu.org/gitweb/?p=gpicker.git;a=blob_plain;f=README;hb=HEAD README] for more details and examples. Examples in pictures
 can also be seen here
 http://alkandratsenka.blogspot.com/2008/10/gpicker-tale.html.
 
-It's implemented as gtk program (which makes it fast even on large projects) and few emacs lisp functions which
+It's implemented as a gtk program (which makes it fast even on large projects) and a few emacs lisp functions to
 invoke it.
 
 It can be downloaded from http://savannah.nongnu.org/projects/gpicker
