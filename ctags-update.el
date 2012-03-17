@@ -1,3 +1,3 @@
 DeletedPage
 
-https://github.com/jixiuf/helm-etag-plus
+https://github.com/jixiuf/helm-etags-plus
