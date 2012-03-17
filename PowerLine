@@ -104,3 +104,5 @@ static char * arrow_right[] = {
 
 NicolasRougier
 
+A more complete version, including minor modes, is included in Lisp:powerline.el
+
