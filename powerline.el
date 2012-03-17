@@ -200,6 +200,8 @@ static char * %s[] = {
       (setq i (+ i 1)))
     (make-xpm "percent" color1 color2 (reverse o))))
 
+
+;; from memoize.el @ http://nullprogram.com/blog/2010/07/26/
 (defun memoize (func)
   "Memoize the given function. If argument is a symbol then
 install the memoized function over the original function."
