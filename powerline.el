@@ -1,4 +1,4 @@
-;; powerline.el
+;;; powerline.el
 ;; Vim style powerline for Emacs, courtesy of http://www.reddit.com/r/emacs/comments/qlbsr/vim_powerline_ported_to_emacs/c3zoxgy
 (defvar powerline-color1)
 (defvar powerline-color2)
