@@ -1,3 +1,5 @@
+;;; powerline.el
+
 (require 'memoize)
 
 (defvar powerline-color1)
