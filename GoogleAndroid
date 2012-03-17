@@ -6,6 +6,7 @@ For development there are currently only a few approaches:
 
 * EmDroid
 * RemVee's [http://github.com/remvee/android-mode/blob/master/android-mode.el android-mode]
+* CEDET (CollectionOfEmacsDevelopmentEnvironmentTools) depends on android-mode.el, and is integrated with EDE supporting project creation, debugging, and uploading to your device.  It will configure your Java buffers to perform symbol lookups in android.jar, providing full smart completion support.
 
 [new]
 
@@ -33,4 +34,3 @@ BUILD FAILED
 </pre>
 
 <b>Solution:</b> add the $JAVA_HOME/bin to the path environment variable
-
