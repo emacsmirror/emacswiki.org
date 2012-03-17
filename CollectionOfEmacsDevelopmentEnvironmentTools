@@ -35,6 +35,8 @@ External tools supported
 * IdUtils - supported by EDE file search, and semantic symref.
 * Graphviz (dot) - supported by COGRE for diagram layout and export.
 * ExuberantCtags - Supported as an alternate parser for Semantic for many languages, like Bourne shell scripts.
+* javap - extract symbols from Java .jar files.
+* arduino - arduino microcontroller tools for compiling and uploading programs to an Arduino board.
 
 Issues
 
