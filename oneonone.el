@@ -7,16 +7,16 @@
 ;; Copyright (C) 1999-2012, Drew Adams, all rights reserved.
 ;; Created: Fri Apr  2 12:34:20 1999
 ;; Version: 21.1
-;; Last-Updated: Fri Mar  2 10:36:03 2012 (-0800)
+;; Last-Updated: Sat Mar 17 14:44:56 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 2613
+;;     Update #: 2621
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/oneonone.el
 ;; Keywords: local, frames
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
 ;;
 ;; Features that might be required by this library:
 ;;
-;;   `avoid', `cl', `frame-cmds', `frame-fns', `hexrgb', `misc-fns',
+;;   `avoid', `frame-cmds', `frame-fns', `hexrgb', `misc-fns',
 ;;   `oneonone', `strings', `thingatpt', `thingatpt+', `zoom-frm'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -274,6 +274,9 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2012/03/17 dadams
+;;     1on1-fit-minibuffer-frame:
+;;       Use count-screen-lines to get the Icomplete overlay height, to fix part of bug #11035.
 ;; 2012/03/02 dadams
 ;;     Added 1on1-remove-if: to avoid runtime load of cl.el.
 ;;     1on1-emacs: Use 1on1-remove-if, not remove-if.
@@ -1706,7 +1709,13 @@ This has no effect if you do not also use library `fit-frame.el'."
                 (window-min-height                       1on1-minibuffer-frame-height)
                 (fit-frame-empty-height                  1on1-minibuffer-frame-height)
                 (fit-frame-empty-special-display-height  1on1-minibuffer-frame-height))
-           (fit-frame frame (frame-width frame))
+           (if (fboundp 'count-screen-lines) ; Emacs 21+
+               ;; For `icomplete.el', Emacs 23+ uses an overlay instead of inserting text into
+               ;; the buffer.  `fit-frame' cannot take the height of that overlay into account.
+               ;; So we use `count-screen-lines' to get the height.
+               ;; For now, there remains an Emacs bug wrt the cursor placement: #11035.
+               (fit-frame frame (frame-width frame) (1+ (count-screen-lines)))
+             (fit-frame frame (frame-width frame)))
            ;; $$$$       (when (>= emacs-major-version 21)
            ;;              (set-frame-height frame (1+ (frame-height frame)))) ; A little extra.
            (1on1-set-minibuffer-frame-top/bottom)
