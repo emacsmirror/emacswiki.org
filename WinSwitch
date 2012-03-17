@@ -57,7 +57,9 @@ outcome is fast and seamless navigation.
 == Installation ==
 
 To use the package, download Lisp:win-switch.el and place it
-somewhere in your load path.[[#fn2]][:fn2Back] Then, execute the following code
+somewhere in your load path.[[#fn2]][:fn2Back] (You can also obtain
+the package through <code>package.el</code> from the [http://marmalade-repo.org/ Marmalade] repository.)
+Then, execute the following code
 either directly or from in your .emacs file:
 
 <pre>
