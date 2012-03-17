@@ -1,7 +1,5 @@
 ;;; powerline.el
 
-(require 'memoize)
-
 (defvar powerline-color1)
 (defvar powerline-color2)
 
@@ -201,6 +199,26 @@ static char * %s[] = {
                o))
       (setq i (+ i 1)))
     (make-xpm "percent" color1 color2 (reverse o))))
+
+(defun memoize (func)
+  "Memoize the given function. If argument is a symbol then
+install the memoized function over the original function."
+  (typecase func
+    (symbol (fset func (memoize-wrap (symbol-function func))) func)
+    (function (memoize-wrap func))))
+
+(defun memoize-wrap (func)
+  "Return the memoized version of the given function."
+  (let ((table-sym (gensym))
+	(val-sym (gensym))
+	(args-sym (gensym)))
+    (set table-sym (make-hash-table :test 'equal))
+    `(lambda (&rest ,args-sym)
+       ,(concat (documentation func) "\n(memoized function)")
+       (let ((,val-sym (gethash ,args-sym ,table-sym)))
+	 (if ,val-sym
+	     ,val-sym
+	   (puthash ,args-sym (apply ,func ,args-sym) ,table-sym))))))
 
 (memoize 'arrow-left-xpm)
 (memoize 'arrow-right-xpm)
