@@ -1,14 +1,14 @@
-*mu4e* is a new emacs-based e-mail client. It's based on the [http://www.djcbsoftware.nl/code/mu mu] e-mail indexer/searcher. It focuses on being super-efficient and  on withstanding the daily e-mail tsunami.
+*mu4e* is a new emacs-based e-mail client. It's based on the [http://www.djcbsoftware.nl/code/mu mu] e-mail indexer/searcher. It focuses on being a super-efficient tool to withstand the daily e-mail tsunami. 
 
 ==Features==
-* completely search based, yet allowing for folder based operation
+* completely search based, yet allowing for folder-based operation
 * search based on subject, sender, recipient (to, cc, bcc), date interval, message flags, attachment name and mime-type, etc.
-* support for bookmarks and quickly navigating your mails using only two keystrokes
+* support for bookmarks and quickly navigating your mails using only two keystrokes (like dired)
 * support for non-english languages -- so angstrom will match Ångström
-* documented
+* fully documented
 
 ==Links==
-* source code (part of mu): http://gitorious.org/mu/mu
+* source code (part of mu): https://github.com/djcb/mu
 * homepage, screenshots: http://www.djcbsoftware.nl/code/mu/mu4e.html
 * documentation: http://www.djcbsoftware.nl/code/mu/mu4e/index.html 
 
