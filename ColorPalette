@@ -393,6 +393,10 @@ what do you mean? file a.el only contain one statement: (require 'gud) -- [[ahei
 
 [new:DrewAdams:2009-11-20 17:04 UTC]
 What do I mean? I mean that it is the output of vanilla Emacs function `describe-function' that you are complaining is incorrect. So file an Emacs bug about that. That has nothing to do with '''Icicles''', and even less than nothing to do with ColorPalette. -- DrewAdams
+
+
+
+
 [new:spinuvit:2012-03-17 16:34 UTC]
 Hi Drew,
 
@@ -400,11 +404,31 @@ Thanks for the package. It's great, except that I find it difficult to use for c
 
 First, apparently there is no way to insert the current color into the kill ring. When I am editing a css file I might need hundreds of values. Now I am just going to message buffer to cut form there. Would be nice to rebind C-w to insert the color under the point into a kill ring. 
 
-Second 12 digit RGB hex is not standard, browsers don't support it. I always have to manually remove 6 digits, pretty annoying. Can I somehow configure ColorPalete to output 6 digit hex? 
+Second 12 digit RGB hex is not standard, browsers don't support it. I always have to manually remove 6 digits, pretty annoying. Can I somehow configure ColorPalette to output 6 digit hex? 
 
 And finally, because there are so many colors, my emacs is getting really slow when pallet is open. Is it possible to reduce the number of colors?
 
-Many thanks.
+Many thanks. -- [[spinuvit]]
+
+
+[new:DrewAdams:2012-03-18 02:51 UTC]
+In reverse order:
+
+1. Yes, <tt>[[palette.el]]</tt> slows Emacs down considerably.  There's nothing I can do about that, given the way I chose to implement it, which uses hundreds of faces --- Emacs is just not designed to handle lots of faces displayed at the same time.
+
+An alternative, simpler in many ways but not quite as feature-full, would be to use an image and map from its coordinates.  I won't be implementing that, but it would be useful and maybe someone else will.  I like what the palette does, but I do realize that one needs a powerful machine to make it not slow things down too much.
+
+2. You can use any number of RGB digits, as long as it is a multiple of 3.  The palette uses as many as it can get from user input and that doesn't overload an Emacs integer, so that it can be more precise.
+
+3. However, I've just added a user option, `palette-hex-rgb-digits', which will limit the number of hex digits in messages and some return values.  Some commands are also used internally, so they still return the full RGB value, i.e., ignoring `palette-hex-rgb-digits'.  Let me know if this option gives you what you want in this regard.
+
+4. The current color is always in variable `palette-current-color' (but the variable value does not respect `palette-hex-rgb-digits').  There are other variables that hold foreground and background colors that you have picked.  I've just added a command, `palette-current-rgb-to-kill-ring', to copy the current color to the kill ring, respecting `palette-hex-rgb-digits'.  It is bound to '''`M-w'''' in the palette.
+
+You will need to download <tt>[[hexrgb.el]]</tt> and <tt>[[palette.el]]</tt> anew, to pick up these changes.
+
+Thx -- DrewAdams
+
+
 ----
 Lisp:palette.el, Lisp:facemenu+.el
 
