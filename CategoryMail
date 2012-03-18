@@ -31,6 +31,7 @@ used:
 * [[Mew]] -- good IMAP4 support
 * [[CategoryViewMail|VM]] -- offers virtual folders and good documentation
 * NotMuch -- an email indexing/search tool with an emacs mail client
+* [[mu4e]] -- a new emacs-based e-mail client based on the mu maildir utils package
 
 Some people also like to use a non-elisp mail client from within Emacs:
 
