@@ -7,9 +7,9 @@
 ;; Copyright (C) 2006-2012, Drew Adams, all rights reserved.
 ;; Created: Sat May 20 07:56:06 2006
 ;; Version: 22.0
-;; Last-Updated: Sat Mar 17 19:47:29 2012 (-0700)
+;; Last-Updated: Sun Mar 18 07:45:29 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 723 4
+;;     Update #: 728 4
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/palette.el
 ;; Keywords: color, rgb, hsv, hexadecimal, face, frame
 ;; Compatibility: GNU Emacs: 22.x, 23.x
@@ -308,6 +308,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2012/03/18 dadams
+;;     palette-current-rgb-to-kill-ring: Added optional MSG-P arg and message.
 ;; 2012/03/17 dadams
 ;;     Added option palette-hex-rgb-digits, palette-current-rgb-to-kill-ring.
 ;;     Bound palette-current-rgb-to-kill-ring to M-w in palette keymap.
@@ -1049,11 +1051,12 @@ informative message."
     color))
 
 ;;;###autoload
-(defun palette-current-rgb-to-kill-ring ()
+(defun palette-current-rgb-to-kill-ring (&optional msg-p) ; Bound to `M-w'.
   "Copy the RGB hex string for the current color to the kill ring.
 Respect option `palette-hex-rgb-digits'."
-  (interactive)
-  (kill-new (palette-current-color)))
+  (interactive "p")
+  (kill-new (palette-current-color))
+  (when msg-p (message "Copied: %s" (palette-current-color))))
 
 ;;;###autoload
 (defalias 'eyedrop-background-at-mouse 'palette-background-at-mouse)
