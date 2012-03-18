@@ -8,7 +8,7 @@ Old Unix keyboards had these keys' positions inverted, and Sun keyboards always 
 
 It is possible to embrace this "new" keyboard layout, however, and go a step further than just swapping Control and CapsLock keys - and SwapControlAltAndCapsLock for an old Unix or Sun keyboard-like experience.  It's a mindblowing change for the first few days, but it makes keyboard usage much simpler and easier.
 
-There are many, many different ways to make CapsLock work as an additional control key.  You only need to pick one of the following from the list, usually whichever one seems easiest to you.  Do note, however, that the keyboard mappings are separate for X (graphical) applications and for Linux virtual terminals.  (Sidenote: This problem may be alleviated soon as Debian's <code>/etc/default/keyboard</code> file appears designed to work for both virtual terminals and X.)
+There are many, many different ways to make CapsLock work as an additional control key.  You only need to pick one of the following from the list, usually whichever one seems easiest to you.  Do note, however, that the keyboard mappings are separate for X (graphical) applications and for Linux virtual consoles.  (Sidenote: This problem may be alleviated soon as Debian's <code>/etc/default/keyboard</code> file appears designed to work for both virtual consoles and X.)
 
 
 == Gnome Desktop Environment ==
@@ -88,15 +88,15 @@ In Fedora 15 you can also add a file <code>~/.Xkbmap</code> that contains comman
 
 The CapsKey page has an example of moving Ctrl to Caps.
 
-== Virtual terminals ==
+== Virtual consoles ==
 
-A virtual terminal is NOT an <code>[agkux]term</code> inside of X.  It is the white-on-black text-only mode that scares some people who have been traumatized by Microsoft's COMMAND.COM shell.  If you do not use virtual terminals, there is no reason for you to read this section.
+A virtual console is NOT an <code>[agkux]term</code> inside of X.  It is the white-on-black text-only mode that scares some people who have been traumatized by Microsoft's COMMAND.COM shell.  If you do not use virtual consoles, there is no reason for you to read this section.
 
-=== Generic GNU/Linux Virtual Terminal (any distribution) ===
+=== Generic GNU/Linux Virtual Console (any distribution) ===
 
 ''Note: while these instructions should work under any distribution of GNU/Linux, you may wish to use a distribution-specific method which may be simpler.''
 
-Press Ctrl-Alt-F1 to enter the first virtual terminal.
+Press Ctrl-Alt-F1 to enter the first virtual console.
 
 Now run:
 
@@ -160,7 +160,7 @@ To make the change effective:
 
  $ sudo invoke-rc.d console-screen.sh restart
 
-=== On Ubuntu GNU/Linux virtual terminal ===
+=== On Ubuntu GNU/Linux virtual console ===
 
 Ubuntu Maverick
 
@@ -172,7 +172,7 @@ select "Swap Ctrl and CapsLock"
 
 or also you can select "Make CapsLock an additional Ctrl"
 
-this also work for virtual terminals
+this also work for virtual consoles
 
 1. Edit /etc/default/console-setup and add an X11 style caps lock modification:
 
