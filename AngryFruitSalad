@@ -60,6 +60,10 @@ A picture of my Emacs without washed colours (left), with `egoge-wash-out-fontlo
 
 [[image:AngryFruitSaladTwo Screenshot]]
 
+
+
+
+[:WashOutIn]
 == A Wash-Out (or In) from Drew ==
 
 '''DoReMi''' provides commands (in library Lisp:doremi-frm.el) that let you wash out the colors used in various faces -- `doremi-face-fg', for instance. You just type `s', for "saturation", at the prompt. Decreasing the saturation washes a color out, making it less vibrant ("angry"). (You can do the same thing with frame backgrounds: `doremi-bg'.)
