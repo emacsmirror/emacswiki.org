@@ -218,8 +218,8 @@ This is great for testing things. It should also make it easy to clone my config
 
 I've done a few other packages for Emacs:
 
-* [[WikiDoc]] -- a program to make wiki documentation from Elisp functions, [[http://marmalade-repo.org/packages/wikidoc|marmalade repo here]]
-* fakir -- a library to make faking Emacs Lisp functions easier [[http://marmalade-repo.org/packages/fakir|marmalade repo here]]
+* [[WikiDoc]] -- a program to make wiki documentation from Elisp functions, [[http://marmalade-repo.org/packages/wikidoc|marmalade repo here]], [[http://github.com/nicferrier/elwikidoc|github here]]
+* fakir -- a library to make faking Emacs Lisp functions easier [[http://marmalade-repo.org/packages/fakir|marmalade repo here]], [[http://github.com/nicferrier/emacs-fakir|github here]]
  
 And some other stuff I haven't packaged yet:
 
