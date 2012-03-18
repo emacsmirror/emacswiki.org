@@ -432,10 +432,19 @@ Thx -- DrewAdams
 
 That's great. Thanks for the fast feedback. But unfortunately I cannot make the `palette-curren-rgb-to-kill-ring' to work. It seems to always kill the original color instead of the current one. 
 
+[edit: sorry I was confused, it works great, thanks]. 
+
 Also a small improvement if possible, can '''`M-w'''' also display a message, "Copied rgb #xxxxxx"?
 
+I also noticed that the palette.el doesn't play nicely with [http://julien.danjou.info/software/rainbow-mode rainbow-mode]. If I call pallete, select `*mouse-2 background*' and click on a region colored by ranbow mode, I am getting the underlying background and not the rainbow color. I am not sure why, but just a guess, is rainbow using overlays and palette is not taking overlays into account?
+
 Thanks. 
+
+
+
 ----
 Lisp:palette.el, Lisp:facemenu+.el
 
 CategoryDisplay CategoryFrames CategoryFaces CategoryCustomize
+tt
+ and 
