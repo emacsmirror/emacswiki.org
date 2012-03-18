@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2012, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Tue Mar 13 15:08:02 2012 (-0700)
+;; Last-Updated: Sun Mar 18 12:49:51 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 14542
+;;     Update #: 14607
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-chg.el
 ;; Keywords: bookmarks, bookmark+
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -145,6 +145,26 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-1.el'")
 ;;
+;; 2012/03/18 dadams
+;;     Added: bmkp-modified-bookmarks, redefinition of bookmark-set-name.
+;;     bookmark-store, bookmark-set-name, bookmark-prop-set, bmkp-replace-existing-bookmark:
+;;       Add the bookmark to bmkp-modified-bookmarks.
+;;     bookmark-rename: Call bmkp-rename-for-marked-and-omitted-lists _after_ set new name w/ prop.
+;;     bookmark-save: Reset bmkp-modified-bookmarks.  Call bmkp-refresh/rebuild-menu-list.
+;;     bmkp-rename-for-marked-and-omitted-lists: Fixed typo: marked -> omitted.
+;;     bmkp-edit-bookmark-name-and-file:
+;;       Save each of bmk name and file name only if changed (bug fix).  Provide default file name.
+;;       If no automatic save, and modifications, ask user whether to save.
+;;     bmkp-edit-bookmark-records-send:
+;;       Add updated bookmarks to bmkp-modified-bookmarks.
+;;       Merge sanity-check dolist with main dolist.
+;;       Set bmkp-bmenu-marked-bookmarks to names in bmkp-modified-bookmarks, not in edited-bookmarks.
+;;     bmkp-edit-bookmark-record: Use (shallow) copy of bmkp-edit-bookmark-orig-record, not original.
+;;     bmkp-edit-bookmark-record-send: Add updated bookmark to bmkp-modified-bookmarks.
+;;     bmkp-record-visit: Let-bind bmkp-modified-bookmarks to itself, so will be restored.
+;;     bmkp-refresh-menu-list: Pass no FILTEREDP if no current filter (start anew).
+;;     bmkp-bookmark-name-member: If a name in NAMES is unpropertized, don't try to match property.
+;;     bmkp-replace-existing-bookmark: For propertize bookmark-current-bookmark with bmkp-full-record.
 ;; 2012/03/13 dadams
 ;;     bmkp-incremental-filter-delay:
 ;;       Use bookmark-search-delay as default value, if available.  Else use 0.2 (not 0.6).
@@ -659,6 +679,17 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-bmu.el'")
 ;;
+;; 2012/03/18 dadams
+;;     bookmark-bmenu-delete: Remove bookmark from bmkp-modified-bookmarks also.
+;;     bmkp-bmenu-list-1: RESET-P resets bmkp-modified-bookmarks also.  Insert modified marks (*).
+;;     bmkp-bmenu-refresh-menu-list:
+;;       When revert from file: Reset *-marked-bookmarks, *-modified-bookmarks, *-omitted-bookmarks.
+;;                              Bind bmkp-bmenu-filter-function to nil for bmkp-refresh-menu-list.
+;;     bmkp-bmenu-toggle-show-only-(un)marked:
+;;       Save display, so bmkp-bmenu-before-hide-marked-alist is up-to-date.
+;;     bmkp-bmenu-mode-status-help: Added legend for markings.
+;;     bmkp-bmenu-edit-marked: Use (shallow) copies of bookmarks, not originals.
+;;     Added bmkp-save-menu-list-state to Bookmark+ menu.
 ;; 2012/03/13 dadams
 ;;     bmkp-bmenu-read-filter-input:
 ;;       If C-g then restore previous display.
