@@ -7,9 +7,9 @@
 ;; Copyright (C) 2004-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Sep 20 22:58:45 2004
 ;; Version: 21.0
-;; Last-Updated: Sat Mar 17 18:28:15 2012 (-0700)
+;; Last-Updated: Sat Mar 17 19:00:37 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 894
+;;     Update #: 897
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/hexrgb.el
 ;; Keywords: number, hex, rgb, color, background, frames, display
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -730,28 +730,23 @@ N must be an integer between 0 and 65535, or else an error is raised."
 
 (defun hexrgb-hex-to-hex (hex nb-digits)
   "Return a hex string of NB-DIGITS digits, rounded from hex string HEX.
-HEX can optionally start with `#'.
-In that case, so does the return value.
-Raise an error if HEX represents a number > `most-positive-fixnum'"
-  (let* ((nb-sign-p  (eq ?# (aref hex 0)))
-         (hex-       (or (and nb-sign-p  (substring hex 1))  hex))
-         (len        (length hex-))
-         (digdiff    (- nb-digits len))
-         (ret        (cond ((zerop digdiff)
-                            hex-)
-                           ((natnump digdiff)
-                            (let ((int  (hexrgb-hex-to-int hex-)))
-                              (unless (natnump int) (error "HEX number is too large"))
-                              (format (concat "%0" (int-to-string len) "X"
-                                              (make-string digdiff ?0)) int)))
-                           (t
-                            (let ((over  (substring hex- digdiff)))
-                              (setq hex-  (substring hex- 0 nb-digits))
-                              (if (> (string-to-number over 16)
-                                     (string-to-number (make-string (- digdiff) ?7) 16))
-                                  (hexrgb-increment-hex hex- nb-digits 1) ; Round up.
-                                hex-))))))
-    (if nb-sign-p (concat "#" ret) ret)))
+Raise an error if HEX represents a number > `most-positive-fixnum'
+HEX is a hex string, not an RGB string.  It does not start with `#'."
+  (let* ((len      (length hex))
+         (digdiff  (- nb-digits len)))
+    (cond ((zerop digdiff)
+           hex)
+          ((natnump digdiff)
+           (let ((int  (hexrgb-hex-to-int hex)))
+             (unless (natnump int) (error "HEX number is too large"))
+             (format (concat "%0" (int-to-string len) "X" (make-string digdiff ?0)) int)))
+          (t
+           (let ((over  (substring hex digdiff)))
+             (setq hex  (substring hex 0 nb-digits))
+             (if (> (string-to-number over 16)
+                    (string-to-number (make-string (- digdiff) ?7) 16))
+                 (hexrgb-increment-hex hex nb-digits 1) ; Round up.
+               hex))))))
 
 (defun hexrgb-rgb-hex-to-rgb-hex (hex nb-digits)
   "Trim or expand hex RGB string HEX to NB-DIGITS digits.
