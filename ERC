@@ -90,6 +90,7 @@ manually, you might find some settings you didn't know about by looking around.
 
 === SSL configuration ===
 * ErcSSL -- allow connections to ssl/tls-enabled servers (with certificates)
+* ErcSASL -- authenticate with SASL
 
 === Miscellaneous ===
 * ErcCvsFeatures -- what's new or different in the CVS version of ERC
