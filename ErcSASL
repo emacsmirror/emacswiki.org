@@ -1,0 +1,14 @@
+= Connect to servers that allow authenticating with SASL =
+JosephGay has a patched version of [[ERC]] with SASL support on GitHub.
+
+https://github.com/joseph-gay/erc-sasl
+
+
+The important file to get is https://github.com/joseph-gay/erc-sasl/blob/sasl/erc-sasl.el
+
+When you've put either his [[ERC]] or the erc-sasl in your load-path edit your [[.emacs]] with
+
+  (require 'erc-sasl)
+  (add-to-list 'erc-sasl-server-regexp-list "host\\.server\\.com") ;; e.g. irc\\.freenode\\.net, or .* for any host
+
+You'll need to initially pass a password to Erc for authentication.
