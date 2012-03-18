@@ -438,7 +438,19 @@ Also a small improvement if possible, can '''`M-w'''' also display a message, "C
 
 I also noticed that the palette.el doesn't play nicely with [http://julien.danjou.info/software/rainbow-mode rainbow-mode]. If I call pallete, select `*mouse-2 background*' and click on a region colored by ranbow mode, I am getting the underlying background and not the rainbow color. I am not sure why, but just a guess, is rainbow using overlays and palette is not taking overlays into account?
 
-Thanks. 
+Thanks. -- [[spinuvit]]
+
+
+[new:DrewAdams:2012-03-18 14:51 UTC]
+OK, I added a message. Makes sense.
+
+Yes, that's likely the reason wrt rainbow mode (although I haven't checked).  The ##palette.el## functions deal only with text properties, not overlay properties.  The code could be changed to take overlays into account as well, but I'm not sure that's a good idea.
+
+When there are both overlays and text properties for a given position the code needs a set of rules for which to pick up, or needs to interact with the user to get the user choice.  Things are already complicated enough when there are multiple faces at a given position.  I'm guessing that users would be confused if things were made more complicated by dealing with overlays as well.
+
+I don't have a strong opinion about that.  But I'm not eager to modify this immediately either.  I have other things to do...  If you have a strong use case, let me know the arguments and I'll consider looking into it.
+
+Thx -- DrewAdams
 
 
 
