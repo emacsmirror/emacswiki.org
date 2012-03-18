@@ -7,9 +7,9 @@
 ;; Copyright (C) 2004-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Sep 20 22:58:45 2004
 ;; Version: 21.0
-;; Last-Updated: Thu Jan  5 09:13:12 2012 (-0800)
+;; Last-Updated: Sat Mar 17 17:07:22 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 807
+;;     Update #: 882
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/hexrgb.el
 ;; Keywords: number, hex, rgb, color, background, frames, display
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -62,13 +62,15 @@
 ;;    `hexrgb-defined-colors-alist',
 ;;    `hexrgb-delete-whitespace-from-string',
 ;;    `hexrgb-float-to-color-value', `hexrgb-hex-char-to-integer',
-;;    `hexrgb-hex-to-color-values', `hexrgb-hex-to-hsv',
-;;    `hexrgb-hex-to-rgb', `hexrgb-hsv-to-hex', `hexrgb-hex-to-int',
-;;    `hexrgb-hsv-to-rgb', `hexrgb-increment-blue',
-;;    `hexrgb-increment-equal-rgb', `hexrgb-increment-green',
-;;    `hexrgb-increment-hex', `hexrgb-increment-red',
-;;    `hexrgb-int-to-hex', `hexrgb-rgb-hex-string-p',
-;;    `hexrgb-rgb-to-hex', `hexrgb-rgb-to-hsv'.
+;;    `hexrgb-hex-to-color-values', `hexrgb-hex-to-hex',
+;;    `hexrgb-hex-to-hsv', `hexrgb-hex-to-rgb', `hexrgb-hsv-to-hex',
+;;    `hexrgb-hex-to-int', `hexrgb-hsv-to-rgb',
+;;    `hexrgb-increment-blue', `hexrgb-increment-equal-rgb',
+;;    `hexrgb-increment-green', `hexrgb-increment-hex',
+;;    `hexrgb-increment-red', `hexrgb-int-to-hex', `hexrgb-blue-hex',
+;;    `hexrgb-green-hex', `hexrgb-red-hex', `hexrgb-rgb-hex-string-p',
+;;    `hexrgb-rgb-hex-to-rgb-hex', `hexrgb-rgb-to-hex',
+;;    `hexrgb-rgb-to-hsv'.
 ;;
 ;;
 ;;  Add this to your initialization file (~/.emacs or ~/_emacs):
@@ -82,6 +84,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2012/03/17 dadams
+;;     Added: hexrgb-(red|green|blue-hex, hexrgb-rgb-hex-to-rgb-hex, hexrgb-hex-to-hex.
 ;; 2012/01/05 dadams
 ;;     hexrgb-complement: Added optional arg MSG-P.
 ;;     Some doc-string cleanup.
@@ -723,6 +727,66 @@ N must be an integer between 0 and 65535, or else an error is raised."
   (unless (and (wholenump n) (<= n 65535))
     (error "Not a whole number less than 65536"))
   (/ (float n) 65535.0))
+
+(defun hexrgb-hex-to-hex (hex nb-digits)
+  "Return a hex string of NB-DIGITS digits, rounded from hex string HEX.
+Raise an error if HEX represents a number > `most-positive-fixnum'"
+  (let* ((len      (length hex))
+         (digdiff  (- nb-digits len)))
+    (cond ((zerop digdiff)
+           hex)
+          ((natnump digdiff)
+           (let ((int  (hexrgb-hex-to-int hex)))
+             (unless (natnump int) (error "HEX number is too large"))
+             (format (concat "%0" (int-to-string len) "X" (make-string digdiff ?0)) int)))
+          (t
+           (let ((over  (substring hex digdiff)))
+             (setq hex  (substring hex 0 nb-digits))
+             (if (> (string-to-number over 16)
+                    (string-to-number (make-string (- digdiff) ?7) 16))
+                 (hexrgb-increment-hex hex nb-digits 1) ; Round up.
+               hex))))))
+
+(defun hexrgb-rgb-hex-to-rgb-hex (hex nb-digits &optional laxp)
+  "Trim or expand hex RGB string HEX to NB-DIGITS digits"
+  (let* ((nb-sign-p  (eq ?# (aref hex 0)))
+         (hex+       (or (and nb-sign-p  hex)
+                         (and laxp  (concat "#" hex))
+                         (error "Hex RGB color missing `#': `%s'" hex)))
+         (red        (hexrgb-red-hex   hex+))
+         (green      (hexrgb-green-hex hex+))
+         (blue       (hexrgb-blue-hex  hex+)))
+    (format "%s%s%s%s"
+            (if nb-sign-p "#" "")
+            (hexrgb-hex-to-hex red   nb-digits)
+            (hexrgb-hex-to-hex green nb-digits)
+            (hexrgb-hex-to-hex blue  nb-digits))))
+
+(defun hexrgb-red-hex (hex &optional laxp)
+  "Return the red hex component for RGB string HEX."
+  (let* ((nb-sign-p  (eq ?# (aref hex 0)))
+         (hex-       (or (and nb-sign-p  (substring hex 1))
+                         (and laxp  hex)
+                         (error "Hex RGB color missing `#': `%s'" hex))))
+    (substring hex- 0 (/ (length hex-) 3))))
+
+(defun hexrgb-green-hex (hex &optional laxp)
+  "Return the green hex component for RGB string HEX."
+  (let* ((nb-sign-p  (eq ?# (aref hex 0)))
+         (hex-       (or (and nb-sign-p  (substring hex 1))
+                         (and laxp  hex)
+                         (error "Hex RGB color missing `#': `%s'" hex)))
+         (len        (/ (length hex-) 3)))
+    (substring hex- len (* 2 len))))
+
+(defun hexrgb-blue-hex (hex &optional laxp)
+  "Return the blue hex component for RGB string HEX."
+  (let* ((nb-sign-p  (eq ?# (aref hex 0)))
+         (hex-       (or (and nb-sign-p  (substring hex 1))
+                         (and laxp  hex)
+                         (error "Hex RGB color missing `#': `%s'" hex)))
+         (len        (/ (length hex-) 3)))
+    (substring hex- (* 2 len))))
 
 (defun hexrgb-float-to-color-value (x)
   "Return the color-component value equivalent of floating-point number X.
