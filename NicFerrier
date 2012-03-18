@@ -18,7 +18,7 @@ The last couple of years I've started to look at ELisp as a practical language (
 * [http://nic.ferrier.me.uk/blog/2010_10/elnode about Elnode, the EmacsLisp asycnc HTTP server]
 
 
-== Asynchronous HTTP servers for Emacs (EmacsLisp node.js)  == 
+== Elnode: an asynchronous HTTP server for Emacs or node.js in EmacsLisp  == 
 [[Elnode]] is an asynchronous TCP server handling HTTP.
 
 Elnode is in the [http://marmalade-repo.org/packages/elnode marmalade repository]
