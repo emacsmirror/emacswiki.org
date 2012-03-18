@@ -7,9 +7,9 @@
 ;; Copyright (C) 2006-2012, Drew Adams, all rights reserved.
 ;; Created: Sat May 20 07:56:06 2006
 ;; Version: 22.0
-;; Last-Updated: Sat Mar 17 19:18:36 2012 (-0700)
+;; Last-Updated: Sat Mar 17 19:47:29 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 713 4
+;;     Update #: 723 4
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/palette.el
 ;; Keywords: color, rgb, hsv, hexadecimal, face, frame
 ;; Compatibility: GNU Emacs: 22.x, 23.x
@@ -255,16 +255,16 @@
 ;;    `eyedropper-foreground', `foreground-color', `hsv', `palette',
 ;;    `palette-background-at-mouse', `palette-background-at-point',
 ;;    `palette-brightness-scale', `palette-current-color',
-;;    `palette-decrease-blue', `palette-decrease-green',
-;;    `palette-decrease-hue', `palette-decrease-red',
-;;    `palette-decrease-saturation', `palette-decrease-value',
-;;    `palette-down', `palette-down+pick', `palette-exit',
-;;    `palette-foreground-at-mouse', `palette-foreground-at-point',
-;;    `palette-help', `palette-hex-info', `palette-hsv-info',
-;;    `palette-increase-blue', `palette-increase-green',
-;;    `palette-increase-hue', `palette-increase-red',
-;;    `palette-increase-saturation', `palette-increase-value',
-;;    `palette-left', `palette-left+pick',
+;;    `palette-current-rgb-to-kill-ring', `palette-decrease-blue',
+;;    `palette-decrease-green', `palette-decrease-hue',
+;;    `palette-decrease-red', `palette-decrease-saturation',
+;;    `palette-decrease-value', `palette-down', `palette-down+pick',
+;;    `palette-exit', `palette-foreground-at-mouse',
+;;    `palette-foreground-at-point', `palette-help',
+;;    `palette-hex-info', `palette-hsv-info', `palette-increase-blue',
+;;    `palette-increase-green', `palette-increase-hue',
+;;    `palette-increase-red', `palette-increase-saturation',
+;;    `palette-increase-value', `palette-left', `palette-left+pick',
 ;;    `palette-pick-background-at-mouse',
 ;;    `palette-pick-background-at-point', `palette-pick-color-by-hsv',
 ;;    `palette-pick-color-by-name', `palette-pick-color-by-rgb',
@@ -309,7 +309,8 @@
 ;;; Change Log:
 ;;
 ;; 2012/03/17 dadams
-;;     Added option palette-hex-rgb-digits.
+;;     Added option palette-hex-rgb-digits, palette-current-rgb-to-kill-ring.
+;;     Bound palette-current-rgb-to-kill-ring to M-w in palette keymap.
 ;;     palette-hex-info, palette-current-color, palette-color-message:
 ;;       Use palette-hex-rgb-digits.
 ;; 2012/01/05 dadams
@@ -650,6 +651,7 @@ user updates `blink-cursor-mode'.")
     (define-key map "\M-c" 'palette-pick-color-by-name) ; c = color
     (define-key map "\M-h" 'palette-pick-color-by-hsv)  ; h = HSV
     (define-key map "\M-r" 'palette-pick-color-by-rgb)  ; r = RGB
+    (define-key map "\M-w" 'palette-current-rgb-to-kill-ring)
     (define-key map [(shift control f)] 'palette-right+pick)
     (define-key map [(shift right)]     'palette-right+pick)
     (define-key map [(shift control b)] 'palette-left+pick)
@@ -659,6 +661,9 @@ user updates `blink-cursor-mode'.")
     (define-key map [(shift control p)] 'palette-up+pick)
     (define-key map [(shift up)]        'palette-up+pick)
 
+    (define-key popup-map [current-rgb-to-kill-ring]
+      '(menu-item "Copy Current Color as Kill" palette-current-rgb-to-kill-ring
+        :help "Copy color as RGB hex string, respecting `palette-hex-rgb-digits'"))
     (define-key popup-map [current-color]
       '(menu-item "Current Color Info" palette-current-color
         :help "Return the current color and show info about it"))
@@ -788,6 +793,7 @@ In the color palette:
  - `r', `g', `b', `h', `s', `v' decreases the red, green, blue, hue,
    saturation, value  component of the current color, respectively;
    `R', `G', `B', `H', `S', `V' increases the component
+ - `M-w' copies the current color (RGB hex) to the kill ring
  - `q' quits the palette
  - `C-l' refreshes the palette: use if you have a display problem
  - `C-h m' provides info on Color Palette mode
@@ -902,6 +908,7 @@ In the color palette:
  - `r', `g', `b', `h', `s', `v' decreases the red, green, blue, hue,
    saturation, value  component of the current color, respectively;
    `R', `G', `B', `H', `S', `V' increases the component
+ - `M-w' copies the current color (RGB hex) to the kill ring
  - `q' quits the palette
  - `C-l' refreshes the palette: use if you have a display problem
  - `C-h m' provides info on Color Palette mode
@@ -1040,6 +1047,13 @@ informative message."
   (let ((color  (hexrgb-rgb-hex-to-rgb-hex palette-current-color palette-hex-rgb-digits)))
     (when msg-p (palette-color-message color t))
     color))
+
+;;;###autoload
+(defun palette-current-rgb-to-kill-ring ()
+  "Copy the RGB hex string for the current color to the kill ring.
+Respect option `palette-hex-rgb-digits'."
+  (interactive)
+  (kill-new (palette-current-color)))
 
 ;;;###autoload
 (defalias 'eyedrop-background-at-mouse 'palette-background-at-mouse)
