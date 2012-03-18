@@ -631,7 +631,7 @@
 
 (require 'cl)
 
-(defvar anything-version "1.3.8")
+(defvar anything-version "1.3.9")
 
 ;; (@* "User Configuration")
 
@@ -1034,6 +1034,7 @@ otherwise same keys in `anything-map' will take precedence."
 (defvar anything-let-variables nil)
 (defvar anything-split-window-state nil)
 (defvar anything-selection-point nil)
+(defvar anything-alive-p nil)
 
  
 ;; (@* "Utility: logging")
@@ -1302,19 +1303,28 @@ Attributes:
                 anything-sources anything-compile-source-functions))
        (anything-log-eval anything-compiled-sources)))))
 
-(defun* anything-get-selection (&optional (buffer nil buffer-s) (force-display-part))
+(defun* anything-get-selection (&optional (buffer nil buffer-s)
+                                          force-display-part)
   "Return the currently selected item or nil.
 if BUFFER is nil or unspecified, use anything-buffer as default value.
-If FORCE-DISPLAY-PART is non-nil, return the display string."
+If FORCE-DISPLAY-PART is non-nil, return the display string.
+If FORCE-DISPLAY-PART value is 'withprop the display string is returned
+with its properties."
   (setq buffer (if (and buffer buffer-s) buffer anything-buffer))
   (unless (anything-empty-buffer-p buffer)
     (with-current-buffer buffer
-      (let ((selection
+      (let* ((disp-fn (if (eq force-display-part 'withprop)
+                          'buffer-substring
+                          'buffer-substring-no-properties))
+             (selection
              (or (and (not force-display-part)
                       (get-text-property (overlay-start
                                           anything-selection-overlay)
                                          'anything-realvalue))
-                 (let ((disp (buffer-substring-no-properties
+                 ;; It is needed to return properties of DISP in some case,
+                 ;; e.g for `anything-confirm-and-exit-minibuffer',
+                 ;; so use `buffer-substring' here when 'withprop is specified.
+                 (let ((disp (funcall disp-fn
                               (overlay-start anything-selection-overlay)
                               (1- (overlay-end anything-selection-overlay))))
                        (source (anything-get-current-source)))
@@ -1387,6 +1397,7 @@ filtered-candidate-transformer functions."
   "Perform an action after quitting `anything'.
 The action is to call FUNCTION with arguments ARGS."
   (setq anything-quit t)
+  (anything-kill-async-processes)
   (anything-log-eval function args)
   (apply 'run-with-idle-timer 0 nil function args)
   (anything-exit-minibuffer))
@@ -1957,6 +1968,7 @@ It use `switch-to-buffer' or `pop-to-buffer' depending of value of
   (setq anything-current-prefix-arg nil)
   (setq anything-once-called-functions nil)
   (setq anything-delayed-init-executed nil)
+  (setq anything-alive-p t)
   (setq anything-current-buffer
         (if (minibuffer-window-active-p (minibuffer-window))
             ;; If minibuffer is active be sure to use it's buffer
@@ -1996,7 +2008,7 @@ For ANY-PRESELECT ANY-RESUME ANY-KEYMAP, See `anything'."
     (let ((src-keymap (assoc-default 'keymap (anything-get-current-source))))
       ;; Startup with the first keymap found either in current source
       ;; or anything arg, otherwise use global value of `anything-map'.
-      ;; This map with be used as a `minibuffer-local-map'.
+      ;; This map will be used as a `minibuffer-local-map'.
       ;; Maybe it will be overriden when changing source
       ;; by `anything-maybe-update-keymap'.
       (unless anything-local-map-override-anything-map
@@ -2125,6 +2137,7 @@ hooks concerned are `post-command-hook' and `minibuffer-setup-hook'."
   (anything-log-run-hook 'anything-cleanup-hook)
   (anything-hooks 'cleanup)
   (anything-frame-or-window-configuration 'restore)
+  (setq anything-alive-p nil)
   ;; This is needed in some cases where last input
   ;; is yielded infinitely in minibuffer after anything session.
   (anything-clean-up-minibuffer))
@@ -2607,12 +2620,15 @@ call it before update."
   "Insert MATCH into `anything-buffer' with INSERT-FUNCTION for SOURCE.
 If MATCH is a list then insert the string intended to appear on the display
 and store the real value in a text property."
-  (let ((start (point-at-bol (point)))
-        (string (or (car-safe match) match))
+  (let ((start     (point-at-bol (point)))
+        (dispvalue (or (car-safe match) match))
         (realvalue (cdr-safe match)))
-    (when (symbolp string) (setq string (symbol-name string)))
-    (when (stringp string)
-      (funcall insert-function string)
+    (setq dispvalue
+          (cond ((symbolp dispvalue) (symbol-name dispvalue))
+                ((numberp dispvalue) (number-to-string dispvalue))
+                (t dispvalue)))
+    (when (stringp dispvalue)
+      (funcall insert-function dispvalue)
       ;; Some sources with candidates-in-buffer have already added
       ;; 'anything-realvalue property when creating candidate buffer.
       (unless (get-text-property start 'anything-realvalue)
@@ -3049,19 +3065,22 @@ If `minibuffer-completion-confirm' value is t,
 don't exit and send message 'no match'."
   (interactive)
   (let ((empty-buffer-p (with-current-buffer anything-buffer
-                          (eq (point-min) (point-max)))))
-      (cond ((and empty-buffer-p
-                  (eq minibuffer-completion-confirm 'confirm))
-             (setq anything-minibuffer-confirm-state
-                   'confirm)
-             (setq minibuffer-completion-confirm nil)
-             (minibuffer-message " [confirm]"))
-            ((and empty-buffer-p
-                  (eq minibuffer-completion-confirm t))
-             (minibuffer-message " [No match]"))
-            (t
-             (setq anything-minibuffer-confirm-state nil)
-             (anything-exit-minibuffer)))))
+                          (eq (point-min) (point-max))))
+        (unknow (string= (get-text-property
+                          0 'display (anything-get-selection nil 'withprop))
+                         "[?]")))
+    (cond ((and (or empty-buffer-p unknow)
+                (eq minibuffer-completion-confirm 'confirm))
+           (setq anything-minibuffer-confirm-state
+                 'confirm)
+           (setq minibuffer-completion-confirm nil)
+           (minibuffer-message " [confirm]"))
+          ((and (or empty-buffer-p unknow)
+                (eq minibuffer-completion-confirm t))
+           (minibuffer-message " [No match]"))
+          (t
+           (setq anything-minibuffer-confirm-state nil)
+           (anything-exit-minibuffer)))))
 (add-hook 'anything-after-update-hook 'anything-confirm-and-exit-hook)
 
 (defun anything-confirm-and-exit-hook ()
@@ -3494,45 +3513,42 @@ Acceptable values of CREATE-OR-BUFFER:
 - other non-nil value
   Create a new local candidates buffer,
   named \" *anything candidates:SOURCE*ANYTHING-CURRENT-BUFFER\"."
-  (let* ((global-bname (format " *anything candidates:%s*" anything-source-name))
+  (let* ((global-bname (format " *anything candidates:%s*"
+                               anything-source-name))
          (local-bname (format " *anything candidates:%s*%s"
                               anything-source-name
-                              (buffer-name anything-current-buffer)))
-         (register-func
-          (lambda ()
-            (setq anything-candidate-buffer-alist
-                  (cons (cons anything-source-name create-or-buffer)
-                        (delete (assoc anything-source-name
-                                       anything-candidate-buffer-alist)
-                                anything-candidate-buffer-alist)))))
-         (kill-buffers-func
-          (lambda ()
-            (loop for b in (buffer-list)
-                  if (string-match (format "^%s" (regexp-quote global-bname))
-                                   (buffer-name b))
-                  do (kill-buffer b))))
-         (create-func
-          (lambda ()
-            (with-current-buffer
-                (get-buffer-create (if (eq create-or-buffer 'global)
-                                       global-bname
-                                       local-bname))
-              (buffer-disable-undo)
-              (erase-buffer)
-              (font-lock-mode -1))))
-         (return-func
-          (lambda ()
-            (or (get-buffer local-bname)
-                (get-buffer global-bname)
-                (anything-aif (assoc-default anything-source-name
-                                             anything-candidate-buffer-alist)
-                    (and (buffer-live-p it) it))))))
-    (when create-or-buffer
-      (funcall register-func)
-      (unless (bufferp create-or-buffer)
-        (and (eq create-or-buffer 'global) (funcall kill-buffers-func))
-        (funcall create-func)))
-    (funcall return-func)))
+                              (buffer-name anything-current-buffer))))
+    (flet ((register-func ()
+             (setq anything-candidate-buffer-alist
+                   (cons (cons anything-source-name create-or-buffer)
+                         (delete (assoc anything-source-name
+                                        anything-candidate-buffer-alist)
+                                 anything-candidate-buffer-alist))))
+           (kill-buffers-func ()
+             (loop for b in (buffer-list)
+                   if (string-match (format "^%s" (regexp-quote global-bname))
+                                    (buffer-name b))
+                   do (kill-buffer b)))
+           (create-func ()
+             (with-current-buffer
+                 (get-buffer-create (if (eq create-or-buffer 'global)
+                                        global-bname
+                                        local-bname))
+               (buffer-disable-undo)
+               (erase-buffer)
+               (font-lock-mode -1)))
+           (return-func ()
+             (or (get-buffer local-bname)
+                 (get-buffer global-bname)
+                 (anything-aif (assoc-default anything-source-name
+                                              anything-candidate-buffer-alist)
+                     (and (buffer-live-p it) it)))))
+      (when create-or-buffer
+        (register-func)
+        (unless (bufferp create-or-buffer)
+          (and (eq create-or-buffer 'global) (kill-buffers-func))
+          (create-func)))
+      (return-func))))
 
 (defun anything-compile-source--candidates-in-buffer (source)
   (anything-aif (assoc 'candidates-in-buffer source)
