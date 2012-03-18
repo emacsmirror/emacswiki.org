@@ -7,9 +7,9 @@
 ;; Copyright (C) 2004-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Sep 20 22:58:45 2004
 ;; Version: 21.0
-;; Last-Updated: Sat Mar 17 17:07:22 2012 (-0700)
+;; Last-Updated: Sat Mar 17 18:28:15 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 882
+;;     Update #: 894
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/hexrgb.el
 ;; Keywords: number, hex, rgb, color, background, frames, display
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -730,29 +730,35 @@ N must be an integer between 0 and 65535, or else an error is raised."
 
 (defun hexrgb-hex-to-hex (hex nb-digits)
   "Return a hex string of NB-DIGITS digits, rounded from hex string HEX.
+HEX can optionally start with `#'.
+In that case, so does the return value.
 Raise an error if HEX represents a number > `most-positive-fixnum'"
-  (let* ((len      (length hex))
-         (digdiff  (- nb-digits len)))
-    (cond ((zerop digdiff)
-           hex)
-          ((natnump digdiff)
-           (let ((int  (hexrgb-hex-to-int hex)))
-             (unless (natnump int) (error "HEX number is too large"))
-             (format (concat "%0" (int-to-string len) "X" (make-string digdiff ?0)) int)))
-          (t
-           (let ((over  (substring hex digdiff)))
-             (setq hex  (substring hex 0 nb-digits))
-             (if (> (string-to-number over 16)
-                    (string-to-number (make-string (- digdiff) ?7) 16))
-                 (hexrgb-increment-hex hex nb-digits 1) ; Round up.
-               hex))))))
-
-(defun hexrgb-rgb-hex-to-rgb-hex (hex nb-digits &optional laxp)
-  "Trim or expand hex RGB string HEX to NB-DIGITS digits"
   (let* ((nb-sign-p  (eq ?# (aref hex 0)))
-         (hex+       (or (and nb-sign-p  hex)
-                         (and laxp  (concat "#" hex))
-                         (error "Hex RGB color missing `#': `%s'" hex)))
+         (hex-       (or (and nb-sign-p  (substring hex 1))  hex))
+         (len        (length hex-))
+         (digdiff    (- nb-digits len))
+         (ret        (cond ((zerop digdiff)
+                            hex-)
+                           ((natnump digdiff)
+                            (let ((int  (hexrgb-hex-to-int hex-)))
+                              (unless (natnump int) (error "HEX number is too large"))
+                              (format (concat "%0" (int-to-string len) "X"
+                                              (make-string digdiff ?0)) int)))
+                           (t
+                            (let ((over  (substring hex- digdiff)))
+                              (setq hex-  (substring hex- 0 nb-digits))
+                              (if (> (string-to-number over 16)
+                                     (string-to-number (make-string (- digdiff) ?7) 16))
+                                  (hexrgb-increment-hex hex- nb-digits 1) ; Round up.
+                                hex-))))))
+    (if nb-sign-p (concat "#" ret) ret)))
+
+(defun hexrgb-rgb-hex-to-rgb-hex (hex nb-digits)
+  "Trim or expand hex RGB string HEX to NB-DIGITS digits.
+HEX can optionally start with `#'.
+In that case, so does the return value."
+  (let* ((nb-sign-p  (eq ?# (aref hex 0)))
+         (hex+       (or (and nb-sign-p  hex)  (concat "#" hex)))
          (red        (hexrgb-red-hex   hex+))
          (green      (hexrgb-green-hex hex+))
          (blue       (hexrgb-blue-hex  hex+)))
@@ -762,29 +768,26 @@ Raise an error if HEX represents a number > `most-positive-fixnum'"
             (hexrgb-hex-to-hex green nb-digits)
             (hexrgb-hex-to-hex blue  nb-digits))))
 
-(defun hexrgb-red-hex (hex &optional laxp)
-  "Return the red hex component for RGB string HEX."
+(defun hexrgb-red-hex (hex)
+  "Return the red hex component for RGB string HEX.
+HEX can optionally start with `#'.  The return value does not."
   (let* ((nb-sign-p  (eq ?# (aref hex 0)))
-         (hex-       (or (and nb-sign-p  (substring hex 1))
-                         (and laxp  hex)
-                         (error "Hex RGB color missing `#': `%s'" hex))))
+         (hex-       (or (and nb-sign-p  (substring hex 1))  hex)))
     (substring hex- 0 (/ (length hex-) 3))))
 
-(defun hexrgb-green-hex (hex &optional laxp)
-  "Return the green hex component for RGB string HEX."
+(defun hexrgb-green-hex (hex)
+  "Return the green hex component for RGB string HEX.
+HEX can optionally start with `#'.  The return value does not."
   (let* ((nb-sign-p  (eq ?# (aref hex 0)))
-         (hex-       (or (and nb-sign-p  (substring hex 1))
-                         (and laxp  hex)
-                         (error "Hex RGB color missing `#': `%s'" hex)))
+         (hex-       (or (and nb-sign-p  (substring hex 1))  hex))
          (len        (/ (length hex-) 3)))
     (substring hex- len (* 2 len))))
 
-(defun hexrgb-blue-hex (hex &optional laxp)
-  "Return the blue hex component for RGB string HEX."
+(defun hexrgb-blue-hex (hex)
+  "Return the blue hex component for RGB string HEX.
+HEX can optionally start with `#'.  The return value does not."
   (let* ((nb-sign-p  (eq ?# (aref hex 0)))
-         (hex-       (or (and nb-sign-p  (substring hex 1))
-                         (and laxp  hex)
-                         (error "Hex RGB color missing `#': `%s'" hex)))
+         (hex-       (or (and nb-sign-p  (substring hex 1))  hex))
          (len        (/ (length hex-) 3)))
     (substring hex- (* 2 len))))
 
