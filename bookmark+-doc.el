@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2012, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Wed Mar  7 17:29:04 2012 (-0800)
+;; Last-Updated: Sun Mar 18 13:45:48 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 14443
+;;     Update #: 14465
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-doc.el
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search,
 ;;           info, url, w3m, gnus
@@ -385,13 +385,13 @@
 ;;  * Multiple bookmark files.
 ;;
 ;;     - Although vanilla Emacs lets you load different bookmark
-;;       files, this feature is not well supported, if not
-;;       contradictory.  With Bookmark+ you can easily (a) switch
-;;       among alternative bookmark files or (b) load multiple files
-;;       into the same session, accumulating their bookmark
-;;       definitions.  The last file you used is the default when you
-;;       choose a file to switch to, so it is easy to go back and
-;;       forth between two bookmark files.
+;;       files, it does not support this feature well, and the
+;;       behavior can even be contradictory.  With Bookmark+ you can
+;;       easily (a) switch among alternative bookmark files or (b)
+;;       load multiple files into the same session, accumulating their
+;;       bookmark definitions.  The last file you used is the default
+;;       when you choose a file to switch to, so it is easy to go back
+;;       and forth between two bookmark files.
 ;;       See (@> "Using Multiple Bookmark Files").
 ;;
 ;;  * Type-specific jump commands.
@@ -473,7 +473,7 @@
 ;;       . From the Emacs-Wiki Web site,
 ;;         http://www.emacswiki.org/cgi-bin/wiki/BookmarkPlus.
 ;;
-;;     - Easily recognize orphaned and invalid bookmarks.
+;;     - It is easy to recognize orphaned and invalid bookmarks.
 ;;
 ;;       . Invalid bookmarks are shown in a special face in the
 ;;         bookmark-list display.
@@ -481,6 +481,12 @@
 ;;       . You can easily mark all of the orphaned bookmarks, that is,
 ;;         those whose recorded files have been renamed or deleted.
 ;;         You can then relocate or delete those bookmarks.
+;;
+;;     - It is easy to recognize modified (i.e., unsaved) bookmarks.
+;;       They are marked with `*'.  Likewise, bookmarks that have tags
+;;       (marked with `t'); bookmarks that have annotations (`a'); and
+;;       bookmarks that are temporary (`X'), meaning that they will
+;;       not be saved.
 ;;
 ;;  * Jump-destination highlighting.
 ;;
@@ -569,13 +575,33 @@
 ;;  any of the current bookmarks.  Outside the bookmark-list display,
 ;;  you can use command `bmkp-revert-bookmark-file' to do this.
 ;;
+;;  User option `bookmark-save-flag' controls whether and how often to
+;;  automatically save the bookmark list to the bookmark file.  You
+;;  can toggle this option using `M-~' in the bookmark-list display.
+;;
+;;  In the bookmark-list display, you can tell whether individual
+;;  bookmarks have been modified since the last save: they are marked
+;;  with `*'.  I believe that this indication is robust and accurate
+;;  (if not, please report a bug), but a word of caution: do not
+;;  depend on it.  The only way to be sure that your bookmarks have
+;;  been saved is to save them. ;-)
+;;
+;;  Is there a way to unmodify a single bookmark that you have
+;;  changed?  No, not unless it is the only one you modified.  If you
+;;  revert to the bookmarks as last saved, then all changes to all
+;;  bookmarks (including addition and removal of bookmarks) are lost.
+;;  If you want to work carefully when making multiple changes, then
+;;  save any modifications you are sure of before you move on to
+;;  others.  If only one bookmark is modified then reverting to the
+;;  bookmark file effectively unmodifies that bookmark.
+;;
 ;;  You can load different bookmark files, either adding their
 ;;  bookmarks to those already in the current bookmark list or
 ;;  replacing them.
 ;;
-;;  The most important takeaway from this section is that #1, #2, and
-;;  #3 can be out of sync, and they often are.  And that can be
-;;  useful.
+;;  The most important takeaway from this section is that #1 (list),
+;;  #2 (file), and #3 (display) can be out of sync, and they often
+;;  are.  And that can be useful.
 ;;
 ;;  Until now, everything said in this section is true of vanilla
 ;;  Emacs as well as Bookmark+.  Bookmark+ adds some flexibility
@@ -1835,9 +1861,11 @@
 ;;  unmark bookmarks, show or hide bookmarks of particular types, and
 ;;  more.  Bookmarks that have tags are marked with a `t'.  Bookmarks
 ;;  that have an annotation are marked with an `a' (not with a `*' as
-;;  in vanilla `bookmark.el').  Bookmarks that have bookmark-highlight
-;;  override settings (see (@> "Defining How to Highlight")) are
-;;  marked with a one-character pink background.
+;;  in vanilla `bookmark.el').  Bookmarks that have been modified
+;;  since the last save of the bookmark file are marked with a `*'.
+;;  Bookmarks that have bookmark-highlight override settings (see
+;;  (@> "Defining How to Highlight")) are marked with a one-character
+;;  pink background.
 ;;
 ;;  Use `?' or `C-h m' in buffer `*Bookmark List*' for more
 ;;  information about the bookmark list, including the following:
