@@ -428,7 +428,13 @@ You will need to download <tt>[[hexrgb.el]]</tt> and <tt>[[palette.el]]</tt> ane
 
 Thx -- DrewAdams
 
+[new:spinuvit:2012-03-18 10:31 UTC]
 
+That's great. Thanks for the fast feedback. But unfortunately I cannot make the `palette-curren-rgb-to-kill-ring' to work. It seems to always kill the original color instead of the current one. 
+
+Also a small improvement if possible, can '''`M-w'''' also display a message, "Copied rgb #xxxxxx"?
+
+Thanks. 
 ----
 Lisp:palette.el, Lisp:facemenu+.el
 
