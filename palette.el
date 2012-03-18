@@ -7,9 +7,9 @@
 ;; Copyright (C) 2006-2012, Drew Adams, all rights reserved.
 ;; Created: Sat May 20 07:56:06 2006
 ;; Version: 22.0
-;; Last-Updated: Sat Mar 17 19:16:55 2012 (-0700)
+;; Last-Updated: Sat Mar 17 19:18:36 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 712 4
+;;     Update #: 713 4
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/palette.el
 ;; Keywords: color, rgb, hsv, hexadecimal, face, frame
 ;; Compatibility: GNU Emacs: 22.x, 23.x
@@ -239,9 +239,9 @@
 ;;  User options defined here:
 ;;
 ;;    `palette-change-color-hook', `palette-exit-hook',
-;;    `palette-font', `palette-message-info',
-;;    `palette-save-color-hook', `palette-update-cursor-color-flag',
-;;    `palette-verbose-flag'.
+;;    `palette-font', `palette-hex-rgb-digits',
+;;    `palette-message-info', `palette-save-color-hook',
+;;    `palette-update-cursor-color-flag', `palette-verbose-flag'.
 ;;
 ;;  Commands defined here:
 ;;
