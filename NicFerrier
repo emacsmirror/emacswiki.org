@@ -33,6 +33,37 @@ I am also improving and extending the [[https://github.com/nicferrier/elnode/blo
 
 It's pretty good. I hope people pick it up because it's an interesting way to leverage Emacs.
 
+== Batch testing in a clean environment ==
+
+Elnode has a bunch of tests written with [[ErtTestLibrary]] and I use them often but because Elnode is quite complex I would like to prove that it works in a clean environment. So I investigated starting a clean Emacs (which means no site init and no package state).
+
+This is what I have for Elnode right now:
+
+{{{
+;; Batch test Elnode
+
+(setq package-dir "~/work/elnode/elpa")
+(when (file-exists-p package-dir)
+  (delete-directory package-dir t))
+(setq package-user-dir package-dir)
+(setq package-archives
+      '(("gnu" . "http://elpa.gnu.org/packages/")
+        ("marmalade" . "http://marmalade-repo.org/packages/")))
+(package-list-packages)
+(setq elnode-init-port nil)
+(package-install 'creole)
+(package-install-file "~/work/elnode/elnode.el")
+(ert-run-tests-batch-and-exit)
+
+;; End
+}}}
+
+It works perfectly! It trashes a temporary package store (//elpa//) and then sets it up again, then package loads Elnode, which tests that the package depends work properly and then runs all tests.
+
+Note that the installation of //creole// is deliberate, Elnode can use //creole// but does not depend on it. Maybe I should change that to a proper dependancy.
+
+Anyway, it's no coincidence that one of my interests is continuous integration and this could certainly be used as a way of doing continuous integration with Elnode (or any other EmacsLisp package). One thing stopping that is that ERT currently uses a non-xUnit output format for reporting success and failure of tests.  I am wondering whether some sort of text pipeline processing could be used for now, or whether ERT could be adapted to spit out in xUnit format.
+
 == WikiCreole ==
 
 WikiCreole is a Wiki markup language very like the one used here on EmacsWiki. 
