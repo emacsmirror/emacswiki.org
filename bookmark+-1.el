@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2012, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 13:43:55 2010 (-0700)
-;; Last-Updated: Sun Mar 18 12:37:15 2012 (-0700)
+;; Last-Updated: Mon Mar 19 07:28:18 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 4572
+;;     Update #: 4573
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-1.el
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -2847,7 +2847,8 @@ Non-nil optional arg SAME-COUNT-P means do not increment
   (when (bookmark-time-to-save-p) (bookmark-save)))
 
 ;;;###autoload
-(defun bmkp-edit-bookmark-name-and-file (bookmark &optional edit-record-p) ; Bound to `C-x p r'
+(defun bmkp-edit-bookmark-name-and-file (bookmark &optional edit-record-p)
+                                        ; Bound to `C-x p r' (`r' in bookmark list)
   "Edit BOOKMARK's name and file name, and maybe save them.
 Return a list of the new bookmark name and new file name.
 BOOKMARK is a bookmark name (a string) or a bookmark record.
