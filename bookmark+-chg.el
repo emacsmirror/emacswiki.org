@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2012, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Sun Mar 18 12:49:51 2012 (-0700)
+;; Last-Updated: Mon Mar 19 07:38:00 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 14607
+;;     Update #: 14612
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-chg.el
 ;; Keywords: bookmarks, bookmark+
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -679,6 +679,9 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-bmu.el'")
 ;;
+;; 2012/03/19 dadams
+;;     Added: bmkp-*-mark.
+;;     bmkp-bmenu-list-1, bmkp-bmenu-mode-status-help: Use bmkp-*-mark for *.
 ;; 2012/03/18 dadams
 ;;     bookmark-bmenu-delete: Remove bookmark from bmkp-modified-bookmarks also.
 ;;     bmkp-bmenu-list-1: RESET-P resets bmkp-modified-bookmarks also.  Insert modified marks (*).
