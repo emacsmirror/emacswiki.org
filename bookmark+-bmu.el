@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2012, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 09:05:21 2010 (-0700)
-;; Last-Updated: Sun Mar 18 12:02:30 2012 (-0700)
+;; Last-Updated: Mon Mar 19 07:37:10 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 1741
+;;     Update #: 1748
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-bmu.el
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -193,14 +193,15 @@
 ;;
 ;;  Faces defined here:
 ;;
-;;    `bmkp->-mark', `bmkp-a-mark', `bmkp-bad-bookmark',
-;;    `bmkp-bookmark-file', `bmkp-bookmark-list', `bmkp-buffer',
-;;    `bmkp-D-mark', `bmkp-desktop', `bmkp-file-handler',
-;;    `bmkp-function', `bmkp-gnus', `bmkp-heading', `bmkp-info',
-;;    `bmkp-local-directory', `bmkp-local-file-with-region',
-;;    `bmkp-local-file-without-region', `bmkp-man', `bmkp-non-file',
-;;    `bmkp-remote-file', `bmkp-sequence', `bmkp-su-or-sudo',
-;;    `bmkp-t-mark', `bmkp-url', `bmkp-variable-list', `bmkp-X-mark'.
+;;    `bmkp-*-mark', `bmkp->-mark', `bmkp-a-mark',
+;;    `bmkp-bad-bookmark', `bmkp-bookmark-file', `bmkp-bookmark-list',
+;;    `bmkp-buffer', `bmkp-D-mark', `bmkp-desktop',
+;;    `bmkp-file-handler', `bmkp-function', `bmkp-gnus',
+;;    `bmkp-heading', `bmkp-info', `bmkp-local-directory',
+;;    `bmkp-local-file-with-region', `bmkp-local-file-without-region',
+;;    `bmkp-man', `bmkp-non-file', `bmkp-remote-file',
+;;    `bmkp-sequence', `bmkp-su-or-sudo', `bmkp-t-mark', `bmkp-url',
+;;    `bmkp-variable-list', `bmkp-X-mark'.
 ;;
 ;;  User options defined here:
 ;;
@@ -475,6 +476,10 @@ Don't forget to mention your Emacs and library versions."))
     '((((background dark)) (:foreground "Orchid"))
       (t (:foreground "Orange4")))
   "*Face used for a `man' page bookmark."
+  :group 'bookmark-plus :group 'faces)
+
+(defface bmkp-*-mark '((t (:foreground "Red" :background "Yellow")))
+  "*Face used for a modification mark (`*') in the bookmark list."
   :group 'bookmark-plus :group 'faces)
 
 (defface bmkp-non-file
@@ -1072,7 +1077,7 @@ Non-nil INTERACTIVEP means `bookmark-bmenu-list' was called
         (if (not (memq bmk bmkp-modified-bookmarks))
             (insert " ")
           (insert "*")
-          (put-text-property (1- (point)) (point) 'face 'bmkp-D-mark))
+          (put-text-property (1- (point)) (point) 'face 'bmkp-*-mark))
         (when (and (featurep 'bookmark+-lit) (bmkp-get-lighting bmk)) ; Highlight highlight overrides.
           (put-text-property (1- (point)) (point) 'face 'bmkp-light-mark))
         (when (and (bmkp-image-bookmark-p bmk)  show-image-file-icon-p)
@@ -3413,7 +3418,7 @@ Autosave bookmarks:\t%s\nAutosave list display:\t%s\n\n\n"
             (put-text-property 0 1 'face 'bmkp-t-mark tt)
             (put-text-property 0 1 'face 'bmkp-a-mark aa)
             (put-text-property 0 1 'face 'bmkp-X-mark XX)
-            (put-text-property 0 1 'face 'bmkp-D-mark mod)
+            (put-text-property 0 1 'face 'bmkp-*-mark mod)
             (insert "Legend for Markings\n-------------------\n")
             (insert (concat mm  "\t- marked\n"))
             (insert (concat DD  "\t- flagged for deletion                (`x' to delete all such)\n"))
