@@ -61,6 +61,13 @@ the first item from the list. Any idea how to fix it?
 [new]
 It works. You need to press RET to get choose template options.
 
+[new]
+I have translate msf-abbrev snippets into yasnippet.
+because c++mode and c-mode in msf-abbrev snippets are almost the same, I combined them together.
+the project is hosted at: 
+https://github.com/heychenbin/msf-abbrev-to-yasnippet
+
+
 ----
 CategoryTemplates CategoryCode
 
