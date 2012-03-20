@@ -11,20 +11,26 @@ There's also "don’t respond to any bug requests regarding modified copies of y
 But other ideas?
 
 "Drop the current format of the wiki - use something standard like !MediaWiki instead of !OddMuse." How is reformatting the pages going to improve them?
+> It's not about the markup, it's about the functionality.
 
 "Drop all the articles about Emacs extensions." Just delete them? Are you at least going to rewrite them and move them to the appropriate project pages out there?
 Or are you just going to delete them? Taking away and not giving back?
+> Drop them from the wiki, move them elsewhere (obviously).
 
 "Drop all the extensions hosted there." Some of the old code has no other home. Some of the old code is here for the poor sods stuck with Emacs 20. Are you going to package them for ELPA or Marmalade or whatever you are going to suggest instead?
+> Everything can simply be archived prior to removal from the wiki. Radical actions are what triggers changes.
 
 Some of you – like DrewAdams – keep their packages on the wiki. For those packages, I don't see any alternative. Are you going to maintain his software? Fix his bugs? Develop his features? Unless you are, I guess you can try and fork his stuff and keep it on whatever other system you want. But please don't suggest taking something away without giving something in return.
+> With so many superior project hosting solutions I don't feel like there'll be much taking away, but still...
 
 "Assemble a team of moderators." Indeed. //Moderators! Where have you been hiding for the last ten years!// Are you volunteering? I'm a bit wary regarding your deletionist tendencies. But perhaps you'd like to start with a new Table of Contents and new top-down menus where only the pages you personally vetted and checked are listed. That would be an _awesome_ thing to do! Of course, there's no need to delete anything in order for you to do this. Just arrange the stuff you like and do it.
+> Hehe :-)
 
 In fact, in order to do it, just do it.
 
 "Accept only articles about general Emacs usage and Emacs Lisp programming." How is that going to work – more deleting? I don't know… I don't think you understand where the value of Emacs Wiki comes from. Perhaps you should write a book about Emacs? Collect a team of authors and editors and deletionists, take a copy of the wiki, and just do it _right_.
+> Believe it or not - sometimes the best improvement comes from the deletion of something. You speak like you don't know how much irrelevant content is hosted on the wiki. All I want is a good signal-to-noise ratio (and the ration is currently terrible).
 
 Also, less hyperbole when posting… :P
-
+> Everyone has his writing style :-)
 [new]
