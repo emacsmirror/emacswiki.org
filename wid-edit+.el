@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2012, Drew Adams, all rights reserved.
 ;; Created: Fri Dec 21 10:25:32 2007
 ;; Version: 22.0
-;; Last-Updated: Sun Jan  1 14:05:07 2012 (-0800)
+;; Last-Updated: Tue Mar 20 10:09:38 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 253
+;;     Update #: 255
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/wid-edit+.el
 ;; Keywords: widget, color
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -60,6 +60,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2012/03/20 dadams
+;;     editable-field: Updated for Emacs 24: added :value-set entry.
 ;; 2008/05/11 dadams
 ;;     Added: (conditional-)key-definition, widgetp-define-key-from-key-def,
 ;;            widgetp-key-def-set.
@@ -136,6 +138,9 @@ text in the `:format' string (if specified)."
   :valid-regexp ""
   :error "Field's value doesn't match allowed forms"
   :value-create 'widget-field-value-create
+  :value-set (if (fboundp 'widget-field-value-set)
+                 'widget-field-value-set
+               'widget-default-value-set)
   :value-delete 'widget-field-value-delete
   :value-get 'widget-field-value-get
   :match 'widget-field-match)
