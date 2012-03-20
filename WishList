@@ -463,6 +463,7 @@ string including the beginning and quotes.")
 [new:DrewAdams:2012-02-16 15:11 UTC]
 :: I believe animated GIFs are supported in Emacs 24.  Maybe in 23 too; dunno. -- DrewAdams
 
+* rcirc support of automatic reconnection.
 
 
 == Utopian Wishes ==
