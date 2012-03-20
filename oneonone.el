@@ -7,9 +7,9 @@
 ;; Copyright (C) 1999-2012, Drew Adams, all rights reserved.
 ;; Created: Fri Apr  2 12:34:20 1999
 ;; Version: 21.1
-;; Last-Updated: Sat Mar 17 14:44:56 2012 (-0700)
+;; Last-Updated: Tue Mar 20 10:24:10 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 2621
+;;     Update #: 2623
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/oneonone.el
 ;; Keywords: local, frames
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -274,6 +274,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2012/03/20 dadams
+;;     1on1-fit-minibuffer-frame: Use count-screen-lines only for Emacs 23+ - see comment.
 ;; 2012/03/17 dadams
 ;;     1on1-fit-minibuffer-frame:
 ;;       Use count-screen-lines to get the Icomplete overlay height, to fix part of bug #11035.
@@ -1709,7 +1711,12 @@ This has no effect if you do not also use library `fit-frame.el'."
                 (window-min-height                       1on1-minibuffer-frame-height)
                 (fit-frame-empty-height                  1on1-minibuffer-frame-height)
                 (fit-frame-empty-special-display-height  1on1-minibuffer-frame-height))
-           (if (fboundp 'count-screen-lines) ; Emacs 21+
+           (if (> emacs-major-version 22)
+               ;; In principle, that test could have been (fboundp 'count-screen-lines), which
+               ;; is defined for Emacs 21+.  But doing that makes the frame jump up and down
+               ;; inappropriately in Emacs 21-22.  So do it only for Emacs 23+.
+
+               ;; The reason for the different code for Emacs 23+:
                ;; For `icomplete.el', Emacs 23+ uses an overlay instead of inserting text into
                ;; the buffer.  `fit-frame' cannot take the height of that overlay into account.
                ;; So we use `count-screen-lines' to get the height.
