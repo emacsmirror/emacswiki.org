@@ -8,8 +8,8 @@ Comment by -- [[WolfmanJM]]
 Note that as HAML uses spaces only for indentation make sure you turn off tabs, also you can enable auto-indent mode.
 
      (add-hook 'haml-mode-hook
-                  '(lambda ()
-                         (setq indent-tabs-mode nil)
-                         (define-key haml-mode-map "\C-m" 'newline-and-indent)))
+               (lambda ()
+                 (setq indent-tabs-mode nil)
+                 (define-key haml-mode-map "\C-m" 'newline-and-indent)))
 
 
