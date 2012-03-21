@@ -35,7 +35,8 @@ Emacswiki is a great resource. It's not perfect, but it's the best we have. A gr
 [new:AlexSchroeder:2012-03-21 12:56 UTC]
 BozhidarBatsov has formulated [http://batsov.com/articles/2012/03/21/all-hands-on-deck-or-the-action-plan-for-a-new-emacs-community-wiki/ an action plan]!
 
-Reactions on [http://www.reddit.com/r/emacs/comments/r53cd/die_emacswiki_die/ reddit], [https://groups.google.com/d/topic/gnu.emacs.help/VozXLV6VWbo/discussion gnu.emacs.help].
+Reactions on [http://www.reddit.com/r/emacs/comments/r53cd/die_emacswiki_die/ reddit], [https://groups.google.com/d/topic/gnu.emacs.help/VozXLV6VWbo/discussion gnu.emacs.help],
+[https://news.ycombinator.com/item?id=3729372 Hacker News].
 
 In the mean time, on the quality of editing, I said a while back on [[EmacsWikiSuggestions]] when we talked about separate Discussion or Talk pages: "Personally, I think the wiki exists somewhere between the newsgroups, the FAQ, the mailing lists, and IRC. It’s certainly nowhere near the quality of organization and writing that the Emacs documentation has – and I don’t think this is the right medium to aim for this level of quality. I think the people willing to invest that amount of energy to write quality stuff ought to be writing the real Emacs documentation – and they probably are."
 
@@ -46,3 +47,6 @@ Some people want to change that. I have the nagging feeling they ought to be wri
 [new]
 I don't think Alex has gotten enough appreciation.  I've found the Emacs wiki to be very useful, and I have no doubt I will continue to find this wiki very useful.  Thanks, Alex, for all your work!
 -- JayBelanger
+
+[new]
+Thanks! -- Alex
