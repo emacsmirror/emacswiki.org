@@ -30,7 +30,7 @@ Also, less hyperbole when posting… :P
 [new]
 It's like the rants we sometimes hear about making emacs more modern, use python as extension language, etc. It would be nice to rewrite everything, but actually it's a lot of a work which no one really wants to do.
 
-Emacswiki is a great resource. It's not perfect, but it's the best we have. A gradual improvement is much more feasible than throwing away everything and start from scratch, and a gradual improvement is possible, because anyone can edit the wiki and discuss the proposed changes here with others. -- anon
+Emacswiki is a great resource. It's not perfect, but it's the best we have. A gradual improvement is much more feasible than throwing away everything and start from scratch, and a gradual improvement is possible, because anyone can edit the wiki and discuss the proposed changes here with others. -- [[anon]]
 
 [new:AlexSchroeder:2012-03-21 12:56 UTC]
 BozhidarBatsov has formulated [http://batsov.com/articles/2012/03/21/all-hands-on-deck-or-the-action-plan-for-a-new-emacs-community-wiki/ an action plan]!
@@ -50,3 +50,19 @@ I don't think Alex has gotten enough appreciation.  I've found the Emacs wiki to
 
 [new]
 Thanks! -- Alex
+
+
+[new:DrewAdams:2012-03-21 21:01 UTC]
+I heartily add my appreciation of Alex and %%EmacsWiki%% to the pronouncements by [[anon]], JayBelanger, and others at the URLs cited above (worth taking a look at).
+
+If this wiki were not useful then people would not use it. Simple as that.  If it comes up often and early in Google searches it is because other sites link to it a lot.  Obviously, it is helping people --- or at least interesting them.
+
+No one forces anyone to consider %%EmacsWiki%% as the best or the only (or even a good) source of information about Emacs.  No one forces anyone to visit %%EmacsWiki%% or pay attention to it at all.  And no one prevents anyone from participating and contributing improvements.
+
+Think what you want of %%EmacsWiki%%.  Create or use any alternative resources you prefer.  Go for it --- the more the merrier.
+
+The fact remains that many people do appreciate %%EmacsWiki%%.  Maybe tomorrow your better mousetrap will pull all the Emacs-info traffic, and Alex can retire! ;-)  On n'arrete pas le progres...  But there is no reason to require that %%EmacsWiki%% die so that your dream can be born.  Just do it.  Alex did what he wanted.  Go forth and do what you want.
+
+As for appreciating Alex: He has been uncomonly generous with his time, resources, and fight for fairness. This wiki would not '''''be''''' were it not for AlexSchroeder.  And if it somehow ''were'', it would not be anywhere near as helpful. -- DrewAdams
+
+
