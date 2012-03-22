@@ -1,1 +1,21 @@
-You are currently reading this
+[[pt:ComoFazer]]
+[[zh:教导]]
+[[de:KurzAnleitung]]
+[[ja:利用手引]]
+
+* [[HowToNavigate|Navigate]] and [[HowToSearch|search]] the wiki.
+
+* [[HowToEdit|Edit]] the wiki (including how to upload EmacsLisp libraries).
+
+* Use different natural [[HowLanguagesWork|languages]] on the wiki.
+
+* [[WikiDownload|Download]] all or some of the wiki page database.
+
+* Help with wiki [[WikiMaintenance|maintenance]] tasks.
+
+EmacsWiki is a collaborative Web site.  See WikiIntro. 
+
+Still need help?  Visit WikiQuestions, or report a problem at EmacsWikiProblems.
+
+----
+CategoryEmacsWikiSite
