@@ -72,12 +72,14 @@ As for appreciating Alex: He has been uncomonly generous with his time, resource
 * When did they contribute to it? 
 * Were they ever unsatisfied and disappointed when they had turned to Emacswiki for some help? 
 * Did they overgrow Emacswiki and start visiting it less often? 
+* What other Emacs-related resource they user regularly to complement and supplement Emacswiki.
 
-These are some most important questions answering. These questions can easily be answered and they can be collected in a page of it's own. For a long-lived project, such /existing/ use-cases need to be captured. We shouldn't dismiss wisdom of common folks.
+These are all some important questions to ask. These questions can be easily answered - they need to be answered by an individual user himself - and they can be collected in a page of it's own. For a long-lived project, such /existing/ use-cases need to be captured. We shouldn't dismiss wisdom of common folks.
 
-With some meta-thinking and in a good hand, it is possible that Emacswiki could be /re-targetted/, /without/ changing much of the infrastructure. 
+With some meta-thinking and in a good hand, it is possible that Emacswiki could be /re-targetted/, /without/ changing much of the infrastructure. With passing time, needs of people might have changed and the eco-system might have changed for the better.
 
-My immediate reaction to BozhidarBatsov's post is this: 
+My immediate reaction to BozhidarBatsov is: 
+
 * Try articulating why and how Emacswiki is useful to the community and what niche it fills.
 * Please show and tell. I need a proof-of-concept so that I can take you seriously.
 * Don't under-estimate the time it takes to build and sustain an infrastructure and a community.
