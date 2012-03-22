@@ -1,3 +1,4 @@
+[[en:cinaplace]]
 If you do not have the UrlPackage, you can still download files via http, if you use open-network-stream and code the http stuff yourself.
 
 Here is an example from Lisp:wikiarea.el by EdwardOConnor, for example:
