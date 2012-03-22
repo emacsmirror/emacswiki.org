@@ -1,1 +1,581 @@
-Using a more secure Wiki might be a good idea
+This page is for recording (or discussion) of [::Suggestions] about the EmacsWiki Web site. 
+
+If you want to record or discuss problems with the Web site (not with Emacs), please do so at EmacsWikiProblems.
+
+Make sure your suggestion doesn't exist already or that your question has already been answered by checking the HowTo and WikiQuestions pages, respectively.
+
+Discussion about the front page of the Wiki is at [[SiteMap Discussion]].
+
+Discussion about the table of contents at the top of each page is at TableOfContentsDiscussion.
+
+Discussion about the "Goto Bar", the links at the top and bottom of each page, is at GotoBarDiscussion.
+
+Discussion about the TextFormattingRules used in contributing to pages  is at TextFormattingDiscussion.
+
+'''Add your suggestions below this line.'''
+
+== NearMap ==
+
+If the NearMap must go it is probably because it included a moribund group of Wikis.  At one time Meatball and Community Wiki held promise.  What if it included WardsWiki (the WikiWiki) or the related Wikis on the InterMap or the WikiNode?
+
+* http://c2.com/wiki/links.txt
+
+This feature might still be useful. -- AaronHawley
+
+== Cross-referencing basic Lisp info ==
+
+Someone who had been using Emacs for some time came across an EmacsWiki page and complained on OpenQuestions that the Lisp code didn't have instructions how to use it.  It's a fair criticism.  We had a similar criticism awhile back that resulted in improving the InstallingPackages page.
+
+I'm adding something like "Run this code by EvaluatingExpressions in Emacs or by adding it to your InitFile for Emacs" and hoping it's sufficient.
+
+It's going to be a big pain to add them to every single Emacs Lisp code listing. -- AaronHawley
+
+[new]
+if you have the admin password there is a way to do global search and replace operations using Perl regular expressions -- if you want to try that? -- AlexSchroeder
+
+== Be Able To Specify Which Manual, for `Manual:' Links ==
+
+I recently added a glossary entry for `macro'.  I added this link: Manual:macros.  Unfortunately, there is also a `macros' page in the CC mode manual, so this link sends you to a page where you need to pick from the two manuals.  The choice will not be obvious to a newbie.
+
+It would be good to be able to somehow specify the manual: `(elisp)'. E.g. ##[[Manual (elisp):macros]]## or some such.  Being able to specify more than one manual would be a nice-to-have (without it one would just create multiple links). -- DrewAdams
+
+
+
+== Elisp files status ==
+
+I just saw that Elena had tested some libraries for capitalising and found that
+
+  > auto-cap.el doesn't work;
+  > - auto-capitalize.el raises an error after the first word, then it
+  > doesn't work any more.
+
+This could be a lot of work for different users. Could we please try to find a way to mark libraries as working/nonworking? Maybe for different Emacs versions?
+
+This is not the first time I make a suggestion similar to this.
+However it is a very difficult problem so it is no surprise that we have not made any giant step forwards here,
+but maybe we should try...?
+
+Since elisp files are treated a bit special maybe there is some way to hook in new functionality like the one above?
+(And maybe there could be added another functionality: storing the files in a repository like Launchpad - but that is another story.)
+
+[new:DrewAdams:2009-08-07 02:34 UTC]
+Yes, we've been around this block before... Bad idea (depending on what you mean). Individual libraries typically have some page associated with them where a user can provide feedback about problems. Notifying the library author is the best way to handle such feedback -- the author is likely to be the only one to do anything about fixing problems, in any case.
+
+It's certainly a bad idea to have some simple yes/no or score as an indication of whether or how well a library works. And one person's "works" is another persons "doesn't work". Better to post specific problem descriptions. And it's best to deliver them to the person who will fix them (either via the wiki or in some other way).
+
+Treating software problems via bug reports is, as always, the way to go. Just one opinion. -- DrewAdams
+
+[new]
+Yes, just working/non-working is of course not what I mean.
+But the current situation is in my opinion unacceptable.
+If someone has found a problem there should be an easy uniform way to report it (so it gets reported) --
+and an easy uniform way to know about it (so that next person does not need to try and the author can get aware of what has happened).
+
+Some kind of a bug tracker tailored to the needs here. -- LennartBorgman
+
+[new:DrewAdams:2009-08-07 05:35 UTC]
+Reported to whom? 
+
+1. Reported to the library maintainer? That's best done on an individual basis. Some code is posted here but its maintainers seldom look here -- in that case, it's best to contact them by whatever means are described in the library. Even for other libraries here, I don't see the point of a central bug repository or scoreboard.
+
+I look on the wiki often, and users can post bug reports for my libraries here, no problem. But I prefer to get bug reports by email, since there is often an back-and-forth of information that is simpler by email. I prefer that [[Icicles]] users use `M-x icicle-send-bug-report', which prepares an email. I imagine that different library maintainers have different preferences. Jane might like Twitter; John might like smoke signals.
+
+2. Reported to other users? That too is best done on the particular page dedicated to that library -- that's where its users look for tips, problems, Q&A, and other info about that particular library. Again, a central tips or problem-description repository would be much less useful, IMO.
+
+Bug ''tracking''? That's something else again. That too tends to be specific to the particular library and maintainer. Don't expect someone whose file was posted here long ago or by someone else to follow bugs through an EmacsWiki bug tracker.
+
+I really think handling any kind of information relative to code posted here -- whether questions, bugs, tips, discussion, or anything else, is best handled in the pages here that concern that particular code, not in some consolidating bug tracker. That's in the nature of wiki contribution and sharing. I don't see the value of the "uniformity" you propose. Again, just one opinion. -- DrewAdams
+
+[new]
+Ok, you are against my proposal.
+You seem to think the current situation is the best.
+
+So why do you think of that it currently does not work?
+Is not that a problem?
+
+What do you think that a user that download a library that does not work think?
+
+Where should the problem currently be reported on the wiki?
+Should a user that founds a problem change the code in the library to say "this does not work", or?
+(That might be a way, actually.) -- LennartBorgman
+
+[new:DrewAdams:2009-08-07 14:30 UTC]
+I don't see a particular problem, but I recognize that it could happen that a user not know how to contact the maintainer of some code s?he finds here. If that happens (no contact info in the file, no wiki homepage for the maintainer, no other info about the maintainer anywhere, no help from Google), then I suppose the user's only recourse is to write something up here, asking if others know how to contact the maintainer.
+
+I'm not saying you don't see a problem. I'm saying I don't see your proposal as being a good solution. But it would be good to hear from others. Just one opinion. -- DrewAdams
+
+[new]
+I see a problem for example in the case I started this thread with and I have seen a lot of similar problems before.
+
+I also see a problem in that there is no place to put the information in so that it can be shared.
+Should a user that discovers a problem simply change the elisp file so that it barks or just put a comment in it, or?
+
+And there is no "problem history" which also could help users trying something or finding a problem.
+
+Beeing able to search for a special error message is something more that can be useful.
+(Yes, it can be put in a comment in the elisp file, but that will disappear from searching after the problem is fixed so no one will see it if they are not fast enough
+to discover the problem.)
+
+I could go on...
+
+[new]
+In general, I think adding a bug tracker to the site and maintaining it is a chore I'm not looking forward to. Does anybody volunteer? I'd be willing to add code that will not only print a _Download_ link but also a bugtracking link for every source file.
+
+I agree with Drew's sentiment, however. The individual files are not big projects. At least for my own files, I get about one or two emails per year, and most of them I no longer maintain anyway. I'd never check a bucktracking site, I'd never set up some sort of email notification, I wouldn't provide more support, work harder on bugs, or prioritize according to the needs of strangers on the Internet. I don't see myself in the target audience for a bug tracker.
+
+Now, if *somebody else* set up a bugtracker, and authors who want to use it add some sort of special token to their source files, and I automatically link to the appropriate bug tracker accounts -- that might be worth an experiment. -- AlexSchroeder
+
+[new]
+Maybe a common bugtracker for all elisp files hosted on Emacs Wiki?
+Then individual authors could add a token to those files for which they want to use that bugtracker.
+They should then of course subscribe themselves to this bug tracker.
+
+However I would like some structured bug handling including at least Emacs version.
+Is there any bugtracker that can handle this?
+(I suppose we should use one of the bugtrackers available and hosted on some good site like Launchpad.)
+-- LennartBorgman
+
+[new]
+Will you set something up? I'm willing to write some code to connect elisp sources hosted on Emcs Wiki to link to an external bugtracker. -- Alex
+
+[new]
+I believe we maybe should think more about the structure needed first.
+And how we can lower the threshold for users to use it (or perhaps whether there are any benefits of lowering the threshold?).
+
+== User Names on RecentChanges Page ==
+
+It would be good if user names were treated normally at RecentChanges, that is, to show a non-existant page like a non-existant page is usually shown. People might be encouraged to follow it and create a home page.
+
+[new]
+I haven't thought about this in a long time. Maybe you're right. -- AlexSchroeder
+
+== Keep more revisions of each page ==
+
+The history for a page should show several revisions. Currently, past revisions are removed eventually. In the worst case, this leaves exactly one revision. Even if the _diff_ at the bottom of a page continues to show the diff between the no longer extant last revision and the current revision, some more information would be helpful.
+
+[new]
+I've never had a need for this. I'll leave the suggestion standing. Perhaps more people want to support this? On the other hand,
+I could add a link to the [[SVN repository]]. What do you think of that? Eg. the history for AlexSchroeder would also contain a link to
+http://svn.savannah.gnu.org/viewvc/emacswikipages/AlexSchroeder?root=emacswiki -- AlexSchroeder
+
+
+== Cross-Reference Alphabetical and Chronological Library Lists ==
+
+Please put a link to the chronological listing of libraries on page [http://www.emacswiki.org/elisp/ Alphabetical List], and put a link to the alphabetical listing on page [EmacsWiki:action=rc;match=%5C.%28el%7Ctar%29%28%5C.gz%29%3F%24;from=1117497600;showedit=1 Chronological List] -- preferably near the top of the page. -- DrewAdams
+
+[new]
+These pages are generated automatically by the wiki script; writing code to provide this feature seems excessive. -- AlexSchroeder
+
+== Downloading Elisp Files ==
+
+There was recently a discussion on the developers list about saving elisp files from a web browser.
+AFAICS if you save what you see in the browser you can get problem with certain characters.
+This problem will be bigger the more non-ascii characters the elisp file contains.
+The simplest way to avoid this seems to me to be to right click the file and choose /Save Link As/ or something similar.
+
+What about telling this beside the /Download/ link on the elisp pages? -- LennartBorgman
+
+[new]
+I actually have a suggestion in the ElispArea telling people to try and avoid anything but ASCII or UTF-8 encoded files when uploading. I'm not sure your suggestion works. If it does, it certainly seems like a hack to me. The problem is that the server sends a HTTP header indicating that the content is UTF-8 encoded. If it is not, then the bytes are simply invalid. Whether the browser handles the bytes correctly, ignores the HTTP header, or drops the characters is undefined, as far as I am concerned. If you really need those ISO-2022 or KOI-8 encoded files, then use the _Replace text with a file_ link below the Save button to really upload a file. This file will then be handled correctly by the browser since in almost all cases, the browser will offer to save it instead of displaying it. -- AlexSchroeder
+
+[new]
+I am not sure. However please read the message from Jason here:
+http://lists.gnu.org/archive/html/emacs-pretest-bug/2007-02/msg00241.html.
+To me it looks like this leads to the same conclusion that I came to.
+If the webserver is not properly configured the way I suggested above may still be a way to download a file as binary.
+
+[new]
+The way I read it, Jason doesn't provide any new information. He says the webserver doesn't change anything. That is correct. I say that the browser is getting incorrectly encoded bytes, and what happens when you do a "save" or "save as" is undefined. It might work in most cases. In the same thread Drew also mentions that the wiki strips control characters, since those are illegal in XHTML pages, irrespective of encoding used. Thus, using "save as" instead of "save" will probably solve many problems, but certainly not all. The only way to be sure that all problems are solved correctly is by replacing the page text with an uploaded file, as explained elsewhere.
+
+The only thing we could do is either refuse page edits that attempt to add control characters or invalid encoding, thereby warning users, or automatically convert it into an uploaded page, hopefully with an appropriate explanation somewhere.
+
+-- Alex
+
+[new]
+I do not believe the browser recieves incorrectly encoded bytes. I thought that it recieved the raw bytes and then interpreted them with the help of the mime headers. Is that not the case?
+
+Using right-click + save-as solves the downloading problem, but not the problem with editing.
+-- LennartBorgman
+
+[new]
+And the control character problem remains unsolved (mostly ^L, of course). -- Alex
+
+== Layout ==
+
+=== Edit Page ==
+
+What about moving the "Please make sure..." text, plus the Username field above the text-input editing box? That would reduce the need to scroll the page by placing the Save and Preview buttons closer to the editing box (using Preview more than once while editing is common). In fact, it would be great if those two buttons could be on the same line as the "This change is a minor edit" check box, making them even closer to the edit box. -- DrewAdams
+
+[new]
+At the time I did this on purpose to make sure people read the blurb... :/
+
+As for hitting Preview a lot: The access key should be P, so try M-p or C-p in your browser.
+
+Other than that, if you have a CSS-based suggestion, we can try it out.
+-- AlexSchroeder
+
+
+=== Keys ===
+
+[new]
+Adding some style changes to break out &lt;code&gt; from the surrounding text would be very helpful for key strokes.  Especially if they are something like '<code>C-x (</code>' which is used for starting a keyboard macro. -- DocWhat
+
+[new]
+Do you mean in addition to using a monospaced font, something like a light gray background?
+Alternatively, the weird accents-used-as-apostrophes such as `C-x C-c' usually work.
+Unfortunately, the regular expression used prevents `C-x (' from working. :(
+
+The particular regular expressions used, straight from the Perl code:
+
+  if (/\G(\`|‘)([CM][- ][- A-Za-z0-9<>;:#]+)(\'|’)/cg
+      or /\G(\`|‘)([-A-Za-z0-9\/\*]+[=]?)(\'|’)/cg) {
+    return $q->code('&#x2018;' . $2 . '&#x2019;');
+  }
+
+Any suggestions for improvement? It would obviously be easy to style these occurrences.
+But how?
+-- AlexSchroeder
+
+== Please write a summary ==
+
+2007-08-12
+
+* Without any comment at the summary the feed is absolute useless. Please consider writing a short but informative summary for your changes.
+
+* I think it is quite helpful to know when an information was written. Every comment should have a date in front of.
+
+* Most informations are useless for emacs beginners because the article is starting with a high assumption. Therefore there should be a standard layout for emacs modes like 1. what is it good for? 2. what i need to run it? 3. how could it get started? 4. which should be the minimum configuration? 5. everything else a geek have to know.
+
+[new:AlexSchroeder:2007-08-12 08:19 UTC]
+The situation is just the same on RecentChanges. I find that in terms of peer review, the author is usually more important than the summary; unknown authors have a higher chance of being checked by me. Unfortunately most feed readers do not support the RSS 2.0 WikiModule. Perhaps many people subscribe to the full feed including diff. That would be a good way to check out what has changed regardless of summary. If you're really desperate, you could try the [http://www.emacswiki.org/cgi-bin/emacs?action=rss;full=1;page=0;diff=1 RSS feed with diff but without page content]...
+
+As for time stamps: Aren't we aiming for "timeless" information? At least as far as Emacs releases go. We will have people running Emacs 22 for a decade now, for all I know. Old information is not necessarily useless, so putting dates on ordinary pages can be misleading as well. The only time a time stamp makes sense is when you're putting personal thoughts on a page -- like this conversation, for example. But a wiki can be something between a FAQ and a manual, and neither has time stamps.
+
+When it comes to page content, I guess you're right. We're somewhere between the FAQ (but there aren't many frequently asked questions), and an extension of the ElispManual. We're certainly not the manual itself.
+
+== Drew Adams' Libraries == 
+
+Drew I respect your work and all that you've done with Emac and on EmacsWiki. However, PLEASE can a emacswiki pages be required by sanction to be limited to only 1 (One!) reference to instances of Drew's libraries, and then *ONLY* after other relevant examples, code, etc. pertinent to the a pages context. This site is *SERIOUSLY* limited by Drew's spam and suffers because of it to the extent that it is becoming unusable because of the superfluous `Icicles.*' references strewn about.  There is a point at which the entire Emacs community suffers because of Drew's insistence on xrefs to anything remotely related to his libraries. -- mon_key
+
+[new]
+The wiki encourages people to post their own code, and to cross-references pages, and by extension, people will cross reference their own code wherever it seems appropriate. If nobody else is as prolific, then that's hardly Drew's fault. On the contrary, *I wish other people would add more crossreferences.*
+
+There's also a philosophical point, here. How is Drew's code different from other people's code? The only thing I see is that his code is not part of Emacs. But the wiki was created to enable just that: *Hosting code and documentation that is not part of Emacs.* There will always be forces that move the wiki in some direction, and it's ok to support particular goals. In fact it's ok to not like Drew's contributions. But the correct response is to make something better. Add crossreferences to even better pages. Make the crossreferences themselves better by commenting them and saying what the referenced library does and whether it does it well. Be constructive. Help build a better wiki by integrating other people's work instead of preventing them from contributing just because you don't agree with their point of view.
+
+I have trouble understanding how this site is "bold-caps-seriously" limited by Drew's contributions, and how his contributions can in all honesty be called "spam". The tone of the complaint makes it hard for me to take it seriously, even though I tried to give as straight an answer as I could.
+
+Also, you might consider not complaining anonymously.
+
+-- AlexSchroeder
+
+[new]
+I've added a sig, now its not anonymous. I _hope_ I do my best to try and contribute constructively and to make judicious commenting on libraries and xrefs. That said, I tend to put them in my source which seems like a reasonable way to voice support for particular authors, goals, pkgs etc. You are correct, and I agree, the matter is a bit of a philosophical point. If everyone xrefd with Drew's zeal as a philosophical matter I personally think the site would suffer, obv. YMMV. As I say, I truly do respect what Drew has done w/ Icicles; this doesn't make it OK to splatter it about at the vaguest possible connection. FWIW there is a search bar, it is quite useful and I'm surprised sometimes by how readily it will point _me_ to what _I_ am looking for.  -- mon_key
+
+[new]
+Maybe the problem is that Drew's libraries can be monolithic, [[Icicles]] in particular; There is some great stuff in [[Icicles]] but I don't want it all.
+That said, I don't find his cross-referencing excessive. --CH
+
+== CSS (headers, printing) ==
+
+[new]
+For some ideas on print style sheets, see [http://alistapart.com/articles/goingtoprint/ Eric Meyer's article on A List Apart]. One particularly nice idea shows how to display the URL with hyperlinked text, which would be handy here.
+--AmyYoung
+
+[new]
+What exactly should we do? -- AlexSchroeder
+
+[new]
+Could we go back to the situation where in default CSS the rendering of different headers level differ only in the font size (but do differ) down until last HTML header level? -- JakubNarebski
+
+[new]
+Not unless more people support this since I don't like it. -- AlexSchroeder
+
+[new]
+In graphical browsers second-level headers currently are the same size as regular text, just italic.  This does not standout at all, making them bold would be much better in my eyes.  For example I just added a page with a long list of code snippets at the end. I reorganized them thematically and then added second-level headers. Boy that was less readable as before! So I had to add the horizontal lines back that I previously removed.  Ps: why do we skip = and use == instead? -- JonasBernoulli
+
+[new]
+Take a look at the [[CSS]] page. That will allow you to use your own CSS instead of relying on the default. If you write a CSS file that makes a significant improvement and convince some other long-time users of the site, I'll be happy to use it instead of what we have right now.
+
+As to the /why/ of the current CSS: I'm happy with the look of H2 and H3 headers. I believe HTML pages should have but one H1 element -- the one at the top of the page, and I believe any page on this wiki should be written with just H2 and H3 sections and subsections. I find the need for H4 subsubsections to be a sign that the text ought to be reorganized instead. I also find horizonzal lines unnecessary except when creating the pseudo-footers separating categories and related pages from the rest of the page. It's how I interpret the suggestions given by Robert Bringhurst in his _The Elements of Typographical Style_, p. 61ff. Typographically, poise is mad of white space. Don't permit the titles to oppress the text. Use as many levels of headings as you need: no more and no fewer. There were people who didn't like the amount of whitespace I prefer, which is why I'm using the theme "with more whitespace around headers and small-caps". -- AlexSchroeder
+
+== Use div#main etc ==
+
+Could you please put id on relevant div tags so it is possible to play a bit more with the CSS? (like &lt;div id="main"> )
+
+-- LennartBorgman
+
+[new]
+There is div.content and there is div.wrapper.  I'm not a CSS expert, so I can't tell what it is you're insinuating that makes adding another div necessary for CSS trickery? -- AaronHawley
+
+[new]
+This are CSS classes, not Id:s. Putting id:s on some important div tags makes it easier to under stand IMO. -- LennartBorgman
+
+== Click the heading to search for pages in this category / that link here ==
+
+This bothers me similarly to the above since it just adds clutter for anyone who knows what clicking on a header does.  I would like to remove this too but this would probably not be well received.  I would suggest that this information is somehow shown on all pages but in an less intrusive way.
+
+Maybe somewhere in the footer close to where the language links are too.  Then again this link ("Pages linking here") as well as the links to the translations can easily be missed.  Maybe both kinds should be placed somewhere more visible?  But if you do this please do so in a way that makes it easy to hide it using a style sheet.  -- JonasBernoulli
+
+== Discussions ==
+
+I use the emacswiki quite extensively primarily as a source of information. One of the confusing aspects of this wiki is that the discussions are intermingled with the content. Is it possible to have a discussion page such as the one that comes out-of-the-box with a MediaWiki package? 
+
+[new]
+Yes, that would be possible. Every page X would have a sister page Comments_on_X, Discussion_of_X, or Talk_about_X. I'm not quite familiar with any extra features Mediawiki Talk pages offer. You can see it in effect on [http://emacswiki.org/test/ the test wiki]. Since the comment pages are real, separate pages, they can be edited, show up on RecentChanges, etc. Anybody else who prefers this separation?
+
+As for myself, I'm not convinced that this will be a good move because we're often not presenting "finished" stuff like an encyclopedia or a blog. Our pages are a not as ephemereal as posting to a newsgroup, but not as solid as manual pages. People who come here expecting the same quality and consistency they have come to expect from the Emacs manual have simply come to the wrong place. -- AlexSchroeder
+
+[new:DrewAdams:2010-05-10 13:32 UTC]
+I agree that it is not a good idea, as a systematic mechanism. IOW, sometimes it can be helpful, and other times it is not helpful.
+We have different kinds of pages, and the discussions appropriate to them can take different forms. In some cases, it is useful to be able to point to relevant passages on the page being talked about (e.g. without users needing to open two browser pages).
+
+And it can sometimes be appropriate to have more than one discussion subsection on a page, with each being local to (near) the text/topic being discussed. You can see this where people have posted snippets and others have responded directly about them, right next to them. In some cases, the text and metatext (discussion) are even merged into a single conversation/discussion. That can be useful in some contexts.
+
+Obviously, any approach can be used inappropriately or become unwieldy. The solution is editing. IMO, this is a false need/problem -- as a ''general'' problem. If there is a problem for a particular page, then the solution is to better organize that page -- e.g. create an appropriate '''Discussion''' heading or separate '''DiscussionOfFoobar''' page. -- DrewAdams
+
+[new]
+I think adding a Discussion/Comments page is an excellent idea. 
+
+The current approach fails when engaged in any sort of extensive dialogue for when:
+ (and (= parties-in-discussion 2) (> exchanges-in-discussion 3)) 
+
+Likewise, it fails to convey reasonable temporal context when attempting to
+accomodate multiparty exhanges e.g. when: 
+ (> parties-in-discussion 2)
+
+Moreover, the current model encourages `inline' disccusion where it is often not
+approriate/relevant; for example, those situations when a package author
+discusses/dialogues their specific package in a generalized category because her
+package interacts with other packages which also fall under the same
+umbrella. Consider the following hypothetical EmacsPageFoo:
+
+<pre>
+ This is a page about getting Emacs to frob Foo.
+
+ Foo is blah blah blah... 
+
+ The package Lisp:KungFoo.el extends Emacs Foo by blah blah blah.
+
+ == Make Foo Mode the default ==
+
+ Here is some code that will Foo for you:
+
+ (defadvice foo-display (after set-mode activate)
+   "Set the mode of the buffer *FOO* to `foo-mode'."
+   (save-excursion
+     (set-buffer get-current-foo-buffer)
+     (foo-mode)))
+
+ Advising Foo is blah blah blah...
+
+ [new]
+ I've tried the package Lisp:KungFoo.el The `kung-foo-q' fncn breaks when advice
+ frobbing Emacs Foo w/ a-breaking-feature from Lisp:SuperFoo.el -- FailedToFoo
+
+ [new]
+ FailedToFoo, I wrote the package Lisp:KungFoo.el maybe I can help.
+ Did you try putting twist-knob-Z in your init before loading it? -- KungFooAuthor
+
+ [new]
+ Hey, KungFooAuthor. I tried adding `twist-knob-Z' (and `rotate-widget-W' FWIW)
+ to my init.  The problem was elsewhere though. It looks like the variable
+ `undo-knob-U', which (on my system), needs a twisting 33 degrees
+ counter-clockwise on each third Wednsday falling on an even numbered calendar
+ day. However, the `un-foo-berator' variable in Lisp:SuperFoo.el conflicts with
+ this causing the `berate-all-foo' function to unscrew all of my changes on each
+ fourth Thursday of a month that is divisible by 4. Maybe _you_ can adjust your
+ code b/c the Lisp:SuperFoo.el packages is old code and the original author is
+ no longer actively maintaining it -- FailedToFoo
+
+ [new]
+ FailedToFoo, glad to hear you were able get Lisp:KungFoo.el to work. I've
+ adjusted `undo-knob-U' to require its twistage in a manner which accomodates
+ the idiosyncracies of Lisp:SuperFoo.el's `un-foo-berator'. I also adjusted
+ `twist-knob-Z'. Hopefully that fixes the problem. BTW you might want to try my
+ library Lisp:auto-foo-tastic.el which supercedes most of the functionality of
+ Lisp:SuperFoo.el -- KungFooAuthor
+
+ == How To Schedule a Foo == 
+ This uses foo-schedule (defined above) and foo-remind to produce a daily
+ countdown to a foo-zero:
+
+ (defun foo-countdown (m1 d1 y1 n)
+   "Foo reminder during the day N prior to date-foo."
+   (foo-remind '(foo-date m1 d1 y1) 
+   (let (foo-value) 
+      	(dotimes (i n foo-value) (setq foo-value (cons i foo-value))))))
+
+ Then: "&%%(foo-countdown 22 4 2000 15) my-foo-deadline" shows a Foo reminder
+ for the last 15 days before the foo-date.
+
+ == How to Foo Foo ===
+
+  { ... }
+
+</pre>
+
+The inline comments in the example above happen quite a bit. 
+
+IMHO these types of interludes often have little to do with the context of the page in which they
+appear and would be of better use separated to a new location. 
+
+I would suggest that in addition to or alternatively adding a ``HelpFixingFoo''
+page where package authors and other interested parties can answer questions
+independent of the primary content/context.  Such a page might serve as a good
+compromise between the existing pages (not all of which can/should/will be
+modified to reflect the new functionality) and pages which would clearly benefit
+from better granularity. -- [[mon_key]]
+
+[new]
+Brilliant. Maybe a new wiki mechanism is needed? or integration with something like Disqus? --CH
+
+[new]
+I guess we're at 2:2 right now. :) -- Alex
+
+[new]
+Hello all. First time posting but no need to be gentle on the noob. I promise I won't pay the courtesy back ;-). Well here goes...
+
+Without choosing sides in the above discussion, I'll say that this site needs lots of work (told you I wouldn't go easy). Lots and lots of work (and still going :-). 
+
+I've been collecting some of my bigger ideas and will post it soon. In short, I think this wiki is trying to accomplish multiple goals for people in multiple roles. The roles I see are:
+# Emacs noobs. This wiki may even help people decide if they want to try Emacs
+# Emacs users who wish to learn more, get help, find a package, browse elisp, perhaps even help maintain a package or two.
+# Emacs gurus for whom this website is an act of love.
+
+The site is also trying to serve multiple goals by providing a place for:
+# Noob introduction and support for Emacs: I think the wiki navigation is too complex for this.
+# Discussions about Emacs: The wiki is somewhat successful at this. But if you compare it to a forum or something like Slashdot...
+# Bug reporting and tracking: Being I don't think anyone has stats as to how many bugs are raised, followed, repaired, ignored, or outdated, it seems clear that this isn't being met.
+# Code distribution: It makes code available, but I'm not sure it is in a useful manner. I present this (FYI: 'present this' is secret code for 'rant on and on about') in some detail.
+# Archival of outdated information: A+ for this. But, alas, the amount of outdated material is so great and so widespread that there is no way to distinguish archival from new. 
+# Likely many more.
+
+So I favor a major reorganization of the wiki material. It may seem impossible to do this as you're all volunteers and I'm just a complaining site visitor who has only complained and not even had the courtesy to offer to help. That being said, I think that the reorganization can happen gradually (over years) and can be aided by technologies such as ranking search results by date, adding banners to abandoned packages, etc...
+
+Oh, I think that every change that is not a minor edit must be automatically time stamped and the time stamp must be displayed, when appropriate, automatically.
+
+As I said, I have more written, but it is taking longer than I want to get put together so I thought I'd throw this in while watching 2 episodes of Dr. Who.
+
+I didn't want to say this at the beginning as I didn't want to sound like I was sucking up or something, but I think you guys are doing a great job on this site. You have been improving the site for years and the site has revitalized my interest in participating in the Emacs again. 
+
+I think your discussion about comment pages and my comments in this posting are proof to the success of the site. In my mind, all of these comments are trying to deal with the problem that the wiki is a site whose content has grown faster than its organization and technology can keep up with.
+
+Sure that's a problem, but it's also a sign of great success.
+
+May 22, 2011 at 21:24 ET (GMT-04:00) -- NeilSmithline 
+
+[new]
+Looks like there is a feature to sign and timestamp comments in the wiki but it is a bit broken.. The TextFormattingRules claims that if you start your posting with <code>[ new :: ]</code> (with the spaces removed, that it will start a new comment, add your name, and show a timestamp when you mouse over the comment. I couldn't get it to work. No matter what I did adding :: to the initial new broke in some way. That being said, I did learn that if you put <code>[ new :: ]</code> (spaces deleted) inline of your comment that it gets partially expanded. Even if you put it inside a nowiki tag such as: "<nowiki>This use of new: [new:NeilSmithline:2011-05-23 02:07 UTC] is inside nowiki tags. See how <code>doesn't do </code> anything?</nowiki>". Is posting here enough to get this posted as a bug?
+
+BTW, as I was writing my first post above, it occurred to me that TRAC is designed to combine version control, comments, wiki, etc... I've never been a big fan of TRAC just because it just looks terrible, but I see why it is used (this is not an endorsement, just a comment).
+
+May 22, 2011 at 22:10 ET (GMT-04:00) -- NeilSmithline
+
+[new:AlexSchroeder:2011-05-23 08:10 UTC]
+I'd be interested in understanding how adding :: broke "in some way". I think it still works for me.
+
+You are right in that the initial ##[ new::]## will get expanded before any text formatting rules are applied. These macros are applied before saving a page, not when rendering a page. That's why it has no access to HTML context, text formatting rules, and so on. I consider the feature (the expansion with timestamp and username) to be very minor and the effort to fix this appears to be a major undertaking. I'd rather remove the feature. Most of the uses I've seen only involve ##[new]## anyway, without the colons.
+
+[new:DrewAdams:2011-05-23 13:21 UTC]
+: I use ##[ new::]## and would like to continue to do so.  Having the timestamps is helpful to me. -- DrewAdams
+
+[new:AlexSchroeder:2011-05-23 08:10 UTC]
+As for wiki reorganization: I think it works just like a wish list for an open source project. If it doesn't scratch someone's itch, nobody is going to add it. I think it's a fundamental issue with our business model: there is no pay for boring stuff. Plus, 
+documentation is of no direct use for anything -- unlike code. Thus, people are mostly motivated to keep their own code and its documentation up to date. I don't think there is anything we can do about that. That's why the MissionStatement does not mention organization and quality.
+
+Personally, I think the wiki exists somewhere between the newsgroups, the FAQ, the mailing lists, and IRC. It's certainly nowhere near the quality of organization and writing that the Emacs documentation has -- and I don't think this is the right medium to aim for this level of quality. I think the people willing to invest that amount of energy to write quality stuff ought to be writing the real Emacs documentation -- and they probably are.
+
+[new:NeilSmithline:2011-06-06 01:47 UTC]
+Can't recall how the new tag broke Alex. In my initial comment, I do have a use of the new tag in the middle of a paragraph in a pair of nowiki tags and it got expanded there. But I couldn't make it happen at the start of a comment. 
+
+Drew, I couldn't help laughing when I read your comment about the quality of documentation. IMO, the best case is that the quality of Emacs matches the quality of your documentation. 
+
+Regarding timestamps, I'm not arguing against them. I want more of them. I think that every *comment* should have a timestamp. I think that every page, including the *.el pages, should have the date of the last significant modification on the top of the page. I'm tired of reading through a huge page to find some 2008 date on the bottom. 
+
+Regarding the quality of pages, I don't think that we should, in any way, prohibit some users, pages, formats, etc... This is a wiki - it's supposed to be a mish-mash (yes, that is a technical term). 
+
+What I want to be able to do is be aware of the timeliness and quality of a page before visiting it or, at a minimum, immediately when viewing a page. I'm not looking to set a minimum quality standard for a page to be on the wiki or to say that if a page or its *.el packaes haven't been updated in some period of time that they should be deleted. I just want to be able to filter the results in a reasonable efficient manner. 
+
+While I would like this feature, I do feel that it is important for the less Emacs-experienced users. I suspect that the fact that I'm willing to take the time to complain about the lack of organization in the Wiki means I'm one of the more dedicated users. But I suspect that others are less dedicated and give up sooner. I want to make it easy for them.
+
+-- NeilSmithline 2011-06-06 01:47 UTC 
+
+[new:NeilSmithline:2011-07-12 19:23 UTC]
+I may have mentioned before that I think our wiki could have better usability. I've been working on some ideas for that on my own that I can discuss when I actually have something that works. But today, I needed to lookup something in the Common Lisp Reference Manual. A quick Google search and looking at the first two hits I found a masterpiece of Web documentation. Before giving links, let me say that language references and wikis have lots of overlap in terms of their goals, but that they many differences as well. IMO, the biggest difference is that a language reference is supposed to be immutable while a wiki does its very best to be mutable. That being said, I think there are still ideas here that can help.
+
+The spec is at [http://www.lispworks.com/documentation/HyperSpec/Front/index.htm The Common Lisp Hyperspec™]. While I never thought of EmacsWiki's home page as having too much data, I am now questioning wondering if it does. A quick way to get a feel for the site is to select the master index, pick a letter, and use the forward and backward arrows to move through the pages of the index. It is simple, very accessible, and wickedly fast. Let's just assume that the speed is due to their hosting expenses and not something we should even try to compete with. 
+
+But those navigation arrows are wonderful. I like that up-arrow too. Being a wiki doesn't mean you can't have an index or hierarchy of pages. I'm not arguing that a hierarchy should be enforced or even created on the EmacsWiki, just that I think that a hierarchy is really useful. I think some serious thought needs to be given into adding a hierarchy to the EmacsWiki. Even if someone came up with a brilliant idea, I don't think I would want to mandate that all pages use it. But that's OK. Some pages will just be easier to find than others.
+
+I think that the Wikipedia has an index model that is along the lines of what would be good for the EmacsWiki. At the bottom of Wikipedia pages such as [[WikiPedia:Emacs]] are those little blue bars. For Emacs they are labeled /Emacs/ and /GNU Project/. This type of multi-index seems more appropriate for the EmacsWiki than does the type used in the Lisp reference. 
+
+I haven't thought about what that index should look like, but I think that, largely due to its largeness (sorry - couldn't resist the pun), the EmacsWiki needs better navigation than it did in times past. The Wikipedia didn't have those blue bars when it first started. It added them as it grew. 
+
+While I've used two specific examples, [http://www.lispworks.com/documentation/HyperSpec/Front/index.htm The Common Lisp Hyperspec™], and the Wikipedia, I'm not actually arguing that we follow either of their models. But I think both models have good ideas behind them and are ?evidence? that the EmacsWiki can be indexed. While I believe that indexing would greatly help the EmacsWiki, that is more a matter of opinion.
+
+-- NeilSmithline at July 12, 2011 at 15:47 ET (GMT-04:00)
+
+[new:NeilSmithline:2011-07-12 20:00 UTC]
+I know, two back-to-back comments. The indexing one is a big topic and I didn't want this little topic to get lost in the indexing issues. I think that [http://jtra.cz/stuff/lisp/sclr/index.html this cheat sheet for Common Lisp] is simply brilliant. I don't have a top-10 list of hyperlink technologies, but if I did, this would probably be on it. 
+
+It is very limited in scope, but it is simple, not-intimidating, and links to useful summary pages which, in turn, link to the [http://www.lispworks.com/documentation/HyperSpec/Front/index.htm The Common Lisp Hyperspec™]. I think that the EmacsWiki as well as Emacs' Info would benefit from something of this sort.
+
+-- NeilSmithline at July 12, 2011 at 16:01 ET (GMT-04:00)
+
+[new:AlexSchroeder:2011-07-13 12:41 UTC]
+I'd be willing to invest some time in writing code to help with an automatic hierarchy. I had code that would start at the SiteMap, follow every link to a category page and use those as the top level entries, and use all the bullet list items on the category pages as the second level entries… And we could use Self:action=index or Self:action=printable-index as a basis for forward and backward linking. But essentially the category pages are supposed to be our top level list of commented (and thus value-added) indexes to subtopics.
+
+If you have an idea of how to automatically extract Emacs-relevant keywords from wiki pages – maybe using the actual concept index of the manual as a list of terms to search for? – let's discuss it. :) 
+
+As for dates, I guess with some appropriate CSS you could extract and display the date available in the kind of comment markup I'm using (instead of relying on mouse hovering):
+
+##[new‌‍​::]## -> ##[new:AlexSchroeder:2011-07-13 12:41 UTC]## -> ##<div class="color one level0"><div class="portrait"><p><a class="newauthor" title="2007-08-12 08:19 UTC" href="http://www.emacswiki.org/emacs/AlexSchroeder"><img class="portrait" src="http://www.emacswiki.org/alex/pics/alex-drinking-coffee-48-bw.jpg" alt="new: 2007-08-12 08:19 UTC" /></a> <br /> <a class="local" href="http://www.emacswiki.org/emacs/AlexSchroeder">AlexSchroeder</a></p></div>##
+
+The reason for making dates less prominent is that I used to believe in the /Wiki Now/:
+
+: If the pages are well written, it doesn't matter.  Every page is still relevant.  Unlike a blog or a newspaper, the articles written on a wiki are not only intended for the /current/ readers.  Instead, a wiki can be thought of as a one-way communication-channel to the future.  Temporal context will be lost to future readers.  Adding timestamps will not help, because we need more -- we need the /relevant/ context: Did the author write it because C# was hot?  Because of the war in Iraq?  Which war in Iraq?  Writing well for future reads is therefore important on a wiki. -- WikiNow
+
+I'm not sure whether the thinking regarding the /Wiki Now/ is still relevant when it comes to the _Emacs Wiki_.
+
+[new:NeilSmithline:2011-07-23 03:54 UTC]
+First, it is very cool that my picture, though hard to figure out how to set it up, is retroactive to my previous posts. And the photo is retroactive too as it is 5 years old. I'm just getting younger by the minute :-)
+
+Second, I was looking at some of Google Labs' [http://www.googlelabs.com projects] and saw that they have a [http://pagespeed.googlelabs.com/ web site optimization tool]. It focuses on the efficiency of the data that is sent to the browser. Not on the server performance or browser redering. I ran it against a few pages that were in my browser history. One was [http://en.wikipedia.org/wiki/Stemming Stemming] (I've been looking at new-fangled search tools as I think the single biggest improvement to the EmacsWiki is new search technology). That gave these [http://pagespeed.googlelabs.com/#url=http_3A_2F_2Fen.wikipedia.org_2Fwiki_2FStemming&mobile=false results]. I also tried the [[Icicles]] page. I was most impressed by Oddmuse's [http://pagespeed.googlelabs.com/#url=http_3A_2F_2Fwww.emacswiki.org_2Femacs_2FIcicles&mobile=false performance]. 
+
+I tried several pages and there was some minor variation in the numbers for both Wikis but the lowest I saw was 89 on the EmacsWiki SiteMap. While I know that 2 points is insignificant, I was quite entertained that Icicles beat the SiteMap. Who'd have thunk! 
+
+The [http://pagespeed.googlelabs.com/ web site optimization tool] groups problems it finds into three severity levels. The only problems the tool found were classified as /Low/ severity. In the few pages I tried the tool didn't find a single issues ranked /Medium/ or /High/. I'm not a big fan of Wikis and I think there are too many of them. But I do think you've done a great job with OddMuse. If I had a hat I'd tip it to you. 
+
+As far as the Wiki organization goes, I've been thinking about it quite a bit, I've prototyped some ideas (eg: improved searching), and I've tried to figure who the target audience(s) are and how the EmacsWiki is trying to help them. While I know that quoting existing terminology always runs the risk of bringing too much baggage with it, but I think we need a few [http://en.wikipedia.org/wiki/User_story user stories] before we decide to make any time-consuming changes. I think 
+
+My feeling is that once we have identified the 4, maybe 5, user stories we want to help, the rest says easy. For example, if we are catering to total Emacs noobs, then perhaps the best front page would say [http://en.wikipedia.org/wiki/Don%27t_Panic_%28The_Hitchhiker%27s_Guide_to_the_Galaxy%29#Don.27t_Panic DON'T PANIC] followed by "Start Here". I think that we probably want a total Emacs noob story but we want other stories as well. 
+
+Once we decide on the stories, something which I'm happy to discuss but think that there are others who are more qualified and deserving to actually decide on what they should be, then I think we should consider a hierarchy. I know I suggested a hierarchy but my ideas have been slowly simmering in the back of my head and I'm starting to think I have a rough idea as to what the problem is. Note that in this instance I'm using "problem" to mean something I don't like and think others won't like either.
+
+While I'm still developing it, I think the problem with the EmacsWiki is that while it has the information to meet many user stories, it does not provide appropriate guidance to help a user fulfill their needs. 
+
+As I've been developing a better understanding of what I think the EmacsWiki needs, I think it is likely that some kind of categorization, page threading, labeling, etc... is the solution. I'm just not sure what. 
+
+It's late so I'm going to sign off, but when I'm more awake I think I'll start a new page for more detailed discussions.
+
+As a parting comment, the more I understand what I think is missing, the more I think that what is here is great.
+
+-- NeilSmithline at July 23, 2011 at 01:39 ET (GMT-04:00)
+
+PS: Alex, I think that WikiNow is relevant to the EmacsWiki but the EmacsWiki doesn't just distribute information, it also distributes code. Downloading code that stopped working three releases ago or reading about bugs that happened 5 years ago before two major rewrites of the package is a place where history is helpful but can't outweigh the need for accessibility to the current state. Perhaps some means of archiving is appropriate? Dunno. I agree with the principle of WikiNow but see that EmacsWiki has other needs that must coexist with WikiNow.
+ 
+[new:AlexSchroeder:2011-07-24 22:21 UTC]
+Thank you for the kind words. Looking forward to some user stories. :)
+
+== Safari Reader ==
+
+[new:JoonhwanLee:2011-10-24 12:54 UTC]
+It'd be nice if i can read emacswiki pages with safari's new 'reader' tol feature... or is there any option for this already? - JoonhwanLee
+
+[new]
+On RecentChanges, click on the various RSS links. Works for me on my iPhone. – Alex
+
+[new:JoonhwanLee:2011-10-24 15:01 UTC]
+Oh, there's a way already. good. but, would  be better to read a certain page ;) Thx anyway.
+----
+CategoryEmacsWikiSite
