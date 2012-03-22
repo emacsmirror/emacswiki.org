@@ -1,3 +1,6 @@
 [new:AlexSchroeder:2012-03-22 20:57 UTC]
 Hm, we seem to get a lot of vandalism. I locked the site for the moment. EmacsWikiAdministrators can lock and unlock the site via the _Administration_ link at the bottom, then _Password_ link to make sure you're logged in as an administrator, and once you are, the _Administration_ page will show a _Lock site_ or _Unlock site_ link.
+
+*Update*: I added mail.wishmobile.ca to BannedHosts.
+
 -- AlexSchroeder
