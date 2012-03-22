@@ -1,27 +1,27 @@
-Everyday when you're walking down the street
-And everybody that you meet
-Has an original point of view
+[[ja:Emacsビギナー]]
+[[es:CategoriaAyuda]]
+[[fr:NouvelUtilisateurEmacs]]
 
-And I say HEY! (HEY!)
-What a wonderful kind of day.
-If you can learn to work and play
-And get along with each other
+* An Emacs [http://www.gnu.org/software/emacs/tour/ Guided tour] -- The official website for GnuEmacs.
+* EmacsTutorial -- Learn basic familiarity using the built-in tutorial.
+* WhyUseEmacs -- Overview of Emacs features.
+* LearningEmacs -- Different strategies for learning.
+* BooksAboutEmacs -- Books in print and online.
+* CategoryGlossary -- Emacs terminology.
+* CategoryHistory -- Emacs History.
+* EmacsKeyNotation -- Standard notation for Emacs keys.
+* EmacsNewbieHelpReference -- Commonly used keys.
+* EmacsNewbieKeyReference -- Commonly used commands. 
+* EmacsNewbieMouseReference -- How the Emacs mouse works.
+* CategoryReferenceSheet -- Emacs key reference sheet examples.
+* EmacsScreencasts -- Screen casts where you can learn how others use Emacs.
+* KeyboardMacros -- Capture what you do and then play it back again, multiple times. Almost everything you do (mouse, menus, keyboard keys) can be recorded and replayed.
+* LearnEmacsLisp -- Learning EmacsLisp is part of LearningEmacs -- yes, even for newbies.
+* EmacsNewbieWithIcicles -- Use [[Icicles]] to learn Emacs.
+* EmacsCrashCourse -- One recipe for learning.
+* CommonProblems -- Common sources of confusion.
+* EnjoyWrestlingWithEmacs -- What you're in for!
 
-You got to listen to your heart
-Listen to the beat
-Listen to the rhythm
-The rhythm of the street
-Open up your eyes
-Open up your ears
-Get together and make things better
-By working together!
-
-It's a simple message and it comes from the heart
-Believe in yourself (in yourself)
-cause that's the place to start (to start)
-
-And I say HEY! (HEY!)
-What a wonderful kind of day
-If we can learn to work and play
-And get along with each other.
-Hey what a wonderful kind of day hey!
+----
+CategoryHelp
+CategoryDocumentation
