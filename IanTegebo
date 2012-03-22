@@ -1,4 +1,13 @@
 I use Emacs.
 
+= Emacs Lisp Pages of Interest =
+
+* [[rx]] - I'd appreciated Perl's ##/x## modifier, so this approach seems useful as well.
+* StateMachine
+* CoRoutines (also ConcurrentEmacs)
+* LaterDo
+* HashMap
+* [[deferred.el]]
+
 ----
 CategoryHomepage
