@@ -19,8 +19,30 @@ The following should work in Emacs 23:
     ; read _after_ the initial frame is created.
     (add-hook 'after-make-frame-functions 'toggle-fullscreen)
 
-It does not work on MS Windows or vanilla Mac Emacs 23; see below.
+It does not work on MS Windows or vanilla Mac Emacs 23; see [[#PlatformSpecific]], below.
 
+
+
+
+
+
+== Starting in fullscreen mode ==
+
+[new]
+At least on my Ubuntu installation, directly calling (toggle-fullscreen) from the .emacs gives weird layout behaviour.
+It seems that window resizes have to take place after something which is evaluated after the .emacs, so this did the job for me:
+{{{
+(run-with-idle-timer 0.1 nil 'toggle-fullscreen)
+}}}
+
+Note that an after-init-hook didn't work for me.
+
+[new:TimRetout:2010-07-09 16:50 UTC]
+There is also the --fullscreen command line option. -- TimRetout
+
+
+
+[:PlatformSpecific]
 == Platform-specific methods ==
 
 These methods may be useful with older versions of Emacs, or ports where the 'fullscreen' frame parameter is not supported.
@@ -300,19 +322,12 @@ If your Emacs does not support fullscreen, it can be faked with the maxframe lib
 	(my-fullscreen)))
 }}}
 
-== Starting in fullscreen mode ==
 
-[new]
-At least on my Ubuntu installation, directly calling (toggle-fullscreen) from the .emacs gives weird layout behaviour.
-It seems that window resizes have to take place after something which is evaluated after the .emacs, so this did the job for me:
-{{{
-(run-with-idle-timer 0.1 nil 'toggle-fullscreen)
-}}}
+==See also==
+See also [[Fullscreen]].
 
-Note that an after-init-hook didn't work for me.
 
-[new:TimRetout:2010-07-09 16:50 UTC]
-There is also the --fullscreen command line option. -- TimRetout
+
 
 == Q&A ==
 
@@ -333,5 +348,8 @@ There is also the --fullscreen command line option. -- TimRetout
   (w32-send-sys-command #xf030))
 }}}
 
-==See also==
-See also [[Fullscreen]].
+
+
+
+
+
