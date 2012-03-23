@@ -319,12 +319,19 @@ There is also the --fullscreen command line option. -- TimRetout
 ** Under Fvwm 2.5.23 I get a little band of background at the bottom
    of the screen --- any solution for that?  I have yet to try it with
    another WM.
-
 ** The solution is to add Style "*" <nowiki>ResizeHintOverride</nowiki> to your config
-** This also occurs under Fluxbox 1.0; the current git repository
-fixes this problem
+** This also occurs under Fluxbox 1.0; the current git repository fixes this problem
 ** Not a problem under KDE 3.5.7
-** Echo area cannot be displayed after fullscreen call,for windows, maybe ”(w32-send-sys-command 61488)“ should be used to maximize emacs window
+** Echo area cannot be displayed after fullscreen call, for windows, maybe ”(w32-send-sys-command 61488)“ should be used to maximize emacs window
+
+[new]
+** My Windows taskbar is vertical. Emacs gets confused and covers it partially. How can I make Emacs maximize every time I focus on it?
+  I tried this, but the advice doesn't seem to be invoked
+{{{
+(defadvice handle-switch-frame (after maximize-frame activate)
+  "Maximize frame every time it receives focus, i.e. a switch-frame event."
+  (w32-send-sys-command #xf030))
+}}}
 
 ==See also==
 See also [[Fullscreen]].
