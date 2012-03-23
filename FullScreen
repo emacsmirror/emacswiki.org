@@ -42,6 +42,33 @@ There is also the --fullscreen command line option. -- TimRetout
 
 
 
+
+
+
+
+== frame-cmds.el ==
+
+Library <tt>[[frame-cmds.el]]</tt> provides various commands to maximize and restore frames horizontally, vertically, or both.  It applies to any platform and any Emacs version (20+), and it can take into account a standalone minibuffer frame, the MS Windows task bar, and Mac areas that should not be covered. 
+
+As is true for other methods mentioned on this page, "maximized" here is not quite the same thing as "full-screen".  Maximizing here means making a frame as big as possible (possibly leaving room for the things mentioned above), but the frame still appears as a frame, with title bar, border, etc.
+
+##frame-cmds.el## also includes other, related commands, to tile frames across or down your display, for instance.  These are the commands relevant to this topic:
+
+* `toggle-max-frame', `toggle-max-frame-horizontally', `toggle-max-frame-vertically'
+
+* `maximize-frame', `maximize-frame-horizontally', `maximize-frame-vertically'
+
+* `restore-frame', `restore-frame-horizontally', `restore-frame-vertically'
+
+* `tile-frames', `tile-frames-horizontally', `tile-frames-vertically'
+
+
+
+
+
+
+
+
 [:PlatformSpecific]
 == Platform-specific methods ==
 
