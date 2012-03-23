@@ -46,7 +46,7 @@ There is also the --fullscreen command line option. -- TimRetout
 
 
 
-== frame-cmds.el ==
+== Maximize/Restore Using Library frame-cmds.el ==
 
 Library <tt>[[frame-cmds.el]]</tt> provides various commands to maximize and restore frames horizontally, vertically, or both.  It applies to any platform and any Emacs version (20+), and it can take into account a standalone minibuffer frame, the MS Windows task bar, and Mac areas that should not be covered. 
 
