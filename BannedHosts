@@ -16,7 +16,7 @@
 # pages), please get the page database instead.  See
 # http://emacswiki.org/cgi-bin/wiki/WikiDownload
 
-dsl\.tekksavvy\.com  # for vandalizing the site in March 2012
+dsl\.teksavvy\.com  # for vandalizing the site in March 2012
 mail\.wishmobile\.ca # for vandalizing the site in March 2012
 # 60.190.240.64 - 60.190.240.95
 ^60\.190\.240\.(6[456789]|[78][0-9]|9[0-5]) # for spamming our category pages
