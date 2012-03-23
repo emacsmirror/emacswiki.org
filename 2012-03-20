@@ -94,6 +94,6 @@ Well, I decided to count Bozhidar's angry ranting as a vote in favor of discussi
 
 If you want to try it and provide some feedback, please do.
 
-* [EmacsWiki:action=browse;id=2012-03-20;css=/css/pedia.css#switch use Wikipedia theme]
+* [EmacsWiki:action=browse;id=2012-03-20;css=/css/pedia.css;theme=#switch use Wikipedia theme]
 
-* [EmacsWiki:action=browse;id=2012-03-20;css=#switch back to the default theme]
+* [EmacsWiki:action=browse;id=2012-03-20;css=;theme=#switch back to the default theme]
