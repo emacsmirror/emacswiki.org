@@ -87,3 +87,13 @@ My immediate reaction to BozhidarBatsov is:
 * Take yourself, your project and Emacswiki even less seriously - this is /very/ essential /if/ you want to build a long-living community.
 * Nice and persuasive argument. You walk in to a bazaar and call that it is no cathedral.
 * Ha, you have a sponsor. That explains it all.
+
+[new:AlexSchroeder:2012-03-23 18:33 UTC]
+[:switch]
+Well, I decided to count Bozhidar's angry ranting as a vote in favor of discussion pages, added them and renamed them to "Talk". And if the critics are right, then I'm expecting a significant improvement of quality, soon. In order to further improve the presumed quality of the site, I added a Wikipedia-inspired [[CSS]] file.
+
+If you want to try it and provide some feedback, please do.
+
+* [EmacsWiki:action=browse;id=2012-03-20#switch;css=/css/pedia.css use Wikipedia theme]
+
+* [EmacsWiki:action=browse;id=2012-03-20#switch;css=/css/pedia.css back to the default theme]
