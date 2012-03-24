@@ -2,3 +2,19 @@
 
 -- JonasBernoulli 2012-03-24 10:50 UTC
 
+
+----
+
+You are right. In addition to that, people still used wget with a slightly different User Agent string:
+
+{{{
+grep -i wget logs/access.log.1 | wc -l
+4802
+grep -i wget logs/access.log.1 | head -1
+111.191.137.201 - - [23/Mar/2012:06:34:31 +0100] "HEAD / HTTP/1.1" 200 - "-" "Wget/1.13.4 (cygwin)"
+}}}
+
+Oh well!
+
+-- AlexSchroeder 2012-03-24 11:12 UTC
+
