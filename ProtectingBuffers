@@ -1,3 +1,14 @@
+==Emacs Lock==
+
+Emacs Lock (`emacs-lock-mode') is a minor mode for marking buffers as protected. Several levels of protection are provided:
+* Emacs cannot exit until the buffer is killed or unlocked
+* the buffer cannot be killed
+* all of the above
+
+The default locking behavior can be customized via `emacs-lock-default-locking-mode'. 
+
+Emacs Lock is included in Emacs 24.
+
 ==Protecting Buffers in XEmacs==
 
 To protect important buffers from accidental killing, use the following forms in [[XEmacs]]:
