@@ -104,54 +104,6 @@ git.el will look into your git configuration for committer name and email addres
 
 MdReadme can auto-generate a README for display on a github repository page.
 
-== MS Windows ==
-
-Q. How can I use it with MS Windows?
-
-A. The current ##git.el## (2008-03-02) in the git source
-repository does not work out of the box. I (piyo) have proposed a
-[http://groups.google.com/group/msysgit/browse_thread/thread/b852fef689817707
-an interim patch-up Emacs Lisp file] called ##git-mswin.el##
-for users of [http://code.google.com/p/msysgit/ the git fork msysgit].
-
-[new:DrewAdams:2008-04-18 14:14 UTC]
-Thanks. But it's still not clear to me. I wonder if you or someone else could give a little recipe for how to use it, step by step (including what to do if you do/do not use Cygwin). Assume ignorant readers like myself. That would be very helpful. Thx -- DrewAdams
-
-[new]
-Ok, here's some explanation:
-I installed the Git-1.5.4-preview20080202.exe from [http://code.google.com/p/msysgit/ msysgit], which is the more native-like Git flavor on Windows and does not require Cygwin. The install option I use is "Run Git from the Windows Command Prompt" which only puts the cmd scripts git.cmd and gitk.cmd in my path. I do not recommend "Run Git and included Unix tools from the Windows Commmand Prompt" especially if you are still using Cygwin with your Emacs. At this point, your system environment variable "PATH" will have included "##C:\Program Files\git\cmd##" or likewise.
-
-Inside emacs, install ##git.el## (load-path add and require) and call `M-x git-status'. However, at this point it does not call ##git.cmd## correctly, so that is why I created that interim ##git-mswin.el## as mentioned above. Install ##git-mswin.el## (load-path add and require) and retry the `M-x git-status'.
-
-You will be able to view the status of the directory in a pcvs/dired like fashion, diff/ediff and commit. I think there is no support for ##git-add --interactive##, for those advanced users of the git index cache and partial committing. For this you will want ##gitsum.el## but I have not confirmed if it works for my setup. Also, I do not do everything git related inside emacs. I still rely on the Command Prompt (cmd.exe!) to ##git-init##, ##git-tag##, ##git-branch##, run ##git-rebase --interactive## and visualize (##gitk##). Of course, you can set GIT_EDITOR to your Emacs instance (gnuclient.exe, etc), for spot edits.
-
-As far as the Cygwin-only route is concered, Alex Ott says he had [http://alexott.blogspot.com/2008/04/using-emacs-with-git.html success with Cygwin git and Windows Emacs back in 2006 with some modifications].
-
-To make NT Emacs work with Cygwin git I needed to patch git.el as follows (without it "commit" checked in an empty tree, i.e. it deleted all files):
-{{{
---- git.el~	2008-04-19 23:43:30.203125000 +0200
-+++ git.el	2008-05-12 02:28:46.453125000 +0200
-@@ -810,7 +810,7 @@
-         (not (file-executable-p ".git/hooks/pre-commit"))
-         (let ((index-file (make-temp-file "gitidx")))
-           (unwind-protect
--            (let ((head-tree (unless (git-empty-db-p) (git-rev-parse "HEAD^{tree}"))))
-+            (let ((head-tree (unless (git-empty-db-p) (git-rev-parse "HEAD^\\{tree\\}"))))
-               (git-read-tree head-tree index-file)
-               (git-update-index index-file files)
-               (git-run-hook "pre-commit" `(("GIT_INDEX_FILE" . ,index-file))))
-@@ -829,7 +829,7 @@
-                   head head-tree)
-               (unless (git-empty-db-p)
-                 (setq head (git-rev-parse "HEAD")
--                      head-tree (git-rev-parse "HEAD^{tree}")))
-+                      head-tree (git-rev-parse "HEAD^\\{tree\\}")))
-               (if files
-                   (progn
-                     (message "Running git commit...")
-}}}
-
-
 == How to use Git with VC ==
 
 Question: I would like to do everything from within Emacs (without having to
