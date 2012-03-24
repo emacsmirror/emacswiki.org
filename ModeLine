@@ -9,7 +9,7 @@ For complete information on the contents of mode lines, see [[Manual:mode line]]
 ** '''##**##''' -- modified since last save
 ** '''##--##''' -- not modified since last save
 ** '''##%*##''' -- read-only, but modified
-** '''##%%##''' -- read-only, not modifed
+** '''##%%##''' -- read-only, not modified
 : In the screenshot, buffers ##*Help*## and ##drews-lisp-20## are read-only (unmodified); buffer ##shrink-fit.el## is writable and unmodified.
 * Buffer name -- for example, a file name.
 * The name of one or more [[MajorMode]]s or [[MinorMode]]s of the buffer , surrounded by parentheses. In the screenshot, buffer ##shrink-fit.el## is in major mode ##Emacs-Lisp## (and in no minor mode). In Emacs 22, you can click the major-mode and minor-mode names for additional behavior.
