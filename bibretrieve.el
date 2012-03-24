@@ -636,13 +636,6 @@ ARG is the optional argument."
 
     (set-marker reftex-select-return-marker nil)
 
-    ;; (when (stringp selected-entries)
-    ;;   (message selected-entries))
-    ;; (unless selected-entries (message "Quit"))
- 
-    ;; (insert (bibretrieve-extract-bib-items selected-entries))
-    (message "fin qui ok")
-
     (if (stringp selected-entries)
       (message selected-entries)
       (if (not selected-entries)
