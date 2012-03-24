@@ -12,11 +12,6 @@ wget --http-user=foo --http-pass=geheim --reject "*search=*","*action=*", \
 --page-requisites --convert-links -e robots=off -w 4 -r -l5 -np <url>
 </pre>
 
-== Problems with PDF Files ==
-
-##--html-extension## adds the html extension to some PDF files, since their MIME type is thought to be text/html.
-This doesn't happen for all PDFs though.
-
 (Back to WikiDownload.)
 
 ----
