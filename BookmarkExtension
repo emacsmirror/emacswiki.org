@@ -1,1 +1,115 @@
-DeletedPage
+This page is about [http://mercurial.intuxication.org/hg/emacs-bookmark-extension/ bookmark-extensions]
+
+This is a fork of bookmark+.el, but simpler to use (less commands).
+
+Compatibility: Only emacs23+.
+
+== Download ==
+
+You can get it here with mercurial: 
+
+<pre>
+
+hg clone http://mercurial.intuxication.org/hg/emacs-bookmark-extension/
+
+</pre>
+
+To get the development branch:
+
+<pre>
+
+hg update -C Development
+
+</pre>
+
+== Features ==
+
+* At the moment it provide support for bookmarking in W3m, Gnus, Woman, Man, Info with emacs standard bookmarks.
+
+* You can import w3m bookmarks temporarily by using the w3m filter (W) in menu list with a prefix arg (C-u).
+
+* You can import Delicious bookmarks temporarily with (D) a prefix arg will refresh the list from delicious.
+NOTE: For this feature you will need Lisp:anything-delicious.el even if you don't use Anything.
+
+* You can import Firefox bookmarks temporarily with (P).
+NOTE: Firefox version>=3 don't use anymore html file to store bookmarks.
+It use instead places.sqlite, an sql database.
+bookmark-extensions.el use the bookmarks.html file to import firefox bookmarks.
+To feed your bookmarks.html automatically, add this line in user.js (in ~/.mozilla/firefox/xxxx.default)
+
+<pre>
+
+user_pref("browser.bookmarks.autoExportHTML", true);
+
+</pre>
+
+Or set it to true with a doubleclick in about:config from firefox.
+
+This will import automatically your firefox bookmarks from places.sqlite to bookmarks.html
+
+* You can jump to your urls with external browser (e.g firefox) if you use a prefix arg (C-u RET). 
+
+* The display is colorized to differency caregories of bookmarks.
+
+* You will find filters to show only the category of bookmarks you want (e.g Gnus, W3m, etc...)
+
+* You will find the support to use it in [[Anything]] in Lisp:anything-config.el
+** `M-x anything-for-files'
+** `M-x anything-bookmark-ext'
+
+* It provide also an incremental searching of bookmarks ala [[Anything]].(no need to have [[Anything]] installed)
+(That is now part of Emacs).
+
+* Bookmarking a page from firefox in Emacs bookmarks is possible:
+
+You will find files and instructions in contrib directory.
+
+You will have to add protocol handlers to firefox to make that working:
+
+That is not so easy as it was in firefox version < 3 due to a bug in firefox3+ i think.
+
+I will add infos when i know more about that. See [https://bugzilla.mozilla.org/show_bug.cgi?id=529511 Bug 529511]
+
+You can also have infos about that on the org mailing list.
+
+For the moment you will have to hack file in firefox: mimeTypes.rdf in addition of the usual user.js.
+
+You will find some code to setup protocols in Firefox in the contrib directory (firefox-protocol.el), but that is
+experimental (use with care) though that work fine for me here to setup my protocols.
+
+* Org support: You will also find command `bmkext-firefox2org' to send your firefox bookmarks to an org file.
+
+* Bookmark-extensions have now his own addressbook, that can be a replacement of bbdb.
+
+== Screenshots ==
+
+Here some screenshots:
+
+http://farm3.static.flickr.com/2677/4079986668_065298b71d.jpg
+
+[http://farm3.static.flickr.com/2677/4079986668_d72675dd61_o.png Full screen]
+
+Searching in bookmarks:
+
+http://farm4.static.flickr.com/3520/4079996702_810752dbda.jpg
+
+[http://farm4.static.flickr.com/3520/4079996702_65588d83c1_o.png Full screen]
+
+== Discuss ==
+
+[new]
+
+You should use an image host which allows full size images, so if you click on the thumbnall a new page is opened with the full size pictures. Or you could link the images to the full images on Flickr.
+
+These screenshots are pretty much useless, because you only see a very vague color outline of things. If a new user comes here they are not very helpful to present what these features actually look like during use.
+
+: Thanks for the links to the full screen pictures. I wish it would be a policy on Emacs Wiki (to provide a link to the original picture), because I've seen ridiculously tiny screenshots on other pages too.
+
+It would be great if you provided more information about the differences between bookmark-extensions vs. Bookmark+.el.
+As of now, it is hard to tell what kind of advantages bookmark-extensions provides over Bookmark+.el.
+
+[new]
+I don't want to make comparison between bookmark+ and bookmark-extensions, just look at the features provided above and make your own idea,
+or better try one and the other.
+
+-- ThierryVolpiatto
