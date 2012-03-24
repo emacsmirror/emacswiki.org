@@ -23,7 +23,7 @@ Overall, emacs templates packages can be divided into those whose syntax for def
 
 * SemanticRecoder -- Part of CollectionOfEmacsDevelopmentEnvironmentTools with GoogleTemplates like syntax.  Created for language agnostic code generation applications.
 
-* Lisp:defaultcontent.el - fills new files with a template depending on the filename. The template form can expand various things dynamically, including the filename, basefilename, date/time, environment variables. It can also run arbitrary elisp code.  A good companion to yasnippet. 
+* Lisp:defaultcontent.el - fills new files with a template depending on the filename. The template form can expand various things dynamically, including the filename, basefilename, date/time, environment variables. It can also run arbitrary elisp code.  A good companion to yasnippet. Attaches to find-file-hooks and inserts template contents only when a file is initially created. 
 
 
 === Elisp Macro Based Template Systems ===
@@ -71,6 +71,13 @@ The simplest template-like feature expansion of abbreviations. For example, you 
 I find SkeletonMode hard to read and write for longer templates; TempoMode seems to be much easier to use. -- AlexSchroeder
 
 I think lisp code based template system is of limited use. They mostly seem early efforts at template. Further, when templates gets complex to a point, best is to simply code elisp. Text based one is the way to go, since it requires no lisp knowldege, so its users can be much broader. In particular, i think recent developement borrowed from TextMate, namely Snippet.el created in 2005, is good. Some info indicates that author of Snippet is no longer maintaining it. Since YaSnippetMode is a rewrite with more features, i think that is the best choice. It has full website support and forum and is active. -- [[Xah Lee]]
+
+[new] 
+
+I find yasnippet to be very useful and flexible, for small code-gen, snippet expansions.  Type <code>f o r TAB</code> and you get a for loop with fields you can fill in. Very nice. I also like defaultcontent.el for initially filling a newly-created file with boilerplate. My content templates include header comments, license notes, and basic structure. I use both of these packages together.  
+- [[DinoChiesa]]
+
+
 
 [new]
 How does TempoMode differ from MsfAbbrev ? Hum well, I see the
