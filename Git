@@ -23,7 +23,9 @@ In emacs 23 the command showing the repository status C-x v d has been rewritten
 vc-git-grep can be used and a UI for git grep.
 vc-git.el also includes support for git blame, in the vc-annotate command (C-x v g).
 
-== [[Magit]] is the most popular interface to git ==
+== Magit is the most popular interface to git ==
+
+See [[Magit]].
 
 * Get it from: http://magit.github.com/magit
 * Manual: http://magit.github.com/magit/magit.html
