@@ -23,6 +23,10 @@ In emacs 23 the command showing the repository status C-x v d has been rewritten
 vc-git-grep can be used and a UI for git grep.
 vc-git.el also includes support for git blame, in the vc-annotate command (C-x v g).
 
+== [[Magit]] is the most popular interface to git ==
+
+* Get it from: http://magit.github.com/magit
+* Manual: http://magit.github.com/magit/magit.html
 
 == Other packages ==
 
@@ -35,10 +39,7 @@ It was forked from Magit and uses many of its core ideas. Both modes have evolve
 * Documentation: 
 ** http://bogolisk.blogspot.com/ (older version, still useful and includes screenshots)
 
-*[[Magit]]* is another interface to git:
 
-* Get it from: http://magit.github.com/magit
-* Manual: http://magit.github.com/magit/magit.html
 
 *egit* is an Emacs Git history interface intended to be similar to qgit or gitk. Requires git.el.
 
