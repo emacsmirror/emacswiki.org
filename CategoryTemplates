@@ -23,6 +23,9 @@ Overall, emacs templates packages can be divided into those whose syntax for def
 
 * SemanticRecoder -- Part of CollectionOfEmacsDevelopmentEnvironmentTools with GoogleTemplates like syntax.  Created for language agnostic code generation applications.
 
+* Lisp:defaultcontent.el - fills new files with a template depending on the filename. The template form can expand various things dynamically, including the filename, basefilename, date/time, environment variables. It can also run arbitrary elisp code.  A good companion to yasnippet. 
+
+
 === Elisp Macro Based Template Systems ===
 
 * SkeletonMode -- Bundled with Emacs 22 with full doc. See <code>(info "(autotype)Top")</code>
