@@ -70,6 +70,8 @@ http://www.foldr.org/~michaelw/emacs/redshank/
 
 * [http://www.microsoft.com/downloads/details.aspx?FamilyId=ADF1B9E7-74A8-401D-9B0E-8326749F9419&displaylang=en Video] showing Emacs in action by Don Box. Funny. You can see how he changes slash into backslash in shell mode running ##cmdproxy.exe##. :-)
 
+* Emacsmovies.org: http://emacsmovies.org/
+
 
 * [http://www.youtube.com/watch?v=0vumR5Hcz7s GNEVE / GNU Emacs Video Editing ] demonstration video on Youtube, edited by GNEVE.
 
@@ -80,6 +82,8 @@ http://www.foldr.org/~michaelw/emacs/redshank/
 * Derek Slager used CommandLogMode (everywhere, but only inside Emacs) to create a screencast.
 
 * See also [http://www.debugmode.com/wink/ wink] (freeware w32, creates flash video, is it ok to link to it here? An open source version is on its [http://groups.google.com/group/wink-discuss/browse_thread/thread/42812132e43573a0 way].)
+
+* A post describing how the screencasts on the emacsmovies.org website are done. - http://emacsmovies.org/blog/2012/01/21/welcome_to_emacsmovies.org/
 
 ----
 CategoryHelp
