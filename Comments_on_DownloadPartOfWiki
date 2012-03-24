@@ -1,0 +1,4 @@
+@Alex Is it really still necessary to block wget? I intend to merge the various WikiDownload pages (as you suggest a long time ago) and the instructions on how to use wget are a bit complicated due to the restriction. Given that there is now a git repository (as well as svn, cvs) as well as a rsync mirror I doubt anybody would download the complete wiki using wget.
+
+-- JonasBernoulli 2012-03-24 10:50 UTC
+
