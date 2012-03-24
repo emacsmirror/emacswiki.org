@@ -41,8 +41,6 @@ It was forked from Magit and uses many of its core ideas. Both modes have evolve
 * Documentation: 
 ** http://bogolisk.blogspot.com/ (older version, still useful and includes screenshots)
 
-
-
 *egit* is an Emacs Git history interface intended to be similar to qgit or gitk. Requires git.el.
 
 * Homepage: http://github.com/jimhourihan/egit/tree/master
@@ -73,17 +71,16 @@ It was forked from Magit and uses many of its core ideas. Both modes have evolve
 
 GitDwim defines context-aware commands.
 
+== Also see ==
 
-More information:
-
+* EmacsFromGit -- A Git mirror of the Emacs CVS repository is available.
+* [http://github.com github] is a popular website to host and browse git repositories.
 * [http://xtalk.msk.su/~ott/en/writings/emacs-vcs/EmacsGit.html Work with Git from Emacs] is an article by AlexOtt that provides more information about each of the mentioned packages.
 * [http://files.taesoo.org/git-emacs/git-emacs.html A Guided Tour of emacs-git] (by TSKim)
 
-== Emacs from Git ==
-
-* EmacsFromGit -- A Git mirror of the Emacs CVS repository is available.
-
 == Configuration ==
+
+=== Debian ===
 
 If you are using the Debian git packages, you can add the following to
 your ##.emacs## to make all of these available (if you are not
@@ -101,13 +98,7 @@ using the Debian packages, adjust the path to suit):
 
 git.el will look into your git configuration for committer name and email address.  If that fails, it uses the Emacs defaults.  If you rely on environment variables for your configuration, beware. (And consider `git-committer-name' and `git-committer-email')
 
-== github ==
-
-[http://github.com github] is a popular website to host and browse git repositories. There are [http://github.com/languages/Emacs%20Lisp quite a few Emacs libraries] there now.
-
-MdReadme can auto-generate a README for display on a github repository page.
-
-== How to use Git with VC ==
+=== How to use Git with VC ===
 
 Question: I would like to do everything from within Emacs (without having to
 resort to the command-line).  I was able to create a new repository with
@@ -131,9 +122,6 @@ Question: How do I revert an uptodate file to a previous version? How do I manag
 What is stash?
 What is the master-file?
 Why does vc-dir not show the remote-url?
-
-
-
 
 ----
 CategoryVersionControl
