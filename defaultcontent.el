@@ -170,7 +170,7 @@ or quickly handled with a delimiting character." )
     ;; This expands custom elisp code.
     ;; Courtesy of Luc Moreau:
     ( "@LISP(\\(.*\\))@"     (let (sexp value (here (point)))
-                             (goto-char (+ 1 (match-beginning 0)))
+                             (goto-char (match-beginning 0))
                              (setq sexp (dc--read-closest-sexp))
                              (if sexp (setq value (eval sexp)))
                              (goto-char here)
