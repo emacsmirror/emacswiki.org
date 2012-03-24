@@ -2,9 +2,9 @@
 
 r-autoyas is a small ESS complement. It provides automatically created yasnippets for R functions.
 
-Watch the demo screencast: http://www.youtube.com/watch?v=jLJPorf2LBE
+Watch the demo screencast: http://www.youtube.com/watch?v=jLJPorf2LBE (Old version! The key bindings have changed and there are more features now.)
 
-Get source code and info here: http://www.svenhartenstein.de/Software/R-autoyas
+Get source code and more info here: https://github.com/mlf176f2/r-autoyas.el
 
 Requirements:
 * yasnippet: http://code.google.com/p/yasnippet/
