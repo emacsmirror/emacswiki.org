@@ -4,7 +4,7 @@
 ;; Modified by: Dino Chiesa <dpchiesa@hotmail.com>
 ;; Created    : September 12, 1993
 ;; Version    : 1.4
-;; Keywords   : fringe, bitmap
+;; Keywords   : template
 ;; X-URL      : http://www.emacswiki.org/emacs/defaultcontent.el
 ;; Last-saved : <2012-March-24 02:34:42>
 
