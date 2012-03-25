@@ -7,7 +7,7 @@
 ;; Maintainer: José Alfredo Romero L. <escherdragon@gmail.com>
 ;; Created: 24 Sep 2007
 ;; Version: 5
-;; RCS Version: $Rev: 413 $
+;; RCS Version: $Rev: 414 $
 ;; Keywords: files, dired, midnight commander, norton, orthodox
 ;; URL: http://www.emacswiki.org/emacs/sunrise-commander.el
 ;; Compatibility: GNU Emacs 22+
@@ -330,6 +330,19 @@ Commander panes."
 mode."
   :group 'sunrise
   :type 'boolean)
+
+(defcustom sr-attributes-display-mask nil
+  "Contols hiding/transforming columns with `sr-toggle-attributes'.
+If set, its value must be a list of symbols, one for each
+attributes column. If the symbol is nil, then the corresponding
+column will be hidden, and if it's not nil then the column will
+be left untouched. The symbol may also be the name of a function
+that takes one string argument and evaluates to a different
+string -- in this case this function will be used to transform
+the contents of the corresponding column and its result will be
+displayed instead."
+  :group 'sunrise
+  :type '(repeat symbol))
 
 (defcustom sr-fuzzy-negation-character ?!
   "Character to use for negating patterns when fuzzy-narrowing a pane."
@@ -2111,6 +2124,33 @@ Kills any other buffer opened previously the same way."
             (if (eq (current-buffer) other-window-scroll-buffer)
                 (setq other-window-scroll-buffer  nil))))
 
+(defun sr-mask-attributes (beg end)
+  "Manage the hiding of attributes in region from BEG to END.
+Selective hiding of specific attributes can be controlled by customizing the
+`sr-attributes-display-mask' variable."
+  (let ((cursor beg) props)
+    (flet ((sr-make-display-props
+            (display-function-or-flag)
+            (cond ((functionp display-function-or-flag)
+                   `(display
+                     ,(apply display-function-or-flag
+                             (list (buffer-substring cursor (1- (point)))))))
+                  ((null display-function-or-flag) '(invisible t))
+                  (t nil))))
+      (if sr-attributes-display-mask
+          (block block 
+            (mapc (lambda (do-display)
+                    (search-forward-regexp "\\w")
+                    (search-forward-regexp "\\s-")
+                    (setq props (sr-make-display-props do-display))
+                    (when props 
+                      (add-text-properties cursor (point) props))
+                    (setq cursor (point))
+                    (if (>= (point) end) (return-from block)))
+                  sr-attributes-display-mask))
+        (unless (>= cursor end)
+          (add-text-properties cursor end '(invisible t)))))))
+
 (defun sr-display-attributes (beg end visiblep)
   "Manage the display of file attributes in the region from BEG to END.
 if VISIBLEP is nil then shows file attributes in region, otherwise hides them."
@@ -2124,9 +2164,10 @@ if VISIBLEP is nil then shows file attributes in region, otherwise hides them."
       (while (and next (< next end))
         (beginning-of-line)
         (forward-char 2)
-        (if visiblep
-            (remove-text-properties (point) next '(invisible t))
-          (add-text-properties (point) next '(invisible t)))
+        (if (not visiblep)
+            (sr-mask-attributes (point) next)
+          (remove-text-properties (point) next '(invisible t))
+          (remove-text-properties (point) next '(display)))
         (forward-line 1)
         (setq next (dired-move-to-filename))))))
 
@@ -2735,13 +2776,14 @@ are not copied."
         (inhibit-read-only t))
     (with-current-buffer (sr-other 'buffer)
       (sr-clone-files items target clone-op progress))
-    (if (window-live-p (sr-other 'window))
-        (sr-in-other
-         (progn
-           (revert-buffer)
+    (when (window-live-p (sr-other 'window))
+      (sr-in-other
+       (progn
+         (revert-buffer)
+         (when (memq major-mode '(sr-mode sr-virtual-mode))
            (dired-mark-remembered
             (mapcar (lambda (x) (cons (expand-file-name x) mark-char)) names))
-           (sr-focus-filename (car names)))))))
+           (sr-focus-filename (car names))))))))
 
 (defun sr-clone-files (file-paths target-dir clone-op progress &optional do-overwrite)
   "Clone all files in FILE-PATHS to TARGET-DIR using CLONE-OP to clone the files.
