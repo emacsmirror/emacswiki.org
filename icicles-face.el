@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:19:43 2006
 ;; Version: 22.0
-;; Last-Updated: Sun Feb 12 17:55:54 2012 (-0800)
+;; Last-Updated: Sun Mar 25 19:49:41 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 621
+;;     Update #: 623
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-face.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -222,9 +222,14 @@ Do nothing if FUNCTION has not been defined (`fboundp')."
 
 ;;; Library `hexrgb.el'.
 ;;;
-;;;###autoload (autoload 'icicle-increment-color-hue        "icicles-face.el")
-;;;###autoload (autoload 'icicle-increment-color-saturation "icicles-face.el")
-;;;###autoload (autoload 'icicle-increment-color-value      "icicles-face.el")
+;;; Handle these autoloads this way, so they get created only if `hexrgb.el' is available.
+;;;
+;;;###autoload
+(when (require 'hexrgb nil t)
+  (autoload 'icicle-increment-color-hue        "icicles-face.el")
+  (autoload 'icicle-increment-color-saturation "icicles-face.el")
+  (autoload 'icicle-increment-color-value      "icicles-face.el"))
+
 (eval-after-load "hexrgb" '(icicle-face-after-load-hexrgb))
  
 ;;(@* "Groups, Organized Alphabetically")
