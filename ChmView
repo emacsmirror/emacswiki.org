@@ -3,29 +3,29 @@
 
 : It is base on "archmage". 
 :: (archmage is a program that acts as  HTTP server on specified port number, so you can read CHM file with your favourite borwser.)
-:: And ChmView integrates "archmage" with Emacs, you can use [[emacs-w3m]] (or any browser you like) browse CHM file.
+:: And ChmView integrates "archmage" with Emacs, you can use [[emacs-w3m]] (or any browser you like) to browse a CHM file.
 
 ==Install==
 * Install archmage:
-: Because ChmView is base on "archmage", so make sure you have install "archmage" in your system, like me (I use Debian) :
+: ChmView is based on archmage(1) so make sure you have it installed on your system. On a Debian-based OS :
 :: sudo aptitude install archmage
 
-* Install elisp file:
+* Install the elisp file:
 : Put Lisp:chm-view.el in your load-path, and add 
 :: (require 'chm-view)
 : in ~/.emacs
 
 ==Setup==
-: I recommend you install [[emacs-w3m]], and setup variable  "browse-url-browser-function" with "w3m-browse-url", then you can view CHM file in Emacs!
+: I recommend you install [[emacs-w3m]], and setup the variable  "browse-url-browser-function" with the value "w3m-browse-url", then you can view a CHM file in Emacs!
 Like below:
 :: (setq browse-url-browser-function 'w3m-browse-url)
 
 ==Usage==
 * View CHM file:
-: You can use command "chm-view-file" view CHM file in browser.
+: You can use the command "chm-view-file" to view a CHM file in the browser.
 
 * Integrate with dired:
-: You can bind command "chm-view-dired" with "dired-mode-map", then you can view CHM file that marked in dired.
+: You can bind the command "chm-view-dired" with "dired-mode-map", so that you can view a CHM file that is marked in a dired buffer.
 
 ==Note==
 : Because "archmage" needs time to extract the CHM file, the browser (such as [[emacs-w3m]]) might open a special port before the "archmage" extract is completed. if this occurs,  you will get an error: "Cannot retrieve URL: http://localhost:531560 (exit status: 0)". Just refresh the current page to fix. 
