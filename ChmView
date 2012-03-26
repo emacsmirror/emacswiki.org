@@ -16,7 +16,7 @@
 : in ~/.emacs
 
 ==Setup==
-: I recommend you install [[emacs-w3m]], and setup the variable  "browse-url-browser-function" with the value "w3m-browse-url", then you can view a CHM file in Emacs!
+: I recommend you install [[emacs-w3m]], and setup the variable  `browse-url-browser-function' with the value `w3m-browse-url', then you can view a CHM file in Emacs!
 Like below:
 :: (setq browse-url-browser-function 'w3m-browse-url)
 
