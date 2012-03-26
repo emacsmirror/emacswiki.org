@@ -31,3 +31,56 @@ shjk, I can make it more obvious if you can suggest a particular change you'd li
 
 -- AlexSchroeder 2012-03-26 16:39 UTC
 
+
+----
+
+AlexSchroeder: here is an attempt. It's put just below the page title in the hope that's a location which will not be missed. I created a little CSS/Html mess, though. It might be a good idea to ask someone with better knowledge of this stuff than me to implement this properly :)
+
+[[image:LinkToTalkPageSuggestionImage]]
+
+The article itself would get a "To Discussion" link.
+
+Added to wiki.css:
+
+    .article_talk_nav {
+        font-size: 40%;
+        line-height: 30%;
+        letter-spacing: 0;
+    }
+
+    div.article_talk_nav a:link {
+        color:#00F;
+        text-decoration: underline;
+    }
+    div.article_talk_nav a:visited {
+        color:#A0A;
+        text-decoration: underline;
+    }
+    div.article_talk_nav a:active {
+        color:#F00;
+        text-decoration: underline;
+    }
+
+
+Added to page html:
+
+  <div class="article_talk_nav">
+    <br><a title="To Article" href="article">To Article</a>
+  </div>
+
+This is added into the page title like this (formatting changed):
+    <br><span class="specialdays">Bangladesh, Independence Day</span>
+    
+    <h1>
+      <a title="Click to search for references to this page" rel="nofollow"
+         href="http://www.google.com/cse?cx=004774160799092323420:6-ff2s0o6yi&amp;q=%22Comments%20on%202012-03-20%22">
+        Comments on 2012-03-20
+      </a>
+      <div class="article_talk_nav">
+        <br><a title="To Article" href="article">To Article</a>
+      </div>
+    </h1>
+    </div>
+
+-- shjk 2012-03-26 20:06 UTC
+
