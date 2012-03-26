@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Fri Mar 16 15:47:21 2012 (-0700)
+;; Last-Updated: Sun Mar 25 19:48:19 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 8151
+;;     Update #: 8154
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-chg.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -1097,6 +1097,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-face.el'")
 ;;
+;; 2012/03/25 dadams
+;;     Replace autoload cookies for *-increment-color-* by autoloads inside soft-require of hexrgb.el.
 ;; 2012/02/12
 ;;     Added def of icicle-byte-compile-eval-after-load-flag here too, so can load before icicles.el.
 ;; 2011/10/21 dadams
