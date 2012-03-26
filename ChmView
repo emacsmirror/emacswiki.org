@@ -2,7 +2,7 @@
 : ChmView is a mode to view CHM files in Emacs.
 
 : It is based on "archmage". 
-:: (archmage is a program that acts as  HTTP server on specified port number, so you can read CHM file with your favourite borwser.)
+:: (archmage is a program that acts as  HTTP server on specified port number, so you can read CHM file with your favorite browser.)
 :: And ChmView integrates "archmage" with Emacs, you can use [[emacs-w3m]] (or any browser you like) to browse a CHM file.
 
 ==Install==
