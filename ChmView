@@ -22,20 +22,20 @@ Like below:
 
 ==Usage==
 * View CHM file:
-: You can use the command "chm-view-file" to view a CHM file in the browser.
+: You can use the command `chm-view-file' to view a CHM file in the browser.
 
 * Integrate with dired:
-: You can bind the command "chm-view-dired" with "dired-mode-map", so that you can view a CHM file that is marked in a dired buffer.
+: You can bind the command `chm-view-dired' with `dired-mode-map', so that you can view a CHM file that is marked in a dired buffer.
 
 ==Note==
-: Because "archmage" needs time to extract the CHM file, the browser (such as [[emacs-w3m]]) might open a special port before the "archmage" extract is completed. if this occurs,  you will get an error: "Cannot retrieve URL: http://localhost:531560 (exit status: 0)". Just refresh the current page to fix. 
-: If you always get this error when opening a CHM file, you need to set 'chm-view-delay' to a larger number (default is 0.3 second).
+: Because `archmage' needs time to extract the CHM file, the browser (such as [[emacs-w3m]]) might open a special port before the `archmage' extract is completed. If this occurs,  you will get an error: "Cannot retrieve URL: http://localhost:531560 (exit status: 0)". Just refresh the current page to fix this issue.
+: If you always get this error when opening a CHM file, you need to set 'chm-view-delay' to a larger number (default is 0.3 seconds).
 
 ==Customize==
-: All above setup can customize by:
-: M-x customize-group RET chm-view RET
+: All above setup can customized using
+: ##M-x customize-group RET chm-view RET##
 
-* "chm-view-delay" 
+* `chm-view-delay' 
 :: The delay time before view CHM file.
 :: This is necessary spend time start sub-process.
 
