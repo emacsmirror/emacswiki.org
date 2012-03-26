@@ -516,7 +516,8 @@ out-of-the-box support for this popular usage pattern. Once the
 only thing needed to instruct SC to stop using frames and start using
 the passive pane as a transient viewer is:
 
-    (setq sr-popviewer-select-viewer-action (lambda () (other-window 1)))
+    (setq sr-popviewer-select-viewer-action
+         (lambda nil (let ((sr-running nil)) (other-window 1))))
 
 Personally I prefer to use the M-x customize-variable interface for
 this kind of tasks, but that's just a matter of preference.
@@ -592,10 +593,12 @@ the viewer pane, and not in the SC panes.
 
 //Misc customizations://
 
-Here's a way to start SC with no attributes (in case one doesn't need them everyday):
+To start SC with no attributes (in case one doesn't need them everyday), simply
+customize variable `sr-show-file-attributes' and set it to nil:
 
-    (add-hook 'sr-start-hook (lambda ()
-                               (sr-toggle-attributes)))
+    M-x customize-variable [RET] sr-show-file-attributes [RET]
+
+then click on [toggle] and then [Save for future sessions].
 
 Here's a way to reset SC panes if one have messed them up:
 
