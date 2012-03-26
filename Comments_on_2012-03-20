@@ -84,3 +84,17 @@ This is added into the page title like this (formatting changed):
 
 -- shjk 2012-03-26 20:06 UTC
 
+
+----
+
+[:talkative]
+Hm, below the title. Interesting… Ideally, this would work without modification of the HTML source, though. Otherwise all the other CSS files (including the ’Pedia theme) would get messed up. Sometimes it is possibly to do this using absolute positioning. This necessarily requires the header to not have line-breaks (which introduces usability issues for people with narrow screens). Here's a first attempt at achieving it:
+
+* [EmacsWiki:action=browse;id=Comments_on_2012-03-20;css=/css/talkative-emacs.css;theme=#talkative use Talkative Emacs theme]
+
+* [EmacsWiki:action=browse;id=Comments_on_2012-03-20;css=;theme=#talkative back to the default theme]
+
+Depending on how this looks on narrow screens, perhaps we should force a linebreak in front of the search box.
+
+-- [http://alexschroeder.ch/ AlexSchroeder] 2012-03-26 23:04 UTC
+
