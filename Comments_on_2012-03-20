@@ -93,6 +93,8 @@ Hm, below the title. Interesting… Ideally, this would work without modificatio
 
 * [EmacsWiki:action=browse;id=Comments_on_2012-03-20;css=;theme= back to the default theme]
 
+* [http://www.emacswiki.org/css/talkative-emacs.css CSS source]
+
 Depending on how this looks on narrow screens, perhaps we should force a linebreak in front of the search box.
 
 -- [http://alexschroeder.ch/ AlexSchroeder] 2012-03-26 23:04 UTC
