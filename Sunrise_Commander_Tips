@@ -399,6 +399,48 @@ as you'd do a regular one.
 At any moment you can press C-c C-c to return to normal mode.
 
 ----
+[:HideAttributesSelectively]
+==How do I hide (or modify) selected columns in the list of attributes?==
+
+The `sr-toggle-attributes' function (C-Backspace) allows to hide all attributes
+that are normally displayed on the left of files and directories. Sometimes this
+is overkilling: one would like to remove most of them, but leave some always
+displayed, instead of having to choose between all or nothing.
+
+Since version 5r414 it's possible to control what specific attributes are hidden
+by `sr-toggle-attributes'. It's just a matter of customizing appropriately one
+variable: `sr-attributes-display-mask'. The value of this variable may be either
+nil or a list of symbols, one for each attribute column. In this list, if a
+given element is nil, then the corresponding column will be hidden, and if it's
+not nil the column will be displayed. An element may also be the name of a
+custom function that takes a string as its sole argument and evaluates to a
+different string -- in this case that function will be used to transform the
+contents of the corresponding column and its result will be displayed instead.
+
+For instance, if we set `sr-attributes-display-mask' to the following value:
+
+    '(t nil nil t nil nil nil)
+
+then when `sr-toggle-attributes' is invoked, all attributes will be hidden,
+except for the first (permissions) and the third one (e.g. file size). If the
+list contains more elements than columns on display, the excessive elements are
+silently ignored. If it contains less elements than columns, the missing
+elements are assumed to be nil and their columns will be hidden.
+
+If instead of t we provide at some position the name of a custom function:
+
+    '(my/octal-permissions nil nil t nil nil nil)
+
+then that function (//my/octal-permissions// in this case) will be used to
+transform the value of its corresponding column into something different that
+will replace its original value, instead of just hiding it.
+
+The rule of thumb here is: if you can achieve the same result either by setting
+an appropriate value for the listing switches (`sr-listing-switches' and
+`sr-virtual-listing-switches') or by setting `sr-attributes-display-mask', then
+prefer always the first option -- it will always have better performance.
+
+----
 [:NavigationAndTracking]
 ==Advanced navigation and location tracking.==
 
