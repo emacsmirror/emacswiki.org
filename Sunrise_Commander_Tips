@@ -425,7 +425,7 @@ then when `sr-toggle-attributes' is invoked, all attributes will be hidden,
 except for the first (permissions) and the third one (e.g. file size). If the
 list contains more elements than columns on display, the excessive elements are
 silently ignored. If it contains less elements than columns, the missing
-elements are assumed to be nil and their columns will be hidden.
+elements are assumed to be t and their columns will be left alone.
 
 If instead of t we provide at some position the name of a custom function:
 
