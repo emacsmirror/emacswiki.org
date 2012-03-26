@@ -47,7 +47,8 @@ You can tune the PDFCreator to do all sorts of things, I have it set to autosave
     (cond ((eq system-type 'windows-nt)
        (setq ps-printer-name "PDFCreator")
        (setq ps-printer-name-option "-d")
-       (setq ps-lpr-command "/bin/lpr")))
+       (setq ps-lpr-command "/bin/lpr"))) ; if you're using the Emacs in Cygwin
+      ;(setq ps-lpr-command "c:/cygwin/bin/lpr.exe"))) ; if you're using the native Windows build of Emacs
 
 To test use ps-print-buffer.  TimOCallaghan
 
