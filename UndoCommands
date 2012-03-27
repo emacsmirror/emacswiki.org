@@ -31,7 +31,7 @@ Having once undone a change with `C-x u' or `##C-_##', you can repeat the undo c
 [new]
 It works with GnuEmacs, yet it does not work with xemacs. Is there any similar trick in it?
 
-----
+[new]
 Try adding something like
 
 (global-unset-key "\C-z")
