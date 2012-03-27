@@ -96,8 +96,8 @@
          ;; AutoComplete development version.
          ("auto-complete development version" nil nil
           (
-           "https://raw.github.com/m2ym/auto-complete/master/popup.el"
-           "https://raw.github.com/m2ym/auto-complete/master/fuzzy.el"
+           "https://raw.github.com/m2ym/popup-el/master/popup.el"
+           "https://raw.github.com/m2ym/fuzzy-el/master/fuzzy.el"
            "https://raw.github.com/m2ym/auto-complete/master/auto-complete.el"
            "https://raw.github.com/m2ym/auto-complete/master/auto-complete-config.el"
            ))
