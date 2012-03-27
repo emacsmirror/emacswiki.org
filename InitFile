@@ -9,7 +9,9 @@ just open it for editing in Emacs:
 
    C-x C-f ~/.emacs RET
 
-If it seems your InitFile is not being read, type `C-h e' to see if there's a chance there was a problem with it loading.
+When you add Lisp to your .emacs, it is not evaluated until you restart Emacs.  Rather than restarting Emacs, you can use `M-x eval-buffer', or `M-x eval-region' or just `C-x C-e'.  See EvaluatingExpressions.
+
+If it seems your InitFile is not being read, type `C-h e' to see if there's a chance there was a problem with it loading.  See also DebugFileLoading.
 
 It's often better to break up a lengthy InitFile into a number of Emacs Lisp packages and a small, top-level InitFile that loads your packages, especially if you define commands and other functions. Some of the "init files" available here on EmacsWiki are organized in this way, as a set of packages.
 
