@@ -78,35 +78,36 @@ See ThingAtPointCommands.
 
 [:mark-word]
 [:my-mark-current-word]
-== my-mark-current-word ==
+== Mark current word ==
 
 Vanilla Emacs command `mark-word' operates on words by using `forward-word' (`##M-f##') from [[point]] and setting [[mark]] at the end of the word.  Most other `mark-'-style commands move the point -- including `mark-defun', `mark-paragraph', ...
 
-There exists a `current-word' function in EmacsLisp that finds the word (or symbol) at the point from its beginning to its end.  Here's an attempt at making a command that uses this function to mark the *current word*.
+There exists a `current-word' function in EmacsLisp that finds the word (or symbol) at the point from its beginning to its end.  Since `current-word' returns a string, and does not return region markers, it's difficult to translate its results.  This code uses ThingAtPoint to find the current word.  Use it by EvaluatingExpressions in Emacs or by adding it to your Emacs InitFile.
 
-  (defun my-mark-current-word ()
+  (defun my-mark-current-word (&optional arg allow-extend)
     "Put point at beginning of current word, set mark at end."
-    (interactive)
-    (let* ((opoint (point))
-           (word (current-word))
-           (word-length (length word)))
-      (if (save-excursion
-            ;; Avoid signaling error when moving beyond buffer.
-            (if (> (point-min)  (- (point) word-length))
-                (beginning-of-buffer)
-              (forward-char (- (length word))))
-            (search-forward word (+ opoint (length word))
-                            'noerror))
-          (progn (push-mark (match-end 0) nil t)
-                 (goto-char (match-beginning 0)))
-        (error "No word at point" word))))
-
-Since `current-word' returns a string, and does not return region markers, it's difficult to translate its results.  One could use `search-backward' with the word found by `current-word', but Emacs search functions require the "match found must not extend before that position" the search was started.  An initial approach is to move backwards (without going beyond the buffer limits) the number of characters in the word, then execute the search.
-
-When this and other bugs are worked out a more intricate version should be written that also supports TransientMarkMode and the `allow-extend' argument.
-
-[new:DrewAdams:2008-11-29 19:12 UTC]
-Just use [[#mark-thing]] (above) with `word' as the type of thing. The whole word is selected, and you can repeat to select successive (whole) words. -- DrewAdams
+    (interactive "p\np")
+    (setq arg (if arg arg 1))
+    (if (and allow-extend
+             (or (and (eq last-command this-command) (mark t))
+                 (region-active-p)))
+        (set-mark
+         (save-excursion
+           (when (< (mark) (point))
+             (setq arg (- arg)))
+           (goto-char (mark))
+           (forward-word arg)
+           (point)))
+      (let ((wbounds (bounds-of-thing-at-point 'word)))
+        (unless (consp wbounds)
+          (error "No word at point"))
+        (if (>= arg 0)
+            (goto-char (car wbounds))
+          (goto-char (cdr wbounds)))
+        (push-mark (save-excursion
+                     (forward-word arg)
+                     (point)))
+        (activate-mark))))
 
 [:mark-a-word-or-thing]
 == Mark Word or Thing ==
@@ -231,7 +232,7 @@ MakingMarkVisible describes how to show the mark as a cursor. This is convenient
 Try AutoMark if you are tired of setting the mark manually.
 
 [:expandregion]
-== expandregion.el ==
+== Expand region command ==
 
 expandregion.el is a very useful tool for increasing the selected region by semantic units. Download it at: https://github.com/magnars/expand-region.el
 
