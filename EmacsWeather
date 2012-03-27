@@ -5,6 +5,7 @@ Interfacing to weather services on the net:
 * EmacsMeteo
 * Lisp:xml-weather.el 
 * [http://julien.danjou.info/google-weather-el.html google-weather and org-google-weather]
+* [http://jasonfruit.com/page/weather_el weather.el (uses data from worldweatheronline.com)]
 
 There is also a WThreeM w3m-search-engine-alist on WThreeMSearch for weather.com.
 
