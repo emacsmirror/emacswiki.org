@@ -1,6 +1,6 @@
 *Note:* This package was included in Emacs 22.1. In a Dired buffer, the key sequence `C-x C-q' runs the command `wdired-change-to-wdired-mode' to make a dired buffer editable. Change the filenames as you see fit. Commit changes to disk with `C-c C-c'.
 
-Juan LeónLahozGarcía wrote Lisp:wdired.el which facilitates renaming files in the Dired buffer. This is great for renaming all those MP3 files :) -- especially when combined with [http://www.antisleep.com/download/elisp/gse-number-rect.el gse-number-rect] by ScottEvans.
+JuanLeónLahozGarcía wrote Lisp:wdired.el which facilitates renaming files in the Dired buffer. This is great for renaming all those MP3 files :) -- especially when combined with [http://www.antisleep.com/download/elisp/gse-number-rect.el gse-number-rect] by ScottEvans.
 
 
 == Make parent directories patch ==
