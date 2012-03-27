@@ -1,4 +1,5 @@
 Is there a quick way or re-visiting the file in current buffer? This is useful when it was modified by an external program.
+
  From: MichaelSlassto
  Subject: Re: revisit-file
  Newsgroups: comp.emacs
@@ -21,12 +22,7 @@ In addition to [using `M-x revert-buffer']..., you can tell Emacs to do it autom
 
 we have found that an awful lot of our network traffic can be people visiting multiple files across the network and having global-auto-revert-mode on so no longer use it all the time -- RaymondZeitler, comp.emacs, 24 May 2001
 
-
 See AutoRevertMode.
-
-
-
-
 
 == No confirmation ==
 
@@ -38,15 +34,9 @@ In <tt>[[misc-cmds.el]]</tt> you will find this extremely complex command defini
 
 I bind it to `##<F5>##' (since that's the MS Windows key for syncing things). -- DrewAdams
 
-
-
-
-
-
-
 == Revert all buffers that are visiting a file ==
 
-This is a litte function that is useful when editing several files that might for any reason change on disk (update from VersionControl).  It reverts all buffers that are visiting a file.
+This is a little function that is useful when editing several files that might for any reason change on disk (update from VersionControl).  It reverts all buffers that are visiting a file.
 
   (defun revert-all-buffers ()
     "Refreshes all open buffers from their respective files."
