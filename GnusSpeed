@@ -5,7 +5,7 @@ Please expand this page with more technical content from experts.
 ==What operations are slow in Gnus==
 List and discuss them here.
 
-* Checking for new mail (g in *Group* buffer) [not true anymore 15-02-12, nnimap was rewritten, it's lightning fast now]
+* Checking for new mail (g in *Group* buffer) [not very true anymore (15-02-12), nnimap was rewritten, "3 g" key is super fast now]
 * Entering an nnimap group
 * Downloading an article with big attachments -- you must wait for them
 * RSS with nnrss
