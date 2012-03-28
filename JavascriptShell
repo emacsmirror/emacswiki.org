@@ -1,4 +1,6 @@
-How about an interactive shell for use within emacs that allows the user to run and execute Javascript?  There are a few interactive shells around, built on spidermonkey or Rhino, but this one works on Windows and the built-in Windows Script Host (Cscript.exe) that can run Javascript. It also depends on [http://kobyk.wordpress.com/2007/09/14/a-jscript-interactive-interpreter-shell-for-the-windows-script-host/ the Javascript REPL from KobyK]. In fact, this elisp code is just an integration of kobyk's work into emacs.
+Lisp:jsshell-bundle.el
+
+Here's an interactive shell for use within emacs that allows the user to run and execute Javascript.  There are a few interactive shells around, built on spidermonkey or Rhino, but this one works on Windows and the built-in Windows Script Host (Cscript.exe) that can run Javascript. It also depends on [http://kobyk.wordpress.com/2007/09/14/a-jscript-interactive-interpreter-shell-for-the-windows-script-host/ the Javascript REPL from KobyK]. In fact, this elisp code is just an integration of kobyk's work into emacs.
 
 http://i.imgur.com/Juenp.png
 
@@ -6,8 +8,6 @@ The primary benefit of an interactive Javascript is that developers can run and 
 
 Using this code, it's possible, from within the editing buffer of a .js file, to send the region to the shell to be evaluated.  It's also possible to send complete files to the Javascript shell.  This allows, for example the developer to mark a large function, then send it to the shell, then pop to the shell and immediately invoke that function interactively, to see the results. After changing the function in the regular editing buffer, you can send it again to the shell, and test again.  Much faster than loading up a browser. 
  
-Lisp:jsshell-bundle.el
-
 This was inspired by  [http://js-comint-el.sourceforge.net/ the JS-comint mode on sourceforge].
 
 The shell does not, in itself, provide a mock DOM, and so is unsuitable, by itself, for running tests of browser-centric code. You couldn't run jQuery in it, for example. 
