@@ -4,13 +4,18 @@ http://i.imgur.com/Juenp.png
 
 The primary benefit of an interactive Javascript is that developers can run and test Javascript code that is not browser-centric in an interactive shell, without leaving emacs. It's good for testing, iterative development.
 
-Using this code, it's possible to send the region to the shell to be evaluated, or send complete files to the Javascript shell.  This allows, for example the developer to mark a large function, then send it to the shell, then pop to the shell and immediately invoke that function interactively, to see the results. After changing the function in the regular editing buffer, you can send it again to the shell, and test again.  Much faster than loading up a browser. 
+Using this code, it's possible, from within the editing buffer of a .js file, to send the region to the shell to be evaluated.  It's also possible to send complete files to the Javascript shell.  This allows, for example the developer to mark a large function, then send it to the shell, then pop to the shell and immediately invoke that function interactively, to see the results. After changing the function in the regular editing buffer, you can send it again to the shell, and test again.  Much faster than loading up a browser. 
  
 Lisp:jsshell-bundle.el
 
 This was inspired by  [http://js-comint-el.sourceforge.net/ the JS-comint mode on sourceforge].
 
-This module also has the ability to load in separate modules when you begin the shell.  For example, you can load in json2.js, into the shell, or a module with extensions to the string prototype. You can see that in the screenshot above. 
+The shell does not, in itself, provide a mock DOM, and so is unsuitable, by itself, for running tests of browser-centric code. You couldn't run jQuery in it, for example. 
+
+This module does have the ability to load in separate modules when you begin the shell.  For example, you can load in json2.js, into the shell, or a module with extensions to the string prototype. You can see that in the screenshot above. 
+
+Theoretically, if you had a suitable mock of a DOM implemented in JavaScript, you could load it into this shell to enable testing of browser-centric code. 
+
 
 ----
 
