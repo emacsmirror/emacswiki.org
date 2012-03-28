@@ -1,28 +1,28 @@
-My Emacs Anniversery is in May.  2 years so far.
+My Emacs Anniversery is in May.  I started in 2007, so I guess I am turning into an old-timer.  I am still learning stuff, which is why I love emacs.
 
 Emacs projects are:
-
-* I did some work on TwIt, and plan to do more.
-* DevKitEmacs - A helper mode for interfacing with devkitpro.  Making the compilation and testing of NDS homebrew much easier.
 * ToDoChiKu - A Growl/Snarl interface for emacs.  Comes with a few helpers.
-* cruisecontrol.el - An Emacs Controller for CruiseControl.  Right now it just starts a build.
+* I did some work on TwIt.  Ever sence they stopped supporting basic authentication over HTTPS I stopped working on it.  I don't use twitter enough, and don't want to write an OpenAuth library.
 * [[Tagging]] - Originally from Conrad Barski M.D., I have heavily hacked it to work with ECB
 * file-journal.el - I took it over, and started to make some adjustments.
 * Lisp:work-timer.el - A simple timer that tells you when you need to start working, and when you need to start relaxing.  Uses ToDoChiKu. 
-* JisekiDesktop - The final step to turning emacs into your OS.
-* Lisp:org-jira.el - A simple package to hook up jira with org.  Right now provides a org to jira link.  More coming later.
 * Lisp:i-ching.el - i-ching for Emacs.
-* MojoSdk - Helper functions for interacting with the mojo SDK development tools. 
 * Lisp:flip-tables.el  goofy fun. Put an emoji table flipper on your kill ring.
 
-----
-For one job I do Web Development.  My weapons of choice are org-mode, moz-repl, js2 and nxhtml.
+Emacs Projects that I won't kill, but I don't work on anymore:
+* cruisecontrol.el - An Emacs Controller for CruiseControl.  Right now it just starts a build.
+* DevKitEmacs - A helper mode for interfacing with devkitpro.  Making the compilation and testing of NDS homebrew much easier.
 
-For fun I write Scheme, I am working on a web/application server and Gambit for the Nintendo DS
+Emacs Projects that I will kill one day soon:
+* JisekiDesktop - I don't use it anymore.  It was a neet idea though!  Slated for death in 2013
+* TwIt - Slated for death in 2013, unless someone else takes over.
+* MojoSdk - Helper functions for interacting with the mojo SDK development tools.   Now that the new palm handset is dead, is this useful?
+
+----
+For one job I do Web Development.  My weapons of choice are org-mode, js-mode, swank-js and nxhtml.
+For fun I play with fun languages, Scheme, Javascript, Clojure, and Kilns.
 
 OrgMode and ParEdit Mode are my favorite modes.  I am also fond of the Bovinator and ECB.
-
-I am currently having problems with tab-completion in my cygwin shell.  I can't tab complete if I am in a directory with a space in it, and each tab completion ends with a backlash.
 
 
 == Messages ==
