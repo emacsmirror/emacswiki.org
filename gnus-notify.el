@@ -50,6 +50,8 @@ contains new messages"))
   "This hook is invoked before jumping to a gnus group with unread messages.
   Each hook should take a single argument - the GROUP to be selected")
 
+(defvar gnus-mst-notify-face 'gnus-group-mail-3-empty
+  "Face used to gnus notification message in modeline")
 
 (add-hook 'gnus-exit-gnus-hook
           (lambda ()
@@ -90,7 +92,7 @@ contains new messages"))
   "Update the modeline to show groups containing new messages"
   (if gnus-mst-notify-groups
       (setq gnus-mst-display-new-messages
-            (append (list " [m: ")
+            (append (list " [m:")
                     (maplist
                      #'(lambda (sublist)
                          (let ((group (car sublist))
@@ -104,14 +106,14 @@ contains new messages"))
                            (list*
                             (list ':propertize
                                   (if gnus-notify-show-unread-counts
-                                      (format "[%s %s]"
+                                      (format "[%s%s]"
                                               (gnus-mst-notify-shorten-group-name
                                                (car sublist))
                                               (gnus-group-unread (car sublist)))
                                     (format "%s"
                                             (gnus-mst-notify-shorten-group-name
                                              (car sublist))))
-                                  'face 'bold
+                                  'face gnus-mst-notify-face
                                   'keymap map
                                   'help-echo "Visit this group")
                             (if (cdr sublist)
