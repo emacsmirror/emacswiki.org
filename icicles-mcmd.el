@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Sat Mar 10 15:45:43 2012 (-0800)
+;; Last-Updated: Wed Mar 28 07:40:23 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 17885
+;;     Update #: 17886
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-mcmd.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -1227,21 +1227,21 @@ but the `display' string is unique for each call."
 ;; The first here is also the default sort order.  Entries are traversed by `C-,' in
 ;; `icicle-sort-orders-alist' order.
 
-;;;###autoload (autoload 'icicle-sort-alphabetical "icicles-mcmd.el")
+;;;###autoload (autoload 'icicle-sort-alphabetical "icicles-mcmd")
 (icicle-define-sort-command "alphabetical" ; `icicle-sort-alphabetical'
     icicle-case-string-less-p
   "Sort completion candidates alphabetically.
 Ignore letter case if `completion-ignore-case' or `case-fold-search'
 is non-nil.")
 
-;;;###autoload (autoload 'icicle-sort-special-candidates-first "icicles-mcmd.el")
+;;;###autoload (autoload 'icicle-sort-special-candidates-first "icicles-mcmd")
 (icicle-define-sort-command "special candidates first" ; `icicle-sort-special-candidates-first'
     icicle-special-candidates-first-p
   "Sort completion candidates by putting special candidates first.
 Otherwise, sorting is alphabetical.  Ignore letter case if
 `completion-ignore-case' or `case-fold-search' is non-nil.")
 
-;;;###autoload (autoload 'icicle-sort-extra-candidates-first "icicles-mcmd.el")
+;;;###autoload (autoload 'icicle-sort-extra-candidates-first "icicles-mcmd")
 (icicle-define-sort-command "extra candidates first" ; `icicle-sort-extra-candidates-first'
     icicle-extra-candidates-first-p
   "Sort completion candidates by putting extra candidates first.
@@ -1250,32 +1250,32 @@ Otherwise, sorting is alphabetical.  Ignore letter case if
 An extra candidate is one that is a member of
 `icicle-extra-candidates'.")
 
-;;;###autoload (autoload 'icicle-sort-proxy-candidates-first "icicles-mcmd.el")
+;;;###autoload (autoload 'icicle-sort-proxy-candidates-first "icicles-mcmd")
 (icicle-define-sort-command "proxy candidates first" ; `icicle-sort-proxy-candidates-first'
     icicle-proxy-candidate-first-p
   "Sort completion candidates by putting proxy candidates first.
 Otherwise, sorting is alphabetical.  Ignore letter case if
 `completion-ignore-case' or `case-fold-search' is non-nil.")
 
-;;;###autoload (autoload 'icicle-sort-case-insensitive "icicles-mcmd.el")
+;;;###autoload (autoload 'icicle-sort-case-insensitive "icicles-mcmd")
 (icicle-define-sort-command "case insensitive" ; `icicle-sort-case-insensitive'
     icicle-case-insensitive-string-less-p
   "Sort completion candidates alphabetically, but case-insenstively.")
 
-;;;###autoload (autoload 'icicle-sort-by-2nd-parts-alphabetically "icicles-mcmd.el")
+;;;###autoload (autoload 'icicle-sort-by-2nd-parts-alphabetically "icicles-mcmd")
 (icicle-define-sort-command "by 2nd parts alphabetically" ; `icicle-sort-by-2nd-parts-alphabetically'
     icicle-2nd-part-string-less-p
   "Sort multi-completion candidates alphabetically by their second parts.
 After that, sort alphabetically by the first parts.  Ignore letter
 case if `completion-ignore-case' or `case-fold-search' is non-nil.")
 
-;;;###autoload (autoload 'icicle-sort-by-last-file-modification-time "icicles-mcmd.el")
+;;;###autoload (autoload 'icicle-sort-by-last-file-modification-time "icicles-mcmd")
 (icicle-define-sort-command "by last file modification time"
     icicle-last-modified-first-p        ; `icicle-sort-by-last-file-modification-time'
   "Sort file-name completion candidates in order of last modification.
 If not doing file-name completion, then sort alphabetically.")
 
-;;;###autoload (autoload 'icicle-sort-by-file-type "icicles-mcmd.el")
+;;;###autoload (autoload 'icicle-sort-by-file-type "icicles-mcmd")
 (icicle-define-sort-command "by file type" ; `icicle-sort-by-file-type'
     icicle-file-type-less-p
   "Sort file-name completion candidates by file type.
@@ -1284,24 +1284,24 @@ Then sort by file type (extension), alphabetically.
 Sort names that have the same extension alphabetically.
 If not doing file-name completion, sort candidates alphabetically.")
 
-;;;###autoload (autoload 'icicle-sort-by-directories-first "icicles-mcmd.el")
+;;;###autoload (autoload 'icicle-sort-by-directories-first "icicles-mcmd")
 (icicle-define-sort-command "by directories first" ; `icicle-sort-by-directories-first'
     icicle-dirs-first-p
   "Sort file-name completion candidates so that directories are first.
 If not doing file-name completion, then sort alphabetically.")
 
-;;;###autoload (autoload 'icicle-sort-by-directories-last "icicles-mcmd.el")
+;;;###autoload (autoload 'icicle-sort-by-directories-last "icicles-mcmd")
 (icicle-define-sort-command "by directories last" ; `icicle-sort-by-directories-last'
     icicle-dirs-last-p
   "Sort file-name completion candidates so that directories are last.
 If not doing file-name completion, then sort alphabetically.")
 
-;;;###autoload (autoload 'icicle-sort-by-last-use-as-input "icicles-mcmd.el")
+;;;###autoload (autoload 'icicle-sort-by-last-use-as-input "icicles-mcmd")
 (icicle-define-sort-command "by last use as input" ; `icicle-sort-by-last-use-as-input'
     icicle-most-recent-first-p
   "Sort completion candidates in order of last use as minibuffer input.")
 
-;;;###autoload (autoload 'icicle-sort-by-previous-use-alphabetically "icicles-mcmd.el")
+;;;###autoload (autoload 'icicle-sort-by-previous-use-alphabetically "icicles-mcmd")
 (icicle-define-sort-command "by previous use alphabetically"
     icicle-historical-alphabetic-p      ; `icicle-sort-by-previous-use-alphabetically'
   "Sort completion candidates by previous use and alphabetically.
@@ -1310,14 +1310,14 @@ are in two groups, each of which is sorted alphabetically separately:
 those matching previous inputs, followed by those that have not yet
 been used.")
 
-;;;###autoload (autoload 'icicle-sort-by-abbrev-frequency "icicles-mcmd.el")
+;;;###autoload (autoload 'icicle-sort-by-abbrev-frequency "icicles-mcmd")
 (icicle-define-sort-command "by abbrev frequency" ; `icicle-sort-by-abbrev-frequency'
     icicle-command-abbrev-used-more-p
   "Sort abbrev completion candidates by frequency of use
 Otherwise, sort alphabetically.  Ignore letter case if
 `completion-ignore-case' or `case-fold-search' is non-nil.")
 
-;;;###autoload (autoload 'icicle-sort-turned-OFF "icicles-mcmd.el")
+;;;###autoload (autoload 'icicle-sort-turned-OFF "icicles-mcmd")
 (icicle-define-sort-command "turned OFF" nil ; `icicle-sort-turned-OFF'
   "Do not sort completion candidates.")
 
