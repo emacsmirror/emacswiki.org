@@ -13,7 +13,7 @@ author/maintainer/contributor on:
 * FlymakeCursor - displays flymake error messages in the minibuffer, when cursor stops on a line
 * [http://www.emacswiki.org/emacs/linum-ex.el Linum-Ex] - a linum for large files. Doesn't freeze when scrolling continuously.
 * [http://www.emacswiki.org/emacs/FlymakePhp#toc2 Flymake for PHP CodeSniffer] 
-
+* VbDotNetMode - editing for VB.NET.  Surprisingly easy to code in comparison to csharp-mode.
 
 dpchiesa0hotmail0com
 
