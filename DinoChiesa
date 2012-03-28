@@ -8,6 +8,7 @@ author/maintainer/contributor on:
 * [http://code.google.com/p/csharpmode/source/browse/#svn/trunk flymake-for-csharp.el] (author)
 * [http://code.google.com/p/csharpmode/source/browse/#svn/trunk aspx-mode.el] - mode for editing .ASPX files (author)
 * [[MSTFS]] commands for integrating with MS-TFS (author)
+* JavascriptShell - an interactive Javascript shell (author)
 
 
 
