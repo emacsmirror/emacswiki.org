@@ -14,7 +14,7 @@ Gnus demon is pretty smart, but it's behavior is not properly documented. Here i
 
 ----
 
-If you want to be notified of new and interesting mail, take a look at Lisp:gnus-notify.el.
+If you want to be notified of new and interesting mail, take a look at GnusNotify
 
 ----
 
