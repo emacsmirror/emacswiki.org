@@ -6,13 +6,18 @@ You can have Gnus check for new mail every 2 minutes:
 You don't need to set any other variables nor load more files.
 
 The parameters to gnus-demon-add-handler are:
-* the function to call
-* how many minutes (or the time unit specified in gnus-demon-timestep) pass between attempts to call the function
-* whether Emacs has to be idle in order to call the function. t: it must be idle. A number: it must have been idle for this many minutes (well, gnus-demon-timestep). nil: call it anyway even if it isn't idle
+* FUNC the function to call
+* TIME how many time units ( specified in gnus-demon-timestep) pass between attempts to call the function
+* IDLE whether Emacs has to be idle in order to call the function. t: it must be idle. A number: it must have been idle for this many minutes (well, gnus-demon-timestep). nil: call it anyway even if it isn't idle
+
+Gnus demon is pretty smart, but it's behavior is not properly documented. Here is how it works. Assume you set gnus-demon-timestep to 1 second, the TIME to 60 and IDLE to 5, then gnus will try to call your function every 60 seconds, but it will first check if you have been idle for 5 seconds. If so it executes the function, if not it sets the idle timer which is triggered first time you are idle for 5 sec. Once executed the one minute count starts again and gnus takes it all over again. Thus, you are pretty sure that the intervals between calls are not smaller than (60 sec) + (continuous work time) + (5 idle sec).
+
+----
 
 If you want to be notified of new and interesting mail, take a look at Lisp:gnus-notify.el.
 
 ----
+
 Scanning all the news can be slow. If you want a fast scan only of the important lists (mail for example). Set the level of important groups to lower or equal to 3 and add this:
 
 {{{
@@ -30,11 +35,13 @@ Scanning all the news can be slow. If you want a fast scan only of the important
 	      (gnus-group-get-new-news level))))
       (set-window-configuration win))))
 
-(setq gnus-demon-timestep 30)
-(gnus-demon-add-handler 'gnus-demon-scan-news-3 2 1)
+(setq gnus-demon-timestep 10)
+(gnus-demon-add-handler 'gnus-demon-scan-news-3 12 1)
 }}}
 
-This checks you mail every minute on condition that you have been idle for 30 seconds. No check message is displayed. 
+This checks you mail every 2 minutes on condition that you have been idle for 10 seconds. No check message is displayed. 
+
+(this doesn't work with virtual groups (gnus bug), remove level in gnus-group-get-new-news call)
 
 ----
 
