@@ -1,0 +1,23 @@
+So some content here needs work.   So lets make this happen.  
+
+One of the ways I can see doing this is through a top down approach, by setting up a bunch of "wiki projects" with some discreet goals in mind, and any who are interested in that project picking a goal, and working with it.
+
+How can you contribute to a project?
+* Add some todo items if you think you have some good ideas on how to improve a particular project
+* Pick one of the todo items and get cracking!
+
+
+== Projects ==
+
+=== JavaScript Project ===
+
+==== Ideas, and todo list ====
+* Make a central JavaScript page of sorts, outlining various javascript projects, pacakges, etc that are available for emacs
+* clean up Js2Mode
+* Clean JavaScriptMode, this one is going to need a lot of work
+* Clean out any old pages that are no longer applicable, SelenEmacs is a good for-instance
+
+==== Contributors: ====
+
+* Jonathan Arkell
+
