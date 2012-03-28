@@ -6,7 +6,7 @@ Language-specific:
 * CPlusPlus -- C++ specific programming.
 * CProgrammingLanguage -- C specific programming.
 * DProgrammingLanguage -- D specific programming.
-* EcmaScript -- Programming in Javascript, Jscript, and !ActionScript.
+* JavaScript -- (including JScript) also see FlashActionscript.
 * EmacsEclim -- tight eclipse integration for emacs.
 * JavaDevelopmentEnvironment -- a great set of tools for Java programmers.
 * MozillaDevelopmentEnvironmentforEmacs -- support for Mozilla technologies in Emacs.
@@ -65,4 +65,3 @@ File management:
 * ProgrammingModes for language-specific programming modes.
 * CategoryProgrammerUtils for information on using external programming tools with Emacs.  
 * CategoryExternalUtilities for use of other, non-programming external tools.
-
