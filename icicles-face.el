@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:19:43 2006
 ;; Version: 22.0
-;; Last-Updated: Wed Mar 28 07:39:57 2012 (-0700)
+;; Last-Updated: Wed Mar 28 08:27:22 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 624
+;;     Update #: 640
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-face.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -34,10 +34,6 @@
 ;;    `Icicles-Key-Completion', `Icicles-Matching',
 ;;    `Icicles-Minibuffer-Display', `Icicles-Miscellaneous',
 ;;    `Icicles-Searching'.
-;;
-;;  Macros defined here:
-;;
-;;    `icicle-maybe-byte-compile-after-load'.
 ;;
 ;;  Faces defined here:
 ;;
@@ -65,13 +61,9 @@
 ;;    `icicle-search-main-regexp-others', `icicle-special-candidate',
 ;;    `icicle-whitespace-highlight', `minibuffer-prompt'.
 ;;
-;;  User options defined here:
-;;
-;;    `icicle-byte-compile-eval-after-load-flag'.
-;;
 ;;  Functions defined here:
 ;;
-;;    `icicle-face-after-load-hexrgb', `icicle-increment-color-hue',
+;;    `icicle-increment-color-hue',
 ;;    `icicle-increment-color-saturation'
 ;;    `icicle-increment-color-value'.
 ;;
@@ -111,7 +103,10 @@
 ;;
 ;;; Code:
 
-(eval-when-compile (require 'hexrgb nil t)) ;; (no error if not found):
+;;; Soft-require `hexrgb.el[c]' at both autoload generation-time and load-time.
+;;;
+;;;###autoload
+(require 'hexrgb nil t) ;; (no error if not found):
   ;; hexrgb-color-values-to-hex, hexrgb-hsv-to-rgb, hexrgb-rgb-to-hsv.
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -120,34 +115,8 @@
 
 ;;; Icicles Commands for Other Packages ------------------------------
 
-;; Put this first
-
-;; Same as the definition in `icicles-cmd2.el'.
 ;;;###autoload
-(defcustom icicle-byte-compile-eval-after-load-flag t
-  "*Non-nil means byte-compile definitions made within `eval-after-load'.
-Some Icicles functions (commands, in particular) work only if a given
-library is loaded.  Some such functions are defined inside an
-`eval-after-load' form, which means they are defined only, and as soon
-as, the required library is loaded.
-
-If this option is non-nil then those function definitions are
-byte-compiled.  This compilation adds a bit to the load time, in
-effect, but it means that the functions run faster."
-  :type 'boolean :group 'Icicles-Miscellaneous)
-
-;; Same as the definition in `icicles-cmd2.el'.
-(defmacro icicle-maybe-byte-compile-after-load (function)
-  "Byte-compile FUNCTION if `icicle-byte-compile-eval-after-load-flag'.
-Do nothing if FUNCTION has not been defined (`fboundp')."
-  `(when (and icicle-byte-compile-eval-after-load-flag (fboundp ',function))
-    (require 'bytecomp)
-    (let ((byte-compile-warnings  ())
-          (byte-compile-verbose   nil))
-      (byte-compile ',function))))
-
-(defun icicle-face-after-load-hexrgb ()
-  "Things to do for `icicles-face.el' after loading `hexrgb.el'."
+(when (featurep 'hexrgb)
 
   ;; Essentially a version of `doremi-increment-color-component' for hue only.
   ;; Must be before `icicle-search-context-level-1'.
@@ -169,9 +138,6 @@ Do nothing if FUNCTION has not been defined (`fboundp')."
       (hexrgb-color-values-to-hex (mapcar (lambda (x) (floor (* x 65535.0)))
                                           (hexrgb-hsv-to-rgb hue saturation value)))))
 
-  (icicle-maybe-byte-compile-after-load icicle-increment-color-hue)
-
-
   ;; Essentially a version of `doremi-increment-color-component' for saturation only.
   ;; Must be before `icicle-search-context-level-1'.
   (defun icicle-increment-color-saturation (color increment)
@@ -192,9 +158,6 @@ Do nothing if FUNCTION has not been defined (`fboundp')."
       (hexrgb-color-values-to-hex (mapcar (lambda (x) (floor (* x 65535.0)))
                                           (hexrgb-hsv-to-rgb hue saturation value)))))
 
-  (icicle-maybe-byte-compile-after-load icicle-increment-color-saturation)
-
-
   ;; Essentially a version of `doremi-increment-color-component' for value only.
   ;; Must be before definition of option `icicle-region-background' (in `icicles-opt.el').
   (defun icicle-increment-color-value (color increment)
@@ -213,24 +176,7 @@ Do nothing if FUNCTION has not been defined (`fboundp')."
       (setq value  (+ value (/ increment 100.0)))
       (when (> value 1.0) (setq value  (1- value)))
       (hexrgb-color-values-to-hex (mapcar (lambda (x) (floor (* x 65535.0)))
-                                          (hexrgb-hsv-to-rgb hue saturation value)))))
-
-  (icicle-maybe-byte-compile-after-load icicle-increment-color-value)
-
-  )
-
-
-;;; Library `hexrgb.el'.
-;;;
-;;; Handle these autoloads this way, so they get created only if `hexrgb.el' is available.
-;;;
-;;;###autoload
-(when (require 'hexrgb nil t)
-  (autoload 'icicle-increment-color-hue        "icicles-face")
-  (autoload 'icicle-increment-color-saturation "icicles-face")
-  (autoload 'icicle-increment-color-value      "icicles-face"))
-
-(eval-after-load "hexrgb" '(icicle-face-after-load-hexrgb))
+                                          (hexrgb-hsv-to-rgb hue saturation value))))))
  
 ;;(@* "Groups, Organized Alphabetically")
 
