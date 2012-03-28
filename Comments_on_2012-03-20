@@ -128,3 +128,14 @@ And on an editing page, I'd like to see the ##Save## and ##Preview## buttons cop
 
 -- DrewAdams 2012-03-28 15:02 UTC
 
+
+----
+
+I think this is doable. The 'pedia theme would be a good starting point since it moves the Edit link to the top:
+
+* [EmacsWiki:action=browse;id=Comments_on_2012-03-20;css=/css/pedia.css;theme=top#switch use Wikipedia Top theme]
+
+* [EmacsWiki:action=browse;id=Comments_on_2012-03-20;css=;theme=top#switch back to the default theme]
+
+-- AlexSchroeder 2012-03-28 17:50 UTC
+
