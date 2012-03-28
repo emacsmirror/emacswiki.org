@@ -2,7 +2,7 @@ At least, as far as I can see, Twit.el is effectively dead, and has been since t
 
 If an enterprising developer wanted to make it live again, all they would need to do is change the auth scheme.  https://github.com/psanford/emacs-oauth/ might be a good place to start.
 
-DeleteMeIn2013
+[[DeleteMeIn2013]]
 
 
 [[image:TwitElScreenShot]]
