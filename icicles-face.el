@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:19:43 2006
 ;; Version: 22.0
-;; Last-Updated: Sun Mar 25 19:49:41 2012 (-0700)
+;; Last-Updated: Wed Mar 28 07:39:57 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 623
+;;     Update #: 624
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-face.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -17,7 +17,7 @@
 ;;
 ;; Features that might be required by this library:
 ;;
-;;   `backquote', `bytecomp'.
+;;   `backquote', `bytecomp', `hexrgb'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -226,9 +226,9 @@ Do nothing if FUNCTION has not been defined (`fboundp')."
 ;;;
 ;;;###autoload
 (when (require 'hexrgb nil t)
-  (autoload 'icicle-increment-color-hue        "icicles-face.el")
-  (autoload 'icicle-increment-color-saturation "icicles-face.el")
-  (autoload 'icicle-increment-color-value      "icicles-face.el"))
+  (autoload 'icicle-increment-color-hue        "icicles-face")
+  (autoload 'icicle-increment-color-saturation "icicles-face")
+  (autoload 'icicle-increment-color-value      "icicles-face"))
 
 (eval-after-load "hexrgb" '(icicle-face-after-load-hexrgb))
  
