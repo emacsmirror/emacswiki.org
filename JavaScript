@@ -19,11 +19,12 @@ There are a number of helpful modes and elisp packages to working with javascrip
 Finally There are some specifc modes available as well:
 * GwtMuMaMo Multiple Major Mode (MuMaMo) for working with the Google Web Toolkit
 * [[CouchdbDocument]] interacting with couchDB
+* MozRepl Which is a great way to hook into the lower level javascript engine of mozilla.
+* [http://flusspferd.github.com/ Flusspferd] provides a [https://github.com/ruediger/flusspferd/blob/master/misc/emacs/flusspferd.el mode for emacs].
 
 == Javascript wishlist ==
 * NPM and Ender package manager front-ends
 * Lookups to the Javascripture [[http://www.javascripture.com/]]
-* 
 
 ----
 CategoryProgramming CategoryWebDevelopment
