@@ -667,23 +667,5 @@ You might also find useful the following:
     (setq sr-listing-switches " --time-style=locale --group-directories-first -alDhgG")
 
 ----
-
-
 CategoryDirectories
 CategoryEmulation
- utility. Finding files by name (C-c C-n) or by
-contents (C-c C-g) is cool, but it's in the raw find command (C-c C-f) where the
-real power is. Most file managers can only dream of providing such a rich search
-capability. If you need a place to get you started,
-[http://www.softpanorama.org/Tools/Find/find_mini_tutorial.shtml  here is a good
-tutorial]. Also take the time to study the manual page (M-x man
-  (interactive)
-  (setq file (or file (dired-get-filename)))
-  (save-selected-window
-    (sr-select-viewer-window)
-    (let ((buff (current-buffer))
-	  (fname (if (file-directory-p file)
-		     file
-		   (file-name-nondirectory file)))
-	  (app (cond
-		((eq system-type 'darwin)	
