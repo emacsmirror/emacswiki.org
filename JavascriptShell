@@ -2,7 +2,7 @@ How about an interactive shell for use within emacs that allows the user to run 
 
 The primary benefit of an interactive Javascript is that developers can run and test Javascript code that is not browser-centric in an interactive shell, without leaving emacs. It's good for testing, iterative development.
 
-It's possible to send the region to the shell to be evaluated, or send complete files to the Javascript shell.  This allows, for example the developer to mark a large function, then send it to the shell, then pop to the shell and invoke that function interactively, to see the results.
+Using this code, it's possible to send the region to the shell to be evaluated, or send complete files to the Javascript shell.  This allows, for example the developer to mark a large function, then send it to the shell, then pop to the shell and immediately invoke that function interactively, to see the results. After changing the function in the regular editing buffer, you can send it again to the shell, and test again.  Much faster than loading up a browser. 
  
 Lisp:jsshell-bundle.el
 
