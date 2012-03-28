@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Thu May 21 13:31:43 2009 (-0700)
 ;; Version: 22.0
-;; Last-Updated: Sat Mar 10 15:08:06 2012 (-0800)
+;; Last-Updated: Wed Mar 28 07:39:32 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 5279
+;;     Update #: 5280
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-cmd2.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -1925,54 +1925,54 @@ build a cache file of synonyms that are used for completion.  See
 
 ;;; Library `Bookmark+' - Icicles multi-commands.
 ;;;
-;;;###autoload (autoload 'icicle-tag-a-file                              "icicles-cmd2.el")
-;;;###autoload (autoload 'icicle-untag-a-file                            "icicles-cmd2.el")
-;;;###autoload (autoload 'icicle-find-file-handle-bookmark               "icicles-cmd2.el")
-;;;###autoload (autoload 'icicle-find-file-handle-bookmark-other-window  "icicles-cmd2.el")
-;;;###autoload (autoload 'icicle-find-file-tagged                        "icicles-cmd2.el")
-;;;###autoload (autoload 'icicle-find-file-tagged-other-window           "icicles-cmd2.el")
-;;;###autoload (autoload 'icicle-find-file-all-tags                      "icicles-cmd2.el")
-;;;###autoload (autoload 'icicle-find-file-all-tags-other-window         "icicles-cmd2.el")
-;;;###autoload (autoload 'icicle-find-file-all-tags-regexp               "icicles-cmd2.el")
-;;;###autoload (autoload 'icicle-find-file-all-tag-regexp-other-windows  "icicles-cmd2.el")
-;;;###autoload (autoload 'icicle-find-file-some-tags                     "icicles-cmd2.el")
-;;;###autoload (autoload 'icicle-find-file-some-tags-other-window        "icicles-cmd2.el")
-;;;###autoload (autoload 'icicle-find-file-some-tags-regexp              "icicles-cmd2.el")
-;;;###autoload (autoload 'icicle-find-file-some-tags-regexp-other-window "icicles-cmd2.el")
+;;;###autoload (autoload 'icicle-tag-a-file                              "icicles-cmd2")
+;;;###autoload (autoload 'icicle-untag-a-file                            "icicles-cmd2")
+;;;###autoload (autoload 'icicle-find-file-handle-bookmark               "icicles-cmd2")
+;;;###autoload (autoload 'icicle-find-file-handle-bookmark-other-window  "icicles-cmd2")
+;;;###autoload (autoload 'icicle-find-file-tagged                        "icicles-cmd2")
+;;;###autoload (autoload 'icicle-find-file-tagged-other-window           "icicles-cmd2")
+;;;###autoload (autoload 'icicle-find-file-all-tags                      "icicles-cmd2")
+;;;###autoload (autoload 'icicle-find-file-all-tags-other-window         "icicles-cmd2")
+;;;###autoload (autoload 'icicle-find-file-all-tags-regexp               "icicles-cmd2")
+;;;###autoload (autoload 'icicle-find-file-all-tag-regexp-other-windows  "icicles-cmd2")
+;;;###autoload (autoload 'icicle-find-file-some-tags                     "icicles-cmd2")
+;;;###autoload (autoload 'icicle-find-file-some-tags-other-window        "icicles-cmd2")
+;;;###autoload (autoload 'icicle-find-file-some-tags-regexp              "icicles-cmd2")
+;;;###autoload (autoload 'icicle-find-file-some-tags-regexp-other-window "icicles-cmd2")
 (eval-after-load "bookmark+" '(icicle-cmd2-after-load-bookmark+))
 
 
 ;;; Library `hexrgb.el' - Icicles multi-commands.
 ;;;
-;;;###autoload (autoload 'icicle-frame-bg "icicles-cmd2.el")
-;;;###autoload (autoload 'icicle-frame-fg "icicles-cmd2.el")
+;;;###autoload (autoload 'icicle-frame-bg "icicles-cmd2")
+;;;###autoload (autoload 'icicle-frame-fg "icicles-cmd2")
 (eval-after-load "hexrgb" '(icicle-cmd2-after-load-hexrgb))
 
 
 ;;; Library `highlight.el' - Icicles multi-commands.  Emacs 21+.
 ;;;
-;;;###autoload (autoload 'icicle-choose-faces           "icicles-cmd2.el")
-;;;###autoload (autoload 'icicle-choose-invisible-faces "icicles-cmd2.el")
-;;;###autoload (autoload 'icicle-choose-visible-faces   "icicles-cmd2.el")
-;;;###autoload (autoload 'icicle-hide-faces             "icicles-cmd2.el")
-;;;###autoload (autoload 'icicle-hide-only-faces        "icicles-cmd2.el")
-;;;###autoload (autoload 'icicle-show-faces             "icicles-cmd2.el")
-;;;###autoload (autoload 'icicle-show-only-faces        "icicles-cmd2.el")
+;;;###autoload (autoload 'icicle-choose-faces           "icicles-cmd2")
+;;;###autoload (autoload 'icicle-choose-invisible-faces "icicles-cmd2")
+;;;###autoload (autoload 'icicle-choose-visible-faces   "icicles-cmd2")
+;;;###autoload (autoload 'icicle-hide-faces             "icicles-cmd2")
+;;;###autoload (autoload 'icicle-hide-only-faces        "icicles-cmd2")
+;;;###autoload (autoload 'icicle-show-faces             "icicles-cmd2")
+;;;###autoload (autoload 'icicle-show-only-faces        "icicles-cmd2")
 (eval-after-load "highlight" '(icicle-cmd2-after-load-highlight))
 
 
 ;;; Library `palette.el' - Icicles multi-commands.
 ;;;
-;;;###autoload (autoload 'icicle-pick-color-by-name "icicles-cmd2.el")
+;;;###autoload (autoload 'icicle-pick-color-by-name "icicles-cmd2")
 (eval-after-load "palette" '(icicle-cmd2-after-load-palette))
 
 
 ;;; Library `synonyms.el' - Icicles multi-commands.
 ;;;
-;;;###autoload (autoload 'synonyms                        "icicles-cmd2.el")
-;;;###autoload (autoload 'icicle-synonyms                 "icicles-cmd2.el")
-;;;###autoload (autoload 'icicle-insert-thesaurus-entry   "icicles-cmd2.el")
-;;;###autoload (autoload 'icicle-complete-thesaurus-entry "icicles-cmd2.el")
+;;;###autoload (autoload 'synonyms                        "icicles-cmd2")
+;;;###autoload (autoload 'icicle-synonyms                 "icicles-cmd2")
+;;;###autoload (autoload 'icicle-insert-thesaurus-entry   "icicles-cmd2")
+;;;###autoload (autoload 'icicle-complete-thesaurus-entry "icicles-cmd2")
 (eval-after-load "synonyms" '(icicle-cmd2-after-load-synonyms))
  
 ;;(@* "Icicles Top-Level Commands, Part 2")
@@ -1995,7 +1995,7 @@ build a cache file of synonyms that are used for completion.  See
 (defvar icicle-orig-pointsize nil
   "Size of font of selected frame in points, before command.")
 
-;;;###autoload (autoload 'icicle-font "icicles-cmd2.el")
+;;;###autoload (autoload 'icicle-font "icicles-cmd2")
 (icicle-define-command icicle-font      ; Command name
   "Change font of current frame."       ; Doc string
   (lambda (font) (modify-frame-parameters icicle-orig-frame (list (cons 'font font)))) ; Action fn
@@ -2348,7 +2348,7 @@ Non-interactively, argument NODESET is a list of Info node names."
       (unless (stringp nodeset) (setq nodeset "Virtual Book")) ; Non-interactive - NODESET is a list.
       (Info-virtual-book nodeset nodes))))
 
-;;;###autoload (autoload 'icicle-where-is "icicles-cmd2.el")
+;;;###autoload (autoload 'icicle-where-is "icicles-cmd2")
 (icicle-define-command icicle-where-is  ; Command name
   "Show keyboard/menu/mouse sequences that invoke specified command.
 This is a multi-command version of `where-is'.
@@ -2400,7 +2400,7 @@ remapping, then customize option `icicle-top-level-key-bindings'." ; Doc string
    (icicle-all-candidates-list-alt-action-fn
     (or icicle-all-candidates-list-alt-action-fn (icicle-alt-act-fn-for-type "command")))))
 
-;;;###autoload (autoload 'icicle-describe-option-of-type "icicles-cmd2.el")
+;;;###autoload (autoload 'icicle-describe-option-of-type "icicles-cmd2")
 (icicle-define-command icicle-describe-option-of-type ; Bound to `C-h C-o'.  Command name
   "Describe a user option that was defined with a given `defcustom' type.
 Enter patterns for the OPTION name and TYPE definition in the
@@ -2577,7 +2577,7 @@ This is used as the value of `minibuffer-completion-table'."
         result                          ; `all-completions', `test-completion'
       (try-completion strg (mapcar #'list result) pred)))) ; `try-completion'
 
-;;;###autoload (autoload 'icicle-vardoc "icicles-cmd2.el")
+;;;###autoload (autoload 'icicle-vardoc "icicles-cmd2")
 (icicle-define-command icicle-vardoc    ; Command name
   "Choose a variable description.
 Each candidate for completion is a variable name plus its
@@ -2640,7 +2640,7 @@ Remember that you can use `\\<minibuffer-local-completion-map>\
 ;;;   "Action function for `icicle-vardoc', `icicle-fundoc', `icicle-plist'."
 ;;;   (with-output-to-temp-buffer "*Help*" (princ entry)))
 
-;;;###autoload (autoload 'icicle-fundoc "icicles-cmd2.el")
+;;;###autoload (autoload 'icicle-fundoc "icicles-cmd2")
 (icicle-define-command icicle-fundoc    ; Command name
   "Choose a function description.
 Each candidate for completion is a function name plus its
@@ -2696,7 +2696,7 @@ Remember that you can use `\\<minibuffer-local-completion-map>\
   (let ((sig-p  (string-match "\n\n(fn\\(\\( .*\\)?)\\)\\'" docstring)))
     (if sig-p (substring docstring 0 (match-beginning 0)) docstring)))
 
-;;;###autoload (autoload 'icicle-plist "icicles-cmd2.el")
+;;;###autoload (autoload 'icicle-plist "icicles-cmd2")
 (icicle-define-command icicle-plist     ; Command name
   "Choose a symbol and its property list.
 Each candidate for completion is a symbol name plus its property list
@@ -2754,7 +2754,7 @@ Remember that you can use `\\<minibuffer-local-completion-map>\
     (icicle-highlight-lighter)
     (message "Gathering property lists...")))
 
-;;;###autoload (autoload 'icicle-doc "icicles-cmd2.el")
+;;;###autoload (autoload 'icicle-doc "icicles-cmd2")
 (icicle-define-command icicle-doc       ; Command name
   "Choose documentation for a symbol.
 Each candidate for completion is the description of a function,
@@ -4641,7 +4641,7 @@ documentation."
   "Wrap REGEXP between regexp parens, as a regexp group."
   (concat "\\(" regexp "\\)"))
 
-;;;###autoload (autoload 'icicle-search-bookmark "icicles-cmd2.el")
+;;;###autoload (autoload 'icicle-search-bookmark "icicles-cmd2")
 (icicle-define-command icicle-search-bookmark ; Bound to `M-s M-s j'.
   "Search bookmarked text.
 See also `icicle-search-bookmarks-together', which searches bookmarks
@@ -6128,7 +6128,7 @@ information about the arguments, see the doc for command
         (substring icicle-explore-final-choice input-start)
       icicle-explore-final-choice)))
 
-;;;###autoload (autoload 'icicle-comint-command "icicles-cmd2.el")
+;;;###autoload (autoload 'icicle-comint-command "icicles-cmd2")
 (icicle-define-command icicle-comint-command ; Bound to `C-c TAB' in `comint-mode'.
   "Retrieve a previously used command.
 Use this in a `comint-mode' buffer such as `*shell*' or
