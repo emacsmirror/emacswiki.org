@@ -11,7 +11,7 @@ author/maintainer/contributor on:
 * JavascriptShell - an interactive Javascript shell (author)
 * [[RFringe]] - library for displaying tick marks in the right-hand fringe of the emacs frame
 * FlymakeCursor - displays flymake error messages in the minibuffer, when cursor stops on a line
-
+* [http://www.emacswiki.org/emacs/linum-ex.el Linum-Ex] - a linum for large files. Doesn't freeze when scrolling continuously.
 
 
 dpchiesa0hotmail0com
