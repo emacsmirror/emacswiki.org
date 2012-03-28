@@ -1,6 +1,6 @@
 The EmacsWiki [[Git]] repository checks in every change on the Emacswiki (with username and summary being used as author and commit message). It contains the raw text of all Emacswiki pages, except for pages marked as deleted.
 
-It uses [[Git]] and can be found [http://github.com/emacsmirror/emacswiki.org here] on github.
+It uses [[Git]] and can be found [http://github.com/emacsmirror/emacswiki.org on github].
 
 == Package Branches ==
 
