@@ -7,3 +7,5 @@ Using this code, it's possible to send the region to the shell to be evaluated, 
 Lisp:jsshell-bundle.el
 
 This was inspired by  [http://js-comint-el.sourceforge.net/ the JS-comint mode on sourceforge].
+
+This module also has the ability to load in separate modules when you begin the shell.  For example, you can load in json2.js, into the shell, or a module with extensions to the string prototype.
