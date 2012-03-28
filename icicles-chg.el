@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Sun Mar 25 19:48:19 2012 (-0700)
+;; Last-Updated: Wed Mar 28 08:30:15 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 8154
+;;     Update #: 8171
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-chg.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -85,6 +85,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd1.el'")
 ;;
+;; 2012/03/28 dadams
+;;     Changed FILE arg in autoloads by removing .el, so .elc will be loaded if available.
 ;; 2012/03/10 dadams
 ;;     Added: icicle-make-bookmark-candidate (factored out).
 ;;     icicle-bookmark(-set|-list|-other-window):
@@ -564,6 +566,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd2.el'")
 ;;
+;; 2012/03/28 dadams
+;;     Changed FILE arg in autoloads by removing .el, so .elc will be loaded if available.
 ;; 2012/03/10 dadams
 ;;     icicle-bookmark-a-file, icicle-find-file-tagged(-other-window): Bind icicle-full-cand-fn.
 ;;     icicle-find-file-(handle-bookmark|(all|some)-tags(-regexp))(-other-window):
@@ -1097,6 +1101,17 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-face.el'")
 ;;
+;; 2012/03/28 dadams
+;;     Soft-require hexrgb.el at autoload generation-time and load-time.  Removed eval-when-compile.
+;;     Moved *-increment-* function defs from *-face-after-load-hexrgb to (when (featurep 'hexrgb)...),
+;;       and add autoload cookie for that.
+;;     Removed: icicle-byte-compile-eval-after-load-flag, icicle-maybe-byte-compile-after-load,
+;;              icicle-face-after-load-hexrgb.
+;;     Use (when (featurep 'hexrgb)...) instead of (defun icicle-face-after-load-hexrgb...) as wrapper.
+;;     Removed calls to icicle-maybe-byte-compile-after-load.
+;;     Removed (eval-after-load "hexrgb" '(icicle-face-after-load-hexrgb)).
+;;     Removed autoload cookie with autoloads for icicle-increment-color-*.
+;;     Changed FILE arg in autoloads by removing .el, so .elc will be loaded if available.
 ;; 2012/03/25 dadams
 ;;     Replace autoload cookies for *-increment-color-* by autoloads inside soft-require of hexrgb.el.
 ;; 2012/02/12
@@ -2996,6 +3011,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-mcmd.el'")
 ;;
+;; 2012/03/28 dadams
+;;     Changed FILE arg in autoloads by removing .el, so .elc will be loaded if available.
 ;; 2012/03/10 dadams
 ;;     icicle-autofile-action:
 ;;       Bind/restore completion vars around reading tags.
