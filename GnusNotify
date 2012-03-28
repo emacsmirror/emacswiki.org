@@ -1,6 +1,6 @@
 [[gnus-notify.el]] is a mode that display gnus news number at mode-line. Combined with [[GnusDemon]], it warns you when you receive new mails or when there are new news to read. Clicking the modeline brings you to corresponding summary buffer. 
 
-There are eseveral alternatives, see GnusNotificationComparison.
+There are several alternatives, see GnusNotificationComparison.
 
 ==How to use gnus-notify.el==
 gnus-notify allows you to select which groups you want to include in the report; it does this via a „group parameter“ you have to add manually.
