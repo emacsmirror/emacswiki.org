@@ -1,8 +1,9 @@
-An interactive shell for use within emacs that allows the user to run Javascript. 
+How about an interactive shell for use within emacs that allows the user to run and execute Javascript. There are a few of these for spidermonkey and Rhino, but this one depends on Windows and the built-in Windows Script Host (Cscript.exe) that can run Javascript. It also depends on [http://kobyk.wordpress.com/2007/09/14/a-jscript-interactive-interpreter-shell-for-the-windows-script-host/ the Javascript REPL from KobyK].
 
-This depends on Windows and the built-in Windows Script Host (Cscript.exe) that can run Javascript.
+The primary benefit of an interactive Javascript is that developers can run and test Javascript code that is not browser-centric in an interactive shell, without leaving emacs.
 
+It's possible to send the region to the shell to be evaluated, or send complete files to the Javascript shell.  This allows, for example the developer to mark a large function, then send it to the shell, then pop to the shell and invoke that function interactively, to see the results.
+ 
 Lisp:jsshell-bundle.el
 
-
-
+This was inspired by  [http://js-comint-el.sourceforge.net/ the JS-comint mode on sourceforge].
