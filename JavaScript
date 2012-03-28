@@ -1,7 +1,7 @@
 The EmacsWiki Centeral Repository for all things Javascript.
 
 Emacs has 2 major Javascript modes:
-* js-mode (JavascriptMode) which is a barebones mode built upon cc-mode.  It used to be called espresso-mode at one time, but got folded into the emacs core
+* js-mode (JavaScriptMode) which is a barebones mode built upon cc-mode.  It used to be called espresso-mode at one time, but got folded into the emacs core
 * js2-mode ([[Js2Mode]])  which is a full blown IDE style mode, with its own parser.
 * ECMAScriptMode is another javascript mode, but it's last update was 2005.  You're likely better off using js-mode
 
