@@ -1,0 +1,8 @@
+An interactive shell for use within emacs that allows the user to run Javascript. 
+
+This depends on Windows and the built-in Windows Script Host (Cscript.exe) that can run Javascript.
+
+Lisp:jsshell-bundle.el
+
+
+
