@@ -13,6 +13,30 @@ The parameters to gnus-demon-add-handler are:
 If you want to be notified of new and interesting mail, take a look at Lisp:gnus-notify.el.
 
 ----
+Scanning all the news can be slow. If you want a fast scan only of the important lists (mail for example). Set the level of important groups to lower or equal to 3 and add this:
+
+{{{
+(defun gnus-demon-scan-news-3 ()
+  (let ((win (current-window-configuration))
+	(gnus-read-active-file nil)
+	(gnus-check-new-newsgroups nil)
+	(gnus-verbose 2)
+	(gnus-verbose-backends 5)
+	(level 3))
+    (unwind-protect
+	(save-window-excursion
+	  (when (gnus-alive-p)
+	    (with-current-buffer gnus-group-buffer
+	      (gnus-group-get-new-news level))))
+      (set-window-configuration win))))
+
+(setq gnus-demon-timestep 30)
+(gnus-demon-add-handler 'gnus-demon-scan-news-3 2 1)
+}}}
+
+This checks you mail every minute on condition that you have been idle for 30 seconds. No check message is displayed. 
+
+----
 
 I'm thinking of adding something like:
 
