@@ -312,8 +312,50 @@ Feel free to improve this function to suit your needs (for example by adding sup
 == Synctex and Evince ==
 
 Recent versions of the document reader Evince (since 2.32) have support for backward search; i.e. you press Ctrl
-and the left mouse button within a PDF document to be taken back to the corresponding line of the .tex source file that generated the PDF.  This requires synctex.  Thanks to Tassilo Horn for solving this problem!
-http://permalink.gmane.org/gmane.emacs.auctex.general/4074
+and the left mouse button within a PDF document to be taken back to the corresponding line of the .tex source file that generated the PDF.  This requires synctex.  (Original solution due to Tassilo Horn:
+http://permalink.gmane.org/gmane.emacs.auctex.general/4074)
+
+Evince works by sending a message via DBus that we can configure Emacs to pick up on. Unfortunately, the contents of the message seem to have changed somewhere between versions 2.32 and 3.2. The following code works for me with the newer version.
+
+{{{
+(require 'dbus)
+
+(defun un-urlify (fname-or-url)
+  "A trivial function that replaces a prefix of file:/// with just /."
+  (if (string= (substring fname-or-url 0 8) "file:///")
+      (substring fname-or-url 7)
+    fname-or-url))
+
+(defun th-evince-sync (file linecol &rest ignored)
+  (let* ((fname (un-urlify file))
+         (buf (find-buffer-visiting fname))
+         (line (car linecol))
+         (col (cadr linecol)))
+    (if (null buf)
+        (message "[Synctex]: %s is not opened..." fname)
+      (switch-to-buffer buf)
+      (goto-line (car linecol))
+      (unless (= col -1)
+        (move-to-column col)))))
+
+(defvar *dbus-evince-signal* nil)
+
+(defun enable-evince-sync ()
+  (require 'dbus)
+  (when (and
+         (eq window-system 'x)
+         (fboundp 'dbus-register-signal))
+    (unless *dbus-evince-signal*
+      (setf *dbus-evince-signal*
+            (dbus-register-signal
+             :session nil "/org/gnome/evince/Window/0"
+             "org.gnome.evince.Window" "SyncSource"
+             'th-evince-sync)))))
+
+(add-hook 'LaTeX-mode-hook 'enable-evince-sync)
+}}}
+
+That code was based upon a version by Tassilo Horn, which worked for me with older versions of Evince. The code below is his version.
 
 {{{
 (require 'dbus)
@@ -337,7 +379,7 @@ http://permalink.gmane.org/gmane.emacs.auctex.general/4074
    'th-evince-sync))
 }}}
 
-Finally, in your .tex buffer you need to do M-x TeX-source-correlate-mode so that the synctex information is written when you compile your documents.
+Finally, in your .tex buffer you need to do ##M-x TeX-source-correlate-mode## so that the synctex information is written when you compile your documents. You can enable that with ##C-c C-t C-s##.
 
 == Evince (and other viewers) in 11.85 (Debian Squeeze) ==
 AUCTeX 11.85 does this differently than later versions.  All viewers are set with the TeX-output-view-style variable:
