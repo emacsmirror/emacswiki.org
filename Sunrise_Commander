@@ -639,47 +639,11 @@ Hi. I am new to Sunrise Commander. Looks very powerful! My problem: my screen is
 -- Sven
 
 [new:::]
-Hi Sven. What you  want to do is perfectly possible, but there  is one thing you
-have to  know first:  Dired, the basis  on which Sunrise  is built,  needs those
-fields to  function properly, so removing  them totally from the  panes (e.g. by
-obviating the -l switch in the underlying calls to ls) is not an option. What we
-can do is to hide  the fields you don't want to see, but doing  so has a cost --
-not as big as to be noticeable in "normal" directories (with up to a few hundred
-entries), but  if you happen to  have directories containing thousands  of files
-and directories you'll probably have to wait a bit for the pane to render.
-
-That being said, you may want to try something like this in your .emacs file:
-
-    (eval-after-load 'sunrise-commander
-      '(progn
-
-         (defvar sr-attributes-to-hide "[drwx-]+ +[0-9]+ +"
-           "(regex) attributes to hide in sr-hide-some-attributes")
-
-         (defun sr-hide-some-attributes ()
-           "Hides *some* attributes of all files in the active pane."
-           (interactive)
-           (save-excursion
-             (sr-unhide-attributes)
-             (goto-char (point-min))
-             (let ((next (re-search-forward sr-attributes-to-hide  nil t))
-                   (attr-list nil)
-                   (overlay nil))
-               (while next
-                 (beginning-of-line)
-                 (setq overlay (make-overlay (+ 2 (point)) (- next 1)))
-                 (setq attr-list (cons overlay attr-list))
-                 (overlay-put overlay 'invisible t)
-                 (overlay-put overlay 'intangible t)
-                 (forward-line)
-                 (setq next (re-search-forward sr-attributes-to-hide nil t)))
-               (set (make-local-variable 'hidden-attrs) attr-list))))
-
-         (add-hook 'sr-refresh-hook 'sr-hide-some-attributes)))
-
-you'll have  to tweak /sr-attributes-to-hide/ to  match the output ls  gives you
-depending on the concrete value of  /sr-listing-switches/ you use.  You may have
-also issues with the indentation of entries in the pane.
+*Update 28-03-2012:* Since version 5r414, the procedure for hiding selected
+attributes columns has been dramatically simplified. Check out the
+[[http://www.emacswiki.org/emacs/Sunrise_Commander_Tips#toc17|How do I hide (or
+modify) selected columns in the list of attributes?]] section in the
+[[Sunrise Commander Tips|Tips & Tricks page]] for more details.
 
 Another possibility is  simply to use the vertical layout  by default: press C-c
 C-s once and see if you like it. If you do you can do:
@@ -691,7 +655,7 @@ choose the vertical layout and press the "Save for future sessions" button.
 [http://www.emacswiki.org/emacs/Jos%c3%a9_Alfredo_Romero_L. j.a.]
 
 [new]
-j.a., thank you very much for your fast answer and great help! I guess a "'(progn " is needed in the eval-after-load function, otherwise I got a warning about wrong number of arguments. With your above code, it looks much better to me now! I would prefer a different column order though. I am everything but a lisp expert, but if I understand your code, this could be achieved inside the while loop. I might try later when I find more time to really dive into sunrise commander. Again, thank you very much! Great work!
+j.a., thank you very much for your fast answer and great help! I would prefer a different column order though. I am everything but a lisp expert, but if I understand your code, this could be achieved inside the while loop. I might try later when I find more time to really dive into sunrise commander. Again, thank you very much! Great work!
 -- Sven
 
 [new:::]
@@ -776,7 +740,7 @@ RedBlue.
 
 This has been addressed in the latest version of the
 [Lisp:sunrise-x-popviewer.el PopViewer extension]. See my latest
-update in the [[Sunrise Commander Tips#toc16|Alternative Usage
+update in the [[Sunrise Commander Tips#toc19|Alternative Usage
 Patterns]] section of the [[Sunrise Commander Tips|Tips & Tricks
 page]] for more details.
 
