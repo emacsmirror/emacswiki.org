@@ -2,7 +2,7 @@ Allows to edit a JavaScript file in Emacs and to have the same kind of interacti
 Firefox (Mozilla?).
 
 See:
-[http://the.unwashedmeme.com/blog/2005/06/02/javascript-shellserver-for-emacs/ Javascript ShellServer for Emacs]
+[http://the.unwashedmeme.com/blog/2005/06/02/javascript-shellserver-for-emacs/ Javascript ShellServer for Emacs]  (note, page is 404'ing as of 2012/04 )
 
 Based on 
 [http://mozdev.org/pipermail/conkeror/2004-November/000014.html emacs slave]
