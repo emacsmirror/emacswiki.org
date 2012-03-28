@@ -182,7 +182,8 @@ This integration supports prototype.js class representation and original class r
 * MozRepl -- connect to Mozilla and Firefox apps and modify/extend them interactively with Javascript from Emacs
 * JavascriptShellServer
 * [http://flusspferd.org Flusspferd] provides a [http://github.com/ruediger/flusspferd/blob/master/misc/emacs/flusspferd.el mode for Emacs] to use the Javascript REPL.
-* [http://js-comint-el.sourceforge.net/ js-comint-el] provides javasript REPL depend on standalone javascript shell, like spidermonkey, rhino
+* [http://js-comint-el.sourceforge.net/ js-comint-el] provides javascript REPL depend on standalone javascript shell, like spidermonkey, rhino.
+* JavascriptShell - a Javascript REPL build on WSH/CScript.exe for Windows.
 
 [:Discussion]
 == Discussion ==
