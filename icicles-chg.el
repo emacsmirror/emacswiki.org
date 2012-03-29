@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Wed Mar 28 08:30:15 2012 (-0700)
+;; Last-Updated: Thu Mar 29 11:00:25 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 8171
+;;     Update #: 8181
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-chg.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -85,6 +85,11 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd1.el'")
 ;;
+;; 2012/03/29 dadams
+;;     icicle-customize-apropos-options-of-type:
+;;       Pass inherit-or-value to icicle-var-is-of-type-p as the MODE.
+;;       Handle the case where the user just enters a regexp, without using completion: mapatoms.
+;;     icicle-customize-apropos: Use backquote and comma on regexp in lambda.
 ;; 2012/03/28 dadams
 ;;     Changed FILE arg in autoloads by removing .el, so .elc will be loaded if available.
 ;; 2012/03/10 dadams
@@ -1101,6 +1106,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-face.el'")
 ;;
+;; 2012/03/29 dadams
+;;     Removed autoload cookies: hexrgb require, defs of *-increment-*, and *-search-context-level-*.
 ;; 2012/03/28 dadams
 ;;     Soft-require hexrgb.el at autoload generation-time and load-time.  Removed eval-when-compile.
 ;;     Moved *-increment-* function defs from *-face-after-load-hexrgb to (when (featurep 'hexrgb)...),
