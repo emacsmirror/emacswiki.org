@@ -13,6 +13,7 @@ The following pages on %%EmacsWiki%% provide Emacs thesaurus functionalities or 
 * Library Lisp:mthesaur.el -- search for synonyms
 * [http://williamxu.net9.org/ref/wordnet.el wordnet.el] -- Browse the Word-Net dictionary (broken)
 * ShawnBoyette -- Mention of Wroget
+* [http://www.emacswiki.org/emacs/thesaurus.el thesaurus] -- Use BigHugeLabs to lookup synonyms, and maybe replace word-at-point
 
 ----
 
