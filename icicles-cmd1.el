@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Thu Mar 29 10:45:09 2012 (-0700)
+;; Last-Updated: Thu Mar 29 14:04:06 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 23453
+;;     Update #: 23459
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-cmd1.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -1727,7 +1727,7 @@ you see what items will be available in the customize buffer."
            pref-arg)))
   (let ((found  nil))
     (mapatoms `(lambda (symbol)
-                (when (string-match ,regexp (symbol-name symbol))
+                (when (string-match ',regexp (symbol-name symbol))
                   (when (and (not (memq all '(faces options))) ; groups or t
                              (get symbol 'custom-group))
                     (push (list symbol 'custom-group) found))
@@ -1787,19 +1787,30 @@ you see what items will be available in the customize buffer."
   (defalias 'old-customize-apropos-groups (symbol-function 'customize-apropos-groups)))
 
 ;;;###autoload
-(defun icicle-customize-apropos-groups (regexp)
-  "Customize all user groups matching REGEXP.
-Use `S-TAB', [next], and [prior], to match regexp input - this lets
-you see what items will be available in the customize buffer."
+(defun icicle-customize-apropos-groups (pattern)
+  "Customize all user groups matching PATTERN.
+When prompted for the PATTERN, you can use completion against group
+names - e.g. `S-TAB'.  Instead of entering a pattern you can then just
+hit `RET' to accept the list of matching groups.  This lets you see
+which groups will be available in the customize buffer and dynamically
+change that list.
+
+PATTERN is a regexp.  Starting with Emacs 24, it can alternatively be
+a list of words separated by spaces.  Two or more of the words are
+matched in different orders against each group name."
   (interactive
    (let* ((pred                                    #'(lambda (s)
                                                        (unless (symbolp s) (setq s  (intern s)))
                                                        (get s 'custom-group)))
           (icompletep                              (and (boundp 'icomplete-mode)  icomplete-mode))
           (icicle-must-pass-after-match-predicate  (and (not icompletep)  pred)))
-     (list (completing-read "Customize groups (regexp): " obarray (and icompletep pred)
+     (list (completing-read "Customize groups (pattern): " obarray (and icompletep pred)
                             nil nil 'regexp-history))))
-  (customize-apropos regexp 'groups))
+  (when (and (> emacs-major-version 23)
+             (require 'apropos nil t)
+             (string= (regexp-quote pattern) pattern))
+    (setq pattern  (split-string pattern "[ \t]+"))) ; Split into words
+  (customize-apropos pattern 'groups))
 
 
 ;; REPLACE ORIGINAL `customize-apropos-options' defined in `cus-edit.el',
