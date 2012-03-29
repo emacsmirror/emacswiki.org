@@ -1,1 +1,8 @@
 How do i mark selected unstaged changes and commit them? -- VagnJohansen 2012-02-06 09:59 UTC
+
+----
+
+Unfortunately there's currently no multiple selection for magit items
+
+-- YannHodique 2012-03-29 09:45 UTC
+
