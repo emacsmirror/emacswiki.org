@@ -3,15 +3,10 @@
 ;; Filename: dropdown-list.el
 ;; Description: Drop-down menu interface
 ;; Author: Jaeyoun Chung [jay.chung@gmail.com]
-;; Maintainer:
-;; Copyright (C) 2008 Jaeyoun Chung
-;; Created: Fri Aug 14 11:46:34 2009 (Central European Time)
-;; Version:
-;; Last-Updated: Fri Aug 14 11:46:34 2009 (Central European Time)
-;;           By: Deniz Dogan
-;;     Update #: 44
-;; URL: http://www.emacswiki.org/cgi-bin/wiki/dropdown-list.el
-;; Keywords: convenience menu
+;; URL: http://www.emacswiki.org/cgi-bin/wiki/download/dropdown-list.el
+;; origin: http://www.emacswiki.org/cgi-bin/wiki/dropdown-list.el
+;; Version: 1.45
+;; Keywords: menu convenience dropdown
 ;; Compatibility: GNU Emacs 21.x, GNU Emacs 22.x, GNU Emacs 23.x
 ;;
 ;; Features that might be required by this library:
@@ -28,6 +23,8 @@
 ;;
 ;;; Change log:
 ;;
+;; 2012/03/29   v1.45 Dino Chiesa
+;;     Packaging for marmalade-repo.org
 ;; 2009/08/14 Deniz Dogan
 ;;     Making TAB select the chosen option.  If no option has been selected, chooses the
 ;;     first one.
@@ -255,4 +252,3 @@ Use multiple times to bind different COMMANDs to the same KEY."
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; dropdown-list.el ends here
-
