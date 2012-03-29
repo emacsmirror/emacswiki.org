@@ -1,4 +1,4 @@
-This page is about obtaining information about natural-language synonyms within Emacs. In other words, it's about thesauri.
+This page is about obtaining information about NaturalLanguage synonyms within Emacs. In other words, it's about thesauri.
 
 A thesaurus generally groups words and phrases into classes of synonyms. In English, the classic, model thesaurus is Roget's Thesaurus.
 
@@ -6,19 +6,16 @@ More generally, any set of equivalence classes of strings might be thought of as
 
 Because of this generality, you can also use thesaurus functionality (looking up synonyms) for things like spell-checking and even as a part of a personal information manager (PDA).
 
-The following pages on %%EmacsWiki%% provide Emacs thesaurus functionalities or make some mention of using thesauri or manipulating synonyms:
+The following pages on %%EmacsWiki%% provide Emacs thesaurus commands or make some mention of using thesauri or manipulating synonyms:
 
 * [[Synonyms]] -- Library Lisp:synonyms.el.  Search for synonyms, with regexps and [[Icicles]] [[completion]]
 * [[Icicles]] Complete a partial word to a word or phrase in a thesaurus
 * Library Lisp:mthesaur.el -- search for synonyms
 * [http://williamxu.net9.org/ref/wordnet.el wordnet.el] -- Browse the Word-Net dictionary (broken)
 * ShawnBoyette -- Mention of Wroget
-* [http://www.emacswiki.org/emacs/thesaurus.el thesaurus] -- Use BigHugeLabs to lookup synonyms, and maybe replace word-at-point
+* Lisp:thesaurus.el  -- Use BigHugeLabs to lookup synonyms, and maybe replace word-at-point
+
+See also NaturalLanguageMode
 
 ----
-
-CategorySpelling CategoryHypermedia CategoryPersonalInformationManager
-
-----
-
-Near page: [[Thesaurus]]
+CategoryWriting
