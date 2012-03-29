@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:19:43 2006
 ;; Version: 22.0
-;; Last-Updated: Wed Mar 28 08:27:22 2012 (-0700)
+;; Last-Updated: Thu Mar 29 10:53:32 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 640
+;;     Update #: 643
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-face.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -17,7 +17,7 @@
 ;;
 ;; Features that might be required by this library:
 ;;
-;;   `backquote', `bytecomp', `hexrgb'.
+;;   `hexrgb'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -103,20 +103,15 @@
 ;;
 ;;; Code:
 
-;;; Soft-require `hexrgb.el[c]' at both autoload generation-time and load-time.
-;;;
-;;;###autoload
-(require 'hexrgb nil t) ;; (no error if not found):
-  ;; hexrgb-color-values-to-hex, hexrgb-hsv-to-rgb, hexrgb-rgb-to-hsv.
-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
  
 ;;(@* "Icicles Commands for Other Packages")
 
 ;;; Icicles Commands for Other Packages ------------------------------
 
-;;;###autoload
-(when (featurep 'hexrgb)
+(when (require 'hexrgb nil t);; (no error if not found):
+  ;; hexrgb-color-values-to-hex, hexrgb-hsv-to-rgb, hexrgb-rgb-to-hsv.
+
 
   ;; Essentially a version of `doremi-increment-color-component' for hue only.
   ;; Must be before `icicle-search-context-level-1'.
@@ -530,7 +525,6 @@ Not used for versions of Emacs before version 21."
 This highlighting is done during Icicles searching."
   :group 'Icicles-Searching :group 'faces)
 
-;;;###autoload
 (defface icicle-search-context-level-1
     (let ((context-bg  (face-background 'icicle-search-main-regexp-current)))
       `((((background dark))
@@ -548,7 +542,6 @@ This highlighting is done during Icicles searching whenever
 search context corresponds to the entire regexp."
   :group 'Icicles-Searching :group 'faces)
 
-;;;###autoload
 (defface icicle-search-context-level-2
     (let ((context-bg  (face-background 'icicle-search-main-regexp-current)))
       `((((background dark))
@@ -566,7 +559,6 @@ This highlighting is done during Icicles searching whenever
 search context corresponds to the entire regexp."
   :group 'Icicles-Searching :group 'faces)
 
-;;;###autoload
 (defface icicle-search-context-level-3
     (let ((context-bg  (face-background 'icicle-search-main-regexp-current)))
       `((((background dark))
@@ -584,7 +576,6 @@ This highlighting is done during Icicles searching whenever
 search context corresponds to the entire regexp."
   :group 'Icicles-Searching :group 'faces)
 
-;;;###autoload
 (defface icicle-search-context-level-4
     (let ((context-bg  (face-background 'icicle-search-main-regexp-current)))
       `((((background dark))
@@ -602,7 +593,6 @@ This highlighting is done during Icicles searching whenever
 search context corresponds to the entire regexp."
   :group 'Icicles-Searching :group 'faces)
 
-;;;###autoload
 (defface icicle-search-context-level-5
     (let ((context-bg  (face-background 'icicle-search-main-regexp-current)))
       `((((background dark))
@@ -618,7 +608,6 @@ This highlighting is done during Icicles searching whenever
 search context corresponds to the entire regexp."
   :group 'Icicles-Searching :group 'faces)
 
-;;;###autoload
 (defface icicle-search-context-level-6
     (let ((context-bg  (face-background 'icicle-search-main-regexp-current)))
       `((((background dark))
@@ -634,7 +623,6 @@ This highlighting is done during Icicles searching whenever
 search context corresponds to the entire regexp."
   :group 'Icicles-Searching :group 'faces)
 
-;;;###autoload
 (defface icicle-search-context-level-7
     (let ((context-bg  (face-background 'icicle-search-main-regexp-current)))
       `((((background dark))
@@ -650,7 +638,6 @@ This highlighting is done during Icicles searching whenever
 search context corresponds to the entire regexp."
   :group 'Icicles-Searching :group 'faces)
 
-;;;###autoload
 (defface icicle-search-context-level-8
     (let ((context-bg  (face-background 'icicle-search-main-regexp-current)))
       `((((background dark))
