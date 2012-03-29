@@ -1,5 +1,3 @@
-DeletedPage
-
 == About ==
 
 I'm a professional software engineer with a passion for UNIX and its descendants, Emacs and free software in general. I live and work in Sofia, Bulgaria and I teach free programming and Linux courses in the universities there in my spare time. 
@@ -13,6 +11,8 @@ I happen to maintain a few Emacs related project on GitHub:
 ** [http://github.com/bbatsov/projectile projectile]
 ** [http://github.com/bbatsov/zenburn-emacs The Zenburn color theme, ported to Emacs]
 ** [http://github.com/bbatsov/solarized-emacs The Solarized color theme, ported to Emacs]
+
+I'm also part of the team of the other Emacs Wiki - [http://wikemacs.org | WikEmacs].
 
 
 [new:DrewAdams:2010-09-19 12:43 UTC]
