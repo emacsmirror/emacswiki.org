@@ -355,6 +355,14 @@ Evince works by sending a message via DBus that we can configure Emacs to pick u
 (add-hook 'LaTeX-mode-hook 'enable-evince-sync)
 }}}
 
+[new]
+If the path has space, it might be problematic (for me it is). So I fixed as follows: 
+{{{
+(fname (replace-regexp-in-string "%20" " " (un-urlify file)))
+}}}
+-- Kiwon
+
+[new]
 That code was based upon a version by Tassilo Horn, which worked for me with older versions of Evince. The code below is his version.
 
 {{{
@@ -380,6 +388,7 @@ That code was based upon a version by Tassilo Horn, which worked for me with old
 }}}
 
 Finally, in your .tex buffer you need to do ##M-x TeX-source-correlate-mode## so that the synctex information is written when you compile your documents. You can enable that with ##C-c C-t C-s##.
+
 
 == Evince (and other viewers) in 11.85 (Debian Squeeze) ==
 AUCTeX 11.85 does this differently than later versions.  All viewers are set with the TeX-output-view-style variable:
