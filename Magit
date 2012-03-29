@@ -1,4 +1,4 @@
-Magit is an emacs mode for interacting with the [[Git]] version control system. It's written by MariusVollmer, of GNU/Guile fame. Recently PhilJackson, of no particular fame, took over as maintainer.
+Magit is an emacs mode for interacting with the [[Git]] version control system. It's written by MariusVollmer, of GNU/Guile fame. PhilJackson took over as maintainer for quite some time, and now Magit is collectively maintained by YannHodique, RemiVanicat and PeterWeisberg.
 
 * Get it from: http://magit.github.com/magit/
 * Bugs to project page on github: http://github.com/magit/magit/issues
