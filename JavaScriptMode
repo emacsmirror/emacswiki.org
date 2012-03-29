@@ -18,7 +18,7 @@ js-mode includes:
 
 Anything with the name "javascript-mode" is likely deprecated--and decrepit.  The following links are kept around for information, but if you are using JavaScript, you want js-mode or [[Js2Mode]].
 
-This name refers to Karl Landstrom's implementation: http://www.brgeight.se/downloads/emacs/javascript.el
+This name refers to Karl Landstrom's implementation: http://www.karllandstrom.se/downloads/emacs/javascript.el
 
 The one from XEmacs works fine also in GNU Emacs: http://cvs.xemacs.org/viewcvs.cgi/XEmacs/packages/xemacs-packages/prog-modes/javascript-mode.el
 
