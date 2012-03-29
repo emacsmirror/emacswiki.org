@@ -153,10 +153,3 @@ Wrt moving Edit link to the top: I do not want to change from the default displa
 
 -- DrewAdams 2012-03-29 02:06 UTC
 
-
-----
-
-There is no reason it has to depend on the CSS but since CSS allows me to separate script output from layout to a very large degree, why not use it? Changes to the HTML output require changes to the code and affect everybody. Bugs introduced to the code affect everybody. The CSS changes, and the individual CSS choices open to us allow me to change the CSS incrementally, to experiment, to satisfy individual preferences. It also allows me to deal with me insecurities due to not being a professional web designer. :)
-
--- [http://alexschroeder.ch/alex/Emacs AlexSchroeder] 2012-03-29 07:46 UTC
-
