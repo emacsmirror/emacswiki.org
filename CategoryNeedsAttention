@@ -1,0 +1,15 @@
+Maybe you found something on the wiki that needs some help.  Great!  Arguably, you should just go ahead and make the change. Be brave!  Old revisions are saved, and stored in source control, so you can't break anything.  That said, maybe there are time pressures with daily life, or maybe you feel like you don't have enough experience, or a host of other reasons.   That's where this category comes in.
+
+If you flag a with CategoryNeedsAttention, that means some !WikiGnome can get in there, and fix the problem.   Try to localize the portion of the wiki that needs attention, and put in a small explanation as to what exactly needs attention.  
+
+=== Examples === 
+
+Say you find some elisp code that sucks, and doesn't work with Emacs 23/24 (or a recent version of foo library x).  At the bottom of it, you might put:
+
+    CategoryNeedsAttention -- outdated lisp
+
+Or perhaps you found a page that is chock full of information, from 4 years ago, and you're not sure it is applicable, you might put
+
+    CategoryNeedsAttention -- still applicable?
+
+!WikiGnomes: use backlinks to find pages that need your help!
