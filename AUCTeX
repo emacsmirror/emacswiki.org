@@ -413,6 +413,33 @@ On the page [[http://www.emacswiki.org/emacs/TN]] there is a section ''TeX-texif
 
 Should it?
 
+== Problem of synctex ==
+If somebody has a problem with synctex, i.e. hanging or wrong page search, try the following:
+{{{
+(require 'tex)
+(defun TeX-synctex-output-page ()
+  "Return the page corresponding to the current source position.
+This method assumes that the document was compiled with SyncTeX
+enabled and the `synctex' binary is available."
+  (let ((synctex-output
+	 (with-output-to-string
+	   (call-process "synctex" nil (list standard-output nil) nil "view"
+			 "-i" (format "%s:%s:%s" (line-number-at-pos)
+				      (current-column)
+				      ;; The real file name (not symbolic) fixed
+				      ;; for the synctex path bug
+                                      (concat (file-name-directory (file-truename (buffer-file-name)))
+                                              "./"
+                                              (file-name-nondirectory (buffer-file-name))))
+			 "-o" (TeX-active-master (TeX-output-extension))))))
+    (if (string-match "Page:\\([0-9]+\\)" synctex-output)
+	(match-string 1 synctex-output)
+      "1")))
+}}}
+
+Because synctex includes a redundant string "./" in the path, this codes will help.
+-- Kiwon 
+
 ----
 CategoryModes
 CategoryTex
