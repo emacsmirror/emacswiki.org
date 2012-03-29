@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Wed Mar 28 07:39:01 2012 (-0700)
+;; Last-Updated: Thu Mar 29 10:45:09 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 23445
+;;     Update #: 23453
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-cmd1.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -17,13 +17,13 @@
 ;;
 ;; Features that might be required by this library:
 ;;
-;;   `apropos', `apropos-fn+var', `avoid', `backquote', `bytecomp',
-;;   `cl', `cus-edit', `cus-face', `cus-load', `cus-start', `doremi',
-;;   `easymenu', `el-swank-fuzzy', `ffap', `ffap-', `frame-cmds',
-;;   `frame-fns', `fuzzy', `fuzzy-match', `hexrgb', `icicles-face',
-;;   `icicles-fn', `icicles-mcmd', `icicles-opt', `icicles-var',
-;;   `image-dired', `kmacro', `levenshtein', `misc-fns', `mouse3',
-;;   `mwheel', `naked', `pp', `pp+', `regexp-opt', `ring', `ring+',
+;;   `apropos', `apropos-fn+var', `avoid', `cl', `cus-edit',
+;;   `cus-face', `cus-load', `cus-start', `doremi', `easymenu',
+;;   `el-swank-fuzzy', `ffap', `ffap-', `frame-cmds', `frame-fns',
+;;   `fuzzy', `fuzzy-match', `hexrgb', `icicles-face', `icicles-fn',
+;;   `icicles-mcmd', `icicles-opt', `icicles-var', `image-dired',
+;;   `kmacro', `levenshtein', `misc-fns', `mouse3', `mwheel',
+;;   `naked', `pp', `pp+', `regexp-opt', `ring', `ring+',
 ;;   `second-sel', `strings', `thingatpt', `thingatpt+', `wid-edit',
 ;;   `wid-edit+', `widget'.
 ;;
@@ -1726,22 +1726,22 @@ you see what items will be available in the customize buffer."
      (list (completing-read "Customize (regexp): " obarray (and icompletep pred) nil nil 'regexp-history)
            pref-arg)))
   (let ((found  nil))
-    (mapatoms #'(lambda (symbol)
-                  (when (string-match regexp (symbol-name symbol))
-                    (when (and (not (memq all '(faces options))) ; groups or t
-                               (get symbol 'custom-group))
-                      (push (list symbol 'custom-group) found))
-                    (when (and (not (memq all '(options groups))) ; faces or t
-                               (custom-facep symbol))
-                      (push (list symbol 'custom-face) found))
-                    (when (and (not (memq all '(groups faces))) ; options or t
-                               (boundp symbol)
-                               (or (get symbol 'saved-value)
-                                   (custom-variable-p symbol)
-                                   (if (memq all '(nil options))
-                                       (user-variable-p symbol)
-                                     (get symbol 'variable-documentation))))
-                      (push (list symbol 'custom-variable) found)))))
+    (mapatoms `(lambda (symbol)
+                (when (string-match ,regexp (symbol-name symbol))
+                  (when (and (not (memq all '(faces options))) ; groups or t
+                             (get symbol 'custom-group))
+                    (push (list symbol 'custom-group) found))
+                  (when (and (not (memq all '(options groups))) ; faces or t
+                             (custom-facep symbol))
+                    (push (list symbol 'custom-face) found))
+                  (when (and (not (memq all '(groups faces))) ; options or t
+                             (boundp symbol)
+                             (or (get symbol 'saved-value)
+                                 (custom-variable-p symbol)
+                                 (if (memq all '(nil options))
+                                     (user-variable-p symbol)
+                                   (get symbol 'variable-documentation))))
+                    (push (list symbol 'custom-variable) found)))))
     (if (not found)
         (error "No matches")
       (custom-buffer-create (custom-sort-items found t custom-buffer-order-groups)
@@ -1848,15 +1848,20 @@ you see what items will be available in the customize buffer."
 ;;;###autoload
 (defun icicle-customize-apropos-options-of-type (type regexp)
   "Customize all loaded customizable options of type TYPE that match REGEXP.
+When prompted for the REGEXP, you can use completion against option
+names - e.g. `S-TAB'.  Instead of entering a regexp you can then just
+hit `RET' to accept the list of matching options.  This lets you see
+which options will available in the customize buffer and dynamically
+change that list.
+
 With no prefix arg, each option is defined with `defcustom' type TYPE.
 With a prefix arg, either each option is defined with `defcustom' type
- TYPE or its current value is compatible with TYPE.
+ TYPE or its current value is compatible with TYPE, where
+ compatibility is checked using `icicle-var-is-of-type-p' using
+ `inherit-or-value' as the MODE argument.
 
 If TYPE is nil (the default value) then all `defcustom' variables are
-potential candidates.
-
-Use `S-TAB', `next', and `prior', to match regexp input - this lets
-you see which options will be available in the customize buffer."
+potential candidates."
   (interactive
    (let ((typ       (car (condition-case err
                              (read-from-string
@@ -1881,7 +1886,7 @@ you see which options will be available in the customize buffer."
                                  (or (not typ) ; `typ' = nil means use all types.
                                      (if pref-arg
                                          (condition-case nil
-                                             (icicle-var-is-of-type-p s (list typ))
+                                             (icicle-var-is-of-type-p s (list typ) 'inherit-or-value)
                                            (error nil))
                                        (equal (get s 'custom-type) typ))))))
                        (icompletep                              (and (boundp 'icomplete-mode)
@@ -1889,10 +1894,28 @@ you see which options will be available in the customize buffer."
                        (icicle-must-pass-after-match-predicate  (and (not icompletep)  pred)))
                   (completing-read "Customize options matching (regexp): "
                                    obarray (and icompletep pred) nil nil 'regexp-history)))))
-  (custom-buffer-create (custom-sort-items
-                         (mapcar #'(lambda (s) (list (intern s) 'custom-variable))
-                                 icicle-completion-candidates)
-                         t "*Customize Apropos*")))
+  ;; If user used completion, then just use `icicle-completion-candidates'.
+  ;; Otherwise, get all symbols that satisfy the same pred as for completion.
+  (let ((found     (mapcar #'(lambda (cand) (list (intern cand) 'custom-variable))
+                           icicle-completion-candidates))
+        (pref-arg  current-prefix-arg))
+    (unless found
+      (mapatoms `(lambda (s)
+                  (when (and (string-match ,regexp (symbol-name s))
+                             (boundp s)
+                             (or (not (fboundp 'indirect-variable))
+                                 (eq (indirect-variable s) s))
+                             (or (get s 'saved-value) (custom-variable-p s))
+                             (or (not ',type) ; `type' = nil means use all types.
+                                 (if ',pref-arg
+                                     (condition-case nil
+                                         (icicle-var-is-of-type-p s (list ',type) 'inherit-or-value)
+                                       (error nil))
+                                   (equal (get s 'custom-type) ',type))))
+                    (push (list s 'custom-variable) found)))))
+    (unless found (error "No matches"))
+    (custom-buffer-create (custom-sort-items found t custom-buffer-order-groups)
+                          "*Customize Apropos*")))
 
 
 ;; REPLACE ORIGINAL `repeat-complex-command' defined in `simple.el',
