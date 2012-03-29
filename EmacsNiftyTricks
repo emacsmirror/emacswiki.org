@@ -42,6 +42,8 @@ For those of us using earlier versions, use the PictureModeTrailingWhitespaceTri
 * M-SPC will remove all except 1 space between characters.  Suppose you have
 'a <blanks> tree' & point is postioned just after the 'a' (or anywhere in the space between the words), hitting M-SPC will make it 'a tree'.   --SivaramN
 
+* [http://www.emacswiki.org/emacs/thesaurus.el Use an online thesaurus] to replace the word at point with a synonym of your choosing. 
+
 * A few months ago, I finally wrote code to do incremental numbering of columns.  My life is better for it: http://www.antisleep.com/download/elisp/gse-number-rect.el -- ScottEvans
 * Use MarkCommands to remember and go back and forth between locations in buffers or across buffers.
 * Use BreadcrumbForEmacs to set a series of breadcrumb bookmarks in the buffers, and jump back to them quickly.  Visiting the bookmarks in the other window is a quick way to browse all the bookmarked locations.
