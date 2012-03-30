@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Wed Mar 28 08:19:39 2012 (-0700)
+;; Last-Updated: Fri Mar 30 09:22:56 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 23089
+;;     Update #: 23090
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -896,7 +896,8 @@
 ;;    `icicle-convert-dots',
 ;;    `icicle-current-completion-in-Completions',
 ;;    `icicle-current-sort-functions', `icicle-current-sort-order',
-;;    `icicle-current-TAB-method', `icicle-customize-faces',
+;;    `icicle-current-TAB-method',
+;;    `icicle-customize-apropos-opt-action', `icicle-customize-faces',
 ;;    `icicle-custom-type', `icicle-dabbrev--abbrev-at-point',
 ;;    `icicle-default-buffer-names',
 ;;    `icicle-define-crm-completion-map', ,
