@@ -1,8 +1,8 @@
-Generally, ''any'' set of equivalence classes of strings (''any'' strings) can be considered a '''[::thesaurus]''', and the members of each equivalence class can be thought of as '''[::synonym]s''' of each other. 
+In computing, a set of equivalence classes of strings can be considered a [::thesaurus] and the members of each equivalence class are [::synonym]s for each other.  See [[WikiPedia:Thesaurus#Computing]].
 
-A thesaurus is typically used for words and phrases of a NaturalLanguage. For English, the best-known thesaurus is ''Roget's Thesaurus''. Thesauri have long been used by careful writers.  
+Generally, a thesaurus is typically used for words and phrases of a NaturalLanguage. For English, the best-known thesaurus is ''Roget's Thesaurus''. Thesauri have long been used by careful writers.  
 
-The following pages provide thesaurus features or make some use of a thesaurus or synonyms:
+The following pages provide thesaurus or synonym features:
 
 * [[Synonyms]] -- Library <tt>[[synonyms.el]]</tt>.  Search or browse for synonyms, including with [[regexp]]s and [[Icicles|Icicles completion]]. Substitute any thesaurus (in the accepted format), including one you create.
 * [[Icicles]] -- Complete a partial word to a word or phrase in a thesaurus.  Uses <tt>[[synonyms.el]]</tt>.
@@ -11,14 +11,10 @@ The following pages provide thesaurus features or make some use of a thesaurus o
 * [[ShawnBoyette|Wroget]] -- Digital version of ''Roget's Thesaurus''
 * Library <tt>[[thesaurus.el]]</tt>  -- Look up synonyms on [[http://BigHugeLabs.com|BigHugeLabs.com]], and maybe replace word-at-point.  Animation example:
 
-
 :: http://i.imgur.com/grvGD.gif
-
-
 
 ----
 See also NaturalLanguageMode
-
 
 ----
 CategoryWriting
