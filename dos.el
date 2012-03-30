@@ -1,6 +1,6 @@
 ;;; dos.el --- major mode for editing Dos scripts (batch files)
 
-;; Copyright (C) 2003, 2008, 2009, 2010, 2011 2012 Arni Magnusson
+;; Copyright (C) 2003, 2008, 2009, 2010, 2011, 2012 Arni Magnusson
 
 ;; Author:   Arni Magnusson
 ;; Version:  2.17
