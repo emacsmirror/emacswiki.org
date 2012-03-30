@@ -16,7 +16,7 @@ CmdMode does not recognize ::comments, :.labels, /options, -options, or --option
 
 == dos-mode ==
 
-By Arni Magnusson (2003-2011). The recommended mode for editing Dos scripts.
+By Arni Magnusson (2003-2012). The recommended mode for editing Dos scripts.
 
 DosMode supports all of the features listed above, borrowing and improving ideas from ##batch-mode## and ##cmd-mode##. It also provides imenu+outline navigation and code templates.
 
@@ -66,6 +66,8 @@ index 1540c84..e3cd49d 100644
 Fixed, ##!var!## variables are now recognized. Thanks for the feedback! -- Arni Magnusson
 
 == ntcmd-mode ==
+
+By Daniel Colascione (2010). Emphasis on language parser.
 
 Lisp:ntcmd.el is a new DOS script mode that uses a parser to fully
 understand the cmd language. Does not natively include templating and
