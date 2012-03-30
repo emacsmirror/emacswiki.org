@@ -24,3 +24,14 @@ The latter two are obiuously more difficult than the former.
 
 -- RyanDavis 2012-03-30 08:38 UTC
 
+
+----
+
+There are different kinds of todos that require different levels of effort and expertise. Differentiating them with different tags will be able to encourage newer users to contribute on the easier stuff.
+
+In my code I use: doc, warn, todo, hack, refactor.
+
+The latter two are obiuously more difficult than the former.
+
+-- RyanDavis 2012-03-30 08:38 UTC
+
