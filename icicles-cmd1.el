@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Fri Mar 30 07:58:01 2012 (-0700)
+;; Last-Updated: Fri Mar 30 09:21:48 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 23511
+;;     Update #: 23515
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-cmd1.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -246,7 +246,8 @@
 ;;    `icicle-command-abbrev-action',
 ;;    `icicle-command-abbrev-matching-commands',
 ;;    `icicle-command-abbrev-record', `icicle-command-abbrev-regexp',
-;;    `icicle-customize-faces', `icicle-dabbrev--abbrev-at-point',
+;;    `icicle-customize-apropos-opt-action', `icicle-customize-faces',
+;;    `icicle-dabbrev--abbrev-at-point',
 ;;    `icicle-default-buffer-names',
 ;;    `icicle-delete-file-or-directory',
 ;;    `icicle-execute-extended-command-1', `icicle-explore',
@@ -1878,77 +1879,40 @@ the customize buffer."
   (defalias 'old-customize-apropos-options-of-type
       (symbol-function 'customize-apropos-options-of-type)))
 
-;;;###autoload
-(defun icicle-customize-apropos-options-of-type (type regexp)
-  "Customize all loaded user options of type TYPE that match REGEXP.
-When prompted for the REGEXP, you can use completion against option
-names - e.g. `S-TAB'.  Instead of entering a regexp you can then just
-hit `RET' to accept the list of matching options.  This lets you see
-which options will available in the customize buffer and dynamically
-change that list.
+;;;###autoload (autoload 'icicle-customize-apropos-options-of-type "icicles-cmd1")
+(icicle-define-command icicle-customize-apropos-options-of-type
+  "Customize all loaded user options of a given type.
+Enter patterns for the OPTION name and TYPE definition in the
+minibuffer, separated by `icicle-list-join-string', which is \"^G^J\",
+by default.  (`^G' here means the Control-g character, input using
+`C-h C-g'.  Likewise, for `^J'.)
 
-With no prefix arg, each option is defined with `defcustom' type TYPE.
-With a prefix arg, either each option is defined with `defcustom' type
- TYPE or its current value is compatible with TYPE, where
- compatibility is checked using `icicle-var-is-of-type-p' using
- `inherit-or-value' as the MODE argument.
+OPTION is a regexp that is matched against option names.
 
-If TYPE is nil (the default value) then all `defcustom' variables are
-potential candidates."
-  (interactive
-   (let ((typ       (car (condition-case err
-                             (read-from-string
-                              (let ((types  ()))
-                                (mapatoms
-                                 #'(lambda (cand)
-                                     (when (custom-variable-p cand)
-                                       (push (list (format "%s"
-                                                           (format "%S" (get cand 'custom-type))))
-                                             types))))
-                                (completing-read "Customize all options of type: "
-                                                 (icicle-remove-duplicates types)
-                                                 nil nil nil nil "nil")))
-                           (end-of-file (error "No such custom type")))))
-         (pref-arg  current-prefix-arg))
-     (list typ  (let* ((pred
-                        #'(lambda (s)
-                            (unless (symbolp s) (setq s  (intern s)))
-                            (and (boundp s)
-                                 (or (not (fboundp 'indirect-variable)) (eq (indirect-variable s) s))
-                                 (or (get s 'saved-value) (custom-variable-p s))
-                                 (or (not typ) ; `typ' = nil means use all types.
-                                     (if pref-arg
-                                         (condition-case nil
-                                             (icicle-var-is-of-type-p s (list typ) 'inherit-or-value)
-                                           (error nil))
-                                       (equal (get s 'custom-type) typ))))))
-                       (icompletep                              (and (boundp 'icomplete-mode)
-                                                                     icomplete-mode))
-                       (icicle-must-pass-after-match-predicate  (and (not icompletep)  pred)))
-                  (completing-read "Customize options matching (regexp): "
-                                   obarray (and icompletep pred) nil nil 'regexp-history)))))
-  ;; If user used completion, then just use `icicle-completion-candidates'.
-  ;; Otherwise, get all symbols that satisfy the same pred as for completion.
-  (let ((found     (mapcar #'(lambda (cand) (list (intern cand) 'custom-variable))
-                           icicle-completion-candidates))
-        (pref-arg  current-prefix-arg))
-    (unless found
-      (mapatoms `(lambda (s)
-                  (when (and (string-match ,regexp (symbol-name s))
-                             (boundp s)
-                             (or (not (fboundp 'indirect-variable))
-                                 (eq (indirect-variable s) s))
-                             (or (get s 'saved-value) (custom-variable-p s))
-                             (or (not ',type) ; `type' = nil means use all types.
-                                 (if ',pref-arg
-                                     (condition-case nil
-                                         (icicle-var-is-of-type-p s (list ',type) 'inherit-or-value)
-                                       (error nil))
-                                   (equal (get s 'custom-type) ',type))))
-                    (push (list s 'custom-variable) found)))))
-    (unless found (error "No matches"))
-    (custom-buffer-create (custom-sort-items found t custom-buffer-order-groups)
-                          "*Customize Apropos*")))
+See `icicle-describe-option-of-type', which handles input and
+completion similarly, for a full description of TYPE, matching, and
+the use of a prefix argument."          ; Doc string
+  icicle-customize-apropos-opt-action   ; Action function
+  prompt                                ; `completing-read' args
+  'icicle-describe-opt-of-type-complete nil nil nil nil nil nil
+  ((prompt                             "OPTION `C-M-j' TYPE: ") ; Bindings
+   (icicle-candidate-properties-alist  '((1 (face icicle-candidate-part))))
+   ;; Bind `icicle-apropos-complete-match-fn' to nil to prevent automatic input matching
+   ;; in `icicle-unsorted-apropos-candidates' etc., because `icicle-describe-opt-of-type-complete'
+   ;; does everything.
+   (icicle-apropos-complete-match-fn   nil)
+   (icicle-candidate-help-fn           'icicle-describe-opt-action)
+   (icicle-pref-arg                    current-prefix-arg))
+  (progn (put-text-property 0 1 'icicle-fancy-candidates t prompt) ; First code
+         (icicle-highlight-lighter)
+         (message "Gathering user options and their types...")))
+
+(defun icicle-customize-apropos-opt-action (opt+type)
+  "Action function for `icicle-customize-apropos-options-of-type'."
+  (let ((icicle-list-use-nth-parts  '(1)))
+    (custom-buffer-create (custom-sort-items (mapcar #'(lambda (s) (list (intern s) 'custom-variable))
+                                                     icicle-completion-candidates)
+                                             t "*Customize Apropos*"))))
 
 
 ;; REPLACE ORIGINAL `repeat-complex-command' defined in `simple.el',
