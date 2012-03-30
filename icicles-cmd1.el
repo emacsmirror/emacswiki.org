@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Thu Mar 29 14:04:06 2012 (-0700)
+;; Last-Updated: Fri Mar 30 07:58:01 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 23459
+;;     Update #: 23511
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-cmd1.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -1693,22 +1693,41 @@ This is an Icicles command - see command `icicle-mode'."
 ;; REPLACE ORIGINAL `customize-apropos' defined in `cus-edit.el',
 ;; saving it for restoration when you toggle `icicle-mode'.
 ;;
-;; Uses `completing-read' to read the regexp.
+;; 1. Uses `completing-read' to read the regexp.
+;;
+;; 2. Fixes Emacs bugs #11132, #11126.
 ;;
 (unless (fboundp 'old-customize-apropos)
   (defalias 'old-customize-apropos (symbol-function 'customize-apropos)))
 
 ;;;###autoload
-(defun icicle-customize-apropos (regexp &optional all)
-  "Customize all user preferences matching REGEXP.
-If ALL is `options', include only options.
-If ALL is `faces', include only faces.
-If ALL is `groups', include only groups.
-If ALL is t (interactively, with prefix arg), include options which
-  are not user-settable, as well as faces and groups.
+(defun icicle-customize-apropos (pattern &optional type)
+  "Customize all loaded user preferences matching PATTERN.
+When prompted for the PATTERN, you can use completion against
+preference names - e.g. `S-TAB'.  Instead of entering a pattern you
+can then just hit `RET' to accept the list of matching faces.  This
+lets you see which preferences will be available in the customize
+buffer and dynamically change that list.
 
-Use `S-TAB', [next], and [prior], to match regexp input - this lets
-you see what items will be available in the customize buffer."
+If TYPE is `options', include only user options.
+If TYPE is `faces', include only faces.
+If TYPE is `groups', include only groups.
+If TYPE is t (interactively, with a prefix arg), include variables
+ that are not user options, as well as faces and groups.
+
+PATTERN is a regexp.
+
+Starting with Emacs 24, if PATTERN includes no regexp special chars
+then it can alternatively be a list of \"words\" separated by spaces.
+Two or more of the words are matched in different orders against each
+preference name.  \"Word\" here really means a string of non-space
+chars.
+
+This handling of \"words\" is for compatibility with vanilla Emacs,
+and is only approximative.  It can include \"matches\" that you do not
+expect.  For better matching use Icicles progressive completion, i.e.,
+separate the words (any strings, in fact, including regexps) using
+`S-SPC', not just `SPC'."
   (interactive
    (let* ((pref-arg  current-prefix-arg)
           (pred                                    (lambda (s)
@@ -1723,29 +1742,38 @@ you see what items will be available in the customize buffer."
                                                                     (get s 'variable-documentation)))))))
           (icompletep                              (and (boundp 'icomplete-mode)  icomplete-mode))
           (icicle-must-pass-after-match-predicate  (and (not icompletep)  pred)))
-     (list (completing-read "Customize (regexp): " obarray (and icompletep pred) nil nil 'regexp-history)
+     (list (completing-read "Customize (pattern): " obarray (and icompletep pred) nil nil 'regexp-history)
            pref-arg)))
-  (let ((found  nil))
+  (let ((found  ()))
+    (when (and (> emacs-major-version 23)  (require 'apropos nil t)
+               (string= (regexp-quote pattern) pattern))
+      (setq pattern  (split-string pattern "[ \t]+" 'OMIT-NULLS)))
+    (when (fboundp 'apropos-parse-pattern) (apropos-parse-pattern pattern)) ; Emacs 24+
     (mapatoms `(lambda (symbol)
-                (when (string-match ',regexp (symbol-name symbol))
-                  (when (and (not (memq all '(faces options))) ; groups or t
+                (when (string-match ,(if (> emacs-major-version 23) apropos-regexp pattern)
+                                    (symbol-name symbol))
+                  (when (and (not (memq type '(faces options))) ; groups or t
                              (get symbol 'custom-group))
                     (push (list symbol 'custom-group) found))
-                  (when (and (not (memq all '(options groups))) ; faces or t
+                  (when (and (not (memq type '(options groups))) ; faces or t
                              (custom-facep symbol))
                     (push (list symbol 'custom-face) found))
-                  (when (and (not (memq all '(groups faces))) ; options or t
+                  (when (and (not (memq type '(groups faces))) ; options or t
                              (boundp symbol)
                              (or (get symbol 'saved-value)
                                  (custom-variable-p symbol)
-                                 (if (memq all '(nil options))
+                                 (if (memq type '(nil options))
                                      (user-variable-p symbol)
                                    (get symbol 'variable-documentation))))
                     (push (list symbol 'custom-variable) found)))))
-    (if (not found)
-        (error "No matches")
-      (custom-buffer-create (custom-sort-items found t custom-buffer-order-groups)
-                            "*Customize Apropos*"))))
+    (unless found
+      (error "No %s matching %s" (if (eq type t)
+                                     "items"
+                                   (format "%s" (if (memq type '(options faces groups))
+                                                    (symbol-name type)
+                                                  "customizable items")))
+             pattern))
+    (custom-buffer-create (custom-sort-items found t custom-buffer-order-groups) "*Customize Apropos*")))
 
 ;; Define this for Emacs 20 and 21
 (unless (fboundp 'custom-variable-p)
@@ -1757,47 +1785,42 @@ you see what items will be available in the customize buffer."
 ;; REPLACE ORIGINAL `customize-apropos-faces' defined in `cus-edit.el',
 ;; saving it for restoration when you toggle `icicle-mode'.
 ;;
-;; Uses `completing-read' to read the regexp.
+;; 1. Uses `completing-read' to read the regexp.
+;;
+;; 2. Fixes Emacs bug #11124.
 ;;
 (unless (fboundp 'old-customize-apropos-faces)
   (defalias 'old-customize-apropos-faces (symbol-function 'customize-apropos-faces)))
 
 ;;;###autoload
-(defun icicle-customize-apropos-faces (regexp)
-  "Customize all user faces matching REGEXP.
-Use `S-TAB', [next], and [prior], to match regexp input - this lets
-you see what items will be available in the customize buffer."
+(defun icicle-customize-apropos-faces (pattern)
+  "Customize all loaded faces matching PATTERN.
+See `icicle-customize-apropos'."
   (interactive
    (let* ((pred                                    #'(lambda (s)
                                                        (unless (symbolp s) (setq s  (intern s)))
                                                        (custom-facep s)))
           (icompletep                              (and (boundp 'icomplete-mode)  icomplete-mode))
           (icicle-must-pass-after-match-predicate  (and (not icompletep)  pred)))
-     (list (completing-read "Customize faces (regexp): " obarray (and icompletep pred)
+     (list (completing-read "Customize faces (pattern): " obarray (and icompletep pred)
                             nil nil 'regexp-history))))
-  (customize-apropos regexp 'faces))
+  (customize-apropos pattern 'faces))
 
 
 ;; REPLACE ORIGINAL `customize-apropos-groups' defined in `cus-edit.el',
 ;; saving it for restoration when you toggle `icicle-mode'.
 ;;
-;; Uses `completing-read' to read the regexp.
+;; 1. Uses `completing-read' to read the regexp.
+;;
+;; 2. Fixes Emacs bug #11124.
 ;;
 (unless (fboundp 'old-customize-apropos-groups)
   (defalias 'old-customize-apropos-groups (symbol-function 'customize-apropos-groups)))
 
 ;;;###autoload
 (defun icicle-customize-apropos-groups (pattern)
-  "Customize all user groups matching PATTERN.
-When prompted for the PATTERN, you can use completion against group
-names - e.g. `S-TAB'.  Instead of entering a pattern you can then just
-hit `RET' to accept the list of matching groups.  This lets you see
-which groups will be available in the customize buffer and dynamically
-change that list.
-
-PATTERN is a regexp.  Starting with Emacs 24, it can alternatively be
-a list of words separated by spaces.  Two or more of the words are
-matched in different orders against each group name."
+  "Customize all loaded customize groups matching PATTERN.
+See `icicle-customize-apropos'."
   (interactive
    (let* ((pred                                    #'(lambda (s)
                                                        (unless (symbolp s) (setq s  (intern s)))
@@ -1806,28 +1829,27 @@ matched in different orders against each group name."
           (icicle-must-pass-after-match-predicate  (and (not icompletep)  pred)))
      (list (completing-read "Customize groups (pattern): " obarray (and icompletep pred)
                             nil nil 'regexp-history))))
-  (when (and (> emacs-major-version 23)
-             (require 'apropos nil t)
-             (string= (regexp-quote pattern) pattern))
-    (setq pattern  (split-string pattern "[ \t]+"))) ; Split into words
   (customize-apropos pattern 'groups))
 
 
 ;; REPLACE ORIGINAL `customize-apropos-options' defined in `cus-edit.el',
 ;; saving it for restoration when you toggle `icicle-mode'.
 ;;
-;; Uses `completing-read' to read the regexp.
+;; 1. Uses `completing-read' to read the regexp.
+;;
+;; 2. Fixes Emacs bugs #11124, #11128.
 ;;
 (unless (fboundp 'old-customize-apropos-options)
   (defalias 'old-customize-apropos-options (symbol-function 'customize-apropos-options)))
 
 ;;;###autoload
-(defun icicle-customize-apropos-options (regexp &optional arg)
-  "Customize all user options matching REGEXP.
-With prefix argument, include options which are not user-settable.
+(defun icicle-customize-apropos-options (pattern &optional arg)
+  "Customize all loaded user options matching PATTERN.
+See `icicle-customize-apropos'.
 
-Use `S-TAB', [next], and [prior], to match regexp input - this lets
-you see what items will be available in the customize buffer."
+With a prefix arg, include variables that are not user options as
+completion candidates, and include also matching faces and groups in
+the customize buffer."
   (interactive
    (let* ((pref-arg                                current-prefix-arg)
           (pred                                    `(lambda (s)
@@ -1840,10 +1862,10 @@ you see what items will be available in the customize buffer."
                                                         (get s 'variable-documentation))))))
           (icompletep                              (and (boundp 'icomplete-mode)  icomplete-mode))
           (icicle-must-pass-after-match-predicate  (and (not icompletep)  pred)))
-     (list (completing-read "Customize options (regexp): " obarray (and icompletep pred)
+     (list (completing-read "Customize options (pattern): " obarray (and icompletep pred)
                             nil nil 'regexp-history)
            pref-arg)))
-  (customize-apropos regexp (or arg 'options)))
+  (customize-apropos pattern (or arg 'options)))
 
 
 ;; REPLACE ORIGINAL `customize-apropos-options-of-type' defined in `cus-edit+.el',
@@ -1858,7 +1880,7 @@ you see what items will be available in the customize buffer."
 
 ;;;###autoload
 (defun icicle-customize-apropos-options-of-type (type regexp)
-  "Customize all loaded customizable options of type TYPE that match REGEXP.
+  "Customize all loaded user options of type TYPE that match REGEXP.
 When prompted for the REGEXP, you can use completion against option
 names - e.g. `S-TAB'.  Instead of entering a regexp you can then just
 hit `RET' to accept the list of matching options.  This lets you see
