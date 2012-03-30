@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Thu Mar 29 11:00:25 2012 (-0700)
+;; Last-Updated: Fri Mar 30 08:05:44 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 8181
+;;     Update #: 8190
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-chg.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -85,6 +85,9 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd1.el'")
 ;;
+;; 2012/03/30 dadams
+;;     icicle-customize-apropos*:
+;;       Updated wrt Emacs 24 (handle PATTERN).  Fixed vanilla Emacs bugs #11124, #11126, #11132.
 ;; 2012/03/29 dadams
 ;;     icicle-customize-apropos-options-of-type:
 ;;       Pass inherit-or-value to icicle-var-is-of-type-p as the MODE.
