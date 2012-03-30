@@ -21,7 +21,7 @@ Note: BEWARE OF EARLIER VERSIONS!  They were vulnerable to shell command injecti
 <foouser> yourusername: `rm -rf ~`
 }}}
 
-This was *fixed in 0.3.1* (2011-12-09), upgrading is *strongly recommended!*
+This was *fixed in 0.3.1* (2011-12-09), upgrading is *strongly recommended!* Note that the version on Marmalade currently does *not* have the fix. 
 
 ==Customize==
 * `erc-nick-notify-delay'
