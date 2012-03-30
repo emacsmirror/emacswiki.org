@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:53 2006
 ;; Version: 22.0
-;; Last-Updated: Fri Mar 16 15:46:24 2012 (-0700)
+;; Last-Updated: Fri Mar 30 08:42:34 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 12942
+;;     Update #: 12946
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-fn.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -17,11 +17,11 @@
 ;;
 ;; Features that might be required by this library:
 ;;
-;;   `apropos', `apropos-fn+var', `backquote', `bytecomp', `cl',
-;;   `el-swank-fuzzy', `ffap', `ffap-', `fuzzy', `fuzzy-match',
-;;   `hexrgb', `icicles-face', `icicles-opt', `icicles-var',
-;;   `kmacro', `levenshtein', `naked', `regexp-opt', `thingatpt',
-;;   `thingatpt+', `wid-edit', `wid-edit+', `widget'.
+;;   `apropos', `apropos-fn+var', `cl', `el-swank-fuzzy', `ffap',
+;;   `ffap-', `fuzzy', `fuzzy-match', `hexrgb', `icicles-face',
+;;   `icicles-opt', `icicles-var', `kmacro', `levenshtein', `naked',
+;;   `regexp-opt', `thingatpt', `thingatpt+', `wid-edit',
+;;   `wid-edit+', `widget'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -4355,14 +4355,15 @@ Return the possibly transformed candidate."
     candidate))
 
 (defun icicle-join-nth-parts (parts)
-  "Join the elements in PARTS using `icicle-list-nth-parts-join-string'."
+  "Join the elements in PARTS using `icicle-list-nth-parts-join-string'.
+The parts to join are specified by `icicle-list-use-nth-parts'."
   (let* ((maxpart  (length parts))
          (indexes  icicle-list-use-nth-parts)
          (cand     "")
          (firstp   t)
          partnum)
-    (if (< maxpart 2)
-        (car parts)                     ; Nothing to join.
+    (if (null parts)
+        ""                              ; Nothing to join.
       (while indexes
         (setq partnum  (car indexes))
         (unless firstp (setq cand  (concat cand icicle-list-nth-parts-join-string)))
