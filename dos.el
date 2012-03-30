@@ -1,13 +1,13 @@
 ;;; dos.el --- major mode for editing Dos scripts (batch files)
 
-;; Copyright (C) 2003, 2008, 2009, 2010, 2011 Arni Magnusson
+;; Copyright (C) 2003, 2008, 2009, 2010, 2011 2012 Arni Magnusson
 
 ;; Author:   Arni Magnusson
-;; Version:  2.16
+;; Version:  2.17
 ;; Keywords: languages
 ;; URL:      http://emacswiki.org/emacs/dos.el
 
-(defconst dos-mode-version "2.16" "Dos Mode version number.")
+(defconst dos-mode-version "2.17" "Dos Mode version number.")
 
 ;;; Commentary:
 ;;
@@ -48,6 +48,7 @@
 
 ;;; History:
 ;;
+;; 30 Mar 2012  2.17 Improved documentation.
 ;; 14 Feb 2011  2.16 Improved highlighting of variable names.
 ;; 20 Sep 2010  2.15 Changed :LABEL highlighting to new `dos-label-face'. Improved highlighting of variable names.
 ;;  8 Jul 2010  2.14 Added user function `dos-mode-version'.
@@ -241,7 +242,7 @@ save keystrokes. Read help for Dos command with `dos-help-cmd'. Run script using
   (interactive)(kill-all-local-variables)(setq major-mode 'dos-mode)(setq mode-name "Dos")
   (set (make-local-variable 'comment-start) "rem")
   (set (make-local-variable 'imenu-generic-expression) '((nil "^:[^:].*" 0)))
-  (set (make-local-variable 'font-lock-defaults) '(dos-font-lock-keywords nil t))
+  (set (make-local-variable 'font-lock-defaults) '(dos-font-lock-keywords nil t)) ; case-insensitive keywords
   (set (make-local-variable 'outline-regexp) ":[^:]")
   (set-syntax-table dos-mode-syntax-table)
   (setq local-abbrev-table dos-mode-abbrev-table)
