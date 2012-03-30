@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Fri Mar 30 08:05:44 2012 (-0700)
+;; Last-Updated: Fri Mar 30 09:23:19 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 8190
+;;     Update #: 8195
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-chg.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -86,6 +86,8 @@
 ;;;(@* "CHANGE LOG FOR `icicles-cmd1.el'")
 ;;
 ;; 2012/03/30 dadams
+;;     Added: icicle-customize-apropos-opt-action.
+;;     icicle-customize-apropos-options-of-type: Rewrote as a multi-command using multi-completions.
 ;;     icicle-customize-apropos*:
 ;;       Updated wrt Emacs 24 (handle PATTERN).  Fixed vanilla Emacs bugs #11124, #11126, #11132.
 ;; 2012/03/29 dadams
@@ -1230,6 +1232,10 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-fn.el'")
 ;;
+;; 2012/03/30 dadams
+;;     icicle-join-nth-parts:
+;;       Handle a singleton PARTS normally, according to icicle-list-use-nth-parts - do not just
+;;       return the CAND.  If PARTS is nil, return "".
 ;; 2012/03/16 dadams
 ;;     icicle-display-candidates-in-Completions:
 ;;       Show thumbnails for image-file bookmarks also (see Bookmark+).
