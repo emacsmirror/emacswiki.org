@@ -234,7 +234,7 @@ There are two modules; both allow you to use jslint or JSHINT as the flymake too
 
 The first, [http://code.google.com/p/jslint-for-wsh/source/browse/#svn/trunk flymake-for-jslint-for-wsh.el], requires you to download JSHINT or JSLINT, modify it slightly, save  it, and set a variable in  your .emacs pointing to the modified script. 
  
-[http://cheeso.members.winisp.net/srcview.aspx?dir=emacs&file=fly-jshint-wsh.el A newer version] downloads the JSLINT or JSHINT at runtime.  This version is also available on the Marmalade Repo as [http://marmalade-repo.org/packages/fly-jshint-wsh  fly-jshint-wsh].  
+[http://cheeso.members.winisp.net/srcview.aspx?dir=emacs&file=fly-jshint-wsh.el A newer version] downloads and modifies the JSLINT or JSHINT at runtime.  This version is also available on the Marmalade Repo as [http://marmalade-repo.org/packages/fly-jshint-wsh  fly-jshint-wsh].  
 
 A sample of using jslint-for-wsh.js as a "compile" command in emacs:
 
