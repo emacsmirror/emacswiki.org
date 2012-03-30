@@ -2,11 +2,11 @@
 ;;
 ;; Author: Dino Chiesa, Alex Henning
 ;; Created: Thu, 29 Mar 2012  09:18
-;; Package-Requires: ((dropdown-list "1.45"))
+;; Package-Requires: ()
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/thesaurus.el
 ;; X-URL: http://cheeso.members.winisp.net/srcview.aspx?dir=emacs&file=thesaurus.el
-;; Version: 1.0.1
-;; Keywords: thesaurus
+;; Version: 1.0.3
+;; Keywords: thesaurus synonym
 ;; License: New BSD
 
 ;;; Commentary
@@ -18,8 +18,8 @@
 ;; http://alexhenning.github.com/blog/2010/11/01/synonym.el/
 ;;
 ;; I standardized the naming, re-factored, wrote some documentation,
-;; introduced the dependency on dropdown-list.el, added a license,
-;; and polished it.
+;; introduced the dependency on dropdown-list.el and x-popup-menu, added
+;; a license, and polished it.
 ;;
 ;; Right now it depends on a web service from big huge labs. It
 ;; is not tied to that service, and could be expanded to use other
@@ -36,7 +36,7 @@
 ;;
 ;; This module currently relies on a BigHugeLabs thesaurus service. The
 ;; service is currently free, and has a limit of 10,000 lookups per
-;; month. If anyone exceeds this, it shouldn't be difficult to expand
+;; day. If anyone exceeds this, it shouldn't be difficult to expand
 ;; this module to support other online thesaurus services. Wolfram Alpha
 ;; is one possible option; there is a free API. I'm sure there are
 ;; others.
@@ -44,7 +44,16 @@
 
 ;;; Revisions:
 ;;
-;; 1.0.1  2012-March-29  Initial version
+;; 1.0.3  2012-March-30  Dino Chiesa
+;;    include x-popup-menu as the default prompting mechanism.
+;;    dropdown-list is sort of a pain to work with. I don't know
+;;    what this means for tty users.
+;;
+;; 1.0.2  2012-March-29  Dino Chiesa
+;;    tiny doc change
+;;
+;; 1.0.1  2012-March-29  Dino Chiesa
+;;    Initial version
 ;;
 
 ;;; License
@@ -87,8 +96,22 @@
 
 
 
+(defgroup thesaurus nil
+  "Provides a facility to look up synonyms")
+
 (defcustom thesaurus-bhl-api-key nil
   "The api key for connecting to BigHugeLabs.com"
+  :group 'thesaurus)
+
+(defcustom thesaurus-prompt-mechanism 'x-popup-menu
+  "The prompting mechanism for thesaurus choices. Options:
+'x-popup-menu, or 'dropdown-list.  When setting this,
+set it to the symbol, not to the string or the actual
+function.  Eg
+
+  (setq thesaurus-prompt-mechanism 'x-popup-menu)
+
+"
   :group 'thesaurus)
 
 (defvar thesaurus---load-path (or load-file-name "~/thesaurus.el")
@@ -144,7 +167,7 @@ web service."
 BigHugeLabs web service."
   (if (not (and (boundp 'thesaurus-bhl-api-key)
                 (stringp thesaurus-bhl-api-key)))
-    (error "Invalid api key."))
+    (error "Invalid api key for BigHugeLabs."))
   (url-retrieve-synchronously
    (concat "http://words.bighugelabs.com/api/2/"
            thesaurus-bhl-api-key "/" word "/")))
@@ -173,26 +196,20 @@ where
    flavor  = {syn,sim,ant,rel}
    word = the actual word
 
+The return value is a list, with those three items in it,
+in that order.
+
 "
   (let ((start (point))
         (end (line-end-position))
-        s frag flav parts)
+        s parts)
 
     (setq s (buffer-substring-no-properties start end)
           parts (split-string s "|"))
 
-    (if (> (length parts) 1)
-        (setq
-          flav (nth 1 parts)
-          frag (concat (nth 2 parts)
-              (if (not (or (string= flav "syn")
-                           (string= flav "sim")))
-                  (concat " (" flav ")")
-                ""))))
-
     (delete-region start end)
     (delete-char 1)
-    frag))
+    parts))
 
 
 (defun thesaurus-fetch-synonyms (word)
@@ -220,14 +237,53 @@ or, if there is no cache hit, then from the remote service.
       (thesaurus-cache-put word (thesaurus-fetch-synonyms word))))
 
 
+(defun thesaurus-get-menu-position ()
+  "get the position for the popup menu"
+  (if (fboundp 'posn-at-point)
+      (let ((x-y (posn-x-y (posn-at-point (point)))))
+        (list (list (+ (car x-y) 10)
+                    (+ (cdr x-y) 20))
+              (selected-window)))
+    t))
+
+
+(defun thesaurus--generate-menu (candidates)
+  "Generate a menu suitable for use in `x-popup-menu' from the
+list of candidates. Each item in the list of candidates is a
+list, (FORM FLAVOR WORD), where FORM is one of {adjective, verb,
+noun, etc}, FLAVOR is {syn, sim, rel, ant, etc}, and WORD is the
+actual word.
+
+"
+  (let ((items (mapcar '(lambda (elt)
+                          (cons
+                           (concat (nth 2 elt) " (" (nth 0 elt) ")")
+                           (nth 2 elt)))
+                       candidates)))
+    (setq items (cons "Ignored pane title" items))
+
+    (list "Replace with..." items)))
+
+
+
 (defun thesaurus-prompt-user-with-choices (candidates)
   "prompt the user with the available replacement choices.
 In this context the list of choices is the list of synonyms.
+
+See `thesaurus-prompt-mechanism'.
+
 "
-  (let ((choice-n (dropdown-list candidates)))
-    (if choice-n
-        (nth choice-n candidates)
-      (keyboard-quit))))
+  (cond
+   ((and (eq thesaurus-prompt-mechanism 'dropdown-list)
+         (featurep 'dropdown-list))
+    (let ((choice-n (dropdown-list (mapcar '(lambda (elt) (nth 2 elt)) candidates))))
+      (if choice-n
+          (nth choice-n candidates)
+        (keyboard-quit))))
+
+   (t
+    (x-popup-menu (thesaurus-get-menu-position)
+                  (thesaurus--generate-menu candidates)))))
 
 
 (defun thesaurus-word-at-point ()
@@ -259,7 +315,8 @@ inserted in its place.
 
 "
   (interactive (list (read-string "word: " (thesaurus-word-at-point))))
-  (let ((chosen (thesaurus-prompt-user-with-choices (thesaurus-get-synonyms word))))
+  (let ((chosen (thesaurus-prompt-user-with-choices
+                 (thesaurus-get-synonyms word))))
     (if chosen
         (progn
           (goto-char (car thesaurus-bounds-of-looked-up-word))
@@ -277,7 +334,8 @@ inserted in its place.
           (thesaurus-cache-make))))
 
 
-(require 'dropdown-list)
+(eval-when-compile (require 'dropdown-list nil t))
+
 (thesaurus-install)
 
 (provide 'thesaurus)
