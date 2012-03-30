@@ -90,9 +90,7 @@ features with additional help commands such as `describe-file'
 
 '''`C-h C-o'''', which is bound by those libraries to command
 `describe-option-of-type', is bound in ''Icicle'' mode to
-'''`icicle-describe-option-of-type'''' instead, which uses
-multi-completion and is therefore more powerful.
-See [[Icicles - Multi-Completions]].  `C-h C-o' describes a [[user option]]
+'''`icicle-describe-option-of-type'''' instead, which is a [[multi-command]] that uses [[multi-completion]] and is therefore more powerful.  `C-h C-o' describes a [[user option]]
 that is of a particular custom type: you match the type and the
 option name at the same time.
 
@@ -122,7 +120,11 @@ descriptive text (tag) that appears next to a value component in
 [[Customize]].
 
 `C-h C-o' is a powerful way to browse
-options and their documentation. See the doc string of `icicle-describe-option-of-type' for more possibilities.
+options and their documentation. See the doc string of `icicle-describe-option-of-type' for more possibilities.  See
+also '''`icicle-customize-apropos-options-of-type''''
+([[#OtherAproposCommands|Other Icicles Apropos Commands]]), which is similar
+to `icicle-describe-option-of-type' but which opens a [[Customize]]
+buffer for all of the matching options when you hit `RET'.
 
 Candidate help (prefix `C-M-') is available for these types of completion candidates, by default:
 
@@ -209,12 +211,10 @@ values, and you can use command `icicle-describe-option-of-type' (bound to `C-h 
 to find user options of a certain type.
 
 Command '''`icicle-customize-apropos-options-of-type'''' is similar to
-`icicle-describe-option-of-type', in that it lets you specify the
-type of matching options.  But instead of describing an option, it
-opens [[Customize]] for all options of the specified type that match
-your input regexp.  (Unlike `icicle-describe-option-of-type',
-however, it is not a multi-completion command: you first specify
-the type, then the regexp to match.)
+`icicle-describe-option-of-type' (bound by default to `C-h C-o').  It lets you specify the type of matching options, and it is a
+[[multi-completion]] [[multi-command]].  But instead of describing options, it
+opens [[Customize]] for them.  See the doc for
+`icicle-describe-option-of-type' for details about how to use it.
 
 One difference between '''Icicles''' apropos commands and the standard
 commands, besides the '''Icicles''' enhancements already described, is
