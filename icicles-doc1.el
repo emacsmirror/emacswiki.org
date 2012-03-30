@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Fri Mar 16 10:57:43 2012 (-0700)
+;; Last-Updated: Fri Mar 30 09:44:37 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 26508
+;;     Update #: 26524
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-doc1.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -4094,9 +4094,9 @@
 ;;
 ;;  `C-h C-o', which is bound by those libraries to command
 ;;  `describe-option-of-type', is bound in Icicle mode to
-;;  `icicle-describe-option-of-type' instead, which uses
-;;  multi-completion and is therefore more powerful.
-;;  See (@file :file-name "icicles-doc2.el" :to "Multi-Completions").
+;;  `icicle-describe-option-of-type' instead, which is a multi-command
+;;  that uses multi-completion and is therefore more powerful.  See
+;;  (@file :file-name "icicles-doc2.el" :to "Multi-Completions").
 ;;  `C-h C-o' describes a user option that is of a particular custom
 ;;  type: you match the type and the option name at the same time.
 ;;
@@ -4128,7 +4128,11 @@
 ;;
 ;;  `C-h C-o' is a powerful way to browse options and their
 ;;  documentation.  See the doc string of
-;;  `icicle-describe-option-of-type' for more possibilities.
+;;  `icicle-describe-option-of-type' for more possibilities.  See
+;;  also `icicle-customize-apropos-options-of-type'
+;;  ((@> "Other Icicles Apropos Commands")), which is similar
+;;  to `icicle-describe-option-of-type' but which opens a Customize
+;;  buffer for all of the matching options when you hit `RET'.
 ;;
 ;;  Candidate help (prefix `C-M-') is available for these types of
 ;;  completion candidates, by default:
@@ -4225,12 +4229,11 @@
 ;;  find user options of a certain type.
 ;;
 ;;  Command `icicle-customize-apropos-options-of-type' is similar to
-;;  `icicle-describe-option-of-type', in that it lets you specify the
-;;  type of matching options.  But instead of describing an option, it
-;;  opens Customize for all options of the specified type that match
-;;  your input regexp.  (Unlike `icicle-describe-option-of-type',
-;;  however, it is not a multi-completion command: you first specify
-;;  the type, then the regexp to match.)
+;;  `icicle-describe-option-of-type' (bound by default to `C-h C-o').
+;;  It lets you specify the type of matching options, and it is a
+;;  multi-completion multi-command.  But instead of describing
+;;  options, it opens Customize for them.  See the doc for
+;;  `icicle-describe-option-of-type' for details about how to use it.
 ;;
 ;;  One difference between Icicles apropos commands and the standard
 ;;  commands, besides the Icicles enhancements already described, is
