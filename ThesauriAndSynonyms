@@ -1,23 +1,18 @@
-A thesaurus is a database for NaturalLanguage. It presents lists of synonyms for words and phrases. For the English language, the best-known thesaurus is Roget's Thesaurus. Thesauri have been used by careful writers for ever.  
+Generally, ''any'' set of equivalence classes of strings (''any'' strings) can be considered a '''[::thesaurus]''', and the members of each equivalence class can be thought of as '''[::synonym]s''' of each other. 
 
-== Summary ==
+A thesaurus is typically used for words and phrases of a NaturalLanguage. For English, the best-known thesaurus is ''Roget's Thesaurus''. Thesauri have long been used by careful writers.  
 
-Generally, any set of equivalence classes of strings might be thought of as a thesaurus, and the members of each equivalence class can be thought of as synonyms of each other. Another way to describe this is as a set of catalogs.
+The following pages provide thesaurus features or make some use of a thesaurus or synonyms:
 
-The following pages on %%EmacsWiki%% provide Emacs thesaurus commands or make some mention of using thesauri or manipulating synonyms:
-
-* [[Synonyms]] -- Library Lisp:synonyms.el.  Search for synonyms, with regexps and [[Icicles]] [[completion]]
-* [[Icicles]] Complete a partial word to a word or phrase in a thesaurus
-* Library Lisp:mthesaur.el -- search for synonyms
-* [http://williamxu.net9.org/ref/wordnet.el wordnet.el] -- Browse the Word-Net dictionary (broken)
-* ShawnBoyette -- Mention of Wroget
-* Lisp:thesaurus.el  -- lookup synonyms on BigHugeLabs.com, and maybe replace word-at-point.
+* [[Synonyms]] -- Library <tt>[[synonyms.el]]</tt>.  Search or browse for synonyms, including with [[regexp]]s and [[Icicles|Icicles completion]]. Substitute any thesaurus (in the accepted format), including one you create.
+* [[Icicles]] -- Complete a partial word to a word or phrase in a thesaurus.  Uses <tt>[[synonyms.el]]</tt>.
+* Library <tt>[[mthesaur.el]]</tt> -- Search for synonyms.
+* Library <tt>[http://williamxu.net9.org/ref/wordnet.el wordnet.el]</tt> -- Browse the Word-Net dictionary (''currently broken'')
+* [[ShawnBoyette|Wroget]] -- Digital version of ''Roget's Thesaurus''
+* Library <tt>[[thesaurus.el]]</tt>  -- Look up synonyms on [[http://BigHugeLabs.com|BigHugeLabs.com]], and maybe replace word-at-point.  Animation example:
 
 
-== thesaurus.el in action ==
-
-
-http://i.imgur.com/grvGD.gif
+:: http://i.imgur.com/grvGD.gif
 
 
 
