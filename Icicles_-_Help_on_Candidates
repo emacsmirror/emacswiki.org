@@ -216,14 +216,14 @@ Command '''`icicle-customize-apropos-options-of-type'''' is similar to
 opens [[Customize]] for them.  See the doc for
 `icicle-describe-option-of-type' for details about how to use it.
 
-One difference between '''Icicles''' apropos commands and the standard
-commands, besides the '''Icicles''' enhancements already described, is
-that (starting with Emacs 22) the standard commands let you input a set of ''keywords'', as an
-alternative to inputting a regexp.  '''Icicles''' apropos commands do
-not allow for keyword input, as such.  However, '''Icicles'''
-[[progressive completion]] provides a more powerful way to search with multiple keywords (in
-fact, multiple regexps) -- you can of course use it with the
-'''Icicles''' apropos commands.  Also, there are several problems with
+
+Starting with Emacs 22, both the standard Emacs apropos commands
+and the '''Icicles''' versions let you input a set of ''words'' (really, any strings with no regexp special chars) separated by space chars, as an
+alternative to inputting a [[regexp]].  
+
+However, '''Icicles'''
+[[progressive completion]] provides a more powerful way to search with multiple words (in fact, multiple regexps) -- you can of course use it with the
+'''Icicles''' apropos commands.  Also, there are a few problems with
 the standard Emacs apropos commands, with respect to interpreting
 your input as either a set of keywords or a regexp. Because they allow two very different syntaxes as input, the
 standard apropos commands are
