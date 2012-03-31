@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Fri Mar 16 11:02:22 2012 (-0700)
+;; Last-Updated: Sat Mar 31 14:46:23 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 28726
+;;     Update #: 28728
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-doc2.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -6521,9 +6521,11 @@
 ;;  `icicle-add/update-saved-completion-set' - Add a set to
 ;;                          `icicle-saved-completion-sets'
 ;;  `icicle-apply'        - Selectively apply function to alist items
-;;  `icicle-apropos'      - `apropos', but shows matches
+;;  `icicle-apropos'      - Enhanced `apropos' - shows matches etc.
 ;;  `icicle-apropos-command' - Enhanced `apropos-command'
-;;  `icicle-apropos-variable' - Enhanced `apropos-variable'
+;;  `icicle-apropos-function' - All functions, not just commands
+;;  `icicle-apropos-option' - Only options, not all variables
+;;  `icicle-apropos-variable' - All variables, not just options
 ;;  `icicle-apropos-zippy' - Show matching Zippy quotes
 ;;  `icicle-bookmark-file-other-window' - Jump to file bookmarks
 ;;  `icicle-bookmark-dired-other-window'  - Jump to Dired bookmarks
