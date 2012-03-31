@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Fri Mar 30 09:21:48 2012 (-0700)
+;; Last-Updated: Sat Mar 31 11:08:02 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 23515
+;;     Update #: 23519
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-cmd1.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -1702,7 +1702,7 @@ This is an Icicles command - see command `icicle-mode'."
   (defalias 'old-customize-apropos (symbol-function 'customize-apropos)))
 
 ;;;###autoload
-(defun icicle-customize-apropos (pattern &optional type)
+(defun icicle-customize-apropos (pattern &optional type msgp)
   "Customize all loaded user preferences matching PATTERN.
 When prompted for the PATTERN, you can use completion against
 preference names - e.g. `S-TAB'.  Instead of entering a pattern you
@@ -1744,12 +1744,15 @@ separate the words (any strings, in fact, including regexps) using
           (icompletep                              (and (boundp 'icomplete-mode)  icomplete-mode))
           (icicle-must-pass-after-match-predicate  (and (not icompletep)  pred)))
      (list (completing-read "Customize (pattern): " obarray (and icompletep pred) nil nil 'regexp-history)
-           pref-arg)))
+           pref-arg
+           t)))
   (let ((found  ()))
     (when (and (> emacs-major-version 23)  (require 'apropos nil t)
-               (string= (regexp-quote pattern) pattern))
+               (string= (regexp-quote pattern) pattern)
+               (not (string= "" pattern)))
       (setq pattern  (split-string pattern "[ \t]+" 'OMIT-NULLS)))
     (when (fboundp 'apropos-parse-pattern) (apropos-parse-pattern pattern)) ; Emacs 24+
+    (when msgp (message "Gathering apropos data for customize..."))
     (mapatoms `(lambda (symbol)
                 (when (string-match ,(if (> emacs-major-version 23) apropos-regexp pattern)
                                     (symbol-name symbol))
@@ -1794,7 +1797,7 @@ separate the words (any strings, in fact, including regexps) using
   (defalias 'old-customize-apropos-faces (symbol-function 'customize-apropos-faces)))
 
 ;;;###autoload
-(defun icicle-customize-apropos-faces (pattern)
+(defun icicle-customize-apropos-faces (pattern &optional msgp)
   "Customize all loaded faces matching PATTERN.
 See `icicle-customize-apropos'."
   (interactive
@@ -1804,7 +1807,9 @@ See `icicle-customize-apropos'."
           (icompletep                              (and (boundp 'icomplete-mode)  icomplete-mode))
           (icicle-must-pass-after-match-predicate  (and (not icompletep)  pred)))
      (list (completing-read "Customize faces (pattern): " obarray (and icompletep pred)
-                            nil nil 'regexp-history))))
+                            nil nil 'regexp-history)
+           t)))
+  (when msgp (message "Gathering apropos data for customizing faces..."))
   (customize-apropos pattern 'faces))
 
 
@@ -1819,7 +1824,7 @@ See `icicle-customize-apropos'."
   (defalias 'old-customize-apropos-groups (symbol-function 'customize-apropos-groups)))
 
 ;;;###autoload
-(defun icicle-customize-apropos-groups (pattern)
+(defun icicle-customize-apropos-groups (pattern &optional msgp)
   "Customize all loaded customize groups matching PATTERN.
 See `icicle-customize-apropos'."
   (interactive
@@ -1829,7 +1834,9 @@ See `icicle-customize-apropos'."
           (icompletep                              (and (boundp 'icomplete-mode)  icomplete-mode))
           (icicle-must-pass-after-match-predicate  (and (not icompletep)  pred)))
      (list (completing-read "Customize groups (pattern): " obarray (and icompletep pred)
-                            nil nil 'regexp-history))))
+                            nil nil 'regexp-history)
+           t)))
+  (when msgp (message "Gathering apropos data for customizing groups..."))
   (customize-apropos pattern 'groups))
 
 
@@ -1844,7 +1851,7 @@ See `icicle-customize-apropos'."
   (defalias 'old-customize-apropos-options (symbol-function 'customize-apropos-options)))
 
 ;;;###autoload
-(defun icicle-customize-apropos-options (pattern &optional arg)
+(defun icicle-customize-apropos-options (pattern &optional arg msgp)
   "Customize all loaded user options matching PATTERN.
 See `icicle-customize-apropos'.
 
@@ -1865,7 +1872,9 @@ the customize buffer."
           (icicle-must-pass-after-match-predicate  (and (not icompletep)  pred)))
      (list (completing-read "Customize options (pattern): " obarray (and icompletep pred)
                             nil nil 'regexp-history)
-           pref-arg)))
+           pref-arg
+           t)))
+  (when msgp (message "Gathering apropos data for customizing options..."))
   (customize-apropos pattern (or arg 'options)))
 
 
