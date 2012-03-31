@@ -12,7 +12,7 @@ With '''Bookmark+''' you can use bookmarks that were created with any Emacs vers
 [:Libraries]
 == Bookmark+ Libraries ==
 
-'''Bookmark''' is composed of these libraries:
+'''Bookmark+''' is composed of these libraries:
 
 * <tt>[[bookmark+.el]]</tt> -- main (driver) library -- loads the rest
 * <tt>[[bookmark+-mac.el]]</tt> -- Lisp macros
