@@ -7,9 +7,9 @@
 ;; Copyright (C) 1999-2012, Drew Adams, all rights reserved.
 ;; Created: Fri Apr  2 12:34:20 1999
 ;; Version: 21.1
-;; Last-Updated: Tue Mar 20 10:24:10 2012 (-0700)
+;; Last-Updated: Sat Mar 31 09:05:44 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 2623
+;;     Update #: 2629
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/oneonone.el
 ;; Keywords: local, frames
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -274,6 +274,9 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2012/03/31 dadams
+;;     Wrap count-screen-lines with with-current buffer.  Fixes bug: M in Dired pops up and
+;;      selects frame listing marked files - and that frame's screen lines were being used.
 ;; 2012/03/20 dadams
 ;;     1on1-fit-minibuffer-frame: Use count-screen-lines only for Emacs 23+ - see comment.
 ;; 2012/03/17 dadams
@@ -1721,7 +1724,12 @@ This has no effect if you do not also use library `fit-frame.el'."
                ;; the buffer.  `fit-frame' cannot take the height of that overlay into account.
                ;; So we use `count-screen-lines' to get the height.
                ;; For now, there remains an Emacs bug wrt the cursor placement: #11035.
-               (fit-frame frame (frame-width frame) (1+ (count-screen-lines)))
+               (fit-frame frame (frame-width frame)
+                          ;; Need to be sure to use the right buffer.  Some commands etc. can
+                          ;; pop up a frame and select it, or otherwise change the selected buf.
+                          (with-current-buffer (or (window-buffer (active-minibuffer-window))
+                                                   (current-buffer))
+                            (1+ (count-screen-lines))))
              (fit-frame frame (frame-width frame)))
            ;; $$$$       (when (>= emacs-major-version 21)
            ;;              (set-frame-height frame (1+ (frame-height frame)))) ; A little extra.
