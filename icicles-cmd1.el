@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Sat Mar 31 11:17:30 2012 (-0700)
+;; Last-Updated: Sat Mar 31 12:31:12 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 23520
+;;     Update #: 23521
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-cmd1.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -1718,7 +1718,7 @@ If TYPE is t (interactively, with a prefix arg), include variables
 
 PATTERN is a regexp.
 
-Starting with Emacs 24, if PATTERN includes no regexp special chars
+Starting with Emacs 22, if PATTERN includes no regexp special chars
 then it can alternatively be a list of \"words\" separated by spaces.
 Two or more of the words are matched in different orders against each
 preference name.  \"Word\" here really means a string of non-space
@@ -1747,14 +1747,14 @@ separate the words (any strings, in fact, including regexps) using
            pref-arg
            t)))
   (let ((found  ()))
-    (when (and (> emacs-major-version 23)  (require 'apropos nil t)
+    (when (and (> emacs-major-version 21)  (require 'apropos nil t)
                (string= (regexp-quote pattern) pattern)
                (not (string= "" pattern)))
       (setq pattern  (split-string pattern "[ \t]+" 'OMIT-NULLS)))
-    (when (fboundp 'apropos-parse-pattern) (apropos-parse-pattern pattern)) ; Emacs 24+
+    (when (fboundp 'apropos-parse-pattern) (apropos-parse-pattern pattern)) ; Emacs 22+
     (when msgp (message "Gathering apropos data for customize..."))
     (mapatoms `(lambda (symbol)
-                (when (string-match ,(if (> emacs-major-version 23) apropos-regexp pattern)
+                (when (string-match ,(if (> emacs-major-version 21) apropos-regexp pattern)
                                     (symbol-name symbol))
                   (when (and (not (memq type '(faces options))) ; groups or t
                              (get symbol 'custom-group))
