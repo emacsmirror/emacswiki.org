@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Fri Mar 30 09:23:19 2012 (-0700)
+;; Last-Updated: Sat Mar 31 11:15:10 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 8195
+;;     Update #: 8202
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-chg.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -85,6 +85,9 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd1.el'")
 ;;
+;; 2012/03/31 dadams
+;;     icicle-customize-apropos:  Do not call split-string if string is empty.
+;;     icicle-customize-apropos*: Added optional MSGP arg - display progress msg if non-nil.
 ;; 2012/03/30 dadams
 ;;     Added: icicle-customize-apropos-opt-action.
 ;;     icicle-customize-apropos-options-of-type: Rewrote as a multi-command using multi-completions.
