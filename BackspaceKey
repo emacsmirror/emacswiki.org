@@ -81,10 +81,9 @@ These two bindings together make the delete key behave like a forward looking ve
 
 == Emacs inside a terminal emulator ==
 
-With a terminal emulator such as <code>xterm</code>, you can usually configure the bytes sent by the Backspace and Delete keys.  For example, <code>xterm</code>, by default, sends the `DEL' character for Backspace and the sequence `ESC [ 3 ~' for the Delete key.
+With a terminal emulator such as <code>xterm</code>, you can usually configure the bytes sent by the Backspace and Delete keys.  For example, <code>xterm</code>, by default, sends the `DEL' character for Backspace and the sequence `ESC [ 3 ~' for the Delete key. The MacOS Terminal can be configured to do the same by unchecking the "Delete sends Ctrl-H" option under Preferences|Advanced. If your terminal is set up this way, configure Emacs' "Normal Erase Is Backspace" option to "Off" in order to make Emacs map 'backspace' to backward-delete-char and 'delete' to delete-char.
 
-: The next thing to do is to incorporate the original text of this topic.  Unfortunately, I have to go.  I'll try to do some more tomorrow.  This is still quite a mix of explanation, history, and plain how-to instructions.  Thoughts on how to break this up are appreciated. --DaleHagglund
-
+If your terminal is set up to send ^H when you press backspace, instead configure "Normal Erase Is Backspace" option to "On" (or "Maybe") so that Emacs will treat ^H as backward-delete-char instead of help.
 
 
 ----
