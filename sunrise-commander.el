@@ -7,7 +7,7 @@
 ;; Maintainer: José Alfredo Romero L. <escherdragon@gmail.com>
 ;; Created: 24 Sep 2007
 ;; Version: 5
-;; RCS Version: $Rev: 414 $
+;; RCS Version: $Rev: 415 $
 ;; Keywords: files, dired, midnight commander, norton, orthodox
 ;; URL: http://www.emacswiki.org/emacs/sunrise-commander.el
 ;; Compatibility: GNU Emacs 22+
@@ -2684,30 +2684,25 @@ See `dired-make-relative-symlink'."
 (defun sr-do-rename ()
   "Move selected files and directories recursively from one pane to the other."
   (interactive)
-  (if (sr-virtual-target)
-      (error "Cannot move files to a VIRTUAL buffer, try (C)opying instead"))
-  (let* ((selected-items (dired-get-marked-files nil))
-         (files-count (length selected-items))
-         (target sr-other-directory) progress)
-    (if (> files-count 0)
-        (if (sr-equal-dirs default-directory sr-other-directory)
-            (dired-do-rename)
-          (when (sr-ask "Move" target selected-items #'y-or-n-p)
-            (let ((names (mapcar #'file-name-nondirectory selected-items))
-                  (inhibit-read-only t))
-              (with-current-buffer (sr-other 'buffer)
-                (setq progress
-                      (sr-make-progress-reporter
-                       "renaming" (length selected-items)))
-                (sr-move-files selected-items default-directory progress)
-                (revert-buffer)
-                (dired-mark-remembered
-                 (mapcar (lambda (x) (cons (expand-file-name x) ?R)) names)))
-              (if (window-live-p (sr-other 'window))
-                  (sr-in-other (sr-focus-filename (car names)))))
-            (revert-buffer)
-            (sr-progress-reporter-done progress)))
-      (message "Sunrise: Empty selection. Nothing done."))))
+  (when (sr-virtual-target)
+    (error "Cannot move files to a VIRTUAL buffer, try (C)opying instead"))
+  (if (sr-equal-dirs default-directory sr-other-directory)
+      (dired-do-rename)
+    (let ((marked (dired-get-marked-files)))
+      (when (sr-ask "Move" sr-other-directory marked #'y-or-n-p)
+        (let ((names (mapcar #'file-name-nondirectory marked))
+              (progress (sr-make-progress-reporter "renaming" (length marked)))
+              (inhibit-read-only t))
+          (sr-in-other
+           (progn
+             (sr-move-files marked default-directory progress)
+             (revert-buffer)
+             (when (eq major-mode 'sr-mode)
+               (dired-mark-remembered
+                (mapcar (lambda (x) (cons (expand-file-name x) ?R)) names))
+               (sr-focus-filename (car names)))))
+          (sr-progress-reporter-done progress))
+        (revert-buffer)))))
 
 (defun sr-do-delete ()
   "Remove selected files from the file system."
@@ -2835,6 +2830,14 @@ IN-DIR/D => TO-DIR/D using CLONE-OP to clone the files."
       (make-directory (concat to-dir d)))
     (sr-clone-files file-paths-in-d (concat to-dir d) clone-op progress do-overwrite)))
 
+(defsubst sr-move-op (file target target-dir progress do-overwrite)
+  "Helper function used by `sr-move-files' to rename files and directories."
+  (condition-case nil
+      (dired-rename-file file target do-overwrite)
+    (error
+     (sr-clone-directory file "" target-dir 'copy-file progress do-overwrite)
+     (dired-delete-file file 'always))))
+
 (defun sr-move-files (file-path-list target-dir progress &optional do-overwrite)
   "Move all files in FILE-PATH-LIST (list of full paths) to TARGET-DIR."
   (mapc
@@ -2848,10 +2851,8 @@ IN-DIR/D => TO-DIR/D using CLONE-OP to clone the files."
               (if (file-exists-p target)
                   (when (or (eq do-overwrite 'ALWAYS)
                             (setq do-overwrite (sr-ask-overwrite target)))
-                    (sr-clone-directory f "" target-dir 'copy-file progress
-                                        do-overwrite)
-                    (dired-delete-file f 'always))
-                (dired-rename-file f target do-overwrite))))
+                    (sr-move-op f target target-dir progress do-overwrite))
+                (sr-move-op f target target-dir progress do-overwrite))))
         (let* ((name (file-name-nondirectory f))
                (target-file (concat target-dir name)))
           ;; (message "Renaming: %s => %s" f target-file)
