@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Sat Mar 31 11:08:02 2012 (-0700)
+;; Last-Updated: Sat Mar 31 11:17:30 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 23519
+;;     Update #: 23520
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-cmd1.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -1706,8 +1706,8 @@ This is an Icicles command - see command `icicle-mode'."
   "Customize all loaded user preferences matching PATTERN.
 When prompted for the PATTERN, you can use completion against
 preference names - e.g. `S-TAB'.  Instead of entering a pattern you
-can then just hit `RET' to accept the list of matching faces.  This
-lets you see which preferences will be available in the customize
+can then just hit `RET' to accept the list of matching preferences.
+This lets you see which preferences will be available in the customize
 buffer and dynamically change that list.
 
 If TYPE is `options', include only user options.
