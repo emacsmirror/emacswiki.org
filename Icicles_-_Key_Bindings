@@ -231,6 +231,8 @@ to keys in ''Icicle'' mode -- they are ''not'' bound by '''Icicles''' (except to
 [:icicle-apply]
 [:icicle-apropos]
 [:icicle-apropos-command]
+[:icicle-apropos-function]
+[:icicle-apropos-option]
 [:icicle-apropos-variable]
 [:icicle-apropos-zippy]
 [:icicle-bookmark-file-other-window]
@@ -340,11 +342,12 @@ to keys in ''Icicle'' mode -- they are ''not'' bound by '''Icicles''' (except to
 * `icicle-add-entry-to-saved-completion-set' -- Add a completion candidate to a [[Icicles - Candidate Sets|saved set]]
 * `icicle-add/update-saved-completion-set' -- Add a set to `icicle-saved-completion-sets'
 * `icicle-apply'        -- Apply function to [[alist]] items
-* `icicle-apropos'     --  Like `apropos', but shows matches
+* `icicle-apropos'     --  Enhanced `apropos' -- shows matches etc.
 * `icicle-apropos-command' -- Enhanced `apropos-command'
-* `icicle-apropos-variable' -- Enhanced `apropos-variable'
+* `icicle-apropos-function' -- All functions, not just [[command]]s
+* `icicle-apropos-option' -- Only [[option]]s, not all variables
+* `icicle-apropos-variable' -- All [[variable]]s, not just options
 * `icicle-apropos-zippy' -- Show matching Zippy quotes
-
 
 * `icicle-bookmark-file-other-window' -- Jump to file bookmarks
 * `icicle-bookmark-dired-other-window'  -- Jump to [[Dired]] bookmarks
