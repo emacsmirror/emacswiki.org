@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Fri Mar 30 09:44:37 2012 (-0700)
+;; Last-Updated: Sat Mar 31 14:48:59 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 26524
+;;     Update #: 26527
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-doc1.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -4235,17 +4235,17 @@
 ;;  options, it opens Customize for them.  See the doc for
 ;;  `icicle-describe-option-of-type' for details about how to use it.
 ;;
-;;  One difference between Icicles apropos commands and the standard
-;;  commands, besides the Icicles enhancements already described, is
-;;  that (starting with Emacs 22) the standard commands let you input
-;;  a set of keywords, as an alternative to inputting a regexp.
-;;  Icicles apropos commands do not allow for keyword input, as such.
+;;  Starting with Emacs 22, both the standard Emacs apropos commands
+;;  and the Icicles versions let you input a set of words (really, any
+;;  strings with no regexp special chars) separated by space chars, as
+;;  an alternative to inputting a regexp.
+;;
 ;;  However, Icicles progressive completion provides a more powerful
-;;  way to search with multiple keywords (in fact, multiple regexps) -
+;;  way to search with multiple words (in fact, multiple regexps) -
 ;;  you can of course use it with the Icicles apropos commands.  Also,
-;;  there are several problems with the standard Emacs apropos
-;;  commands, with respect to interpreting your input as either a set
-;;  of keywords or a regexp.  Because they allow two very different
+;;  there are a few problems with the standard Emacs apropos commands,
+;;  with respect to interpreting your input as either a set of
+;;  keywords or a regexp.  Because they allow two very different
 ;;  syntaxes as input, the standard apropos commands are forced to
 ;;  make some limiting compromises for keyword searching.
 ;;
