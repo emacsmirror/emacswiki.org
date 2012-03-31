@@ -5,7 +5,7 @@
 ;; Package-Requires: ()
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/thesaurus.el
 ;; X-URL: http://cheeso.members.winisp.net/srcview.aspx?dir=emacs&file=thesaurus.el
-;; Version: 1.0.3
+;; Version: 1.0.4
 ;; Keywords: thesaurus synonym
 ;; License: New BSD
 
@@ -19,9 +19,9 @@
 ;;
 ;; I standardized the naming, re-factored, wrote some documentation,
 ;; introduced the dependency on dropdown-list.el and x-popup-menu, added
-;; a license, and polished it.
+;; a license, introduced some error handling, and polished it.
 ;;
-;; Right now it depends on a web service from big huge labs. It
+;; Right now it depends on a web service from Big Huge Labs. It
 ;; is not tied to that service, and could be expanded to use other
 ;; services, and to even dynamically choose which service to access.
 ;;
@@ -36,13 +36,19 @@
 ;;
 ;; This module currently relies on a BigHugeLabs thesaurus service. The
 ;; service is currently free, and has a limit of 10,000 lookups per
-;; day. If anyone exceeds this, it shouldn't be difficult to expand
-;; this module to support other online thesaurus services. Wolfram Alpha
-;; is one possible option; there is a free API. I'm sure there are
-;; others.
+;; day. If the service changes, or becomes unavailable, or if anyone
+;; exceeds the limit, it shouldn't be difficult to expand this module to
+;; support other online thesaurus services. Wolfram Alpha is one
+;; possible option; there is a free API. Surely there are others.
 ;;
 
 ;;; Revisions:
+;;
+;; 1.0.4  2012-March-30  Dino Chiesa
+;;    use message-box to notify users when they need to acquire an api
+;;    key, and pop a browser to do so. Use a special message-box on
+;;    Windows.  Also, handle the case where no synonyms are found - for
+;;    example, when looking up a mis-spelled or non-existent word.
 ;;
 ;; 1.0.3  2012-March-30  Dino Chiesa
 ;;    include x-popup-menu as the default prompting mechanism.
@@ -92,26 +98,31 @@
 ;; WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 ;; POSSIBILITY OF SUCH DAMAGE.
 ;;
-;;
-
 
 
 (defgroup thesaurus nil
-  "Provides a facility to look up synonyms")
+  "Provides a facility to look up synonyms.")
 
 (defcustom thesaurus-bhl-api-key nil
-  "The api key for connecting to BigHugeLabs.com"
+  "The api key for connecting to BigHugeLabs.com.
+
+Get one by visiting  http://words.bighugelabs.com/getkey.php
+
+"
+  :type 'string
   :group 'thesaurus)
 
 (defcustom thesaurus-prompt-mechanism 'x-popup-menu
-  "The prompting mechanism for thesaurus choices. Options:
-'x-popup-menu, or 'dropdown-list.  When setting this,
-set it to the symbol, not to the string or the actual
+  "The mechanism used to prompt the user for his choice of
+synonym. Options: 'x-popup-menu, or 'dropdown-list.  When setting
+this, set it to the symbol, not to the string or the actual
 function.  Eg
 
   (setq thesaurus-prompt-mechanism 'x-popup-menu)
 
 "
+  :type 'symbol
+  :options '('x-popup-menu 'dropdown-list)
   :group 'thesaurus)
 
 (defvar thesaurus---load-path (or load-file-name "~/thesaurus.el")
@@ -140,8 +151,9 @@ function.  Eg
   (gethash key thesaurus-cache))
 
 (defun thesaurus-cache-put (key value)
-  (puthash key value thesaurus-cache)
-  (when thesaurus-can-save-cache-p (thesaurus-cache-save))
+  (when value
+    (puthash key value thesaurus-cache)
+    (when thesaurus-can-save-cache-p (thesaurus-cache-save)))
   value)
 
 (defun thesaurus-cache-save ()
@@ -157,32 +169,125 @@ function.  Eg
                             (point-min) (point-max)))))))
 
 (defun thesaurus-get-buffer-for-word (word)
-  "retrieve a list of synonyms for the given word, from the
+  "Retrieve a list of synonyms for the given word, from the
 web service."
-  ;; could insert a choose function here
+  ;; could insert a chooser function here
   (thesaurus-get-buffer-for-word-bhl word))
+
+(defun thesaurus-msgbox (msg)
+  "Display a message in a dialog box."
+  (if (thesaurus-want-msgbox-via-powershell)
+      (thesaurus-msgbox-via-powershell msg)
+    (message-box msg)))
+
+
+(defun thesaurus-want-msgbox-via-powershell ()
+  "Determine if we want to display a message box
+using Windows powershell."
+  (and (eq system-type 'windows-nt)
+       (file-exists-p (thesaurus-get-powershell-exe))))
+
+(defun thesaurus-get-powershell-exe ()
+  "get location of powershell exe."
+  (concat
+   (or (getenv "windir") "c:\\windows")
+   "\\System32\\WindowsPowerShell\\v1.0\\powershell.exe"))
+
+
+(defun thesaurus-msgbox-via-powershell (format-string &rest args)
+  "Display a message box via powershell and Windows Forms.
+
+The `message-box' fn works poorly on Windows; it does not allow
+the encoding of newlines and also the UI generally looks like a
+silly toy.
+
+This can be used in place of `message-box' on Windows.
+
+This is used within `thesaurus.el' in only one case: to notify
+the user that he needs to register for an API key.
+
+"
+  (flet ((rris (a1 a2 s) (replace-regexp-in-string a1 a2 s)))
+    (let* ((msg (format format-string args))
+           (ps-cmd
+            ;; This is a command to be passed on the cmd.exe line.
+            ;; Newlines encoded as \n or `n do not display properly. This
+            ;; code transforms splits the string on newlines, then joins,
+            ;; using [char]0x000D as the "glue".  Also - need to perform
+            ;; special escaping of single and double quotes.  All this
+            ;; because we are passing a script to powershell on the
+            ;; command line.
+            ;;
+            ;; creating a file with script code in it, then passing
+            ;; that file to powershell, would avoid the need for
+            ;; special escaping.  But that is not feasible, since by
+            ;; default powershell prohibits executing scripts. But
+            ;; powershell allows running script passed as -Command. So.
+            (concat "[void][System.Reflection.Assembly]::LoadWithPartialName('System.Windows.Forms');"
+                    "[Windows.Forms.MessageBox]::Show("
+                    (mapconcat '(lambda (elt)
+                                  (rris (char-to-string 34)
+                                        (char-to-string 39)
+                                        (pp-to-string
+                                         (rris (char-to-string 34)
+                                               "'+[char]0x0022+'"
+                                               (rris (char-to-string 39)
+                                                     "'+[char]0x0027+'"
+                                                     elt)
+                                               ))))
+                               (split-string msg "\n" nil)
+                               "+[char]0x000D+")
+                    ",'Message from Emacs',"
+                    "[Windows.Forms.MessageBoxButtons]::OK,"
+                    "[Windows.Forms.MessageBoxIcon]::Information)"))
+           (shell-command
+            (format "%s -Command %s"
+                    (thesaurus-get-powershell-exe)
+                    (concat "\"& {" ps-cmd "}\""))))
+      (shell-command-on-region (point) (point)
+                               shell-command
+                               nil nil nil))))
+
 
 (defun thesaurus-get-buffer-for-word-bhl (word)
   "retrieve a list of synonyms for the given word, from the
 BigHugeLabs web service."
   (if (not (and (boundp 'thesaurus-bhl-api-key)
                 (stringp thesaurus-bhl-api-key)))
-    (error "Invalid api key for BigHugeLabs."))
+      (let ((msg (concat "You need to get an \"api key\" from BigHugeLabs.\n"
+                     "Then, set it in your .emacs with a statement like:\n"
+                     "    (setq thesaurus-bhl-api-key \"XXXXXXXXXXXX\") \n")))
+        (thesaurus-msgbox msg)
+        (browse-url "http://words.bighugelabs.com/getkey.php")
+        nil)
   (url-retrieve-synchronously
    (concat "http://words.bighugelabs.com/api/2/"
-           thesaurus-bhl-api-key "/" word "/")))
+           thesaurus-bhl-api-key "/" word "/"))))
 
 
-(defun thesaurus-dump-http-headers ()
+
+(defun thesaurus-process-http-headers ()
   "In the buffer created by `url-retrieve-synchronously',
-there are HTTP headers. This fn removes them. It deletes each
-line until finding a blank line, which in normal HTTP signals the
-end of the headers and the beginning of the message content.
+there are HTTP headers, and content. This fn removes the headers
+from the buffer, parsing the Content-Length header to verify that
+a substantive response was received.
+
+This implementation deletes each line until finding a blank line,
+which in correctly-formatted HTTP messages signals the end of the
+headers and the beginning of the message content.
 "
-  (while (/= (point) (line-end-position))
-    (delete-region (point) (line-end-position))
-    (delete-char 1))
-  (delete-char 1))
+  (let ((clength -1))
+    (while (/= (point) (line-end-position))
+      (when (and (< clength 0)
+               (re-search-forward "^[Cc]ontent-[Ll]ength ?: *\\(.*\\)$" (line-end-position) t))
+          (setq clength (string-to-number (match-string 1)))
+          (goto-char (line-beginning-position)))
+      (delete-region (point) (line-end-position))
+      (delete-char 1))
+    (delete-char 1)
+    clength))
+
+
 
 
 (defun thesaurus-parse-one-line ()
@@ -200,13 +305,11 @@ The return value is a list, with those three items in it,
 in that order.
 
 "
-  (let ((start (point))
-        (end (line-end-position))
-        s parts)
-
-    (setq s (buffer-substring-no-properties start end)
+  (let (start end s parts)
+    (setq start  (point)
+          end (line-end-position)
+          s (buffer-substring-no-properties start end)
           parts (split-string s "|"))
-
     (delete-region start end)
     (delete-char 1)
     parts))
@@ -216,16 +319,19 @@ in that order.
   "fetch synonyms for the given word, from a remote source."
   (let ((synonym-list nil)
         (buf (thesaurus-get-buffer-for-word word)))
-    (with-current-buffer buf
-      (rename-buffer (concat "*thesaurus* - " word) t)
-      (goto-char (point-min))
-      (thesaurus-dump-http-headers)
-      (while (not (= (point-min) (point-max)))
-        (let ((elt (thesaurus-parse-one-line)))
-          (if elt
-              (add-to-list 'synonym-list elt)))))
-    (kill-buffer buf)
-    (nreverse synonym-list)))
+    (if buf
+        (progn
+          (with-current-buffer buf
+            (rename-buffer (concat "*thesaurus* - " word) t)
+            (goto-char (point-min))
+            (if (> (thesaurus-process-http-headers) 0)
+                (while (not (= (point-min) (point-max)))
+                  (let ((elt (thesaurus-parse-one-line)))
+                    (if elt
+                        (add-to-list 'synonym-list elt))))
+              (message-box "No synonyms found.")))
+          (kill-buffer buf)
+          (nreverse synonym-list)))))
 
 
 ;;;###autoload
@@ -248,7 +354,7 @@ or, if there is no cache hit, then from the remote service.
 
 
 (defun thesaurus--generate-menu (candidates)
-  "Generate a menu suitable for use in `x-popup-menu' from the
+  "Generate a menu suitable for use in `x-popup-dialog' from the
 list of candidates. Each item in the list of candidates is a
 list, (FORM FLAVOR WORD), where FORM is one of {adjective, verb,
 noun, etc}, FLAVOR is {syn, sim, rel, ant, etc}, and WORD is the
@@ -260,9 +366,13 @@ actual word.
                            (concat (nth 2 elt) " (" (nth 0 elt) ")")
                            (nth 2 elt)))
                        candidates)))
-    (setq items (cons "Ignored pane title" items))
 
-    (list "Replace with..." items)))
+    ;; this works with x-popup-menu
+    (setq items (cons "Ignored pane title" items))
+    (list "Replace with..." items)
+    ;; ;; this works with x-popup-dialog
+    ;; (cons "Replace with..." items)
+    ))
 
 
 
@@ -274,6 +384,8 @@ See `thesaurus-prompt-mechanism'.
 
 "
   (cond
+   ((not candidates)
+    nil)
    ((and (eq thesaurus-prompt-mechanism 'dropdown-list)
          (featurep 'dropdown-list))
     (let ((choice-n (dropdown-list (mapcar '(lambda (elt) (nth 2 elt)) candidates))))
@@ -282,6 +394,13 @@ See `thesaurus-prompt-mechanism'.
         (keyboard-quit))))
 
    (t
+    ;; NB:
+    ;; x-popup-menu displays in the proper location, near
+    ;; the cursor.
+    ;;
+    ;; x-popup-dialog always displays in the center
+    ;; of the frame, which makes for an annoying
+    ;; user-experience.
     (x-popup-menu (thesaurus-get-menu-position)
                   (thesaurus--generate-menu candidates)))))
 
