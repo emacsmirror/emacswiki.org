@@ -13,7 +13,7 @@ I wrote a few light-weight Emacs extensions, mostly for my own use:
 * [http://github.com/ZungBang/emacs-grep-o-matic/tree grep-o-matic] - use a single key combination to launch a search for the text under the cursor or marked region, in the currently open files, current buffer's directory or the whole current source code repository
 * [https://github.com/ZungBang/emacs-repository-root/tree repository-root] - deduce the repository root directory for a given file or directory
 
-I'm also known online as [::ZungBang] (or Zung!) - pronounced "tsoong bang", a nick I took on during my days as a [http://web.archive.org/web/20050420222712/http://www.telefragged.com/zungbang/ Quake hacker].
+I'm also known online as [::ZungBang] (or Zung!) - pronounced "tsoong bang", a nick I took on during my days as a [http://www.atomicgamer.com/zungbang/ Quake hacker].
 
 I run a [http://machine-cycle.blogspot.com blog] that documents the pain and glory involved in running [http://www.debian.org Debian GNU/Linux] on my home computer. 
 
