@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Sun Apr  1 07:51:12 2012 (-0700)
+;; Last-Updated: Sun Apr  1 12:00:30 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 8211
+;;     Update #: 8227
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-chg.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -85,6 +85,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd1.el'")
 ;;
+;; 2012/04/01 dadams
+;;     Removed: old-customize-apropos* (no longer redefine automatically for Icicle mode).
 ;; 2012/03/31 dadams
 ;;     icicle-customize-apropos:  Do not call split-string if string is empty.
 ;;                                Allow word list for Emacs 22+, not 24+.
@@ -582,6 +584,7 @@
 ;;
 ;; 2012/04/01 dadams
 ;;     Added: icicle-apropos-option-of-type, icicle-apropos-opt-action.
+;;     icicle-where-is: In help fn, wrap individual key sequences in `', not just all of them together.
 ;; 2012/03/31 dadams
 ;;     icicle-apropos*: Updated wrt Emacs 24 (handle PATTERN).  Added optional MSGP arg.
 ;; 2012/03/28 dadams
@@ -5493,6 +5496,10 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-opt.el'")
 ;;
+;; 2012/04/01 dadams
+;;     Moved to icicle-top-level-key-bindings from icicle-functions-to-redefine:
+;;       customize-*, dabbrev-completion, repeat-complex-command.
+;;     icicle-top-level-key-bindings: Added replacements for apropos* commands.
 ;; 2012/02/28 dadams
 ;;     for Emacs 20: Use eval-when-compile, not eval-and-compile, to require cl.el.
 ;; 2012/02/26 dadams
