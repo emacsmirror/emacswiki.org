@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Sat Mar 31 14:48:59 2012 (-0700)
+;; Last-Updated: Sun Apr  1 13:35:39 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 26527
+;;     Update #: 26565
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-doc1.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -225,9 +225,10 @@
 ;;    (@> "Changing the Sort Order")
 ;;    (@> "Defining New Sort Orders")
 ;;    (@> "Different Sorts for Different Sorts of Uses")
-;;  (@> "Get Help on Candidates")
-;;    (@> "Use Candidate Help Like You Use Emacs Command `apropos'")
-;;    (@> "Other Icicles Apropos Commands")
+;;  (@> "A Propos d'Apropos")
+;;    (@> "Get Help on Candidates")
+;;      (@> "Use Candidate Help Like You Use Emacs Command `apropos'")
+;;    (@> "Icicles Apropos Commands")
 ;;
 ;;  (@> "Multi-Commands")
 ;;    (@> "What Is a Multi-Command?")
@@ -4001,17 +4002,41 @@
 ;;    way to filter and sort the domain of discourse, that is, all
 ;;    possible candidates, prior to any use of completion.
  
-;;(@* "Get Help on Candidates")
+;;(@* "A Propos d'Apropos")
 ;;
-;;  Get Help on Candidates
-;;  ----------------------
+;;  A Propos d'Apropos
+;;  ------------------
+;;
+;;  The Icicles doc speaks often of apropos this and apropos that.
+;;  "Apropos" could almost be thought of as another name for Icicles.
+;;
+;;  Somewhat different things are meant by this term.  But they all
+;;  stem from the traditional use in Emacs of the term to mean
+;;  "about", and the traditional `apropos' commands that accept a
+;;  regexp and give you information about symbols whose names match
+;;  that regexp.
+;;
+;;  The most common mention of "apropos" in Icicles is in connection
+;;  with "apropos completion" - see (@> "Apropos Completions"), which
+;;  uses regexp matching.  It is the regexp matching that inspires the
+;;  name.
+;;
+;;  This doc section describes ways in which Icicles gives you help
+;;  apropos (about) something in Emacs.  All of these ways let you use
+;;  regexp matching, but they also work with any other kind of
+;;  matching.  That is, they provide information about things, and you
+;;  can use them with apropos completion, but you can also use them
+;;  with other kinds of completion.
+;;
+;;(@* "Get Help on Candidates")
+;;  ** Get Help on Candidates **
 ;;
 ;;  General Icicles help is available at any time during minibuffer
 ;;  input, by hitting `C-?' (`icicle-minibuffer-help').  This section
-;;  is about specific help on individual completion candidates
-;;  instead.
+;;  is instead about specific help for individual completion
+;;  candidates.
 ;;
-;;  When you cycle among candidates for input, help on the current
+;;  When you cycle among completion candidates, help for the current
 ;;  candidate is shown in the mode-line, provided user option
 ;;  `icicle-help-in-mode-line-delay' is greater than zero.  This makes
 ;;  it easy to see what each candidate means or does.  Similarly, this
@@ -4059,7 +4084,7 @@
 ;;  (@> "Multi-Commands").
 ;;
 ;;(@* "Use Candidate Help Like You Use Emacs Command `apropos'")
-;;  ** Use Candidate Help Like You Use Emacs Command `apropos' **
+;;  *** Use Candidate Help Like You Use Emacs Command `apropos' ***
 ;;
 ;;  You can use this candidate-help functionality as a kind of
 ;;  expanded `apropos' functionality.  As an example, type `C-h v
@@ -4130,8 +4155,8 @@
 ;;  documentation.  See the doc string of
 ;;  `icicle-describe-option-of-type' for more possibilities.  See
 ;;  also `icicle-customize-apropos-options-of-type'
-;;  ((@> "Other Icicles Apropos Commands")), which is similar
-;;  to `icicle-describe-option-of-type' but which opens a Customize
+;;  ((@> "Icicles Apropos Commands")), which is similar to
+;;  `icicle-describe-option-of-type' but which opens a Customize
 ;;  buffer for all of the matching options when you hit `RET'.
 ;;
 ;;  Candidate help (prefix `C-M-') is available for these types of
@@ -4196,21 +4221,32 @@
 ;;  the way, whenever you access help on a candidate.  (Default value:
 ;;  `right', meaning move it to the right).
 ;; 
+;;(@* "Icicles Apropos Commands")
+;;  ** Icicles Apropos Commands **
 ;;
-;;(@* "Other Icicles Apropos Commands")
-;;  ** Other Icicles Apropos Commands **
+;;  The commands described in this section can generally be thought of
+;;  as extensions of the traditional Emacs apropos commands.  In
+;;  addition to what each of them does with your chosen completion
+;;  candidate or the current set of completion candidates, each of
+;;  them provides the complete documentation for the current
+;;  completion candidate as its candidate help (`C-M-RET',
+;;  `C-M-mouse-2', and so on).
 ;;
-;;  There are also Icicles replacements for the standard Emacs
-;;  `apropos' commands.  They act similarly, but they also let you see
-;;  the list of regexp matches incrementally (as with all Icicles
-;;  commands), using `S-TAB'.  If you also use my library
+;;(@* "Replacements for Standard Apropos Commands")
+;;  *** Replacements for Standard Apropos Commands ***
+;;
+;;  By default (see option `icicle-top-level-key-bindings'), in Icicle
+;;  mode the standard Emacs `apropos' commands are remapped to Icicles
+;;  versions.  The Icicles commands act similarly, but they also let
+;;  you see the list of regexp matches incrementally (as with all
+;;  Icicles commands), using `S-TAB'.  If you also use my library
 ;;  `apropos-fn+var.el', then these Icicles commands take advantage of
-;;  the apropos enhancements in that library.
+;;  the apropos enhancements provided by that library.
 ;;
-;;  The Icicles apropos commands are: `icicle-apropos',
-;;  `icicle-apropos-command', `icicle-apropos-function',
-;;  `icicle-apropos-option', `icicle-apropos-variable', and
-;;  `icicle-apropos-zippy'.
+;;  These are the Icicles apropos commands that standard commands are
+;;  remapped to: `icicle-apropos', `icicle-apropos-command',
+;;  `icicle-apropos-function', `icicle-apropos-option',
+;;  `icicle-apropos-variable', and `icicle-apropos-zippy'.
 ;;
 ;;  Another feature of these Icicles commands is that when more than
 ;;  one type of object can be a candidate, candidates of a certain
@@ -4218,22 +4254,6 @@
 ;;  `icicle-special-candidate'.  For example, command `icicle-apropos'
 ;;  shows function names as special candidates, to help you
 ;;  distinguish them from variable names.
-;;
-;;  In addition, Icicles commands `icicle-doc', `icicle-fundoc', and
-;;  `icicle-vardoc' provide the functionality of standard Emacs
-;;  command `apropos-documentation', but with additional features -
-;;  see (@file :file-name "icicles-doc2.el" :to "Multi-Completions").
-;;  In addition, you can use command `icicle-plist' to find symbols
-;;  with certain property-list keys and values, and you can use
-;;  command `icicle-describe-option-of-type' (bound to `C-h C-o') to
-;;  find user options of a certain type.
-;;
-;;  Command `icicle-customize-apropos-options-of-type' is similar to
-;;  `icicle-describe-option-of-type' (bound by default to `C-h C-o').
-;;  It lets you specify the type of matching options, and it is a
-;;  multi-completion multi-command.  But instead of describing
-;;  options, it opens Customize for them.  See the doc for
-;;  `icicle-describe-option-of-type' for details about how to use it.
 ;;
 ;;  Starting with Emacs 22, both the standard Emacs apropos commands
 ;;  and the Icicles versions let you input a set of words (really, any
@@ -4250,6 +4270,47 @@
 ;;  make some limiting compromises for keyword searching.
 ;;
 ;;  See Also: (@> "Progressive Completion").
+;;
+;;(@* "Documentation Apropos Multi-Commands")
+;;  *** Documentation Apropos Multi-Commands ***
+;;
+;;  Icicles multi-commands `icicle-doc', `icicle-fundoc', and
+;;  `icicle-vardoc' provide the functionality of standard Emacs
+;;  command `apropos-documentation', but with additional features -
+;;  see (@file :file-name "icicles-doc2.el" :to "Multi-Completions").
+;;  In addition, you can use multi-command `icicle-plist' to find
+;;  symbols with certain property-list keys and values.
+;;
+;;  Each of those multi-commands uses multi-completion candidates.
+;;  The candidates in each case are multi-part, with the first part
+;;  being the name of the symbol and the last part being its
+;;  documentation.  For `icicle-doc' there is a middle part, which is
+;;  the symbol type (`FUNCTION', `VARIABLE', or `FACE').
+;;
+;;(@* "Type-Aware Apropos Multi-Commands")
+;;  *** Type-Aware Apropos Multi-Commands ***
+;;
+;;  The following apropos multi-commands for user options also use
+;;  multi-completion candidates.  In this case the first part is the
+;;  option name and the second part is its Customize type (`defcustom'
+;;  type).
+;;
+;;  * `icicle-describe-option-of-type' (bound to `C-h C-o')
+;;  * `icicle-apropos-options-of-type'
+;;  * `icicle-customize-apropos-options-of-type'
+;;
+;;  They all work the same way.  They do something with all loaded
+;;  user options of a the type that you specify.  The first one
+;;  describes an individual option, showing its doc string.  The
+;;  second opens an Apropos buffer for all matching options.  The
+;;  third opens a Customize buffer for them.
+;;
+;;  These are very powerful commands, especially if you know a bit
+;;  about `defcustom' `:type' specifications, but even if you do not.
+;;  See the doc string of `icicle-describe-option-of-type' for more
+;;  information, especially about using a prefix argument to determine
+;;  how the second, `TYPE', part of the completion candidates is
+;;  handled.
  
 ;;(@* "Multi-Commands")
 ;;
