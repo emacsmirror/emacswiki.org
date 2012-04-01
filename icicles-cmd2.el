@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Thu May 21 13:31:43 2009 (-0700)
 ;; Version: 22.0
-;; Last-Updated: Sat Mar 31 12:08:37 2012 (-0700)
+;; Last-Updated: Sun Apr  1 07:47:27 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 5295
+;;     Update #: 5304
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-cmd2.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -23,9 +23,9 @@
 ;;   `frame-fns', `fuzzy', `fuzzy-match', `hexrgb', `icicles-cmd1',
 ;;   `icicles-face', `icicles-fn', `icicles-mcmd', `icicles-opt',
 ;;   `icicles-var', `image-dired', `kmacro', `levenshtein',
-;;   `misc-fns', `mouse3', `mwheel', `naked', `pp', `pp+',
-;;   `regexp-opt', `ring', `ring+', `second-sel', `strings',
-;;   `thingatpt', `thingatpt+', `wid-edit', `wid-edit+', `widget'.
+;;   `misc-fns', `mouse3', `mwheel', `naked', `regexp-opt', `ring',
+;;   `ring+', `second-sel', `strings', `thingatpt', `thingatpt+',
+;;   `wid-edit', `wid-edit+', `widget'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -58,9 +58,9 @@
 ;;    (+)`a', (+)`any', (+)`buffer', (+)`file', (+)`icicle-anything',
 ;;    (+)`icicle-apply', `icicle-apropos', `icicle-apropos-command',
 ;;    `icicle-apropos-function', `icicle-apropos-option',
-;;    `icicle-apropos-variable', `icicle-apropos-zippy',
-;;    (+)`icicle-bookmark-a-file', (+)`icicle-choose-faces',
-;;    (+)`icicle-choose-invisible-faces',
+;;    (+)`icicle-apropos-option-of-type', `icicle-apropos-variable',
+;;    `icicle-apropos-zippy', (+)`icicle-bookmark-a-file',
+;;    (+)`icicle-choose-faces', (+)`icicle-choose-invisible-faces',
 ;;    (+)`icicle-choose-visible-faces', (+)`icicle-comint-command',
 ;;    (+)`icicle-comint-search', (+)`icicle-compilation-search',
 ;;    (+)`icicle-complete-keys', `icicle-complete-thesaurus-entry',
@@ -163,7 +163,7 @@
 ;;
 ;;    `icicle-add-key+cmd', `icicle-anything-candidate-value',
 ;;    `icicle-apply-action', `icicle-apply-list-action',
-;;    `icicle-char-properties-in-buffer',
+;;    `icicle-apropos-opt-action', `icicle-char-properties-in-buffer',
 ;;    `icicle-char-properties-in-buffers',
 ;;    `icicle-choose-anything-candidate',
 ;;    `icicle-choose-candidate-of-type',
@@ -3159,6 +3159,39 @@ of strings is used as a word list."
      (when (fboundp 'apropos-parse-pattern) (apropos-parse-pattern pattern)) ; Emacs 22+
      (when msgp (message (format "Gathering data apropos %s..." (if do-all "functions" "commands"))))
      (apropos-command pattern do-all var-predicate))))
+
+;;;###autoload (autoload 'icicle-apropos-option-of-type "icicles-cmd1")
+(icicle-define-command icicle-apropos-option-of-type
+  "Show user options of a given type.
+Enter patterns for the OPTION name and TYPE definition in the
+minibuffer, separated by `icicle-list-join-string', which is \"^G^J\",
+by default.  (`^G' here means the Control-g character, input using
+`C-h C-g'.  Likewise, for `^J'.)
+
+OPTION is a regexp that is matched against option names.
+
+See `icicle-describe-option-of-type', which handles input and
+completion similarly, for a full description of TYPE, matching, and
+the use of a prefix argument."          ; Doc string
+  icicle-apropos-opt-action             ; Action function
+  prompt                                ; `completing-read' args
+  'icicle-describe-opt-of-type-complete nil nil nil nil nil nil
+  ((prompt                             "OPTION `C-M-j' TYPE: ") ; Bindings
+   (icicle-candidate-properties-alist  '((1 (face icicle-candidate-part))))
+   ;; Bind `icicle-apropos-complete-match-fn' to nil to prevent automatic input matching
+   ;; in `icicle-unsorted-apropos-candidates' etc., because `icicle-describe-opt-of-type-complete'
+   ;; does everything.
+   (icicle-apropos-complete-match-fn   nil)
+   (icicle-candidate-help-fn           'icicle-describe-opt-action)
+   (icicle-pref-arg                    current-prefix-arg))
+  (progn (put-text-property 0 1 'icicle-fancy-candidates t prompt) ; First code
+         (icicle-highlight-lighter)
+         (message "Gathering user options and their types...")))
+
+(defun icicle-apropos-opt-action (opt+type)
+  "Action function for `icicle-apropos-option-of-type'."
+  (let ((icicle-list-use-nth-parts  '(1)))
+    (apropos-option (icicle-transform-multi-completion opt+type))))
 
 ;;;###autoload
 (defun icicle-apropos-zippy (regexp)
