@@ -115,7 +115,9 @@ The most important links are '''bold''' here.
 * '''[[Icicles - Completions Display]]''' -- how '''Icicles''' uses buffer `*Completions*'
 * '''[[Icicles - Icompletion]]''' -- incremental updating of the set of completion candidates
 * '''[[Icicles - Sorting Candidates]]''' -- controlling sorting and removal of duplicates
-* '''[[Icicles - Help on Candidates]]''' -- displaying help on individual candidates while cycling -- '''Icicles''''s answer to `apropos'
+
+* '''[[Icicles - A Propos d'Apropos]]''' -- 1) apropos commands unleashed, 2) help for individual candidates while cycling
+
 * '''[[Icicles - Multi-Commands]]''' -- making ''multiple input choices'' in a single command execution; performing actions on candidates while cycling
 * '''[[Icicles - More About Multi-Commands]]''' -- more about multi-commands
 * [[Icicles - Tripping]] -- multi-commands for navigating and exploring
