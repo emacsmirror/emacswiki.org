@@ -14,7 +14,7 @@ Another method is to go from the bottom up approach. If you find a page that nee
 
 ==== Ideas, and todo list ====
 * Make a central JavaScript page of sorts, outlining various javascript projects, packages, etc that are available for emacs.  
-* clean up Js2Mode
+* clean up [[Js2Mode]]
 * Clean JavaScriptMode, this one is going to need a lot of work
 * Clean out any old pages that are no longer applicable, SelenEmacs is a good for-instance
 * Fix backlinks of old EcmaScript page to point to JavaScript, and then delete 
