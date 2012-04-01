@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Thu May 21 13:31:43 2009 (-0700)
 ;; Version: 22.0
-;; Last-Updated: Sun Apr  1 07:47:27 2012 (-0700)
+;; Last-Updated: Sun Apr  1 10:47:17 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 5304
+;;     Update #: 5308
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-cmd2.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -2375,25 +2375,25 @@ remapping, then customize option `icicle-top-level-key-bindings'." ; Doc string
   t
   ((pref-arg  current-prefix-arg)       ; Bindings
    (pred                                    (if pref-arg
-                                                #'(lambda (c)
-                                                    (unless (symbolp c) (setq c (intern c)))
-                                                    (commandp c))
-                                              #'(lambda (c)
-                                                  (unless (symbolp c) (setq c (intern c)))
+                                                #'(lambda (cand)
+                                                    (unless (symbolp cand) (setq cand  (intern cand)))
+                                                    (commandp cand))
+                                              #'(lambda (cand)
+                                                  (unless (symbolp cand) (setq cand  (intern cand)))
                                                   (with-current-buffer icicle-orig-buff
-                                                    (and (commandp c)
-                                                         (where-is-internal
-                                                          c overriding-local-map 'non-ascii))))))
+                                                    (and (commandp cand)
+                                                         (where-is-internal cand overriding-local-map
+                                                                            'non-ascii))))))
    (icompletep                              (and (boundp 'icomplete-mode)  icomplete-mode))
    (icicle-must-pass-after-match-predicate  (and (not icompletep)  pred))
    (icicle-candidate-help-fn
-    #'(lambda (c)
+    #'(lambda (cand)
         (with-current-buffer icicle-orig-buff
-          (let* ((keys   (where-is-internal (intern-soft c) overriding-local-map))
-                 (keys1  (mapconcat #'icicle-key-description keys ", ")))
+          (let* ((keys   (where-is-internal (intern-soft cand) overriding-local-map))
+                 (keys1  (mapconcat #'icicle-key-description keys "', `")))
             (message (if (string= "" keys1)
-                         (format "`%s' is not on any key" c)
-                       (format "`%s' is on `%s'" c (icicle-propertize keys1 'face 'icicle-msg-emphasis))))
+                         (format "`%s' is not on any key" cand)
+                       (format "`%s' is on `%s'" cand (icicle-propertize keys1 'face 'icicle-msg-emphasis))))
             (sit-for 3)))))
    (icicle-candidate-alt-action-fn
     (or icicle-candidate-alt-action-fn (icicle-alt-act-fn-for-type "command")))
