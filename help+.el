@@ -7,9 +7,9 @@
 ;; Copyright (C) 1999-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Mar 16 14:18:11 1999
 ;; Version: 20.0
-;; Last-Updated: Sun Jan  1 14:34:09 2012 (-0800)
+;; Last-Updated: Sun Apr  1 10:52:37 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 2130
+;;     Update #: 2133
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/help+.el
 ;; Keywords: help
 ;; Compatibility: GNU Emacs: 22.x, 23.x
@@ -69,6 +69,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2012/04/01 dadams
+;;     where-is: Wrap individual key sequences in `', not just all of them together.
 ;; 2011/10/07 dadams
 ;;     Added soft require of naked.el.
 ;;     where-is, help-on-click/key-lookup: Use naked-key-description if available.
@@ -392,7 +394,7 @@ in the current buffer."
              (keys      (mapconcat (if (fboundp 'naked-key-description)
                                        #'naked-key-description
                                      #'key-description)
-                                   keys ", "))
+                                   keys "', `"))
              string)
         (setq string  (if insert
                           (if (> (length keys) 0)
