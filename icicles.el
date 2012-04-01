@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Fri Mar 30 09:22:56 2012 (-0700)
+;; Last-Updated: Sun Apr  1 07:49:03 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 23090
+;;     Update #: 23092
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -125,9 +125,10 @@
 ;;    `icicle-add/update-saved-completion-set', `icicle-anything',
 ;;    `icicle-apply' `icicle-apropos', `icicle-apropos-command',
 ;;    `icicle-apropos-function', `icicle-apropos-option',
-;;    `icicle-apropos-variable', `icicle-apropos-zippy',
-;;    `icicle-bbdb-complete-name', `icicle-bookmark',
-;;    `icicle-bookmark-a-file', `icicle-bookmark-all-tags',
+;;    `icicle-apropos-option-of-type', `icicle-apropos-variable',
+;;    `icicle-apropos-zippy', `icicle-bbdb-complete-name',
+;;    `icicle-bookmark', `icicle-bookmark-a-file',
+;;    `icicle-bookmark-all-tags',
 ;;    `icicle-bookmark-all-tags-other-window',
 ;;    `icicle-bookmark-all-tags-regexp',
 ;;    `icicle-bookmark-all-tags-regexp-other-window',
@@ -824,7 +825,8 @@
 ;;    `icicle-apropos-any-candidates-p',
 ;;    `icicle-apropos-any-file-name-candidates-p',
 ;;    `icicle-apropos-candidates', `icicle-apropos-complete-1',
-;;    `icicle-apropos-complete-2', `icicle-autofile-action',
+;;    `icicle-apropos-complete-2', `icicle-apropos-opt-action',
+;;    `icicle-autofile-action',
 ;;    `icicle-backward-delete-char-untabify-dots',
 ;;    `icicle-barf-if-outside-Completions',
 ;;    `icicle-barf-if-outside-Completions-and-minibuffer',
