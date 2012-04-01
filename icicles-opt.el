@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:22:14 2006
 ;; Version: 22.0
-;; Last-Updated: Sat Mar 31 22:29:58 2012 (-0700)
+;; Last-Updated: Sun Apr  1 10:22:49 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 4967
+;;     Update #: 4984
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-opt.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -1618,24 +1618,18 @@ and you must load library `filesets.el'."
 (defcustom icicle-functions-to-redefine
   '(bbdb-complete-name                   comint-dynamic-complete
     comint-dynamic-complete-filename     comint-replace-by-expanded-filename
-    customize-apropos                    customize-apropos-faces
-    customize-apropos-groups             customize-apropos-options
-    customize-apropos-options-of-type    customize-face
-    customize-face-other-window          dabbrev-completion
     ;; Use these two if you want Icicles completion for shell commands.
     ;; See http://www.emacswiki.org/emacs/Icicles_-_Shell-Command_Enhancements.
-    ;;
     ;; dired-read-shell-command
     ;; read-shell-command
-    ess-complete-object-name
-    gud-gdb-complete-command
+    ess-complete-object-name             gud-gdb-complete-command
     Info-goto-node                       Info-index
     Info-menu
     lisp-complete-symbol                 lisp-completion-at-point
     minibuffer-default-add-completions
     read-char-by-name                    read-color
     read-from-minibuffer                 read-string
-    recentf-make-menu-items              repeat-complex-command)
+    recentf-make-menu-items)
   "*List of symbols representing functions to be redefined in Icicle mode.
 In Icicle mode, each such FUNCTION is aliased to Icicles function
 `icicle-FUNCTION'.  The original functions are restored when you exit
@@ -1656,7 +1650,9 @@ you enter Icicle mode.  This means that you must ensure that the code
 that sets it is invoked before you enter Icicle mode.  If you use
 Customize to change this option, then ensure that the code inserted by
 Customize into your `user-init-file' or your `custom-file' is invoked
-before you enter Icicle mode."
+before you enter Icicle mode.
+
+See also option `icicle-top-level-key-bindings'."
   :type '(repeat (restricted-sexp :tag "Command"
                   ;; Use `symbolp' instead of `functionp' or `fboundp', in case the library
                   ;; defining the function is not loaded.
@@ -3409,13 +3405,25 @@ toggle Icicle mode off and then back on."
     ,@(and (require 'kmacro nil t)      ; (Emacs 22+)
            '(([S-f4]               icicle-kmacro                       t))) ; `S-f4'
     (abort-recursive-edit          icicle-abort-recursive-edit         t) ; `C-]'
+    (apropos                       icicle-apropos                      t)
+    (apropos-command               icicle-apropos-command              t) ; `C-h a'
+    (apropos-variable              icicle-apropos-option
+     (fboundp 'icicle-apropos-option))
+    (apropos-variable              icicle-apropos-variable
+     (not (fboundp 'icicle-apropos-option)))
+    (apropos-zippy                 icicle-apropos-zippy                t)
     (bookmark-jump                 icicle-bookmark
      t)                                 ; `C-x j j', `C-x p b', `C-x r b'
     (bookmark-jump-other-window    icicle-bookmark-other-window
      t)                                 ; `C-x 4 j j', `C-x p j', `C-x p o', `C-x p q'
     (bookmark-set                  icicle-bookmark-cmd                 t) ; `C-x r m'
-    (minibuffer-keyboard-quit      icicle-abort-recursive-edit ; `C-g' (minibuffer - `delsel.el')
-     (fboundp 'minibuffer-keyboard-quit))
+    (customize-apropos             icicle-customize-apropos            t)
+    (customize-apropos-faces       icicle-customize-apropos-faces      t)
+    (customize-apropos-groups      icicle-customize-apropos-groups     t)
+    (customize-apropos-options     icicle-customize-apropos-options    t)
+    (customize-face                icicle-customize-face               t)
+    (customize-face-other-window   icicle-customize-face-other-window  t)
+    (dabbrev-completion            icicle-dabbrev-completion           t)
     (delete-window                 icicle-delete-window                t) ; `C-x 0'
     (delete-windows-for            icicle-delete-window                t) ; `C-x 0' (`frame-cmds.el')
     (dired                         icicle-dired                        t) ; `C-x d'
@@ -3432,10 +3440,13 @@ toggle Icicle mode off and then back on."
     (insert-buffer                 icicle-insert-buffer                t) ; `C-S-insert'
     (kill-buffer                   icicle-kill-buffer                  t) ; `C-x k'
     (kill-buffer-and-its-windows   icicle-kill-buffer                  t) ; `C-x k' (`misc-cmds.el')
+    (minibuffer-keyboard-quit      icicle-abort-recursive-edit ; `C-g' (minibuffer - `delsel.el')
+     (fboundp 'minibuffer-keyboard-quit))
     (other-window                  icicle-other-window-or-frame        t) ; `C-x o'
     (other-window-or-frame         icicle-other-window-or-frame        t) ; `C-x o' (`frame-cmds.el')
     (pop-global-mark
      icicle-goto-global-marker-or-pop-global-mark                      t) ; `C-x C-@', `C-x C-SPC'
+    (repeat-complex-command        icicle-repeat-complex-command       t) ; `C-x M-:', `C-x M-ESC'
     (set-mark-command
      icicle-goto-marker-or-set-mark-command                            t) ; `C-@', `C-SPC'
     (switch-to-buffer              icicle-buffer                       t) ; `C-x b'
@@ -3673,7 +3684,9 @@ you enter Icicle mode.  This means that you must ensure that the code
 that sets it is invoked before you enter Icicle mode.  If you use
 Customize to change this option, then ensure that the code inserted by
 Customize into your `user-init-file' or your `custom-file' is invoked
-before you enter Icicle mode."
+before you enter Icicle mode.
+
+See also option `icicle-functions-to-redefine'."
   :type (if (> emacs-major-version 20)
             '(repeat icicle-key-definition)
           '(repeat
