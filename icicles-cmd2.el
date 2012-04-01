@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Thu May 21 13:31:43 2009 (-0700)
 ;; Version: 22.0
-;; Last-Updated: Sun Apr  1 10:47:17 2012 (-0700)
+;; Last-Updated: Sun Apr  1 13:25:38 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 5308
+;;     Update #: 5310
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-cmd2.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -58,7 +58,7 @@
 ;;    (+)`a', (+)`any', (+)`buffer', (+)`file', (+)`icicle-anything',
 ;;    (+)`icicle-apply', `icicle-apropos', `icicle-apropos-command',
 ;;    `icicle-apropos-function', `icicle-apropos-option',
-;;    (+)`icicle-apropos-option-of-type', `icicle-apropos-variable',
+;;    (+)`icicle-apropos-options-of-type', `icicle-apropos-variable',
 ;;    `icicle-apropos-zippy', (+)`icicle-bookmark-a-file',
 ;;    (+)`icicle-choose-faces', (+)`icicle-choose-invisible-faces',
 ;;    (+)`icicle-choose-visible-faces', (+)`icicle-comint-command',
@@ -3160,8 +3160,8 @@ of strings is used as a word list."
      (when msgp (message (format "Gathering data apropos %s..." (if do-all "functions" "commands"))))
      (apropos-command pattern do-all var-predicate))))
 
-;;;###autoload (autoload 'icicle-apropos-option-of-type "icicles-cmd1")
-(icicle-define-command icicle-apropos-option-of-type
+;;;###autoload (autoload 'icicle-apropos-options-of-type "icicles-cmd1")
+(icicle-define-command icicle-apropos-options-of-type
   "Show user options of a given type.
 Enter patterns for the OPTION name and TYPE definition in the
 minibuffer, separated by `icicle-list-join-string', which is \"^G^J\",
@@ -3189,7 +3189,7 @@ the use of a prefix argument."          ; Doc string
          (message "Gathering user options and their types...")))
 
 (defun icicle-apropos-opt-action (opt+type)
-  "Action function for `icicle-apropos-option-of-type'."
+  "Action function for `icicle-apropos-options-of-type'."
   (let ((icicle-list-use-nth-parts  '(1)))
     (apropos-option (icicle-transform-multi-completion opt+type))))
 
