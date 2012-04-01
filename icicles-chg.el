@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Sun Apr  1 12:00:30 2012 (-0700)
+;; Last-Updated: Sun Apr  1 13:27:04 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 8227
+;;     Update #: 8228
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-chg.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -583,7 +583,7 @@
 ;;;(@* "CHANGE LOG FOR `icicles-cmd2.el'")
 ;;
 ;; 2012/04/01 dadams
-;;     Added: icicle-apropos-option-of-type, icicle-apropos-opt-action.
+;;     Added: icicle-apropos-options-of-type, icicle-apropos-opt-action.
 ;;     icicle-where-is: In help fn, wrap individual key sequences in `', not just all of them together.
 ;; 2012/03/31 dadams
 ;;     icicle-apropos*: Updated wrt Emacs 24 (handle PATTERN).  Added optional MSGP arg.
