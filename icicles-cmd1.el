@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Sat Mar 31 12:31:12 2012 (-0700)
+;; Last-Updated: Sun Apr  1 07:34:18 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 23521
+;;     Update #: 23522
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-cmd1.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -23,9 +23,8 @@
 ;;   `fuzzy', `fuzzy-match', `hexrgb', `icicles-face', `icicles-fn',
 ;;   `icicles-mcmd', `icicles-opt', `icicles-var', `image-dired',
 ;;   `kmacro', `levenshtein', `misc-fns', `mouse3', `mwheel',
-;;   `naked', `pp', `pp+', `regexp-opt', `ring', `ring+',
-;;   `second-sel', `strings', `thingatpt', `thingatpt+', `wid-edit',
-;;   `wid-edit+', `widget'.
+;;   `naked', `regexp-opt', `ring', `ring+', `second-sel', `strings',
+;;   `thingatpt', `thingatpt+', `wid-edit', `wid-edit+', `widget'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -164,7 +163,7 @@
 ;;    `icicle-customize-apropos-faces',
 ;;    `icicle-customize-apropos-groups',
 ;;    `icicle-customize-apropos-options',
-;;    `icicle-customize-apropos-options-of-type',
+;;    (+)`icicle-customize-apropos-options-of-type',
 ;;    (+)`icicle-customize-face',
 ;;    (+)`icicle-customize-face-other-window',
 ;;    `icicle-customize-icicles-group', `icicle-dabbrev-completion',
