@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Sun Apr  1 07:34:18 2012 (-0700)
+;; Last-Updated: Sun Apr  1 11:50:18 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 23522
+;;     Update #: 23528
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-cmd1.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -1689,17 +1689,10 @@ This is an Icicles command - see command `icicle-mode'."
       t custom-buffer-order-groups)
      "*Customize Apropos*")))
 
-
-;; REPLACE ORIGINAL `customize-apropos' defined in `cus-edit.el',
-;; saving it for restoration when you toggle `icicle-mode'.
-;;
+;; Icicles replacement for `customize-apropos', defined in `cus-edit.el'.
 ;; 1. Uses `completing-read' to read the regexp.
-;;
 ;; 2. Fixes Emacs bugs #11132, #11126.
 ;;
-(unless (fboundp 'old-customize-apropos)
-  (defalias 'old-customize-apropos (symbol-function 'customize-apropos)))
-
 ;;;###autoload
 (defun icicle-customize-apropos (pattern &optional type msgp)
   "Customize all loaded user preferences matching PATTERN.
@@ -1784,17 +1777,10 @@ separate the words (any strings, in fact, including regexps) using
     "Return non-nil if VARIABLE is a custom variable."
     (or (get variable 'standard-value) (get variable 'custom-autoload))))
 
-
-;; REPLACE ORIGINAL `customize-apropos-faces' defined in `cus-edit.el',
-;; saving it for restoration when you toggle `icicle-mode'.
-;;
+;; Icicles replacement for `customize-apropos-faces', defined in `cus-edit.el'.
 ;; 1. Uses `completing-read' to read the regexp.
-;;
 ;; 2. Fixes Emacs bug #11124.
 ;;
-(unless (fboundp 'old-customize-apropos-faces)
-  (defalias 'old-customize-apropos-faces (symbol-function 'customize-apropos-faces)))
-
 ;;;###autoload
 (defun icicle-customize-apropos-faces (pattern &optional msgp)
   "Customize all loaded faces matching PATTERN.
@@ -1811,17 +1797,10 @@ See `icicle-customize-apropos'."
   (when msgp (message "Gathering apropos data for customizing faces..."))
   (customize-apropos pattern 'faces))
 
-
-;; REPLACE ORIGINAL `customize-apropos-groups' defined in `cus-edit.el',
-;; saving it for restoration when you toggle `icicle-mode'.
-;;
+;; Icicles replacement for `customize-apropos-groups', defined in `cus-edit.el'.
 ;; 1. Uses `completing-read' to read the regexp.
-;;
 ;; 2. Fixes Emacs bug #11124.
 ;;
-(unless (fboundp 'old-customize-apropos-groups)
-  (defalias 'old-customize-apropos-groups (symbol-function 'customize-apropos-groups)))
-
 ;;;###autoload
 (defun icicle-customize-apropos-groups (pattern &optional msgp)
   "Customize all loaded customize groups matching PATTERN.
@@ -1838,17 +1817,10 @@ See `icicle-customize-apropos'."
   (when msgp (message "Gathering apropos data for customizing groups..."))
   (customize-apropos pattern 'groups))
 
-
-;; REPLACE ORIGINAL `customize-apropos-options' defined in `cus-edit.el',
-;; saving it for restoration when you toggle `icicle-mode'.
-;;
+;; Icicles replacement for `customize-apropos-options', defined in `cus-edit.el'.
 ;; 1. Uses `completing-read' to read the regexp.
-;;
 ;; 2. Fixes Emacs bugs #11124, #11128.
 ;;
-(unless (fboundp 'old-customize-apropos-options)
-  (defalias 'old-customize-apropos-options (symbol-function 'customize-apropos-options)))
-
 ;;;###autoload
 (defun icicle-customize-apropos-options (pattern &optional arg msgp)
   "Customize all loaded user options matching PATTERN.
@@ -1875,17 +1847,6 @@ the customize buffer."
            t)))
   (when msgp (message "Gathering apropos data for customizing options..."))
   (customize-apropos pattern (or arg 'options)))
-
-
-;; REPLACE ORIGINAL `customize-apropos-options-of-type' defined in `cus-edit+.el',
-;; saving it for restoration when you toggle `icicle-mode'.
-;;
-;; Uses `completing-read' to read the regexp.
-;;
-(when (and (fboundp 'customize-apropos-options-of-type)
-           (not (fboundp 'old-customize-apropos-options-of-type)))
-  (defalias 'old-customize-apropos-options-of-type
-      (symbol-function 'customize-apropos-options-of-type)))
 
 ;;;###autoload (autoload 'icicle-customize-apropos-options-of-type "icicles-cmd1")
 (icicle-define-command icicle-customize-apropos-options-of-type
