@@ -35,7 +35,9 @@
 
 * [[Mozilla]]
 * FireFox
-* [[Conkeror]] -- Emacsify Mozilla and Firefox
+* [[Conkeror]] -- Web browser based on Mozilla and mainly inspired by Emacs; it was previously a Firefox extension
+* [http://addons.mozilla.org/en-US/firefox/addon/firemacs/ Firemacs] -- Firefox extension for Emacs editing/viewing keybind
+* [http://github.com/mooz/keysnail/wiki KeySnail] -- Firefox and Thunderbird extension, with customizable Emacs keybindings
 * [[Google Chrome]]
 * PrintWithWebBrowser -- preview and print with your web browser
 
