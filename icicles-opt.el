@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:22:14 2006
 ;; Version: 22.0
-;; Last-Updated: Fri Mar  2 13:50:43 2012 (-0800)
+;; Last-Updated: Sat Mar 31 22:29:58 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 4966
+;;     Update #: 4967
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-opt.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -17,10 +17,9 @@
 ;;
 ;; Features that might be required by this library:
 ;;
-;;   `backquote', `bytecomp', `el-swank-fuzzy', `ffap', `ffap-',
-;;   `fuzzy', `fuzzy-match', `hexrgb', `icicles-face', `kmacro',
-;;   `levenshtein', `regexp-opt', `thingatpt', `thingatpt+',
-;;   `wid-edit', `widget'.
+;;   `cl', `el-swank-fuzzy', `ffap', `ffap-', `fuzzy', `fuzzy-match',
+;;   `hexrgb', `icicles-face', `kmacro', `levenshtein', `regexp-opt',
+;;   `thingatpt', `thingatpt+', `wid-edit', `widget'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -3641,7 +3640,7 @@ toggle Icicle mode off and then back on."
     (find-tag-other-window         icicle-find-first-tag-other-window  t) ; `C-x 4 .'
     (pop-tag-mark        icicle-pop-tag-mark          (fboundp 'command-remapping)) ; `M-*'
     (eval-expression     icicle-pp-eval-expression    (fboundp 'command-remapping)) ; `M-:'
-    (pp-eval-expression icicle-pp-eval-expression (fboundp 'command-remapping)) ;`M-:' (`pp+.el')
+    (pp-eval-expression  icicle-pp-eval-expression    (fboundp 'command-remapping)) ;`M-:' (`pp+.el')
     ;; For La Carte (`lacarte.el'), not Icicles, but it's convenient to do this here.
     ("\e\M-x"            lacarte-execute-command ; `ESC M-x'
      (fboundp 'lacarte-execute-command))
