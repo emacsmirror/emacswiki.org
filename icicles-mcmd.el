@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Wed Mar 28 07:40:23 2012 (-0700)
+;; Last-Updated: Sat Mar 31 22:29:25 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 17886
+;;     Update #: 17887
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-mcmd.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -17,13 +17,12 @@
 ;;
 ;; Features that might be required by this library:
 ;;
-;;   `apropos', `apropos-fn+var', `backquote', `bytecomp', `cl',
-;;   `doremi', `el-swank-fuzzy', `ffap', `ffap-', `fuzzy',
-;;   `fuzzy-match', `hexrgb', `icicles-face', `icicles-fn',
-;;   `icicles-opt', `icicles-var', `image-dired', `kmacro',
-;;   `levenshtein', `mouse3', `mwheel', `naked', `pp', `pp+',
-;;   `regexp-opt', `ring', `ring+', `thingatpt', `thingatpt+',
-;;   `wid-edit', `wid-edit+', `widget'.
+;;   `apropos', `apropos-fn+var', `cl', `doremi', `el-swank-fuzzy',
+;;   `ffap', `ffap-', `fuzzy', `fuzzy-match', `hexrgb',
+;;   `icicles-face', `icicles-fn', `icicles-opt', `icicles-var',
+;;   `image-dired', `kmacro', `levenshtein', `mouse3', `mwheel',
+;;   `naked', `pp', `pp+', `regexp-opt', `ring', `ring+',
+;;   `thingatpt', `thingatpt+', `wid-edit', `wid-edit+', `widget'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -389,7 +388,6 @@
   ;; icicle-isearch-complete-past-string, icicle-minibuf-input-sans-dir,
   ;; icicle-toggle-icicle-mode-twice
 
-(require 'pp+ nil t) ;; (no error if not found): pp-eval-expression
 (require 'doremi nil t) ;; (no error if not found):
                         ;; doremi, doremi(-boost)-(up|down)-keys, doremi-limit, doremi-wrap
 (when (> emacs-major-version 22) (require 'help-fns+ nil t)) ;; (no error if not found):
@@ -2808,7 +2806,7 @@ Bound to `M-q' in the minibuffer during key completion (Emacs 22+)."
 ;;;###autoload
 (defun icicle-pp-eval-expression-in-minibuffer (insert-value) ; Bound to `M-:' in minibuffer.
   "Evaluate an Emacs-Lisp expression and pretty-print its value.
-This just calls `pp-eval-expression' from a recursive minibuffer."
+This just calls `icicle-pp-eval-expression' from a recursive minibuffer."
   (interactive "P")
   (when (interactive-p) (icicle-barf-if-outside-Completions-and-minibuffer))
   (let ((enable-recursive-minibuffers  t))
