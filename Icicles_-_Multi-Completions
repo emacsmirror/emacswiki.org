@@ -76,13 +76,13 @@ later), plists are pretty-printed (in `*Help*' and
 `*Completions*'), but if you use a negative prefix argument then
 pretty-printing is skipped, gaining a little time.
 
-* Command '''`icicle-describe-option-of-type'''' (bound to '''`C-h C-o'''' in ''Icicle'' mode) lets you match both an
+* Commands '''`icicle-describe-option-of-type'''' (bound to '''`C-h C-o'''' in ''Icicle'' mode), '''`icicle-apropos-options-of-type'''', and '''`icicle-customize-apropos-options-of-type'''' each let
+let you match both an
 [[option]] ''name'' and the option's `defcustom' ''type'' definition.  There are several ways to match
-type definitions, controlled by the prefix argument -- see the
-command's doc string.  You can match a type directly or taking
+type definitions, controlled by the prefix argument.  You can match a type directly or taking
 type inheritance into account.  You can match a type as a [[sexp]]
 or using a regexp.  You can match a type expression or match the
-option's current [[symbol value|value]] against a type.
+option's current [[symbol value|value]] against a type.  See [[Icicles - A Propos d'Apropos#Type-AwareAproposMulti-Commands|Type-Aware Apropos Multi-Commands]].
 
 Other '''Icicles''' commands that use multi-completion include
 `icicle-locate-file', `icicle-locate-file-other-window',
@@ -188,6 +188,8 @@ Even this simple command expression combines the effect of Emacs commands
 
 
 
+
+
 [:HowMultiCompletionsWork]
 == How Multi-Completions Work ==
 
@@ -256,6 +258,11 @@ as well.
 
 
 
+
+
+
+
+
 [:MultiCompletionsVsCRM]
 == Multi-Completions vs completing-read-multiple ==
 
@@ -276,6 +283,12 @@ prompt, but they each complete against the same set of variable
 names.
 
 Multi-completion matches a list of regexps in ''parallel''.  See also the descriptions of `M-*' and `S-SPC', which match a list of regexps in ''series'': [[Icicles - Progressive Completion]].  You can combine these features, of course. 
+
+
+
+
+
+
 
 
 
