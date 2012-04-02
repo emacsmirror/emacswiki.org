@@ -323,6 +323,13 @@ of snapshotting is complete.
 It seems like AutoInstall has a lot of overlap with [[el-get]].  It would be interesting to see if the projects can contribute to one-another.
 
 -- [[DaveAbrahams]]
+
+----
+[new:JonathanArkell:2012-04-02]
+Hi, I am just about to go through the various Anything pages, and go through a massive cleanup, since it appears that the name has changed to helm.  I noticed you made a change to Lisp:anything.el, which was one of the pages i was planning to delete (forwarding people to the helm package on github).  is the Anything.el package still maintained on the wiki, and separate from helm?
+Thanks!
+-- [[JonathanArkell]]
+
  
 ----
 CategoryHomepage
