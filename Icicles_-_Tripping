@@ -48,12 +48,14 @@ navigate.
 [:icicle-bookmark-autofile-all-tags-regexp]
 [:icicle-bookmark-autofile-some-tags]
 [:icicle-bookmark-autofile-some-tags-regexp]
+[:icicle-bookmark-autofile]
 [:icicle-bookmark-non-file]
 [:icicle-bookmark-bookmark-list]
 [:icicle-bookmark-dired]
 [:icicle-bookmark-file]
 [:icicle-bookmark-gnus]
 [:icicle-bookmark-info]
+[:icicle-bookmark-image]
 [:icicle-bookmark-desktop]
 [:icicle-bookmark-local-file]
 [:icicle-bookmark-man]
@@ -69,6 +71,10 @@ navigate.
 [:icicle-bookmark-file-some-tags-regexp]
 [:icicle-bookmark-url]
 [:icicle-bookmark-w3m]
+[:icicle-bookmark-temporary]
+[:icicle-bookmark-bookmark-file]
+[:icicle-bookmark-autonamed]
+[:icicle-bookmark-autonamed-this-buffer]
 [:icicle-bookmark-this-buffer]
 [:icicle-bookmark-specific-buffers]
 [:icicle-bookmark-specific-files]
@@ -165,23 +171,24 @@ The '''`a'''' indicates that the command completes an [[autofile bookmark]] name
 
 
 
-
-
 * '''`icicle-bookmark-other-window'''' ('''`C-- C-x r m'''') -- Trip among [[bookmark]]s of all types.  (Also bound to '''`C-x 4 j j'''' if library <tt>[[bookmark+.el]]</tt> is used.)
 
 * Type-specific bookmark trips (requires library <tt>[[bookmark+.el]]</tt>).
 (Use prefix key `C-x 4 j' for other-window commands.)
+** '''`icicle-bookmark-autofile''''    ('''`C-x j a'''') -- Autofile bookmarks
 ** '''`icicle-bookmark-non-file''''    ('''`C-x j b'''') -- Non-file ([[buffer]]) bookmarks
 ** '''`icicle-bookmark-bookmark-list'''' ('''`C-x j B'''') -- [[BookmarkPlus#BookmarkListViews|Bookmark-list]] bookmarks
 ** '''`icicle-bookmark-dired''''       ('''`C-x j d'''') -- [[DiredMode|Dired]] bookmarks.
 ** '''`icicle-bookmark-file''''        ('''`C-x j f'''') -- File bookmarks
+** '''`icicle-bookmark-file-this-dir''''             ('''`##C-x j . f##'''') -- File bookmarks in the current directory
 ** '''`icicle-bookmark-gnus''''        ('''`C-x j g'''') -- [[Gnus]] bookmarks
 ** '''`icicle-bookmark-info''''        ('''`C-x j i'''') -- [[Info]] bookmarks
+** '''`icicle-bookmark-image''''       ('''`C-x j M-i'''') -- Image bookmarks
 ** '''`icicle-bookmark-desktop''''       ('''`C-x j K'''') -- [[DeskTop]] bookmarks
 ** '''`icicle-bookmark-local-file''''  ('''`C-x j l'''') -- Local-file bookmarks
 ** '''`icicle-bookmark-man''''         ('''`C-x j m'''') -- [[ManMode|man]]-page bookmarks
-** '''`icicle-bookmark-region''''      ('''`C-x j r'''', '''`C-u C-u C-x C-x'''') -- [[region|Region]] bookmarks
 ** '''`icicle-bookmark-remote-file'''' ('''`C-x j n'''') -- Remote-file ([[TrampMode|Tramp]] or AngeFtp) bookmarks
+** '''`icicle-bookmark-region''''      ('''`C-x j r'''', '''`C-u C-u C-x C-x'''') -- [[region|Region]] bookmarks
 ** '''`icicle-bookmark-all-tags'''' ('''##C-x j t *##'''') -- Bookmarks having all of a set of tags
 ** '''`icicle-bookmark-some-tags'''' ('''##C-x j t +##'''') -- Bookmarks having some of a set of tags
 ** '''`icicle-bookmark-all-tags-regexp'''' ('''##C-x j t % *##'''') -- Bookmarks having all tags match a [[regexp]]
@@ -192,6 +199,10 @@ The '''`a'''' indicates that the command completes an [[autofile bookmark]] name
 ** '''`icicle-bookmark-file-some-tags-regexp'''' ('''##C-x j t f % +##'''') -- File and directory bookmarks having some tags that match a regexp
 ** '''`icicle-bookmark-url''''         ('''`C-x j u'''') -- URL bookmarks
 ** '''`icicle-bookmark-w3m''''         ('''`C-x j w'''') -- [[w3m|W3M]] bookmarks
+** '''`icicle-bookmark-temporary''''    ('''`C-x j x'''') -- Temporary bookmarks
+** '''`icicle-bookmark-bookmark-file''''    ('''`C-x j y'''') -- Bookmark-file bookmarks
+** '''`icicle-bookmark-autonamed''''       ('''`C-x j #'''') -- Autonamed bookmarks
+** '''`icicle-bookmark-autonamed-this-buffer''''       ('''`##C-x j , ###'''') -- Autonamed bookmarks in the current buffer
 ** '''`icicle-bookmark-this-buffer''''  ('''`##C-x j , ,##'''') -- Bookmarks for the current buffer
 ** '''`icicle-bookmark-specific-buffers'''' ('''`##C-x j = b##'''') -- Bookmarks for specific buffers
 ** '''`icicle-bookmark-specific-files'''' ('''`##C-x j = f##'''') -- Bookmarks for specific files
