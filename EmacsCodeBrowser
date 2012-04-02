@@ -1,3 +1,8 @@
+It would be nice if ECB parsed Javascript buffers... the method buffer is empty when using ECB-2.40 and cedet1.1beta on Emacs 24 
+
+-- ElroyJetson
+
+----
 * http://www.sf.net/projects/ecb
 * http://ecb.sourceforge.net/
 * http://ecb.sourceforge.net/screenshots/index.html
