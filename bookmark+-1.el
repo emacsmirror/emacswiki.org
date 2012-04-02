@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2012, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 13:43:55 2010 (-0700)
-;; Last-Updated: Mon Mar 19 07:28:18 2012 (-0700)
+;; Last-Updated: Mon Apr  2 15:22:20 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 4573
+;;     Update #: 4580
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-1.el
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -9381,7 +9381,7 @@ See `bmkp-next-bookmark-w32-repeat'."
 (bmkp-define-next+prev-cycle-commands "url")
 
 ;;;###autoload
-(defun bmkp-toggle-autonamed-bookmark-set/delete (position &optional allp)
+(defun bmkp-toggle-autonamed-bookmark-set/delete (&optional position allp)
                                         ; Bound to `C-x p RET', `C-x p c RET'
   "If there is an autonamed bookmark at point, delete it, else create one.
 The bookmark created has no region.  Its name is formatted according
@@ -9389,8 +9389,9 @@ to option `bmkp-autoname-bookmark-function'.
 
 With a prefix arg, delete *ALL* autonamed bookmarks for this buffer.
 
-Non-interactively, act at POSITION, not point."
+Non-interactively, act at POSITION, not point.  If nil, act at point."
   (interactive "d\nP")
+  (unless position (setq position  (point)))
   (if allp
       (bmkp-delete-all-autonamed-for-this-buffer)
     (let ((bmk-name  (funcall bmkp-autoname-bookmark-function position)))
@@ -9402,23 +9403,26 @@ Non-interactively, act at POSITION, not point."
         (message "Deleted bookmark `%s'" bmk-name)))))
 
 ;;;###autoload
-(defun bmkp-set-autonamed-bookmark (position &optional msgp)
+(defun bmkp-set-autonamed-bookmark (&optional position msgp)
   "Set an autonamed bookmark at point.
 The bookmark created has no region.  Its name is formatted according
 to option `bmkp-autoname-bookmark-function'.
 Non-interactively:
- - Act at POSITION, not point.
+ - Act at POSITION, not point.  If nil, act at point.
  - Non-nil optional arg MSGP means display a status message."
   (interactive (list (point) t))
+  (unless position (setq position  (point)))
   (let ((bmk-name     (funcall bmkp-autoname-bookmark-function position))
         (mark-active  nil))             ; Do not set a region bookmark.
     (bookmark-set bmk-name)
     (when msgp (message "Set bookmark `%s'" bmk-name))))
 
 ;;;###autoload
-(defun bmkp-set-autonamed-bookmark-at-line (number)
-  "Set an autonamed bookmark at the beginning of the given line NUMBER."
+(defun bmkp-set-autonamed-bookmark-at-line (&optional number)
+  "Set an autonamed bookmark at the beginning of the given line NUMBER.
+If NUMBER is nil, use the current line."
   (interactive "nSet bookmark on line: ")
+  (unless number (setq number  (count-lines (point-min) (point))))
   (save-excursion
     (goto-char (point-min))
     (unless (zerop (forward-line (1- number)))
@@ -9694,7 +9698,7 @@ make a bookmark temporary using `bmkp-make-bookmark-temporary' or
     (bmkp-refresh/rebuild-menu-list nil 'BATCHP))) ; Now refresh, after iterate.    
 
 ;;;###autoload
-(defun bmkp-delete-bookmarks (position allp &optional alist msgp) ; Bound to `C-x p delete'
+(defun bmkp-delete-bookmarks (&optional position allp alist msgp) ; Bound to `C-x p delete'
   "Delete some bookmarks at point or all bookmarks in the buffer.
 With no prefix argument, delete some bookmarks at point.
 If there is more than one, require confirmation for each.
@@ -9702,12 +9706,13 @@ If there is more than one, require confirmation for each.
 With a prefix argument, delete *ALL* bookmarks in the current buffer.
 
 Non-interactively:
- Delete at POSITION, not point.
+ Delete at POSITION, not point.  If nil, delete at point.
  Non-nil optional arg ALLP means delete all bookmarks in the buffer.
  ALIST is the alist of bookmarks.
    If nil, use the bookmarks in the current buffer.
  Non-nil MSGP means display informative messages."
   (interactive "d\nP\ni\np")
+  (unless position (setq position  (point)))
   (let ((bmks-to-delete  (and allp  (mapcar #'bmkp-bookmark-name-from-record
                                             (bmkp-this-buffer-alist-only))))
         (bmks-deleted    ())
