@@ -2904,8 +2904,7 @@ that they are automatically deleted by adding
 [:TemporaryBookmarks]
 == Temporary Bookmarks ==
 
-Autonamed bookmarks are easy-come-easy-go in the sense that `C-x p
-RET' either sets (creates) one or deletes the one under the
+Autonamed bookmarks are easy-come-easy-go in the sense that `##C-x p RET##' either sets (creates) one or deletes the one under the
 cursor.  But what about temporary bookmarks in general?  What if
 you want only bookmarks that are temporary, that is, not saved to
 disk?  Or what if you want certain kinds of bookmarks to always be
