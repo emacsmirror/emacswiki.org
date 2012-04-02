@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Sun Apr  1 11:50:18 2012 (-0700)
+;; Last-Updated: Mon Apr  2 16:20:16 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 23528
+;;     Update #: 23529
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-cmd1.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -3492,11 +3492,11 @@ If you also use library `Bookmark+', then:
    `C-x j w'   - W3M (URL) bookmarks
    `C-x j x'   - temporary bookmarks
    `C-x j y'   - bookmark-file bookmarks
+   `C-x j #'   - autonamed bookmarks
+   `C-x j , #' - autonamed bookmarks for the current buffer
    `C-x j , ,' - bookmarks for the current buffer
    `C-x j = b' - bookmarks for specific buffers
    `C-x j = f' - bookmarks for specific files
-   `C-x j #'   - autonamed bookmarks
-   `C-x j , #' - autonamed bookmarks for the current buffer
 
    See also the individual multi-commands for different bookmark
    types: `icicle-bookmark-info-other-window' etc.
