@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2012, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Mon Mar 19 07:38:00 2012 (-0700)
+;; Last-Updated: Mon Apr  2 16:44:06 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 14612
+;;     Update #: 14618
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-chg.el
 ;; Keywords: bookmarks, bookmark+
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -145,6 +145,10 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-1.el'")
 ;;
+;; 2012/04/02 dadams
+;;     bmkp-toggle-autonamed-bookmark-set/delete, bmkp-set-autonamed-bookmark(-at-line),
+;;       bmkp-delete-bookmarks:
+;;         Made POSITION, NUMBER, ALLP optional.
 ;; 2012/03/18 dadams
 ;;     Added: bmkp-modified-bookmarks, redefinition of bookmark-set-name.
 ;;     bookmark-store, bookmark-set-name, bookmark-prop-set, bmkp-replace-existing-bookmark:
