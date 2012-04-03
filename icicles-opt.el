@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:22:14 2006
 ;; Version: 22.0
-;; Last-Updated: Tue Apr  3 08:11:14 2012 (-0700)
+;; Last-Updated: Tue Apr  3 16:26:06 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 4985
+;;     Update #: 4986
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-opt.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -3712,7 +3712,7 @@ See also option `icicle-functions-to-redefine'."
   :group 'Icicles-Key-Bindings)
 
 ;;;###autoload
-(defcustom icicle-top-level-when-sole-completion-delay 0.7
+(defcustom icicle-top-level-when-sole-completion-delay 1.0
   "*Number of secs to wait to return to top level if only one completion.
 This has no effect if `icicle-top-level-when-sole-completion-flag' is
 nil.  Editing the completion (typing or deleting a character) before
