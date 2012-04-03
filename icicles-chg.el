@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Mon Apr  2 21:16:35 2012 (-0700)
+;; Last-Updated: Tue Apr  3 14:25:40 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 8230
+;;     Update #: 8243
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-chg.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -85,6 +85,14 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd1.el'")
 ;;
+;; 2012/04/03 dadams
+;;     icicle-send-signal-to-process:
+;;       Moved it and icicle-describe-process here from *-cmd2.el.  Added autoload cookie.
+;;       Changed definition guard condition to locate-library.    Updated def, including to
+;;       require proced.el.
+;;     icicle-kmacro:
+;;       Changed autoload cookie to be conditional on locate-library.
+;;       Changed definition guard condition to locate-library.  Updated def to require kmacro.el.
 ;; 2012/04/01 dadams
 ;;     Removed: old-customize-apropos* (no longer redefine automatically for Icicle mode).
 ;; 2012/03/31 dadams
@@ -582,6 +590,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd2.el'")
 ;;
+;; 2012/04/03 dadams
+;;     icicle-send-signal-to-process: Moved it to *-cmd1.el.
 ;; 2012/04/01 dadams
 ;;     Added: icicle-apropos-options-of-type, icicle-apropos-opt-action.
 ;;     icicle-where-is: In help fn, wrap individual key sequences in `', not just all of them together.
@@ -5498,6 +5508,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-opt.el'")
 ;;
+;; 2012/04/03 dadams
+;;     icicle-top-level-key-bindings: Protect icicle-complete-thesaurus-entry binding with fboundp.
 ;; 2012/04/01 dadams
 ;;     Moved to icicle-top-level-key-bindings from icicle-functions-to-redefine:
 ;;       customize-*, dabbrev-completion, repeat-complex-command.
