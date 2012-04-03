@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Sun Apr  1 13:27:04 2012 (-0700)
+;; Last-Updated: Mon Apr  2 21:16:35 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 8228
+;;     Update #: 8230
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-chg.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -4428,6 +4428,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-mode.el'")
 ;;
+;; 2012/04/02 dadams
+;;     icicle-mode: Propertize ON / OFF.
 ;; 2012/03/01 dadams
 ;;     icicle-unbind-key-completion-keys-in-keymaps-from: Corrected last fix: follow symbol first.
 ;; 2012/02/29 dadams
