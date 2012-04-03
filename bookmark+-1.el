@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2012, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 13:43:55 2010 (-0700)
-;; Last-Updated: Mon Apr  2 15:22:20 2012 (-0700)
+;; Last-Updated: Tue Apr  3 13:13:29 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 4580
+;;     Update #: 4582
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-1.el
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -335,7 +335,7 @@
 ;;    `bmkp-edit-bookmark-record-mode',
 ;;    `bmkp-edit-bookmark-records-mode', `bmkp-edit-tags-mode',
 ;;    `bmkp-end-position-post-context',
-;;    `bmkp-end-position-pre-context', `bmkp-every', `bmkp-face-prop',
+;;    `bmkp-end-position-pre-context', `bmkp-every',
 ;;    `bmkp-file-alist-only', `bmkp-file-all-tags-alist-only',
 ;;    `bmkp-file-all-tags-regexp-alist-only', `bmkp-file-alpha-cp',
 ;;    `bmkp-file-attribute-0-cp', `bmkp-file-attribute-1-cp',
@@ -5165,11 +5165,6 @@ prefix of FILE)."
       (float-time specified-time)
     (unless specified-time (setq specified-time  (current-time)))
     (+ (* (float (nth 0 specified-time)) (expt 2 16))  (nth 1 specified-time))))
-
-(defun bmkp-face-prop (value)
-  "Return a list with elements `face' or `font-lock-face' and VALUE.
-Starting with Emacs 22, the first element is `font-lock-face'."
-  (list (if (> emacs-major-version 21) 'font-lock-face 'face) value))
 
 (defun bmkp-make-plain-predicate (pred &optional final-pred)
   "Return a plain predicate that corresponds to component-predicate PRED.
