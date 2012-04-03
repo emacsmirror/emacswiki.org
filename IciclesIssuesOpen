@@ -115,11 +115,11 @@ Better yet, use this to separate threads (puts space before and after the horizo
 
 Hi Drew!
 
-I found a bug in the latest icicles(Update #: 5280 in icicles-cmd2.el). When i hit `C-c /' icicle-complete-thesaurus-entry then i've got a Symbol's function definition is void: icicle-complete-thesaurus-entry error.
+I found a bug in the latest icicles(Update #: 5280 in icicles-cmd2.el). When i hit `C-c / ' icicle-complete-thesaurus-entry then i've got a Symbol's function definition is void: icicle-complete-thesaurus-entry error.
 
 I've opened icicles-cmd2.el and eval-ed the defun with `C-M-x' but the error remains.
 
-May i suggest to you that you should free the `C-c /' bindig. OrgMode uses it heavily, i've discovered the bug in org-mode when i've tried http://orgmode.org/org.html#Sparse-trees 
+May i suggest to you that you should free the `C-c / ' bindig. OrgMode uses it heavily, i've discovered the bug in org-mode when i've tried http://orgmode.org/org.html#Sparse-trees 
 
 Regards,
 PasJa
