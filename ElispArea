@@ -116,13 +116,13 @@ implementation ##epackage.el## package manager. This a modern implementation of 
 
 == Tips ==
 
-Additional tips can be found on ElispAreaDiscussions.
+Additional tips can be found on [[Comments on ElispArea]].
 
 === Tip: Version keyword ===
 
 If you put a percent sign (%), then "Id:" (the colon is necessary), then another %, in a page of elisp code, it will end up being expanded into a revision number and look like this:
 
-%Id: 283%
+%Id: 284%
 
 So you can have lisp files on the wiki be version-numbered automatically instead of manually.
 
