@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2012, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 09:05:21 2010 (-0700)
-;; Last-Updated: Mon Mar 19 07:37:10 2012 (-0700)
+;; Last-Updated: Tue Apr  3 13:19:01 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 1748
+;;     Update #: 1752
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-bmu.el
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -224,7 +224,7 @@
 ;;    `bmkp-bmenu-mark/unmark-bookmarks-tagged-all/none',
 ;;    `bmkp-bmenu-mark/unmark-bookmarks-tagged-some/not-all',
 ;;    `bmkp-bmenu-propertize-item', `bmkp-bmenu-read-filter-input',
-;;    `bmkp-maybe-unpropertize-bookmark-names',
+;;    `bmkp-face-prop', `bmkp-maybe-unpropertize-bookmark-names',
 ;;    `bmkp-reverse-multi-sort-order', `bmkp-reverse-sort-order'.
 ;;
 ;;  Internal variables defined here:
@@ -328,8 +328,8 @@
 ;; bmkp-completing-read-file-name, bmkp-current-bookmark-file,
 ;; bmkp-current-sort-order, bmkp-describe-bookmark,
 ;; bmkp-describe-bookmark-internals, bmkp-desktop-bookmark-p,
-;; bmkp-edit-bookmark-name-and-file, bmkp-face-prop,
-;; bmkp-file-alpha-cp, bmkp-file-remote-p, bmkp-function-bookmark-p,
+;; bmkp-edit-bookmark-name-and-file, bmkp-file-alpha-cp,
+;; bmkp-file-remote-p, bmkp-function-bookmark-p,
 ;; bookmark-get-bookmark, bmkp-get-buffer-name, bmkp-get-tags,
 ;; bmkp-gnus-bookmark-p, bmkp-gnus-cp, bmkp-handler-cp,
 ;; bmkp-incremental-filter-delay, bmkp-image-bookmark-p,
@@ -548,7 +548,8 @@ You can, however, use \\<bookmark-bmenu-mode-map>\
 `\\[bmkp-bmenu-show-only-omitted]' to see them.
 You can then mark some of them and use `\\[bmkp-bmenu-omit/unomit-marked]'
  to make those that are marked available again for the bookmark list."
-  ;; $$$$$$ TODO: Create a customize :type `bookmark-name' and provide completion for filling out the field.
+  ;; $$$$$$ TODO: Create a customize :type `bookmark-name'
+  ;;              and provide completion for filling out the field.
   :type '(repeat (string :tag "Bookmark name")) :group 'bookmark-plus)
 
 ;;;###autoload
@@ -3940,6 +3941,11 @@ the same name."
   "Raise an error if current buffer is not `*Bookmark List*'."
   (unless (equal (buffer-name (current-buffer)) "*Bookmark List*")
     (error "You can only use this command in buffer `*Bookmark List*'")))
+
+(defun bmkp-face-prop (value)
+  "Return a list with elements `face' or `font-lock-face' and VALUE.
+Starting with Emacs 22, the first element is `font-lock-face'."
+  (list (if (> emacs-major-version 21) 'font-lock-face 'face) value))
 
 
 ;;(@* "Sorting - Commands")
