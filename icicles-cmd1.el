@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Mon Apr  2 16:20:16 2012 (-0700)
+;; Last-Updated: Tue Apr  3 14:11:44 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 23529
+;;     Update #: 23549
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-cmd1.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -222,8 +222,8 @@
 ;;    (+)`icicle-select-bookmarked-region', (+)`icicle-select-frame',
 ;;    `icicle-select-frame-by-name', (+)`icicle-select-window',
 ;;    `icicle-select-window-by-name', `icicle-send-bug-report',
-;;    (+)`icicle-set-option-to-t', (+)`icicle-sexp-list',
-;;    `icicle-shell-dynamic-complete-command',
+;;    (+)`icicle-send-signal-to-process', (+)`icicle-set-option-to-t',
+;;    (+)`icicle-sexp-list', `icicle-shell-dynamic-complete-command',
 ;;    `icicle-shell-dynamic-complete-environment-variable',
 ;;    `icicle-shell-dynamic-complete-filename',
 ;;    (+)`icicle-string-list', (+)`icicle-toggle-option',
@@ -488,6 +488,7 @@
 (defvar icicle-clear-history-hist)      ; In `icicle-clear-history-1',`icicle-clear-current-history'
 (defvar icicle-window-alist)            ; In `icicle-select-window'
 (defvar locate-make-command-line)       ; In `locate.el'
+(defvar proced-signal-list)             ; In `proced.el' (Emacs 23+)
 (defvar shell-completion-execonly)      ; In `shell.el'
 (defvar snarf-tag-function)             ; In `etags.el'
 (defvar translation-table-for-input)    ; Built-in, Emacs 21+.
@@ -2810,8 +2811,8 @@ If ABBREV-OR-CMD is not an abbreviation or a command, raise an error."
    (icicle-all-candidates-list-alt-action-fn ; M-|'
     (or icicle-all-candidates-list-alt-action-fn alt-fn (icicle-alt-act-fn-for-type "command")))))
 
-;;;###autoload (autoload 'icicle-kmacro "icicles-cmd1")
-(when (require 'kmacro nil t)
+;;;###autoload (when (locate-library "kmacro") (autoload 'icicle-kmacro "icicles-cmd1"))
+(when (locate-library "kmacro")
   (icicle-define-command icicle-kmacro  ; Bound to `S-f4' in Icicle mode (Emacs 22+).
     "Execute a keyboard macro according to its position in `kmacro-ring'.
 Macros in the keyboard macro ring are given names `1', `2', and so on,
@@ -2843,6 +2844,7 @@ an action uses the base prefix arg you used for `icicle-kmacro'."
     (and (kmacro-ring-head) (null kmacro-ring) "1") nil
     ((icicle-pref-arg  current-prefix-arg))    ; Additional bindings
     (progn                              ; First code
+      (unless (require 'kmacro nil t) (error "This command requires library `kmacro.el'"))
       (when defining-kbd-macro (kmacro-end-or-call-macro current-prefix-arg) (error "Done"))
       (unless (or (kmacro-ring-head) kmacro-ring) (error "No keyboard macro defined"))))
 
@@ -5370,6 +5372,88 @@ Otherwise:
     (if (wholenump (prefix-numeric-value arg))
         (funcall icicle-yank-function arg)
       (let ((current-prefix-arg  nil))  (icicle-completing-yank)))))
+
+;;;###autoload (when (locate-library "proced") (autoload 'icicle-send-signal-to-process "icicles-cmd1"))
+(when (locate-library "proced")         ; Emacs 23+.
+  (icicle-define-command icicle-send-signal-to-process
+    "Send a signal to a system process.
+Each candidate is a multi-completion with parts COMMAND, USER, and
+PID, separated by `icicle-list-join-string' (\"^G^J\", by default).
+ COMMAND is the system command associated with the process.
+ USER is the user who issued COMMAND.
+ PID is the process identifier.
+You can match an input regexp against any combination of the parts.
+You can use `C-M-j' (equivalent here to `C-q C-g C-j') to input the
+default separator."
+    (lambda (cand)                      ; Action function
+      (let* ((process       (funcall get-pid cand))
+             (process-name  (funcall get-attr cand 'comm))
+             (sigcode       (let ((enable-recursive-minibuffers  t))
+                              (completing-read
+                               (format "Send signal to process %s: " process-name)
+                               ;; `proced-signal-list' is free here.
+                               proced-signal-list nil nil nil nil "TERM"))))
+        (setq sigcode  (and (stringp sigcode)  (if (string-match "\\`[0-9]+\\'" sigcode)
+                                                   (string-to-number sigcode)
+                                                 (make-symbol sigcode))))
+        (when sigcode (signal-process process sigcode))))
+    prompt (mapcar #'(lambda (pid)
+                       (let ((ats  (process-attributes pid)))
+                         `((,(cdr (assoc 'comm ats)) ,(cdr (assoc 'user ats)) ,(number-to-string pid)))))
+                   (list-system-processes))
+    nil 'FORCE-MATCH-TO-PREVENT-ACCIDENTS nil nil nil nil
+    ((prompt                             "COMMAND `C-M-j' USER `C-M-j' PID: ") ; Bindings
+     (completion-ignore-case             t) ; For sorting.
+     (icicle-candidate-properties-alist  ())
+     (icicle-list-use-nth-parts          '(3))
+     (get-pid                            #'(lambda (cand) (string-to-number cand)))
+     (get-attr                           #'(lambda (cand attr)
+                                             (cdr-safe (assoc attr (process-attributes
+                                                                    (funcall get-pid cand))))))
+     (get-user                           #'(lambda (cand) (funcall get-attr cand 'user)))
+     (icicle-candidate-help-fn           #'(lambda (cand)
+                                             (icicle-describe-process (funcall get-pid cand))))
+     (icicle-transform-before-sort-p     t)
+     (icicle-last-transform-function     nil) ; Because we bind `icicle-transform-function'.
+     (icicle-transform-function          #'(lambda (cands)
+                                             (let ((user-name  (user-login-name)))
+                                               (loop for cand in cands
+                                                     for user = (funcall
+                                                                 get-user
+                                                                 (icicle-transform-multi-completion cand)) 
+                                                     if (equal user-name user)
+                                                     collect cand))))
+     (icicle-sort-orders-alist           '(("by pid" .
+                                            (lambda (s1 s2) (< (funcall get-pid s1) (funcall get-pid s2))))
+                                           ("by command name" .
+                                            (lambda (s1 s2)
+                                              (string-lessp (upcase (funcall get-attr s1 'comm))
+                                                            (upcase (funcall get-attr s2 'comm)))))
+                                           ("by age" .
+                                            (lambda (s1 s2)
+                                              (> (float-time (funcall get-attr s1 'start))
+                                                 (float-time (funcall get-attr s2 'start)))))))
+     (icicle-sort-comparer               (cdar icicle-sort-orders-alist)))
+    (progn (unless (require 'proced nil t) (error "This command requires library `proced.el'")) ; First code
+           (put-text-property 0 1 'icicle-fancy-candidates t prompt)
+           (icicle-highlight-lighter)))
+
+  (defun icicle-describe-process (pid)
+    "Describe the system process that has process id PID."
+    (interactive "nPID: ")
+    (with-output-to-temp-buffer "*Help*"
+      (let* ((attributes  (process-attributes pid))
+             (comm        (cdr-safe (assoc 'comm attributes)))
+             (args        (cdr-safe (assoc 'args attributes)))
+             (start       (cdr-safe (assoc 'start attributes)))
+             (user        (cdr-safe (assoc 'user attributes)))
+             (state       (cdr-safe (assoc 'state attributes))))
+        (princ (format "PID:\t\t%s\n" pid))
+        (when comm  (princ (format "Command name:\t%s\n" comm)))
+        (when args  (princ (format "Command line:\t%s\n" args)))
+        (when user  (princ (format "User:\t\t%s\n"         user)))
+        (when state  (princ (format "State:\t%s\n"       state)))
+        (when start (princ (format-time-string "Started:\t%a %b %e %T %Y (%z)\n" start)))))))
 
 ;;;###autoload (autoload 'icicle-delete-file "icicles-cmd1")
 (icicle-define-file-command icicle-delete-file ; Command name
