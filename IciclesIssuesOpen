@@ -113,52 +113,6 @@ Better yet, use this to separate threads (puts space before and after the horizo
 ''Enter your report below.''
 
 
-<pre>
-</pre>
-----
-<pre>
-</pre>
-
-[new]
-
-Hi Drew!
-
-I found a bug in the latest icicles(Update #: 5280 in icicles-cmd2.el). When i hit `C-c / ' icicle-complete-thesaurus-entry then i've got a Symbol's function definition is void: icicle-complete-thesaurus-entry error.
-
-I've opened icicles-cmd2.el and eval-ed the defun with `C-M-x' but the error remains.
-
-May i suggest to you that you should free the `C-c / ' bindig. OrgMode uses it heavily, i've discovered the bug in org-mode when i've tried http://orgmode.org/org.html#Sparse-trees 
-
-Regards,
-PasJa
-
-[new:DrewAdams:2012-04-03 15:22 UTC]
-Hi PasJa.  There are a couple of things to say about this.
-
-1. Thanks for your report.  Should be fixed now.  The error came from the default value of `icicle-top-level-key-bindings', which was unconditionally binding the key instead of binding it only if the command is defined.
-
-2. After the fix, if you do not use <tt>[[synonyms.el]]</tt> then the key will not be bound by default.
-
-3. Even if you do use <tt>[[synonyms.el]]</tt>, it is trivial to prevent the key binding: just customize option `icicle-top-level-key-bindings'.  That's why it is a [[user option]].
-
-4. Wrt '''Icicles''' using (by default) the binding `##C-c /##', and the conflict with OrgMode:
-
-''Icicle'' mode is a minor mode.  IIUC, OrgMode is a major mode.  Per the Elisp manual ([[Manual:Key Binding Conventions]]):
-
-[new]
-* Sequences consisting of C-c followed by {, }, <, >, : or ; are also reserved for major modes.
- 
-* Sequences consisting of ''C-c followed by any other punctuation character are allocated for minor modes''. Using them in a major mode is not absolutely prohibited, but if you do that, the major mode binding may be shadowed from time to time by minor modes. 
-[new]
-
-IOW, it is OrgMode, not '''Icicles''', that is not behaving well here.  More precisely, it is not behaving badly, but it must expect that minor modes such as ''Icicle'' mode will overwrite such a key binding.  (Of course, '''Icicles''' only overwrites it by default, and only if you also use library <tt>[[synonyms.el]]</tt>.)
-
-Thx -- DrewAdams
-
-
-
-
-
 
 
 
