@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:22:14 2006
 ;; Version: 22.0
-;; Last-Updated: Sun Apr  1 10:22:49 2012 (-0700)
+;; Last-Updated: Tue Apr  3 08:11:14 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 4984
+;;     Update #: 4985
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-opt.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -3397,7 +3397,8 @@ toggle Icicle mode off and then back on."
     ("\C-c'"                     icicle-occur                        t) ; `C-c ''
     ("\C-c="                     icicle-imenu                        t) ; `C-c ='
     ("\C-c\""                    icicle-search-text-property         t) ; `C-c "'
-    ("\C-c/"                     icicle-complete-thesaurus-entry     t) ; `C-c /'
+    ("\C-c/"                     icicle-complete-thesaurus-entry        ; `C-c /'
+     (fboundp 'icicle-complete-thesaurus-entry))
     ("\C-x\M-e"                  icicle-execute-named-keyboard-macro t) ; `C-x M-e'
     ("\C-x "                     icicle-command-abbrev               t) ; `C-x SPC'
     ("\C-x5o"                    icicle-select-frame                 t) ; `C-x 5 o'
