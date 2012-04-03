@@ -289,7 +289,18 @@ Not sure where to mention this but I recommend adding the &optional release argu
 [new]
 
 Is there any way not to save the list of activated minor modes? I just want to revisit the list of files. -- Kiwon
+
+[new]
+
+Here's what I do to solve that problem:
+
+    (loop for mode in minor-mode-list do (add-to-list 'desktop-minor-mode-table (list mode nil)))
+
+Be sure to require all of the minor modes you use, and put this at the bottom!
+
 ----
+
+
 
 See SessionManagement for other similar packages.
 
