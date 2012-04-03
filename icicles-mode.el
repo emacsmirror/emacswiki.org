@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 10:21:10 2006
 ;; Version: 22.0
-;; Last-Updated: Thu Mar  1 22:40:21 2012 (-0800)
+;; Last-Updated: Mon Apr  2 21:14:09 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 8501
+;;     Update #: 8508
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-mode.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -20,7 +20,7 @@
 ;;   `advice', `advice-preload', `apropos', `apropos+',
 ;;   `apropos-fn+var', `avoid', `backquote', `bookmark', `bookmark+',
 ;;   `bookmark+-1', `bookmark+-bmu', `bookmark+-key',
-;;   `bookmark+-lit', `bookmark+-mac', `bytecomp', `cus-edit',
+;;   `bookmark+-lit', `bookmark+-mac', `bytecomp', `cl', `cus-edit',
 ;;   `cus-face', `cus-load', `cus-start', `dired', `dired+',
 ;;   `dired-aux', `dired-x', `doremi', `easymenu', `ediff-diff',
 ;;   `ediff-help', `ediff-init', `ediff-merg', `ediff-mult',
@@ -584,10 +584,12 @@ bindings are not available to you."
                        (when (ad-is-active fn) (ad-activate fn)))))))
           (unless (eq icicle-guess-commands-in-path 'load)
             (setq icicle-shell-command-candidates-cache  ())) ; Reset - toggle Icy to update.
-          (message "Turning %s Icicle mode..." (if icicle-mode "ON" "OFF"))
+          (message "Turning %s Icicle mode..."
+           (icicle-propertize (if icicle-mode "ON" "OFF") 'face 'icicle-msg-emphasis))
           (icicle-define-minibuffer-maps icicle-mode)
           (run-hooks 'icicle-mode-hook)
-          (message "Turning %s Icicle mode...done" (if icicle-mode "ON" "OFF")))))
+          (message "Turning %s Icicle mode...done"
+           (icicle-propertize (if icicle-mode "ON" "OFF") 'face 'icicle-msg-emphasis)))))
 
 (unless (fboundp 'define-minor-mode)    ; Emacs 20 ------------
   (defun icicle-mode (&optional arg)
