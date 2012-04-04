@@ -4,6 +4,8 @@
                 float:    right;
                 width:    35ex;
                 padding:  2ex;
+                margin-bottom: 1em;
+                border:   1px solid black;
                 font:     12pt/13pt 'Abadi MT Condensed Light', 'Arial Narrow',
                           Arial, sans-serif;">
   <img style=  "float:    right"
