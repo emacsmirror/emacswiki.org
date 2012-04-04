@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Wed Apr  4 10:09:20 2012 (-0700)
+;; Last-Updated: Wed Apr  4 11:34:35 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 23585
+;;     Update #: 23588
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-cmd1.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -1724,11 +1724,20 @@ can then just hit `RET' to accept the list of matching preferences.
 This lets you see which preferences will be available in the customize
 buffer and dynamically change that list.
 
+Interactively:
+
+With no prefix arg, customize all matching preferences: groups, faces,
+and options.  With a prefix arg, show those plus all matching
+non-option variables in Customize (but you cannot actually customize
+the latter).
+
+Non-interactively:
+
 If TYPE is `options', include only user options.
 If TYPE is `faces', include only faces.
 If TYPE is `groups', include only groups.
-If TYPE is t (interactively, with a prefix arg), include variables
- that are not user options, as well as faces and groups.
+If TYPE is t, include variables that are not user options, as well as
+ faces and groups.
 
 PATTERN is a regexp.
 
