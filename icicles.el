@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Sun Apr  1 13:26:04 2012 (-0700)
+;; Last-Updated: Tue Apr  3 17:30:27 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 23093
+;;     Update #: 23097
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -126,9 +126,9 @@
 ;;    `icicle-apply' `icicle-apropos', `icicle-apropos-command',
 ;;    `icicle-apropos-function', `icicle-apropos-option',
 ;;    `icicle-apropos-options-of-type', `icicle-apropos-variable',
-;;    `icicle-apropos-zippy', `icicle-bbdb-complete-name',
-;;    `icicle-bookmark', `icicle-bookmark-a-file',
-;;    `icicle-bookmark-all-tags',
+;;    `icicle-apropos-vars-w-val-satisfying', `icicle-apropos-zippy',
+;;    `icicle-bbdb-complete-name', `icicle-bookmark',
+;;    `icicle-bookmark-a-file', `icicle-bookmark-all-tags',
 ;;    `icicle-bookmark-all-tags-other-window',
 ;;    `icicle-bookmark-all-tags-regexp',
 ;;    `icicle-bookmark-all-tags-regexp-other-window',
@@ -221,6 +221,7 @@
 ;;    `icicle-customize-apropos-groups',
 ;;    `icicle-customize-apropos-options',
 ;;    `icicle-customize-apropos-options-of-type',
+;;    `icicle-customize-apropos-opts-w-val-satisfying',
 ;;    `icicle-customize-face', `icicle-customize-icicles-group',
 ;;    `icicle-cycle-expand-to-common-match',
 ;;    `icicle-cycle-image-file-thumbnail',
@@ -229,8 +230,8 @@
 ;;    `icicle-delete-window', `icicle-delete-windows',
 ;;    `icicle-delete-windows-on', `icicle-describe-file',
 ;;    `icicle-describe-option-of-type', `icicle-describe-process',
-;;    `icicle-directory-list', `icicle-dired',
-;;    `icicle-dired-chosen-files',
+;;    `icicle-describe-var-w-val-satisfying', `icicle-directory-list',
+;;    `icicle-dired', `icicle-dired-chosen-files',
 ;;    `icicle-dired-chosen-files-other-window',
 ;;    `icicle-dired-other-window', `icicle-dired-project',
 ;;    `icicle-dired-project-other-window',
@@ -1042,7 +1043,7 @@
 ;;    `icicle-put-at-head', `icicle-put-whole-cand-prop',
 ;;    `icicle-quote-file-name-part-of-cmd',
 ;;    `icicle-raise-Completions-frame', `icicle-readable-to-markers',
-;;    `icicle-read-char-by-name',
+;;    `icicle-read-args-w-val-satisfying', `icicle-read-char-by-name',
 ;;    `icicle-read-args-for-set-completion-methods',
 ;;    `icicle-read-char-exclusive',
 ;;    `icicle-read-char-maybe-completing', `icicle-read-face-name',
