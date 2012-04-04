@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Tue Apr  3 17:40:09 2012 (-0700)
+;; Last-Updated: Wed Apr  4 11:49:35 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 8266
+;;     Update #: 8272
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-chg.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -85,6 +85,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd1.el'")
 ;;
+;; 2012/04/04 dadams
+;;     Moved hint about (S-)TAB from icicle-read-args-w-val-satisfying to callers that need it.
 ;; 2012/04/03 dadams
 ;;     Added: icicle-apropos-vars-w-val-satisfying, icicle-describe-var-w-val-satisfying,
 ;;            icicle-customize-opts-w-val-satisfying, icicle-read-args-w-val-satisfying.
@@ -4451,6 +4453,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-mode.el'")
 ;;
+;; 2012/04/04 dadams
+;;     Added to menus: *-w-*-satisfying, icicle-apropos-options-of-type.  Changed item names a bit.
 ;; 2012/04/02 dadams
 ;;     icicle-mode: Propertize ON / OFF.
 ;; 2012/03/01 dadams
