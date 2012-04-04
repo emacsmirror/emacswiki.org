@@ -4,7 +4,9 @@
 
 ----
 
-== A Propos d'Apropos ==
+
+
+
 
 The '''Icicles''' doc speaks often of ''apropos this'' and ''apropos that''.
 "'''Apropos'''" could almost be thought of as another name for '''Icicles'''.
@@ -15,12 +17,11 @@ stem from the traditional use in Emacs of the term to mean
 [[regexp]] and give you information about [[symbol]]s whose names match
 that regexp.
 
-The most common mention of "apropos" in '''Icicles''' is in connection
-with "''apropos completion''" --- see [[Icicles - Apropos Completions]], which
+The most common mention of "apropos" in '''Icicles''' is in connection with [[Icicles - Apropos Completions|apropos completion]], which
 uses regexp matching.  It is the regexp matching that inspires the
 name.
 
-This doc section describes ways in which '''Icicles''' gives you help
+This page describes ways in which '''Icicles''' gives you help
 apropos (about) something in Emacs.  All of these ways let you use
 regexp matching, but they also work with any other kind of
 matching.  That is, they provide information about things, and you
@@ -33,7 +34,7 @@ with other kinds of completion.
 
 
 [:GetHelpOnCandidates]
-=== Get Help on Candidates ===
+== Get Help on Candidates ==
 
 General '''Icicles''' help is available at any time during [[minibuffer]]
 input, by hitting '''`##C-?##'''' (`icicle-minibuffer-help').  This section
@@ -84,7 +85,7 @@ see [[Icicles - Multi-Commands]].
 
 
 [:CandidateHelpAsApropos]
-==== Use Candidate Help Like You Use Emacs Command `apropos' ====
+=== Use Candidate Help Like You Use Emacs Command `apropos' ===
 
 You can use this candidate-help functionality as a kind of expanded `apropos'
 function.  As an example, type `C-h v out', then type `S-TAB' to
@@ -213,7 +214,7 @@ of the way, whenever you access help on a candidate.  (Default value:
 
 
 [:IciclesAproposCommands]
-=== Icicles Apropos Commands ===
+== Icicles Apropos Commands ==
 
 The commands described in this section can generally be thought of
 as extensions of the traditional Emacs apropos commands.  In
@@ -229,7 +230,7 @@ completion candidate as its candidate help (`C-M-RET',
 
 
 [:ReplacementsForStandardAproposCommands]
-==== Replacements for Standard Apropos Commands ====
+=== Replacements for Standard Apropos Commands ===
 
 By default (see option '''`<tt>[[Icicles - Customization and General Tips#icicle-top-level-key-bindings|icicle-top-level-key-bindings]]</tt>'''', in ''Icicle'' mode the standard Emacs `apropos' commands are remapped to '''Icicles'''
 versions.  The '''Icicles commands''' act similarly, but they also let you see the list of regexp matches incrementally (as with all
@@ -268,11 +269,20 @@ forced to  make some limiting compromises for keyword searching.
 
 
 
+
+
+
+
+
+
+
+
+
 [:icicle-doc]
 [:icicle-fundoc]
 [:icicle-vardoc]
 [:icicle-plist]
-==== Documentation Apropos Multi-Commands ====
+=== Documentation Apropos Multi-Commands ===
 
 '''Icicles''' [[multi-command]]s '''`icicle-doc'''', '''`icicle-fundoc'''', and '''`icicle-vardoc'''' provide the functionality of standard Emacs command `apropos-documentation', but with additional features --- see [[Icicles - Multi-Completions]].
 In addition, you can use multi-command '''`icicle-plist'''' to find
@@ -290,11 +300,16 @@ the symbol type (`FUNCTION', `VARIABLE', or `FACE').
 
 
 
+
+
+
+
+
 [:icicle-describe-option-of-type]
 [:icicle-apropos-options-of-type]
 [:icicle-customize-options-of-type]
 [:Type-AwareAproposMulti-Commands]
-==== Type-Aware Apropos Multi-Commands ====
+=== Type-Aware Apropos Multi-Commands ===
 
 The following apropos [[multi-command]]s for [[user option]]s also use
 [[multi-completion]] candidates.  In this case the ''first part'' is the
@@ -321,8 +336,13 @@ handled.
 
 
 
-----
 
+
+
+
+
+
+----
 
 
 || *Previous:*  [[Icicles - Sorting Candidates]] || '''[[Icicles]]''' || IciclesIndex || *Next:* [[Icicles - Multi-Commands]] ||
