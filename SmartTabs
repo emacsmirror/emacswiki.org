@@ -214,7 +214,8 @@ The wheel appears to have been reinvented a number of times:
 * [http://bytes.inso.cc/wp/2009/01/07/dot-emacs-smarter-indentation-with-tabs-and-spaces/ Another], used by the [http://wiki.xmms2.xmms.se/wiki/Emacs_C_style XMMS2] project.
 * A [http://web.archive.org/web/20051124145441/http://my.erinet.com/~tschaef/cc-mode/description.html custom CC mode], from the web archive.
 
-(As for ''non-Emacs'' implementations, Michael Geddes has written a [http://www.vim.org/scripts/script.php?script_id=231 Smart Tabs plugin for Vim]. Also, [http://www.jetbrains.com/idea/ IntelliJ IDEA] has a "Smart Tabs" option, and [https://bugzilla.gnome.org/show_bug.cgi?id=567606 Anjuta]'s tab handling is reportedly fixed in SVN.)
+(As for ''non-Emacs'' implementations, Michael Geddes has written a [http://www.vim.org/scripts/script.php?script_id=231 Smart Tabs plugin for Vim]. Also, [http://www.jetbrains.com/idea/ IntelliJ IDEA] has a "Smart Tabs" option, [https://bugzilla.gnome.org/show_bug.cgi?id=567606 Anjuta]'s tab handling is reportedly fixed in SVN, and
+the [http://dhaumann.blogspot.com/2009/10/extending-kate-with-scripts.html#advanced-editing-tools-scripting-indentation Kate editor]'s indentation API distinguishes between "indentation" and "alignment".)
 
 == Screenshot ==
 
