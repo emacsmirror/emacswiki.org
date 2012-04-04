@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Tue Apr  3 17:03:31 2012 (-0700)
+;; Last-Updated: Tue Apr  3 17:40:09 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 8252
+;;     Update #: 8266
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-chg.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -86,6 +86,8 @@
 ;;;(@* "CHANGE LOG FOR `icicles-cmd1.el'")
 ;;
 ;; 2012/04/03 dadams
+;;     Added: icicle-apropos-vars-w-val-satisfying, icicle-describe-var-w-val-satisfying,
+;;            icicle-customize-opts-w-val-satisfying, icicle-read-args-w-val-satisfying.
 ;;     icicle-send-signal-to-process:
 ;;       Moved it and icicle-describe-process here from *-cmd2.el.  Added autoload cookie.
 ;;       Changed definition guard condition to locate-library.    Updated def, including to
@@ -96,7 +98,9 @@
 ;;     Moved here from *cmd2.el:
 ;;      icicle-apropos, icicle-apropos-command, icicle-apropos-function, icicle-apropos-option,
 ;;      icicle-apropos-options-of-type, icicle-apropos-variable, icicle-apropos-zippy,
-;;      icicle-apropos-opt-action; and compile-time requires of: yow, cookie1, apropos-fn+var.
+;;      icicle-apropos-opt-action, icicle-describe-option-of-type, icicle-describe-opt-action,
+;;      icicle-describe-opt-of-type-complete.
+;;      Plus compile-time requires of libraries yow, cookie1, apropos-fn+var.
 ;; 2012/04/01 dadams
 ;;     Removed: old-customize-apropos* (no longer redefine automatically for Icicle mode).
 ;; 2012/03/31 dadams
@@ -598,8 +602,9 @@
 ;;     Moved to *-cmd1.el:
 ;;      icicle-send-signal-to-process, icicle-apropos, icicle-apropos-command, icicle-apropos-function,
 ;;      icicle-apropos-option, icicle-apropos-options-of-type, icicle-apropos-variable,
-;;      icicle-apropos-zippy, icicle-apropos-opt-action; and compile-time requires of: yow, cookie1,
-;;      apropos-fn+var.
+;;      icicle-apropos-zippy, icicle-apropos-opt-action, icicle-describe-option-of-type,
+;;      icicle-describe-opt-action, icicle-describe-opt-of-type-complete.
+;;      Plus compile-time requires of libraries yow, cookie1, apropos-fn+var.
 ;; 2012/04/01 dadams
 ;;     Added: icicle-apropos-options-of-type, icicle-apropos-opt-action.
 ;;     icicle-where-is: In help fn, wrap individual key sequences in `', not just all of them together.
