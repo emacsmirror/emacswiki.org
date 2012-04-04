@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Thu May 21 13:31:43 2009 (-0700)
 ;; Version: 22.0
-;; Last-Updated: Tue Apr  3 16:56:25 2012 (-0700)
+;; Last-Updated: Tue Apr  3 17:19:04 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 5327
+;;     Update #: 5332
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-cmd2.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -61,7 +61,6 @@
 ;;    (+)`icicle-choose-visible-faces', (+)`icicle-comint-command',
 ;;    (+)`icicle-comint-search', (+)`icicle-compilation-search',
 ;;    (+)`icicle-complete-keys', `icicle-complete-thesaurus-entry',
-;;    (+)`icicle-describe-option-of-type', `icicle-describe-process',
 ;;    (+)`icicle-doc', (+)`icicle-exchange-point-and-mark',
 ;;    (+)`icicle-find-file-all-tags',
 ;;    (+)`icicle-find-file-all-tags-other-window',
@@ -180,8 +179,7 @@
 ;;    `icicle-comint-search-send-input', `icicle-compilation-hook-fn',
 ;;    `icicle-compilation-search-in-context-fn',
 ;;    `icicle-complete-keys-1', `icicle-complete-keys-action',
-;;    `icicle-defined-thing-p', `icicle-describe-opt-action',
-;;    `icicle-describe-opt-of-type-complete', `icicle-doc-action',
+;;    `icicle-defined-thing-p', `icicle-doc-action',
 ;;    `icicle-fn-doc-minus-sig', `icicle-font-w-orig-size',
 ;;    `icicle-get-anything-actions-for-type',
 ;;    `icicle-get-anything-cached-candidates',
@@ -2378,183 +2376,6 @@ remapping, then customize option `icicle-top-level-key-bindings'." ; Doc string
     (or icicle-candidate-alt-action-fn (icicle-alt-act-fn-for-type "command")))
    (icicle-all-candidates-list-alt-action-fn
     (or icicle-all-candidates-list-alt-action-fn (icicle-alt-act-fn-for-type "command")))))
-
-;;;###autoload (autoload 'icicle-describe-option-of-type "icicles-cmd2")
-(icicle-define-command icicle-describe-option-of-type ; Bound to `C-h C-o'.  Command name
-  "Describe a user option that was defined with a given `defcustom' type.
-Enter patterns for the OPTION name and TYPE definition in the
-minibuffer, separated by `icicle-list-join-string', which is \"^G^J\",
-by default.  (`^G' here means the Control-g character, input using
-`C-h C-g'.  Likewise, for `^J'.)
-
-OPTION is a regexp that is matched against option names.
-
-Depending on the prefix arg, TYPE is interpreted as either of these:
-
- - a regexp to match against the option type
-
- - a definition acceptable for `defcustom' :type, or its first symbol,
-   for example, (choice (integer) (regexp)) or `choice'
-
-In the second case, depending on the prefix arg, TYPE can be matched
-against the option type, or it can be matched against either the
-option type or one of its subtypes.
-
-In the second case also, depending on the prefix arg, if TYPE does not
-match some option's type, that option might still be a candidate, if
-its current value satisfies TYPE.
-
-In sum, the prefix arg determines the type-matching behavior, as
-follows:
-
- - None:      OPTION is defined with TYPE or a subtype of TYPE.
-              TYPE is a regexp.
-
- - `C-u':     OPTION is defined with TYPE or a subtype of TYPE,
-                or its current value is compatible with TYPE.
-              TYPE is a type definition or its first symbol.
-
- - Negative:  OPTION is defined with TYPE (exact match).
-              TYPE is a regexp.
-
- - Positive:  OPTION is defined with TYPE,
-                or its current value is compatible with TYPE.
-              TYPE is a type definition or its first symbol.
-
- - Zero:      OPTION is defined with TYPE or a subtype of TYPE.
-              TYPE is a type definition or its first symbol.
-
- - `C-u C-u': OPTION is defined with TYPE (exact match).
-              TYPE is a type definition or its first symbol.
-
-You can change these prefix-arg key sequences by customizing option
-`icicle-option-type-prefix-arg-list'.  For example, if you tend to use
-the matching defined here for `C-u', you might want to make that the
-default behavior (no prefix arg).  You can assign any of the six
-behaviors to any of the prefix-arg keys.
-
-If TYPE is nil, then *all* options that match OPTION are candidates.
-
-Note that options defined in libraries that have not been loaded can
-be candidates, but their type will appear as nil, since it is not
-known before loading the option definition.
-
-You can match your input against the option name or the type
-definition or both.  Use `C-M-j' (equivalent here to `C-q C-g C-j') to
-input the default separator.
-
-For example, to match all Icicles options whose type matches `string'
-\(according to the prefix arg), use `S-TAB' with this input:
-
-icicle.*^G
-string$
-
-If you instead want all Icicles options whose type definition contains
-`string', as in (repeat string), then use this:
-
-icicle.*^G
-\[^^G]*string
-
-Here, `[^^G]' matches any character except ^G, which includes newline.
-If you use `.'  here instead of `[^^G]', then only the first lines of
-type definitions are searched for `string', because `.' matches any
-character except a newline.  (The first `^' in `[^^G]' is a circumflex
-character.  The second `^' is part of `^G', the printed representation
-of a Control-g character.)
-
-Remember that you can use `\\<minibuffer-local-completion-map>\
-\\[icicle-cycle-incremental-completion] to toggle incremental completion." ; Doc string
-  icicle-describe-opt-action            ; Action function
-  prompt                                ; `completing-read' args
-  'icicle-describe-opt-of-type-complete nil nil nil nil nil nil
-  ((prompt                             "OPTION `C-M-j' TYPE: ") ; Bindings
-   (icicle-candidate-properties-alist  '((1 (face icicle-candidate-part))))
-   ;; Bind `icicle-apropos-complete-match-fn' to nil to prevent automatic input matching
-   ;; in `icicle-unsorted-apropos-candidates' etc., because `icicle-describe-opt-of-type-complete'
-   ;; does everything.
-   (icicle-apropos-complete-match-fn   nil)
-   (icicle-candidate-help-fn           'icicle-describe-opt-action)
-   ;; $$$ (icicle-highlight-input-completion-failure nil)
-   (icicle-pref-arg                    current-prefix-arg))
-  (progn (put-text-property 0 1 'icicle-fancy-candidates t prompt) ; First code
-         (icicle-highlight-lighter)
-         (message "Gathering user options and their types...")))
-
-(defun icicle-describe-opt-action (opt+type)
-  "Action function for `icicle-describe-option-of-type'."
-  (let ((icicle-list-use-nth-parts  '(1)))
-    (describe-variable (intern (icicle-transform-multi-completion opt+type)))))
-
-;; Free var here: `icicle-pref-arg' - it is bound in `icicle-describe-option-of-type'.
-(defun icicle-describe-opt-of-type-complete (strg pred completion-mode)
-  "Completion function for `icicle-describe-option-of-type'.
-This is used as the value of `minibuffer-completion-table'."
-  (setq strg  icicle-current-input)
-  ;; Parse strg into its option part and its type part: OPS  and TPS.
-  ;; Make raw alist of all options and their types: ((a . ta) (b . tb)...).
-  (let* ((num-prefix  (prefix-numeric-value icicle-pref-arg))
-         (mode        (cond ((not icicle-pref-arg) ; No prefix arg
-                             (nth 4 icicle-option-type-prefix-arg-list))
-                            ((and (consp icicle-pref-arg) (= 16 num-prefix)) ; C-u C-u
-                             (nth 0 icicle-option-type-prefix-arg-list))
-                            ((consp icicle-pref-arg) (nth 2 icicle-option-type-prefix-arg-list)) ; C-u
-                            ((zerop num-prefix) (nth 1 icicle-option-type-prefix-arg-list)) ; C-0
-                            ((wholenump num-prefix) ; C-9
-                             (nth 3 icicle-option-type-prefix-arg-list))
-                            (t (nth 5 icicle-option-type-prefix-arg-list)))) ; C--
-         (ops         (let ((icicle-list-use-nth-parts  '(1)))
-                        (icicle-transform-multi-completion strg)))
-         (tps         (let ((icicle-list-use-nth-parts  '(2)))
-                        (icicle-transform-multi-completion strg)))
-         (tp          (and (not (string= "" tps))
-                           ;; Use regexp if no prefix arg or negative; else use sexp.
-                           (if (memq mode '(inherit-or-regexp direct-or-regexp)) tps (read tps))))
-         (result      nil))
-    (mapatoms
-     #'(lambda (symb)
-         (when (if (fboundp 'custom-variable-p) (custom-variable-p symb) (user-variable-p symb))
-           (condition-case nil
-               (push (list symb (get symb 'custom-type)) result)
-             (error nil)))))
-    ;; Keep only candidates that correspond to input.
-    (setq result
-          (let ((ops-re  (if (memq icicle-current-completion-mode '(nil apropos))
-                             ops
-                           (concat "^" ops))))
-            (icicle-remove-if-not
-             #'(lambda (opt+typ)
-                 (and (string-match ops-re (symbol-name (car opt+typ)))
-                      (or (null tp)
-                          (condition-case nil
-                              (icicle-var-is-of-type-p (car opt+typ) (list tp)
-                                                       (case mode
-                                                         ((inherit inherit-or-regexp) 'inherit)
-                                                         ((direct  direct-or-regexp)  'direct)
-                                                         (inherit-or-value     'inherit-or-value)
-                                                         (direct-or-value      'direct-or-value)))
-                            (error nil)))))
-             result)))
-    ;; Change alist entries to multi-completions: "op^G^Jtp".  Add short help for mode-line, tooltip.
-    (setq result
-          (mapcar #'(lambda (entry)
-                      (let* ((opt+typ-string
-                              ;; $$$$$$ (concat (mapconcat #'(lambda (e) (pp-to-string e))
-                              ;;                           entry icicle-list-join-string)
-                              ;;                icicle-list-end-string)) ; $$$$$$
-                              (mapconcat #'(lambda (e) (pp-to-string e)) entry
-                                         icicle-list-join-string))
-                             (doc       ; Don't bother to look up doc, if user won't see it.
-                              (and (or (> icicle-help-in-mode-line-delay 0)
-                                       (and (boundp 'tooltip-mode) tooltip-mode))
-                                   (documentation-property (car entry) 'variable-documentation t)))
-                             (doc1  (and (stringp doc)
-                                         (string-match ".+$" doc) (match-string 0 doc))))
-                        (when doc1 (icicle-candidate-short-help doc1 opt+typ-string))
-                        opt+typ-string))
-                  result))
-    (if completion-mode
-        result                          ; `all-completions', `test-completion'
-      (try-completion strg (mapcar #'list result) pred)))) ; `try-completion'
 
 ;;;###autoload (autoload 'icicle-vardoc "icicles-cmd2")
 (icicle-define-command icicle-vardoc    ; Command name
