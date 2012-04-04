@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Tue Apr  3 17:28:14 2012 (-0700)
+;; Last-Updated: Wed Apr  4 10:09:20 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 23577
+;;     Update #: 23585
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-cmd1.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -473,7 +473,8 @@
   (defvar kmacro-ring)                  ; In `kmacro.el'
   (defvar read-file-name-completion-ignore-case) ;  In `minibuffer.el'
   (defvar recentf-list)                 ; In `recentf.el'
-  (defvar tags-case-fold-search))       ; In `etags.el'
+  (defvar tags-case-fold-search)        ; In `etags.el'
+  (defvar tooltip-mode))                ; In `tooltip.el'
 
 (when (< emacs-major-version 23)
   (defvar read-buffer-completion-ignore-case))
@@ -2482,7 +2483,8 @@ it could be anything.  Instead of just `integerp', for example, it
 could be `(lambda (val) (and (integerp val) (> val 5) (< val 15)))'.
 
 With a prefix argument, candidates are limited to user options."
-  (interactive (icicle-read-args-w-val-satisfying "Apropos variables" current-prefix-arg t))
+  (interactive (icicle-read-args-w-val-satisfying "Apropos var (hit `S-TAB' or `TAB'): "
+                                                  current-prefix-arg t))
   (if optionp
       (if (fboundp 'icicle-apropos-option)
           (icicle-apropos-option pattern)
@@ -2503,7 +2505,8 @@ accepts the value of the variable as its (first) argument.
 Typically the predicate is a type predicate, such as `integerp', but
 it could be anything.  Instead of just `integerp', for example, it
 could be `(lambda (val) (and (integerp val) (> val 5) (< val 15)))'."
-  (interactive (let ((xxx  (icicle-read-args-w-val-satisfying "Customize variables" t t)))
+  (interactive (let ((xxx  (icicle-read-args-w-val-satisfying "Customize vars (hit `S-TAB' or `TAB'): "
+                                                              t t)))
                  (list (car xxx) (cadr xxx))))
   (icicle-customize-apropos-options pattern))
 
@@ -2544,9 +2547,8 @@ return the symbol with that name."
          (icompletep                              (and (boundp 'icomplete-mode)  icomplete-mode))
          (icicle-must-pass-after-match-predicate  (and (not icompletep) varpred))
          (varpat                                  (completing-read
-                                                   (concat prompt " (hit `S-TAB' or `TAB'): ")
-                                                   obarray (and icompletep varpred)
-                                                   nil nil nil (and vardflt (symbol-name vardflt)) t)))
+                                                   prompt obarray (and icompletep varpred) nil nil nil
+                                                   (and vardflt (symbol-name vardflt)) t)))
     (list valpred
           (if patternp
               (if icicle-completion-candidates
