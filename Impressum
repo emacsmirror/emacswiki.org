@@ -1,11 +1,9 @@
-
 <html>
  <div  class=  "vcard image"
        style=  "background-color: #fff;
                 float:    right;
                 width:    35ex;
                 padding:  2ex;
-                border:   1px dotted red;
                 font:     12pt/13pt 'Abadi MT Condensed Light', 'Arial Narrow',
                           Arial, sans-serif;">
   <img style=  "float:    right"
@@ -31,10 +29,8 @@
    <span style="display:none;"><span class="type">Cell</span>: </span>
    <span class="value">+41 78 6125175</span>
   </div>
-  <div class=  "email"><a href="mailto:kensanata@gmail.com">kensanata@gmail.com</a></div>
-  <a   class=  "url"
-       href=   "http://www.emacswiki.org/alex/">http://www.emacswiki.org/alex/</a>
-  
+  <div>kensanata@gmail.com</div>
+  <div>http://www.emacswiki.org/alex/</div>
  </div>
 </html>
 
