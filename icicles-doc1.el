@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Mon Apr  2 16:24:15 2012 (-0700)
+;; Last-Updated: Wed Apr  4 07:52:12 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 26573
+;;     Update #: 26595
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-doc1.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -225,10 +225,15 @@
 ;;    (@> "Changing the Sort Order")
 ;;    (@> "Defining New Sort Orders")
 ;;    (@> "Different Sorts for Different Sorts of Uses")
+;;
 ;;  (@> "A Propos d'Apropos")
-;;    (@> "Get Help on Candidates")
+;;    (@> "Get Help on Completion Candidates")
 ;;      (@> "Use Candidate Help Like You Use Emacs Command `apropos'")
 ;;    (@> "Icicles Apropos Commands")
+;;      (@> "Replacements for Standard Apropos Commands")
+;;      (@> "Documentation-Apropos Multi-Commands")
+;;      (@> "Type-Aware Variable-Apropos Multi-Commands")
+;;      (@> "Value-Aware Variable-Apropos Multi-Commands")
 ;;
 ;;  (@> "Multi-Commands")
 ;;    (@> "What Is a Multi-Command?")
@@ -1027,7 +1032,7 @@
 ;;  several possible commands.  Or just use it to browse doc strings,
 ;;  to learn more about Emacs.
 ;;
-;;  See (@> "Get Help on Candidates") for more about this.
+;;  See (@> "Get Help on Completion Candidates") for more about this.
 ;;
 ;;(@* "Perform Multiple Operations in One Command")
 ;;  ** Perform Multiple Operations in One Command **
@@ -2224,7 +2229,7 @@
 ;;
 ;;  Then, of course, you can pick one (or you can use `C-M-next'
 ;;  repeatedly to view the doc of each of these functions in turn -
-;;  see (@> "Get Help on Candidates")).
+;;  see (@> "Get Help on Completion Candidates")).
 ;;
 ;;  You get the idea.  This feature is both very simple to use and
 ;;  very useful.  It's easy to appreciate using multiple simple
@@ -4028,8 +4033,8 @@
 ;;  can use them with apropos completion, but you can also use them
 ;;  with other kinds of completion.
 ;;
-;;(@* "Get Help on Candidates")
-;;  ** Get Help on Candidates **
+;;(@* "Get Help on Completion Candidates")
+;;  ** Get Help on Completion Candidates **
 ;;
 ;;  General Icicles help is available at any time during minibuffer
 ;;  input, by hitting `C-?' (`icicle-minibuffer-help').  This section
@@ -4271,8 +4276,8 @@
 ;;
 ;;  See Also: (@> "Progressive Completion").
 ;;
-;;(@* "Documentation Apropos Multi-Commands")
-;;  *** Documentation Apropos Multi-Commands ***
+;;(@* "Documentation-Apropos Multi-Commands")
+;;  *** Documentation-Apropos Multi-Commands ***
 ;;
 ;;  Icicles multi-commands `icicle-doc', `icicle-fundoc', and
 ;;  `icicle-vardoc' provide the functionality of standard Emacs
@@ -4287,17 +4292,18 @@
 ;;  documentation.  For `icicle-doc' there is a middle part, which is
 ;;  the symbol type (`FUNCTION', `VARIABLE', or `FACE').
 ;;
-;;(@* "Type-Aware Apropos Multi-Commands")
-;;  *** Type-Aware Apropos Multi-Commands ***
+;;(@* "Type-Aware Variable-Apropos Multi-Commands")
+;;  *** Type-Aware Variable-Apropos Multi-Commands ***
 ;;
-;;  The following apropos multi-commands for user options also use
-;;  multi-completion candidates.  In this case the first part is the
-;;  option name and the second part is its Customize type (`defcustom'
-;;  type).
+;;  The following apropos multi-commands for user options are
+;;  type-aware.  Like the documentation-apropos multi-commands, they
+;;  use multi-completion candidates.  In this case the first part is
+;;  the option name and the second part is its Customize type
+;;  (`defcustom' type).
 ;;
-;;  * `icicle-describe-option-of-type' (bound to `C-h C-o')
 ;;  * `icicle-apropos-options-of-type'
 ;;  * `icicle-customize-apropos-options-of-type'
+;;  * `icicle-describe-option-of-type' (bound to `C-h C-o')
 ;;
 ;;  They all work the same way.  They do something with all loaded
 ;;  user options of a the type that you specify.  The first one
@@ -4311,6 +4317,27 @@
 ;;  information, especially about using a prefix argument to determine
 ;;  how the second, `TYPE', part of the completion candidates is
 ;;  handled.
+;;
+;;(@* "Value-Aware Variable-Apropos Multi-Commands")
+;;  *** Value-Aware Variable-Apropos Multi-Commands ***
+;;
+;;  The following apropos multi-commands for variables are
+;;  value-aware.  You are prompted first for a predicate that
+;;  restricts completion candidates to variables whose current value
+;;  satisfies it.  For example, if you enter `integerp' as the
+;;  predicate then candidates are variables whose value is an integer.
+;;
+;;  * `icicle-apropos-vars-w-val-satisfying'
+;;  * `icicle-customize-apropos-opts-w-val-satisfying'
+;;  * `icicle-describe-var-w-val-satisfying'
+;;
+;;  The predicate you enter is read as a Lisp sexp, but it is not
+;;  evaluated.  It must be either a function symbol, such as
+;;  `integerp', or a lambda form, such as `(lambda (val) (and
+;;  (integerp val) (> val 500)))'.  Other than the fact that it must
+;;  accept at least one argument (the value of a variable), it can be
+;;  anything you like.  Individual candidate help (e.g., `C-M-RET')
+;;  shows you the doc string and the current value.
  
 ;;(@* "Multi-Commands")
 ;;
@@ -4466,9 +4493,9 @@
 ;;
 ;;  Does this `C-RET' stuff sound familiar?  Using a multi-command is
 ;;  similar to accessing help on a candidate
-;;  (see (@> "Get Help on Candidates")).  A multi-command is any
-;;  command that has a special action defined for use with `C-RET'
-;;  (command `icicle-candidate-action') on the current cycle
+;;  (see (@> "Get Help on Completion Candidates")).  A multi-command
+;;  is any command that has a special action defined for use with
+;;  `C-RET' (command `icicle-candidate-action') on the current cycle
 ;;  candidate.  If no such special action is defined, then help on the
 ;;  candidate is displayed - displaying help is just the default
 ;;  action for `C-RET', used when no other action is defined.  You can
@@ -4523,8 +4550,8 @@
 ;;
 ;;  See Also:
 ;;
-;;  * (@> "Get Help on Candidates") for information about using
-;;    candidate help.
+;;  * (@> "Get Help on Completion Candidates") for information about
+;;    using candidate help.
 ;;  * (@file :file-name "icicles-doc2.el" :to "Defining Multi-Commands the Hard Way")
 ;;    for information about defining a custom candidate-help action
 ;;    for a command.
