@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Tue Apr  3 14:11:44 2012 (-0700)
+;; Last-Updated: Tue Apr  3 16:56:52 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 23549
+;;     Update #: 23563
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-cmd1.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -51,7 +51,10 @@
 ;;
 ;;    (+)`clear-option', (+)`icicle-add-buffer-candidate',
 ;;    (+)`icicle-add-buffer-config',
-;;    `icicle-add-entry-to-saved-completion-set',
+;;    `icicle-add-entry-to-saved-completion-set', `icicle-apropos',
+;;    `icicle-apropos-command', `icicle-apropos-function',
+;;    `icicle-apropos-option', (+)`icicle-apropos-options-of-type',
+;;    `icicle-apropos-variable', `icicle-apropos-zippy',
 ;;    `icicle-bbdb-complete-name', (+)`icicle-bookmark',
 ;;    (+)`icicle-bookmark-all-tags',
 ;;    (+)`icicle-bookmark-all-tags-other-window',
@@ -233,7 +236,8 @@
 ;;
 ;;  Non-interactive functions defined here:
 ;;
-;;    `custom-variable-p', `icicle-binary-option-p',
+;;    `custom-variable-p', `icicle-apropos-opt-action',
+;;    `icicle-binary-option-p',
 ;;    `icicle-bookmark-bind-narrow-commands',
 ;;    `icicle-bookmark-cleanup', `icicle-bookmark-cleanup-on-quit',
 ;;    `icicle-bookmark-delete-action', `icicle-bookmark-help-string',
@@ -357,6 +361,8 @@
 (eval-when-compile (require 'cl)) ;; pushnew
                                   ;; plus, for Emacs < 21: dolist, push
 (eval-when-compile (when (>= emacs-major-version 21) (require 'recentf))) ;; recentf-mode
+(require 'apropos-fn+var nil t) ;; (no error if not found):
+  ;; apropos-command, apropos-function, apropos-option, apropos-variable
 (eval-when-compile (require 'dabbrev))
   ;; dabbrev-case-fold-search, dabbrev-upcase-means-case-search, dabbrev--last-obarray,
   ;; dabbrev--last-completion-buffer, dabbrev--last-abbreviation, dabbrev--check-other-buffers,
@@ -369,6 +375,7 @@
   ;; comint-completion-recexact, comint-directory, comint-dynamic-complete-filename,
   ;; comint-dynamic-complete-functions, comint-line-beginning-position,
   ;; comint-match-partial-filename, comint-quote-filename
+(eval-when-compile (require 'cookie1 nil t)) ;; (no error if not found): cookie-cache
 (eval-when-compile (require 'shell)) ;; shell-backward-command, shell-completion-execonly,
   ;; shell-dynamic-complete-command, shell-dynamic-complete-environment-variable,
   ;; shell-dynamic-complete-filename, shell-match-partial-variable
@@ -377,6 +384,8 @@
   ;; find-tag-marker-ring, find-tag-other-window, goto-tag-location-function, snarf-tag-function,
   ;; tag-find-file-of-tag-noselect, tags-case-fold-search,
   ;; tags-lazy-completion-table, tags-table-files, visit-tags-table-buffer
+(eval-when-compile (require 'yow nil t)) ;; (no error if not found):
+  ;; apropos-zippy, yow-after-load-message, yow-file, yow-load-message
 
 ;; Commented out because `synonyms.el' soft-requires Icicles.
 ;; (eval-when-compile (require 'synonyms nil t)) ;; (no error if not found):
@@ -463,6 +472,7 @@
 (when (< emacs-major-version 23)
   (defvar read-buffer-completion-ignore-case))
 
+(defvar apropos-do-all)                 ; In `apropos.el'
 (defvar bbdb-complete-name-allow-cycling) ; In `bbdb-com.el'
 (defvar bbdb-extract-address-components-func) ; In `bbdb-com.el'
 (defvar bbdb-expand-mail-aliases)       ; In `bbdb-com.el'
@@ -478,6 +488,7 @@
 (defvar color-theme)                    ; In `color-theme.el'
 (defvar color-themes)                   ; In `color-theme.el'
 (defvar color-theme-initialized)        ; In `color-theme.el'
+(defvar cookie-cache)
 (defvar ess-current-process-name)       ; In `ess-inf.el'
 (defvar ess-mode-syntax-table)          ; In `ess-cust.el'
 (defvar ess-use-R-completion)           ; In `ess-cust.el'
@@ -493,6 +504,9 @@
 (defvar snarf-tag-function)             ; In `etags.el'
 (defvar translation-table-for-input)    ; Built-in, Emacs 21+.
 (defvar w3m-current-title)              ; In `w3m.el'.
+(defvar yow-after-load-message)
+(defvar yow-file)
+(defvar yow-load-message)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
  
@@ -1883,6 +1897,374 @@ the use of a prefix argument."          ; Doc string
     (custom-buffer-create (custom-sort-items (mapcar #'(lambda (s) (list (intern s) 'custom-variable))
                                                      icicle-completion-candidates)
                                              t "*Customize Apropos*"))))
+
+;;;###autoload
+(defun icicle-apropos (pattern &optional do-all msgp)
+  "Describe Lisp symbols whose names match PATTERN.
+By default, show symbols only if they are defined as functions,
+variables, or faces, or if they have nonempty property lists.
+
+With a prefix argument, or if `apropos-do-all' is non-nil, describe all
+matching symbols.
+
+Return a list of the symbols and descriptions.
+
+Like command `apropos', but you can preview the list of matches using
+`S-TAB'.  Function names are highlighted using face
+`icicle-special-candidate'.
+
+When prompted for the PATTERN, you can use completion against
+preference names - e.g. `S-TAB'.  Instead of entering a pattern you
+can then just hit `RET' to accept the list of matching preferences.
+This lets you see which preferences will be available in the customize
+buffer and dynamically change that list.
+
+PATTERN is a regexp.
+
+Starting with Emacs 22, if PATTERN includes no regexp special chars
+then it can alternatively be a list of \"words\" separated by spaces.
+Two or more of the words are matched in different orders against each
+preference name.  \"Word\" here really means a string of non-space
+chars.
+
+This handling of \"words\" is for compatibility with vanilla Emacs,
+and is only approximative.  It can include \"matches\" that you do not
+expect.  For better matching use Icicles progressive completion, i.e.,
+separate the words (any strings, in fact, including regexps) using
+`S-SPC', not just `SPC'."
+  (interactive
+   (list
+    (unwind-protect
+         (progn
+           (mapatoms #'(lambda (symb) (when (fboundp symb) (put symb 'icicle-special-candidate t))))
+           (let ((icicle-fancy-candidates-p  t)
+                 (icicle-candidate-alt-action-fn
+                  (or icicle-candidate-alt-action-fn
+                      (icicle-alt-act-fn-for-type "symbol")))
+                 (icicle-all-candidates-list-alt-action-fn
+                  (or icicle-all-candidates-list-alt-action-fn
+                      (icicle-alt-act-fn-for-type "symbol"))))
+             (completing-read "Apropos symbol (regexp or words): " obarray
+                              nil nil nil 'regexp-history)))
+      (mapatoms #'(lambda (symb) (put symb 'icicle-special-candidate nil))))
+    current-prefix-arg
+    t))
+  (when (and (> emacs-major-version 21)  (require 'apropos nil t)
+             (string= (regexp-quote pattern) pattern)
+             (not (string= "" pattern)))
+    (setq pattern  (split-string pattern "[ \t]+" 'OMIT-NULLS)))
+  (when (fboundp 'apropos-parse-pattern) (apropos-parse-pattern pattern)) ; Emacs 22+
+  (when msgp (message "Gathering apropos data..."))
+  (apropos pattern do-all))
+
+(cond
+  ;; Use my versions of the `apropos*' commands, defined in `apropos-fn+var.el'.
+  ;; Note that unlike my versions of `apropos-option' and `apropos-command', the `icicle-'
+  ;; versions here do not respect `apropos-do-all': they always work with options and commands.
+  ((fboundp 'apropos-option)
+   (defun icicle-apropos-variable (pattern &optional msgp)
+     "Show variables that match PATTERN.
+This includes variables that are not user options.
+User options are highlighted using face `icicle-special-candidate'.
+You can see the list of matches with `S-TAB'.
+See `icicle-apropos' for a description of PATTERN."
+     (interactive
+      (list
+       (unwind-protect
+            (progn
+              (mapatoms #'(lambda (symb)
+                            (when (user-variable-p symb) (put symb 'icicle-special-candidate t))))
+              (let* ((icicle-fancy-candidates-p  t)
+                     (pred                                      #'(lambda (s)
+                                                                    (unless (symbolp s) (setq s  (intern s)))
+                                                                    (and (boundp s)
+                                                                         (get s 'variable-documentation))))
+                     (icompletep                                (and (boundp 'icomplete-mode)
+                                                                     icomplete-mode))
+                     (icicle-must-pass-after-match-predicate    (and (not icompletep)  pred))
+                     (icicle-candidate-alt-action-fn            (or icicle-candidate-alt-action-fn
+                                                                    (icicle-alt-act-fn-for-type "variable")))
+                     (icicle-all-candidates-list-alt-action-fn  (or icicle-all-candidates-list-alt-action-fn
+                                                                    (icicle-alt-act-fn-for-type "variable"))))
+                (completing-read
+                 (concat "Apropos variable (regexp" (and (>= emacs-major-version 22) " or words")
+                         "): ")
+                 obarray (and icompletep pred) nil nil 'regexp-history)))
+         (mapatoms #'(lambda (symb) (put symb 'icicle-special-candidate nil))))
+       t))
+     (when (and (> emacs-major-version 21)  (require 'apropos nil t)
+                (string= (regexp-quote pattern) pattern)
+                (not (string= "" pattern)))
+       (setq pattern  (split-string pattern "[ \t]+" 'OMIT-NULLS)))
+     (when (fboundp 'apropos-parse-pattern) (apropos-parse-pattern pattern)) ; Emacs 22+
+     (when msgp (message "Gathering data apropos variables..."))
+     (apropos-variable pattern))
+
+   (defun icicle-apropos-option (pattern &optional msgp)
+     "Show user options (variables) that match PATTERN.
+You can see the list of matches with `S-TAB'.
+See `icicle-apropos' for a description of PATTERN."
+     (interactive
+      (let* ((pred                                    #'(lambda (s)
+                                                          (unless (symbolp s) (setq s  (intern s)))
+                                                          (user-variable-p s)))
+             (icompletep                              (and (boundp 'icomplete-mode) icomplete-mode))
+             (icicle-must-pass-after-match-predicate  (and (not icompletep)  pred)))
+        (list (completing-read
+               (concat "Apropos user option (regexp" (and (>= emacs-major-version 22) " or words")
+                       "): ") obarray (and icompletep pred) nil nil 'regexp-history)
+              t)))
+     (let ((apropos-do-all  nil)
+           (icicle-candidate-alt-action-fn
+            (or icicle-candidate-alt-action-fn (icicle-alt-act-fn-for-type "option")))
+           (icicle-all-candidates-list-alt-action-fn
+            (or icicle-all-candidates-list-alt-action-fn (icicle-alt-act-fn-for-type "option"))))
+       (when (and (> emacs-major-version 21)  (require 'apropos nil t)
+                  (string= (regexp-quote pattern) pattern)
+                  (not (string= "" pattern)))
+         (setq pattern  (split-string pattern "[ \t]+" 'OMIT-NULLS)))
+       (when (fboundp 'apropos-parse-pattern) (apropos-parse-pattern pattern)) ; Emacs 22+
+       (when msgp (message "Gathering data apropos user options..."))
+       (apropos-option pattern)))
+
+   (defun icicle-apropos-function (pattern &optional msgp)
+     "Show functions that match PATTERN.
+This includes functions that are not commands.
+Command names are highlighted using face `icicle-special-candidate'.
+You can see the list of matches with `S-TAB'.
+See `icicle-apropos' for a description of PATTERN."
+     (interactive
+      (list
+       (unwind-protect
+            (progn
+              (mapatoms #'(lambda (symb)
+                            (when (commandp symb) (put symb 'icicle-special-candidate t))))
+              (let* ((icicle-fancy-candidates-p               t)
+                     (pred                                     #'(lambda (s)
+                                                                   (unless (symbolp s) (setq s  (intern s)))
+                                                                   (fboundp s)))
+                     (icompletep                              (and (boundp 'icomplete-mode) icomplete-mode))
+                     (icicle-must-pass-after-match-predicate  (and (not icompletep)  pred))
+                     (icicle-candidate-alt-action-fn          (or icicle-candidate-alt-action-fn
+                                                                  (icicle-alt-act-fn-for-type "function")))
+                     (icicle-all-candidates-list-alt-action-fn  
+                      (or icicle-all-candidates-list-alt-action-fn
+                          (icicle-alt-act-fn-for-type "function"))))
+                (completing-read
+                 (concat "Apropos function (regexp" (and (>= emacs-major-version 22) " or words")
+                         "): ") obarray (and icompletep pred) nil nil 'regexp-history)))
+         (mapatoms #'(lambda (symb) (put symb 'icicle-special-candidate nil))))
+       t))
+     (when (and (> emacs-major-version 21)  (require 'apropos nil t)
+                (string= (regexp-quote pattern) pattern)
+                (not (string= "" pattern)))
+       (setq pattern  (split-string pattern "[ \t]+" 'OMIT-NULLS)))
+     (when (fboundp 'apropos-parse-pattern) (apropos-parse-pattern pattern)) ; Emacs 22+
+     (when msgp (message "Gathering data apropos functions..."))
+     (apropos-function pattern))
+
+   (defun icicle-apropos-command (pattern &optional msgp)
+     "Show commands (interactively callable functions) that match PATTERN.
+You can see the list of matches with `S-TAB'.
+See `icicle-apropos' for a description of PATTERN."
+     (interactive
+      (let* ((pred                                      #'(lambda (s)
+                                                            (unless (symbolp s) (setq s  (intern s)))
+                                                            (commandp s)))
+             (icompletep                                (and (boundp 'icomplete-mode) icomplete-mode))
+             (icicle-must-pass-after-match-predicate    (and (not icompletep)  pred))
+             (icicle-candidate-alt-action-fn            (or icicle-candidate-alt-action-fn
+                                                            (icicle-alt-act-fn-for-type "command")))
+             (icicle-all-candidates-list-alt-action-fn  (or icicle-all-candidates-list-alt-action-fn
+                                                            (icicle-alt-act-fn-for-type "command"))))
+        (list (completing-read
+               (concat "Apropos command (regexp" (and (>= emacs-major-version 22) " or words")
+                       "): ") obarray (and icompletep pred) nil nil 'regexp-history)
+              t)))
+     (when (and (> emacs-major-version 21)  (require 'apropos nil t)
+                (string= (regexp-quote pattern) pattern)
+                (not (string= "" pattern)))
+       (setq pattern  (split-string pattern "[ \t]+" 'OMIT-NULLS)))
+     (when (fboundp 'apropos-parse-pattern) (apropos-parse-pattern pattern)) ; Emacs 22+
+     (when msgp (message "Gathering data apropos commands..."))
+     (let ((apropos-do-all  nil))  (apropos-command pattern))))
+
+  ;; My versions are not available.  Use the vanilla Emacs versions of the `apropos...' commands.
+  (t
+   (defun icicle-apropos-variable (pattern &optional do-all msgp)
+     "Show variables that match PATTERN.
+You can see the list of matches with `S-TAB'.
+See `icicle-apropos' for a description of PATTERN.
+
+By default, only user options are candidates.  With optional prefix
+DO-ALL, or if `apropos-do-all' is non-nil, all variables are
+candidates.  In that case, the user-option candidates are highlighted
+using face `icicle-special-candidate'."
+     (interactive
+      (list
+       (unwind-protect
+            (progn
+              (unless (or (boundp 'apropos-do-all) (require 'apropos nil t))
+                (error "Library `apropos' not found"))
+              (when (or current-prefix-arg apropos-do-all)
+                (mapatoms #'(lambda (symb)
+                              (when (user-variable-p symb) (put symb 'icicle-special-candidate t)))))
+              (let* ((icicle-fancy-candidates-p               (or current-prefix-arg apropos-do-all))
+                     (pred                                    (if (or current-prefix-arg apropos-do-all)
+                                                                  #'(lambda (s)
+                                                                      (unless (symbolp s)
+                                                                        (setq s  (intern s)))
+                                                                      (and (boundp s)
+                                                                           (get s 'variable-documentation)))
+                                                                #'(lambda (s)
+                                                                    (unless (symbolp s) (setq s  (intern s)))
+                                                                    (user-variable-p s))))
+                     (icompletep                                (and (boundp 'icomplete-mode) icomplete-mode))
+                     (icicle-must-pass-after-match-predicate  (and (not icompletep)  pred))
+                     (icicle-candidate-alt-action-fn          (or icicle-candidate-alt-action-fn
+                                                                  (icicle-alt-act-fn-for-type
+                                                                   (if icicle-fancy-candidates-p
+                                                                       "variable"
+                                                                     "option"))))
+                     (icicle-all-candidates-list-alt-action-fn
+                      (or icicle-all-candidates-list-alt-action-fn
+                          (icicle-alt-act-fn-for-type (if icicle-fancy-candidates-p
+                                                          "variable"
+                                                        "option")))))
+                (completing-read
+                 (concat "Apropos " (if (or current-prefix-arg apropos-do-all)
+                                        "variable" "user option")
+                         " (regexp" (and (>= emacs-major-version 22) " or words") "): ")
+                 obarray (and icompletep pred) nil nil 'regexp-history)))
+         (when (or current-prefix-arg apropos-do-all)
+           (mapatoms #'(lambda (symb) (put symb 'icicle-special-candidate nil)))))
+       current-prefix-arg
+       t))
+     (when (and (> emacs-major-version 21)  (require 'apropos nil t)
+                (string= (regexp-quote pattern) pattern)
+                (not (string= "" pattern)))
+       (setq pattern  (split-string pattern "[ \t]+" 'OMIT-NULLS)))
+     (when (fboundp 'apropos-parse-pattern) (apropos-parse-pattern pattern)) ; Emacs 22+
+     (when msgp (message (format "Gathering data apropos %s..." (if do-all "variables" "options"))))
+     (apropos-variable pattern do-all))
+
+   (defun icicle-apropos-command (pattern &optional do-all var-predicate msgp)
+     "Show commands (interactively callable functions) that match PATTERN.
+You can see the list of matches with `S-TAB'.
+
+See `icicle-apropos' for a description of PATTERN.
+
+With \\[universal-argument] prefix, or if `apropos-do-all' is non-nil,
+also show noninteractive functions.  In that case, the command
+candidates are highlighted using face `icicle-special-candidate'.
+
+If VAR-PREDICATE is non-nil, show only variables, and only those that
+satisfy the predicate VAR-PREDICATE.
+
+Non-interactively, a string PATTERN is used as a regexp, while a list
+of strings is used as a word list."
+     (interactive
+      (list
+       (unwind-protect
+            (progn
+              (unless (boundp 'apropos-do-all)
+                (unless (require 'apropos nil t) (error "Library `apropos' not found")))
+              (when (or current-prefix-arg apropos-do-all)
+                (mapatoms #'(lambda (symb)
+                              (when (commandp symb) (put symb 'icicle-special-candidate t)))))
+              (let* ((icicle-fancy-candidates-p               (or current-prefix-arg apropos-do-all))
+                     (pred                                    (if current-prefix-arg
+                                                                  #'(lambda (s)
+                                                                      (unless (symbolp s)
+                                                                        (setq s  (intern s)))
+                                                                      (fboundp s))
+                                                                #'(lambda (s)
+                                                                    (unless (symbolp s) (setq s  (intern s)))
+                                                                    (commandp s))))
+                     (icompletep                              (and (boundp 'icomplete-mode) icomplete-mode))
+                     (icicle-must-pass-after-match-predicate  (and (not icompletep)  pred))
+                     (icicle-candidate-alt-action-fn           (or icicle-candidate-alt-action-fn
+                                                                   (icicle-alt-act-fn-for-type
+                                                                    (if icicle-fancy-candidates-p
+                                                                        "function"
+                                                                      "command"))))
+                     (icicle-all-candidates-list-alt-action-fn
+                      (or icicle-all-candidates-list-alt-action-fn
+                          (icicle-alt-act-fn-for-type (if icicle-fancy-candidates-p
+                                                          "function"
+                                                        "command")))))
+                (completing-read
+                 (concat "Apropos " (if (or current-prefix-arg apropos-do-all)
+                                        "command or function" "command")
+                         " (regexp" (and (>= emacs-major-version 22) " or words") "): ")
+                 obarray (and icompletep pred) nil nil 'regexp-history)))
+         (when (or current-prefix-arg apropos-do-all)
+           (mapatoms #'(lambda (symb) (put symb 'icicle-special-candidate nil)))))
+       current-prefix-arg
+       nil
+       t))
+     (when (and (> emacs-major-version 21)  (require 'apropos nil t)
+                (string= (regexp-quote pattern) pattern)
+                (not (string= "" pattern)))
+       (setq pattern  (split-string pattern "[ \t]+" 'OMIT-NULLS)))
+     (when (fboundp 'apropos-parse-pattern) (apropos-parse-pattern pattern)) ; Emacs 22+
+     (when msgp (message (format "Gathering data apropos %s..." (if do-all "functions" "commands"))))
+     (apropos-command pattern do-all var-predicate))))
+
+;;;###autoload (autoload 'icicle-apropos-options-of-type "icicles-cmd1")
+(icicle-define-command icicle-apropos-options-of-type
+  "Show user options of a given type.
+Enter patterns for the OPTION name and TYPE definition in the
+minibuffer, separated by `icicle-list-join-string', which is \"^G^J\",
+by default.  (`^G' here means the Control-g character, input using
+`C-h C-g'.  Likewise, for `^J'.)
+
+OPTION is a regexp that is matched against option names.
+
+See `icicle-describe-option-of-type', which handles input and
+completion similarly, for a full description of TYPE, matching, and
+the use of a prefix argument."          ; Doc string
+  icicle-apropos-opt-action             ; Action function
+  prompt                                ; `completing-read' args
+  'icicle-describe-opt-of-type-complete nil nil nil nil nil nil
+  ((prompt                             "OPTION `C-M-j' TYPE: ") ; Bindings
+   (icicle-candidate-properties-alist  '((1 (face icicle-candidate-part))))
+   ;; Bind `icicle-apropos-complete-match-fn' to nil to prevent automatic input matching
+   ;; in `icicle-unsorted-apropos-candidates' etc., because `icicle-describe-opt-of-type-complete'
+   ;; does everything.
+   (icicle-apropos-complete-match-fn   nil)
+   (icicle-candidate-help-fn           'icicle-describe-opt-action)
+   (icicle-pref-arg                    current-prefix-arg))
+  (progn (put-text-property 0 1 'icicle-fancy-candidates t prompt) ; First code
+         (icicle-highlight-lighter)
+         (message "Gathering user options and their types...")))
+
+(defun icicle-apropos-opt-action (opt+type)
+  "Action function for `icicle-apropos-options-of-type'."
+  (let ((icicle-list-use-nth-parts  '(1)))
+    (apropos-option (icicle-transform-multi-completion opt+type))))
+
+;;;###autoload
+(defun icicle-apropos-zippy (regexp)
+  "Show all Zippy quotes matching the regular-expression REGEXP.
+Return the list of matches."
+  (interactive (progn (unless (boundp 'yow-file)
+                        (unless (require 'yow nil t) (error "Library `yow' not found")))
+                      (cookie yow-file yow-load-message yow-after-load-message)
+                      (let* ((case-fold-search     t)
+                             (cookie-table-symbol  (intern yow-file cookie-cache))
+                             (string-table         (symbol-value cookie-table-symbol))
+                             (table                (nreverse (mapcar #'list string-table))))
+                        (list (completing-read "Apropos Zippy (regexp): " table
+                                               nil nil nil 'regexp-history)))))
+  (let ((matches  (apropos-zippy icicle-current-input)))
+    (when (interactive-p)
+      (with-output-to-temp-buffer "*Zippy Apropos*"
+        (while matches
+          (princ (car matches))
+          (setq matches  (cdr matches))
+          (and matches (princ "\n\n")))))
+    matches))                           ; Return matching Zippyisms.
 
 
 ;; REPLACE ORIGINAL `repeat-complex-command' defined in `simple.el',
