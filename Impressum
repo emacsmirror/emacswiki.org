@@ -1,1 +1,41 @@
-todo for Swiss law...
+
+<html>
+ <div  class=  "vcard image"
+       style=  "background-color: #fff;
+                float:    right;
+                width:    35ex;
+                padding:  2ex;
+                border:   1px dotted red;
+                font:     12pt/13pt 'Abadi MT Condensed Light', 'Arial Narrow',
+                          Arial, sans-serif;">
+  <img style=  "float:    right"
+       src=    "http://www.emacswiki.org/alex/pics/alex1.png"
+       alt=    "photo"
+       class=  "photo"/>
+  <div class=  "fn"
+       style=  "margin-top: 0.5ex;
+                letter-spacing: -0.5pt;
+                font: bold 14pt 'Century Gothic', Arial, sans-serif;">Alex Schroeder</div>
+  Emacs, Lisp, Perl, Wiki, D&D
+  <div class=  "adr"
+       style=  "margin-top: 2ex;">
+   <div class= "street-address">Kanzleistrasse 222</div>
+   <abbr title="Switzerland"
+       class=  "country-name"
+       style=  "border:   none;
+                letter-spacing: inherit;">CH</abbr>-<span class="postal-code">8004</span>
+   <span class="locality">Zürich</span>
+  </div>
+  <div class=  "tel"
+       style=  "margin-top: 2ex">
+   <span style="display:none;"><span class="type">Cell</span>: </span>
+   <span class="value">+41 78 6125175</span>
+  </div>
+  <div class=  "email"><a href="mailto:kensanata@gmail.com">kensanata@gmail.com</a></div>
+  <a   class=  "url"
+       href=   "http://www.emacswiki.org/alex/">http://www.emacswiki.org/alex/</a>
+  
+ </div>
+</html>
+
+«Unlauter handelt insbesondere, wer Waren, Werke oder Leistungen im elektronischen Geschäftsverkehr anbietet und es dabei unterlässt, klare und vollständige Angaben über seine Identität und seine Kontaktadresse einschliesslich derjenigen der elektronischen Post zu machen.» – [http://www.admin.ch/ch/d/sr/241/a3.html UWG bei Artikel 3 Absatz 1], Buchstabe s, Ziffer 1 
