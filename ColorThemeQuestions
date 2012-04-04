@@ -157,8 +157,23 @@ Well, you could put something in your [[init file]] like this:
 
 You could use `if' and use an alternative color scheme on console; some work pretty well.
 
-Note: the above solution optionally loads the theme system wide depending on the type of the /first/ frame opened.  When using emacsclient it is often the case that a user will have both tty and x frames open.  Is there any way to optoinally "turn on" the current theme in /only/ x frames?
+The above solution optionally loads the theme system wide depending on the type of the /first/ frame opened.  When using emacsclient it is often the case that a user will have both tty and x frames open.  Is there any way to optoinally "turn on" the current theme in /only/ x frames?  Using the old Color Themes package this was possible with code like the following.  It does not appear to be possible using the new built in theme support in custom.el.
+<pre>
+;; test for each frame or console
+(defun color-theme-for-win-sys (frame)
+  (let ((color-theme-is-global nil))
+    (select-frame frame)
+    (when (window-system frame)
+      (color-theme-railscasts))))
 
+;; hook on after-make-frame-functions
+(add-hook 'after-make-frame-functions 'color-theme-for-win-sys)
+
+;; Start up the color theme in this initial frame.
+(let ((color-theme-is-global nil))
+  (when (window-system)
+    (color-theme-railscasts)))
+</pre>
 
 
 [new:PauloMatos:2010-01-28]
