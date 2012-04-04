@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 10:21:10 2006
 ;; Version: 22.0
-;; Last-Updated: Mon Apr  2 21:14:09 2012 (-0700)
+;; Last-Updated: Wed Apr  4 11:39:48 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 8508
+;;     Update #: 8537
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-mode.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -1125,24 +1125,29 @@ Used on `pre-command-hook'."
            (define-key icicle-menu-map [customize]
              (list 'menu-item "Customize" icicle-custom-menu-map))))
 
-    (define-key icicle-custom-menu-map [icicle-customize-apropos-groups]
-      '(menu-item "Groups Matching Regexp..." icicle-customize-apropos-groups
-        :help "Customize all customization groups matching a regexp"))
-    (define-key icicle-custom-menu-map [icicle-customize-apropos-faces]
-      '(menu-item "Faces Matching Regexp..." icicle-customize-apropos-faces
-        :help "Customize all faces matching a regexp"))
-    (define-key icicle-custom-menu-map [icicle-customize-face-other-window]
-      '(menu-item "+ Face..." icicle-customize-face-other-window :help "Customize a face"))
-    (define-key icicle-custom-menu-map [icicle-customize-apropos-options]
-      '(menu-item "Options Matching Regexp..." icicle-customize-apropos-options
-        :help "Customize all user options matching a regexp"))
     (define-key icicle-custom-menu-map [icicle-customize-apropos]
-      '(menu-item "Settings Matching Regexp..." icicle-customize-apropos
-        :help "Customize all user settings matching a regexp"))
+      '(menu-item "Groups, Faces & Options Matching..." icicle-customize-apropos
+        :help "Customize groups, faces, and options that match a regexp"))
+    (define-key icicle-custom-menu-map [icicle-customize-face-other-window]
+      '(menu-item "+ Face..." icicle-customize-face-other-window
+        :help "Customize any number of faces (`C-RET')"))
+    (define-key icicle-custom-menu-map [icicle-customize-apropos-faces]
+      '(menu-item "Faces Matching..." icicle-customize-apropos-faces
+        :help "Customize faces that match a regexp"))
+    (define-key icicle-custom-menu-map [icicle-customize-apropos-opts-w-val-satisfying]
+      '(menu-item "Options Matching with a Value Satisfying..."
+        icicle-customize-apropos-opts-w-val-satisfying
+        :help "Customize options whose values satisfy a predicate that match a regexp"))
     (define-key icicle-custom-menu-map [icicle-customize-apropos-options-of-type]
-      '(menu-item "Settings of a Given Type Matching Regexp..."
+      '(menu-item "Options of Type Matching..."
         icicle-customize-apropos-options-of-type
-        :help "Customize all loaded options of a given type that match a regexp"))
+        :help "Customize user options of a given type that match a regexp"))
+    (define-key icicle-custom-menu-map [icicle-customize-apropos-options]
+      '(menu-item "Options Matching..." icicle-customize-apropos-options
+        :help "Customize user options that match a regexp"))
+    (define-key icicle-custom-menu-map [icicle-customize-apropos-groups]
+      '(menu-item "Groups Matching..." icicle-customize-apropos-groups
+        :help "Customize customization groups that match a regexp"))
 
 
     ;; `Apropos' -----------------------------------------------------
@@ -1165,25 +1170,34 @@ Used on `pre-command-hook'."
            (define-key icicle-apropos-menu-map [icicle-apropos]
              '(menu-item "Symbols..." icicle-apropos
                :help "Like `apropos', but lets you see the list of matches (with `S-TAB')"))
-           (define-key icicle-apropos-menu-map [icicle-apropos-function]
-             '(menu-item "Functions..." icicle-apropos-function
-               :help "Show functions that match PATTERN"))
+           (define-key icicle-apropos-menu-map [icicle-apropos-vars-w-val-satisfying]
+             '(menu-item "Variables with a Value Satisfying..." icicle-apropos-vars-w-val-satisfying
+               :help "Show variables whose values satisfy a given predicate"))
            (define-key icicle-apropos-menu-map [icicle-apropos-variable]
              '(menu-item "Variables..." icicle-apropos-variable
                :help "Show variables that match PATTERN"))
+           (define-key icicle-apropos-menu-map [icicle-apropos-options-of-type]
+             '(menu-item "Options of Type..." icicle-apropos-options-of-type
+               :help "Show user options (variables) of a given `defcustom' type"))
            (define-key icicle-apropos-menu-map [icicle-apropos-option]
              '(menu-item "Options..." icicle-apropos-option
                :help "Show user options (variables) that match PATTERN"))
+           (define-key icicle-apropos-menu-map [icicle-apropos-function]
+             '(menu-item "Functions..." icicle-apropos-function
+               :help "Show functions that match PATTERN"))
            (define-key icicle-apropos-menu-map [icicle-apropos-command]
              '(menu-item "Commands..." icicle-apropos-command
-               :help "Show commands (interactively callable functions) that match PATTERN")))
+               :help "Show commands that match PATTERN")))
           (t
+           (define-key icicle-apropos-menu-map [icicle-apropos-vars-w-val-satisfying]
+             '(menu-item "Variables with a Value Satisfying..." icicle-apropos-vars-w-val-satisfying
+               :help "Show variables whose values satisfy a given predicate"))
            (define-key icicle-apropos-menu-map [icicle-apropos-variable]
              '(menu-item "Variables..." icicle-apropos-variable
                :help "Show variables that match PATTERN"))
            (define-key icicle-apropos-menu-map [icicle-apropos-command]
              '(menu-item "Commands..." icicle-apropos-command
-               :help "Show commands (interactively callable functions) that match PATTERN"))))
+               :help "Show commands that match PATTERN"))))
 
 
     ;; `Describe' ----------------------------------------------------
@@ -1205,11 +1219,14 @@ Used on `pre-command-hook'."
       '(menu-item "+ Doc of Fun, Var, or Face..." icicle-doc
         :help "Choose documentation for a symbol"))
     (define-key icicle-describe-menu-map [icicle-fundoc]
-      '(menu-item "+ Describe Function with Name, Doc..." icicle-fundoc
+      '(menu-item "+ Function with Name, Doc..." icicle-fundoc
         :help "Choose a function description"))
     (define-key icicle-describe-menu-map [icicle-vardoc]
-      '(menu-item "+ Describe Variable with Name, Doc..." icicle-vardoc
+      '(menu-item "+ Variable with Name, Doc..." icicle-vardoc
         :help "Choose a variable description"))
+    (define-key icicle-describe-menu-map [icicle-describe-var-w-val-satisfying]
+      '(menu-item "+ Variable with Value Satifying..." icicle-describe-var-w-val-satisfying
+        :help "Describe a variable that satisfies a given predicate"))
     (define-key icicle-describe-menu-map [icicle-describe-option-of-type]
       '(menu-item "+ Option of Type..." icicle-describe-option-of-type
         :help "Describe a user option that was defined with a given `defcustom' type"))
