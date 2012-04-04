@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Sun Apr  1 13:24:50 2012 (-0700)
+;; Last-Updated: Wed Apr  4 08:03:11 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 28735
+;;     Update #: 28740
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-doc2.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -106,9 +106,13 @@
 ;;    (@file :file-name "icicles-doc1.el" :to "Different Sorts for Different Sorts of Uses")
 ;;
 ;;  (@file :file-name "icicles-doc1.el" :to "A Propos d'Apropos")
-;;    (@file :file-name "icicles-doc1.el" :to "Get Help on Candidates")
+;;    (@file :file-name "icicles-doc1.el" :to "Get Help on Completion Candidates")
 ;;      (@file :file-name "icicles-doc1.el" :to "Use Candidate Help Like You Use Emacs Command `apropos'")
 ;;    (@file :file-name "icicles-doc1.el" :to "Icicles Apropos Commands")
+;;      (@file :file-name "icicles-doc1.el" :to "Replacements for Standard Apropos Commands")
+;;      (@file :file-name "icicles-doc1.el" :to "Documentation-Apropos Multi-Commands")
+;;      (@file :file-name "icicles-doc1.el" :to "Type-Aware Variable-Apropos Multi-Commands")
+;;      (@file :file-name "icicles-doc1.el" :to "Value-Aware Variable-Apropos Multi-Commands")
 ;;
 ;;  (@file :file-name "icicles-doc1.el" :to "Multi-Commands")
 ;;    (@file :file-name "icicles-doc1.el" :to "What Is a Multi-Command?")
@@ -2370,7 +2374,7 @@
 ;;  For an extra candidate, help is provided for the command by the
 ;;  `apropos' shell command (if available).  For a file-name
 ;;  candidate, help shows the file's properties.  See
-;;  (@file :file-name "icicles-doc1.el" :to "Get Help on Candidates").
+;;  (@file :file-name "icicles-doc1.el" :to "Get Help on Completion Candidates").
 ;;
 ;;  Remember also:
 ;;
@@ -3703,8 +3707,7 @@
 ;;    directly or taking type inheritance into account.  You can match
 ;;    a type as a sexp or using a regexp.  You can match a type
 ;;    expression or match the option's current value against a type.
-;;    See (@file :file-name "icicles-doc1.el" :to "Type-Aware Apropos
-;;    Multi-Commands").
+;;    See (@file :file-name "icicles-doc1.el" :to "Type-Aware Variable-Apropos Multi-Commands").
 ;;
 ;;  Other Icicles commands that use multi-completion include
 ;;  `icicle-locate-file', `icicle-locate-file-other-window',
@@ -7003,7 +7006,7 @@
 ;;
 ;;  The following minibuffer bindings provide help on candidate
 ;;  completions.  For explanation, see
-;;  (@file :file-name "icicles-doc1.el" :to "Get Help on Candidates")
+;;  (@file :file-name "icicles-doc1.el" :to "Get Help on Completion Candidates")
 ;;  and (@file :file-name "icicles-doc1.el" :to "Multi-Commands").
 ;;
 ;;    `C-M-RET'   - `icicle-help-on-candidate': current candidate
