@@ -34,7 +34,7 @@ with other kinds of completion.
 
 
 [:GetHelpOnCandidates]
-== Get Help on Candidates ==
+== Get Help on Completion Candidates ==
 
 General '''Icicles''' help is available at any time during [[minibuffer]]
 input, by hitting '''`##C-?##'''' (`icicle-minibuffer-help').  This section
@@ -80,6 +80,10 @@ you will not get help on the candidates; instead, you will execute
 a candidate command, switch to a candidate buffer, and open a
 candidate file, respectively.  For more information,
 see [[Icicles - Multi-Commands]].
+
+
+
+
 
 
 
@@ -213,6 +217,11 @@ of the way, whenever you access help on a candidate.  (Default value:
 
 
 
+
+
+
+
+
 [:IciclesAproposCommands]
 == Icicles Apropos Commands ==
 
@@ -282,7 +291,8 @@ forced to  make some limiting compromises for keyword searching.
 [:icicle-fundoc]
 [:icicle-vardoc]
 [:icicle-plist]
-=== Documentation Apropos Multi-Commands ===
+[:Documentation-AproposMulti-Commands]
+=== Documentation-Apropos Multi-Commands ===
 
 '''Icicles''' [[multi-command]]s '''`icicle-doc'''', '''`icicle-fundoc'''', and '''`icicle-vardoc'''' provide the functionality of standard Emacs command `apropos-documentation', but with additional features --- see [[Icicles - Multi-Completions]].
 In addition, you can use multi-command '''`icicle-plist'''' to find
@@ -305,19 +315,19 @@ the symbol type (`FUNCTION', `VARIABLE', or `FACE').
 
 
 
-[:icicle-describe-option-of-type]
 [:icicle-apropos-options-of-type]
 [:icicle-customize-options-of-type]
-[:Type-AwareAproposMulti-Commands]
-=== Type-Aware Apropos Multi-Commands ===
+[:icicle-describe-option-of-type]
+[:Type-AwareVariable-AproposMulti-Commands]
+=== Type-Aware Variable-Apropos Multi-Commands ===
 
-The following apropos [[multi-command]]s for [[user option]]s also use
-[[multi-completion]] candidates.  In this case the ''first part'' is the
+The following apropos [[multi-command]]s for [[user option]]s are type-aware.  Like the documentation-apropos multi-commands, they
+use [[multi-completion]] candidates.  In this case the ''first part'' is the
 option name and the ''second part'' is its Customize type (`defcustom' type).
 
-* '''`icicle-describe-option-of-type'''' (bound to '''`C-h C-o'''')
 * '''`icicle-apropos-options-of-type''''
 * '''`icicle-customize-apropos-options-of-type''''
+* '''`icicle-describe-option-of-type'''' (bound to '''`C-h C-o'''')
 
 They all work the same way.  They do something with all loaded
 user options of a the type that you specify.  The first one
@@ -340,6 +350,30 @@ handled.
 
 
 
+
+[:icicle-apropos-vars-w-val-satisfying]
+[:icicle-customize-apropos-opts-w-val-satisfying]
+[:icicle-describe-var-w-val-satisfying]
+[:Value-AwareVariable-AproposMulti-Commands]
+=== Value-Aware Variable-Apropos Multi-Commands ===
+
+The following apropos [[multi-command]]s for [[variable]]s are
+value-aware.  You are prompted first for a predicate that
+restricts completion candidates to variables whose current value
+satisfies it.  For example, if you enter `integerp' as the
+predicate then candidates are variables whose value is an integer.
+
+* '''`icicle-apropos-vars-w-val-satisfying''''
+* '''`icicle-customize-apropos-opts-w-val-satisfying''''
+* '''`icicle-describe-var-w-val-satisfying''''
+
+The predicate you enter is read as a Lisp [[sexp]], but it is not
+evaluated.  It must be either a function symbol, such as
+`integerp', or a lambda form, such as ##(lambda (val) (and
+(integerp val) (> val 500)))##.  Other than the fact that it must
+accept at least one argument (the value of a variable), it can be
+anything you like.  Individual candidate help (e.g., `C-M-RET')
+shows you the doc string and the current value.
 
 
 ----
