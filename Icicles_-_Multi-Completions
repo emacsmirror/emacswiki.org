@@ -82,7 +82,7 @@ let you match both an
 type definitions, controlled by the prefix argument.  You can match a type directly or taking
 type inheritance into account.  You can match a type as a [[sexp]]
 or using a regexp.  You can match a type expression or match the
-option's current [[symbol value|value]] against a type.  See [[Icicles - A Propos d'Apropos#Type-AwareAproposMulti-Commands|Type-Aware Apropos Multi-Commands]].
+option's current [[symbol value|value]] against a type.  See [[Icicles - A Propos d'Apropos#Type-AwareVariable-AproposMulti-Commands|Type-Aware Variable-Apropos Multi-Commands]].
 
 Other '''Icicles''' commands that use multi-completion include
 `icicle-locate-file', `icicle-locate-file-other-window',
