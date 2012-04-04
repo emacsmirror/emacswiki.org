@@ -4,7 +4,7 @@ Provides syntax highlighting, IDE compilation and file manipulation, outline cod
 
 You can get it here:
 
-* [http://admb-project.org/tools/emacs/admb.el/view admb.el]
+* [http://admb-project.org/tools/editors/emacs/admb.el/view admb.el]
 
 [http://admb-project.org AD Model Builder] is an environment for nonlinear statistical modeling, built around the AUTODIF Library, a C++ language extension which transparently implements reverse-mode automatic differentiation.
 
