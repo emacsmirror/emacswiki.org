@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2012, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Wed Apr  4 18:42:34 2012 (-0700)
+;; Last-Updated: Thu Apr  5 07:58:50 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 14628
+;;     Update #: 14635
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-chg.el
 ;; Keywords: bookmarks, bookmark+
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -145,6 +145,9 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-1.el'")
 ;;
+;; 2012/04/05 dadams
+;;     bmkp-auto-idle-bookmark-mode-timer: Use nil as default value.
+;;     bmkp-auto-idle-bookmark-mode: If timer is non-nil, set it to nil (and cancel it).
 ;; 2012/04/04 dadams
 ;;     Added: bmkp-auto-idle-bookmark-mode(-delay|-hook|-lighter|-set-function),
 ;;            bmkp-temporary-bookmarking-mode-lighter, bmkp-auto-idle-bookmark-mode-timer.
