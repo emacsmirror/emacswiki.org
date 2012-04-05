@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2012, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 13:43:55 2010 (-0700)
-;; Last-Updated: Tue Apr  3 13:13:29 2012 (-0700)
+;; Last-Updated: Wed Apr  4 18:37:52 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 4582
+;;     Update #: 4614
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-1.el
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -106,7 +106,8 @@
 ;;    `bmkp-autofile-some-tags-jump-other-window',
 ;;    `bmkp-autofile-some-tags-regexp-jump',
 ;;    `bmkp-autofile-some-tags-regexp-jump-other-window',
-;;    `bmkp-autonamed-jump', `bmkp-autonamed-jump-other-window',
+;;    `bmkp-auto-idle-bookmark-mode', `bmkp-autonamed-jump',
+;;    `bmkp-autonamed-jump-other-window',
 ;;    `bmkp-autonamed-this-buffer-jump',
 ;;    `bmkp-autonamed-this-buffer-jump-other-window',
 ;;    `bmkp-bookmark-a-file' `bmkp-bookmark-file-jump',
@@ -271,6 +272,10 @@
 ;;
 ;;  User options defined here:
 ;;
+;;    `bmkp-auto-idle-bookmark-mode-delay',
+;;    `bmkp-auto-idle-bookmark-mode-hook',
+;;    `bmkp-auto-idle-bookmark-mode-lighter',
+;;    `bmkp-auto-idle-bookmark-mode-set-function',
 ;;    `bmkp-autoname-bookmark-function', `bmkp-autoname-format',
 ;;    `bmkp-autotemp-bookmark-predicates',
 ;;    `bmkp-bookmark-name-length-max', `bmkp-crosshairs-flag',
@@ -288,6 +293,7 @@
 ;;    `bmkp-su-or-sudo-regexp', `bmkp-tags-for-completion',
 ;;    `bmkp-temporary-bookmarking-mode',
 ;;    `bmkp-temporary-bookmarking-mode-hook',
+;;    `bmkp-temporary-bookmarking-mode-lighter',
 ;;    `bmkp-this-file/buffer-cycle-sort-comparer', `bmkp-use-region',
 ;;    `bmkp-w3m-allow-multi-tabs'.
 ;;
@@ -445,11 +451,11 @@
 ;;  Internal variables defined here:
 ;;
 ;;    `bmkp-after-set-hook', `bmkp-autofile-history',
-;;    `bmkp-autonamed-history', `bmkp-autotemp-all-when-set-p',
-;;    `bmkp-bookmark-file-history', `bmkp-bookmark-list-history',
-;;    `bmkp-current-bookmark-file', `bmkp-current-nav-bookmark',
-;;    `bmkp-desktop-history', `bmkp-dired-history',
-;;    `bmkp-edit-bookmark-record-mode-map',
+;;    `bmkp-auto-idle-bookmark-mode-timer', `bmkp-autonamed-history',
+;;    `bmkp-autotemp-all-when-set-p', `bmkp-bookmark-file-history',
+;;    `bmkp-bookmark-list-history', `bmkp-current-bookmark-file',
+;;    `bmkp-current-nav-bookmark', `bmkp-desktop-history',
+;;    `bmkp-dired-history', `bmkp-edit-bookmark-record-mode-map',
 ;;    `bmkp-edit-bookmark-records-mode-map',
 ;;    `bmkp-edit-bookmark-records-number', `bmkp-edit-tags-mode-map',
 ;;    `bmkp-file-bookmark-handlers', `bmkp-file-history',
@@ -639,6 +645,45 @@
  
 ;;(@* "User Options (Customizable)")
 ;;; User Options (Customizable) --------------------------------------
+
+;; Emacs 20 only.
+(unless (fboundp 'define-minor-mode)
+  (defcustom bmkp-auto-idle-bookmark-mode nil
+    "*Non-nil means that bookmarks are created periodically automatically.
+Setting this variable directly does not take effect;
+use either \\[customize] or command `bmkp-auto-idle-bookmark-mode'."
+    :set (lambda (symbol value) (bmkp-auto-idle-bookmark-mode (if value 1 -1)))
+    :initialize 'custom-initialize-default
+    :type 'boolean :group 'bookmark-plus :require 'bookmark+))
+
+;;;###autoload
+(defcustom bmkp-auto-idle-bookmark-mode-delay 60
+  "Number of seconds delay before automatically setting a bookmark.
+Such automatic bookmarking is controlled by
+`bmkp-temporary-bookmarking-mode'."
+  :type 'integer :group 'bookmark-plus)
+
+;;;###autoload
+(defcustom bmkp-auto-idle-bookmark-mode-hook ()
+  "*Functions run after entering and exiting automatic-bookmarking mode."
+  :type 'hook :group 'bookmark-plus)
+
+;;;###autoload
+(defcustom bmkp-auto-idle-bookmark-mode-lighter " Auto-Bmk"
+  "Lighter for `bmkp-auto-idle-bookmark-mode'.
+This string shows in the mode line when `bmkp-auto-idle-bookmark-mode'
+is enabled.  Set this to nil or \"\" if you do not want any lighter."
+  :type 'string :group 'bookmark-plus)
+
+;;;###autoload
+(defcustom bmkp-auto-idle-bookmark-mode-set-function #'bmkp-set-autonamed-bookmark-at-line
+  "Function used to set an automatic bookmark.
+Used by `bmkp-temporary-bookmarking-mode'.
+The default value, `bmkp-set-autonamed-bookmark-at-line', sets an
+autonamed bookmark at the start of the current line.  To bookmark the
+current position, so you can have more than one automatic bookmark per
+line, use `bmkp-set-autonamed-bookmark' instead."
+  :type 'function :group 'bookmark-plus)
 
 ;;;###autoload
 (defcustom bmkp-autoname-bookmark-function 'bmkp-autoname-bookmark-function-default
@@ -1042,6 +1087,13 @@ handler for a given file."
   :type 'boolean :group 'bookmark-plus)
 
 ;;;###autoload
+(defcustom bmkp-temporary-bookmarking-mode-lighter " Temp-Bmk"
+  "Lighter for `bmkp-temporary-bookmarking-mode'.
+This string shows in the mode line when `bmkp-temporary-bookmarking-mode'
+is enabled.  Set this to nil or \"\" if you do not want any lighter."
+  :type 'string :group 'bookmark-plus)
+
+;;;###autoload
 (defcustom bmkp-use-region t
   "*Non-nil means visiting a bookmark activates its recorded region."
   :type '(choice
@@ -1110,6 +1162,16 @@ Keys are bookmark type names.  Values are corresponding history variables.")
 (defvar bmkp-w3m-history ()              "History for W3M bookmarks.")
 
 (defvar bmkp-after-set-hook nil "Hook run after `bookmark-set' sets a bookmark.")
+
+(defvar bmkp-auto-idle-bookmark-mode-timer
+  (progn (when (timerp 'bmkp-auto-idle-bookmark-mode-timer)
+           (cancel-timer bmkp-auto-idle-bookmark-mode-timer))
+         (prog1 (run-with-idle-timer
+                 bmkp-auto-idle-bookmark-mode-delay t
+                 bmkp-auto-idle-bookmark-mode-set-function)
+           (when (timerp 'bmkp-auto-idle-bookmark-mode-timer)
+             (cancel-timer bmkp-auto-idle-bookmark-mode-timer))))
+  "Timer for `bmkp-auto-idle-bookmark-mode'.")
 
 (defvar bmkp-autotemp-all-when-set-p nil "Non-nil means make any bookmark temporary whenever it is set.")
 
@@ -1852,11 +1914,13 @@ bookmarks)."
              (any-bookmark             (bmkp-light-bookmark bname))
              (autonamed-in-buffer      (bmkp-light-bookmarks (bmkp-remove-if-not
                                                               #'bmkp-autonamed-bookmark-p
-                                                              (bmkp-this-buffer-alist-only)) nil 'MSG))
+                                                              (bmkp-this-buffer-alist-only))
+                                                             nil interactivep))
              (non-autonamed-in-buffer  (bmkp-light-bookmarks (bmkp-remove-if
                                                               #'bmkp-autonamed-bookmark-p
-                                                              (bmkp-this-buffer-alist-only)) nil 'MSG))
-             (all-in-buffer            (bmkp-light-this-buffer nil 'MSG)))
+                                                              (bmkp-this-buffer-alist-only))
+                                                             nil interactivep))
+             (all-in-buffer            (bmkp-light-this-buffer nil interactivep)))
            ;; Maybe make bookmark temporary.
            (if bmkp-autotemp-all-when-set-p
                (bmkp-make-bookmark-temporary bname)
@@ -9523,7 +9587,95 @@ bookmark-list."
 
 (if (fboundp 'define-minor-mode)
     ;; Emacs 21 and later.  Eval this so that even if the library is byte-compiled with Emacs 20,
-    ;; loading it into Emacs 21+ will define variable `icicle-mode'.
+    ;; loading it into Emacs 21+ will define variable `bmkp-auto-idle-bookmark-mode'.
+    (eval '(define-minor-mode bmkp-auto-idle-bookmark-mode
+            "Toggle automatic setting of a bookmark when Emacs is idle.
+Non-interactively, turn automatic bookmarking on if and only if ARG is
+positive.
+
+When the mode is enabled, a bookmark is automatically set every
+`bmkp-auto-idle-bookmark-mode-delay' seconds, using the setting
+function that is the value of option
+`bmkp-auto-idle-bookmark-mode-set-function'.
+
+If you want these bookmarks to be temporary (not saved to your
+bookmark file), then customize option
+`bmkp-autotemp-bookmark-predicates' so that it includes the kind of
+bookmarks that are set by `bmkp-auto-idle-bookmark-mode-set-function'.
+For example, if automatic bookmarking sets autonamed bookmarks, then
+`bmkp-autotemp-bookmark-predicates' should include
+`bmkp-autonamed-bookmark-p' or
+`bmkp-autonamed-this-buffer-bookmark-p'.
+
+If you want the automatically created bookmarks to be highlighted,
+then customize option `bmkp-auto-light-when-set' to highlight
+bookmarks of the appropriate kind.  For example, to highlight
+autonamed bookmarks set it to `autonamed-bookmark'."
+            :init-value nil :global t :group 'bookmark-plus :lighter bmkp-auto-idle-bookmark-mode-lighter
+            :link `(url-link :tag "Send Bug Report"
+                    ,(concat "mailto:" "drew.adams" "@" "oracle" ".com?subject=\
+Bookmark bug: \
+&body=Describe bug here, starting with `emacs -Q'.  \
+Don't forget to mention your Emacs and library versions."))
+            :link '(url-link :tag "Download" "http://www.emacswiki.org/bookmark+.el")
+            :link '(url-link :tag "Description" "http://www.emacswiki.org/BookmarkPlus")
+            :link '(emacs-commentary-link :tag "Commentary" "bookmark+")
+            (cancel-timer bmkp-auto-idle-bookmark-mode-timer)
+            (when bmkp-auto-idle-bookmark-mode
+              (setq bmkp-auto-idle-bookmark-mode-timer
+                    (run-with-idle-timer
+                     bmkp-auto-idle-bookmark-mode-delay t
+                     bmkp-auto-idle-bookmark-mode-set-function))
+              (run-hooks 'bmkp-auto-idle-bookmark-mode-hook))
+            (when (interactive-p)
+              (message "Automatic bookmarking is now %s"
+                       (if bmkp-auto-idle-bookmark-mode "ON" "OFF")))))
+
+  ;; Emacs 20
+  (defun bmkp-auto-idle-bookmark-mode (&optional arg)
+    "Toggle automatic setting of a bookmark when Emacs is idle.
+Non-interactively, turn automatic bookmarking on if and only if ARG is
+positive.
+
+When the mode is enabled, a bookmark is automatically set every
+`bmkp-auto-idle-bookmark-mode-delay' seconds, using the setting
+function that is the value of option
+`bmkp-auto-idle-bookmark-mode-set-function'.
+
+If you want these bookmarks to be temporary (not saved to your
+bookmark file), then customize option
+`bmkp-autotemp-bookmark-predicates' so that it includes the kind of
+bookmarks that are set by `bmkp-auto-idle-bookmark-mode-set-function'.
+For example, if automatic bookmarking sets autonamed bookmarks, then
+`bmkp-autotemp-bookmark-predicates' should include
+`bmkp-autonamed-bookmark-p'.
+
+If you want the automatically created bookmarks to be highlighted,
+then customize option `bmkp-auto-light-when-set' to highlight
+bookmarks of the appropriate kind.  For example, to highlight
+autonamed bookmarks set it to `autonamed-bookmark'."
+    (interactive "P")
+    (setq bmkp-auto-idle-bookmark-mode
+          (if arg (> (prefix-numeric-value arg) 0) (not bmkp-auto-idle-bookmark-mode)))
+    (cancel-timer bmkp-auto-idle-bookmark-mode-timer)
+    (when bmkp-auto-idle-bookmark-mode
+      (setq bmkp-auto-idle-bookmark-mode-timer
+            (run-with-idle-timer
+             bmkp-auto-idle-bookmark-mode-delay t
+             bmkp-auto-idle-bookmark-mode-set-function))
+      (run-hooks 'bmkp-auto-idle-bookmark-mode-hook))
+    (when (interactive-p)
+      (message "Automatic bookmarking is now %s"
+               (if bmkp-auto-idle-bookmark-mode "ON" "OFF"))))
+
+
+  (add-to-list 'minor-mode-alist
+               `(bmkp-auto-idle-bookmark-mode ,bmkp-auto-idle-bookmark-mode-lighter)))
+
+
+(if (fboundp 'define-minor-mode)
+    ;; Emacs 21 and later.  Eval this so that even if the library is byte-compiled with Emacs 20,
+    ;; loading it into Emacs 21+ will define variable `bmkp-temporary-bookmarking-mode'.
     (eval '(define-minor-mode bmkp-temporary-bookmarking-mode ; `M-L' in `*Bookmark List*'.
             "Toggle temporary bookmarking.
 Temporary bookmarking means that any bookmark changes (creation,
@@ -9541,7 +9693,7 @@ When the mode is turned ON:
 
 Non-interactively, turn temporary bookmarking on if and only if ARG is
 positive.  Non-interactively there is no prompt for confirmation."
-            :init-value nil :global t :group 'bookmark-plus
+            :init-value nil :global t :group 'bookmark-plus :lighter bmkp-temporary-bookmarking-mode-lighter
             :link `(url-link :tag "Send Bug Report"
                     ,(concat "mailto:" "drew.adams" "@" "oracle" ".com?subject=\
 Bookmark bug: \
@@ -9615,7 +9767,11 @@ positive.  Non-interactively there is no prompt for confirmation."
            (when (interactive-p) (message "Bookmarking is now TEMPORARY")))
           (t                            ; User refused to confirm.
            (message "OK, canceled - bookmarking is NOT temporary")
-           (setq bmkp-temporary-bookmarking-mode  nil)))))
+           (setq bmkp-temporary-bookmarking-mode  nil))))
+
+
+  (add-to-list 'minor-mode-alist
+               `(bmkp-temporary-bookmarking-mode ,bmkp-temporary-bookmarking-mode-lighter)))
 
 ;;;###autoload
 (defun bmkp-toggle-autotemp-on-set (&optional msgp) ; Bound to `C-x p x'
