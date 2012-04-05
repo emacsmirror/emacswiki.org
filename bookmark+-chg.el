@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2012, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Thu Apr  5 07:58:50 2012 (-0700)
+;; Last-Updated: Thu Apr  5 10:47:12 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 14635
+;;     Update #: 14650
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-chg.el
 ;; Keywords: bookmarks, bookmark+
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -146,6 +146,17 @@
 ;;;(@* "CHANGE LOG FOR `bookmark+-1.el'")
 ;;
 ;; 2012/04/05 dadams
+;;     Added (Emacs 21+): bmkp-global-auto-idle-bookmark-mode, bmkp-turn-on-auto-idle-bookmark-mode.
+;;     bmkp-auto-idle-bookmark-mode (Emacs 21+):
+;;       Made it local:
+;;         Removed keyword :global, added keyword :require.
+;;         Timer function does nothing if the mode is not enabled (i.e., for the current buffer).
+;;     bmkp-auto-idle-bookmark-mode (Emacs 20):
+;;       Changed interactive spec to handle toggle symbol.
+;;       Timer function does nothing if the mode is not enabled (for the current buffer, if local).
+;;       Change message to mention buffer when the mode is local.
+;;     Removed: bmkp-auto-idle-bookmark-mode-hook.
+;;     Added autoload cookie for Emacs 20 defcustom for bmkp-auto-idle-bookmark-mode.
 ;;     bmkp-auto-idle-bookmark-mode-timer: Use nil as default value.
 ;;     bmkp-auto-idle-bookmark-mode: If timer is non-nil, set it to nil (and cancel it).
 ;; 2012/04/04 dadams
