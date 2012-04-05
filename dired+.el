@@ -7,9 +7,9 @@
 ;; Copyright (C) 1999-2012, Drew Adams, all rights reserved.
 ;; Created: Fri Mar 19 15:58:58 1999
 ;; Version: 21.2
-;; Last-Updated: Tue Mar 13 14:49:30 2012 (-0700)
+;; Last-Updated: Thu Apr  5 13:40:12 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 4521
+;;     Update #: 4528
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/dired+.el
 ;; Keywords: unix, mouse, directories, diredp, dired
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -255,6 +255,9 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2012/04/05 dadams
+;;     Added redefinition of dired-mark-pop-up, to fix Emacs bug #7533.  If they ever fix it
+;;     then remove this hack.
 ;; 2012/03/13 dadams
 ;;     diredp-dired(-for)-files(-other-window):
 ;;       Bind: icicle-sort-comparer, icicle-all-candidates-list-alt-action-fn.
@@ -949,6 +952,19 @@ a prefix arg lets you edit the `ls' switches used for the new listing."
                             arg)
       (dired-move-to-filename)
       (message "Redisplaying...done"))))
+
+;; REPLACE ORIGINAL in `dired.el'.
+;;
+;; Made compatible with Emacs 20, 21, which do not have [:alnum].
+;; Also, this is defined here because it is used elsewhere in the file.
+;;
+(defun dired-switches-escape-p (switches)
+  "Return non-nil if the string SWITCHES contains `-b' or `--escape'."
+  ;; Do not match things like "--block-size" that happen to contain "b".
+  (if (> emacs-major-version 21)
+      (string-match "\\(\\`\\| \\)-[[:alnum:]]*b\\|--escape\\>" switches)
+    (string-match "\\(\\`\\| \\)-\\(\w\\|[0-9]\\)*b\\|--escape\\>" switches)))  
+
 
 ;; From `dired.el'
 
@@ -3764,17 +3780,6 @@ the variable `window-min-height'."
 
 ;; REPLACE ORIGINAL in `dired.el'.
 ;;
-;; Reset `mode-line-process' to nil.
-;;
-(when (< emacs-major-version 21)
-  (or (fboundp 'old-dired-revert) (fset 'old-dired-revert (symbol-function 'dired-revert)))
-  (defun dired-revert (&optional arg noconfirm)
-    (setq mode-line-process  nil)        ; Set by, e.g., `find-dired'.
-    (old-dired-revert arg noconfirm)))
-
-
-;; REPLACE ORIGINAL in `dired.el'.
-;;
 ;; 1. Put `mouse-face' on whole line, not just file name.
 ;; 2. Add text property `dired-filename' to the file name (only).
 ;;
@@ -3798,6 +3803,17 @@ Add text property `dired-filename' to the file name."
 
 ;; REPLACE ORIGINAL in `dired.el'.
 ;;
+;; Reset `mode-line-process' to nil.
+;;
+(when (< emacs-major-version 21)
+  (or (fboundp 'old-dired-revert) (fset 'old-dired-revert (symbol-function 'dired-revert)))
+  (defun dired-revert (&optional arg noconfirm)
+    (setq mode-line-process  nil)        ; Set by, e.g., `find-dired'.
+    (old-dired-revert arg noconfirm)))
+
+
+;; REPLACE ORIGINAL in `dired.el'.
+;;
 ;; If at root on a Windows drive, go up to a list of available drives.
 ;;
 ;;;###autoload
@@ -3817,93 +3833,6 @@ On MS Windows, if you already at the root directory, invoke
         (progn (if other-window (dired-other-window up) (dired up))
                (dired-goto-file dir))
         (and (eq system-type 'windows-nt) (diredp-w32-drives)))))
-
-
-;; REPLACE ORIGINAL in `dired.el'.
-;;
-;; 1. Fixes Emacs bug #7126: Did not work with arbitrary file list (cons arg to `dired').
-;; 2. Remove `/' from directory name before comparing with BASE.
-;;
-;;;###autoload
-(defun dired-goto-file (file)           ; Bound to `j'
-  "Go to line describing file FILE in this dired buffer."
-  ;; Return value of point on success, else nil.
-  ;; FILE must be an absolute file name.
-  ;; Loses if FILE contains control chars like "\007" for which ls
-  ;; either inserts "?" or "\\007" into the buffer, so we won't find
-  ;; it in the buffer.
-  (interactive
-   (prog1                               ; Let push-mark display its message
-       (list (expand-file-name (read-file-name "Goto file: " (dired-current-directory))))
-     (push-mark)))
-  (setq file  (directory-file-name file)) ; does no harm if no directory
-  (let ((found  nil)
-        case-fold-search dir)
-    (setq dir  (or (file-name-directory file) (error "File name `%s' is not absolute" file)))
-
-    ;; Dired+: Added this sexp.
-    (save-excursion
-      (goto-char (point-min))
-      (let ((search-string  (replace-regexp-in-string "\^m" "\\^m" file nil t))
-            (here           nil))
-        (setq search-string  (replace-regexp-in-string "\\\\" "\\\\" search-string nil t))
-
-        ;; Escape whitespace.  Added per Emacs 24 addition in `unless' code below:
-        (when (and (dired-switches-escape-p dired-actual-switches)
-                   (string-match "[ \t\n]" search-string))
-          ;; FIXME: fix this for all possible file names (embedded control chars etc).
-          ;;        Need to escape everything that `ls -b' escapes.
-          (setq search-string  (replace-regexp-in-string " " "\\ "  search-string nil t)
-                search-string  (replace-regexp-in-string "\t" "\\t" search-string nil t)
-                search-string  (replace-regexp-in-string "\n" "\\n" search-string nil t)))
-
-        ;; Use HERE to ensure we do not keep searching for a directory entry.
-        (while (and (not (eobp))  (not found)  (not (equal here (point))))
-          (setq here  (point))
-          (if (search-forward (concat " " search-string) nil 'NO-ERROR)
-              ;; Must move to filename since an (actually correct) match could have been
-              ;; elsewhere on the line (e.g. "-" would match somewhere in permission bits).
-              (setq found  (dired-move-to-filename))
-            ;; If this isn't the right line, move forward to avoid trying this line again.
-            (forward-line 1)))))
-
-    (unless found
-      (save-excursion
-        ;; The difficulty here is to get the result of dired-goto-subdir without really
-        ;; calling it if we don't have any subdirs.
-        (if (if (string= dir (expand-file-name default-directory))
-                (goto-char (point-min))
-              (and (cdr dired-subdir-alist)  (dired-goto-subdir dir)))
-            (let ((base      (file-name-nondirectory file))
-                  (boundary  (dired-subdir-max))
-                  search-string)
-              (setq search-string  (replace-regexp-in-string "\^m" "\\^m" base nil t)
-                    search-string  (replace-regexp-in-string "\\\\" "\\\\" search-string nil t))
-
-              ;; Escape whitespace.  Sexp added by Emacs 24:
-              (when (and (dired-switches-escape-p dired-actual-switches)
-                         (string-match "[ \t\n]" search-string))
-                ;; FIXME: fix this for all possible file names (embedded control chars etc).
-                ;;        Need to escape everything that `ls -b' escapes.
-                (setq search-string  (replace-regexp-in-string " " "\\ " search-string nil t)
-                      search-string  (replace-regexp-in-string "\t" "\\t" search-string nil t)
-                      search-string  (replace-regexp-in-string "\n" "\\n" search-string nil t)))
-
-              (while (and (not found)
-                          ;; Filenames are preceded by SPC.  This makes the search faster
-                          ;; (e.g. for the filename "-"!).
-                          (search-forward (concat " " search-string) boundary 'move))
-                ;; Dired+: Remove / from filename, then compare with BASE.
-                ;; Match could have BASE just as initial substring or
-                ;; or in permission bits or date or not be a proper filename at all.
-                (if (and (dired-get-filename 'no-dir t)
-                         (equal base (directory-file-name (dired-get-filename 'no-dir t))))
-                    ;; Must move to filename since an (actually correct) match could have been
-                    ;; elsewhere on the line (e.g. "-" would match somewhere in permission bits).
-                    (setq found  (dired-move-to-filename))
-                  ;; If this is not the right line, move forward to avoid trying this line again.
-                  (forward-line 1)))))))
-    (and found (goto-char found))))     ; Return value of point.
 
 
 ;; REPLACE ORIGINAL in `dired.el'.
@@ -4010,15 +3939,89 @@ Otherwise, an error occurs in these cases."
 
 ;; REPLACE ORIGINAL in `dired.el'.
 ;;
-;; Made compatible with Emacs 20, 21, which do not have [:alnum].
-;; Also, this is defined here because it is used elsewhere in the file.
+;; 1. Fixes Emacs bug #7126: Did not work with arbitrary file list (cons arg to `dired').
+;; 2. Remove `/' from directory name before comparing with BASE.
 ;;
-(defun dired-switches-escape-p (switches)
-  "Return non-nil if the string SWITCHES contains `-b' or `--escape'."
-  ;; Do not match things like "--block-size" that happen to contain "b".
-  (if (> emacs-major-version 21)
-      (string-match "\\(\\`\\| \\)-[[:alnum:]]*b\\|--escape\\>" switches)
-    (string-match "\\(\\`\\| \\)-\\(\w\\|[0-9]\\)*b\\|--escape\\>" switches)))  
+;;;###autoload
+(defun dired-goto-file (file)           ; Bound to `j'
+  "Go to line describing file FILE in this dired buffer."
+  ;; Return value of point on success, else nil.
+  ;; FILE must be an absolute file name.
+  ;; Loses if FILE contains control chars like "\007" for which ls
+  ;; either inserts "?" or "\\007" into the buffer, so we won't find
+  ;; it in the buffer.
+  (interactive
+   (prog1                               ; Let push-mark display its message
+       (list (expand-file-name (read-file-name "Goto file: " (dired-current-directory))))
+     (push-mark)))
+  (setq file  (directory-file-name file)) ; does no harm if no directory
+  (let ((found  nil)
+        case-fold-search dir)
+    (setq dir  (or (file-name-directory file) (error "File name `%s' is not absolute" file)))
+
+    ;; Dired+: Added this sexp.
+    (save-excursion
+      (goto-char (point-min))
+      (let ((search-string  (replace-regexp-in-string "\^m" "\\^m" file nil t))
+            (here           nil))
+        (setq search-string  (replace-regexp-in-string "\\\\" "\\\\" search-string nil t))
+
+        ;; Escape whitespace.  Added per Emacs 24 addition in `unless' code below:
+        (when (and (dired-switches-escape-p dired-actual-switches)
+                   (string-match "[ \t\n]" search-string))
+          ;; FIXME: fix this for all possible file names (embedded control chars etc).
+          ;;        Need to escape everything that `ls -b' escapes.
+          (setq search-string  (replace-regexp-in-string " " "\\ "  search-string nil t)
+                search-string  (replace-regexp-in-string "\t" "\\t" search-string nil t)
+                search-string  (replace-regexp-in-string "\n" "\\n" search-string nil t)))
+
+        ;; Use HERE to ensure we do not keep searching for a directory entry.
+        (while (and (not (eobp))  (not found)  (not (equal here (point))))
+          (setq here  (point))
+          (if (search-forward (concat " " search-string) nil 'NO-ERROR)
+              ;; Must move to filename since an (actually correct) match could have been
+              ;; elsewhere on the line (e.g. "-" would match somewhere in permission bits).
+              (setq found  (dired-move-to-filename))
+            ;; If this isn't the right line, move forward to avoid trying this line again.
+            (forward-line 1)))))
+
+    (unless found
+      (save-excursion
+        ;; The difficulty here is to get the result of dired-goto-subdir without really
+        ;; calling it if we don't have any subdirs.
+        (if (if (string= dir (expand-file-name default-directory))
+                (goto-char (point-min))
+              (and (cdr dired-subdir-alist)  (dired-goto-subdir dir)))
+            (let ((base      (file-name-nondirectory file))
+                  (boundary  (dired-subdir-max))
+                  search-string)
+              (setq search-string  (replace-regexp-in-string "\^m" "\\^m" base nil t)
+                    search-string  (replace-regexp-in-string "\\\\" "\\\\" search-string nil t))
+
+              ;; Escape whitespace.  Sexp added by Emacs 24:
+              (when (and (dired-switches-escape-p dired-actual-switches)
+                         (string-match "[ \t\n]" search-string))
+                ;; FIXME: fix this for all possible file names (embedded control chars etc).
+                ;;        Need to escape everything that `ls -b' escapes.
+                (setq search-string  (replace-regexp-in-string " " "\\ " search-string nil t)
+                      search-string  (replace-regexp-in-string "\t" "\\t" search-string nil t)
+                      search-string  (replace-regexp-in-string "\n" "\\n" search-string nil t)))
+
+              (while (and (not found)
+                          ;; Filenames are preceded by SPC.  This makes the search faster
+                          ;; (e.g. for the filename "-"!).
+                          (search-forward (concat " " search-string) boundary 'move))
+                ;; Dired+: Remove / from filename, then compare with BASE.
+                ;; Match could have BASE just as initial substring or
+                ;; or in permission bits or date or not be a proper filename at all.
+                (if (and (dired-get-filename 'no-dir t)
+                         (equal base (directory-file-name (dired-get-filename 'no-dir t))))
+                    ;; Must move to filename since an (actually correct) match could have been
+                    ;; elsewhere on the line (e.g. "-" would match somewhere in permission bits).
+                    (setq found  (dired-move-to-filename))
+                  ;; If this is not the right line, move forward to avoid trying this line again.
+                  (forward-line 1)))))))
+    (and found (goto-char found))))     ; Return value of point.
 
 
 ;; REPLACE ORIGINAL in `dired.el':
@@ -4084,6 +4087,43 @@ non-empty directories is allowed."
   (if (> emacs-major-version 23)
       (dired-internal-do-deletions l arg trash)
     (dired-internal-do-deletions l arg)))
+
+
+;; REPLACE ORIGINAL in `dired.el':
+;;
+;; Delete the window or frame popped up, afterward.  Fixes Emacs bug #7533.
+;;
+(defun dired-mark-pop-up (bufname op-symbol files function &rest args)
+  "Return FUNCTION's result on ARGS after showing which files are marked.
+Displays the file names in a buffer named BUFNAME;
+ nil gives \" *Marked Files*\".
+This uses function `dired-pop-to-buffer' to do that.
+
+FUNCTION should not manipulate files, just read input
+ (an argument or confirmation).
+The window is not shown if there is just one file or
+ OP-SYMBOL is a member of the list in `dired-no-confirm'.
+FILES is the list of marked files.  It can also be (t FILENAME)
+in the case of one marked file, to distinguish that from using
+just the current file."
+  (or bufname (setq bufname  " *Marked Files*"))
+  (if (or (eq dired-no-confirm t)
+	  (memq op-symbol dired-no-confirm)
+	  ;; If FILES defaulted to the current line's file.
+	  (= (length files) 1))
+      (apply function args)
+    (with-current-buffer (get-buffer-create bufname)
+      (erase-buffer)
+      ;; Handle (t FILE) just like (FILE), here.
+      ;; That value is used (only in some cases), to mean
+      ;; just one file that was marked, rather than the current line file.
+      (dired-format-columns-of-files (if (eq (car files) t) (cdr files) files))
+      (remove-text-properties (point-min) (point-max)
+			      '(mouse-face nil help-echo nil)))
+    (save-window-excursion
+      (dired-pop-to-buffer bufname)
+      (prog1 (apply function args)
+        (if (one-window-p) (delete-frame) (delete-window))))))
 
 ;;;###autoload
 (defun diredp-capitalize (&optional arg) ; Not bound
