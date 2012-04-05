@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2012, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 13:43:55 2010 (-0700)
-;; Last-Updated: Wed Apr  4 18:37:52 2012 (-0700)
+;; Last-Updated: Wed Apr  4 18:58:08 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 4614
+;;     Update #: 4615
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-1.el
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -9596,7 +9596,8 @@ positive.
 When the mode is enabled, a bookmark is automatically set every
 `bmkp-auto-idle-bookmark-mode-delay' seconds, using the setting
 function that is the value of option
-`bmkp-auto-idle-bookmark-mode-set-function'.
+`bmkp-auto-idle-bookmark-mode-set-function'.  Turning on the mode runs
+hook `bmkp-auto-idle-bookmark-mode-hook'.
 
 If you want these bookmarks to be temporary (not saved to your
 bookmark file), then customize option
@@ -9640,7 +9641,8 @@ positive.
 When the mode is enabled, a bookmark is automatically set every
 `bmkp-auto-idle-bookmark-mode-delay' seconds, using the setting
 function that is the value of option
-`bmkp-auto-idle-bookmark-mode-set-function'.
+`bmkp-auto-idle-bookmark-mode-set-function'.  Turning on the mode runs
+hook `bmkp-auto-idle-bookmark-mode-hook'.
 
 If you want these bookmarks to be temporary (not saved to your
 bookmark file), then customize option
