@@ -199,6 +199,11 @@ Alternatively, follow the following procedure:
     (set-default-font
      "-apple-inconsolata-medium-r-normal--13-130-72-72-m-130-iso10646-1")
 
+
+== Emacs for Mac OS X ==
+
+M-x mac-font-panel-mode is not available on Emacs builds downloaded from http://emacsformacosx.com. On these builds, use the default Mac shortcut to popup the font panel, i.e, Command+T. Alternatively, use M-x ns-popup-font-panel. Then follow the instructions in the Carbon Emacs section.
+
 == Use with Anything ==
 '''[[Anything]]''' is a candidate selection framework.
 
