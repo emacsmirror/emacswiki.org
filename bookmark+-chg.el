@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2012, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Tue Apr  3 13:15:12 2012 (-0700)
+;; Last-Updated: Wed Apr  4 18:42:34 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 14619
+;;     Update #: 14628
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-chg.el
 ;; Keywords: bookmarks, bookmark+
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -145,6 +145,11 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-1.el'")
 ;;
+;; 2012/04/04 dadams
+;;     Added: bmkp-auto-idle-bookmark-mode(-delay|-hook|-lighter|-set-function),
+;;            bmkp-temporary-bookmarking-mode-lighter, bmkp-auto-idle-bookmark-mode-timer.
+;;     bmkp-temporary-bookmarking-mode: Added lighter.
+;;     bookmark-set: Pass INTERACTIVEP arg, not constant MSGP, to bmkp-light-(bookmarks|this-buffer).
 ;; 2012/04/03 dadams
 ;;     Moved to bookmark+-bmu.el: bmkp-face-prop.
 ;; 2012/04/02 dadams
