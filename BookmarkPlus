@@ -3031,6 +3031,57 @@ the annotation mark `a' would otherwise appear.
 
 
 
+[:AutomaticBookmarking]
+== Automatic Bookmarking ==
+
+You might or might not find automatic bookmarking useful.  The
+idea is that Emacs sets a bookmark for you automatically, whenever
+you are idle for a given period of time ([[option]]
+'''`bmkp-auto-idle-bookmark-mode-delay'''').  Then you can navigate
+among those bookmarks to visit spots where you spent some time
+(idly).
+
+This automatic bookmarking is a minor mode, which you can toggle
+on/off using command `bmkp-auto-idle-bookmark-mode'.  When the
+mode is on the minor-mode indicator `Auto-Bmk' is shown in the
+[[mode line]].  You can [[Customize|customize]] this indicator (removing it, if you
+like), using option '''`bmkp-auto-idle-bookmark-mode-lighter''''.
+
+Another option defines the bookmark-setting function, which by
+default is '''`bmkp-set-autonamed-bookmark-at-line'''', which sets an
+autonamed bookmark at the current line.  You typically want
+bookmarks created automatically to be autonamed, both because the
+name is unimportant and because setting an autonamed bookmark
+requires no interaction.  But you can use any setting function you
+like as the option value.  (You can always rename an autonamed
+bookmark later, if you want to keep it and give it a meaningful
+name.)
+
+If you want the automatically created bookmarks to be temporary
+(not saved to your bookmark file), then customize option
+'''`bmkp-autotemp-bookmark-predicates'''' so that it includes the kind
+of bookmarks that are set by
+`bmkp-auto-idle-bookmark-mode-set-function'.  For example, if
+automatic bookmarking sets autonamed bookmarks, then
+`bmkp-autotemp-bookmark-predicates' should include
+`bmkp-autonamed-bookmark-p' or
+`bmkp-autonamed-this-buffer-bookmark-p'.
+
+If you want the bookmarks to be automatically highlighted, then
+customize option '''`bmkp-auto-light-when-set'''' to highlight bookmarks
+of the appropriate kind.  For example, to highlight autonamed
+bookmarks set it to `autonamed-bookmark'.
+
+
+
+
+
+
+
+
+
+
+
 
 [:HighlightingBookmarkLocations]
 == Highlighting Bookmark Locations ==
