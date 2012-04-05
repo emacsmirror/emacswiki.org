@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2012, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Wed Apr  4 19:03:32 2012 (-0700)
+;; Last-Updated: Thu Apr  5 11:24:24 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 14476
+;;     Update #: 14490
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-doc.el
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search,
 ;;           info, url, w3m, gnus
@@ -2798,19 +2798,29 @@
 ;;  among those bookmarks to visit spots where you spent some time
 ;;  (idly).
 ;;
-;;  This automatic bookmarking is a minor mode, which you can toggle
-;;  on/off using command `bmkp-auto-idle-bookmark-mode'.  When the
-;;  mode is on the minor-mode indicator `Auto-Bmk' is shown in the
-;;  mode line.  You can customize this indicator (removing it, if you
+;;  Mode `bmkp-auto-idle-bookmark-mode' is a local minor mode, which
+;;  means that it is buffer-specific.  The command of the same name
+;;  turns the mode on and off.  When the mode is on, the minor-mode
+;;  indicator ("lighter") `Auto-Bmk' is shown in the mode line for the
+;;  buffer.  You can customize this indicator (removing it, if you
 ;;  like), using option `bmkp-auto-idle-bookmark-mode-lighter'.
 ;;
-;;  Another option defines the bookmark-setting function, which by
-;;  default is `bmkp-set-autonamed-bookmark-at-line', which sets an
-;;  autonamed bookmark at the current line.  You typically want
-;;  bookmarks created automatically to be autonamed, both because the
-;;  name is unimportant and because setting an autonamed bookmark
-;;  requires no interaction.  But you can use any setting function you
-;;  like as the option value.  (You can always rename an autonamed
+;;  Command `bmkp-global-auto-idle-bookmark-mode' turns on the mode in
+;;  all buffers, that is, it is global, not local.  Regardless of
+;;  whether you use the mode locally or globally, a bookmark is
+;;  created automatically only in the current buffer.  That is, a
+;;  buffer must be current (selected) for an automatic bookmark to be
+;;  created there - it is not enough that the mode be enabled in the
+;;  buffer.
+;;
+;;  Option `bmkp-auto-idle-bookmark-mode-set-function' defines the
+;;  bookmark-setting function.  By default its value is
+;;  `bmkp-set-autonamed-bookmark-at-line', which sets an autonamed
+;;  bookmark at the current line.  You typically want bookmarks that
+;;  are created automatically to be autonamed, both because the name
+;;  is unimportant and because setting an autonamed bookmark requires
+;;  no interaction on your part.  But you can use any setting function
+;;  you like as the option value.  (You can always rename an autonamed
 ;;  bookmark later, if you want to keep it and give it a meaningful
 ;;  name.)
 ;;
@@ -2822,12 +2832,18 @@
 ;;  automatic bookmarking sets autonamed bookmarks, then
 ;;  `bmkp-autotemp-bookmark-predicates' should include
 ;;  `bmkp-autonamed-bookmark-p' or
-;;  `bmkp-autonamed-this-buffer-bookmark-p'.
+;;  `bmkp-autonamed-this-buffer-bookmark-p'.  Remember that you can
+;;  toggle whether a given bookmark is temporary or savable, using
+;;  `M-X' in the bookmark-list display (buffer `*Bookmark List*').
 ;;
 ;;  If you want the bookmarks to be automatically highlighted, then
 ;;  customize option `bmkp-auto-light-when-set' to highlight bookmarks
 ;;  of the appropriate kind.  For example, to highlight autonamed
 ;;  bookmarks set it to `autonamed-bookmark'.
+;;
+;;  NOTE: If you use Emacs 20, then by default
+;;  `bmkp-auto-idle-bookmark-mode' is global rather than local.  The
+;;  doc string tells you how to make it local instead.
  
 ;;(@* "Highlighting Bookmark Locations")
 ;;  ** Highlighting Bookmark Locations **
