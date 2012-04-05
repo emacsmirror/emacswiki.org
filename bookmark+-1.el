@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2012, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 13:43:55 2010 (-0700)
-;; Last-Updated: Wed Apr  4 18:58:08 2012 (-0700)
+;; Last-Updated: Thu Apr  5 07:59:42 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 4615
+;;     Update #: 4626
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-1.el
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -1163,14 +1163,7 @@ Keys are bookmark type names.  Values are corresponding history variables.")
 
 (defvar bmkp-after-set-hook nil "Hook run after `bookmark-set' sets a bookmark.")
 
-(defvar bmkp-auto-idle-bookmark-mode-timer
-  (progn (when (timerp 'bmkp-auto-idle-bookmark-mode-timer)
-           (cancel-timer bmkp-auto-idle-bookmark-mode-timer))
-         (prog1 (run-with-idle-timer
-                 bmkp-auto-idle-bookmark-mode-delay t
-                 bmkp-auto-idle-bookmark-mode-set-function)
-           (when (timerp 'bmkp-auto-idle-bookmark-mode-timer)
-             (cancel-timer bmkp-auto-idle-bookmark-mode-timer))))
+(defvar bmkp-auto-idle-bookmark-mode-timer nil
   "Timer for `bmkp-auto-idle-bookmark-mode'.")
 
 (defvar bmkp-autotemp-all-when-set-p nil "Non-nil means make any bookmark temporary whenever it is set.")
@@ -9621,12 +9614,13 @@ Don't forget to mention your Emacs and library versions."))
             :link '(url-link :tag "Download" "http://www.emacswiki.org/bookmark+.el")
             :link '(url-link :tag "Description" "http://www.emacswiki.org/BookmarkPlus")
             :link '(emacs-commentary-link :tag "Commentary" "bookmark+")
-            (cancel-timer bmkp-auto-idle-bookmark-mode-timer)
+            (when bmkp-auto-idle-bookmark-mode-timer
+              (cancel-timer bmkp-auto-idle-bookmark-mode-timer)
+              (setq bmkp-auto-idle-bookmark-mode-timer  nil))
             (when bmkp-auto-idle-bookmark-mode
               (setq bmkp-auto-idle-bookmark-mode-timer
-                    (run-with-idle-timer
-                     bmkp-auto-idle-bookmark-mode-delay t
-                     bmkp-auto-idle-bookmark-mode-set-function))
+                    (run-with-idle-timer bmkp-auto-idle-bookmark-mode-delay 'REPEAT
+                                         bmkp-auto-idle-bookmark-mode-set-function))
               (run-hooks 'bmkp-auto-idle-bookmark-mode-hook))
             (when (interactive-p)
               (message "Automatic bookmarking is now %s"
@@ -9659,12 +9653,13 @@ autonamed bookmarks set it to `autonamed-bookmark'."
     (interactive "P")
     (setq bmkp-auto-idle-bookmark-mode
           (if arg (> (prefix-numeric-value arg) 0) (not bmkp-auto-idle-bookmark-mode)))
-    (cancel-timer bmkp-auto-idle-bookmark-mode-timer)
+    (when bmkp-auto-idle-bookmark-mode-timer
+      (cancel-timer bmkp-auto-idle-bookmark-mode-timer)
+      (setq bmkp-auto-idle-bookmark-mode-timer  nil))
     (when bmkp-auto-idle-bookmark-mode
       (setq bmkp-auto-idle-bookmark-mode-timer
-            (run-with-idle-timer
-             bmkp-auto-idle-bookmark-mode-delay t
-             bmkp-auto-idle-bookmark-mode-set-function))
+            (run-with-idle-timer bmkp-auto-idle-bookmark-mode-delay 'REPEAT
+                                 bmkp-auto-idle-bookmark-mode-set-function))
       (run-hooks 'bmkp-auto-idle-bookmark-mode-hook))
     (when (interactive-p)
       (message "Automatic bookmarking is now %s"
