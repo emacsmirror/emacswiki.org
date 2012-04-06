@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2012, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Thu Apr  5 11:24:24 2012 (-0700)
+;; Last-Updated: Fri Apr  6 09:58:56 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 14490
+;;     Update #: 14522
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-doc.el
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search,
 ;;           info, url, w3m, gnus
@@ -2766,12 +2766,15 @@
 ;;    `bmkp-autotemp-bookmark-predicates'.  It is a list of bookmark
 ;;    predicates - typically type predicates - that define which
 ;;    bookmarks are automatically made temporary whenever they are
-;;    set.  The default value is `nil'.
+;;    set.
 ;;
-;;    For example, if you wanted autonamed bookmarks to always be made
-;;    temporary whenever created or updated, you would customize the
-;;    option to include the predicate `bmkp-autonamed-bookmark-p'.
-;;    The doc string for the option lists the predefined type
+;;    The default value includes the type predicates for autonamed
+;;    bookmarks: `bmkp-autonamed-bookmark-p' and
+;;    `bmkp-autonamed-this-buffer-bookmark-p'.  This means that (only)
+;;    autonamed bookmarks are made temporary whenever they are created
+;;    or updated.
+;;
+;;    The doc string for the option lists the predefined bookmark type
 ;;    predicates, but you can use any bookmark predicates.
 ;;
 ;;  * Finally, you can toggle whether *all* bookmarks become temporary
@@ -2798,6 +2801,20 @@
 ;;  among those bookmarks to visit spots where you spent some time
 ;;  (idly).
 ;;
+;;  How many such automatic bookmarks would you want?  And where?
+;;  Bookmark+ tries to provide some user options that let you get the
+;;  behavior you want.
+;;
+;;  In general, you probably do not want such bookmarks to be created
+;;  too often or too close together.  You probably do not care about
+;;  the names of the bookmarks created, and you do not want to be
+;;  interrupted to name them.  You probably want automatic bookmarking
+;;  to be per-buffer, but you might sometimes want to turn it on or
+;;  off for all buffers.  You might want more than one automatic
+;;  bookmark on a given line, but probably not.  Finally, you might or
+;;  might not want automatic bookmarks to be temporary (current
+;;  session only) or highlighted.
+;;
 ;;  Mode `bmkp-auto-idle-bookmark-mode' is a local minor mode, which
 ;;  means that it is buffer-specific.  The command of the same name
 ;;  turns the mode on and off.  When the mode is on, the minor-mode
@@ -2814,15 +2831,23 @@
 ;;  buffer.
 ;;
 ;;  Option `bmkp-auto-idle-bookmark-mode-set-function' defines the
-;;  bookmark-setting function.  By default its value is
+;;  bookmark-setting function.  By default, its value is
 ;;  `bmkp-set-autonamed-bookmark-at-line', which sets an autonamed
-;;  bookmark at the current line.  You typically want bookmarks that
-;;  are created automatically to be autonamed, both because the name
-;;  is unimportant and because setting an autonamed bookmark requires
-;;  no interaction on your part.  But you can use any setting function
-;;  you like as the option value.  (You can always rename an autonamed
-;;  bookmark later, if you want to keep it and give it a meaningful
-;;  name.)
+;;  bookmark at (the beginning of) the current line.  You typically
+;;  want bookmarks that are created automatically to be autonamed,
+;;  both because the name is unimportant and because setting an
+;;  autonamed bookmark requires no interaction on your part.  But you
+;;  can use any setting function you like as the option value.  (You
+;;  can always rename an autonamed bookmark later, if you want to keep
+;;  it and give it a meaningful name.)
+;;
+;;  Option `bmkp-auto-idle-bookmark-min-distance' is the minimum
+;;  number of characters between automatic bookmark positions.  If the
+;;  cursor is currently closer to some existing automatically created
+;;  bookmark, then no automatic bookmark is set at point.  If you set
+;;  this to `nil' then there is no limit on how close the bookmarks
+;;  can be.  (But there is only one autonamed bookmark at any given
+;;  position.)
 ;;
 ;;  If you want the automatically created bookmarks to be temporary
 ;;  (not saved to your bookmark file), then customize option
@@ -2832,9 +2857,10 @@
 ;;  automatic bookmarking sets autonamed bookmarks, then
 ;;  `bmkp-autotemp-bookmark-predicates' should include
 ;;  `bmkp-autonamed-bookmark-p' or
-;;  `bmkp-autonamed-this-buffer-bookmark-p'.  Remember that you can
-;;  toggle whether a given bookmark is temporary or savable, using
-;;  `M-X' in the bookmark-list display (buffer `*Bookmark List*').
+;;  `bmkp-autonamed-this-buffer-bookmark-p' (it includes both of these
+;;  by default).  Remember that you can toggle whether a given
+;;  bookmark is temporary or savable, using `M-X' in the bookmark-list
+;;  display (buffer `*Bookmark List*').
 ;;
 ;;  If you want the bookmarks to be automatically highlighted, then
 ;;  customize option `bmkp-auto-light-when-set' to highlight bookmarks
