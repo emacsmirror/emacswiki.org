@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Wed Apr  4 08:03:11 2012 (-0700)
+;; Last-Updated: Fri Apr  6 07:53:36 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 28740
+;;     Update #: 28742
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-doc2.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -6668,7 +6668,7 @@
 ;;  similar to what you are reading now.  It also lists toggle
 ;;  commands and the current toggle values.
 ;;
-;;    `C-?' - `icicle-minibuffer-help'
+;;    `M-?' - `icicle-minibuffer-help'
 ;;
 ;;  The following key bindings are made for the minibuffer completion
 ;;  keymaps.  They are in effect whenever you are using the minibuffer
@@ -7448,7 +7448,7 @@
 ;;
 ;;  * Use `M-x icicle-send-bug-report'.
 ;;
-;;  * Use `C-?' from the minibuffer.  Then click button `Icicles
+;;  * Use `M-?' from the minibuffer.  Then click button `Icicles
 ;;    Options and Faces' in buffer `*Help*'.  Then click the link
 ;;    `Send Bug Report' in buffer `*Customize Group: icicles*'.
 ;;
@@ -8732,7 +8732,7 @@
 ;;  besides the feature of multiple-choice.  These include choosing
 ;;  menu items from the keyboard, with completion, and cycling among
 ;;  menu items.  The additional features are all explained when the
-;;  user hits `C-?'.
+;;  user hits `M-?'.
 ;;
 ;;  One common use of a multiple-choice menu is letting the user
 ;;  select a list of items from a larger list of candidates.  The list
