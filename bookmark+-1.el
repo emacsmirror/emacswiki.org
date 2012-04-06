@@ -710,7 +710,7 @@ It must have a single `%s' to accept the buffer name."
   :type 'string :group 'bookmark-plus)
 
 ;;;###autoload
-(defcustom bmkp-autotemp-bookmark-predicates (bmkp-autonamed-bookmark-p
+(defcustom bmkp-autotemp-bookmark-predicates '(bmkp-autonamed-bookmark-p
                                               bmkp-autonamed-this-buffer-bookmark-p)
   "*Predicates for bookmarks to be set (created) as temporary bookmarks.
 Each is typically a type predicate, but it can be any function that
