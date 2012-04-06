@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 10:21:10 2006
 ;; Version: 22.0
-;; Last-Updated: Wed Apr  4 11:39:48 2012 (-0700)
+;; Last-Updated: Fri Apr  6 07:51:24 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 8537
+;;     Update #: 8550
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-mode.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -1079,7 +1079,7 @@ Used on `pre-command-hook'."
     ;; Beginning of non-submenu `Icicles' menu -----------------------
     (define-key icicle-menu-map [icicle-help]
       '(menu-item "Icicles Help" icicle-minibuffer-help
-        :help "Display help for minibuffer input and completion" :keys "C-? in minibuf"))
+        :help "Display help for minibuffer input and completion" :keys "M-? in minibuf"))
     (define-key icicle-menu-map [icicle-abort]
       '(menu-item "Cancel Minibuffer" icicle-abort-recursive-edit
         :enable (active-minibuffer-window)
@@ -2178,7 +2178,7 @@ keymap.  If KEYMAP-VAR is not bound to a keymap, it is ignored."
 
        (define-key map [menu-bar minibuf completion-help]
          '(menu-item "Icicles Help" icicle-minibuffer-help
-           :help "Display help for minibuffer input and completion"))
+           :help "Display help for minibuffer input and completion" :keys "M-?"))
        (define-key map [menu-bar minibuf separator-last] '("--"))
 
        (define-key map [menu-bar minibuf icicle-toggle-search-complementing-domain]
@@ -2244,7 +2244,9 @@ keymap.  If KEYMAP-VAR is not bound to a keymap, it is ignored."
          '(menu-item "Insert File Name" icicle-read+insert-file-name
            :help "Read and insert a file name using (lax) completion"))
 
+       ;; $$$$$$ Keep `C-?' also for a while, undocumented, for backward compatibility only.
        (define-key map (icicle-kbd "C-?")           'icicle-minibuffer-help) ; `C-?'
+       (define-key map (icicle-kbd "M-?")           'icicle-minibuffer-help) ; `M-?'
        (define-key map (icicle-kbd "C-g")           'icicle-abort-recursive-edit) ; `C-g'
        (define-key map (icicle-kbd "M-S-backspace") 'icicle-erase-minibuffer) ; `M-S-backspace'
        (define-key map (icicle-kbd "M-S-delete")    'icicle-erase-minibuffer) ; `M-S-delete'
@@ -2281,7 +2283,7 @@ keymap.  If KEYMAP-VAR is not bound to a keymap, it is ignored."
 
          (define-key map [menu-bar minibuf completion-help]
            '(menu-item "Icicles Help" icicle-minibuffer-help
-             :help "Display help for minibuffer input and completion"))
+             :help "Display help for minibuffer input and completion" :keys "M-?"))
          (define-key map [menu-bar minibuf separator-last] '("--"))
 
          (define-key map [menu-bar minibuf icicle-toggle-search-complementing-domain]
@@ -2347,7 +2349,9 @@ keymap.  If KEYMAP-VAR is not bound to a keymap, it is ignored."
            '(menu-item "Insert File Name" icicle-read+insert-file-name
              :help "Read and insert a file name using (lax) completion"))
 
+         ;; $$$$$$ Keep `C-?' also for a while, undocumented, for backward compatibility only.
          (define-key map (icicle-kbd "C-?")           'icicle-minibuffer-help) ; `C-?'
+         (define-key map (icicle-kbd "M-?")           'icicle-minibuffer-help) ; `M-?'
          (define-key map (icicle-kbd "C-g")           'icicle-abort-recursive-edit) ; `C-g'
          (define-key map (icicle-kbd "M-S-backspace") 'icicle-erase-minibuffer) ; `M-S-backspace'
          (define-key map (icicle-kbd "M-S-delete")    'icicle-erase-minibuffer) ; `M-S-delete'
@@ -2384,7 +2388,7 @@ keymap.  If KEYMAP-VAR is not bound to a keymap, it is ignored."
 
          (define-key map [menu-bar minibuf completion-help]
            '(menu-item "Icicles Help" icicle-minibuffer-help
-             :help "Display help for minibuffer input and completion"))
+             :help "Display help for minibuffer input and completion" :keys "M-?"))
          (define-key map [menu-bar minibuf separator-last] '("--"))
 
          (define-key map [menu-bar minibuf icicle-toggle-search-complementing-domain]
@@ -2450,7 +2454,9 @@ keymap.  If KEYMAP-VAR is not bound to a keymap, it is ignored."
            '(menu-item "Insert File Name" icicle-read+insert-file-name
              :help "Read and insert a file name using (lax) completion"))
 
+         ;; $$$$$$ Keep `C-?' also for a while, undocumented, for backward compatibility only.
          (define-key map (icicle-kbd "C-?")           'icicle-minibuffer-help) ; `C-?'
+         (define-key map (icicle-kbd "M-?")           'icicle-minibuffer-help) ; `M-?'
          (define-key map (icicle-kbd "C-g")           'icicle-abort-recursive-edit) ; `C-g'
          (define-key map (icicle-kbd "M-S-backspace") 'icicle-erase-minibuffer) ; `M-S-backspace'
          (define-key map (icicle-kbd "M-S-delete")    'icicle-erase-minibuffer) ; `M-S-delete'
@@ -2495,7 +2501,9 @@ keymap.  If KEYMAP-VAR is not bound to a keymap, it is ignored."
      (let ((map  completion-list-mode-map))
        (dolist (key  icicle-candidate-help-keys) ; `C-M-return', `C-help', `C-M-help', `C-f1',
          (define-key map key 'icicle-help-on-candidate)) ; `C-M-f1'
+       ;; $$$$$$ Keep `C-?' also for a while, undocumented, for backward compatibility only.
        (define-key map (icicle-kbd "C-?")      'icicle-minibuffer-help) ; `C-?'
+       (define-key map (icicle-kbd "M-?")      'icicle-minibuffer-help) ; `M-?'
        (define-key map (icicle-kbd "C-g")      'icicle-abort-recursive-edit) ; `C-g'
        (define-key map (icicle-kbd "q")        'icicle-abort-recursive-edit) ; `q'
        (define-key map (icicle-kbd "C-insert") 'icicle-insert-completion) ; `C-insert'
@@ -2577,7 +2585,9 @@ keymap.  If KEYMAP-VAR is not bound to a keymap, it is ignored."
        (define-key map [menu-bar minibuf icicle-completing-read+insert]             nil)
        (define-key map [menu-bar minibuf icicle-read+insert-file-name]              nil)
 
+       ;; $$$$$$ Keep `C-?' also for a while, undocumented, for backward compatibility only.
        (define-key map (icicle-kbd "C-?")           nil) ; `C-?'
+       (define-key map (icicle-kbd "M-?")           nil) ; `M-?'
        (define-key map (icicle-kbd "C-g")           (if (and (fboundp 'minibuffer-keyboard-quit)
                                                                delete-selection-mode)
                                                           'minibuffer-keyboard-quit
@@ -2628,7 +2638,9 @@ keymap.  If KEYMAP-VAR is not bound to a keymap, it is ignored."
          (define-key map [menu-bar minibuf icicle-completing-read+insert]             nil)
          (define-key map [menu-bar minibuf icicle-read+insert-file-name]              nil)
 
+         ;; $$$$$$ Keep `C-?' also for a while, undocumented, for backward compatibility only.
          (define-key map (icicle-kbd "C-?")           nil) ; `C-?'
+         (define-key map (icicle-kbd "M-?")           nil) ; `M-?'
          (define-key map (icicle-kbd "C-g")           (if (and (fboundp 'minibuffer-keyboard-quit)
                                                                  delete-selection-mode)
                                                             'minibuffer-keyboard-quit
@@ -2679,7 +2691,9 @@ keymap.  If KEYMAP-VAR is not bound to a keymap, it is ignored."
          (define-key map [menu-bar minibuf icicle-completing-read+insert]             nil)
          (define-key map [menu-bar minibuf icicle-read+insert-file-name]              nil)
 
+         ;; $$$$$$ Keep `C-?' also for a while, undocumented, for backward compatibility only.
          (define-key map (icicle-kbd "C-?")           nil) ; `C-?'
+         (define-key map (icicle-kbd "M-?")           nil) ; `M-?'
          (define-key map (icicle-kbd "C-g")           (if (and (fboundp 'minibuffer-keyboard-quit)
                                                                  delete-selection-mode)
                                                             'minibuffer-keyboard-quit
@@ -2800,7 +2814,7 @@ MAP is `minibuffer-local-completion-map' or
 
     (define-key map [menu-bar minibuf completion-help]
       '(menu-item "Icicles Help" icicle-minibuffer-help
-        :help "Display help for minibuffer input and completion"))
+        :help "Display help for minibuffer input and completion" :keys "M-?"))
     (define-key map [menu-bar minibuf separator-last] '("--"))
 
     (define-key map [menu-bar minibuf icicle-toggle-search-complementing-domain]
@@ -3139,7 +3153,9 @@ complete)"))
   (define-key map (icicle-kbd "C-$")       'icicle-toggle-transforming) ; `C-$'
   ;; In Emacs 22+, local is parent of local-completion
   (unless (eq minibuffer-local-map (keymap-parent minibuffer-local-completion-map))
-    (define-key map (icicle-kbd "C-?")     'icicle-minibuffer-help)) ; `C-?'
+    ;; $$$$$$ Keep `C-?' also for a while, undocumented, for backward compatibility only.
+    (define-key map (icicle-kbd "C-?")     'icicle-minibuffer-help) ; `C-?'
+    (define-key map (icicle-kbd "M-?")     'icicle-minibuffer-help)) ; `M-?'
   (define-key map (icicle-kbd "C-.")       'icicle-dispatch-C-.) ; `C-.'
   (define-key map (icicle-kbd "C-#")       'icicle-cycle-incremental-completion) ; `C-#'
   (define-key map (icicle-kbd "C-\"")      'icicle-toggle-expand-to-common-match) ; `C-"'
@@ -3391,7 +3407,9 @@ MAP is `minibuffer-local-completion-map',
   (define-key map (icicle-kbd "C-$")       nil)
   ;; In Emacs 22+, local is parent of local-completion
   (unless (eq minibuffer-local-map (keymap-parent minibuffer-local-completion-map))
-    (define-key map (icicle-kbd "C-?")     nil))
+    ;; $$$$$$ Keep `C-?' also for a while, undocumented, for backward compatibility only.
+    (define-key map (icicle-kbd "C-?")     nil)
+    (define-key map (icicle-kbd "M-?")     nil))
   (define-key map (icicle-kbd "C-.")       nil)
   (define-key map (icicle-kbd "C-#")       nil)
   (define-key map (icicle-kbd "C-%")       nil)
