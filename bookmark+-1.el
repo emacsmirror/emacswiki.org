@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2012, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 13:43:55 2010 (-0700)
-;; Last-Updated: Thu Apr  5 10:39:41 2012 (-0700)
+;; Last-Updated: Fri Apr  6 09:39:02 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 4694
+;;     Update #: 4721
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-1.el
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -275,6 +275,7 @@
 ;;
 ;;  User options defined here:
 ;;
+;;    `bmkp-auto-idle-bookmark-min-distance',
 ;;    `bmkp-auto-idle-bookmark-mode-delay',
 ;;    `bmkp-auto-idle-bookmark-mode-lighter',
 ;;    `bmkp-auto-idle-bookmark-mode-set-function',
@@ -401,7 +402,8 @@
 ;;    `bmkp-msg-about-sort-order', `bmkp-multi-sort',
 ;;    `bmkp-names-same-bookmark-p', `bmkp-non-autonamed-alist-only',
 ;;    `bmkp-non-file-alist-only', `bmkp-non-file-bookmark-p',
-;;    `bmkp-omitted-alist-only', `bmkp-orphaned-file-alist-only',
+;;    `bmkp-not-near-other-auto-idle-bmks', `bmkp-omitted-alist-only',
+;;    `bmkp-orphaned-file-alist-only',
 ;;    `bmkp-orphaned-file-bookmark-p',
 ;;    `bmkp-orphaned-local-file-alist-only',
 ;;    `bmkp-orphaned-local-file-bookmark-p',
@@ -453,7 +455,8 @@
 ;;  Internal variables defined here:
 ;;
 ;;    `bmkp-after-set-hook', `bmkp-autofile-history',
-;;    `bmkp-auto-idle-bookmark-mode-timer', `bmkp-autonamed-history',
+;;    `bmkp-auto-idle-bookmark-mode-timer',
+;;    `bmkp-auto-idle-bookmarks', `bmkp-autonamed-history',
 ;;    `bmkp-autotemp-all-when-set-p', `bmkp-bookmark-file-history',
 ;;    `bmkp-bookmark-list-history', `bmkp-current-bookmark-file',
 ;;    `bmkp-current-nav-bookmark', `bmkp-desktop-history',
@@ -649,6 +652,14 @@
 ;;(@* "User Options (Customizable)")
 ;;; User Options (Customizable) --------------------------------------
 
+;;;###autoload
+(defcustom bmkp-auto-idle-bookmark-min-distance 1000
+  "*Minimum number of chars between automatic bookmark positions."
+  :type '(choice
+          (const   :tag "No minumum distance" nil)
+          (integer :tag "At least this many chars" :value 1000))
+  :group 'bookmark-plus)
+
 ;; Emacs 20 only.
 ;;;###autoload
 (unless (fboundp 'define-minor-mode)
@@ -699,7 +710,8 @@ It must have a single `%s' to accept the buffer name."
   :type 'string :group 'bookmark-plus)
 
 ;;;###autoload
-(defcustom bmkp-autotemp-bookmark-predicates ()
+(defcustom bmkp-autotemp-bookmark-predicates (bmkp-autonamed-bookmark-p
+                                              bmkp-autonamed-this-buffer-bookmark-p)
   "*Predicates for bookmarks to be set (created) as temporary bookmarks.
 Each is typically a type predicate, but it can be any function that
 accepts as its (first) argument a bookmark or bookmark name.
@@ -1162,6 +1174,9 @@ Keys are bookmark type names.  Values are corresponding history variables.")
 
 (defvar bmkp-after-set-hook nil "Hook run after `bookmark-set' sets a bookmark.")
 
+(defvar bmkp-auto-idle-bookmarks ()
+  "Alist of bookmarks that were created automatically during this session.")
+
 (defvar bmkp-auto-idle-bookmark-mode-timer nil
   "Timer for `bmkp-auto-idle-bookmark-mode'.
 This variable is buffer-local, which means that there is a separate
@@ -1569,7 +1584,7 @@ want to look up the bookmark in `bookmark-alist'."
 ;; 2. Use `bmkp-get-bookmark-in-alist' to test whether the bookmark already exists.
 ;; 3. Put full bookmark record on bookmark name (inside record) as property `bmkp-full-record'.
 ;; 4. Use `bmkp-maybe-save-bookmarks'.
-;; 5. Add the bookmark to `bmkp-modified-bookmarks'.
+;; 5. Add the bookmark to `bmkp-modified-bookmarks', and to `bmkp-auto-idle-bookmarks' if appropriate.
 ;; 6. Return the bookmark.
 ;;
 (defun bookmark-store (bookmark-name data no-overwrite)
@@ -1604,6 +1619,8 @@ Return the new bookmark."
     (put-text-property 0 (length bname) 'bmkp-full-record bmk bname)
     (bmkp-maybe-save-bookmarks)
     (add-to-list 'bmkp-modified-bookmarks bmk)
+    (when (boundp 'bmkp-setting-auto-idle-bmk-p)
+      (add-to-list 'bmkp-auto-idle-bookmarks (bmkp-bookmark-record-from-name bname)))
     (setq bookmark-current-bookmark  bname)
     (bmkp-refresh/rebuild-menu-list bmk)
     bmk))                               ; Return the bookmark.
@@ -2436,7 +2453,7 @@ candidate."
 ;; 3. Use `bmkp-get-bookmark-in-alist', not `bookmark-get-bookmark'.
 ;; 4. Remove highlighting for the bookmark.
 ;; 5. Doc string includes note about `S-delete' for Icicles.
-;; 6. Update `bmkp-latest-bookmark-alist' and `bmkp-bmenu-omitted-bookmarks'.
+;; 6. Update `bmkp-latest-bookmark-alist', `bmkp-bmenu-omitted-bookmarks', and `bmkp-auto-idle-bookmarks'.
 ;; 7. Increment `bookmark-alist-modification-count' even when BATCHP is non-nil.
 ;;
 ;;;###autoload
@@ -2471,6 +2488,7 @@ candidate.  In this way, you can delete multiple bookmarks."
       (when (fboundp 'bmkp-unlight-bookmark) (bmkp-unlight-bookmark bmk 'NOERROR))
       (setq bookmark-alist                (delq bmk bookmark-alist)
             bmkp-latest-bookmark-alist    (delq bmk bmkp-latest-bookmark-alist)
+            bmkp-auto-idle-bookmarks      (delq bmk bmkp-auto-idle-bookmarks)
             bmkp-bmenu-omitted-bookmarks  (bmkp-delete-bookmark-name-from-list
                                            bname bmkp-bmenu-omitted-bookmarks))
       (unless (bmkp-get-bookmark-in-alist bookmark-current-bookmark 'NOERROR)
@@ -9595,9 +9613,8 @@ bookmark-list."
 Non-interactively, turn automatic bookmarking on for the current
 buffer if and only if ARG is positive.
 
-To enable automatic bookmarking in all buffers, use
-`bmkp-global-auto-idle-bookmark-mode' or add
-\(bmkp-global-auto-idle-bookmark-mode 1) to your init file.
+To enable or disable automatic bookmarking in all buffers, use
+`bmkp-global-auto-idle-bookmark-mode'.
 
 When the mode is enabled in the current buffer, a bookmark is
 automatically set every `bmkp-auto-idle-bookmark-mode-delay' seconds,
@@ -9640,8 +9657,10 @@ Don't forget to mention your Emacs and library versions."))
                  (setq bmkp-auto-idle-bookmark-mode-timer
                        (run-with-idle-timer bmkp-auto-idle-bookmark-mode-delay 'REPEAT
                                             (lambda ()
-                                              (when bmkp-auto-idle-bookmark-mode
-                                                (funcall bmkp-auto-idle-bookmark-mode-set-function))))))
+                                              (when (and bmkp-auto-idle-bookmark-mode
+                                                         (bmkp-not-near-other-auto-idle-bmks))
+                                                (let ((bmkp-setting-auto-idle-bmk-p  t))
+                                                  (funcall bmkp-auto-idle-bookmark-mode-set-function)))))))
                (when (interactive-p)
                  (message "Automatic bookmarking is now %s in buffer `%s'"
                           (if bmkp-auto-idle-bookmark-mode "ON" "OFF") (buffer-name)))))
@@ -9696,8 +9715,10 @@ your init file:
            (setq bmkp-auto-idle-bookmark-mode-timer
                  (run-with-idle-timer bmkp-auto-idle-bookmark-mode-delay 'REPEAT
                                       (lambda () ; This allows use as a local mode.
-                                        (when bmkp-auto-idle-bookmark-mode
-                                          (funcall bmkp-auto-idle-bookmark-mode-set-function))))))
+                                        (when (and bmkp-auto-idle-bookmark-mode
+                                                   (bmkp-not-near-other-auto-idle-bmks))
+                                          (let ((bmkp-setting-auto-idle-bmk-p  t))
+                                            (funcall bmkp-auto-idle-bookmark-mode-set-function)))))))
          (when (interactive-p)
            (message "Automatic bookmarking is now %s%s"
                     (if bmkp-auto-idle-bookmark-mode "ON" "OFF")
@@ -9709,6 +9730,21 @@ your init file:
        (add-to-list 'minor-mode-alist
                     `(bmkp-auto-idle-bookmark-mode ,bmkp-auto-idle-bookmark-mode-lighter))))
 
+(defun bmkp-not-near-other-auto-idle-bmks (&optional position)
+  "Is POSITION far enough from automatic bookmarks to create a new one?
+Return non-nil if `bmkp-auto-idle-bookmark-min-distance' is nil or if
+POSITION is at least `bmkp-auto-idle-bookmark-min-distance' chars from
+all other automatic bookmarks in the same buffer.  Else return nil."
+  (unless position (setq position  (point)))
+  (or (not bmkp-auto-idle-bookmark-min-distance)
+      (catch 'bmkp-not-near-other-auto-idle-bmks
+        (let (pos)
+          (dolist (bmk  bmkp-auto-idle-bookmarks)
+            (when (and (bmkp-this-buffer-p bmk)
+                       (setq pos  (bookmark-get-position bmk))
+                       (< (abs (- (point) pos)) bmkp-auto-idle-bookmark-min-distance))
+              (throw 'bmkp-not-near-other-auto-idle-bmks nil)))
+          t))))
 
 (if (fboundp 'define-minor-mode)
     ;; Emacs 21 and later.  Eval this so that even if the library is byte-compiled with Emacs 20,
