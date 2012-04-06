@@ -18,8 +18,9 @@
 ;; MA 02111-1307 USA
 ;;
 ;;;; Changelog:
-;; * 2012/04/06 - Fix bug breaking PRIVMSG notifications, and implement
-;;                settings as customizations. -Ken Manheimer
+;; * 2012/04/06 - Fix bug breaking PRIVMSG notifications,
+;;                indicate each of the keywords mentioned, and
+;;                implement settings as customizations. -Ken Manheimer
 ;;
 ;; * 2011/04/13 - Support for Growl on Windows; support for
 ;;                rcirc-keywords.
@@ -84,7 +85,7 @@ See `my-rcirc-notify-keyword' for the message format to use."
   :type 'boolean
   :group 'rcirc-notify)
 
-(defcustom my-rcirc-notify-keyword "%s mentioned the keyword '%s': %s"
+(defcustom my-rcirc-notify-keyword "%s mentioned the keyword(s) %s: %s"
   "Format of the message to display in the popup.
 The first %s will expand to the nick that mentioned the keyword,
 the second %s (if any) will expand to the keyword used,
@@ -142,6 +143,8 @@ same person."
   (when window-system
     ;; Set default dir to appease the notification gods
     (let ((default-directory "~/"))
+      (if (listp keyword)
+          (setq keyword (mapconcat 'identity keyword ", ")))
       (my-page-me (format my-rcirc-notify-keyword sender keyword text)))))
 
 (defun my-rcirc-notify-private (sender &optional text)
@@ -177,14 +180,14 @@ matches the current nick or keywords."
                 (my-rcirc-notify-allowed sender))
 	   (my-rcirc-notify sender text))
 	  (my-rcirc-notify-keywords
-	   (let ((keyword (catch 'match
-			    (dolist (key rcirc-keywords)
-			      (when (string-match (concat "\\<" key "\\>")
-						  text)
-				(throw 'match key))))))
-	     (when keyword
+	   (let (keywords)
+             (dolist (key rcirc-keywords keywords)
+               (when (string-match (concat "\\<" key "\\>")
+                                   text)
+                 (push key keywords)))
+	     (when keywords
                (if (my-rcirc-notify-allowed sender)
-                   (my-rcirc-notify-keyword sender keyword text))))))))
+                   (my-rcirc-notify-keyword sender keywords text))))))))
 
 (defun my-rcirc-notify-privmsg (proc sender response target text)
   "Notify the current user when someone sends a private message
