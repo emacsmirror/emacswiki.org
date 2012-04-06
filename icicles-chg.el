@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Wed Apr  4 11:49:35 2012 (-0700)
+;; Last-Updated: Fri Apr  6 08:39:27 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 8272
+;;     Update #: 8275
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-chg.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -4453,6 +4453,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-mode.el'")
 ;;
+;; 2012/04/06 dadams
+;;     Replaced C-? with M-? as the binding for icicle-minibuffer-help (works for terminals also).
 ;; 2012/04/04 dadams
 ;;     Added to menus: *-w-*-satisfying, icicle-apropos-options-of-type.  Changed item names a bit.
 ;; 2012/04/02 dadams
