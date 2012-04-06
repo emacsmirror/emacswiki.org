@@ -109,7 +109,7 @@ There are also some freebie advantages of using such menus,
 besides the feature of multiple-choice. These include choosing
 menu items from the keyboard, with completion, and cycling among
 menu items. The additional features are all explained when the
-user hits `##C-?##'.
+user hits `##M-?##'.
 
 One common use of a multiple-choice menu is letting the user select a [[list]] of items from a larger list of candidates.  The list is returned, with the items in the order selected.  Examples of this include these multi-commands:
 
