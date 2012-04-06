@@ -13,11 +13,11 @@
 
 Load library '''<tt>[[icicles.el]]</tt>''', turn on ''Icicle'' mode, and you're good to go. You can turn ''Icicle'' mode off or on at any time with command '''`icy-mode''''.    When you turn it off, you're back in vanilla Emacs.
 
-Beyond that, the most important thing to know about '''Icicles''' is that you can get help on ''Icicle'' mode during [[minibuffer]] input.  You do that either by using item '''Help''' of the [[menu bar]] '''Icicles''' menu or '''Minibuf''' menu, or by hitting '''`##C-?##'''' (`icicle-minibuffer-help').
+Beyond that, the most important thing to know about '''Icicles''' is that you can get help on ''Icicle'' mode during [[minibuffer]] input.  You do that either by using item '''Help''' of the [[menu bar]] '''Icicles''' menu or '''Minibuf''' menu, or by hitting '''`##M-?##'''' (`icicle-minibuffer-help').
 
 You now know enough to use '''Icicles'''. If you have doc-phobia or are easily overwhelmed by explanations, then ''read no more'' -- just try it!  
 
-If you want a little more explanation than the help page (`##C-?##'), then read the rest of this page, but no more. This page shows a sample of what you can do in ''Icicle'' mode.
+If you want a little more explanation than the help page (`##M-?##'), then read the rest of this page, but no more. This page shows a sample of what you can do in ''Icicle'' mode.
 
 If you want to know more about '''Icicles''' by reading instead of just trying, then read beyond this page. There is a lot you can learn, but there is not much that you need to learn, to use '''Icicles''' usefully. Do not be afraid to get in and get wet. Above all, do not be overwhelmed by the doc -- if it helps, fine. 
 
@@ -31,7 +31,7 @@ If you want to know more about '''Icicles''' by reading instead of just trying, 
 
 This README gives you an idea what '''Icicles''' is for, what it does.  For
 information about how to obtain and install '''Icicles''' see [[Icicles - Libraries]].  For information about how to use '''Icicles''' read the other sections on this page and the following pages.  For
-quick help during completion, you can use '''`##C-?##'''' in the minibuffer and
+quick help during completion, you can use '''`##M-?##'''' in the minibuffer and
 `C-mouse-3' on a candidate in buffer `*Completions*'.
 
 '''Icicles''' enhances [[minibuffer]] [[completion]].  It does so generally,
@@ -249,7 +249,7 @@ candidates, candidates you have selected (the region in
 Altogether there are many menu items in the popup menu.  Think of
 the menu as a learning device and a way to remind you of possible
 operations on completion candidates and the keys they are bound
-to.  In this it is similar to the help you get when you use '''`##C-?##''''
+to.  In this it is similar to the help you get when you use '''`##M-?##''''
 in the minibuffer, but with the menu you can also act, not just be
 reminded.
 
@@ -307,14 +307,14 @@ not always optimal for all contexts.
 
 You will become acquainted with a few of these toggle keys and
 remember them, but you will forget others.  What is important to
-point out here is that '''`##C-?##''''  (`icicle-minibuffer-help') is your
+point out here is that '''`##M-?##''''  (`icicle-minibuffer-help') is your
 friend in the minibuffer.  During completion, the help it displays includes, near the
 top, a list of the toggle keys and the corresponding current
 values of their options.
 
 Whenever you use an '''Icicles''' toggle command, a momentary message
 shows you the new option value.  So as an alternative to using
-`##C-?##' to see the current value of an option, you can just toggle
+`##M-?##' to see the current value of an option, you can just toggle
 it twice.
 
 
