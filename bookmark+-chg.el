@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2012, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Thu Apr  5 10:47:12 2012 (-0700)
+;; Last-Updated: Fri Apr  6 09:49:52 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 14650
+;;     Update #: 14658
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-chg.el
 ;; Keywords: bookmarks, bookmark+
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -145,6 +145,15 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-1.el'")
 ;;
+;; 2012/04/06 dadams
+;;     Added: bmkp-auto-idle-bookmark-min-distance, bmkp-not-near-other-auto-idle-bmks,
+;;            bmkp-auto-idle-bookmarks.
+;;     bmkp-autotemp-bookmark-predicates:
+;;       Changed default value to include bmkp-autonamed-bookmark(-this-buffer)-p.
+;;     bookmark-store: Add the bookmark to bmkp-auto-idle-bookmarks (if appropriate).
+;;     bookmark-delete: Remove the bookmark from bmkp-auto-idle-bookmarks.
+;;     bmkp-auto-idle-bookmark-mode:
+;;       Bind bmkp-setting-auto-idle-bmk-p.  Do nothing if bmkp-not-near-other-auto-idle-bmks says so.
 ;; 2012/04/05 dadams
 ;;     Added (Emacs 21+): bmkp-global-auto-idle-bookmark-mode, bmkp-turn-on-auto-idle-bookmark-mode.
 ;;     bmkp-auto-idle-bookmark-mode (Emacs 21+):
