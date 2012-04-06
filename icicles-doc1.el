@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Wed Apr  4 07:52:12 2012 (-0700)
+;; Last-Updated: Fri Apr  6 07:52:58 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 26595
+;;     Update #: 26597
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-doc1.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -462,13 +462,13 @@
 ;;  Beyond that, the most important thing to know about Icicles is
 ;;  that you can get help on Icicle mode during minibuffer input.  You
 ;;  do that either by using item Help of the menu-bar Icicles menu or
-;;  Minibuf menu, or by hitting `C-?' (`icicle-minibuffer-help').
+;;  Minibuf menu, or by hitting `M-?' (`icicle-minibuffer-help').
 ;;
 ;;  You now know enough to use Icicles.  If you have doc-phobia or are
 ;;  easily overwhelmed by explanations, then *read no more* - just try
 ;;  it!
 ;;
-;;  If you want a little more explanation than the help page (`C-?'),
+;;  If you want a little more explanation than the help page (`M-?'),
 ;;  then read the rest of section (@> "Nutshell View of Icicles"), but
 ;;  no more.  It shows a sample of what you can do in Icicle mode.
 ;;
@@ -500,7 +500,7 @@
 ;;  Altogether there are many menu items in the popup menu.  Think of
 ;;  the menu as a learning device and a way to remind you of possible
 ;;  operations on completion candidates and the keys they are bound
-;;  to.  In this it is similar to the help you get when you use `C-?'
+;;  to.  In this it is similar to the help you get when you use `M-?'
 ;;  in the minibuffer, but with the menu you can also act, not just be
 ;;  reminded.
 ;;
@@ -690,14 +690,14 @@
 ;;
 ;;  You will become acquainted with a few of these toggle keys and
 ;;  remember them, but you will forget others.  What is important to
-;;  point out here is that `C-?'  (`icicle-minibuffer-help') is your
+;;  point out here is that `M-?'  (`icicle-minibuffer-help') is your
 ;;  friend in the minibuffer.  During completion, the help it displays
 ;;  includes, near the top, a list of the toggle keys and the
 ;;  corresponding current values of their options.
 ;;
 ;;  Whenever you use an Icicles toggle command, a momentary message
 ;;  shows you the new option value.  So as an alternative to using
-;;  `C-?' to see the current value of an option, you can just toggle
+;;  `M-?' to see the current value of an option, you can just toggle
 ;;  it twice.
 ;;
 ;;(@* "Cycle Completion Candidates")
@@ -4037,7 +4037,7 @@
 ;;  ** Get Help on Completion Candidates **
 ;;
 ;;  General Icicles help is available at any time during minibuffer
-;;  input, by hitting `C-?' (`icicle-minibuffer-help').  This section
+;;  input, by hitting `M-?' (`icicle-minibuffer-help').  This section
 ;;  is instead about specific help for individual completion
 ;;  candidates.
 ;;
@@ -4391,7 +4391,7 @@
 ;;
 ;;  Just remember that `+' means that you can choose any number of
 ;;  inputs.  For a list of predefined Icicles multi-commands, use
-;;  `C-?' (`icicle-minibuffer-help') in the minibuffer - search for
+;;  `M-?' (`icicle-minibuffer-help') in the minibuffer - search for
 ;;  `+' at the beginning of a line.
 ;;
 ;;(@* "How Does a Multi-Command Work?")
