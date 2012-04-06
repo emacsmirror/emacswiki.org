@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Sat Mar 31 22:29:25 2012 (-0700)
+;; Last-Updated: Fri Apr  6 07:45:16 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 17887
+;;     Update #: 17888
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-mcmd.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -21,8 +21,8 @@
 ;;   `ffap', `ffap-', `fuzzy', `fuzzy-match', `hexrgb',
 ;;   `icicles-face', `icicles-fn', `icicles-opt', `icicles-var',
 ;;   `image-dired', `kmacro', `levenshtein', `mouse3', `mwheel',
-;;   `naked', `pp', `pp+', `regexp-opt', `ring', `ring+',
-;;   `thingatpt', `thingatpt+', `wid-edit', `wid-edit+', `widget'.
+;;   `naked', `regexp-opt', `ring', `ring+', `thingatpt',
+;;   `thingatpt+', `wid-edit', `wid-edit+', `widget'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -1817,7 +1817,7 @@ If ALTERNATIVEP is non-nil, the alternative sort order is returned."
 ;; is, for now, in hopes Emacs will eventually fix this.
 ;;
 ;;;###autoload
-(defun icicle-minibuffer-help ()        ; Bound to `C-?' in minibuffer.
+(defun icicle-minibuffer-help ()        ; Bound to `M-?' in the minibuffer.
   "Describe Icicles minibuffer and *Completion* buffer bindings."
   (interactive)
   (let ((cur-buf  (current-buffer)))
