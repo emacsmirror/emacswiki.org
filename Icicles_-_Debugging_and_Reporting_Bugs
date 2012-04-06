@@ -17,7 +17,7 @@ suggestion is by email.  Do one of the following:
 
 * Use `M-x icicle-send-bug-report'.
 
-* Use `##C-?##' from the minibuffer.  Then click button `##Icicles
+* Use `##M-?##' from the minibuffer.  Then click button `##Icicles
 Options and Faces##' in buffer `*Help*'.  Then click the link
   `##Send Bug Report##' in buffer `##*Customize Group: icicles*##'.
 
