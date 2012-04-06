@@ -37,7 +37,7 @@ with other kinds of completion.
 == Get Help on Completion Candidates ==
 
 General '''Icicles''' help is available at any time during [[minibuffer]]
-input, by hitting '''`##C-?##'''' (`icicle-minibuffer-help').  This section
+input, by hitting '''`##M-?##'''' (`icicle-minibuffer-help').  This section
 is instead about specific help for ''individual'' completion
 candidates instead.
 
