@@ -486,7 +486,7 @@ similar to what you are reading now.  It also lists toggle
 commands and the current toggle values.
 
 [:icicle-minibuffer-help]
-* '''`##C-?##'''' -- `icicle-minibuffer-help'
+* '''`##M-?##'''' -- `icicle-minibuffer-help'
 
 The following key bindings are made for the minibuffer completion
 keymaps.  They are in effect whenever you are using the minibuffer
