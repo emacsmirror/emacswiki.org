@@ -56,5 +56,9 @@ This will add M-o and M-m combinations to your c-mode. M-m will produce method/f
 * Flex matching/fuzzy completion would be great.
 * a fixed line at the top/bottom of the screen showing which letters you already entered
 
+= Alternatives =
+
+[https://github.com/michaelw/buftoggle buftoggle.el] provides functions to switch between related files and buffers, and also allows to set up search paths on a per-directory basis.
+
 ----
 CategoryProgrammerUtils
