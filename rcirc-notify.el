@@ -18,6 +18,9 @@
 ;; MA 02111-1307 USA
 ;;
 ;;;; Changelog:
+;; * 2012/04/06 - Fix bug breaking PRIVMSG notifications, and implement
+;;                settings as customizations. -Ken Manheimer
+;;
 ;; * 2011/04/13 - Support for Growl on Windows; support for
 ;;                rcirc-keywords.
 ;;
@@ -27,7 +30,7 @@
 ;;                what Mac OS 10.4 and Growl 1.1.6 require.
 ;;
 ;; * 2009/02/23 - Added support for growlnotify which is a Mac OS X
-;;                notification tool.  http://growl.info -Shane Celis 
+;;                notification tool.  http://growl.info -Shane Celis
 ;;
 ;; * 2008/12/29 - Fix annoying bug where the user gets notified
 ;;                for every PRIVMSG and added new variable specifying
@@ -64,34 +67,48 @@
 
 (require 'rcirc)
 
-(defvar my-rcirc-notify-message "%s mentioned you: %s"
+(defgroup rcirc-notify nil
+  "Libnotify popups for rcirc irc mode."
+  :group 'rcirc)
+
+(defcustom my-rcirc-notify-message "%s mentioned you: %s"
   "Format of the message to display in the popup.
 The first %s will expand to the nick that notified you,
-the second %s (if any) will expand to the message text itself.")
+the second %s (if any) will expand to the message text itself."
+  :type 'string
+  :group 'rcirc-notify)
 
-(defvar my-rcirc-notify-keywords t
+(defcustom my-rcirc-notify-keywords t
   "Non-nil means matches of `rcirc-keywords' will result in notification.
-See `my-rcirc-notify-keyword' for the message format to use.")
+See `my-rcirc-notify-keyword' for the message format to use."
+  :type 'boolean
+  :group 'rcirc-notify)
 
-(defvar my-rcirc-notify-keyword "%s mentioned the keyword '%s': %s"
+(defcustom my-rcirc-notify-keyword "%s mentioned the keyword '%s': %s"
   "Format of the message to display in the popup.
 The first %s will expand to the nick that mentioned the keyword,
 the second %s (if any) will expand to the keyword used,
 the third %s (if any) will expand to the message text itself.
-This only happens if `my-rcirc-notify-keywords' is non-nil.")
+This only happens if `my-rcirc-notify-keywords' is non-nil."
+  :type 'string
+  :group 'rcirc-notify)
 
-(defvar my-rcirc-notify-message-private "%s sent a private message: %s"
+(defcustom my-rcirc-notify-message-private "%s sent a private message: %s"
   "Format of the message to display in the popup.
 The first %s will expand to the nick that notified you,
-the second %s (if any) will expand to the message text itself.")
+the second %s (if any) will expand to the message text itself."
+  :type 'string
+  :group 'rcirc-notify)
 
 (defvar my-rcirc-notify-nick-alist nil
   "An alist of nicks and the last time they tried to trigger a
 notification.")
 
-(defvar my-rcirc-notify-timeout 60
+(defcustom my-rcirc-notify-timeout 60
   "Number of seconds that will elapse between notifications from the
-same person.")
+same person."
+  :type 'integer
+  :group 'rcirc-notify)
 
 (defun my-page-me (msg)
   (cond
@@ -152,12 +169,12 @@ that can occur between two notifications.  The default is
 
 (defun my-rcirc-notify-me (proc sender response target text)
   "Notify the current user when someone sends a message that
-matches the current nick."
+matches the current nick or keywords."
   (interactive)
   (when (and (not (string= (rcirc-nick proc) sender))
-	     (not (string= (rcirc-server-name proc) sender))
-	     (my-rcirc-notify-allowed sender))
-    (cond ((string-match (rcirc-nick proc) text)
+	     (not (string= (rcirc-server-name proc) sender)))
+    (cond ((and (string-match (concat "\\b" (rcirc-nick proc) "\\b") text)
+                (my-rcirc-notify-allowed sender))
 	   (my-rcirc-notify sender text))
 	  (my-rcirc-notify-keywords
 	   (let ((keyword (catch 'match
@@ -166,7 +183,8 @@ matches the current nick."
 						  text)
 				(throw 'match key))))))
 	     (when keyword
-	       (my-rcirc-notify-keyword sender keyword text)))))))
+               (if (my-rcirc-notify-allowed sender)
+                   (my-rcirc-notify-keyword sender keyword text))))))))
 
 (defun my-rcirc-notify-privmsg (proc sender response target text)
   "Notify the current user when someone sends a private message
