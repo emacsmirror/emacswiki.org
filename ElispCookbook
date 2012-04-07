@@ -818,7 +818,28 @@ in Emacs and its ok to edit the existing buffer.
       (save-buffer))
     (message "Writing file...done"))
 
-=== Searching ===
+=== Finding files via wildcards and sorting by time ===
+
+    (defun get-matching-files-by-time (spec)
+      "Get a list of filenames, with names matching SPEC. SPEC may
+    include wildcards including * and ?.  The files returned are 
+    ordered according to the last-modified time, with the most
+    recently-modified file first.
+    "
+      (flet ((by-mtime (a b)
+                       (let ((a-mtime (nth 5 (file-attributes a)))
+                             (b-mtime (nth 5 (file-attributes b))))
+                         (or (> (nth 0 a-mtime) (nth 0 b-mtime))
+                             (and
+                              (eq (nth 0 a-mtime) (nth 0 b-mtime))
+                              (> (nth 1 a-mtime) (nth 1 b-mtime)))))))
+
+      (let ((allfiles (file-expand-wildcards spec)))
+        (sort allfiles 'by-mtime))))
+
+
+
+=== Searching within a File ===
 
 If you don't have grep, then you may need to write some Lisp which can find a match in a file.
 
