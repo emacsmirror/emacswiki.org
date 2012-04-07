@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2012, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 13:43:55 2010 (-0700)
-;; Last-Updated: Sat Apr  7 12:54:16 2012 (-0700)
+;; Last-Updated: Sat Apr  7 14:43:29 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 4965
+;;     Update #: 4968
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-1.el
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -553,6 +553,9 @@
 (eval-when-compile (require 'gnus)) ;; mail-header-id (really in `nnheader.el')
 (eval-when-compile (require 'gnus-sum)) ;; gnus-summary-article-header
 (eval-when-compile (require 'cl)) ;; case, multiple-value-bind, typecase (plus, for Emacs 20: dolist)
+
+(require 'thingatpt+ nil t) ;; (no error if not found):
+;; region-or-non-nil-symbol-name-nearest-point, symbol-nearest-point
 
 (require 'bookmark)
 ;; bookmark-alist, bookmark-alist-modification-count, bookmark-annotation-name,
@@ -7471,7 +7474,7 @@ The default value is DEFAULT-VALUE if non-nil, or the nearest symbol
 to the cursor if it is a variable."
   (setq option  (if option 'user-variable-p 'boundp))
   (let ((symb                                        (cond ((fboundp 'symbol-nearest-point)
-                                                            (symbol-nearest-point))
+                                                            (symbol-nearest-point)) ; In `thingatpt+.el'.
                                                            ((fboundp 'symbol-at-point) (symbol-at-point))
                                                            (t nil)))
         (enable-recursive-minibuffers                t)
