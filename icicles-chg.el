@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Fri Apr  6 08:39:27 2012 (-0700)
+;; Last-Updated: Sat Apr  7 13:11:26 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 8275
+;;     Update #: 8289
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-chg.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -85,6 +85,13 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd1.el'")
 ;;
+;; 2012/04/07 dadams
+;;     icicle-bookmark-set:
+;;       Updated for Bookmark+ changes, including new defaulting, removing region handling, and making
+;;         bmk temporary.
+;;       Updated doc string with info from icicle-bookmark-cmd.  Refer to bookmark-set doc.
+;;     icicle-bookmark-cmd:
+;;       Updated doc string.  Refer to icicle-bookmark-set doc.
 ;; 2012/04/04 dadams
 ;;     Moved hint about (S-)TAB from icicle-read-args-w-val-satisfying to callers that need it.
 ;; 2012/04/03 dadams
