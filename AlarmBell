@@ -25,7 +25,7 @@ For XEmacs you can set the visible bell not to flash the whole screen (as is def
 
 == Reduce the number of warnings == 
 
-In some cases, you'd like to recuce the number of warnings or eliminate warnings in certain conditions. The following
+In some cases, you'd like to reduce the number of warnings or eliminate warnings in certain conditions. The following
 turns off the alarm bell 
 when you hit `C-g' in the
 minibuffer or during an `isearch'.
