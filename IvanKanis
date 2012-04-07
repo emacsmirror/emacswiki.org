@@ -1,20 +1,11 @@
-I am Ivan [http://kanis.fr Kanis]
+I have a [http://ivan.kanis.fr web page] which contains a blog that talks about emacs.
 
-I have used emacs since around 1997, my wife worked at Amazon and I got her the O'Reilly book. She didn't need it anymore so I used it and have used emacs since. In 2002 I got more proficient with elisp. 
+I have used emacs since around 1997.
+
+In 2002 I got more proficient with elisp. 
 
 In 2007, I have declared .emacs bankruptcy like [http://www.emacsblog.org/2007/10/07/declaring-emacs-bankruptcy/ Ryan McGeary]. My configuration file grew so large it was unmaintainable. I took the time to split it up in small manageable chunks.
 
-The [http://kanis.fr/hg/lisp/ result] was well worth the time invested. I have packaged all external programs that are not included in emacs 23.1: auctex, bbdb, lookup, org, w3m...
+I wrote the mercurial backend and a world clock that are now part of emacs. I have also written a vt100 terminal emulator called [http://ivan.kanis.fr/nterm.html nterm].
 
-The start up files are in [http://kanis.fr/hg/lisp/emacs.d emacs.d]. I have split files amongst different functionality groups. I compile all elisp files myself. A warning message will help me find my mistakes
-
-I wrote the mercurial backend and a world clock that are now part of emacs. I have also written a NewTerminal called nterm.
-
-I have patched appt.el to support variable warning time see details on my [http://kanis.fr/blog-emacs.html blog].
-
-----
-Hi Ivan, where i can find your nterm.el? I can't download it from http://kanis.fr/nterm.html (Access denied) -- AndyStewart
-
-I can download it now but it is version 0.3 but the changelog mentions 0.4. Also the tarball contains byte-compiled and at least less insists to opening it in hex mode. "My favorite search engine" did not tell me a better way to contact you than this. Maybe you can make a hg repository (containing only nterm) available? -- JonasBernoulli
-----
 CategoryHomepage
