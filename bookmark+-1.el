@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2012, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 13:43:55 2010 (-0700)
-;; Last-Updated: Fri Apr  6 09:39:02 2012 (-0700)
+;; Last-Updated: Sat Apr  7 12:54:16 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 4721
+;;     Update #: 4965
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-1.el
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -504,8 +504,8 @@
 ;;    `bookmark-get-bookmark', `bookmark-get-bookmark-record' (Emacs
 ;;    20-22), `bookmark-get-handler' (Emacs 20-22),
 ;;    `bookmark-handle-bookmark', `bookmark-jump-noselect' (Emacs
-;;    20-22), `bookmark-location', `bookmark-make-record' (Emacs
-;;    20-22), `bookmark-make-record-default',
+;;    20-22), `bookmark-location', `bookmark-make-record',
+;;    `bookmark-make-record-default',
 ;;    `bookmark-maybe-load-default-file', `bookmark-prop-get' (Emacs
 ;;    20-22), `bookmark-prop-set', `bookmark-show-annotation',
 ;;    `bookmark-show-all-annotations', `bookmark-store' (Emacs 20-22),
@@ -711,7 +711,7 @@ It must have a single `%s' to accept the buffer name."
 
 ;;;###autoload
 (defcustom bmkp-autotemp-bookmark-predicates '(bmkp-autonamed-bookmark-p
-                                              bmkp-autonamed-this-buffer-bookmark-p)
+                                               bmkp-autonamed-this-buffer-bookmark-p)
   "*Predicates for bookmarks to be set (created) as temporary bookmarks.
 Each is typically a type predicate, but it can be any function that
 accepts as its (first) argument a bookmark or bookmark name.
@@ -777,6 +777,7 @@ of the following, if available:
           (const :tag "Highlighted bookmark at point"    highlighted)
           (const :tag "Last used bookmark in same file"  last-used))
   :group 'bookmark-plus)
+
 
 ;; We do not use `define-obsolete-variable-alias' so that byte-compilation in older Emacs
 ;; works for newer Emacs too.
@@ -883,6 +884,50 @@ If an integer, then use a menu only if there are fewer bookmark
           (const   :tag "Always use a menu to choose a bookmark" t)
           (const   :tag "Never use a menu to choose a bookmark" nil))
   :group 'bookmark-plus)
+
+;;;###autoload
+(defcustom bmkp-new-bookmark-default-names
+  (let ((fns  '((lambda () (let ((ff  (function-called-at-point)))
+                             (and ff  (symbolp ff)  (symbol-name ff)))))))
+    (when (fboundp 'region-or-non-nil-symbol-name-nearest-point) ; Defined in `thingatpt+.el'.
+      (push 'region-or-non-nil-symbol-name-nearest-point fns)))
+  "Functions to produce the default name for a new bookmark.
+\(The default name for an *existing* bookmark is obtained using
+`bmkp-default-bookmark-name'.)
+
+The option value is a list of functions that do not require an
+argument and return a string (or nil).  They are invoked in order to
+produce the default names.
+
+The following names are also provided, after the names described
+above: The value of variable `bookmark-current-bookmark' and the
+return value of function `bookmark-buffer-name', in that order.
+
+These latter names are the defaults provided by vanilla Emacs
+`bookmark.el', so if you want the vanilla behavior then set the option
+value to nil.
+
+For non-interactive use of a default bookmark name, and for Emacs
+prior to Emacs 23 even for interactive use, only the first default
+name is used.
+
+Some functions you might want to use in the option value:
+
+ * `region-or-non-nil-symbol-name-nearest-point'
+ * (lambda () (let ((ff  (function-called-at-point)))
+      (and (symbolp ff) (symbol-name ff))))
+ * (lambda () (let ((vv  (variable-at-point))) ; `variable-at-point'
+      (and (symbolp vv) (symbol-name vv))))    ;  returns 0 if no var
+ * `word-at-point'
+ * (lambda () (let ((ss  (symbol-at-point)))
+     (and ss (symbol-name ss))))
+
+The first of these is defined in library `thingatpt+.el'.  It returns
+the text in the region, if it is active and not empty.  Otherwise it
+returns the name of the (non-`nil') symbol nearest point, within
+maximum search distances `near-point-x-distance' (left and right) and
+`near-point-y-distance' (up and down)."
+  :type '(repeat function) :group 'bookmark-plus)
 
 ;;;###autoload
 (defcustom bmkp-other-window-pop-to-flag t
@@ -1440,6 +1485,8 @@ the state of buffer `*Bookmark List*' at the time it is created:
   ;; These definitions are for Emacs versions prior to Emacs 23.
   ;; They are the same as the vanilla Emacs 23+ definitions, except as noted.
   ;; They let older versions of Emacs handle bookmarks created with Emacs 23.
+  ;; (Emacs < 23 also needs a compatible `bookmark-make-record' version,
+  ;; but I redefine it for all versions, in any case.)
 
   (defun Info-bookmark-make-record ()
     "Create an Info bookmark record."
@@ -1483,16 +1530,6 @@ FUNCTION must accept the same arguments as `bookmark-default-handler'.
 You can set this variable buffer-locally to enable bookmarking of
 locations that should be treated specially, such as Info nodes, news
 posts, images, pdf documents, etc.")
-
-  (defun bookmark-make-record ()
-    "Return a new bookmark record (NAME . ALIST) for the current location."
-    (let ((record  (funcall bookmark-make-record-function)))
-      ;; Set up default name.
-      (if (stringp (car record))
-          record                        ; The function already provided a default name.
-        (when (car record) (push nil record))
-        (setcar record  (or bookmark-current-bookmark (bookmark-buffer-name)))
-        record)))
 
   (defun bookmark-prop-get (bookmark prop)
     "Return property PROP of BOOKMARK, or nil if no such property.
@@ -1576,6 +1613,33 @@ want to look up the bookmark in `bookmark-alist'."
   (cond ((consp bookmark) bookmark)     ; No test of alist membership.
         ((stringp bookmark) (bmkp-bookmark-record-from-name bookmark noerror)) ; No MEMP check.
         (t (and (not noerror) (error "Invalid bookmark: `%s'" bookmark)))))
+
+
+;; REPLACES ORIGINAL in `bookmark.el'.
+;;
+;; Use option `bmkp-new-bookmark-default-names' to obtain the default name.
+;;
+(defun bookmark-make-record ()
+  "Return a new bookmark record (NAME . ALIST) for the current location.
+Start with `bookmark-make-record-function'.  If it does not provide a
+bookmark name, then use option `bmkp-new-bookmark-default-names' to
+provide it.  If that does not provide it then use
+`bookmark-current-bookmark' or `bookmark-buffer-name', in that order."
+  (let ((record  (funcall bookmark-make-record-function))
+        defname)
+    (if (stringp (car record))
+        record
+      (when (car record) (push nil record))
+      (setq defname  (catch 'bookmark-make-record
+                       (dolist (fn  bmkp-new-bookmark-default-names)
+                         (when (functionp fn) ; Be sure it is defined and is a function.
+                           (let ((val  (funcall fn)))
+                             (when (and (stringp val) (not (string= "" val)))
+                               (throw 'bookmark-make-record val)))))
+                       (or bookmark-current-bookmark (bookmark-buffer-name))))
+      (when (and defname  (not (stringp defname)))  (setq defname  (format "%s" defname))) ; Just in case.
+      (setcar record  defname)
+      record)))
 
 
 ;; REPLACES ORIGINAL in `bookmark.el'.
@@ -1828,12 +1892,14 @@ a text property.  Point is irrelevant and unaffected."
 ;;
 ;; 1. Use `bookmark-make-record'.
 ;; 2. Use special default prompts for active region, W3M, and Gnus.
-;; 3. Use `bmkp-completing-read-lax', choosing from current buffer's bookmarks.
-;; 4. Numeric prefix arg (diff from plain): all bookmarks as completion candidates.
-;; 5. Prompt for tags if `bmkp-prompt-for-tags-flag' is non-nil.
-;; 6. Possibly highlight bookmark and other bookmarks in buffer, per `bmkp-auto-light-when-set'.
-;; 7. Make bookmark temporary, if `bmkp-autotemp-bookmark-predicates' says to.
-;; 8. Run `bmkp-after-set-hook'.
+;; 3. Use function `bmkp-new-bookmark-default-names', in addition to the name that
+;;    `bookmark-make-record' comes up with, as the list of default values.
+;; 4. Use `bmkp-completing-read-lax', choosing from current buffer's bookmarks.
+;; 5. Numeric prefix arg (diff from plain): all bookmarks as completion candidates.
+;; 6. Prompt for tags if `bmkp-prompt-for-tags-flag' is non-nil.
+;; 7. Possibly highlight bookmark and other bookmarks in buffer, per `bmkp-auto-light-when-set'.
+;; 8. Make bookmark temporary, if `bmkp-autotemp-bookmark-predicates' says to.
+;; 9. Run `bmkp-after-set-hook'.
 ;;
 ;;;###autoload
 (defun bookmark-set (&optional name parg interactivep) ; `C-x r m', `C-x p c m'
@@ -1841,12 +1907,8 @@ a text property.  Point is irrelevant and unaffected."
 If the region is active (`transient-mark-mode') and nonempty, then
 record the region limits in the bookmark.
 
-If NAME is nil, then prompt for the bookmark name.  The default name
-for prompting is as follows (in order of priority):
-
- * If the region is active and nonempty, then the buffer name followed
-   by \": \" and the region prefix (up to
-   `bmkp-bookmark-name-length-max' chars).
+If NAME is nil, then prompt for the bookmark name.  The default names
+for prompting are as follows (in order of priority):
 
  * If in W3M mode, then the current W3M title.
 
@@ -1854,7 +1916,20 @@ for prompting is as follows (in order of priority):
 
  * If on a `man' page, then the page name (command and section).
 
- * Otherwise, the current buffer name.
+ * If the region is active and nonempty, then the buffer name followed
+   by \": \" and the region prefix (up to
+   `bmkp-bookmark-name-length-max' chars).
+
+ * The names defined by option `bmkp-new-bookmark-default-names'.
+
+ * The value of variable `bookmark-current-bookmark', the name of the
+   last-used bookmark for the current file.
+
+ * The value returned by function `bookmark-buffer-name'.
+
+For Emacs 23+, all of the names described above are available as
+default values, by repeating `M-n'.  For older Emacs versions, the
+first name provided is the only default value.
 
 While entering a bookmark name at the prompt:
 
@@ -1898,26 +1973,17 @@ bookmarks)."
            (save-excursion (skip-chars-forward " ") (setq bookmark-yank-point  (point)))
            (setq bookmark-current-buffer  (current-buffer)))
          (let* ((record   (bookmark-make-record))
-                (regionp  (and transient-mark-mode mark-active (not (eq (mark) (point)))))
-                (regname  (concat (buffer-name) ": "
-                                  (buffer-substring (if regionp (region-beginning) (point))
-                                                    (if regionp  (region-end)  (line-end-position)))))
-                (defname  (bmkp-replace-regexp-in-string
-                           "\n" " "
-                           (cond (regionp (save-excursion (goto-char (region-beginning))
-                                                          (skip-chars-forward " ")
-                                                          (setq bookmark-yank-point  (point)))
-                                          (substring regname 0 (min bmkp-bookmark-name-length-max
-                                                                    (length regname))))
-                                 ((eq major-mode 'w3m-mode) w3m-current-title)
-                                 ((eq major-mode 'gnus-summary-mode) (elt (gnus-summary-article-header) 1))
-                                 ((memq major-mode '(Man-mode woman-mode))
-                                  (buffer-substring (point-min) (save-excursion (goto-char (point-min))
-                                                                                (skip-syntax-forward "^ ")
-                                                                                (point))))
-                                 (t (car record)))))
+                (defname  (cond ((eq major-mode 'w3m-mode) w3m-current-title)
+                                ((eq major-mode 'gnus-summary-mode) (elt (gnus-summary-article-header) 1))
+                                ((memq major-mode '(Man-mode woman-mode))
+                                 (buffer-substring (point-min) (save-excursion (goto-char (point-min))
+                                                                               (skip-syntax-forward "^ ")
+                                                                               (point))))
+                                (t nil)))
+                (defname  (and defname  (bmkp-replace-regexp-in-string "\n" " " defname)))
                 (bname    (or name  (bmkp-completing-read-lax
-                                     "Set bookmark " defname
+                                     "Set bookmark "
+                                     (bmkp-new-bookmark-default-names defname)
                                      (and (or (not parg) (consp parg)) ; No numeric PARG: all bookmarks.
                                           (bmkp-specific-buffers-alist-only))
                                      nil 'bookmark-history))))
@@ -2782,6 +2848,59 @@ that option is non-nil."
 ;;(@* "Bookmark+ Functions (`bmkp-*')")
 ;;; Bookmark+ Functions (`bmkp-*') -----------------------------------
 
+(defun bmkp-new-bookmark-default-names (&optional first-def)
+  "Return a list of default names (strings) for a new bookmark.
+A non-nil optional arg FIRST-DEF is prepended to the list of names
+described below.
+
+If the region is active and non-empty, then the first default name
+\(other than FIRST-DEF) is the current buffer name followed by \": \"
+and the region prefix (up to `bmkp-bookmark-name-length-max' chars).
+The other names are as described below.
+
+Uses option `bmkp-new-bookmark-default-names' to come up with the
+other names.  To these names, `bookmark-current-bookmark' and
+`bookmark-buffer-name' are appened, if available (non-nil).
+
+NOTE: For Emacs versions prior to Emacs 23, return only a single
+default name, not a list of names.  The name is the first in the list
+of names described above for Emacs 23+."
+  (let ((defs  (and first-def  (list first-def)))
+        val)
+    (unless (and (< emacs-major-version 23)  defs) ; Just use FIRST-DEF for Emacs < 23.
+      ;; If region is active, first default is its text, with buffer name prepended.
+      (when (and transient-mark-mode mark-active  (not (eq (mark) (point))))
+        (let* ((regname  (concat (buffer-name) ": " (buffer-substring (region-beginning) (region-end))))
+               (defname  (bmkp-replace-regexp-in-string
+                          "\n" " "
+                          (progn (save-excursion (goto-char (region-beginning))
+                                                 (skip-chars-forward " ")
+                                                 (setq bookmark-yank-point  (point)))
+                                 (substring regname 0 (min bmkp-bookmark-name-length-max
+                                                           (length regname)))))))
+          (if (< emacs-major-version 23)
+              (setq defs  defname)
+            (add-to-list 'defs defname))))
+      ;; Names provided by option `bmkp-new-bookmark-default-names',
+      ;; plus `bookmark-current-bookmark' and `bookmark-buffer-name'.
+      (unless (and (< emacs-major-version 23)  defs)
+        (catch 'bmkp-new-bookmark-default-names
+          (dolist (fn  bmkp-new-bookmark-default-names)
+            (when (functionp fn)        ; Be sure it is defined and is a function.
+              (setq val  (funcall fn))
+              (when (and (stringp val) (not (string= "" val)))
+                (setq val  (bmkp-replace-regexp-in-string "\n" " " val))
+                (if (> emacs-major-version 22)
+                    (add-to-list 'defs val)
+                  (throw 'bmkp-new-bookmark-default-names (setq defs  val)))))))
+        (when (and (< emacs-major-version 23)  (null defs))
+          (setq defs  (or bookmark-current-bookmark  (bookmark-buffer-name))))
+        (when (consp defs)
+          (when bookmark-current-bookmark (push bookmark-current-bookmark defs))
+          (let ((buf  (bookmark-buffer-name))) (when buf (push buf defs)))
+          (setq defs  (nreverse defs)))))
+    defs))
+
 (defun bmkp-bookmark-record-from-name (bookmark-name &optional noerror memp alist)
   "Return the full bookmark (record) that corresponds to BOOKMARK-NAME.
 BOOKMARK-NAME must be a string.  If it has non-nil text property
@@ -2897,11 +3016,14 @@ LAXP non-nil means use lax completion."
            (completion-ignore-case          bookmark-completion-ignore-case)
            (default                         default)
            (prompt                          (if default
-                                                (concat prompt (format " (%s): " default))
+                                                (concat prompt
+                                                        (format " (%s): "
+                                                                (if (consp default) (car default) default)
+                                                                default))
                                               (concat prompt ": ")))
-           (str                             (completing-read
-                                             prompt alist pred (not laxp) nil
-                                             (or hist 'bookmark-history) default)))
+           (str                             (completing-read prompt alist pred (not laxp) nil
+                                                             (or hist 'bookmark-history) default)))
+      (when (consp default) (setq default  (car default))) ; Emacs 23+
       (if (and (string-equal "" str) default) default str))))
 
 (defun bmkp-jump-1 (bookmark display-function use-region-p)
