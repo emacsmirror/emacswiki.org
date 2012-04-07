@@ -207,7 +207,7 @@ The same menu is available on '''`C-mouse-3''''. It has submenus '''Jump To''', 
 
 
 [:BookmarkListImprovements]
-=== Improvements for the bookmark list. ===
+=== Improvements for the bookmark-list display. ===
 
 This is buffer `##*Bookmark List*##', aka the bookmark "menu list" (a misnomer), which you display using '''`C-x p e'''' (or `C-x r l').  See [[#BookmarkListDisplay|Bookmark List Display]].
 
@@ -432,6 +432,25 @@ automatically or on demand.  You control what kind of
 highlighting, if any, is used for which bookmarks.  This
 feature requires that you have library <tt>[[bookmark+-lit.el]]</tt> in
 your `load-path' (it will then be loaded by ##bookmark+.el##).
+
+
+
+
+
+
+
+
+
+
+
+[:BetterDefaults]
+=== Better, user-configurable bookmark-name defaults. ===
+
+See the doc strings of command `bookmark-set' ('''Bookmark+'''
+version) and options `bmkp-new-bookmark-default-names' and
+`bmkp-default-bookmark-name'.
+
+
 
 
 
@@ -3365,18 +3384,17 @@ any number of Dired bookmarks.
 
 A single key can ''set'' a bookmark or ''visit'' bookmarks.  This key is
 whatever command `bookmark-set' would normally be bound to -- e.g. `C-x r m'.  A [[prefix argument]] controls what it does.  If negative
-(`M--'), jump to (browse) bookmarks.  Otherwise, set a bookmark,
+(`M--'), jump to (browse) bookmarks.  Otherwise, set a bookmark using `bookmark-set' ('''Bookmark+''' version),
 as follows:
 
 * Numeric prefix arg (non-negative): No prompt.  Use the buffer
   name plus the text of the region (if active) or the current line
   as the bookmark name.  Quickest way to set a bookmark.
 
-* No prefix arg (as usual): Prompt for bookmark name.  But if the
-  region is active, use the buffer name plus the region text as
-  the default name.
+* No prefix arg: same as `bookmark-set' (prompt for name).
 
-* Plain `C-u' (as usual): Prompt for name; no bookmark overwrite.
+* Plain `C-u': same as `bookmark-set' (prompt for name, no
+bookmark overwrite.
 
 During completion of a bookmark name, most features of the
 bookmark-list display (see [[#BookmarkListDisplay|The Bookmark List Display]]) are available on the fly.  Buffer `*Completions*' acts like a dynamic version of `##*Bookmark List*##':
