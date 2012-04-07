@@ -197,12 +197,11 @@ the region is activated (provided option
   use.  Otherwise, the bookmark is ''named automatically'' using the
   ''buffer'' name plus '''`##: ##'''' plus the first
 '''`<tt>[[Icicles - Customization and General Tips#icicle-bookmark-name-length-max|icicle-bookmark-name-length-max]]</tt>'''' characters of the region text. (Newline characters are changed to spaces for the name.)
-
-:: So if (a) you are visiting buffer `foo', (b) the region text
-  starts with "<tt>Arise, you wretched of the earth! For justice
-  thunders condemnation: A better world's in birth!</tt>", and (c) the
-  value of option '''`<tt>[[Icicles - Customization and General Tips#icicle-bookmark-name-length-max|icicle-bookmark-name-length-max]]</tt>'''' is 15, then
-  `C-9 C-x C-x' sets the region bookmark named "'''<tt>foo: Arise, you</tt>''''".
+So if (a) you are visiting buffer `foo', (b) the region text
+starts with "<tt>Arise, you wretched of the earth! For justice
+thunders condemnation: A better world's in birth!</tt>", and (c) the
+value of option '''`<tt>[[Icicles - Customization and General Tips#icicle-bookmark-name-length-max|icicle-bookmark-name-length-max]]</tt>'''' is 15, then
+`C-9 C-x C-x' sets the region bookmark named "'''<tt>foo: Arise, you</tt>''''".
 
 
 
@@ -236,12 +235,10 @@ bookmark jumping -- see [[#JumpingToABookmark|Jumping to a Bookmark]], below.
   a region bookmark, except that instead of including a prefix of
   the ''region'' text, the name includes text from the ''current line''
   that starts at [[point]].
-
-:: So if the cursor in buffer `foo' is on the `y' in a line with
+So if the cursor in buffer `foo' is on the `y' in a line with
   the text "<tt>Arise, you wretched of the earth!</tt>", then the bookmark
   will automatically be named "'''<tt>foo: you wretch</tt>'''".
-
-:: If the prefix argument is ''0'', then the new bookmark does not
+If the prefix argument is ''0'', then the new bookmark does not
   overwrite any existing bookmark with the same name.
 
 
