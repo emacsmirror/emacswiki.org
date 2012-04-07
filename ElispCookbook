@@ -1184,5 +1184,42 @@ This fn depends on the prior fn that allows reading a specific value from the Wi
                       (split-string (nth 2 proxy) ";" t))))))
 
 
+=== HTTP GET via Powershell ===
+
+Some people report that the url.el exhibits problems when retrieving content from https: endpoints. 
+This fn performs a "wget" using Powershell.  Works only on Windows.
+
+(defun wget-via-powershell (url &optional ext)
+  "get the contents of a URL into a file via powershell. The EXT
+is the extension to use on the destination file. It should begin
+with a dot.
+"
+  (let* ((ext (or ext ".txt"))
+         (url-tmpf (make-temp-file "emacs-wget-" nil ext))
+         (ps-cmd (concat
+                  "(new-object System.Net.WebClient).DownloadFile("
+                  (replace-regexp-in-string (char-to-string 34)
+                                            (char-to-string 39)
+                                            (pp-to-string url))
+                  ","
+                  (replace-regexp-in-string "/"
+                                            "\\\\"
+                  (replace-regexp-in-string (char-to-string 34)
+                                            (char-to-string 39)
+                                            (pp-to-string url-tmpf)))
+                  ")"))
+         (shell-command
+          (format "%s -Command %s"
+                  bundlify-powershell-exe
+                  (concat "\"& {" ps-cmd "}\""))))
+
+    (shell-command-on-region (point) (point)
+                             shell-command
+                             nil nil nil)
+    ;;(message "downloaded to %s" url-tmpf)
+    url-tmpf))
+
+
+
 ----
 CategoryCode
