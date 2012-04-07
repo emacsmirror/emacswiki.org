@@ -33,5 +33,9 @@ It would really improve the readability of long ##if## forms like above (this is
 
 In its current form, the actual functionality of `highlight-indentation' is very trivial: font-lock a space character followed by a fixed amount of space characters. So for it to work with lisp's variable indentation some major changes are needed... -- AntonJohansson
 
+[new]
+
+https://github.com/ran9er/init.emacs/blob/master/20_aux-line.el
+
 ----
 CategoryDisplay
