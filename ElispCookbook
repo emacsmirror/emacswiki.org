@@ -970,9 +970,9 @@ or
 
 === Messagebox via Powershell ===
 
-The built-in message-box fn on Windows is sort of broken, and it's also 
+The built-in message-box fn on Windows is [http://thread.gmane.org/gmane.emacs.bugs/58385/focus=58393 sort of broken], and it's also 
 not particularly beautiful or functional either.  This fn allows you to 
-pop a message box using POwershell, which is builtin to all Windows. 
+pop a message box using Powershell, which is builtin to all Windows. 
 
     (defun msgbox-via-powershell (format-string &rest args)
       "display a message box via powershell and Windows Forms.
@@ -1011,7 +1011,6 @@ pop a message box using POwershell, which is builtin to all Windows.
             (shell-command-on-region (point) (point)
                                      shell-command
                                      nil nil nil)))))
-
 
 
 
