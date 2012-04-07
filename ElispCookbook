@@ -1013,6 +1013,71 @@ pop a message box using Powershell, which is builtin to all Windows.
                                      nil nil nil)))))
 
 
+=== Read Windows Registry ===
+
+This fn reads a registry key - retrieves all the values and the names of all the subkeys. 
+
+    (defun w32reg-read-key (key)
+      "Read all values and subkeys for a key path in the Windows registry.
+    The return value is a list (KEYNAME VALUES SUBKEYS).  KEYNAME is
+    the name of the key. VALUES is a list of values, each one
+    following this form: (NAME TYPE VALUE) where each are strings,
+    and the TYPE is like \"REG_DWORD\" and so on.
+
+    SUBKEYS is a simple list of strings.
+
+    If the path does not exist, it returns nil.
+    "
+      (let ((reg.exe (concat (getenv "windir") "\\system32\\reg.exe"))
+            keyname values subkeys (state 0))
+
+        (with-temp-buffer
+          (insert (shell-command-to-string
+                   (concat reg.exe " query " "\"" key "\"")))
+
+          (while (not (= (point-min) (point-max)))
+            (goto-char (point-min))
+            (let ((start (point))
+                  (end (line-end-position))
+                  line this-value)
+              (setq line (buffer-substring-no-properties start end))
+              (delete-region start end)
+              (delete-char 1) ;; NL
+
+              (cond
+               ((string/starts-with line "ERROR:")
+                nil)
+
+               ((string= "" line)
+                (setq state (1+ state)))
+
+               ((not keyname)
+                (setq keyname line
+                      state 1))
+
+               ((eq state 1)
+                (let ((parts (split-string line nil t)))
+                  (setq this-value (mapconcat 'identity (cddr parts) " "))
+
+                  ;; convert to integer, maybe
+                  (if (string= (nth 1 parts) "REG_DWORD")
+                      (setq this-value
+                            (string-to-number (substring this-value 2))))
+
+                  (setq values (cons (list (nth 0 parts)
+                                         (nth 1 parts)
+                                         this-value) values))))
+               ((eq state 2)
+                (setq subkeys (cons
+                               (if (string/starts-with line keyname)
+                                   (substring line (1+ (length keyname)))
+                                 line)
+                               subkeys)))
+               (t nil)))))
+
+        (and keyname
+             (list keyname values subkeys))))
+
 
 
 ----
