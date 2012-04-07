@@ -1094,6 +1094,29 @@ This fn reads a registry key - retrieves all the values and the names of all the
              (list keyname values subkeys))))
 
 
+=== Read one Regustry Value ===
+
+This fn depends on the previous one, shown above. 
+
+    (defun w32reg-read-value (key value)
+      "Read a value from a key location in the registry. The result
+    is a list like (NAME TYPE VALUE), where the first two items are
+    strings.  TYPE is like \"REG_DWORD\", \"REG_SZ\", \"REG_BINARY\",
+    and so on.  If TYPE is \"REG_DWORD\", then the VALUE is a number.
+
+    If the key value does not exist, it returns nil.
+    "
+      (let ((all (w32reg-read-key key))
+            (c 0) L n r values)
+        (and all
+             (setq values (nth 1 all)
+                   L (length values))
+        (while (and (not r) (< c L))
+          (setq n (nth c values)
+                c (1+ c))
+          (if (string= value (car n))
+              (setq r n))))
+        r))
 
 ----
 CategoryCode
