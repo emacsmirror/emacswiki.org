@@ -1,22 +1,34 @@
+== Get visual indication of an exception == 
+
 During a normal editing session Emacs gives a warning signal quite
-often. Some people find the beeping annoying. To get a visual signal
+often. Every time you type Ctrl-G, to stop searching, or stop what you were typing and do something else, and so on... you will get the bell. 
+Some people find all the beeping annoying. To get a visual signal
 instead, put the following in your .emacs:
 
  (setq visible-bell 1)
 
-Now some people find the flashing annoying. To turn the alarm totally
+
+
+== Turn of alarms completely ==
+
+Now some people find the flashing annoying. 
+To turn the alarm totally
 off, you can use this:
 
  (setq ring-bell-function 'ignore)
+
+== XEmacs: Flash top and bottom line only ==
 
 For XEmacs you can set the visible bell not to flash the whole screen (as is default in XEmacs) but only the top and bottom line (default in GnuEmacs) by setting the visible-bell to anything other than t or nil:
 
  (setq visible-bell 'top-bottom)
 
-However, this is not a good idea IMO. To get a warning, when something
-went not as expected, can be quite useful sometimes. The following
-reduces the amount of warning signals but does not turn them off in
-general:
+== Reduce the number of warnings == 
+
+In some cases, you'd like to recuce the number of warnings or eliminate warnings in certain conditions. The following
+turns off the alarm bell 
+when you hit `C-g' in the
+minibuffer or during an `isearch'.
 
  (setq ring-bell-function 
       (lambda ()
@@ -24,11 +36,10 @@ general:
 		      '(isearch-abort abort-recursive-edit exit-minibuffer keyboard-quit))
 	  (ding))))
 
-Now Emacs does not beep or flash anymore, when you hit `C-g' in the
-minibuffer or during an `isearch'.
 
+== Play a different sound ==
 
-Then again, instead of beeping or flashing, Emacs could play a cool sound file, whenever an error occurs:
+Instead of beeping or flashing, Emacs could play a cool sound file, whenever an error occurs:
 
  (setq ring-bell-function (lambda ()
 			   (call-process "audioplay" nil 0 nil 
@@ -36,10 +47,14 @@ Then again, instead of beeping or flashing, Emacs could play a cool sound file, 
 
 You might have to replace "audioplay" by "wavplay" or whatever application you have for playing audio files.
 
-XEmacs offers another way by setting the variable <tt>bell-volume</tt>. The following turns off the bell absolutely:
+== XEmacs: set the bell volume ==
+
+XEmacs offers an option to set the variable <tt>bell-volume</tt>. The following turns off the bell absolutely:
 
     (setq bell-volume 0)
-[new]
+
+== Use the Scroll-lock LED as an alarm indicator == 
+
 I use the following to make the Scroll Lock LED blink:
 
  (setq ring-bell-function (lambda ()
@@ -47,7 +62,10 @@ I use the following to make the Scroll Lock LED blink:
 
 Seems like the Scroll Lock LED may be useful after all ;) -- mina86
 
-[new]
+== a predictae for suppressing the bell at night ==
+
+I have a younger sister and the bell wakes her up, so I've wrote this
+predicate to control the beeping.  -- PiotrMieszkowski
 
     (defvar night-start 22
       "The hour that people go to sleep.")
@@ -61,8 +79,17 @@ Seems like the Scroll Lock LED may be useful after all ;) -- mina86
         (or (< hr night-end)
         (> hr night-start))))
 
-I have a younger sister and the bell wakes her up, so I've wrote this
-predicate to control the beeping.  -- PiotrMieszkowski
+
+== Flash the screen ==
+
+When I use <tt>(setq visible-bell t)</tt> I see nothing.  So I use this as a visual indicator: 
+
+    ;; quiet, please! No dinging!
+    (setq visible-bell nil)
+    (setq ring-bell-function `(lambda ()
+                                (set-face-background 'default "DodgerBlue")
+                                (set-face-background 'default "black")))
+
 
 ----
 CategoryDotEmacs
