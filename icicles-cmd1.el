@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Wed Apr  4 11:34:35 2012 (-0700)
+;; Last-Updated: Sat Apr  7 12:50:45 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 23588
+;;     Update #: 23615
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-cmd1.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -3865,12 +3865,17 @@ Otherwise, set a bookmark, as follows:
     The candidates are bookmarks in the current buffer (or all
     bookmarks if there are none in this buffer).
 
-  . If the region is active and nonempty, then use the buffer name
-    followed by the region prefix as the default name.
+  . You can narrow the current completion candidates to bookmarks of a
+    given type.  The keys for this are the same as for
+    `icicle-bookmark' and for the bookmark-jumping keys at the top
+    level.
+
+  . See the `Bookmark+' doc string of redefined command `bookmark-set'
+    for info about the available default values for the bookmark name.
 
   If feature `bookmark+' is not present, then completion is not
   available, and the default bookmark name is the last one used in
-  this buffer.
+  the current buffer.
 
   Note: You can use command `icicle-bookmark-set' with a numeric
   prefix arg if you want to complete against all bookmark names,
@@ -3915,13 +3920,29 @@ In particular, you might prefer to remap `bookmark-set' to
 (defun icicle-bookmark-set (&optional name parg interactivep) ; `C-x r m'
   "With `Bookmark+', this is `bookmark-set' with Icicles multi-completions.
 In particular, you can use (lax) completion for the bookmark name.
-Without library `Bookmark+', this is the same as vanilla Emacs
-`bookmark-set'.
+Without `Bookmark+', this is the same as vanilla Emacs `bookmark-set'.
 
-If you use library `Bookmark+', then you can narrow the current
-completion candidates to bookmarks of a given type.  The keys for this
-are the same as for `icicle-bookmark' and for the bookmark-jumping
-keys at the top level."
+With `Bookmark+':
+
+ . You can use (lax) completion for the bookmark name.
+   The candidates are bookmarks in the current buffer (or all
+   bookmarks if there are none in this buffer).
+
+ . You can narrow the current completion candidates to bookmarks of a
+   given type.  The keys for this are the same as for
+   `icicle-bookmark' and for the bookmark-jumping keys at the top
+   level.
+
+ . See the `Bookmark+' doc string of redefined command `bookmark-set'
+   for info about the available default values for the bookmark name.
+
+If feature `bookmark+' is not present, then completion is not
+available, and the default bookmark name is the last one used in
+the current buffer.
+
+Note: You can use command `icicle-bookmark-set' with a numeric
+prefix arg if you want to complete against all bookmark names,
+instead of those for the current buffer."
   (interactive (list nil current-prefix-arg t))
   (if (not (featurep 'bookmark+))
       (bookmark-set name parg)
@@ -4004,39 +4025,24 @@ keys at the top level."
                  bookmark-current-buffer  (current-buffer))
            (save-excursion (skip-chars-forward " ") (setq bookmark-yank-point  (point)))
            (let* ((record   (bookmark-make-record))
-                  (regionp  (and transient-mark-mode mark-active (not (eq (mark) (point)))))
-                  (regname  (concat (buffer-name) ": "
-                                    (buffer-substring (if regionp (region-beginning) (point))
-                                                      (if regionp
-                                                          (region-end)
-                                                        (line-end-position)))))
-                  (defname  (bmkp-replace-regexp-in-string
-                             "\n" " "
-                             (cond (regionp
-                                    (save-excursion
-                                      (goto-char (region-beginning))
-                                      (skip-chars-forward " ") (setq bookmark-yank-point  (point)))
-                                    (substring regname 0 (min bmkp-bookmark-name-length-max
-                                                              (length regname))))
-                                   ((eq major-mode 'w3m-mode) w3m-current-title)
-                                   ((eq major-mode 'gnus-summary-mode)
-                                    (elt (gnus-summary-article-header) 1))
-                                   ((memq major-mode '(Man-mode woman-mode))
-                                    (buffer-substring (point-min) (save-excursion
-                                                                    (goto-char (point-min))
-                                                                    (skip-syntax-forward "^ ")
-                                                                    (point))))
-                                   (t (car record)))))
-                  (bname    (or name
-                                (icicle-transform-multi-completion
-                                 (bmkp-completing-read-lax "Set bookmark " defname
-                                                           icicle-candidates-alist
-                                                           nil (if (boundp 'bookmark-history)
-                                                                   'bookmark-history
-                                                                 'icicle-bookmark-history))))))
+                  (defname  (cond ((eq major-mode 'w3m-mode) w3m-current-title)
+                                  ((eq major-mode 'gnus-summary-mode) (elt (gnus-summary-article-header) 1))
+                                  ((memq major-mode '(Man-mode woman-mode))
+                                   (buffer-substring (point-min) (save-excursion (goto-char (point-min))
+                                                                                 (skip-syntax-forward "^ ")
+                                                                                 (point))))
+                                  (t nil)))
+                  (defname  (and defname  (bmkp-replace-regexp-in-string "\n" " " defname)))
+                  (bname    (or name  (icicle-transform-multi-completion
+                                       (bmkp-completing-read-lax "Set bookmark "
+                                                                 (bmkp-new-bookmark-default-names defname)
+                                                                 icicle-candidates-alist
+                                                                 nil (if (boundp 'bookmark-history)
+                                                                         'bookmark-history
+                                                                       'icicle-bookmark-history))))))
              (when (string-equal bname "") (setq bname  defname))
              (bookmark-store bname (cdr record) (consp parg))
-             (when (and bmkp-prompt-for-tags-flag interactivep)
+             (when (and interactivep bmkp-prompt-for-tags-flag)
                (bmkp-add-tags bname (bmkp-read-tags-completing))) ; Don't bother to refresh tags. (?)
              (case (and (boundp 'bmkp-auto-light-when-set) bmkp-auto-light-when-set)
                (autonamed-bookmark       (when (bmkp-autonamed-bookmark-p bname)
@@ -4047,16 +4053,26 @@ keys at the top level."
                (autonamed-in-buffer      (bmkp-light-bookmarks
                                           (bmkp-remove-if-not
                                            #'bmkp-autonamed-bookmark-p
-                                           (bmkp-this-buffer-alist-only)) nil 'MSG))
+                                           (bmkp-this-buffer-alist-only)) nil interactivep))
                (non-autonamed-in-buffer  (bmkp-light-bookmarks
                                           (bmkp-remove-if
                                            #'bmkp-autonamed-bookmark-p
-                                           (bmkp-this-buffer-alist-only)) nil 'MSG))
-               (all-in-buffer            (bmkp-light-this-buffer nil 'MSG)))
+                                           (bmkp-this-buffer-alist-only)) nil interactivep))
+               (all-in-buffer            (bmkp-light-this-buffer nil interactivep)))
+             ;; Maybe make bookmark temporary.
+             (if bmkp-autotemp-all-when-set-p
+                 (bmkp-make-bookmark-temporary bname)
+               (catch 'icicle-bookmark-set
+                 (dolist (pred  bmkp-autotemp-bookmark-predicates)
+                   (when (and (functionp pred)  (funcall pred bname))
+                     (bmkp-make-bookmark-temporary bname)
+                     (throw 'icicle-bookmark-set t)))))
              (run-hooks 'bmkp-after-set-hook)
              (if bookmark-use-annotations
                  (bookmark-edit-annotation bname)
-               (goto-char bookmark-current-point))))
+               (goto-char bookmark-current-point)))
+           (setq bookmark-yank-point     nil
+                 bookmark-current-buffer nil))
       (icicle-bookmark-cleanup))))
 
 (defun icicle-make-bookmark-candidate (bookmark)
