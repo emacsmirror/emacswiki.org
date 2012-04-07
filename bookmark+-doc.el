@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2012, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Fri Apr  6 09:58:56 2012 (-0700)
+;; Last-Updated: Sat Apr  7 13:24:20 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 14522
+;;     Update #: 14537
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-doc.el
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search,
 ;;           info, url, w3m, gnus
@@ -336,7 +336,7 @@
 ;;       from the `Bookmark+' menu, including submenus `Jump To',
 ;;       `Tags', and `Highlight'.
 ;;
-;;  * Improvements for the bookmark list.
+;;  * Improvements for the bookmark-list display.
 ;;
 ;;    This is buffer `*Bookmark List*', aka the bookmark "menu list"
 ;;    (a misnomer), which you display using `C-x p e' (or `C-x r l').
@@ -504,7 +504,13 @@
 ;;       highlighting, if any, is used for which bookmarks.  This
 ;;       feature requires that you have library `bookmark+-lit.el' in
 ;;       your `load-path' (it will then be loaded by `bookmark+.el).
-;;    
+;;
+;;  * Better, user-configurable bookmark-name defaults.
+;;
+;;     See the doc strings of command `bookmark-set' (Bookmark+
+;;     version) and options `bmkp-new-bookmark-default-names' and
+;;     `bmkp-default-bookmark-name'.
+;;
 ;;  * Synergy with Icicles.
 ;;
 ;;     - Icicles works with Bookmark+ to provide enhanced bookmark
@@ -3079,18 +3085,17 @@
 ;;  A single key can set a bookmark or visit bookmarks.  This key is
 ;;  whatever command `bookmark-set' would normally be bound to -
 ;;  e.g. `C-x r m'.  A prefix arg controls what it does.  If negative
-;;  (`M--'), jump to (browse) bookmarks.  Otherwise, set a bookmark,
-;;  as follows:
+;;  (`M--'), jump to (browse) bookmarks.  Otherwise, set a bookmark
+;;  using `bookmark-set' (Bookmark+ version), as follows:
 ;;
 ;;  * Numeric prefix arg (non-negative): No prompt.  Use the buffer
 ;;    name plus the text of the region (if active) or the current line
 ;;    as the bookmark name.  Quickest way to set a bookmark.
 ;;
-;;  * No prefix arg (as usual): Prompt for bookmark name.  But if the
-;;    region is active, use the buffer name plus the region text as
-;;    the default name.
+;;  * No prefix arg: same as `bookmark-set' (prompt for name).
 ;;
-;;  * Plain `C-u' (as usual): Prompt for name; no bookmark overwrite.
+;;  * Plain `C-u': same as `bookmark-set' (prompt for name, no
+;;    bookmark overwrite.
 ;;
 ;;  During completion of a bookmark name, many features of the
 ;;  bookmark-list display (see (@> "The Bookmark List Display")) are
