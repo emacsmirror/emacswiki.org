@@ -965,5 +965,56 @@ or
 
   (call-interactively (key-binding (kbd "M-TAB")))
 
+
+== Windows-specific things == 
+
+=== Messagebox via Powershell ===
+
+The built-in message-box fn on Windows is sort of broken, and it's also 
+not particularly beautiful or functional either.  This fn allows you to 
+pop a message box using POwershell, which is builtin to all Windows. 
+
+    (defun msgbox-via-powershell (format-string &rest args)
+      "display a message box via powershell and Windows Forms.
+    "
+      (flet ((rris (a1 a2 s) (replace-regexp-in-string a1 a2 s)))
+        (let ((msg (format format-string args)))
+          (let ((powershell-exe  (concat
+                                  (getenv "windir")
+                                  "\\System32\\WindowsPowerShell\\v1.0\\powershell.exe"))
+                (ps-cmd
+                 (concat "[void][System.Reflection.Assembly]::LoadWithPartialName('System.Windows.Forms');"
+                         "[Windows.Forms.MessageBox]::Show("
+                         (mapconcat '(lambda (elt)
+                                       (rris (char-to-string 34)
+                                             (char-to-string 39)
+                                             (pp-to-string
+                                              (rris (char-to-string 34)
+                                                    "'+[char]0x0022+'"
+                                                    (rris (char-to-string 39)
+                                                          "'+[char]0x0027+'"
+                                                          elt)
+                                                    ))))
+                                    (split-string msg "\n" nil)
+                                    "+[char]0x000D+")
+                         ",'Message from Emacs',"
+                         "[Windows.Forms.MessageBoxButtons]::OK,"
+                         "[Windows.Forms.MessageBoxIcon]::Information)"))
+
+                shell-command)
+
+            (setq shell-command
+                  (format "%s -Command %s"
+                          powershell-exe
+                          (concat "\"& {" ps-cmd "}\"")))
+
+            (shell-command-on-region (point) (point)
+                                     shell-command
+                                     nil nil nil)))))
+
+
+
+
+
 ----
 CategoryCode
