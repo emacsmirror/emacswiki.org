@@ -62,7 +62,7 @@ I use the following to make the Scroll Lock LED blink:
 
 Seems like the Scroll Lock LED may be useful after all ;) -- mina86
 
-== a predictae for suppressing the bell at night ==
+== A predicate for suppressing the bell at night ==
 
 I have a younger sister and the bell wakes her up, so I've wrote this
 predicate to control the beeping.  -- PiotrMieszkowski
