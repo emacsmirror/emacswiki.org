@@ -1094,7 +1094,7 @@ This fn reads a registry key - retrieves all the values and the names of all the
              (list keyname values subkeys))))
 
 
-=== Read one Regustry Value ===
+=== Read one Registry Value ===
 
 This fn depends on the previous one, shown above. 
 
@@ -1117,6 +1117,34 @@ This fn depends on the previous one, shown above.
           (if (string= value (car n))
               (setq r n))))
         r))
+
+=== Read IE Proxy Configuration ===
+
+This fn depends on the prior fn that allows reading a specific value from the Windows registry.
+
+
+    (defun w32reg-get-ie-proxy-config ()
+      "Return the Proxy Server settings configured for IE, if enabled.
+    The result is a list of cons cells; like this:
+
+      ((\"http\" . \"127.0.0.1:8888\")
+       (\"https\" .  \"127.0.0.1:8888\"))
+
+    ...which is suitable for use with (setq url-proxy-services ...)
+
+    "
+      (let* ((rpath "HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Internet Settings")
+             (enabled (w32reg-read-value rpath "ProxyEnable"))
+             r)
+        (if (and enabled
+                 (numberp (nth 2 enabled))
+                 (>  (nth 2 enabled) 0))
+            (let ((proxy (w32reg-read-value rpath "ProxyServer")))
+              (mapcar `(lambda (elt)
+                         (let ((x (split-string elt "=" t)))
+                           (cons (car x) (cadr x))))
+                      (split-string (nth 2 proxy) ";" t))))))
+
 
 ----
 CategoryCode
