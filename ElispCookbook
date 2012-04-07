@@ -838,6 +838,13 @@ in Emacs and its ok to edit the existing buffer.
         (sort allfiles 'by-mtime))))
 
 
+=== Get File contents as string ===
+
+    (defun file-contents-as-string (filename)
+      (with-temp-buffer
+        (insert-file-contents filename)
+        (buffer-substring-no-properties (point-min) (point-max))))
+
 
 === Searching within a File ===
 
