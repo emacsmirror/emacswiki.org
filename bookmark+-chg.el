@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2012, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Fri Apr  6 09:49:52 2012 (-0700)
+;; Last-Updated: Sat Apr  7 12:55:05 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 14658
+;;     Update #: 14670
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-chg.el
 ;; Keywords: bookmarks, bookmark+
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -145,6 +145,12 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-1.el'")
 ;;
+;; 2012/04/07 dadams
+;;     Added: bmkp-new-bookmark-default-names (option & function).
+;;     Redefine bookmark-make-record (for all Emacs versions) to use bmkp-new-bookmark-default-names.
+;;     bookmark-set: Use bmkp-new-bookmark-default-names (multiple defaults).
+;;                   Moved the region-text default value stuff to fn bmkp-new-bookmark-default-names.
+;;     bmkp-completing-read-1: Handle a cons DEFAULT.
 ;; 2012/04/06 dadams
 ;;     Added: bmkp-auto-idle-bookmark-min-distance, bmkp-not-near-other-auto-idle-bmks,
 ;;            bmkp-auto-idle-bookmarks.
