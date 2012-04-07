@@ -7,6 +7,8 @@ http://i.imgur.com/Juenp.png
 The primary benefit of an interactive Javascript is that developers can run and test Javascript code that is not browser-centric in an interactive shell, without leaving emacs. It's good for testing, iterative development.
 
 Using this code, it's possible, from within the editing buffer of a .js file, to send the region to the shell to be evaluated.  It's also possible to send complete files to the Javascript shell.  This allows, for example the developer to mark a large function, then send it to the shell, then pop to the shell and immediately invoke that function interactively, to see the results. After changing the function in the regular editing buffer, you can send it again to the shell, and test again.  Much faster than loading up a browser. 
+
+Also the shell does simple completion on properties of Javascript objects.  type: <tt>obj.TAB</tt> and you get a completion list. 
  
 This was inspired by  [http://js-comint-el.sourceforge.net/ the JS-comint mode on sourceforge].
 
