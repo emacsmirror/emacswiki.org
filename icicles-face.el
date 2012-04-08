@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:19:43 2006
 ;; Version: 22.0
-;; Last-Updated: Thu Mar 29 10:53:32 2012 (-0700)
+;; Last-Updated: Sun Apr  8 13:02:23 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 643
+;;     Update #: 645
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-face.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -638,6 +638,7 @@ This highlighting is done during Icicles searching whenever
 search context corresponds to the entire regexp."
   :group 'Icicles-Searching :group 'faces)
 
+;; NO AUTOLOAD COOKIE HERE.
 (defface icicle-search-context-level-8
     (let ((context-bg  (face-background 'icicle-search-main-regexp-current)))
       `((((background dark))
