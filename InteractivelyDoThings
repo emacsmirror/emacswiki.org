@@ -83,8 +83,9 @@ Here is some code showing how to select an erc buffer using IDO features (includ
   (global-set-key (kbd "C-c e") 'rgr/ido-erc-buffer)
 }}}
 
-== Helper Function to Select Based on Mode
-This is based on Richard Riley's work. I extracted it out, so I can easily make one for erc, one for shell, ... .
+=== Helper Function to Select Based on Mode ===
+This is based on what RichardRiley provided. I extracted it out, so I can easily make one for erc, one for shell, ... .
+-- ajvargo
 {{{
 (defun ido-for-mode(prompt the-mode)
   (switch-to-buffer
