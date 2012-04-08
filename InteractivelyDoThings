@@ -83,6 +83,29 @@ Here is some code showing how to select an erc buffer using IDO features (includ
   (global-set-key (kbd "C-c e") 'rgr/ido-erc-buffer)
 }}}
 
+== Helper Function to Select Based on Mode
+This is based on Richard Riley's work. I extracted it out, so I can easily make one for erc, one for shell, ... .
+{{{
+(defun ido-for-mode(prompt the-mode)
+  (switch-to-buffer
+   (ido-completing-read prompt
+                        (save-excursion
+                          (delq
+                           nil
+                           (mapcar (lambda (buf)
+                                     (when (buffer-live-p buf)
+                                       (with-current-buffer buf
+                                         (and (eq major-mode the-mode)
+                                              (buffer-name buf)))))
+                                   (buffer-list)))))))
+
+(defun ido-shell-buffer()
+  (interactive)
+  (ido-for-mode "Shell:" 'shell-mode))
+
+(global-set-key (kbd "C-c s") 'ido-shell-buffer)
+}}}
+
 = Mimicking an invocation of ido followed by some keys =
 
 I use ERC, and I wanted to bind something to the equivalent of "C-x b #": that is, launching ido-switch-buffer and hitting a # so that ERC channels are given as options.  However, it's tough in general to write elisp or keyboard macros that run a command and start entering things into a minibuffer without finishing the prompt. For this special case, though, this elisp works:
