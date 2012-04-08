@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 10:21:10 2006
 ;; Version: 22.0
-;; Last-Updated: Fri Apr  6 07:51:24 2012 (-0700)
+;; Last-Updated: Sat Apr  7 16:01:23 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 8550
+;;     Update #: 8555
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-mode.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -261,7 +261,7 @@ bindings in `*Completions*'.")
 ;;; Icicle mode command ----------------------------------------------
 
 ;; Main command.  Inspired from `icomplete-mode'.
-;;;###autoload
+;;;###autoload (autoload ''icy-mode "icicles")
 (defalias 'icy-mode 'icicle-mode)
 (when (fboundp 'define-minor-mode)      ; Emacs 21+ ------------
   (when (> emacs-major-version 22)
@@ -2004,7 +2004,6 @@ Used on `pre-command-hook'."
   (define-key global-map [handle-switch-frame] 'icicle-skip-this-command)
   (define-key global-map [switch-frame] 'icicle-handle-switch-frame))
 
-;;;###autoload
 (defun icicle-bind-isearch-keys ()
   "Bind Icicles Isearch commands."
   (dolist (key icicle-search-from-isearch-keys)
@@ -2146,13 +2145,13 @@ keymap.  If KEYMAP-VAR is not bound to a keymap, it is ignored."
 
 ;;; Other Icicles functions that define Icicle mode ------------------
 
-;;;###autoload
+;;;###autoload (autoload 'icicle-skip-this-command "icicles")
 (defun icicle-skip-this-command ()
   "Prevent `handle-switch-frame' from being added to `this-command'."
   (interactive)
   (setq this-command  last-command))
 
-;;;###autoload
+;;;###autoload (autoload 'icicle-handle-switch-frame "icicles")
 (defun icicle-handle-switch-frame (event)
   "Call `handle-switch-frame', but don't add it to `this-command'."
   (interactive "e")
