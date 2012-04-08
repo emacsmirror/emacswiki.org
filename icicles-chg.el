@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Sat Apr  7 13:11:26 2012 (-0700)
+;; Last-Updated: Sun Apr  8 13:53:50 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 8289
+;;     Update #: 8300
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-chg.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -85,6 +85,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd1.el'")
 ;;
+;; 2012/04/08 dadams
+;;     Make autoload cookies for commands load icicles[.el] explicitly.
 ;; 2012/04/07 dadams
 ;;     icicle-bookmark-set:
 ;;       Updated for Bookmark+ changes, including new defaulting, removing region handling, and making
@@ -607,6 +609,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd2.el'")
 ;;
+;; 2012/04/08 dadams
+;;     Make autoload cookies for commands load icicles[.el] explicitly.
 ;; 2012/04/03 dadams
 ;;     Moved to *-cmd1.el:
 ;;      icicle-send-signal-to-process, icicle-apropos, icicle-apropos-command, icicle-apropos-function,
@@ -1275,6 +1279,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-fn.el'")
 ;;
+;; 2012/04/08 dadams
+;;     icicle-minibuffer-default-add-dired-shell-commands: Make autoload cookie load icicles[.el].
 ;; 2012/03/30 dadams
 ;;     icicle-join-nth-parts:
 ;;       Handle a singleton PARTS normally, according to icicle-list-use-nth-parts - do not just
@@ -3070,6 +3076,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-mcmd.el'")
 ;;
+;; 2012/04/08 dadams
+;;     Make autoload cookies for commands load icicles[.el] explicitly.
 ;; 2012/03/31 dadams
 ;;     Removed soft-require of pp+.el (not used directly, but used by icicles-opt.el if available).
 ;; 2012/03/28 dadams
@@ -4460,6 +4468,9 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-mode.el'")
 ;;
+;; 2012/04/08 dadams
+;;     Make autoload cookies for commands load icicles[.el] explicitly.
+;;     Removed autoload cookie from icicle-bind-isearch-keys (non-interactive).
 ;; 2012/04/06 dadams
 ;;     Replaced C-? with M-? as the binding for icicle-minibuffer-help (works for terminals also).
 ;; 2012/04/04 dadams
