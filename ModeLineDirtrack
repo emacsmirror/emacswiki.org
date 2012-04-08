@@ -49,6 +49,24 @@ You can also use [[uniquify]] for a similar effect:
 
 -- [[nschum]]
 
+[new]
+I use [[uniquify]] but I prefer the uniquified portion of the buffer name to /not/ be highlighted in the mode line. So I use the following code to remove the text properties in the range outside of ##(uniquify-buffer-base-name)##:
+
+    (setq-default mode-line-buffer-identification
+      `(:eval
+        (let ((s (format-mode-line
+                   (propertized-buffer-identification (buffer-name)))))
+          (when (and (boundp 'uniquify-managed) uniquify-managed)
+            (unless (string= (buffer-name) (uniquify-buffer-base-name))
+              (let ((base-len (length (uniquify-buffer-base-name)))
+                    (full-len (length (buffer-name)))
+                    (pre (eq uniquify-buffer-name-style 'forward)))
+                (let ((start (if pre 0 base-len))
+                      (end (if pre (- full-len base-len) full-len)))
+                  (set-text-properties start end nil s)))))
+          s)))
+
+----
+
 CategoryModeLine
 CategoryModeLineConfiguration
-
