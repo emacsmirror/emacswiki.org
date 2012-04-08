@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:53 2006
 ;; Version: 22.0
-;; Last-Updated: Fri Mar 30 08:42:34 2012 (-0700)
+;; Last-Updated: Sat Apr  7 15:45:34 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 12946
+;;     Update #: 12957
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-fn.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -34,6 +34,12 @@
 ;;  Macros defined here:
 ;;
 ;;    `icicle-maybe-cached-action'.
+;;
+;;  Commands defined here:
+;;
+;;    `icicle-dired-smart-shell-command',
+;;    `icicle-minibuffer-default-add-dired-shell-commands',
+;;    `icicle-shell-command', `icicle-shell-command-on-region',
 ;;
 ;;  Non-interactive functions defined here:
 ;;
@@ -68,7 +74,6 @@
 ;;    `icicle-delete-alist-dups', `icicle-delete-count',
 ;;    `icicle-delete-dups', `icicle-delete-whitespace-from-string',
 ;;    `icicle-dired-read-shell-command',
-;;    `icicle-dired-smart-shell-command',
 ;;    `icicle-dir-prefix-wo-wildcards', `icicle-dirs-first-p',
 ;;    `icicle-dirs-last-p', `icicle-displayable-cand-from-saved-set',
 ;;    `icicle-display-cand-from-full-cand',
@@ -121,7 +126,6 @@
 ;;    `icicle-merge-saved-order-less-p',
 ;;    `icicle-minibuffer-default-add-completions',
 ;;    `icicle-minibuf-input', `icicle-minibuf-input-sans-dir',
-;;    `icicle-minibuffer-default-add-dired-shell-commands',
 ;;    `icicle-minibuffer-prompt-end', `icicle-mode-line-name-less-p',
 ;;    `icicle-most-recent-first-p', `icicle-msg-maybe-in-minibuffer',
 ;;    `icicle-ms-windows-NET-USE', `icicle-multi-sort',
@@ -158,10 +162,9 @@
 ;;    `icicle-save-raw-input', `icicle-scatter',
 ;;    `icicle-scatter-match', `icicle-scroll-or-update-Completions',
 ;;    `icicle-set-difference', `icicle-set-intersection',
-;;    `icicle-set-union', `icicle-shell-command',
-;;    `icicle-shell-command-on-region',
-;;    `icicle-show-help-in-mode-line', `icicle-show-in-mode-line',
-;;    `icicle-some', `icicle-special-candidates-first-p',
+;;    `icicle-set-union', `icicle-show-help-in-mode-line',
+;;    `icicle-show-in-mode-line', `icicle-some',
+;;    `icicle-special-candidates-first-p',
 ;;    `icicle-start-of-candidates-in-Completions',
 ;;    `icicle-strip-ignored-files-and-sort',
 ;;    `icicle-subst-envvar-in-file-name',
@@ -2566,7 +2569,8 @@ Call `icicle-read-shell-command-completing', passing PROMPT and FILES."
 ;; we include also the commands from `dired-guess-default'.
 ;;
 ;; Free var here: `icicle-files' is bound in `icicle-dired-read-shell-command'.
-;;;###autoload
+;;
+;;;###autoload (autoload 'icicle-minibuffer-default-add-dired-shell-commands "icicles")
 (defun icicle-minibuffer-default-add-dired-shell-commands ()
   "Return a list of all commands associated with current dired files.
 The commands are from `minibuffer-default-add-dired-shell-commands',
