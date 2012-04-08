@@ -5,35 +5,35 @@
 ;; Package-Requires: ()
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/thesaurus.el
 ;; X-URL: http://cheeso.members.winisp.net/srcview.aspx?dir=emacs&file=thesaurus.el
-;; Version: 1.0.4
+;; Version: 2012.4.7
 ;; Keywords: thesaurus synonym
 ;; License: New BSD
 
-;;; Commentary
-;;
+;;; Commentary:
+
 ;; This module allows a user to look up synonyms for a word in
 ;; a web-accessible thesaurus.
-;;
+
 ;; This code started with a basic version posted without license at
 ;; http://alexhenning.github.com/blog/2010/11/01/synonym.el/
-;;
+
 ;; I standardized the naming, re-factored, wrote some documentation,
 ;; introduced the dependency on dropdown-list.el and x-popup-menu, added
 ;; a license, introduced some error handling, and polished it.
-;;
+
 ;; Right now it depends on a web service from Big Huge Labs. It
 ;; is not tied to that service, and could be expanded to use other
 ;; services, and to even dynamically choose which service to access.
-;;
+
 ;; To use, first go to http://words.bighugelabs.com/ and register (no
 ;; cost) to get an API key.  Then, put thesaurus.el in your emacs load
 ;; path and modify your .emacs to do this:
-;;
+
 ;;   (require 'thesaurus)
 ;;   (setq thesaurus-bhl-api-key "XXXXXXXXXXXX")  ;; from registration
 ;;   ;; optional key binding
 ;;   (define-key global-map (kbd "C-x t") 'thesaurus-choose-synonym-and-replace)
-;;
+
 ;; This module currently relies on a BigHugeLabs thesaurus service. The
 ;; service is currently free, and has a limit of 10,000 lookups per
 ;; day. If the service changes, or becomes unavailable, or if anyone
@@ -43,6 +43,11 @@
 ;;
 
 ;;; Revisions:
+;;
+;; 2012.4.7  2012-April-07 Dino Chiesa  PENDING
+;;    Fixup the customization group.
+;;    Also serialize and de-serialize the cache as a list, not as a
+;;    hash. To avoid the problem reported by Takafumi Arakaki. (Thanks!)
 ;;
 ;; 1.0.4  2012-March-30  Dino Chiesa
 ;;    use message-box to notify users when they need to acquire an api
@@ -101,7 +106,8 @@
 
 
 (defgroup thesaurus nil
-  "Provides a facility to look up synonyms.")
+  "Provides a facility to look up synonyms."
+  :group 'Editing)
 
 (defcustom thesaurus-bhl-api-key nil
   "The api key for connecting to BigHugeLabs.com.
@@ -129,7 +135,7 @@ function.  Eg
   "For internal use only. ")
 
 (defvar thesaurus-cache-dir (file-name-directory thesaurus---load-path))
-(defvar thesaurus-cache-basefilename "thesaurus.cache")
+(defvar thesaurus-cache-basefilename ".thesaurus.cache")
 
 (defvar thesaurus-can-save-cache-p (or
        (and (>= emacs-major-version 23)
@@ -144,7 +150,7 @@ function.  Eg
 (defun thesaurus-cache-filename ()
   (concat thesaurus-cache-dir thesaurus-cache-basefilename))
 
-(defun thesaurus-cache-make ()
+(defun thesaurus-cache-initialize ()
   (make-hash-table :test 'equal))
 
 (defun thesaurus-cache-get (key)
@@ -153,20 +159,44 @@ function.  Eg
 (defun thesaurus-cache-put (key value)
   (when value
     (puthash key value thesaurus-cache)
-    (when thesaurus-can-save-cache-p (thesaurus-cache-save)))
+    ;; saving the cache may get expensive as it gets larger
+    (thesaurus-cache-save))
   value)
+
+
+(defun thesaurus-hashtable-to-alist (hash)
+  "Return an association-list representation of the hashtable HASH."
+   (let ((alist nil))
+     (maphash
+      (lambda (key value)
+        (setq alist (cons (cons key value) alist)))
+      hash)
+     alist))
+
+
+(defun thesaurus-hashtable-from-alist (alist &rest options)
+  "Build a hashtable from the values in the association list ALIST."
+  (let ((ht (apply 'make-hash-table options)))
+    (mapc
+     (lambda (kv-pair) (puthash (car kv-pair) (cdr kv-pair) ht))
+     alist)
+     ht))
 
 (defun thesaurus-cache-save ()
   (with-temp-buffer
-    (insert (with-output-to-string (princ thesaurus-cache)))
-    (write-region (point-min) (point-max) (thesaurus-cache-filename))))
+    (let (print-level print-length)
+      (insert (pp-to-string (thesaurus-hashtable-to-alist thesaurus-cache)))
+      (write-region (point-min) (point-max) (thesaurus-cache-filename)))))
+
 
 (defun thesaurus-cache-load ()
-  (let ((filename  (thesaurus-cache-filename)))
-  (with-temp-buffer
-    (insert-file-contents filename)
-    (car (read-from-string (buffer-substring-no-properties
-                            (point-min) (point-max)))))))
+  (thesaurus-hashtable-from-alist
+   (with-temp-buffer
+     (insert-file-contents (thesaurus-cache-filename))
+     (car (read-from-string (buffer-substring-no-properties
+                             (point-min) (point-max)))))
+   :test 'equal))
+
 
 (defun thesaurus-get-buffer-for-word (word)
   "Retrieve a list of synonyms for the given word, from the
@@ -180,18 +210,17 @@ web service."
       (thesaurus-msgbox-via-powershell msg)
     (message-box msg)))
 
+(defun thesaurus-path-of-powershell-exe ()
+  "get location of powershell exe."
+  (concat
+   (or (getenv "windir") "c:\\windows")
+   "\\System32\\WindowsPowerShell\\v1.0\\powershell.exe"))
 
 (defun thesaurus-want-msgbox-via-powershell ()
   "Determine if we want to display a message box
 using Windows powershell."
   (and (eq system-type 'windows-nt)
-       (file-exists-p (thesaurus-get-powershell-exe))))
-
-(defun thesaurus-get-powershell-exe ()
-  "get location of powershell exe."
-  (concat
-   (or (getenv "windir") "c:\\windows")
-   "\\System32\\WindowsPowerShell\\v1.0\\powershell.exe"))
+       (file-exists-p (thesaurus-path-of-powershell-exe))))
 
 
 (defun thesaurus-msgbox-via-powershell (format-string &rest args)
@@ -242,7 +271,7 @@ the user that he needs to register for an API key.
                     "[Windows.Forms.MessageBoxIcon]::Information)"))
            (shell-command
             (format "%s -Command %s"
-                    (thesaurus-get-powershell-exe)
+                    (thesaurus-path-of-powershell-exe)
                     (concat "\"& {" ps-cmd "}\""))))
       (shell-command-on-region (point) (point)
                                shell-command
@@ -369,10 +398,7 @@ actual word.
 
     ;; this works with x-popup-menu
     (setq items (cons "Ignored pane title" items))
-    (list "Replace with..." items)
-    ;; ;; this works with x-popup-dialog
-    ;; (cons "Replace with..." items)
-    ))
+    (list "Replace with..." items)))
 
 
 
@@ -436,21 +462,19 @@ inserted in its place.
   (interactive (list (read-string "word: " (thesaurus-word-at-point))))
   (let ((chosen (thesaurus-prompt-user-with-choices
                  (thesaurus-get-synonyms word))))
-    (if chosen
-        (progn
+    (when chosen
           (goto-char (car thesaurus-bounds-of-looked-up-word))
           (delete-region (car thesaurus-bounds-of-looked-up-word)
                          (cdr thesaurus-bounds-of-looked-up-word))
-          (insert chosen)))))
+          (insert chosen))))
 
 
 (defun thesaurus-install ()
   "install `thesaurus.el'"
   (setq thesaurus-cache
-        (if (and (file-exists-p (thesaurus-cache-filename))
-                 thesaurus-can-save-cache-p)
+        (if (file-exists-p (thesaurus-cache-filename))
             (thesaurus-cache-load)
-          (thesaurus-cache-make))))
+          (thesaurus-cache-initialize))))
 
 
 (eval-when-compile (require 'dropdown-list nil t))
