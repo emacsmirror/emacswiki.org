@@ -1,7 +1,6 @@
-ELPA is the *Emacs Lisp Package Archive*, by TomTromey.
+ELPA is the *Emacs Lisp Package Archive*, by TomTromey.    
 
-http://tromey.com/elpa/
-
+== ELPA  ==
 "Our goal is to make it simple to install, use, and upgrade Emacs Lisp packages. We supply ##package.el##, a simple package manager for Emacs, and a repository of pre-packed Emacs Lisp code."
 
 ##package.el## (from ELPA) will be added to vanilla GnuEmacs, version 24.  As of 2010-06-18, ##package.el## has been merged with the development version of Emacs, and an ELPA repository has been set up at http://elpa.gnu.org/.
@@ -11,11 +10,21 @@ The Emacs version of ##package.el## will support multiple repositories.  You can
   (setq package-archives '(("ELPA" . "http://tromey.com/elpa/") 
                            ("gnu" . "http://elpa.gnu.org/packages/")))
 
-One such alternative repo is [http://marmalade-repo.org/ Marmalade] , a community package source that allows users to upload their own packages.
+The old URL, for historical purposes is at: http://tromey.com/elpa/
 
 See also 2010-11-15 discussion about ELPA in Emacs 24.x at http://thread.gmane.org/gmane.emacs.devel/132634/focus=132640
 
+== Marmalade ==
+
+[http://marmalade-repo.org/ Marmalade], a package.el friendly community package source that allows users to upload their own packages.  Package maintainers don't have to be the same as the maintainers of the original code.  
+
+Some packages (for instance, slime) are out of date however.
+
+== Melpa ==
+
 See also MELPA at http://melpa.milkbox.net/
+
+Melpa uses a recipe system similar to [[el-get]].  Recipes are stored on a git-hub repository which tells the updated package.el how to download each package.  The source of the package might be from git, svn, darcs or this wiki.
 
 ----
 CategoryCode CategoryPackaging
