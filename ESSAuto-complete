@@ -63,9 +63,9 @@ You can play with [[http://cx4a.org/software/auto-complete/manual.html#Configura
 {{{
 
 (setq 
-      ;; ac-auto-show-menu t
+      ;; ac-auto-show-menu 1
       ;; ac-candidate-limit nil
-      ;; ac-delay 0.01
+      ;; ac-delay 0.1
       ;; ac-disable-faces (quote (font-lock-comment-face font-lock-doc-face))
       ;; ac-ignore-case 'smart
       ;; ac-menu-height 10
