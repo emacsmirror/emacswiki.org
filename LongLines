@@ -23,7 +23,7 @@ If you invoke command `longlines-show-hard-newlines' or set
 hard returns are marked with a glyph. This makes typing errors
 easier to spot.
 
-Long Lines mode does not lengthen short lines. It does not remove line endings (hard returns); it only (visually) wraps long lines. It (it what? this looks like it has been cut off; can anyone fix this? --Anonymous.)
+Long Lines mode does not lengthen short lines. It does not remove line endings (hard returns); it only (visually) wraps long lines.
 
 If you want to remove hard returns and then let Long Lines mode handle line wrapping, you can do this:
 
