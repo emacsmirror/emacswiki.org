@@ -120,6 +120,10 @@ find a quick way to turn them off. So here is an advice that does the trick:
 
 [https://github.com/purcell/ibuffer-vc This extension] to ibuffer-mode can dynamically create filter groups for the listed files' version-control trees, and show their status (e.g. up-to-date, modified etc.).
 
+== Group by TRAMP connection ==
+
+[https://github.com/svend/ibuffer-tramp This extension] (based on [https://github.com/purcell/ibuffer-vc ibuffer-vc]) to ibuffer-mode can dynamically create filter groups for TRAMP buffers.
+
 ----
 
 == Sort by pathname ==
