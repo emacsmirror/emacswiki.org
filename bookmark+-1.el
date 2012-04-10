@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2012, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 13:43:55 2010 (-0700)
-;; Last-Updated: Sat Apr  7 14:43:29 2012 (-0700)
+;; Last-Updated: Mon Apr  9 19:43:25 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 4968
+;;     Update #: 5052
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-1.el
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -17,7 +17,7 @@
 ;; Features that might be required by this library:
 ;;
 ;;   `bookmark', `bookmark+-1', `bookmark+-mac', `cl', `dired',
-;;   `dired-aux', `dired-x', `ffap', `pp'.
+;;   `dired-aux', `dired-x', `ffap', `pp', `thingatpt', `thingatpt+'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -1599,13 +1599,12 @@ If it is a record then it is NOT looked up (need not belong)."
 ;;
 (defun bookmark-get-bookmark (bookmark &optional noerror)
   "Return the full bookmark (record) that corresponds to BOOKMARK.
-BOOKMARK is a bookmark name or a full bookmark (record).
+BOOKMARK is a bookmark name or a bookmark record.
 Non-nil optional arg NOERROR means return nil if BOOKMARK is not a
 valid bookmark.  If NOERROR is nil then raise an error in this case.
 
-If BOOKMARK is a bookmark-name (string) instead of a full bookmark
-then return what `bmkp-bookmark-record-from-name' (with no MEMP check)
-returns.
+If BOOKMARK is a bookmark name instead of a full bookmark then return
+what `bmkp-bookmark-record-from-name' (with no MEMP check) returns.
 
 This function is like `bmkp-get-bookmark-in-alist', except that
 `bmkp-get-bookmark-in-alist' always tests whether BOOKMARK is in
@@ -1749,7 +1748,7 @@ Lines beginning with `#' are ignored."
         (annotation-buf  (current-buffer)))
     (bookmark-set-annotation bookmark annotation)
     (setq bookmark-alist-modification-count  (1+ bookmark-alist-modification-count))
-    (bmkp-refresh/rebuild-menu-list bookmark) ; So display `a' marker (updated).
+    (bmkp-refresh/rebuild-menu-list bookmark) ; So display `a' and `*' markers (updated).
     (if (fboundp 'kill-buffer-and-its-windows)
         (kill-buffer-and-its-windows annotation-buf) ; Defined in `misc-cmds.el'.
       (kill-buffer annotation-buf))))
@@ -1993,7 +1992,7 @@ bookmarks)."
            (when (string-equal bname "") (setq bname  defname))
            (bookmark-store bname (cdr record) (consp parg))
            (when (and interactivep bmkp-prompt-for-tags-flag)
-             (bmkp-add-tags bname (bmkp-read-tags-completing))) ; Don't bother to refresh tags. (?)
+             (bmkp-add-tags bname (bmkp-read-tags-completing) 'NO-UPDATE-P)) ; Do not refresh tags. (?)
            (case (and (boundp 'bmkp-auto-light-when-set) bmkp-auto-light-when-set)
              (autonamed-bookmark       (when (bmkp-autonamed-bookmark-p bname)
                                          (bmkp-light-bookmark bname)))
@@ -2346,15 +2345,20 @@ Return nil (or raise an error)."
 ;; REPLACES ORIGINAL in `bookmark.el'.
 ;;
 ;; 1. Added bookmark default for interactive use.
-;; 2. Added note about `S-delete' to doc string.
-;; 3. Changed arg name: BOOKMARK -> BOOKMARK-NAME.
-;; 4. Update Dired location too, for Dired bookmark.
-;; 5. Refresh menu list, to show new location.
+;; 2. Added optional arg NO-UPDATE-P.
+;; 3. Added note about `S-delete' to doc string.
+;; 4. Changed arg name: BOOKMARK -> BOOKMARK-NAME.
+;; 5. Update Dired location too, for Dired bookmark.
+;; 6. Refresh menu list, to show new location.
 ;;
 ;;;###autoload
-(defun bookmark-relocate (bookmark-name) ; Not bound
+(defun bookmark-relocate (bookmark-name &optional no-update-p) ; Not bound
   "Relocate the bookmark named BOOKMARK-NAME to another file.
 You are prompted for the new file name.
+
+Non-nil NO-UPDATE-P means do not update `bmkp-tags-alist' and do not
+refresh/rebuild the bookmark-list display.
+
 Changes the file associated with the bookmark.
 Useful when a file has been renamed after a bookmark was set in it.
 
@@ -2378,9 +2382,10 @@ candidate."
         (bookmark-prop-set bookmark-name 'dired-directory new-filename))))
   (bmkp-maybe-save-bookmarks)
   (when (and bookmark-bmenu-toggle-filenames (get-buffer "*Bookmark List*")
-             (get-buffer-window (get-buffer "*Bookmark List*") 0))
+             (get-buffer-window (get-buffer "*Bookmark List*") 0)
+             (not no-update-p))
     (with-current-buffer (get-buffer "*Bookmark List*") ; Do NOT just use `bmkp-refresh/rebuild-menu-list'.
-      (bmkp-refresh-menu-list bookmark-name)))) ; So display new location.
+      (bmkp-refresh-menu-list bookmark-name)))) ; So display new location and `*' marker.
 
 
 ;; REPLACES ORIGINAL in `bookmark.el'.
@@ -2826,8 +2831,7 @@ If no annotation and MSGP is non-nil, show a no-annotation message."
           (let ((ann  (bookmark-get-annotation full-record)))
             (when (and ann (not (string-equal ann "")))
               (insert (concat (bmkp-bookmark-name-from-record full-record) ":\n"))
-              (put-text-property (line-beginning-position 0) (line-end-position 0)
-                                 'face 'bmkp-heading)
+              (put-text-property (line-beginning-position 0) (line-end-position 0) 'face 'bmkp-heading)
               (insert ann) (unless (bolp) (insert "\n\n")))))
         (goto-char (point-min))
         (view-mode-enter (cons (selected-window) (cons nil 'quit-window)))
@@ -2943,7 +2947,7 @@ Optional arg ALIST defaults to `bookmark-alist'."
 
 (defun bmkp-get-bookmark-in-alist (bookmark &optional noerror alist)
   "Return the full bookmark in ALIST that corresponds to BOOKMARK.
-BOOKMARK is a bookmark name or a full bookmark (record).
+BOOKMARK is a bookmark name or a bookmark record.
 
 Non-nil optional arg NOERROR means return nil if BOOKMARK does not
 represent a valid bookmark or is valid but is not in ALIST.  If
@@ -2953,9 +2957,8 @@ Optional arg ALIST defaults to `bookmark-alist'.
 
 Bookmark membership in ALIST is tested using `eq'.
 
-If BOOKMARK is a bookmark-name (string) instead of a full bookmark
-then return what `bmkp-bookmark-record-from-name' with non-nil arg
-MEMP returns.
+If BOOKMARK is a bookmark name instead of a full bookmark then return
+what `bmkp-bookmark-record-from-name' with non-nil arg MEMP returns.
 
 This function is like `bookmark-get-bookmark', except that
 `bookmark-get-bookmark' tests whether BOOKMARK is in `bookmark-alist'
@@ -3031,7 +3034,7 @@ LAXP non-nil means use lax completion."
 
 (defun bmkp-jump-1 (bookmark display-function use-region-p)
   "Helper function for `bookmark-jump' commands.
-BOOKMARK is a bookmark name (a string) or a bookmark record.
+BOOKMARK is a bookmark name or a bookmark record.
 DISPLAY-FUNCTION is passed to `bookmark--jump-via'.
 Non-nil USE-REGION-P means activate the region, if recorded."
   (setq bookmark  (bookmark-get-bookmark bookmark 'NOERROR))
@@ -3060,7 +3063,7 @@ Non-nil optional arg SAME-COUNT-P means do not increment
                                         ; Bound to `C-x p r' (`r' in bookmark list)
   "Edit BOOKMARK's name and file name, and maybe save them.
 Return a list of the new bookmark name and new file name.
-BOOKMARK is a bookmark name (a string) or a bookmark record.
+BOOKMARK is a bookmark name or a bookmark record.
 
 Without a prefix arg, you are prompted for the new bookmark name and
  the new file name.  When entering the new name you can use completion
@@ -3137,11 +3140,12 @@ by `bmkp-bmenu-edit-marked' (`\\<bookmark-bmenu-mode-map>\\[bmkp-bmenu-edit-mark
   (let ((editbuf     (current-buffer))
         (read-error-msg
          (catch 'bmkp-edit-bookmark-records-send
-           (let ((edited-bookmarks
-                  (condition-case err
-                      (save-excursion (goto-char (point-min))  (read (current-buffer)))
-                    (error (throw 'bmkp-edit-bookmark-records-send (error-message-string err)))))
-                 (orig-bmks  (bmkp-marked-bookmarks-only)))
+           (let ((edited-bookmarks  (condition-case err
+                                        (save-excursion (goto-char (point-min))  (read (current-buffer)))
+                                      (error (throw 'bmkp-edit-bookmark-records-send
+                                               (error-message-string err)))))
+                 (orig-bmks         (bmkp-marked-bookmarks-only))
+                 (bookmark-save     nil)) ; Save at most once, after `dolist'.
              (cond ((not (listp edited-bookmarks))
                     (throw 'bmkp-edit-bookmark-records-send "Not a list of bookmarks"))
                    ((not (= (length edited-bookmarks) bmkp-edit-bookmark-records-number))
@@ -3187,7 +3191,7 @@ When you have finished editing, use `\\[bmkp-edit-bookmark-record-send]'."
 ;;;###autoload
 (defun bmkp-edit-bookmark-record (bookmark) ; Bound to `C-x p e'.
   "Edit the full record (the Lisp sexp) for BOOKMARK.
-BOOKMARK is a bookmark name (a string) or a bookmark record.
+BOOKMARK is a bookmark name or a bookmark record.
 When you finish editing, use `\\[bmkp-edit-bookmark-record-send]'.
 The current bookmark list is then updated to reflect your edits."
   (interactive (list (bookmark-completing-read "Edit Lisp record for bookmark:"
@@ -3270,7 +3274,7 @@ When you have finished composing, type \\[bmkp-edit-tags-send]."
   "Edit BOOKMARK's tags, and maybe save the result.
 The edited value must be a list each of whose elements is either a
  string or a cons whose key is a string.
-BOOKMARK is a bookmark name (a string) or a bookmark record."
+BOOKMARK is a bookmark name or a bookmark record."
   (interactive (list (bookmark-completing-read "Edit tags for bookmark" (bmkp-default-bookmark-name))))
   (setq bookmark  (bmkp-get-bookmark-in-alist bookmark))
   (let* ((btags    (bmkp-get-tags bookmark))
@@ -3923,7 +3927,7 @@ Args are the same as for `bmkp-refresh-menu-list'."
 This brings the displayed list up to date.  It does not change the
 current filtering or sorting of the displayed list.
 Non-nil optional arg BOOKMARK means move cursor to BOOKMARK's line.
- BOOKMARK is a bookmark name or a bookmark record.
+BOOKMARK is a bookmark name or a bookmark record.
 Non-nil optional arg NO-MSG-P means do not show progress messages."
   (let ((bookmark-alist  (if bmkp-bmenu-filter-function
                              (funcall bmkp-bmenu-filter-function)
@@ -4189,23 +4193,25 @@ Otherwise, return an alist of the full tags.
   (if (consp tag) tag (list tag)))
 
 ;;;###autoload
-(defun bmkp-remove-all-tags (bookmark &optional msgp no-cache-update-p)
+(defun bmkp-remove-all-tags (bookmark &optional no-update-p msgp)
                                         ; Bound to `C-x p t 0', (`T 0' in bookmark list)
   "Remove all tags from BOOKMARK.
 Non-interactively:
- - Non-nil optional arg MSGP means show a message about the removal.
- - Non-nil NO-CACHE-UPDATE-P means do not update `bmkp-tags-alist'."
+ - Non-nil NO-UPDATE-P means do not update `bmkp-tags-alist' and
+   do not refresh/rebuild the bookmark-list display.
+ - Non-nil optional arg MSGP means show a message about the removal."
   (interactive (list (bookmark-completing-read "Bookmark" (bmkp-default-bookmark-name)) 'msg))
   (when (and msgp (null (bmkp-get-tags bookmark))) (error "Bookmark has no tags to remove"))
   (let ((nb-removed  (and (interactive-p) (length (bmkp-get-tags bookmark)))))
     (bookmark-prop-set bookmark 'tags ())
-    (unless no-cache-update-p (bmkp-tags-list)) ; Update the tags cache.
+    (unless no-update-p (bmkp-tags-list)) ; Update the tags cache.
     (bmkp-maybe-save-bookmarks)
     (when (and msgp  nb-removed) (message "%d tags removed" nb-removed)))
-  (bmkp-refresh/rebuild-menu-list bookmark (not msgp))) ; So remove `t' marker for BOOKMARK.
+  (unless no-update-p
+    (bmkp-refresh/rebuild-menu-list bookmark (not msgp)))) ; So remove `t' marker and add `*' for BOOKMARK.
 
 ;;;###autoload
-(defun bmkp-add-tags (bookmark tags &optional msgp no-cache-update-p)
+(defun bmkp-add-tags (bookmark tags &optional no-update-p msgp)
                                         ; `C-x p t + b' (`b' for bookmark), (`T +' in bookmark list)
   "Add TAGS to BOOKMARK.
 Hit `RET' to enter each tag, then hit `RET' again after the last tag.
@@ -4219,7 +4225,8 @@ time.  Use a prefix argument if you want to refresh them.
 Non-interactively:
  - TAGS is a list of strings.
  - Non-nil MSGP means display a message about the addition.
- - Non-nil NO-CACHE-UPDATE-P means do not update `bmkp-tags-alist'.
+ - Non-nil NO-UPDATE-P means do not update `bmkp-tags-alist' and
+   do not refresh/rebuild the bookmark-list display.
 Return the number of tags added."
   (interactive (list (bookmark-completing-read "Bookmark" (bmkp-default-bookmark-name))
                      (bmkp-read-tags-completing nil nil current-prefix-arg)
@@ -4228,9 +4235,10 @@ Return the number of tags added."
          (olen     (length newtags)))
     (dolist (tag  tags)  (unless (or (assoc tag newtags) (member tag newtags))  (push tag newtags)))
     (bookmark-prop-set bookmark 'tags newtags)
-    (unless no-cache-update-p (bmkp-tags-list)) ; Update the tags cache.
+    (unless no-update-p (bmkp-tags-list)) ; Update the tags cache.
     (bmkp-maybe-save-bookmarks)
-    (bmkp-refresh/rebuild-menu-list bookmark (not msgp)) ; So display `t' marker for BOOKMARK.
+    (unless no-update-p
+      (bmkp-refresh/rebuild-menu-list bookmark (not msgp))) ; So display `t' and `*' markers for BOOKMARK.
     (let ((nb-added  (- (length newtags) olen)))
       (when msgp (message "%d tags added. Now: %S" nb-added ; Echo just the tag names.
                           (let ((tgs  (mapcar #'bmkp-tag-name newtags)))
@@ -4249,19 +4257,22 @@ If any of the bookmarks has no tag named TAG, then add one with VALUE."
 (defun bmkp-set-tag-value-for-bookmarks (bookmarks tag value) ; Not bound
   "Set the value of TAG to VALUE, for each of the BOOKMARKS.
 If any of the BOOKMARKS has no tag named TAG, then add one with VALUE."
-  (dolist (bmk  bookmarks) (bmkp-set-tag-value bmk tag value)))
+  (let ((bookmark-save  nil))           ; Save at most once, after `dolist'.
+    (dolist (bmk  bookmarks) (bmkp-set-tag-value bmk tag value 'NO-UPDATE-P))))
 
 ;;;###autoload
-(defun bmkp-set-tag-value (bookmark tag value &optional msgp) ; Bound to `C-x p t v'
+(defun bmkp-set-tag-value (bookmark tag value &optional no-update-p msgp) ; Bound to `C-x p t v'
   "For BOOKMARK's TAG, set the value to VALUE.
 If BOOKMARK has no tag named TAG, then add one with value VALUE.
-Non-interactively, non-nil MSGP means display a message about the
-updated value."
+Non-interactively:
+ - Non-nil NO-UPDATE-P means do not update `bmkp-tags-alist' and
+   do not refresh/rebuild the bookmark-list display.
+ - Non-nil MSGP means display a message about the updated value."
   (interactive
    (let* ((bmk  (bookmark-completing-read "Bookmark" (bmkp-default-bookmark-name)))
           (tag  (bmkp-read-tag-completing "Tag: " (mapcar 'bmkp-full-tag (bmkp-get-tags bmk)))))
      (list bmk tag (read (read-string "Value: ")) 'msg)))
-  (unless (bmkp-has-tag-p bookmark tag) (bmkp-add-tags bookmark (list tag)))
+  (unless (bmkp-has-tag-p bookmark tag) (bmkp-add-tags bookmark (list tag) no-update-p))
   (let* ((newtags     (copy-alist (bmkp-get-tags bookmark)))
          (assoc-tag   (assoc tag newtags))
          (member-tag  (and (not assoc-tag) (member tag newtags))))
@@ -4270,7 +4281,7 @@ updated value."
   (when msgp "Tag value set"))
 
 ;;;###autoload
-(defun bmkp-remove-tags (bookmark tags &optional msgp no-cache-update-p)
+(defun bmkp-remove-tags (bookmark tags &optional no-update-p msgp)
                                         ; `C-x p t - b' (`b' for bookmark), (`T -' in bookmark list)
   "Remove TAGS from BOOKMARK.
 Hit `RET' to enter each tag, then hit `RET' again after the last tag.
@@ -4282,7 +4293,8 @@ time.  Use a prefix argument if you want to refresh them.
 Non-interactively:
  - TAGS is a list of strings.  The corresponding tags are removed.
  - Non-nil MSGP means display status messages.
- - Non-nil NO-CACHE-UPDATE-P means do not update `bmkp-tags-alist'.
+ - Non-nil NO-UPDATE-P means do not update `bmkp-tags-alist' and
+   do not refresh/rebuild the bookmark-list display.
 Return the number of tags removed."
   (interactive (let ((bmk  (bookmark-completing-read "Bookmark" (bmkp-default-bookmark-name))))
                  (list bmk
@@ -4297,9 +4309,10 @@ Return the number of tags removed."
                                          (if (atom tag) (member tag tags) (member (car tag) tags)))
                                      remtags))
       (bookmark-prop-set bookmark 'tags remtags)
-      (unless no-cache-update-p (bmkp-tags-list)) ; Update the tags cache.
+      (unless no-update-p (bmkp-tags-list)) ; Update the tags cache.
       (bmkp-maybe-save-bookmarks)
-      (bmkp-refresh/rebuild-menu-list bookmark (not msgp)) ; So remove `t' marker for BOOKMARK if no tags.
+      (unless no-update-p
+        (bmkp-refresh/rebuild-menu-list bookmark (not msgp))) ; So remove `t' marker if no tags.
       (let ((nb-removed  (- olen (length remtags))))
         (when msgp (message "%d tags removed. Now: %S" nb-removed ; Echo just the tag names.
                             (let ((tgs  (mapcar #'bmkp-tag-name remtags)))
@@ -4324,7 +4337,9 @@ Non-interactively:
        (error "OK - deletion canceled")
      (list (bmkp-read-tags-completing nil t current-prefix-arg)
            'MSG)))
-  (dolist (bmk  (bookmark-all-names)) (bmkp-remove-tags bmk tags nil 'NO-CACHE-UPDATE))
+  (let ((bookmark-save  nil))           ; Save at most once, after `dolist'.
+    (dolist (bmk  (bookmark-all-names))
+      (bmkp-remove-tags bmk tags 'NO-UPDATE-P)))
   (bmkp-tags-list)                      ; Update the tags cache (only once, at end).
   (when msgp (message "Tags removed from all bookmarks: %S" tags)))
 
@@ -4336,7 +4351,8 @@ about the deletion."
   (interactive (list (bmkp-read-tag-completing "Tag (old name): ")
                      (bmkp-read-tag-completing "New name: ")
                      'MSG))
-  (let ((tag-exists-p  nil))
+  (let ((tag-exists-p   nil)
+        (bookmark-save  nil))           ; Save at most once, after `dolist'.
     (dolist (bmk  (bookmark-all-names))
       (let ((newtags  (copy-alist (bmkp-get-tags bmk))))
         (when newtags
@@ -4348,7 +4364,7 @@ about the deletion."
               (setq tag-exists-p  t)
               (bookmark-prop-set bmk 'tags newtags))))))
     (if tag-exists-p
-        (bmkp-tags-list)                ; Update the tags cache.
+        (bmkp-tags-list)                ; Update the tags cache now, after iterate.
       (error "No such tag: `%s'" tag))
     (when msgp (message "Renamed"))))
 
@@ -4368,26 +4384,28 @@ about the number of tags copied."
     (when msgp (message "%d tags now available for pasting" (length btags)))))
 
 ;;;###autoload
-(defun bmkp-paste-add-tags (bookmark &optional msgp no-cache-update-p) ; Bound to `C-x p t p', `C-x p t C-y'
+(defun bmkp-paste-add-tags (bookmark &optional no-update-p msgp) ; Bound to `C-x p t p', `C-x p t C-y'
   "Add tags to BOOKMARK that were previously copied from another bookmark.
 The tags are copied from `bmkp-copied-tags'.
 Non-interactively:
+ - Non-nil NO-UPDATE-P means do not update `bmkp-tags-alist' and
+   do not refresh/rebuild the bookmark-list display.
  - Non-nil MSGP means display a message about the addition.
- - Non-nil NO-CACHE-UPDATE-P means do not update `bmkp-tags-alist'.
 Return the number of tags added."
   (interactive (list (bookmark-completing-read "Bookmark" (bmkp-default-bookmark-name)) 'msg))
   (unless (listp bmkp-copied-tags)
     (error "`bmkp-paste-add-tags': `bmkp-copied-tags' is not a list"))
-  (bmkp-add-tags bookmark bmkp-copied-tags msgp no-cache-update-p))
+  (bmkp-add-tags bookmark bmkp-copied-tags no-update-p msgp))
 
 ;;;###autoload
-(defun bmkp-paste-replace-tags (bookmark &optional msgp no-cache-update-p) ; Bound to `C-x p t q'
+(defun bmkp-paste-replace-tags (bookmark &optional no-update-p msgp) ; Bound to `C-x p t q'
   "Replace tags for BOOKMARK with those copied from another bookmark.
 The tags are copied from `bmkp-copied-tags'.
 Any previously existing tags for BOOKMARK are lost.
 Non-interactively:
+ - Non-nil NO-UPDATE-P means do not update `bmkp-tags-alist' and
+   do not refresh/rebuild the bookmark-list display.
  - Non-nil MSGP means display a message about the addition.
- - Non-nil NO-CACHE-UPDATE-P means do not update `bmkp-tags-alist'.
 Return the number of tags for BOOKMARK."
   (interactive (list (bookmark-completing-read "Bookmark" (bmkp-default-bookmark-name)) 'msg))
   (unless (listp bmkp-copied-tags)
@@ -4395,8 +4413,8 @@ Return the number of tags for BOOKMARK."
   (when (and msgp  (bmkp-get-tags bookmark)
              (not (y-or-n-p "Existing tags will be LOST - really replace them? ")))
     (error "OK - paste-replace tags canceled"))
-  (bmkp-remove-all-tags bookmark msgp no-cache-update-p)
-  (bmkp-add-tags bookmark bmkp-copied-tags msgp no-cache-update-p))
+  (bmkp-remove-all-tags bookmark no-update-p msgp)
+  (bmkp-add-tags bookmark bmkp-copied-tags no-update-p msgp))
 
 
 ;;(@* "Bookmark Predicates")
@@ -4468,7 +4486,6 @@ If it is a record then it need not belong to `bookmark-alist'."
 (defun bmkp-file-bookmark-p (bookmark)
   "Return non-nil if BOOKMARK bookmarks a file or directory.
 This excludes bookmarks of a more specific kind (e.g. Info, Gnus).
-
 BOOKMARK is a bookmark name or a bookmark record.
 If it is a record then it need not belong to `bookmark-alist'."
   (let* ((filename   (bookmark-get-filename bookmark))
@@ -4483,7 +4500,6 @@ If it is a record then it need not belong to `bookmark-alist'."
 (defun bmkp-file-this-dir-bookmark-p (bookmark)
   "Return non-nil if BOOKMARK bookmarks file/subdir in `default-directory'.
 This excludes bookmarks of a more specific kind (e.g. Info, Gnus).
-
 BOOKMARK is a bookmark name or a bookmark record.
 If it is a record then it need not belong to `bookmark-alist'."
   (and (bmkp-file-bookmark-p bookmark)
@@ -4534,7 +4550,6 @@ If it is a record then it need not belong to `bookmark-alist'."
 (defun bmkp-local-file-bookmark-p (bookmark)
   "Return non-nil if BOOKMARK bookmarks a local file or directory.
 This excludes bookmarks of a more specific kind (e.g. Info, Gnus).
-
 BOOKMARK is a bookmark name or a bookmark record.
 If it is a record then it need not belong to `bookmark-alist'."
   (and (bmkp-file-bookmark-p bookmark) (not (bmkp-remote-file-bookmark-p bookmark))))
@@ -6162,7 +6177,7 @@ input."
       (error "Failed to create bookmark for `%s':\n%s\n" url failure))))
 
 ;;;###autoload
-(defun bmkp-file-target-set (file &optional prefix-only-p name/prefix no-overwrite msgp)
+(defun bmkp-file-target-set (file &optional prefix-only-p name/prefix no-overwrite no-update-p msgp)
                                         ; Bound to `C-x p c f'
   "Set a bookmark for FILE.  Return the bookmark.
 The bookmarked position is the beginning of the file.
@@ -6185,6 +6200,8 @@ Non-interactively:
  - Optional arg NAME/PREFIX is the name or name prefix string.
  - Optional arg NO-OVERWRITE is passed to `bookmark-store': non-nil
    means do not overwrite an existing bookmark that has the same name.
+ - Non-nil NO-UPDATE-P means do not update `bmkp-tags-alist' and
+   do not refresh/rebuild the bookmark-list display.
  - Non-nil optional arg MSGP means MSGP means show a warning message
    if file does not exist."
   (interactive
@@ -6210,7 +6227,7 @@ Non-interactively:
       (error (setq failure  (error-message-string err))))
     (if (not failure)
         (prog1 bmk                      ; Return the bookmark.
-          (bmkp-refresh/rebuild-menu-list bmk (not msgp))
+          (unless no-update-p (bmkp-refresh/rebuild-menu-list bmk (not msgp)))
           (when (and msgp  (not (file-exists-p file)))
             (message "File name is now bookmarked, but no such file yet: `%s'" (expand-file-name file))))
       (error "Failed to create bookmark for `%s':\n%s\n" file failure))))
@@ -6245,7 +6262,7 @@ The bookmarked position will be the beginning of the file."
 ;;;###autoload
 (defalias 'bmkp-bookmark-a-file 'bmkp-autofile-set)
 ;;;###autoload
-(defun bmkp-autofile-set (file &optional dir prefix msgp) ; Bound to `C-x p c a'
+(defun bmkp-autofile-set (file &optional dir prefix no-update-p msgp) ; Bound to `C-x p c a'
   "Set a bookmark for FILE, autonaming the bookmark for the file.
 Return the bookmark.
 Interactively, you are prompted for FILE.  You can use `M-n' to pick
@@ -6272,8 +6289,10 @@ one autofile bookmark with the same bookmark name and the same
 relative file name (non-directory part), but with different absolute
 file names.
 
-Non-interactively, non-nil optional arg MSGP means display status
-messages."
+Non-interactively:
+ - Non-nil NO-UPDATE-P means do not update `bmkp-tags-alist' and
+   do not refresh/rebuild the bookmark-list display.
+ - Non-nil optional arg MSGP means display status messages."
   (interactive
    (list (let ((icicle-unpropertize-completion-result-flag  t))
            (read-file-name "File: " nil
@@ -6308,7 +6327,7 @@ messages."
     ;;   (bmkp-replace-existing-bookmark bmk)) ; Update the existing bookmark.
     (if (not bmk)
         ;; Create a new bookmark, and return it.
-        (bmkp-file-target-set (expand-file-name file dir-to-use) t prefix 'NO-OVERWRITE msgp)
+        (bmkp-file-target-set (expand-file-name file dir-to-use) t prefix 'NO-OVERWRITE no-update-p msgp)
       (when msgp (message "Autofile bookmark set for `%s'" file))
       bmk)))                            ; Return the bookmark.
 
@@ -6343,7 +6362,7 @@ same, except possibly for their directory parts (see previous)."
 ;;;###autoload
 (defalias 'bmkp-tag-a-file 'bmkp-autofile-add-tags) ; Bound to `C-x p t + a'
 ;;;###autoload
-(defun bmkp-autofile-add-tags (file tags &optional dir prefix msgp no-cache-update-p)
+(defun bmkp-autofile-add-tags (file tags &optional dir prefix no-update-p msgp)
   "Add TAGS to the autofile bookmark for FILE.
 If there is no autofile bookmark for FILE, create one.
 Interactively, you are prompted for FILE and then TAGS.
@@ -6362,9 +6381,8 @@ time.  Use a non-positive prefix argument if you want to refresh them.
 
 Non-interactively:
  - TAGS is a list of strings.
- - DIR and PREFIX are as for `bmkp-autofile-set'.
+ - DIR, PREFIX, and NO-UPDATE-P are as for `bmkp-autofile-set'.
  - Non-nil MSGP means display a message about the addition.
- - Non-nil NO-CACHE-UPDATE-P means do not update `bmkp-tags-alist'.
 Return the number of tags added."
   (interactive
    (list (let ((icicle-unpropertize-completion-result-flag  t))
@@ -6380,12 +6398,12 @@ Return the number of tags added."
          (and current-prefix-arg (wholenump (prefix-numeric-value current-prefix-arg))
               (read-string "Prefix for bookmark name: "))
          'msg))
-  (bmkp-add-tags (bmkp-autofile-set file dir prefix) tags msgp no-cache-update-p))
+  (bmkp-add-tags (bmkp-autofile-set file dir prefix no-update-p) tags no-update-p msgp))
 
 ;;;###autoload
 (defalias 'bmkp-untag-a-file 'bmkp-autofile-remove-tags) ; Bound to `C-x p t - a'
 ;;;###autoload
-(defun bmkp-autofile-remove-tags (file tags &optional dir prefix msgp no-cache-update-p)
+(defun bmkp-autofile-remove-tags (file tags &optional dir prefix no-update-p msgp)
   "Remove TAGS from autofile bookmark for FILE.
 Interactively, you are prompted for TAGS and then FILE.
 With Emacs 22 and later, only files with at least one of the given
@@ -6407,9 +6425,8 @@ time.  Use a non-positive prefix argument if you want to refresh them.
 
 Non-interactively:
  - TAGS is a list of strings.
- - DIR and PREFIX are as for `bmkp-autofile-set'.
+ - DIR, PREFIX, and NO-UPDATE-P are as for `bmkp-autofile-set'.
  - Non-nil MSGP means display a message about the removal.
- - Non-nil NO-CACHE-UPDATE-P means do not update `bmkp-tags-alist'.
 Return the number of tags removed."
   (interactive
    (let* ((pref                                        (and current-prefix-arg
@@ -6441,7 +6458,7 @@ Return the number of tags removed."
                                                            (thing-at-point 'filename)
                                                            (buffer-file-name)))))))
      (list fil tgs nil pref 'MSG)))
-  (bmkp-remove-tags (bmkp-autofile-set file dir prefix) tags msgp no-cache-update-p))
+  (bmkp-remove-tags (bmkp-autofile-set file dir prefix no-update-p) tags no-update-p msgp))
 
 ;;;###autoload
 (defun bmkp-purge-notags-autofiles (&optional prefix msgp) ; Not bound
@@ -6451,15 +6468,16 @@ With a prefix arg, you are prompted for a PREFIX for the bookmark name."
                    (error "OK - deletion canceled")
                  (list (and current-prefix-arg (read-string "Prefix for bookmark name: "))
                        'MSGP)))
-  (let ((bmks  (bmkp-autofile-alist-only prefix))
+  (let ((bmks           (bmkp-autofile-alist-only prefix))
+        (bookmark-save  nil)            ; Save at most once, after `dolist'.
         record tags)
     ;; Needs Bookmark+ version of `bookmark-delete', which accepts a bookmark, not just its name.
     (dolist (bmk  bmks)
       (when (and (setq tags  (assq 'tags (bmkp-bookmark-data-from-record bmk)))
                  (or (not tags) (null (cdr tags))))
         (bookmark-delete bmk 'BATCHP)))) ; Do not refresh list here - do it after iterate.
-  (bmkp-tags-list)                      ; Update the tags cache.
-  (bmkp-refresh/rebuild-menu-list nil (not msgp))) ; Now refresh, after iterate.
+  (bmkp-tags-list)                      ; Update the tags cache now, after iterate.
+  (bmkp-refresh/rebuild-menu-list nil (not msgp))) ; Refresh now, after iterate.
 
 
 ;; $$$$$$ Not used currently.
@@ -9704,7 +9722,8 @@ buffer part names the current buffer."
       (when (or (not msgp)
                 (y-or-n-p (format "Delete ALL autonamed bookmarks for buffer `%s'? "
                                   (buffer-name))))
-        (dolist (bmk  bmks-to-delete)  (bookmark-delete bmk 'BATCHP)) ; No refresh yet.
+        (let ((bookmark-save   nil))    ; Save at most once, after `dolist'.
+          (dolist (bmk  bmks-to-delete)  (bookmark-delete bmk 'BATCHP))) ; No refresh yet.
         (bmkp-refresh/rebuild-menu-list nil (not msgp)) ; Now refresh, after iterate.
         (when msgp (message "Deleted all bookmarks for buffer `%s'" (buffer-name)))))))
 
@@ -9715,7 +9734,8 @@ Non-nil optional arg NO-REFRESH-P means do not refresh/rebuild the
 bookmark-list."
   (when (and bookmarks-already-loaded  bookmark-alist)
     (let ((bmks-to-delete  (mapcar #'bmkp-bookmark-name-from-record
-                                   (bmkp-autonamed-this-buffer-alist-only))))
+                                   (bmkp-autonamed-this-buffer-alist-only)))
+          (bookmark-save  nil))         ; Save at most once, after `dolist'.
       (dolist (bmk  bmks-to-delete)  (bookmark-delete bmk 'BATCHP))) ; No refresh yet.
     (unless no-refresh-p
       (bmkp-refresh/rebuild-menu-list nil 'BATCHP)))) ; Now refresh, after iterate.
@@ -9725,9 +9745,10 @@ bookmark-list."
 (defun bmkp-delete-autonamed-no-confirm ()
   "Delete all autonamed bookmarks for all buffers, without confirmation."
   (when (and bookmarks-already-loaded  bookmark-alist)
-    (dolist (buf  (buffer-list))
-      (with-current-buffer buf
-        (bmkp-delete-autonamed-this-buffer-no-confirm 'NO-REFRESH-P))) ; No refresh yet.
+    (let ((bookmark-save   nil))        ; Save at most once, after `dolist'.
+      (dolist (buf  (buffer-list))
+        (with-current-buffer buf
+          (bmkp-delete-autonamed-this-buffer-no-confirm 'NO-REFRESH-P)))) ; No refresh yet.
     (bmkp-refresh/rebuild-menu-list nil 'BATCHP))) ; Now refresh, after iterate.
 
 (cond ((fboundp 'define-minor-mode)
@@ -10034,7 +10055,8 @@ make a bookmark temporary using `bmkp-make-bookmark-temporary' or
         (when msgp (message "No temporary bookmarks to delete"))
       (when (and msgp  (not (y-or-n-p (format "Delete ALL temporary bookmarks? "))))
         (error "OK - delete canceled"))
-      (dolist (bmk  bmks-to-delete)  (bookmark-delete bmk 'BATCHP)) ; No refresh yet.
+      (let ((bookmark-save   nil))      ; Save at most once, after `dolist'.
+        (dolist (bmk  bmks-to-delete)  (bookmark-delete bmk 'BATCHP))) ; No refresh yet.
       (bmkp-refresh/rebuild-menu-list nil (not msgp)) ; Now refresh, after iterate.
       (when msgp (message "Deleted all temporary bookmarks")))))
 
@@ -10042,7 +10064,8 @@ make a bookmark temporary using `bmkp-make-bookmark-temporary' or
 (defun bmkp-delete-temporary-no-confirm ()
   "Delete all temporary bookmarks, without confirmation."
   (when (and bookmarks-already-loaded  bookmark-alist)
-    (let ((bmks-to-delete  (mapcar #'bmkp-bookmark-name-from-record (bmkp-temporary-alist-only))))
+    (let ((bmks-to-delete  (mapcar #'bmkp-bookmark-name-from-record (bmkp-temporary-alist-only)))
+          (bookmark-save   nil))        ; Save at most once, after `dolist'.
       (dolist (bmk  bmks-to-delete)  (bookmark-delete bmk 'BATCHP))) ; No refresh yet.
     (bmkp-refresh/rebuild-menu-list nil 'BATCHP))) ; Now refresh, after iterate.    
 
@@ -10065,6 +10088,7 @@ Non-interactively:
   (let ((bmks-to-delete  (and allp  (mapcar #'bmkp-bookmark-name-from-record
                                             (bmkp-this-buffer-alist-only))))
         (bmks-deleted    ())
+        (bookmark-save   nil)           ; Save at most once, after `dolist'.
         bmk-pos)
     (when (and msgp  bmks-to-delete  (not (y-or-n-p (format "Delete ALL bookmarks in buffer `%s'? "
                                                             (buffer-name)))))
