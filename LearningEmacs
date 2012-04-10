@@ -18,6 +18,8 @@ Try the EmacsTutorial, or read one of the BooksAboutEmacs.
 
 * EnjoyWrestlingWithEmacs -- What you're in for!
 
+* [http://david.rothlis.net/emacs/howtolearn.html How to learn Emacs] -- a tutorial leveraging Emacs's self-documentation and source code.
+
 Most people learn best by doing and not just by reading over a list of
 [[command]]s and trying to memorize them.  Get yourself a text file
 to play around with. Make a backup copy if you're nervous about
