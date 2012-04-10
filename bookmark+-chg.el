@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2012, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Mon Apr  9 20:00:25 2012 (-0700)
+;; Last-Updated: Tue Apr 10 13:36:28 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 14720
+;;     Update #: 14741
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-chg.el
 ;; Keywords: bookmarks, bookmark+
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -145,6 +145,14 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-1.el'")
 ;;
+;; 2012/04/10 dadams
+;;     Added: bmkp-count-multi-mods-as-one-flag.
+;;     bmkp-edit-bookmark-records-send, bmkp-set-tag-value-for-bookmarks, bmkp-remove-tags-from-all,
+;;       bmkp-rename-tag, bmkp-purge-notags-autofiles,
+;;       bmkp-delete(-all)-autonamed(-for)(-this-buffer)(-no-confirm), bmkp-delete-bookmarks,
+;;       bmkp-delete(-all)-temporary(-bookmarks|-no-confirm):
+;;         Corrected bookmark-save to bookmark-save-flag in bindings to nil.
+;;         Use bmkp-count-multi-mods-as-one-flag for the binding.
 ;; 2012/04/09 dadams
 ;;     bookmark-relocate, bmkp-edit-bookmark-records-send, bmkp-set-tag-value, bmkp-file-target-set,
 ;;       bmkp-autofile-set:
@@ -734,6 +742,13 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-bmu.el'")
 ;;
+;; 2012/04/10 dadams
+;;     bmkp-bmenu-load-marked-bookmark-file-bookmarks:
+;;       Use bmkp-refresh-menu-list, not bmkp-refresh/rebuild-menu-list.
+;;     bmkp-bmenu-(add|remove)-tags-(to|from)-marked, bmkp-bmenu-paste-(add|replace)-tags-to-marked: 
+;;       Corrected bookmark-save to bookmark-save-flag in bindings to nil.
+;;       Use bmkp-count-multi-mods-as-one-flag for the binding.
+;;       Call bmkp-refresh-menu-list.
 ;; 2012/04/09 dadams
 ;;     bmkp-bmenu-set-tag-value, bmkp-bmenu-remove-tags, bmkp-bmenu-paste-(add|replace)-tags:
 ;;       Added nil NO-UPDATE-P arg in calls to bmkp-set-tag-value, bmkp-remove-tags,
