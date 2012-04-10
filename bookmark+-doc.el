@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2012, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Sat Apr  7 13:24:20 2012 (-0700)
+;; Last-Updated: Tue Apr 10 14:03:41 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 14537
+;;     Update #: 14544
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-doc.el
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search,
 ;;           info, url, w3m, gnus
@@ -582,26 +582,6 @@
 ;;  any of the current bookmarks.  Outside the bookmark-list display,
 ;;  you can use command `bmkp-revert-bookmark-file' to do this.
 ;;
-;;  User option `bookmark-save-flag' controls whether and how often to
-;;  automatically save the bookmark list to the bookmark file.  You
-;;  can toggle this option using `M-~' in the bookmark-list display.
-;;
-;;  In the bookmark-list display, you can tell whether individual
-;;  bookmarks have been modified since the last save: they are marked
-;;  with `*'.  I believe that this indication is robust and accurate
-;;  (if not, please report a bug), but a word of caution: do not
-;;  depend on it.  The only way to be sure that your bookmarks have
-;;  been saved is to save them. ;-)
-;;
-;;  Is there a way to unmodify a single bookmark that you have
-;;  changed?  No, not unless it is the only one you modified.  If you
-;;  revert to the bookmarks as last saved, then all changes to all
-;;  bookmarks (including addition and removal of bookmarks) are lost.
-;;  If you want to work carefully when making multiple changes, then
-;;  save any modifications you are sure of before you move on to
-;;  others.  If only one bookmark is modified then reverting to the
-;;  bookmark file effectively unmodifies that bookmark.
-;;
 ;;  You can load different bookmark files, either adding their
 ;;  bookmarks to those already in the current bookmark list or
 ;;  replacing them.
@@ -626,6 +606,54 @@
 ;;  reflects it imperfectly, because it is a snapshot).  So if the
 ;;  bookmark file that is loaded is different from the one that was
 ;;  recorded for the display state, the recorded state is ignored.
+;;
+;;(@* "Automatic Saving")
+;;  *** Automatic Saving ***
+;;
+;;  User option `bookmark-save-flag' controls whether and how often to
+;;  automatically save the bookmark list to the bookmark file, thus
+;;  syncing the two.  You can toggle this option using `M-~' in the
+;;  bookmark-list display.
+;;
+;;  In the bookmark-list display, you can tell whether individual
+;;  bookmarks have been modified since the last save: they are marked
+;;  with `*'.  I believe that this indication is robust and accurate
+;;  (if not, please report a bug), but a word of caution: do not
+;;  depend on it.  The only way to be sure that your bookmarks have
+;;  been saved is to save them. ;-)
+;;
+;;  Is there a way to unmodify a single bookmark that you have
+;;  changed?  No, not unless it is the only one you modified.  If you
+;;  revert to the bookmarks as last saved, then all changes to all
+;;  bookmarks (including addition and removal of bookmarks) are lost.
+;;  If you want to work carefully when making multiple changes, then
+;;  save any modifications you are sure of before you move on to
+;;  others.  If only one bookmark is modified then reverting to the
+;;  bookmark file effectively unmodifies that bookmark.
+;;
+;;  When you consult the doc for option `bookmark-save-flag' you see
+;;  that besides values of `nil' and `t', meaning off and on, it can
+;;  have a value that is the number of bookmark modifications to allow
+;;  before automatically saving.  If the value is 10, for instance,
+;;  then the 11th modification triggers automatic saving.
+;;
+;;  But a modification means any change to any bookmark.  Typically,
+;;  you are more interested in considering all of the changes caused
+;;  by a given command as one modification.  Why?  Suppose you use a
+;;  command such as `T > +' (`bmkp-bmenu-add-tags-to-marked'), which
+;;  adds a set of tags to each of the marked bookmarks.  Even if there
+;;  have been no other modifications since you last saved bookmarks,
+;;  if there are more marked bookmarks than your setting of
+;;  `bookmark-save-flag' then automatic saving will kick in in the
+;;  middle of the command.  Some of the bookmarks with the added tags
+;;  will be automatically saved.  And that does not give you an
+;;  opportunity to cancel the changes (e.g., by quitting without
+;;  saving).
+;;
+;;  This is the reason for option `bmkp-count-multi-mods-as-one-flag',
+;;  whose default value is `t', which means count all of a sequence of
+;;  modifications together as one modification, as far as
+;;  `bookmark-save-flag' is concerned.
  
 ;;(@* "Different Types of Jump Commands")
 ;;  ** Different Types of Jump Commands **
