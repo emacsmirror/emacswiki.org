@@ -1,4 +1,4 @@
-This is a really simple mode to edit pages on Oddmuse wikis (such as EmacsWiki) using Emacs.
+This is a really simple mode to edit pages on Oddmuse wikis (such as EmacsWiki) using GNU Emacs.
 
 Project is currently hosted on savannah at
 
@@ -6,12 +6,12 @@ Project is currently hosted on savannah at
 
 oddmuse is also at: Lisp:oddmuse.el (not the latest version though).
 
-In the meanwhile, I also installed oddmuse-el on ohloh.net service:
-http://www.ohloh.net/p/oddmuse-el
-
 It works in Emacs 22 and further (if you use Emacs 21, check the section below).
 
 == Important Notice ==
+[new:XavierMaillard:2012-04-11 23:48 UTC]
+No this mode is not dead (not yet). I just did not have time for ages ;)
+
 [new:rubikitch:2009-02-21 00:09 UTC]
 I have switched to [[Yaoddmuse]]. So I'm finding someone to take over OddmuseMode. If you are interested in it, it's yours! -- [[rubikitch]]
 
