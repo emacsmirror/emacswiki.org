@@ -419,6 +419,10 @@ variable `wl-message-sort-field-list':
 Finally, you can toggle to full header view with "H" key. Do note, that if you have mime-buttons turned off, you probably want to include <code>"^Content-Disposition:"</code> in the above lists, so that you can see if there's an attachment in the message.
 
 
+== Messages in threads get paired up with wrong parent ==
+If two unrelated emails share the same subject, wl might/will group them together as being part of the same thread, to disable this set wl-summary-search-parent-by-subject-regexp to nil.
+
+
 == How can I TAB-complete on the folder petname?==
 Default behavior is to give the path when completing a folder. Set
 <code>(setq wl-use-folder-petname '(modeline read-folder))</code>, to
