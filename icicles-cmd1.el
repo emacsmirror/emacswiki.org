@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Sat Apr  7 16:34:43 2012 (-0700)
+;; Last-Updated: Mon Apr  9 18:56:49 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 23631
+;;     Update #: 23632
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-cmd1.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -2863,7 +2863,7 @@ You can use this command only from a bookmark-list display buffer
   (bmkp-bmenu-barf-if-not-in-menu-list)
   (icicle-candidate-set-save-1 (bmkp-bmenu-get-marked-files) 99))
 
-;;;###autoload (autoload ''icicle-bookmark-save-marked-files-as-project "icicles")
+;;;###autoload (autoload 'icicle-bookmark-save-marked-files-as-project "icicles")
 (defalias 'icicle-bookmark-save-marked-files-as-project ; Bound to `C-}' in *Bookmark List*.
     'icicle-bookmark-save-marked-files-persistently)
 ;;;###autoload (autoload 'icicle-bookmark-save-marked-files-persistently "icicles")
@@ -2953,7 +2953,7 @@ You can use this command only from a Dired buffer."
   (interactive)
   (icicle-candidate-set-save-1 (dired-get-marked-files) 99))
 
-;;;###autoload (autoload ''icicle-dired-save-marked-as-project "icicles")
+;;;###autoload (autoload 'icicle-dired-save-marked-as-project "icicles")
 (defalias 'icicle-dired-save-marked-as-project ; Bound to `C-}' in Dired.
     'icicle-dired-save-marked-persistently)
 ;;;###autoload (autoload 'icicle-dired-save-marked-persistently "icicles")
@@ -2976,7 +2976,7 @@ You can use this command only from a Dired buffer."
 
 
 (put 'icicle-dired-saved-file-candidates 'icicle-Completions-window-max-height 200)
-;;;###autoload (autoload ''icicle-dired-chosen-files "icicles")
+;;;###autoload (autoload 'icicle-dired-chosen-files "icicles")
 (defalias 'icicle-dired-chosen-files 'icicle-dired-saved-file-candidates)
 ;;;###autoload (autoload 'icicle-dired-saved-file-candidates "icicles")
 (defun icicle-dired-saved-file-candidates (prompt-for-dir-p)
@@ -3006,7 +3006,7 @@ Use \\<minibuffer-local-completion-map>`\\[icicle-candidate-set-save]' to save c
                                            (icicle-file-list)))))
     (dired (cons (generate-new-buffer-name "Icy File Set") (nreverse file-names)))))
 
-;;;###autoload (autoload ''icicle-dired-chosen-files-other-window "icicles")
+;;;###autoload (autoload 'icicle-dired-chosen-files-other-window "icicles")
 (defalias 'icicle-dired-chosen-files-other-window 'icicle-dired-saved-file-candidates-other-window)
 ;;;###autoload (autoload 'icicle-dired-saved-file-candidates-other-window "icicles")
 (defun icicle-dired-saved-file-candidates-other-window (prompt-for-dir-p) ; Bound `C-M-<' in Dired.
@@ -4993,7 +4993,7 @@ You are prompted for the FILES."
 ;;;###autoload (autoload 'icicle-bookmark-bookmark-file "icicles")
 (icicle-define-bookmark-command              "bookmark-file")                 ; `C-x j y'
 
-;;;###autoload (autoload ''icicle-select-bookmarked-region "icicles")
+;;;###autoload (autoload 'icicle-select-bookmarked-region "icicles")
 (defalias 'icicle-select-bookmarked-region 'icicle-bookmark-region-other-window)
 
 ;;;###autoload (autoload 'icicle-bookmarked-buffer-list "icicles")
@@ -7242,7 +7242,7 @@ and a final-choice key (e.g. `RET', `mouse-2') to choose the last one." ; Doc st
                sexps  (mapcar (lambda (sx) (car (read-from-string sx))) sexps))
     (when (interactive-p) (message "Sexps: %S" sexps))))
 
-;;;###autoload (autoload ''icicle-regexp-list "icicles")
+;;;###autoload (autoload 'icicle-regexp-list "icicles")
 (defalias 'icicle-regexp-list 'icicle-keyword-list)
 ;;;###autoload (autoload 'icicle-keyword-list "icicles")
 (icicle-define-command icicle-keyword-list ; Command name
