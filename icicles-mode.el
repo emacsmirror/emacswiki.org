@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 10:21:10 2006
 ;; Version: 22.0
-;; Last-Updated: Sat Apr  7 16:01:23 2012 (-0700)
+;; Last-Updated: Mon Apr  9 18:57:27 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 8555
+;;     Update #: 8556
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-mode.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -261,7 +261,7 @@ bindings in `*Completions*'.")
 ;;; Icicle mode command ----------------------------------------------
 
 ;; Main command.  Inspired from `icomplete-mode'.
-;;;###autoload (autoload ''icy-mode "icicles")
+;;;###autoload (autoload 'icy-mode "icicles")
 (defalias 'icy-mode 'icicle-mode)
 (when (fboundp 'define-minor-mode)      ; Emacs 21+ ------------
   (when (> emacs-major-version 22)
