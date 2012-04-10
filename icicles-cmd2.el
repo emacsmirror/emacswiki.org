@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Thu May 21 13:31:43 2009 (-0700)
 ;; Version: 22.0
-;; Last-Updated: Sat Apr  7 16:41:25 2012 (-0700)
+;; Last-Updated: Mon Apr  9 18:57:04 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 5342
+;;     Update #: 5343
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-cmd2.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -2649,7 +2649,7 @@ The `standard-syntax-table' definition of whitespace is used."
          (and (stringp string) (> (length string) 0) (string-match "\\S-" string)))
       (set-syntax-table orig-syntable))))
 
-;;;###autoload (autoload ''icicle-map "icicles")
+;;;###autoload (autoload 'icicle-map "icicles")
 (defalias 'icicle-map 'icicle-apply)
 ;;;###autoload (autoload 'icicle-apply "icicles")
 (defun icicle-apply (alist fn &optional nomsg predicate initial-input hist def inherit-input-method)
@@ -5460,7 +5460,7 @@ BEG, END, and WHERE."
     (unless marked-bufs (setq marked-bufs  (list (Buffer-menu-buffer t))))
     (apply #'icicle-search nil nil scan-fn-or-regexp require-match marked-bufs args)))
 
-;;;###autoload (autoload ''icicle-search-lines "icicles")
+;;;###autoload (autoload 'icicle-search-lines "icicles")
 (defalias 'icicle-search-lines 'icicle-occur) ; Bound to `M-s M-s l'.
 ;;;###autoload (autoload 'icicle-occur "icicles")
 (defun icicle-occur (beg end &optional where) ; Bound to `M-s M-s o', `C-c ''.
@@ -5796,7 +5796,7 @@ then a prefix argument changes the behavior, as follows:
       (kill-new (icicle-isearch-complete-past-string))
       (icicle-search (point-min) (point-max) regexp t))))
 
-;;;###autoload (autoload ''icicle-search-defs "icicles")
+;;;###autoload (autoload 'icicle-search-defs "icicles")
 (defalias 'icicle-search-defs 'icicle-imenu) ; Bound to `M-s M-s d'.
 ;;;###autoload (autoload 'icicle-imenu "icicles")
 (defun icicle-imenu (beg end require-match &optional where) ; Bound to `M-s M-s i', `C-c ='.
@@ -5859,7 +5859,7 @@ procedure name."
                  ,(icicle-search-where-arg)))
   (icicle-imenu-1 nil beg end require-match where))
 
-;;;###autoload (autoload ''icicle-search-defs-full "icicles")
+;;;###autoload (autoload 'icicle-search-defs-full "icicles")
 (defalias 'icicle-search-defs-full 'icicle-imenu-full) ; Bound to `M-s M-s D'.
 ;;;###autoload (autoload 'icicle-imenu-full "icicles")
 (defun icicle-imenu-full (beg end require-match &optional where) ; Bound to `M-s M-s I'.
