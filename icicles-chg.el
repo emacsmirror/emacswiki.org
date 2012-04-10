@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Sun Apr  8 13:53:50 2012 (-0700)
+;; Last-Updated: Mon Apr  9 19:08:53 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 8300
+;;     Update #: 8304
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-chg.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -85,6 +85,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd1.el'")
 ;;
+;; 2012/04/09 dadams
+;;     Fixed typos: double single-quotes in autoload cookies.
 ;; 2012/04/08 dadams
 ;;     Make autoload cookies for commands load icicles[.el] explicitly.
 ;; 2012/04/07 dadams
@@ -609,6 +611,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd2.el'")
 ;;
+;; 2012/04/09 dadams
+;;     Fixed typos: double single-quotes in autoload cookies.
 ;; 2012/04/08 dadams
 ;;     Make autoload cookies for commands load icicles[.el] explicitly.
 ;; 2012/04/03 dadams
@@ -3076,6 +3080,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-mcmd.el'")
 ;;
+;; 2012/04/09 dadams
+;;     Fixed typos: double single-quotes in autoload cookies.
 ;; 2012/04/08 dadams
 ;;     Make autoload cookies for commands load icicles[.el] explicitly.
 ;; 2012/03/31 dadams
@@ -4468,6 +4474,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-mode.el'")
 ;;
+;; 2012/04/09 dadams
+;;     Fixed typo: double single-quotes in autoload cookie.
 ;; 2012/04/08 dadams
 ;;     Make autoload cookies for commands load icicles[.el] explicitly.
 ;;     Removed autoload cookie from icicle-bind-isearch-keys (non-interactive).
