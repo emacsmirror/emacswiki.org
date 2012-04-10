@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Thu May 21 13:31:43 2009 (-0700)
 ;; Version: 22.0
-;; Last-Updated: Mon Apr  9 18:57:04 2012 (-0700)
+;; Last-Updated: Mon Apr  9 20:17:29 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 5343
+;;     Update #: 5344
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-cmd2.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -7132,9 +7132,9 @@ Use `mouse-2', `RET', or `S-RET' to finally choose a candidate, or
                           icicle-extra-candidates  icicle-orig-extra-cands) ; Restore it.
                     (when (eq 'self-insert-command binding)
                       (unless key (error "Cannot insert `%s'" key))
-                      (setq last-command-char  (aref key 0)))
+                      (setq last-command-event  (aref key 0)))
                     (when (eq 'digit-argument binding)
-                      (setq last-command-char  (aref key 0))
+                      (setq last-command-event  (aref key 0))
                       (icicle-msg-maybe-in-minibuffer "Numeric argument"))
                     (when (eq 'negative-argument binding)
                       (icicle-msg-maybe-in-minibuffer "Negative argument"))
