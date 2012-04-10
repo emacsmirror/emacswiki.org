@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Sat Apr  7 16:22:20 2012 (-0700)
+;; Last-Updated: Mon Apr  9 18:57:15 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 17942
+;;     Update #: 17943
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-mcmd.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -1352,7 +1352,7 @@ Bound to `M-_' in the minibuffer."
 
 ;; Top-level commands.  Could instead be in `icicles-cmd2.el'.
 ;;
-;;;###autoload (autoload ''toggle-icicle-ignoring-comments "icicles")
+;;;###autoload (autoload 'toggle-icicle-ignoring-comments "icicles")
 (defalias 'toggle-icicle-ignoring-comments 'icicle-toggle-ignoring-comments)
 ;;;###autoload (autoload 'icicle-toggle-ignoring-comments "icicles")
 (defun icicle-toggle-ignoring-comments () ; Bound to `C-M-;' in minibuffer.
@@ -1369,7 +1369,7 @@ Bound to `C-M-;' in the minibuffer."
 
 ;; Top-level commands.  Could instead be in `icicles-cmd2.el'.
 ;;
-;;;###autoload (autoload ''toggle-icicle-search-replace-common-match "icicles")
+;;;###autoload (autoload 'toggle-icicle-search-replace-common-match "icicles")
 (defalias 'toggle-icicle-search-replace-common-match 'icicle-toggle-search-replace-common-match)
 ;;;###autoload (autoload 'icicle-toggle-search-replace-common-match "icicles")
 (defun icicle-toggle-search-replace-common-match () ; Bound to `M-;' in minibuffer.
@@ -1386,7 +1386,7 @@ Bound to `M-;' in the minibuffer."
 
 ;; Top-level commands.  Could instead be in `icicles-cmd2.el'.
 ;;
-;;;###autoload (autoload ''toggle-icicle-search-replace-whole "icicles")
+;;;###autoload (autoload 'toggle-icicle-search-replace-whole "icicles")
 (defalias 'toggle-icicle-search-replace-whole 'icicle-toggle-search-replace-whole)
 ;;;###autoload (autoload 'icicle-toggle-search-replace-whole "icicles")
 (defun icicle-toggle-search-replace-whole ()
@@ -1401,11 +1401,11 @@ Bound to `M-_' in the minibuffer when searching."
 
 ;; Top-level commands.  Could instead be in `icicles-cmd2.el'.
 ;;
-;;;###autoload (autoload ''toggle-icicle-dot "icicles")
+;;;###autoload (autoload 'toggle-icicle-dot "icicles")
 (defalias 'toggle-icicle-dot 'icicle-toggle-dot)
-;;;###autoload (autoload ''toggle-icicle-. "icicles")
+;;;###autoload (autoload 'toggle-icicle-. "icicles")
 (defalias 'toggle-icicle-.   'icicle-toggle-dot)
-;;;###autoload (autoload ''icicle-toggle-. "icicles")
+;;;###autoload (autoload 'icicle-toggle-. "icicles")
 (defalias 'icicle-toggle-.   'icicle-toggle-dot)
 ;;;###autoload (autoload 'icicle-toggle-dot "icicles")
 (defun icicle-toggle-dot ()             ; Bound to `C-M-.' in minibuffer.
@@ -1539,7 +1539,7 @@ use the `Meta' key (e.g. `M-up') to increment in larger steps."
 
 ;; Top-level commands.  Could instead be in `icicles-cmd2.el'.
 ;;
-;;;###autoload (autoload ''cycle-icicle-TAB-completion-method "icicles")
+;;;###autoload (autoload 'cycle-icicle-TAB-completion-method "icicles")
 (defalias 'cycle-icicle-TAB-completion-method 'icicle-next-TAB-completion-method)
 ;;;###autoload (autoload 'icicle-next-TAB-completion-method "icicles")
 (defun icicle-next-TAB-completion-method (temporary-p) ; Bound to `C-(' in minibuffer.
@@ -1604,7 +1604,7 @@ restored as soon as you return to the top level."
 
 ;; Top-level commands.  Could instead be in `icicles-cmd2.el'.
 ;;
-;;;###autoload (autoload ''cycle-icicle-S-TAB-completion-method "icicles")
+;;;###autoload (autoload 'cycle-icicle-S-TAB-completion-method "icicles")
 (defalias 'cycle-icicle-S-TAB-completion-method 'icicle-next-S-TAB-completion-method)
 ;;;###autoload (autoload 'icicle-next-S-TAB-completion-method "icicles")
 (defun icicle-next-S-TAB-completion-method (temporary-p) ; Bound to `M-(' in minibuffer.
@@ -1648,7 +1648,7 @@ restored as soon as you return to the top level."
 
 ;; Top-level commands.  Could instead be in `icicles-cmd2.el'.
 ;;
-;;;###autoload (autoload ''cycle-icicle-sort-order "icicles")
+;;;###autoload (autoload 'cycle-icicle-sort-order "icicles")
 (defalias 'cycle-icicle-sort-order 'icicle-change-sort-order)
 ;;;###autoload (autoload 'icicle-change-sort-order "icicles")
 (defun icicle-change-sort-order (&optional arg alternativep) ; Bound to `C-,' in minibuffer.
@@ -2786,7 +2786,7 @@ Bound to `M-q' in the minibuffer."
 
 ;; Top-level commands.  Could instead be in `icicles-cmd2.el'.
 ;;
-;;;###autoload (autoload ''toggle-icicle-search-whole-word "icicles")
+;;;###autoload (autoload 'toggle-icicle-search-whole-word "icicles")
 (defalias 'toggle-icicle-search-whole-word 'icicle-toggle-search-whole-word)
 ;;;###autoload (autoload 'icicle-toggle-search-whole-word "icicles")
 (defun icicle-toggle-search-whole-word () ; Bound to `M-q' in minibuffer during Icicles search.
@@ -7135,7 +7135,7 @@ Use `left', `right', or the mouse wheel to adjust
 
 ;; Top-level commands.  Could instead be in `icicles-cmd2.el'.
 ;;
-;;;###autoload (autoload ''toggle-icicle-WYSIWYG-Completions "icicles")
+;;;###autoload (autoload 'toggle-icicle-WYSIWYG-Completions "icicles")
 (defalias 'toggle-icicle-WYSIWYG-Completions 'icicle-toggle-WYSIWYG-Completions)
 ;;;###autoload (autoload 'icicle-toggle-WYSIWYG-Completions "icicles")
 (defun icicle-toggle-WYSIWYG-Completions ()
@@ -7148,7 +7148,7 @@ Use `left', `right', or the mouse wheel to adjust
 
 ;; Top-level commands.  Could instead be in `icicles-cmd2.el'.
 ;;
-;;;###autoload (autoload ''toggle-icicle-~-for-home-dir "icicles")
+;;;###autoload (autoload 'toggle-icicle-~-for-home-dir "icicles")
 (defalias 'toggle-icicle-~-for-home-dir 'icicle-toggle-~-for-home-dir)
 ;;;###autoload (autoload 'icicle-toggle-~-for-home-dir "icicles")
 (defun icicle-toggle-~-for-home-dir ()  ; Bound to `M-~' in minibuffer.
@@ -7162,7 +7162,7 @@ Bound to `M-~' in the minibuffer."
 
 ;; Top-level commands.  Could instead be in `icicles-cmd2.el'.
 ;;
-;;;###autoload (autoload ''toggle-icicle-C-for-actions "icicles")
+;;;###autoload (autoload 'toggle-icicle-C-for-actions "icicles")
 (defalias 'toggle-icicle-C-for-actions 'icicle-toggle-C-for-actions)
 ;;;###autoload (autoload 'icicle-toggle-C-for-actions "icicles")
 (defun icicle-toggle-C-for-actions ()   ; Bound to `M-g' in minibuffer.
@@ -7177,7 +7177,7 @@ Bound to `M-g' in the minibuffer."
 
 ;; Top-level commands.  Could instead be in `icicles-cmd2.el'.
 ;;
-;;;###autoload (autoload ''toggle-icicle-alternative-sorting "icicles")
+;;;###autoload (autoload 'toggle-icicle-alternative-sorting "icicles")
 (defalias 'toggle-icicle-alternative-sorting 'icicle-toggle-alternative-sorting)
 ;;;###autoload (autoload 'icicle-toggle-alternative-sorting "icicles")
 (defun icicle-toggle-alternative-sorting () ; Bound to `C-M-,' in minibuffer.
@@ -7196,7 +7196,7 @@ Bound to `C-M-,' in the minibuffer."
 
 ;; Top-level commands.  Could instead be in `icicles-cmd2.el'.
 ;;
-;;;###autoload (autoload ''toggle-icicle-sorting "icicles")
+;;;###autoload (autoload 'toggle-icicle-sorting "icicles")
 (defalias 'toggle-icicle-sorting 'icicle-toggle-sorting)
 ;;;###autoload (autoload 'icicle-toggle-sorting "icicles")
 (defun icicle-toggle-sorting ()         ; Not bound to a key.
@@ -7216,7 +7216,7 @@ When sorting is active, comparison is done by `icicle-sort-comparer'."
 
 ;; Top-level commands.  Could instead be in `icicles-cmd2.el'.
 ;;
-;;;###autoload (autoload ''toggle-icicle-angle-brackets "icicles")
+;;;###autoload (autoload 'toggle-icicle-angle-brackets "icicles")
 (defalias 'toggle-icicle-angle-brackets 'icicle-toggle-angle-brackets)
 ;;;###autoload (autoload 'icicle-toggle-angle-brackets "icicles")
 (defun icicle-toggle-angle-brackets ()
@@ -7233,7 +7233,7 @@ When sorting is active, comparison is done by `icicle-sort-comparer'."
 
 ;; Top-level commands.  Could instead be in `icicles-cmd2.el'.
 ;;
-;;;###autoload (autoload ''toggle-icicle-proxy-candidates "icicles")
+;;;###autoload (autoload 'toggle-icicle-proxy-candidates "icicles")
 (defalias 'toggle-icicle-proxy-candidates 'icicle-toggle-proxy-candidates)
 ;;;###autoload (autoload 'icicle-toggle-proxy-candidates "icicles")
 (defun icicle-toggle-proxy-candidates () ; Bound to `C-M-_' in minibuffer.
@@ -7253,7 +7253,7 @@ to take effect.  (This is for performance reasons.)"
 
 ;; Top-level commands.  Could instead be in `icicles-cmd2.el'.
 ;;
-;;;###autoload (autoload ''toggle-icicle-transforming "icicles")
+;;;###autoload (autoload 'toggle-icicle-transforming "icicles")
 (defalias 'toggle-icicle-transforming 'icicle-toggle-transforming)
 ;;;###autoload (autoload 'icicle-toggle-transforming "icicles")
 (defun icicle-toggle-transforming ()    ; Bound to `C-$' in minibuffer.
@@ -7277,7 +7277,7 @@ Bound to `C-$' in the minibuffer."
 
 ;; Top-level commands.  Could instead be in `icicles-cmd2.el'.
 ;;
-;;;###autoload (autoload ''cycle-icicle-incremental-completion "icicles")
+;;;###autoload (autoload 'cycle-icicle-incremental-completion "icicles")
 (defalias 'cycle-icicle-incremental-completion 'icicle-cycle-incremental-completion)
 ;;;###autoload (autoload 'icicle-cycle-incremental-completion "icicles")
 (defun icicle-cycle-incremental-completion () ; Bound to `C-#' in minibuffer.
@@ -7303,7 +7303,7 @@ Bound to `C-#' in the minibuffer."
 
 ;; Top-level commands.  Could instead be in `icicles-cmd2.el'.
 ;;
-;;;###autoload (autoload ''cycle-icicle-expand-to-common-match "icicles")
+;;;###autoload (autoload 'cycle-icicle-expand-to-common-match "icicles")
 (defalias 'cycle-icicle-expand-to-common-match 'icicle-cycle-expand-to-common-match)
 ;;;###autoload (autoload 'icicle-cycle-expand-to-common-match "icicles")
 (defun icicle-cycle-expand-to-common-match () ; Bound to `C-M-"' in minibuffer.
@@ -7328,7 +7328,7 @@ This cycles among all possible values of the option.  See also
 
 ;; Top-level commands.  Could instead be in `icicles-cmd2.el'.
 ;;
-;;;###autoload (autoload ''toggle-icicle-expand-to-common-match "icicles")
+;;;###autoload (autoload 'toggle-icicle-expand-to-common-match "icicles")
 (defalias 'toggle-icicle-expand-to-common-match 'icicle-toggle-expand-to-common-match)
 ;;;###autoload (autoload 'icicle-toggle-expand-to-common-match "icicles")
 (defun icicle-toggle-expand-to-common-match () ; Bound to `C-"' in minibuffer.
@@ -7364,7 +7364,7 @@ Bound to `C-^' in the minibuffer."
 
 ;; Top-level commands.  Could instead be in `icicles-cmd2.el'.
 ;;
-;;;###autoload (autoload ''toggle-icicle-remote-file-testing "icicles")
+;;;###autoload (autoload 'toggle-icicle-remote-file-testing "icicles")
 (defalias 'toggle-icicle-remote-file-testing 'icicle-toggle-remote-file-testing)
 ;;;###autoload (autoload 'icicle-toggle-remote-file-testing "icicles")
 (defun icicle-toggle-remote-file-testing () ; Bound to `C-^' in minibuffer.
@@ -7397,7 +7397,7 @@ Bound to `C-^' in the minibuffer, except during Icicles searching."
 
 ;; NOT a top-level command (most toggle commands can be used at top-level).
 ;;
-;;;###autoload (autoload ''toggle-icicle-highlight-all-current "icicles")
+;;;###autoload (autoload 'toggle-icicle-highlight-all-current "icicles")
 (defalias 'toggle-icicle-highlight-all-current 'icicle-toggle-highlight-all-current)
 ;;;###autoload (autoload 'icicle-toggle-highlight-all-current "icicles")
 (defun icicle-toggle-highlight-all-current () ; Bound to `C-^' in minibuffer.
@@ -7435,7 +7435,7 @@ Bound to `C-x .' in the minibuffer."
 
 ;; Top-level commands.  Could instead be in `icicles-cmd2.el'.
 ;;
-;;;###autoload (autoload ''toggle-icicle-hiding-common-match "icicles")
+;;;###autoload (autoload 'toggle-icicle-hiding-common-match "icicles")
 (defalias 'toggle-icicle-hiding-common-match 'icicle-toggle-hiding-common-match)
 ;;;###autoload (autoload 'icicle-toggle-hiding-common-match "icicles")
 (defun icicle-toggle-hiding-common-match () ; Bound to `C-x .' in minibuf, via `icicle-dispatch-C-x.'.
@@ -7453,7 +7453,7 @@ See also option `icicle-hide-non-matching-lines-flag'."
 
 ;; Top-level commands.  Could instead be in `icicles-cmd2.el'.
 ;;
-;;;###autoload (autoload ''toggle-icicle-hiding-non-matching-lines "icicles")
+;;;###autoload (autoload 'toggle-icicle-hiding-non-matching-lines "icicles")
 (defalias 'toggle-icicle-hiding-non-matching-lines 'icicle-toggle-hiding-non-matching-lines)
 ;;;###autoload (autoload 'icicle-toggle-hiding-non-matching-lines "icicles")
 (defun icicle-toggle-hiding-non-matching-lines () ; Bound to `C-u C-x .' in minibuffer.
@@ -7469,7 +7469,7 @@ See also option `icicle-hide-common-match-in-Completions-flag'."
 
 ;; Top-level commands.  Could instead be in `icicles-cmd2.el'.
 ;;
-;;;###autoload (autoload ''toggle-icicle-show-multi-completion "icicles")
+;;;###autoload (autoload 'toggle-icicle-show-multi-completion "icicles")
 (defalias 'toggle-icicle-show-multi-completion 'icicle-toggle-show-multi-completion)
 ;;;###autoload (autoload 'icicle-toggle-show-multi-completion "icicles")
 (defun icicle-toggle-show-multi-completion () ; Bound to `M-m' in minibuffer.
@@ -7484,7 +7484,7 @@ Bound to `M-m' in the minibuffer."
 
 ;; Top-level commands.  Could instead be in `icicles-cmd2.el'.
 ;;
-;;;###autoload (autoload ''toggle-icicle-ignored-space-prefix "icicles")
+;;;###autoload (autoload 'toggle-icicle-ignored-space-prefix "icicles")
 (defalias 'toggle-icicle-ignored-space-prefix 'icicle-toggle-ignored-space-prefix)
 ;;;###autoload (autoload 'icicle-toggle-ignored-space-prefix "icicles")
 (defun icicle-toggle-ignored-space-prefix () ; Bound to `M-_' in minibuffer, except when searching.
@@ -7507,7 +7507,7 @@ duration of `icicle-buffer'."
 
 ;; Top-level commands.  Could instead be in `icicles-cmd2.el'.
 ;;
-;;;###autoload (autoload ''toggle-icicle-highlight-historical-candidates "icicles")
+;;;###autoload (autoload 'toggle-icicle-highlight-historical-candidates "icicles")
 (defalias 'toggle-icicle-highlight-historical-candidates
     'icicle-toggle-highlight-historical-candidates)
 ;;;###autoload (autoload 'icicle-toggle-highlight-historical-candidates "icicles")
@@ -7524,7 +7524,7 @@ Bound to `C-pause' in the minibuffer."
 
 ;; Top-level commands.  Could instead be in `icicles-cmd2.el'.
 ;;
-;;;###autoload (autoload ''toggle-icicle-highlight-saved-candidates "icicles")
+;;;###autoload (autoload 'toggle-icicle-highlight-saved-candidates "icicles")
 (defalias 'toggle-icicle-highlight-saved-candidates
     'icicle-toggle-highlight-saved-candidates)
 ;;;###autoload (autoload 'icicle-toggle-highlight-saved-candidates "icicles")
@@ -7541,7 +7541,7 @@ Bound to `S-pause' in the minibuffer."
 
 ;; Top-level commands.  Could instead be in `icicles-cmd2.el'.
 ;;
-;;;###autoload (autoload ''toggle-icicle-completions-format "icicles")
+;;;###autoload (autoload 'toggle-icicle-completions-format "icicles")
 (defalias 'toggle-icicle-completions-format
     'icicle-toggle-completions-format)
 ;;;###autoload (autoload 'icicle-toggle-completions-format "icicles")
@@ -7571,7 +7571,7 @@ Bound to `C-.' in the minibuffer."
 
 ;; Top-level commands.  Could instead be in `icicles-cmd2.el'.
 ;;
-;;;###autoload (autoload ''toggle-icicle-ignored-extensions "icicles")
+;;;###autoload (autoload 'toggle-icicle-ignored-extensions "icicles")
 (defalias 'toggle-icicle-ignored-extensions 'icicle-toggle-ignored-extensions)
 ;;;###autoload (autoload 'icicle-toggle-ignored-extensions "icicles")
 (defun icicle-toggle-ignored-extensions () ; Bound to `C-.' in minibuffer except in Icicles search.
@@ -7595,7 +7595,7 @@ Bound to `C-.' in minibuffer during file-name input."
 
 ;; Top-level commands.  Could instead be in `icicles-cmd2.el'.
 ;;
-;;;###autoload (autoload ''toggle-icicle-search-cleanup "icicles")
+;;;###autoload (autoload 'toggle-icicle-search-cleanup "icicles")
 (defalias 'toggle-icicle-search-cleanup 'icicle-toggle-search-cleanup)
 ;;;###autoload (autoload 'icicle-toggle-search-cleanup "icicles")
 (defun icicle-toggle-search-cleanup ()  ; Bound to `C-.' in minibuffer during Icicles search.
@@ -7611,7 +7611,7 @@ Bound to `C-.' in the minibuffer during Icicles search."
 
 ;; Top-level commands.  Could instead be in `icicles-cmd2.el'.
 ;;
-;;;###autoload (autoload ''toggle-icicle-search-complementing-domain "icicles")
+;;;###autoload (autoload 'toggle-icicle-search-complementing-domain "icicles")
 (defalias 'toggle-icicle-search-complementing-domain 'icicle-toggle-search-complementing-domain)
 ;;;###autoload (autoload 'icicle-toggle-search-complementing-domain "icicles")
 (defun icicle-toggle-search-complementing-domain () ; Bound to `C-M-~' in minibuffer.
@@ -7642,7 +7642,7 @@ Bound to `C-M-~' in the minibuffer."
 
 ;; Top-level commands.  Could instead be in `icicles-cmd2.el'.
 ;;
-;;;###autoload (autoload ''toggle-icicle-regexp-quote "icicles")
+;;;###autoload (autoload 'toggle-icicle-regexp-quote "icicles")
 (defalias 'toggle-icicle-regexp-quote 'icicle-toggle-regexp-quote)
 ;;;###autoload (autoload 'icicle-toggle-regexp-quote "icicles")
 (defun icicle-toggle-regexp-quote ()    ; Bound to `C-`' in minibuffer.
@@ -7681,7 +7681,7 @@ Bound to `M-%' in the minibuffer."
 
 ;; Top-level commands.  Could instead be in `icicles-cmd2.el'.
 ;;
-;;;###autoload (autoload ''toggle-icicle-literal-replacement "icicles")
+;;;###autoload (autoload 'toggle-icicle-literal-replacement "icicles")
 (defalias 'toggle-icicle-literal-replacement 'icicle-toggle-literal-replacement)
 ;;;###autoload (autoload 'icicle-toggle-literal-replacement "icicles")
 (defun icicle-toggle-literal-replacement () ; Bound to `C-M-`' in minibuffer.
@@ -7698,7 +7698,7 @@ Bound to `C-M-`' in the minibuffer."
 
 ;; Top-level commands.  Could instead be in `icicles-cmd2.el'.
 ;;
-;;;###autoload (autoload ''toggle-icicle-case-sensitivity "icicles")
+;;;###autoload (autoload 'toggle-icicle-case-sensitivity "icicles")
 (defalias 'toggle-icicle-case-sensitivity 'icicle-toggle-case-sensitivity)
 ;;;###autoload (autoload 'icicle-toggle-case-sensitivity "icicles")
 (defun icicle-toggle-case-sensitivity (file+buff-p) ; Bound to `C-S-a' in minibuffer, i.e., `C-A'.
