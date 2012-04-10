@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2012, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 09:05:21 2010 (-0700)
-;; Last-Updated: Tue Apr  3 13:19:01 2012 (-0700)
+;; Last-Updated: Mon Apr  9 19:33:07 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 1752
+;;     Update #: 1770
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-bmu.el
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -2987,6 +2987,7 @@ Interactively, you are required to confirm."
      this-bmk
      (bmkp-read-tag-completing "Tag: " (mapcar 'bmkp-full-tag (bmkp-get-tags this-bmk)))
      (read (read-string "Value: "))
+     nil
      'MSG)))
 
 ;;;###autoload
@@ -3011,6 +3012,7 @@ If any of the bookmarks has no tag named TAG, then add one with VALUE."
   (let ((bmk  (bookmark-bmenu-bookmark)))
     (bmkp-remove-tags bmk
                       (bmkp-read-tags-completing (mapcar 'bmkp-full-tag (bmkp-get-tags bmk)) t)
+                      nil
                       msgp)))
 
 ;;;###autoload
@@ -3022,11 +3024,12 @@ You can use completion to enter each tag, but you are not limited to
 choosing existing tags."
   (interactive (list (bmkp-read-tags-completing) 'MSG))
   (bmkp-bmenu-barf-if-not-in-menu-list)
-  (let ((marked  (bmkp-marked-bookmarks-only)))
+  (let ((marked          (bmkp-marked-bookmarks-only))
+        (bookmark-save   nil))          ; Save at most once, after `dolist'.
     (unless marked (error "No marked bookmarks"))
     (when msgp (message "Adding tags..."))
-    (dolist (bmk  (mapcar #'car marked)) (bmkp-add-tags bmk tags nil 'NO-CACHE-UPDATE)))
-  (bmkp-tags-list)                      ; Update the tags cache (only once, at end).
+    (dolist (bmk  (mapcar #'car marked)) (bmkp-add-tags bmk tags 'NO-UPDATE-P)))
+  (bmkp-tags-list)                      ; Update the tags cache now, after iterate.
   (when (and msgp tags) (message "Tags added: %S" tags)))
 
 ;;;###autoload
@@ -3034,17 +3037,18 @@ choosing existing tags."
   "Remove TAGS from each of the marked bookmarks.
 Hit `RET' to enter each tag, then hit `RET' again after the last tag.
 You can use completion to enter each tag."
-  (interactive (let ((cand-tags  ()))
+  (interactive (let ((cand-tags       ()))
                  (dolist (bmk  (bmkp-marked-bookmarks-only))
                    (setq cand-tags  (bmkp-set-union cand-tags (bmkp-get-tags bmk))))
                  (unless cand-tags (error "No tags to remove"))
                  (list (bmkp-read-tags-completing cand-tags t) 'MSG)))
   (bmkp-bmenu-barf-if-not-in-menu-list)
-  (let ((marked  (bmkp-marked-bookmarks-only)))
+  (let ((marked          (bmkp-marked-bookmarks-only))
+        (bookmark-save   nil))          ; Save at most once, after `dolist'.
     (unless marked (error "No marked bookmarks"))
     (when msgp (message "Removing tags..."))
-    (dolist (bmk  (mapcar #'car marked)) (bmkp-remove-tags bmk tags nil 'NO-CACHE-UPDATE)))
-  (bmkp-tags-list)                      ; Update the tags cache (only once, at end).
+    (dolist (bmk  (mapcar #'car marked)) (bmkp-remove-tags bmk tags 'NO-UPDATE-P)))
+  (bmkp-tags-list)                      ; Update the tags cache now, after iterate.
   (when (and msgp tags) (message "Tags removed: %S" tags)))
 
 ;;;###autoload
@@ -3255,7 +3259,7 @@ unmark those that have no tags at all."
   (interactive (list 'MSG))
   (bmkp-bmenu-barf-if-not-in-menu-list)
   (bookmark-bmenu-ensure-position)
-  (bmkp-paste-add-tags (bookmark-bmenu-bookmark) msgp))
+  (bmkp-paste-add-tags (bookmark-bmenu-bookmark) nil msgp))
 
 ;;;###autoload
 (defun bmkp-bmenu-paste-replace-tags (&optional msgp) ; `T q', `mouse-3' menu.
@@ -3263,18 +3267,19 @@ unmark those that have no tags at all."
   (interactive (list 'MSG))
   (bmkp-bmenu-barf-if-not-in-menu-list)
   (bookmark-bmenu-ensure-position)
-  (bmkp-paste-replace-tags (bookmark-bmenu-bookmark) msgp))
+  (bmkp-paste-replace-tags (bookmark-bmenu-bookmark) nil msgp))
 
 ;;;###autoload
 (defun bmkp-bmenu-paste-add-tags-to-marked (&optional msgp) ; `T > p', `T > C-y'
   "Add tags that were copied from another bookmark to the marked bookmarks."
   (interactive (list 'MSG))
   (bmkp-bmenu-barf-if-not-in-menu-list)
-  (let ((marked  (bmkp-marked-bookmarks-only)))
+  (let ((marked          (bmkp-marked-bookmarks-only))
+        (bookmark-save   nil))          ; Save at most once, after `dolist'.
     (unless marked (error "No marked bookmarks"))
     (when msgp (message "Adding tags..."))
-    (dolist (bmk  marked) (bmkp-paste-add-tags bmk nil 'NO-CACHE-UPDATE))
-    (bmkp-tags-list)                    ; Update the tags cache (only once, at end).
+    (dolist (bmk  marked) (bmkp-paste-add-tags bmk 'NO-UPDATE-P))
+    (bmkp-tags-list)                    ; Update the tags cache now, after iterate.
     (when msgp (message "Tags added: %S" bmkp-copied-tags))))
 
 ;;;###autoload
@@ -3282,11 +3287,12 @@ unmark those that have no tags at all."
   "Replace tags for the marked bookmarks with tags copied previously."
   (interactive (list 'MSG))
   (bmkp-bmenu-barf-if-not-in-menu-list)
-  (let ((marked  (bmkp-marked-bookmarks-only)))
+  (let ((marked          (bmkp-marked-bookmarks-only))
+        (bookmark-save   nil))          ; Save at most once, after `dolist'.
     (unless marked (error "No marked bookmarks"))
     (when msgp (message "Replacing tags..."))
-    (dolist (bmk  marked) (bmkp-paste-replace-tags bmk nil 'NO-CACHE-UPDATE))
-    (bmkp-tags-list)                    ; Update the tags cache (only once, at end).
+    (dolist (bmk  marked) (bmkp-paste-replace-tags bmk 'NO-UPDATE-P))
+    (bmkp-tags-list)                    ; Update the tags cache now, after iterate.
     (when msgp (message "Replacement tags: %S" bmkp-copied-tags))))
 
 
