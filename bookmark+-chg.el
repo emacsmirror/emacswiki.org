@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2012, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Sat Apr  7 14:46:45 2012 (-0700)
+;; Last-Updated: Mon Apr  9 20:00:25 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 14672
+;;     Update #: 14720
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-chg.el
 ;; Keywords: bookmarks, bookmark+
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -145,6 +145,20 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-1.el'")
 ;;
+;; 2012/04/09 dadams
+;;     bookmark-relocate, bmkp-edit-bookmark-records-send, bmkp-set-tag-value, bmkp-file-target-set,
+;;       bmkp-autofile-set:
+;;         Added optional arg NO-UPDATE-P.  Use it to inhibit display refreshing.
+;;     bmkp-edit-bookmark-records-send, bmkp-set-tag-value-for-bookmarks, bmkp-remove-tags-from-all,
+;;       bmkp-rename-tag, bmkp-purge-notags-autofiles, delete-all-autonamed-for-this-buffer
+;;       bmkp-delete(-all)-temporary-(bookmarks|no-confirm), bmkp-delete-bookmarks,
+;;       bmkp-delete-autonamed(-this-buffer)(-no-confirm):
+;;         Bind bookmark-save to nil around iteration, to inhibit saving until finished.
+;;     bmkp-(add|remove)(-all)-tags, bmkp-paste-(add|replace)-tags, bmkp-autofile-(add|remove)-tags:
+;;       Swapped order of args MSGP and NO-UPDATE-P (put MSGP last).
+;;     bmkp-(add|remove)(-all)-tags, bmkp-autofile-(add|remove)-tags:
+;;       Use NO-UPDATE-P also to inhibit display refreshing.
+;;     bmkp-remove-tags-from-all: Pass non-nil NO-UPDATE-P arg to bmkp-remove-tags.
 ;; 2012/04/07 dadams
 ;;     Added: bmkp-new-bookmark-default-names (option & function).
 ;;     Redefine bookmark-make-record (for all Emacs versions) to use bmkp-new-bookmark-default-names.
@@ -720,6 +734,15 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-bmu.el'")
 ;;
+;; 2012/04/09 dadams
+;;     bmkp-bmenu-set-tag-value, bmkp-bmenu-remove-tags, bmkp-bmenu-paste-(add|replace)-tags:
+;;       Added nil NO-UPDATE-P arg in calls to bmkp-set-tag-value, bmkp-remove-tags,
+;;       bmkp-paste-(add|replace)-tags.
+;;     bmkp-bmenu-add-tags-to-marked, bmkp-bmenu-remove-tags-from-marked,
+;;       bmkp-bmenu-paste-(add|replace)-tags-to-marked:
+;;         Bind bookmark-save to nil around iteration, to inhibit saving until finished.
+;;         New arg order for calls to bmkp-(add|remove)-tags.
+;;         Pass non-nil NO-UPDATE-P arg to bmkp-paste-(add|replace)-tags.
 ;; 2012/04/03 dadams
 ;;     Moved here from bookmark+-1.el: bmkp-face-prop.
 ;; 2012/03/19 dadams
