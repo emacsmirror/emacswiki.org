@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Mon Apr  9 18:57:15 2012 (-0700)
+;; Last-Updated: Mon Apr  9 20:18:07 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 17943
+;;     Update #: 17944
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-mcmd.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -2254,9 +2254,9 @@ you do not want this remapping, then customize option
 (defun icicle-digit-argument (arg)      ; Bound to `C-<0-9>', `M-<0-9>', `C-M-<0-9>' in minibuffer.
   "`digit-argument', but also echo the prefix."
   (interactive "P")
-  (let* ((char   (if (integerp last-command-char)
-                     last-command-char
-                   (get last-command-char 'ascii-character)))
+  (let* ((char   (if (integerp last-command-event)
+                     last-command-event
+                   (get last-command-event 'ascii-character)))
          (digit  (- (logand char ?\177) ?0)))
     (cond ((integerp arg)
            (setq prefix-arg  (+ (* arg 10) (if (< arg 0) (- digit) digit))))
