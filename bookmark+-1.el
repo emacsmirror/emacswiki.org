@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2012, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 13:43:55 2010 (-0700)
-;; Last-Updated: Mon Apr  9 19:43:25 2012 (-0700)
+;; Last-Updated: Tue Apr 10 09:50:11 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 5052
+;;     Update #: 5095
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-1.el
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -281,7 +281,8 @@
 ;;    `bmkp-auto-idle-bookmark-mode-set-function',
 ;;    `bmkp-autoname-bookmark-function', `bmkp-autoname-format',
 ;;    `bmkp-autotemp-bookmark-predicates',
-;;    `bmkp-bookmark-name-length-max', `bmkp-crosshairs-flag',
+;;    `bmkp-bookmark-name-length-max',
+;;    `bmkp-count-multi-mods-as-one-flag', `bmkp-crosshairs-flag',
 ;;    `bmkp-default-bookmark-name',
 ;;    `bmkp-default-handlers-for-file-types',
 ;;    `bmkp-desktop-no-save-vars',
@@ -740,6 +741,18 @@ These are the predefined type predicates:
 (defcustom bmkp-bookmark-name-length-max 70
   "*Max number of chars for default name for a bookmark with a region."
   :type 'integer :group 'bookmark-plus)
+
+;;;###autoload
+(defcustom bmkp-count-multi-mods-as-one-flag t
+  "*Non-nil means count multiple modifications as one.
+
+This is for `bookmark-alist-modification-count'.  Non-nil means that
+when you invoke a command that acts on multiple bookmarks or acts in
+multiple ways on one bookmark, all of changes together count as only
+one moficication.  That can prevent automatic saving of your bookmark
+file during the sequence of modifications, so that when the command is
+done you can choose not to save (i.e., to quit) if you like."
+  :type 'boolean :group 'bookmark-plus)
 
 ;;;###autoload
 (defcustom bmkp-crosshairs-flag (> emacs-major-version 21)
@@ -3140,12 +3153,13 @@ by `bmkp-bmenu-edit-marked' (`\\<bookmark-bmenu-mode-map>\\[bmkp-bmenu-edit-mark
   (let ((editbuf     (current-buffer))
         (read-error-msg
          (catch 'bmkp-edit-bookmark-records-send
-           (let ((edited-bookmarks  (condition-case err
-                                        (save-excursion (goto-char (point-min))  (read (current-buffer)))
-                                      (error (throw 'bmkp-edit-bookmark-records-send
-                                               (error-message-string err)))))
-                 (orig-bmks         (bmkp-marked-bookmarks-only))
-                 (bookmark-save     nil)) ; Save at most once, after `dolist'.
+           (let ((edited-bookmarks    (condition-case err
+                                          (save-excursion (goto-char (point-min))  (read (current-buffer)))
+                                        (error (throw 'bmkp-edit-bookmark-records-send
+                                                 (error-message-string err)))))
+                 (orig-bmks           (bmkp-marked-bookmarks-only))
+                 (bookmark-save-flag  (and (not bmkp-count-multi-mods-as-one-flag)
+                                           bookmark-save-flag))) ; Save only after `dolist'.
              (cond ((not (listp edited-bookmarks))
                     (throw 'bmkp-edit-bookmark-records-send "Not a list of bookmarks"))
                    ((not (= (length edited-bookmarks) bmkp-edit-bookmark-records-number))
@@ -4257,7 +4271,8 @@ If any of the bookmarks has no tag named TAG, then add one with VALUE."
 (defun bmkp-set-tag-value-for-bookmarks (bookmarks tag value) ; Not bound
   "Set the value of TAG to VALUE, for each of the BOOKMARKS.
 If any of the BOOKMARKS has no tag named TAG, then add one with VALUE."
-  (let ((bookmark-save  nil))           ; Save at most once, after `dolist'.
+  (let ((bookmark-save-flag  (and (not bmkp-count-multi-mods-as-one-flag)
+                                  bookmark-save-flag))) ; Save only after `dolist'.
     (dolist (bmk  bookmarks) (bmkp-set-tag-value bmk tag value 'NO-UPDATE-P))))
 
 ;;;###autoload
@@ -4337,9 +4352,9 @@ Non-interactively:
        (error "OK - deletion canceled")
      (list (bmkp-read-tags-completing nil t current-prefix-arg)
            'MSG)))
-  (let ((bookmark-save  nil))           ; Save at most once, after `dolist'.
-    (dolist (bmk  (bookmark-all-names))
-      (bmkp-remove-tags bmk tags 'NO-UPDATE-P)))
+  (let ((bookmark-save-flag  (and (not bmkp-count-multi-mods-as-one-flag)
+                                  bookmark-save-flag))) ; Save only after `dolist'.
+    (dolist (bmk  (bookmark-all-names)) (bmkp-remove-tags bmk tags 'NO-UPDATE-P)))
   (bmkp-tags-list)                      ; Update the tags cache (only once, at end).
   (when msgp (message "Tags removed from all bookmarks: %S" tags)))
 
@@ -4351,8 +4366,9 @@ about the deletion."
   (interactive (list (bmkp-read-tag-completing "Tag (old name): ")
                      (bmkp-read-tag-completing "New name: ")
                      'MSG))
-  (let ((tag-exists-p   nil)
-        (bookmark-save  nil))           ; Save at most once, after `dolist'.
+  (let ((tag-exists-p        nil)
+        (bookmark-save-flag  (and (not bmkp-count-multi-mods-as-one-flag)
+                                  bookmark-save-flag))) ; Save only after `dolist'.
     (dolist (bmk  (bookmark-all-names))
       (let ((newtags  (copy-alist (bmkp-get-tags bmk))))
         (when newtags
@@ -6468,8 +6484,9 @@ With a prefix arg, you are prompted for a PREFIX for the bookmark name."
                    (error "OK - deletion canceled")
                  (list (and current-prefix-arg (read-string "Prefix for bookmark name: "))
                        'MSGP)))
-  (let ((bmks           (bmkp-autofile-alist-only prefix))
-        (bookmark-save  nil)            ; Save at most once, after `dolist'.
+  (let ((bmks                (bmkp-autofile-alist-only prefix))
+        (bookmark-save-flag  (and (not bmkp-count-multi-mods-as-one-flag)
+                                  bookmark-save-flag)) ; Save only after `dolist'.
         record tags)
     ;; Needs Bookmark+ version of `bookmark-delete', which accepts a bookmark, not just its name.
     (dolist (bmk  bmks)
@@ -9722,7 +9739,8 @@ buffer part names the current buffer."
       (when (or (not msgp)
                 (y-or-n-p (format "Delete ALL autonamed bookmarks for buffer `%s'? "
                                   (buffer-name))))
-        (let ((bookmark-save   nil))    ; Save at most once, after `dolist'.
+        (let ((bookmark-save-flag   (and (not bmkp-count-multi-mods-as-one-flag)
+                                         bookmark-save-flag))) ; Save at most once, after `dolist'.
           (dolist (bmk  bmks-to-delete)  (bookmark-delete bmk 'BATCHP))) ; No refresh yet.
         (bmkp-refresh/rebuild-menu-list nil (not msgp)) ; Now refresh, after iterate.
         (when msgp (message "Deleted all bookmarks for buffer `%s'" (buffer-name)))))))
@@ -9733,9 +9751,10 @@ buffer part names the current buffer."
 Non-nil optional arg NO-REFRESH-P means do not refresh/rebuild the
 bookmark-list."
   (when (and bookmarks-already-loaded  bookmark-alist)
-    (let ((bmks-to-delete  (mapcar #'bmkp-bookmark-name-from-record
-                                   (bmkp-autonamed-this-buffer-alist-only)))
-          (bookmark-save  nil))         ; Save at most once, after `dolist'.
+    (let ((bmks-to-delete      (mapcar #'bmkp-bookmark-name-from-record
+                                       (bmkp-autonamed-this-buffer-alist-only)))
+          (bookmark-save-flag  (and (not bmkp-count-multi-mods-as-one-flag)
+                                    bookmark-save-flag))) ; Save at most once, after `dolist'.
       (dolist (bmk  bmks-to-delete)  (bookmark-delete bmk 'BATCHP))) ; No refresh yet.
     (unless no-refresh-p
       (bmkp-refresh/rebuild-menu-list nil 'BATCHP)))) ; Now refresh, after iterate.
@@ -9745,7 +9764,8 @@ bookmark-list."
 (defun bmkp-delete-autonamed-no-confirm ()
   "Delete all autonamed bookmarks for all buffers, without confirmation."
   (when (and bookmarks-already-loaded  bookmark-alist)
-    (let ((bookmark-save   nil))        ; Save at most once, after `dolist'.
+    (let ((bookmark-save-flag  (and (not bmkp-count-multi-mods-as-one-flag)
+                                    bookmark-save-flag))) ; Save at most once, after `dolist'.
       (dolist (buf  (buffer-list))
         (with-current-buffer buf
           (bmkp-delete-autonamed-this-buffer-no-confirm 'NO-REFRESH-P)))) ; No refresh yet.
@@ -10055,7 +10075,8 @@ make a bookmark temporary using `bmkp-make-bookmark-temporary' or
         (when msgp (message "No temporary bookmarks to delete"))
       (when (and msgp  (not (y-or-n-p (format "Delete ALL temporary bookmarks? "))))
         (error "OK - delete canceled"))
-      (let ((bookmark-save   nil))      ; Save at most once, after `dolist'.
+      (let ((bookmark-save-flag  (and (not bmkp-count-multi-mods-as-one-flag)
+                                      bookmark-save-flag))) ; Save at most once, after `dolist'.
         (dolist (bmk  bmks-to-delete)  (bookmark-delete bmk 'BATCHP))) ; No refresh yet.
       (bmkp-refresh/rebuild-menu-list nil (not msgp)) ; Now refresh, after iterate.
       (when msgp (message "Deleted all temporary bookmarks")))))
@@ -10065,7 +10086,8 @@ make a bookmark temporary using `bmkp-make-bookmark-temporary' or
   "Delete all temporary bookmarks, without confirmation."
   (when (and bookmarks-already-loaded  bookmark-alist)
     (let ((bmks-to-delete  (mapcar #'bmkp-bookmark-name-from-record (bmkp-temporary-alist-only)))
-          (bookmark-save   nil))        ; Save at most once, after `dolist'.
+          (bookmark-save-flag  (and (not bmkp-count-multi-mods-as-one-flag)
+                                    bookmark-save-flag))) ; Save at most once, after `dolist'.
       (dolist (bmk  bmks-to-delete)  (bookmark-delete bmk 'BATCHP))) ; No refresh yet.
     (bmkp-refresh/rebuild-menu-list nil 'BATCHP))) ; Now refresh, after iterate.    
 
@@ -10085,10 +10107,11 @@ Non-interactively:
  Non-nil MSGP means display informative messages."
   (interactive "d\nP\ni\np")
   (unless position (setq position  (point)))
-  (let ((bmks-to-delete  (and allp  (mapcar #'bmkp-bookmark-name-from-record
-                                            (bmkp-this-buffer-alist-only))))
-        (bmks-deleted    ())
-        (bookmark-save   nil)           ; Save at most once, after `dolist'.
+  (let ((bmks-to-delete      (and allp  (mapcar #'bmkp-bookmark-name-from-record
+                                                (bmkp-this-buffer-alist-only))))
+        (bmks-deleted        ())
+        (bookmark-save-flag  (and (not bmkp-count-multi-mods-as-one-flag)
+                                  bookmark-save-flag)) ; Save at most once, after `dolist'.
         bmk-pos)
     (when (and msgp  bmks-to-delete  (not (y-or-n-p (format "Delete ALL bookmarks in buffer `%s'? "
                                                             (buffer-name)))))
