@@ -93,7 +93,8 @@ enter <code>xhost +foo</code> into some terminal, then the host opens emacs and
 does <code>M-x make-frame-on-display RET bar:0.0</code>
 
 There's also [[Rudel]], a plugin for emacs which apparently makes it
-compatible with [http://www.divvun.no/doc/tools/gobby.html gobby].
+compatible with [http://www.divvun.no/doc/tools/gobby.html gobby]. 
+More alternatives are listed on the page [[CollaborativeEditing]].
 
 ----
 CategoryRemoteEmacs
