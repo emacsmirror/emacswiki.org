@@ -7,5 +7,10 @@ Open files with external applications. Works from everywhere (find-file, dired, 
 If you have problems making it work on MS Windows, have a look at [[Sunrise_Commander_Tips#ExternalApps | this tip]].
 
 RunAssoc is a similar (alternative) utility.
+
+[new]
+
+I've made a couple of improvements to this, and the author hasn't responded, so I put them up on [https://bitbucket.org/jpkotta/openwith/overview bitbucket].
+
 ----
 See also CategoryExternalUtilities
