@@ -1,6 +1,9 @@
 The following gives multiple approaches in EmacsLisp code for managing duplicate lines in a file.  Try them out by EvaluatingExpressions or by adding to your InitFile.  For duplicating lines see CopyFromAbove.
 
-Here's how to find duplicate lines and keep only the first occurrence.
+Without lisp, you can remove duplicates with M-x replace-regexp or query-replace-regexp, replacing \([^\n]+\n\)\1+ with \1. (Note that instead of \n, you should insert a line feed with C-Q C-J.)  In lisp, this is
+  (replace-regexp "\\([^\n]+\n\\)\\1+" "\\1").
+
+Here's some more fundamental lisp to find duplicate lines and keep only the first occurrence.
 
   (defun uniquify-all-lines-region (start end)
     "Find duplicate lines in region START to END keeping first occurrence."
