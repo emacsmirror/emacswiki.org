@@ -68,14 +68,11 @@ typing
 
     tmux -S /tmp/tmux-shared/myshare
 
-and if you're on a Mac, do
+and then do
 
     emacsclient --tty --socket-name /tmp/emacs-shared/server
 
 
-on Linux, do
-
-    emacsclient --tty
 
 
 === Other alternatives / further reading===
