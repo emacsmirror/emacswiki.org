@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams
 ;; Copyright (C) 2000-2012, Drew Adams, all rights reserved.
 ;; Created: Sun Aug 15 11:12:30 2010 (-0700)
-;; Last-Updated: Sun Jan  1 14:28:58 2012 (-0800)
+;; Last-Updated: Wed Apr 11 14:50:20 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 85
+;;     Update #: 88
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-mac.el
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -290,11 +290,11 @@ sort, and unsorted.")
                (not (equal bmkp-sort-comparer ',comparer))
                (setq bmkp-sort-comparer   ',comparer
                      bmkp-reverse-sort-p  nil))
-              (;; This sort order reversed.  Change to unsorted.
-               bmkp-reverse-sort-p
-               (setq bmkp-sort-comparer   nil))
-              (t;; This sort order - reverse it.
-               (setq bmkp-reverse-sort-p  t)))
+              (;; Not this sort order reversed - make it reversed.
+               (not bmkp-reverse-sort-p)
+               (setq bmkp-reverse-sort-p  t))
+              (t;; This sort order reversed.  Change to unsorted.
+               (setq bmkp-sort-comparer   nil)))
         (message "Sorting...")
         (bookmark-bmenu-ensure-position)
         (let ((current-bmk  (bookmark-bmenu-bookmark)))
