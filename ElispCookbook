@@ -339,26 +339,25 @@ Alternatively, replacing the `let' with `save-excursion'.
         n)))
   
   (decimal-number "536870911")
-  536870911
+  ==> 536870911
   
   (decimal-number "536870912")
-  536870912.0
+  ==> 536870912.0
   
   (decimal-number "3.141592653589793")
-  3.141592653589793
+  ==> 3.141592653589793
   
   (decimal-number "042")
-  42
+  ==> 42
   
   (decimal-number " 0 ")
-  0
+  ==> 0
   
   (decimal-number "000")
-  0
+  ==> 0
   
   (decimal-number "0.0")
-  0.0
-  
+  ==> 0.0
 
 === Random numbers ===
 
@@ -394,7 +393,12 @@ See IncrementNumber.
 
 == Dates and times ==
 
-=== Get today's date ===
+=== Today's date ===
+
+  (defun today-is ()
+    "Display current time."
+    (interactive)
+    (message (format-time-string "Today is %Y-%m-%d %T")))
 
 See InsertingTodaysDate.
 
@@ -780,6 +784,22 @@ the list:
 
 === Read ===
 
+  (defun file-string (file)
+    "Read the contents of a file and return as a string."
+    (with-temp-buffer
+      (insert-file-contents file)
+      (buffer-string)))
+
+On the chance that a buffer may already be actively visiting the file,
+consider using `find-file-noselect'
+
+  (defun file-string (file)
+    "Read the contents of a file and return as a string."
+    (with-current-buffer (find-file-noselect file)
+      (buffer-string)))
+
+=== Filter ===
+
 Processing a file is usually done with a temporary buffer:
 
  (defun process-file (file)
@@ -790,16 +810,8 @@ Processing a file is usually done with a temporary buffer:
        (insert-file-contents file)
        (goto-char (point-min))
        (while (not (eobp))
-       ;; do something here with buffer content
+         ;; do something here with buffer content
          (forward-line)))))
-
-On the chance that a buffer may already be actively visiting the file,
-consider using `find-file-noselect'
-
-  (defun file-string (file)
-    "Read the contents of a file and return as a string."
-    (with-current-buffer (find-file-noselect file)
-      (buffer-string)))
 
 === Write ===
 
@@ -833,34 +845,6 @@ in Emacs and its ok to edit the existing buffer.
       (save-buffer))
     (message "Writing file...done"))
 
-=== Finding files via wildcards and sorting by time ===
-
-    (defun get-matching-files-by-time (spec)
-      "Get a list of filenames, with names matching SPEC. SPEC may
-    include wildcards including * and ?.  The files returned are 
-    ordered according to the last-modified time, with the most
-    recently-modified file first.
-    "
-      (flet ((by-mtime (a b)
-                       (let ((a-mtime (nth 5 (file-attributes a)))
-                             (b-mtime (nth 5 (file-attributes b))))
-                         (or (> (nth 0 a-mtime) (nth 0 b-mtime))
-                             (and
-                              (eq (nth 0 a-mtime) (nth 0 b-mtime))
-                              (> (nth 1 a-mtime) (nth 1 b-mtime)))))))
-
-      (let ((allfiles (file-expand-wildcards spec)))
-        (sort allfiles 'by-mtime))))
-
-
-=== Get File contents as string ===
-
-    (defun file-contents-as-string (filename)
-      (with-temp-buffer
-        (insert-file-contents filename)
-        (buffer-substring-no-properties (point-min) (point-max))))
-
-
 === Searching within a File ===
 
 If you don't have grep, then you may need to write some Lisp which can find a match in a file.
@@ -874,13 +858,25 @@ If you don't have grep, then you may need to write some Lisp which can find a ma
         (error "Search failed"))))
   ==> "(add-to-list 'load-path \"/usr/share/emacs/site-lisp/\")"
 
-=== Filter ===
-
 === Locking ===
+
+    (unless (file-locked-p (buffer-file-name))
+       (lock-buffer))
 
 === Stat ===
 
-An interface to the kernel's stat(2) is provided by the function file-attributes. The way times are represented may be a bit unexpected, though.
+An interface to the kernel's stat(2) is provided by the function file-attributes.
+
+    (let* ((attrs (file-attributes (buffer-file-name)))
+           (atime (nth 4 attrs))
+           (mtime (nth 5 attrs))
+           (ctime (nth 6 attrs)))
+      (concat "File last accessed on "
+              (format-time-string "%Y-%m-%d %T" atime) "\n"
+              "File last modified on "
+              (format-time-string "%Y-%m-%d %T" mtime) "\n"
+              "File last changed on "
+              (format-time-string "%Y-%m-%d %T" ctime) "\n"))
 
 === Deleting ===
 
@@ -889,7 +885,78 @@ An interface to the kernel's stat(2) is provided by the function file-attributes
 
 === Copy, move and rename ===
 
+  (copy-file file new-name)
+
+  (rename-file file new-dir)
+
+  (rename-file file new-name)
+
 == Directories ==
+
+=== Listing ===
+
+All files in a directory sorted by name:
+
+  (directory-files "~/")
+  ==> ("." ".." ".bash_history" ".bashrc" ".emacs" ".emacs.d" "diary" "local" "public_html")
+
+File names matching a regular expression and in no particular order.
+
+  (directory-files "~/" (not 'absolute) "\\`\\." 'nosort)
+  ==> (".emacs.d" ".emacs" ".bash_history" ".bashrc" ".." ".")
+
+File names matching a wildcard expression sorted by name.
+
+  (let ((default-directory "~/"))
+    (file-expand-wildcards "?emacs*"))
+  ==> (".emacs" ".emacs.d")
+
+All files sorted by modification time:
+
+  (let ((default-directory "~/"))
+    (sort
+      (directory-files default-directory (not 'absolute) nil 'nosort)
+      (lambda (a b)
+        (time-less-p (nth 5 (file-attributes a))
+                     (nth 5 (file-attributes b))))))
+  ==> (".bashrc" "diary" "public_html" "local" ".bash_history" ".." ".emacs" ".emacs.d" ".")
+
+=== Recursion ===
+
+Here's an example of using `directory-files' to find all
+subdirectories in a subdirectory.
+
+Could potentially surpass `max-lisp-eval-depth' if the filesystem
+has a suffienctly complex number of subdirectories.
+
+  (defun directory-dirs (dir)
+    "Find all directories in DIR."
+    (unless (file-directory-p dir)
+      (error "Not a directory `%s'" dir))
+    (let ((dir (directory-file-name dir))
+          (dirs '())
+          (files (directory-files dir nil nil t)))
+        (dolist (file files)
+          (unless (member file '("." ".."))
+            (let ((file (concat dir "/" file)))
+              (when (file-directory-p file)
+                (setq dirs (append (cons file
+                                         (directory-dirs file))
+                                   dirs))))))
+        dirs))
+
+Giving `directory-dirs' an absolute file name:
+
+  (directory-dirs "/emacs/lisp")
+  ==> ("/usr/share/emacs/23.2/lisp/calc" "/usr/share/emacs/23.2/lisp/calendar"
+       "/usr/share/emacs/23.2/lisp/cedet" "/usr/share/emacs/23.2/lisp/cedet/ede" ...)
+
+Setting the `default-directory' to a directory allows
+`directory-dirs' to return relative file names for subdirectories.
+
+  (let ((default-directory "/usr/share/emacs/23.2/lisp"))
+    (directory-dirs "."))
+  ==> ("./calc" "./calendar" "./cedet" "./cedet/ede" ...)
 
 === Traversing ===
 
