@@ -62,7 +62,7 @@ Ctrl+D), from here you start up emacs:
 
 
 === Connecting to the host===
-With the host up and running, users in the =staff= (or whatever) group
+With the host up and running, users in the <code>users</code> (or whatever) group
 on the same machine should be able to connect to the host by simply
 typing
 
