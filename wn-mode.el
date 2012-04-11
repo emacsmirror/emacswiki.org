@@ -1,3 +1,7 @@
+;;; wn-model.el -- numeric window switching shortcuts
+;;; Version: 0.1
+;;; 
+
 ;;; Window number
 (defun wn-window-list ()
   "Return a list of ordered windows on the current frame"
@@ -54,3 +58,5 @@
   "wn-mode modeline face")
 
 (provide wn-mode)
+
+;;; wn-mode.el ends here
