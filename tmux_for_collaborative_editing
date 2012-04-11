@@ -11,8 +11,8 @@ sharing their account, I would recommend setting up a special account
 for the host. Note: other users don't need to share their accounts,
 only the host.
 === Prerequisites===
-- tmux version 1.6 or later
-- emacs version 23 or later
+* tmux version 1.6 or later
+* emacs version 23 or later
 
 === Setting up the host===
 This step has to be done just once for the host.
