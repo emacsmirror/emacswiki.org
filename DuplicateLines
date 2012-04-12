@@ -1,9 +1,27 @@
 The following gives multiple approaches in EmacsLisp code for managing duplicate lines in a file.  Try them out by EvaluatingExpressions or by adding to your InitFile.  For duplicating lines see CopyFromAbove.
 
-Without lisp, you can remove duplicates with M-x replace-regexp or query-replace-regexp, replacing \([^\n]+\n\)\1+ with \1. (Note that instead of \n, you should insert a line feed with C-Q C-J.)  In lisp, this is
-  (replace-regexp "\\([^\n]+\n\\)\\1+" "\\1").
+You can try to remove duplicate lines with ReplaceRegexp or , by replacing ##\([^ C-q C-j ]+ C-q C-j \)\1+## with ##\1##.   The Lisp version of this command would be
 
-Here's some more fundamental lisp to find duplicate lines and keep only the first occurrence.
+  (replace-regexp "\\([^\n]+\n\\)\\1+" "\\1")
+
+Since it doesn't backtrack, there's no way remove a line with more than one duplicate.
+
+{{{
+Duplicate line 1
+Unique line 1
+Duplicate line 1
+Duplicate line 1
+}}}
+
+It will leave duplicate lines.
+
+{{{
+Duplicate line 1
+Unique line 1
+Duplicate line 1
+}}}
+
+Here's some Lisp to find duplicate lines and keep only the first occurrence by starting each search and replace at the start of the last duplicate -- ##(goto-char start)##.
 
   (defun uniquify-all-lines-region (start end)
     "Find duplicate lines in region START to END keeping first occurrence."
@@ -53,7 +71,7 @@ Duplicate line 2
 Unique line 4
 }}}
 
-The above can also be done with another implementation that adds distinct lines to a temporary list, and checks each line in the list with `assoc'.
+Another implementation that adds distinct lines to a temporary list, and checks each line in the list with `assoc' will give the same result as the previous.
 
   (defun uniquify-all-lines-region (start end)
     "Find duplicate lines in region START to END keeping first occurrence."
@@ -91,7 +109,7 @@ Unique line 4
 
 Note that non-consecutive duplication of the first line are not removed.
 
-The Unix utility ##sort## can get the same result of unique lines as `M-x uniquify-all-lines-buffer' using the ##-u## argument.  However, the lines are sorted rather than kept in the order of first appearance.
+The Unix utility ##sort## and its ##-u## argument can give the same result of unique lines as `M-x uniquify-all-lines-buffer' .  However, the lines are sorted rather than kept in the order of first appearance.
 
 The output of ##sort -u## on the example above is:
 
@@ -107,7 +125,7 @@ Unique line 4
 
 
 The command `M-x uniquify-buffer-lines' will remove identical adjacent lines
-in the current buffer, similar to what is obtained with the Unix uniq command.
+in the current buffer, similar to what is obtained with the Unix ##uniq## command.
 
   (defun uniquify-region-lines (beg end)
     "Remove duplicate adjacent lines in region."
