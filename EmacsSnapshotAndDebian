@@ -47,3 +47,8 @@ GIT : git pull
 
 and then do a make and install as described in the Build section above.
 
+== Alternatives ==
+
+There is also a precompiled emacs-snapshot package available at http://emacs.naquadah.org/.
+It is rebuilt regularly and can be installed with a package mananger (like aptitude).
+
