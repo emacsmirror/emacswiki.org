@@ -1,6 +1,6 @@
 The following gives multiple approaches in EmacsLisp code for managing duplicate lines in a file.  Try them out by EvaluatingExpressions or by adding to your InitFile.  For duplicating lines see CopyFromAbove.
 
-You can try to remove duplicate lines with ReplaceRegexp or , by replacing ##\([^ C-q C-j ]+ C-q C-j \)\1+## with ##\1##.   The Lisp version of this command would be
+You can try to remove duplicate lines with ReplaceRegexp or `##C-M-%##' (`query-replace-regexp'), by replacing ##\([^ C-q C-j ]+ C-q C-j \)\1+## with ##\1##.  A newline is entered with a `C-q C-j'.  The Lisp version of this command would be
 
   (replace-regexp "\\([^\n]+\n\\)\\1+" "\\1")
 
