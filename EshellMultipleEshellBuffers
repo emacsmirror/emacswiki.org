@@ -12,4 +12,29 @@ multi-eshell-go-back -- Switch to the previous buffer in the shell ring.
 
 Q: What advantages does this provide over using M-x eshell-new along with various buffer switching techniques?
 
-A: Convenience, nothing more. One-button cycling through eshell buffers can be faster than C-x b *eshell*<2> (especially if you don't remember which *eshell*<?> you want to switch to). Also, is eshell-new part of emacs? It doesn't appear to be in 22.1.50 (of Carbon emacs). 
+A: Convenience, nothing more. One-button cycling through eshell buffers can be faster than C-x b *eshell*<2> (especially if you don't remember which *eshell*<?> you want to switch to). Also, is eshell-new part of emacs? It doesn't appear to be in 22.1.50 (of Carbon emacs).
+
+[new:Anonymous:2012-04-13 12:09 UTC]
+multi-eshell-function calls multi-eshell-shell-function that may change default-directory (the shell command does that). Thus, when wanting to start a new shell with multi-eshell-shell-function=shell, the new shell will be started in the same directory than the previous shell while it would make more sense to launch it in the default-directory where the multi-eshell was launched. This should fix this issues :
+
+{{{
+--- b/multi-eshell.el
++++ a/multi-eshell.el
+@@ -45,7 +45,16 @@
+   :type 'string
+   :group 'multi-eshell)
+
+-(defun multi-eshell-function () "This function opens the appropriate shell." (eval multi-eshell-shell-function) )
++(defun multi-eshell-function ()
++  "This function opens the appropriate shell and restores the default-directory
++after"
++  (let(
++	   (cur_dir default-directory)
++	   )
++   (eval multi-eshell-shell-function)
++   (setq default-directory cur_dir)
++   )
++)
+ ;;;(defvar multi-eshell-function `(shell) ) ;;; Defines the shell. ('shell) or ('eshell)
+ ;(defvar multi-eshell-name "*eshell*") ;;; Name of default shell or eshell buffer
+}}}
