@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Mon Apr  9 20:22:11 2012 (-0700)
+;; Last-Updated: Fri Apr 13 14:52:13 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 8306
+;;     Update #: 8315
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-chg.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -611,6 +611,9 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd2.el'")
 ;;
+;; 2012/04/13 dadams
+;;     Added: icicle-search-dired-get-files.
+;;     icicle-search-dired-marked: Use icicle-search-dired-get-files, not dired-get-marked-files.
 ;; 2012/04/09 dadams
 ;;     Changed last-command-char to last-command-event.
 ;;     Fixed typos: double single-quotes in autoload cookies.
@@ -1284,6 +1287,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-fn.el'")
 ;;
+;; 2012/04/13 dadams
+;;     icicle-files-within-1: Allow FILE-LIST to be a function.  *-within: Updated doc accordingly.
 ;; 2012/04/08 dadams
 ;;     icicle-minibuffer-default-add-dired-shell-commands: Make autoload cookie load icicles[.el].
 ;; 2012/03/30 dadams
@@ -6238,6 +6243,9 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-var.el'")
 ;;
+;; 2012/04/13 dadams
+;;     icicle-search-modes: For Dired, use icicle-search-dired-get-files, not dired-get-marked-files.
+;;     icicle-re-no-dot: Made it a defconst.
 ;; 2012/02/11 dadams
 ;;     icicle-current-raw-input, icicle-general-help-string, icicle-incremental-completion-p:
 ;;       Doc updates for input-expansion changes, including option name change (no -flag).
