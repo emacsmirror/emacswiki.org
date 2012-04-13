@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Thu May 21 13:31:43 2009 (-0700)
 ;; Version: 22.0
-;; Last-Updated: Mon Apr  9 20:17:29 2012 (-0700)
+;; Last-Updated: Fri Apr 13 14:05:56 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 5344
+;;     Update #: 5354
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-cmd2.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -214,7 +214,8 @@
 ;;    `icicle-search-char-prop-matches-p',
 ;;    `icicle-search-choose-buffers', `icicle-search-cleanup',
 ;;    `icicle-search-define-candidates',
-;;    `icicle-search-define-candidates-1', `icicle-search-final-act',
+;;    `icicle-search-define-candidates-1',
+;;    `icicle-search-dired-get-files', `icicle-search-final-act',
 ;;    `icicle-search-help',
 ;;    `icicle-search-highlight-all-input-matches',
 ;;    `icicle-search-highlight-and-maybe-replace',
@@ -5420,7 +5421,26 @@ BEG, END, and WHERE."
                  ,(not icicle-show-multi-completion-flag)))
   (unless (eq major-mode 'dired-mode)
     (error "Command `icicle-search-dired-marked' must be called from a Dired buffer"))
-  (apply #'icicle-search nil nil scan-fn-or-regexp require-match (dired-get-marked-files) args))
+  (apply #'icicle-search nil nil scan-fn-or-regexp require-match (icicle-search-dired-get-files) args))
+
+(defun icicle-search-dired-get-files ()
+  "Return files for `icicle-search' in Dired mode.
+The files are those that are marked in the current Dired buffer, or
+all files in the directory if none are marked.
+Marked subdirectories are handled recursively in the same way."
+  (let ((files  ()))
+    (icicle-files-within
+     #'(lambda ()
+         ;; If none marked, exclude (t FILENAME): the unmarked file at cursor.
+         ;; If none as a result, then return all files in the dir (but no subdirs).
+         (let ((ff  (dired-get-marked-files nil nil nil 'DISTINGUISH-ONE-MARKED)))
+           (cond ((eq t (car ff))  (cdr ff))
+                 ((cadr ff)        ff)
+                 (t                (icicle-remove-if
+                                    #'file-directory-p
+                                    (directory-files default-directory 'FULL icicle-re-no-dot))))))
+                    
+     files)))
 
 ;;;###autoload (autoload 'icicle-search-ibuffer-marked "icicles")
 (defun icicle-search-ibuffer-marked (scan-fn-or-regexp require-match ; Bound to `M-s M-s m' in Ibuffer.
