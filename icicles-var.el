@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:23:26 2006
 ;; Version: 22.0
-;; Last-Updated: Sat Feb 11 14:40:58 2012 (-0800)
+;; Last-Updated: Fri Apr 13 13:58:15 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 1606
+;;     Update #: 1609
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-var.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -17,11 +17,10 @@
 ;;
 ;; Features that might be required by this library:
 ;;
-;;   `apropos', `apropos-fn+var', `backquote', `bytecomp', `cl',
-;;   `el-swank-fuzzy', `ffap', `ffap-', `fuzzy', `fuzzy-match',
-;;   `hexrgb', `icicles-face', `icicles-opt', `kmacro',
-;;   `levenshtein', `naked', `regexp-opt', `thingatpt', `thingatpt+',
-;;   `wid-edit', `widget'.
+;;   `apropos', `apropos-fn+var', `cl', `el-swank-fuzzy', `ffap',
+;;   `ffap-', `fuzzy', `fuzzy-match', `hexrgb', `icicles-face',
+;;   `icicles-opt', `kmacro', `levenshtein', `naked', `regexp-opt',
+;;   `thingatpt', `thingatpt+', `wid-edit', `widget'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -1199,7 +1198,8 @@ Depending on the value of option
 `icicle-unpropertize-completion-result-flag', it may also remove all
 text properties.")
 
-(defvar icicle-re-no-dot "^\\([^.]\\|\\.\\([^.]\\|\\..\\)\\).*"
+;; Same as `directory-files-no-dot-files-regexp' in `files.el', available for Emacs 23+.
+(defconst icicle-re-no-dot "^\\([^.]\\|\\.\\([^.]\\|\\..\\)\\).*"
   "Regexp that matches anything except `.' and `..'.")
 
 (defvar icicle-require-match-p nil
@@ -1335,7 +1335,7 @@ current search context.")
 It is bound to the key prefix `icicle-search-key-prefix'.")
 
 (defvar icicle-search-modes
-  '((dired-mode           (dired-get-marked-files))
+  '((dired-mode           (icicle-search-dired-get-files))
     (ibuffer-mode         (nreverse (ibuffer-get-marked-buffers)))
     (Buffer-menu-mode     (Buffer-menu-marked-buffers))
     (bookmark-bmenu-mode  (progn (unless (fboundp 'bmkp-bmenu-get-marked-files)
