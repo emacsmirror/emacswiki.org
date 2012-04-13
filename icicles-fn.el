@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:53 2006
 ;; Version: 22.0
-;; Last-Updated: Sat Apr  7 15:45:34 2012 (-0700)
+;; Last-Updated: Fri Apr 13 14:44:21 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 12957
+;;     Update #: 12964
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-fn.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -5430,35 +5430,52 @@ there are no such matching candidates, then LIST is returned."
 
 (defun icicle-files-within (file-list accum &optional no-symlinks-p)
   "List of all readable files in FILE-LIST.
-Accessible directories in FILE-LIST are processed recursively to
-include their files and the files in their subdirectories.
+FILE-LIST is a list of file names or a function that returns such.
+If a function then invoke it with no args to get the list of files.
 
-Optional arg NO-SYMLINKS-P non-nil means do not follow symbolic links.
+Accessible directories in the list of files are processed recursively
+to include their files and the files in their subdirectories.
+
+But if there is a Dired buffer for such a directory, and if FILE-LIST
+is a function, then it is invoked in that Dired buffer to return the
+list of files to use.  E.g., if FILE-LIST is `dired-get-marked-files'
+then only the marked files and subdirectories are included.  If you
+have more than one Dired buffer for a directory that is processed
+here, then only the first one in `dired-buffers' is used.
 
 The list of files is accumulated in ACCUM, which is used for recursive
 calls.
-Bind `icicle-dirs-done' for use as free var elsewhere."
+
+Optional arg NO-SYMLINKS-P non-nil means do not follow symbolic links."
+  ;; Binds `icicle-dirs-done' for use as free var in `icicle-files-within-1'."
   (let ((icicle-dirs-done  ()))
     (icicle-files-within-1 file-list accum no-symlinks-p)))
 
 (defun icicle-files-within-1 (file-list accum no-symlinks-p) ; `icicle-dirs-done' is free here.
   "Helper for `icicle-files-within'."
-  (let ((res  accum)
+  (let ((files  (if (functionp file-list) (funcall file-list) file-list))
+        (res    accum)
         file)
-    (while file-list
-      (setq file  (car file-list))
-      (unless (and no-symlinks-p (file-symlink-p file))
+    (while files
+      (setq file  (car files))
+      (unless (and no-symlinks-p  (file-symlink-p file))
         (if (file-directory-p file)
             ;; Skip directory if ignored, already treated, or inaccessible.
             (when (and (not (member (file-name-nondirectory file) icicle-ignored-directories))
                        (not (member (file-truename file) icicle-dirs-done))
                        (file-accessible-directory-p file))
-              (setq res  (icicle-files-within-1 (directory-files file 'full icicle-re-no-dot)
-                                                res
-                                                no-symlinks-p))
+              (setq res  (icicle-files-within-1
+                          (or (and (functionp file-list)
+                                   (assoc (file-name-as-directory file) dired-buffers)
+                                   (with-current-buffer
+                                       (cdr (assoc (file-name-as-directory file) dired-buffers))
+                                     (funcall file-list)))
+                              (directory-files file 'FULL icicle-re-no-dot))
+                          res
+                          no-symlinks-p))
               (push (file-truename file) icicle-dirs-done))
           (when (file-readable-p file) (setq res  (cons file res)))))
-      (pop file-list))
+      (pop files))
     res))
 
 (defun icicle-delete-whitespace-from-string (string &optional from to)
