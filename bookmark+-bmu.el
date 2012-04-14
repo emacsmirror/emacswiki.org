@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2012, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 09:05:21 2010 (-0700)
-;; Last-Updated: Fri Apr 13 17:11:56 2012 (-0700)
+;; Last-Updated: Sat Apr 14 07:05:17 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 1822
+;;     Update #: 1827
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-bmu.el
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -1428,12 +1428,21 @@ Bookmark Highlighting
 \\[bmkp-unlight-bookmark-here]\t- Unhighlight a bookmark at point or on same line
 
 
-Sort (`*Bookmark List*')
-------------------------
+Sort `*Bookmark List*'
+----------------------
 
 \(Repeat to cycle normal/reversed/off, except as noted.)
 
-\\[bmkp-bmenu-sort-marked-before-unmarked]\t- Sort marked bookmarks first
+\\[bmkp-reverse-sort-order]\t- Reverse current sort direction       (repeat to toggle)
+\\[bmkp-reverse-multi-sort-order]\t- Complement sort predicate decisions  (repeat \
+to toggle)
+\\[bmkp-bmenu-change-sort-order-repeat]\t- Cycle sort orders                    (repeat \
+to cycle)
+
+\\[bmkp-bmenu-sort-marked-before-unmarked]\t- Sort marked (`>') bookmarks first
+\\[bmkp-bmenu-sort-flagged-before-unflagged]\t- Sort flagged (`D') bookmarks first
+\\[bmkp-bmenu-sort-modified-before-unmodified]\t- Sort modified (`*') bookmarks first
+
 \\[bmkp-bmenu-sort-by-last-buffer-or-file-access]\t- Sort by last buffer or file \
 access
 \\[bmkp-bmenu-sort-by-Gnus-thread]\t- Sort by Gnus thread: group, article, message
@@ -1450,12 +1459,6 @@ access
 \\[bmkp-bmenu-sort-by-local-file-size]\t- Sort by local file size
 \\[bmkp-bmenu-sort-by-last-local-file-access]\t- Sort by last local file access
 \\[bmkp-bmenu-sort-by-last-local-file-update]\t- Sort by last local file update (edit)
-
-\\[bmkp-reverse-sort-order]\t- Reverse current sort direction       (repeat to toggle)
-\\[bmkp-reverse-multi-sort-order]\t- Complement sort predicate decisions  (repeat \
-to toggle)
-\\[bmkp-bmenu-change-sort-order-repeat]\t- Cycle sort orders                    (repeat \
-to cycle)
 
 
 Hide/Show (`*Bookmark List*')
