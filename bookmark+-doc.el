@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2012, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Tue Apr 10 14:03:41 2012 (-0700)
+;; Last-Updated: Sat Apr 14 07:03:16 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 14544
+;;     Update #: 14547
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-doc.el
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search,
 ;;           info, url, w3m, gnus
@@ -1178,10 +1178,12 @@
 ;;
 ;;  If, for example, when you quit the bookmark list you are showing
 ;;  only bookmarks to Info nodes and UNIX manual pages, sorted in a
-;;  particular way, and with some of them marked for particular
-;;  processing, then the next time you open the list the same state is
-;;  restored: the same set of bookmarks is shown, in the same order,
-;;  with the same markings.
+;;  particular way, and with some of them marked with `>' for
+;;  particular processing, then the next time you open the list the
+;;  same state is restored: the same set of bookmarks is shown, in the
+;;  same order, with the same markings.  Deletion flags (`D') and
+;;  modification indicators (`*') are purposefully not saved as part
+;;  of the display state - they are lost when you quit the display.
 ;;
 ;;  You can turn off this automatic bookmark-list display state
 ;;  saving, if you want, by customizing option `bmkp-bmenu-state-file'
@@ -2268,8 +2270,8 @@
 ;;  `bmkp-sort-orders-for-cycling-alist'.
 ;;
 ;;  You can also change directly to one of the main sort orders
-;;  (without cycling) using `s n', `s f n', etc. - use `C-h m' or `?'
-;;  for more info.
+;;  (without cycling) using `s >', `s n', `s f n', etc. - use `C-h m'
+;;  or `?'  for more info.
 ;;
 ;;  You can reverse the current sort direction (ascending/descending)
 ;;  using `s r'.  Also, repeating any of the main sort-order commands
