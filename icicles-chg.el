@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Fri Apr 13 14:52:13 2012 (-0700)
+;; Last-Updated: Sat Apr 14 06:52:08 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 8315
+;;     Update #: 8316
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-chg.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -611,6 +611,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd2.el'")
 ;;
+;; 2012/04/14 dadams
+;;     icicle-search-dired-get-files: Moved handling of IGNORE-MARKS-P outside the lambda.
 ;; 2012/04/13 dadams
 ;;     Added: icicle-search-dired-get-files.
 ;;     icicle-search-dired-marked: Use icicle-search-dired-get-files, not dired-get-marked-files.
