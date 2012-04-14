@@ -826,6 +826,15 @@ To write something to a file you can create a temporary buffer, insert the thing
                      (point-max)
                      file))))
 
+Another way to do this is via with-temp-file: 
+
+ (defun write-string-to-file (string file)
+   (interactive "sEnter the string: \nFFile to save to: ")
+   (with-temp-file file
+     (insert string)))
+
+
+
 === Input and output (I/O) ===
 
 This is a nice and simple way to edit a file with Emacs Lisp,
