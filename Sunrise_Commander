@@ -641,9 +641,9 @@ Hi. I am new to Sunrise Commander. Looks very powerful! My problem: my screen is
 [new:::]
 *Update 28-03-2012:* Since version 5r414, the procedure for hiding selected
 attributes columns has been dramatically simplified. Check out the
-[[http://www.emacswiki.org/emacs/Sunrise_Commander_Tips#toc17|How do I hide (or
-modify) selected columns in the list of attributes?]] section in the
-[[Sunrise Commander Tips|Tips & Tricks page]] for more details.
+[[Sunrise_Commander_Tips#HideAttributesSelectively |How do I hide (or modify)
+selected columns in the list of attributes?]] section in the
+[[Sunrise_Commander_Tips|Tips & Tricks page]] for more details.
 
 Another possibility is  simply to use the vertical layout  by default: press C-c
 C-s once and see if you like it. If you do you can do:
