@@ -431,14 +431,52 @@ If instead of t we provide at some position the name of a custom function:
 
     '(my/octal-permissions nil nil t nil nil nil)
 
-then that function (//my/octal-permissions// in this case) will be used to
-transform the value of its corresponding column into something different that
+then that function (<code>my/octal-permissions</code> in this case) will be used
+to transform the value of its corresponding column into something different that
 will replace its original value, instead of just hiding it.
 
 The rule of thumb here is: if you can achieve the same result either by setting
 an appropriate value for the listing switches (`sr-listing-switches' and
 `sr-virtual-listing-switches') or by setting `sr-attributes-display-mask', then
 prefer always the first option -- it will always have better performance.
+
+----
+[:OctalAttributes]
+==How to display the permissions of files and directories in octal?==
+
+One of the most unfathomed mysteries in life is why <code>ls</code> did never
+provide an option to display file permissions in octal. After all that's what
+überhackers use all the time isn't it? Well, if you read carefully
+[[#HideAttributesSelectively | the previous tip]] then you know this can be
+achieved in Sunrise with little effort.
+
+Here is a function (<code>my/octal-permissions</code>) than can be used in a
+display mask to automatically convert the permissions column from symbolic
+notation to octal in SC:
+
+    (defvar my/octal-memo nil "Memoization cache for ls permissions.")
+
+    (defun my/octal-permissions (input)
+      "Convert ls permissions from symbolic representation to octal."
+      (flet ((convert (part)
+                      (or (assoc-default part my/octal-memo)
+                          (let ((perms 0) (flags 0)
+                                (perm-n '((?r . 4) (?w . 2) (?x . 1) (?s . 1) (?t . 1)))
+                                (flag-n '((?s . 1) (?S . 1) (?t . 1) (?T . 1))))
+                            (mapc (lambda (x)
+                                    (setq perms (+ (or (assoc-default x perm-n) 0) perms))
+                                    (setq flags (+ (or (assoc-default x flag-n) 0) flags)))
+                                  (string-to-list part))
+                            (cdar (add-to-list
+                                   'my/octal-memo
+                                   `(,part . ,(list (number-to-string perms) flags)))))))
+             (combine (user group other)
+                      (let ((flags (+ (* 4 (cadr user)) (* 2 (cadr group)) (cadr other))))
+                        (concat (if (zerop flags) " " (number-to-string flags))
+                                (car user) (car group) (car other) " "))))
+        (combine (convert (substring-no-properties input 1 4))
+                 (convert (substring-no-properties input 4 7))
+                 (convert (substring-no-properties input 7)))))
 
 ----
 [:NavigationAndTracking]
