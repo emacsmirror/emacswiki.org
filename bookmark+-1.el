@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2012, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 13:43:55 2010 (-0700)
-;; Last-Updated: Tue Apr 10 09:50:11 2012 (-0700)
+;; Last-Updated: Fri Apr 13 17:01:56 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 5095
+;;     Update #: 5133
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-1.el
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -363,7 +363,8 @@
 ;;    `bmkp-file-this-dir-bookmark-p',
 ;;    `bmkp-file-this-dir-some-tags-alist-only',
 ;;    `bmkp-file-this-dir-some-tags-regexp-alist-only',
-;;    `bmkp-float-time', `bmkp-full-tag', `bmkp-function-bookmark-p',
+;;    `bmkp-flagged-bookmark-p', `bmkp-flagged-cp', `bmkp-float-time',
+;;    `bmkp-full-tag', `bmkp-function-bookmark-p',
 ;;    `bmkp-get-autofile-bookmark', `bmkp-get-bookmark-in-alist',
 ;;    `bmkp-get-buffer-name', `bmkp-get-end-position',
 ;;    `bmkp-get-tag-value', `bmkp-get-tags', `bmkp-get-visit-time',
@@ -400,6 +401,7 @@
 ;;    `bmkp-man-alist-only', `bmkp-man-bookmark-p',
 ;;    `bmkp-marked-bookmark-p', `bmkp-marked-bookmarks-only',
 ;;    `bmkp-marked-cp', `bmkp-maybe-save-bookmarks',
+;;    `bmkp-modified-bookmark-p', `bmkp-modified-cp',
 ;;    `bmkp-msg-about-sort-order', `bmkp-multi-sort',
 ;;    `bmkp-names-same-bookmark-p', `bmkp-non-autonamed-alist-only',
 ;;    `bmkp-non-file-alist-only', `bmkp-non-file-bookmark-p',
@@ -597,7 +599,7 @@
 ;; bmkp-bmenu-before-hide-marked-alist,
 ;; bmkp-bmenu-before-hide-unmarked-alist, bmkp-bmenu-commands-file,
 ;; bmkp-bmenu-filter-function, bmkp-bmenu-filter-pattern,
-;; bmkp-bmenu-first-time-p, bmkp-bmenu-goto-bookmark-named,
+;; bmkp-bmenu-first-time-p, bmkp-flagged-bookmarks, bmkp-bmenu-goto-bookmark-named,
 ;; bmkp-bmenu-marked-bookmarks, bmkp-bmenu-omitted-bookmarks,
 ;; bmkp-bmenu-refresh-menu-list, bmkp-bmenu-show-all,
 ;; bmkp-bmenu-state-file, bmkp-bmenu-title,
@@ -1697,9 +1699,12 @@ Return the new bookmark."
     ;; If it needs to be stripped, that will be done when saving.
     (put-text-property 0 (length bname) 'bmkp-full-record bmk bname)
     (bmkp-maybe-save-bookmarks)
-    (add-to-list 'bmkp-modified-bookmarks bmk)
-    (when (boundp 'bmkp-setting-auto-idle-bmk-p)
-      (add-to-list 'bmkp-auto-idle-bookmarks (bmkp-bookmark-record-from-name bname)))
+    ;; These two are the same as `add-to-list' with `EQ' (not available for Emacs 20-21).
+    (unless (memq bmk bmkp-modified-bookmarks)
+      (setq bmkp-modified-bookmarks  (cons bmk bmkp-modified-bookmarks)))
+    (when (and (boundp 'bmkp-setting-auto-idle-bmk-p)
+               (not (memq bmk bmkp-auto-idle-bookmarks)))
+      (setq bmkp-auto-idle-bookmarks  (cons bmk bmkp-auto-idle-bookmarks)))
     (setq bookmark-current-bookmark  bname)
     (bmkp-refresh/rebuild-menu-list bmk)
     bmk))                               ; Return the bookmark.
@@ -2051,7 +2056,9 @@ BOOKMARK is a bookmark name or a bookmark record."
   ;; Do this regardless of Emacs version and `bmkp-propertize-bookmark-names-flag'.
   ;; If it needs to be stripped, that will be done when saving.
   (put-text-property 0 (length newname) 'bmkp-full-record bookmark newname)
-  (add-to-list 'bmkp-modified-bookmarks bookmark))
+  ;; This is the same as `add-to-list' with `EQ' (not available for Emacs 20-21).
+  (unless (memq bookmark bmkp-modified-bookmarks)
+    (setq bmkp-modified-bookmarks  (cons bookmark bmkp-modified-bookmarks))))
 
 
 ;; REPLACES ORIGINAL in `bookmark.el'.
@@ -2157,7 +2164,9 @@ If it is a record then it need not belong to `bookmark-alist'."
       (if (consp (car (cadr bmk)))      ; Old format: ("name" ((filename . "f")...))
           (setcdr bmk (list (cons (cons prop val) (cadr bmk))))
         (setcdr bmk (cons (cons prop val) (cdr bmk))))) ; New: ("name" (filename . "f")...)
-    (add-to-list 'bmkp-modified-bookmarks bmk)))
+    ;; This is the same as `add-to-list' with `EQ' (not available for Emacs 20-21).
+    (unless (memq bmk bmkp-modified-bookmarks)
+      (setq bmkp-modified-bookmarks  (cons bmk bmkp-modified-bookmarks)))))
 
 
 ;; REPLACES ORIGINAL in `bookmark.el'.
@@ -3178,7 +3187,9 @@ by `bmkp-bmenu-edit-marked' (`\\<bookmark-bmenu-mode-map>\\[bmkp-bmenu-edit-mark
                  ;; Update the original bookmark (same cons cell) with what's in the edited version.
                  (setcar (car orig-bmks) bname)
                  (setcdr (car orig-bmks) data)
-                 (add-to-list 'bmkp-modified-bookmarks (car orig-bmks))
+                 ;; This is the same as `add-to-list' with `EQ' (not available for Emacs 20-21).
+                 (unless (memq (car orig-bmks) bmkp-modified-bookmarks)
+                   (setq bmkp-modified-bookmarks  (cons (car orig-bmks) bmkp-modified-bookmarks)))
                  (setq orig-bmks  (cdr orig-bmks))))
              ;; Update using modified ORIG-BMKS.
              (setq bmkp-bmenu-marked-bookmarks        (mapcar #'bmkp-bookmark-name-from-record
@@ -3259,7 +3270,10 @@ Non-interactively, optional arg MSGP means display progress messages."
                 ;; Update the original bookmark with what's in the edited version.
                 (setcar bmkp-edit-bookmark-orig-record bname)
                 (setcdr bmkp-edit-bookmark-orig-record data)
-                (add-to-list 'bmkp-modified-bookmarks bmkp-edit-bookmark-orig-record)
+                ;; This is the same as `add-to-list' with `EQ' (not available for Emacs 20-21).
+                (unless (memq bmkp-edit-bookmark-orig-record bmkp-modified-bookmarks)
+                  (setq bmkp-modified-bookmarks  (cons bmkp-edit-bookmark-orig-record
+                                                       bmkp-modified-bookmarks)))
                 (setq bmk-name  bname)) ; Save for bookmark-list display, below.
               (setq bmkp-sorted-alist                  (bmkp-sort-omit bookmark-alist)
                     bookmark-alist-modification-count  (1+ bookmark-alist-modification-count)))
@@ -4521,6 +4535,13 @@ If it is a record then it need not belong to `bookmark-alist'."
   (and (bmkp-file-bookmark-p bookmark)
        (equal (file-name-directory (bookmark-get-filename bookmark)) default-directory)))
 
+(defun bmkp-flagged-bookmark-p (bookmark)
+  "Return non-nil if BOOKMARK is flagged for deletion in `*Bookmark List*'.
+BOOKMARK is a bookmark name or a bookmark record.
+If it is a record then it need not belong to `bookmark-alist'."
+  (setq bookmark  (bookmark-get-bookmark bookmark))
+  (memq bookmark bmkp-flagged-bookmarks))
+
 (defun bmkp-function-bookmark-p (bookmark)
   "Return non-nil if BOOKMARK is a function bookmark.
 BOOKMARK is a bookmark name or a bookmark record.
@@ -4583,6 +4604,13 @@ BOOKMARK is a bookmark name or a bookmark record.
 If it is a record then it need not belong to `bookmark-alist'."
   (unless (stringp bookmark) (setq bookmark  (bmkp-bookmark-name-from-record bookmark)))
   (bmkp-bookmark-name-member bookmark bmkp-bmenu-marked-bookmarks))
+
+(defun bmkp-modified-bookmark-p (bookmark)
+  "Return non-nil if BOOKMARK is a modified bookmark'.
+BOOKMARK is a bookmark name or a bookmark record.
+If it is a record then it need not belong to `bookmark-alist'."
+  (setq bookmark  (bookmark-get-bookmark bookmark))
+  (memq bookmark bmkp-modified-bookmarks))
 
 (defun bmkp-non-file-bookmark-p (bookmark)
   "Return non-nil if BOOKMARK is a non-file bookmark (e.g *scratch*).
@@ -5649,6 +5677,23 @@ Similarly, SUFFIX-MSG is appended, after appending \".  \"."
 ;;(@* "Sorting - General Predicates")
 ;;  *** Sorting - General Predicates ***
 
+(defun bmkp-flagged-cp (b1 b2)
+  "True if bookmark B1 is flagged for deletion and bookmark B2 is not.
+Reverse the roles of B1 and B2 for a false value.
+A true value is returned as `(t)', a false value as `(nil)'.
+Return nil if incomparable as described.
+
+B1 and B2 are full bookmarks (records) or bookmark names.
+If either is a record then it need not belong to `bookmark-alist'."
+  (setq b1  (bookmark-get-bookmark b1)
+        b2  (bookmark-get-bookmark b2))
+  (let ((m1  (bmkp-flagged-bookmark-p b1))
+        (m2  (bmkp-flagged-bookmark-p b2)))
+    (cond ((and m1 m2)  nil)
+          (m1           '(t))
+          (m2           '(nil))
+          (t            nil))))
+
 (defun bmkp-marked-cp (b1 b2)
   "True if bookmark B1 is marked and bookmark B2 is not.
 Reverse the roles of B1 and B2 for a false value.
@@ -5661,6 +5706,23 @@ If either is a record then it need not belong to `bookmark-alist'."
         b2  (bookmark-get-bookmark b2))
   (let ((m1  (bmkp-marked-bookmark-p b1))
         (m2  (bmkp-marked-bookmark-p b2)))
+    (cond ((and m1 m2)  nil)
+          (m1           '(t))
+          (m2           '(nil))
+          (t            nil))))
+
+(defun bmkp-modified-cp (b1 b2)
+  "True if bookmark B1 is modified and bookmark B2 is not.
+Reverse the roles of B1 and B2 for a false value.
+A true value is returned as `(t)', a false value as `(nil)'.
+Return nil if incomparable as described.
+
+B1 and B2 are full bookmarks (records) or bookmark names.
+If either is a record then it need not belong to `bookmark-alist'."
+  (setq b1  (bookmark-get-bookmark b1)
+        b2  (bookmark-get-bookmark b2))
+  (let ((m1  (bmkp-modified-bookmark-p b1))
+        (m2  (bmkp-modified-bookmark-p b2)))
     (cond ((and m1 m2)  nil)
           (m1           '(t))
           (m2           '(nil))
@@ -6509,7 +6571,7 @@ the `bmkp-full-record' on the bookmark name (without otherwise
 changing the name)."
   (let (failure)
     (condition-case err
-        (progn                     ; Code similar to `bookmark-store'.
+        (progn                          ; Code similar to `bookmark-store'.
           (setcdr bookmark (cdr (bookmark-make-record)))
           (bmkp-maybe-save-bookmarks)
           ;; Put the full bookmark on its name as property `bmkp-full-record'.
@@ -6517,7 +6579,9 @@ changing the name)."
           ;; If it needs to be stripped, that will be done when saving.
           (let ((bname  (bmkp-bookmark-name-from-record bookmark)))
             (put-text-property 0 (length bname) 'bmkp-full-record bookmark bname)
-            (add-to-list 'bmkp-modified-bookmarks bookmark)
+            ;; This is the same as `add-to-list' with `EQ' (not available for Emacs 20-21).
+            (unless (memq bookmark bmkp-modified-bookmarks)
+              (setq bmkp-modified-bookmarks  (cons bookmark bmkp-modified-bookmarks)))
             (setq bookmark-current-bookmark  bname))
           (bookmark-bmenu-surreptitiously-rebuild-list))
       (error (setq failure  (error-message-string err))))
@@ -9893,8 +9957,8 @@ your init file:
                       ""))))
 
 
-       (add-to-list 'minor-mode-alist
-                    `(bmkp-auto-idle-bookmark-mode ,bmkp-auto-idle-bookmark-mode-lighter))))
+       (add-to-list 'minor-mode-alist `(bmkp-auto-idle-bookmark-mode
+                                        ,bmkp-auto-idle-bookmark-mode-lighter))))
 
 (defun bmkp-not-near-other-auto-idle-bmks (&optional position)
   "Is POSITION far enough from automatic bookmarks to create a new one?
@@ -10009,8 +10073,8 @@ positive.  Non-interactively there is no prompt for confirmation."
            (setq bmkp-temporary-bookmarking-mode  nil))))
 
 
-  (add-to-list 'minor-mode-alist
-               `(bmkp-temporary-bookmarking-mode ,bmkp-temporary-bookmarking-mode-lighter)))
+  (add-to-list 'minor-mode-alist `(bmkp-temporary-bookmarking-mode
+                                   ,bmkp-temporary-bookmarking-mode-lighter)))
 
 ;;;###autoload
 (defun bmkp-toggle-autotemp-on-set (&optional msgp) ; Bound to `C-x p x'
@@ -10117,7 +10181,7 @@ Non-interactively:
                                                             (buffer-name)))))
       (error "Canceled - no bookmarks deleted"))
     (cond (bmks-to-delete               ; Delete all.
-           (dolist (bmk  bmks-to-delete) (bookmark-delete bmk 'BATCHP)) ; No refresh yet.
+           (dolist (bname  bmks-to-delete) (bookmark-delete bname 'BATCHP)) ; No refresh yet.
            (bmkp-refresh/rebuild-menu-list nil (not msgp)) ; Now refresh, after iterate.
            (when msgp (message "Deleted all bookmarks in buffer `%s'" (buffer-name))))
 
@@ -10125,19 +10189,26 @@ Non-interactively:
            (when msgp (message "No bookmarks to delete in buffer `%s'" (buffer-name))))
 
           (t                            ; Delete selected bookmarks at point.
-           (dolist (bmk  (or alist  (bmkp-this-buffer-alist-only)))
-             (when (eq (setq bmk-pos  (bookmark-get-position bmk)) position)
-               (add-to-list 'bmks-to-delete (bmkp-bookmark-name-from-record bmk))))
+           (let (bname)
+             (dolist (bmk  (or alist  (bmkp-this-buffer-alist-only)))
+               (when (eq position (setq bmk-pos  (bookmark-get-position bmk)))
+                 (setq bname  (bmkp-bookmark-name-from-record bmk))
+                 ;; This is the same as `add-to-list' with `EQ' (not available for Emacs 20-21).
+                 (unless (memq bname bmks-to-delete)
+                   (setq bmks-to-delete  (cons bname bmks-to-delete))))))
            (cond ((cadr bmks-to-delete) ; More than one at point.
-                  (dolist (bmk  bmks-to-delete)
-                    (when (or (not msgp)  (y-or-n-p (format "Delete bookmark `%s'? " bmk)))
-                      (bookmark-delete bmk 'BATCHP) ; No refresh yet.
-                      (add-to-list 'bmks-deleted bmk)))
+                  (dolist (bname  bmks-to-delete)
+                    (when (or (not msgp)  (y-or-n-p (format "Delete bookmark `%s'? " bname)))
+                      (bookmark-delete bname 'BATCHP) ; No refresh yet.
+                      ;; This is the same as `add-to-list' with `EQ' (not available for Emacs 20-21).
+                      (unless (memq bname bmks-deleted)
+                        (setq bmks-deleted  (cons bname bmks-deleted)))))
                   (bmkp-refresh/rebuild-menu-list nil (not msgp)) ; Now refresh.    
                   (when msgp
                     (message (if bmks-deleted
                                  (format "Deleted bookmarks: %s"
-                                         (mapconcat (lambda (bmk) (format "`%s'" bmk)) bmks-deleted ", "))
+                                         (mapconcat (lambda (bname) (format "`%s'" bname)) bmks-deleted
+                                                    ", "))
                                "No bookmarks deleted"))))
                  (bmks-to-delete        ; Only one bookmark at point.
                   (bookmark-delete (car bmks-to-delete))
