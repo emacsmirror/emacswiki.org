@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2012, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Tue Apr 10 13:36:28 2012 (-0700)
+;; Last-Updated: Fri Apr 13 17:21:46 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 14741
+;;     Update #: 14783
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-chg.el
 ;; Keywords: bookmarks, bookmark+
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -145,6 +145,11 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-1.el'")
 ;;
+;; 2012/04/13 dadams
+;;     Added: bmkp-(flagged|modified)-bookmark-p, bmkp-(flagged|modified)-cp.
+;;     bookmark-store, bookmark-set-name, bookmark-prop-set, bmkp-edit-bookmark-record(s)-send,
+;;       bmkp-replace-existing-bookmark, bmkp-delete-bookmarks:
+;;         Use (equivalent of) eq version of add-to-list.
 ;; 2012/04/10 dadams
 ;;     Added: bmkp-count-multi-mods-as-one-flag.
 ;;     bmkp-edit-bookmark-records-send, bmkp-set-tag-value-for-bookmarks, bmkp-remove-tags-from-all,
@@ -742,6 +747,15 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-bmu.el'")
 ;;
+;; 2012/04/13 dadams
+;;     Added: bmkp-bmenu-sort-(flagged|modified)-before-un(flagged|modified), bmkp-flagged-bookmarks.
+;;     Bound bmkp-bmenu-sort-(flagged|modified)-before-un(flagged|modified) to s D, s *.
+;;     bookmark-bmenu-(un)mark: Delete bookmark from bmkp-flagged-bookmarks.
+;;     bookmark-bmenu-mark: Use (equivalent of) eq version of add-to-list.
+;;     bookmark-bmenu-delete: Add bookmark to bmkp-flagged-bookmarks.
+;;     bmkp-bmenu-list-1: Always reset bmkp-(flagged|modified)-bookmarks.
+;;                        Flag bookmarks if bmkp-flagged-bookmark-p.
+;;     bmkp-bmenu-refresh-menu-list: C-u resets bmkp-flagged-bookmarks too.
 ;; 2012/04/10 dadams
 ;;     bmkp-bmenu-load-marked-bookmark-file-bookmarks:
 ;;       Use bmkp-refresh-menu-list, not bmkp-refresh/rebuild-menu-list.
@@ -1136,6 +1150,10 @@
 ;;       that depends on macros needs to be byte-compiled anew after loading the updated macros.
 ;; **************************************************************************************************
 ;;
+;; 2012/04/12 dadams
+;;     bmkp-define-sort-command: Do not bmkp-bmenu-goto-bookmark-named unless current-bmk (play safe).
+;; 2012/04/11 dadams
+;;     bmkp-define-sort-command: In function def, change order to: fn, reverse-fn, unsorted.
 ;; 2011/12/30 dadams
 ;;     bmkp-define-cycle-command: Applied renaming of bmkp-sort-and-remove-dups to bmkp-sort-omit.
 ;;     bmkp-define-file-sort-predicate: Updated doc string of generated functions.
