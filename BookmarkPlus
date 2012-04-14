@@ -1173,6 +1173,10 @@ instead of `##(b . ())##' and `##(a b)##' instead of `##(a . (b))##' or `##(a . 
 
 
 
+
+
+
+
 [:BookmarkListViews]
 == Bookmark-List Views - Saving and Restoring State ==
 
@@ -1206,7 +1210,8 @@ again (which could be in the next Emacs session).  You can think of
 this feature as your ''Home'' page for bookmarks, giving you a
 stepping stone to the files and directories you use most.
 
-If, for example, when you quit the bookmark list you are showing only bookmarks to [[Info]] nodes and UNIX manual pages, sorted in a particular way, and with some of them marked for particular processing, then the next time you open the list the same state is restored: the same set of bookmarks is shown, in the same order, with the same markings.
+If, for example, when you quit the bookmark list you are showing only bookmarks to [[Info]] nodes and UNIX manual pages, sorted in a particular way, and with some of them marked with '''`##>##'''' for particular processing, then the next time you open the list the same state is restored: the same set of bookmarks is shown, in the same order, with the same markings.  Deletion flags ('''`D'''') and
+modification indicators ('''`##*##'''') are purposefully ''not'' saved as part of the display state --- they are lost when you quit the display.
 
 You can turn off this automatic bookmark-list display state saving, if you want, by customizing option '''`bmkp-bmenu-state-file'''' to `nil'. And you can toggle this option at any time, using '''`##C-M-~##'''' in the bookmark list (command '''`bmkp-toggle-saving-menu-list-state''''). In particular, if you want your next visit to the bookmark list to start out with a ''previously'' recorded state instead of the current state, just hit `##C-M-~##' before quitting the bookmark list.
 
@@ -2446,7 +2451,7 @@ orders, but you can shorten the cycling list by
 customizing option '''`bmkp-sort-orders-for-cycling-alist''''.
 
 You can also change directly to one of the main sort orders
-(without cycling) using '''`##s n##'''', '''`##s f n##'''', etc.:
+(without cycling) using '''`##s >##'''', '''`##s n##'''', '''`##s f n##'''', etc.:
 
 * '''`##s >##'''' -- Sort marked before unmarked.
 * '''`##s b##'''' -- Sort by last __b__uffer or file access.
