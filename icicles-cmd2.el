@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Thu May 21 13:31:43 2009 (-0700)
 ;; Version: 22.0
-;; Last-Updated: Fri Apr 13 14:05:56 2012 (-0700)
+;; Last-Updated: Fri Apr 13 17:35:32 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 5354
+;;     Update #: 5357
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-cmd2.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -5423,17 +5423,20 @@ BEG, END, and WHERE."
     (error "Command `icicle-search-dired-marked' must be called from a Dired buffer"))
   (apply #'icicle-search nil nil scan-fn-or-regexp require-match (icicle-search-dired-get-files) args))
 
-(defun icicle-search-dired-get-files ()
+(defun icicle-search-dired-get-files (&optional ignore-marks-p)
   "Return files for `icicle-search' in Dired mode.
 The files are those that are marked in the current Dired buffer, or
 all files in the directory if none are marked.
-Marked subdirectories are handled recursively in the same way."
+Marked subdirectories are handled recursively in the same way.
+
+Non-nil optional arg IGNORE-MARKS-P means ignore all Dired markings:
+just get all of the files in the current directory."
   (let ((files  ()))
     (icicle-files-within
      #'(lambda ()
          ;; If none marked, exclude (t FILENAME): the unmarked file at cursor.
          ;; If none as a result, then return all files in the dir (but no subdirs).
-         (let ((ff  (dired-get-marked-files nil nil nil 'DISTINGUISH-ONE-MARKED)))
+         (let ((ff  (and (not ignore-marks-p)  (dired-get-marked-files nil nil nil 'DISTINGUISH-ONE-MARKED))))
            (cond ((eq t (car ff))  (cdr ff))
                  ((cadr ff)        ff)
                  (t                (icicle-remove-if
