@@ -273,7 +273,7 @@ The fullscreen functionality has not made it into Emacs-23 as of late 2010.
 
 ==== Maximizer ====
 
-Maximizer is a free utility that brings Full Screen app mode to all Cocoa apps running in Mac OS X Lion 10.7, even if they don’t technically support the feature yet. It also works with Emacs from [http://emacsformacosx.com/]. For more info go to article at [http://osxdaily.com/2011/07/22/enable-full-screen-support-all-apps-os-x-lion-maximizer/ osxdaily.com].
+Maximizer is a free utility that brings Full Screen app mode to all Cocoa apps running in Mac OS X Lion 10.7, even if they don’t technically support the feature yet. It also works with Emacs from [http://emacsformacosx.com/ emacsformacosx.com]. For more info go to article at [http://osxdaily.com/2011/07/22/enable-full-screen-support-all-apps-os-x-lion-maximizer/ osxdaily.com].
 
 ==== Patching the binary ====
 
