@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams
 ;; Copyright (C) 2000-2012, Drew Adams, all rights reserved.
 ;; Created: Sun Aug 15 11:12:30 2010 (-0700)
-;; Last-Updated: Wed Apr 11 14:50:20 2012 (-0700)
+;; Last-Updated: Thu Apr 12 11:00:03 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 88
+;;     Update #: 90
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-mac.el
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -299,7 +299,8 @@ sort, and unsorted.")
         (bookmark-bmenu-ensure-position)
         (let ((current-bmk  (bookmark-bmenu-bookmark)))
           (bookmark-bmenu-surreptitiously-rebuild-list)
-          (bmkp-bmenu-goto-bookmark-named current-bmk)) ; Put cursor back on right line.
+          (when current-bmk             ; Should be non-nil, but play safe.
+            (bmkp-bmenu-goto-bookmark-named current-bmk))) ; Put cursor back on right line.
         (when (interactive-p)
           (bmkp-msg-about-sort-order
            ,sort-order
