@@ -2,12 +2,14 @@
 
 ;; Filename: elisp-depend.el
 ;; Description: Parse depends library of elisp file.
-;; Author: Andy Stewart lazycat.manatee@gmail.com
+;; Authors: Andy Stewart lazycat.manatee@gmail.com
+;; Tom Breton (Tehom) tehom@panix.com
+;; "Michael Heerdegen" <michael_heerdegen@web.de>
 ;; Maintainer: Tom Breton (Tehom) tehom@panix.com
 ;; Copyright (C) 2009, Andy Stewart, all rights reserved.
 ;; Copyright (C) 2010, Tom Breton, all rights reserved.
 ;; Created: 2009-01-11 19:40:45
-;; Version: 0.4.0
+;; Version: 0.4.2
 ;; Last-Updated: Sat  8 May, 2010 10:51 PM
 ;;           By: Tom Breton
 ;; URL: http://www.emacswiki.org/emacs/download/elisp-depend.el
@@ -95,12 +97,14 @@
 ;;
 
 ;;; Change log:
+;; 2010/05/10
+;;      * Bugfix: Fixed error if file didn't start with a comment.
 ;; 2010/05/08
 ;;      * Added require for `thingatpt'
 ;;      * Now slash-style module names are treated correctly.
 ;;
 ;; 2009/02/11
-;;      * Add new option `build-in' to function `elisp-depend-map'
+;;      * Add new option `built-in' to function `elisp-depend-map'
 ;;        for debug.
 ;;
 ;; 2009/01/18
@@ -137,17 +141,48 @@
 ;;; Code:
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; Customize ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;###autoload
 (defgroup elisp-depend nil
   "Parse depend library of elisp file."
   :group 'tools)
 
+;;;###autoload
 (defcustom elisp-depend-directory-list
   '("/usr/share/emacs/")
-  "The ignore directory for search."
+  "List of directories that search should ignore."
   :type 'list
   :group 'elisp-depend)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; Interactive Functions. ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;;;###autoload
+(defun elisp-depend-print-dependencies (&optional built-in)
+  "Print library dependencies of the current buffer.
+With prefix argument, don't include built-in libraries.
+Every library that has a parent directory in
+`elisp-depend-directory-list' is considered built-in."
+  (interactive "P")
+  (let ((dep-table
+         (mapconcat (lambda (dep)
+                      (format "%s: %s"
+                              (propertize (elisp-depend-filename (car dep)) 'face 'match)
+                              (mapconcat #'symbol-name (cdr dep) ", ")))
+                    (elisp-depend-map nil built-in) "\n")))
+    (switch-to-buffer (get-buffer-create "*Dependencies*"))
+    (setq truncate-lines nil
+          buffer-read-only nil)
+    (erase-buffer)                         ;with != 0
+    (insert dep-table)
+    (goto-char (point-min))
+    (view-mode +1)
+    (setq view-exit-action
+          (lambda (buffer)
+            ;; Use `with-current-buffer' to make sure that `bury-buffer'
+            ;; also removes BUFFER from the selected window.
+            (with-current-buffer buffer
+              (bury-buffer))))))
+
+;;;###autoload
 (defun elisp-depend-insert-require ()
   "Insert a block of (require sym) or 'autoload statements into an elisp file."
   (interactive)
@@ -163,8 +198,9 @@
             (dolist (symbol (cdr element))
               (if (functionp symbol)
                   (insert (format "(autoload '%s \"%s\")\n" symbol library-name))))))
-      (message "Not need any depend libraries."))))
+      (message "Doesn't need any extra libraries."))))
 
+;;;###autoload
 (defun elisp-depend-insert-comment ()
   "Insert a block of `sym' statements into an elisp file."
   (interactive)
@@ -174,13 +210,13 @@
           (insert ";; ")
           (dolist (element deps)
             (insert (format "`%s' " (elisp-depend-filename (car element))))))
-      (message "Not need any depend libraries."))))
+      (message "Doesn't need any extra libraries."))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; Utilities Functions ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(defun elisp-depend-map (&optional buffer build-in)
+(defun elisp-depend-map (&optional buffer built-in)
   "Return depend map with BUFFER.
 If BUFFER is nil, use current buffer.
-If BUILD-IN is non-nil, return build-in library information.
+If BUILT-IN is non-nil, return built-in library information.
 Return depend map as format: (filepath symbol-A symbol-B symbol-C)."
   (save-excursion
     (set-buffer (or buffer (current-buffer)))
@@ -207,24 +243,24 @@ Return depend map as format: (filepath symbol-A symbol-B symbol-C)."
                ;; Not  in `let' or `let*'.
                (not (elisp-depend-let-variable-p))
                ;; Just test function, skip variable.
-               (fboundp symbol)
+               (functionp symbol)
                ;; Filter pseudo function symbol.
                (elisp-depend-filter-pseudo-function-symbol symbol)
-               ;; Not build-in function.
-               (not (elisp-depend-build-in-function-p symbol))
+               ;; Not built-in function.
+               (not (subrp symbol))
                ;; Find symbol define file.
                (setq filepath (symbol-file symbol))
                ;; Get file name without extension.
                (setq filename (elisp-depend-filename filepath))
                ;; Not current buffer file.
                (not (string= filename current-filename))
-               ;; Not match build-in load path.
-               (if build-in
-                   ;; Don't filter build-in libraries when
-                   ;; option `build-in' is non-nil.
+               ;; Not match built-in load path.
+               (if built-in
+                   ;; Don't filter built-in libraries when
+                   ;; option `built-in' is non-nil.
                    t
-                 ;; Otherwise filter build-in libraries.
-                 (not (elisp-depend-match-build-in-library filepath)))
+                 ;; Otherwise filter built-in libraries.
+                 (not (elisp-depend-match-built-in-library filepath)))
                ;; Not seen before.
                (not (memq symbol symbol-seen)))
           (setq symbol-seen (cons symbol symbol-seen))
@@ -268,8 +304,6 @@ FULLPATH is the full path of file."
 	 (file-name-sans-extension 
 	    (file-name-nondirectory fullpath)))))
 
-
-
 (defun elisp-depend-skip-string ()
   "Skip string for fast check."
   (while (and (not (eobp))
@@ -302,13 +336,14 @@ FULLPATH is the full path of file."
 
 (defun elisp-depend-filter-pseudo-function-symbol (symbol)
   "Filter pseudo function with SYMBOL.
-In buffer, some symbol is not use as function,
-example use `buffer' as local buffer.
-But `symbol-file' will consider it's function
-if have function have same name with `buffer'.
-So i try to check whether symbol is real function.
-If this symbol is function, at front have ( or ' ,
-otherwise this symbol is not use as function."
+In buffer, not all symbols are used as a functions.
+For example, `list' might be a variable holding a list.
+But `symbol-file' will consider it to be a function
+if have a function has same name, like `list'.
+
+So I try to check whether symbol is real function.
+If this symbol is function, the character immediately before it will
+be either ( or ' , otherwise this symbol is not considered a function."
   (save-excursion
     (let (current-char)
       (backward-char (length (symbol-name symbol)))
@@ -319,8 +354,8 @@ otherwise this symbol is not use as function."
           t
         nil))))
 
-(defun elisp-depend-match-build-in-library (fullpath)
-  "Return t if FULLPATH match directory with build-in library."
+(defun elisp-depend-match-built-in-library (fullpath)
+  "Return t if FULLPATH match directory with built-in library."
   (if (or (string-equal (format "%s.el" user-init-file) fullpath)
           (string-equal (format "%s.elc" user-init-file) fullpath))
       t                                 ;return t if match `user-init-file'.
@@ -337,7 +372,9 @@ Otherwise return nil."
     (let (symbol)
       (backward-up-list nil)            ;for compatibility Emacs 20
       (skip-chars-backward " \n\t")
-      (when (string-equal "(" (string (char-before)))
+      (when (and
+	       (> (point) 1)
+	       (string-equal "(" (string (char-before))))
         (forward-char -1)
         (skip-chars-backward " \n\t"))
       (setq symbol (symbol-at-point))
@@ -346,11 +383,6 @@ Otherwise return nil."
                    (string-equal "let*" (symbol-name symbol))))
           t
         nil))))
-
-(defun elisp-depend-build-in-function-p (symbol)
-  "Return t if SYMBOL is a build-in function."
-  (string-equal (format "#<subr %s>" (symbol-name symbol))
-                (format "%s" (symbol-function symbol))))
 
 (defun elisp-depend-current-parse-state ()
   "Return parse state of point from beginning of defun."
