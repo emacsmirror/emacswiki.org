@@ -430,7 +430,7 @@ How much time have I spent on this? A bit, I guess -- time passes way too fast w
 
 1) I have slightly modified the //sr-dired// function in version 4R315 -- you may want to try that instead (have a look at [[Sunrise_Commander_Tips#ReplaceDiredWithSunrise | this tip]]).
 
-2) Yes, try customizing variables sr-listing-switches and sr-virtual-listing-switches.
+2) Yes, try customizing variables sr-listing-switches and sr-virtual-listing-switches and read [[Sunrise_Commander_Tips#HideAttributesSelectively | this tip]].
 
 3) That function is actually called "fuzzy narrowing". How do you exactly imagine navigating through a listing while narrowing its contents?
 
