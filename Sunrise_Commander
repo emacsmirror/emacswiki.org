@@ -739,10 +739,9 @@ RedBlue.
 [new]
 
 This has been addressed in the latest version of the
-[Lisp:sunrise-x-popviewer.el PopViewer extension]. See my latest
-update in the [[Sunrise Commander Tips#toc19|Alternative Usage
-Patterns]] section of the [[Sunrise Commander Tips|Tips & Tricks
-page]] for more details.
+[Lisp:sunrise-x-popviewer.el PopViewer extension]. See my latest update in the
+[[Sunrise_Commander_Tips#AlternativeUsagePatterns|Alternative Usage Patterns]]
+section of the [[Sunrise_Commander_Tips|Tips & Tricks page]] for more details.
 
 [http://www.emacswiki.org/emacs/Jos%c3%a9_Alfredo_Romero_L. j.a.]
 
