@@ -7,7 +7,7 @@
 ;; Maintainer: José Alfredo Romero L. <escherdragon@gmail.com>
 ;; Created: 24 Sep 2007
 ;; Version: 5
-;; RCS Version: $Rev: 415 $
+;; RCS Version: $Rev: 416 $
 ;; Keywords: files, dired, midnight commander, norton, orthodox
 ;; URL: http://www.emacswiki.org/emacs/sunrise-commander.el
 ;; Compatibility: GNU Emacs 22+
@@ -1175,6 +1175,7 @@ these values uses the default, ie. $HOME."
         (if right-directory
             (setq sr-right-directory right-directory))
 
+        (sr-switch-to-nonpane-buffer)
         (setq sr-restore-buffer (current-buffer)
               sr-current-frame (window-frame (selected-window))
               sr-prior-window-configuration (current-window-configuration)
@@ -1277,13 +1278,7 @@ buffer or window."
   (delete-other-windows)
   (if (buffer-live-p other-window-scroll-buffer)
       (switch-to-buffer other-window-scroll-buffer)
-    (let ((start (current-buffer)))
-      (while (and
-              start
-              (or (memq major-mode '(sr-mode sr-virtual-mode sr-tree-mode))
-                  (memq (current-buffer) (list sr-left-buffer sr-right-buffer))))
-        (bury-buffer)
-        (if (eq start (current-buffer)) (setq start nil)))))
+    (sr-switch-to-nonpane-buffer))
 
   ;;now create the viewer window
   (unless (and sr-panes-height (< sr-panes-height (frame-height)))
@@ -1306,6 +1301,16 @@ buffer or window."
   (sr-select-window sr-selected-window)
   (sr-restore-panes-width)
   (run-hooks 'sr-start-hook))
+
+(defun sr-switch-to-nonpane-buffer ()
+  "Try to switch to a buffer that is *not* a Sunrise pane."
+  (let ((start (current-buffer)))
+    (while (and
+              start
+              (or (memq major-mode '(sr-mode sr-virtual-mode sr-tree-mode))
+                  (memq (current-buffer) (list sr-left-buffer sr-right-buffer))))
+        (bury-buffer)
+        (if (eq start (current-buffer)) (setq start nil)))))
 
 (defun sr-restore-prior-configuration ()
   "Restore the configuration stored in `sr-prior-window-configuration' if any."
@@ -1480,8 +1485,7 @@ With optional argument REVERT, executes `revert-buffer' on the passive buffer."
              (numberp sr-selected-window-width))
     (enlarge-window-horizontally
      (min (- sr-selected-window-width (window-width))
-          (- (frame-width) (window-width) window-min-width)))
-    (setq sr-selected-window-width nil)))
+          (- (frame-width) (window-width) window-min-width)))))
 
 (defun sr-resize-panes (&optional reverse)
   "Enlarge (or shrink, if REVERSE is t) the left pane by 5 columns."
@@ -1496,14 +1500,16 @@ With optional argument REVERT, executes `revert-buffer' on the passive buffer."
 (defun sr-enlarge-left-pane ()
   "Enlarge the left pane by 5 columns."
   (interactive)
-  (if (< (1+ window-min-width) (window-width sr-right-window))
-      (sr-resize-panes)))
+  (when (< (1+ window-min-width) (window-width sr-right-window))
+      (sr-resize-panes)
+      (sr-save-panes-width)))
 
 (defun sr-enlarge-right-pane ()
   "Enlarge the right pane by 5 columns."
   (interactive)
-  (if (< (1+ window-min-width) (window-width sr-left-window))
-      (sr-resize-panes t)))
+  (when (< (1+ window-min-width) (window-width sr-left-window))
+      (sr-resize-panes t)
+      (sr-save-panes-width)))
 
 (defun sr-get-panes-size (&optional size)
   "Tell what the maximal, minimal and normal pane sizes should be."
@@ -1557,17 +1563,22 @@ The optional argument determines the height to lock the panes at.
 Valid values are `min' and `max'; given any other value, locks
 the panes at normal position."
   (interactive)
-  (when sr-running
-    (setq sr-panes-height (sr-get-panes-size height))
-    (let ((locked sr-windows-locked))
-      (setq sr-windows-locked t)
-      (if height
-          (shrink-window 1)
-        (setq sr-selected-window-width t)
-        (balance-windows))
-      (unless locked
-        (sit-for 0.1)
-        (setq sr-windows-locked nil)))))
+  (if sr-running
+    (if (not (and (window-live-p sr-left-window)
+                  (or (window-live-p sr-right-window)
+                      (eq sr-window-split-style 'top))))
+        (sr-setup-windows)
+      (setq sr-panes-height (sr-get-panes-size height))
+      (let ((locked sr-windows-locked))
+        (setq sr-windows-locked t)
+        (if height
+            (shrink-window 1)
+          (setq sr-selected-window-width t)
+          (balance-windows))
+        (unless locked
+          (sit-for 0.1)
+          (setq sr-windows-locked nil))))
+    (sunrise)))
 
 (defun sr-max-lock-panes ()
   (interactive)
@@ -3443,10 +3454,15 @@ buffer in the passive pane."
 
 (defun sr-dired-do-apply (dired-fun)
   "Helper function for implementing `sr-do-query-replace-regexp' and Co."
-  (let ((buff (current-buffer)))
-    (sr-quit)
-    (switch-to-buffer buff)
-    (call-interactively dired-fun)))
+  (let ((buff (current-buffer)) (orig sr-restore-buffer))
+    (condition-case nil
+        (progn
+          (sr-quit)
+          (switch-to-buffer buff)
+          (call-interactively dired-fun))
+      (quit
+       (when orig (switch-to-buffer orig))
+       (sunrise)))))
 
 (defun sr-do-query-replace-regexp ()
   "Force Sunrise to quit before executing `dired-do-query-replace-regexp'."
