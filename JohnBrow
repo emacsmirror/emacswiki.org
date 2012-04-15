@@ -2,18 +2,16 @@ I use Emacs.
 
 * Nick on #emacs:  <code>UriahEep</code>
 * Real Email:  john.n.brow@gmail.com
-* John uses Emacs under Fedora 14 and Emacs 23.2.1 on my laptop (Win 7)
+* John uses Emacs under Fedora 16 and Emacs 23.4.1 on my laptop (Win 7)
 
 I use Emacs both at home and at school.
 
 Because I have been subjected to numerous older development environments my desire for full-screen editors caused me at one time to write my own editors.  During my tour of duty as a programmer and analyst I ran across all the usual editor suspects until I dove into Emacs in the late 90's and really never looked back.  I'm learning elisp at the same pace as Emacs development ;-)
 
-I doubt I'll ever completely get rid of Emacs because I just find more uses for it.  At home I do a little C and Python programming and HTML (in Emacs).  And for super-trivial Java stuff I find Emacs works easier than firing up my IDE (NetBeans).  If I ever get around to writing a novel I'll be using Emacs exclusively.  There's a lot to be said for a stable editor, and I consider Emacs to be a stable editor.
+I doubt I'll ever completely get rid of Emacs because I keep finding more uses for it.  At home I do a little C and Python programming and HTML (in Emacs).  And for super-trivial Java stuff I find Emacs works easier than firing up my IDE (NetBeans).  If I ever get around to writing a novel I'll be using Emacs exclusively.  There's a lot to be said for a stable editor, and I consider Emacs to be a stable editor.
 
 My function keys (including S-Fx and C-fx) are nearly full with my customizations.  The latest fad of mine is to assign about 4-6 of my S-Fx to find-file my most frequent directories where my current work is.  My latest use for Emacs is for schoolwork, where I'm just typing away madly for homework that requires only essay-like text.
 
-[new]
-Welcome on the wiki !
 [new]
 Emacs being slow or resource hungry comes from people who try using Emacs as if it was still vi (or any other standalone text editor) and not as the user-level "operating system" (programmable and multi-purpose) that it is and should be.  Welcome. --AaronHawley
 [new]
