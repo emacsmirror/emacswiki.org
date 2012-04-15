@@ -44,7 +44,7 @@ Also,
 
 == Troubleshooting ==
 
-''' SELinux issues'''
+=== SELinux issues ===
 
 If you do something like this
 
@@ -57,8 +57,7 @@ firewall from restarting!
 
 This is likely to be due to intermediate tmp files (guessing here) with the Tramp/sudo interaction.  Not sure how one might configure around this.
 
-
-''' Tramp hangs '''
+=== Tramp hangs ===
 
 If you're wondering why tramp just hangs then check that ssh hasn't
 just suddenly died.  This may be due to pppd, routers or whatever.  In
@@ -70,14 +69,13 @@ now you have a problem - however, just hitting C-g and then attempting the save/
 Another thing that can cause tramp to hang (I saw this with Solaris at the remote end) is using
 an ancient /bin/sh as the remote shell. Switching to bash fixed it.
 
-
 I had a hang when I saw "Sending the Perl `mime-encode' implementations."  Setting my default method to "scp" fixed it (though now it's slower).
 
 If Tramp hangs with Solaris at the local end, try using "scpx" as your default tramp method. Also check that the hostname you are invoking Tramp with, matches what is in the ##~/.ssh/known_hosts## file; e.g. if the known_hosts file specifies the host with an IP, use an IP in the Tramp invocation.
 
 If you're using SVN or DARCS (or likely other things) with VC, see below for problem descriptions.
 
-''' Tramp hangs #2 '''
+=== Tramp hangs #2 ===
 
 If you are a victim of the following:
 
@@ -120,22 +118,20 @@ then
 fi
 }}}
 
-''' Tramp hangs #4: UTF8 LANG'''
+=== Tramp hangs #4: UTF8 LANG ===
 
 To connect to a very old system I had to switch the remote, default LANG to a ''non''-utf8 one (in ##/etc/sysconfig/i18n##) Otherwise tramp would hang right after sending ##exec /bin/sh##. Tracing showed any utf8 LANG to somehow output extra CRs characters, causing tramp to wait the prompt forever. This could be locale bug.
 
 
 == Tips and tricks ==
 
-'''Using su to edit stuff as root'''
+=== Using su to edit stuff as root ===
 
 C-x C-f /su:&#58;/etc/hosts RET
 
 Please note the double :
 
-----
-
-'''Using Tramp to open files sudo'd to root'''
+=== Using Tramp to open files sudo'd to root ===
 
 One lazy afternoon, one "sudo vi foo" too many (or rather "udo vi foo", while my term was blocked because of the stupid ^S handling), I came up with this and was, subsequently, happy:
 
@@ -418,22 +414,17 @@ I really like the above.  It doesn't work when you run it more than once on a bu
       (find-alternate-file fname))))
 }}}
 
-----
-
-'''Tramp on NTEmacs with cygwin ssh'''
+=== Tramp on NTEmacs with cygwin ssh ===
 
 To get this to work, here are some of the things I noticed,
 * You have to create your keys and stuff and after putting them into memory, run NTEmacs from the cygwin shell.
-
 * You have to use sshx as the tramp-default-method otherwise it complains about a terminal or something.
 
 [new]
 With putty, this finally seems to work.
 
 * First, use the puttygen to generate your keys (Apparently, the authentication agent called paegant needs them with some kind of comments and stuff).
-
 * Start paegant which is the authentication agent with the putty suite and load the keys.
-
 * Then connect using the pscp method. This seems to work.
 
 -- NoufalIbrahim
@@ -505,8 +496,7 @@ FWIW, here is my Windows shortcut target for launching Emacs via Cygwin, and hav
 
 If your cygwin bash profile manages your ssh-agent for you, then this approach makes TRAMP via the sshx method pretty seamless.
 
-----
-'''Tramp on emacs, ssh and cygwin/X'''
+=== Tramp on emacs, ssh and cygwin/X ===
 
 Tramp-mode can be made to operate within the cygwin/X environment as an alternative to NTEmacs. In this approach, emacs is installed as a cygwin package and can be run in the cmd bash shell, rxvt, or under X-windows. In order for tramp-mode to function, the following should be added to your .emacs file:
 
@@ -527,10 +517,10 @@ CYGWIN_NT-5.1 diogenes 1.5.19(0.150/4/2) 2006-01-20 13:28 i686 Cygwin
 This approach works with or without ssh-agent / keychain. It also works using the stock cygwin.bat, with [http://www.soe.ucsc.edu/~you/notes/cygwin-install.html#mozTocId306872 "tty and binmode"] cygwin.bat, with [http://www.soe.ucsc.edu/~you/notes/cygwin-install.html#mozTocId333576 rxvt], or under X-windows.
 
 --CarsonReynolds
-----
-'''Problem with a "plink -telnet" method on nqmacs (to AIX)'''
 
-I'm trying to use tramp on a W$ box to connect to an AIX machine
+=== Problem with a "plink -telnet" method on nqmacs (to AIX) ===
+
+I'm trying to use tramp on a Windows box to connect to an AIX machine
 ("porco") via telnet because I can't install ssh on porco, and I'm
 having to use "plink -telnet" because the default telnet client is
 broken - both "telnet" and "plink -telnet" work when I run them in DOS
@@ -602,8 +592,9 @@ By the way, I'm using nqmacs ("GNU Emacs 22.0.50.1
 (i386-mingw-nt5.0.2195) of 2005-06-26") on Windows 2000...
 [new]
 I get the plinkt work with 23.0.94.1 on windows XP. My configuration is almost the same as yours except: 1, (tramp-login-args (("-telnet") ("%h"))); 2, I didn't configure tramp-password-end-of-line. -- lgfang
-----
-'''How do you set up TrampMode to make multi-hop methods less painful to work with?'''  Say I can ssh to node 'secret' only from 'remote', I'd use:
+
+=== How do you set up TrampMode to make multi-hop methods less painful to work with? ===
+Say I can ssh to node 'secret' only from 'remote', I'd use:
 
     /multi:ssh:foo@remote:ssh:bar@secret:~/.emacs
 
@@ -613,10 +604,7 @@ Can I set TrampMode up so that a method like:
 
 would access the same file in the same manner?  I.e., can I set it up to use an abbreviated path?  -- Dirk
 
-
-----
-'''How do you do a three-step multi?'''  or '''Why doesn't multi work?'''
-
+=== How do you do a three-step multi? - or - Why doesn't multi work? ===
 
 This works in debian lenny (2009), which comes with emacs 22.2 and tramp 2.0.55:
 
@@ -693,13 +681,11 @@ I hope there's a sensible explanation. I would love to be pointed to a logical e
 
 -- Matthew
 
-----
-'''Editing files via sudo doesnt work with vc-svn.el.'''
+=== Editing files via sudo doesnt work with vc-svn.el. ===
 
 I get this in *Subversion Output*:
 
   svn: '/sudo:root@localhost:/home/elements' is not a working copy
-
 
 In *Messages*:
 
@@ -749,8 +735,7 @@ This is a similar advice for DVC mode (thanks to folks at ru_emacs):
 [new]
 '''Editing files not under DARCS version control via TRAMP doesn't work when using Jorgen Schäfer's vc-darcs.el v1.3 or earlier''', please upgrade to 1.4. See VcDarcs
 
-----
-'''I want to completely turn off backups for Tramp.'''
+=== I want to completely turn off backups for Tramp. ===
 
 [new]
 I guess the simplest way would be a hook, but I can't figure out what the name of the Tramp hook is. tramp-mode-hook doesn't seem to work -- [[bkhl]]
@@ -767,10 +752,7 @@ how about just overwriting tramp-auto-save ? -- [[Gyom]]
   (auto-save-mode -1))
 }}}
 
-
-----
-
-'''Helpful variables you can set for debugging:'''
+=== Helpful variables you can set for debugging ===
 
 {{{
 (require 'tramp)
@@ -783,9 +765,7 @@ how about just overwriting tramp-auto-save ? -- [[Gyom]]
 [new]
 See also `How to Customize Traces' in the TRAMP info manual (`C-h i'). The tramp-debug-buffer variable seems to be missing and, I guess, deprecated in GNU Emacs 23.
 
-----
-
-'''Connecting to a different port:'''
+=== Connecting to a different port ===
 
 Use the self-described "kludgy" hostname (see documentation for tramp-open-connection-rsh function): ##C-x C-f /ssh:test@host#2222:/tmp##
 
@@ -795,8 +775,7 @@ The kludge does not work with plink (at least with plink v.0.60 and tramp coming
 
 -- MstislavElagin
 
------
-'''Using CVS on the remote server:'''
+=== Using CVS on the remote server ===
 
 If you are using editing files remotely on CVS, and that CVS server is itself a remote machine requiring passphrase via ssh, try this trick. Add "-A" to your argument list for ssh.  "-A" will forward your SSH keys to the remote machine (say remotemachine1), which can then use those keys for the authentication to the remote CVS server (say remotemachine2).  Check this from the command line first:
 
@@ -816,15 +795,14 @@ in your ##~/.ssh/config## file.
 
 (Tested with Emacs from CVS 22.0.50 and Tramp 2.0.47).
 
-----
-'''Using sftp or psftp without ssh'''
+=== Using sftp or psftp without ssh ===
 
 Because tramp uses plink to login with all putty variants, and ssh to login with all openssh variants, its not possible to use psftp or sftp connection using Tramp.  There's not a way to override the tramp-login-program aspect of the alist tramp-methods.  Unfortunately, nothing's changed since 2004.[http://lists.gnu.org/archive/html/tramp-devel/2004-03/msg00046.html][http://lists.gnu.org/archive/html/tramp-devel/2004-03/msg00047.html]  Tramp can only do SFTP over SSH, and AngeFtp doesn't currently support SFTP, and with no plans to handle it, since Tramp supports SFTP over SSH.
 
 This is problematic with hosting accounts where access is only via sftp... other protocals (such as ssh) are disabled.
 
-----
-'''Using tramp with archive-mode'''
+=== Using tramp with archive-mode ===
+
 Does anyone have a working configuration that combines tramp and archive-mode?
 I can open the remote archive but when I try to open a file within the archive I get:
 
@@ -865,14 +843,11 @@ This is using the following config:
 
 scpwrapper is just a script that converts arguments of the form ##"c:/"## to ##"/cygdrive/c"##.
 
-
 ----
 
 One of the neat things about using TRAMP via a remote shell, is that emacs will then automatically invoke other remote shell commands directly on that server. e.g. When viewing a remote file, try <code>M-x shell</code>, <code>M-x rgrep</code>, etc...
 
-----
-
-==Using tramp to quickly edit files as root==
+== Using tramp to quickly edit files as root ==
 
 I find the following shortcuts to be highly useful for quickly editing files as root; esp via emacsclient (i.e. as an alternative to sudo vi)
 
