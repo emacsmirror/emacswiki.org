@@ -5,5 +5,7 @@ https://github.com/TaylanUB/rcirc-activities/
 
 
 The core "infrastructure" has no other purpose than to keep the `rcirc-activities/activities' alist up-to-date, which associates buffers with a list of activity flags.
+
 Any "frontend" can be used to actually make it usable.
+
 The default front-end so far is the `rcirc-activities/switch-to-buffer' function, which uses ido to show the selection of buffers in which activities are present. In this selection, buffer names are prefixed with "@" if the `mention' flag is set (your nick appeared in a PRIVMSG), otherwise "." if the `talk' flag is set (a PRIVMSG was received), and otherwise " " if the `activity' flag is set (any text was printed on the buffer). Buffers with no flags don't appear in the list.
