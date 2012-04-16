@@ -113,16 +113,18 @@ Here is how to change that in your InitFile, courtesy of AdrianKubala:
 
     (add-hook 'isearch-mode-end-hook 'my-goto-match-beginning)
     (defun my-goto-match-beginning ()
-      (when isearch-forward (goto-char isearch-other-end)))
+      (when (and isearch-forward isearch-other-end)
+        (goto-char isearch-other-end)))
 
     (defadvice isearch-exit (after my-goto-match-beginning activate)
       "Go to beginning of match."
-      (when isearch-forward (goto-char isearch-other-end)))
+      (when (and isearch-forward isearch-other-end)
+        (goto-char isearch-other-end)))
 
 With this hook, both `C-g' and `RET' exit the search at the begining of the search string. To recover the old behaviour of `C-g' (going back to where you where before starting the search), you can change the hook to (only tested on Emacs 22):
 
     (defun my-goto-match-beginning ()
-      (when (and isearch-forward (not isearch-mode-end-hook-quit))
+      (when (and isearch-forward isearch-other-end (not isearch-mode-end-hook-quit))
         (goto-char isearch-other-end)))
 
 
