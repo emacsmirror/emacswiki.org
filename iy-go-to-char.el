@@ -7,8 +7,8 @@
 ;; Filename: iy-go-to-char.el
 ;; Description: Go to char
 ;; Created: 2009-08-23 01:27:34
-;; Version: 1.0
-;; Last-Updated: 2009-08-23 05:17:50
+;; Version: 1.1
+;; Last-Updated: 2012-04-16 08:42:00
 ;; URL: http://www.emacswiki.org/emacs/download/iy-go-to-char.el
 ;; Compatibility: GNU Emacs 23.1.1
 
@@ -84,6 +84,10 @@
 ;; search can cross lines. To continue search last char, use
 ;; `iy-go-to-char-continue' and `iy-go-to-char-continue-backward'.
 
+;;; Change Log:
+;; 2012-04-16 (1.1)
+;;    fix C-s/C-r to enter isearch
+
 ;;; Code:
 
 (defgroup iy-go-to-char nil
@@ -104,6 +108,11 @@
 (defvar iy-go-to-char-last-char nil
   "last char used in iy-go-to-char"
   )
+
+(defun iy-go-to-char-isearch-setup ()
+  (remove-hook 'isearch-mode-hook 'iy-go-to-char-isearch-setup)
+  (setq isearch-string (if iy-go-to-char-last-char (string iy-go-to-char-last-char) ""))
+  (isearch-search-and-update))
 
 ;;;###autoload
 (defun iy-go-to-char (n char)
@@ -152,15 +161,8 @@ Unless quit using C-g or the region is activated before searching, the start
       (push-mark orig t)
       (cond
        ((or (eq ev ?\C-s) (eq ev ?\C-r))
-        (let ((begin (match-beginning 0))
-              (end (match-end 0))
-              isearch-initial-string
-              )
-          (if (eq begin end)
-              (if (eq ev ?\C-s) (isearch-forward) (isearch-backward))
-            (setq isearch-initial-string (buffer-substring begin end))
-            (add-hook 'isearch-mode-hook 'isearch-set-initial-string)
-            (if (eq ev ?\C-s) (isearch-forward) (isearch-backward)))))
+        (add-hook 'isearch-mode-hook 'iy-go-to-char-isearch-setup)
+        (if (eq ev ?\C-s) (isearch-forward) (isearch-backward)))
        ((eq ev ?\C-w)
         (goto-char pt)
         (push-mark orig t)
