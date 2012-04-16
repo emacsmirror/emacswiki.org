@@ -116,6 +116,10 @@ File an Emacs bug: `M-x report-emacs-bug'. Give a clear step-by-step recipe, sta
 [new]
 I will do so. Since my post I found that I can "Run as Administrator" as a workaround. It appears that the ACL of newly created files is too strict for most tasks (at least that's my take: if I log in as a different user, I cannot access the files created by emacs as my principal login with *anything*). Now what's weird is that most other programs started as that very same user cannot access the file - so, it is impossible to icacls it. Looks as much a Vista bug as an Emacs bug...
 
+[new]
+This is a feature of Windows Vista which virtualizes the file system and the registry in the attempt to keep existing misbehaved applications to run, such as those which write configuration files to the Windows directory or the application directory assuming the user has rights to do so. See http://msdn.microsoft.com/en-us/library/bb756960.aspx to learn the details why Emacs is virtualized and why Explorer is not.
+
+You can run with elevated priviledges, run as a user with rights to create/change those files, add yourself to a group to have the rights or change the file's ACL to give you those rights. Running as administrator falls under the first choice if you're an administrator and under the second if you're not (you must provide the administrator password in this case). -- Paulo Madeira
 
 
 
