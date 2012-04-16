@@ -210,6 +210,19 @@ Repeat command `my-theme-cycle' (bound here to ##`[F12]'##) to cycle among theme
     (setq color-theme-is-global nil) ; Initialization
     (my-theme-set-default)
 
+== Installing a Color Theme for One Buffer Only ==
+
+On GNU Emacs featuring [http://www.gnu.org/software/emacs/manual/html_node/elisp/Face-Remapping.html Face-Remapping] (that is versions >= 23) you can use [https://github.com/vic/color-theme-buffer-local/blob/master/color-theme-buffer-local.el color-theme-buffer-local] to install theme faces on a per buffer basis.
+
+Here's how to do this interactively.
+
+   M-x color-theme-buffer-local
+
+Or you can use it programmatically to install a color theme based on a major mode, for example:
+
+   (require 'color-theme-buffer-local)
+   (add-hook 'java-mode 
+     (lambda nil (color-theme-buffer-local 'color-theme-robin-hood (current-buffer))))
 
 == Installing a Color Theme for One Frame Only ==
 You can do this by using the variable `color-theme-is-global' which
