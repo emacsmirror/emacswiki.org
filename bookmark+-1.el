@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2012, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 13:43:55 2010 (-0700)
-;; Last-Updated: Fri Apr 13 17:01:56 2012 (-0700)
+;; Last-Updated: Mon Apr 16 13:49:40 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 5133
+;;     Update #: 5142
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-1.el
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -1863,10 +1863,9 @@ Non-nil VISITS means record it as the `visits' entry."
          (fcrs     (when regionp (bmkp-end-position-pre-context beg end)))
          (ecrs     (when regionp (bmkp-end-position-post-context end))))
     `(,@(unless no-file
-                `((filename . ,(cond ((buffer-file-name)
-                                      (bookmark-buffer-file-name))
-                                     (dired-p  nil)
-                                     (t        bmkp-non-file-filename)))))
+                `((filename . ,(cond ((buffer-file-name) (bookmark-buffer-file-name))
+                                     (dired-p            nil)
+                                     (t                  bmkp-non-file-filename)))))
       (buffer-name . ,buf)
       ,@(unless (and no-context (> emacs-major-version 23))
                 `((front-context-string . ,fcs)))
@@ -6929,8 +6928,8 @@ Inserted subdirs:\t%s\nHidden subdirs:\t\t%s\n"
              (and visits  (format "Visits:\t\t\t%d\n" visits))
              (and time    (format "Last visit:\t\t%s\n" (format-time-string "%c" time)))
              (and created (format "Creation:\t\t%s\n" (format-time-string "%c" created)))
-             (and tags    (format "Tags:\t\t\t%S\n" tags))
-             (and annot   (format "\nAnnotation:\n%s" annot))
+             (and tags    (format "Tags:\n \"%s\"\n" (mapconcat #'identity tags "\"\n \"")))
+             (and annot   (format "\nAnnotation:\n%s\n" annot))
              (and (not no-image)
                   (fboundp 'image-file-name-regexp) ; In `image-file.el' (Emacs 22+).
                   (if (fboundp 'string-match-p)
@@ -7240,7 +7239,7 @@ order, filter function, regexp pattern, title, and omit list."
                                                      bmkp-bmenu-omitted-bookmarks))
                   (last-bmenu-title              . ,bmkp-bmenu-title)
                   (last-bmenu-toggle-filenames   . ,bookmark-bmenu-toggle-filenames))))
-    `(,@(bookmark-make-record-default 'no-file 'no-context)
+    `(,@(bookmark-make-record-default 'NO-FILE 'NO-CONTEXT)
       (filename      . ,bmkp-non-file-filename)
       (bookmark-list . ,state)
       (handler       . bmkp-jump-bookmark-list))))
@@ -7540,6 +7539,7 @@ Interactively, read the variables to save, using
   (let ((bookmark-make-record-function  #'(lambda () (bmkp-make-variable-list-record variables))))
     (call-interactively #'bookmark-set)))
 
+;; Not used in the Bookmark+ code.  Available for users to create varlist bookmark non-interactively.
 (defun bmkp-create-variable-list-bookmark (bookmark-name vars vals &optional buffer-name)
   "Create a variable-list bookmark named BOOKMARK-NAME from VARS and VALS.
 VARS and VALS are corresponding lists of variables and their values.
