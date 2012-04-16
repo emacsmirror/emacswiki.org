@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Mar  5 17:09:08 1996
 ;; Version: 21.0
-;; Last-Updated: Fri Mar  2 08:51:29 2012 (-0800)
+;; Last-Updated: Mon Apr 16 13:42:24 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 534
+;;     Update #: 539
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/strings.el
 ;; Keywords: internal, strings, text
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -41,8 +41,8 @@
 ;;    `current-d-m-y-string', `current-line-string',
 ;;    `display-in-minibuffer', `display-lines-containing',
 ;;    `echo-in-buffer', `empty-name-p', `erase-inactive-minibuffer',
-;;    `erase-nonempty-inactive-minibuffer', `frame-alist',
-;;    `insert-in-minibuffer', `minibuffer-empty-p',
+;;    `erase-nonempty-inactive-minibuffer', `fill-string',
+;;    `frame-alist', `insert-in-minibuffer', `minibuffer-empty-p',
 ;;    `non-empty-name-p', `ordinal-suffix', `pick-some-words',
 ;;    `read-any-variable', `read-number', `region-description',
 ;;    `set-minibuffer-empty-p', `string-w-face',
@@ -64,6 +64,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2012/04/16 dadams
+;;     Added: fill-string.
 ;; 2011/12/12 dadams
 ;;     read-buffer: Use internal-complete-buffer for Emacs 22+.
 ;; 2011/01/04 dadams
@@ -380,6 +382,17 @@ alternative, see `erase-nonempty-inactive-minibuffer'."
           (erase-buffer)
           (set-minibuffer-empty-p t)))
       (message nil))))                  ; Clear any messages to show minibuf.
+
+(defun fill-string (string &optional justify nosqueeze to-eop)
+  "Return a copy of STRING, but filled.
+Arguments are those for `fill-region' with the same names.
+`fill-region' is used.  See it for the behavior, including the
+variables that are respected."
+  (with-temp-buffer
+    (insert string)
+    (fill-region (point-min) (point-max))
+    (setq string  (buffer-substring (point-min) (point-max))))
+  string)
 
 (defun string-w-face (arg)
   "Convert ARG (of form (FACE OBJECT)) to a string with face FACE.
