@@ -460,6 +460,16 @@ set up, this problem should not be there. How do I set up the terminal correctly
 [new]
 5 - I'd like to be able to change the icon (or name?) of a running instance of Emacs.app. I use one instance for mail and another one for coding. Would like to be able to differentiate them when switching between apps using Cmd-TAB.
 
+* Response to 5:
+I don't think there is a way to change the Dock name now at runtime.  
+- It seems that it is possible in theory on Mac OS X: note that some Java VMs have a '-Xdock:name' option to set this.  See http://stackoverflow.com/questions/2553941/programatically-setting-the-dockname-java-mac-os-x-jvm-property
+
+* To create two separate instances of Emacs:
+  The dock name comes from the application bundle /Applications/XXX.app name on disk.  
+  To change the dock name, you can create a new bundle directory: /Applications/Emacs-Mail.app, make a Contents directory and then use symbolic links inside Contents (Resources, MacOS) to the /Applications/Emacs.app dir.  To change the menubar name and have the two apps treated as different programs you must change Info.plist.  Change CFBundleName and CFBundleIdentifier from '*Emacs' to '*Emacs-Mail'.  Then, you have to delete Contents/English.lproj/Infoplist.strings - this contains a localized string for CFBundleName which will be used as the app name in the menubar if it exists.  Voila: two independent Emacs apps without doubling the disk space. 
+-- MH
+
+
 
 == See Also ==
 
