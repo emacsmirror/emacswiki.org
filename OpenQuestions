@@ -281,6 +281,9 @@ file you were working on, when you last saved it
 
 Thanks!
 
+My guess is that this is possible to do. It would involve hooking into the save and load hooks of a file, and reading/writing buffer-undo-list.  If hte file got modified outside of emacs, the undo-list would be out-of-sync though.
+--JonathanArkell  
+
 == Syntax Highlighting ==
 [new]
 Aquamacs newbie here. I can't seem to easily find help on user-defined syntax highlighting for any file types. For example I work with a program called Ox, with .ox extensions. The command 'decl' is often used for declaring variables. Given my text is green, how I would I go about making 'decl' come up blue in .ox files to distinguish the command? Edited to add: simply put, I'm looking to add a new option for .ox files under File>Change Buffer Mode... , that highlights Ox syntax like decl, while, for, if,...etc.
