@@ -286,5 +286,9 @@ The correct thing to do is just to re-find it with `C-x C-m c utf-8'.
 
 ::: It depends on what you mean by "the encoding is wrong". If you mean (for example) "the file is encoded in latin-1 on disk but that is wrong, it should be utf-8 instead (and Emacs is displaying the non-ascii characters correctly)" then yes, see ChangingEncodings. If you mean "the file is encoded in utf-8 on disk but Emacs guessed the encoding wrong (it interpreted it as latin-1, so the non-ascii characters are displayed as gibberish)" you should revisit it with the right coding system. I guess in this particular case no information was technically "lost" by the incorrect decoding (you could encode the gibberish back to bytes using latin-1 and decode the bytes using utf-8 and the result would make sense) but I am not sure if that is the case for all coding systems (it depends on what they do with invalid input (including corner cases like utf-8 "overlong forms" (see http://en.wikipedia.org/wiki/UTF-8) where simply leaving them as-is may not even be what the user wants!)
 
+== Combining characters ==
+
+It seems Emacs does not support some combining characters. For instance if you paste or read from a file the word страни́ца (as seen in Wiktionary) you will see страни´ца. -- DanielClemente, Apr2012, 24.1.50.4 in X.org in Debian
+
 ----
 CategoryInternationalization
