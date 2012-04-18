@@ -3,7 +3,7 @@ There are four screenplay libraries known, two of which share the same name :(
 * http://www.nongnu.org/screenplay/ -- by VanceSimpson
 * http://www.nongnu.org/screenwriter/ -- improved fork of VanceSimpson's screenplay.el
 * Lisp:screenplay.el -- by AlexSchroeder
-* http://www.emacswiki.org/emacs/RubyTwoMode -- uses emacs + python + LaTeX to give industry standard Final Draft scripts.
+* RubyTwoMode -- uses emacs + python + LaTeX to give industry standard Final Draft scripts.
 
 There is also a LaTeX Document Class called "plari" by Antti-Juhani Kaijanaho for screen plays.
 You can find it on any CTAN-mirror.  
