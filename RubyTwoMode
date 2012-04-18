@@ -3,9 +3,11 @@
 ruby2shoes combines Emacs and Python to create a sophisticated writing environment for screenplay and fiction writers. Emacs' modes are used to create .sp or .fc files. Spirit, a Python application, then archives these files, converts them to text, HTML or LaTeX, or prints them in a variety of ways.
 Finally, ruby2web creates a web site of your work.
 
-There are two modes in ruby2shoes, fiction.el and screenplay.el
+Project homepage:
 
 * http://pypi.python.org/pypi/ruby2shoes
+
+There are two modes in ruby2shoes, *fiction.el* and *screenplay.el*.
 
 Here are the comment sections of the mode files so you can see what they do.
 
