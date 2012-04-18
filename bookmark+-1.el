@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2012, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 13:43:55 2010 (-0700)
-;; Last-Updated: Mon Apr 16 13:49:40 2012 (-0700)
+;; Last-Updated: Wed Apr 18 15:42:23 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 5142
+;;     Update #: 5147
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-1.el
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -9869,7 +9869,10 @@ For example, if automatic bookmarking sets autonamed bookmarks, then
 If you want the automatically created bookmarks to be highlighted,
 then customize option `bmkp-auto-light-when-set' to highlight
 bookmarks of the appropriate kind.  For example, to highlight
-autonamed bookmarks set it to `autonamed-bookmark'."
+autonamed bookmarks set it to `autonamed-bookmark'.
+
+NOTE: If you use Emacs 21 then there is no global version of the mode
+- that is, there is no command `bmkp-global-auto-idle-bookmark-mode'."
                :init-value nil :group 'bookmark-plus :require 'bookmark+
                :lighter bmkp-auto-idle-bookmark-mode-lighter
                :link `(url-link :tag "Send Bug Report"
@@ -9899,9 +9902,11 @@ Don't forget to mention your Emacs and library versions."))
                "Turn on `bmkp-auto-idle-bookmark-mode'."
                (bmkp-auto-idle-bookmark-mode 1)))
 
-       (eval '(define-globalized-minor-mode bmkp-global-auto-idle-bookmark-mode bmkp-auto-idle-bookmark-mode
-               bmkp-turn-on-auto-idle-bookmark-mode :group 'bookmark-plus :require 'bookmark+)))
-
+       (when (fboundp 'define-globalized-minor-mode) ; Emacs 22+, not 21.
+         (eval '(define-globalized-minor-mode bmkp-global-auto-idle-bookmark-mode
+                 bmkp-auto-idle-bookmark-mode
+                 bmkp-turn-on-auto-idle-bookmark-mode
+                 :group 'bookmark-plus :require 'bookmark+))))
       (t                                ; Emacs 20.
        (defun bmkp-auto-idle-bookmark-mode (&optional arg)
          "Toggle automatic setting of a bookmark when Emacs is idle.
