@@ -3,7 +3,7 @@
 ;; Copyright (C) 2012 tama.sh
 
 ;; Author: tama.sh <tama.csh@gmail.com>
-;; Version: 1.0.0
+;; Version: 1.0.1
 ;; Keywords: TeX
 
 ;; This program is free software; you can redistribute it and/or modify
@@ -54,6 +54,8 @@
 ;;
 ;; * 2012/02/22
 ;;     First released
+;; * 2012/04/18
+;;     Correct the regexp for searching environments
 
 ;;; Code:
 
@@ -206,7 +208,8 @@
 (defun texlabel-search-env (env-list region)
   "Search environments and return a list of labeled regions.
 This function ignores environments in comment lines."
-    (texlabel-collect-key-rec (texlabel-make-or-regexp env-list) (texlabel-parse-env region)))
+    (texlabel-collect-key-rec (concat "^" (texlabel-make-or-regexp env-list) "$")
+			      (texlabel-parse-env region)))
 
 (defun texlabel-search-math-env (region)
   "Search math enviroments indicated by `texlabel-math-env-list'. Return a list of labeled regions."
