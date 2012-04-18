@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2012, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Sat Apr 14 07:03:16 2012 (-0700)
+;; Last-Updated: Wed Apr 18 15:40:52 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 14547
+;;     Update #: 14548
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-doc.el
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search,
 ;;           info, url, w3m, gnus
@@ -2905,7 +2905,10 @@
 ;;
 ;;  NOTE: If you use Emacs 20, then by default
 ;;  `bmkp-auto-idle-bookmark-mode' is global rather than local.  The
-;;  doc string tells you how to make it local instead.
+;;  doc string tells you how to make it local instead.  If you use
+;;  Emacs 21, then `bmkp-auto-idle-bookmark-mode' is local but there
+;;  is no global mode, `bmkp-global-auto-idle-bookmark-mode'.  This is
+;;  because Emacs 21 does not support `define-globalized-minor-mode'.
  
 ;;(@* "Highlighting Bookmark Locations")
 ;;  ** Highlighting Bookmark Locations **
