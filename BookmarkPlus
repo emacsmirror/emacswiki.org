@@ -3176,7 +3176,10 @@ of the appropriate kind.  For example, to highlight autonamed
 bookmarks set it to `autonamed-bookmark'.
 
 
-'''NOTE:''' If you use Emacs 20, then by default `bmkp-auto-idle-bookmark-mode' is global rather than local.  The doc string tells you how to make it local instead.
+'''NOTE:''' If you use Emacs 20, then by default `bmkp-auto-idle-bookmark-mode' is global rather than local.  The doc string tells you how to make it local instead.  If you use
+Emacs 21, then `bmkp-auto-idle-bookmark-mode' is local but there
+is no global mode, `bmkp-global-auto-idle-bookmark-mode'.  This is
+because Emacs 21 does not support `define-globalized-minor-mode'.
 
 
 
