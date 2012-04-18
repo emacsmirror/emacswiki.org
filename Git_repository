@@ -2,6 +2,8 @@ The EmacsWiki [[Git]] repository checks in every change on the Emacswiki (with u
 
 It uses [[Git]] and can be found [http://github.com/emacsmirror/emacswiki.org on github].
 
+(Back to WikiDownload.)
+
 == Package Branches ==
 
 Additionally individual packages distributed on the Emacswiki are available from this repository in separate _branches_ (named pkg/NAME). Such a branch contains the full history of all files that are part of a particular package but purges all other history. These branches can lag behind a few days.
@@ -16,10 +18,15 @@ Also, if you are already comfortable using git and need to make changes to a pac
 
 The master branch contains the full history of all pages and libraries since the 8th August 2009. The first 800 commits have been created by importing from the [[SVN_repository]]. Each of these commits contains all changes of a complete day and has no meaningful commit messages.
 
-Since the 20th November 2011 this repository is integrated with Oddmuse - every edit results in a separate commit. The announcement can be found [http://www.emacswiki.org/emacs/2011-11-04 here].
+Since the 20th November 2011 this repository is integrated with Oddmuse -- every edit results in a separate commit. The announcement can be found [http://www.emacswiki.org/emacs/2011-11-04 here].
 
-(Back to WikiDownload.)
+== Binary Files ==
+
+The wiki allows users to upload files to a page. The page content is now a binary blob plus MIME-type. When the uploaded file is served, the MIME-type is used to tell the browser how to handle the file. In fact, the binary blob is stored in MIME-encoded format and can therefore be served as-is when it is requested.
+
+This is different from how files are often treated by operating systems. Take [[TummePic01]] for example.  the MIME-type on the first line and the MIME-encoded file content on the following lines. This is exactly how the page looks in the Git repository. In order to convert this file, you need to determine that the appropriate suffix for ##image/png## is ##.png##, decode it and rename it.
+
+If the page name includes the traditional suffix, however, things are easier. Take [[ArabicIrc.png]] for example and check out the [Self:action=browse;id=ArabicIrc.png;raw=1 raw data]. If you want to convert this page to a file that is usable on an ordinary file system, you just need to strip the first line and decode it. [http://git.savannah.gnu.org/cgit/oddmuse.git/tree/mimedecode.pl mimedecode.pl] does this for you.
 
 ----
 CategoryEmacsWikiSite
-
