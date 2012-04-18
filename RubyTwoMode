@@ -1,9 +1,6 @@
-There are two modes in ruby2shoes, fiction.el and screenplay.el  They are both
-available at http://sourceforge.net/projects/ruby2shoes and the help pages
-are always up to date on http://ruby2shoes.sourceforge.net.
+There are two modes in ruby2shoes, fiction.el and screenplay.el
 
-* The ruby2shoes project doesn't seem to exist at sourceforge anymore.
-* [Update 28/05/2008] Seems to have moved here now: http://pypi.python.org/pypi/ruby2shoes
+* http://pypi.python.org/pypi/ruby2shoes
 
 ruby2shoes is first about writing and the modes help you write fiction or
 screenplays in Emacs.  Then there are the Python scripts that convert
