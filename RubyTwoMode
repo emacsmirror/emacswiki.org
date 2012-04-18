@@ -1,18 +1,15 @@
+/low-resource writer's software for screenplays and fiction/
+
+ruby2shoes combines Emacs and Python to create a sophisticated writing environment for screenplay and fiction writers. Emacs' modes are used to create .sp or .fc files. Spirit, a Python application, then archives these files, converts them to text, HTML or LaTeX, or prints them in a variety of ways.
+Finally, ruby2web creates a web site of your work.
+
 There are two modes in ruby2shoes, fiction.el and screenplay.el
 
 * http://pypi.python.org/pypi/ruby2shoes
 
-ruby2shoes is first about writing and the modes help you write fiction or
-screenplays in Emacs.  Then there are the Python scripts that convert
-the ruby2shoes .sp or .fc files to HTML, TeX, LaTeX, <nowiki>PostScript</nowiki>, and
-nicely formatted text.  And finally there is ruby2web that makes it almost
-wiki-easy to create a web site of your work.
-
 Here are the comment sections of the mode files so you can see what they do.
 
-<pre>
-
-fiction.el
+== fiction.el ==
 
 Major mode for writing novels, children's stories, and other fiction.
 Creates .fc files which are translated into LaTeX files by an external
@@ -42,7 +39,7 @@ turn off the global font lock in Emac's Edit menu.  The sluggishness comes
 from the way Emacs colors your fonts and turning off the color returns you
 to normal, lightning-like speed.
 
-screenplay.el
+== screenplay.el ==
 
 Major mode for writing industry-standard Hollywood spec-scripts.
 Creates .sp files which are translated into LaTeX files by an external
@@ -76,6 +73,3 @@ The only emphasis in a spec-script is underlining. To underline a word,
 begin it with an underbar: this underlined is _this.  LaTeX commands
 like \newpage take the form *\command on a line by themselves.  The
 backslash in the second position is the key.
-
-
-</pre>
