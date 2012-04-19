@@ -5,16 +5,14 @@ http://i.imgur.com/OGrq6.png
 
 He says:
 
-[quote]
-For the screenshot I opened up a random Emacs source file, went to a
+: For the screenshot I opened up a random Emacs source file, went to a
 random function, and tried to complete a structure.  In this case it was
 glyph_matrix, and we can see that CEDET has provided a list of all the
 members of the glyph_matrix struct.
 
-There is a bit prettification going on there, I use AutoCompleteMode and
+: There is a bit prettification going on there, I use AutoCompleteMode and
 its AC-Semantic backend to do the overlay-based completion window but
 the heavy lifting is all CEDET.
-[/quote]
 
 This is the configuration he uses:
 
