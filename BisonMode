@@ -1,3 +1,5 @@
+This is probably the same file as it is by the same author of flex-mode: http://ftp.sunet.se/pub/gnu/emacs-lisp/incoming/bison-mode.el
+
 bison and flex files are apparently supported by CcMode.
 - does anybody have more detail on this? I don't see anything in the cc mode docs about this.
 
