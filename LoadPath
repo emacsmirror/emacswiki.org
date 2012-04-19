@@ -11,9 +11,11 @@ Emacs or by adding it to your InitFile.
 
 == Adding a directory ==
 
-To add a single directory to the front of your `load-path' (the final slash is needed for a directory):
+To add a single directory to the front of your `load-path':
 
     (add-to-list 'load-path "~/.emacs.d/lisp/")
+
+People with a CommonLisp background like to make sure that the entry ends with a trailing slash, but this is not required by EmacsLisp.
 
 [:AddSubDirectories]
 == Adding subdirectories ==
