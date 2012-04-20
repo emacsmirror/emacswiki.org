@@ -1,7 +1,7 @@
 Joseph Gay
 gilleylen:at:gmail:dot:com
 
-ysph on #emacs and http://twitter.com/psydotai
+[::ysph] on #emacs and http://twitter.com/psydotai
 
 I use GNU Emacs
 
@@ -9,10 +9,9 @@ I use GNU Emacs
 * reading and composing mail over IMAP using [[Gnus]]
 * web browsing (mostly technical docs) using [[w3m]]
 * server administration using TrampMode
-* twitter via bitlbee
+* identi.ca via bitlbee
 * note taking, writing, agenda, and time clock in OrgMode
-* i try to keep a learning log using RememberMode
-* SlimeMode for hacking on clojure and sbcl (in my spare time)
+* SlimeMode for hacking in clojure and sbcl (in my spare time)
 
 I am a vim convert. I used ViperMode for a few months, but I've now
 dropped it completely. My transition was motivated initially by
