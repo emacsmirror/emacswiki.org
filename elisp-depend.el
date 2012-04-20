@@ -1,432 +1,248 @@
-;;; elisp-depend.el --- Parse depend libraries of elisp file.
-
-;; Filename: elisp-depend.el
-;; Description: Parse depends library of elisp file.
-;; Authors: Andy Stewart lazycat.manatee@gmail.com
-;; Tom Breton (Tehom) tehom@panix.com
-;; "Michael Heerdegen" <michael_heerdegen@web.de>
-;; Maintainer: Tom Breton (Tehom) tehom@panix.com
-;; Copyright (C) 2009, Andy Stewart, all rights reserved.
-;; Copyright (C) 2010, Tom Breton, all rights reserved.
-;; Created: 2009-01-11 19:40:45
-;; Version: 0.4.2
-;; Last-Updated: Sat  8 May, 2010 10:51 PM
-;;           By: Tom Breton
-;; URL: http://www.emacswiki.org/emacs/download/elisp-depend.el
-;; Keywords: elisp-depend
-;; Compatibility: GNU Emacs 20 ~ GNU Emacs 23
-;;
-;; Features that might be required by this library:
-;;
-;;
-;;
-
-;;; This file is NOT part of GNU Emacs
-
-;;; License
-;;
-;; This program is free software; you can redistribute it and/or modify
-;; it under the terms of the GNU General Public License as published by
-;; the Free Software Foundation; either version 3, or (at your option)
-;; any later version.
-
-;; This program is distributed in the hope that it will be useful,
-;; but WITHOUT ANY WARRANTY; without even the implied warranty of
-;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-;; GNU General Public License for more details.
-
-;; You should have received a copy of the GNU General Public License
-;; along with this program; see the file COPYING.  If not, write to
-;; the Free Software Foundation, Inc., 51 Franklin Street, Fifth
-;; Floor, Boston, MA 02110-1301, USA.
-
-;;; Commentary:
-;;
-;; Parse depend libraries of elisp file.
-;;
-;; This packages is parse current elisp file and get
-;; depend libraries that need.
-;;
-;; Default, it will use function `symbol-file' to get
-;; depend file with current symbol.
-;; And then use `featurep' to test this file whether
-;; write `provide' sentences for feature reference.
-;; If `featurep' return t, generate depend information
-;; as "(require 'foo)" format.
-;; If `featurep' return nil, generate depend
-;; as "(autoload 'foo "FooFile")" format.
-;;
-;; This packages will always return depend information as `autoload'
-;; format if a feature not write `provide' information in source code.
-;;
-;; Below are commands you can use:
-;;
-;; `elisp-depend-insert-require'        insert depends code.
-;; `elisp-depend-insert-comment'        insert depends comment.
-;;
-
-;;; Installation:
-;;
-;; Put elisp-depend.el to your load-path.
-;; The load-path is usually ~/elisp/.
-;; It's set in your ~/.emacs like this:
-;; (add-to-list 'load-path (expand-file-name "~/elisp"))
-;;
-;; And the following to your ~/.emacs startup file.
-;;
-;; (require 'elisp-depend)
-;;
-;; NOTE:
-;;
-;; Default, if your Emacs is install at "/usr/share/emacs/",
-;; You can ignore below setup.
-;;
-;; Otherwise you need setup your Emacs directory with
-;; option `elisp-depend-directory-list', like below:
-;;
-;; (setq elisp-depend-directory-list '("YourEmacsDirectory"))
-;;
-
-;;; Customize:
-;;
-;; `elisp-depend-directory-list' the install directory of emacs.
-;; Or you can add others directory that you want filter.
-;;
-;; All of the above can customize by:
-;;      M-x customize-group RET elisp-depend RET
-;;
-
-;;; Change log:
-;; 2010/05/10
-;;      * Bugfix: Fixed error if file didn't start with a comment.
-;; 2010/05/08
-;;      * Added require for `thingatpt'
-;;      * Now slash-style module names are treated correctly.
-;;
-;; 2009/02/11
-;;      * Add new option `built-in' to function `elisp-depend-map'
-;;        for debug.
-;;
-;; 2009/01/18
-;;      * Complete all check work.
-;;        Now can generate exact depend information.
-;;      * Modified some code to compatibility Emacs 20.
-;;        Thanks "Drew Adams" advice.
-;;      * Fix doc.
-;;
-;; 2009/01/17
-;;      * Don't include user init file in depend information,
-;;        filter by variable `user-init-file'.
-;;
-;; 2009/01/11
-;;      * First released.
-;;
-
-;;; Acknowledgements:
-;;
-;;      Drew Adams      <drew.adams@oracle.com>
-;;              For advice for compatibility Emacs 20.
-;;
-
-;;; TODO
-;;
-;;      Fix local-variable problem:
-;;          If the some local-variable (such as lambda sentence)
-;;          have same name with function, will got unnecessary depend
-;;          information.
-;;
-
-;;; Require
-(require 'thingatpt)
-;;; Code:
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; Customize ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;;###autoload
-(defgroup elisp-depend nil
-  "Parse depend library of elisp file."
-  :group 'tools)
-
-;;;###autoload
-(defcustom elisp-depend-directory-list
-  '("/usr/share/emacs/")
-  "List of directories that search should ignore."
-  :type 'list
-  :group 'elisp-depend)
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; Interactive Functions. ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;;;###autoload
-(defun elisp-depend-print-dependencies (&optional built-in)
-  "Print library dependencies of the current buffer.
-With prefix argument, don't include built-in libraries.
-Every library that has a parent directory in
-`elisp-depend-directory-list' is considered built-in."
-  (interactive "P")
-  (let ((dep-table
-         (mapconcat (lambda (dep)
-                      (format "%s: %s"
-                              (propertize (elisp-depend-filename (car dep)) 'face 'match)
-                              (mapconcat #'symbol-name (cdr dep) ", ")))
-                    (elisp-depend-map nil built-in) "\n")))
-    (switch-to-buffer (get-buffer-create "*Dependencies*"))
-    (setq truncate-lines nil
-          buffer-read-only nil)
-    (erase-buffer)                         ;with != 0
-    (insert dep-table)
-    (goto-char (point-min))
-    (view-mode +1)
-    (setq view-exit-action
-          (lambda (buffer)
-            ;; Use `with-current-buffer' to make sure that `bury-buffer'
-            ;; also removes BUFFER from the selected window.
-            (with-current-buffer buffer
-              (bury-buffer))))))
-
-;;;###autoload
-(defun elisp-depend-insert-require ()
-  "Insert a block of (require sym) or 'autoload statements into an elisp file."
-  (interactive)
-  (let ((deps (elisp-depend-map))
-        library-name)
-    (if deps
-        (dolist (element deps)
-          (setq library-name (elisp-depend-filename (car element)))
-          ;; Insert (require 'foo) if featurep return t.
-          (if (featurep (intern library-name))
-              (insert (format "(require '%s)\n" library-name))
-            ;; Otherwise autoload function in `library-name'.
-            (dolist (symbol (cdr element))
-              (if (functionp symbol)
-                  (insert (format "(autoload '%s \"%s\")\n" symbol library-name))))))
-      (message "Doesn't need any extra libraries."))))
-
-;;;###autoload
-(defun elisp-depend-insert-comment ()
-  "Insert a block of `sym' statements into an elisp file."
-  (interactive)
-  (let ((deps (elisp-depend-map)))
-    (if deps
-        (progn
-          (insert ";; ")
-          (dolist (element deps)
-            (insert (format "`%s' " (elisp-depend-filename (car element))))))
-      (message "Doesn't need any extra libraries."))))
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; Utilities Functions ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(defun elisp-depend-map (&optional buffer built-in)
-  "Return depend map with BUFFER.
-If BUFFER is nil, use current buffer.
-If BUILT-IN is non-nil, return built-in library information.
-Return depend map as format: (filepath symbol-A symbol-B symbol-C)."
-  (save-excursion
-    (set-buffer (or buffer (current-buffer)))
-    (goto-char (point-min))
-    (let (symbol symbol-seen filepath filename current-filename dentry deps)
-      ;; Get current buffer file name without extension.
-      (setq current-filename (elisp-depend-filename (buffer-file-name)))
-      (while (not (eobp))
-        ;; Forward symbol.
-        (forward-symbol 1)
-        ;; Skip string.
-        (elisp-depend-skip-string)
-        ;; Skip comment.
-        (elisp-depend-skip-comment)
-        ;; Skip defun name and argument list.
-        (elisp-depend-skip-defun-name-and-argument)
-        ;; Check symbol.
-        (when (and
-               ;; Not in string or comment.
-               (not (elisp-depend-in-string-p))
-               (not (elisp-depend-in-comment-p))
-               ;; Get symbol at point.
-               (setq symbol (symbol-at-point))
-               ;; Not  in `let' or `let*'.
-               (not (elisp-depend-let-variable-p))
-               ;; Just test function, skip variable.
-               (functionp symbol)
-               ;; Filter pseudo function symbol.
-               (elisp-depend-filter-pseudo-function-symbol symbol)
-               ;; Not built-in function.
-               (not (subrp symbol))
-               ;; Find symbol define file.
-               (setq filepath (symbol-file symbol))
-               ;; Get file name without extension.
-               (setq filename (elisp-depend-filename filepath))
-               ;; Not current buffer file.
-               (not (string= filename current-filename))
-               ;; Not match built-in load path.
-               (if built-in
-                   ;; Don't filter built-in libraries when
-                   ;; option `built-in' is non-nil.
-                   t
-                 ;; Otherwise filter built-in libraries.
-                 (not (elisp-depend-match-built-in-library filepath)))
-               ;; Not seen before.
-               (not (memq symbol symbol-seen)))
-          (setq symbol-seen (cons symbol symbol-seen))
-          (if (setq dentry (assoc filepath deps))
-              (setcdr dentry (cons symbol (cdr dentry)))
-            (setq deps (cons (cons filepath (list symbol)) deps)))))
-      deps)))
-
-(defun elisp-depend-get-load-history-line (path-sans-ext extension)
-   "Return line in load-history correspoding to PATH-SANS-EXT with
-   EXTENSION.
-Return nil if there is none."
-   (assoc 
-      (concat path-sans-ext extension) 
-      load-history))
-
-(defun elisp-depend-filename (fullpath)
-  "Return filename without extension and path.
-FULLPATH is the full path of file."
-   
-   (let*
-      (  
-	 (true-path-sans-ext
-	    (file-name-sans-extension
-	       (file-truename fullpath)))
-	 (file-history
-	    (cdr
-	       (or
-		  (elisp-depend-get-load-history-line 
-		     true-path-sans-ext ".elc")
-		  (elisp-depend-get-load-history-line 
-		     true-path-sans-ext ".el"))))
-	 (lib-name
-	    (when file-history
-	       (cdr
-		  (assq 'provide file-history)))))
-
-      (if lib-name
-	 (symbol-name lib-name)
-	 ;;Fallback: Just use the base filename
-	 (file-name-sans-extension 
-	    (file-name-nondirectory fullpath)))))
-
-(defun elisp-depend-skip-string ()
-  "Skip string for fast check."
-  (while (and (not (eobp))
-              (elisp-depend-in-string-p))
-    (goto-char (1+ (cdr (elisp-depend-string-start+end-points))))
-    (forward-symbol 1)))
-
-(defun elisp-depend-skip-comment ()
-  "Skip comment for fast check."
-  (while (and (not (eobp))
-              (elisp-depend-in-comment-p))
-    (search-forward-regexp "\\s>" nil t)
-    (forward-symbol 1)))
-
-(defun elisp-depend-skip-defun-name-and-argument ()
-  "Skip defun name and argument for fast check."
-  (let ((original-point (point))
-        (symbol (symbol-at-point)))
-    (when (and symbol
-               (string-equal "defun" (symbol-name symbol)))
-      (forward-char (- (length (symbol-name (symbol-at-point)))))
-      (skip-chars-backward " \n\t")
-      (if (string-equal "(" (string (char-before)))
-          (progn
-            (goto-char original-point)
-            (search-forward "(" nil t)
-            (forward-char -1)
-            (forward-list))
-        (goto-char original-point)))))
-
-(defun elisp-depend-filter-pseudo-function-symbol (symbol)
-  "Filter pseudo function with SYMBOL.
-In buffer, not all symbols are used as a functions.
-For example, `list' might be a variable holding a list.
-But `symbol-file' will consider it to be a function
-if have a function has same name, like `list'.
-
-So I try to check whether symbol is real function.
-If this symbol is function, the character immediately before it will
-be either ( or ' , otherwise this symbol is not considered a function."
-  (save-excursion
-    (let (current-char)
-      (backward-char (length (symbol-name symbol)))
-      (skip-chars-backward " \n\t")
-      (setq current-char (string (char-before)))
-      (if (or (string-equal "'" current-char)
-              (string-equal "(" current-char))
-          t
-        nil))))
-
-(defun elisp-depend-match-built-in-library (fullpath)
-  "Return t if FULLPATH match directory with built-in library."
-  (if (or (string-equal (format "%s.el" user-init-file) fullpath)
-          (string-equal (format "%s.elc" user-init-file) fullpath))
-      t                                 ;return t if match `user-init-file'.
-    (catch 'match
-      (dolist (directory elisp-depend-directory-list)
-        (if (string-match (expand-file-name directory) fullpath)
-            (throw 'match t)))
-      nil)))
-
-(defun elisp-depend-let-variable-p ()
-  "Return t if symbol at point is a variable in `let' or `let*'.
-Otherwise return nil."
-  (save-excursion
-    (let (symbol)
-      (backward-up-list nil)            ;for compatibility Emacs 20
-      (skip-chars-backward " \n\t")
-      (when (and
-	       (> (point) 1)
-	       (string-equal "(" (string (char-before))))
-        (forward-char -1)
-        (skip-chars-backward " \n\t"))
-      (setq symbol (symbol-at-point))
-      (if (and symbol
-               (or (string-equal "let" (symbol-name symbol))
-                   (string-equal "let*" (symbol-name symbol))))
-          t
-        nil))))
-
-(defun elisp-depend-current-parse-state ()
-  "Return parse state of point from beginning of defun."
-  (let ((point (point)))
-    (beginning-of-defun)
-    ;; Calling PARSE-PARTIAL-SEXP will advance the point to its second
-    ;; argument (unless parsing stops due to an error, but we assume it
-    ;; won't in elisp-depend-mode).
-    (parse-partial-sexp (point) point)))
-
-(defun elisp-depend-in-string-p (&optional state)
-  "True if the parse STATE is within a double-quote-delimited string.
-If no parse state is supplied, compute one from the beginning of the
-  defun to the point."
-  ;; 3. non-nil if inside a string (the terminator character, really)
-  (and (nth 3 (or state (elisp-depend-current-parse-state)))
-       t))
-
-(defun elisp-depend-in-comment-p (&optional state)
-  "True if parse state STATE is within a comment.
-If no parse state is supplied, compute one from the beginning of the
-  defun to the point."
-  ;; 4. nil if outside a comment, t if inside a non-nestable comment,
-  ;;    else an integer (the current comment nesting)
-  (and (nth 4 (or state (elisp-depend-current-parse-state)))
-       t))
-
-(defun elisp-depend-string-start+end-points (&optional state)
-  "Return a cons of the points of open and close quotes of the string.
-The string is determined from the parse state STATE, or the parse state
-  from the beginning of the defun to the point.
-This assumes that `elisp-depend-in-string-p' has already returned true, i.e.
-  that the point is already within a string."
-  (save-excursion
-    ;; 8. character address of start of comment or string; nil if not
-    ;;    in one
-    (let ((start (nth 8 (or state (elisp-depend-current-parse-state)))))
-      (goto-char start)
-      (forward-sexp 1)
-      (cons start (1- (point))))))
-
-(provide 'elisp-depend)
-
-;;; elisp-depend.el ends here
-
-;;; LocalWords:  YourEmacsDirectory filepath dentry deps sym featurep fullpath
-;;; LocalWords:  FooFile elc subr
+#FILE text/x-emacs-lisp 
+Ozs7IGVsaXNwLWRlcGVuZC5lbCAtLS0gUGFyc2UgZGVwZW5kIGxpYnJhcmllcyBvZiBlbGlzcCBm
+aWxlLgoKOzsgRmlsZW5hbWU6IGVsaXNwLWRlcGVuZC5lbAo7OyBEZXNjcmlwdGlvbjogUGFyc2Ug
+ZGVwZW5kcyBsaWJyYXJ5IG9mIGVsaXNwIGZpbGUuCjs7IEF1dGhvcnM6IEFuZHkgU3Rld2FydCBs
+YXp5Y2F0Lm1hbmF0ZWVAZ21haWwuY29tCjs7IFRvbSBCcmV0b24gKFRlaG9tKSB0ZWhvbUBwYW5p
+eC5jb20KOzsgIk1pY2hhZWwgSGVlcmRlZ2VuIiA8bWljaGFlbF9oZWVyZGVnZW5Ad2ViLmRlPgo7
+OyBNYWludGFpbmVyOiBUb20gQnJldG9uIChUZWhvbSkgdGVob21AcGFuaXguY29tCjs7IENvcHly
+aWdodCAoQykgMjAwOSwgQW5keSBTdGV3YXJ0LCBhbGwgcmlnaHRzIHJlc2VydmVkLgo7OyBDb3B5
+cmlnaHQgKEMpIDIwMTAtMjAxMiwgVG9tIEJyZXRvbiwgYWxsIHJpZ2h0cyByZXNlcnZlZC4KOzsg
+Q3JlYXRlZDogMjAwOS0wMS0xMSAxOTo0MDo0NQo7OyBJZDogJElkJAo7OyBWZXJzaW9uOiAxLjAu
+MQo7OyBMYXN0LVVwZGF0ZWQ6IEZyaSAyMCBBcHIsIDIwMTIKOzsgICAgICAgICAgIEJ5OiBUb20g
+QnJldG9uCjs7IFVSTDogaHR0cDovL3d3dy5lbWFjc3dpa2kub3JnL2VtYWNzL2Rvd25sb2FkL2Vs
+aXNwLWRlcGVuZC5lbAo7OyBLZXl3b3JkczogZWxpc3AtZGVwZW5kCjs7IENvbXBhdGliaWxpdHk6
+IEdOVSBFbWFjcyAyMCB+IEdOVSBFbWFjcyAyMwo7Owo7OyBGZWF0dXJlcyB0aGF0IG1pZ2h0IGJl
+IHJlcXVpcmVkIGJ5IHRoaXMgbGlicmFyeToKOzsKOzsKOzsKCjs7OyBUaGlzIGZpbGUgaXMgTk9U
+IHBhcnQgb2YgR05VIEVtYWNzCgo7OzsgTGljZW5zZQo7Owo7OyBUaGlzIHByb2dyYW0gaXMgZnJl
+ZSBzb2Z0d2FyZTsgeW91IGNhbiByZWRpc3RyaWJ1dGUgaXQgYW5kL29yIG1vZGlmeQo7OyBpdCB1
+bmRlciB0aGUgdGVybXMgb2YgdGhlIEdOVSBHZW5lcmFsIFB1YmxpYyBMaWNlbnNlIGFzIHB1Ymxp
+c2hlZCBieQo7OyB0aGUgRnJlZSBTb2Z0d2FyZSBGb3VuZGF0aW9uOyBlaXRoZXIgdmVyc2lvbiAz
+LCBvciAoYXQgeW91ciBvcHRpb24pCjs7IGFueSBsYXRlciB2ZXJzaW9uLgoKOzsgVGhpcyBwcm9n
+cmFtIGlzIGRpc3RyaWJ1dGVkIGluIHRoZSBob3BlIHRoYXQgaXQgd2lsbCBiZSB1c2VmdWwsCjs7
+IGJ1dCBXSVRIT1VUIEFOWSBXQVJSQU5UWTsgd2l0aG91dCBldmVuIHRoZSBpbXBsaWVkIHdhcnJh
+bnR5IG9mCjs7IE1FUkNIQU5UQUJJTElUWSBvciBGSVRORVNTIEZPUiBBIFBBUlRJQ1VMQVIgUFVS
+UE9TRS4gIFNlZSB0aGUKOzsgR05VIEdlbmVyYWwgUHVibGljIExpY2Vuc2UgZm9yIG1vcmUgZGV0
+YWlscy4KCjs7IFlvdSBzaG91bGQgaGF2ZSByZWNlaXZlZCBhIGNvcHkgb2YgdGhlIEdOVSBHZW5l
+cmFsIFB1YmxpYyBMaWNlbnNlCjs7IGFsb25nIHdpdGggdGhpcyBwcm9ncmFtOyBzZWUgdGhlIGZp
+bGUgQ09QWUlORy4gIElmIG5vdCwgd3JpdGUgdG8KOzsgdGhlIEZyZWUgU29mdHdhcmUgRm91bmRh
+dGlvbiwgSW5jLiwgNTEgRnJhbmtsaW4gU3RyZWV0LCBGaWZ0aAo7OyBGbG9vciwgQm9zdG9uLCBN
+QSAwMjExMC0xMzAxLCBVU0EuCgo7OzsgQ29tbWVudGFyeToKOzsKOzsgUGFyc2UgZGVwZW5kIGxp
+YnJhcmllcyBvZiBlbGlzcCBmaWxlLgo7Owo7OyBUaGlzIHBhY2thZ2VzIGlzIHBhcnNlIGN1cnJl
+bnQgZWxpc3AgZmlsZSBhbmQgZ2V0Cjs7IGRlcGVuZCBsaWJyYXJpZXMgdGhhdCBuZWVkLgo7Owo7
+OyBEZWZhdWx0LCBpdCB3aWxsIHVzZSBmdW5jdGlvbiBgc3ltYm9sLWZpbGUnIHRvIGdldAo7OyBk
+ZXBlbmQgZmlsZSB3aXRoIGN1cnJlbnQgc3ltYm9sLgo7OyBBbmQgdGhlbiB1c2UgYGZlYXR1cmVw
+JyB0byB0ZXN0IHRoaXMgZmlsZSB3aGV0aGVyCjs7IHdyaXRlIGBwcm92aWRlJyBzZW50ZW5jZXMg
+Zm9yIGZlYXR1cmUgcmVmZXJlbmNlLgo7OyBJZiBgZmVhdHVyZXAnIHJldHVybiB0LCBnZW5lcmF0
+ZSBkZXBlbmQgaW5mb3JtYXRpb24KOzsgYXMgIihyZXF1aXJlICdmb28pIiBmb3JtYXQuCjs7IElm
+IGBmZWF0dXJlcCcgcmV0dXJuIG5pbCwgZ2VuZXJhdGUgZGVwZW5kCjs7IGFzICIoYXV0b2xvYWQg
+J2ZvbyAiRm9vRmlsZSIpIiBmb3JtYXQuCjs7Cjs7IFRoaXMgcGFja2FnZXMgd2lsbCBhbHdheXMg
+cmV0dXJuIGRlcGVuZCBpbmZvcm1hdGlvbiBhcyBgYXV0b2xvYWQnCjs7IGZvcm1hdCBpZiBhIGZl
+YXR1cmUgbm90IHdyaXRlIGBwcm92aWRlJyBpbmZvcm1hdGlvbiBpbiBzb3VyY2UgY29kZS4KOzsK
+OzsgQmVsb3cgYXJlIGNvbW1hbmRzIHlvdSBjYW4gdXNlOgo7Owo7OyBgZWxpc3AtZGVwZW5kLWlu
+c2VydC1yZXF1aXJlJyAgICAgICAgaW5zZXJ0IGRlcGVuZHMgY29kZS4KOzsgYGVsaXNwLWRlcGVu
+ZC1pbnNlcnQtY29tbWVudCcgICAgICAgIGluc2VydCBkZXBlbmRzIGNvbW1lbnQuCjs7Cgo7Ozsg
+SW5zdGFsbGF0aW9uOgo7Owo7OyBQdXQgZWxpc3AtZGVwZW5kLmVsIHRvIHlvdXIgbG9hZC1wYXRo
+Lgo7OyBUaGUgbG9hZC1wYXRoIGlzIHVzdWFsbHkgfi9lbGlzcC8uCjs7IEl0J3Mgc2V0IGluIHlv
+dXIgfi8uZW1hY3MgbGlrZSB0aGlzOgo7OyAoYWRkLXRvLWxpc3QgJ2xvYWQtcGF0aCAoZXhwYW5k
+LWZpbGUtbmFtZSAifi9lbGlzcCIpKQo7Owo7OyBBbmQgdGhlIGZvbGxvd2luZyB0byB5b3VyIH4v
+LmVtYWNzIHN0YXJ0dXAgZmlsZS4KOzsKOzsgKHJlcXVpcmUgJ2VsaXNwLWRlcGVuZCkKOzsKOzsg
+Tk9URToKOzsKOzsgRGVmYXVsdCwgaWYgeW91ciBFbWFjcyBpcyBpbnN0YWxsIGF0ICIvdXNyL3No
+YXJlL2VtYWNzLyIsCjs7IFlvdSBjYW4gaWdub3JlIGJlbG93IHNldHVwLgo7Owo7OyBPdGhlcndp
+c2UgeW91IG5lZWQgc2V0dXAgeW91ciBFbWFjcyBkaXJlY3Rvcnkgd2l0aAo7OyBvcHRpb24gYGVs
+aXNwLWRlcGVuZC1kaXJlY3RvcnktbGlzdCcsIGxpa2UgYmVsb3c6Cjs7Cjs7IChzZXRxIGVsaXNw
+LWRlcGVuZC1kaXJlY3RvcnktbGlzdCAnKCJZb3VyRW1hY3NEaXJlY3RvcnkiKSkKOzsKCjs7OyBD
+dXN0b21pemU6Cjs7Cjs7IGBlbGlzcC1kZXBlbmQtZGlyZWN0b3J5LWxpc3QnIHRoZSBpbnN0YWxs
+IGRpcmVjdG9yeSBvZiBlbWFjcy4KOzsgT3IgeW91IGNhbiBhZGQgb3RoZXJzIGRpcmVjdG9yeSB0
+aGF0IHlvdSB3YW50IGZpbHRlci4KOzsKOzsgQWxsIG9mIHRoZSBhYm92ZSBjYW4gY3VzdG9taXpl
+IGJ5Ogo7OyAgICAgIE0teCBjdXN0b21pemUtZ3JvdXAgUkVUIGVsaXNwLWRlcGVuZCBSRVQKOzsK
+Cjs7OyBDaGFuZ2UgbG9nOgo7OyAyMDEyLzA0LzIwCjs7ICAgICAgKiBTd2l0Y2hlZCB0byBgcmVh
+ZCcgaW5zdGVhZCBvZiBwYXJzaW5nIHRoZSBmaWxlIG1uYXVhbGx5LgoKOzsgMjAxMC8wNS8xMAo7
+OyAgICAgICogQnVnZml4OiBGaXhlZCBlcnJvciBpZiBmaWxlIGRpZG4ndCBzdGFydCB3aXRoIGEg
+Y29tbWVudC4KOzsgMjAxMC8wNS8wOAo7OyAgICAgICogQWRkZWQgcmVxdWlyZSBmb3IgYHRoaW5n
+YXRwdCcKOzsgICAgICAqIE5vdyBzbGFzaC1zdHlsZSBtb2R1bGUgbmFtZXMgYXJlIHRyZWF0ZWQg
+Y29ycmVjdGx5Lgo7Owo7OyAyMDA5LzAyLzExCjs7ICAgICAgKiBBZGQgbmV3IG9wdGlvbiBgYnVp
+bHQtaW4nIHRvIGZ1bmN0aW9uIGBlbGlzcC1kZXBlbmQtbWFwJwo7OyAgICAgICAgZm9yIGRlYnVn
+Lgo7Owo7OyAyMDA5LzAxLzE4Cjs7ICAgICAgKiBDb21wbGV0ZSBhbGwgY2hlY2sgd29yay4KOzsg
+ICAgICAgIE5vdyBjYW4gZ2VuZXJhdGUgZXhhY3QgZGVwZW5kIGluZm9ybWF0aW9uLgo7OyAgICAg
+ICogTW9kaWZpZWQgc29tZSBjb2RlIHRvIGNvbXBhdGliaWxpdHkgRW1hY3MgMjAuCjs7ICAgICAg
+ICBUaGFua3MgIkRyZXcgQWRhbXMiIGFkdmljZS4KOzsgICAgICAqIEZpeCBkb2MuCjs7Cjs7IDIw
+MDkvMDEvMTcKOzsgICAgICAqIERvbid0IGluY2x1ZGUgdXNlciBpbml0IGZpbGUgaW4gZGVwZW5k
+IGluZm9ybWF0aW9uLAo7OyAgICAgICAgZmlsdGVyIGJ5IHZhcmlhYmxlIGB1c2VyLWluaXQtZmls
+ZScuCjs7Cjs7IDIwMDkvMDEvMTEKOzsgICAgICAqIEZpcnN0IHJlbGVhc2VkLgo7OwoKOzs7IEFj
+a25vd2xlZGdlbWVudHM6Cjs7Cjs7ICAgICAgRHJldyBBZGFtcyAgICAgIDxkcmV3LmFkYW1zQG9y
+YWNsZS5jb20+Cjs7ICAgICAgICAgICAgICBGb3IgYWR2aWNlIGZvciBjb21wYXRpYmlsaXR5IEVt
+YWNzIDIwLgo7OwoKOzs7IFRPRE8KOzsKOzsgICAgICBGaXggbG9jYWwtdmFyaWFibGUgcHJvYmxl
+bToKOzsgICAgICAgICAgSWYgdGhlIHNvbWUgbG9jYWwtdmFyaWFibGUgKHN1Y2ggYXMgbGFtYmRh
+IHNlbnRlbmNlKQo7OyAgICAgICAgICBoYXZlIHNhbWUgbmFtZSB3aXRoIGZ1bmN0aW9uLCB3aWxs
+IGdvdCB1bm5lY2Vzc2FyeSBkZXBlbmQKOzsgICAgICAgICAgaW5mb3JtYXRpb24uCjs7Cgo7Ozsg
+UmVxdWlyZQo7OyAoTm9uZSkKCjs7OyBDb2RlOgoKOzs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7
+Ozs7IEN1c3RvbWl6ZSA7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7OzsKOzs7IyMjYXV0b2xv
+YWQKKGRlZmdyb3VwIGVsaXNwLWRlcGVuZCBuaWwKICAiUGFyc2UgZGVwZW5kIGxpYnJhcnkgb2Yg
+ZWxpc3AgZmlsZS4iCiAgOmdyb3VwICd0b29scykKCjs7OyMjI2F1dG9sb2FkCihkZWZjdXN0b20g
+ZWxpc3AtZGVwZW5kLWRpcmVjdG9yeS1saXN0CiAgJygiL3Vzci9zaGFyZS9lbWFjcy8iKQogICJM
+aXN0IG9mIGRpcmVjdG9yaWVzIHRoYXQgc2VhcmNoIHNob3VsZCBpZ25vcmUuIgogIDp0eXBlICds
+aXN0CiAgOmdyb3VwICdlbGlzcC1kZXBlbmQpCgo7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7
+OzsgSW50ZXJhY3RpdmUgRnVuY3Rpb25zLiA7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7OzsK
+Cjs7OyMjI2F1dG9sb2FkCihkZWZ1biBlbGlzcC1kZXBlbmQtcHJpbnQtZGVwZW5kZW5jaWVzICgm
+b3B0aW9uYWwgYnVpbHQtaW4pCiAgIlByaW50IGxpYnJhcnkgZGVwZW5kZW5jaWVzIG9mIHRoZSBj
+dXJyZW50IGJ1ZmZlci4KV2l0aCBwcmVmaXggYXJndW1lbnQsIGRvbid0IGluY2x1ZGUgYnVpbHQt
+aW4gbGlicmFyaWVzLgpFdmVyeSBsaWJyYXJ5IHRoYXQgaGFzIGEgcGFyZW50IGRpcmVjdG9yeSBp
+bgpgZWxpc3AtZGVwZW5kLWRpcmVjdG9yeS1saXN0JyBpcyBjb25zaWRlcmVkIGJ1aWx0LWluLiIK
+ICAoaW50ZXJhY3RpdmUgIlAiKQogIChsZXQgKChkZXAtdGFibGUKICAgICAgICAgKG1hcGNvbmNh
+dCAobGFtYmRhIChkZXApCiAgICAgICAgICAgICAgICAgICAgICAoZm9ybWF0ICIlczogJXMiCiAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgIChwcm9wZXJ0aXplIChlbGlzcC1kZXBlbmQtZmls
+ZW5hbWUgKGNhciBkZXApKSAnZmFjZSAnbWF0Y2gpCiAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgIChtYXBjb25jYXQgIydzeW1ib2wtbmFtZSAoY2RyIGRlcCkgIiwgIikpKQogICAgICAgICAg
+ICAgICAgICAgIChlbGlzcC1kZXBlbmQtbWFwIG5pbCBidWlsdC1pbikgIlxuIikpKQogICAgKHN3
+aXRjaC10by1idWZmZXIgKGdldC1idWZmZXItY3JlYXRlICIqRGVwZW5kZW5jaWVzKiIpKQogICAg
+KHNldHEgdHJ1bmNhdGUtbGluZXMgbmlsCiAgICAgICAgICBidWZmZXItcmVhZC1vbmx5IG5pbCkK
+ICAgIChlcmFzZS1idWZmZXIpICAgICAgICAgICAgICAgICAgICAgICAgIDt3aXRoICE9IDAKICAg
+IChpbnNlcnQgZGVwLXRhYmxlKQogICAgKGdvdG8tY2hhciAocG9pbnQtbWluKSkKICAgICh2aWV3
+LW1vZGUgKzEpCiAgICAoc2V0cSB2aWV3LWV4aXQtYWN0aW9uCiAgICAgICAgICAobGFtYmRhIChi
+dWZmZXIpCiAgICAgICAgICAgIDs7IFVzZSBgd2l0aC1jdXJyZW50LWJ1ZmZlcicgdG8gbWFrZSBz
+dXJlIHRoYXQgYGJ1cnktYnVmZmVyJwogICAgICAgICAgICA7OyBhbHNvIHJlbW92ZXMgQlVGRkVS
+IGZyb20gdGhlIHNlbGVjdGVkIHdpbmRvdy4KICAgICAgICAgICAgKHdpdGgtY3VycmVudC1idWZm
+ZXIgYnVmZmVyCiAgICAgICAgICAgICAgKGJ1cnktYnVmZmVyKSkpKSkpCgo7OzsjIyNhdXRvbG9h
+ZAooZGVmdW4gZWxpc3AtZGVwZW5kLWluc2VydC1yZXF1aXJlICgpCiAgIkluc2VydCBhIGJsb2Nr
+IG9mIChyZXF1aXJlIHN5bSkgb3IgJ2F1dG9sb2FkIHN0YXRlbWVudHMgaW50byBhbiBlbGlzcCBm
+aWxlLiIKICAoaW50ZXJhY3RpdmUpCiAgKGxldCAoKGRlcHMgKGVsaXNwLWRlcGVuZC1tYXApKQog
+ICAgICAgIGxpYnJhcnktbmFtZSkKICAgIChpZiBkZXBzCiAgICAgICAgKGRvbGlzdCAoZWxlbWVu
+dCBkZXBzKQogICAgICAgICAgKHNldHEgbGlicmFyeS1uYW1lIChlbGlzcC1kZXBlbmQtZmlsZW5h
+bWUgKGNhciBlbGVtZW50KSkpCiAgICAgICAgICA7OyBJbnNlcnQgKHJlcXVpcmUgJ2ZvbykgaWYg
+ZmVhdHVyZXAgcmV0dXJuIHQuCiAgICAgICAgICAoaWYgKGZlYXR1cmVwIChpbnRlcm4gbGlicmFy
+eS1uYW1lKSkKICAgICAgICAgICAgICAoaW5zZXJ0IChmb3JtYXQgIihyZXF1aXJlICclcylcbiIg
+bGlicmFyeS1uYW1lKSkKICAgICAgICAgICAgOzsgT3RoZXJ3aXNlIGF1dG9sb2FkIGZ1bmN0aW9u
+IGluIGBsaWJyYXJ5LW5hbWUnLgogICAgICAgICAgICAoZG9saXN0IChzeW1ib2wgKGNkciBlbGVt
+ZW50KSkKICAgICAgICAgICAgICAoaWYgKGZ1bmN0aW9ucCBzeW1ib2wpCiAgICAgICAgICAgICAg
+ICAgIChpbnNlcnQgKGZvcm1hdCAiKGF1dG9sb2FkICclcyBcIiVzXCIpXG4iIHN5bWJvbCBsaWJy
+YXJ5LW5hbWUpKSkpKSkKICAgICAgKG1lc3NhZ2UgIkRvZXNuJ3QgbmVlZCBhbnkgZXh0cmEgbGli
+cmFyaWVzLiIpKSkpCgo7OzsjIyNhdXRvbG9hZAooZGVmdW4gZWxpc3AtZGVwZW5kLWluc2VydC1j
+b21tZW50ICgpCiAgIkluc2VydCBhIGJsb2NrIG9mIGBzeW0nIHN0YXRlbWVudHMgaW50byBhbiBl
+bGlzcCBmaWxlLiIKICAoaW50ZXJhY3RpdmUpCiAgKGxldCAoKGRlcHMgKGVsaXNwLWRlcGVuZC1t
+YXApKSkKICAgIChpZiBkZXBzCiAgICAgICAgKHByb2duCiAgICAgICAgICAoaW5zZXJ0ICI7OyAi
+KQogICAgICAgICAgKGRvbGlzdCAoZWxlbWVudCBkZXBzKQogICAgICAgICAgICAoaW5zZXJ0IChm
+b3JtYXQgImAlcycgIiAoZWxpc3AtZGVwZW5kLWZpbGVuYW1lIChjYXIgZWxlbWVudCkpKSkpKQog
+ICAgICAobWVzc2FnZSAiRG9lc24ndCBuZWVkIGFueSBleHRyYSBsaWJyYXJpZXMuIikpKSkKCjs7
+Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7OyBVdGlsaXRpZXMgRnVuY3Rpb25zIDs7Ozs7Ozs7
+Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7OwoKKGRlZnVuIGVsaXNwLWRlcGVuZC1yZWFkLXRyZWUgKCZv
+cHRpb25hbCBidWZmZXIpCiAgICJSZXR1cm4gdGhlIHRyZWUgZ2l2ZW4gYnkgcmVhZGluZyB0aGUg
+YnVmZmVyIGFzIGVsaXNwLgpUaGUgdG9wIGxldmVsIGlzIHByZXNlbnRlZCBhcyBhIGxpc3QsIGFz
+IGlmIHRoZSBidWZmZXIgY29udGVudHMgaGFkIGJlZW4KXChsaXN0IENPTlRFTlRTLi4uXCkiCiAg
+IChsZXQqIAogICAgICAoKHRyZWUgJygpKSkKICAgICAgKHNhdmUtZXhjdXJzaW9uCgkgKHNldC1i
+dWZmZXIgKG9yIGJ1ZmZlciAoY3VycmVudC1idWZmZXIpKSkKCSAoZ290by1jaGFyIChwb2ludC1t
+aW4pKQoJIDs7IExvb3AgaXMgZGVsaWJlcmF0ZWx5IHRlcm1pbmF0ZWQgYnkgYSByZWFkIGVycm9y
+IGF0IEVPRi4KCSAoY29uZGl0aW9uLWNhc2UgbmlsCgkgICAgKHdoaWxlIHQKCSAgICAgICAoc2V0
+cSB0cmVlIChjb25zIChyZWFkIChjdXJyZW50LWJ1ZmZlcikpIHRyZWUpKSkKCSAgICAoZXJyb3Ig
+dHJlZSkpKSkpCgo7Ozs7IEdldHRpbmcgdGhlIHN5bWJvbHMgZnJvbSBhIHNleHAgbGlzdAoKOzsg
+RXhwbG9yYXRpb24gaGVscGVycy4gIFRoZXNlIGdlbmVyYWxseSBjYWxsCjs7IGBlbGlzcC1kZXBl
+bmQtc2V4cC0+c3ltLWxpc3QnLCBpbXBsaWNpdGx5IHJlY3Vyc2luZy4gIFRoZXkgZG8gbm90Cjs7
+IGF0dGVtcHQgdG8gc2tpcCBzeW1ib2xzIHRoYXQgYXJlIGJvdW5kIGJ5IGFyZ2xpc3RzLCBsZXQg
+Zm9ybXMsIGV0Yy4KCihkZWZ1biBlbGlzcC1kZXBlbmQtZ2V0LXN5bXMtcmVjdXJzZSAoc2V4cCBu
+KQogICAiR2V0cyBzeW1zIGZyb20gYSBmb3JtIHRoYXQgaWdub3JlcyB0aGUgZmlyc3QgTiBhcmd1
+bWVudHMgYW5kCnJlY3Vyc2VzIG9uIHRoZSByZXN0LiIKICAgCiAgIChhcHBseSAjJ2FwcGVuZAog
+ICAgICAobWFwY2FyICMnZWxpc3AtZGVwZW5kLXNleHAtPnN5bS1saXN0IChudGhjZHIgbiBzZXhw
+KSkpKQoKKGRlZnVuIGVsaXNwLWRlcGVuZC1kZWZ1bi1mb3JtLT5zeW0tbGlzdCAoc2V4cCkKICAg
+IkdldHMgc3ltcyBmcm9tIGEgZGVmaW5pdGlvbiBmb3JtIGxpa2UgXChERUYgTkFNRSBBUkdTIEJP
+RFkuLi5cKS4KCldlIGRvbid0IHRyeSB0byB1bmRlcnN0YW5kIGFyZ3VtZW50IGxpc3RzIG9yIHNr
+aXAgdmFyaWFibGVzIHRoYXQKYXJlIG1lbnRpb25lZCBpbiB0aGVtLiIKICAgKGVsaXNwLWRlcGVu
+ZC1nZXQtc3ltcy1yZWN1cnNlIHNleHAgMykpCihkZWZ1biBlbGlzcC1kZXBlbmQtZGVmdmFyLWZv
+cm0tPnN5bS1saXN0IChzZXhwKQogICAiR2V0cyBzeW1zIGZyb20gYSBkZWZpbml0aW9uIGZvcm0g
+bGlrZSBcKERFRiBOQU1FIEJPRFkgT1BUSU9OUy4uLlwpLiIKICAgKGVsaXNwLWRlcGVuZC1zZXhw
+LT5zeW0tbGlzdCAobnRoIDIgc2V4cCkpKQoKKGRlZnVuIGVsaXNwLWRlcGVuZC1sZXQtZm9ybS0+
+c3ltLWxpc3QgKHNleHApCiAgICJHZXRzIHN5bXMgZnJvbSBhIGxldCBmb3JtIGxpa2UgXChMRVQg
+KChOQU1FIEJPRFkpLi4uKSBCT0RZLi4uXCkuIgogICAKICAgKGxldCoKICAgICAgKChiaW5kaW5n
+LWZvcm1zIChjYWRyIHNleHApKSkKCiAgICAgIChhcHBlbmQKCSAoYXBwbHkgIydhcHBlbmQKCSAg
+ICAobWFwY2FyIAoJICAgICAgICMnKGxhbWJkYSAoYi1mb3JtKQoJCSAgICAoaWYgKGNvbnNwIGIt
+Zm9ybSkKCQkgICAgICAgKGVsaXNwLWRlcGVuZC1zZXhwLT5zeW0tbGlzdCAoY2FkciBiLWZvcm0p
+KQoJCSAgICAgICAnKCkpKQoJICAgICAgIGJpbmRpbmctZm9ybXMpKQoJIChlbGlzcC1kZXBlbmQt
+Z2V0LXN5bXMtcmVjdXJzZSAoY2RkciBzZXhwKSAwKSkpKQoKCihkZWZjb25zdCBlbGlzcC1kZXBl
+bmQtc3BlY2lhbC1leHBsb3JlcnMgCiAgICcoCiAgICAgIChxdW90ZSAobGFtYmRhIChkdW1teSkg
+JygpKSkKICAgICAgKHByb3ZpZGUgKGxhbWJkYSAoZHVtbXkpICcoKSkpCiAgICAgIChyZXF1aXJl
+IChsYW1iZGEgKGR1bW15KSAnKCkpKQoKICAgICAgKGRlZnVuIGVsaXNwLWRlcGVuZC1kZWZ1bi1m
+b3JtLT5zeW0tbGlzdCkKICAgICAgKGRlZm1hY3JvIGVsaXNwLWRlcGVuZC1kZWZ1bi1mb3JtLT5z
+eW0tbGlzdCkKICAgICAgKGRlZnZhciBlbGlzcC1kZXBlbmQtZGVmdmFyLWZvcm0tPnN5bS1saXN0
+KQogICAgICAoZGVmY29uc3QgZWxpc3AtZGVwZW5kLWRlZnZhci1mb3JtLT5zeW0tbGlzdCkKICAg
+ICAgKGxhbWJkYSAobGFtYmRhIChzZXhwKQoJCSAoZWxpc3AtZGVwZW5kLWdldC1zeW1zLXJlY3Vy
+c2Ugc2V4cCAyKSkpCiAgICAgIAogICAgICAgKGxldCBlbGlzcC1kZXBlbmQtbGV0LWZvcm0tPnN5
+bS1saXN0KQogICAgICAgKGxldCogZWxpc3AtZGVwZW5kLWxldC1mb3JtLT5zeW0tbGlzdCkKICAg
+ICAgKQogICAiQWxpc3Qgb2Ygc3ltYm9scyB0byBleHBhbmQgc3BlY2lhbGx5LCBtYXBwaW5nIGZy
+b20gc3ltYm9sIHRvCmV4cGxvcmUgZnVuY3Rpb24uICBFeHBsb3JlIGZ1bmN0aW9ucyB0YWtlIG9u
+ZSBhcmd1bWVudCwgYSBzZXhwLCBhbmQKcmV0dXJuIGEgbGlzdCBvZiBzeW1ib2xzLiIgKQoKKGRl
+ZnVuIGVsaXNwLWRlcGVuZC1zZXhwLT5zeW0tbGlzdCAoc2V4cCkKICAgIlJldHVybiBhbGwgdGhl
+IHJlZmVyZW5jZWQgc3ltYm9scyBmcm9tIHRoZSBzZXhwLCBhcyBhIGxpc3QuCgpUaGUgcmVzdWx0
+IG9taXRzIGBkZWZ1bicgYW5kIHNpbWlsYXIgYnVpbHQtaW5zLiAgVGhlIHJlc3VsdCBtYXkKY29u
+dGFpbiBkdXBsaWNhdGVzLiAgSXQgZG9lcyBub3QgZGlzdGluZ3Vpc2ggc3ltYm9scyBjYWxsZWQg
+YXMKZnVuY3Rpb25zIGZyb20gdmFyaWFibGVzLiAgCgpUaGlzIGZ1bmN0aW9uIGRvZXMgbm90IGV4
+cGFuZCBtYWNyb3MuIgoKICAgOzsgRG9uJ3Qgd2FudCB0byBkcmFnIGBjbCcgaW4sIHNvIGl0J3Mg
+YSB0cmVlIG9mIGBpZidzLgogICAoaWYKICAgICAgKHN5bWJvbHAgc2V4cCkKICAgICAgKGxpc3Qg
+YCh2YXIgLHNleHApKQogICAgICAoaWYgKGNvbnNwIHNleHApCgkgKGxldAoJICAgICgoZnVuY3Rv
+ciAoY2FyIHNleHApKSkKCSAgICAoaWYKCSAgICAgICAobm90IChzeW1ib2xwIGZ1bmN0b3IpKQoJ
+ICAgICAgIDs7IEZ1bmN0b3IgaXMgYSBsYW1iZGEgb3Igc2ltaWxhci4KCSAgICAgICAoZWxpc3At
+ZGVwZW5kLWdldC1zeW1zLXJlY3Vyc2Ugc2V4cCAwKQoJICAgICAgIChsZXQqCgkJICAoKGV4cGxv
+cmVyCgkJICAgICAgKGFzc29jIGZ1bmN0b3IgZWxpc3AtZGVwZW5kLXNwZWNpYWwtZXhwbG9yZXJz
+KSkpCgkJICAoaWYgZXhwbG9yZXIKCQkgICAgIChmdW5jYWxsIChjYWRyIGV4cGxvcmVyKSBzZXhw
+KQoJCSAgICAgKGNvbnMgCgkJCWAoZnVuYyAsZnVuY3RvcikKCQkJKGVsaXNwLWRlcGVuZC1nZXQt
+c3ltcy1yZWN1cnNlIHNleHAgMSkpKSkpKQoJIDs7IEl0J3MgbmVpdGhlciBzeW1ib2wgbm9yIGZv
+cm0sIHNvIHRoZXJlIGFyZSBubyBzeW1ib2xzIGluIGl0LgoJICcoKSkpKQoKCjs7IFRyYW5zbGF0
+ZSBzeW1ib2xzIHRvIHJlcXVpcmVtZW50cwoKKGRlZnVuIGVsaXNwLWRlcGVuZC1zeW0tbGlzdC0+
+ZGVwZW5kZW5jaWVzIChzeW0tbGlzdCBjdXJyZW50LWZpbGVuYW1lIGJ1aWx0LWluIHNlZS12YXJz
+KQogICAiIgoKICAgKGxldAogICAgICAoKHN5bWJvbC1zZWVuICcoKSkKCSAoZGVwZW5kZW5jaWVz
+ICcoKSkpCiAgICAgIDs7IFBvb3ItbWFuJ3MgZG9saXN0CiAgICAgICh3aGlsZSBzeW0tbGlzdAoJ
+IChsZXQqIAoJICAgICggIChlbCAoY2FyIHN5bS1saXN0KSkKCSAgICAgICAodHlwZSAoY2FyIGVs
+KSkKCSAgICAgICAoc3ltYm9sIChjYWRyIGVsKSkKCSAgICAgICA7OyBQb29yLW1hbidzIGFuZC1s
+ZXQqLiAgVGhlc2UgZ2V0IHNldCBhbmQgY2hlY2tlZCBiZWxvdy4KCSAgICAgICBmaWxlcGF0aCBm
+aWxlbmFtZSkKCSAgICAoaWYKCSAgICAgICAoYW5kCgkJICA7OyBIYXZlbid0IGFscmVhZHkgdHJl
+YXRlZCBpdAoJCSAgKG5vdCAobWVtcSBzeW1ib2wgc3ltYm9sLXNlZW4pKQoJCSAgOzsgSXQncyBh
+IGZ1bmN0aW9uLCBvciB3ZSdyZSBhbGxvd2luZyB2YXJzLgoJCSAgKG9yIHNlZS12YXJzIChlcSB0
+eXBlICdmdW5jKSkKCQkgIDs7IGFuZCBpdCdzIG5vdCBhIEMgZnVuY3Rpb24uCgkJICAobm90IChz
+dWJycCBzeW1ib2wpKQoJCSAgOzsgR2V0IHRoZSBmaWxlIHRoYXQgZGVmaW5lcyB0aGlzIHN5bWJv
+bAoJCSAgKHNldHEgZmlsZXBhdGggKHN5bWJvbC1maWxlIHN5bWJvbCkpCgkJICA7OyBHZXQgZmls
+ZSBuYW1lIHdpdGhvdXQgZXh0ZW5zaW9uLgoJCSAgKHNldHEgZmlsZW5hbWUgKGVsaXNwLWRlcGVu
+ZC1maWxlbmFtZSBmaWxlcGF0aCkpCgkJICA7OyBJdCdzIG5vdCBkZWZpbmVkIGluIHRoZSBidWZm
+ZXIgd2UncmUgZXhwbG9yaW5nLgoJCSAgKG5vdCAoc3RyaW5nPSBmaWxlbmFtZSBjdXJyZW50LWZp
+bGVuYW1lKSkKCQkgIDs7IEl0J3Mgbm90IGJ1aWx0IGluIG9yIHdlJ3JlIGFsbG93aW5nIGJ1aWx0
+LWlucwoJCSAgKG9yIGJ1aWx0LWluCgkJICAgICAobm90CgkJCShlbGlzcC1kZXBlbmQtbWF0Y2gt
+YnVpbHQtaW4tbGlicmFyeQoJCQkgICBmaWxlcGF0aCkpKSkKCSAgICAgICAobGV0CgkJICAoKGRl
+bnRyeSAoYXNzb2MgZmlsZXBhdGggZGVwZW5kZW5jaWVzKSkpCgkJICAoaWYgZGVudHJ5CgkJICAg
+ICAoc2V0Y2RyIGRlbnRyeSAoY29ucyBzeW1ib2wgKGNkciBkZW50cnkpKSkKCQkgICAgIChzZXRx
+IGRlcGVuZGVuY2llcyAKCQkJKGNvbnMgCgkJCSAgIChjb25zIGZpbGVwYXRoIChsaXN0IHN5bWJv
+bCkpIAoJCQkgICBkZXBlbmRlbmNpZXMpKSkpKSkKCSAoc2V0cSBzeW0tbGlzdCAoY2RyIHN5bS1s
+aXN0KSkpCiAgICAgIDs7CiAgICAgIGRlcGVuZGVuY2llcykpCgooZGVmdW4gZWxpc3AtZGVwZW5k
+LW1hcCAoJm9wdGlvbmFsIGJ1ZmZlciBidWlsdC1pbikKICAiUmV0dXJuIGRlcGVuZCBtYXAgd2l0
+aCBCVUZGRVIuCklmIEJVRkZFUiBpcyBuaWwsIHVzZSBjdXJyZW50IGJ1ZmZlci4KSWYgQlVJTFQt
+SU4gaXMgbm9uLW5pbCwgcmV0dXJuIGJ1aWx0LWluIGxpYnJhcnkgaW5mb3JtYXRpb24uClJldHVy
+biBkZXBlbmQgbWFwIGFzIGZvcm1hdDogKGZpbGVwYXRoIHN5bWJvbC1BIHN5bWJvbC1CIHN5bWJv
+bC1DKS4iCiAgIChsZXQqIAogICAgICAoCgkgKHRyZWUgKGVsaXNwLWRlcGVuZC1yZWFkLXRyZWUg
+YnVmZmVyKSkKCSAoc3ltLWxpc3QgKGVsaXNwLWRlcGVuZC1nZXQtc3ltcy1yZWN1cnNlIHRyZWUg
+MCkpCgkgKGRlcGVuZGVuY2llcwoJICAgIChlbGlzcC1kZXBlbmQtc3ltLWxpc3QtPmRlcGVuZGVu
+Y2llcwoJICAgICAgIHN5bS1saXN0CgkgICAgICAgKGVsaXNwLWRlcGVuZC1maWxlbmFtZSAoYnVm
+ZmVyLWZpbGUtbmFtZSBidWZmZXIpKQoJICAgICAgIGJ1aWx0LWluIAoJICAgICAgIG5pbCkpKQog
+ICAgICAKICAgICAgZGVwZW5kZW5jaWVzKSkKCgooZGVmdW4gZWxpc3AtZGVwZW5kLWdldC1sb2Fk
+LWhpc3RvcnktbGluZSAocGF0aC1zYW5zLWV4dCBleHRlbnNpb24pCiAgICJSZXR1cm4gbGluZSBp
+biBsb2FkLWhpc3RvcnkgY29ycmVzcG9kaW5nIHRvIFBBVEgtU0FOUy1FWFQgd2l0aAogICBFWFRF
+TlNJT04uClJldHVybiBuaWwgaWYgdGhlcmUgaXMgbm9uZS4iCiAgIChhc3NvYyAKICAgICAgKGNv
+bmNhdCBwYXRoLXNhbnMtZXh0IGV4dGVuc2lvbikgCiAgICAgIGxvYWQtaGlzdG9yeSkpCgooZGVm
+dW4gZWxpc3AtZGVwZW5kLWZpbGVuYW1lIChmdWxscGF0aCkKICAiUmV0dXJuIGZpbGVuYW1lIHdp
+dGhvdXQgZXh0ZW5zaW9uIGFuZCBwYXRoLgpGVUxMUEFUSCBpcyB0aGUgZnVsbCBwYXRoIG9mIGZp
+bGUuIgogICAKICAgKGxldCoKICAgICAgKCAgCgkgKHRydWUtcGF0aC1zYW5zLWV4dAoJICAgIChm
+aWxlLW5hbWUtc2Fucy1leHRlbnNpb24KCSAgICAgICAoZmlsZS10cnVlbmFtZSBmdWxscGF0aCkp
+KQoJIChmaWxlLWhpc3RvcnkKCSAgICAoY2RyCgkgICAgICAgKG9yCgkJICAoZWxpc3AtZGVwZW5k
+LWdldC1sb2FkLWhpc3RvcnktbGluZSAKCQkgICAgIHRydWUtcGF0aC1zYW5zLWV4dCAiLmVsYyIp
+CgkJICAoZWxpc3AtZGVwZW5kLWdldC1sb2FkLWhpc3RvcnktbGluZSAKCQkgICAgIHRydWUtcGF0
+aC1zYW5zLWV4dCAiLmVsIikpKSkKCSAobGliLW5hbWUKCSAgICAod2hlbiBmaWxlLWhpc3RvcnkK
+CSAgICAgICAoY2RyCgkJICAoYXNzcSAncHJvdmlkZSBmaWxlLWhpc3RvcnkpKSkpKQoKICAgICAg
+KGlmIGxpYi1uYW1lCgkgKHN5bWJvbC1uYW1lIGxpYi1uYW1lKQoJIDs7RmFsbGJhY2s6IEp1c3Qg
+dXNlIHRoZSBiYXNlIGZpbGVuYW1lCgkgKGZpbGUtbmFtZS1zYW5zLWV4dGVuc2lvbiAKCSAgICAo
+ZmlsZS1uYW1lLW5vbmRpcmVjdG9yeSBmdWxscGF0aCkpKSkpCgooZGVmdW4gZWxpc3AtZGVwZW5k
+LW1hdGNoLWJ1aWx0LWluLWxpYnJhcnkgKGZ1bGxwYXRoKQogICJSZXR1cm4gdCBpZiBGVUxMUEFU
+SCBtYXRjaCBkaXJlY3Rvcnkgd2l0aCBidWlsdC1pbiBsaWJyYXJ5LiIKICAoaWYgKG9yIChzdHJp
+bmctZXF1YWwgKGZvcm1hdCAiJXMuZWwiIHVzZXItaW5pdC1maWxlKSBmdWxscGF0aCkKICAgICAg
+ICAgIChzdHJpbmctZXF1YWwgKGZvcm1hdCAiJXMuZWxjIiB1c2VyLWluaXQtZmlsZSkgZnVsbHBh
+dGgpKQogICAgICB0ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgO3JldHVybiB0IGlm
+IG1hdGNoIGB1c2VyLWluaXQtZmlsZScuCiAgICAoY2F0Y2ggJ21hdGNoCiAgICAgIChkb2xpc3Qg
+KGRpcmVjdG9yeSBlbGlzcC1kZXBlbmQtZGlyZWN0b3J5LWxpc3QpCiAgICAgICAgKGlmIChzdHJp
+bmctbWF0Y2ggKGV4cGFuZC1maWxlLW5hbWUgZGlyZWN0b3J5KSBmdWxscGF0aCkKICAgICAgICAg
+ICAgKHRocm93ICdtYXRjaCB0KSkpCiAgICAgIG5pbCkpKQoKKHByb3ZpZGUgJ2VsaXNwLWRlcGVu
+ZCkKCjs7OyBlbGlzcC1kZXBlbmQuZWwgZW5kcyBoZXJlCgo7OzsgTG9jYWxXb3JkczogIFlvdXJF
+bWFjc0RpcmVjdG9yeSBmaWxlcGF0aCBkZW50cnkgZGVwcyBzeW0gZmVhdHVyZXAgZnVsbHBhdGgK
+Ozs7IExvY2FsV29yZHM6ICBGb29GaWxlIGVsYyBzdWJyCg==
