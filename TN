@@ -197,6 +197,118 @@ If there is still something left do do start the next latex-command."
 (add-hook 'LaTeX-mode-hook '(lambda () (local-set-key (kbd "C-c C-a") 'TeX-texify)))
 </pre>
 
+== Using xpdf as viewer with forward and inverse search ==
+xpdf exists in cygwin and in linux and can be configured for forward and inverse search using synctex.
+
+One clumsy method is shown here that overcomes some problems such as that emacsclient cannot be started from the xpdf-mouse bindings because of the obscuring parenthesis.
+
+Note however, that this is a fast hack!
+
+Prerequisites: "xpdf", "synctex", "bash", "bc", and "pgrep" must be installed additionally to "emacs".
+
+The ".xpdfrc"-file in the users home directory should contain the line:
+<pre>
+bind ctrl-mousePress1 any "run(xpdfsynctex edit %i %j %k)"
+</pre>
+
+There should be the executable shell script "xpdfsynctex" in the users command path:
+<pre>
+#!/usr/bin/bash
+LOG=xpdfsynctex.log
+
+echo "Running $0" "$@" > ${LOG}
+
+declare -A FIELDS 
+
+INPUT="`zgrep Input:1: *.synctex.gz`"
+INPUT="${INPUT/Input:1:/}"
+
+tofields () {
+for ((i=1; i <= ${#EDIT[@]}; i=i+1 )); do
+    IFS=:
+    tmp=(${EDIT[$i]})
+    if [[ "${tmp[0]}" != "" ]]; then
+	eval FIELDS["${tmp[0]}"]="${tmp[1]}"
+ 	echo "FIELDS[${tmp[0]}]=${tmp[1]}" >> ${LOG}
+    fi
+done;   
+}
+
+echo "INPUT=${INPUT}" >> ${LOG}
+
+HEIGHT=842
+echo "Assuming A4 with $HEIGHT pt (72dpi)." >> ${LOG}
+
+if [[ "$1" == "edit" ]]; then
+
+PAGE=$2
+X=$3
+Y_FROM_BOTTOM=$4
+Y=`bc <<< "${HEIGHT}-${Y_FROM_BOTTOM}"`
+
+echo "Position in dots from top left: X=$X, Y=$Y on page ${PAGE}." >> ${LOG};
+
+IFS="
+"
+EDIT=(`synctex edit -o ${PAGE}:$X:$Y:${INPUT}`)
+
+tofields
+
+CMDLINE="emacsclient -a /usr/bin/emacs -e \"(find-file \\\"${INPUT}\\\")\" -e \"(goto-line ${FIELDS[Line]})\""
+
+echo "Executing:${CMDLINE}"  >> ${LOG}
+
+eval ${CMDLINE}  >> ${LOG}
+
+elif [[ "$1" == "view" ]]; then
+
+BASENAME=$2
+LINE=$3
+COLUMN=$4
+EDIT=(`synctex view -i ${LINE}:${COLUMN}:${INPUT} -o ${BASENAME}.pdf`)
+
+tofields
+
+PAGE=${FIELDS[Page]}
+XTL=${FIELDS[x]}
+YTL=`bc <<< "${HEIGHT}-${FIELDS[y]}"`
+XBR=`bc <<< "$XTL+${FIELDS[W]}"`
+YBR=`bc <<< "$YTL-${FIELDS[H]}"`
+
+CMDLINE="xpdf -remote xpdfServer${BASENAME} ${BASENAME}.pdf";
+
+if ! pgrep -x -n ${CMDLINE}; then
+    echo "Starting \"${CMDLINE}\"" >> ${LOG}
+    eval ${CMDLINE} >> ${LOG} &
+    sleep 1
+else
+    echo "Server \"${CMDLINE}\$ already running." >> ${LOG}
+fi
+
+CMDLINE="xpdf -remote xpdfServer${BASENAME} -exec \"gotoPage(${PAGE})\""
+echo "Executing:${CMDLINE}" >> ${LOG}
+eval ${CMDLINE} >> ${LOG}
+
+CMDLINE="xpdf -remote xpdfServer${BASENAME} -exec \"setSelection(${PAGE},$XTL,$YTL,$XBR,$YBR)\""
+echo "Executing:${CMDLINE}" >> ${LOG}
+eval ${CMDLINE} >> ${LOG}
+
+else
+echo help # todo
+fi
+</pre>
+
+In the users initialization there should be the lines:
+<pre>
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Using xpdf as viewer:
+
+(add-hook 'LaTeX-mode-hook
+	  '(lambda ()
+	     (setcdr (assoc "LaTeX" TeX-command-list) '("%`%l%(mode)%' %t; dvipdf %d > /dev/null; pgrep -x -f \"xpdf -remote xpdfServer%s %s.pdf\" && xpdf -remote xpdfServer%s -reload" TeX-run-TeX nil   (latex-mode doctex-mode)   :help "Run LaTeX"))
+	     (setcdr (assoc "View" TeX-command-list) '("xpdfsynctex view %s %n 1" TeX-run-background nil t :help "Run Viewer"))
+	     ))
+</pre>
 
 [new:DrewAdams:2010-07-30 14:23 UTC]
 Welcome to the wiki. -- DrewAdams
