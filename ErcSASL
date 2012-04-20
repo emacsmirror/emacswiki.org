@@ -12,3 +12,5 @@ When you've put either his [[ERC]] or the erc-sasl in your load-path edit your [
   (add-to-list 'erc-sasl-server-regexp-list "host\\.server\\.com") ;; e.g. irc\\.freenode\\.net, or .* for any host
 
 You'll need to initially pass a password to Erc for authentication.
+
+Update: There is also a small modification to the function erc-login required for erc-sasl to work. This is the reason for cloning the entire ERC repo. Pending a few modifications, I hope to have this merged.
