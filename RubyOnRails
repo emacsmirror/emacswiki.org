@@ -185,4 +185,4 @@ See HamlMode.
 
 == Tab-Key in Terminal-Mode
 [new]
-When using the emacs-rails plugin with snippets (tab-expansion), it works nice in the normal GUI, but in the terminal mode the tab-key triggers the intendation but snippets dont work. Has somebody any tips for this? Thanks! Running Emacs-snapshot 23.0.6 on Ubuntu  Gutsy Gibbon --- Roman
+When using the emacs-rails plugin with snippets (tab-expansion), it works nicely in the normal GUI, but in terminal mode the tab-key triggers the indentation but snippets don't work. Does anyone have any tips for how to fix this? Thanks! Running Emacs-snapshot 23.0.6 on Ubuntu  Gutsy Gibbon --- Roman
