@@ -231,3 +231,6 @@ Here is my calendar configuration. -- [[rubikitch]]
         (holiday-fixed 12 25 "Weihnachten")
 	(holiday-fixed 12 26 "Stephanstag")))
 </pre>
+
+=== Ukrainian ===
+Lisp:ukrainian-holidays.el
