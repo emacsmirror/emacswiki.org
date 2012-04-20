@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:53 2006
 ;; Version: 22.0
-;; Last-Updated: Fri Apr 13 14:44:21 2012 (-0700)
+;; Last-Updated: Fri Apr 20 12:45:01 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 12964
+;;     Update #: 12979
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-fn.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -73,7 +73,7 @@
 ;;    `icicle-custom-type', `icicle-define-crm-completion-map',
 ;;    `icicle-delete-alist-dups', `icicle-delete-count',
 ;;    `icicle-delete-dups', `icicle-delete-whitespace-from-string',
-;;    `icicle-dired-read-shell-command',
+;;    `icicle-directories-within', `icicle-dired-read-shell-command',
 ;;    `icicle-dir-prefix-wo-wildcards', `icicle-dirs-first-p',
 ;;    `icicle-dirs-last-p', `icicle-displayable-cand-from-saved-set',
 ;;    `icicle-display-cand-from-full-cand',
@@ -231,7 +231,7 @@
 ;;  `filesets-get-filelist' - Fix.  Bug #976 reported to Emacs devel.
 ;;
 ;;  For descriptions of changes to this file, see `icicles-chg.el'.
-  
+ 
 ;;(@> "Index")
 ;;
 ;;  If you have library `linkd.el' and Emacs 22 or later, load
@@ -247,7 +247,7 @@
 ;;  (@> "Icicles functions - S-TAB completion cycling")
 ;;  (@> "Icicles functions - common helper functions")
 ;;  (@> "Icicles functions - sort functions")
-  
+ 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;; This program is free software; you can redistribute it and/or
@@ -365,7 +365,7 @@
   (defvaralias 'minibuffer-local-must-match-filename-map 'minibuffer-local-filename-must-match-map))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-  
+ 
 ;;(@* "Redefined standard functions")
 
 ;;; Redefined standard functions -------------------------------------
@@ -1042,7 +1042,7 @@ See the source code for details."
                  ((and (consp cand) (stringp (car cand))) ; ("aa" . cc) -> ("aa" "aa" . cc)
                   (cons (copy-sequence (car cand)) cand))
                  ((stringp cand)        ; "aa" -> ("aa" "aa")
-                  (list (copy-sequence cand) cand)) 
+                  (list (copy-sequence cand) cand))
                  (t                     ; Anything else: (aa), aa -> no change
                   cand))))
       ;; Put original alist candidates on display candidates (strings), as a text property.
@@ -1136,7 +1136,7 @@ and `read-file-name-function'."
               (ffap-available-p                 (or (require 'ffap- nil t) (require 'ffap nil t)))
               ;; The next four prevent slowing down `ffap-guesser'.
               (ffap-alist nil)                  (ffap-machine-p-known 'accept)
-              (ffap-url-regexp nil)             (ffap-shell-prompt-regexp nil) 
+              (ffap-url-regexp nil)             (ffap-shell-prompt-regexp nil)
               (fap
                (if (and (eq major-mode 'dired-mode) (fboundp 'dired-get-file-for-visit))
                    (condition-case nil
@@ -1144,7 +1144,7 @@ and `read-file-name-function'."
                      (error nil))
                  (and ffap-available-p (ffap-guesser))))
               (icicle-proxy-candidates
-               (append 
+               (append
                 (and icicle-add-proxy-candidates-flag
                      (append (and fap (list "*point file name*"))
                              (and ffap-available-p (list mouse-file))
@@ -1417,7 +1417,7 @@ whose value or whose custom type is compatible with type `integer',
                                        (error nil)))
                             (push (symbol-name cand) ipc))))
                        ipc)))
-             
+
                ;; Emacs 23 allows DEFAULT to be a list of strings - use the first one for prompt etc.
                (default1  (if (consp default) (car default) default)))
            (when default
@@ -1508,7 +1508,7 @@ whose value or whose custom type is compatible with type `string'."
              ;; Emacs 23 allows DEFAULT to be a list of strings - use the first one for prompt etc.
              (default1  (if (consp default) (car default) default)))
          (when default
-           (save-match-data 
+           (save-match-data
              (setq prompt  (if (string-match "\\(\\):[ \t]*\\'" prompt)
                                (replace-match (format " (default %s)" default1) t t prompt 1)
                              (replace-regexp-in-string
@@ -2662,7 +2662,7 @@ the file's properties."
     (let ((cmd  (icicle-read-file-name prompt nil default-value nil initial-contents)))
       (when icicle-quote-shell-file-name-flag (setq cmd (icicle-quote-file-name-part-of-cmd cmd)))
       cmd)))
-     
+
 (defun icicle-quote-file-name-part-of-cmd (strg)
   "Double-quote the file name that starts string STRG, for the shell.
 This assumes a UNIX-style shell, for which the following characters
@@ -3101,7 +3101,7 @@ NO-DISPLAY-P non-nil means do not display the candidates; just
                                (let ((name-ov  (overlays-in end end)))
                                  (if name-ov
                                      (delete-overlay (car name-ov))
-                                   (setq name-ov  (make-overlay beg end))  
+                                   (setq name-ov  (make-overlay beg end))
                                    (overlay-put name-ov 'display " ")))))))
                        (goto-char next)))
 
@@ -3965,7 +3965,7 @@ occurrence of `*'.  Otherwise, this is just `file-name-directory'."
            (string-match "/[^/]*\\*" filename))
       (substring filename 0 (1+ (match-beginning 0)))
     (or (file-name-directory filename) ""))) ; Don't return nil, in any case.
-      
+
 (defun icicle-show-help-in-mode-line (candidate)
   "If short help for CANDIDATE is available, show it in the mode-line.
 Do this only if `icicle-help-in-mode-line-delay' is positive.
@@ -4165,7 +4165,7 @@ the code."
                                                    icicle-common-match-string
                                                    (icicle-file-name-directory icicle-current-input))))
                          icicle-common-match-string)))
-            
+
           ;; Save current input for `C-l', then save common match as current input.
           ;; Do NOT do anything if we're ignoring letter case and that is the only difference
           ;; between the common match and the input (e.g. MS Windows file names).
@@ -4385,7 +4385,7 @@ The parts to join are specified by `icicle-list-use-nth-parts'."
           (icicle-join-nth-parts parts) ; Join mult-completion parts per `icicle-list-use-nth-parts'.
         ;; Multi-completion, but no joining specified.  Reconstitute the display candidate.
         ;; $$$$$$        (concat (mapconcat #'identity parts icicle-list-join-string)
-        ;;                       icicle-list-end-string) ; $$$$$$ 
+        ;;                       icicle-list-end-string) ; $$$$$$
         (mapconcat #'identity parts icicle-list-join-string)))))
 
 (defun icicle-file-name-directory (file)
@@ -5111,7 +5111,7 @@ If no highlighting was attempted, return nil."
            (and (not icicle-incremental-completion)
                 (memq icicle-highlight-input-completion-failure '(implicit implicit-strict)))
            (and (not (icicle-require-match-p))
-                icicle-test-for-remote-files-flag ; nil flag ignores strict setting for highlighting 
+                icicle-test-for-remote-files-flag ; nil flag ignores strict setting for highlighting
                 (memq icicle-highlight-input-completion-failure '(implicit-strict explicit-strict)))
            (let ((len  (length icicle-completion-candidates)))
              (and (> len 1)  (> len icicle-highlight-input-completion-failure-threshold))))
@@ -5428,13 +5428,19 @@ there are no such matching candidates, then LIST is returned."
 (defvar icicle-dirs-done ()
   "Directories already processed.")
 
-(defun icicle-files-within (file-list accum &optional no-symlinks-p)
-  "List of all readable files in FILE-LIST.
+
+;; Args INCLUDE-DIRS-P and PREDICATE are not used in the Icicles code yet
+;; (except in `icicle-directories-within', below, which also is not used yet).
+;;
+(defun icicle-files-within (file-list accum &optional no-symlinks-p include-dirs-p predicate)
+  "List of readable files in FILE-LIST, handling directories recursively.
 FILE-LIST is a list of file names or a function that returns such.
 If a function then invoke it with no args to get the list of files.
 
 Accessible directories in the list of files are processed recursively
-to include their files and the files in their subdirectories.
+to include their files and the files in their subdirectories.  (The
+directories themselves are not included, unless optional arg
+INCLUDE-DIRS-P is non-nil.)
 
 But if there is a Dired buffer for such a directory, and if FILE-LIST
 is a function, then it is invoked in that Dired buffer to return the
@@ -5446,16 +5452,24 @@ here, then only the first one in `dired-buffers' is used.
 The list of files is accumulated in ACCUM, which is used for recursive
 calls.
 
-Optional arg NO-SYMLINKS-P non-nil means do not follow symbolic links."
+Non-nil optional arg NO-SYMLINKS-P means do not follow symbolic links.
+
+Non-nil optional arg INCLUDE-DIRS-P means include directory names
+along with the names of non-directories.
+
+Non-nil optional arg PREDICATE must be a function that accepts a
+file-name argument.  Only files (and possibly directories) that
+satisfy PREDICATE are included in the result."
   ;; Binds `icicle-dirs-done' for use as free var in `icicle-files-within-1'."
   (let ((icicle-dirs-done  ()))
-    (icicle-files-within-1 file-list accum no-symlinks-p)))
+    (nreverse (icicle-files-within-1 file-list accum no-symlinks-p include-dirs-p predicate))))
 
-(defun icicle-files-within-1 (file-list accum no-symlinks-p) ; `icicle-dirs-done' is free here.
-  "Helper for `icicle-files-within'."
+(defun icicle-files-within-1 (file-list accum no-symlinks-p include-dirs-p predicate)
+  "Helper for `icicle-files-within'."   ; `icicle-dirs-done' is free here.
   (let ((files  (if (functionp file-list) (funcall file-list) file-list))
         (res    accum)
         file)
+    (when (and files  predicate) (setq files  (icicle-remove-if-not predicate files)))
     (while files
       (setq file  (car files))
       (unless (and no-symlinks-p  (file-symlink-p file))
@@ -5466,17 +5480,38 @@ Optional arg NO-SYMLINKS-P non-nil means do not follow symbolic links."
                        (file-accessible-directory-p file))
               (setq res  (icicle-files-within-1
                           (or (and (functionp file-list)
-                                   (assoc (file-name-as-directory file) dired-buffers)
+                                   (dired-buffers-for-dir file) ; Removes killed buffers.
                                    (with-current-buffer
                                        (cdr (assoc (file-name-as-directory file) dired-buffers))
                                      (funcall file-list)))
                               (directory-files file 'FULL icicle-re-no-dot))
                           res
-                          no-symlinks-p))
+                          no-symlinks-p
+                          include-dirs-p
+                          predicate))
+              (when include-dirs-p (push file res))
               (push (file-truename file) icicle-dirs-done))
-          (when (file-readable-p file) (setq res  (cons file res)))))
+          (when (file-readable-p file) (push file res))))
       (pop files))
     res))
+
+
+;; Not used in the Icicles code yet.
+;;
+(defun icicle-directories-within (&optional directory no-symlinks-p predicate)
+  "List of accessible directories within DIRECTORY.
+Optional arg DIRECTORY defaults to the value of `default-directory'.
+Non-nil optional arg NO-SYMLINKS-P means do not follow symbolic links.
+Non-nil optional arg PREDICATE must be a function that accepts a
+ file-name argument.  Only directories that satisfy PREDICATE are
+ included in the result."
+  (unless directory (setq directory  default-directory))
+  (let ((dirs  (icicle-files-within (directory-files directory 'FULL icicle-re-no-dot)
+                                    () no-symlinks-p 'INCLUDE-DIRS-P
+                                    #'file-directory-p)))
+    (if predicate
+        (icicle-remove-if-not predicate dirs)
+      dirs)))
 
 (defun icicle-delete-whitespace-from-string (string &optional from to)
   "Remove whitespace from substring of STRING from FROM to TO.
@@ -6079,7 +6114,7 @@ If it is t, then set it to the value of ACTION, so the next call
 
 (defun icicle-alt-act-fn-for-type (type)
   "Returns an action function chosen by user for type TYPE (a string).
-Typical use: Bind `icicle-candidate-alt-action-fn' and 
+Typical use: Bind `icicle-candidate-alt-action-fn' and
 `icicle-all-candidates-list-alt-action-fn' to the return value.
 However, you must first bind `icicle-orig-window' to the window that
 is current before user input is read from the minibuffer."
