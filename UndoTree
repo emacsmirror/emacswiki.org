@@ -13,7 +13,7 @@ For more information, see the Commentary at the top of the ##undo-tree.el## file
 
 == Downloading ==
 
-The latest "stable" version (version 0.3.3, released January 2012) can be obtained from:
+The latest "stable" version (version 0.3.4, released April 2012) can be obtained from:
 
 * Undo-tree package download: http://www.dr-qubit.org/download.php?file=undo-tree/undo-tree.el
 * Web-site: http://www.dr-qubit.org/emacs.php#undo-tree
@@ -31,7 +31,7 @@ This is a git repository, ''not'' a web page. To grab the latest development ver
 
 Please send bug reports and suggestions to [mailto:toby-undo-tree@dr-qubit.org toby-undo-tree@dr-qubit.org] (you can post them here as well if you like, of course). I don't check this page regularly, so anything not emailed to me is likely to languish here unnoticed for some time.
 
-If you have code you would like to contribute to undo-tree, either send a patch against the latest development version to [mailto:toby-undo-tree@dr-qubit.org toby-undo-tree@dr-qubit.org], or better still, use git, rebase your work against the latest git HEAD, and let me know where to find your clone of the undo-tree repository so that I can pull your changes.
+If you have code you would like to contribute to undo-tree, either send a patch against the latest development version to [mailto:toby-undo-tree@dr-qubit.org toby-undo-tree@dr-qubit.org], or better still, use git, rebase your work against the latest git master, and let me know where to find your clone of the undo-tree repository so that I can pull your changes.
 
 -- TobyCubitt
 
