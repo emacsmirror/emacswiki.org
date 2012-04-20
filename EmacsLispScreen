@@ -133,6 +133,24 @@ V. Oleynik).
 === How to give each screen its own buffer-list ===
 
 If you would like each of your elscreens to have independent most-recently-used-buffer-lists, try ElscreenSeparateBufferLists.
+
+=== How to hide some of buffers with depends from screen name. Example for iswitchb. ===
+Example to use with iswitchb buffer switcher, show in screen with name 
+"cde" only c-mode buffers:
+ 
+  (defun screen-dependent-hide-buffers ()
+    "Hook to [un]ignore buffers for elscreen name"
+    (interactive)
+    (let* ((screen-name (elscreen-get-screen-nickname (elscreen-get-current-screen)))
+           (ignore
+            (cond
+             ((equal screen-name "cde")
+              '((lambda (name)
+                 (with-current-buffer name
+                   (not (derived-mode-p 'c-mode))))))
+             (t '("^ "))))) ;; let variables
+      (setq iswitchb-buffer-ignore ignore)))
+  (eval-after-load "elscreen" '(add-hook 'elscreen-goto-hook 'screen-dependent-hide-buffers))
  
 == ElScreen Addons ==
 
@@ -221,6 +239,10 @@ I want to let first sceen numbered as 1 instead 0, how to do ?
 How do I deactivate elscreen once it was loaded?
 [new]
 I'm trying out elscreen, but when I switch buffers via "C-x b" which runs "switch-to-buffer", I see buffers from all screens when I tab complete.  Is there a way to set it up so only the current screen's buffers show?  Thanks!
+ 
+
+
+
 
 ----
 CategoryEmulation
