@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Sat Apr 14 06:52:08 2012 (-0700)
+;; Last-Updated: Fri Apr 20 13:00:21 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 8316
+;;     Update #: 8332
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-chg.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -611,6 +611,12 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd2.el'")
 ;;
+;; 2012/04/20 dadams
+;;     Added: icicle-search-dired-get-files-for-dir, icicle-search-dired-marked-here.
+;;     icicle-search-dired-marked:
+;;       Added arg IGNORE-MARKS-P (prefix arg).  Pass it to icicle-search-dired-get-files.
+;;     icicle-search-dired-get-files: Rewrote - uses icicle-search-dired-get-files-for-dir.
+;;       Ask user whether to use Dired buffers for subdirs, if there are any.
 ;; 2012/04/14 dadams
 ;;     icicle-search-dired-get-files: Moved handling of IGNORE-MARKS-P outside the lambda.
 ;; 2012/04/13 dadams
@@ -1289,6 +1295,9 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-fn.el'")
 ;;
+;; 2012/04/20 dadams
+;;     Added: icicle-directories-within (not yet used).
+;;     icicle-files-within: Added args INCLUDE-DIRS-P, PREDICATE.  Remove killed Dired buffers.
 ;; 2012/04/13 dadams
 ;;     icicle-files-within-1: Allow FILE-LIST to be a function.  *-within: Updated doc accordingly.
 ;; 2012/04/08 dadams
