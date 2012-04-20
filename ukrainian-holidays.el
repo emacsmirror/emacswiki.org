@@ -1,3 +1,4 @@
+<pre>
 ;; Щоб показувати лише українські свята, додай до .emacs:
 ;; (require 'ukrainian-holidays)
 ;; (setq calendar-holidays holiday-ukrainian-holidays)
@@ -71,3 +72,4 @@ Nth day before or after Easter."
 	(list 4 day year)
       (list 5 (- day 30) year))))
 (provide 'ukrainian-holidays)
+<\pre>
