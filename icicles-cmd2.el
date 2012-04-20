@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Thu May 21 13:31:43 2009 (-0700)
 ;; Version: 22.0
-;; Last-Updated: Fri Apr 13 19:50:16 2012 (-0700)
+;; Last-Updated: Fri Apr 20 12:53:24 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 5360
+;;     Update #: 5571
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-cmd2.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -215,7 +215,9 @@
 ;;    `icicle-search-choose-buffers', `icicle-search-cleanup',
 ;;    `icicle-search-define-candidates',
 ;;    `icicle-search-define-candidates-1',
-;;    `icicle-search-dired-get-files', `icicle-search-final-act',
+;;    `icicle-search-dired-get-files',
+;;    `icicle-search-dired-get-files-for-dir',
+;;    `icicle-search-dired-marked-here', `icicle-search-final-act',
 ;;    `icicle-search-help',
 ;;    `icicle-search-highlight-all-input-matches',
 ;;    `icicle-search-highlight-and-maybe-replace',
@@ -5409,19 +5411,47 @@ BEG, END, and WHERE."
   (apply #'icicle-search nil nil scan-fn-or-regexp require-match (bmkp-bmenu-get-marked-files) args))
 
 ;;;###autoload (autoload 'icicle-search-dired-marked "icicles")
-(defun icicle-search-dired-marked (scan-fn-or-regexp require-match ; Bound to `M-s M-s m' in Dired.
-                                   &rest args) ; Bound also to `C-0 M-s M-s M-s', `C-0 C-`' in Dired.
+(defun icicle-search-dired-marked (ignore-marks-p scan-fn-or-regexp require-match
+                                   &rest args) ; Bound to `M-s M-s m' in Dired.
+                                        ; Bound also to `C-0 M-s M-s M-s', `C-0 C-c `' in Dired.
   "Search the marked files in Dired.
-Same as using `C-0' with `icicle-search' in Dired. 
-Arguments are the same as for `icicle-search', but without arguments
-BEG, END, and WHERE."
-  (interactive `(,(if icicle-search-whole-word-flag
+With a prefix arg, ignore Dired markings: search all files in the
+directory.  (Non-interactively, do this if argument IGNORE-MARKS-P is
+non-nil.)
+
+Otherwise, search only the marked files in the directory, or all of
+the files if none are marked.
+
+Marked subdirectories are handled recursively in the same way: If they
+have a Dired buffer then search their marked files, or all of their
+files if none are marked.  If a marked directory at any level has no
+Dired buffer then search all of its files.  If a marked directory has
+more than one Dired buffer then raise an error.
+
+Because you might not be aware of existing Dired buffers for some
+marked directories, you are asked to confirm searching their marked
+files.  If you do not confirm this then all files in marked
+directories are searched, regardless of whether directories might have
+Dired buffers with marked files.  That is, Dired buffers are ignored
+if you do not confirm using them.
+
+This is bound by default to `M-s M-s m' in Dired.  This is the same as
+using `C-0' with `icicle-search' in Dired, that is, `C-0 M-s M-s M-s'
+or `C-0 C-c `', but in that case you cannot use the prefix arg to
+ignore markings.
+
+Non-interactively, the arguments other than IGNORE-MARKS-P are the
+same as for `icicle-search', but without arguments BEG, END, and
+WHERE."
+  (interactive `(,current-prefix-arg
+                 ,(if icicle-search-whole-word-flag
                       (icicle-search-read-word)
                       (icicle-search-read-context-regexp))
                  ,(not icicle-show-multi-completion-flag)))
   (unless (eq major-mode 'dired-mode)
     (error "Command `icicle-search-dired-marked' must be called from a Dired buffer"))
-  (apply #'icicle-search nil nil scan-fn-or-regexp require-match (icicle-search-dired-get-files) args))
+  (apply #'icicle-search nil nil scan-fn-or-regexp require-match
+         (icicle-search-dired-get-files ignore-marks-p) args))
 
 (defun icicle-search-dired-get-files (&optional ignore-marks-p)
   "Return files for `icicle-search' in Dired mode.
@@ -5431,26 +5461,62 @@ Marked subdirectories are handled recursively in the same way.
 
 Non-nil optional arg IGNORE-MARKS-P means ignore all Dired markings:
 just get all of the files in the current directory."
-  (let ((files  ()))
-    (icicle-files-within
-     (if ignore-marks-p
-         (directory-files default-directory 'FULL icicle-re-no-dot)
-       #'(lambda ()
-           ;; If none marked, exclude (t FILENAME): the unmarked file at cursor.
-           ;; If none as a result, then return all files in the dir (but no subdirs).
-           (let ((ff  (dired-get-marked-files nil nil nil 'DISTINGUISH-ONE-MARKED)))
-             (cond ((eq t (car ff))  (cdr ff))
-                   ((cadr ff)        ff)
-                   (t                (icicle-remove-if
-                                      #'file-directory-p
-                                      (directory-files default-directory 'FULL icicle-re-no-dot)))))))
-     files)))
+  (let ((askp  (list nil)))             ; The cons's car will be set to `t' if need to ask user.
+    (if ignore-marks-p
+        (icicle-files-within (directory-files default-directory 'FULL icicle-re-no-dot) ())
+      ;; Pass FILES and ASKP to `icicle-search-dired-get-files-for-dir', so we don't have to use them as
+      ;; free vars there.  But that means that they each need to be a cons cell that we can modify, so
+      ;; we can get back the updated info.
+      (let ((files  (list 'DUMMY)))     ; The files picked up will be added to this list.
+        (icicle-search-dired-get-files-for-dir default-directory files askp)
+        (setq files  (cdr files))       ; Remove `DUMMY' from the modifed list.
+        (if (and (car askp)  (not (y-or-n-p "Search marked files in Dired buffers for subdirs? ")))
+            (icicle-files-within (directory-files default-directory 'FULL icicle-re-no-dot) ())
+          files)))))
+
+(defun icicle-search-dired-get-files-for-dir (dir accum askp)
+  "Return files for directory DIR, for use by `icicle-search' in Dired.
+Pick up all marked files in DIR, if it has a Dired buffer, or all
+files in DIR, if not.  Handle subdirs recursively (only marked
+subdirs, if Dired).
+
+ACCUM is an accumulator list: the files picked up in this call are
+nconc'd to it.
+
+ASKP is a one-element list, the element indicating whether to ask the
+user about respecting Dired markings.  It is set here to `t' if there
+is a Dired buffer for DIR.
+
+But if there is more than one Dired buffer for DIR, raise an error."
+  (dolist (file  (if (not (dired-buffers-for-dir dir))
+                     (directory-files dir 'FULL icicle-re-no-dot)
+                   (when (cadr (dired-buffers-for-dir dir)) (error "More than one Dired buffer for `%s'" dir))
+                   (setcar askp  t)
+                   (with-current-buffer (car (dired-buffers-for-dir dir))
+                     (icicle-search-dired-marked-here))))
+    (if (not (file-directory-p file))
+        (setcdr (last accum) (list file))
+      (icicle-search-dired-get-files-for-dir file accum askp))))
+
+(defun icicle-search-dired-marked-here ()
+  "Marked files and subdirs in this Dired buffer, or all if none are marked.
+Directories `.' and `..' are excluded."
+  ;; If no file is marked, exclude `(FILENAME)': the unmarked file at cursor.
+  ;; If there are no marked files as a result, return all files and subdirs in the dir.
+  (let ((ff  (condition-case nil        ; Ignore error if cursor is on `.' or `..' and no file is marked.
+                 (dired-get-marked-files nil nil nil 'DISTINGUISH-ONE-MARKED)
+               (error nil))))
+    (cond ((eq t (car ff))  (cdr ff))   ; Single marked
+          ((cadr ff)        ff)         ; Multiple marked
+          (t                (directory-files ; None marked
+                             default-directory 'FULL icicle-re-no-dot 'NOSORT)))))
+  
 
 ;;;###autoload (autoload 'icicle-search-ibuffer-marked "icicles")
 (defun icicle-search-ibuffer-marked (scan-fn-or-regexp require-match ; Bound to `M-s M-s m' in Ibuffer.
                                      &rest args) ; Bound also to `C-0 M-s M-s M-s', `C-0 C-`' in Ibuffer.
   "Search the marked buffers in Ibuffer, in order.
-Same as using `C-0' with `icicle-search' in Ibuffer. 
+Same as using `C-0' with `icicle-search' in Ibuffer.
 Arguments are the same as for `icicle-search', but without arguments
 BEG, END, and WHERE."
   (interactive `(,(if icicle-search-whole-word-flag
