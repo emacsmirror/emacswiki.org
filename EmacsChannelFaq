@@ -101,7 +101,7 @@ And for Lisp to put in your .emacs
 
     ;; Set font to Dejavu sans mono
     (set-face-attribute 'default (not 'this-frame-only)
-                        :face "DejaVu Sans Mono")
+                        :font "DejaVu Sans Mono")
 
 Windows users check ChangeFontsPermanentlyOnWindows.
 
