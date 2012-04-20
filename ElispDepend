@@ -1,5 +1,7 @@
 ==What is elisp-depend.el ?==
-ElispDepend is mode that parse depend libraries of elisp file. And generate appropriate information for depend libraries.
+ElispDepend is mode that parses an elisp file and generates
+appropriate dependency information, as comments or as elisp
+require and autoload statements.
 
 ==Install==
 * Load file:
@@ -25,7 +27,7 @@ ElispDepend is mode that parse depend libraries of elisp file. And generate appr
 : Insert appropriate depend libraries comment at cursor.
 
 ==Describe==
-Default, this package will use function `symbol-file' to get depend file with current symbol. 
+By default, this package will use function `symbol-file' to get depend file with current symbol. 
 And then use `featurep' to test this file whether write `provide' sentences for feature reference.
 If `featurep' return t, generate depend information as "(require 'foo)" format.
 If `featurep' return nil, generate depends as "(autoload 'foo "file")" format.
@@ -33,29 +35,15 @@ If `featurep' return nil, generate depends as "(autoload 'foo "file")" format.
 This packages will always return depend information as `autoload'
 format if a feature not write `provide' information in source code.
 
-==Implement==
-ElispDepend will loop all symbol in current buffer, and try to get appropriate depend information.
-But this's unnecessary check all symbol, example symbol in string, comment...etc.
+==Implementation==
 
-So i describe some detail in function `elisp-depend-map':
-* (elisp-depend-skip-string)
-: Will skip all symbol in string for fast check. If sense point in string, this function will jump end of string.
-* (elisp-depend-skip-comment)
-: Will skip all symbol in comment for fast check. If sense point in comment, this function will jump end of comment.
-* (elisp-depend-skip-defun-name-and-argument)
-: Will skip all symbol in function argument-list, if current symbol is "defun", this function will jump end of argument-list.
-* (not (elisp-depend-let-variable-p))
-: Make sure symbol is not local variable define in "let" or "let*".
-* (elisp-depend-filter-pseudo-function-symbol symbol)
-: Default, some function and variable have some name, example i use "buffer" with local variable, but have a function named "buffer" icicles-cmds.el. So this function is test a symbol whether use as function when found same name function.
-: This function will check whether have ' or ( at front of test symbol, otherwise skip this symbol.
-* (not (elisp-depend-build-in-function-p symbol))
-: Default some function is build-in function, such as "assoc". 
-: This function use `symbol-function' to check this, if function define as format "#<subr foo>", skip this build-in function.
-: For example, function define of "assoc" is "#<subr assoc>", so this function will skip symbol "assoc".
-* (not (elisp-depend-match-build-in-library filepath))
-: `elisp-depend-map' will get all depend information for current buffer, including the libraries the load along with Emacs.
-: So this function will use value of `elisp-depend-directory-list" to filter those libraries.
+The newest version of ElispDepend uses `read' to get a sexp containing
+all the elisp code in the buffer.  It then explores the sexp, treating
+functors such as `defun' specially.  Each such special symbol has its
+own explorer function.
+
+Finally it considers each symbol it found, determining where it's from
+and whether to include it.
 
 ==Bug==
 * This still have bug when some local-variable symbol have same name with exist function, then it will generate unnecessary depend information.
@@ -87,6 +75,9 @@ I added something about ##elisp-depend.el## at LibraryDependencies and Automatic
 
 : Thank you very much. :) -- AndyStewart
 
+[new]
+The latest version is available, Lisp:elisp-depend.el.  It uses `read'
+to understand the buffer so it should be less error-prone than before.
 
 ----
 CategoryCode
