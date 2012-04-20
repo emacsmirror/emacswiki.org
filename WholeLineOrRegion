@@ -91,6 +91,14 @@ One winds up with:
 
 In addition, the package provides a framework for enabling any region-based command (e.g., ##comment-dwim##) to work on the current line if region is undefined.
 
+[new]
+The function ##whole-line-or-region-kill-region## doesn't respect the ##kill-read-only-ok## variable (it always signals an error when the buffer is read-only). Here is some advice to fix that:
+
+    (defadvice whole-line-or-region-kill-region
+               (before whole-line-or-region-kill-read-only-ok activate)
+      (interactive "p")
+      (unless kill-read-only-ok (barf-if-buffer-read-only)))
+
 ----
 
 See also CopyingWholeLines.
