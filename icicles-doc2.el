@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Fri Apr  6 07:53:36 2012 (-0700)
+;; Last-Updated: Sat Apr 21 14:44:06 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 28742
+;;     Update #: 28754
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-doc2.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -815,7 +815,7 @@
 ;;    Buffer Menu, it means the marked buffers.  In the bookmark list,
 ;;    it means the marked bookmarks (you need `Bookmark+' for this).
 ;;    In such modes the same behavior is typically available on
-;;    another key as well (e.g. `M-s i'), as a separate command.
+;;    another key as well (e.g. `M-s M-s m'), as a separate command.
 ;;
 ;;  As a convenience, some specialized Icicles commands are defined
 ;;  that correspond to `icicle-search' with the various
@@ -2062,7 +2062,6 @@
 ;;  * icicle-search-bookmark
 ;;  * icicle-search-autofile-bookmark
 ;;  * icicle-search-bookmark-list-bookmark
-;;  * icicle-search-desktop-bookmark
 ;;  * icicle-search-dired-bookmark
 ;;  * icicle-search-file-bookmark
 ;;  * icicle-search-gnus-bookmark
@@ -2433,16 +2432,34 @@
 ;;  hit `Q' again, but that's not very convenient.  A similar problem
 ;;  applies to searching using `A'.
 ;;
-;;  In Dired with Icicles, you can use `M-s i'
-;;  (`icicle-search-dired-marked') to search the files and possibly
-;;  replace search hits.  This runs `icicle-search', so you have
-;;  available all of its features, including accessing search hits
-;;  directly, in any order.  To skip a whole file, just match its name
-;;  with your minibuffer input and then use `C-~' to remove all of its
+;;  In Dired with Icicles, you can use `M-s M-s m'
+;;  (`icicle-search-dired-marked') to search the marked files and
+;;  possibly replace search hits.  With a prefix arg the markings are
+;;  ignored; all files are searched.
+;;
+;;  Each marked subdirectory is handled recursively in the same way:
+;;  If it has a Dired buffer then its marked files are searched, or
+;;  all of its files if none are marked.  If a marked directory at any
+;;  level has no Dired buffer then all of its files are searched.
+;;
+;;  Because you might not be aware of existing Dired buffers for some
+;;  marked directories, you are asked to confirm searching their
+;;  marked files.  If you do not confirm this then all files in marked
+;;  directories are searched, regardless of whether directories might
+;;  have Dired buffers with marked files.  That is, Dired buffers are
+;;  ignored if you do not confirm using them.
+;;
+;;  This command runs `icicle-search', so you have available all of
+;;  its features, including accessing search hits directly, in any
+;;  order.  To skip a whole file, just match its name with your
+;;  minibuffer input and then use `C-~' to remove all of its
 ;;  occurrences from the set of hits.
 ;;
-;;  Note: You can similarly use `M-s i' in Ibuffer or Buffer Menu to
-;;  search all marked buffers using Icicles search.
+;;  Note: You can similarly use `M-s M-s m' in Ibuffer or Buffer Menu
+;;  to search all marked buffers using Icicles search.  Also, `C-0 M-s
+;;  M-s M-s' and `C-0 C-c `' are bound to the same command.  (But you
+;;  cannot pass a separate prefix arg in those cases, since `C-0' is
+;;  already used.)
 ;;
 ;;(@* "Save Marked Files as Completion Candidates")
 ;;  ** Save Marked Files as Completion Candidates **
@@ -2743,7 +2760,8 @@
 ;;  for information about defining, saving, and reusing sets of
 ;;  completion candidates.
 ;;
-;;  * (@> "Icicles Bookmark Enhancements") for information about using Info bookmarks.
+;;  * (@> "Icicles Bookmark Enhancements") for information about using
+;;  Info bookmarks.
 ;;
 ;;  [* If you click `mouse-1' on a candidate and (starting with Emacs
 ;;  22) `mouse-1-click-follows-link' is an integer, then you will need
@@ -6603,7 +6621,6 @@
 ;;  `icicle-search-buff-menu-marked' - Search marked buffers, in order
 ;;  `icicle-search-buffer' - Search multiple buffers
 ;;  `icicle-search-char-property' - Search for character properties
-;;  `icicle-search-desktop-bookmark' -- Search desktop bookmarks
 ;;  `icicle-search-dired-bookmark' - Search Dired bookmarks
 ;;  `icicle-search-dired-marked' - Search the marked files in Dired
 ;;  `icicle-search-file'  - Search multiple files
@@ -8395,7 +8412,6 @@
 ;;  `icicle-search-autofile-bookmark' - Search an autofile bookmark
 ;;  `icicle-search-bookmark' - Search a bookmark
 ;;  `icicle-search-bookmark-list-bookmark' - Search bookmark-list bmk
-;;  `icicle-search-desktop-bookmark' - Search a Desktop bookmark
 ;;  `icicle-search-dired-bookmark' - Search a Dired bookmark
 ;;  `icicle-search-file-bookmark' - Search a bookmarked file
 ;;  `icicle-search-gnus-bookmark' - Search a bookmarked Gnus message
