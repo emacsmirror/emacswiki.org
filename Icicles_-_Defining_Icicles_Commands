@@ -327,7 +327,6 @@ Several top-level '''Icicles''' commands have been defined using
 [:icicle-search-autofile-bookmark]
 [:icicle-search-bookmark]
 [:icicle-search-bookmark-list-bookmark]
-[:icicle-search-desktop-bookmark]
 [:icicle-search-dired-bookmark]
 [:icicle-search-file-bookmark]
 [:icicle-search-gnus-bookmark]
@@ -441,7 +440,6 @@ Several top-level '''Icicles''' commands have been defined using
 * '''`icicle-search-autofile-bookmark'''' -- Search an autofile bookmark
 * '''`icicle-search-bookmark'''' -- Search a bookmark
 * '''`icicle-search-bookmark-list-bookmark'''' -- Search a bookmark-list bookmark
-* '''`icicle-search-desktop-bookmark'''' -- Search a DeskTop bookmark
 * '''`icicle-search-dired-bookmark'''' -- Search a [[Dired]] bookmark
 * '''`icicle-search-file-bookmark'''' -- Search a bookmarked file
 * '''`icicle-search-gnus-bookmark'''' -- Search a bookmarked Gnus message
