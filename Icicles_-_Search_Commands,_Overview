@@ -214,7 +214,7 @@ the same prefix key, '''`M-s M-s''''.  Starting with Emacs 23, a single
 key twice for '''Icicles''' search.
 
 The most general '''Icicles''' search command is '''`icicle-search'''', which
-is bound to '''`M-s M-s M-s''''.  It is also bound to '''`C-c `''''.  (In some
+is bound to '''`M-s M-s M-s''''.  It is also bound to '''`##C-c `##''''.  (In some
 modes these keys are bound to a mode-specific form of '''Icicles'''
 search.)
 
@@ -554,7 +554,7 @@ mode.  In [[Dired]], this means the marked files.  In [[Ibuffer]] or
 BufferMenu, it means the marked buffers.  In the [[BookMarks#BookmarkList|bookmark list]],
 it means the marked bookmarks (you need '''[[Bookmark+]]''' for this).
 In such modes the same behavior is typically available on
-another key as well (e.g. `M-s i'), as a separate command.
+another key as well (e.g. `M-s M-s m'), as a separate command.
 
 
 As a convenience, some specialized '''Icicles''' commands are defined that
