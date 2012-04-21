@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Thu May 21 13:31:43 2009 (-0700)
 ;; Version: 22.0
-;; Last-Updated: Fri Apr 20 12:53:24 2012 (-0700)
+;; Last-Updated: Sat Apr 21 12:43:41 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 5571
+;;     Update #: 5573
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-cmd2.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -112,9 +112,7 @@
 ;;    (+)`icicle-search-bookmarks-together',
 ;;    (+)`icicle-search-buffer', (+)`icicle-search-buff-menu-marked',
 ;;    (+)`icicle-search-char-property', (+)`icicle-search-defs',
-;;    (+)`icicle-search-defs-full',
-;;    (+)`icicle-search-desktop-bookmark',
-;;    (+)`icicle-search-dired-bookmark',
+;;    (+)`icicle-search-defs-full', (+)`icicle-search-dired-bookmark',
 ;;    (+)`icicle-search-dired-marked', (+)`icicle-search-file',
 ;;    (+)`icicle-search-file-bookmark', (+)`icicle-search-generic',
 ;;    (+)`icicle-search-gnus-bookmark',
@@ -4352,7 +4350,6 @@ future search commands, not the current one.)" ; Doc string
 ;;  `icicle-search-autofile-bookmark'
 ;;  `icicle-search-autonamed-bookmark'
 ;;  `icicle-search-bookmark-list-bookmark'
-;;  `icicle-search-desktop-bookmark'
 ;;  `icicle-search-dired-bookmark'
 ;;  `icicle-search-file-bookmark'
 ;;  `icicle-search-gnus-bookmark'
