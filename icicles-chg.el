@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Fri Apr 20 13:00:21 2012 (-0700)
+;; Last-Updated: Sat Apr 21 14:14:14 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 8332
+;;     Update #: 8336
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-chg.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -4492,6 +4492,10 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-mode.el'")
 ;;
+;; 2012/04/21 dadams
+;;     (put 'icicle-mode 'custom-mode-group 'Icicles), so `C-u customize-mode icicle-mode' works.
+;;     icicle-mode: Change :group to Icicles from Icicles-Miscellaneous.
+;;                  Updated list of top-level commands in doc string, and moved it to the end.
 ;; 2012/04/09 dadams
 ;;     Fixed typo: double single-quotes in autoload cookie.
 ;; 2012/04/08 dadams
