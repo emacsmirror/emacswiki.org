@@ -412,7 +412,6 @@ are specific to bookmarks:
 * '''`icicle-search-bookmark''''
 * '''`icicle-search-autofile-bookmark''''
 * '''`icicle-search-bookmark-list-bookmark''''
-* '''`icicle-search-desktop-bookmark''''
 * '''`icicle-search-dired-bookmark''''
 * '''`icicle-search-file-bookmark''''
 * '''`icicle-search-gnus-bookmark''''
