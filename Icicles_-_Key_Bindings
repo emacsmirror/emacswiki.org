@@ -300,7 +300,6 @@ to keys in ''Icicle'' mode -- they are ''not'' bound by '''Icicles''' (except to
 [:icicle-search-all-tags-regexp-bookmark]
 [:icicle-search-autofile-bookmark]
 [:icicle-search-bookmark-list-bookmark]
-[:icicle-search-desktop-bookmark]
 [:icicle-search-dired-bookmark]
 [:icicle-search-file-bookmark]
 [:icicle-search-gnus-bookmark]
@@ -416,7 +415,6 @@ to keys in ''Icicle'' mode -- they are ''not'' bound by '''Icicles''' (except to
 * `icicle-search-buff-menu-marked' -- Search BufferMenu marked buffers, in order
 * `icicle-search-buffer' -- Search multiple [[buffer]]s
 * `icicle-search-char-property' - Search for character properties
-* `icicle-search-desktop-bookmark' -- Search [[DeskTop|desktop]] bookmarks
 * `icicle-search-dired-bookmark' -- Search [[Dired]] bookmarks
 * `icicle-search-dired-marked' -- Search the marked files in Dired
 * `icicle-search-file'  -- Search multiple files
