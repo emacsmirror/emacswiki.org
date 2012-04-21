@@ -138,7 +138,7 @@ The most important links are '''bold''' here.
 * '''[[Icicles - Bookmark Enhancements]]''' -- enhancements involving Emacs [[bookmark]]s (see also '''[[Bookmark+]]''')
 * '''[[Icicles - Emacs Tags Enhancements]]''' -- finding source-code definitions ([[tags]])
 * [[Icicles - Shell-Command Enhancements]] -- completion for shell commands
-* [[Icicles - Dired Enhancements]] -- '''Icicles''' enhancements to DiredMode
+* '''[[Icicles - Dired Enhancements]]''' -- '''Icicles''' enhancements to DiredMode
 * [[Icicles - Info Enhancements]] -- '''Icicles''' enhancements to InfoMode
 * '''[[Icicles - Support for Projects]]''' -- features that help you work with a software project
 * '''[[Icicles - Complex Completions]]''' -- ''applying a function'' to complex candidates (e.g. Lisp structures -- more than just strings) that you choose interactively
