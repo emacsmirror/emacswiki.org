@@ -2,13 +2,15 @@
 
 This page collects information for creating a usable Python programming environment in Emacs. 
 
-There are two implementations of a Python mode for Emacs: python.el and python-mode.el.
+There are three implementations of a Python mode for Emacs: python.el and python-mode.el.
 
 # ProgrammingWithPythonDotEl -- python.el comes with GNU Emacs.
 
 # ProgrammingWithPythonModeDotEl -- [https://launchpad.net/python-mode python-mode.el] comes from Python.
 
-(Unification is desired.)
+# ProgrammingWithPythonDotElGallina -- []https://github.com/fgallina/python.el Fabián Ezequiel Gallina's new implementation of python.el
+
+(Gallina's mode tries to merge the functionality of the first two modes.)
 
 You may also find these pages useful:
 
