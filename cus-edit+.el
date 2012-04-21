@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2012, Drew Adams, all rights reserved.
 ;; Created: Thu Jun 29 13:19:36 2000
 ;; Version: 21.1
-;; Last-Updated: Fri Mar  2 08:08:32 2012 (-0800)
+;; Last-Updated: Sat Apr 21 10:58:38 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 1392
+;;     Update #: 1406
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/cus-edit+.el
 ;; Keywords: help, customize, help, faces
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -336,13 +336,16 @@
 ;;              been REDEFINED HERE:
 ;;
 ;;    `custom-add-parent-links', `custom-buffer-create-internal',
-;;    `customize-group-other-window', `customize-unsaved'.
+;;    `customize-group-other-window', `customize-mode',
+;;    `customize-unsaved'.
 ;;
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;;; Change Log:
 ;;
+;; 2012/04/21 dadams
+;;     Added redefinition of customize-mode.  See Emacs bugs #11299 and #11301.
 ;; 2012/01/18 dadams
 ;;     Renamed customize-customized to customize-unsaved, per Emacs 22+.  Added alias.
 ;;     customize-update-all, Custom-ignore-unsaved, Custom-consider-unchanged:
@@ -481,6 +484,7 @@
 
 
 ;; REPLACES ORIGINAL binding in `cus-edit.el'.
+;;
 ;; Don't use the silly `Custom-buffer-done' of Emacs 21 (until it is fixed),
 ;; and don't use `bury-buffer' (Emacs 20), since it doesn't work with
 ;; dedicated windows.  Use `quit-window': DTRT.
@@ -554,6 +558,7 @@ use etags instead.  Etags support is not as robust as imenu support."
 
 
 ;; REPLACES ORIGINAL in `cus-edit.el'.
+;;
 ;; Changed text for saved, to not give impression that preference
 ;; was necessarily set and saved.
 ;;
@@ -626,6 +631,7 @@ The list should be sorted most significant first.")
 
 
 ;; REPLACES ORIGINAL in `cus-edit.el'.
+;;
 ;; Rename `Parent groups:' to `Groups:' and `Parent documentation:' to `See Also:'
 ;; Fill `See Also:' links list.
 ;;
@@ -707,6 +713,7 @@ to preferences when idle.")
 
 
 ;; REPLACES ORIGINAL in `cus-edit.el'.
+;;
 ;; Added `Consider Unchanged', `Ignore Unsaved Changes', `Set from External Changes'.
 ;;
 (defconst custom-face-menu
@@ -755,6 +762,7 @@ widget.  If FILTER is nil, ACTION is always valid.")
 
 
 ;; REPLACES ORIGINAL in `cus-edit.el'.
+;;
 ;; Added `Consider Unchanged', `Ignore Unsaved Changes', `Set from External Changes'.
 ;;
 (defconst custom-variable-menu
@@ -1010,6 +1018,7 @@ call this function."
 
 
 ;; REPLACES ORIGINAL in `faces.el'.
+;;
 ;; TEMPORARY BUG fix.  We wrap call to `x-defined-colors' with non-`nil' binding of
 ;; `executing-kbd-macro' to suppress messages.  Redefining `message' with an `flet'
 ;; (flet ((message (arg) nil)) might be a bit cleaner, but this is OK.
@@ -1071,6 +1080,7 @@ an integer value."
 (defalias 'customize-customized 'customize-unsaved) ; Emacs changed its mind. ;-)
 
 ;; REPLACES ORIGINAL in `cus-edit.el'.
+;;
 ;; 1. By default, ignores preferences in `customize-customized-ignore'.
 ;; 2. Added prefix arg to override `customize-customized-ignore'.
 ;; 3. When not interactive and there are changes, ask for confirmation.
@@ -1533,6 +1543,7 @@ variable, since it was considered unchanged."
 
 
 ;; REPLACES ORIGINAL in `cus-edit.el'.
+;;
 ;; Added `Consider Unchanged', `Ignore Unsaved Changes', `Set from External Changes'.
 ;;
 (when (< emacs-major-version 24)
@@ -1554,6 +1565,7 @@ variable, since it was considered unchanged."
 
 
 ;; REPLACES ORIGINAL in `cus-edit.el'.
+;;
 ;; 1. Added items `Consider Unchanged' and `Ignore Unsaved Changes'.
 ;; 2. Hard-code `quit-window' as `Finish' action.
 ;; 3. Run hook `customp-buffer-create-hook' at end.
@@ -1721,7 +1733,29 @@ are ignored by `customize-customized'."
     (run-hooks 'customp-buffer-create-hook)))
 
 
+;; REPLACES ORIGINAL in `cus-edit.el' (Emacs 22+).
+;;
+;; Handle minor modes also - see Emacs bugs #11299 and #11301.
+;;
+(when (fboundp 'custom-group-of-mode)   ; Emacs 22+
+  (defun customize-mode (mode)
+    "Customize options related to a major or minor mode.
+By default the current major is used.
+With a prefix argument or if the current major mode has no known group,
+you are prompted for the MODE to customize."
+    (interactive
+     (list
+      (let ((completion-regexp-list  '("-mode\\'"))
+            (group                   (custom-group-of-mode major-mode)))
+        (if (and group  (not current-prefix-arg))
+            major-mode
+          (intern (completing-read "Mode: " obarray 'custom-group-of-mode
+                                   t nil nil (and group  (symbol-name major-mode))))))))
+    (customize-group (custom-group-of-mode mode))))
+
+
 ;; REPLACES ORIGINAL in `cus-edit.el'.
+;;
 ;; 1. Added items `Consider Unchanged' and `Ignore Unsaved Changes'.
 ;; 2. Hard-code `quit-window' as `Finish' action.
 ;; 3. Run hook `customp-buffer-create-hook' at end.
@@ -1871,6 +1905,7 @@ Reset all values in buffer to standard settings, updating your custom file."
 
 
 ;; REPLACES ORIGINAL in `cus-edit.el'.
+;;
 ;; Fit frame expanding and collapsing tree nodes.
 ;;
 (when (fboundp 'fit-frame-if-one-window)
@@ -1882,6 +1917,7 @@ Reset all values in buffer to standard settings, updating your custom file."
 
 
 ;; REPLACES ORIGINAL in `cus-edit.el'.
+;;
 ;; Fit frame afterward.
 ;;
 ;; NOTE: GNU Emacs bug (which will be fixed in next release) causes
