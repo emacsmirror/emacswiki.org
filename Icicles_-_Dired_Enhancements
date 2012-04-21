@@ -35,10 +35,25 @@ In Dired, `A' searches the marked files using a [[regexp]], and `Q' launches `qu
 
 One workaround is to use `##M->##' to go to the end of a file, and then `##M-,##' to resume query-replace.  Or you can quit the command altogether, unmark the file you're finished searching, and then hit `Q' again, but that's not very convenient. A similar problem applies to searching using `A'.
 
-In Dired with '''Icicles''', you can use '''`M-s i'''' (`icicle-search-dired-marked') to search the files and possibly replace search hits. This runs `icicle-search', so you have available all of its features, including accessing search hits directly, in any order. To skip a whole file, just match its name with your minibuffer input and then use `##C-~##' to remove all of its occurrences from the set of hits.
+In Dired with '''Icicles''', you can use '''`M-s M-s m'''' (`icicle-search-dired-marked') to search the marked files and possibly replace search hits.  With a [[prefix argument]] the markings are
+ignored; all files are searched.
 
-'''Note:''' You can similarly use `M-s i' in [[IbufferMode|Ibuffer]] or [[BufferMenu|Buffer Menu]] to
-search all marked buffers using '''Icicles''' search.
+Each marked subdirectory is handled recursively in the same way:
+If it has a Dired buffer then its marked files are searched, or
+all of its files if none are marked.  If a marked directory at any
+level has no Dired buffer then all of its files are searched.
+
+Because you might not be aware of existing Dired buffers for some
+marked directories, you are asked to confirm searching their
+marked files.  If you do not confirm this then all files in marked
+directories are searched, regardless of whether directories might
+have Dired buffers with marked files.  That is, Dired buffers are
+ignored if you do not confirm using them.
+
+This command runs `icicle-search', so you have available all of its features, including accessing search hits directly, in any order. To skip a whole file, just match its name with your minibuffer input and then use `##C-~##' to remove all of its occurrences from the set of hits.
+
+'''Note:''' You can similarly use `M-s M-s m' in [[IbufferMode|Ibuffer]] or [[BufferMenu|Buffer Menu]] to
+search all marked buffers using '''Icicles''' search.  Also, '''`C-0 M-s M-s M-s'''' and '''`##C-0 C-c `##'''' are bound to the same command.  (But you cannot pass a separate prefix arg in those cases, since `C-0' is already used.)
 
 
 
