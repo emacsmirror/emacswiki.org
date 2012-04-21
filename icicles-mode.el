@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 10:21:10 2006
 ;; Version: 22.0
-;; Last-Updated: Mon Apr  9 18:57:27 2012 (-0700)
+;; Last-Updated: Sat Apr 21 14:22:29 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 8556
+;;     Update #: 8728
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-mode.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -294,46 +294,81 @@ cannot take advantage of WYSIWYG)."
 Non-nil prefix ARG turns mode on if ARG > 0, else turns it off.
 Icicle mode is a global minor mode.  It binds keys in the minibuffer.
 
-The following top-level commands are also available in Icicle mode.
-In many cases there are also `other-window' versions.
+You can use `customize-group Icicles' or `C-u customize-mode
+icicle-mode' to customize Icicles options and faces.
+
+For more information, use `\\<minibuffer-local-completion-map>\\[icicle-minibuffer-help]' \
+when the minibuffer is active.
+
+Depending on your platform, if you use Icicles in a text terminal
+\(that is, without a window system/manager), you might need to change
+some of the key bindings if some of the default bindings are not
+available to you.
+
+Icicle mode defines the following top-level commands.  In many cases
+there are also `-other-window' versions.
 
 `clear-option' (alias)                 - Set binary option(s) to nil
 `icicle-add-buffer-candidate'          - Add always-candidate buffer
 `icicle-add-buffer-config'             - To `icicle-buffer-configs'
 `icicle-add-entry-to-saved-completion-set' - Add completion to a set
+`icicle-add-file-to-fileset'           - Add a file to a fileset
 `icicle-add/update-saved-completion-set' - To
                                         `icicle-saved-completion-sets'
 `icicle-apply'                         - Apply function to alist items
 `icicle-apropos'                       - `apropos', but shows matches
 `icicle-apropos-command'               - Enhanced `apropos-command'
+`icicle-apropos-options-of-type'       - Show options of a given type
 `icicle-apropos-variable'              - Enhanced `apropos-variable'
-`icicle-apropos-zippy'                 - Show matching Zippy quotes
+`icicle-apropos-vars-w-val-satisfying' - Show vars of given values
+`icicle-bbdb-complete-name'            - Complete a user name/address
 `icicle-bookmark'                      - Jump to a bookmark
+`icicle-bookmark-a-file'               - Create an autofile bookmark
 `icicle-bookmark-all-tags'             - Jump to tagged bookmark
 `icicle-bookmark-all-tags-regexp'      - Jump to tagged bookmark
+`icicle-bookmark-autofile'             - Jump to an autofile bookmark
+`icicle-bookmark-autofile-all-tags'    - Jump to a tagged autofile
+`icicle-bookmark-autofile-all-tags-regexp'
+`icicle-bookmark-autofile-some-tags'
+`icicle-bookmark-autofile-some-tags-regexp'
+`icicle-bookmark-autonamed'            - Jump to an autonamed bookmark
+`icicle-bookmark-autonamed-this-buffer'
+`icicle-bookmark-bookmark-file'        - Load a bookmark file bookmark
 `icicle-bookmark-bookmark-list'        - Jump to a bookmark list
+`icicle-bookmark-cmd'                  - Set or jump to a bookmark
 `icicle-bookmark-desktop'              - Jump to a desktop bookmark
 `icicle-bookmark-dired'                - Jump to a Dired bookmark
+`icicle-bookmarked-buffer-list'        - Choose bookmarked buffers
+`icicle-bookmarked-file-list'          - Choose bookmarked files
 `icicle-bookmark-file'                 - Jump to a file bookmark
 `icicle-bookmark-file-all-tags'        - Jump to tagged file bookmark
 `icicle-bookmark-file-all-tags-regexp'
 `icicle-bookmark-file-some-tags'
 `icicle-bookmark-file-some-tags-regexp'
+`icicle-bookmark-file-this-dir'        - Jump to file in directory
 `icicle-bookmark-file-this-dir-all-tags'
 `icicle-bookmark-file-this-dir-all-tags-regexp'
 `icicle-bookmark-file-this-dir-some-tags'
 `icicle-bookmark-file-this-dir-some-tags-regexp'
 `icicle-bookmark-gnus'                 - Jump to a Gnus bookmark
+`icicle-bookmark-image'                - Jump to an image bookmark
 `icicle-bookmark-info'                 - Jump to an Info bookmark
+`icicle-bookmark-jump'                 - Jump to any bookmark
+`icicle-bookmark-list'                 - Choose a list of bookmarks
 `icicle-bookmark-local-file'           - Jump to local-file bookmark
 `icicle-bookmark-man'                  - Jump to a `man'-page bookmark
 `icicle-bookmark-non-file'             - Jump to a buffer bookmark
 `icicle-bookmark-region'               - Jump to a region bookmark
 `icicle-bookmark-remote-file'          - Jump to a remote file
+`icicle-bookmark-save-marked-files'    - Save file names as candidates
+`icicle-bookmark-save-marked-files-persistently'
+`icicle-bookmark-save-marked-files-to-variable'
+`icicle-bookmark-set'                  - Set a bookmark
 `icicle-bookmark-some-tags'            - Jump to tagged bookmark
 `icicle-bookmark-some-tags-regexp'     - Jump to tagged bookmark
 `icicle-bookmark-specific-buffers'     - Jump to a bookmarked buffer
 `icicle-bookmark-specific-files'       - Jump to a bookmarked file
+`icicle-bookmark-temporary'            - Jump to a temporary bookmark
 `icicle-bookmark-this-buffer'          - Jump to bookmark for this buf
 `icicle-bookmark-url'                  - Jump to a URL bookmark
 `icicle-bookmark-w3m'                  - Jump to a W3M (URL) bookmark
@@ -342,25 +377,48 @@ In many cases there are also `other-window' versions.
 `icicle-buffer-list'                   - Choose a list of buffer names
 `icicle-change-alternative-sort-order' - Choose an alternative sort
 `icicle-change-sort-order'             - Choose a sort order
-`icicle-clear-current-history'         - Clear current history entries
+`icicle-choose-faces'                  - Choose a list of face names
+`icicle-choose-invisible-faces'        - Choose faces now invisible
+`icicle-choose-visible-faces'          - Choose faces now visible
 `icicle-clear-history'                 - Clear entries from a history
 `icicle-color-theme'                   - Change color theme
 `icicle-comint-command'                - Reuse shell etc. command
 `icicle-comint-dynamic-complete'       - Text completion in shell
+`icicle-comint-dynamic-complete-filename'
+`icicle-comint-replace-by-expanded-filename'
 `icicle-comint-search'                 - Reuse shell etc. command
 `icicle-command-abbrev'                - Multi-command `M-x' + abbrevs
 `icicle-compilation-search'            - `icicle-search' and show hits
 `icicle-complete-keys'                 - Complete keys
 `icicle-complete-thesaurus-entry'      - Complete word using thesaurus
 `icicle-completing-yank'               - `yank' using completion
+`icicle-customize-apropos'             - Enhanced `customize-apropos'
+`icicle-customize-apropos-faces',
+`icicle-customize-apropos-groups'
+`icicle-customize-apropos-options'
+`icicle-customize-apropos-options-of-type'
+`icicle-customize-apropos-opts-w-val-satisfying'
 `icicle-customize-face'                - Multi-`customize-face'
 `icicle-customize-icicles-group'       - Customize options and faces
 `icicle-cycle-expand-to-common-match'  - Cycle input ECM expansion
+`icicle-cycle-image-file-thumbnail'    - Toggle images in Completions
 `icicle-cycle-incremental-completion'  - Cycle incremental completion
+`icicle-dabbrev-completion'            - Enhanced `dabbrev-completion'
 `icicle-delete-file'                   - Delete file/directory
 `icicle-delete-window'                 - Delete window (`C-u': buffer)
 `icicle-delete-windows'                - Delete all windows for buffer
+`icicle-describe-file'                 - Describe a file
+`icicle-describe-option-of-type'       - Describe option of given type
+`icicle-describe-process'              - Describe a computer process
+`icicle-describe-var-w-val-satisfying' - Describe var satisfying pred
+ `icicle-directory-list'               - Choose a list of directories
 `icicle-dired'                         - Multi-command Dired
+`icicle-dired-chosen-files'            - Dired a set of files & dirs
+`icicle-dired-project'                 - Dired a saved project
+`icicle-dired-save-marked'             - Save marked file names
+`icicle-dired-save-marked-persistently'
+`icicle-dired-save-marked-to-variable'
+`icicle-dired-smart-shell-command'     - Enhanced version of vanilla
 `icicle-doc'                           - Show doc for fn, var, or face
 `icicle-doremi-candidate-width-factor+' - +/- candidate column width
 `icicle-doremi-increment-max-candidates+' - +/- max number candidates
@@ -369,6 +427,9 @@ In many cases there are also `other-window' versions.
 `icicle-doremi-increment-variable+'    - Increment var using Do Re Mi
 `icicle-doremi-inter-candidates-min-spaces+' - +/- candidate spacing
 `icicle-doremi-zoom-Completions+'      - +/- `*Completions*' text size
+`icicle-ess-complete-object-name'      - Complete an ESS object
+`icicle-ess-R-complete-object-name'    - Complete an ESS object in R
+`icicle-exchange-point-and-mark'       - Flip, save, or select region
 `icicle-execute-extended-command'      - Multi-command `M-x'
 `icicle-execute-named-keyboard-macro'  - Execute named keyboard macro
 `icicle-face-list'                     - Choose a list of face names
@@ -376,10 +437,12 @@ In many cases there are also `other-window' versions.
 `icicle-file'                          - Visit file/directory
 `icicle-find-file'                     -       same: relative only
 `icicle-find-file-absolute'            -       same: absolute only
-`icicle-find-file-all-tags'            - Visit tagged file
+`icicle-find-file-read-only'           -       same: read-only
+`icicle-find-file-all-tags'            - Visit Emacs-tagged file
 `icicle-find-file-all-tags-regexp'
 `icicle-find-file-some-tags'
 `icicle-find-file-some-tags-regexp'
+`icicle-find-file-handle-bookmark'     - Find file handling bookmark
 `icicle-find-file-in-tags-table'       - File in Emacs tags table
 `icicle-find-file-tagged'              - Visit tagged file
 `icicle-find-first-tag'                - Visit definition with tag
@@ -389,52 +452,98 @@ In many cases there are also `other-window' versions.
 `icicle-frame-fg'                      - Change foreground of frame
 `icicle-fundoc'                        - Show function description
 `icicle-goto-global-marker'            - Go to a global marker
+`icicle-goto-global-marker-or-pop-global-mark'
 `icicle-goto-marker'                   - Go to a marker in this buffer
+`icicle-grep-saved-file-candidates'    - Grep saved file candidates
+`icicle-gud-gdb-complete-command'      - Enhanced version of vanilla
+`icicle-hide-faces'                    - Hide chosen visible faces
+`icicle-hide-only-faces'               - Show all but chosen faces
+`icicle-hide/show-comments'            - Hide or show comments
+`icicle-ido-like-mode'                 - Ido-like mode for Icicles
 `icicle-imenu*'                        - Navigate among Imenu entries
+`icicle-imenu-full'                            same: full definitions
+`icicle-imenu-command'                 - Navigate among command defs
+`icicle-imenu-command-full'                    same: full definitions
+`icicle-imenu-face'                    - Navigate among face defs
+`icicle-imenu-face-full'                       same: full definitions
+`icicle-imenu-key-explicit-map'        - Navigate among key defs
+`icicle-imenu-key-explicit-map-full'           same: full definitions
+`icicle-imenu-key-implicit-map'                same: no explicit map
+`icicle-imenu-key-implicit-map-full'           same: full definitions
+`icicle-imenu-macro'                   - Navigate among macro defs
+`icicle-imenu-macro-full'                      same: full definitions
+`icicle-imenu-non-interactive-function' - Navigate among function defs
+`icicle-imenu-non-interactive-function-full'   same: full definitions
+`icicle-imenu-user-option'             - Navigate among option defs
+`icicle-imenu-user-option-full'                same: full definitions
+`icicle-imenu-variable'                - Navigate among variable defs
+`icicle-imenu-variable-full'                   same: full definitions
 `icicle-increment-option'              - Increment numeric option
 `icicle-increment-variable'            - Increment numeric variable
 `icicle-Info-goto-node'                - Multi-cmd `Info-goto-node'
 `icicle-Info-index'                    - Multi-command `Info-index'
-`icicle-Info-menu'                     - Multi-command `Info-menu'
+`icicle-Info-menu-cmd'                 - Multi-command `Info-menu'
 `icicle-Info-virtual-book'             - Open a virtual Info book
 `icicle-insert-buffer'                 - Multi-command `insert-buffer'
 `icicle-insert-thesaurus-entry'        - Insert thesaurus entry(s)
 `icicle-keyword-list'                  - Choose a list of keywords
 `icicle-kill-buffer'                   - Kill buffer
 `icicle-kmacro'                        - Execute a keyboard macro
+`icicle-lisp-complete-symbol'          - Enhanced version of vanilla
+`icicle-locate'                        - Run `locate' then visit files
 `icicle-locate-file'                   - Visit file(s) in a directory
+`icicle-locate-file-no-symlinks'               same, but do not follow
+`icicle-minibuffer-default-add-dired-shell-commands' - Enhanced
 `icicle-minibuffer-help'               - Show Icicles minibuffer help
 `icicle-mode' or `icy-mode'            - Toggle Icicle mode
 `icicle-next-S-TAB-completion-method'  - Next S-TAB completion method
 `icicle-next-TAB-completion-method'    - Next TAB completion method
+`icicle-next-visible-thing'            - Go to the next visible THING
+`icicle-object-action'                 - Act on an object of some type
 `icicle-occur'                         - Incremental `occur'
 `icicle-other-window-or-frame'         - Other window/frame or select
+`icicle-pick-color-by-name'            - Set palette color by name
 `icicle-plist'                         - Show symbols, property lists
+`icicle-pp-eval-expression'            - Enhanced version of vanilla
+`icicle-previous-visible-thing'        - Go to previous visible THING
+`icicle-read-color'                    - Read a color name or hex RGB
+`icicle-read-color-wysiwyg'
+`icicle-read-kbd-macro'                - Like vanilla but no <>
 `icicle-recent-file'                   - Open recently used file(s)
 `icicle-recompute-shell-command-candidates' - Update from search path
+`icicle-regexp-list'                   - Choose a list of regexps
 `icicle-remove-buffer-candidate'       - Remove always-candidate buf
 `icicle-remove-buffer-config'          - From `icicle-buffer-configs'
 `icicle-remove-entry-from-saved-completion-set' - From a saved set
 `icicle-remove-file-from-recentf-list' - Remove from recent files list
 `icicle-remove-saved-completion-set'   - From
                                         `icicle-saved-completion-sets'
+`icicle-repeat-complex-command'        - Enhanced version of vanilla
 `icicle-reset-option-to-nil'           - Set binary option(s) to nil
+`icicle-resolve-file-name'             - Resolve file name at point
 `icicle-save-string-to-variable'       - Save text for use with `C-='
 `icicle-search'                        - Search with regexps & cycling
 `icicle-search-all-tags-bookmark'      - Search tagged bookmarks 
 `icicle-search-all-tags-regexp-bookmark'
+`icicle-search-autofile-bookmark'      - Search autofile bookmark text
+`icicle-search-autonamed-bookmark'     - Search autonamed bookmarks
 `icicle-search-bookmark'               - Search bookmarks separately
-`icicle-search-bookmark-list-bookmark' - Search bookmark lists
+`icicle-search-bookmark-list-bookmark' - Search bookmark list bookmark
+`icicle-search-bookmark-list-marked'   - Search marked bookmarks
 `icicle-search-bookmarks-together'     - Search bookmarks together
+`icicle-search-buffer'                 - Search buffers
+`icicle-search-buff-menu-marked'       - Search marked buffers
 `icicle-search-char-property'          - Search for overlay/text props
 `icicle-search-dired-bookmark'         - Search Dired bookmarks
 `icicle-search-dired-marked'           - Search marked files in Dired
 `icicle-search-file'                   - Search multiple files
 `icicle-search-file-bookmark'          - Search bookmarked files
 `icicle-search-gnus-bookmark'          - Search bookmarked Gnus msgs
+`icicle-search-highlight-cleanup'      - Remove search highlighting
 `icicle-search-ibuffer-marked'         - Search marked bufs in Ibuffer
 `icicle-search-info-bookmark'          - Search bookmarked Info nodes
 `icicle-search-keywords'               - Search with regexp keywords
+`icicle-search-lines'                  - Same as `icicle-occur'
 `icicle-search-local-file-bookmark'    - Search bookmarked local files
 `icicle-search-man-bookmark'           - Search bookmarked `man' pages
 `icicle-search-non-file-bookmark'      - Search bookmarked buffers
@@ -446,15 +555,38 @@ In many cases there are also `other-window' versions.
 `icicle-search-sentences'              - Search sentences as contexts
 `icicle-search-some-tags-bookmark'     - Search tagged bookmarks 
 `icicle-search-some-tags-regexp-bookmark'
+`icicle-search-specific-buffers-bookmark' - Search bookmarked buffers
+`icicle-search-specific-files-bookmark' - Search bookmarked files
+`icicle-search-temporary-bookmark'     - Search temporary bookmarks
 `icicle-search-text-property'          - Search for faces etc.
+`icicle-search-thing'                  - Searh with THINGs as contexts
+`icicle-search-this-buffer-bookmark'   - Search bookmarks for buffer
 `icicle-search-url-bookmark'           - Search bookmarked URLs
+`icicle-search-w3m-bookmark'           - Search w3m bookmark text
+`icicle-search-w-isearch-string'       - Search using Isearch string
 `icicle-search-word'                   - Whole-word search
+`icicle-search-xml-element'            - Search XML element contexts
+`icicle-search-xml-element-text-node'  - Search XML text() nodes
 `icicle-select-bookmarked-region'      - Select bookmarked regions
 `icicle-select-frame'                  - Select a frame by name
 `icicle-select-window'                 - Select window by buffer name
 `icicle-send-bug-report'               - Send Icicles bug report
+`icicle-send-signal-to-process'        - Send signals to processes
 `icicle-set-option-to-t'               - Set binary option(s) to t
+`icicle-set-S-TAB-methods-for-command' - Set `S-TAB' methods for a cmd
+`icicle-set-TAB-methods-for-command'   - Set `TAB' methods for a cmd
+`icicle-sexp-list'                     - Choose a list of sexps
+`icicle-shell-command'                 - Enhanced vanilla version
+`icicle-shell-command-on-region'
+`icicle-shell-dynamic-complete-command'
+`icicle-shell-dynamic-complete-environment-variable'
+`icicle-shell-dynamic-complete-filename'
+`icicle-show-faces'                    - Show chosen visible faces
+`icicle-show-only-faces'               - Hide all but chosen faces
+`icicle-string-list'                   - Choose a list of strings
+`icicle-synonyms'                      - Show synonyms matching regexp
 `icicle-tag-a-file'                    - Tag a file a la delicious
+`icicle-tags-search'                   - Search files in tags tables
 `icicle-toggle-~-for-home-dir'         - Toggle using `~' for $HOME
 `icicle-toggle-alternative-sorting'    - Swap alternative sort
 `icicle-toggle-angle-brackets'         - Toggle using angle brackets
@@ -473,9 +605,11 @@ In many cases there are also `other-window' versions.
 `icicle-toggle-ignored-extensions'     - Toggle ignored files
 `icicle-toggle-ignored-space-prefix'   - Toggle ignoring space prefix
 `icicle-toggle-ignoring-comments'      - Toggle ignoring comments
+`icicle-toggle-literal-replacement'    - Toggle escaping regexp chars
 `icicle-toggle-option'                 - Toggle binary user option
 `icicle-toggle-proxy-candidates'       - Toggle proxy candidates
 `icicle-toggle-regexp-quote'           - Toggle regexp escaping
+`icicle-toggle-remote-file-testing'    - Toggle testing whether remote
 `icicle-toggle-search-cleanup'         - Toggle search highlighting
 `icicle-toggle-search-complementing-domain' - Toggle complement search
 `icicle-toggle-search-replace-common-match' - Toggle ECM replacement
@@ -489,16 +623,10 @@ In many cases there are also `other-window' versions.
 `icicle-vardoc'                        - Show variable description
 `icicle-where-is'                      - `where-is' multi-command
 `icicle-yank-maybe-completing'         - `yank' maybe using completion
-`toggle' (alias)                       - Toggle binary user option
-
-For more information, use `\\<minibuffer-local-completion-map>\\[icicle-minibuffer-help]' \
-when the minibuffer is active.
-
-Note: Depending on your platform, if you use Icicles in a text
-terminal (that is, without a window system/manager), then you might
-need to change some of the key bindings, if some of the default
-bindings are not available to you."
-          :global t :group 'Icicles-Miscellaneous :lighter " Icy" :init-value nil
+`icicle-yank-pop-commands'             - Yank DWIM, per context
+`icicle-zap-to-char'                   - Kill through N CHARs by name
+`toggle' (alias)                       - Toggle binary user option"
+          :global t :group 'Icicles :lighter " Icy" :init-value nil
           (cond (icicle-mode
                  ;; (when (interactive-p)
                  ;;   (unless (or window-system (and (fboundp 'daemonp) (daemonp)))
@@ -589,7 +717,10 @@ bindings are not available to you."
           (icicle-define-minibuffer-maps icicle-mode)
           (run-hooks 'icicle-mode-hook)
           (message "Turning %s Icicle mode...done"
-           (icicle-propertize (if icicle-mode "ON" "OFF") 'face 'icicle-msg-emphasis)))))
+           (icicle-propertize (if icicle-mode "ON" "OFF") 'face 'icicle-msg-emphasis))))
+
+  ;; Do this so users can do `C-u customize-mode icicle-mode'.  See Emacs bugs #11299 and #11301.
+  (put 'icicle-mode 'custom-mode-group 'Icicles))
 
 (unless (fboundp 'define-minor-mode)    ; Emacs 20 ------------
   (defun icicle-mode (&optional arg)
@@ -597,46 +728,77 @@ bindings are not available to you."
 Non-nil prefix ARG turns mode on if ARG > 0, else turns it off.
 Icicle mode is a global minor mode.  It binds keys in the minibuffer.
 
-The following top-level commands are also available in Icicle mode.
-In many cases there are also `other-window' versions.
+For more information, use `\\<minibuffer-local-completion-map>\\[icicle-minibuffer-help]' \
+when the minibuffer is active.
+
+Depending on your platform, if you use Icicles in a text terminal
+\(that is, without a window system/manager), you might need to change
+some of the key bindings if some of the default bindings are not
+available to you.
+
+Icicle mode defines the following top-level commands.  In many cases
+there are also `-other-window' versions.
 
 `clear-option' (alias)                 - Set binary option(s) to nil
 `icicle-add-buffer-candidate'          - Add always-candidate buffer
 `icicle-add-buffer-config'             - To `icicle-buffer-configs'
 `icicle-add-entry-to-saved-completion-set' - Add completion to a set
+`icicle-add-file-to-fileset'           - Add a file to a fileset
 `icicle-add/update-saved-completion-set' - To
                                         `icicle-saved-completion-sets'
 `icicle-apply'                         - Apply function to alist items
 `icicle-apropos'                       - `apropos', but shows matches
 `icicle-apropos-command'               - Enhanced `apropos-command'
+`icicle-apropos-options-of-type'       - Show options of a given type
 `icicle-apropos-variable'              - Enhanced `apropos-variable'
-`icicle-apropos-zippy'                 - Show matching Zippy quotes
+`icicle-apropos-vars-w-val-satisfying' - Show vars of given values
+`icicle-bbdb-complete-name'            - Complete a user name/address
 `icicle-bookmark'                      - Jump to a bookmark
+`icicle-bookmark-a-file'               - Create an autofile bookmark
 `icicle-bookmark-all-tags'             - Jump to tagged bookmark
 `icicle-bookmark-all-tags-regexp'      - Jump to tagged bookmark
+`icicle-bookmark-autofile'             - Jump to an autofile bookmark
+`icicle-bookmark-autofile-all-tags'    - Jump to a tagged autofile
+`icicle-bookmark-autofile-all-tags-regexp'
+`icicle-bookmark-autofile-some-tags'
+`icicle-bookmark-autofile-some-tags-regexp'
+`icicle-bookmark-autonamed'            - Jump to an autonamed bookmark
+`icicle-bookmark-autonamed-this-buffer'
+`icicle-bookmark-bookmark-file'        - Load a bookmark file bookmark
 `icicle-bookmark-bookmark-list'        - Jump to a bookmark list
+`icicle-bookmark-cmd'                  - Set or jump to a bookmark
 `icicle-bookmark-desktop'              - Jump to a desktop bookmark
 `icicle-bookmark-dired'                - Jump to a Dired bookmark
+`icicle-bookmarked-buffer-list'        - Choose bookmarked buffers
+`icicle-bookmarked-file-list'          - Choose bookmarked files
 `icicle-bookmark-file'                 - Jump to a file bookmark
 `icicle-bookmark-file-all-tags'        - Jump to tagged file bookmark
 `icicle-bookmark-file-all-tags-regexp'
 `icicle-bookmark-file-some-tags'
 `icicle-bookmark-file-some-tags-regexp'
+`icicle-bookmark-file-this-dir'        - Jump to file in directory
 `icicle-bookmark-file-this-dir-all-tags'
 `icicle-bookmark-file-this-dir-all-tags-regexp'
 `icicle-bookmark-file-this-dir-some-tags'
 `icicle-bookmark-file-this-dir-some-tags-regexp'
 `icicle-bookmark-gnus'                 - Jump to a Gnus bookmark
 `icicle-bookmark-info'                 - Jump to an Info bookmark
+`icicle-bookmark-jump'                 - Jump to any bookmark
+`icicle-bookmark-list'                 - Choose a list of bookmarks
 `icicle-bookmark-local-file'           - Jump to local-file bookmark
 `icicle-bookmark-man'                  - Jump to a `man'-page bookmark
 `icicle-bookmark-non-file'             - Jump to a buffer bookmark
 `icicle-bookmark-region'               - Jump to a region bookmark
 `icicle-bookmark-remote-file'          - Jump to a remote file
+`icicle-bookmark-save-marked-files'    - Save file names as candidates
+`icicle-bookmark-save-marked-files-persistently'
+`icicle-bookmark-save-marked-files-to-variable'
+`icicle-bookmark-set'                  - Set a bookmark
 `icicle-bookmark-some-tags'            - Jump to tagged bookmark
 `icicle-bookmark-some-tags-regexp'     - Jump to tagged bookmark
 `icicle-bookmark-specific-buffers'     - Jump to a bookmarked buffer
 `icicle-bookmark-specific-files'       - Jump to a bookmarked file
+`icicle-bookmark-temporary'            - Jump to a temporary bookmark
 `icicle-bookmark-this-buffer'          - Jump to bookmark for this buf
 `icicle-bookmark-url'                  - Jump to a URL bookmark
 `icicle-bookmark-w3m'                  - Jump to a W3M (URL) bookmark
@@ -645,24 +807,42 @@ In many cases there are also `other-window' versions.
 `icicle-buffer-list'                   - Choose a list of buffer names
 `icicle-change-alternative-sort-order' - Choose an alternative sort
 `icicle-change-sort-order'             - Choose a sort order
-`icicle-clear-current-history'         - Clear current history entries
 `icicle-clear-history'                 - Clear entries from a history
 `icicle-color-theme'                   - Change color theme
 `icicle-comint-command'                - Reuse shell etc. command
 `icicle-comint-dynamic-complete'       - Text completion in shell
+`icicle-comint-dynamic-complete-filename'
+`icicle-comint-replace-by-expanded-filename'
 `icicle-comint-search'                 - Reuse shell etc. command
 `icicle-command-abbrev'                - Multi-command `M-x' + abbrevs
 `icicle-compilation-search'            - `icicle-search' and show hits
 `icicle-complete-thesaurus-entry'      - Complete word using thesaurus
 `icicle-completing-yank'               - `yank' using completion
+`icicle-customize-apropos'             - Enhanced `customize-apropos'
+`icicle-customize-apropos-faces',
+`icicle-customize-apropos-groups'
+`icicle-customize-apropos-options'
+`icicle-customize-apropos-options-of-type'
+`icicle-customize-apropos-opts-w-val-satisfying'
 `icicle-customize-face'                - Multi-`customize-face'
 `icicle-customize-icicles-group'       - Customize options and faces
 `icicle-cycle-expand-to-common-match'  - Cycle input ECM expansion
 `icicle-cycle-incremental-completion'  - Cycle incremental completion
+`icicle-dabbrev-completion'            - Enhanced `dabbrev-completion'
 `icicle-delete-file'                   - Delete file/directory
 `icicle-delete-window'                 - Delete window (`C-u': buffer)
 `icicle-delete-windows'                - Delete all windows for buffer
+`icicle-describe-file'                 - Describe a file
+`icicle-describe-option-of-type'       - Describe option of given type
+`icicle-describe-var-w-val-satisfying' - Describe var satisfying pred
+ `icicle-directory-list'               - Choose a list of directories
 `icicle-dired'                         - Multi-command Dired
+`icicle-dired-chosen-files'            - Dired a set of files & dirs
+`icicle-dired-project'                 - Dired a saved project
+`icicle-dired-save-marked'             - Save marked file names
+`icicle-dired-save-marked-persistently'
+`icicle-dired-save-marked-to-variable'
+`icicle-dired-smart-shell-command'     - Enhanced version of vanilla
 `icicle-doc'                           - Show doc for fn, var, or face
 `icicle-doremi-candidate-width-factor+' - +/- candidate column width
 `icicle-doremi-increment-max-candidates+' - +/- max number candidates
@@ -671,6 +851,9 @@ In many cases there are also `other-window' versions.
 `icicle-doremi-increment-variable+'    - Increment var using Do Re Mi
 `icicle-doremi-inter-candidates-min-spaces+' - +/- candidate spacing
 `icicle-doremi-zoom-Completions+'      - +/- `*Completions*' text size
+`icicle-ess-complete-object-name'      - Complete an ESS object
+`icicle-ess-R-complete-object-name'    - Complete an ESS object in R
+`icicle-exchange-point-and-mark'       - Flip, save, or select region
 `icicle-execute-extended-command'      - Multi-command `M-x'
 `icicle-execute-named-keyboard-macro'  - Execute named keyboard macro
 `icicle-face-list'                     - Choose a list of face names
@@ -678,10 +861,12 @@ In many cases there are also `other-window' versions.
 `icicle-file'                          - Visit file/directory
 `icicle-find-file'                     -       same: relative only
 `icicle-find-file-absolute'            -       same: absolute only
-`icicle-find-file-all-tags'            - Visit tagged file
+`icicle-find-file-read-only'           -       same: read-only
+`icicle-find-file-all-tags'            - Visit Emacs-tagged file
 `icicle-find-file-all-tags-regexp'
 `icicle-find-file-some-tags'
 `icicle-find-file-some-tags-regexp'
+`icicle-find-file-handle-bookmark'     - Find file handling bookmark
 `icicle-find-file-in-tags-table'       - File in Emacs tags table
 `icicle-find-file-tagged'              - Visit tagged file
 `icicle-find-first-tag'                - Visit definition with tag
@@ -691,50 +876,92 @@ In many cases there are also `other-window' versions.
 `icicle-frame-fg'                      - Change foreground of frame
 `icicle-fundoc'                        - Show function description
 `icicle-goto-global-marker'            - Go to a global marker
+`icicle-goto-global-marker-or-pop-global-mark'
 `icicle-goto-marker'                   - Go to a marker in this buffer
+`icicle-grep-saved-file-candidates'    - Grep saved file candidates
+`icicle-gud-gdb-complete-command'      - Enhanced version of vanilla
+`icicle-hide/show-comments'            - Hide or show comments
 `icicle-imenu*'                        - Navigate among Imenu entries
+`icicle-imenu-full'                            same: full definitions
+`icicle-imenu-command'                 - Navigate among command defs
+`icicle-imenu-command-full'                    same: full definitions
+`icicle-imenu-face'                    - Navigate among face defs
+`icicle-imenu-face-full'                       same: full definitions
+`icicle-imenu-key-explicit-map'        - Navigate among key defs
+`icicle-imenu-key-explicit-map-full'           same: full definitions
+`icicle-imenu-key-implicit-map'                same: no explicit map
+`icicle-imenu-key-implicit-map-full'           same: full definitions
+`icicle-imenu-macro'                   - Navigate among macro defs
+`icicle-imenu-macro-full'                      same: full definitions
+`icicle-imenu-non-interactive-function' - Navigate among function defs
+`icicle-imenu-non-interactive-function-full'   same: full definitions
+`icicle-imenu-user-option'             - Navigate among option defs
+`icicle-imenu-user-option-full'                same: full definitions
+`icicle-imenu-variable'                - Navigate among variable defs
+`icicle-imenu-variable-full'                   same: full definitions
 `icicle-increment-option'              - Increment numeric option
 `icicle-increment-variable'            - Increment numeric variable
 `icicle-Info-goto-node'                - Multi-cmd `Info-goto-node'
 `icicle-Info-index'                    - Multi-command `Info-index'
-`icicle-Info-menu'                     - Multi-command `Info-menu'
+`icicle-Info-menu-cmd'                 - Multi-command `Info-menu'
 `icicle-insert-buffer'                 - Multi-command `insert-buffer'
 `icicle-insert-thesaurus-entry'        - Insert thesaurus entry(s)
 `icicle-keyword-list'                  - Choose a list of keywords
 `icicle-kill-buffer'                   - Kill buffer
+`icicle-lisp-complete-symbol'          - Enhanced version of vanilla
+`icicle-locate'                        - Run `locate' then visit files
 `icicle-locate-file'                   - Visit file(s) in a directory
+`icicle-locate-file-no-symlinks'               same, but do not follow
+`icicle-minibuffer-default-add-dired-shell-commands' - Enhanced
 `icicle-minibuffer-help'               - Show Icicles minibuffer help
 `icicle-mode' or `icy-mode'            - Toggle Icicle mode
 `icicle-next-S-TAB-completion-method'  - Next S-TAB completion method
 `icicle-next-TAB-completion-method'    - Next TAB completion method
+`icicle-next-visible-thing'            - Go to the next visible THING
+`icicle-object-action'                 - Act on an object of some type
 `icicle-occur'                         - Incremental `occur'
 `icicle-other-window-or-frame'         - Other window/frame or select
 `icicle-plist'                         - Show symbols, property lists
+`icicle-pp-eval-expression'            - Enhanced version of vanilla
+`icicle-previous-visible-thing'        - Go to previous visible THING
+`icicle-read-color'                    - Read a color name or hex RGB
+`icicle-read-color-wysiwyg'
+`icicle-read-kbd-macro'                - Like vanilla but no <>
 `icicle-recent-file'                   - Open recently used file(s)
 `icicle-recompute-shell-command-candidates' - Update from search path
+`icicle-regexp-list'                   - Choose a list of regexps
 `icicle-remove-buffer-candidate'       - Remove always-candidate buf
 `icicle-remove-buffer-config'          - From `icicle-buffer-configs'
 `icicle-remove-entry-from-saved-completion-set' - From a saved set
 `icicle-remove-file-from-recentf-list' - Remove from recent files list
 `icicle-remove-saved-completion-set'   - From
                                         `icicle-saved-completion-sets'
+`icicle-repeat-complex-command'        - Enhanced version of vanilla
 `icicle-reset-option-to-nil'           - Set binary option(s) to nil
+`icicle-resolve-file-name'             - Resolve file name at point
 `icicle-save-string-to-variable'       - Save text for use with `C-='
 `icicle-search'                        - Search with regexps & cycling
-`icicle-search-bookmark'               - Search bookmarks separately
 `icicle-search-all-tags-bookmark'      - Search tagged bookmarks 
 `icicle-search-all-tags-regexp-bookmark'
-`icicle-search-bookmark-list-bookmark' - Search bookmark lists
+`icicle-search-autofile-bookmark'      - Search autofile bookmark text
+`icicle-search-autonamed-bookmark'     - Search autonamed bookmarks
+`icicle-search-bookmark'               - Search bookmarks separately
+`icicle-search-bookmark-list-bookmark' - Search bookmark list bookmark
+`icicle-search-bookmark-list-marked'   - Search marked bookmarks
 `icicle-search-bookmarks-together'     - Search bookmarks together
+`icicle-search-buffer'                 - Search buffers
+`icicle-search-buff-menu-marked'       - Search marked buffers
 `icicle-search-char-property'          - Search for overlay/text props
 `icicle-search-dired-bookmark'         - Search Dired bookmarks
 `icicle-search-dired-marked'           - Search marked files in Dired
 `icicle-search-file'                   - Search multiple files
 `icicle-search-file-bookmark'          - Search bookmarked files
 `icicle-search-gnus-bookmark'          - Search bookmarked Gnus msgs
+`icicle-search-highlight-cleanup'      - Remove search highlighting
 `icicle-search-ibuffer-marked'         - Search marked bufs in Ibuffer
 `icicle-search-info-bookmark'          - Search bookmarked Info nodes
 `icicle-search-keywords'               - Search with regexp keywords
+`icicle-search-lines'                  - Same as `icicle-occur'
 `icicle-search-local-file-bookmark'    - Search bookmarked local files
 `icicle-search-man-bookmark'           - Search bookmarked `man' pages
 `icicle-search-non-file-bookmark'      - Search bookmarked buffers
@@ -746,15 +973,35 @@ In many cases there are also `other-window' versions.
 `icicle-search-sentences'              - Search sentences as contexts
 `icicle-search-some-tags-bookmark'     - Search tagged bookmarks 
 `icicle-search-some-tags-regexp-bookmark'
+`icicle-search-specific-buffers-bookmark' - Search bookmarked buffers
+`icicle-search-specific-files-bookmark' - Search bookmarked files
+`icicle-search-temporary-bookmark'     - Search temporary bookmarks
 `icicle-search-text-property'          - Search for faces etc.
+`icicle-search-thing'                  - Searh with THINGs as contexts
+`icicle-search-this-buffer-bookmark'   - Search bookmarks for buffer
 `icicle-search-url-bookmark'           - Search bookmarked URLs
+`icicle-search-w3m-bookmark'           - Search w3m bookmark text
+`icicle-search-w-isearch-string'       - Search using Isearch string
 `icicle-search-word'                   - Whole-word search
+`icicle-search-xml-element'            - Search XML element contexts
+`icicle-search-xml-element-text-node'  - Search XML text() nodes
 `icicle-select-bookmarked-region'      - Select bookmarked regions
 `icicle-select-frame'                  - Select a frame by name
 `icicle-select-window'                 - Select window by buffer name
 `icicle-send-bug-report'               - Send Icicles bug report
 `icicle-set-option-to-t'               - Set binary option(s) to t
+`icicle-set-S-TAB-methods-for-command' - Set `S-TAB' methods for a cmd
+`icicle-set-TAB-methods-for-command'   - Set `TAB' methods for a cmd
+`icicle-sexp-list'                     - Choose a list of sexps
+`icicle-shell-command'                 - Enhanced vanilla version
+`icicle-shell-command-on-region'
+`icicle-shell-dynamic-complete-command'
+`icicle-shell-dynamic-complete-environment-variable'
+`icicle-shell-dynamic-complete-filename'
+`icicle-string-list'                   - Choose a list of strings
+`icicle-synonyms'                      - Show synonyms matching regexp
 `icicle-tag-a-file'                    - Tag a file a la delicious
+`icicle-tags-search'                   - Search files in tags tables
 `icicle-toggle-~-for-home-dir'         - Toggle using `~' for $HOME
 `icicle-toggle-alternative-sorting'    - Swap alternative sort
 `icicle-toggle-angle-brackets'         - Toggle using angle brackets
@@ -773,9 +1020,11 @@ In many cases there are also `other-window' versions.
 `icicle-toggle-ignored-extensions'     - Toggle ignored files
 `icicle-toggle-ignored-space-prefix'   - Toggle ignoring space prefix
 `icicle-toggle-ignoring-comments'      - Toggle ignoring comments
+`icicle-toggle-literal-replacement'    - Toggle escaping regexp chars
 `icicle-toggle-option'                 - Toggle binary user option
 `icicle-toggle-proxy-candidates'       - Toggle proxy candidates
 `icicle-toggle-regexp-quote'           - Toggle regexp escaping
+`icicle-toggle-remote-file-testing'    - Toggle testing whether remote
 `icicle-toggle-search-cleanup'         - Toggle search highlighting
 `icicle-toggle-search-complementing-domain' - Toggle complement search
 `icicle-toggle-search-replace-common-match' - Toggle ECM replacement
@@ -789,15 +1038,8 @@ In many cases there are also `other-window' versions.
 `icicle-vardoc'                        - Show variable description
 `icicle-where-is'                      - `where-is' multi-command
 `icicle-yank-maybe-completing'         - `yank' maybe using completion
-`toggle' (alias)                       - Toggle binary user option
-
-For more information, use `\\<minibuffer-local-completion-map>\\[icicle-minibuffer-help]' \
-when the minibuffer is active.
-
-Note: Depending on your platform, if you use Icicles in a text
-terminal (that is, without a window system/manager), then you might
-need to change some of the key bindings, if some of the default
-bindings are not available to you."
+`icicle-yank-pop-commands'             - Yank DWIM, per context
+`toggle' (alias)                       - Toggle binary user option"
     (interactive "P")
     (setq icicle-mode  (if arg (> (prefix-numeric-value arg) 0) (not icicle-mode)))
     (icicle-define-minibuffer-maps icicle-mode)
