@@ -24,6 +24,17 @@ later to use for completion.
 
 
 
+
+
+
+
+
+
+
+
+
+
+
 [:SavingAndRetrieving]
 === Saving and Retrieving Completion Candidates ===
 
@@ -88,6 +99,15 @@ the highlighting.
 
 
 
+
+
+
+
+
+
+
+
+
 [:SaveOrRetrieveMore]
 === Saving or Retrieving Additional Candidates ===
 
@@ -143,6 +163,16 @@ problem.  (Personally, I use `nil'.)]
 
 
 
+
+
+
+
+
+
+
+
+
+
 [:SaveRetrieveWithVariable]
 === Different Places for Saving and Retrieving Candidates ===
 
@@ -177,6 +207,21 @@ candidates to a cache file, they are also saved to
 `##C->##' and `##C-<##' accept the same prefix arguments as `##C-M->##' and
 `##C-M-<##' , letting you specify the source or destination (variable,
 cache file) when you save or retrieve additional candidates.
+
+'''Note:''' Use the right type of saved candidates ([[Icicles - Persistent Completions|persistent]] or not) for a given command. It is the particular command that determines whether or not a given type of saved candidate is appropriate. For example, you can save search hits when you use `icicle-search-file' (same as `icicle-search' with a negative prefix arg), and those saved search-hit candidates effectively reference files and positions in those files. And you can later retrieve and reuse such saved candidates to visit the search positions. But those candidates are not merely file names, so they cannot be used with a command such as as `find-file' or `icicle-file' that expects a file name. Conversely, you cannot use a saved set of file names with a command such as `icicle-search-file' that expects `icicle-search' candidates. 
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
