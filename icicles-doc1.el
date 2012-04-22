@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Fri Apr  6 07:52:58 2012 (-0700)
+;; Last-Updated: Sun Apr 22 08:44:10 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 26597
+;;     Update #: 26607
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-doc1.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -6235,18 +6235,16 @@
 ;;
 ;;  These commands all let you use a prefix argument to control which
 ;;  buffers are completion candidates.  It is the numeric value of the
-;;  prefix arg that matters:
+;;  prefix arg that matters.  Candidates are only the buffers that
+;;  satisfy these conditions:
 ;;
-;;  * Positive: only buffers visiting files
-;;  * Zero:     only buffers with the same mode as the current buffer
-;;  * Negative: only buffers associated with the selected frame
+;;  * Plain `C-u': whose mode is derived from the current buffer mode
+;;  * Zero:        whose mode is the same as the current buffer mode
+;;  * Positive:    visiting files
+;;  * Negative:    associated with the selected frame
 ;;
 ;;  In addition to the usual Icicles key bindings, during buffer-name
 ;;  completion you can use the following keys:
-;;
-;;  * `C-x M' (`icicle-filter-buffer-cands-for-mode') to filter the
-;;    buffer-name candidates to keep only those with a given major
-;;    mode.  You are prompted for the mode.
 ;;
 ;;  * `C-x m' (`icicle-bookmark-non-file-other-window') to visit a
 ;;    bookmarked buffer.  This is available only if you use library
@@ -6254,6 +6252,26 @@
 ;;    actually visit any number of buffer bookmarks with one use of
 ;;    `C-x m'.  When finished, you can continue with non-bookmark
 ;;    buffer-name completion.
+;;
+;;  * `C-x C-m -' (`icicle-remove-buffer-cands-for-derived-mode') to
+;;    remove the buffer-name candidates with a major mode that is
+;;    derived from a given mode.  You are prompted for the mode.  You
+;;    can repeat this key to narrow buffer candidates by mode.  (`C-m'
+;;    is the same key as `RET'.)
+;;
+;;  * `C-x M -' (`icicle-remove-buffer-cands-for-mode') to remove the
+;;    buffer-name candidates with a given major mode.  You are
+;;    prompted for the mode.  You can repeat this key to narrow buffer
+;;    candidates by mode.
+;;
+;;  * `C-x C-m +' (`icicle-keep-only-buffer-cands-for-derived-mode')
+;;    to keep only the buffer-name candidates with a major mode that
+;;    is derived from a given mode.  You are prompted for the mode.
+;;    (`C-m' is the same key as `RET'.)
+;;
+;;  * `C-x M +' (`icicle-keep-only-buffer-cands-for-mode') to keep
+;;    only the buffer-name candidates with a given major mode.  You
+;;    are prompted for the mode.
 ;;
 ;;  * `S-delete' to kill the buffer named by the current completion
 ;;    candidate.
