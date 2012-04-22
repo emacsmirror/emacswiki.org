@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Sat Apr 21 14:14:14 2012 (-0700)
+;; Last-Updated: Sun Apr 22 08:19:03 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 8336
+;;     Update #: 8356
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-chg.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -85,6 +85,10 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd1.el'")
 ;;
+;; 2012/04/22 dadams
+;;     Removed: icicle-filter-buffer-cands-for-mode (replaced by *-(remove|keep-only)* in *-mcmd.el).
+;;     icicle-(kill|insert)-buffer, icicle-buffer(-other-window), icicle-add-buffer-candidate:
+;;       Use icicle-(un)bind-buffer-candidate-keys.
 ;; 2012/04/09 dadams
 ;;     Fixed typos: double single-quotes in autoload cookies.
 ;; 2012/04/08 dadams
@@ -2924,6 +2928,9 @@
 ;;       macros needs to be byte-compiled anew after loading the updated macros.
 ;; ****************************************************************************************************
 ;;
+;; 2012/04/22 dadams
+;;     icicle-buffer-bindings: C-u keeps only derived-mode buffers.
+;;                             Use backquote for lambda to handle free var THIS-MODE.
 ;; 2012/03/10 dadams
 ;;     icicle-define-bookmark-command-1, icicle-define-search-bookmark-command:
 ;;       First code, last code: When autofile, call icicle-(un)bind-file-candidate-keys.
@@ -3097,6 +3104,9 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-mcmd.el'")
 ;;
+;; 2012/04/22 dadams
+;;     Added: icicle-(un)bind-buffer-candidate-keys,
+;;            icicle-(remove|keep-only)-buffer-cands-for(-derived)-mode.
 ;; 2012/04/09 dadams
 ;;     Changed last-command-char to last-command-event.
 ;;     Fixed typos: double single-quotes in autoload cookies.
