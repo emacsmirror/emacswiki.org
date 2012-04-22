@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Mon Apr  9 20:18:07 2012 (-0700)
+;; Last-Updated: Sun Apr 22 08:19:15 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 17944
+;;     Update #: 17957
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-mcmd.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -247,6 +247,7 @@
 ;;    `icicle-apropos-complete-1', `icicle-apropos-complete-2',
 ;;    `icicle-autofile-action',
 ;;    `icicle-backward-delete-char-untabify-dots',
+;;    `icicle-bind-buffer-candidate-keys',
 ;;    `icicle-bind-file-candidate-keys', `icicle-candidate-action-1',
 ;;    `icicle-candidate-set-retrieve-1',
 ;;    `icicle-candidate-set-save-1',
@@ -279,6 +280,7 @@
 ;;    `icicle-substitute-keymap-vars', `icicle-successive-action',
 ;;    `icicle-transform-sole-candidate',
 ;;    `icicle-transpose-chars-dots',
+;;    `icicle-unbind-buffer-candidate-keys',
 ;;    `icicle-unbind-file-candidate-keys',
 ;;    `icicle-upcase-if-ignore-case', `icicle-update-and-next'.
 ;;
@@ -5827,6 +5829,50 @@ Return the string that was inserted."
     (insert result)
     result))
 
+;;;###autoload (autoload 'icicle-bind-buffer-candidate-keys "icicles")
+(defun icicle-bind-buffer-candidate-keys () ; Use in first code of buffer-candidate commands.
+  "Bind specific keys for acting on the current buffer-name candidate."
+  (when (require 'bookmark+ nil t)
+    (define-key minibuffer-local-completion-map (icicle-kbd "C-x m") ; `C-x m'
+      'icicle-bookmark-non-file-other-window)
+    (define-key minibuffer-local-must-match-map (icicle-kbd "C-x m") ; `C-x m'
+      'icicle-bookmark-non-file-other-window))
+  (define-key minibuffer-local-completion-map (icicle-kbd "C-x M -") ; `C-x M -'
+    'icicle-remove-buffer-cands-for-mode)
+  (define-key minibuffer-local-must-match-map (icicle-kbd "C-x M -") ; `C-x M -'
+    'icicle-remove-buffer-cands-for-mode)
+  (define-key minibuffer-local-completion-map (icicle-kbd "C-x M +") ; `C-x M +'
+    'icicle-keep-only-buffer-cands-for-mode)
+  (define-key minibuffer-local-must-match-map (icicle-kbd "C-x M +") ; `C-x M +'
+    'icicle-keep-only-buffer-cands-for-mode)
+  (define-key minibuffer-local-completion-map (icicle-kbd "C-x C-m -") ; `C-x C-m -', aka `C-x RET -'
+    'icicle-remove-buffer-cands-for-derived-mode)
+  (define-key minibuffer-local-must-match-map (icicle-kbd "C-x C-m -") ; `C-x C-m -', aka `C-x RET -'
+    'icicle-remove-buffer-cands-for-derived-mode)
+  (define-key minibuffer-local-completion-map (icicle-kbd "C-x C-m +") ; `C-x C-m +', aka `C-x RET +'
+    'icicle-keep-only-buffer-cands-for-derived-mode)
+  (define-key minibuffer-local-must-match-map (icicle-kbd "C-x C-m +") ; `C-x C-m +', aka `C-x RET +'
+    'icicle-keep-only-buffer-cands-for-derived-mode))
+
+;;;###autoload (autoload 'icicle-unbind-buffer-candidate-keys "icicles")
+(defun icicle-unbind-buffer-candidate-keys () ; Use in last code of buffer-candidate commands.
+  "Unbind specific keys for acting on the current buffer-name candidate."
+  (define-key minibuffer-local-completion-map (icicle-kbd "C-x m")     nil)
+  (define-key minibuffer-local-must-match-map (icicle-kbd "C-x m")     nil)
+  (define-key minibuffer-local-completion-map (icicle-kbd "C-x M -")   nil)
+  (define-key minibuffer-local-must-match-map (icicle-kbd "C-x M -")   nil)
+  (define-key minibuffer-local-completion-map (icicle-kbd "C-x M +")   nil)
+  (define-key minibuffer-local-must-match-map (icicle-kbd "C-x M +")   nil)
+  (define-key minibuffer-local-completion-map (icicle-kbd "C-x M")     nil)
+  (define-key minibuffer-local-must-match-map (icicle-kbd "C-x M")     nil)
+  (define-key minibuffer-local-completion-map (icicle-kbd "C-x C-m -") nil)
+  (define-key minibuffer-local-must-match-map (icicle-kbd "C-x C-m -") nil)
+  (define-key minibuffer-local-completion-map (icicle-kbd "C-x C-m +") nil)
+  (define-key minibuffer-local-must-match-map (icicle-kbd "C-x C-m +") nil)
+  (define-key minibuffer-local-completion-map (icicle-kbd "C-x C-m")   nil)
+  (define-key minibuffer-local-must-match-map (icicle-kbd "C-x C-m")   nil))
+
+
 ;; `minibuffer-local-filename-completion-map' and `minibuffer-local-must-match-filename-map'
 ;; were introduced in Emacs 22, and they inherit from `minibuffer-local-completion' and
 ;; `minibuffer-local-must-match-map', respectively.  For Emacs 23.1,
@@ -5836,7 +5882,7 @@ Return the string that was inserted."
 ;;
 ;;;###autoload (autoload 'icicle-bind-file-candidate-keys "icicles")
 (defun icicle-bind-file-candidate-keys ()
-  "Bind specific keys for acting on the current file candidate."
+  "Bind specific keys for acting on the current file-name candidate."
   (cond ((boundp 'minibuffer-local-filename-completion-map)
          (define-key minibuffer-local-filename-completion-map (icicle-kbd "C-backspace") ; `C-backspace'
            'icicle-up-directory)
@@ -5938,7 +5984,7 @@ Return the string that was inserted."
 
 ;;;###autoload (autoload 'icicle-unbind-file-candidate-keys "icicles")
 (defun icicle-unbind-file-candidate-keys ()
-  "Unbind specific keys for acting on the current file candidate."
+  "Unbind specific keys for acting on the current file-name candidate."
   (when (boundp 'minibuffer-local-filename-completion-map)
     (define-key minibuffer-local-filename-completion-map (icicle-kbd "C-backspace") nil)
     (define-key minibuffer-local-filename-completion-map (icicle-kbd "C-c +")       nil)
@@ -7812,6 +7858,82 @@ it is the only frame or a standalone minibuffer frame."
             (if (and (one-window-p t) (cdr (visible-frame-list))) ; Sole window but not sole frame.
                 (delete-frame)
               (delete-window (selected-window)))))))))
+
+;; Free var here: `icicle-bufflist' is bound by `icicle-buffer-bindings'.
+;;;###autoload (autoload 'icicle-remove-buffer-cands-for-mode "icicles")
+(defun icicle-remove-buffer-cands-for-mode (&optional derivedp keep-p)
+  "Prompt for a major mode, then remove buffer candidates with that mode.
+Repeat this to progressively remove buffers with different modes.
+
+Non-nil DERIVEDP (prefix arg) means remove buffers with or derived
+from the mode.
+
+Non-nil KEEP-P means do the opposite: keep only such buffer
+candidates, instead of removing them."
+  (interactive "P")
+  (save-selected-window (icicle-remove-Completions-window))
+  (let* ((orig-buff                     icicle-pre-minibuffer-buffer)
+         (enable-recursive-minibuffers  t)
+         (buffer-modes                  (icicle-remove-duplicates
+                                         (mapcar (lambda (buf)
+                                                   (with-current-buffer buf
+                                                     (list (symbol-name major-mode))))
+                                                 icicle-bufflist)))
+         (mode
+          (let ((icicle-must-pass-after-match-predicate  nil))
+            (intern (completing-read
+                     (format "%s candidates %s mode: "
+                             (if keep-p "Keep only" "Remove")
+                             (if derivedp "derived from" "with"))
+                     (if derivedp
+                         (let ((modes  buffer-modes)
+                               parent ancestors)
+                           (dolist (buf  icicle-bufflist)
+                             (setq ancestors  ()
+                                   parent     (get (with-current-buffer buf major-mode)
+                                                   'derived-mode-parent))
+                             (while parent
+                               (add-to-list 'modes (list (symbol-name parent)))
+                               (setq parent  (get parent 'derived-mode-parent))))
+                           modes)
+                       buffer-modes)
+                     nil t))))
+         (new-pred
+          (if (and derivedp  (fboundp 'derived-mode-p))
+              (if keep-p
+                  `(lambda (buf) (with-current-buffer buf (derived-mode-p ',mode)))
+                `(lambda (buf) (not (with-current-buffer buf (derived-mode-p ',mode)))))
+            (if keep-p
+                `(lambda (buf) (with-current-buffer buf (eq major-mode ',mode)))
+              `(lambda (buf) (with-current-buffer buf (not (eq major-mode ',mode))))))))
+    (setq icicle-must-pass-after-match-predicate
+          (if icicle-must-pass-after-match-predicate
+              (lexical-let ((curr-pred  icicle-must-pass-after-match-predicate))
+                `(lambda (buf)
+                   (and (funcall ',curr-pred buf) (funcall ',new-pred buf))))
+            new-pred)))
+  (icicle-complete-again-update))
+
+;;;###autoload (autoload 'icicle-remove-buffer-cands-for-derived-mode "icicles")
+(defun icicle-remove-buffer-cands-for-derived-mode ()
+  "Prompt for a major mode, then remove buffer candidates derived from it.
+Repeat this to progressively remove buffers with different modes."
+  (interactive)
+  (icicle-remove-buffer-cands-for-mode 'DERIVEDP))
+
+;;;###autoload (autoload 'icicle-keep-only-buffer-cands-for-mode "icicles")
+(defun icicle-keep-only-buffer-cands-for-mode (&optional derivedp)
+  "Prompt for a major mode.  Keep only buffer candidates with that mode.
+Non-nil DERIVEDP (prefix arg) means keep only buffers with or derived
+from the mode."
+  (interactive "P")
+  (icicle-remove-buffer-cands-for-mode derivedp 'KEEP-P))
+  
+;;;###autoload (autoload 'icicle-keep-only-buffer-cands-for-derived-mode "icicles")
+(defun icicle-keep-only-buffer-cands-for-derived-mode ()
+  "Prompt for a major mode.  Keep only buffer candidates derived from it."
+  (interactive)
+  (icicle-remove-buffer-cands-for-mode 'DERIVEDP 'KEEP-P))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
