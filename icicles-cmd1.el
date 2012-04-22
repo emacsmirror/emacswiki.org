@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Mon Apr  9 18:56:49 2012 (-0700)
+;; Last-Updated: Sun Apr 22 07:56:49 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 23632
+;;     Update #: 23643
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-cmd1.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -424,7 +424,8 @@
   ;; icicle-condition-case-no-debug, icicle-define-bookmark(-other-window)-command, icicle-kbd, 
   ;; icicle-define(-file)-command, icicle-define-add-to-alist-command, icicle-unbind-file-candidate-keys
 (require 'icicles-mcmd)
-  ;; icicle-yank
+  ;; icicle-bind-buffer-candidate-keys, icicle-bind-file-candidate-keys, icicle-unbind-buffer-candidate-keys,
+  ;; icicle-unbind-file-candidate-keys, icicle-yank
 (require 'icicles-opt)                  ; (This is required anyway by `icicles-var.el'.)
   ;; icicle-add-proxy-candidates-flag, icicle-buffer-configs, icicle-buffer-extras,
   ;; icicle-buffer-ignore-space-prefix-flag, icicle-buffer-match-regexp,
@@ -5548,15 +5549,12 @@ the behavior."                          ; Doc string
   (mapcar #'(lambda (buf) (list (buffer-name buf))) icicle-bufflist) nil ; `icicle-bufflist' is free.
   (and (fboundp 'confirm-nonexistent-file-or-buffer) (confirm-nonexistent-file-or-buffer)) ; Emacs 23.
   nil 'buffer-name-history (buffer-name (current-buffer)) nil
-  (icicle-buffer-bindings)              ; Bindings
-  (progn                                ; First code
-    (define-key minibuffer-local-completion-map (icicle-kbd "C-x M") ; `C-x M'
-      'icicle-filter-buffer-cands-for-mode)
-    (define-key minibuffer-local-must-match-map (icicle-kbd "C-x M") ; `C-x M'
-      'icicle-filter-buffer-cands-for-mode))
-  nil                                   ; Undo code
-  (progn (define-key minibuffer-local-completion-map (icicle-kbd "C-x M") nil) ; Last code
-         (define-key minibuffer-local-must-match-map (icicle-kbd "C-x M") nil)))
+  (icicle-buffer-bindings)               ; Bindings
+  ;; Actually, there is no reason to bind `C-x m' to `icicle-bookmark-non-file-other-window' here,
+  ;; but to keep things simple we do it anyway.
+  (icicle-bind-buffer-candidate-keys)    ; First code
+  nil                                    ; Undo code
+  (icicle-unbind-buffer-candidate-keys)) ; Last code
 
 (defun icicle-kill-a-buffer-and-update-completions (buf)
   "Kill buffer BUF and update the set of completions."
@@ -5627,22 +5625,10 @@ the behavior."                          ; Doc string
   (mapcar #'(lambda (buf) (list (buffer-name buf))) icicle-bufflist) nil ; `icicle-bufflist' is free.
   (and (fboundp 'confirm-nonexistent-file-or-buffer) (confirm-nonexistent-file-or-buffer)) ; Emacs 23.
   nil 'buffer-name-history (icicle-default-buffer-names) nil
-  (icicle-buffer-bindings)              ; Bindings
-  (progn                                ; First code
-    (when (require 'bookmark+ nil t)
-      (define-key minibuffer-local-completion-map (icicle-kbd "C-x m") ; `C-x m'
-        'icicle-bookmark-non-file-other-window)
-      (define-key minibuffer-local-must-match-map (icicle-kbd "C-x m") ; `C-x m'
-        'icicle-bookmark-non-file-other-window))
-    (define-key minibuffer-local-completion-map (icicle-kbd "C-x M") ; `C-x M'
-      'icicle-filter-buffer-cands-for-mode)
-    (define-key minibuffer-local-must-match-map (icicle-kbd "C-x M") ; `C-x M'
-      'icicle-filter-buffer-cands-for-mode))
-  nil                                   ; Undo code
-  (progn (define-key minibuffer-local-completion-map (icicle-kbd "C-x m") nil) ; Last code
-         (define-key minibuffer-local-must-match-map (icicle-kbd "C-x m") nil)
-         (define-key minibuffer-local-completion-map (icicle-kbd "C-x M") nil)
-         (define-key minibuffer-local-must-match-map (icicle-kbd "C-x M") nil)))
+  (icicle-buffer-bindings)               ; Bindings
+  (icicle-bind-buffer-candidate-keys)    ; First code
+  nil                                    ; Undo code
+  (icicle-unbind-buffer-candidate-keys)) ; Last code
 
 ;; Free var here: `icicle-bufflist' is bound by `icicle-buffer-bindings'.
 (defun icicle-default-buffer-names ()
@@ -5657,23 +5643,6 @@ the behavior."                          ; Doc string
                               (icicle-first-N 4 (or icicle-bufflist (buffer-list))))))
       bname)))
 
-;; Free var here: `icicle-bufflist' is bound by `icicle-buffer-bindings'.
-(defun icicle-filter-buffer-cands-for-mode ()
-  "Prompt for a major mode, then remove buffer candidates not in that mode."
-  (interactive)
-  (save-selected-window (icicle-remove-Completions-window))
-  (let* ((enable-recursive-minibuffers  t)
-         (mode
-          (intern (completing-read
-                   "Major mode: "
-                   (icicle-remove-duplicates
-                    (mapcar (lambda (buf) (with-current-buffer buf (list (symbol-name major-mode))))
-                            icicle-bufflist))
-                   nil t))))
-    (setq icicle-must-pass-after-match-predicate  `(lambda (buf)
-                                                    (with-current-buffer buf (eq major-mode ',mode)))))
-  (icicle-complete-again-update))
-
 ;;;###autoload (autoload 'icicle-buffer-other-window "icicles")
 (icicle-define-command icicle-buffer-other-window ; Bound to `C-x 4 b' in Icicle mode.
   "Switch to a different buffer in another window.
@@ -5683,22 +5652,10 @@ Same as `icicle-buffer' except it uses a different window." ; Doc string
   (mapcar #'(lambda (buf) (list (buffer-name buf))) icicle-bufflist) nil ; `icicle-bufflist' is free.
   (and (fboundp 'confirm-nonexistent-file-or-buffer) (confirm-nonexistent-file-or-buffer)) ; Emacs 23.
   nil 'buffer-name-history (icicle-default-buffer-names) nil
-  (icicle-buffer-bindings)              ; Bindings
-  (progn                                ; First code
-    (when (require 'bookmark+ nil t)
-      (define-key minibuffer-local-completion-map (icicle-kbd "C-x m") ; `C-x m'
-        'icicle-bookmark-non-file-other-window)
-      (define-key minibuffer-local-must-match-map (icicle-kbd "C-x m") ; `C-x m'
-        'icicle-bookmark-non-file-other-window))
-    (define-key minibuffer-local-completion-map (icicle-kbd "C-x M") ; `C-x M'
-      'icicle-filter-buffer-cands-for-mode)
-    (define-key minibuffer-local-must-match-map (icicle-kbd "C-x M") ; `C-x M'
-      'icicle-filter-buffer-cands-for-mode))
-  nil                                   ; Undo code
-  (progn (define-key minibuffer-local-completion-map (icicle-kbd "C-x m") nil) ; Last code
-         (define-key minibuffer-local-must-match-map (icicle-kbd "C-x m") nil)
-         (define-key minibuffer-local-completion-map (icicle-kbd "C-x M") nil)
-         (define-key minibuffer-local-must-match-map (icicle-kbd "C-x M") nil)))
+  (icicle-buffer-bindings)               ; Bindings
+  (icicle-bind-buffer-candidate-keys)    ; First code
+  nil                                    ; Undo code
+  (icicle-unbind-buffer-candidate-keys)) ; Last code
 
 ;;;###autoload (autoload 'icicle-insert-buffer "icicles")
 (icicle-define-command icicle-insert-buffer
@@ -5739,15 +5696,12 @@ the behavior."                          ; Doc string
   (mapcar #'(lambda (buf) (list (buffer-name buf))) icicle-bufflist) nil ; `icicle-bufflist' is free.
   (and (fboundp 'confirm-nonexistent-file-or-buffer) (confirm-nonexistent-file-or-buffer)) ; Emacs 23.
   nil 'buffer-name-history (icicle-default-buffer-names) nil
-  (icicle-buffer-bindings)              ; Bindings
-  (progn                                ; First code
-    (define-key minibuffer-local-completion-map (icicle-kbd "C-x M") ; `C-x M'
-      'icicle-filter-buffer-cands-for-mode)
-    (define-key minibuffer-local-must-match-map (icicle-kbd "C-x M") ; `C-x M'
-      'icicle-filter-buffer-cands-for-mode))
-  nil                                   ; Undo code
-  (progn (define-key minibuffer-local-completion-map (icicle-kbd "C-x M") nil) ; Last code
-         (define-key minibuffer-local-must-match-map (icicle-kbd "C-x M") nil)))
+  (icicle-buffer-bindings)               ; Bindings
+  ;; Actually, there is no reason to bind `C-x m' to `icicle-bookmark-non-file-other-window' here,
+  ;; but to keep things simple we do it anyway.
+  (icicle-bind-buffer-candidate-keys)    ; First code
+  nil                                    ; Undo code
+  (icicle-unbind-buffer-candidate-keys)) ; Last code
 
 ;;;###autoload (autoload 'icicle-add-buffer-candidate "icicles")
 (icicle-define-command icicle-add-buffer-candidate ; Command name
@@ -5778,14 +5732,11 @@ the behavior."                          ; Doc string
   (and (fboundp 'confirm-nonexistent-file-or-buffer) (confirm-nonexistent-file-or-buffer)) ; Emacs 23.
   nil 'buffer-name-history (icicle-default-buffer-names) nil
   (icicle-buffer-bindings ((icicle-use-candidates-only-once-flag  t))) ; Bindings
-  (progn                                ; First code
-    (define-key minibuffer-local-completion-map (icicle-kbd "C-x M") ; `C-x M'
-      'icicle-filter-buffer-cands-for-mode)
-    (define-key minibuffer-local-must-match-map (icicle-kbd "C-x M") ; `C-x M'
-      'icicle-filter-buffer-cands-for-mode))
-  nil                                   ; Undo code
-  (progn (define-key minibuffer-local-completion-map (icicle-kbd "C-x M") nil) ; Last code
-         (define-key minibuffer-local-must-match-map (icicle-kbd "C-x M") nil)))
+  ;; Actually, there is no reason to bind `C-x m' to `icicle-bookmark-non-file-other-window' here,
+  ;; but to keep things simple we do it anyway.
+  (icicle-bind-buffer-candidate-keys)    ; First code
+  nil                                    ; Undo code
+  (icicle-unbind-buffer-candidate-keys)) ; Last code
 
 ;;;###autoload (autoload 'icicle-remove-buffer-candidate "icicles")
 (icicle-define-command icicle-remove-buffer-candidate ; Command name
