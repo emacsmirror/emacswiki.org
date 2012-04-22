@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Sun Apr 22 08:44:10 2012 (-0700)
+;; Last-Updated: Sun Apr 22 10:53:02 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 26607
+;;     Update #: 26608
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-doc1.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -5989,6 +5989,20 @@
 ;;  `C-M-<' , letting you specify the source or destination (variable,
 ;;  cache file) when you save or retrieve additional candidates.
 ;;
+;;  Note: Use the right type of saved candidates (persistent or not)
+;;  for a given command.  It is the particular command that determines
+;;  whether or not a given type of saved candidate is appropriate.
+;;  For example, you can save search hits when you use
+;;  `icicle-search-file' (same as `icicle-search' with a negative
+;;  prefix arg), and those saved search-hit candidates effectively
+;;  reference files and positions in those files.  And you can later
+;;  retrieve and reuse such saved candidates to visit the search
+;;  positions.  But those candidates are not merely file names, so
+;;  they cannot be used with a command such as `find-file' or
+;;  `icicle-file' that expects a file name.  Conversely, you cannot
+;;  use a saved set of file names with a command such as
+;;  `icicle-search-file' that expects `icicle-search' candidates.
+;;
 ;;(@* "Set Operations")
 ;;  ** Set Operations **
 ;;
@@ -6794,20 +6808,6 @@
 ;;  fileset and not a single completion candidate.  To add a single
 ;;  file (default: the current buffer's file) to a fileset, use
 ;;  command `icicle-add-file-to-fileset'.
-;;
-;;  Note: Use the right type of saved candidates (persistent or not)
-;;  for a given command.  It is the particular command that determines
-;;  whether or not a given type of saved candidate is appropriate.
-;;  For example, you can save search hits when you use
-;;  `icicle-search-file' (same as `icicle-search' with a negative
-;;  prefix arg), and those saved search-hit candidates effectively
-;;  reference files and positions in those files.  And you can later
-;;  retrieve and reuse such saved candidates to visit the search
-;;  positions.  But those candidates are not merely file names, so
-;;  they cannot be used with a command such as `find-file' or
-;;  `icicle-file' that expects a file name.  Conversely, you cannot
-;;  use a saved set of file names with a command such as
-;;  `icicle-search-file' that expects `icicle-search' candidates.
 ;;
 ;;(@* "Improving Performance with Persistent Sets")
 ;;  ** Improving Performance with Persistent Sets **
