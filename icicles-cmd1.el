@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Sun Apr 22 07:56:49 2012 (-0700)
+;; Last-Updated: Sun Apr 22 10:17:07 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 23643
+;;     Update #: 23689
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-cmd1.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -245,8 +245,8 @@
 ;;    `icicle-bookmark-bind-narrow-commands',
 ;;    `icicle-bookmark-cleanup', `icicle-bookmark-cleanup-on-quit',
 ;;    `icicle-bookmark-delete-action', `icicle-bookmark-help-string',
-;;    `icicle-bookmark-jump-1', `icicle-clear-history-1',
-;;    `icicle-clear-history-entry',
+;;    `icicle-bookmark-jump-1', `icicle-buffer-name-prompt',
+;;    `icicle-clear-history-1', `icicle-clear-history-entry',
 ;;    `icicle-comint-dynamic-complete-as-filename',
 ;;    `icicle-comint-dynamic-simple-complete',
 ;;    `icicle-comint-replace-orig-completion-fns',
@@ -5518,14 +5518,23 @@ want this remapping, then customize option
 ;;;###autoload (autoload 'icicle-kill-buffer "icicles")
 (icicle-define-command icicle-kill-buffer ; Bound to `C-x k' in Icicle mode.
   "Kill a buffer.
-With a positive prefix arg, only buffers visiting files are candidates.
-With a negative prefix arg, only buffers associated with the selected
- frame are candidates.
-With a zero prefix arg, only buffers that have the same mode as the
- current buffer are candidates.
+Buffer-name completion candidates are as follows, depending on the
+prefix arg:
 
-You can use `C-x M' during completion to allow only buffers of a
-certain major mode as candidates.  You are prompted for the mode.
+* No prefix arg: all buffers
+* Numeric arg > 0: buffers visiting files
+* Numeric arg < 0: buffers associated with the selected frame
+* Numeric arg = 0: buffers with the same mode as the current buffer
+* Plain prefix arg (`C-u'): buffers with the same mode as current, or
+  with a mode that the current mode is derived from
+
+You can use these additional keys during buffer-name completion:
+* `C-x m'     Visit a bookmarked buffer (only if you use Bookmark+).
+* `C-x C-m -' Remove buffers with a mode that is derived from a given
+              mode.  Repeatable.  (`C-m' = `RET'.)
+* `C-x M -'   Remove buffers with a given mode.  Repeatable.
+* `C-x C-m +' Keep only buffers with a mode derived from a given mode.
+* `C-x M +'   Keep only buffers with a given mode.
 
 These options, when non-nil, control candidate matching and filtering:
 
@@ -5545,16 +5554,32 @@ Note: The prefix arg is tested, even when this is called
 noninteractively.  Lisp code can bind `current-prefix-arg' to control
 the behavior."                          ; Doc string
   icicle-kill-a-buffer-and-update-completions ; Action function
-  "Kill buffer: "                       ; `completing-read' args
+  (icicle-buffer-name-prompt "Kill")    ; `completing-read' args
   (mapcar #'(lambda (buf) (list (buffer-name buf))) icicle-bufflist) nil ; `icicle-bufflist' is free.
   (and (fboundp 'confirm-nonexistent-file-or-buffer) (confirm-nonexistent-file-or-buffer)) ; Emacs 23.
   nil 'buffer-name-history (buffer-name (current-buffer)) nil
-  (icicle-buffer-bindings)               ; Bindings
+  (icicle-buffer-bindings)              ; Bindings
   ;; Actually, there is no reason to bind `C-x m' to `icicle-bookmark-non-file-other-window' here,
   ;; but to keep things simple we do it anyway.
-  (icicle-bind-buffer-candidate-keys)    ; First code
-  nil                                    ; Undo code
+  (icicle-bind-buffer-candidate-keys)   ; First code
+  nil                                   ; Undo code
   (icicle-unbind-buffer-candidate-keys)) ; Last code
+
+(defun icicle-buffer-name-prompt (action &optional other-window-p)
+  "Return prompt for buffer-name completion.
+ACTION is the command action, a string.  It starts the prompt."
+  (concat  (cond ((null current-prefix-arg)
+                  (format "%s buffer" action)) ; `completing-read' args
+                 ((and (consp current-prefix-arg)  (fboundp 'derived-mode-p)) ; `C-u'
+                  (format "%s buffer with same or ancestor mode" action))
+                 ((zerop (prefix-numeric-value current-prefix-arg)) ; `C-0'
+                  (format "%s buffer with same mode" action))
+                 ((< (prefix-numeric-value current-prefix-arg) 0) ; `C--'
+                  (format "%s buffer for same frame" action))
+                 (t                     ; `C-1'
+                  (format "%s file buffer" action)))
+           (and other-window-p " in other window")
+           ": "))
 
 (defun icicle-kill-a-buffer-and-update-completions (buf)
   "Kill buffer BUF and update the set of completions."
@@ -5579,18 +5604,24 @@ the behavior."                          ; Doc string
 ;;;###autoload (autoload 'icicle-buffer "icicles")
 (icicle-define-command icicle-buffer    ; Bound to `C-x b' in Icicle mode.
   "Switch to a different buffer.
-With a positive prefix arg, only buffers visiting files are candidates.
-With a negative prefix arg, only buffers associated with the selected
- frame are candidates.
-With a zero prefix arg, only buffers that have the same mode as the
- current buffer are candidates.
+Buffer-name completion candidates are as follows, depending on the
+prefix arg:
 
-You can use `C-x m' during completion to access buffer (non-file)
- bookmarks, if you use library `Bookmark+'.
-You can use `S-delete' during completion to kill a candidate buffer.
+* No prefix arg: all buffers
+* Numeric arg > 0: buffers visiting files
+* Numeric arg < 0: buffers associated with the selected frame
+* Numeric arg = 0: buffers with the same mode as the current buffer
+* Plain prefix arg (`C-u'): buffers with the same mode as current, or
+  with a mode that the current mode is derived from
 
-You can use `C-x M' during completion to allow only buffers of a
-certain major mode as candidates.  You are prompted for the mode.
+You can use these additional keys during buffer-name completion:
+* `C-x m'     Visit a bookmarked buffer (only if you use Bookmark+).
+* `C-x C-m -' Remove buffers with a mode that is derived from a given
+              mode.  Repeatable.  (`C-m' = `RET'.)
+* `C-x M -'   Remove buffers with a given mode.  Repeatable.
+* `C-x C-m +' Keep only buffers with a mode derived from a given mode.
+* `C-x M +'   Keep only buffers with a given mode.
+* `S-delete'  Kill the buffer named by a completion candidate.
 
 These options, when non-nil, control candidate matching and filtering:
 
@@ -5621,13 +5652,13 @@ Note: The prefix arg is tested, even when this is called
 noninteractively.  Lisp code can bind `current-prefix-arg' to control
 the behavior."                          ; Doc string
   switch-to-buffer                      ; Action function
-  "Switch to buffer: "                  ; `completing-read' args
+  (icicle-buffer-name-prompt "Switch to") ; `completing-read' args
   (mapcar #'(lambda (buf) (list (buffer-name buf))) icicle-bufflist) nil ; `icicle-bufflist' is free.
   (and (fboundp 'confirm-nonexistent-file-or-buffer) (confirm-nonexistent-file-or-buffer)) ; Emacs 23.
   nil 'buffer-name-history (icicle-default-buffer-names) nil
-  (icicle-buffer-bindings)               ; Bindings
-  (icicle-bind-buffer-candidate-keys)    ; First code
-  nil                                    ; Undo code
+  (icicle-buffer-bindings)              ; Bindings
+  (icicle-bind-buffer-candidate-keys)   ; First code
+  nil                                   ; Undo code
   (icicle-unbind-buffer-candidate-keys)) ; Last code
 
 ;; Free var here: `icicle-bufflist' is bound by `icicle-buffer-bindings'.
@@ -5648,28 +5679,36 @@ the behavior."                          ; Doc string
   "Switch to a different buffer in another window.
 Same as `icicle-buffer' except it uses a different window." ; Doc string
   switch-to-buffer-other-window         ; Action function
-  "Switch to buffer in other window: "  ; `completing-read' args
+  (icicle-buffer-name-prompt "Switch to" t) ; `completing-read' args
   (mapcar #'(lambda (buf) (list (buffer-name buf))) icicle-bufflist) nil ; `icicle-bufflist' is free.
   (and (fboundp 'confirm-nonexistent-file-or-buffer) (confirm-nonexistent-file-or-buffer)) ; Emacs 23.
   nil 'buffer-name-history (icicle-default-buffer-names) nil
-  (icicle-buffer-bindings)               ; Bindings
-  (icicle-bind-buffer-candidate-keys)    ; First code
-  nil                                    ; Undo code
+  (icicle-buffer-bindings)              ; Bindings
+  (icicle-bind-buffer-candidate-keys)   ; First code
+  nil                                   ; Undo code
   (icicle-unbind-buffer-candidate-keys)) ; Last code
 
 ;;;###autoload (autoload 'icicle-insert-buffer "icicles")
 (icicle-define-command icicle-insert-buffer
   "Multi-command version of `insert-buffer'.
-With a positive prefix arg, only buffers visiting files are candidates.
-With a negative prefix arg, only buffers associated with the selected
- frame are candidates.
-With a zero prefix arg, only buffers that have the same mode as the
- current buffer are candidates.
+Buffer-name completion candidates are as follows, depending on the
+prefix arg:
 
-You can use `C-x M' during completion to allow only buffers of a
-certain major mode as candidates.  You are prompted for the mode.
+* No prefix arg: all buffers
+* Numeric arg > 0: buffers visiting files
+* Numeric arg < 0: buffers associated with the selected frame
+* Numeric arg = 0: buffers with the same mode as the current buffer
+* Plain prefix arg (`C-u'): buffers with the same mode as current, or
+  with a mode that the current mode is derived from
 
-You can use `S-delete' during completion to kill a candidate buffer.
+You can use these additional keys during buffer-name completion:
+* `C-x m'     Visit a bookmarked buffer (only if you use Bookmark+).
+* `C-x C-m -' Remove buffers with a mode that is derived from a given
+              mode.  Repeatable.  (`C-m' = `RET'.)
+* `C-x M -'   Remove buffers with a given mode.  Repeatable.
+* `C-x C-m +' Keep only buffers with a mode derived from a given mode.
+* `C-x M +'   Keep only buffers with a given mode.
+* `S-delete'  Kill the buffer named by a completion candidate.
 
 These options, when non-nil, control candidate matching and filtering:
 
@@ -5692,32 +5731,40 @@ Note: The prefix arg is tested, even when this is called
 noninteractively.  Lisp code can bind `current-prefix-arg' to control
 the behavior."                          ; Doc string
   insert-buffer                         ; Action function
-  "Buffer: "                            ; `completing-read' args
+  (icicle-buffer-name-prompt "Insert")  ; `completing-read' args
   (mapcar #'(lambda (buf) (list (buffer-name buf))) icicle-bufflist) nil ; `icicle-bufflist' is free.
   (and (fboundp 'confirm-nonexistent-file-or-buffer) (confirm-nonexistent-file-or-buffer)) ; Emacs 23.
   nil 'buffer-name-history (icicle-default-buffer-names) nil
-  (icicle-buffer-bindings)               ; Bindings
+  (icicle-buffer-bindings)              ; Bindings
   ;; Actually, there is no reason to bind `C-x m' to `icicle-bookmark-non-file-other-window' here,
   ;; but to keep things simple we do it anyway.
-  (icicle-bind-buffer-candidate-keys)    ; First code
-  nil                                    ; Undo code
+  (icicle-bind-buffer-candidate-keys)   ; First code
+  nil                                   ; Undo code
   (icicle-unbind-buffer-candidate-keys)) ; Last code
 
 ;;;###autoload (autoload 'icicle-add-buffer-candidate "icicles")
 (icicle-define-command icicle-add-buffer-candidate ; Command name
   "Add buffer as an always-show completion candidate.
 Add the buffer to `icicle-buffer-extras'.  Save the updated option.
-With a positive prefix arg, only buffers visiting files are candidates.
-With a negative prefix arg, only buffers associated with the selected
- frame are candidates.
-With a zero prefix arg, only buffers that have the same mode as the
- current buffer are candidates.
+Buffer-name completion candidates are as follows, depending on the
+prefix arg:
 
-You can use `S-delete' on any completion candidate to remove it from
-`icicle-buffer-extras'.
+* No prefix arg: all buffers
+* Numeric arg > 0: buffers visiting files
+* Numeric arg < 0: buffers associated with the selected frame
+* Numeric arg = 0: buffers with the same mode as the current buffer
+* Plain prefix arg (`C-u'): buffers with the same mode as current, or
+  with a mode that the current mode is derived from
 
-You can use `C-x M' during completion to allow only buffers of a
-certain major mode as candidates.  You are prompted for the mode.
+You can use these additional keys during buffer-name completion:
+* `C-x m'     Visit a bookmarked buffer (only if you use Bookmark+).
+* `C-x C-m -' Remove buffers with a mode that is derived from a given
+              mode.  Repeatable.  (`C-m' = `RET'.)
+* `C-x M -'   Remove buffers with a given mode.  Repeatable.
+* `C-x C-m +' Keep only buffers with a mode derived from a given mode.
+* `C-x M +'   Keep only buffers with a given mode.
+* `S-delete'  Remove the buffer named by a completion candidate from
+              `icicle-buffer-extras'.
 
 Note: The prefix arg is tested, even when this is called
 noninteractively.  Lisp code can bind `current-prefix-arg' to control
@@ -5727,15 +5774,17 @@ the behavior."                          ; Doc string
     (funcall icicle-customize-save-variable-function 'icicle-buffer-extras icicle-buffer-extras)
     (message "Buffer `%s' added to always-show buffers"
              (icicle-propertize buf 'face 'icicle-msg-emphasis)))
-  "Buffer candidate to show always: "   ; `completing-read' args
+  (icicle-buffer-name-prompt "Show always") ; `completing-read' args
   (mapcar #'(lambda (buf) (list (buffer-name buf))) icicle-bufflist) nil ; `icicle-bufflist' is free.
   (and (fboundp 'confirm-nonexistent-file-or-buffer) (confirm-nonexistent-file-or-buffer)) ; Emacs 23.
   nil 'buffer-name-history (icicle-default-buffer-names) nil
-  (icicle-buffer-bindings ((icicle-use-candidates-only-once-flag  t))) ; Bindings
+  (icicle-buffer-bindings               ; Bindings
+   ((icicle-delete-candidate-object        'icicle-remove-buffer-candidate-action) ; Override default (kill).
+    (icicle-use-candidates-only-once-flag  t)))
   ;; Actually, there is no reason to bind `C-x m' to `icicle-bookmark-non-file-other-window' here,
   ;; but to keep things simple we do it anyway.
-  (icicle-bind-buffer-candidate-keys)    ; First code
-  nil                                    ; Undo code
+  (icicle-bind-buffer-candidate-keys)   ; First code
+  nil                                   ; Undo code
   (icicle-unbind-buffer-candidate-keys)) ; Last code
 
 ;;;###autoload (autoload 'icicle-remove-buffer-candidate "icicles")
