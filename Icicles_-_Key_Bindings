@@ -735,7 +735,14 @@ are also in effect:
 
 * '''`C-x m'''' -- `icicle-bookmark-non-file-other-window': Visit a [[BookmarkPlus#AdditionalTypes|buffer (non-file) bookmark]].  See also [[Icicles - More About Multi-Commands#AccessingBookmarks|Accessing Saved Locations (Bookmarks) on the Fly]].  (Available only if you use '''[[Bookmark+]]'''.)
 
-* '''`C-x M'''' -- `icicle-filter-buffer-cands-for-mode': Filter the buffer candidate to keep only those in a given [[major mode]] (you are prompted for the mode).
+* '''`C-x C-m -'''' -- `icicle-remove-buffer-cands-for-derived-mode': Remove buffer-name candidates with a [[major mode]] that is derived from a given mode.  Repeat to filter progressively.  (`C-m' is the same key as `RET'.)
+
+* '''`C-x M -'''' -- `icicle-remove-buffer-cands-for-mode': Remove buffer-name candidates with a given major mode.  Repeat to filter progressively.
+
+* '''`##C-x C-m +##'''' -- `icicle-keep-only-buffer-cands-for-derived-mode': Keep only buffer-name candidates with a major mode that is derived from a given mode.
+
+* '''`##C-x M +##'''' -- `icicle-keep-only-buffer-cands-for-mode': Keep only buffer-name candidates with a given major mode.
+
 
 
 
