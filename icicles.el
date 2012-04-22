@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Sat Apr 21 13:07:35 2012 (-0700)
+;; Last-Updated: Sun Apr 22 08:26:21 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 23121
+;;     Update #: 23124
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -503,6 +503,8 @@
 ;;    `icicle-insert-newline-in-minibuffer',
 ;;    `icicle-insert-string-at-point',
 ;;    `icicle-insert-string-from-variable', `icicle-isearch-complete',
+;;    `icicle-keep-only-buffer-cands-for-derived-mode',
+;;    `icicle-keep-only-buffer-cands-for-mode',
 ;;    `icicle-keep-only-past-inputs', `icicle-kill-line',
 ;;    `icicle-kill-paragraph', `icicle-kill-region',
 ;;    `icicle-kill-region-wimpy', `icicle-kill-sentence',
@@ -548,6 +550,8 @@
 ;;    `icicle-previous-prefix-candidate-action',
 ;;    `icicle-previous-prefix-candidate-alt-action',
 ;;    `icicle-read+insert-file-name', `icicle-regexp-quote-input',
+;;    `icicle-remove-buffer-cands-for-derived-mode',
+;;    `icicle-remove-buffer-cands-for-mode',
 ;;    `icicle-remove-candidate', `icicle-remove-Completions-window',
 ;;    `icicle-resolve-file-name', `icicle-retrieve-last-input',
 ;;    `icicle-retrieve-next-input', `icicle-retrieve-previous-input',
@@ -824,6 +828,7 @@
 ;;    `icicle-barf-if-outside-Completions-and-minibuffer',
 ;;    `icicle-barf-if-outside-minibuffer', `icicle-binary-option-p',
 ;;    `icicle-bind-completion-keys',
+;;    `icicle-bind-buffer-candidate-keys',
 ;;    `icicle-bind-file-candidate-keys', `icicle-bind-isearch-keys',
 ;;    `icicle-bind-key-completion-keys-for-map-var',
 ;;    `icicle-bind-key-completion-keys-in-keymaps-from',
@@ -1119,7 +1124,8 @@
 ;;    `icicle-transform-multi-completion',
 ;;    `icicle-transform-sole-candidate',
 ;;    `icicle-transpose-chars-dots', `icicle-try-switch-buffer',
-;;    `icicle-ucs-names', `icicle-unbind-file-candidate-keys',
+;;    `icicle-ucs-names', `icicle-unbind-buffer-candidate-keys',
+;;    `icicle-unbind-file-candidate-keys',
 ;;    `icicle-unbind-isearch-keys',
 ;;    `icicle-unbind-key-completion-keys-for-map-var',
 ;;    `icicle-unbind-key-completion-keys-in-keymaps-from',
