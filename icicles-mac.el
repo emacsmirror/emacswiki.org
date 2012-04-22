@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:24:28 2006
 ;; Version: 22.0
-;; Last-Updated: Sat Mar 10 11:23:18 2012 (-0800)
+;; Last-Updated: Sun Apr 22 07:51:00 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 980
+;;     Update #: 981
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-mac.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -446,14 +446,18 @@ created after the others."
         (or icicle-all-candidates-list-alt-action-fn (icicle-alt-act-fn-for-type "buffer")))
        (icicle-bufflist
         (if current-prefix-arg
-            (cond ((zerop (prefix-numeric-value current-prefix-arg))
+            (cond ((and (consp current-prefix-arg)  (fboundp 'derived-mode-p)) ; `C-u'
+                   (icicle-remove-if-not #'(lambda (bf)
+                                             (derived-mode-p (with-current-buffer bf major-mode)))
+                                         (buffer-list)))
+                  ((zerop (prefix-numeric-value current-prefix-arg)) ; `C-0'
                    (let ((this-mode  major-mode))
-                     (icicle-remove-if-not #'(lambda (bf)
-                                               (with-current-buffer bf (eq major-mode this-mode)))
+                     (icicle-remove-if-not `(lambda (bf)
+                                               (with-current-buffer bf (eq major-mode ',this-mode)))
                                            (buffer-list))))
-                  ((< (prefix-numeric-value current-prefix-arg) 0)
+                  ((< (prefix-numeric-value current-prefix-arg) 0) ; `C--'
                    (cdr (assq 'buffer-list (frame-parameters))))
-                  (t
+                  (t                    ; `C-1'
                    (icicle-remove-if-not #'(lambda (bf) (buffer-file-name bf)) (buffer-list))))
           (buffer-list))))
      post-bindings))
