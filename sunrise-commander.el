@@ -7,7 +7,7 @@
 ;; Maintainer: José Alfredo Romero L. <escherdragon@gmail.com>
 ;; Created: 24 Sep 2007
 ;; Version: 5
-;; RCS Version: $Rev: 416 $
+;; RCS Version: $Rev: 417 $
 ;; Keywords: files, dired, midnight commander, norton, orthodox
 ;; URL: http://www.emacswiki.org/emacs/sunrise-commander.el
 ;; Compatibility: GNU Emacs 22+
@@ -1894,14 +1894,17 @@ depending on the version of bookmark.el being used."
 For checkpoints to work, download http://joseito.republika.pl/%s.el.gz\
 and add it to your `load-path'" name name))))
 
-(defmacro sr-checkpoint-command (function-name &optional function-args)
-  `(defun ,function-name ,function-args
+(defmacro sr-checkpoint-command (function-name)
+  `(defun ,function-name (&optional arg)
      (interactive)
      (sr-require-checkpoints-extension)
-     (call-interactively ',function-name)))
-(sr-checkpoint-command sr-checkpoint-save    (&optional arg))
-(sr-checkpoint-command sr-checkpoint-restore (&optional arg))
-(sr-checkpoint-command sr-checkpoint-handler (&optional arg))
+     (if (commandp #',function-name)
+         (call-interactively #',function-name)
+       (funcall #',function-name arg))))
+(sr-checkpoint-command sr-checkpoint-save)
+(sr-checkpoint-command sr-checkpoint-restore)
+(sr-checkpoint-command sr-checkpoint-handler)
+;;;###autoload (autoload 'sr-checkpoint-handler "sunrise-commander" "" t)
 
 (defun sr-do-find-marked-files (&optional noselect)
   "Sunrise replacement for `dired-do-find-marked-files'."
@@ -3459,7 +3462,9 @@ buffer in the passive pane."
         (progn
           (sr-quit)
           (switch-to-buffer buff)
-          (call-interactively dired-fun))
+          (call-interactively dired-fun)
+          (replace-buffer-in-windows buff)
+          (sr-bury-panes))
       (quit
        (when orig (switch-to-buffer orig))
        (sunrise)))))
