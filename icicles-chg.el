@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Sun Apr 22 08:19:03 2012 (-0700)
+;; Last-Updated: Sun Apr 22 10:18:32 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 8356
+;;     Update #: 8360
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-chg.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -86,9 +86,12 @@
 ;;;(@* "CHANGE LOG FOR `icicles-cmd1.el'")
 ;;
 ;; 2012/04/22 dadams
+;;     Added: icicle-buffer-name-prompt.
 ;;     Removed: icicle-filter-buffer-cands-for-mode (replaced by *-(remove|keep-only)* in *-mcmd.el).
 ;;     icicle-(kill|insert)-buffer, icicle-buffer(-other-window), icicle-add-buffer-candidate:
-;;       Use icicle-(un)bind-buffer-candidate-keys.
+;;       Use icicle-buffer-name-prompt, icicle-(un)bind-buffer-candidate-keys.  Updated doc string.
+;;     icicle-add-buffer-candidate:
+;;       Bind icicle-delete-candidate-object to icicle-remove-buffer-candidate-action (as previously).
 ;; 2012/04/09 dadams
 ;;     Fixed typos: double single-quotes in autoload cookies.
 ;; 2012/04/08 dadams
