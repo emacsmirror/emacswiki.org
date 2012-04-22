@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Mar  5 17:21:28 1996
 ;; Version: 21.0
-;; Last-Updated: Fri Mar  2 08:30:24 2012 (-0800)
+;; Last-Updated: Sat Apr 21 19:54:57 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 581
+;;     Update #: 586
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/misc-fns.el
 ;; Keywords: internal, unix, lisp, extensions, local
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -47,15 +47,17 @@
 ;;    `another-buffer', `current-line', `display-in-mode-line',
 ;;    `do-files', `flatten', `fontify-buffer', `force-time-redisplay',
 ;;    `interesting-buffer-p', `live-buffer-name',
-;;    `make-transient-mark-mode-buffer-local', `mod-signed',
-;;    `notify-user-of-mode', `region-or-buffer-limits', `signum',
-;;    `undefine-keys-bound-to', `undefine-killer-commands',
+;;    `make-transient-mark-mode-buffer-local', `mode-ancestors',
+;;    `mod-signed', `notify-user-of-mode', `region-or-buffer-limits',
+;;    `signum', `undefine-keys-bound-to', `undefine-killer-commands',
 ;;    `unique-name'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;;; Change Log:
 ;;
+;; 2012/04/21 dadams
+;;     Added mode-ancestors.
 ;; 2012/02/29 dadams
 ;;     Removed: simple-set-(intersection|union|difference).
 ;; 2011/01/04 dadams
@@ -322,7 +324,7 @@ If the region is not active or is empty, then bob and eob are used."
 
 
 
-;;;$ MODE ---------------------------------------------------------------------
+;;;$ MODES ---------------------------------------------------------------------
 
 (defcustom notifying-user-of-mode-flag t
   "*Non-nil means to display messages notifying user of mode changes.
@@ -351,6 +353,17 @@ Useful as a mode hook.  For example:
     (message "Buffer `%s' is in %s mode.   For info on the mode: `%s'."
              buffer mode-name
              (substitute-command-keys "\\[describe-mode]"))))
+
+(defun mode-ancestors (mode)
+  "Return the ancestor modes, a list of symbols, for symbol MODE.
+Uses symbol property `derived-mode-parent' to trace backwards."
+  (let ((parent  (get mode 'derived-mode-parent))
+        (modes   ()))
+    (while parent
+      (push parent modes)
+      (setq parent  (get parent 'derived-mode-parent)))
+    modes))
+  
 
 
 ;;;$ FILES --------------------------------------------------------------------
