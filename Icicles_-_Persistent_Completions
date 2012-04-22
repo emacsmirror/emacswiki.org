@@ -23,6 +23,13 @@ These are covered in the next two sections.
 
 
 
+
+
+
+
+
+
+
 [:AvoidRemoteFileCompletion]
 == Avoid Remote File-Name Completion ==
 
@@ -85,6 +92,13 @@ then you might want to use relative file names (`C-x C-f').
 
 
 
+
+
+
+
+
+
+
 [:AvoidGeneratingLargeSet]
 == Avoid Generating A Large Completion Set ==
 
@@ -116,6 +130,12 @@ use `TAB' or `S-TAB' because retrieval opens a recursive
 Note that using a [[numeric prefix argument]] (`C-u' with a number)
 with `##C-M->##' and `##C-M-<##' saves or retrieves a completion-candidates
 set using a ''[[variable]]'' that you name, not a cache file.  See [[Icicles - Candidate Sets]].
+
+
+
+
+
+
 
 
 
@@ -197,6 +217,16 @@ names that match your current input.
 
 
 
+
+
+
+
+
+
+
+
+
+
 [:Filesets]
 == Filesets and Icicles Saved Completion Sets ==
 
@@ -227,7 +257,17 @@ You can use commands '''`icicle-remove-entry-from-saved-completion-set'''' and '
 file (default: the current buffer's file) to a fileset, use
 command '''`icicle-add-file-to-fileset''''.
 
-'''Note:''' Use the right type of saved candidates (persistent or not) for a given command. It is the particular command that determines whether or not a given type of saved candidate is appropriate. For example, you can save search hits when you use `icicle-search-file' (same as `icicle-search' with a negative prefix arg), and those saved search-hit candidates effectively reference files and positions in those files. And you can later retrieve and reuse such saved candidates to visit the search positions. But those candidates are not merely file names, so they cannot be used with a command such as as `find-file' or `icicle-file' that expects a file name. Conversely, you cannot use a saved set of file names with a command such as `icicle-search-file' that expects `icicle-search' candidates. 
+
+
+
+
+
+
+
+
+
+
+
 
 
 [:PeristenceForPerformance]
