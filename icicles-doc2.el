@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Sat Apr 21 14:44:06 2012 (-0700)
+;; Last-Updated: Sun Apr 22 08:51:25 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 28754
+;;     Update #: 28759
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-doc2.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -6929,10 +6929,25 @@
 ;;  (@file :file-name "icicles-doc1.el" :to "Accessing Saved Locations (Bookmarks) on the Fly").
 ;;                      (Available only if you use `bookmark+.el'.)
 ;;
-;;    `C-x M'         - `icicle-filter-buffer-cands-for-mode':
-;;                      Filter the buffer candidate to keep only those
-;;                      in a given major mode (you are prompted for
-;;                      the mode).
+;;    `C-x C-m -'     - `icicle-remove-buffer-cands-for-derived-mode':
+;;                      Remove buffer-name candidates with a major
+;;                      mode that is derived from a given mode.
+;;                      Repeat to filter progressively.
+;;                      (`C-m' is the same key as `RET'.)
+
+;;
+;;    `C-x M -'       - `icicle-remove-buffer-cands-for-mode':
+;;                      Remove buffer-name candidates with a given
+;;                      major mode.  Repeat to filter progressively.
+
+;;
+;;    `C-x C-m +'  - `icicle-keep-only-buffer-cands-for-derived-mode':
+;;                      Keep only buffer-name candidates with a major
+;;                      mode that is derived from a given mode.
+;;
+;;    `C-x M +'       - `icicle-keep-only-buffer-cands-for-mode':
+;;                      Keep only buffer-name candidates with a given
+;;                      major mode.
 ;;
 ;;  The following minibuffer binding moves the cursor to the start of
 ;;  the part of your input, if any, that is highlighted because it
