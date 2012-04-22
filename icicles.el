@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Sun Apr 22 08:26:21 2012 (-0700)
+;; Last-Updated: Sun Apr 22 09:38:54 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 23124
+;;     Update #: 23125
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -839,7 +839,8 @@
 ;;    `icicle-bookmark-delete-action', `icicle-bookmark-help-string',
 ;;    `icicle-bookmark-jump-1',
 ;;    `icicle-buffer-file/process-name-less-p',
-;;    `icicle-buffer-smaller-p', `icicle-buffer-sort-*...*-last',
+;;    `icicle-buffer-name-prompt', `icicle-buffer-smaller-p',
+;;    `icicle-buffer-sort-*...*-last',
 ;;    `icicle-call-then-update-Completions',
 ;;    `icicle-cancel-Help-redirection', `icicle-candidate-action-1',
 ;;    `icicle-candidate-set-1', `icicle-candidate-set-retrieve-1',
