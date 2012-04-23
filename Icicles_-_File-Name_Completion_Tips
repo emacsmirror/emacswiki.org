@@ -168,7 +168,7 @@ absolute file name, including ''directory'' components.  See [[Icicles - File-Na
 [:icicle-ignored-directories]
 ==== Locating Files: Skip Symlinks, Version-Control Directories ====
 
-If you have symbolic links that might get in the way of exploring directories while locating files, you can use command `icicle-locate-file-no-symlinks' instead of icicle-ignored-directories' -- it will not follow symbolic links.
+If you have symbolic links that might get in the way of exploring directories while locating files, you can use command `icicle-locate-file-no-symlinks' instead of `icicle-locate-file' --- it will not follow symbolic links.
 
 This also gives you a way to temporarily avoid descending into a subdirectory you are not interested in: put a symbolic link in its place temporarily.
 
