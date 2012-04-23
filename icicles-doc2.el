@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Sun Apr 22 08:51:25 2012 (-0700)
+;; Last-Updated: Mon Apr 23 09:31:05 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 28759
+;;     Update #: 28762
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-doc2.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -5758,9 +5758,9 @@
 ;;                   nil)))))
 ;;
 ;;  * Option `icicle-ignored-directories' is a list of directories
-;;    that are ignored by commands `icicle-locate-file' and
-;;    `icicle-locate-file-no-symlinks'.  By default, this is the value
-;;    of `vc-directory-exclusion-list'.
+;;    that are ignored by various Icicles commands, including
+;;    `icicle-locate-file'.  By default, this is the value of
+;;    `vc-directory-exclusion-list'.
 ;;
 ;;  * User option `icicle-buffer-sort' is a predicate used to sort
 ;;    buffer-name candidates in Icicles buffer commands such as
@@ -6336,8 +6336,8 @@
 ;;
 ;;  * If you have symbolic links that might get in the way of
 ;;    exploring directories while locating files, you can use command
-;;    `icicle-locate-file-no-symlinks' instead of
-;;    icicle-ignored-directories' - it will not follow symbolic links.
+;;    `icicle-locate-file-no-symlinks' instead of `icicle-locate-file'
+;;    - it will not follow symbolic links.
 ;;
 ;;    This also gives you a way to temporarily avoid descending into a
 ;;    subdirectory you are not interested in: put a symbolic link in
