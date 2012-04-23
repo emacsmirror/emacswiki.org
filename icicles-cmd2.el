@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Thu May 21 13:31:43 2009 (-0700)
 ;; Version: 22.0
-;; Last-Updated: Mon Apr 23 08:09:24 2012 (-0700)
+;; Last-Updated: Mon Apr 23 09:34:37 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 5579
+;;     Update #: 5582
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-cmd2.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -5456,6 +5456,8 @@ The files are those that are marked in the current Dired buffer, or
 all files in the directory if none are marked.
 Marked subdirectories are handled recursively in the same way.
 
+\(Directories in `icicle-ignored-directories' are skipped.)
+
 Non-nil optional arg IGNORE-MARKS-P means ignore all Dired markings:
 just get all of the files in the current directory."
   (let ((askp  (list nil)))             ; The cons's car will be set to `t' if need to ask user.
@@ -5472,8 +5474,8 @@ just get all of the files in the current directory."
           (setq files  ())
           (dolist (file  (icicle-search-dired-marked-here))
             (if (file-directory-p file)
-                (setq files  (nconc files (icicle-files-within
-                                           (directory-files file 'FULL icicle-re-no-dot) ())))
+                (setq files  (nconc files
+                                    (icicle-files-within (directory-files file 'FULL icicle-re-no-dot) ())))
               (add-to-list 'files file)))
           (nreverse files))))))
 
