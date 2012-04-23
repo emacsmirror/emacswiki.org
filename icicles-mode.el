@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 10:21:10 2006
 ;; Version: 22.0
-;; Last-Updated: Sat Apr 21 14:22:29 2012 (-0700)
+;; Last-Updated: Mon Apr 23 13:56:43 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 8728
+;;     Update #: 8732
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-mode.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -2025,7 +2025,7 @@ Used on `pre-command-hook'."
 
     (define-key icicle-dired-multiple-menu-map [icicle-search-dired-marked]
       '(menu-item "Search (and Replace)..." icicle-search-dired-marked
-        :help "Search the marked files"))
+        :help "Search the marked files" :enable (fboundp 'diredp-get-files)))
     (define-key icicle-dired-multiple-menu-map [icicle-dired-save-marked-more]
       '(menu-item "Save as More Completion Candidates" icicle-dired-save-marked-more
         :help "Add the marked file names to the saved file-completion candidates set"))
@@ -2102,20 +2102,16 @@ Used on `pre-command-hook'."
         (list 'menu-item "Icicles" icicle-bookmark+-menu-map :visible 'icicle-mode))
       (define-key icicle-bookmark+-menu-map [icicle-search-bookmark-list-marked]
         '(menu-item "Search & Replace in Marked Files..." icicle-search-bookmark-list-marked
-          :enable (eq major-mode 'bookmark-bmenu-mode)
           :help "Search the files of the marked bookmarks"))
       (define-key icicle-bookmark+-menu-map [icicle-bookmark-save-marked-files-more]
         '(menu-item "Save File Names of Marked as More Candidates..."
           icicle-bookmark-save-marked-files-more
-          :enable (eq major-mode 'bookmark-bmenu-mode)
           :help "Add file names of marked bookmarks to saved file-completion candidates"))
       (define-key icicle-bookmark+-menu-map [icicle-bookmark-save-marked-files]
         '(menu-item "Save File Names of Marked as Candidates..." icicle-bookmark-save-marked-files
-          :enable (eq major-mode 'bookmark-bmenu-mode)
           :help "Save file names of marked bookmarks as a set of file-completion candidates"))
       (define-key icicle-bookmark+-menu-map [icicle-bookmark-save-marked-files-as-project]
         '(menu-item "Save Marked as Project" icicle-bookmark-save-marked-files-as-project
-          :enable (eq major-mode 'bookmark-bmenu-mode)
           :help "Save the file names of the marked bookmarks as a persistent set")))
 
     )
@@ -2208,12 +2204,13 @@ Used on `pre-command-hook'."
       (define-key dired-mode-map (icicle-kbd "C-M-}") 'icicle-dired-save-marked-to-variable))
     (unless (lookup-key dired-mode-map (icicle-kbd "C-}")) ; Dired `C-}'
       (define-key dired-mode-map (icicle-kbd "C-}") 'icicle-dired-save-marked-as-project))
-    (let* ((key  (apply 'vector         ; Dired `M-s M-s m'
-                        (append (listify-key-sequence icicle-search-key-prefix)
-                                (listify-key-sequence (icicle-kbd "m")))))
-           (def  (lookup-key dired-mode-map key)))
-      (unless (and def  (not (integerp def)))
-        (define-key dired-mode-map key 'icicle-search-dired-marked))))
+    (when (fboundp 'diredp-get-files)   ; Requires `dired+.el'.
+      (let* ((key  (apply 'vector         ; Dired `M-s M-s m'
+                          (append (listify-key-sequence icicle-search-key-prefix)
+                                  (listify-key-sequence (icicle-kbd "m")))))
+             (def  (lookup-key dired-mode-map key)))
+        (unless (and def  (not (integerp def)))
+          (define-key dired-mode-map key 'icicle-search-dired-marked)))))
 
   ;; Bind keys in Ibuffer mode.
   (when (boundp 'ibuffer-mode-map)
