@@ -281,6 +281,17 @@ The '''`a'''' indicates that the command completes an [[autofile bookmark]] name
 
 
 
+(You need library '''[[Dired+]]''' for `icicle-search-dired-marked', and library '''[[Bookmark+]]''' for `icicle-search-bookmark-list-marked'.)
+
+
+
+
+
+
+
+
+
+
 
 [:HighlightingDestination]
 === Highlighting the Destination ===
