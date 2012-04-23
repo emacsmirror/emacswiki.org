@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Sun Apr 22 09:38:54 2012 (-0700)
+;; Last-Updated: Mon Apr 23 10:30:40 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 23125
+;;     Update #: 23129
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -910,7 +910,7 @@
 ;;    `icicle-delete-whitespace-from-string',
 ;;    `icicle-describe-opt-action',
 ;;    `icicle-describe-opt-of-type-complete', `icicle-ding',
-;;    `icicle-directories-within', `icicle-dired-read-shell-command',
+;;    `icicle-dired-read-shell-command',
 ;;    `icicle-dir-prefix-wo-wildcards', `icicle-dirs-first-p',
 ;;    `icicle-dirs-last-p', `icicle-displayable-cand-from-saved-set',
 ;;    `icicle-display-cand-from-full-cand',
@@ -1083,10 +1083,7 @@
 ;;    `icicle-search-char-prop-matches-p',
 ;;    `icicle-search-choose-buffers', `icicle-search-cleanup',
 ;;    `icicle-search-define-candidates',
-;;    `icicle-search-define-candidates-1',
-;;    `icicle-search-dired-get-files',
-;;    `icicle-search-dired-get-files-for-dir',
-;;    `icicle-search-dired-marked-here', `icicle-search-final-act',
+;;    `icicle-search-define-candidates-1', `icicle-search-final-act',
 ;;    `icicle-search-help',
 ;;    `icicle-search-highlight-all-input-matches',
 ;;    `icicle-search-highlight-and-maybe-replace',
