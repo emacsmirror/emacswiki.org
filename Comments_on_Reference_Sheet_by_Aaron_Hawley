@@ -10,3 +10,16 @@ Besides the Dired scenario, I can't find a reason to really care.
 
 -- AaronHawley 2012-04-23 18:58 UTC
 
+
+----
+
+That doesn't surprise me.
+
+What is true of `revert-buffer' in Dired is true in general.
+
+* `revert-buffer' is a different command from `find-alternate-file'.  They are not defined to do the same thing.  Look at their code, if you want to understand this.
+
+* `revert-buffer' applies to buffers other than just file buffers -- Dired is only one example of this.  See the doc for `revert-buffer'.
+
+-- DrewAdams 2012-04-23 20:49 UTC
+
