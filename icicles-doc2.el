@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Mon Apr 23 09:31:05 2012 (-0700)
+;; Last-Updated: Mon Apr 23 13:31:50 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 28762
+;;     Update #: 28775
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-doc2.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -520,6 +520,9 @@
 ;;  `w'       `icicle-search-word' - Whole words as contexts (`C-c $')
 ;;  `x'       `icicle-search-xml-element' - Search XML elements
 ;;  `X'       `icicle-search-xml-element-text-node'- Search text nodes
+;;
+;;  (You need library `Dired+' for `icicle-search-dired-marked', and
+;;  library `Bookmark+' for `icicle-search-bookmark-list-marked'.)
 ;;
 ;;  There are many `icicle-search-*-bookmark' commands, for searching
 ;;  within bookmarks of various types.
@@ -2416,26 +2419,10 @@
 ;;(@* "Search-and-Replace Marked Files")
 ;;  ** Search-and-Replace Marked Files **
 ;;
-;;  In Dired, `A' searches the marked files using a regexp, and `Q'
-;;  launches `query-replace-regexp' on them.  But suppose that you
-;;  want to change only a few occurrences in each file, perhaps among
-;;  the first occurrences.  Using `Q', you are forced to review each
-;;  search hit in turn - all of them; you cannot simply skip the rest
-;;  in one file and continue with the next file.
-;;
-;;  [I suggested that this feature be added to Emacs, and it has been
-;;  added in Emacs 23: you can now skip to the next file.]
-;;
-;;  One workaround is to use `M->' to go to the end of a file, and
-;;  then `M-,' to resume query-replace.  Or you can quit the command
-;;  altogether, unmark the file you're finished searching, and then
-;;  hit `Q' again, but that's not very convenient.  A similar problem
-;;  applies to searching using `A'.
-;;
-;;  In Dired with Icicles, you can use `M-s M-s m'
-;;  (`icicle-search-dired-marked') to search the marked files and
-;;  possibly replace search hits.  With a prefix arg the markings are
-;;  ignored; all files are searched.
+;;  If you use library `Dired+' then you can use `M-s M-s m'
+;;  (`icicle-search-dired-marked') in Dired to use Icicles search on
+;;  the marked files and replace search hits on demand.  With a prefix
+;;  arg the Dired markings are ignored; all files are searched.
 ;;
 ;;  Each marked subdirectory is handled recursively in the same way:
 ;;  If it has a Dired buffer then its marked files are searched, or
@@ -2449,11 +2436,11 @@
 ;;  have Dired buffers with marked files.  That is, Dired buffers are
 ;;  ignored if you do not confirm using them.
 ;;
-;;  This command runs `icicle-search', so you have available all of
-;;  its features, including accessing search hits directly, in any
-;;  order.  To skip a whole file, just match its name with your
-;;  minibuffer input and then use `C-~' to remove all of its
-;;  occurrences from the set of hits.
+;;  Command `icicle-search-dired-marked' runs `icicle-search', so you
+;;  have available all of its features, including accessing search
+;;  hits directly, in any order.  To skip a whole file, just match its
+;;  name with your minibuffer input and then use `C-~' to remove all
+;;  of its occurrences from the set of hits.
 ;;
 ;;  Note: You can similarly use `M-s M-s m' in Ibuffer or Buffer Menu
 ;;  to search all marked buffers using Icicles search.  Also, `C-0 M-s
