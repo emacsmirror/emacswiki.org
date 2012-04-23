@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Sun Apr 22 10:53:02 2012 (-0700)
+;; Last-Updated: Mon Apr 23 13:27:47 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 26608
+;;     Update #: 26611
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-doc1.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -4982,6 +4982,9 @@
 ;;  * `icicle-select-frame' (`C-x 5 o') - Trip among frames, by name
 ;;  * `icicle-select-window' (`C-0 C-x o') - Trip among windows, by
 ;;                                       buffer name
+;;
+;;  (You need library `Dired+' for `icicle-search-dired-marked', and
+;;  library `Bookmark+' for `icicle-search-bookmark-list-marked'.)
 ;;
 ;;(@* "Highlighting the Destination")
 ;;  ** Highlighting the Destination **
