@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:53 2006
 ;; Version: 22.0
-;; Last-Updated: Mon Apr 23 09:35:12 2012 (-0700)
+;; Last-Updated: Mon Apr 23 10:14:24 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 12982
+;;     Update #: 12988
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-fn.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -73,7 +73,7 @@
 ;;    `icicle-custom-type', `icicle-define-crm-completion-map',
 ;;    `icicle-delete-alist-dups', `icicle-delete-count',
 ;;    `icicle-delete-dups', `icicle-delete-whitespace-from-string',
-;;    `icicle-directories-within', `icicle-dired-read-shell-command',
+;;    `icicle-dired-read-shell-command',
 ;;    `icicle-dir-prefix-wo-wildcards', `icicle-dirs-first-p',
 ;;    `icicle-dirs-last-p', `icicle-displayable-cand-from-saved-set',
 ;;    `icicle-display-cand-from-full-cand',
@@ -5430,7 +5430,8 @@ there are no such matching candidates, then LIST is returned."
 
 
 ;; Args INCLUDE-DIRS-P and PREDICATE are not used in the Icicles code yet
-;; (except in `icicle-directories-within', below, which also is not used yet).
+;;
+;; This is the SAME as `diredp-files-within' in Dired+.  This code must be kept in sync with that.
 ;;
 (defun icicle-files-within (file-list accum &optional no-symlinks-p include-dirs-p predicate)
   "List of readable files in FILE-LIST, handling directories recursively.
@@ -5461,59 +5462,46 @@ along with the names of non-directories.
 Non-nil optional arg PREDICATE must be a function that accepts a
 file-name argument.  Only files (and possibly directories) that
 satisfy PREDICATE are included in the result."
-  ;; Binds `icicle-dirs-done' for use as free var in `icicle-files-within-1'."
-  (let ((icicle-dirs-done  ()))
-    (nreverse (icicle-files-within-1 file-list accum no-symlinks-p include-dirs-p predicate))))
+  (if (fboundp 'diredp-files-within)    ; The code SHOULD be kept the same!
+      (diredp-files-within file-list accum no-symlinks-p include-dirs-p predicate)
+    ;; Binds `icicle-dirs-done' for use as free var in `icicle-files-within-1'."
+    (let ((icicle-dirs-done  ()))
+      (nreverse (icicle-files-within-1 file-list accum no-symlinks-p include-dirs-p predicate)))))
 
+;; This is the SAME as `diredp-files-within-1' in Dired+.  This code must be kept in sync with that.
+;;
 (defun icicle-files-within-1 (file-list accum no-symlinks-p include-dirs-p predicate)
   "Helper for `icicle-files-within'."   ; `icicle-dirs-done' is free here.
-  (let ((files  (if (functionp file-list) (funcall file-list) file-list))
-        (res    accum)
-        file)
-    (when (and files  predicate) (setq files  (icicle-remove-if-not predicate files)))
-    (while files
-      (setq file  (car files))
-      (unless (and no-symlinks-p  (file-symlink-p file))
-        (if (file-directory-p file)
-            ;; Skip directory if ignored, already treated, or inaccessible.
-            (when (and (not (member (file-name-nondirectory file) icicle-ignored-directories))
-                       (not (member (file-truename file) icicle-dirs-done))
-                       (file-accessible-directory-p file))
-              (setq res  (icicle-files-within-1
-                          (or (and (functionp file-list)
-                                   (dired-buffers-for-dir file) ; Removes killed buffers.
-                                   (with-current-buffer
-                                       (cdr (assoc (file-name-as-directory file) dired-buffers))
-                                     (funcall file-list)))
-                              (directory-files file 'FULL icicle-re-no-dot))
-                          res
-                          no-symlinks-p
-                          include-dirs-p
-                          predicate))
-              (when include-dirs-p (push file res))
-              (push (file-truename file) icicle-dirs-done))
-          (when (file-readable-p file) (push file res))))
-      (pop files))
-    res))
-
-
-;; Not used in the Icicles code yet.
-;;
-(defun icicle-directories-within (&optional directory no-symlinks-p predicate)
-  "List of accessible directories within DIRECTORY.
-\(Directories in `icicle-ignored-directories' are skipped.)
-Optional arg DIRECTORY defaults to the value of `default-directory'.
-Non-nil optional arg NO-SYMLINKS-P means do not follow symbolic links.
-Non-nil optional arg PREDICATE must be a function that accepts a
- file-name argument.  Only directories that satisfy PREDICATE are
- included in the result."
-  (unless directory (setq directory  default-directory))
-  (let ((dirs  (icicle-files-within (directory-files directory 'FULL icicle-re-no-dot)
-                                    () no-symlinks-p 'INCLUDE-DIRS-P
-                                    #'file-directory-p)))
-    (if predicate
-        (icicle-remove-if-not predicate dirs)
-      dirs)))
+  (if (fboundp 'diredp-files-within-1)
+      (diredp-files-within-1 file-list accum no-symlinks-p include-dirs-p predicate)
+    (let ((files  (if (functionp file-list) (funcall file-list) file-list))
+          (res    accum)
+          file)
+      (when (and files  predicate) (setq files  (icicle-remove-if-not predicate files)))
+      (while files
+        (setq file  (car files))
+        (unless (and no-symlinks-p  (file-symlink-p file))
+          (if (file-directory-p file)
+              ;; Skip directory if ignored, already treated, or inaccessible.
+              (when (and (not (member (file-name-nondirectory file) icicle-ignored-directories))
+                         (not (member (file-truename file) icicle-dirs-done))
+                         (file-accessible-directory-p file))
+                (setq res  (icicle-files-within-1
+                            (or (and (functionp file-list)
+                                     (dired-buffers-for-dir file) ; Removes killed buffers.
+                                     (with-current-buffer
+                                         (cdr (assoc (file-name-as-directory file) dired-buffers))
+                                       (funcall file-list)))
+                                (directory-files file 'FULL icicle-re-no-dot))
+                            res
+                            no-symlinks-p
+                            include-dirs-p
+                            predicate))
+                (when include-dirs-p (push file res))
+                (push (file-truename file) icicle-dirs-done))
+            (when (file-readable-p file) (push file res))))
+        (pop files))
+      res)))
 
 (defun icicle-delete-whitespace-from-string (string &optional from to)
   "Remove whitespace from substring of STRING from FROM to TO.
