@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Mon Apr 23 11:48:02 2012 (-0700)
+;; Last-Updated: Mon Apr 23 14:07:53 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 8379
+;;     Update #: 8383
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-chg.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -4515,6 +4515,10 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-mode.el'")
 ;;
+;; 2012/04/23 dadams
+;;     Enable icicle-search-dired-marked in icicle-dired-multiple-menu-map only if Dired+ is loaded.
+;;     Bind icicle-search-dired-marked in dired-mode-map only if Dired+ is loaded.
+;;     Removed :enable conditions for icicle-bookmark+-menu-map - it is always in bookmark-bmenu-mode.
 ;; 2012/04/21 dadams
 ;;     (put 'icicle-mode 'custom-mode-group 'Icicles), so `C-u customize-mode icicle-mode' works.
 ;;     icicle-mode: Change :group to Icicles from Icicles-Miscellaneous.
