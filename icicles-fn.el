@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:53 2006
 ;; Version: 22.0
-;; Last-Updated: Fri Apr 20 12:45:01 2012 (-0700)
+;; Last-Updated: Mon Apr 23 09:35:12 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 12979
+;;     Update #: 12982
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-fn.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -5438,9 +5438,10 @@ FILE-LIST is a list of file names or a function that returns such.
 If a function then invoke it with no args to get the list of files.
 
 Accessible directories in the list of files are processed recursively
-to include their files and the files in their subdirectories.  (The
+to include their files and the files in their subdirectories.  The
 directories themselves are not included, unless optional arg
-INCLUDE-DIRS-P is non-nil.)
+INCLUDE-DIRS-P is non-nil.  (Directories in
+`icicle-ignored-directories' are skipped.)
 
 But if there is a Dired buffer for such a directory, and if FILE-LIST
 is a function, then it is invoked in that Dired buffer to return the
@@ -5500,6 +5501,7 @@ satisfy PREDICATE are included in the result."
 ;;
 (defun icicle-directories-within (&optional directory no-symlinks-p predicate)
   "List of accessible directories within DIRECTORY.
+\(Directories in `icicle-ignored-directories' are skipped.)
 Optional arg DIRECTORY defaults to the value of `default-directory'.
 Non-nil optional arg NO-SYMLINKS-P means do not follow symbolic links.
 Non-nil optional arg PREDICATE must be a function that accepts a
