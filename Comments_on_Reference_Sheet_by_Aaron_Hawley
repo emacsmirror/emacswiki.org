@@ -1,0 +1,5 @@
+It is ''not'' true that `C-x C-v RET' is the same as `revert-buffer'.
+See [[RevertBuffer#C-xC-vRETisNOTrevert-buffer|C-x C-v is not revert-buffer]].
+
+-- DrewAdams 2012-04-23 15:36 UTC
+
