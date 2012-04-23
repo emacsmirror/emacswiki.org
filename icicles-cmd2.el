@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Thu May 21 13:31:43 2009 (-0700)
 ;; Version: 22.0
-;; Last-Updated: Sat Apr 21 12:43:41 2012 (-0700)
+;; Last-Updated: Mon Apr 23 08:09:24 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 5573
+;;     Update #: 5579
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-cmd2.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -5467,9 +5467,15 @@ just get all of the files in the current directory."
       (let ((files  (list 'DUMMY)))     ; The files picked up will be added to this list.
         (icicle-search-dired-get-files-for-dir default-directory files askp)
         (setq files  (cdr files))       ; Remove `DUMMY' from the modifed list.
-        (if (and (car askp)  (not (y-or-n-p "Search marked files in Dired buffers for subdirs? ")))
-            (icicle-files-within (directory-files default-directory 'FULL icicle-re-no-dot) ())
-          files)))))
+        (if (not (and (car askp)  (not (y-or-n-p "Search marked files in Dired buffers for subdirs? "))))
+            files
+          (setq files  ())
+          (dolist (file  (icicle-search-dired-marked-here))
+            (if (file-directory-p file)
+                (setq files  (nconc files (icicle-files-within
+                                           (directory-files file 'FULL icicle-re-no-dot) ())))
+              (add-to-list 'files file)))
+          (nreverse files))))))
 
 (defun icicle-search-dired-get-files-for-dir (dir accum askp)
   "Return files for directory DIR, for use by `icicle-search' in Dired.
@@ -5488,7 +5494,7 @@ But if there is more than one Dired buffer for DIR, raise an error."
   (dolist (file  (if (not (dired-buffers-for-dir dir))
                      (directory-files dir 'FULL icicle-re-no-dot)
                    (when (cadr (dired-buffers-for-dir dir)) (error "More than one Dired buffer for `%s'" dir))
-                   (setcar askp  t)
+                   (unless (equal dir default-directory) (setcar askp  t))
                    (with-current-buffer (car (dired-buffers-for-dir dir))
                      (icicle-search-dired-marked-here))))
     (if (not (file-directory-p file))
