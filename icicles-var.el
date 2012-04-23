@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:23:26 2006
 ;; Version: 22.0
-;; Last-Updated: Fri Apr 13 13:58:15 2012 (-0700)
+;; Last-Updated: Mon Apr 23 10:28:58 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 1609
+;;     Update #: 1615
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-var.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -1335,11 +1335,13 @@ current search context.")
 It is bound to the key prefix `icicle-search-key-prefix'.")
 
 (defvar icicle-search-modes
-  '((dired-mode           (icicle-search-dired-get-files))
+  '((dired-mode           (progn (unless (fboundp 'diredp-get-files)
+                                   (error "You need library Dired+ for this"))
+                                 (diredp-get-files)))
     (ibuffer-mode         (nreverse (ibuffer-get-marked-buffers)))
     (Buffer-menu-mode     (Buffer-menu-marked-buffers))
     (bookmark-bmenu-mode  (progn (unless (fboundp 'bmkp-bmenu-get-marked-files)
-                                   (error "You need Bookmark+ for this"))
+                                   (error "You need library Bookmark+ for this"))
                                  (bmkp-bmenu-get-marked-files))))
   "Alist that maps `major-mode' values to sexps that return WHERE.
 Each entry is a two-element list (MODE SEXP).
