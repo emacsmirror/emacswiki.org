@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Mon Apr 23 08:07:49 2012 (-0700)
+;; Last-Updated: Mon Apr 23 11:48:02 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 8365
+;;     Update #: 8379
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-chg.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -619,6 +619,9 @@
 ;;;(@* "CHANGE LOG FOR `icicles-cmd2.el'")
 ;;
 ;; 2012/04/23 dadams
+;;     icicle-search-dired-marked: Use diredp-get-files.  Raise error if Dired+ not present.
+;;     Moved other icicle-search-dired-* functions to Dired+ as diredp-*.
+;;
 ;;     icicle-search-dired-get-files:
 ;;       If user answers no, then pick up only the marked files here 9and all files underneath).
 ;;     icicle-search-dired-get-files-for-dir: A no answer does not change what happens for top dir.
@@ -1306,6 +1309,9 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-fn.el'")
 ;;
+;; 2012/04/23 dadams
+;;     icicle-files-within(-1): If Dired+ available, use diredp-files-within(-1).
+;;     Moved to dired+.el (and renamed prefix): icicle-directories-within.
 ;; 2012/04/20 dadams
 ;;     Added: icicle-directories-within (not yet used).
 ;;     icicle-files-within: Added args INCLUDE-DIRS-P, PREDICATE.  Remove killed Dired buffers.
@@ -6275,6 +6281,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-var.el'")
 ;;
+;; 2012/04/23 dadams
+;;     icicle-search-modes: Treat dired-mode like bookmark-bmenu-mode: error if no Dired+.
 ;; 2012/04/13 dadams
 ;;     icicle-search-modes: For Dired, use icicle-search-dired-get-files, not dired-get-marked-files.
 ;;     icicle-re-no-dot: Made it a defconst.
