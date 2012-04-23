@@ -268,6 +268,11 @@ Here are the suffix keys on the `M-s M-s' prefix key:
 * '''`X'''' -- `icicle-search-xml-element-text-node' -- Search the text() nodes of XML elements as contexts
 
 
+
+
+(You need library '''[[Dired+]]''' for `icicle-search-dired-marked', and
+library '''[[Bookmark+]]''' for `icicle-search-bookmark-list-marked'.)
+
 There are many `icicle-search-*-bookmark' commands, for searching
 within bookmarks of various types.
 
