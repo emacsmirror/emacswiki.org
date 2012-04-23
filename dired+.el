@@ -7,9 +7,9 @@
 ;; Copyright (C) 1999-2012, Drew Adams, all rights reserved.
 ;; Created: Fri Mar 19 15:58:58 1999
 ;; Version: 21.2
-;; Last-Updated: Thu Apr  5 13:40:12 2012 (-0700)
+;; Last-Updated: Mon Apr 23 11:34:46 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 4528
+;;     Update #: 4590
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/dired+.el
 ;; Keywords: unix, mouse, directories, diredp, dired
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -21,7 +21,7 @@
 ;;   `dired', `dired+', `dired-aux', `dired-x', `ediff-diff',
 ;;   `ediff-help', `ediff-init', `ediff-merg', `ediff-mult',
 ;;   `ediff-util', `ediff-wind', `ffap', `misc-fns', `pp', `pp+',
-;;   `w32-browser'.
+;;   `thingatpt', `thingatpt+', `w32-browser'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -162,30 +162,34 @@
 ;;
 ;;  Non-interactive functions defined here:
 ;;
-;;    `diredp-bookmark', `diredp-all-files', `diredp-do-grep-1',
-;;    `diredp-fewer-than-2-files-p', `diredp-find-a-file-read-args',
+;;    `diredp-bookmark', `diredp-all-files',
+;;    `diredp-directories-within',
 ;;    `diredp-dired-files-interactive-spec',
 ;;    `diredp-dired-plus-description',
 ;;    `diredp-dired-plus-description+links',
 ;;    `diredp-dired-plus-help-link', `diredp-dired-union-1',
-;;    `diredp-dired-union-interactive-spec',
+;;    `diredp-dired-union-interactive-spec', `diredp-do-grep-1',
+;;    `diredp-fewer-than-2-files-p', `diredp-find-a-file-read-args',
+;;    `diredp-files-within', `diredp-files-within-1',
+;;    `diredp-get-files', `diredp-get-files-for-dir',
 ;;    `diredp-internal-do-deletions',
 ;;    `diredp-make-find-file-keys-reuse-dirs',
 ;;    `diredp-make-find-file-keys-not-reuse-dirs',
-;;    `diredp-mark-files-tagged-all/none',
+;;    `diredp-marked-here', `diredp-mark-files-tagged-all/none',
 ;;    `diredp-mark-files-tagged-some/not-all',
 ;;    `diredp-paste-add-tags', `diredp-paste-replace-tags',
-;;    `diredp-read-bookmark-file-args', `diredp-set-tag-value',
-;;    `diredp-tag', `diredp-this-file-marked-p',
-;;    `diredp-this-file-unmarked-p', `diredp-this-subdir',
-;;    `diredp-untag'.
+;;    `diredp-read-bookmark-file-args', `diredp-remove-if-not',
+;;    `diredp-set-tag-value', `diredp-tag',
+;;    `diredp-this-file-marked-p', `diredp-this-file-unmarked-p',
+;;    `diredp-this-subdir', `diredp-untag'.
 ;;
 ;;  Variables defined here:
 ;;
-;;    `diredp-file-line-overlay', `diredp-font-lock-keywords-1',
-;;    `diredp-loaded-p', `diredp-menu-bar-immediate-menu',
-;;    `diredp-menu-bar-mark-menu', `diredp-menu-bar-operate-menu',
-;;    `diredp-menu-bar-regexp-menu', `diredp-menu-bar-subdir-menu',
+;;    `diredp-file-line-overlay', `diredp-files-within-dirs-done',
+;;    `diredp-font-lock-keywords-1', `diredp-loaded-p',
+;;    `diredp-menu-bar-immediate-menu', `diredp-menu-bar-mark-menu',
+;;    `diredp-menu-bar-operate-menu', `diredp-menu-bar-regexp-menu',
+;;    `diredp-menu-bar-subdir-menu', `diredp-re-no-dot',
 ;;    `diredp-w32-drives-mode-map'.
 ;;
 ;;
@@ -255,6 +259,10 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2012/04/23 dadams
+;;     Moved here from Icicles, and renamed prefix:
+;;       diredp-re-no-dot, diredp-get-files, diredp-get-files-for-dir, diredp-files-within-dirs-done,
+;;       diredp-files-within, 
 ;; 2012/04/05 dadams
 ;;     Added redefinition of dired-mark-pop-up, to fix Emacs bug #7533.  If they ever fix it
 ;;     then remove this hack.
@@ -2251,8 +2259,186 @@ Read names of Dired buffers to include, and then the new, Dired-union
                                          (expand-file-name file)
                                        file))
                                    files))))))
-  
-         
+
+
+;;; Actions on marked files and subdirs, recursively.
+
+;; Same value as the default value of `icicle-re-no-dot'.
+(defvar diredp-re-no-dot "^\\([^.]\\|\\.\\([^.]\\|\\..\\)\\).*"
+  "Regexp that matches anything except `.' and `..'.")
+
+(defun diredp-get-files (&optional ignore-marks-p)
+  "Return files from this Dired buffer and subdirectories, recursively.
+The files are those that are marked in the current Dired buffer, or
+all files in the directory if none are marked.
+Marked subdirectories are handled recursively in the same way.
+
+\(Directories in `icicle-ignored-directories' are skipped, if you use
+Icicles.  Otherwise, directories in `vc-directory-exclusion-list' are
+skipped.)
+
+Non-nil optional arg IGNORE-MARKS-P means ignore all Dired markings:
+just get all of the files in the current directory."
+  (let ((askp  (list nil)))             ; The cons's car will be set to `t' if need to ask user.
+    (if ignore-marks-p
+        (diredp-files-within (directory-files default-directory 'FULL diredp-re-no-dot) ())
+      ;; Pass FILES and ASKP to `diredp-get-files-for-dir', so we don't have to use them as
+      ;; free vars there.  But that means that they each need to be a cons cell that we can modify, so
+      ;; we can get back the updated info.
+      (let ((files  (list 'DUMMY)))     ; The files picked up will be added to this list.
+        (diredp-get-files-for-dir default-directory files askp)
+        (setq files  (cdr files))       ; Remove `DUMMY' from the modifed list.
+        (if (not (and (car askp)  (not (y-or-n-p "Search marked files in Dired buffers for subdirs? "))))
+            files
+          (setq files  ())
+          (dolist (file  (diredp-marked-here))
+            (if (file-directory-p file)
+                (setq files  (nconc files (diredp-files-within
+                                           (directory-files file 'FULL diredp-re-no-dot) ())))
+              (add-to-list 'files file)))
+          (nreverse files))))))
+
+(defun diredp-get-files-for-dir (dir accum askp)
+  "Return files for directory DIR and subdirectories, recursively.
+Pick up all marked files in DIR if it has a Dired buffer, or all files
+in DIR if not.  Handle subdirs recursively (only marked subdirs, if
+Dired).
+
+ACCUM is an accumulator list: the files picked up in this call are
+nconc'd to it.
+
+ASKP is a one-element list, the element indicating whether to ask the
+user about respecting Dired markings.  It is set here to `t' if there
+is a Dired buffer for DIR.
+
+But if there is more than one Dired buffer for DIR, raise an error."
+  (dolist (file  (if (not (dired-buffers-for-dir dir))
+                     (directory-files dir 'FULL diredp-re-no-dot)
+                   (when (cadr (dired-buffers-for-dir dir)) (error "More than one Dired buffer for `%s'" dir))
+                   (unless (equal dir default-directory) (setcar askp  t))
+                   (with-current-buffer (car (dired-buffers-for-dir dir))
+                     (diredp-marked-here))))
+    (if (not (file-directory-p file))
+        (setcdr (last accum) (list file))
+      (diredp-get-files-for-dir file accum askp))))
+
+(defun diredp-marked-here ()
+  "Marked files and subdirs in this Dired buffer, or all if none are marked.
+Directories `.' and `..' are excluded."
+  ;; If no file is marked, exclude `(FILENAME)': the unmarked file at cursor.
+  ;; If there are no marked files as a result, return all files and subdirs in the dir.
+  (let ((ff  (condition-case nil        ; Ignore error if cursor is on `.' or `..' and no file is marked.
+                 (dired-get-marked-files nil nil nil 'DISTINGUISH-ONE-MARKED)
+               (error nil))))
+    (cond ((eq t (car ff))  (cdr ff))   ; Single marked
+          ((cadr ff)        ff)         ; Multiple marked
+          (t                (directory-files ; None marked
+                             default-directory 'FULL diredp-re-no-dot 'NOSORT)))))
+
+(defvar diredp-files-within-dirs-done ()
+  "Directories already processed by `diredp-files-within'.")
+
+
+;; Args INCLUDE-DIRS-P and PREDICATE are not used in the Dired+ code yet
+;; (except in `diredp-directories-within', which also is not used yet).
+;;
+(defun diredp-files-within (file-list accum &optional no-symlinks-p include-dirs-p predicate)
+  "List of readable files in FILE-LIST, handling directories recursively.
+FILE-LIST is a list of file names or a function that returns such.
+If a function then invoke it with no args to get the list of files.
+
+Accessible directories in the list of files are processed recursively
+to include their files and the files in their subdirectories.  The
+directories themselves are not included, unless optional arg
+INCLUDE-DIRS-P is non-nil.  (Directories in
+`icicle-ignored-directories' are skipped, if you use Icicles.
+Otherwise, directories in `vc-directory-exclusion-list' are skipped.)
+
+But if there is a Dired buffer for such a directory, and if FILE-LIST
+is a function, then it is invoked in that Dired buffer to return the
+list of files to use.  E.g., if FILE-LIST is `dired-get-marked-files'
+then only the marked files and subdirectories are included.  If you
+have more than one Dired buffer for a directory that is processed
+here, then only the first one in `dired-buffers' is used.
+
+The list of files is accumulated in ACCUM, which is used for recursive
+calls.
+
+Non-nil optional arg NO-SYMLINKS-P means do not follow symbolic links.
+
+Non-nil optional arg INCLUDE-DIRS-P means include directory names
+along with the names of non-directories.
+
+Non-nil optional arg PREDICATE must be a function that accepts a
+file-name argument.  Only files (and possibly directories) that
+satisfy PREDICATE are included in the result."
+  ;; Bind `diredp-files-within-dirs-done' for use as a free var in `diredp-files-within-1'."
+  (let ((diredp-files-within-dirs-done  ()))
+    (nreverse (diredp-files-within-1 file-list accum no-symlinks-p include-dirs-p predicate))))
+
+;; `diredp-files-within-dirs-done' is free here, bound in `diredp-files-within'.
+(defun diredp-files-within-1 (file-list accum no-symlinks-p include-dirs-p predicate)
+  "Helper for `diredp-files-within'."
+  (let ((files  (if (functionp file-list) (funcall file-list) file-list))
+        (res    accum)
+        file)
+    (when (and files  predicate) (setq files  (diredp-remove-if-not predicate files)))
+    (while files
+      (setq file  (car files))
+      (unless (and no-symlinks-p  (file-symlink-p file))
+        (if (file-directory-p file)
+            ;; Skip directory if ignored, already treated, or inaccessible.
+            (when (and (not (member (file-name-nondirectory file) (if (boundp 'icicle-ignored-directories)
+                                                                      icicle-ignored-directories
+                                                                    (and (boundp 'vc-directory-exclusion-list)
+                                                                         vc-directory-exclusion-list))))
+                       (not (member (file-truename file) diredp-files-within-dirs-done))
+                       (file-accessible-directory-p file))
+              (setq res  (diredp-files-within-1
+                          (or (and (functionp file-list)
+                                   (dired-buffers-for-dir file) ; Removes killed buffers.
+                                   (with-current-buffer
+                                       (cdr (assoc (file-name-as-directory file) dired-buffers))
+                                     (funcall file-list)))
+                              (directory-files file 'FULL diredp-re-no-dot))
+                          res
+                          no-symlinks-p
+                          include-dirs-p
+                          predicate))
+              (when include-dirs-p (push file res))
+              (push (file-truename file) diredp-files-within-dirs-done))
+          (when (file-readable-p file) (push file res))))
+      (pop files))
+    res))
+
+(defun diredp-remove-if-not (pred xs)
+  "A copy of list XS with only elements that satisfy predicate PRED."
+  (let ((result  ()))
+    (dolist (x xs) (when (funcall pred x) (push x result)))
+    (nreverse result)))
+
+
+;; Not used in the Dired+ code yet.
+(defun diredp-directories-within (&optional directory no-symlinks-p predicate)
+  "List of accessible directories within DIRECTORY.
+Directories in `icicle-ignored-directories' are skipped, if you use
+Icicles.  Otherwise, directories in `vc-directory-exclusion-list' are
+skipped.
+
+Optional arg DIRECTORY defaults to the value of `default-directory'.
+Non-nil optional arg NO-SYMLINKS-P means do not follow symbolic links.
+Non-nil optional arg PREDICATE must be a function that accepts a
+ file-name argument.  Only directories that satisfy PREDICATE are
+ included in the result."
+  (unless directory (setq directory  default-directory))
+  (let ((dirs  (diredp-files-within (directory-files directory 'FULL diredp-re-no-dot)
+                                    () no-symlinks-p 'INCLUDE-DIRS-P
+                                    #'file-directory-p)))
+    (if predicate
+        (diredp-remove-if-not predicate dirs)
+      dirs)))
+
+
 
 ;;; `diredp-marked(-other-window)' tries to treat SWITCHES, but SWITCHES seems to be ignored
 ;;; by `dired' when the DIRNAME arg is a cons, at least on MS Windows.  I filed Emacs bug #952
