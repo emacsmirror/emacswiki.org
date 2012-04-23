@@ -11,6 +11,8 @@ Is there a quick way of re-visiting the file in current buffer? This is useful w
 
 The second one is a sleazy trick, calling find-alternate-file - that prompts you for a file name, but fills in the name of the current buffer's filename as a default, so you can hit RET to re-read the file from disk.  Before I knew about find-alternate-file, I wanted something faster for reverting buffers (mainly due to the problem [[XEmacs]] has with hard links; see the WishList).  That's why I bound revert-buffer into the C-c keymap.
 
+
+[:C-xC-vRETisNOTrevert-buffer]
 [new:DrewAdams:2012-01-13 23:22 UTC]
 Actually, `C-x C-v' is not a sleazy trick.  And it's not the same as `revert-buffer'.  To see this, in DiredMode, mark some files, flag some for deletion, or whatever.  Try `M-x revert-buffer' or `g' --- no change.  Now try `C-x C-v RET'.  `C-x C-v' is quite useful independently from `revert-buffer', for this reason. -- DrewAdams
 [new]
