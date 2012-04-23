@@ -262,7 +262,7 @@ As of January 2012 there's an IRC channel <code>#wanderlust</code> at irc.freeno
 * http://www.mail-archive.com/emacs-orgmode@gnu.org/msg20250/wlconfiguration.org -- Good config, in org-mode.
 
 === Sources & patches ===
-* http://cvs.m17n.org/viewcvs/root/wanderlust/ -- Official CVS repository for wp, apel, semi, and film. 
+* http://cvs.m17n.org/viewcvs/root/wanderlust/ -- Official CVS repository for wp, apel, semi, and film. Will be closed at 2012-04-30.
 * https://github.com/wanderlust/wanderlust -- Semi-official up-to-date wanderlust development repository. 
 * http://www.jpl.org/elips/wl/ -- Official according to outdated home page.
 * http://repo.or.cz/w/more-wl.git -- Various patches.
