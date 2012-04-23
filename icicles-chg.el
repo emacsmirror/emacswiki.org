@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Sun Apr 22 10:18:32 2012 (-0700)
+;; Last-Updated: Mon Apr 23 08:07:49 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 8360
+;;     Update #: 8365
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-chg.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -618,6 +618,10 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd2.el'")
 ;;
+;; 2012/04/23 dadams
+;;     icicle-search-dired-get-files:
+;;       If user answers no, then pick up only the marked files here 9and all files underneath).
+;;     icicle-search-dired-get-files-for-dir: A no answer does not change what happens for top dir.
 ;; 2012/04/20 dadams
 ;;     Added: icicle-search-dired-get-files-for-dir, icicle-search-dired-marked-here.
 ;;     icicle-search-dired-marked:
