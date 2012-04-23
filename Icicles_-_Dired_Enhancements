@@ -24,18 +24,13 @@ can be persistent or just for the current Emacs session.
 
 
 
+
+
 [:SearchAndReplace]
 === Search-and-Replace Marked Files ===
 
-In Dired, `A' searches the marked files using a [[regexp]], and `Q' launches `query-replace-regexp' on them. But suppose that you want to change only a few occurrences in each file, perhaps among the first occurrences. Using `Q', you are forced to review each search hit in turn -- all of them; you cannot simply skip the rest in one file and continue with the next file. 
 
-[new:DrewAdams:2008-07-25 23:55 UTC]
-[I suggested (on 2008/1/1) that this feature be added to Emacs, and it has been added in Emacs 23: you can now skip to the next file. -- DrewAdams]
-[new] 
-
-One workaround is to use `##M->##' to go to the end of a file, and then `##M-,##' to resume query-replace.  Or you can quit the command altogether, unmark the file you're finished searching, and then hit `Q' again, but that's not very convenient. A similar problem applies to searching using `A'.
-
-In Dired with '''Icicles''', you can use '''`M-s M-s m'''' (`icicle-search-dired-marked') to search the marked files and possibly replace search hits.  With a [[prefix argument]] the markings are
+If you use library '''[[Dired+]]''' then you can use '''`M-s M-s m'''' (`icicle-search-dired-marked')  in Dired to use [[Icicles - Search Commands, Overview#IciclesSearchKeyBindings|Icicles search]] on the marked files and replace search hits on demand.  With a [[prefix argument]] the Dired markings are
 ignored; all files are searched.
 
 Each marked subdirectory is handled recursively in the same way:
@@ -50,7 +45,7 @@ directories are searched, regardless of whether directories might
 have Dired buffers with marked files.  That is, Dired buffers are
 ignored if you do not confirm using them.
 
-This command runs `icicle-search', so you have available all of its features, including accessing search hits directly, in any order. To skip a whole file, just match its name with your minibuffer input and then use `##C-~##' to remove all of its occurrences from the set of hits.
+Command `icicle-search-dired-marked' runs `icicle-search', so you have available all of its features, including accessing search hits directly, in any order. To skip a whole file, just match its name with your minibuffer input and then use `##C-~##' to remove all of its occurrences from the set of hits.
 
 '''Note:''' You can similarly use `M-s M-s m' in [[IbufferMode|Ibuffer]] or [[BufferMenu|Buffer Menu]] to
 search all marked buffers using '''Icicles''' search.  Also, '''`C-0 M-s M-s M-s'''' and '''`##C-0 C-c `##'''' are bound to the same command.  (But you cannot pass a separate prefix arg in those cases, since `C-0' is already used.)
