@@ -30,3 +30,12 @@ Fortunately, in "buffers other than just file buffers" these are modes where `re
 
 -- AaronHawley 2012-04-24 13:45 UTC
 
+
+----
+
+Dunno about "flawed text editor" ... but if you want to make your cheat sheet a bit more accurate without adding verbiage, consider changing "same as previous" to "similar to previous" or some such, in the description of `C-x C-v RET'.
+
+And yes, a cheat sheet always runs the risk of misleading somewhat.  "Restore buffer with version on disk" also suffers in this regard.  Such is life on a cheat sheet. ;-)
+
+-- DrewAdams 2012-04-24 14:09 UTC
+
