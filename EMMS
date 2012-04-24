@@ -638,6 +638,9 @@ Lisp:anything-config.el has EMMS related sources, `anything-c-source-emms-stream
 
 The discnumber tag is supported by at least mp3 and ogg files, and most players understand it. Is there a special reason EMMS ignores it ? It kinda messes up my media library, since files are played by track number apparently and thus when playing an album with two disc, both first tracks are played, then both second tracks, etc.
 
+[new]
+I implemented support for discnumber, patch sent to emms-patches and viewable from here: http://article.gmane.org/gmane.emacs.emms.patches/691 .  No response yet.  -- ChristopheRhodes
+
 == EMMS: Makes easy things hard and hard things impossible. ==
 Such a steaming pile of shitty spaghetti code --> avoid to keep sanity.
 
