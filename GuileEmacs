@@ -42,6 +42,11 @@ For GoogleSummerOfCode 2011, work was done on Emacs Lisp support in Guile.  Read
 
 * [http://wingolog.org/archives/2009/01/07/a-brief-history-of-guile A Brief History of Guile] by Andy Wingo
 
+On 2012-04-09, there was an announcement on emacs-devel about GoogleSummerOfCode projects that included adding libguile to Emacs and using it as the interpreter.  It was followed by some mailing list discussion.
+
+* [https://lists.gnu.org/archive/html/emacs-devel/2012-04/msg00276.html GSoC projects related to Emacs] 
+* [https://lists.gnu.org/archive/html/emacs-devel/2012-04/msg00291.html Re: Emacs and Guile]
+
 See also other EmacsImplementations.
 
 ----
