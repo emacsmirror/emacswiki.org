@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Mon Apr 23 13:31:50 2012 (-0700)
+;; Last-Updated: Tue Apr 24 07:00:35 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 28775
+;;     Update #: 28776
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-doc2.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -6921,20 +6921,16 @@
 ;;                      mode that is derived from a given mode.
 ;;                      Repeat to filter progressively.
 ;;                      (`C-m' is the same key as `RET'.)
-
-;;
-;;    `C-x M -'       - `icicle-remove-buffer-cands-for-mode':
-;;                      Remove buffer-name candidates with a given
-;;                      major mode.  Repeat to filter progressively.
-
 ;;
 ;;    `C-x C-m +'  - `icicle-keep-only-buffer-cands-for-derived-mode':
 ;;                      Keep only buffer-name candidates with a major
 ;;                      mode that is derived from a given mode.
 ;;
-;;    `C-x M +'       - `icicle-keep-only-buffer-cands-for-mode':
-;;                      Keep only buffer-name candidates with a given
-;;                      major mode.
+;;    `C-x M -'       - `icicle-remove-buffer-cands-for-mode': Same as
+;;                      `C-x C-m -', but excludes ancestor modes.
+;;
+;;    `C-x M +'       - `icicle-keep-only-buffer-cands-for-mode': Same
+;;                      as `C-x C-m +', but excludes ancestor modes.
 ;;
 ;;  The following minibuffer binding moves the cursor to the start of
 ;;  the part of your input, if any, that is highlighted because it
