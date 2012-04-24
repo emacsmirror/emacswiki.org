@@ -27,16 +27,17 @@ completion you can use the following keys:
   buffer-name candidates with a major
   mode that is ''derived from'' a given ''mode''.  You are prompted for the mode.  You can repeat this key to narrow buffer candidates by mode.  (`C-m' is the same key as `RET'.)
 
-* '''`C-x M -'''' ('''`icicle-remove-buffer-cands-for-mode'''') to ''remove'' the
-  buffer-name candidates with a given major ''mode''.  You are prompted for the mode.  You can repeat this key to narrow buffer candidates by mode.
-
 * '''`##C-x C-m +##'''' ('''`icicle-keep-only-buffer-cands-for-derived-mode'''') to ''keep only'' the
   buffer-name candidates with a major
   mode that is ''derived from'' a given ''mode''.  You are prompted for the mode.   (`C-m' is the same key as `RET'.)
 
-* '''`##C-x M +##'''' ('''`icicle-keep-only-buffer-cands-for-mode'''') to ''keep only'' the
-  buffer-name candidates with a given major
-  ''mode''.  You are prompted for the mode.
+* '''`C-x M -'''' ('''`icicle-remove-buffer-cands-for-mode'''') -- same as `C-x C-m -', but excludes ancestor modes.
+
+
+* '''`##C-x M +##'''' ('''`icicle-keep-only-buffer-cands-for-mode'''') -- same as `##C-x C-m +##', but excludes ancestor modes.
+
+
+
 
 * '''`C-x m'''' ('''`icicle-bookmark-non-file-other-window'''') to visit a
   [[BookmarkPlus#AdditionalTypes|bookmarked buffer]].  This is available only if you use library
