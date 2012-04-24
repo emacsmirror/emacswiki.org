@@ -1,5 +1,5 @@
 == Jeremy Rayman ==
-* Author of [[RainbowDelimiters]] (Lisp:rainbow-delimiters.el), which colorizes paren, bracket, and brace pairs according to their nested depth.
+* Author of [[RainbowDelimiters]], which colorizes paren, bracket, and brace pairs according to their nested depth.
 
 * jeremy (dot) rayman (at) gmail.com
 
