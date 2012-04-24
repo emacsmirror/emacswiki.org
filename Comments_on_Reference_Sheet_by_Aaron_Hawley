@@ -23,3 +23,10 @@ What is true of `revert-buffer' in Dired is true in general.
 
 -- DrewAdams 2012-04-23 20:49 UTC
 
+
+----
+
+Fortunately, in "buffers other than just file buffers" these are modes where `revert-buffer' is bound to a better key than `C-x C-v RET' -- usually the `g' key.  I appreciate `revert-buffer-function' as a good hack for Emacs modes, but it does muddle the correspondence between the name of a command and its behavior in some cases.  One of the many dangers entailed in making a cheat sheet for a flawed text editor I suppose.
+
+-- AaronHawley 2012-04-24 13:45 UTC
+
