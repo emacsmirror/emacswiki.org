@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Mon Apr 23 13:27:47 2012 (-0700)
+;; Last-Updated: Tue Apr 24 07:12:00 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 26611
+;;     Update #: 26615
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-doc1.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -6276,19 +6276,16 @@
 ;;    can repeat this key to narrow buffer candidates by mode.  (`C-m'
 ;;    is the same key as `RET'.)
 ;;
-;;  * `C-x M -' (`icicle-remove-buffer-cands-for-mode') to remove the
-;;    buffer-name candidates with a given major mode.  You are
-;;    prompted for the mode.  You can repeat this key to narrow buffer
-;;    candidates by mode.
-;;
 ;;  * `C-x C-m +' (`icicle-keep-only-buffer-cands-for-derived-mode')
 ;;    to keep only the buffer-name candidates with a major mode that
 ;;    is derived from a given mode.  You are prompted for the mode.
 ;;    (`C-m' is the same key as `RET'.)
 ;;
-;;  * `C-x M +' (`icicle-keep-only-buffer-cands-for-mode') to keep
-;;    only the buffer-name candidates with a given major mode.  You
-;;    are prompted for the mode.
+;;  * `C-x M -' (`icicle-remove-buffer-cands-for-mode') - same as
+;;    `C-x C-m -', but excludes ancestor modes.
+;;
+;;  * `C-x M +' (`icicle-keep-only-buffer-cands-for-mode') - same as
+;;    `C-x C-m +', but excludes ancestor modes.
 ;;
 ;;  * `S-delete' to kill the buffer named by the current completion
 ;;    candidate.
