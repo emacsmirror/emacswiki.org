@@ -26,7 +26,7 @@ Adding this function to deft.el:
     val))
 }}}
 
-and replacing the call to search-forward in deft-filter-match-file with a call to deft-token-search-forward will make Deft's filtering behave like NV's.
+and replacing the call to *search-forward* in *deft-filter-match-file* with a call to *deft-token-search-forward* will make Deft's filtering behave like NV's.
 
 ----
 CategoryWriting
