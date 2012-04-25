@@ -23,7 +23,7 @@ You can customize the colors [[RainbowDelimiters]] uses. The default colors are 
 = Setup instructions: =
 1. Download rainbow-delimiters.el from git and add it to your emacs load-path.
 
-2. Byte-compile the file (necessary for speed):
+2. BYTE-COMPILE THE FILE (Critical for speed):
 <pre>
 M-x byte-compile-file <location of rainbow-delimiters.el>
 </pre>
