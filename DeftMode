@@ -2,5 +2,31 @@ Deft is an Emacs mode for quickly browsing, filtering, and editing directories o
 
 http://jblevins.org/projects/deft/
 
+---
+
+As provided, Deft searches for a literal string, whitespace included, in the titles and contents of the deft buffers.  So if you type "things stuff foo bar," it returns only files with the literal exact string "things stuff foo bar."  
+
+Notational Velocity treats the search-string like a list of whitespace-delimited tokens - it returns items which match all the tokens, in any order.  
+
+Adding this function to deft.el:
+
+{{{
+(defun deft-token-search-forward (deft-filter-regexp) 
+  "Return FILE if FILE matches all tokens in current filter regexp."
+  (let ((tokens (split-string deft-filter-regexp))
+        (val t))
+    (if (not tokens)
+        (setq val nil))
+    (while tokens
+      (save-excursion
+      (if (not (search-forward (car tokens) nil t))
+          (setq val nil))
+      (setq tokens (cdr tokens))
+      ))
+    val))
+}}}
+
+and replacing the call to search-forward in deft-filter-match-file with a call to deft-token-search-forward will make Deft's filtering behave like NV's.
+
 ----
 CategoryWriting
