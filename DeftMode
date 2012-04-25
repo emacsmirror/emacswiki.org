@@ -2,7 +2,7 @@ Deft is an Emacs mode for quickly browsing, filtering, and editing directories o
 
 http://jblevins.org/projects/deft/
 
----
+----
 
 As provided, Deft searches for a literal string, whitespace included, in the titles and contents of the deft buffers.  So if you type "things stuff foo bar," it returns only files with the literal exact string "things stuff foo bar."  
 
@@ -27,6 +27,8 @@ Adding this function to deft.el:
 }}}
 
 and replacing the call to *search-forward* in *deft-filter-match-file* with a call to *deft-token-search-forward* will make Deft's filtering behave like NV's.
+
+- pobocks
 
 ----
 CategoryWriting
