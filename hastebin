@@ -1,0 +1,3 @@
+emacs-haste-client is an emacs client for hastebin.com (a minimalist open-source pastebin), or a local installation of [https://github.com/seejohnrun/haste-server haste-server].
+
+The code is available from https://github.com/rlister/emacs-haste-client, and allows pasting of region (if set) or entire buffer.
