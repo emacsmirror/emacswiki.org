@@ -7,9 +7,9 @@
 ;; Copyright (C) 1999-2012, Drew Adams, all rights reserved.
 ;; Created: Fri Mar 19 15:58:58 1999
 ;; Version: 21.2
-;; Last-Updated: Mon Apr 23 11:34:46 2012 (-0700)
+;; Last-Updated: Wed Apr 25 11:29:49 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 4590
+;;     Update #: 4606
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/dired+.el
 ;; Keywords: unix, mouse, directories, diredp, dired
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -259,6 +259,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2012/04/25 dadams
+;;     dired-insert-directory: Updated per Emacs 24.
 ;; 2012/04/23 dadams
 ;;     Moved here from Icicles, and renamed prefix:
 ;;       diredp-re-no-dot, diredp-get-files, diredp-get-files-for-dir, diredp-files-within-dirs-done,
@@ -1011,7 +1013,19 @@ If HDR is non-nil, insert a header line with the directory name."
     (let ((opoint               (point))
           (process-environment  (copy-sequence process-environment))
           end)
-      (when (or dired-use-ls-dired (file-remote-p dir))
+      (when (and
+             ;; Do not try to invoke `ls' if we are on DOS/Windows, where `ls-lisp' is used, except if the
+             ;; user really wants to use `ls', as indicated by `ls-lisp-use-insert-directory-program'.
+             (or (not (featurep 'ls-lisp))  ls-lisp-use-insert-directory-program)
+             (or (if (eq dired-use-ls-dired 'unspecified)
+                     ;; Check whether "ls --dired" gives exit code 0.  Save answer in `dired-use-ls-dired'.
+                     (or (setq dired-use-ls-dired  (eq 0 (call-process insert-directory-program
+                                                                       nil nil nil "--dired")))
+                         (progn (message "Command `ls' does not support switch `--dired' - see \
+`dired-use-ls-dired'.")
+                                nil))
+                   dired-use-ls-dired)
+                 (file-remote-p dir)))
         (setq switches  (concat "--dired " switches)))
       ;; We used to specify the C locale here, to force English month names.  This should not be
       ;; necessary any more with the new value of `directory-listing-before-filename-regexp'.
@@ -1024,7 +1038,9 @@ If HDR is non-nil, insert a header line with the directory name."
               (dired-align-file beg (point))))
         (insert-directory dir switches wildcard (not wildcard)))
       ;; Quote certain characters, unless ls quoted them for us.
-      (unless (string-match "b" dired-actual-switches)
+      (unless (if (fboundp 'dired-switches-escape-p)
+                  (dired-switches-escape-p dired-actual-switches)
+                (string-match "b" dired-actual-switches))
         (save-excursion
           (setq end  (point-marker))
           (goto-char opoint)
@@ -1035,7 +1051,20 @@ If HDR is non-nil, insert a header line with the directory name."
           (while (search-forward "\^m" end t)
             (replace-match (apply #'propertize "\\015" (text-properties-at (match-beginning 0)))
                            nil t))
-          (set-marker end nil)))
+          (set-marker end nil))
+        ;; Comment from some Emacs Dev developer:
+        ;; Replace any newlines in DIR with literal "\n" for the sake of the header line.  To disambiguate a
+        ;; literal "\n" in the actual dirname, we also replace "\" with "\\".  Personally, I think this
+        ;; should always be done, irrespective of the value of dired-actual-switches, because:
+        ;;   i) Dired simply does not work with an unescaped newline in the directory name used in the header
+        ;;      (bug=10469#28), and
+        ;;  ii) "\" is always replaced with "\\" in the listing, so doing it in the header as well makes
+        ;;      things consistent.
+        ;; But at present it is done only if "-b" is in ls-switches, because newlines in dirnames are
+        ;; uncommon, and people may have gotten used to seeing unescaped "\" in the headers.
+        ;; Note: adjust `dired-build-subdir-alist' if you change this.
+        (setq dir  (replace-regexp-in-string "\\\\" "\\\\" dir nil t)
+              dir  (replace-regexp-in-string "\n" "\\n" dir nil t)))
       (dired-insert-set-properties opoint (point))
       ;; If we used `--dired' and it worked, the lines are already indented.  Else indent them.
       (unless (save-excursion (goto-char opoint) (looking-at "  "))
