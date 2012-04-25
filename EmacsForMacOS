@@ -295,6 +295,7 @@ http://www.lorax.com/FreeStuff/TextExtras.html provides additional Emacs like fe
 So control-s is just beeping at me in emacs in the Mac OS X Terminal (10.4) on my home machine but works fine on 10.2 on my work machine -- what gives?  I've looked into the flow control tty issue and tried to disable it -- still emacs just sits there beeping.  M-x save-buffers and M-x isearch gets to be a pain.  Any hints for the Mac OS X Terminal?
 [new]
 : I don't know the answer to this, but the fact that it is beeping means that Emacs is probably getting it and just not understanding it. If it had anything to do with flow control, you wouldn't get even beeping. -- JonathanArnold
+: this can be caused by checking the "speak selected text when the key is pressed" in the "Speech" control panel/sysprefs. The default key is ctrl-s. -- JeremyLeipzig
 
 [new]
 Say I want to run the function "forward-sexp" bound to C-M-f. I *should* be able to get at it with "hold ctrl, hold alt, hit f". However, if I actually do that I get the
