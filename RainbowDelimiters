@@ -79,7 +79,7 @@ The light/dark color schemes differ only in their brightness level.
 [http://emacs-fu.blogspot.com/2011/05/toward-balanced-and-colorful-delimiters.html emacs-fu: toward balanced and colorful delimiters] is a blog post describing rainbow-delimiters, including a screenshot using a different color theme.
 
 == Development Version/Contributing ==
-The current development version will always be at github, under [http://github.com/jlr/rainbow-delimiters jlr/rainbow-delimiters]. Please communicate before starting work on significant changes to be sure we avoid duplicate effort.
+The current development version will always be at github, under [http://github.com/jlr/rainbow-delimiters jlr/rainbow-delimiters].
 
 == Reporting Issues ==
 Please send any bug reports or feature requests through the rainbow-delimiters [http://github.com/jlr/rainbow-delimiters github] page.
