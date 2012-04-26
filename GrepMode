@@ -37,9 +37,22 @@ There are several ways to get a working `grep' and `find' on MS Windows.
 * [[#GnuWin32]]
 * [[#MSYS]]
 
-Copy #grep.exe# and #find.exe# (as well as any necessary #.dll# files) to Emacs' #bin# directory. Emacs will then use these files over any other executables with the same name, including Windows' own #find# utility.
+Copy ##grep.exe## and ##find.exe## (as well as any necessary ##.dll## files) to Emacs' ##bin## directory. Emacs will then use these files over any other executables with the same name, including Windows' own ##find## utility.
 
-Alternatively, you can install #grep# and #find# in their default locations and then modify Emacs' #PATH# variable (see below).
+Alternatively, you can install ##grep## and ##find## in their default locations and then modify Emacs' ##PATH## variable (see below).
+
+[:MSYS]
+=== MSYS ===
+
+The find and grep utilities from [http://gnuwin32.sourceforge.net/ GnuWin32] (below) are very old versions. To have a recent version of find and grep plus other GNU utilities such as egrep you can install [http://www.mingw.org/wiki/msys/ MSYS]. After installation, put this in your .emacs in order to tell Emacs to use these files over any other executables with the same name, including Windows' own ##find## utility:
+
+<pre>
+(setenv "PATH"
+  (concat
+   ;; Change this with your path to MSYS bin directory
+   "C:\\MinGW\\msys\\1.0\\bin;"
+   (getenv "PATH")))
+</pre>
 
 [:GnuWin32]
 === GnuWin32 ===
@@ -68,20 +81,6 @@ It looks like dots and tilde characters needs to be escaped for `rgrep', `dired-
 	         "\\([\\.~]\\)"
 	         "\\\\\\1"
 	         ad-return-value)))))
-
-
-[:MSYS]
-=== MSYS ===
-
-Find and grep utilities from [http://gnuwin32.sourceforge.net/ GnuWin32] are very old versions. To have a recent version of find and grep plus other GNU utilities such as egrep you can install [http://www.mingw.org/wiki/msys/ MSYS]. After installation, put this in your .emacs in order to tell Emacs to use these files over any other executables with the same name, including Windows' own ##find## utility:
-
-<pre>
-(setenv "PATH"
-  (concat
-   ;; Change this with your path to MSYS bin directory
-   "C:\\MinGW\\msys\\1.0\\bin;"
-   (getenv "PATH")))
-</pre>
 
 == Grep+: Enhancements to Emacs grep ==
 
