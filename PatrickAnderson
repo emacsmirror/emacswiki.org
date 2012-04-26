@@ -2,10 +2,13 @@ Hello all.
 
 I started using GNU Emacs in 1993.
 
-== Problems with Emacs 24 ==
+== Problems with Emacs 23 on Windows ==
+* If git.exe is in the PATH, attempting to view a file in a directory containing a .git folder will hang the editor until issuing C-g (quit).
 
-I want to use the newer (not yet released) version of Emacs, but it gives me trouble on my work machine (Windows 7 x64 Enterprise N):
+* Why package a very old ctags.exe and etags.exe that don't work worth a damn?  If we are going to drag those binaries around, why not replace them with ExuberantTags?
 
+
+== Problems with Emacs 24 on Windows ==
 Everything seems fine when I start a new instance, but after a while I start getting errors when attempting to launch external programs.
 
 * Using svn.exe from within EShell causes: ''Creating pipe: no error''
@@ -13,8 +16,6 @@ Everything seems fine when I start a new instance, but after a while I start get
 * Invoking `browse-url-of-dired-file' to launch explorer.exe against a directory gives: ''Debugger entered--Lisp error: (error "ShellExecute failed: Not enough storage is available to process this command.")''
 
 * Invoking `browse-url-of-dired-file' against a .cmd file gives ''Debugger entered--Lisp error: (file-error "Spawning child process" "resource temporarily unavailable")''
-
-
 
 
 
