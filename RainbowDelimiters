@@ -6,7 +6,7 @@ You can customize the colors [[RainbowDelimiters]] uses. The default colors are 
 
 
 = Download: =
-* [http://github.com/jlr/rainbow-delimiters/raw/master/rainbow-delimiters.el rainbow-delimiters.el]. Current release is always found in [http://github.com/jlr/rainbow-delimiters/ jlr/rainbow-delimiters].
+* [http://github.com/jlr/rainbow-delimiters/raw/master/rainbow-delimiters.el rainbow-delimiters.el]. Current release is always found on github at [http://github.com/jlr/rainbow-delimiters/ jlr/rainbow-delimiters].
 
 * Current release: <b>1.3.3</b> (2011-11-25)
 ** Backwards compatibility with Emacs versions prior to 23.2.
