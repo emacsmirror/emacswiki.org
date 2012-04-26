@@ -5,3 +5,11 @@ I decided to look for something like this when I was working on two modules in t
 The name doesn't quite make sense anymore, though.  I was originally attaching to the cperl-mode-hook but I couldn't get it to work quite right in that case so I switched to file-find-hook.  
 
 Lisp:cperl-auto-name.el
+
+[new:sylecn:2012-04-26 08:40 UTC]
+There is a built-in feature for that kind of thing, see Info: (emacs) Uniquify. Here is what I use:
+{{{
+;; uniquified buffers with parts of directory name, instead of foo<1>
+(require 'uniquify)
+(setq uniquify-buffer-name-style 'post-forward)
+}}}
