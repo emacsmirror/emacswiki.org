@@ -21,6 +21,51 @@ Every time acro-buffer is called, it first contracts any expanded acronyms it fi
     ) 
   )
 
+
+(defun acro-expand ()
+  (interactive)
+  "expand an acronym in-situ"
+  (let (theword acrostrings)
+    (setq curpt (point))
+    (setq myboundaries (bounds-of-thing-at-point 'word))
+    (setq thewordstart (car myboundaries))
+    (goto-char thewordstart)
+    (setq theword (thing-at-point 'word))
+    ;; (insert theword)
+    (setq acrostrings "")
+    (setq splitstr "")
+    (defvar acro-sourcefile "~/tex/texmf/raif/acronyms.txt" 
+      "Location of a list of acronyms and definitions - 1 per
+      line, tab separated")
+    (setq acrostrings (acro-read-lines acro-sourcefile))
+    (catch 'break 
+     (while acrostrings
+       (setq acroline (car acrostrings))
+       (setq splitstr (split-string acroline "\t" t))
+       (setq theacro (car splitstr))
+       (setq theexacro (nth 1 splitstr))
+       (setq acrostrings (cdr acrostrings))
+       ;; (insert theacro)
+       (if (equal theacro theword) 
+	   ;; (insert theexacro)
+       	   (let ()
+	    (delete-region (point)
+			   (save-excursion
+			     (forward-word 1)
+			     (point)))
+	    ;; )
+       	    ;; (kill-word)
+       	    (insert theexacro)
+       	    (throw 'break 0)
+       	    )
+	 ()
+       	 )
+       )
+     )
+    (goto-char curpt)
+    )
+)
+
 (defun acro-buffer ()
   (interactive)
   "main loop function to identify and replace acronyms"
