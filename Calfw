@@ -2,12 +2,11 @@
 
 **THIS PAGE IS A WORK IN PROGRESS**
 
-I am attempting to port the [https://github.com/kiwanami/emacs-calfw/blob/master/readme.md README.md] from the [https://github.com/kiwanami/emacs-calfw Github repository]. Any help will be appreciated. Just look [https://github.com/kiwanami/emacs-calfw/blob/master/readme.md README.md] and edit this page to make it match better. 
+I am converting the [https://github.com/kiwanami/emacs-calfw/blob/master/readme.md README.md] from the [https://github.com/kiwanami/emacs-calfw Github repository]. Any help will be appreciated. Just look [https://github.com/kiwanami/emacs-calfw/blob/master/readme.md README.md] and edit this page to make it a better match. 
 
-Until this page is cleaned up more, you will probably do better reading [https://github.com/kiwanami/emacs-calfw/blob/master/readme.md README.md].
+I have converted nearly all of the page so you should have no troubles with it unless you are interested in some of the latter sections involving APIs. For those sections you will probably do better reading [https://github.com/kiwanami/emacs-calfw/blob/master/readme.md README.md] (and converting this page to match).
 
 NeilSmithline, 25 Apr 2012
-
 
 =What is calfw?=
 This program displays a calendar view in the Emacs buffer.
@@ -95,13 +94,13 @@ You can display a calendar in your howm menu file.
 
 https://cacoo.com/diagrams/vrScI4K2QlmDApfd-1F941.png
 
-For org users:
+===For org users:===
 
     (require 'calfw-org)
 
 Then, ##M-x cfw:open-org-calendar##.
 
-https://cacoo.com/diagrams/S6aJntG6giGs44Yn-89CB2.png?width=450
+https://cacoo.com/diagrams/S6aJntG6giGs44Yn-89CB2.png
 
 ===For iCal (Google Calendar) users:===
 
@@ -176,6 +175,7 @@ Here is a customization code:
 One can customize the faces.
 
 Here is a template code for face customization:
+
     (custom-set-faces
      '(cfw:face-title ((t (:foreground "#f0dfaf" :weight bold :height 2.0 :inherit variable-pitch))))
      '(cfw:face-header ((t (:foreground "#d0bf8f" :weight bold))))
@@ -276,47 +276,46 @@ The function-slot cfw:source-data receives two arguments, start and end date of 
 Here is a simple example.
 
 cfw:source-data example1:
-
-;; cfw:source-data example
-(defun sample-data1 (b e)
-  '(
-    ((1  1 2011) . ("item1"))
-    ((1 10 2011) . ("item2-1" "item2-2"))
-    ))
-
-(cfw:open-calendar-buffer
-  :date (cfw:date 1 1 2011)
-  :contents-sources
-   (list 
-     (make-cfw:source
-      :name "test1" :data 'sample-data1)))
-
+    ;; cfw:source-data example
+    (defun sample-data1 (b e)
+      '(
+        ((1  1 2011) . ("item1"))
+        ((1 10 2011) . ("item2-1" "item2-2"))
+        ))
+    
+    (cfw:open-calendar-buffer
+      :date (cfw:date 1 1 2011)
+      :contents-sources
+       (list 
+         (make-cfw:source
+          :name "test1" :data 'sample-data1)))
+    
 Evaluating this code in the scratch buffer, following result is displayed.
-
+    
 Simple source example
-
+    
 The date is specified by ([month] [day] [year]). This format is commonly used in calendar.el and orgmode. (I diagrammed the exchange ways for some time and date formats in Emacs, here.)
-
+    
 Period items are little different. One period item is specified by ([start date] [end date] [content]) and the periods record of the alist collects them as a list, like the following code.
 
-cfw:source-data example2:
-
-;; cfw:source-data period items
-(defun sample-data2 (b e)
-  '(
-    ((1  8 2011) . ("item1"))
-     (periods
-      ((1 8 2011) (1 9 2011) "period item")
-      ((1 11 2011) (1 12 2011) "next item"))
-    ))
-;; (A . (B C) ) is equivalent to (A B C)
-
-(cfw:open-calendar-buffer
-  :date (cfw:date 1 1 2011)
-  :contents-sources
-   (list 
-     (make-cfw:source
-      :name "test2" :data 'sample-data2)))
+    cfw:source-data example2:
+    
+    ;; cfw:source-data period items
+    (defun sample-data2 (b e)
+      '(
+        ((1  8 2011) . ("item1"))
+         (periods
+          ((1 8 2011) (1 9 2011) "period item")
+          ((1 11 2011) (1 12 2011) "next item"))
+        ))
+    ;; (A . (B C) ) is equivalent to (A B C)
+    
+    (cfw:open-calendar-buffer
+      :date (cfw:date 1 1 2011)
+      :contents-sources
+       (list 
+         (make-cfw:source
+          :name "test2" :data 'sample-data2)))
 
 Evaluating this code in the scratch buffer, following result is displayed.
 
@@ -324,15 +323,15 @@ Range items example
 
 Here are other detailed specifications.
 
-    The both start and end date are included by the query period.
-    The items those aren't included in the query period are ignored.
-    cfw:source-data should return a value as fast as possible, because users are waiting for the result. Caching is good idea.
-    Schedule items don't have to be ordered. Duplicated items may be gathered.
-    In the day cell, the items are sorted by string-lessp, i.e. numerical and alphabetical order.
-        The ordering function can be customized by the named argument :sorter of the component construction.
+* The both start and end date are included by the query period.
+* The items those aren't included in the query period are ignored.
+* ##cfw:source-data## should return a value as fast as possible, because users are waiting for the result. Caching is good idea.
+* Schedule items don't have to be ordered. Duplicated items may be gathered.
+* In the day cell, the items are sorted by string-lessp, i.e. numerical and alphabetical order.
+** The ordering function can be customized by the named argument :sorter of the component construction.
 
 In the above examples, the dates of the schedule items are fixed. The actual sources generate result values by the programs. The codes of calfw add-ons may be helpful for your implementation.
-How to embed the calfw component in the other applications?
+==How to embed the calfw component in the other applications?==
 
 In this section, the details of calfw components would be explained so as for users to extend calfw in themselves.
 
@@ -341,9 +340,9 @@ Calfw component
 
 Calfw has three destination components to display the calendar.
 
-    Independent buffer
-    Region in the other buffer
-    Text output
+* Independent buffer
+* Region in the other buffer
+* Text output
 
 Buffer
 
