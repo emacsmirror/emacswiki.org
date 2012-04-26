@@ -493,3 +493,14 @@ History
     2011/01/07 ver 0.1 : First release. Supporting howm and iCal schedules.
 
 SAKURAI, Masashi m.sakurai atmark kiwanami.net
+
+
+
+== See also ==
+* DiaryMode
+* PlannerMode
+* CalendarMode
+* GIT:calendar/calendar.el, GIT:calendar/diary-lib.el, GIT:calendar/holidays.el, GIT:calendar/solar.el, ...
+
+----
+CategoryPersonalInformationManager CategoryCalendar
