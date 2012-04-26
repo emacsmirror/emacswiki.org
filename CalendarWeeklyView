@@ -94,9 +94,14 @@ checked for if any appointment is present then only show weekly view.
     (add-hook 'diary-display-function 'fancy-diary-display-week-graph-if-appt)
 
 
-=See also=
-calfw, a weekly/monthly calendar view which also integrates with OrgMode to display your tasks for each day. Check the screenshots and be impressed…
-https://github.com/kiwanami/emacs-calfw
+== See also ==
+
+* DiaryMode
+* PlannerMode
+* GIT:calendar/calendar.el, GIT:calendar/diary-lib.el, GIT:calendar/holidays.el, GIT:calendar/solar.el, ...
+* [https://github.com/kiwanami/emacs-calfw Emacs-calfw] Calendar framework for emacs (looks like iCal on OS X)
+* [[Calfw]]
+
 
 ----
 CategoryPersonalInformationManager CategoryCalendar
