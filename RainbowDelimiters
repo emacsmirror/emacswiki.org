@@ -16,8 +16,6 @@ You can customize the colors [[RainbowDelimiters]] uses. The default colors are 
 ** Improvements to customize interface.
 ** Infinite depth support by repeatedly cycling through defined faces.
 ** Documentation changes.
-* Issues
-** A few problems working with certain languages due to differing syntax-tables. A fix is forthcoming.
 
 
 = Setup instructions: =
