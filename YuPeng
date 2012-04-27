@@ -4,7 +4,7 @@ A list of my elisp:
 
 * KconfigMode --- highlight linux kernel's Kconfig file
 
-* hide-region+ --- enhance the hide-region.el
+* [[hide-region+]] --- enhance the hide-region.el
 
 
 [new:DrewAdams:2011-02-21 14:11 UTC]
