@@ -31,7 +31,7 @@ Woops. I just realised there's some nonsense ("rem0veth1s") in the email. Mathia
 
 [new]
 
-I make an enhance of hide-region.el, named it [[hide-region+]], add three more function:
+I make an enhance of hide-region.el, named it [[hide-region+]], add three more functions:
 1 hide-region-unhide-below
   unhide a region just below the point
 2 hide-region-unhide-all
