@@ -1,7 +1,7 @@
-Format your elisp code and save your time, you don't need format elisp code line by line. :) 
+Format your elisp code and save your time, you don't need to format elisp code line by line. :) 
 
-==What is ElispFormat ?==
-ElispFormat is mode that format elisp code.
+==What is ElispFormat?==
+ElispFormat is a mode that format elisp code.
 
 ==Install==
 : Put Lisp:elisp-format.el in your load-path, and add
@@ -47,31 +47,31 @@ All below option can customize by: M-x customize-group RET elisp-format RET
 : The list contain addons keywords for newline.
 
 * `elisp-format-newline-keyword-except-list'
-: The list contain except keywords for newline.
+: The list contains except keywords for newline.
 
 * `elisp-format-split-subexp-keyword-addons-list'
-: The list contain addons keywords that will split it's sub-expression.
+: The list contains addons keywords that will split it's sub-expression.
 
 * `elisp-format-split-subexp-keyword-except-list'
-: The list contain except keywords that will split it's sub-expression.
+: The list contains except keywords that will split it's sub-expression.
 
 * `elisp-format-split-subexp-keyword-keep-alist'
-: The alist contain keep keyword when split it's sub-expression.
+: The alist contains keep keyword when split it's sub-expression.
 
 ==Tips==
-* If current mark is active, command "elisp-format-region" will format region you select, otherwise it will format defun arond point.
+* If current mark is active, command "elisp-format-region" will format region you select, otherwise it will format defun around point.
 
 * If you want format many files, you can marked them in dired, and use command "elisp-format-dired" to format marked files in dired.
 
-* You can format speical file through command "elisp-format-file".
+* You can format special file through command "elisp-format-file".
 
 * By default, when you format *huge* file, it will hang emacs. So you can use command `elisp-format-file-batch' make format process at background.
 
-* You also can use command `elisp-format-directory' format all recursive elisp files in speical directory.
+* You also can use command `elisp-format-directory' format all recursive elisp files in special directory.
 
-* By default, when you use command `elisp-format-directory' format too many elisp fiels, it will hang emacs. So you can use command `elisp-format-directory-batch' make format process at background.
+* By default, when you use command `elisp-format-directory' format too many elisp fields, it will hang emacs. So you can use command `elisp-format-directory-batch' make format process at background.
 
-* If you're sure lazy, you can use command "elisp-format-library" format speical library and don't need input long file path.
+* If you're lazy, you can use command "elisp-format-library" format special library and don't need to input long file path.
 
 ==Notes==
-I can't ensure this package can do perfect work with all situations, I have test it with all elisp files that builtin GNU Emacs 23.0.60.1 . so please let me know if you have any suggestion or bug. -- AndyStewart
+I can't ensure this package will do a perfect work with all situations, I have test it with all elisp files that are builtin GNU Emacs 23.0.60.1. So please let me know if you have any suggestion or bug. -- AndyStewart
