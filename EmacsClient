@@ -655,7 +655,7 @@ Enjoy.
 
 = Using emacsclient to make a new frame of a remote Emacs 22 on a local display =
 
-ssh remote_host -f emacsclient --eval '"(make-frame-on-display \"$DISPLAY\")"'
+    ssh remote_host -f emacsclient --eval '"(make-frame-on-display \"$DISPLAY\")"'
 
 = Edit in a new frame or in the current frame =
 
