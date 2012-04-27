@@ -15,15 +15,19 @@ Get the code here: Lisp:hide-region.el
 
 '''See Also:'''
 
-* HighLight -- Hide/show regions, arbitrary text, text with a given set of faces. Use regexps, a highlighter pen, region.
+* HighLight -- Hide/show multiple regions, arbitrary text, text with a given set of faces. Use regexps, a highlighter pen, region.
 
 * MarkerPens -- Invisible pen which hides the region (sounds similar to this but doesn't mark the invisible text with a configurable string).
 
 * HideLines -- Hide lines.
 
+
+== Discussion ==
+
+
 [new]
 
-I added [[http://github.com/chrisdone/hide-region/commit/d96532344572076f9fcf9297abb0f95a7861224d a patch for unhiding the region at the point]].  Mathias Dahl's email (mathias.rem0veth1s.dahl@gmail.com) doesn't exist anymore, so maybe this is a reasonable place to notify him. -- ChrisDone
+I added [[http://github.com/chrisdone/hide-region/commit/d96532344572076f9fcf9297abb0f95a7861224d a patch for unhiding the region at the point]].  MathiasDahl's email (mathias.rem0veth1s.dahl@gmail.com) doesn't exist anymore, so maybe this is a reasonable place to notify him. -- ChrisDone
 
 [new]
 
