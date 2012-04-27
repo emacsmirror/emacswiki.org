@@ -4,7 +4,7 @@ A list of my elisp:
 
 * KconfigMode --- highlight linux kernel's Kconfig file
 
-* [[hide-region+]] --- enhance the hide-region.el
+* [[hide-region+]] --- enhance the hide-region.el, add three functions: 1 hide-region-unhide-below: unhide a region just below the point 2 hide-region-unhide-all: unhide all the region in the current buffer 3 hide-region-toggle: toggle all the gide region in the current buffer
 
 
 [new:DrewAdams:2011-02-21 14:11 UTC]
