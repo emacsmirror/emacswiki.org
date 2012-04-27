@@ -7,7 +7,7 @@
 ;; Maintainer: José Alfredo Romero L. <escherdragon@gmail.com>
 ;; Created: 24 Sep 2007
 ;; Version: 5
-;; RCS Version: $Rev: 417 $
+;; RCS Version: $Rev: 418 $
 ;; Keywords: files, dired, midnight commander, norton, orthodox
 ;; URL: http://www.emacswiki.org/emacs/sunrise-commander.el
 ;; Compatibility: GNU Emacs 22+
@@ -1209,7 +1209,7 @@ these values uses the default, ie. $HOME."
          (sr-listing-switches (or switches sr-listing-switches)))
     (unless (file-readable-p directory) 
       (error "%s is not readable!" (sr-directory-name-proper directory)))
-    (unless sr-running (sunrise))
+    (unless (and sr-running (eq (selected-frame) sr-current-frame)) (sunrise))
     (sr-select-window sr-selected-window)
     (if file
         (sr-follow-file file)
@@ -1217,6 +1217,12 @@ these values uses the default, ie. $HOME."
     (hl-line-mode 1)
     (sr-display-attributes (point-min) (point-max) sr-show-file-attributes)
     (sr-this 'buffer)))
+
+(defun sr-choose-cd-target ()
+  "Select a suitable target directory for cd operations."
+  (if (and sr-running (eq (selected-frame) sr-current-frame))
+      sr-this-directory
+    default-directory))
 
 ;;;###autoload
 (defun sunrise-cd ()
@@ -1227,7 +1233,7 @@ viewer window."
   (interactive)
   (if (not (and sr-running
                 (eq (window-frame sr-left-window) (selected-frame))))
-      (sr-dired (or (buffer-file-name) default-directory))
+      (sr-dired (sr-choose-cd-target))
     (sr-quit t)
     (message "Hast thou a charm to stay the morning-star in his deep course?")))
 
@@ -3705,8 +3711,7 @@ Bind C-j and C-k to Sunrise terminal integration commands."
 See `sr-term' for a description of the arguments."
   (let* ((program (if program (executable-find program)))
          (program (or program sr-terminal-program))
-         (dir (expand-file-name
-              (if sr-running sr-this-directory default-directory)))
+         (dir (expand-file-name (sr-choose-cd-target)))
         (aterm (car sr-ti-openterms))
         (cd (or cd (null sr-ti-openterms)))
         (line-mode (if (buffer-live-p aterm)
@@ -3722,8 +3727,7 @@ See `sr-term' for a description of the arguments."
 
 (defun sr-term-eshell (&optional cd newterm)
   "Implementation of `sr-term' when using `eshell'."
-  (let ((dir (expand-file-name
-              (if sr-running sr-this-directory default-directory)))
+  (let ((dir (expand-file-name (sr-choose-cd-target)))
         (cd (or cd (null sr-ti-openterms))))
     (sr-term-excursion newterm (eshell))
     (when cd
