@@ -97,7 +97,7 @@ Si vous parvenez à suivre l'exemple, vous comprenez le langage Emacs. Si vous c
 # Ensuite, je coupe la fenêtre de gauche en utilisant `split-window-vertically' - ou, plus facilement, son raccourci : la séquence `C-x 2', de ce que je m'en rappelle. A ce point, le cadre possède trois fenêtres, chacune contenant le buffer <code>foobar</code>: Je peux voir son nom dans la ''mode-line'' de chaque fenêtre.
 # Je clique ''MB1'' dans la fenêtre en haut à gauche pour y placer le ''curseur'' -- et y donner le focus --. Puis j'y ouvre le fichier <code>toto</code>, en utilisant la séquence-clé `C-x C-f' (pour la commande `find-file'). Je peux voir, au nom, dans la ModeLine de la fenêtre que son buffer est désormais <code>toto</code>. Je tracte la ModeLine, en utilisant MB1, pour redimensionner le buffer <code>toto's</code> window dans le cadre.
 # Dans le buffer <code>toto</code>, je tracte MB1 sur le texte pour créer une ''région''. J'utilise la ''séquence de touche'' `C-w' pour ''kill'' le texte de la région.
-# Je clique MB1 dans le buffer <code>foobar</code>. Ce qui déplace le curseur où le ''pointeur'' à été cliqué. Ensuite je  ''coupe'' le texte tué (coupé) du buffer <code>toto</code> au ''point'' du buffer <code>foobar</code>.
+# Je clique MB1 dans le buffer <code>foobar</code>. Ce qui déplace le curseur où le ''pointeur'' à été cliqué. Ensuite je  ''colle'' le texte tué (coupé) du buffer <code>toto</code> au ''point'' du buffer <code>foobar</code>.
 
 '''Exercice:''' Répétez les exemples précédents, en termes courants (non-Emacs), en Norvégien.
 
