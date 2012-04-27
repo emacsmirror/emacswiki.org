@@ -206,7 +206,7 @@ When your last command is a movement command, and your cursor is at a parenthesi
 See NavigatingParentheses for other ways to navigate between parentheses.
 
 A popular approach is to use a single function button to bounce
-between parentheses. Here is a self-exlanatory excerpt from my .emacs:
+between parentheses. Here is a self-explanatory excerpt from my .emacs:
 
    (defun match-parenthesis (arg)
      "Match the current character according to the syntax table.
