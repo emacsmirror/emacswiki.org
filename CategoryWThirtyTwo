@@ -97,6 +97,7 @@ MS Tips and Tricks:
 * w32-toggle-lock-key function (included in Emacs) -- toggle 'Caps Lock', 'Scroll Lock' and 'Num Lock' keys from within elisp
 * CatagoryIntellimouse -- Information about using an !IntelliMouse with emacs
 * WThirtyTwoHardDrivesMenu -- provides menu with all currently available local drives (useful in dired)
+* WThirtyTwoMetaRightLeftNotWorking -- some programs prevent M-Right and M-Left from working
 
 MS applications:
 
