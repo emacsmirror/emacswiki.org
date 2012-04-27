@@ -6,6 +6,9 @@ I'll start the list:
 ** This is now possible using ##minimap.el##. Please see the page [[MiniMap]] for details.
 
 * [http://player.vimeo.com/video/41090089 typing on several lines at once], also of Sublime editor
+** Can be done with ##multiple-line-edit.el## (http://www.emacswiki.org/emacs/multiple-line-edit.el)
+** Also [[CuaMode]] can edit multiple lines
+** Quick and dirty: C-x r t
 
 ----
 CategoryWishList
