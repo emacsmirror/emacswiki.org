@@ -236,7 +236,7 @@ Il faut également utiliser la séquence `C-x ESC ESC', mais ensuite utiliser `M
 
 == Macros Clavier, ou comment puis-je faire cela encore et encore ? ==
 
-Une des plus des choses les plus utile que vous puissiez apprendre est la manière d'enregistrer une séquence de touches comme une "macro clavier", et de la jouer ensuite comme une macro (plusieurs fois, peut-être). Allez voir du coté des KeyboardMacros pour savoir comment faire ça.
+Une des choses les plus utiles que vous puissiez apprendre est la manière d'enregistrer une séquence de touches comme une "macro clavier", et de la jouer ensuite comme une macro (plusieurs fois, peut-être). Allez voir du coté des KeyboardMacros pour savoir comment faire ça.
 
 '''Remarque :''' Presque tout ce que vous faites avec Emacs peut être enregistré comme une "macro clavier", pas seulement les frappes sur le clavier. Cela inclut également les actions à la souris et les sélections dans les menus.
 
@@ -270,7 +270,7 @@ La bibliothèque Lisp:menu-bar+.el de Drew permet un accès plus facile à la ba
 
 Oui, le langage Lisp Emacs c'est également pour les ''newbies''. Le fait est que si vous apprenez rien qu'un petit peu de Lisp Emacs, votre utilisation d'Emacs va devenir bien plus efficace. Quelques raisons :
 * Vous comprendrez mieux la documentation et l'aide des fonctions et variables.
-* Vous serez capable de consulter le code source Lisp d'une function ou d'une variable, afin de mieux la comprendre.
+* Vous serez capable de consulter le code source Lisp d'une fonction ou d'une variable, afin de mieux la comprendre.
 * Vous serez capable de convertir des séquences classiques, utilisées précédemment dans une macro clavier, pour créer votre propre commande (écrite en Lisp). -- Voir [[KeyboardMacros]]
 * Vous serez en mesure de récupérez des extraits de code depuis le code source ou depuis le Web, et de les adapter pour créer vos propres commandes Emacs.
 * Vous serez capable de customiser Emacs pour qu'il réponde à vos besoins et vos envies.
