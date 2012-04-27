@@ -3,10 +3,9 @@ Collecting features which other editors have and Emacs doesn't can be good inspi
 I'll start the list:
 
 * [http://www.sublimetext.com/ Minimap] of Sublime editor. See the left side of the screenshots.
+** This is now possible using ##minimap.el##. Please see the page [[Mini Map]] for Details.
 
-[new]
-: This is now possible using ##minimap.el##. Please see the page MiniMap for Details.
-
+* [http://player.vimeo.com/video/41090089 typing on several lines at once], also of Sublime editor
 
 ----
 CategoryWishList
