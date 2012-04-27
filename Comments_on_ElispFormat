@@ -1,1 +1,12 @@
 I am very interested in learning the proper lisp style formatting. Has anybody with elisp experience tried ElispFormat? I would like to use it to learn more. I have found it from this: http://groups.google.com/group/comp.lang.lisp/msg/5c3ad44be794ebec -- priyadarshan 
+
+----
+
+I recall trying it and not liking what it did always to Emacs Lisp code.
+
+Emacs already comes with an indent region command for EmacsLispMode and there is already a CheckDoc minor mode.  The only way to improve the style of your Lisp code is to read a lot of existing Lisp code.  Emacs comes with a lot of source code, of varying qualities, so you can read it.
+
+ElispFormat is a solution in search of a problem.  When I found out it was a contract job paid someone it became clear that I was right.
+
+-- AaronHawley 2012-04-27 21:45 UTC
+
