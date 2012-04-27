@@ -17,11 +17,7 @@ Some unmet wishes and discussion can from time to time be moved to more relevant
 
 The other possibility would move wishlist items on to UserName pages, and could be linked to from this page.
 
-== The List ==
-
-Before the list starts, what about a better list?  I'd like to see a way to put some muscle behind "wishes", wouldn't it be nice if the emacs community could vote on these wishes?
-
-=== Usage Wishes ===
+== Usage Wishes ==
 
 * That lots more people use emacs -batch or xemacs -batch so that they use and
 improve command line emacs and replace usage of other languages
@@ -33,7 +29,7 @@ for shell scripting.  I'd prefer elisp with (require 'cl) over scsh.
 *** This type of collaborative editing is possible in Emacs with [[Rudel]]. Currently the obby protocol (introduced by the [http://gobby.0x539.de/trac/ Gobby] collaborative editor) is supported. Support for the protocol used by [[SubEthaEdit]] is under development.  -- JanMoringen (disclaimer: Rudel author)
 [new]
 
-=== Configuration Wishes ===
+== Configuration Wishes ==
 
 * An Internet service that allows users to share their Emacs configuration, including [[InitFile]]s and any associated personal EmacsLisp libraries or
 libraries written by others.  Web and version control features should be incorporated.
@@ -48,7 +44,7 @@ libraries written by others.  Web and version control features should be incorpo
 ** Discussion in [[emacs-devel]] on 2008-08-01 called [http://article.gmane.org/gmane.emacs.devel/101927 Emacs Package Management].
 ** Discussion in [[comp.emacs]] on 2002-11-21 called [http://groups.google.com/group/comp.emacs/browse_thread/thread/696d4ba8809ff258 Package Manager]
 
-=== Software Design Wishes ===
+== Software Design Wishes ==
 
 This category is a bit vague.  It is the place for discussing improvements to design decisions
 that affect Emacs broadly.  Issues are commonly related to using files generally or of what tasks
@@ -120,7 +116,7 @@ your circle, box etc drawing code, and you'd write a data structure and tell ema
 
 * I would like to have bonjour chat client in GNU/Emacs... And it would be wonderfoul if I could use ERC for this aim.
 
-=== Portability and Internationalisation Wishes ===
+== Portability and Internationalisation Wishes ==
 
 Here is where requests for using Emacs on other software and operating system platforms
 or to support other human languages and compatibility issues between other Emacsen.
@@ -130,7 +126,15 @@ or to support other human languages and compatibility issues between other Emacs
 * I wish I could write Arabic in Emacs
 ** And I wish I could write Hebrew (go BiDi), with vowel points.
 
-=== Editing Wishes ===
+== Editing Wishes ==
+
+* [http://www.sublimetext.com/ Minimap] of Sublime editor. See the left side of the screenshots.
+** This is now possible using ##minimap.el##. Please see the page MiniMap for details.
+
+* [http://player.vimeo.com/video/41090089 typing on several lines at once], also of Sublime editor
+** Can be done with Lisp:multiple-line-edit.el
+** Also CuaMode can edit multiple lines
+** Quick and dirty: C-x r t
 
 These are wishes for better support for text editing, especially writers, but not exclusively.
 [new]
@@ -192,7 +196,7 @@ But i think what it very useful function for everyone.
 
 * I'd like to scroll a buffer with the mouse wheel and have the cursor remain at the original line, even if it goes off-screen. Emacs seems to be designed with the premise that the cursor be on-screen all the time, but could make an exception for wheel/scroll-bar events and refocus the cursor on keypress. Otherwise the user who habitually scrolls will be constantly worried of losing the cursor position… Mmm; that's a feature to discourage excessive glancing. -- [[DanielClemente]]
 
-=== User-Interface Wishes ===
+== User-Interface Wishes ==
 
 These are wishes related to interacting with Emacs or with the graphical user interface of Emacs.
 
@@ -290,7 +294,7 @@ On the other hand, the click event seems to be stored as a <code>TOOL_BAR_EVENT<
 [new]
 * Emacs diplay images in tty,xterm.
 
-=== Extensibility Wishes ===
+== Extensibility Wishes ==
 
 These are wishes about Emacs lisp or generally extending Emacs.
 
@@ -310,7 +314,7 @@ These are wishes about Emacs lisp or generally extending Emacs.
 *** I've implemented this (with combinations determined by variables) as Lisp:unbound.el.  The interesting bit in the request is the word "simple", really.  --DavisHerring
 * guile2 instead of core elisp
 
-=== Mode Wishes ===
+== Mode Wishes ==
 
 These are wishes for new modes or for changes to modes existing in Emacs.
 
@@ -361,21 +365,16 @@ How about:
 
 * I'd like to use an outline for EmacsPresentation like JMP's software.
 
-==== Php Mode in Emacs ====
-The currently available mode for php is not within Emacs and hardly maintained at the moment.
-The reason is that no one believes that the current php-mode.el can be included in Emacs since all the contributors has not signed papers for Emacs.
+* The currently available mode for php is not within Emacs and hardly maintained at the moment.
+The reason is that no one believes that the current php-mode.el can be included in Emacs since all the contributors has not signed papers for Emacs.  So a new php-mode is badly needed. A php-mode where all the contributors has signed papers for Emacs.  Anyone interested in this could read more about it in the Emacs Devel mailing list archive.
 
-So a new php-mode is badly needed. A php-mode where all the contributors has signed papers for Emacs.
-
-Anyone interested in this could read more about it in the Emacs Devel mailing list archive.
-
-=== Documentation Wishes ===
+== Documentation Wishes ==
 
 These are wishes related to Emacs's documentation or with the Info system.
 
 * EmacsCommandSuggester will study the user's actions and suggest commands they should use as alternatives.
 
-=== Programming Wishes ===
+== Programming Wishes ==
 
 Below are wishes related to Emacs support of computer programming, not
 about programming Emacs.  Those are filed above under extensibility.
@@ -448,7 +447,7 @@ string including the beginning and quotes.")
 
 * A general recognition that an unclosed quoting construct is not a syntax error //while I'm still typing it!//
 
-=== Other Wishes ===
+== Other Wishes ==
 
 * I'd like if the EmacsDoctor wasn't such an ass all the time.
 
