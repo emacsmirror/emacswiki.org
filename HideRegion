@@ -29,6 +29,15 @@ I added [[http://github.com/chrisdone/hide-region/commit/d96532344572076f9fcf929
 
 Woops. I just realised there's some nonsense ("rem0veth1s") in the email. Mathias, you use GMail! You don't need to do this! Anyway, I'll forward my email onto the correct address. -- ChrisDone
 
+[new]
+
+I make an enhance of hide-region.el, named it [[hide-region+]], add three more function:
+1 hide-region-unhide-below
+  unhide a region just below the point
+2 hide-region-unhide-all
+  unhide all the region in the current buffer
+3 hide-region-toggle
+  toggle all the gide region in the current buffer
 ----
 CategoryHideStuff
 CategoryRegion
