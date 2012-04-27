@@ -121,7 +121,7 @@ Parmi les commandes utiles on trouvera : (information disponible via `C-h C-h'):
 * '''C-h k''' (`describe-key') - Décrit la commande que le raccourci/menu/souris désigne: Entrez une séquence; Emacs en donne la signification.
 * '''C-h w''' (`where-is') - Liste les raccourcis/commandes menu/actions souris qui déclenchent une commande donnée. C'est l'inverse de `C-h k'.
 * '''C-h f''' (`describe-function') - Décrit une commande ou autre fonction.
-* '''C-h a''' (`apropos') - Liste toutes les commandes dont le nom contient la chaîne de caractères. Exemple: `C-h afile' liste les commandes contenant "file".
+* '''C-h a''' (`apropos') - Liste toutes les commandes dont le nom contient la chaîne de caractères. Exemple: `C-h a file' liste les commandes contenant "file".
 * '''C-h m''' (`describe-mode') - Décrit le(s) mode(s) du buffer actif : décrit les séquences importantes disponibles dans le buffer et donne quelques informations supplémentaires spécifiques au buffer.
 * '''C-h i''' (`info') - Lancer Info, le navigateur de documentation: Accès au Manuel Emacs (et autres documentations).
 
