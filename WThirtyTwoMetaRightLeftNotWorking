@@ -1,0 +1,4 @@
+The Lenovo USB Enhanced Performance Keyboard driver software seems to interfere with M-<right> and M-<left> from working in windows. this can be very annoying if you are trying to use org-mode. It calls itself skdaemon.exe in the task manager and killing it will solve the problem temporarily or uninstalling the driver will solve it permanently.
+
+
+
