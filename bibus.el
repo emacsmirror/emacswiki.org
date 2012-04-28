@@ -1,4 +1,4 @@
-;;; bibus.el --- 
+;;; bibus.el --- Major mode for displaying and managing reference keys
 
 ;; Copyright 2006 Ye Wenbin
 ;;
