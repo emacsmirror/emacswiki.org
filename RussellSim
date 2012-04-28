@@ -1,0 +1,15 @@
+I have been using Emacs since 2010.  I started writing elisp in 2011 and in 2012 I have started developing with Common Lisp.  But from day to day I mostly program in Python.
+
+My Emacs and other configs are stored at my [https://github.com/russell/dotfiles github].
+
+My current configuration involves.
+
+||Window Manger||[[http://stumpwm.org/ Stumpwm]]||
+||Webbrowser||Firefox (with [[https://github.com/mooz/keysnail/wiki keysnail]])||
+||Editor||Emacs||
+||Email||[[Gnus]]||
+||IRC||[[ERC]]||
+||Jabber||[[JabberEl]]||
+
+----
+CategoryHomepage
