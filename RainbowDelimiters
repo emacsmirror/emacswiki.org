@@ -1,8 +1,8 @@
 <b>[[RainbowDelimiters]]</b> is a "rainbow parentheses"-like mode which highlights parentheses, brackets, and braces according to their depth. Each successive level is highlighted in a different color. This makes it easy to spot matching delimiters, orient yourself in the code, and tell which statements are at a given depth.
 
-Great care has been taken to make this mode FAST. You shouldn’t see any change in scrolling or editing speed even with delimiter-rich languages like Clojure, Lisp, and Scheme.
+Great care has been taken to make this mode FAST. You shouldn’t see any change in scrolling or editing speed even with delimiter-rich languages like Clojure or EmacsLisp.
 
-You can customize the color scheme [[RainbowDelimiters]] uses. Default colors are intentionally subtle, with the philosophy that syntax highlighting shouldn't be visually intrusive.
+You can customize the color scheme [[RainbowDelimiters]] uses. Default colors are intentionally subtle.
 
 
 = Download: =
@@ -14,7 +14,7 @@ You can customize the color scheme [[RainbowDelimiters]] uses. Default colors ar
 *** A large file which revealed this bottleneck now highlights ~40x faster.
 ** Color scheme for light backgrounds.
 ** Correct broken/incorrect highlighting reported in certain languages.
-* Features:
+* Overview:
 ** Correct highlighting for non-Lisp languages (/Perl, C, etc./). Respects syntax of the buffer major-mode.
 ** global-rainbow-delimiters mode: Use rainbow-delimiters editor-wide.
 ** Checkboxes to enable/disable highlighting of each type of delimiter.
