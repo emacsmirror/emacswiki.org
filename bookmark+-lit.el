@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams
 ;; Copyright (C) 2010-2112, Drew Adams, all rights reserved.
 ;; Created: Wed Jun 23 07:49:32 2010 (-0700)
-;; Last-Updated: Thu Feb 23 09:03:25 2012 (-0800)
+;; Last-Updated: Sat Apr 28 16:41:38 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 776
+;;     Update #: 779
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-lit.el
 ;; Keywords: bookmarks, highlighting, bookmark+
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -1274,7 +1274,9 @@ If STYLE is `none' then:
                          (setq ov  (save-excursion
                                      (make-overlay
                                       (progn (goto-char pos) (line-beginning-position 1))
-                                      (progn (goto-char pos) (line-beginning-position 2)))))
+                                      (progn (goto-char pos) (line-beginning-position 2))
+                                      nil
+                                      'FRONT-ADVANCE)))
                        (overlay-put ov 'before-string nil) ; Remove any fringe highlighting.
                        (save-excursion
                          (move-overlay ov
@@ -1287,13 +1289,15 @@ If STYLE is `none' then:
       (bol           (if (not ov)
                          (setq ov  (save-excursion (goto-char pos)
                                                    (make-overlay (line-beginning-position)
-                                                                 (1+ (line-beginning-position)))))
+                                                                 (1+ (line-beginning-position))
+                                                                 nil
+                                                                 'FRONT-ADVANCE)))
                        (overlay-put ov 'before-string nil) ; Remove any fringe highlighting.
                        (save-excursion (goto-char pos)
                                        (move-overlay ov (line-beginning-position)
                                                      (1+ (line-beginning-position))))))
       (point         (if (not ov)
-                         (setq ov  (make-overlay pos (1+ pos)))
+                         (setq ov  (make-overlay pos (1+ pos) nil 'FRONT-ADVANCE))
                        (overlay-put ov 'before-string nil) ; Remove any fringe highlighting.
                        (move-overlay ov pos (1+ pos))))
       (none          (when ov (delete-overlay ov))  (setq ov nil)))
@@ -1317,7 +1321,9 @@ Non-nil LINEP means also highlight the line containing POS."
                                       (1+ (point))))
       (setq ov  (save-excursion (make-overlay (progn (goto-char pos)
                                                      (goto-char (line-beginning-position)))
-                                              (1+ (point))))))
+                                              (1+ (point))
+                                              nil
+                                              'FRONT-ADVANCE))))
     (overlay-put ov 'before-string (bmkp-fringe-string side autonamedp))
     (if linep
         (move-overlay ov (save-excursion (goto-char pos) (line-beginning-position 1))
