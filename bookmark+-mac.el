@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams
 ;; Copyright (C) 2000-2012, Drew Adams, all rights reserved.
 ;; Created: Sun Aug 15 11:12:30 2010 (-0700)
-;; Last-Updated: Thu Apr 12 11:00:03 2012 (-0700)
+;; Last-Updated: Fri Apr 27 17:25:39 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 90
+;;     Update #: 97
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-mac.el
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -100,7 +100,8 @@
 ;;    `bmkp-define-cycle-command',
 ;;    `bmkp-define-next+prev-cycle-commands',
 ;;    `bmkp-define-sort-command', `bmkp-define-file-sort-predicate',
-;;    `bmkp-menu-bar-make-toggle'.
+;;    `bmkp-menu-bar-make-toggle',
+;;    `bmkp-with-output-to-plain-temp-buffer'.
 ;;
 ;;  Non-interactive functions defined here:
 ;;
@@ -191,6 +192,17 @@ Elements of ALIST that are not conses are ignored."
 ;;(@* "Macros")
 
 ;;; Macros -----------------------------------------------------------
+
+;;;###autoload
+(defmacro bmkp-with-output-to-plain-temp-buffer (buf &rest body)
+  "Like `with-output-to-temp-buffer', but with no *Help* navigation stuff."
+  `(unwind-protect
+    (progn
+      (remove-hook 'temp-buffer-setup-hook 'help-mode-setup)
+      (remove-hook 'temp-buffer-show-hook  'help-mode-finish)
+      (with-output-to-temp-buffer ,buf ,@body))
+    (add-hook 'temp-buffer-setup-hook 'help-mode-setup)
+    (add-hook 'temp-buffer-show-hook  'help-mode-finish)))
 
 ;;;###autoload
 (defmacro bmkp-define-cycle-command (type &optional otherp)
