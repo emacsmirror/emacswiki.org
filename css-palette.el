@@ -1,4 +1,4 @@
-;;; css-palette.el 
+;;; css-palette.el --- "palettes" inside block comments
 ;; Copyright (C) 2008 Niels Giesen
 
 ;; Author: Niels Giesen <nielsforkgiesen@gmailspooncom, but please
