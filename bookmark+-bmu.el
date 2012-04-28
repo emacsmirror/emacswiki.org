@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2012, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 09:05:21 2010 (-0700)
-;; Last-Updated: Sat Apr 14 07:05:17 2012 (-0700)
+;; Last-Updated: Fri Apr 27 17:37:00 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 1827
+;;     Update #: 1828
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-bmu.el
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -320,7 +320,9 @@
 (defalias 'bmkp-bookmark-name-from-record 'bookmark-name-from-full-record)
 
 
-(require 'bookmark+-mac) ;; bmkp-define-sort-command
+(require 'bookmark+-mac) ;; bmkp-define-sort-command, bmkp-with-output-to-plain-temp-buffer
+
+(put 'bmkp-with-output-to-plain-temp-buffer 'common-lisp-indent-function '(4 &body))
 
 ;; (eval-when-compile (require 'bookmark+-1))
 ;; bmkp-add-tags, bmkp-alpha-p, bmkp-bookmark-creation-cp,
@@ -3820,7 +3822,7 @@ The current bookmark list is then updated to reflect your edits."
                               (bmkp-marked-bookmarks-only))))
     (unless copied-bmks (error "No marked bookmarks"))
     (setq bmkp-edit-bookmark-records-number  (length copied-bmks))
-    (with-output-to-temp-buffer bufname
+    (bmkp-with-output-to-plain-temp-buffer bufname
       (princ
        (substitute-command-keys
         (concat ";; Edit the Lisp records for the marked bookmarks.\n;;\n"
