@@ -79,7 +79,17 @@ First, you'll want to customize same-window-regexps to include ##"\\*shell.*\\*\
               next-shell-buffer))
       (shell buffer)))
 
+Another take on multiple shells, one shell per tramp host. If you already have a shell for that user@host then raise it.
 
+ (defun my-shell (&optional buffer)
+   (interactive)
+   (let* ((tramp-path (when (tramp-tramp-file-p default-directory)
+                        (tramp-dissect-file-name default-directory)))
+          (host (tramp-file-name-real-host tramp-path))
+          (user (if (tramp-file-name-user tramp-path)
+                  (format "%s@" (tramp-file-name-user tramp-path)) ""))
+          (new-buffer-name (format "*shell:%s%s*" user host)))
+     (shell (if host new-buffer-name buffer))))
 
 ==garbage ls output / garbage gcc output==
 
