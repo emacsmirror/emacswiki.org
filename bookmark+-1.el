@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2012, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 13:43:55 2010 (-0700)
-;; Last-Updated: Wed Apr 18 15:42:23 2012 (-0700)
+;; Last-Updated: Fri Apr 27 17:26:22 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 5147
+;;     Update #: 5150
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-1.el
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -593,7 +593,9 @@
 
 (require 'bookmark+-mac)
 ;; bmkp-define-cycle-command, bmkp-define-file-sort-predicate, bmkp-menu-bar-make-toggle,
-;; bmkp-replace-regexp-in-string
+;; bmkp-replace-regexp-in-string, bmkp-with-output-to-plain-temp-buffer
+
+(put 'bmkp-with-output-to-plain-temp-buffer 'common-lisp-indent-function '(4 &body))
 
 (eval-when-compile (require 'bookmark+-bmu))
 ;; bmkp-bmenu-before-hide-marked-alist,
@@ -3227,7 +3229,7 @@ The current bookmark list is then updated to reflect your edits."
          (bufname   (format "*Edit Record for Bookmark `%s'*" bname)))
     (set-text-properties 0 (length bname) nil bname) ; Strip properties from (copied) name string.
     (bookmark-maybe-historicize-string bname)
-    (with-output-to-temp-buffer bufname
+    (bmkp-with-output-to-plain-temp-buffer bufname
       (princ
        (substitute-command-keys
         (concat ";; Edit the Lisp record for bookmark\n;;\n"
@@ -3308,7 +3310,7 @@ BOOKMARK is a bookmark name or a bookmark record."
          (bmkname  (bmkp-bookmark-name-from-record bookmark))
          (edbuf    (format "*Edit Tags for Bookmark `%s'*" bmkname)))
     (setq bmkp-return-buffer  (current-buffer))
-    (with-output-to-temp-buffer edbuf
+    (bmkp-with-output-to-plain-temp-buffer edbuf
       (princ
        (substitute-command-keys
         (concat ";; Edit tags for bookmark\n;;\n;; \"" bmkname "\"\n;;\n"
