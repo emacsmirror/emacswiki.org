@@ -7,9 +7,9 @@
 ;; Copyright (C) 1999-2012, Drew Adams, all rights reserved.
 ;; Created: Fri Mar 19 15:58:58 1999
 ;; Version: 21.2
-;; Last-Updated: Sat Apr 28 13:04:33 2012 (-0700)
+;; Last-Updated: Sat Apr 28 14:40:21 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 4781
+;;     Update #: 4800
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/dired+.el
 ;; Keywords: unix, mouse, directories, diredp, dired
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -109,11 +109,13 @@
 ;;    `diredp-dired-union-other-window', `diredp-do-bookmark',
 ;;    `diredp-do-bookmark-in-bookmark-file',
 ;;    `diredp-do-find-marked-files-recursive', `diredp-do-grep',
-;;    `diredp-do-move-recursive', `diredp-do-paste-add-tags',
-;;    `diredp-do-paste-replace-tags', `diredp-do-remove-all-tags',
-;;    `diredp-do-set-tag-value', `diredp-do-tag', `diredp-do-untag',
-;;    `diredp-downcase-this-file', `diredp-ediff', `diredp-fileset',
-;;    `diredp-find-a-file', `diredp-find-a-file-other-frame',
+;;    `diredp-do-grep-recursive', `diredp-do-move-recursive',
+;;    `diredp-do-paste-add-tags', `diredp-do-paste-replace-tags',
+;;    `diredp-do-remove-all-tags', `diredp-do-set-tag-value',
+;;    `diredp-do-shell-command-recursive', `diredp-do-tag',
+;;    `diredp-do-untag', `diredp-downcase-this-file', `diredp-ediff',
+;;    `diredp-fileset', `diredp-find-a-file',
+;;    `diredp-find-a-file-other-frame',
 ;;    `diredp-find-a-file-other-window',
 ;;    `diredp-find-file-other-frame',
 ;;    `diredp-find-file-reuse-dir-buffer',
@@ -273,7 +275,8 @@
 ;; 2012/04/28 dadams
 ;;     Added:
 ;;       diredp-copy-filename-as-kill-recursive, diredp-do-copy-recursive,
-;;       diredp-do-find-marked-files-recursive, diredp-do-move-recursive,
+;;       diredp-do-find-marked-files-recursive, diredp-do-grep-recursive,
+;;       diredp-do-move-recursive, diredp-do-shell-command-recursive,
 ;;       diredp-list-marked-recursive, diredp-marked-recursive(-other-window),
 ;;       diredp-multiple-w32-browser-recursive, diredp-do-create-files-recursive,
 ;;       diredp-get-confirmation-recursive, diredp-list-files, diredp-y-or-n-files-p,
@@ -283,6 +286,7 @@
 ;;     Moved bookmark menu items to submenu Bookmarks.
 ;;     Added keys (with M-+ prefix) and menu items for new (*-recursive) commands.
 ;;     Reordered w32-browser stuff in menus.
+;;     diredp-do-grep: Combined defs for diff Emacs versions - do version test at runtime.
 ;; 2012/04/25 dadams
 ;;     dired-insert-directory: Updated per Emacs 24.
 ;; 2012/04/23 dadams
@@ -1449,11 +1453,17 @@ If HDR is non-nil, insert a header line with the directory name."
 (define-key diredp-menu-bar-operate-menu [recursive-marked]
   (cons "Recursive Marked" diredp-menu-bar-recursive-marked-menu))
 
+(define-key diredp-menu-bar-recursive-marked-menu [diredp-do-grep-recursive]
+    '(menu-item "Grep..." diredp-do-grep-recursive
+      :help "Run `grep' on the marked files, including those in marked subdirs"))
+(define-key diredp-menu-bar-recursive-marked-menu [diredp-do-shell-command-recursive]
+    '(menu-item "Shell Command..." diredp-do-shell-command-recursive
+      :help "Run shell command on the marked files, including those in marked subdirs"))
 (define-key diredp-menu-bar-recursive-marked-menu [diredp-do-move-recursive]
-    '(menu-item "Move" diredp-do-move-recursive
+    '(menu-item "Move to..." diredp-do-move-recursive
       :help "Move marked files, including in marked subdirs, to a given directory"))
 (define-key diredp-menu-bar-recursive-marked-menu [diredp-do-copy-recursive]
-    '(menu-item "Copy" diredp-do-copy-recursive
+    '(menu-item "Copy to..." diredp-do-copy-recursive
       :help "Copy marked files, including in marked subdirs, to a given directory"))
 (define-key diredp-menu-bar-recursive-marked-menu [separator-1] '("--"))
 (define-key diredp-menu-bar-recursive-marked-menu [diredp-list-marked-recursive]
@@ -1869,10 +1879,12 @@ If HDR is non-nil, insert a header line with the directory name."
 (define-prefix-command 'diredp-recursive-map)
 (define-key dired-mode-map "\M-+"  diredp-recursive-map) ; `M-+'
 
+(define-key diredp-recursive-map "!"           'diredp-do-shell-command-recursive)      ; `!'
 (define-key diredp-recursive-map "C"           'diredp-do-copy-recursive)               ; `C'
 (define-key diredp-recursive-map "F"           'diredp-do-find-marked-files-recursive)  ; `F'
 (define-key diredp-recursive-map "l"           'diredp-list-marked-recursive)           ; `l'
 (define-key diredp-recursive-map "R"           'diredp-do-move-recursive)               ; `R'
+(define-key diredp-recursive-map "\M-g"        'diredp-do-grep-recursive)               ; `M-g'
 (define-key diredp-recursive-map "\M-w"        'diredp-copy-filename-as-kill-recursive) ; `M-w'
 (define-key diredp-recursive-map (kbd "C-M-*") 'diredp-marked-recursive-other-window)   ; `C-M-*'
 
@@ -2658,6 +2670,30 @@ Raise an error if not confirmed."
   (unless (y-or-n-p "Act on ALL files (or all marked if any) in and UNDER this dir? ")
     (error "OK, canceled")))
 
+(defun diredp-do-shell-command-recursive (command &optional ignore-marks-p) ; Bound to `M-+ !'
+  "Run shell COMMAND on the marked files, including those in marked subdirs.
+Like `dired-do-shell-command', but act recursively on subdirs.
+The files included are those that are marked in the current Dired
+buffer, or all files in the directory if none are marked.  Marked
+subdirectories are handled recursively in the same way.
+
+With a prefix argument, ignore all marks - include all files in this
+Dired buffer and all subdirs, recursively."
+  (interactive
+   (progn (diredp-get-confirmation-recursive)
+          (let* ((prompt  "! on *: ")
+                 (cmd     (minibuffer-with-setup-hook
+                              (lambda ()
+                                (set (make-local-variable 'minibuffer-default-add-function)
+                                     'minibuffer-default-add-dired-shell-commands))
+                            (let ((dired-no-confirm  t))
+                              (if (functionp 'dired-guess-shell-command)
+                                  ;; Guess cmd based only on files marked in current (top) dir.
+                                  (dired-guess-shell-command prompt (dired-get-marked-files t))
+                                (read-shell-command prompt nil nil))))))
+            (list cmd current-prefix-arg))))
+  (dired-do-shell-command command nil (diredp-get-files ignore-marks-p)))
+
 (defun diredp-do-find-marked-files-recursive (&optional ignore-marks-p) ; Bound to `M-+ F'
   "Find marked files simultaneously, including those in marked subdirs.
 Like `dired-do-find-marked-files', but act recursively on subdirs.
@@ -2670,6 +2706,25 @@ Dired buffer and all subdirs, recursively."
   (interactive (progn (diredp-get-confirmation-recursive)
                       (list current-prefix-arg)))
   (dired-simultaneous-find-file (diredp-get-files ignore-marks-p) nil))
+
+(defun diredp-do-grep-recursive (command-args &optional ignore-marks-p) ; Bound to `M+ M-g'
+  "Run `grep' on marked files, including those in marked subdirs.
+Like `diredp-do-grep', but act recursively on subdirs.
+The files included are those that are marked in the current Dired
+buffer, or all files in the directory if none are marked.  Marked
+subdirectories are handled recursively in the same way.
+
+With a prefix argument, ignore all marks - include all files in this
+Dired buffer and all subdirs, recursively."
+  (interactive (progn (diredp-get-confirmation-recursive)
+                      (unless (if (< emacs-major-version 22)
+                                  grep-command
+                                (and grep-command  (or (not grep-use-null-device)
+                                                       (eq grep-use-null-device t))))
+                        (grep-compute-defaults))
+                      (list (diredp-do-grep-1 (diredp-get-files current-prefix-arg))
+                            current-prefix-arg)))
+  (grep command-args))
 
 (defun diredp-marked-recursive (dirname &optional ignore-marked-p) ; Not bound to a key
   "Open Dired on marked files, including those in marked subdirs.
@@ -3981,27 +4036,18 @@ A prefix argument ARG specifies files to use instead of marked.
   (interactive "P")
   (dired-map-over-marks-check #'dired-load arg 'load (diredp-fewer-than-2-files-p arg)))
 
-(when (< emacs-major-version 22)
-  (defun diredp-do-grep (command-args)  ; Bound to `M-g'
-    "Run `grep' on marked (or next prefix arg) files.
+(defun diredp-do-grep (command-args)    ; Bound to `M-g'
+  "Run `grep' on marked (or next prefix arg) files.
 A prefix argument behaves according to the ARG argument of
 `dired-get-marked-files'.  In particular, `C-u C-u' operates on all
 files in the Dired buffer."
-    (interactive (progn (unless grep-command (grep-compute-defaults))
-                        (list (diredp-do-grep-1))))
-    (grep command-args)))
-
-(unless (< emacs-major-version 22)
-  (defun diredp-do-grep (command-args)  ; Bound to `M-g'
-    "Run `grep' on marked (or next prefix arg) files.
-A prefix argument behaves according to the ARG argument of
-`dired-get-marked-files'.  In particular, `C-u C-u' operates on all
-files in the Dired buffer."
-    (interactive (progn (unless (and grep-command  (or (not grep-use-null-device)
-                                                       (eq grep-use-null-device t)))
-                          (grep-compute-defaults))
-                        (list (diredp-do-grep-1))))
-    (grep command-args)))
+  (interactive (progn (unless (if (< emacs-major-version 22)
+                                  grep-command
+                                (and grep-command  (or (not grep-use-null-device)
+                                                       (eq grep-use-null-device t))))
+                        (grep-compute-defaults))
+                      (list (diredp-do-grep-1))))
+  (grep command-args))
 
 ;; Optional arg FILES is no longer used.  It was used in `diredp-do-grep' before the
 ;; new `dired-get-marked-files'.
