@@ -1,27 +1,31 @@
 <b>[[RainbowDelimiters]]</b> is a "rainbow parentheses"-like mode which highlights parentheses, brackets, and braces according to their depth. Each successive level is highlighted in a different color. This makes it easy to spot matching delimiters, orient yourself in the code, and tell which statements are at a given depth.
 
-Great care has been taken to make this mode FAST. You shouldn't see any change in scrolling or editing speed when it's on even when working in delimiter-rich languages like Clojure, Lisp and Scheme.
+Great care has been taken to make this mode FAST. You shouldn’t see any change in scrolling or editing speed even with delimiter-rich languages like Clojure, Lisp, and Scheme.
 
-You can customize the colors [[RainbowDelimiters]] uses. The default colors are intentionally subtle; they are unobtrusive enough to make the mode worth looking at even if you usually don't like rainbow parentheses modes. 
+You can customize the color scheme [[RainbowDelimiters]] uses. Default colors are intentionally subtle, with the philosophy that syntax highlighting shouldn't be visually intrusive.
 
 
 = Download: =
 * [http://github.com/jlr/rainbow-delimiters/raw/master/rainbow-delimiters.el rainbow-delimiters.el]. Current release is always found on github at [http://github.com/jlr/rainbow-delimiters/ jlr/rainbow-delimiters].
 
-* Current release: <b>1.3.3</b> (2011-11-25)
-** Backwards compatibility with Emacs versions prior to 23.2.
+* Current release: <b>1.3.4</b> (2012-04-27)
+** Further optimize highlighting speed. Benchmarks show 2x improvement.
+** Eliminate bottleneck seen in certain large files.
+*** A large file which revealed this bottleneck now highlights ~40x faster.
+** Color scheme for light backgrounds.
+** Correct broken/incorrect highlighting reported in certain languages.
+* Features:
 ** Correct highlighting for non-Lisp languages (/Perl, C, etc./). Respects syntax of the buffer major-mode.
-** Add global-rainbow-delimiters mode.
+** global-rainbow-delimiters mode: Use rainbow-delimiters editor-wide.
 ** Checkboxes to enable/disable highlighting of each type of delimiter.
-** Improvements to customize interface.
-** Infinite depth support by repeatedly cycling through defined faces.
-** Documentation changes.
+** Customizable color scheme works with deftheme and color-theme.el.
+** Infinite nesting depth by repeatedly cycling through defined faces.
 
 
 = Setup instructions: =
 1. Download rainbow-delimiters.el from git and add it to your emacs load-path.
 
-2. Byte-compile the file (necessary for speed):
+2. Byte-compile the file (*necessary for speed*):
 <pre>
 M-x byte-compile-file <location of rainbow-delimiters.el>
 </pre>
@@ -36,6 +40,11 @@ M-x byte-compile-file <location of rainbow-delimiters.el>
 - To *use only with specific modes*, add lines like the following:
 <pre>
 (add-hook 'clojure-mode-hook 'rainbow-delimiters-mode)
+</pre>
+
+- To *enable in all programming-related modes* (Emacs 24+):
+<pre>
+(add-hook 'prog-mode-hook 'rainbow-delimiters-mode)
 </pre>
 
 - To *use Emacs-wide*, add this line:
@@ -64,7 +73,9 @@ The customize group <code>rainbow-delimiters-faces</code> contains the faces for
 
 The face <code>rainbow-delimiters-unmatched-face</code> is used for unmatched closing delimiters.
 
-*Color-theme.el users:* Further information is available at the top of rainbow-delimiters.el.
+Color themes Zenburn and Solarized have added their own faces for the mode.
+
+*deftheme*/color-theme.el: Further information is available at the top of rainbow-delimiters.el.
 
 
 === Stop Highlighting Certain Delimiters ===
@@ -74,12 +85,10 @@ You can *disable highlighting* of any of the supported delimiter types through t
 == Other Information ==
 Rainbow-delimiters comes with two *default color schemes*, for light and dark backgrounds. Emacs chooses which to used based on the value of variable 'frame-background-mode'.
 
-The light/dark color schemes differ only in their brightness level.
-
 [http://emacs-fu.blogspot.com/2011/05/toward-balanced-and-colorful-delimiters.html emacs-fu: toward balanced and colorful delimiters] is a blog post describing rainbow-delimiters, including a screenshot using a different color theme.
 
 == Development Version/Contributing ==
-The current development version will always be at github, under [http://github.com/jlr/rainbow-delimiters jlr/rainbow-delimiters].
+The current development version is always at github, under [http://github.com/jlr/rainbow-delimiters jlr/rainbow-delimiters].
 
 == Reporting Issues ==
 Please send any bug reports or feature requests through the rainbow-delimiters [http://github.com/jlr/rainbow-delimiters github] page.
