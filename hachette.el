@@ -1,5 +1,4 @@
-;;; hachette.el
-;; Lookup a word on the Hachette's online french dictionary.
+;;; hachette.el --- Lookup a word on the Hachette's online french dictionary.
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Emacs Lisp Archive Entry
 ;; Filename: hachette.el
