@@ -191,7 +191,7 @@
            "https://github.com/kiwanami/emacs-window-manager/raw/master/e2wm.el"))
          ("helm" nil nil
           (
-           "https://github.com/emacs-helm/helm/raw/master/helm.el"))
+           "https://raw.github.com/emacs-helm/helm/master/helm.el"))
          )                              ;/appende
        auto-install-batch-list))        ;/setq
 
