@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2012, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Wed Apr 18 15:44:14 2012 (-0700)
+;; Last-Updated: Sat Apr 28 16:45:25 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 14787
+;;     Update #: 14795
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-chg.el
 ;; Keywords: bookmarks, bookmark+
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -145,6 +145,8 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-1.el'")
 ;;
+;; 2012/04/27 dadams
+;;     bmkp-edit-(tags|bookmark-record): Use bmkp-with-output-to-plain-temp-buffer.
 ;; 2012/04/18 dadams
 ;;     Do not try to define bmkp-global-auto-idle-bookmark-mode for Emacs 21 (no define-globalized*).
 ;; 2012/04/16 dadams
@@ -752,6 +754,8 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-bmu.el'")
 ;;
+;; 2012/04/27 dadams
+;;     bmkp-bmenu-edit-marked: Use bmkp-with-output-to-plain-temp-buffer.
 ;; 2012/04/13 dadams
 ;;     Added: bmkp-bmenu-sort-(flagged|modified)-before-un(flagged|modified), bmkp-flagged-bookmarks.
 ;;     Bound bmkp-bmenu-sort-(flagged|modified)-before-un(flagged|modified) to s D, s *.
@@ -1109,6 +1113,8 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-lit.el'")
 ;;
+;; 2012/04/28 dadams
+;;     bmkp-make/move-overlay-of-style, bmkp-make/move-fringe: Use FRONT-ADVANCE arg for make-overlay.
 ;; 2011/12/30 dadams
 ;;     Added aliases: bmkp-bookmark-(data|name)-from-record.
 ;;     bmkp-bookmarks-lighted-at-point: Include only bookmarks in bookmark-alist.
@@ -1155,6 +1161,8 @@
 ;;       that depends on macros needs to be byte-compiled anew after loading the updated macros.
 ;; **************************************************************************************************
 ;;
+;; 2012/04/27
+;;     Added: bmkp-with-output-to-plain-temp-buffer.
 ;; 2012/04/12 dadams
 ;;     bmkp-define-sort-command: Do not bmkp-bmenu-goto-bookmark-named unless current-bmk (play safe).
 ;; 2012/04/11 dadams
