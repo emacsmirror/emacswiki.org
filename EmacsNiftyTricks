@@ -74,6 +74,15 @@ For those of us using earlier versions, use the PictureModeTrailingWhitespaceTri
 * Shrink-wrap (resize) frames to fit their selected window: Lisp:fit-frame.el and Lisp:autofit-frame.el. 
 * ColorTheme
 * `M-x line-number-mode' and `column-number-mode' (or ##(column-number-mode 1)## or ##(line-number-mode 1)## in your ##.emacs##)
+* Stop emacs from dinging when you use `ctrl-G'
+
+    ;; quiet, please! No dinging!
+    (setq visible-bell nil)
+    (setq ring-bell-function `(lambda ()
+                            (set-face-background 'default "DodgerBlue")
+                            (set-face-background 'default "black")))
+
+
 * Put ##(menu-bar-mode -1)## in your ##.emacs## to get rid of that useless menu bar.  Or take a look at ActiveMenu for a dynamic solution.
 * Set `next-line-add-newlines' to `t' and stop worrying about whether you are at the end of the file when you do `C-n'.  (Why is there no `right-add-newlines'?)
 * Want line numbers on the left of your buffer? see LineNumbers -- found by AlexSchroeder
