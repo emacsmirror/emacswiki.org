@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2012, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Sat Apr 28 16:45:25 2012 (-0700)
+;; Last-Updated: Sat Apr 28 23:31:18 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 14795
+;;     Update #: 14808
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-chg.el
 ;; Keywords: bookmarks, bookmark+
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -754,6 +754,14 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-bmu.el'")
 ;;
+;; 2012/04/28 dadams
+;;     bookmark-bmenu-(un)mark(-all), bmkp-bmenu-regexp-mark, bmkp-bmenu-mark-bookmarks-satisfying,
+;;       bmkp-bmenu-toggle-marks, bmkp-bmenu-(un)mark-bookmarks-tagged-regexp,
+;;       bmkp-bmenu-mark/unmark-bookmarks-tagged-(all/none|some/not-all):
+;;         Added optional arg NO-RE-SORT-P.
+;;         Automatically re-sort if marks changed and if sort order is marked first/last (s >).
+;;     Changed all non-interactive calls of bookmark-bmenu-(un)mark to pass non-nil NO-RE-SORT-P.
+;;     bmkp-bmenu-toggle-marks: Call bookmark-bmenu-ensure-position at start.
 ;; 2012/04/27 dadams
 ;;     bmkp-bmenu-edit-marked: Use bmkp-with-output-to-plain-temp-buffer.
 ;; 2012/04/13 dadams
