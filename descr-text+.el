@@ -7,16 +7,16 @@
 ;; Copyright (C) 2011-2012, Drew Adams, all rights reserved.
 ;; Created: Thu Nov 24 11:57:04 2011 (-0800)
 ;; Version: 23.1
-;; Last-Updated: Fri Jan 27 13:24:15 2012 (-0800)
+;; Last-Updated: Sun Apr 29 09:48:10 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 230
+;;     Update #: 237
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/descr-text+.el
 ;; Keywords: help, characters, description
 ;; Compatibility: GNU Emacs: 22.x, 23.x, 24.x
 ;;
 ;; Features that might be required by this library:
 ;;
-;;   `button', `descr-text', `help-mode', `view'.
+;;   `button', `descr-text', `help-fns', `help-mode', `view'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -53,6 +53,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2012/04/29 dadams
+;;     describe-char for Emacs 22: Replaced charset-description by its macro expansion.
 ;; 2012/01/27 dadams
 ;;     Added: describe-property-list, describe-text-properties(-1), describe-text-sexp.
 ;;     describe-char: Added optional arg WIDTH.  Use it instead of function window-width.
@@ -398,7 +400,12 @@ as well as widgets, buttons, overlays, and text properties."
                ,`(insert-text-button
                   ,(symbol-name charset)
                   'type 'help-character-set 'help-args '(,charset))
-               ,(format "(%s)" (charset-description charset)))
+               ;; The next sexp is just the macro expansion of this:
+               ;; ,(format "(%s)" (charset-description charset)))
+               ;; Need to do this because `charset-description' is a macro in Emacs 22.
+               ,(format "(%s)" (if (charset-quoted-standard-p charset)
+                                   (aref (charset-info (nth 1 charset)) 13)
+                                 (list 'aref (list 'charset-info charset) 13))))
               ("code point"
                ,(let ((split  (split-char char)))
                      `(insert-text-button
