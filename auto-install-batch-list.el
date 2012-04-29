@@ -189,9 +189,9 @@
           (
            "https://github.com/kiwanami/emacs-window-layout/raw/master/window-layout.el"
            "https://github.com/kiwanami/emacs-window-manager/raw/master/e2wm.el"))
-         ("twittering-mode" nil nil
+         ("helm" nil nil
           (
-           "https://github.com/hayamiz/twittering-mode/raw/master/twittering-mode.el"))
+           "https://github.com/emacs-helm/helm/raw/master/helm.el"))
          )                              ;/appende
        auto-install-batch-list))        ;/setq
 
