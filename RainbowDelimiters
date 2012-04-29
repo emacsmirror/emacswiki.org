@@ -1,4 +1,4 @@
-<b>[[RainbowDelimiters]]</b> is a "rainbow parentheses"-like mode which highlights parentheses, brackets, and braces according to their depth. Each successive level is highlighted in a different color. This makes it easy to spot matching delimiters, orient yourself in the code, and tell which statements are at a given depth.
+<b>[[RainbowDelimiters]]</b> is a "rainbow parentheses"-like mode which highlights parens, brackets, and braces according to their depth. Each successive level is highlighted a different color. This makes it easy to spot matching delimiters, orient yourself in the code, and tell which statements are at the same depth.
 
 Great care has been taken to make this mode FAST. You shouldn’t see any change in scrolling or editing speed even with delimiter-rich languages like Clojure or EmacsLisp.
 
