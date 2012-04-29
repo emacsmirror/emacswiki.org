@@ -9,18 +9,19 @@ You can customize the color scheme [[RainbowDelimiters]] uses. Default colors ar
 * [http://github.com/jlr/rainbow-delimiters/raw/master/rainbow-delimiters.el rainbow-delimiters.el] 
 
 * Current release: <b>1.3.4</b> (2012-04-27)
-* New:
-** Further optimize highlighting speed. Benchmarks show 2x improvement.
+** Further improve highlighting speed. Benchmarks show 2x improvement.
 ** Eliminate bottleneck seen in certain large files.
-*** A large file which revealed this bottleneck now highlights ~40x faster.
+*** A large file which had this now highlights ~40x faster.
 ** Color scheme for light backgrounds.
 ** Correct broken/incorrect highlighting reported in certain languages.
+
 * Overview:
+** Highlights parens, brackets, braces.
 ** Correct highlighting for non-Lisp languages (/Perl, C, etc./). 
 ** global-rainbow-delimiters mode: Use rainbow-delimiters editor-wide.
 ** Checkboxes to enable/disable highlighting of each type of delimiter.
 ** Customizable color scheme works with deftheme and color-theme.el.
-** Infinite nesting depth by repeatedly cycling through defined faces.
+** Infinite nesting depth by cycling through defined faces.
 
 
 = Setup instructions: =
