@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2012, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Wed Apr 18 15:40:52 2012 (-0700)
+;; Last-Updated: Sat Apr 28 17:14:53 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 14548
+;;     Update #: 14563
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-doc.el
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search,
 ;;           info, url, w3m, gnus
@@ -2686,6 +2686,17 @@
 ;;  automatically repositioned following their recorded contexts, and
 ;;  their names reflect that repositioning.
 ;;
+;;  It is only when you jump to a bookmark that it is repositioned
+;;  this way, and only if needed.  It is normal that some bookmarks
+;;  become somewhat out of sync with their original positions as you
+;;  edit the text in the buffer.  In addition, if you highlight
+;;  bookmarks then you will notice the highlighting move as you edit
+;;  nearby text.  The recorded bookmark has not changed, but its
+;;  highlight has moved.  The highlight moves more or less as if it
+;;  were an Emacs marker. When you jump to the bookmark and it is thus
+;;  updated, the highlight moves back to the recorded position,
+;;  adjusted perhaps to fit the recorded context.
+;;
 ;;  `C-x p RET' is `bmkp-toggle-autonamed-bookmark-set/delete', and it
 ;;  does double duty.  If an autonamed bookmark is under the cursor,
 ;;  then `C-x p RET' deletes it.  Easy creation, easy deletion.
@@ -2948,6 +2959,14 @@
 ;;  * `bmkp-light-style-non-autonamed' (option)
 ;;  * `bmkp-light-left-fringe-bitmap'  (option)
 ;;  * `bmkp-light-right-fringe-bitmap' (option)
+;;
+;;  Note: A position or line highlight acts more or less like an Emacs
+;;  marker: it moves with the surrounding text.  As you edit the text
+;;  in the buffer, the highlighted location can thus become out of
+;;  sync with the recorded position.  This is normal.  When you jump
+;;  to the bookmark its highlight is automatically repositioned to the
+;;  recorded location, possibly adjusted according to the the
+;;  surrounding context.
 ;;
 ;;  In addition to the default highlighting, which you can customize,
 ;;  you can set the highlighting for individual bookmarks and
