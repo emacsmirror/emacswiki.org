@@ -95,25 +95,25 @@ If you are using Zsh, you will notice setting the variable PROMPT_COMMAND doesn'
 
 On some systems using precmd in the manner above may cause errors.  In this case try the following:
 
-function eterm-update {
-    # Only set the full hostname for ssh sessions.
-    if [[ -n "$SSH_CONNECTION" ]]; then
-        # For ssh connections, use the hostname (it is assumed here that there an ssh alias on the connecting machince that has the same name as the ssh alias).
-        echo -e "\033AnSiTh" "$(hostname)"
-    else
-        # For local sessions, use the full host name so tramp will know that the path is not remote.
-        echo -e "\033AnSiTh" "$(hostname -f)"
-    fi
-    
-    echo -e "\033AnSiTu" "$LOGNAME" # $LOGNAME is more portable than using whoami.
-    echo -e "\033AnSiTc" "$(pwd)"
-}
+    function eterm-update {
+        # Only set the full hostname for ssh sessions.
+        if [[ -n "$SSH_CONNECTION" ]]; then
+            # For ssh connections, use the hostname (it is assumed here that there an ssh alias on the connecting machince that has the same name as the ssh alias).
+            echo -e "\033AnSiTh" "$(hostname)"
+        else
+            # For local sessions, use the full host name so tramp will know that the path is not remote.
+            echo -e "\033AnSiTh" "$(hostname -f)"
+        fi
+        
+        echo -e "\033AnSiTu" "$LOGNAME" # $LOGNAME is more portable than using whoami.
+        echo -e "\033AnSiTc" "$(pwd)"
+    }
 
 eterm-update
 
-function chpwd {
-    eterm-update
-}
+    function chpwd {
+        eterm-update
+    }
 
 == Remote Term Type ==
 
