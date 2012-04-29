@@ -2,7 +2,7 @@
 
 Great care has been taken to make this mode FAST. You shouldn’t see any change in scrolling or editing speed even with delimiter-rich languages like Clojure or EmacsLisp.
 
-You can customize the color scheme [[RainbowDelimiters]] uses. Default colors are intentionally subtle.
+You can customize the color scheme [[RainbowDelimiters]] uses. The color scheme it comes with is intentionally subtle.
 
 
 = Download: =
