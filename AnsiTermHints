@@ -109,11 +109,11 @@ On some systems using precmd in the manner above may cause errors.  In this case
         echo -e "\033AnSiTc" "$(pwd)"
     }
 
-eterm-update
-
     function chpwd {
         eterm-update
     }
+
+    cd "$(pwd)"
 
 == Remote Term Type ==
 
