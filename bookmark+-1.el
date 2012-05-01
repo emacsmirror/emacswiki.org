@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2012, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 13:43:55 2010 (-0700)
-;; Last-Updated: Tue May  1 08:40:23 2012 (-0700)
+;; Last-Updated: Tue May  1 13:18:24 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 5154
+;;     Update #: 5164
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-1.el
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -4259,7 +4259,10 @@ Non-interactively:
  - Non-nil MSGP means display a message about the addition.
  - Non-nil NO-UPDATE-P means do not update `bmkp-tags-alist' and
    do not refresh/rebuild the bookmark-list display.
-Return the number of tags added."
+
+The absolute value of the return value is the number of tags added.
+If BOOKMARK was untagged before the operation, then the return value
+is negative."
   (interactive (list (bookmark-completing-read "Bookmark" (bmkp-default-bookmark-name))
                      (bmkp-read-tags-completing nil nil current-prefix-arg)
                      'msg))
@@ -4275,6 +4278,8 @@ Return the number of tags added."
       (when msgp (message "%d tags added. Now: %S" nb-added ; Echo just the tag names.
                           (let ((tgs  (mapcar #'bmkp-tag-name newtags)))
                             (setq tgs (sort tgs #'string<)))))
+      (when (and (zerop olen)  (> (length newtags) 0))
+        (setq nb-added  (- nb-added)))
       nb-added)))
 
 ;; $$$$$$ Not yet used
@@ -4328,7 +4333,10 @@ Non-interactively:
  - Non-nil MSGP means display status messages.
  - Non-nil NO-UPDATE-P means do not update `bmkp-tags-alist' and
    do not refresh/rebuild the bookmark-list display.
-Return the number of tags removed."
+
+The absolute value of the return value is the number of tags removed.
+If BOOKMARK is untagged after the operation, then the return value
+is negative."
   (interactive (let ((bmk  (bookmark-completing-read "Bookmark" (bmkp-default-bookmark-name))))
                  (list bmk
                        (bmkp-read-tags-completing (mapcar 'bmkp-full-tag (bmkp-get-tags bmk))
@@ -4350,6 +4358,8 @@ Return the number of tags removed."
         (when msgp (message "%d tags removed. Now: %S" nb-removed ; Echo just the tag names.
                             (let ((tgs  (mapcar #'bmkp-tag-name remtags)))
                               (setq tgs (sort tgs #'string<)))))
+      (when (and (zerop (length remtags))  (> olen 0))
+        (setq nb-removed  (- nb-removed)))
         nb-removed))))
 
 ;;;###autoload
@@ -4444,10 +4454,11 @@ Return the number of tags for BOOKMARK."
   (interactive (list (bookmark-completing-read "Bookmark" (bmkp-default-bookmark-name)) 'msg))
   (unless (listp bmkp-copied-tags)
     (error "`bmkp-paste-replace-tags': `bmkp-copied-tags' is not a list"))
-  (when (and msgp  (bmkp-get-tags bookmark)
-             (not (y-or-n-p "Existing tags will be LOST - really replace them? ")))
-    (error "OK - paste-replace tags canceled"))
-  (bmkp-remove-all-tags bookmark no-update-p msgp)
+  (let ((has-tags-p  (bmkp-get-tags bookmark)))
+    (when (and msgp  has-tags-p
+               (not (y-or-n-p "Existing tags will be LOST - really replace them? ")))
+      (error "OK - paste-replace tags canceled"))
+    (when has-tags-p (bmkp-remove-all-tags bookmark no-update-p msgp)))
   (bmkp-add-tags bookmark bmkp-copied-tags no-update-p msgp))
 
 
