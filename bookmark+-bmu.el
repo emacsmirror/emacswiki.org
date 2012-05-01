@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2012, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 09:05:21 2010 (-0700)
-;; Last-Updated: Sat Apr 28 23:32:40 2012 (-0700)
+;; Last-Updated: Tue May  1 08:55:37 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 1911
+;;     Update #: 1930
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-bmu.el
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -167,6 +167,7 @@
 ;;    `bmkp-bmenu-show-only-w3m-urls',
 ;;    `bmkp-bmenu-sort-by-bookmark-name',
 ;;    `bmkp-bmenu-sort-by-bookmark-visit-frequency',
+;;    `bmkp-bmenu-sort-by-bookmark-type',
 ;;    `bmkp-bmenu-sort-by-creation-time',
 ;;    `bmkp-bmenu-sort-by-file-name',
 ;;    `bmkp-bmenu-sort-by-Gnus-thread',
@@ -180,6 +181,7 @@
 ;;    `bmkp-bmenu-sort-flagged-before-unflagged',
 ;;    `bmkp-bmenu-sort-marked-before-unmarked',
 ;;    `bmkp-bmenu-sort-modified-before-unmodified',
+;;    `bmkp-bmenu-sort-tagged-before-untagged',
 ;;    `bmkp-bmenu-toggle-marked-temporary/savable',
 ;;    `bmkp-bmenu-toggle-marks', `bmkp-bmenu-toggle-show-only-marked',
 ;;    `bmkp-bmenu-toggle-show-only-unmarked',
@@ -1475,6 +1477,7 @@ to cycle)
 \\[bmkp-bmenu-sort-marked-before-unmarked]\t- Sort marked (`>') bookmarks first
 \\[bmkp-bmenu-sort-flagged-before-unflagged]\t- Sort flagged (`D') bookmarks first
 \\[bmkp-bmenu-sort-modified-before-unmodified]\t- Sort modified (`*') bookmarks first
+\\[bmkp-bmenu-sort-tagged-before-untagged]\t- Sort tagged (`t') bookmarks first
 
 \\[bmkp-bmenu-sort-by-last-buffer-or-file-access]\t- Sort by last buffer or file \
 access
@@ -4329,6 +4332,13 @@ Otherwise alphabetize by bookmark name.")
  "Sort bookmarks by putting marked before unmarked.
 Otherwise alphabetize by bookmark name.")
 
+(bmkp-define-sort-command               ; Bound to `s 0' (zero) in bookmark list
+ "by creation time"                     ; `bmkp-bmenu-sort-by-creation-time'
+ ((bmkp-bookmark-creation-cp) bmkp-alpha-p)
+ "Sort bookmarks by the time of their creation.
+When one or both of the bookmarks does not have a `created' entry),
+compare them by bookmark name.")
+
 (bmkp-define-sort-command               ; Bound to `s b' in bookmark list
  "by last buffer or file access"        ; `bmkp-bmenu-sort-by-last-buffer-or-file-access'
  ((bmkp-buffer-last-access-cp bmkp-local-file-accessed-more-recently-cp)
@@ -4347,24 +4357,23 @@ remote-file bookmarks by bookmark name.")
 When two bookmarks are not comparable by visit frequency, compare them
 by bookmark name.")
 
-(bmkp-define-sort-command               ; Bound to `s t' in bookmark list
+(bmkp-define-sort-command               ; Bound to `s d' in bookmark list
  "by last bookmark access"              ; `bmkp-bmenu-sort-by-last-bookmark-access'
  ((bmkp-bookmark-last-access-cp) bmkp-alpha-p)
  "Sort bookmarks by the time of their last visit as bookmarks.
 When two bookmarks are not comparable by visit time, compare them
 by bookmark name.")
 
-(bmkp-define-sort-command               ; Bound to `s 0' in bookmark list
- "by creation time"                     ; `bmkp-bmenu-sort-by-creation-time'
- ((bmkp-bookmark-creation-cp) bmkp-alpha-p)
- "Sort bookmarks by the time of their creation.
-When one or both of the bookmarks does not have a `created' entry),
-compare them by bookmark name.")
-
 (bmkp-define-sort-command               ; Bound to `s n' in bookmark list
  "by bookmark name"                     ; `bmkp-bmenu-sort-by-bookmark-name'
  bmkp-alpha-p
  "Sort bookmarks by bookmark name, respecting `case-fold-search'.")
+
+(bmkp-define-sort-command               ; Bound to `s t' in bookmark list
+ "tagged before untagged"               ; `bmkp-bmenu-sort-tagged-before-untagged'
+ ((bmkp-tagged-cp) bmkp-alpha-p)
+ "Sort bookmarks by putting tagged before untagged.
+Otherwise alphabetize by bookmark name.")
 
 ;; This is a general option.  It is in this file because it is used mainly by the bmenu code.
 ;; Its definitions MUST COME AFTER the calls to macro `bmkp-define-sort-command'.
@@ -4562,15 +4571,15 @@ Marked bookmarks that have no associated file are ignored."
 (define-key bookmark-bmenu-mode-map "MS"                   'bmkp-bmenu-show-only-man-pages)
 (define-key bookmark-bmenu-mode-map "\M-m"                 'bmkp-bmenu-mark-all)
 (define-key bookmark-bmenu-mode-map "O"                    nil) ; For Emacs 20
-(define-key bookmark-bmenu-mode-map "OM"               'bmkp-bmenu-mark-orphaned-local-file-bookmarks)
+(define-key bookmark-bmenu-mode-map "OM"                 'bmkp-bmenu-mark-orphaned-local-file-bookmarks)
 (define-key bookmark-bmenu-mode-map "OS"                   'bmkp-bmenu-show-only-orphaned-local-files)
 (define-key bookmark-bmenu-mode-map "P"                    nil) ; For Emacs 20
 (define-key bookmark-bmenu-mode-map "PA"                  'bmkp-bmenu-filter-annotation-incrementally)
-(define-key bookmark-bmenu-mode-map "PB"               'bmkp-bmenu-filter-bookmark-name-incrementally)
+(define-key bookmark-bmenu-mode-map "PB"                 'bmkp-bmenu-filter-bookmark-name-incrementally)
 (define-key bookmark-bmenu-mode-map "PF"                   'bmkp-bmenu-filter-file-name-incrementally)
 (define-key bookmark-bmenu-mode-map "PT"                   'bmkp-bmenu-filter-tags-incrementally)
 (define-key bookmark-bmenu-mode-map "q"                    'bmkp-bmenu-quit)
-(define-key bookmark-bmenu-mode-map "\M-q"          'bmkp-bmenu-query-replace-marked-bookmarks-regexp)
+(define-key bookmark-bmenu-mode-map "\M-q"            'bmkp-bmenu-query-replace-marked-bookmarks-regexp)
 (define-key bookmark-bmenu-mode-map "r"                    'bmkp-bmenu-edit-bookmark-name-and-file)
 (define-key bookmark-bmenu-mode-map "R"                    nil) ; For Emacs 20
 (define-key bookmark-bmenu-mode-map "RM"                   'bmkp-bmenu-mark-region-bookmarks)
@@ -4581,7 +4590,8 @@ Marked bookmarks that have no associated file are ignored."
 (define-key bookmark-bmenu-mode-map "s>"                   'bmkp-bmenu-sort-marked-before-unmarked)
 (define-key bookmark-bmenu-mode-map "s*"                   'bmkp-bmenu-sort-modified-before-unmodified)
 (define-key bookmark-bmenu-mode-map "s0"                   'bmkp-bmenu-sort-by-creation-time)
-(define-key bookmark-bmenu-mode-map "sb"               'bmkp-bmenu-sort-by-last-buffer-or-file-access)
+(define-key bookmark-bmenu-mode-map "sb"                 'bmkp-bmenu-sort-by-last-buffer-or-file-access)
+(define-key bookmark-bmenu-mode-map "sd"                   'bmkp-bmenu-sort-by-last-bookmark-access)
 (define-key bookmark-bmenu-mode-map "sD"                   'bmkp-bmenu-sort-flagged-before-unflagged)
 (define-key bookmark-bmenu-mode-map "sfd"                  'bmkp-bmenu-sort-by-local-file-type)
 (define-key bookmark-bmenu-mode-map "sfn"                  'bmkp-bmenu-sort-by-file-name)
@@ -4595,13 +4605,13 @@ Marked bookmarks that have no associated file are ignored."
 (define-key bookmark-bmenu-mode-map "sr"                   'bmkp-reverse-sort-order)
 (define-key bookmark-bmenu-mode-map "s\C-r"                'bmkp-reverse-multi-sort-order)
 (define-key bookmark-bmenu-mode-map "ss"                   'bmkp-bmenu-change-sort-order-repeat)
-(define-key bookmark-bmenu-mode-map "st"                   'bmkp-bmenu-sort-by-last-bookmark-access)
+(define-key bookmark-bmenu-mode-map "st"                   'bmkp-bmenu-sort-tagged-before-untagged)
 (define-key bookmark-bmenu-mode-map "su"                   'bmkp-bmenu-sort-by-url)
-(define-key bookmark-bmenu-mode-map "sv"                 'bmkp-bmenu-sort-by-bookmark-visit-frequency)
+(define-key bookmark-bmenu-mode-map "sv"                   'bmkp-bmenu-sort-by-bookmark-visit-frequency)
 ;; ;; (define-key bookmark-bmenu-mode-map "sw"                   'bmkp-bmenu-sort-by-w3m-url)
 (when (> emacs-major-version 22)        ; Emacs 23+
  (define-key bookmark-bmenu-mode-map (kbd "M-s a C-s")     'bmkp-bmenu-isearch-marked-bookmarks)
- (define-key bookmark-bmenu-mode-map (kbd "M-s a M-C-s") 'bmkp-bmenu-isearch-marked-bookmarks-regexp))
+ (define-key bookmark-bmenu-mode-map (kbd "M-s a M-C-s")   'bmkp-bmenu-isearch-marked-bookmarks-regexp))
 (define-key bookmark-bmenu-mode-map (kbd "M-s a M-s")      'bmkp-bmenu-search-marked-bookmarks-regexp)
 (define-key bookmark-bmenu-mode-map "T"                    nil) ; For Emacs20
 (define-key bookmark-bmenu-mode-map "T>+"                  'bmkp-bmenu-add-tags-to-marked)
@@ -4636,7 +4646,7 @@ Marked bookmarks that have no associated file are ignored."
 (define-key bookmark-bmenu-mode-map "Tv"                   'bmkp-bmenu-set-tag-value)
 (define-key bookmark-bmenu-mode-map "T\M-w"                'bmkp-bmenu-copy-tags)
 (define-key bookmark-bmenu-mode-map "T\C-y"                'bmkp-bmenu-paste-add-tags)
-(define-key bookmark-bmenu-mode-map "\M-t"            'bookmark-bmenu-toggle-filenames) ; `t' in Emacs
+(define-key bookmark-bmenu-mode-map "\M-t"             'bookmark-bmenu-toggle-filenames) ; `t' in Emacs
 (define-key bookmark-bmenu-mode-map "t"                    'bmkp-bmenu-toggle-marks)
 (define-key bookmark-bmenu-mode-map "U"                    'bmkp-bmenu-unmark-all)
 (define-key bookmark-bmenu-mode-map "\M-u"                 nil) ; For Emacs 20
