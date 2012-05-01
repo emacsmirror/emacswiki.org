@@ -11,11 +11,11 @@ may prevent you from collecting on your damage insurance.
 
 * On devices:
 ** For experiences with Emacs and particular keyboards, see GoodKeyboards and Wiki:ErgonomicKeyboard (keyboards, pedals, etc.)
-*** Japanese keyboards ([https://en.wikipedia.org/wiki/Keyboard_layout#Japanese Wikipedia article]) have many keys that you can press with thumbs, to which you can bind modifiers. It works better with "at-home-modifier" described below.
+*** Japanese keyboards ([https://en.wikipedia.org/wiki/Keyboard_layout#Japanese Wikipedia article]) have many keys that you can press with thumbs, to which you can bind modifiers. For example, the bottom row of Japanese keyboards can work as e.g. <nowiki>[alt][shift][ctrl][shift][alt]</nowiki> *and* <nowiki>[Esc][Bs][Space][Enter][Tab]</nowiki>, /all/ pressed by thumbs.
 ** FootSwitches for Control key and other frequently used keys. For example I use two Usb pedals: one for Ctrl key, the other for Shift key, Shift+Space is bound to RET, and CapsLock for Backspace. This way I solved the problem with RSI. -- SewerynKokot
 * Hacking keyboards:
 ** Keyboard Layouts are discussed in MovingTheCtrlKey, CapsKey, Wiki:DvorakKeyboard
-*** [https://gitorious.org/at-home-modifier/pages/Home at-home-modifier] lets you use the Space key as /both/ space and control (or shift, alt, whichever.) If you press the space alone, it's a space, but if pressed with other keys, it's ctrl.  It's only for Linux, but for Windows, you can use !AutoHotKey, and for Mac, [http://pqrs.org/macosx/keyremap4macbook/index.html keyremap4macbook]. If you have enough keys around the space key (like Japanese keyboards), the bottom row can work as e.g. <nowiki>[alt][shift][ctrl][shift][alt]</nowiki> *and* <nowiki>[Esc][Bs][Space][Enter][Tab]</nowiki>, /all/ pressed by thumbs.
+*** [https://gitorious.org/at-home-modifier/pages/Home at-home-modifier] lets you use the Space key as /both/ space and control (or shift, alt, whichever.) If you press the space alone, it's a space, but if pressed with other keys, it's ctrl.  It's only for Linux, but for Windows, you can use !AutoHotKey, and for Mac, [http://pqrs.org/macosx/keyremap4macbook/index.html keyremap4macbook].
 ** [ViperMode Viper] whips up [ViKeys vi keys] in Emacs, [http://invisible-island.net/vile/ Vile]-like.
 ** StickyModifiers reduce chording, as do FootSwitches; a GamePad controller, accessible through the JoyStick interface, can use chording but not in such a painful way
 ** Functions to avoid RepeatingCommands by hand reduce repetitive movements.
