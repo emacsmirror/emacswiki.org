@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2012, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 13:43:55 2010 (-0700)
-;; Last-Updated: Fri Apr 27 17:26:22 2012 (-0700)
+;; Last-Updated: Tue May  1 08:40:23 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 5150
+;;     Update #: 5154
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-1.el
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -441,16 +441,17 @@
 ;;    `bmkp-some-tags-regexp-alist-only', `bmkp-some-unmarked-p'
 ;;    `bmkp-sort-omit', `bmkp-sound-jump',
 ;;    `bmkp-specific-buffers-alist-only',
-;;    `bmkp-specific-files-alist-only', `bmkp-tag-name',
-;;    `bmkp-tags-in-bookmark-file', `bmkp-tags-list',
-;;    `bmkp-temporary-alist-only', `bmkp-temporary-bookmark-p',
-;;    `bmkp-this-buffer-alist-only', `bmkp-this-buffer-p',
-;;    `bmkp-this-file-alist-only', `bmkp-this-file/buffer-alist-only',
-;;    `bmkp-this-file-p', `bmkp-unmarked-bookmarks-only',
-;;    `bmkp-upcase', `bmkp-update-autonamed-bookmark',
-;;    `bmkp-url-alist-only', `bmkp-url-bookmark-p',
-;;    `bmkp-url-browse-alist-only', `bmkp-url-browse-bookmark-p',
-;;    `bmkp-url-cp', `bmkp-variable-list-alist-only',
+;;    `bmkp-specific-files-alist-only', `bmkp-tagged-bookmark-p',
+;;    `bmkp-tagged-cp', `bmkp-tag-name', `bmkp-tags-in-bookmark-file',
+;;    `bmkp-tags-list', `bmkp-temporary-alist-only',
+;;    `bmkp-temporary-bookmark-p', `bmkp-this-buffer-alist-only',
+;;    `bmkp-this-buffer-p', `bmkp-this-file-alist-only',
+;;    `bmkp-this-file/buffer-alist-only', `bmkp-this-file-p',
+;;    `bmkp-unmarked-bookmarks-only', `bmkp-upcase',
+;;    `bmkp-update-autonamed-bookmark', `bmkp-url-alist-only',
+;;    `bmkp-url-bookmark-p', `bmkp-url-browse-alist-only',
+;;    `bmkp-url-browse-bookmark-p', `bmkp-url-cp',
+;;    `bmkp-variable-list-alist-only',
 ;;    `bmkp-variable-list-bookmark-p', `bmkp-visited-more-cp',
 ;;    `bmkp-w3m-alist-only', `bmkp-w3m-bookmark-p', `bmkp-w3m-cp',
 ;;    `bmkp-w3m-set-new-buffer-name'.
@@ -4059,6 +4060,8 @@ corresponding bookmark buffer is returned."
 BOOKMARK is a bookmark name or a bookmark record."
   (bookmark-prop-get bookmark 'tags))
 
+(defalias 'bmkp-tagged-bookmark-p 'bmkp-get-tags)
+
 (defun bmkp-get-tag-value (bookmark tag)
   "Return value of BOOKMARK's tag TAG.
 BOOKMARK is a bookmark name or a bookmark record.
@@ -5724,6 +5727,23 @@ If either is a record then it need not belong to `bookmark-alist'."
         b2  (bookmark-get-bookmark b2))
   (let ((m1  (bmkp-modified-bookmark-p b1))
         (m2  (bmkp-modified-bookmark-p b2)))
+    (cond ((and m1 m2)  nil)
+          (m1           '(t))
+          (m2           '(nil))
+          (t            nil))))
+
+(defun bmkp-tagged-cp (b1 b2)
+  "True if bookmark B1 is tagged and bookmark B2 is not.
+Reverse the roles of B1 and B2 for a false value.
+A true value is returned as `(t)', a false value as `(nil)'.
+Return nil if incomparable as described.
+
+B1 and B2 are full bookmarks (records) or bookmark names.
+If either is a record then it need not belong to `bookmark-alist'."
+  (setq b1  (bookmark-get-bookmark b1)
+        b2  (bookmark-get-bookmark b2))
+  (let ((m1  (bmkp-tagged-bookmark-p b1))
+        (m2  (bmkp-tagged-bookmark-p b2)))
     (cond ((and m1 m2)  nil)
           (m1           '(t))
           (m2           '(nil))
