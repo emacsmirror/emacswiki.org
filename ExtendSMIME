@@ -1,10 +1,22 @@
 S/MIME support in Gnus is somewhat limited.  ExtendSMIME redefines some Gnus
-functions and adds new ones to include proper support for multiple
-recipients, retrieval and caching of certificates from LDAP servers, and
-(via DefaultEncrypt) automatic insertion of MML tags into messages if
-certificates for all recipients are available.
+functions and adds new ones to include proper support for
+* multiple recipients (smime-encrypt-region enhanced),
+* retrieval  and caching of certificates from LDAP servers
+  (smime-cert-by-ldap-1 redefined, including a bug fix),
+* extraction and caching of certificates from signed messages
+  (smime-verify-region enhanced),
+* and (via jl-encrypt.el) automatic insertion of MML tags into messages if
+  certificates for all recipients are available.
 
-A signed version of jl-encrypt.el is available
+The general idea of ExtendSMIME is to store available certificates in
+files under smime-certificate-directory.  The file names under which a
+certificate is stored are its e-mail addresses.
+A certificate file is written in two cases:  First, if a certificate is
+received on demand via LDAP.  Second, if a signed message containing a
+certificate is verified successfully then the contained certificate is
+stored for each of its e-mail addresses.
+
+Signed versions of jl-smime.el and jl-encrypt.el are available
 [http://www.informationelle-selbstbestimmung-im-internet.de/emacs/ over there].
 
 For basic setup information concerning S/MIME in GNU Emacs (Gnus, in
