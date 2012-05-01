@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2012, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 09:05:21 2010 (-0700)
-;; Last-Updated: Tue May  1 14:57:32 2012 (-0700)
+;; Last-Updated: Tue May  1 15:20:56 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 1976
+;;     Update #: 1988
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-bmu.el
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -107,6 +107,8 @@
 ;;    `bmkp-bmenu-filter-bookmark-name-incrementally',
 ;;    `bmkp-bmenu-filter-file-name-incrementally',
 ;;    `bmkp-bmenu-filter-tags-incrementally',
+;;    `bmkp-bmenu-flag-for-deletion',
+;;    `bmkp-bmenu-flag-for-deletion-backwards',
 ;;    `bmkp-bmenu-isearch-marked-bookmarks' (Emacs 23+),
 ;;    `bmkp-bmenu-isearch-marked-bookmarks-regexp' (Emacs 23+),
 ;;    `bmkp-bmenu-make-sequence-from-marked', `bmkp-bmenu-mark-all',
@@ -264,8 +266,9 @@
 ;;              defined in `bookmark.el' have been REDEFINED HERE:
 ;;
 ;;    `bookmark-bmenu-bookmark', `bookmark-bmenu-check-position',
-;;    `bookmark-bmenu-delete', `bookmark-bmenu-ensure-position' (Emacs
-;;    23.2+), `bookmark-bmenu-hide-filenames', `bookmark-bmenu-mode',
+;;    `bookmark-bmenu-delete', `bookmark-bmenu-delete-backwards',
+;;    `bookmark-bmenu-ensure-position' (Emacs 23.2+),
+;;    `bookmark-bmenu-hide-filenames', `bookmark-bmenu-mode',
 ;;    `bookmark-bmenu-show-filenames',
 ;;    `bookmark-bmenu-surreptitiously-rebuild-list',
 ;;    `bookmark-bmenu-switch-other-window',
@@ -874,6 +877,7 @@ Non-interactively:
           (when current-bmk (bmkp-bmenu-goto-bookmark-named current-bmk))))))
   (forward-line (if backup -1 1)))
 
+
 ;; REPLACES ORIGINAL in `bookmark.el'.
 ;;
 ;; 1. Do not use `bookmark-bmenu-ensure-position' as a test - it always returns non-nil anyway.
@@ -883,6 +887,8 @@ Non-interactively:
 ;; 4. Raise error if not in buffer `*Bookmark List*'.
 ;; 5. Remove bookmark from `bmkp-bmenu-marked-bookmarks'.  Add it to `bmkp-flagged-bookmarks'.
 ;;
+;;;###autoload
+(defalias 'bmkp-bmenu-flag-for-deletion 'bookmark-bmenu-delete) ; A better name.
 ;;;###autoload
 (defun bookmark-bmenu-delete ()         ; Bound to `d', `k' in bookmark list
   "Flag this bookmark for deletion, using mark `D'.
@@ -904,6 +910,21 @@ the deletions."
         (setq bmkp-flagged-bookmarks  (cons bmk bmkp-flagged-bookmarks)))))
   (forward-line 1))
 
+
+;; REPLACES ORIGINAL in `bookmark.el'.
+;;
+;; Do not move forward another line at end.  Leave point above flagged bookmark.
+;;
+;;;###autoload
+(defalias 'bmkp-bmenu-flag-for-deletion-backwards 'bookmark-bmenu-delete-backwards) ; A better name.
+;;;###autoload
+(defun bookmark-bmenu-delete-backwards ()
+  "Mark bookmark on this line to be deleted, then move up one line.
+To carry out the deletions that you've marked, use \\<bookmark-bmenu-mode-map>\\[bookmark-bmenu-execute-deletions]."
+  (interactive)
+  (bookmark-bmenu-delete)
+  (forward-line -2)
+  (bookmark-bmenu-ensure-position))
 
 ;; REPLACES ORIGINAL in `bookmark.el'.
 ;;
@@ -4532,7 +4553,9 @@ Marked bookmarks that have no associated file are ignored."
 (define-key bookmark-bmenu-mode-map "c"                    'bmkp-bmenu-define-command)
 (define-key bookmark-bmenu-mode-map "C"                    'bmkp-bmenu-define-full-snapshot-command)
 (define-key bookmark-bmenu-mode-map "\M-c"                 'bmkp-bmenu-define-jump-marked-command)
+(define-key bookmark-bmenu-mode-map "d"                    'bmkp-bmenu-flag-for-deletion)
 (define-key bookmark-bmenu-mode-map "D"                    'bmkp-bmenu-delete-marked)
+(define-key bookmark-bmenu-mode-map "\C-d"                  'bmkp-bmenu-flag-for-deletion-backwards)
 (define-key bookmark-bmenu-mode-map "\M-d"                 nil) ; For Emacs 20
 (define-key bookmark-bmenu-mode-map "\M-d>"                'bmkp-bmenu-dired-marked)
 (define-key bookmark-bmenu-mode-map "\M-d\M-m"             'bmkp-bmenu-mark-dired-bookmarks)
@@ -4575,6 +4598,7 @@ Marked bookmarks that have no associated file are ignored."
 (define-key bookmark-bmenu-mode-map "\M-I"                 nil) ; For Emacs 20
 (define-key bookmark-bmenu-mode-map "\M-I\M-M"             'bmkp-bmenu-mark-image-bookmarks)
 (define-key bookmark-bmenu-mode-map "\M-I\M-S"             'bmkp-bmenu-show-only-image-files)
+(define-key bookmark-bmenu-mode-map "k"                    'bmkp-bmenu-flag-for-deletion)
 (define-key bookmark-bmenu-mode-map "K"                    nil) ; For Emacs 20
 (define-key bookmark-bmenu-mode-map "KM"                   'bmkp-bmenu-mark-desktop-bookmarks)
 (define-key bookmark-bmenu-mode-map "KS"                   'bmkp-bmenu-show-only-desktops)
