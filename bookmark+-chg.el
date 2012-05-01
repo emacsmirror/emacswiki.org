@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2012, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Tue May  1 13:54:00 2012 (-0700)
+;; Last-Updated: Tue May  1 15:21:31 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 14829
+;;     Update #: 14831
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-chg.el
 ;; Keywords: bookmarks, bookmark+
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -759,6 +759,8 @@
 ;;;(@* "CHANGE LOG FOR `bookmark+-bmu.el'")
 ;;
 ;; 2012/05/01 dadams
+;;     Added redefinition of bookmark-bmenu-delete-backwards (they broke its movement).
+;;     Added aliases: bmkp-bmenu-flag-for-deletion(-backwards).  Bind to d, k, C-d (same as aliases).
 ;;     bmkp-bmenu-(add|remove)-tags, bmkp-bmenu-(add|remove)-tags-(to|from)-marked:
 ;;         Automatically re-sort if # tagged bmks changed and sort order is tagged first/last (s t).
 ;;     Added: bmkp-bmenu-sort-tagged-before-untagged.
