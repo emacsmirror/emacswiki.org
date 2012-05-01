@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2012, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Sat Apr 28 23:31:18 2012 (-0700)
+;; Last-Updated: Tue May  1 13:24:41 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 14808
+;;     Update #: 14827
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-chg.el
 ;; Keywords: bookmarks, bookmark+
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -145,6 +145,10 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-1.el'")
 ;;
+;; 2012/05/01 dadams
+;;     Added: bmkp-tagged-bookmark-p (alias), bmkp-tagged-cp.
+;;     bmkp-(add|remove)-tags: Return negative nb-* if changed from (un)tagged to not (un)tagged.
+;;     bmkp-paste-replace-tags: Do not call bmkp-remove-all-tags unless there are tags to remove.
 ;; 2012/04/27 dadams
 ;;     bmkp-edit-(tags|bookmark-record): Use bmkp-with-output-to-plain-temp-buffer.
 ;; 2012/04/18 dadams
@@ -754,6 +758,12 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-bmu.el'")
 ;;
+;; 2012/05/01 dadams
+;;     bmkp-bmenu-(add|remove)-tags, bmkp-bmenu-(add|remove)-tags-(to|from)-marked:
+;;         Automatically re-sort if # tagged bmks changed and sort order is tagged first/last (s t).
+;;     Added: bmkp-bmenu-sort-tagged-before-untagged.
+;;     Bind bmkp-bmenu-sort-tagged-before-untagged to s t.
+;;     Bind bmkp-bmenu-sort-by-last-bookmark-access to s d, not s t.
 ;; 2012/04/28 dadams
 ;;     bookmark-bmenu-(un)mark(-all), bmkp-bmenu-regexp-mark, bmkp-bmenu-mark-bookmarks-satisfying,
 ;;       bmkp-bmenu-toggle-marks, bmkp-bmenu-(un)mark-bookmarks-tagged-regexp,
