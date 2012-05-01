@@ -361,11 +361,11 @@ This is not limited to ctrl -- shift, alt, or any other keys can be pressed with
 History: This trick was invented by K. Kimura in 2001, and has been known as "!SandS", standing for "Space and Shift" (the original idea was to use the space as shift) to some users in Japan. See the [http://gitorious.org/at-home-modifier/at-home-modifier/blobs/raw/master/README README] of at-home-modifier for the full history.
 
 
-== Japanese keyboards ==
+== Japanese keyboard ==
 
-Yet another alternative to moving the control key, to avoid Emacs pinky, is to use Japanese keyboards.
+Yet another alternative to moving the control key, to avoid Emacs pinky, is to use Japanese keyboard.
 
-Japanese keyboards ([https://en.wikipedia.org/wiki/Keyboard_layout#Japanese Wikipedia article]) have many keys that you can press with thumbs, to which you can bind modifiers. For example, the bottom row of Japanese keyboards can work as e.g. <nowiki>[alt][shift][ctrl][shift][alt]</nowiki> *and* <nowiki>[Esc][Bs][Space][Enter][Tab]</nowiki>, /all/ pressed by thumbs.
+Japanese keyboard ([https://en.wikipedia.org/wiki/Keyboard_layout#Japanese Wikipedia article]) have many keys that you can press with thumbs, to which you can bind modifiers. For example, the bottom row of Japanese keyboard can work as e.g. <nowiki>[alt][shift][ctrl][shift][alt]</nowiki> *and* <nowiki>[Esc][Bs][Space][Enter][Tab]</nowiki>, /all/ pressed by thumbs.
 
 For experiences with Emacs and particular keyboards, see GoodKeyboards and Wiki:ErgonomicKeyboard (keyboards, pedals, etc.)
 
