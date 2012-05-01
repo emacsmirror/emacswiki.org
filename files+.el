@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Fri Aug 11 14:24:13 1995
 ;; Version: 21.0
-;; Last-Updated: Sun Jan  1 14:22:44 2012 (-0800)
+;; Last-Updated: Tue May  1 10:08:18 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 597
+;;     Update #: 612
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/files+.el
 ;; Keywords: internal, extensions, local
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -30,18 +30,24 @@
 ;;    `dired-mouse-describe-listed-directory',
 ;;
 ;;
+;;  ***** NOTE: The following macro defined in `files.el' has been
+;;              COPIED HERE:
+;;
+;;    `minibuffer-with-setup-hook' (Emacs 22 & 23.1 only).
+;;
 ;;  ***** NOTE: The following functions defined in `files.el' have been
 ;;              REDEFINED HERE:
 ;;
-;;  `display-buffer-other-frame' - Use `read-buffer'.
-;;                                 Do not select the buffer.
-;;  `find-file-read-args' - In Dired, use file at cursor as default.
-;;  `insert-directory' - Add file count in Dired for each dir listed.
-;;  `switch-to-buffer-other-frame'  - Use `read-buffer'.
-;;                                    Return the buffer switched to.
-;;  `switch-to-buffer-other-window' -
-;;     Use `read-buffer'.
-;;     Raise frame of selected window (for non-nil `pop-up-frames').
+;;    `display-buffer-other-frame' - Use `read-buffer'.
+;;                                   Do not select the buffer.
+;;    `find-file-read-args' - In Dired, use file at cursor as default
+;;                            (Emacs 22 & 23.1 only).
+;;    `insert-directory' - Add file count in Dired for each dir.
+;;    `switch-to-buffer-other-frame'  - Use `read-buffer'.
+;;                                      Return the buffer switched to.
+;;    `switch-to-buffer-other-window' -
+;;       Use `read-buffer'.
+;;       Raise frame of selected window (for non-nil `pop-up-frames').
 ;;
 ;;  Load this library after loading the standard library `files.el'.
 ;;  However, if you use MS Windows, MS-DOS, or MacOS, then you will
@@ -59,6 +65,11 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2012/05/01 dadams
+;;     minibuffer-with-setup-hook:
+;;       Define only for Emacs 22 and 23.1.
+;;       Updated wrt Emacs 23: (funcall ,fun), not (,fun).
+;;     find-file-read-args: Redefine only for Emacs 22 and 23.1.
 ;; 2011/12/19 dadams
 ;;     insert-directory: Use line-end-position, not end-of-line + point.
 ;; 2011/09/21 dadams
@@ -205,44 +216,53 @@ regardless of the language.")
 
 
 ;; Copied here from `files.el', for use by `find-file-read-args'.
-;;;###autoload
-(defmacro minibuffer-with-setup-hook (fun &rest body)
-  "Add FUN to `minibuffer-setup-hook' while executing BODY.
+(when (and (> emacs-major-version 21)
+           (or (< emacs-major-version 23)
+               (and (= emacs-major-version 23) (= emacs-minor-version 1))))
+  (defmacro minibuffer-with-setup-hook (fun &rest body)
+    "Temporarily add FUN to `minibuffer-setup-hook' while executing BODY.
 BODY should use the minibuffer at most once.
-Recursive uses of the minibuffer will not be affected."
-  (declare (indent 1) (debug t))
-  (let ((hook (make-symbol "setup-hook")))
-    `(let (,hook)
-      (setq ,hook
-       (lambda ()
-         ;; Clear out this hook so it does not interfere
-         ;; with any recursive minibuffer usage.
-         (remove-hook 'minibuffer-setup-hook ,hook)
-         (,fun)))
-      (unwind-protect
-           (progn (add-hook 'minibuffer-setup-hook ,hook) ,@body)
-        (remove-hook 'minibuffer-setup-hook ,hook)))))
+Recursive uses of the minibuffer are unaffected (FUN is not
+called additional times).
+
+This macro actually adds an auxiliary function that calls FUN,
+rather than FUN itself, to `minibuffer-setup-hook'."
+    (declare (indent 1) (debug t))
+    (let ((hook (make-symbol "setup-hook")))
+      `(let (,hook)
+        (setq ,hook
+         (lambda ()
+           ;; Clear out this hook so it does not interfere
+           ;; with any recursive minibuffer usage.
+           (remove-hook 'minibuffer-setup-hook ,hook)
+           (funcall ,fun)))
+        (unwind-protect
+             (progn (add-hook 'minibuffer-setup-hook ,hook) ,@body)
+          (remove-hook 'minibuffer-setup-hook ,hook))))))
 
 
 ;; REPLACES ORIGINAL in `files.el':
 ;; In Dired, use file under cursor as default.
 ;; Note: This function is not used before Emacs 22.
 ;;
-(defun find-file-read-args (prompt mustmatch)
-  (list (let ((find-file-default
-               (if (eq major-mode 'dired-mode)
-                   (let ((this-file (condition-case nil
-                                        (dired-get-file-for-visit)
-                                      (error nil))))
-                     (if this-file
-                         (abbreviate-file-name this-file)
-                       (and buffer-file-name (abbreviate-file-name
-                                              buffer-file-name))))
-                 (and buffer-file-name (abbreviate-file-name buffer-file-name)))))
-          (minibuffer-with-setup-hook
-           (lambda () (setq minibuffer-default find-file-default))
-           (read-file-name prompt nil default-directory mustmatch)))
-        t))
+(when (and (> emacs-major-version 21)
+           (or (< emacs-major-version 23)
+               (and (= emacs-major-version 23) (= emacs-minor-version 1))))
+  (defun find-file-read-args (prompt mustmatch)
+    (list (let ((find-file-default
+                 (if (eq major-mode 'dired-mode)
+                     (let ((this-file (condition-case nil
+                                          (dired-get-file-for-visit)
+                                        (error nil))))
+                       (if this-file
+                           (abbreviate-file-name this-file)
+                         (and buffer-file-name (abbreviate-file-name
+                                                buffer-file-name))))
+                   (and buffer-file-name (abbreviate-file-name buffer-file-name)))))
+            (minibuffer-with-setup-hook
+             (lambda () (setq minibuffer-default find-file-default))
+             (read-file-name prompt nil default-directory mustmatch)))
+          t)))
 
 
 ;; REPLACES ORIGINAL in `files.el':
