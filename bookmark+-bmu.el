@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2012, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 09:05:21 2010 (-0700)
-;; Last-Updated: Tue May  1 09:35:59 2012 (-0700)
+;; Last-Updated: Tue May  1 13:52:59 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 1943
+;;     Update #: 1947
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-bmu.el
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -4303,7 +4303,7 @@ bookmark name.")
 Sort a local file before a remote file, and a remote file before other
 bookmarks.  Otherwise, sort by bookmark name.")
 
-(bmkp-define-sort-command               ; Bound to `s f t' in bookmark list
+(bmkp-define-sort-command               ; Bound to `s f d' in bookmark list
  "by last local file access"            ; `bmkp-bmenu-sort-by-last-local-file-access'
  ((bmkp-local-file-accessed-more-recently-cp) bmkp-alpha-p)
  "Sort bookmarks by last local file access time.
@@ -4324,7 +4324,7 @@ bookmarks.  Otherwise, sort by bookmark name.")
 When two bookmarks are not comparable by file name, compare them by
 bookmark name.")
 
-(bmkp-define-sort-command               ; Bound to `s f d' in bookmark list (`d' for "directory")
+(bmkp-define-sort-command               ; Bound to `s f k' in bookmark list (`k' for "kind")
  "by local file type"                   ; `bmkp-bmenu-sort-by-local-file-type'
  ((bmkp-local-file-type-cp) bmkp-alpha-p)
  "Sort bookmarks by local file type: file, symlink, directory.
@@ -4610,10 +4610,10 @@ Marked bookmarks that have no associated file are ignored."
 (define-key bookmark-bmenu-mode-map "sb"                 'bmkp-bmenu-sort-by-last-buffer-or-file-access)
 (define-key bookmark-bmenu-mode-map "sd"                   'bmkp-bmenu-sort-by-last-bookmark-access)
 (define-key bookmark-bmenu-mode-map "sD"                   'bmkp-bmenu-sort-flagged-before-unflagged)
-(define-key bookmark-bmenu-mode-map "sfd"                  'bmkp-bmenu-sort-by-local-file-type)
+(define-key bookmark-bmenu-mode-map "sfd"                  'bmkp-bmenu-sort-by-last-local-file-access)
+(define-key bookmark-bmenu-mode-map "sfk"                  'bmkp-bmenu-sort-by-local-file-type)
 (define-key bookmark-bmenu-mode-map "sfn"                  'bmkp-bmenu-sort-by-file-name)
 (define-key bookmark-bmenu-mode-map "sfs"                  'bmkp-bmenu-sort-by-local-file-size)
-(define-key bookmark-bmenu-mode-map "sft"                  'bmkp-bmenu-sort-by-last-local-file-access)
 (define-key bookmark-bmenu-mode-map "sfu"                  'bmkp-bmenu-sort-by-last-local-file-update)
 (define-key bookmark-bmenu-mode-map "sg"                   'bmkp-bmenu-sort-by-Gnus-thread)
 (define-key bookmark-bmenu-mode-map "si"                   'bmkp-bmenu-sort-by-Info-location)
