@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2012, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 09:05:21 2010 (-0700)
-;; Last-Updated: Tue May  1 08:55:37 2012 (-0700)
+;; Last-Updated: Tue May  1 09:35:59 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 1930
+;;     Update #: 1943
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-bmu.el
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -2220,7 +2220,7 @@ From Lisp, non-nil optional arg MSG-P means show progress messages."
                                                                    'saved-value)))
                                                  (error nil)))
            (let ((bmkp-bmenu-filter-function  nil)) ; Remove any filtering.
-             (bmkp-refresh-menu-list (bookmark-bmenu-bookmark) (not msg-p)))) 
+             (bmkp-refresh-menu-list (bookmark-bmenu-bookmark) (not msg-p))))
           (t
            (when msg-p (message (setq msg  (concat msg "list in memory..."))))
            (bmkp-refresh-menu-list (bookmark-bmenu-bookmark) (not msg-p))))
@@ -2836,7 +2836,7 @@ to turn saving back on."
         (bookmark-load (bookmark-get-filename bmk) nil 'BATCHP))
 
       ;; $$$$$$ Should we do (bmkp-tags-list) here to update the tags cache?
-      
+
       (bmkp-refresh-menu-list bmk (not msgp)) ; Refresh after iterate.
       (when msgp (message "Autosaving is now OFF.  Loaded: %s"
                           (mapconcat (lambda (bmk) (format "`%s'" (bmkp-bookmark-name-from-record bmk)))
@@ -3095,7 +3095,11 @@ Interactively, you are required to confirm."
   (interactive)
   (bmkp-bmenu-barf-if-not-in-menu-list)
   (bookmark-bmenu-ensure-position)
-  (bmkp-add-tags (bookmark-bmenu-bookmark) (bmkp-read-tags-completing)))
+  (let ((nb-added  (bmkp-add-tags (bookmark-bmenu-bookmark) (bmkp-read-tags-completing))))
+    (when (and (< nb-added 0)           ; It was untagged but is now tagged.  If `s t' then re-sort.
+               (equal bmkp-sort-comparer '((bmkp-tagged-cp) bmkp-alpha-p))) ; Hardcoded value, for now.
+      (bmkp-bmenu-sort-tagged-before-untagged))
+    nb-added))
 
 ;;;###autoload
 (defun bmkp-bmenu-set-tag-value ()      ; Bound to `T v' in bookmark list
@@ -3130,11 +3134,16 @@ If any of the bookmarks has no tag named TAG, then add one with VALUE."
   (interactive "p")
   (bmkp-bmenu-barf-if-not-in-menu-list)
   (bookmark-bmenu-ensure-position)
-  (let ((bmk  (bookmark-bmenu-bookmark)))
-    (bmkp-remove-tags bmk
-                      (bmkp-read-tags-completing (mapcar 'bmkp-full-tag (bmkp-get-tags bmk)) t)
-                      nil
-                      msgp)))
+  (let* ((bmk         (bookmark-bmenu-bookmark))
+         (nb-removed  (bmkp-remove-tags bmk
+                                        (bmkp-read-tags-completing
+                                         (mapcar 'bmkp-full-tag (bmkp-get-tags bmk)) t)
+                                        nil
+                                        msgp)))
+    (when (and (< nb-removed 0)         ; It was tagged but is now untagged.  If `s t' then re-sort.
+               (equal bmkp-sort-comparer '((bmkp-tagged-cp) bmkp-alpha-p))) ; Hardcoded value, for now.
+      (bmkp-bmenu-sort-tagged-before-untagged))
+    nb-removed))
 
 ;;;###autoload
 (defun bmkp-bmenu-add-tags-to-marked (tags &optional msgp) ; Bound to `T > +' in bookmark list
@@ -3145,15 +3154,19 @@ You can use completion to enter each tag, but you are not limited to
 choosing existing tags."
   (interactive (list (bmkp-read-tags-completing) 'MSG))
   (bmkp-bmenu-barf-if-not-in-menu-list)
-  (let ((marked              (bmkp-marked-bookmarks-only))
-        (bmk                 (bookmark-bmenu-bookmark))
-        (bookmark-save-flag  (and (not bmkp-count-multi-mods-as-one-flag)
-                                  bookmark-save-flag))) ; Save at most once, after `dolist'.
+  (let ((marked                (bmkp-marked-bookmarks-only))
+        (bmk                   (bookmark-bmenu-bookmark))
+        (bookmark-save-flag    (and (not bmkp-count-multi-mods-as-one-flag)
+                                    bookmark-save-flag)) ; Save at most once, after `dolist'.
+        (some-were-untagged-p  nil))
     (unless marked (error "No marked bookmarks"))
     (when msgp (message "Adding tags..."))
-    (dolist (bmk  (mapcar #'car marked)) (bmkp-add-tags bmk tags 'NO-UPDATE-P))
+    (dolist (bmk  (mapcar #'car marked))
+      (when (< (bmkp-add-tags bmk tags 'NO-UPDATE-P) 0)  (setq some-were-untagged-p  t)))
     (bmkp-tags-list)                    ; Update the tags cache now, after iterate.
     (bmkp-refresh-menu-list bmk (not msgp)) ; Refresh after iterate.
+    (when (and some-were-untagged-p  (equal bmkp-sort-comparer '((bmkp-tagged-cp) bmkp-alpha-p)))
+      (bmkp-bmenu-sort-tagged-before-untagged))
     (when (and msgp tags) (message "Tags added: %S" tags))))
 
 ;;;###autoload
@@ -3167,15 +3180,19 @@ You can use completion to enter each tag."
                  (unless cand-tags (error "No tags to remove"))
                  (list (bmkp-read-tags-completing cand-tags t) 'MSG)))
   (bmkp-bmenu-barf-if-not-in-menu-list)
-  (let ((marked              (bmkp-marked-bookmarks-only))
-        (bmk                 (bookmark-bmenu-bookmark))
-        (bookmark-save-flag  (and (not bmkp-count-multi-mods-as-one-flag)
-                                  bookmark-save-flag))) ; Save at most once, after `dolist'.
+  (let ((marked                   (bmkp-marked-bookmarks-only))
+        (bmk                      (bookmark-bmenu-bookmark))
+        (bookmark-save-flag       (and (not bmkp-count-multi-mods-as-one-flag)
+                                       bookmark-save-flag)) ; Save at most once, after `dolist'.
+        (some-are-now-untagged-p  nil))
     (unless marked (error "No marked bookmarks"))
     (when msgp (message "Removing tags..."))
-    (dolist (bmk  (mapcar #'car marked)) (bmkp-remove-tags bmk tags 'NO-UPDATE-P))
+    (dolist (bmk  (mapcar #'car marked))
+      (when (< (bmkp-remove-tags bmk tags 'NO-UPDATE-P) 0)  (setq some-are-now-untagged-p  t)))
     (bmkp-tags-list)                    ; Update the tags cache now, after iterate.
     (bmkp-refresh-menu-list bmk (not msgp)) ; Refresh after iterate.
+    (when (and some-are-now-untagged-p  (equal bmkp-sort-comparer '((bmkp-tagged-cp) bmkp-alpha-p)))
+      (bmkp-bmenu-sort-tagged-before-untagged))
     (when (and msgp tags) (message "Tags removed: %S" tags))))
 
 ;;;###autoload
@@ -3682,7 +3699,7 @@ Autosave bookmarks:\t%s\nAutosave list display:\t%s\n\n\n"
             (insert local-w-region) (insert buffer) (insert no-buf) (insert remote)
             (insert sudo) (insert local-dir) (insert file-handler) (insert bookmark-list)
             (insert bookmark-file) (insert desktop) (insert sequence) (insert variable-list)
-            (insert function) (insert bad) 
+            (insert function) (insert bad)
             (insert "\n\n")
             (insert "More bookmarking help below.  Each line represents an Emacs bookmark.\n")
             (insert "Keys without prefix `C-x' are available only in `*Bookmark List*'.\n")
