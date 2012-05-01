@@ -2451,22 +2451,25 @@ orders, but you can shorten the cycling list by
 customizing option '''`bmkp-sort-orders-for-cycling-alist''''.
 
 You can also change directly to one of the main sort orders
-(without cycling) using '''`##s >##'''', '''`##s n##'''', '''`##s f n##'''', etc.:
+(without cycling) using '''`##s >##'''', '''`##s n##'''', '''`##s f n##'''', etc.  There are many such predefined sort orders bound to keys with the prefix `s' --- use `C-h m' or `?'  for more info.
 
-* '''`##s >##'''' -- Sort marked before unmarked.
-* '''`##s b##'''' -- Sort by last __b__uffer or file access.
+* '''`##s >##'''' -- Sort marked (`##>##') before unmarked
+* '''`##s *##'''' -- Sort modified (`##*##') before unmodified
+* '''`##s 0##'''' -- Sort by bookmark creation date/time
+* '''`##s b##'''' -- Sort by last __b__uffer or file access
+* '''`##s d##'''' -- Sort by last bookmark access __d__ate/time
+* '''`##s D##'''' -- Sort flagged (`##D##') before unflagged
+* '''`##s f d##'''' -- Sort by last local __f__ile access __d__ate/time
+* '''`##s f k##'''' -- Sort by local __f__ile __k__ind: file, symlink, dir
+* '''`##s f n##'''' -- Sort by __f__ile __n__ame
+* '''`##s f s##'''' -- Sort by local __f__ile __s__ize
+* '''`##s f u##'''' -- Sort by last local __f__ile __u__pdate (edit) date/time
 * '''`##s g##'''' -- Sort by __G__nus thread: group, article, message.
 * '''`##s i##'''' -- Sort by __I__nfo manual, node, position
 * '''`##s k##'''' -- Sort by bookmark type (__k__ind)
 * '''`##s n##'''' -- Sort by bookmark __n__ame
-* '''`##s t##'''' -- Sort by last bookmark access __t__ime
+* '''`##s t##'''' -- Sort tagged (`##t##') before untagged
 * '''`##s v##'''' -- Sort by __v__isit frequency
-* '''`##s w##'''' -- Sort by __W__3M URL
-* '''`##s f d##'''' -- Sort by local __f__ile type: file, symlink, __d__ir
-* '''`##s f n##'''' -- Sort by __f__ile __n__ame
-* '''`##s f s##'''' -- Sort by local __f__ile __s__ize
-* '''`##s f t##'''' -- Sort by last local __f__ile access __t__ime
-* '''`##s f u##'''' -- Sort by last local __f__ile __u__pdate (edit)
 
 You can __r__everse the current sort direction (ascending/descending)
 using '''`##s r##''''.  Also, repeating any of the main sort-order commands
