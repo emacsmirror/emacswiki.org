@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Mon Apr 23 14:07:53 2012 (-0700)
+;; Last-Updated: Mon Apr 30 21:49:02 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 8383
+;;     Update #: 8384
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-chg.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -1309,6 +1309,9 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-fn.el'")
 ;;
+;; 2012/04/30 dadams
+;;     icicle-unsorted-file-name-prefix-candidates:
+;;       Forgot to use PRED, not default-directory, in second call to try-completion.
 ;; 2012/04/23 dadams
 ;;     icicle-files-within(-1): If Dired+ available, use diredp-files-within(-1).
 ;;     Moved to dired+.el (and renamed prefix): icicle-directories-within.
