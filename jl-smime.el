@@ -4,7 +4,7 @@
 
 ;; Copyright (C) 2011, 2012 Jens Lechtenbörger
 
-;; Version: $Id: jl-smime.el,v 1.1 2012/03/09 10:37:29 lechten Exp lechten $
+;; Version: $Id: jl-smime.el,v 1.2 2012/05/01 07:50:43 lechten Exp lechten $
 ;; Compatibility: Should work with GNU Emacs 23.1 and later
 
 ;; This program is free software; you can redistribute it and/or
@@ -50,10 +50,22 @@
 ;; GnuPG keys.
 
 ;; S/MIME support in Gnus is somewhat limited.  This file redefines some Gnus
-;; functions and adds new ones to include proper support for multiple
-;; recipients, retrieval and caching of certificates from LDAP servers, and
-;; (via jl-encrypt.el) automatic insertion of MML tags into messages if
-;; certificates for all recipients are available.
+;; functions and adds new ones to include proper support for
+;; * multiple recipients (smime-encrypt-region enhanced),
+;; * retrieval  and caching of certificates from LDAP servers
+;;   (smime-cert-by-ldap-1 redefined, including a bug fix),
+;; * extraction and caching of certificates from signed messages
+;;   (smime-verify-region enhanced),
+;; * and (via jl-encrypt.el) automatic insertion of MML tags into messages if
+;;   certificates for all recipients are available.
+
+;; The general idea of ExtendSMIME is to store available certificates in
+;; files under smime-certificate-directory.  The file names under which a
+;; certificate is stored are its e-mail addresses.
+;; A certificate file is written in two cases:  First, if a certificate is
+;; received on demand via LDAP.  Second, if a signed message containing a
+;; certificate is verified successfully then the contained certificate is
+;; stored for each of its e-mail addresses.
 
 ;; For basic setup information concerning S/MIME in GNU Emacs (Gnus, in
 ;; fact), I recommend that you read Info node `(message) Security'
@@ -187,6 +199,37 @@ certificate."
 	(insert-buffer-substring buffer))
       (kill-buffer buffer))))
 
+;; Usually, signed messages contain the signer's certificate.
+;; Redefine smime-verify-region to write that certificate to a file.
+(defun smime-verify-region (b e)
+  "Verify S/MIME message in region between B and E.
+Returns non-nil on success.
+Any details (stdout and stderr) are left in the buffer specified by
+`smime-details-buffer'.
+If signature verification is successful, the signing certificate is
+written into a file under smime-certificate-directory."
+  (smime-new-details-buffer)
+  (let ((CAs (append (if smime-CA-file
+			 (list "-CAfile"
+			       (expand-file-name smime-CA-file)))
+		     (if smime-CA-directory
+			 (list "-CApath"
+			       (expand-file-name smime-CA-directory))))))
+    (unless CAs
+      (error "No CA configured"))
+    (if smime-crl-check
+	(add-to-list 'CAs smime-crl-check))
+    ;; JL: Added
+    ;; - let statement to create tmpfile,
+    ;; - options '"-signer" tmpfile' in call to openssl to write certificate,
+    ;; - and call jl-rename-certfile.
+    (let ((tmpfile (smime-make-temp-file "smime")))
+      (if (apply 'smime-call-openssl-region b e (list smime-details-buffer t)
+	       "smime" "-verify" "-signer" tmpfile "-out" "/dev/null" CAs)
+	(jl-rename-certfile tmpfile)
+      (insert-buffer-substring smime-details-buffer)
+      nil))))
+
 ;; Redefine mml-smime-openssl-encrypt-query to deal with all addresses of
 ;; a message.
 (defun mml-smime-openssl-encrypt-query ()
@@ -198,7 +241,7 @@ certificate."
 		   ";")))
 
 ;;
-;; New function to make the above work.
+;; New functions to make the above work.
 ;;
 (defun jl-fetch-certs-possibly-from-ldap (addresses)
   "Return list of certificate file names for given ADDRESSES.
@@ -214,4 +257,22 @@ First, check for existing file; then retrieve file via LDAP."
 	(error "Certfile not available for recipient: %s" email))
       (cons certfile
 	    (jl-fetch-certs-possibly-from-ldap (cdr addresses))))))
+
+(defun jl-rename-certfile (tmpfile)
+  "Extract e-mail addresses from TMPFILE and copy TMPFILE once per address.
+TMPFILE must contain a certificate.  For each e-mail address, TMPFILE is
+copied to smime-certificate-directory with the e-mail address as filename.
+Afterwards, TMPFILE is deleted."
+  (unless (file-readable-p tmpfile)
+    (error "Certfile not available: %s" tmpfile))
+  (smime-new-details-buffer)
+  (with-current-buffer smime-details-buffer
+    (when (call-process smime-openssl-program nil smime-details-buffer nil
+			"x509" "-in" tmpfile "-email" "-noout")
+      (let ((addresses (mapcar 'downcase (smime-buffer-as-string-region
+					  (point-min) (point-max)))))
+	(dolist (address addresses t)
+	  (copy-file tmpfile (concat smime-certificate-directory address) t))
+	(delete-file tmpfile)
+	t))))
 ;;; jl-smime.el ends here
