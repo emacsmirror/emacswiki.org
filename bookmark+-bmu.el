@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2012, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 09:05:21 2010 (-0700)
-;; Last-Updated: Tue May  1 13:52:59 2012 (-0700)
+;; Last-Updated: Tue May  1 14:57:32 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 1947
+;;     Update #: 1976
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-bmu.el
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -3358,8 +3358,7 @@ With a prefix arg, unmark all that are tagged with *some* TAGS."
   (bmkp-bmenu-barf-if-not-in-menu-list)
   (bmkp-bmenu-mark/unmark-bookmarks-tagged-some/not-all tags (not somep) 'UNMARK msgp))
 
-(defun bmkp-bmenu-mark/unmark-bookmarks-tagged-all/none (tags &optional
-                                                                nonep unmarkp msgp no-re-sort-p)
+(defun bmkp-bmenu-mark/unmark-bookmarks-tagged-all/none (tags &optional nonep unmarkp msgp no-re-sort-p)
   "Mark or unmark visible bookmarks tagged with all or none of TAGS.
 TAGS is a list of strings, the tag names.
 NONEP non-nil means mark/unmark bookmarks that have none of the TAGS.
@@ -3405,7 +3404,7 @@ Non-nil optional arg NO-RE-SORT-P inhibits re-sorting."
                    (message "%d bookmarks matched" count))))))
 
 (defun bmkp-bmenu-mark/unmark-bookmarks-tagged-some/not-all (tags &optional
-                                                                    notallp unmarkp msgp no-re-sort-p)
+                                                             notallp unmarkp msgp no-re-sort-p)
   "Mark or unmark visible bookmarks tagged with any or not all of TAGS.
 TAGS is a list of strings, the tag names.
 NOTALLP non-nil means mark/unmark bookmarks that do not have all TAGS.
