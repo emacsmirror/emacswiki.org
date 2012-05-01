@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2012, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Sat Apr 28 17:14:53 2012 (-0700)
+;; Last-Updated: Tue May  1 08:58:36 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 14563
+;;     Update #: 14564
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-doc.el
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search,
 ;;           info, url, w3m, gnus
@@ -2270,8 +2270,9 @@
 ;;  `bmkp-sort-orders-for-cycling-alist'.
 ;;
 ;;  You can also change directly to one of the main sort orders
-;;  (without cycling) using `s >', `s n', `s f n', etc. - use `C-h m'
-;;  or `?'  for more info.
+;;  (without cycling) using `s >', `s n', `s f n', etc.  There are
+;;  many such predefined sort orders bound to keys with the prefix `s'
+;;  - use `C-h m' or `?'  for more info.
 ;;
 ;;  You can reverse the current sort direction (ascending/descending)
 ;;  using `s r'.  Also, repeating any of the main sort-order commands
