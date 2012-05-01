@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2012, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Tue May  1 13:24:41 2012 (-0700)
+;; Last-Updated: Tue May  1 13:54:00 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 14827
+;;     Update #: 14829
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-chg.el
 ;; Keywords: bookmarks, bookmark+
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -764,6 +764,8 @@
 ;;     Added: bmkp-bmenu-sort-tagged-before-untagged.
 ;;     Bind bmkp-bmenu-sort-tagged-before-untagged to s t.
 ;;     Bind bmkp-bmenu-sort-by-last-bookmark-access to s d, not s t.
+;;     Bind bmkp-bmenu-sort-by-last-local-file-access to s f d, not s f t.
+;;     Bind bmkp-bmenu-sort-by-local-file-type to s f k, not s f d.
 ;; 2012/04/28 dadams
 ;;     bookmark-bmenu-(un)mark(-all), bmkp-bmenu-regexp-mark, bmkp-bmenu-mark-bookmarks-satisfying,
 ;;       bmkp-bmenu-toggle-marks, bmkp-bmenu-(un)mark-bookmarks-tagged-regexp,
