@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:53 2006
 ;; Version: 22.0
-;; Last-Updated: Mon Apr 23 10:14:24 2012 (-0700)
+;; Last-Updated: Mon Apr 30 21:47:32 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 12988
+;;     Update #: 12990
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-fn.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -3068,7 +3068,7 @@ NO-DISPLAY-P non-nil means do not display the candidates; just
                          (let ((image-file
                                 (if (and icicle-show-multi-completion-flag
                                          (symbolp icicle-last-top-level-command)
-                                         ;; We could alternative put a property on such symbols and
+                                         ;; We could alternatively put a property on such symbols and
                                          ;; test that.  But just matching the cmd name is OK so far.
                                          (string-match "^icicle-bookmark-"
                                                        (symbol-name icicle-last-top-level-command)))
@@ -3532,7 +3532,7 @@ the expanded common match of the input over all candidates."
                                                        (and (fboundp 'completion--field-metadata)
                                                             (completion--field-metadata ; Emacs 24
                                                              (field-beginning))))
-                   (try-completion input minibuffer-completion-table default-directory))))
+                   (try-completion input minibuffer-completion-table pred))))
             ;; If common prefix matches an empty directory, use that dir as the sole completion.
             (when (and (stringp common-prefix)
                        (save-match-data (string-match "/\\.$" common-prefix))) ; Matches /., /..
