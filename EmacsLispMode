@@ -1,0 +1,32 @@
+Emacs Lisp Mode is one of the best ProgrammingModes that comes with Emacs for working with EmacsLisp.
+
+Emacs Lisp Mode is enabled for any files ending in ##.el## or when editing the Emacs InitFile.
+
+Emacs Lisp Mode is used for EvaluatingExpressions.  Completion is very well configured.  Simply use `C-M-i' or `M-TAB'.  Because Emacs's SelfDocumentation is really good its possible to read up on a function or variable in HelpMode based on its DocString.
+
+Indentation is available with `TAB'.  `C-M-q' indents the [[Sexp]] in front of point.  Indent region is ##`C-M-\'##.  Newline and indent is `C-j'.
+
+ByteCompilation is possible with `M-x byte-compile-file'.
+
+Unfortunately, not all of the Emacs Lisp mode features are available in the LispInteractionMode.  See InferiorEmacsLispMode for an Emacs Lisp REPL.
+
+Starting a new Emacs Lisp file with `M-x auto-insert' will use SkeletonMode to give the standard format for your source code.  Enabling the global minor mode AutoInsertMode can do this for you every time you start a new file.
+
+Related EmacsLisp major and minor modes:
+* CheckDoc -- Check the programming style of a file
+* ElDoc -- Show the function signature in the EchoArea
+* DebuggerMode -- Debug signaled errors
+* SourceLevelDebugger -- Edebug can step through code and even does tracing
+* EmacsLispProfiler -- Instrument functions and determine average runtime
+* EmacsLispBenchmark -- Programmatic profiling with benchmark.el
+* EmacsLispLint -- Check code for problems with elint.el
+* EmacsLispTracing -- Trace code execution with trace.el
+* ImenuMode -- Add a menu that is an index of the code in the buffer
+* FindFunc -- Jump to the definition of an Emacs function
+* EmacsTags -- Easily cross-reference symbols
+* ReBuilder -- Interactively test regular expression strings
+
+----
+CategoryCode
+CategoryModes
+CategoryProgramming
