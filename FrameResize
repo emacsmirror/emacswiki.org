@@ -1,0 +1,23 @@
+When using a window manager that frequently reapportions screen space — such as a tiling window manager — or when in a situation where you are often flipping Emacs in and out of full-screen mode, you might want to train Emacs to maintain a width of 80 characters through each resize event. Though the following code is rudimentary — it would benefit from improvements like a cache of appropriate font sizes instead of recomputing the correct font size afresh with each call — it does maintain at least 80 columns of text across resizing.
+
+{{{
+;; Maintain at least 80 columns, even when the window is resized
+
+(setq maximum-font-height 180)
+(setq minimum-font-height 60)
+(setq previous-frame-width 0)
+
+(setq window-size-change-functions
+      '((lambda (frame)
+          (if (/= previous-frame-width (frame-width frame))
+              (let ((trial-size maximum-font-height))
+                (set-face-attribute 'default frame :height trial-size)
+                (while (and (> trial-size minimum-font-height)
+                            (< (frame-width frame) 80))
+                  (setq trial-size (- trial-size 10))
+                  (set-face-attribute 'default frame :height trial-size))
+                (setq previous-frame-width (frame-width frame))
+                )))))
+}}}
+
+This code snippet was originally copied from [https://github.com/brandon-rhodes/dot-emacs/blob/master/auto-resize-font.el auto-resize-font.el].
