@@ -177,6 +177,10 @@ Use anything.el v1.147 or newer.")
 (defvar anything-grep-fontify-file-name t
   "If non-nil, fontify file name and line number of matches.")
 
+(defvar anything-grep-sh-program
+  (or (executable-find "zsh")
+      (executable-find "sh")))
+
 (defvar anything-grep-alist
   '(("buffers" ("egrep -Hin %s $buffers" "/"))
     ("memo" ("ack-grep -af | xargs egrep -Hin %s" "~/memo"))
@@ -282,8 +286,9 @@ GNU grep is expected for COMMAND. The grep result is colorized."
     (set (make-local-variable 'agrep-source-local) (anything-get-current-source))
     (add-to-list 'agrep-waiting-source agrep-source-local)
     (set-process-sentinel
-     (start-process-shell-command "anything-grep" (current-buffer)
-                                  (format "cd %s; %s" pwd command))
+     (start-process "anything-grep" (current-buffer)
+                    anything-grep-sh-program "-c"
+                    (format "cd %s; %s" pwd command))
      'agrep-sentinel)))
 
 (defvar agrep-do-after-minibuffer-exit nil)
