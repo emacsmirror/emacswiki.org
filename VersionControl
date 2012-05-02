@@ -10,9 +10,9 @@ See CategoryVersionControl for other interfaces to other version control systems
 
 
     C-x v v     vc-next-action -- perform the next logical control operation on file
-    (C-x C-q    by default, C-x C-q is no longer bound, so it's better to use the above binding)
     C-x v i     vc-register -- add a new file to version control
- 
+
+    C-x v +     vc-update -- Get latest changes from version control
     C-x v ~     vc-version-other-window -- look at other revisions
     C-x v =     vc-diff -- diff with other revisions
     C-x v u     vc-revert-buffer -- undo checkout
