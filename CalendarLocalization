@@ -126,6 +126,8 @@ Week starts with Monday, use also spanish weekday and month names. Editor specia
 === Swedish ===
 See http://bigwalter.net/daniel/elisp/sv-kalender.el
 
+=== Norwegian ===
+See https://github.com/unhammer/calendar-norway.el
 
 == Localized National Holidays ==
 
