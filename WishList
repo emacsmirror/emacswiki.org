@@ -116,6 +116,7 @@ your circle, box etc drawing code, and you'd write a data structure and tell ema
 ** Well, the python 're' package does that, and then there is a package for using python as an extension language. That might be an easy implementation.  But, yes (!), lookahead/lookbehind in elisp functions would be great and I would use them.
 
 * I would like to have bonjour chat client in GNU/Emacs... And it would be wonderfoul if I could use ERC for this aim.
+** [http://www.bitlbee.org/main.php/extdoc.html Bitlbee] + ERC?
 
 == Portability and Internationalisation Wishes ==
 
@@ -544,4 +545,3 @@ own page.
 
 ----
 CategoryWishList
-
