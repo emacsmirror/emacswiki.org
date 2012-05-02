@@ -17,7 +17,6 @@ You can customize the color scheme [[RainbowDelimiters]] uses. The color scheme 
 
 * Overview:
 ** Highlights parens, brackets, braces.
-** Correct highlighting for non-Lisp languages (/Perl, C, etc./). 
 ** global-rainbow-delimiters mode: Use rainbow-delimiters editor-wide.
 ** Checkboxes to enable/disable highlighting of each type of delimiter.
 ** Customizable color scheme works with deftheme and color-theme.el.
