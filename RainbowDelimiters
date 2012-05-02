@@ -20,7 +20,7 @@ You can customize the color scheme [[RainbowDelimiters]] uses. The color scheme 
 ** global-rainbow-delimiters mode: Use rainbow-delimiters editor-wide.
 ** Checkboxes to enable/disable highlighting of each type of delimiter.
 ** Customizable color scheme works with deftheme and color-theme.el.
-** Infinite nesting depth by cycling through defined faces.
+** Infinite nesting depth by cycling through faces repeatedly.
 
 
 = Setup instructions: =
