@@ -14,17 +14,17 @@ Starting a new Emacs Lisp file with `M-x auto-insert' will use SkeletonMode to g
 
 Related EmacsLisp major and minor modes:
 * CheckDoc -- Check the programming style of a file
-* ElDoc -- Show the function signature in the EchoArea
-* DebuggerMode -- Debug signaled errors
-* SourceLevelDebugger -- Edebug can step through code and even does tracing
+* ElDoc -- Show the signature of the function at [[point]] in the EchoArea
+* DebuggerMode (`debug') --  Step through code.  Entry per function;  using breakpoints; or upon error or quit (`C-g')
+* SourceLevelDebugger (`edebug') -- Step through or trace code
 * EmacsLispProfiler -- Instrument functions and determine average runtime
 * EmacsLispBenchmark -- Programmatic profiling with benchmark.el
 * EmacsLispLint -- Check code for problems with elint.el
 * EmacsLispTracing -- Trace code execution with trace.el
-* ImenuMode -- Add a menu that is an index of the code in the buffer
-* FindFunc -- Jump to the definition of an Emacs function
-* EmacsTags -- Easily cross-reference symbols
-* ReBuilder -- Interactively test regular expression strings
+* ImenuMode -- Jump to code definitions in the same buffer
+* FindFunc -- Jump to an EmacsLisp function definition anywhere
+* EmacsTags -- Jump to a code definition anywhere
+* ReBuilder -- Interactively test [[regular expression]] strings
 
 ----
 CategoryCode
