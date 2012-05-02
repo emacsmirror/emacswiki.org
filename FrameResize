@@ -1,3 +1,5 @@
+==Teaching Emacs to Always Maintain 80 Columns==
+
 When using a window manager that frequently reapportions screen space — such as a tiling window manager — or when in a situation where you are often flipping Emacs in and out of full-screen mode, you might want to train Emacs to maintain a width of 80 characters through each resize event. Though the following code is rudimentary — it would benefit from improvements like a cache of appropriate font sizes instead of recomputing the correct font size afresh with each call — it does maintain at least 80 columns of text across resizing.
 
 {{{
