@@ -1,20 +1,16 @@
-= What is a Doc String =
+A documentation string, or '''[::doc string]''', is part of a symbol's definitions in EmacsLisp that
+describes the purpose of the object to a human, and are an important part
+of the SelfDocumentation feature of Emacs and EmacsLisp in general.
+The various describe-commands are one way to have access to these strings.
 
-Documentation strings, or '''[::doc string]s''', are parts of EmacsLisp that
-describe the purpose of the code to a human, and are an important part
-of the SelfDocumentation features of Emacs and EmacsLisp in general.
-The describe-commands are one way to have access to these strings.
-
-A doc string might explain to a user what a function or variable is for, 
-what possible arguments a function understands, expects and what it returns, 
+A doc string might explain to a user what a function or variable is for,
+what possible arguments a function understands, expects and what it returns,
 what other functions or variables the user might be interested in, where to find
 more information and so on.
 
-= How Doc Strings are defined =
-
 These strings are defined among the code.  For example `defun', the
-command to describe new functions, has the syntax <code>(defun NAME
-ARGLIST [DOCSTRING] BODY...)</code>, where the optional argument for
+command to describe new functions, has the syntax ##(defun NAME
+ARGLIST [DOCSTRING] BODY...)##, where the optional argument for
 defining the string can be seen.  Thus in the example
 
     (defun hello-world nil
@@ -33,14 +29,12 @@ visible to someone who takes a look into the EmacsLisp programs
 themselves, and usually are meant as notes for developing the code
 itself.
 
-= Doc Strings and good CodingStyle = 
-
 With good CodingStyle the very first line of the doc string ought to give a very
 summarized, self-sufficient description of the code.  More verbose
-text should follow.
-
+text should follow.  See CheckDoc mode to check your coding style.
 
 ----
-
-CategoryDocumentation CategoryHelp CategoryCode
+CategoryDocumentation
+CategoryHelp
+CategoryCode
 CategoryGlossary
