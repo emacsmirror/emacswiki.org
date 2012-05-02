@@ -71,11 +71,11 @@ M-x customize-group rainbow-delimiters
 </pre>
 
 === Color Scheme ===
-The customize group <code>rainbow-delimiters-faces</code> contains the faces for successive nested pairs of delimiters. You can change them to customize the color scheme for yourself.
+customize-group <code>rainbow-delimiters-faces</code> has the faces for successive nested pairs of delimiters. You can change them through emacs customize or in your color theme or dot-emacs.
 
 The face <code>rainbow-delimiters-unmatched-face</code> is used for unmatched closing delimiters.
 
-Color themes 'Zenburn' and 'Solarized' come with their own color choices for rainbow-delimiters.
+Zenburn and Solarized themes have their own colors for these faces.
 
 *deftheme*/color-theme.el: Further information is at the top of rainbow-delimiters.el.
 
