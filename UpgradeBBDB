@@ -46,7 +46,7 @@
 || bbdb-ignore-most-messages-alist |||| [gone] ||
 || bbdb-always-add-addresses |||| [gone] ||
 || bbdb-auto-notes-alist |||| bbdb-auto-notes-rules ||
-|| bbdb/vm-set-auto-folder-alist |||| ? ||
+|| bbdb/vm-set-auto-folder-alist |||| [gone] ||
 || bbdb-complete-name |||| bbdb-complete-mail ||
 || bbdb-completion-type |||| bbdb-completion-list ||
 || bbdb-canonicalize-redundant-nets-p |||| bbdb-canonicalize-redundant-mails ||
