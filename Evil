@@ -76,5 +76,16 @@ In Normal state, you can use the ##\## key to switch to Emacs state for the dura
 [new]
 Thanks, works great! -- Volfy
 
+[new]
+The first thing I missed of Vim were the tabs. With elscreen.el and its dependencies installed, the following code emulates part of the Vim behaviour:
+
+(load "elscreen" "ElScreen" t)
+
+(define-key evil-normal-state-map (kbd "C-w t") 'elscreen-create)
+(define-key evil-normal-state-map (kbd "C-w x") 'elscreen-kill)
+
+(define-key evil-normal-state-map "gT" 'elscreen-previous)
+(define-key evil-normal-state-map "gt" 'elscreen-next)
+
 ----
 CategoryKeys CategoryEmulation
