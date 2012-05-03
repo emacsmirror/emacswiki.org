@@ -370,7 +370,7 @@ $ diff -c putty-src/WINDOWS/WINDOW.c WINDOW-patched.C
 
 Be sure to set tke keyboard type (Terminal | Keyboard) to SCO. This is the only type that recognizes all function keys. See (http://the.earth.li/~sgtatham/putty/0.62/htmldoc/Chapter4.html#config-keyboard for more info.
 
-The meta key is a combination of Ctrl + Shift.
+To use the function keys + meta key, you'll have to use Ctrl + Shift + function key.
 
 Use this piece of Elisp code in your Emacs ini file to create the correct keybindings when using Emacs over PuTTY.
 
@@ -378,16 +378,15 @@ Use this piece of Elisp code in your Emacs ini file to create the correct keybin
 (if (eq system-uses-terminfo t)
     (progn                              ;; PuTTY hack - needs to be in SCO mode
       (define-key key-translation-map [\e] [\M])
-      (define-key input-decode-map "\M-[H" [home])
-      (define-key input-decode-map "\M-[F" [end])
-      (define-key input-decode-map "\e\e[4~" [S-end])
+      (define-key input-decode-map "\e[H" [home])
+      (define-key input-decode-map "\e[F" [end])
       (define-key input-decode-map "\e[D" [S-left])
       (define-key input-decode-map "\e[C" [S-right])
       (define-key input-decode-map "\e[A" [S-up])
       (define-key input-decode-map "\e[B" [S-down])
       (define-key input-decode-map "\e[C" [S-right])
-      (define-key input-decode-map "\M-[I" [prior])
-      (define-key input-decode-map "\M-[G" [next])
+      (define-key input-decode-map "\e[I" [prior])
+      (define-key input-decode-map "\e[G" [next])
 
       (define-key input-decode-map "\e[M" [f1])
       (define-key input-decode-map "\e[Y" [S-f1])
