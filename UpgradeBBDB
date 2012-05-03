@@ -1,52 +1,51 @@
 * How to upgrade from BBDB 2.x to 3.x
 
 || 2.x |||| 3.x ||
-|| bbdb-complete-name-allow-cycling |||| bbdb-complete-mail-allow-cycling ||
-|| bbdb-electric-p |||| bbdb-electric ||
-|| bbdb-send-mail-style |||| bbdb-mail-user-agent ||
-|| bbdb-phones-label-list |||| bbdb-phone-label-list ||
-|| bbdb-quiet-about-name-mismatches |||| bbdb-accept-name-mismatch ||
-|| bbdb-north-american-phone-numbers-p |||| bbdb-phone-style ||
-|| bbdb-check-zip-codes-p |||| bbdb-check-postcode ||
-|| bbdb-use-pop-up |||| bbdb-pop-up-layout ||
-|| bbdb-pop-up-target-lines |||| bbdb-pop-up-window-size ||
-|| bbdb-canonicalize-net-hook |||| bbdb-canonicalize-mail-function ||
-|| bbdb-address-zip |||| ? bbdb-address-postcode ? ||
-|| bbdb-address-location |||| ? ||
-|| bbdb-format-streets |||| ? ||
-|| bbdb-dwim-net-address-allow-redundancy |||| bbdb-mail-avoid-redundancy ||
-|| bbdb-hashtable-size |||| [gone] ||
-|| bbdb-initialize |||| same + bbdb-mua-auto-update-init ||
-|| bbdb-get-field |||| bbdb-record-note ||
-|| bbdb-*-location |||| bbdb-*-label ||
-|| bbdb-record-phones |||| bbdb-record-phone ||
-|| bbdb-record-addresses |||| bbdb-record-address ||
-|| bbdb-timestamp-hook |||| bbdb-timestamp ||
-|| bbdb-creation-date-hook |||| bbdb-creation-date ||
-|| bbdb-display-layout |||| bbdb-layout ||
-|| bbdb-pop-up-display-layout |||| bbdb-pop-up-layout ||
-|| bbdb-get-only-first-address-p |||| bbdb-message-all-addresses ||
-|| bbdb-completion-type |||| bbdb-completion-list ||
-|| bbdb-save-db-timeout |||| [gone] ||
-|| bbdb-gui |||| [gone] ||
-|| bbdb-notice-hook |||| bbdb-notice-mail-hook ||
-|| bbdb-auto-notes-hook |||| bbdb-auto-notes ||
-|| bbdb-offer-save |||| [gone] ||
 || *-company |||| *-organization ||
+|| bbdb-*-location |||| bbdb-*-label ||
+|| bbdb-address-edit-continental |||| [gone, see bbdb-address-format-list] ||
+|| bbdb-address-editing-function |||| [gone, see bbdb-address-format-list] ||
+|| bbdb-address-location |||| ? ||
+|| bbdb-address-zip |||| ? bbdb-address-postcode ? ||
 || bbdb-addresses-label-list |||| ? ||
-|| bbdb-print-file-name |||| bbdb-print-file ||
-|| bbdb-address-editing-function |||| ? ||
-|| bbdb-address-edit-continental |||| [gone] ||
-|| bbdb/vm-force-create |||| ? ||
-|| bbdb-define-all-aliases |||| ? ||
-|| bbdb-new-nets-always-primary |||| [gone] ||
-|| bbdb/mail-auto-create-p  |||| [gone] ||
-|| bbdb-ignore-some-messages-hook |||| [gone] ||
-|| bbdb-ignore-some-messages-alist |||| [gone] ||
-|| bbdb-ignore-most-messages-alist |||| [gone] ||
 || bbdb-always-add-addresses |||| [gone] ||
 || bbdb-auto-notes-alist |||| bbdb-auto-notes-rules ||
-|| bbdb/vm-set-auto-folder-alist |||| [gone] ||
-|| bbdb-complete-name |||| bbdb-complete-mail ||
-|| bbdb-completion-type |||| bbdb-completion-list ||
+|| bbdb-auto-notes-hook |||| bbdb-auto-notes ||
+|| bbdb-canonicalize-net-hook |||| bbdb-canonicalize-mail-function ||
 || bbdb-canonicalize-redundant-nets-p |||| bbdb-canonicalize-redundant-mails ||
+|| bbdb-check-zip-codes-p |||| bbdb-check-postcode ||
+|| bbdb-complete-name |||| bbdb-complete-mail ||
+|| bbdb-complete-name-allow-cycling |||| bbdb-complete-mail-allow-cycling ||
+|| bbdb-completion-type |||| bbdb-completion-list ||
+|| bbdb-creation-date-hook |||| bbdb-creation-date ||
+|| bbdb-define-all-aliases |||| ? ||
+|| bbdb-display-layout |||| bbdb-layout ||
+|| bbdb-dwim-net-address-allow-redundancy |||| bbdb-mail-avoid-redundancy ||
+|| bbdb-electric-p |||| bbdb-electric ||
+|| bbdb-format-streets |||| ? ||
+|| bbdb-get-field |||| bbdb-record-note ||
+|| bbdb-get-only-first-address-p |||| bbdb-message-all-addresses ||
+|| bbdb-gui |||| [gone] ||
+|| bbdb-hashtable-size |||| [gone] ||
+|| bbdb-ignore-most-messages-alist |||| [gone] ||
+|| bbdb-ignore-some-messages-alist |||| [gone] ||
+|| bbdb-ignore-some-messages-hook |||| [gone] ||
+|| bbdb-initialize |||| same + bbdb-mua-auto-update-init ||
+|| bbdb-new-nets-always-primary |||| [gone] ||
+|| bbdb-north-american-phone-numbers-p |||| bbdb-phone-style ||
+|| bbdb-notice-hook |||| bbdb-notice-mail-hook ||
+|| bbdb-offer-save |||| [gone] ||
+|| bbdb-phones-label-list |||| bbdb-phone-label-list ||
+|| bbdb-pop-up-display-layout |||| bbdb-pop-up-layout ||
+|| bbdb-pop-up-target-lines |||| bbdb-pop-up-window-size ||
+|| bbdb-print-file-name |||| bbdb-print-file ||
+|| bbdb-quiet-about-name-mismatches |||| bbdb-accept-name-mismatch ||
+|| bbdb-record-addresses |||| bbdb-record-address ||
+|| bbdb-record-phones |||| bbdb-record-phone ||
+|| bbdb-save-db-timeout |||| [gone] ||
+|| bbdb-send-mail-style |||| bbdb-mail-user-agent ||
+|| bbdb-timestamp-hook |||| bbdb-timestamp ||
+|| bbdb-use-pop-up |||| bbdb-pop-up-layout ||
+|| bbdb/mail-auto-create-p  |||| [gone] ||
+|| bbdb/vm-force-create |||| ? ||
+|| bbdb/vm-set-auto-folder-alist |||| [gone] ||
