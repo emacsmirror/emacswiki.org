@@ -1,0 +1,16 @@
+I have used ange-ftp with windows ftp client successfully on Windows XP for several years. Now I moved to Windows Seven and it stopped work properly (with exactly the same emacs version). It took me quite a while to understand that, on Seven, the hash command does not include a newline in the end. Then you get things like
+
+####226 Transfer complete.
+
+instead of 
+
+####
+
+226 Transfer complete.
+
+simple solution... 
+
+(setq  ange-ftp-send-hash nil)
+
+-- Vasco Lopes Paulo 2012-05-03 18:23 UTC
+
