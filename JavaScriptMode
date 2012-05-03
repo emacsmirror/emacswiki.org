@@ -29,7 +29,7 @@ The Mewde Project contain XEmacs' javascript mode while adding Mozilla Spider Mo
 
 == Fix for Greasemonkey scripts ==
 
-The following fix from [[EmacsInitFileOfSylecn|Sylecn]] addresses a bug where the metadata block in Greasemonkey scripts confuses the syntax highlighter.
+The following fix from [[EmacsInitFileOfSylecn|Sylecn]] addresses a bug where the metadata block in Greasemonkey scripts confuses the syntax highlighter:
 
     (eval-after-load 'js
       '(progn
