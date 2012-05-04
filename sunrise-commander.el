@@ -7,7 +7,7 @@
 ;; Maintainer: José Alfredo Romero L. <escherdragon@gmail.com>
 ;; Created: 24 Sep 2007
 ;; Version: 5
-;; RCS Version: $Rev: 418 $
+;; RCS Version: $Rev: 419 $
 ;; Keywords: files, dired, midnight commander, norton, orthodox
 ;; URL: http://www.emacswiki.org/emacs/sunrise-commander.el
 ;; Compatibility: GNU Emacs 22+
@@ -1233,7 +1233,7 @@ viewer window."
   (interactive)
   (if (not (and sr-running
                 (eq (window-frame sr-left-window) (selected-frame))))
-      (sr-dired (sr-choose-cd-target))
+      (sr-dired (or (buffer-file-name) (sr-choose-cd-target)))
     (sr-quit t)
     (message "Hast thou a charm to stay the morning-star in his deep course?")))
 
