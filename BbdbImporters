@@ -212,5 +212,3 @@ i was switching from mutt/abook to wanderlust/bbdb, so i came up with this code.
 
 I use Gnus as my mailer, but I live on a Macintosh.  To get the system AddressBook data into the BBDB, I've written a [http://www.homonculus.net/blog/by_name/bbdb_os_x_hackery.html short python script] that uses the PyObjC bridge to pull the relevant data directly.    Share and enjoy!
 
-== Two-way CardDAV sync ==
-Has anyone got this working?
