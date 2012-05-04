@@ -14,3 +14,6 @@ It doesn't require you to change your shell's rc-file.
               nil t))
 
   (add-hook 'shell-mode-hook 'track-shell-directory/procfs)
+
+[new]
+This is a problem that disturbed me for a long long time. A very neat solution without making changes to shell script.
