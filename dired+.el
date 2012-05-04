@@ -7,9 +7,9 @@
 ;; Copyright (C) 1999-2012, Drew Adams, all rights reserved.
 ;; Created: Fri Mar 19 15:58:58 1999
 ;; Version: 21.2
-;; Last-Updated: Sat Apr 28 14:40:21 2012 (-0700)
+;; Last-Updated: Fri May  4 10:37:11 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 4800
+;;     Update #: 4960
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/dired+.el
 ;; Keywords: unix, mouse, directories, diredp, dired
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -259,6 +259,7 @@
 ;;     Doc string reflects new `dired-simultaneous-find-file'.
 ;;  `dired-mark-sexp' - 1. Variable `s' -> `blks'.
 ;;                      2. Fixes to `uid' and `gid'.
+;;  `dired-mark-unmarked-files' (Emacs < 24 only) - Emacs 24+ version.
 ;;  `dired-simultaneous-find-file' -
 ;;     Use separate frames instead of windows if `pop-up-frames' is
 ;;     non-nil, or if prefix arg < 0.
@@ -272,6 +273,15 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2012/05/04 dadams
+;;     Added: dired-mark-unmarked-files for Emacs < 24.
+;;     diredp-do-create-files-recursive: Corrected for Emacs < 24.
+;;     diredp-do-create-files-recursive, diredp-(un)mark-files-tagged-regexp,
+;;       diredp(-mouse)-do-(un)tag, diredp(-mouse)-do-remove-all-tags,
+;;       diredp(-mouse)-do-paste-(add|replace)-tags, diredp(-mouse)-do-set-tag-value,
+;;       diredp(-mouse)-do-bookmark(-in-bookmark-file), diredp-find-a-file-read-args, 
+;;       diredp-mouse-do-shell-command:
+;;         Use lexical-let(*), to get closures for free vars in lambdas.
 ;; 2012/04/28 dadams
 ;;     Added:
 ;;       diredp-copy-filename-as-kill-recursive, diredp-do-copy-recursive,
@@ -812,10 +822,9 @@ If DISTINGUISH-ONE-MARKED is non-nil, then return (t FILENAME) instead
       (if (and newarg (not multi-C-u))
           (if (integerp newarg)
               (progn                    ; No `save-excursion', want to move point.
-                (dired-repeat-over-lines newarg
-                                         (function (lambda ()
-                                           (if ,show-progress (sit-for 0))
-                                           (setq results  (cons ,body results)))))
+                (dired-repeat-over-lines newarg #'(lambda ()
+                                                    (when ,show-progress (sit-for 0))
+                                                    (setq results  (cons ,body results))))
                 (if (< newarg 0) (nreverse results) results))
             ;; Non-nil, non-integer ARG means use current file:
             (list ,body))
@@ -2859,24 +2868,31 @@ Prompts for the target directory, in which to create the files.
 FILE-CREATOR OPERATION, and MARKER-CHAR are as in `dired-create-files'.
 Non-nil IGNORE-MARKS-P means ignore all marks - include all files in this
 Dired buffer and all subdirs, recursively."
-  (let* ((fn-list     (diredp-get-files ignore-marks-p))
-	 (target-dir  (dired-dwim-target-directory))
-	 (defaults    (dired-dwim-target-defaults fn-list target-dir))
-	 (target      (expand-file-name
-                       (minibuffer-with-setup-hook
-                           (lambda ()
-                             (set (make-local-variable 'minibuffer-default-add-function) nil)
-                             (setq minibuffer-default  defaults))
-                         (funcall (if (fboundp 'read-directory-name)
-                                      #'read-directory-name
-                                    #'read-file-name)
-                                  (concat operation "files to: ")
-                                  default-directory default-directory)))))
+  (lexical-let* ((fn-list     (diredp-get-files ignore-marks-p))
+                 (target-dir  (dired-dwim-target-directory))
+                 (defaults    (and (fboundp 'dired-dwim-target-defaults) ; Emacs 23+
+                                   (dired-dwim-target-defaults fn-list target-dir)))
+                 (target      (expand-file-name
+                               (if (fboundp 'minibuffer-with-setup-hook) ; Emacs 22+
+                                   (minibuffer-with-setup-hook
+                                    (lambda ()
+                                      (set (make-local-variable 'minibuffer-default-add-function)
+                                           nil)
+                                      (setq minibuffer-default  defaults))
+                                    (funcall (if (fboundp 'read-directory-name)
+                                                 #'read-directory-name
+                                               #'read-file-name)
+                                             (concat operation " files to: ")
+                                             default-directory default-directory))
+                                 (funcall (if (fboundp 'read-directory-name)
+                                              #'read-directory-name
+                                            #'read-file-name)
+                                          (concat operation "files to: ")
+                                          default-directory default-directory)))))
     (unless (file-directory-p target) (error "Target is not a directory: %s" target))
-    (dired-create-files
-     file-creator operation fn-list
-     `(lambda (from) (expand-file-name (file-name-nondirectory from) ',target))
-     marker-char)))
+    (dired-create-files file-creator operation fn-list
+                        #'(lambda (from) (expand-file-name (file-name-nondirectory from) target))
+                        marker-char)))
 
 
 
@@ -3096,13 +3112,15 @@ You need library `bookmark+.el' to use this command."
   (unless (eq major-mode 'dired-mode)
     (error "You must be in a Dired buffer to use this command"))
   (dired-mark-if (and (not (looking-at dired-re-dot))  (not (eolp))
-                      (let* ((fname  (dired-get-filename nil t))
-                             (bmk    (and fname (bmkp-get-autofile-bookmark fname nil prefix)))
-                             (btgs   (and bmk (bmkp-get-tags bmk)))
-                             (anyp   (and btgs (bmkp-some (lambda (tag)
+                      (lexical-let* ((fname  (dired-get-filename nil t))
+                                     (bmk    (and fname (bmkp-get-autofile-bookmark
+                                                         fname nil prefix)))
+                                     (btgs   (and bmk (bmkp-get-tags bmk)))
+                                     (anyp   (and btgs (bmkp-some
+                                                        #'(lambda (tag)
                                                             (string-match regexp
                                                                           (bmkp-tag-name tag)))
-                                                          btgs))))
+                                                        btgs))))
                         (and btgs (if notp (not anyp) anyp))))
                  "some-tag-matching-regexp file"))
 
@@ -3121,13 +3139,15 @@ You need library `bookmark+.el' to use this command."
     (error "You must be in a Dired buffer to use this command"))
   (let ((dired-marker-char  ?\040))
     (dired-mark-if (and (not (looking-at dired-re-dot))  (not (eolp))
-                        (let* ((fname  (dired-get-filename nil t))
-                               (bmk    (and fname (bmkp-get-autofile-bookmark fname nil prefix)))
-                               (btgs   (and bmk (bmkp-get-tags bmk)))
-                               (anyp   (and btgs (bmkp-some (lambda (tag)
+                        (lexical-let* ((fname  (dired-get-filename nil t))
+                                       (bmk    (and fname (bmkp-get-autofile-bookmark
+                                                           fname nil prefix)))
+                                       (btgs   (and bmk (bmkp-get-tags bmk)))
+                                       (anyp   (and btgs (bmkp-some
+                                                          #'(lambda (tag)
                                                               (string-match regexp
                                                                             (bmkp-tag-name tag)))
-                                                            btgs))))
+                                                          btgs))))
                           (and btgs (if notp (not anyp) anyp))))
                    "some-tag-matching-regexp file")))
 
@@ -3225,8 +3245,8 @@ A prefix argument ARG specifies files to use instead of those marked.
                 (and diredp-prompt-for-bookmark-prefix-flag
                      (read-string "Prefix for autofile bookmark name: "))
                 current-prefix-arg)))
-  (dired-map-over-marks-check #'(lambda () (diredp-tag tags prefix)) arg 'tag
-                              (diredp-fewer-than-2-files-p arg)))
+  (dired-map-over-marks-check (lexical-let ((pref  prefix)) #'(lambda () (diredp-tag tags pref)))
+                              arg 'tag (diredp-fewer-than-2-files-p arg)))
 
 (defun diredp-tag (tags &optional prefix)
   "Add tags to the file or directory named on the current line.
@@ -3253,14 +3273,14 @@ You need library `bookmark+.el' to use this command."
   (unless (require 'bookmark+ nil t) (error "This command requires library `bookmark+.el'"))
   (unless (eq major-mode 'dired-mode)
     (error "You must be in a Dired buffer to use this command"))
-  (let ((mouse-pos         (event-start event))
-        (dired-no-confirm  t)
-        (prefix            (and diredp-prompt-for-bookmark-prefix-flag
-                                (read-string "Prefix for bookmark name: "))))
+  (lexical-let ((mouse-pos         (event-start event))
+                (dired-no-confirm  t)
+                (prefix            (and diredp-prompt-for-bookmark-prefix-flag
+                                        (read-string "Prefix for bookmark name: "))))
     (select-window (posn-window mouse-pos))
     (goto-char (posn-point mouse-pos))
-    (dired-map-over-marks-check
-     #'(lambda () (diredp-tag (bmkp-read-tags-completing) prefix)) 1 'tag t))
+    (dired-map-over-marks-check #'(lambda () (diredp-tag (bmkp-read-tags-completing) prefix))
+                                1 'tag t))
   (dired-previous-line 1))
 
 ;;;###autoload
@@ -3289,8 +3309,9 @@ A prefix argument ARG specifies files to use instead of those marked.
            (and diredp-prompt-for-bookmark-prefix-flag
                 (read-string "Prefix for bookmark name: "))
            current-prefix-arg)))
-  (dired-map-over-marks-check #'(lambda () (diredp-untag tags prefix)) arg 'untag
-                              (diredp-fewer-than-2-files-p arg)))
+  (dired-map-over-marks-check (lexical-let ((pref  prefix))
+                                #'(lambda () (diredp-untag tags pref)))
+                              arg 'untag (diredp-fewer-than-2-files-p arg)))
 
 (defun diredp-untag (tags &optional prefix)
   "Remove some tags from the file or directory named on the current line.
@@ -3317,14 +3338,14 @@ You need library `bookmark+.el' to use this command."
   (unless (require 'bookmark+ nil t) (error "This command requires library `bookmark+.el'"))
   (unless (eq major-mode 'dired-mode)
     (error "You must be in a Dired buffer to use this command"))
-  (let ((mouse-pos         (event-start event))
-        (dired-no-confirm  t)
-        (prefix            (and diredp-prompt-for-bookmark-prefix-flag
-                                (read-string "Prefix for bookmark name: "))))
+  (lexical-let ((mouse-pos         (event-start event))
+                (dired-no-confirm  t)
+                (prefix            (and diredp-prompt-for-bookmark-prefix-flag
+                                        (read-string "Prefix for bookmark name: "))))
     (select-window (posn-window mouse-pos))
     (goto-char (posn-point mouse-pos))
-    (let* ((bmk   (bmkp-get-autofile-bookmark  (dired-get-filename) nil prefix))
-           (btgs  (and bmk (bmkp-get-tags bmk))))
+    (lexical-let* ((bmk   (bmkp-get-autofile-bookmark  (dired-get-filename) nil prefix))
+                   (btgs  (and bmk (bmkp-get-tags bmk))))
       (unless btgs (error "File has no tags to remove"))
       (dired-map-over-marks-check
        #'(lambda () (diredp-untag (bmkp-read-tags-completing btgs) prefix)) 1 'untag t)))
@@ -3351,8 +3372,9 @@ A prefix argument ARG specifies files to use instead of those marked.
      (list (and diredp-prompt-for-bookmark-prefix-flag
                 (read-string "Prefix for bookmark name: "))
            current-prefix-arg)))
-  (dired-map-over-marks-check #'(lambda () (diredp-remove-all-tags prefix)) arg 'remove-all-tags
-                              (diredp-fewer-than-2-files-p arg)))
+  (lexical-let ((pref  prefix))
+    (dired-map-over-marks-check #'(lambda () (diredp-remove-all-tags pref)) arg 'remove-all-tags
+                                (diredp-fewer-than-2-files-p arg))))
 
 (defun diredp-remove-all-tags (&optional prefix)
   "Remove all tags from the file or directory named on the current line.
@@ -3379,14 +3401,14 @@ You need library `bookmark+.el' to use this command."
   (unless (require 'bookmark+ nil t) (error "This command requires library `bookmark+.el'"))
   (unless (eq major-mode 'dired-mode)
     (error "You must be in a Dired buffer to use this command"))
-  (let ((mouse-pos         (event-start event))
-        (dired-no-confirm  t)
-        (prefix            (and diredp-prompt-for-bookmark-prefix-flag
-                                (read-string "Prefix for bookmark name: "))))
+  (lexical-let ((mouse-pos         (event-start event))
+                (dired-no-confirm  t)
+                (prefix            (and diredp-prompt-for-bookmark-prefix-flag
+                                        (read-string "Prefix for bookmark name: "))))
     (select-window (posn-window mouse-pos))
     (goto-char (posn-point mouse-pos))
-    (dired-map-over-marks-check
-     #'(lambda () (diredp-remove-all-tags prefix)) 1 'remove-all-tags t))
+    (dired-map-over-marks-check #'(lambda () (diredp-remove-all-tags prefix))
+                                1 'remove-all-tags t))
   (dired-previous-line 1))
 
 ;;;###autoload
@@ -3409,7 +3431,9 @@ A prefix argument ARG specifies files to use instead of those marked.
      (list (and diredp-prompt-for-bookmark-prefix-flag
                 (read-string "Prefix for autofile bookmark name: "))
            current-prefix-arg)))
-  (dired-map-over-marks-check #'(lambda () (diredp-paste-add-tags prefix)) arg 'paste-add-tags
+  (dired-map-over-marks-check (lexical-let ((pref  prefix))
+                                #'(lambda () (diredp-paste-add-tags pref)))
+                              arg 'paste-add-tags
                               (diredp-fewer-than-2-files-p arg)))
 
 (defun diredp-paste-add-tags (&optional prefix)
@@ -3439,10 +3463,10 @@ You need library `bookmark+.el' to use this command."
   (unless (require 'bookmark+ nil t) (error "This command requires library `bookmark+.el'"))
   (unless (eq major-mode 'dired-mode)
     (error "You must be in a Dired buffer to use this command"))
-  (let ((mouse-pos         (event-start event))
-        (dired-no-confirm  t)
-        (prefix            (and diredp-prompt-for-bookmark-prefix-flag
-                                (read-string "Prefix for bookmark name: "))))
+  (lexical-let ((mouse-pos         (event-start event))
+                (dired-no-confirm  t)
+                (prefix            (and diredp-prompt-for-bookmark-prefix-flag
+                                        (read-string "Prefix for bookmark name: "))))
     (select-window (posn-window mouse-pos))
     (goto-char (posn-point mouse-pos))
     (dired-map-over-marks-check #'(lambda () (diredp-paste-add-tags prefix))
@@ -3469,9 +3493,9 @@ A prefix argument ARG specifies files to use instead of those marked.
      (list (and diredp-prompt-for-bookmark-prefix-flag
                 (read-string "Prefix for autofile bookmark name: "))
            current-prefix-arg)))
-  (dired-map-over-marks-check #'(lambda () (diredp-paste-replace-tags prefix)) arg
-                              'paste-replace-tags
-                              (diredp-fewer-than-2-files-p arg)))
+  (dired-map-over-marks-check (lexical-let ((pref  prefix))
+                                #'(lambda () (diredp-paste-replace-tags pref)))
+                              arg 'paste-replace-tags (diredp-fewer-than-2-files-p arg)))
 
 (defun diredp-paste-replace-tags (&optional prefix)
   "Replace tags for this file or dir with tags copied previously.
@@ -3501,10 +3525,10 @@ You need library `bookmark+.el' to use this command."
   (unless (require 'bookmark+ nil t) (error "This command requires library `bookmark+.el'"))
   (unless (eq major-mode 'dired-mode)
     (error "You must be in a Dired buffer to use this command"))
-  (let ((mouse-pos         (event-start event))
-        (dired-no-confirm  t)
-        (prefix            (and diredp-prompt-for-bookmark-prefix-flag
-                                (read-string "Prefix for bookmark name: "))))
+  (lexical-let ((mouse-pos         (event-start event))
+                (dired-no-confirm  t)
+                (prefix            (and diredp-prompt-for-bookmark-prefix-flag
+                                        (read-string "Prefix for bookmark name: "))))
     (select-window (posn-window mouse-pos))
     (goto-char (posn-point mouse-pos))
     (dired-map-over-marks-check #'(lambda () (diredp-paste-replace-tags prefix))
@@ -3535,7 +3559,10 @@ A prefix argument ARG specifies files to use instead of those marked.
            (and diredp-prompt-for-bookmark-prefix-flag
                 (read-string "Prefix for bookmark name: "))
            current-prefix-arg)))
-  (dired-map-over-marks-check #'(lambda () (diredp-set-tag-value tag value prefix))
+  (dired-map-over-marks-check (lexical-let ((tg    tag)
+                                            (val   value)
+                                            (pref  prefix))
+                                #'(lambda () (diredp-set-tag-value tg val pref)))
                               arg 'set-tag-value (diredp-fewer-than-2-files-p arg)))
 
 (defun diredp-set-tag-value (tag value &optional prefix)
@@ -3565,16 +3592,16 @@ You need library `bookmark+.el' to use this command."
   (unless (require 'bookmark+ nil t) (error "This command requires library `bookmark+.el'"))
   (unless (eq major-mode 'dired-mode)
     (error "You must be in a Dired buffer to use this command"))
-  (let ((mouse-pos         (event-start event))
-        (dired-no-confirm  t)
-        (prefix            (and diredp-prompt-for-bookmark-prefix-flag
-                                (read-string "Prefix for bookmark name: "))))
+  (lexical-let ((mouse-pos         (event-start event))
+                (dired-no-confirm  t)
+                (prefix            (and diredp-prompt-for-bookmark-prefix-flag
+                                        (read-string "Prefix for bookmark name: "))))
     (select-window (posn-window mouse-pos))
     (goto-char (posn-point mouse-pos))
-    (dired-map-over-marks-check
-     #'(lambda ()
-         (diredp-set-tag-value (bmkp-read-tag-completing) (read (read-string "Value: ")) prefix))
-     1 'set-tag-value t))
+    (dired-map-over-marks-check #'(lambda () (diredp-set-tag-value (bmkp-read-tag-completing)
+                                                                   (read (read-string "Value: "))
+                                                                   prefix))
+                                1 'set-tag-value t))
   (dired-previous-line 1))
 
 ;;;###autoload
@@ -3599,17 +3626,17 @@ A prefix argument ARG specifies files to use instead of those marked.
           (list (and diredp-prompt-for-bookmark-prefix-flag
                      (read-string "Prefix for bookmark name: "))
                 current-prefix-arg)))
-  (dired-map-over-marks-check #'(lambda () (diredp-bookmark prefix)) arg 'bookmark
-                              (diredp-fewer-than-2-files-p arg)))
+  (dired-map-over-marks-check (lexical-let ((pref  prefix)) #'(lambda () (diredp-bookmark pref)))
+                              arg 'bookmark (diredp-fewer-than-2-files-p arg)))
 
 ;;;###autoload
 (defun diredp-mouse-do-bookmark (event) ; Not bound
   "In Dired, bookmark this file.  See `diredp-do-bookmark'."
   (interactive "e")
-  (let ((mouse-pos         (event-start event))
-        (dired-no-confirm  t)
-        (prefix            (and diredp-prompt-for-bookmark-prefix-flag
-                                (read-string "Prefix for bookmark name: "))))
+  (lexical-let ((mouse-pos         (event-start event))
+                (dired-no-confirm  t)
+                (prefix            (and diredp-prompt-for-bookmark-prefix-flag
+                                        (read-string "Prefix for bookmark name: "))))
     (select-window (posn-window mouse-pos))
     (goto-char (posn-point mouse-pos))
     (dired-map-over-marks-check #'(lambda () (diredp-bookmark prefix)) nil 'bookmark t))
@@ -3742,8 +3769,8 @@ bookmark-file bookmark for BOOKMARK-FILE."
       (unwind-protect
            (progn (bmkp-switch-bookmark-file bookmark-file) ; Changes `*-current-bookmark-file'.
                   (dired-map-over-marks-check
-                   #'(lambda () (diredp-bookmark prefix)) arg 'bookmark
-                   (diredp-fewer-than-2-files-p arg))
+                   (lexical-let ((pref  prefix)) #'(lambda () (diredp-bookmark pref)))
+                   arg 'bookmark (diredp-fewer-than-2-files-p arg))
                   (bookmark-save)
                   (unless bfile-exists-p (revert-buffer)))
         (unless (bmkp-same-file-p old-bmkp-current-bookmark-file  bmkp-current-bookmark-file)
@@ -3831,8 +3858,9 @@ As a side effect, killed dired buffers for DIR are removed from
     (find-file-other-window filename wildcards))
 
   (defun diredp-find-a-file-read-args (prompt mustmatch) ; Not bound
-    (list (let ((find-file-default  (abbreviate-file-name (dired-get-file-for-visit))))
-            (minibuffer-with-setup-hook (lambda () (setq minibuffer-default  find-file-default))
+    (list (lexical-let ((find-file-default  (abbreviate-file-name (dired-get-file-for-visit))))
+            (minibuffer-with-setup-hook #'(lambda ()
+                                            (setq minibuffer-default  find-file-default))
                                         (read-file-name prompt nil default-directory mustmatch)))
           t)))
 
@@ -4228,6 +4256,34 @@ Else return a singleton list of a directory name, which is as follows:
              file))
       (list (dired-current-directory))))
 
+
+;; REPLACE ORIGINAL in `dired-x.el'.
+;;
+;; Fix the `interactive' spec.  This is the Emacs 24+ version, provided for earlier versions.
+;;
+(unless (> emacs-major-version 23)
+  (defun dired-mark-unmarked-files (regexp msg &optional unflag-p localp)
+    "Mark unmarked files matching REGEXP, displaying MSG.
+REGEXP is matched against the entire file name.  When called
+interactively, prompt for REGEXP.
+With prefix argument, unflag all those files.
+
+Non-interactively:
+ Returns t if any work was done, nil otherwise.
+ Optional fourth argument LOCALP is as in `dired-get-filename'."
+    (interactive
+     (list (dired-read-regexp
+            "Mark unmarked files matching regexp (default all): ")
+           nil current-prefix-arg nil))
+    (let ((dired-marker-char (if unflag-p ?\   dired-marker-char)))
+      (dired-mark-if
+       (and
+        ;; not already marked
+        (looking-at " ")
+        ;; uninteresting
+        (let ((fn (dired-get-filename localp t)))
+          (and fn (string-match regexp fn))))
+       msg))))
 
 
 ;;; VISIT ALL MARKED FILES SIMULTANEOUSLY.
@@ -5453,7 +5509,7 @@ With prefix arg, prompt for SWITCHES which are the options for `diff'."
                            (read-string "Options for diff: "
                                         (if (stringp diff-switches)
                                             diff-switches
-                                          (mapconcat 'identity diff-switches " "))))))
+                                          (mapconcat #'identity diff-switches " "))))))
         (mouse-pos  (event-start event)))
     (select-window (posn-window mouse-pos))
     (goto-char (posn-point mouse-pos))
@@ -5616,8 +5672,9 @@ output files usually are created there instead of in a subdir."
   ;;Functions dired-run-shell-command and dired-shell-stuff-it do the
   ;;actual work and can be redefined for customization.
   (interactive "e")
-  (let ((mouse-pos  (event-start event))
-        (command    (dired-read-shell-command "! on %s: " nil (dired-get-marked-files t nil))))
+  (lexical-let ((mouse-pos  (event-start event))
+                (command    (dired-read-shell-command "! on %s: " nil
+                                                      (dired-get-marked-files t nil))))
     (select-window (posn-window mouse-pos))
     (goto-char (posn-point mouse-pos))
     (dired-bunch-files (- 10000 (length command))
