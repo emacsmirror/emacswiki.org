@@ -25,3 +25,6 @@ the date as it does now. If you synchronize more than one time in a day, this wi
 
 Ah, I now found that you can set 'bbdb-time-internal-format' to "%Y-%m-%dT%T%z" to produce full ISO 8601 format. This should be perfect for syncing. See the documentation of 'format-time-string' to find what specifiers you can use. ColinMarquardt
  
+
+== Two-way CardDAV sync ==
+Has anyone got this working?
