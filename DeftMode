@@ -30,5 +30,6 @@ and replacing the call to *search-forward* in *deft-filter-match-file* with a ca
 
 - pobocks
 
+I see some blocking behaviour with defts autosave feature after having emacs open for awhile with deft running, any suggestions on what this might be (only happens with the autosave in deft)? - anon
 ----
 CategoryWriting
