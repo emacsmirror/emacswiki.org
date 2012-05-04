@@ -3,7 +3,7 @@
 ;; Copyright (c) 2011-2012 Alp Aker
 
 ;; Author: Alp Aker <alp.tekin.aker@gmail.com>
-;; Version: 1.81
+;; Version: 1.82
 ;; Keywords: convenience
 
 ;; This program is free software; you can redistribute it and/or
@@ -44,16 +44,18 @@
 
 ;; By default, fci-mode draws its vertical indicator at the fill column.  If
 ;; you'd like it to be drawn at another column, set `fci-rule-column' to the
-;; column number.  This variable becomes buffer local when set, so you can
-;; use different values for different modes.  The default behavior (drawing
-;; the rule at the fill column) is specified by setting fci-rule-column to
-;; nil.
+;; column number.  (A case in which this might be useful is when you want to
+;; fill comments at, for example, column 70, but want a vertical rule at
+;; column 80 or 100 to indicate the maximum line length for code.)  The
+;; default behavior (showing the indicator at the fill column) is specified
+;; by setting fci-rule-column to nil.  Note that this variable becomes buffer
+;; local when set.
 
 ;; On graphical displays the fill-column rule is drawn using a bitmap
 ;; image.  Its color is controlled by the variable `fci-rule-color', whose
 ;; value can be any valid color name.  The rule's width in pixels is
 ;; determined by the variable `fci-rule-width'; the default value is 1.
-;;
+
 ;; The rule can be drawn as a solid or dashed line, controlled by the
 ;; variable `fci-rule-use-dashes'; the default is nil.  The dash appearance is
 ;; controlled by `fci-dash-pattern', which is the ratio of dash length to
@@ -118,7 +120,7 @@
 
 ;; o Fci-mode in not currently compatible with Emacs's
 ;;   `show-trailing-whitespace' feature (given the way the latter is
-;;   implemented, such compatilibility is going to be hard to achieve).  A
+;;   implemented, such compatibility is going to be hard to achieve).  A
 ;;   workaround is to configure `whitespace-mode' to replicate the
 ;;   functionality of show-trailing-whitespace.  This can be done with the
 ;;   following setting:
@@ -170,10 +172,10 @@
 ;; ================
 
 ;; Thanks to Ami Fischman, Christopher Genovese, Michael Hoffman, José
-;; Alfredo Romero L., José Lombera, R. Lange, Joe Lisee, Frank Meffert,
+;; Alfredo Romero L., R. Lange, Joe Lisee, José Lombera, Frank Meffert,
 ;; Mitchell Peabody, sheijk, and an anonymous BT subscriber for bug reports
-;; and suggestions.  Special thanks to lomew and Pär Wieslander for code
-;; contributions.
+;; and suggestions.  Special thanks to lomew, David Röthlisberger, and Pär
+;; Wieslander for code contributions.
 
 ;;; Code:
 
@@ -202,7 +204,7 @@ Changes to this variable do not take effect until the mode
 function `fci-mode' is run."
   :group 'fill-column-indicator
   :tag "Fill-Column rule column"
-  :type '(choice (symbol :tag "Use the fill column" 'fill-column)
+  :type '(choice (const :tag "Use the fill column" nil)
                  (integer :tag "Use a custom column"
                           :match (lambda (w val) (fci-posint-p val)))))
 
@@ -419,6 +421,7 @@ U+E000-U+F8FF, inclusive)."
 ;;; Mode Definition
 ;;; ---------------------------------------------------------------------
 
+;;;###autoload
 (define-minor-mode fci-mode
   "Toggle fci-mode on and off.
 Fci-mode indicates the location of the fill column by drawing a
@@ -465,6 +468,7 @@ on troubleshooting.)"
     (dolist (var fci-internal-vars)
       (set var nil))))
 
+;;;###autoload
 (defun turn-on-fci-mode ()
   "Turn on fci-mode unconditionally."
   (interactive)
@@ -484,8 +488,8 @@ on troubleshooting.)"
   (unless (memq fci-rule-image-format '(xpm pbm))
     (error "Unrecognized value of `fci-rule-image-format'"))
   ;; If the third element of a binding form is t, then nil is an acceptable
-  ;; value for the variable; otherwise, the variable must satisfy the given
-  ;; predicate.
+  ;; value for the variable; otherwise, the variable value must satisfy the
+  ;; given predicate.
   (let ((checks '((fci-rule-color color-defined-p)
                   (fci-rule-column fci-posint-p t)
                   (fci-rule-width fci-posint-p t)
@@ -620,7 +624,7 @@ rough heuristic.)"
   (fci-with-rule-parameters
     (let* ((identifier "/* XPM */\nstatic char *rule[] = {")
            (dimens (concat "\"" width-str " " height-str " 2 1\","))
-           (color-spec (concat "\"1 c " fci-rule-color "\",\n\"0 c None\","))
+           (color-spec (concat "\"1 c " fci-rule-color "\",\"0 c None\","))
            (on-pixels (concat "\""
                               (make-string left-margin ?0)
                               (make-string rule-width ?1)
