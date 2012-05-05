@@ -8,7 +8,7 @@
 || bbdb-address-location |||| ? ||
 || bbdb-address-zip |||| ? bbdb-address-postcode ? ||
 || bbdb-addresses-label-list |||| ? ||
-|| bbdb-always-add-addresses |||| [gone] ||
+|| bbdb-always-add-addresses |||| bbdb-add-mails ||
 || bbdb-auto-notes-alist |||| bbdb-auto-notes-rules ||
 || bbdb-auto-notes-hook |||| bbdb-auto-notes ||
 || bbdb-canonicalize-net-hook |||| bbdb-canonicalize-mail-function ||
