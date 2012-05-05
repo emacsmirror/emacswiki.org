@@ -7,9 +7,9 @@
 ;; Copyright (C) 1999-2012, Drew Adams, all rights reserved.
 ;; Created: Fri Mar 19 15:58:58 1999
 ;; Version: 21.2
-;; Last-Updated: Sat May  5 09:23:34 2012 (-0700)
+;; Last-Updated: Sat May  5 16:47:24 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 4975
+;;     Update #: 5108
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/dired+.el
 ;; Keywords: unix, mouse, directories, diredp, dired
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -108,6 +108,7 @@
 ;;    `diredp-dired-plus-help', `diredp-dired-union',
 ;;    `diredp-dired-union-other-window', `diredp-do-bookmark',
 ;;    `diredp-do-bookmark-in-bookmark-file',
+;;    `diredp-do-bookmark-in-bookmark-file-recursive',
 ;;    `diredp-do-bookmark-recursive',
 ;;    `diredp-do-find-marked-files-recursive', `diredp-do-grep',
 ;;    `diredp-do-grep-recursive', `diredp-do-move-recursive',
@@ -157,6 +158,7 @@
 ;;    `diredp-remove-all-tags-this-file', `diredp-rename-this-file',
 ;;    `diredp-send-bug-report',
 ;;    `diredp-set-bookmark-file-bookmark-for-marked',
+;;    `diredp-set-bookmark-file-bookmark-for-marked-recursive',
 ;;    `diredp-set-tag-value-this-file',
 ;;    `diredp-shell-command-this-file', `diredp-symlink-this-file',
 ;;    `diredp-tag-this-file', `diredp-toggle-find-file-reuse-dir',
@@ -275,8 +277,16 @@
 ;;; Change Log:
 ;;
 ;; 2012/05/05 dadams
-;;     Added: diredp-do-bookmark-recursive.  Bound to M-+ M-b.  Added to menus.
+;;     Added: diredp-do-bookmark-recursive, diredp-do-bookmark-in-bookmark-file-recursive,
+;;            diredp-set-bookmark-file-bookmark-for-marked-recursive.
+;;              Bound to M-+ M-b, M-+ C-M-B, M-+ C-M-b, respectively.  Added to menus.
 ;;     diredp-bookmark: Added optional arg FILE.
+;;     diredp-do-bookmark-in-bookmark-file: Added optional arg FILES.
+;;     diredp-dired-plus-description: Updated.
+;;     diredp-get-confirmation-recursive: Raise error if not in Dired.
+;;     diredp-do-bookmark-recursive, diredp-marked-recursive(-other-window),
+;;       diredp-multiple-w32-browser-recursive:
+;;         Use diredp-get-confirmation-recursive.
 ;; 2012/05/04 dadams
 ;;     Added: dired-mark-unmarked-files for Emacs < 24.
 ;;     diredp-do-create-files-recursive: Corrected for Emacs < 24.
@@ -1462,9 +1472,9 @@ If HDR is non-nil, insert a header line with the directory name."
     '(menu-item "Open" dired-do-find-marked-files ; In `dired-x.el'.
       :help "Open each marked file for editing")))
 
-(defvar diredp-menu-bar-recursive-marked-menu (make-sparse-keymap "Recursive Marked"))
+(defvar diredp-menu-bar-recursive-marked-menu (make-sparse-keymap "Marked Here and Below"))
 (define-key diredp-menu-bar-operate-menu [recursive-marked]
-  (cons "Recursive Marked" diredp-menu-bar-recursive-marked-menu))
+  (cons "Marked Here and Below" diredp-menu-bar-recursive-marked-menu))
 
 (define-key diredp-menu-bar-recursive-marked-menu [diredp-do-grep-recursive]
     '(menu-item "Grep..." diredp-do-grep-recursive
@@ -1478,16 +1488,26 @@ If HDR is non-nil, insert a header line with the directory name."
 (define-key diredp-menu-bar-recursive-marked-menu [diredp-do-copy-recursive]
     '(menu-item "Copy to..." diredp-do-copy-recursive
       :help "Copy marked files, including in marked subdirs, to a given directory"))
-(define-key diredp-menu-bar-recursive-marked-menu [separator-1] '("--"))
+(define-key diredp-menu-bar-recursive-marked-menu [separator-recursive-3] '("--"))
 (define-key diredp-menu-bar-recursive-marked-menu [diredp-list-marked-recursive]
     '(menu-item "List Marked Files" diredp-list-marked-recursive
       :help "List the files marked here and in marked subdirs, recursively"))
 (define-key diredp-menu-bar-recursive-marked-menu [diredp-copy-filename-as-kill-recursive]
     '(menu-item "Copy File Names (to Paste)" diredp-copy-filename-as-kill-recursive
       :help "Copy names of marked files here and in marked subdirs, to `kill-ring'"))
+(define-key diredp-menu-bar-recursive-marked-menu [separator-recursive-2] '("--"))
+(define-key diredp-menu-bar-recursive-marked-menu [diredp-do-bookmark-in-bookmark-file-recursive]
+    '(menu-item "Bookmark in Bookmark File" diredp-do-bookmark-in-bookmark-file-recursive
+      :help "Bookmark marked files, including those in marked subdirs, in a bookmark file"))
+(define-key diredp-menu-bar-recursive-marked-menu
+    [diredp-set-bookmark-file-bookmark-for-marked-recursive]
+  '(menu-item "Create Bookmark-File Bookmark"
+    diredp-set-bookmark-file-bookmark-for-marked-recursive
+    :help "Create a bookmark-file bookmark for marked files, including in marked subdirs"))
 (define-key diredp-menu-bar-recursive-marked-menu [diredp-do-bookmark-recursive]
     '(menu-item "Bookmark" diredp-do-bookmark-recursive
       :help "Bookmark the marked files, including those in marked subdirs"))
+(define-key diredp-menu-bar-recursive-marked-menu [separator-recursive-1] '("--"))
 (define-key diredp-menu-bar-recursive-marked-menu [diredp-marked-recursive-other-window]
     '(menu-item "Dired (Marked) in Other Window" diredp-marked-recursive-other-window
       :help "Open Dired (in other window) on marked files, including those in marked subdirs"))
@@ -1525,17 +1545,28 @@ If HDR is non-nil, insert a header line with the directory name."
       :help "Remove some tags from the marked or next N files"))
   (define-key diredp-menu-bar-bookmarks-menu [diredp-do-tag]
     '(menu-item "Add Tags..." diredp-do-tag
-      :help "Add some tags to the marked or next N files")))
+      :help "Add some tags to the marked or next N files"))
+  (define-key diredp-menu-bar-bookmarks-menu [separator-book-2] '("--")))
 
+(define-key diredp-menu-bar-bookmarks-menu [diredp-do-bookmark-in-bookmark-file-recursive]
+  '(menu-item "Bookmark in Bookmark File (Here and Below)..."
+    diredp-do-bookmark-in-bookmark-file-recursive
+    :help "Bookmark marked files (including in marked subdirs) in bookmark file and save it"))
+(define-key diredp-menu-bar-bookmarks-menu
+    [diredp-set-bookmark-file-bookmark-for-marked-recursive]
+  '(menu-item "Create Bookmark-File Bookmark (Here and Below)..."
+    diredp-set-bookmark-file-bookmark-for-marked-recursive
+    :help "Create a bookmark-file bookmark for marked files, including in marked subdirs"))
+(define-key diredp-menu-bar-bookmarks-menu [diredp-do-bookmark-recursive]
+  '(menu-item "Bookmark (Here and Below)..." diredp-do-bookmark-recursive
+    :help "Bookmark the marked files, including those in marked subdirs"))
+(define-key diredp-menu-bar-bookmarks-menu [separator-book-1] '("--"))
 (define-key diredp-menu-bar-bookmarks-menu [diredp-do-bookmark-in-bookmark-file]
   '(menu-item "Bookmark in Bookmark File..." diredp-do-bookmark-in-bookmark-file
     :help "Bookmark the marked files in BOOKMARK-FILE and save BOOKMARK-FILE"))
 (define-key diredp-menu-bar-bookmarks-menu [diredp-set-bookmark-file-bookmark-for-marked]
-  '(menu-item "Bookmark Project..." diredp-set-bookmark-file-bookmark-for-marked
-    :help "Bookmark the marked files and create a bookmark-file bookmark for them"))
-(define-key diredp-menu-bar-bookmarks-menu [diredp-do-bookmark-recursive]
-  '(menu-item "Bookmark Here & Below (Recursive)..." diredp-do-bookmark-recursive
-    :help "Bookmark the marked, including those in marked subdirs"))
+  '(menu-item "Create Bookmark-File Bookmark..." diredp-set-bookmark-file-bookmark-for-marked
+    :help "Create a bookmark-file bookmark, and bookmark the marked files in it"))
 (define-key diredp-menu-bar-bookmarks-menu [diredp-do-bookmark]
   '(menu-item "Bookmark..." diredp-do-bookmark :help "Bookmark the marked or next N files"))
 
@@ -1901,6 +1932,10 @@ If HDR is non-nil, insert a header line with the directory name."
 (define-key diredp-recursive-map "!"           'diredp-do-shell-command-recursive)      ; `!'
 (define-key diredp-recursive-map (kbd "C-M-*") 'diredp-marked-recursive-other-window)   ; `C-M-*'
 (define-key diredp-recursive-map "\M-b"        'diredp-do-bookmark-recursive)           ; `M-b'
+(define-key diredp-recursive-map (kbd "C-M-b")                                          ; `C-M-b'
+  'diredp-set-bookmark-file-bookmark-for-marked-recursive)
+(define-key diredp-recursive-map [(control meta shift ?b)]                              ; `C-M-B'
+  'diredp-do-bookmark-in-bookmark-file-recursive)
 (define-key diredp-recursive-map "C"           'diredp-do-copy-recursive)               ; `C'
 (define-key diredp-recursive-map "F"           'diredp-do-find-marked-files-recursive)  ; `F'
 (define-key diredp-recursive-map "\M-g"        'diredp-do-grep-recursive)               ; `M-g'
@@ -2686,7 +2721,10 @@ Non-nil optional arg PREDICATE must be a function that accepts a
 
 (defun diredp-get-confirmation-recursive ()
   "Get confirmation from user to act on all files here and below.
-Raise an error if not confirmed."
+Raise an error if not confirmed.
+Raise an error first if not in Dired mode."
+  (unless (eq major-mode 'dired-mode)
+    (error "You must be in a Dired buffer to use this command"))
   (unless (y-or-n-p "Act on ALL files (or all marked if any) in and UNDER this dir? ")
     (error "OK, canceled")))
 
@@ -2723,15 +2761,49 @@ subdirectories are handled recursively in the same way.
 
 With a prefix argument, ignore all marks - include all files in this
 Dired buffer and all subdirs, recursively."
-  (interactive
-   (progn (unless (eq major-mode 'dired-mode)
-            (error "You must be in a Dired buffer to use this command"))
-          (list current-prefix-arg
-                (and diredp-prompt-for-bookmark-prefix-flag
-                     (read-string "Prefix for bookmark name: ")))))
+  (interactive (progn (diredp-get-confirmation-recursive)
+                      (list current-prefix-arg
+                            (and diredp-prompt-for-bookmark-prefix-flag
+                                 (read-string "Prefix for bookmark name: ")))))
   (dolist (file  (diredp-get-files ignore-marks-p))
-    (diredp-bookmark prefix file)))
+    (diredp-bookmark prefix file 'NO-MSG-P)))
     
+(defun diredp-do-bookmark-in-bookmark-file-recursive (bookmark-file ; Bound to `M-+ C-M-B')
+                                                      &optional prefix ignore-marks-p
+                                                      bfile-bookmarkp)
+  "Bookmark files here and below in BOOKMARK-FILE and save BOOKMARK-FILE.
+Like `diredp-do-bookmark-in-bookmark-file', but act recursively on
+subdirs.  The files included are those that are marked in the current
+Dired buffer, or all files in the directory if none are marked.
+Marked subdirectories are handled recursively in the same way.
+
+With a prefix argument, ignore all marks - include all files in this
+Dired buffer and all subdirs, recursively."
+  (interactive
+   (progn (diredp-get-confirmation-recursive)
+          (let ((d-r-b-f-args  (diredp-read-bookmark-file-args)))
+            (list (car d-r-b-f-args) (cadr d-r-b-f-args) (car (cddr d-r-b-f-args))))))
+  (diredp-do-bookmark-in-bookmark-file bookmark-file prefix nil bfile-bookmarkp
+                                       (diredp-get-files ignore-marks-p)))
+
+(defun diredp-set-bookmark-file-bookmark-for-marked-recursive (bookmark-file ; Bound to `M-+ C-M-b'
+                                                               &optional prefix arg)
+  "Bookmark the marked files and create a bookmark-file bookmark for them.
+Like `diredp-set-bookmark-file-bookmark-for-marked', but act
+recursively on subdirs.
+
+The files included are those that are marked in the current Dired
+buffer, or all files in the directory if none are marked.  Marked
+subdirectories are handled recursively in the same way.
+
+With a prefix argument, ignore all marks - include all files in this
+Dired buffer and all subdirs, recursively."
+  (interactive (progn (diredp-get-confirmation-recursive)
+                      (diredp-read-bookmark-file-args)))
+  (unless (require 'bookmark+ nil t) (error "This command requires library `bookmark+.el'"))
+  (diredp-do-bookmark-in-bookmark-file-recursive bookmark-file prefix arg
+                                                 'CREATE-BOOKMARK-FILE-BOOKMARK))
+
 (defun diredp-do-find-marked-files-recursive (&optional ignore-marks-p) ; Bound to `M-+ F'
   "Find marked files simultaneously, including those in marked subdirs.
 Like `dired-do-find-marked-files', but act recursively on subdirs.
@@ -2771,21 +2843,19 @@ Like `diredp-marked', but act recursively on subdirs.
 See `diredp-do-find-marked-files-recursive' for a description of the
 files included.  In particular, if no files are marked here or in a
 marked subdir, then all files in the directory are included."
-  (interactive
-   (progn (unless (eq major-mode 'dired-mode) (error "Use this command only in Dired mode"))
-          (diredp-get-confirmation-recursive)
-          (list (cons (generate-new-buffer-name (buffer-name))
-                      (diredp-get-files current-prefix-arg)))))
+  (interactive (progn (diredp-get-confirmation-recursive)
+                      (diredp-get-confirmation-recursive)
+                      (list (cons (generate-new-buffer-name (buffer-name))
+                                  (diredp-get-files current-prefix-arg)))))
   (dired dirname))
 
 (defun diredp-marked-recursive-other-window (dirname &optional ignore-marked-p)
                                         ; Bound to `M-+ C-M-*'
   "Same as `diredp-marked-recursive', but uses a different window."
-  (interactive
-   (progn (unless (eq major-mode 'dired-mode) (error "Use this command only in Dired mode"))
-          (diredp-get-confirmation-recursive)
-          (list (cons (generate-new-buffer-name (buffer-name))
-                      (diredp-get-files current-prefix-arg)))))
+  (interactive (progn (diredp-get-confirmation-recursive)
+                      (diredp-get-confirmation-recursive)
+                      (list (cons (generate-new-buffer-name (buffer-name))
+                                  (diredp-get-files current-prefix-arg)))))
   (dired-other-window dirname))
 
 (defun diredp-list-marked-recursive (&optional ignore-marks-p)
@@ -2793,7 +2863,7 @@ marked subdir, then all files in the directory are included."
 See `diredp-do-find-marked-files-recursive' for a description of the
 files included.  In particular, if no files are marked here or in a
 marked subdir, then all files in the directory are included."
-  (interactive
+  (interactive                          ; No need for `diredp-get-confirmation-recursive' here.
    (progn (unless (eq major-mode 'dired-mode) (error "Use this command only in Dired mode"))
           (list current-prefix-arg)))
   (let ((files  (diredp-get-files ignore-marks-p)))
@@ -2808,7 +2878,8 @@ Like `dired-multiple-w32-browser', but act recursively on subdirs.
 See `diredp-do-find-marked-files-recursive' for a description of the
 files included.  In particular, if no files are marked here or in a
 marked subdir, then all files in the directory are included."
-    (interactive (progn (diredp-get-confirmation-recursive) (list current-prefix-arg)))
+    (interactive (progn (diredp-get-confirmation-recursive)
+                        (list current-prefix-arg)))
     (let ((files  (diredp-get-files ignore-marked-p)))
       (while files
         (w32-browser (car files))
@@ -2833,10 +2904,12 @@ arg and marked files are ignored in this case.
 The files included are those that are marked in the current Dired
 buffer, or all files in the directory if none are marked.  Marked
 subdirectories are handled recursively in the same way."
-  (interactive "P")
+  (interactive                          ; No need for `diredp-get-confirmation-recursive' here.
+   (progn (unless (eq major-mode 'dired-mode) (error "Use this command only in Dired mode"))
+          (list current-prefix-arg)))
   (let* ((files   (mapcar (cond ((zerop (prefix-numeric-value arg)) #'identity)
                                 ((consp arg) (lambda (fn) (concat (dired-current-directory t)
-                                                             (file-name-nondirectory fn))))
+                                                                  (file-name-nondirectory fn))))
                                 (t (lambda (fn) (file-name-nondirectory fn))))
                           (diredp-get-files)))
          (string  (mapconcat #'identity files " ")))
@@ -3655,7 +3728,8 @@ A prefix argument ARG specifies files to use instead of those marked.
           (list (and diredp-prompt-for-bookmark-prefix-flag
                      (read-string "Prefix for bookmark name: "))
                 current-prefix-arg)))
-  (dired-map-over-marks-check (lexical-let ((pref  prefix)) #'(lambda () (diredp-bookmark pref)))
+  (dired-map-over-marks-check (lexical-let ((pref  prefix))
+                                #'(lambda () (diredp-bookmark pref nil 'NO-MSG-P)))
                               arg 'bookmark (diredp-fewer-than-2-files-p arg)))
 
 ;;;###autoload
@@ -3668,17 +3742,21 @@ A prefix argument ARG specifies files to use instead of those marked.
                                         (read-string "Prefix for bookmark name: "))))
     (select-window (posn-window mouse-pos))
     (goto-char (posn-point mouse-pos))
-    (dired-map-over-marks-check #'(lambda () (diredp-bookmark prefix)) nil 'bookmark t))
+    (dired-map-over-marks-check #'(lambda () (diredp-bookmark prefix nil 'NO-MSG-P))
+                                nil 'bookmark t))
   (dired-previous-line 1))
 
-(defun diredp-bookmark (&optional prefix file)
+(defun diredp-bookmark (&optional prefix file no-msg-p)
   "Bookmark the file or directory FILE.
 If you use library `bookmark+.el' then the bookmark is an autofile.
 Return nil for success or the file name otherwise.
 
 The bookmark name is the (non-directory) file name, prefixed by
  optional arg PREFIX (a string) if non-nil.
-FILE defaults to the file name on the current Dired line."
+
+FILE defaults to the file name on the current Dired line.
+
+Non-nil optional arg NO-MSG-P means do not show progress messages."
   (bookmark-maybe-load-default-file)
   (let ((fil      (or file  (dired-get-file-for-visit)))
         (failure  nil))
@@ -3703,7 +3781,9 @@ FILE defaults to the file name on the current Dired line."
                           `((filename . ,fil)
                             (position . 0)))))))
             (bookmark-store (concat prefix (file-name-nondirectory fil))
-                            (cdr (bookmark-make-record)) nil)))
+                            (cdr (bookmark-make-record))
+                            nil
+                            no-msg-p)))
       (error (setq failure  (error-message-string err))))
     (if (not failure)
 	nil                             ; Return nil for success.
@@ -3764,8 +3844,9 @@ See also command `diredp-do-bookmark-in-bookmark-file'."
 
 ;;;###autoload
 (defun diredp-do-bookmark-in-bookmark-file (bookmark-file ; Bound to `C-M-S-b' (`C-M-B')
-                                            &optional prefix arg  bfile-bookmarkp)
-  "Bookmark the marked files in BOOKMARK-FILE and save BOOKMARK-FILE.
+                                            &optional prefix arg bfile-bookmarkp files)
+  "Bookmark files in BOOKMARK-FILE and save BOOKMARK-FILE.
+The files bookmarked are the marked files, by default.
 The bookmarked position is the beginning of the file.
 You are prompted for BOOKMARK-FILE.  The default is `.emacs.bmk' in
 the current directory, but you can enter any file name, anywhere.
@@ -3780,7 +3861,9 @@ Each bookmark name is the non-directory portion of the file name,
 Interactively, you are prompted for PREFIX if
  `diredp-prompt-for-bookmark-prefix-flag' is non-nil.
 
-A prefix argument ARG specifies files to use instead of those marked.
+Interactively, a prefix argument ARG specifies the files to use
+instead of those marked.
+
  An integer means use the next ARG files (previous -ARG, if < 0).
  `C-u': Use the current file (whether or not any are marked).
  `C-u C-u': Use all files in Dired, except directories.
@@ -3789,8 +3872,11 @@ A prefix argument ARG specifies files to use instead of those marked.
 
 See also command `diredp-set-bookmark-file-bookmark-for-marked'.
 
-Non-interactively, non-nil BFILE-BOOKMARKP means create a
-bookmark-file bookmark for BOOKMARK-FILE."
+Non-interactively:
+
+ * Non-nil BFILE-BOOKMARKP means create a bookmark-file bookmark for
+   BOOKMARK-FILE.
+ * Non-nil FILES is the list of files to bookmark."
   (interactive (diredp-read-bookmark-file-args))
   (unless (require 'bookmark+ nil t) (error "This command requires library `bookmark+.el'"))
   (let ((bfile-exists-p  (file-readable-p bookmark-file)))
@@ -3799,9 +3885,12 @@ bookmark-file bookmark for BOOKMARK-FILE."
     (let ((old-bmkp-current-bookmark-file  bmkp-current-bookmark-file))
       (unwind-protect
            (progn (bmkp-switch-bookmark-file bookmark-file) ; Changes `*-current-bookmark-file'.
-                  (dired-map-over-marks-check
-                   (lexical-let ((pref  prefix)) #'(lambda () (diredp-bookmark pref)))
-                   arg 'bookmark (diredp-fewer-than-2-files-p arg))
+                  (if files
+                      (dolist (file  files)  (diredp-bookmark prefix file 'NO-MSG-P))
+                    (dired-map-over-marks-check
+                     (lexical-let ((pref  prefix))
+                       #'(lambda () (diredp-bookmark pref nil 'NO-MSG-P)))
+                     arg 'bookmark (diredp-fewer-than-2-files-p arg)))
                   (bookmark-save)
                   (unless bfile-exists-p (revert-buffer)))
         (unless (bmkp-same-file-p old-bmkp-current-bookmark-file  bmkp-current-bookmark-file)
@@ -5904,27 +5993,28 @@ General
 -------
 
 * \\[diredp-toggle-find-file-reuse-dir]\t- Toggle reuse of directories
-* \\[diredp-marked-other-window]\t- Open Dired on marked
-* \\[diredp-fileset]\t- Open Dired on files in a fileset
+
+* \\[diredp-marked-other-window]\t\t\t- Open Dired on marked
+* \\[diredp-fileset]\t\t- Open Dired on files in a fileset
 * \\[diredp-dired-for-files]\t- Open Dired on specific files
 * \\[diredp-dired-union]\t- Create union of some Dired buffers
 "
     (and (fboundp 'diredp-w32-drives)   ; In `w32-browser.el'.
-         "* \\[diredp-w32-drives]\t- Go up to a list of MS Windows drives
+         "* \\[diredp-w32-drives]\t\t- Go up to a list of MS Windows drives
 ")
 
     "
 Mouse
 -----
 
-* \\[diredp-mouse-3-menu]\t- Context-sensitive menu
+* \\[diredp-mouse-3-menu]\t\t- Context-sensitive menu
 "
 
     (and (where-is-internal 'diredp-mouse-describe-file dired-mode-map)
          "* \\[diredp-mouse-describe-file]\t- Describe this
 ")
 
-    "* \\[diredp-mouse-mark-region-files]\t- Mark all in region
+    "* \\[diredp-mouse-mark-region-files]\t\t- Mark all in region
 "
 
     (and (where-is-internal 'diredp-mouse-find-file dired-mode-map)
@@ -5935,10 +6025,10 @@ Mouse
 ")
 
     (and (where-is-internal 'dired-mouse-find-file-other-window dired-mode-map)
-         "* \\[dired-mouse-find-file-other-window]\t- Open in another window
+         "* \\[dired-mouse-find-file-other-window]\t\t- Open in another window
 ")
 
-    "* \\[diredp-mouse-find-file-other-frame]\t- Open in another frame
+    "* \\[diredp-mouse-find-file-other-frame]\t\t- Open in another frame
 "
 
     (and (fboundp 'dired-mouse-w32-browser) ; In `w32-browser.el'.
@@ -5955,18 +6045,18 @@ Mouse
 Marking
 -------
 
-* \\[dired-mark]\t- Mark this
-* \\[dired-unmark]\t- Unmark this
-* \\[dired-toggle-marks]\t- Toggle marked/unmarked
-* \\[dired-mark-sexp]\t- Mark all satisfying a predicate
-* \\[dired-unmark-all-marks]\t- Unmark all
-* \\[diredp-mark/unmark-extension]\t- Mark/unmark all that have a given extension
-* \\[diredp-mark-files-tagged-regexp]\t- Mark those with a tag that matches a regexp
-* \\[diredp-unmark-files-tagged-regexp]\t- Unmark those with a tag that matches a regexp
-* \\[diredp-mark-files-tagged-all]\t- Mark those with all of the given tags
-* \\[diredp-unmark-files-tagged-all]\t- Unmark those with all of the given tags
-* \\[diredp-mark-files-tagged-some]\t- Mark those with some of the given tags
-* \\[diredp-unmark-files-tagged-some]\t- Unmark those with some of the given tags
+* \\[dired-mark]\t\t- Mark this
+* \\[dired-unmark]\t\t- Unmark this
+* \\[dired-do-toggle]\t\t- Toggle marked/unmarked
+* \\[dired-mark-sexp]\t\t- Mark all satisfying a predicate
+* \\[dired-unmark-all-marks]\t\t- Unmark all
+* \\[diredp-mark/unmark-extension]\t\t- Mark/unmark all that have a given extension
+* \\[diredp-mark-files-tagged-regexp]\t\t- Mark those with a tag that matches a regexp
+* \\[diredp-unmark-files-tagged-regexp]\t\t- Unmark those with a tag that matches a regexp
+* \\[diredp-mark-files-tagged-all]\t\t- Mark those with all of the given tags
+* \\[diredp-unmark-files-tagged-all]\t\t- Unmark those with all of the given tags
+* \\[diredp-mark-files-tagged-some]\t\t- Mark those with some of the given tags
+* \\[diredp-unmark-files-tagged-some]\t\t- Unmark those with some of the given tags
 * \\[diredp-mark-files-tagged-not-all]\t- Mark those without some of the given tags
 * \\[diredp-unmark-files-tagged-not-all]\t- Unmark those without some of the given tags
 * \\[diredp-mark-files-tagged-none]\t- Mark those with none of the given tags
@@ -5978,29 +6068,29 @@ Current file/subdir (current line)
 ----------------------------------
 
 * \\[diredp-describe-file]\t- Describe
-* \\[diredp-byte-compile-this-file]\t- Byte-compile
-* \\[diredp-compress-this-file]\t- Compress/uncompress
-* \\[diredp-print-this-file]\t- Print
-* \\[diredp-relsymlink-this-file]\t- Create relative symlink
-* \\[diredp-delete-this-file]\t- Delete (with confirmation)
-* \\[diredp-rename-this-file]\t- Rename
-* \\[diredp-upcase-this-file]\t- Rename to uppercase
-* \\[diredp-downcase-this-file]\t- Rename to lowercase
-* \\[diredp-capitalize-this-file]\t- Capitalize (rename)
-* \\[diredp-ediff]\t- Ediff
+* \\[diredp-byte-compile-this-file]\t\t- Byte-compile
+* \\[diredp-compress-this-file]\t\t- Compress/uncompress
+* \\[diredp-print-this-file]\t\t- Print
+* \\[diredp-relsymlink-this-file]\t\t- Create relative symlink
+* \\[diredp-delete-this-file]\t\t- Delete (with confirmation)
+* \\[diredp-rename-this-file]\t\t- Rename
+* \\[diredp-upcase-this-file]\t\t- Rename to uppercase
+* \\[diredp-downcase-this-file]\t\t- Rename to lowercase
+* \\[diredp-capitalize-this-file]\t\t- Capitalize (rename)
+* \\[diredp-ediff]\t\t- Ediff
 "
     (and (fboundp 'diredp-tag-this-file) ; In `bookmark+-1.el'.
-         "* \\[diredp-tag-this-file]\t- Add some tags to this
-* \\[diredp-untag-this-file]\t- Remove some tags from this
-* \\[diredp-remove-all-tags-this-file]\t- Remove all tags from this
-* \\[diredp-copy-tags-this-file]\t- Copy the tags from this
-* \\[diredp-paste-add-tags-this-file]\t- Paste (add) copied tags to this
-* \\[diredp-paste-replace-tags-this-file]\t- Paste (replace) tags for this
-* \\[diredp-set-tag-value-this-file]\t- Set a tag value for this
+         "* \\[diredp-tag-this-file]\t\t- Add some tags to this
+* \\[diredp-untag-this-file]\t\t- Remove some tags from this
+* \\[diredp-remove-all-tags-this-file]\t\t- Remove all tags from this
+* \\[diredp-copy-tags-this-file]\t\t- Copy the tags from this
+* \\[diredp-paste-add-tags-this-file]\t\t- Paste (add) copied tags to this
+* \\[diredp-paste-replace-tags-this-file]\t\t- Paste (replace) tags for this
+* \\[diredp-set-tag-value-this-file]\t\t- Set a tag value for this
 ")
 
     (and (fboundp 'diredp-bookmark-this-file) ; In `bookmark+-1.el'.
-         "* \\[diredp-bookmark-this-file]\t- Bookmark
+         "* \\[diredp-bookmark-this-file]\t\t- Bookmark
 ")
 
     (and (fboundp 'dired-mouse-w32-browser) ; In `w32-browser.el'.
@@ -6019,43 +6109,65 @@ Current file/subdir (current line)
 Marked (or next prefix arg) files/subdirs
 -----------------------------------------
 
-* \\[diredp-do-grep]\t- Run `grep'
-* \\[diredp-marked-other-window]\t- Dired (only those marked)
-* \\[dired-do-compress]\t- Compress
-* \\[dired-do-byte-compile]\t- Byte-compile
-* \\[dired-do-load]\t- Load (Emacs Lisp)
+* \\[dired-copy-filename-as-kill]\t\t- Copy names for pasting
+* \\[dired-do-find-marked-files]\t\t- Visit
+* \\[dired-do-copy]\t\t- Copy
+* \\[dired-do-rename]\t\t- Rename/move
+* \\[diredp-do-grep]\t\t- Run `grep'
+* \\[dired-do-shell-command]\t\t- Run shell command
+* \\[diredp-marked-other-window]\t\t- Dired (only those marked)
+* \\[dired-do-compress]\t\t- Compress
+* \\[dired-do-byte-compile]\t\t- Byte-compile
+* \\[dired-do-load]\t\t- Load (Emacs Lisp)
 * \\[diredp-omit-marked]\t- Omit
 * \\[diredp-omit-unmarked]\t- Omit unmarked
+
+* \\[diredp-copy-filename-as-kill-recursive]\t- Copy names for pasting, but get files here & below
+* \\[diredp-do-find-marked-files-recursive]\t\t- Visit, but get files here & below
+* \\[diredp-do-copy-recursive]\t\t- Copy, but get files here & below
+* \\[diredp-do-move-recursive]\t\t- Move, but get files here & below
+* \\[diredp-do-grep-recursive]\t- `grep', but get files here & below
+* \\[diredp-do-shell-command-recursive]\t\t- Run shell command, but get files here & below
+* \\[diredp-marked-recursive-other-window]\t- Dired marked, but get files here & below
+* \\[diredp-list-marked-recursive]\t\t- List files marked here & below
+
 "
 
     (and (fboundp 'diredp-do-tag) ; In `bookmark+-1.el'.
-         "* \\[diredp-do-tag]\t- Add some tags to marked
-* \\[diredp-do-untag]\t- Remove some tags from marked
-* \\[diredp-do-remove-all-tags]\t- Remove all tags from marked
+         "* \\[diredp-do-tag]\t\t- Add some tags to marked
+* \\[diredp-do-untag]\t\t- Remove some tags from marked
+* \\[diredp-do-remove-all-tags]\t\t- Remove all tags from marked
 * \\[diredp-do-paste-add-tags]\t- Paste (add) copied tags to marked
-* \\[diredp-do-paste-replace-tags]\t- Paste (replace) tags for marked
-* \\[diredp-do-set-tag-value]\t- Set a tag value for marked
-* \\[diredp-mark-files-tagged-regexp]\t- Mark those with a tag that matches a regexp
-* \\[diredp-mark-files-tagged-all]\t- Mark those with all of the given tags
-* \\[diredp-mark-files-tagged-some]\t- Mark those with some of the given tags
+* \\[diredp-do-paste-replace-tags]\t\t- Paste (replace) tags for marked
+* \\[diredp-do-set-tag-value]\t\t- Set a tag value for marked
+* \\[diredp-mark-files-tagged-regexp]\t\t- Mark those with a tag that matches a regexp
+* \\[diredp-mark-files-tagged-all]\t\t- Mark those with all of the given tags
+* \\[diredp-mark-files-tagged-some]\t\t- Mark those with some of the given tags
 * \\[diredp-mark-files-tagged-not-all]\t- Mark those without some of the given tags
 * \\[diredp-mark-files-tagged-none]\t- Mark those with none of the given tags
-* \\[diredp-unmark-files-tagged-regexp]\t- Unmark those with a tag that matches a regexp
-* \\[diredp-unmark-files-tagged-all]\t- Unmark those with all of the given tags
-* \\[diredp-unmark-files-tagged-some]\t- Unmark those with some of the given tags
+* \\[diredp-unmark-files-tagged-regexp]\t\t- Unmark those with a tag that matches a regexp
+* \\[diredp-unmark-files-tagged-all]\t\t- Unmark those with all of the given tags
+* \\[diredp-unmark-files-tagged-some]\t\t- Unmark those with some of the given tags
 * \\[diredp-unmark-files-tagged-not-all]\t- Unmark those without some of the given tags
 * \\[diredp-unmark-files-tagged-none]\t- Unmark those with none of the given tags
 ")
 
     (and (fboundp 'diredp-do-bookmark) ; In `bookmark+-1.el'.
-         "* \\[diredp-do-bookmark]\t- Bookmark
-* \\[diredp-set-bookmark-file-bookmark-for-marked]\t- \
+         "* \\[diredp-do-bookmark]\t\t- Bookmark
+* \\[diredp-set-bookmark-file-bookmark-for-marked]\t\t- \
 Bookmark and create bookmark-file bookmark
 * \\[diredp-do-bookmark-in-bookmark-file]\t- Bookmark in specific bookmark file
+* \\[diredp-do-bookmark-recursive]\t- Bookmark, but get files here & below
+* \\[diredp-do-bookmark-in-bookmark-file-recursive]\t- Bookmark in bookmark file; \
+get files here & below
+* \\[diredp-set-bookmark-file-bookmark-for-marked-recursive]\t- Create bookmark-file bookmark; \
+get files here & below
+
 ")
 
     (and (fboundp 'dired-multiple-w32-browser) ; In `w32-browser.el'.
          "* \\[dired-multiple-w32-browser]\t- MS Windows `Open' action
+* \\[diredp-multiple-w32-browser-recursive]\t- `Open' here & below
 ")
 
     (and (fboundp 'diredp-tag-this-file) ; In `bookmark+-1.el'.
@@ -6063,27 +6175,27 @@ Bookmark and create bookmark-file bookmark
 Tagging
 -------
 
-* \\[diredp-tag-this-file]\t- Add some tags to this
-* \\[diredp-untag-this-file]\t- Remove some tags from this
-* \\[diredp-remove-all-tags-this-file]\t- Remove all tags from this
-* \\[diredp-copy-tags-this-file]\t- Copy the tags from this
-* \\[diredp-paste-add-tags-this-file]\t- Paste (add) copied tags to this
-* \\[diredp-paste-replace-tags-this-file]\t- Paste (replace) tags for this
-* \\[diredp-set-tag-value-this-file]\t- Set a tag value for this
-* \\[diredp-do-tag]\t- Add some tags to marked
-* \\[diredp-do-untag]\t- Remove some tags from marked
-* \\[diredp-do-remove-all-tags]\t- Remove all tags from marked
+* \\[diredp-tag-this-file]\t\t- Add some tags to this
+* \\[diredp-untag-this-file]\t\t- Remove some tags from this
+* \\[diredp-remove-all-tags-this-file]\t\t- Remove all tags from this
+* \\[diredp-copy-tags-this-file]\t\t- Copy the tags from this
+* \\[diredp-paste-add-tags-this-file]\t\t- Paste (add) copied tags to this
+* \\[diredp-paste-replace-tags-this-file]\t\t- Paste (replace) tags for this
+* \\[diredp-set-tag-value-this-file]\t\t- Set a tag value for this
+* \\[diredp-do-tag]\t\t- Add some tags to marked
+* \\[diredp-do-untag]\t\t- Remove some tags from marked
+* \\[diredp-do-remove-all-tags]\t\t- Remove all tags from marked
 * \\[diredp-do-paste-add-tags]\t- Paste (add) copied tags to marked
-* \\[diredp-do-paste-replace-tags]\t- Paste (replace) tags for marked
-* \\[diredp-do-set-tag-value]\t- Set a tag value for marked
-* \\[diredp-mark-files-tagged-regexp]\t- Mark those with a tag that matches a regexp
-* \\[diredp-mark-files-tagged-all]\t- Mark those with all of the given tags
-* \\[diredp-mark-files-tagged-some]\t- Mark those with some of the given tags
+* \\[diredp-do-paste-replace-tags]\t\t- Paste (replace) tags for marked
+* \\[diredp-do-set-tag-value]\t\t- Set a tag value for marked
+* \\[diredp-mark-files-tagged-regexp]\t\t- Mark those with a tag that matches a regexp
+* \\[diredp-mark-files-tagged-all]\t\t- Mark those with all of the given tags
+* \\[diredp-mark-files-tagged-some]\t\t- Mark those with some of the given tags
 * \\[diredp-mark-files-tagged-not-all]\t- Mark those without some of the given tags
 * \\[diredp-mark-files-tagged-none]\t- Mark those with none of the given tags
-* \\[diredp-unmark-files-tagged-regexp]\t- Unmark those with a tag that matches a regexp
-* \\[diredp-unmark-files-tagged-all]\t- Unmark those with all of the given tags
-* \\[diredp-unmark-files-tagged-some]\t- Unmark those with some of the given tags
+* \\[diredp-unmark-files-tagged-regexp]\t\t- Unmark those with a tag that matches a regexp
+* \\[diredp-unmark-files-tagged-all]\t\t- Unmark those with all of the given tags
+* \\[diredp-unmark-files-tagged-some]\t\t- Unmark those with some of the given tags
 * \\[diredp-unmark-files-tagged-not-all]\t- Unmark those without some of the given tags
 * \\[diredp-unmark-files-tagged-none]\t- Unmark those with none of the given tags
 ")
@@ -6093,9 +6205,9 @@ Tagging
 Bookmarking
 -----------
 
-* \\[diredp-bookmark-this-file]\t- Bookmark this
-* \\[diredp-do-bookmark]\t- Bookmark marked
-* \\[diredp-set-bookmark-file-bookmark-for-marked]\t- \
+* \\[diredp-bookmark-this-file]\t\t- Bookmark this
+* \\[diredp-do-bookmark]\t\t- Bookmark marked
+* \\[diredp-set-bookmark-file-bookmark-for-marked]\t\t- \
 Bookmark marked and create bookmark-file bookmark
 * \\[diredp-do-bookmark-in-bookmark-file]\t- Bookmark marked, in specific bookmark file
 ")
