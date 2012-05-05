@@ -170,13 +170,16 @@ can easily move entries around:
                                   v
                               move down
 
-You can get it here:
-
+You can get it from one of the following:
 * http://www.astro.uva.nl/~dominik/Tools/outline-magic.el
+* http://www.emacswiki.org/emacs/outline-magic.el
 
 It seems that similar features are provided by AllOut.
 
-You can use outline-magic to fold python code: [http://stackoverflow.com/questions/4079648/combine-python-mode-with-org-mode-for-emacs/4093889#4093889 python-magic.el]
+You can use outline-magic to fold python code:
+* [http://stackoverflow.com/questions/4079648/combine-python-mode-with-org-mode-for-emacs/4093889#4093889 python-magic.el]
+* http://www.emacswiki.org/emacs/python-magic.el
+
 == Converting Emacs Outline to Other Formats ==
 
 Outline mode is helpful for organizing plain text documents and program
