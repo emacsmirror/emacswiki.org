@@ -7,9 +7,9 @@
 ;; Copyright (C) 1999-2012, Drew Adams, all rights reserved.
 ;; Created: Fri Mar 19 15:58:58 1999
 ;; Version: 21.2
-;; Last-Updated: Fri May  4 10:37:11 2012 (-0700)
+;; Last-Updated: Sat May  5 09:23:34 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 4960
+;;     Update #: 4975
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/dired+.el
 ;; Keywords: unix, mouse, directories, diredp, dired
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -108,6 +108,7 @@
 ;;    `diredp-dired-plus-help', `diredp-dired-union',
 ;;    `diredp-dired-union-other-window', `diredp-do-bookmark',
 ;;    `diredp-do-bookmark-in-bookmark-file',
+;;    `diredp-do-bookmark-recursive',
 ;;    `diredp-do-find-marked-files-recursive', `diredp-do-grep',
 ;;    `diredp-do-grep-recursive', `diredp-do-move-recursive',
 ;;    `diredp-do-paste-add-tags', `diredp-do-paste-replace-tags',
@@ -273,6 +274,9 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2012/05/05 dadams
+;;     Added: diredp-do-bookmark-recursive.  Bound to M-+ M-b.  Added to menus.
+;;     diredp-bookmark: Added optional arg FILE.
 ;; 2012/05/04 dadams
 ;;     Added: dired-mark-unmarked-files for Emacs < 24.
 ;;     diredp-do-create-files-recursive: Corrected for Emacs < 24.
@@ -1481,6 +1485,9 @@ If HDR is non-nil, insert a header line with the directory name."
 (define-key diredp-menu-bar-recursive-marked-menu [diredp-copy-filename-as-kill-recursive]
     '(menu-item "Copy File Names (to Paste)" diredp-copy-filename-as-kill-recursive
       :help "Copy names of marked files here and in marked subdirs, to `kill-ring'"))
+(define-key diredp-menu-bar-recursive-marked-menu [diredp-do-bookmark-recursive]
+    '(menu-item "Bookmark" diredp-do-bookmark-recursive
+      :help "Bookmark the marked files, including those in marked subdirs"))
 (define-key diredp-menu-bar-recursive-marked-menu [diredp-marked-recursive-other-window]
     '(menu-item "Dired (Marked) in Other Window" diredp-marked-recursive-other-window
       :help "Open Dired (in other window) on marked files, including those in marked subdirs"))
@@ -1526,6 +1533,9 @@ If HDR is non-nil, insert a header line with the directory name."
 (define-key diredp-menu-bar-bookmarks-menu [diredp-set-bookmark-file-bookmark-for-marked]
   '(menu-item "Bookmark Project..." diredp-set-bookmark-file-bookmark-for-marked
     :help "Bookmark the marked files and create a bookmark-file bookmark for them"))
+(define-key diredp-menu-bar-bookmarks-menu [diredp-do-bookmark-recursive]
+  '(menu-item "Bookmark Here & Below (Recursive)..." diredp-do-bookmark-recursive
+    :help "Bookmark the marked, including those in marked subdirs"))
 (define-key diredp-menu-bar-bookmarks-menu [diredp-do-bookmark]
   '(menu-item "Bookmark..." diredp-do-bookmark :help "Bookmark the marked or next N files"))
 
@@ -1889,13 +1899,14 @@ If HDR is non-nil, insert a header line with the directory name."
 (define-key dired-mode-map "\M-+"  diredp-recursive-map) ; `M-+'
 
 (define-key diredp-recursive-map "!"           'diredp-do-shell-command-recursive)      ; `!'
+(define-key diredp-recursive-map (kbd "C-M-*") 'diredp-marked-recursive-other-window)   ; `C-M-*'
+(define-key diredp-recursive-map "\M-b"        'diredp-do-bookmark-recursive)           ; `M-b'
 (define-key diredp-recursive-map "C"           'diredp-do-copy-recursive)               ; `C'
 (define-key diredp-recursive-map "F"           'diredp-do-find-marked-files-recursive)  ; `F'
+(define-key diredp-recursive-map "\M-g"        'diredp-do-grep-recursive)               ; `M-g'
 (define-key diredp-recursive-map "l"           'diredp-list-marked-recursive)           ; `l'
 (define-key diredp-recursive-map "R"           'diredp-do-move-recursive)               ; `R'
-(define-key diredp-recursive-map "\M-g"        'diredp-do-grep-recursive)               ; `M-g'
 (define-key diredp-recursive-map "\M-w"        'diredp-copy-filename-as-kill-recursive) ; `M-w'
-(define-key diredp-recursive-map (kbd "C-M-*") 'diredp-marked-recursive-other-window)   ; `C-M-*'
 
 
 ;; Undefine some bindings that would try to modify a Dired buffer.  Their key sequences will
@@ -2703,6 +2714,24 @@ Dired buffer and all subdirs, recursively."
             (list cmd current-prefix-arg))))
   (dired-do-shell-command command nil (diredp-get-files ignore-marks-p)))
 
+(defun diredp-do-bookmark-recursive (&optional ignore-marks-p prefix) ; Bound to `M-+ M-b'
+  "Bookmark the marked files, including those in marked subdirs.
+Like `diredp-do-bookmark', but act recursively on subdirs.
+The files included are those that are marked in the current Dired
+buffer, or all files in the directory if none are marked.  Marked
+subdirectories are handled recursively in the same way.
+
+With a prefix argument, ignore all marks - include all files in this
+Dired buffer and all subdirs, recursively."
+  (interactive
+   (progn (unless (eq major-mode 'dired-mode)
+            (error "You must be in a Dired buffer to use this command"))
+          (list current-prefix-arg
+                (and diredp-prompt-for-bookmark-prefix-flag
+                     (read-string "Prefix for bookmark name: ")))))
+  (dolist (file  (diredp-get-files ignore-marks-p))
+    (diredp-bookmark prefix file)))
+    
 (defun diredp-do-find-marked-files-recursive (&optional ignore-marks-p) ; Bound to `M-+ F'
   "Find marked files simultaneously, including those in marked subdirs.
 Like `dired-do-find-marked-files', but act recursively on subdirs.
@@ -3116,11 +3145,11 @@ You need library `bookmark+.el' to use this command."
                                      (bmk    (and fname (bmkp-get-autofile-bookmark
                                                          fname nil prefix)))
                                      (btgs   (and bmk (bmkp-get-tags bmk)))
-                                     (anyp   (and btgs (bmkp-some
-                                                        #'(lambda (tag)
-                                                            (string-match regexp
-                                                                          (bmkp-tag-name tag)))
-                                                        btgs))))
+                                     (anyp   (and btgs  (bmkp-some
+                                                         #'(lambda (tag)
+                                                             (string-match regexp
+                                                                           (bmkp-tag-name tag)))
+                                                         btgs))))
                         (and btgs (if notp (not anyp) anyp))))
                  "some-tag-matching-regexp file"))
 
@@ -3642,44 +3671,46 @@ A prefix argument ARG specifies files to use instead of those marked.
     (dired-map-over-marks-check #'(lambda () (diredp-bookmark prefix)) nil 'bookmark t))
   (dired-previous-line 1))
 
-(defun diredp-bookmark (&optional prefix)
-  "Bookmark the file or directory named on the current line.
-The bookmark name is the (non-directory) file name, prefixed by PREFIX
- if non-nil.
-Return nil for success, file name otherwise.
-If you use library `bookmark+.el' then the bookmark is an autofile."
+(defun diredp-bookmark (&optional prefix file)
+  "Bookmark the file or directory FILE.
+If you use library `bookmark+.el' then the bookmark is an autofile.
+Return nil for success or the file name otherwise.
+
+The bookmark name is the (non-directory) file name, prefixed by
+ optional arg PREFIX (a string) if non-nil.
+FILE defaults to the file name on the current Dired line."
   (bookmark-maybe-load-default-file)
-  (let ((file  (dired-get-file-for-visit))
-        failure)
+  (let ((fil      (or file  (dired-get-file-for-visit)))
+        (failure  nil))
     (condition-case err
         (if (fboundp 'bmkp-autofile-set)
-            (bmkp-autofile-set file nil prefix)
+            (bmkp-autofile-set fil nil prefix)
           (let ((bookmark-make-record-function
                  (cond ((and (require 'image nil t) (require 'image-mode nil t)
-                             (condition-case nil (image-type file) (error nil)))
+                             (condition-case nil (image-type fil) (error nil)))
                         ;; Last two lines of function are from `image-bookmark-make-record'.
                         ;; But don't use that directly, because it uses
                         ;; `bookmark-make-record-default', which gets nil for `filename'.
 
                         ;; NEED to keep this code sync'd with `bmkp-make-record-for-target-file'.
                         (lambda ()
-                          `((filename   . ,file)
+                          `((filename   . ,fil)
                             (position   . 0)
-                            (image-type . ,(image-type file))
+                            (image-type . ,(image-type fil))
                             (handler    . image-bookmark-jump))))
                        (t
                         (lambda ()
-                          `((filename . ,file)
+                          `((filename . ,fil)
                             (position . 0)))))))
-            (bookmark-store (concat prefix (file-name-nondirectory file))
+            (bookmark-store (concat prefix (file-name-nondirectory fil))
                             (cdr (bookmark-make-record)) nil)))
       (error (setq failure  (error-message-string err))))
     (if (not failure)
 	nil                             ; Return nil for success.
       (if (fboundp 'bmkp-autofile-set)
           (dired-log failure)
-        (dired-log "Failed to create bookmark for `%s':\n%s\n" file failure))
-      (dired-make-relative file))))     ; Return file name for failure.
+        (dired-log "Failed to create bookmark for `%s':\n%s\n" fil failure))
+      (dired-make-relative fil))))      ; Return file name for failure.
 
 ;;;###autoload
 (defun diredp-set-bookmark-file-bookmark-for-marked (bookmark-file ; Bound to `C-M-b'
