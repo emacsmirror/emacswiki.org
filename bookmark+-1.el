@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2012, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 13:43:55 2010 (-0700)
-;; Last-Updated: Tue May  1 13:18:24 2012 (-0700)
+;; Last-Updated: Fri May  4 16:55:09 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 5164
+;;     Update #: 5449
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-1.el
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -2019,14 +2019,14 @@ bookmarks)."
              (non-autonamed-bookmark   (unless (bmkp-autonamed-bookmark-p bname)
                                          (bmkp-light-bookmark bname)))
              (any-bookmark             (bmkp-light-bookmark bname))
-             (autonamed-in-buffer      (bmkp-light-bookmarks (bmkp-remove-if-not
-                                                              #'bmkp-autonamed-bookmark-p
-                                                              (bmkp-this-buffer-alist-only))
-                                                             nil interactivep))
-             (non-autonamed-in-buffer  (bmkp-light-bookmarks (bmkp-remove-if
-                                                              #'bmkp-autonamed-bookmark-p
-                                                              (bmkp-this-buffer-alist-only))
-                                                             nil interactivep))
+             (autonamed-in-buffer      (bmkp-light-bookmarks
+                                        (bmkp-remove-if-not #'bmkp-autonamed-bookmark-p
+                                                            (bmkp-this-buffer-alist-only))
+                                        nil interactivep))
+             (non-autonamed-in-buffer  (bmkp-light-bookmarks
+                                        (bmkp-remove-if #'bmkp-autonamed-bookmark-p
+                                                        (bmkp-this-buffer-alist-only))
+                                        nil interactivep))
              (all-in-buffer            (bmkp-light-this-buffer nil interactivep)))
            ;; Maybe make bookmark temporary.
            (if bmkp-autotemp-all-when-set-p
@@ -2134,12 +2134,13 @@ BOOKMARK is a bookmark name or a bookmark record."
       (non-autonamed-bookmark   (unless (bmkp-autonamed-bookmark-p bookmark)
                                   (bmkp-light-bookmark bookmark nil nil nil 'USE-POINT)))
       (any-bookmark             (bmkp-light-bookmark bookmark nil nil nil 'USE-POINT))
-      (autonamed-in-buffer      (bmkp-light-bookmarks (bmkp-remove-if-not
-                                                       #'bmkp-autonamed-bookmark-p
-                                                       (bmkp-this-buffer-alist-only)) nil 'MSG))
-      (non-autonamed-in-buffer  (bmkp-light-bookmarks (bmkp-remove-if
-                                                       #'bmkp-autonamed-bookmark-p
-                                                       (bmkp-this-buffer-alist-only)) nil 'MSG))
+      (autonamed-in-buffer      (bmkp-light-bookmarks
+                                 (bmkp-remove-if-not #'bmkp-autonamed-bookmark-p
+                                                     (bmkp-this-buffer-alist-only))
+                                 nil 'MSG))
+      (non-autonamed-in-buffer  (bmkp-light-bookmarks
+                                 (bmkp-remove-if #'bmkp-autonamed-bookmark-p (bmkp-this-buffer-alist-only))
+                                 nil 'MSG))
       (all-in-buffer            (bmkp-light-this-buffer nil 'MSG)))
     (let ((orig-buff  (current-buffer))) ; Used by `crosshairs-highlight'.
       (run-hooks 'bookmark-after-jump-hook))
@@ -4346,8 +4347,9 @@ is negative."
          (olen     (length remtags)))
     (if (null remtags)
         (when msgp (message "Bookmark has no tags to remove")) ; Do nothing if bookmark has no tags.
-      (setq remtags  (bmkp-remove-if #'(lambda (tag)
-                                         (if (atom tag) (member tag tags) (member (car tag) tags)))
+      (setq remtags  (bmkp-remove-if (lexical-let ((tgs  tags))
+                                       #'(lambda (tag)
+                                           (if (atom tag) (member tag tgs) (member (car tag) tgs))))
                                      remtags))
       (bookmark-prop-set bookmark 'tags remtags)
       (unless no-update-p (bmkp-tags-list)) ; Update the tags cache.
@@ -4358,8 +4360,8 @@ is negative."
         (when msgp (message "%d tags removed. Now: %S" nb-removed ; Echo just the tag names.
                             (let ((tgs  (mapcar #'bmkp-tag-name remtags)))
                               (setq tgs (sort tgs #'string<)))))
-      (when (and (zerop (length remtags))  (> olen 0))
-        (setq nb-removed  (- nb-removed)))
+        (when (and (zerop (length remtags))  (> olen 0))
+          (setq nb-removed  (- nb-removed)))
         nb-removed))))
 
 ;;;###autoload
@@ -4814,8 +4816,9 @@ Does not include bookmarks that have no tags.
 A new list is returned (no side effects)."
   (bmkp-remove-if-not
    #'(lambda (bmk)
-       (let ((bmk-tags  (bmkp-get-tags bmk)))
-         (and bmk-tags (bmkp-every #'(lambda (tag) (member (bmkp-tag-name tag) tags)) bmk-tags))))
+       (lexical-let* ((tgs       tags)
+                      (bmk-tags  (bmkp-get-tags bmk)))
+         (and bmk-tags  (bmkp-every #'(lambda (tag) (member (bmkp-tag-name tag) tgs)) bmk-tags))))
    bookmark-alist))
 
 (defun bmkp-all-tags-regexp-alist-only (regexp)
@@ -4823,10 +4826,10 @@ A new list is returned (no side effects)."
 Does not include bookmarks that have no tags.
 A new list is returned (no side effects)."
   (bmkp-remove-if-not
-   #'(lambda (bmk)
-       (let ((bmk-tags  (bmkp-get-tags bmk)))
-         (and bmk-tags (bmkp-every #'(lambda (tag) (string-match regexp (bmkp-tag-name tag)))
-                                   bmk-tags))))
+   (lexical-let ((rg  regexp))
+     #'(lambda (bmk)
+         (let ((bmk-tags  (bmkp-get-tags bmk)))
+           (and bmk-tags  (bmkp-every #'(lambda (tag) (string-match rg (bmkp-tag-name tag))) bmk-tags)))))
    bookmark-alist))
 
 (defun bmkp-annotated-alist-only ()
@@ -4844,27 +4847,29 @@ With non-nil arg PREFIX, the bookmark names must all have that PREFIX."
   (bookmark-maybe-load-default-file)
   (if (not prefix)
       (bmkp-remove-if-not #'bmkp-autofile-bookmark-p bookmark-alist)
-    (bmkp-remove-if-not #'(lambda (bb) (bmkp-autofile-bookmark-p bb prefix)) bookmark-alist)))
+    (bmkp-remove-if-not (lexical-let ((pref  prefix)) #'(lambda (bmk) (bmkp-autofile-bookmark-p bmk pref)))
+                        bookmark-alist)))
 
 (defun bmkp-autofile-all-tags-alist-only (tags)
   "`bookmark-alist', with only autofiles having all tags in TAGS.
 A new list is returned (no side effects)."
   (bmkp-remove-if-not
-   #'(lambda (bmk)
-       (and (bmkp-autofile-bookmark-p bmk)
-            (let ((bmk-tags  (bmkp-get-tags bmk)))
-              (and bmk-tags (bmkp-every #'(lambda (tag) (bmkp-has-tag-p bmk tag)) tags)))))
+   (lexical-let ((tgs  tags))
+     #'(lambda (bmk)
+         (and (bmkp-autofile-bookmark-p bmk)  (bmkp-get-tags bmk)
+              (bmkp-every (lexical-let ((bk  bmk)) #'(lambda (tag) (bmkp-has-tag-p bk tag))) tgs))))
    bookmark-alist))
 
 (defun bmkp-autofile-all-tags-regexp-alist-only (regexp)
   "`bookmark-alist', with only autofiles having all tags match REGEXP.
 A new list is returned (no side effects)."
   (bmkp-remove-if-not
-   #'(lambda (bmk)
-       (and (bmkp-autofile-bookmark-p bmk)
-            (let ((bmk-tags  (bmkp-get-tags bmk)))
-              (and bmk-tags (bmkp-every #'(lambda (tag) (string-match regexp (bmkp-tag-name tag)))
-                                        bmk-tags)))))
+   (lexical-let ((rg  regexp))
+     #'(lambda (bmk)
+         (and (bmkp-autofile-bookmark-p bmk)
+              (let ((bmk-tags  (bmkp-get-tags bmk)))
+                (and bmk-tags  (bmkp-every #'(lambda (tag) (string-match rg (bmkp-tag-name tag)))
+                                           bmk-tags))))))
    bookmark-alist))
 
 (defun bmkp-autofile-some-tags-alist-only (tags)
@@ -4872,16 +4877,18 @@ A new list is returned (no side effects)."
 A new list is returned (no side effects)."
   (bmkp-remove-if-not
    #'(lambda (bmk) (and (bmkp-autofile-bookmark-p bmk)
-                        (bmkp-some #'(lambda (tag) (bmkp-has-tag-p bmk tag)) tags)))
+                        (bmkp-some (lexical-let ((bk  bmk)) #'(lambda (tag) (bmkp-has-tag-p bk tag)))
+                                   tags)))
    bookmark-alist))
 
 (defun bmkp-autofile-some-tags-regexp-alist-only (regexp)
   "`bookmark-alist', with only autofiles having some tags match REGEXP.
 A new list is returned (no side effects)."
   (bmkp-remove-if-not
-   #'(lambda (bmk) (and (bmkp-autofile-bookmark-p bmk)
-                        (bmkp-some #'(lambda (tag) (string-match regexp (bmkp-tag-name tag)))
-                                   (bmkp-get-tags bmk))))
+   (lexical-let ((rg  regexp))
+     #'(lambda (bmk) (and (bmkp-autofile-bookmark-p bmk)
+                          (bmkp-some #'(lambda (tag) (string-match rg (bmkp-tag-name tag)))
+                                     (bmkp-get-tags bmk)))))
    bookmark-alist))
 (defun bmkp-autonamed-alist-only ()
   "`bookmark-alist', with only autonamed bookmarks (from any buffers).
@@ -4937,38 +4944,42 @@ A new list is returned (no side effects)."
   "`bookmark-alist', with only file bookmarks having all tags in TAGS.
 A new list is returned (no side effects)."
   (bmkp-remove-if-not
-   #'(lambda (bmk)
-       (and (bmkp-file-bookmark-p bmk)
-            (let ((bmk-tags  (bmkp-get-tags bmk)))
-              (and bmk-tags (bmkp-every #'(lambda (tag) (bmkp-has-tag-p bmk tag)) tags)))))
+   (lexical-let ((tgs  tags))
+     #'(lambda (bmk)
+         (and (bmkp-file-bookmark-p bmk)  (bmkp-get-tags bmk)
+              (bmkp-every (lexical-let ((bk  bmk)) #'(lambda (tag) (bmkp-has-tag-p bk tag))) tgs))))
    bookmark-alist))
 
 (defun bmkp-file-all-tags-regexp-alist-only (regexp)
   "`bookmark-alist', with only file bookmarks having all tags match REGEXP.
 A new list is returned (no side effects)."
   (bmkp-remove-if-not
-   #'(lambda (bmk)
-       (and (bmkp-file-bookmark-p bmk)
-            (let ((bmk-tags  (bmkp-get-tags bmk)))
-              (and bmk-tags (bmkp-every #'(lambda (tag) (string-match regexp (bmkp-tag-name tag)))
-                                        bmk-tags)))))
+   (lexical-let ((rg  regexp))
+     #'(lambda (bmk)
+         (and (bmkp-file-bookmark-p bmk)
+              (let ((bmk-tags  (bmkp-get-tags bmk)))
+                (and bmk-tags  (bmkp-every #'(lambda (tag) (string-match rg (bmkp-tag-name tag)))
+                                           bmk-tags))))))
    bookmark-alist))
 
 (defun bmkp-file-some-tags-alist-only (tags)
   "`bookmark-alist', with only file bookmarks having some tags in TAGS.
 A new list is returned (no side effects)."
   (bmkp-remove-if-not
-   #'(lambda (bmk) (and (bmkp-file-bookmark-p bmk)
-                        (bmkp-some #'(lambda (tag) (bmkp-has-tag-p bmk tag)) tags)))
+   (lexical-let ((tgs  tags))
+     #'(lambda (bmk) (and (bmkp-file-bookmark-p bmk)
+                          (bmkp-some (lexical-let ((bk  bmk)) #'(lambda (tag) (bmkp-has-tag-p bk tag)))
+                                     tgs))))
    bookmark-alist))
 
 (defun bmkp-file-some-tags-regexp-alist-only (regexp)
   "`bookmark-alist', with only file bookmarks having some tags match REGEXP.
 A new list is returned (no side effects)."
   (bmkp-remove-if-not
-   #'(lambda (bmk) (and (bmkp-file-bookmark-p bmk)
-                        (bmkp-some #'(lambda (tag) (string-match regexp (bmkp-tag-name tag)))
-                                   (bmkp-get-tags bmk))))
+   (lexical-let ((rg  regexp))
+     #'(lambda (bmk) (and (bmkp-file-bookmark-p bmk)
+                          (bmkp-some #'(lambda (tag) (string-match rg (bmkp-tag-name tag)))
+                                     (bmkp-get-tags bmk)))))
    bookmark-alist))
 
 (defun bmkp-file-this-dir-alist-only ()
@@ -4985,10 +4996,10 @@ A new list is returned (no side effects)."
 Include only files and subdir that are in `default-directory'.
 A new list is returned (no side effects)."
   (bmkp-remove-if-not
-   #'(lambda (bmk)
-       (and (bmkp-file-this-dir-bookmark-p bmk)
-            (let ((bmk-tags  (bmkp-get-tags bmk)))
-              (and bmk-tags (bmkp-every #'(lambda (tag) (bmkp-has-tag-p bmk tag)) tags)))))
+   (lexical-let ((tgs  tags))
+     #'(lambda (bmk)
+         (and (bmkp-file-this-dir-bookmark-p bmk)  (bmkp-get-tags bmk)
+              (bmkp-every (lexical-let ((bk  bmk)) #'(lambda (tag) (bmkp-has-tag-p bk tag))) tgs))))
    bookmark-alist))
 
 (defun bmkp-file-this-dir-all-tags-regexp-alist-only (regexp)
@@ -4996,11 +5007,12 @@ A new list is returned (no side effects)."
 Include only files and subdir that are in `default-directory'.
 A new list is returned (no side effects)."
   (bmkp-remove-if-not
-   #'(lambda (bmk)
-       (and (bmkp-file-this-dir-bookmark-p bmk)
-            (let ((bmk-tags  (bmkp-get-tags bmk)))
-              (and bmk-tags (bmkp-every #'(lambda (tag) (string-match regexp (bmkp-tag-name tag)))
-                                        bmk-tags)))))
+   (lexical-let ((rg  regexp))
+     #'(lambda (bmk)
+         (and (bmkp-file-this-dir-bookmark-p bmk)
+              (let ((bmk-tags  (bmkp-get-tags bmk)))
+                (and bmk-tags
+                     (bmkp-every #'(lambda (tag) (string-match rg (bmkp-tag-name tag))) bmk-tags))))))
    bookmark-alist))
 
 (defun bmkp-file-this-dir-some-tags-alist-only (tags)
@@ -5008,8 +5020,10 @@ A new list is returned (no side effects)."
 Include only files and subdir that are in `default-directory'.
 A new list is returned (no side effects)."
   (bmkp-remove-if-not
-   #'(lambda (bmk) (and (bmkp-file-this-dir-bookmark-p bmk)
-                        (bmkp-some #'(lambda (tag) (bmkp-has-tag-p bmk tag)) tags)))
+   (lexical-let ((tgs  tags))
+     #'(lambda (bmk) (and (bmkp-file-this-dir-bookmark-p bmk)
+                          (bmkp-some (lexical-let ((bk  bmk)) #'(lambda (tag) (bmkp-has-tag-p bk tag)))
+                                     tgs))))
    bookmark-alist))
 
 (defun bmkp-file-this-dir-some-tags-regexp-alist-only (regexp)
@@ -5017,9 +5031,10 @@ A new list is returned (no side effects)."
 Include only files and subdir that are in `default-directory'.
 A new list is returned (no side effects)."
   (bmkp-remove-if-not
-   #'(lambda (bmk) (and (bmkp-file-this-dir-bookmark-p bmk)
-                        (bmkp-some #'(lambda (tag) (string-match regexp (bmkp-tag-name tag)))
-                                   (bmkp-get-tags bmk))))
+   (lexical-let ((rg  regexp))
+     #'(lambda (bmk) (and (bmkp-file-this-dir-bookmark-p bmk)
+                          (bmkp-some #'(lambda (tag) (string-match rg (bmkp-tag-name tag)))
+                                     (bmkp-get-tags bmk)))))
    bookmark-alist))
 
 (defun bmkp-gnus-alist-only ()
@@ -5110,21 +5125,19 @@ A new list is returned (no side effects)."
 (defun bmkp-regexp-filtered-file-name-alist-only ()
   "`bookmark-alist' for files matching `bmkp-bmenu-filter-pattern'."
   (bookmark-maybe-load-default-file)
-  (let (fname)
-    (bmkp-remove-if-not #'(lambda (bmk) (and (setq fname  (bookmark-get-filename bmk))
-                                             (string-match bmkp-bmenu-filter-pattern fname)))
-                        bookmark-alist)))
+  (bmkp-remove-if-not #'(lambda (bmk) (let ((fname  (bookmark-get-filename bmk)))
+                                        (and fname  (string-match bmkp-bmenu-filter-pattern fname))))
+                      bookmark-alist))
 
 (defun bmkp-regexp-filtered-tags-alist-only ()
   "`bookmark-alist' for tags matching `bmkp-bmenu-filter-pattern'."
   (bookmark-maybe-load-default-file)
-  (let (tags)
-    (bmkp-remove-if-not
-     #'(lambda (bmk) (and (setq tags  (bmkp-get-tags bmk))
-                          (bmkp-some (lambda (tag)
-                                       (string-match bmkp-bmenu-filter-pattern (bmkp-tag-name tag)))
-                                     tags)))
-     bookmark-alist)))
+  (bmkp-remove-if-not #'(lambda (bmk)
+                          (let ((bmk-tags  (bmkp-get-tags bmk)))
+                            (and bmk-tags (bmkp-some #'(lambda (tag) (string-match bmkp-bmenu-filter-pattern
+                                                                                   (bmkp-tag-name tag)))
+                                                     bmk-tags))))
+                      bookmark-alist))
 
 (defun bmkp-region-alist-only ()
   "`bookmark-alist', filtered to retain only bookmarks that have regions.
@@ -5142,16 +5155,17 @@ A new list is returned (no side effects)."
   "`bookmark-alist', but with only bookmarks having some tags in TAGS.
 A new list is returned (no side effects)."
   (bmkp-remove-if-not
-   #'(lambda (bmk) (bmkp-some #'(lambda (tag) (bmkp-has-tag-p bmk tag)) tags))
+   (lexical-let ((tgs  tags))
+     #'(lambda (bmk) (bmkp-some (lexical-let ((bk  bmk)) #'(lambda (tag) (bmkp-has-tag-p bk tag))) tgs)))
    bookmark-alist))
 
 (defun bmkp-some-tags-regexp-alist-only (regexp)
   "`bookmark-alist', but with only bookmarks having some tags match REGEXP.
 A new list is returned (no side effects)."
-  (bmkp-remove-if-not
-   #'(lambda (bmk)
-       (bmkp-some #'(lambda (tag) (string-match regexp (bmkp-tag-name tag))) (bmkp-get-tags bmk)))
-   bookmark-alist))
+  (bmkp-remove-if-not (lexical-let ((rg  regexp))
+                        #'(lambda (bmk) (bmkp-some #'(lambda (tag) (string-match rg (bmkp-tag-name tag)))
+                                                   (bmkp-get-tags bmk))))
+                      bookmark-alist))
 
 (defun bmkp-specific-buffers-alist-only (&optional buffers)
   "`bookmark-alist', filtered to retain only bookmarks to buffers BUFFERS.
@@ -5163,12 +5177,14 @@ Note: Bookmarks created by vanilla Emacs do not record the buffer
 name.  They are therefore excluded from the returned alist."
   (unless buffers  (setq buffers  (list (buffer-name))))
   (bookmark-maybe-load-default-file)
-  (bmkp-remove-if-not (lambda (bmk) (and (not (bmkp-desktop-bookmark-p       bmk)) ; Exclude these
-                                         (not (bmkp-bookmark-file-bookmark-p bmk))
-                                         (not (bmkp-sequence-bookmark-p      bmk))
-                                         (not (bmkp-function-bookmark-p      bmk))
-                                         (not (bmkp-variable-list-bookmark-p bmk))
-                                         (member (bmkp-get-buffer-name bmk) buffers)))
+  (bmkp-remove-if-not (lexical-let ((bufs  buffers))
+                        #'(lambda (bmk)
+                            (and (not (bmkp-desktop-bookmark-p       bmk)) ; Exclude these
+                                 (not (bmkp-bookmark-file-bookmark-p bmk))
+                                 (not (bmkp-sequence-bookmark-p      bmk))
+                                 (not (bmkp-function-bookmark-p      bmk))
+                                 (not (bmkp-variable-list-bookmark-p bmk))
+                                 (member (bmkp-get-buffer-name bmk) bufs))))
                       bookmark-alist))
 
 (defun bmkp-specific-files-alist-only (&optional files)
@@ -5178,7 +5194,8 @@ It defaults to a singleton list with the current buffer's file name.
 A new list is returned (no side effects)."
   (unless files  (setq files  (list (buffer-file-name))))
   (bookmark-maybe-load-default-file)
-  (bmkp-remove-if-not (lambda (bmk) (member (bookmark-get-filename bmk) files)) bookmark-alist))
+  (bmkp-remove-if-not (lexical-let ((ff  files)) #'(lambda (bmk) (member (bookmark-get-filename bmk) ff)))
+                      bookmark-alist))
 
 (defun bmkp-temporary-alist-only ()
   "`bookmark-alist', filtered to retain only temporary bookmarks.
@@ -5553,14 +5570,14 @@ Keys are compared for sorting using `equal'.
 
 If optional arg OMIT is non-nil, then it is a list of keys.  Omit from
 the return value any elements with keys in the list."
-  (let ((new-alist  (bmkp-remove-omitted alist omit))
-        (sort-fn  (and bmkp-sort-comparer  (if (and (not (functionp bmkp-sort-comparer))
-                                                    (consp bmkp-sort-comparer))
-                                               'bmkp-multi-sort
-                                             bmkp-sort-comparer))))
+  (lexical-let ((new-alist  (bmkp-remove-omitted alist omit))
+                (sort-fn    (and bmkp-sort-comparer  (if (and (not (functionp bmkp-sort-comparer))
+                                                              (consp bmkp-sort-comparer))
+                                                         'bmkp-multi-sort
+                                                       bmkp-sort-comparer))))
     (when sort-fn
       (setq new-alist  (sort new-alist (if bmkp-reverse-sort-p
-                                           (lambda (a b) (not (funcall sort-fn a b)))
+                                           #'(lambda (a b) (not (funcall sort-fn a b)))
                                          sort-fn))))
     new-alist))
 
@@ -5585,14 +5602,14 @@ elements with keys in list OMIT."
 ;;; Keys are compared for sorting using `equal'.
 ;;; If optional arg OMIT is non-nil, then omit from the return value any
 ;;; elements with keys in list OMIT."
-;;;   (let ((new-alist  (bmkp-remove-assoc-dups alist omit))
-;;;         (sort-fn  (and bmkp-sort-comparer  (if (and (not (functionp bmkp-sort-comparer))
+;;;   (lexical-let ((new-alist  (bmkp-remove-assoc-dups alist omit))
+;;;                (sort-fn  (and bmkp-sort-comparer  (if (and (not (functionp bmkp-sort-comparer))
 ;;;                                                     (consp bmkp-sort-comparer))
-;;;                                                'bmkp-multi-sort
-;;;                                              bmkp-sort-comparer))))
+;;;                                                            'bmkp-multi-sort
+;;;                                                    bmkp-sort-comparer))))
 ;;;     (when sort-fn
 ;;;       (setq new-alist  (sort new-alist (if bmkp-reverse-sort-p
-;;;                                            (lambda (a b) (not (funcall sort-fn a b)))
+;;;                                            #'(lambda (a b) (not (funcall sort-fn a b)))
 ;;;                                          sort-fn))))
 ;;;     new-alist))
 
@@ -6274,10 +6291,11 @@ input."
              (read-string "Prefix for bookmark name: ")
            (bmkp-completing-read-lax "Bookmark name"))))
   (unless name/prefix (setq name/prefix  ""))
-  (let ((bookmark-make-record-function  (if (eq major-mode 'w3m-mode)
-                                            'bmkp-make-w3m-record
-                                          (lambda () (bmkp-make-url-browse-record url))))
-        bmk failure)
+  (lexical-let* ((ul                             url)
+                 (bookmark-make-record-function  (if (eq major-mode 'w3m-mode)
+                                                     'bmkp-make-w3m-record
+                                                   #'(lambda () (bmkp-make-url-browse-record ul))))
+                 bmk failure)
     (condition-case err
         (setq bmk  (bookmark-store (if prefix-only-p (concat name/prefix url) name/prefix)
                                    (cdr (bookmark-make-record)) nil))
@@ -6363,7 +6381,7 @@ The bookmarked position will be the beginning of the file."
                (position   . 0)
                (image-type . ,(image-type file))
                (handler    . image-bookmark-jump))))
-          ((let ((case-fold-search  t)) (string-match "\\([.]au$\\|[.]wav$\\)" file)) ; Sound
+          ((let ((case-fold-search  t))  (string-match "\\([.]au$\\|[.]wav$\\)" file)) ; Sound
            ;; Obsolete: `(lambda () '((filename . ,file) (handler . bmkp-sound-jump))))
            `(lambda () '((filename . ,file) (file-handler . play-sound-file))))
           (t
@@ -6539,34 +6557,32 @@ Non-interactively:
  - Non-nil MSGP means display a message about the removal.
 Return the number of tags removed."
   (interactive
-   (let* ((pref                                        (and current-prefix-arg
-                                                            (wholenump
-                                                             (prefix-numeric-value current-prefix-arg))
-                                                            (read-string "Prefix for bookmark name: ")))
-          (tgs                                         (bmkp-read-tags-completing
-                                                        nil nil (and current-prefix-arg
-                                                                     (< (prefix-numeric-value
-                                                                         current-prefix-arg) 1))))
-          (icicle-unpropertize-completion-result-flag  t) ; For `read-file-name'.
-          (fil   (condition-case nil
-                     (read-file-name
-                      "File: " nil
-                      (or (if (boundp 'file-name-at-point-functions) ; In `files.el', Emacs 23.2+.
-                              (run-hook-with-args-until-success 'file-name-at-point-functions)
-                            (ffap-guesser))
-                          (thing-at-point 'filename)
-                          (buffer-file-name))
-                      t nil (lambda (ff) ; PREDICATE - only for Emacs 22+.
-                              (let* ((bmk   (bmkp-get-autofile-bookmark ff nil pref))
-                                     (btgs  (and bmk (bmkp-get-tags bmk))))
-                                (and btgs  (catch 'bmkp-autofile-remove-tags
-                                             (dolist (tag  tgs)
-                                               (when (not (member tag btgs))
-                                                 (throw 'bmkp-autofile-remove-tags nil)))
-                                             t)))))
-                   (error (read-file-name "File: " nil (or (ffap-guesser)
-                                                           (thing-at-point 'filename)
-                                                           (buffer-file-name)))))))
+   (lexical-let* ((pref
+                   (and current-prefix-arg  (wholenump (prefix-numeric-value current-prefix-arg))
+                        (read-string "Prefix for bookmark name: ")))
+                  (tgs
+                   (bmkp-read-tags-completing nil nil (and current-prefix-arg  (< (prefix-numeric-value
+                                                                                   current-prefix-arg) 1))))
+                  (icicle-unpropertize-completion-result-flag  t) ; For `read-file-name'.
+                  (fil   (condition-case nil
+                             (read-file-name
+                              "File: " nil
+                              (or (if (boundp 'file-name-at-point-functions) ; In `files.el', Emacs 23.2+.
+                                      (run-hook-with-args-until-success 'file-name-at-point-functions)
+                                    (ffap-guesser))
+                                  (thing-at-point 'filename)
+                                  (buffer-file-name))
+                              t nil #'(lambda (ff) ; PREDICATE - only for Emacs 22+.
+                                        (let* ((bmk   (bmkp-get-autofile-bookmark ff nil pref))
+                                               (btgs  (and bmk  (bmkp-get-tags bmk))))
+                                          (and btgs  (catch 'bmkp-autofile-remove-tags-pred
+                                                       (dolist (tag  tgs)
+                                                         (when (not (member tag btgs))
+                                                           (throw 'bmkp-autofile-remove-tags-pred nil)))
+                                                       t)))))
+                           (error (read-file-name "File: " nil (or (ffap-guesser)
+                                                                   (thing-at-point 'filename)
+                                                                   (buffer-file-name)))))))
      (list fil tgs nil pref 'MSG)))
   (bmkp-remove-tags (bmkp-autofile-set file dir prefix no-update-p) tags no-update-p msgp))
 
@@ -6635,21 +6651,22 @@ is non-nil, then try to find an appropriate shell command using, in
 order, `dired-guess-default' and (Emacs 23+ only)
 `mailcap-file-default-commands'.  If a match is found then return a
 Lisp function that invokes that shell command."
-  (let* ((bmkp-user  (bmkp-default-handler-user filename))
-         (shell-cmd  (if (stringp bmkp-user)
-                         bmkp-user
-                       (and (not bmkp-user)
-                            bmkp-guess-default-handler-for-file-flag
-                            (or (and (require 'dired-x nil t)
-                                     (let* ((case-fold-search
-                                             (or (and (boundp 'dired-guess-shell-case-fold-search)
-                                                      dired-guess-shell-case-fold-search)
-                                                 case-fold-search))
-                                            (default  (dired-guess-default (list filename))))
-                                       (if (consp default) (car default) default)))
-                                (and (require 'mailcap nil t) ; Emacs 23+
-                                     (car (mailcap-file-default-commands (list filename)))))))))
-    (cond ((stringp shell-cmd) `(lambda (bmk) (dired-do-shell-command ,shell-cmd nil ',(list filename))))
+  (lexical-let* ((ff         (list filename))
+                 (bmkp-user  (bmkp-default-handler-user filename))
+                 (shell-cmd  (if (stringp bmkp-user)
+                                 bmkp-user
+                               (and (not bmkp-user)
+                                    bmkp-guess-default-handler-for-file-flag
+                                    (or (and (require 'dired-x nil t)
+                                             (let* ((case-fold-search
+                                                     (or (and (boundp 'dired-guess-shell-case-fold-search)
+                                                              dired-guess-shell-case-fold-search)
+                                                         case-fold-search))
+                                                    (default  (dired-guess-default (list filename))))
+                                               (if (consp default) (car default) default)))
+                                        (and (require 'mailcap nil t) ; Emacs 23+
+                                             (car (mailcap-file-default-commands (list filename)))))))))
+    (cond ((stringp shell-cmd) #'(lambda (bmk) (dired-do-shell-command shell-cmd nil ff)))
           ((or (functionp bmkp-user) (and bmkp-user (symbolp bmkp-user)))
            bmkp-user)
           (t nil))))
@@ -7334,9 +7351,10 @@ Non-interactively, non-nil optional arg MSGP means display a status message."
         (progn (bookmark-maybe-upgrade-file-format)
                (unless (listp (bookmark-alist-from-buffer)) (error "")))
       (error (error "Not a valid bookmark file: `%s'" file))))
-  (let ((bookmark-make-record-function  #'(lambda () (bmkp-make-bookmark-file-record file)))
-        (bookmark-name                  (bmkp-completing-read-lax
-                                         "Bookmark-file BOOKMARK name " file nil nil 'bookmark-history)))
+  (let ((bookmark-make-record-function  (lexical-let ((ff  file))
+                                          #'(lambda () (bmkp-make-bookmark-file-record ff))))
+        (bookmark-name                  (bmkp-completing-read-lax "Bookmark-file BOOKMARK name "
+                                                                  file nil nil 'bookmark-history)))
     (bookmark-set bookmark-name 99 'interactivep))
   (when msgp (message "Set bookmark-file bookmark")))
 
@@ -7410,14 +7428,14 @@ the display of proxy candidates."
         (desktop-base-file-name   (file-name-nondirectory desktop-file)) ; Emacs 23+
         (desktop-dir              (file-name-directory desktop-file))
         (desktop-restore-eager    t)    ; Don't bother with lazy restore.
-        (desktop-globals-to-save  (bmkp-remove-if #'(lambda (elt)
-                                                      (memq elt bmkp-desktop-no-save-vars))
+        (desktop-globals-to-save  (bmkp-remove-if #'(lambda (elt) (memq elt bmkp-desktop-no-save-vars))
                                                   desktop-globals-to-save)))
     (if (< emacs-major-version 22)
         (desktop-save desktop-dir)      ; Emacs < 22 has no locking.
       (desktop-save desktop-dir 'RELEASE))
     (message "Desktop saved in `%s'" desktop-file)
-    (let ((bookmark-make-record-function  #'(lambda () (bmkp-make-desktop-record desktop-file))))
+    (let ((bookmark-make-record-function  (lexical-let ((df  desktop-file))
+                                            #'(lambda () (bmkp-make-desktop-record df)))))
       (call-interactively #'bookmark-set))))
 
 (defun bmkp-make-desktop-record (desktop-file)
@@ -7456,8 +7474,7 @@ Clear the desktop and load DESKTOP-FILE DIRNAME."
         (desktop-base-file-name   (file-name-nondirectory desktop-file)) ; Emacs 23+
         (desktop-dir              (file-name-directory desktop-file))
         (desktop-restore-eager    t)    ; Don't bother with lazy restore.
-        (desktop-globals-to-save  (bmkp-remove-if #'(lambda (elt)
-                                                      (memq elt bmkp-desktop-no-save-vars))
+        (desktop-globals-to-save  (bmkp-remove-if #'(lambda (elt) (memq elt bmkp-desktop-no-save-vars))
                                                   desktop-globals-to-save)))
     (bmkp-desktop-kill)
     (desktop-clear)
@@ -7569,7 +7586,8 @@ You need library `wide-n.el' to use the bookmark created."
 Interactively, read the variables to save, using
 `bmkp-read-variables-completing'."
   (interactive (list (bmkp-read-variables-completing)))
-  (let ((bookmark-make-record-function  #'(lambda () (bmkp-make-variable-list-record variables))))
+  (let ((bookmark-make-record-function  (lexical-let ((vars  variables))
+                                          #'(lambda () (bmkp-make-variable-list-record vars)))))
     (call-interactively #'bookmark-set)))
 
 ;; Not used in the Bookmark+ code.  Available for users to create varlist bookmark non-interactively.
@@ -7581,8 +7599,9 @@ Optional arg BUFFER-NAME is the buffer name to use for the bookmark (a
 string).  This is useful if some of the variables are buffer-local.
 If BUFFER-NAME is nil, the current buffer name is recorded."
   (eval `(multiple-value-bind ,vars ',vals
-          (let ((bookmark-make-record-function
-                 (lambda () (bmkp-make-variable-list-record ',vars ,buffer-name))))
+          (let ((bookmark-make-record-function  (lexical-let ((vs   vars)
+                                                              (buf  buffer-name))
+                                                  #'(lambda () (bmkp-make-variable-list-record vs buf)))))
             (bookmark-set ,bookmark-name nil t)))))
 
 (defun bmkp-read-variables-completing (&optional option)
@@ -7896,8 +7915,7 @@ BOOKMARK is a bookmark name or a bookmark record."
                                                (file-name-directory (car dired-directory))
                                              dired-directory)))
                (subdirs  (bmkp-dired-subdirs))
-               (mfiles   (mapcar #'(lambda (mm) (car mm))
-                                 (dired-remember-marks (point-min) (point-max)))))
+               (mfiles   (mapcar #'car (dired-remember-marks (point-min) (point-max)))))
            `(,dir
              ,@(bookmark-make-record-default 'no-file)
              (filename . ,dir) (dired-directory . ,dired-directory)
@@ -7937,7 +7955,9 @@ BOOKMARK is a bookmark name or a bookmark record."
       (t                                             (dired dir switches)))
     (let ((inhibit-read-only  t))
       (dired-insert-old-subdirs subdirs)
-      (dired-mark-remembered (mapcar #'(lambda (mf) (cons (expand-file-name mf dir) 42)) mfiles))
+      (dired-mark-remembered (mapcar (lexical-let ((dd  dir))
+                                       #'(lambda (mf) (cons (expand-file-name mf dd) 42)))
+                                     mfiles))
       (save-excursion
         (dolist (dir  hidden-dirs) (when (dired-goto-subdir dir) (dired-hide-subdir 1)))))
     (goto-char (bookmark-get-position bookmark))))
@@ -8997,46 +9017,44 @@ candidate.
 By default, the tag choices for completion are NOT refreshed, to save
 time.  Use a prefix argument if you want to refresh them."
     (interactive (list (bmkp-read-tags-completing nil nil current-prefix-arg)))
-    (let* ((use-file-dialog                             nil)
-           (pred                                        #'(lambda (ff)
-                                                            (let* ((bmk   (bmkp-get-autofile-bookmark ff))
-                                                                   (btgs  (and bmk (bmkp-get-tags bmk))))
-                                                              (and btgs  (bmkp-every #'(lambda (tag)
-                                                                                         (bmkp-has-tag-p
-                                                                                          bmk tag))
-                                                                                     tags)))))
-           (icicle-unpropertize-completion-result-flag  t) ; For `read-file-name'.
-           (icicle-must-pass-after-match-predicate      pred)
-           (fil                                         (or (and file  (funcall pred file)  file)
-                                                            (read-file-name
-                                                             "Find file: " nil nil t nil
-                                                             (and (or (not (boundp 'icicle-mode))
-                                                                      (not icicle-mode))
-                                                                  pred))))
-           (bmk                                         (bmkp-get-autofile-bookmark fil)))
+    (lexical-let* ((tgs              tags)
+                   (use-file-dialog  nil)
+                   (pred
+                    #'(lambda (ff)
+                        (lexical-let* ((bmk   (bmkp-get-autofile-bookmark ff))
+                                       (btgs  (and bmk  (bmkp-get-tags bmk))))
+                          (and btgs  (bmkp-every #'(lambda (tag) (bmkp-has-tag-p bmk tag)) tgs)))))
+                   (icicle-unpropertize-completion-result-flag  t) ; For `read-file-name'.
+                   (icicle-must-pass-after-match-predicate      pred)
+                   (fil                                         (or (and file  (funcall pred file)  file)
+                                                                    (read-file-name
+                                                                     "Find file: " nil nil t nil
+                                                                     (and (or (not (boundp 'icicle-mode))
+                                                                              (not icicle-mode))
+                                                                          pred))))
+                   (bmk                                         (bmkp-get-autofile-bookmark fil)))
       (when bmk  (bookmark-jump bmk)))))
 
 (when (> emacs-major-version 21)        ; Needs `read-file-name' with a PREDICATE arg.
   (defun bmkp-find-file-all-tags-other-window (tags &optional file) ; `C-x 4 j t C-f *'
     "`bmkp-find-file-all-tags', but in another window."
     (interactive (list (bmkp-read-tags-completing nil nil current-prefix-arg)))
-    (let* ((use-file-dialog                             nil)
-           (pred                                        #'(lambda (ff)
-                                                            (let* ((bmk   (bmkp-get-autofile-bookmark ff))
-                                                                   (btgs  (and bmk (bmkp-get-tags bmk))))
-                                                              (and btgs  (bmkp-every #'(lambda (tag)
-                                                                                         (bmkp-has-tag-p
-                                                                                          bmk tag))
-                                                                                     tags)))))
-           (icicle-unpropertize-completion-result-flag  t) ; For `read-file-name'.
-           (icicle-must-pass-after-match-predicate      pred)
-           (fil                                         (or (and file  (funcall pred file)  file)
-                                                            (read-file-name
-                                                             "Find file: " nil nil t nil
-                                                             (and (or (not (boundp 'icicle-mode))
-                                                                      (not icicle-mode))
-                                                                  pred))))
-           (bmk                                         (bmkp-get-autofile-bookmark fil)))
+    (lexical-let* ((tgs              tags)
+                   (use-file-dialog  nil)
+                   (pred
+                    #'(lambda (ff)
+                        (lexical-let* ((bk    (bmkp-get-autofile-bookmark ff))
+                                       (btgs  (and bk  (bmkp-get-tags bk))))
+                          (and btgs  (bmkp-every #'(lambda (tag) (bmkp-has-tag-p bk tag)) tgs)))))
+                   (icicle-unpropertize-completion-result-flag  t) ; For `read-file-name'.
+                   (icicle-must-pass-after-match-predicate      pred)
+                   (fil                                         (or (and file  (funcall pred file)  file)
+                                                                    (read-file-name
+                                                                     "Find file: " nil nil t nil
+                                                                     (and (or (not (boundp 'icicle-mode))
+                                                                              (not icicle-mode))
+                                                                          pred))))
+                   (bmk                                         (bmkp-get-autofile-bookmark fil)))
       (bookmark-jump-other-window bmk))))
 
 (when (> emacs-major-version 21)        ; Needs `read-file-name' with a PREDICATE arg.
@@ -9044,24 +9062,23 @@ time.  Use a prefix argument if you want to refresh them."
     "Visit a file or directory that has each tag matching REGEXP.
 You are prompted for the REGEXP."
     (interactive (list (read-string "Regexp for tags: ")))
-    (let* ((use-file-dialog                             nil)
-           (pred                                        #'(lambda (ff)
-                                                            (let* ((bmk   (bmkp-get-autofile-bookmark ff))
-                                                                   (btgs  (and bmk (bmkp-get-tags bmk))))
-                                                              (and btgs  (bmkp-every
-                                                                          #'(lambda (tag)
-                                                                              (string-match
-                                                                               regexp (bmkp-tag-name tag)))
-                                                                          btgs)))))
-           (icicle-unpropertize-completion-result-flag  t) ; For `read-file-name'.
-           (icicle-must-pass-after-match-predicate      pred)
-           (fil                                         (or (and file  (funcall pred file)  file)
-                                                            (read-file-name
-                                                             "Find file: " nil nil t nil
-                                                             (and (or (not (boundp 'icicle-mode))
-                                                                      (not icicle-mode))
-                                                                  pred))))
-           (bmk                                         (bmkp-get-autofile-bookmark fil)))
+    (lexical-let* ((rg               regexp)
+                   (use-file-dialog  nil)
+                   (pred
+                    #'(lambda (ff)
+                        (let* ((bk    (bmkp-get-autofile-bookmark ff))
+                               (btgs  (and bk  (bmkp-get-tags bk))))
+                          (and btgs  (bmkp-every #'(lambda (tag) (string-match rg (bmkp-tag-name tag)))
+                                                 btgs)))))
+                   (icicle-unpropertize-completion-result-flag  t) ; For `read-file-name'.
+                   (icicle-must-pass-after-match-predicate      pred)
+                   (fil                                         (or (and file  (funcall pred file)  file)
+                                                                    (read-file-name
+                                                                     "Find file: " nil nil t nil
+                                                                     (and (or (not (boundp 'icicle-mode))
+                                                                              (not icicle-mode))
+                                                                          pred))))
+                   (bmk                                         (bmkp-get-autofile-bookmark fil)))
       (bookmark-jump bmk))))
 
 ;;;###autoload
@@ -9069,24 +9086,23 @@ You are prompted for the REGEXP."
   (defun bmkp-find-file-all-tags-regexp-other-window (regexp &optional file) ; `C-x 4 j t C-f % *'
     "`bmkp-find-file-all-tags-regexp', but in another window."
     (interactive (list (read-string "Regexp for tags: ")))
-    (let* ((use-file-dialog                             nil)
-           (pred                                        #'(lambda (ff)
-                                                            (let* ((bmk   (bmkp-get-autofile-bookmark ff))
-                                                                   (btgs  (and bmk (bmkp-get-tags bmk))))
-                                                              (and btgs  (bmkp-every
-                                                                          #'(lambda (tag)
-                                                                              (string-match
-                                                                               regexp (bmkp-tag-name tag)))
-                                                                          btgs)))))
-           (icicle-unpropertize-completion-result-flag  t) ; For `read-file-name'.
-           (icicle-must-pass-after-match-predicate      pred)
-           (fil                                         (or (and file  (funcall pred file)  file)
-                                                            (read-file-name
-                                                             "Find file: " nil nil t nil
-                                                             (and (or (not (boundp 'icicle-mode))
-                                                                      (not icicle-mode))
-                                                                  pred))))
-           (bmk                                         (bmkp-get-autofile-bookmark fil)))
+    (lexical-let* ((rg               regexp)
+                   (use-file-dialog  nil)
+                   (pred
+                    #'(lambda (ff)
+                        (let* ((bk    (bmkp-get-autofile-bookmark ff))
+                               (btgs  (and bk  (bmkp-get-tags bk))))
+                          (and btgs  (bmkp-every #'(lambda (tag) (string-match rg (bmkp-tag-name tag)))
+                                                 btgs)))))
+                   (icicle-unpropertize-completion-result-flag  t) ; For `read-file-name'.
+                   (icicle-must-pass-after-match-predicate      pred)
+                   (fil                                         (or (and file  (funcall pred file)  file)
+                                                                    (read-file-name
+                                                                     "Find file: " nil nil t nil
+                                                                     (and (or (not (boundp 'icicle-mode))
+                                                                              (not icicle-mode))
+                                                                          pred))))
+                   (bmk                                         (bmkp-get-autofile-bookmark fil)))
       (bookmark-jump-other-window bmk))))
 
 ;;;###autoload
@@ -9106,22 +9122,22 @@ However, only files that are bookmarked as autofiles are candidates.
 By default, the tag choices for completion are NOT refreshed, to save
 time.  Use a prefix argument if you want to refresh them."
     (interactive (list (bmkp-read-tags-completing nil nil current-prefix-arg)))
-    (let* ((use-file-dialog                             nil)
-           (pred                                        #'(lambda (ff)
-                                                            (let* ((bmk   (bmkp-get-autofile-bookmark ff))
-                                                                   (btgs  (and bmk (bmkp-get-tags bmk))))
-                                                              (and btgs  (bmkp-some #'(lambda (tag)
-                                                                                        (bmkp-has-tag-p
-                                                                                         bmk tag)) tags)))))
-           (icicle-unpropertize-completion-result-flag  t) ; For `read-file-name'.
-           (icicle-must-pass-after-match-predicate      pred)
-           (fil                                         (or (and file  (funcall pred file)  file)
-                                                            (read-file-name
-                                                             "Find file: " nil nil t nil
-                                                             (and (or (not (boundp 'icicle-mode))
-                                                                      (not icicle-mode))
-                                                                  pred))))
-           (bmk                                         (bmkp-get-autofile-bookmark fil)))
+    (lexical-let* ((tgs              tags)
+                   (use-file-dialog  nil)
+                   (pred
+                    #'(lambda (ff)
+                        (lexical-let* ((bk    (bmkp-get-autofile-bookmark ff))
+                                       (btgs  (and bk  (bmkp-get-tags bk))))
+                          (and btgs  (bmkp-some #'(lambda (tag) (bmkp-has-tag-p bk tag)) tgs)))))
+                   (icicle-unpropertize-completion-result-flag  t) ; For `read-file-name'.
+                   (icicle-must-pass-after-match-predicate      pred)
+                   (fil                                         (or (and file  (funcall pred file)  file)
+                                                                    (read-file-name
+                                                                     "Find file: " nil nil t nil
+                                                                     (and (or (not (boundp 'icicle-mode))
+                                                                              (not icicle-mode))
+                                                                          pred))))
+                   (bmk                                         (bmkp-get-autofile-bookmark fil)))
       (bookmark-jump bmk))))
 
 ;;;###autoload
@@ -9129,22 +9145,22 @@ time.  Use a prefix argument if you want to refresh them."
   (defun bmkp-find-file-some-tags-other-window (tags &optional file) ; `C-x 4 j t C-f +'
     "`bmkp-find-file-some-tags', but in another window."
     (interactive (list (bmkp-read-tags-completing nil nil current-prefix-arg)))
-    (let* ((use-file-dialog                             nil)
-           (pred                                        #'(lambda (ff)
-                                                            (let* ((bmk   (bmkp-get-autofile-bookmark ff))
-                                                                   (btgs  (and bmk (bmkp-get-tags bmk))))
-                                                              (and btgs  (bmkp-some #'(lambda (tag)
-                                                                                        (bmkp-has-tag-p
-                                                                                         bmk tag)) tags)))))
-           (icicle-unpropertize-completion-result-flag  t) ; For `read-file-name'.
-           (icicle-must-pass-after-match-predicate      pred)
-           (fil                                         (or (and file  (funcall pred file)  file)
-                                                            (read-file-name
-                                                             "Find file: " nil nil t nil
-                                                             (and (or (not (boundp 'icicle-mode))
-                                                                      (not icicle-mode))
-                                                                  pred))))
-           (bmk                                         (bmkp-get-autofile-bookmark fil)))
+    (lexical-let* ((tgs              tags)
+                   (use-file-dialog  nil)
+                   (pred
+                    #'(lambda (ff)
+                        (lexical-let* ((bk    (bmkp-get-autofile-bookmark ff))
+                                       (btgs  (and bk  (bmkp-get-tags bk))))
+                          (and btgs  (bmkp-some #'(lambda (tag) (bmkp-has-tag-p bk tag)) tgs)))))
+                   (icicle-unpropertize-completion-result-flag  t) ; For `read-file-name'.
+                   (icicle-must-pass-after-match-predicate      pred)
+                   (fil                                         (or (and file  (funcall pred file)  file)
+                                                                    (read-file-name
+                                                                     "Find file: " nil nil t nil
+                                                                     (and (or (not (boundp 'icicle-mode))
+                                                                              (not icicle-mode))
+                                                                          pred))))
+                   (bmk                                         (bmkp-get-autofile-bookmark fil)))
       (bookmark-jump-other-window bmk))))
 
 ;;;###autoload
@@ -9153,24 +9169,23 @@ time.  Use a prefix argument if you want to refresh them."
     "Visit a file or directory that has a tag matching REGEXP.
 You are prompted for the REGEXP."
     (interactive (list (read-string "Regexp for tags: ")))
-    (let* ((use-file-dialog                             nil)
-           (pred                                        #'(lambda (ff)
-                                                            (let* ((bmk   (bmkp-get-autofile-bookmark ff))
-                                                                   (btgs  (and bmk (bmkp-get-tags bmk))))
-                                                              (and btgs  (bmkp-some
-                                                                          #'(lambda (tag)
-                                                                              (string-match
-                                                                               regexp (bmkp-tag-name tag)))
-                                                                          btgs)))))
-           (icicle-unpropertize-completion-result-flag  t) ; For `read-file-name'.
-           (icicle-must-pass-after-match-predicate      pred)
-           (fil                                         (or (and file  (funcall pred file)  file)
-                                                            (read-file-name
-                                                             "Find file: " nil nil t nil
-                                                             (and (or (not (boundp 'icicle-mode))
-                                                                      (not icicle-mode))
-                                                                  pred))))
-           (bmk                                         (bmkp-get-autofile-bookmark fil)))
+    (lexical-let* ((rg               regexp)
+                   (use-file-dialog  nil)
+                   (pred
+                    #'(lambda (ff)
+                        (let* ((bk    (bmkp-get-autofile-bookmark ff))
+                               (btgs  (and bk  (bmkp-get-tags bk))))
+                          (and btgs  (bmkp-some #'(lambda (tag) (string-match rg (bmkp-tag-name tag)))
+                                                btgs)))))
+                   (icicle-unpropertize-completion-result-flag  t) ; For `read-file-name'.
+                   (icicle-must-pass-after-match-predicate      pred)
+                   (fil                                         (or (and file  (funcall pred file)  file)
+                                                                    (read-file-name
+                                                                     "Find file: " nil nil t nil
+                                                                     (and (or (not (boundp 'icicle-mode))
+                                                                              (not icicle-mode))
+                                                                          pred))))
+                   (bmk                                         (bmkp-get-autofile-bookmark fil)))
       (bookmark-jump bmk))))
 
 ;;;###autoload
@@ -9178,24 +9193,23 @@ You are prompted for the REGEXP."
   (defun bmkp-find-file-some-tags-regexp-other-window (regexp &optional file) ; `C-x 4 j t C-f % +'
     "`bmkp-find-file-some-tags-regexp', but in another window."
     (interactive (list (read-string "Regexp for tags: ")))
-    (let* ((use-file-dialog                             nil)
-           (pred                                        #'(lambda (ff)
-                                                            (let* ((bmk   (bmkp-get-autofile-bookmark ff))
-                                                                   (btgs  (and bmk (bmkp-get-tags bmk))))
-                                                              (and btgs  (bmkp-some
-                                                                          #'(lambda (tag)
-                                                                              (string-match
-                                                                               regexp (bmkp-tag-name tag)))
-                                                                          btgs)))))
-           (icicle-unpropertize-completion-result-flag  t) ; For `read-file-name'.
-           (icicle-must-pass-after-match-predicate      pred)
-           (fil                                         (or (and file  (funcall pred file)  file)
-                                                            (read-file-name
-                                                             "Find file: " nil nil t nil
-                                                             (and (or (not (boundp 'icicle-mode))
-                                                                      (not icicle-mode))
-                                                                  pred))))
-           (bmk                                         (bmkp-get-autofile-bookmark fil)))
+    (lexical-let* ((rg               regexp)
+                   (use-file-dialog  nil)
+                   (pred
+                    #'(lambda (ff)
+                        (let* ((bk    (bmkp-get-autofile-bookmark ff))
+                               (btgs  (and bk  (bmkp-get-tags bk))))
+                          (and btgs  (bmkp-some #'(lambda (tag) (string-match rg (bmkp-tag-name tag)))
+                                                btgs)))))
+                   (icicle-unpropertize-completion-result-flag  t) ; For `read-file-name'.
+                   (icicle-must-pass-after-match-predicate      pred)
+                   (fil                                         (or (and file  (funcall pred file)  file)
+                                                                    (read-file-name
+                                                                     "Find file: " nil nil t nil
+                                                                     (and (or (not (boundp 'icicle-mode))
+                                                                              (not icicle-mode))
+                                                                          pred))))
+                   (bmk                                         (bmkp-get-autofile-bookmark fil)))
       (bookmark-jump-other-window bmk))))
 
 ;;;###autoload
