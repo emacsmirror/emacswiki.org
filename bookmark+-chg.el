@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2012, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Tue May  1 15:21:31 2012 (-0700)
+;; Last-Updated: Fri May  4 13:47:10 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 14831
+;;     Update #: 14873
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-chg.el
 ;; Keywords: bookmarks, bookmark+
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -145,6 +145,17 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-1.el'")
 ;;
+;; 2012/05/04 dadams
+;;     bmkp-remove-tags, bmkp-all-tags(-regexp)-alist-only
+;;       bmkp(-(auto)file(-this-dir))(-(all|some)-tags)(-regexp)-alist-only,
+;;       bmkp-specific-(buffers|files)-alist-only, bmkp-sort-omit, bmkp-url-target-set,
+;;       bmkp-autofile-remove-tags. bmkp-default-handler-for-file, bmkp-set-bookmark-file-bookmark,
+;;       bmkp-set-desktop-bookmark, bmkp-set-variable-list-bookmark,
+;;       bmkp-create-variable-list-bookmark, bmkp-jump-dired,
+;;       bmkp-find-file-(all|some)-tags(-regexp)(-other-window):
+;;         Use lexical-let(*), to get closures for free vars in lambdas.
+;;     bmkp-regexp-filtered-(file-name|tags)-alist-only: Moved let inside lambda.
+;;     bmkp-make-dired-record: Use car instead of (lambda (x) (car x)).
 ;; 2012/05/01 dadams
 ;;     Added: bmkp-tagged-bookmark-p (alias), bmkp-tagged-cp.
 ;;     bmkp-(add|remove)-tags: Return negative nb-* if changed from (un)tagged to not (un)tagged.
