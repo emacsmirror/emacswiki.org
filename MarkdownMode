@@ -24,5 +24,25 @@ A similar logic applies to double-quotes, especially if one is frequently adding
     ; <http://stackoverflow.com/questions/9527593/customizing-check-parens-to-check-double-quotes>
     (add-hook 'markdown-mode-hook (lambda () (modify-syntax-entry ?\" "\"" markdown-mode-syntax-table)))
 
+== Usage notes ==
+
+It should be noted that in practice this thing is not too usable, because
+
+* for a file > 500 lines in size it gets rather slow (in Aquamacs-current, based on GNU Emacs 23.3.50.1)
+* completion with Meta-/ is broken (inserts a new line)
+* syntax highlithing is broken in several places (especially for pre-formatted text)
+* and so on
+
+Except for some help with indentation there is no markdown-specific stuff here
+* no way to change header level
+* no section navigation
+* no shortcuts for reordering list items
+
+There are some shortcuts to insert markdown elements, but as a rule they are longer than corresponding
+elements themselves (e.g. "shortcut" 'Ctrl-C Ctr-S C' to insert a pair of backticks).
+
+Sadly this is the only mode for markdown editing I've found yet. For now I'd use text mode for short projects
+or excellent org-mode (with markdown export) for long ones.
+
 ----
 MarkupModes
