@@ -27,7 +27,7 @@
 || bbdb-get-only-first-address-p |||| bbdb-message-all-addresses ||
 || bbdb-gui |||| [gone] ||
 || bbdb-hashtable-size |||| [gone] ||
-|| bbdb-ignore-most-messages-alist |||| [gone] ||
+|| bbdb-ignore-most-messages-alist |||| bbdb-accept-message-alist ||
 || bbdb-ignore-some-messages-alist |||| bbdb-ignore-message-alist ||
 || bbdb-ignore-some-messages-hook |||| [gone] ||
 || bbdb-initialize |||| same + bbdb-mua-auto-update-init ||
