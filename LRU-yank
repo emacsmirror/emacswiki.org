@@ -1,3 +1,1 @@
-homepage: https://github.com/lewang/le_emacs_LRU_yank
-
-* reorganize kill-ring as an LRU (least recently used) stack.  Similary to M-tab to switch between applications on windows.
+#REDIRECT MRU-yank
