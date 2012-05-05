@@ -4,7 +4,7 @@
 
 ;; Maintainer: Naveen Garg
 ;; Version: 0.1
-;; Keywords: outlines, python
+;; Keywords: outlines, languages
 
 ;; This file is not part of GNU Emacs.
 
