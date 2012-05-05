@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2012, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Fri May  4 13:47:10 2012 (-0700)
+;; Last-Updated: Sat May  5 14:52:58 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 14873
+;;     Update #: 14933
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-chg.el
 ;; Keywords: bookmarks, bookmark+
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -145,6 +145,13 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-1.el'")
 ;;
+;; 2012/05/05 dadams
+;;     bookmark-store, bmkp-make-function-bookmark, bmkp-unomit-all, bmkp-url-target-set:
+;;       Added optional arg NO-MSG-P. 
+;;     bookmark-store, bookmark-set, bmkp-record-visit, bmkp-make-function-bookmark,
+;;       bmkp-current-bookmark-list-state, bmkp-unomit-all, bmkp-url-target-set, bmkp-file-target-set,
+;;       bmkp-replace-existing-bookmark:
+;;         Pass NO-MSG-P to *-refresh/rebuild-menu-list, *-surreptitiously-rebuild-list, *-store.
 ;; 2012/05/04 dadams
 ;;     bmkp-remove-tags, bmkp-all-tags(-regexp)-alist-only
 ;;       bmkp(-(auto)file(-this-dir))(-(all|some)-tags)(-regexp)-alist-only,
@@ -769,6 +776,24 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-bmu.el'")
 ;;
+;; 2012/05/05 dadams
+;;     bookmark-bmenu-(un)mark(-all), bmkp-bmenu-regexp-mark, bmkp-bmenu-toggle-marks,
+;;       bmkp-bmenu-mark-bookmarks-satisfying, bmkp-bmenu-toggle-marked-temporary/savable,
+;;       bmkp-bmenu-(un)mark-bookmarks-tagged-regexp:
+;;         Added optional arg MSG-P.
+;;     bookmark-bmenu-(un)mark(-all), bookmark-bmenu-execute-deletions, bmkp-bmenu-regexp-mark,
+;;       bmkp-bmenu-toggle-show-only-(un)marked, bmkp-bmenu-mark-bookmarks-satisfying,
+;;       bmkp-bmenu-toggle-marks, bmkp-bmenu-toggle-marked-temporary/savable,
+;;       bmkp-bmenu-toggle-temporary, bmkp-bmenu-make-sequence-from-marked,
+;;       bmkp-bmenu-(un)omit(-marked), bmkp-bmenu-(un)mark-bookmarks-tagged-regexp,
+;;       bmkp-bmenu-mark/unmark-bookmarks-tagged-*, bmkp-bmenu-change-sort-order,
+;;       bmkp-reverse(-multi)-sort-order:
+;;         Pass NO-MSG-P to *-refresh/rebuild-menu-list, *-surreptitiously-rebuild-list, *-store.
+;;     bmkp-bmenu-mark/unmark-bookmarks-tagged-(all/none|some/not-all):
+;;       Swapped last two args, so consistent order.
+;;     bmkp-bmenu-(un)mark-bookmarks-tagged-*: Updated arg order in calls to b-b-m/u-b-t-(a/n|s/n-a).
+;;     bmkp-bmenu-(un)mark-bookmarks-tagged-regexp, bmkp-bmenu-mark/unmark-bookmarks-tagged-*:
+;;       Added status message.
 ;; 2012/05/01 dadams
 ;;     Added redefinition of bookmark-bmenu-delete-backwards (they broke its movement).
 ;;     Added aliases: bmkp-bmenu-flag-for-deletion(-backwards).  Bind to d, k, C-d (same as aliases).
