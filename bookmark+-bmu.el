@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2012, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 09:05:21 2010 (-0700)
-;; Last-Updated: Tue May  1 15:20:56 2012 (-0700)
+;; Last-Updated: Sat May  5 14:55:00 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 1988
+;;     Update #: 2047
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-bmu.el
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -798,9 +798,10 @@ prompting with completion for the new path."
 ;; 4. Narrower scope for `with-buffer-modified-unmodified' and `let'.
 ;; 5. If current sort is `s >' (marked first or last), and it was unmarked before, then re-sort.
 ;; 6. Added optional arg NO-RE-SORT-P to inhibit #5.
+;; 7. Added optional arg MSG-P.
 ;;
 ;;;###autoload
-(defun bookmark-bmenu-mark (&optional no-re-sort-p) ; Bound to `m' in bookmark list
+(defun bookmark-bmenu-mark (&optional no-re-sort-p msg-p) ; Bound to `m' in bookmark list
   "Mark the bookmark on this line, using mark `>'.
 Add its name to `bmkp-bmenu-marked-bookmarks', after propertizing it
 with the full bookmark as `bmkp-full-record'.
@@ -808,9 +809,10 @@ with the full bookmark as `bmkp-full-record'.
 If the bookmark was unmarked before, and if the sort order is marked
 first or last (`s >'), then re-sort.
 
-Non-interactively, non-nil optional arg NO-RE-SORT-P inhibits
-re-sorting."
-  (interactive)
+Non-interactively:
+* Non-nil optional arg NO-RE-SORT-P inhibits re-sorting.
+* Non-nil optional arg MSG-P means display a status message."
+  (interactive (list nil 'MSG-P))
   (bmkp-bmenu-barf-if-not-in-menu-list)
   (bookmark-bmenu-ensure-position)
   (beginning-of-line)
@@ -831,7 +833,7 @@ re-sorting."
       ;; If it was unmarked but now is marked, and if sort order is `s >', then re-sort.
       (when (and was-unmarked-p  (equal bmkp-sort-comparer '((bmkp-marked-cp) bmkp-alpha-p)))
         (let ((current-bmk  (bookmark-bmenu-bookmark)))
-          (bookmark-bmenu-surreptitiously-rebuild-list)
+          (bookmark-bmenu-surreptitiously-rebuild-list (not msg-p))
           (when current-bmk (bmkp-bmenu-goto-bookmark-named current-bmk))))))
   (forward-line 1))
 
@@ -845,9 +847,10 @@ re-sorting."
 ;; 5. Narrower scope for `with-buffer-modified-unmodified' and `let'.
 ;; 6. If current sort is `s >' (marked first or last), and it was marked before, then re-sort.
 ;; 7. Added optional arg NO-RE-SORT-P to inhibit #6.
+;; 8. Added optional arg MSG-P.
 ;;
 ;;;###autoload
-(defun bookmark-bmenu-unmark (&optional backup no-re-sort-p) ; Bound to `u' in bookmark list
+(defun bookmark-bmenu-unmark (&optional backup no-re-sort-p msg-p) ; Bound to `u' in bookmark list
   "Unmark the bookmark on this line, then move down to the next.
 With a prefix argument, move up instead.
 
@@ -855,9 +858,10 @@ If the bookmark was marked before, and if the sort order is marked
 first or last (`s >'), then re-sort.
 
 Non-interactively:
- Non-nil optional arg BACKUP (prefix arg) means move up.
- Non-nil optional arg NO-RE-SORT-P inhibits re-sorting."
-  (interactive "P")
+* Non-nil optional arg BACKUP (prefix arg) means move up.
+* Non-nil optional arg NO-RE-SORT-P inhibits re-sorting.
+* Non-nil optional arg MSG-P means display a status message."
+  (interactive (list current-prefix-arg nil 'MSG-P))
   (bmkp-bmenu-barf-if-not-in-menu-list)
   (bookmark-bmenu-ensure-position)
   (beginning-of-line)
@@ -873,7 +877,7 @@ Non-interactively:
       ;; If it was marked but now is unmarked, and if sort order is `s >', then re-sort.
       (when (and was-marked-p  (equal bmkp-sort-comparer '((bmkp-marked-cp) bmkp-alpha-p)))
         (let ((current-bmk  (bookmark-bmenu-bookmark)))
-          (bookmark-bmenu-surreptitiously-rebuild-list)
+          (bookmark-bmenu-surreptitiously-rebuild-list (not msg-p))
           (when current-bmk (bmkp-bmenu-goto-bookmark-named current-bmk))))))
   (forward-line (if backup -1 1)))
 
@@ -920,7 +924,8 @@ the deletions."
 ;;;###autoload
 (defun bookmark-bmenu-delete-backwards ()
   "Mark bookmark on this line to be deleted, then move up one line.
-To carry out the deletions that you've marked, use \\<bookmark-bmenu-mode-map>\\[bookmark-bmenu-execute-deletions]."
+To carry out the deletions that you've marked, use \\<bookmark-bmenu-mode-map>\
+\\[bookmark-bmenu-execute-deletions]."
   (interactive)
   (bookmark-bmenu-delete)
   (forward-line -2)
@@ -957,7 +962,7 @@ Non-nil optional arg NO-MSG-P means do not show progress messages."
 ;;;###autoload
 (defalias 'list-bookmarks 'bookmark-bmenu-list)
 ;;;###autoload
-(defun bookmark-bmenu-list (&optional filteredp msgp) ; Bound to `C-x p e', `C-x r l'
+(defun bookmark-bmenu-list (&optional filteredp msg-p) ; Bound to `C-x p e', `C-x r l'
   "Display a list of existing bookmarks, in buffer `*Bookmark List*'.
 The leftmost column of a bookmark entry shows `D' if the bookmark is
  flagged for deletion, or `>' if it is marked normally.
@@ -997,7 +1002,7 @@ Non-interactively:
    * Use `bmkp-bmenu-title' not the default menu-list title.
    * Do not reset `bmkp-latest-bookmark-alist' to `bookmark-alist'.
 
- - Non-nil optional arg MSGP means display progress messages.
+ - Non-nil optional arg MSG-P means display progress messages.
 
 In Lisp code, non-nil optional argument FILTEREDP means the bookmark
 list has been filtered, which means:
@@ -1005,7 +1010,7 @@ list has been filtered, which means:
  * Do not reset `bmkp-latest-bookmark-alist' to `bookmark-alist'."
   (interactive "i\np")
   (bookmark-maybe-load-default-file)
-  (when msgp (message "Gathering bookmarks to display..."))
+  (when msg-p (message "Gathering bookmarks to display..."))
   (when (and bmkp-bmenu-first-time-p bmkp-bmenu-commands-file
              (file-readable-p bmkp-bmenu-commands-file))
     (with-current-buffer (let ((enable-local-variables  ())
@@ -1051,7 +1056,7 @@ list has been filtered, which means:
                      (cdr (assq 'last-bmenu-before-hide-unmarked-alist state))))))
          (setq bmkp-bmenu-first-time-p  nil)
          (let ((bookmark-alist  (or bmkp-latest-bookmark-alist bookmark-alist)))
-           (bmkp-bmenu-list-1 'filteredp nil msgp))
+           (bmkp-bmenu-list-1 'filteredp nil msg-p))
          ;; Propertize bookmark names if not already propertized (lists saved with Emacs 20 or
          ;; not `bmkp-propertize-bookmark-names-flag').  Check only the first to guess propertized.
          (when (and (consp bmkp-bmenu-marked-bookmarks)
@@ -1083,9 +1088,7 @@ list has been filtered, which means:
              (bmkp-bmenu-goto-bookmark-named bmkp-last-bmenu-bookmark))))
         (t
          (setq bmkp-bmenu-first-time-p  nil)
-         (bmkp-bmenu-list-1 filteredp
-                            (or msgp  (not (get-buffer "*Bookmark List*")))
-                            msgp))))
+         (bmkp-bmenu-list-1 filteredp (or msg-p  (not (get-buffer "*Bookmark List*"))) msg-p))))
 
 (defun bmkp-bmenu-list-1 (filteredp reset-p interactivep)
   "Helper for `bookmark-bmenu-list'.
@@ -1842,18 +1845,18 @@ See `bookmark-jump' for info about the prefix arg."
 
 ;; REPLACES ORIGINAL in `bookmark.el'.
 ;;
-;; 1. Added optional arg MSGP.
-;; 2. Call `bookmark-show-annotation' with arg MSGP.
+;; 1. Added optional arg MSG-P.
+;; 2. Call `bookmark-show-annotation' with arg MSG-P.
 ;; 3. Raise error if not in buffer `*Bookmark List*'.
 ;;
 ;;;###autoload
-(defun bookmark-bmenu-show-annotation (msgp)
+(defun bookmark-bmenu-show-annotation (msg-p)
   "Show the annotation for the current bookmark in another window."
   (interactive "p")
   (bmkp-bmenu-barf-if-not-in-menu-list)
   (bookmark-bmenu-ensure-position)
   (let ((bookmark  (bookmark-bmenu-bookmark)))
-    (bookmark-show-annotation bookmark msgp)))
+    (bookmark-show-annotation bookmark msg-p)))
 
 
 ;; REPLACES ORIGINAL in `bookmark.el'.
@@ -1890,7 +1893,7 @@ confirmation."
                   bmkp-latest-bookmark-alist  (delete bmk bmkp-latest-bookmark-alist))))
         (if (<= count 0)
             (message (if markedp "No marked bookmarks" "No bookmarks flagged for deletion"))
-          (bookmark-bmenu-surreptitiously-rebuild-list)
+          (bookmark-bmenu-surreptitiously-rebuild-list 'NO-MSG-P)
           (message "Deleted %d bookmarks" count))
         (if o-str
             (bmkp-bmenu-goto-bookmark-named o-str)
@@ -2232,7 +2235,7 @@ From Lisp, non-nil optional arg MSG-P means show progress messages."
     (cond ((and arg (yes-or-no-p (format "Revert to bookmarks saved in file `%s'? "
                                          bmkp-current-bookmark-file)))
            (when msg-p (message (setq msg  (concat msg "file..."))))
-           (bookmark-load bmkp-current-bookmark-file 'OVERWRITE 'NOMSGP)
+           (bookmark-load bmkp-current-bookmark-file 'OVERWRITE 'NO-MSG-P)
            (setq bmkp-bmenu-marked-bookmarks   () ; Start from scratch.
                  bmkp-modified-bookmarks       ()
                  bmkp-flagged-bookmarks        ()
@@ -2385,7 +2388,7 @@ From Lisp, non-nil optional arg MSG-P means show progress messages."
                 bookmark-alist                       (bmkp-unmarked-bookmarks-only)
                 bmkp-latest-bookmark-alist           bookmark-alist
                 status                               'hidden))
-        (bookmark-bmenu-surreptitiously-rebuild-list)
+        (bookmark-bmenu-surreptitiously-rebuild-list 'NO-MSG-P)
         (cond ((eq status 'hidden)
                (bookmark-bmenu-ensure-position)
                (message "Marked bookmarks are now hidden"))
@@ -2418,7 +2421,7 @@ From Lisp, non-nil optional arg MSG-P means show progress messages."
                 bookmark-alist                         (bmkp-marked-bookmarks-only)
                 bmkp-latest-bookmark-alist             bookmark-alist
                 status                                 'hidden))
-        (bookmark-bmenu-surreptitiously-rebuild-list)
+        (bookmark-bmenu-surreptitiously-rebuild-list 'NO-MSG-P)
         (cond ((eq status 'hidden)
                (bookmark-bmenu-ensure-position)
                (message "Unmarked bookmarks are now hidden"))
@@ -2436,31 +2439,33 @@ From Lisp, non-nil optional arg MSG-P means show progress messages."
 ;;  *** Menu-List (`*-bmenu-*') Commands Involving Marks ***
 
 ;;;###autoload
-(defun bmkp-bmenu-mark-all (&optional no-re-sort-p) ; Bound to `M-m' in bookmark list
+(defun bmkp-bmenu-mark-all (&optional no-re-sort-p msg-p) ; Bound to `M-m' in bookmark list
   "Mark all bookmarks, using mark `>'.
 If any bookmark was unmarked before, and if the sort order is marked
 first or last (`s >'), then re-sort.
 
-Non-interactively, non-nil optional arg NO-RE-SORT-P inhibits
-re-sorting."
-  (interactive)
+Non-interactively:
+* Non-nil optional arg NO-RE-SORT-P inhibits re-sorting.
+* Non-nil optional arg MSG-P meands display a status message."
+  (interactive "i\np")
   (bmkp-bmenu-barf-if-not-in-menu-list)
   (let ((count      0)
         (nb-marked  (length bmkp-bmenu-marked-bookmarks)))
     (save-excursion
       (goto-char (point-min)) (forward-line bmkp-bmenu-header-lines)
+      (when msg-p (message "Updating bookmark-list display..."))
       (while (not (eobp)) (bookmark-bmenu-mark 'NO-RE-SORT-P) (setq count  (1+ count))))
     (unless no-re-sort-p
       ;; If some were unmarked before, and if sort order is `s >' then re-sort.
       (when (and (/= nb-marked count)  (equal bmkp-sort-comparer '((bmkp-marked-cp) bmkp-alpha-p)))
         (let ((current-bmk  (bookmark-bmenu-bookmark)))
-          (bookmark-bmenu-surreptitiously-rebuild-list)
+          (bookmark-bmenu-surreptitiously-rebuild-list 'NO-MSG-P)
           (when current-bmk (bmkp-bmenu-goto-bookmark-named current-bmk)))))
-    (message "Marked: %d" count)))
+    (when msg-p (message "Marked: %d" count))))
 
 ;; This is similar to `dired-unmark-all-files'.
 ;;;###autoload
-(defun bmkp-bmenu-unmark-all (mark &optional arg no-re-sort-p) ; Bound to `M-DEL', `U' in bookmark list
+(defun bmkp-bmenu-unmark-all (mark &optional arg no-re-sort-p msg-p) ; Bound to `M-DEL', `U' in bmk list
   "Remove a mark from each bookmark.
 Hit the mark character (`>' or `D') to remove those marks,
  or hit `RET' to remove all marks (both `>' and `D').
@@ -2471,10 +2476,11 @@ If any bookmark was marked before, and if the sort order is marked
 first or last (`s >'), then re-sort.
 
 Non-interactively:
- MARK is the mark character or a carriage-return character (`?\r').
- Non-nil ARG (prefix arg) means query.
- Non-nil optional arg NO-RE-SORT-P inhibits re-sorting."
-  (interactive "cRemove marks (RET means all): \nP")
+* MARK is the mark character or a carriage-return character (`?\r').
+* Non-nil ARG (prefix arg) means query.
+* Non-nil optional arg NO-RE-SORT-P inhibits re-sorting.
+* Non-nil optional arg MSG-P meands display a status message."
+  (interactive "cRemove marks (RET means all): \nP\ni\np")
   (bmkp-bmenu-barf-if-not-in-menu-list)
   (require 'dired-aux)
   (let* ((count              0)
@@ -2495,20 +2501,21 @@ Non-interactively:
                       (re-search-forward dired-re-mark nil t)
                     (let ((case-fold-search  t)) ; Treat `d' the same as `D'.
                       (search-forward string nil t))))
-        (when (or (not arg)  (let ((bmk  (bookmark-bmenu-bookmark)))
-                               (and bmk (dired-query 'query "Unmark bookmark `%s'? " bmk))))
+        (when (or (prog1 (not arg) (when msg-p (message "Updating bookmark-list display...")))
+                  (let ((bmk  (bookmark-bmenu-bookmark)))
+                    (and bmk  (dired-query 'query "Unmark bookmark `%s'? " bmk))))
           (bookmark-bmenu-unmark nil 'NO-RE-SORT-P) (forward-line -1)
           (setq count  (1+ count)))))
     (unless no-re-sort-p
       ;; If some were marked before, and if sort order is `s >', then re-sort.
       (when (and some-marked-p  (equal bmkp-sort-comparer '((bmkp-marked-cp) bmkp-alpha-p)))
         (let ((current-bmk  (bookmark-bmenu-bookmark)))
-          (bookmark-bmenu-surreptitiously-rebuild-list)
+          (bookmark-bmenu-surreptitiously-rebuild-list 'NO-MSG-P)
           (when current-bmk (bmkp-bmenu-goto-bookmark-named current-bmk)))))
-    (if (= 1 count) (message "1 mark removed") (message "%d marks removed" count))))
+    (when msg-p (if (= 1 count) (message "1 mark removed") (message "%d marks removed" count)))))
 
 ;;;###autoload
-(defun bmkp-bmenu-regexp-mark (regexp &optional no-re-sort-p) ; Bound to `% m' in bookmark list
+(defun bmkp-bmenu-regexp-mark (regexp &optional no-re-sort-p msg-p) ; Bound to `% m' in bookmark list
   "Mark bookmarks that match REGEXP.
 The entire bookmark line is tested: bookmark name and possibly file name.
 Note too that if file names are not shown currently then the bookmark
@@ -2517,14 +2524,16 @@ name is padded at the right with spaces.
 If any bookmark was unmarked before, and if the sort order is marked
 first or last (`s >'), then re-sort.
 
-Non-interactively, non-nil optional arg NO-RE-SORT-P inhibits
-re-sorting."
-  (interactive "sRegexp: ")
+Non-interactively:
+* Non-nil optional arg NO-RE-SORT-P inhibits re-sorting.
+* Non-nil optional arg MSG-P means display a status message."
+  (interactive "sRegexp: \np")
   (bmkp-bmenu-barf-if-not-in-menu-list)
   (let ((count      0)
         (nb-marked  (length bmkp-bmenu-marked-bookmarks)))
     (save-excursion
       (goto-char (point-min)) (forward-line bmkp-bmenu-header-lines)
+      (when msg-p (message "Updating bookmark-list display..."))
       (while (and (not (eobp)) (re-search-forward regexp (point-max) t))
         (bookmark-bmenu-mark 'NO-RE-SORT-P)
         (setq count  (1+ count))))
@@ -2533,9 +2542,9 @@ re-sorting."
       (when (and (equal bmkp-sort-comparer '((bmkp-marked-cp) bmkp-alpha-p))
                  (< nb-marked (length bmkp-bmenu-marked-bookmarks)))
         (let ((current-bmk  (bookmark-bmenu-bookmark)))
-          (bookmark-bmenu-surreptitiously-rebuild-list)
+          (bookmark-bmenu-surreptitiously-rebuild-list 'NO-MSG-P)
           (when current-bmk (bmkp-bmenu-goto-bookmark-named current-bmk)))))
-    (if (= 1 count) (message "1 bookmark matched") (message "%d bookmarks matched" count))))
+    (when msg-p (if (= 1 count) (message "1 bookmark matched") (message "%d bookmarks matched" count)))))
 
 ;;;###autoload
 (defun bmkp-bmenu-mark-autofile-bookmarks (&optional arg) ; Bound to `A M' in bookmark list
@@ -2673,7 +2682,7 @@ If FILE is non-nil, set `bmkp-last-specific-file' to it."
   (bmkp-bmenu-mark-bookmarks-satisfying 'bmkp-w3m-bookmark-p))
 
 ;;;###autoload
-(defun bmkp-bmenu-mark-bookmarks-satisfying (pred &optional no-re-sort-p) ; Not bound
+(defun bmkp-bmenu-mark-bookmarks-satisfying (pred &optional no-re-sort-p msg-p) ; Not bound
   "Mark bookmarks that satisfy predicate PRED.
 If you use this interactively, you are responsible for entering a
 symbol that names a unnary predicate.  The function you provide is not
@@ -2682,15 +2691,17 @@ checked - it is simply applied to each bookmark to test it.
 If any bookmark was unmarked before, and if the sort order is marked
 first or last (`s >'), then re-sort.
 
-Non-interactively, non-nil optional arg NO-RE-SORT-P inhibits
-re-sorting."
-  (interactive "aPredicate: ")
+Non-interactively:
+* Non-nil optional arg NO-RE-SORT-P inhibits re-sorting.
+* Non-nil optional arg MSG-P means display a status message."
+  (interactive "aPredicate: \np")
   (bmkp-bmenu-barf-if-not-in-menu-list)
   (let ((count      0)
         (nb-marked  (length bmkp-bmenu-marked-bookmarks))
         bmk)
     (save-excursion
       (goto-char (point-min)) (forward-line bmkp-bmenu-header-lines)
+      (when msg-p (message "Updating bookmark-list display..."))
       (while (not (eobp))
         (setq bmk  (bookmark-bmenu-bookmark))
         (if (not (funcall pred bmk))
@@ -2702,17 +2713,20 @@ re-sorting."
       (when (and (equal bmkp-sort-comparer '((bmkp-marked-cp) bmkp-alpha-p))
                  (< nb-marked (length bmkp-bmenu-marked-bookmarks)))
         (let ((current-bmk  (bookmark-bmenu-bookmark)))
-          (bookmark-bmenu-surreptitiously-rebuild-list)
+          (bookmark-bmenu-surreptitiously-rebuild-list 'NO-MSG-P)
           (when current-bmk (bmkp-bmenu-goto-bookmark-named current-bmk)))))
-    (if (= 1 count) (message "1 bookmark matched") (message "%d bookmarks matched" count))))
+    (when msg-p (if (= 1 count) (message "1 bookmark matched") (message "%d bookmarks matched" count)))))
 
 ;;;###autoload
-(defun bmkp-bmenu-toggle-marks (&optional backup no-re-sort-p) ; Bound to `t' in bookmark list
+(defun bmkp-bmenu-toggle-marks (&optional backup no-re-sort-p msg-p) ; Bound to `t' in bookmark list
   "Toggle marks: Unmark all marked bookmarks; mark all unmarked bookmarks.
 This affects only the `>' mark, not the `D' flag.
 
 Interactively or with nil optional arg NO-RE-SORT-P, if the current
-sort order is marked first or last (`s >'), then re-sort."
+sort order is marked first or last (`s >'), then re-sort.
+
+Non-interactively, non-nil optional arg MSG-P means display a status
+message."
   (interactive)
   (bmkp-bmenu-barf-if-not-in-menu-list)
   (bookmark-bmenu-ensure-position)
@@ -2722,6 +2736,7 @@ sort order is marked first or last (`s >'), then re-sort."
       (goto-char (point-min)) (forward-line bmkp-bmenu-header-lines)
       (if (not (bmkp-some-marked-p bmkp-latest-bookmark-alist))
           (bmkp-bmenu-mark-all no-re-sort-p)
+        (when msg-p (message "Updating bookmark-list display..."))
         (while (not (eobp))
           (cond ((bmkp-bookmark-name-member (bookmark-bmenu-bookmark) bmkp-bmenu-marked-bookmarks)
                  (bookmark-bmenu-unmark nil 'NO-RE-SORT-P)
@@ -2732,9 +2747,9 @@ sort order is marked first or last (`s >'), then re-sort."
     ;; If sort order is `s >' then re-sort.
     (when (and (not no-re-sort-p)  (equal bmkp-sort-comparer '((bmkp-marked-cp) bmkp-alpha-p)))
       (let ((current-bmk  (bookmark-bmenu-bookmark)))
-        (bookmark-bmenu-surreptitiously-rebuild-list)
+        (bookmark-bmenu-surreptitiously-rebuild-list 'NO-MSG-P)
         (when current-bmk (bmkp-bmenu-goto-bookmark-named current-bmk))))
-    (message "Marked: %d, unmarked: %d" marked-count unmarked-count)))
+    (when msg-p (message "Marked: %d, unmarked: %d" marked-count unmarked-count))))
 
 ;;;###autoload
 (defun bmkp-bmenu-toggle-marked-temporary/savable () ; Bound to `M-X' in bookmark list
@@ -2760,9 +2775,9 @@ If none are marked, toggle status of the bookmark of the current line."
              (goto-char o-point)
              (beginning-of-line))
            (bmkp-toggle-temporary-bookmark (bookmark-bmenu-bookmark) 'MSG)
-           (bookmark-bmenu-surreptitiously-rebuild-list))
+           (bookmark-bmenu-surreptitiously-rebuild-list 'NO-MSG-P))
           (t
-           (bookmark-bmenu-surreptitiously-rebuild-list)
+           (bookmark-bmenu-surreptitiously-rebuild-list 'NO-MSG-P)
            (message "%d made temporary; %d made savable" count-temp count-save)))
     (if o-str
         (bmkp-bmenu-goto-bookmark-named o-str)
@@ -2780,7 +2795,7 @@ If none are marked, toggle status of the bookmark of the current line."
   (let ((o-str    (bookmark-bmenu-bookmark))
         (o-point  (point)))
     (bmkp-toggle-temporary-bookmark (bookmark-bmenu-bookmark) 'MSG)
-    (bookmark-bmenu-surreptitiously-rebuild-list)
+    (bookmark-bmenu-surreptitiously-rebuild-list 'NO-MSG-P)
     (if o-str
         (bmkp-bmenu-goto-bookmark-named o-str)
       (goto-char o-point)
@@ -2818,7 +2833,7 @@ of the buffer is the same as that of buffer `*Bookmark List*'."
   (bookmark-bmenu-execute-deletions 'marked))
 
 ;;;###autoload
-(defun bmkp-bmenu-load-marked-bookmark-file-bookmarks (&optional msgp) ; Bound to `M-l' in bookmark list
+(defun bmkp-bmenu-load-marked-bookmark-file-bookmarks (&optional msg-p) ; Bound to `M-l' in bookmark list
   "Load the bookmark-file bookmarks that are marked, in display order.
 Non bookmark-file bookmarks that are marked are ignored.
 You can sort the bookmark-list display to change the load order.
@@ -2836,21 +2851,21 @@ to turn saving back on."
         (bmk   (bookmark-bmenu-bookmark)))
     (unless bmks (error "No marked bookmark-file bookmarks"))
     ;; Maybe save bookmarks first.
-    (when (or (not msgp)
+    (when (or (not msg-p)
               (and (> bookmark-alist-modification-count 0)
                    (condition-case err
                        (yes-or-no-p "Save current bookmarks? (`C-g': cancel load too) ")
                      (quit  (error "OK - canceled"))
                      (error (error (error-message-string err))))))
       (bookmark-save))
-    (when (or (not msgp)
+    (when (or (not msg-p)
               (yes-or-no-p "Load the marked bookmark-file bookmarks? ")
               (error "OK - canceled"))
       (when bookmark-save-flag          ; Turn off autosaving.
-        (bmkp-toggle-saving-bookmark-file) ; No MSGP arg - issue message below.
+        (bmkp-toggle-saving-bookmark-file) ; No MSG-P arg - issue message below.
         (when bookmark-save-flag  (setq bookmark-save-flag  nil)) ; Be sure it's off.
-        (when msgp (message "Autosaving of current bookmark file is now OFF")))
-      (when msgp (message "Loading marked bookmark files..."))
+        (when msg-p (message "Autosaving of current bookmark file is now OFF")))
+      (when msg-p (message "Loading marked bookmark files..."))
 
       (dolist (bmk  bmks)               ; Load.
         ;; USE BATCHP: Do not refresh list or display messages here - do that after iterate.
@@ -2858,11 +2873,11 @@ to turn saving back on."
 
       ;; $$$$$$ Should we do (bmkp-tags-list) here to update the tags cache?
 
-      (bmkp-refresh-menu-list bmk (not msgp)) ; Refresh after iterate.
-      (when msgp (message "Autosaving is now OFF.  Loaded: %s"
-                          (mapconcat (lambda (bmk) (format "`%s'" (bmkp-bookmark-name-from-record bmk)))
-                                     bmks
-                                     ", "))))))
+      (bmkp-refresh-menu-list bmk (not msg-p)) ; Refresh after iterate.
+      (when msg-p (message "Autosaving is now OFF.  Loaded: %s"
+                           (mapconcat (lambda (bmk) (format "`%s'" (bmkp-bookmark-name-from-record bmk)))
+                                      bmks
+                                      ", "))))))
 
 ;;;###autoload
 (defun bmkp-bmenu-make-sequence-from-marked (bookmark-name &optional dont-omit-p) ; Not bound
@@ -2915,7 +2930,7 @@ Returns the bookmark (internal record) created or updated."
     (unless dont-omit-p
       (bmkp-bmenu-omit-marked)
       (message "Marked bookmarks now OMITTED - use `bmkp-bmenu-show-only-omitted' to show"))
-    (bookmark-bmenu-surreptitiously-rebuild-list)
+    (bookmark-bmenu-surreptitiously-rebuild-list 'NO-MSG-P)
     (bmkp-bmenu-goto-bookmark-named bookmark-name)
     new))
 
@@ -2930,7 +2945,7 @@ Returns the bookmark (internal record) created or updated."
   (bmkp-bmenu-barf-if-not-in-menu-list)
   (bookmark-bmenu-ensure-position)
   (push (bookmark-bmenu-bookmark) bmkp-bmenu-omitted-bookmarks)
-  (bookmark-bmenu-surreptitiously-rebuild-list)
+  (bookmark-bmenu-surreptitiously-rebuild-list 'NO-MSG-P)
   (message "Omitted 1 bookmark"))
 
 ;;;###autoload
@@ -2961,7 +2976,7 @@ You can then mark some of them and use `\\[bmkp-bmenu-omit/unomit-marked]' to ma
             count                    (1+ count)))
     (if (<= count 0)
         (message "No marked bookmarks")
-      (bookmark-bmenu-surreptitiously-rebuild-list)
+      (bookmark-bmenu-surreptitiously-rebuild-list 'NO-MSG-P)
       (message "Omitted %d bookmarks" count))
     (if o-str
         (bmkp-bmenu-goto-bookmark-named o-str)
@@ -2996,7 +3011,7 @@ They will henceforth be available for display in the bookmark list.
       (setq bmkp-bmenu-filter-function  nil
             bmkp-bmenu-title            "All Bookmarks"
             bmkp-latest-bookmark-alist  bookmark-alist)
-      (bookmark-bmenu-surreptitiously-rebuild-list)
+      (bookmark-bmenu-surreptitiously-rebuild-list 'NO-MSG-P)
       (message "UN-omitted %d bookmarks" count)))
   (when (and (fboundp 'fit-frame-if-one-window)
              (eq (selected-window) (get-buffer-window (get-buffer-create "*Bookmark List*") 0)))
@@ -3137,20 +3152,20 @@ Interactively, you are required to confirm."
      'MSG)))
 
 ;;;###autoload
-(defun bmkp-bmenu-set-tag-value-for-marked (tag value &optional msgp) ; `T > v' in bookmark list
+(defun bmkp-bmenu-set-tag-value-for-marked (tag value &optional msg-p) ; `T > v' in bookmark list
   "Set the value of TAG to VALUE, for each of the marked bookmarks.
 If any of the bookmarks has no tag named TAG, then add one with VALUE."
   (interactive (list (bmkp-read-tag-completing) (read (read-string "Value: ")) 'MSG))
   (bmkp-bmenu-barf-if-not-in-menu-list)
-  (when msgp (message "Setting tag values..."))
+  (when msg-p (message "Setting tag values..."))
   (let ((marked  (bmkp-marked-bookmarks-only)))
     (unless marked (error "No marked bookmarks"))
-    (when msgp (message "Setting tag values..."))
+    (when msg-p (message "Setting tag values..."))
     (bmkp-set-tag-value-for-bookmarks marked tag value))
-  (when (and msgp tag) (message "Setting tag values...done")))
+  (when (and msg-p tag) (message "Setting tag values...done")))
 
 ;;;###autoload
-(defun bmkp-bmenu-remove-tags (&optional msgp) ; Only on `mouse-3' menu in bookmark list.
+(defun bmkp-bmenu-remove-tags (&optional msg-p) ; Only on `mouse-3' menu in bookmark list.
   "Remove some tags from this bookmark."
   (interactive "p")
   (bmkp-bmenu-barf-if-not-in-menu-list)
@@ -3160,14 +3175,14 @@ If any of the bookmarks has no tag named TAG, then add one with VALUE."
                                         (bmkp-read-tags-completing
                                          (mapcar 'bmkp-full-tag (bmkp-get-tags bmk)) t)
                                         nil
-                                        msgp)))
+                                        msg-p)))
     (when (and (< nb-removed 0)         ; It was tagged but is now untagged.  If `s t' then re-sort.
                (equal bmkp-sort-comparer '((bmkp-tagged-cp) bmkp-alpha-p))) ; Hardcoded value, for now.
       (bmkp-bmenu-sort-tagged-before-untagged))
     nb-removed))
 
 ;;;###autoload
-(defun bmkp-bmenu-add-tags-to-marked (tags &optional msgp) ; Bound to `T > +' in bookmark list
+(defun bmkp-bmenu-add-tags-to-marked (tags &optional msg-p) ; Bound to `T > +' in bookmark list
   "Add TAGS to each of the marked bookmarks.
 TAGS is a list of strings.
 Hit `RET' to enter each tag, then hit `RET' again after the last tag.
@@ -3181,17 +3196,17 @@ choosing existing tags."
                                     bookmark-save-flag)) ; Save at most once, after `dolist'.
         (some-were-untagged-p  nil))
     (unless marked (error "No marked bookmarks"))
-    (when msgp (message "Adding tags..."))
+    (when msg-p (message "Adding tags..."))
     (dolist (bmk  (mapcar #'car marked))
       (when (< (bmkp-add-tags bmk tags 'NO-UPDATE-P) 0)  (setq some-were-untagged-p  t)))
     (bmkp-tags-list)                    ; Update the tags cache now, after iterate.
-    (bmkp-refresh-menu-list bmk (not msgp)) ; Refresh after iterate.
+    (bmkp-refresh-menu-list bmk (not msg-p)) ; Refresh after iterate.
     (when (and some-were-untagged-p  (equal bmkp-sort-comparer '((bmkp-tagged-cp) bmkp-alpha-p)))
       (bmkp-bmenu-sort-tagged-before-untagged))
-    (when (and msgp tags) (message "Tags added: %S" tags))))
+    (when (and msg-p tags) (message "Tags added: %S" tags))))
 
 ;;;###autoload
-(defun bmkp-bmenu-remove-tags-from-marked (tags &optional msgp) ; Bound to `T > -' in bookmark list
+(defun bmkp-bmenu-remove-tags-from-marked (tags &optional msg-p) ; Bound to `T > -' in bookmark list
   "Remove TAGS from each of the marked bookmarks.
 Hit `RET' to enter each tag, then hit `RET' again after the last tag.
 You can use completion to enter each tag."
@@ -3207,17 +3222,17 @@ You can use completion to enter each tag."
                                        bookmark-save-flag)) ; Save at most once, after `dolist'.
         (some-are-now-untagged-p  nil))
     (unless marked (error "No marked bookmarks"))
-    (when msgp (message "Removing tags..."))
+    (when msg-p (message "Removing tags..."))
     (dolist (bmk  (mapcar #'car marked))
       (when (< (bmkp-remove-tags bmk tags 'NO-UPDATE-P) 0)  (setq some-are-now-untagged-p  t)))
     (bmkp-tags-list)                    ; Update the tags cache now, after iterate.
-    (bmkp-refresh-menu-list bmk (not msgp)) ; Refresh after iterate.
+    (bmkp-refresh-menu-list bmk (not msg-p)) ; Refresh after iterate.
     (when (and some-are-now-untagged-p  (equal bmkp-sort-comparer '((bmkp-tagged-cp) bmkp-alpha-p)))
       (bmkp-bmenu-sort-tagged-before-untagged))
-    (when (and msgp tags) (message "Tags removed: %S" tags))))
+    (when (and msg-p tags) (message "Tags removed: %S" tags))))
 
 ;;;###autoload
-(defun bmkp-bmenu-mark-bookmarks-tagged-regexp (regexp &optional notp no-re-sort-p)
+(defun bmkp-bmenu-mark-bookmarks-tagged-regexp (regexp &optional notp no-re-sort-p msg-p)
                                         ; `T m %' in bookmark list
   "Mark bookmarks any of whose tags match REGEXP.
 With a prefix arg, mark all that are tagged but have no matching tags.
@@ -3226,15 +3241,17 @@ If any bookmark was unmarked before, and if the sort order is marked
 first or last (`s >'), then re-sort.
 
 Non-interactively:
- Non-nil NOTP: see prefix arg, above.
- Non-nil optional arg NO-RE-SORT-P inhibits re-sorting."
-  (interactive "sRegexp: \nP")
+* Non-nil NOTP: see prefix arg, above.
+* Non-nil optional arg NO-RE-SORT-P inhibits re-sorting.
+* Non-nil optional arg MSG-P means display a status message."
+  (interactive "sRegexp: \nP\ni\p")
   (bmkp-bmenu-barf-if-not-in-menu-list)
   (let ((count      0)
         (nb-marked  (length bmkp-bmenu-marked-bookmarks))
         tags anyp)
     (save-excursion
       (goto-char (point-min)) (forward-line bmkp-bmenu-header-lines)
+      (when msg-p (message "Updating bookmark-list display..."))
       (while (not (eobp))
         (setq tags  (bmkp-get-tags (bookmark-bmenu-bookmark))
               anyp  (and tags (bmkp-some (lambda (tag) (string-match regexp (bmkp-tag-name tag)))
@@ -3248,12 +3265,12 @@ Non-interactively:
       (when (and (equal bmkp-sort-comparer '((bmkp-marked-cp) bmkp-alpha-p))
                  (/= nb-marked (length bmkp-bmenu-marked-bookmarks)))
         (let ((current-bmk  (bookmark-bmenu-bookmark)))
-          (bookmark-bmenu-surreptitiously-rebuild-list)
+          (bookmark-bmenu-surreptitiously-rebuild-list 'NO-MSG-P)
           (when current-bmk (bmkp-bmenu-goto-bookmark-named current-bmk)))))
-    (if (= 1 count) (message "1 bookmark matched") (message "%d bookmarks matched" count))))
+    (when msg-p (if (= 1 count) (message "1 bookmark matched") (message "%d bookmarks matched" count)))))
 
 ;;;###autoload
-(defun bmkp-bmenu-mark-bookmarks-tagged-all (tags &optional nonep msgp) ; `T m *' in bookmark list
+(defun bmkp-bmenu-mark-bookmarks-tagged-all (tags &optional nonep msg-p) ; `T m *' in bookmark list
   "Mark all visible bookmarks that are tagged with *each* tag in TAGS.
 As a special case, if TAGS is empty, then mark the bookmarks that have
 any tags at all (i.e., at least one tag).
@@ -3261,10 +3278,10 @@ any tags at all (i.e., at least one tag).
 With a prefix arg, mark all that are *not* tagged with *any* TAGS."
   (interactive (list (bmkp-read-tags-completing) current-prefix-arg 'MSG))
   (bmkp-bmenu-barf-if-not-in-menu-list)
-  (bmkp-bmenu-mark/unmark-bookmarks-tagged-all/none tags nonep nil msgp))
+  (bmkp-bmenu-mark/unmark-bookmarks-tagged-all/none tags nonep nil nil msg-p))
 
 ;;;###autoload
-(defun bmkp-bmenu-mark-bookmarks-tagged-none (tags &optional allp msgp) ; `T m ~ +' in bookmark list
+(defun bmkp-bmenu-mark-bookmarks-tagged-none (tags &optional allp msg-p) ; `T m ~ +' in bookmark list
   "Mark all visible bookmarks that are not tagged with *any* tag in TAGS.
 As a special case, if TAGS is empty, then mark the bookmarks that have
 no tags at all.
@@ -3272,10 +3289,10 @@ no tags at all.
 With a prefix arg, mark all that are tagged with *each* tag in TAGS."
   (interactive (list (bmkp-read-tags-completing) current-prefix-arg 'MSG))
   (bmkp-bmenu-barf-if-not-in-menu-list)
-  (bmkp-bmenu-mark/unmark-bookmarks-tagged-all/none tags (not allp) nil msgp))
+  (bmkp-bmenu-mark/unmark-bookmarks-tagged-all/none tags (not allp) nil nil msg-p))
 
 ;;;###autoload
-(defun bmkp-bmenu-mark-bookmarks-tagged-some (tags &optional somenotp msgp) ; `T m +' in bookmark list
+(defun bmkp-bmenu-mark-bookmarks-tagged-some (tags &optional somenotp msg-p) ; `T m +' in bookmark list
   "Mark all visible bookmarks that are tagged with *some* tag in TAGS.
 As a special case, if TAGS is empty, then mark the bookmarks that have
 any tags at all.
@@ -3286,10 +3303,10 @@ Hit `RET' to enter each tag, then hit `RET' again after the last tag.
 You can use completion to enter each tag."
   (interactive (list (bmkp-read-tags-completing) current-prefix-arg 'MSG))
   (bmkp-bmenu-barf-if-not-in-menu-list)
-  (bmkp-bmenu-mark/unmark-bookmarks-tagged-some/not-all tags somenotp nil msgp))
+  (bmkp-bmenu-mark/unmark-bookmarks-tagged-some/not-all tags somenotp nil nil msg-p))
 
 ;;;###autoload
-(defun bmkp-bmenu-mark-bookmarks-tagged-not-all (tags &optional somep msgp) ; `T m ~ *' in bmk list
+(defun bmkp-bmenu-mark-bookmarks-tagged-not-all (tags &optional somep msg-p) ; `T m ~ *' in bmk list
   "Mark all visible bookmarks that are *not* tagged with *all* TAGS.
 As a special case, if TAGS is empty, then mark the bookmarks that have
 no tags at all.
@@ -3297,10 +3314,10 @@ no tags at all.
 With a prefix arg, mark all that are tagged with *some* tag in TAGS."
   (interactive (list (bmkp-read-tags-completing) current-prefix-arg 'MSG))
   (bmkp-bmenu-barf-if-not-in-menu-list)
-  (bmkp-bmenu-mark/unmark-bookmarks-tagged-some/not-all tags (not somep) nil msgp))
+  (bmkp-bmenu-mark/unmark-bookmarks-tagged-some/not-all tags (not somep) nil nil msg-p))
 
 ;;;###autoload
-(defun bmkp-bmenu-unmark-bookmarks-tagged-regexp (regexp &optional notp no-re-sort-p)
+(defun bmkp-bmenu-unmark-bookmarks-tagged-regexp (regexp &optional notp no-re-sort-p msg-p)
                                         ; `T u %' in bookmark list
   "Unmark bookmarks any of whose tags match REGEXP.
 With a prefix arg, mark all that are tagged but have no matching tags.
@@ -3309,15 +3326,17 @@ If any bookmark was marked before, and if the sort order is marked
 first or last (`s >'), then re-sort.
 
 Non-interactively:
- Non-nil NOTP: see prefix arg, above.
- Non-nil optional arg NO-RE-SORT-P inhibits re-sorting."
-  (interactive "sRegexp: \nP")
+* Non-nil NOTP: see prefix arg, above.
+* Non-nil optional arg NO-RE-SORT-P inhibits re-sorting.
+* Non-nil optional arg MSG-P means display a status message."
+  (interactive "sRegexp: \nP\ni\np")
   (bmkp-bmenu-barf-if-not-in-menu-list)
   (let ((count      0)
         (nb-marked  (length bmkp-bmenu-marked-bookmarks))
         tags anyp)
     (save-excursion
       (goto-char (point-min)) (forward-line bmkp-bmenu-header-lines)
+      (when msg-p (message "Updating bookmark-list display..."))
       (while (not (eobp))
         (setq tags  (bmkp-get-tags (bookmark-bmenu-bookmark))
               anyp  (and tags (bmkp-some (lambda (tag) (string-match regexp (bmkp-tag-name tag)))
@@ -3331,12 +3350,12 @@ Non-interactively:
       (when (and (equal bmkp-sort-comparer '((bmkp-marked-cp) bmkp-alpha-p))
                  (/= nb-marked (length bmkp-bmenu-marked-bookmarks)))
         (let ((current-bmk  (bookmark-bmenu-bookmark)))
-          (bookmark-bmenu-surreptitiously-rebuild-list)
+          (bookmark-bmenu-surreptitiously-rebuild-list 'NO-MSG-P)
           (when current-bmk (bmkp-bmenu-goto-bookmark-named current-bmk)))))
-    (if (= 1 count) (message "1 bookmark matched") (message "%d bookmarks matched" count))))
+    (when msg-p (if (= 1 count) (message "1 bookmark matched") (message "%d bookmarks matched" count)))))
 
 ;;;###autoload
-(defun bmkp-bmenu-unmark-bookmarks-tagged-all (tags &optional nonep msgp) ; `T u *' in bookmark list
+(defun bmkp-bmenu-unmark-bookmarks-tagged-all (tags &optional nonep msg-p) ; `T u *' in bookmark list
   "Unmark all visible bookmarks that are tagged with *each* tag in TAGS.
 As a special case, if TAGS is empty, then unmark the bookmarks that have
 any tags at all.
@@ -3344,10 +3363,10 @@ any tags at all.
 With a prefix arg, unmark all that are *not* tagged with *any* TAGS."
   (interactive (list (bmkp-read-tags-completing) current-prefix-arg 'MSG))
   (bmkp-bmenu-barf-if-not-in-menu-list)
-  (bmkp-bmenu-mark/unmark-bookmarks-tagged-all/none tags nonep 'UNMARK msgp))
+  (bmkp-bmenu-mark/unmark-bookmarks-tagged-all/none tags nonep 'UNMARK nil msg-p))
 
 ;;;###autoload
-(defun bmkp-bmenu-unmark-bookmarks-tagged-none (tags &optional allp msgp) ; `T u ~ +' in bookmark list
+(defun bmkp-bmenu-unmark-bookmarks-tagged-none (tags &optional allp msg-p) ; `T u ~ +' in bookmark list
   "Unmark all visible bookmarks that are *not* tagged with *any* TAGS.
 As a special case, if TAGS is empty, then unmark the bookmarks that have
 no tags at all.
@@ -3355,10 +3374,10 @@ no tags at all.
 With a prefix arg, unmark all that are tagged with *each* tag in TAGS."
   (interactive (list (bmkp-read-tags-completing) current-prefix-arg 'MSG))
   (bmkp-bmenu-barf-if-not-in-menu-list)
-  (bmkp-bmenu-mark/unmark-bookmarks-tagged-all/none tags (not allp) 'UNMARK msgp))
+  (bmkp-bmenu-mark/unmark-bookmarks-tagged-all/none tags (not allp) 'UNMARK nil msg-p))
 
 ;;;###autoload
-(defun bmkp-bmenu-unmark-bookmarks-tagged-some (tags &optional somenotp msgp) ; `T u +' in bmk list
+(defun bmkp-bmenu-unmark-bookmarks-tagged-some (tags &optional somenotp msg-p) ; `T u +' in bmk list
   "Unmark all visible bookmarks that are tagged with *some* tag in TAGS.
 As a special case, if TAGS is empty, then unmark the bookmarks that have
 any tags at all.
@@ -3366,10 +3385,10 @@ any tags at all.
 With a prefix arg, unmark all that are *not* tagged with *all* TAGS."
   (interactive (list (bmkp-read-tags-completing) current-prefix-arg 'MSG))
   (bmkp-bmenu-barf-if-not-in-menu-list)
-  (bmkp-bmenu-mark/unmark-bookmarks-tagged-some/not-all tags somenotp 'UNMARK msgp))
+  (bmkp-bmenu-mark/unmark-bookmarks-tagged-some/not-all tags somenotp 'UNMARK nil msg-p))
 
 ;;;###autoload
-(defun bmkp-bmenu-unmark-bookmarks-tagged-not-all (tags &optional somep msgp) ; `T u ~ *' in bmk list
+(defun bmkp-bmenu-unmark-bookmarks-tagged-not-all (tags &optional somep msg-p) ; `T u ~ *' in bmk list
   "Unmark all visible bookmarks that are *not* tagged with *all* TAGS.
 As a special case, if TAGS is empty, then unmark the bookmarks that have
 no tags at all.
@@ -3377,29 +3396,29 @@ no tags at all.
 With a prefix arg, unmark all that are tagged with *some* TAGS."
   (interactive (list (bmkp-read-tags-completing) current-prefix-arg 'MSG))
   (bmkp-bmenu-barf-if-not-in-menu-list)
-  (bmkp-bmenu-mark/unmark-bookmarks-tagged-some/not-all tags (not somep) 'UNMARK msgp))
+  (bmkp-bmenu-mark/unmark-bookmarks-tagged-some/not-all tags (not somep) 'UNMARK nil msg-p))
 
-(defun bmkp-bmenu-mark/unmark-bookmarks-tagged-all/none (tags &optional nonep unmarkp msgp no-re-sort-p)
+(defun bmkp-bmenu-mark/unmark-bookmarks-tagged-all/none (tags &optional nonep unmarkp no-re-sort-p msg-p)
   "Mark or unmark visible bookmarks tagged with all or none of TAGS.
 TAGS is a list of strings, the tag names.
-NONEP non-nil means mark/unmark bookmarks that have none of the TAGS.
-UNMARKP non-nil means unmark; nil means mark.
-MSGP means display a status message.
+Non-nil NONEP means mark/unmark bookmarks that have none of the TAGS.
+Non-nil UNMARKP means unmark; nil means mark.
+Non-nil NO-RE-SORT-P inhibits re-sorting.
+Non-nil MSG-P means display a status message.
 
 As a special case, if TAGS is empty, then mark or unmark the bookmarks
 that have any tags at all, or if NONEP is non-nil then mark or unmark
 those that have no tags at all.
 
 If any bookmark was (un)marked before but is not afterward, and if the
-sort order is marked first or last (`s >'), then re-sort.
-
-Non-nil optional arg NO-RE-SORT-P inhibits re-sorting."
+sort order is marked first or last (`s >'), then re-sort."
   (with-current-buffer "*Bookmark List*"
     (let ((count      0)
           (nb-marked  (length bmkp-bmenu-marked-bookmarks))
           bmktags presentp)
       (save-excursion
         (goto-char (point-min)) (forward-line bmkp-bmenu-header-lines)
+        (when msg-p (message "Updating bookmark-list display..."))
         (while (not (eobp))
           (setq bmktags  (bmkp-get-tags (bookmark-bmenu-bookmark)))
           (if (not (if (null tags)
@@ -3418,34 +3437,34 @@ Non-nil optional arg NO-RE-SORT-P inhibits re-sorting."
         (when (and (equal bmkp-sort-comparer '((bmkp-marked-cp) bmkp-alpha-p))
                    (/= nb-marked (length bmkp-bmenu-marked-bookmarks)))
           (let ((current-bmk  (bookmark-bmenu-bookmark)))
-            (bookmark-bmenu-surreptitiously-rebuild-list)
+            (bookmark-bmenu-surreptitiously-rebuild-list 'NO-MSG-P)
             (when current-bmk (bmkp-bmenu-goto-bookmark-named current-bmk)))))
-      (when msgp (if (= 1 count)
-                     (message "1 bookmark matched")
-                   (message "%d bookmarks matched" count))))))
+      (when msg-p (if (= 1 count)
+                      (message "1 bookmark matched")
+                    (message "%d bookmarks matched" count))))))
 
-(defun bmkp-bmenu-mark/unmark-bookmarks-tagged-some/not-all (tags &optional
-                                                             notallp unmarkp msgp no-re-sort-p)
+(defun bmkp-bmenu-mark/unmark-bookmarks-tagged-some/not-all (tags &optional notallp unmarkp
+                                                             no-re-sort-p msg-p)
   "Mark or unmark visible bookmarks tagged with any or not all of TAGS.
 TAGS is a list of strings, the tag names.
-NOTALLP non-nil means mark/unmark bookmarks that do not have all TAGS.
-UNMARKP non-nil means unmark; nil means mark.
-MSGP means display a status message.
+Non-nil NOTALLP means mark/unmark bookmarks that do not have all TAGS.
+Non-nil UNMARKP means unmark; nil means mark.
+Non-nil NO-RE-SORT-P inhibits re-sorting.
+Non-nil MSG-P means display a status message.
 
 As a special case, if TAGS is empty, then mark or unmark the bookmarks
 that have any tags at all, or if NOTALLP is non-nil then mark or
 unmark those that have no tags at all.
 
 If any bookmark was (un)marked before but is not afterward, and if the
-sort order is marked first or last (`s >'), then re-sort.
-
-Non-nil optional arg NO-RE-SORT-P inhibits re-sorting."
+sort order is marked first or last (`s >'), then re-sort."
   (with-current-buffer "*Bookmark List*"
     (let ((count      0)
           (nb-marked  (length bmkp-bmenu-marked-bookmarks))
           bmktags presentp)
       (save-excursion
         (goto-char (point-min)) (forward-line bmkp-bmenu-header-lines)
+        (when msg-p (message "Updating bookmark-list display..."))
         (while (not (eobp))
           (setq bmktags  (bmkp-get-tags (bookmark-bmenu-bookmark)))
           (if (not (if (null tags)
@@ -3464,37 +3483,37 @@ Non-nil optional arg NO-RE-SORT-P inhibits re-sorting."
         (when (and (equal bmkp-sort-comparer '((bmkp-marked-cp) bmkp-alpha-p))
                    (/= nb-marked (length bmkp-bmenu-marked-bookmarks)))
           (let ((current-bmk  (bookmark-bmenu-bookmark)))
-            (bookmark-bmenu-surreptitiously-rebuild-list)
+            (bookmark-bmenu-surreptitiously-rebuild-list 'NO-MSG-P)
             (when current-bmk (bmkp-bmenu-goto-bookmark-named current-bmk)))))
-      (when msgp
+      (when msg-p
         (if (= 1 count) (message "1 bookmark matched") (message "%d bookmarks matched" count))))))
 
 ;;;###autoload
-(defun bmkp-bmenu-copy-tags (&optional msgp) ; `T c', `T M-w', `mouse-3' menu in bookmark list.
+(defun bmkp-bmenu-copy-tags (&optional msg-p) ; `T c', `T M-w', `mouse-3' menu in bookmark list.
   "Copy tags from this bookmark, so you can paste them to another bookmark."
   (interactive (list 'MSG))
   (bmkp-bmenu-barf-if-not-in-menu-list)
   (bookmark-bmenu-ensure-position)
-  (bmkp-copy-tags (bookmark-bmenu-bookmark) msgp))
+  (bmkp-copy-tags (bookmark-bmenu-bookmark) msg-p))
 
 ;;;###autoload
-(defun bmkp-bmenu-paste-add-tags (&optional msgp) ; `T p', `T C-y', `mouse-3' menu in bookmark list.
+(defun bmkp-bmenu-paste-add-tags (&optional msg-p) ; `T p', `T C-y', `mouse-3' menu in bookmark list.
   "Add tags to this bookmark that were copied from another bookmark."
   (interactive (list 'MSG))
   (bmkp-bmenu-barf-if-not-in-menu-list)
   (bookmark-bmenu-ensure-position)
-  (bmkp-paste-add-tags (bookmark-bmenu-bookmark) nil msgp))
+  (bmkp-paste-add-tags (bookmark-bmenu-bookmark) nil msg-p))
 
 ;;;###autoload
-(defun bmkp-bmenu-paste-replace-tags (&optional msgp) ; `T q', `mouse-3' menu.
+(defun bmkp-bmenu-paste-replace-tags (&optional msg-p) ; `T q', `mouse-3' menu.
   "Replace tags for this bookmark with those copied from another bookmark."
   (interactive (list 'MSG))
   (bmkp-bmenu-barf-if-not-in-menu-list)
   (bookmark-bmenu-ensure-position)
-  (bmkp-paste-replace-tags (bookmark-bmenu-bookmark) nil msgp))
+  (bmkp-paste-replace-tags (bookmark-bmenu-bookmark) nil msg-p))
 
 ;;;###autoload
-(defun bmkp-bmenu-paste-add-tags-to-marked (&optional msgp) ; `T > p', `T > C-y'
+(defun bmkp-bmenu-paste-add-tags-to-marked (&optional msg-p) ; `T > p', `T > C-y'
   "Add tags that were copied from another bookmark to the marked bookmarks."
   (interactive (list 'MSG))
   (bmkp-bmenu-barf-if-not-in-menu-list)
@@ -3503,14 +3522,14 @@ Non-nil optional arg NO-RE-SORT-P inhibits re-sorting."
         (bookmark-save-flag  (and (not bmkp-count-multi-mods-as-one-flag)
                                   bookmark-save-flag))) ; Save at most once, after `dolist'.
     (unless marked (error "No marked bookmarks"))
-    (when msgp (message "Adding tags..."))
+    (when msg-p (message "Adding tags..."))
     (dolist (bmk  marked) (bmkp-paste-add-tags bmk 'NO-UPDATE-P))
     (bmkp-tags-list)                    ; Update the tags cache now, after iterate.
-    (bmkp-refresh-menu-list bmk (not msgp)) ; Refresh after iterate.
-    (when msgp (message "Tags added: %S" bmkp-copied-tags))))
+    (bmkp-refresh-menu-list bmk (not msg-p)) ; Refresh after iterate.
+    (when msg-p (message "Tags added: %S" bmkp-copied-tags))))
 
 ;;;###autoload
-(defun bmkp-bmenu-paste-replace-tags-for-marked (&optional msgp) ; `T > q'
+(defun bmkp-bmenu-paste-replace-tags-for-marked (&optional msg-p) ; `T > q'
   "Replace tags for the marked bookmarks with tags copied previously."
   (interactive (list 'MSG))
   (bmkp-bmenu-barf-if-not-in-menu-list)
@@ -3519,24 +3538,24 @@ Non-nil optional arg NO-RE-SORT-P inhibits re-sorting."
         (bookmark-save-flag  (and (not bmkp-count-multi-mods-as-one-flag)
                                   bookmark-save-flag))) ; Save at most once, after `dolist'.
     (unless marked (error "No marked bookmarks"))
-    (when msgp (message "Replacing tags..."))
+    (when msg-p (message "Replacing tags..."))
     (dolist (bmk  marked) (bmkp-paste-replace-tags bmk 'NO-UPDATE-P))
     (bmkp-tags-list)                    ; Update the tags cache now, after iterate.
-    (bmkp-refresh-menu-list bmk (not msgp)) ; Refresh after iterate.
-    (when msgp (message "Replacement tags: %S" bmkp-copied-tags))))
+    (bmkp-refresh-menu-list bmk (not msg-p)) ; Refresh after iterate.
+    (when msg-p (message "Replacement tags: %S" bmkp-copied-tags))))
 
 
 ;;(@* "General Menu-List (`-*bmenu-*') Commands and Functions")
 ;;  *** General Menu-List (`-*bmenu-*') Commands and Functions ***
 
 ;;;###autoload
-(defun bmkp-bmenu-show-or-edit-annotation (editp msgp)
+(defun bmkp-bmenu-show-or-edit-annotation (editp msg-p)
   "Show annotation for current buffer in another window.  `C-u': Edit.
 With no prefix arg, show the annotation.  With a prefix arg, edit it."
   (interactive "P\np")
   (if editp
       (bookmark-bmenu-edit-annotation)
-    (bookmark-bmenu-show-annotation msgp)))
+    (bookmark-bmenu-show-annotation msg-p)))
 
 ;;;###autoload
 (defun bmkp-bmenu-w32-open ()           ; Bound to `M-RET' in bookmark list.
@@ -3913,7 +3932,7 @@ return the list."
 ;; This is a general command.  It is in this file because it uses macro `bmkp-define-sort-command'
 ;; and it is used mainly in the bookmark list display.
 ;;;###autoload
-(defun bmkp-define-tags-sort-command (tags &optional msgp) ; Bound to `T s' in bookmark list
+(defun bmkp-define-tags-sort-command (tags &optional msg-p) ; Bound to `T s' in bookmark list
   "Define a command to sort bookmarks in the bookmark list by tags.
 Hit `RET' to enter each tag, then hit `RET' again after the last tag.
 
@@ -3959,8 +3978,7 @@ specified tags, in order, separated by hyphens (`-').  E.g., for TAGS
             (write-region (point-min) (point-max) bmkp-bmenu-commands-file 'append)
           (file-error (error "Cannot write `%s'" bmkp-bmenu-commands-file)))
         (kill-buffer (current-buffer))))
-    (when msgp (message "Defined and saved command `%s'"
-                        (concat "bmkp-bmenu-sort-" sort-order)))))
+    (when msg-p (message "Defined and saved command `%s'" (concat "bmkp-bmenu-sort-" sort-order)))))
 
 ;;;###autoload
 (defun bmkp-bmenu-edit-bookmark-name-and-file (&optional internalp) ; Bound to `r' in bookmark list
@@ -3975,9 +3993,7 @@ internal, Lisp form)."
         (bmkp-edit-bookmark-record bmk-name)
       (let* ((new-data  (bmkp-edit-bookmark-name-and-file bmk-name))
              (new-name  (car new-data)))
-        (if (not new-data)
-            (message "No changes made")
-          (bmkp-refresh-menu-list new-name))))))
+        (if (not new-data) (message "No changes made") (bmkp-refresh-menu-list new-name))))))
 
 ;;;###autoload
 (defun bmkp-bmenu-edit-tags ()          ; Bound to `T e' in bookmark list
@@ -4211,7 +4227,7 @@ With a prefix arg, reverse the current sort order."
         (setq next-order          (or (cadr (member (bmkp-current-sort-order) orders))  (car orders))
               bmkp-sort-comparer  (cdr (assoc next-order bmkp-sort-orders-for-cycling-alist))))
       (message "Sorting...")
-      (bookmark-bmenu-surreptitiously-rebuild-list)
+      (bookmark-bmenu-surreptitiously-rebuild-list 'NO-MSG-P)
       (when current-bmk                 ; Put cursor back on the right line.
         (bmkp-bmenu-goto-bookmark-named current-bmk))
       (when (interactive-p) (bmkp-msg-about-sort-order next-order)))))
@@ -4226,7 +4242,7 @@ If you combine this with \\<bookmark-bmenu-mode-map>\
   (bmkp-bmenu-barf-if-not-in-menu-list)
   (setq bmkp-reverse-sort-p  (not bmkp-reverse-sort-p))
   (let ((current-bmk  (bookmark-bmenu-bookmark)))
-    (bookmark-bmenu-surreptitiously-rebuild-list)
+    (bookmark-bmenu-surreptitiously-rebuild-list 'NO-MSG-P)
     (when current-bmk                   ; Put cursor back on the right line.
       (bmkp-bmenu-goto-bookmark-named current-bmk)))
   (when (interactive-p) (bmkp-msg-about-sort-order (bmkp-current-sort-order))))
@@ -4270,7 +4286,7 @@ use it."
   (bmkp-bmenu-barf-if-not-in-menu-list)
   (setq bmkp-reverse-multi-sort-p  (not bmkp-reverse-multi-sort-p))
   (let ((current-bmk  (bookmark-bmenu-bookmark)))
-    (bookmark-bmenu-surreptitiously-rebuild-list)
+    (bookmark-bmenu-surreptitiously-rebuild-list 'NO-MSG-P)
     (when current-bmk                   ; Put cursor back on the right line.
       (bmkp-bmenu-goto-bookmark-named current-bmk)))
   (when (interactive-p) (bmkp-msg-about-sort-order (bmkp-current-sort-order))))
