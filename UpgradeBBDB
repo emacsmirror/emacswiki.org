@@ -18,7 +18,7 @@
 || bbdb-complete-name-allow-cycling |||| bbdb-complete-mail-allow-cycling ||
 || bbdb-completion-type |||| bbdb-completion-list ||
 || bbdb-creation-date-hook |||| bbdb-creation-date ||
-|| bbdb-define-all-aliases |||| ? ||
+|| bbdb-define-all-aliases |||| bbdb-mail-aliases ||
 || bbdb-display-layout |||| bbdb-layout ||
 || bbdb-dwim-net-address-allow-redundancy |||| bbdb-mail-avoid-redundancy ||
 || bbdb-electric-p |||| bbdb-electric ||
