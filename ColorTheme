@@ -474,6 +474,8 @@ Live color theme screenshots at the [http://color-theme-select.heroku.com/ (colo
 
 Bill Clementson has published his color theme: http://bc.tech.coop/ubuntu-config/elisp/color-theme-billc.el
 
+[[monokai-theme.el]] is based on TextMate's monokai theme. Can anybody make it Emacs 24 deftheme and package.el compatible?
+
 == History ==
 The original color theme code was written by Jonadab the Unsightly
 One.
