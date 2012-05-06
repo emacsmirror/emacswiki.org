@@ -7,9 +7,9 @@
 ;; Copyright (C) 1999-2012, Drew Adams, all rights reserved.
 ;; Created: Fri Mar 19 15:58:58 1999
 ;; Version: 21.2
-;; Last-Updated: Sat May  5 16:47:24 2012 (-0700)
+;; Last-Updated: Sun May  6 07:29:24 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 5108
+;;     Update #: 5112
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/dired+.el
 ;; Keywords: unix, mouse, directories, diredp, dired
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -276,6 +276,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2012/05/06 dadsms
+;;     diredp-y-or-n-files-p: Do not kill buffer *Files* - just bury it.
 ;; 2012/05/05 dadams
 ;;     Added: diredp-do-bookmark-recursive, diredp-do-bookmark-in-bookmark-file-recursive,
 ;;            diredp-set-bookmark-file-bookmark-for-marked-recursive.
@@ -2533,7 +2535,10 @@ Directories `.' and `..' are excluded."
 Return t if answer is \"y\".
 
 Like `y-or-n-p', but user can also hit `l' to display the list of
-files that the confirmation is for, using `diredp-list-files'."
+files that the confirmation is for, using `diredp-list-files', in
+buffer `*Files'.  When finished (even if you quit using `C-g'), the
+display of buffer `*Files*' is removed, but the buffer is still
+available for you to visit."
   (let ((answer  'recenter))
     (cond (noninteractive
            (setq prompt  (concat prompt (and (eq ?\   (aref prompt (1- (length prompt))))
@@ -2584,7 +2589,7 @@ files that the confirmation is for, using `diredp-list-files'."
                       (discard-input)))
                (save-window-excursion (pop-to-buffer list-buf)
                                       (if (one-window-p) (delete-frame) (delete-window))
-                                      (kill-buffer list-buf))
+                                      (bury-buffer list-buf))
                (define-key query-replace-map "l" nil)))))
     (let ((ret  (eq answer 'act)))
       (unless noninteractive (message "%s %s" prompt (if ret "y" "n")))
