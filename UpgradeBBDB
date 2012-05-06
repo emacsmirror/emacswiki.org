@@ -3,8 +3,9 @@
 || 2.x |||| 3.x ||
 || *-company |||| *-organization ||
 || bbdb-*-location |||| bbdb-*-label ||
-|| bbdb-address-edit-continental |||| [gone, see bbdb-address-format-list] ||
-|| bbdb-address-editing-function |||| [gone, see bbdb-address-format-list] ||
+|| bbdb-address-edit-continental |||| [write your own] bbdb-edit-address-default] ||
+|| bbdb-address-edit-default |||| bbdb-edit-address-default ||
+|| bbdb-address-editing-function |||| [see default rule in bbdb-address-format-list] ||
 || bbdb-address-location |||| ? ||
 || bbdb-address-zip |||| ? bbdb-address-postcode ? ||
 || bbdb-addresses-label-list |||| ? ||
