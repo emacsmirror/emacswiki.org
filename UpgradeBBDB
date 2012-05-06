@@ -48,6 +48,6 @@
 || bbdb-send-mail-style |||| bbdb-mail-user-agent ||
 || bbdb-timestamp-hook |||| bbdb-timestamp ||
 || bbdb-use-pop-up |||| bbdb-pop-up-layout ||
-|| bbdb/mail-auto-create-p  |||| [gone] ||
-|| bbdb/vm-force-create |||| ? ||
+|| bbdb/mail-auto-create-p  |||| [see] bbdb-mua-auto-update-init ||
+|| bbdb/vm-force-create |||| [see] bbdb-mua-auto-update-init ||
 || bbdb/vm-set-auto-folder-alist |||| [gone] ||
