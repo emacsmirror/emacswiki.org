@@ -23,6 +23,7 @@
 || bbdb-display-layout |||| bbdb-layout ||
 || bbdb-dwim-net-address-allow-redundancy |||| bbdb-mail-avoid-redundancy ||
 || bbdb-electric-p |||| bbdb-electric ||
+|| bbdb-force-record-create |||| ? ||
 || bbdb-format-streets |||| ? ||
 || bbdb-get-field |||| bbdb-record-note ||
 || bbdb-get-only-first-address-p |||| bbdb-message-all-addresses ||
