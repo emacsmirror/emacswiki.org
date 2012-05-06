@@ -4,31 +4,31 @@ http://jblevins.org/projects/deft/
 
 ----
 
-As provided, Deft searches for a literal string, whitespace included, in the titles and contents of the deft buffers.  So if you type "things stuff foo bar," it returns only files with the literal exact string "things stuff foo bar."  
+Notational Velocity provides a show-hide function key, letting you pop in-and-out of the interface quickly.  I recreated a crude version of this in Deft, bound to f6.
 
-Notational Velocity treats the search-string like a list of whitespace-delimited tokens - it returns items which match all the tokens, in any order.  
+Note - if you want to use a major-mode other than text-mode for your deft notes, set deft-note-extension to a file-extension that has an entry in [[AutoModeAlist|auto-mode-alist]]
 
-Adding this function to deft.el:
+<code>
+(define-minor-mode deft-note-mode "Deft notes" nil " Deft-Notes" nil)
+(setq deft-text-mode 'deft-note-mode)
+(defun kill-all-deft-notes ()
+  (interactive)
+  (save-excursion
+    (let((count 0))
+      (dolist(buffer (buffer-list))
+        (set-buffer buffer)
+        (when (not (eq nil deft-note-mode))  
+          (setq count (1+ count))
+          (kill-buffer buffer)))
+      )))
+(defun deft-or-close () (interactive) (if (or (eq major-mode 'deft-mode) (not (eq nil deft-note-mode)))
+                                          (progn (kill-all-deft-notes) (kill-buffer "*Deft*"))
+                                        (deft)
+                                        ))
+(global-set-key [f6] 'deft-or-close)
+</code>
 
-{{{
-(defun deft-token-search-forward (deft-filter-regexp) 
-  "Return FILE if FILE matches all tokens in current filter regexp."
-  (let ((tokens (split-string deft-filter-regexp))
-        (val t))
-    (if (not tokens)
-        (setq val nil))
-    (while tokens
-      (save-excursion
-      (if (not (search-forward (car tokens) nil t))
-          (setq val nil))
-      (setq tokens (cdr tokens))
-      ))
-    val))
-}}}
-
-and replacing the call to *search-forward* in *deft-filter-match-file* with a call to *deft-token-search-forward* will make Deft's filtering behave like NV's.
-
-- pobocks
+----
 
 I see some blocking behaviour with defts autosave feature after having emacs open for awhile with deft running, any suggestions on what this might be (only happens with the autosave in deft)? - anon
 ----
