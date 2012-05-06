@@ -3,7 +3,7 @@ Solving a print problem using Windows Script Host (WSH) with Win32 Emacs:
 Getting Emacs to produce quotes on the command line.
 </b>
 
-To specify a printer on the [http://www.gnu.org/software/emacs/windows/big.html#printing-ghostscript GSPRINT.EXE] command line, the -printer switch is required.  This switch requires that the printer name be surrounded by quotes on the command line.  A sample command (issued directly from a Windows command prompt) might be: 
+To specify a printer on the [http://pages.cs.wisc.edu/~ghost/gsview/gsprint.htm GSPRINT.EXE] command line, the -printer switch is required.  This switch requires that the printer name be surrounded by quotes on the command line.  A sample command (issued directly from a Windows command prompt) might be: 
 
     /path/gsprint.exe -printer "Canon" myfile.ps.
 
