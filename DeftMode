@@ -8,7 +8,7 @@ Notational Velocity provides a show-hide function key, letting you pop in-and-ou
 
 Note - if you want to use a major-mode other than text-mode for your deft notes, set deft-note-extension to a file-extension that has an entry in [[AutoModeAlist|auto-mode-alist]]
 
-<code>
+{{{
 (define-minor-mode deft-note-mode "Deft notes" nil " Deft-Notes" nil)
 (setq deft-text-mode 'deft-note-mode)
 (defun kill-all-deft-notes ()
@@ -26,7 +26,7 @@ Note - if you want to use a major-mode other than text-mode for your deft notes,
                                         (deft)
                                         ))
 (global-set-key [f6] 'deft-or-close)
-</code>
+}}}
 
 ----
 
