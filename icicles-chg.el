@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Mon Apr 30 21:49:02 2012 (-0700)
+;; Last-Updated: Sun May  6 13:48:53 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 8384
+;;     Update #: 8390
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-chg.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -38,8 +38,8 @@
 ;;
 ;; ****************************************************************************************************
 ;; NOTE: If you byte-compile Icicles (recommended), then WHENEVER `icicles-mac.el' is updated, you
-;;       must load `icicles-mac.el' (not just `icicles-mac.elc'), then compile it, then RECOMPILE *ALL*
-;;       of the other Icicles source files as well.  This is normal for Lisp: code that depends on
+;;       MUST LOAD `icicles-mac.el' (not just `icicles-mac.elc'), then compile it, then RECOMPILE *ALL*
+;;       of the other Icicles source files as well.  This is normal for Lisp.  Code that depends on
 ;;       macros needs to be byte-compiled anew after loading the updated macros.
 ;; ****************************************************************************************************
 ;;
@@ -618,6 +618,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd2.el'")
 ;;
+;; 2012/05/06 dadams
+;;     icicle-search-dired-marked: Call diredp-get-confirmation-recursive to get confirmation.
 ;; 2012/04/23 dadams
 ;;     icicle-search-dired-marked: Use diredp-get-files.  Raise error if Dired+ not present.
 ;;     Moved other icicle-search-dired-* functions to Dired+ as diredp-*.
@@ -4518,6 +4520,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-mode.el'")
 ;;
+;; 2012/05/06 dadams
+;;     Put icicle-search-dired-marked also on diredp-menu-bar-recursive-marked-menu, if available.
 ;; 2012/04/23 dadams
 ;;     Enable icicle-search-dired-marked in icicle-dired-multiple-menu-map only if Dired+ is loaded.
 ;;     Bind icicle-search-dired-marked in dired-mode-map only if Dired+ is loaded.
