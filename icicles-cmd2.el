@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Thu May 21 13:31:43 2009 (-0700)
 ;; Version: 22.0
-;; Last-Updated: Mon Apr 23 11:08:53 2012 (-0700)
+;; Last-Updated: Sun May  6 07:02:42 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 5598
+;;     Update #: 5601
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-cmd2.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -5408,7 +5408,7 @@ BEG, END, and WHERE."
 (defun icicle-search-dired-marked (ignore-marks-p scan-fn-or-regexp require-match
                                    &rest args) ; Bound to `M-s M-s m' in Dired.
                                         ; Bound also to `C-0 M-s M-s M-s', `C-0 C-c `' in Dired.
-  "Search the marked files in Dired.
+  "Search marked files in Dired, including in marked subdirs, recursively.
 You need library `Dired+' for this command.
 
 With a prefix arg, ignore Dired markings: search all files in the
@@ -5426,7 +5426,7 @@ more than one Dired buffer then raise an error.
 
 Because you might not be aware of existing Dired buffers for some
 marked directories, you are asked to confirm searching their marked
-files.  If you do not confirm this then all files in marked
+files.  If you do not confirm this then *all* files in marked
 directories are searched, regardless of whether directories might have
 Dired buffers with marked files.  That is, Dired buffers are ignored
 if you do not confirm using them.
@@ -5442,6 +5442,7 @@ WHERE."
   (interactive
    (progn
      (unless (fboundp 'diredp-get-files) (error "This command requires library `dired+.el'"))
+     (diredp-get-confirmation-recursive) ; Make user confirm, since this can explore *lots* of files.
      `(,current-prefix-arg
        ,(if icicle-search-whole-word-flag
             (icicle-search-read-word)
