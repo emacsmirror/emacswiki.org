@@ -7,9 +7,9 @@
 ;; Copyright (C) 1999-2012, Drew Adams, all rights reserved.
 ;; Created: Fri Mar 19 15:58:58 1999
 ;; Version: 21.2
-;; Last-Updated: Sun May  6 07:29:24 2012 (-0700)
+;; Last-Updated: Mon May  7 09:09:44 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 5112
+;;     Update #: 5114
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/dired+.el
 ;; Keywords: unix, mouse, directories, diredp, dired
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -2849,7 +2849,6 @@ See `diredp-do-find-marked-files-recursive' for a description of the
 files included.  In particular, if no files are marked here or in a
 marked subdir, then all files in the directory are included."
   (interactive (progn (diredp-get-confirmation-recursive)
-                      (diredp-get-confirmation-recursive)
                       (list (cons (generate-new-buffer-name (buffer-name))
                                   (diredp-get-files current-prefix-arg)))))
   (dired dirname))
@@ -2858,7 +2857,6 @@ marked subdir, then all files in the directory are included."
                                         ; Bound to `M-+ C-M-*'
   "Same as `diredp-marked-recursive', but uses a different window."
   (interactive (progn (diredp-get-confirmation-recursive)
-                      (diredp-get-confirmation-recursive)
                       (list (cons (generate-new-buffer-name (buffer-name))
                                   (diredp-get-files current-prefix-arg)))))
   (dired-other-window dirname))
