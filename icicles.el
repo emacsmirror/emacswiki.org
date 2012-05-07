@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Mon Apr 23 10:30:40 2012 (-0700)
+;; Last-Updated: Mon May  7 10:35:47 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 23129
+;;     Update #: 23131
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -322,9 +322,10 @@
 ;;    `icicle-search-bookmarks-together', `icicle-search-buffer',
 ;;    `icicle-search-buff-menu-marked', `icicle-search-char-property',
 ;;    `icicle-search-defs', `icicle-search-defs-full',
-;;    `icicle-search-dired-bookmark', `icicle-search-dired-marked',
-;;    `icicle-search-file', `icicle-search-file-bookmark',
-;;    `icicle-search-generic', `icicle-search-gnus-bookmark',
+;;    `icicle-search-dired-bookmark',
+;;    `icicle-search-dired-marked-recursive', `icicle-search-file',
+;;    `icicle-search-file-bookmark', `icicle-search-generic',
+;;    `icicle-search-gnus-bookmark',
 ;;    `icicle-search-highlight-cleanup',
 ;;    `icicle-search-ibuffer-marked', `icicle-search-info-bookmark',
 ;;    `icicle-search-keywords', `icicle-search-lines',
