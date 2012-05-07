@@ -1,4 +1,4 @@
-When scrolling X steps in one direction, let scrolling X steps opposite direction move point back to exactly where it was. 
+When scrolling X steps in one direction, let scrolling X steps in opposite direction move point back to exactly where it was. 
 
 * Lisp:vertical-consistency.el
 
