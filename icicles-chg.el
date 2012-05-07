@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Sun May  6 13:48:53 2012 (-0700)
+;; Last-Updated: Mon May  7 10:32:55 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 8390
+;;     Update #: 8394
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-chg.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -618,6 +618,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd2.el'")
 ;;
+;; 2012/05/07 dadams
+;;     Renamed: icicle-search-dired-marked to icicle-search-dired-marked-recursive.
 ;; 2012/05/06 dadams
 ;;     icicle-search-dired-marked: Call diredp-get-confirmation-recursive to get confirmation.
 ;; 2012/04/23 dadams
@@ -4520,6 +4522,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-mode.el'")
 ;;
+;; 2012/05/07 dadams
+;;     Applied renaming of icicle-search-dired-marked to icicle-search-dired-marked-recursive.
 ;; 2012/05/06 dadams
 ;;     Put icicle-search-dired-marked also on diredp-menu-bar-recursive-marked-menu, if available.
 ;; 2012/04/23 dadams
@@ -5609,6 +5613,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-opt.el'")
 ;;
+;; 2012/05/07 dadams
+;;     Applied renaming of icicle-search-dired-marked to icicle-search-dired-marked-recursive.
 ;; 2012/04/03 dadams
 ;;     icicle-top-level-key-bindings: Protect icicle-complete-thesaurus-entry binding with fboundp.
 ;;     icicle-top-level-when-sole-completion-delay: Increased default value from 0.7 to 1.0.
@@ -6292,6 +6298,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-var.el'")
 ;;
+;; 2012/05/07 dadams
+;;     Applied renaming of icicle-search-dired-marked to icicle-search-dired-marked-recursive.
 ;; 2012/04/23 dadams
 ;;     icicle-search-modes: Treat dired-mode like bookmark-bmenu-mode: error if no Dired+.
 ;; 2012/04/13 dadams
