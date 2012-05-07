@@ -174,7 +174,7 @@ Here is a screenshot that shows some of the highlighting features of `icicle-sea
 [:icicle-search-defs-full]
 [:icicle-search-desktop-bookmark]
 [:icicle-search-dired-bookmark]
-[:icicle-search-dired-marked]
+[:icicle-search-dired-marked-recursive]
 [:icicle-search-file-bookmark]
 [:icicle-search-gnus-bookmark]
 [:icicle-search-ibuffer-marked]
@@ -256,7 +256,7 @@ Here are the suffix keys on the `M-s M-s' prefix key:
 * '''`m'''' -- `icicle-search-bookmark-list-marked' -- Marked bookmarks
 * '''`m'''' -- `icicle-search-buff-menu-marked' -- Search BufferMenu marked buffers
 * '''`m'''' -- `icicle-search-ibuffer-marked' -- Search [[Ibuffer]] marked buffers
-* '''`m'''' -- `icicle-search-dired-marked' -- Search [[Dired]] marked files
+* '''`m'''' -- `icicle-search-dired-marked-recursive' -- Search [[Dired]] marked files
 * '''`o'''' -- `icicle-occur' (aka `icicle-search-lines') -- An `occur' with [[Icicles - Icompletion|incremental completion]] ('''`##C-c '##'''')
 * '''`O'''' -- `icicle-search-overlay-property' -- Search text having a given [[overlay]] property
 * '''`p'''' -- `icicle-search-paragraphs' -- Search Emacs paragraphs as contexts
