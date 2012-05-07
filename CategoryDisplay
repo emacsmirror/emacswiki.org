@@ -55,6 +55,7 @@ that colors and [[Face]]s belong in CategoryFaces.
 * IdleScrolling -- scroll down one line per second when idle
 * SwissMove -- scroll with decreasing stepsizes
 * GrabAndDrag -- scroll a window by mouse dragging
+* VerticalConsistency -- make opposite vertical movement go back its track
 
 == Display Line Wrap ==
 
