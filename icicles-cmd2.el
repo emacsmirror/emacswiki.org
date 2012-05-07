@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Thu May 21 13:31:43 2009 (-0700)
 ;; Version: 22.0
-;; Last-Updated: Sun May  6 07:02:42 2012 (-0700)
+;; Last-Updated: Mon May  7 10:15:19 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 5601
+;;     Update #: 5608
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-cmd2.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -113,9 +113,9 @@
 ;;    (+)`icicle-search-buffer', (+)`icicle-search-buff-menu-marked',
 ;;    (+)`icicle-search-char-property', (+)`icicle-search-defs',
 ;;    (+)`icicle-search-defs-full', (+)`icicle-search-dired-bookmark',
-;;    (+)`icicle-search-dired-marked', (+)`icicle-search-file',
-;;    (+)`icicle-search-file-bookmark', (+)`icicle-search-generic',
-;;    (+)`icicle-search-gnus-bookmark',
+;;    (+)`icicle-search-dired-marked-recursive',
+;;    (+)`icicle-search-file', (+)`icicle-search-file-bookmark',
+;;    (+)`icicle-search-generic', (+)`icicle-search-gnus-bookmark',
 ;;    `icicle-search-highlight-cleanup',
 ;;    (+)`icicle-search-ibuffer-marked',
 ;;    (+)`icicle-search-info-bookmark', (+)`icicle-search-keywords',
@@ -5404,9 +5404,9 @@ BEG, END, and WHERE."
   (bmkp-bmenu-barf-if-not-in-menu-list)
   (apply #'icicle-search nil nil scan-fn-or-regexp require-match (bmkp-bmenu-get-marked-files) args))
 
-;;;###autoload (autoload 'icicle-search-dired-marked "icicles")
-(defun icicle-search-dired-marked (ignore-marks-p scan-fn-or-regexp require-match
-                                   &rest args) ; Bound to `M-s M-s m' in Dired.
+;;;###autoload (autoload 'icicle-search-dired-marked-recursive "icicles")
+(defun icicle-search-dired-marked-recursive (ignore-marks-p scan-fn-or-regexp require-match
+                                             &rest args) ; Bound to `M-s M-s m' in Dired.
                                         ; Bound also to `C-0 M-s M-s M-s', `C-0 C-c `' in Dired.
   "Search marked files in Dired, including in marked subdirs, recursively.
 You need library `Dired+' for this command.
