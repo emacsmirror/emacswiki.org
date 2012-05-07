@@ -12,4 +12,4 @@ The following code was used to search my el-git directory for files containg (re
 
 I deleted the line from yasnippet and it still works. 
 
-assoc is now implemented in source code
+assoc is now implemented in c code
