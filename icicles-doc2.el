@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Tue Apr 24 07:00:35 2012 (-0700)
+;; Last-Updated: Mon May  7 10:17:42 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 28776
+;;     Update #: 28784
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-doc2.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -506,7 +506,8 @@
 ;;  `m'       `icicle-search-bookmark-list-marked' - Marked bookmarks
 ;;  `m'       `icicle-search-buff-menu-marked' - Search marked buffers
 ;;  `m'       `icicle-search-ibuffer-marked'   - Search marked buffers
-;;  `m'       `icicle-search-dired-marked' - Search Dired marked files
+;;  `m'       `icicle-search-dired-marked-recursive' - Search Dired
+;;            marked files
 ;;  `o'       `icicle-occur' (aka `icicle-search-lines') - An `occur'
 ;;            with incremental completion (`C-c '')
 ;;  `O'       `icicle-search-overlay-property' - Search text having a
@@ -521,8 +522,9 @@
 ;;  `x'       `icicle-search-xml-element' - Search XML elements
 ;;  `X'       `icicle-search-xml-element-text-node'- Search text nodes
 ;;
-;;  (You need library `Dired+' for `icicle-search-dired-marked', and
-;;  library `Bookmark+' for `icicle-search-bookmark-list-marked'.)
+;;  (You need library `Dired+' for
+;;  `icicle-search-dired-marked-recursive', and library `Bookmark+'
+;;  for `icicle-search-bookmark-list-marked'.)
 ;;
 ;;  There are many `icicle-search-*-bookmark' commands, for searching
 ;;  within bookmarks of various types.
@@ -2420,9 +2422,10 @@
 ;;  ** Search-and-Replace Marked Files **
 ;;
 ;;  If you use library `Dired+' then you can use `M-s M-s m'
-;;  (`icicle-search-dired-marked') in Dired to use Icicles search on
-;;  the marked files and replace search hits on demand.  With a prefix
-;;  arg the Dired markings are ignored; all files are searched.
+;;  (`icicle-search-dired-marked-recursive') in Dired to use Icicles
+;;  search on the marked files and replace search hits on demand.
+;;  With a prefix arg the Dired markings are ignored; all files are
+;;  searched.
 ;;
 ;;  Each marked subdirectory is handled recursively in the same way:
 ;;  If it has a Dired buffer then its marked files are searched, or
@@ -2436,11 +2439,12 @@
 ;;  have Dired buffers with marked files.  That is, Dired buffers are
 ;;  ignored if you do not confirm using them.
 ;;
-;;  Command `icicle-search-dired-marked' runs `icicle-search', so you
-;;  have available all of its features, including accessing search
-;;  hits directly, in any order.  To skip a whole file, just match its
-;;  name with your minibuffer input and then use `C-~' to remove all
-;;  of its occurrences from the set of hits.
+;;  Command `icicle-search-dired-marked-recursive' runs
+;;  `icicle-search', so you have available all of its features,
+;;  including accessing search hits directly, in any order.  To skip a
+;;  whole file, just match its name with your minibuffer input and
+;;  then use `C-~' to remove all of its occurrences from the set of
+;;  hits.
 ;;
 ;;  Note: You can similarly use `M-s M-s m' in Ibuffer or Buffer Menu
 ;;  to search all marked buffers using Icicles search.  Also, `C-0 M-s
@@ -6609,7 +6613,7 @@
 ;;  `icicle-search-buffer' - Search multiple buffers
 ;;  `icicle-search-char-property' - Search for character properties
 ;;  `icicle-search-dired-bookmark' - Search Dired bookmarks
-;;  `icicle-search-dired-marked' - Search the marked files in Dired
+;;  `icicle-search-dired-marked-recursive' - Search marked files
 ;;  `icicle-search-file'  - Search multiple files
 ;;  `icicle-search-file-bookmark' - Search file bookmarks
 ;;  `icicle-search-gnus-bookmark' - Search Gnus bookmarks
