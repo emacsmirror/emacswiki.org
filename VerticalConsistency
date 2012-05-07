@@ -2,10 +2,9 @@ When scrolling X steps in one direction, let scrolling X steps opposite directio
 
 Lisp:vertical-consistency.el
 
-Other solutions with overlapping functionality:
+Other solutions with overlapping functionality: HalfScrolling, [[Scrolling]]
 
-* HalfScrolling
-* [[Scrolling]]
+-- DavidAndersson
 
 ----
 CategoryDisplay
