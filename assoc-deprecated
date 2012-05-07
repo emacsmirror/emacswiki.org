@@ -1,6 +1,7 @@
 Find the culprit libraries causing the following error message on emacs 24 startup
 
     error: Package assoc is obsolete!
+    
  
 The following code was used to search my el-git directory for files containg (require 'assoc)
 
