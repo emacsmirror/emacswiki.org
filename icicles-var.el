@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:23:26 2006
 ;; Version: 22.0
-;; Last-Updated: Mon Apr 23 10:28:58 2012 (-0700)
+;; Last-Updated: Mon May  7 10:16:47 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 1615
+;;     Update #: 1618
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-var.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -813,7 +813,7 @@ input prompt is prefixed by `+'.
 + `icicle-search-bookmarks-together'   - Search bookmarks together
 + `icicle-search-char-property'        - Search for overlay/text props
 + `icicle-search-dired-bookmark'       - Search Dired bookmarks
-+ `icicle-search-dired-marked'         - Search marked files in Dired
++ `icicle-search-dired-marked-recursive'- Search marked files in Dired
 + `icicle-search-file'                 - Search multiple files
 + `icicle-search-file-bookmark'        - Search bookmarked files
 + `icicle-search-gnus-bookmark'        - Search bookmarked Gnus msgs
