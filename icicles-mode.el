@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 10:21:10 2006
 ;; Version: 22.0
-;; Last-Updated: Sun May  6 07:04:26 2012 (-0700)
+;; Last-Updated: Mon May  7 08:03:45 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 8739
+;;     Update #: 8740
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-mode.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -2021,7 +2021,7 @@ Used on `pre-command-hook'."
              (define-key diredp-menu-bar-recursive-marked-menu [icicle-search-dired-marked]
                '(menu-item "Icicles Search (and Replace)..." icicle-search-dired-marked
                  :help "Search the marked files, including in marked subdirs"
-                 :enable (fboundp 'diredp-get-files)))))
+                 :visible (fboundp 'diredp-get-files)))))
           (t
            (defvar icicle-dired-multiple-menu-map (make-sparse-keymap)
              "`Icicles' > `Dired Marked' submenu, in Dired mode.")
@@ -2032,7 +2032,7 @@ Used on `pre-command-hook'."
     (define-key icicle-dired-multiple-menu-map [icicle-search-dired-marked]
       '(menu-item "Search Here and Below..." icicle-search-dired-marked
         :help "Search the marked files, including in marked subdirs"
-        :enable (fboundp 'diredp-get-files)))
+        :visible (fboundp 'diredp-get-files)))
     (define-key icicle-dired-multiple-menu-map [icicle-dired-save-marked-more]
       '(menu-item "Save as More Completion Candidates" icicle-dired-save-marked-more
         :help "Add the marked file names to the saved file-completion candidates set"))
