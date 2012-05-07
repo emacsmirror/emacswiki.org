@@ -10,6 +10,8 @@ The following code was used to search my el-git directory for files containg (re
     ./org-mode/contrib/lisp/org-export-generic.el:(require 'assoc)
     ./magit/magit-key-mode.el:(require 'assoc)
 
-I deleted the line from yasnippet and it still works. 
+I deleted the require statements from these files.
+
+This solves the error message. Every thing seems to run ok
 
 assoc is now implemented in c code
