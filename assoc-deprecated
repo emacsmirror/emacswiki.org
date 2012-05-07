@@ -1,6 +1,6 @@
 Find the culprit libraries.
  
-The following code was used to search my el-git directory for files contaings (require 'assoc)
+The following code was used to search my el-git directory for files containg (require 'assoc)
 
      find ~/.emacs.d/el-git -name "*.el" -exec grep -H "(require 'assoc)" {} \;
     ./yasnippet/yasnippet.el:(require 'assoc)
