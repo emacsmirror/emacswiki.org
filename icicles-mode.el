@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 10:21:10 2006
 ;; Version: 22.0
-;; Last-Updated: Mon May  7 08:03:45 2012 (-0700)
+;; Last-Updated: Mon May  7 10:15:53 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 8740
+;;     Update #: 8747
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-mode.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -535,7 +535,7 @@ there are also `-other-window' versions.
 `icicle-search-buff-menu-marked'       - Search marked buffers
 `icicle-search-char-property'          - Search for overlay/text props
 `icicle-search-dired-bookmark'         - Search Dired bookmarks
-`icicle-search-dired-marked'           - Search marked files in Dired
+`icicle-search-dired-marked-recursive' - Search marked files in Dired
 `icicle-search-file'                   - Search multiple files
 `icicle-search-file-bookmark'          - Search bookmarked files
 `icicle-search-gnus-bookmark'          - Search bookmarked Gnus msgs
@@ -953,7 +953,7 @@ there are also `-other-window' versions.
 `icicle-search-buff-menu-marked'       - Search marked buffers
 `icicle-search-char-property'          - Search for overlay/text props
 `icicle-search-dired-bookmark'         - Search Dired bookmarks
-`icicle-search-dired-marked'           - Search marked files in Dired
+`icicle-search-dired-marked-recursive' - Search marked files in Dired
 `icicle-search-file'                   - Search multiple files
 `icicle-search-file-bookmark'          - Search bookmarked files
 `icicle-search-gnus-bookmark'          - Search bookmarked Gnus msgs
@@ -2018,9 +2018,9 @@ Used on `pre-command-hook'."
                (list 'menu-item "Icicles" icicle-dired-multiple-menu-map :visible 'icicle-mode)))
 
            (when (keymapp diredp-menu-bar-recursive-marked-menu) ; Defined in `dired+.el'
-             (define-key diredp-menu-bar-recursive-marked-menu [icicle-search-dired-marked]
-               '(menu-item "Icicles Search (and Replace)..." icicle-search-dired-marked
-                 :help "Search the marked files, including in marked subdirs"
+             (define-key diredp-menu-bar-recursive-marked-menu [icicle-search-dired-marked-recursive]
+               '(menu-item "Icicles Search (and Replace)..." icicle-search-dired-marked-recursive
+                 :help "Search the marked files, including those in marked subdirs"
                  :visible (fboundp 'diredp-get-files)))))
           (t
            (defvar icicle-dired-multiple-menu-map (make-sparse-keymap)
@@ -2029,9 +2029,9 @@ Used on `pre-command-hook'."
              (list 'menu-item "Dired Marked" icicle-dired-multiple-menu-map
                    :visible '(eq major-mode 'dired-mode)))))
 
-    (define-key icicle-dired-multiple-menu-map [icicle-search-dired-marked]
-      '(menu-item "Search Here and Below..." icicle-search-dired-marked
-        :help "Search the marked files, including in marked subdirs"
+    (define-key icicle-dired-multiple-menu-map [icicle-search-dired-marked-recursive]
+      '(menu-item "Search Here and Below..." icicle-search-dired-marked-recursive
+        :help "Search the marked files, including those in marked subdirs"
         :visible (fboundp 'diredp-get-files)))
     (define-key icicle-dired-multiple-menu-map [icicle-dired-save-marked-more]
       '(menu-item "Save as More Completion Candidates" icicle-dired-save-marked-more
@@ -2217,7 +2217,7 @@ Used on `pre-command-hook'."
                                   (listify-key-sequence (icicle-kbd "m")))))
              (def  (lookup-key dired-mode-map key)))
         (unless (and def  (not (integerp def)))
-          (define-key dired-mode-map key 'icicle-search-dired-marked)))))
+          (define-key dired-mode-map key 'icicle-search-dired-marked-recursive)))))
 
   ;; Bind keys in Ibuffer mode.
   (when (boundp 'ibuffer-mode-map)
