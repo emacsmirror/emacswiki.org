@@ -1,1 +1,11 @@
+When scrolling X steps in one direction, let scrolling X steps opposite direction move point back to exactly where it was. 
+
 Lisp:vertical-consistency.el
+
+Other solutions with overlaping functionality:
+
+* HalfScrolling
+* [[Scrolling]]
+
+----
+CategoryDisplay
