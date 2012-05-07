@@ -7,9 +7,9 @@
 ;; Copyright (C) 1995-2012, Drew Adams, all rights reserved.
 ;; Created: Wed Aug  2 11:12:24 1995
 ;; Version: 21.1
-;; Last-Updated: Fri Mar  2 13:48:27 2012 (-0800)
+;; Last-Updated: Mon May  7 15:39:13 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 2920
+;;     Update #: 2921
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/start.el
 ;; Keywords: abbrev, internal, local, init
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -83,6 +83,8 @@
 ;;
 ;; Change Log:
 ;;
+;; 2012/05/07 dadams
+;;     Do not require tabbar-mode for Emacs 21.
 ;; 2012/02/28 dadams
 ;;     Don't bother requiring calendar stuff and mkhtml anymore.
 ;; 2012/02/26 dadams
@@ -418,7 +420,7 @@
   (defvar paren-message-linefeed-display "^J")) ; Toggle in/out context for open paren.
 (require 'bookmark+ nil t)              ; Extensions to `bookmark.el'.
 (when (> emacs-major-version 21) (require 'bm nil t)) ; Visible bookmarks.
-(when (> emacs-major-version 20) (require 'tabbar nil t)) ; Tab bar.
+(when (> emacs-major-version 21) (require 'tabbar nil t)) ; Tab bar.
 (require 'finder+ nil t)                ; Extensions to `finder.el'.
 (require 'iso-transl nil t)             ; Keyboard input definitions for ISO 8859/1.
 (require 'eshell-auto nil t)            ; Eshell
