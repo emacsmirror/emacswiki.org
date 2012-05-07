@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:22:14 2006
 ;; Version: 22.0
-;; Last-Updated: Mon Apr 23 14:03:36 2012 (-0700)
+;; Last-Updated: Mon May  7 09:49:22 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 4990
+;;     Update #: 4992
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-opt.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -2662,8 +2662,9 @@ Has the same form as a key-sequence argument to `define-key'.
 This same prefix key sequence, followed by `m', is used in some major
 modes for a mode-specific Icicles search command.  E.g., if the prefix
 key is `M-s M-s' then `M-s M-s m' is bound in Dired mode to
-`icicle-search-dired-marked', which searches the marked files
-\(provided you also use Dired+)."
+`icicle-search-dired-marked-recursive', which searches the marked
+files, including in subdirs recursively (provided you use library
+Dired+)."
   :type 'sexp :group 'Icicles-Key-Bindings)
 
 ;;;###autoload
