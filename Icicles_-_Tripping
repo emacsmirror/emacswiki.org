@@ -132,7 +132,7 @@ navigate.
 [:icicle-search-remote-file-bookmark]
 [:icicle-search-url-bookmark]
 [:icicle-search-char-property]
-[:icicle-search-dired-marked]
+[:icicle-search-dired-marked-recursive]
 [:icicle-search-file]
 [:icicle-search-ibuffer-marked]
 [:icicle-search-keywords]
@@ -258,7 +258,7 @@ The '''`a'''' indicates that the command completes an [[autofile bookmark]] name
 
 * '''`icicle-search-char-property'''' -- Trip among buffer strings with
   some [[text property]] or [[overlay]] property
-* '''`icicle-search-dired-marked''''   -- Search marked files in Dired
+* '''`icicle-search-dired-marked-recursive''''   -- Search marked files in Dired
 * '''`icicle-search-file''''           -- Search multiple files
 * '''`icicle-search-ibuffer-marked'''' -- Search marked buffers in [[IbufferMode|Ibuffer]]
 * '''`icicle-search-keywords'''' ('''`##C-c ^##'''') -- Trip among keyword search hits
