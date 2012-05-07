@@ -79,13 +79,13 @@ Thanks, works great! -- Volfy
 === Vim tabs ===
 The first thing I missed of Vim were the tabs. With elscreen.el and its dependencies installed, the following code emulates part of the Vim behaviour:
 
-(load “elscreen” “ElScreen” t)
+    (load "elscreen" "ElScreen" t)
 
-(define-key evil-normal-state-map (kbd “C-w t”) ‘elscreen-create) ;creat tab
-(define-key evil-normal-state-map (kbd “C-w x”) ‘elscreen-kill) ;kill tab
+    (define-key evil-normal-state-map (kbd "C-w t") 'elscreen-create) ;creat tab
+    (define-key evil-normal-state-map (kbd "C-w x") 'elscreen-kill) ;kill tab
 
-(define-key evil-normal-state-map “gT” ‘elscreen-previous) ;previous tab
- (define-key evil-normal-state-map “gt” ‘elscreen-next) ;next tab
+    (define-key evil-normal-state-map "gT" 'elscreen-previous) ;previous tab
+    (define-key evil-normal-state-map "gt" 'elscreen-next) ;next tab
 
 
 ----
