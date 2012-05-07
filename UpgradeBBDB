@@ -25,7 +25,7 @@
 || bbdb-electric-p |||| bbdb-electric ||
 || bbdb-force-record-create |||| ? ||
 || bbdb-format-streets |||| ? ||
-|| bbdb-get-field |||| bbdb-record-note ||
+|| bbdb-get-field |||| bbdb-record-note/bbdb-record-get-field ||
 || bbdb-get-only-first-address-p |||| bbdb-message-all-addresses ||
 || bbdb-gui |||| [gone] ||
 || bbdb-hashtable-size |||| [gone] ||
@@ -44,6 +44,8 @@
 || bbdb-quiet-about-name-mismatches |||| bbdb-accept-name-mismatch ||
 || bbdb-record-addresses |||| bbdb-record-address ||
 || bbdb-record-phones |||| bbdb-record-phone ||
+|| bbdb-record-putprop |||| bbdb-record-set-field ||
+|| bbdb-record-net |||| bbdb-record-mail ||
 || bbdb-save-db-timeout |||| [gone] ||
 || bbdb-send-mail-style |||| bbdb-mail-user-agent ||
 || bbdb-timestamp-hook |||| bbdb-timestamp ||
