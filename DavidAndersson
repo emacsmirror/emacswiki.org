@@ -5,6 +5,7 @@ Contributions:
 * GotoChg -- goto last change
 * KeyChord -- map pairs of simultaneously pressed keys to commands
 * ScrollMargs -- scroll margins minor mode (a.k.a smooth scroll)
+* VerticalConsistency -- make opposite vertical movements go back its track
 
 ----
 CategoryHomepage
