@@ -2,7 +2,7 @@ Find the culprit libraries.
  
 The following code was used to search my el-git directory for files contaings (require 'assoc)
 
-find ~/.emacs.d/el-git -name "*.el" -exec grep -H "(require 'assoc)" {} \;
-./yasnippet/yasnippet.el:(require 'assoc)
-./org-mode/contrib/lisp/org-export-generic.el:(require 'assoc)
-./magit/magit-key-mode.el:(require 'assoc)
+     find ~/.emacs.d/el-git -name "*.el" -exec grep -H "(require 'assoc)" {} \;
+    ./yasnippet/yasnippet.el:(require 'assoc)
+    ./org-mode/contrib/lisp/org-export-generic.el:(require 'assoc)
+    ./magit/magit-key-mode.el:(require 'assoc)
