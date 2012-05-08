@@ -1,0 +1,57 @@
+Emacs comes with GIT:emacs-lisp/benchmark.el by DaveLove that can display the elapsed time of running an EmacsLisp expression.  It observes the timing from running a form once or repeatedly.  Any time spent by Emacs on GarbageCollection is also determined.  These features are available interactively with `M-x benchmark' or programmatically with `benchmark-run'.
+
+Here's the result of sorting 512 integers 512 times.
+
+  C-u 512 M-x benchmark (sort (number-sequence 1 512) '<)
+  Elapsed time: 0.260000s (0.046000s in 6 GCs)
+
+The elapsed time was a quarter of a second with a twentieth of a second due to 6 garbage collections.
+
+Here is the result of BubbleSort on 100 integers done 100 times.
+
+  (benchmark-run 100
+      (let* ((list (mapcar 'random (make-list 100 most-positive-fixnum)))
+              (i (length list)))
+         (while (> i 1)
+           (let ((b list))
+             (while (cdr b)
+               (when (< (cadr b) (car b))
+                 (setcar b (prog1 (cadr b)
+                             (setcdr b (cons (car b) (cddr b))))))
+               (setq b (cdr b))))
+           (setq i (1- i)))
+         list))
+  ==> (2.28 103 0.8200000000002063)
+
+The elapsed time is 2.28 seconds with 103 garbage collects taking four-fifths of a second.
+
+Checking for an improvement on the same expression after ByteCompilation is possible with `benchmark-run-compiled'.
+
+  (benchmark-run-compiled 100
+      (let* ((list (mapcar 'random (make-list 100 most-positive-fixnum)))
+              (i (length list)))
+         (while (> i 1)
+           (let ((b list))
+             (while (cdr b)
+               (when (< (cadr b) (car b))
+                 (setcar b (prog1 (cadr b)
+                             (setcdr b (cons (car b) (cddr b))))))
+               (setq b (cdr b))))
+           (setq i (1- i)))
+         list))
+  ==> (0.348 5 0.0420000000000087)
+
+The compiled form is 6 times faster and with twenty times less garbage collection.
+
+The compiled form of using Emacs's `sort' as in the very first example above doesn't improve the timing after compiled since its already a built-in primitive function written in C.
+
+  (benchmark-run-compiled 512 (sort (number-sequence 1 512) '<))
+  (0.258 5 0.043000000000006366)
+
+See also
+EmacsLispProfiler,
+EmacsLispTracing.
+
+----
+CategoryCode
+CategoryProgramming
