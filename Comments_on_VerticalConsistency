@@ -1,0 +1,6 @@
+Generates a "Wrong type argument: number-or-marker-p, (0.0 . 0)" if one goes to the beginning of buffer, runs vert-previous-line and then vert-next-line (or the inverse, going to end of buffer, vert-next-line and then vert-previous-line) running on Emacs 23.3.1.
+
+Adding "(numberp temporary-goal-column)" checks to the vert-next-line function seems to solve the problem.
+
+-- [http://www.emacswiki.org/emacs/Tuffy Tuffy] 2012-05-08 16:37 UTC
+
