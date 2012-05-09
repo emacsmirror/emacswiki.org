@@ -1,6 +1,6 @@
 ;;; bst-mode.el --- major mode for editing BibTeX style files
 
-;; Copyright (C) 2002-3005  Jakub Narebski
+;; Copyright (C) 2002-2005  Jakub Narebski
 
 ;; Authors: Jakub Narebski <jnareb@fuw.edu.pl>
 ;;          Nelson H. F. Beebe <beebe@math.utah.edu>
@@ -53,7 +53,7 @@
 
 ;;; Code:
 
-
+ 
 ;; Version
 (defconst bst-mode-version "0.3"
   "Version of bst-mode (BibTeX style)")
