@@ -30,7 +30,7 @@ See also Manual:Glossary.
 * [[extensible]] -- the `E' in "Emacs"
 * [[face]] -- Is it a [[font]]?  Is it a color?  No, it is a face!
 * [[font]] -- ???????? FIXME
-* [[frame]] -- Emacs [[window]]s are shown in frames (called "windows" outside of Emacs)
+* [[frame]] -- Emacs [[window]]s are shown in frame (called "window" outside of Emacs)
 * [[fringe]] -- thin strips at the left and right edges of a [[window]], with glyphs that indicate various things
 * '''[::function cell]''' -- the function associated with a [[symbol]]; aka '''[::symbol function]'''
 * [[GPL]] -- GNU General Public License: publishing license used for free software
