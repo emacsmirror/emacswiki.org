@@ -1,4 +1,4 @@
-Edebug is a source level debugger for EmacsLisp.  It 
+'''[::Edebug]''' is a source level debugger for EmacsLisp.  It 
 instruments code. This means that Emacs adds special
 instructions to the code when it is evaluated.  The main entry point
 is `M-x edebug-defun' (also on `C-u C-M-x').  Use it instead of `C-x
@@ -40,9 +40,15 @@ The arrow shows you which sexp will be evaluated next:
 
 To quit the debugger, type `q'. 
 
-You can disable edebug on a function by evaluating the function again using `C-M-x'.
+Edebug can enter any defun whose source ban be found with FindFunc by hitting `i' which steps into the next function to be evaluated.  This instruments the function and will be debugged every time it is run.
 
-See also: DebuggerMode.
+You can disable edebug on a function by evaluating the function again using `C-M-x' without a PrefixArgument.
+
+You can see the code coverage of the defun at point with `C-x X =' or `M-x edebug-display-freq-count'.
+
+See also
+DebuggerMode,
+EmacsLispTracing.
 
 ----
 CategoryDebug
