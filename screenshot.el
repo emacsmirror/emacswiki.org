@@ -214,6 +214,7 @@ It is recommend to have a delay time to enable us to take a screenshot other tha
              (cons 'screenshot-prepare-minor-mode screenshot-prepare-minor-mode-map))
 
 ;;; (@* "Commands")
+;;;###autoload
 (defun screenshot (filename &optional scheme nomsg)
   "Prepare to take a screenshot to FILENAME with SCHEME.
 After pressing C-c C-c, executing `screenshot-take'.
@@ -239,6 +240,7 @@ See also `screenshot-take' docstring. "
     (setq screenshot-prepare-minor-mode t)
     (or nomsg (message "Press C-c C-c to take a screenshot!"))))
 
+;;;###autoload
 (defun screenshot-take ()
   "Take a screenshot configured by `screenshot' command.
 
