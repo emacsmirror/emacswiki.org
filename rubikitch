@@ -73,6 +73,7 @@ EevMode is my partner for years.
 * GitDwim -- Context-aware command for [[Git]]
 * Lisp:sudo-ext.el -- Use sudo in M-!, M-x compile, and so on / M-x sudoedit
 * Lisp:savekill.el -- Save `kill-ring' to disk. Risk hedge of sudden death.
+* Lisp:esh-myparser.el -- Call zsh/bash/ruby from EmacsShell
 * I maintained
 ** OddmuseMode -- Edit oddmuse wikis (including EmacsWiki) in Emacs
 
