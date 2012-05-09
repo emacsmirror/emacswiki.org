@@ -1,4 +1,4 @@
-'''Frame''' are only called "frame" in Emacs; outside Emacs, frame are called "[[Window]]". (But not all of the properties of Emacs frame pertain to non-Emacs "window" such as your Web browser window or an application dialog box.)
+'''Frames''' are only called frames in Emacs; outside Emacs, frames are called "[[Window]]s". (But not all of the properties of Emacs frames pertain to non-Emacs "windows" such as your Web browser window or an application dialog box.)
 
 A [::frame] is rectangular, with four frame '''borders'''. A frame usually has a '''title bar''' with a frame title (name). A frame usually has a '''MenuBar''', just under the title bar. Depending on your version of Emacs, a frame may also have a '''ToolBar''' with buttons. 
 
