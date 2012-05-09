@@ -31,4 +31,5 @@ broadband\.kyivstar\.net # for spamming ColemakKeyboard
 ^ec2-107-22-93-62.compute-1.amazonaws.com  # for spamming SiteMap in April 2012
 ^pool-173-74-59-171.dllstx.fios.verizon.net  # for spamming SiteMap in April 2012
 ^58.22.64.227  # for spamming TableOfContentsDiscussion in April 2012
+^ec2-107-20-164-163.compute-1.amazonaws.com
 
