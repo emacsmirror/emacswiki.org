@@ -285,7 +285,7 @@ This works only for IMAP.
 From [http://www.lshift.net/blog/2005/07/21/searching-imap-in-gnus Searching IMAP in Gnus].
 Add the following line to your .emacs:
 <pre>
-require 'nnir
+(require 'nnir)
 </pre>
 
 Then add the following line to the secondary-method in .gnus.el 
