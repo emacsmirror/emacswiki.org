@@ -1,10 +1,7 @@
-Wanderlust is a mail/news reader for Emacs(en) apparently written from the ground up for IMAP. It seems to have very good support for Japanese, and it works quite-well for this English-speaker.
+Wanderlust is a mail/news reader for Emacs with excellent IMAP support. Wanderlust was written by Yuuichi Teranishi and others.
 
-Download%%/%%Snapshots: http://www.jpl.org/elips/wl/ (ftp://ftp.gohome.org/wl/ needs authentication)
+The last official stable version was 2.14.0 and current unstable version is 2.15.9. The most up-to-date code is to be found on [http://github.com/wanderlust github].
 
-Current stable version is 2.14.0 and current unstable version is 2.15.9. The website is not up to date, but you can get help through the mailing list. 
-
-[new]
 New upstream mailing list addresses: <code>wl@ml.gentei.org</code> and <code>wl-en@ml.gentei.org</code>, respectively.
 
 == Features ==
