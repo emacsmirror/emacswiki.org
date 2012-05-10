@@ -7,9 +7,9 @@
 ;; Copyright (C) 2011-2012, Drew Adams, all rights reserved.
 ;; Created: Wed May 11 07:11:30 2011 (-0700)
 ;; Version:
-;; Last-Updated: Sun Jan  1 16:00:08 2012 (-0800)
+;; Last-Updated: Thu May 10 06:56:04 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 19
+;;     Update #: 39
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/hide-comnt.el
 ;; Keywords: comment, hide, show
 ;; Compatibility: GNU Emacs: 21.x, 22.x, 23.x
@@ -31,7 +31,7 @@
 ;;
 ;;  Commands defined here:
 ;;
-;;    `hide/show-comments',
+;;    `hide/show-comments', `hide/show-comments-toggle'.
 ;;
 ;;  User options defined here:
 ;;
@@ -46,6 +46,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2012/05/10 dadams
+;;     Added: hide/show-comments-toggle.  Thx to Denny Zhang for the suggestion.
 ;; 2011/11/23 dadams
 ;;     hide/show-comments: Bug fix - ensure CEND is not past eob.
 ;; 2011/05/11 dadams
@@ -142,6 +144,24 @@ because it needs `comment-search-forward'."
                      (put-text-property cbeg cend 'invisible t)
                    (put-text-property cbeg cend 'invisible nil)))))
         (set-buffer-modified-p bufmodp)))))
+
+(defun hide/show-comments-toggle (&optional start end)
+  "Toggle hiding/showing of comments in the active region or whole buffer.
+If the region is active then toggle in the region.  Otherwise, in the
+whole buffer.
+
+Interactively, START and END default to the region limits, if active.
+Otherwise, including non-interactively, they default to `point-min'
+and `point-max'.
+
+See `hide/show-comments' for more information."
+  (interactive (if (or (not mark-active)  (null (mark))  (= (point) (mark)))
+                   (list (point-min) (point-max))
+                 (if (< (point) (mark)) (list (point) (mark)) (list (mark) (point)))))
+  (if (save-excursion (goto-char start) (and (comment-search-forward end 'NOERROR)
+                                             (get-text-property (point) 'invisible)))
+      (hide/show-comments 'show start end)
+    (hide/show-comments 'hide start end)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;
 
