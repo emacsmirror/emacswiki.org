@@ -1,28 +1,5 @@
-If you want to control keyboard rate over emacs session you may want to do this:
-
-<pre>
-  ;; Installs C-ck Prefix for Keyboard control commands
-  (defun my-set-keyrate (lat rate)
-    (shell-command (format "xset r rate %d %d" lat rate)))
-
-  (define-key global-map "\C-ckd"
-    (lambda ()
-      (interactive)
-      (my-set-keyrate 250 50)
-      (message "Default keyrate intalled."))) ;default keyrate
-  (define-key global-map "\C-ckf"
-    (lambda ()
-      (interactive)
-      (my-set-keyrate 250 100)
-      (message "Fast keyrate intalled"))) ;fast
-  (define-key global-map "\C-cks"
-    (lambda ()
-      (interactive)
-      (my-set-keyrate 250 25)
-      (message "Slow keyrate installed"))) ;slow
-</pre>
-
-I like to use fast rate at the morning, slow - after dinner and default for the rest time. --ZajcevEvgeny
-
-----
-CategoryKeys
+ 
+天は、他の六人の兄弟自身があまりにも多く、昔ながらの感じることはありませんリ ンガーので、いつも若いと、1つまたは3年間のダウン滞在する明白な愚かさのような、 それは親密さにも触れています。常に勝っリンガー天され、張Xiaofan強い、さらに上の ものよりも関税の線の自己インダクタンス、平 [url=http://www.lvtojapan.com/]ルイヴィトン[/url] 日は自分の扇動を供給していたが、彼ら は時折兄弟はからかうが、彼女はのように、まっすぐに立つことが第一ですが、独自の バッキング。 マウンテンホームは孤独ですが、また、静かな、Xiaofanも時折尋ねたいくつかの天は 草のdamiaocunの悲劇についての簡単ダレンものではありませんが、今のところ全く分か らない事は、時間とXiaofanの心の受け渡しは、最終的にゆっくりと消えていった。
+ 
+[url=http://www.lvtojapan.com/] http://www.lvtojapan.com/ [/url] 
+ae4177fbfb52fc9e64fe201
