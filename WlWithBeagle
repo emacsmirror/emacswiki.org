@@ -1,3 +1,5 @@
+DeletedPage
+
 == How to search (local) Wanderlust folders using Beagle ==
 
 See http://beagle-project.org/ for setting up Beagle to index your mail. If mail is stored in mboxes or maildir it should just work. Add the following to your ##.wl## file:
