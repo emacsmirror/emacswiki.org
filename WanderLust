@@ -191,23 +191,11 @@ Check that you have enabled IMAP in your Gmail account settings, then put the fo
 Then you also need to set up your .folder-file. See [[WlMultipleAccounts]] for an example. 
 
 ===Setting up NNTP ===
-You can use wl as a NNTP client, and post to usenet newsgroups.  Add this to your ~/.folders.
+You can use wl as a NNTP client, and post to usenet newsgroups. In the folder view, type ##m a##, then add an NTTP folder. Try reading the WL mailinglist:
+
 {{{
-Mail-lists{
-#To view the entire wanderlust mail list archive:
--gmane.mail.wanderlust.general@news.gmane.org:563!  "Wanderlust ML"
-
-#might also interest me to add these:
--gmane.linux.arch.general@news.gmane.org:563!       "Arch linux"
--gmane.emacs.help@news.gmane.org:563!               "gnu-emacs"
-
-#Also add Arch and Stumpwm (emacs friendly window manager) ML archives:
--gmane.comp.window-managers.stumpwm.devel@news.gmane.org:563! "Stumpwm"
-}
+-gmane.mail.wanderlust.general@news.gmane.org
 }}}
-
-(Note: When using comments, make sure the "#" is in the first column, or wl can, in my
- experience, freeze on start up.)
 
 == Getting Help ==
 Please read the [http://www.gohome.org/wl/doc/wl_toc.html manual] carefully, 
