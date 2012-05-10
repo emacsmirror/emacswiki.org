@@ -349,8 +349,8 @@ From [http://mail.google.com/support/bin/answer.py?answer=77657 Gmail Help]
 ||Move a message to a folder ||Apply a label to the message ||##B m## ||
 ||Move a message to a folder within a folder ||Apply a label showing folder hierarchy ('!MainFolder/!SubFolder') ||##B m## ||
 ||Create a folder ||Create a label ||##B m## to nonexistent folder will create it.||
-||Move a message to [Gmail]/Spam ||Report a message as spam ||##B m [Gmail]Spam RET## ||
-||Move a message to [Gmail]/Trash ||Move a message to Trash ||##B m [Gmail]Trash RET## ||
+||Move a message to [Gmail]/Spam ||Report a message as spam ||##B m [Gmail]/Spam RET## ||
+||Move a message to [Gmail]/Trash ||Move a message to Trash ||##B m [Gmail]/Trash RET## ||
 ||Send a message ||Store message in Sent Mail ||##m##  ||
 ||Delete a message in inbox ||Remove the message from inbox ||##B DEL## ||
 ||Delete a message from a folder ||Remove that label from the message ||##B DEL## ||
