@@ -1,7 +1,5 @@
 Wanderlust is a mail/news reader for Emacs(en) apparently written from the ground up for IMAP. It seems to have very good support for Japanese, and it works quite-well for this English-speaker.
 
-Homepage: http://www.gohome.org/wl/
-
 Download%%/%%Snapshots: http://www.jpl.org/elips/wl/ (ftp://ftp.gohome.org/wl/ needs authentication)
 
 Current stable version is 2.14.0 and current unstable version is 2.15.9. The website is not up to date, but you can get help through the mailing list. 
@@ -225,7 +223,7 @@ As of January 2012 there's an IRC channel <code>#wanderlust</code> at irc.freeno
 * [http://www.emacswiki.org/emacs/MailtoHandler#toc5 MailtoHandler] -- Using wl for <code>mailto:</code> links
 * http://julien.danjou.info/software/offlineimap.el -- Run offlineimap from emacs
 * https://gist.github.com/622291 -- gravatar.el and wl-gravatar.el
-
+* Project home page (old): http://www.gohome.org/wl/
 === Tutorials ===
 * [http://mihai.bazon.net/articles/emacs/wanderlust-email-client Wanderlust email client.]
 * [http://box.matto.nl/emacsgmail.html Wanderlust with Gmail.] 
