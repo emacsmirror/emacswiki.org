@@ -32,23 +32,6 @@ New upstream mailing list addresses: <code>wl@ml.gentei.org</code> and <code>wl-
 
 It is the only emacs mail reader that I have used that seems to handle IMAP properly (i.e., leaves messages on server, cacheing, etc.). Gnus (CategoryGnus) users may disagree. It integrates with BBDB (CategoryBbdb), supports MIME, can handle integrating with mailcrypt (cvs version) (WanderLustEncryption). MIME and PGP/MIME is handled via SEMI (SemiIsEmacsMimeInterface). Key-bindings are, at least to me, a little foreign at first. Documentation in English is sufficient though not overwhelming. 
 
-== Requirements ==
-
-Supported Emacsen:
-
-* Mule-2.3@19.34
-* Mule for Win32
-* Meadow-1.01 or later
-* NTEmacs 20.4 or later
-* Emacs 20.3 or later
-* XEmacs-20.4 or later
-
-Other Requirements:
-
-[[SEMI]] 1.14.3 or later (for SEMI you need [[APEL]] and [[FLIM]]).  Recommended combination of APEL, FLIM and SEMI are following.
-
-* APEL 10.7, FLIM 1.14.5 and SEMI 1.14.5 
-
 == Installing Wanderlust ==
 Best way to get the latest wanderlust and all its dependencies is by installing it through [http://www.emacswiki.org/emacs/el-get el-get], which is an elisp package manager, that downloads and installs all dependencies automatically. You can also install wanderlust through your package manager (for GNU/Linux); search for "wanderlust", "wl", or "wl-beta" (recommended for Debian-based systems).
 
