@@ -363,6 +363,13 @@ If the path has space, it might be problematic (for me it is). So I fixed as fol
 -- Kiwon
 
 [new]
+There is a more generic fix that works for spaces, accents, and probably all sorts of weird characters:
+{{{
+(fname (url-unhex-string (un-urlify file)))
+}}}
+-- Schnouki
+
+[new]
 That code was based upon a version by Tassilo Horn, which worked for me with older versions of Evince. The code below is his version.
 
 {{{
