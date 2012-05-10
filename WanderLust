@@ -100,51 +100,6 @@ Similarly,
 
 will show you the complete hierarchy of newsgroups available on your default nntp server. 
 
-=== Opening attachments -- Setting up .mailcap ===
-If your messages contain attachments, you can type `v' to launch an external program with it. You will be asked which method to use. Hit the tab key to see the available methods. To configure your own programs, you'll have to add/edit the mime types in the ~/.mailcap file. Here is an example (you might have to use "%s" instead of %s if you get into trouble with spaces in filenames):
-
-~/.mailcap:
-{{{
-application/excel;		/usr/bin/oocalc2 %s
-application/x-excel;		/usr/bin/oocalc2 %s
-application/x-msexcel;		/usr/bin/oocalc2 %s
-application/vnd.ms-excel;	/usr/bin/oocalc2 %s
-application/ms-word;		/usr/bin/oowriter2 %s
-application/powerpoint;		/usr/bin/ooimpress2 %s
-application/mspowerpoint;	/usr/bin/ooimpress2 %s
-application/vnd.ms-powerpoint;	/usr/bin/ooimpress2 %s
-application/pdf;		/usr/bin/xpdf %s
-application/x-bz; 		/usr/bin/xarchiver %s
-application/x-bzip2;		/usr/bin/xarchiver %s
-application/x-compress;		/usr/bin/xarchiver %s
-application/x-compressed;	/usr/bin/xarchiver %s
-application/x-gtar;		/usr/bin/xarchiver %s
-application/x-gzip;		/usr/bin/xarchiver %s
-application/x-zip-compressed;	/usr/bin/xarchiver %s
-application/x-tar; 		/usr/bin/xarchiver %s
-application/zip; 		/usr/bin/xarchiver %s
-multipart/x-zip; 		/usr/bin/xarchiver %s
-audio/*;			/usr/bin/play %s
-image/*;			/usr/bin/gimp %s
-image/*;			/usr/bin/gqview %s
-multipart/x-gzip;		/usr/bin/xarchiver %s
-text/html;		 	/usr/bin/firefox %s
-text/plain;			/usr/bin/emacs %s
-video/*;			/usr/bin/gmplayer %s
-}}}
-
-You might also add the following to your ~/.wl file to allow you starting your browser when hitting the specified key (in this case, `f') while `point' is at url:
-
-~/.wl:
-{{{
-;; browse url key
-(add-hook 'mime-view-mode-hook
-	  (lambda ()
-	    (local-set-key "f" 'browse-url)))
-}}}
-
-The file will be read when you start wl. 
-
 === Setting up with Gmail ===
 Check that you have enabled IMAP in your Gmail account settings, then put the following in your .wl:
 {{{
