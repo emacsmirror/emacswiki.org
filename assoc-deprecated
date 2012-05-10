@@ -1,4 +1,4 @@
-Find the culprit libraries causing the following error message on emacs 24 startup
+Find the culprit libraries causing the following error message on emacs 24.2 startup
 
     error: Package assoc is obsolete!
     
@@ -10,19 +10,11 @@ The following code was used to search my el-git directory for files containg (re
     ./org-mode/contrib/lisp/org-export-generic.el:(require 'assoc)
     ./magit/magit-key-mode.el:(require 'assoc)
 
-I deleted the require statements from these files.
 
-This solves the error message. Every thing seems to run ok
-
-assoc is now implemented in c code
 
 [new:YannHodique:2012-05-08 05:52 UTC]
-Please don't do that, or at least don't advise others to do that :)
 
-The comments above are very misleading:
-* by blindly removing requirements, you **will** break code
-* `assoc' has always been implemented in C. assoc.el was about some other helpers (such as `aput', `adelete', ...) that were deemed unworthy. So, removing the dependency to assoc.el will only help for code that actually **didn't** use any of those
-* assoc.el will only be obsolete in upcoming Emacs 24.2
-* please instead contact the packages maintainers to have these fixed. For Magit, I fixed it recently in the git repository, and this will be part of the upcoming 1.1.2 version
+* `assoc' is implemented in C. assoc.el was about some other helpers (such as `aput', `adelete', ...) that were deemed unworthy.
+* assoc.el will be obsolete in upcoming Emacs 24.2
+* please contact the package maintainers to have these fixed. For Magit, I fixed it recently in the git repository, and this will be part of the upcoming 1.1.2 version
 
-I suggest this page be rewritten entirely, or just deleted
