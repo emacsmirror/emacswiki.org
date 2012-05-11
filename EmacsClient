@@ -30,6 +30,9 @@ RobDavenport : Owe - I believe that error means the file ~/.emacs.d/server/serve
 * In Linux, I find the absolute easiest way to start the daemon and a new frame is to bind the command <tt>emacsclient -c -a ""</tt> to a keyboard command or in some menu. This attempts to start a new client, fails to detect a running daemon, starts the daemon, and finally starts the client with <tt>""</tt> as the argument/file. If a daemon is running it doesn't get past the <tt>-c</tt> switch.
 
 === Windows ===
+
+See EmacsMsWindowsIntegration for a fairly complete and workable solution for Emacs 23/24, using stock Emacs builds (not W32Emacs).
+
 Create an emacs.bat file in your Emacs "bin" directory. (Perhaps something like "\Program Files\emacs-23.1\bin" if you've used an installer.) Add the following commands:
 
 <pre>
