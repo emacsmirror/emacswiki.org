@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Nov 28 15:41:09 2005
 ;; Version: 
-;; Last-Updated: Sun Jan  1 14:29:36 2012 (-0800)
+;; Last-Updated: Fri May 11 16:27:59 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 160
+;;     Update #: 177
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/apropos-fn+var.el
 ;; Keywords: apropos
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -53,6 +53,10 @@
 ;; 
 ;;; Change Log:
 ;;
+;; 2012/05/11 dadams
+;;     apropos-print: Updated for Emacs 24.
+;; 2012/03/31 dadams
+;;     Button apropos-option: Added properties face and apropos-short-label (same as var).
 ;; 2011/10/07 dadams
 ;;     Added soft require of naked.el.
 ;;     apropos-print: Use naked-key-description if available.
@@ -96,11 +100,12 @@
 (require 'naked nil t) ;; (no error if not found): naked-key-description
 
 ;; Quiet byte compiler
-(unless (boundp 'apropos-pattern) (defvar apropos-pattern))
-(unless (boundp 'apropos-sort-by-scores) (defvar apropos-sort-by-scores))
+(defvar apropos-compact-layout)
+(defvar apropos-multi-type)
+(defvar apropos-pattern)
+(defvar apropos-sort-by-scores)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;
-
 
 (if (< emacs-major-version 22)
     (defun apropos-function (pattern)
@@ -431,14 +436,9 @@ If non-nil TEXT is a string that will be printed as a heading."
                    symbol item)
                (set-buffer standard-output)
                (apropos-mode)
-               (if (display-mouse-p)
-                   (insert
-                    "If moving the mouse over text changes the text's color, "
-                    "you can click\n"
-                    "mouse-2 or hit `RET' on that text to get more information.\n"))
-               (insert "In this buffer, go to the name of the command, function, or variable,\n"
-                       (substitute-command-keys
-                        "and type \\[apropos-follow] to get full documentation.\n\n"))
+               (insert (substitute-command-keys "Type \\[apropos-follow] on ")
+                       (if apropos-multi-type "a type label" "an entry")
+                       " to view its full documentation.\n\n")
                (if text (insert text "\n\n"))
                (dolist (apropos-item p)
                  (when (and spacing (not (bobp)))
@@ -453,10 +453,9 @@ If non-nil TEXT is a string that will be printed as a heading."
                  (insert-text-button (symbol-name symbol)
                                      'type 'apropos-symbol
                                      'skip apropos-multi-type
-                                     ;; Can't use default, since user may have
-                                     ;; changed the variable!
-                                     ;; Just say `no' to variables containing faces!
-                                     'face apropos-symbol-face)
+                                     'face (if (boundp 'apropos-symbol-face)
+                                               apropos-symbol-face
+                                             'apropos-symbol))
                  (if (and (eq apropos-sort-by-scores 'verbose)
                           (cadr apropos-item))
                      (insert " (" (number-to-string (cadr apropos-item)) ") "))
@@ -474,7 +473,7 @@ If non-nil TEXT is a string that will be printed as a heading."
                               ;; omitting any that contain a buffer or a frame.
                               ;; FIXME: Why omit keys that contain buffers and
                               ;; frames?  This looks like a bad workaround rather
-                              ;; than a proper fix.  Does anybod know what problem
+                              ;; than a proper fix.  Does anybody know what problem
                               ;; this is trying to address?  --Stef
                               (dolist (key keys)
                                 (let ((i 0)
@@ -496,18 +495,22 @@ If non-nil TEXT is a string that will be printed as a heading."
                                                   (naked-key-description key)
                                                 (key-description key))
                                             (error)))
-                                (if apropos-keybinding-face
-                                    (put-text-property 0 (length key)
-                                                       'face apropos-keybinding-face
-                                                       key))
+                                (put-text-property 0 (length key)
+                                                   'face (if (boundp 'apropos-keybinding-face)
+                                                             apropos-keybinding-face
+                                                           'apropos-keybinding)
+                                                   key)
                                 key)
                               item ", "))
                           (insert "M-x ... RET")
-                          (when apropos-keybinding-face
-                            (put-text-property (- (point) 11) (- (point) 8)
-                                               'face apropos-keybinding-face)
-                            (put-text-property (- (point) 3) (point)
-                                               'face apropos-keybinding-face))))
+                          (put-text-property (- (point) 11) (- (point) 8)
+                                             'face (if (boundp 'apropos-keybinding-face)
+                                                       apropos-keybinding-face
+                                                     'apropos-keybinding))
+                          (put-text-property (- (point) 3) (point)
+                                             'face (if (boundp 'apropos-keybinding-face)
+                                                       apropos-keybinding-face
+                                                     'apropos-keybinding))))
                    (terpri))
                  (apropos-print-doc 2 (if (commandp symbol)
                                           'apropos-command
@@ -529,12 +532,103 @@ If non-nil TEXT is a string that will be printed as a heading."
            (setq apropos-accumulator ()))))) ; permit gc
 
 (when (>= emacs-major-version 22)
+  (defface apropos-option '((t (:inherit font-lock-variable-name-face)))
+    "Face used for option names in Apropos buffers."
+    :group 'apropos)
+
   (define-button-type 'apropos-option
       'apropos-label "Option"
+      'apropos-short-label "v"          ; Same as variable
+      'face '(apropos-option button)
       'help-echo "mouse-2, RET: Display more help on this user option (variable)"
       'follow-link t
       'action (lambda (button)
-                (describe-variable (button-get button 'apropos-symbol)))))
+                (describe-variable (button-get button 'apropos-symbol))))
+
+;;;   (define-button-type 'apropos-function
+;;;       'apropos-label "Function"
+;;;       'apropos-short-label "f"
+;;;       'face '(font-lock-function-name-face button)
+;;;       'help-echo "mouse-2, RET: Display more help on this function"
+;;;       'follow-link t
+;;;       'action (lambda (button)
+;;;                 (describe-function (button-get button 'apropos-symbol))))
+
+;;;   (define-button-type 'apropos-macro
+;;;       'apropos-label "Macro"
+;;;       'apropos-short-label "m"
+;;;       'face '(font-lock-function-name-face button)
+;;;       'help-echo "mouse-2, RET: Display more help on this macro"
+;;;       'follow-link t
+;;;       'action (lambda (button)
+;;;                 (describe-function (button-get button 'apropos-symbol))))
+
+;;;   (define-button-type 'apropos-command
+;;;       'apropos-label "Command"
+;;;       'apropos-short-label "c"
+;;;       'face '(font-lock-function-name-face button)
+;;;       'help-echo "mouse-2, RET: Display more help on this command"
+;;;       'follow-link t
+;;;       'action (lambda (button)
+;;;                 (describe-function (button-get button 'apropos-symbol))))
+
+;;;   ;; We used to use `customize-variable-other-window' instead for a
+;;;   ;; customizable variable, but that is slow.  It is better to show an
+;;;   ;; ordinary help buffer and let the user click on the customization
+;;;   ;; button in that buffer, if he wants to.
+;;;   ;; Likewise for `customize-face-other-window'.
+;;;   (define-button-type 'apropos-variable
+;;;       'apropos-label "Variable"
+;;;       'apropos-short-label "v"
+;;;       'face '(font-lock-variable-name-face button)
+;;;       'help-echo "mouse-2, RET: Display more help on this variable"
+;;;       'follow-link t
+;;;       'action (lambda (button)
+;;;                 (describe-variable (button-get button 'apropos-symbol))))
+
+;;;   (define-button-type 'apropos-face
+;;;       'apropos-label "Face"
+;;;       'apropos-short-label "F"
+;;;       'face '(font-lock-variable-name-face button)
+;;;       'help-echo "mouse-2, RET: Display more help on this face"
+;;;       'follow-link t
+;;;       'action (lambda (button)
+;;;                 (describe-face (button-get button 'apropos-symbol))))
+
+;;;   (define-button-type 'apropos-group
+;;;       'apropos-label "Group"
+;;;       'apropos-short-label "g"
+;;;       'face '(font-lock-builtin-face button)
+;;;       'help-echo "mouse-2, RET: Display more help on this group"
+;;;       'follow-link t
+;;;       'action (lambda (button)
+;;;                 (customize-group-other-window
+;;;                  (button-get button 'apropos-symbol))))
+
+;;;   (define-button-type 'apropos-widget
+;;;       'apropos-label "Widget"
+;;;       'apropos-short-label "w"
+;;;       'face '(font-lock-builtin-face button)
+;;;       'help-echo "mouse-2, RET: Display more help on this widget"
+;;;       'follow-link t
+;;;       'action (lambda (button)
+;;;                 (widget-browse-other-window (button-get button 'apropos-symbol))))
+
+;;;   (define-button-type 'apropos-plist
+;;;       'apropos-label "Properties"
+;;;       'apropos-short-label "p"
+;;;       'face '(font-lock-keyword-face button)
+;;;       'help-echo "mouse-2, RET: Display more help on this plist"
+;;;       'follow-link t
+;;;       'action (lambda (button)
+;;;                 (apropos-describe-plist (button-get button 'apropos-symbol))))
+
+;;;   (define-button-type 'apropos-library
+;;;       'help-echo "mouse-2, RET: Display more help on this library"
+;;;       'follow-link t
+;;;       'action (lambda (button)
+;;;                 (apropos-library (button-get button 'apropos-symbol))))
+  )
 
 ;;;;;;;;;;;;;;;;;;;;
 
