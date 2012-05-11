@@ -331,6 +331,14 @@ Hi, I am just about to go through the various Anything pages, and go through a m
 Thanks!
 -- [[JonathanArkell]]
 
+----
+[new:JonasBernoulli:2012-05-11]
+I have added autoloads to Lisp:screenshot.el, hope that is okay. Could you please add also add autoloads to Lisp:yaoddmuse.el; you can get my "patch" here: https://raw.github.com/gist/2660901/72ce45c2a725ad5b3ceb4e775182e1ec4d56cbc8/yaoddmuse.el or https://gist.github.com/2660901
+
+By the way have you considered moving to git (or another dvcs) and github (or another host)? That would make sending pull requests easier ;-) (Or just an email address where patches could be send would also be helpful.)
+
+-- JonasBernoulli
+
  
 ----
 CategoryHomepage
