@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Mon May  7 10:32:55 2012 (-0700)
+;; Last-Updated: Thu May 10 21:25:28 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 8394
+;;     Update #: 8401
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-chg.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -4522,6 +4522,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-mode.el'")
 ;;
+;; 2012/05/10 dadams
+;;     Corrected guard condition for diredp-menu-bar-recursive-marked-menu.
 ;; 2012/05/07 dadams
 ;;     Applied renaming of icicle-search-dired-marked to icicle-search-dired-marked-recursive.
 ;; 2012/05/06 dadams
