@@ -85,6 +85,8 @@ you are using the default view of /Control Panel/, you have to select /User Acco
 before you can select /User Accounts/. Either way, set up the ##HOME## environment variable as
 described above.  See also MsWindowsDotEmacs.
 
+*Integration with Windows Shell:* If you're using Win7 or later and Emacs24, check out EmacsMsWindowsIntegration for how to start Emacs from a shortcut, use it to open file types, etc.
+
 
 ----
 CategoryWThirtyTwo
