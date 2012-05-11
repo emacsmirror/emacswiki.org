@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 10:21:10 2006
 ;; Version: 22.0
-;; Last-Updated: Mon May  7 10:15:53 2012 (-0700)
+;; Last-Updated: Thu May 10 21:13:27 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 8747
+;;     Update #: 8749
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-mode.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -2017,7 +2017,7 @@ Used on `pre-command-hook'."
              (define-key dired-mode-map [menu-bar operate icicles]
                (list 'menu-item "Icicles" icicle-dired-multiple-menu-map :visible 'icicle-mode)))
 
-           (when (keymapp diredp-menu-bar-recursive-marked-menu) ; Defined in `dired+.el'
+           (when (boundp 'diredp-menu-bar-recursive-marked-menu) ; Defined in `dired+.el'
              (define-key diredp-menu-bar-recursive-marked-menu [icicle-search-dired-marked-recursive]
                '(menu-item "Icicles Search (and Replace)..." icicle-search-dired-marked-recursive
                  :help "Search the marked files, including those in marked subdirs"
