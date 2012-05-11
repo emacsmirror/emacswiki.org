@@ -106,7 +106,11 @@ For current cvs version, I have write a [[EmacsdInitScript]] to put in /etc/init
 
 === Microsoft Windows (in Emacs often called w32) ===
 
-==== Using the patched version o EmacsW32 ====
+==== Using stock (unpatched) Emacs ====
+
+See EmacsMsWindowsIntegration for how to set up taskbar/Start-menu shortcuts and make Emacs open particular file types using emacsclient.  This works well for Emacs 24 at least, and is simpler and perhaps better than the VBS solutions mentioned below.
+
+==== Using the patched version of EmacsW32 ====
 
 With the patched version of [[EmacsW32]] [[#EmacsW32Client]] will start Emacs automatically by default.
 You can use the same solution also with the unpatched version, but this requires using the patched version of emacs client + the file auto-server.el.
