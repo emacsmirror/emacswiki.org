@@ -1,21 +1,26 @@
-There are at least four ways you may want to integrate Emacs into Windows:
+This page is about different ways to integrate Emacs into MS Windows:
 
-# run from cmd window
-# Start from shortcut (taskbar or Start menu)
-# Double-click .txt/.el/.org files (or other extensions)
-# set as editor for git/mercurial/etc.
+== Run Emacs from a `cmd' Window ==
 
-First, for #1, put the emacs bin dir in the Windows PATH (right-click Computer, Properties, Advanced, Environment Variables).  This handles #1 and simplifies the other steps (no paths needed).
+Put the Emacs `bin' folder in the Windows ##PATH## environment variable (right-click Computer, Properties, Advanced, Environment Variables).  This also simplifies other methods mentioned on this page (no explicit paths needed then).
 
-For #2, the right code for the desktop/task-bar shortcut is exactly this:
+
+== Use a Shortcut ==
+
+Use this code for a desktop/task-bar shortcut:
 {{{
 emacsclientw.exe -na runemacs.exe -c
 }}}
-This shortcut will start emacs from scratch if it's not running, and open a new frame if it is.
-The -c is key: without it, you have to pass a file to open (even if it's "", which does work but is uglier) or emacsclient will exit with an error.
-(Right-click on desktop, New Shortcut, etc., then drag the shortcut into taskbar if you want.)
 
-For #3, use ftype and assoc:
+This shortcut starts Emacs from scratch if it's not running, and opens a new frame if it is.
+
+The ##-c## is key: without it, you have to pass a file to open (even if it's ##""##, which does work but is uglier) or else emacsclient will exit with an error.
+(Right-click on desktop, New Shortcut, etc., then drag the shortcut into the Quick-Launch bar if you want.)
+
+
+== Create File Associations ==
+
+Use Windows command-line commands `ftype' and `assoc':
 
     ftype txtfile=emacsclientw -na runemacs "%1"
     ftype EmacsLisp=emacsclientw -na runemacs "%1"
@@ -27,8 +32,19 @@ For #3, use ftype and assoc:
     assoc .c=CodeFile
     assoc .h=CodeFile
 
-For #4, I don't know a general solution, but this almost works for me:
+
+== Set `emacsclient' as Your Editor ==
+
+This almost works:
 {{{
   git config --global core.editor "emacsclient -a runemacs '%*'"
 }}}
-The problem is, if emacs wasn't already running, it starts emacs fine, but it returns right away -- doesn't wait.  So the git commit fails (because the default message was unchanged).  Anyone know how to make emacsclient wait in the case where it has to start the alt editor?  (Do NOT use emacsclientw here; it doesn't wait.)
+
+If Emacs is not already running then it starts Emacs OK, but it returns right away -- doesn't wait.  So the ##git## commit fails (because the default message is unchanged).
+
+Anyone know how to make emacsclient wait in the case where it has to start the alternate editor?  (Do ''not'' use ##emacsclientw## here; it doesn't wait.)
+
+
+----
+
+CategoryWThirtyTwo
