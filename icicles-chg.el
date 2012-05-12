@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Thu May 10 21:25:28 2012 (-0700)
+;; Last-Updated: Fri May 11 17:36:21 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 8401
+;;     Update #: 8404
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-chg.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -3124,6 +3124,10 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-mcmd.el'")
 ;;
+;; 2012/05/11 dadams
+;;     icicle-sit-for: Bind inhibit-quit to t so C-g is handled as icicle-abort-recursive-edit.
+;;     icicle-(prefix|apropos)-complete-1:
+;;       Set icicle-next-(prefix|apropos)-complete-cycles-p to t unconditionally (except for WORD-P).
 ;; 2012/04/22 dadams
 ;;     Added: icicle-(un)bind-buffer-candidate-keys,
 ;;            icicle-(remove|keep-only)-buffer-cands-for(-derived)-mode.
