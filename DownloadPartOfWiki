@@ -2,9 +2,7 @@
 
 == Using wget ==
 
-Wget can't be directly used to download a small region of emacswiki.org because the site has a robots.txt to exclude wget.
-
-Here's a polite way around this barrier:
+Be sure to use the **--reject** parameter:
 
 <pre>
 wget --http-user=foo --http-pass=geheim --reject "*search=*","*action=*", \
