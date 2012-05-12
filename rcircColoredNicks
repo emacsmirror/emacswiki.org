@@ -55,7 +55,7 @@ the value.
 		     ("green" "kensanata")
                      ("gray" "fsbot" "birny" "lisppaste" "specbot")))
       (dolist (nick (cdr group))
-	(puthash nick (car group) rcirc-color-mapping)))
+	(puthash nick (cons 'foreground (car group)) rcirc-color-mapping)))
 
 == Listing the colors assigned interactively using /color ==
 
