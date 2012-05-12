@@ -1,7 +1,7 @@
 ==GNU-EMACS ON MS-WINDOWS OTHER THAN EMACSW32==
 
 Apart from [[EmacsW32]] there are several distributions of binaries of Gnu-Emacs for
-MS-Windows to choose from currently (Sept. 2012):
+MS-Windows to choose from:
 
 * So-called *CVS-versions* that are currently in development but are actually quite stable
   now. These are located on !SourceForge. There are currently two versions to choose from,
