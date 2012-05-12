@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Sun Apr 22 08:19:15 2012 (-0700)
+;; Last-Updated: Fri May 11 17:33:51 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 17957
+;;     Update #: 17964
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-mcmd.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -2330,7 +2330,7 @@ you do not want this remapping, then customize option
 
 (when (> emacs-major-version 22)
   (defun icicle-sit-for (seconds &optional nodisp obsolete)
-    "Perform redisplay, then wait for SECONDS seconds or until input is available.
+  "Perform redisplay, then wait for SECONDS seconds or until input is available.
 SECONDS may be a floating-point value.
 \(On operating systems that do not support waiting for fractions of a
 second, floating-point values are rounded down to the nearest integer.)
@@ -2345,30 +2345,31 @@ An obsolete, but still supported form is
 where the optional arg MILLISECONDS specifies an additional wait period,
 in milliseconds; this was useful when Emacs was built without
 floating point support."
-    (if (numberp nodisp)
-        (setq seconds  (+ seconds (* 1e-3 nodisp))
-              nodisp   obsolete)
-      (if obsolete (setq nodisp  obsolete)))
-    (cond (noninteractive
-           (sleep-for seconds)
-           t)
-          ((input-pending-p)
-           nil)
-          ((<= seconds 0)
-           (or nodisp (redisplay)))
-          (t
-           (or nodisp (redisplay))
-           (let ((read (read-event nil nil seconds)))
-             (or (null read)
-                 (progn
-                   ;; If last command was a prefix arg, e.g. C-u, push this event onto
-                   ;; `unread-command-events' as (t . EVENT) so it will be added to
-                   ;; `this-command-keys' by `read-key-sequence'.
-                   (if (memq overriding-terminal-local-map
+  (if (numberp nodisp)
+      (setq seconds  (+ seconds (* 1e-3 nodisp))
+            nodisp   obsolete)
+    (if obsolete (setq nodisp  obsolete)))
+  (cond (noninteractive
+         (sleep-for seconds)
+         t)
+        ((input-pending-p)
+         nil)
+        ((<= seconds 0)
+         (or nodisp (redisplay)))
+        (t
+         (or nodisp (redisplay))
+         (let* ((inhibit-quit  t)
+                (read          (read-event nil nil seconds)))
+           (or (null read)
+               (progn
+                 ;; If last command was a prefix arg, e.g. C-u, push this event onto
+                 ;; `unread-command-events' as (t . EVENT) so it will be added to
+                 ;; `this-command-keys' by `read-key-sequence'.
+                 (when (memq overriding-terminal-local-map
                              (list universal-argument-map icicle-universal-argument-map))
-                       (setq read (cons t read)))
-                   (push read unread-command-events)
-                   nil)))))))
+                   (setq read  (cons t read)))
+                 (push read unread-command-events)
+                 nil)))))))
 
 ;;;###autoload (autoload 'icicle-retrieve-next-input "icicles")
 (defun icicle-retrieve-next-input (&optional arg) ; Bound to `C-S-l' (`C-L') in minibuffer.
@@ -3654,8 +3655,11 @@ Optional argument WORD-P non-nil means complete only a word at a time."
                                                     (if no-display-p
                                                         'icicle-prefix-complete-no-display
                                                       'icicle-prefix-complete))
-            icicle-next-prefix-complete-cycles-p  (equal input-before-completion
-                                                         (icicle-input-from-minibuffer 'leave-envvars)))
+            ;; $$$$$$ Trying this - added wrapper (or (not word-p)...)
+            icicle-next-prefix-complete-cycles-p  (or (not word-p)
+                                                      (equal input-before-completion
+                                                             (icicle-input-from-minibuffer
+                                                              'leave-envvars))))
       (when mode-line-help (icicle-show-help-in-mode-line mode-line-help))
       return-value)))
 
@@ -3999,8 +4003,10 @@ message either.  NO-DISPLAY-P is passed to
     (setq icicle-last-completion-command         (if no-display-p
                                                      'icicle-apropos-complete-no-display
                                                    'icicle-apropos-complete)
-          icicle-next-apropos-complete-cycles-p  (equal input-before-completion
-                                                        (icicle-input-from-minibuffer)))
+          ;; $$$$$$ Trying without the condition arg - just pass `t'
+          ;; icicle-next-apropos-complete-cycles-p  (equal input-before-completion
+          ;;                                               (icicle-input-from-minibuffer)))
+          icicle-next-apropos-complete-cycles-p  t)
     (when mode-line-help (icicle-show-help-in-mode-line mode-line-help))
     icicle-completion-candidates))
 
