@@ -11,6 +11,7 @@ wget --http-user=foo --http-pass=geheim --reject "*search=*","*action=*", \
 </pre>
 
 You're probably better off using a different download method!
+If you get it wrong, [http://www.emacswiki.org/alex/2012-05-12_Stupid_Leeches you might get banned].
 
 (Back to WikiDownload.)
 
