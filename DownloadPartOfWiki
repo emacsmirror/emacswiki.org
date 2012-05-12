@@ -10,6 +10,8 @@ wget --http-user=foo --http-pass=geheim --reject "*search=*","*action=*", \
 --page-requisites --convert-links -e robots=off -w 4 -r -l5 -np <url>
 </pre>
 
+You're probably better off using a different download method!
+
 (Back to WikiDownload.)
 
 ----
