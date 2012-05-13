@@ -10,6 +10,7 @@ For those runnning an up-to-date version of Emacs (22.1 or newer) an alternative
 : Try subword-mode (without the "c-").
 
 ==>>the references below all seem to be out of date.  If anyone still has a copy.... I have to use this stuff.
+===>> The Wayback machine ( web.archive.org ) has them.
 
 There's a minor mode for CamelCase (M-x camelCase-mode), written by C. R. Manning, that allows for forward-word and backward-word to stop at each word within a CamelCase word.  It's now available from http://www.eecs.ucf.edu/~leavens/emacs/camelCase/camelCase-mode.el with instructions and commentary at http://www.eecs.ucf.edu/~leavens/emacs/camelCase/camelCase-mode.html
 
