@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Fri May 11 17:33:51 2012 (-0700)
+;; Last-Updated: Sun May 13 16:44:18 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 17964
+;;     Update #: 17967
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-mcmd.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -2322,8 +2322,10 @@ you do not want this remapping, then customize option
 ;; REPLACE ORIGINAL `sit-for' in `subr.el',
 ;; saving it for restoration when you toggle `icicle-mode'.
 ;;
-;; Ensure that `sit-for' after `C-u' in the minibuffer is immediately interrupted by user input.
-;; This fix is not needed for Emacs < 23.
+;; 1. Ensure that `sit-for' after `C-u' in the minibuffer is immediately interrupted by user input.
+;;    This fix is not needed for Emacs < 23.
+;;
+;; 2. Bind `inhibit-quit' to t, so `C-g' is handled after `sit-for', by `icicle-abort-recursive-edit'.
 ;;
 (unless (fboundp 'old-sit-for)
   (defalias 'old-sit-for (symbol-function 'sit-for)))
@@ -6661,7 +6663,8 @@ NO-ERROR-P non-nil means don't raise an error if NEW-CANDS is nil."
                                                 icicle-saved-candidates-variables-obarray
                                                 nil nil nil (if (boundp 'variable-name-history)
                                                                 'variable-name-history
-                                                              'icicle-variable-name-history)))
+                                                              'icicle-variable-name-history)
+                                                "icicle-saved-completion-candidates"))
                            (when in-minibuf-p
                              (with-output-to-temp-buffer "*Completions*"
                                (display-completion-list icicle-completion-candidates)))))
