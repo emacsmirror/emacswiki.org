@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Fri May 11 17:36:21 2012 (-0700)
+;; Last-Updated: Sun May 13 10:22:28 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 8404
+;;     Update #: 8407
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-chg.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -1313,6 +1313,9 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-fn.el'")
 ;;
+;; 2012/05/13 dadams
+;;     icicle-completion-setup-function (all Emacs versions):
+;;       Use substitute-in-file-name, to expand env vars.  expand-file-name and file-name-as-directory.
 ;; 2012/04/30 dadams
 ;;     icicle-unsorted-file-name-prefix-candidates:
 ;;       Forgot to use PRED, not default-directory, in second call to try-completion.
