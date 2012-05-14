@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Mon May  7 10:17:42 2012 (-0700)
+;; Last-Updated: Sun May 13 17:41:00 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 28784
+;;     Update #: 28803
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-doc2.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -522,9 +522,9 @@
 ;;  `x'       `icicle-search-xml-element' - Search XML elements
 ;;  `X'       `icicle-search-xml-element-text-node'- Search text nodes
 ;;
-;;  (You need library `Dired+' for
-;;  `icicle-search-dired-marked-recursive', and library `Bookmark+'
-;;  for `icicle-search-bookmark-list-marked'.)
+;;  (You need library library `Bookmark+' for
+;;  `icicle-search-bookmark-list-marked'.  You need library `Dired+'
+;;  for `icicle-search-dired-marked-recursive'.)
 ;;
 ;;  There are many `icicle-search-*-bookmark' commands, for searching
 ;;  within bookmarks of various types.
@@ -2421,23 +2421,24 @@
 ;;(@* "Search-and-Replace Marked Files")
 ;;  ** Search-and-Replace Marked Files **
 ;;
-;;  If you use library `Dired+' then you can use `M-s M-s m'
-;;  (`icicle-search-dired-marked-recursive') in Dired to use Icicles
-;;  search on the marked files and replace search hits on demand.
-;;  With a prefix arg the Dired markings are ignored; all files are
-;;  searched.
+;;  If you also use library `Dired+' then `M-s M-s m'
+;;  (`icicle-search-dired-marked-recursive') in Dired uses Icicles
+;;  search (and on-demand replace) on the marked files.
+
 ;;
 ;;  Each marked subdirectory is handled recursively in the same way:
 ;;  If it has a Dired buffer then its marked files are searched, or
 ;;  all of its files if none are marked.  If a marked directory at any
 ;;  level has no Dired buffer then all of its files are searched.
+;;  With a prefix arg the Dired markings are ignored; all files are
+;;  searched.
 ;;
 ;;  Because you might not be aware of existing Dired buffers for some
 ;;  marked directories, you are asked to confirm searching their
-;;  marked files.  If you do not confirm this then all files in marked
-;;  directories are searched, regardless of whether directories might
-;;  have Dired buffers with marked files.  That is, Dired buffers are
-;;  ignored if you do not confirm using them.
+;;  marked files.  If you do not confirm, then all files in marked
+;;  subdirectories (recursively) are searched, regardless of whether
+;;  they might have Dired buffers with marked files.  That is, Dired
+;;  buffers are ignored if you do not confirm using them.
 ;;
 ;;  Command `icicle-search-dired-marked-recursive' runs
 ;;  `icicle-search', so you have available all of its features,
