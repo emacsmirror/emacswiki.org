@@ -1,5 +1,6 @@
 This page is about displaying sequences of characters as fancy characters or symbols -- for example, showing ##->## as -->.
 
+* [https://github.com/drothlis/pretty-symbols pretty-symbols-mode] -- an attempt to replace most of the below with a proper package (available on [http://melpa.milkbox.net/ MELPA]) and under source control to facilitate contributions.
 * PrettyLambda -- Show ##lambda## as the Greek letter.
 * PrettyGreek -- Generalization of PrettyLambda for other Greek letters.
 * TrentBuck's pretty symbols -- He says they horribly mess up wrapping (lines become too long) and alignment -- obvious if you do `##C-x v =##'.
