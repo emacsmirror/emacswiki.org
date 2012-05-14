@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Sun May 13 16:44:18 2012 (-0700)
+;; Last-Updated: Mon May 14 09:47:41 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 17967
+;;     Update #: 17970
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-mcmd.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -5094,9 +5094,11 @@ You can use this command only from the minibuffer or `*Completions*'
                                     (not (eq icicle-current-completion-mode 'prefix))))))
     (cond (;; Use special help function.
            icicle-candidate-help-fn
-           ;; Transform candidate, in case it's a multi-completion.
-           (funcall icicle-candidate-help-fn
-                    (icicle-transform-multi-completion icicle-last-completion-candidate)))
+           ;; We do not transform a multi-completion candidate before passing it to
+           ;; `icicle-candidate-help-fn'.  It is that function that should do that (using
+           ;; `icicle-transform-multi-completion').  We thus give that function access to the full,
+           ;; untransformed candidate so that it can transform it anyway it wants.
+           (funcall icicle-candidate-help-fn icicle-last-completion-candidate))
 
           (;; Call to `lacarte-execute(-menu)-command' (defined in `lacarte.el').
            ;; Use command associated with menu item.
