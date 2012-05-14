@@ -17,6 +17,10 @@ This shortcut starts Emacs from scratch if it's not running, and opens a new fra
 The ##-c## is key: without it, you have to pass a file to open (even if it's ##""##, which does work but is uglier) or else emacsclient will exit with an error.
 (Right-click on desktop, New Shortcut, etc., then drag the shortcut into the Quick-Launch bar if you want.)
 
+  -n means no wait - don't wait for the server to return
+  -a EDITOR specifies to the emacsclientw.exe which editor to run if emacs.exe is not already running
+  -c tells emacs to create a new frame instead of trying to use the existing frame
+
 
 == Create File Associations ==
 
