@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Sun May 13 10:22:28 2012 (-0700)
+;; Last-Updated: Sun May 13 17:15:14 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 8407
+;;     Update #: 8419
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-chg.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -85,6 +85,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd1.el'")
 ;;
+;; 2012/05/13 dadams
+;;     Added: icicle-dired-save-marked(-more|to-cache-file|to-fileset|to-variable)-recursive, 
 ;; 2012/04/22 dadams
 ;;     Added: icicle-buffer-name-prompt.
 ;;     Removed: icicle-filter-buffer-cands-for-mode (replaced by *-(remove|keep-only)* in *-mcmd.el).
@@ -3127,6 +3129,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-mcmd.el'")
 ;;
+;; 2012/05/13 dadams
+;;     icicle-candidate-set-save-1: Use icicle-saved-completion-candidates as default variable.
 ;; 2012/05/11 dadams
 ;;     icicle-sit-for: Bind inhibit-quit to t so C-g is handled as icicle-abort-recursive-edit.
 ;;     icicle-(prefix|apropos)-complete-1:
@@ -4529,6 +4533,9 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-mode.el'")
 ;;
+;; 2012/05/13 dadams
+;;     Added: icicle-dired-recursive-marked-menu-map.  Put *-recursive commands on it.
+;;     Bind *recursive commands to same keys as non-recursive, but on M-+ prefix key.
 ;; 2012/05/10 dadams
 ;;     Corrected guard condition for diredp-menu-bar-recursive-marked-menu.
 ;; 2012/05/07 dadams
