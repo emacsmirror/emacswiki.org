@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Mon May  7 10:35:47 2012 (-0700)
+;; Last-Updated: Sun May 13 17:05:49 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 23131
+;;     Update #: 23137
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -236,8 +236,13 @@
 ;;    `icicle-dired-save-marked',
 ;;    `icicle-dired-save-marked-as-project',
 ;;    `icicle-dired-save-marked-more',
+;;    `icicle-dired-save-marked-more-recursive',
 ;;    `icicle-dired-save-marked-persistently',
+;;    `icicle-dired-save-marked-recursive',
+;;    `icicle-dired-save-marked-to-cache-file-recursive',
+;;    `icicle-dired-save-marked-to-fileset-recursive',
 ;;    `icicle-dired-save-marked-to-variable',
+;;    `icicle-dired-save-marked-to-variable-recursive',
 ;;    `icicle-dired-smart-shell-command', `icicle-doc',
 ;;    `icicle-doremi-increment-variable+',
 ;;    `icicle-ess-complete-object-name',
