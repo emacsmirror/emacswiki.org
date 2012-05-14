@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:23:26 2006
 ;; Version: 22.0
-;; Last-Updated: Mon May  7 10:16:47 2012 (-0700)
+;; Last-Updated: Mon May 14 10:05:01 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 1618
+;;     Update #: 1622
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-var.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -286,9 +286,11 @@ this should return nil for \"success\" and non-nil for \"failure\".")
 
 (defvar icicle-candidate-help-fn nil
   "Help function to be applied to current completion candidate.
+If nil then default help function `icicle-help-on-candidate' is used.
 If non-nil, it must be a function that accepts a completion candidate
-  (a string or a symbol) as argument.
-If nil, default help function `icicle-help-on-candidate' is used.")
+in its display form.  If the candidate is a multi-completion then the
+help function can invoke `icicle-transform-multi-completion' on it,
+binding `icicle-list-use-nth-parts' as appropriate.")
 
 (defvar icicle-candidate-nb nil
   "Current completion candidate number, or nil if not cycling candidates.
