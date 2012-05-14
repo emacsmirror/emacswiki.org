@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Sun Apr 22 10:17:07 2012 (-0700)
+;; Last-Updated: Sun May 13 17:01:36 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 23689
+;;     Update #: 23778
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-cmd1.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -185,8 +185,13 @@
 ;;    `icicle-dired-save-marked',
 ;;    `icicle-dired-save-marked-as-project',
 ;;    `icicle-dired-save-marked-more',
+;;    `icicle-dired-save-marked-more-recursive',
 ;;    `icicle-dired-save-marked-persistently',
+;;    `icicle-dired-save-marked-recursive',
+;;    `icicle-dired-save-marked-to-cache-file-recursive',
+;;    `icicle-dired-save-marked-to-fileset-recursive',
 ;;    `icicle-dired-save-marked-to-variable',
+;;    `icicle-dired-save-marked-to-variable-recursive',
 ;;    `icicle-doremi-increment-variable+',
 ;;    `icicle-ess-complete-filename',
 ;;    `icicle-ess-complete-object-name',
@@ -2890,7 +2895,12 @@ You can use this command only from a bookmark-list display buffer
   (bmkp-bmenu-barf-if-not-in-menu-list)
   (icicle-candidate-set-save-1 (bmkp-bmenu-get-marked-files) (if filesetp 0 '(1))))
 
-;;;###autoload (autoload 'icicle-dired-save-marked "icicles")
+
+;;;###autoload (autoload 'icicle-dired-save-marked                        "icicles")
+;;;###autoload (autoload 'icicle-dired-save-marked-more                   "icicles")
+;;;###autoload (autoload 'icicle-dired-save-marked-to-variable            "icicles")
+;;;###autoload (autoload 'icicle-dired-save-marked-as-project             "icicles")
+;;;###autoload (autoload 'icicle-dired-save-marked-persistently           "icicles")
 (defun icicle-dired-save-marked (&optional arg) ; Bound to `C-M->' in Dired.
   "Save the marked file names in Dired as a set of completion candidates.
 Saves file names in variable `icicle-saved-completion-candidates', by
@@ -2917,47 +2927,24 @@ You can use this command only from a Dired buffer."
     (error "Command `icicle-dired-save-marked' must be called from a Dired buffer"))
   (icicle-candidate-set-save-1 (dired-get-marked-files) arg))
 
-;;;###autoload (autoload 'icicle-dired-save-marked-more "icicles")
 (defun icicle-dired-save-marked-more (&optional arg) ; Bound to `C->' in Dired.
   "Add the marked file names in Dired to the saved candidates set.
-Add candidates to `icicle-saved-completion-candidates', by default.
-A prefix argument acts the same as for `icicle-candidate-set-save'.
-
-The existing saved candidates are still saved.  The current candidates
-are added to those already saved.
-
-You can retrieve the saved set of candidates with `C-M-<'.
-You can use the saved set of candidates for operations such as
-\\<minibuffer-local-completion-map>
-`icicle-candidate-set-union' (`\\[icicle-candidate-set-union]'),
-`icicle-candidate-set-intersection' (`\\[icicle-candidate-set-intersection]'), and
-`icicle-candidate-set-difference' (`\\[icicle-candidate-set-difference]').
-
-You can use this command only from a Dired buffer."
+Like `icicle-dired-save-marked', but add file names to those already
+saved, if any.  A prefix argument has the same effect as for
+`icicle-dired-save-marked'."
   (interactive "P")
   (unless (eq major-mode 'dired-mode)
     (error "`icicle-dired-save-marked-more' must be called from a Dired buffer"))
   (icicle-candidate-set-save-1 (dired-get-marked-files) arg t))
 
-;;;###autoload (autoload 'icicle-dired-save-marked-to-variable "icicles")
 (defun icicle-dired-save-marked-to-variable () ; Bound to `C-M-}' in Dired.
   "Save the marked file names in Dired to a variable as a candidate set.
-You can retrieve the saved set of file-name candidates during
-completion using `\\<minibuffer-local-completion-map>\\[icicle-candidate-set-retrieve]'.
-You can use the saved set of candidates for operations such as
-\\<minibuffer-local-completion-map>
-`icicle-candidate-set-union' (`\\[icicle-candidate-set-union]'),
-`icicle-candidate-set-intersection' (`\\[icicle-candidate-set-intersection]'), and
-`icicle-candidate-set-difference' (`\\[icicle-candidate-set-difference]').
-
-You can use this command only from a Dired buffer."
+Same as using `icicle-dired-save-marked' with no prefix argument."
   (interactive)
   (icicle-candidate-set-save-1 (dired-get-marked-files) 99))
 
-;;;###autoload (autoload 'icicle-dired-save-marked-as-project "icicles")
 (defalias 'icicle-dired-save-marked-as-project ; Bound to `C-}' in Dired.
     'icicle-dired-save-marked-persistently)
-;;;###autoload (autoload 'icicle-dired-save-marked-persistently "icicles")
 (defun icicle-dired-save-marked-persistently (filesetp)
   "Save the marked file names in Dired as a persistent set.
 With no prefix arg, save in a cache file.
@@ -2974,6 +2961,114 @@ You can use the saved set of candidates for operations such as
 You can use this command only from a Dired buffer."
   (interactive "P")
   (icicle-candidate-set-save-1 (dired-get-marked-files) (if filesetp 0 '(1))))
+
+
+;;; These commands require library `Dired+'.
+;;;
+;;;###autoload (autoload 'icicle-dired-save-marked-recursive               "icicles")
+;;;###autoload (autoload 'icicle-dired-save-marked-more-recursive          "icicles")
+;;;###autoload (autoload 'icicle-dired-save-marked-to-variable-recursive   "icicles")
+;;;###autoload (autoload 'icicle-dired-save-marked-to-cache-file-recursive "icicles")
+;;;###autoload (autoload 'icicle-dired-save-marked-to-fileset-recursive    "icicles")
+(when (fboundp 'diredp-get-files)       ; In Dired+.
+  (defun icicle-dired-save-marked-recursive (&optional ignore-marks-p arg) ; Bound to `M-+ C-M->' in Dired.
+    "Save the marked file names in Dired, including those in marked subdirs.
+Like `icicle-dired-save-marked', but act recursively on subdirs.
+
+The files included are those that are marked in the current Dired
+buffer, or all files in the directory if none are marked.  Marked
+subdirectories are handled recursively in the same way.
+
+With a prefix argument, ignore all marks - include all files in this
+Dired buffer and all subdirs, recursively.
+
+You need library `Dired+' for this command."
+    (interactive (progn
+                   (unless (fboundp 'diredp-get-confirmation-recursive)
+                     (error "You need library `dired+.el' for this command"))
+                   (diredp-get-confirmation-recursive)
+                   (list current-prefix-arg 1)))
+    (icicle-candidate-set-save-1 (diredp-get-files ignore-marks-p) arg))
+
+  (defun icicle-dired-save-marked-more-recursive (&optional ignore-marks-p arg) ; Bound to `M-+ C->' in Dired.
+    "Add marked files, including those in marked subdirs, to saved candidates.
+Like `icicle-dired-save-marked-more', but act recursively on subdirs.
+
+The files included are those that are marked in the current Dired
+buffer, or all files in the directory if none are marked.  Marked
+subdirectories are handled recursively in the same way.
+
+With a prefix argument, ignore all marks - include all files in this
+Dired buffer and all subdirs, recursively.
+
+You need library `Dired+' for this command."
+    (interactive (progn
+                   (unless (fboundp 'diredp-get-confirmation-recursive)
+                     (error "You need library `dired+.el' for this command"))
+                   (diredp-get-confirmation-recursive)
+                   (list current-prefix-arg 1)))
+    (icicle-candidate-set-save-1 (diredp-get-files ignore-marks-p) arg t))
+
+  (defun icicle-dired-save-marked-to-variable-recursive (&optional ignore-marks-p) ; `M-+ C-M-}' in Dired.
+    "Save marked files, including those in marked subdirs, to a variable.
+Like `icicle-dired-save-marked-to-variable', but act recursively on subdirs.
+
+The files included are those that are marked in the current Dired
+buffer, or all files in the directory if none are marked.  Marked
+subdirectories are handled recursively in the same way.
+
+With a prefix argument, ignore all marks - include all files in this
+Dired buffer and all subdirs, recursively.
+
+You need library `Dired+' for this command."
+    (interactive (progn
+                   (unless (fboundp 'diredp-get-confirmation-recursive)
+                     (error "You need library `dired+.el' for this command"))
+                   (diredp-get-confirmation-recursive)
+                   (list current-prefix-arg)))
+    (icicle-candidate-set-save-1 (diredp-get-files ignore-marks-p) 99))
+
+  (defun icicle-dired-save-marked-to-cache-file-recursive (&optional ignore-marks-p) ; `M-+ C-}' in Dired.
+    "Save marked files, including in marked subdirs, to an Icicles cache set.
+Like `icicle-dired-save-marked-persistently' with no prefix arg, but
+act recursively on subdirs.
+
+The files included are those that are marked in the current Dired
+buffer, or all files in the directory if none are marked.  Marked
+subdirectories are handled recursively in the same way.
+
+With a prefix argument, ignore all marks - include all files in this
+Dired buffer and all subdirs, recursively.
+
+You need library `Dired+' for this command."
+    (interactive (progn
+                   (unless (fboundp 'diredp-get-confirmation-recursive)
+                     (error "You need library `dired+.el' for this command"))
+                   (diredp-get-confirmation-recursive)
+                   (list current-prefix-arg)))
+    (icicle-candidate-set-save-1 (diredp-get-files ignore-marks-p) '(1)))
+
+  (defun icicle-dired-save-marked-to-fileset-recursive (&optional ignore-marks-p) ; Not bound by default.
+    "Save marked files, including those in marked subdirs, to an Emacs fileset.
+Like `icicle-dired-save-marked-persistently' with no prefix arg, but
+act recursively on subdirs.
+
+The files included are those that are marked in the current Dired
+buffer, or all files in the directory if none are marked.  Marked
+subdirectories are handled recursively in the same way.
+
+With a prefix argument, ignore all marks - include all files in this
+Dired buffer and all subdirs, recursively.
+
+You need library `Dired+' for this command."
+    (interactive (progn
+                   (unless (fboundp 'diredp-get-confirmation-recursive)
+                     (error "You need library `dired+.el' for this command"))
+                   (unless (require 'filesets nil t)
+                     (error "Cannot save to a fileset - feature `filesets' not provided"))
+                   (diredp-get-confirmation-recursive)
+                   (list current-prefix-arg)))
+    (icicle-candidate-set-save-1 (diredp-get-files ignore-marks-p) 0)))
 
 
 (put 'icicle-dired-saved-file-candidates 'icicle-Completions-window-max-height 200)
