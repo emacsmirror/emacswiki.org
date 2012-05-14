@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Thu May 21 13:31:43 2009 (-0700)
 ;; Version: 22.0
-;; Last-Updated: Mon May  7 10:15:19 2012 (-0700)
+;; Last-Updated: Sun May 13 17:08:35 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 5608
+;;     Update #: 5628
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-cmd2.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -5405,8 +5405,8 @@ BEG, END, and WHERE."
   (apply #'icicle-search nil nil scan-fn-or-regexp require-match (bmkp-bmenu-get-marked-files) args))
 
 ;;;###autoload (autoload 'icicle-search-dired-marked-recursive "icicles")
-(defun icicle-search-dired-marked-recursive (ignore-marks-p scan-fn-or-regexp require-match
-                                             &rest args) ; Bound to `M-s M-s m' in Dired.
+(defun icicle-search-dired-marked-recursive (ignore-marks-p scan-fn-or-regexp require-match &rest args)
+                                        ; Bound to `M-s M-s m' in Dired with Dired+.
                                         ; Bound also to `C-0 M-s M-s M-s', `C-0 C-c `' in Dired.
   "Search marked files in Dired, including in marked subdirs, recursively.
 You need library `Dired+' for this command.
