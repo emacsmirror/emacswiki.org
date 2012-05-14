@@ -1,10 +1,10 @@
 ;;; grep-o-matic.el --- auto grep word under cursor
 
-;; Copyright (C) 2008 Avi Rozen
+;; Copyright (C) 2008-2012 Avi Rozen
 
 ;; Author: Avi Rozen <avi.rozen@gmail.com>
 ;; Keywords: tools, processes, search
-;; Version: %Id: 2%
+;; Version: %Id: 3%
 
 ;; This file is NOT part of GNU Emacs.
 
@@ -162,7 +162,7 @@ Optionaly prompt for regexp to search."
   (let ((regexp (grep-o-matic-get-regexp prompt))
         (files (let ((directory-abbrev-alist
                       (cons (cons (regexp-quote (expand-file-name default-directory)) "./") directory-abbrev-alist)))
-                 (mapconcat 'abbreviate-file-name
+                 (mapconcat (lambda (fn) (abbreviate-file-name (shell-quote-argument fn)))
                             (apply 'nconc
                                    (mapcar '(lambda (buffer)
                                               (let ((file (buffer-file-name buffer)))
