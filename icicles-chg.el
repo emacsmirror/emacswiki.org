@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Sun May 13 17:15:14 2012 (-0700)
+;; Last-Updated: Mon May 14 10:04:17 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 8419
+;;     Update #: 8421
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-chg.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -3129,6 +3129,9 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-mcmd.el'")
 ;;
+;; 2012/05/14 dadams
+;;     icicle-help-on-candidate:
+;;       Do not use transform multi-completion candidate before passiting it to *-candidate-help-fn.
 ;; 2012/05/13 dadams
 ;;     icicle-candidate-set-save-1: Use icicle-saved-completion-candidates as default variable.
 ;; 2012/05/11 dadams
@@ -6314,6 +6317,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-var.el'")
 ;;
+;; 2012/05/14 dadams
+;;     icicle-candidate-help-fn: Updated doc string to mention transforming multi-completion cands.
 ;; 2012/05/07 dadams
 ;;     Applied renaming of icicle-search-dired-marked to icicle-search-dired-marked-recursive.
 ;; 2012/04/23 dadams
