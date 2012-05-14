@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 10:21:10 2006
 ;; Version: 22.0
-;; Last-Updated: Thu May 10 21:13:27 2012 (-0700)
+;; Last-Updated: Sun May 13 17:12:36 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 8749
+;;     Update #: 8804
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-mode.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -90,11 +90,12 @@
 ;;  Internal variables defined here:
 ;;
 ;;    `icicle-bookmark-menu-map', `icicle-custom-menu-map',
-;;    `icicle-describe-menu-map', `icicle-edit-menu-map',
-;;    `icicle-file-menu-map', `icicle-frames-menu-map',
-;;    `icicle-info-menu-map', `icicle-mode-map',
-;;    `icicle-options-menu-map', `icicle-search-menu-map',
-;;    `icicle-search-tags-menu-map'.
+;;    `icicle-describe-menu-map', `icicle-dired-multiple-menu-map',
+;;    `icicle-dired-recursive-marked-menu-map',
+;;    `icicle-edit-menu-map', `icicle-file-menu-map',
+;;    `icicle-frames-menu-map', `icicle-info-menu-map',
+;;    `icicle-mode-map', `icicle-options-menu-map',
+;;    `icicle-search-menu-map', `icicle-search-tags-menu-map'.
 ;;
 ;;  For descriptions of changes to this file, see `icicles-chg.el'.
  
@@ -415,9 +416,15 @@ there are also `-other-window' versions.
 `icicle-dired'                         - Multi-command Dired
 `icicle-dired-chosen-files'            - Dired a set of files & dirs
 `icicle-dired-project'                 - Dired a saved project
+`icicle-dired-saved-file-candidates'   - Dired set of saved file names
 `icicle-dired-save-marked'             - Save marked file names
-`icicle-dired-save-marked-persistently'
-`icicle-dired-save-marked-to-variable'
+`icicle-dired-save-marked-more'
+`icicle-dired-save-marked-more-recursive'
+`icicle-dired-save-marked-recursive'
+`icicle-dired-save-marked-persistently'  ... to cache file or fileset
+`icicle-dired-save-marked-to-cache-file-recursive' ... to cache-file
+`icicle-dired-save-marked-to-variable'   ... to variable
+`icicle-dired-save-marked-to-variable-recursive'
 `icicle-dired-smart-shell-command'     - Enhanced version of vanilla
 `icicle-doc'                           - Show doc for fn, var, or face
 `icicle-doremi-candidate-width-factor+' - +/- candidate column width
@@ -839,9 +846,15 @@ there are also `-other-window' versions.
 `icicle-dired'                         - Multi-command Dired
 `icicle-dired-chosen-files'            - Dired a set of files & dirs
 `icicle-dired-project'                 - Dired a saved project
+`icicle-dired-saved-file-candidates'   - Dired set of saved file names
 `icicle-dired-save-marked'             - Save marked file names
-`icicle-dired-save-marked-persistently'
-`icicle-dired-save-marked-to-variable'
+`icicle-dired-save-marked-more'
+`icicle-dired-save-marked-more-recursive'
+`icicle-dired-save-marked-recursive'
+`icicle-dired-save-marked-persistently'  ... to cache file or fileset
+`icicle-dired-save-marked-to-cache-file-recursive' ... to cache-file
+`icicle-dired-save-marked-to-variable'   ... to variable
+`icicle-dired-save-marked-to-variable-recursive'
 `icicle-dired-smart-shell-command'     - Enhanced version of vanilla
 `icicle-doc'                           - Show doc for fn, var, or face
 `icicle-doremi-candidate-width-factor+' - +/- candidate column width
@@ -2018,31 +2031,56 @@ Used on `pre-command-hook'."
                (list 'menu-item "Icicles" icicle-dired-multiple-menu-map :visible 'icicle-mode)))
 
            (when (boundp 'diredp-menu-bar-recursive-marked-menu) ; Defined in `dired+.el'
-             (define-key diredp-menu-bar-recursive-marked-menu [icicle-search-dired-marked-recursive]
-               '(menu-item "Icicles Search (and Replace)..." icicle-search-dired-marked-recursive
-                 :help "Search the marked files, including those in marked subdirs"
-                 :visible (fboundp 'diredp-get-files)))))
+             (defvar icicle-dired-recursive-marked-menu-map (make-sparse-keymap)
+               "`Icicles' submenu for Dired+'s `Multiple' > `Marked Here and Below' menu.")
+             (define-key diredp-menu-bar-recursive-marked-menu [icicles]
+               (list 'menu-item "Icicles" icicle-dired-recursive-marked-menu-map
+                     :visible 'icicle-mode))))
+
           (t
            (defvar icicle-dired-multiple-menu-map (make-sparse-keymap)
              "`Icicles' > `Dired Marked' submenu, in Dired mode.")
            (define-key icicle-menu-map [dired-marked]
              (list 'menu-item "Dired Marked" icicle-dired-multiple-menu-map
-                   :visible '(eq major-mode 'dired-mode)))))
+                   :visible '(eq major-mode 'dired-mode)))
 
-    (define-key icicle-dired-multiple-menu-map [icicle-search-dired-marked-recursive]
-      '(menu-item "Search Here and Below..." icicle-search-dired-marked-recursive
-        :help "Search the marked files, including those in marked subdirs"
-        :visible (fboundp 'diredp-get-files)))
-    (define-key icicle-dired-multiple-menu-map [icicle-dired-save-marked-more]
-      '(menu-item "Save as More Completion Candidates" icicle-dired-save-marked-more
-        :help "Add the marked file names to the saved file-completion candidates set"))
-    (define-key icicle-dired-multiple-menu-map [icicle-dired-save-marked]
-      '(menu-item "Save as Completion Candidates" icicle-dired-save-marked
-        :help "Save the marked file names as a set of completion candidates"))
+           (when (boundp 'diredp-menu-bar-recursive-marked-menu) ; Defined in `dired+.el'
+             (defvar icicle-dired-recursive-marked-menu-map (make-sparse-keymap)
+               "`Icicles' > `Dired Marked Here and Below' menu.")
+             (define-key icicle-dired-multiple-menu-map [here-and-below]
+               (list 'menu-item "Here and Below" icicle-dired-recursive-marked-menu-map
+                     :visible '(eq major-mode 'dired-mode))))))
+
     (define-key icicle-dired-multiple-menu-map [icicle-dired-save-marked-as-project]
       '(menu-item "Save as Project" icicle-dired-save-marked-as-project
         :help "Save the marked file names in Dired as a persistent set"))
+    (define-key icicle-dired-multiple-menu-map [icicle-dired-save-marked-more]
+      '(menu-item "Add to Saved Candidates" icicle-dired-save-marked-more
+        :help "Add the marked file names to the saved file-completion candidates set"))
+    (define-key icicle-dired-multiple-menu-map [icicle-dired-save-marked]
+      '(menu-item "Save Names as Completion Candidates" icicle-dired-save-marked
+        :help "Save the marked file names as a set of completion candidates"))
 
+    (when (boundp 'diredp-menu-bar-recursive-marked-menu) ; Defined in `dired+.el'
+      (define-key icicle-dired-recursive-marked-menu-map [icicle-search-dired-marked-recursive]
+        '(menu-item "Icicles Search (and Replace)..." icicle-search-dired-marked-recursive
+          :help "Search the marked files, including those in marked subdirs"))
+      (define-key icicle-dired-recursive-marked-menu-map [icicle-dired-save-marked-to-fileset-recursive]
+        '(menu-item "Save Names to Fileset" icicle-dired-save-marked-to-fileset-recursive
+          :help "Save marked names, including those in marked subdirs, to an Emacs fileset"))
+      (define-key icicle-dired-recursive-marked-menu-map
+          [icicle-dired-save-marked-to-cache-file-recursive]
+        '(menu-item "Save Names to Cache Set" icicle-dired-save-marked-to-cache-file-recursive
+          :help "Save marked names, including those in marked subdirs, to an Icicles cache file"))
+      (define-key icicle-dired-recursive-marked-menu-map [icicle-dired-save-marked-to-variable-recursive]
+        '(menu-item "Save Names to Variable" icicle-dired-save-marked-to-variable-recursive
+          :help "Save marked names, including those in marked subdirs, to a variable"))
+      (define-key icicle-dired-recursive-marked-menu-map [icicle-dired-save-marked-more-recursive]
+        '(menu-item "Add to Saved Candidates" icicle-dired-save-marked-more-recursive
+          :help "Add marked files, including those in marked subdirs, to saved candidates"))
+      (define-key icicle-dired-recursive-marked-menu-map [icicle-dired-save-marked-recursive]
+        '(menu-item "Save Names as Completion Candidates" icicle-dired-save-marked-recursive
+          :help "Save the marked file names in Dired, including those in marked subdirs")))
 
     ;; `Dired Dirs' ------------------------------------------------
     (cond ((not icicle-touche-pas-aux-menus-flag)
@@ -2087,7 +2125,7 @@ Used on `pre-command-hook'."
     (when (fboundp 'icicle-Info-virtual-book)
       (define-key icicle-info-menu-map [icicle-Info-virtual-book]
         '(menu-item "Virtual Book" icicle-Info-virtual-book
-        :help "Open Info on a virtual book of saved Info nodes")))
+          :help "Open Info on a virtual book of saved Info nodes")))
     (define-key icicle-info-menu-map [icicle-Info-goto-node]
       '(menu-item "+ Go to Node..." icicle-Info-goto-node
         :help "Go to an Info node by name"))
@@ -2210,14 +2248,28 @@ Used on `pre-command-hook'."
     (unless (lookup-key dired-mode-map (icicle-kbd "C-M-}")) ; Dired `C-M-}'
       (define-key dired-mode-map (icicle-kbd "C-M-}") 'icicle-dired-save-marked-to-variable))
     (unless (lookup-key dired-mode-map (icicle-kbd "C-}")) ; Dired `C-}'
-      (define-key dired-mode-map (icicle-kbd "C-}") 'icicle-dired-save-marked-as-project))
-    (when (fboundp 'diredp-get-files)   ; Requires `dired+.el'.
-      (let* ((key  (apply 'vector         ; Dired `M-s M-s m'
-                          (append (listify-key-sequence icicle-search-key-prefix)
-                                  (listify-key-sequence (icicle-kbd "m")))))
-             (def  (lookup-key dired-mode-map key)))
-        (unless (and def  (not (integerp def)))
-          (define-key dired-mode-map key 'icicle-search-dired-marked-recursive)))))
+      (define-key dired-mode-map (icicle-kbd "C-}") 'icicle-dired-save-marked-as-project)))
+
+  ;; More Dired keys, but these require `dired+.el'.
+  (when (boundp 'diredp-recursive-map)
+    (let* ((key  (apply 'vector           ; `M-s M-s m'
+                        (append (listify-key-sequence icicle-search-key-prefix)
+                                (listify-key-sequence (icicle-kbd "m")))))
+           (def  (lookup-key dired-mode-map key)))
+      (unless (and def  (not (integerp def)))
+        (define-key dired-mode-map key 'icicle-search-dired-marked-recursive)))
+    (define-key diredp-recursive-map (icicle-kbd "M-s M-s") ; `M-+ M-s M-s'
+      'icicle-search-dired-marked-recursive)
+    (define-key diredp-recursive-map (icicle-kbd "C-{") ; `M-+ C-{'
+      'icicle-dired-project-other-window)
+    (define-key diredp-recursive-map (icicle-kbd "C-M->") ; `M-+ C-M->'
+      'icicle-dired-save-marked-recursive)
+    (define-key diredp-recursive-map (icicle-kbd "C->") ; `M-+ C->'
+      'icicle-dired-save-marked-more-recursive)
+    (define-key diredp-recursive-map (icicle-kbd "C-M-}") ; `M-+ C-M-}'
+      'icicle-dired-save-marked-to-variable-recursive)
+    (define-key diredp-recursive-map (icicle-kbd "C-}") ; `M-+ C-}'
+      'icicle-dired-save-marked-to-cache-file-recursive))
 
   ;; Bind keys in Ibuffer mode.
   (when (boundp 'ibuffer-mode-map)
