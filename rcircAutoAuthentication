@@ -20,5 +20,23 @@ Note that if you have BitlBee running locally, you need an entry using "localhos
 
 auto-authentication can be disabled by setting `rcirc-auto-authenticate-flag' to nil.
 
+Following code snippet advices rcirc to read authinfo from `auth-sources' with port set to "irc-nickserv".
+
+    (defadvice rcirc (around rcirc-read-from-authinfo activate)
+      "Allow rcirc to read authinfo from ~/.authinfo.gpg via the auth-source API."
+      (let ((rcirc-authinfo rcirc-authinfo)
+            (credentials (auth-source-search :port '("irc-nickserv")
+                                             :require '(:user :secret))))
+        (dolist (p credentials)
+          (let ((host (plist-get p :host))
+                (user (plist-get p :user))
+                (secret (plist-get p :secret)))
+            (add-to-list 'rcirc-authinfo
+                         (list host 'nickserv user
+                               (if (functionp secret)
+                                   (funcall secret)
+                                 secret)))))
+        ad-do-it))
+
 ----
 CategoryChatClient [[rcirc]]
