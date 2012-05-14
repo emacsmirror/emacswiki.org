@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Mon May  7 09:58:01 2012 (-0700)
+;; Last-Updated: Sun May 13 17:23:20 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 26619
+;;     Update #: 26625
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-doc1.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -4963,8 +4963,7 @@
 ;;    `icicle-search-url-bookmark'     - Search URL bookmarks
 ;;  * `icicle-search-char-property'    - Trip among buffer strings with
 ;;                                       with a text/overlay property
-;;  * `icicle-search-dired-marked-recursive' - Search files marked in
-;;                                       Dired
+;;  * `icicle-search-dired-marked-recursive' - Search marked in Dired
 ;;  * `icicle-search-file'             - Search multiple files
 ;;  * `icicle-search-ibuffer-marked'   - Search marked bufs in Ibuffer
 ;;  * `icicle-search-keywords' (`C-c ^') - Trip among keyword search
@@ -4984,9 +4983,9 @@
 ;;  * `icicle-select-window' (`C-0 C-x o') - Trip among windows, by
 ;;                                       buffer name
 ;;
-;;  (You need library `Dired+' for
-;;  `icicle-search-dired-marked-recursive', and library `Bookmark+'
-;;  for `icicle-search-bookmark-list-marked'.)
+;;  (You need library library `Bookmark+' for
+;;  `icicle-search-bookmark-list-marked'.  You need library `Dired+'
+;;  for `icicle-search-dired-marked-recursive'.)
 ;;
 ;;(@* "Highlighting the Destination")
 ;;  ** Highlighting the Destination **
