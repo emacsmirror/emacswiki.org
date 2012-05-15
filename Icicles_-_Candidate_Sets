@@ -73,7 +73,7 @@ in `*Completions*' combines these two: if the region is active, then
 the ''selected'' candidates become the saved set; otherwise, ''all''
 candidates are saved.  This binding makes it easy to save
 candidates using the mouse: select them (e.g. drag or double-click `mouse-1', or click `mouse-1' then `mouse-3'), then use
-`M-S-mouse-3' to save. [*]
+`M-S-mouse-3' to save. [[#MouseNote|*]]
 
 You can also use '''`##C-M-)##'''' to '''''un'''''save all candidates: just select no
 candidates before you hit `##C-M-)##', to reset the set of saved
@@ -132,7 +132,7 @@ is active in `*Completions*': it adds ''selected'' or ''all'' candidates.
 again in the same place, acts the same as `##C-)##'.  That is, click
 `mouse-1', then click `mouse-3' twice in another location, to
 save all candidates between the `mouse-1' and `mouse-3'
-positions. [*]
+positions. [[#MouseNote|*]]
 
 * The '''`insert'''' [[key]] ('''`icicle-save/unsave-candidate'''') adds just
   the current completion candidate (e.g. during [[Icicles - Cycling Completions|cycling]]).  Clicking a candidate in buffer `*Completions*'
@@ -153,6 +153,9 @@ same idea behind marking files in [[DiredMode|Dired]] and then operating on the
 marked files, using `x'.  It corresponds to what is represented in
 some user interfaces by filling out a checklist followed by clicking `OK'.
 
+
+
+[:MouseNote]
 [* If you click `mouse-1' on a candidate and (starting with Emacs
 22) `mouse-1-click-follows-link' is an integer, then you will need
 to hold the mouse button depressed longer than that many seconds,
