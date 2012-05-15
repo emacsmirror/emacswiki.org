@@ -409,7 +409,9 @@ If you use library '''[[Bookmark+]]''', then marking bookmarks in buffer
 `##*Bookmark List*##' is another way of choosing them for searching.
 Mode-specific '''Icicles''' search, '''`M-s M-s m'''' (in this case,
 `icicle-search-bookmark-list-marked') searches the marked objects,
-in this case the targets of the marked bookmarks.
+in this case the targets of the marked bookmarks.  (You can
+similarly use `M-s M-s m' in [[Ibuffer]], BufferMenu, and [[Dired]] to
+search all marked buffers/files using '''Icicles''' search.)
 
 
 
