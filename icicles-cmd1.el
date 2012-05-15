@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Sun May 13 17:01:36 2012 (-0700)
+;; Last-Updated: Tue May 15 07:21:20 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 23778
+;;     Update #: 23781
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-cmd1.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -2924,7 +2924,7 @@ You can use the saved set of candidates for operations such as
 You can use this command only from a Dired buffer."
   (interactive "P")
   (unless (eq major-mode 'dired-mode)
-    (error "Command `icicle-dired-save-marked' must be called from a Dired buffer"))
+    (error "You must be in a Dired buffer to use this command"))
   (icicle-candidate-set-save-1 (dired-get-marked-files) arg))
 
 (defun icicle-dired-save-marked-more (&optional arg) ; Bound to `C->' in Dired.
@@ -2934,13 +2934,15 @@ saved, if any.  A prefix argument has the same effect as for
 `icicle-dired-save-marked'."
   (interactive "P")
   (unless (eq major-mode 'dired-mode)
-    (error "`icicle-dired-save-marked-more' must be called from a Dired buffer"))
+    (error "You must be in a Dired buffer to use this command"))
   (icicle-candidate-set-save-1 (dired-get-marked-files) arg t))
 
 (defun icicle-dired-save-marked-to-variable () ; Bound to `C-M-}' in Dired.
   "Save the marked file names in Dired to a variable as a candidate set.
 Same as using `icicle-dired-save-marked' with no prefix argument."
   (interactive)
+  (unless (eq major-mode 'dired-mode)
+    (error "You must be in a Dired buffer to use this command"))
   (icicle-candidate-set-save-1 (dired-get-marked-files) 99))
 
 (defalias 'icicle-dired-save-marked-as-project ; Bound to `C-}' in Dired.
@@ -2960,6 +2962,8 @@ You can use the saved set of candidates for operations such as
 
 You can use this command only from a Dired buffer."
   (interactive "P")
+  (unless (eq major-mode 'dired-mode)
+    (error "You must be in a Dired buffer to use this command"))
   (icicle-candidate-set-save-1 (dired-get-marked-files) (if filesetp 0 '(1))))
 
 
