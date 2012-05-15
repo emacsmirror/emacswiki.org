@@ -42,3 +42,8 @@ The list below is only an example. Add your own features and add subfeatures to 
 === Common Lisp ===
 
 * Completely rewrite Emacs in Common Lisp instead of C+Elisp.
+
+
+=== Guile ===
+
+* Get Emacs to run on the Guile VM
