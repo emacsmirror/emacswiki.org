@@ -6,9 +6,10 @@
 
 == Icicles Dired Enhancements ==
 
+
 '''Icicles''' can help with DiredMode in these ways:
 
-* You can use '''Icicles''' [[#SearchAndReplace|search-and-replace]] on the marked files.
+* You can use '''Icicles''' [[#SearchAndReplace|search-and-replace]] on the marked files in the current directory and in marked subdirectories (recursively).
 
 * You can [[#SaveFilesAsCandidates|save marked file names]] as completion candidates for reuse later.
 
@@ -25,9 +26,9 @@ can be persistent or just for the current Emacs session.
 
 
 
-
+[:icicle-search-dired-marked-recursive]
 [:SearchAndReplace]
-=== Search-and-Replace Marked Files ===
+== Search-and-Replace Marked Files ==
 
 
 If you also use library '''[[Dired+]]''' then '''`M-s M-s m'''' (`icicle-search-dired-marked-recursive')  in Dired uses [[Icicles - Search Commands, Overview#IciclesSearchKeyBindings|Icicles search]] (and on-demand replace) on the marked files.
@@ -38,8 +39,6 @@ all of its files if none are marked.  If a marked directory at any
 level has no Dired buffer then all of its files are searched.    With a [[prefix argument]] the Dired markings are
 ignored; all files are searched.
 
-
-
 Because you might not be aware of existing Dired buffers for some
 marked directories, you are asked to confirm searching their
 marked files.  If you do not confirm, then all files in marked
@@ -49,8 +48,10 @@ ignored if you do not confirm using them.
 
 Command `icicle-search-dired-marked-recursive' runs `icicle-search', so you have available all of its features, including accessing search hits directly, in any order. To skip a whole file, just match its name with your minibuffer input and then use `##C-~##' to remove all of its occurrences from the set of hits.
 
-'''Note:''' You can similarly use `M-s M-s m' in [[IbufferMode|Ibuffer]] or [[BufferMenu|Buffer Menu]] to
-search all marked buffers using '''Icicles''' search.  Also, '''`C-0 M-s M-s M-s'''' and '''`##C-0 C-c `##'''' are bound to the same command.  (But you cannot pass a separate prefix arg in those cases, since `C-0' is already used.)
+You can similarly use `M-s M-s m' in [[IbufferMode|Ibuffer]] or [[BufferMenu|Buffer Menu]] to
+search all marked buffers using '''Icicles''' search, and in your
+bookmark list (buffer `##*Bookmark List*##') to search all
+marked bookmark targets (you need library '''[[Bookmark+]]''' for this).  Also, '''`C-0 M-s M-s M-s'''' and '''`##C-0 C-c `##'''' are bound to the same command.  (But you cannot pass a separate prefix arg in those cases, since `C-0' is already used.)
 
 
 
@@ -63,16 +64,17 @@ search all marked buffers using '''Icicles''' search.  Also, '''`C-0 M-s M-s M-s
 
 
 [:SaveFilesAsCandidates]
-=== Save Marked Files as Completion Candidates ===
+== Save Marked Names as Completion Candidates ==
 
-In Dired with '''Icicles''', you can use `##C-M->##' (`icicle-dired-save-marked') to ''save the marked file names'' as a set of completion candidates, for reuse later (e.g., using
+In Dired with '''Icicles''', you can use `##C-M->##' (`icicle-dired-save-marked') to save the marked file and subdirectory names as a set of completion candidates, for reuse later (e.g., using
 `##C-M-<##').  Similarly, you can use `##C->##' to add the marked files to an existing saved set of  candidates.
+
 These bindings act similarly to `##C-M->##' and `##C->##' in the
 minibuffer: a prefix argument controls whether you save candidates
 to a variable or a cache file.  Also, '''`##C-M-}##'''' saves to a variable
-you name, and '''`##C-}##'''' saves to a cache file -- see [[#MarkedFilesAsProject|Marked Files as a Project]], below.
+you name, and '''`##C-}##'''' saves to a cache file -- see [[#MarkedFilesAsProject|Marked Files and Dirs as a Project]], below.
 
-You can use such a saved set of file names as candidates during
+You can use such a saved set of file and directory names as candidates during
 file-name completion.  They are saved as absolute names,
 which means you can use them with, say, `C-u C-x C-f'.
 See [[Icicles - File-Name Input#AbsoluteFileNames|Absolute File Names and Different Directories]].
@@ -86,9 +88,26 @@ See [[Icicles - File-Name Input#AbsoluteFileNames|Absolute File Names and Differ
 
 
 
+[:SaveMarkedNamesHereAndBelow]
+=== Save Marked Names Here and Below ===
+
+Just as `M-s M-s m' acts on the marked names in not only the
+current Dired buffer but also those in marked subdirectories,
+recursively (see [[#SearchAndReplace|Search-and-Replace Marked Files]]), so there are commands to save the marked names at all levels within the current directory.  These commands are available only if you use library '''[[Dired+]]'''.
+
+They have the same key bindings as the non-recursive commands,
+except that they are on prefix key '''`##M-+##''''.  For example, `##M-+ C-M->##' saves the marked names here and below as a set of file-name completion candidates.  They are available on Dired menu-bar menu '''Multiple''' > '''Marked Here and Below''' > '''Icicles'''.
+
+
+
+
+
+
+
+
 
 [:OpenDiredOnSavedFiles]
-=== Open Dired for a Set of File Names ===
+== Open Dired for a Set of File and Dir Names ==
 
 In Dired with '''Icicles''' you can use `##C-M-<##' (`icicle-dired-chosen-files-other-window') to open Dired for a set of file or directory names that you choose interactively or that you have previously [[#SaveFilesAsCandidates|saved]] (persistently or not) as completion candidates or as an Emacs [[fileset]].
 
@@ -109,7 +128,7 @@ The file names are checked to be sure they reference existing files. If any of t
 
 
 [:MarkedFilesAsProject]
-=== Marked Files as a Project ===
+== Marked Files and Dirs as a Project ==
 
 Just as `##C-}##' in the minibuffer is a shortcut for `##C-u C-M->##',
 which saves the current set of completion candidates persistently, so '''`##C-}##'''' in Dired saves the marked file names in
@@ -151,7 +170,7 @@ not remember its cache file name.
 
 
 [:CompleteShellCommands]
-=== Shell Commands On Marked Files ===
+== Shell Commands On Marked Files ==
 
 This is an optional feature that is
 ''not enabled by default''.  See also [[Icicles - Shell-Command Enhancements]].
@@ -242,8 +261,9 @@ with projects
 
 
 ----
+----
 
-=== Discussion ===
+== Discussion ==
 [new]
 In DiredMode, Q eventually runs `tags-query-replace' and A runs `tags-search'. In both cases you can use `M-> M-,' ( (goto-char (point-max))(tags-loop-continue) ) to skip rest of the file and continue to the next file. -- GregChernov
 
