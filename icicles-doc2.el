@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Tue May 15 08:05:52 2012 (-0700)
+;; Last-Updated: Tue May 15 08:10:44 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 28807
+;;     Update #: 28810
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-doc2.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -2064,7 +2064,9 @@
 ;;  `*Bookmark List*' is another way of choosing them for searching.
 ;;  Mode-specific Icicles search, `M-s M-s m' (in this case,
 ;;  `icicle-search-bookmark-list-marked') searches the marked objects,
-;;  in this case the targets of the marked bookmarks.
+;;  in this case the targets of the marked bookmarks.  (You can
+;;  similarly use `M-s M-s m' in Ibuffer, Buffer Menu, and Dired to
+;;  search all marked buffers/files using Icicles search.)
 ;;
 ;;  In addition to using Icicles search on a set of bookmark targets
 ;;  together, you can use the following Icicles search multi-commands
