@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Mon May 14 10:04:17 2012 (-0700)
+;; Last-Updated: Tue May 15 16:42:18 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 8421
+;;     Update #: 8437
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-chg.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -620,6 +620,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd2.el'")
 ;;
+;; 2012/05/15 dadams
+;;     Removed: icicle-search-desktop-bookmark (useless).
 ;; 2012/05/07 dadams
 ;;     Renamed: icicle-search-dired-marked to icicle-search-dired-marked-recursive.
 ;; 2012/05/06 dadams
@@ -1317,7 +1319,8 @@
 ;;
 ;; 2012/05/13 dadams
 ;;     icicle-completion-setup-function (all Emacs versions):
-;;       Use substitute-in-file-name, to expand env vars.  expand-file-name and file-name-as-directory.
+;;       Corrected what becomes default-directory:  Use substitute-in-file-name, to expand env vars.
+;;       Use expand-file-name and file-name-as-directory.
 ;; 2012/04/30 dadams
 ;;     icicle-unsorted-file-name-prefix-candidates:
 ;;       Forgot to use PRED, not default-directory, in second call to try-completion.
@@ -4536,6 +4539,12 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-mode.el'")
 ;;
+;; 2012/05/15 dadams
+;;     Added to and reorg'd Search, Go To menus.  Added submenus Bookmarks & Definitions.
+;;       Added to menus: icicle-search-define-replacement, icicle-search-w-isearch-string,
+;;         icicle-search-(overlay|char), icicle-imenu-*, icicle-search-THINGs, icicle-search-*-marked,
+;;         icicle-search-*-bookmark.
+;;     icicle-dired-multiple-menu-map: Added icicle-dired-save-marked-to-variable.
 ;; 2012/05/13 dadams
 ;;     Added: icicle-dired-recursive-marked-menu-map.  Put *-recursive commands on it.
 ;;     Bind *recursive commands to same keys as non-recursive, but on M-+ prefix key.
