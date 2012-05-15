@@ -36,7 +36,7 @@ later to use for completion.
 
 
 [:SavingAndRetrieving]
-=== Saving and Retrieving Completion Candidates ===
+== Saving and Retrieving Completion Candidates ==
 
 Set operations such as union and difference act on two sets.  The
 current set of completion candidates is always one of these sets.
@@ -109,7 +109,7 @@ the highlighting.
 
 
 [:SaveOrRetrieveMore]
-=== Saving or Retrieving Additional Candidates ===
+== Saving or Retrieving Additional Candidates ==
 
 You can use '''`##C-<##'''' to retrieve a set of saved candidates and ''add''
 them to the current candidates, instead of replacing those
@@ -177,7 +177,7 @@ problem.  (Personally, I use `nil'.)]
 
 
 [:SaveRetrieveWithVariable]
-=== Different Places for Saving and Retrieving Candidates ===
+== Different Places for Saving and Retrieving Candidates ==
 
 You can save completion candidates to a different
 variable from `icicle-saved-completion-candidates' by using a
@@ -223,13 +223,35 @@ cache file) when you save or retrieve additional candidates.
 
 
 
+== Saving Marked Files and Dirs in Dired ==
+
+Besides saving file and directory names that are completion
+candidates on the fly, You can create or add to a saved set of
+names using the names that are marked in [[Dired]].  The same keys
+(e.g., `##C-M->##') that save candidates in the [[minibuffer]] during
+[[completion]] save the marked names in Dired.
+
+If you use library '''[[Dired+]]''' then you can also use the same keys,
+but with the prefix key '''`##M-+##'''' (e.g. `##M-+ C-M->##') to save not only
+the names that are marked in the current Dired buffer but also
+those that are marked ''in any marked subdirectories, recursively''.
+See [[Icicles - Dired Enhancements#SaveMarkedNamesHereAndBelow| Save Marked Names Here and Below]].
 
 
 
 
 
 
-=== Set Operations ===
+
+
+
+
+
+
+
+
+
+== Set Operations ==
 
 The other available set-operation commands for use with completion
 candidates, besides saving and retrieving, are these:
