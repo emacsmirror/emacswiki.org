@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Tue May 15 08:51:31 2012 (-0700)
+;; Last-Updated: Tue May 15 09:19:15 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 28831
+;;     Update #: 28837
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-doc2.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -3032,21 +3032,27 @@
 ;;  `icicle-locate-file'.  Command `icicle-file' (bound to `C-x C-f'
 ;;  by default) lets you do both, depending on the prefix argument.
 ;;
-;;  You save a set of file names the same way you save any set of
-;;  completion candidates.  You can save all of the names that match
-;;  your current input.  You can add a set of names or individual
-;;  names to a set of names that you have already saved.
+;;  You save a set of file and directory names the same way you save
+;;  any set of completion candidates.  You can save all of the names
+;;  that match your current input.  You can add a set of names or
+;;  individual names to a set of names that you have already saved.
 ;;
-;;  In addition, you can save the marked files in Dired as a set of
-;;  project files.
-;;
+;;  In addition, you can save the names of the marked files and
+;;  subdirectories in Dired persistently as a project.
+;;  
 ;;  Your project is not only files that are all in the same directory,
-;;  of course.  You can save file names from multiple directories in
-;;  the same set.  And you can include directory names as well, for
-;;  use later with commands that operate on directories.  Finally, you
-;;  can also save file names as Emacs filesets and use those the same
-;;  way.  An Icicles set of saved file names can include Emacs
-;;  filesets - see
+;;  of course.  If you use library `Dired+' then you can also save all
+;;  of the marked file names in the current directory and in marked
+;;  subdirectories, recursively - see (@> "Save Marked Names Here and Below").
+;;
+;;  Even if you do not use `Dired+', with Icicles you can easily save
+;;  file names from multiple directories in the same set.  And you can
+;;  include directory names as well, for use later with commands that
+;;  operate on directories.
+;;
+;;  Finally, you can also save file names as Emacs filesets and use
+;;  those the same way.  An Icicles cache-file set of saved file names
+;;  can include Emacs filesets - see
 ;;  (@file :file-name "icicles-doc1.el" :to "Filesets and Icicles Saved Completion Sets").
 ;;
 ;;  See Also:
