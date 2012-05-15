@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Sun May 13 17:41:00 2012 (-0700)
+;; Last-Updated: Tue May 15 08:05:52 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 28803
+;;     Update #: 28807
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-doc2.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -2060,9 +2060,15 @@
 ;;  When you search the text of a region bookmark, the search is
 ;;  limited to the region.
 ;;
-;;  In addition to using `C-u' with the general Icicles search
-;;  commands, you can use the following Icicles search commands that
-;;  are specific to bookmarks:
+;;  If you use library `Bookmark+', then marking bookmarks in buffer
+;;  `*Bookmark List*' is another way of choosing them for searching.
+;;  Mode-specific Icicles search, `M-s M-s m' (in this case,
+;;  `icicle-search-bookmark-list-marked') searches the marked objects,
+;;  in this case the targets of the marked bookmarks.
+;;
+;;  In addition to using Icicles search on a set of bookmark targets
+;;  together, you can use the following Icicles search multi-commands
+;;  that are specific to bookmarks:
 ;;
 ;;  * icicle-search-bookmark
 ;;  * icicle-search-autofile-bookmark
@@ -2093,9 +2099,11 @@
 ;;
 ;;  All of these commands act the same way.  They are multi-commands,
 ;;  so you can use them to search multiple bookmarks.  But unlike
-;;  `icicle-search-bookmarks-together' (`C-u C-c `'), you do not first
-;;  choose all of the bookmarks and then search them together.
-;;  Instead, you search them one at a time.
+;;  `icicle-search-bookmarks-together' (`C-u C-c `') and
+;;  `icicle-search-bookmark-list-marked' (`M-s M-s m'), you do not
+;;  first choose the bookmarks and then search them together.
+;;  Instead, you search them one at a time, choosing each with a
+;;  multi-command action.
 ;;
 ;;  `icicle-search-bookmark' is flexible, letting you specify any set
 ;;  of bookmarks to use as candidates.  The candidates are the
