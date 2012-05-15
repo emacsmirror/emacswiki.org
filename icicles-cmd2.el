@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Thu May 21 13:31:43 2009 (-0700)
 ;; Version: 22.0
-;; Last-Updated: Sun May 13 17:08:35 2012 (-0700)
+;; Last-Updated: Tue May 15 16:07:20 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 5628
+;;     Update #: 5629
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-cmd2.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -4370,7 +4370,6 @@ future search commands, not the current one.)" ; Doc string
 (icicle-define-search-bookmark-command "autofile")
 (icicle-define-search-bookmark-command "autonamed")
 (icicle-define-search-bookmark-command "bookmark-list")
-(icicle-define-search-bookmark-command "desktop")
 (icicle-define-search-bookmark-command "dired")
 (icicle-define-search-bookmark-command "file")
 (icicle-define-search-bookmark-command "gnus")
