@@ -37,8 +37,6 @@ The list below is only an example. Add your own features and add subfeatures to 
 * Eclipse-like [http://goo.gl/9k3ld overriding/implementing methods]
 * Make java-mode aware of generics for syntax highlighting
 
-== add more features here ==
-
 === Common Lisp ===
 
 * Completely rewrite Emacs in Common Lisp instead of C+Elisp.
@@ -47,3 +45,7 @@ The list below is only an example. Add your own features and add subfeatures to 
 === Guile ===
 
 * Get Emacs to run on the Guile VM
+
+
+== add more features here ==
+
