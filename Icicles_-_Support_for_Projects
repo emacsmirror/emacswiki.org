@@ -58,6 +58,10 @@ related software.
 
 
 
+
+
+
+
 [:TagsFileProject]
 == A Tags File Can Define a Project ==
 
@@ -76,6 +80,8 @@ that are listed in the current tags table:
 
 '''See also'''
 [[Icicles - File Name Input#ReadingFileNames|Commands that Read File Names]].
+
+
 
 
 
@@ -141,6 +147,8 @@ or just the part of it that matches your current input.
 
 
 
+
+
 [:DefiningAndSavingSets]
 == Defining and Saving Sets of Files or Buffers ==
 
@@ -189,18 +197,20 @@ the latter type are `icicle-find-file-absolute', `icicle-find-file-in-tags-table
 `icicle-recent-file', and `icicle-locate-file'.  Command
 '''`icicle-file'''' (bound to '''`C-x C-f'''' by default) lets you do both, depending on the [[prefix argument]].
 
-You save a set of file names the same way you save any set of
+You save a set of file and directory names the same way you save any set of
 completion candidates.  You can save all of the names that match
 your current input.  You can add a set of names or individual
 names to a set of names that you have already saved.
 
-In addition, you can save the marked files in [[DiredMode|Dired]] as a set of
-project files.
+In addition, you can save the names of the marked files and subdirectories in [[Dired]] persistently as a project.
 
-Your project is not only files that are all in the same directory,
-of course.  You can save file names from multiple directories in
+Your project is not only files that are all in the same directory, of course.  If you use library '''[[Dired+]]''' then you can also save all of the marked file names in the current directory and in marked subdirectories, recursively -- see [[Icicles - Dired Enhancements#SaveMarkedNamesHereAndBelow|Save Marked Names Here and Below]].
+
+Even if you do not use '''Dired+''', with '''Icicles''' you can easily save file names from multiple directories in
 the same set.  And you can include directory names as well, for
-use later with commands that operate on directories. Finally, you can also save file names as Emacs [[fileset]]s and use those the same way. An '''Icicles''' set of saved file names can include Emacs filesets -- see [[Icicles - Persistent Completions#Filesets|Filesets and Icicles Saved Completion Sets]].
+use later with commands that operate on directories.
+
+Finally, you can also save file names as Emacs [[fileset]]s and use those the same way. An '''Icicles''' cache-file set of saved file names can include Emacs filesets -- see [[Icicles - Persistent Completions#Filesets|Filesets and Icicles Saved Completion Sets]].
 
 '''See Also:'''
 
@@ -210,7 +220,7 @@ use later with commands that operate on directories. Finally, you can also save 
 * [[Icicles - Progressive Completion]]
 * [[Icicles - Nutshell View#ChippingAway| Chipping Away the Non-Elephant]]
 * [[Icicles - File-Name Input]]
-* [[Icicles - Dired Enhancements#SaveFilesAsCandidates|Icicles - Save Marked Files as Completion Candidates]]
+* [[Icicles - Dired Enhancements#SaveFilesAsCandidates|Icicles - Save Marked Names as Completion Candidates]]
 
 
 
