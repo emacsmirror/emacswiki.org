@@ -35,6 +35,7 @@ The list below is only an example. Add your own features and add subfeatures to 
 * Eclipse-like [http://goo.gl/mJf7o QuickAssist].
 * Eclipse-like [http://goo.gl/tYnc1 QuickFix]
 * Eclipse-like [http://goo.gl/9k3ld overriding/implementing methods]
+* Make java-mode aware of generics for syntax highlighting
 
 == add more features here ==
 
