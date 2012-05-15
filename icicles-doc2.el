@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Tue May 15 08:10:44 2012 (-0700)
+;; Last-Updated: Tue May 15 08:51:31 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 28810
+;;     Update #: 28831
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-doc2.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -238,9 +238,9 @@
 ;;
 ;;  (@> "Icicles Dired Enhancements")
 ;;    (@> "Search-and-Replace Marked Files")
-;;    (@> "Save Marked Files as Completion Candidates")
-;;    (@> "Open Dired for a Set of File Names")
-;;    (@> "Marked Files as a Project")
+;;    (@> "Save Marked Names as Completion Candidates")
+;;    (@> "Open Dired for a Set of File and Dir Names")
+;;    (@> "Marked Files and Dirs as a Project")
 ;;    (@> "Shell Commands on Marked Files")
 ;;
 ;;  (@> "Icicles Info Enhancements")
@@ -2413,7 +2413,9 @@
 ;;
 ;;  Icicles can help with Dired in these ways:
 ;;
-;;  * You can use Icicles search-and-replace on the marked files.
+;;  * You can use Icicles search-and-replace on the marked files in
+;;    the current directory and in marked subdirectories
+;;    (recursively).
 ;;
 ;;  * You can save marked file names as completion candidates for
 ;;    reuse later.
@@ -2434,7 +2436,6 @@
 ;;  If you also use library `Dired+' then `M-s M-s m'
 ;;  (`icicle-search-dired-marked-recursive') in Dired uses Icicles
 ;;  search (and on-demand replace) on the marked files.
-
 ;;
 ;;  Each marked subdirectory is handled recursively in the same way:
 ;;  If it has a Dired buffer then its marked files are searched, or
@@ -2457,34 +2458,53 @@
 ;;  then use `C-~' to remove all of its occurrences from the set of
 ;;  hits.
 ;;
-;;  Note: You can similarly use `M-s M-s m' in Ibuffer or Buffer Menu
-;;  to search all marked buffers using Icicles search.  Also, `C-0 M-s
-;;  M-s M-s' and `C-0 C-c `' are bound to the same command.  (But you
-;;  cannot pass a separate prefix arg in those cases, since `C-0' is
-;;  already used.)
+;;  You can similarly use `M-s M-s m' in Ibuffer or Buffer Menu to
+;;  search all marked buffers using Icicles search, and in your
+;;  bookmark list (buffer `*Bookmark List*') to search all marked
+;;  bookmark targets (you need library `Bookmark+' for this).  Also,
+;;  `C-0 M-s M-s M-s' and `C-0 C-c `' are bound to the same command.
+;;  (But you cannot pass a separate prefix arg in those cases, since
+;;  `C-0' is already used.)
 ;;
-;;(@* "Save Marked Files as Completion Candidates")
-;;  ** Save Marked Files as Completion Candidates **
+;;(@* "Save Marked Names as Completion Candidates")
+;;  ** Save Marked Names as Completion Candidates **
 ;;
 ;;  In Dired with Icicles, you can use `C-M->'
-;;  (`icicle-dired-save-marked') to save the marked file names as a
-;;  set of completion candidates, for reuse later (e.g., using
-;;  `C-M-<').  Similarly, you can use `C->' to add the marked files to
-;;  an existing saved set of candidates.
+;;  (`icicle-dired-save-marked') to save the marked file and
+;;  subdirectory names as a set of completion candidates, for reuse
+;;  later (e.g., using `C-M-<').  Similarly, you can use `C->' to add
+;;  the marked files to an existing saved set of candidates.
 ;;
 ;;  These bindings act similarly to `C-M->' and `C->' in the
 ;;  minibuffer: a prefix argument controls whether you save candidates
 ;;  to a variable or a cache file.  Also, `C-M-}' saves to a variable
 ;;  you name, and `C-}' saves to a cache file - see
-;;  (@* "Marked Files as a Project"), below.
+;;  (@* "Marked Files and Dirs as a Project"), below.
 ;;
-;;  You can use such a saved set of file names as candidates during
-;;  file-name completion.  They are saved as absolute names,
-;;  which means you can use them with, say, `C-u C-x C-f'.  See
+;;  You can use such a saved set of file and directory names as
+;;  candidates during file-name completion.  They are saved as
+;;  absolute names, which means you can use them with, say, `C-u C-x
+;;  C-f'.  See
 ;;  (@file :file-name "icicles-doc1.el" :to "Absolute File Names and Different Directories").
 ;;
-;;(@* "Open Dired for a Set of File Names")
-;;  ** Open Dired for a Set of File Names **
+;;(@* "Save Marked Names Here and Below")
+;;  *** Save Marked Names Here and Below ***
+;;
+;;  Just as `M-s M-s m' acts on the marked names in not only the
+;;  current Dired buffer but also those in marked subdirectories,
+;;  recursively (see (@> "Search-and-Replace Marked Files")), so there
+;;  are commands to save the marked names at all levels within the
+;;  current directory.  These commands are available only if you use
+;;  library `Dired+'.
+;;
+;;  They have the same key bindings as the non-recursive commands,
+;;  except that they are on prefix key `M-+'.  For example, `M-+
+;;  C-M->' saves the marked names here and below as a set of
+;;  completion candidates.  They are available on Dired menu-bar menu
+;;  `Multiple' > `Marked Here and Below' > `Icicles'.
+;;
+;;(@* "Open Dired for a Set of File and Dir Names")
+;;  ** Open Dired for a Set of File and Dir Names **
 ;;
 ;;  In Dired with Icicles you can use `C-M-<'
 ;;  (`icicle-dired-chosen-files-other-window') to open Dired for a set
@@ -2506,8 +2526,8 @@
 ;;  checked for existence in the Dired directory.  If you use a prefix
 ;;  argument, then you are prompted for the directory to use.
 ;;
-;;(@* "Marked Files as a Project")
-;;  ** Marked Files as a Project **
+;;(@* "Marked Files and Dirs as a Project")
+;;  ** Marked Files and Dirs as a Project **
 ;;
 ;;  Just as `C-}' in the minibuffer is a shortcut for `C-u C-M->',
 ;;  which saves the current set of completion candidates persistently,
@@ -3037,7 +3057,7 @@
 ;;  * (@file :file-name "icicles-doc1.el" :to "Progressive Completion")
 ;;  * (@file :file-name "icicles-doc1.el" :to "Chip Away the Non-Elephant")
 ;;  * (@file :file-name "icicles-doc1.el" :to "File-Name Input and Locating Files Anywhere")
-;;  * (@> "Save Marked Files as Completion Candidates") (Dired)
+;;  * (@> "Save Marked Names as Completion Candidates") (Dired)
 ;;
 ;;(@* "Retrieving and Reusing a Saved Project")
 ;;  ** Retrieving and Reusing a Saved Project **
