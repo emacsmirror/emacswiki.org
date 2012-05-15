@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Mon May 14 09:47:41 2012 (-0700)
+;; Last-Updated: Tue May 15 10:32:33 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 17970
+;;     Update #: 17973
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-mcmd.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -1764,7 +1764,7 @@ Bound to `M-,' in the minibuffer."
               (icicle-current-input           icicle-current-input)
               (icicle-candidate-nb            icicle-candidate-nb)
               (icicle-update-input-hook       nil))
-          (icicle-completing-read-history "Replace with: " 'icicle-search-replacement-history)))
+          (icicle-completing-read-history "Replacement string: " 'icicle-search-replacement-history)))
   ;; Just a sanity check.  Cannot really test equivalence of two regexps.
   (while (if icicle-search-replace-whole-candidate-flag
              (equal icicle-search-replacement icicle-scan-fn-or-regexp)
@@ -1776,7 +1776,7 @@ Bound to `M-,' in the minibuffer."
                 (icicle-current-input           icicle-current-input)
                 (icicle-candidate-nb            icicle-candidate-nb)
                 (icicle-update-input-hook       nil))
-            (icicle-completing-read-history "Replacement = replaced.  Replace with: "
+            (icicle-completing-read-history "Replacement = replaced.  Replacement string: "
                                             'icicle-search-replacement-history)))))
 
 ;;;###autoload (autoload 'icicle-change-alternative-sort-order "icicles")
@@ -5187,7 +5187,7 @@ If FILENAME is the name of an autofile bookmark and you use library
 `Bookmark+', then show also the bookmark information (tags etc.).  In
 this case, a prefix arg shows the internal form of the bookmark."
     (interactive "FDescribe file: \nP")
-    (unless filename (setq filename default-directory))
+    (unless filename (setq filename  default-directory))
     (help-setup-xref `(icicle-describe-file ,filename ,internal-form-p) (interactive-p))
     (let ((attrs (file-attributes filename))
           ;; Functions `bmkp-*' are defined in `bookmark+.el'.
