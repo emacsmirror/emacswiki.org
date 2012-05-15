@@ -17,6 +17,7 @@ We don't recommend it, either, because horizontally split windows are usually to
 See LineWrap for more info.
 
 See PhysicalLineMove for a minor-mode that changes line movement commands (C-n, C-p, C-a, C-e) to take into account wrapped lines; useful if you don't want to truncate lines!
+: Isn't this deprecated by M-x visual-line-mode? I don't see what else PhysicalLineMove would bring to the table.
 
 If you want to set truncate-partial-width-windows just for a certain mode, you need
 to put the setting in a hook:
