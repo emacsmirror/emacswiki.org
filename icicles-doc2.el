@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Tue May 15 09:19:15 2012 (-0700)
+;; Last-Updated: Tue May 15 09:49:45 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 28837
+;;     Update #: 28838
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-doc2.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -239,6 +239,7 @@
 ;;  (@> "Icicles Dired Enhancements")
 ;;    (@> "Search-and-Replace Marked Files")
 ;;    (@> "Save Marked Names as Completion Candidates")
+;;      (@> "Save Marked Names Here and Below")
 ;;    (@> "Open Dired for a Set of File and Dir Names")
 ;;    (@> "Marked Files and Dirs as a Project")
 ;;    (@> "Shell Commands on Marked Files")
