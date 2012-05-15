@@ -405,9 +405,15 @@ bookmarks (or bookmark names, with a prefix arg).  It returns them in a Lisp lis
 When you search the text of a ''region'' bookmark, the search is
 limited to the region.
 
-In addition to using `C-u' with the general '''Icicles''' search
-commands, you can use the following '''Icicles''' search commands that
-are specific to bookmarks:
+If you use library '''[[Bookmark+]]''', then marking bookmarks in buffer
+`##*Bookmark List*##' is another way of choosing them for searching.
+Mode-specific '''Icicles''' search, '''`M-s M-s m'''' (in this case,
+`icicle-search-bookmark-list-marked') searches the marked objects,
+in this case the targets of the marked bookmarks.
+
+
+
+In addition to using '''Icicles''' search on a set of bookmark targets together, you can use the following '''Icicles''' search [multi-commands that are specific to bookmarks:
 
 * '''`icicle-search-bookmark''''
 * '''`icicle-search-autofile-bookmark''''
@@ -438,9 +444,9 @@ that have a certain set of tags.
 
 All of these commands act the same way.  They are
 [[multi-command]]s, so you can use them to search multiple bookmarks.
-But unlike `icicle-search-bookmarks-together' (`##C-u C-c `##'), you
-do not first choose all of the bookmarks and then search them
-together.  Instead, you search them ''one at a time''.
+But unlike `icicle-search-bookmarks-together' (`##C-u C-c `##') and `icicle-search-bookmark-list-marked' (`##M-s M-s m##'), you
+do not first choose the bookmarks and then search them
+together.  Instead, you search them ''one at a time'', choosing each with a multi-command action.
 
 `icicle-search-bookmark' is flexible, letting you specify any set
 of bookmarks to use as candidates.  The candidates are the
