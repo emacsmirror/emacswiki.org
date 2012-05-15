@@ -46,6 +46,9 @@ The list below is only an example. Add your own features and add subfeatures to 
 
 * Get Emacs to run on the Guile VM +1
 
+=== Org Mode ===
+
+* Export to Microsoft Word
 
 == add more features here ==
 
