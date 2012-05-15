@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Tue May 15 08:51:09 2012 (-0700)
+;; Last-Updated: Tue May 15 09:54:08 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 26628
+;;     Update #: 26633
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-doc1.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -355,6 +355,7 @@
 ;;  (@file :file-name "icicles-doc2.el" :to "Icicles Dired Enhancements")
 ;;    (@file :file-name "icicles-doc2.el" :to "Search-and-Replace Marked Files")
 ;;    (@file :file-name "icicles-doc2.el" :to "Save Marked Names as Completion Candidates")
+;;      (@file :file-name "icicles-doc2.el" :to "Save Marked Names Here and Below")
 ;;    (@file :file-name "icicles-doc2.el" :to "Open Dired for a Set of File and Dir Names")
 ;;    (@file :file-name "icicles-doc2.el" :to "Marked Files and Dirs as a Project")
 ;;    (@file :file-name "icicles-doc2.el" :to "Shell Commands on Marked Files")
@@ -6006,6 +6007,21 @@
 ;;  `icicle-file' that expects a file name.  Conversely, you cannot
 ;;  use a saved set of file names with a command such as
 ;;  `icicle-search-file' that expects `icicle-search' candidates.
+;;
+;;(@* "Saving Marked Files and Dirs in Dired")
+;;  ** Saving Marked Files and Dirs in Dired **
+;;
+;;  Besides saving file and directory names that are completion
+;;  candidates on the fly, You can create or add to a saved set of
+;;  names using the names that are marked in Dired.  The same keys
+;;  (e.g., `C-M->') that save candidates in the minibuffer during
+;;  completion save the marked names in Dired.
+;;
+;;  If you use library `Dired+' then you can also use the same keys,
+;;  but with the prefix key `M-+' (e.g. `M-+ C-M->') to save not only
+;;  the names that are marked in the current Dired buffer but also
+;;  those that are marked in any marked subdirectories, recursively.
+;;  See (@file :file-name "icicles-doc2.el" :to "Save Marked Names Here and Below").
 ;;
 ;;(@* "Set Operations")
 ;;  ** Set Operations **
