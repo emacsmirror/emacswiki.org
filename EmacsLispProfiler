@@ -1,0 +1,115 @@
+Emacs comes with GIT:emacs-lisp/elp.el by BarryWarsaw that can display the elapsed time of running an EmacsLisp function.  It is possible to instrument more than one function, so it displays the results as a table in a buffer called ##*Elp Profiling Results*##.  It tracks the total timing for each call of an instrumented function and determines the average time for each call.
+
+According to the commentary in the source code,
+
+: ''Elp can instrument byte-compiled functions just as easily as interpreted functions, but it cannot instrument macros.  However, when you redefine a function (e.g. with eval-defun), you'll need to re-instrument it with M-x elp-instrument-function.  This will also reset profiling information for that function.  Elp can handle interactive functions (i.e. commands), but of course any time spent idling for user prompts will show up in the timing results.''
+
+Instrument a function with `M-x elp-instrument-function'.
+
+  M-x elp-instrument-function RET sort RET
+
+The profiler works by adding a wrapper to each instrumented function.
+
+  (pp (symbol-function 'sort))
+  ==> (lambda
+        (&rest args)
+        (elp-wrapper 'sort nil args))
+
+Run an instrumented function a bunch with `dotimes' or EmacsLispBenchmark.
+
+  (dotimes (i 512)
+    (nsort (mapcar 'random (make-list 100 most-positive-fixnum)) '<))
+
+Running `M-x elp-results' gives the following output in the buffer ##*Elp Profiling Results*##.
+
+  Function Name  Call Count  Elapsed Time  Average Time
+  sort           512         0.0270000000  5.27...e-005
+
+Every time you run `elp-results', it resets the count for all instrumented functions unless you change `elp-reset-after-results' to nil.  You can manually reset the statistics for one function with `M-x elp-reset-function' or all functions with `M-x elp-reset-all'.
+
+To remove the instrumentation on a function `M-x elp-restore-function'.  To remove all instrumentation, `M-x elp-restore-all'.
+
+If you want to profile an instrumented function when it is called by a "master" function and ignore any times its called by other functions, use `M-x elp-set-master'.  You can only have set one master.
+
+To instrument all symbols starting with a prefix, use `M-x elp-instrument-package'.  Here's how to profile opening InfoMode.  First its library needs to be fully loaded in Emacs, not just AutoLoaded, for it to be instrumented by the profiler.  Info has two prefixes for its symbols -- lowercase `info' and capitalized 'Info'.
+
+  M-x load-library info
+  M-x elp-instrument-package info
+  M-x elp-instrument-package Info
+  C-h i
+  M-x elp-results
+
+Package profiling can help find where the time intensive areas are.
+
+  Function Name                     Call Count  Elapsed Time  Average Time
+  info                              1           0.046         0.046
+  info-setup                        1           0.046         0.046
+  Info-find-node                    1           0.046         0.046
+  Info-directory                    1           0.046         0.046
+  info-initialize                   1           0.023         0.023
+  Info-find-node-2                  1           0.023         0.023
+  Info-default-dirs                 1           0.022         0.022
+  Info-select-node                  1           0.02          0.02
+  Info-fontify-node                 1           0.019         0.019
+  Info-index-node                   53          0.017         0.0003207547
+  Info-insert-dir                   1           0.003         0.003
+  Info-directory-find-node          1           0.003         0.003
+  Info-virtual-call                 3           0.003         0.001
+  Info-menu-update                  2           0.001         0.0005
+  Info-dir-remove-duplicates        1           0.001         0.001
+  Info-find-node-in-buffer-1        2           0.0           0.0
+  Info-file-supports-index-cookies  53          0.0           0.0
+  Info-complete-menu-item           1           0.0           0.0
+  Info-set-mode-line                2           0.0           0.0
+  Info-following-node-name-re       6           0.0           0.0
+  Info-toc-nodes                    1           0.0           0.0
+  Info-directory-toc-nodes          1           0.0           0.0
+  Info-directory-find-file          1           0.0           0.0
+  Info-virtual-file-p               1           0.0           0.0
+  Info-find-file                    1           0.0           0.0
+  Info-display-images-node          1           0.0           0.0
+  Info-breadcrumbs                  1           0.0           0.0
+  Info-hide-cookies-node            1           0.0           0.0
+  Info-node-at-bob-matching         2           0.0           0.0
+  Info-virtual-fun                  4           0.0           0.0
+  Info-check-pointer                6           0.0           0.0
+  Info-find-node-in-buffer          1           0.0           0.0
+  Info-extract-pointer              6           0             0.0
+  Info-mode                         1           0.0           0.0
+
+By default the result are sorted by total time.  You can change the sort order by customizing `elp-sort-by-function' with [[Customize]].
+
+It's possible to display the results in the current buffer.
+
+  (let ((elp-use-standard-output t))
+    (elp-results))
+  Function Name  Call Count  Elapsed Time  Average Time
+  =============  ==========  ============  ============
+  sort           512         0.0270000000  5.27...e-005
+
+This is the same output when your profile code and run `elp-results' while Emacs is in BatchMode.
+
+If you want to programmatically set functions for profiling, then add them to `elp-function-list' then run `elp-instrument-list'.
+
+  (let ((elp-function-list '(nsort primitive-sort)))
+    (elp-instrument-list)
+    (dotimes (i 512)
+      (let ((randlist (make-list 100 most-positive-fixnum)))
+        (nsort (copy-sequence randlist) '<)
+        (primitive-sort (copy-sequence randlist) '<)))
+    (elp-results)
+    (elp-reset-list))
+
+Here's the results of comparing a Lisp sort with the entirely C version in Emacs.
+
+  Function Name                     Call Count  Elapsed Time  Average Time
+  nsort                             512         0.2930000000  0.0005722656
+  primitive-sort                    512         0.0140000000  2.73...e-005
+
+See also
+EmacsLispBenchmark,
+EmacsLispTracing.
+
+----
+CategoryCode
+CategoryProgramming
