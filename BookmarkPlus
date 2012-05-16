@@ -4239,8 +4239,12 @@ Can you try that, to see?  Just use `C-x p L' (`bmkp-switch-bookmark-file' to lo
 
 Also, I contacted BastienGuerry by email, who I think wrote the Gnus bookmarks code.  He may be able to help.  If you want to follow up by email, feel free -- that's probably easier than communicating this way.  Thx -- DrewAdams
 
-
-
+[new:AndersJohansson:2012-05-16 13:20 UTC]
+One thing that I needed was to have the All Tags list alphabetically sorted. I think this would be desirable in most cases. If I haven't missed anything this could be fixed for instance by replacing
+##(pp-display-expression (bmkp-tags-list (not fullp) current-only-p) "*All Tags"))##
+with
+##(pp-display-expression (sort (bmkp-tags-list (not fullp) current-only-p) 'string<) "*All Tags"))##
+in the definition of `bmkp-list-all-tags'. -- AndersJohansson
 
 
 
