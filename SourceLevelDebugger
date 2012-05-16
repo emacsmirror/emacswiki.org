@@ -72,7 +72,7 @@ And note you could also put a condition around "stop_here" for example:
 
         ((>  n 1) (progn (if (= n 3) stop-here 'fact) (* n (fact (1- n)))))
 
-What's hoaky about the above is all the verbiage in the <tt>(progn</tt> ... <tt>)</tt> and that you have to enter the function argument 'fact in stop-here. There may be a way to reduce this in the stop-here macro.
+What's hoaky about the above is all the verbiage in the <tt>(progn</tt> ... <tt>)</tt> and that you have to enter the function argument <tt>'fact</tt> in `stop-here'. There may be a way to reduce this in the `stop-here' macro.
 
 
 See also
