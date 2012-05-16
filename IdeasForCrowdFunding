@@ -47,6 +47,14 @@ The list below is only an example. Add your own features and add subfeatures to 
 * Get Emacs to run on the Guile VM +1
 ** This would speed up Emacs Lisp and allow other languages to be used instead of Emacs Lisp. How can we get this costed out, or otherwise get an estimate on how much we would need to raise to "Kickstart" this project?
 
+=== FFI ===
+
+* Provide a FFI so that we can use external libraries from lisp without having to patch the C code.  Notice: if rewritten in Common Lisp then we don't need this item since it comes for free with CL implementations.
+
+=== Graphics ===
+
+* Provide a more versatile emacs windowing system, including interactive graphical windows.  This would allow us to implement modes managing windows like in http://www.chris-granger.com/2012/04/12/light-table---a-new-ide-concept/.  Notice: if rewritten in Common Lisp then we could implement it in CL, without having to write low-level graphic and windowing primitives in C.
+
 === Org Mode ===
 
 * Export to Microsoft Word
