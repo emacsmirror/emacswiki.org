@@ -1296,6 +1296,23 @@ This fn performs a "wget" using Powershell.  Works only on Windows.
           ;;(message "downloaded to %s" url-tmpf)
           url-tmpf)))
 
+== Demo Code for modules ==
+
+Sometimes you might want to insert some demo code that for a module you write. The demo code of course is not run when the module is loaded via `require' or `load' but when you `eval-current-buffer'. All you need to do add a test on:
+
+   (eq (car eval-buffer-list) (current-buffer))
+
+Here is a complete example:
+
+    (provide 'foo-foo)
+    (setq foo-foo 10)
+    ;; Demo code only executed when eval'ing current-buffer
+    (if (eq (car eval-buffer-list) (current-buffer))
+        (message "foo-foo is %d" foo-foo)
+    )
+
+
+
 
 ----
 CategoryCode
