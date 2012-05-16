@@ -68,9 +68,9 @@ You can see the code coverage of the defun at point with `C-x X =' or `M-x edebu
 
 If you eval the above and then edebug-defun while the point is on fact, you'll first stop at fact but then when you enter `g' for `go' it will next stop after the <tt>(* n</tt>...<tt> )</tt> which is what I want.
 
-And note you could also put a condition around "stop_here" for example:
+And note you could also put a condition around `stop-here` for example:
 
-        ((>  n 1) (progn (if (= n 3) stop-here 'fact) (* n (fact (1- n)))))
+        ((>  n 1) (progn (if (= n 3) (stop-here 'fact)) (* n (fact (1- n)))))
 
 What's hoaky about the above is all the verbiage in the <tt>(progn</tt> ... <tt>)</tt> and that you have to enter the function argument <tt>'fact</tt> in `stop-here'. There may be a way to reduce this in the `stop-here' macro.
 
