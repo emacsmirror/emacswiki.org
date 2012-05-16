@@ -59,6 +59,12 @@ The list below is only an example. Add your own features and add subfeatures to 
 
 * Export to Microsoft Word
 
+This is already possible.  
+
+First you export the Orgfile to OpenDocument/LibreOffice format.  Then you use LibreOffice to convert it to doc or docx format.  See http://orgmode.org/manual/ODT-export-commands.html and http://orgmode.org/manual/Extending-ODT-export.html#x-export-to-other-formats.
+
+This feature is available as part of Emacs-24.1.
+
 === Terminal Emulation ===
 
 * More work on EShell or better terminal emulation.
