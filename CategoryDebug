@@ -27,6 +27,7 @@ Debugging other programs using Emacs:
 ** [http://bashdb.sf.net bashdb]  --  Bash debugger
 ** gdb     --  can be run stand-alone or from an existing a comint "track-mode" shell
 ** [http://github.com/rocky/kshdb kshdb]   --  Ksh debugger
+** pdb -- Stock C Python debugger
 ** perl    --  can be run stand-alone or from an existing a comint "track-mode" shell
 ** [http://bashdb.sourceforge.net/pydb/ pydb] --  Python debugger (but please use the newer pydbgr instead)
 ** [http://code.google.com/p/pydbgr/ pydbgr] --  Python debugger
