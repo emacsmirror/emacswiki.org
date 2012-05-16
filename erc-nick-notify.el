@@ -3,7 +3,7 @@
 ;; Filename: erc-nick-notify.el
 ;; Description: Notify popup for ERC
 ;; Author: Andy Stewart lazycat.manatee@gmail.com
-;; Contributors: Philipp Haselwarter <philipp.haselwarter AT gmx.de>
+;; Contributors: Philipp Haselwarter <philipp AT haselwarter DOT org>
 ;; Maintainer: Andy Stewart lazycat.manatee@gmail.com
 ;; Copyright (C) 2008, 2009, Andy Stewart, all rights reserved.
 ;; Created: 2008-12-04 12:47:28
