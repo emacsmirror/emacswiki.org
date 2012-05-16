@@ -23,12 +23,12 @@ Debugging other programs using Emacs:
 ** GdbMode -- a debugger mode specialized for gdb
 ** PdbNotes -- additional setup info for python
 
-* There is a [https://github.com/rocky/emacs-dbgr/wiki/ rewrite of GUD] from scratch. The debuggers supported include:
+* There is a [https://github.com/rocky/emacs-dbgr/wiki/ rewrite of GUD] from scratch. The debuggers can be run stand-alone or from an existing a comint "track-mode" shell The debuggers supported include:
 ** [http://bashdb.sf.net bashdb]  --  Bash debugger
 ** gdb     --  can be run stand-alone or from an existing a comint "track-mode" shell
 ** [http://github.com/rocky/kshdb kshdb]   --  Ksh debugger
 ** pdb -- Stock C Python debugger
-** perl    --  can be run stand-alone or from an existing a comint "track-mode" shell
+** perl    --  Stock perl5db debugger
 ** [http://bashdb.sourceforge.net/pydb/ pydb] --  Python debugger (but please use the newer pydbgr instead)
 ** [http://code.google.com/p/pydbgr/ pydbgr] --  Python debugger
 ** rdebug  --  Ruby debugger ruby-debug 
