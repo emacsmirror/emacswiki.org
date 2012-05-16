@@ -4246,7 +4246,10 @@ with
 ##(pp-display-expression (sort (bmkp-tags-list (not fullp) current-only-p) 'string<) "*All Tags"))##
 in the definition of `bmkp-list-all-tags'. -- AndersJohansson
 
+[new:DrewAdams:2012-05-16 15:21 UTC]
+Good idea.  Done.  The code is a bit different, as it needs to be able to (a) handle a prefix arg (full tags) and (b) respect `case-fold-search'.
 
+Thx -- DrewAdams
 
 
 
