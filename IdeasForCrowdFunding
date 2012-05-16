@@ -61,7 +61,7 @@ The list below is only an example. Add your own features and add subfeatures to 
 
 This is already possible.  
 
-First you export the Orgfile to OpenDocument/LibreOffice format.  Then you use LibreOffice to convert it to doc or docx format.  See http://orgmode.org/manual/ODT-export-commands.html and http://orgmode.org/manual/Extending-ODT-export.html#x-export-to-other-formats.
+First you export the Orgfile to OpenDocument format (This is the native format used by LibreOffice).  Then you use LibreOffice to convert it to doc or docx format.  See http://orgmode.org/manual/ODT-export-commands.html and http://orgmode.org/manual/Extending-ODT-export.html#x-export-to-other-formats.
 
 This feature is available as part of Emacs-24.1.
 
