@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2012, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Sat May  5 14:52:58 2012 (-0700)
+;; Last-Updated: Wed May 16 08:25:04 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 14933
+;;     Update #: 14938
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-chg.el
 ;; Keywords: bookmarks, bookmark+
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -145,6 +145,9 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-1.el'")
 ;;
+;; 2012/05/16 dadams
+;;     Added: bmkp-string-less-case-fold-p.
+;;     bmkp-list-all-tags: List tags alphabetically.  Thx to Anders Johansson for the suggestion.
 ;; 2012/05/05 dadams
 ;;     bookmark-store, bmkp-make-function-bookmark, bmkp-unomit-all, bmkp-url-target-set:
 ;;       Added optional arg NO-MSG-P. 
