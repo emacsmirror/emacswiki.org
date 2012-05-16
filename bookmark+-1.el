@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2012, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 13:43:55 2010 (-0700)
-;; Last-Updated: Sat May  5 14:23:27 2012 (-0700)
+;; Last-Updated: Wed May 16 08:20:58 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 5539
+;;     Update #: 5559
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-1.el
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -441,7 +441,8 @@
 ;;    `bmkp-some-tags-regexp-alist-only', `bmkp-some-unmarked-p'
 ;;    `bmkp-sort-omit', `bmkp-sound-jump',
 ;;    `bmkp-specific-buffers-alist-only',
-;;    `bmkp-specific-files-alist-only', `bmkp-tagged-bookmark-p',
+;;    `bmkp-specific-files-alist-only',
+;;    `bmkp-string-less-case-fold-p', `bmkp-tagged-bookmark-p',
 ;;    `bmkp-tagged-cp', `bmkp-tag-name', `bmkp-tags-in-bookmark-file',
 ;;    `bmkp-tags-list', `bmkp-temporary-alist-only',
 ;;    `bmkp-temporary-bookmark-p', `bmkp-this-buffer-alist-only',
@@ -1094,6 +1095,10 @@ is tried and
   "*List of strings used as tags for completion (not an alist).
 The tags can be specified here individually or taken from (a) the
 current bookmark list or (b) one or more bookmark files or both.
+
+\(In Emacs 20 and 21, you cannot choose (b) when customizing, but if
+\(b) was chosen using a later Emacs version then the option value can
+still be used in Emacs 20 and 21.)
 
 If a relative file name is specified for a bookmark file then the
 current value of `default-directory' is used to find the file."
@@ -4154,7 +4159,8 @@ determining the tags to use per option `bmkp-tags-for-completion'."
                                         ; Bound to `C-x p t l', (`T l' in bookmark list)
   "List bookmark tags.
 Show the list in the minibuffer or, if not enough space, in buffer
-`*All Tags*'.
+`*All Tags*'.  The tags are listed alphabetically, respecting option
+`case-fold-search'.
 
 With no prefix arg or with a plain prefix arg (`C-u'), the tags listed
 are those defined by option `bmkp-tags-for-completion'.  Otherwise
@@ -4167,13 +4173,18 @@ plain `C-u'), list the full alist of tags.
 
 Note that when the full tags alist is shown, the same tag name appears
 once for each of its different values.
+
 Non-interactively, non-nil MSG-P means display a status message."
   (interactive (list (and current-prefix-arg (> (prefix-numeric-value current-prefix-arg) 0))
                      (and current-prefix-arg (not (consp current-prefix-arg)))
                      t))
   (require 'pp)
   (when msg-p (message "Gathering tags..."))
-  (pp-display-expression (bmkp-tags-list (not fullp) current-only-p) "*All Tags"))
+  (pp-display-expression  (sort (bmkp-tags-list (not fullp) current-only-p)
+                                (if fullp
+                                    (lambda (t1 t2) (bmkp-string-less-case-fold-p (car t1) (car t2)))
+                                  'bmkp-string-less-case-fold-p))
+                          "*All Tags"))
 
 (defun bmkp-tags-list (&optional names-only-p current-only-p)
   "List of all bookmark tags, per option `bmkp-tags-for-completion'.
@@ -5476,6 +5487,12 @@ open a remote connection."
       (float-time specified-time)
     (unless specified-time (setq specified-time  (current-time)))
     (+ (* (float (nth 0 specified-time)) (expt 2 16))  (nth 1 specified-time))))
+
+(defun bmkp-string-less-case-fold-p (s1 s2)
+  "Like `string-lessp', but respect `case-fold-search'."
+  (when case-fold-search (setq s1  (bmkp-upcase s1)
+                               s2  (bmkp-upcase s2)))
+  (string-lessp s1 s2))
 
 (defun bmkp-make-plain-predicate (pred &optional final-pred)
   "Return a plain predicate that corresponds to component-predicate PRED.
