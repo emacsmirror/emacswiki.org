@@ -46,6 +46,35 @@ You can disable edebug on a function by evaluating the function again using `C-M
 
 You can see the code coverage of the defun at point with `C-x X =' or `M-x edebug-display-freq-count'.
 
+== Inserting a direct call to edbug ==
+
+    (defmacro stop-here (fn)
+       "Call edebug here. FN is assumed to be a symbol of the function you are in."
+       `(if (consp (get ,fn 'edebug))
+           (edebug)))
+    
+    (defun clear-edebug (fn-sym)
+      "Remove 'edebug property from FN-SYM, a function symbol.
+      (put fn-sym 'edebug nil)
+    )
+
+    ;; An example of use:
+    (defun fact (n)
+      (cond ((eq n 0) )
+        ((eq n 1) 1)
+        ((>  n 1) (progn (stop-here 'fact) (* n (fact (1- n)))))
+        (t nil))
+     )
+
+If you eval the above and then edebug-defun while the point is on fact, you'll first stop at fact but then when you enter `g' for `go' it will next stop after the <tt>(* n</tt>...<tt> )</tt> which is what I want.
+
+And note you could also put a condition around "stop_here" for example:
+
+        ((>  n 1) (progn (if (= n 3) stop-here 'fact) (* n (fact (1- n)))))
+
+What's hoaky about the above is all the verbiage in the <tt>(progn</tt> ... <tt>)</tt> and that you have to enter the function argument 'fact in stop-here. There may be a way to reduce this in the stop-here macro.
+
+
 See also
 DebuggerMode,
 EmacsLispTracing.
