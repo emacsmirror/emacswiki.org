@@ -7,9 +7,9 @@
 ;; Copyright (C) 2006-2012, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 08 13:09:19 2006
 ;; Version: 22.0
-;; Last-Updated: Thu May 17 11:24:31 2012 (-0700)
+;; Last-Updated: Thu May 17 13:43:51 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 423
+;;     Update #: 431
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/crosshairs.el
 ;; Keywords: faces, frames, emulation, highlight, cursor, accessibility
 ;; Compatibility: GNU Emacs: 22.x, 23.x
@@ -25,7 +25,14 @@
 ;;  This library highlights the current line and the current column.
 ;;  It combines the features of libraries `hl-line.el', `hl-line+.el',
 ;;  and `col-highlight.el', which let you highlight the line or column
-;;  individually.  See those libraries for more information.
+;;  individually.  See those libraries for more information, in
+;;  particular for user options that affect the behavior.
+;;
+;;  If you want the horizontal and vertical highlighting to look the
+;;  same, then:
+;;
+;;  1. Set option `col-highlight-vline-face-flag' to non-nil.
+;;  2. Customize faces `col-highlight' and `hl-line' to look the same.
 ;;
 ;;  Command `crosshairs-mode' toggles this highlighting on and off.
 ;;  You can do this twice in succession to flash the crosshairs to
@@ -58,8 +65,7 @@
 ;;
 ;;  User options defined here:
 ;;
-;;    `crosshairs-mode', `crosshairs-overlay-priority',
-;;    `crosshairs-vline-same-face-flag'.
+;;    `crosshairs-mode', `crosshairs-overlay-priority'.
 ;;
 ;;  Commands defined here:
 ;;
@@ -84,7 +90,7 @@
 ;;; Change Log:
 ;;
 ;; 2012/05/17 dadams
-;;     crosshairs-vline-same-face-flag: defvaralias col-highlight-vline-face-flag.
+;;     Removed: crosshairs-vline-same-face-flag.
 ;; 2011/01/03 dadams
 ;;     Added autoload cookies for defgroup, defcustoms, commands.
 ;; 2010/06/29 dadams
@@ -167,13 +173,6 @@ Don't forget to mention your Emacs and library versions."))
           (const   :tag "No priority (default priority)"  nil)
           (integer :tag "Priority"  100))
   :group 'crosshairs)
-
-;;;###autoload
-(defvaralias 'crosshairs-vline-same-face-flag 'col-highlight-vline-face-flag
-  "*Non-nil means use face `hl-line' for crosshairs column highlighting.
-nil means highlight the column according to the value of `vline-style'
-and face `vline'.  This is just an alias for option
-`col-highlight-vline-face-flag'.")
 
 (defvar crosshairs-highlight-when-idle-p nil
   "Non-nil means highlight current line and column when Emacs is idle.
