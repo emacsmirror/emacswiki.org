@@ -91,6 +91,7 @@ and set the focus back to Emacs frame"
 It is very useful for me, since I alway browse the webs while compiling ;-)
 -- Xu Yuan
 
+It would be nicer still if compile were written to allow for no buffer at all. God forbid commands should leave window configurations alone.
 [new]
 
 Hack to have the background color change depending on the outcome of the compile command, so long as the compilation window has its own frame. Stick '*compilation*' in special-display-buffer-nams.
