@@ -7,9 +7,9 @@
 ;; Copyright (C) 2006-2012, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 08 13:09:19 2006
 ;; Version: 22.0
-;; Last-Updated: Thu May 17 13:43:51 2012 (-0700)
+;; Last-Updated: Thu May 17 16:52:02 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 431
+;;     Update #: 436
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/crosshairs.el
 ;; Keywords: faces, frames, emulation, highlight, cursor, accessibility
 ;; Compatibility: GNU Emacs: 22.x, 23.x
@@ -90,6 +90,7 @@
 ;;; Change Log:
 ;;
 ;; 2012/05/17 dadams
+;;     crosshairs-mode: Made it respect crosshairs-overlay-priority.
 ;;     Removed: crosshairs-vline-same-face-flag.
 ;; 2011/01/03 dadams
 ;;     Added autoload cookies for defgroup, defcustoms, commands.
@@ -211,11 +212,21 @@ Don't forget to mention your Emacs and library versions."))
   (cond (crosshairs-mode
          (unless global-hl-line-mode
            (global-hl-line-mode 1)
-           (global-hl-line-highlight))
+           (global-hl-line-highlight)
+           (when crosshairs-overlay-priority
+             (overlay-put global-hl-line-overlay
+                          'priority crosshairs-overlay-priority)
+             (when (boundp 'vline-overlay-table)
+               (mapcar (lambda (ov) (when (overlayp ov)
+                                 (overlay-put ov 'priority
+                                              crosshairs-overlay-priority)))
+                       vline-overlay-table))))
          (column-highlight-mode 1)
          (message "Point: %d - Crosshairs mode enabled" (point)))
         (t
          (global-hl-line-mode -1)
+         (when crosshairs-overlay-priority
+           (overlay-put global-hl-line-overlay 'priority nil))
          (global-hl-line-unhighlight)
          (column-highlight-mode -1)
          (message "Point: %d - Crosshairs mode disabled" (point)))))
