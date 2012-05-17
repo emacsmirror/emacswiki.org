@@ -46,7 +46,7 @@ The list below is only an example. Add your own features and add subfeatures to 
 
 * Get Emacs to run on the Guile VM +1
 ** This would speed up Emacs Lisp and allow other languages to be used instead of Emacs Lisp. How can we get this costed out, or otherwise get an estimate on how much we would need to raise to "Kickstart" this project?
-* [http://kck.st/IY0Bau Emacsy is a kickstarter project] a Guile library that provides Emacs-like facilities--keymaps, minibuffer, tab completion, recordable macros, and major/minor modes--for applications natively.  
+* [http://kck.st/IY0Bau Emacsy is a kickstarter project] for a Guile library that provides Emacs-like facilities--keymaps, minibuffer, tab completion, recordable macros, and major/minor modes--for applications natively.  
 
 === FFI ===
 
