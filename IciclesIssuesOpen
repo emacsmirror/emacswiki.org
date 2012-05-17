@@ -141,11 +141,13 @@ PasJa
 
 
 [new:DrewAdams:2012-05-17 14:15 UTC]
-Hi PasJa,
+Hi %%PasJa%%,
 
 Send me a mail with this info, and cc MichaelAlbinus (##michael.albinus AT gmx.de##), who writes Tramp.
 
 A workaround is perhaps to use `##C-###' in the minibuffer to turn off incremental completion.  No doubt, when '''Icicles''' tries to complete `##/##' Tramp is kicking in for some reason and trying to complete that string first.
+
+Another possible workaround is to use `##C-^##' in the minibuffer to toggle remote-file testing (it toggles [[option]] `icicle-test-for-remote-files-flag'), which also turns off Tramp's completion.  Toggle it back on when you want that completion.
 
 Hopefully Michael will have an answer for us.  But you need to specify exactly which OS you use, which Emacs version, which Tramp version, and any customizations --- preferably provide a recipe from ##emacs -Q## that specifies only the customizations needed to reproduce the problem.  Thx -- DrewAdams
 
