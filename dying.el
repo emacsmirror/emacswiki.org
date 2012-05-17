@@ -28,6 +28,8 @@
 ;; `dying-mode' with the specified lifetime.  If there are only
 ;; `dying-countdown-duration' seconds left before kill a countdown
 ;; starts.
+;;; Changes:
+;; 2012-05-17: More general time formats in `start-dying-mode'
 ;;; Code:
 
 (require 'timer)
