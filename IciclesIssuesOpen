@@ -114,10 +114,29 @@ Better yet, use this to separate threads (puts space before and after the horizo
 
 
 
+<pre>
+
+</pre>
+----
+<pre>
+
+</pre>
 
 
 
+[new] Hi Drew!
 
+Iv'got another icicles issue: If i hit `C-x C-f' to open files, and i go back to the directory tree with `C-backspace' (icicle-up-directory) every time i reach the '/' character, a message pops up in the minibuffer: "Tramp: Waiting for prompts from remote shell" and emacs freezes, after the process timed out, emacs responds again. 
+
+My tramp config(nothing special)
+
+   (setq shell-prompt-pattern "^[^a-zA-Z].*[~#$%>] *" ; we need a bit more funky pattern, as tramp will start $SHELL (sudo -s), ie., zsh for root user
+         tramp-default-method "ssh"
+         tramp-persistency-file-name "~/.emacs.d/cache/tramp")
+
+
+Regards,
+PasJa
 
 
 
