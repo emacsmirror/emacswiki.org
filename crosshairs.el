@@ -7,9 +7,9 @@
 ;; Copyright (C) 2006-2012, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 08 13:09:19 2006
 ;; Version: 22.0
-;; Last-Updated: Thu May 17 10:51:23 2012 (-0700)
+;; Last-Updated: Sun Jan  1 14:28:02 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 413
+;;     Update #: 407
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/crosshairs.el
 ;; Keywords: faces, frames, emulation, highlight, cursor, accessibility
 ;; Compatibility: GNU Emacs: 22.x, 23.x
@@ -83,9 +83,6 @@
 ;; 
 ;;; Change Log:
 ;;
-;; 2012/05/17 dadams
-;;     crosshairs-flash, crosshairs-highlight:
-;;       Bind col-highlight-vline-face-flag to not crosshairs-vline-same-face-flag.
 ;; 2011/01/03 dadams
 ;;     Added autoload cookies for defgroup, defcustoms, commands.
 ;; 2010/06/29 dadams
@@ -264,8 +261,7 @@ both for SECONDS seconds."
   (interactive "P")
   (cancel-timer crosshairs-flash-line-timer) ; Cancel to prevent duplication.
   (cancel-timer crosshairs-flash-col-timer)
-  (let ((global-hl-line-mode            global-hl-line-mode)
-        (col-highlight-vline-face-flag  (not crosshairs-vline-same-face-flag)))
+  (let ((global-hl-line-mode global-hl-line-mode))
     (col-highlight-unhighlight t)
     (col-highlight-highlight t)
     (when column-highlight-mode (col-highlight-highlight t)) ; Extra - a vline bug.
@@ -333,8 +329,7 @@ Return current position as a marker."
       (hl-line-move global-hl-line-overlay))
     (when (and (fboundp 'col-highlight-highlight) (not (eq mode 'line-only)))
       (redisplay t) ; Force a redisplay, or else it doesn't always show up.
-      (let ((col-highlight-vline-face-flag  (not crosshairs-vline-same-face-flag)))
-        (col-highlight-highlight)))
+      (col-highlight-highlight))
     (when (or (boundp 'global-hl-line-overlay) (fboundp 'col-highlight-highlight))
       (add-hook 'pre-command-hook 'crosshairs-unhighlight))
     (unless nomsg
