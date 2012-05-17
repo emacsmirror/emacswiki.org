@@ -7,9 +7,9 @@
 ;; Copyright (C) 2006-2012, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 08 13:09:19 2006
 ;; Version: 22.0
-;; Last-Updated: Sun Jan  1 14:28:02 2012 (-0800)
+;; Last-Updated: Thu May 17 11:24:31 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 407
+;;     Update #: 423
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/crosshairs.el
 ;; Keywords: faces, frames, emulation, highlight, cursor, accessibility
 ;; Compatibility: GNU Emacs: 22.x, 23.x
@@ -83,6 +83,8 @@
 ;; 
 ;;; Change Log:
 ;;
+;; 2012/05/17 dadams
+;;     crosshairs-vline-same-face-flag: defvaralias col-highlight-vline-face-flag.
 ;; 2011/01/03 dadams
 ;;     Added autoload cookies for defgroup, defcustoms, commands.
 ;; 2010/06/29 dadams
@@ -167,11 +169,11 @@ Don't forget to mention your Emacs and library versions."))
   :group 'crosshairs)
 
 ;;;###autoload
-(defcustom crosshairs-vline-same-face-flag t
-  "*Non-nil means use face `hl-line' for column highlighting also.
+(defvaralias 'crosshairs-vline-same-face-flag 'col-highlight-vline-face-flag
+  "*Non-nil means use face `hl-line' for crosshairs column highlighting.
 nil means highlight the column according to the value of `vline-style'
-and face `vline'."
-  :type 'boolean :group 'crosshairs)
+and face `vline'.  This is just an alias for option
+`col-highlight-vline-face-flag'.")
 
 (defvar crosshairs-highlight-when-idle-p nil
   "Non-nil means highlight current line and column when Emacs is idle.
@@ -261,7 +263,7 @@ both for SECONDS seconds."
   (interactive "P")
   (cancel-timer crosshairs-flash-line-timer) ; Cancel to prevent duplication.
   (cancel-timer crosshairs-flash-col-timer)
-  (let ((global-hl-line-mode global-hl-line-mode))
+  (let ((global-hl-line-mode  global-hl-line-mode))
     (col-highlight-unhighlight t)
     (col-highlight-highlight t)
     (when column-highlight-mode (col-highlight-highlight t)) ; Extra - a vline bug.
