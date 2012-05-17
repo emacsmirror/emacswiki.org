@@ -41,7 +41,7 @@
   "Timer for dying mode. (nil when unset)")
 (make-variable-buffer-local 'dying-timer)
 
-(defcustom dying-countdown-duration 10 "Time before kill when countdown starts." :group 'dying :type 'integer)
+(defcustom dying-countdown-duration 99 "Time before kill when countdown starts." :group 'dying :type 'integer)
 
 ;; Stolen from run-at-time:
 (defun timer-translate-time (time)
@@ -99,7 +99,7 @@ Else it updates the countdown in the mode-line."
 
 (defun dying-set-lifetime (&optional time)
   "Set the lifetime of the current buffer.
-Don't limit lifetime of current buffer if time is the empty string
+Don't limit lifetime of current buffer if TIME is the empty string
 \(or nil in non-interactive usage)."
   (interactive "sNew Lifetime:")
   (if (and time (null (equal time "")))
@@ -138,17 +138,16 @@ Don't limit lifetime of current buffer if time is the empty string
 (make-variable-buffer-local 'dying-kill-time)
 
 (defun start-dying-mode (lifetime)
-  "Start `dying-mode' with lifetime LIFETIME (in seconds).
+  "Start `dying-mode' with lifetime LIFETIME (format as for `run-at-time').
 If you want to start `dying-mode' with an unlimited lifetime just respond with enter to the lifetime-query.
 If you use this function non-interactively, give the lifetime as a the number of seconds (with type `numberp')
 or as `nil' when you want to start with an unlimited lifetime."
-  (interactive (let (str sec) (while (progn
-				    (setq str (read-string "Lifetime (number of seconds, or empty string for unlimited lifetime):" nil nil ""))
-				    (and
-				     (if (string= str "") (setq sec nil) t)
-				     (null (if (string-match "^[1-9][0-9]*$" str)
-					       (setq sec (string-to-number str)))))))
-				(list sec)))
+  (interactive (let (str lifetime) (while (progn
+					    (setq str (read-string "Lifetime (number of seconds, or empty string for unlimited lifetime):" nil nil ""))
+					    (and
+					     (if (string= str "") (setq lifetime nil) t)
+					     (null (setq lifetime (timer-translate-time str))))))
+		    (list lifetime)))
   (setq dying-lifetime lifetime)
   (dying-mode))
 
