@@ -18,6 +18,10 @@ See also [[Manual:Outline Mode]].
 
 == Cumbersome Key-Bindings  ==
 
+Use OutlineMagic: It extends OutlineMode and OutlineMinorMode with a single command to toggle hiding/showing (<code>outline-cycle</code>) which you can bind to something like <C-tab>.
+
+--
+
 I use outline-minor-mode  to see the skeleton of programs.
 To navigate between headings i rebound all the commands to 1-event long keys.
 Something like M-P/N  (meta and uppercase letters). Otherwise it's too long for my taste.
