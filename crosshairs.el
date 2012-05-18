@@ -7,9 +7,9 @@
 ;; Copyright (C) 2006-2012, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 08 13:09:19 2006
 ;; Version: 22.0
-;; Last-Updated: Thu May 17 16:52:02 2012 (-0700)
+;; Last-Updated: Fri May 18 07:22:07 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 436
+;;     Update #: 465
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/crosshairs.el
 ;; Keywords: faces, frames, emulation, highlight, cursor, accessibility
 ;; Compatibility: GNU Emacs: 22.x, 23.x
@@ -65,7 +65,7 @@
 ;;
 ;;  User options defined here:
 ;;
-;;    `crosshairs-mode', `crosshairs-overlay-priority'.
+;;    `crosshairs-mode'.
 ;;
 ;;  Commands defined here:
 ;;
@@ -89,6 +89,12 @@
 ;; 
 ;;; Change Log:
 ;;
+;; 2012/05/18 dadams
+;;     Removed: crosshairs-overlay-priority.  Instead, use vline-overlay-priority
+;;              and col-highlight-overlay-priority.
+;;     crosshairs-mode, crosshairs-(un)highlight:
+;;       Do not set the overlay priority - done using defadvice in hl-line+.el and
+;;       col-highlight.el.
 ;; 2012/05/17 dadams
 ;;     crosshairs-mode: Made it respect crosshairs-overlay-priority.
 ;;     Removed: crosshairs-vline-same-face-flag.
@@ -167,14 +173,6 @@ Don't forget to mention your Emacs and library versions."))
   :link '(url-link :tag "Download"
           "http://www.emacswiki.org/cgi-bin/wiki/crosshairs.el"))
 
-;;;###autoload
-(defcustom crosshairs-overlay-priority nil
-  "*Priority to use for overlay `global-hl-line-overlay'."
-  :type '(choice
-          (const   :tag "No priority (default priority)"  nil)
-          (integer :tag "Priority"  100))
-  :group 'crosshairs)
-
 (defvar crosshairs-highlight-when-idle-p nil
   "Non-nil means highlight current line and column when Emacs is idle.
 Do NOT change this yourself; instead, use
@@ -212,21 +210,11 @@ Don't forget to mention your Emacs and library versions."))
   (cond (crosshairs-mode
          (unless global-hl-line-mode
            (global-hl-line-mode 1)
-           (global-hl-line-highlight)
-           (when crosshairs-overlay-priority
-             (overlay-put global-hl-line-overlay
-                          'priority crosshairs-overlay-priority)
-             (when (boundp 'vline-overlay-table)
-               (mapcar (lambda (ov) (when (overlayp ov)
-                                 (overlay-put ov 'priority
-                                              crosshairs-overlay-priority)))
-                       vline-overlay-table))))
+           (global-hl-line-highlight))
          (column-highlight-mode 1)
          (message "Point: %d - Crosshairs mode enabled" (point)))
         (t
          (global-hl-line-mode -1)
-         (when crosshairs-overlay-priority
-           (overlay-put global-hl-line-overlay 'priority nil))
          (global-hl-line-unhighlight)
          (column-highlight-mode -1)
          (message "Point: %d - Crosshairs mode disabled" (point)))))
@@ -332,12 +320,6 @@ Return current position as a marker."
         (setq global-hl-line-overlay (make-overlay 1 1)) ; to be moved
         (overlay-put global-hl-line-overlay 'face hl-line-face))
       (overlay-put global-hl-line-overlay 'window (selected-window))
-      (when crosshairs-overlay-priority
-        (overlay-put global-hl-line-overlay 'priority crosshairs-overlay-priority)
-        (when (boundp 'vline-overlay-table)
-          (mapcar (lambda (ov) (when (overlayp ov)
-                            (overlay-put ov 'priority crosshairs-overlay-priority)))
-                  vline-overlay-table)))
       (hl-line-move global-hl-line-overlay))
     (when (and (fboundp 'col-highlight-highlight) (not (eq mode 'line-only)))
       (redisplay t) ; Force a redisplay, or else it doesn't always show up.
@@ -358,12 +340,11 @@ Optional arg nil means do nothing if this event is a frame switch."
                           (eq (car last-input-event) 'switch-frame))))
     (when (fboundp 'col-highlight-unhighlight) (col-highlight-unhighlight t))
     (when (and (boundp 'global-hl-line-overlay) global-hl-line-overlay)
-      (when crosshairs-overlay-priority
-        (overlay-put global-hl-line-overlay 'priority nil))
+;;       (when crosshairs-overlay-priority
+;;         (overlay-put global-hl-line-overlay 'priority nil))
       (delete-overlay global-hl-line-overlay))
     (remove-hook 'pre-command-hook 'crosshairs-unhighlight)))
 
-      
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (provide 'crosshairs)
