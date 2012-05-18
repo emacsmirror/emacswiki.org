@@ -45,33 +45,33 @@ For a very nicely-done package, check out SmartCompile; it will figure out how i
 compile is not just limited to compiling source-code.  For example, you
 can put the following LocalVariables at the bottom of a file called
 .crontab in your home directory:
-<pre>
+{{{
  # Local Variables:
  # compile-command: "crontab ~/.crontab"
  # End:
-</pre>
+}}}
 Now you just have to do M-x compile and the contents of the file is
 installed as your crontab.  (See also CrontabMode.)
 
 [new]
 You can also put the following LocalVariables at the beginning of the file:
-<pre>
+{{{
  # -*- compile-command: "crontab ~/.crontab" -*-
-</pre>
+}}}
 
 == Success or failure of compile ==
 
 It would be nice to be able to do something upon failed or successful compilations. Often I switch to other desktops after I've initiated a compilation, and a success "ding!" or failure "dong!" sound would be somewhat useful ...
 
 <em>M-x compile just runs a shell command.  So you could append commands to play different sounds upon success or failure like so:
-<pre>
+{{{
  make -k || bplay failure.wav && bplay success.wav
-</pre>
+}}}
 <em>Of course I'm assuming you have bplay installed and that your shell supports the "||" and "&&" conditionals.</em>
 
 [new]
 You can use tooptip-show or any other way to notify the compilation results.
-<pre>
+{{{
 (defun notify-compilation-result(buffer msg)
   "Notify that the compilation is finished,
 close the *compilation* buffer if the compilation is successful,
@@ -87,18 +87,28 @@ and set the focus back to Emacs frame"
 
 (add-to-list 'compilation-finish-functions
 	     'notify-compilation-result)
-</pre>
+}}}
 It is very useful for me, since I alway browse the webs while compiling ;-)
 -- Xu Yuan
-
+[new]
 It would be nicer still if compile were written to allow for no buffer at all. God forbid commands should leave window configurations alone.
+[new]
+You could define `recompile' to be done in the background and not disrupt the window configuration. -- AaronHawley
+
+{{{
+(defun recompile-quietly ()
+  "Re-compile without changing the window configuration."
+  (interactive)
+  (save-window-excursion
+    (recompile)))
+}}}
 [new]
 
 Hack to have the background color change depending on the outcome of the compile command, so long as the compilation window has its own frame. Stick '*compilation*' in special-display-buffer-nams.
 
 The snippet below also makes '<' and '>' into paren characters for easier C++ template debugging.
 
-<pre>
+{{{
 (require 'cl)
 
 (pushnew '("*compilation*"
@@ -150,22 +160,22 @@ The snippet below also makes '<' and '>' into paren characters for easier C++ te
 
 (add-hook 'compilation-finish-functions #'qtmstr-compile-finish)
 
-</pre>
+}}}
 
 == No prompt for command ==
 
 If you get tired of having to hit enter after "make -k" (or whatever your compile-command is) set compilation-read-command to nil.  If you do that M-x compile will only prompt for a compile-command if you give it a prefix argument.
 
-<pre>
+{{{
     (setq compilation-read-command nil)
-</pre>
+}}}
 -- Greg Rowe
 
 [new]
 What I do is:
-<pre>
+{{{
     (global-set-key "\C-x\C-m" 'compile)
-</pre>
+}}}
 and then my normal compile invocation became C-x C-m C-m
 
 [new]
@@ -175,7 +185,7 @@ Note that after you have hit the enter once for your compile command, you can ru
 
 I use this command to compile, which will recompile in the exact same way as last time, unless given a prefix argument.  This is really handy for big projects where I need to edit a lot of files in different directories.
 
-<pre>
+{{{
 (global-set-key [(control c) (c)] 'compile-again)
 
 (setq compilation-last-buffer nil)
@@ -192,7 +202,7 @@ M-x compile.
        (set-buffer compilation-last-buffer)
        (revert-buffer t t))
    (call-interactively 'compile)))
-</pre>
+}}}
 
 - NealePickett
 
@@ -204,7 +214,7 @@ Answer: M-x recompile just executes the last compile command in the directory of
 ==Running Make with the closest Makefile==
 
 In some projects, systems do not have a Makefile in each directory. As an example, you may be working on files in src/h/, and you'd like to execute <code>make -f ../../Makefile</code>. To do this, you'll need to extract the closest makefile in the parent directory and above:
-<pre>
+{{{
 (require 'cl) ; If you don't have it already
 
 (defun* get-closest-pathname (&optional (file "Makefile"))
@@ -219,18 +229,18 @@ of FILE in the current directory, suitable for creation"
 			return d
 			if (equal d root)
 			return nil))))
-</pre>
+}}}
 Then just use one of the above advice to change compile-command to (format "make -f %s" (get-closest-pathname)), or just compute it anew every time you press F5 or so on.  For example,
-<pre>
+{{{
  (require 'compile)
  (add-hook 'c-mode-hook (lambda () (set (make-local-variable 'compile-command) (format "make -f %s" (get-closest-pathname)))))
-</pre>
+}}}
 
 ==Similar, but using nearest Makefile in directory with "configure.ac"==
 
 Here's an alternative to the above that I've been using for a year or so now, which tries to find a directory with configure.ac in it - assuming this will be the top level of an autoconf package (this is important if you want to run e.g. make install).
 
-<pre>
+{{{
 (defun compile-pkg (&optional command startdir)
   "Compile a package, moving up to the parent directory
   containing configure.ac, if it exists. Start in startdir if defined,
@@ -279,33 +289,33 @@ Here's an alternative to the above that I've been using for a year or so now, wh
 	(setq dirname (expand-file-name ".." dirname))))
     ; return statement
     (if found dirname nil)))
-</pre>
+}}}
 
 I then wrote this mini-function...
-<pre>
+{{{
 (defun std-compile ()
   "Like 'compile', but uses compile-pkg"
   (interactive)
   (compile-pkg compile-command))
-</pre>
+}}}
 ... and bound it to F7, having used VC6.0 for far too long!
 
 Yet another variant of much the same thing (using upward-find-file above):
 
-<pre>
+{{{
 (defun compile-next-makefile ()                                                           
   (interactive)                                                                           
   (let* ((default-directory (or (upward-find-file "Makefile") "."))                       
          (compile-command (concat "cd " default-directory " && "                          
                                   compile-command)))                                      
     (compile compile-command))) 
-</pre>
+}}}
 
 == Compile in another directory ==
 
 This isn't a compile-specific tweak, but I tend to use it for that and grep mostly.  Often I'll want to run M-x compile or M-x grep, but I will want the default-directory to be something other than the current buffer's.  I wrote the following command and bound it to M-X (ie, shift-M-X):
 
-<pre>
+{{{
 (defun in-directory ()
   "Reads a directory name (using ido), then runs
 execute-extended-command with default-directory in the given
@@ -315,7 +325,7 @@ directory."
           (ido-read-directory-name "In directory: "
                                    nil nil t)))
     (call-interactively 'execute-extended-command)))
-</pre>
+}}}
 
 So I can type M-X, select a directory, and then type compile or grep at the M-x prompt. (It also passes prefix args through correctly.)  You can use read-directory-name instead of the ido version if you'd like.
 
@@ -371,10 +381,10 @@ tools, etc). There is a simple way with ##emacsclient## to still get emacs to pa
 
 I'm using the following to get emacs to load and parse a log file as if it was the result of a
 compile command:
-<pre>
+{{{
     $ make > make.log
     $ emacsclient -a cat --eval '(let () (setq compile-command "cat /full/path/to/make.log")(recompile))'
-</pre>
+}}}
 
 -- AlainMellan
 [new]
