@@ -6,6 +6,7 @@ Emacs provides several outline features, some come bundled,
 some must be downloaded.
 
 * OutlineMode: hides blocks of text in a hierarchy
+* OutlineMinorMode: hides block definitions in languages such as C/C++
 * HideShow: hides block definitions in languages such as C/C++
 * OrgMode: the outliner that does everything (PIM, task management, publishing, and more)
 * AllOut: extensive outline formatting and manipulation
