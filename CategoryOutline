@@ -8,8 +8,8 @@ some must be downloaded.
 * OutlineMode: hides blocks of text in a hierarchy
 * HideShow: hides block definitions in languages such as C/C++
 * OrgMode: the outliner that does everything (PIM, task management, publishing, and more)
-* AllOut
-* FoldingMode
+* AllOut: extensive outline formatting and manipulation
+* FoldingMode: hides blocks marked with <code>{{{</code> and <code>}}}</code>
 * KoutlineMode
 * FoldIngo:  A minor folding mode with mouse/menu/face support.
 * CategorizingInformationManager -- provides ee-outline to operate on outlines
