@@ -20,3 +20,7 @@ some must be downloaded.
 
 There is also ooutline and noutline which all refer to
 some version of `outline', so they are not worth mentioning.
+
+If you want basic IDE-style code folding without hours of research:
+* Enable outline-minor-mode (bundled with GNU Emacs, and with better language support from most major modes than hide-show minor mode): <code>(add-hook 'prog-mode-hook 'outline-minor-mode)</code>
+* Install OutlineMagic for sane outline keybindings.
