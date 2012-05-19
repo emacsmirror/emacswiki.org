@@ -32,6 +32,20 @@ This variable actually defaults to on. If you don't like query / channel windows
 
 : Yep, I have the same problem. It's very annoying, since you can accidentally be kicked for spamming. It seems like the erc-setup-logging hook is called too late -- JanSeeger
 
+::: I have seen that in the past; now (2012-05-19, using trunk Emacs from bzr), with a different configuration, I have a similar problem which might be related: when ERC logging is enabled, windows scroll so that only the top line is used, with the prompt being in the second line. I've been able to reliably workaround the issue, but I'm hesitating in reporting the bug as I don't exactly understand the problem.  The problem is that <tt>erc-log-all-but-server-buffers</tt> (defined in <tt>erc-log.el</tt>) has side effects, and in particular causes windows to scroll.  For reasons I don't understand, *not* saving the excursion and the window excursion fixes everything.  Here's my fixed definition, from my .emacs: -- LucaSaiu
+<pre>
+(defun erc-log-all-but-server-buffers (buffer)
+  "erc-log-all-but-server-buffer as re-defined by Luca Saiu"
+  (with-current-buffer buffer
+    (not (erc-server-buffer-p))))
+;;
+;; ;;; Anyway, a more direct modification also works fine:
+;; (defun erc-log-all-but-server-buffers (buffer)
+;;   "erc-log-all-but-server-buffer as re-defined by Luca Saiu"
+;;  (set-buffer buffer)
+;;  (not (erc-server-buffer-p)))
+</pre>
+
 == Auto-saving log files on emacs exit ==
 
 Normally when exiting emacs with log files on, you will be prompted to save each buffer in turn. This can be quite frustrating if you need to exit in a hurry ("You ever need to leave emacs?" some might ask ;-)). Here's a lisp snippit which will save all erc buffers to logs when exiting.
