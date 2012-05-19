@@ -71,3 +71,5 @@ This feature is available as part of Emacs-24.1.
 * More work on EShell or better terminal emulation.
 
 == add more features here ==
+
+* Regular Expressions: provide Perl regex syntax, possibly migrating/interfacing to CL-PPCRE (http://weitz.de/cl-ppcre)
