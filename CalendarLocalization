@@ -38,6 +38,7 @@ and the 'terrestrial-branch' (地支) in Chinese:
           chinese-calendar-terrestrial-branch
           ["子" "丑" "寅" "卯" "辰" "巳" "午" "未" "申" "酉" "戌" "亥"])
 
+
 === Dutch ===
 
     (setq calendar-week-start-day 1
@@ -140,6 +141,10 @@ http://xwl.appspot.com/ref/cal-china-x.el
 Modified version of the above using traditional Chinese characters (plus some nit picks):
 
 http://github.com/stepnem/emacs-libraries/blob/master/cal-china-x.el
+
+=== Korean ===
+
+There is a package, cal-korea-x that support Korean lunar calendar, and display names for months.  See http://github.com/cinsk/cal-korea-x/
 
 === Danish ===
 
