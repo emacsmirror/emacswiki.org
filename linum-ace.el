@@ -49,8 +49,8 @@
 is generate by linum-ace-search-candidate.")
 
 (defvar linum-ace-keys
-  (nconc (loop for i from ?a to ?z collect i)
-	 (loop for i from ?A to ?Z collect i))
+  (nconc (number-sequence ?a ?z)
+	 (number-sequence ?A ?Z))
   "The keys to show on left fringe for unempty lines,
 each key should only an printable character.
 
@@ -60,8 +60,8 @@ linum-ace show the same keys as ace-jump-mode, you can use
    (setq linum-ace-keys ace-jump-mode-move-keys)
 you also can build your own keys if you only want to
 lower case character and digits
-   (setq linum-ace-keys (nconc (loop for i from ?a to ?z collect i)
-			       (loop for i from ?0 to ?9 collect i)) ")
+   (setq linum-ace-keys (nconc (number-sequence ?0 ?9)
+			       (number-sequence ?a ?z))")
 
 
 ;;;; Advices
@@ -91,7 +91,7 @@ candiate position and key."
   (let* ((linum-ace-char
 	  (or
 	   (cdr-safe (assoc line-number linum-ace-alist))
-	   ?\ )))
+	   ?\s)))
     (propertize (format "%2s " (char-to-string linum-ace-char ))
 		'face 'linum-ace-face)))
 
