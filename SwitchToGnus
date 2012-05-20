@@ -221,6 +221,78 @@ New and improved! It now saves your window configuration even if you haven't alr
 	(set-window-configuration gnus-unbury-window-configuration)))))
 </pre>
 
+
+Here is my take on switching to mail back and forth
+-xaccrocheur
+
+<pre>
+"Key used to switch to mail and back"
+(defvar px-toggle-mail-key [(meta f1)])
+
+"Mail client"
+(fset 'px-mail-client 'wl)
+(defvar px-no-mail-window-configuration (current-window-configuration))
+(defvar px-mail-window-configuration nil)
+
+(defun px-prefs (arg)
+  "toggle pref bits"
+  (tabbar-mode arg)
+  (scroll-bar-mode arg)
+  (global-linum-mode arg)
+  (fringe-mode arg))
+
+(defun px-exit-mail nil
+  "called after exiting mail"
+  (set-window-configuration px-no-mail-window-configuration)
+  (px-prefs -1))
+
+(defun px-go-mail nil
+  "switch to mail or launch it"
+  (interactive)
+  (if (or (get-buffer "Folder")		; Wanderlust
+	  (get-buffer "*Group*"))	; Gnus
+      (progn
+	(message "go!")
+	(setq px-no-mail-window-configuration (current-window-configuration))
+	(px-prefs 0)
+	(set-window-configuration px-mail-window-configuration))
+    (progn
+      (message "load!")
+      (setq px-no-mail-window-configuration (current-window-configuration))
+      (px-prefs 0)
+      (px-mail-client))))
+
+(defun px-no-mail nil
+  "switch back from mail"
+  (interactive)
+  (message "back!")
+  (setq px-mail-window-configuration (current-window-configuration))
+  (set-window-configuration px-no-mail-window-configuration)
+  (px-prefs t))
+
+(eval-after-load "wl-folder"
+  '(define-key wl-folder-mode-map px-toggle-mail-key 'px-no-mail))
+
+(eval-after-load "wl-summary"
+  '(progn
+     (define-key wl-summary-mode-map px-toggle-mail-key 'px-no-mail)
+     (define-key mime-view-mode-default-map px-toggle-mail-key 'px-no-mail)))
+
+(eval-after-load "wl-draft"
+  '(define-key wl-draft-mode-map px-toggle-mail-key 'px-no-mail))
+
+(eval-after-load "gnus"
+  '(progn
+     (define-key gnus-summary-mode-map px-toggle-mail-key 'px-no-mail)
+     (define-key gnus-group-mode-map px-toggle-mail-key 'px-no-mail)
+     (define-key gnus-article-mode-map px-toggle-mail-key 'px-no-mail)))
+
+(eval-after-load "message"
+  '(define-key message-mode-map px-toggle-mail-key 'px-no-mail))
+
+(define-key global-map px-toggle-mail-key 'px-go-mail)
+</pre>
+(see https://github.com/xaccrocheur/kituu/blob/master/.emacs for IRL implementation)
 ----
 CategoryGnus
 CategoryKeys
