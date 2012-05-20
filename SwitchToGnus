@@ -226,7 +226,8 @@ New and improved! It now saves your window configuration even if you haven't alr
 = Toggle WanderLust on/off as well =
 
 Here is my take on switching to mail back and forth, as the above failed me in various cases.
-<br />-xaccrocheur
+
+-xaccrocheur
 
 <pre>
 "Key used to switch to mail and back"
@@ -296,7 +297,8 @@ Here is my take on switching to mail back and forth, as the above failed me in v
 (define-key global-map px-toggle-mail-key 'px-go-mail)
 </pre>
 (see https://github.com/xaccrocheur/kituu/blob/master/.emacs for IRL implementation)
-<br />Use it with my Mail-bug mail-client agnostic mail notification package : https://github.com/xaccrocheur/mail-bug.el
+
+Use it with my Mail-bug mail-client agnostic mail notification package : https://github.com/xaccrocheur/mail-bug.el
 ----
 CategoryGnus
 CategoryKeys
