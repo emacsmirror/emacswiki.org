@@ -225,15 +225,16 @@ New and improved! It now saves your window configuration even if you haven't alr
 
 = Toggle WanderLust on/off as well =
 
-Here is my take on switching to mail back and forth, as the above failed me in various cases.
+Here is my take on switching to mail back and forth, as the above approaches failed me in various cases.
 
 -xaccrocheur
 
 <pre>
+
 "Key used to switch to mail and back"
 (defvar px-toggle-mail-key [(meta f1)])
 
-"Mail client"
+"Mail client, use wl or gnus"
 (fset 'px-mail-client 'wl)
 (defvar px-no-mail-window-configuration (current-window-configuration))
 (defvar px-mail-window-configuration nil)
@@ -246,22 +247,20 @@ Here is my take on switching to mail back and forth, as the above failed me in v
   (fringe-mode arg))
 
 (defun px-exit-mail nil
-  "called after exiting mail"
+  "called after switch back from mail"
   (set-window-configuration px-no-mail-window-configuration)
   (px-prefs -1))
 
 (defun px-go-mail nil
-  "switch to mail or launch it"
+  "switch to mail client or launch it"
   (interactive)
   (if (or (get-buffer "Folder")		; Wanderlust
 	  (get-buffer "*Group*"))	; Gnus
       (progn
-	(message "go!")
 	(setq px-no-mail-window-configuration (current-window-configuration))
 	(px-prefs 0)
 	(set-window-configuration px-mail-window-configuration))
     (progn
-      (message "load!")
       (setq px-no-mail-window-configuration (current-window-configuration))
       (px-prefs 0)
       (px-mail-client))))
@@ -269,7 +268,6 @@ Here is my take on switching to mail back and forth, as the above failed me in v
 (defun px-no-mail nil
   "switch back from mail"
   (interactive)
-  (message "back!")
   (setq px-mail-window-configuration (current-window-configuration))
   (set-window-configuration px-no-mail-window-configuration)
   (px-prefs t))
@@ -295,6 +293,8 @@ Here is my take on switching to mail back and forth, as the above failed me in v
   '(define-key message-mode-map px-toggle-mail-key 'px-no-mail))
 
 (define-key global-map px-toggle-mail-key 'px-go-mail)
+
+
 </pre>
 (see https://github.com/xaccrocheur/kituu/blob/master/.emacs for IRL implementation)
 
@@ -302,3 +302,4 @@ You may use it with my Mail-bug (client-agnostic mail notification) package : ht
 ----
 CategoryGnus
 CategoryKeys
+CategoryWL
