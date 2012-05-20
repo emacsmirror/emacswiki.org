@@ -298,7 +298,7 @@ Here is my take on switching to mail back and forth, as the above failed me in v
 </pre>
 (see https://github.com/xaccrocheur/kituu/blob/master/.emacs for IRL implementation)
 
-Use it with my Mail-bug mail-client agnostic mail notification package : https://github.com/xaccrocheur/mail-bug.el
+You may use it with my Mail-bug (client-agnostic mail notification) package : https://github.com/xaccrocheur/mail-bug.el
 ----
 CategoryGnus
 CategoryKeys
