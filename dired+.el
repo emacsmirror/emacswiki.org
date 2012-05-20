@@ -7,9 +7,9 @@
 ;; Copyright (C) 1999-2012, Drew Adams, all rights reserved.
 ;; Created: Fri Mar 19 15:58:58 1999
 ;; Version: 21.2
-;; Last-Updated: Sat May 19 16:40:34 2012 (-0700)
+;; Last-Updated: Sat May 19 17:44:37 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 5383
+;;     Update #: 5410
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/dired+.el
 ;; Keywords: unix, mouse, directories, diredp, dired
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -121,9 +121,9 @@
 ;;    `diredp-do-search-recursive', `diredp-do-set-tag-value',
 ;;    `diredp-do-shell-command-recursive',
 ;;    `diredp-do-symlink-recursive', `diredp-do-tag',
-;;    `diredp-do-untag', `diredp-downcase-this-file', `diredp-ediff',
-;;    `diredp-fileset', `diredp-find-a-file',
-;;    `diredp-find-a-file-other-frame',
+;;    `diredp-do-untag', `diredp-downcase-recursive',
+;;    `diredp-downcase-this-file', `diredp-ediff', `diredp-fileset',
+;;    `diredp-find-a-file', `diredp-find-a-file-other-frame',
 ;;    `diredp-find-a-file-other-window',
 ;;    `diredp-find-file-other-frame',
 ;;    `diredp-find-file-reuse-dir-buffer',
@@ -177,7 +177,7 @@
 ;;    `diredp-unmark-files-tagged-none',
 ;;    `diredp-unmark-files-tagged-not-all',
 ;;    `diredp-unmark-files-tagged-some', `diredp-unmark-region-files',
-;;    `diredp-untag-this-file', `diredp-upcase-this-file',
+;;    `diredp-untag-this-file', `diredp-upcase-recursive', `diredp-upcase-this-file',
 ;;    `diredp-w32-drives', `diredp-w32-drives-mode',
 ;;    `toggle-diredp-find-file-reuse-dir'.
 ;;
@@ -290,12 +290,14 @@
 ;; 2012/05/19 dadams
 ;;     Added: diredp-image-dired-*-recursive, diredp-*link-recursive,
 ;;            diredp-do-isearch(-regexp)-recursive, diredp-do-query-replace-regexp-recursive,
-;;            diredp-do-search-recursive, diredp-capitalize-recursive,
+;;            diredp-do-search-recursive, diredp-(capitalize|(up|down)case)-recursive,
 ;;            diredp-create-files-non-directory-recursive.
 ;;              Bound in M-+ prefix key.  Added to menus.
-;;     diredp-do-(copy|move)-recursive: Use arg IGNORE-MARKS-P (forgot to use it).
 ;;     diredp-get-files, diredp-y-or-n-files-p, diredp-list-files, diredp-list-marked-recursive:
 ;;       Added optional arg PREDICATE.
+;;     diredp-do-create-files-recursive: Removed MARKER-CHAR arg.  Hard-code to keep markings.
+;;     diredp-do-(copy|move)-recursive: Use arg IGNORE-MARKS-P (forgot to use it).
+;;                                      Removed MARKER-CHAR arg in call to d-d-c-f-r.
 ;;     Added missing autoload cookies.
 ;; 2012/05/06 dadsms
 ;;     diredp-y-or-n-files-p: Do not kill buffer *Files* - just bury it.
@@ -1559,15 +1561,14 @@ If HDR is non-nil, insert a header line with the directory name."
   '(menu-item "Capitalize" diredp-capitalize-recursive
     :enable (or (not (fboundp 'msdos-long-file-names))  (msdos-long-file-names))
     :help "Capitalize (initial caps) the names of all marked files"))
-;;; @@@@
-;;; (define-key diredp-menu-bar-recursive-marked-menu [diredp-downcase-recursive]
-;;;   '(menu-item "Downcase" diredp-downcase-recursive
-;;;     :enable (or (not (fboundp 'msdos-long-file-names))  (msdos-long-file-names))
-;;;     :help "Rename marked files to lowercase names"))
-;;; (define-key diredp-menu-bar-recursive-marked-menu [diredp-upcase-recursive]
-;;;   '(menu-item "Upcase" diredp-upcase-recursive
-;;;     :enable (or (not (fboundp 'msdos-long-file-names))  (msdos-long-file-names))
-;;;     :help "Rename marked files to uppercase names"))
+(define-key diredp-menu-bar-recursive-marked-menu [diredp-downcase-recursive]
+  '(menu-item "Downcase" diredp-downcase-recursive
+    :enable (or (not (fboundp 'msdos-long-file-names))  (msdos-long-file-names))
+    :help "Rename marked files to lowercase names"))
+(define-key diredp-menu-bar-recursive-marked-menu [diredp-upcase-recursive]
+  '(menu-item "Upcase" diredp-upcase-recursive
+    :enable (or (not (fboundp 'msdos-long-file-names))  (msdos-long-file-names))
+    :help "Rename marked files to uppercase names"))
 (define-key diredp-menu-bar-recursive-marked-menu [diredp-do-move-recursive]
     '(menu-item "Move to..." diredp-do-move-recursive
       :help "Move marked files, including in marked subdirs, to a given directory"))
@@ -2015,6 +2016,8 @@ If HDR is non-nil, insert a header line with the directory name."
 (define-prefix-command 'diredp-recursive-map)
 (define-key dired-mode-map "\M-+"  diredp-recursive-map) ; `M-+'
 
+(define-key diredp-recursive-map "%l"          'diredp-downcase-recursive)              ; `% l'
+(define-key diredp-recursive-map "%u"          'diredp-upcase-recursive)                ; `% u'
 (define-key diredp-recursive-map "!"           'diredp-do-shell-command-recursive)      ; `!'
 (define-key diredp-recursive-map (kbd "C-M-*") 'diredp-marked-recursive-other-window)   ; `C-M-*'
 (define-key diredp-recursive-map "A"           'diredp-do-search-recursive)             ; `A'
@@ -2592,7 +2595,8 @@ PREDICATE returns non-nil."
                 (setq files  (nconc files (diredp-files-within
                                            (directory-files file 'FULL diredp-re-no-dot)
                                            () nil nil predicate)))
-              (when (funcall predicate file) (add-to-list 'files file))))
+              (when (or (not predicate)  (funcall predicate file))
+                (add-to-list 'files file))))
           (nreverse files))))))
 
 (defun diredp-get-files-for-dir (dir accum askp)
@@ -2876,8 +2880,7 @@ subdirectories are handled recursively in the same way.
 With a prefix argument, ignore all marks - include all files in this
 Dired buffer and all subdirs, recursively."
   (interactive (progn (diredp-get-confirmation-recursive) (list current-prefix-arg)))
-  (diredp-do-create-files-recursive #'make-symbolic-link "Symlink" ignore-marks-p
-                                    dired-keep-marker-symlink))
+  (diredp-do-create-files-recursive #'make-symbolic-link "Symlink" ignore-marks-p))
 
 (when (fboundp 'dired-do-relsymlink)
   (defun diredp-do-relsymlink-recursive (&optional ignore-marks-p) ; Bound to `M-+ Y'
@@ -2894,8 +2897,8 @@ Dired buffer and all subdirs, recursively.
 
 For absolute symlinks, use \\[diredp-do-symlink-recursive]."
     (interactive (progn (diredp-get-confirmation-recursive) (list current-prefix-arg)))
-    (diredp-do-create-files-recursive #'dired-make-relative-symlink
-                                      "RelSymLink" ignore-marks-p dired-keep-marker-relsymlink)))
+    (diredp-do-create-files-recursive #'dired-make-relative-symlink "RelSymLink"
+                                      ignore-marks-p)))
 
 ;;;###autoload
 (defun diredp-do-hardlink-recursive (&optional ignore-marks-p) ; Bound to `M-+ H'
@@ -2910,8 +2913,7 @@ subdirectories are handled recursively in the same way.
 With a prefix argument, ignore all marks - include all files in this
 Dired buffer and all subdirs, recursively."
   (interactive (progn (diredp-get-confirmation-recursive) (list current-prefix-arg)))
-  (diredp-do-create-files-recursive #'dired-hardlink "Hardlink" ignore-marks-p
-                                    dired-keep-marker-hardlink))
+  (diredp-do-create-files-recursive #'dired-hardlink "Hardlink" ignore-marks-p))
 
 ;;;###autoload
 (defun diredp-image-dired-display-thumbs-recursive (&optional ignore-marks-p append do-not-pop)
@@ -3224,7 +3226,7 @@ subdirectories are handled recursively in the same way."
 
 ;;;###autoload
 (defun diredp-capitalize-recursive (&optional ignore-marks-p) ; Not bound
-  "Rename marked files, including in marked subdirs, by capitilizing them.
+  "Rename marked files, including in marked subdirs, by capitalizing them.
 Like `diredp-capitalize', but act recursively on subdirs.
 
 The files included are those that are marked in the current Dired
@@ -3236,6 +3238,36 @@ Dired buffer and all subdirs, recursively."
   (interactive (progn (diredp-get-confirmation-recursive) (list current-prefix-arg)))
   (diredp-create-files-non-directory-recursive
    #'dired-rename-file #'capitalize "Rename by capitalizing:" ignore-marks-p))
+
+;;;###autoload
+(defun diredp-upcase-recursive (&optional ignore-marks-p) ; Not bound
+  "Rename marked files, including in marked subdirs, making them uppercase.
+Like `dired-upcase', but act recursively on subdirs.
+
+The files included are those that are marked in the current Dired
+buffer, or all files in the directory if none are marked.  Marked
+subdirectories are handled recursively in the same way.
+
+With a prefix argument, ignore all marks - include all files in this
+Dired buffer and all subdirs, recursively."
+  (interactive (progn (diredp-get-confirmation-recursive) (list current-prefix-arg)))
+  (diredp-create-files-non-directory-recursive
+   #'dired-rename-file #'upcase "Rename to uppercase:" ignore-marks-p))
+
+;;;###autoload
+(defun diredp-downcase-recursive (&optional ignore-marks-p) ; Not bound
+  "Rename marked files, including in marked subdirs, making them lowercase.
+Like `dired-downcase', but act recursively on subdirs.
+
+The files included are those that are marked in the current Dired
+buffer, or all files in the directory if none are marked.  Marked
+subdirectories are handled recursively in the same way.
+
+With a prefix argument, ignore all marks - include all files in this
+Dired buffer and all subdirs, recursively."
+  (interactive (progn (diredp-get-confirmation-recursive) (list current-prefix-arg)))
+  (diredp-create-files-non-directory-recursive
+   #'dired-rename-file #'downcase "Rename to lowercase:" ignore-marks-p))
 
 ;;;###autoload
 (defun diredp-do-move-recursive (&optional ignore-marks-p) ; Bound to `M-+ R'
@@ -3259,8 +3291,7 @@ Renames any buffers that are visiting the files.
 The default suggested for the target directory depends on the value of
 `dired-dwim-target', which see."
   (interactive (progn (diredp-get-confirmation-recursive) (list current-prefix-arg)))
-  (diredp-do-create-files-recursive #'dired-copy-file "Move" ignore-marks-p
-                                    dired-keep-marker-rename))
+  (diredp-do-create-files-recursive #'dired-copy-file "Move" ignore-marks-p))
 
 ;;;###autoload
 (defun diredp-do-copy-recursive (&optional ignore-marks-p) ; Bound to `M-+ C'
@@ -3289,14 +3320,14 @@ This command copies symbolic links by creating new ones, like UNIX
 command `cp -d'."
   (interactive (progn (diredp-get-confirmation-recursive) (list current-prefix-arg)))
   (let ((dired-recursive-copies  nil))  ; Doesn't have to be nil, but let's not go overboard now.
-    (diredp-do-create-files-recursive #'dired-copy-file "Copy" ignore-marks-p
-                                      dired-keep-marker-copy)))
+    (diredp-do-create-files-recursive #'dired-copy-file "Copy" ignore-marks-p)))
 
-(defun diredp-do-create-files-recursive (file-creator operation ignore-marks-p
-                                         &optional marker-char)
+(defun diredp-do-create-files-recursive (file-creator operation ignore-marks-p)
   "Create a new file for each marked file, including those in marked subdirs.
+Like `dired-do-create-files', but act recursively on subdirs, and
+always keep markings.
 Prompts for the target directory, in which to create the files.
-FILE-CREATOR OPERATION, and MARKER-CHAR are as in `dired-create-files'.
+FILE-CREATOR OPERATION is as in `dired-create-files'.
 Non-nil IGNORE-MARKS-P means ignore all marks - include all files in this
 Dired buffer and all subdirs, recursively."
   (lexical-let* ((fn-list     (diredp-get-files ignore-marks-p))
@@ -3321,9 +3352,12 @@ Dired buffer and all subdirs, recursively."
                                           (concat operation "files to: ")
                                           default-directory default-directory)))))
     (unless (file-directory-p target) (error "Target is not a directory: %s" target))
-    (dired-create-files file-creator operation fn-list
-                        #'(lambda (from) (expand-file-name (file-name-nondirectory from) target))
-                        marker-char)))
+    (dired-create-files
+     file-creator operation fn-list
+     #'(lambda (from) (expand-file-name (file-name-nondirectory from) target))
+     ;; Hard-code `*' marker, or else it will be removed in lower dirs because the code uses
+     ;; `dired-file-marker', which only works in the current Dired directory.
+     ?*)))
 
 (defun diredp-create-files-non-directory-recursive (file-creator basename-constructor
                                                     operation &optional ignore-marks-p)
@@ -3352,7 +3386,9 @@ Type SPC or `y' to %s one file, DEL or `n' to skip to next,
                   (dired-query 'rename-non-directory-query (concat operation " `%s' to `%s'")
                                (dired-make-relative from) (dired-make-relative to)))
                 to)))
-     dired-keep-marker-rename)))
+     ;; Hard-code `*' marker, or else it will be removed in lower dirs because the code uses
+     ;; `dired-file-marker', which only works in the current Dired directory.
+     ?*)))
 
 
 
