@@ -1,1 +1,1 @@
-#REDIRECT Runner
+#REDIRECT [[Runner]]
