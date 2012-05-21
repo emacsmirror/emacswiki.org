@@ -1,4 +1,4 @@
-cua-lite is a new CUA emulator package for Emacs.  There are three things that make this package different from the others already out there:
+cua-lite is a replacement of the CUA emulator package for Emacs. It was last updated in 2003.  There are three things that make this package different from the others already out there:
 
 # it is a quasi-minor mode, meaning that it can be turned on & off easily (though only globally; hence the "quasi-")
 # it is easily extendable
