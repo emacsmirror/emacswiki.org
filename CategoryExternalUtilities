@@ -27,6 +27,7 @@ The reverse, use external applications from within Emacs. Note that only OrgMode
 ** [[DiredPlus|Dired+]] + <tt>[[w32-browser.el]]</tt> -- use Windows file associations in [[Dired]]
 ** OpenWith -- open files with external applications.
 ** SexMode -- It is now using the platorm independent functionality offered by OrgMode for starting external applications. (Note that there are some differences, see the beginning of sex-mode.el.)
+** [[Runner]] -- link a set of shell commands to file and directory names while in [[Dired]]. These commands can then be run using `dired-do-shell-command' (or pressing "!").
 
 Sound and Music:
 
