@@ -1,56 +1,12 @@
 This library allows for a set of shell commands to be linked with file or directory names. Used in [[DiredMode]], these commands can then be run using `dired-do-shell-command' (or pressing "!").
 
 Features: 
-
 * Provides a widget.el interface to add, edit, and sort shell commands.
-
 * Gets rid of the "A command is running - kill it? Yes or No?" message.
-
 * Hides the stdout buffer if `runner-run-in-background' is set to t. Can be disabled for specific commands if the command string contains `{run:out}'.
-
 * Uses `runner-shell-function' instead of `shell-command' if command string contains `{run:shell}'.
 
-Since this library modifies the behavior of `dired-guess-shell-alist-user', make sure you understand the command syntax of that variable (see the documentation of `dired-guess-shell-alist-user' for more).
-
-==Download==
-
-Lisp:runner.el
-
-== Install ==
-
-Put this file in your Emacs-Lisp load path, and add the following
-into your startup file (i.e., $HOME/.emacs).
-
- (require 'runner)
-
-== Usage ==
-
-While in dired mode, position point on any file or directory you
-wish to add a shell command to, then do:
-
- M-x runner-add-file (for file or directory names)
- M-x runner-add-extension (for file extension)
-
-A new buffer will be created allowing you to specify what commands
-to run.
-
-A file name or extension can be linked to multiple set of
-commands. You can view and edit which pattern is being applied to a
-file by positioning point on a file and running,
-
- M-x runner-edit-file-at-point
-
-You can also add, edit, or delete any specific pattern by doing:
-
- M-x runner-add-empty
- M-x runner-edit
- M-x runner-delete
-
-The command database will be saved to the variable
-`runner-init-file' (default is "~/.emacs.d/runner-conf.el"). You
-may choose a different location by doing:
-
- M-x customize-variable runner-init-file
+Get it from: https://github.com/thamer/runner
 
 ----
 CategoryDirectories
