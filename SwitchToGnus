@@ -1,3 +1,5 @@
+== Switch to gnus ==
+
 Here is a function to switch to the most relevant Gnus buffer.
 
     (global-set-key (kbd "C-c n") 'switch-to-gnus)
