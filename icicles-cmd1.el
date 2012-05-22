@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Tue May 15 07:21:20 2012 (-0700)
+;; Last-Updated: Tue May 22 06:17:50 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 23781
+;;     Update #: 23789
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-cmd1.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -773,7 +773,8 @@ Returns t if successful."
                     (unless minibuffer-p (message "Completed")))
                    ((and comint-completion-recexact comint-completion-addsuffix
                          (string-equal filenondir completion)
-                         (file-exists-p file))
+                         (or (icicle-file-remote-p file) ; Don't let Tramp try to access it.
+                             (file-exists-p file)))
                     ;; It's not unique, but user wants shortest match.
                     (insert (if (file-directory-p file) dirsuffix filesuffix))
                     (unless minibuffer-p (message "Completed shortest")))
@@ -3099,7 +3100,10 @@ Use \\<minibuffer-local-completion-map>`\\[icicle-candidate-set-save]' to save c
                                         default-directory))
          (icicle-list-use-nth-parts   '(1))
          (file-names                  (icicle-remove-if
-                                       #'(lambda (fil) (or (null fil) (not (file-exists-p fil))))
+                                       #'(lambda (fil)
+                                           (or (null fil)
+                                               (not (or (icicle-file-remote-p fil) ; Avoid Tramp accessing.
+                                                        (file-exists-p fil)))))
                                        (or (and icicle-saved-completion-candidates
                                                 (mapcar #'icicle-transform-multi-completion
                                                         icicle-saved-completion-candidates))
@@ -3126,7 +3130,10 @@ directory (default directory)."
                                         default-directory))
          (icicle-list-use-nth-parts   '(1))
          (file-names                  (icicle-remove-if
-                                       #'(lambda (fil) (or (null fil) (not (file-exists-p fil))))
+                                       #'(lambda (fil)
+                                           (or (null fil)
+                                               (not (or (icicle-file-remote-p fil) ; Avoid Tramp accessing.
+                                                        (file-exists-p fil)))))
                                        (or (and icicle-saved-completion-candidates
                                                 (mapcar #'icicle-transform-multi-completion
                                                         icicle-saved-completion-candidates))
@@ -3165,8 +3172,10 @@ you use library `Bookmark+'."
                                                         default-directory nil)
                                       default-directory))
                 (file-names         ()))
-           (dolist (f  icicle-saved-completion-candidates)
-             (when (file-exists-p f) (push f file-names)))
+           (dolist (ff  icicle-saved-completion-candidates)
+             (when (or (icicle-file-remote-p ff) ; Don't let Tramp try to access it.
+                       (file-exists-p ff))
+               (push ff file-names)))
            (unless file-names (error "No files in project `%s' actually exist" set-name))
            (dired (cons (generate-new-buffer-name set-name)
                         (nreverse (mapcar #'(lambda (file)
@@ -3207,8 +3216,10 @@ you use library `Bookmark+'."
                                                         default-directory nil)
                                       default-directory))
                 (file-names         ()))
-           (dolist (f  icicle-saved-completion-candidates)
-             (when (file-exists-p f) (push f file-names)))
+           (dolist (ff  icicle-saved-completion-candidates)
+             (when (or (icicle-file-remote-p ff) ; Don't let Tramp try to access it.
+                       (file-exists-p ff))
+               (push ff file-names)))
            (unless file-names (error "No files in project `%s' actually exist" set-name))
            (dired-other-window (cons (generate-new-buffer-name set-name)
                                      (nreverse (mapcar #'(lambda (file)
@@ -3232,7 +3243,10 @@ directory."
         (error "%s" (substitute-command-keys "No saved completion candidates.  \
 Use \\<minibuffer-local-completion-map>`\\[icicle-candidate-set-save]' to save candidates")))
       (unless grep-command (grep-compute-defaults))
-      (dolist (f  icicle-saved-completion-candidates) (when (file-exists-p f) (push f file-names)))
+      (dolist (ff  icicle-saved-completion-candidates)
+        (when (or (icicle-file-remote-p ff) ; Don't let Tramp try to access it.
+                  (file-exists-p ff))
+          (push ff file-names)))
       (let ((default  (and (fboundp 'grep-default-command) (grep-default-command))))
         (read-from-minibuffer
          "grep <pattern> <files> :  "
