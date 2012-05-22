@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Tue May 15 10:32:33 2012 (-0700)
+;; Last-Updated: Tue May 22 06:07:50 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 17973
+;;     Update #: 17977
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-mcmd.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -1026,7 +1026,7 @@ See description of `kill-region-wimpy'."
      (list (funcall (if (fboundp 'read-directory-name) #'read-directory-name #'read-file-name)
                     "Create directory: " default-directory default-directory))))
   (setq dir  (directory-file-name (expand-file-name dir)))
-  (while (file-exists-p dir)
+  (while (file-exists-p dir)            ; This will cause Tramp to access if remote, but that's OK here.
     (message "%s already exists" dir) (sit-for 1)
     (let ((enable-recursive-minibuffers  t))
       (setq dir  (funcall (if (fboundp 'read-directory-name) #'read-directory-name #'read-file-name)
@@ -5130,8 +5130,9 @@ You can use this command only from the minibuffer or `*Completions*'
            ;; If buffer or file, describe its properties.  Otherwise, create symbol and get its help.
            (cond ((and (bufferp (get-buffer transformed-cand))
                        (with-current-buffer transformed-cand (describe-mode) t)))
-                 ((file-exists-p transformed-cand) (icicle-describe-file transformed-cand
-                                                                         current-prefix-arg))
+                 ((or (icicle-file-remote-p transformed-cand) ; Don't let Tramp try to access it.
+                      (file-exists-p transformed-cand))
+                  (icicle-describe-file transformed-cand current-prefix-arg))
                  (t (icicle-help-on-candidate-symbol (intern transformed-cand))))))
     ;;$$$ (icicle-raise-Completions-frame)
 
@@ -5165,7 +5166,9 @@ You can use this command only from the minibuffer or `*Completions*'
          (setq symb  (symbol-name symb)) ; Convert symbol to string, and try some more.
          (cond ((and (bufferp (get-buffer symb))
                      (with-current-buffer (get-buffer symb) (describe-mode) t)))
-               ((file-exists-p symb) (icicle-describe-file symb current-prefix-arg))
+               ((or (icicle-file-remote-p symb) ; Don't let Tramp try to access it.
+                    (file-exists-p symb))
+                (icicle-describe-file symb current-prefix-arg))
                (t (icicle-msg-maybe-in-minibuffer "No help"))))))
 
 ;; This is the same as `describe-file' in `help-fns+.el', but we avoid requiring that library.
