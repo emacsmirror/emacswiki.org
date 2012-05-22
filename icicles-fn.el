@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:53 2006
 ;; Version: 22.0
-;; Last-Updated: Sun May 13 10:19:09 2012 (-0700)
+;; Last-Updated: Tue May 22 06:08:47 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 12996
+;;     Update #: 13002
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-fn.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -2699,9 +2699,12 @@ and file c:/Program Files/My Dir/mycmd.exe exists, then this returns
                                                       minibuffer-completion-predicate
                                                     default-directory))))
           (when (and (<= (length compl) (length strg)) (string-match compl strg 0)
-                     (file-exists-p compl))
+                     (or (icicle-file-remote-p compl) ; Don't let Tramp try to access it.
+                         (file-exists-p compl)))
             (setq filename compl)))
-        (if (or (string= "" filename)  (not (file-exists-p filename)))
+        (if (or (string= "" filename)
+                (not (or (icicle-file-remote-p filename) ; Don't let Tramp try to access it.
+                         (file-exists-p filename))))
             strg
           (setq quoted-strg  (concat "\"" filename "\""))
           (setq quoted-strg  (concat quoted-strg (substring strg (length filename)))))))))
@@ -4023,7 +4026,8 @@ check only the first char for the property."
                                     ((stringp candidate) ; String without help property.
                                      (cond ((and (or (icicle-file-name-input-p) ; File name.
                                                      icicle-abs-file-candidates)
-                                                 (file-exists-p candidate))
+                                                 (or (icicle-file-remote-p candidate) ; Avoid Tramp.
+                                                     (file-exists-p candidate)))
                                             (if (get-file-buffer candidate)
                                                 (concat (icicle-help-line-buffer
                                                          (get-file-buffer candidate) 'no-bytes-p) " "
