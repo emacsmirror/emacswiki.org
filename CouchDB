@@ -1,0 +1,8 @@
+Apache !CouchDB™ is a database that uses JSON for documents, JavaScript for MapReduce queries, and regular HTTP for an API.
+
+There are few !CouchDB related elisp packages:
+
+* CouchdbDocument -- open, edit and save !CouchDB document as normal file.
+* [http://edward.oconnor.cx/elisp/couchdb.el couchdb.el] -- An Emacs Lisp client library for !CouchDB.
+* [http://github.com/cinsk/emacs-sofa emacs-sofa] -- !CouchDB API with native interface like Futon. ([http://www.cloudant.com Cloudant] is also supported as well as !CouchDB)
+
