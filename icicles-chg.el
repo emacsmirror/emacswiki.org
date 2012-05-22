@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Tue May 15 16:42:18 2012 (-0700)
+;; Last-Updated: Tue May 22 07:05:07 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 8437
+;;     Update #: 8453
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-chg.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -85,6 +85,10 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd1.el'")
 ;;
+;; 2012/05/22 dadams
+;;     icicle-comint-dynamic-complete-as-filename, icicle-dired-(project|saved-file-candidates(*)),
+;;       icicle-grep-saved-file-candidates:
+;;         Test with icicle-file-remote-p before file-exists-p, to avoid Tramp.
 ;; 2012/05/13 dadams
 ;;     Added: icicle-dired-save-marked(-more|to-cache-file|to-fileset|to-variable)-recursive, 
 ;; 2012/04/22 dadams
@@ -620,6 +624,9 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd2.el'")
 ;;
+;; 2012/05/22 dadams
+;;     icicle-search-define-candidates, icicle-char-properties-in-buffers:
+;;       Test with icicle-file-remote-p before file-exists-p, to avoid Tramp.
 ;; 2012/05/15 dadams
 ;;     Removed: icicle-search-desktop-bookmark (useless).
 ;; 2012/05/07 dadams
@@ -1317,6 +1324,9 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-fn.el'")
 ;;
+;; 2012/05/22 dadams
+;;     icicle-show-help-in-mode-line, icicle-quote-file-name-part-of-cmd:
+;;       Test with icicle-file-remote-p before file-exists-p, to avoid Tramp.  Thx to Michael Albinus.
 ;; 2012/05/13 dadams
 ;;     icicle-completion-setup-function (all Emacs versions):
 ;;       Corrected what becomes default-directory:  Use substitute-in-file-name, to expand env vars.
@@ -3132,6 +3142,9 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-mcmd.el'")
 ;;
+;; 2012/05/22 dadams
+;;     icicle-help-on-candidate(-symbol):
+;;       Test with icicle-file-remote-p before file-exists-p, to avoid Tramp.
 ;; 2012/05/14 dadams
 ;;     icicle-help-on-candidate:
 ;;       Do not use transform multi-completion candidate before passiting it to *-candidate-help-fn.
