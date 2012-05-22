@@ -7,9 +7,9 @@
 ;; Copyright (C) 1999-2012, Drew Adams, all rights reserved.
 ;; Created: Fri Mar 19 15:58:58 1999
 ;; Version: 21.2
-;; Last-Updated: Tue May 22 09:40:10 2012 (-0700)
+;; Last-Updated: Tue May 22 14:04:25 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 5456
+;;     Update #: 5501
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/dired+.el
 ;; Keywords: unix, mouse, directories, diredp, dired
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -105,7 +105,8 @@
 ;;    `diredp-delete-this-file', `diredp-describe-file',
 ;;    `diredp-describe-mode', `diredp-dired-files',
 ;;    `diredp-dired-files-other-window', `diredp-dired-for-files',
-;;    `diredp-dired-for-files-other-window', `diredp-dired-plus-help',
+;;    `diredp-dired-for-files-other-window',
+;;    `diredp-dired-inserted-subdirs', `diredp-dired-plus-help',
 ;;    `diredp-dired-union', `diredp-dired-union-other-window',
 ;;    `diredp-do-bookmark', `diredp-do-bookmark-in-bookmark-file',
 ;;    `diredp-do-bookmark-in-bookmark-file-recursive',
@@ -290,8 +291,11 @@
 ;;
 ;; 2012/05/22 dadams
 ;;     diredp-get-files(-for-dir): Added optional arg INCLUDE-DIRS-P.
-;;     Added: diredp-insert-subdirs(-recursive).  Bound to (M-+) M-i.  Added to menus.
+;;     Added: diredp-insert-subdirs(-recursive), diredp-dired-inserted-subdirs.  Added to menus.
+;;            Bound diredp-insert-subdirs* to (M-+) M-i.
 ;;     Bound diredp-capitalize(-recursive) to (M-+) %c.
+;;     Added diredp-dired-union-other-window to Dirs menu.
+;;     Updated diredp-dired-plus-description.
 ;; 2012/05/19 dadams
 ;;     Added: diredp-image-dired-*-recursive, diredp-*link-recursive,
 ;;            diredp-do-isearch(-regexp)-recursive, diredp-do-query-replace-regexp-recursive,
@@ -1890,8 +1894,13 @@ If HDR is non-nil, insert a header line with the directory name."
 (define-key diredp-menu-bar-subdir-menu [create-directory] ; Moved from "Immediate".
   '(menu-item "New Directory..." dired-create-directory :help "Create a directory"))
 (define-key diredp-menu-bar-subdir-menu [separator-dired-on-set] '("--"))
-(define-key diredp-menu-bar-subdir-menu [revert]
-  '(menu-item "Refresh (Sync & Show All)" revert-buffer :help "Update directory contents"))
+(define-key diredp-menu-bar-subdir-menu [diredp-dired-inserted-subdirs]
+  '(menu-item "Dired Each Inserted Subdir..." diredp-dired-inserted-subdirs
+    :enable (cdr dired-subdir-alist)    ; First elt is current dir.  Must have at least one more.
+    :help "Open Dired for each of the inserted subdirectories"))
+(define-key diredp-menu-bar-subdir-menu [diredp-dired-union-other-window]
+  '(menu-item "Dired Union..." diredp-dired-union-other-window
+    :help "Open Dired for the union of some existing Dired buffers"))
 (define-key diredp-menu-bar-subdir-menu [diredp-fileset]
   '(menu-item "Dired Fileset..." diredp-fileset
     :enable (> emacs-major-version 21) :help "Open Dired on an Emacs fileset"))
@@ -1910,6 +1919,8 @@ If HDR is non-nil, insert a header line with the directory name."
 (define-key diredp-menu-bar-subdir-menu [dired]
   '(menu-item "Dired (Filter via Wildcards)..." dired
     :help "Explore a directory (you can provide wildcards)"))
+(define-key diredp-menu-bar-subdir-menu [revert]
+  '(menu-item "Refresh (Sync & Show All)" revert-buffer :help "Update directory contents"))
 
 ;; On Windows, bind more.
 (eval-after-load "w32-browser"
@@ -2564,6 +2575,25 @@ Read names of Dired buffers to include, and then the new, Dired-union
                                          (expand-file-name file)
                                        file))
                                    files))))))
+
+;;;###autoload
+(defun diredp-dired-inserted-subdirs (&optional no-show-p msgp)
+  "Open Dired for each of the subdirs inserted in this Dired buffer.
+With a prefix arg, create the Dired buffers but do not display them."
+  (interactive "P\np")
+  (unless (eq major-mode 'dired-mode)
+    (error "You must be in a Dired buffer to use this command"))
+  (let ((this-dir    default-directory)
+        (this-frame  (selected-frame)))
+    (unwind-protect
+         (save-selected-window 
+           (dolist (entry  dired-subdir-alist)
+             (unless (string= (car entry) this-dir)
+               (if (not no-show-p)
+                   (dired-other-window (car entry))
+                 (dired-noselect (car entry))
+                 (when msgp (message "Dired buffers created but not shown"))))))
+      (select-frame-set-input-focus this-frame))))
 
 
 ;;; Actions on marked files and subdirs, recursively.
@@ -6436,17 +6466,18 @@ General
 -------
 
 * \\[diredp-toggle-find-file-reuse-dir]\t- Toggle reuse of directories
-
-* \\[diredp-marked-other-window]\t\t\t\t- Open Dired on marked
-* \\[diredp-fileset]\t\t- Open Dired on files in a fileset
-* \\[diredp-dired-for-files]\t- Open Dired on specific files
-* \\[diredp-dired-union]\t- Create union of some Dired buffers
 "
     (and (fboundp 'diredp-w32-drives)   ; In `w32-browser.el'.
          "* \\[diredp-w32-drives]\t\t- Go up to a list of MS Windows drives
 ")
 
-    "
+"
+* \\[diredp-marked-other-window]\t\t\t\t- Open Dired on marked
+* \\[diredp-fileset]\t\t- Open Dired on files in a fileset
+* \\[diredp-dired-for-files]\t- Open Dired on specific files
+* \\[diredp-dired-union]\t- Create union of some Dired buffers
+* \\[diredp-dired-inserted-subdirs]\t- Dired each inserted subdir
+
 Mouse
 -----
 
