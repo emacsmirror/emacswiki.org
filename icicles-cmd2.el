@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Thu May 21 13:31:43 2009 (-0700)
 ;; Version: 22.0
-;; Last-Updated: Tue May 15 16:07:20 2012 (-0700)
+;; Last-Updated: Tue May 22 06:21:11 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 5629
+;;     Update #: 5632
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-cmd2.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -3558,8 +3558,9 @@ The arguments are the same as for `icicle-search'."
   (cond ((and (consp where) (bufferp (car where))) ; List of buffers - search buffers.
          (dolist (buf  where)
            (icicle-search-define-candidates-1 buf nil nil scan-fn-or-regexp args)))
-        ((and (consp where) (stringp (car where)) ; List of files - search files.
-              (file-exists-p (car where)))
+        ((and (consp where)  (stringp (car where)) ; List of files - search files.  (Check only the first.)
+              (or (icicle-file-remote-p (car where)) ; Don't let Tramp try to access it.
+                  (file-exists-p (car where))))
          (dolist (file  where)
            (icicle-search-define-candidates-1 (find-file-noselect file 'nowarn) nil nil
                                               scan-fn-or-regexp args)))
@@ -5033,9 +5034,9 @@ TYPE can be `overlay', `text', or nil, meaning overlay properties,
 text properties, or both, respectively."
   (cond ((and (consp where) (bufferp (car where))) ; List of buffers - search buffers.
          (dolist (buf  where) (icicle-char-properties-in-buffer buf nil nil type)))
-        ((and (consp where)             ; List of files - search files.
-              (stringp (car where))
-              (file-exists-p (car where)))
+        ((and (consp where)  (stringp (car where)) ; List of files - search files.  (Check only the first.)
+              (or (icicle-file-remote-p (car where)) ; Don't let Tramp try to access it.
+                  (file-exists-p (car where))))
          (dolist (file  where)
            (icicle-char-properties-in-buffer (find-file-noselect file) nil nil type)))
         ((consp where)                  ; Search bookmarked regions.
