@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:53 2006
 ;; Version: 22.0
-;; Last-Updated: Tue May 22 06:08:47 2012 (-0700)
+;; Last-Updated: Tue May 22 08:15:47 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 13002
+;;     Update #: 13009
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-fn.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -5237,7 +5237,24 @@ A return value of zero means DRIVE is a mapped network drive."
     ;; Don't bother to hash for Emacs 20, 21, unless `cl.el' happens to be loaded.
     (call-process shell-file-name nil nil nil shell-command-switch (concat "NET USE " drive))))
 
-;; $$$$$ TRYING WITHOUT `save-match-data', but probably need it.
+;;; $$$$$$
+;;; (defun icicle-file-remote-p (file) ; Older definition - new one is like `bmkp-file-remote-p'.
+;;;   "Non-nil means FILE is likely to name a file on a remote system.
+;;; For MS Windows, if `icicle-network-drive-means-remote-flag' is non-nil
+;;; then this includes a file on a mapped network drive.
+
+;;; Otherwise, use, in order, `ffap-file-remote-p' or `file-remote-p'.  If
+;;; those functions are not defined then return nil."
+;;;   (or (and (eq system-type 'windows-nt)
+;;;            ;; $$$$  (save-match-data   ; IS THIS NEEDED?
+;;;            (let ((case-fold-search  t)) (string-match "\\`\\([a-z]:\\)" file))
+;;;            (eq 0 (condition-case nil
+;;;                 (icicle-ms-windows-NET-USE (match-string 1 file))
+;;;               (error nil)))
+;;;            icicle-network-drive-means-remote-flag)
+;;;       (and (fboundp 'ffap-file-remote-p) (ffap-file-remote-p file))
+;;;       (and (fboundp 'file-remote-p) (file-remote-p file))))
+
 (defun icicle-file-remote-p (file)
   "Non-nil means FILE is likely to name a file on a remote system.
 For MS Windows, if `icicle-network-drive-means-remote-flag' is non-nil
@@ -5252,8 +5269,8 @@ those functions are not defined then return nil."
                 (icicle-ms-windows-NET-USE (match-string 1 file))
               (error nil)))
            icicle-network-drive-means-remote-flag)
-      (and (fboundp 'ffap-file-remote-p) (ffap-file-remote-p file))
-      (and (fboundp 'file-remote-p) (file-remote-p file))))
+      (and (fboundp 'file-remote-p)  (file-remote-p file))
+      (and (stringp file)  (string-match "\\`/[^/]+:" file)  (match-string 0 file))))
 
 ;;; $$$$$ Should these `*-any-*' fns call `icicle-transform-candidates'?  For now, no, to save time.
 (defun icicle-any-candidates-p (input)
