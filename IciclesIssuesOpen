@@ -152,6 +152,18 @@ Another possible workaround is to use `##C-^##' in the minibuffer to toggle remo
 Hopefully Michael will have an answer for us.  But you need to specify exactly which OS you use, which Emacs version, which Tramp version, and any customizations --- preferably provide a recipe from ##emacs -Q## that specifies only the customizations needed to reproduce the problem.  Thx -- DrewAdams
 
 
+[new:DrewAdams:2012-05-22 14:21 UTC]
+I think the problem is fixed now.  Please try the latest files and let me know.  I could not test this on Windows -- there is no problem there, because ##/## is automatically expanded to ##c:/## or whatever, which prevents [[Tramp]] from kicking in.  But MichaelAlbinus was kind enough to debug it and found the problem.  It was not at all in the completion code but in was in a little function that displays info about the current candidate in the mode line.
+
+Please give it a try and let me know.  Thx -- DrewAdams
+
+
+
+
+
+
+
+
 
 
 
