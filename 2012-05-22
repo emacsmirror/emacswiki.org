@@ -1,5 +1,6 @@
 It’s time for the irregular EmacsChannel ChatClient test again!
 
+{{{
  168 irssi
   92 erc
   66 xchat
@@ -12,11 +13,12 @@ It’s time for the irregular EmacsChannel ChatClient test again!
   11 colloquy
   10 quassel
    9 textual
+   7 irccloud
    6 mirc
-   6 irccloud
    5 andchat
    5 tiarra
    4 circe
+   4 unknown
    3 linkinus
    3 kvirc
    2 qwebirc
@@ -40,9 +42,9 @@ It’s time for the irregular EmacsChannel ChatClient test again!
    1 nbs
    1 miranda
    1 http
-   1 unknown
 ----
- 541 total
+ 545 total
+}}}
 
 IrcClientSurvey says how I produced the list. No manual editing this time.
 
