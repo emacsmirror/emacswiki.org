@@ -4252,7 +4252,21 @@ Good idea.  Done.  The code is a bit different, as it needs to be able to (a) ha
 Thx -- DrewAdams
 
 [new:AndersJohansson:2012-05-22 13:30 UTC]
-Another thing that would be very useful, at least for me, the way I use Bookmark+ (doing qualitative text analysis by bookmarking and tagging portions of textfiles), is if there was a possibility to show the bookmark list in another way, showing the tags (or the car of a tag) in a column (preferably instead of the filename which isn't that important for me right now). I don't know if this is a stupid idea for some reason, but I think this would help whenever there is a need for an overview of the tags associated with a bunch of bookmarks. ---AndersJohansson
+Another thing that would be very useful, at least for me, the way I use Bookmark+ (doing qualitative text analysis by bookmarking and tagging portions of textfiles), is if there was a possibility to show the bookmark list in another way, showing the tags (or the car of a tag) in a column (preferably instead of the filename which isn't that important for me right now). I don't know if this is a stupid idea for some reason, but I think this would help whenever there is a need for an overview of the tags associated with a bunch of bookmarks. --- AndersJohansson
+
+
+[new:DrewAdams:2012-05-22 15:35 UTC]
+I agree that something like that could be useful.  But I'm afraid that one will have to go on my wishlist-todo list.
+
+There is also the problem that a list of tags can be long or short, and so can individual tags be long or short, and tags can contain newlines etc.  IOW, there is no obvious and easy way to format such info in a column -- I would have to come up with something else.  
+
+And because the `##*Bookmark List*##' itself is complex, I would instead probably show bookmarks plus their tags in a separate display -- a separate buffer (as is done for `bmkp-list-all-tags').
+
+Dunno when/whether I will do something like this, however, so don't hold your breath.
+
+One workaround to some extent, at least in the sense that it lets you see a set of bookmarks (all of them, if you like) together with their tags, is `E': `bmkp-bmenu-edit-marked'.  You might at least take a look at that, to see if it's helpful.  Thx -- DrewAdams
+
+
 
 ----
 CategoryBookmarking CategoryHypermedia CategoryPersistence 
