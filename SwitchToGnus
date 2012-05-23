@@ -248,11 +248,6 @@ Here is my take on switching to mail back and forth, as the above approaches fai
   (global-linum-mode arg)
   (fringe-mode arg))
 
-(defun px-exit-mail nil
-  "called after switch back from mail"
-  (set-window-configuration px-no-mail-window-configuration)
-  (px-prefs t))
-
 (defun px-go-mail nil
   "switch to mail client or launch it"
   (interactive)
