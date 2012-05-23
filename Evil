@@ -22,7 +22,7 @@ Move Evil to ##~/.emacs.d/evil## (or somewhere else in your ##load-path##). Then
     (require 'evil)
     (evil-mode 1)
 
-If your .emacs file has a custom-set-variables section, you should add this before it.  For example, customizing evil-search-module as evil-search wouldn't work.
+If your .emacs file has a custom-set-variables section, you should place it after Evil.
 
 Evil requires [UndoTree undo-tree.el] in the ##load-path## for linear undo and undo branches. Otherwise, Evil uses regular Emacs undo.
 
