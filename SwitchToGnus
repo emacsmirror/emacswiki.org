@@ -299,7 +299,7 @@ Here is my take on switching to mail back and forth, as the above approaches fai
 </pre>
 (see https://github.com/xaccrocheur/kituu/blob/master/.emacs for IRL implementation)
 
-You may use it with my Mail-bug (client-agnostic mail notification) package : https://github.com/xaccrocheur/mail-bug.el
+You may use it with my mail-bug (client-agnostic mail notification) package : https://github.com/xaccrocheur/mail-bug
 ----
 CategoryGnus
 CategoryKeys
