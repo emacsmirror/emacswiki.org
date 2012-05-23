@@ -7,9 +7,9 @@
 ;; Copyright (C) 1999-2012, Drew Adams, all rights reserved.
 ;; Created: Fri Mar 19 15:58:58 1999
 ;; Version: 21.2
-;; Last-Updated: Tue May 22 14:04:25 2012 (-0700)
+;; Last-Updated: Wed May 23 10:44:50 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 5501
+;;     Update #: 5535
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/dired+.el
 ;; Keywords: unix, mouse, directories, diredp, dired
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -107,8 +107,9 @@
 ;;    `diredp-dired-files-other-window', `diredp-dired-for-files',
 ;;    `diredp-dired-for-files-other-window',
 ;;    `diredp-dired-inserted-subdirs', `diredp-dired-plus-help',
-;;    `diredp-dired-union', `diredp-dired-union-other-window',
-;;    `diredp-do-bookmark', `diredp-do-bookmark-in-bookmark-file',
+;;    `diredp-dired-this-subdir', `diredp-dired-union',
+;;    `diredp-dired-union-other-window', `diredp-do-bookmark',
+;;    `diredp-do-bookmark-in-bookmark-file',
 ;;    `diredp-do-bookmark-in-bookmark-file-recursive',
 ;;    `diredp-do-bookmark-recursive', `diredp-do-copy-recursive',
 ;;    `diredp-do-find-marked-files-recursive', `diredp-do-grep',
@@ -291,8 +292,8 @@
 ;;
 ;; 2012/05/22 dadams
 ;;     diredp-get-files(-for-dir): Added optional arg INCLUDE-DIRS-P.
-;;     Added: diredp-insert-subdirs(-recursive), diredp-dired-inserted-subdirs.  Added to menus.
-;;            Bound diredp-insert-subdirs* to (M-+) M-i.
+;;     Added: diredp-insert-subdirs(-recursive), diredp(-this)-dired-inserted-subdir(s).
+;;            Added to menus.  Bound diredp-insert-subdirs* to (M-+) M-i.
 ;;     Bound diredp-capitalize(-recursive) to (M-+) %c.
 ;;     Added diredp-dired-union-other-window to Dirs menu.
 ;;     Updated diredp-dired-plus-description.
@@ -1330,6 +1331,11 @@ If HDR is non-nil, insert a header line with the directory name."
 (define-key diredp-menu-bar-immediate-menu [ediff]
   '(menu-item "Compare..." diredp-ediff :help "Compare file at cursor with another file"))
 (define-key diredp-menu-bar-immediate-menu [separator-diff] '("--"))
+(define-key diredp-menu-bar-immediate-menu [diredp-dired-this-subdir]
+  '(menu-item "Dired This Subdir (Tear Off)..."
+    (lambda () (interactive) (diredp-dired-this-subdir t))
+    :enable (cdr dired-subdir-alist)    ; First elt is current dir.  Must have at least one more.
+    :help "Open Dired for subdir at or above point, tearing it off if inserted"))
 (define-key diredp-menu-bar-immediate-menu [insert-subdir]
   '(menu-item "Insert This Subdir" dired-maybe-insert-subdir
     :enable (atom (diredp-this-subdir)) :help "Insert a listing of this subdirectory"))
@@ -2575,6 +2581,32 @@ Read names of Dired buffers to include, and then the new, Dired-union
                                          (expand-file-name file)
                                        file))
                                    files))))))
+
+;;;###autoload
+(defun diredp-dired-this-subdir (&optional tear-off-p msgp)
+  "Open Dired for the subdir at or above point.
+If point is not on a subdir line, but is in an inserted subdir
+listing, then use that subdir.
+
+With a prefix arg:
+ If the subdir is inserted and point is in the inserted listing then
+ remove that listing and move to the ordinary subdir line.  In other
+ words, when in an inserted listing, a prefix arg tears off the
+ inserted subdir to its own Dired buffer."
+  (interactive "P\np")
+  (unless (eq major-mode 'dired-mode)
+    (error "You must be in a Dired buffer to use this command"))
+  (let* ((this-dir       default-directory)
+         (this-subdir    (diredp-this-subdir))
+         (on-dir-line-p  (atom this-subdir)))
+    (unless on-dir-line-p               ; Subdir header line or non-directory file.
+      (setq this-subdir  (car this-subdir)))
+    (unless (string= this-subdir this-dir)
+      (when tear-off-p
+        (unless on-dir-line-p
+          (dired-kill-subdir)           ; Tear it off.
+          (dired-goto-file this-subdir))) ; Move to normal subdir line.
+      (dired-other-window this-subdir))))
 
 ;;;###autoload
 (defun diredp-dired-inserted-subdirs (&optional no-show-p msgp)
@@ -5912,6 +5944,8 @@ With non-nil prefix arg, mark them instead."
                                  ["Open in Windows Explorer" dired-w32explore
                                   :visible (featurep 'w32-browser)]
                                  ["View (Read Only)" dired-view-file]
+                                 ["Dired This Subdir (Tear Off)"
+                                  (lambda () (interactive) (diredp-dired-this-subdir t))]
                                  "--"   ; -----------------------------------------------
                                  ["Compare..." diredp-ediff]
                                  ["Diff..." dired-diff]
