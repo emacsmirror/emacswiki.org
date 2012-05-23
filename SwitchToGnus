@@ -239,7 +239,7 @@ Here is my take on switching to mail back and forth, as the above approaches fai
 "Mail client, use wl or gnus"
 (fset 'px-mail-client 'wl)
 (defvar px-no-mail-window-configuration (current-window-configuration))
-(defvar px-mail-window-configuration nil)
+(defvar px-mail-window-configuration t)
 
 (defun px-prefs (arg)
   "toggle pref bits"
@@ -247,6 +247,11 @@ Here is my take on switching to mail back and forth, as the above approaches fai
   (scroll-bar-mode arg)
   (global-linum-mode arg)
   (fringe-mode arg))
+
+(defun px-exit-mail nil
+  "called after switch back from mail"
+  (set-window-configuration px-no-mail-window-configuration)
+  (px-prefs t))
 
 (defun px-go-mail nil
   "switch to mail client or launch it"
@@ -274,8 +279,8 @@ Here is my take on switching to mail back and forth, as the above approaches fai
 
 (eval-after-load "wl-summary"
   '(progn
-     (define-key wl-summary-mode-map px-toggle-mail-key 'px-no-mail)
-     (define-key mime-view-mode-default-map px-toggle-mail-key 'px-no-mail)))
+     (define-key wl-summary-mode-map [f3] 'wl-summary-pick)
+     (define-key wl-summary-mode-map px-toggle-mail-key 'px-no-mail)))
 
 (eval-after-load "wl-draft"
   '(define-key wl-draft-mode-map px-toggle-mail-key 'px-no-mail))
@@ -289,8 +294,12 @@ Here is my take on switching to mail back and forth, as the above approaches fai
 (eval-after-load "message"
   '(define-key message-mode-map px-toggle-mail-key 'px-no-mail))
 
-(define-key global-map px-toggle-mail-key 'px-go-mail)
+(add-hook
+ 'mime-view-mode-hook
+ '(lambda ()
+    (local-set-key px-toggle-mail-key 'px-no-mail)))
 
+(define-key global-map px-toggle-mail-key 'px-go-mail)
 
 </pre>
 (see https://github.com/xaccrocheur/kituu/blob/master/.emacs for IRL implementation)
