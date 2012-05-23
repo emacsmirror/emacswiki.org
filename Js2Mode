@@ -19,15 +19,16 @@ The js2-mode has a nice feature in that it highlights undeclared variables, but 
     ;; Note that we also support the "symbol: true" way of specifying names via a hack (remove any ":true"
     ;; to make it look like a plain decl, and any ':false' are left behind so they'll effectively be ignored as
     ;; you can;t have a symbol called "someName:false"
-   (add-hook 'js2-post-parse-callbacks 
-          (lambda ()
-            (let ((btext (replace-regexp-in-string
-                          ": *true" " "
-                          (replace-regexp-in-string "[\n\t ]+" " " (buffer-substring-no-properties 1 (buffer-size)) t t))))
-              (setq js2-additional-externs
-                    (split-string
-                     (if (string-match "/\\* *global *\\(.*?\\) *\\*/" btext) (match-string-no-properties 1 btext) "")
-                     " *, *" t))
-              )))
+    (add-hook 'js2-post-parse-callbacks
+              (lambda ()
+                (when (> (buffer-size) 0)
+                  (let ((btext (replace-regexp-in-string
+                                ": *true" " "
+                                (replace-regexp-in-string "[\n\t ]+" " " (buffer-substring-no-properties 1 (buffer-size)) t t))))
+                    (mapc (apply-partially 'add-to-list 'js2-additional-externs)
+                          (split-string
+                           (if (string-match "/\\* *global *\\(.*?\\) *\\*/" btext) (match-string-no-properties 1 btext) "")
+                           " *, *" t))
+                    ))))
 
 The jslint tool has an advanced version of this feature - the globals list can specify symbols that are valid globals ("name: true") but it can also declare that some symbols are valid as long as you don't assign to them ("name: false"), and it also seems that the globals comments can be placed inside a function and there the checking will respect the function scope. The js2-mode doesn't seem (to me) to have either of these concepts inherently built in, so the version below will consider all global decls to have file scope, and it will respect "name: true" symbols but it will ignore "name: false" symbols (i.e. they'll still be reported as invalid globals when used) - you could change this by adjusting the regexps below, but extending js2-mode to understand these more advanced concepts for looking at undeclared symnbols is probably a more major task -- TimMeadowcroft
