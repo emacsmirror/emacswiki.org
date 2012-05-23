@@ -28,4 +28,4 @@ Installation notes and usage tips are in [http://dzhus.org/hg/emacs-shellfm/raw-
 
 = Requirements =
 
-Emacs-shellfm needs Shell-FM version 0.5 or later (because it needs <code>-b</code> option [http://github.com/jkramer/shell-fm/commit/b5f81f73a316c90e3e9070a5e0cf10815baeab48 added] in January 2008).
+Emacs-shellfm needs Shell-FM version 0.7 or later.
