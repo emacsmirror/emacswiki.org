@@ -4266,7 +4266,8 @@ Dunno when/whether I will do something like this, however, so don't hold your br
 
 One workaround to some extent, at least in the sense that it lets you see a set of bookmarks (all of them, if you like) together with their tags, is `E': `bmkp-bmenu-edit-marked'.  You might at least take a look at that, to see if it's helpful.  Thx -- DrewAdams
 
-
+[new:AndersJohansson:2012-05-23 09:30 UTC]
+I understand there are lots of complexities to consider for this. bmkp-bmenu-edit-marked' actually worked pretty well for me right now. Thanks ---AndersJohansson
 
 ----
 CategoryBookmarking CategoryHypermedia CategoryPersistence 
