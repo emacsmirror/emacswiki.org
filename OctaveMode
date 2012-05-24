@@ -1,4 +1,4 @@
-==Octave-mode for WIN32==
+==Octave-mode for Xemacs on WIN32==
 
 Here is my init.el part for Xemacs for WIN32:
 
@@ -69,6 +69,17 @@ that is the reason for defining the keystroke [(meta control tab)].
 Starting octave from within xemacs is not working :-(
 Is there someone who can help?
 
+==Hints for Inferior Octave on GNU Emacs for Win32==
+
+You may consider convenience settings from the previous section. The *only requirement* however is to have ##octave.exe## on ##exec-path##.
+
+Not so long time ago mingw32 build of Octave began to use an experimental OpenGL as a default ##graphics_toolkit## (the case as of 2012-05-24).
+This effectively breaks lots of stuff including org-babel for octave.
+For off-screen plotting and subsequent printing into a file, one needs to override defaults with something like
+
+    graphics_toolkit gnuplot;
+
+This should make org-babel usable again with octave.
 
 ==Location==
 
