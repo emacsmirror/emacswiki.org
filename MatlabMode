@@ -21,6 +21,7 @@ Here is mine ##C:/Programs/matlabshell/matlabshell.cmd##
 
     @echo off
     SET PATH=C:\PROGRA~1\MATLAB\R2011a\bin;C:\PROGRA~1\MATLAB\R2011a\bin\win32
+    cd /d %HOME%
     %~dp0\matlabShell.exe 500 20000
 
 And here is what I have in dot emacs
