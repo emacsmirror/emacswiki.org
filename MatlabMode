@@ -11,6 +11,25 @@ Put into your init-file (~/.emacs, ~/.xemacs/init.el, whatever)
  (setq matlab-indent-function t)
  (setq matlab-shell-command "matlab")
 
+=== On Win32 ===
+
+MATLAB is not a CLI application on MS Windows. One needs a shell wrapper that would pipe emacs input into a Matlab and back.
+One can get that from http://www.cs.umb.edu/~ram/matlabShell/index.html . I failed to rebuild it with Matlab 2011a , but packaged exe seems to work.
+[http://www.mathworks.com/matlabcentral/newsreader/view_thread/13365 Here] it is explained how to set things up. However ##""## shall be replaced with ##'()##
+
+Here is mine ##C:/Programs/matlabshell/matlabshell.cmd##
+
+    @echo off
+    SET PATH=C:\PROGRA~1\MATLAB\R2011a\bin;C:\PROGRA~1\MATLAB\R2011a\bin\win32
+    %~dp0\matlabShell.exe 500 20000
+
+And here is what I have in dot emacs
+
+    (setq matlab-shell-command "c:/Programs/matlabshell/matlabshell.cmd")
+    (setq matlab-shell-command-switches '())
+    (setq matlab-shell-echoes nil)
+
+
 == Wiki Pages ==
 * MatlabFunctionTemplate
 
