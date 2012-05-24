@@ -26,6 +26,8 @@ This is a git repository, ''not'' a web page. To grab the latest development ver
 
     git clone http://www.dr-qubit.org/git/undo-tree.git undo-tree
 
+seems to be forbidden: "You don't have permission to access /git/undo-tree.git/ on this server."
+-Emmett
 
 == Contributing ==
 
