@@ -3,7 +3,7 @@
 ;; Copyright (C) 2012 tama.sh
 
 ;; Author: tama.sh <tama.csh@gmail.com>
-;; Version: 1.0.1
+;; Version: 1.0.2
 ;; Keywords: TeX
 
 ;; This program is free software; you can redistribute it and/or modify
@@ -56,6 +56,8 @@
 ;;     First released
 ;; * 2012/04/18
 ;;     Correct the regexp for searching environments
+;; * 2012/05/25
+;;     Fix the bug when inserting labels in lines with comments
 
 ;;; Code:
 
@@ -143,10 +145,12 @@
 
 ;; parser:
 
-(defun texlabel-in-comment-line-p (point)
-  "Check whether the current line is a comment line."
+(defun texlabel-in-comment-p (point)
+  "Check whether the POINT is in a comment, and return the beginning of the comment."
   (save-excursion
-    (nth 4 (parse-partial-sexp (line-beginning-position) point)) ))
+    (let ((parse-rst (parse-partial-sexp (line-beginning-position) point)))
+      (if (nth 4 parse-rst)
+	(nth 8 parse-rst) ))))
 
 (defun texlabel-make-env-cmd-stack (region)
   "Make a stack of environment commands."
@@ -159,7 +163,7 @@
     (save-excursion
       (goto-char begin-region)
       (while (re-search-forward env-cmd-regexp end-region t)
-	(unless (texlabel-in-comment-line-p (point))
+	(unless (texlabel-in-comment-p (point))
 	  (let* ((begin-or-end (match-string-no-properties 1))
 		 (env-name (match-string-no-properties 2))
 		 (env-point (if (string= begin-or-end "begin") (match-beginning 0)
@@ -264,7 +268,7 @@ This function igonres separaters in inner environments and in comment lines."
     (save-excursion
       (goto-char begin-region)
       (while (texlabel-re-search-forward-cmd sep-regexp end-region t)
-	(if (and (not (texlabel-in-comment-line-p (point)))
+	(if (and (not (texlabel-in-comment-p (point)))
 		 (not (texlabel-in-region-list-p (point) inner-region-list)))
 	    (progn
 	      (setq end-sub-region (point))
@@ -285,9 +289,14 @@ This function igonres separaters in inner environments and in comment lines."
     (save-excursion
       (dolist (region region-list (nreverse rst))
 	(let ((begin-region (car region))
-	      (end-region (cdr region)))
+	      (end-region (cdr region))
+	      (exclude-flag nil))
 	  (goto-char begin-region)
-	  (unless (texlabel-re-search-forward-cmd cmd-regexp end-region t)
+	  (while (and (not exclude-flag)
+		      (texlabel-re-search-forward-cmd cmd-regexp end-region t))
+	    (unless (texlabel-in-comment-p (point))
+	      (setq exclude-flag t)))
+	  (unless exclude-flag
 	    (setq rst (cons region rst))))))))
 
 (defun texlabel-exclude-notag-region (region-list)
@@ -384,11 +393,15 @@ from the beginning and end of the region."
   (if (string-match "[ \t]*$" str)
       (setq str (replace-match "" nil nil str))))
 
-(defun texlabel-insert-label (label-name)
+(defun texlabel-insert-label (label-name &optional point)
   "Insert a label that has LABEL-NAME."
-  (delete-horizontal-space)
-  (insert (concat texlabel-pre-label-string
-		  (texlabel-make-tex-cmd "label" label-name))))
+  (save-excursion
+    (if point
+	(goto-char point))
+    (delete-horizontal-space)
+    (insert (concat texlabel-pre-label-string
+		    (texlabel-make-tex-cmd "label" label-name)))))
+
 ;; reference:
 
 (defun texlabel-rename-reference-1 (refcmd rename-label-list)
@@ -451,7 +464,7 @@ RENAME-LABEL-LIST is a list of dot pairs (old-label . new-label)."
 	label-point-list)
     (goto-char begin-region)
     (while (and (re-search-forward label-cmd-regexp end-region t)
-		(not (texlabel-in-comment-line-p (point))) )
+		(not (texlabel-in-comment-p (point))) )
       (setq label-point-list
 	    (cons (cons (match-string-no-properties 1) (match-beginning 0))
 		  label-point-list )))
@@ -522,7 +535,7 @@ It also modifies related references."
 				(cons (cons label new-label) rename-label-list) ))))
 		;; if label is nil
 		(goto-char marker)
-		(texlabel-insert-label new-label) )
+		(texlabel-insert-label new-label (texlabel-in-comment-p (point))) )
 	      (setq counter (1+ counter))
 	      (set-marker marker nil) )))
 	;; rename reference accoding to rename referenc list
