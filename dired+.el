@@ -7,9 +7,9 @@
 ;; Copyright (C) 1999-2012, Drew Adams, all rights reserved.
 ;; Created: Fri Mar 19 15:58:58 1999
 ;; Version: 21.2
-;; Last-Updated: Wed May 23 10:44:50 2012 (-0700)
+;; Last-Updated: Fri May 25 09:54:46 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 5535
+;;     Update #: 5543
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/dired+.el
 ;; Keywords: unix, mouse, directories, diredp, dired
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -135,7 +135,8 @@
 ;;    `diredp-image-dired-delete-tag-recursive',
 ;;    `diredp-image-dired-display-thumbs-recursive',
 ;;    `diredp-image-dired-tag-files-recursive',
-;;    `diredp-insert-subdirs', `diredp-insert-subdirs-recursive',
+;;    `diredp-insert-as-subdir', `diredp-insert-subdirs',
+;;    `diredp-insert-subdirs-recursive',
 ;;    `diredp-list-marked-recursive', `diredp-load-this-file',
 ;;    `diredp-marked', `diredp-marked-other-window',
 ;;    `diredp-marked-recursive',
@@ -186,7 +187,7 @@
 ;;
 ;;  Non-interactive functions defined here:
 ;;
-;;    `diredp-all-files', `diredp-bookmark',
+;;    `diredp-all-files', `diredp-ancestor-dirs', `diredp-bookmark',
 ;;    `diredp-create-files-non-directory-recursive',
 ;;    `diredp-directories-within',
 ;;    `diredp-dired-files-interactive-spec',
@@ -200,7 +201,7 @@
 ;;    `diredp-get-confirmation-recursive', `diredp-get-files',
 ;;    `diredp-get-files-for-dir', `diredp-internal-do-deletions',
 ;;    `diredp-list-files', `diredp-make-find-file-keys-reuse-dirs',
-;;    `diredp-make-find-file-keys-not-reuse-dirs',
+;;    `diredp-make-find-file-keys-not-reuse-dirs', `diredp-maplist',
 ;;    `diredp-marked-here', `diredp-mark-files-tagged-all/none',
 ;;    `diredp-mark-files-tagged-some/not-all',
 ;;    `diredp-paste-add-tags', `diredp-paste-replace-tags',
@@ -290,6 +291,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2012/05/25 dadams
+;;     Added: diredp-insert-as-subdir, diredp-ancestor-dirs, diredp-maplist.
 ;; 2012/05/22 dadams
 ;;     diredp-get-files(-for-dir): Added optional arg INCLUDE-DIRS-P.
 ;;     Added: diredp-insert-subdirs(-recursive), diredp(-this)-dired-inserted-subdir(s).
@@ -2820,6 +2823,24 @@ Optional arg BUFNAME is the name of the buffer for the display.
   "Directories already processed by `diredp-files-within'.")
 
 
+;; Not used in the Dired+ code yet.
+(defun diredp-directories-within (&optional directory no-symlinks-p predicate)
+  "List of accessible directories within DIRECTORY.
+Directories in `icicle-ignored-directories' are skipped, if you use
+Icicles.  Otherwise, directories in `vc-directory-exclusion-list' are
+skipped.
+
+Optional arg DIRECTORY defaults to the value of `default-directory'.
+Non-nil optional arg NO-SYMLINKS-P means do not follow symbolic links.
+Non-nil optional arg PREDICATE must be a function that accepts a
+ file-name argument.  Only directories that satisfy PREDICATE are
+ included in the result."
+  (unless directory (setq directory  default-directory))
+  (let ((dirs  (diredp-files-within (directory-files directory 'FULL diredp-re-no-dot)
+                                    () no-symlinks-p 'INCLUDE-DIRS-P
+                                    #'file-directory-p)))
+    (if predicate (diredp-remove-if-not predicate dirs) dirs)))
+
 ;; Args INCLUDE-DIRS-P and PREDICATE are not used in the Dired+ code yet
 ;; (except in `diredp-directories-within', which also is not used yet).
 ;;
@@ -2899,24 +2920,36 @@ satisfy PREDICATE are included in the result."
     (dolist (x xs) (when (funcall pred x) (push x result)))
     (nreverse result)))
 
+(when (> emacs-major-version 21) ; Emacs 20 has no PREDICATE arg to `read-file-name'.
+  (defun diredp-insert-as-subdir (child ancestor)
+    "Insert the current Dired dir into a Dired listing of an ancestor dir.
+Ancestor means parent, grandparent, etc. at any level.
+You are prompted for the ancestor directory.  
+The ancestor Dired buffer is selected.
 
-;; Not used in the Dired+ code yet.
-(defun diredp-directories-within (&optional directory no-symlinks-p predicate)
-  "List of accessible directories within DIRECTORY.
-Directories in `icicle-ignored-directories' are skipped, if you use
-Icicles.  Otherwise, directories in `vc-directory-exclusion-list' are
-skipped.
+Non-interactively, insert CHILD dir into Dired listing for ANCESTOR dir."
+    (interactive
+     (progn (unless (eq major-mode 'dired-mode)
+              (error "You must be in a Dired buffer to use this command"))
+            (list default-directory
+                  (completing-read
+                   "Insert this dir into ancestor dir: "
+                   (mapcar #'list (diredp-ancestor-dirs default-directory))))))
+    (dired-other-window ancestor)
+    (dired-insert-subdir child)))
 
-Optional arg DIRECTORY defaults to the value of `default-directory'.
-Non-nil optional arg NO-SYMLINKS-P means do not follow symbolic links.
-Non-nil optional arg PREDICATE must be a function that accepts a
- file-name argument.  Only directories that satisfy PREDICATE are
- included in the result."
-  (unless directory (setq directory  default-directory))
-  (let ((dirs  (diredp-files-within (directory-files directory 'FULL diredp-re-no-dot)
-                                    () no-symlinks-p 'INCLUDE-DIRS-P
-                                    #'file-directory-p)))
-    (if predicate (diredp-remove-if-not predicate dirs) dirs)))
+(defun diredp-ancestor-dirs (dir)
+  "Return a list of the ancestor directories of directory DIR."
+  (mapcar #'file-name-as-directory
+          (diredp-maplist (lambda (dd) (mapconcat #'identity (reverse dd) "/"))
+                          (cdr (nreverse (split-string dir "/" t))))))
+
+(defun diredp-maplist (function list)
+  "Map FUNCTION over LIST and its cdrs.
+A simple, recursive version of the classic `maplist'."
+  (and list  (cons (funcall function list) (maplist function (cdr list)))))
+
+
 
 ;;; Commands operating on marked at all levels below (recursively)
 
