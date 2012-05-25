@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Tue May 22 08:14:04 2012 (-0700)
+;; Last-Updated: Fri May 25 10:15:50 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 8456
+;;     Update #: 8459
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-chg.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -85,6 +85,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd1.el'")
 ;;
+;; 2012/05/25 dadams
+;;     Added: icicle-dired-insert-as-subdir.
 ;; 2012/05/22 dadams
 ;;     icicle-comint-dynamic-complete-as-filename, icicle-dired-(project|saved-file-candidates(*)),
 ;;       icicle-grep-saved-file-candidates:
@@ -4553,6 +4555,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-mode.el'")
 ;;
+;; 2012/05/25 dadams
+;;     Added icicle-dired-insert-as-subdir to menu icicle-dired-dir-menu-map.
 ;; 2012/05/15 dadams
 ;;     Added to and reorg'd Search, Go To menus.  Added submenus Bookmarks & Definitions.
 ;;       Added to menus: icicle-search-define-replacement, icicle-search-w-isearch-string,
