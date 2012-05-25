@@ -11,3 +11,12 @@ Title: "Accelerating OpenSSH connections with ControlMaster"
 
 -- Anonymous 2012-05-25 00:27 UTC
 
+
+----
+
+I use Tramp Mode under Linux all the time.
+
+You need a full PuTTY suite, with the plink utility for the interface.
+
+-- [http://theothermccain.com/ ChristopherSmith] 2012-05-25 12:54 UTC
+
