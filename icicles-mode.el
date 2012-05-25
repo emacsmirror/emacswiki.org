@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 10:21:10 2006
 ;; Version: 22.0
-;; Last-Updated: Tue May 15 16:24:50 2012 (-0700)
+;; Last-Updated: Fri May 25 09:48:10 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 8979
+;;     Update #: 8982
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-mode.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -186,7 +186,8 @@
   ;; (no error if not found): minibuffer-depth-indicate-mode
 
 (require 'dired+ nil t) ;; (no error if not found):
-                        ;; diredp-menu-bar-operate-menu, diredp-menu-bar-subdir-menu
+                        ;; diredp-menu-bar-operate-menu, diredp-menu-bar-recursive-marked-menu,
+                        ;; diredp-menu-bar-subdir-menu
 (require 'dired) ;; dired-mode-map
 (require 'menu-bar+ nil t) ;; (no error if not found):
   ;; menu-bar-apropos-menu, menu-bar-describe-menu, menu-bar-edit-menu,
@@ -2357,6 +2358,10 @@ Used on `pre-command-hook'."
              (list 'menu-item "Dired Dirs" icicle-dired-dir-menu-map
                    :visible '(eq major-mode 'dired-mode)))))
 
+    (when (fboundp 'icicle-dired-insert-as-subdir) ; Emacs 21+
+      (define-key icicle-dired-dir-menu-map [icicle-dired-insert-as-subdir]
+        '(menu-item "Insert Dir into Ancestor Dired..." icicle-dired-insert-as-subdir
+          :help "Insert a directory into a Dired ancestor directory listing")))
     (define-key icicle-dired-dir-menu-map [icicle-dired-saved-file-candidates-other-window]
       '(menu-item "Open Dired for Chosen Files..."
         icicle-dired-saved-file-candidates-other-window
