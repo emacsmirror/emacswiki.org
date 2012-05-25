@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Sun May 13 17:05:49 2012 (-0700)
+;; Last-Updated: Fri May 25 09:34:45 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 23137
+;;     Update #: 23138
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -229,8 +229,8 @@
 ;;    `icicle-describe-var-w-val-satisfying', `icicle-directory-list',
 ;;    `icicle-dired', `icicle-dired-chosen-files',
 ;;    `icicle-dired-chosen-files-other-window',
-;;    `icicle-dired-other-window', `icicle-dired-project',
-;;    `icicle-dired-project-other-window',
+;;    `icicle-dired-insert-as-subdir', `icicle-dired-other-window',
+;;    `icicle-dired-project', `icicle-dired-project-other-window',
 ;;    `icicle-dired-saved-file-candidates',
 ;;    `icicle-dired-saved-file-candidates-other-window',
 ;;    `icicle-dired-save-marked',
