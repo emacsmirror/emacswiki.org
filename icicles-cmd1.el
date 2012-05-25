@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Tue May 22 06:17:50 2012 (-0700)
+;; Last-Updated: Fri May 25 09:57:16 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 23789
+;;     Update #: 23795
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-cmd1.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -178,6 +178,7 @@
 ;;    (+)`icicle-delete-windows', (+)`icicle-directory-list',
 ;;    (+)`icicle-dired', `icicle-dired-chosen-files',
 ;;    `icicle-dired-chosen-files-other-window',
+;;    (+)`icicle-dired-insert-as-subdir',
 ;;    (+)`icicle-dired-other-window', `icicle-dired-project',
 ;;    `icicle-dired-project-other-window',
 ;;    `icicle-dired-saved-file-candidates',
@@ -2975,6 +2976,7 @@ You can use this command only from a Dired buffer."
 ;;;###autoload (autoload 'icicle-dired-save-marked-to-variable-recursive   "icicles")
 ;;;###autoload (autoload 'icicle-dired-save-marked-to-cache-file-recursive "icicles")
 ;;;###autoload (autoload 'icicle-dired-save-marked-to-fileset-recursive    "icicles")
+;;;###autoload (autoload 'icicle-dired-insert-as-subdir                    "icicles")
 (when (fboundp 'diredp-get-files)       ; In Dired+.
   (defun icicle-dired-save-marked-recursive (&optional ignore-marks-p arg) ; Bound to `M-+ C-M->' in Dired.
     "Save the marked file names in Dired, including those in marked subdirs.
@@ -3074,6 +3076,20 @@ You need library `Dired+' for this command."
                    (diredp-get-confirmation-recursive)
                    (list current-prefix-arg)))
     (icicle-candidate-set-save-1 (diredp-get-files ignore-marks-p) 0)))
+
+(when (and (> emacs-major-version 21)   ; Emacs 20 has no PREDICATE arg to `read-file-name'.
+           (fboundp 'diredp-insert-as-subdir))
+  (icicle-define-file-command icicle-dired-insert-as-subdir
+    "Choose a directory.  Insert it into a Dired ancestor listing."
+    (lambda (dir) (diredp-insert-as-subdir dir ancestor-dir))
+    "Insert directory into ancestor Dired: " ; `read-file-name' args
+    default-directory nil t nil (lambda (ff)
+                                  (and (file-directory-p (expand-file-name ff))
+                                       (dired-in-this-tree (expand-file-name ff)
+                                                           ancestor-dir)))
+    ((ancestor-dir                      ; Bindings
+      (completing-read "Ancestor Dired dir to insert into: "
+                       (mapcar #'list (diredp-ancestor-dirs default-directory)))))))
 
 
 (put 'icicle-dired-saved-file-candidates 'icicle-Completions-window-max-height 200)
