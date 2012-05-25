@@ -68,6 +68,8 @@ Not terribly difficult but it took me a bit to puzzle out what needed to be done
 
 == External links ==
 
+[https://github.com/m2ym/auto-complete/issues Bug tracker]
+
 [http://www.enigmacurry.com/2009/01/21/autocompleteel-python-code-completion-in-emacs/ Integrating Rope and Yasnippet with Auto Complete].
 
 [http://madscientist.jp/~ikegami/diary/20090215.html#p01 Integrating for Haskell (experimentally, for the Haskell compiler GHC 6.10.1)]
