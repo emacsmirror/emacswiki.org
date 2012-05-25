@@ -7,9 +7,9 @@
 ;; Copyright (C) 1999-2012, Drew Adams, all rights reserved.
 ;; Created: Fri Mar 19 15:58:58 1999
 ;; Version: 21.2
-;; Last-Updated: Fri May 25 09:54:46 2012 (-0700)
+;; Last-Updated: Fri May 25 13:01:05 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 5543
+;;     Update #: 5559
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/dired+.el
 ;; Keywords: unix, mouse, directories, diredp, dired
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -119,6 +119,7 @@
 ;;    `diredp-do-move-recursive', `diredp-do-paste-add-tags',
 ;;    `diredp-do-paste-replace-tags',
 ;;    `diredp-do-query-replace-regexp-recursive',
+;;    `diredp-do-redisplay-recursive',
 ;;    `diredp-do-relsymlink-recursive', `diredp-do-remove-all-tags',
 ;;    `diredp-do-search-recursive', `diredp-do-set-tag-value',
 ;;    `diredp-do-shell-command-recursive',
@@ -292,7 +293,9 @@
 ;;; Change Log:
 ;;
 ;; 2012/05/25 dadams
-;;     Added: diredp-insert-as-subdir, diredp-ancestor-dirs, diredp-maplist.
+;;     Added: diredp-insert-as-subdir, diredp-ancestor-dirs, diredp-maplist,
+;;            diredp-do-redisplay-recursive.
+;;     diredp-get-files: Added optional arg DONT-ASKP.
 ;; 2012/05/22 dadams
 ;;     diredp-get-files(-for-dir): Added optional arg INCLUDE-DIRS-P.
 ;;     Added: diredp-insert-subdirs(-recursive), diredp(-this)-dired-inserted-subdir(s).
@@ -2633,17 +2636,18 @@ With a prefix arg, create the Dired buffers but do not display them."
 
 ;;; Actions on marked files and subdirs, recursively.
 
-(defun diredp-get-files (&optional ignore-marks-p predicate include-dirs-p)
+(defun diredp-get-files (&optional ignore-marks-p predicate include-dirs-p dont-askp)
   "Return files from this Dired buffer and subdirectories, recursively.
 The files are those that are marked in the current Dired buffer, or
 all files in the directory if none are marked.
 Marked subdirectories are handled recursively in the same way.
 
 If there is some included subdirectory that has a Dired buffer with
-marked files, then ask the user whether s?he wants to use the marked
-files in Dired buffers, as opposed to using all of the files in
-included directories.  To this y-or-n question s?he can hit `l' to see
-the list of files that will be included (using `diredp-list-files').
+marked files, then (unless DONT-ASKP is non-nil) ask the user whether
+to use the marked files in Dired buffers, as opposed to using all of
+the files in included directories.  To this y-or-n question the user
+can hit `l' to see the list of files that will be included (using
+`diredp-list-files').
 
 \(Directories in `icicle-ignored-directories' are skipped, if you use
 Icicles.  Otherwise, directories in `vc-directory-exclusion-list' are
@@ -2657,7 +2661,10 @@ PREDICATE returns non-nil.
 
 Non-nil INCLUDE-DIRS-P means include marked subdirectory names (but
 also handle those subdirs recursively, picking up their marked files
-and subdirs)."
+and subdirs).
+
+Non-nil DONT-ASKP means do not ask the user whether to use marked
+instead of all.  Act as if the user was asked and replied `y'."
   (let ((askp  (list nil)))             ; The cons's car will be set to `t' if need to ask user.
     (if ignore-marks-p
         (diredp-files-within (directory-files default-directory 'FULL diredp-re-no-dot)
@@ -2668,11 +2675,10 @@ and subdirs)."
       (let ((files  (list 'DUMMY)))     ; The files picked up will be added to this list.
         (diredp-get-files-for-dir default-directory files askp include-dirs-p)
         (setq files  (cdr files))       ; Remove `DUMMY' from the modifed list.
-        (if (not (and (car askp)
-                      (not (diredp-y-or-n-files-p
-                            "Use marked (instead of all) files in subdir Dired buffers? "
-                            files
-                            predicate))))
+        (if (or dont-askp  (not (car askp))
+                (diredp-y-or-n-files-p "Use marked (instead of all) in subdir Dired buffers? "
+                                       files
+                                       predicate))
             (if predicate (diredp-remove-if-not predicate files) files)
           (setq files  ())
           (dolist (file  (diredp-marked-here))
@@ -3536,6 +3542,32 @@ Type SPC or `y' to %s one file, DEL or `n' to skip to next,
      ;; `dired-file-marker', which only works in the current Dired directory.
      ?*)))
 
+;;;###autoload
+(defun diredp-do-redisplay-recursive (&optional msgp)
+  "Redisplay marked file lines, including those in marked subdirs.
+Like `dired-do-redisplay' with no args, but act recursively on
+subdirs."
+  (interactive
+   (progn (unless (eq major-mode 'dired-mode)
+            (error "You must be in a Dired buffer to use this command"))
+          (unless (y-or-n-p "Act on all marked file lines in and UNDER this dir? ")
+            (error "OK, canceled"))
+          (list t)))
+  (when msgp (message "Redisplaying..."))
+  (dolist (subdir  (diredp-get-files nil #'file-directory-p 'INCLUDE-SUBDIRS 'DONT-ASK))
+    (with-current-buffer (dired-noselect subdir)
+      ;; `message' is much faster than making `dired-map-over-marks' show progress
+      (dired-uncache (if (consp dired-directory) (car dired-directory) dired-directory))
+      (dired-map-over-marks
+       (let ((fname                    (dired-get-filename))
+             ;; Postpone readin hook till we map over all marked files (Bug#6810).
+             (dired-after-readin-hook   nil))
+         (message "Redisplaying... %s" fname)
+         (dired-update-file-line fname))
+       nil)
+      (run-hooks 'dired-after-readin-hook)
+      (dired-move-to-filename)))
+  (when msgp (message "Redisplaying...done")))
 
 
 ;;; `diredp-marked(-other-window)' tries to treat SWITCHES, but SWITCHES seems to be ignored
