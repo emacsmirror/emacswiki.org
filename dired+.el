@@ -7,9 +7,9 @@
 ;; Copyright (C) 1999-2012, Drew Adams, all rights reserved.
 ;; Created: Fri Mar 19 15:58:58 1999
 ;; Version: 21.2
-;; Last-Updated: Fri May 25 13:01:05 2012 (-0700)
+;; Last-Updated: Fri May 25 14:26:25 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 5559
+;;     Update #: 5585
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/dired+.el
 ;; Keywords: unix, mouse, directories, diredp, dired
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -111,7 +111,8 @@
 ;;    `diredp-dired-union-other-window', `diredp-do-bookmark',
 ;;    `diredp-do-bookmark-in-bookmark-file',
 ;;    `diredp-do-bookmark-in-bookmark-file-recursive',
-;;    `diredp-do-bookmark-recursive', `diredp-do-copy-recursive',
+;;    `diredp-do-bookmark-recursive', `diredp-do-chmod-recursive',
+;;    `diredp-do-copy-recursive',
 ;;    `diredp-do-find-marked-files-recursive', `diredp-do-grep',
 ;;    `diredp-do-grep-recursive', `diredp-do-hardlink-recursive',
 ;;    `diredp-do-isearch-recursive',
@@ -294,8 +295,11 @@
 ;;
 ;; 2012/05/25 dadams
 ;;     Added: diredp-insert-as-subdir, diredp-ancestor-dirs, diredp-maplist,
-;;            diredp-do-redisplay-recursive.
+;;            diredp-do-redisplay-recursive, diredp-do-chmod-recursive.
+;;            Bound diredp-do-chmod-recursive. to M-+ M and added to menu.
 ;;     diredp-get-files: Added optional arg DONT-ASKP.
+;;     diredp-y-or-n-files-p: Kill list buffer if it was never shown.
+;;     dired-mark-pop-up: ignore error when delete frame/window.
 ;; 2012/05/22 dadams
 ;;     diredp-get-files(-for-dir): Added optional arg INCLUDE-DIRS-P.
 ;;     Added: diredp-insert-subdirs(-recursive), diredp(-this)-dired-inserted-subdir(s).
@@ -1544,6 +1548,11 @@ If HDR is non-nil, insert a header line with the directory name."
       :help "Show thumbnails for marked image files, including those in marked subdirs"))
   (define-key diredp-menu-bar-recursive-marked-menu [separator-image] '("--")))
 
+(define-key diredp-menu-bar-recursive-marked-menu [diredp-do-chmod-recursive]
+  '(menu-item "Change Mode..." diredp-do-chmod-recursive
+    :help "Change mode (attributes) of marked files, including those in marked subdirs"))
+(define-key diredp-menu-bar-recursive-marked-menu [separator-change] '("--"))
+
 (when (fboundp 'dired-do-isearch-regexp) ; Emacs 23+
   (define-key diredp-menu-bar-recursive-marked-menu [diredp-do-isearch-regexp-recursive]
     '(menu-item "Isearch Regexp Files..." diredp-do-isearch-regexp-recursive
@@ -1557,15 +1566,14 @@ If HDR is non-nil, insert a header line with the directory name."
 (define-key diredp-menu-bar-recursive-marked-menu [diredp-do-search-recursive]
   '(menu-item "Search Files..." diredp-do-search-recursive
     :help "Regexp search marked files, including those in marked subdirs"))
-
 (define-key diredp-menu-bar-recursive-marked-menu [diredp-do-grep-recursive]
     '(menu-item "Grep..." diredp-do-grep-recursive
       :help "Run `grep' on the marked files, including those in marked subdirs"))
 (define-key diredp-menu-bar-recursive-marked-menu [diredp-do-shell-command-recursive]
     '(menu-item "Shell Command..." diredp-do-shell-command-recursive
       :help "Run shell command on the marked files, including those in marked subdirs"))
+(define-key diredp-menu-bar-recursive-marked-menu [separator-search] '("--"))
 
-(define-key diredp-menu-bar-recursive-marked-menu [separator-link] '("--"))
 (define-key diredp-menu-bar-recursive-marked-menu [diredp-do-hardlink-recursive]
   '(menu-item "Hardlink to..." diredp-do-hardlink-recursive
     :help "Make hard links for marked files, including those in marked subdirs"))
@@ -1580,8 +1588,8 @@ If HDR is non-nil, insert a header line with the directory name."
   (define-key diredp-menu-bar-recursive-marked-menu [diredp-do-relsymlink-recursive]
     '(menu-item "Symlink to (Relative)..." diredp-do-relsymlink-recursive
       :help "Make relative symbolic links for marked files, including those in marked subdirs")))
+(define-key diredp-menu-bar-recursive-marked-menu [separator-link] '("--"))
 
-(define-key diredp-menu-bar-recursive-marked-menu [separator-move] '("--"))
 (define-key diredp-menu-bar-recursive-marked-menu [diredp-capitalize-recursive]
   '(menu-item "Capitalize" diredp-capitalize-recursive
     :enable (or (not (fboundp 'msdos-long-file-names))  (msdos-long-file-names))
@@ -1600,7 +1608,8 @@ If HDR is non-nil, insert a header line with the directory name."
 (define-key diredp-menu-bar-recursive-marked-menu [diredp-do-copy-recursive]
     '(menu-item "Copy to..." diredp-do-copy-recursive
       :help "Copy marked files, including in marked subdirs, to a given directory"))
-(define-key diredp-menu-bar-recursive-marked-menu [separator-recursive-3] '("--"))
+(define-key diredp-menu-bar-recursive-marked-menu [separator-rename] '("--"))
+
 (define-key diredp-menu-bar-recursive-marked-menu [diredp-list-marked-recursive]
     '(menu-item "List Marked Files" diredp-list-marked-recursive
       :help "List the files marked here and in marked subdirs, recursively"))
@@ -1610,7 +1619,8 @@ If HDR is non-nil, insert a header line with the directory name."
 (define-key diredp-menu-bar-recursive-marked-menu [diredp-insert-subdirs-recursive]
   '(menu-item "Insert Subdirs" diredp-insert-subdirs-recursive
     :help "Insert the marked subdirectories, gathered recursively"))
-(define-key diredp-menu-bar-recursive-marked-menu [separator-recursive-2] '("--"))
+(define-key diredp-menu-bar-recursive-marked-menu [separator-misc] '("--"))
+
 (define-key diredp-menu-bar-recursive-marked-menu [diredp-do-bookmark-in-bookmark-file-recursive]
     '(menu-item "Bookmark in Bookmark File" diredp-do-bookmark-in-bookmark-file-recursive
       :help "Bookmark marked files, including those in marked subdirs, in a bookmark file"))
@@ -1622,7 +1632,8 @@ If HDR is non-nil, insert a header line with the directory name."
 (define-key diredp-menu-bar-recursive-marked-menu [diredp-do-bookmark-recursive]
     '(menu-item "Bookmark" diredp-do-bookmark-recursive
       :help "Bookmark the marked files, including those in marked subdirs"))
-(define-key diredp-menu-bar-recursive-marked-menu [separator-recursive-1] '("--"))
+(define-key diredp-menu-bar-recursive-marked-menu [separator-bookmark] '("--"))
+
 (define-key diredp-menu-bar-recursive-marked-menu [diredp-marked-recursive-other-window]
     '(menu-item "Dired (Marked) in Other Window" diredp-marked-recursive-other-window
       :help "Open Dired (in other window) on marked files, including those in marked subdirs"))
@@ -2070,6 +2081,7 @@ If HDR is non-nil, insert a header line with the directory name."
 (define-key diredp-recursive-map "H"           'diredp-do-hardlink-recursive)           ; `H'
 (define-key diredp-recursive-map "\M-i"        'diredp-insert-subdirs-recursive)        ; `M-i'
 (define-key diredp-recursive-map "l"           'diredp-list-marked-recursive)           ; `l'
+(define-key diredp-recursive-map "M"           'diredp-do-chmod-recursive)              ; `M'
 (define-key diredp-recursive-map "Q"         'diredp-do-query-replace-regexp-recursive) ; `Q'
 (define-key diredp-recursive-map "R"           'diredp-do-move-recursive)               ; `R'
 (define-key diredp-recursive-map "S"           'diredp-do-symlink-recursive)            ; `S'
@@ -2737,11 +2749,12 @@ Directories `.' and `..' are excluded."
   "PROMPT user with a \"y or n\" question about a list of FILES.
 Return t if answer is \"y\".  Otherwise, return nil.
 
-Like `y-or-n-p', but user can also hit `l' to display the list of
+Like `y-or-n-p', but the user can also hit `l' to display the list of
 files that the confirmation is for, using `diredp-list-files', in
-buffer `*Files'.  When finished (even if you quit using `C-g'), the
-display of buffer `*Files*' is removed, but the buffer is still
-available for you to visit.
+buffer `*Files'.  When finished, buffer `*Files*' is is killed if it
+was never shown, or is hidden and buried otherwise.  Thus, if it was
+shown then it is still available to revisit afterward (even if the
+user quit using `C-g').
 
 PREDICATE is passed to `diredp-list-files', to list only file names
 for which it returns non-nil."
@@ -2761,7 +2774,8 @@ for which it returns non-nil."
              (and (display-popup-menus-p)  (listp last-nonmenu-event)  use-dialog-box))
            (setq answer  (x-popup-dialog t `(,prompt ("Yes" . act) ("No" . skip)))))
           (t
-           (let ((list-buf  (generate-new-buffer-name "*Files*")))
+           (let ((list-buf        (generate-new-buffer-name "*Files*"))
+                 (list-was-shown  nil))
              (unwind-protect
                   (progn
                     (define-key query-replace-map "l" 'show)
@@ -2787,15 +2801,20 @@ for which it returns non-nil."
                              (case answer
                                ((skip act)  nil)
                                (recenter    (recenter) t)
-                               (show        (diredp-list-files files nil list-buf predicate) t)
+                               (show        (diredp-list-files files nil list-buf predicate)
+                                            (setq list-was-shown  t)) ; Record showing it.
                                (help        (message "Use `l' to show file list") (sit-for 1))
                                ((exit-prefix quit) (signal 'quit nil) t)
                                (t t)))
                       (ding)
                       (discard-input)))
                (save-window-excursion (pop-to-buffer list-buf)
-                                      (if (one-window-p) (delete-frame) (delete-window))
-                                      (bury-buffer list-buf))
+                                      (condition-case nil ; Ignore error if user already deleted.
+                                          (if (one-window-p) (delete-frame) (delete-window))
+                                        (error nil))
+                                      (if list-was-shown
+                                          (bury-buffer list-buf)
+                                        (kill-buffer list-buf)))
                (define-key query-replace-map "l" nil)))))
     (let ((ret  (eq answer 'act)))
       (unless noninteractive (message "%s %s" prompt (if ret "y" "n")))
@@ -3543,6 +3562,33 @@ Type SPC or `y' to %s one file, DEL or `n' to skip to next,
      ?*)))
 
 ;;;###autoload
+(defun diredp-do-chmod-recursive (&optional ignore-marks-p) ; Bound to `M-+ M'
+  "Change the mode of the marked files, including those in marked subdirs.
+Symbolic modes like `g+w' are allowed.
+
+Note thatmarked subdirs are not changed.  Their markings are used only
+to indicate that some of their files are to be changed."
+  (interactive (progn (diredp-get-confirmation-recursive) (list current-prefix-arg)))
+  (let* ((files    (diredp-get-files ignore-marks-p))
+	 (modestr  (and (stringp (car files))
+                        (nth 8 (file-attributes (car files)))))
+	 (default  (and (stringp modestr)
+                        (string-match "^.\\(...\\)\\(...\\)\\(...\\)$" modestr)
+                        (replace-regexp-in-string "-" "" (format "u=%s,g=%s,o=%s"
+                                                                 (match-string 1 modestr)
+                                                                 (match-string 2 modestr)
+                                                                 (match-string 3 modestr)))))
+	 (modes    (dired-mark-read-string
+                    "Change mode of marked files here and below to: " nil 'chmod
+                    nil files default)))
+    (when (equal modes "") (error "No file mode specified"))
+    (dolist (file  files)
+      (set-file-modes file (or (and (string-match "^[0-7]+" modes)
+                                    (string-to-number modes 8))
+                               (file-modes-symbolic-to-number modes (file-modes file)))))
+    (diredp-do-redisplay-recursive 'MSGP)))
+
+;;;###autoload
 (defun diredp-do-redisplay-recursive (&optional msgp)
   "Redisplay marked file lines, including those in marked subdirs.
 Like `dired-do-redisplay' with no args, but act recursively on
@@ -3554,14 +3600,15 @@ subdirs."
             (error "OK, canceled"))
           (list t)))
   (when msgp (message "Redisplaying..."))
-  (dolist (subdir  (diredp-get-files nil #'file-directory-p 'INCLUDE-SUBDIRS 'DONT-ASK))
-    (with-current-buffer (dired-noselect subdir)
+  (dolist (dir  (cons default-directory
+                      (diredp-get-files nil #'file-directory-p 'INCLUDE-SUBDIRS 'DONT-ASK)))
+    (with-current-buffer (dired-noselect dir)
       ;; `message' is much faster than making `dired-map-over-marks' show progress
       (dired-uncache (if (consp dired-directory) (car dired-directory) dired-directory))
       (dired-map-over-marks
        (let ((fname                    (dired-get-filename))
              ;; Postpone readin hook till we map over all marked files (Bug#6810).
-             (dired-after-readin-hook   nil))
+             (dired-after-readin-hook  nil))
          (message "Redisplaying... %s" fname)
          (dired-update-file-line fname))
        nil)
@@ -5489,7 +5536,9 @@ just the current file."
     (save-window-excursion
       (dired-pop-to-buffer bufname)
       (prog1 (apply function args)
-        (if (one-window-p) (delete-frame) (delete-window))))))
+        (condition-case nil             ; Ignore error if user already deleted.
+            (if (one-window-p) (delete-frame) (delete-window))
+          (error nil))))))
 
 ;;;###autoload
 (defun diredp-capitalize (&optional arg) ; Not bound
