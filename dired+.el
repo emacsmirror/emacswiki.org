@@ -7,9 +7,9 @@
 ;; Copyright (C) 1999-2012, Drew Adams, all rights reserved.
 ;; Created: Fri Mar 19 15:58:58 1999
 ;; Version: 21.2
-;; Last-Updated: Sat May 26 11:00:12 2012 (-0700)
+;; Last-Updated: Sat May 26 13:08:34 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 5590
+;;     Update #: 5603
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/dired+.el
 ;; Keywords: unix, mouse, directories, diredp, dired
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -294,7 +294,10 @@
 ;;; Change Log:
 ;;
 ;; 2012/05/26 dadams
+;;     diredp-dired-inserted-subdirs, diredp-insert-as-subdir:
+;;       Preserve markings and switches in target buffer.
 ;;     dired-mark-pop-up: Use unwind-protect.  Bury buffer too.
+;;     diredp-do-chmod-recursive: Use only 5 args if < Emacs 23.
 ;; 2012/05/25 dadams
 ;;     Added: diredp-insert-as-subdir, diredp-ancestor-dirs, diredp-maplist,
 ;;            diredp-do-redisplay-recursive, diredp-do-chmod-recursive.
@@ -2631,20 +2634,27 @@ With a prefix arg:
 ;;;###autoload
 (defun diredp-dired-inserted-subdirs (&optional no-show-p msgp)
   "Open Dired for each of the subdirs inserted in this Dired buffer.
-With a prefix arg, create the Dired buffers but do not display them."
+With a prefix arg, create the Dired buffers but do not display them.
+Markings and current Dired switches are preserved."
   (interactive "P\np")
   (unless (eq major-mode 'dired-mode)
     (error "You must be in a Dired buffer to use this command"))
   (let ((this-dir    default-directory)
-        (this-frame  (selected-frame)))
+        (this-frame  (selected-frame))
+        marked)
     (unwind-protect
-         (save-selected-window 
+         (save-selected-window
            (dolist (entry  dired-subdir-alist)
              (unless (string= (car entry) this-dir)
+               (setq marked  (dired-remember-marks (dired-get-subdir-min entry)
+                                                   (dired-get-subdir-max entry)))
                (if (not no-show-p)
-                   (dired-other-window (car entry))
-                 (dired-noselect (car entry))
-                 (when msgp (message "Dired buffers created but not shown"))))))
+                   (dired-other-window (car entry) dired-actual-switches)
+                 (dired-noselect (car entry) dired-actual-switches)
+                 (when msgp (message "Dired buffers created but not shown")))
+               (let ((inhibit-read-only  t))
+                 (dired-mark-remembered marked))
+               (set-buffer-modified-p nil))))
       (select-frame-set-input-focus this-frame))))
 
 
@@ -2954,6 +2964,9 @@ Ancestor means parent, grandparent, etc. at any level.
 You are prompted for the ancestor directory.  
 The ancestor Dired buffer is selected.
 
+Markings and switches in the current Dired buffer are preserved for
+the subdir listing in the ancestor Dired buffer.
+
 Non-interactively, insert CHILD dir into Dired listing for ANCESTOR dir."
     (interactive
      (progn (unless (eq major-mode 'dired-mode)
@@ -2962,8 +2975,13 @@ Non-interactively, insert CHILD dir into Dired listing for ANCESTOR dir."
                   (completing-read
                    "Insert this dir into ancestor dir: "
                    (mapcar #'list (diredp-ancestor-dirs default-directory))))))
-    (dired-other-window ancestor)
-    (dired-insert-subdir child)))
+    (let ((switches  dired-actual-switches)
+          (marked    (dired-remember-marks (point-min) (point-max))))
+      (dired-other-window ancestor)
+      (dired-insert-subdir child switches)
+      (let ((inhibit-read-only  t))
+        (dired-mark-remembered marked))
+      (set-buffer-modified-p nil))))
 
 (defun diredp-ancestor-dirs (dir)
   "Return a list of the ancestor directories of directory DIR."
@@ -3007,7 +3025,8 @@ Like using \\<dired-mode-map>`\\[dired-maybe-insert-subdir]' at each marked dire
 Like `diredp-insert-subdirs', but act recursively on subdirs.
 The subdirs inserted are those that are marked in the current Dired
 buffer, or all subdirs in the directory if none are marked.  Marked
-subdirectories are handled recursively in the same way.
+subdirectories are handled recursively in the same way (their marked
+subdirs are inserted...).
 
 With a prefix argument, ignore all marks - include all files in this
 Dired buffer and all subdirs, recursively."
@@ -3580,9 +3599,13 @@ to indicate that some of their files are to be changed."
                                                                  (match-string 1 modestr)
                                                                  (match-string 2 modestr)
                                                                  (match-string 3 modestr)))))
-	 (modes    (dired-mark-read-string
-                    "Change mode of marked files here and below to: " nil 'chmod
-                    nil files default)))
+	 (modes    (if (> emacs-major-version 22)
+                       (dired-mark-read-string
+                        "Change mode of marked files here and below to: " nil 'chmod
+                        nil files default)
+                     (dired-mark-read-string
+                      "Change mode of marked files here and below to: " nil 'chmod
+                      nil files))))
     (when (equal modes "") (error "No file mode specified"))
     (dolist (file  files)
       (set-file-modes file (or (and (string-match "^[0-7]+" modes)
