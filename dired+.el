@@ -7,9 +7,9 @@
 ;; Copyright (C) 1999-2012, Drew Adams, all rights reserved.
 ;; Created: Fri Mar 19 15:58:58 1999
 ;; Version: 21.2
-;; Last-Updated: Fri May 25 14:26:25 2012 (-0700)
+;; Last-Updated: Sat May 26 11:00:12 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 5585
+;;     Update #: 5590
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/dired+.el
 ;; Keywords: unix, mouse, directories, diredp, dired
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -293,6 +293,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2012/05/26 dadams
+;;     dired-mark-pop-up: Use unwind-protect.  Bury buffer too.
 ;; 2012/05/25 dadams
 ;;     Added: diredp-insert-as-subdir, diredp-ancestor-dirs, diredp-maplist,
 ;;            diredp-do-redisplay-recursive, diredp-do-chmod-recursive.
@@ -5504,7 +5506,8 @@ non-empty directories is allowed."
 
 ;; REPLACE ORIGINAL in `dired.el':
 ;;
-;; Delete the window or frame popped up, afterward.  Fixes Emacs bug #7533.
+;; Delete the window or frame popped up, afterward, and bury its buffer.
+;; Fixes Emacs bug #7533.
 ;;
 (defun dired-mark-pop-up (bufname op-symbol files function &rest args)
   "Return FUNCTION's result on ARGS after showing which files are marked.
@@ -5520,25 +5523,31 @@ FILES is the list of marked files.  It can also be (t FILENAME)
 in the case of one marked file, to distinguish that from using
 just the current file."
   (or bufname (setq bufname  " *Marked Files*"))
-  (if (or (eq dired-no-confirm t)
-	  (memq op-symbol dired-no-confirm)
-	  ;; If FILES defaulted to the current line's file.
-	  (= (length files) 1))
-      (apply function args)
-    (with-current-buffer (get-buffer-create bufname)
-      (erase-buffer)
-      ;; Handle (t FILE) just like (FILE), here.
-      ;; That value is used (only in some cases), to mean
-      ;; just one file that was marked, rather than the current line file.
-      (dired-format-columns-of-files (if (eq (car files) t) (cdr files) files))
-      (remove-text-properties (point-min) (point-max)
-			      '(mouse-face nil help-echo nil)))
-    (save-window-excursion
-      (dired-pop-to-buffer bufname)
-      (prog1 (apply function args)
-        (condition-case nil             ; Ignore error if user already deleted.
-            (if (one-window-p) (delete-frame) (delete-window))
-          (error nil))))))
+  (let (result)
+    (if (or (eq dired-no-confirm t)
+            (memq op-symbol dired-no-confirm)
+            ;; If FILES defaulted to the current line's file.
+            (= (length files) 1))
+        (setq result  (apply function args))
+      (with-current-buffer (get-buffer-create bufname)
+        (erase-buffer)
+        ;; Handle (t FILE) just like (FILE), here.
+        ;; That value is used (only in some cases), to mean
+        ;; just one file that was marked, rather than the current line file.
+        (dired-format-columns-of-files (if (eq (car files) t) (cdr files) files))
+        (remove-text-properties (point-min) (point-max)
+                                '(mouse-face nil help-echo nil)))
+      (unwind-protect
+           (save-window-excursion
+             (dired-pop-to-buffer bufname)
+             (setq result  (apply function args)))
+        (condition-case nil    ; Ignore error if user already deleted window.
+            (progn
+              (select-window (get-buffer-window bufname 0))
+              (if (one-window-p) (delete-frame) (delete-window)))
+          (error nil))
+        (bury-buffer bufname)))
+    result))
 
 ;;;###autoload
 (defun diredp-capitalize (&optional arg) ; Not bound
