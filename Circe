@@ -43,7 +43,7 @@ cvs up
 
 = Configuration =
 
-For a sample configuration have a look at the info documentation (info "(circe)Example Configuration") or its [http://www.nongnu.org/circe/ homepage].
+For a sample configuration have a look at the info documentation (info "(circe)Example Configuration") or its [http://www.jorgenschaefer.de/software/circe/ homepage].
 ----
 CategoryChatClient
 InternetRelayChat
