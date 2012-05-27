@@ -74,3 +74,4 @@ This feature is available as part of Emacs-24.1.
 == add more features here ==
 
 * Regular Expressions: provide Perl regex syntax, possibly migrating/interfacing to CL-PPCRE (http://weitz.de/cl-ppcre)
+** A possible solution for this one is here: https://github.com/joddie/pcre2el 
