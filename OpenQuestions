@@ -364,6 +364,16 @@ Thanks!
 [new]
 You can mark an area with <code>mark-sexp</code> or ThingAtPoint or <code>mark-enclosing-sexp</code> (from ThingAtPointCommands). However if you want to edit within this region while it's marked, you may want to use BasicNarrowing after you've marked a region. --AmitPatel
 
+==Auto-fill within square brackets?==
+[new] 
+I'm relatively new to Emacs, but have been experimenting with it to see if it would be worth switching. I write in Markdown and use pandoc to convert to whatever I need. In case it matters, I'm running Emacs 23.3.1 on Ubuntu 12.04.
+
+I'm a graduate student in the humanities, so my writing is heavy on the footnotes. Footnotes, in pandoc, are formatted within square brackets. The problem I'm having is that auto-fill mode seems to ignore text within brackets, so my footnotes end up snaking their way across the page--and the only fix I've been able to find is to manually break the lines myself, every time I edit the paragraph. That's obviously less than ideal. (I could also give up on inline footnotes, and leave them all separate references, but I'd prefer not to, and it doesn't seem like that should be necessary.)
+
+So my question is, is there a way to make auto-fill mode operate on text within brackets, too? Is there a reason it doesn't by default?
+
+Many thanks, Brian.
+
 
 [:FAQ]
 == Answers to frequent questions ==
