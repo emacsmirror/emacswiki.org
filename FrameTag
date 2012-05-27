@@ -1,3 +1,11 @@
 Main page at: https://github.com/liangzan/frame-tag.el
 
-FrameTag allow fast switching between frames via M-1 through M-9. The leftmost frame is tagged as "1" and the next leftmost frame gets tagged as "2". The motivation is to recreate the workspace keybindings of xmonad.
+%%FrameTag%% allows fast switching between frames via M-1 through M-9. The leftmost frame is tagged as "1" and the next leftmost frame gets tagged as "2". The motivation is to recreate the workspace keybindings of xmonad.
+
+
+
+
+
+
+----
+CategoryFrames
