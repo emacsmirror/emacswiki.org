@@ -1,34 +1,20 @@
-* *** Topic for #emacs-es: Novedad: Grupo de traduccion de Emacs al castellano: http://gnu.manticore.es -- Un manual de introducción: http://xrl.us/nogc | .emacs colaborativo http://xrl.us/nogo | Pegad info http://emacs.es.gnu.org (comunidad hispanohablante) http://www.emacswiki.org/cgi-bin/emacs-es (comunidad intl.) | Lista de correo http://xrl.us/nogg | EMMS 2.0: http://xrl.us/k5ip | cell-mode, primer release: http://xrl.us/nogm | http://ftp.gnu.org/gnu/erc/ | /msg fsbot novedades o ,,novedades
+* *** TOPIC Comunidad de Emacs hispanoparlante || http://www.emacswiki.org || Manual en español: http://www.rpublica.net/emacs/emacs.html || Weblog internacional y multilingüe de Emacs: http://www.emacswiki.org/cgi-bin/wiki.pl?Noticias || Emacs 23.4 liberado || Vídeo de Emacs por gestos corriendo en una pseudo-tableta, pídalo aquí. (budbot!~supybot@unaffiliated/indio/bot/budbot on Wed Apr  4 22:40:10 2012)
 
 <pre>
 <indio>	,novedades
-<fsbot>	[0] no borrar
+<fsbot>	[0] ¡No borrar esta entrada!
 <fsbot>	[1] Para agregar entradas mecanografiar , CanalEmacsEsNovedades is also Texto de la novedad,
-<fsbot>	[2] cell-mode, primer release: http://xrl.us/nogm,
-<fsbot>	[3] Conkeror 0.33 http://conkeror.mozdev.org/,
-<fsbot>	[4] Increible! http://www.bloomington.in.us/~brutt/msf-abbrev.html, ..[Type ,more]
+<fsbot>	[2] Tenemos traductor. Mecanografiar , help-translate para más información, ..[Type ,more]
 <indio>	,more
-<fsbot>	[5] Manual nuevo: "GNU/Emacs Iniciación a la edición" pretende ser una especie de "manual general" , centrado en las tareas de edición, limitándose a apuntar, sin entrar en ellas, otras posibilidades que Emacs nos ofrece para tareas más especializadas. http://www.rpublica.net/emacs/emacs.html ..[Type ,more]
-<indio>	,more
-<fsbot>	¡DISPONIBLE ONLINE! ¡ESCRITO EN ESPAÑOL!,
-<fsbot>	[6] Iros apuntando al .emacs party en http://emacs.es.gnu.org/emacs-es.pl/.emacs_Party,
-<fsbot>	[7] David Arroyo Menéndez (aka davidam) ha puesto un post de gnu/emacs en http://wainu.ii.uned.es:8000/blogs/davidam/, ..[Type ,more]
-<indio>	,more
-<fsbot>	[8] En 2006-04-29, el equipo de EMMS lanzó orgulloso EMMS 2.0, una reescritura importante usando totalmente una nueva representación de playlists. El tarball está disponible aquí: http://www.gnu.org/software/emms/releases/emms-2.0.tar.gz, ..[Type ,more]
-<indio>	,more
-<fsbot>	[9] rms casi arrestado http://www.fsf.org/blogs/community/rms-ati-protest.html,
-<fsbot>	[10] Vídeo nuevo: introducción, orígenes y evolución del lenguaje Lisp y el taller "Lisp en 10 minutos": http://es.gnu.org/multimedia,
-<fsbot>	[11] Tenemos traductor. Mecanografiar , help-translate para más información, ..[Type ,more]
-<indio>	,more
-<fsbot>	[12] Weblog international y multilingual del Emacs: http://www.emacswiki.org/cgi-bin/wiki.pl?Noticias
+<fsbot>	[3] Weblog international y multilingual del Emacs: http://www.emacswiki.org/cgi-bin/wiki.pl?Noticias
 </pre>
 
 
-Incluso si hay bastante gente de habla hispana en EmacsChannel, hay también un cuarto dedicado a los usuarios hispanohablantes de Emacs:  Venga a hablarnos al canal '''#emacs-es''' @ irc.freenode.net.
+Incluso si hay bastante gente de habla hispana en EmacsChannel, hay también un canal dedicado a los usuarios hispanohablantes de Emacs:  Venga a hablarnos al canal '''#emacs-es''' @ irc.freenode.net.
 
 Si no hay bastantes visitantes en #emacs-es, plantee la pregunta en #emacs.  Incluso si la mayoría no habla español, intentaremos ayudarle.
 
-* irc://irc.freenode.net/#emacs-es (basta clicar con '''Mozilla Firefox''' con la extensión '''ChatZilla''' incorporada o con '''Mozilla Application Suite''')
+* irc://irc.freenode.net/#emacs-es (basta clicar con '''Mozilla Firefox''' con la extensión '''ChatZilla''')
 
 == Ayuda Para Novatos ==
 
