@@ -9,10 +9,10 @@ Click the heading to find all pages related to [[Frame]]s in Emacs.
 ** [[Shrink-Wrapping Frames]] -- fit a frame to its displayed buffer
 ** [[OneOnOneEmacs]] -- frame-friendly Emacs
 * FrameMove -- move between frames (i.e., change the input focus) using the arrow keys 
-* FrameTag -- switch between frames using M-1 to M-9.
 * FrameParameters -- what frame parameters are, and how to set and save them
 * FrameResize -- keeping a constant character width when the frame is resized
 * FrameSize -- set the size of frames
+* FrameTag -- switch between frames using M-1 to M-9.
 * FrameTitle -- change the title of a frame
 * OneOnOneEmacs -- making Emacs more frame-oriented, and less (Emacs-)window oriented
 
