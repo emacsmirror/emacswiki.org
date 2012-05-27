@@ -374,6 +374,9 @@ So my question is, is there a way to make auto-fill mode operate on text within 
 
 Many thanks, Brian.
 
+[new]
+It's not clear how it's not working.  One thing to know about AutoFillMode is that you need to know how the manual FillParagraph commands work to understand Auto Fill Mode.  You can manually set or reset the fill prefix and Emacs also has AdaptiveFilling feature.  Read the Emacs manual, `C-h r m Filling RET'.  -- AaronHawley
+
 
 [:FAQ]
 == Answers to frequent questions ==
