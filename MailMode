@@ -18,6 +18,15 @@ Here are some typical settings:
       mail-default-headers "FCC: ~/SENT\n")
 </pre>
 
+Emacs sets up your buffer initially with some mail headers.  You can modify, remove, or add to those
+before sending; the setup is just for your convenience.  Your mail setup hook (mail-setup-hook) can set
+up some of these headers - it runs before Emacs adds its own.
+
+Starting in Emacs 22, one of the header <b>mail</b> sets up automatically is <b>From:</b>.  If you
+don't want it to do this (perhaps because you would rather do it with your mail setup hook, perhaps
+because your pre-Emacs 22 environment is already set up to do that), set <b>mail-setup_with_from</b> to nil.
+
+
 = colorizing multiply-quoted lines =
 
 If you want to have the lines of an e-mail colorized differently depending on how many levels of quoting (instead of just one color for all quoted text), you can use this hook (after you've defined the faces):
