@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Fri May 25 10:15:50 2012 (-0700)
+;; Last-Updated: Mon May 28 07:06:58 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 8459
+;;     Update #: 8460
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-chg.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -85,6 +85,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd1.el'")
 ;;
+;; 2012/05/30 dadams
+;;     icicle-dired-insert-as-subdir: Include default-directory as candidate for ANCESTOR-DIR.
 ;; 2012/05/25 dadams
 ;;     Added: icicle-dired-insert-as-subdir.
 ;; 2012/05/22 dadams
