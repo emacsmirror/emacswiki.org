@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Fri May 25 09:57:16 2012 (-0700)
+;; Last-Updated: Mon May 28 06:55:31 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 23795
+;;     Update #: 23800
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-cmd1.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -3080,7 +3080,12 @@ You need library `Dired+' for this command."
 (when (and (> emacs-major-version 21)   ; Emacs 20 has no PREDICATE arg to `read-file-name'.
            (fboundp 'diredp-insert-as-subdir))
   (icicle-define-file-command icicle-dired-insert-as-subdir
-    "Choose a directory.  Insert it into a Dired ancestor listing."
+    "Choose a directory.  Insert it into a Dired ancestor listing.
+If the directory you choose has a Dired buffer then its markings and
+switches are preserved for the subdir listing in the ancestor Dired
+buffer.
+
+You need library `Dired+' for this command."
     (lambda (dir) (diredp-insert-as-subdir dir ancestor-dir))
     "Insert directory into ancestor Dired: " ; `read-file-name' args
     default-directory nil t nil (lambda (ff)
@@ -3089,7 +3094,8 @@ You need library `Dired+' for this command."
                                                            ancestor-dir)))
     ((ancestor-dir                      ; Bindings
       (completing-read "Ancestor Dired dir to insert into: "
-                       (mapcar #'list (diredp-ancestor-dirs default-directory)))))))
+                       (cons (list default-directory)
+                             (mapcar #'list (diredp-ancestor-dirs default-directory))))))))
 
 
 (put 'icicle-dired-saved-file-candidates 'icicle-Completions-window-max-height 200)
