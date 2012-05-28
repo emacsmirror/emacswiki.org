@@ -75,3 +75,7 @@ This feature is available as part of Emacs-24.1.
 
 * Regular Expressions: provide Perl regex syntax, possibly migrating/interfacing to CL-PPCRE (http://weitz.de/cl-ppcre)
 ** A possible solution for this one is here: https://github.com/joddie/pcre2el 
+
+* turn emacs into full fledged web browser using webkit.
+
+* log all emacs command invocations to a file or sql database - for life metrics/analysis purposes - to create predictive ai assistant
