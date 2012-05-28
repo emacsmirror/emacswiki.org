@@ -7,9 +7,9 @@
 ;; Copyright (C) 1999-2012, Drew Adams, all rights reserved.
 ;; Created: Fri Mar 19 15:58:58 1999
 ;; Version: 21.2
-;; Last-Updated: Sun May 27 16:59:27 2012 (-0700)
+;; Last-Updated: Mon May 28 07:03:02 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 5778
+;;     Update #: 5784
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/dired+.el
 ;; Keywords: unix, mouse, directories, diredp, dired
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -298,6 +298,9 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2012/05/30 dadams
+;;     diredp-insert-as-subdir: Added optional arg IN-DIRED-NOW-P.  Pick up markings & switches
+;;                              from sole Dired buffer for CHILD if not in Dired now.
 ;; 2012/05/29 dadams
 ;;     Added: diredp-do-(chxxx|chgrp|chown|touch)-recursive, diredp-touch-this-file,
 ;;       diredp-menu-bar-(immediate|operate)-bookmarks-menu.  Added to menus.  Bound to keys.
@@ -3060,8 +3063,8 @@ satisfy PREDICATE are included in the result."
     (dolist (x xs) (when (funcall pred x) (push x result)))
     (nreverse result)))
 
-(when (> emacs-major-version 21) ; Emacs 20 has no PREDICATE arg to `read-file-name'.
-  (defun diredp-insert-as-subdir (child ancestor)
+(when (> emacs-major-version 21)        ; Emacs 20 has no PREDICATE arg to `read-file-name'.
+  (defun diredp-insert-as-subdir (child ancestor &optional in-dired-now-p)
     "Insert the current Dired dir into a Dired listing of an ancestor dir.
 Ancestor means parent, grandparent, etc. at any level.
 You are prompted for the ancestor directory.  
@@ -3070,20 +3073,33 @@ The ancestor Dired buffer is selected.
 Markings and switches in the current Dired buffer are preserved for
 the subdir listing in the ancestor Dired buffer.
 
-Non-interactively, insert CHILD dir into Dired listing for ANCESTOR dir."
+Non-interactively:
+ Insert CHILD dir into Dired listing for ANCESTOR dir.
+
+ Non-nil optional arg IN-DIRED-NOW-P means to use the current buffer
+ as the Dired buffer from which to pick up markings and switches.
+ Otherwise, pick them up from a Dired buffer for CHILD, if there is
+ exactly one such buffer."
     (interactive
      (progn (unless (eq major-mode 'dired-mode)
               (error "You must be in a Dired buffer to use this command"))
             (list default-directory
                   (completing-read
                    "Insert this dir into ancestor dir: "
-                   (mapcar #'list (diredp-ancestor-dirs default-directory))))))
-    (let ((switches  dired-actual-switches)
-          (marked    (dired-remember-marks (point-min) (point-max))))
+                   (mapcar #'list (diredp-ancestor-dirs default-directory)))
+                  t)))
+    (let ((child-dired-buf  (if in-dired-now-p (current-buffer) (dired-buffers-for-dir child)))
+          (switches         nil)
+          (marked           nil))
+      (when (consp child-dired-buf)
+        (setq child-dired-buf  (and (= 1 (length child-dired-buf))  (car child-dired-buf))))
+      (when child-dired-buf
+        (with-current-buffer child-dired-buf
+          (setq switches  dired-actual-switches
+                marked    (dired-remember-marks (point-min) (point-max)))))
       (dired-other-window ancestor)
       (dired-insert-subdir child switches)
-      (let ((inhibit-read-only  t))
-        (dired-mark-remembered marked))
+      (when marked (let ((inhibit-read-only  t)) (dired-mark-remembered marked)))
       (set-buffer-modified-p nil))))
 
 (defun diredp-ancestor-dirs (dir)
