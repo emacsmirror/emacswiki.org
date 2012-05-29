@@ -10,6 +10,8 @@ Thanks Lukhas,
 
 I though it might be helpful for newbies if I put up my .emacs here : AvallarkDotEmacs Its just got very basic stuff like hiding the menu, scroll bar and stuff like that.
 
+For a while, I have been using emacs on Mac. Is great, but i initially struggled to get some keys mapped right: Here is my dot emacs for mac : AvallarkDotEmacsForMac
+
 color-theme and bar-cursor can be obtained by using apt-get install emacs-goodies :)
 
 The erc package can be obtained [http://sourceforge.net/projects/erc/ here] and more documentation can be obtained at EmacsIRCClient
