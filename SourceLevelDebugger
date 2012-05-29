@@ -54,7 +54,7 @@ You can see the code coverage of the defun at point with `C-x X =' or `M-x edebu
            (edebug)))
     
     (defun clear-edebug (fn-sym)
-      "Remove 'edebug property from FN-SYM, a function symbol.
+      "Remove 'edebug property from FN-SYM, a function symbol."
       (put fn-sym 'edebug nil)
     )
 
