@@ -1,4 +1,3 @@
-
 ;;; powerline.el --- fancy statusline
 
 ;; Name: Emacs Powerline
