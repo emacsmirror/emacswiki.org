@@ -46,7 +46,7 @@ If you have bug reports or suggestions, please submit them at the [https://bitbu
 
 == Discussion ==
 
-: ''(Evil is also discussed at the [http://lists.ourproject.org/cgi-bin/mailman/listinfo/implementations-list gmane.emacs.vim-emulation] mailing list.)''
+: ''(Evil is also discussed at the [http://lists.ourproject.org/cgi-bin/mailman/listinfo/implementations-list gmane.emacs.vim-emulation] mailing list and in our IRC channel #evil-mode on irc.freenode.net.)''
 
 [new]
 It would be nice with a brief overview over the objectives and difference to [ViperMode Viper].
