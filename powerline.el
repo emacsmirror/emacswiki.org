@@ -1,4 +1,17 @@
-;;; powerline.el
+
+;;; powerline.el --- fancy statusline
+
+;; Name: Emacs Powerline
+;; Author: Unknown
+;; Version: 1.0
+;; Keywords: statusline
+
+;;; Commentary:
+
+;; This package simply provides a minor mode for fancifying the status line.
+
+
+;;; Code:
 
 (defvar powerline-color1)
 (defvar powerline-color2)
@@ -468,3 +481,5 @@ install the memoized function over the original function."
                              (powerline-make-text      "  "    nil  )))))
 
 (provide 'powerline)
+
+;;; powerline.el ends here
