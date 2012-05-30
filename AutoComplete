@@ -263,6 +263,8 @@ Yes, of course. auto-complete is a frame work for completion. But you have to gi
 [new]
 BUG: Entering two forward slashes (for example to add a comment in C++) causes a delay of several minutes during which one can do nothing else with emacs.
 
+Comment: I tried this with auto-complete 1.3.1 and don't witness the issue.  The first time I type // there's a noticible delay of less than a second.
+
 ----
 [new]
 <pre>
