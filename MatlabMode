@@ -14,7 +14,9 @@ Put into your init-file (~/.emacs, ~/.xemacs/init.el, whatever)
 === On Win32 ===
 
 MATLAB is not a CLI application on MS Windows. One needs a shell wrapper that would pipe emacs input into a Matlab and back.
-One can get that from http://www.cs.umb.edu/~ram/matlabShell/index.html . I failed to rebuild it with Matlab 2011a , but packaged exe seems to work.
+One can get that from http://www.cs.umb.edu/~ram/matlabShell/index.html .
+The only problem is that it does not allow multiline commands. This is crucial if one intends to use it with org-babel .
+There is a [https://github.com/mlt/matlabShell workaround available] until better solution is found.
 [http://www.mathworks.com/matlabcentral/newsreader/view_thread/13365 Here] it is explained how to set things up. However ##""## shall be replaced with ##'()##
 
 Here is mine ##C:/Programs/matlabshell/matlabshell.cmd##
