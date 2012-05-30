@@ -1,8 +1,7 @@
 This is one of the EmacsForMacOS options you have, also known as [::CarbonEmacs].
 It contains Emacs CVS using Carbon and comes bundled with many packages.
 
-* [http://www.apple.com/downloads/macosx/unix_open_source/carbonemacspackage.html Apple download page] for Tiger (but see below for a Panther version)
-* SeijiZenitani's page in [http://homepage.mac.com/zenitani/emacs-j.html Japanese], [http://homepage.mac.com/zenitani/emacs-e.html English]
+* SeijiZenitani's page in [http://th.nao.ac.jp/MEMBER/zenitani/emacs-j.html Japanese], [http://th.nao.ac.jp/MEMBER/zenitani/emacs-e.html English]
 * [http://groups.google.com/group/carbon-emacs?hl=en Carbon Emacs User Group]
 * MakingOfCarbonEmacsPackage describes how to build CarbonEmacsPackage from the source code.
 
