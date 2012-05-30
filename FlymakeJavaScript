@@ -36,7 +36,7 @@ and import it from your DotEmacs like so:
 
 <pre>
 (require 'flymake-jslint)
-(add-hook 'javascript-mode-hook
+(add-hook 'js-mode-hook
 	  (lambda () (flymake-mode t)))
 </pre>
 
