@@ -3,15 +3,15 @@
 ;; Filename: org-outlook.el
 ;; Description: 
 ;; Author: Matthew L. Fidler
-;; Maintainer: 
+;; Maintainer:
 ;; Created: Mon May 10 09:44:59 2010 (-0500)
-;; Version: 0.2
-;; Last-Updated: Fri Apr  8 08:50:01 2011 (-0500)
-;;           By: US041375
-;;     Update #: 153
-;; URL: 
-;; Keywords: 
-;; Compatibility:    
+;; Version: 0.3
+;; Last-Updated: Sat May 26 11:16:14 2012 (-0500)
+;;           By: Matthew L. Fidler
+;;     Update #: 165
+;; URL: https://github.com/mlf176f2/org-outlook.el
+;; Keywords: Org-outlook 
+;; Compatibility:
 ;; 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; 
@@ -25,6 +25,18 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; 
 ;;; Change log:
+;; 26-May-2012    Matthew L. Fidler  
+;;    Last-Updated: Sat May 26 11:13:22 2012 (-0500) #163 (Matthew L. Fidler)
+;;    Added (require 'cl)
+;; 21-Feb-2012    Matthew L. Fidler  
+;;    Last-Updated: Tue Feb 21 11:15:02 2012 (-0600) #160 (Matthew L. Fidler)
+;;    Bug fix for opening files.
+;; 21-Feb-2012      
+;;    Last-Updated: Tue Dec 13 08:41:29 2011 (-0600) #156 (Matthew L. Fidler)
+;;    Bug fix.
+;; 13-Dec-2011    Matthew L. Fidler  
+;;    Last-Updated: Tue Dec 13 08:41:10 2011 (-0600) #155 (Matthew L. Fidler)
+;;    Added more autoload cookies.
 ;; 08-Apr-2011      
 ;;    Last-Updated: Fri Apr  8 08:49:38 2011 (-0500) #151 (US041375)
 ;;    Added some autoload cookies.
@@ -59,7 +71,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; 
 ;;; Code:
-
+(require 'cl)
 (require 'org)
 (require 'org-protocol)
 
@@ -85,15 +97,16 @@
 
 ;;;###autoload
 (defun org-outlook-open (id)
-   "Open the Outlook item identified by ID.  ID should be an Outlook GUID."
-   ; Change this to work with Outlook 2007 without changing the
-   ; registry.
-   (setq debug-on-error 't)
-   (if (and org-outlook-location (file-exists-p org-outlook-location))
-       (shell-command (concat "\"" org-outlook-location "\" /select \"outlook:" id "\"&"))
-     (w32-shell-execute "open" (concat "outlook:" id))))
+  "Open the Outlook item identified by ID.  ID should be an Outlook GUID."
+  ;; Change this to work with Outlook 2007 without changing the
+  ;; registry.
+  (setq debug-on-error 't)
+  (if (and org-outlook-location (file-exists-p org-outlook-location))
+      (w32-shell-execute "open" org-outlook-location
+                         (concat "/select \"outlook:" id "\""))
+    (w32-shell-execute "open" (concat "outlook:" id))))
 
-
+;;;###autoload
 (org-add-link-type "outlook" 'org-outlook-open)
 
 ;;;###autoload
@@ -274,9 +287,9 @@ CAPTURE-FUNC is either the symbol `org-remember' or `org-capture'."
                    url (if (string-match "[^[:space:]]" (format "%s (%s)" title sender)) (format "%s (%s)" title sender) url)))
          (org-capture-link-is-already-stored t) ;; avoid call to org-store-link
          remember-annotation-functions)
-    ;(with-temp-buffer
-    ;  (clipboard-yank)
-    ;  (setq region (buffer-substring (point-min) (point-max))))
+                                        ;(with-temp-buffer
+                                        ;  (clipboard-yank)
+                                        ;  (setq region (buffer-substring (point-min) (point-max))))
     (setq org-stored-links
           (cons (list url title) org-stored-links))
     (kill-new orglink)
@@ -292,9 +305,13 @@ CAPTURE-FUNC is either the symbol `org-remember' or `org-capture'."
     (raise-frame)
     (funcall capture-func nil template)))
 
-(add-to-list 'org-protocol-protocol-alist
-             '("outlook" :protocol "outlook"
-               :function org-protocol-outlook :kill-client t))
+;;;###autoload
+(progn
+  (if (not (boundp 'org-protocol-protocol-alist))
+      (setq org-protocol-protocol-alist nil))
+  (add-to-list 'org-protocol-protocol-alist
+               '("outlook" :protocol "outlook"
+                 :function org-protocol-outlook :kill-client t)))
 
 (provide 'org-outlook)
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
