@@ -22,12 +22,10 @@ If you want to live on the bleeding edge, the latest "development" version can b
 
 * Undo-tree git repository: http://www.dr-qubit.org/git/undo-tree.git
 
-This is a git repository, ''not'' a web page. To grab the latest development version, clone the repository using something like:
+This is a git repository, ''not'' a web page (and will throw a 403 error if you use a browser). To grab the latest development version, clone the repository using something like:
 
     git clone http://www.dr-qubit.org/git/undo-tree.git undo-tree
 
-seems to be forbidden: "You don't have permission to access /git/undo-tree.git/ on this server."
--Emmett
 
 == Contributing ==
 
