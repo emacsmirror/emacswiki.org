@@ -5,13 +5,12 @@ For example, when you drop a jpg file to the buffer visiting an html file,
 a pre-configured string: ##<img src="...## will be inserted.
 For more details, examine the elisp file.
 
-* http://homepage.mac.com/zenitani/comp-e.html
 * http://svn.sourceforge.jp/cgi-bin/viewcvs.cgi/zenitani/elisp/?root=macwiki
 
 It comes from [[mac-drag-n-drop.el]], but it's no longer mac-only.
 The code is tested on the below emacsen.
 
-* Emacs 22.0.91 (CarbonEmacsPackage) on Mac OS X 10.4
+* Emacs 22.3 (CarbonEmacsPackage) on Mac OS X 10.4
 * Emacs 22.0.50 on !CentOS 4.1 / GNOME
 * 
 
