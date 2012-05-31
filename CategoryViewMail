@@ -54,7 +54,7 @@ VM is very well documented. It comes with a fine set of info pages, and there ar
 
 * Phil Sung, [[http://web.psung.name/emacstips/vm.html|VM configuration and workflow]], September 13, 2008.  Nice article on setting up VM.
 
-* Arik Mitschang, [[http://www.arikm.com/tidbits/?id=6|emacs: VM Mail Reader]], December 29, 2009.  Help for setting up VM.
+* Arik Mitschang, [[http://www.arikm.com/tidbits/?id=6|emacs: VM Mail Reader]], December 29, 2009.  Help for setting up VM. Dead link --PasJa
 
 * Josh Braun, [[http://wideaperture.net/blog/?p=3270| Setting up a VM Mail Client in Emacs]], June 22, 2011.  Basic but adequate instructions for setting up VM.
 
@@ -72,7 +72,7 @@ VM is very well documented. It comes with a fine set of info pages, and there ar
 
 * XEmacs, [[http://www.xemacs.org/Documentation/21.5/html/xemacs-faq_7.html|XEmacs 21.5 FAQ section on Connecting to the Internet]], includes FAQ's on VM.
 
-* José E. Marchesi, [[http://es.gnu.org/~jemarch/EmacsEmail.html|Email Management with Emacs]], May 12, 2009.  An example configuration for VM.
+* José E. Marchesi, [[http://es.gnu.org/~jemarch/EmacsEmail.html|Email Management with Emacs]], May 12, 2009.  An example configuration for VM. Dead link --PasJa
 
 * Francois Flueret, [[http://www.idiap.ch/~fleuret/files/fleuret.vm|VM configuration file]]
 
