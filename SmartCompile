@@ -4,7 +4,6 @@ This small code provides a `M-x smart-compile' command, an alternative to the `M
 
 The latest version is available at:
 
-* http://homepage.mac.com/zenitani/comp-e.html
 * http://svn.sourceforge.jp/cgi-bin/viewcvs.cgi/zenitani/elisp/?root=macwiki
 
 ----
