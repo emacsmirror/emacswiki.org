@@ -4,9 +4,9 @@ The latest version of the Completion User Interface (0.11.11, released January 2
 * Completion User Interface git repository: <code>http://www.dr-qubit.org/git/predictive.git</code>
 * Web-site: http://www.dr-qubit.org/emacs.php#completion
 
-The development version is hosted in the same git repository as PredictiveMode. Note that the git repository URL is a git repository, *not* a web-site. You cannot view it in a web browser. To grab the latest development version, clone the repository using something like:
+The development version is hosted in the same git repository as PredictiveMode. Note that the git repository URL is a git repository, ''*not*'' a web-site. You cannot view it in a web browser. To grab the latest development version, clone the repository using:
 
-  git clone http://www.dr-qubit.org/git/predictive.git predictive 
+  git clone http://www.dr-qubit.org/git/predictive.git
 
 
 This package can take advantage of the AutoOverlays package if it's available, but does not require it.
