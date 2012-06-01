@@ -97,7 +97,13 @@ It scores up replies to my replies.
 
 -- SachaChua
 
-== Correct message count in IMAP: ==
+== Correct message counts in IMAP: ==
+
+[new:DaveAbrahams:2012-06-01 20:56 UTC]:
+
+the code you'll find in the two sections below doesn't apply in Gnus' current development branch, and wouldn't work if the IMAP server is your primary select method.  My rewrite for the latest Gnus is [https://github.com/dabrahams/dwamacs/commit/0d6a991232e104a27ba4c85cf0c8044be3273d77 here].
+
+=== The Old Stuff (Part One) ===
 
 Gnus does not support correct message counts, but imap does.
 Here is a little code that fetches the number of messages in an
@@ -154,7 +160,7 @@ In order to use it, put a "%ut" somewhere in your
 (add-hook 'gnus-after-getting-new-news-hook 'nnimap-message-count-cache-clear)
 }}}
 
-== Correct message (and unread) count in IMAP with multiple servers ==
+=== Old Stuff (part deux) ===
 
 I found the above very useful, thanks for it!  Though, I had to modify
 it a bit, so it works with multiple servers and also has a new user
