@@ -10,9 +10,9 @@ It's at version 0.23.13 (released April 2012), but it's still undergoing steady 
 
 = Download =
 
-Note that the git repository URL is a git repository, *not* a web-site. You cannot view it in a web browser. To grab the latest development version, clone the repository using something like:
+Note that the git repository URL is a git repository, *not* a web-site. You cannot view it in a web browser. To grab the latest development version, clone the repository using:
 
-  git clone http://www.dr-qubit.org/git/predictive.git predictive 
+  git clone http://www.dr-qubit.org/git/predictive.git 
 
 The predictive completion package uses the CompletionUI, AutoOverlays,  DictionaryTrees, [[Tries]], TaggedNFA, [[Heaps]], [[AVLtrees]], and [[Queues]] packages. For convenience, these are included in the download file (linked above).
 
