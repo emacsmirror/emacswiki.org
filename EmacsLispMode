@@ -2,17 +2,45 @@ Emacs Lisp Mode is one of the best ProgrammingModes that comes with Emacs for wo
 
 Emacs Lisp Mode is enabled for any files ending in ##.el## or when editing the Emacs InitFile.
 
-Emacs Lisp Mode is used for EvaluatingExpressions.  Completion is very well configured.  Simply use `C-M-i' or `M-TAB'.  Because Emacs's SelfDocumentation is really good its possible to read up on a function or variable in HelpMode based on its DocString.
+Emacs Lisp Mode is used for EvaluatingExpressions.  Indentation is available with `TAB'.  `C-M-q' indents the [[Sexp]] in front of point.  Indent region is ##`C-M-\'##.  Newline and indent is `C-j'.
 
-Indentation is available with `TAB'.  `C-M-q' indents the [[Sexp]] in front of point.  Indent region is ##`C-M-\'##.  Newline and indent is `C-j'.
+Completion is very well configured.  Simply use `C-M-i' or `M-TAB'.  Because Emacs's SelfDocumentation is really good its possible to read up on a function or variable in HelpMode based on its DocString.
 
 ByteCompilation is possible with `M-x byte-compile-file'.
-
 Unfortunately, not all of the Emacs Lisp mode features are available in the LispInteractionMode.  See InferiorEmacsLispMode for an Emacs Lisp REPL.
 
 Starting a new Emacs Lisp file with `M-x auto-insert' will use SkeletonMode to give the standard format for your source code.  Enabling the global minor mode AutoInsertMode can do this for you every time you start a new file.
 
+As an example of customizing Emacs Lisp Mode, with Emacs Lisp, we will enable these features.
+
+* Customize Emacs Lisp Mode to use spaces not tabs (see TabsAreEvil),
+* enable FlySpell and ElDoc minor modes,
+* PrettyPrint with `C-x C-e',
+* recompile on save if the ByteCompilation file does exist and
+* have `RET' reindent the current and new line.
+
+Try these customizations by adding the following code it to your InitFile or by EvaluatingExpressions.  If you are already visiting a buffer in Emacs Lisp Mode, then after evaluating this code reopen the associated file or restart the mode with `M-x normal-mode'.
+
+    (add-hook 'emacs-lisp-mode-hook
+              (lambda ()
+                ;; Use spaces, not tabs.
+                (setq indent-tabs-mode nil)
+                ;; Keep M-TAB for `completion-at-point'
+                (define-key flyspell-mode-map "\M-\t" nil)
+                ;; Pretty-print eval'd expressions.
+                (define-key emacs-lisp-mode-map
+                            "\C-x\C-e" 'pp-eval-last-sexp)
+                ;; Recompile if .elc exists.
+                (add-hook (make-local-variable 'after-save-hook)
+                          (lambda ()
+                            (byte-force-recompile default-directory)))
+                (define-key emacs-lisp-mode-map
+                            "\r" 'reindent-then-newline-and-indent)))
+    (add-hook 'emacs-lisp-mode-hook 'eldoc-mode)
+    (add-hook 'emacs-lisp-mode-hook 'flyspell-prog-mode) ;; Requires Ispell
+
 Related EmacsLisp major and minor modes:
+
 * CheckDoc -- Check the programming style of a file
 * ElDoc -- Show the signature of the function at [[point]] in the EchoArea
 * DebuggerMode (`debug') --  Step through code.  Entry per function;  using breakpoints; or upon error or quit (`C-g')
@@ -24,7 +52,9 @@ Related EmacsLisp major and minor modes:
 * ImenuMode -- Jump to code definitions in the same buffer
 * FindFunc -- Jump to an EmacsLisp function definition anywhere
 * EmacsTags -- Jump to a code definition anywhere
+* ParenthesisMatching -- Emacs supports parentheses
 * ReBuilder -- Interactively test [[regular expression]] strings
+* ShowParenMode -- Highlight the matching parens at point
 
 ----
 CategoryCode
