@@ -22,7 +22,7 @@ If you want to live on the bleeding edge, the latest "development" version can b
 
 * Undo-tree git repository: http://www.dr-qubit.org/git/undo-tree.git
 
-This is a git repository, ''not'' a web page. You cannot view it in a web browser. To grab the latest development version, clone the repository using:
+This is a git repository, ''*not*'' a web page. You cannot view it in a web browser. To grab the latest development version, clone the repository using:
 
     git clone http://www.dr-qubit.org/git/undo-tree.git
 
