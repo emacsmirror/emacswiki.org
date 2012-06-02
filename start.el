@@ -7,9 +7,9 @@
 ;; Copyright (C) 1995-2012, Drew Adams, all rights reserved.
 ;; Created: Wed Aug  2 11:12:24 1995
 ;; Version: 21.1
-;; Last-Updated: Mon May  7 15:39:13 2012 (-0700)
+;; Last-Updated: Sat Jun  2 07:05:34 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 2921
+;;     Update #: 2928
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/start.el
 ;; Keywords: abbrev, internal, local, init
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -83,6 +83,8 @@
 ;;
 ;; Change Log:
 ;;
+;; 2012/06/02 dadams
+;;     Soft require ucs-cmds.el (Emacs 23+).
 ;; 2012/05/07 dadams
 ;;     Do not require tabbar-mode for Emacs 21.
 ;; 2012/02/28 dadams
@@ -389,6 +391,8 @@
                                (define-key dired-mode-map "\C-x\C-q" 'wdired-change-to-wdired-mode))))
 (when (fboundp 'text-scale-increase)    ; Emacs 23+
   (require 'face-remap+ nil t))         ; Resize window/frame when scale text.
+(when (> emacs-major-version 22)        ; Need Emacs 23+ version of `ucs-insert' (`C-x 8 RET').
+  (require 'ucs-cmds nil t))            ; Enhanced `C-x 8 RET'.
 (when (> emacs-major-version 20)        ; Ring/stack of narrowings.
   (require 'wide-n nil t))
 ;;; ;; Use my update to Francis Wright's version of `ls-lisp.el', if available.
