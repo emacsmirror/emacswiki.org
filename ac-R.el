@@ -15,8 +15,8 @@
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
-;;  NOTE:  ESS SVN has out-of-the-box integration with AC and will
-;;  be released with next v5.16. See http://www.emacswiki.org/emacs/ESSAuto-complete for details.
+;;  NOTE:  ESS SVN has out-of-the-box integration with AC from v12.02
+;;  See http://www.emacswiki.org/emacs/ESSAuto-complete for details.
 ;;
 ;;  Please don't use this file if you use new
 ;;  version of ESS, or it might have unpredictable consequences. 
