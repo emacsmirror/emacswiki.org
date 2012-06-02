@@ -1,0 +1,32 @@
+The Light Table editor, shown at http://www.kickstarter.com/projects/ibdknox/light-table/, has some pretty neat ideas on coding, in part inspired by http://vimeo.com/36579366. Emacs wouldn't be Emacs if it wasn't constantly amassing the features of every other real or potential editor in the multiverse, so how can these ideas be implemented in Emacs?
+
+==docstrings as you type==
+Already exists in e.g. auto-complete-mode, slime.
+
+==The side-by-side instant REPL with values flowing through==
+(is there a good name for this?)
+
+Would be very neat for Python, emacs-lisp, etc.
+
+Also see http://www.kickstarter.com/projects/568774734/emacsy-an-embeddable-emacs 
+==Picking and showing function definitions side-by-side regardless of files==
+"the smallest unit is a function, not a file"
+
+Emacs does abstract away from files by the use of buffers, which can be cloned and narrowed, but you still need to find the functions.
+
+You use the key sequence <code>C-x 4 c C-M-h C-x n n</code> to create a clone of the buffer, mark the function you're at, and narrow to the function. Putting it into a quick-and-dirty function:
+
+    (defun clone-buffer-and-narrow-to-function ()
+      (interactive)
+      (clone-indirect-buffer-other-window nil 'pop-to-buffer)
+      (mark-defun) ; works not only in emacs-lisp, but C++, Python, ...
+      (narrow-to-region (mark) (point))
+      (pop-mark)
+      (other-window 1))
+    (define-key global-map (kbd "C-x 4 n") 'clone-buffer-and-narrow-to-function) ; or whatever key you prefer
+
+This is useful when you've already found the function, and want to "stash it" visually (PROTIP: you can also ediff cloned and narrowed buffers). 
+
+What's missing is a way to quickly show a list of all project functions ("linked" to their implementations) to pick and choose from. 
+
+If you use CEDET or ropemacs-mode, it should be possible to keep a live-updating buffer showing the implementations of called functions as you type calls to them.
