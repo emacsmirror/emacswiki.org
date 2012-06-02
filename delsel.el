@@ -8,9 +8,9 @@
 ;; Copyright (C) 1992 Free Software Foundation, Inc.
 ;; Created: Fri Dec  1 13:51:31 1995
 ;; Version: 21.0
-;; Last-Updated: Sun Jan  1 14:27:33 2012 (-0800)
+;; Last-Updated: Sat Jun  2 10:46:59 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 329
+;;     Update #: 346
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/delsel.el
 ;; Keywords: abbrev, emulations, local, convenience
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -88,6 +88,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2012/06/02 dadams
+;;     delete-selection-pre-hook-1: For yank, rotate kill-ring until get to diff one.
 ;; 2011/01/03 dadams
 ;;     Added autoload cookie for command.
 ;; 2009/10/02 dadams
@@ -209,9 +211,9 @@ Mark mode.
 
 Non-nil prefix ARG turns mode on if ARG is positive, else turns it off."
     (interactive "P")
-    (setq delete-selection-mode (if arg
-                                    (> (prefix-numeric-value arg) 0)
-                                  (not delete-selection-mode)))
+    (setq delete-selection-mode  (if arg
+                                     (> (prefix-numeric-value arg) 0)
+                                   (not delete-selection-mode)))
     (force-mode-line-update)
     (if (not delete-selection-mode)
         (remove-hook 'pre-command-hook 'delete-selection-pre-hook)
@@ -246,7 +248,7 @@ either \\[customize] or function `delete-selection-mode'."
                     (memq (get this-command 'delete-selection) '(supersede kill)))
            (delete-region (point) cmpl-last-insert-location) ; Free var here.
            (insert cmpl-original-string) ; Free var here.
-           (setq completion-to-accept nil))) ; Free var here.
+           (setq completion-to-accept  nil))) ; Free var here.
         (killp (kill-region (point) (mark)))
         (t (delete-region (point) (mark))))
   (deactivate-mark)
@@ -255,58 +257,62 @@ either \\[customize] or function `delete-selection-mode'."
 (defun delete-selection-pre-hook ()
   (if (and (eq last-command 'complete)  ; See `completion.el'.
            (boundp 'cmpl-last-insert-location))
-      (let ((mark-active t)) (delete-selection-pre-hook-1))
+      (let ((mark-active  t)) (delete-selection-pre-hook-1))
     (delete-selection-pre-hook-1)))
 
 (if (< emacs-major-version 21)
     (defun delete-selection-pre-hook-1 ()
+      "Helper for `delete-selection-pre-hook."
       (when (and delete-selection-mode
                  (not buffer-read-only)
                  transient-mark-mode mark-active)
-        (let ((type (and (symbolp this-command) (get this-command 'delete-selection))))
+        (let ((type  (and (symbolp this-command)
+                          (get this-command 'delete-selection))))
           (cond ((eq type 'kill)
                  (delete-active-region t))
                 ((eq type 'yank)
-                 ;; Before a yank command.  Make sure we don't yank the same
-                 ;; region that we are going to delete.
-                 ;; That would make yank a no-op.
-                 (when (string= (buffer-substring-no-properties (point) (mark))
-                                (car kill-ring))
-                   (current-kill 1))
+                 ;; Before a yank command.  Make sure we do not yank the same
+                 ;; region that we are going to delete.  That would make yank a no-op.
+                 (let ((tail  kill-ring))
+                   (while (and tail  (string= (buffer-substring-no-properties
+                                               (point) (mark))
+                                              (car tail)))
+                     (current-kill 1)
+                     (setq tail  (cdr tail))))
                  (delete-active-region))
                 ((eq type 'supersede)
                  (delete-active-region)
-                 (setq this-command 'ignore))
+                 (setq this-command  'ignore))
                 (type (delete-active-region))))))
   (defun delete-selection-pre-hook-1 ()
+    "Helper for `delete-selection-pre-hook."
     (when (and delete-selection-mode transient-mark-mode mark-active
                (not buffer-read-only))
-      (let ((type (and (symbolp this-command)
-                       (get this-command 'delete-selection))))
+      (let ((type  (and (symbolp this-command)  (get this-command 'delete-selection))))
         (condition-case data
             (cond ((eq type 'kill)
                    (delete-active-region t))
                   ((eq type 'yank)
-                   ;; Before a yank command,
-                   ;; make sure we don't yank the same region
-                   ;; that we are going to delete.
-                   ;; That would make yank a no-op.
-                   (when (string= (buffer-substring-no-properties (point) (mark))
-                                  (car kill-ring))
-                     (current-kill 1))
+                   ;; Before a yank command.  Make sure we do not yank the same region
+                   ;; that we are going to delete.  That would make yank a no-op.
+                   (let ((tail  kill-ring))
+                     (while (and tail  (string= (buffer-substring-no-properties
+                                                 (point) (mark))
+                                                (car tail)))
+                       (current-kill 1)
+                       (setq tail  (cdr tail))))
                    (delete-active-region))
                   ((eq type 'supersede)
-                   (let ((empty-region (= (point) (mark))))
+                   (let ((empty-region  (= (point) (mark))))
                      (delete-active-region)
-                     (unless empty-region
-                       (setq this-command 'ignore))))
+                     (unless empty-region (setq this-command  'ignore))))
                   (type
                    (delete-active-region)))
           (file-supersession
            ;; If ask-user-about-supersession-threat signals an error,
            ;; stop safe_run_hooks from clearing out pre-command-hook.
            (and (eq inhibit-quit 'pre-command-hook)
-                (setq inhibit-quit 'delete-selection-dummy))
+                (setq inhibit-quit  'delete-selection-dummy))
            (signal 'file-supersession (cdr data))))))))
 
 (put 'self-insert-command 'delete-selection t)
@@ -339,7 +345,7 @@ In Delete Selection mode, if the mark is active, just deactivate it;
 then it takes a second \\[keyboard-quit] to abort the minibuffer."
   (interactive)
   (if (and delete-selection-mode transient-mark-mode mark-active)
-      (setq deactivate-mark t)
+      (setq deactivate-mark  t)
     (when (get-buffer "*Completions*") (delete-windows-on "*Completions*"))
     (abort-recursive-edit)))
 
