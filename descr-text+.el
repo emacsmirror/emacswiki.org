@@ -7,16 +7,16 @@
 ;; Copyright (C) 2011-2012, Drew Adams, all rights reserved.
 ;; Created: Thu Nov 24 11:57:04 2011 (-0800)
 ;; Version: 23.1
-;; Last-Updated: Sun Apr 29 09:48:10 2012 (-0700)
+;; Last-Updated: Sat Jun  2 13:21:44 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 237
+;;     Update #: 257
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/descr-text+.el
 ;; Keywords: help, characters, description
 ;; Compatibility: GNU Emacs: 22.x, 23.x, 24.x
 ;;
 ;; Features that might be required by this library:
 ;;
-;;   `button', `descr-text', `help-fns', `help-mode', `view'.
+;;   `button', `descr-text', `help-mode', `view'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -53,6 +53,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2012/06/02 dadams
+;;     describe-char: Updated for Emacs 24 (bidi stuff).
 ;; 2012/04/29 dadams
 ;;     describe-char for Emacs 22: Replaced charset-description by its macro expansion.
 ;; 2012/01/27 dadams
@@ -630,12 +632,14 @@ The information is displayed in buffer `*Help*'.
 
 The position information includes POS; the total size of BUFFER; the
 region limits, if narrowed; the column number; and the horizontal
-scroll amount, if horizontally scrolled.
+scroll amount, if the buffer is horizontally scrolled.
 
 The character information includes the character code; charset and
-code points in it; syntax; category; how the character is encoded in a
-file; character composition information (if relevant); and relevant
-widgets, buttons, overlays, and text properties."
+code points in it; syntax; category; how the character is encoded in
+BUFFER and in BUFFER's file; the font and font glyphs used to display
+the character; the character's canonical name and other properties
+defined by the Unicode Data Base; and relevant widgets, buttons,
+overlays, and text properties."
     (interactive "d")
     (unless (buffer-live-p buffer) (setq buffer  (current-buffer)))
     (setq width  (or width 70))
@@ -674,6 +678,16 @@ widgets, buttons, overlays, and text properties."
                 (setq charset  (char-charset char)
                       code     (encode-char char charset)))
           (setq code  char))
+        (cond
+          ;; Append a PDF character to directional embeddings and overrides, to prevent
+          ;; potential messup of the following text.
+          ((memq char '(?\x202a ?\x202b ?\x202d ?\x202e))
+           (setq char-description  (concat char-description
+                                           (propertize (string ?\x202c) 'invisible t))))
+          ;; Append an LRM char to any strong char to avoid messing up the numerical codepoint.
+          ((memq (get-char-code-property char 'bidi-class) '(R AL))
+           (setq char-description  (concat char-description
+                                           (propertize (string ?\x200e) 'invisible t)))))
         (when composition
           ;; When the composition is trivial (i.e. composed only with the
           ;; current character itself without any alternate characters),
@@ -758,26 +772,27 @@ widgets, buttons, overlays, and text properties."
                                      (format ", Hscroll: %d" (window-hscroll))))
                          (col      (current-column)))
                         (if (or (/= beg 1)  (/= end (1+ total)))
-                            (format "%d of %d (%d%%), column: %d%s, region: %d-%d"
-                                    pos total percent col hscroll beg end)
+                            (format "%d of %d (%d%%), restriction: <%d-%d>, column: %d%s"
+                                    pos total percent col beg end hscroll)
                           (if (= pos end)
                               (format "%d of %d (EOB), column: %d%s" pos total col hscroll)
                             (format "%d of %d (%d%%), column: %d%s"
                                     pos total percent col hscroll)))))
                 ("character"
-                 ,(format "%s (displayed as %s) (%d, #o%o, #x%x)"
+                 ,(format "%s (displayed as %s) (codepoint %d, #o%o, #x%x)"
                           char-description
-                          (apply 'propertize char-description (text-properties-at pos))
+                          (apply 'propertize char-description
+                                 (text-properties-at pos))
                           char char char))
                 ("preferred charset"
                  ,`(insert-text-button ,(symbol-name charset)
                                        'type 'help-character-set 'help-args '(,charset))
                  ,(format "(%s)" (charset-description charset)))
-                ("code point"
-                 ,(let ((str  (if (integerp code)
-                                  (format (if (< code 256) "0x%02X" "0x%04X")
-                                          code)
-                                (format "0x%04X%04X" (car code) (cdr code)))))
+                ("code point in charset"
+                 ,(let ((str (if (integerp code)
+                                 (format (if (< code 256) "0x%02X" "0x%04X")
+                                         code)
+                               (format "0x%04X%04X" (car code) (cdr code)))))
                        (if (<= (charset-dimension charset) 2)
                            `(insert-text-button
                              ,str
