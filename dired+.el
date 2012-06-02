@@ -7,9 +7,9 @@
 ;; Copyright (C) 1999-2012, Drew Adams, all rights reserved.
 ;; Created: Fri Mar 19 15:58:58 1999
 ;; Version: 21.2
-;; Last-Updated: Sat Jun  2 10:17:37 2012 (-0700)
+;; Last-Updated: Sat Jun  2 14:09:06 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 5797
+;;     Update #: 5808
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/dired+.el
 ;; Keywords: unix, mouse, directories, diredp, dired
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -113,7 +113,8 @@
 ;;    `diredp-do-bookmark-in-bookmark-file-recursive',
 ;;    `diredp-do-bookmark-recursive', `diredp-do-chmod-recursive',
 ;;    `diredp-do-chgrp-recursive', `diredp-do-chown-recursive',
-;;    `diredp-do-copy-recursive',
+;;    `diredp-do-copy-recursive', `diredp-do-decrypt-recursive',
+;;    `diredp-do-encrypt-recursive',
 ;;    `diredp-do-find-marked-files-recursive', `diredp-do-grep',
 ;;    `diredp-do-grep-recursive', `diredp-do-hardlink-recursive',
 ;;    `diredp-do-isearch-recursive',
@@ -124,12 +125,12 @@
 ;;    `diredp-do-redisplay-recursive',
 ;;    `diredp-do-relsymlink-recursive', `diredp-do-remove-all-tags',
 ;;    `diredp-do-search-recursive', `diredp-do-set-tag-value',
-;;    `diredp-do-shell-command-recursive',
+;;    `diredp-do-shell-command-recursive', `diredp-do-sign-recursive',
 ;;    `diredp-do-symlink-recursive', `diredp-do-tag',
 ;;    `diredp-do-touch-recursive', `diredp-do-untag',
-;;    `diredp-downcase-recursive', `diredp-downcase-this-file',
-;;    `diredp-ediff', `diredp-fileset', `diredp-find-a-file',
-;;    `diredp-find-a-file-other-frame',
+;;    `diredp-do-verify-recursive', `diredp-downcase-recursive',
+;;    `diredp-downcase-this-file', `diredp-ediff', `diredp-fileset',
+;;    `diredp-find-a-file', `diredp-find-a-file-other-frame',
 ;;    `diredp-find-a-file-other-window',
 ;;    `diredp-find-file-other-frame',
 ;;    `diredp-find-file-reuse-dir-buffer',
@@ -299,7 +300,7 @@
 ;;; Change Log:
 ;;
 ;; 2012/06/02 dadams
-;;     Added: diredp-do-print-recursive.  Added to menus.  Bound to keys.
+;;     Added: diredp-do-(print|encrypt|decrypt|sign|verify)-recursive.  Menus.  Keys.
 ;;     diredp-do-move-recursive: Corrected to use dired-rename-file, not dired-copy-file.
 ;; 2012/05/30 dadams
 ;;     diredp-insert-as-subdir: Added optional arg IN-DIRED-NOW-P.  Pick up markings & switches
@@ -1614,6 +1615,21 @@ If HDR is non-nil, insert a header line with the directory name."
 (define-key diredp-menu-bar-operate-menu [recursive-marked]
   (cons "Marked Here and Below" diredp-menu-bar-recursive-marked-menu))
 
+(when (> emacs-major-version 22) ; Emacs 23+
+  (define-key diredp-menu-bar-recursive-marked-menu [diredp-do-decrypt-recursive]
+    '(menu-item "Decrypt..." diredp-do-decrypt-recursive
+      :help "Decrypt marked files, including those in marked subdirs"))
+  (define-key diredp-menu-bar-recursive-marked-menu [diredp-do-verify-recursive]
+    '(menu-item "Verify" diredp-do-verify-recursive
+      :help "Verify marked files, including those in marked subdirs"))
+  (define-key diredp-menu-bar-recursive-marked-menu [diredp-do-sign-recursive]
+    '(menu-item "Sign..." diredp-do-sign-recursive
+      :help "Sign marked files, including those in marked subdirs"))
+  (define-key diredp-menu-bar-recursive-marked-menu [diredp-do-encrypt-recursive]
+    '(menu-item "Encrypt..." diredp-do-encrypt-recursive
+      :help "Encrypt marked files, including those in marked subdirs"))
+  (define-key diredp-menu-bar-recursive-marked-menu [separator-crypt] '("--"))) ; --------------
+
 (when (fboundp 'image-dired-delete-tag) ; Emacs 22+
   (define-key diredp-menu-bar-recursive-marked-menu [diredp-image-dired-delete-tag-recursive]
     '(menu-item "Delete Image Tag..." diredp-image-dired-delete-tag-recursive
@@ -2176,6 +2192,12 @@ If HDR is non-nil, insert a header line with the directory name."
 (define-prefix-command 'diredp-recursive-map)
 (define-key dired-mode-map "\M-+"  diredp-recursive-map) ; `M-+'
 
+(when (> emacs-major-version 22)
+  (define-key diredp-recursive-map ":d"        'diredp-do-decrypt-recursive)            ; `: d'
+  (define-key diredp-recursive-map ":e"        'diredp-do-encrypt-recursive)            ; `: e'
+  (define-key diredp-recursive-map ":s"        'diredp-do-sign-recursive)               ; `: s'
+  (define-key diredp-recursive-map ":v"        'diredp-do-verify-recursive)             ; `: v'
+  )
 (define-key diredp-recursive-map "%c"          'diredp-capitalize-recursive)            ; `% c'
 (define-key diredp-recursive-map "%l"          'diredp-downcase-recursive)              ; `% l'
 (define-key diredp-recursive-map "%u"          'diredp-upcase-recursive)                ; `% u'
@@ -2776,10 +2798,10 @@ Markings and current Dired switches are preserved."
 ;;; Actions on marked files and subdirs, recursively.
 
 (defun diredp-get-files (&optional ignore-marks-p predicate include-dirs-p dont-askp)
-  "Return files from this Dired buffer and subdirectories, recursively.
-The files are those that are marked in the current Dired buffer, or
-all files in the directory if none are marked.
-Marked subdirectories are handled recursively in the same way.
+  "Return file names from this Dired buffer and subdirectories, recursively.
+The name are those that are marked in the current Dired buffer, or all
+files in the directory if none are marked.  Marked subdirectories are
+handled recursively in the same way.
 
 If there is some included subdirectory that has a Dired buffer with
 marked files, then (unless DONT-ASKP is non-nil) ask the user whether
@@ -2831,10 +2853,10 @@ instead of all.  Act as if the user was asked and replied `y'."
           (nreverse files))))))
 
 (defun diredp-get-files-for-dir (dir accum askp &optional include-dirs-p)
-  "Return files for directory DIR and subdirectories, recursively.
-Pick up all marked files in DIR if it has a Dired buffer, or all files
-in DIR if not.  Handle subdirs recursively (only marked subdirs, if
-Dired).
+  "Return file names for directory DIR and subdirectories, recursively.
+Pick up names of all marked files in DIR if it has a Dired buffer, or
+all files in DIR if not.  Handle subdirs recursively (only marked
+subdirs, if Dired).
 
 ACCUM is an accumulator list: the files picked up in this call are
 nconc'd to it.
@@ -3357,6 +3379,77 @@ Dired buffer and all subdirs, recursively."
   (let ((comment  (image-dired-read-comment)))
     (image-dired-write-comments (mapcar (lambda (curr-file) (cons curr-file comment))
                                         (diredp-get-files ignore-marks-p)))))
+
+(when (> emacs-major-version 22)
+  (defun diredp-do-decrypt-recursive (&optional ignore-marks-p) ; Bound to `M-+ : d'
+    "Decrypt marked files, including those in marked subdirs.
+Like `epa-dired-do-decrypt', but act recursively on subdirs to pick up
+the files to decrypt.
+
+The files included are those that are marked in the current Dired
+buffer, or all files in the directory if none are marked.  Marked
+subdirectories are handled recursively in the same way.
+
+With a prefix argument, ignore all marks - include all files in this
+Dired buffer and all subdirs, recursively."
+    (interactive (progn (diredp-get-confirmation-recursive) (list current-prefix-arg)))
+    (dolist (file  (diredp-get-files ignore-marks-p))
+      (epa-decrypt-file (expand-file-name file)))
+    (revert-buffer))
+
+
+  (defun diredp-do-verify-recursive (&optional ignore-marks-p) ; Bound to `M-+ : v'
+    "Verify marked files, including those in marked subdirs.
+Like `epa-dired-do-verify', but act recursively on subdirs to pick up
+the files to verify.
+
+The files included are those that are marked in the current Dired
+buffer, or all files in the directory if none are marked.  Marked
+subdirectories are handled recursively in the same way.
+
+With a prefix argument, ignore all marks - include all files in this
+Dired buffer and all subdirs, recursively."
+    (interactive (progn (diredp-get-confirmation-recursive) (list current-prefix-arg)))
+    (dolist (file  (diredp-get-files ignore-marks-p))
+      (epa-verify-file (expand-file-name file)))
+    (revert-buffer))
+
+  (defun diredp-do-sign-recursive (&optional ignore-marks-p) ; Bound to `M-+ : s'
+    "Sign marked files, including those in marked subdirs.
+Like `epa-dired-do-sign', but act recursively on subdirs to pick up
+the files to sign.
+
+The files included are those that are marked in the current Dired
+buffer, or all files in the directory if none are marked.  Marked
+subdirectories are handled recursively in the same way.
+
+With a prefix argument, ignore all marks - include all files in this
+Dired buffer and all subdirs, recursively."
+    (interactive (progn (diredp-get-confirmation-recursive) (list current-prefix-arg)))
+    (dolist (file  (diredp-get-files ignore-marks-p))
+      (epa-sign-file (expand-file-name file)
+                     (epa-select-keys (epg-make-context) "Select keys for signing.
+If none are selected, the default secret key is used.  ")
+                     (y-or-n-p "Make a detached signature? ")))
+    (revert-buffer))
+
+  (defun diredp-do-encrypt-recursive (&optional ignore-marks-p) ; Bound to `M-+ : e'
+    "Encrypt marked files, including those in marked subdirs.
+Like `epa-dired-do-encrypt', but act recursively on subdirs to pick up
+the files to encrypt.
+
+The files included are those that are marked in the current Dired
+buffer, or all files in the directory if none are marked.  Marked
+subdirectories are handled recursively in the same way.
+
+With a prefix argument, ignore all marks - include all files in this
+Dired buffer and all subdirs, recursively."
+    (interactive (progn (diredp-get-confirmation-recursive) (list current-prefix-arg)))
+    (dolist (file  (diredp-get-files ignore-marks-p))
+      (epa-encrypt-file (expand-file-name file)
+                        (epa-select-keys (epg-make-context) "Select recipients for encryption.
+If none are selected, symmetric encryption is performed.  ")))
+    (revert-buffer)))
 
 ;;;###autoload
 (defun diredp-do-bookmark-recursive (&optional ignore-marks-p prefix) ; Bound to `M-+ M-b'
