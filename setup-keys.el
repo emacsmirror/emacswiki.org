@@ -7,9 +7,9 @@
 ;; Copyright (C) 1999-2012, Drew Adams, all rights reserved.
 ;; Created: Fri Apr  2 12:34:20 1999
 ;; Version: 21.1
-;; Last-Updated: Sun Jan  1 14:05:12 2012 (-0800)
+;; Last-Updated: Sat Jun  2 07:06:03 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 1083
+;;     Update #: 1089
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/setup-keys.el
 ;; Keywords: mouse, keyboard, menus, menu-bar
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -67,6 +67,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2012/06/02 dadams
+;;     If ucs-cmds.el is loaded, bind C-x 8 RET to ucsc-insert, if Emacs 23+.
 ;; 2011/11/12 dadams
 ;;     Vars sub-*: Removed (when (fboundp '*)...) wrapper - define always.  But mention in doc
 ;;       string that has no effect unless library loaded.
@@ -567,6 +569,10 @@
     ;; Make window-manager "minimize" button thumbify instead of iconify.
     ;; (define-key special-event-map [iconify-frame] 'thumfr-thumbify-frame-upon-event)
     ))
+
+(eval-after-load "ucs-cmds"
+  '(when (> emacs-major-version 22)     ; Need Emacs 23+ version of `ucs-insert'.
+    (define-key global-map [remap ucs-insert] 'ucsc-insert)))
 
 (define-key help-map "\C-\M-f" 'describe-face)
 
