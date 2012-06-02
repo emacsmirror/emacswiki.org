@@ -7,9 +7,9 @@
 ;; Copyright (C) 1999-2012, Drew Adams, all rights reserved.
 ;; Created: Fri Mar 19 15:58:58 1999
 ;; Version: 21.2
-;; Last-Updated: Mon May 28 07:03:02 2012 (-0700)
+;; Last-Updated: Sat Jun  2 10:17:37 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 5784
+;;     Update #: 5797
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/dired+.el
 ;; Keywords: unix, mouse, directories, diredp, dired
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -119,7 +119,7 @@
 ;;    `diredp-do-isearch-recursive',
 ;;    `diredp-do-isearch-regexp-recursive',
 ;;    `diredp-do-move-recursive', `diredp-do-paste-add-tags',
-;;    `diredp-do-paste-replace-tags',
+;;    `diredp-do-paste-replace-tags', `diredp-do-print-recursive',
 ;;    `diredp-do-query-replace-regexp-recursive',
 ;;    `diredp-do-redisplay-recursive',
 ;;    `diredp-do-relsymlink-recursive', `diredp-do-remove-all-tags',
@@ -298,6 +298,9 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2012/06/02 dadams
+;;     Added: diredp-do-print-recursive.  Added to menus.  Bound to keys.
+;;     diredp-do-move-recursive: Corrected to use dired-rename-file, not dired-copy-file.
 ;; 2012/05/30 dadams
 ;;     diredp-insert-as-subdir: Added optional arg IN-DIRED-NOW-P.  Pick up markings & switches
 ;;                              from sole Dired buffer for CHILD if not in Dired now.
@@ -1011,7 +1014,7 @@ If DISTINGUISH-ONE-MARKED is non-nil, then return (t FILENAME) instead
 ;;; Stuff from `dired-aux.el'.
 
 (defun dired-map-over-marks-check (fun arg op-symbol &optional show-progress)
-  "Map FUN over marked files and display failures.
+  "Map FUN over marked lines and display failures.
 FUN takes zero args.  It returns non-nil (the offending object, e.g.
 the short form of the filename) for a failure and probably logs a
 detailed error explanation using function `dired-log'.
@@ -1659,10 +1662,15 @@ If HDR is non-nil, insert a header line with the directory name."
 (define-key diredp-menu-bar-recursive-marked-menu [diredp-do-grep-recursive]
     '(menu-item "Grep..." diredp-do-grep-recursive
       :help "Run `grep' on the marked files, including those in marked subdirs"))
+(define-key diredp-menu-bar-recursive-marked-menu [separator-search] '("--")) ; ----------------
+
 (define-key diredp-menu-bar-recursive-marked-menu [diredp-do-shell-command-recursive]
     '(menu-item "Shell Command..." diredp-do-shell-command-recursive
       :help "Run shell command on the marked files, including those in marked subdirs"))
-(define-key diredp-menu-bar-recursive-marked-menu [separator-search] '("--")) ; ----------------
+(define-key diredp-menu-bar-recursive-marked-menu [diredp-do-print-recursive]
+    '(menu-item "Print..." diredp-do-print-recursive
+      :help "Print the marked files, including those in marked subdirs"))
+(define-key diredp-menu-bar-recursive-marked-menu [separator-misc] '("--")) ; ----------------
 
 (define-key diredp-menu-bar-recursive-marked-menu [diredp-do-hardlink-recursive]
   '(menu-item "Hardlink to..." diredp-do-hardlink-recursive
@@ -1709,7 +1717,7 @@ If HDR is non-nil, insert a header line with the directory name."
 (define-key diredp-menu-bar-recursive-marked-menu [diredp-insert-subdirs-recursive]
   '(menu-item "Insert Subdirs" diredp-insert-subdirs-recursive
     :help "Insert the marked subdirectories, gathered recursively"))
-(define-key diredp-menu-bar-recursive-marked-menu [separator-misc] '("--")) ; ------------------
+(define-key diredp-menu-bar-recursive-marked-menu [separator-dirs] '("--")) ; ------------------
 
 (define-key diredp-menu-bar-recursive-marked-menu [diredp-do-bookmark-in-bookmark-file-recursive]
     '(menu-item "Bookmark in Bookmark File" diredp-do-bookmark-in-bookmark-file-recursive
@@ -2188,6 +2196,7 @@ If HDR is non-nil, insert a header line with the directory name."
 (define-key diredp-recursive-map "l"           'diredp-list-marked-recursive)           ; `l'
 (define-key diredp-recursive-map "M"           'diredp-do-chmod-recursive)              ; `M'
 (define-key diredp-recursive-map "O"           'diredp-do-chown-recursive)              ; `O'
+(define-key diredp-recursive-map "P"           'diredp-do-print-recursive)              ; `P'
 (define-key diredp-recursive-map "Q"         'diredp-do-query-replace-regexp-recursive) ; `Q'
 (define-key diredp-recursive-map "R"           'diredp-do-move-recursive)               ; `R'
 (define-key diredp-recursive-map "S"           'diredp-do-symlink-recursive)            ; `S'
@@ -3073,6 +3082,11 @@ The ancestor Dired buffer is selected.
 Markings and switches in the current Dired buffer are preserved for
 the subdir listing in the ancestor Dired buffer.
 
+Note: If you use Icicles, then you can use
+`icicle-dired-insert-as-subdir' instead: it is a multi-command.  It
+does the same thing, but it lets you insert any number of descendent
+directories into a given ancestor-directory Dired buffer.
+
 Non-interactively:
  Insert CHILD dir into Dired listing for ANCESTOR dir.
 
@@ -3225,6 +3239,29 @@ With a prefix argument, ignore all marks - include all files in this
 Dired buffer and all subdirs, recursively."
   (interactive (progn (diredp-get-confirmation-recursive) (list current-prefix-arg)))
   (diredp-do-create-files-recursive #'dired-hardlink "Hardlink" ignore-marks-p))
+
+;;;###autoload
+(defun diredp-do-print-recursive (&optional ignore-marks-p) ; Bound to `M-+ P'
+  "Print the marked files, including those in marked subdirs.
+Like `dired-do-print', but act recursively on subdirs to pick up the
+files to print.
+
+The files included are those that are marked in the current Dired
+buffer, or all files in the directory if none are marked.  Marked
+subdirectories are handled recursively in the same way.
+
+With a prefix argument, ignore all marks - include all files in this
+Dired buffer and all subdirs, recursively."
+  (interactive (progn (diredp-get-confirmation-recursive) (list current-prefix-arg)))
+  (let* ((file-list  (diredp-get-files ignore-marks-p))
+	 (command    (dired-mark-read-string
+                      "Print %s with: "
+                      (mapconcat #'identity (cons lpr-command (if (stringp lpr-switches)
+                                                                  (list lpr-switches)
+                                                                lpr-switches))
+                                 " ")
+                      'print nil file-list)))
+    (dired-run-shell-command (dired-shell-stuff-it command file-list nil))))
 
 ;;;###autoload
 (defun diredp-image-dired-display-thumbs-recursive (&optional ignore-marks-p append do-not-pop)
@@ -3602,7 +3639,7 @@ Renames any buffers that are visiting the files.
 The default suggested for the target directory depends on the value of
 `dired-dwim-target', which see."
   (interactive (progn (diredp-get-confirmation-recursive) (list current-prefix-arg)))
-  (diredp-do-create-files-recursive #'dired-copy-file "Move" ignore-marks-p))
+  (diredp-do-create-files-recursive #'dired-rename-file "Move" ignore-marks-p))
 
 ;;;###autoload
 (defun diredp-do-copy-recursive (&optional ignore-marks-p) ; Bound to `M-+ C'
@@ -3743,7 +3780,7 @@ Dired buffer and all subdirs, recursively."
   "Change the mode of the marked files, including those in marked subdirs.
 Symbolic modes like `g+w' are allowed.
 
-Note thatmarked subdirs are not changed.  Their markings are used only
+Note that marked subdirs are not changed.  Their markings are used only
 to indicate that some of their files are to be changed."
   (interactive (progn (diredp-get-confirmation-recursive) (list current-prefix-arg)))
   (let* ((files    (diredp-get-files ignore-marks-p))
