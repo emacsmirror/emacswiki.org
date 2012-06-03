@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Mon May 28 06:55:31 2012 (-0700)
+;; Last-Updated: Sun Jun  3 09:09:14 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 23800
+;;     Update #: 23806
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-cmd1.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -3403,23 +3403,20 @@ then customize option `icicle-top-level-key-bindings'." ; Doc string
          ;; Rebind alternative action functions to nil, so we don't override the command we call.
          (icicle-candidate-alt-action-fn            nil)
          (icicle-all-candidates-list-alt-action-fn  nil)
-         ;; Rebind `icicle-candidate-action-fn' to a function that calls the
-         ;; candidate CMD-NAME on a single argument that it reads.  This is
-         ;; used only if CMD-NAME is a command that, itself, reads an input
-         ;; argument with completion.  When that is the case, you can use
-         ;; completion on that input, and if you do that, you can use `C-RET'
-         ;; to use command CMD-NAME as a multi-command.  In other words, this
+         ;; Rebind `icicle-candidate-action-fn' to a function that calls the candidate command on a single
+         ;; argument that it reads.  This is used only if the command itself reads an input argument with
+         ;; completion.  When that is the case, you can use completion on that input, and if you do that,
+         ;; you can use `C-RET' to use the candidate command as a multi-command.  In other words, this
          ;; binding allows for two levels of multi-commands.
          (icicle-candidate-action-fn
           (and icicle-candidate-action-fn ; This is nil after the command name is read.
-               #'(lambda (arg)
+               `(lambda (arg)
                    (setq arg  (icicle-transform-multi-completion arg))
                    (condition-case nil
-                       (funcall cmd arg) ; Try to use string candidate `arg'.
+                       (funcall ',cmd arg) ; Try to use string candidate `arg'.
                      ;; If that didn't work, use a symbol or number candidate.
-                     (wrong-type-argument (funcall cmd (car (read-from-string arg))))
-                     (wrong-number-of-arguments ; Punt - show help.
-                      (funcall #'icicle-help-on-candidate)))
+                     (wrong-type-argument (funcall ',cmd (car (read-from-string arg))))
+                     (wrong-number-of-arguments (funcall #'icicle-help-on-candidate))) ; Punt - show help.
                    (select-window (minibuffer-window))
                    (select-frame-set-input-focus (selected-frame))))))
     ;; Message showing what `cmd' is bound to.  This is pretty much a transcription of C code in
