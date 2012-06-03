@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Tue May 22 06:07:50 2012 (-0700)
+;; Last-Updated: Sun Jun  3 11:51:08 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 17977
+;;     Update #: 17987
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-mcmd.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -2977,6 +2977,9 @@ You can use this command only from the minibuffer (`\\<minibuffer-local-completi
                                'icicle-apropos-candidates)
                          'regexp-p))
 
+;; This is not helpful or needed, because the command sets `this-command' to the proper cycling command.
+;; (put 'icicle-previous-candidate-per-mode-action 'icicle-action-command t)
+
 ;; Bound  in minibuffer to keys in `icicle-modal-cycle-up-action-keys' (`C-up').
 ;;
 ;;;###autoload (autoload 'icicle-previous-candidate-per-mode-action "icicles")
@@ -3006,6 +3009,10 @@ You can use this command only from the minibuffer (`\\<minibuffer-local-completi
   (interactive)
   (when (interactive-p) (icicle-barf-if-outside-minibuffer))
   (icicle-successive-action #'icicle-previous-candidate-per-mode #'icicle-candidate-alt-action nth))
+
+
+;; This is not helpful or needed, because the command sets `this-command' to the proper cycling command.
+;;(put 'icicle-next-candidate-per-mode-action 'icicle-action-command t)
 
 ;; Bound in minibuffer to keys in `icicle-modal-cycle-down-action-keys' (`C-down').
 ;;
@@ -3071,6 +3078,7 @@ You can use this command only from the minibuffer (`\\<minibuffer-local-completi
 ;; Bound in minibuffer to keys in `icicle-prefix-cycle-previous-action-keys' (`C-home').
 (put 'icicle-previous-prefix-candidate-action 'icicle-cycling-command         'backward)
 (put 'icicle-previous-prefix-candidate-action 'icicle-prefix-cycling-command  'backward)
+(put 'icicle-previous-prefix-candidate-action 'icicle-action-command          t)
 
 ;;;###autoload (autoload 'icicle-previous-prefix-candidate-action "icicles")
 (defun icicle-previous-prefix-candidate-action (&optional nth)
@@ -3089,6 +3097,7 @@ You can use this command only from the minibuffer (`\\<minibuffer-local-completi
 ;; Bound in minibuffer to keys in `icicle-prefix-cycle-next-action-keys' (`C-end').
 (put 'icicle-next-prefix-candidate-action 'icicle-cycling-command         'forward)
 (put 'icicle-next-prefix-candidate-action 'icicle-prefix-cycling-command  'forward)
+(put 'icicle-next-prefix-candidate-action 'icicle-action-command          t)
 
 ;;;###autoload (autoload 'icicle-next-prefix-candidate-action "icicles")
 (defun icicle-next-prefix-candidate-action (&optional nth)
@@ -3107,6 +3116,7 @@ You can use this command only from the minibuffer (`\\<minibuffer-local-completi
 ;; Bound in minibuffer to keys in `icicle-apropos-cycle-previous-action-keys' (`C-prior').
 (put 'icicle-previous-apropos-candidate-action 'icicle-cycling-command         'backward)
 (put 'icicle-previous-apropos-candidate-action 'icicle-apropos-cycling-command 'backward)
+(put 'icicle-previous-apropos-candidate-action 'icicle-action-command          t)
 
 ;;;###autoload (autoload 'icicle-previous-apropos-candidate-action "icicles")
 (defun icicle-previous-apropos-candidate-action (&optional nth)
@@ -3125,6 +3135,7 @@ You can use this command only from the minibuffer (`\\<minibuffer-local-completi
 ;; Bound in minibuffer to keys in `icicle-apropos-cycle-next-action-keys' (`C-next').
 (put 'icicle-next-apropos-candidate-action 'icicle-cycling-command         'forward)
 (put 'icicle-next-apropos-candidate-action 'icicle-apropos-cycling-command 'forward)
+(put 'icicle-next-apropos-candidate-action 'icicle-action-command          t)
 
 ;;;###autoload (autoload 'icicle-next-apropos-candidate-action "icicles")
 (defun icicle-next-apropos-candidate-action (&optional nth)
