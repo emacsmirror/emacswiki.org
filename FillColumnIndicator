@@ -1,4 +1,4 @@
-Many modern editors and IDEs can graphically indicate the location of the fill column by drawing a thin line (in design parlance, a "rule") down the length of the editing window.  The package [[fill-column-indicator.el]] (by AlpAker) implements this facility in Emacs:
+Many modern editors and IDEs can graphically indicate the location of the fill column by drawing a thin line (in design parlance, a "rule") down the length of the editing window.  The package [[fill-column-indicator.el]] implements this facility in Emacs:
 
 [[image:FciRuleStyle]] 
 
