@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Mon May 28 07:06:58 2012 (-0700)
+;; Last-Updated: Sun Jun  3 12:11:19 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 8460
+;;     Update #: 8469
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-chg.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -85,6 +85,10 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd1.el'")
 ;;
+;; 2012/06/03 dadams
+;;     icicle-execute-extended-command-1:
+;;       Do not show "You can invoke..." message for multi-command use.  Do it only for top-level M-x.
+;;       Use backquote+comma to eliminate free var CMD.
 ;; 2012/05/30 dadams
 ;;     icicle-dired-insert-as-subdir: Include default-directory as candidate for ANCESTOR-DIR.
 ;; 2012/05/25 dadams
@@ -3147,6 +3151,9 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-mcmd.el'")
 ;;
+;; 2012/06/03 dadams
+;;     icicle-(next|previous)-(prefix|apropos)-candidate-action:
+;;       Put non-nil value on icicle-action-command, so M-x avoids key reminder for multi-command use.
 ;; 2012/05/22 dadams
 ;;     icicle-help-on-candidate(-symbol):
 ;;       Test with icicle-file-remote-p before file-exists-p, to avoid Tramp.
