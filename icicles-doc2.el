@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Tue May 15 09:49:45 2012 (-0700)
+;; Last-Updated: Sun Jun  3 09:45:01 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 28838
+;;     Update #: 28879
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-doc2.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -8857,7 +8857,7 @@
 ;;  interesting illustration of using `icicle-define-command'.  The
 ;;  candidate action function itself binds a candidate action
 ;;  function, in case the candidate is a command that reads input with
-;;  completion.
+;;  completion.  Here is a simplified version of the definition.
 ;;
 ;;  (icicle-define-command
 ;;    icicle-execute-extended-command   ; `M-x' in Icicle mode.
@@ -8869,30 +8869,45 @@
 ;;                        (prefix-numeric-value current-prefix-arg))
 ;;               ""))
 ;;    obarray 'commandp t nil 'extended-command-history nil nil
-;;    ((last-cmd last-command))        ; Save the last command
+;;    ((last-command last-command))    ; Save & restore `last-command'
+;;     (use-file-dialog nil)           ; For mouse-2 in *Completions*
+;;     icicle-new-last-cmd)            ; Set in `i-e-e-c-1'
 ;;    nil nil                          ; First code, undo code
-;;    (setq last-command last-cmd))    ; Last: restore last command
+;;    (setq this-command icicle-new-last-cmd)) ; Restore last command
 ;;
 ;;  (defun icicle-execute-extended-command-1 (cmd-name)
 ;;    "Action function for `icicle-execute-extended-command'."
-;;     (set-buffer icicle-orig-buff) ; bound by `icicle-define-command'.
-;;     (select-window icicle-orig-window)
-;;     (let ((icicle-candidate-action-fn
-;;            (lambda (x) (funcall (intern cmd-name) x))))
+;;     (when (get-buffer icicle-orig-buff)
+;;       (set-buffer icicle-orig-buff))
+;;     (when (window-live-p icicle-orig-window)
+;;       (select-window icicle-orig-window))
+;;     (when (string= "" cmd-name) (error "No command name"))
+;;     (let* ((cmd (intern cmd-name))
+;;            (icicle-candidate-action-fn
+;;             (and icicle-candidate-action-fn ; nil after CMD is read
+;;                  `(lambda (x)
+;;                     (setq x (icicle-transform-multi-completion x))
+;;                     (funcall ',cmd x))))
 ;;       (run-hooks 'post-command-hook)
-;;       (setq this-command cmd)
 ;;       (run-hooks 'pre-command-hook)
-;;       (let ((enable-recursive-minibuffers  t))
-;;         (call-interactively (intern cmd-name) 'record-it))))
+;;       (let ((enable-recursive-minibuffers t)
+;;             (this-command cmd))
+;;         (call-interactively cmd 'record-it))
+;;       (setq icicle-new-last-cmd  cmd)))
 ;;
-;;  The last seven lines of this action function rebind
+;;  Variables `icicle-orig-buff' and `icicle-orig-window' are bound
+;;  automatically by macro `icicle-define-command' to the buffer and
+;;  window where the multi-command (`icicle-execute-extended-command'
+;;  in this case) was invoked.
+;;
+;;  The last several lines of this action function rebind
 ;;  `icicle-candidate-action-fn' to a function that calls the
-;;  candidate `cmd-name' on a single argument that it reads.  This is
-;;  useful if `cmd-name' is a command that, itself, reads an input
-;;  argument with completion.  When that is the case, you can use
-;;  completion on that input, and if you do that, you can use `C-RET'
-;;  to use command `cmd-name' as a multi-command.  In other words,
-;;  this binding allows for two levels of multi-commands.
+;;  candidate command on a single argument that it reads.  This is
+;;  useful if that command itself reads an input argument with
+;;  completion.  When that is the case, you can use completion on that
+;;  input, and if you do that, you can use `C-RET' to use the
+;;  candidate command `as a multi-command.  In other words, this
+;;  binding allows for two levels of multi-commands.
 ;;
 ;;  There are a few things wrong with this definition, however.  In
 ;;  the action function, the candidate command is applied to a
@@ -8905,10 +8920,11 @@
 ;;  `icicle-candidate-action-fn':
 ;;
 ;;  (lambda (x)
+;;    (setq x  (icicle-transform-multi-completion x))
 ;;    (condition-case nil
-;;        (funcall cmd x)    ; Try to use a string candidate.  If that
+;;        (funcall ',cmd x)   ; Try to use a string candidate.  If that
 ;;      (wrong-type-argument ; did not work, use a symbol or number.
-;;       (funcall cmd (car (read-from-string x))))))
+;;       (funcall ',cmd (car (read-from-string x))))))
 ;;
 ;;  A similar problem occurs if the action function called does not
 ;;  accept a (single) argument.  The best thing to do in this case is
@@ -8917,27 +8933,30 @@
 ;;
 ;;  (wrong-number-of-arguments (funcall #'icicle-help-on-candidate))
 ;;
-;;  And what if the command `cmd' does something that changes the
-;;  focus away from the minibuffer's frame?  That's the case for
+;;  And what if the command does something that changes the focus away
+;;  from the minibuffer's frame?  That's the case for
 ;;  `describe-variable', for instance: it selects buffer `*Help*'.  To
-;;  fix this potential problem, the action function needs to reset the
-;;  focus back to the minibuffer frame:
+;;  fix this potential problem, the action function resets the focus
+;;  back to the minibuffer and its frame:
 ;;
 ;;  (lambda (x)
+;;    (setq x  (icicle-transform-multi-completion x))
 ;;    (condition-case nil
-;;        (funcall cmd x)
-;;      (wrong-type-argument (funcall cmd (car (read-from-string x))))
+;;        (funcall ',cmd x)
+;;      (wrong-type-argument
+;;       (funcall ',cmd (car (read-from-string x))))
 ;;      (wrong-number-of-arguments
 ;;       (funcall #'icicle-help-on-candidate)))
+;;    (select-window (minibuffer-window))
 ;;    (select-frame-set-input-focus
 ;;      (window-frame (minibuffer-window))))
 ;;
 ;;  The actual definitions of the action function and the main command
 ;;  are even more complex.  They need to take into account various
 ;;  subtleties, including those associated with recursive minibuffers
-;;  and multiple invocations of `completing-read'.  Evaluate, for
-;;  example, (symbol-function 'icicle-execute-extended-command) to see
-;;  the real definition.
+;;  and multiple invocations of `completing-read'.  Evaluate
+;;  (symbol-function 'icicle-execute-extended-command) to see the real
+;;  definition.
 ;;
 ;;  See Also:
 ;;
