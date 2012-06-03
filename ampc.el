@@ -4,12 +4,12 @@
 
 ;; Author: Christopher Schmidt <christopher@ch.ristopher.com>
 ;; Maintainer: Christopher Schmidt <christopher@ch.ristopher.com>
-;; Version: 0.1.2
+;; Version: 0.1.3
 ;; Created: 2011-12-06
 ;; Keywords: ampc, mpc, mpd
 ;; Compatibility: GNU Emacs: 24.x
 
-;; This file is part of GNU Emacs.
+;; This file is part of ampc.
 
 ;; This program is free software; you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -42,15 +42,22 @@
 ;; Optionally bind a key to this function, e.g.:
 ;;
 ;; (global-set-key (kbd "<f9>") 'ampc)
-
+;;
+;; or
+;;
+;; (global-set-key (kbd "<f9>") (lambda () (interactive) (ampc "host" "port")))
+;;
 ;; Byte-compile ampc (M-x byte-compile-file RET /path/to/ampc.el RET) to improve
 ;; its performance!
 
 ;;; ** usage
-;; To invoke ampc, call the command `ampc', e.g. via M-x ampc RET.  Once ampc is
-;; connected to the daemon, it creates its window configuration in the selected
-;; window.  To make ampc use the full frame rather than the selected window,
-;; customise `ampc-use-full-frame'.
+;; To invoke ampc, call the command `ampc', e.g. via M-x ampc RET.  When called
+;; interactively, `ampc' reads host address and port from the minibuffer.  If
+;; called non-interactively, the first argument to `ampc' is the host, the
+;; second is the port.  Both values default to nil, which will make ampc connect
+;; to localhost:6600.  Once ampc is connected to the daemon, it creates its
+;; window configuration in the selected window.  To make ampc use the full frame
+;; rather than the selected window, customise `ampc-use-full-frame'.
 ;;
 ;; ampc offers three independent views which expose different parts of the user
 ;; interface.  The current playlist view, the default view at startup, may be
@@ -80,15 +87,19 @@
 ;;
 ;; To mark an entry, move the point to the entry and press `m' (ampc-mark).  To
 ;; unmark an entry, press `u' (ampc-unmark).  To unmark all entries, press `U'
-;; (ampc-unmark-all).  To toggle marks, press `t' (ampc-toggle-marks).  To
-;; navigate to the next entry, press `n' (ampc-next-line).  Analogous, pressing
-;; `p' (ampc-previous-line) moves the point to the previous entry.
+;; (ampc-unmark-all).  To toggle marks, press `t' (ampc-toggle-marks).  Pressing
+;; `<down-mouse-1>' with the mouse mouse cursor on a list entry will move point
+;; to the entry and toggle the mark.  To navigate to the next entry, press `n'
+;; (ampc-next-line).  Analogous, pressing `p' (ampc-previous-line) moves the
+;; point to the previous entry.
 ;;
 ;; Window two shows the current playlist.  The song that is currently played by
 ;; the daemon, if any, is highlighted.  To delete the selected songs from the
-;; playlist, press `d' (ampc-delete).  To move the selected songs up, press
-;; `<up>' (ampc-up).  Analogous, press `<down>' (ampc-down) to move the selected
-;; songs down.
+;; playlist, press `d' (ampc-delete).  Pressing `<down-mouse-3>' will move the
+;; point to the entry under cursor and delete it from the playlist.  To move the
+;; selected songs up, press `<up>' (ampc-up).  Analogous, press `<down>'
+;; (ampc-down) to move the selected songs down.  Pressing `<return>'
+;; (ampc-play-this) or `<down-mouse-2>' will play the song at point/cursor.
 ;;
 ;; Windows three to five are tag browsers.  You use them to narrow the song
 ;; database to certain songs.  Think of tag browsers as filters, analogous to
@@ -96,9 +107,11 @@
 ;; songs that is filtered is displayed in the header line of the window.
 ;;
 ;; Window six shows the songs that match the filters defined by windows three to
-;; five.  To add the selected song to the playlist, press `a' (ampc-add).  This
-;; key binding works in tag browsers as well.  Calling ampc-add in a tag browser
-;; adds all songs filtered up to the selected browser to the playlist.
+;; five.  To add the selected song to the playlist, press `a' (ampc-add).
+;; Pressing `<down-mouse-3>' will move the point to the entry under the cursor
+;; and execute `ampc-add'.  These key bindings works in tag browsers as well.
+;; Calling `ampc-add' in a tag browser adds all songs filtered up to the
+;; selected browser to the playlist.
 ;;
 ;; The tag browsers of the (default) current playlist view (accessed via `J')
 ;; are `Genre' (window 3), `Artist' (window 4) and `Album' (window 5).  The key
@@ -124,7 +137,7 @@
 ;;; *** outputs view
 ;; The outputs view contains a single list which shows the configured outputs of
 ;; mpd.  To toggle the enabled property of the selected outputs, press `a'
-;; (ampc-toggle-output-enabled).
+;; (ampc-toggle-output-enabled) or `<mouse-3>'.
 
 ;;; *** global keys
 ;; Aside from `J', `M', `K', `<' and `L', which may be used to select different
@@ -165,8 +178,8 @@
 ;;
 ;; The keymap of ampc is designed to fit the QWERTY United States keyboard
 ;; layout.  If you use another keyboard layout, feel free to modify
-;; ampc-mode-map.  For example, I use a regular QWERTZ German keyboard (layout),
-;; so I modify `ampc-mode-map' in my init.el like this:
+;; `ampc-mode-map'.  For example, I use a regular QWERTZ German keyboard
+;; (layout), so I modify `ampc-mode-map' in my init.el like this:
 ;;
 ;; (eval-after-load 'ampc
 ;;   '(flet ((substitute-ampc-key
@@ -291,19 +304,22 @@ all the time!"
                     ("Artist" :offset 20)
                     ("Album" :offset 40)
                     ("Time" :offset 60))))
-    `((,(kbd "J")
+    `(("Current playlist view (Genre|Artist|Album)"
+       ,(kbd "J")
        horizontal
        (0.4 vertical
             (6 status)
             (1.0 current-playlist :properties ,pl-prop))
        ,rs_a)
-      (,(kbd "M")
+      ("Current playlist view (Genre|Album|Artist)"
+       ,(kbd "M")
        horizontal
        (0.4 vertical
             (6 status)
             (1.0 current-playlist :properties ,pl-prop))
        ,rs_b)
-      (,(kbd "K")
+      ("Playlist view (Genre|Artist|Album)"
+       ,(kbd "K")
        horizontal
        (0.4 vertical
             (6 status)
@@ -311,7 +327,8 @@ all the time!"
                  (0.8 playlist :properties ,pl-prop)
                  (1.0 playlists)))
        ,rs_a)
-      (,(kbd "<")
+      ("Playlist view (Genre|Album|Artist)"
+       ,(kbd "<")
        horizontal
        (0.4 vertical
             (6 status)
@@ -319,7 +336,8 @@ all the time!"
                  (0.8 playlist :properties ,pl-prop)
                  (1.0 playlists)))
        ,rs_b)
-      (,(kbd "L")
+      ("Outputs view"
+       ,(kbd "L")
        outputs :properties (("outputname" :title "Name")
                             ("outputenabled" :title "Enabled" :offset 10))))))
 
@@ -368,10 +386,10 @@ all the time!"
     (define-key map (kbd "z") 'ampc-suspend)
     (define-key map (kbd "T") 'ampc-trigger-update)
     (loop for view in ampc-views
-          do (define-key map (car view)
+          do (define-key map (cadr view)
                `(lambda ()
                   (interactive)
-                  (ampc-configure-frame ',(cdr view)))))
+                  (ampc-change-view ',view))))
     map))
 
 (defvar ampc-item-mode-map
@@ -382,12 +400,19 @@ all the time!"
     (define-key map (kbd "U") 'ampc-unmark-all)
     (define-key map (kbd "n") 'ampc-next-line)
     (define-key map (kbd "p") 'ampc-previous-line)
+    (define-key map [remap next-line] 'ampc-next-line)
+    (define-key map [remap previous-line] 'ampc-previous-line)
+    (define-key map (kbd "<down-mouse-1>") 'ampc-mouse-toggle-mark)
+    (define-key map (kbd "<mouse-1>") 'ampc-mouse-align-point)
     map))
 
 (defvar ampc-current-playlist-mode-map
   (let ((map (make-sparse-keymap)))
     (suppress-keymap map)
     (define-key map (kbd "<return>") 'ampc-play-this)
+    (define-key map (kbd "<down-mouse-2>") 'ampc-mouse-play-this)
+    (define-key map (kbd "<mouse-2>") 'ampc-mouse-align-point)
+    (define-key map (kbd "<down-mouse-3>") 'ampc-mouse-delete)
     map))
 
 (defvar ampc-playlist-mode-map
@@ -397,6 +422,7 @@ all the time!"
     (define-key map (kbd "d") 'ampc-delete)
     (define-key map (kbd "<up>") 'ampc-up)
     (define-key map (kbd "<down>") 'ampc-down)
+    (define-key map (kbd "<down-mouse-3>") 'ampc-mouse-delete)
     map))
 
 (defvar ampc-playlists-mode-map
@@ -412,6 +438,8 @@ all the time!"
     (suppress-keymap map)
     (define-key map (kbd "t") 'ampc-toggle-marks)
     (define-key map (kbd "a") 'ampc-add)
+    (define-key map (kbd "<down-mouse-3>") 'ampc-mouse-add)
+    (define-key map (kbd "<mouse-3>") 'ampc-mouse-align-point)
     map))
 
 (defvar ampc-outputs-mode-map
@@ -419,18 +447,30 @@ all the time!"
     (suppress-keymap map)
     (define-key map (kbd "t") 'ampc-toggle-marks)
     (define-key map (kbd "a") 'ampc-toggle-output-enabled)
+    (define-key map (kbd "<down-mouse-3>") 'ampc-mouse-toggle-output-enabled)
+    (define-key map (kbd "<mouse-3>") 'ampc-mouse-align-point)
     map))
 
 ;;; **** menu
-(easy-menu-define ampc-menu ampc-mode-map
-  "Main Menu for ampc"
-  '("ampc"
+(easy-menu-define nil ampc-mode-map nil
+  `("ampc"
+    ("Change view" ,@(loop for view in ampc-views
+                           collect (vector (car view)
+                                           `(lambda ()
+                                              (interactive)
+                                              (ampc-change-view ',view)))))
+    "--"
     ["Play" ampc-toggle-play
      :visible (and ampc-status
                    (not (equal (cdr (assq 'state ampc-status)) "play")))]
     ["Pause" ampc-toggle-play
      :visible (and ampc-status
                    (equal (cdr (assq 'state ampc-status)) "play"))]
+    ["Stop" (lambda () (interactive) (ampc-toggle-play 4))
+     :visible (and ampc-status
+                   (equal (cdr (assq 'state ampc-status)) "play"))]
+    ["Next" ampc-next]
+    ["Previous" ampc-previous]
     "--"
     ["Clear playlist" ampc-clear]
     ["Shuffle playlist" ampc-shuffle]
@@ -443,11 +483,18 @@ all the time!"
     ["Decrease volume" ampc-decrease-volume]
     ["Increase crossfade" ampc-increase-crossfade]
     ["Decrease crossfade" ampc-decrease-crossfade]
-    ["Toggle repeat" ampc-toggle-repeat]
-    ["Toggle random" ampc-toggle-random]
-    ["Toggle consume" ampc-toggle-consume]
+    ["Toggle repeat" ampc-toggle-repeat
+     :style toggle
+     :selected (equal (cdr-safe (assq 'repeat ampc-status)) "1")]
+    ["Toggle random" ampc-toggle-random
+     :style toggle
+     :selected (equal (cdr-safe (assq 'random ampc-status)) "1")]
+    ["Toggle consume" ampc-toggle-consume
+     :style toggle
+     :selected (equal (cdr-safe (assq 'consume ampc-status)) "1")]
     "--"
     ["Trigger update" ampc-trigger-update]
+    ["Suspend" ampc-suspend]
     ["Quit" ampc-quit]))
 
 (easy-menu-define ampc-selection-menu ampc-item-mode-map
@@ -465,6 +512,31 @@ all the time!"
     ["Unmark all" ampc-unmark-all]
     ["Toggle marks" ampc-toggle-marks
      :visible (not (eq (car ampc-type) 'playlists))]))
+
+(defvar ampc-tool-bar-map
+  (let ((map (make-sparse-keymap)))
+    (tool-bar-local-item
+     "mpc/prev" 'ampc-previous 'previous map
+     :help "Previous")
+    (tool-bar-local-item
+     "mpc/play" 'ampc-toggle-play 'play map
+     :help "Play"
+     :visible '(and ampc-status
+                    (not (equal (cdr (assq 'state ampc-status)) "play"))))
+    (tool-bar-local-item
+     "mpc/pause" 'ampc-toggle-play 'pause map
+     :help "Pause"
+     :visible '(and ampc-status
+                    (equal (cdr (assq 'state ampc-status)) "play")))
+    (tool-bar-local-item
+     "mpc/stop" (lambda () (interactive) (ampc-toggle-play 4)) 'stop map
+     :help "Stop"
+     :visible '(and ampc-status
+                    (equal (cdr (assq 'state ampc-status)) "play")))
+    (tool-bar-local-item
+     "mpc/next" 'ampc-next 'next map
+     :help "Next")
+    map))
 
 ;;; ** code
 ;;; *** macros
@@ -509,7 +581,11 @@ all the time!"
                when (get-text-property (point) 'updated)
                do (delete-region (point) (1+ (line-end-position)))
                else
-               do (forward-line nil)
+               do (add-text-properties
+                   (+ (point) 2)
+                   (progn (forward-line nil)
+                          (1- (point)))
+                   '(mouse-face highlight))
                end)
          (goto-char point)
          (ampc-align-point))
@@ -531,7 +607,9 @@ all the time!"
                do (save-excursion
                     ,@body))
        (loop until (eobp)
-             for index from 0 to (1- (prefix-numeric-value arg-))
+             for index from 0 to (1- (if (numberp arg-)
+                                         arg-
+                                       (prefix-numeric-value arg-)))
              do (save-excursion
                   (goto-char (line-end-position))
                   ,@body)
@@ -556,11 +634,11 @@ all the time!"
 (define-derived-mode ampc-item-mode ampc-mode ""
   nil)
 
-(define-derived-mode ampc-mode fundamental-mode "ampc"
+(define-derived-mode ampc-mode special-mode "ampc"
   nil
   (buffer-disable-undo)
-  (setf buffer-read-only t
-        truncate-lines ampc-truncate-lines
+  (set (make-local-variable 'tool-bar-map) ampc-tool-bar-map)
+  (setf truncate-lines ampc-truncate-lines
         font-lock-defaults '((("^\\(\\*\\)\\(.*\\)$"
                                (1 'ampc-mark-face)
                                (2 'ampc-marked-face))
@@ -580,6 +658,11 @@ all the time!"
               (2 'ampc-current-song-marked-face)))))
 
 ;;; *** internal functions
+(defun ampc-change-view (view)
+  (if (equal ampc-outstanding-commands '((idle)))
+      (ampc-configure-frame (cddr view))
+    (message "ampc is busy, cannot change window layout")))
+
 (defun ampc-quote (string)
   (concat "\"" (replace-regexp-in-string "\"" "\\\"" string) "\""))
 
@@ -605,7 +688,7 @@ all the time!"
                                 data)
            (ampc-send-command 'add t (ampc-quote data))))
         (t
-         (loop for d in data
+         (loop for d in (reverse data)
                do (ampc-add-impl (cdr (assoc "file" d)))))))
 
 (defun* ampc-skip (N &aux (song (cdr-safe (assq 'song ampc-status))))
@@ -834,8 +917,7 @@ all the time!"
                      ((tag song)
                       (if (assoc (ampc-tags) ampc-internal-db)
                           (ampc-fill-tag-song)
-                        (push `(,(ampc-tags) . ,(ampc-create-tree))
-                              ampc-internal-db)
+                        (push `(,(ampc-tags) . nil) ampc-internal-db)
                         (ampc-send-command 'listallinfo)))
                      (status
                       (ampc-send-command 'status)
@@ -894,7 +976,7 @@ all the time!"
                                                      (t a))))))
 
 (defun ampc-tree< (a b)
-  (not (string< (if (listp a) (car a) a) (if (listp b) (car b) b))))
+  (string< (car a) (car b)))
 
 (defun ampc-create-tree ()
   (avl-tree-create 'ampc-tree<))
@@ -956,21 +1038,22 @@ all the time!"
          (insert element "\n")
          (put-text-property start (point) 'data (if (eq cmp t)
                                                     `(,data)
-                                                  data)))
-       nil)
-      (update t
-              (remove-text-properties (point) (1+ (point)) '(updated))
-              (equal (buffer-substring (point) (1+ (point))) "*")))))
+                                                  data))))
+      (update
+       (remove-text-properties (point) (1+ (point)) '(updated))
+       (equal (buffer-substring (point) (1+ (point))) "*")))))
 
 (defun ampc-fill-tag (trees)
   (put-text-property (point-min) (point-max) 'data nil)
   (loop with new-trees
         finally return new-trees
         for tree in trees
+        when tree
         do (avl-tree-mapc (lambda (e)
                             (when (ampc-insert (car e) (cdr e) t)
                               (push (cdr e) new-trees)))
-                          tree)))
+                          tree)
+        end))
 
 (defun ampc-fill-song (trees)
   (loop
@@ -1175,18 +1258,16 @@ all the time!"
                           (line-beginning-position))
         then next
         while origin
-        for next  = (progn
-                      (forward-char)
-                      (and (search-forward-regexp "^file: " nil t)
-                           (move-beginning-of-line nil)))
-        while next
+        do (goto-char (1+ origin))
+        for next = (and (search-forward-regexp "^file: " nil t)
+                        (line-beginning-position))
+        while (or (not running) next)
         do (save-restriction
-             (narrow-to-region origin next)
+             (narrow-to-region origin (or next (point-max)))
              (ampc-fill-internal-db-entry))
-        (goto-char origin)
-        (when running
-          (delete-region origin next)
-          (setf next origin))))
+        do (when running
+             (delete-region origin next)
+             (setf next origin))))
 
 (defun ampc-tags ()
   (loop for w in (ampc-windows)
@@ -1200,25 +1281,21 @@ all the time!"
 (defun ampc-fill-internal-db-entry ()
   (loop
    with data-buffer = (current-buffer)
-   with tree = `(nil . ,(cdr (assoc (ampc-tags) ampc-internal-db)))
+   with tree = (assoc (ampc-tags) ampc-internal-db)
    for w in (ampc-windows)
    do
    (with-current-buffer (window-buffer w)
      (ampc-set-dirty t)
      (ecase (car ampc-type)
        (tag
-        (let* ((data (or (ampc-extract (cdr ampc-type) data-buffer)
-                         "[Not Specified]"))
-               (member (and (cdr tree) (avl-tree-member (cdr tree) data))))
-          (cond (member (setf tree member))
-                ((cdr tree)
-                 (setf member `(,data . nil))
-                 (avl-tree-enter (cdr tree) member)
-                 (setf tree member))
-                (t
-                 (setf (cdr tree) (ampc-create-tree) member`(,data . nil))
-                 (avl-tree-enter (cdr tree) member)
-                 (setf tree member)))))
+        (let ((data (or (ampc-extract (cdr ampc-type) data-buffer)
+                        "[Not Specified]")))
+          (unless (cdr tree)
+            (setf (cdr tree) (ampc-create-tree)))
+          (setf tree (avl-tree-enter (cdr tree)
+                                     `(,data . nil)
+                                     (lambda (data match)
+                                       match)))))
        (song
         (push (loop for p in `(("file")
                                ,@(plist-get (cdr ampc-type) :properties))
@@ -1423,6 +1500,47 @@ all the time!"
                                         (lambda (a b) (< (car a) (car b))))))
   (ampc-update))
 
+(defun ampc-mouse-play-this (event)
+  (interactive "e")
+  (select-window (posn-window (event-end event)))
+  (goto-char (posn-point (event-end event)))
+  (ampc-play-this))
+
+(defun ampc-mouse-delete (event)
+  (interactive "e")
+  (select-window (posn-window (event-end event)))
+  (goto-char (posn-point (event-end event)))
+  (ampc-delete 1))
+
+(defun ampc-mouse-add (event)
+  (interactive "e")
+  (select-window (posn-window (event-end event)))
+  (goto-char (posn-point (event-end event)))
+  (ampc-add-impl))
+
+(defun ampc-mouse-toggle-output-enabled (event)
+  (interactive "e")
+  (select-window (posn-window (event-end event)))
+  (goto-char (posn-point (event-end event)))
+  (ampc-toggle-output-enabled 1))
+
+(defun* ampc-mouse-toggle-mark (event &aux buffer-read-only)
+  (interactive "e")
+  (let ((window (posn-window (event-end event))))
+    (when (with-selected-window window
+            (goto-char (posn-point (event-end event)))
+            (unless (eobp)
+              (move-beginning-of-line nil)
+              (ampc-mark-impl (not (eq (char-after) ?*)) 1)
+              t))
+      (select-window window))))
+
+(defun ampc-mouse-align-point (event)
+  (interactive "e")
+  (select-window (posn-window (event-end event)))
+  (goto-char (posn-point (event-end event)))
+  (ampc-align-point))
+
 ;;; *** interactives
 (defun* ampc-unmark-all (&aux buffer-read-only)
   "Remove all marks."
@@ -1623,7 +1741,8 @@ If ARG is omitted, use the selected entries."
 
 (defun ampc-delete (&optional arg)
   "Delete the next ARG songs from the playlist.
-If ARG is omitted, use the selected entries."
+If ARG is omitted, use the selected entries.  If ARG is non-nil,
+all marks after point are removed nontheless."
   (interactive "P")
   (assert (ampc-in-ampc-p))
   (let ((point (point)))
@@ -1669,7 +1788,7 @@ If ARG is omitted, use the selected entries."
     (ampc-send-command 'clear)))
 
 (defun ampc-add (&optional arg)
-  "Add the next ARG songs associated with the entries after point
+  "Add the songs associated with the next ARG entries after point
 to the playlist.
 If ARG is omitted, use the selected entries in the current buffer."
   (interactive "P")
@@ -1833,7 +1952,7 @@ connect to.  The values default to localhost:6600."
   (unless ampc-connection
     (let ((connection (open-network-stream "ampc"
                                            (with-current-buffer
-                                               (get-buffer-create " *mpc*")
+                                               (get-buffer-create " *ampc*")
                                              (delete-region (point-min)
                                                             (point-max))
                                              (current-buffer))
@@ -1850,7 +1969,7 @@ connect to.  The values default to localhost:6600."
     (set-process-filter ampc-connection 'ampc-filter)
     (set-process-query-on-exit-flag ampc-connection nil)
     (setf ampc-outstanding-commands '((setup))))
-  (ampc-configure-frame (cdar ampc-views))
+  (ampc-configure-frame (cddar ampc-views))
   (run-hooks 'ampc-connected-hook)
   (ampc-filter (process-buffer ampc-connection) nil))
 
