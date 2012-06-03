@@ -120,7 +120,7 @@ top-level##' should always straighten you out.
 [:describe-function]
 ==== What About describe-variable and describe-function? ====
 
-Sadly, if you try the last example with `describe-variable' or `describe-function', you might be in for a surprise. In Emacs 20, they both work fine. In later Emacs versions, `describe-variable' gives you the message "You did not specify a variable", and `describe-function' displays a `*Help*' buffer that says that each function you choose is really a [[keyboard macro]]!
+Sadly, if you try the last example with `describe-variable' or `describe-function', you might be in for a surprise. In Emacs 20, they both work fine. In later Emacs versions, `describe-variable' gives you the message "##You did not specify a variable##", and `describe-function' displays a `*Help*' buffer that says that each function you choose is really a [[keyboard macro]]!
 
 Why? It's a bit complex, but worth hearing about if you want to understand multi `M-x' better.
 
