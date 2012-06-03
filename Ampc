@@ -24,15 +24,24 @@ Optionally bind a key to this function, e.g.:
 (global-set-key (kbd "<f9>") 'ampc)
 </pre>
 
+or
+
+<pre>
+(global-set-key (kbd "<f9>") (lambda () (interactive) (ampc "host" "port")))
+</pre>
+
 Byte-compile ampc (M-x byte-compile-file RET /path/to/ampc.el RET) to improve
 its performance!
 
 == usage ==
 
-To invoke ampc, call the command `ampc', e.g. via M-x ampc RET.  Once ampc is
-connected to the daemon, it creates its window configuration in the selected
-window.  To make ampc use the full frame rather than the selected window,
-customise `ampc-use-full-frame'.
+To invoke ampc, call the command `ampc', e.g. via M-x ampc RET.  When called
+interactively, `ampc' reads host address and port from the minibuffer.  If
+called non-interactively, the first argument to `ampc' is the host, the
+second is the port.  Both values default to nil, which will make ampc connect
+to localhost:6600.  Once ampc is connected to the daemon, it creates its
+window configuration in the selected window.  To make ampc use the full frame
+rather than the selected window, customise `ampc-use-full-frame'.
 
 ampc offers three independent views which expose different parts of the user
 interface.  The current playlist view, the default view at startup, may be
@@ -65,15 +74,19 @@ item may be selected/marked.  There may be multiple selections.
 
 To mark an entry, move the point to the entry and press `m' (ampc-mark).  To
 unmark an entry, press `u' (ampc-unmark).  To unmark all entries, press `U'
-(ampc-unmark-all).  To toggle marks, press `t' (ampc-toggle-marks).  To
-navigate to the next entry, press `n' (ampc-next-line).  Analogous, pressing
-`p' (ampc-previous-line) moves the point to the previous entry.
+(ampc-unmark-all).  To toggle marks, press `t' (ampc-toggle-marks).  Pressing
+`<down-mouse-1>' with the mouse mouse cursor on a list entry will move point
+to the entry and toggle the mark.  To navigate to the next entry, press `n'
+(ampc-next-line).  Analogous, pressing `p' (ampc-previous-line) moves the
+point to the previous entry.
 
 Window two shows the current playlist.  The song that is currently played by
 the daemon, if any, is highlighted.  To delete the selected songs from the
-playlist, press `d' (ampc-delete).  To move the selected songs up, press
-`<up>' (ampc-up).  Analogous, press `<down>' (ampc-down) to move the selected
-songs down.
+playlist, press `d' (ampc-delete).  Pressing `<down-mouse-3>' will move the
+point to the entry under cursor and delete it from the playlist.  To move the
+selected songs up, press `<up>' (ampc-up).  Analogous, press `<down>'
+(ampc-down) to move the selected songs down.  Pressing `<return>'
+(ampc-play-this) or `<down-mouse-2>' will play the song at point/cursor.
 
 Windows three to five are tag browsers.  You use them to narrow the song
 database to certain songs.  Think of tag browsers as filters, analogous to
@@ -81,9 +94,11 @@ piping `grep' outputs through additional `grep' filters.  The property of the
 songs that is filtered is displayed in the header line of the window.
 
 Window six shows the songs that match the filters defined by windows three to
-five.  To add the selected song to the playlist, press `a' (ampc-add).  This
-key binding works in tag browsers as well.  Calling ampc-add in a tag browser
-adds all songs filtered up to the selected browser to the playlist.
+five.  To add the selected song to the playlist, press `a' (ampc-add).
+Pressing `<down-mouse-3>' will move the point to the entry under the cursor
+and execute `ampc-add'.  These key bindings works in tag browsers as well.
+Calling `ampc-add' in a tag browser adds all songs filtered up to the
+selected browser to the playlist.
 
 The tag browsers of the (default) current playlist view (accessed via `J')
 are `Genre' (window 3), `Artist' (window 4) and `Album' (window 5).  The key
@@ -111,7 +126,7 @@ order of tag browsers.
 
 The outputs view contains a single list which shows the configured outputs of
 mpd.  To toggle the enabled property of the selected outputs, press `a'
-(ampc-toggle-output-enabled).
+(ampc-toggle-output-enabled) or `<mouse-3>'.
 
 === global keys ===
 
@@ -153,8 +168,8 @@ point to the current song.
 
 The keymap of ampc is designed to fit the QWERTY United States keyboard
 layout.  If you use another keyboard layout, feel free to modify
-ampc-mode-map.  For example, I use a regular QWERTZ German keyboard (layout),
-so I modify `ampc-mode-map' in my init.el like this:
+`ampc-mode-map'.  For example, I use a regular QWERTZ German keyboard
+(layout), so I modify `ampc-mode-map' in my init.el like this:
 
 <pre>
 (eval-after-load 'ampc
