@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Sun Jun  3 09:09:14 2012 (-0700)
+;; Last-Updated: Sun Jun  3 12:03:13 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 23806
+;;     Update #: 23808
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-cmd1.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -3411,29 +3411,34 @@ then customize option `icicle-top-level-key-bindings'." ; Doc string
          (icicle-candidate-action-fn
           (and icicle-candidate-action-fn ; This is nil after the command name is read.
                `(lambda (arg)
-                   (setq arg  (icicle-transform-multi-completion arg))
-                   (condition-case nil
-                       (funcall ',cmd arg) ; Try to use string candidate `arg'.
-                     ;; If that didn't work, use a symbol or number candidate.
-                     (wrong-type-argument (funcall ',cmd (car (read-from-string arg))))
-                     (wrong-number-of-arguments (funcall #'icicle-help-on-candidate))) ; Punt - show help.
-                   (select-window (minibuffer-window))
-                   (select-frame-set-input-focus (selected-frame))))))
+                 (setq arg  (icicle-transform-multi-completion arg))
+                 (condition-case nil
+                     (funcall ',cmd arg) ; Try to use string candidate `arg'.
+                   ;; If that didn't work, use a symbol or number candidate.
+                   (wrong-type-argument (funcall ',cmd (car (read-from-string arg))))
+                   (wrong-number-of-arguments (funcall #'icicle-help-on-candidate))) ; Punt - show help.
+                 (select-window (minibuffer-window))
+                 (select-frame-set-input-focus (selected-frame))))))
     ;; Message showing what `cmd' is bound to.  This is pretty much a transcription of C code in
     ;; `keyboard.c'.  Not sure it DTRT when there is already a msg in the echo area.
-    (when (and suggest-key-bindings (not executing-kbd-macro))
+    ;; But do not show the message if we are not at the `M-x' top level, i.e., if we are acting on a
+    ;; candidate command using `C-RET' instead of `RET'.
+    (when (and suggest-key-bindings  (not executing-kbd-macro)
+               (or (not (get this-command 'icicle-action-command))
+                   ;; This one is used for `*-per-mode-action', which sets `this-command' to the cycler.
+                   (not (get this-command 'icicle-cycling-command))))
       (let* ((bindings   (where-is-internal cmd overriding-local-map t))
              (curr-msg   (current-message))
              ;; $$$$$$ (wait-time  (if curr-msg
-             ;; $$$$$$                 (or (and (numberp suggest-key-bindings) suggest-key-bindings) 2)
+             ;; $$$$$$                 (or (and (numberp suggest-key-bindings)  suggest-key-bindings) 2)
              ;; $$$$$$              0))
-             (wait-time  (or (and (numberp suggest-key-bindings) suggest-key-bindings) 2)))
-        (when (and bindings (not (and (vectorp bindings) (eq (aref bindings 0) 'mouse-movement))))
-          (when (and (sit-for wait-time) (atom unread-command-events))
+             (wait-time  (or (and (numberp suggest-key-bindings)  suggest-key-bindings) 2)))
+        (when (and bindings  (not (and (vectorp bindings)  (eq (aref bindings 0) 'mouse-movement))))
+          (when (and (sit-for wait-time)  (atom unread-command-events))
             (let ((message-log-max  nil)) ; Don't log this message.
               (message "You can invoke command `%s' using `%s'" (symbol-name cmd)
                        (icicle-propertize (key-description bindings) 'face 'icicle-msg-emphasis)))
-            (when (and (sit-for wait-time) curr-msg) (message "%s" curr-msg))))))
+            (when (and (sit-for wait-time)  curr-msg) (message "%s" curr-msg))))))
     (cond ((arrayp fn)
            (let ((this-command  cmd)) (execute-kbd-macro fn count))
            (when (> count 1) (message "(%d times)" count)))
