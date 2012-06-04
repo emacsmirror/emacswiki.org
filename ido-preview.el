@@ -40,6 +40,7 @@
 ;;
 ;; References:
 ;; http://www.emacswiki.org/emacs/ido-preview.el -- self-reference
+;; http://www.emacswiki.org/emacs/InteractivelyDoThings -- ido main page
 ;;
 ;;; Code:
 
