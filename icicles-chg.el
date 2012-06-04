@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Sun Jun  3 12:11:19 2012 (-0700)
+;; Last-Updated: Mon Jun  4 15:10:02 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 8469
+;;     Update #: 8471
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-chg.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -85,6 +85,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd1.el'")
 ;;
+;; 2012/06/04 dadams
+;;     Comment or otherwise handle free vars in lambdas: some lexical-let, some backquoting.
 ;; 2012/06/03 dadams
 ;;     icicle-execute-extended-command-1:
 ;;       Do not show "You can invoke..." message for multi-command use.  Do it only for top-level M-x.
