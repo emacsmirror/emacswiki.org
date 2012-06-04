@@ -507,7 +507,9 @@ https://gist.github.com/1329188
 
 == ido-preview ==
 Two functions, that allow to view current item contents in a temporary buffer and window(clearing surrounding windows, but it's safe). Content is either file contents, buffer contents or function description. 
+
 Content can also be second list's element, that must be string: 
+
   (ido-completing-read "What, ... is your favorite color? "
     (list
       (list "red" "Red is #ff0000")
@@ -515,6 +517,7 @@ Content can also be second list's element, that must be string:
       "yellow"
       "clear"
       (list "i-dont-know" "So why do you think my ido-preview will ever know it?")))
+
 Lisp:ido-preview.el
 
 == Icicles and Ido ==
