@@ -79,3 +79,6 @@ This feature is available as part of Emacs-24.1.
 * turn emacs into full fledged web browser using webkit.
 
 * log all emacs command invocations to a file or sql database - for life metrics/analysis purposes - to create predictive ai assistant
+** There is command-frequency.el and keyfreq.el.  They are both on marmalade.
+
+* Fix the slowness with subprocesses on OS X.
