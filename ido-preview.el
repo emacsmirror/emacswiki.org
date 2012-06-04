@@ -38,6 +38,9 @@
 ;;     (define-key ido-completion-map (kbd "C-p") 'ido-preview-backward)
 ;;     (define-key ido-completion-map (kbd "C-n") 'ido-preview-forward)))
 ;;
+;; References:
+;; http://www.emacswiki.org/emacs/ido-preview.el -- self-reference
+;;
 ;;; Code:
 
 (defun ido-preview-cond()
