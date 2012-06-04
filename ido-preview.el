@@ -1,4 +1,4 @@
-;;; ido-preview.el --- mode for viewing current option contests before opening
+;;; ido-preview.el --- commands for viewing current option contests before opening
 ;;
 ;; Copyright 2012 Horishnii Oleksii
 ;;
