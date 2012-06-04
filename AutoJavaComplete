@@ -1,5 +1,6 @@
- This is Auto Java Complete.     
- My email is <jixiuf@gmail.com>.
+ This is Auto Java Complete.   
+Mail list: emacsjava at googlegroups.com  
+ My email is <jixiuf at gmail.com>.
 
 ===Install===
 First you should have installed
@@ -122,10 +123,6 @@ You even can edit a jsp file using AutoJavaComplete ,try it.(read  [https://gith
 [[image:AutoJavaComplete-import]]
 
 [[image:AutoJavaComplete-import2]]
-
-== To Do ==
-
-* when completing method, show return type more gentlely  (finished)
 
 
 ----
