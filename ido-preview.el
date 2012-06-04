@@ -28,7 +28,7 @@
 ;;
 ;; Add something like the following to your .emacs:
 ;;
-;;; Warning: this bind my functions to C-p and C-n, and rebindbind
+;;; Warning: this bind my functions to C-p and C-n, and rebind
 ;;; *already bound* in ido C-p and C-n functions to C-M-p and C-M-n.
 ;;; If you don't want that hackery behavior, bind it to keys you like.
 ;; (add-hook 'ido-setup-hook
