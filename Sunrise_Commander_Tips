@@ -299,7 +299,8 @@ install). In Debian all you have to do is type (as root):
 
         apt-get install avfs
 
-in your command line and press Return.
+in your command line and press Return. Installation instructions for Mac OS X
+(Lion) are available [http://blog.breadncup.com/tag/sunrise-commander here].
 
 Once  you  have  AVFS installed in your system, you must launch the AVFS daemon,
 indicating a point (directory) where to "mount" your  entire  file  system.  For
