@@ -1,4 +1,4 @@
-Lisp:flex-isearch.el
+[https://bitbucket.org/jpkotta/flex-isearch BitBucket repo]
 
 This is a minor mode that modifies isearch-mode.  If the search fails, the search string is transformed into a regular expression that matches the original and similar strings.  The resulting regexp is similar to the way ido flex matching works (see InteractivelyDoThings).  You can customize the transformation by redefining the function flex-isearch-compile-regexp.  This was originally based off of fuzzy.el by Tomohiro Matsuyama of AutoComplete fame.
 
