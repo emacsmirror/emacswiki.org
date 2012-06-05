@@ -115,7 +115,7 @@ You have to replace the above mentioned sound files by ones that exist on your s
   (add-hook 'erc-server-PRIVMSG-functions
             'erc-my-privmsg-sound)
 
-Then, an example for the above *sound* function could just be:
+Then, an example for the above 'sound' function could just be:
 
   (setq sound-default "/usr/share/sounds/purple/alert.wav")
   
