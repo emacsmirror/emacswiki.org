@@ -30,10 +30,22 @@ This is really handy. Thanks! One request for enhancement: add a customization v
 : Done; please try the latest. Thx for the suggestion. -- DrewAdams
 
 [new]
-Thanks!  --AmitPatel
+Thanks!  -- AmitPatel
+
+----
 
 [new]
-Would it be possible to optionally display the absolute value of point even while not in TransientMarkMode? --Priyadarshan
+Would it be possible to optionally display the absolute value of point even while not in TransientMarkMode? -- [[Priyadarshan]]
+
+[new:DrewAdams:2012-06-05 20:44 UTC]
+Sorry, but I think that if you want something like that it should be as an extension of `line-number-mode' and/or `column-number-mode'.  Showing [[point]] as an option makes sense regardless of whether the [[region]] is [[active region|active]].
+
+Of course, as soon as point is shown someone will also want to see [[mark]]...
+
+If you want to do this kind of thing, just take a look at the code in <tt>[[modeline-posn.el]]</tt>, in particular the redefinition of `mode-line-position'.  The parts to tweak are those for `line-number-mode' and `column-number-mode' (one or both, depending on what you want).  HTH -- DrewAdams
+
+
+
 ----
 
 CategoryDisplay
