@@ -102,6 +102,32 @@ played.
 You have to replace the above mentioned sound files by ones that exist on your system.
 
 
+== Playing a sound when receiving a private message ==
+
+Here is how to play a sound whenever you receive a private message:
+
+  (defun erc-my-privmsg-sound (proc parsed)
+    (let* ((tgt (car (erc-response.command-args parsed)))
+           (privp (erc-current-nick-p tgt)))
+      (and
+       privp
+       (sound)
+       nil))) ;We must return nil. See help for `erc-server-PRIVMSG-functions'
+
+  (add-hook 'erc-server-PRIVMSG-functions
+            'erc-my-privmsg-sound)
+
+Then, an example for the above *sound* function could just be:
+
+  (setq sound-default "/usr/share/sounds/purple/alert.wav")
+  
+  (defun sound (&optional path)
+    (start-process-shell-command
+     "sound"
+     nil
+     (concat "aplay -fcd " (or path sound-default))))
+
+
 == Playing with sound on Mac OS X ==
 
 play-sound and friends don't appear to be implemented in various 
