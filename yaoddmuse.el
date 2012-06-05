@@ -1024,6 +1024,7 @@ It must print the page to stdout.
 
 ;;; Edit.
 
+;;;###autoload
 (defun yaoddmuse-edit (&optional wikiname pagename prefix)
   "Edit a page on a wiki.
 WIKINAME is the name of the wiki as defined in `yaoddmuse-wikis',
@@ -1040,6 +1041,7 @@ Use a PREFIX argument to force a reload of the page."
                               'yaoddmuse-handle-get
                             'yaoddmuse-handle-get-or-display)))
 
+;;;###autoload
 (defun yaoddmuse-edit-default (prefix)
   "Edit a page with default wiki `yaoddmuse-default-wiki'.
 Use a PREFIX argument to force a reload of the page."
@@ -1063,6 +1065,7 @@ page name when can't find page name around point."
 
 ;;; Post
 
+;;;###autoload
 (defun yaoddmuse-post-buffer (&optional post-buffer summary prefix)
   "Post the BUFFER to the current wiki.
 The current wiki is taken from `yaoddmuse-wiki'.
@@ -1087,6 +1090,7 @@ If PREFIX is non-nil, will view page after post successful."
                   summary
                   prefix))
 
+;;;###autoload
 (defun yaoddmuse-post-current-buffer (prefix)
   "Post current buffer to current wiki.
 The current wiki is taken from `yaoddmuse-wiki'.
@@ -1094,6 +1098,7 @@ Use a PREFIX argument to browse page after post successful."
   (interactive "P")
   (yaoddmuse-post-buffer (current-buffer) nil prefix))
 
+;;;###autoload
 (defun yaoddmuse-post-file (&optional filename wikiname pagename summary prefix)
   "Post file to current wiki.
 The current wiki is taken from `yaoddmuse-wiki'.
@@ -1119,12 +1124,14 @@ If PREFIX is non-nil, will view page after post successful."
     ;; Error when invalid file name.
     (message "Invalid file name %s" filename)))
 
+;;;###autoload
 (defun yaoddmuse-post-file-default (prefix)
   "Post file to default wiki.
 If PREFIX is non-nil, will view page after post successful."
   (interactive "P")
   (yaoddmuse-post-file nil yaoddmuse-default-wiki nil nil prefix))
 
+;;;###autoload
 (defun yaoddmuse-post-library (&optional library wikiname pagename summary prefix)
   "Post library to current wiki.
 The current wiki is taken from `yaoddmuse-wikis'.
@@ -1140,6 +1147,7 @@ If PREFIX is non-nil, will view page after post successful."
   (let ((filename (find-library-name library)))
     (yaoddmuse-post-file filename wikiname pagename summary prefix)))
 
+;;;###autoload
 (defun yaoddmuse-post-library-default (prefix)
   "Post library to default wiki.
 Use a PREFIX argument to browse page after post successful."
@@ -1150,6 +1158,7 @@ Use a PREFIX argument to browse page after post successful."
     ;; Post library to default wiki.
     (yaoddmuse-post-file filename yaoddmuse-default-wiki pagename nil prefix)))
 
+;;;###autoload
 (defun yaoddmuse-post-dired (&optional wikiname summary prefix)
   "Post dired marked files to current wiki.
 The current wiki is taken from `yaoddmuse-wikis'.
@@ -1168,12 +1177,14 @@ If PREFIX is non-nil, will view page after post successful."
               (yaoddmuse-post-file filename wikiname pagename summary prefix))))
     (message "This command in only for `dired-mode'.")))
 
+;;;###autoload
 (defun yaoddmuse-post-dired-default (prefix)
   "Post dired marked files to default wiki.
 Use a PREFIX argument to browse page after post successful."
   (interactive "P")
   (yaoddmuse-post-dired yaoddmuse-default-wiki nil prefix))
 
+;;;###autoload
 (defun yaoddmuse-post-screenshot (&optional wikiname summary prefix)
   "Post screenshot to current wiki.
 The current wiki is taken from `yaoddmuse-wikis'.
@@ -1191,6 +1202,7 @@ If PREFIX is non-nil, will view page after post successful."
         (yaoddmuse-post-file yaoddmuse-screenshot-filename wikiname nil "Screenshot by yaoddmuse.el" prefix))
     (message "Please make sure have install program '%s'." yaoddmuse-screenshot-program)))
 
+;;;###autoload
 (defun yaoddmuse-post-screenshot-default (prefix)
   "Post screenshot to default wiki.
 Use a PREFIX argument to browse page after post successful."
@@ -1204,6 +1216,7 @@ Use a PREFIX argument to browse page after post successful."
   (interactive)
   (yaoddmuse-get-page yaoddmuse-wikiname yaoddmuse-pagename))
 
+;;;###autoload
 (defun yaoddmuse-browse-page (&optional wikiname pagename)
   "Browse special page in wiki.
 WIKINAME is the name of the wiki as defined in `yaoddmuse-wikis',
@@ -1211,11 +1224,13 @@ PAGENAME is the pagename of the page you want to edit."
   (interactive)
   (yaoddmuse-get-pagename wikiname pagename 'yaoddmuse-handle-browse))
 
+;;;###autoload
 (defun yaoddmuse-browse-page-default ()
   "Brose special page with `yaoddmuse-default-wiki'."
   (interactive)
   (yaoddmuse-browse-page yaoddmuse-default-wiki))
 
+;;;###autoload
 (defun yaoddmuse-browse-page-diff (&optional wikiname pagename)
   "Browse special page diff in wiki.
 WIKINAME is the name of the wiki as defined in `yaoddmuse-wikis',
@@ -1223,8 +1238,9 @@ PAGENAME is the pagename of the page you want to edit."
   (interactive)
   (yaoddmuse-get-pagename wikiname pagename 'yaoddmuse-handle-browse-diff))
 
+;;;###autoload
 (defun yaoddmuse-browse-page-default-diff ()
-  "Brose special page with `yaoddmuse-default-wiki'."
+  "Browse special page with `yaoddmuse-default-wiki'."
   (interactive)
   (yaoddmuse-browse-page-diff yaoddmuse-default-wiki))
 
@@ -1345,6 +1361,7 @@ such as picture or compress."
         (insert data)
         (write-file (read-file-name (format "File: (Suffix: %s) " suffix)))))))
 
+;;;###autoload
 (defun emacswiki (&optional pagename prefix)
   "Edit a page on the EmacsWiki.
 PAGENAME is the pagename of the page you want to edit.
