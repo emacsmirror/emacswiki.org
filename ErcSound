@@ -104,8 +104,6 @@ You have to replace the above mentioned sound files by ones that exist on your s
 
 == Playing a sound when receiving a private message ==
 
-Here is how to play a sound whenever you receive a private message:
-
   (defun erc-my-privmsg-sound (proc parsed)
     (let* ((tgt (car (erc-response.command-args parsed)))
            (privp (erc-current-nick-p tgt)))
