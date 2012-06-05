@@ -28,3 +28,7 @@ How about adding a third option which would use a control character at the begin
 [new]
 
 this seems like a perfect use of prefix args? Since current isearch uses a prefix to mean "do regexp search" flex search could use one C-u to mean "regexp" and two C-u's to mean "flex", maybe. Eliminate the need for a first-character thing, anyway.
+
+[new:jpkotta:2012-06-05 18:51 UTC]
+
+Excellent idea.  I've updated it to advise normal isearch commands so that a double prefix activates flex searching, and also added some commands that work like the regular isearch commands except they force flex searching.  Also, I've set the default to not automatically activate flex searching when isearch fails.
