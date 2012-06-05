@@ -339,6 +339,8 @@ By the way have you considered moving to git (or another dvcs) and github (or an
 
 -- JonasBernoulli
 
+[new:JonasBernoulli:2012-06-05]
+I went ahead and added the autoloads myself. -- JonasBernoulli
  
 ----
 CategoryHomepage
