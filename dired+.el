@@ -7,9 +7,9 @@
 ;; Copyright (C) 1999-2012, Drew Adams, all rights reserved.
 ;; Created: Fri Mar 19 15:58:58 1999
 ;; Version: 21.2
-;; Last-Updated: Sat Jun  2 14:09:06 2012 (-0700)
+;; Last-Updated: Tue Jun  5 14:40:25 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 5808
+;;     Update #: 5846
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/dired+.el
 ;; Keywords: unix, mouse, directories, diredp, dired
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -299,6 +299,9 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2012/06/05 dadams
+;;     MS Windows: Just do not define commands that are inappropriate for Windows (instead of
+;;       defining them to raise an error or making them invisible in menus).
 ;; 2012/06/02 dadams
 ;;     Added: diredp-do-(print|encrypt|decrypt|sign|verify)-recursive.  Menus.  Keys.
 ;;     diredp-do-move-recursive: Corrected to use dired-rename-file, not dired-copy-file.
@@ -756,9 +759,10 @@
 
 (require 'dired-x nil t) ;; (no error if not found) dired-do-relsymlink
 (require 'misc-fns nil t) ;; (no error if not found): undefine-killer-commands
-(when (eq system-type 'windows-nt) ;; (no error if not found):
-  (require 'w32-browser nil t)) ;; dired-w32explore, dired-w32-browser, dired-mouse-w32-browser,
-                                ;; dired-multiple-w32-browser
+(when (memq system-type '(windows-nt ms-dos))
+  ;; (no error if not found):
+  (require 'w32-browser nil t));; dired-w32explore, dired-w32-browser, dired-mouse-w32-browser,
+                               ;; dired-multiple-w32-browser
 ;;; (when (< emacs-major-version 21)
 ;;;   (require 'mkhtml nil t)) ;; (no error if not found): mkhtml-dired-files
 
@@ -1281,14 +1285,14 @@ If HDR is non-nil, insert a header line with the directory name."
                   :help "Display sized image in a separate window"))
     (define-key diredp-menu-bar-immediate-menu [separator-image] '("--"))) ; -------------------
 
-(define-key diredp-menu-bar-immediate-menu [chown]
-  '(menu-item "Change Owner..." diredp-chown-this-file
-    :visible (not (memq system-type '(ms-dos windows-nt)))
-    :help "Change the owner of file at cursor"))
-(define-key diredp-menu-bar-immediate-menu [chgrp]
-  '(menu-item "Change Group..." diredp-chgrp-this-file
-    :visible (not (memq system-type '(ms-dos windows-nt)))
-    :help "Change the group of file at cursor"))
+(when (fboundp 'diredp-chown-this-file)
+  (define-key diredp-menu-bar-immediate-menu [chown]
+    '(menu-item "Change Owner..." diredp-chown-this-file
+      :help "Change the owner of file at cursor")))
+(when (fboundp 'diredp-chgrp-this-file)
+  (define-key diredp-menu-bar-immediate-menu [chgrp]
+    '(menu-item "Change Group..." diredp-chgrp-this-file
+      :help "Change the group of file at cursor")))
 (define-key diredp-menu-bar-immediate-menu [chmod]
   '(menu-item "Change Mode..." diredp-chmod-this-file
     :help "Change mode (attributes) of file at cursor"))
@@ -1485,14 +1489,14 @@ If HDR is non-nil, insert a header line with the directory name."
       :help "Display image thumbnails for marked image files"))
   (define-key diredp-menu-bar-operate-menu [separator-image] '("--"))) ; -----------------------
 
-(define-key diredp-menu-bar-operate-menu [chown]
-  '(menu-item "Change Owner..." dired-do-chown
-    :visible (not (memq system-type '(ms-dos windows-nt)))
-    :help "Change the owner of marked files"))
-(define-key diredp-menu-bar-operate-menu [chgrp]
-  '(menu-item "Change Group..." dired-do-chgrp
-    :visible (not (memq system-type '(ms-dos windows-nt)))
-    :help "Change the owner of marked files"))
+(unless (memq system-type '(windows-nt ms-dos))
+  (define-key diredp-menu-bar-operate-menu [chown]
+    '(menu-item "Change Owner..." dired-do-chown
+      :help "Change the owner of marked files")))
+(unless (memq system-type '(windows-nt ms-dos))
+  (define-key diredp-menu-bar-operate-menu [chgrp]
+    '(menu-item "Change Group..." dired-do-chgrp
+      :help "Change the owner of marked files")))
 (define-key diredp-menu-bar-operate-menu [chmod]
   '(menu-item "Change Mode..." dired-do-chmod
     :help "Change mode (attributes) of marked files"))
@@ -1645,14 +1649,14 @@ If HDR is non-nil, insert a header line with the directory name."
       :help "Show thumbnails for marked image files, including those in marked subdirs"))
   (define-key diredp-menu-bar-recursive-marked-menu [separator-image] '("--"))) ; --------------
 
-(define-key diredp-menu-bar-recursive-marked-menu [chown]
-  '(menu-item "Change Owner..." diredp-do-chown-recursive
-    :visible (not (memq system-type '(ms-dos windows-nt)))
-    :help "Change the owner of marked files, including those in marked subdirs"))
-(define-key diredp-menu-bar-recursive-marked-menu [chgrp]
-  '(menu-item "Change Group..." diredp-do-chgrp-recursive
-    :visible (not (memq system-type '(ms-dos windows-nt)))
-    :help "Change the owner of marked files, including those in marked subdirs"))
+(when (fboundp 'diredp-do-chown-recursive)
+  (define-key diredp-menu-bar-recursive-marked-menu [chown]
+    '(menu-item "Change Owner..." diredp-do-chown-recursive
+      :help "Change the owner of marked files, including those in marked subdirs")))
+(when (fboundp 'diredp-do-chgrp-recursive)
+  (define-key diredp-menu-bar-recursive-marked-menu [chgrp]
+    '(menu-item "Change Group..." diredp-do-chgrp-recursive
+      :help "Change the owner of marked files, including those in marked subdirs")))
 (define-key diredp-menu-bar-recursive-marked-menu [chmod]
   '(menu-item "Change Mode..." diredp-do-chmod-recursive
     :help "Change mode (attributes) of marked files, including those in marked subdirs"))
@@ -2166,12 +2170,14 @@ If HDR is non-nil, insert a header line with the directory name."
 (define-key dired-mode-map "b"       'diredp-byte-compile-this-file)        ; `b'
 (define-key dired-mode-map [(control shift ?b)] 'diredp-bookmark-this-file) ; `C-B'
 (define-key dired-mode-map "\M-c"    'diredp-capitalize-this-file)          ; `M-c'
-(define-key dired-mode-map [(control meta shift ?g)] 'diredp-chgrp-this-file) ; `C-M-G'
+(when (fboundp 'diredp-chgrp-this-file)
+  (define-key dired-mode-map [(control meta shift ?g)] 'diredp-chgrp-this-file)) ; `C-M-G'
 (define-key dired-mode-map "\M-i"    'diredp-insert-subdirs)                ; `M-i'
 (define-key dired-mode-map "\M-l"    'diredp-downcase-this-file)            ; `M-l'
 (define-key dired-mode-map [(meta shift ?m)] 'diredp-chmod-this-file)       ; `M-M'
 (define-key dired-mode-map "\C-o"    'diredp-find-file-other-frame)         ; `C-o'
-(define-key dired-mode-map [(meta shift ?o)] 'diredp-chown-this-file)       ; `M-O'
+(when (fboundp 'diredp-chown-this-file)
+  (define-key dired-mode-map [(meta shift ?o)] 'diredp-chown-this-file))    ; `M-O'
 (define-key dired-mode-map "\C-\M-o" 'dired-display-file)                   ; `C-M-o' (not `C-o')
 (define-key dired-mode-map "\M-p"    'diredp-print-this-file)               ; `M-p'
 (define-key dired-mode-map "r"       'diredp-rename-this-file)              ; `r'
@@ -2211,13 +2217,15 @@ If HDR is non-nil, insert a header line with the directory name."
   'diredp-do-bookmark-in-bookmark-file-recursive)
 (define-key diredp-recursive-map "C"           'diredp-do-copy-recursive)               ; `C'
 (define-key diredp-recursive-map "F"           'diredp-do-find-marked-files-recursive)  ; `F'
-(define-key diredp-recursive-map "G"           'diredp-do-chgrp-recursive)              ; `G'
+(when (fboundp 'diredp-do-chgrp-recursive)
+  (define-key diredp-recursive-map "G"         'diredp-do-chgrp-recursive))             ; `G'
 (define-key diredp-recursive-map "\M-g"        'diredp-do-grep-recursive)               ; `M-g'
 (define-key diredp-recursive-map "H"           'diredp-do-hardlink-recursive)           ; `H'
 (define-key diredp-recursive-map "\M-i"        'diredp-insert-subdirs-recursive)        ; `M-i'
 (define-key diredp-recursive-map "l"           'diredp-list-marked-recursive)           ; `l'
 (define-key diredp-recursive-map "M"           'diredp-do-chmod-recursive)              ; `M'
-(define-key diredp-recursive-map "O"           'diredp-do-chown-recursive)              ; `O'
+(when (fboundp 'diredp-do-chown-recursive)
+  (define-key diredp-recursive-map "O"         'diredp-do-chown-recursive))             ; `O'
 (define-key diredp-recursive-map "P"           'diredp-do-print-recursive)              ; `P'
 (define-key diredp-recursive-map "Q"         'diredp-do-query-replace-regexp-recursive) ; `Q'
 (define-key diredp-recursive-map "R"           'diredp-do-move-recursive)               ; `R'
@@ -3616,7 +3624,7 @@ only the files for which it returns non-nil."
     (diredp-list-files files)))
 
 
-(when (and (eq system-type 'windows-nt)  (fboundp 'w32-browser))
+(when (and (memq system-type '(windows-nt ms-dos))  (fboundp 'w32-browser))
   (defun diredp-multiple-w32-browser-recursive (&optional ignore-marked-p)
     "Run Windows apps for with marked files, including those in marked subdirs.
 Like `dired-multiple-w32-browser', but act recursively on subdirs.
@@ -3792,7 +3800,7 @@ Dired buffer and all subdirs, recursively."
                                             #'read-file-name)
                                           (concat operation "files to: ")
                                           default-directory default-directory)))))
-    (unless (file-directory-p target) (error "Target is not a directory: %s" target))
+    (unless (file-directory-p target) (error "Target is not a directory: `%s'" target))
     (dired-create-files
      file-creator operation fn-list
      #'(lambda (from) (expand-file-name (file-name-nondirectory from) target))
@@ -3899,21 +3907,17 @@ to indicate that some of their files are to be changed."
                                (file-modes-symbolic-to-number modes (file-modes file)))))
     (diredp-do-redisplay-recursive 'MSGP)))
 
-;;;###autoload
-(defun diredp-do-chgrp-recursive (&optional ignore-marks-p)
-  "Change the group of the marked (or next ARG) files."
-  (interactive "P")
-  (when (memq system-type '(ms-dos windows-nt))
-    (error "`chgrp' not supported on this system"))
-  (diredp-do-chxxx-recursive "Group" "chgrp" 'chgrp ignore-marks-p))
+(unless (memq system-type '(windows-nt ms-dos))
+  (defun diredp-do-chgrp-recursive (&optional ignore-marks-p)
+    "Change the group of the marked (or next ARG) files."
+    (interactive "P")
+    (diredp-do-chxxx-recursive "Group" "chgrp" 'chgrp ignore-marks-p)))
 
-;;;###autoload
-(defun diredp-do-chown-recursive (&optional ignore-marks-p)
-  "Change the owner of the marked (or next ARG) files."
-  (interactive "P")
-  (when (memq system-type '(ms-dos windows-nt))
-    (error "`chown' not supported on this system"))
-  (diredp-do-chxxx-recursive "Owner" dired-chown-program 'chown ignore-marks-p))
+(unless (memq system-type '(windows-nt ms-dos))
+  (defun diredp-do-chown-recursive (&optional ignore-marks-p)
+    "Change the owner of the marked (or next ARG) files."
+    (interactive "P")
+    (diredp-do-chxxx-recursive "Owner" dired-chown-program 'chown ignore-marks-p)))
 
 ;;;###autoload
 (defun diredp-do-touch-recursive (&optional ignore-marks-p)
@@ -4001,7 +4005,7 @@ from multiple directories in the same tree."
   "Same as `diredp-marked', but uses a different window."
   (interactive
    (progn
-     (unless (eq major-mode 'dired-mode) (error "Run this command only in Dired mode"))
+     (unless (eq major-mode 'dired-mode) (error "Use this command only in Dired mode"))
      (let ((num  (and current-prefix-arg (atom current-prefix-arg)
                       (not (zerop (prefix-numeric-value current-prefix-arg)))
                       (abs (prefix-numeric-value current-prefix-arg)))))
@@ -5181,28 +5185,27 @@ choice described for `diredp-do-grep'."
              (- (length up-to-files) 2)))
      nil nil 'grep-history default)))
 
-;;;###autoload
-(define-derived-mode diredp-w32-drives-mode fundamental-mode "Drives"
-  "Open Dired for an MS Windows drive (local or remote)."
-  (setq buffer-read-only  t))
+(when (memq system-type '(windows-nt ms-dos))
+  (define-derived-mode diredp-w32-drives-mode fundamental-mode "Drives"
+    "Open Dired for an MS Windows drive (local or remote)."
+    (setq buffer-read-only  t)))
 
 ;; The next two commands were originally taken from Emacs Wiki, page WThirtyTwoBrowseNetDrives:
 ;; http://www.emacswiki.org/emacs/WThirtyTwoBrowseNetDrives.  They are referred to there as
 ;; commands `show-net-connections' and `netdir'.  I am hoping that the contributor (anonymous)
 ;; does not mind my adapting them and including them in Dired+.
 
-;;;###autoload
-(defun diredp-w32-list-mapped-drives () ; Not bound
-  "List network connection information for shared MS Windows resources.
+(when (memq system-type '(windows-nt ms-dos))
+  (defun diredp-w32-list-mapped-drives () ; Not bound
+    "List network connection information for shared MS Windows resources.
 This just invokes the Windows `NET USE' command."
-  (interactive)
-  (unless (eq system-type 'windows-nt) (error "This command is for use only on MS Windows"))
-  (shell-command "net use")
-  (display-buffer "*Shell Command Output*"))
+    (interactive)
+    (shell-command "net use")
+    (display-buffer "*Shell Command Output*")))
 
-;;;###autoload
-(defun diredp-w32-drives (&optional other-window-p) ; Not bound
-  "Visit a list of MS Windows drives for use by Dired.
+(when (memq system-type '(windows-nt ms-dos))
+  (defun diredp-w32-drives (&optional other-window-p) ; Not bound
+    "Visit a list of MS Windows drives for use by Dired.
 With a prefix argument use another window for the list.
 In the list, use `mouse-2' or `RET' to open Dired for a given drive.
 
@@ -5214,27 +5217,28 @@ customize.
 Note: When you are in Dired at the root of a drive (e.g. directory
       `c:/'), command `dired-up-directory' invokes this command.
       So you can use `\\[dired-up-directory]' to go up to the list of drives."
-  (interactive "P")
-  (unless (eq system-type 'windows-nt) (error "This command is for use only on MS Windows"))
-  (require 'widget)
-  (let ((drive              (copy-sequence diredp-w32-local-drives))
-        (inhibit-read-only  t))
-    (with-temp-buffer
-      (insert (shell-command-to-string "net use"))
+    (interactive "P")
+    (require 'widget)
+    (let ((drive              (copy-sequence diredp-w32-local-drives))
+          (inhibit-read-only  t))
+      (with-temp-buffer
+        (insert (shell-command-to-string "net use"))
+        (goto-char (point-min))
+        (while (re-search-forward "[A-Z]: +\\\\\\\\[^ ]+" nil t nil)
+          (setq drive  (cons (split-string (match-string 0)) drive))))
+      (if other-window-p
+          (pop-to-buffer "*Windows Drives*")
+        (switch-to-buffer "*Windows Drives*"))
+      (erase-buffer)
+      (widget-minor-mode 1)
+      (dolist (drv  (sort drive (lambda (a b) (string-lessp (car a) (car b)))))
+        (lexical-let ((drv  drv))
+          (widget-create 'push-button
+                         :notify (lambda (widget &rest ignore) (dired (car drv)))
+                         (concat (car drv) "  " (cadr drv))))
+        (widget-insert "\n"))
       (goto-char (point-min))
-      (while (re-search-forward "[A-Z]: +\\\\\\\\[^ ]+" nil t nil)
-        (setq drive  (cons (split-string (match-string 0)) drive))))
-    (if other-window-p (pop-to-buffer "*Windows Drives*") (switch-to-buffer "*Windows Drives*"))
-    (erase-buffer)
-    (widget-minor-mode 1)
-    (dolist (drv  (sort drive (lambda (a b) (string-lessp (car a) (car b)))))
-      (lexical-let ((drv  drv))
-        (widget-create 'push-button
-                       :notify (lambda (widget &rest ignore) (dired (car drv)))
-                       (concat (car drv) "  " (cadr drv))))
-      (widget-insert "\n"))
-    (goto-char (point-min))
-    (diredp-w32-drives-mode)))
+      (diredp-w32-drives-mode))))
 
 ;; $$$$$$ NO LONGER USED.  Was used in `dired-do-grep(-1)' before new `dired-get-marked-files'.
 (defun diredp-all-files ()
@@ -5591,7 +5595,7 @@ On MS Windows, if you already at the root directory, invoke
         (and (cdr dired-subdir-alist)  (dired-goto-subdir up))
         (progn (if other-window (dired-other-window up) (dired up))
                (dired-goto-file dir))
-        (and (eq system-type 'windows-nt) (diredp-w32-drives)))))
+        (and (memq system-type '(windows-nt ms-dos))  (diredp-w32-drives)))))
 
 
 ;; REPLACE ORIGINAL in `dired.el'.
@@ -5648,7 +5652,7 @@ Otherwise, an error occurs in these cases."
                   start  (+ shift (match-end 0))))))
 
       ;; $$$ This sexp was added by Emacs 23.3.
-      (when (eq system-type 'windows-nt)
+      (when (memq system-type '(windows-nt ms-dos))
         (save-match-data
           (let ((start  0))
             (while (string-match "\\\\" file start)
@@ -6151,15 +6155,15 @@ prefix arg shows the internal form of the bookmark."
   "In Dired, change the mode of the file on the cursor line."
   (interactive) (dired-do-chmod 1))
 
-;;;###autoload
-(defun diredp-chgrp-this-file ()        ; Not bound
-  "In Dired, change the group of the file on the cursor line."
-  (interactive) (dired-do-chgrp 1))
+(unless (memq system-type '(windows-nt ms-dos))
+  (defun diredp-chgrp-this-file ()      ; Not bound
+    "In Dired, change the group of the file on the cursor line."
+    (interactive) (dired-do-chgrp 1)))
 
-;;;###autoload
-(defun diredp-chown-this-file ()        ; Not bound
-  "In Dired, change the owner of the file on the cursor line."
-  (interactive) (dired-do-chown 1))
+(unless (memq system-type '(windows-nt ms-dos))
+  (defun diredp-chown-this-file ()      ; Not bound
+    "In Dired, change the owner of the file on the cursor line."
+    (interactive) (dired-do-chown 1)))
 
 (when (fboundp 'dired-do-touch)
   (defun diredp-touch-this-file ()        ; Not bound
@@ -6493,9 +6497,9 @@ With non-nil prefix arg, mark them instead."
                                ["Change Timestamp..." diredp-touch-this-file]
                                ["Change Mode..." diredp-chmod-this-file]
                                ["Change Group..." diredp-chgrp-this-file
-                                :visible (not (memq system-type '(ms-dos windows-nt)))]
+                                :visible (fboundp 'diredp-chgrp-this-file)]
                                ["Change Owner..." diredp-chown-this-file
-                                :visible (not (memq system-type '(ms-dos windows-nt)))]))))
+                                :visible (fboundp 'diredp-chown-this-file)]))))
                        (when diredp-file-line-overlay
                          (delete-overlay diredp-file-line-overlay))
                        (setq choice  (x-popup-menu event map))
@@ -6907,25 +6911,25 @@ This calls chmod, so symbolic modes like `g+w' are allowed."
   (dired-do-chxxx "Mode" "chmod" 'chmod 1)
   (dired-previous-line 1))
 
-;;;###autoload
-(defun diredp-mouse-do-chgrp (event)    ; Not bound
-  "Change the group of this file."
-  (interactive "e")
-  (let ((mouse-pos  (event-start event)))
-    (select-window (posn-window mouse-pos))
-    (goto-char (posn-point mouse-pos)))
-  (dired-do-chxxx "Group" "chgrp" 'chgrp 1)
-  (dired-previous-line 1))
+(unless (memq system-type '(windows-nt ms-dos))
+  (defun diredp-mouse-do-chgrp (event)  ; Not bound
+    "Change the group of this file."
+    (interactive "e")
+    (let ((mouse-pos  (event-start event)))
+      (select-window (posn-window mouse-pos))
+      (goto-char (posn-point mouse-pos)))
+    (dired-do-chxxx "Group" "chgrp" 'chgrp 1)
+    (dired-previous-line 1)))
 
-;;;###autoload
-(defun diredp-mouse-do-chown (event)    ; Not bound
-  "Change the owner of this file."
-  (interactive "e")
-  (let ((mouse-pos  (event-start event)))
-    (select-window (posn-window mouse-pos))
-    (goto-char (posn-point mouse-pos)))
-  (dired-do-chxxx "Owner" dired-chown-program 'chown 1)
-  (dired-previous-line 1))
+(unless (memq system-type '(windows-nt ms-dos))
+  (defun diredp-mouse-do-chown (event)  ; Not bound
+    "Change the owner of this file."
+    (interactive "e")
+    (let ((mouse-pos  (event-start event)))
+      (select-window (posn-window mouse-pos))
+      (goto-char (posn-point mouse-pos)))
+    (dired-do-chxxx "Owner" dired-chown-program 'chown 1)
+    (dired-previous-line 1)))
 
 
 ;;; Dired+ Help
@@ -7010,7 +7014,7 @@ General
 
 * \\[diredp-toggle-find-file-reuse-dir]\t- Toggle reuse of directories
 "
-    (and (fboundp 'diredp-w32-drives)   ; In `w32-browser.el'.
+    (and (fboundp 'diredp-w32-drives)
          "* \\[diredp-w32-drives]\t\t- Go up to a list of MS Windows drives
 ")
 
