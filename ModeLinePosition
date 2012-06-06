@@ -45,7 +45,7 @@ Of course, as soon as point is shown someone will also want to see [[mark]]...
 If you want to do this kind of thing, just take a look at the code in <tt>[[modeline-posn.el]]</tt>, in particular the redefinition of `mode-line-position'.  The parts to tweak are those for `line-number-mode' and `column-number-mode' (one or both, depending on what you want).  HTH -- DrewAdams
 
 [new]
-Thank you for the pointers! I shall try and let you know.
+Thank you for the pointers! I shall try and let you know. -- [[priyadarshan]]
 
 ----
 
