@@ -1,5 +1,28 @@
-DSGAADFGASDGADSFHGADFS[url=http://www.louisvuittonvente.fr]Louis Vuitton France[/url]  YUYASDGASDDSFGHADS 
-YUYZSDGASDDFHAD[url=http://www.christianlouboutinvente.fr]Chaussure Louboutin[/url]  GJTRASDGASDASDFHGAD 
-ZVXZADFGASDGDSFGHADS[url=http://www.coachoutletsonlineaus.com/][b]coach outlet online[/b][/url]  GJTRSDGSADSDFH 
-QWERSDGSADGSDFH[url=http://www.christianlouboutinvente.fr]Chaussures Christian Louboutin[/url]
- ERYERADFHGDAFASDFHGAD
+If you want to control keyboard rate over emacs session you may want to do this:
+
+<pre>
+  ;; Installs C-ck Prefix for Keyboard control commands
+  (defun my-set-keyrate (lat rate)
+    (shell-command (format "xset r rate %d %d" lat rate)))
+
+  (define-key global-map "\C-ckd"
+    (lambda ()
+      (interactive)
+      (my-set-keyrate 250 50)
+      (message "Default keyrate intalled."))) ;default keyrate
+  (define-key global-map "\C-ckf"
+    (lambda ()
+      (interactive)
+      (my-set-keyrate 250 100)
+      (message "Fast keyrate intalled"))) ;fast
+  (define-key global-map "\C-cks"
+    (lambda ()
+      (interactive)
+      (my-set-keyrate 250 25)
+      (message "Slow keyrate installed"))) ;slow
+</pre>
+
+I like to use fast rate at the morning, slow - after dinner and default for the rest time. --ZajcevEvgeny
+
+----
+CategoryKeys
