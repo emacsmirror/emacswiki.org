@@ -225,6 +225,40 @@ An auto-complete source for Octave, providing Octave commands completion can be 
  
 http://www.emacswiki.org/emacs/ac-octave.el
 
+== OCaml/Tuareg Mode ==
+An auto-complete source for the caml and tuareg modes, gets symbols from caml-help.el in caml mode:
+
+{{{
+(defun ac-ocaml-candidates (prefix)
+  "Candidates for OCaml auto-completion"
+  (let ((candidates)
+	(module-name 
+	  (when (string-match "\\([A-Za-z_][A-Za-z0-9_']*\\)[.]" prefix)
+	    (match-string 1 prefix))))
+    (if module-name
+	(let ((modules
+	       (and (assoc module-name (ocaml-module-alist))
+		    (list (assoc module-name (ocaml-module-alist))))))
+	  (iter
+	   '(lambda (mod)
+	      (iter '(lambda (sym) (add-to-list 'candidates (concat (car mod) "." sym)))
+		    (ocaml-module-symbols mod)))
+	   modules))
+      (iter
+       '(lambda (mod)
+	  (iter '(lambda (sym) (add-to-list 'candidates sym))
+		(ocaml-module-symbols mod)))
+       (ocaml-visible-modules))
+      (iter '(lambda (mod) (add-to-list 'candidates (car mod))) (ocaml-module-alist)))
+    candidates))
+        
+(ac-define-source ocaml
+  '((available . (require 'caml-help nil t))
+    (candidates . (ac-ocaml-candidates ac-prefix))
+    (prefix . "\\(?:[^A-Za-z0-9_.']\\|\\`\\)\\(\\(?:[A-Za-z_][A-Za-z0-9_']*[.]\\)?[A-Za-z0-9_']*\\)")
+    (symbol . "s")))
+}}}
+
 == Writing your own sources ==
 
 21 Dec 2010: Is there any tutorial about how to write your own sources?  I'd like to write a source on top of http://www.emacswiki.org/emacs/el-swank-fuzzy.el the way it has been done for Anything, but I can't understand what is the expected interface from sources.  Thanks.
