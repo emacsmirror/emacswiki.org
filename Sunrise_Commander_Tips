@@ -671,8 +671,8 @@ the viewer pane, and not in the SC panes.
 ----
 
 [new]
-
-//Misc customizations://
+[:misc]
+==Misc customizations==
 
 To start SC with no attributes (in case one doesn't need them everyday), simply
 customize variable `sr-show-file-attributes' and set it to nil:
@@ -704,6 +704,24 @@ If You want SC to list dirs first, and files after that - customize the `sr-list
 You might also find useful the following:
 
     (setq sr-listing-switches " --time-style=locale --group-directories-first -alDhgG")
+
+Checkpoint technology remembers both panes directory, if You want to bind some directory to a key, do:
+
+    (define-key global-map [(f12)]
+         (lambda ()
+           (interactive)
+           (sr-dired "/path/to/your/directory")))
+
+if you want the directory to appear always in the same panel (e.g. the right one) you could do something like this:
+
+    (define-key global-map [(f12)]
+      (lambda ()
+        (interactive)
+        (unless sr-running (sunrise))
+        (sr-select-window 'right)
+        (sr-dired "/path/to/your/directory")))
+
+
 
 ----
 CategoryDirectories
