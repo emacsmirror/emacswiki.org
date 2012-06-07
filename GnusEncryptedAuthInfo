@@ -38,7 +38,7 @@ It seems that in addition, you need to stop passing <code>--use-agent</code> to 
 This is described in [[EasyPG]].
 
 ----
-For the popular !OfflineIMAP + Gnus setup [http://quotenil.com/OfflineIMAP-with-Encrypted-Authinfo.html this is how] to make offlineimap use .authinfo.gpg. -- GaborMelis
+For the popular !OfflineIMAP + Gnus setup see [[OfflineIMAP]] 
 
 ----
 CategoryGnus
