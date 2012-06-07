@@ -111,6 +111,22 @@ I use this to temporarily unset the GPG_AGENT_INFO environment variable if runni
         (when (not (display-graphic-p))
           (setenv "GPG_AGENT_INFO" agent))))
 
+If you use emacsclient and sometimes over plaintext ssh, sometimes in X, this will alter the behavious on-the-fly:
+
+    (defadvice epg--start (around advice-epg-disable-agent disable)
+      "Don't allow epg--start to use gpg-agent in plain text
+    terminals."
+      (if (display-graphic-p)
+          ad-do-it
+        (let ((agent (getenv "GPG_AGENT_INFO")))
+          (setenv "GPG_AGENT_INFO" nil) ; give us a usable text password prompt
+          ad-do-it
+          (setenv "GPG_AGENT_INFO" agent))))
+    (ad-enable-advice 'epg--start 'around 'advice-epg-disable-agent)
+    (ad-activate 'epg--start)
+
+Note also there's a bug in pinentry in GnuPG2, if you run Arch Linux you could install gnupg1 and do <code>(when (file-executable-p "/usr/bin/gpg1") (setq epg-gpg-program "/usr/bin/gpg1"))</code> to make it use gpg1 on your Arch boxen.
+
 ----
 [new]
 I have removed 'gpg-agent'. Of course, it totally solved the problem with the GUI dialog. In Ubuntu, 'gpg-agent' is used by default as a replacement for 'ssh-agent'. When 'gpg-agent' is deleted, 'ssh-agent' is used. So, no visible losses. --[[DmitriMinaev]]
