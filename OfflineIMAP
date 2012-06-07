@@ -15,6 +15,7 @@ If you run emacs as a server and already use epg + netrc to for your other passw
 In ~/.offlineimaprc, put <code>remotepasseval = get_password_emacs("imap.host.com", "993")</code>
 
 In ~/.offlineimap.py, put 
+
     import subprocess
     def get_output(cmd):
       # Bunch of boilerplate to catch the output of a command:
@@ -27,6 +28,7 @@ In ~/.offlineimap.py, put
       return get_output(cmd).strip().lstrip('"').rstrip('"')
 
 and in ~/.emacs put 
+
     (defun offlineimap-get-password (host port)
       (let* ((netrc (netrc-parse (expand-file-name "~/.netrc.gpg")))
              (hostentry (netrc-machine netrc host port port)))
