@@ -220,7 +220,12 @@ Please take another look, and let me know.  Thx -- DrewAdams
 Buffer-Menu+ v21.0 does not work with Emacs 24.1.50.1 (full version information: ##GNU Emacs 24.1.50.1 (x86_64-pc-linux-gnu, GTK+ Version 3.4.1) of 2012-05-25 on rhenium, modified by Debian##). When I invoke `buffer-menu' I get the following error message: ##list-buffers-noselect: Symbol's value as variable is void: Buffer-menu-sort-button-map## -- MoritzBunkus
 
 
+[new:DrewAdams:2012-06-07 13:31 UTC]
+Yes, sorry about that.  ChongYidong rewrote the code in vanilla ##buff-menu.el## so that it uses his new so-called "tabulated list mode".  (And they apparently have not documented the change in `view-emacs-news' -- I filed a bug report about that.)
 
+Dunno when (or whether) I will update <tt>[[buff-menu+.el]]</tt> to deal with that -- no doubt not for a while anyway.  Fortunately, 24.1 will not be affected -- the change is only for 24.2+.  
+
+If you want a workaround for now, grab the ##buff-menu.el## code from the latest Emacs 24 pretest or prior (e.g. from Emacs 23), and load that, then ##buff-menu+.el##.  -- DrewAdams
 
 
 
