@@ -1,0 +1,34 @@
+OfflineIMAP is a popular IMAP mail synchroniser. A popular combination is [[Gnus]]/[[Wanderlust]] for mail reading, OfflineIMAP for sync and [[Dovecot]] as the local email server.
+
+* Home page: http://offlineimap.org/
+
+==Encrypted auth info==
+As with [[GnusEncryptedAuthInfo]], it's possible to keep your email password encrypted. Take a look at /usr/share/offlineimap/offlineimap.conf for all remotepass/remotepasseval options. 
+
+One method would be to use a standard desktop keyring, see http://pypi.python.org/pypi/keyring
+
+Another would be to import some python gnupg bindings and parse your ~/.netrc.gpg or ~/.authinfo.gpg. 
+
+===Using EasyPG===
+If you run emacs as a server and already use epg + netrc to for your other passwords (e.g. <code>(setq smtpmail-auth-credentials (expand-file-name "~/.netrc.gpg"))</code>), one nice alternative is to run offlineimap through [http://julien.danjou.info/software/offlineimap.el offlineimap.el] and get the password from emacsclient. 
+
+In ~/.offlineimaprc, put <code>remotepasseval = get_password_emacs("imap.host.com", "993")</code>
+
+In ~/.offlineimap.py, put <pre>
+import subprocess
+def get_output(cmd):
+  # Bunch of boilerplate to catch the output of a command:
+  pipe = subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+  (output, errout) = pipe.communicate()
+  assert pipe.returncode == 0 and not errout
+  return output
+def get_password_emacs(host, port):
+  cmd = "emacsclient --eval '(offlineimap-get-password \"%s\" \"%s\")'" % (host,port)
+  return get_output(cmd).strip().lstrip('"').rstrip('"')
+</pre>
+and in ~/.emacs put <pre>(defun offlineimap-get-password (host port)
+  (let* ((netrc (netrc-parse (expand-file-name "~/.netrc.gpg")))
+	 (hostentry (netrc-machine netrc host port port)))
+    (when hostentry (netrc-get hostentry "password"))))</pre>
+
+Then just M-x offlineimap; if you haven't opened your key this session yet, it'll prompt for the password, otherwise it'll use the agent (if you've set it to do that).
