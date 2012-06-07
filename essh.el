@@ -1,113 +1,179 @@
-#FILE text/x-emacs-lisp 
-Ozs7IGVzc2guZWwgLS0tIGEgc2V0IG9mIGNvbW1hbmRzIHRoYXQgZW11bGF0ZSBmb3IgYmFzaCB3
-aGF0IEVTUyBpcyB0byBSLgoKOzsgRmlsZW5hbWU6IGVzc2guZWwKCgo7OyAtLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0gOzsK
-OzsgVE8gSU5TVEFMTDogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgIDs7Cjs7IDEuIGFkZCBlc3NoLmVsIGluIHlvdXIgbG9hZC1wYXRoLiAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICA7Owo7OyAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgOzsKOzsgMi4gYWRk
-IHRvIHlvdXIgLmVtYWNzIGZpbGU6ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgIDs7Cjs7ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICA7Owo7OyAocmVxdWlyZSAnZXNzaCkgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgOzsKOzsgKGRlZnVuIGVzc2gtc2gt
-aG9vayAoKSAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIDs7Cjs7
-ICAgKGRlZmluZS1rZXkgc2gtbW9kZS1tYXAgIlxDLWNcQy1yIiAncGlwZS1yZWdpb24tdG8tc2hl
-bGwpICAgICAgICA7Owo7OyAgIChkZWZpbmUta2V5IHNoLW1vZGUtbWFwICJcQy1jXEMtYiIgJ3Bp
-cGUtYnVmZmVyLXRvLXNoZWxsKSAgICAgICAgOzsKOzsgICAoZGVmaW5lLWtleSBzaC1tb2RlLW1h
-cCAiXEMtY1xDLWoiICdwaXBlLWxpbmUtdG8tc2hlbGwpICAgICAgICAgIDs7Cjs7ICAgKGRlZmlu
-ZS1rZXkgc2gtbW9kZS1tYXAgIlxDLWNcQy1uIiAncGlwZS1saW5lLXRvLXNoZWxsLWFuZC1zdGVw
-KSA7Owo7OyAgIChkZWZpbmUta2V5IHNoLW1vZGUtbWFwICJcQy1jXEMtZiIgJ3BpcGUtZnVuY3Rp
-b24tdG8tc2hlbGwpICAgICAgOzsKOzsgICAoZGVmaW5lLWtleSBzaC1tb2RlLW1hcCAiXEMtY1xD
-LWQiICdzaGVsbC1jZC1jdXJyZW50LWRpcmVjdG9yeSkpIDs7Cjs7IChhZGQtaG9vayAnc2gtbW9k
-ZS1ob29rICdlc3NoLXNoLWhvb2spICAgICAgICAgICAgICAgICAgICAgICAgICAgICA7Owo7OyAt
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0gOzsKCjs7IGZ1bmN0aW9uIHRha2VuIGZyb20gZXNzIHBhY2thZ2UKKGRlZnVuIGVz
-c2gtbmV4dC1jb2RlLWxpbmUgKCZvcHRpb25hbCBhcmcpCiAgIk1vdmUgQVJHIGxpbmVzIG9mIGNv
-ZGUgZm9yd2FyZCAoYmFja3dhcmQgaWYgQVJHIGlzIG5lZ2F0aXZlKS4KU2tpcHMgcGFzdCBhbGwg
-ZW1wdHkgYW5kIGNvbW1lbnQgbGluZXMuCSBEZWZhdWx0IGZvciBBUkcgaXMgMS4KCk9uIHN1Y2Nl
-c3MsIHJldHVybiAwLiAgT3RoZXJ3aXNlLCBnbyBhcyBmYXIgYXMgcG9zc2libGUgYW5kIHJldHVy
-biAtMS4iCiAgKGludGVyYWN0aXZlICJwIikKICAob3IgYXJnIChzZXRxIGFyZyAxKSkKICAoYmVn
-aW5uaW5nLW9mLWxpbmUpCiAgKGxldCAoKG4gMCkKCShpbmMgKGlmICg+IGFyZyAwKSAxIC0xKSkp
-CiAgICAod2hpbGUgKGFuZCAoLz0gYXJnIDApICg9IG4gMCkpCiAgICAgIChzZXRxIG4gKGZvcndh
-cmQtbGluZSBpbmMpKTsgbj0wIGlzIHN1Y2Nlc3MKICAgICAgKHdoaWxlIChhbmQgKD0gbiAwKQoJ
-CSAgKGxvb2tpbmctYXQgIlxccy0qXFwoJFxcfFxcczxcXCkiKSkKCShzZXRxIG4gKGZvcndhcmQt
-bGluZSBpbmMpKSkKICAgICAgKHNldHEgYXJnICgtIGFyZyBpbmMpKSkKICAgIG4pKQoKKGRlZnVu
-IHByb2Nlc3Mtc2hlbGwgKCkKICAicmV0dXJucyBhIGxpc3Qgd2l0aCBleGlzdGluZyBzaGVsbCBw
-cm9jZXNzLiIKICAoaW50ZXJhY3RpdmUpCiAgKHNldHEgbGlzdHByIChwcm9jZXNzLWxpc3QpKQog
-IChzZXRxIGxlbmd0aHByIChsZW5ndGggbGlzdHByKSkKICAoc2V0cSBpIDApCiAgKHNldHEgbGlz
-dHNoZWxscCAnKCkpCiAgKHdoaWxlICg8IGkgbGVuZ3RocHIpCiAgICAoc2V0cSBwb3MgKHN0cmlu
-Zy1tYXRjaCAic2hlbGwiIChwcmluMS10by1zdHJpbmcgKGVsdCBsaXN0cHIgaSkpKSkKICAgIChp
-ZiBwb3MgKGFkZC10by1saXN0ICdsaXN0c2hlbGxwIChwcm9jZXNzLW5hbWUgKGdldC1wcm9jZXNz
-IChlbHQgbGlzdHByIGkpKSkpKQogICAgKHNldHEgaSAoKyAxIGkpKSkKICBsaXN0c2hlbGxwKQoK
-CihkZWZ1biBwcm9jZXNzLXNoZWxsLWNob29zZSAoKQogICJyZXR1cm5zIHdoaWNoIHByb2Nlc3Mg
-dG8gdXNlLiIKKGludGVyYWN0aXZlKQooc2V0cSBvdXRwciAwKQooc2V0cSBjYnVmIChjdXJyZW50
-LWJ1ZmZlcikpCihzZXRxIHNoZWxsbGlzdCAocHJvY2Vzcy1zaGVsbCkpCihzZXRxIHNoZWxsbiAo
-bGVuZ3RoIHNoZWxsbGlzdCkpCihpZiAoZXEgc2hlbGxuIDApCiAgICAocHJvZ24gKHNoZWxsKQoJ
-ICAgKHN3aXRjaC10by1idWZmZXIgY2J1ZikKCSAgIChzZXRxIG91dHByIChnZXQtcHJvY2VzcyAi
-c2hlbGwiKSkKCSAgIChzbGVlcC1mb3IgMC41KSkpCihpZiAoZXEgc2hlbGxuIDEpCiAgICAoc2V0
-cSBvdXRwciAoZ2V0LXByb2Nlc3MgKGVsdCBzaGVsbGxpc3QgMCkpKSkKKGlmICg+IHNoZWxsbiAx
-KQoocHJvZ24KKHNldHEgcHJvYyAoY29tcGxldGluZy1yZWFkICJTZW5kIGNvZGUgdG86IiBzaGVs
-bGxpc3QgbmlsIHQgKGVsdCBzaGVsbGxpc3QgMCkpKQooc2V0cSBvdXRwciAoZ2V0LXByb2Nlc3Mg
-cHJvYykpKSkKb3V0cHIpCgoKKGRlZnVuIHNoZWxsLWV2YWwtbGluZSAoc3Byb2Nlc3MgY29tbWFu
-ZCkKICAiRXZhbHVhdGVzIGEgc2luZ2xlIGNvbW1hbmQgaW50byB0aGUgc2hlbGwgcHJvY2Vzcy4i
-CiAgKHNldHEgc2J1ZmZlciAocHJvY2Vzcy1idWZmZXIgc3Byb2Nlc3MpKQogIChzZXRxIGNvbW1h
-bmQgKGNvbmNhdCBjb21tYW5kICJcbiIpKQogIChhY2NlcHQtcHJvY2Vzcy1vdXRwdXQgc3Byb2Nl
-c3MgMCAxMCkKICAod2l0aC1jdXJyZW50LWJ1ZmZlciBzYnVmZmVyIAogICAgKGVuZC1vZi1idWZm
-ZXIpIDtwb2ludCBpcyBub3Qgc2VlbiBiZWluZyBtb3ZlZCAodW5sZXNzIHNidWZmZXIgaXMgZm9j
-dXNlZCkKICAgIChpbnNlcnQgY29tbWFuZCkJCQk7cGFzdGVzIHRoZSBjb21tYW5kIHRvIHNoZWxs
-CiAgICAoc2V0LW1hcmtlciAocHJvY2Vzcy1tYXJrIHNwcm9jZXNzKSAocG9pbnQtbWF4KSkKICAg
-IChwcm9jZXNzLXNlbmQtc3RyaW5nIHNwcm9jZXNzIGNvbW1hbmQpCiAgICA7OyAoYWNjZXB0LXBy
-b2Nlc3Mtb3V0cHV0IHNwcm9jZXNzIDAgMTApCiAgICApKQoKKGRlZnVuIHNoZWxsLWNkLWN1cnJl
-bnQtZGlyZWN0b3J5ICgpCiAgIkNoYW5nZXMgdGhlIHNoZWxsIHdvcmtpbmcgZGlyZWN0b3J5IHRv
-IHRoZSBjdXJyZW50IGJ1ZmZlcidzIG9uZS4iCiAgKGludGVyYWN0aXZlKQogIChzZXRxIHNwcm9j
-ZXNzIChwcm9jZXNzLXNoZWxsLWNob29zZSkpCiAgKHNldHEgY29tIChmb3JtYXQgImNkICVzIiAo
-ZmlsZS1uYW1lLWRpcmVjdG9yeSAoYnVmZmVyLWZpbGUtbmFtZSkpKSkKICAoc2hlbGwtZXZhbC1s
-aW5lIHNwcm9jZXNzIGNvbSkpCgoKKGRlZnVuIHBpcGUtbGluZS10by1zaGVsbCAoJm9wdGlvbmFs
-IHN0ZXApCiAgIkV2YWx1YXRlcyB0aGUgY3VycmVudCBsaW5lIHRvIHRoZSBzaGVsbC4iCiAgKGlu
-dGVyYWN0aXZlICgpKQogIChzZXRxIGNvbSAoYnVmZmVyLXN1YnN0cmluZyAocG9pbnQtYXQtYm9s
-KSAocG9pbnQtYXQtZW9sKSkpCiAgKGlmICg+IChsZW5ndGggY29tKSAwKQogICAgICAocHJvZ24K
-CShzZXRxIHNwcm9jZXNzIChwcm9jZXNzLXNoZWxsLWNob29zZSkpCgkoc2hlbGwtZXZhbC1saW5l
-IHNwcm9jZXNzIGNvbSkKCSh3aGVuIHN0ZXAgKGVzc2gtbmV4dC1jb2RlLWxpbmUpKSkKICAgICht
-ZXNzYWdlICJObyBjb21tYW5kIGluIHRoaXMgbGluZSIpKSkKCihkZWZ1biBwaXBlLWxpbmUtdG8t
-c2hlbGwtYW5kLXN0ZXAgKCkKICAiRXZhbHVhdGVzIHRoZSBjdXJyZW50IGxpbmUgdG8gdGhlIHNo
-ZWxsIGFuZCBnb2VzIHRvIG5leHQgbGluZS4iCiAgKGludGVyYWN0aXZlKQogIChwaXBlLWxpbmUt
-dG8tc2hlbGwgdCkpCgooZGVmdW4gcGlwZS1yZWdpb24tdG8tc2hlbGwgKHN0YXJ0IGVuZCkKICAi
-U2VuZHMgYSByZWdpb24gdG8gdGhlIHNoZWxsLiIKICAoaW50ZXJhY3RpdmUgInIiKQogIChzZXRx
-IGNvbSAoYnVmZmVyLXN1YnN0cmluZyBzdGFydCBlbmQpKQkgICAgICAgO3JlYWRzIGNvbW1hbmQK
-ICAoc2V0cSBsY29tIChsZW5ndGggY29tKSkJCSAgICAgICA7Y291bnQgY2hhcnMKICAoc2V0cSBs
-YXN0Y2hhciAoc3Vic3RyaW5nIGNvbSAoMS0gbGNvbSkgbGNvbSkpIDtnZXQgbGFzdCBjaGFyCiAg
-KHVubGVzcyAoc3RyaW5nLW1hdGNoICJcbiIgbGFzdGNoYXIpIDtpZiBsYXN0IGNoYXIgaXMgbm90
-ICJcbiIsIHRoZW4uLi4KICAgIChzZXRxIGNvbSAoY29uY2F0IGNvbSAiXG4iKSkpCSAgICAgOy4u
-LmFkZCBpdCEKICAoc2V0cSBzcHJvY2VzcyAocHJvY2Vzcy1zaGVsbC1jaG9vc2UpKQogIChzZXRx
-IHNidWZmZXIgKHByb2Nlc3MtYnVmZmVyIHNwcm9jZXNzKSkKICAod2hpbGUgKD4gKGxlbmd0aCBj
-b20pIDApIAogICAgKHNldHEgcG9zIChzdHJpbmctbWF0Y2ggIlxuIiBjb20pKSAKICAgIChzZXRx
-IHNjb20gKHN1YnN0cmluZyBjb20gMCBwb3MpKQogICAgKHNldHEgY29tIChzdWJzdHJpbmcgY29t
-IChtaW4gKGxlbmd0aCBjb20pICgxKyBwb3MpKSkpCiAgICAoc2hlbGwtZXZhbC1saW5lIHNwcm9j
-ZXNzIHNjb20pCiAgICAoYWNjZXB0LXByb2Nlc3Mtb3V0cHV0IHNwcm9jZXNzIDAgMTApCiAgICAp
-KSAKCgooZGVmdW4gcGlwZS1idWZmZXItdG8tc2hlbGwgKCkKICAiRXZhbHVhdGUgd2hvbGUgYnVm
-ZmVyIHRvIHRoZSBzaGVsbC4iCiAgKGludGVyYWN0aXZlKQogIChwaXBlLXJlZ2lvbi10by1zaGVs
-bCAocG9pbnQtbWluKSAocG9pbnQtbWF4KSkpCgooZGVmdW4gcGlwZS1mdW5jdGlvbi10by1zaGVs
-bCAoKQoiRXZhbHVhdGUgZnVuY3Rpb24gdG8gdGhlIHNoZWxsLiIKKGludGVyYWN0aXZlKQooc2V0
-cSBiZWctZW5kIChlc3NoLWJlZy1lbmQtb2YtZnVuY3Rpb24pKQooaWYgYmVnLWVuZAogICAgKHNh
-dmUtZXhjdXJzaW9uCiAgICAgIChzZXRxIGJlZyAobnRoIDAgYmVnLWVuZCkpCiAgICAgIChzZXRx
-IGVuZCAobnRoIDEgYmVnLWVuZCkpCiAgICAgIChnb3RvLWxpbmUgYmVnKQogICAgICAoc2V0cSBv
-cmlnaW4gKHBvaW50LWF0LWJvbCkpCiAgICAgIChnb3RvLWxpbmUgZW5kKQogICAgICAoc2V0cSB0
-ZXJtaW5hbCAocG9pbnQtYXQtZW9sKSkKICAgICAgKHBpcGUtcmVnaW9uLXRvLXNoZWxsIG9yaWdp
-biB0ZXJtaW5hbCkpCiAgKG1lc3NhZ2UgIk5vIGZ1bmN0aW9uIGF0IGN1cnJlbnQgcG9pbnQuIikp
-KQoKKGRlZnVuIGVzc2gtYmVnLWVuZC1vZi1mdW5jdGlvbiAoKQogICJSZXR1cm5zIHRoZSBsaW5l
-cyB3aGVyZSB0aGUgZnVuY3Rpb24gc3RhcnRzIGFuZCBlbmRzLiBJZiB0aGVyZSBpcyBubyBmdW5j
-dGlvbiBhdCBjdXJyZW50IGxpbmUsIGl0IHJldHVybnMgbmlsLiIKICAoaW50ZXJhY3RpdmUpCiAg
-KHNldHEgY3VybGluZSAobGluZS1udW1iZXItYXQtcG9zKSkJO2N1cnJlbnQgbGluZQogIChzZXRx
-IGN1cmNvbSAoYnVmZmVyLXN1YnN0cmluZyAocG9pbnQtYXQtYm9sKSAocG9pbnQtYXQtZW9sKSkp
-CiAgKHNldHEgcG9zIChzdHJpbmctbWF0Y2ggImZ1bmN0aW9uIiBjdXJjb20pKQogIChzYXZlLWV4
-Y3Vyc2lvbiAKICAgIChpZiBwb3MgCgkocHJvZ24KCSAgKHNldHEgYmVnIGN1cmxpbmUpKQogICAg
-ICAocHJvZ24KCSh3aGlsZSAobm90IHBvcykKCSAgKHNldHEgY3VybGluZSAoMS0gY3VybGluZSkp
-CTtjdXJyZW50IGxpbmUKCSAgKHByZXZpb3VzLWxpbmUpCQkJO2dvIHRvIHByZXZpb3VzIGxpbmUK
-CSAgKHNldHEgY3VyY29tIChidWZmZXItc3Vic3RyaW5nIChwb2ludC1hdC1ib2wpIChwb2ludC1h
-dC1lb2wpKSkKCSAgKHNldHEgcG9zIChzdHJpbmctbWF0Y2ggImZ1bmN0aW9uIiBjdXJjb20pKSkK
-ICAgICAgKHNldHEgYmVnIGN1cmxpbmUpKSkKICAgIChiZWdpbm5pbmctb2YtbGluZSkKICAgIChm
-b3J3YXJkLWxpc3QpCQkJOyBtb3ZlIHBvaW50ZXIgdG8gZmlyc3QgbWF0Y2hpbmcgYnJhY2UKICAg
-IChzZXRxIGVuZCAobGluZS1udW1iZXItYXQtcG9zKSkpCiAgOzsgKG1lc3NhZ2UgKGZvcm1hdCAg
-IiVkICVkIiBiZWcgZW5kKSkKICAoaWYgKGFuZCAoPD0gKGxpbmUtbnVtYmVyLWF0LXBvcykgZW5k
-KSAoPj0gKGxpbmUtbnVtYmVyLWF0LXBvcykgYmVnKSkKICAgICAgKGxpc3QgYmVnIGVuZCkKICAg
-IG5pbCkpCiAgCgoocHJvdmlkZSAnZXNzaCkK
+;;; essh.el --- a set of commands that emulate for bash what ESS is to R.
+
+;; Filename: essh.el
+
+
+;; ------------------------------------------------------------------ ;;
+;; TO INSTALL:                                                        ;;
+;; 1. add essh.el in your load-path.                                  ;;
+;;                                                                    ;;
+;; 2. add to your .emacs file:                                        ;;
+;;                                                                    ;;
+;; (require 'essh)                                                    ;;
+;; (defun essh-sh-hook ()                                             ;;
+;;   (define-key sh-mode-map "\C-c\C-r" 'pipe-region-to-shell)        ;;
+;;   (define-key sh-mode-map "\C-c\C-b" 'pipe-buffer-to-shell)        ;;
+;;   (define-key sh-mode-map "\C-c\C-j" 'pipe-line-to-shell)          ;;
+;;   (define-key sh-mode-map "\C-c\C-n" 'pipe-line-to-shell-and-step) ;;
+;;   (define-key sh-mode-map "\C-c\C-f" 'pipe-function-to-shell)      ;;
+;;   (define-key sh-mode-map "\C-c\C-d" 'shell-cd-current-directory)) ;;
+;; (add-hook 'sh-mode-hook 'essh-sh-hook)                             ;;
+;; ------------------------------------------------------------------ ;;
+
+;; function taken from ess package
+(defun essh-next-code-line (&optional arg)
+  "Move ARG lines of code forward (backward if ARG is negative).
+Skips past all empty and comment lines.	 Default for ARG is 1.
+
+On success, return 0.  Otherwise, go as far as possible and return -1."
+  (interactive "p")
+  (or arg (setq arg 1))
+  (beginning-of-line)
+  (let ((n 0)
+	(inc (if (> arg 0) 1 -1)))
+    (while (and (/= arg 0) (= n 0))
+      (setq n (forward-line inc)); n=0 is success
+      (while (and (= n 0)
+		  (looking-at "\\s-*\\($\\|\\s<\\)"))
+	(setq n (forward-line inc)))
+      (setq arg (- arg inc)))
+    n))
+
+(defun process-shell ()
+  "returns a list with existing shell process."
+  (interactive)
+  (setq listpr (process-list))
+  (setq lengthpr (length listpr))
+  (setq i 0)
+  (setq listshellp '())
+  (while (< i lengthpr)
+    (setq pos (string-match "shell" (prin1-to-string (elt listpr i))))
+    (if pos (add-to-list 'listshellp (process-name (get-process (elt listpr i)))))
+    (setq i (+ 1 i)))
+  listshellp)
+
+
+(defun process-shell-choose ()
+  "returns which process to use."
+(interactive)
+(setq outpr 0)
+(setq cbuf (current-buffer))
+(setq shelllist (process-shell))
+(setq shelln (length shelllist))
+(if (eq shelln 0)
+    (progn (shell)
+	   (switch-to-buffer cbuf)
+	   (setq outpr (get-process "shell"))
+	   (sleep-for 0.5)))
+(if (eq shelln 1)
+    (setq outpr (get-process (elt shelllist 0))))
+(if (> shelln 1)
+(progn
+(setq proc (completing-read "Send code to:" shelllist nil t (elt shelllist 0)))
+(setq outpr (get-process proc))))
+outpr)
+
+
+(defun shell-eval-line (sprocess command)
+  "Evaluates a single command into the shell process."
+  (setq sbuffer (process-buffer sprocess))
+  (setq command (concat command "\n"))
+  (accept-process-output sprocess 0 10)
+  (with-current-buffer sbuffer 
+    (end-of-buffer) ;point is not seen being moved (unless sbuffer is focused)
+    (insert command)			;pastes the command to shell
+    (set-marker (process-mark sprocess) (point-max))
+    (process-send-string sprocess command)
+    ;; (accept-process-output sprocess 0 10)
+    ))
+
+(defun shell-cd-current-directory ()
+  "Changes the shell working directory to the current buffer's one."
+  (interactive)
+  (setq sprocess (process-shell-choose))
+  (setq com (format "cd %s" (file-name-directory (buffer-file-name))))
+  (shell-eval-line sprocess com))
+
+
+(defun pipe-line-to-shell (&optional step)
+  "Evaluates the current line to the shell."
+  (interactive ())
+  (setq com (buffer-substring (point-at-bol) (point-at-eol)))
+  (if (> (length com) 0)
+      (progn
+	(setq sprocess (process-shell-choose))
+	(shell-eval-line sprocess com)
+	(when step (essh-next-code-line)))
+    (message "No command in this line")))
+
+(defun pipe-line-to-shell-and-step ()
+  "Evaluates the current line to the shell and goes to next line."
+  (interactive)
+  (pipe-line-to-shell t))
+
+(defun pipe-region-to-shell (start end)
+  "Sends a region to the shell."
+  (interactive "r")
+  (setq com (buffer-substring start end))	       ;reads command
+  (setq lcom (length com))		       ;count chars
+  (setq lastchar (substring com (1- lcom) lcom)) ;get last char
+  (unless (string-match "\n" lastchar) ;if last char is not "\n", then...
+    (setq com (concat com "\n")))	     ;...add it!
+  (setq sprocess (process-shell-choose))
+  (setq sbuffer (process-buffer sprocess))
+  (while (> (length com) 0) 
+    (setq pos (string-match "\n" com)) 
+    (setq scom (substring com 0 pos))
+    (setq com (substring com (min (length com) (1+ pos))))
+    (shell-eval-line sprocess scom)
+    (accept-process-output sprocess 0 10)
+    )) 
+
+
+(defun pipe-buffer-to-shell ()
+  "Evaluate whole buffer to the shell."
+  (interactive)
+  (pipe-region-to-shell (point-min) (point-max)))
+
+(defun pipe-function-to-shell ()
+"Evaluate function to the shell."
+(interactive)
+(setq beg-end (essh-beg-end-of-function))
+(if beg-end
+    (save-excursion
+      (setq beg (nth 0 beg-end))
+      (setq end (nth 1 beg-end))
+      (goto-line beg)
+      (setq origin (point-at-bol))
+      (goto-line end)
+      (setq terminal (point-at-eol))
+      (pipe-region-to-shell origin terminal))
+  (message "No function at current point.")))
+
+(defun essh-beg-end-of-function ()
+  "Returns the lines where the function starts and ends. If there is no function at current line, it returns nil."
+  (interactive)
+  (setq curline (line-number-at-pos))	;current line
+  (setq curcom (buffer-substring (point-at-bol) (point-at-eol)))
+  (setq pos (string-match "function" curcom))
+  (save-excursion 
+    (if pos 
+	(progn
+	  (setq beg curline))
+      (progn
+	(while (not pos)
+	  (setq curline (1- curline))	;current line
+	  (previous-line)			;go to previous line
+	  (setq curcom (buffer-substring (point-at-bol) (point-at-eol)))
+	  (setq pos (string-match "function" curcom)))
+      (setq beg curline)))
+    (beginning-of-line)
+    (forward-list)			; move pointer to first matching brace
+    (setq end (line-number-at-pos)))
+  ;; (message (format  "%d %d" beg end))
+  (if (and (<= (line-number-at-pos) end) (>= (line-number-at-pos) beg))
+      (list beg end)
+    nil))
+  
+
+(provide 'essh)
