@@ -217,7 +217,7 @@ Please take another look, and let me know.  Thx -- DrewAdams
 
 ----
 [new]
-Buffer-Menu+ v21.0 does not work with Emacs 24.1.50.1 (full version information: ##GNU Emacs 24.1.50.1 (x86_64-pc-linux-gnu, GTK+ Version 3.4.1) of 2012-05-25 on rhenium, modified by Debian##). When I invoke `buffer-menu' I get the following error message: ##list-buffers-noselect: Symbol's value as variable is void: Buffer-menu-sort-button-map##
+Buffer-Menu+ v21.0 does not work with Emacs 24.1.50.1 (full version information: ##GNU Emacs 24.1.50.1 (x86_64-pc-linux-gnu, GTK+ Version 3.4.1) of 2012-05-25 on rhenium, modified by Debian##). When I invoke `buffer-menu' I get the following error message: ##list-buffers-noselect: Symbol's value as variable is void: Buffer-menu-sort-button-map## -- MoritzBunkus
 
 
 
