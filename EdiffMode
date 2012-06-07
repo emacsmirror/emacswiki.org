@@ -279,7 +279,7 @@ For a wrapper script and some instructions on setting up subversion to use Emacs
 {{{
 ediff-merge-files-with-ancestor
 }}}
-as the interactive conflict resolution tool please see my blog post at: http://bit.ly/m9ozZr
+as the interactive conflict resolution tool please see my blog post at: http://zaakbeekman.blogspot.com/2011/04/using-emacs-ediff-as-graphical-merge.html
 --IzaakBeekman
 
 [new]
