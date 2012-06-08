@@ -8,13 +8,13 @@ Emacs-24 comes with a new simple global minor mode electric-pair-mode which uses
 
 === autopair.el ===
 
-Autopair.el (hosted here [http://autopair.googlecode.com/svn/trunk/autopair.el autopair.el] in http://autopair.googlecode.com) is a minor-mode that works with almost all major modes.  This is probably most likely the easiest (and best) way to achieve autopairs functionality in all your favorite modes.
+http://github.com/capitaomorte/autopair ([https://raw.github.com/capitaomorte/autopair/master/autopair.el direct link]) is a minor-mode that works with almost all major modes.  This is probably most likely the easiest (and best) way to achieve autopairs functionality in all your favorite modes.
 
 Key Points:
 
 * it's a little less intrusive than some other extensions since it preserves the original bindings for the keys it rebinds;
 * it's generic: discovers which characters to pair based on the currently active syntax table;
-* tries to do autopairing/autoskipping in a way that will contribute to balancing out the parenthesis.
+* tries to do autopairing/autoskipping in a way that contributes to balancing out the parenthesis.
 
 ==== How does this work? ====
 
