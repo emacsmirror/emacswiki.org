@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Fri Jun  8 10:35:30 2012 (-0700)
+;; Last-Updated: Fri Jun  8 11:26:46 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 17990
+;;     Update #: 17993
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-mcmd.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -34,6 +34,10 @@
 ;;  commands).  For top-level commands, see `icicles-cmd1.el' and
 ;;  `icicles-cmd2.el'.  For Icicles documentation, see
 ;;  `icicles-doc1.el' and `icicles-doc2.el'.
+;;
+;;  Macros defined here:
+;;
+;;    `icicle-maybe-byte-compile-after-load'.
 ;;
 ;;  Commands defined here:
 ;;
@@ -843,6 +847,17 @@ POSITION is a buffer position."
 ;;(@* "Icicles commands")
 
 ;;; Icicles commands -------------------------------------------------
+
+;; Same as the definition in `icicles-face.el' and `icicles-cmd2.el'.
+(defmacro icicle-maybe-byte-compile-after-load (function)
+  "Byte-compile FUNCTION if `icicle-byte-compile-eval-after-load-flag'.
+Do nothing if FUNCTION has not been defined (`fboundp')."
+  `(when (and icicle-byte-compile-eval-after-load-flag (fboundp ',function))
+    (require 'bytecomp)
+    (let ((byte-compile-warnings  ())
+          (byte-compile-verbose   nil))
+      (byte-compile ',function))))
+
 
 ;;(@* "Minibuffer editing commands")
 
