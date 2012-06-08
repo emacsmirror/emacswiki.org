@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Mon Jun  4 15:10:02 2012 (-0700)
+;; Last-Updated: Fri Jun  8 10:36:23 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 8471
+;;     Update #: 8476
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-chg.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -3153,6 +3153,9 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-mcmd.el'")
 ;;
+;; 2012/06/08 dadams
+;;     icicle-yank-secondary: Use eval-after-load of second-sel.el instead of fboundp yank-secondary
+;;       (for arbitrary load order).  Added icicle-maybe-byte-compile-after-load.
 ;; 2012/06/03 dadams
 ;;     icicle-(next|previous)-(prefix|apropos)-candidate-action:
 ;;       Put non-nil value on icicle-action-command, so M-x avoids key reminder for multi-command use.
@@ -4566,6 +4569,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-mode.el'")
 ;;
+;; 2012/06/08 dadams
+;;     icicle-define-minibuffer-maps: fboundp of icicle-yank-secondary, not yank-secondary.
 ;; 2012/05/25 dadams
 ;;     Added icicle-dired-insert-as-subdir to menu icicle-dired-dir-menu-map.
 ;; 2012/05/15 dadams
