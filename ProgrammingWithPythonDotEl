@@ -51,19 +51,40 @@ python-end-of-block instead of py-next-block?
 The following will integrate python.el completions with auto-complete. You need to have installed and loaded auto-complete.el first:
 
 
-(defvar ac-source-python
-  '((candidates .
-
+    (defvar ac-source-python
+      '((candidates .
 		(lambda ()
-
 		  (mapcar '(lambda (completion)
-
 			     (first (last (split-string completion "\\." t))))
-
 			  (python-symbol-completions (python-partial-symbol)))))))
 
-
-(add-hook 'python-mode-hook
-
+    (add-hook 'python-mode-hook
 	  (lambda() (setq ac-sources '(ac-source-python))))
+
+
+== Troubleshooting ==
+
+=== C-c C-c / C-c C-r doesn't send evaluate my code! ===
+It seems like point has to be at the very bottom, with a clear prompt, for python-send-region to work. Here's a quick hack that does that before calling the function, and puts it back the way it was afterwards:
+
+
+    (defadvice python-send-region (around advice-python-send-region-goto-end)
+      "Fix a little bug if the point is not at the prompt when you do
+    C-c C-[rc]"
+      (let ((oldpoint (with-current-buffer (process-buffer (python-proc)) (point)))
+    	(oldinput
+    	 (with-current-buffer (process-buffer (python-proc))
+    	   (goto-char (point-max))
+    	   ;; Do C-c C-u, but without modifying the kill ring:
+    	   (let ((pmark (process-mark (get-buffer-process (current-buffer)))))
+    	     (when (> (point) (marker-position pmark))
+    	       (let ((ret (buffer-substring pmark (point))))
+    		 (delete-region pmark (point))
+    		 ret))))))
+        ad-do-it
+        (with-current-buffer (process-buffer (python-proc))
+          (when oldinput (insert oldinput))
+          (goto-char oldpoint))))
+    (ad-enable-advice 'python-send-region 'around 'advice-python-send-region-goto-end)
+    (ad-activate 'python-send-region)
 
