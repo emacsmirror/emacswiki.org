@@ -227,6 +227,8 @@ Dunno when (or whether) I will update <tt>[[buff-menu+.el]]</tt> to deal with th
 
 If you want a workaround for now, grab the ##buff-menu.el## code from the latest Emacs 24 pretest or prior (e.g. from Emacs 23), and load that, then ##buff-menu+.el##.  -- DrewAdams
 
+[new]
+I've taken ##buff-menu.el## from Emacs 23, and that works. Thanks for the hint. I can happily use this combination, so fix ##buff-menu+## whenever it suits you best. -- MoritzBunkus
 
 
 
