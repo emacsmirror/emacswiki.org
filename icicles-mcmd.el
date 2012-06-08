@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Sun Jun  3 11:51:08 2012 (-0700)
+;; Last-Updated: Fri Jun  8 10:35:30 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 17987
+;;     Update #: 17990
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-mcmd.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -1123,14 +1123,17 @@ See description of `yank-pop'."
   (interactive "*p")
   (icicle-call-then-update-Completions #'yank-pop arg))
 
-(when (fboundp 'yank-secondary)         ; In `second-sel.el'.
-  (defun icicle-yank-secondary ()       ; Bound to `C-M-y' in minibuffer.
-    "Insert the secondary selection at point.
+(eval-after-load "second-sel"
+  '(progn (defun icicle-yank-secondary () ; Bound to `C-M-y' in minibuffer.
+            "Insert the secondary selection at point.
 Move point to the end of the inserted text.  Does not change mark."
-    (interactive "*")
-    (icicle-call-then-update-Completions #'yank-secondary))
-  ;; Tell `delete-selection-mode' to replace active region by yanked secondary selection.
-  (put 'icicle-yank-secondary 'delete-selection 'yank))
+            (interactive "*")
+            (icicle-call-then-update-Completions #'yank-secondary))
+
+    (icicle-maybe-byte-compile-after-load icicle-yank-secondary)
+
+    ;; Tell `delete-selection-mode' to replace active region by yanked secondary selection.
+    (put 'icicle-yank-secondary 'delete-selection 'yank)))
 
 
 ;; Tell `delete-selection-mode' to replace active region by yanked secondary selection.
