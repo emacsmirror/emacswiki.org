@@ -1,4 +1,8 @@
-;;; multi-eshell.el -- Create and manage multiple shells within Emacs
+;;; multi-eshell.el --- Create and manage multiple shells within Emacs
+
+;; Author: Chris Stucchio
+;; URL: http://cims.nyu.edu/~stucchio
+;; Version: 0.0.1
 
 ;;     This program is free software: you can redistribute it and/or modify
 ;;     it under the terms of the GNU General Public License as published by
@@ -190,5 +194,4 @@
 
 (provide 'multi-eshell)
 
-
-
+;;; multi-eshell.el ends here
