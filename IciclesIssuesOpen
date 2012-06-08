@@ -122,6 +122,8 @@ Better yet, use this to separate threads (puts space before and after the horizo
 
 </pre>
 
+
+[:PasJaTrampProblem2012-06-08]
 [new]
 I've found another little bug: when i go to another machine with tramp, like `/ssh:pasja@example.com:/pasja' and hit the famous tab key, the machine part goes to the completion. My prompt looks like `/ssh:pasja@example.com:/pasja/pasja@example.com'. Of course this directory does not exist in my home folder, and i have to delete back, to get the real completion. After that is could use it normally.
 
