@@ -158,9 +158,15 @@ I think the problem is fixed now.  Please try the latest files and let me know. 
 Please give it a try and let me know.  Thx -- DrewAdams
 
 
+[new]
 
+Hi %%Drew,%%,
 
+Thanks, both of you, i tried the latest version, now it is usable. I've got some long living tramp connection now :-) 
 
+But i've found another little bug: when i go to another machine with tramp, like `/ssh:pasja@example.com:/pasja' and hit the famous tab key, the machine part goes to the completion. My prompt looks like `/ssh:pasja@example.com:/pasja/pasja@example.com'. Of course this directory does not exist in my home folder, and i have to delete back, to get the real completion. After that is could use it normally.
+
+Regards-- PasJa
 
 
 
