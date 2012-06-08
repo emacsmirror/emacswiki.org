@@ -122,51 +122,16 @@ Better yet, use this to separate threads (puts space before and after the horizo
 
 </pre>
 
-
-[:PasJaTrampIssue]
-[new] Hi Drew!
-
-Iv'got another icicles issue: If i hit `C-x C-f' to open files, and i go back to the directory tree with `C-backspace' (icicle-up-directory) every time i reach the '/' character, a message pops up in the minibuffer: "Tramp: Waiting for prompts from remote shell" and emacs freezes, after the process timed out, emacs responds again. 
-
-My tramp config(nothing special)
-
-   (setq shell-prompt-pattern "^[^a-zA-Z].*[~#$%>] *" ; we need a bit more funky pattern, as tramp will start $SHELL (sudo -s), ie., zsh for root user
-         tramp-default-method "ssh"
-         tramp-persistency-file-name "~/.emacs.d/cache/tramp")
-
-
-Regards,
-PasJa
-
-
-
-[new:DrewAdams:2012-05-17 14:15 UTC]
-Hi %%PasJa%%,
-
-Send me a mail with this info, and cc MichaelAlbinus (##michael.albinus AT gmx.de##), who writes Tramp.
-
-A workaround is perhaps to use `##C-###' in the minibuffer to turn off incremental completion.  No doubt, when '''Icicles''' tries to complete `##/##' Tramp is kicking in for some reason and trying to complete that string first.
-
-Another possible workaround is to use `##C-^##' in the minibuffer to toggle remote-file testing (it toggles [[option]] `icicle-test-for-remote-files-flag'), which also turns off Tramp's completion.  Toggle it back on when you want that completion.
-
-Hopefully Michael will have an answer for us.  But you need to specify exactly which OS you use, which Emacs version, which Tramp version, and any customizations --- preferably provide a recipe from ##emacs -Q## that specifies only the customizations needed to reproduce the problem.  Thx -- DrewAdams
-
-
-[new:DrewAdams:2012-05-22 14:21 UTC]
-I think the problem is fixed now.  Please try the latest files and let me know.  I could not test this on Windows -- there is no problem there, because ##/## is automatically expanded to ##c:/## or whatever, which prevents [[Tramp]] from kicking in.  But MichaelAlbinus was kind enough to debug it and found the problem.  It was not at all in the completion code but in was in a little function that displays info about the current candidate in the mode line.
-
-Please give it a try and let me know.  Thx -- DrewAdams
-
-
 [new]
-
-Hi %%Drew,%%,
-
-Thanks, both of you, i tried the latest version, now it is usable. I've got some long living tramp connection now :-) 
-
-But i've found another little bug: when i go to another machine with tramp, like `/ssh:pasja@example.com:/pasja' and hit the famous tab key, the machine part goes to the completion. My prompt looks like `/ssh:pasja@example.com:/pasja/pasja@example.com'. Of course this directory does not exist in my home folder, and i have to delete back, to get the real completion. After that is could use it normally.
+I've found another little bug: when i go to another machine with tramp, like `/ssh:pasja@example.com:/pasja' and hit the famous tab key, the machine part goes to the completion. My prompt looks like `/ssh:pasja@example.com:/pasja/pasja@example.com'. Of course this directory does not exist in my home folder, and i have to delete back, to get the real completion. After that is could use it normally.
 
 Regards-- PasJa
+
+
+
+
+
+
 
 
 
