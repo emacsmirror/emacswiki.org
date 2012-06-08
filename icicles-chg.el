@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Fri Jun  8 10:36:23 2012 (-0700)
+;; Last-Updated: Fri Jun  8 11:29:22 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 8476
+;;     Update #: 8477
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-chg.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -3154,6 +3154,7 @@
 ;;;(@* "CHANGE LOG FOR `icicles-mcmd.el'")
 ;;
 ;; 2012/06/08 dadams
+;;     Added macro icicle-maybe-byte-compile-after-load here too (for next).
 ;;     icicle-yank-secondary: Use eval-after-load of second-sel.el instead of fboundp yank-secondary
 ;;       (for arbitrary load order).  Added icicle-maybe-byte-compile-after-load.
 ;; 2012/06/03 dadams
