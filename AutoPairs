@@ -8,7 +8,7 @@ Emacs-24 comes with a new simple global minor mode electric-pair-mode which uses
 
 === autopair.el ===
 
-http://github.com/capitaomorte/autopair ([https://raw.github.com/capitaomorte/autopair/master/autopair.el direct link]) is a minor-mode that works with almost all major modes.  This is probably most likely the easiest (and best) way to achieve autopairs functionality in all your favorite modes.
+http://github.com/capitaomorte/autopair ([https://raw.github.com/capitaomorte/autopair/master/autopair.el download]) is a minor-mode that works with almost all major modes.  This is probably most likely the easiest (and best) way to achieve autopairs functionality in all your favorite modes.
 
 Key Points:
 
@@ -127,7 +127,7 @@ I don't think the wiki is the best place to ask questions.  However, why aren't 
 um, how do I report bug to you? email? I also tried paredit before tried autopairs, but I think autopairs is better than paredit, :), only I think, I think there are more bugs in paredit, so I choose autopairs. That's the bad news for me you'll disable autopairs, :(. -- [[ahei]]
 
 [new]
-There is a new feature that implements your desired backtick-and-quote custom pairing. Anyway to submit a bug or track autopair.el development go to http://autopair.googlecode.com, you can ask questions there and I can follow-up much better on them. For example one of the issues in point 3 you report is a not a bug, autopair can't guess you don't mean to start a string before the ")".--JoaoTavora
+There is a new feature that implements your desired backtick-and-quote custom pairing. Anyway to submit a bug or track autopair.el development go to http://github.com/capitaomorte/autopair, you can ask questions there and I can follow-up much better on them. For example one of the issues in point 3 you report is a not a bug, autopair can't guess you don't mean to start a string before the ")".--JoaoTavora
 
 [new]
 About backtick-and-quote, I already used it, it's good. Small suggestion, I think "##(setq autopair-extra-pairs `(:everywhere ((?` . ?'))))##" is more common for elisp users.
