@@ -64,7 +64,7 @@ The following will integrate python.el completions with auto-complete. You need 
 
 == Troubleshooting ==
 
-=== C-c C-c / C-c C-r doesn't send evaluate my code! ===
+=== C-c C-c / C-c C-r doesn't send / evaluate my code! ===
 It seems like point has to be at the very bottom, with a clear prompt, for python-send-region to work. Here's a quick hack that does that before calling the function, and puts it back the way it was afterwards:
 
 
