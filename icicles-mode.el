@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 10:21:10 2006
 ;; Version: 22.0
-;; Last-Updated: Fri May 25 09:48:10 2012 (-0700)
+;; Last-Updated: Fri Jun  8 10:37:28 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 8982
+;;     Update #: 8988
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-mode.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -2827,7 +2827,7 @@ keymap.  If KEYMAP-VAR is not bound to a keymap, it is ignored."
        (dolist (key  icicle-read+insert-file-name-keys)
          (define-key map key 'icicle-read+insert-file-name)) ; `C-M-S-f'
        (define-key map (icicle-kbd "C-j")           'icicle-insert-newline-in-minibuffer) ; `C-j'
-       (when (fboundp 'yank-secondary)  ; In `second-sel.el'.
+       (when (fboundp 'icicle-yank-secondary)
          (define-key map (icicle-kbd "C-M-y") 'icicle-yank-secondary))) ; `C-M-y'
 
      ;; `minibuffer-local-ns-map': default minibuffer map when spaces are not allowed.
@@ -2932,7 +2932,7 @@ keymap.  If KEYMAP-VAR is not bound to a keymap, it is ignored."
          (dolist (key  icicle-read+insert-file-name-keys)
            (define-key map key 'icicle-read+insert-file-name)) ; `C-M-S-f'
          (define-key map (icicle-kbd "C-j")           'icicle-insert-newline-in-minibuffer) ; `C-j'
-         (when (fboundp 'yank-secondary) ; In `second-sel.el'.
+         (when (fboundp 'icicle-yank-secondary)
            (define-key map (icicle-kbd "C-M-y") 'icicle-yank-secondary)))) ; `C-M-y'
 
      ;; `minibuffer-local-isearch-map': minibuffer map for editing isearch strings.
@@ -3037,7 +3037,7 @@ keymap.  If KEYMAP-VAR is not bound to a keymap, it is ignored."
          (dolist (key  icicle-read+insert-file-name-keys)
            (define-key map key 'icicle-read+insert-file-name)) ; `C-M-S-f'
          (define-key map (icicle-kbd "C-j")           'icicle-insert-newline-in-minibuffer) ; `C-j'
-         (when (fboundp 'yank-secondary) ; In `second-sel.el'.
+         (when (fboundp 'icicle-yank-secondary)
            (define-key map (icicle-kbd "C-M-y") 'icicle-yank-secondary)))) ; `C-M-y'
 
      ;; `minibuffer-local-completion-map': completion map.
@@ -3669,7 +3669,7 @@ complete)"))
     (define-key map (icicle-kbd "M-.")     'icicle-insert-string-at-point) ; `M-.'
     (define-key map (icicle-kbd "C-x C-f") 'icicle-resolve-file-name) ; `C-x C-f'
     (define-key map (icicle-kbd "M-:")     'icicle-pp-eval-expression-in-minibuffer) ; `M-:'
-    (when (fboundp 'yank-secondary)     ; In `second-sel.el'.
+    (when (fboundp 'icicle-yank-secondary)
       (define-key map (icicle-kbd "C-M-y") 'icicle-yank-secondary)) ; `C-M-y'
     (define-key map (icicle-kbd "M-S-backspace") 'icicle-erase-minibuffer) ; `M-S-backspace'
     (define-key map (icicle-kbd "M-S-delete") 'icicle-erase-minibuffer) ; `M-S-delete'
