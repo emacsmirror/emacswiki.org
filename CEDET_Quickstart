@@ -41,5 +41,8 @@ This is the configuration he uses:
 (ac-config-default)
 }}}
 
+[new]
+I found that semantic-idle-completions-mode interferes with autocomplete and had to disable it for autocomplete to work normally. - TaylanUB
+
 ----
 CategoryProgrammerUtils
