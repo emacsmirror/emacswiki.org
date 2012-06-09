@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:22:14 2006
 ;; Version: 22.0
-;; Last-Updated: Sun May 13 14:44:36 2012 (-0700)
+;; Last-Updated: Sat Jun  9 10:54:50 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 4995
+;;     Update #: 5002
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-opt.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -2763,11 +2763,13 @@ It is an option mainly to persist its value.
 See `icicle-guess-commands-in-path'."
   :type '(repeat sexp) :group 'Icicles-Miscellaneous)
 
-(if (and (fboundp 'defvaralias) (boundp 'completion-show-help))
-    (defvaralias 'icicle-show-Completions-help-flag 'completion-show-help)
-  (defcustom icicle-show-Completions-help-flag t
-    "*Non-nil means display help lines at the top of buffer `*Completions*'."
-    :type 'boolean :group 'Icicles-Completions-Display))
+(defcustom icicle-show-Completions-help-flag t
+  "*Non-nil means display help lines at the top of buffer `*Completions*'.
+A nil value means show only the completion candidates themselves.
+But if there are no candidates then say so in `*Completions*'.
+Note that vanilla Emacs option `completion-show-help' has no effect in
+Icicle mode."
+  :type 'boolean :group 'Icicles-Completions-Display)
 
 ;;;###autoload
 (defcustom icicle-show-Completions-initially-flag nil
