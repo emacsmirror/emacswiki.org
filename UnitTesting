@@ -42,6 +42,8 @@ https://github.com/rocky/emacs-test-unit is yet another Unit test based on PhilH
 
 PhilHagelberg describes a BDD framework with expectations-like syntax. [http://technomancy.us/73 Description].
 
+[http://ecukes.info/ ecukes] is a cucumber-like framework for writing tests. It allows you to write human-readable feature tests. 
+
 === Others ===
 
 '''[[EmacsLispForRuby|El4r]]''' (Emacs Lisp for Ruby) leverages Ruby's ##Test::Unit## framework by using the EmacsRuby extension language. You write unit tests in EmacsRuby, while the code is in EmacsLisp. In other words, you can treat the EmacsLisp code as a black box and feed it inputs and check the outputs using EmacsRuby.
