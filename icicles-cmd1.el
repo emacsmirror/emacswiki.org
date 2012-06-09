@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Mon Jun  4 15:07:32 2012 (-0700)
+;; Last-Updated: Sat Jun  9 16:03:23 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 24001
+;;     Update #: 24006
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-cmd1.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -17,14 +17,15 @@
 ;;
 ;; Features that might be required by this library:
 ;;
-;;   `apropos', `apropos-fn+var', `avoid', `cl', `cus-edit',
-;;   `cus-face', `cus-load', `cus-start', `doremi', `easymenu',
-;;   `el-swank-fuzzy', `ffap', `ffap-', `frame-cmds', `frame-fns',
-;;   `fuzzy', `fuzzy-match', `hexrgb', `icicles-face', `icicles-fn',
-;;   `icicles-mcmd', `icicles-opt', `icicles-var', `image-dired',
-;;   `kmacro', `levenshtein', `misc-fns', `mouse3', `mwheel',
-;;   `naked', `regexp-opt', `ring', `ring+', `second-sel', `strings',
-;;   `thingatpt', `thingatpt+', `wid-edit', `wid-edit+', `widget'.
+;;   `apropos', `apropos-fn+var', `avoid', `backquote', `bytecomp',
+;;   `cl', `cus-edit', `cus-face', `cus-load', `cus-start', `doremi',
+;;   `easymenu', `el-swank-fuzzy', `ffap', `ffap-', `frame-cmds',
+;;   `frame-fns', `fuzzy', `fuzzy-match', `hexrgb', `icicles-face',
+;;   `icicles-fn', `icicles-mcmd', `icicles-opt', `icicles-var',
+;;   `image-dired', `kmacro', `levenshtein', `misc-fns', `mouse3',
+;;   `mwheel', `naked', `regexp-opt', `ring', `ring+', `second-sel',
+;;   `strings', `thingatpt', `thingatpt+', `wid-edit', `wid-edit+',
+;;   `widget'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -600,29 +601,29 @@ customize option `icicle-top-level-key-bindings'."
   "Prettify and show EXPRESSION in a way appropriate to its length.
 If a temporary buffer is needed for representation, it is named
 OUT-BUFFER-NAME."
-  (lexical-let* ((old-show-function  temp-buffer-show-function)
-                 ;; Use this function to display the buffer.
-                 ;; This function either decides not to display it at all
-                 ;; or displays it in the usual way.
-                 (temp-buffer-show-function
-                  #'(lambda (buf)       ; FREE here: OLD-SHOW-FUNCTION.
-                      (with-current-buffer buf
-                        (goto-char (point-min))
-                        (end-of-line 1)
-                        (if (or (< (1+ (point)) (point-max))
-                                (>= (- (point) (point-min)) (frame-width)))
-                            (let ((temp-buffer-show-function  old-show-function)
-                                  (old-selected               (selected-window))
-                                  (window                     (display-buffer buf)))
-                              (goto-char (point-min)) ; expected by some hooks ...
-                              (make-frame-visible (window-frame window))
-                              (unwind-protect
-                                   (progn (select-window window)
-                                          (run-hooks 'temp-buffer-show-hook))
-                                (select-window old-selected)
-                                (message "Evaluating...done.  See buffer `%s'."
-                                         out-buffer-name)))
-                          (message "%s" (buffer-substring (point-min) (point))))))))
+  (let* ((old-show-function  temp-buffer-show-function)
+         ;; Use this function to display the buffer.
+         ;; This function either decides not to display it at all
+         ;; or displays it in the usual way.
+         (temp-buffer-show-function
+          `(lambda (buf)
+            (with-current-buffer buf
+              (goto-char (point-min))
+              (end-of-line 1)
+              (if (or (< (1+ (point)) (point-max))
+                      (>= (- (point) (point-min)) (frame-width)))
+                  (let ((temp-buffer-show-function  ',old-show-function)
+                        (old-selected               (selected-window))
+                        (window                     (display-buffer buf)))
+                    (goto-char (point-min)) ; expected by some hooks ...
+                    (make-frame-visible (window-frame window))
+                    (unwind-protect
+                         (progn (select-window window)
+                                (run-hooks 'temp-buffer-show-hook))
+                      (select-window old-selected)
+                      (message "Evaluating...done.  See buffer `%s'."
+                               out-buffer-name)))
+                (message "%s" (buffer-substring (point-min) (point))))))))
     (with-output-to-temp-buffer out-buffer-name
       (pp expression)
       (with-current-buffer standard-output
@@ -7369,7 +7370,9 @@ Unicode chars, then customize option `icicle-zap-to-char-candidates'."
         (when (char-table-p translation-table-for-input) ; Free var here.
           (setq char  (or (aref translation-table-for-input char)  char))))
     (kill-region (point) (progn (search-forward (char-to-string char) nil nil arg)
-                                ;; (goto-char (if (> arg 0) (1- (point)) (1+ (point)))) ; (vanilla)
+                                ;; (goto-char (if (> arg 0)
+                                ;;                (max (point-min) (1- (point)))
+                                ;;              (min (point-max) (1+ (point))))) ; (vanilla)
                                 (point)))))
 
 ;;;###autoload (autoload 'icicle-sexp-list "icicles")
