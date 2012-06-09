@@ -98,7 +98,23 @@ coding conversion.
 
 == ccrypt ==
 
-See "Emacs Support" section on http://ccrypt.sourceforge.net/.
+See "Emacs Support" section on http://ccrypt.sourceforge.net/
+
+This actually works over SSH.
+
+<pre>
+Download source and
+$ ./configure && make install
+</pre>
+
+Current instructions on home page of how to enable in .emacs are wrong. Add this instead:
+
+<pre>
+(setq load-path (cons "path" load-path)) ; where path is the path where ps-ccrypt.el is located
+(require 'ps-ccrypt "ps-ccrypt.el")
+</pre>
+
+Now, simply open a file you want to encrypt and save (C-x C-w) with "cpt" extension.
 
 == See also ==
 
