@@ -71,12 +71,11 @@ nickserv login and password saved to an erc-auth file to be loaded by erc.
 
 === Symbol's function definition is void: erc-tls ===
 
-[new]
-Hey, put (require 'erc) in your ~/.emacs. -- talau
+[new]Hey, put (require 'erc) in your ~/.emacs. -- talau
 
-[new]
-I followed the tutorial on creating the cert keys and I have Nick.cer, Nick.key and Nick.pem. 
-When I go to configure the tls-program variable, the -CAfile option requires CAs.pem. 
-This tutorial doesn't explain where to get this file from.
+[new]I followed the tutorial on creating the cert keys and I have Nick.cer, Nick.key and Nick.pem. When I go to configure the tls-program variable, the -CAfile option requires CAs.pem. This tutorial doesn't explain where to get this file from. -- E1f
+
+You skipped a part of the tutorial, E1f. Check under "Connecting to OFTC with your Cert" -> "Unlisted Clients" -> "Irssi", and adjust for your designated paths. -- ootput
+
 ----
 [[ERC]]
