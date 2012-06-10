@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Fri Jun  8 11:29:22 2012 (-0700)
+;; Last-Updated: Sat Jun  9 17:42:52 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 8477
+;;     Update #: 8505
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-chg.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -85,6 +85,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd1.el'")
 ;;
+;; 2012/06/09 dadams
+;;     icicle-pp-display-expression: Use backquote+comma, not lexical-let (bug fix).
 ;; 2012/06/04 dadams
 ;;     Comment or otherwise handle free vars in lambdas: some lexical-let, some backquoting.
 ;; 2012/06/03 dadams
@@ -1334,6 +1336,13 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-fn.el'")
 ;;
+;; 2012/06/09 dadams
+;;     icicle-display-candidates-in-Completions, icicle-highlight-initial-whitespace:
+;;       Use point-max if 1+ point is greater.
+;;     icicle-display-completion-list:
+;;       Insert help string only if there are completions.
+;;       Show text "There are no possible..." anyway, even if the show flag is nil.
+;;     icicle-expand-file-name-20: Move forward-line only if the show flag is non-nil - else no-op.
 ;; 2012/05/22 dadams
 ;;     icicle-file-remote-p: Aligned with bmkp-file-remote-p - removed ffap; added final string-match.
 ;;     icicle-show-help-in-mode-line, icicle-quote-file-name-part-of-cmd:
@@ -3153,6 +3162,15 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-mcmd.el'")
 ;;
+;; 2012/06/09 dadams
+;;     icicle-choose-completion, icicle-nb-of-cand-in-Completions-horiz, icicle-insert-dot,
+;;       icicle-switch-to-Completions-buf, icicle-current-completion-in-Completions,
+;;       icicle-move-to-next-completion:
+;;         Use point-min if 1- point is less.
+;;     icicle-move-to-next-completion:
+;;       Adjust use of icicle-show-Completions-help-flag.  Wrap when bobp.  When wrap to end, back up
+;;       over final space, which has no mouse-face, else previous-single-property-change DTWT.
+;;     icicle-previous-line: Handle new behavior of nil icicle-show-Completions-help-flag.
 ;; 2012/06/08 dadams
 ;;     Added macro icicle-maybe-byte-compile-after-load here too (for next).
 ;;     icicle-yank-secondary: Use eval-after-load of second-sel.el instead of fboundp yank-secondary
@@ -5676,6 +5694,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-opt.el'")
 ;;
+;; 2012/06/09 dadams
+;;     icicle-show-Completions-help-flag: Do not defvaralias it to completion-show-help.  Updated doc.
 ;; 2012/05/07 dadams
 ;;     Applied renaming of icicle-search-dired-marked to icicle-search-dired-marked-recursive.
 ;; 2012/04/03 dadams
