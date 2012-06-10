@@ -61,11 +61,6 @@ Enjoy your SSL-encrypted IRC session!
 == Problems ==
 === Re-connect ===
 [new]
-I followed the tutorial on creating the cert keys and I have Nick.cer, Nick.key and Nick.pem. 
-When I go to configure the tls-program variable, the -CAfile option requires CAs.pem. 
-This tutorial doesn't explain where to get this file from.
-
-[new]
 While the start-irc will initiate the cert-based ssl connection, a terminated connection
 will fail to trigger an auto-reconnect with certs. In the absence of valid ssl credentials,
 this will mean repeated failed attempts to reconnect. A temporary solution would be to have
@@ -79,5 +74,9 @@ nickserv login and password saved to an erc-auth file to be loaded by erc.
 [new]
 Hey, put (require 'erc) in your ~/.emacs. -- talau
 
+[new]
+I followed the tutorial on creating the cert keys and I have Nick.cer, Nick.key and Nick.pem. 
+When I go to configure the tls-program variable, the -CAfile option requires CAs.pem. 
+This tutorial doesn't explain where to get this file from.
 ----
 [[ERC]]
