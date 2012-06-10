@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:53 2006
 ;; Version: 22.0
-;; Last-Updated: Tue May 22 08:15:47 2012 (-0700)
+;; Last-Updated: Sat Jun  9 17:30:13 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 13009
+;;     Update #: 13022
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-fn.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -658,8 +658,8 @@ so it is called after completion-list buffer text is written."
 
 (defun icicle-insert-Completions-help-string ()
   "Add or remove help in `*Completions*'.
-This is controlled by `icicle-show-Completions-help-flag'.  If that
-option is nil, remove help; else, add it."
+This is controlled by `icicle-show-Completions-help-flag'.  Show help
+only if that option is non-nil."
   (if icicle-show-Completions-help-flag
       (let ((instruction2  (or (and icicle-mode (substitute-command-keys
                                                  (concat "(\\<minibuffer-local-completion-map>"
@@ -3092,11 +3092,12 @@ NO-DISPLAY-P non-nil means do not display the candidates; just
                                           (string-match (image-file-name-regexp) image-file))))
                              (let ((thumb-img  (append (image-dired-get-thumbnail-image image-file)
                                                        '(:margin 2)))
-                                   (img-ov     (overlays-in (point) (1+ (point)))))
+                                   (img-ov     (overlays-in (point) (min (point-max) (1+ (point))))))
                                (if img-ov
                                    (delete-overlay (car img-ov))
                                  (put-image thumb-img beg)
-                                 (setq img-ov (loop for ov in (overlays-in (point) (1+ (point)))
+                                 (setq img-ov (loop for ov in (overlays-in
+                                                               (point) (min (point-max) (1+ (point))))
                                                     when (overlay-get ov 'put-image) collect ov into ovs
                                                     finally return (car ovs)))
                                  (overlay-put img-ov 'image-file image-file)
@@ -3183,13 +3184,16 @@ The optional second arg is ignored."
     (let ((mainbuf  (current-buffer)))  ; $$$$$$ For Emacs 23 crap that puts base-size in last cdr.
       (with-current-buffer standard-output
         (goto-char (point-max))
-        (when icicle-show-Completions-help-flag (icicle-insert-Completions-help-string))
         (let ((cand-intro-string  (if completions
                                       "Possible completions are:\n"
                                     "There are no possible completions of what you have typed.")))
-          (put-text-property 0 (length cand-intro-string) 'face 'icicle-Completions-instruction-1
-                             cand-intro-string)
-          (insert cand-intro-string))
+          (when (and icicle-show-Completions-help-flag  completions)
+            (icicle-insert-Completions-help-string)
+            (put-text-property 0 (length cand-intro-string) 'face 'icicle-Completions-instruction-1
+                               cand-intro-string))
+          ;; Show `There are no possible...' anyway, even if not `icicle-show-Completions-help-flag'.
+          (when (or icicle-show-Completions-help-flag  (null completions))
+            (insert cand-intro-string)))
         ;; $$$$$$$$ Emacs 23 nonsense.  Revisit this when Stefan finally removes that crud.
         ;; This is done in Emacs 23 `display-completion-list'.
         (when (and completions  (fboundp 'completion-all-sorted-completions)) ; Emacs 23
@@ -3340,12 +3344,13 @@ This must be called in the minibuffer."
           (save-restriction
             (narrow-to-region (point) (point-max)) ; Search within completion candidate.
             (while (and (not (eobp)) (looking-at "\\(\\s-\\|\n\\)+"))
-              (put-text-property (point) (1+ (point)) 'face 'icicle-whitespace-highlight)
+              (put-text-property (point) (min (point-max) (1+ (point)))
+                                 'face 'icicle-whitespace-highlight)
               (forward-char 1))
             ;; Remove any previous whitespace highlighting that is no longer part of prefix.
             (while (not (eobp))
               (when (eq (get-text-property (point) 'face) 'icicle-whitespace-highlight)
-                (put-text-property (point) (1+ (point)) 'face nil))
+                (put-text-property (point) (min (point-max) (1+ (point))) 'face nil))
               (forward-char 1))))))))
 
 (defun icicle-minibuffer-prompt-end ()
@@ -5603,7 +5608,7 @@ Similar to `expand-file-name', except:
   "Return buffer position of the first candidate in `*Completions*'."
   (save-excursion
     (goto-char (point-min))
-    (forward-line (if icicle-show-Completions-help-flag 2 1))
+    (when icicle-show-Completions-help-flag (forward-line 2))
     (point)))
 
 (defun icicle-key-description (keys &optional prefix angles)
