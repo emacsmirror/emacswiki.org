@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Fri Jun  8 11:26:46 2012 (-0700)
+;; Last-Updated: Sat Jun  9 17:33:15 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 17993
+;;     Update #: 18031
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-mcmd.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -17,12 +17,13 @@
 ;;
 ;; Features that might be required by this library:
 ;;
-;;   `apropos', `apropos-fn+var', `cl', `doremi', `el-swank-fuzzy',
-;;   `ffap', `ffap-', `fuzzy', `fuzzy-match', `hexrgb',
-;;   `icicles-face', `icicles-fn', `icicles-opt', `icicles-var',
-;;   `image-dired', `kmacro', `levenshtein', `mouse3', `mwheel',
-;;   `naked', `regexp-opt', `ring', `ring+', `thingatpt',
-;;   `thingatpt+', `wid-edit', `wid-edit+', `widget'.
+;;   `apropos', `apropos-fn+var', `backquote', `bytecomp', `cl',
+;;   `doremi', `el-swank-fuzzy', `ffap', `ffap-', `fuzzy',
+;;   `fuzzy-match', `hexrgb', `icicles-face', `icicles-fn',
+;;   `icicles-opt', `icicles-var', `image-dired', `kmacro',
+;;   `levenshtein', `mouse3', `mwheel', `naked', `regexp-opt',
+;;   `ring', `ring+', `thingatpt', `thingatpt+', `wid-edit',
+;;   `wid-edit+', `widget'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -621,8 +622,8 @@ This differs from `icicle-minibuffer-complete-and-exit' (bound to
       (setq end  (point)
             beg  (1+ (point))))
     (when (and (>= (point) (icicle-start-of-candidates-in-Completions))
-               (get-text-property (1- (point)) 'mouse-face))
-      (setq end  (1- (point))
+               (get-text-property (max (point-min) (1- (point))) 'mouse-face))
+      (setq end  (max (point-min) (1- (point)))
             beg  (point)))
     (unless beg	(error "No completion here"))
     (setq beg         (previous-single-property-change beg 'mouse-face)
@@ -715,7 +716,7 @@ POSITION is a buffer position."
       (set-buffer compl-buf)
       (goto-char position)
       ;; If in a completion, move to its start, and set POSITION there.
-      (let ((prop  (get-text-property  (1- (point)) 'mouse-face)))
+      (let ((prop  (get-text-property (max (point-min) (1- (point))) 'mouse-face)))
         (when (and prop (eq prop (get-text-property (point) 'mouse-face)))
           (goto-char (previous-single-property-change (point) 'mouse-face nil
                                                       (icicle-start-of-candidates-in-Completions)))))
@@ -1077,7 +1078,7 @@ See description of `kill-region-wimpy'."
 ;;;   "Kill (delete) the part of the input that does not complete.
 ;;; Repeat to delete more."
 ;;;   (interactive)
-;;;   (goto-char (1- (point-max)))
+;;;   (goto-char (max (point-min) (1- (point))))
 ;;;   (while (and (not (bobp))
 ;;;               (memq (get-text-property (point) 'face)
 ;;;                     '(icicle-input-completion-fail icicle-input-completion-fail-lax)))
@@ -1220,7 +1221,8 @@ With a plain prefix arg (`C-u'), insert the opposite kind of dot
     (if (not (string= icicle-dot-string-internal "."))
         (insert (icicle-anychar-regexp))
       (insert ".")
-      (add-text-properties (1- (point)) (point) '(icicle-user-plain-dot t rear-nonsticky t)))))
+      (add-text-properties (max (point-min) (1- (point))) (point)
+                           '(icicle-user-plain-dot t rear-nonsticky t)))))
 
 (defun icicle-anychar-regexp ()
   "Return a regexp that matches any single character, including newline.
@@ -4121,7 +4123,7 @@ You can use this command only from the minibuffer (`\\<minibuffer-local-completi
                                (not (funcall search-fn inp nil 'leave-at-end))))))))
         (unless (eobp)
           (unless icicle-candidate-nb (goto-char (match-beginning 0)))
-          (let ((prop  (get-text-property (1- (point)) 'mouse-face)))
+          (let ((prop  (get-text-property (max (point-min) (1- (point))) 'mouse-face)))
             ;; If in a completion, move to the start of it.
             (when (and prop (eq prop (get-text-property (point) 'mouse-face)))
               (goto-char (previous-single-property-change (point) 'mouse-face nil (point-min)))))
@@ -4172,8 +4174,8 @@ Return the name as a string."           ; See also `choose-completion' and `mous
     (when (and (not (eobp)) (get-text-property (point) 'mouse-face))
       (setq end  (point)
             beg  (1+ (point))))
-    (when (and (> (point) start-of-cands) (get-text-property (1- (point)) 'mouse-face))
-      (setq end  (1- (point))
+    (when (and (> (point) start-of-cands) (get-text-property (max (point-min) (1- (point))) 'mouse-face))
+      (setq end  (max (point-min) (1- (point)))
             beg  (point)))
     (setq beg  (previous-single-property-change (or beg (point)) 'mouse-face nil start-of-cands)
           end  (next-single-property-change (or end (point)) 'mouse-face nil (point-max)))
@@ -4245,15 +4247,17 @@ You can use this command only from buffer `*Completions*' (`\\<completion-list-m
       (setq n  (1- n)))
 
     ;; Backward: n < 0.
-    (while (and (< n 0) (>= (count-lines 1 (point)) (if icicle-show-Completions-help-flag 3 2)))
-      (let ((prop  (get-text-property (1- (point)) 'mouse-face)))
+    (while (and (< n 0)
+                (>= (count-lines 1 (point)) (if icicle-show-Completions-help-flag 2 0)))
+      (let ((prop  (get-text-property (max (point-min) (1- (point))) 'mouse-face)))
         (when (and prop (eq prop (get-text-property (point) 'mouse-face))) ; If in cand, move to start.
           (goto-char (previous-single-property-change (point) 'mouse-face nil beg))))
       (unless (or (< (count-lines 1 (point)) ; Move to end of previous candidate.
-                     (if icicle-show-Completions-help-flag 3 2))
-                  (get-text-property (1- (point)) 'mouse-face))
+                     (if icicle-show-Completions-help-flag 2 0))
+                  (and (not (bobp))  (get-text-property (1- (point)) 'mouse-face)))
         (goto-char (or (previous-single-property-change (point) 'mouse-face)
-                       end)))           ; Wrap back to last candidate.
+                       ;; Wrap back to end of last candidate.  (Back over final space with no mouse-face.)
+                       (1- end))))
 
       ;; Move to the start of that candidate.
       (goto-char (previous-single-property-change (point) 'mouse-face nil beg))
@@ -4280,9 +4284,14 @@ You can use this command only from buffer `*Completions*' (`\\<completion-list-m
       (beginning-of-line)
       (while (and (< (point) opoint) (re-search-forward "[^ ] +" eol t))
         (setq curr-col  (1+ curr-col))))
-    (forward-line -1)
-    (when (< (point) (icicle-start-of-candidates-in-Completions))
-      (goto-char (point-max)) (beginning-of-line)) ; Wrap around
+    (cond ((and (not icicle-show-Completions-help-flag)
+                (<= (count-lines (icicle-start-of-candidates-in-Completions) (point)) (if (bolp) 0 1)))
+           (goto-char (point-max)) (beginning-of-line)) ; Wrap around
+          (t
+           (forward-line -1)
+           (when (and icicle-show-Completions-help-flag
+                      (< (point) (icicle-start-of-candidates-in-Completions)))
+             (goto-char (point-max)) (beginning-of-line)))) ; Wrap around
     (let ((eol  (line-end-position)))
       (save-excursion
         (beginning-of-line)
