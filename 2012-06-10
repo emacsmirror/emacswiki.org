@@ -19,5 +19,5 @@ list.
 
 * Unified and improved completion system in many modes and packages.
 
-* Support for GnuTLS (for built-in TLS/SSL encryption), GTK+ 3,
+* Support for !GnuTLS (for built-in TLS/SSL encryption), GTK+ 3,
   ImageMagick, SELinux, and Libxml2.
