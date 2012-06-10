@@ -1,0 +1,23 @@
+ChongYidong has announced [http://lists.gnu.org/archive/html/emacs-devel/2012-06/msg00164.html the release of Emacs 24.1]!
+
+GNU Emacs 24.1 has been released.  It is available on the [ftp.gnu.org/gnu/emacs/ GNU ftp site].
+Note the [http://www.gnu.org/order/ftp.html list of mirrors].
+
+Here are some new features in Emacs 24.1.  See etc/NEWS for a complete
+list.
+
+* New packaging system and interface (M-x list-packages) for
+  downloading and installing extensions.  A default package archive is
+  hosted by GNU and maintained by the Emacs developers.
+
+* Support for displaying and editing bidirectional text, including
+  right-to-left scripts such as Arabic and Hebrew.
+
+* Support for lexical scoping in Emacs Lisp.
+
+* Improvements to the Custom Themes system (M-x customize-themes).
+
+* Unified and improved completion system in many modes and packages.
+
+* Support for GnuTLS (for built-in TLS/SSL encryption), GTK+ 3,
+  ImageMagick, SELinux, and Libxml2.
