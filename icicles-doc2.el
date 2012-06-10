@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Sun Jun  3 09:45:01 2012 (-0700)
+;; Last-Updated: Sat Jun  9 17:43:40 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 28879
+;;     Update #: 28883
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-doc2.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -5276,10 +5276,12 @@
 ;;    window at any time using `C-x 0' in the minibuffer.
 ;;
 ;;  * Non-`nil' option `icicle-show-Completions-help-flag' means
-;;    display help (instructions) at the top of the `*Completions*'
-;;    window.  These instructions are shown in faces
-;;    `icicle-Completions-instruction-1' and
-;;    `icicle-Completions-instruction-2'.
+;;    display help (instructions) at the top of the buffer that shows
+;;    completions (typically `*Completions*').  These instructions are
+;;    shown in faces `icicle-Completions-instruction-1' and
+;;    `icicle-Completions-instruction-2'.  If `nil', the completion
+;;    candidates are shown alone (no help text), but if there are no
+;;    candidates then text stating that fact is printed in the buffer.
 ;;
 ;;  * Option `icicle-help-in-mode-line-delay' is the number of seconds
 ;;    to display help on individual completion candidates in the
