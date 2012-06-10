@@ -13,6 +13,11 @@ Im now able to have a gtk button move with the text in emacs, just like an image
 
 Its very cool!
 
+Embedded webkit displaying an emacs elnode web app! yay!
+
+[[image:WebkitElnodeScreenshot]]
+
+
 == getting the code ==
 
 I've now created an "xwidget" branch in the savannah emacs bzr repo, and the code will live there now.
