@@ -853,7 +853,9 @@ time using
 ==== Option icicle-show-Completions-help-flag, Faces icicle-Completions-instruction-1 and -2 ====
 
 Non-`nil' option '''`icicle-show-Completions-help-flag'''' means display help
-(instructions) at the top of the `*Completions*' window.  These instructions are shown in faces '''`icicle-Completions-instruction-1'''' and '''`icicle-Completions-instruction-2''''.
+(instructions) at the top of the buffer that shows completions (typically `*Completions*').  These instructions are shown in faces '''`icicle-Completions-instruction-1'''' and '''`icicle-Completions-instruction-2''''.  If `nil', the completion
+candidates are shown alone (no help text), but if there are no
+candidates then text stating that fact is printed in the buffer.
 
 ----
 [:icicle-help-in-mode-line-delay]
