@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2012, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 13:43:55 2010 (-0700)
-;; Last-Updated: Wed May 16 08:20:58 2012 (-0700)
+;; Last-Updated: Mon Jun 11 14:49:01 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 5559
+;;     Update #: 5562
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-1.el
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -4184,7 +4184,7 @@ Non-interactively, non-nil MSG-P means display a status message."
                                 (if fullp
                                     (lambda (t1 t2) (bmkp-string-less-case-fold-p (car t1) (car t2)))
                                   'bmkp-string-less-case-fold-p))
-                          "*All Tags"))
+                          "*All Tags*"))
 
 (defun bmkp-tags-list (&optional names-only-p current-only-p)
   "List of all bookmark tags, per option `bmkp-tags-for-completion'.
@@ -5357,9 +5357,10 @@ If NAME has property `bmkp-full-record', then test whether both:
  b. NAME has the same `bmkp-full-record' value as an element of NAMES."
   ;; $$$$$$ Can we change `equal' to `eq' here?
   (let ((prop  (get-text-property 0 'bmkp-full-record name)))
-    (if (not prop)
+    (if (or (null name)  (not prop))
         (member name names)             ; Unpropertized - just use `member'.
-      (while (and names  (not (and (string= name (car names)) ; = `bmkp-names-same-bookmark-p'.
+      (while (and names  (not (and (stringp (car names))
+                                   (string= name (car names)) ; = `bmkp-names-same-bookmark-p'.
                                    ;; If unpropertized in NAMES, then assume it's the one.
                                    (or (not (get-text-property 0 'bmkp-full-record (car names)))
                                        (equal prop (get-text-property 0 'bmkp-full-record (car names)))))))
