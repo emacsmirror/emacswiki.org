@@ -5,5 +5,26 @@ As proposed by JohnWiegley in order to select a Message-ID from any nnml group:
         (gnus-summary-read-group (concat "nnml:" (car info)) nil t)
         (gnus-summary-goto-article (cdr info) nil t)))
 
+With the very latest Gnus and nnir.el, you can use something like this (edit the "INBOX" string to a default mailbox name):
+
+    (defun gnus-goto-article (message-id)
+      (gnus-summary-read-group "INBOX" 15 t)
+      (gnus-summary-refer-article message-id))
+
+Make sure that nnir is high up in your gnus-refer-article-method list.  Here's what mine looks like:
+
+    (current
+     (nnir "nnimap:Local")
+     (nntp "LocalNews"
+           (nntp-address "localhost")
+           (nntp-port-number 9119))
+     (nntp "Gmane"
+           (nntp-address "news.gmane.org"))
+     (nntp "Eternal September"
+           (nntp-address "news.eternal-september.org")
+           (nntp-authinfo-user "jwiegley")))
+
+The advantage here is that it finds the article by message-id anywhere that can be found via article referral. -- JohnWiegley
+
 ----
 CategoryGnus
