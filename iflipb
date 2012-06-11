@@ -3,9 +3,10 @@
 *iflipb* lets you flip between recently visited buffers in a way that
 resembles what ##Alt-(Shift-)TAB## does in Microsoft Windows and other
 graphical window managers. *iflipb* treats the buffer list as a stack,
-and (by design) it doesn't loop around. This means that when you have
+and (by design) it doesn't wrap around. This means that when you have
 flipped to the last buffer and continue, you don't get to the first
-buffer again. This is a good thing.
+buffer again. This is a good thing. (If you disagree and want
+wrap-around, set ##iflipb-wrap-around## to non-nil.)
 
 == Operation ==
 
