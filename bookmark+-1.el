@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2012, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 13:43:55 2010 (-0700)
-;; Last-Updated: Mon Jun 11 14:49:01 2012 (-0700)
+;; Last-Updated: Mon Jun 11 16:10:14 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 5562
+;;     Update #: 5587
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-1.el
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -1662,7 +1662,8 @@ provide it.  If that does not provide it then use
                              (when (and (stringp val) (not (string= "" val)))
                                (throw 'bookmark-make-record val)))))
                        (or bookmark-current-bookmark (bookmark-buffer-name))))
-      (when (and defname  (not (stringp defname)))  (setq defname  (format "%s" defname))) ; Just in case.
+      (when (and defname  (not (stringp defname))) (setq defname  (format "%s" defname))) ; Just in case.
+      (when (string= "" defname) (setq defname "<EMPTY NAME>")) ; You never know.
       (setcar record  defname)
       record)))
 
@@ -1812,8 +1813,9 @@ The names are those of the bookmarks in ALIST or, if nil,
 ;; REPLACES ORIGINAL in `bookmark.el'.
 ;;
 ;; 1. Added optional args ALIST, PRED, and HIST.
-;; 2. Define using helper function `bmkp-completing-read-1',
-;;    which binds `icicle-delete-candidate-object' to (essentially) `bookmark-delete'.
+;; 2. Define using helper function `bmkp-completing-read-1'.
+;;    which: (a) binds `icicle-delete-candidate-object' to (essentially) `bookmark-delete'.
+;;           (b) forces you to enter a non-empty name, if DEFAULT is nil or "".
 ;;
 (defun bookmark-completing-read (prompt &optional default alist pred hist)
   "Read a bookmark name, prompting with PROMPT.
@@ -2016,7 +2018,17 @@ bookmarks)."
                                      (and (or (not parg) (consp parg)) ; No numeric PARG: all bookmarks.
                                           (bmkp-specific-buffers-alist-only))
                                      nil 'bookmark-history))))
-           (when (string-equal bname "") (setq bname  defname))
+           (when (and (string= bname "")  defname) (setq bname  defname))
+           ;; This is not needed unless passed a NAME arg of "" and DEFNAME is also "".
+           ;; Otherwise, `bmkp-completing-read-lax' already took care of this, above.
+           (while (string= "" bname)
+             (message "Enter a NON-EMPTY bookmark name") (sit-for 2)
+             (setq bname  (bmkp-completing-read-lax
+                           "Set bookmark "
+                           (bmkp-new-bookmark-default-names defname)
+                                     (and (or (not parg) (consp parg)) ; No numeric PARG: all bookmarks.
+                                          (bmkp-specific-buffers-alist-only))
+                                     nil 'bookmark-history)))
            (bookmark-store bname (cdr record) (consp parg) (not interactivep))
            (when (and interactivep bmkp-prompt-for-tags-flag)
              (bmkp-add-tags bname (bmkp-read-tags-completing) 'NO-UPDATE-P)) ; Do not refresh tags. (?)
@@ -3036,7 +3048,8 @@ In addition:
 
 (defun bmkp-completing-read-1 (prompt default alist pred hist laxp)
   "Helper for `bookmark-completing-read(-lax)'.
-LAXP non-nil means use lax completion."
+LAXP non-nil means use lax completion.
+Force user to enter non-empty input, if DEFAULT is nil or \"\"."
   (bookmark-maybe-load-default-file)
   (setq alist  (or alist bookmark-alist))
   (if (and (not laxp)
@@ -3063,7 +3076,12 @@ LAXP non-nil means use lax completion."
            (str                             (completing-read prompt alist pred (not laxp) nil
                                                              (or hist 'bookmark-history) default)))
       (when (consp default) (setq default  (car default))) ; Emacs 23+
-      (if (and (string-equal "" str) default) default str))))
+      (when (and (string-equal "" str)  default) (setq str  default))
+      (while (string= "" str)
+        (message "Enter a NON-EMPTY bookmark name") (sit-for 2)
+        (setq str  (completing-read prompt alist pred (not laxp) nil (or hist 'bookmark-history)
+                                    default)))
+      str)))
 
 (defun bmkp-jump-1 (bookmark display-function use-region-p)
   "Helper function for `bookmark-jump' commands.
