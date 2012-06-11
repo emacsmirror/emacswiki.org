@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2012, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Mon Jun 11 09:16:08 2012 (-0700)
+;; Last-Updated: Mon Jun 11 14:54:06 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 14940
+;;     Update #: 14943
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-chg.el
 ;; Keywords: bookmarks, bookmark+
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -145,6 +145,8 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-1.el'")
 ;;
+;; 2012/06/1 dadams
+;;     bmkp-bookmark-name-member: If NAME is null, just use member.  Skip any in NAMES that is null.
 ;; 2012/05/16 dadams
 ;;     Added: bmkp-string-less-case-fold-p.
 ;;     bmkp-list-all-tags: List tags alphabetically.  Thx to Anders Johansson for the suggestion.
