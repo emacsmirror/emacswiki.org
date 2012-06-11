@@ -20,14 +20,14 @@ You use the key sequence <code>C-x 4 c C-M-h C-x n n</code> to create a clone of
 
     (defun clone-buffer-and-narrow-to-function ()
       (interactive)
-      (clone-indirect-buffer-other-window nil 'pop-to-buffer)
+      (clone-indirect-buffer-other-window (which-function) 'pop-to-buffer)
       (mark-defun) ; works not only in emacs-lisp, but C++, Python, ...
       (narrow-to-region (mark) (point))
       (pop-mark)
       (other-window 1))
     (define-key global-map (kbd "C-x 4 n") 'clone-buffer-and-narrow-to-function) ; or whatever key you prefer
 
-This is useful when you've already found the function, and want to "stash it" visually (PROTIP: you can also ediff cloned and narrowed buffers). 
+This is useful when you've already found the function, and want to "stash it" visually (PROTIP: you can also ediff cloned and narrowed buffers). The cloned indirect buffer will be named based on the function you are narrowing to.
 
 What's missing is a way to quickly show a list of all project functions ("linked" to their implementations) to pick and choose from. 
 
