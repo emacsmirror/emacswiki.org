@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2012, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Tue May  1 08:58:36 2012 (-0700)
+;; Last-Updated: Mon Jun 11 19:49:30 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 14564
+;;     Update #: 14568
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-doc.el
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search,
 ;;           info, url, w3m, gnus
@@ -3283,27 +3283,25 @@
 ;;  3. Most bookmarks created using Bookmark+ will not interfere with
 ;;     the behavior of vanilla Emacs, versions 21-23.  The new
 ;;     bookmark types are simply ignored by vanilla Emacs.  For
-;;     example:
-;;
-;;     - A bookmark with a region is treated like a simple position
-;;       bookmark: the destination is the region start position.
-;;
-;;     - A Gnus bookmark does not work; it is simply ignored.
+;;     example, a bookmark with a region is treated like a simple
+;;     position bookmark: the destination is the region start
+;;     position.
 ;;
 ;;     However, there are two cases in which Bookmark+ bookmarks will
 ;;     raise an error in vanilla Emacs:
 ;;
-;;     * You cannot use non-file (e.g. buffer-only) bookmarks with any
-;;       version of vanilla Emacs.
+;;     * You cannot use non-file (e.g. buffer-only) bookmarks with
+;;       some versions of vanilla Emacs.
 ;;
 ;;     * You cannot use any bookmarks created using Bookmark+ with
 ;;       vanilla Emacs 20.
 ;;
-;;     The Emacs bookmark data structure has changed from version to
-;;     version.  Bookmark+ always creates bookmarks that have the most
-;;     recent structure (Emacs 23).  As is the case for any bookmarks
-;;     that have the Emacs 23 structure, these bookmarks will not work
-;;     in vanilla Emacs 20 (that is, without Bookmark+).
+;;     The Emacs bookmark data structure has changed from (Emacs)
+;;     version to version.  Bookmark+ always creates bookmarks that
+;;     have the most recent structure (defined in Emacs 23).  As is
+;;     the case for any bookmarks that have the Emacs 23 structure,
+;;     these bookmarks will not work in vanilla Emacs 20 (that is,
+;;     without Bookmark+).
 ;;
 ;;  Bottom line: Use `bookmark+.el' to access bookmarks created using
 ;;  `bookmark+.el'.
