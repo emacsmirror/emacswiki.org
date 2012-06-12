@@ -242,6 +242,8 @@ How can you see in a single thread both the received message and the sent messag
 
 [new]
 Create a nnvirtual group that contains both "nnimap+imap.gmail.com:INBOX" and "nnimap+imap.gmail.com:[Gmail]/Sent Mail", and you can have conversational view in that group.
+[new]
+Then click "u" on INBOX to avoid seeing both nnvirtual:INBOX+sent and INBOX (note: don't use "k", then you'll lose the read/unread/star flags; see https://www.gnu.org/software/emacs/manual/html_node/gnus/Group-Levels.html#Group-Levels).
 
 ===*Article* extracts/previews in *Summary*===
 Is it possible to show the first non-reply line of the article within `gnus-summary-line-format', in order to get a "preview"?
