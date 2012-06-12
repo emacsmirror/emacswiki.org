@@ -63,9 +63,8 @@ Others (not so graphical):
 Link to your success stories here!
 * [http://kldp.org/node/110967 emacs java(jdee) completion note (korean)]
 
-== Current status ==
+== Installation notes ==
 
-[new]
 Install notes for Gnu Emacs 23. This will help you get (require 'jde) running. No guarantee on anything else.
 
 jde depends: cedet, elib. 
@@ -77,6 +76,8 @@ jde depends: cedet, elib.
 
 (add-to-list 'load-path "/usr/share/emacs/site-lisp/elib/")
 </pre>
+
+See http://forums.fedoraforum.org/showthread.php?t=280711 for notes on installing JDEE and CEDET with Emacs 24.
 
 Then you need to edit jdel.el in lisp dir.
 
@@ -106,7 +107,6 @@ For jde itself, add these to .emacs, change the dirs to fit your install of cour
 
 I don't know much about it myself. I guess there are more problems waiting.
 
-[new]
 '''How to load JDE in Emacs >=23.2 (after CEDET integration into Emacs trunk)''':
 I fear it is complex, as the CEDET inclusion changed package names but JDEE is still using the old ones (tested in branches 2.4 and trunk). For instance (require 'semantic-ctxt) is the old name (standalone CEDET), but in the Emacs-included CEDET it should be transformed to (require 'semantic/ctxt). Someone must update JDEE. 24.m3.2010, [[DanielClemente]]
 
