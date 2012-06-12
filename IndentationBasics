@@ -107,7 +107,7 @@ I'm using GNU Emacs 21.3.1, and don't see "##indent-tabs-mode##" when I do a ##C
 [new]
 It's a variable. Don't ask me why, I cannot explain it. :) -- AlexSchroeder
 
-[new]
+== Smart Tabs ==
 I haven't been able to find this. Is it possible to make Emacs use a /smart/ mix of tabs and spaces? This seems like the obvious right thing to do.
 
 For instance (using 2-space tabs):
@@ -147,6 +147,19 @@ I've often wanted the above suggestion, of using tabs for indentation level and 
 **Yes**, it is possible. See SmartTabs.
 
 [[image:SmartTabsScreenshot]]
+
+== Project-specific Indentation Configuration ==
+
+If your .emacs is set-up to do indentation one way and you are contributing to a project that expects indentation to be done in a different way, then you might want [[DirectoryVariables]].  For example, if you usually use spaces (##(indent-tabs-mode nil)##) to indent, and the project you're working on uses tabs, then you can add a ##.dir-locals.el## to the root directory of the project to make Emacs treat files in the project specially:
+
+    ;; The 'nil' configuration applies to all modes.
+    ((nil . ((indent-tabs-mode . t)
+            (tab-width . 2)))
+     (haskell-mode . (
+            ;; Highlight leading space characters in Haskell files.
+            (eval . (highlight-regexp "^ *")))))
+
+The ##highlight-regexp## part will keep you honest.
 
 ----
 CategoryIndentation
