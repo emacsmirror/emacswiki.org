@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2012, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Mon Jun 11 16:12:54 2012 (-0700)
+;; Last-Updated: Tue Jun 12 15:50:47 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 14947
+;;     Update #: 14951
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-chg.el
 ;; Keywords: bookmarks, bookmark+
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -145,6 +145,9 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-1.el'")
 ;;
+;; 2012/06/12 dadams
+;;     bmkp-new-bookmark-default-names: 1. Test for DEFS at end is listp, not consp. 2. Return FNS.
+;;     bmkp-completing-read-1: Removed empty-input loop - caller must provide a default or handle "".
 ;; 2012/06/1 dadams
 ;;     bookmark-make-record: Replace an empty bookmark name with <EMPTY NAME>.
 ;;     bookmark-set, bmkp-completing-read-1: Require user to input a non-empty bookmark name.
