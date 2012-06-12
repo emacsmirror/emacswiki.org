@@ -320,8 +320,8 @@ Fixed: use local varible
 
     (add-hook 'dired-mode-hook
               '(lambda ()
-                 (make-local-variable 'ido-enable-replace-completting-read)
-                 (setq ido-enable-replace-completing-read nil)))
+                 (set (make-local-variable 'ido-enable-replace-completing-read) nil)))
+
 
 -- Shihpin
 === Use ido in ibuffer ===
