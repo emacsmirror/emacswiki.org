@@ -30,18 +30,47 @@
 ;; starts.
 ;;; Changes:
 ;; 2012-05-17: More general time formats in `start-dying-mode'
+;; 2012-06-11: Comfortable input for `dying-default-lifetime' (widget for `customize-variable' and property variable-interactive for `set-variable')
 ;;; Code:
 
 (require 'timer)
 (require 'diary-lib)
+(require 'widget)
 
-(defcustom dying-default-lifetime 10 "Default lifetime of buffer in seconds." :group 'dying :type 'float)
+(define-widget 'dying-lifetime-widget 'editable-field
+  "Lifetime in the format as for `run-at-time'"
+  :format "Lifetime: %v "
+  :prompt-history 'widget-field-history
+  :validate (lambda (widget)
+	      (unless (timer-translate-time (widget-value widget))
+		(widget-put widget :error (format "Invalid time-format: %s"
+                                                  (widget-value widget)))
+		widget))
+  :match (lambda (widget value)
+	   (if (dying-check-lifetime value) t)))
+
+(defun dying-check-lifetime (val)
+  (if (or (and (stringp val) (string= val ""))
+	  (timer-translate-time val))
+      val))
+
+(put 'dying-default-lifetime 'variable-interactive
+     '(let (lifetime)
+	(while (null  (setq lifetime (dying-check-lifetime (read-string "Default Lifetime:" nil dying-default-lifetime-history)))))
+	(list lifetime)))
+
+(defvar dying-default-lifetime-history ())
+
+(defcustom dying-default-lifetime "10 minutes" "Default lifetime of buffer in seconds." :group 'dying :type 'dying-lifetime-widget)
 
 (defvar dying-timer nil
   "Timer for dying mode. (nil when unset)")
 (make-variable-buffer-local 'dying-timer)
 
 (defcustom dying-countdown-duration 99 "Time before kill when countdown starts." :group 'dying :type 'integer)
+
+(defun dying-test (w)
+  (message "dying-test:%S" w))
 
 ;; Stolen from run-at-time:
 (defun timer-translate-time (time)
@@ -72,7 +101,7 @@
   time)
 
 (defvar dying-lifetime 'dying-default-lifetime
-  "Lifetime of the current buffer. Defaults to dying-default-lifetime")
+  "Lifetime of the current buffer. Defaults to `dying-default-lifetime'")
 (make-variable-buffer-local 'dying-lifetime)
 
 (defun dying-lifetime ()
