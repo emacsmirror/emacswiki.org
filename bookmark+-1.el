@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2012, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 13:43:55 2010 (-0700)
-;; Last-Updated: Mon Jun 11 16:10:14 2012 (-0700)
+;; Last-Updated: Tue Jun 12 08:41:51 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 5587
+;;     Update #: 5590
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-1.el
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -289,9 +289,9 @@
 ;;    `bmkp-guess-default-handler-for-file-flag',
 ;;    `bmkp-handle-region-function', `bmkp-incremental-filter-delay',
 ;;    `bmkp-last-as-first-bookmark-file',
-;;    `bmkp-menu-popup-max-length', `bmkp-other-window-pop-to-flag',
-;;    `bmkp-prompt-for-tags-flag', `bmkp-region-search-size',
-;;    `bmkp-save-new-location-flag',
+;;    `bmkp-menu-popup-max-length', `bmkp-new-bookmark-default-names',
+;;    `bmkp-other-window-pop-to-flag', `bmkp-prompt-for-tags-flag',
+;;    `bmkp-region-search-size', `bmkp-save-new-location-flag',
 ;;    `bmkp-sequence-jump-display-function',
 ;;    `bmkp-show-end-of-region', `bmkp-sort-comparer',
 ;;    `bmkp-su-or-sudo-regexp', `bmkp-tags-for-completion',
@@ -403,8 +403,9 @@
 ;;    `bmkp-marked-cp', `bmkp-maybe-save-bookmarks',
 ;;    `bmkp-modified-bookmark-p', `bmkp-modified-cp',
 ;;    `bmkp-msg-about-sort-order', `bmkp-multi-sort',
-;;    `bmkp-names-same-bookmark-p', `bmkp-non-autonamed-alist-only',
-;;    `bmkp-non-file-alist-only', `bmkp-non-file-bookmark-p',
+;;    `bmkp-names-same-bookmark-p', `bmkp-new-bookmark-default-names',
+;;    `bmkp-non-autonamed-alist-only', `bmkp-non-file-alist-only',
+;;    `bmkp-non-file-bookmark-p',
 ;;    `bmkp-not-near-other-auto-idle-bmks', `bmkp-omitted-alist-only',
 ;;    `bmkp-orphaned-file-alist-only',
 ;;    `bmkp-orphaned-file-bookmark-p',
@@ -788,7 +789,7 @@ If you use this option in Lisp code, you will want to add/remove
   "*Default bookmark name preference.
 In `*Bookmark List*' use the name of the current line's bookmark.
 Otherwise, if `bookmark+-lit.el' is not loaded then use the name of
- the last-used bookmark in the current file.
+the last-used bookmark in the current file.
 
 Otherwise, use this option to determine the default, by preferring one
 of the following, if available:
