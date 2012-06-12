@@ -3627,24 +3627,20 @@ versions 20 through 23.
 3. Most bookmarks created using '''Bookmark+''' will not interfere
    with the behavior of vanilla Emacs, versions 21-23.  The new
    bookmark types are simply ignored by vanilla Emacs.  For
-   example:
-
-* A bookmark with a region is treated like a simple position
-     bookmark: the destination is the region start position.
-
-* A Gnus bookmark does not work; it is simply ignored. 
+   example, a bookmark with a region is treated like a simple
+   position bookmark: the destination is the region start position.
 
 However, there are two cases in which '''Bookmark+''' bookmarks will raise an error in vanilla Emacs:
 
-* You cannot use non-file (e.g. buffer-only) bookmarks with any
-     version of vanilla Emacs.
+* You cannot use non-file (e.g. buffer-only) bookmarks with some
+     versions of vanilla Emacs.
 
 * You cannot use any bookmarks created using '''Bookmark+''' 
      with vanilla Emacs 20.
 
-The Emacs bookmark data structure has changed from version to
+The Emacs bookmark data structure has changed from (Emacs) version to
 version.  '''Bookmark+''' always creates bookmarks that
-have the most recent structure (Emacs 23).  As is the case for
+have the most recent structure (defined in Emacs 23).  As is the case for
 any bookmarks that have the Emacs 23 structure, these bookmarks
 will not work in vanilla Emacs 20 (that is, without
 '''Bookmark+''').
