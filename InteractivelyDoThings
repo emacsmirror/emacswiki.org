@@ -316,6 +316,12 @@ I found ido-completing-read to interfere when using dired mode buffers (e.g., re
 
 -- ChrisPoole
 
+Fixed: use local varible
+    (add-hook 'dired-mode-hook
+              '(lambda ()
+                 (make-local-variable 'ido-enable-replace-completting-read)
+                 (setq ido-enable-replace-completing-read nil)))
+-- Shihpin
 === Use ido in ibuffer ===
 
 ibuffer mode doesn't come with an option to use ido-find-file, so here's a simple adaptation of ibuffer-find-file that uses ido instead of read-file:
