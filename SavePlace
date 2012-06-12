@@ -10,5 +10,9 @@ Alternatively, you could add the following to your InitFile:
 
 Note that using setq will not do because the variable is buffer-local.
 
+Your saved places are written to the file stored in the file specified by <code>save-place-file</code>. This defaults to <code>~/.emacs-places</code>. You may want to change it to keep your home directory uncluttered, e.g.
+
+    (setq save-place-file "~/.emacs.d/saved-places")
+
 ----
 SessionManagement CategoryPersistence
