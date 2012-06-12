@@ -150,7 +150,7 @@ I've often wanted the above suggestion, of using tabs for indentation level and 
 
 == Project-specific Indentation Configuration ==
 
-If your .emacs is set-up to do indentation one way and you are contributing to a project that expects indentation to be done in a different way, then you might want [[DirectoryVariables]].  For example, if you usually use spaces (##(indent-tabs-mode nil)##) to indent, and the project you're working on uses tabs, then you can add a ##.dir-locals.el## to the root directory of the project to make Emacs treat files in the project specially:
+If your .emacs is set-up to do indentation one way and you are contributing to a project that expects indentation to be done in a different way, then you might want [[DirectoryVariables]].  For example, if you usually use spaces (##(indent-tabs-mode nil)##) to indent, and the project you're working on uses tabs, then you can add a ##.dir-locals.el## to the root directory of the project to make Emacs treat files in the project specially.  Here's an example ##.dir-locals.el## that uses tabs and highlights leading spaces to keep you honest:
 
     ;; The 'nil' configuration applies to all modes.
     ((nil . ((indent-tabs-mode . t)
@@ -158,8 +158,6 @@ If your .emacs is set-up to do indentation one way and you are contributing to a
      (haskell-mode . (
             ;; Highlight leading space characters in Haskell files.
             (eval . (highlight-regexp "^ *")))))
-
-The ##highlight-regexp## part will keep you honest.
 
 ----
 CategoryIndentation
