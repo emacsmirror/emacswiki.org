@@ -69,8 +69,6 @@
 
 (defcustom dying-countdown-duration 99 "Time before kill when countdown starts." :group 'dying :type 'integer)
 
-(defun dying-test (w)
-  (message "dying-test:%S" w))
 
 ;; Stolen from run-at-time:
 (defun timer-translate-time (time)
