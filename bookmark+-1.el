@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2012, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 13:43:55 2010 (-0700)
-;; Last-Updated: Tue Jun 12 14:22:10 2012 (-0700)
+;; Last-Updated: Tue Jun 12 15:36:00 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 5594
+;;     Update #: 5601
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-1.el
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -2023,9 +2023,9 @@ bookmarks)."
                                      (and (or (not parg) (consp parg)) ; No numeric PARG: all bookmarks.
                                           (bmkp-specific-buffers-alist-only))
                                      nil 'bookmark-history))))
+           ;; BNAME should not be "" now, since `bmkp-new-bookmark-default-names' should provide default(s)
+           ;; and empty input to `bmkp-completing-read-lax' returns the default.  But just in case...
            (when (and (string= bname "")  defname) (setq bname  defname))
-           ;; This is not needed unless passed a NAME arg of "" and DEFNAME is also "".
-           ;; Otherwise, `bmkp-completing-read-lax' already took care of this, above.
            (while (string= "" bname)
              (message "Enter a NON-EMPTY bookmark name") (sit-for 2)
              (setq bname  (bmkp-completing-read-lax
@@ -2917,7 +2917,7 @@ The other names are as described below.
 
 Uses option `bmkp-new-bookmark-default-names' to come up with the
 other names.  To these names, `bookmark-current-bookmark' and
-`bookmark-buffer-name' are appened, if available (non-nil).
+`bookmark-buffer-name' are appended, if available (non-nil).
 
 NOTE: For Emacs versions prior to Emacs 23, return only a single
 default name, not a list of names.  The name is the first in the list
@@ -2952,7 +2952,7 @@ of names described above for Emacs 23+."
                   (throw 'bmkp-new-bookmark-default-names (setq defs  val)))))))
         (when (and (< emacs-major-version 23)  (null defs))
           (setq defs  (or bookmark-current-bookmark  (bookmark-buffer-name))))
-        (when (consp defs)
+        (when (listp defs)
           (when bookmark-current-bookmark (push bookmark-current-bookmark defs))
           (let ((buf  (bookmark-buffer-name))) (when buf (push buf defs)))
           (setq defs  (nreverse defs)))))
@@ -3082,10 +3082,6 @@ Force user to enter non-empty input, if DEFAULT is nil or \"\"."
                                                              (or hist 'bookmark-history) default)))
       (when (consp default) (setq default  (car default))) ; Emacs 23+
       (when (and (string-equal "" str)  default) (setq str  default))
-      (while (string= "" str)
-        (message "Enter a NON-EMPTY bookmark name") (sit-for 2)
-        (setq str  (completing-read prompt alist pred (not laxp) nil (or hist 'bookmark-history)
-                                    default)))
       str)))
 
 (defun bmkp-jump-1 (bookmark display-function use-region-p)
