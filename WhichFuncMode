@@ -1,41 +1,23 @@
-WhichFuncMode (also known as [::WhichFunctionMode]) is a minor mode, that when activated displays the current function name in the mode line. It works under certain major modes, like c-mode or perl-mode. 
+WhichFuncMode (also known as [::WhichFunctionMode]) is a minor mode, that when activated displays the current function name in the mode line. It works under certain major modes, like CcMode or PerlMode. 
 To activate it, type
 
-  M-x which-func-mode RET
+  M-x which-function-mode RET
 
 or enter the following piece of elisp into your `.emacs` file to make it permanent :
 
-  (which-func-mode 1)
-
-== Troubleshooting ==
+  (which-function-mode 1)
 
 WhichFuncMode is based on ImenuMode, so if it doesn't show correct current function name (and mode supports imenu), try
 
-  M-x imenu RET *Rescan* RET
-  C-g
-
-which does
-
-{{{
-(progn
-  (imenu--cleanup)
-  (setq imenu--index-alist nil)
-  (imenu-update-menubar))
-}}}
-
-== Displayed in header-line ==
+  M-x imenu RET *Rescan* RET RET
 
 To show the function in the HeaderLine instead of the ModeLine,
 
-{{{
-(load "which-func")
-(which-func-mode)
+(which-function-mode)
 
 (delete (assoc 'which-func-mode mode-line-format) mode-line-format)
 (setq which-func-header-line-format
-              '(which-func-mode
-                ("" which-func-format
-                 )))
+              '(which-func-mode ("" which-func-format)))
 (defadvice which-func-ff-hook (after header-line activate)
   (when which-func-mode
     (delete (assoc 'which-func-mode mode-line-format) mode-line-format)
@@ -43,48 +25,16 @@ To show the function in the HeaderLine instead of the ModeLine,
 
 }}}
 
-== Other langauges ==
-
 To get other languages to work with which-func, simple add the name of a programing mode with support for Imenu to `which-func-modes'.
 
   (eval-after-load "which-func"
-    (unless  (member java-mode which-func-modes)
-      (add-to-list 'which-func-modes 'java-mode)))
+      '(add-to-list 'which-func-modes 'java-mode))
 
-Thanks for the tip, yet should this not be more like (e.g. for lua-mode)?
-
-  (eval-after-load "which-func"
-    (unless (member 'lua-mode which-func-modes)
-      (add-to-list 'which-func-modes 'lua-mode)))
-
-Yes, or just
-
-  (eval-after-load "which-func"
-      (add-to-list 'which-func-modes 'lua-mode))
-
-Good point about add-to-list.  I found that the following seems to work even better here (otherwise leading to startup errors):
-
-  (eval-after-load "which-func"
-      '(add-to-list 'which-func-modes 'lua-mode))
-
-[new]
-Ah yes, of course, forgot to quote the form.
-Please clean up this discussion and just show the valid form.
-
-[new]
-To configure a language for which-func mode, you need to configure it for Imenu.  See ImenuMode.
-
-== Alternatives ==
+To configure a language for which-func mode, you need to configure it for ImenuMode.
 
 An alternative mode that offers similar functionality for several programming languages is SemanticIdleBreadcrumbsMode.
 
-[new:PhilHudson:2010-06-15 17:49 UTC]
-Suggestion: might someone with the required knowledge like to compare and contrast [[WhichFuncMode]] with [[ElDoc]]? Are they (should they be) mutually incompatible?
-
-[new]
-As far as I can see they are rather orthogonal.
-WhichFuncMode shows which function's source code you are in.
-ElDoc shows where you are in a parameter list to a function call.
+WhichFuncMode shows which function's source code you are in, ElDoc shows where you are in a parameter list to a function call.  They both are mode-configurable.
 
 ----
 CategoryProgrammerUtils
