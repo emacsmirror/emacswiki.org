@@ -317,10 +317,12 @@ I found ido-completing-read to interfere when using dired mode buffers (e.g., re
 -- ChrisPoole
 
 Fixed: use local varible
+
     (add-hook 'dired-mode-hook
               '(lambda ()
                  (make-local-variable 'ido-enable-replace-completting-read)
                  (setq ido-enable-replace-completing-read nil)))
+
 -- Shihpin
 === Use ido in ibuffer ===
 
