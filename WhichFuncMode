@@ -13,6 +13,7 @@ WhichFuncMode is based on ImenuMode, so if it doesn't show correct current funct
 
 To show the function in the HeaderLine instead of the ModeLine,
 
+{{{
 (which-function-mode)
 
 (delete (assoc 'which-func-mode mode-line-format) mode-line-format)
