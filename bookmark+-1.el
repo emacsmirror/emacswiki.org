@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2012, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 13:43:55 2010 (-0700)
-;; Last-Updated: Tue Jun 12 08:41:51 2012 (-0700)
+;; Last-Updated: Tue Jun 12 14:22:10 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 5590
+;;     Update #: 5594
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-1.el
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -786,7 +786,10 @@ If you use this option in Lisp code, you will want to add/remove
 
 ;;;###autoload
 (defcustom bmkp-default-bookmark-name 'highlighted
-  "*Default bookmark name preference.
+  "*Default bookmark name preference for accessing existing bookmarks.
+\(The default name for a new bookmark is obtained using option
+`bmkp-new-bookmark-default-names'.)
+
 In `*Bookmark List*' use the name of the current line's bookmark.
 Otherwise, if `bookmark+-lit.el' is not loaded then use the name of
 the last-used bookmark in the current file.
@@ -913,7 +916,8 @@ If an integer, then use a menu only if there are fewer bookmark
   (let ((fns  '((lambda () (let ((ff  (function-called-at-point)))
                              (and ff  (symbolp ff)  (symbol-name ff)))))))
     (when (fboundp 'region-or-non-nil-symbol-name-nearest-point) ; Defined in `thingatpt+.el'.
-      (push 'region-or-non-nil-symbol-name-nearest-point fns)))
+      (push 'region-or-non-nil-symbol-name-nearest-point fns))
+    fns)
   "Functions to produce the default name for a new bookmark.
 \(The default name for an *existing* bookmark is obtained using
 `bmkp-default-bookmark-name'.)
