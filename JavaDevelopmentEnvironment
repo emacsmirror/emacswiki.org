@@ -64,6 +64,7 @@ Link to your success stories here!
 * [http://kldp.org/node/110967 emacs java(jdee) completion note (korean)]
 
 == Installation notes ==
+See http://forums.fedoraforum.org/showthread.php?t=280711 for notes on installing JDEE and CEDET with Emacs 24.
 
 Install notes for Gnu Emacs 23. This will help you get (require 'jde) running. No guarantee on anything else.
 
@@ -76,8 +77,6 @@ jde depends: cedet, elib.
 
 (add-to-list 'load-path "/usr/share/emacs/site-lisp/elib/")
 </pre>
-
-See http://forums.fedoraforum.org/showthread.php?t=280711 for notes on installing JDEE and CEDET with Emacs 24.
 
 Then you need to edit jdel.el in lisp dir.
 
