@@ -164,8 +164,10 @@ So, any .h file that defines an @interface is objc-mode instead of c-mode. (You 
 
 find-file-other-file doesn't work right, for two reasons.
 
-The first problem is that cc-other-file-alist doesn't know about Obj-C++ (.mm) files, and doesn't know that .h files can be headers for .m and .mm files. To fix that:
+The first problem is that cc-other-file-alist doesn't know about Obj-C++ (.mm) files, and doesn't know that .h files can be headers for .m and .mm files.  To fix that:
 <pre>
+(require 'cl)        ;; for the extended "push" macro
+(require 'find-file) ;; for the "cc-other-file-alist" variable
 (push ".m" (cadr (assoc "\\.h\\'" cc-other-file-alist)))
 (push ".mm" (cadr (assoc "\\.h\\'" cc-other-file-alist)))
 (push '("\\.m\\'" (".h")) cc-other-file-alist)
