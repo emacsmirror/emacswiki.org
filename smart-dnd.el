@@ -50,6 +50,44 @@
 ;; will be replaced by the dropped filename in the expression.
 
 
+(defun smart-dnd-execute (f)
+  "Execute a Drag'n'Drop action with filename F
+depending on `smart-dnd-string-alist'."
+  (interactive "f")
+  (save-excursion
+    (if (eq (car-safe last-nonmenu-event) 'drag-n-drop)
+        (goto-char (posn-point (car (cdr-safe last-nonmenu-event)))))
+    (let( (alist smart-dnd-string-alist)
+          (case-fold-search nil)
+          (my-string nil)
+          (succeed nil) )
+      (while alist
+        (when (string-match (caar alist) f)
+          (setq my-string (cdar alist))
+          (when (stringp my-string)
+            (insert (smart-dnd-string my-string f))
+            (setq alist nil)
+            (setq succeed t)
+            )
+          (when (not (stringp my-string))
+            (eval (cdar alist))
+            (setq alist nil)
+            (setq succeed t)
+            )
+          )
+        (setq alist (cdr alist))
+        )
+      succeed)))
+
+;;;###autoload
+(defun smart-dnd-setup (alist)
+  "Install smart-dnd feature to the local buffer."
+  (interactive)
+  (set (make-local-variable 'dnd-protocol-alist)
+       (append smart-dnd-protocol-alist dnd-protocol-alist))
+  (set (make-local-variable 'smart-dnd-string-alist) alist)
+  )
+
 (defun smart-dnd-string (string filename)
   "Generate a string, based on a format STRING and the FILENAME.
 You can use the following keywords in the format control STRING.
