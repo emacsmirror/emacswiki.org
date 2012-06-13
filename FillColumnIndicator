@@ -202,5 +202,29 @@ Thanks for pointing that out.  I have a fix, but I'd like to test it a little be
 
 I've uploaded a new version (1.77) with a fix.  On NextStep (OS X) it appears to be possible to confuse it if you rapidly resize the frame several times in the space of a second; on X it seems solid.   I can't reproduce the problem reliably, though; I'm guessing that there's a subtle bug in the way the NextStep port communicates with the window manager.  In any case, this should (I hope :) be robust enough for normal usage. --AA
 
+[new]
+
+Nice plugin.  I am an old-fashioned and I prefer to use this plugin with 
+##'truncate-lines t##
+setting.
+So in order to avoid fci rendering weirdly I added this to my ##~/.emacs## file:
+
+<pre>
+(setq-default fci-rule-column 80)
+(setq fci-handle-truncate-lines nil)
+(add-hook 'after-change-major-mode-hook 'auto-fci-mode)
+(add-hook 'window-size-change-functions 'auto-fci-mode)
+
+(defun auto-fci-mode (&optional unused)
+  (if (> (frame-width) 80)
+      (fci-mode 1)
+    (fci-mode 0))
+)
+
+</pre>
+
+Essentially it checks if the frame-width is greater than ##80## (##80## is the value
+of ##fci-rule-column##) and conditionally enables ##fci##
+
 ----
 CategoryFilling 
