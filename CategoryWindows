@@ -36,6 +36,7 @@ Move among windows -- alternatives to `C-x o' (`other-window').
 * ThreeWindows -- Enjoy your work in three windows per [[Frame]]. One big and two small. 
 * QuickTiling -- If you like xmonad, tmux etc., chances are you'll this too.
 * GridLayout -- how to quickly split the frame into a grid
+* PlaceWindows ([[place-windows.el]]) -- place active windows according to number of rows, incrementally or with universal argument. Each row height is equal, each column height equal in current row.
 
 == Switching Window Configurations ==
 
