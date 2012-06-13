@@ -25,6 +25,30 @@
 ;; the Free Software Foundation, Inc., 59 Temple Place - Suite 330,
 ;; Boston, MA 02111-1307, USA.
 
+;;; Commentary
+
+;; This package provides user-configurable drag-n-drop feature to Emacs 22.
+;;
+;; Usage:
+;;
+;; First, evaluate `smart-dnd-setup' function with an alist in the buffer.
+;; The code modifies drag-n-drop behaviour in the local buffer and then
+;; a string "image file: file.png" will be inserted when *.png file is dropped.
+;;
+;; (require 'smart-dnd)
+;; (smart-dnd-setup
+;;  '(
+;;    ("\\.png\\'" . "image file: %f\n")
+;;    ("\\.jpg\\'" . "image file: %f\n")
+;;    (".exe\\'"   . (message (concat "executable: " f)))
+;;    (".*"        . "any filename: %f\n")
+;;    ))
+;;
+;; String elements will be formatted by `smart-dnd-string'.
+;; You can also put elisp expression into the alist.
+;; In the case of ".exe" in the above list, a local variable 'f'
+;; will be replaced by the dropped filename in the expression.
+
 (provide 'smart-dnd)
 
 ;;; smart-dnd.el ends here
