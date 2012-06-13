@@ -49,6 +49,34 @@
 ;; In the case of ".exe" in the above list, a local variable 'f'
 ;; will be replaced by the dropped filename in the expression.
 
+
+(defun smart-dnd-string (string filename)
+  "Generate a string, based on a format STRING and the FILENAME.
+You can use the following keywords in the format control STRING.
+%F means absolute pathname.           [ /home/zenitani/public_html/index.html ]
+%f means file name without directory. [ index.html ]
+%r and %R means relative path to the FILENAME from a file in the current buffer.
+                                      [ public_html/index.html ]
+When the target buffer hasn't been assigned a file name yet,
+%r returns the absolute pathname      [ /home/zenitani/public_html/index.html ]
+while %R returns the URL.             [ file:///home/zenitani/ .. /index.html ]
+%n means file name without extension. [ index ]
+%e means extension of file name.      [ html ]
+"
+  (interactive)
+  (let ((rlist smart-dnd-replace-alist)
+        (case-fold-search nil)
+        (f filename))
+    (while rlist
+      (while (string-match (caar rlist) string)
+        (setq string
+              (replace-match
+               (eval (cdar rlist)) t nil string)))
+    (setq rlist (cdr rlist))
+    ))
+  string)
+
+
 (provide 'smart-dnd)
 
 ;;; smart-dnd.el ends here
