@@ -15,6 +15,16 @@ Common replies:
 * EmacsLisp isn't multithreaded / lacks coroutines (programs like Gnus can make everything stall)
 * Do you mean EmacsLisp-the-language or EmacsLisp-the-library?
 
+Steve Yegge wrote a blog post contrasting JavaScript and Elisp: http://steve-yegge.blogspot.com/2008/11/ejacs-javascript-interpreter-for-emacs.html
+
+In it, he idenitifies problems with Elisp:
+* Problem #1: Momentum
+* Problem #2: No encapsulation
+* Problem #3: No delegation
+* Problem #4: Properties
+* Problem #5: No polymorphic toString
+
+
 = EmacsLisp Isn't Scheme =
 
 This, from my highly unscientific sample, is far and away the most popular reason EmacsLisp sucks. Well, that's good to know. EmacsLisp is also not Perl, or COBOL, or IBM 1130 assembler, or a bicycle, or an orange. Thanks for the help!
