@@ -289,7 +289,15 @@ Did you install it correctly as documented?
 The website says: "Nearly all the JDEE problems that I have seen are caused by faulty setups," and "Most problems reported by users are installation/setup problems."  See the [http://jdee.sunsite.dk/trouble-shooting.htm Trouble Shooting Guide] (Dead link).
 
 == Alternatives ==
+
+=== malabar-mode ===
+
 [http://github.com/espenhw/malabar-mode malabar-mode] is an effort to create a better Java mode for Emacs.
+
+=== Eclim ===
+
+[http://eclim.org/ Eclim] uses Eclipse as a backend to provide intelligent Java completion and coding support in Emacs
+
 
 == Comments ==
 
