@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2012, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 09:05:21 2010 (-0700)
-;; Last-Updated: Mon Jun 11 08:58:53 2012 (-0700)
+;; Last-Updated: Wed Jun 13 10:47:36 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 2076
+;;     Update #: 2084
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-bmu.el
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -1186,7 +1186,7 @@ Normally, the string returned is propertized with property
 `bmkp-full-record', which records the full bookmark record.
 Non-nil optional FULL means return the bookmark record, not the name."
   (condition-case nil
-      (let ((name  (save-excursion (forward-line 0) (forward-char (1+ bmkp-bmenu-marks-width))
+      (let ((name  (save-excursion (forward-line 0) (forward-char bmkp-bmenu-marks-width)
                                    (get-text-property (point) 'bmkp-bookmark-name))))
         (if full
             (get-text-property 0 'bmkp-full-record name)
@@ -1679,8 +1679,7 @@ Non-nil optional arg NO-MSG-P means do not show progress messages."
                                                        (line-beginning-position)) 'help-echo)))
                       (put-text-property (+ bmkp-bmenu-marks-width (line-beginning-position))
                                          (point) 'mouse-face 'highlight)
-                      (when help  (put-text-property (+ bmkp-bmenu-marks-width
-                                                        (line-beginning-position))
+                      (when help  (put-text-property (+ bmkp-bmenu-marks-width (line-beginning-position))
                                                      (point) 'help-echo help))))
                   (forward-line 1)))))))
     (unless no-msg-p (message "Showing file names...done"))
@@ -4143,13 +4142,13 @@ Return the propertized string (the bookmark name)."
             (append (bmkp-face-prop 'bmkp-local-file-without-region)
                     `(mouse-face highlight follow-link t
                       help-echo (format "mouse-2: Jump to (visit) file `%s'" ,filep))))
-           ((and buffp  (get-buffer buffp)
-                 (or (not filep)  (equal filep bmkp-non-file-filename))) ; Buffer
+           ; Existing buffer, including for a file bookmark if the file buffer has not yet been saved.
+           ((and buffp  (get-buffer buffp))
             (append (bmkp-face-prop 'bmkp-buffer)
                     `(mouse-face highlight follow-link t
                       help-echo (format "mouse-2: Jump to buffer `%s'" ,buffp))))
-           ((and buffp  (or (not filep)  (equal filep bmkp-non-file-filename)
-                            (not (file-exists-p filep)))) ; Buffer bookmark, but no buffer.
+           ((and (or (not filep)  (equal filep bmkp-non-file-filename)
+                     (not (file-exists-p filep)))) ; No file or buffer.
             (append (bmkp-face-prop 'bmkp-non-file)
                     `(mouse-face highlight follow-link t
                       help-echo (format "mouse-2: Jump to buffer `%s'" ,buffp))))
