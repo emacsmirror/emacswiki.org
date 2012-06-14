@@ -388,7 +388,7 @@ t."
 				       "SHALL" "SHALL NOT"
 				       "SHOULD" "SHOULD NOT"
 				       "RECOMMENDED" "NOT RECOMMENDED"
-				       "MAY" "OPTIONAL")
+				       "MAY" "OPTIONAL" "NOT")
   "List of requirement keyword strings to be highlighted if
 `irfc-highlight-requirement-keywords' is t."
   :type '(repeat (string))
