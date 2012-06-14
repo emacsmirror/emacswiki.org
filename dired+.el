@@ -7,9 +7,9 @@
 ;; Copyright (C) 1999-2012, Drew Adams, all rights reserved.
 ;; Created: Fri Mar 19 15:58:58 1999
 ;; Version: 21.2
-;; Last-Updated: Wed Jun 13 19:44:07 2012 (-0700)
+;; Last-Updated: Thu Jun 14 07:52:45 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 5864
+;;     Update #: 5880
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/dired+.el
 ;; Keywords: unix, mouse, directories, diredp, dired
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -299,6 +299,9 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2012/06/14 dadams
+;;     dired-do-redisplay: Updated wrt Emacs 23: bind, (then run) dired-after-readin-hook.
+;;     diredp-y-or-n-files-p: Corrected construction of prompt wrt final SPC.
 ;; 2012/06/13 dadams
 ;;     dired-buffers-for-dir: Updated wrt Emacs 23:
 ;;       If dired-directory is a list then expand FILE in DIR & check whether in cdr of list.
@@ -873,7 +876,7 @@ Return value is the number of files marked, or nil if none were marked."
                           (dired-plural-s count)
                           (if (eq dired-marker-char ?\040) "un" "")
                           (if (eq dired-marker-char dired-del-marker) "flagged" "marked"))))
-    (and (> count 0) count)))
+    (and (> count 0)  count)))
 
 
 ;; REPLACE ORIGINAL in `dired.el'.
@@ -913,14 +916,14 @@ If DISTINGUISH-ONE-MARKED is non-nil, then return (t FILENAME) instead
     (let ((inhibit-read-only  t)
           (newarg             ,arg)
           multi-C-u case-fold-search found results)
-      (when (and (consp newarg) (> (prefix-numeric-value newarg) 4))
+      (when (and (consp newarg)  (> (prefix-numeric-value newarg) 4))
         (setq newarg     (case (prefix-numeric-value newarg)
                            (16   'all-files-no-dirs) ; `C-u C-u'
                            (64   'all-files-no-dots) ; `C-u C-u C-u'
                            (256  'all-files) ; `C-u C-u C-u C-u'
                            (t    'all-files-no-dirs))
               multi-C-u  t))
-      (if (and newarg (not multi-C-u))
+      (if (and newarg  (not multi-C-u))
           (if (integerp newarg)
               (progn                    ; No `save-excursion', want to move point.
                 (dired-repeat-over-lines newarg #'(lambda ()
@@ -952,7 +955,7 @@ If DISTINGUISH-ONE-MARKED is non-nil, then return (t FILENAME) instead
                                             (diredp-get-file-or-dir-name newarg)
                                           (re-search-forward regexp nil t))
                                         (point-marker)))))
-          (when (and ,distinguish-one-marked (= (length results) 1))
+          (when (and ,distinguish-one-marked  (= (length results) 1))
             (setq results  (cons t results)))
           (if found results (list ,body)))))
     ;; `save-excursion' loses, again
@@ -965,11 +968,11 @@ Argument ARG:
  `all-files-no-dirs' or nil means skip directories.
  `all-files-no-dots' means skip `.' and `..'."
   (let ((fname  nil))
-    (while (and (not fname) (not (eobp)))
+    (while (and (not fname)  (not (eobp)))
       (setq fname  (dired-get-filename t t))
       (when (and fname  (or (not arg) (eq arg 'all-files-no-dirs))  (file-directory-p fname))
         (setq fname  nil))
-      (when (and fname (eq arg 'all-files-no-dots)
+      (when (and fname  (eq arg 'all-files-no-dots)
                  (or (member fname '("." "..")) (string-match "/\.\.?$" fname)))
         (setq fname  nil))
       (forward-line 1))
@@ -1013,7 +1016,7 @@ If DISTINGUISH-ONE-MARKED is non-nil, then return (t FILENAME) instead
                          (dired-get-filename localp) arg nil distinguish-one-marked)))
         result)
     (if (not filter)
-        (if (and distinguish-one-marked (eq (car all-of-them) t))
+        (if (and distinguish-one-marked  (eq (car all-of-them) t))
             all-of-them
           (nreverse all-of-them))
       (dolist (file  all-of-them) (when (funcall filter file) (push file result)))
@@ -1068,19 +1071,22 @@ You can reset all subdirectory switches to the default using
 See Info node `(emacs)Subdir switches' for more details."
     ;; Moves point if the next ARG files are redisplayed.
     (interactive "P\np")
-    (if (and test-for-subdir (dired-get-subdir))
+    (if (and test-for-subdir  (dired-get-subdir))
         (let* ((dir       (dired-get-subdir))
                (switches  (cdr (assoc-string dir dired-switches-alist))))
-          (dired-insert-subdir dir (and arg (read-string "Switches for listing: "
-                                                         (or switches dired-subdir-switches
-                                                             dired-actual-switches)))))
+          (dired-insert-subdir dir (and arg  (read-string "Switches for listing: "
+                                                          (or switches dired-subdir-switches
+                                                              dired-actual-switches)))))
       (message "Redisplaying...")
       ;; `message' much faster than making `dired-map-over-marks' show progress
       (dired-uncache (if (consp dired-directory) (car dired-directory) dired-directory))
-      (dired-map-over-marks (let ((fname  (dired-get-filename)))
+      (dired-map-over-marks (let ((fname  (dired-get-filename))
+                                  ;; Postpone readin hook map over all marked files (Bug#6810).
+                                  (dired-after-readin-hook nil))
                               (message "Redisplaying... `%s'" fname)
                               (dired-update-file-line fname))
                             arg)
+      (run-hooks 'dired-after-readin-hook)
       (dired-move-to-filename)
       (message "Redisplaying...done"))))
 
@@ -1091,10 +1097,10 @@ If on a subdir line, redisplay that subdirectory.  In that case,
 a prefix arg lets you edit the `ls' switches used for the new listing."
     ;; Moves point if the next ARG files are redisplayed.
     (interactive "P\np")
-    (if (and test-for-subdir (dired-get-subdir))
+    (if (and test-for-subdir  (dired-get-subdir))
         (dired-insert-subdir (dired-get-subdir)
-                             (and arg (read-string "Switches for listing: "
-                                                   dired-actual-switches)))
+                             (and arg  (read-string "Switches for listing: "
+                                                    dired-actual-switches)))
       (message "Redisplaying...")
       ;; message much faster than making dired-map-over-marks show progress
       (dired-uncache (if (consp dired-directory) (car dired-directory) dired-directory))
@@ -1120,7 +1126,7 @@ a prefix arg lets you edit the `ls' switches used for the new listing."
 
 ;; From `dired.el'
 
-(when (and (> emacs-major-version 22) (featurep 'ls-lisp+))
+(when (and (> emacs-major-version 22)  (featurep 'ls-lisp+))
 
 ;;; 2012/04/26: Commented this out.
 ;;;             Might need it again when update `ls-lisp+.el' to fix other things.
@@ -1128,7 +1134,7 @@ a prefix arg lets you edit the `ls' switches used for the new listing."
 ;;;   ;; Use t as WILDCARD arg to `dired-insert-directory'.
 ;;;   ;;
 ;;;   (defun dired-readin-insert ()
-;;;     ;; Insert listing for the specified dir (and maybe file list)
+;;;     ;; Insert listing for the specified dir (and maybe file  list)
 ;;;     ;; already in dired-directory, assuming a clean buffer.
 ;;;     (let (dir file-list)
 ;;;       (if (consp dired-directory)
@@ -1246,7 +1252,7 @@ If HDR is non-nil, insert a header line with the directory name."
                                  ;; Can't use (overlays-at (point)), BUG?
                                  (overlays-in (point) (1+ (point)))))
          (put-image thumb-file image-pos)
-         (setq overlay  (car (delq nil (mapcar (lambda (o) (and (overlay-get o 'put-image) o))
+         (setq overlay  (car (delq nil (mapcar (lambda (o) (and (overlay-get o 'put-image)  o))
                                                (overlays-in (point) (1+ (point)))))))
          (overlay-put overlay 'image-file image-file)
          (overlay-put overlay 'thumb-file thumb-file)))
@@ -1884,11 +1890,11 @@ If HDR is non-nil, insert a header line with the directory name."
     :help "Flag auto-save files for deletion"))
 (define-key diredp-menu-bar-mark-menu [flag-region]
   '(menu-item "Flag Region" diredp-flag-region-files-for-deletion
-    :enable (and transient-mark-mode mark-active (not (eq (mark) (point))))
+    :enable (and transient-mark-mode  mark-active  (not (eq (mark) (point))))
     :help "Flag all files in the region (selection) for deletion"))
 (when (< emacs-major-version 21)
   (put 'diredp-flag-region-files-for-deletion
-       'menu-enable '(and transient-mark-mode mark-active (not (eq (mark) (point))))))
+       'menu-enable '(and transient-mark-mode  mark-active  (not (eq (mark) (point))))))
 (define-key diredp-menu-bar-mark-menu [deletion]
   '(menu-item "Flag" dired-flag-file-deletion :help "Flag current line's file for deletion"))
 (define-key diredp-menu-bar-mark-menu [separator-flag] '("--")) ; ------------------------------
@@ -1932,11 +1938,11 @@ If HDR is non-nil, insert a header line with the directory name."
   '(menu-item "Mark Executables" dired-mark-executables :help "Mark all executable files"))
 (define-key diredp-menu-bar-mark-menu [mark-region]
   '(menu-item "Mark Region" diredp-mark-region-files
-    :enable (and transient-mark-mode mark-active (not (eq (mark) (point))))
+    :enable (and transient-mark-mode  mark-active  (not (eq (mark) (point))))
     :help "Mark all of the files in the region (selection)"))
 (when (< emacs-major-version 21)
   (put 'diredp-mark-region-files
-       'menu-enable '(and transient-mark-mode mark-active (not (eq (mark) (point))))))
+       'menu-enable '(and transient-mark-mode  mark-active  (not (eq (mark) (point))))))
 (define-key diredp-menu-bar-mark-menu [mark]
   '(menu-item "Mark" dired-mark :help "Mark current line's file for future operations"))
 (define-key diredp-menu-bar-mark-menu [separator-unmark] '("--")) ; ----------------------------
@@ -1948,11 +1954,11 @@ If HDR is non-nil, insert a header line with the directory name."
     :help "Remove a specific mark (or all marks) from every file"))
 (define-key diredp-menu-bar-mark-menu [unmark-region]
   '(menu-item "Unmark Region" diredp-unmark-region-files
-    :enable (and transient-mark-mode mark-active (not (eq (mark) (point))))
+    :enable (and transient-mark-mode  mark-active  (not (eq (mark) (point))))
     :help "Unmark all files in the region (selection)"))
 (when (< emacs-major-version 21)
   (put 'diredp-unmark-region-files
-       'menu-enable '(and transient-mark-mode mark-active (not (eq (mark) (point))))))
+       'menu-enable '(and transient-mark-mode  mark-active  (not (eq (mark) (point))))))
 (define-key diredp-menu-bar-mark-menu [unmark]
   '(menu-item "Unmark" dired-unmark :help "Unmark or unflag current line's file"))
 
@@ -2432,7 +2438,7 @@ In particular, inode number, number of hard links, and file size."
 (defvar diredp-link-priv 'diredp-link-priv)
 
 ;; Fix Emacs 20 recognition of fields up through file name when size is expressed using `k' etc.
-(when (and (< emacs-major-version 21) (not (boundp 'diredp-loaded-p))
+(when (and (< emacs-major-version 21)  (not (boundp 'diredp-loaded-p))
            dired-move-to-filename-regexp ; These last two checks are just in case.
            (eq (aref dired-move-to-filename-regexp 7) ?\  ))
   (setq dired-move-to-filename-regexp  (concat "[0-9][BkKMGTPEZY]?"
@@ -2611,7 +2617,7 @@ library `Bookmark+'):
               ;; If a dialog box is about to be used, call `read-directory-name' so the dialog
               ;; code knows we want directories.  Some dialog boxes can only select directories
               ;; or files when popped up, not both.
-              (if (and (fboundp 'read-directory-name) (next-read-file-uses-dialog-p))
+              (if (and (fboundp 'read-directory-name)  (next-read-file-uses-dialog-p))
                   (read-directory-name (format "Dired %s(directory): " str) nil
                                        default-directory nil)
                 (read-file-name (format "Dired %s(directory): " str) nil default-directory nil))
@@ -2625,7 +2631,7 @@ library `Bookmark+'):
               (cons (read-string "Dired buffer name: " nil nil default-directory) files))))
      (when (fboundp 'icicle-unbind-file-candidate-keys)
        (icicle-unbind-file-candidate-keys)))
-   (and current-prefix-arg (natnump (prefix-numeric-value current-prefix-arg))
+   (and current-prefix-arg  (natnump (prefix-numeric-value current-prefix-arg))
         (read-string "Dired listing switches: " dired-listing-switches))))
 
 ;;;###autoload
@@ -2720,19 +2726,19 @@ Read names of Dired buffers to include, and then the new, Dired-union
                               (setq buf  (completing-read
                                           "Dired buffer to include (C-g when done): "
                                           dirbufs nil t nil buffer-name-history
-                                          (and dirbufs (car (assoc (buffer-name) dirbufs)))))
+                                          (and dirbufs  (car (assoc (buffer-name) dirbufs)))))
                             (quit nil)))
        (push buf bufs)
        (setq dirbufs  (delete (cons buf (with-current-buffer buf default-directory)) dirbufs)))
      (setq bufs  (nreverse bufs))
      (cons (read-string "Dired-union buffer name: ") bufs))
-   (and current-prefix-arg (read-string "Dired listing switches: " dired-listing-switches))))
+   (and current-prefix-arg  (read-string "Dired listing switches: " dired-listing-switches))))
 
 ;;;###autoload
 (defun diredp-fileset (flset-name)      ; Not bound
   "Open Dired on the files in fileset FLSET-NAME."
   (interactive
-   (list (let ((fd  (or (and (require 'filesets nil t) filesets-data)
+   (list (let ((fd  (or (and (require 'filesets nil t)  filesets-data)
                         (error "Feature `filesets' not provided"))))
            (completing-read "Open Dired on fileset: " filesets-data))))
   (let ((flset  (filesets-get-fileset-from-name flset-name))
@@ -2922,8 +2928,8 @@ PREDICATE is passed to `diredp-list-files', to list only file names
 for which it returns non-nil."
   (let ((answer  'recenter))
     (cond (noninteractive
-           (setq prompt  (concat prompt (and (eq ?\   (aref prompt (1- (length prompt))))
-                                             "" " ")
+           (setq prompt  (concat prompt
+                                 (and (not (eq ?\   (aref prompt (1- (length prompt)))))  " ")
                                  "(y or n; l to show file list) "))
            (let ((temp-prompt  prompt))
              (while (not (memq answer '(act skip)))
