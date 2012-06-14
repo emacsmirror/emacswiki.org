@@ -7,9 +7,9 @@
 ;; Copyright (C) 1999-2012, Drew Adams, all rights reserved.
 ;; Created: Fri Mar 19 15:58:58 1999
 ;; Version: 21.2
-;; Last-Updated: Tue Jun  5 14:40:25 2012 (-0700)
+;; Last-Updated: Wed Jun 13 19:44:07 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 5846
+;;     Update #: 5864
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/dired+.el
 ;; Keywords: unix, mouse, directories, diredp, dired
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -299,6 +299,11 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2012/06/13 dadams
+;;     dired-buffers-for-dir: Updated wrt Emacs 23:
+;;       If dired-directory is a list then expand FILE in DIR & check whether in cdr of list.
+;;     diredp-get-files-for-dir, diredp-files-within-1, diredp-insert-as-subdir:
+;;       Expand dir name before passing it to dired-buffers-for-dir.
 ;; 2012/06/05 dadams
 ;;     MS Windows: Just do not define commands that are inappropriate for Windows (instead of
 ;;       defining them to raise an error or making them invisible in menus).
@@ -2877,12 +2882,12 @@ Non-nil optional arg INCLUDE-DIRS-P means include marked subdirectory
 names (but also handle those subdirs recursively).
 
 If there is more than one Dired buffer for DIR then raise an error."
-  (dolist (file  (if (not (dired-buffers-for-dir dir))
+  (dolist (file  (if (not (dired-buffers-for-dir (expand-file-name dir)))
                      (directory-files dir 'FULL diredp-re-no-dot)
-                   (when (cadr (dired-buffers-for-dir dir))
+                   (when (cadr (dired-buffers-for-dir (expand-file-name dir)))
                      (error "More than one Dired buffer for `%s'" dir))
                    (unless (equal dir default-directory) (setcar askp  t))
-                   (with-current-buffer (car (dired-buffers-for-dir dir))
+                   (with-current-buffer (car (dired-buffers-for-dir (expand-file-name dir)))
                      (diredp-marked-here))))
     (if (not (file-directory-p file))
         (setcdr (last accum) (list file))
@@ -3081,7 +3086,8 @@ satisfy PREDICATE are included in the result."
                        (file-accessible-directory-p file))
               (setq res  (diredp-files-within-1
                           (or (and (functionp file-list)
-                                   (dired-buffers-for-dir file) ; Removes killed buffers.
+                                   (dired-buffers-for-dir ; Removes killed buffers.
+                                    (expand-file-name file))
                                    (with-current-buffer
                                        (cdr (assoc (file-name-as-directory file) dired-buffers))
                                      (funcall file-list)))
@@ -3132,7 +3138,9 @@ Non-interactively:
                    "Insert this dir into ancestor dir: "
                    (mapcar #'list (diredp-ancestor-dirs default-directory)))
                   t)))
-    (let ((child-dired-buf  (if in-dired-now-p (current-buffer) (dired-buffers-for-dir child)))
+    (let ((child-dired-buf  (if in-dired-now-p
+                                (current-buffer)
+                              (dired-buffers-for-dir (expand-file-name child))))
           (switches         nil)
           (marked           nil))
       (when (consp child-dired-buf)
@@ -4898,27 +4906,26 @@ matches FILE.
 The list is in reverse order of buffer creation, most recent last.
 As a side effect, killed dired buffers for DIR are removed from
 `dired-buffers'."
-  (setq dir  (file-name-as-directory dir))
-  (let ((alist  dired-buffers) result elt buf pattern)
-    (while alist
-      (setq elt  (car alist)
-            buf  (cdr elt))
-      (if (buffer-name buf)
-          (if (dired-in-this-tree dir (car elt))
-              (with-current-buffer buf
-                (and (assoc dir dired-subdir-alist)
-                     (or (null file)
-                         (let ((wildcards
-                                ;; Allow for consp `dired-directory' too.
-                                (file-name-nondirectory (if (consp dired-directory)
-                                                            (car dired-directory)
-                                                          dired-directory))))
-                           (or (= 0 (length wildcards))
-                               (string-match (dired-glob-regexp wildcards) file))))
-                     (setq result  (cons buf result)))))
-        ;; else buffer is killed - clean up:
-        (setq dired-buffers  (delq elt dired-buffers)))
-      (setq alist  (cdr alist)))
+  (setq dir (file-name-as-directory dir))
+  (let (result buf)
+    (dolist (elt  dired-buffers)
+      (setq buf  (cdr elt))
+      (cond ((null (buffer-name buf))   ; Buffer is killed - clean up.
+             (setq dired-buffers  (delq elt dired-buffers)))
+            ((dired-in-this-tree dir (car elt))
+             (with-current-buffer buf
+               (and (assoc dir dired-subdir-alist)
+                    (or (null file)
+                        (if (stringp dired-directory)
+                            ;; Allow for consp `dired-directory' too.
+                            (let ((wildcards  (file-name-nondirectory
+                                               (if (consp dired-directory)
+                                                   (car dired-directory)
+                                                 dired-directory))))
+                              (or (= 0 (length wildcards))
+                                  (string-match (dired-glob-regexp wildcards) file)))
+                          (member (expand-file-name file dir) (cdr dired-directory))))
+                    (setq result  (cons buf result)))))))
     result))
 
 
