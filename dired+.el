@@ -7,9 +7,9 @@
 ;; Copyright (C) 1999-2012, Drew Adams, all rights reserved.
 ;; Created: Fri Mar 19 15:58:58 1999
 ;; Version: 21.2
-;; Last-Updated: Thu Jun 14 07:52:45 2012 (-0700)
+;; Last-Updated: Thu Jun 14 08:15:25 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 5880
+;;     Update #: 5883
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/dired+.el
 ;; Keywords: unix, mouse, directories, diredp, dired
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -300,6 +300,7 @@
 ;;; Change Log:
 ;;
 ;; 2012/06/14 dadams
+;;     dired-mark-pop-up: Wrap save-excursion around window/frame deletion.
 ;;     dired-do-redisplay: Updated wrt Emacs 23: bind, (then run) dired-after-readin-hook.
 ;;     diredp-y-or-n-files-p: Corrected construction of prompt wrt final SPC.
 ;; 2012/06/13 dadams
@@ -5902,11 +5903,12 @@ just the current file."
            (save-window-excursion
              (dired-pop-to-buffer bufname)
              (setq result  (apply function args)))
-        (condition-case nil    ; Ignore error if user already deleted window.
-            (progn
-              (select-window (get-buffer-window bufname 0))
-              (if (one-window-p) (delete-frame) (delete-window)))
-          (error nil))
+        (save-excursion
+          (condition-case nil           ; Ignore error if user already deleted window.
+              (progn
+                (select-window (get-buffer-window bufname 0))
+                (if (one-window-p) (delete-frame) (delete-window)))
+            (error nil)))
         (bury-buffer bufname)))
     result))
 
