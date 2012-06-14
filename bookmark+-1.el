@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2012, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 13:43:55 2010 (-0700)
-;; Last-Updated: Wed Jun 13 11:17:51 2012 (-0700)
+;; Last-Updated: Thu Jun 14 08:48:22 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 5695
+;;     Update #: 5696
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-1.el
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -2618,7 +2618,7 @@ candidate.  In this way, you can delete multiple bookmarks."
       (unless (bmkp-get-bookmark-in-alist bookmark-current-bookmark 'NOERROR)
         (setq bookmark-current-bookmark  nil)) ; Make this nil if last occurrence of BMK was deleted.
        ;; Do NOT refresh/rebuild if BATCHP.  Caller must do that if batching deletions.
-      (unless batchp (bmkp-refresh/rebuild-menu-list nil batchp))
+      (unless batchp (bmkp-refresh/rebuild-menu-list))
       (bmkp-maybe-save-bookmarks))))    ; Increments `bookmark-alist-modification-count'.
 
 
