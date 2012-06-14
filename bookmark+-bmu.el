@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2012, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 09:05:21 2010 (-0700)
-;; Last-Updated: Wed Jun 13 10:47:36 2012 (-0700)
+;; Last-Updated: Thu Jun 14 13:30:53 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 2084
+;;     Update #: 2116
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-bmu.el
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -205,9 +205,9 @@
 ;;    `bmkp-file-handler', `bmkp-function', `bmkp-gnus',
 ;;    `bmkp-heading', `bmkp-info', `bmkp-local-directory',
 ;;    `bmkp-local-file-with-region', `bmkp-local-file-without-region',
-;;    `bmkp-man', `bmkp-non-file', `bmkp-remote-file',
-;;    `bmkp-sequence', `bmkp-su-or-sudo', `bmkp-t-mark', `bmkp-url',
-;;    `bmkp-variable-list', `bmkp-X-mark'.
+;;    `bmkp-man', `bmkp-no-local', `bmkp-non-file',
+;;    `bmkp-remote-file', `bmkp-sequence', `bmkp-su-or-sudo',
+;;    `bmkp-t-mark', `bmkp-url', `bmkp-variable-list', `bmkp-X-mark'.
 ;;
 ;;  User options defined here:
 ;;
@@ -492,8 +492,13 @@ Don't forget to mention your Emacs and library versions."))
   :group 'bookmark-plus :group 'faces)
 
 (defface bmkp-non-file
+    '((t (:foreground "MediumSeaGreen")))
+  "*Face used for a bookmark not associated with an existing buffer."
+  :group 'bookmark-plus :group 'faces)
+
+(defface bmkp-no-local
     '((t (:foreground "gray60")))
-  "*Face used for a bookmark not associated with an existing file or buffer."
+  "*Face used for a local file bookmark whose target file does not exist."
   :group 'bookmark-plus :group 'faces)
 
 (defface bmkp-remote-file
@@ -524,8 +529,8 @@ Don't forget to mention your Emacs and library versions."))
   :group 'bookmark-plus :group 'faces)
 
 (defface bmkp-variable-list
-    '((((background dark)) (:foreground "#FFFF74747474")) ; ~ salmon
-      (t (:foreground "DarkCyan")))
+    '((((background dark)) (:foreground "#FFFF8D947477")) ; ~ salmon
+      (t (:foreground "#0000726B8B8B")))     ; ~dark cyan
   "*Face used for a bookmarked list of variables."
   :group 'bookmark-plus :group 'faces)
 
@@ -3691,8 +3696,9 @@ Autosave bookmarks:\t%s\nAutosave list display:\t%s\n\n\n"
                 (url              "URL\n")
                 (local-no-region  "Local file with no region\n")
                 (local-w-region   "Local file with a region\n")
+                (no-file          "No such local file\n")
                 (buffer           "Buffer\n")
-                (no-buf           "No current buffer\n")
+                (no-buf           "No such buffer now\n")
                 (bad              "Possibly invalid bookmark\n")
                 (remote           "Remote file/directory or Dired buffer (could have wildcards)\n")
                 (sudo             "Remote accessed by `su' or `sudo'\n")
@@ -3709,9 +3715,10 @@ Autosave bookmarks:\t%s\nAutosave list display:\t%s\n\n\n"
             (put-text-property 0 (1- (length man))           'face 'bmkp-man          man)
             (put-text-property 0 (1- (length url))           'face 'bmkp-url          url)
             (put-text-property 0 (1- (length local-no-region))
-                               'face 'bmkp-local-file-without-region             local-no-region)
+                               'face 'bmkp-local-file-without-region                  local-no-region)
             (put-text-property 0 (1- (length local-w-region))
-                               'face 'bmkp-local-file-with-region                local-w-region)
+                               'face 'bmkp-local-file-with-region                     local-w-region)
+            (put-text-property 0 (1- (length no-file))       'face 'bmkp-no-local     no-file)
             (put-text-property 0 (1- (length buffer))        'face 'bmkp-buffer       buffer)
             (put-text-property 0 (1- (length no-buf))        'face 'bmkp-non-file     no-buf)
             (put-text-property 0 (1- (length bad))           'face 'bmkp-bad-bookmark bad)
@@ -3735,8 +3742,8 @@ Autosave bookmarks:\t%s\nAutosave list display:\t%s\n\n\n"
               (insert-image (create-image bmkp-bmenu-image-bookmark-icon-file nil nil :ascent 95))
               (insert "Image file\n"))
             (insert gnus) (insert info) (insert man) (insert url) (insert local-no-region)
-            (insert local-w-region) (insert buffer) (insert no-buf) (insert remote)
-            (insert sudo) (insert local-dir) (insert file-handler) (insert bookmark-list)
+            (insert local-w-region) (insert no-file) (insert buffer) (insert no-buf)
+            (insert remote) (insert sudo) (insert local-dir) (insert file-handler) (insert bookmark-list)
             (insert bookmark-file) (insert desktop) (insert sequence) (insert variable-list)
             (insert function) (insert bad)
             (insert "\n\n")
@@ -4123,7 +4130,7 @@ Return the propertized string (the bookmark name)."
                     `(mouse-face highlight follow-link t
                       help-echo (format "mouse-2: Jump to (visit) file `%s'" ,filep))))
            ;; Test for remoteness before any other tests of the file itself
-           ;; (e.g. `file-exists-p'), so we don't prompt for a password etc.
+           ;; (e.g. `file-exists-p'), so Tramp does not prompt for a password etc.
            ((and filep  (bmkp-file-remote-p filep)  (not sudop)) ; Remote file (ssh, ftp)
             (append (bmkp-face-prop 'bmkp-remote-file)
                     `(mouse-face highlight follow-link t
@@ -4147,11 +4154,12 @@ Return the propertized string (the bookmark name)."
             (append (bmkp-face-prop 'bmkp-buffer)
                     `(mouse-face highlight follow-link t
                       help-echo (format "mouse-2: Jump to buffer `%s'" ,buffp))))
-           ((and (or (not filep)  (equal filep bmkp-non-file-filename)
-                     (not (file-exists-p filep)))) ; No file or buffer.
+           ((or (not filep)  (equal filep bmkp-non-file-filename)) ; Non-file, and no existing buffer.
             (append (bmkp-face-prop 'bmkp-non-file)
                     `(mouse-face highlight follow-link t
-                      help-echo (format "mouse-2: Jump to buffer `%s'" ,buffp))))
+                      help-echo (format "mouse-2: Create buffer `%s' and jump to it" ,buffp))))
+           ((and filep  (not (file-exists-p filep))) ; Local-file bookmark, but no such file exists.
+            (bmkp-face-prop 'bmkp-no-local))
            (t (append (bmkp-face-prop 'bmkp-bad-bookmark)
                       `(mouse-face highlight follow-link t
                         help-echo (format "BAD BOOKMARK (maybe): `%s'" ,filep))))))
