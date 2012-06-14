@@ -1397,7 +1397,7 @@ URL is download URL that base on `irfc-download-base-url'."
     (with-current-buffer (get-buffer download-buffer-name)
       ;; Bind download url with local buffer.
       (setq irfc-download-url url)
-      (setq irfc-download-buffer (url-retrieve parsed-url
+      (setq irfc-download-buffer (url-retrieve url
                                                'irfc-download-callback
                                                (list download-buffer-name))))))
 
