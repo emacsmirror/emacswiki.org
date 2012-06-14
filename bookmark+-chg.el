@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2012, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Wed Jun 13 11:29:50 2012 (-0700)
+;; Last-Updated: Thu Jun 14 13:42:24 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 14955
+;;     Update #: 14963
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-chg.el
 ;; Keywords: bookmarks, bookmark+
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -786,6 +786,11 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-bmu.el'")
 ;;
+;; 2012/06/14 dadams
+;;     Added face bmkp-no-local.
+;;     Redefined defaults for faces bmkp-non-file and bmkp-variable-list.
+;;     bmkp-bmenu-mode-status-help: Added legend for no such local file.
+;;     bmkp-bmenu-propertize-item: Distinguish no such local file from no such existing buffer.
 ;; 2012/06/13 dadams
 ;;     bookmark-bmenu-bookmark: forward-char bmkp-bmenu-marks-width, not 1+ that.
 ;;     bmkp-bmenu-propertize-item: Allow a file bookmark to get buffer prop if file not yet saved.
