@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2012, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Thu Jun 14 13:42:24 2012 (-0700)
+;; Last-Updated: Fri Jun 15 15:16:00 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 14963
+;;     Update #: 14969
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-chg.el
 ;; Keywords: bookmarks, bookmark+
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -786,6 +786,9 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-bmu.el'")
 ;;
+;; 2012/06/15 dadams
+;;     bookmark-bmenu-mode, bmkp-bmenu-mode-status-help: Improved doc string.
+;;     bmkp-bmenu-show-or-edit-annotation: Corrected doc string: bookmark, not buffer.
 ;; 2012/06/14 dadams
 ;;     Added face bmkp-no-local.
 ;;     Redefined defaults for faces bmkp-non-file and bmkp-variable-list.
