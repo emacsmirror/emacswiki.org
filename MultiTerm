@@ -36,7 +36,7 @@
 
 ==Note==
 
-* You have to carefully consider which keys you want to pass to your multi-term shell and which you want to use to control Emacs.  Pass over to few and you won't be able to control the program you want.  Pass over the wrong ones and you wont be able to make use of emacs global commands.  
+* You have to carefully consider which keys you want to pass to your multi-term shell and which you want to use to control Emacs.  Pass over too few and you won't be able to control the program you want.  Pass over the wrong ones and you wont be able to make use of emacs global commands.  
  There is a simple mechanism to do this.
 * `term-unbind-key-list' is a list of keys which emacs keeps for itself.  By default it contains ("C-z" "C-c" "C-x" "C-h" "C-y" "<ESC>")
 * `term-bind-key-alist' is a list of keys and functions which you can use, for example to use Emacs style cursor movement to the multi-terminal.  The default is long, so I'll let you look it up yourself.
