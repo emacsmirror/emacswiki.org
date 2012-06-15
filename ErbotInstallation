@@ -24,7 +24,7 @@ apt-get -u install [-t stable] emacs21-el. The package emacs21-el helps with ErB
 
 * Install BBDB: apt-get -u install bbdb.
 
-* Install Calc: apt-get -u install calc. (There doesn't seem to be a calc package in Debian? --JohnSullivan)
+* Install Calc: apt-get -u install calc. (Part of stock Emacs 22)
 
 * Install dictionary-el (apt-get [-t sarge] -u install dictionary-el), optional, if you don't, the dictionary funtions of the bot will not work..
 
