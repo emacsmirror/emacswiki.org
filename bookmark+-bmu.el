@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2012, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 09:05:21 2010 (-0700)
-;; Last-Updated: Thu Jun 14 13:30:53 2012 (-0700)
+;; Last-Updated: Fri Jun 15 11:16:24 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 2116
+;;     Update #: 2176
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-bmu.el
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -1207,9 +1207,14 @@ Non-nil optional FULL means return the bookmark record, not the name."
 (defun bookmark-bmenu-mode ()
   "Major mode for editing a list of bookmarks.
 
-More bookmarking help below.  Each line represents an Emacs bookmark.
-Keys without prefix `C-x' are available only in `*Bookmark List*'.
-Other keys are available everywhere.
+Each line represents an Emacs bookmark.  Keys without prefix `C-x' are
+available only here (in `*Bookmark List*').  Other keys are available
+everywhere.
+
+Remember that you can see all bindings for a prefix key by hitting it,
+then `C-h'.  E.g., `s C-h' to see keys with prefix `s' (sorting keys).
+
+More bookmarking help below.
 
 
 Help - Bookmark Info
@@ -1222,7 +1227,7 @@ Help - Bookmark Info
 \\[bmkp-bmenu-describe-this+move-up]\t- Show the info, then move to previous bookmark
 \\[bmkp-bmenu-describe-marked]\t- Show info about the marked bookmarks  (`C-u': internal form)
 \\[bookmark-bmenu-locate]\t- Show location of bookmark (in minibuffer)
-\\[bookmark-bmenu-show-annotation]\t- Show bookmark's annotation
+\\[bmkp-bmenu-show-or-edit-annotation]\t- Show bookmark's annotation            (`C-u': edit it)
 \\[bookmark-bmenu-show-all-annotations]\t- Show the annotations of all annotated bookmarks
 
 \\[bmkp-list-defuns-in-commands-file]
@@ -1306,7 +1311,7 @@ Here:
 \\[bookmark-bmenu-1-window]\t- Bookmark in a full-frame window
 \\[bookmark-bmenu-2-window]\t- This bookmark and last-visited bookmark
 
-Anywhere:
+Anywhere (`C-x j C-h' to see this, and `C-x j t C-h' for tags):
 
 \\[bookmark-jump]\t- Bookmark by name
 \\[bmkp-jump-to-type]\t- Bookmark by type
@@ -1351,10 +1356,9 @@ Autonamed Bookmarks (anywhere)
 -------------------
 
 \\[bmkp-toggle-autonamed-bookmark-set/delete]\t- Create/delete autonamed bookmark at point
-\\[bmkp-autonamed-jump]\t- Jump to an autonamed bookmark
+C-u \\[bmkp-toggle-autonamed-bookmark-set/delete]\t- Delete all autonamed bookmarks in current buffer
+\\[bmkp-autonamed-jump]\t\t- Jump to an autonamed bookmark
 \\[bmkp-autonamed-this-buffer-jump]\t- Jump to an autonamed bookmark in a given buffer
-\\[bmkp-delete-all-autonamed-for-this-buffer]
-\t- Delete all autonamed bookmarks in current buffer
 
 
 Cycle Bookmarks (anywhere)
@@ -1385,8 +1389,8 @@ Mark/Unmark Bookmarks
 
 \(Mark means `>'.  Flag means `D'.   See also `Tags', below.)
 
-\\[bookmark-bmenu-delete]\t- Flag bookmark `D' for deletion, then move down
-\\[bookmark-bmenu-delete-backwards]\t- Flag bookmark `D' for deletion, then move up
+\\[bmkp-bmenu-flag-for-deletion]\t- Flag bookmark `D' for deletion, then move down
+\\[bmkp-bmenu-flag-for-deletion-backwards]\t- Flag bookmark `D' for deletion, then move up
 
 \\[bookmark-bmenu-mark]\t- Mark bookmark
 \\[bookmark-bmenu-unmark]\t- Unmark bookmark (`C-u': move up one line)
@@ -1425,7 +1429,7 @@ Modify, Delete Bookmarks
 
 \\[bmkp-bmenu-edit-bookmark-name-and-file]\t- Rename or relocate bookmark
 \\[bmkp-bmenu-edit-tags]\t- Edit bookmark's tags
-\\[bookmark-bmenu-edit-annotation]\t- Edit bookmark's annotation
+C-u \\[bmkp-bmenu-show-or-edit-annotation]\t- Edit bookmark's annotation
 \\[bmkp-bmenu-edit-bookmark-record]\t- Edit internal record for bookmark (Lisp)
 \\[bmkp-bmenu-edit-marked]\t- Edit internal records of marked bookmarks (Lisp)
 \\[bmkp-bmenu-toggle-temporary]\t- Toggle temporary/savable status of bookmark
@@ -1492,7 +1496,7 @@ Bookmark Highlighting
 \\[bmkp-unlight-bookmark-here]\t- Unhighlight a bookmark at point or on same line
 
 
-Sort `*Bookmark List*'
+Sort `*Bookmark List*' (`s C-h' to see this)
 ----------------------
 
 \(Repeat to cycle normal/reversed/off, except as noted.)
@@ -3555,7 +3559,7 @@ sort order is marked first or last (`s >'), then re-sort."
 
 ;;;###autoload
 (defun bmkp-bmenu-show-or-edit-annotation (editp msg-p)
-  "Show annotation for current buffer in another window.  `C-u': Edit.
+  "Show annotation for current bookmark in another window.  `C-u': Edit.
 With no prefix arg, show the annotation.  With a prefix arg, edit it."
   (interactive "P\np")
   (if editp
@@ -3599,10 +3603,11 @@ With no prefix arg, show the annotation.  With a prefix arg, edit it."
           (help-setup-xref (list #'bmkp-bmenu-mode-status-help) (interactive-p))
           (goto-char (point-min))
           (search-forward               ; This depends on the text written by `bookmark-bmenu-mode'.
-           "Other keys are available everywhere." nil t)
+           "More bookmarking help below." nil t)
           (delete-region (point-min) (point)) ; Get rid of intro from `describe-function'.
           (insert "*************************** Bookmark List ***************************\n\n")
           (insert "Major mode for editing a list of bookmarks.\n")
+          (insert "Each line in `*Bookmark List*' represents an Emacs bookmark.\n")
           (setq top  (copy-marker (point)))
           ;; Add buttons to access help and Customize.
           ;; Not for Emacs 21.3 - its `help-insert-xref-button' signature is different.
@@ -3669,24 +3674,24 @@ Autosave bookmarks:\t%s\nAutosave list display:\t%s\n\n\n"
                    (if bmkp-bmenu-state-file "yes" "no")))
 
           ;; Add markings legend.
-          (let ((mm   ">")
-                (DD   "D")
-                (tt   "t")
-                (aa   "a")
-                (XX   "X")
-                (mod  "*"))
-            (put-text-property 0 1 'face 'bmkp-D-mark DD)
-            (put-text-property 0 1 'face 'bmkp-t-mark tt)
-            (put-text-property 0 1 'face 'bmkp-a-mark aa)
-            (put-text-property 0 1 'face 'bmkp-X-mark XX)
-            (put-text-property 0 1 'face 'bmkp-*-mark mod)
-            (insert "Legend for Markings\n-------------------\n")
-            (insert (concat mm  "\t- marked\n"))
-            (insert (concat DD  "\t- flagged for deletion                (`x' to delete all such)\n"))
-            (insert (concat tt  "\t- tagged                              (`C-h C-RET' to see)\n"))
-            (insert (concat aa  "\t- annotated                           (`C-h C-RET' to see)\n"))
-            (insert (concat mod "\t- modified (not saved)\n"))
-            (insert (concat XX  "\t- temporary (will not be saved)\n"))
+          (let ((mm   "  >")
+                (DD   "  D")
+                (tt   "  t")
+                (aa   "  a")
+                (XX   "  X")
+                (mod  "  *"))
+            (put-text-property 2 3 'face 'bmkp-D-mark DD)
+            (put-text-property 2 3 'face 'bmkp-t-mark tt)
+            (put-text-property 2 3 'face 'bmkp-a-mark aa)
+            (put-text-property 2 3 'face 'bmkp-X-mark XX)
+            (put-text-property 2 3 'face 'bmkp-*-mark mod)
+            (insert "Legend for Markings\n-------------------\n\n")
+            (insert (concat mm  "  marked\n"))
+            (insert (concat DD  "  flagged for deletion                     (`x' to delete all such)\n"))
+            (insert (concat tt  "  tagged                                   (`C-h C-RET' to see)\n"))
+            (insert (concat aa  "  annotated                                (`C-h C-RET' to see)\n"))
+            (insert (concat mod "  modified (not saved)\n"))
+            (insert (concat XX  "  temporary (will not be saved)\n"))
             (insert "\n\n"))
 
           ;; Add face legend.
@@ -3735,21 +3740,21 @@ Autosave bookmarks:\t%s\nAutosave list display:\t%s\n\n\n"
             (put-text-property 0 (1- (length sequence))      'face 'bmkp-sequence      sequence)
             (put-text-property 0 (1- (length variable-list)) 'face 'bmkp-variable-list variable-list)
             (put-text-property 0 (1- (length function))      'face 'bmkp-function      function)
-            (insert "Legend for Bookmark Types\n-------------------------\n")
+            (insert "Legend for Bookmark Types\n-------------------------\n\n")
             (when (and (fboundp 'display-images-p)  (display-images-p)
                        bmkp-bmenu-image-bookmark-icon-file
                        (file-readable-p bmkp-bmenu-image-bookmark-icon-file))
-              (insert-image (create-image bmkp-bmenu-image-bookmark-icon-file nil nil :ascent 95))
-              (insert "Image file\n"))
-            (insert gnus) (insert info) (insert man) (insert url) (insert local-no-region)
-            (insert local-w-region) (insert no-file) (insert buffer) (insert no-buf)
-            (insert remote) (insert sudo) (insert local-dir) (insert file-handler) (insert bookmark-list)
-            (insert bookmark-file) (insert desktop) (insert sequence) (insert variable-list)
-            (insert function) (insert bad)
-            (insert "\n\n")
-            (insert "More bookmarking help below.  Each line represents an Emacs bookmark.\n")
-            (insert "Keys without prefix `C-x' are available only in `*Bookmark List*'.\n")
-            (insert "Other keys are available everywhere.")))))))
+              (insert "  ") (insert-image (create-image bmkp-bmenu-image-bookmark-icon-file nil nil :ascent 95))
+              (insert " Image file\n"))
+            (insert "  " gnus) (insert "  " info) (insert "  " man) (insert "  " url) (insert "  " local-no-region)
+            (insert "  " local-w-region) (insert "  " no-file) (insert "  " buffer) (insert "  " no-buf)
+            (insert "  " remote) (insert "  " sudo) (insert "  " local-dir) (insert "  " file-handler)
+            (insert "  " bookmark-list) (insert "  " bookmark-file) (insert "  " desktop) (insert "  " sequence)
+            (insert "  " variable-list) (insert "  " function) (insert "  " bad)
+            (insert "\n\nKeys without prefix `C-x' are available only here (`*Bookmark List*').\n")
+            (insert "Keys with prefix `C-x' are available everywhere.\n\n")
+            (insert "Remember that you can see all bindings for a prefix key by hitting it,\n")
+            (insert "then `C-h'.  E.g., `s C-h' to see keys with prefix `s' (sorting).")))))))
 
 (when (and (> emacs-major-version 21)
            (condition-case nil (require 'help-mode nil t) (error nil))
@@ -4580,7 +4585,7 @@ Marked bookmarks that have no associated file are ignored."
 (define-key bookmark-bmenu-mode-map "\M-c"                 'bmkp-bmenu-define-jump-marked-command)
 (define-key bookmark-bmenu-mode-map "d"                    'bmkp-bmenu-flag-for-deletion)
 (define-key bookmark-bmenu-mode-map "D"                    'bmkp-bmenu-delete-marked)
-(define-key bookmark-bmenu-mode-map "\C-d"                  'bmkp-bmenu-flag-for-deletion-backwards)
+(define-key bookmark-bmenu-mode-map "\C-d"                 'bmkp-bmenu-flag-for-deletion-backwards)
 (define-key bookmark-bmenu-mode-map "\M-d"                 nil) ; For Emacs 20
 (define-key bookmark-bmenu-mode-map "\M-d>"                'bmkp-bmenu-dired-marked)
 (define-key bookmark-bmenu-mode-map "\M-d\M-m"             'bmkp-bmenu-mark-dired-bookmarks)
