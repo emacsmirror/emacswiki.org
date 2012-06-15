@@ -344,6 +344,18 @@ upcoming diary entries will be printed whenever you login.
 NOTE: This is obsolete for users with init=/usr/bin/emacs in their
 kernel commandline. ;)
 
+I can't find diary-batch.el, so I made my own.  It's simple but it gets the job done:
+
+<pre>
+(require 'calendar)
+(defun diary-batch (&optional ndays)
+  (interactive "P")
+  (let ((diary-print-entries-hook (lambda () (princ (buffer-string))))
+	(diary-display-function 'diary-fancy-display))
+    (diary-list-entries (calendar-current-date) (or ndays diary-mail-days))
+    (diary-print-entries)))
+</pre>
+
 == Questions ==
 
 I'd like to have the diary/calendar display and recognize dates in -true- ISO format, i.e. 2006-03-01, not 2006-3-1. Any ideas on how to accomplish this?
