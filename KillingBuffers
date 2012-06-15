@@ -241,6 +241,33 @@ select with up/down/pgup/pgdown/C-p/C-n/C-v/M-v, choose with enter,
 With TAB actions can be selected if the selected buffer has more than one possible action.
 With C-z kills buffer without quitting anything session.
 
+== Killing Buffers of asynchronous processes with dying-mode ==
+Say, you want to kill buffers for asynchronous processes by default 10 minutes after the corresponding process exits.
+For that purpose you can use dying-mode from [[dying.el]] and the code below in your .emacs file.
+
+You can set the default lifetime of the buffer after the process exits with the variable dying-default-lifetime.
+If you consider the process output to be important to you for a longer time than dying-default-lifetime you can switch off dying-mode within the lifetime of the process buffer or prolong the lifetime of the buffer.
+
+{{{
+(require 'dying)
+
+(fset 'start-process-orig (symbol-function 'start-process))
+
+(fset 'start-process
+      (append
+       (list 'lambda
+	     '(name buffer program &rest program-args)
+	     (concat (let ((s (documentation 'start-process))) (substring s 0 (string-match "\n\n.*\\'" s)))
+	       "\nAfter finishing the process the process buffer goes into dying-mode."))
+       '((let ((ret (apply 'start-process-orig name buffer program program-args)))
+	   (if ret
+	       (set-process-sentinel ret
+				     '(lambda (proc event)
+					(when (and (eq (process-status proc) 'exit)
+						   (process-buffer proc))
+					  (with-current-buffer (process-buffer proc)
+					    (dying-mode t)))))) ret))))
+}}}
 
 
 ----
