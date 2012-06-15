@@ -344,7 +344,7 @@ upcoming diary entries will be printed whenever you login.
 NOTE: This is obsolete for users with init=/usr/bin/emacs in their
 kernel commandline. ;)
 
-I can't find diary-batch.el, so I made my own.  It's simple but it gets the job done:
+I can't find diary-batch.el, so I made my own.  It's simple, but it gets the job done.  It's invoked in the same way as above:
 
 <pre>
 (require 'calendar)
