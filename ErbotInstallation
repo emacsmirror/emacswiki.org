@@ -110,7 +110,7 @@ Place all these files in ~/elisp/.
 
 * apt-get install w3-url-e21 
 
-* BTW, If you want to enable the silly magic-8-ball, add (setq fs-m8b-p t) to its .emacs.  Then it answers any questions ending in ?? using a magic-8-ball.
+* BTW, If you want to enable the silly magic-8-ball, add (setq fsi-m8b-p t) to its .emacs.  Then it answers any questions ending in ?? using a magic-8-ball.
 
 == Wiki Training ==
 
