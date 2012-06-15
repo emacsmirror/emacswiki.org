@@ -251,7 +251,8 @@ If you consider the process output to be important to you for a longer time than
 {{{
 (require 'dying)
 
-(fset 'start-process-orig (symbol-function 'start-process))
+(unless (fboundp 'start-process-orig)
+  (fset 'start-process-orig (symbol-function 'start-process)))
 
 (fset 'start-process
       (append
@@ -267,6 +268,14 @@ If you consider the process output to be important to you for a longer time than
 						   (process-buffer proc))
 					  (with-current-buffer (process-buffer proc)
 					    (dying-mode t)))))) ret))))
+
+(defadvice shell-command-sentinel (after shell-command-sentinel-dying-mode (proc event) activate)
+  "The original shell-command-sentinel prevents insertion of a termination message into the process buffer itself.
+The advice starts dying-mode after the process exits."
+  (when (and (eq (process-status proc) 'exit)
+	     (process-buffer proc))
+    (with-current-buffer (process-buffer proc)
+      (dying-mode t))))
 }}}
 
 
