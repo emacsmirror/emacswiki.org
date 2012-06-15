@@ -82,3 +82,5 @@ This feature is available as part of Emacs-24.1.
 ** There is command-frequency.el and keyfreq.el.  They are both on marmalade.
 
 * Fix the slowness with subprocesses on OS X.
+
+* Better PDF support - e.g. copy text, highlighting text - would be really useful for research scientists.
