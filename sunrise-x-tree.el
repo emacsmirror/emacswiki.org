@@ -1,15 +1,15 @@
-;;; sunrise-x-tabs.el --- tabs for the Sunrise Commander File Manager
+;;; sunrise-x-tree.el --- Tree View for the Sunrise Commander File Manager
 
-;; Copyright (C) 2009-2012 José Alfredo Romero Latouche.
+;; Copyright (C) 2010-2012 José Alfredo Romero Latouche.
 
 ;; Author: José Alfredo Romero L. <escherdragon@gmail.com>
 ;;	Štěpán Němec <stepnem@gmail.com>
 ;; Maintainer: José Alfredo Romero L. <escherdragon@gmail.com>
-;; Created: 24 Oct 2009
+;; Created: 4 May 2010
 ;; Version: 1
-;; RCS Version: $Rev: 421 $
-;; Keywords: sunrise commander, tabs
-;; URL: http://www.emacswiki.org/emacs/sunrise-x-tabs.el
+;; RCS Version: $Rev: 413 $
+;; Keywords: sunrise commander, directories tree navigation
+;; URL: http://www.emacswiki.org/emacs/sunrise-x-tree.el
 ;; Compatibility: GNU Emacs 22+
 
 ;; This file is *NOT* part of GNU Emacs.
@@ -29,611 +29,1180 @@
 
 ;;; Commentary:
 
-;; This extension brings tab‐based navigation to the Sunrise Commander. It adds
-;; to the list of optional mechanisms already available in Sunrise for moving
-;; around the file system (like regular bookmarks, checkpoints, history rings,
-;; materialized virtual buffers, navigable paths and file‐following) another way
-;; to maintain a list of selected locations one wants to return later on, or to
-;; compose "breadcrumb trails" for complex repetitive operations.
+;; This extension adds to the Sunrise Commander file manager a directories-only
+;; tree view that can be used for fast navigation, as well as for several basic
+;; operations on files and directories. It uses the excellent "tree-widget.el"
+;; library written by David Ponce and works the same in text consoles as well as
+;; in graphical environments, using either the mouse or just the keyboard.
 
-;; The main difference between tabs and other mechanisms is that once a buffer
-;; has been assigned to a tab, it will not be killed automatically by Sunrise,
-;; so it's possible to keep it around as long as necessary with all its marks
-;; and state untouched. Tabs can be persisted across sessions using the DeskTop
-;; feature.
+;; For more information on the Sunrise Commander, other extensions and cool tips
+;; & tricks visit http://www.emacswiki.org/emacs/Sunrise_Commander
 
-;; Creating, using and destroying tabs are fast and easy operations, either with
-;; mouse or keyboard:
+;; This extension was developed on GNU Emacs 24 on Linux and tested on GNU Emacs
+;; 22 and 24 for Linux, and on EmacsW32 (version 23) for Windows.
 
-;; * Press C-j (or select Sunrise > Tabs > Add Tab in the menu) to create a new
-;; tab or to rename an already existing tab.
-
-;; * Press C-k (or right-click the tab) to kill an existing tab. Combine with M-
-;; (M-C-k) to kill the tab on the passive pane. Prefix with a digit to kill tabs
-;; by relative order (e.g. 2 C-k kills the second tab in the current pane, while
-;; 4 M-C-k kills the fourth tab in the passive pane).
-
-;; * Press C‐n and C‐p to move from tab to tab ("Next", "Previous"), or simply
-;; left‐click on the tab to focus its assigned buffer. These two keybindings can
-;; be prefixed with an integer to move faster.
-
-;; * The last four bindings can be combined with Meta (i.e. M‐C‐j, M‐C‐k, M‐C‐n
-;; and M‐C‐p) to perform the equivalent operation on the passive pane or (when
-;; in synchronized navigation mode) on both panes simultaneously.
-
-;; * Press * C-k to kill in one go all the tabs in the current pane. Similarly,
-;; press * M-C-k to wipe all the tabs off the passive pane or (when synchronized
-;; mode is active) on both panes simultaneously.
-
-;; * Killing the current buffer with C‐x k automatically switches to the one
-;; assigned to the first available tab (if any).
-
-;; The extension is provided as a minor mode, so you can enable / disable it
-;; totally by using the command `sr-tabs-mode'.
-
-;; It does *not* pretend to be a generic solution for tabs in Emacs. If you need
-;; one, have a look at TabBar mode (http://www.emacswiki.org/emacs/TabBarMode)
-;; by David Ponce. I wrote this just because it turned out to be easier to write
-;; this than to customize tabbar to behave exactly like I wanted inside the
-;; Sunrise panes. It's meant to be simple and to work nicely with Sunrise with
-;; just a few tabs (up to 10‐15 per pane, maybe).
-
-;; It was written on GNU Emacs 23 on Linux, and tested on GNU Emacs 22 and 23
-;; for Linux and on EmacsW32 (version 23) for Windows.
-
-;;; Installation and Usage:
+;;; Installation:
 
 ;; 1) Put this file somewhere in your Emacs `load-path'.
 
-;; 2) Add a (require 'sunrise‐x‐tabs) expression to your .emacs file somewhere
+;; 2) Add a (require 'sunrise‐x‐tree) expression to your .emacs file somewhere
 ;; after the (require 'sunrise‐commander) one.
 
 ;; 3) Evaluate the new expression, or reload your .emacs file, or restart Emacs.
 
-;; 4) Enjoy ;-)
+;; 4) You may have to customize the `tree-widget-image-enable' variable if all
+;; you get are text-only icons (e.g. "[+]" and "[X]") in your graphical
+;; environment, while you'd rather prefer looking at pretty graphical ones.
+
+;; WARNING: If you use Slime be aware that some versions of this package include
+;; an older version of tree-widget.el that may clobber the one in Emacs and make
+;; this extension work improperly. At least that's the case in Debian for i386:
+;; slime comes with version 21.4 of tree-widget, but the extension requires 22.1
+;; or better.
+
+;;; Usage:
+
+;; In order to explain the different ways this extension is used, it's necessary
+;; to first introduce a few concepts:
+;; * A Sunrise Tree View pane displays a list of directories arranged in a tree-
+;;   like structure. There is exactly one such TREE in every Tree View pane.
+;; * Each node in this tree is called FOLDER and represents one directory in the
+;;   file system. A folder can be in one of two states: OPEN or CLOSED. When the
+;;   folder is open, its children (if any) are displayed under it in the tree.
+;; * The top-most folder in every tree is called the ROOT of the tree. All other
+;;   folders in the same tree represent sub-directories of the root directory.
+;; * To FOCUS a given folder means to replace the current tree with one that has
+;;   that folder as its root.
+;; * The opposite operation of focusing a folder, i.e. showing it in the context
+;;   of a broader tree, is called BLURRING the folder.
+;; * Finally, to EXPLODE a given folder means to open it, then all its children,
+;;   then all the children of its children and so on, as many times as the value
+;;   of  the   `sr-tree-explosion-ratio'  option   (which  can   be  customized)
+;;   specifies. This  is an additive  operation, which means that  exploding the
+;;   same directory  many times  will open  more of  its descendants  deeper and
+;;   deeper until the tree runs out of closed folders in that branch.
+
+;; The Sunrise Tree View mode offers three different ways of navigating the file
+;; system: with the mouse (for rodent lovers), with the arrow keys (for rookies)
+;; and with other keys nearer the home row (for keyboard junkies).
+
+;; 1. With the mouse:
+
+;; * Meta + Shift + left click anywhere inside a pane to switch between tree and
+;;   normal modes.
+;; * Left click on a folder or anywhere beside it to open or close the folder.
+;; * Middle click on a folder, or anywhere beside it, to just select it without
+;;   changing its state.
+;; * Shift + left click on a folder or anywhere beside it to focus it.
+;; * Meta + left click on a folder or anywhere beside it to blur it. Meta + left
+;;   click anywhere else in the pane to blur the currently selected folder.
+;; * Control + left click on a folder or anywhere beside it to explode it.
+;; * Double click on a folder to dismiss tree view and visit the folder.
+;; * Left or Middle click anywhere on the path line at the top of the pane to go
+;;   directly to the directory which path ends at that point in the line.
+
+;; 2. With the arrow keys:
+
+;; * Meta + Shift + down switches between tree and normal modes.
+;; * Up and down move the cursor up and down (duh!)
+;; * Right opens a folder if it was closed, or browses it if it was open.
+;; * Left closes a folder if it was open, or jumps up to its parent folder if it
+;;   was closed.
+;; * Shift + right focuses the selected folder.
+;; * Shift + left blurs the selected folder.
+;; * Control + right explodes the selected folder.
+;; * If you're in a text console and  the bindings above don't work for you, try
+;;   using Escape instead of Shift (not combined -- first press escape, then the
+;;   arrow key) and C-c instead of Control.
+
+;; 3. With alphanumeric keys:
+
+;; * C-t Space (alternatively C-t Return) - switch between modes.
+;; * n, p - move cursor up/down.
+;; * Space, Return - open closed folder / browse already open folder.
+;; * Backspace - close open folder / jump to parent of already closed folder.
+;; * C-c f - focus the selected folder.
+;; * C-c b - blur the selected folder.
+;; * C-Return, C-c Return - explode the selected folder.
+;; * f - browse the selected folder in normal mode.
+;; * v, o - view the selected folder in the passive pane, in whatever mode it
+;;   happens to be at that moment.
+;; * C-c C-c - dismiss tree view and return to normal mode.
+
+;; * C-q is simply another binding for the usual pane synchronization (C-c C-z)
+;;   already present in Sunrise Commander Core, which in tree mode performs the
+;;   "Quick View" operation required by the OFM standard.
+
+;; * C-u C-s, C-u C-r - "sticky" interactive search. This works like the regular
+;; isearch, but when the current search is finished with a Return, the folder
+;; the cursor ends on is automatically opened and a new (forward) Isearch
+;; starts, so one can continue searching among the children of that folder. This
+;; allows for extremely fast navigation across lengthy paths of directories with
+;; just a few keystrokes. To terminate a sticky search, press C-g or (once
+;; again) Return. Sticky searches can be made default in tree panes by
+;; customizing the variable `sr-tree-isearch-always-sticky' - when set, prefix
+;; the command to start a regular (non-sticky) interactive search.
+
+;; * When AVFS support is active, press "#" to toggle the display of compressed
+;; archives in Tree View panes.
+
+;; Additionally, most of the original keybindings from Sunrise apply (wherever
+;; it makes sense, of course). For instance switching/transposing/laying out
+;; panes (Tab, M-Tab, C-c, C-s), showing / hiding hidden directories (C-o),
+;; jumping to parent/arbitrary directory (J, j) and many more, including the
+;; following file manipulation commands: copy (C), clone (K), rename (R), delete
+;; (D), symlink (S), relative symlink (Y), create a new directory (+) and show
+;; file size (y).
+
+;; All directory commands from the Sunrise Buttons extension are also supported.
+;; It is required to upgrade the Buttons extension to version 1R293 or better to
+;; make this integration work correctly, though.
+
+;; Hey, and don't forget to enjoy ;-)
 
 ;;; Code:
 
 (require 'sunrise-commander)
-(eval-when-compile (require 'cl)
-                   (require 'desktop))
+(require 'tree-widget)
+(require 'hl-line)
+(eval-when-compile (require 'desktop))
 
-(defcustom sr-tabs-follow-panes t
-  "Whether tabs should be swapped too when transposing the Sunrise panes."
-  :group 'sunrise
-  :type 'boolean)
-
-(defcustom sr-tabs-max-tabsize 10
-  "Maximum width of a Sunrise Commander tab."
+(defcustom sr-tree-explosion-ratio 3
+  "Maximum number of directory levels to recursively open at a time.
+Used by the command `sr-tree-explode-branch'."
   :group 'sunrise
   :type 'integer)
 
-(defface sr-tabs-active-face
-  '((((type tty) (class color) (min-colors 88))
-     :background "white")
-    (((type tty) (class color) (min-colors 8))
-     :background "green" :foreground "yellow" :bold t)
-    (((type tty) (class mono)) :inverse-video t)
-    (t
-     :inherit variable-pitch :bold t :background "white" :height 0.9))
-  "Face of the currently selected tab in any of the Sunrise panes."
-  :group 'sunrise)
+(defcustom sr-tree-isearch-always-sticky nil
+  "Whether interactive searches are always sticky in tree panes."
+  :group 'sunrise
+  :type 'boolean)
 
-(defface sr-tabs-inactive-face
-  '((((type tty) (class color) (min-colors 88))
-     :background "color-84" :foreground "white")
-    (((type tty) (class color) (min-colors 8))
-     :background "white" :foreground "cyan")
-    (t
-     :inherit variable-pitch :background "gray95" :height 0.9))
-  "Face of all non-selected tabs in both Sunrise panes."
-  :group 'sunrise)
+(defcustom sr-tree-avfs-handlers-alist '(("\\.od[fgpst]$" . "#uzip/")
+                                         ("\\.oxt$"       . "#uzip/")
+                                         ("\\.sx[dmicw]$" . "#uzip/"))
+  "List of AVFS handlers to manage specific file extensions in Tree View mode."
+  :group 'sunrise
+  :type 'alist)
 
-(defface sr-tabs-separator-face
-  '((t (:height 0.3)))
-  "Face of the string used to separate the Sunrise tabs from one another."
-  :group 'sunrise)
+(defvar sr-tree-root nil
+  "Root widget of the current tree view.")
 
-(defconst sr-tabs-sep #(" " 0 1 (face sr-tabs-separator-face))
-  "Sunrise Tabs separator character.")
+(defvar sr-tree-open-paths nil
+  "List of paths to all the directories open in the current tree view.")
 
-(defconst sr-tabs-ligature #(" ║" 0 1 (face sr-tabs-separator-face))
-  "Sunrise Tabs line separator string.")
+(defvar sr-tree-avfs-seen nil
+  "List of paths to big compressed archives visited through AVFS.")
 
-(defconst sr-tabs-max-cache-length 30
-  "Max number of tab labels cached for reuse.")
+(defvar sr-tree-cursor nil
+  ;; FIXME better docstring -- what about LABEL?
+  "Cons cell of the from (LABEL . FILEPATH).
+FILEPATH is the path to the selected directory in the current
+tree view.")
 
-(defvar sr-tabs '((left) (right)))
-(defvar sr-tabs-labels-cache '((left) (right)))
-(defvar sr-tabs-line-cache '((left) (right)))
-(defvar sr-tabs-mode nil)
-(defvar sr-tabs-on nil)
+(defvar sr-tree-mode-map (make-sparse-keymap)
+  "Keymap for the Sunrise Commander Tree View.")
+
+(defvar sr-buttons-command-adapter nil
+  "Compiler pacifier.
+See `sr-buttons-command-adapter' in sunrise-x-buttons.el.")
+
+(defvar sr-tree-omit-archives t "")
+
+(define-widget 'sr-tree-dir-widget 'tree-widget
+  "Directory Tree widget."
+  :dynargs  'sr-tree-expand-dir
+  :has-children   t)
 
 ;;; ============================================================================
-;;; Core functions:
+;;; GUI Management functions:
 
-(defun sr-tabs-add ()
-  "Assign the current buffer to exactly one tab in the active pane.
-If a tab for the current buffer already exists, invoke `sr-tabs-rename'."
+(defun sr-tree-focus-widget ()
+  "Move point to the first button widget in the current line (if any)."
   (interactive)
-  (let ((tab-name (buffer-name))
-        (tab-set (assq sr-selected-window sr-tabs)))
-      (if (member tab-name (cdr tab-set))
-          (call-interactively 'sr-tabs-rename)
-        (setcdr tab-set (cons tab-name (cdr tab-set)))))
-  (sr-tabs-refresh))
+  (beginning-of-line)
+  (unless (get-char-property (point) 'button)
+    (while (not (or (eolp) (get-char-property (point) 'button)))
+      (forward-char))))
 
-(defun sr-tabs-remove (&optional tab-buffer side)
-  "Remove the tab to which TAB-BUFFER is assigned in the active pane.
-If TAB-BUFFER is nil, removes the tab to which the current buffer
-is assigned, if any."
+(defun sr-tree-get-button ()
+  "Return the first button widget in the current line (if any)."
+  (sr-tree-focus-widget)
+  (get-char-property (point) 'button))
+
+(defun sr-tree-get-branch ()
+  "Return the first tree widget in the current line (if any)."
+  (widget-get (sr-tree-get-button) :parent))
+
+(defun sr-tree-get-cursor ()
+  "Return a cursor as documented in `sr-tree-cursor'."
+  (let* ((cursor-node (sr-tree-get-button))
+         (cursor-tree (if cursor-node (widget-get cursor-node :parent)))
+         (cursor-node (widget-get cursor-node :node))
+         (cursor-tag (widget-get cursor-node :tag))
+         (cursor-path (sr-tree-path-line (widget-get cursor-tree :path))))
+    (and cursor-tag cursor-path (cons cursor-tag cursor-path))))
+
+(defun sr-tree-update-cursor ()
+  "Update the cursor (cf. `sr-tree-cursor').
+Also updates other graphical elements of the interface, depending
+on the position of the point."
+  (setq sr-tree-cursor (sr-tree-get-cursor))
+  (when sr-tree-cursor
+    (setq sr-this-directory (cdr sr-tree-cursor))
+    (sr-tree-highlight)
+    (setq default-directory (file-name-as-directory (cdr sr-tree-cursor)))
+    (when (and (featurep 'sunrise-x-modeline)
+               (not (eq mode-line-format (default-value 'mode-line-format))))
+      (if (fboundp 'sr-modeline-refresh)
+          (sr-modeline-refresh))
+      (force-mode-line-update))
+    (if (and sr-synchronized
+             (not (eq sr-left-buffer sr-right-buffer))
+             (eq (selected-window) (sr-this 'window)))
+        (sr-tree-advertised-find-file-other))))
+
+(defun sr-tree-refresh-dir (widget &rest ignore)
+  "Refresh WIDGET parent (or own) tree children. IGNORE other arguments."
+  (let ((tree (if (tree-widget-p widget)
+                  widget
+                (widget-get widget :parent))))
+    (widget-put tree :args nil) ;; Clear the tree children cache.
+    (widget-value-set tree (widget-value tree))) ;; Redraw the tree node.
+  (if (fboundp 'sr-tabs-refresh)
+      (sr-tabs-refresh))
+  (sr-highlight))
+
+(defun sr-tree-refresh-branch (&optional prefix)
+  "Revert the currently selected branch in the directory tree.
+If no branch is selected, then select the root node and revert
+the whole tree. If PREFIX is non-nil, close all open
+subdirectories in the tree first."
   (interactive "P")
-  (let* ((side (or side sr-selected-window))
-         (tab-name (if (integerp tab-buffer)
-                       (nth tab-buffer (assoc side sr-tabs))
-                     (buffer-name tab-buffer)))
-         (tab-buffer (and tab-name (get-buffer tab-name)))
-         (tab-set (assq side sr-tabs)))
-    (setcdr tab-set (delete tab-name (cdr tab-set)))
-    (unless (or (null tab-buffer)
-                (eq tab-buffer (current-buffer))
-                (eq tab-buffer (sr-other 'buffer)))
-      (kill-buffer (get-buffer tab-name))))
-  (sr-tabs-refresh))
+  (if prefix
+      (setq sr-tree-open-paths nil))
+  (let ((button (sr-tree-get-button)))
+    (unless button
+      (sr-tree-beginning-of-buffer)
+      (setq button (sr-tree-get-button)))
+    (sr-tree-refresh-dir button)))
 
-(defun sr-tabs-clean ()
-  "Remove all tabs from the current pane."
+(defun sr-tree-revert-buffer (&optional ignore-auto noconfirm)
+  "Revert the current Sunrise Tree View buffer."
   (interactive)
-  (let ((tab))
-    (while (setq tab (nth 1 (assoc sr-selected-window sr-tabs)))
-      (sr-tabs-remove 1))))
+  (sr-tree-refresh-branch))
 
-(defun sr-tabs-kill (&optional name side)
-  "Remove the tab named NAME from the active pane and kill its buffer.
-The buffer is not killed when currently visible or assigned to
-another tab."
+(defun sr-tree-widget (e &optional open)
+  "Return a widget to display directory E.
+With a non-nil optional argument OPEN, display the widget as open
+initially."
+  (let ((is-open (or open (member e sr-tree-open-paths)))
+        (tag (sr-chop ?/ e)))
+    (setq tag (file-name-as-directory (file-name-nondirectory tag)))
+    `(sr-tree-dir-widget
+      :open ,is-open
+      :node (push-button
+             :tag ,tag
+             :format "%[%t%]\n"
+             :notify sr-tree-refresh-dir)
+      :path ,e)))
+
+(defun sr-tree-path-line (&optional path)
+  "Transform PATH into a suitable path line for displaying at the pane top."
+  (sr-chop ?/ (expand-file-name (or path (cdr sr-tree-cursor) ""))))
+
+(defun sr-tree-highlight ()
+  "Set up the path line in the current Sunrise Tree buffer."
+  (save-excursion
+    (let ((path (or (cdr sr-tree-cursor) "-"))
+          (inhibit-read-only t))
+      (goto-char (point-min))
+      (delete-region (point) (line-end-position))
+      (widget-insert (sr-tree-path-line nil) " ")
+      (forward-line 1)
+      (delete-region (line-beginning-position) (line-end-position))
+      (widget-insert
+       (format "%s" (if sr-tree-omit-archives "" "virtual directories: ON ")))
+      (sr-highlight))))
+
+(defun sr-tree-check-virtual-size (entry)
+  "Allow user to abort before trying to access a large archive through AVFS."
+  ;; TODO: use function abort-if-file-too-large instead:
+  (if (and sr-avfs-root
+           (sr-overlapping-paths-p sr-avfs-root entry)
+           (string-match "^\\([^#]+\\)#" entry))
+      (let* ((root (match-string 1 entry))
+             (root (substring root (length sr-avfs-root)))
+             (size (nth 7 (file-attributes root))))
+        (when (and large-file-warning-threshold
+                   (not (member root sr-tree-avfs-seen))
+                   (> size large-file-warning-threshold))
+          (or (y-or-n-p
+               (format "File %s is large (%dMB), really open? "
+                       (file-name-nondirectory root) (/ size 1048576)))
+              (error "Aborted"))
+          (sr-tree-avfs-register-seen root)))))
+
+(defun sr-tree-list (dir)
+  "Return the list of subdirectories in DIR."
+  (let ((entries (directory-files dir 'full)) dirs entry rel-entry)
+    (while entries
+      (setq entry (car entries)
+            rel-entry (file-relative-name entry (concat entry "/.."))
+            entries (cdr entries))
+
+      (cond ((eq ?. (string-to-char (substring entry -1)))
+             (ignore))
+
+            ((and dired-omit-mode (eq ?. (string-to-char rel-entry)))
+             (ignore))
+
+            ((file-directory-p entry)
+             (setq dirs (cons entry dirs)))
+
+            ((and (not sr-tree-omit-archives) (sr-avfs-directory-p entry))
+             (setq dirs (cons (sr-tree-avfs-dir entry) dirs)))
+
+            (t (ignore))))
+    (nreverse dirs)))
+
+(defun sr-tree-avfs-dir (filename)
+  "Return the virtual path for accessing FILENAME through AVFS in Tree View panes.
+Returns nil if AVFS cannot manage this kind of file."
+  (let* ((handler
+          (or (assoc-default filename sr-tree-avfs-handlers-alist 'string-match)
+              (assoc-default filename sr-avfs-handlers-alist 'string-match)))
+          (vdir (concat filename handler)))
+    (unless (sr-overlapping-paths-p sr-avfs-root vdir)
+      (setq vdir (concat sr-avfs-root vdir)))
+    (sr-tree-path-line vdir)))
+
+(defun sr-tree-expand-dir (tree)
+  "Return TREE widget children. Reuse :args cache if it exists."
+  (or (widget-get tree :args)
+      (let ((dir (widget-get tree :path)))
+        (message "Reading directory '%s'..." dir)
+        (condition-case err
+            (prog1
+                (mapcar 'sr-tree-widget (sr-tree-list dir))
+              (message "Reading directory '%s'...done" dir))
+          (error
+           (widget-put tree :open nil)
+           (message "%s" (error-message-string err))
+           nil)))))
+
+(defun sr-tree-register-path (widget)
+  "Add path from WIDGET to the current Sunrise Tree buffer's list of open paths."
+  (let ((path (sr-tree-path-line (widget-get widget :path))))
+    (setq sr-tree-open-paths
+          (if (widget-get widget :open)
+              (cons path sr-tree-open-paths)
+            (delete path sr-tree-open-paths)))))
+(add-hook 'tree-widget-after-toggle-functions 'sr-tree-register-path)
+
+(defun sr-tree-avfs-register-seen (path)
+  "Add the PATH to the list of (big) archives visited through AVFS."
+  (setq sr-tree-avfs-seen (cons path (delete path sr-tree-avfs-seen))))
+
+(defun sr-tree-build (root)
+  "Delete the current tree widget and build a new one at ROOT."
+  (interactive "DSunrise Tree Root: ")
+  (setq default-directory
+        (file-name-as-directory (setq root (expand-file-name root))))
+  (let ((inhibit-read-only t)
+        (all (overlay-lists)))
+    (erase-buffer)
+    (mapc 'delete-overlay (car all))
+    (mapc 'delete-overlay (cdr all))
+    (tree-widget-set-theme "folder")
+    (widget-insert (format "%s\n\n" (sr-tree-path-line root)))
+    (set
+     (make-local-variable 'sr-tree-root)
+     (widget-create (sr-tree-widget root t)))
+    (widget-setup)
+    (if sr-tree-cursor
+        (sr-tree-search-cursor)
+      (sr-tree-beginning-of-buffer))
+    (sr-tree-refresh-branch)
+    (sr-tree-register-path sr-tree-root)))
+
+(defun sr-tree-build-new (root)
+  "Build a new Tree View pane in a new buffer at ROOT."
+  (interactive "DSunrise Tree Root: ")
+  (let ((default-directory root))
+    (sr-save-aspect
+     (sr-alternate-buffer
+      (switch-to-buffer (generate-new-buffer "Sunrise Tree")))
+     (sr-tree-mode))))
+
+(defun sr-tree-goto-dir (root &optional keep-state)
+  "`sr-goto-dir' replacement for buffers in Sunrise Tree mode.
+See also the variable `sr-goto-dir-function'."
   (interactive)
-  (let ((to-kill (or (and name (get-buffer name)) (current-buffer))) (stack)
-        (side (or side sr-selected-window)))
-    (sr-tabs-remove to-kill side)
-    (if (and (not (memq to-kill (list sr-left-buffer sr-right-buffer)))
-             (not (member to-kill (apply 'append (mapcar 'cdr sr-tabs)))))
-        (kill-buffer to-kill))
-    (sr-tabs-refresh)))
+  (setq root (expand-file-name root))
+  (let ((cursor sr-tree-cursor)
+        (open-paths sr-tree-open-paths))
+    (sr-tree-build-new root)
+    (when keep-state
+        (setq sr-tree-cursor cursor
+              sr-tree-open-paths (mapcar 'identity open-paths))))
+  (sr-keep-buffer)
+  (sr-history-push root))
 
-(defun sr-tabs-next (&optional n)
-  "Move focus to the next tab (left to right) in the active pane.
-With a prefix argument N, moves focus to the tab N places ahead,
-or to the last one if there are fewer tabs than requested."
+;; This forces deactivation of Tree View mode before focusing a regular file:
+(defadvice sr-focus-filename
+  (around sr-tree-advice-sr-focus-filename (filename))
+  (if (eq major-mode 'sr-tree-mode)
+      (if (file-directory-p filename)
+          (let* ((path (directory-file-name (expand-file-name filename)))
+                 (label (file-name-as-directory (file-name-nondirectory path))))
+            (sr-tree-search-cursor (cons label path)))
+        (sr-tree-dismiss)
+        ad-do-it)
+    ad-do-it))
+(ad-activate 'sr-focus-filename)
+
+;;; ============================================================================
+;;; GUI interaction functions:
+
+(defun sr-tree-next-line ()
+  "Move point to the next line in the current pane."
+  (interactive)
+  (forward-line)
+  (sr-tree-update-cursor))
+
+(defun sr-tree-previous-line ()
+  "Move point to the previous line in the current pane."
+  (interactive)
+  (forward-line -1)
+  (sr-tree-update-cursor))
+
+(defun sr-tree-scroll-down (&optional arg)
+  "Scroll down the current pane without moving the point (if possible)."
+  (interactive)
+  (scroll-down arg)
+  (sr-tree-update-cursor))
+
+(defun sr-tree-scroll-up (&optional arg)
+  "Scroll up the current pane without moving the point (if possible)."
+  (interactive)
+  (scroll-up arg)
+  (sr-tree-update-cursor))
+
+(defun sr-tree-beginning-of-buffer ()
+  "Move cursor to the top of the current Sunrise Tree View pane."
+  (interactive)
+  (goto-char (widget-get sr-tree-root :from))
+  (sr-tree-update-cursor))
+
+(defun sr-tree-end-of-buffer ()
+  "Move cursor to the bottom of the current Sunrise Tree View pane."
+  (interactive)
+  (forward-sentence)
+  (sr-tree-update-cursor))
+
+(defun sr-tree-toggle-branch (&optional action)
+  "Open/close (graphically) the node selected in the current Sunrise Tree pane.
+Optional ACTION is one of the symbols `open' or `close' and
+allows to specify whether the node has to be open only if closed,
+or closed only if open."
+  (interactive)
+  (let* ((branch (sr-tree-get-branch))
+         (is-open (widget-get branch :open))
+         (path))
+    (unless is-open
+      (setq path (widget-get branch :path))
+      (sr-tree-check-virtual-size path)
+      t)
+    (when (or (and is-open (eq action 'close))
+              (and (not is-open) (eq action 'open))
+              (null action))
+      (sr-tree-focus-widget)
+      (widget-button-press (point))
+      t)))
+
+(defun sr-tree-open-branch ()
+  "Unfold (graphically) the directory selected in the current Sunrise Tree pane.
+Displays the subdirectories directly under it."
+  (interactive)
+  (if (widget-get (sr-tree-get-branch) :open)
+      (sr-tree-advertised-find-file)
+    (sr-tree-toggle-branch 'open)))
+
+(defun sr-tree-close-branch ()
+  "Fold the selected directory.
+Hides all subdirectories being displayed under it or any of its
+subdirectories."
+  (interactive)
+  (sr-tree-toggle-branch 'close))
+
+(defun sr-tree-collapse-branch ()
+  "If the current folder is open, close it.
+If it is closed, move to its parent directory, building a new
+tree if necessary."
+  (interactive)
+  (let ((branch (sr-tree-get-branch)))
+    (if (widget-get branch :open)
+        (sr-tree-close-branch)
+      (sr-tree-prev-subdir)
+      (unless (eq (sr-tree-get-branch) sr-tree-root)
+        (sr-tree-close-branch)))))
+
+(defun sr-tree-explode-branch (&optional level branch)
+  "Open the selected directory and all its open subdirectories recursively.
+The number of levels is determined by the variable
+`sr-tree-explosion-ratio'. LEVEL and BRANCH optional arguments
+are used only internally to control recursion."
+  (interactive)
+  (unless (or level branch)
+    (recenter (truncate (/ (window-body-height) 10.0))))
+  (let ((level (or level sr-tree-explosion-ratio))
+        (branch (or branch (sr-tree-get-branch)))
+        args)
+    (when (and branch (< 0 level))
+      (unless (widget-get branch :open)
+        (setq level (1- level))
+        (funcall #'tree-widget-action branch))
+      (dolist (child (cdr (widget-get branch :children)))
+        (sr-tree-explode-branch level child)))))
+
+(defun sr-tree-search-cursor (&optional init-cursor recursing)
+  "Try to move the point to the node represented by INIT-CURSOR.
+If it is nil, use the value of `sr-tree-cursor' instead. On
+failure, put the point at the top of the pane."
+  (let ((cursor (or init-cursor sr-tree-cursor)) new-cursor)
+    (if (null cursor)
+        (sr-tree-beginning-of-buffer)
+      (unless recursing (goto-char (point-min)))
+      (when (search-forward (car cursor) (point-max) t)
+        (setq new-cursor (sr-tree-get-cursor))
+        (if (and new-cursor (not (sr-equal-dirs (cdr cursor) (cdr new-cursor))))
+            (progn
+              (sr-tree-next-line)
+              (sr-tree-search-cursor cursor t))
+          (sr-tree-update-cursor))))))
+
+(defun sr-tree-isearch-prompt ()
+  "Display the message that appears when a sticky search is launched."
+  (message (propertize "Sunrise Tree sticky I-search (C-g to exit): "
+                       'face 'minibuffer-prompt)))
+
+(defvar sr-tree-isearch-mode-commands
+  '(([S-return]  . 'sr-tree-focus-branch)
+    ([S-right]   . 'sr-tree-focus-branch)
+    ([?\e right] . 'sr-tree-focus-branch)
+    ("\C-cf"     . 'sr-tree-focus-branch)
+
+    ([M-return]  . 'sr-tree-blur-branch)
+    ([S-left]    . 'sr-tree-blur-branch)
+    ([?\e left]  . 'sr-tree-blur-branch)
+    ("\C-cb"     . 'sr-tree-blur-branch)
+
+    ([C-return]  . 'sr-tree-explode-branch)
+    ([C-right]   . 'sr-tree-explode-branch)
+    ([3 right]   . 'sr-tree-explode-branch)
+    ("\C-c\C-m"  . 'sr-tree-explode-branch)
+
+    ) "Keybindings installed in `isearch-mode' during a sticky search.")
+
+(defsubst sr-tree-isearch-command (binding)
+  `(lambda () (interactive) (sr-tree-post-isearch ,(cdr binding))))
+
+(defun sr-tree-isearch-setup ()
+  "Set up Isearch to perform sticky searches in Sunrise Tree panes.
+Used from `isearch-mode-hook'."
+  (add-hook 'isearch-mode-end-hook 'sr-tree-post-isearch)
+  (set (make-local-variable 'search-nonincremental-instead) nil)
+  (define-key isearch-mode-map "\C-c" (make-sparse-keymap))
+  (mapc (lambda (binding)
+          (define-key
+            isearch-mode-map
+            (car binding) (sr-tree-isearch-command binding)))
+        sr-tree-isearch-mode-commands)
+  (run-hooks 'sr-refresh-hook))
+
+(defun sr-tree-isearch-done ()
+  "Clean up the Isearch hook and keymap after a sticky search."
+  (remove-hook 'isearch-mode-end-hook 'sr-tree-post-isearch)
+  (kill-local-variable 'search-nonincremental-instead)
+  (mapc (lambda (binding)
+          (define-key isearch-mode-map (car binding) nil))
+        sr-tree-isearch-mode-commands)
+  (define-key isearch-mode-map "\C-c" 'isearch-other-control-char)
+  (isearch-done)
+  (setq isearch-mode-end-hook-quit t))
+
+(defun sr-tree-isearch-forward (&optional prefix)
+  "Prefixable version of `isearch-forward' used in Sunrise Tree mode.
+With PREFIX, starts a new `isearch-forward' immediately after the
+previous one exits as long as C-g is not pressed."
+  (interactive "P")
+  (if (or (and prefix (not sr-tree-isearch-always-sticky))
+          (and (not prefix) sr-tree-isearch-always-sticky))
+      (sr-tree-sticky-isearch-forward)
+    (isearch-forward nil t)))
+
+(defun sr-tree-sticky-isearch-forward ()
+  "Chain Isearch operations to allow fast navigation through long file paths.
+Press C-g to abort, or Return twice on a folder to dismiss Tree
+View and visit that folder."
+  (interactive)
+  (sr-tree-isearch-setup)
+  (isearch-forward nil t)
+  (run-with-idle-timer 0.01 nil 'sr-tree-isearch-prompt))
+
+(defun sr-tree-isearch-backward (&optional prefix)
+  "Prefixable version of `isearch-backward' used in Sunrise Tree mode.
+With PREFIX, starts a new `isearch-forward' immediately after the
+previous search exits until C-g is pressed."
+  (interactive "P")
+  (if (or (and prefix (not sr-tree-isearch-always-sticky))
+          (and (not prefix) sr-tree-isearch-always-sticky))
+      (sr-tree-isearch-setup))
+  (isearch-backward nil t)
+  (run-with-idle-timer 0.01 nil 'sr-tree-isearch-prompt))
+
+(defun sr-tree-sticky-isearch-backward ()
+  "Chain Isearch operations to allow fast navigation through long file paths.
+Press C-g to abort, or Return twice on a folder to dismiss Tree
+View and visit that folder."
+  (interactive)
+  (sr-tree-isearch-setup)
+  (isearch-backward nil t))
+
+(defun sr-tree-post-isearch (&optional command)
+  "Installed in `isearch-mode-end-hook' during sticky Isearch operations."
+  (sr-tree-update-cursor)
+  (cond (command (sr-tree-isearch-command-loop command))
+        (isearch-mode-end-hook-quit (sr-tree-isearch-done))
+        ((equal "" isearch-string) (sr-tree-open-branch))
+        ((and (sr-tree-toggle-branch 'open)
+              (widget-get (sr-tree-get-branch) :args))
+         (recenter (truncate (/ (window-body-height) 10.0))))
+        (t (ignore)))
+  (unless isearch-mode-end-hook-quit
+    (sr-tree-sticky-isearch-forward)))
+
+(defun sr-tree-isearch-command-loop (command)
+  (funcall command)
+  (let* ((msg "Sunrise Tree: sticky Isearch (C-g to exit)")
+         (key (read-key-sequence msg))
+         (next-command (lookup-key sr-tree-mode-map key)))
+    (while (memq next-command '(sr-tree-explode-branch
+                                sr-tree-focus-branch
+                                sr-tree-blur-branch))
+      (funcall next-command)
+      (setq key (read-key-sequence msg)
+            next-command (lookup-key sr-tree-mode-map key)))
+    (isearch-unread-key-sequence (listify-key-sequence key))
+    (setq isearch-mode-end-hook-quit nil)))
+
+(defun sr-tree-focus-branch ()
+  "Replace the current tree with a new one rooted in the selected directory."
+  (interactive)
+  (unless (eq (sr-tree-get-branch) sr-tree-root)
+    (sr-tree-goto-dir (cdr sr-tree-cursor) t)
+    (if sr-tree-open-paths (revert-buffer))))
+
+(defun sr-tree-blur-branch ()
+  "Change root of the current tree to its parent, keeping the cursor position."
+  (interactive)
+  (let ((cursor sr-tree-cursor))
+    (unless (eq (sr-tree-get-branch) sr-tree-root)
+      (sr-tree-beginning-of-buffer))
+    (sr-tree-prev-subdir t)
+    (revert-buffer)
+    (sr-tree-search-cursor cursor))
+  (recenter))
+
+(defun sr-tree-omit-mode (&optional force)
+  "Toggle `dired-omit-mode' in the current Sunrise Tree View pane."
+  (interactive)
+  (setq dired-omit-mode (or force (not dired-omit-mode)))
+  (revert-buffer))
+
+(defun sr-tree-avfs-toggle ()
+  "Toggle display of compressed archives in Sunrise Tree View panes."
+  (interactive)
+  (if sr-avfs-root
+      (let ((cursor sr-tree-cursor))
+        (setq sr-tree-omit-archives (not sr-tree-omit-archives))
+        (sr-tree-refresh-dir sr-tree-root)
+        (sr-tree-search-cursor cursor)
+        (recenter (truncate (/ (window-body-height) 10.0))))))
+
+(defun sr-tree-handle-mouse-event (e handler)
+  "Handle mouse event E by updating point and calling HANDLER.
+Return t if the event was successfully handled."
+  (when (and e (eq major-mode 'sr-tree-mode))
+    (mouse-set-point e)
+    (when (sr-tree-get-button)
+      (sr-tree-update-cursor)
+      (funcall handler)
+      t)))
+
+(defun sr-tree-mouse-toggle-branch (e)
+  "Open/close (graphically) the folder clicked with the mouse.
+Also handle the case when the click occurs on the path line."
+  (interactive "e")
+  (or (sr-tree-handle-mouse-event e 'sr-tree-toggle-branch)
+      (sr-mouse-advertised-find-file e)))
+
+(defun sr-tree-mouse-focus-branch (e)
+  "Version of `sr-tree-focus-branch' (which see) for the mouse."
+  (interactive "e")
+  (sr-tree-handle-mouse-event e 'sr-tree-focus-branch))
+
+(defun sr-tree-mouse-blur-branch (e)
+  "Version of `sr-tree-blur-branch' (which see) for the mouse."
+  (interactive "e")
+  (or (sr-tree-handle-mouse-event e 'sr-tree-blur-branch)
+      (sr-tree-blur-branch)))
+
+(defun sr-tree-mouse-explode-branch (e)
+  "Version of `sr-tree-explode-branch' (which see) for the mouse."
+  (interactive "e")
+  (sr-tree-handle-mouse-event e 'sr-tree-explode-branch))
+
+;;; ============================================================================
+;;; File system navigation functions:
+
+(defun sr-tree-prev-subdir (&optional keep-state)
+  "Move to the parent of currently selected directory in Tree View mode.
+Resets the list of open directories unless KEEP-STATE is not
+nil."
+  (interactive)
+  (let* ((branch (sr-tree-get-branch))
+         (parent (widget-get branch :parent)))
+    (cond
+     ((tree-widget-p parent)
+      (goto-char (widget-get parent :from))
+      (sr-tree-update-cursor))
+
+     ((sr-equal-dirs default-directory "/")
+      (ignore))
+
+     ((eq branch sr-tree-root)
+      (sr-tree-register-path sr-tree-root)
+      (sr-tree-goto-dir ".." keep-state)
+      (sr-tree-beginning-of-buffer)))))
+
+(defun sr-tree-jump-up ()
+  (interactive)
+  (sr-tree-prev-subdir t)
+  (revert-buffer))
+
+(defun sr-tree-advertised-find-file ()
+  "Visit the currently selected file or directory in Sunrise Tree View mode."
+  (interactive)
+  (let ((target (cdr sr-tree-cursor))
+        (sr-goto-dir-function nil)
+        (in-search (memq 'sr-tree-post-isearch isearch-mode-end-hook)))
+    (sr-tree-check-virtual-size target)
+    (if in-search (sr-tree-isearch-done))
+    (sr-save-aspect (sr-alternate-buffer (sr-goto-dir target)))
+    (if in-search (sr-sticky-isearch))))
+
+(defun sr-tree-mouse-advertised-find-file (e)
+  "Visit a file or directory selected using the mouse in the current pane."
+  (interactive "e")
+  (sr-tree-handle-mouse-event e 'sr-tree-advertised-find-file))
+
+(defun sr-tree-advertised-find-file-other ()
+  "Visit the currently selected file or directory in the passive pane."
+  (interactive)
+  (let ((target (cdr sr-tree-cursor)) (side (sr-other)))
+    (sr-tree-check-virtual-size target)
+    (save-selected-window
+      (select-window (sr-other 'window))
+      (sr-goto-dir target)
+      (sr-display-attributes (point-min) (point-max) sr-show-file-attributes)
+      (sr-keep-buffer side)
+      (if (fboundp 'sr-tabs-refresh) (sr-tabs-refresh)))))
+
+(defun sr-tree-sync ()
+  "Toggle the synchronized navigation feature in Sunrise Tree View panes."
+  (interactive)
+  (sr-sync)
+  (sr-tree-update-cursor))
+
+;;; ============================================================================
+;;; File system manipulation functions:
+
+(defmacro sr-tree-adapt-dired-command (form)
+  "Evaluate FORM with a few Dired functions locally redefined.
+Necessary so the basic Dired file manipulation commands can work
+in Sunrise Tree View mode."
+  `(let ((ad-redefinition-action 'accept))
+     (flet
+      ((dired-get-filename (&optional localp no-error)
+                           (cdr sr-tree-cursor))
+       (dired-show-file-type (file &optional deref-symlinks)
+                             (message
+                              "%s: directory"
+                              (directory-file-name (car sr-tree-cursor)))))
+       ,form)))
+
+(defun sr-tree-do-copy ()
+  "Recursively copy all selected files and directories between panes.
+Copies files from the active to the passive pane."
+  (interactive)
+  (sr-tree-adapt-dired-command (sr-do-copy)))
+
+(defun sr-tree-do-clone ()
+  "Recursively clone all selected files and directories between panes.
+Clones files from active to the passive pane."
+  (interactive)
+  (sr-tree-adapt-dired-command (sr-do-clone)))
+
+(defun sr-tree-do-symlink ()
+  "Create symbolic links in the passive pane to selected files in the active pane."
+  (interactive)
+  (sr-tree-adapt-dired-command (sr-do-symlink)))
+
+(defun sr-tree-do-relsymlink ()
+  "Make relative symbolic links in the passive pane to selected files in the active pane."
+  (interactive)
+  (sr-tree-adapt-dired-command (sr-do-relsymlink)))
+
+(defun sr-tree-do-rename ()
+  "Recursively move all selected files and directories between panes.
+Moves files from the active pane to the passive pane."
+  (interactive)
+  (sr-tree-adapt-dired-command (sr-do-rename))
+  (unless (file-exists-p (cdr sr-tree-cursor))
+    (sr-tree-prev-subdir)
+    (sr-tree-refresh-branch)))
+
+(defun sr-tree-do-delete ()
+  "Remove the directory selected in the current Sunrise Tree View pane."
+  (interactive)
+  (sr-tree-adapt-dired-command (sr-do-delete))
+  (unless (file-exists-p (cdr sr-tree-cursor))
+    (sr-tree-prev-subdir)
+    (sr-tree-refresh-branch)))
+
+(defun sr-tree-show-files-info ()
+  "Version of `sr-show-files-info' (which see) for Sunrise Tree View panes."
+  (interactive)
+  (sr-tree-adapt-dired-command (sr-show-files-info)))
+
+(defun sr-tree-create-directory (directory)
+  "Create a new directory in Sunrise Tree View mode."
+  (interactive
+   (list (read-file-name "Create directory: "
+                         (file-name-as-directory (cdr sr-tree-cursor)))))
+  (let* ((expanded (directory-file-name (expand-file-name directory)))
+         (parent (file-name-directory expanded)))
+    (make-directory expanded t)
+    (when (sr-equal-dirs parent (cdr sr-tree-cursor))
+      (sr-tree-toggle-branch 'open)
+      (sr-tree-refresh-branch)
+      (search-forward
+       (file-name-as-directory (file-name-nondirectory expanded)) nil t)
+      (sr-tree-update-cursor))))
+
+;;;###autoload
+(define-derived-mode sr-tree-mode nil "Sunrise Tree View"
+  "Tree view for the Sunrise Commander file manager."
+  :group 'sunrise
+  (set-keymap-parent sr-tree-mode-map sr-mode-map)
+  (mapc 'make-local-variable '(sr-tree-open-paths
+                               sr-tree-cursor
+                               hl-line-sticky-flag
+                               isearch-mode-end-hook
+                               desktop-save-buffer
+                               revert-buffer-function
+                               sr-goto-dir-function
+                               sr-buttons-command-adapter))
+  (add-hook 'isearch-mode-end-hook 'sr-tree-update-cursor)
+  (setq desktop-save-buffer        'sr-tree-desktop-save-buffer
+        hl-line-sticky-flag        nil
+        revert-buffer-function     'sr-tree-revert-buffer
+        sr-goto-dir-function       'sr-tree-goto-dir
+        sr-buttons-command-adapter 'sr-tree-buttons-command-adapter)
+  (setq dired-omit-mode t)
+  (set (make-local-variable 'buffer-quit-function) 'sr-quit)
+  (hl-line-mode 1)
+  (unless sr-tree-root
+    (sr-tree-build default-directory)))
+
+;;; ============================================================================
+;;; Sunrise Core + Tabs + Mode Line integration:
+
+(defun sr-tree-view (&optional desktop-mode)
+  "Switch from Sunrise normal mode to Tree View.
+If DESKTOP-MODE is non-nil, do not kill the current
+buffer (necessary during `desktop-read')."
+  (interactive)
+  (sr-save-aspect
+   (if desktop-mode
+       (switch-to-buffer (generate-new-buffer "Sunrise Tree"))
+     (sr-alternate-buffer
+      (switch-to-buffer (generate-new-buffer "Sunrise Tree"))))
+   (sr-tree-mode))
+  (if (fboundp 'sr-modeline-setup)
+      (sr-modeline-setup))
+  (if (fboundp 'sr-tabs-engage)
+      (sr-tabs-engage))
+  (sr-force-passive-highlight))
+
+(defun sr-tree-mouse-view (e)
+  "Switch from Sunrise normal mode to Tree View using the mouse."
+  (interactive "e")
+  (sr-mouse-change-window e)
+  (sr-tree-view))
+
+(defun sr-tree-dismiss ()
+  "Switch from Tree View to normal mode."
+  (interactive)
+  (let ((target (widget-get sr-tree-root :path))
+        (sr-goto-dir-function nil))
+    (sr-save-aspect
+     (sr-alternate-buffer (sr-goto-dir target)))))
+
+(defun sr-tree-mouse-dismiss (e)
+  "Switch from Tree View to normal mode using the mouse."
+  (interactive "e")
+  (sr-mouse-change-window e)
+  (sr-tree-dismiss))
+
+;;; ============================================================================
+;;; Sunrise Buttons integration:
+
+(defvar sr-tree-button-commands
+  '((sr-do-copy               . sr-tree-do-copy)
+    (sr-do-clone              . sr-tree-do-clone)
+    (sr-do-symlink            . sr-tree-do-symlink)
+    (sr-do-relsymlink         . sr-tree-do-relsymlink)
+    (sr-do-rename             . sr-tree-do-rename)
+    (sr-do-delete             . sr-tree-do-delete)
+    (sr-goto-dir              . sr-goto-dir)
+    (sr-advertised-find-file  . sr-tree-advertised-find-file)
+    (sr-quick-view            . sr-tree-advertised-find-file-other)
+    (sr-dired-prev-subdir     . sr-tree-prev-subdir)
+    (sr-change-window         . sr-change-window)
+    (sr-synchronize-panes     . sr-synchronize-panes)
+    (sr-sync                  . sr-tree-sync)
+    (sr-beginning-of-buffer   . sr-tree-beginning-of-buffer)
+    (sr-end-of-buffer         . sr-tree-end-of-buffer)
+    (sr-term                  . sr-term)
+    (sr-describe-mode         . sr-describe-mode)
+    (sr-transpose-panes       . sr-transpose-panes)
+    (revert-buffer            . revert-buffer)
+    (sr-split-toggle          . sr-split-toggle)
+    (sr-toggle-truncate-lines . sr-toggle-truncate-lines)
+    (dired-create-directory   . sr-tree-create-directory)
+    (sr-history-prev          . sr-history-prev)
+    (sr-history-next          . sr-history-next)
+    ) "Sunrise Buttons-to-Tree commands translation table.")
+
+(defun sr-tree-buttons-command-adapter (command)
+  "Execute the given buttons command in the current Sunrise Tree View pane.
+If the command doesn't make sense in the current context, first
+switch to normal mode, then execute."
+  (let ((translation (cdr (assq command sr-tree-button-commands))))
+    (if translation
+        (call-interactively translation)
+      (sr-tree-dismiss)
+      (call-interactively command))))
+
+;;; ============================================================================
+;;; Tree Widget adapter functions:
+
+(defun sr-tree-widget-forward (arg)
+  "`widget-forward' replacement for use in `tree-widget-button-keymap'."
   (interactive "p")
-  (sr-tabs-step n))
+  (if (eq major-mode 'sr-tree-mode)
+      (sr-change-window)
+    (widget-forward arg)))
 
-(defun sr-tabs-prev (&optional n)
-  "Move focus to the previous tab (right to left) in the active pane.
-With a prefix argument N, moves focus to the tab N places behind,
-or to the first one if there are fewer tabs than requested."
-  (interactive "p")
-  (sr-tabs-step n t))
+(defun sr-tree-widget-button-press (pos &optional event)
+  "`widget-button-press' replacement for use in `tree-widget-button-keymap'."
+  (interactive "@d")
+  (if (eq major-mode 'sr-tree-mode)
+      (sr-tree-open-branch)
+    (widget-button-press pos event)))
 
-(defun sr-tabs-step (count &optional back)
-  "Move focus from the current tab to the one COUNT places ahead or behind.
-The direction depends on the value of BACK."
-  (let* ((stack (cdr (assq sr-selected-window sr-tabs)))
-         (stack (if back (reverse stack) stack))
-         (target (member (buffer-name) stack)))
-    (unless (null stack)
-      (if (or (null count) (zerop count))
-          (setq count 1))
-      (if (< 1 (length target))
-          (sr-tabs-switch-to-buffer (or (nth count target) (car (last target))))
-        (sr-tabs-switch-to-buffer (car stack))))))
-
-(defun sr-tabs-switch-to-buffer (to-buffer)
-  "Change context of the active Sunrise pane when switching buffers."
-  (let ((from-buffer (current-buffer)))
-    (unless (eq from-buffer to-buffer)
-      (switch-to-buffer to-buffer)
-      (setq sr-this-directory default-directory)
-      (set (sr-symbol sr-selected-window 'buffer) (current-buffer))
-      (set (sr-symbol sr-selected-window 'directory) default-directory)
-      (unless (eq from-buffer (sr-other 'buffer))
-        (kill-buffer from-buffer))
-      (revert-buffer)
-      (sr-history-push default-directory)))
-  (sr-tabs-refresh))
-
-(defun sr-tabs-focus (name side)
-  "Give focus to the tab with name NAME in SIDE pane."
-  (unless (eq side sr-selected-window)
-    (sr-change-window))
-  (sr-tabs-switch-to-buffer name))
-
-(defun sr-tabs-kill-and-go ()
-  "Kill the current Sunrise buffer and move to the next one.
-This kills the buffer, removes its assigned tab (if any) and
-moves to the next buffer tabbed in the active pane, unless there
-are no more tabbed buffers to fall back to, in which case just
-removes the tab."
-  (interactive)
-  (let ((to-kill (current-buffer))
-        (stack (cdr (assq sr-selected-window sr-tabs))))
-    (if (null stack)
-        (sr-quit)
-      (sr-tabs-kill)
-      (setq stack (cdr stack))
-      (sr-tabs-next)
-      (unless (or (null stack)
-                  (eq to-kill (current-buffer))
-                  (eq to-kill (sr-other 'buffer)))
-        (kill-buffer to-kill)))))
-
-(defun sr-tabs-rename (&optional new-name)
-  (interactive "sRename current tab to: ")
-  (let* ((key (buffer-name))
-         (cache (assq sr-selected-window sr-tabs-labels-cache))
-         (label (cadr cache)))
-    (if label
-        (sr-tabs-redefine-label key new-name))))
-
-(defun sr-tabs-transpose ()
-  "Swap the sets of tabs from one pane to the other."
-  (interactive)
-  (flet ((flip (side) (setcar side (cdr (assq (car side) sr-side-lookup)))))
-    (dolist (registry (list sr-tabs sr-tabs-labels-cache))
-      (mapc 'flip registry)))
-  (sr-in-other (sr-tabs-refresh))
-  (sr-tabs-refresh))
-
-(defadvice sr-transpose-panes (after sr-tabs-advice-sr-transpose-panes ())
-  "Synchronize the tabs with the panes if so required (see the variable
-`sr-tabs-follow-panes'). Activated in the function `sr-tabs-engage'."
-  (if sr-tabs-follow-panes (sr-tabs-transpose)))
+(defun sr-tree-widget-button-click (event)
+  "`widget-button-click' replacement for use in `tree-widget-button-keymap'."
+  (interactive "e")
+  (unless (eq major-mode 'sr-tree-mode)
+    (tree-widget-button-click event)))
 
 ;;; ============================================================================
-;;; Graphical interface:
+;;; Sunrise Tree View keybindings:
 
-(defun sr-tabs-focus-cmd (name side)
-  "Return a function to give focus to the named NAME in the SIDE pane."
-  (let ((selector (if (eq side (caar sr-tabs)) #'caar #'caadr)))
-    `(lambda ()
-       (interactive)
-       (sr-tabs-focus ,name (funcall ',selector sr-tabs)))))
+(define-key sr-mode-map "\C-t "             'sr-tree-view)
+(define-key sr-mode-map "\C-t\C-m"          'sr-tree-view)
+(define-key sr-mode-map [(shift meta down)] 'sr-tree-view)
+(define-key sr-mode-map [?\e down]          'sr-tree-view)
 
-(defun sr-tabs-rename-cmd (name)
-  "Return a function to rename the tab named NAME in both panes."
-  `(lambda (&optional new-name)
-     (interactive "sRename tab to: ")
-     (sr-tabs-redefine-label ,name new-name)))
+(define-key sr-tree-mode-map "\C-m"     'sr-tree-open-branch)
+(define-key sr-tree-mode-map " "        'sr-tree-toggle-branch)
+(define-key sr-tree-mode-map "\C-o"     'sr-tree-omit-mode)
+(define-key sr-tree-mode-map "n"        'sr-tree-next-line)
+(define-key sr-tree-mode-map "p"        'sr-tree-previous-line)
+(define-key sr-tree-mode-map "\t"       'sr-change-window)
+(define-key sr-tree-mode-map "g"        'sr-tree-refresh-branch)
+(define-key sr-tree-mode-map "J"        'sr-tree-jump-up)
+(define-key sr-tree-mode-map "j"        'sr-tree-build-new)
+(define-key sr-tree-mode-map "f"        'sr-tree-advertised-find-file)
+(define-key sr-tree-mode-map "v"        'sr-tree-advertised-find-file-other)
+(define-key sr-tree-mode-map "o"        'sr-tree-advertised-find-file-other)
+(define-key sr-tree-mode-map "\M-a"     'sr-tree-beginning-of-buffer)
+(define-key sr-tree-mode-map "\M-e"     'sr-tree-end-of-buffer)
+(define-key sr-tree-mode-map "\C-s"     'sr-tree-isearch-forward)
+(define-key sr-tree-mode-map "\C-cs"    'sr-tree-sticky-isearch-forward)
+(define-key sr-tree-mode-map "\C-r"     'sr-tree-isearch-backward)
+(define-key sr-tree-mode-map "\C-cr"    'sr-tree-sticky-isearch-backward)
+(define-key sr-tree-mode-map "\C-c\C-c" 'sr-tree-dismiss)
+(define-key sr-tree-mode-map "\C-cf"    'sr-tree-focus-branch)
+(define-key sr-tree-mode-map "\C-cb"    'sr-tree-blur-branch)
+(define-key sr-tree-mode-map "\C-c\C-m" 'sr-tree-explode-branch)
+(define-key sr-tree-mode-map "\C-t "    'sr-tree-dismiss)
+(define-key sr-tree-mode-map "\C-t\C-m" 'sr-tree-dismiss)
 
-(defun sr-tabs-kill-cmd (name side)
-  "Return a function to delete the tab named NAME in the SIDE pane."
-  (let ((selector (if (eq side (caar sr-tabs)) #'caar #'caadr)))
-    `(lambda ()
-       (interactive)
-       (if (eq sr-selected-window (funcall ',selector sr-tabs))
-           (sr-tabs-kill ,name)
-         (sr-in-other
-          (sr-tabs-kill ,name))))))
+(define-key sr-tree-mode-map "#" 'sr-tree-avfs-toggle)
 
-(defsubst sr-tabs-propertize-tag (string face keymap)
-  "Propertize STRING with FACE and KEYMAP so it can be used as a tab tag."
-  (propertize string
-              'face face
-              'help-echo "mouse-1: select tab\n\mouse-2: rename tab\n\mouse-3: kill tab"
-              'local-map keymap))
+(define-key sr-tree-mode-map [up]   'sr-tree-previous-line)
+(define-key sr-tree-mode-map [down] 'sr-tree-next-line)
 
-(defun sr-tabs-make-tag (name as-active &optional tag)
-  "Return a propertized string for decorating a tab named NAME.
-AS-ACTIVE determines whether to propertize it as an active or a
-passive tab (nil = passive, t = active). The optional argument
-TAG allows to provide a pretty name to label the tab."
-  (let ((tag (or tag name))
-        (side sr-selected-window)
-        (keymap (make-sparse-keymap)))
-    (if (< sr-tabs-max-tabsize (length tag))
-        (setq tag (concat (substring tag 0 sr-tabs-max-tabsize) "…")))
-    (setq tag (concat sr-tabs-sep tag sr-tabs-sep))
-    (define-key keymap [header-line mouse-1] (sr-tabs-focus-cmd name side))
-    (define-key keymap [header-line mouse-2] (sr-tabs-rename-cmd name))
-    (define-key keymap [header-line mouse-3] (sr-tabs-kill-cmd name side))
-    (if as-active
-        (sr-tabs-propertize-tag tag 'sr-tabs-active-face keymap)
-      (sr-tabs-propertize-tag tag 'sr-tabs-inactive-face keymap))))
+(define-key sr-tree-mode-map [right]     'sr-tree-open-branch)
+(define-key sr-tree-mode-map [S-right]   'sr-tree-focus-branch)
+(define-key sr-tree-mode-map [?\e right] 'sr-tree-focus-branch)
+(define-key sr-tree-mode-map [C-right]   'sr-tree-explode-branch)
+(define-key sr-tree-mode-map [3 right]   'sr-tree-explode-branch) ;; "\C-c <right>"
 
-(defun sr-tabs-make-label (name &optional alias)
-  "Return a new label for decorating a tab named NAME.
-A label is a dotted pair of tags, for active and passive state.
-The new label is put in cache for later reuse. The optional
-argument ALIAS allows to provide a pretty name to label the tab."
-  (let* ((alias (or alias name))
-         (label (cons (sr-tabs-make-tag name t alias)
-                      (sr-tabs-make-tag name nil alias)))
-         (entry (list (cons name label)))
-         (cache (assq sr-selected-window sr-tabs-labels-cache)))
-    (setcdr cache (append (cdr cache) entry))
-    label))
+(define-key sr-tree-mode-map [left]     'sr-tree-collapse-branch)
+(define-key sr-tree-mode-map [S-left]   'sr-tree-blur-branch)
+(define-key sr-tree-mode-map [?\e left] 'sr-tree-blur-branch)
+(define-key sr-tree-mode-map [C-left]   'sr-tree-collapse-branch)
+(define-key sr-tree-mode-map [3-left]   'sr-tree-collapse-branch) ;; "\C-c <left>"
+(define-key sr-tree-mode-map [delete]   'sr-tree-collapse-branch)
 
-(defun sr-tabs-trim-label (label)
-  "Remove all properties and trailing whitespace from the given string."
-  (replace-regexp-in-string "^\\s-+\\|\\s-+$"
-                            ""
-                            (substring-no-properties label)))
+(define-key sr-tree-mode-map [next]              'sr-tree-scroll-up)
+(define-key sr-tree-mode-map [prior]             'sr-tree-scroll-down)
+(define-key sr-tree-mode-map [backspace]         'sr-tree-collapse-branch)
+(define-key sr-tree-mode-map [C-return]          'sr-tree-explode-branch)
+(define-key sr-tree-mode-map [S-return]          'sr-tree-focus-branch)
+(define-key sr-tree-mode-map [M-return]          'sr-tree-blur-branch)
+(define-key sr-tree-mode-map [(shift meta down)] 'sr-tree-dismiss)
+(define-key sr-tree-mode-map [?\e down]          'sr-tree-dismiss)
 
-(defun sr-tabs-redefine-label (name alias)
-  "Change the name displayed on the tab with assigned buffer NAME to ALIAS.
-By default, a tab is named after its assigned buffer. This function allows to
-give tabs names that are more readable or simply easier to remember."
-  (let* ((alias (sr-tabs-trim-label (or alias ""))) (cache))
-    (when (string= "" alias)
-        (setq alias (buffer-name)))
-    (setq cache (assq sr-selected-window sr-tabs-labels-cache))
-    (setcdr cache (delq nil
-                        (mapcar (lambda(x)
-                                  (and (not (equal (car x) name)) x))
-                                (cdr cache))))
-    (sr-tabs-make-label name alias)
-    (sr-tabs-refresh)))
+(define-key sr-tree-mode-map "C" 'sr-tree-do-copy)
+(define-key sr-tree-mode-map "K" 'sr-tree-do-clone)
+(define-key sr-tree-mode-map "R" 'sr-tree-do-rename)
+(define-key sr-tree-mode-map "D" 'sr-tree-do-delete)
+(define-key sr-tree-mode-map "S" 'sr-tree-do-symlink)
+(define-key sr-tree-mode-map "Y" 'sr-tree-do-relsymlink)
+(define-key sr-tree-mode-map "y" 'sr-tree-show-files-info)
+(define-key sr-tree-mode-map "+" 'sr-tree-create-directory)
 
-(defun sr-tabs-get-tag (name is-active)
-  "Retrieve the cached tag for the tab named NAME in state IS-ACTIVE.
-nil = inactive, t = active. Creates new labels when needed."
-  (let* ((cache (assq sr-selected-window sr-tabs-labels-cache))
-         (label (cdr (assoc name (cdr cache)))))
-    (if (null label)
-        (setq label (sr-tabs-make-label name)))
-    (if (< sr-tabs-max-cache-length (length (cdr cache)))
-        (setcdr cache (cddr cache)))
-    (if is-active (car label) (cdr label))))
+(define-key sr-tree-mode-map "\C-c\C-z" 'sr-tree-sync)
+(define-key sr-tree-mode-map "\C-q"     'sr-tree-sync)
 
-(defun sr-tabs-make-line ()
-  "Assemble a new tab line from cached tags and put it in the line cache."
-  (if (memq major-mode '(sr-mode sr-virtual-mode sr-tree-mode))
-      (let ((tab-set (cdr (assq sr-selected-window sr-tabs)))
-            (tab-line (if (or (cdar sr-tabs)
-                              (cdr (cadr sr-tabs))) "" nil))
-            (current-name (buffer-name)))
-        (mapc (lambda (x)
-                (let ((is-current (equal current-name x)))
-                  (setq tab-line (concat tab-line sr-tabs-sep
-                                         (sr-tabs-get-tag x is-current)))))
-              tab-set)
-        (setcdr (assq sr-selected-window sr-tabs-line-cache) tab-line)
-        tab-line)
-    nil))
+(dotimes (n 10)
+  (define-key sr-tree-mode-map (number-to-string n) 'digit-argument))
 
-(defsubst sr-tabs-empty-p (line)
-  (or (null line) (string= "" line)))
+(mapc (lambda (x)
+        (define-key sr-tree-mode-map x nil))
+      '("Q" "F" "A" "k" "s" "\C-c/"))
 
-(defsubst sr-tabs-empty-mask (line)
-  (or (and (null line) "") line))
+(define-key sr-tree-mode-map [mouse-1] 'sr-tree-mouse-toggle-branch)
+(define-key sr-tree-mode-map [mouse-2] (lambda ()
+                                         (interactive)
+                                         (call-interactively 'mouse-set-point)
+                                         (sr-advertised-find-file)
+                                         (sr-tree-update-cursor)))
+(define-key sr-tree-mode-map [double-mouse-1] 'sr-tree-mouse-advertised-find-file)
+(define-key sr-tree-mode-map [S-mouse-1] 'sr-tree-mouse-focus-branch)
+(define-key sr-tree-mode-map [M-mouse-1] 'sr-tree-mouse-blur-branch)
+(define-key sr-tree-mode-map [C-mouse-1] 'sr-tree-mouse-explode-branch)
 
-(defsubst sr-tabs-empty-null (line)
-  (if (sr-tabs-empty-p line) nil line))
+(define-key sr-tree-mode-map (kbd "<S-down-mouse-1>") 'ignore)
+(define-key sr-tree-mode-map (kbd "<M-down-mouse-1>") 'ignore)
+(define-key sr-tree-mode-map (kbd "<C-down-mouse-1>") 'ignore)
 
-(defun sr-nonempty-p (line-list)
-  "Return non-nil if LINE-LIST contains at least one non-nil element."
-  (or (not (sr-tabs-empty-p (car line-list)))
-      (and (cdr line-list) (sr-nonempty-p (cdr line-list)))))
+(define-key sr-mode-map (kbd "<M-S-down-mouse-1>") 'sr-tree-mouse-view)
+(define-key sr-tree-mode-map (kbd "<M-S-down-mouse-1>") 'sr-tree-mouse-dismiss)
 
-(defun sr-tabs-xor (list1 list2)
-  "Replacement for function `set-exclusive-or'.
-Used to avoid dependency on cl-seq.el."
-  (cond ((null list1) list2)
-        ((null list2) list1)
-        ((equal list1 list2) nil)
-        (t
-         (let (result)
-           (mapc (lambda (element)
-                   (if (member element result)
-                       (setq result (delete element result))
-                     (setq result (cons element result))))
-                 (append list1 list2))
-           result))))
-
-(defun sr-tabs-refresh ()
-  "Update `header-line-format' in both panes.
-Uses the line cache for the passive one, and assembles a new tab
-line for the active one. In the (corner) case when both panes
-contain the same buffer, glues together the tab lines with a
-``double bar'' separator."
-  (setq sr-tabs-mode sr-tabs-on)
-  (sr-tabs-make-line)
-  (let ((line-list (mapcar 'cdr sr-tabs-line-cache))
-        (same-buffer (eq sr-left-buffer sr-right-buffer)))
-    (if same-buffer
-        (setq header-line-format
-              (and (sr-nonempty-p line-list)
-                   (mapconcat 'concat line-list sr-tabs-ligature)))
-      (let ((other-buffer (sr-other 'buffer)))
-        (if (eq 'right sr-selected-window)
-            (setq line-list (nreverse line-list)))
-        (if (apply 'sr-tabs-xor (mapcar 'sr-tabs-empty-p line-list))
-            (setq line-list (mapcar 'sr-tabs-empty-mask line-list))
-          (setq line-list (mapcar 'sr-tabs-empty-null line-list)))
-
-        (setq header-line-format (car line-list))
-
-        (when (buffer-live-p other-buffer)
-          (with-current-buffer other-buffer
-            (setq header-line-format (cadr line-list)))))))
-  (force-window-update))
-
-;;; ============================================================================
-;;; Private interface:
-
-(defun sr-tabs-bury-all ()
-  "Bury all currently tabbed buffers."
-  (let ((all-buffers (apply 'append (mapcar 'cdr sr-tabs))))
-    (if all-buffers
-        (mapc 'bury-buffer all-buffers))))
-
-(defun sr-tabs-protect-buffer ()
-  "Protect the current buffer from being automatically disposed
-by Sunrise when moving to another directory (called from
-`kill-buffer-query-functions' hook.)"
-  (let ((tab-name (buffer-name)))
-    (not (or (member tab-name (car sr-tabs))
-             (member tab-name (cadr sr-tabs))))))
-
-(defun sr-tabs-engage ()
-  "Enable the Sunrise Tabs extension."
-  (setq sr-tabs-on t)
-  (add-hook 'sr-refresh-hook 'sr-tabs-refresh)
-  (add-hook 'sr-quit-hook 'sr-tabs-bury-all)
-  (add-hook 'kill-buffer-query-functions 'sr-tabs-protect-buffer)
-  (ad-activate 'sr-transpose-panes)
-  (sr-tabs-refresh))
-
-(defun sr-tabs-disengage ()
-  "Disable the Sunrise Tabs extension."
-  (setq sr-tabs-on nil)
-  (remove-hook 'sr-refresh-hook 'sr-tabs-refresh)
-  (remove-hook 'sr-quit-hook 'sr-tabs-bury-all)
-  (remove-hook 'kill-buffer-query-functions 'sr-tabs-protect-buffer)
-  (ad-deactivate 'sr-transpose-panes)
-  (setq header-line-format (default-value 'header-line-format))
-  (sr-in-other (setq header-line-format (default-value 'header-line-format))))
-
-;;; ============================================================================
-;;; User interface:
-
-(defvar sr-tabs-mode-map (make-sparse-keymap))
-(define-key sr-tabs-mode-map [(control ?j)] 'sr-tabs-add)
-(define-key sr-tabs-mode-map [(control ?k)] 'sr-tabs-remove)
-(define-key sr-tabs-mode-map "*\C-k" 'sr-tabs-clean)
-(define-key sr-tabs-mode-map [(control ?p)] 'sr-tabs-prev)
-(define-key sr-tabs-mode-map [(control ?n)] 'sr-tabs-next)
-(define-key sr-tabs-mode-map [(meta tab)] 'sr-tabs-next)
-
-(define-key sr-tabs-mode-map [(control meta ?j)]
-  (lambda () (interactive) (sr-in-other (sr-tabs-add))))
-(define-key sr-tabs-mode-map [(control meta ?k)]
-  (lambda () (interactive) (sr-in-other (call-interactively 'sr-tabs-remove))))
-(define-key sr-tabs-mode-map [(control meta ?p)]
-  (lambda () (interactive) (sr-in-other (sr-tabs-prev))))
-(define-key sr-tabs-mode-map [(control meta ?n)]
-  (lambda () (interactive) (sr-in-other (sr-tabs-next))))
-(define-key sr-tabs-mode-map [(control meta tab)]
-  (lambda () (interactive) (sr-in-other (sr-tabs-next))))
-(define-key sr-tabs-mode-map "*\C-\M-k"
-  (lambda () (interactive) (sr-in-other (sr-tabs-clean))))
-
-(define-key sr-tabs-mode-map "\C-xk" 'sr-tabs-kill-and-go)
-(define-key sr-tabs-mode-map "\M-T"  'sr-tabs-transpose)
-
-(define-minor-mode sr-tabs-mode
-  "Tabs support for the Sunrise Commander file manager.
-This minor mode provides the following keybindings:
-
-        C-j ........... Create new tab (or rename existing tab) in active pane.
-        C-k ........... Kill the tab of the current buffer in the active pane.
-        C-n ........... Move to the next tab in the active pane.
-        C-p ........... Move to the previous tab in the active pane.
-
-        C-M-j ......... Assign the current buffer to a tab in the passive pane.
-        C-M-k ......... Kill the tab of the current buffer in the passive pane.
-        C-M-n ......... Move to the next tab in the passive pane.
-        C-M-p ......... Move to the previous tab in the passive pane.
-
-        C-x k ......... Kill buffer and move to the next tabbed one (if any).
-"
-  nil nil sr-tabs-mode-map
-  (unless (memq major-mode '(sr-mode sr-virtual-mode sr-tree-mode))
-    (setq sr-tabs-mode nil)
-    (error "Sorry, this mode can be used only within the Sunrise Commander."))
-  (if sr-tabs-mode
-      (sr-tabs-engage)
-    (sr-tabs-disengage)))
-
-
+(define-key tree-widget-button-keymap "\t" 'sr-tree-widget-forward)
+(define-key tree-widget-button-keymap "\C-m" 'sr-tree-widget-button-press)
+(define-key tree-widget-button-keymap [down-mouse-1] 'sr-tree-widget-button-click)
+(define-key tree-widget-button-keymap [mouse-1] 'tree-widget-button-click)
+(define-key tree-widget-button-keymap [double-mouse-1] 'sr-tree-mouse-advertised-find-file)
+(define-key tree-widget-button-keymap [C-mouse-1] 'sr-tree-mouse-explode-branch)
 
 ;;; ============================================================================
 ;;; Bootstrap:
 
-(defun sr-tabs-menu-init ()
-  "Initialize the Sunrise Tabs extension menu."
+(defun sr-tree-menu-init ()
+  "Initialize the Sunrise Tree extension menu."
+
   (unless (lookup-key sr-mode-map [menu-bar Sunrise])
     (define-key sr-mode-map [menu-bar Sunrise]
       (cons "Sunrise" (make-sparse-keymap))))
-  (let ((menu-map (make-sparse-keymap "Tabs")))
-    (define-key sr-mode-map [menu-bar Sunrise tabs] (cons "Tabs" menu-map))
-    (define-key menu-map [help] '("Help" . (lambda ()
-                                             (interactive)
-                                             (describe-function 'sr-tabs-mode))))
-    (define-key menu-map [transpose] '("Transpose" . sr-tabs-transpose))
-    (define-key menu-map [kill]      '("Kill and go to next" . sr-tabs-kill-and-go))
-    (define-key menu-map [next]      '("Next"         . sr-tabs-next))
-    (define-key menu-map [prev]      '("Previous"     . sr-tabs-prev))
-    (define-key menu-map [remove]    '("Remove"       . sr-tabs-remove))
-    (define-key menu-map [add]       '("Add/Rename"   . sr-tabs-add))))
-(defun sr-tabs-start-once ()
-  "Bootstrap the tabs mode on the first execution of the Sunrise Commander,
-after module installation."
-  (sr-tabs-mode t)
-  (sr-tabs-menu-init)
-  (remove-hook 'sr-start-hook 'sr-tabs-start-once)
-  (unintern 'sr-tabs-menu-init obarray)
-  (unintern 'sr-tabs-start-once obarray))
-(add-hook 'sr-start-hook 'sr-tabs-start-once)
+  (let ((menu-map (make-sparse-keymap "Tree View")))
+    (define-key sr-mode-map [menu-bar Sunrise tree-view]
+      (cons "Tree View" menu-map))
+    (define-key menu-map [enable-tree-view] '("enable" . sr-tree-view)))
+
+  (define-key sr-tree-mode-map [menu-bar Sunrise]
+    (cons "Sunrise" (make-sparse-keymap)))
+  (let ((menu-map (make-sparse-keymap "Tree View")))
+    (define-key sr-tree-mode-map [menu-bar Sunrise tree-view]
+      (cons "Tree View" menu-map))
+    (define-key menu-map [enable-tree-view] nil)
+    (define-key menu-map [disable-tree-view] '("dismiss" . sr-tree-dismiss)))
+
+  (remove-hook 'sr-start-hook 'sr-tree-menu-init)
+  (unintern 'sr-tree-menu-init obarray))
+
+(add-hook 'sr-start-hook 'sr-tree-menu-init)
+
+(defun sunrise-x-tree-unload-function ()
+  (sr-ad-disable "^sr-tree-"))
 
 ;;; ============================================================================
 ;;; Desktop support:
 
-(defun sr-tabs-desktop-save-buffer (desktop-dirname)
-  "Return additional desktop data for saving tabs of the current Sunrise buffer."
-  (let* ((left-tab (car (member (buffer-name) (assoc 'left sr-tabs))))
-         (left-cache (cdr (assq 'left sr-tabs-labels-cache)))
-         (left-label (cadr (assoc left-tab left-cache)))
-         (right-tab (car (member (buffer-name) (assoc 'right sr-tabs))))
-         (right-cache (cdr (assq 'right sr-tabs-labels-cache)))
-         (right-label (cadr (assoc right-tab right-cache))))
-    (delq
-     nil
-     (list
-      (if left-label (cons 'left-tab (sr-tabs-trim-label left-label)))
-      (if right-label (cons 'right-tab (sr-tabs-trim-label right-label)))))))
+(defun sr-tree-desktop-save-buffer (desktop-dirname)
+  "Return additional data for saving a Sunrise tree buffer to a desktop file."
+  (append `((root . ,(widget-get sr-tree-root :path))
+            (open-paths . ,sr-tree-open-paths)
+            (cursor ,sr-tree-cursor)
+            (omit-mode . ,dired-omit-mode))
+          (if (eq (current-buffer) sr-left-buffer) '((left . t)))
+          (if (eq (current-buffer) sr-right-buffer) '((right . t)))
+          (if (fboundp 'sr-tabs-desktop-save-buffer)
+              (sr-tabs-desktop-save-buffer desktop-dirname))))
 
-(defun sr-tabs-desktop-restore-buffer (desktop-buffer-file-name
+(defun sr-tree-desktop-restore-buffer (desktop-buffer-file-name
                                        desktop-buffer-name
                                        desktop-buffer-misc)
-  "Restore all tabs in a Sunrise (normal or VIRTUAL) buffer from a desktop file."
+  "Restore a Sunrise tree buffer from a description in a desktop file."
+  (sr-tree-view t)
+  (setq sr-tree-open-paths (cdr (assoc 'open-paths desktop-buffer-misc)))
+  (setq dired-omit-mode (cdr (assoc 'omit-mode desktop-buffer-misc)))
+  (setq sr-tree-cursor (cadr (assoc 'cursor desktop-buffer-misc)))
+  (sr-tree-build (cdr (assoc 'root desktop-buffer-misc)))
+  (sr-tree-update-cursor)
   (mapc (lambda (side)
-          (let* ((sr-selected-window side)
-                 (tab-symbol (intern (concat (symbol-name side) "-tab")))
-                 (name (buffer-name))
-                 (label (cdr (assq tab-symbol desktop-buffer-misc)))
-                 (tab-set (assq side sr-tabs)))
-            (when label
-              (setcdr tab-set (cons name (cdr tab-set)))
-              (sr-tabs-make-label name label))))
+          (when (cdr (assoc side desktop-buffer-misc))
+            (set (sr-symbol side 'buffer) (current-buffer))
+            (set (sr-symbol side 'directory) (cdr sr-tree-cursor))))
         '(left right))
-  (unless sr-tabs-on
-    (sr-tabs-engage)))
+  (if (fboundp 'sr-tabs-desktop-restore-buffer)
+      (sr-tabs-desktop-restore-buffer desktop-buffer-file-name
+                                      desktop-buffer-name
+                                      desktop-buffer-misc)))
 
-(defun sr-tabs-reset-state ()
-  "Reset some environment variables that control the behavior of
-tabs in the Sunrise Commander (used for desktop support)."
-  (mapc (lambda (x) (setcdr x nil)) sr-tabs-labels-cache)
-  (mapc (lambda (x) (setcdr x nil)) sr-tabs)
-  nil)
+(add-to-list 'desktop-buffer-mode-handlers
+             '(sr-tree-mode . sr-tree-desktop-restore-buffer))
 
-;; These append the previous functions to the generic desktop support in Sunrise:
-(add-to-list 'sr-desktop-save-handlers 'sr-tabs-desktop-save-buffer)
-(add-to-list 'sr-desktop-restore-handlers 'sr-tabs-desktop-restore-buffer)
+(provide 'sunrise-x-tree)
 
-;; This activates the tabs support after desktop restoration:
-(add-hook
- 'desktop-after-read-hook
- (defun sr-tabs-desktop-after-read-function ()
-   (unless (assq 'sr-tabs-on desktop-globals-to-clear)
-     (add-to-list 'desktop-globals-to-clear
-                  '(sr-tabs-on . (sr-tabs-reset-state))))))
+;;;###autoload (eval-after-load 'sunrise-commander '(sr-extend-with 'sunrise-x-tree))
 
-(defun sunrise-x-tabs-unload-function ()
-  (sr-ad-disable "^sr-tabs-"))
-
-(provide 'sunrise-x-tabs)
-
-;;;###autoload (eval-after-load 'sunrise-commander '(sr-extend-with 'sunrise-x-tabs))
-
-;;; sunrise-x-tabs.el ends here
+;;; sunrise-x-tree.el ends here
