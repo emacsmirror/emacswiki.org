@@ -17,7 +17,7 @@ Many of these settings are not at all typical; some are quite personal, and othe
  (global-hl-line-mode t)                        ; Highlight cursor line
  (add-to-list 'default-frame-alist '(font . "")); Change fonts
 
-= Cursor mouse =
+= Cursor and mouse =
  (blink-cursor-mode 0)                          ; No blinking cursor
  (setq track-eol nil)                           ; Cursor don't track end-of-line
  (setq mouse-yank-at-point t)                   ; Paste at cursor position
@@ -37,7 +37,7 @@ Many of these settings are not at all typical; some are quite personal, and othe
  (setq grep-command "grep -i -nH -e ")          ; Set grep command options
  (setq exec-path (append exec-path '("/bin")))  ; Change binary path
 
- = Files and sessions =
+= Files and sessions =
  (setq auto-save-timeout 60)                    ; Autosave every minute
  (desktop-save-mode t)                          ; Save session before quitting
  (setq confirm-kill-emacs 'yes-or-no-p)         ; Confirm quit
