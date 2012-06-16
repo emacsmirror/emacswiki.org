@@ -46,13 +46,18 @@ Ac binds M-n, and M-p for navigation in the completion menu, which might be inco
 (define-key ac-completing-map "\M-k" 'ac-previous)
 }}}
 
-== Completion Keys ==
+== Completion keys ==
 
-When selecting completion candidates the return key inserts the selected candidate. This can be a problem any time completion candidates are triggered and you want to insert a new line, because pressing return will complete the selected candidate rather than insert a new line as intended. One solution is to use tab rather than return to insert the selected candidate:
+When selecting completion candidates the return key inserts the selected candidate. This can be a problem any time completion candidates are triggered and you want to insert a new line, because pressing return will complete the selected candidate rather than insert a new line as intended. One solution is to remove the binding of ac-complete to the return key"
+
+{{{
+(define-key ac-completing-map "\r" nil)
+}}}
+
+Optionally, you may wish to bind ac-complete to tab:
 
 {{{
 (define-key ac-completing-map "\t" 'ac-complete)
-(define-key ac-completing-map "\r" nil)
 }}}
 
 With recent versions of auto-complete you may need to set 
@@ -62,7 +67,7 @@ With recent versions of auto-complete you may need to set
  (define-key ac-completing-map [return] nil)
 }}}
 
-instead
+instead.
 
 == Colors ==
 
