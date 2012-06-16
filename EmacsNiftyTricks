@@ -69,6 +69,71 @@ For those of us using earlier versions, use the PictureModeTrailingWhitespaceTri
 * Copy and paste from [[register]]s - `C-x r s R'  and  `C-x r g R' (think: register-set/register-get). This works slightly different in [[XEmacs]].  From the info page ([[XEmacs]])RegText: "'`C-x r s R' stores a copy of the text of the region into the register named R.  `C-x r i R' inserts the text from the register `R' in the buffer."  At least this is true for [[XEmacs]] 21.4.x.
 
 
+== User Interface ==
+* [[Icicles]] -- [[Completion]] and cycling for virtually all minibuffer input. Regexp matching for completion candidates. Perform actions on multiple candidates. Perform set operations on candidate sets. Lots more.
+* Shrink-wrap (resize) frames to fit their selected window: Lisp:fit-frame.el and Lisp:autofit-frame.el. 
+* ColorTheme
+* `M-x line-number-mode' and `column-number-mode' (or ##(column-number-mode 1)## or ##(line-number-mode 1)## in your ##.emacs##)
+* Stop emacs from dinging when you use `ctrl-G'
+
+    ;; quiet, please! No dinging!
+    (setq visible-bell nil)
+    (setq ring-bell-function `(lambda ()
+                            (set-face-background 'default "DodgerBlue")
+                            (set-face-background 'default "black")))
+
+
+* Put ##(menu-bar-mode -1)## in your ##.emacs## to get rid of that useless menu bar.  Or take a look at ActiveMenu for a dynamic solution.
+* Set `next-line-add-newlines' to `t' and stop worrying about whether you are at the end of the file when you do `C-n'.  (Why is there no `right-add-newlines'?)
+* Want line numbers on the left of your buffer? see LineNumbers -- found by AlexSchroeder
+* `M-x transient-mark-mode' in GnuEmacs (and `zmacs-region' in [[XEmacs]]) to make it highlight the active region (and lots of other nifty stuff too!)
+* Make [[XEmacs]]' menus look like Gtk, add these to your ##~/.Xresources##:
+
+    Emacs*Xlw''''''Menu*fontSet: -*-helvetica-medium-r-normal-*-*-120-*-*-*-*-*-*
+    Emacs*Xlw''''''Menu*foreground: black
+    Emacs*Xlw''''''Menu*shadowThickness: 1
+
+* Find which [[face]]s are used at [[point]] -- several ways:
+** `M-x describe-text-properties'
+** `##C-u C-=##'
+** `M-x describe-face' -- The faces applied to the text are listed as the default value for [[completion]]. If you use [[Icicles]], then ‘describe-face’ shows the face-name candidates in buffer ‘*Completions*’ using their own faces – WYSIWYG. ([[Icicles - Customization_and_General_Tips#icicle-WYSIWYG-Completions-flag|Screenshot]])
+** `##M-: (face-at-point)##' (Emacs 23+)
+
+* Keep that minibuffer out from under the taskbar on windows with this [[XEmacs]] trick, BumpWindowUp
+
+* ##mouse-drag.el## -- scroll the buffer by dragging it. For [[XEmacs]] you can use TrackScroll
+* ##(strokes-mode 1)## -- use mouse gestures as key events
+* `M-x mouse-avoidance-mode RET'
+* ##(setq echo-keystrokes 0.1)## -- See what you are typing.
+
+* Running a command in another frame: OtherFrameCommands
+* `M-x webjump' -- Jump directly to predefined websites using `browse-url'.
+
+* SaveHist or EmacsSession: remember MinibufferHistory and other variables between Emacs sessions.  This is so damn cool.
+
+* Store a WindowConfiguration or a FrameConfiguration to a [[register]] with WindowsAndRegisters or FramesAndRegisters.
+
+* Use IdleTimers.
+
+* Use <tt>[[cursor-chg.el]]</tt> to ChangingCursorDynamically.  If you sometimes find yourself inadvertently overwriting some text because you are in overwrite mode but you didn't expect so, this might prove useful.  It changes cursor color and shape to indicate read-only and overwrite modes. And here is another way:
+
+        (setq hcz-set-cursor-color-color "")
+        (setq hcz-set-cursor-color-buffer "")
+        (defun hcz-set-cursor-color-according-to-mode ()
+          "change cursor color according to some minor modes."
+          ;; set-cursor-color is somewhat costly, so we only call it when needed:
+          (let ((color
+                 (if buffer-read-only "black"
+                   (if overwrite-mode "red"
+                     "blue"))))
+            (unless (and
+                     (string= color hcz-set-cursor-color-color)
+                     (string= (buffer-name) hcz-set-cursor-color-buffer))
+              (set-cursor-color (setq hcz-set-cursor-color-color color))
+              (setq hcz-set-cursor-color-buffer (buffer-name)))))
+        (add-hook 'post-command-hook 'hcz-set-cursor-color-according-to-mode)
+
+* Use font-lock-add-keywords to tweak fontification (highlight FIXME comments, add extra keywords, etc.)
 
 == Buffers and Files ==
 
@@ -121,73 +186,6 @@ For those of us using earlier versions, use the PictureModeTrailingWhitespaceTri
         "Prevent annoying \"Active processes exist\" query when you quit Emacs."
         (flet ((process-list ())) ad-do-it))
 
-== Audiovisual settings: bells and whistles ==
-
-* ColorTheme
-* Line and column numbers: a) To put line numbers on the left of your buffer, try `M-x linum-mode' or put ##(global-linum-mode 1)## in your init-file; see LineNumbers. b) To get them on your modeline, try `M-x line-number-mode' and `M-x column-number-mode' (or ##(column-number-mode 1)## or ##(line-number-mode 1)## in your ##init.el##).
-* Use font-lock-add-keywords to tweak fontification (highlight FIXME comments, add extra keywords, etc.)
-* Stop emacs from dinging when you use `ctrl-G'
-
-    ;; quiet, please! No dinging!
-    (setq visible-bell nil)
-    (setq ring-bell-function `(lambda ()
-                            (set-face-background 'default "DodgerBlue")
-                            (set-face-background 'default "black")))
-
-* Removing interface bars: customize ##(tool-bar-mode -1)##, ##(scroll-bar-mode -1)##  and ##(menu-bar-mode -1)## permanently hide them. See ActiveMenu for for another less persistent solution for menu bar. To get rid of title bar given by OS, run Emacs in full screen by commandline option -fs or --fullscreen. See the page FullScreen for more details and, for example, Windows specific methods.
-* To remove start-up messages, put ##(setq inhibit-splash-screen t)## and (setq inhibit-startup-echo-area-message "YOUR-USER-NAME") in your init-file.
-* `M-x transient-mark-mode' in GnuEmacs (and `zmacs-region' in [[XEmacs]]) to make it highlight the active region (and lots of other nifty stuff too!)
-* Make [[XEmacs]]' menus look like Gtk, add these to your ##~/.Xresources##:
-
-    Emacs*Xlw''''''Menu*fontSet: -*-helvetica-medium-r-normal-*-*-120-*-*-*-*-*-*
-    Emacs*Xlw''''''Menu*foreground: black
-    Emacs*Xlw''''''Menu*shadowThickness: 1
-* Keep that minibuffer out from under the taskbar on windows with this [[XEmacs]] trick, BumpWindowUp
-
-== User Interface ==
-
-* [[Icicles]] -- [[Completion]] and cycling for virtually all minibuffer input. Regexp matching for completion candidates. Perform actions on multiple candidates. Perform set operations on candidate sets. Lots more.
-* Shrink-wrap (resize) frames to fit their selected window: Lisp:fit-frame.el and Lisp:autofit-frame.el. 
-* Set `next-line-add-newlines' to `t' and stop worrying about whether you are at the end of the file when you do `C-n'.  (Why is there no `right-add-newlines'?)
-* Find which [[face]]s are used at [[point]] -- several ways:
-** `M-x describe-text-properties'
-** `##C-u C-=##'
-** `M-x describe-face' -- The faces applied to the text are listed as the default value for [[completion]]. If you use [[Icicles]], then ‘describe-face’ shows the face-name candidates in buffer ‘*Completions*’ using their own faces – WYSIWYG. ([[Icicles - Customization_and_General_Tips#icicle-WYSIWYG-Completions-flag|Screenshot]])
-** `##M-: (face-at-point)##' (Emacs 23+)
-* ##mouse-drag.el## -- scroll the buffer by dragging it. For [[XEmacs]] you can use TrackScroll
-* ##(strokes-mode 1)## -- use mouse gestures as key events
-* `M-x mouse-avoidance-mode RET'
-* ##(setq echo-keystrokes 0.1)## -- See what you are typing.
-
-* Running a command in another frame: OtherFrameCommands
-* `M-x webjump' -- Jump directly to predefined websites using `browse-url'.
-
-* SaveHist or EmacsSession: remember MinibufferHistory and other variables between Emacs sessions.  This is so damn cool.
-
-* Store a WindowConfiguration or a FrameConfiguration to a [[register]] with WindowsAndRegisters or FramesAndRegisters.
-
-* Use IdleTimers.
-
-* Use <tt>[[cursor-chg.el]]</tt> to ChangingCursorDynamically.  If you sometimes find yourself inadvertently overwriting some text because you are in overwrite mode but you didn't expect so, this might prove useful.  It changes cursor color and shape to indicate read-only and overwrite modes. And here is another way:
-
-        (setq hcz-set-cursor-color-color "")
-        (setq hcz-set-cursor-color-buffer "")
-        (defun hcz-set-cursor-color-according-to-mode ()
-          "change cursor color according to some minor modes."
-          ;; set-cursor-color is somewhat costly, so we only call it when needed:
-          (let ((color
-                 (if buffer-read-only "black"
-                   (if overwrite-mode "red"
-                     "blue"))))
-            (unless (and
-                     (string= color hcz-set-cursor-color-color)
-                     (string= (buffer-name) hcz-set-cursor-color-buffer))
-              (set-cursor-color (setq hcz-set-cursor-color-color color))
-              (setq hcz-set-cursor-color-buffer (buffer-name)))))
-        (add-hook 'post-command-hook 'hcz-set-cursor-color-according-to-mode)
-
-
-
 
 == Mail ==
 
@@ -197,6 +195,19 @@ For those of us using earlier versions, use the PictureModeTrailingWhitespaceTri
         (setq mail-user-agent 'gnus-user-agent) 
 
 See also GnusNiftyTricks
+
+== Miscellaneous ==
+* `M-x phases-of-moon' -- Awoooo!
+* EmacsAsDesktopBackground -- The ''real'' active background window
+* `##ESC ESC ESC##' -- Go back to just one window (by deleting all but the selected window).
+* ##(fset 'yes-or-no-p 'y-or-n-p)## --  Make all "##yes or no##" prompts show "##y or n##" instead.  See YesOrNoP.
+* Once a week browse the info file looking for curious corners. A worthwhile one to learn is [[register]]s. 
+* Open up simple.el and check out all nice functions in there. -- MathiasDahl
+* Read EmacsNiftyTricks and drop by the #emacs channel on irc.openprojects.net and chat with the gurus.
+
+* Search Google and Wikipedia with BrowseAproposURL. 
+* [EmacsWiki:EmacsScreen escreen] is handy to either temporarily switch tasks or temporarily open a new buffer.  Gives you a new frame and doesn't mess with anything in the other frame.  The advantage over `C-x 5 2' is that it also doesn't screw up your window layout on your desktop. -- LathI
+* Here's how my Emacs helps me fight procrastination: [http://bach.ipipan.waw.pl/~nathell/blog/fighting-procrastination.html anti-procrastination.el] [broken link 2010-08-10] -- DanielJanus (Try [http://korpus.pl/~nathell/blog/ the blog] or [http://blog.danieljanus.pl/fighting-procrastination.html this mirror].)
 
 [:Development]
 [:Programming]
@@ -263,20 +274,6 @@ RET##', but not all systems have `uniq'.
 * Yank the last rectangle killing `C-x r y'
 * Align lines in region on a common string with `M-x align-regexp'
 * Delete all space around point with ##M-\##
-
-== Miscellaneous ==
-* `M-x phases-of-moon' -- Awoooo!
-* EmacsAsDesktopBackground -- The ''real'' active background window
-* `##ESC ESC ESC##' -- Go back to just one window (by deleting all but the selected window).
-* ##(fset 'yes-or-no-p 'y-or-n-p)## --  Make all "##yes or no##" prompts show "##y or n##" instead.  See YesOrNoP.
-* [EmacsWiki:EmacsScreen escreen] is handy to either temporarily switch tasks or temporarily open a new buffer.  Gives you a new frame and doesn't mess with anything in the other frame.  The advantage over `C-x 5 2' is that it also doesn't screw up your window layout on your desktop. -- LathI
-* Here's how my Emacs helps me fight procrastination: [http://bach.ipipan.waw.pl/~nathell/blog/fighting-procrastination.html anti-procrastination.el] [broken link 2010-08-10] -- DanielJanus (Try [http://korpus.pl/~nathell/blog/ the blog] or [http://blog.danieljanus.pl/fighting-procrastination.html this mirror].)
-* Search Google and Wikipedia with BrowseAproposURL.
-
-== Further ideas for nifty tricks ==
-* Once a week browse the info file looking for curious corners. A worthwhile one to learn is [[register]]s. 
-* Open up simple.el and check out all nice functions in there. -- MathiasDahl
-* Read EmacsNiftyTricks and drop by the #emacs channel on irc.openprojects.net and chat with the gurus.
 
 == See Also ==
 
