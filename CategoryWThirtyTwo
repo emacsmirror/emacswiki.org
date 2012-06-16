@@ -4,7 +4,7 @@ Click on the header to search for pages about EmacsForWindows.
 Where to get it:
 
 * Official supported binaries http://www.gnu.org/software/emacs/windows/faq2.html#where-precompiled
-** stable - <b>Emacs 23.4 (released 2012-02-05)</b>
+** stable - <b>Emacs 24.1 (released June 10, 2012)</b>
 *** ftp://ftp.gnu.org/gnu/emacs/windows/
 *** http://ftp.gnu.org/gnu/emacs/windows/
 *** Note that most people will want the bin file, not the barebin file. The barebin file includes only the compiled binaries, not the rest of Emacs. (It's intended for people who downloaded the source and then changed their mind about compiling it themselves.)
