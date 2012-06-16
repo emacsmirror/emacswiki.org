@@ -198,19 +198,6 @@ For those of us using earlier versions, use the PictureModeTrailingWhitespaceTri
 
 See also GnusNiftyTricks
 
-== Miscellaneous ==
-* `M-x phases-of-moon' -- Awoooo!
-* EmacsAsDesktopBackground -- The ''real'' active background window
-* `##ESC ESC ESC##' -- Go back to just one window (by deleting all but the selected window).
-* ##(fset 'yes-or-no-p 'y-or-n-p)## --  Make all "##yes or no##" prompts show "##y or n##" instead.  See YesOrNoP.
-* Once a week browse the info file looking for curious corners. A worthwhile one to learn is [[register]]s. 
-* Open up simple.el and check out all nice functions in there. -- MathiasDahl
-* Read EmacsNiftyTricks and drop by the #emacs channel on irc.openprojects.net and chat with the gurus.
-
-* Search Google and Wikipedia with BrowseAproposURL. 
-* [EmacsWiki:EmacsScreen escreen] is handy to either temporarily switch tasks or temporarily open a new buffer.  Gives you a new frame and doesn't mess with anything in the other frame.  The advantage over `C-x 5 2' is that it also doesn't screw up your window layout on your desktop. -- LathI
-* Here's how my Emacs helps me fight procrastination: [http://bach.ipipan.waw.pl/~nathell/blog/fighting-procrastination.html anti-procrastination.el] [broken link 2010-08-10] -- DanielJanus (Try [http://korpus.pl/~nathell/blog/ the blog] or [http://blog.danieljanus.pl/fighting-procrastination.html this mirror].)
-
 [:Development]
 [:Programming]
 == Programming ==
@@ -276,6 +263,20 @@ RET##', but not all systems have `uniq'.
 * Yank the last rectangle killing `C-x r y'
 * Align lines in region on a common string with `M-x align-regexp'
 * Delete all space around point with ##M-\##
+
+== Miscellaneous ==
+* `M-x phases-of-moon' -- Awoooo!
+* EmacsAsDesktopBackground -- The ''real'' active background window
+* `##ESC ESC ESC##' -- Go back to just one window (by deleting all but the selected window).
+* ##(fset 'yes-or-no-p 'y-or-n-p)## --  Make all "##yes or no##" prompts show "##y or n##" instead.  See YesOrNoP.
+* [EmacsWiki:EmacsScreen escreen] is handy to either temporarily switch tasks or temporarily open a new buffer.  Gives you a new frame and doesn't mess with anything in the other frame.  The advantage over `C-x 5 2' is that it also doesn't screw up your window layout on your desktop. -- LathI
+* Here's how my Emacs helps me fight procrastination: [http://bach.ipipan.waw.pl/~nathell/blog/fighting-procrastination.html anti-procrastination.el] [broken link 2010-08-10] -- DanielJanus (Try [http://korpus.pl/~nathell/blog/ the blog] or [http://blog.danieljanus.pl/fighting-procrastination.html this mirror].)
+* Search Google and Wikipedia with BrowseAproposURL.
+
+== Further ideas for nifty tricks ==
+* Once a week browse the info file looking for curious corners. A worthwhile one to learn is [[register]]s. 
+* Open up simple.el and check out all nice functions in there. -- MathiasDahl
+* Read EmacsNiftyTricks and drop by the #emacs channel on irc.openprojects.net and chat with the gurus.
 
 == See Also ==
 
