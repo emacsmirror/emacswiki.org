@@ -29,6 +29,15 @@ Rectangle commands were originally part of Emacs's PictureMode.
 See also RectangleMark
 and ColumnNumberMode.
 
+== Rectangle Commands ==
+
+* Kill a rectangle `C-x r k'
+* Yank the last rectangle killing `C-x r y'
+* Insert a text rectangle `C-x r t'
+* Delete the selected rectangle: `C-x r d'
+* Insert a whitespace rectangle into the region: `C-x r o'
+* Number lines in rectangle: `C-x r N'. This command also inserts a column of spaces after numbers.
+
 == Use case: Copying tables from a Web browser ==
 
 When copying and pasting tabular data from a Web page rendered in a Web browser, you often will get more than just what you want copied to the clipboard.  Bring the text into Emacs -- unless you were in Emacs already.  If you want only one or some of the columns of the data, use the rectangle commands of Emacs.  Hit `C-SPC' at the beginning of the first entry in the column you want, and then move to the final entry in the last tabular column you want, then hit `C-x r k'.  This kills the rows of the column(s) you're interested in.
