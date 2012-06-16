@@ -107,6 +107,37 @@ preview buffer of a certain code template, respectively.
 
 http://www.duenenhof-wilhelm.de/dieter/ansys-mode.jpg
 
+== News ==
+
+
+
+* Included some tutorial slides for ANSYS-Mode:
+  ansys-mode_tutorial.pdf
+
+* Added a timer for getting rid of the parameter help overlays after
+  some time interval (1 min) without reusing the parameter help
+
+* Added a (customisable) variable `ansys-no-of-processors' and
+  function with the same name for specifying the number of processors
+  for an Ansys multiprocessor run
+
+* Extended mode commands, templates and removed typos mainly in
+  ansys-template.el. For example added all *get functions in the
+  ansys-skeleton-function template
+
+* Added a custom variable the corresponding function
+  ansys-ansysli-servers for specifying the ansys interconnect license
+  servers
+
+* Added a new shortcut and menu entry isometric view
+
+* Applied sensible defaults to ansys-lmutil-program, ansys-program and
+  ansys-help-program, for most needs it should now be enough just to
+  set the used ansys version (ansys-current-ansys-version, if it is
+  not 140, see the example config file default_el) and maybe
+  additionally the installation directory (ansys-install-directory).
+
+
 == Installation ==
 
 The version scheme is a mixture of the ANSYS release (currently 14.0)
