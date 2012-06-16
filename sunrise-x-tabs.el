@@ -1,13 +1,13 @@
 ;;; sunrise-x-tabs.el --- tabs for the Sunrise Commander File Manager
 
-;; Copyright (C) 2009-2010 José Alfredo Romero Latouche.
+;; Copyright (C) 2009-2012 José Alfredo Romero Latouche.
 
 ;; Author: José Alfredo Romero L. <escherdragon@gmail.com>
 ;;	Štěpán Němec <stepnem@gmail.com>
 ;; Maintainer: José Alfredo Romero L. <escherdragon@gmail.com>
 ;; Created: 24 Oct 2009
 ;; Version: 1
-;; RCS Version: $Rev: 394 $
+;; RCS Version: $Rev: 421 $
 ;; Keywords: sunrise commander, tabs
 ;; URL: http://www.emacswiki.org/emacs/sunrise-x-tabs.el
 ;; Compatibility: GNU Emacs 22+
@@ -95,7 +95,8 @@
 ;;; Code:
 
 (require 'sunrise-commander)
-(eval-when-compile (require 'desktop))
+(eval-when-compile (require 'cl)
+                   (require 'desktop))
 
 (defcustom sr-tabs-follow-panes t
   "Whether tabs should be swapped too when transposing the Sunrise panes."
@@ -142,9 +143,9 @@
 (defconst sr-tabs-max-cache-length 30
   "Max number of tab labels cached for reuse.")
 
-(defvar sr-tabs '((left)(right)))
+(defvar sr-tabs '((left) (right)))
 (defvar sr-tabs-labels-cache '((left) (right)))
-(defvar sr-tabs-line-cache '((left)(right)))
+(defvar sr-tabs-line-cache '((left) (right)))
 (defvar sr-tabs-mode nil)
 (defvar sr-tabs-on nil)
 
@@ -277,10 +278,9 @@ removes the tab."
 (defun sr-tabs-transpose ()
   "Swap the sets of tabs from one pane to the other."
   (interactive)
-  (setq sr-tabs (mapc (lambda (x)
-                        (if (eq 'left (car x))
-                            (setcar x 'right)
-                          (setcar x 'left))) sr-tabs))
+  (flet ((flip (side) (setcar side (cdr (assq (car side) sr-side-lookup)))))
+    (dolist (registry (list sr-tabs sr-tabs-labels-cache))
+      (mapc 'flip registry)))
   (sr-in-other (sr-tabs-refresh))
   (sr-tabs-refresh))
 
@@ -360,19 +360,19 @@ argument ALIAS allows to provide a pretty name to label the tab."
                             (substring-no-properties label)))
 
 (defun sr-tabs-redefine-label (name alias)
-  ;; FIXME better docstring, explain the arguments
-  "Modify the pretty name (alias) of the label with the given name."
+  "Change the name displayed on the tab with assigned buffer NAME to ALIAS.
+By default, a tab is named after its assigned buffer. This function allows to
+give tabs names that are more readable or simply easier to remember."
   (let* ((alias (sr-tabs-trim-label (or alias ""))) (cache))
-    (if (string= "" alias)
-        (error "Cancelled: invalid tab name")
-      (progn
-        (setq cache (assq sr-selected-window sr-tabs-labels-cache))
-        (setcdr cache (delq nil
-                       (mapcar (lambda(x)
-                                 (and (not (equal (car x) name)) x))
-                               (cdr cache))))
-        (sr-tabs-make-label name alias)
-        (sr-tabs-refresh)))))
+    (when (string= "" alias)
+        (setq alias (buffer-name)))
+    (setq cache (assq sr-selected-window sr-tabs-labels-cache))
+    (setcdr cache (delq nil
+                        (mapcar (lambda(x)
+                                  (and (not (equal (car x) name)) x))
+                                (cdr cache))))
+    (sr-tabs-make-label name alias)
+    (sr-tabs-refresh)))
 
 (defun sr-tabs-get-tag (name is-active)
   "Retrieve the cached tag for the tab named NAME in state IS-ACTIVE.
@@ -566,7 +566,6 @@ This minor mode provides the following keybindings:
     (define-key menu-map [prev]      '("Previous"     . sr-tabs-prev))
     (define-key menu-map [remove]    '("Remove"       . sr-tabs-remove))
     (define-key menu-map [add]       '("Add/Rename"   . sr-tabs-add))))
-;;; FIXME
 (defun sr-tabs-start-once ()
   "Bootstrap the tabs mode on the first execution of the Sunrise Commander,
 after module installation."
