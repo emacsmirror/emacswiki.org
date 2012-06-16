@@ -147,6 +147,9 @@ Indeed. Given that ERT is now part of GNU Emacs, I think particularly helpful wo
 [new]
 One question: do any of these packages support TAP (the [http://testanything.org/wiki/index.php/Main_Page Test Anything Protocol])? I don't see a single reference to it.
 
+[new:rocky:2012-06-15]
+In short order I added optional TAP output to '''[[http://github.com/rocky/test-simple|test-simple.el]]'''. However after doing that I realize you are not going to be able to use ''prove'' unless one creates a custom Test::Harness. Open an issue on the github page if this is worth pursuing.
+
 [new]
 Does anybody know any mock or stub frameworks in Emacs Lisp? Because many Emacs Lisp functions have side-effects, a mock / stub framework is essential to unittest in Emacs Lisp. -- [[rubikitch]]
 
