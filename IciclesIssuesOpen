@@ -135,10 +135,19 @@ What Emacs version are you using, and what Tramp version? -- DrewAdams
 
 
 [new]
-
 Emacs: GNU Emacs 23.2.1 (i486-pc-linux-gnu, GTK+ Version 2.20.0) of 2010-12-11 on raven, modified by Debian
 
 Tramp: 2.1.18-23.2
+
+-- PasJa
+
+[new:DrewAdams:2012-06-16 12:51 UTC]
+I cannot repro it on Windows.  MichaelHeerdegen tried but cannot repro it on GNU/Linux.  Please follow up using email.  Thx -- DrewAdams
+
+
+
+
+
 
 
 
