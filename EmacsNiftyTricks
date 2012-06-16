@@ -258,7 +258,7 @@ RET##', but not all systems have `uniq'.
 * Make the region lowercase: `downcase-region' -- JonAquino
 * Align lines in region on a common string with `M-x align-regexp'
 * Delete all space around point with ##M-\##
-* RectangleCommans: kill, yank, insert, delete rectangles and more!
+* RectangleCommands: kill, yank, insert, delete rectangles and more!
 == Miscellaneous ==
 * `M-x phases-of-moon' -- Awoooo!
 * EmacsAsDesktopBackground -- The ''real'' active background window
