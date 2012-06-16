@@ -183,5 +183,34 @@ I am sorry that my solution doesn't seem to work for you. Please let me know you
 
 See above for the additional `gnus-posting-styles' modification.
 
+
+[new:匿名者:2012-06-16 12:08 UTC]
+In the recently released Emacs 24.1, one could utilitize the fact that SMTPMAIL would consult ~/.authinfo for all credential details, and the brand new smtpmail-stream-type variable makes using a separate (set-smtp-ssl) unnecessary. In fact the original solution could be widely simplified to using only one function for the defadvise:
+
+    (setq smtp-accounts
+          '(("aa@bb.cc" "John Doe" "default.server.com")
+            ("qq@rr.ss" "Mary Johnson" "server2.com")))
+  
+    (defun my-change-smtp ()
+      (save-excursion
+        (loop with from = (save-restriction
+                            (message-narrow-to-headers)
+                            (message-fetch-field "from"))
+              for (addr fname server) in smtp-accounts
+              when (string-match addr from)
+              do (setq user-mail-address addr
+                       user-full-name fname
+                       smtpmail-smtp-server server))))
+  
+    (defadvice smtpmail-via-smtp
+      (before change-smtp-by-message-from-field (recipient buffer &optional ask) activate)
+      (with-current-buffer buffer (my-change-smtp)))
+  
+    (setq user-mail-address "aa@bb.cc"
+          user-full-name "John Doe"
+          smtpmail-smtp-server "default.server.com"
+          smtpmail-auth-credentials (expand-file-name "~/.authinfo"))
+
+
 ----
 CategoryGnus
