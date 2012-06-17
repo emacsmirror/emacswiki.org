@@ -148,8 +148,6 @@ add extra substrings to exclude as needed, and, if you're like me and run one em
 
 ==Option 5==
 
-Similar to 1 and 2, but generates the colors automatically (stole the luminescence function from the nicks highlighting module)
-<pre>
 (defmacro unpack-color (color red green blue &rest body)
   `(let ((,red   (car ,color))
          (,green (car (cdr ,color)))
@@ -168,10 +166,10 @@ Similar to 1 and 2, but generates the colors automatically (stole the luminescen
   (unpack-color color red green blue
    `(,(- 255 red) ,(- 255 green) ,(- 255 blue))))
 
-(defun erc-get-color-for-bar (nick dark)
+(defun erc-get-color-for-nick (nick &optional dark)
   (let* ((maxbound (* (* 256 256) 256))
          (code     (round (mod (string-to-number (md5 (downcase nick)) 16) maxbound)))
-         (red      (mod code 255))
+         (red      (mod code 256))
          (blue     (mod (/ code 256) 256))
          (green    (/ (/ code 256) 256))
          (color    `(,red ,green ,blue)))
@@ -189,7 +187,6 @@ Similar to 1 and 2, but generates the colors automatically (stole the luminescen
         (when (erc-get-server-user nick)
           (put-text-property
            (car bounds) (cdr bounds) 'face
-           (cons 'foreground-color (erc-get-color-for-bar nick 't))))))))
+           (cons 'foreground-color (erc-get-color-for-nick nick 't))))))))
 
 (add-hook 'erc-insert-modify-hook 'erc-highlight-nicknames)
-</pre>
