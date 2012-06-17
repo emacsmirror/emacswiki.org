@@ -2,23 +2,24 @@ Click the heading to list pages in this category.
 This category is about editing, not modes.  See CategoryModes, instead.
 
 * [[kill|Killing]], [[yank|yanking]], copying and deleting:
+** CopyFromAbove -- Copy line or characters from previous line
 ** CopyWithoutSelection -- simply copy current [[line]], current word and current paragraph to the [[kill ring]] without selecting each line, word or paragraph
+** CopyingWholeLines -- Copying whole lines
+** DeleteKillAndCopy -- take any motion command and prepend it with a suitable key to delete, kill or copy the text passed over
 ** DeleteSelectionMode -- type to replace the current selection (or backspace to delete it)
 ** DeletingSyntax -- an alternative to killing by words
-** DeleteKillAndCopy -- take any motion command and prepend it with a suitable key to delete, kill or copy the text passed over
 ** DeletingWhitespace -- delete extra whitespace
-** LineCopyChar -- Copy character(s) from the line before or after to the current line.
-** [[MRU-yank]] -- maintain [[kill ring]] as MRU (Most Recently Used) stack.  Similar to the application stack (M-tab) on MS Windows
-** MousePlus -- highlight the [[yank]] position while you press `mouse-2', so you hit the right spot
-** WholeLineOrRegion -- operate on current [[line]] if [[region]] is undefined
-** CopyFromAbove -- Copy line or characters from previous line
-** CopyingWholeLines -- Copying whole lines
-** ZapToChar -- Delete the characters from [[point]] to a character you specify.
 ** KillOrCopyToIsearch -- [[kill|Kill]] or copy from [[point]] up to where you are Isearching 
-** Motion/kill do-what-I-mean -- [[cursor]] movement and [[kill|killing]] [[DWIM]] functions.  Lisp:motion-and-kill-dwim.el
-** duplicate-previous/next-line lets you replace current line with a neighboring one by cycling through them like you can with history in Bash. I bind them to M-n and M-p.  Lisp:duplicate-line.el
-** [[Anything]] -- `M-x anything-show-kill-ring' narrows the kill-ring by multiple patterns.
+** LineCopyChar -- Copy character(s) from the line before or after to the current line.
 ** Lisp:savekill.el -- Save kill-ring immediately and restore to protect from emacs crash.
+** Motion/kill do-what-I-mean -- [[cursor]] movement and [[kill|killing]] [[DWIM]] functions.  Lisp:motion-and-kill-dwim.el
+** MousePlus -- highlight the [[yank]] position while you press `mouse-2', so you hit the right spot
+** RectangleCommands --  commands that operate across lines in a region in a column-intelligent manner.
+** WholeLineOrRegion -- operate on current [[line]] if [[region]] is undefined
+** ZapToChar -- Delete the characters from [[point]] to a character you specify.
+** [[Anything]] -- `M-x anything-show-kill-ring' narrows the kill-ring by multiple patterns.
+** [[MRU-yank]] -- maintain [[kill ring]] as MRU (Most Recently Used) stack.  Similar to the application stack (M-tab) on MS Windows
+** duplicate-previous/next-line lets you replace current line with a neighboring one by cycling through them like you can with history in Bash. I bind them to M-n and M-p.  Lisp:duplicate-line.el
 ** See also CategoryRegion
 * [[register|Registers]]:
 ** RegAdhoc -- automatically add [[register]]s and show their destinations
@@ -78,4 +79,3 @@ This category is about editing, not modes.  See CategoryModes, instead.
 ** TextLint -- check your scientific writing for common style errors.
 ** [http://www.emacswiki.org/emacs/BaoqiuCui#toc2 Grammar Checker] -- Use [http://www.link.cs.cmu.edu/link Link Grammar] as the grammar checker back-end.
 ** [[CategorySpelling|Spelling]] -- spell-checking
-
