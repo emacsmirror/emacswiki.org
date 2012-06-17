@@ -401,8 +401,8 @@ the following options:
 * It might be interesting for you to visit the [http://www.emacswiki.org/cgi-bin/wiki/AnsysMode Emacs Wiki].
 At the Wiki you can add some comments or wishes without registration.
 
-# local variables:
-# word-wrap: t
-# show-trailing-whitespace: t
-# indicate-empty-lines: t
-# end:
+local variables:
+word-wrap: t
+show-trailing-whitespace: t
+indicate-empty-lines: t
+end:
