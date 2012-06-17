@@ -169,12 +169,11 @@ Similar to 1 and 2, but generates the colors automatically. The idea for the lum
   (unpack-color color red green blue
    `(,(- 255 red) ,(- 255 green) ,(- 255 blue))))
 
-(defun erc-get-color-for-nick (nick &optional dark)
-  (let* ((maxbound (* (* 256 256) 256))
-         (code     (round (mod (string-to-number (md5 (downcase nick)) 16) maxbound)))
-         (red      (mod code 256))
-         (blue     (mod (/ code 256) 256))
-         (green    (/ (/ code 256) 256))
+(defun erc-get-color-for-nick (nick dark)
+  (let* ((hash     (md5 (downcase nick)))
+         (red      (mod (string-to-number (substring hash 0 10) 16) 256))
+         (blue     (mod (string-to-number (substring hash 10 20) 16) 256))
+         (green    (mod (string-to-number (substring hash 20 30) 16) 256))
          (color    `(,red ,green ,blue)))
     (rgb-to-html (if (if dark (< (hexcolor-luminance color) 85)
                        (> (hexcolor-luminance color) 170))
