@@ -6,8 +6,7 @@ Copyright (C) 2006 - 2012  H. Dieter Wilhelm, GPL V3
 == Introduction ==
 
 This [http://code.google.com/p/ansys-mode/ project] supports working
-with the FEA (Finite Element Analysis) suite [http://www.ansys.com
-ANSYS].
+with the FEA (Finite Element Analysis) suite [http://www.ansys.com ANSYS].
 
 It provides *ANSYS-Mode*, an add-on to the
 [http://www.gnu.org/software/emacs/ Gnu Emacs] editor for navigating,
@@ -28,8 +27,7 @@ The current stable version (14.0.1) of ANSYS-Mode is available at
 http://code.google.com/p/ansys-mode/downloads/list/ansys-mode-14.0.1.tgz"
 to the console).  You will find at the download section a tutorial in
 PDF as well, or check out the
-[http://duenenhof-wilhelm.de/dieter/ansys-mode_tutorial/ansys-mode_tutorial.html
-online version] of it.
+[http://duenenhof-wilhelm.de/dieter/ansys-mode_tutorial/ansys-mode_tutorial.html online version] of it.
 
 Please report bugs! You can do this at Google Code's
 [http://code.google.com/p/ansys-mode/issues/list issues list].
@@ -97,19 +95,23 @@ capabilities a UNIX systems is necessary.
 * ANSYS-Mode changes some Emacs default behaviour to alleviate the
   transition from other editors and user interface standards
 
-As a visual example, a screen-shot on EmacsWiki and Google code show
-an Emacs frame (GTK+ toolkit under Linux) with a ripped off menu
-field.  The APDL file is in the right window with the (experimental)
-user variable highlighting switched on and a help overlay (in yellow
-background) activated. The smaller windows on the left hand side are
-showing the "Variable definitions buffer" of the same file and a
-preview buffer of a certain code template, respectively.
+== Example applications ==
+
+Visual examples you will find in the
+[http://duenenhof-wilhelm.de/dieter/ansys-mode_tutorial/ansys-mode_tutorial.html online tutorial]
+or the latter screen-shot on [http://www.emacswiki.org/emacs/AnsysMode EmacsWiki]
 
 http://www.duenenhof-wilhelm.de/dieter/ansys-mode.jpg
 
+Above image shows an Emacs frame (in reversed colour mode and compiled
+with the GTK+ toolkit under Linux) with a ripped off menu field.  The
+APDL file is in the right window with the (experimental) user variable
+highlighting switched on and a help overlay (in yellow background)
+activated. The smaller windows on the left hand side are showing the
+"Variable definitions buffer" of the same file and a preview buffer of
+a certain code template, respectively.
+
 == News ==
-
-
 
 * Included some tutorial slides for ANSYS-Mode:
   ansys-mode_tutorial.pdf
@@ -136,7 +138,6 @@ http://www.duenenhof-wilhelm.de/dieter/ansys-mode.jpg
   set the used ansys version (ansys-current-ansys-version, if it is
   not 140, see the example config file default_el) and maybe
   additionally the installation directory (ansys-install-directory).
-
 
 == Installation ==
 
@@ -357,11 +358,11 @@ In mainly cronological order:
 
 == Resources ==
 
-* http://www.emacswiki.org
-* http://www.ansys.net -- general ANSYS repository
-* http://www.ansys.com
-* http://www.xansys.org -- ansys online community
-* http://www.padtinc.com/pedal -- another APDL script editor
+* [http://www.emacswiki.org The Emacs Wiki]
+* A general [http://www.ansys.net  ANSYS macro repository]
+* The [http://www.ansys.com ANSYS site]
+* An [http://www.xansys.org ANSYS online community]
+* Another APDL [http://www.padtinc.com/pedal  script editor]
 
 == Bugs and Problems ==
 
@@ -390,18 +391,15 @@ the following options:
 * Write an email to the mode maintainer (you can trigger a bug report
   from the menu or directly calling the function
   `ansys-submit-bug-report'.  Even when you are not in the position of
-  sending emails from within Emacs this will give at least a useful
-  mail template with valuable information about internal mode
-  settings).
+  sending emails from Emacs this will give at least a useful mail
+  template with valuable information about internal mode settings).
 
 * When you have already a (cost free) Google account you are able
-  to issue a bug report at the Google Code hosted page
-  http://code.google.com/p/ansys-mode/issues/list.  From this site
-  you can also download the latest development version.
+  to issue a bug report at the [http://code.google.com/p/ansys-mode/issues/list Google Code site].
+  From this site you can download the latest development version.
 
-* It might be helpful for you to visit the Emacs Wiki
-  (http://www.emacswiki.org/cgi-bin/wiki/AnsysMode).  At the Wiki you
-  can add some comments or wishes.
+* It might be interesting for you to visit the [http://www.emacswiki.org/cgi-bin/wiki/AnsysMode Emacs Wiki].
+At the Wiki you can add some comments or wishes without registration.
 
 # local variables:
 # word-wrap: t
