@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Sat Jun  9 17:42:52 2012 (-0700)
+;; Last-Updated: Sun Jun 17 08:42:40 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 8505
+;;     Update #: 8508
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-chg.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -3162,6 +3162,10 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-mcmd.el'")
 ;;
+;; 2012/06/17 dadams
+;;     icicle-narrow-candidates:
+;;       Use read-file-name with icicle-must-pass-after-match-predicate for all Emacs Versions.
+;;       Thx to Michael Heerdegen.  Use backquote+comma to eliminate free var in lambda.
 ;; 2012/06/09 dadams
 ;;     icicle-choose-completion, icicle-nb-of-cand-in-Completions-horiz, icicle-insert-dot,
 ;;       icicle-switch-to-Completions-buf, icicle-current-completion-in-Completions,
