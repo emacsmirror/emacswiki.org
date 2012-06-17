@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Sat Jun  9 17:33:15 2012 (-0700)
+;; Last-Updated: Sun Jun 17 08:38:28 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 18031
+;;     Update #: 18043
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-mcmd.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -5605,8 +5605,8 @@ You can use this command only from the minibuffer (`\\<minibuffer-local-completi
                (minibuffer-message "  [Sole completion]")
              (set minibuffer-history-variable (cons (car icicle-completion-candidates)
                                                     (symbol-value minibuffer-history-variable)))
-             ;; $$$$$$ Should this now use `icicle-current-input'
-             ;;        instead of (car icicle-completion-candidates), for PCM?
+             ;; $$$$$$ Should this use `icicle-current-input' instead of
+             ;; (car icicle-completion-candidates), for PCM?
              (icicle-condition-case-no-debug i-narrow-candidates
                  (throw 'icicle-read-top
                    (if (and (icicle-file-name-input-p) insert-default-directory
@@ -5620,53 +5620,35 @@ You can use this command only from the minibuffer (`\\<minibuffer-local-completi
                          icicle-current-input)
                (error (message "%s" (error-message-string i-narrow-candidates))))))
           (t
-           (let* (;; $$$$$$$$$$$$$ (icicle-whole-candidate-as-text-prop-p  nil)
-                  (minibuffer-setup-hook ; Make sure the new minibuffer is the reference buffer.
-                   (cons
-                    (lambda ()
-                      (with-current-buffer (get-buffer-create "*Completions*")
-                        (set (make-local-variable 'completion-reference-buffer)
-                             (window-buffer (active-minibuffer-window)))))
-                    minibuffer-setup-hook))
-                  (current-candidates  icicle-completion-candidates)
-                  (result
-                   (cond ((and (icicle-file-name-input-p)
-                               (or (= emacs-major-version 22) ; Emacs 22 or 23.1
-                                   (and (= emacs-major-version 23) (= emacs-minor-version 1))))
-                          (read-file-name "Match also (regexp): "
-                                          (icicle-file-name-directory-w-default icicle-current-input)
-                                          nil icicle-require-match-p nil
-                                          (lambda (file-cand) (member file-cand current-candidates))))
-                         ((and (icicle-file-name-input-p) (> emacs-major-version 22)) ; Emacs 23.2+
-                          (let ((icicle-must-pass-after-match-predicate
-                                 #'(lambda (c) (member c current-candidates))))
-                            (completing-read "Match also (regexp): " 'read-file-name-internal nil
-                                             icicle-require-match-p nil minibuffer-history-variable)))
-                         (t             ; Emacs 20, 21
-                          ;; In Emacs < 22, there is no PREDICATE arg to `read-file-name', so
-                          ;; we use `completing-read' even for file-name completion.  In that case, we
-                          ;; tack the `default-directory' onto each candidate, unless it is already an
-                          ;; absolute file name.  We also let completion functions (e.g. `S-TAB') know
-                          ;; that this is not really file-name completion.
-                          (completing-read
-                           "Match also (regexp): "
-                           (cond ((icicle-file-name-input-p)
-                                  (setq minibuffer-completing-file-name  nil) ; Disavow completing file.
-                                  (let ((dir  (icicle-file-name-directory-w-default
-                                               icicle-current-input)))
-                                    (mapcar (lambda (file)
-                                              (list (if (file-name-absolute-p file)
-                                                        file
-                                                      (concat dir file))))
-                                            icicle-completion-candidates)))
-                                 (icicle-whole-candidate-as-text-prop-p
-                                  (mapcar (lambda (cand)
-                                            (funcall icicle-get-alist-candidate-function (car cand)))
-                                          (icicle-filter-alist minibuffer-completion-table
-                                                               icicle-completion-candidates)))
-                                 (t
-                                  (mapcar #'list icicle-completion-candidates)))
-                           nil icicle-require-match-p nil minibuffer-history-variable)))))
+           (let* ((minibuffer-setup-hook  (cons ; Make sure new minibuffer is completion reference buf.
+                                           (lambda ()
+                                             (with-current-buffer (get-buffer-create "*Completions*")
+                                               (set (make-local-variable 'completion-reference-buffer)
+                                                    (window-buffer (active-minibuffer-window)))))
+                                           minibuffer-setup-hook))
+                  (current-candidates     icicle-completion-candidates)
+                  ;; Handle all Emacs versions the same way for file-name completion.  We can do that
+                  ;; because we use `icicle-must-pass-after-match-predicate', so we do not depend on
+                  ;; `read-file-name' needing a PREDICATE arg.
+                  (result                 (if (icicle-file-name-input-p)
+                                              (let ((icicle-must-pass-after-match-predicate
+                                                     `(lambda (c) (member c ',current-candidates))))
+                                                (read-file-name "Match also (regexp): "
+                                                                (icicle-file-name-directory-w-default
+                                                                 icicle-current-input)
+                                                                nil icicle-require-match-p))
+                                            (completing-read
+                                             "Match also (regexp): "
+                                             (if icicle-whole-candidate-as-text-prop-p
+                                                 (mapcar (lambda (cand)
+                                                           (funcall icicle-get-alist-candidate-function
+                                                                    (car cand)))
+                                                         (icicle-filter-alist
+                                                          minibuffer-completion-table
+                                                          icicle-completion-candidates))
+                                               (mapcar #'list icicle-completion-candidates))
+                                             nil icicle-require-match-p nil
+                                             minibuffer-history-variable))))
              ;; Normally, `icicle-narrow-candidates' is called from the minibuffer.
              ;; If not, just return the result read.
              (if (> (minibuffer-depth) 0)
