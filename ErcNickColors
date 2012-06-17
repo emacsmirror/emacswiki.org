@@ -145,3 +145,51 @@ add extra substrings to exclude as needed, and, if you're like me and run one em
 <pre>
 (add-hook 'after-make-frame-functions '(lambda (frame) (erc-set-colors-list)))
 </pre>
+
+==Option 5==
+
+Similar to 1 and 2, but generates the colors automatically (stole the luminescence function from the nicks highlighting module)
+<pre>
+(defmacro unpack-color (color red green blue &rest body)
+  `(let ((,red   (car ,color))
+         (,green (car (cdr ,color)))
+         (,blue  (car (cdr (cdr ,color)))))
+     ,@body))
+
+(defun rgb-to-html (color)
+  (unpack-color color red green blue
+   (concat "#" (format "%02x%02x%02x" red green blue))))
+
+(defun hexcolor-luminance (color)
+  (unpack-color color red green blue
+   (floor (+ (* 0.299 red) (* 0.587 green) (* 0.114 blue)))))
+
+(defun invert-color (color)
+  (unpack-color color red green blue
+   `(,(- 255 red) ,(- 255 green) ,(- 255 blue))))
+
+(defun erc-get-color-for-bar (nick dark)
+  (let* ((maxbound (* (* 255 255) 255))
+         (code     (round (mod (string-to-number (md5 (downcase nick)) 16) maxbound)))
+         (red      (mod code 255))
+         (blue     (mod (/ code 255) 255))
+         (green    (/ (/ code 255) 255))
+         (color    `(,red ,green ,blue)))
+    (rgb-to-html (if (if dark (< (hexcolor-luminance color) 85)
+                       (> (hexcolor-luminance color) 170))
+                     (invert-color color)
+                   color))))
+
+(defun erc-highlight-nicknames ()
+  (save-excursion
+    (goto-char (point-min))
+    (while (re-search-forward "\\w+" nil t)
+      (let* ((bounds (bounds-of-thing-at-point 'word))
+             (nick   (buffer-substring-no-properties (car bounds) (cdr bounds))))
+        (when (erc-get-server-user nick)
+          (put-text-property
+           (car bounds) (cdr bounds) 'face
+           (cons 'foreground-color (erc-get-color-for-bar nick 't))))))))
+
+(add-hook 'erc-insert-modify-hook 'erc-highlight-nicknames)
+</pre>
