@@ -36,7 +36,7 @@ This is for emacs version >= 22. Contribute your own.
   Align with respect to : (column) : M-x align-regexp RET :
   Fit window to buffer content     : C-x -
   Put >> in front of selected lines: C-x r t RET >>
-  Count words in buffer            : M-x how-many RET \<
+  Count words in buffer            : M-x count-words RET
   Compute square root of 2         : M-: (sqrt 2)
   Scroll down other window         : C-M-v
   Scroll up other window           : C-M-- C-M-v
