@@ -109,3 +109,145 @@ Didn't work for me out of the box. Setting todochiku-command to the full path (e
       (t (list "-i" icon "-t"
                (if sticky "0" (int-to-string (* 1000 todochiku-timeout)))
                title message))))
+
+== Growl for Windows, Snarl R2.5, etc. ==
+To support Growl for Windows, and Snarl R2.5,
+I merged http://justinsboringpage.blogspot.jp/2009/09/making-emacs-growl.html .
+
+ --- todochiku.el	2012-06-18 22:21:24.000000000 +0900
+ +++ b/todochiku.el	2012-06-18 22:37:00.000000000 +0900
+ @@ -1,6 +1,6 @@
+  ;;; todochiku.el --- A mode for interfacing with Growl, Snarl, and the like.
+ -(defconst todochiku-version "0.0.8")
+ -;; Version: 0.0.8
+ +(defconst todochiku-version "0.8.0")
+ +;; Version: 0.8.0
+  
+  ;; Copyright (c)2008 Jonathan Arkell. (by)(nc)(sa)  Some rights reserved.
+  ;; Author: Jonathan Arkell <jonnay@jonnay.net>
+ @@ -36,7 +36,7 @@
+  ;;
+  ;;  `todochiku-command'
+  ;;    Path to command for sending growl-like messages.
+ -;;    default = (case system-type (windows-nt "C:/Program Files/full phat/Snarl/exrras/sncmd/snarl_command.exe") (darwin "/usr/local/bin/growlnotify") (t "notify-send"))
+ +;;    default = (case system-type (windows-nt "C:/Program Files/full phat/Snarl/tools/heysnarl.exe") (darwin "/usr/local/bin/growlnotify") (t "notify-send"))
+  ;;  `todochiku-message-too'
+  ;;    Display todochiku as messages as well
+  ;;    default = nil
+ @@ -61,6 +61,9 @@
+  ;;  `todochiku-display-appts-in-window-too'
+  ;;    Whether or not pings from apt-disp-window should show up in emacs as well as growl.
+  ;;    default = (quote t)
+ +;;  `todochiku-appts-sticky'
+ +;;    Whether or not to make appt messages sticky.
+ +;;    default = (quote t)
+  
+  ;; This is more a smaller library package to start with.  Maybe it will grow one day.
+  
+ @@ -98,6 +101,15 @@
+  ;; - Build better backend support.
+  
+  ;;; CHANGELOG:
+ +;; V0.8.0 - Snarl R2.5.1 (comment-outed; see todochiku-get-arguments)
+ +;;        - better support for Growl for Windows
+ +;;        - Added todochiku-appts-sticky option.
+ +;; V0.7.1 - Made growl interactive
+ +;;        - todochiku-icon can take an icon symbol (eg 'bell) as well as url
+ +;;        - or filename
+ +;;        - Fixed argument format so it works with Growl for windows
+ +;;        - (by Justin Heyes-Jones) 
+ +;; V0.7   - Added YaOddMuse interface
+  ;; V0.0.8 - Fixed broken `todochiku-icons-directory' definition that made it impossible to change through Customize.
+  ;; V0.0.7b - Added support for sticky messages for libnotify and growl.
+  ;; V0.0.7  - Added YaOddMuse interface
+ @@ -129,15 +141,13 @@
+  
+  (defcustom todochiku-command 
+    (case system-type 
+ -    (windows-nt "C:/Program Files/full phat/Snarl/exrras/sncmd/snarl_command.exe")
+ +    (windows-nt "C:/Program Files/full phat/Snarl/tools/heysnarl.exe")
+      (darwin "/usr/local/bin/growlnotify")
+      (t "notify-send"))
+    "Path to command for sending growl-like messages.
+  If you do not have an external notification program, leave this blank.
+  For MacOS Growl: /usr/local/bin/growlnotify (a shot in the dark here)
+ -For Win32 Snarl: C:/Program Files/full phat/Snarl/extras/sncmd/sncmd.exe
+ -                 or
+ -                 C:/Program Files/full phat/Snarl/extras/sncmd/snarl_command.exe
+ +For Win32 Snarl: C:/Program Files/full phat/Snarl/tools/heysnarl.exe
+  For Unix-like systems libnotify: notify-send (or /usr/bin/notify-send)"
+    :type '(string)
+    :group 'todochiku)
+ @@ -209,6 +219,11 @@
+    :type '(boolean)
+    :group 'todochiku)
+  
+ +(defcustom todochiku-appts-sticky 't
+ +  "Whether or not to make appt messages sticky."
+ +  :type '(boolean)
+ +  :group 'todochiku)
+ +
+  (defface todochiku-message-face
+    '((default
+  	  :forground "black"
+ @@ -247,22 +262,45 @@
+  
+  (defun growl (title message)
+    "Alias for `todochiku-message'."
+ -  (todochiku-message title message ""))
+ +  (interactive "sTitle: \nsMessage: ")
+ +  (todochiku-message title message 'emacs))
+  
+  ;;*JasonMcBrayer backend
+  (defun todochiku-get-arguments (title message icon sticky)
+    "Gets todochiku arguments.
+  This would be better done through a customization probably."
+    (case system-type
+ -    ('windows-nt (list "/M" title message icon))
+ -    ('darwin (list title (if sticky "-s" "") "-m" message "--image" icon ))
+ +    ;('windows-nt (list "/M" title message icon)) ;; for old Snarl
+ +    ;;;; Growl for Windows
+ +    ('windows-nt (list "/a:Emacs"
+ +                       (format "/ai:%s" (shell-quote-argument (todochiku-icon 'emacs)))
+ +                       (format "/r:%s" (shell-quote-argument "General Notification"))
+ +                       (format "/n:%s" (shell-quote-argument "General Notification"))
+ +                       (format "/t:%s" (shell-quote-argument
+ +                                        (encode-coding-string title locale-coding-system)))
+ +                       (format "/i:%s" (shell-quote-argument (todochiku-icon icon)))
+ +                       (format "/s:%s" (if sticky "true" "false"))
+ +                       (encode-coding-string message locale-coding-system)))
+ +    ;;;; Snarl R2.5.1
+ +    ;; ('windows-nt (list (encode-coding-string
+ +    ;;                     (format "notify?icon=%s%s&title=%s&text=%s"
+ +    ;;                            (todochiku-icon icon)
+ +    ;;                            (if sticky "&timeout=0" "")
+ +    ;;                            title
+ +    ;;                            message)
+ +    ;;                     locale-coding-system)))
+ +    ('darwin
+ +     (if sticky (list "-n" "Emacs" "-a" "Emacs" "-t" title "-s" "-m" message "--image" icon)
+ +       (list "-n" "Emacs" "-a" "Emacs" "-t" title "-m" message "--image" icon)))
+      (t (list "-i" icon "-t"
+               (if sticky "0" (int-to-string (* 1000 todochiku-timeout)))
+               title message))))
+  
+  (defun todochiku-icon (icon)
+    "Pull out an actual icon from the variable `todochiku-icons'."
+ -  (expand-file-name (concat todochiku-icons-directory "/" (cdr (assoc icon todochiku-icons)))))
+ +  (if (symbolp icon)
+ +      (expand-file-name (concat todochiku-icons-directory "/" (cdr (assoc icon todochiku-icons))))
+ +    icon))
+  
+  (defun todochiku-in (message mins)
+    "Send a todochiku message in a set ammount of time. Can take a prefix arg for the number of mins to wait."
+ @@ -278,7 +316,9 @@
+    "A helper function to interface with appt-disp-window-function."
+    (todochiku-message (concat "Appt in " min-to-app)
+  					 (concat appt-msg "\n" min-to-app " Mins\n" new-time)
+ -					 (todochiku-icon 'alarm))
+ +					 (todochiku-icon 'alarm)
+ +                     todochiku-appts-sticky
+ +                     )
+    (if todochiku-display-appts-in-window-too
+  	  (appt-disp-window min-to-app new-time appt-msg)))
+  
