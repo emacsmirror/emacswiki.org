@@ -52,6 +52,10 @@ mv twittering-mode-2.0.0/twittering-mode.el ~/.emacs.d/site-lisp/
       (setq twittering-use-master-password t)
 }}}
 This requires GnuPG. And also, either EasyPG or alpaca.el (0.13) is necessary.
+* (Optional) You may need to point twittering-mode to your system's CA certificate bundle.  On CentOS 6 I added this to my `.emacs`:
+{{{
+      (setq twittering-cert-file "/etc/ssl/certs/ca-bundle.crt")
+}}}
 
 === Run twittering-mode ===
 # Execute `M-x twit` to run twittering-mode.
