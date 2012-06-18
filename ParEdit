@@ -107,7 +107,7 @@ Adding this code to your <tt>[InitFile .emacs]</tt> will set the modes as in the
 == ParEdit, and extreme barfarge and slurpage ==
 
 There are times when I'm in a list like '''(a b| c d e f g)''', and I know
-that want to barf out every following point from the current form.  Since
+that want to barf out everything following point from the current form.  Since
 ##C-}## doesn't take a prefix argument, there's really no quick way to do this
 with the standard paredit.el mode.
 
