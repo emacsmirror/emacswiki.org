@@ -1,7 +1,7 @@
 Ecasound is a very flexible audio multichannel
 recording and mixing tool by KaiVehmanen.
 
-Visit the [http://www.wakkanet.fi/~kaiv/ecasound/welcome.html Ecasound homepage] for more information.
+Visit the [http://www.eca.cx/ecasound/ Ecasound homepage] for more information.
 
 I am currently trying to write Emacs modes for the different
 Ecasound file formats, and for the ecasound Interactive Mode (ecasound -i)
