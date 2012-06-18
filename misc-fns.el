@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Mar  5 17:21:28 1996
 ;; Version: 21.0
-;; Last-Updated: Sat Apr 21 19:54:57 2012 (-0700)
+;; Last-Updated: Mon Jun 18 09:04:13 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 586
+;;     Update #: 590
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/misc-fns.el
 ;; Keywords: internal, unix, lisp, extensions, local
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -56,6 +56,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2012/06/18 dadams
+;;     notify-user-of-mode: Handle a consp value of mode-name (Emacs 22+).
 ;; 2012/04/21 dadams
 ;;     Added mode-ancestors.
 ;; 2012/02/29 dadams
@@ -350,8 +352,8 @@ Useful as a mode hook.  For example:
              (or (and notifying-user-of-mode-flag ; Global var controls display.
                       (interesting-buffer-p buffer)) ; Not internal buffer.
                  anyway))               ; Override.
-    (message "Buffer `%s' is in %s mode.   For info on the mode: `%s'."
-             buffer mode-name
+    (message "Buffer `%s' is in mode `%s'.   For info on the mode: `%s'."
+             buffer (if (consp mode-name) (car mode-name) mode-name)
              (substitute-command-keys "\\[describe-mode]"))))
 
 (defun mode-ancestors (mode)
