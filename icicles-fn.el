@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:53 2006
 ;; Version: 22.0
-;; Last-Updated: Sat Jun  9 17:30:13 2012 (-0700)
+;; Last-Updated: Mon Jun 18 09:29:20 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 13022
+;;     Update #: 13025
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-fn.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -4054,8 +4054,9 @@ check only the first char for the property."
   "Simple help string for BUFFER."
   (with-current-buffer buffer
     (if no-bytes-p
-        (format "Mode: %s" mode-name)
-      (format "Bytes: %d, Mode: %s" (buffer-size) mode-name))))
+        (format "Mode: %s" (if (fboundp 'format-mode-line) (format-mode-line mode-name) mode-name))
+      (format "Bytes: %d, Mode: %s"
+              (buffer-size) (if (fboundp 'format-mode-line) (format-mode-line mode-name) mode-name)))))
 
 (defun icicle-help-line-file (file)
   "Simple help string for FILE."
