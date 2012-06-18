@@ -2,6 +2,14 @@ Transient Mark mode gives you much of the standard selection-highlighting behavi
 
 In Transient Mark mode, the [[region]] is ''active'' only temporarily, and it is ''highlighted'' while it is active. You activate the region for each [[command]] that uses it: place the [[mark]], then move the [[cursor]] (and [[point]]).
 
+Some features in Emacs support extra behaviors or require it to be on.
+
+* CommentingCode with `M-;'
+* SearchAndReplace in a region
+* DeleteSelectionMode
+* MarkCommands that extend the region on subsequent calls
+* OrgMode
+
 Highlighting the region would not be appropriate without Transient Mark mode. Because the region always exists (as soon as the mark exists), without a notion of ''active'' region, some text would always be highlighted (except when mark = point), which would prove to be a nuisance.
 
 In Emacs 22 and later, `C-SPC C-SPC' activates Transient Mark mode only ''temporarily''. This means that even if you do not use Transient Mark mode, you can get the effect of it for the space of one command by doing `C-SPC C-SPC'.
