@@ -175,6 +175,8 @@ Evaluate the following after paredit is loaded:
   (paredit-annotate-mode-with-examples)
   (paredit-annotate-functions-with-examples)
 
+-- JohnWiegley
+
 == Discussion ==
 
 I downloaded %%ParEdit%% a long time ago, but I did not succeed in using it daily. I have two questions here:
