@@ -2,24 +2,27 @@ CC Mode is a powerful package that provides modes for editing C and C-like (C++,
 
 * http://cc-mode.sourceforge.net
 
-== Modes provided by CC Mode ==
+Modes provided by CC Mode:
 
 * CProgrammingLanguage Mode
-* CPlusPlusMode -- (real name C++ mode) 
+* CPlusPlusMode -- C++ mode
 * JavaMode
-* Objective-C Mode
+* ObjectiveCMode
 * IDL Mode
 * Pike Mode
 * AwkMode
 * ... several 3rd party derived modes.
 
-== Extensions to CC Mode ==
+Extensions to CC Mode:
 
 * QtMode -- Edit Qt C++ programs in emacs.
 Note: the standard C++ Mode recognises the QT macros (such as "slots"), and as done since CC Mode 5.30.  QtMode is probably very old.
 * CSharpMode - for C#
+* CCLookup - Searching CPP Reference (Documentation)
+** http://github.com/tsgates/cclookup/tree/master
+** http://taesoo.org/Opensource/CClookup
 
-== Using different styles according to source location ==
+Using different styles according to source location:
 
 This could probably do with some modifications to support more than one style type.  C++ code is also not affected.
 
@@ -32,7 +35,6 @@ This could probably do with some modifications to support more than one style ty
                                  (c-set-style "linux")))))
 
 [new]
-
 I do it like:
 
 {{{
@@ -59,37 +61,39 @@ I do it like:
  'c-mode-hook 'artm-guess-c-style)
 }}}
 
-== Key bindings ==
-* CCModeKeyBinding
-
-== Refactoring C code ==
+Refactoring C code:
 
 {{{
-;; move current function up
 (defun my-move-function-up ()
+  "Move current function up."
   (interactive)
   (save-excursion
     (c-mark-function)
-    (kill-region (region-beginning) (region-end))
-    (c-beginning-of-defun 1)
-    (yank)))
+    (let ((fun-beg (point))
+          (fun-end (mark)))
+      (transpose-regions (progn
+                           (c-beginning-of-defun 1)
+                           (point))
+                         (progn
+                           (c-end-of-defun 1)
+                           (point))
+                         fun-beg fun-end))))
 
-;; move current function down
 (defun my-move-function-down ()
+  "Move current function down."
   (interactive)
-  (save-excursion 
+  (save-excursion
     (c-mark-function)
-    (kill-region (region-beginning) (region-end))
-    (c-beginning-of-defun -1)
-    (yank)))
+    (let ((fun-beg (point))
+          (fun-end (mark)))
+      (transpose-regions fun-beg fun-end
+                         (progn
+                           (c-beginning-of-defun -1)
+                           (point))
+                         (progn
+                           (c-end-of-defun 1)
+                           (point))))))
 }}}
-Your comments are welcome.
-
---dfa
-
-Probably you you can use `delete-and-extract-region' instead of `kill-region' plus `yank'.
-
---ttn
 
 {{{
 (defun mark-c-scope-beg ()
@@ -132,73 +136,6 @@ There must be a better way to do this...
 [new]
 
 There are c-beginning-of-defun and c-end-of-defun, plus c-mark-function in cc-cmds.el  -- that might be it!
-
-== CCLookup: Searching CPP Reference (Documentation) ==
-* github: http://github.com/tsgates/cclookup/tree/master
-* web: http://taesoo.org/Opensource/CClookup
-
-
-== Objective C++ ==
-
-Emacs doesn't know about Objective C++. If you open a ".mm" file, it'll be in text-mode or lisp-mode or whatever your default is, which is not very useful.
-
-Unfortunately, until someone writes an objc++-mode, you have to choose between objc-mode and c++-mode. Either one is going to have incomplete syntax highlighting, but the latter also often gets confused with indentation. So, add something like this to your .emacs to open ".mm" files as objc-mode:
-<pre>
-(add-to-list 'auto-mode-alist '("\\.mm\\'" . objc-mode))
-</pre>
-
-=== Objective C headers ===
-
-The default mode for .h files is c-mode. This works reasonably well for C++ headers, although it has incomplete syntax highlighting, but it's much worse for Objective C, where you get things like parameters not lining up properly by their colons. You can handle this by adding a function to magic-mode-alist, like this:
-<pre>
-(add-to-list 'magic-mode-alist
-                `(,(lambda ()
-                     (and (string= (file-name-extension buffer-file-name) "h")
-                          (re-search-forward "@\\<interface\\>" 
-					     magic-mode-regexp-match-limit t)))
-                  . objc-mode))
-</pre>
-So, any .h file that defines an @interface is objc-mode instead of c-mode. (You could extend this to distinguish C++ from C by looking for class or template definitions, but I haven't bothered.)
-
-=== ff-find-other-file and friends ===
-
-find-file-other-file doesn't work right, for two reasons.
-
-The first problem is that cc-other-file-alist doesn't know about Obj-C++ (.mm) files, and doesn't know that .h files can be headers for .m and .mm files.  To fix that:
-<pre>
-(require 'cl)        ;; for the extended "push" macro
-(require 'find-file) ;; for the "cc-other-file-alist" variable
-(push ".m" (cadr (assoc "\\.h\\'" cc-other-file-alist)))
-(push ".mm" (cadr (assoc "\\.h\\'" cc-other-file-alist)))
-(push '("\\.m\\'" (".h")) cc-other-file-alist)
-(push '("\\.mm\\'" (".h")) cc-other-file-alist)
-</pre>
-
-The bigger problem is that the header-search algorithm doesn't understand frameworks. So, &lt;sys/types&gt; properly finds /usr/include/sys/types, but &lt;Foundation/Foundation.h&gt; fails. To fix that:
-<pre>
-(defadvice ff-get-file-name (around ff-get-file-name-framework
-				    (search-dirs 
-				     fname-stub 
-				     &optional suffix-list))
-  "Search for Mac framework headers as well as POSIX headers."
-   (or
-    (if (string-match "\\(.*?\\)/\\(.*\\)" fname-stub)
-	(let* ((framework (match-string 1 fname-stub))
-	       (header (match-string 2 fname-stub))
-	       (fname-stub (concat framework ".framework/Headers/" header)))
-	  ad-do-it))
-      ad-do-it))
-(ad-enable-advice 'ff-get-file-name 'around 'ff-get-file-name-framework)
-(ad-activate 'ff-get-file-name)
-</pre>
-Unfortunately, there are some libraries that effectively reimplement parts of find-file.el instead of using it, which means you may need to patch more functions if you use those libraries.
-
-Of course you'll also want to add the framework paths to cc-search-directories. I used to have code to extract the gcc defaults for both include directories and framework directories at startup, but that turns out to be not much better than using the built-in defaults, because it doesn't take into account the local values for the project(s) I work on. So now I just hard-code it in my .emacs, and then have project-specific files to eval as needed.
-<pre>
-(setq cc-search-directories '("." "../include" "/usr/include" "/usr/local/include/*"
-			      "/System/Library/Frameworks" "/Library/Frameworks"))
-</pre>
-
 
 ----
 CategoryProgramming
