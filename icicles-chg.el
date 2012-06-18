@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Sun Jun 17 08:42:40 2012 (-0700)
+;; Last-Updated: Mon Jun 18 09:33:52 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 8508
+;;     Update #: 8510
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-chg.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -1336,6 +1336,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-fn.el'")
 ;;
+;; 2012/06/18 dadams
+;;     icicle-help-line-buffer: Use format-mode-line if available.
 ;; 2012/06/09 dadams
 ;;     icicle-display-candidates-in-Completions, icicle-highlight-initial-whitespace:
 ;;       Use point-max if 1+ point is greater.
