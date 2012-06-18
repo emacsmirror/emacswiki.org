@@ -51,3 +51,6 @@ I've created something similar to this package, also called
 focuses only on configuration, not installation or updating.  It optionally
 links to el-get for that behavior.  Further, my version emphasizes startup
 performance. -- JohnWiegley
+
+[new]
+See also [[el-get]] -- dim
