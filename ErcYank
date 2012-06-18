@@ -16,4 +16,10 @@ ERC than the latest release (it requires `erc-nets' which was renamed
 ##(require 'erc-services)## should fix that.
 
 ----
+
+I wrote a different, much simpler (16 line function) version of this that uses
+[https://github.com/defunkt/gist.el gist.el], available at
+https://github.com/jwiegley/erc-yank. -- JohnWiegley
+
+----
 [[ERC]]
