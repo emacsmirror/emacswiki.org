@@ -45,3 +45,9 @@ particular pattern -- intended for giving it a downloads page such as
 on SourceForge, and picking the URL from that. I'll probably add SHA1/
 MD5 verirfication, too. 
 
+[new]
+I've created something similar to this package, also called
+[https://github.com/jwiegley/use-package use-package.el], except that it
+focuses only on configuration, not installation or updating.  It optionally
+links to el-get for that behavior.  Further, my version emphasizes startup
+performance. -- JohnWiegley
