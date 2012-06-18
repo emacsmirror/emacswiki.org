@@ -86,4 +86,4 @@ a buffer to switch to.  If it returns nil, ELSE-FORM is evaluated."
 
 ----
 
-I've updated this module to be a bit more modern: you can repeat the selection key to cycle through buffers matching the same type.  The newer version is at lisp:selectkey.el. -- JohnWiegley
+I've updated this module to be a bit more modern: you can repeat the selection key to cycle through buffers matching the same type.  The newer version is at Lisp:selectkey.el. -- JohnWiegley
