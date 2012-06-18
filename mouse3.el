@@ -7,9 +7,9 @@
 ;; Copyright (C) 2010-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 30 15:22:56 2010 (-0800)
 ;; Version: 
-;; Last-Updated: Sun Jan  1 14:05:14 2012 (-0800)
+;; Last-Updated: Mon Jun 18 09:44:38 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 1448
+;;     Update #: 1452
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/mouse3.el
 ;; Keywords: mouse menu keymap kill rectangle region
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -307,6 +307,8 @@
 ;; 
 ;;; Change Log:
 ;;
+;; 2012/06/18 dadams
+;;     mouse3-region-popup-menu: Use format-mode-line on mode-name.
 ;; 2011/12/19 dadams
 ;;     mouse3-dired-(un)mark-region-files, mouse3-dired-flag-region-files-for-deletion:
 ;;       Use line-(beginning|end)-position, not (beginning|end)-of-line + point.
@@ -1215,11 +1217,11 @@ for Emacs 23+.)"
                        ,@(and mouse3-region-popup-include-global-menus-flag (fboundp 'mouse-menu-bar-map)
                               (if (zerop (or (frame-parameter nil 'menu-bar-lines) 0))
                                   `((menu-bar-maps "Menu Bar" ,@(mouse-menu-bar-map)))
-                                ;; Alternative: a `@' prefix in the name makes Emacs splice
-                                ;; in the major-mode menunstead of having a submenu
-                                ;; with the major-mode name.
+                                ;; Alternative: a `@' prefix in the name makes Emacs splice in the
+                                ;; major-mode menu instead of having a submenu with the major-mode name.
                                 ;; `((major-mode-map "@" ,@(mouse-menu-major-mode-map)))
-                                `((major-mode-map ,mode-name ,@(mouse-menu-major-mode-map)))))
+                                `((major-mode-map ,(format-mode-line mode-name)
+                                   ,@(mouse-menu-major-mode-map)))))
                        ,@(and mouse3-region-popup-include-global-menus-flag (fboundp 'mouse-menu-bar-map)
                               '((sep1-global "--")))
 
