@@ -20,4 +20,7 @@ I just wrote my first Emacs major mode. It's a Cisco router configuration file m
 I've renamed the mode, souped it up a little and provided some more features that make it more useful. It's split into two files now and available as a tarball from my site [http://nibrahim.net.in/downloads/ios-config-mode.tar.gz]. 
 
 ----
+
+I recently started the http://emacsmovies.org website to produce screencasts describing how to use Emacs. 
+
 CategoryHomepage
