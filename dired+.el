@@ -7,9 +7,9 @@
 ;; Copyright (C) 1999-2012, Drew Adams, all rights reserved.
 ;; Created: Fri Mar 19 15:58:58 1999
 ;; Version: 21.2
-;; Last-Updated: Tue Jun 19 11:00:36 2012 (-0700)
+;; Last-Updated: Tue Jun 19 13:12:52 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 5961
+;;     Update #: 5991
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/dired+.el
 ;; Keywords: unix, mouse, directories, diredp, dired
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -102,6 +102,38 @@
 ;;  and they are available on submenu `Marked Here and Below' of the
 ;;  `Multiple' menu-bar menu.
 ;;
+;;  If you use library `Icicles' then you have these additional
+;;  commands/keys that act recursively on marked files.  They are in
+;;  the `Icicles' submenu of menu `Multiple' > `Marked Here and
+;;  Below'.
+;;
+;;  * `M-+ M-s M-s' or `M-s M-s m' - Use Icicles search (and its
+;;                  on-demand replace) on the marked files.
+;;
+;;  * Save the names of the marked files:
+;;
+;;    `M-+ C-M->' - Save as a completion set, for use during
+;;                  completion (e.g. with `C-x C-f').
+;;
+;;    `M-+ C->'   - Add marked names to the names in the current saved
+;;                  completion set.
+;;
+;;    `M-+ C-}'   - Save persistently to an Icicles cache file, for
+;;                  use during completion in another session.
+;;
+;;    `icicle-dired-save-marked-to-fileset-recursive' - Like `M-+
+;;                  C-}', but save persistently to an Emacs fileset.
+;;
+;;    `M-+ C-M-}' - Save to a Lisp variable.
+;;
+;;
+;;  In the other direction, if you have a saved set of file names then
+;;  you can use `C-M-<' (`icicle-dired-chosen-files-other-window') in
+;;  Dired to open a Dired buffer for just those files.  So you can
+;;  mark some files and subdirs in a hierarchy of Dired buffers, use
+;;  `M-+ C-}' to save their names persistently, then later use `C-{'
+;;  to retrieve them, and `C-M-<' (in Dired) to open Dired on them.
+;;
 ;;
 ;;  Inserted Subdirs, Multiple Dired Buffers, Files from Anywhere,...
 ;;  -----------------------------------------------------------------
@@ -129,7 +161,7 @@
 ;;    are interpreted relative to the value of `default-directory'.
 ;;    Use absolute file names if appropriate.
 ;;
-;;  Some other packages, such as `Bookmark+' and `Icicles', make it
+;;  Some other libraries, such as `Bookmark+' and `Icicles', make it
 ;;  easy to create or re-create Dired buffers that list specific files
 ;;  and have a particular set of markings.  This can be handy for
 ;;  using Dired buffers to manage projects.  In such use cases you
@@ -160,7 +192,7 @@
 ;;  insert any number of directories you choose interactively into a
 ;;  Dired ancestor directory listing.  If a directory you choose to
 ;;  insert already has its own Dired buffer, then its markings and
-;;  switches are preserved for the new subdirectory listing in the
+;;  switches are preserved for the new, subdirectory listing in the
 ;;  ancestor Dired buffer.
 ;;
 ;;
