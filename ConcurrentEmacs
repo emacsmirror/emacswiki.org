@@ -243,9 +243,19 @@ here's part of a discussion between PatrickAnderson and EliBarzilay about using 
 
 ----
 
-So what does everyone most want to do concurrently? Download mail in the background, render webpages while editing, font-lock with 8 CPUs at once, ..? Important question! -- LukeGorrie
+So what does everyone most want to do concurrently? Download mail in the
+background, render webpages while editing, font-lock with 8 CPUs at once, ..?
+Important question! -- LukeGorrie
 
-[new] Most of the times when I would need this is when doing work in dired that takes long time; it could be listings on a file server at another office, it can be "% g" searches I want to do, etc. Dired is a very handy tool for many variants of file operations, but sometimes I have to plan the work so that I don't need Emacs during the time dired works. -- MaDa
+[new] Most of the times when I would need this is when doing work in dired
+that takes long time; it could be listings on a file server at another office,
+it can be "% g" searches I want to do, etc. Dired is a very handy tool for
+many variants of file operations, but sometimes I have to plan the work so
+that I don't need Emacs during the time dired works. -- MaDa
+
+[new] Check out [https://github.com/jwiegley/emacs-async emacs-async], which
+has a `dired-async' module that can be used to make at least copying and
+moving to remote servers asynchronous. -- JohnWiegley
 
 ----
 
