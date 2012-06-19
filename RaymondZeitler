@@ -1,6 +1,6 @@
 Page for OrgMode user (formerly a PlannerMode user) RaymondZeitler.
 
-I use Emacs.  I've gone from Brief to Zeus with a tiny diversion to Vedit before switching on July 10, 2000. I'm currently running v23.2.1 on Windows XP Professional SP3.
+I use Emacs.  I've gone from Brief to Zeus with a tiny diversion to Vedit before switching on July 10, 2000. I'm currently running v23.4.1 on Windows 7 Professional SP1.
 
 My background is electrical engineering, but I spend more time designing photomasks and surface acoustic wave devices, and writing code in Visual Basic, Basic, NTScript, VBScript, Fortran and Perl.  My specialty is in applying the techniques of computer automation to design processes, data processing and computer maintenance.  Emacs is also my HTML editor.
 
@@ -10,17 +10,9 @@ But I decided to try OrgMode in June 2010.  When I hunkered down and followed th
 
 On June 8, 2010 I upgraded to Emacs 23.2, and I changed my .emacs to remove unnecessary packages (like gnuserv).  My OrgMode and PlannerMode settings reside in separate .orgmode and .plan files.  My .orgmode file also contains org-decrypt-to-kill-ring, which I wrote based on org-decrypt-entry.  My .plan (which I maintain here for historical reasons) contains a new version of "select-planner-directory", which I named "select-planner-project".
 
-I read the following Emacs mailing lists regularly:
-
- - http://lists.gnu.org/mailman/listinfo/help-emacs-windows
- - http://lists.gnu.org/mailman/listinfo/emacs-orgmode
- - https://mail.gna.org/listinfo/planner-el-discuss
- - https://mail.gna.org/listinfo/muse-el-discuss
- - http://lists.nongnu.org/mailman/listinfo/emacs-wiki-discuss (deprecated).
-
 I am an Officer for an IEEE Section in Region 1.
 
-I can be reached at r.zeitler&#64;ieee&#46;org.  But questions or comments that pertain to Emacs, Org or Planner should be posted to one of the above lists.
+I can be reached at r.zeitler&#64;ieee&#46;org.  But questions or comments that pertain to Emacs, Org or Planner should be directed to an expert.
 
 My .emacs:
 <pre>
