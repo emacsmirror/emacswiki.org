@@ -108,7 +108,7 @@ Place all these files in ~/elisp/.
 * Write to google to request a license-key (expect immediate automated reply) and a permission (don't really expect a reply, IME, YMMV) for your bot to serve google search results.  Check out  http://www.google.com/apis/ .   Put that license key into mybot's ~/.emacs.private, like this:
  (setq google-license-key "foodfhjdkjdfkMYLicensekeylkfgnjkfgkjfkj")
 
-* apt-get install w3-url-e21 
+* apt-get install w3-url-e21 (not available in more recent Ubuntu/Debian, see [[w3]] for installation instructions)
 
 * BTW, If you want to enable the silly magic-8-ball, add (setq fsi-m8b-p t) to its .emacs.  Then it answers any questions ending in ?? using a magic-8-ball.
 
