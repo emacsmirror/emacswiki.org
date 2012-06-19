@@ -1,11 +1,11 @@
 I frequently edit big space-separated text tables.  The hardest thing to to in emacs is edit table columns, as most emacs commands operate most efficiently in a line-oriented nature.
 
 I have tried to use the various other modes and functions for aligning text and working with tables as found in this wiki, but they really bog down when tables get big (hundreds or thousands of rows and columns) for one or more of the following reasons:  
-- most are regexp-based, which is slower than using split-string
-- some want you to enter the dimensions of the table, which I never know exactly
-- some mark up the table view with lines and separators, which I don't want
-- some want to store the file with metadata in it, whereas I just want the bare text in the saved file
-- some make you learn a whole new set of navigation keys and won't let you just edit the table
+* most are regexp-based, which is slower than using split-string
+* some want you to enter the dimensions of the table, which I never know exactly
+* some mark up the table view with lines and separators, which I don't want
+* some want to store the file with metadata in it, whereas I just want the bare text in the saved file
+* some make you learn a whole new set of navigation keys and won't let you just edit the table
 
 In contrast, I find that a simple transpose and align function allows emacs to function well as a table editor even in basic text mode.  Most importantly, once a table has been transposed, the powerful line-oriented editing commands can now operate effectively on columns.  Also, once the table has been aligned, even the builtin rectangle edit commands become more useful for editing columns.  
 
