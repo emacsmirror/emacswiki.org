@@ -23,67 +23,15 @@ a bbbb c       a    1 4
 
 Here is what to put in your init.el:
 
-    (load (expand-file-name "YOUR_FILE_PATH/transpar.el"))
+    (require 'transpar)
     (global-set-key (kbd "C-c C-x") 'transpose-paragraph-as-table)
 
-Here is the code (to be put in "transpar.el")
+Here is the code: <tt>[[transpar.el]]</tt>.
 
-    (defun transpose-paragraph-as-table ()
-      "Transpose and align current paragraph."
-      (interactive)
-      (transpose-region-as-table (paragraph-beginning-position) (paragraph-end-position)))
-    
-    (defun transpose-region-as-table (beg end)
-      "Transpose and align region."
-      (goto-char beg)
-      (insert (list-to-text (align-list (transpose-list (text-to-list (delete-and-extract-region beg end))))))
-      (goto-char beg))
-    
-    (defun list-to-text (arg)
-      "List to text.  Join with space and then with newline."
-      (mapconcat 'identity (mapcar '(lambda (row) (mapconcat 'identity row " ")) arg) "\n"))
-    
-    (defun text-to-list (arg)
-      "Text to list.  Separate by newline then by whitespace."
-      (mapcar '(lambda (row) (split-string row split-string-default-separators t)) (split-string arg "\n")))
-    
-    (defun transpose-list (rowlist)
-      "Transpose list.  Missing elements marked with periods."
-      (let (newlist collist)
-        (dotimes (col (apply 'max (mapcar 'length rowlist)))
-          (setq collist ())
-          (dolist (row rowlist)
-            (if (< col (length row)) (push (nth col row) collist)
-              (push "." collist)))
-          (push (reverse collist) newlist))
-        (reverse newlist)))
-    
-    (defun align-list (rowlist)
-      "Align list.  Determine column widths from max element size."
-      (let (widlist newlist collist)
-        (dotimes (col (apply 'max (mapcar 'length rowlist)))
-          (push (apply 'max (mapcar '(lambda (row) (length (nth col row))) rowlist)) widlist))
-        (setq widlist (reverse widlist))
-        (dolist (row rowlist)
-          (setq collist ())
-          (dotimes (col (length row))
-            (push (format (concat "%-" (number-to-string (nth col widlist)) "s") (nth col row)) collist))
-          (push (reverse collist) newlist))
-        (reverse newlist)))
-    
-    (defun paragraph-beginning-position ()
-      "Paragraph beginning position."
-      (save-excursion
-        (forward-paragraph)
-        (backward-paragraph)
-        (forward-word)
-        (line-beginning-position)))
-    
-    (defun paragraph-end-position ()
-      "Paragraph end position."
-      (save-excursion
-        (forward-paragraph)
-        (backward-word)
-        (line-end-position)))
-    
 
+
+----
+
+CategoryEditing
+CategoryAlignment
+CategoryTables
