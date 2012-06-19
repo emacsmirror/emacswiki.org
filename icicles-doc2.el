@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Sat Jun  9 17:43:40 2012 (-0700)
+;; Last-Updated: Tue Jun 19 13:15:24 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 28883
+;;     Update #: 28886
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-doc2.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -2426,6 +2426,12 @@
 ;;    fileset.  It does not matter how the file names were saved or
 ;;    which directories the files are in.  The set of saved file names
 ;;    can be persistent or just for the current Emacs session.
+;;
+;;  * You can use multi-command `icicle-dired-insert-as-subdir' to
+;;    insert directories you choose into a Dired ancestor directory
+;;    listing.  If a directory you choose already has its own Dired
+;;    buffer, then its markings and switches are preserved for the
+;;    new, subdirectory listing in the ancestor Dired buffer.
 ;;
 ;;  * You can use file-name completion when you use `!'  or `&' to
 ;;    execute a shell command.  This is an optional feature that is
