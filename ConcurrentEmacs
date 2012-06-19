@@ -253,9 +253,10 @@ it can be "% g" searches I want to do, etc. Dired is a very handy tool for
 many variants of file operations, but sometimes I have to plan the work so
 that I don't need Emacs during the time dired works. -- MaDa
 
-[new] Check out [https://github.com/jwiegley/emacs-async emacs-async], which
-has a `dired-async' module that can be used to make at least copying and
-moving to remote servers asynchronous. -- JohnWiegley
+[new] 
+Check out [https://github.com/jwiegley/emacs-async emacs-async], which has a
+`dired-async' module that can be used to make at least copying and moving to
+remote servers asynchronous. -- JohnWiegley
 
 ----
 
