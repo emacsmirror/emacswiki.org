@@ -109,7 +109,7 @@ The commented out lines are dispose settings for usenet folders ("^-") and Shimb
          (wl-message-id-domain . "smtp.gmail.com")
 
 
-         (wl-fcc . "%[Gmail]/Sent:myname/clear@imap.gmail.com:993!")
+         ("Fcc" . "%[Gmail]/Sent:myname/clear@imap.gmail.com:993!")
          (wl-draft-folder . "%[Gmail]/Draft:myname/clear@imap.gmail.com:993!")
          )
         ("work"
@@ -119,7 +119,7 @@ The commented out lines are dispose settings for usenet folders ("^-") and Shimb
          (wl-smtp-posting-server . "mail.company.com")
          (wl-local-domain . "mail.company.com")
 
-         (wl-fcc . "%INBOX.Sent:\"myname@company.com\"/clear@mail.company.com")
+         ("Fcc" . "%INBOX.Sent:\"myname@company.com\"/clear@mail.company.com")
          (wl-draft-folder . "%INBOX.Drafts:\"myname@company.com\"/clear@mail.company.com"))
         ))
 
