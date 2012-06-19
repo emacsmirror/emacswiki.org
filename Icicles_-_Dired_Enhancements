@@ -16,6 +16,11 @@
 * You can [[#OpenDiredOnSavedFiles|open Dired on saved file names]], that is, names that you previously saved as a completion candidates set or as an Emacs [[fileset]]. It does not matter how the file names were saved or which directories the files are in.  The set of saved file names
 can be persistent or just for the current Emacs session.
 
+* You can use [[multi-command]] '''`icicle-dired-insert-as-subdir'''' to insert directories you choose into a Dired ancestor directory
+listing.  If a directory you choose already has its own Dired
+buffer, then its markings and switches are preserved for the
+new, subdirectory listing in the ancestor Dired buffer.
+
 * You can use file-name [[completion]] when you use '''`##!##'''' or '''`##&##'''' to execute a [[#CompleteShellCommands|shell command]].  This is an optional feature that is
 ''not enabled by default''.  See also [[Icicles - Shell-Command Enhancements]].
 
