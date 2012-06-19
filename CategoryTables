@@ -4,3 +4,4 @@ Modes that allow you to easily create and edit tables. A table is consists of a 
 * OrgMode contains a minor mode which you can use independently. Activate it using `M-x orgtbl-mode'. Org Table Minor Mode allows formulas and integrates the [[Calc]], but recalculation of all formulas is not automatic.
 * SimpleEmacsSpreadsheet (SES) is even more focused on doing what a spreadsheet should do. Formulas and automatic recalculation are included.
 * ArrayMode comes with Emacs but is extremely primitive.
+* TransposeParagraphAsTable will treat any paragraph in a document as a space-separated text table and transpose and align it.
