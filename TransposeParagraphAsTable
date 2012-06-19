@@ -1,4 +1,4 @@
-I frequently edit big space-separated text tables.  The hardest thing to to in emacs is edit table columns, as most emacs commands operate most efficiently in a line-oriented nature.
+I (MarkArmstrong) frequently edit big space-separated text tables.  The hardest thing to to in emacs is edit table columns, as most emacs commands operate most efficiently in a line-oriented nature.
 
 I have tried to use the various other modes and functions for aligning text and working with tables as found in this wiki, but they really bog down when tables get big (hundreds or thousands of rows and columns) for one or more of the following reasons:  
 * most are regexp-based, which is slower than using split-string
@@ -23,8 +23,8 @@ a bbbb c       a    1 4
 
 Here is what to put in your init.el:
 
-    (require 'transpar)
-    (global-set-key (kbd "C-c C-x") 'transpose-paragraph-as-table)
+  (require 'transpar)
+  (global-set-key (kbd "C-c C-x") 'transpose-paragraph-as-table)
 
 Here is the code: <tt>[[transpar.el]]</tt>.
 
