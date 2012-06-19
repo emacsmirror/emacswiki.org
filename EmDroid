@@ -1,6 +1,6 @@
 Lisp:emdroid.el
 
-Android is a mobile platform backed by Google.  It runs on a linux / jvm stack.  See http://code.google.com/android/ for more details. 
+Android is a mobile platform backed by Google.  It runs on a linux / dalvik stack.  See http://code.google.com/android/ for more details. 
 
 Emdroid is Android for Emacs.  Like the Eclipse plugin, EmDroid will be a wrapper around the commandline tools. It is currently being developed by JonathanArkell.
 
