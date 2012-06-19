@@ -1,0 +1,87 @@
+I frequently edit big space-separated text tables.  The hardest thing to to in emacs is edit table columns, as most emacs commands operate most efficiently in a line-oriented nature.
+
+I have tried to use the various other modes and functions for aligning text and working with tables as found in this wiki, but they really bog down when tables get big (hundreds or thousands of rows and columns) for one or more of the following reasons:  
+ - most are regexp-based, which is slower than using split-string
+ - some want you to enter the dimensions of the table, which I never know exactly
+ - some mark up the table view with lines and separators, which I don't want
+ - some want to store the file with metadata in it, whereas I just want the bare text in the saved file
+ - some make you learn a whole new set of navigation keys and won't let you just edit the table
+
+In contrast, I find that a simple transpose and align function allows emacs to function well as a table editor even in basic text mode.  Most importantly, once a table has been transposed, the powerful line-oriented editing commands can now operate effectively on columns.  Also, once the table has been aligned, even the builtin rectangle edit commands become more useful for editing columns.  
+
+The below command will act upon the paragraph containing the point in any text document.  It will interpret that paragraph as a text table by splitting the lines using the split-string function.  It will then replace that paragraph with its transpose with columns left-aligned.  Column widths are determined by the maximum element size in each column.  If the table is not rectangular then missing elements are replaced with ".".
+
+I find no need for a separate align-only command since that can be achieved simply by transposing twice.
+
+Example:
+
+a bbbb c       a    1 4
+1 2       -->  bbbb 2 5
+4 5 6          c    . 6
+
+Here is what to put in your init.el:
+
+(load (expand-file-name "YOUR_FILE_PATH/transpar.el"))
+(global-set-key (kbd "C-c C-x") 'transpose-paragraph-as-table)
+
+Here is the code (to be put in "transpar.el")
+
+(defun transpose-paragraph-as-table ()
+  "Transpose and align current paragraph."
+  (interactive)
+  (transpose-region-as-table (paragraph-beginning-position) (paragraph-end-position)))
+
+(defun transpose-region-as-table (beg end)
+  "Transpose and align region."
+  (goto-char beg)
+  (insert (list-to-text (align-list (transpose-list (text-to-list (delete-and-extract-region beg end))))))
+  (goto-char beg))
+
+(defun list-to-text (arg)
+  "List to text.  Join with space and then with newline."
+  (mapconcat 'identity (mapcar '(lambda (row) (mapconcat 'identity row " ")) arg) "\n"))
+
+(defun text-to-list (arg)
+  "Text to list.  Separate by newline then by whitespace."
+  (mapcar '(lambda (row) (split-string row split-string-default-separators t)) (split-string arg "\n")))
+
+(defun transpose-list (rowlist)
+  "Transpose list.  Missing elements marked with periods."
+  (let (newlist collist)
+    (dotimes (col (apply 'max (mapcar 'length rowlist)))
+      (setq collist ())
+      (dolist (row rowlist)
+        (if (< col (length row)) (push (nth col row) collist)
+          (push "." collist)))
+      (push (reverse collist) newlist))
+    (reverse newlist)))
+
+(defun align-list (rowlist)
+  "Align list.  Determine column widths from max element size."
+  (let (widlist newlist collist)
+    (dotimes (col (apply 'max (mapcar 'length rowlist)))
+      (push (apply 'max (mapcar '(lambda (row) (length (nth col row))) rowlist)) widlist))
+    (setq widlist (reverse widlist))
+    (dolist (row rowlist)
+      (setq collist ())
+      (dotimes (col (length row))
+        (push (format (concat "%-" (number-to-string (nth col widlist)) "s") (nth col row)) collist))
+      (push (reverse collist) newlist))
+    (reverse newlist)))
+
+(defun paragraph-beginning-position ()
+  "Paragraph beginning position."
+  (save-excursion
+    (forward-paragraph)
+    (backward-paragraph)
+    (forward-word)
+    (line-beginning-position)))
+
+(defun paragraph-end-position ()
+  "Paragraph end position."
+  (save-excursion
+    (forward-paragraph)
+    (backward-word)
+    (line-end-position)))
+
+
