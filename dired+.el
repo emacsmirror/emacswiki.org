@@ -7,9 +7,9 @@
 ;; Copyright (C) 1999-2012, Drew Adams, all rights reserved.
 ;; Created: Fri Mar 19 15:58:58 1999
 ;; Version: 21.2
-;; Last-Updated: Thu Jun 14 08:15:25 2012 (-0700)
+;; Last-Updated: Tue Jun 19 08:28:01 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 5883
+;;     Update #: 5898
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/dired+.el
 ;; Keywords: unix, mouse, directories, diredp, dired
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -35,24 +35,33 @@
 ;;  Key bindings changed.  Menus redefined.  `diredp-mouse-3-menu'
 ;;  popup menu added.  New commands.  Some commands enhanced.
 ;;
+;;  All new functions, variables, and faces defined here have the
+;;  prefix `diredp-' (for Dired Plus) in their names.
+;;
 ;;  Additional suggested key bindings:
 ;;
 ;;    (define-key ctl-x-map   "d" 'diredp-dired-files)
 ;;    (define-key ctl-x-4-map "d" 'diredp-dired-files-other-window)
 ;;
-;;  Note: If you want a maximum or minimum fontification for Dired
-;;  mode, then customize option `font-lock-maximum-decoration'.  If
-;;  you want a different fontification level for Dired than for other
-;;  modes, you can do this too by customizing
+;;
+;;  Fontification Levels
+;;  --------------------
+;;
+;;  If you want a maximum or minimum fontification for Dired mode,
+;;  then customize option `font-lock-maximum-decoration'.  If you want
+;;  a different fontification level for Dired than for other modes,
+;;  you can do this too by customizing
 ;;  `font-lock-maximize-decoration'.
 ;;
-;;  Note:
 ;;
-;;    Most of the commands (such as `C' and `M-g') that operate on
-;;    marked files have the added feature here that multiple `C-u' use
-;;    not the files that are marked or the next or previous N files,
-;;    but *all* of the files in the Dired buffer.  Just what "all"
-;;    files means changes with the number of `C-u', as follows:
+;;  Act on All Files
+;;  ----------------
+;;
+;;  Most of the commands (such as `C' and `M-g') that operate on
+;;  marked files have the added feature here that multiple `C-u' use
+;;  not the files that are marked or the next or previous N files, but
+;;  *all* of the files in the Dired buffer.  Just what "all" files
+;;  means changes with the number of `C-u', as follows:
 ;;
 ;;    `C-u C-u'         - Use all files present, but no directories.
 ;;    `C-u C-u C-u'     - Use all files and dirs except `.' and `..'.
@@ -60,19 +69,41 @@
 ;;
 ;;    (More than four `C-u' act the same as two.)
 ;;
-;;    This feature can be particularly useful when you have a Dired
-;;    buffer with files from multiple directories.
+;;  This feature can be particularly useful when you have a Dired
+;;  buffer with files chosen from multiple directories.
 ;;
-;;    Note that this behavior is described only in the doc string of
-;;    function `dired-get-marked-files'.  It is *not* described in the
-;;    doc strings of the various commands, because that would require
-;;    redefining each command separately here.  Instead, we redefine
-;;    only macro `dired-map-over-marks' and function
-;;    `dired-get-filename' in order to achieve this effect.
+;;  Note that this behavior is described only in the doc string of
+;;  function `dired-get-marked-files'.  It is *not* described in the
+;;  doc strings of the various commands, because that would require
+;;  redefining each command separately here.  Instead, we redefine
+;;  only macro `dired-map-over-marks' and function
+;;  `dired-get-filename' in order to achieve this effect.
 ;;
 ;;
-;;  All new functions, variables, and faces defined here have the
-;;  prefix `diredp-' (for Dired Plus) in their names.
+;;  Act on Marked (or All) Files Here and Below
+;;  -------------------------------------------
+;;
+;;  The previous note does not apply to the `diredp-*-recursive'
+;;  commands defined here.  These commands act on the marked files in
+;;  the current Dired buffer, or all files in the directory if none
+;;  are marked.
+;;
+;;  And marked subdirectories are handled recursively in the same way.
+;;  That is, these commands act also on the marked files in any marked
+;;  subdirectories, recursively.  If there is no Dired buffer for a
+;;  given marked subdirectory then all its files and subdirs are
+;;  targeted.
+;;
+;;  With a prefix argument, all marks are ignored.  The commands act
+;;  on all files in the current Dired buffer and all of its
+;;  subdirectories, recursively.  This is why the previous note does
+;;  not apply to these commands: the prefix argument has a different
+;;  meaning.
+;;
+;;  All of the `diredp-*-recursive' commands are on the prefix key
+;;  `M-+', and they are available on submenu `Marked Here and Below'
+;;  of the `Multiple' menu-bar menu (`Operate' menu of vanilla Dired).
+;;
 ;;
 ;;
 ;;  Options defined here:
