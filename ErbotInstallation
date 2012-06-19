@@ -39,7 +39,7 @@ apt-get -u install [-t stable] emacs21-el. The package emacs21-el helps with ErB
 
 * mkdir ~/public_html/data, mkdir ~/.url, touch ~/.emacs.private
 
-* Optionally, ensure that the programs wget, w3m (used for training the bot), fortune are installed on your machine. Fsbot has functions for different types of fortunes, for access to all of them, (optionally) install all these (debian) fortunes packages: display-dhammapada, dopewars, fortunes, fortunes-min, fortunes-debian-hints, fortunes-mario, libfortune-perl, fortune-bofh-excuses, twisted-quotes. 
+* Optionally, ensure that the programs wget, w3m (used for training the bot), fortune are installed on your machine. Fsbot has functions for different types of fortunes, for access to all of them, (optionally) install all these (debian) fortunes packages: display-dhammapada, dopewars, fortunes, fortunes-min, fortunes-debian-hints, fortunes-mario, libfortune-perl, fortunes-bofh-excuses, twisted-quotes. 
 
 
 * <b> erbot files: </b> Fetch all the erbot files and the README to
