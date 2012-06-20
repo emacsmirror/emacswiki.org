@@ -8,3 +8,8 @@ determine whether these repetitions must be consecutive or not.  It's a
 small pattern detector, I guess.
 
 Loop detection is useful for the RepetitionDetectionPackage.
+
+
+
+----
+CategoryCode
