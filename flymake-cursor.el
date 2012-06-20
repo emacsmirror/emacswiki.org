@@ -6,7 +6,7 @@
 ;;            : Donald Curtis <dcurtis@milkbox.net>
 ;; Created    : May 2011
 ;; Modified   : March 2012
-;; Version    : 0.1.3
+;; Version    : 0.1.4
 ;; Keywords   : languages mode flymake
 ;; X-URL      : http://www.emacswiki.org/emacs/flymake-cursor.el
 ;; Last-saved : <2012-Mar-06 16:35:59>
@@ -81,10 +81,11 @@ message to display, so there is one ;)"
 (defun flyc/show-stored-error-now ()
   "Displays the stored error in the minibuffer."
   (interactive)
-  (if flyc--e-at-point
-      (progn
-        (message "%s" (flyc/maybe-fixup-message flyc--e-at-point))
-        (setq flyc--e-display-timer nil))))
+  (let ((editing-p (= (minibuffer-depth) 0)))
+   (if (and flyc--e-at-point editing-p)
+       (progn
+         (message "%s" (flyc/maybe-fixup-message flyc--e-at-point))
+         (setq flyc--e-display-timer nil)))))
 
 
 (defun flyc/-get-error-at-point ()
