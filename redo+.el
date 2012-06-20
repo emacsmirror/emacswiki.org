@@ -8,6 +8,7 @@
 ;; Author: Kyle E. Jones, February 1997
 ;;         S. Irie, March 2008
 ;; Keywords: lisp, extensions
+;; Version: 1.14
 
 ;; This program is free software; you can redistribute it and/or
 ;; modify it under the terms of the GNU General Public License as
