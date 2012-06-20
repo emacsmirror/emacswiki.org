@@ -7,9 +7,9 @@
 ;; Copyright (C) 2005-2012, Drew Adams, all rights reserved.
 ;; Created: Sat Jun 25 14:42:07 2005
 ;; Version:
-;; Last-Updated: Sun Jan  1 14:23:08 2012 (-0800)
+;; Last-Updated: Wed Jun 20 08:52:34 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 1757
+;;     Update #: 1766
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/facemenu+.el
 ;; Keywords: faces, extensions, convenience, menus, local
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -190,6 +190,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2012/06/20 dadams
+;;     facemenu-add-face: Updated to Emacs 24 definition.
 ;; 2011/11/26 dadams
 ;;     facemenu-read-color: Applied renaming of icicle-read-color to icicle-read-color-wysiwyg.
 ;;                          Use new arg order for hexrgb-read-color.
@@ -1536,8 +1538,10 @@ Also, close the *Faces* display."
   ;;
   ;; Also put text property `font-lock-ignore' on the highlighted text.
   ;;
-  (defun facemenu-add-face (face &optional start end)
-    "Add FACE to text between START and END.
+  (if (> emacs-major-version 23)
+      ;; Emacs 24
+      (defun facemenu-add-face (face &optional start end)
+        "Add FACE to text between START and END.
 If START is nil or START to END is empty, add FACE to next typed character
 instead.  For each section of that region that has a different face property,
 FACE will be consed onto it, and other faces that are completely hidden by
@@ -1548,53 +1552,115 @@ they are used to set the face information.
 As a special case, if FACE is `default', then the region is left with NO face
 text property.  Otherwise, selecting the default face would not have any
 effect.  See `facemenu-remove-face-function'."
-    (interactive "*xFace: \nr")
-    (if (and (eq face 'default)
-             (not (eq facemenu-remove-face-function t)))
-        (if facemenu-remove-face-function
-            (funcall facemenu-remove-face-function start end)
-          (if (and start (< start end))
-              (remove-text-properties start end '(face default))
-            (setq self-insert-face          'default
-                  self-insert-face-command  this-command)))
-      (if facemenu-add-face-function
-          (save-excursion
-            (if end (goto-char end))
+        (interactive "*xFace: \nr")
+        (cond
+          ((and (eq face 'default)
+                (not (eq facemenu-remove-face-function t)))
+           (if facemenu-remove-face-function
+               (funcall facemenu-remove-face-function start end)
+             (if (and start (< start end))
+                 (remove-text-properties start end '(face default))
+               (facemenu-set-self-insert-face 'default))))
+          (facemenu-add-face-function
+           (save-excursion
+             (if end (goto-char end))
+             (save-excursion
+               (if start (goto-char start))
+               (insert-before-markers
+                (funcall facemenu-add-face-function face end)))
+             (if facemenu-end-add-face
+                 (insert (if (stringp facemenu-end-add-face)
+                             facemenu-end-add-face
+                           (funcall facemenu-end-add-face face))))))
+          ((and start (< start end))
+           (let ((part-start start) part-end)
+             (while (not (= part-start end))
+               (setq part-end (next-single-property-change part-start 'face
+                                                           nil end))
+               (let ((prev (get-text-property part-start 'face)))
+                 (put-text-property part-start part-end 'face
+                                    (if (null prev)
+                                        face
+                                      (facemenu-active-faces
+                                       (cons face
+                                             (if (listp prev)
+                                                 prev
+                                               (list prev)))
+                                       ;; Specify selected frame because nil means to use the
+                                       ;; new-frame default settings, and those are usually nil.
+                                       (selected-frame))))
+                 (put-text-property part-start part-end 'font-lock-ignore t))
+               (setq part-start part-end))))
+          (t
+           (facemenu-set-self-insert-face
+            (if (eq last-command (cdr facemenu-self-insert-data))
+                (cons face (if (listp (car facemenu-self-insert-data))
+                               (car facemenu-self-insert-data)
+                             (list (car facemenu-self-insert-data))))
+              face))))
+        (unless (facemenu-enable-faces-p)
+          (message "Font-lock mode will override any faces you set in this buffer")))
+
+    ;; Emacs 22, 23
+    (defun facemenu-add-face (face &optional start end)
+      "Add FACE to text between START and END.
+If START is nil or START to END is empty, add FACE to next typed character
+instead.  For each section of that region that has a different face property,
+FACE will be consed onto it, and other faces that are completely hidden by
+that will be removed from the list.
+If `facemenu-add-face-function' and maybe `facemenu-end-add-face' are non-nil,
+they are used to set the face information.
+
+As a special case, if FACE is `default', then the region is left with NO face
+text property.  Otherwise, selecting the default face would not have any
+effect.  See `facemenu-remove-face-function'."
+      (interactive "*xFace: \nr")
+      (if (and (eq face 'default)
+               (not (eq facemenu-remove-face-function t)))
+          (if facemenu-remove-face-function
+              (funcall facemenu-remove-face-function start end)
+            (if (and start (< start end))
+                (remove-text-properties start end '(face default))
+              (setq self-insert-face          'default
+                    self-insert-face-command  this-command)))
+        (if facemenu-add-face-function
             (save-excursion
-              (if start (goto-char start))
-              (insert-before-markers
-               (funcall facemenu-add-face-function face end)))
-            (if facemenu-end-add-face
-                (insert (if (stringp facemenu-end-add-face)
-                            facemenu-end-add-face
-                          (funcall facemenu-end-add-face face)))))
-        (if (and start (< start end))
-            (let ((part-start  start)
-                  part-end)
-              (while (not (= part-start end))
-                (setq part-end  (next-single-property-change part-start 'face nil end))
-                (let ((prev  (get-text-property part-start 'face)))
-                  (put-text-property part-start part-end 'face
-                                     (if (null prev)
-                                         face
-                                       (facemenu-active-faces
-                                        (cons face
-                                              (if (listp prev)
-                                                  prev
-                                                (list prev)))
-                                        ;; Specify selected frame because nil means to use the
-                                        ;; new-frame default settings, and those are usually nil.
-                                        (selected-frame))))
-                  (put-text-property part-start part-end 'font-lock-ignore t))
-                (setq part-start  part-end)))
-          (setq self-insert-face  (if (eq last-command self-insert-face-command)
-                                      (cons face (if (listp self-insert-face)
-                                                     self-insert-face
-                                                   (list self-insert-face)))
-                                    face)
-                self-insert-face-command this-command))))
-    (unless (facemenu-enable-faces-p)
-      (message "Font-lock mode will override any faces you set in this buffer"))))
+              (if end (goto-char end))
+              (save-excursion
+                (if start (goto-char start))
+                (insert-before-markers
+                 (funcall facemenu-add-face-function face end)))
+              (if facemenu-end-add-face
+                  (insert (if (stringp facemenu-end-add-face)
+                              facemenu-end-add-face
+                            (funcall facemenu-end-add-face face)))))
+          (if (and start (< start end))
+              (let ((part-start  start)
+                    part-end)
+                (while (not (= part-start end))
+                  (setq part-end  (next-single-property-change part-start 'face nil end))
+                  (let ((prev  (get-text-property part-start 'face)))
+                    (put-text-property part-start part-end 'face
+                                       (if (null prev)
+                                           face
+                                         (facemenu-active-faces
+                                          (cons face
+                                                (if (listp prev)
+                                                    prev
+                                                  (list prev)))
+                                          ;; Specify selected frame because nil means to use the
+                                          ;; new-frame default settings, and those are usually nil.
+                                          (selected-frame))))
+                    (put-text-property part-start part-end 'font-lock-ignore t))
+                  (setq part-start  part-end)))
+            (setq self-insert-face  (if (eq last-command self-insert-face-command)
+                                        (cons face (if (listp self-insert-face)
+                                                       self-insert-face
+                                                     (list self-insert-face)))
+                                      face)
+                  self-insert-face-command this-command))))
+      (unless (facemenu-enable-faces-p)
+        (message "Font-lock mode will override any faces you set in this buffer")))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
