@@ -34,6 +34,8 @@
 
 (defalias 'loop-find 'loop-find-longest)
 
+(defvar loop-consecutive); to bind dynamically in the test
+
 (defun loop-find-shortest (lst loop-min-repetitions loop-min-length loop-max-length &optional loop-consecutive)
   "Find the shortest loop in LST.
 There must be at least LOOP-MIN-REPETITIONS repetitions,
@@ -231,7 +233,8 @@ Examples:
     (assert (= 1 (loop-count test '(1 2 3 4))))
     (assert (equal '(1 2 3 4 5) (loop-find-longest test 3 2 6 t))))
 
-  (let ((test '(1 2 3 4 5 a a 1 2 3 4 5 b b b 1 2 3 4 5 c 1 2 3 4 5 d 6 7)))
+  (let ((test '(1 2 3 4 5 a a 1 2 3 4 5 b b b 1 2 3 4 5 c 1 2 3 4 5 d 6 7))
+	(loop-consecutive nil))
     (assert (= 4 (loop-count test '(1 2 3 4 5))))
     (assert (= 4 (loop-count test '(1 2 3 4))))
     (assert (equal '(1 2) (loop-find-shortest test 3 2 200)))
