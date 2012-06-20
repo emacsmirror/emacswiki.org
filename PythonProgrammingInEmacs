@@ -8,9 +8,11 @@ There are three implementations of a Python mode for Emacs: python.el and python
 
 # ProgrammingWithPythonModeDotEl -- [https://launchpad.net/python-mode python-mode.el] comes from Python.
 
-# ProgrammingWithPythonDotElGallina -- []https://github.com/fgallina/python.el Fabián Ezequiel Gallina's new implementation of python.el
+# ProgrammingWithPythonDotElGallina -- []https://github.com/fgallina/python.el Fabián Ezequiel Gallina's new implementation of python.el (part of Emacs trunk as of [http://bzr.savannah.gnu.org/lh/emacs/trunk/revision/108614 revno 108614]) 
 
-(Gallina's mode tries to merge the functionality of the first two modes.)
+(Gallina's mode tries to merge the functionality of the first two modes.) 
+
+
 
 You may also find these pages useful:
 
