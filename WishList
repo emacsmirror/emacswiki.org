@@ -453,6 +453,8 @@ string including the beginning and quotes.")
 
 * I'd like if the EmacsDoctor wasn't such an ass all the time.
 
+* I wish the EmacsDoctor would help me find bugs in my code instead of just bugs in my psychology.  It should actually be pretty easy to help with [http://en.wikipedia.org/wiki/Rubber_duck_debugging Rubber Duck Debugging].
+
 * I'd like if Emacs has a forward-byte to move in buffer by n bytes and not characters.
 
 * I'd like Emacs keybindings for OpenOffice, something like [http://www.rath.ca/Misc/VBacs/ VBacs] does for Ms Word.
