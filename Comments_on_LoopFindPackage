@@ -1,0 +1,86 @@
+This is an old version.  The latest version is at Lisp:loops.el and has
+more features and optimizations.  This old version is preserved as it
+might help newbies learn something about Lisp programming: Quick
+prototypes that work, optimize later.
+
+<pre>
+;;; loops.el --- detect loops in lists
+
+;; Copyright (C) 2002  Alex Schroeder
+
+;; Author: Alex Schroeder <alex@gnu.org>
+;; Maintainer: Alex Schroeder <alex@gnu.org>
+;; Version: 1.0.0
+;; Keywords: lisp
+;; URL: http://www.emacswiki.org/cgi-bin/wiki.pl?LoopFind
+
+;; This file is not part of GNU Emacs.
+
+;; This is free software; you can redistribute it and/or modify it under
+;; the terms of the GNU General Public License as published by the Free
+;; Software Foundation; either version 2, or (at your option) any later
+;; version.
+
+;; This is distributed in the hope that it will be useful,
+;; but WITHOUT ANY WARRANTY; without even the implied warranty of
+;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+;; GNU General Public License for more details.
+
+;; You should have received a copy of the GNU General Public License
+;; along with GNU Emacs; see the file COPYING.  If not, write to the
+;; Free Software Foundation, Inc., 59 Temple Place - Suite 330,
+;; Boston, MA 02111-1307, USA.
+
+;;; Commentary:
+
+(require 'cl)
+
+(defvar loop-min-repetitions 3)
+(defvar loop-min-length 2)
+(defvar loop-max-length 10)
+
+(defun loop-find (lst)
+  "Find a loop in LST.
+There must be at least `loop-min-repetitions' repetitions,
+and a loop must be at least `loop-min-length' elements long,
+but no longer than `loop-max-length'.
+
+Example: (loop-find '(1 2 3 1 2 3 1 2 3 4 5 6))
+         => (1 2 3)"
+  (let ((len loop-min-length) result)
+    (while (and (< len loop-max-length)
+                (not result))
+      (let ((candidate (subseq lst 0 len)))
+        (if (>= (loop-count lst candidate len) loop-min-repetitions)
+            (setq result candidate)
+          (setq len (1+ len)))))
+    result))
+
+(defun loop-count (lst candidate len)
+  "Count how often LST contains CANDIDATE.
+This counts the repetitions of CANDIDATE at the beginning
+of LST."
+  (let ((count 0))
+    (while (and (>= (length lst) len)
+                (not (mismatch lst candidate :end1 len)))
+      (setq count (1+ count)
+            lst (nthcdr len lst)))
+    count))
+
+;;; Test
+
+(eval-when-compile
+  (let ((test '(1 2 3 4 5 1 2 3 4 5 1 2 3 4 5 1 2 3 4 5 6 7 8 9 0)))
+    (assert (= 4 (loop-count test '(1 2 3 4 5) 5)))
+    (loop-find test)))
+</pre>
+
+-----
+
+This is great and all but how likely is it that a newbie stumbles over
+this page?  Can we please remove this old version. -- JonasBernoulli
+
+-----
+
+The current version has a bug but the code is too complicated for me to debug.
+I'm happy to have found the old code! -- AlexSchroeder
