@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2012, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Fri Jun 15 15:16:00 2012 (-0700)
+;; Last-Updated: Thu Jun 21 09:03:15 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 14969
+;;     Update #: 14977
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-chg.el
 ;; Keywords: bookmarks, bookmark+
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -145,6 +145,8 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-1.el'")
 ;;
+;; 2012/06/21 dadams
+;;     Try to load-library bookmark+-mac.  Require it only if cannot load-library.
 ;; 2012/06/12 dadams
 ;;     bmkp-new-bookmark-default-names: 1. Test for DEFS at end is listp, not consp. 2. Return FNS.
 ;;     bmkp-completing-read-1: Removed empty-input loop - caller must provide a default or handle "".
@@ -786,6 +788,8 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-bmu.el'")
 ;;
+;; 2012/06/21 dadams
+;;     Try to load-library bookmark+-mac.  Require it only if cannot load-library.
 ;; 2012/06/15 dadams
 ;;     bookmark-bmenu-mode, bmkp-bmenu-mode-status-help: Improved doc string.
 ;;     bmkp-bmenu-show-or-edit-annotation: Corrected doc string: bookmark, not buffer.
@@ -1112,6 +1116,8 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-key.el'")
 ;;
+;; 2012/06/21 dadams
+;;     Try to load-library bookmark+-mac, for bmkp-menu-bar-make-toggle.
 ;; 2012/02/26 dadams
 ;;     Bind:
 ;;       bmkp-this-file/buffer-bmenu-list to C-x p , not C-x p ..
@@ -1268,6 +1274,8 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+.el'")
 ;;
+;; 2012/06/21 dadams
+;;     Try to load-library bookmark+-mac.  Require it only if cannot load-library.
 ;; 2012/02/26 dadams
 ;;     Version 3.4.0.
 ;; 2011/12/30 dadams
