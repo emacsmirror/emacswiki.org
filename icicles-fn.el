@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:53 2006
 ;; Version: 22.0
-;; Last-Updated: Mon Jun 18 09:29:20 2012 (-0700)
+;; Last-Updated: Thu Jun 21 09:40:38 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 13025
+;;     Update #: 13028
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-fn.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -5308,14 +5308,17 @@ those functions are not defined then return nil."
 (defun icicle-prefix-any-file-name-candidates-p (input)
   "Return non-nil if partial file-name INPUT has prefix completions."
   (let* ((minibuffer-completion-table      minibuffer-completion-table)
-         (minibuffer-completion-predicate  minibuffer-completion-predicate))
+         (minibuffer-completion-predicate  minibuffer-completion-predicate)
+         (pred                             (if (< emacs-major-version 23)
+                                               default-directory
+                                             minibuffer-completion-predicate)))
     (if (icicle-not-basic-prefix-completion-p)
         (icicle-completion-try-completion input minibuffer-completion-table
                                           minibuffer-completion-predicate
                                           (length input)
                                           (and (fboundp 'completion--field-metadata) ; Emacs 24
                                                (completion--field-metadata (field-beginning))))
-      (try-completion input minibuffer-completion-table default-directory))))
+      (try-completion input minibuffer-completion-table pred))))
 
 (defun icicle-apropos-any-candidates-p (input)
   "Return non-nil if current partial INPUT has apropos completions."
