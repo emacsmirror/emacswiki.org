@@ -54,7 +54,7 @@ A reminder: double escape is needed when using these expressions
 in Lisp code, e.g. <code>\\s(</code>
 
 
-== Over ways to handle parentheses and delimiters ==
+== Other ways to handle parentheses and delimiters ==
 
 Several other means have been devised to jump from parentheses to parentheses. Some are described below. 
 Other can be found in ParenthesisMatching.
