@@ -7,9 +7,9 @@
 ;; Copyright (C) 1999-2012, Drew Adams, all rights reserved.
 ;; Created: Fri Mar 19 15:58:58 1999
 ;; Version: 21.2
-;; Last-Updated: Wed Jun 20 17:04:04 2012 (-0700)
+;; Last-Updated: Thu Jun 21 11:12:31 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 6000
+;;     Update #: 6011
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/dired+.el
 ;; Keywords: unix, mouse, directories, diredp, dired
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -422,6 +422,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2012/06/21 dadams
+;;     diredp-nb-marked-in-mode-name: Add marker numbers regardless of name match.
 ;; 2012/06/20 dadams
 ;;     Added: diredp-nb-marked-in-mode-name, diredp-mode-line-(flagged|marked).  Added to hooks.
 ;;     Thx to Michael Heerdegen.
@@ -7415,47 +7417,48 @@ marked/flagged through the current line and M is the total number
 marked/flagged.
 
 Also abbreviate `mode-name', using \"Dired/\" instead of \"Dired by\"."
-    (save-match-data
-      (when (string-match "^[dD]ired \\(by \\)?\\(.*\\)" (format-mode-line mode-name))
-        (setq mode-name
-              `(,(format "Dired/%s"
-                         (match-string 2 mode-name))
-                (:eval (let* ((dired-marker-char  (if (eq ?D dired-marker-char)
-                                                      ?* ; `dired-do-flagged-delete' binds it.
-                                                    dired-marker-char))
-                              (marked-regexp      (dired-marker-regexp))
-                              (nb-marked          (count-matches marked-regexp
-                                                                 (point-min) (point-max))))
-                         (if (not (> nb-marked 0))
-                             ""
-                           (propertize
-                            (format " %s%d%c"
-                                    (save-excursion
-                                      (forward-line 0)
-                                      (if (looking-at (concat marked-regexp ".*"))
-                                          (format "%d/" (1+ (count-matches
-                                                             marked-regexp
-                                                             (point-min) (point))))
-                                        ""))
-                                    nb-marked dired-marker-char)
-                            'face 'diredp-mode-line-marked))))
-                (:eval (let* ((flagged-regexp  (let ((dired-marker-char  dired-del-marker))
-                                                 (dired-marker-regexp)))
-                              (nb-flagged      (count-matches flagged-regexp
-                                                              (point-min) (point-max))))
-                         (if (not (> nb-flagged 0))
-                             ""
-                           (propertize
-                            (format " %s%dD"
-                                    (save-excursion
-                                      (forward-line 0)
-                                      (if (looking-at (concat flagged-regexp ".*"))
-                                          (format "%d/" (1+ (count-matches
-                                                             flagged-regexp
-                                                             (point-min) (point))))
-                                        ""))
-                                    nb-flagged)
-                            'face 'diredp-mode-line-flagged)))))))))
+    (let ((mname  (format-mode-line mode-name)))
+      (setq mode-name
+            `(,(save-match-data
+                (if (string-match "^[dD]ired \\(by \\)?\\(.*\\)" mname)
+                    (format "Dired/%s" (match-string 2 mname))
+                  mname))
+              (:eval (let* ((dired-marker-char  (if (eq ?D dired-marker-char)
+                                                    ?* ; `dired-do-flagged-delete' binds it.
+                                                  dired-marker-char))
+                            (marked-regexp      (dired-marker-regexp))
+                            (nb-marked          (count-matches marked-regexp
+                                                               (point-min) (point-max))))
+                       (if (not (> nb-marked 0))
+                           ""
+                         (propertize
+                          (format " %s%d%c"
+                                  (save-excursion
+                                    (forward-line 0)
+                                    (if (looking-at (concat marked-regexp ".*"))
+                                        (format "%d/" (1+ (count-matches
+                                                           marked-regexp
+                                                           (point-min) (point))))
+                                      ""))
+                                  nb-marked dired-marker-char)
+                          'face 'diredp-mode-line-marked))))
+              (:eval (let* ((flagged-regexp  (let ((dired-marker-char  dired-del-marker))
+                                               (dired-marker-regexp)))
+                            (nb-flagged      (count-matches flagged-regexp
+                                                            (point-min) (point-max))))
+                       (if (not (> nb-flagged 0))
+                           ""
+                         (propertize
+                          (format " %s%dD"
+                                  (save-excursion
+                                    (forward-line 0)
+                                    (if (looking-at (concat flagged-regexp ".*"))
+                                        (format "%d/" (1+ (count-matches
+                                                           flagged-regexp
+                                                           (point-min) (point))))
+                                      ""))
+                                  nb-flagged)
+                          'face 'diredp-mode-line-flagged))))))))
 
   (defface diredp-mode-line-marked
       '((((background dark))
