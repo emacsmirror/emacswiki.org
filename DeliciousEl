@@ -30,6 +30,13 @@ down on the Delicious side. I fix issues as I bump into them and still use
 delicious-el (the tip of the dev branch to be precise) with the current API
 without problems, but consider yourself warned. -- Štěpán
 
+Update (2012-6-21): Nothing changed. The API (posts/add) still requires
+comma-separated tags when posting (specifically so that you can use tags
+containing spaces), but posts/get returns the tags space-separated, so there's
+no way to distinguish them. I have no words (I wrote to them about the problem
+last year when writing the paragraph above). Anyway, as long as your tags
+don't actually contain spaces you should be fine. -- Štěpán
+
 == Get it ==
 
 A Git repository can be found at http://gitorious.org/delicious-el.
