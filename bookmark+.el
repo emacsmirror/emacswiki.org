@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2012, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Sun Mar 18 12:54:27 2012 (-0700)
+;; Last-Updated: Thu Jun 21 08:28:00 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 14985
+;;     Update #: 14995
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+.el
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -18,7 +18,7 @@
 ;;
 ;;   `bookmark', `bookmark+-1', `bookmark+-bmu', `bookmark+-key',
 ;;   `bookmark+-lit', `bookmark+-mac', `cl', `dired', `dired-aux',
-;;   `dired-x', `ffap', `pp', `pp+'.
+;;   `dired-x', `ffap', `pp', `pp+', `thingatpt', `thingatpt+'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -170,7 +170,11 @@
 
 ;; Load Bookmark+ libraries.
 ;;
-(require 'bookmark+-mac)                ; Lisp macros.
+(or (condition-case nil
+        (load-library "bookmark+-mac")  ; Lisp macros.
+      (error nil))                      ; Use load-library to ensure latest .elc.
+    (require 'bookmark+-mac))           ; Require, so can load separately if not on `load-path'.
+
 (require 'bookmark+-lit nil t)          ; Optional (soft require) - no error if not found.  If you do
                                         ; not want to use `bookmark+-lit.el' then simply do not put
                                         ; that file in your `load-path'.
