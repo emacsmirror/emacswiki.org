@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2012, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 09:05:21 2010 (-0700)
-;; Last-Updated: Thu Jun 21 08:48:49 2012 (-0700)
+;; Last-Updated: Thu Jun 21 09:14:46 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 2181
+;;     Update #: 2184
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-bmu.el
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -136,7 +136,8 @@
 ;;    `bmkp-bmenu-mark-url-bookmarks',
 ;;    `bmkp-bmenu-mark-variable-list-bookmarks',
 ;;    `bmkp-bmenu-mark-w3m-bookmarks', `bmkp-bmenu-mouse-3-menu',
-;;    `bmkp-bmenu-mode-status-help', `bmkp-bmenu-omit',
+;;    `bmkp-bmenu-mode-status-help',
+;;    `bmkp-bmenu-nb-marked-in-mode-name', `bmkp-bmenu-omit',
 ;;    `bmkp-bmenu-omit-marked', `bmkp-bmenu-omit/unomit-marked',
 ;;    `bmkp-bmenu-paste-add-tags',
 ;;    `bmkp-bmenu-paste-add-tags-to-marked',
@@ -4218,6 +4219,59 @@ the same name."
   "Return a list with elements `face' or `font-lock-face' and VALUE.
 Starting with Emacs 22, the first element is `font-lock-face'."
   (list (if (> emacs-major-version 21) 'font-lock-face 'face) value))
+
+(when (> emacs-major-version 21)
+  (defun bmkp-bmenu-nb-marked-in-mode-name ()
+    "Add number of marked and flagged lines to mode name in the mode line.
+\(Flagged means flagged for deletion.)
+If the current line is marked/flagged and there are others
+marked/flagged after it then show `N/M', where N is the number
+marked/flagged through the current line and M is the total number
+marked/flagged."
+    (setq mode-name
+          `(,mode-name
+            (:eval (let* ((marked-regexp   "^>")
+                          (nb-marked       (count-matches marked-regexp
+                                                          (point-min) (point-max))))
+                     (if (not (> nb-marked 0))
+                         ""
+                       (propertize
+                        (format " %s%d>"
+                                (save-excursion
+                                  (forward-line 0)
+                                  (if (looking-at (concat marked-regexp ".*"))
+                                      (format "%d/" (1+ (count-matches marked-regexp
+                                                                       (point-min) (point))))
+                                    ""))
+                                nb-marked)
+                        'face 'bmkp-mode-line-marked))))
+            (:eval (let* ((flagged-regexp  "^D")
+                          (nb-flagged      (count-matches flagged-regexp
+                                                          (point-min) (point-max))))
+                     (if (not (> nb-flagged 0))
+                         ""
+                       (propertize
+                        (format " %s%dD"
+                                (save-excursion
+                                  (forward-line 0)
+                                  (if (looking-at (concat flagged-regexp ".*"))
+                                      (format "%d/" (1+ (count-matches flagged-regexp
+                                                                       (point-min) (point))))
+                                    ""))
+                                nb-flagged)
+                        'face 'bmkp-mode-line-flagged)))))))
+
+  (defface bmkp-mode-line-marked
+      '((t (:inherit 'bmkp->-mark)))
+    "*Face for marked number in mode line `mode-name' for Dired buffers."
+    :group 'Dired-Plus :group 'font-lock-highlighting-faces)
+
+  (defface bmkp-mode-line-flagged
+      '((t (:foreground "Red")))
+    "*Face for flagged number in mode line `mode-name' for Dired buffers."
+    :group 'Dired-Plus :group 'font-lock-highlighting-faces)
+
+  (add-hook 'bookmark-bmenu-mode-hook 'bmkp-bmenu-nb-marked-in-mode-name))
 
 
 ;;(@* "Sorting - Commands")
