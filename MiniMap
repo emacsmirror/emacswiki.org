@@ -137,6 +137,22 @@ Then I can bind single shortcut to minimap toggling, it's handy.
 
 ----
 
+...and for those of us who like to keep the width of our frames at 80 columns...
+
+<pre>
+(defun minimap-toggle ()
+  "Toggle minimap for current buffer."
+  (interactive)
+  (if (null minimap-bufname)
+      (progn (minimap-create)
+	     (set-frame-width (selected-frame) 100))
+    (progn (minimap-kill)
+	   (set-frame-width (selected-frame) 80))))
+</pre>
+
+I have this set to <f7>... It is quite convenient since I don't have to resize my window each time.
+
+----
 I have updated minimap.el to use a single dedicated minimap sidebar window instead of new windows per buffer. Minimap now updates based on what the currently selected buffer is. You can find it here: https://github.com/dustinlacewell/emacs-minimap
 
 Current bugs include semantic overlays disappearing when the current buffer changes.
