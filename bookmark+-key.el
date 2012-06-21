@@ -84,6 +84,8 @@
 
 ;;;;;;;;;;;;;;;;;;;;;
 
+(require 'bookmark+-mac)
+;; bmkp-menu-bar-make-toggle
 
 ;; Some general Renamings.
 ;;
