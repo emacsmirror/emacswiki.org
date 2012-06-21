@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2012, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Mon Jun 11 19:49:30 2012 (-0700)
+;; Last-Updated: Thu Jun 21 09:28:42 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 14568
+;;     Update #: 14574
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-doc.el
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search,
 ;;           info, url, w3m, gnus
@@ -382,6 +382,10 @@
 ;;
 ;;     - You can edit a bookmark: its name and file name/location, its
 ;;       tags, or its complete defining internal Lisp record.
+;;
+;;     - The mode name in the mode line shows the number of bookmarks
+;;       that are marked (`>') and the number that are flagged for
+;;       deletion (`D').
 ;;
 ;;  * Multiple bookmark files.
 ;;
