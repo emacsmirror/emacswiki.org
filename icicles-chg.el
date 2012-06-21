@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Mon Jun 18 09:33:52 2012 (-0700)
+;; Last-Updated: Thu Jun 21 09:55:19 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 8510
+;;     Update #: 8512
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-chg.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -648,7 +648,6 @@
 ;; 2012/04/23 dadams
 ;;     icicle-search-dired-marked: Use diredp-get-files.  Raise error if Dired+ not present.
 ;;     Moved other icicle-search-dired-* functions to Dired+ as diredp-*.
-;;
 ;;     icicle-search-dired-get-files:
 ;;       If user answers no, then pick up only the marked files here 9and all files underneath).
 ;;     icicle-search-dired-get-files-for-dir: A no answer does not change what happens for top dir.
@@ -1336,6 +1335,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-fn.el'")
 ;;
+;; 2012/06/21 dadams
+;;     icicle-prefix-any-file-name-candidates-p: updated for Emacs 23+ (file-name PRED).
 ;; 2012/06/18 dadams
 ;;     icicle-help-line-buffer: Use format-mode-line if available.
 ;; 2012/06/09 dadams
