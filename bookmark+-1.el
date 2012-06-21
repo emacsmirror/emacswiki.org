@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2012, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 13:43:55 2010 (-0700)
-;; Last-Updated: Thu Jun 14 08:48:22 2012 (-0700)
+;; Last-Updated: Thu Jun 21 08:57:11 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 5696
+;;     Update #: 5704
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-1.el
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -594,7 +594,10 @@
 (defalias 'bmkp-bookmark-name-from-record 'bookmark-name-from-full-record)
 
 
-(require 'bookmark+-mac)
+(or (condition-case nil
+        (load-library "bookmark+-mac")  ; Use load-library to ensure latest .elc.
+      (error nil))
+    (require 'bookmark+-mac))           ; Require, so can load separately if not on `load-path'.
 ;; bmkp-define-cycle-command, bmkp-define-file-sort-predicate, bmkp-menu-bar-make-toggle,
 ;; bmkp-replace-regexp-in-string, bmkp-with-output-to-plain-temp-buffer
 
