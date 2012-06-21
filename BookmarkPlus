@@ -250,7 +250,6 @@ This is buffer `##*Bookmark List*##', aka the bookmark "menu list" (a misnomer),
      current bookmark-list sort order.  For Emacs 23 and later, you can even search
      incrementally (`M-s a C-s', or `M-s a C-M-s' for [[regexp]]).
 
-
 * You can use '''`##M-d >##'''' to ''open [[Dired]]'' for just the local file bookmarks that are marked (`##>##').
 
 * If you use Emacs on Microsoft Windows, you can open bookmarks
@@ -264,7 +263,8 @@ makes it easy to update a nearby bookmark (e.g. relocate it).  With a [[numeric 
 
 * You can ''edit'' a bookmark: its name and file name/location, its tags, or its complete defining internal Lisp record.
 
-
+* The mode name in the mode line shows the number of bookmarks that
+are marked (`##>##') and the number that are flagged for deletion (`##D##').
 
 
 
