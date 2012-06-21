@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2012, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 09:05:21 2010 (-0700)
-;; Last-Updated: Thu Jun 21 09:14:46 2012 (-0700)
+;; Last-Updated: Thu Jun 21 10:21:49 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 2184
+;;     Update #: 2185
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-bmu.el
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -4264,12 +4264,12 @@ marked/flagged."
   (defface bmkp-mode-line-marked
       '((t (:inherit 'bmkp->-mark)))
     "*Face for marked number in mode line `mode-name' for Dired buffers."
-    :group 'Dired-Plus :group 'font-lock-highlighting-faces)
+    :group 'bookmark-plus :group 'font-lock-highlighting-faces)
 
   (defface bmkp-mode-line-flagged
       '((t (:foreground "Red")))
     "*Face for flagged number in mode line `mode-name' for Dired buffers."
-    :group 'Dired-Plus :group 'font-lock-highlighting-faces)
+    :group 'bookmark-plus :group 'font-lock-highlighting-faces)
 
   (add-hook 'bookmark-bmenu-mode-hook 'bmkp-bmenu-nb-marked-in-mode-name))
 
