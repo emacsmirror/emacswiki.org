@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2012, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Thu Jun 21 09:03:15 2012 (-0700)
+;; Last-Updated: Thu Jun 21 09:14:16 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 14977
+;;     Update #: 14980
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-chg.el
 ;; Keywords: bookmarks, bookmark+
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -789,6 +789,7 @@
 ;;;(@* "CHANGE LOG FOR `bookmark+-bmu.el'")
 ;;
 ;; 2012/06/21 dadams
+;;     Added: bmkp-bmenu-nb-marked-in-mode-name.  Added to bookmark-bmenu-mode-hook.
 ;;     Try to load-library bookmark+-mac.  Require it only if cannot load-library.
 ;; 2012/06/15 dadams
 ;;     bookmark-bmenu-mode, bmkp-bmenu-mode-status-help: Improved doc string.
