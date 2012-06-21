@@ -162,4 +162,8 @@ Print sequences with format string. -- [[rubikitch]]
                     "\n")))
     (end-of-line))
 ----
+
+As of Emacs 24.1, there's a new command `C-x r N' (`rectangle-number-lines'), that can be used to number the lines.  Just mark a vertical strip of 1 char wide rectangle and hit `C-x r N'and you're good.  `C-u' prefix works to start from any number you choose.
+
+
 CategoryEditing
