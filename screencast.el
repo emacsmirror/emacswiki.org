@@ -3,7 +3,7 @@
 ;; Copyright (C) 2009 ESBEN Andreasen <esbenandreasen@gmail.com>
 
 ;; Authors: Esben Andreasen <esbenandreasen@gmail.com>
-
+;; Version: 1.1
 ;; Keywords: demo screencast
 
 ;; This file is not an official part of Emacs.
@@ -776,3 +776,4 @@ screencasts version number to try it out.")))
 ;;;; END DOCUMENTATION
 (provide 'screencast)
 
+;;; screencast.el ends here
