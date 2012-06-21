@@ -7,9 +7,9 @@
 ;; Copyright (C) 1999-2012, Drew Adams, all rights reserved.
 ;; Created: Fri Mar 19 15:58:58 1999
 ;; Version: 21.2
-;; Last-Updated: Tue Jun 19 13:12:52 2012 (-0700)
+;; Last-Updated: Wed Jun 20 17:04:04 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 5991
+;;     Update #: 6000
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/dired+.el
 ;; Keywords: unix, mouse, directories, diredp, dired
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -210,6 +210,7 @@
 ;;    `diredp-file-suffix', `diredp-flag-mark',
 ;;    `diredp-flag-mark-line', `diredp-get-file-or-dir-name',
 ;;    `diredp-ignored-file-name', `diredp-link-priv',
+;;    `diredp-mode-line-flagged', `diredp-mode-line-marked'
 ;;    `diredp-no-priv', `diredp-number', `diredp-other-priv',
 ;;    `diredp-rare-priv', `diredp-read-priv', `diredp-symlink',
 ;;    `diredp-write-priv'.
@@ -291,7 +292,8 @@
 ;;    `diredp-mouse-mark-region-files', `diredp-mouse-mark/unmark',
 ;;    `diredp-mouse-unmark', `diredp-mouse-upcase',
 ;;    `diredp-mouse-view-file',
-;;    `diredp-multiple-w32-browser-recursive', `diredp-omit-marked',
+;;    `diredp-multiple-w32-browser-recursive',
+;;    `diredp-nb-marked-in-mode-name', `diredp-omit-marked',
 ;;    `diredp-omit-unmarked', `diredp-paste-add-tags-this-file',
 ;;    `diredp-paste-replace-tags-this-file', `diredp-print-this-file',
 ;;    `diredp-relsymlink-this-file',
@@ -420,6 +422,9 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2012/06/20 dadams
+;;     Added: diredp-nb-marked-in-mode-name, diredp-mode-line-(flagged|marked).  Added to hooks.
+;;     Thx to Michael Heerdegen.
 ;; 2012/06/14 dadams
 ;;     dired-mark-pop-up: Wrap save-excursion around window/frame deletion.
 ;;     dired-do-redisplay: Updated wrt Emacs 23: bind, (then run) dired-after-readin-hook.
@@ -7399,6 +7404,75 @@ Bookmark marked and create bookmark-file bookmark
 * \\[diredp-do-bookmark-in-bookmark-file]\t- Bookmark marked, in specific bookmark file
 ")
     )))
+
+(when (> emacs-major-version 21)
+  (defun diredp-nb-marked-in-mode-name ()
+    "Add number of marked and flagged lines to mode name in the mode line.
+\(Flagged means flagged for deletion.)
+If the current line is marked/flagged and there are others
+marked/flagged after it then show `N/M', where N is the number
+marked/flagged through the current line and M is the total number
+marked/flagged.
+
+Also abbreviate `mode-name', using \"Dired/\" instead of \"Dired by\"."
+    (save-match-data
+      (when (string-match "^[dD]ired \\(by \\)?\\(.*\\)" (format-mode-line mode-name))
+        (setq mode-name
+              `(,(format "Dired/%s"
+                         (match-string 2 mode-name))
+                (:eval (let* ((dired-marker-char  (if (eq ?D dired-marker-char)
+                                                      ?* ; `dired-do-flagged-delete' binds it.
+                                                    dired-marker-char))
+                              (marked-regexp      (dired-marker-regexp))
+                              (nb-marked          (count-matches marked-regexp
+                                                                 (point-min) (point-max))))
+                         (if (not (> nb-marked 0))
+                             ""
+                           (propertize
+                            (format " %s%d%c"
+                                    (save-excursion
+                                      (forward-line 0)
+                                      (if (looking-at (concat marked-regexp ".*"))
+                                          (format "%d/" (1+ (count-matches
+                                                             marked-regexp
+                                                             (point-min) (point))))
+                                        ""))
+                                    nb-marked dired-marker-char)
+                            'face 'diredp-mode-line-marked))))
+                (:eval (let* ((flagged-regexp  (let ((dired-marker-char  dired-del-marker))
+                                                 (dired-marker-regexp)))
+                              (nb-flagged      (count-matches flagged-regexp
+                                                              (point-min) (point-max))))
+                         (if (not (> nb-flagged 0))
+                             ""
+                           (propertize
+                            (format " %s%dD"
+                                    (save-excursion
+                                      (forward-line 0)
+                                      (if (looking-at (concat flagged-regexp ".*"))
+                                          (format "%d/" (1+ (count-matches
+                                                             flagged-regexp
+                                                             (point-min) (point))))
+                                        ""))
+                                    nb-flagged)
+                            'face 'diredp-mode-line-flagged)))))))))
+
+  (defface diredp-mode-line-marked
+      '((((background dark))
+         (:foreground "#6B6BFFFF2C2C")) ; a bright green
+        (t (:foreground "DarkViolet")))
+    "*Face for marked number in mode line `mode-name' for Dired buffers."
+    :group 'Dired-Plus :group 'font-lock-highlighting-faces)
+
+  (defface diredp-mode-line-flagged
+      '((t (:foreground "Red")))
+    "*Face for flagged number in mode line `mode-name' for Dired buffers."
+    :group 'Dired-Plus :group 'font-lock-highlighting-faces)
+
+
+  (add-hook 'dired-after-readin-hook 'diredp-nb-marked-in-mode-name)
+  ;; This one is needed for `find-dired', because it does not call `dired-readin'.
+  (add-hook 'dired-mode-hook         'diredp-nb-marked-in-mode-name))
 
 ;;;###autoload
 (defun diredp-send-bug-report ()
