@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Sep 11 10:29:56 1995
 ;; Version: 21.0
-;; Last-Updated: Sun Jan 15 16:10:06 2012 (-0800)
+;; Last-Updated: Thu Jun 21 10:43:21 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 2777
+;;     Update #: 2779
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/buff-menu+.el
 ;; Keywords: mouse, local, convenience
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -78,6 +78,7 @@
 ;;  Other functions defined here:
 ;;
 ;;    `Buffer-menu-fontify-and-adjust-frame',
+;;    `buffer-menu-nb-marked-in-mode-name',
 ;;    `buffer-menu-set-default-value'.
 ;;
 ;;
@@ -142,6 +143,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2012/06/21 dadams
+;;     Added: buffer-menu-nb-marked-in-mode-name.
 ;; 2012/01/15 dadams
 ;;     Rename commands to capitalized Buffer-menu from buffer-menu.
 ;;     Bind Buffer-menu-toggle-(file|mode|time)-column to M-f, M-m, M-t.
@@ -1798,6 +1801,61 @@ Buffers can be marked via commands `\\<Buffer-menu-mode-map>\
               (progn (delete-char 1) (insert ? ))
             (delete-region (point) (progn (forward-line 1) (point)))
             (unless (bobp) (forward-char -1))))))))
+
+(when (> emacs-major-version 21)
+  (defun buffer-menu-nb-marked-in-mode-name ()
+    "Add number of marked and flagged lines to mode name in the mode line.
+\(Flagged means flagged for deletion.)
+If the current line is marked/flagged and there are others
+marked/flagged after it then show `N/M', where N is the number
+marked/flagged through the current line and M is the total number
+marked/flagged."
+    (setq mode-name
+          `(,mode-name
+            (:eval (let* ((marked-regexp   "^>")
+                          (nb-marked       (count-matches marked-regexp
+                                                          (point-min) (point-max))))
+                     (if (not (> nb-marked 0))
+                         ""
+                       (propertize
+                        (format " %s%d>"
+                                (save-excursion
+                                  (forward-line 0)
+                                  (if (looking-at (concat marked-regexp ".*"))
+                                      (format "%d/" (1+ (count-matches marked-regexp
+                                                                       (point-min) (point))))
+                                    ""))
+                                nb-marked)
+                        'face 'buffer-menu-mode-line-marked))))
+            (:eval (let* ((flagged-regexp  "^D")
+                          (nb-flagged      (count-matches flagged-regexp
+                                                          (point-min) (point-max))))
+                     (if (not (> nb-flagged 0))
+                         ""
+                       (propertize
+                        (format " %s%dD"
+                                (save-excursion
+                                  (forward-line 0)
+                                  (if (looking-at (concat flagged-regexp ".*"))
+                                      (format "%d/" (1+ (count-matches flagged-regexp
+                                                                       (point-min) (point))))
+                                    ""))
+                                nb-flagged)
+                        'face 'buffer-menu-mode-line-flagged)))))))
+
+  (defface buffer-menu-mode-line-marked
+      ;; '((t (:inherit buffer-menu-view-mark)))
+      '((t (:foreground "Blue")))
+    "*Face for marked number in mode line `mode-name' for Dired buffers."
+    :group 'Buffer-Menu-Plus :group 'font-lock-highlighting-faces)
+
+  (defface buffer-menu-mode-line-flagged
+      ;;  '((t (:inherit buffer-menu-delete-mark)))
+      '((t (:foreground "Red")))
+    "*Face for flagged number in mode line `mode-name' for Dired buffers."
+    :group 'Buffer-Menu-Plus :group 'font-lock-highlighting-faces)
+
+  (add-hook 'buffer-menu-mode-hook 'buffer-menu-nb-marked-in-mode-name))
 
 ;;;;;;;;;;;;;;;;;;;;;;;
 
