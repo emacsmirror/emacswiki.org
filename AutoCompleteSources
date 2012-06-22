@@ -236,20 +236,14 @@ An auto-complete source for the caml and tuareg modes, gets symbols from caml-he
 	  (when (string-match "\\([A-Za-z_][A-Za-z0-9_']*\\)[.]" prefix)
 	    (match-string 1 prefix))))
     (if module-name
-	(let ((modules
-	       (and (assoc module-name (ocaml-module-alist))
-		    (list (assoc module-name (ocaml-module-alist))))))
-	  (iter
-	   '(lambda (mod)
-	      (iter '(lambda (sym) (add-to-list 'candidates (concat (car mod) "." sym)))
-		    (ocaml-module-symbols mod)))
-	   modules))
+        (iter '(lambda (sym) (push (concat module-name "." sym) candidates))
+              (ocaml-module-symbols (assoc module-name (ocaml-module-alist))))
       (iter
        '(lambda (mod)
-	  (iter '(lambda (sym) (add-to-list 'candidates sym))
+	  (iter '(lambda (sym) (push sym candidates))
 		(ocaml-module-symbols mod)))
        (ocaml-visible-modules))
-      (iter '(lambda (mod) (add-to-list 'candidates (car mod))) (ocaml-module-alist)))
+      (iter '(lambda (mod) (push (car mod) candidates)) (ocaml-module-alist)))
     candidates))
         
 (ac-define-source ocaml
