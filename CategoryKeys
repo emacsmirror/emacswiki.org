@@ -52,6 +52,9 @@ For information on using the menu for actions instead of keys, see CategoryMenus
 * LoadKeys -- Same thing, but for the Linux console using loadkeys, dumpkeys, and showkey
 * XKeyCaps -- Graphical tool by JamieZawinski
 * [[PrintKeyBindings|PKB (Print Key-Bindings)]] -- A package for printing keybindings in a pretty fashion, i.e. so that bindings are listed as in a computer keyboard and grouped by base-keys.
+* [[ShowBindings|Show Bindings]] -- A mode for nice display of keybindings within emacs.
+
+
 
 [:CoolBindings]
 == Cool Bindings ==
