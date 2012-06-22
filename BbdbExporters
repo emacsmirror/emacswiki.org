@@ -2,6 +2,10 @@ Code to export your BBDB to other formats.
 
 CategoryBbdb
 
+== ASynK ==
+
+ASynK is a python program that performs bi-directional sync framework for Contacts, and works between MS Outlook, Google Contacts, and Emacs BBDB. The project page is at: http://karra-asynk.appspot.com/ 
+
 == bbdb2html ==
 
 Perl script to generate a html file.  You can also use it as a cgi script with searching functionality.
