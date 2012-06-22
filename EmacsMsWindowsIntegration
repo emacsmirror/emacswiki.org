@@ -9,7 +9,7 @@ Put the Emacs `bin' folder in the Windows ##PATH## environment variable (right-c
 
 Use this code for a desktop/task-bar shortcut:
 {{{
-emacsclientw.exe -na runemacs.exe -c
+emacsclientw.exe -na runemacs.exe -c ""
 }}}
 
 This shortcut starts Emacs from scratch if it's not running, and opens a new frame if it is.
