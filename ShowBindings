@@ -1,0 +1,101 @@
+(Small) mode for nice display of emacs keybindings:
+
+*Screenshot*
+
+http://www.loria.fr/~rougier/coding/images/emacs-sheet.png
+
+
+*Code*
+
+{{{
+(require 'generic-x)
+(define-generic-mode 
+    'cheat-mode             ;; name of the mode to create
+  '("#")                     ;; comments
+  '("")                     ;; keywords
+  '((" [C\|M]-[^:]+"     . 'binding-face)
+    ("^[A-Za-z].+$"      . 'section-face)
+    ("\\( [C|S|M] \\):." 1 'bold))
+  '("\\.sheet$")                    ;; files for which to activate this mode 
+  nil                               ;; other functions to call
+  "A mode for cheat sheet"          ;; doc string for this mode
+  )
+
+(make-face 'section-face)
+(set-face-attribute 'section-face nil
+                    :height 140
+                    :foreground "#fff"
+                    :background "#555"
+                    :box '(:line-width 3 :color "#555"))
+
+(make-face 'binding-face)
+(set-face-attribute 'binding-face nil
+                    :height 120
+                    :foreground "black"
+                    :background "grey90"
+                    :box '(:line-width 1 :color "grey75"))
+}}}
+
+
+*Bindings*
+
+{{{
+Emacs cheat sheet                                                              
+
+  C : Control                           M : Meta
+
+
+Critical                                Help                                   
+
+  C-x C-x : Quit emacs                   C-h C-h : Help
+
+  C-g : Cancel current command           C-h a : Command apropos
+
+  C-x u : Undo/Redo                      C-h k : Describe key
+
+  M-x : Enter command                    C-h b : Describe binding
+
+
+Files                                  Buffers                                 
+
+  C-x C-f : Open file                    C-x b : Select buffer
+
+  C-x C-s : Save file                    C-x C-b : List buffers
+
+  C-x C-w : Save file as ...             C-x s : Save all buffers
+
+
+Search                                 Replace                                 
+
+  C-s : Search forward                   M-% : Search and replace
+
+  C-r : Search backward
+
+
+Navigation                             Cut, Copy & Paste                       
+
+  C-f : Move char forward                C-d : Delete char forward
+
+  C-b : Move char backward               C-k : Cut line forward
+
+  M-f : Move word forward                M-k : Cut sentence forward
+
+  M-b : Move word backward               C-w : Cut from mark 
+
+  C-a : Move line start                  M-w : Copy from mark 
+
+  C-e : Move line end                    C-y : Paste kill buffer
+
+  M-g : Goto line                        M-y : Paste most recent kill buffer
+
+
+Windows                                                                        
+
+  C-x 0 : Delete current window          C-x 1 : Delete other window
+
+  C-x 2 : Split window vertically        C-x 3 : Split window horizontally
+}}}
+
+
+----
+CategoryKeys
