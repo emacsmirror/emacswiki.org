@@ -1,10 +1,10 @@
 ;;; mic-paren.el --- advanced highlighting of matching parentheses
 
-;;; Copyright (C) 2008 Thien-Thi Nguyen
+;;; Copyright (C) 2008, 2012 Thien-Thi Nguyen
 ;;; Copyright (C) 1997 Mikael Sjödin (mic@docs.uu.se)
 
-;; Version: 3.8
-;; Released: 2008-04-30
+;; Version: 3.9
+;; Released: 2012-04-08
 ;; Author: Mikael Sjödin (mic@docs.uu.se)
 ;;         Klaus Berndl  <berndl@sdm.de>
 ;; Maintainer: ttn
@@ -61,7 +61,7 @@
 ;; ----------------------------------------------------------------------
 ;; Installation:
 ;;
-;; o Place this file in a directory in your 'load-path and byte-compile
+;; o Place this file in a directory in your `load-path' and byte-compile
 ;;   it.  If there are warnings, please report them to ttn.
 ;; o Put the following in your .emacs file:
 ;;      (require 'mic-paren) ; loading
@@ -167,6 +167,9 @@
 ;;
 ;; ----------------------------------------------------------------------
 ;; Versions:
+;; v3.9    + Fixed XEmacs bug in `define-mic-paren-nolog-message'.
+;;           Thanks to Sivaram Neelakantan.
+;;
 ;; v3.8    + Maintainership (crassly) grabbed by ttn.
 ;;         + License now GPLv3+.
 ;;         + Byte-compiler warnings eliminated; if you see one, tell me!
@@ -303,7 +306,7 @@
 
 ;;; Code:
 
-(defvar mic-paren-version "3.8"
+(defvar mic-paren-version "3.9"
   "Version of mic-paren.")
 
 (eval-when-compile (require 'cl))
@@ -680,11 +683,14 @@ mode hook, e.g.:
 (eval-and-compile
   (if (and (fboundp 'display-message)
            (fboundp 'clear-message))
-      (define-mic-paren-nolog-message
-        (display-message 'no-log msg)
-        (clear-message 'no-log))
+      ;; Some GNU Emacs versions need the `eval' so as to avoid saying:
+      ;; > the following functions are not known to be defined:
+      ;; >         display-message, clear-message
+      (eval '(define-mic-paren-nolog-message
+               (display-message 'no-log msg)
+               (clear-message 'no-log)))
     (define-mic-paren-nolog-message
-      (message "%s" msg)
+      (let (message-log-max) (message "%s" msg))
       (message nil))))
 
 ;;; ======================================================================
