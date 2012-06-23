@@ -13,7 +13,7 @@ Contributions to a new php-mode are very welcome!
 ** By default, in GNU Emacs 23.2.1, <tt><nowiki>//</nowiki></tt> comments are not formatted correctly by M-q. The problem is a bug in c-mode, which php-mode 1.5.0 depends on. A [http://lists.gnu.org/archive/html/help-gnu-emacs/2010-12/msg01114.html patch] is available and works, but it has to be applied manually: Line numbers don't match.
 ** [NxhtmlMode nXhtml] contains a variation of the latest php-mode (1.5.0), with some bug fixes and extensions.
 ** There is also Lisp:php-mode-improved.el, a version by DavidHouse branched from the version in nxhtml-mode that fixes a couple of annoying bugs (see the comments at the top of that file).
-** In order to get this mode to work with Emacs 23 I had to add the following lines to my .emacs rather than the ones in php-mode.el.  See http://stackoverflow.com/questions/898063/making-php-mode-compatible-with-emacs-23 for more information. 
+** In order to get this mode to work with Emacs 23 I had to add the following lines to my .emacs rather than the ones in php-mode.el.  See http://stackoverflow.com/questions/898063/making-php-mode-compatible-with-emacs-23 for more information.
 {{{
 (autoload 'php-mode "php-mode" "Major mode for editing php code." t)
 (add-to-list 'auto-mode-alist '("\\.php$" . php-mode))
@@ -124,7 +124,7 @@ Now I can quickly toggle between PHP & HTML mode, depending on what I'm mostly g
 
 [http://trac.sakura.ne.jp/geben/ GEBEN] is a basic debug package that I just discovered and am in the process of trying out. It is a DBGp client (i.e. emacs debug mode using XDebug). -M
 [new]
-I think this project is dead (and also doesn't work properly) - my posts to the mailing list have met with a deafening silence (a month now, with no activity on the list except my 
+I think this project is dead (and also doesn't work properly) - my posts to the mailing list have met with a deafening silence (a month now, with no activity on the list except my
 posts). I recommend removing mention of it from emascwiki.
 
 [new]
@@ -173,7 +173,7 @@ I didn't see such a feature in the php-mode I use so I whipped up a quick soluti
 == Quick documentation lookup with popup help ==
 
 Here's a variation of my quick documentation lookup above. It shows short help for the function under the cursor in the echo area if you press F1. It fetches the info from the official php site and it works for standard functions which documentation is properly tagged. You can press C-F1 for the same behavior as above if quick lookup failed or you want to read more about the function.
- 
+
 <pre>
 (add-hook 'php-mode-hook 'my-php-mode-stuff)
 
@@ -207,7 +207,7 @@ Here's a variation of my quick documentation lookup above. It shows short help f
                 (replace-regexp-in-string
                   "\n" ""
                   (replace-regexp-in-string "<.*?>" "" (match-string-no-properties 1)))))
-                    
+
             (when (re-search-forward "<p class=\"para rdfs-comment\">\\(\\(.\\|\n\\)*?\\)</p>" nil t)
               (setq desc
                     (concat desc "\n\n"
@@ -234,7 +234,7 @@ See [[CompanyModeBackends#PhpCompletion]]
 See [[ElDoc#Phpdoc]]
 
 == Indentation of arrays ==
-The php-mode indentation for array is not good, It will indent like this: 
+The php-mode indentation for array is not good, It will indent like this:
 {{{
 $post=Post::model()->find(array(
                               'select'=>'title',
@@ -243,7 +243,7 @@ $post=Post::model()->find(array(
                               ));
 }}}
 
-The better indentation is like: 
+The better indentation is like:
 {{{
 $post=Post::model()->find(array(
     'select'=>'title',
@@ -266,6 +266,18 @@ Add this to php-mode-hook:
     (c-set-offset 'arglist-intro 'ywb-php-lineup-arglist-intro)
     (c-set-offset 'arglist-close 'ywb-php-lineup-arglist-close)))
 }}}
+
+== Multimode Indentation ==
+
+As I wasn't able to find anything that would handle indentation of multilingual code properly, I wrote the Web Mixed Indentation.
+
+It indents PHP/JavaScript/CSS/XHTML, and you can download it from
+
+https://github.com/sabof/web-mixed-indentation-mode
+
+It's a minor mode, and does just that - you can use it in conjunction with any major mode.
+
+- sabof
 
 == Discussion ==
 
