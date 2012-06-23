@@ -1,0 +1,11 @@
+== Overview ==
+
+Puppet is an automated configuration tool written in [[RubyLanguage|Ruby]], it is programmed using a DSL and uses ERB templates.
+
+== Major Mode ==
+
+Puppet Labs the developers of puppet have released a major mode that provides syntax highlighting [[https://github.com/puppetlabs/puppet-syntax-emacs|puppet-syntax-emacs]].
+
+== Flymake ==
+
+There is also a Flymake plugin [[https://github.com/grimradical/puppet-flymake|puppet-flymake]] which uses [[https://github.com/rodjek/puppet-lint|puppet-lint]] to do syntax checking.
