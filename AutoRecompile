@@ -38,136 +38,11 @@ using ##require## and ##load## enable ##auto-compile-on-load-mode##
 which advises these functions to recompile the source files when
 needed.
 
-== Byte Compile on Emacs Startup ==
-
-Use the [http://code.google.com/p/elisp-cache/ elisp-cache] library,
-by DominiqueQuatravaux. Instructions are included.
-
-== Byte Compile on Load ==
-
-[[byte-code-cache.el]] will automatically compile ##.el## files as
-they're loaded. It keeps the compiled files in
-##~/.emacs.d/byte-cache## by default, and will automatically recompile
-any files that change, even if they're loaded more than once in the
-same session. Recompiling files manually is a pain, and other Lisp
-systems don't make you do it. :-)
-
-[new:DaveAbrahams:2011-09-23 02:52 UTC]
-
-This package would do exactly what I want if it worked, and for the
-longest time I thought it did, but sadly it doesn't seem to be working
-properly on emacs 22, 23, or 24. packages that are require'd during
-initialization when byte-code-cache is enabled don't seem to get
-loaded. To reproduce, put this .emacs file in a temporary directory
-along with byte-code-cache.el:
-
-{{{
-(add-to-list 'load-path "~")
-(with-temp-file "~/foo.el"
-  (insert "(provide 'foo)\n"))
-(require 'byte-code-cache)
-(require 'foo)
-}}}
-Then, with <tt>$HOME</tt> in your environment set to the temporary directory, launch emacs and check <tt>(featurep 'foo)</tt>
-
-[new]
-
-* Becareful, it seems that [[byte-code-cache.el]] doesn't handle well Windows drive letters when writing .elc files onto .emacs.d directory. I have things like this when using byte-code-cache on GNU Emacs on windows (GNU Emacs 22.2.1 (i386-mingw-nt5.1.2600) of 2008-03-26 on RELEASE) :
-<pre>
-Lisp error: (file-error "Opening output file" "invalid argument" "i:/home/.emacs.d/byte-cache/i:!home!.abbrev_defs.elc")
-</pre>
-This is because of the `:' character... Here is the patch to apply on [[byte-code-cache.el]] to correct the problem on windows :
-<pre>
---- byte-code-cache.el.old      2008-04-30 14:33:10.000000000 +0200
-+++ byte-code-cache.el  2008-04-30 14:39:28.000000000 +0200
-@@ -108,19 +108,62 @@
-         (setq tail tail-cdr))))
-   alist)
-
-+;; Code taken from Cedet package (if you don't want this package to
-+;; be dependent on cedet
-+(defvar cedet-dir-sep-char (if (boundp 'directory-sep-char)
-+                              (symbol-value 'directory-sep-char)
-+                            ?/)
-+  "Character used for directory separation.
-+Obsoleted in some versions of Emacs.  Needed in others.")
-+
-+(defun cedet-directory-name-to-file-name (referencedir)
-+  "Convert the REFERENCEDIR (a full path name) into a filename.
-+Converts directory seperation characters into ! characters."
-+  (let ((file referencedir)
-+       dir-sep-string)
-+    ;; Expand to full file name
-+    (or (file-name-absolute-p file)
-+       (setq file (expand-file-name file)))
-+    ;; If FILE is a directory, then force it to end in /.
-+    (when (file-directory-p file)
-+      (setq file (file-name-as-directory file)))
-+    ;; Handle Windows Special cases
-+    (when (memq system-type '(windows-nt ms-dos))
-+      ;; Replace any invalid file-name characters (for the
-+      ;; case of backing up remote files).
-+      (setq file (expand-file-name (convert-standard-filename file)))
-+      (setq dir-sep-string (char-to-string cedet-dir-sep-char))
-+      ;; Normalize DOSish file names: convert all slashes to
-+      ;; directory-sep-char, downcase the drive letter, if any,
-+      ;; and replace the leading "x:" with "/drive_x".
-+      (if (eq (aref file 1) ?:)
-+         (setq file (concat dir-sep-string
-+                            "drive_"
-+                            (char-to-string (downcase (aref file 0)))
-+                            (if (eq (aref file 2) cedet-dir-sep-char)
-+                                ""
-+                              dir-sep-string)
-+                            (substring file 2)))))
-+    ;; Make the name unique by substituting directory
-+    ;; separators.  It may not really be worth bothering about
-+    ;; doubling `!'s in the original name...
-+    (setq file (subst-char-in-string
-+               cedet-dir-sep-char ?!
-+               (replace-regexp-in-string "!" "!!" file)))
-+    file))
-+
- (defun bcc-cache-file-name (file-name)
-   "Transform an absolute file-name into its cache directory entry.
- The resulting name is always an absolute path to a file ending in
- .elc"
-
--  ;; Assumes unix here
-   (concat
-    (file-name-as-directory (expand-file-name bcc-cache-directory))
--   (subst-char-in-string
--    ?/ ?!
--    (file-name-sans-extension
--     (file-relative-name file-name "/")))
--   ".elc"))
-+   (cedet-directory-name-to-file-name
-+    (concat
-+     (file-name-sans-extension
-+      (file-relative-name file-name "/"))
-+     ".elc"))))
-
- (defun bcc-in-blacklist (string blist)
-   "Return non-NIL iff STRING matches a regexp in BLIST.
-</pre>
-
-[new]
-Can anyone explain -
-<pre>
-Loading "/home/jg/.emacs.d/.byte-cache/!home!jg!.emacs.d!config-snippet.elc" as "/home/jg/.emacs.d/config-snippet.el"...done
-Loading /home/jg/.emacs.d/config-snippet.el (source)...done
-</pre>
-? I don't understand why it would successfully(?) load the compiled file and then load the source file.
-
 == Byte Compile on Buffer Save or Kill ==
 
-Library [http://github.com/tarsius/auto-compile auto-compile] byte compiles files either when saving or killing a buffer.  Not only can you configure when files are compiled but also exactly what files. Additionally you may choose to be asked whether you want to compile a file if no existing rule matches.  Then you may save your choice permanently or for the current session.
-
-I originally wrote this library because the libraries and snippets on this page are all quite interesting but none does it all.  After having a quick look at the list of options presented here, I have to admit mine doesn't either but hope that posting it here will encourage me to include more features presented here.
-
-If you find a bug please post it in the [http://github.com/tarsius/auto-compile/issues issue tracker] at github.
-
-AutoAsyncByteCompile compiles elisp files when you save them. It works asynchronously, so you do not have to wait for compilation finish. -- [[rubikitch]]
+AutoAsyncByteCompile compiles elisp files when you save them.
+It works asynchronously, so you do not have to wait for compilation
+finish. -- [[rubikitch]]
 
 == Byte Compile on Buffer Save ==
 
@@ -371,6 +246,24 @@ I use the following, rather massive piece of code to automatically compile my ##
  (add-hook 'kill-emacs-hook (function (lambda () (auto-byte-compile-file t))))
 
 When buffer (or emacs) is killed, it byte compiles file if it's on the ##auto-byte-compile-files-list##. By altering that list it can be configured to auto byte compile all files in given directory like directery with user's own elisp files. -- mina86
+
+
+== Byte Code Cache ==
+
+These packages store ##.elc## files in a cache and load them from
+there.
+
+[http://code.google.com/p/elisp-cache/ elisp-cache] advices functions
+that load libraries to that they look in a special directory containing
+##.elc## files.  It does not appear to byte compile if the ##.elc##
+file is missing instead "Freshness of the cache is only checked every
+once in a while".
+
+[[byte-code-cache.el]] attempts to automatically compile ##.el## files
+as they are loaded.  This no longer work in recent versions of Emacs
+(22, 23, 24) because it uses ##load-source-file-function## to prevent
+an ##.elc## file from being loaded.  Unfortunately this special hook
+isn't run when loading an ##.el## file (and no ##.elc## is around).
 
 
 == Byte Compile Specific Files ==
