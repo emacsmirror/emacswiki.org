@@ -7,7 +7,7 @@
 ;; Maintainer: José Alfredo Romero L. <escherdragon@gmail.com>
 ;; Created: 24 Sep 2007
 ;; Version: 5
-;; RCS Version: $Rev: 420 $
+;; RCS Version: $Rev: 422 $
 ;; Keywords: files, dired, midnight commander, norton, orthodox
 ;; URL: http://www.emacswiki.org/emacs/sunrise-commander.el
 ;; Compatibility: GNU Emacs 22+
@@ -700,26 +700,17 @@ automatically:
   (sr-highlight)
   (dired-omit-mode dired-omit-mode)
 
-  (make-local-variable 'dired-recursive-deletes)
-  (setq dired-recursive-deletes 'top)
-
   (make-local-variable 'truncate-partial-width-windows)
   (setq truncate-partial-width-windows (sr-truncate-v t))
 
-  (make-local-variable 'truncate-lines)
-  (setq truncate-lines nil)
-
-  (make-local-variable 'desktop-save-buffer)
-  (setq desktop-save-buffer 'sr-desktop-save-buffer)
-
-  (make-local-variable 'revert-buffer-function)
-  (setq revert-buffer-function 'sr-revert-buffer)
- 
+  (set (make-local-variable 'dired-header-face) 'sr-passive-path-face)
+  (set (make-local-variable 'dired-recursive-deletes) 'top)
+  (set (make-local-variable 'truncate-lines) nil)
+  (set (make-local-variable 'desktop-save-buffer) 'sr-desktop-save-buffer)
+  (set (make-local-variable 'revert-buffer-function) 'sr-revert-buffer)
   (set (make-local-variable 'buffer-quit-function) 'sr-quit)
   (set (make-local-variable 'sr-show-file-attributes) sr-show-file-attributes)
-
-  (make-local-variable 'hl-line-sticky-flag)
-  (setq hl-line-sticky-flag nil)
+  (set (make-local-variable 'hl-line-sticky-flag) nil)
   (hl-line-mode 1)
 )
 
@@ -734,20 +725,13 @@ automatically:
   (make-local-variable 'truncate-partial-width-windows)
   (setq truncate-partial-width-windows (sr-truncate-v t))
 
-  (make-local-variable 'truncate-lines)
-  (setq truncate-lines nil)
-
-  (make-local-variable 'desktop-save-buffer)
-  (setq desktop-save-buffer 'sr-desktop-save-buffer)
-
-  (make-local-variable 'revert-buffer-function)
-  (setq revert-buffer-function 'sr-revert-buffer)
- 
+  (set (make-local-variable 'dired-header-face) 'sr-passive-path-face)
+  (set (make-local-variable 'truncate-lines) nil)
+  (set (make-local-variable 'desktop-save-buffer) 'sr-desktop-save-buffer)
+  (set (make-local-variable 'revert-buffer-function) 'sr-revert-buffer)
   (set (make-local-variable 'buffer-quit-function) 'sr-quit)
   (set (make-local-variable 'sr-show-file-attributes) sr-show-file-attributes)
-
-  (make-local-variable 'hl-line-sticky-flag)
-  (setq hl-line-sticky-flag nil)
+  (set (make-local-variable 'hl-line-sticky-flag) nil)
   (hl-line-mode 1)
 
   (define-key sr-virtual-mode-map "\C-c\C-c" 'sr-virtual-dismiss))
@@ -1353,17 +1337,16 @@ buffer or window."
 
 (defun sr-highlight(&optional face)
   "Set up the path line in the current buffer."
-  (unless sr-inhibit-highlight
-    (when (memq major-mode '(sr-mode sr-virtual-mode sr-tree-mode))
-      (let ((inhibit-read-only t))
-        (save-excursion
-          (goto-char (point-min))
-          (sr-hide-avfs-root)
-          (sr-highlight-broken-links)
-          (sr-graphical-highlight face)
-          (unless (eq sr-window-split-style 'top)
-            (sr-force-passive-highlight))
-          (run-hooks 'sr-refresh-hook))))))
+  (when (and (memq major-mode '(sr-mode sr-virtual-mode sr-tree-mode))
+             (not sr-inhibit-highlight))
+    (let ((inhibit-read-only t))
+      (save-excursion
+        (goto-char (point-min))
+        (sr-hide-avfs-root)
+        (sr-highlight-broken-links)
+        (sr-graphical-highlight face)
+        (sr-force-passive-highlight)
+        (run-hooks 'sr-refresh-hook)))))
 
 (defun sr-hide-avfs-root ()
   "Hide the AVFS virtual filesystem root (if any) on the path line."
@@ -1388,18 +1371,17 @@ buffer or window."
 (defsubst sr-invalid-overlayp ()
   "Test for invalidity of the current buffer's graphical path line overlay.
 Returns t if the overlay is no longer valid and should be replaced."
-  (or (eq sr-left-buffer sr-right-buffer)
-      (null sr-current-window-overlay)
-      (and (overlayp sr-current-window-overlay)
-           (eq (overlay-start sr-current-window-overlay)
-               (overlay-end sr-current-window-overlay)))))
+  (or (not (overlayp sr-current-window-overlay))
+      (eq (overlay-start sr-current-window-overlay)
+          (overlay-end sr-current-window-overlay))))
 
 (defun sr-graphical-highlight (&optional face)
   "Set up the graphical path line in the current buffer.
 \(Fancy fonts and clickable path.)"
-  (let ((my-face (or face sr-current-path-face))
-        (begin) (end) (inhibit-read-only t))
-    (when (sr-invalid-overlayp)
+  (when (sr-invalid-overlayp)
+    (let ((my-face (or face sr-current-path-face))
+          (begin) (end) (inhibit-read-only t))
+
       ;;determine begining and end
       (save-excursion
         (goto-char (point-min))
@@ -1409,30 +1391,31 @@ Returns t if the overlay is no longer valid and should be replaced."
         (setq end (1- (point))))
 
       ;;build overlay
+      (when sr-current-window-overlay
+        (delete-overlay sr-current-window-overlay))
       (set (make-local-variable 'sr-current-window-overlay)
            (make-overlay begin end))
+      (overlay-put sr-current-window-overlay 'face my-face)
 
       ;;path line hover effect:
       (add-text-properties
        begin
        end
        '(mouse-face sr-highlight-path-face
-                    help-echo "mouse-2: move up")
-       nil))
-
-    ;;only refresh existing overlay:
-    (overlay-put sr-current-window-overlay 'window (selected-window))
-    (overlay-put sr-current-window-overlay 'face my-face)))
+                    help-echo "click to move up")
+       nil)))
+  (overlay-put sr-current-window-overlay 'window (selected-window)))
 
 (defun sr-force-passive-highlight (&optional revert)
   "Set up the graphical path line in the passive pane.
 With optional argument REVERT, executes `revert-buffer' on the passive buffer."
-  (if (and (window-live-p sr-left-window) (window-live-p sr-right-window))
-      (save-window-excursion
-        (select-window (sr-other 'window))
-        (when (memq major-mode '(sr-mode sr-virtual-mode sr-tree-mode))
-          (if revert (revert-buffer))
-          (sr-graphical-highlight 'sr-passive-path-face)))))
+    (unless (or (null sr-right-buffer) (eq sr-left-buffer sr-right-buffer))
+      (with-current-buffer (sr-other 'buffer)
+        (when sr-current-window-overlay
+          (delete-overlay sr-current-window-overlay))
+        (when (and revert
+                   (memq major-mode '(sr-mode sr-virtual-mode sr-tree-mode)))
+          (revert-buffer)))))
 
 (defun sr-quit (&optional norestore)
   "Quit Sunrise and restore Emacs to the previous state."
@@ -2151,7 +2134,7 @@ Kills any other buffer opened previously the same way."
 Selective hiding of specific attributes can be controlled by customizing the
 `sr-attributes-display-mask' variable."
   (let ((cursor beg) props)
-    (flet ((sr-make-display-props
+    (labels ((sr-make-display-props
             (display-function-or-flag)
             (cond ((functionp display-function-or-flag)
                    `(display
@@ -3371,7 +3354,7 @@ Used to notify about the termination status of the process."
     (sr-beginning-of-buffer)
     (dired-change-marks ?* ?\t)
     (let ((stack nil) (filter "") (regex "") (next-char nil) (inhibit-quit t))
-      (flet ((read-next (f) (read-char (concat "Fuzzy narrow: " f))))
+      (labels ((read-next (f) (read-char (concat "Fuzzy narrow: " f))))
         (setq next-char (read-next filter))
         (sr-backup-buffer)
         (while next-char
