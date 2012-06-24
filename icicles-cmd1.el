@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Sat Jun  9 16:03:23 2012 (-0700)
+;; Last-Updated: Sun Jun 24 13:40:12 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 24006
+;;     Update #: 24009
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-cmd1.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -861,8 +861,9 @@ Return t if successful."
     (let ((success  (let ((comint-completion-addsuffix  nil)
                           (icicle-candidate-help-fn
                            #'(lambda (cand)
-                               (shell-command (concat "apropos " (shell-quote-argument cand))
-                                              "*Help*"))))
+                               (with-output-to-temp-buffer "*Help*"
+                                 (princ (shell-command-to-string
+                                         (concat "apropos " (shell-quote-argument cand))))))))
                       (icicle-comint-dynamic-simple-complete filenondir completions))))
       (when (and (memq success '(sole shortest)) comint-completion-addsuffix
                  (not (file-directory-p (comint-match-partial-filename))))
