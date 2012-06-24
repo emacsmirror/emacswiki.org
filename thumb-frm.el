@@ -7,9 +7,9 @@
 ;; Copyright (C) 2004-2012, Drew Adams, all rights reserved.
 ;; Created: Fri Dec 10 16:44:55 2004
 ;; Version: 21.0
-;; Last-Updated: Sun Jun 24 06:02:54 2012 (-0700)
+;; Last-Updated: Sun Jun 24 06:10:32 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 1458
+;;     Update #: 1460
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/thumb-frm.el
 ;; Keywords: frame, icon
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -104,14 +104,14 @@
 ;;  in progress, to invoke its command, and then the key sequence as a
 ;;  whole is processed, ignoring the special event.
 ;;
-;;  For example, assuming that event `iconify-frame' occurs when you
-;;  click the small `X' button in your frame title bar (depends on
-;;  your window manager), if you do `C-x <click-the-X-button> b',
-;;  then: (1) as soon as you click `X' the frame is thumbified, and
-;;  (2) when you hit `b' the key sequence `C-x b' is processed
-;;  (e.g. `switch-to-buffer' prompts you for a buffer name).  I
-;;  mention this not because it is a useful feature but in order to
-;;  avoid confusion.
+;;  For example, assuming that event `iconify-frame' occurs whenever
+;;  you use a window-manager button (e.g. in the title bar) or menu
+;;  item to minimize (iconify) a frame, if you do `C-x
+;;  <click-the-minimize-button> b', then: (1) as soon as you click the
+;;  minimize button the frame is thumbified, and (2) when you hit `b'
+;;  the key sequence `C-x b' is processed (e.g. `switch-to-buffer'
+;;  prompts you for a buffer name).  I mention this not because it is
+;;  a useful feature but in order to avoid confusion.
 ;;
 ;;  If you do bind `thumfr-thumbify-frame-upon-event' to
 ;;  `iconify-frame', be aware that `thumbify-instead-of-iconify-flag'
