@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Thu Jun 21 09:55:19 2012 (-0700)
+;; Last-Updated: Sun Jun 24 13:47:24 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 8512
+;;     Update #: 8515
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-chg.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -85,6 +85,10 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd1.el'")
 ;;
+;; 2012/06/24 dadams
+;;     icicle-shell-dynamic-complete-as-command:
+;;       Use shell-command-to-string in *Help* explicitly, not just shell-command.
+;;       Thx to Christopher Schmidt & Michael Heerdegen.
 ;; 2012/06/09 dadams
 ;;     icicle-pp-display-expression: Use backquote+comma, not lexical-let (bug fix).
 ;; 2012/06/04 dadams
@@ -1335,6 +1339,10 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-fn.el'")
 ;;
+;; 2012/06/24 dadams
+;;     icicle-read-shell-command-completing:
+;;       Use shell-command-to-string in *Help* explicitly, not just shell-command.
+;;       Thx to Christopher Schmidt & Michael Heerdegen.
 ;; 2012/06/21 dadams
 ;;     icicle-prefix-any-file-name-candidates-p: updated for Emacs 23+ (file-name PRED).
 ;; 2012/06/18 dadams
