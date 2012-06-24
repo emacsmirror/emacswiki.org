@@ -146,6 +146,8 @@ isn't run when loading an ##.el## file (and no ##.elc## is around).
 
 == Byte Compile Specific Files ==
 
+I recommend you stop reading here! -- JonasBernoulli
+
 === dotemacs ===
 
 How many ways to skin this cat? Still I tend to edit my dotemacs in a vc repo which is linked to, hence:
