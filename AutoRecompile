@@ -42,11 +42,11 @@ An earlier version of this package tried to incorporate all ideas from
 the other packages and snippets mentioned on this page, and then some.
 It turned out that all those features are not actually needed.  So now
 there are (no longer) any options to control what files are compiled
-(instead a ##.el## is compiled when a ##.elc## files already exists),
-no cache (this seems fragile and also quite useless) and compilation
-does not happen asynchronously (speed never was a problem for me and
-I explicitly want authors to be bothered by warnings, so that they
-actually fix them).
+(instead a ##.el## is compiled when a ##.elc## files already exists
+otherwise it is not), no cache (this seems fragile and also quite
+useless) and compilation does not happen asynchronously (speed never
+was a problem for me and I explicitly want authors to be bothered by
+warnings, so that they actually fix them).
 
 == Byte Compile on Buffer Save ==
 
