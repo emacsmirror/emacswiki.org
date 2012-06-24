@@ -1,6 +1,6 @@
-Click the heading for a list of pages related to this category.
+点击大标题搜索相关资料。
 
-Keys, or '''[[KeySequence]]s''', in Emacs are bound to [[Command]]s. Even a simple key like `s' is bound to a command (usually command `self-insert-command').
+热键, 或 '''[[组合键]]''', 在emacs里被绑定到 [[命令]].  `s' 键也是绑定到命令:  (usually command `self-insert-command').
 
 For information on setting actions to mouse buttons, the mouse wheel, or mouse movements, see CategoryMouse a subset of CategoryKeys.
 
