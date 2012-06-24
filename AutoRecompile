@@ -56,7 +56,7 @@ AutoAsyncByteCompile compiles elisp files when you save them.
 It works asynchronously, so you do not have to wait for compilation
 finish. -- [[rubikitch]]
 
-##auto-recomp.el## is the simplest solution to the problem at hand it
+##auto-recomp.el## is the simplest solution to the problem at hand.  It
 compiles every ##.el## file when it is saved, no questions asked.  It
 used to be available [http://kurukshetra.cjb.net/elisp/auto-recomp.el here]
 but now you have to get it from the [http://web.archive.org/web/20021216070753/http://kurukshetra.cjb.net/elisp/auto-recomp.el web archive] .
