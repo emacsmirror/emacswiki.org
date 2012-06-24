@@ -7,7 +7,7 @@
 ;; Maintainer: José Alfredo Romero L. <escherdragon@gmail.com>
 ;; Created: 4 May 2010
 ;; Version: 1
-;; RCS Version: $Rev: 413 $
+;; RCS Version: $Rev: 422 $
 ;; Keywords: sunrise commander, directories tree navigation
 ;; URL: http://www.emacswiki.org/emacs/sunrise-x-tree.el
 ;; Compatibility: GNU Emacs 22+
@@ -318,7 +318,8 @@ initially."
           (inhibit-read-only t))
       (goto-char (point-min))
       (delete-region (point) (line-end-position))
-      (widget-insert (sr-tree-path-line nil) " ")
+      (widget-insert (propertize (concat (sr-tree-path-line nil) " ")
+                                 'face 'sr-passive-path-face))
       (forward-line 1)
       (delete-region (line-beginning-position) (line-end-position))
       (widget-insert
@@ -811,7 +812,8 @@ nil."
 (defun sr-tree-advertised-find-file-other ()
   "Visit the currently selected file or directory in the passive pane."
   (interactive)
-  (let ((target (cdr sr-tree-cursor)) (side (sr-other)))
+  (let ((target (cdr sr-tree-cursor)) (side (sr-other))
+        (sr-inhibit-highlight t))
     (sr-tree-check-virtual-size target)
     (save-selected-window
       (select-window (sr-other 'window))
