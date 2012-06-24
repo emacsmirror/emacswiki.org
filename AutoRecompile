@@ -146,35 +146,6 @@ isn't run when loading an ##.el## file (and no ##.elc## is around).
 
 == Byte Compile Specific Files ==
 
-=== adding junk to each file ==
-
-I just wrote the following code for use in some of my .el files making heavy use of (eval-when-compile ...) to auto-compile them on load:
-
-<pre>
-
-(if (and load-file-name
-         (equal (file-name-extension load-file-name) "el"))
-    (progn
-      (byte-compile-file load-file-name)
-      (load-file (concat (file-name-sans-extension load-file-name) ".elc")))
-  (let ((source-file-name (concat (file-name-sans-extension load-file-name) ".el")))
-    (if (file-newer-than-file-p source-file-name load-file-name)
-        (progn
-          (byte-compile-file source-file-name)
-          (load-file load-file-name))
-      (progn
-        ;; Normal file contents
-        ))))
-
-</pre>
-
-I didn't add any error handlers for the case of a full disk or insufficient permissions though.
-
-Adding this to every file you want to have compiled does not seam like a very good (read: nice to the eyes) idea. -- JonasBernoulli
-----
-
-----
-
 === dotemacs ===
 
 How many ways to skin this cat? Still I tend to edit my dotemacs in a vc repo which is linked to, hence:
