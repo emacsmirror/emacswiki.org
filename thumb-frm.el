@@ -7,9 +7,9 @@
 ;; Copyright (C) 2004-2012, Drew Adams, all rights reserved.
 ;; Created: Fri Dec 10 16:44:55 2004
 ;; Version: 21.0
-;; Last-Updated: Fri Mar  2 08:57:57 2012 (-0800)
+;; Last-Updated: Sun Jun 24 06:02:54 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 1457
+;;     Update #: 1458
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/thumb-frm.el
 ;; Keywords: frame, icon
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -99,7 +99,22 @@
 ;;  use the window-manager "minimize" frame button (usually at the
 ;;  upper left or right frame corner) to thumbify.
 ;;
-;;  If you do that, be aware that `thumbify-instead-of-iconify-flag'
+;;  Be aware of this fact/feature, which is true of any binding on
+;;  keymap `special-event-map': The event interrupts any key sequence
+;;  in progress, to invoke its command, and then the key sequence as a
+;;  whole is processed, ignoring the special event.
+;;
+;;  For example, assuming that event `iconify-frame' occurs when you
+;;  click the small `X' button in your frame title bar (depends on
+;;  your window manager), if you do `C-x <click-the-X-button> b',
+;;  then: (1) as soon as you click `X' the frame is thumbified, and
+;;  (2) when you hit `b' the key sequence `C-x b' is processed
+;;  (e.g. `switch-to-buffer' prompts you for a buffer name).  I
+;;  mention this not because it is a useful feature but in order to
+;;  avoid confusion.
+;;
+;;  If you do bind `thumfr-thumbify-frame-upon-event' to
+;;  `iconify-frame', be aware that `thumbify-instead-of-iconify-flag'
 ;;  will no longer have any effect: Emacs will *always* thumbify
 ;;  instead of iconify (except for functions `really-iconify-*frame',
 ;;  which are designed to counter this).  If you try this behavior and
