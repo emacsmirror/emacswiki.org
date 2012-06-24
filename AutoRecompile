@@ -45,8 +45,8 @@ there are (no longer) any options to control what files are compiled
 (instead a ##.el## is compiled when a ##.elc## files already exists
 otherwise it is not), no cache (this seems fragile and also quite
 useless) and compilation does not happen asynchronously (speed never
-was a problem for me and I explicitly want authors to be bothered by
-warnings, so that they actually fix them).
+was a problem for me and I *want* authors to be bothered by warnings,
+so that they actually fix them).
 
 == Byte Compile on Buffer Save ==
 
