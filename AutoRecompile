@@ -46,14 +46,10 @@ finish. -- [[rubikitch]]
 
 == Byte Compile on Buffer Save ==
 
-Automatically byte compile elisp files when they are saved, by MichaelAbrahamShulman.
-
-* [http://web.archive.org/web/20021216070753/http://kurukshetra.cjb.net/elisp/auto-recomp.el auto-recomp.el] (was http://kurukshetra.cjb.net/elisp/auto-recomp.el but that is down)
-
-[new]
-[http://web.archive.org/web/20021216070753/http://kurukshetra.cjb.net/elisp/auto-recomp.el auto-recomp.el] requires [http://edward.oconnor.cx/elisp/read-char-spec.el read-char-spec.el] to work.
-
-Why don't you guys put this stuff on the wiki?
+##auto-recomp.el## is the simplest solution to the problem at hand it
+compiles every ##.el## file when it is saved, no questions asked.  It
+used to be available [http://kurukshetra.cjb.net/elisp/auto-recomp.el here]
+but now you have to get it from the [http://web.archive.org/web/20021216070753/http://kurukshetra.cjb.net/elisp/auto-recomp.el web archive] .
 
 ----
 
@@ -120,6 +116,161 @@ I like the idea of compile the file when kill the buffer. So I write a more gene
   (add-hook 'kill-buffer-hook 'auto-recompile-file-maybe nil t))
 
 (add-hook 'emacs-lisp-mode-hook 'auto-recompile-save-hook)
+</pre>
+
+== Byte Code Cache ==
+
+These packages store ##.elc## files in a cache and load them from
+there.
+
+[http://code.google.com/p/elisp-cache/ elisp-cache] advices functions
+that load libraries to that they look in a special directory containing
+##.elc## files.  It does not appear to byte compile if the ##.elc##
+file is missing instead "Freshness of the cache is only checked every
+once in a while".
+
+[[byte-code-cache.el]] attempts to automatically compile ##.el## files
+as they are loaded.  This no longer work in recent versions of Emacs
+(22, 23, 24) because it uses ##load-source-file-function## to prevent
+an ##.elc## file from being loaded.  Unfortunately this special hook
+isn't run when loading an ##.el## file (and no ##.elc## is around).
+
+
+== Byte Compile Specific Files ==
+
+=== adding junk to each file ==
+
+I just wrote the following code for use in some of my .el files making heavy use of (eval-when-compile ...) to auto-compile them on load:
+
+<pre>
+
+(if (and load-file-name
+         (equal (file-name-extension load-file-name) "el"))
+    (progn
+      (byte-compile-file load-file-name)
+      (load-file (concat (file-name-sans-extension load-file-name) ".elc")))
+  (let ((source-file-name (concat (file-name-sans-extension load-file-name) ".el")))
+    (if (file-newer-than-file-p source-file-name load-file-name)
+        (progn
+          (byte-compile-file source-file-name)
+          (load-file load-file-name))
+      (progn
+        ;; Normal file contents
+        ))))
+
+</pre>
+
+I didn't add any error handlers for the case of a full disk or insufficient permissions though.
+
+Adding this to every file you want to have compiled does not seam like a very good (read: nice to the eyes) idea. -- JonasBernoulli
+----
+
+----
+
+=== dotemacs ===
+
+How many ways to skin this cat? Still I tend to edit my dotemacs in a vc repo which is linked to, hence:
+
+<pre>
+;; Auto-compile my .emacs
+;
+; Given that I tend to edit in my vc-repo (to which .emacs links) we
+; straight awaywant to resolve where ~/.emacs resolves to first
+
+(defun autocompile nil
+  "compile itself if ~/.emacs"
+  (interactive)
+  (require 'bytecomp)
+  (let ((dotemacs (expand-file-name "~/.emacs")))
+    (if (string= (buffer-file-name) (file-chase-links dotemacs))
+      (byte-compile-file dotemacs))))
+
+(add-hook 'after-save-hook 'autocompile)
+</pre>
+
+----
+
+I use this code at the end of my .emacs to automatically compile my .emacs if the file .emacs.elc exists and if it's older than the .emacs. Of course this is only useful if you regularly start emacs.
+
+<pre>
+
+;; I always compile my .emacs, saves me about two seconds
+;; startuptime. But that only helps if the .emacs.elc is newer
+;; than the .emacs. So compile .emacs if it's not.
+(when (and user-init-file
+	   (equal (file-name-extension user-init-file) "elc"))
+  (let* ((source (file-name-sans-extension user-init-file))
+	 (alt (concat source ".el")))
+    (setq source (cond ((file-exists-p alt) alt)
+		       ((file-exists-p source) source)
+		       (t nil)))
+    (when source
+      (when (file-newer-than-file-p source user-init-file)
+	(byte-compile-file source)
+	(load-file source)
+	(eval-buffer nil nil)
+        (delete-other-windows) ))))
+
+</pre>
+The only possible problem is that removed functions are not removed until the next start of emacs.
+
+----
+
+An Emacs init file can get big, very big. When it gets large or has a lot of function definitions, you should consider compiling it: it will load faster when Emacs starts, and its functions will execute faster.
+
+But keeping the compiled ##.emacs.elc## file up-to-date with the ##.emacs## source file can be a hassle.  So here is a way to automate that, by compiling your InitFile each time you save it:
+
+    (defun byte-compile-user-init-file ()
+      (let ((byte-compile-warnings '(unresolved)))
+        ;; in case compilation fails, don't leave the old .elc around:
+        (when (file-exists-p (concat user-init-file ".elc"))
+          (delete-file (concat user-init-file ".elc")))
+        (byte-compile-file user-init-file)
+        ;; (message "%s compiled" user-init-file)
+        ))
+
+    (defun my-emacs-lisp-mode-hook ()
+      (when (equal buffer-file-name user-init-file)
+        (add-hook 'after-save-hook 'byte-compile-user-init-file t t)))
+
+    ;; (add-hook 'emacs-lisp-mode-hook 'turn-on-eldoc-mode)
+    (add-hook 'emacs-lisp-mode-hook 'my-emacs-lisp-mode-hook)
+
+Of course, this is not the only way. You could instead compile it each time you quit Emacs (see `kill-emacs-hook'), or when you close the ##.emacs## buffer (see `kill-buffer-hook'), or when you start Emacs and the ##.emacs## source file is more recent than the compiled ##.emacs.elc## file, and so on. For more information, see [[AutoRecompile]].
+
+----
+
+The following version doesn't require the byte compiled version of the file to exist. However, it clutters up 'after-save-hook for all buffers, irrespective of the name/type of the file. You can look at the earlier section for an example of how to add the hook to a buffer-local 'after-save-hook. If your user-init-file is named ##.emacs.el##, replace <code>(concat user-init-file ".elc")</code> with <code>(concat user-init-file "c")</code>.
+
+ (defun byte-compile-init-file ()
+   (when (equal user-init-file buffer-file-name)
+     (when (file-exists-p (concat user-init-file ".elc"))
+       (delete-file (concat user-init-file ".elc")))
+     (byte-compile-file user-init-file)))
+ (add-hook 'after-save-hook 'byte-compile-init-file)
+
+----
+I use following function, when visit file, remove <filename>.elc, after save, create <filename>.elc  -- coldnew
+
+<pre>
+(defun remove-elc-when-visit ()
+  "When visit, remove <filename>.elc"
+  (make-local-variable 'find-file-hook)
+  (add-hook 'find-file-hook
+            (lambda ()
+              (if (file-exists-p (concat buffer-file-name "c"))
+                  (delete-file (concat buffer-file-name "c"))))))
+(add-hook 'emacs-lisp-mode-hook 'remove-elc-when-visit)
+
+(defun byte-compile-when-save()
+  "When save, recompile it"
+  (make-local-variable 'after-save-hook)
+  (add-hook 'after-save-hook
+	    (lambda ()
+	      (if (buffer-file-name)
+	      (byte-compile-file buffer-file-name)))))
+(add-hook 'emacs-lisp-mode-hook 'byte-compile-when-save)
+
 </pre>
 
 ----
@@ -247,54 +398,6 @@ I use the following, rather massive piece of code to automatically compile my ##
 
 When buffer (or emacs) is killed, it byte compiles file if it's on the ##auto-byte-compile-files-list##. By altering that list it can be configured to auto byte compile all files in given directory like directery with user's own elisp files. -- mina86
 
-
-== Byte Code Cache ==
-
-These packages store ##.elc## files in a cache and load them from
-there.
-
-[http://code.google.com/p/elisp-cache/ elisp-cache] advices functions
-that load libraries to that they look in a special directory containing
-##.elc## files.  It does not appear to byte compile if the ##.elc##
-file is missing instead "Freshness of the cache is only checked every
-once in a while".
-
-[[byte-code-cache.el]] attempts to automatically compile ##.el## files
-as they are loaded.  This no longer work in recent versions of Emacs
-(22, 23, 24) because it uses ##load-source-file-function## to prevent
-an ##.elc## file from being loaded.  Unfortunately this special hook
-isn't run when loading an ##.el## file (and no ##.elc## is around).
-
-
-== Byte Compile Specific Files ==
-
-=== adding junk to each file ==
-
-I just wrote the following code for use in some of my .el files making heavy use of (eval-when-compile ...) to auto-compile them on load:
-
-<pre>
-
-(if (and load-file-name
-         (equal (file-name-extension load-file-name) "el"))
-    (progn
-      (byte-compile-file load-file-name)
-      (load-file (concat (file-name-sans-extension load-file-name) ".elc")))
-  (let ((source-file-name (concat (file-name-sans-extension load-file-name) ".el")))
-    (if (file-newer-than-file-p source-file-name load-file-name)
-        (progn
-          (byte-compile-file source-file-name)
-          (load-file load-file-name))
-      (progn
-        ;; Normal file contents
-        ))))
-
-</pre>
-
-I didn't add any error handlers for the case of a full disk or insufficient permissions though.
-
-Adding this to every file you want to have compiled does not seam like a very good (read: nice to the eyes) idea. -- JonasBernoulli
-----
-
 === dotgnus ===
 
 You can also do something like this:
@@ -322,113 +425,6 @@ You can also do something like this:
 </pre>
 
 : So, who originally wrote this, anyway? I've seen it in several .emacs files...
-----
-
-=== dotemacs ===
-
-How many ways to skin this cat? Still I tend to edit my dotemacs in a vc repo which is linked to, hence:
-
-<pre>
-;; Auto-compile my .emacs
-;
-; Given that I tend to edit in my vc-repo (to which .emacs links) we
-; straight awaywant to resolve where ~/.emacs resolves to first
-
-(defun autocompile nil
-  "compile itself if ~/.emacs"
-  (interactive)
-  (require 'bytecomp)
-  (let ((dotemacs (expand-file-name "~/.emacs")))
-    (if (string= (buffer-file-name) (file-chase-links dotemacs))
-      (byte-compile-file dotemacs))))
-
-(add-hook 'after-save-hook 'autocompile)
-</pre>
-
-----
-
-I use this code at the end of my .emacs to automatically compile my .emacs if the file .emacs.elc exists and if it's older than the .emacs. Of course this is only useful if you regularly start emacs.
-
-<pre>
-
-;; I always compile my .emacs, saves me about two seconds
-;; startuptime. But that only helps if the .emacs.elc is newer
-;; than the .emacs. So compile .emacs if it's not.
-(when (and user-init-file
-	   (equal (file-name-extension user-init-file) "elc"))
-  (let* ((source (file-name-sans-extension user-init-file))
-	 (alt (concat source ".el")))
-    (setq source (cond ((file-exists-p alt) alt)
-		       ((file-exists-p source) source)
-		       (t nil)))
-    (when source
-      (when (file-newer-than-file-p source user-init-file)
-	(byte-compile-file source)
-	(load-file source)
-	(eval-buffer nil nil)
-        (delete-other-windows) ))))
-
-</pre>
-The only possible problem is that removed functions are not removed until the next start of emacs.
-
-----
-
-An Emacs init file can get big, very big. When it gets large or has a lot of function definitions, you should consider compiling it: it will load faster when Emacs starts, and its functions will execute faster.
-
-But keeping the compiled ##.emacs.elc## file up-to-date with the ##.emacs## source file can be a hassle.  So here is a way to automate that, by compiling your InitFile each time you save it:
-
-    (defun byte-compile-user-init-file ()
-      (let ((byte-compile-warnings '(unresolved)))
-        ;; in case compilation fails, don't leave the old .elc around:
-        (when (file-exists-p (concat user-init-file ".elc"))
-          (delete-file (concat user-init-file ".elc")))
-        (byte-compile-file user-init-file)
-        ;; (message "%s compiled" user-init-file)
-        ))
-
-    (defun my-emacs-lisp-mode-hook ()
-      (when (equal buffer-file-name user-init-file)
-        (add-hook 'after-save-hook 'byte-compile-user-init-file t t)))
-
-    ;; (add-hook 'emacs-lisp-mode-hook 'turn-on-eldoc-mode)
-    (add-hook 'emacs-lisp-mode-hook 'my-emacs-lisp-mode-hook)
-
-Of course, this is not the only way. You could instead compile it each time you quit Emacs (see `kill-emacs-hook'), or when you close the ##.emacs## buffer (see `kill-buffer-hook'), or when you start Emacs and the ##.emacs## source file is more recent than the compiled ##.emacs.elc## file, and so on. For more information, see [[AutoRecompile]].
-
-----
-
-The following version doesn't require the byte compiled version of the file to exist. However, it clutters up 'after-save-hook for all buffers, irrespective of the name/type of the file. You can look at the earlier section for an example of how to add the hook to a buffer-local 'after-save-hook. If your user-init-file is named ##.emacs.el##, replace <code>(concat user-init-file ".elc")</code> with <code>(concat user-init-file "c")</code>.
-
- (defun byte-compile-init-file ()
-   (when (equal user-init-file buffer-file-name)
-     (when (file-exists-p (concat user-init-file ".elc"))
-       (delete-file (concat user-init-file ".elc")))
-     (byte-compile-file user-init-file)))
- (add-hook 'after-save-hook 'byte-compile-init-file)
-
-----
-I use following function, when visit file, remove <filename>.elc, after save, create <filename>.elc  -- coldnew
-
-<pre>
-(defun remove-elc-when-visit ()
-  "When visit, remove <filename>.elc"
-  (make-local-variable 'find-file-hook)
-  (add-hook 'find-file-hook
-            (lambda ()
-              (if (file-exists-p (concat buffer-file-name "c"))
-                  (delete-file (concat buffer-file-name "c"))))))
-(add-hook 'emacs-lisp-mode-hook 'remove-elc-when-visit)
-
-(defun byte-compile-when-save()
-  "When save, recompile it"
-  (make-local-variable 'after-save-hook)
-  (add-hook 'after-save-hook
-	    (lambda ()
-	      (if (buffer-file-name)
-	      (byte-compile-file buffer-file-name)))))
-(add-hook 'emacs-lisp-mode-hook 'byte-compile-when-save)
-
-</pre>
 
 ----
 CategoryCode, CategoryDotEmacs
