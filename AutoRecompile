@@ -141,7 +141,7 @@ once in a while".
 as they are loaded.  This no longer work in recent versions of Emacs
 (22, 23, 24) because it uses ##load-source-file-function## to prevent
 an ##.elc## file from being loaded.  Unfortunately this special hook
-isn't run when loading an ##.el## file (and no ##.elc## is around).
+isn't run when loading an ##.elc## file (just as the name suggests).
 
 
 == Byte Compile Specific Files ==
