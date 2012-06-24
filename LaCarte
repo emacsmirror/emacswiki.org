@@ -130,11 +130,12 @@ In sum, if you use '''La Carte''', you will want to use it with '''[[Icicles]]''
 ----
 '''See Also:'''
 
-* [[Icicles - Key Completion]] -- Navigate the MenuBar menus by using '''Icicles''' to complete the `menu-bar' prefix key!
+* [[EmacsNewbieWithIcicles|Emacs Newbie with Icicles]] -- A good place to start.
+
+* [[Icicles - Key Completion]] -- Navigate the [[menu bar]] menus by using '''[[Icicles]]''' to complete the `menu-bar' prefix key!
 
 * MenuAccessFromKeyboard, for alternative libraries that also give you keyboard access to menus, in different ways.
 
-* AnythingSources defines anything-c-source-lacarte, the [[Anything]] interface.
 
 ----
 
