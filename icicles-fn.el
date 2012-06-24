@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:53 2006
 ;; Version: 22.0
-;; Last-Updated: Thu Jun 21 09:40:38 2012 (-0700)
+;; Last-Updated: Sun Jun 24 13:39:29 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 13028
+;;     Update #: 13032
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-fn.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -425,7 +425,7 @@ the following is true:
                (and (not completion-no-auto-exit)
                     (equal buffer (window-buffer (minibuffer-window)))
                     (or minibuffer-completion-table
-                        (and icicle-mode (or icicle-extra-candidates icicle-proxy-candidates)))
+                        (and icicle-mode  (or icicle-extra-candidates  icicle-proxy-candidates)))
                     (not (eq 'lisp-complete-symbol icicle-cmd-calling-for-completion))
                     ;; Exit the minibuffer if `icicle-dir-candidate-can-exit-p',
                     ;; or not reading a file name, or chosen file is not a directory.
@@ -472,7 +472,7 @@ the following is true:
              (and (not completion-no-auto-exit)
                   (equal buffer (window-buffer (minibuffer-window)))
                   (or minibuffer-completion-table
-                      (and icicle-mode (or icicle-extra-candidates icicle-proxy-candidates)))
+                      (and icicle-mode  (or icicle-extra-candidates  icicle-proxy-candidates)))
                   (not (eq 'lisp-complete-symbol icicle-cmd-calling-for-completion))
                   ;; Exit the minibuffer if `icicle-dir-candidate-can-exit-p',
                   ;; or not reading a file name, or chosen file is not a directory.
@@ -518,7 +518,7 @@ the following is true:
            (and (not completion-no-auto-exit)
                 (equal buffer (window-buffer (minibuffer-window)))
                 (or minibuffer-completion-table
-                    (and icicle-mode (or icicle-extra-candidates icicle-proxy-candidates)))
+                    (and icicle-mode  (or icicle-extra-candidates icicle-proxy-candidates)))
                 (not (eq 'lisp-complete-symbol icicle-cmd-calling-for-completion))
                 ;; Exit the minibuffer if `icicle-dir-candidate-can-exit-p',
                 ;; or not reading a file name, or chosen file is not a directory.
@@ -2633,10 +2633,11 @@ the file's properties."
          (icicle-point-position-in-candidate          'input-end)
          (icicle-candidate-help-fn                    (lambda (cand)
                                                         (if (member cand icicle-extra-candidates)
-                                                            (shell-command
-                                                             (concat "apropos " (shell-quote-argument
-                                                                                 cand))
-                                                             "*Help*")
+                                                            (with-output-to-temp-buffer "*Help*"
+                                                              (princ
+                                                               (shell-command-to-string
+                                                                (concat "apropos "
+                                                                        (shell-quote-argument cand)))))
                                                           (icicle-describe-file cand))))
          (icicle-extra-candidates                     icicle-extra-candidates)
          (icicle-must-match-regexp                    icicle-file-match-regexp)
