@@ -19,6 +19,7 @@
 * A ##0## prefix-arg to `M-x byte-recompile-directory' will force
   compilation of all files even if they were not previously compiled.
 
+
 == Auto-Compile Package ==
 
 [http://tarsius.github.com/auto-compile/ auto-compile] provides two
@@ -48,6 +49,7 @@ useless) and compilation does not happen asynchronously (speed never
 was a problem for me and I *want* authors to be bothered by warnings,
 so that they actually fix them). -- JonasBernoulli
 
+
 == Byte Compile on Buffer Save ==
 
 AutoAsyncByteCompile compiles elisp files when you save them.
@@ -59,10 +61,6 @@ compiles every ##.el## file when it is saved, no questions asked.  It
 used to be available [http://kurukshetra.cjb.net/elisp/auto-recomp.el here]
 but now you have to get it from the [http://web.archive.org/web/20021216070753/http://kurukshetra.cjb.net/elisp/auto-recomp.el web archive] .
 
-== Byte Compile on Buffer Kill ==
-
-And here's the way I do it... I only want to compile when I kill a buffer,
-not when I save it (which I do obsessively).  -- ScottEvans
 
 == Byte Code Cache ==
 
@@ -114,6 +112,8 @@ Here is my slightly modified version of the byte compile on buffer save solution
 </pre>
 
 === on kill ===
+
+And here’s the way I do it… I only want to compile when I kill a buffer, not when I save it (which I do obsessively). – ScottEvans
 
 <pre>
 (defun gse-prompt-to-compile-init-file ()
