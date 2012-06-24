@@ -46,7 +46,7 @@ there are (no longer) any options to control what files are compiled
 otherwise it is not), no cache (this seems fragile and also quite
 useless) and compilation does not happen asynchronously (speed never
 was a problem for me and I *want* authors to be bothered by warnings,
-so that they actually fix them).
+so that they actually fix them). -- JonasBernoulli
 
 == Byte Compile on Buffer Save ==
 
@@ -59,7 +59,36 @@ compiles every ##.el## file when it is saved, no questions asked.  It
 used to be available [http://kurukshetra.cjb.net/elisp/auto-recomp.el here]
 but now you have to get it from the [http://web.archive.org/web/20021216070753/http://kurukshetra.cjb.net/elisp/auto-recomp.el web archive] .
 
-----
+== Byte Compile on Buffer Kill ==
+
+And here's the way I do it... I only want to compile when I kill a buffer,
+not when I save it (which I do obsessively).  -- ScottEvans
+
+== Byte Code Cache ==
+
+These packages store ##.elc## files in a cache and load them from
+there.
+
+[http://code.google.com/p/elisp-cache/ elisp-cache] advices functions
+that load libraries to that they look in a special directory containing
+##.elc## files.  It does not appear to byte compile if the ##.elc##
+file is missing instead "Freshness of the cache is only checked every
+once in a while".
+
+[[byte-code-cache.el]] attempts to automatically compile ##.el## files
+as they are loaded.  This no longer work in recent versions of Emacs
+(22, 23, 24) because it uses ##load-source-file-function## to prevent
+an ##.elc## file from being loaded.  Unfortunately this special hook
+isn't run when loading an ##.elc## file (just as the name suggests).
+
+
+== Dirty Little Snippets ==
+
+I strongly recommend you stop reading here!  I don't claim that my
+##auto-compile.el## is perfect, but some of the following snippets
+are just to ugly and broken. -- JonasBernoulli
+
+=== on save ===
 
 Here is my slightly modified version of the byte compile on buffer save solution. Compared to the one in auto-recomp.el this one tries to be less distracting by pre-splitting the window with a smaller ##*Compile-Log*## buffer, auto-scroll to the last line to quickly show a potential error and then auto-close the ##*Compile-Log*## window. It would be better to have a real error detection with a notification message rather than a dumb auto-scroll. Next time perhaps.  -- PierreJeanTurpeau
 
@@ -84,9 +113,7 @@ Here is my slightly modified version of the byte compile on buffer save solution
                      buf)))))
 </pre>
 
-== Byte Compile on Buffer Kill ==
-
-And here's the way I do it... I only want to compile when I kill a buffer, not when I save it (which I do obsessively).  -ScottEvans
+=== on kill ===
 
 <pre>
 (defun gse-prompt-to-compile-init-file ()
@@ -125,28 +152,6 @@ I like the idea of compile the file when kill the buffer. So I write a more gene
 
 (add-hook 'emacs-lisp-mode-hook 'auto-recompile-save-hook)
 </pre>
-
-== Byte Code Cache ==
-
-These packages store ##.elc## files in a cache and load them from
-there.
-
-[http://code.google.com/p/elisp-cache/ elisp-cache] advices functions
-that load libraries to that they look in a special directory containing
-##.elc## files.  It does not appear to byte compile if the ##.elc##
-file is missing instead "Freshness of the cache is only checked every
-once in a while".
-
-[[byte-code-cache.el]] attempts to automatically compile ##.el## files
-as they are loaded.  This no longer work in recent versions of Emacs
-(22, 23, 24) because it uses ##load-source-file-function## to prevent
-an ##.elc## file from being loaded.  Unfortunately this special hook
-isn't run when loading an ##.elc## file (just as the name suggests).
-
-
-== Byte Compile Specific Files ==
-
-I recommend you stop reading here! -- JonasBernoulli
 
 === dotemacs ===
 
