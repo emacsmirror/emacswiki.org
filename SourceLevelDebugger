@@ -55,16 +55,14 @@ You can see the code coverage of the defun at point with `C-x X =' or `M-x edebu
     
     (defun clear-edebug (fn-sym)
       "Remove 'edebug property from FN-SYM, a function symbol."
-      (put fn-sym 'edebug nil)
-    )
+      (put fn-sym 'edebug nil))
 
     ;; An example of use:
     (defun fact (n)
-      (cond ((eq n 0) )
-        ((eq n 1) 1)
+      (cond ((= n 0) )
+        ((= n 1) 1)
         ((>  n 1) (progn (stop-here 'fact) (* n (fact (1- n)))))
-        (t nil))
-     )
+        (t nil)))
 
 If you eval the above and then edebug-defun while the point is on fact, you'll first stop at fact but then when you enter `g' for `go' it will next stop after the <tt>(* n</tt>...<tt> )</tt> which is what I want.
 
@@ -74,6 +72,69 @@ And note you could also put a condition around `stop-here` for example:
 
 What's hoaky about the above is all the verbiage in the <tt>(progn</tt> ... <tt>)</tt> and that you have to enter the function argument <tt>'fact</tt> in `stop-here'. There may be a way to reduce this in the `stop-here' macro.
 
+== Test coverage ==
+
+Assume you have the following Lisp code.
+
+  (let ((x 2))
+    (let ((x^2 (* x x)))
+      (while (> x^2 0)
+        (setq x x^2 x^2 (* x^2 x^2))))
+    (let ((2x (+ x x)))
+      (while (> 2x 0)
+        (setq x 2x 2x (+ 2x 2x))))
+    (let ((x/2 (/ x 2)))
+      (while (and (> x/2 0) (> (+ x x/2) 0))
+        (setq x (+ x x/2) x/2 (/ x/2 2))))
+    x)
+
+If you wanted to see how often each expression is used you can use Edebug.  First, start Edebug on the top-level expression with `C-u C-M-x'.  Then hit `c' to completely evaluate the expression until it's finished followed by `C-x X =' (`edebug-display-freq-count').  It will annotate the source code as follows:
+
+  (let ((x 2))
+  ;#1
+    (let ((x^2 (* x x)))
+  ;#1
+      (while (> x^2 0)
+  ;#  1      6
+        (setq x x^2 x^2 (* x^2 x^2))))
+  ;#    5                           1
+    (let ((2x (+ x x)))
+  ;#1
+      (while (> 2x 0)
+  ;#  1      28
+        (setq x 2x 2x (+ 2x 2x))))
+  ;#    27                      1
+    (let ((x/2 (/ x 2)))
+  ;#1
+      (while (and (> x/2 0) (> (+ x x/2) 0))
+  ;#  1      60             59             60
+        (setq x (+ x x/2) x/2 (/ x/2 2))))
+  ;#    59                              1
+    x)
+
+It says all the let-expressions were each visited once.  The test in the fist while-loop was done 6 times and its body 5 times.  The next while-loop 28 times and so on.
+
+Using a function is similar, first instrument the defun with `C-u C-M-x'
+
+  (defun fact (n)
+    (if (<= n 1)
+        1
+      (* n (fact (1- n)))))
+
+Then evaluate an expression that uses the function.
+
+  (fact 6)
+
+Enter `c' to continue the evaluation until it completes.  Move your point back in to the function and use `C-x X ='.
+
+  (defun fact (n)
+    (if (<= n 1)
+  ;#6           
+        1
+      (* n (fact (1- n)))))
+  ;#  5                  6 
+
+The function was entered 6 times, and the second condition 5 times.
 
 See also
 DebuggerMode,
