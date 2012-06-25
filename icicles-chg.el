@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Sun Jun 24 13:47:24 2012 (-0700)
+;; Last-Updated: Sun Jun 24 17:45:49 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 8515
+;;     Update #: 8519
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-chg.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -1343,6 +1343,7 @@
 ;;     icicle-read-shell-command-completing:
 ;;       Use shell-command-to-string in *Help* explicitly, not just shell-command.
 ;;       Thx to Christopher Schmidt & Michael Heerdegen.
+;;     icicle-help-line-(buffer|file): Handle fixnum overflow if buffer or file is too big.
 ;; 2012/06/21 dadams
 ;;     icicle-prefix-any-file-name-candidates-p: updated for Emacs 23+ (file-name PRED).
 ;; 2012/06/18 dadams
@@ -3173,6 +3174,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-mcmd.el'")
 ;;
+;; 2012/06/24 dadams
+;;     icicle-previous-line: Hitting up key on 1st cand looped in vertical mode bc of extra \n at eob.
 ;; 2012/06/17 dadams
 ;;     icicle-narrow-candidates:
 ;;       Use read-file-name with icicle-must-pass-after-match-predicate for all Emacs Versions.
