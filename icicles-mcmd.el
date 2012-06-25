@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Sun Jun 24 17:32:08 2012 (-0700)
+;; Last-Updated: Mon Jun 25 09:44:32 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 18219
+;;     Update #: 18222
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-mcmd.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -5230,9 +5230,9 @@ this case, a prefix arg shows the internal form of the bookmark."
     (interactive "FDescribe file: \nP")
     (unless filename (setq filename  default-directory))
     (help-setup-xref `(icicle-describe-file ,filename ,internal-form-p) (interactive-p))
-    (let ((attrs (file-attributes filename))
+    (let ((attrs  (file-attributes filename))
           ;; Functions `bmkp-*' are defined in `bookmark+.el'.
-          (bmk   (and (fboundp 'bmkp-get-autofile-bookmark)  (bmkp-get-autofile-bookmark filename))))
+          (bmk    (and (fboundp 'bmkp-get-autofile-bookmark)  (bmkp-get-autofile-bookmark filename))))
       (unless attrs (error "Cannot open file `%s'" filename))
       (let* ((type            (nth 0 attrs))
              (numlinks        (nth 1 attrs))
@@ -5285,7 +5285,7 @@ this case, a prefix arg shows the internal form of the bookmark."
              (help-text
               (concat
                (format "`%s'\n%s\n\n" filename (make-string (+ 2 (length filename)) ?-))
-               (format "File Type:                       %s\n"
+               (format "File Type:                  %s\n"
                        (cond ((eq t type) "Directory")
                              ((stringp type) (format "Symbolic link to `%s'" type))
                              (t "Normal file")))
