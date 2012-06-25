@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:53 2006
 ;; Version: 22.0
-;; Last-Updated: Mon Jun 25 09:34:22 2012 (-0700)
+;; Last-Updated: Mon Jun 25 10:30:15 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 13040
+;;     Update #: 13043
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-fn.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -6150,33 +6150,33 @@ Typical use: Bind `icicle-candidate-alt-action-fn' and
 However, you must first bind `icicle-orig-window' to the window that
 is current before user input is read from the minibuffer."
   (lexical-let ((type  type))           ; Does this binding really help?
-    `(lambda (cands)
+    (lambda (cands)
       (unless (listp cands) (setq cands (list cands))) ; So it works for both single and all cands.
       (let* ((enable-recursive-minibuffers     t)
              (anything-actions                 (and (> emacs-major-version 21)
                                                     icicle-use-anything-candidates-flag
                                                     (require 'anything nil t)
                                                     (icicle-get-anything-actions-for-type
-                                                     (intern ,type))))
+                                                     (intern type))))
              (actions                   ; Must sort, for `icicle-candidates-alist',
               (sort                     ; or else `icicle-candidate-nb' will be wrong.
                (append anything-actions
                        (mapcar (lambda (act) (cons (format "%s" act) act))
                                (icicle-remove-if-not #'functionp
-                                                     (cdr (assoc ,type icicle-type-actions-alist)))))
+                                                     (cdr (assoc type icicle-type-actions-alist)))))
                (lambda (a1 a2) (funcall 'string-lessp (car a1) (car a2)))))
              (icicle-sort-comparer             'string-lessp) ; Must be the same order as actions.
              (icicle-candidate-action-fn ; For "how".
               (lambda (fn)
                 (let ((icicle-candidate-alt-action-fn  (icicle-alt-act-fn-for-type "function"))
                       icicle-saved-completion-candidate)
-                  (icicle-with-selected-window
-                   (if (and (boundp 'icicle-orig-window) (window-live-p icicle-orig-window))
-                       icicle-orig-window
-                     (selected-window)) ; Punt wo `icicle-orig-window'.
-                   (dolist (cand  cands)
-                     (setq icicle-saved-completion-candidate  cand)
-                     (icicle-apply-to-saved-candidate fn t ,type))))))
+                  (icicle-with-selected-window ; A macro in `icicles-mac.el'.
+                      (if (and (boundp 'icicle-orig-window) (window-live-p icicle-orig-window))
+                          icicle-orig-window
+                        (selected-window)) ; Punt wo `icicle-orig-window'.
+                    (dolist (cand  cands)
+                      (setq icicle-saved-completion-candidate  cand)
+                      (icicle-apply-to-saved-candidate fn t type))))))
              ;; Save & restore these, so `icomplete-exhibit' on `post-command-hook' has no error.
              (minibuffer-completion-table      minibuffer-completion-table)
              (minibuffer-completion-predicate  minibuffer-completion-predicate))
@@ -6184,10 +6184,10 @@ is current before user input is read from the minibuffer."
         (setq cands  (mapcar (lambda (obj)
                                (setq obj  (icicle-transform-multi-completion obj))
                                (cond ((not (stringp obj))  obj)
-                                     ((memq (intern ,type)
+                                     ((memq (intern type)
                                             '(command face function option symbol variable))
                                       (intern obj))
-                                     ((and (eq (intern ,type) 'frame) (fboundp 'get-a-frame))
+                                     ((and (eq (intern type) 'frame) (fboundp 'get-a-frame))
                                       (get-a-frame obj))
                                      (t  obj)))
                              cands))
@@ -6210,13 +6210,13 @@ is current before user input is read from the minibuffer."
                                                                   (completing-read "How (action): "
                                                                                    actions))))
                    (icicle-with-selected-window
-                    (if (and (boundp 'icicle-orig-window) (window-live-p icicle-orig-window))
-                        icicle-orig-window
-                      (selected-window)) ; Punt: no `icicle-orig-window'.
-                    (let ((icicle-candidate-alt-action-fn  (icicle-alt-act-fn-for-type "function")))
-                      (dolist (cand  cands)
-                        (setq icicle-saved-completion-candidate  cand)
-                        (icicle-apply-to-saved-candidate action t ,type))))))))))))
+                       (if (and (boundp 'icicle-orig-window) (window-live-p icicle-orig-window))
+                           icicle-orig-window
+                         (selected-window)) ; Punt: no `icicle-orig-window'.
+                     (let ((icicle-candidate-alt-action-fn  (icicle-alt-act-fn-for-type "function")))
+                       (dolist (cand  cands)
+                         (setq icicle-saved-completion-candidate  cand)
+                         (icicle-apply-to-saved-candidate action t type))))))))))))
 
 (defun icicle-toggle-icicle-mode-twice ()
   "Toggle Icicle mode twice.  Load `icicles-mode.el' if not loaded."
