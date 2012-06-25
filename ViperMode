@@ -217,7 +217,7 @@ This seems to work for me, at least. Until upstream Viper gets fixed. -- JeremyH
 
 How do you get Vim's "ciw" (= Change Inner Word) command?
 
-I mean, you are in Normal Mode, in an Emacs Lisp Mode buffer, `viper-syntax-preference' is set to `extended' and, in the following code:
+I mean, you are in Normal Mode, in an EmacsLispMode buffer, `viper-syntax-preference' is set to `extended' and, in the following code:
 
     (change-inner-word)
 
