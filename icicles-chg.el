@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Sun Jun 24 17:45:49 2012 (-0700)
+;; Last-Updated: Sun Jun 24 18:19:05 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 8519
+;;     Update #: 8520
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-chg.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -1344,6 +1344,7 @@
 ;;       Use shell-command-to-string in *Help* explicitly, not just shell-command.
 ;;       Thx to Christopher Schmidt & Michael Heerdegen.
 ;;     icicle-help-line-(buffer|file): Handle fixnum overflow if buffer or file is too big.
+;;     icicle-insert-candidates: Remove extra newline at eob when vertical format.
 ;; 2012/06/21 dadams
 ;;     icicle-prefix-any-file-name-candidates-p: updated for Emacs 23+ (file-name PRED).
 ;; 2012/06/18 dadams
