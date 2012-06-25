@@ -58,7 +58,7 @@ not in the word constituent class. This is the same as <code>\W</code>.
 
 * `java-mode-syntax-table' -- Syntax table for java-mode buffers.
 
-* `emacs-lisp-mode-syntax-table' -- For Emacs Lisp mode buffers.
+* `emacs-lisp-mode-syntax-table' -- For EmacsLispMode buffers.
 
 * `lisp-mode-syntax-table' -- Syntax table for lisp-mode buffers.
 
