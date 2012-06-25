@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:53 2006
 ;; Version: 22.0
-;; Last-Updated: Sun Jun 24 13:39:29 2012 (-0700)
+;; Last-Updated: Sun Jun 24 17:00:54 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 13032
+;;     Update #: 13035
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-fn.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -4056,13 +4056,21 @@ check only the first char for the property."
   (with-current-buffer buffer
     (if no-bytes-p
         (format "Mode: %s" (if (fboundp 'format-mode-line) (format-mode-line mode-name) mode-name))
-      (format "Bytes: %d, Mode: %s"
-              (buffer-size) (if (fboundp 'format-mode-line) (format-mode-line mode-name) mode-name)))))
+      (format "Bytes: %s, Mode: %s"
+              (let ((size  (buffer-size)))
+                (if (> size most-positive-fixnum)
+                    (format "> %d" most-positive-fixnum)
+                  size))
+              (if (fboundp 'format-mode-line) (format-mode-line mode-name) mode-name)))))
 
 (defun icicle-help-line-file (file)
   "Simple help string for FILE."
   (let ((attrs  (file-attributes file)))
-    (and attrs (format "Bytes: %d, Saved: %s, Access: %s" (nth 7 attrs)
+    (and attrs (format "Bytes: %s, Saved: %s, Access: %s"
+                       (let ((size  (nth 7 attrs)))
+                         (if (> size most-positive-fixnum)
+                             (format "> %d" most-positive-fixnum)
+                           size))
                        (format-time-string  "%c" (nth 5 attrs)) (nth 8 attrs))))) ; "%Y-%m-%d %H"
 
 (defun icicle-show-in-mode-line (text &optional buffer)
