@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:53 2006
 ;; Version: 22.0
-;; Last-Updated: Sun Jun 24 18:17:47 2012 (-0700)
+;; Last-Updated: Mon Jun 25 09:34:22 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 13038
+;;     Update #: 13040
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-fn.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -547,8 +547,7 @@ so it is called after completion-list buffer text is written."
              (mbuf-contents  (icicle-input-from-minibuffer))
              (dir-of-input   (and minibuffer-completing-file-name
                                   (icicle-file-name-directory
-                                   (file-name-as-directory
-                                    (expand-file-name (substitute-in-file-name mbuf-contents)))))))
+                                   (expand-file-name (substitute-in-file-name mbuf-contents))))))
         ;; If reading file name and either `icicle-comp-base-is-default-dir-p' is nil or this is a
         ;; completion command, then set `default-directory' so it will be copied into `*Completions*'.
         (when (and dir-of-input
@@ -583,8 +582,7 @@ so it is called after completion-list buffer text is written."
              (mbuf-contents  (minibuffer-completion-contents)) ; Get contents only up to point.
              (dir-of-input   (and minibuffer-completing-file-name
                                   (icicle-file-name-directory
-                                   (file-name-as-directory
-                                    (expand-file-name (substitute-in-file-name mbuf-contents))))))
+                                   (expand-file-name (substitute-in-file-name mbuf-contents)))))
              common-string-length)
         ;; If reading file name and either `icicle-comp-base-is-default-dir-p' is nil or this is a
         ;; completion command, then set `default-directory' so it will be copied into `*Completions*'.
@@ -643,9 +641,8 @@ so it is called after completion-list buffer text is written."
       (let ((mainbuf       (current-buffer))
             (dir-of-input  (and minibuffer-completing-file-name
                                 (icicle-file-name-directory
-                                 (file-name-as-directory
-                                  (expand-file-name
-                                   (substitute-in-file-name (minibuffer-completion-contents))))))))
+                                 (expand-file-name
+                                  (substitute-in-file-name (minibuffer-completion-contents)))))))
         ;; If reading file name and either `icicle-comp-base-is-default-dir-p' is nil or this is a
         ;; completion command, then set `default-directory' so it will be copied into `*Completions*'.
         (when (and dir-of-input
