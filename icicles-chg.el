@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Mon Jun 25 09:46:57 2012 (-0700)
+;; Last-Updated: Mon Jun 25 10:32:51 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 8523
+;;     Update #: 8524
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-chg.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -1341,6 +1341,7 @@
 ;;
 ;; 2012/06/25 dadams
 ;;     Corrected change of 5/13: Removed call to file-name-as-directory.
+;;     icicle-alt-act-fn-for-type: Removed backquoting from lambda, since it uses a macro in *-mac.el.
 ;; 2012/06/24 dadams
 ;;     icicle-read-shell-command-completing:
 ;;       Use shell-command-to-string in *Help* explicitly, not just shell-command.
