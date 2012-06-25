@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Fri Jun 22 10:58:06 2012 (-0700)
+;; Last-Updated: Sun Jun 24 17:32:08 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 18214
+;;     Update #: 18219
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-mcmd.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -4287,7 +4287,8 @@ You can use this command only from buffer `*Completions*' (`\\<completion-list-m
            (forward-line -1)
            (when (and icicle-show-Completions-help-flag
                       (< (point) (icicle-start-of-candidates-in-Completions)))
-             (goto-char (point-max)) (beginning-of-line)))) ; Wrap around
+             (goto-char (point-max)) (beginning-of-line) ; Wrap around
+             (unless (get-text-property (point) 'mouse-face) (forward-line -1))))) ; eobp, extra newline.
     (let ((eol  (line-end-position)))
       (save-excursion
         (beginning-of-line)
