@@ -82,7 +82,7 @@ So much for navigating by cycling among defined terms. Most of the time, however
 
 This is quite handy. You can also use simple completion with the vanilla Emacs command `imenu', but with `icicle-imenu' you can type any part of a defined term -- in fact, any part of the line that defines it, and go to the definition in the buffer immediately. 
 
-Using `icicle-imenu' you can also combine ''semantic'' search with the purely syntactic search of Imenu. In Emacs-Lisp mode, if you supply a prefix argument to `icicle-imenu', you can selectively find only [[command]]s or only non-interactive functions.
+Using `icicle-imenu' you can also combine ''semantic'' search with the purely syntactic search of Imenu. In EmacsLispMode, if you supply a prefix argument to `icicle-imenu', you can selectively find only [[command]]s or only non-interactive functions.
 
 
 
