@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Sun Jun 24 18:19:05 2012 (-0700)
+;; Last-Updated: Mon Jun 25 09:35:51 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 8520
+;;     Update #: 8522
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-chg.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -1339,6 +1339,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-fn.el'")
 ;;
+;; 2012/06/25 dadams
+;;     Corrected change of 5/13: Removed call to file-name-as-directory.
 ;; 2012/06/24 dadams
 ;;     icicle-read-shell-command-completing:
 ;;       Use shell-command-to-string in *Help* explicitly, not just shell-command.
