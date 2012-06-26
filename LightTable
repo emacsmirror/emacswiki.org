@@ -32,3 +32,5 @@ This is useful when you've already found the function, and want to "stash it" vi
 What's missing is a way to quickly show a list of all project functions ("linked" to their implementations) to pick and choose from. 
 
 If you use CEDET or ropemacs-mode, it should be possible to keep a live-updating buffer showing the implementations of called functions as you type calls to them.
+
+You can use Speedbar for this. For example, with Python it will display the list of files and then for each file it will list the functions within it. You could modify it so that instead of opening the file in a buffer and going to the function, it can narrow to that function and display it in a buffer instead.
