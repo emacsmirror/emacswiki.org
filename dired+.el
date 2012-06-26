@@ -7,9 +7,9 @@
 ;; Copyright (C) 1999-2012, Drew Adams, all rights reserved.
 ;; Created: Fri Mar 19 15:58:58 1999
 ;; Version: 21.2
-;; Last-Updated: Thu Jun 21 11:41:47 2012 (-0700)
+;; Last-Updated: Tue Jun 26 07:44:27 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 6020
+;;     Update #: 6025
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/dired+.el
 ;; Keywords: unix, mouse, directories, diredp, dired
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -17,11 +17,11 @@
 ;; Features that might be required by this library:
 ;;
 ;;   `bookmark', `bookmark+', `bookmark+-1', `bookmark+-bmu',
-;;   `bookmark+-key', `bookmark+-lit', `bookmark+-mac', `cl',
-;;   `dired', `dired+', `dired-aux', `dired-x', `ediff-diff',
-;;   `ediff-help', `ediff-init', `ediff-merg', `ediff-mult',
-;;   `ediff-util', `ediff-wind', `ffap', `misc-fns', `pp', `pp+',
-;;   `thingatpt', `thingatpt+', `w32-browser'.
+;;   `bookmark+-key', `bookmark+-lit', `cl', `dired', `dired+',
+;;   `dired-aux', `dired-x', `ediff-diff', `ediff-help',
+;;   `ediff-init', `ediff-merg', `ediff-mult', `ediff-util',
+;;   `ediff-wind', `ffap', `misc-fns', `pp', `pp+', `thingatpt',
+;;   `thingatpt+', `w32-browser'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -3049,11 +3049,10 @@ Directories `.' and `..' are excluded."
 Return t if answer is \"y\".  Otherwise, return nil.
 
 Like `y-or-n-p', but the user can also hit `l' to display the list of
-files that the confirmation is for, using `diredp-list-files', in
-buffer `*Files'.  When finished, buffer `*Files*' is is killed if it
-was never shown, or is hidden and buried otherwise.  Thus, if it was
-shown then it is still available to revisit afterward (even if the
-user quit using `C-g').
+files that the confirmation is for, in buffer `*Files'.  When
+finished, buffer `*Files*' is killed if it was never shown, or is
+hidden and buried otherwise.  Thus, if it was shown then it is still
+available to revisit afterward (even if the user quit using `C-g').
 
 PREDICATE is passed to `diredp-list-files', to list only file names
 for which it returns non-nil."
