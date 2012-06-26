@@ -93,15 +93,11 @@
 
 ;;; Key map
 (defvar intel-hex-mode-map ()
-  "Keymap used in Intel Hex mode.")
-
-(if intel-hex-mode-map
-    ()
   (let ((map (make-sparse-keymap)))
     (define-key map "\C-c\C-c" 'intel-hex-update-line-checksum)
     (define-key map "\C-c\C-b" 'intel-hex-update-buffer-checksum)
-    (setq intel-hex-mode-map map)
-    ))
+    map)
+  "Keymap used in Intel Hex mode.")
 
 ;;;###autoload
 (defun intel-hex-mode ()
@@ -297,4 +293,5 @@ and returns its value, or zero"
 (add-to-list 'auto-mode-alist '("\\.hex\\'" . intel-hex-mode))
 (add-to-list 'auto-mode-alist '("\\.a90\\'" . intel-hex-mode))
 
+(provide 'intel-hex-mode)
 ;;; intel-hex-mode.el ends here
