@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams
 ;; Copyright (C) 2000-2012, Drew Adams, all rights reserved.
 ;; Created: Sun Aug 15 11:12:30 2010 (-0700)
-;; Last-Updated: Thu Jun 21 07:50:23 2012 (-0700)
+;; Last-Updated: Tue Jun 26 10:35:56 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 98
+;;     Update #: 101
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-mac.el
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -103,10 +103,6 @@
 ;;    `bmkp-menu-bar-make-toggle',
 ;;    `bmkp-with-output-to-plain-temp-buffer'.
 ;;
-;;  Non-interactive functions defined here:
-;;
-;;    `bmkp-assoc-delete-all', `bmkp-replace-regexp-in-string'.
-;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; 
 ;; This program is free software; you can redistribute it and/or
@@ -159,36 +155,6 @@
 ;; (eval-when-compile (require 'bookmark+-1))
 ;; bmkp-file-bookmark-p, bmkp-float-time, bmkp-local-file-bookmark-p,
 ;; bmkp-msg-about-sort-order, bmkp-reverse-sort-p, bmkp-sort-comparer
- 
-;;(@* "Functions")
-
-;;; Functions --------------------------------------------------------
-
-;;; These functions are general functions.  They are here because they are used in macro
-;;; `bmkp-define-sort-command'.  That macro is in this file because it is used only to create
-;;; bmenu commands.
-
-;; Used in `bmkp-define-sort-command'.
-(defun bmkp-assoc-delete-all (key alist)
-  "Delete from ALIST all elements whose car is `equal' to KEY.
-Return the modified alist.
-Elements of ALIST that are not conses are ignored."
-  (while (and (consp (car alist)) (equal (car (car alist)) key))  (setq alist  (cdr alist)))
-  (let ((tail  alist)
-        tail-cdr)
-    (while (setq tail-cdr  (cdr tail))
-      (if (and (consp (car tail-cdr))  (equal (car (car tail-cdr)) key))
-          (setcdr tail (cdr tail-cdr))
-        (setq tail  tail-cdr))))
-  alist)
-
-;; Used in `bmkp-define-sort-command'.
-;; This is also in `bookmark+-1.el', so need to keep the two in sync.
-(defun bmkp-replace-regexp-in-string (regexp rep string &optional fixedcase literal subexp start)
-  "Replace all matches for REGEXP with REP in STRING and return STRING."
-  (if (fboundp 'replace-regexp-in-string) ; Emacs > 20.
-      (replace-regexp-in-string regexp rep string fixedcase literal subexp start)
-    (if (string-match regexp string) (replace-match rep nil nil string) string))) ; Emacs 20
  
 ;;(@* "Macros")
 
