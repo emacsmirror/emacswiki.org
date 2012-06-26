@@ -7,16 +7,16 @@
 ;; Copyright (C) 2000-2012, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 09:05:21 2010 (-0700)
-;; Last-Updated: Thu Jun 21 10:21:49 2012 (-0700)
+;; Last-Updated: Tue Jun 26 13:28:35 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 2185
+;;     Update #: 2193
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-bmu.el
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
 ;;
 ;; Features that might be required by this library:
 ;;
-;;   `bookmark', `bookmark+-mac', `pp'.
+;;   `bookmark', `pp'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -220,7 +220,7 @@
 ;;
 ;;  Non-interactive functions defined here:
 ;;
-;;    `bmkp-bmenu-barf-if-not-in-menu-list',
+;;    `bmkp-assoc-delete-all', `bmkp-bmenu-barf-if-not-in-menu-list',
 ;;    `bmkp-bmenu-cancel-incremental-filtering',
 ;;    `bmkp-bmenu-filter-alist-by-annotation-regexp',
 ;;    `bmkp-bmenu-filter-alist-by-bookmark-name-regexp',
@@ -232,6 +232,7 @@
 ;;    `bmkp-bmenu-mark/unmark-bookmarks-tagged-some/not-all',
 ;;    `bmkp-bmenu-propertize-item', `bmkp-bmenu-read-filter-input',
 ;;    `bmkp-face-prop', `bmkp-maybe-unpropertize-bookmark-names',
+;;    `bmkp-replace-regexp-in-string',
 ;;    `bmkp-reverse-multi-sort-order', `bmkp-reverse-sort-order'.
 ;;
 ;;  Internal variables defined here:
@@ -326,13 +327,37 @@
 (defalias 'bmkp-bookmark-name-from-record 'bookmark-name-from-full-record)
 
 
-(or (condition-case nil
-        (load-library "bookmark+-mac")  ; Use load-library to ensure latest .elc.
-      (error nil))
-    (require 'bookmark+-mac))           ; Require, so can load separately if not on `load-path'.
+(eval-when-compile
+ (or (condition-case nil
+         (load-library "bookmark+-mac") ; Use load-library to ensure latest .elc.
+       (error nil))
+     (require 'bookmark+-mac)))         ; Require, so can load separately if not on `load-path'.
 ;; bmkp-define-sort-command, bmkp-with-output-to-plain-temp-buffer
 
 (put 'bmkp-with-output-to-plain-temp-buffer 'common-lisp-indent-function '(4 &body))
+
+
+;;; These functions are used in macro `bmkp-define-sort-command'.
+;;;
+(defun bmkp-replace-regexp-in-string (regexp rep string &optional fixedcase literal subexp start)
+  "Replace all matches for REGEXP with REP in STRING and return STRING."
+  (if (fboundp 'replace-regexp-in-string) ; Emacs > 20.
+      (replace-regexp-in-string regexp rep string fixedcase literal subexp start)
+    (if (string-match regexp string) (replace-match rep nil nil string) string))) ; Emacs 20
+
+(defun bmkp-assoc-delete-all (key alist)
+  "Delete from ALIST all elements whose car is `equal' to KEY.
+Return the modified alist.
+Elements of ALIST that are not conses are ignored."
+  (while (and (consp (car alist)) (equal (car (car alist)) key))  (setq alist  (cdr alist)))
+  (let ((tail  alist)
+        tail-cdr)
+    (while (setq tail-cdr  (cdr tail))
+      (if (and (consp (car tail-cdr))  (equal (car (car tail-cdr)) key))
+          (setcdr tail (cdr tail-cdr))
+        (setq tail  tail-cdr))))
+  alist)
+
 
 ;; (eval-when-compile (require 'bookmark+-1))
 ;; bmkp-add-tags, bmkp-alpha-p, bmkp-bookmark-creation-cp,
