@@ -7,17 +7,17 @@
 ;; Copyright (C) 2000-2012, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 13:43:55 2010 (-0700)
-;; Last-Updated: Thu Jun 21 08:57:11 2012 (-0700)
+;; Last-Updated: Tue Jun 26 10:39:06 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 5704
+;;     Update #: 5709
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-1.el
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
 ;;
 ;; Features that might be required by this library:
 ;;
-;;   `bookmark', `bookmark+-1', `bookmark+-mac', `cl', `dired',
-;;   `dired-aux', `dired-x', `ffap', `pp', `thingatpt', `thingatpt+'.
+;;   `bookmark', `bookmark+-1', `cl', `dired', `dired-aux',
+;;   `dired-x', `ffap', `pp', `thingatpt', `thingatpt+'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -594,18 +594,18 @@
 (defalias 'bmkp-bookmark-name-from-record 'bookmark-name-from-full-record)
 
 
-(or (condition-case nil
-        (load-library "bookmark+-mac")  ; Use load-library to ensure latest .elc.
-      (error nil))
-    (require 'bookmark+-mac))           ; Require, so can load separately if not on `load-path'.
-;; bmkp-define-cycle-command, bmkp-define-file-sort-predicate, bmkp-menu-bar-make-toggle,
-;; bmkp-replace-regexp-in-string, bmkp-with-output-to-plain-temp-buffer
+(eval-when-compile
+ (or (condition-case nil
+         (load-library "bookmark+-mac") ; Use load-library to ensure latest .elc.
+       (error nil))
+     (require 'bookmark+-mac)))         ; Require, so can load separately if not on `load-path'.
+;; bmkp-define-cycle-command, bmkp-define-file-sort-predicate, bmkp-with-output-to-plain-temp-buffer
 
 (put 'bmkp-with-output-to-plain-temp-buffer 'common-lisp-indent-function '(4 &body))
 
 (eval-when-compile (require 'bookmark+-bmu))
 ;; bmkp-bmenu-before-hide-marked-alist,
-;; bmkp-bmenu-before-hide-unmarked-alist, bmkp-bmenu-commands-file,
+;; bmkp-bmenu-before-hide-unmarked-alist, bmkp-bmenu-commands-file, bmkp-replace-regexp-in-string,
 ;; bmkp-bmenu-filter-function, bmkp-bmenu-filter-pattern,
 ;; bmkp-bmenu-first-time-p, bmkp-flagged-bookmarks, bmkp-bmenu-goto-bookmark-named,
 ;; bmkp-bmenu-marked-bookmarks, bmkp-bmenu-omitted-bookmarks,
