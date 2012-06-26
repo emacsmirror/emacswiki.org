@@ -7,9 +7,9 @@
 ;; Copyright (C) 2010-2012, Drew Adams, all rights reserved.
 ;; Created: Fri Apr  1 15:34:50 2011 (-0700)
 ;; Version:
-;; Last-Updated: Thu Jun 21 08:29:41 2012 (-0700)
+;; Last-Updated: Tue Jun 26 10:38:36 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 567
+;;     Update #: 568
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-key.el
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -84,11 +84,11 @@
 
 ;;;;;;;;;;;;;;;;;;;;;
 
-
-(or (condition-case nil
-        (load-library "bookmark+-mac")  ; Use load-library to ensure latest .elc.
-      (error nil))
-    (require 'bookmark+-mac))           ; Require, so can load separately if not on `load-path'.
+(eval-when-compile
+ (or (condition-case nil
+         (load-library "bookmark+-mac") ; Use load-library to ensure latest .elc.
+       (error nil))
+     (require 'bookmark+-mac)))         ; Require, so can load separately if not on `load-path'.
 ;; bmkp-menu-bar-make-toggle
 
 
