@@ -324,4 +324,5 @@ need to do the reverse."
   
 (add-to-list 'rcirc-markup-text-functions 'rcirc-markup-random-names)
 
+(provide 'rcirc-random-names)
 ;; rcirc-random-names.el ends here
