@@ -74,4 +74,5 @@ See `format-time-string' for FORMAT-STRING, TIME, and UNIVERSAL arguments."
 	 current-prefix-arg))
   (insert (format-time-string format-string time universal)))
 
+(provide 'insert-time-string)
 ;;; insert-time-string.el ends here
