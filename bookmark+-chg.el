@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2012, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Thu Jun 21 09:14:16 2012 (-0700)
+;; Last-Updated: Tue Jun 26 13:34:47 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 14980
+;;     Update #: 14990
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-chg.el
 ;; Keywords: bookmarks, bookmark+
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -145,6 +145,8 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-1.el'")
 ;;
+;; 2012/06/26 dadams
+;;     Wrapped require of bookmark+-mac.el in eval-when-compile.
 ;; 2012/06/21 dadams
 ;;     Try to load-library bookmark+-mac.  Require it only if cannot load-library.
 ;; 2012/06/12 dadams
@@ -788,6 +790,9 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-bmu.el'")
 ;;
+;; 2012/06/26 dadams
+;;     Moved here from bookmark+-mac.el: bmkp-assoc-delete-all, bmkp-replace-regexp-in-string.
+;;     Wrapped require of bookmark+-mac.el in eval-when-compile.
 ;; 2012/06/21 dadams
 ;;     Added: bmkp-bmenu-nb-marked-in-mode-name.  Added to bookmark-bmenu-mode-hook.
 ;;     Try to load-library bookmark+-mac.  Require it only if cannot load-library.
@@ -1117,6 +1122,8 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-key.el'")
 ;;
+;; 2012/06/26 dadams
+;;     Wrapped require of bookmark+-mac.el in eval-when-compile.
 ;; 2012/06/21 dadams
 ;;     Try to load-library bookmark+-mac, for bmkp-menu-bar-make-toggle.
 ;; 2012/02/26 dadams
@@ -1250,6 +1257,8 @@
 ;;       that depends on macros needs to be byte-compiled anew after loading the updated macros.
 ;; **************************************************************************************************
 ;;
+;; 2012/06/26 dadams
+;;     Moved bmkp-assoc-delete-all, bmkp-replace-regexp-in-string to bookmark+-bmu.el.
 ;; 2012/04/27
 ;;     Added: bmkp-with-output-to-plain-temp-buffer.
 ;; 2012/04/12 dadams
@@ -1275,6 +1284,8 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+.el'")
 ;;
+;; 2012/06/26 dadams
+;;     Wrapped require of bookmark+-mac.el in eval-when-compile.
 ;; 2012/06/21 dadams
 ;;     Try to load-library bookmark+-mac.  Require it only if cannot load-library.
 ;; 2012/02/26 dadams
