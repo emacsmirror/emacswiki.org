@@ -88,3 +88,5 @@ A special buffer is one whose name starts with an asterisk. And `TAGS'."
 (defun mybuffers-rotate (the-list)
   "Delete first elem in THE-LIST and append it to the end."
   (append (cdr the-list) (list (car the-list))))
+
+(provide 'mybuffers)
