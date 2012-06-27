@@ -67,8 +67,8 @@ TODO: This does NOT set the correct Draft folder!
 ;; remove = instant removal (same as "D"), thrash = move to wl-trash-folder
 ;; string = move to string.
 (setq wl-dispose-folder-alist
-      '(("\.\*company\\.com" . "%INBOX.Trash:\"myname@company.com\"/clear@mail.company.com")
-        ("\.\*gmail\\.com" . "%[Gmail]/Trash:myname/clear@imap.gmail.com:993!")
+      '(("^%.*company\\.com" . "%INBOX.Trash:\"myname@company.com\"/clear@mail.company.com")
+        ("^%.*gmail\\.com" . "%[Gmail]/Trash:myname/clear@imap.gmail.com:993!")
         ))
 
 ;;Name of top-folder, default "Desktop".
