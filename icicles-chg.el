@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Mon Jun 25 10:32:51 2012 (-0700)
+;; Last-Updated: Wed Jun 27 15:14:25 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 8524
+;;     Update #: 8531
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-chg.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -3178,6 +3178,10 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-mcmd.el'")
 ;;
+;; 2012/06/27 dadams
+;;     icicle-retrieve-previous-input:
+;;       icicle-highlight-initial-whitespace and icicle-place-cursor.
+;;       Update icicle-current-raw-input unconditionally, so can continue to cycle.
 ;; 2012/06/25 dadams
 ;;     icicle-describe-file: Removed extra space in format line File Type.  Thx to Christopher Schmidt.
 ;; 2012/06/24 dadams
