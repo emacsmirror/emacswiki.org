@@ -73,9 +73,6 @@ It is not possible to change the draft folder using the mechanism below, unfortu
         ("^%.*gmail\\.com" . "%[Gmail]/Trash:myname/clear@imap.gmail.com:993!")
         ))
 
-;;Name of top-folder, default "Desktop".
-(setq wl-folder-desktop-name "email")
-
 ;;select correct email address when we _start_ writing a draft.
 (add-hook 'wl-mail-setup-hook 'wl-draft-config-exec)
 
