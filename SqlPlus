@@ -206,6 +206,7 @@ Columns of the table must correspond to the `sqlplus-x-columns' variable."
 (global-set-key [f4] 'sqlplus-x-connect)
 </pre>
 Advice. Use EasyPG package to keep your connections table in secret.
-- Vjacheslav
+
+- VjacheslavIgnatyev
 ----
 CategorySql
