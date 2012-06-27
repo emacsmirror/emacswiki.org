@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Mon Jun 25 09:44:32 2012 (-0700)
+;; Last-Updated: Wed Jun 27 11:40:27 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 18222
+;;     Update #: 18229
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-mcmd.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -2481,15 +2481,16 @@ minibuffer (`\\<minibuffer-local-completion-map>\
                                (prog1 (if irpi-was-cycling-p (car next) (cadr next))
                                  (setq irpi-was-cycling-p  nil))))))) ; So third `C-l' acts normally.
 
-                 ;; $$$$$$ (when input (icicle-call-then-update-Completions #'insert input))))
-                 (when input (insert input))))
+                 ;; $$$$ (when input (icicle-call-then-update-Completions #'insert input))))
+                 ;; $$$$$$ (when input (insert input))))
 
 ;;; $$$$$$ REPLACED by previous line only.
-;;;                  (when input
-;;;                    (setq icicle-current-raw-input  input)
-;;;                    (insert input)
-;;;                    (icicle-highlight-initial-whitespace input) ; (e.g. user typo).
-;;;                    (icicle-place-cursor input 'deactivate-mark))))
+                 (when input
+                   (setq icicle-current-raw-input  input)
+                   (insert input)
+                   (icicle-highlight-initial-whitespace input) ; (e.g. user typo).
+                   (icicle-place-cursor input 'deactivate-mark))))
+
 ;;;              (let ((icicle-edit-update-p  t))
 ;;;                (funcall (or icicle-last-completion-command  'icicle-apropos-complete))
 ;;;                ;; Restore raw input.  Cycling resets it to "", so `icicle-save-or-restore-input'
@@ -2497,8 +2498,9 @@ minibuffer (`\\<minibuffer-local-completion-map>\
 ;;;                ;; or completion of the same kind).
 ;;;                (setq icicle-current-raw-input  input))
 
-             (setq icicle-last-input  nil ; So `TAB' will expand it - `icicle-save-or-restore-input'.
-                   icicle-cycling-p   irpi-was-cycling-p))) ; Let next `C-l' know the state.
+             (setq icicle-current-raw-input  input ; So we can keep cycling.
+                   icicle-last-input         nil ; So `TAB' expands it - `icicle-save-or-restore-input'.
+                   icicle-cycling-p          irpi-was-cycling-p))) ; Let next `C-l' know the state.
           (t
            (set prev-inputs-var nil)
            (setq icicle-current-raw-input  "")
