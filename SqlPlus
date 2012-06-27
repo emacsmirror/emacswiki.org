@@ -164,5 +164,48 @@ Really quite impressive. I've tried it under Win32, you just need to customize s
 
 -- FabriceGabolde
 
+[new]
+[http://ivvprivate.blog.com/2012/06/27/connection-manager-for-the-sqlplus-mode/ Use] org-mode to keep your connection strings. 
+
+As a developer you have to deal with several different databases. It’s not easy to keep all of your environments in mind. Let’s use Org-mode to help yourself. Keep an environment’s description in "org-mode" table:
+<pre>
+* environments
+** databases
+|---------------+-----------+--------|
+| service (sid) | user      | pwd    |
+|---------------+-----------+--------|
+| prod          | owner app | god    |
+| dev           | dbo       | love   |
+| uat           | dba       | secret |
+|---------------+-----------+--------|
+</pre>
+Place the point to a connection line, call sqlplus-x-connect and you will get connected sqlplus-mode buffer. If different users have the same password you can write them in one cell.
+Here is the sqlplus-x-connect
+<pre>
+(require 'sqlplus)
+(require 'org-table)
+(defvar sqlplus-x-columns '(sqlplus-x-service sqlplus-x-user sqlplus-x-pwd))
+(defun sqlplus-x-connect ()
+  "Build a connection string and make a connection. The point must be in an org-mode table.
+Columns of the table must correspond to the `sqlplus-x-columns' variable."
+  (interactive)
+  (org-table-force-dataline)
+  (let
+      ((cur-row (nth (org-table-current-dline) (org-table-to-lisp)))
+       (is-user-selected (= (org-table-current-column) (+ 1 (position 'sqlplus-x-user sqlplus-x-columns)))))
+    (sqlplus
+     (format
+      "%s/%s@%s"
+      (if is-user-selected
+          (thing-at-point 'symbol)
+        (nth (position 'sqlplus-x-user sqlplus-x-columns) cur-row))
+      (nth (position 'sqlplus-x-pwd sqlplus-x-columns) cur-row)
+      (nth (position 'sqlplus-x-service sqlplus-x-columns) cur-row))
+     (concat (nth (position 'sqlplus-x-service sqlplus-x-columns) cur-row) ".sqp"))))
+
+(global-set-key [f4] 'sqlplus-x-connect)
+</pre>
+Advice. Use EasyPG package to keep your connections table in secret.
+- Vjacheslav
 ----
 CategorySql
