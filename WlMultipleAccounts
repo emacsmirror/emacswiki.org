@@ -57,11 +57,6 @@ With the following setup, wanderlust will automatically send from the right emai
 
 TODO: This does NOT set the correct Draft folder!
 
-TODO: What does the two first lines (commented out) do in wl-dispose-folder-alist below?  
-
-[new]
-The commented out lines are dispose settings for usenet folders ("^-") and Shimbun folders ("^@").
-
 ----
 ~/.wl
 {{{
@@ -72,10 +67,7 @@ The commented out lines are dispose settings for usenet folders ("^-") and Shimb
 ;; remove = instant removal (same as "D"), thrash = move to wl-trash-folder
 ;; string = move to string.
 (setq wl-dispose-folder-alist
-      '(
-        ;;("^-" . remove) ;;default    ;;I don't know what this is?
-        ;;("^@" . remove) ;;default    ;;I don't know what this is?
-        ("\.\*company\\.com" . "%INBOX.Trash:\"myname@company.com\"/clear@mail.company.com")
+      '(("\.\*company\\.com" . "%INBOX.Trash:\"myname@company.com\"/clear@mail.company.com")
         ("\.\*gmail\\.com" . "%[Gmail]/Trash:myname/clear@imap.gmail.com:993!")
         ))
 
