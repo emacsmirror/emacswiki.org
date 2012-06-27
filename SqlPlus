@@ -208,5 +208,6 @@ Columns of the table must correspond to the `sqlplus-x-columns' variable."
 Advice. Use EasyPG package to keep your connections table in secret.
 
 -- VjacheslavIgnatyev
+
 ----
 CategorySql
