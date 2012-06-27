@@ -56,6 +56,8 @@ WORK{
 With the following setup, wanderlust will automatically send from the right email-account when you reply to a message. If you start a new draft, you can cycle through the list in wl-template-alist with C-c C-j. Sent messages from gmail account or work account ends up in the right folder. 
 
 TODO: This does NOT set the correct Draft folder!
+[new]
+It is not possible to change the draft folder using the mechanism below, unfortunately.
 
 ----
 ~/.wl
