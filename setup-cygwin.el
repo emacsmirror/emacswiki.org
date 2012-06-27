@@ -7,9 +7,9 @@
 ;; Copyright (C) 2004-2012, Drew Adams, all rights reserved.
 ;; Created: Thu Jan 15 11:13:38 2004
 ;; Version: 21.0
-;; Last-Updated: Sun Jan  1 17:08:55 2012 (-0800)
+;; Last-Updated: Wed Jun 27 10:09:18 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 106
+;;     Update #: 108
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/setup-cygwin.el
 ;; Keywords: os, unix, cygwin
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -108,7 +108,8 @@ loaded as such.)"
   (error "Edit `setup-cygwin.el' - not known where Cygwin is installed"))
 
 ;;; Use `bash' as the default shell in Emacs.
-(push (if (file-directory-p "C:/cygwin/bin") "C:/cygwin/bin" "C:/bin") exec-path)
+(setq exec-path  (cons (if (file-directory-p "C:/cygwin/bin") "C:/cygwin/bin" "C:/bin")
+                       exec-path))
 (setq shell-file-name  (concat (if (file-directory-p "C:/cygwin/bin") "C:/cygwin/bin" "C:/bin")
                                "/bash.exe")) ; Subprocesses invoked via the shell.
 (setenv "SHELL" shell-file-name)
