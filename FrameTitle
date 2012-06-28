@@ -1,23 +1,31 @@
-= Commands to Rename Frames =
+== Commands to Rename Frames ==
 
-DrewAdams has written library Lisp:frame-cmds.el, which contains two commands for renaming [[Frame]]s:
+Library <tt>[[frame-cmds.el]]</tt> contains two commands for renaming [[frame]]s:
 
-* <code>rename-frame</code> - Rename a frame named OLD-NAME to NEW-NAME.
-: Prefix arg ALL-NAMED non-nil => Rename all frames named FRAME to NEWNAME.
-: OLD-NAME may be a frame, its name, or nil.  Default is `selected-frame'.
-: NEW-NAME is a string or nil.  Default NEW-NAME is current `buffer-name'.
+* '''`rename-frame'''' - Rename a frame named ##OLD-NAME## to ##NEW-NAME##.
+: Prefix arg ##ALL-NAMED## non-`nil' means rename all frames named ##FRAME## to ##NEWNAME##.
+: ##OLD-NAME## can be a frame, its name, or `nil'.  Default is `selected-frame'.
+: ##NEW-NAME## is a string or `nil'.  Default ##NEW-NAME## is current `buffer-name'.
 
-* <code>rename-non-minibuffer-frame</code> - Unless OLD-NAME names the `minibuffer-frame', use `rename-frame'
-to rename a frame named OLD-NAME to NEW-NAME.
-: Prefix arg ALL-NAMED non-nil => Rename all frames named FRAME to NEWNAME.
-: OLD-NAME may be a frame, its name, or nil.  Default is `selected-frame'.
-: NEW-NAME is a string or nil.  Default NEW-NAME is current `buffer-name'.
+* '''`rename-non-minibuffer-frame'''' - Unless ##OLD-NAME## names the `minibuffer-frame', use `rename-frame'
+to rename a frame named ##OLD-NAME## to ##NEW-NAME##.
+: Prefix arg ##ALL-NAMED## non-`nil' means rename all frames named ##FRAME## to ##NEWNAME##.
+: ##OLD-NAME## can be a frame, its name, or `nil'.  Default is `selected-frame'.
+: ##NEW-NAME## is a string or `nil'.  Default ##NEW-NAME## is current `buffer-name'.
 
 
-= Setting the frame and icon title =
+
+
+
+
+
+
+
+== Setting the Frame Title and Icon Title ==
+
 The frame title is changed by changing the value of the variable
-<code>frame-title-format</code>. Likewise, the icon title can be changed with <code>icon-title-format</code>. They recognize the same special characters
-as the <code>mode-line-format</code> variable, ie.:
+`frame-title-format'. Likewise, the icon title can be changed with `icon-title-format'. They recognize the same special characters
+as variable `mode-line-format':
 
   A string is printed verbatim in the mode line except for %-constructs:
     (%-constructs are allowed when the string is the entire mode-line-format
@@ -43,7 +51,11 @@ as the <code>mode-line-format</code> variable, ie.:
     %% -- print %.   %- -- print infinitely many dashes.
   Decimal digits after the % specify field width to which to pad.
 
-===Examples===
+
+
+
+
+=== Examples of Setting Frame and Icon Titles ===
 
 Note that most of the following examples use lists but string values are also valid.
 
@@ -54,28 +66,7 @@ Note that most of the following examples use lists but string values are also va
 : Also see BackquoteSyntax -- LawrenceMitchell)
 
 
-
-By Kelvin_Hu:
-
-Hi guys, I find a *almost perfect format*, as below:
-
-    (setq frame-title-format
-      '("%S" (buffer-file-name "%f"
-                   (dired-directory dired-directory "%b"))))
-
-It is really a good format, I tried it and finally I have a new version as below:
-
-    (setq frame-title-format '(buffer-file-name "%f" (dired-directory dired-directory "%b")))
-
-or
-
-    (setq frame-title-format '("%f" (dired-directory dired-directory "%b")))
-
-but I still do not know how they work (don't let me google, I have googled a lot), so could any one please explain it? Thanks very much.
-
-
-
-Another example to use in a ~/.emacs file, used on e.g. Ubuntu where USERDOMAIN doesn't exist, and the environment variable HOSTNAME isn't exported by default (as can be seen by running "export -p" at a login shell), and we want to get the host name by running the POSIX 'hostname(1)' command only once, at startup. 
+Another example to use in an [[init file]], used on e.g. Ubuntu where USERDOMAIN doesn't exist, and the environment variable HOSTNAME isn't exported by default (as can be seen by running "export -p" at a login shell), and we want to get the host name by running the POSIX 'hostname(1)' command only once, at startup. 
 
     (setq my-hostname 
       (replace-regexp-in-string "\\(^[[:space:]\n]*\\|[[:space:]\n]*$\\)" "" ;; like perl chomp()
@@ -109,11 +100,49 @@ Display date/time if `display-time-mode' is set:
       global-mode-string "     %f" ))
     ;; See also:  `display-time-format' and `mode-line-format'
 
-
-
 Feel free to add your titles here!
 
-==Setting xterm window titles from within Emacs==
+
+
+
+
+
+=== Discussion ===
+
+[new]
+By [[Kelvin Hu]]:
+
+Hi guys, I find a *almost perfect format*, as below:
+
+    (setq frame-title-format
+      '("%S" (buffer-file-name "%f"
+                   (dired-directory dired-directory "%b"))))
+
+It is really a good format, I tried it and finally I have a new version as below:
+
+    (setq frame-title-format
+          '(buffer-file-name
+            "%f"
+            (dired-directory dired-directory "%b")))
+
+or
+
+    (setq frame-title-format
+          '("%f" (dired-directory dired-directory "%b")))
+
+but I still do not know how they work (don't let me google, I have googled a lot), so could any one please explain it? Thanks very much.
+
+[new:DrewAdams:2012-06-28 14:24 UTC]
+See the Elisp manual, here: [[Manual:Frame Titles]]. It refers you to [[Manual:Mode Line Data]] for the details.  How did I find that in the manual?  `i' (`Info-index') in a manual is your friend.  -- DrewAdams
+
+
+
+
+
+
+
+== Setting Xterm Window Titles from within Emacs ==
+
 When running Emacs inside of xterm (e.g. with <code>emacs -nw</code>), it is possible to mostly mimic the behavior of frame/icon titles.  To do so, you will need a copy of
 [http://www.splode.com/~friedman/software/emacs-lisp/src/xterm-title.el xterm-title.el],
 [http://www.splode.com/~friedman/software/emacs-lisp/src/xterm-frobs.el xterm-frobs.el],
@@ -126,8 +155,12 @@ and the following snippet for your <code>.emacs</code>:
 
 Then modify the frame/icon frame title variables as you would in a window system.
 
-== Notes ==
 
+
+
+=== Notes ===
+
+[new]
 By [[avar]]:
 
 My Emacs insists that I have a "dumb" terminal. Even under xterm. This works for me:
@@ -140,12 +173,14 @@ My Emacs insists that I have a "dumb" terminal. Even under xterm. This works for
     (require 'xterm-title)
     (xterm-title-mode 1))
 
+[new]
 By PaulGoins:
 
 My Emacs (emacs-snapshot on Ubuntu, version 1:20090730-1~intrepid1) says TERM is "dumb" after fully loading, but while loading .emacs it does show the right thing (rxvt-unicode, in my case).  "Your mileage may vary", I suppose.
 
 (Note: xterm-title-mode does not seem to work with urxvt.  It does work fine with other xterm-compatibles like gnome-terminal.)
 
+[new]
 By wisnij:
 
 I wasn't able to get xterm-title working with my Cygwin xterm for some reason.  As a stopgap, using xterm-frobs directly seems to work well enough:
@@ -167,6 +202,13 @@ I wasn't able to get xterm-title working with my Cygwin xterm for some reason.  
               (:eval (cond (buffer-read-only "%%  ")
                            ((buffer-modified-p) "*  ")))
               "%b  (" invocation-name "@" system-name ")")))
+
+
+
+
+
+
+
 
 
 ----
