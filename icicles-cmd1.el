@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Sun Jun 24 13:40:12 2012 (-0700)
+;; Last-Updated: Thu Jun 28 14:15:41 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 24009
+;;     Update #: 24010
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-cmd1.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -3259,7 +3259,7 @@ you use library `Bookmark+'."
     (define-key minibuffer-local-completion-map (icicle-kbd "C-x m") nil)))
 
 ;;;###autoload (autoload 'icicle-grep-saved-file-candidates "icicles")
-(defun icicle-grep-saved-file-candidates (command-args)
+(defun icicle-grep-saved-file-candidates (command-args) ; Bound to `M-s M-s g' in Icicle mode.
   "Run `grep' on the set of completion candidates saved with \\<minibuffer-local-completion-map>\
 `\\[icicle-candidate-set-save]'.
 Saved names that do not correspond to existing files are ignored.
