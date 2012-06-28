@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Tue Jun 19 13:15:24 2012 (-0700)
+;; Last-Updated: Thu Jun 28 14:14:54 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 28886
+;;     Update #: 28887
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-doc2.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -3106,11 +3106,11 @@
 ;;  are listed in the Dired buffer.
 ;;  See (@> "Icicles Dired Enhancements").
 ;;
-;;  You can also run `grep' on a saved list of file names using
-;;  command `icicle-grep-saved-file-candidates'.  If you use library
-;;  `dired+.el', then you can also `grep' the files in a project or
-;;  saved list of file names by opening it in Dired and then using
-;;  `M-g' (`diredp-do-grep').
+;;  You can also run `grep' on a saved list of file names using `M-s
+;;  M-s g' ( command `icicle-grep-saved-file-candidates').  If you use
+;;  library `dired+.el', then you can also `grep' the files in a
+;;  project or saved list of file names by opening it in Dired and
+;;  then using `M-g' (`diredp-do-grep').
 ;;
 ;;  Finally, note that among the sets of completion candidates that
 ;;  you can save are Icicles search hits.  That's right.  Icicles
