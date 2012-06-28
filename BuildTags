@@ -51,7 +51,7 @@ To generate tags for certain source files (like *.el files), invoke this:
 To recurse through directories, run something like this:
 
   cd /path/to/my/project
-  find . -type f -iname "*.[ch]" | etags -L -
+  find . -type f -iname "*.[ch]" | etags -
 
 FYI: If you want to use `xargs' with `etags', you have to use the --append flag (e.g. ##find . -type f -iname "*.[ch]" | xargs etags --append##).  Otherwise, etags will overwrite the tags file for each file it gets from xargs.
 
@@ -63,7 +63,7 @@ Put this in your [[init file]]:
      "Create tags file."
      (interactive "DDirectory: ")
      (eshell-command 
-      (format "find %s -type f -name \"*.[ch]\" | etags -L -" dir-name)))
+      (format "find %s -type f -name \"*.[ch]\" | etags -" dir-name)))
 
 === Auto refresh of the tags file ===
 
