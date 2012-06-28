@@ -1,0 +1,23 @@
+Vim (includes vi and ex) can intepret modeline string in the file, which is similar to the Emacs' file local variables.
+
+vim-modeline will parse Vim modeline in the file, and try to interpret in Emacs ways if possible.
+
+== Download ==
+
+Download it from:
+
+    git clone http://github.com/cinsk/emacs-vim-modeline.git
+
+== Install ==
+
+As usual, include ##emacs-vim-modeline/## directory in your load-path, and put following lines in your init file:
+
+    (require 'vim-modeline)
+    (add-to-list 'find-file-hook 'vim-modeline/do)
+
+== Discussion ==
+
+It is not mature enough, but still usable. :)
+
+----
+CategoryEmulation
