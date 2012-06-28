@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:23:26 2006
 ;; Version: 22.0
-;; Last-Updated: Mon May 14 10:05:01 2012 (-0700)
+;; Last-Updated: Thu Jun 28 14:14:19 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 1622
+;;     Update #: 1625
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-var.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -1314,6 +1314,7 @@ current search context.")
     (define-key map (icicle-kbd "D") 'icicle-search-defs-full) ; `D'efinitions
     (define-key map (icicle-kbd ",") 'icicle-tags-search) ; Like `M-,' for `tags-loop-continue'
     (define-key map (icicle-kbd "f") 'icicle-search-file) ; `f'ile
+    (define-key map (icicle-kbd "g") 'icicle-grep-saved-file-candidates) ; `g'rep
     (define-key map (icicle-kbd "i") 'icicle-imenu)  ; `i'menu
     (define-key map (icicle-kbd "I") 'icicle-imenu-full) ; `I'menu
     (define-key map (icicle-kbd "j") 'icicle-search-bookmark) ; `j'ump to bookmark first
