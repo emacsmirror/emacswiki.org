@@ -60,6 +60,9 @@ encoding, just use a prefix argument: `C-u M-x bbdb-vcard-export-update-all' and
 be asked for another encoding.  The default BBDB file encoding , ISO 2022 JP is probably not
 what you want.
 
+[new]
+I've [https://github.com/jwiegley/dot-emacs/blob/master/site-lisp/bbdb-vcard-export.el ported this module to BBDB 3]. -- JohnWiegley
+
 == Writing a .mailrc from BBDB ==
 
 The following will export a very primitive version of your BBDB information into a .mailrc file which is used for normal mail(1) and Emacs Rmail.
