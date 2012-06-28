@@ -12,11 +12,9 @@ Since the 20th November 2011 this repository is integrated with Oddmuse -- every
 
 == Package Repositories ==
 
-Additionally _most_ packages distributed on the Emacswiki are also available as individual _repositories_ from the [[Emacsmirror]] (##https://github.com/emacsmirror/NAME##).
+Additionally _most_ packages distributed on the Emacswiki are also available as individual _repositories_ from the [[Emacsmirror]] (##https://github.com/emacsmirror/NAME##). The package repositories are created by JonasBernoulli as part of the Emacsmirror.
 
 Such a repositories contains the full history of all files that are part of a particular package but purges all other history. These repositories can lag behind a few days.
-
-The package repositories are created by JonasBernoulli as part of the Emacsmirror. While the EmacsWiki and the [[Emacsmirror]] are separate projects the [http://github.com/emacsmirror/emacswiki.org Emacswiki repository] can be considered part of both.
 
 Also, if you are already comfortable using git and need to make changes to a package which can't be merged right away, branch that package's repository from the Emacsmirror and hack away without having to worry about stepping on somebodies tows (as it can happen when you edit somebodies package here on the Emacswiki without prior approval). As always when you fork: don't forget to ask upstream to merge once you are satisfied with your changes!
 
