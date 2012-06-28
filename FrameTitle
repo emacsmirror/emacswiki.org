@@ -54,6 +54,8 @@ Note that most of the following examples use lists but string values are also va
 : Also see BackquoteSyntax -- LawrenceMitchell)
 
 
+By Kelvin Hu:
+
 Hi guys, I find a almost perfect format, as below:
 
     (setq frame-title-format
@@ -63,9 +65,11 @@ Hi guys, I find a almost perfect format, as below:
 It is really a good format, I tried it and finally I have a new version as below:
 
     (setq frame-title-format '(buffer-file-name "%f" (dired-directory dired-directory "%b")))
+or
+    (setq frame-title-format '("%f" (dired-directory dired-directory "%b")))
 
-but I still do not know how they works (don't let me google, I have googled a lot), so could any one please explain it? Thanks very much.
---- by Kelvin Hu
+but I still do not know how they work (don't let me google, I have googled a lot), so could any one please explain it? Thanks very much.
+
 
 Another example to use in a ~/.emacs file, used on e.g. Ubuntu where USERDOMAIN doesn't exist, and the environment variable HOSTNAME isn't exported by default (as can be seen by running "export -p" at a login shell), and we want to get the host name by running the POSIX 'hostname(1)' command only once, at startup. 
 
