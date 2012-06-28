@@ -55,9 +55,9 @@ Note that most of the following examples use lists but string values are also va
 
 
 
-By Kelvin Hu:
+By Kelvin_Hu:
 
-Hi guys, I find a almost perfect format, as below:
+Hi guys, I find a *almost perfect format*, as below:
 
     (setq frame-title-format
       '("%S" (buffer-file-name "%f"
