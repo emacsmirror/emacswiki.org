@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:22:14 2006
 ;; Version: 22.0
-;; Last-Updated: Sat Jun  9 10:54:50 2012 (-0700)
+;; Last-Updated: Fri Jun 29 08:41:38 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 5002
+;;     Update #: 5005
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-opt.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -985,7 +985,10 @@ modes that inherit from Comint mode or otherwise use
 Each element has the form (COMMAND ABBREV N), where ABBREV is an
 abbreviation of COMMAND and N is the number of times COMMAND has been
 invoked via ABBREV.  Both COMMAND and ABBREV are symbols."
-  :type '(alist :key-type symbol :value-type (list symbol integer)) :group 'Icicles-Matching)
+  :type '(alist
+          :key-type (symbol :tag "Command")
+          :value-type (list (symbol :tag "Abbreviation") (integer :tag "Times Used")))
+  :group 'Icicles-Matching)
 
 ;;;###autoload
 (defcustom icicle-command-abbrev-match-all-parts-flag nil
