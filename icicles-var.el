@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:23:26 2006
 ;; Version: 22.0
-;; Last-Updated: Thu Jun 28 14:14:19 2012 (-0700)
+;; Last-Updated: Fri Jun 29 12:00:27 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 1625
+;;     Update #: 1627
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-var.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -36,9 +36,10 @@
 ;;    `icicle-advice-info-list', `icicle-all-candidates-action',
 ;;    `icicle-all-candidates-list-action-fn',
 ;;    `icicle-all-candidates-list-alt-action-fn',
-;;    `icicle-apply-nomsg', `icicle-apropos-complete-match-fn',
-;;    `icicle-bookmark-history', `icicle-bookmark-list-names-only-p',
-;;    `icicle-bookmark-types', `icicle-buffer-config-history',
+;;    `icicle-allowed-sort-predicate', `icicle-apply-nomsg',
+;;    `icicle-apropos-complete-match-fn', `icicle-bookmark-history',
+;;    `icicle-bookmark-list-names-only-p', `icicle-bookmark-types',
+;;    `icicle-buffer-config-history',
 ;;    `icicle-buffer-sort-first-time-p', `icicle-bufflist',
 ;;    `icicle-candidate-action-fn', `icicle-candidate-alt-action-fn',
 ;;    `icicle-candidate-entry-fn', `icicle-candidate-help-fn',
@@ -239,6 +240,12 @@ If neither nil nor t, then the value is the action function to use.")
 
 (defvar icicle-all-candidates-list-alt-action-fn nil
   "Alternative action function to apply to a list of matching completions.")
+
+(defvar icicle-allowed-sort-predicate nil
+  "Predicate that `icicle-current-sort-functions' allows in a sort order.
+That is, if this predicate is used in an entry of
+`icicle-sort-orders-alist' then that entry is retained by
+`icicle-current-sort-functions'.")
 
 (defvar icicle-apply-nomsg nil
   "Non-nil means `icicle-apply' does not show status of applying function.")
