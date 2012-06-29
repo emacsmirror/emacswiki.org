@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Wed Jun 27 15:14:25 2012 (-0700)
+;; Last-Updated: Fri Jun 29 13:23:17 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 8531
+;;     Update #: 8556
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-chg.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -85,6 +85,17 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd1.el'")
 ;;
+;; 2012/06/29 dadams
+;;     icicle-command-abbrev:
+;;       Bind icicle-sort-comparer to icicle-proxy-candidate-first-p, not
+;;         icicle-command-abbrev-used-more-p.  icicle-command-abbrev-used-more-p is second sort order.
+;;       Bind icicle-allowed-sort-predicate (new), to allow icicle-command-abbrev-used-more-p.
+;;       Improved doc string, mentioning icicle-command-abbrev-alist.
+;;     icicle-command-abbrev-action:
+;;       Add abbrev-or-cmd to icicle-commands-for-abbrev if it is in icicle-command-abbrev-alist.
+;;       Do not bind icicle-sort-comparer here - not needed (?).
+;;       During completion, bind icicle-current-input to abbrev-or-cmd.
+;;     Removed #' from lambdas.
 ;; 2012/06/24 dadams
 ;;     icicle-shell-dynamic-complete-as-command:
 ;;       Use shell-command-to-string in *Help* explicitly, not just shell-command.
@@ -3178,6 +3189,10 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-mcmd.el'")
 ;;
+;; 2012/06/29 dadams
+;;     icicle-current-sort-functions: Do not exclude if PRED is icicle-allowed-sort-predicate.
+;;     icicle-help-on-candidate-symbol: select-frame-set-input-focus after apropos-command regexp.
+;;     Removed #' from lambdas.
 ;; 2012/06/27 dadams
 ;;     icicle-retrieve-previous-input:
 ;;       icicle-highlight-initial-whitespace and icicle-place-cursor.
@@ -5722,6 +5737,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-opt.el'")
 ;;
+;; 2012/06/29 dadams
+;;     icicle-command-abbrev-alist: Added :tag strings.
 ;; 2012/06/09 dadams
 ;;     icicle-show-Completions-help-flag: Do not defvaralias it to completion-show-help.  Updated doc.
 ;; 2012/05/07 dadams
@@ -6409,6 +6426,10 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-var.el'")
 ;;
+;; 2012/06/29 dadams
+;;     Added: icicle-allowed-sort-predicate.
+;; 2012/06/28 dadams
+;;     icicle-search-map: Bound icicle-grep-saved-file-candidates (M-s M-s g).
 ;; 2012/05/14 dadams
 ;;     icicle-candidate-help-fn: Updated doc string to mention transforming multi-completion cands.
 ;; 2012/05/07 dadams
