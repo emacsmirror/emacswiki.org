@@ -1,18 +1,18 @@
-;;; sunrise-x-popviewer.el --- floating viewer window for the Sunrise Commander
+;;; sunrise-x-popviewer.el --- floating viewer window for the Sunrise Commander -*- lexical-binding: t -*-
 
-;; Copyright (C) 2008-2010 José Alfredo Romero L.
+;; Copyright (C) 2008-2012 José Alfredo Romero L.
 
 ;; Author: José Alfredo Romero L. <escherdragon@gmail.com>
 ;;	Štěpán Němec <stepnem@gmail.com>
 ;; Maintainer: José Alfredo Romero L. <escherdragon@gmail.com>
 ;; Created: 20 Aug 2008
 ;; Version: 3
-;; RCS Version: $Rev: 409 $
+;; RCS Version: $Rev: 423 $
 ;; Keywords: sunrise commander, windows, accessibility, viewer
 ;; URL: http://www.emacswiki.org/emacs/sunrise-x-popviewer.el
 ;; Compatibility: GNU Emacs 22+
 
-;; This file is *NOT* part of GNU Emacs.
+;; This file is not part of GNU Emacs.
 
 ;; This program is free software: you can redistribute it and/or modify it under
 ;; the terms of the GNU General Public License as published by the Free Software
