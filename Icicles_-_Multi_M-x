@@ -203,7 +203,7 @@ number of them within the same use of `C-x SPC'.
 What happens if your input matches a command name but it is also
 an abbreviation for other command names?  By default, command
 names take precedence: if your input matches a command name then
-that command is invoked.  So, for example, by default the command
+that command is invoked.  So, for example, by default the Emacs command
 `cd' takes precedence over `cd' as an abbreviation for commands
 such as `compile-defun' and `cancel-debug-on-entry'.  If you
 instead want abbreviations to take precedence over command names,
