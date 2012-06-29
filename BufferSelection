@@ -53,7 +53,7 @@ fix it:
       (not (buffer-name (get-buffer buffer))))
 
 = Extensions =
-[[bs-ext.el]] contains extensions to Buffer Selection which allows you to bind keys to configs, and match buffers by regular expressions.
+[[bs-ext.el]] contains extensions to Buffer Selection which allows you to bind keys to configs, and match buffers by regular expressions, along with a few other conveniences.
 
 = Problems, questions and hopefully some answers too =
 
