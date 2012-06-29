@@ -1,4 +1,4 @@
-;;; sunrise-x-tree.el --- Tree View for the Sunrise Commander File Manager
+;;; sunrise-x-tree.el --- Tree View for the Sunrise Commander File Manager -*- lexical-binding: t -*-
 
 ;; Copyright (C) 2010-2012 José Alfredo Romero Latouche.
 
@@ -7,12 +7,12 @@
 ;; Maintainer: José Alfredo Romero L. <escherdragon@gmail.com>
 ;; Created: 4 May 2010
 ;; Version: 1
-;; RCS Version: $Rev: 422 $
+;; RCS Version: $Rev: 423 $
 ;; Keywords: sunrise commander, directories tree navigation
 ;; URL: http://www.emacswiki.org/emacs/sunrise-x-tree.el
 ;; Compatibility: GNU Emacs 22+
 
-;; This file is *NOT* part of GNU Emacs.
+;; This file is not part of GNU Emacs.
 
 ;; This program is free software: you can redistribute it and/or modify it under
 ;; the terms of the GNU General Public License as published by the Free Software
@@ -195,10 +195,9 @@ Used by the command `sr-tree-explode-branch'."
   "List of paths to big compressed archives visited through AVFS.")
 
 (defvar sr-tree-cursor nil
-  ;; FIXME better docstring -- what about LABEL?
   "Cons cell of the from (LABEL . FILEPATH).
-FILEPATH is the path to the selected directory in the current
-tree view.")
+FILEPATH is the path to the selected directory in the current tree
+view. LABEL is the name displayed in the tree representing FILEPATH")
 
 (defvar sr-tree-mode-map (make-sparse-keymap)
   "Keymap for the Sunrise Commander Tree View.")
@@ -262,7 +261,7 @@ on the position of the point."
              (eq (selected-window) (sr-this 'window)))
         (sr-tree-advertised-find-file-other))))
 
-(defun sr-tree-refresh-dir (widget &rest ignore)
+(defun sr-tree-refresh-dir (widget &rest _ignore)
   "Refresh WIDGET parent (or own) tree children. IGNORE other arguments."
   (let ((tree (if (tree-widget-p widget)
                   widget
@@ -287,7 +286,7 @@ subdirectories in the tree first."
       (setq button (sr-tree-get-button)))
     (sr-tree-refresh-dir button)))
 
-(defun sr-tree-revert-buffer (&optional ignore-auto noconfirm)
+(defun sr-tree-revert-buffer (&optional _ignore-auto _noconfirm)
   "Revert the current Sunrise Tree View buffer."
   (interactive)
   (sr-tree-refresh-branch))
@@ -314,8 +313,7 @@ initially."
 (defun sr-tree-highlight ()
   "Set up the path line in the current Sunrise Tree buffer."
   (save-excursion
-    (let ((path (or (cdr sr-tree-cursor) "-"))
-          (inhibit-read-only t))
+    (let ((inhibit-read-only t))
       (goto-char (point-min))
       (delete-region (point) (line-end-position))
       (widget-insert (propertize (concat (sr-tree-path-line nil) " ")
@@ -558,8 +556,7 @@ are used only internally to control recursion."
   (unless (or level branch)
     (recenter (truncate (/ (window-body-height) 10.0))))
   (let ((level (or level sr-tree-explosion-ratio))
-        (branch (or branch (sr-tree-get-branch)))
-        args)
+        (branch (or branch (sr-tree-get-branch))))
     (when (and branch (< 0 level))
       (unless (widget-get branch :open)
         (setq level (1- level))
@@ -820,6 +817,7 @@ nil."
       (sr-goto-dir target)
       (sr-display-attributes (point-min) (point-max) sr-show-file-attributes)
       (sr-keep-buffer side)
+      (if (fboundp 'sr-modeline-refresh) (sr-modeline-refresh))
       (if (fboundp 'sr-tabs-refresh) (sr-tabs-refresh)))))
 
 (defun sr-tree-sync ()
@@ -837,9 +835,9 @@ Necessary so the basic Dired file manipulation commands can work
 in Sunrise Tree View mode."
   `(let ((ad-redefinition-action 'accept))
      (flet
-      ((dired-get-filename (&optional localp no-error)
+      ((dired-get-filename (&optional _localp _no-error)
                            (cdr sr-tree-cursor))
-       (dired-show-file-type (file &optional deref-symlinks)
+       (dired-show-file-type (_file &optional _deref-symlinks)
                              (message
                               "%s: directory"
                               (directory-file-name (car sr-tree-cursor)))))
@@ -1169,7 +1167,7 @@ switch to normal mode, then execute."
 ;;; ============================================================================
 ;;; Desktop support:
 
-(defun sr-tree-desktop-save-buffer (desktop-dirname)
+(defun sr-tree-desktop-save-buffer (desktop-dir)
   "Return additional data for saving a Sunrise tree buffer to a desktop file."
   (append `((root . ,(widget-get sr-tree-root :path))
             (open-paths . ,sr-tree-open-paths)
@@ -1178,7 +1176,7 @@ switch to normal mode, then execute."
           (if (eq (current-buffer) sr-left-buffer) '((left . t)))
           (if (eq (current-buffer) sr-right-buffer) '((right . t)))
           (if (fboundp 'sr-tabs-desktop-save-buffer)
-              (sr-tabs-desktop-save-buffer desktop-dirname))))
+              (sr-tabs-desktop-save-buffer desktop-dir))))
 
 (defun sr-tree-desktop-restore-buffer (desktop-buffer-file-name
                                        desktop-buffer-name
