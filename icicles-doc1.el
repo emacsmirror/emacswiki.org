@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Tue May 15 09:54:08 2012 (-0700)
+;; Last-Updated: Fri Jun 29 08:34:52 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 26633
+;;     Update #: 26634
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-doc1.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -5696,11 +5696,12 @@
 ;;  What happens if your input matches a command name but it is also
 ;;  an abbreviation for other command names?  By default, command
 ;;  names take precedence: if your input matches a command name then
-;;  that command is invoked.  So, for example, by default the command
-;;  `cd' takes precedence over `cd' as an abbreviation for commands
-;;  such as `compile-defun' and `cancel-debug-on-entry'.  If you
-;;  instead want abbreviations to take precedence over command names,
-;;  then set option `icicle-command-abbrev-priority-flag' to `t'.
+;;  that command is invoked.  So, for example, by default the Emacs
+;;  command `cd' takes precedence over `cd' as an abbreviation for
+;;  commands such as `compile-defun' and `cancel-debug-on-entry'.  If
+;;  you instead want abbreviations to take precedence over command
+;;  names, then set option `icicle-command-abbrev-priority-flag' to
+;;  `t'.
 ;;
 ;;  Abbreviations are completed against the (persistent) list of
 ;;  abbreviations you have used in the past.  That list is also
