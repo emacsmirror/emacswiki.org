@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Wed Jun 27 11:40:27 2012 (-0700)
+;; Last-Updated: Fri Jun 29 13:21:37 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 18229
+;;     Update #: 18263
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-mcmd.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -1730,7 +1730,9 @@ multi-sort comparers) that are not pertinent for the current kind of
 completion."
   (icicle-remove-if (lambda (pred)
                       (setq pred  (cdr pred))
-                      (and pred  (symbolp pred) ; Do not handle multi-sort comparers.
+                      (and pred
+                           (symbolp pred) ; Do not handle multi-sort comparers.
+                           (not (eq pred icicle-allowed-sort-predicate))
                            (or (and (get pred 'icicle-proxy-sort-predicate)
                                     (not icicle-add-proxy-candidates-flag))
                                (and (get pred 'icicle-file-name-sort-predicate)
@@ -1741,6 +1743,8 @@ completion."
                                (and (get pred 'icicle-command-sort-predicate)
                                     (not (and (eq minibuffer-completion-table obarray)
                                               ;; But this will fail if predicate is more complex.
+                                              ;; So be sure to bind `icicle-allowed-sort-predicate'
+                                              ;; in that case, to avoid this restriction.
                                               (eq minibuffer-completion-predicate 'commandp))))
                                ;; Sort order for multi-completions. `minibuffer-completion-table'
                                ;; could be a function (e.g. `icicle-describe-opt-of-type-complete')
@@ -2220,26 +2224,26 @@ These are the minibuffer bindings when not completing input:
            (get 'help-xref 'button-category-symbol)) ; In `button.el'
   (define-button-type 'icicle-help-button
       :supertype 'help-xref
-      'help-function #'(lambda () (browse-url "http://www.emacswiki.org/cgi-bin/wiki/Icicles"))
+      'help-function (lambda () (browse-url "http://www.emacswiki.org/cgi-bin/wiki/Icicles"))
       'help-echo
       (purecopy "mouse-2, RET: Icicles documentation on the Emacs Wiki (requires Internet access)"))
   (define-button-type 'icicle-commentary1-button
       :supertype 'help-xref
-      'help-function #'(lambda ()
-                         (finder-commentary "icicles-doc1")
-                         (when (require 'linkd nil t) (linkd-mode 1))
-                         (when (require 'fit-frame nil t) (fit-frame)))
+      'help-function (lambda ()
+                       (finder-commentary "icicles-doc1")
+                       (when (require 'linkd nil t) (linkd-mode 1))
+                       (when (require 'fit-frame nil t) (fit-frame)))
       'help-echo (purecopy "mouse-2, RET: Icicles documentation, Part 1 (no Internet needed)"))
   (define-button-type 'icicle-commentary2-button
       :supertype 'help-xref
-      'help-function #'(lambda ()
-                         (finder-commentary "icicles-doc2")
-                         (when (require 'linkd nil t) (linkd-mode 1))
-                         (when (require 'fit-frame nil t) (fit-frame)))
+      'help-function (lambda ()
+                       (finder-commentary "icicles-doc2")
+                       (when (require 'linkd nil t) (linkd-mode 1))
+                       (when (require 'fit-frame nil t) (fit-frame)))
       'help-echo (purecopy "mouse-2, RET: Icicles documentation, Part 2 (no Internet needed)"))
   (define-button-type 'icicle-customize-button
       :supertype 'help-xref
-      'help-function #'(lambda () (customize-group-other-window 'Icicles))
+      'help-function (lambda () (customize-group-other-window 'Icicles))
       'help-echo (purecopy "mouse-2, RET: Customize/Browse Icicles Options & Faces")))
 
 
@@ -2770,14 +2774,14 @@ You can use this command only from the minibuffer (`\\<minibuffer-local-completi
         (let* ((icicle-whole-candidate-as-text-prop-p   nil)
                ;; If we didn't use this here we'd at least have to bind it to
                ;; `orig-must-pass-after-match-predicate', because of `icicle-execute-extended-command'.
-               (icicle-must-pass-after-match-predicate  #'(lambda (s)
-                                                            (let ((sym  (intern-soft s)))
-                                                              (and sym  (boundp (intern s))
-                                                                   (condition-case nil
-                                                                       (icicle-var-is-of-type-p
-                                                                        sym '(string color regexp)
-                                                                        'inherit-or-value)
-                                                                     (error nil))))))
+               (icicle-must-pass-after-match-predicate  (lambda (s)
+                                                          (let ((sym  (intern-soft s)))
+                                                            (and sym  (boundp (intern s))
+                                                                 (condition-case nil
+                                                                     (icicle-var-is-of-type-p
+                                                                      sym '(string color regexp)
+                                                                      'inherit-or-value)
+                                                                   (error nil))))))
                (enable-recursive-minibuffers            t)
                (var
                 (intern (completing-read "Insert text from variable: " obarray  nil  nil nil
@@ -5200,7 +5204,9 @@ You can use this command only from the minibuffer or `*Completions*'
         ((boundp symb) (describe-variable symb))
         ((facep symb) (describe-face symb))
         ((assq symb (mapcar #'cdr icicle-command-abbrev-alist))
-         (let ((regexp  (icicle-command-abbrev-regexp symb))) (apropos-command regexp)))
+         (let ((regexp  (icicle-command-abbrev-regexp symb))
+               (sel-fr  (selected-frame)))
+           (unwind-protect (apropos-command regexp) (select-frame-set-input-focus sel-fr))))
         ((symbol-plist symb) (apropos-describe-plist symb))
         (t
          (setq symb  (symbol-name symb)) ; Convert symbol to string, and try some more.
@@ -5352,7 +5358,7 @@ You can use this command only from the minibuffer (`\\<minibuffer-local-completi
                              (not (eq icicle-current-completion-mode 'prefix)))))
   (let ((icicle-whole-candidate-as-text-prop-p  nil)
         (enable-recursive-minibuffers            t)
-        (icicle-must-pass-after-match-predicate  #'(lambda (s) (functionp (intern s))))
+        (icicle-must-pass-after-match-predicate  (lambda (s) (functionp (intern s))))
         (icicle-saved-completion-candidate       icicle-last-completion-candidate)
         (icicle-candidate-action-fn              'icicle-apply-to-saved-candidate))
     (icicle-apply-to-saved-candidate
@@ -5388,7 +5394,7 @@ You can use this command only from the minibuffer (`\\<minibuffer-local-completi
           icicle-last-completion-candidate  choice)
     (let ((icicle-whole-candidate-as-text-prop-p  nil)
           (enable-recursive-minibuffers            t)
-          (icicle-must-pass-after-match-predicate  #'(lambda (s) (functionp (intern s))))
+          (icicle-must-pass-after-match-predicate  (lambda (s) (functionp (intern s))))
           (icicle-saved-completion-candidate       icicle-last-completion-candidate)
           (icicle-candidate-action-fn              'icicle-apply-to-saved-candidate))
       (icicle-apply-to-saved-candidate
@@ -5802,7 +5808,7 @@ You can use this command only from the minibuffer (`\\<minibuffer-local-completi
   (let* ((pred                                    minibuffer-completion-predicate)
          (icicle-whole-candidate-as-text-prop-p   nil)
          (enable-recursive-minibuffers            t)
-         (icicle-must-pass-after-match-predicate  #'(lambda (s) (boundp (intern s))))
+         (icicle-must-pass-after-match-predicate  (lambda (s) (boundp (intern s))))
          (var                                     (if askp
                                                       (intern
                                                        (completing-read
