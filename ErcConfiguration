@@ -403,7 +403,7 @@ echo $CLASS
 }}}
 
 
-[new:Anonymous:2012-06-29 16:36 UTC]
+[new:fsmunoz:2012-06-29 16:36 UTC]
 I've used something like in in [[rcircDbusNotification]]; while the code isn't pretty it does not use any external commands - although it relies on running on X11 and perhaps some cooperation of the window manager - but then again, most external applications have the same possible issues.
 {{{
 ;;; Frame-related function from rcircDbusNotification
