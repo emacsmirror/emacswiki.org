@@ -30,16 +30,13 @@ http://code.google.com/p/ansys-mode/downloads/list/ansys-mode-14.0.1.tgz"
 to get the sources).  Besides the code and Emacs you will find also in
 the download section two PDF tutorials or have immediately a look at
 the
-[http://duenenhof-wilhelm.de/dieter/ansys-mode_tutorial/ansys-mode_tutorial.html
-introductory online version], where you can see the images in a higher
-resolution as in the PDFs or the
-[http://duenenhof-wilhelm.de/dieter/ansys-mode_tutorial/APDL_tutorial.html
-in-depth online tutorial].
+[http://duenenhof-wilhelm.de/dieter/ansys-mode_tutorial/ansys-mode_tutorial.html introductory online version],
+where you can see the images in a higher resolution as in the PDFs or the
+[http://duenenhof-wilhelm.de/dieter/ansys-mode_tutorial/APDL_tutorial.html in-depth online tutorial].
 
 Please report bugs and inconsistencies in the documention! Write an
-email to the [[mailto:dieter@duenenhof-wilhelm][maintainer]] or use
-Google Code's [http://code.google.com/p/ansys-mode/issues/list issues
-list].
+email to the [mailto:dieter@duenenhof-wilhelm maintainer] or use
+Google Code's [http://code.google.com/p/ansys-mode/issues/list issues list].
 
 == Requirements ==
 
