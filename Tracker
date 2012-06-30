@@ -25,4 +25,4 @@ to my .emacs file.
 To answer the question about searching by tags above: The code in [[http://waits.cp.jku.at/~maarten/downloads/tracker-dired.el|tracker-dired.el]] builds a sparql query around the search terms to perform a fulltext search. I guess you can trivially change the sparql query (even if sparql syntax is not especially trivial :-) to perform the search on tags.
 
 [new:CyrilB:2012-06-07 UTC]
-<FIXME>All download links on this page seems to be outdated (page is missing or host is down). It will be better to avoid NIH syndrome, so if any emacs user got one of these files on his drive, please submit me to mailto:mchk0123@gmail.com, I will be glad to host them for the community. Thx. - CyrilB
+<FIXME>All download links on this page seems to be outdated (page is missing or host is down). It will be better to avoid NIH syndrome, so if any emacs user got one of these files on his drive, please sent it to me, I will be glad to update this page to include it. Thx. - CyrilB
