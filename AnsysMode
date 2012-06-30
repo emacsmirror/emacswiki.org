@@ -1,5 +1,5 @@
 This is the text of the ANSYS-Mode README file (the formatting is
-targeted for the Emacs Wiki)
+targeted for the [http://www.emacswiki.org/emacs/AnsysMode EmacsWiki])
 
 Copyright (C) 2006 - 2012  H. Dieter Wilhelm, GPL V3
 
@@ -8,40 +8,47 @@ Copyright (C) 2006 - 2012  H. Dieter Wilhelm, GPL V3
 http://duenenhof-wilhelm.de/dieter/ansys-mode_tutorial/ansys+emacs.png
 
 This [http://code.google.com/p/ansys-mode/ project] supports working
-with the FEA (Finite Element Analysis) suite [http://www.ansys.com ANSYS].
+with the FEA (Finite Element Analysis) suite [http://www.ansys.com ANSYS] (ANalysis SYStem).
 
-It provides *ANSYS-Mode*, an add-on to the
-[http://www.gnu.org/software/emacs/ Gnu Emacs] editor for navigating,
-inspecting and writing APDL files.  The mode offers managing and
+It provides 'ANSYS-Mode', an add-on to the
+[http://www.gnu.org/software/emacs/ Gnu Emacs] editor for navigating
+in, inspecting and writing APDL files.  The mode offers managing and
 communication capabilities for ANSYS processes, like interactive code
-debugging with the ANSYS solver or listing the current license status,
-etc. Some features are quite sophisticated but the overall
-documentation is targeted for ANSYS users with little Emacs
+debugging with the ANSYS solver/interpreter or listing the current
+license status, etc. Some features are quite sophisticated but the
+overall documentation is targeted for ANSYS users with little Emacs
 experience.
 
-[http://www.gnu.org/home.en.html Gnu] Emacs is an up-to-date,
-powerful, yet free editor which is available for any operating system
-where ANSYS is running.
+[http://www.gnu.org/home.en.html Gnu] Emacs (Gnu's Not Unix) is an
+up-to-date, extensible, powerful, yet free editor which is available
+for any operating system where ANSYS is running.
 
-The current stable version (14.0.1) of ANSYS-Mode is available at
-[http://code.google.com/p/ansys-mode Google's Code site] (or paste
-"wget
+The current stable version (14.0.1) of ANSYS-Mode is available at the
+[http://code.google.com/p/ansys-mode Google Code site] (hint: paste
+e. g. "wget
 http://code.google.com/p/ansys-mode/downloads/list/ansys-mode-14.0.1.tgz"
-to the console).  You will find at the download section a tutorial in
-PDF as well, or check out the
-[http://duenenhof-wilhelm.de/dieter/ansys-mode_tutorial/ansys-mode_tutorial.html online version] of it.
+to get the sources).  Besides the code and Emacs you will find also in
+the download section two PDF tutorials or have immediately a look at
+the
+[http://duenenhof-wilhelm.de/dieter/ansys-mode_tutorial/ansys-mode_tutorial.html
+introductory online version], where you can see the images in a higher
+resolution as in the PDFs or the
+[http://duenenhof-wilhelm.de/dieter/ansys-mode_tutorial/APDL_tutorial.html
+in-depth online tutorial].
 
-Please report bugs! You can do this at Google Code's
-[http://code.google.com/p/ansys-mode/issues/list issues list].
+Please report bugs and inconsistencies in the documention! Write an
+email to the [[mailto:dieter@duenenhof-wilhelm][maintainer]] or use
+Google Code's [http://code.google.com/p/ansys-mode/issues/list issues
+list].
 
 == Requirements ==
 
 The code is based on ANSYS version 14.0 and is written for GNU Emacs
 and not consciously targeted for XEmacs.  It is tested with Emacs-24.1
-under XP32, XP64 and GNU/Linux.
+under XP32, XP64 and under `GNU/Linux' (there also with Emacs-23.2).
 
-For some of the ANSYS-Mode solver control and communication
-capabilities a UNIX systems is necessary.
+Some of ANSYS-Mode's solver control and communication features are
+only implemented for UNIX systems.
 
 == Features ==
 
@@ -49,7 +56,7 @@ capabilities a UNIX systems is necessary.
   starting the ANSYS help browser, etc.)
 
 * Solver comunication facilities, i. e. sending code fragments from
-  the macro file or commands interactively to an ANSYS solver instance
+  the macro file or commands interactively to an ANSYS solver process
   (UNIX only)
 
 * Command syntax help in the editor (similar to but more verbose then
@@ -66,19 +73,28 @@ capabilities a UNIX systems is necessary.
   keywords, undocumented commands, deprecated elements, ...)  and
   optionally also user defined variables (experimental)
 
-* Alignment (beautification) of whole sections with variable
-  defintions
-
 * Overview of *every* variable definition (*GET, *DIM, *SET, =, *DO,
   CM, *VGET, ...), as well as component names, in the current file.
   These are shown in another window.  In the highest decoration level
   (2) these "user variables" are highlighted as well
 
-* Preview and insertion (optionally auto-insertion) of header and
-  ANSYS code templates for APDL files.  Respective snippets represent
-  examples of APDL work flows and considerable ANSYS know-how and are
-  easily extensible to boot.  The templates are partly interactive
+* Preview and/or insertion of extensible APDL code templates.  For
+  example the function template shows *all* available ANSYS
+  parameteric- and get functions. The respective code snippets show
+  examples of APDL work flows and considerable ANSYS know-how, these
+  are easily extensible to boot.  The templates are partly interactive
   i. e. they are asking for or completing user input.
+
+* Alignment (beautification) of whole sections with variable
+  defintions
+
+* Outlining (hiding and navigating) of code sections with Emacs'
+  outline-minor-mode. With outline strings '!@' you have a heading
+  structure which you can collapse or show.  This is the textual
+  analog to the WorkBench tree view.
+
+* Auto-insertion (optionally) of a header and outline code for every
+  new APDL file.
 
 * Convenient comment handling, commenting out whole paragraphs or
   whole control blocks and vice versa
@@ -87,21 +103,20 @@ capabilities a UNIX systems is necessary.
   together with closing of open blocks with auto-insertion of the
   appropriate end keyword (case-sensitive)
 
-* Outlining (hiding and navigating) of code sections with Emacs'
-  outline-minor-mode
+* ANSYS-Mode defines abbreviations for APDL templates i. e. with
+  writing a "nickname" and a special key triggers an exchange of the
+  characters with a complete code template
 
-* Use of the Emacs abbreviation facility for block templates
-  i. e. with writting a "nickname" Emacs exchanges the characters with
-  a whole code template
-
-* ANSYS-Mode changes some Emacs default behaviour to alleviate the
-  transition from other editors and user interface standards
+* You are able to use all Emacs' facilities, like the built-in
+  calculator, file manager, image viewer and many others.  ANSYS-Mode
+  changes some Emacs default behaviour to alleviate the transition
+  from other editors and user interface standards
 
 == Example applications ==
 
 Visual examples you will find in the
 [http://duenenhof-wilhelm.de/dieter/ansys-mode_tutorial/ansys-mode_tutorial.html online tutorial]
-or the latter screen-shot on [http://www.emacswiki.org/emacs/AnsysMode EmacsWiki]
+and the following screen-shot on [http://www.emacswiki.org/emacs/AnsysMode EmacsWiki]
 
 http://www.duenenhof-wilhelm.de/dieter/ansys-mode.jpg
 
@@ -115,19 +130,22 @@ a certain code template, respectively.
 
 == News ==
 
-* Included some tutorial slides for ANSYS-Mode:
-  ansys-mode_tutorial.pdf
+* Enhanced the documentation, included is now an introductory tutorial
+  `ansys-mode_tutorial.pdf' and a hands-on tutorial
+  `APDL_tutorial.pdf'
 
 * Added a timer for getting rid of the parameter help overlays after
   some time interval (1 min) without reusing the parameter help
 
 * Added a (customisable) variable `ansys-no-of-processors' and
   function with the same name for specifying the number of processors
-  for an Ansys multiprocessor run
+  for an ANSYS multiprocessor run
 
 * Extended mode commands, templates and removed typos mainly in
   ansys-template.el. For example added all *get functions in the
   ansys-skeleton-function template
+
+* Switched on outline-minor-mode and auto-insertion (in default_el)
 
 * Added a custom variable the corresponding function
   ansys-ansysli-servers for specifying the ansys interconnect license
@@ -140,6 +158,8 @@ a certain code template, respectively.
   set the used ansys version (ansys-current-ansys-version, if it is
   not 140, see the example config file default_el) and maybe
   additionally the installation directory (ansys-install-directory).
+
+Please have a look in the NEWS file for the complete history
 
 == Installation ==
 
@@ -157,17 +177,19 @@ Sources:
 * ansys-process.el
 
 (and possibly their compiled versions with the suffix '.elc'.  In case
-you are using the mode with an older version of Emacs than 23 please
+you are using the mode with an older version of Emacs than 24 please
 remove the .elc files.)
 
 Auxiliaries:
 * README -- this file
-* NEWS -- and history
+* NEWS -- news and history
 * TODO -- todos and deficiencies
 * LICENSE -- the GPL (Gnu Puplic License) Version 3
-* default_el -- configuration examples (of an Emacs 'default.el')
-* fontification.mac -- highlighting APDL example
-* ansys-mode_tutorial.pdf -- A tutorial
+* default_el -- configuration example file of an Emacs 'default.el'
+* fontification.mac -- APDL syntax highlighting examples
+* ansys-mode_tutorial.pdf -- An introductory tutorial
+* APDL_tutorial.pdf -- The ANSYS-Mode hacking tutorial
+* APDL_tutorial.ansys -- Hacking tutorial's supplementary APDL code
 
 === Short instructions ===
 
@@ -188,7 +210,7 @@ ANSYS-Mode is now immediately available, by opening (check out the
 
 Most functionalities should work but if you have not installed ANSYS
 in its default installation directory on drive `C:Program Files' on
-Win64 and you want to start for example 'anslic_admin' or the Ansys
+Win64 and you want to start for example 'anslic_admin' or the ANSYS
 help browser directly from Emacs please adjust the configuration file
 `default.el' file in Emacs' `site-lisp' directory according to the
 commented code examples.
@@ -339,7 +361,7 @@ globally:
 * Activated Show Paren Mode (show-paren-mode t)
 * Advised M-w (kill-ring-save) without active region to copy the whole line
 
-(Delete Selection Mode can be switched off in the ANSYS menu.)
+(Delete Selection Mode can be switched off in the ANSYS-Mode menu.)
 
 locally:
 * (setq scroll-preserve-screen-position t)
@@ -347,7 +369,13 @@ locally:
 
 == Acknowledgements ==
 
-In mainly cronological order:
+* Tim Read
+* Geoff Foster
+
+For their ansys-mod.el from 1997 which gave the idea to ANSYS-Mode
+(the implementation is different and vastly extended)
+
+Then in mainly reversed cronological order:
 
 * Ilya Gurin
 * Alex Schroeder
@@ -357,13 +385,12 @@ In mainly cronological order:
 * Mathias Dahl
 * rms
 
-
 == Resources ==
 
-* [http://www.emacswiki.org The Emacs Wiki]
-* A general [http://www.ansys.net  ANSYS macro repository]
-* The [http://www.ansys.com ANSYS site]
-* An [http://www.xansys.org ANSYS online community]
+* The [http://www.emacswiki.org Emacs Wiki]
+* A general [http://www.ansys.net  ANSYS macro repository] (ansys.net)
+* The [http://www.ansys.com ANSYS homepage]
+* Xansys, an [http://www.xansys.org ANSYS online community] (registration necessary for the forum)
 * Another APDL [http://www.padtinc.com/pedal  script editor]
 
 == Bugs and Problems ==
@@ -400,7 +427,8 @@ the following options:
   to issue a bug report at the [http://code.google.com/p/ansys-mode/issues/list Google Code site].
   From this site you can download the latest development version.
 
-* It might be interesting for you to visit the [http://www.emacswiki.org/cgi-bin/wiki/AnsysMode Emacs Wiki].
+* It might be interesting for you to visit the
+[http://www.emacswiki.org/cgi-bin/wiki/AnsysMode Emacs Wiki].
 At the Wiki you can add some comments or wishes without registration.
 
 local variables:
