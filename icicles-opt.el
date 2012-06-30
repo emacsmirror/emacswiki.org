@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:22:14 2006
 ;; Version: 22.0
-;; Last-Updated: Fri Jun 29 08:41:38 2012 (-0700)
+;; Last-Updated: Fri Jun 29 17:09:02 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 5005
+;;     Update #: 5012
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-opt.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -1949,13 +1949,15 @@ This threshold is also used to decide when to display the message
 
 ;;;###autoload
 (defcustom icicle-inhibit-advice-functions
-  '(choose-completion choose-completion-string completing-read
-    completion-setup-function dired-smart-shell-command
-    display-completion-list exit-minibuffer face-valid-attribute-values
-    minibuffer-complete-and-exit mouse-choose-completion
-    next-history-element read-face-name read-file-name read-number
-    shell-command shell-command-on-region switch-to-completions
-    completing-read-multiple)
+  `(choose-completion  choose-completion-string  completing-read
+    completion-setup-function
+    ,@(and (not (fboundp 'read-shell-command)) '(dired-smart-shell-command)) ; Emacs < 23
+    display-completion-list  exit-minibuffer  face-valid-attribute-values
+    minibuffer-complete-and-exit  mouse-choose-completion
+    next-history-element  read-face-name  read-file-name
+    ,@(and (fboundp 'read-number) '(read-number)) ; Emacs 22+
+    ,@(and (not (fboundp 'read-shell-command)) '(shell-command shell-command-on-region)) ; Emacs < 23
+    switch-to-completions  completing-read-multiple)
   "*Functions that Icicles redefines, and for which advice is deactivated.
 Icicle mode deactivates all advice for such functions.  The advice is
 reactivated when you leave Icicle mode."
