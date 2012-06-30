@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Fri Jun 29 13:23:17 2012 (-0700)
+;; Last-Updated: Fri Jun 29 17:24:49 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 8556
+;;     Update #: 8559
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-chg.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -5738,6 +5738,7 @@
 ;;;(@* "CHANGE LOG FOR `icicles-opt.el'")
 ;;
 ;; 2012/06/29 dadams
+;;     icicle-inhibit-advice-functions: Exclude commands that are not redefined in certain releases.
 ;;     icicle-command-abbrev-alist: Added :tag strings.
 ;; 2012/06/09 dadams
 ;;     icicle-show-Completions-help-flag: Do not defvaralias it to completion-show-help.  Updated doc.
