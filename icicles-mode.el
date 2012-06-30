@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 10:21:10 2006
 ;; Version: 22.0
-;; Last-Updated: Fri Jun  8 10:37:28 2012 (-0700)
+;; Last-Updated: Fri Jun 29 16:23:01 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 8988
+;;     Update #: 8990
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-mode.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -20,20 +20,20 @@
 ;;   `advice', `advice-preload', `apropos', `apropos+',
 ;;   `apropos-fn+var', `avoid', `backquote', `bookmark', `bookmark+',
 ;;   `bookmark+-1', `bookmark+-bmu', `bookmark+-key',
-;;   `bookmark+-lit', `bookmark+-mac', `bytecomp', `cl', `cus-edit',
-;;   `cus-face', `cus-load', `cus-start', `dired', `dired+',
-;;   `dired-aux', `dired-x', `doremi', `easymenu', `ediff-diff',
-;;   `ediff-help', `ediff-init', `ediff-merg', `ediff-mult',
-;;   `ediff-util', `ediff-wind', `el-swank-fuzzy', `ffap', `ffap-',
-;;   `fit-frame', `frame-cmds', `frame-fns', `fuzzy', `fuzzy-match',
-;;   `help+20', `hexrgb', `icicles-cmd1', `icicles-cmd2',
-;;   `icicles-face', `icicles-fn', `icicles-mcmd', `icicles-opt',
-;;   `icicles-var', `image-dired', `info', `info+', `kmacro',
-;;   `levenshtein', `menu-bar', `menu-bar+', `misc-cmds', `misc-fns',
-;;   `mouse3', `mwheel', `naked', `pp', `pp+', `regexp-opt', `ring',
-;;   `ring+', `second-sel', `strings', `thingatpt', `thingatpt+',
-;;   `unaccent', `w32-browser', `w32browser-dlgopen', `wid-edit',
-;;   `wid-edit+', `widget'.
+;;   `bookmark+-lit', `bytecomp', `cl', `cus-edit', `cus-face',
+;;   `cus-load', `cus-start', `dired', `dired+', `dired-aux',
+;;   `dired-x', `doremi', `easymenu', `ediff-diff', `ediff-help',
+;;   `ediff-init', `ediff-merg', `ediff-mult', `ediff-util',
+;;   `ediff-wind', `el-swank-fuzzy', `ffap', `ffap-', `fit-frame',
+;;   `frame-cmds', `frame-fns', `fuzzy', `fuzzy-match', `help+20',
+;;   `hexrgb', `icicles-cmd1', `icicles-cmd2', `icicles-face',
+;;   `icicles-fn', `icicles-mcmd', `icicles-opt', `icicles-var',
+;;   `image-dired', `info', `info+', `kmacro', `levenshtein',
+;;   `menu-bar', `menu-bar+', `misc-cmds', `misc-fns', `mouse3',
+;;   `mwheel', `naked', `pp', `pp+', `regexp-opt', `ring', `ring+',
+;;   `second-sel', `strings', `thingatpt', `thingatpt+', `unaccent',
+;;   `w32-browser', `w32browser-dlgopen', `wid-edit', `wid-edit+',
+;;   `widget'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -4340,9 +4340,9 @@ if `icicle-change-region-background-flag' is non-nil."
       (defalias 'read-file-name             'orig-read-file-name)) ; Emacs 20, 21
     (when (fboundp 'old-read-number)
       (defalias 'read-number                'old-read-number))
-    (when (fboundp 'old-shell-command) ; Emacs 23
+    (when (fboundp 'old-shell-command) ; Emacs < 23
       (defalias 'shell-command              'old-shell-command))
-    (when (fboundp 'old-shell-command-on-region) ; Emacs 23
+    (when (fboundp 'old-shell-command-on-region) ; Emacs < 23
       (defalias 'shell-command-on-region    'old-shell-command-on-region))
     (defalias 'switch-to-completions        'old-switch-to-completions)
     (when (fboundp 'old-completing-read-multiple)
