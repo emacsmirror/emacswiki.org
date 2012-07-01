@@ -52,3 +52,4 @@ and then do a make and install as described in the Build section above.
 There is also a precompiled emacs-snapshot package available at http://emacs.naquadah.org/.
 It is rebuilt regularly and can be installed with a package mananger (like aptitude).
 
+I was having problems with installing emacs-snapshot on Debian Wheezy due to unsatisfiable libmagick-dependencies. The problem was solved by apt-pinning; basically taking two missing libraries from Debian unstable repositories. John H. Robinson has written [http://jaqque.sbih.org/kplug/apt-pinning.html noob-friendly guide to apt-pinning].
