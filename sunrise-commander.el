@@ -7,7 +7,7 @@
 ;; Maintainer: José Alfredo Romero L. <escherdragon@gmail.com>
 ;; Created: 24 Sep 2007
 ;; Version: 6
-;; RCS Version: $Rev: 423 $
+;; RCS Version: $Rev: 424 $
 ;; Keywords: files, dired, midnight commander, norton, orthodox
 ;; URL: http://www.emacswiki.org/emacs/sunrise-commander.el
 ;; Compatibility: GNU Emacs 22+
@@ -1947,9 +1947,10 @@ and add it to your `load-path'" name name))))
   "Go to the first directory/file in Dired."
   (interactive)
   (goto-char (point-min))
-  (if (re-search-forward directory-listing-before-filename-regexp nil t)
-      (while (looking-at "\.\.?/?$")
-        (dired-next-line 1))))
+  (when (re-search-forward directory-listing-before-filename-regexp nil t)
+    (dotimes (_times 2)
+      (when (looking-at "\.\.?/?$")
+        (dired-next-line 1)))))
 
 (defun sr-end-of-buffer()
   "Go to the last directory/file in Dired."
