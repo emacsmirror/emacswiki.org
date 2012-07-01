@@ -79,6 +79,15 @@ You can put this command in your <code>~/.xsession</code>, <code>~/.gnomerc</cod
     Option "XkbOptions" "ctrl:nocaps"
 </pre>
 
+If above setting does not work, try this one(nowadays Xorg prefers):
+<pre>
+Section "InputClass"
+    Identifier            "Keyboard Setting"
+    MatchIsKeyboard       "yes"
+    Option                "XkbOptions" "ctrl:swapcaps"
+EndSection
+
+</pre>
 
 In Fedora 15 you can also add a file <code>~/.Xkbmap</code> that contains command line arguments to <code>setxkbmap</code>. These will be used when you next log in.
 
