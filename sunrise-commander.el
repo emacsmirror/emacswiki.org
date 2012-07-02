@@ -7,7 +7,7 @@
 ;; Maintainer: José Alfredo Romero L. <escherdragon@gmail.com>
 ;; Created: 24 Sep 2007
 ;; Version: 6
-;; RCS Version: $Rev: 424 $
+;; RCS Version: $Rev: 425 $
 ;; Keywords: files, dired, midnight commander, norton, orthodox
 ;; URL: http://www.emacswiki.org/emacs/sunrise-commander.el
 ;; Compatibility: GNU Emacs 22+
@@ -2659,9 +2659,10 @@ specifiers are: d (decimal), x (hex) or o (octal)."
               (saved-point (point)))
           (sr-save-aspect
            (setq major-mode 'wdired-mode)
-           (flet ((yes-or-no-p (prompt) nil)
-                  (revert-buffer
-                   (&optional ignore-auto noconfirm preserve-modes) nil))
+           (letf (((symbol-function 'yes-or-no-p) (lambda (prompt) (ignore)))
+                  ((symbol-function 'revert-buffer)
+                   (lambda (&optional ignore-auto noconfirm preserve-modes)
+                     (ignore))))
              ad-do-it)
            (sr-readonly-pane was-virtual)
            (goto-char saved-point))
@@ -2690,7 +2691,7 @@ specifiers are: d (decimal), x (hex) or o (octal)."
                             "copying" (sr-files-size items)))
             (sr-clone items target #'copy-file progress ?C)
             (sr-progress-reporter-done progress)))
-        (flet ((message (_msg &rest _args) (ignore)))
+        (letf (((symbol-function 'message) (lambda (_msg &rest _args) (ignore))))
           (dired-unmark-all-marks))))))
 
 (defun sr-do-symlink ()
