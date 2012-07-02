@@ -7,7 +7,7 @@
 ;; Maintainer: José Alfredo Romero L. <escherdragon@gmail.com>
 ;; Created: 24 Oct 2009
 ;; Version: 1
-;; RCS Version: $Rev: 423 $
+;; RCS Version: $Rev: 425 $
 ;; Keywords: sunrise commander, tabs
 ;; URL: http://www.emacswiki.org/emacs/sunrise-x-tabs.el
 ;; Compatibility: GNU Emacs 22+
@@ -277,9 +277,9 @@ removes the tab."
 (defun sr-tabs-transpose ()
   "Swap the sets of tabs from one pane to the other."
   (interactive)
-  (flet ((flip (side) (setcar side (cdr (assq (car side) sr-side-lookup)))))
+  (labels ((flip (side) (setcar side (cdr (assq (car side) sr-side-lookup)))))
     (dolist (registry (list sr-tabs sr-tabs-labels-cache))
-      (mapc 'flip registry)))
+      (mapc #'flip registry)))
   (sr-in-other (sr-tabs-refresh))
   (sr-tabs-refresh))
 
