@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2012, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 13:43:55 2010 (-0700)
-;; Last-Updated: Tue Jun 26 10:39:06 2012 (-0700)
+;; Last-Updated: Mon Jul  2 16:37:12 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 5709
+;;     Update #: 5710
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-1.el
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -6735,23 +6735,22 @@ is non-nil, then try to find an appropriate shell command using, in
 order, `dired-guess-default' and (Emacs 23+ only)
 `mailcap-file-default-commands'.  If a match is found then return a
 Lisp function that invokes that shell command."
-  (lexical-let* ((ff         (list filename))
-                 (bmkp-user  (bmkp-default-handler-user filename))
-                 (shell-cmd  (if (stringp bmkp-user)
-                                 bmkp-user
-                               (and (not bmkp-user)
-                                    bmkp-guess-default-handler-for-file-flag
-                                    (or (and (require 'dired-x nil t)
-                                             (let* ((case-fold-search
-                                                     (or (and (boundp 'dired-guess-shell-case-fold-search)
-                                                              dired-guess-shell-case-fold-search)
-                                                         case-fold-search))
-                                                    (default  (dired-guess-default (list filename))))
-                                               (if (consp default) (car default) default)))
-                                        (and (require 'mailcap nil t) ; Emacs 23+
-                                             (car (mailcap-file-default-commands (list filename)))))))))
-    (cond ((stringp shell-cmd) #'(lambda (bmk) (dired-do-shell-command shell-cmd nil ff)))
-          ((or (functionp bmkp-user) (and bmkp-user  (symbolp bmkp-user)))
+  (let* ((bmkp-user  (bmkp-default-handler-user filename))
+         (shell-cmd  (if (stringp bmkp-user)
+                         bmkp-user
+                       (and (not bmkp-user)
+                            bmkp-guess-default-handler-for-file-flag
+                            (or (and (require 'dired-x nil t)
+                                     (let* ((case-fold-search
+                                             (or (and (boundp 'dired-guess-shell-case-fold-search)
+                                                      dired-guess-shell-case-fold-search)
+                                                 case-fold-search))
+                                            (default  (dired-guess-default (list filename))))
+                                       (if (consp default) (car default) default)))
+                                (and (require 'mailcap nil t) ; Emacs 23+
+                                     (car (mailcap-file-default-commands (list filename)))))))))
+    (cond ((stringp shell-cmd) `(lambda (bmk) (dired-do-shell-command ',shell-cmd nil ',(list filename))))
+          ((or (functionp bmkp-user) (and bmkp-user (symbolp bmkp-user)))
            bmkp-user)
           (t nil))))
 
