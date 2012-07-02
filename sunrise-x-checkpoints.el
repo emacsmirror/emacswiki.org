@@ -7,7 +7,7 @@
 ;; Maintainer: José Alfredo Romero L. <escherdragon@gmail.com>
 ;; Created: 29 Dec 2009
 ;; Version: 1
-;; RCS Version: $Rev: 423 $
+;; RCS Version: $Rev: 425 $
 ;; Keywords: sunrise commander, checkpoints, bookmarks
 ;; URL: http://www.emacswiki.org/emacs/sunrise-x-checkpoints.el
 ;; Compatibility: GNU Emacs 23+
@@ -87,7 +87,7 @@
   (let ((dirs (cdr (assq 'sr-directories (cdr bookmark)))) (missing))
     (mapc (lambda (x)
             (if (file-directory-p x)
-                (progn (dired x) (sr-bookmark-jump))
+                (sr-save-aspect (dired x) (sr-bookmark-jump))
               (setq missing (cons sr-selected-window missing)))
             (sr-change-window))
           dirs)
