@@ -7,9 +7,9 @@
 ;; Copyright (C) 2008-2012, Drew Adams, all rights reserved.
 ;; Created: Sun Sep  7 14:17:06 2008 (-0700)
 ;; Version: 22.0
-;; Last-Updated: Sun Jan  1 14:21:04 2012 (-0800)
+;; Last-Updated: Mon Jul  2 08:16:57 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 27
+;;     Update #: 30
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/find-func+.el
 ;; Keywords: emacs-lisp, functions, variables
 ;; Compatibility: GNU Emacs: 22.x, 23.x
@@ -27,6 +27,11 @@
 ;;  Commands defined here:
 ;;
 ;;    `find-library-other-window'.
+;;
+;;
+;;  Suggested key binding (`C-x 4 l'):
+;;
+;;    (define-key ctl-x-4-map "l" 'find-library-other-window)
 ;; 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; 
