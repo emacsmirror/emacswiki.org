@@ -7,7 +7,7 @@
 ;; Maintainer: José Alfredo Romero L. <escherdragon@gmail.com>
 ;; Created: 4 May 2010
 ;; Version: 1
-;; RCS Version: $Rev: 423 $
+;; RCS Version: $Rev: 425 $
 ;; Keywords: sunrise commander, directories tree navigation
 ;; URL: http://www.emacswiki.org/emacs/sunrise-x-tree.el
 ;; Compatibility: GNU Emacs 22+
@@ -829,18 +829,23 @@ nil."
 ;;; ============================================================================
 ;;; File system manipulation functions:
 
+(defun sr-tree-get-filename (&optional _localp _no-error)
+  "Replacement for `dired-get-filename' in Sunrise Tree functions."
+  (cdr sr-tree-cursor))
+
+(defun sr-tree-show-file-type (_file &optional _deref-symlinks)
+  "Replacement for `dired-show-file-type' in Sunrise Tree functions."
+  (message "%s: directory" (directory-file-name (car sr-tree-cursor))))
+
 (defmacro sr-tree-adapt-dired-command (form)
   "Evaluate FORM with a few Dired functions locally redefined.
 Necessary so the basic Dired file manipulation commands can work
 in Sunrise Tree View mode."
   `(let ((ad-redefinition-action 'accept))
-     (flet
-      ((dired-get-filename (&optional _localp _no-error)
-                           (cdr sr-tree-cursor))
-       (dired-show-file-type (_file &optional _deref-symlinks)
-                             (message
-                              "%s: directory"
-                              (directory-file-name (car sr-tree-cursor)))))
+     (letf (((symbol-function 'dired-get-filename)
+             (symbol-function 'sr-tree-get-filename))
+            ((symbol-function 'dired-show-file-type)
+             (symbol-function 'sr-tree-show-file-type)))
        ,form)))
 
 (defun sr-tree-do-copy ()
