@@ -4265,12 +4265,46 @@ One workaround to some extent, at least in the sense that it lets you see a set 
 [new:AndersJohansson:2012-05-23 09:30 UTC]
 I understand there are lots of complexities to consider for this. bmkp-bmenu-edit-marked' actually worked pretty well for me right now. Thanks ---AndersJohansson
 
+
+
+----
+
 [new:EgbertoFuentes:2012-07-01 19:23 UTC]
 I have a problem when create a file-handler bookmark:
 
 ##(setq-default bmkp-guess-default-handler-for-file-flag t)##
 
-When I create this kind of bookmark in the same session, it works perfect; but when I restart emacs and try to activate the same bookmark it doesn't work (something about a void --shell-cmd-- symbol). ---EgbertoFuentes
+When I create this kind of bookmark in the same session, it works perfect; but when I restart emacs and try to activate the same bookmark it doesn't work (something about a void ##--shell-cmd--## symbol). --- EgbertoFuentes
+
+[new:DrewAdams:2012-07-02 06:19 UTC]
+Here is a workaround (code from last May, before I changed it to use `lexical-let*'):
+
+  (defun bmkp-default-handler-for-file (filename)
+    "..."
+    (let* ((bmkp-user  (bmkp-default-handler-user filename))
+           (shell-cmd  (if (stringp bmkp-user)
+                           bmkp-user
+                         (and (not bmkp-user)
+                              bmkp-guess-default-handler-for-file-flag
+                              (or (and (require 'dired-x nil t)
+                                       (let* ((case-fold-search
+                                               (or (and (boundp 'dired-guess-shell-case-fold-search)
+                                                        dired-guess-shell-case-fold-search)
+                                                   case-fold-search))
+                                              (default  (dired-guess-default (list filename))))
+                                         (if (consp default) (car default) default)))
+                                  (and (require 'mailcap nil t)
+                                       (car (mailcap-file-default-commands (list filename)))))))))
+      (cond ((stringp shell-cmd) `(lambda (bmk) (dired-do-shell-command ',shell-cmd nil ',(list filename))))
+            ((or (functionp bmkp-user) (and bmkp-user (symbolp bmkp-user)))
+             bmkp-user)
+            (t nil))))
+
+But before trying the workaround, please send me the definition of that bookmark from your bookmark file (you can change any personal info in it; I only need to see the technical definition).
+
+If you can also send me the definition of the bookmark after applying the workaround (you will need to re-create the bookmark, of course), that will help.  Please send the info to me by email if you can (see the file header for the address).
+
+And please let me know your Emacs version, using `M-x emacs-version'.  Thx -- DrewAdams
 
 ----
 CategoryBookmarking CategoryHypermedia CategoryPersistence 
