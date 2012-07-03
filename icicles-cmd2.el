@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Thu May 21 13:31:43 2009 (-0700)
 ;; Version: 22.0
-;; Last-Updated: Mon Jul  2 22:55:47 2012 (-0700)
+;; Last-Updated: Mon Jul  2 23:01:21 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 5684
+;;     Update #: 5685
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-cmd2.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -147,10 +147,6 @@
 ;;    (+)`icicle-tag-a-file', (+)`icicle-tags-search',
 ;;    (+)`icicle-untag-a-file', (+)`icicle-vardoc',
 ;;    (+)`icicle-where-is', (+)`synonyms', (+)`what-which-how'.
-;;
-;;  User options defined here:
-;;
-;;    `icicle-byte-compile-eval-after-load-flag'.
 ;;
 ;;  Non-interactive functions defined here:
 ;;
