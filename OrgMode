@@ -3,25 +3,18 @@
 [[zh:Org-Mode (中文)]]
 == Overview ==
 
-An Emacs Mode for Notes, Project Planning, and Authoring. Org-mode is included with Emacs 22.1.
+Org-mode is an Emacs mode for note keeping, project planning, TODO lists and authoring. It is included from Emacs 22.1 onward as default.
 
-* Homepage: http://orgmode.org
-* Worg (user edited org) tutorials etc: http://orgmode.org/worg
-* The compact Org-mode Guide: http://orgmode.org/guide/
-* The Org Manual: http://orgmode.org/manual/index.html
-* El Manual de Org, traducción al español para 23.1:  http://gnu.manticore.es/manual-org-emacs
+Org-mode's [http://orgmode.org/manual/index.html manual], [http://orgmode.org/guide/ compact guide], the community maintained [http://orgmode.org/worg Worg]  (which includes tutorial, ideas, code snippets, etc.,) and can be accessed at [http://orgmode.org its homepage]. [http://www.network-theory.co.uk/org/manual/ Paperback manual] is also available. [http://gnu.manticore.es/manual-org-emacs El Manual de Org], traduccioón al español para 23.1.
 
 Features:
 
-* integrates with diary
-* set deadlines, todos, scheduled events
-* tables with a fantastic table editor (available as a minor mode)
-* output to html
-* sparse tree view of todos and deadlines
-* agenda mode consolidates todos, scheduled, deadlines, and diary events from many files into one view
-* recognizes dates
-* links to http, file, gnus, rmail, vm, news, wanderlust, bbdb
-* integrates with RememberMode
+* Deadlines, time stamps, scheduling events and TODO items. Integrates Emacs calendar and diary and can compile entries from many files into one view. 
+* Table editor (available as a minor mode for use in other major modes).
+* HTML and LaTeX export, among others.
+* Plain text URL-like links to http, file, gnus, rmail, vm, news, wanderlust, bbdb.
+* Integrates with RememberMode.
+* an environment for literate programming.
 
 == Download and Install ==
 
@@ -375,4 +368,3 @@ http://shouldDo.org
 
 ----
 CategoryOutline CategoryPersonalInformationManager CategoryCalendar
-
