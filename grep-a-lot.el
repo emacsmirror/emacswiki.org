@@ -1,10 +1,11 @@
 ;;; grep-a-lot.el --- manages multiple search results buffers for grep.el
 
-;; Copyright (C) 2008, 2009 Avi Rozen
+;; Copyright (C) 2008-2012 Avi Rozen
 
 ;; Author: Avi Rozen <avi.rozen@gmail.com>
 ;; Keywords: tools, convenience, search
-;; Version: %Id: 5%
+;; URL: https://github.com/ZungBang/emacs-grep-a-lot
+;; Version: 1.0.6
 
 ;; This file is NOT part of GNU Emacs.
 
@@ -294,3 +295,6 @@ grep search results buffers."
   (define-key esc-map "g=" 'grep-a-lot-restart-context))
 
 (provide 'grep-a-lot)
+
+;;; grep-a-lot.el ends here
+
