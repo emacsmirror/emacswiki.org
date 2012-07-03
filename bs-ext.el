@@ -49,7 +49,7 @@
 ;;
 ;; /        : prompt user for regular expression, place matching buffers in "regexp" config, and change to that config
 ;; <left>   : select previous config using `bs-ext-select-previous-configuration'
-;; <right>  : select next config using `bs-select-next-configuration'
+;; <right>  : select next config using `bs-ext-select-next-configuration'
 ;; x        : kill buffer on current line using `bs-delete'
 
 ;;; Installation:
@@ -152,6 +152,18 @@ will be used."
     (bs--set-window-height)
     (bs-message-without-log "Selected configuration: %s" (car config))))
 
+(defun bs-ext-select-next-configuration (&optional start-name)
+  "Apply next configuration START-NAME and refresh buffer list.
+If START-NAME is nil the current configuration `bs-current-configuration'
+will be used."
+  (interactive)
+  (let ((config (bs-next-config (or start-name bs-current-configuration))))
+    (bs-set-configuration (car config))
+    (setq bs-default-configuration bs-current-configuration)
+    (bs--redisplay t)
+    (bs--set-window-height)
+    (bs-message-without-log "Selected configuration: %s" (car config))))
+
 (defvar bs-ext-regexp ".*"
   "Regexp with which to match buffer names for buffer show `regexp' configuration.")
 
@@ -181,7 +193,6 @@ will be used."
     mode-line-position
     #("  " 0 2
       (help-echo "mouse-1: Select (drag to resize)\nmouse-2: Make current window occupy the whole frame\nmouse-3: Remove current window from display"))
-;    mode-line-modes
     "Press ? for help, q to quit"
     (global-mode-string
      ("" global-mode-string
@@ -192,17 +203,21 @@ will be used."
          (display-graphic-p)
        #("-%-" 0 3
          (help-echo "mouse-1: Select (drag to resize)\nmouse-2: Make current window occupy the whole frame\nmouse-3: Remove current window from display")))))
-  "The mode-line-format for the *buffer-selection* buffer.")
+  "The `mode-line-format' for the *buffer-selection* buffer.")
 
+(defun bs-ext-limit-by-regexp nil
+  (interactive)
+  (call-interactively 'bs-ext-set-regexp)
+  (if (not (assoc "regexp" bs-configurations))
+      (add-to-list 'bs-configurations bs-ext-regexp-config))
+  (bs--show-with-configuration "regexp"))
+  
 ;; Set some new keys
 (define-key bs-mode-map (kbd "<left>") 'bs-ext-select-previous-configuration)
-(define-key bs-mode-map (kbd "<right>") 'bs-select-next-configuration)
+(define-key bs-mode-map (kbd "<right>") 'bs-ext-select-next-configuration)
 (define-key bs-mode-map (kbd "x") 'bs-delete)
-(define-key bs-mode-map (kbd "/") (lambda nil (interactive)
-                                    (call-interactively 'bs-ext-set-regexp)
-                                    (if (not (assoc "regexp" bs-configurations))
-                                             (add-to-list 'bs-configurations bs-ext-regexp-config))
-                                    (bs--show-with-configuration "regexp")))
+(define-key bs-mode-map (kbd "/") 'bs-ext-limit-by-regexp)
+(define-key bs-mode-map (kbd "?") 'bs-ext-help)
 ;; Set the config keys
 (bs-ext-set-keys 'bs-ext-config-keys bs-ext-config-keys)
 
@@ -215,8 +230,8 @@ will be used."
 ;; Set the mode-line
 (add-hook 'bs-mode-hook
           (lambda nil
-            (setq mode-line-format bs-ext-mode-line-format)
-            (setq header-line-format (if bs-ext-show-configs-header
+            (setq mode-line-format bs-ext-mode-line-format
+                  header-line-format (if bs-ext-show-configs-header
                                          (mapconcat (lambda (conf)
                                                       (let* ((name (car conf))
                                                              (key (car (rassoc name bs-ext-config-keys)))
@@ -226,6 +241,53 @@ will be used."
                                                           item)))
                                                     bs-configurations " ")))))
 
+;; This variable is used purely for the documentation string.
+(defvar bs-ext-help nil
+  "Major mode for editing a subset of Emacs' buffers.
+\\<bs-mode-map>
+Aside from two header lines each line describes one buffer.
+Move to a line representing the buffer you want to edit and select
+buffer by \\[bs-select] or SPC.  Abort buffer list with \\[bs-kill].
+There are many key commands similar to `Buffer-menu-mode' for
+manipulating the buffer list and buffers.
+For faster navigation each digit key is a digit argument.
+Different configurations are displayed in the header line. These can
+be navigated using \\[bs-ext-select-previous-configuration] and \\[bs-ext-select-next-configuration],
+or by pressing the associated shortcut keys displayed in brackets after
+the config names (see `bs-ext-config-keys').
+
+\\[bs-select] or SPACE -- select current line's buffer and other marked buffers.
+\\[bs-toggle-show-all]  -- toggle between all buffers and a special subset.
+\\[bs-select-other-window] -- select current line's buffer in other window.
+\\[bs-tmp-select-other-window] -- make another window display that buffer and
+    remain in Buffer Selection Menu.
+\\[bs-mouse-select] -- select current line's buffer and other marked buffers.
+\\[bs-save] -- save current line's buffer immediately.
+\\[bs-delete] -- kill current line's buffer immediately.
+\\[bs-toggle-readonly] -- toggle read-only status of current line's buffer.
+\\[bs-clear-modified] -- clear modified-flag on that buffer.
+\\[bs-mark-current] -- mark current line's buffer to be displayed.
+\\[bs-unmark-current] -- unmark current line's buffer to be displayed.
+\\[bs-show-sorted] -- display buffer list sorted by next sort aspect.
+\\[bs-set-configuration-and-refresh] -- ask user for a configuration and \
+apply selected configuration.
+\\[bs-ext-select-next-configuration] -- select and apply next \
+available Buffer Selection Menu configuration.
+\\[bs-ext-select-previous-configuration] -- select and apply previous \
+available Buffer Selection Menu configuration.
+\\[bs-ext-limit-by-regexp] -- display buffers with names matching regexp (prompt).
+\\[bs-kill] -- leave Buffer Selection Menu without a selection.
+\\[bs-toggle-current-to-show] -- toggle status of appearance.
+\\[bs-set-current-buffer-to-show-always] -- mark current line's buffer \
+to show always.
+\\[bs-visit-tags-table] -- call `visit-tags-table' on current line's buffer.
+\\[bs-help] -- display this help text.")
+
+;; redefine 'bs-help so that it includes information about new keybindings
+(defun bs-ext-help ()
+  "Help for `bs-show'."
+  (interactive)
+  (describe-variable 'bs-ext-help))
 
 (provide 'bs-ext)
 
