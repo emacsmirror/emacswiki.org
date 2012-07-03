@@ -4,7 +4,8 @@
 
 ;; Author: Avi Rozen <avi.rozen@gmail.com>
 ;; Keywords: tools, processes, search
-;; Version: %Id: 3%
+;; URL: https://github.com/ZungBang/emacs-grep-o-matic
+;; Version: 1.0.4
 
 ;; This file is NOT part of GNU Emacs.
 
@@ -193,3 +194,5 @@ Optionaly prompt for regexp to search."
 (global-set-key "\M-]" 'grep-o-matic-map)
 
 (provide 'grep-o-matic)
+
+;;; grep-o-matic.el ends here
