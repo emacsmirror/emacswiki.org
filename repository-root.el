@@ -1,10 +1,11 @@
 ;;; repository-root.el --- deduce the repository root directory for a given file
 
-;; Copyright (C) 2008 Avi Rozen
+;; Copyright (C) 2008-2012 Avi Rozen
 
 ;; Author: Avi Rozen <avi.rozen@gmail.com>
-;; Keywords: project, repository, root
-;; Version: %Id: 2%
+;; Keywords: project, repository, root, source control
+;; URL: https://github.com/ZungBang/emacs-repository-root
+;; Version: 1.0.3
 
 ;; This file is NOT part of GNU Emacs.
 
@@ -353,7 +354,9 @@ input PATH string. Calls `repository-root-list'."
 
 (defun repository-root-match (matcher path-to-test path)
   "Return PATH-TO-TEST if it matches MATCHER,
-or nil if it does not."
+or nil if it does not.
+If the result of applying the maching rule is a string, then
+this string is returned as the result, instead of PATH-TO-TEST."
   (let ((found (cond ((and (consp matcher)
                            (functionp (car matcher))
                            (stringp (cdr matcher)))
@@ -429,3 +432,5 @@ with a single cons pair - namely, the result of the first call to
 
 
 (provide 'repository-root)
+
+;;; repository-root.el ends here
