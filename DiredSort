@@ -1,14 +1,14 @@
-==What is DiredSort ?==
+=What is DiredSort?=
 DiredSort is a mode that sort files in various methods.
 
-==Install==
+=Install=
 Put Lisp:dired-sort.el in your load-path, add
 {{{
     (require 'dired-sort)
 }}}    
 in ~/.emacs
 
-==Command List==
+=Command List=
 * defun dired-sort-size
 : Sort files by size.
 
@@ -29,11 +29,11 @@ in ~/.emacs
 
 
 
-See also:
+=See also:=
 
 
 * DiredSortBySizeAndExtension 
-* DiredSortDirectoriesFirst
+* DiredSorting - tips and add-ons for sorting Dired file listings
 * DiredSortMenu
 * Lisp:dired-sort-map.el
 
