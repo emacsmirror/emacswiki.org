@@ -7,7 +7,7 @@
 ;; Maintainer: José Alfredo Romero L. <escherdragon@gmail.com>
 ;; Created: 24 Sep 2007
 ;; Version: 6
-;; RCS Version: $Rev: 425 $
+;; RCS Version: $Rev: 426 $
 ;; Keywords: files, dired, midnight commander, norton, orthodox
 ;; URL: http://www.emacswiki.org/emacs/sunrise-commander.el
 ;; Compatibility: GNU Emacs 22+
@@ -810,6 +810,11 @@ Helper macro for passive & synchronized navigation."
          (sr-select-window home)
        (run-hooks 'sr-refresh-hook)
        (sr-change-window))))
+
+(defmacro sr-silently (&rest body)
+  "Inhibit calls to `message' in BODY."
+  `(letf (((symbol-function 'message) (lambda (_msg &rest _args) (ignore))))
+     ,@body))
 
 (eval-and-compile
   (defun sr-symbol (side type)
@@ -2222,7 +2227,7 @@ if VISIBLEP is nil then shows file attributes in region, otherwise hides them."
     (progn
       (setq truncate-partial-width-windows (sr-truncate-v t))
       (message "Sunrise: truncating long lines")))
-  (dired-do-redisplay))
+  (sr-silently (dired-do-redisplay)))
 
 (defun sr-truncate-p ()
   "Return non-nil if `truncate-partial-width-windows' affects the current pane.
@@ -2691,8 +2696,7 @@ specifiers are: d (decimal), x (hex) or o (octal)."
                             "copying" (sr-files-size items)))
             (sr-clone items target #'copy-file progress ?C)
             (sr-progress-reporter-done progress)))
-        (letf (((symbol-function 'message) (lambda (_msg &rest _args) (ignore))))
-          (dired-unmark-all-marks))))))
+        (sr-silently (dired-unmark-all-marks))))))
 
 (defun sr-do-symlink ()
   "Symlink selected files or directories from one pane to the other."
@@ -2739,7 +2743,7 @@ See `dired-make-relative-symlink'."
                 (mapcar (lambda (x) (cons (expand-file-name x) ?R)) names))
                (sr-focus-filename (car names)))))
           (sr-progress-reporter-done progress))
-        (revert-buffer)))))
+        (sr-silently (revert-buffer))))))
 
 (defun sr-do-delete ()
   "Remove selected files from the file system."
