@@ -50,12 +50,9 @@ Alternatively, type C-u s while in a Dired buffer will prompt you for new ``ls''
 ----
 
 See also:
-
-* DiredSort
-* DiredSortBySizeAndExtension 
+ 
 * DiredSorting – Dired tips and addons for sorting listings
-* DiredSortMenu
-* Lisp:dired-sort-map.el
+
 
 
 
