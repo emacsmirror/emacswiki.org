@@ -14,7 +14,7 @@ Potential solutions that are often suggested:
 * directory tracking - can get confused (particularly with remote logins) - (but is a useful feature in its own right)
 
 The following URL proposed one solution based on sending a completion character (eg a tab) and parsing the results whilst still inside shell / comint mode:
-http://groups.google.com/groups?hl=en&lr=&ie=UTF-8&oe=UTF-8&c2coff=1&safe=off&threadm=6i1t94%24q6b%40sifon.cc.mcgill.ca&rnum=1&prev=/groups%3Fq%3Dtab%2Bcompletion%2Bshell%2Bmode%26hl%3Den%26lr%3D%26ie%3DUTF-8%26oe%3DUTF-8%26c2coff%3D1%26safe%3Doff%26start%3D0%26sa%3DN
+http://groups.google.com/groups?hl=en&lr=&ie=UTF-8&oe=UTF-8&c2coff=1&safe=off&threadm=6i1t94%24q6b%40sifon.cc.mcgill.ca&rnum=1&prev=/groups%3Fq%3Dtab%2Bcompletion%2Bshell%2Bmode&hl%3Den&lr%3D&ie%3DUTF-8&oe%3DUTF-8&c2coff%3D1&safe%3Doff&start%3D0&sa%3DN
 
 I have been trying to get this to work but have encountered a few problems with it to do with the fact that it seems to rely upon the subprocess being run through a pseudo-terminal which has 'echo' turned on.
 
@@ -29,6 +29,10 @@ Option 2 should work regardless of how your subprocess is configured / connected
 Both of these options provide alternative mechanisms to coax completion info out of the subprocess and can be mapped into what is effectively in-line completion inside emacs. Option 2 can additionally use a completion buffer if the completion is ambiguous.
 
 For the (still pretty early-days - ie buggy) code to implement these options - see SubProcessCompletionCode
+
+---
+
+Here is a stable-ish variation on this idea, packaged up and ready to go: https://github.com/monsanto/readline-complete.el
 
 ----
 CategoryCompletion.
