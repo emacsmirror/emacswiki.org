@@ -1,7 +1,7 @@
 ;;; eval-to-texi.el
 
 ;; This is free software
-;; Written by José E. Marchesi
+;; Written by Jos\xE9 E. Marchesi
 
 
 (defun eval-to-texi (form &optional tostring)

@@ -1,5 +1,5 @@
 ;;; message-x.el -- customizable completion in message headers
-;; Copyright (C) 1998 Kai Groﬂjohann
+;; Copyright (C) 1998 Kai Gro\xDFjohann
 
 ;; $Id: message-x.el,v 1.23 2001/05/30 21:04:47 grossjoh Exp $
 

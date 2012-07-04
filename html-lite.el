@@ -2,7 +2,7 @@
 
 ;; Copyright (C) 2004  Free Software Foundation, Inc.
 
-;; Author: Mario Domgörgen <kanaldrache@gmx.de>
+;; Author: Mario Domg\xF6rgen <kanaldrache@gmx.de>
 ;; Keywords: hypermedia
 
 ;; This file is free software; you can redistribute it and/or modify

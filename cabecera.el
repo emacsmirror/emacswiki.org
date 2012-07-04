@@ -25,7 +25,7 @@
 ;; funcion en lisp para generar una cabecera de programa cada vez que se
 ;; abre un fichero en perl, bash o expect , la idea es generar una
 ;; lista de patrones para que esto sea valido en cualquier lenguaje,
-;; es decir valga para cualquier intérprete.
+;; es decir valga para cualquier int\xE9rprete.
 
 
 ;; TODO: Aadir mas lenguajes de programacion y seleccionar el tipo de
@@ -33,8 +33,8 @@
 ;; sean '#' 
 
 ;;INSTALL
-;; Para que funcione de forma automática hay que poner las siguientes
-;; líneas al fichero .emacs y siempre suponiendo que el fichero se
+;; Para que funcione de forma autom\xE1tica hay que poner las siguientes
+;; l\xEDneas al fichero .emacs y siempre suponiendo que el fichero se
 ;; ecuentre en el path de busqueda de emacs:
 ;;
 ;;   Add this to your .emacs
@@ -104,7 +104,7 @@ If the script headers doesn't exist add the rigth interpreter header. Perl and b
 ;;Added comments in english, an corrected some comments in defvars
 ;;
 ;;Revision 1.2  2003/05/13 11:23:41  heraclito
-;;Se ha creado la función que genera la cadena y la añade, además se ha creado de forma correcta la función principal, que comprueba los parámetros y luego llama a inserta-cadena.
+;;Se ha creado la funci\xF3n que genera la cadena y la a\xF1ade, adem\xE1s se ha creado de forma correcta la funci\xF3n principal, que comprueba los par\xE1metros y luego llama a inserta-cadena.
 ;;
 ;;Revision 1.1  2003/05/13 10:30:00  heraclito
 ;;Initial revision

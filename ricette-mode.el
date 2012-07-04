@@ -27,20 +27,20 @@
 ;;                '("^/home/ale/etc/ricette/" . ricette-mode))
 ;;
 ;; in ~/.emacs e garantire che questo documento (ricette-mode.el)
-;; sia in una "directory" che è presente in `load-path'.  (Variare come vuoi.)
+;; sia in una "directory" che \xE8 presente in `load-path'.  (Variare come vuoi.)
 ;;
 ;; La funzione `ricetta-nuova' domanda il nome della ricetta e prepara
 ;; il buffer vuoto con lo stile desiderato (titoli ecc.).
-;; È possibile invocare questa funzione automaticamente aggiungendo la formula:
+;; \xC8 possibile invocare questa funzione automaticamente aggiungendo la formula:
 ;;
 ;;   (add-hook 'ricette-mode-hook 'ricetta-nuova)
 ;;
-;; Questo programma è dedicato alla mia maestra -- Alessandra Bertoni
+;; Questo programma \xE8 dedicato alla mia maestra -- Alessandra Bertoni
 ;; (e il suo cervello bello 8-).
 
 ;;; Code:
 
-;; questo macro usa gli altri, possibile è problema per alcuni. (mi scusa!)
+;; questo macro usa gli altri, possibile \xE8 problema per alcuni. (mi scusa!)
 (defmacro ricette-viso-nuovo (nome col speg)
   (let ((proprio (intern (concat "ricette-" (symbol-name nome) "-viso"))))
     `(progn
@@ -49,7 +49,7 @@
 
 (ricette-viso-nuovo  testo  cyan2 "Viso da usare per il testo di ricette.")
 (ricette-viso-nuovo titoli violet "Viso da usare per i titoli di ricette.")
-(ricette-viso-nuovo quanto yellow "Viso da usare per \"g NNN\" e le altre quantità.")
+(ricette-viso-nuovo quanto yellow "Viso da usare per \"g NNN\" e le altre quantit\xE0.")
 
 ;;- (defvar  ricette-testo-viso 'ricette-testo-viso)
 ;;- (defface ricette-testo-viso '((t (:foreground "cyan2")))
@@ -61,10 +61,10 @@
 ;;-
 ;;- (defvar  ricette-quanto-viso 'ricette-quanto-viso)
 ;;- (defface ricette-quanto-viso '((t (:foreground "yellow")))
-;;-   "Viso da usare per \"g NNN\" e le altre quantità.")
+;;-   "Viso da usare per \"g NNN\" e le altre quantit\xE0.")
 
 (defvar ricette-font-lock-keywords
-  '(("^[ \t]*\\([A-ZÀÈÌÒÙ\t ,]+\\)[ \t]*$" 1 ricette-titoli-viso)
+  '(("^[ \t]*\\([A-Z\xC0\xC8\xCC\xD2\xD9\t ,]+\\)[ \t]*$" 1 ricette-titoli-viso)
     ("^\\(Preparazione\\|Ingredienti\\)" 0 ricette-titoli-viso)
     ("^[*] \\([-,./0-9]+\\(\\s-*[mkK]*[gl]\\>\\)*\\)" 1 ricette-quanto-viso)
     ("\\<[kK]*g [-,./0-9]+$" 0 ricette-quanto-viso)

@@ -4142,7 +4142,7 @@ function will work on read-only buffers."
       (narrow-to-region narrow-min narrow-max)
       (and (eq t folding-list)
            (error
-            "Cannot fold whole buffer -- unmatched begin-fold mark `%s' ´%s'"
+            "Cannot fold whole buffer -- unmatched begin-fold mark `%s' \xB4%s'"
             (current-buffer)
             folding-top-mark))
       (and (integerp (car folding-list))
@@ -4444,7 +4444,7 @@ buffer without affecting the default value for a particular mode."
 (folding-add-to-marks-list 'Bison-mode             "/* {{{" "/* }}} */" " */" t)
 (folding-add-to-marks-list 'LaTeX-mode             "%{{{"         "%}}}" nil t)
 (folding-add-to-marks-list 'TeX-mode               "%{{{"         "%}}}" nil t)
-(folding-add-to-marks-list 'bib´tex-mode    "@Comment {{{" "@Comment }}} */" nil t)
+(folding-add-to-marks-list 'bib\xB4tex-mode    "@Comment {{{" "@Comment }}} */" nil t)
 (folding-add-to-marks-list 'bison-mode             "/* {{{" "/* }}} */" " */" t)
 (folding-add-to-marks-list 'c++-mode               "// {{{" "// }}}" nil t)
 (folding-add-to-marks-list 'c-mode                 "/* {{{" "/* }}} */" " */" t)
