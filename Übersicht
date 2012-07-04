@@ -23,7 +23,7 @@
 * Deutschsprachige Sites zum Emacs im ODP -- Unter http://dmoz.org/World/Deutsch/Computer/Software/Editoren/Emacs/ sind deutschprachige Sites, die sich mit dem Emacs beschäftigen gelistet. Ergänzungen sind mehr als willkommen.
 * AnSysDe -- Ansys mode 
 
-Für den Moment denke ich, dass wir die ganze Kategorien-Übersicht nicht unbedingt brauchen; wenn wir mal 10 Seiten beisammen haben, können wir mit dem Organisieren anfangen.  :) -- AlexSchroeder
+Meiner Meinung nach müssen wir mit dem Organisieren der Seiten erst anfangen, wenn die Liste der deutschen Seiten unübersichtlich lang geworden ist. Davon sind wir noch weit entfernt. :) -- AlexSchroeder
 
 ; XEmacs Besonderheiten: Schreib einfach auf die Seite: "Folgendes gilt nur für XEmacs" - wenn es Emacs Leute gibt, die das auch können, dann werden die das schon abändern.
 ; Bilder: URL tippen und wenn die URL mit JPG oder PNG endet, wird ein IMG tag generiert.  Ansonsten kann man einen Bilderlink mit <nowiki>[[image:foo]]</nowiki> setzen, und auf der Seite "foo" dann ein Bild speichern (denn auf jeder Seite kann entweder ein Bild oder Text (evt. mit IMG tags) stehen.
