@@ -133,4 +133,14 @@ just place them after the elisp lines you use to load sr-speedbar.
 
 -- liyu1981
 
+----
+How to keep speed bar window size after resizing?
 
+add {{{
+(with-current-buffer sr-speedbar-buffer-name
+  (setq window-size-fixed 'width))
+}}}
+
+to your .emacs after calling {{{sr-speedbar-open}}}
+
+— Chen Xian'an
