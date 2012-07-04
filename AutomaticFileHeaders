@@ -252,6 +252,43 @@ No, not as far as I know. It shouldn't be corrected, in place. It is the origina
 
 <tt>[[header2.el]]</tt> started just that way, but has since evolved somewhat. If the original can't be eval'd or compiled without some changes, then you might try to change it. Or you might prefer to start with code in ##header2.el##, and modify that to your taste. -- DrewAdams
 
+== Customize section ==
+
+
+Often people include a "Customize:" section in the file header of elisp libraries, which contains a list of customizable
+variables and short descriptions. Here is a function which searches the current buffer for defcustom statements and then inserts such a list:
+
+<pre>
+(defun insert-customizable-variable-descriptions nil
+  (interactive)
+  (let (vars varnames docstrs (winwidth (- (window-width) 2)))
+    (save-excursion
+      (goto-char (point-min))
+      (while (re-search-forward "(defcustom \\([^ 	
+]+\\)" nil t)
+        (let* ((var (intern-soft (substring-no-properties (match-string 1))))
+               (docstr (car (string-split
+                             (documentation-property
+                              var
+                              'variable-documentation) "\n"))))
+          (add-to-list 'varnames (symbol-name var) t)
+          (add-to-list 'docstrs docstr t))))
+    (loop for varname in varnames and docstr in docstrs
+          do (let* ((wholestr (concat ";; `" varname "' : " docstr "\n"))
+                    (strlen (length wholestr))
+                    (spaces (make-string (+ (length varname) 4) ? ))
+                    (split (> strlen winwidth))
+                    (partstr (reverse-sequence (if split (substring wholestr 0 winwidth))))
+                    (pair (if partstr (let* ((x (string-match " " partstr))
+                                             (pos1 (match-beginning 0))
+                                             (pos2 (- winwidth pos1)))
+                                        (cons (substring wholestr 0 pos2)
+                                              (substring wholestr pos2))))))
+               (if pair (insert (concat (car pair) "\n;;  " spaces (cdr pair)))
+                 (insert wholestr))))))
+</pre> [new:JoeBloggs:2012-07-04 23:44 UTC]
+       -- JoeBloggs
+
 
 ----
 CategoryTemplates
