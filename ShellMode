@@ -103,6 +103,8 @@ By default, tap-completion in shell-mode can complete commands and files, but th
 
 * [https://raw.github.com/szermatt/emacs-bash-completion/master/bash-completion.el bash-completion.el] adds support for BASH programmable completion to shell-mode. 
  
+* [https://github.com/monsanto/readline-complete.el] gives true readline completion in your shell.
+ 
 ==Backgrounding a process==
 
 You might find it difficult to background a process that's started, once you're in shell mode.
