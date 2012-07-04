@@ -1,0 +1,10 @@
+Ist das noch aktuell?
+
+: Mögliches Problem: Normalerweise kann ich auf den Link "Übersicht" immer klicken.  Der Name der Seite ist http://www.emacswiki.org/cgi-bin/emacs-de.pl?%C3%9Cbersicht.
+Wenn ich allerdings aus meinen Bookmarks heraus recent changes aufrufe
+und die "Übersicht" dort auftaucht,
+dann ist die Übersicht mit einer anderen Seite verlinkt:
+http://www.emacswiki.org/cgi-bin/emacs-de.pl?%DCbersicht
+
+-- AlexSchroeder 2012-07-04 15:03 UTC
+
