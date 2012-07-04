@@ -13,6 +13,8 @@ You can accomplish this by customizing variable `dired-listing-switches' to incl
 (setq dired-listing-switches "-aBhl  --group-directories-first")
 </pre>
 
+See DiredSortDirectoriesFirst for other solutions.
+
 = Add-ons for sorting =
 * DiredSort
 * DiredSortBySizeAndExtension 
