@@ -53,7 +53,7 @@ See also:
 
 * DiredSort
 * DiredSortBySizeAndExtension 
-* DiredSortDirectoriesFirst
+* DiredSorting – Dired tips and addons for sorting listings
 * DiredSortMenu
 * Lisp:dired-sort-map.el
 
