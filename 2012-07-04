@@ -1,1 +1,7 @@
 [new:AlexSchroeder:2012-07-04 13:11 UTC]I'm going to do some upgrading in the background – some weird UTF-8 characters are to be expected… This will mostly affect non-English pages, I think.
+
+*Update*: I think it's mostly working. Some small issues remain.
+
+# editing any page including another page containing non-ASCII characters will result in double encoding; this affects all the front pages for the various languages such as SiteMap and [[Übersicht]] since they include the WikiLanguageMenu
+
+# processes running in the background such as the one precomputing the Emacs Wiki RSS feed will produce several "wide character in print" warnings; I hope that these warnings are not visible to site visitors
