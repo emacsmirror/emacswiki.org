@@ -1,0 +1,25 @@
+You can change the way vanilla DiredMode sorts files either by:
+
+* `s' to toggle between alphabetical and date order and with prefix argument, edit listing switches
+* customizing the variable `dired-listing-switches'
+* customizing per-directory local variables.
+
+For a list of listing options, see ls manual.
+
+= Sort Directories First =
+You can accomplish this by customizing variable `dired-listing-switches' to include `--group-directories-first'. For example:
+
+<pre>
+(setq dired-listing-switches "-aBhl  --group-directories-first")
+</pre>
+
+= Add-ons for sorting =
+* DiredSort
+* DiredSortBySizeAndExtension 
+* DiredSortMenu - Lets you sort Dired listings in various ways. Provides a menu bar menu and a popup menu for this.
+* Lisp:dired-sort-map.el
+
+= See also =
+* DiredOmitMode - Lets you hide boring files.
+----
+CategoryDirectories DiredMode
