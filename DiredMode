@@ -6,17 +6,16 @@ The best way to learn about Dired is to try it out: type `C-x d' or `C-x 4 d' an
 
 You can read more about Dired mode by reading the help displayed using `C-h m' in a Dired buffer. Even more information is available in the EmacsManual: `C-h i', choose Emacs, then choose Dired under Advanced Features. (Or read [[Manual:Dired]] online.)
 
-These pages are about vanilla Dired, included with a GnuEmacs distribution:
+= Vanilla Dired distributed with Gnu Emacs =
 
 * [[Dired X]] -- Many extra features (library ##dired-x.el##).
 * DiredOmitMode -- Selectively remove files and subdirectories from the display, to reduce clutter.
 * DiredSearchAndReplace -- Search multiple files.
 * [[WDired]] -- Rename files by editing names directly in the Dired buffer.
 
-Here are some screenshots of Dired buffers, vanilla and otherwise: DiredModeScreenshots
 
 [:DiredEnhancements]
-These pages describe Dired tips and additional features:
+= Dired tips and additional features =
 
 * [[Anything]] -- After evaluating ##(anything-dired-bindings)##, some dired commands are replaced with Anything-based interface.
 * [[Bookmark+]] -- (1) In the bookmark list, `##M-d >##' opens Dired on the marked file and directory bookmarks (only). (2) In Dired, `C-j' jumps among different "views" or states of the same Dired buffer. (3) You can bookmark any Dired buffer -- its current state. Jump among Dired bookmarks using `J' in Dired (or `C-x j d' globally). (4) In Dired, `M-b' bookmarks each of the marked files and dirs.
@@ -47,15 +46,20 @@ These pages describe Dired tips and additional features:
 ** DiredIsearch -- Run `isearch' in Dired, but match only file names
 ** DiredLis -- Letter `isearch' in dired mode, not nedd press some keys to active `isearch-mode'.
 * OperatingOnFilesInDired – Opening files in associated applications.
-** MsShellExecute -- Open any file from dired on W32 systems
 * ThumbsMode -- Modify dired for automatic image previewing.
 * <tt>[[trashcan.el]]</tt> -- A recoverable file-deletion system that behaves like the trash can or recycle bin of many operating systems. NOTE: Starting with Emacs 23.2, we have built-in support for using Recycle Bin or system Trash folder.  See NEWS by pressing C-h n.
 * [[Tumme]] -- Lets you navigate among image files in Dired, with thumbnail previews and more.
+
+= Windows specific tips and additional features =
+
+* DiredWThirtyTwoTweaks
+* MsShellExecute -- Open any file from dired on W32 systems
 * WThirtyTwoFindDired -- Light, w32-specific version of `find-dired'.
 
+= See also =
 
-
-See CategoryDirectories for some other listing formats, besides what you get in Dired.
+* CategoryDirectories for some other listing formats, besides what you get in Dired.
+* DiredModeScreenshots - Here are some screenshots of Dired buffers, vanilla and otherwise.
 
 ----
 CategoryDirectories
