@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2012, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 13:43:55 2010 (-0700)
-;; Last-Updated: Wed Jul  4 08:25:03 2012 (-0700)
+;; Last-Updated: Wed Jul  4 09:19:53 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 5773
+;;     Update #: 5778
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-1.el
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -6746,7 +6746,7 @@ Lisp function that invokes that shell command."
                                 (and (require 'mailcap nil t) ; Emacs 23+
                                      (car (mailcap-file-default-commands (list filename)))))))))
     (cond ((stringp shell-cmd) `(lambda (bmk) (dired-do-shell-command ',shell-cmd nil ',(list filename))))
-          ((or (functionp bmkp-user) (and bmkp-user (symbolp bmkp-user)))
+          ((or (functionp bmkp-user)  (and bmkp-user  (symbolp bmkp-user)))
            bmkp-user)
           (t nil))))
 
@@ -7435,7 +7435,7 @@ Non-interactively, non-nil MSG-P means display a status message."
                                           (lambda () (bmkp-make-bookmark-file-record ff))))
         (bookmark-name                  (bmkp-completing-read-lax "Bookmark-file BOOKMARK name "
                                                                   file nil nil 'bookmark-history)))
-    (bookmark-set bookmark-name 99 'interactivep))
+    (bookmark-set bookmark-name 99 'INTERACTIVEP))
   (when msg-p (message "Set bookmark-file bookmark")))
 
 (defun bmkp-make-bookmark-file-record (bookmark-file)
@@ -7682,7 +7682,7 @@ If BUFFER-NAME is nil, the current buffer name is recorded."
           (let ((bookmark-make-record-function  (lexical-let ((vs   vars)
                                                               (buf  buffer-name))
                                                   (lambda () (bmkp-make-variable-list-record vs buf)))))
-            (bookmark-set ,bookmark-name nil t)))))
+            (bookmark-set ,bookmark-name)))))
 
 (defun bmkp-read-variables-completing (&optional option)
   "Read variable names with completion, and return them as a list of symbols.
