@@ -56,6 +56,13 @@ You can read more about Dired mode by reading the help displayed using `C-h m' i
 * MsShellExecute -- Open any file from dired on W32 systems
 * WThirtyTwoFindDired -- Light, w32-specific version of `find-dired'.
 
+= Alternatives to Dired =
+
+* DiMode -- simple directory editor for GNU Emacs by JoeKeane.
+* MidnightCommanderMode -- emulates Midnight Commander
+* NortonCommanderMode -- emulates Norton Commander
+* [[Sunrise_Commander]] -- Midnight Commander clone
+
 = See also =
 
 * CategoryDirectories for some other listing formats, besides what you get in Dired.
