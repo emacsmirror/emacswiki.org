@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2012, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Wed Jul  4 08:59:11 2012 (-0700)
+;; Last-Updated: Wed Jul  4 09:12:35 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 14993
+;;     Update #: 14994
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-chg.el
 ;; Keywords: bookmarks, bookmark+
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -146,6 +146,7 @@
 ;;;(@* "CHANGE LOG FOR `bookmark+-1.el'")
 ;;
 ;; 2012/07/04 dadams
+;;     bmkp-create-variable-list-bookmark: Removed INTERACTIVEP arg to bookmark-set.
 ;;     #'(lambda...) -> (lambda...).
 ;; 2012/07/02 dadams
 ;;     bmkp-default-handler-for-file:
