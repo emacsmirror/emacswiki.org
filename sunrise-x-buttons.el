@@ -7,7 +7,7 @@
 ;; Maintainer: José Alfredo Romero L. <escherdragon@gmail.com>
 ;; Created: 11 Jun 2008
 ;; Version: 1
-;; RCS Version: $Rev: 423 $
+;; RCS Version: $Rev: 426 $
 ;; Keywords: sunrise commander, shortcut buttons
 ;; URL: http://www.emacswiki.org/emacs/sunrise-x-buttons.el
 ;; Compatibility: GNU Emacs 22+
@@ -123,12 +123,15 @@
     ("SyncNav(C-cC-z)"   'sr-sync                    "Toggle on/off synchronized navigation mode")
     ("LongLines(M-l)"    'sr-toggle-truncate-lines   "Truncate/Restore long lines in active pane")
     ("More...(h)"        'sr-describe-mode           "More commands and keybindings")
-    ("Quit([F10,]q)"     'keyboard-escape-quit       "Dismiss Sunrise Commander")
+    ("Quit([F10,]q)"     'sr-quit                    "Dismiss Sunrise Commander")
     )
   "Sunrise button definitions.")
 
+(eval-and-compile
+  (unless (fboundp 'Custom-mode)
+    (defalias 'Custom-mode 'custom-mode)))
 
-(define-derived-mode sr-buttons-mode custom-mode "Sunrise Buttons"
+(define-derived-mode sr-buttons-mode Custom-mode "Sunrise Buttons"
   "Sunrise Commander Buttons panel mode."
   :group 'sunrise
   (set-keymap-parent sr-buttons-mode-map custom-mode-map)
@@ -173,23 +176,23 @@
 (defun sr-buttons-display ()
   "Display the buttons buffer in the viewer window.
 If no buttons buffer exists yet, creates one."
-  (apply 'require '(cus-edit))
-  (sr-select-viewer-window t)
-  (cond ((buffer-live-p other-window-scroll-buffer) ;;<-- don't nuke quick views!
-         (switch-to-buffer other-window-scroll-buffer))
-        ((get-buffer "*terminal*")                  ;;<-- prefer terminals
-         (switch-to-buffer "*terminal*"))
-        (t
-         (switch-to-buffer sr-buttons-buffer-name)
-         (setq truncate-lines t)
-         (setq line-spacing 5)
-         (setq cursor-in-non-selected-windows nil)
-         (if (not (eq major-mode 'sr-buttons-mode))
-             (let ((line-spacing 2)
-                   (cursor-in-non-selected-windows nil))
-               (sr-buttons-render)
-               (toggle-read-only)))))
-  (sr-select-window sr-selected-window))
+  (unless (and (boundp 'sr-popviewer-mode) (symbol-value 'sr-popviewer-mode))
+    (apply 'require '(cus-edit))
+    (sr-select-viewer-window t)
+    (cond ((buffer-live-p other-window-scroll-buffer) ;;<-- don't nuke quick views!
+           (switch-to-buffer other-window-scroll-buffer))
+          ((get-buffer "*terminal*")                  ;;<-- prefer terminals
+           (switch-to-buffer "*terminal*"))
+          (t
+           (switch-to-buffer sr-buttons-buffer-name)
+           (setq truncate-lines t)
+           (setq line-spacing 5)
+           (setq cursor-in-non-selected-windows nil)
+           (if (not (eq major-mode 'sr-buttons-mode))
+               (let ((line-spacing 2)
+                     (cursor-in-non-selected-windows nil))
+                 (sr-buttons-render)))))
+  (sr-select-window sr-selected-window)))
 
 (defun sr-buttons-render ()
   "Populate current buffer with all widgets described in `sr-buttons-list'."
@@ -265,7 +268,16 @@ button."
      (sr-select-window sr-selected-window)
      (if sr-buttons-command-adapter
          (run-with-timer 0.01 nil (funcall sr-buttons-command-adapter ,action))
-       (run-with-timer 0.01 nil 'call-interactively ,action))))
+       (run-with-timer 0.01 nil (sr-buttons-do ,action)))))
+
+(defun sr-buttons-do (action)
+  "Execute ACTION interactively as response to the click of a button."
+  (hl-line-mode -1)
+  (call-interactively action)
+  (when (memq major-mode '(sr-mode sr-virtual-mode sr-tree-mode))
+    (hl-line-mode 1)
+    (sr-graphical-highlight))
+  t)
 
 (defun sr-buttons-editable-pane ()
   "Call `sr-editable-pane' and display an informative message.
@@ -277,10 +289,10 @@ Used inside the Sunrise Buttons buffer."
 (defun sr-buttons-restore-mode ()
   "Implement the [Restore] action in the Sunrise buttons panel."
   (interactive)
-  (case major-mode
-    (sr-virtual-mode (sr-virtual-dismiss))
-    (wdired-mode (eval '(wdired-finish-edit)))
-    (t (message "Already in regular mode"))))
+  (cond ((eq major-mode 'sr-virtual-mode) (sr-virtual-dismiss))
+        ((eq major-mode 'sr-tree-mode) (eval '(sr-tree-dismiss)))
+        ((string= mode-name "Editable Dired") (eval '(wdired-finish-edit)))
+        (t (message "Already in regular mode"))))
 
 (provide 'sunrise-x-buttons)
 
