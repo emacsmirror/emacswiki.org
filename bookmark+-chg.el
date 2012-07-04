@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2012, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Mon Jul  2 16:38:33 2012 (-0700)
+;; Last-Updated: Wed Jul  4 08:59:11 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 14991
+;;     Update #: 14993
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-chg.el
 ;; Keywords: bookmarks, bookmark+
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -145,6 +145,8 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-1.el'")
 ;;
+;; 2012/07/04 dadams
+;;     #'(lambda...) -> (lambda...).
 ;; 2012/07/02 dadams
 ;;     bmkp-default-handler-for-file:
 ;;       Reverted 2012/05/04 change to use lexical-let.  Byte code in saved bookmark was problematic.
