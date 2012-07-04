@@ -31,13 +31,7 @@ in ~/.emacs
 
 =See also:=
 
-
-* DiredSortBySizeAndExtension 
 * DiredSorting - tips and add-ons for sorting Dired file listings
-* DiredSortMenu
-* Lisp:dired-sort-map.el
-
-
 
 ----
 CategoryDirectories DiredMode
