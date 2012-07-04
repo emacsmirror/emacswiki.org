@@ -112,7 +112,7 @@ This code extends Dired to allow it to sort by file name, file time, file extens
 See also:
 
 * DiredSort
-* DiredSortDirectoriesFirst
+* DiredSorting – Dired tips and addons for sorting listings
 * DiredSortMenu
 * Lisp:dired-sort-map.el
 
