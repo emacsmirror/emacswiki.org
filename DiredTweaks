@@ -1,7 +1,6 @@
 This page provides supplementary information about DiredMode and some enhancements to it.
 
 * DiredOmitMode -- Hide boring files
-* DiredSortDirectoriesFirst
 * DiredReuseDirectoryBuffer -- Make Dired reuse the Dired buffer when you visit a directory
 * DiredLineCommands -- Improvements to next and previous line in Dired.
 * DiredDoShellAsynchronous -- Run shell command in background
@@ -15,9 +14,8 @@ This page provides supplementary information about DiredMode and some enhancemen
 * DiredOfFile -- Open Dired for current file only
 * FilesPlus -- Together with <tt>[[ls-lisp+.el]]</tt>, modifies `insert-directory' so that Dired's second header line lists the number of files:
  '''##files 691##''' ##space used 49439 available 56233408##
-* DiredSortBySizeAndExtension -- Dired enhancement to sort by name, size, time, and extension, instead of only name and time. 
 * DiredFindFileOtherFrame -- open a new frame from dired
-
+* DiredSorting – Dired tips and addons for sorting listings
 
 See also: [[DiredMode#DiredEnhancements|Other Dired Enhancements]].
 
@@ -32,4 +30,3 @@ It is not a perfect solution because it is not electric, but it works. -- gambar
 
 ----
 CategoryDirectories
-
