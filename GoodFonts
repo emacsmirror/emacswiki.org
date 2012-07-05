@@ -15,7 +15,7 @@ http://ahri.net/static/dina.pcfs.tar.bz2
 [new]
 The proggy fonts are nice and I used them for more than a year.  But I use Emacs for a lot more than programming alone.  I also write and read prose in form of e-mail and (La)TeX documents and much of it in languages other than English.  I found it annoying that *all* of the many proggy fonts fail to provide all of the Latin-1 glyphs I need (áâãäéêíïóôõöúüçß).
 
-Fonts with a "geometric" <code>a</code> like Monaco are unacceptable IMHO because the <code>a</code> can, at a glance, be confused with an <code>o</code>.  The Neep font at 14 pt is not crispy enough to me.  So the choice was between Andale and Terminus.  I have used both before, and although they don't look as pretty as the proggy fonts at small sizes, they have all the glyphs I need and as a bonus the Euro currency symbol.  I decided in favor of the Terminus.  It's a *very* crispy font.  I use it at either 14 pts and <code>(setq-default line-spacing 0)</code> or 12 pts and <code>line-spacing</code> 2 with a 15" laptop LCD monitor
+Fonts with a "geometric" <code>a</code> like Monaco are unacceptable IMHO because the <code>a</code> can, at a glance, be confused with an <code>o</code>. The Neep font at 14 pt is not crispy enough to me.  So the choice was between Andale and Terminus.  I have used both before, and although they don't look as pretty as the proggy fonts at small sizes, they have all the glyphs I need and as a bonus the Euro currency symbol.  I decided in favor of the Terminus.  It's a *very* crispy font.  I use it at either 14 pts and <code>(setq-default line-spacing 0)</code> or 12 pts and <code>line-spacing</code> 2 with a 15" laptop LCD monitor
 
 The table bellow summarizes the amount of text you get in Emacs in single-window mode with the fonts I've tested:
 
@@ -31,7 +31,7 @@ The table bellow summarizes the amount of text you get in Emacs in single-window
    Proggy Tiny 80        75      167
    Terminus 120          62      167
    Terminus 140          53      125
-   
+
  --EmilioLopes.
 [new]
 
@@ -77,7 +77,7 @@ On dark backgrounds, I recommend checking out bitmap fonts instead of TrueType o
 
 * ##-*-Monaco-normal-r-*-*-17-102-120-120-c-*-iso8859-1## (MacChan)
 
-* 10-point Monaco Windows XP with ClearType enable 
+* 10-point Monaco Windows XP with ClearType enable
 
 : http://photos21.flickr.com/34135728_376c2837ba_o_d.png
 
@@ -180,6 +180,9 @@ Evaluate the following code in your ##*scratch*## buffer:
      str ")") 'face `((:family ,font-family))))
     (newline)))
 }}}
+
+[new]
+The above code will display variable-width fonts as well as monospace fonts which isn't much help for general Emacs usage. See [https://gist.github.com/3055728 this Gist] for a function to display only monospaced fonts.
 
 == Discussion ==
 
