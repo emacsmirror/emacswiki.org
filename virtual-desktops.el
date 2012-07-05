@@ -13,7 +13,7 @@
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
-;; Commentary:
+;;; Commentary:
 ;;
 ;;allows you to save/retore a frame configuration: windows and buffers.
 ;;
