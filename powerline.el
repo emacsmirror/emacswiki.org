@@ -2,13 +2,19 @@
 
 ;; Name: Emacs Powerline
 ;; Author: Unknown
-;; Version: 1.0
+;; Version: 1.1
 ;; Keywords: statusline
 
 ;;; Commentary:
 
 ;; This package simply provides a minor mode for fancifying the status line.
 
+;;; Changelog:
+
+;; v1.0 - Unknown posted to wiki
+;; v1.1 - Guard clause around the powerline output, so that if
+;;        powerline tries to output something unexpected, it won't
+;;        just fail and flail-barf.  (JonathanArkell)
 
 ;;; Code:
 
@@ -363,12 +369,20 @@ install the memoized function over the original function."
         ((eq side 'left)               (powerline-make-left   string color1 color1 localmap))
         ((eq side 'right)              (powerline-make-right  string color1 color1 localmap))
         (t                             (powerline-make-text   string color1 localmap))))
+
 (defmacro defpowerline (name string)
   `(defun ,(intern (concat "powerline-" (symbol-name name)))
      (side color1 &optional color2)
      (powerline-make side
-                     ,string
+                     (let ((result ,string))
+					   (if (not (or (stringp result)
+									(null result)))
+						   (progn
+							 (message "Powerline got %S but expected a string" result)
+							 " ERR")
+						   result))
                      color1 color2)))
+
 (defun powerline-mouse (click-group click-type string)
   (cond ((eq click-group 'minor)
          (cond ((eq click-type 'menu)
@@ -480,6 +494,9 @@ install the memoized function over the original function."
                              (powerline-percent        'right  nil  powerline-color1  )
                              (powerline-percent-xpm    'text   nil  powerline-color1  )
                              (powerline-make-text      "  "    nil  )))))
+
+
+
 
 (provide 'powerline)
 
