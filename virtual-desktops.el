@@ -1,353 +1,536 @@
-#FILE text/x-emacs-lisp 
-Ozt2aXJ0dWFsLWRlc2t0b3BzLmVsIC0tLSBhbGxvd3MgeW91IHRvIHNhdmUvcmVzdG9yZSBhIGZy
-YW1lIGNvbmZpZ3VyYXRpb246IHdpbmRvd3MgYW5kIGJ1ZmZlcnMuCjs7Cjs7IEZpbGVuYW1lOiB2
-aXJ0dWFsLWRlc2t0b3BzLmVsCjs7IERlc2NyaXB0aW9uOiBhbGxvd3MgeW91IHRvIHNhdmUvcmV0
-b3JlIGEgZnJhbWUgY29uZmlndXJhdGlvbjogd2luZG93cyBhbmQgYnVmZmVycy4KOzsgQXV0aG9y
-OiBDw6lkcmljIENow6lwaWVkIDxjZWRyaWMuY2hlcGllZEBnbWFpbC5jb20+Cjs7IE1haW50YWlu
-ZXI6IEPDqWRyaWMgQ2jDqXBpZWQKOzsgQ29weXJpZ2h0IChDKSAyMDEyLCBDw6lkcmljIENow6lw
-aWVkCjs7IExhc3QgdXBkYXRlZDogV2VkIEp1bCAgNCAxNzo0NzowNyBVVEMKOzsgICAgIEJ5IEPD
-qWRyaWMgQ2jDqXBpZWQKOzsgICAgIFVwZGF0ZSAxCjs7IEtleXdvcmRzOiB2aXJ0dWFsLCBkZXNr
-dG9wCjs7Cjs7Cjs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7
-Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7OzsKOzsKOzsgQ29tbWVudGFyeToKOzsKOzthbGxvd3MgeW91
-IHRvIHNhdmUvcmV0b3JlIGEgZnJhbWUgY29uZmlndXJhdGlvbjogd2luZG93cyBhbmQgYnVmZmVy
-cy4KOzsKOzsKOzsgS2V5cyBhbmQgaW50ZXJhY3RpdmUgZnVuY3Rpb25zOgo7OyB2aXJ0dWFsLWRl
-c2t0b3BzLWFkZDogICAgICAgICAgICAgc2F2ZSBjdXJyZW50IGNvbmZpZ3VyYXRpb24gaW4gYSBu
-ZXcgdmlydHVhbCBkZXNrdG9wIGFuZCBzZWxlY3QgaXQgKEMtYyBDLWQgYSkKOzsgdmlydHVhbC1k
-ZXNrdG9wcy1kZWxldGU6ICAgICAgICAgIGRlbGV0ZSBjdXJyZW50IGRlc2t0b3AgYW5kIHNlbGVj
-dCB0aGUgbmlsIGRlc2t0b3AgKEMtYyBDLWQgZCkKOzsgdmlydHVhbC1kZXNrdG9wcy1kZWxldGUt
-c3BlY2lmaWM6IGRlbGV0ZSBhIHNwZWNpZmljIGRlc2t0b3AgYW5kIHNlbGVjdCB0aGUgbmlsIGRl
-c2t0b3AgaWYgeW91IGNob29zZSBjdXJyZW50IGRlc2t0b3AgKEMtYyBDLWQgRCkKOzsgdmlydHVh
-bC1kZXNrdG9wcy1nb3RvOiAgICAgICAgICAgIHJlc3RvcmUgYSBzcGVjaWZpYyBkZXNrdG9wIChD
-LWMgQy1kIGcpCjs7IHZpcnR1YWwtZGVza3RvcHMtbmV4dDogICAgICAgICAgICBnbyB0byBuZXh0
-IGRlc2t0b3AgKEMtPikKOzsgdmlydHVhbC1kZXNrdG9wcy1wcmV2aW91czogICAgICAgIGdvIHRv
-IHByZXZpb3VzIGRlc2t0b3AgKEMtPCkKOzsgdmlydHVhbC1kZXNrdG9wcy1saXN0OiAgICAgICAg
-ICAgIGxpc3QgYWxsIGRlc2t0b3BzIChDLWMgQy1kIGwpCjs7IHZpcnR1YWwtZGVza3RvcHMtdXBk
-YXRlOiAgICAgICAgICBzYXZlIGN1cnJlbnQgY29uZmlndXJhdGlvbiBpbiBjdXJyZW50IGRlc2t0
-b3AKOzsKOzsKOzsgVmFyaWFibGVzOgo7OyB2aXJ0dWFsLWRlc2t0b3BzLWF1dG8tdXBkYXRlOiBp
-ZiBub24gbmlsLCBjdXJyZW50IGRlc2t0b3Agd2lsbCBiZSB1cGRhdGVkIGJlZm9yZSBleGVjdXRp
-b24gb2YgdmlydHVhbC1kZXNrdG9wcy1uZXh0LCB2aXJ0dWFsLWRlc2t0b3BzLXByZXYsIHZpcnR1
-YWwtZGVza3RvcHMtZ290bwo7Owo7Owo7Owo7Owo7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7
-Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Cjs7IFRoaXMgcHJvZ3Jh
-bSBpcyBmcmVlIHNvZnR3YXJlOyB5b3UgY2FuIHJlZGlzdHJpYnV0ZSBpdCBhbmQvb3IgbW9kaWZ5
-Cjs7IGl0IHVuZGVyIHRoZSB0ZXJtcyBvZiB0aGUgR05VIEdlbmVyYWwgUHVibGljIExpY2Vuc2Ug
-YXMgcHVibGlzaGVkIGJ5Cjs7IHRoZSBGcmVlIFNvZnR3YXJlIEZvdW5kYXRpb247IGVpdGhlciB2
-ZXJzaW9uIDMsIG9yIChhdCB5b3VyIG9wdGlvbikKOzsgYW55IGxhdGVyIHZlcnNpb24uCgo7OyBU
-aGlzIHByb2dyYW0gaXMgZGlzdHJpYnV0ZWQgaW4gdGhlIGhvcGUgdGhhdCBpdCB3aWxsIGJlIHVz
-ZWZ1bCwKOzsgYnV0IFdJVEhPVVQgQU5ZIFdBUlJBTlRZOyB3aXRob3V0IGV2ZW4gdGhlIGltcGxp
-ZWQgd2FycmFudHkgb2YKOzsgTUVSQ0hBTlRBQklMSVRZIG9yIEZJVE5FU1MgRk9SIEEgUEFSVElD
-VUxBUiBQVVJQT1NFLiAgU2VlIHRoZQo7OyBHTlUgR2VuZXJhbCBQdWJsaWMgTGljZW5zZSBmb3Ig
-bW9yZSBkZXRhaWxzLgoKOzsgWW91IHNob3VsZCBoYXZlIHJlY2VpdmVkIGEgY29weSBvZiB0aGUg
-R05VIEdlbmVyYWwgUHVibGljIExpY2Vuc2UKOzsgYWxvbmcgd2l0aCB0aGlzIHByb2dyYW07IHNl
-ZSB0aGUgZmlsZSBDT1BZSU5HLiAgSWYgbm90LCB3cml0ZSB0bwo7OyB0aGUgRnJlZSBTb2Z0d2Fy
-ZSBGb3VuZGF0aW9uLCBJbmMuLCA1MSBGcmFua2xpbiBTdHJlZXQsIEZpZnRoCjs7IEZsb29yLCBC
-b3N0b24sIE1BIDAyMTEwLTEzMDEsIFVTQS4KOzsKOzsgQ29weXJpZ2h0IEPDqWRyaWMgQ2jDqXBp
-ZWQgMjAxMgo7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7
-Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Cjs7Cjs7Cjs7Cjs7Cjs7Cjs7Cjs7Cjs7Ozs7Ozs7Ozs7Ozs7
-Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7OzsK
-OzsKOzsgVE9ETwo7Owo7OyBsaXN0IGJ1ZmZlciBtdXN0IGJlIGludGVyYWN0aXZlCjs7IG1ha2Ug
-Y3VycmVudCBkZXNrdG9wIGZyYW1lIHNwZWNpZmljCjs7IHRlc3QgdmVyeSBjb21wbGljYXRlZCB3
-aW5kb3cgY29uZmlndXJhdGlvbgo7Owo7Owo7Owo7Owo7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7
-Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Cjs7Cjs7IGRlc2t0
-b3AgZm9ybWF0Cjs7Cjs7IGRlc2t0b3AgbGlzdCA6IFtkZXNrdG9wIDFdIFtkZXNrdG9wIDJdCjs7
-ICAgIAkJCQl8Cjs7IAkgICAgCQkJLS0tPiBbV2luZG93IDFdIFtXaW5kb3cgMl0KOzsJCQkJCQkJ
-IHwKOzsJCQkJCQkJIC0tLT4gW1dpbmRvdyBFZGdlc10gW2J1ZmZlciBuYW1lXQo7Owo7Ozs7Ozs7
-Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7
-Ozs7Ozs7CgoKCjs7IENvZGU6CgoocHJvdmlkZSAndmlydHVhbC1kZXNrdG9wcykKCjs7Y29uc3Rh
-bnRzCihkZWZjb25zdCB2aXJ0dWFsLWRlc2t0b3BzLWxpc3QtYnVmZmVyLW5hbWUgIiMjdmlydHVh
-bC1kZXNrdG9wcyMjIikKCjs7Z2xvYmFsIHZhcmlhYmxlcwooZGVmdmFyIHZpcnR1YWwtZGVza3Rv
-cHMtbGlzdCAobGlzdCBuaWwpKQooZGVmdmFyIHZpcnR1YWwtZGVza3RvcHMtY3VycmVudCAwKQoo
-ZGVmdmFyIHZpcnR1YWwtZGVza3RvcHMtbW9kZS1saW5lLXN0cmluZyBuaWwpCgoKOztncm91cAoo
-ZGVmZ3JvdXAgdmlydHVhbC1kZXNrdG9wIG5pbCAiQ3VzdG9taXphdGlvbiBvZiB2aXJ0dWFsLWRl
-c2t0b3AgdmFyaWFibGVzLiIKICA6dGFnICJ2aXJ0dWFsLWRlc2t0b3AiCiAgOmdyb3VwICdlbWFj
-cykKCgo7O2N1c3RvbWl6YWJsZSB2YXJpYWJsZXMKKGRlZmN1c3RvbSB2aXJ0dWFsLWRlc2t0b3Bz
-LWF1dG8tdXBkYXRlICJkZXNrdG9wIGF1dG8gdXBkYXRlIiAiSWYgbm9uIG5pbCwgY3VycmVudCBk
-ZXNrdG9wIHdpbGwgYmUgdXBkYXRlZCB3aGVuIGNhbGxpbmcgYW55IHZpcnR1YWwtZGVza3RvcHMg
-ZnVuY3Rpb24uIgogIDp0eXBlICdib29sZWFuCiAgOmdyb3VwICd2aXJ0dWFsLWRlc2t0b3ApCgoK
-OzsgQ3VzdG9tIE1pbm9yIE1vZGUKKGRlZmluZS1taW5vci1tb2RlIHZpcnR1YWwtZGVza3RvcHMt
-bW9kZQogICJFbmFibGUgZGVza3RvcHMgY3JlYXRpb24gd2hpY2ggc2F2ZSBvciByZXN0b3JlIHdp
-bmRvd3MgYW5kIGJ1ZmZlcnMgb2YgdGhlIGZyYW1lLiIKICA7OyBUaGUgaW5pdGlhbCB2YWx1ZSAt
-IFNldCB0byAxIHRvIGVuYWJsZSBieSBkZWZhdWx0CiAgbmlsCiAgOzsgVGhlIGluZGljYXRvciBm
-b3IgdGhlIG1vZGUgbGluZS4KICAiIgogIDs7IFRoZSBtaW5vciBtb2RlIGtleW1hcAogIGAoCiAg
-ICAoLChrYmQgIkMtPiIpIC4gdmlydHVhbC1kZXNrdG9wcy1uZXh0KQogICAgKCwoa2JkICJDLTwi
-KSAuIHZpcnR1YWwtZGVza3RvcHMtcHJldikKCSgsKGtiZCAiQy1jIEMtZCBhIikgLiB2aXJ0dWFs
-LWRlc2t0b3BzLWFkZCkKICAJKCwoa2JkICJDLWMgQy1kIGQiKSAuIHZpcnR1YWwtZGVza3RvcHMt
-ZGVsKQogIAkoLChrYmQgIkMtYyBDLWQgRCIpIC4gdmlydHVhbC1kZXNrdG9wcy1kZWwtc3BlY2lm
-aWMpCiAgCSgsKGtiZCAiQy1jIEMtZCBnIikgLiB2aXJ0dWFsLWRlc2t0b3BzLWdvdG8pCiAgCSgs
-KGtiZCAiQy1jIEMtZCBsIikgLiB2aXJ0dWFsLWRlc2t0b3BzLWxpc3QpCiAgICkKICAgOzsgTWFr
-ZSBtb2RlIGdsb2JhbCByYXRoZXIgdGhhbiBidWZmZXIgbG9jYWwKICAgOmdsb2JhbCAxCgogICA7
-O2luaXRpYWxpemUgdmFyaWFibGVzCiAgIChwcm9nbgoJIChzZXRxIHZpcnR1YWwtZGVza3RvcHMt
-bGlzdCAobGlzdCBuaWwpKQoJIChzZXRxIHZpcnR1YWwtZGVza3RvcHMtY3VycmVudCAwKQoJIChp
-ZiB2aXJ0dWFsLWRlc2t0b3BzLW1vZGUKCQkgKHNldHEgdmlydHVhbC1kZXNrdG9wcy1tb2RlLWxp
-bmUtc3RyaW5nICItRGVzazogbmlsLSIpCgkgICAgIChzZXRxIHZpcnR1YWwtZGVza3RvcHMtbW9k
-ZS1saW5lLXN0cmluZyAiIikpCgkgKG9yIGdsb2JhbC1tb2RlLXN0cmluZwoJCSAoc2V0cSBnbG9i
-YWwtbW9kZS1zdHJpbmcgJygiIikpKQoJIChvciAobWVtcSAndmlydHVhbC1kZXNrdG9wcy1tb2Rl
-LWxpbmUtc3RyaW5nIGdsb2JhbC1tb2RlLXN0cmluZykKCQkgKHNldHEgZ2xvYmFsLW1vZGUtc3Ry
-aW5nCgkJCSAgIChhcHBlbmQgZ2xvYmFsLW1vZGUtc3RyaW5nICcodmlydHVhbC1kZXNrdG9wcy1t
-b2RlLWxpbmUtc3RyaW5nKSkpKSkKKQoKCgoKKGRlZnVuIHZpcnR1YWwtZGVza3RvcHMtZ2V0LXdp
-bmRvdy14bWluICh3aW5kb3cpCiAgKG50aCAwIChudGggMCB3aW5kb3cpKQopCgooZGVmdW4gdmly
-dHVhbC1kZXNrdG9wcy1nZXQtd2luZG93LXhtYXggKHdpbmRvdykKICAobnRoIDIgKG50aCAwIHdp
-bmRvdykpCikKCihkZWZ1biB2aXJ0dWFsLWRlc2t0b3BzLWdldC13aW5kb3cteW1pbiAod2luZG93
-KQogIChudGggMSAobnRoIDAgd2luZG93KSkKKQoKKGRlZnVuIHZpcnR1YWwtZGVza3RvcHMtZ2V0
-LXdpbmRvdy15bWF4ICh3aW5kb3cpCiAgKG50aCAzIChudGggMCB3aW5kb3cpKQopCgooZGVmdW4g
-dmlydHVhbC1kZXNrdG9wcy1nZXQtd2luZG93LWJ1ZmZlciAod2luZG93KQogIChudGggMSB3aW5k
-b3cpCikKCihkZWZ1biB2aXJ0dWFsLWRlc2t0b3BzLWdldC13aW5kb3ctd2lkdGggKHdpbmRvdykK
-ICAoLSAodmlydHVhbC1kZXNrdG9wcy1nZXQtd2luZG93LXhtYXggd2luZG93KSAodmlydHVhbC1k
-ZXNrdG9wcy1nZXQtd2luZG93LXhtaW4gd2luZG93KSkKKQoKKGRlZnVuIHZpcnR1YWwtZGVza3Rv
-cHMtZ2V0LXdpbmRvdy1oZWlnaHQgKHdpbmRvdykKICAoLSAodmlydHVhbC1kZXNrdG9wcy1nZXQt
-d2luZG93LXltYXggd2luZG93KSAodmlydHVhbC1kZXNrdG9wcy1nZXQtd2luZG93LXltaW4gd2lu
-ZG93KSkKKQoKKGRlZnVuIHZpcnR1YWwtZGVza3RvcHMtZ2V0LXdpbmRvdyAoeCB5IHdpbmRvdy1s
-aXN0KQogIChsZXQgKHdpbmRvdykKCShzZXRxIHdpbmRvdyBuaWwpCgkoY2F0Y2ggJ2JyZWFrOwoJ
-ICAoZG9saXN0ICh3IHdpbmRvdy1saXN0KQoJCShwcm9nbiAoaWYgKGFuZCAoPj0geCAodmlydHVh
-bC1kZXNrdG9wcy1nZXQtd2luZG93LXhtaW4gdykpCgkJCQkJCSg8PSB4ICh2aXJ0dWFsLWRlc2t0
-b3BzLWdldC13aW5kb3cteG1heCB3KSkKCQkJCQkJKD49IHkgKHZpcnR1YWwtZGVza3RvcHMtZ2V0
-LXdpbmRvdy15bWluIHcpKQoJCQkJCQkoPD0geSAodmlydHVhbC1kZXNrdG9wcy1nZXQtd2luZG93
-LXltYXggdykpKQoJCQkJICAgKHByb2duIChzZXRxIHdpbmRvdyB3KQoJCQkJCQkgICh0aHJvdyAn
-YnJlYWsgdCkpKSkpKQoJd2luZG93KQopCgoKOzsgcmV0dXJucyAoYmxvY2steG1pbiBibG9jay15
-bWluIGJsb2NrLXhtYXggYmxvY2steW1heCBibG9jay13aWR0aCBibG9jay1oZWlnaHQpCihkZWZ1
-biB2aXJ0dWFsLWRlc2t0b3BzLWdldC1ibG9jay1kaW1lbnNpb25zIChibG9jaykKICAobGV0IChi
-bG9jay14bWluIGJsb2NrLXltaW4gYmxvY2steG1heCBibG9jay15bWF4IGJsb2NrLXdpZHRoIGJs
-b2NrLWhlaWdodCkKCShkb2xpc3QgKHdpbmRvdyBibG9jaykKCSAgKHByb2duIChpZiAob3IgKGVx
-dWFsIG5pbCBibG9jay14bWluKQoJCQkJCSAoPCAodmlydHVhbC1kZXNrdG9wcy1nZXQtd2luZG93
-LXhtaW4gd2luZG93KSBibG9jay14bWluKSkKCQkJCSAoc2V0cSBibG9jay14bWluICh2aXJ0dWFs
-LWRlc2t0b3BzLWdldC13aW5kb3cteG1pbiB3aW5kb3cpKSkKCQkJIChpZiAob3IgKGVxdWFsIG5p
-bCBibG9jay14bWF4KQoJCQkJCSAoPiAodmlydHVhbC1kZXNrdG9wcy1nZXQtd2luZG93LXhtYXgg
-d2luZG93KSBibG9jay14bWF4KSkKCQkJCSAoc2V0cSBibG9jay14bWF4ICh2aXJ0dWFsLWRlc2t0
-b3BzLWdldC13aW5kb3cteG1heCB3aW5kb3cpKSkKCQkJIChpZiAob3IgKGVxdWFsIG5pbCBibG9j
-ay15bWluKQoJCQkJCSAoPCAodmlydHVhbC1kZXNrdG9wcy1nZXQtd2luZG93LXltaW4gd2luZG93
-KSBibG9jay15bWluKSkKCQkJCSAoc2V0cSBibG9jay15bWluICh2aXJ0dWFsLWRlc2t0b3BzLWdl
-dC13aW5kb3cteW1pbiB3aW5kb3cpKSkKCQkJIChpZiAob3IgKGVxdWFsIG5pbCBibG9jay15bWF4
-KQoJCQkJCSAoPiAodmlydHVhbC1kZXNrdG9wcy1nZXQtd2luZG93LXltYXggd2luZG93KSBibG9j
-ay15bWF4KSkKCQkJCSAoc2V0cSBibG9jay15bWF4ICh2aXJ0dWFsLWRlc2t0b3BzLWdldC13aW5k
-b3cteW1heCB3aW5kb3cpKSkpKQoJKHNldHEgYmxvY2std2lkdGggKC0gYmxvY2steG1heCBibG9j
-ay14bWluKSkKCShzZXRxIGJsb2NrLWhlaWdodCAoLSBibG9jay15bWF4IGJsb2NrLXltaW4pKQoK
-CShsaXN0IGJsb2NrLXhtaW4gYmxvY2steW1pbiBibG9jay14bWF4IGJsb2NrLXltYXggYmxvY2st
-d2lkdGggYmxvY2staGVpZ2h0KSkKKQoKOzsgc3BsaXRzIHZlcnRpY2FsbHkgYW5kIHJldHVybiB0
-aGUgMiBuZXcgYmxvY2tzCjs7IHJldHVybiBuaWwgaWYgY2FuJ3Qgc3BsaXQKKGRlZnVuIHZpcnR1
-YWwtZGVza3RvcHMtc3BsaXQtdmVydGljYWxseSAod2luZG93LWxpc3QgdG90YWwtZnJhbWUtd2lk
-dGggdG90YWwtZnJhbWUtaGVpZ2h0KQogIChsZXQgKGRpbWVuc2lvbnMgYmxvY2steG1pbiBibG9j
-ay14bWF4IGJsb2NrLXltaW4gYmxvY2steW1heCBibG9jay13aWR0aCBibG9jay1oZWlnaHQgd2lu
-ZG93IHdpbmRvd3Mtd2lkdGggc3BsaXQteSkKCShzZXRxIHdpbmRvd3Mtd2lkdGggMCkKCShzZXRx
-IHNwbGl0LXkgbmlsKQoKCTs7Z2V0IHNpemUKCShzZXRxIGRpbWVuc2lvbnMgKHZpcnR1YWwtZGVz
-a3RvcHMtZ2V0LWJsb2NrLWRpbWVuc2lvbnMgd2luZG93LWxpc3QpKQoJKHNldHEgYmxvY2steG1p
-biAobnRoIDAgZGltZW5zaW9ucykpCgkoc2V0cSBibG9jay15bWluIChudGggMSBkaW1lbnNpb25z
-KSkKCShzZXRxIGJsb2NrLXhtYXggKG50aCAyIGRpbWVuc2lvbnMpKQoJKHNldHEgYmxvY2steW1h
-eCAobnRoIDMgZGltZW5zaW9ucykpCgkoc2V0cSBibG9jay13aWR0aCAobnRoIDQgZGltZW5zaW9u
-cykpCgkoc2V0cSBibG9jay1oZWlnaHQgKG50aCA1IGRpbWVuc2lvbnMpKQoKCTs7c2VsZWN0IHdp
-bmRvdwoJKGxldCAodGVtcHggdGVtcHkgZnJhbWV5KQoJICAoc2V0cSBmcmFtZXkgKDEtIChmcmFt
-ZS1oZWlnaHQpKSkgOztyZW1vdmUgbWluaWJ1ZmZlcgoJICAoc2V0cSB0ZW1weCAoMS0gKC8gKCog
-YmxvY2steG1heCAoZnJhbWUtd2lkdGgpKSB0b3RhbC1mcmFtZS13aWR0aCkpKQoJICAoc2V0cSB0
-ZW1weSAoMS0gKC8gKCogYmxvY2steW1heCBmcmFtZXkpIHRvdGFsLWZyYW1lLWhlaWdodCkpKQoJ
-ICAoc2VsZWN0LXdpbmRvdyAod2luZG93LWF0IHRlbXB4IHRlbXB5KSkpCgoKCShjYXRjaCAnYnJl
-YWsKCSAgKGxldCAoeSB3aW5kb3cpCgkJKHNldHEgeSBibG9jay15bWluKQoJCSh3aGlsZSAoPCB5
-IGJsb2NrLXltYXgpIDs7d2hpbGUgdGhlcmUgYXJlIHdpbmRvd3MgbGVmdAoJCSAgKHNldHEgd2lu
-ZG93ICh2aXJ0dWFsLWRlc2t0b3BzLWdldC13aW5kb3cgYmxvY2steG1pbiB5IHdpbmRvdy1saXN0
-KSkgOzsgZ2V0IHdpbmRvdyBpbiAoMCx5KQoJCSAgKHNldHEgd2luZG93cy13aWR0aCAodmlydHVh
-bC1kZXNrdG9wcy1nZXQtd2luZG93LXdpZHRoIHdpbmRvdykpIDs7d2luZG93cy13aWR0aCBpcyB3
-aW5kb3cgd2lkdGgKCQkgIChpZiAoPj0gd2luZG93cy13aWR0aCBibG9jay13aWR0aCkgOztpZiB0
-aGVyZSBpcyBvbmx5IG9uZSB3aW5kb3cgaW4gYWxsIHdpZHRoIHdlIGNhbiBzcGxpdAoJCQkgIChw
-cm9nbiAoc2V0cSBzcGxpdC15ICh2aXJ0dWFsLWRlc2t0b3BzLWdldC13aW5kb3ctaGVpZ2h0IHdp
-bmRvdykpCgkJCQkJICh0aHJvdyAnYnJlYWsgdCkpKQoJCSAgKHByb2duIChsZXQgKHd0ZW1wKQoJ
-CQkJICAgKGRvbGlzdCAod3RlbXAgd2luZG93LWxpc3QpCgkJCQkJIChwcm9nbiAoaWYgKG5vdCAo
-ZXF1YWwgd3RlbXAgd2luZG93KSkgOztpZiB3dGVtcCBpcyBub3QgdGhlIHNhbWUgd2luZG93CgkJ
-CQkJCQkJKGlmICg9ICh2aXJ0dWFsLWRlc2t0b3BzLWdldC13aW5kb3cteW1heCB3dGVtcCkgKHZp
-cnR1YWwtZGVza3RvcHMtZ2V0LXdpbmRvdy15bWF4IHdpbmRvdykpIDs7aWYgd3RlbXAgeW1heCA9
-IHdpbmRvdyB5bWF4IHRoZXkgYXJlIGZvcm1pbmcgYSBsaW5lCgkJCQkJCQkJCShwcm9nbiAoc2V0
-cSB3aW5kb3dzLXdpZHRoICgrIHdpbmRvd3Mtd2lkdGggKHZpcnR1YWwtZGVza3RvcHMtZ2V0LXdp
-bmRvdy13aWR0aCB3dGVtcCkpKSA7O2FkZCB3aW5kb3cgd2lkdGggdG8gdG90YWwgd2lkdGgKCQkJ
-CQkJCQkJCSAgIChpZiAoPj0gd2luZG93cy13aWR0aCBibG9jay13aWR0aCkgOztpZiBhbGwgc2Vs
-ZWN0ZWQgd2luZG93IHdpZHRoIGlzIHRoZSBibG9jayB3aWR0aCB3ZSBjYW4gc3BsaXQKCQkJCQkJ
-CQkJCQkgICAocHJvZ24gKHNldHEgc3BsaXQteSAoLSAodmlydHVhbC1kZXNrdG9wcy1nZXQtd2lu
-ZG93LXltYXggd2luZG93KSBibG9jay15bWluKSkKCQkJCQkJCQkJCQkJCSAgKHRocm93ICdicmVh
-ayB0KSkpKSkpKSkpKQoJCSAgKHNldHEgeSAoKyB5ICh2aXJ0dWFsLWRlc2t0b3BzLWdldC13aW5k
-b3ctaGVpZ2h0IHdpbmRvdykpKSkpKSA7O25leHQgd2luZG93CgoKCShpZiAoYW5kIHNwbGl0LXkK
-CQkJICg8IHNwbGl0LXkgYmxvY2staGVpZ2h0KSkKCQkocHJvZ24gKGxldCAodGVtcCkKCQkJCSAo
-c2V0cSB0ZW1wICgvICgqIHNwbGl0LXkgKHdpbmRvdy1oZWlnaHQpKSBibG9jay1oZWlnaHQpKQoJ
-CQkJIChzcGxpdC13aW5kb3ctdmVydGljYWxseSB0ZW1wKSkKCQkJICAgOzt3aW5kb3cgaXMgc3Bs
-aXR0ZWQgd2UgbmVlZCB0byBjcmVhdGUgdGhlIHR3byBibG9ja3MKCQkJICAgKGxldCAoYmxvY2st
-MSBibG9jay0yKQoJCQkJIChzZXRxIGJsb2NrLTEgJ25pbCkKCQkJCSAoc2V0cSBibG9jay0yICdu
-aWwpCgkJCQkgKGRvbGlzdCAod2luZG93IHdpbmRvdy1saXN0KQoJCQkJICAgKHByb2duIChpZiAo
-PCAodmlydHVhbC1kZXNrdG9wcy1nZXQtd2luZG93LXltaW4gd2luZG93KSAoKyBibG9jay15bWlu
-IHNwbGl0LXkpKQoJCQkJCQkJICAoc2V0cSBibG9jay0xIChjb25zIHdpbmRvdyBibG9jay0xKSkK
-CQkJCQkJCSAgKHNldHEgYmxvY2stMiAoY29ucyB3aW5kb3cgYmxvY2stMikpKSkpCgkJCQkgKGxp
-c3QgYmxvY2stMSBibG9jay0yKSkpCgkgICAgbmlsKSkKKQoKCjs7IHNwbGl0cyBob3Jpem9udGFs
-bHkgYW5kIHJldHVybiB0aGUgMiBuZXcgYmxvY2tzCjs7IHJldHVybiBuaWwgaWYgY2FuJ3Qgc3Bs
-aXQKKGRlZnVuIHZpcnR1YWwtZGVza3RvcHMtc3BsaXQtaG9yaXpvbnRhbGx5ICh3aW5kb3ctbGlz
-dCB0b3RhbC1mcmFtZS13aWR0aCB0b3RhbC1mcmFtZS1oZWlnaHQpCiAgKGxldCAoYmxvY2steG1p
-biBibG9jay14bWF4IGJsb2NrLXltaW4gYmxvY2steW1heCBibG9jay13aWR0aCBibG9jay1oZWln
-aHQgd2luZG93IHdpbmRvd3MtaGVpZ2h0IHNwbGl0LXggZGltZW5zaW9ucykKCShzZXRxIHdpbmRv
-d3MtaGVpZ2h0IDApCgkoc2V0cSBzcGxpdC14IG5pbCkKCgk7O2dldCBzaXplCgkoc2V0cSBkaW1l
-bnNpb25zICh2aXJ0dWFsLWRlc2t0b3BzLWdldC1ibG9jay1kaW1lbnNpb25zIHdpbmRvdy1saXN0
-KSkKCShzZXRxIGJsb2NrLXhtaW4gKG50aCAwIGRpbWVuc2lvbnMpKQoJKHNldHEgYmxvY2steW1p
-biAobnRoIDEgZGltZW5zaW9ucykpCgkoc2V0cSBibG9jay14bWF4IChudGggMiBkaW1lbnNpb25z
-KSkKCShzZXRxIGJsb2NrLXltYXggKG50aCAzIGRpbWVuc2lvbnMpKQoJKHNldHEgYmxvY2std2lk
-dGggKG50aCA0IGRpbWVuc2lvbnMpKQoJKHNldHEgYmxvY2staGVpZ2h0IChudGggNSBkaW1lbnNp
-b25zKSkKCgk7O3NlbGVjdCB3aW5kb3cKCShsZXQgKHRlbXB4IHRlbXB5IGZyYW1leSkKCSAgKHNl
-dHEgZnJhbWV5ICgxLSAoZnJhbWUtaGVpZ2h0KSkpIDs7cmVtb3ZlIG1pbmlidWZmZXIKCSAgKHNl
-dHEgdGVtcHggKDEtICgvICgqIGJsb2NrLXhtYXggKGZyYW1lLXdpZHRoKSkgdG90YWwtZnJhbWUt
-d2lkdGgpKSkKCSAgKHNldHEgdGVtcHkgKDEtICgvICgqIGJsb2NrLXltYXggZnJhbWV5KSB0b3Rh
-bC1mcmFtZS1oZWlnaHQpKSkKCSAgKHNlbGVjdC13aW5kb3cgKHdpbmRvdy1hdCB0ZW1weCB0ZW1w
-eSkpKQoKCShjYXRjaCAnYnJlYWsKCSAgKGxldCAoeCB3aW5kb3cpCgkJKHNldHEgeCBibG9jay14
-bWluKQoJCSh3aGlsZSAoPCB4IGJsb2NrLXhtYXgpIDs7d2hpbGUgdGhlcmUgYXJlIHdpbmRvd3Mg
-bGVmdAoJCSAgKHNldHEgd2luZG93ICh2aXJ0dWFsLWRlc2t0b3BzLWdldC13aW5kb3cgeCBibG9j
-ay15bWluIHdpbmRvdy1saXN0KSkgOzsgZ2V0IHdpbmRvdyBpbiAoMCx5KQoJCSAgKHNldHEgd2lu
-ZG93cy1oZWlnaHQgKHZpcnR1YWwtZGVza3RvcHMtZ2V0LXdpbmRvdy1oZWlnaHQgd2luZG93KSkg
-Ozt3aW5kb3dzLXdpZHRoIGlzIHdpbmRvdyB3aWR0aAoJCSAgKGlmICg+PSB3aW5kb3dzLWhlaWdo
-dCBibG9jay1oZWlnaHQpIDs7aWYgdGhlcmUgaXMgb25seSBvbmUgd2luZG93IGluIGFsbCBoZWln
-aHQgd2UgY2FuIHNwbGl0CgkJCSAgKHByb2duIChzZXRxIHNwbGl0LXggKHZpcnR1YWwtZGVza3Rv
-cHMtZ2V0LXdpbmRvdy13aWR0aCB3aW5kb3cpKQoJCQkJCSAodGhyb3cgJ2JyZWFrIHQpKSkKCQkg
-IChwcm9nbiAobGV0ICh3dGVtcCkKCQkJCSAgIChkb2xpc3QgKHd0ZW1wIHdpbmRvdy1saXN0KQoJ
-CQkJCSAocHJvZ24gKGlmIChub3QgKGVxdWFsIHd0ZW1wIHdpbmRvdykpIDs7aWYgd3RlbXAgaXMg
-bm90IHRoZSBzYW1lIHdpbmRvdwoJCQkJCQkJCShpZiAoPSAodmlydHVhbC1kZXNrdG9wcy1nZXQt
-d2luZG93LXhtYXggd3RlbXApICh2aXJ0dWFsLWRlc2t0b3BzLWdldC13aW5kb3cteG1heCB3aW5k
-b3cpKSA7O2lmIHd0ZW1wIHhtYXggPSB3aW5kb3cgeG1heCB0aGV5IGFyZSBmb3JtaW5nIGEgbGlu
-ZQoJCQkJCQkJCQkocHJvZ24gIChzZXRxIHdpbmRvd3MtaGVpZ2h0ICgrIHdpbmRvd3MtaGVpZ2h0
-ICh2aXJ0dWFsLWRlc2t0b3BzLWdldC13aW5kb3ctaGVpZ2h0IHd0ZW1wKSkpIDs7YWRkIHdpbmRv
-dyBoZWlnaHQgdG8gdG90YWwgaGVpZ2h0CgkJCQkJCQkJCQkJKGlmICg+PSB3aW5kb3dzLWhlaWdo
-dCBibG9jay1oZWlnaHQpIDs7aWYgYWxsIHNlbGVjdGVkIHdpbmRvdyBoZWlnaHQgaXMgdGhlIGJs
-b2NrIGhlaWdodCB3ZSBjYW4gc3BsaXQKCQkJCQkJCQkJCQkJKHByb2duIChzZXRxIHNwbGl0LXgg
-KC0gKHZpcnR1YWwtZGVza3RvcHMtZ2V0LXdpbmRvdy14bWF4IHdpbmRvdykgYmxvY2steG1pbikp
-CgkJCQkJCQkJCQkJCQkgICAodGhyb3cgJ2JyZWFrIHQpKSkpKSkpKSkpCgkJICAoc2V0cSB4ICgr
-IHggKHZpcnR1YWwtZGVza3RvcHMtZ2V0LXdpbmRvdy13aWR0aCB3aW5kb3cpKSkpKSkgOztuZXh0
-IHdpbmRvdwoKCgoJKGlmIChhbmQgc3BsaXQteAoJCQkgKDwgc3BsaXQteCBibG9jay13aWR0aCkp
-CgkJKHByb2duIChsZXQgKHRlbXApCgkJCQkgKHNldHEgdGVtcCAoMSsgKC8gKCogc3BsaXQteCAo
-d2luZG93LXdpZHRoKSkgYmxvY2std2lkdGgpKSkKCQkJCSAoc3BsaXQtd2luZG93LWhvcml6b250
-YWxseSB0ZW1wKSkKCQkJICAgOzt3aW5kb3cgaXMgc3BsaXR0ZWQgd2UgbmVlZCB0byBjcmVhdGUg
-dGhlIHR3byBibG9ja3MKCQkJICAgKGxldCAoYmxvY2stMSBibG9jay0yKQoJCQkJIChzZXRxIGJs
-b2NrLTEgJ25pbCkKCQkJCSAoc2V0cSBibG9jay0yICduaWwpCgkJCQkgKGRvbGlzdCAod2luZG93
-IHdpbmRvdy1saXN0KQoJCQkJICAgKHByb2duIChpZiAoPCAodmlydHVhbC1kZXNrdG9wcy1nZXQt
-d2luZG93LXhtaW4gd2luZG93KSAoKyBibG9jay14bWluIHNwbGl0LXgpKQoJCQkJCQkJICAoc2V0
-cSBibG9jay0xIChjb25zIHdpbmRvdyBibG9jay0xKSkKCQkJCQkJCSAgKHNldHEgYmxvY2stMiAo
-Y29ucyB3aW5kb3cgYmxvY2stMikpKSkpCgkJCQkgKGxpc3QgYmxvY2stMSBibG9jay0yKSkpCgkg
-ICAgbmlsKSkKKQoKCjs7c3BsaXRzIHRoZSBibG9jayB1bnRpbCB0aGVyZSBpcyBvbmx5IG9uZSB3
-aW5kb3cgaW4gZWFjaCBibG9jawooZGVmdW4gdmlydHVhbC1kZXNrdG9wcy1zcGxpdC1ibG9jayAo
-d2luZG93LWxpc3QgdG90YWwtZnJhbWUtd2lkdGggdG90YWwtZnJhbWUtaGVpZ2h0KQogIChpZiAo
-PiAoc2FmZS1sZW5ndGggd2luZG93LWxpc3QpIDEpCgkgIChwcm9nbiAobGV0IChibG9jay0xIGJs
-b2NrLTIgcmVzdWx0KQoJCQkgICA7O3NlYXJjaCBmb3IgYSBzcGxpdAoJCQkgICAoc2V0cSByZXN1
-bHQgKHZpcnR1YWwtZGVza3RvcHMtc3BsaXQtdmVydGljYWxseSB3aW5kb3ctbGlzdCB0b3RhbC1m
-cmFtZS13aWR0aCB0b3RhbC1mcmFtZS1oZWlnaHQpKQoJCQkgICAoaWYgKGVxdWFsIHJlc3VsdCBu
-aWwpCgkJCQkgICAoc2V0cSByZXN1bHQgKHZpcnR1YWwtZGVza3RvcHMtc3BsaXQtaG9yaXpvbnRh
-bGx5IHdpbmRvdy1saXN0IHRvdGFsLWZyYW1lLXdpZHRoIHRvdGFsLWZyYW1lLWhlaWdodCkpKQoJ
-CQkgICAoaWYgKG5vdCAoZXF1YWwgcmVzdWx0IG5pbCkpCgkJCQkgICAocHJvZ24gKHNldHEgYmxv
-Y2stMSAobnRoIDAgcmVzdWx0KSkKCQkJCQkJICAoc2V0cSBibG9jay0yIChudGggMSByZXN1bHQp
-KQoJCQkJCQkgICh2aXJ0dWFsLWRlc2t0b3BzLXNwbGl0LWJsb2NrIGJsb2NrLTEgdG90YWwtZnJh
-bWUtd2lkdGggdG90YWwtZnJhbWUtaGVpZ2h0KQoJCQkJCQkgICh2aXJ0dWFsLWRlc2t0b3BzLXNw
-bGl0LWJsb2NrIGJsb2NrLTIgdG90YWwtZnJhbWUtd2lkdGggdG90YWwtZnJhbWUtaGVpZ2h0KSkK
-CQkJCSAocHJpbnQgIkVycm9yOiBObyBzcGxpdCBGb3VuZCEiKSkpKQoJICAocHJvZ24gKGlmIChu
-b3QgKGVxdWFsIG5pbCAoYnVmZmVyLW5hbWUgKHZpcnR1YWwtZGVza3RvcHMtZ2V0LXdpbmRvdy1i
-dWZmZXIgKG50aCAwIHdpbmRvdy1saXN0KSkpKSkKCQkJCSAoc2V0LXdpbmRvdy1idWZmZXIgKHdp
-bmRvdy1hdCAoLSAoLyAoKiAodmlydHVhbC1kZXNrdG9wcy1nZXQtd2luZG93LXhtYXggKG50aCAw
-IHdpbmRvdy1saXN0KSkgKGZyYW1lLXdpZHRoKSkgdG90YWwtZnJhbWUtd2lkdGgpIDIpCgkJCQkJ
-CQkJCQkJICAgKC0gKC8gKCogKHZpcnR1YWwtZGVza3RvcHMtZ2V0LXdpbmRvdy15bWF4IChudGgg
-MCB3aW5kb3ctbGlzdCkpIChmcmFtZS1oZWlnaHQpKSB0b3RhbC1mcmFtZS1oZWlnaHQpIDIpKQoJ
-CQkJCQkJCQkodmlydHVhbC1kZXNrdG9wcy1nZXQtd2luZG93LWJ1ZmZlciAobnRoIDAgd2luZG93
-LWxpc3QpKSkpKSkKKQoKCjs7cmVzdG9yZSB0aGUgZGVzaXJlZCBkZXNrdG9wCihkZWZ1biB2aXJ0
-dWFsLWRlc2t0b3BzLXJlc3RvcmUgKG51bWJlcikKICAobGV0IChkZXNrdG9wKQogCShzZXRxIGRl
-c2t0b3AgKG50aCBudW1iZXIgdmlydHVhbC1kZXNrdG9wcy1saXN0KSkKCShpZiAobm90IChlcXVh
-bCBuaWwgZGVza3RvcCkpCgkJKHByb2duIChsZXQgKGZyYW1lLXdpZHRoIGZyYW1lLWhlaWdodCB0
-ZW1wLWxpc3QpCgkJCQkgKGRlbGV0ZS1vdGhlci13aW5kb3dzKQoJCQkJIChzZXRxIHRlbXAtbGlz
-dCAodmlydHVhbC1kZXNrdG9wcy1nZXQtYmxvY2stZGltZW5zaW9ucyBkZXNrdG9wKSkKCQkJCSAo
-c2V0cSBmcmFtZS13aWR0aCAobnRoIDQgdGVtcC1saXN0KSkKCQkJCSAoc2V0cSBmcmFtZS1oZWln
-aHQgKG50aCA1IHRlbXAtbGlzdCkpCgkJCQkgKHZpcnR1YWwtZGVza3RvcHMtc3BsaXQtYmxvY2sg
-ZGVza3RvcCBmcmFtZS13aWR0aCBmcmFtZS1oZWlnaHQpKSkpKQopCgoKOztzYXZlIGRlc2t0b3Ag
-YW5kIHJldHVybiBpdAooZGVmdW4gdmlydHVhbC1kZXNrdG9wcy1jcmVhdGUtZGVza3RvcCAoKQog
-IChsZXQgKHdpbmRvdy1saXN0IHVzZXItd2luZG93IHRvcC1sZWZ0LXdpbmRvdykKCTs7c2F2ZSB1
-c2VyIHdpbmRvdwoJKHNldHEgdXNlci13aW5kb3cgKHNlbGVjdGVkLXdpbmRvdykpCgoJOztnbyB0
-byB0aGUgdG9wIGxlZnQgd2luZG93Cgkoc2VsZWN0LXdpbmRvdyAod2luZG93LWF0IDAgMCkpCgko
-c2V0cSB0b3AtbGVmdC13aW5kb3cgKHNlbGVjdGVkLXdpbmRvdykpCgoJOztjcmVhdGUgbGlzdCB3
-aXRoIHRoZSBmaXJzdCB3aW5kbwoJKHNldHEgd2luZG93LWxpc3QgKGxpc3QgKGxpc3QgKHdpbmRv
-dy1lZGdlcykgKHdpbmRvdy1idWZmZXIpKSkpCgkoc2VsZWN0LXdpbmRvdyAobmV4dC13aW5kb3cp
-KQoKCSh3aGlsZSAobm90IChlcXVhbCB0b3AtbGVmdC13aW5kb3cgKHNlbGVjdGVkLXdpbmRvdykp
-KQoJICAoc2V0cSB3aW5kb3ctbGlzdCAoY29ucyAobGlzdCAod2luZG93LWVkZ2VzKSAod2luZG93
-LWJ1ZmZlcikpIHdpbmRvdy1saXN0KSkKCSAgKHNlbGVjdC13aW5kb3cgKG5leHQtd2luZG93KSkp
-CgkJCSAJCQkgCgkoc2VsZWN0LXdpbmRvdyB1c2VyLXdpbmRvdykKCXdpbmRvdy1saXN0KQopCgoK
-OztkZWxldGUgYSBkZXNrdG9wIGlmIGl0IGlzIG5vdCB0aGUgbmlsIGRlc2t0b3AKKGRlZnVuIHZp
-cnR1YWwtZGVza3RvcHMtZGVsZXRlIChudW1iZXIpCiAgKGlmIChhbmQgKDwgbnVtYmVyIChzYWZl
-LWxlbmd0aCB2aXJ0dWFsLWRlc2t0b3BzLWxpc3QpKQoJCSAgICg+IG51bWJlciAwKSkKCSAgKHNl
-dHEgdmlydHVhbC1kZXNrdG9wcy1saXN0IChkZWxxIChudGggbnVtYmVyIHZpcnR1YWwtZGVza3Rv
-cHMtbGlzdCkgdmlydHVhbC1kZXNrdG9wcy1saXN0KSkKCSAgKHByaW50IChjb25jYXQgIkNhbnQg
-ZGVsZXRlIHRoaXMgZGVza3RvcCA6IiAobnVtYmVyLXRvLXN0cmluZyBudW1iZXIpKSkpCikKCgoo
-ZGVmdW4gdmlydHVhbC1kZXNrdG9wcy11cGRhdGUtbW9kZS1saW5lICgpCiAgKGlmICg9IHZpcnR1
-YWwtZGVza3RvcHMtY3VycmVudCAwKQoJICAoc2V0cSB2aXJ0dWFsLWRlc2t0b3BzLW1vZGUtbGlu
-ZS1zdHJpbmcgIi1EZXNrOiBuaWwiKQoJICAoc2V0cSB2aXJ0dWFsLWRlc2t0b3BzLW1vZGUtbGlu
-ZS1zdHJpbmcgKGNvbmNhdCAiLURlc2s6ICIgKG51bWJlci10by1zdHJpbmcgdmlydHVhbC1kZXNr
-dG9wcy1jdXJyZW50KSkpKQogIChmb3JjZS1tb2RlLWxpbmUtdXBkYXRlKQopCgo7Ozs7Ozs7Ozs7
-Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7
-Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7OzsKOzsJCQkJCQkJCUludGVyYWN0aXZlIGZ1bmN0aW9ucwkJ
-CQkJCQkJCTs7Cjs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7
-Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7OwoKKGRlZnVuIHZpcnR1
-YWwtZGVza3RvcHMtYWRkICgpCiAgKGludGVyYWN0aXZlKQogIChpZiB2aXJ0dWFsLWRlc2t0b3Bz
-LW1vZGUKCSAgKHByb2duIChzZXRxIHZpcnR1YWwtZGVza3RvcHMtbGlzdCAoYXBwZW5kIHZpcnR1
-YWwtZGVza3RvcHMtbGlzdCAobGlzdCAodmlydHVhbC1kZXNrdG9wcy1jcmVhdGUtZGVza3RvcCkp
-KSkKCQkJIChzZXRxIHZpcnR1YWwtZGVza3RvcHMtY3VycmVudCAoMS0gKHNhZmUtbGVuZ3RoIHZp
-cnR1YWwtZGVza3RvcHMtbGlzdCkpKQoJCQkgKHZpcnR1YWwtZGVza3RvcHMtdXBkYXRlLW1vZGUt
-bGluZSkpCgkgIChwcmludCAidmlydHVhbC1kZXNrdG9wcy1tb2RlIG11c3QgYmUgZW5hYmxlZCIp
-KQopCgoKKGRlZnVuIHZpcnR1YWwtZGVza3RvcHMtdXBkYXRlICgpCiAgKGludGVyYWN0aXZlKQog
-IChpZiB2aXJ0dWFsLWRlc2t0b3BzLW1vZGUKCSAgKHByb2duIChpZiAobm90ICg9IHZpcnR1YWwt
-ZGVza3RvcHMtY3VycmVudCAwKSkKCQkJCSAobGV0IChkZXNrdG9wKQoJCQkJICAgKHNldHEgZGVz
-a3RvcCAodmlydHVhbC1kZXNrdG9wcy1jcmVhdGUtZGVza3RvcCkpCgkJCQkgICAoc2V0Y2FyIChu
-dGhjZHIgdmlydHVhbC1kZXNrdG9wcy1jdXJyZW50IHZpcnR1YWwtZGVza3RvcHMtbGlzdCkgZGVz
-a3RvcCkpKSkKICAJICAocHJpbnQgInZpcnR1YWwtZGVza3RvcHMtbW9kZSBtdXN0IGJlIGVuYWJs
-ZWQiKSkKKQoKKGRlZnVuIHZpcnR1YWwtZGVza3RvcHMtZGVsICgpCiAgKGludGVyYWN0aXZlKQog
-ICAgKGlmIHZpcnR1YWwtZGVza3RvcHMtbW9kZQoJCShwcm9nbiAodmlydHVhbC1kZXNrdG9wcy1k
-ZWxldGUgdmlydHVhbC1kZXNrdG9wcy1jdXJyZW50KQoJCQkgICAoc2V0cSB2aXJ0dWFsLWRlc2t0
-b3BzLWN1cnJlbnQgMCkKCQkJICAgKHZpcnR1YWwtZGVza3RvcHMtdXBkYXRlLW1vZGUtbGluZSkp
-CgkgICAgKHByaW50ICJ2aXJ0dWFsLWRlc2t0b3BzLW1vZGUgbXVzdCBiZSBlbmFibGVkIikpCikK
-CihkZWZ1biB2aXJ0dWFsLWRlc2t0b3BzLWRlbC1zcGVjaWZpYyAoKQogIChpbnRlcmFjdGl2ZSkK
-ICAoaWYgdmlydHVhbC1kZXNrdG9wcy1tb2RlCgkgIChwcm9nbiAobGV0IChkZXNrdG9wKQoJCQkg
-ICAoc2V0cSBkZXNrdG9wIChyZWFkLWZyb20tbWluaWJ1ZmZlciAiZGVza3RvcCB0byBkZWxldGU/
-ICIpKQoJCQkgICAodmlydHVhbC1kZXNrdG9wcy1kZWxldGUgKHN0cmluZy10by1udW1iZXIgZGVz
-a3RvcCkpCgkJCSAgIChpZiAoPSB2aXJ0dWFsLWRlc2t0b3BzLWN1cnJlbnQgKHN0cmluZy10by1u
-dW1iZXIgZGVza3RvcCkpCgkJCQkgICAoc2V0cSB2aXJ0dWFsLWRlc2t0b3BzLWN1cnJlbnQgMCkp
-KQoJCQkgKHZpcnR1YWwtZGVza3RvcHMtdXBkYXRlLW1vZGUtbGluZSkpCgkgIChwcmludCAidmly
-dHVhbC1kZXNrdG9wcy1tb2RlIG11c3QgYmUgZW5hYmxlZCIpKQopCgooZGVmdW4gdmlydHVhbC1k
-ZXNrdG9wcy1uZXh0ICgpCiAgKGludGVyYWN0aXZlKQogIChpZiB2aXJ0dWFsLWRlc2t0b3BzLW1v
-ZGUKCSAgKHByb2duIChpZiAobm90IChlcXVhbCBuaWwgdmlydHVhbC1kZXNrdG9wcy1hdXRvLXVw
-ZGF0ZSkpCgkJCQkgKHZpcnR1YWwtZGVza3RvcHMtdXBkYXRlKSkKCQkJIChzZXRxIHZpcnR1YWwt
-ZGVza3RvcHMtY3VycmVudCAoMSsgdmlydHVhbC1kZXNrdG9wcy1jdXJyZW50KSkKCQkJIChpZiAo
-Pj0gdmlydHVhbC1kZXNrdG9wcy1jdXJyZW50IChzYWZlLWxlbmd0aCB2aXJ0dWFsLWRlc2t0b3Bz
-LWxpc3QpKQoJCQkJIChzZXRxIHZpcnR1YWwtZGVza3RvcHMtY3VycmVudCAwKSkKCQkJICh2aXJ0
-dWFsLWRlc2t0b3BzLXJlc3RvcmUgdmlydHVhbC1kZXNrdG9wcy1jdXJyZW50KQoJCQkgKHZpcnR1
-YWwtZGVza3RvcHMtdXBkYXRlLW1vZGUtbGluZSkpCgkgIChwcmludCAidmlydHVhbC1kZXNrdG9w
-cy1tb2RlIG11c3QgYmUgZW5hYmxlZCIpKQopCgooZGVmdW4gdmlydHVhbC1kZXNrdG9wcy1wcmV2
-ICgpCiAgKGludGVyYWN0aXZlKQogIChpZiB2aXJ0dWFsLWRlc2t0b3BzLW1vZGUKCSAgKHByb2du
-IChpZiAobm90IChlcXVhbCBuaWwgdmlydHVhbC1kZXNrdG9wcy1hdXRvLXVwZGF0ZSkpCgkJCQkg
-KHZpcnR1YWwtZGVza3RvcHMtdXBkYXRlKSkKCQkJIChzZXRxIHZpcnR1YWwtZGVza3RvcHMtY3Vy
-cmVudCAoMS0gdmlydHVhbC1kZXNrdG9wcy1jdXJyZW50KSkKCQkJIChpZiAoPCB2aXJ0dWFsLWRl
-c2t0b3BzLWN1cnJlbnQgMCkKCQkJCSAoc2V0cSB2aXJ0dWFsLWRlc2t0b3BzLWN1cnJlbnQgKDEt
-IChzYWZlLWxlbmd0aCB2aXJ0dWFsLWRlc2t0b3BzLWxpc3QpKSkpCgkJCSAodmlydHVhbC1kZXNr
-dG9wcy1yZXN0b3JlIHZpcnR1YWwtZGVza3RvcHMtY3VycmVudCkKCQkJICh2aXJ0dWFsLWRlc2t0
-b3BzLXVwZGF0ZS1tb2RlLWxpbmUpKQoJICAocHJpbnQgInZpcnR1YWwtZGVza3RvcHMtbW9kZSBt
-dXN0IGJlIGVuYWJsZWQiKSkKKQoKKGRlZnVuIHZpcnR1YWwtZGVza3RvcHMtZ290byAoKQogIChp
-bnRlcmFjdGl2ZSkKICAoaWYgdmlydHVhbC1kZXNrdG9wcy1tb2RlCgkgIChwcm9nbiAoaWYgKG5v
-dCAoZXF1YWwgbmlsIHZpcnR1YWwtZGVza3RvcHMtYXV0by11cGRhdGUpKQoJCQkJICh2aXJ0dWFs
-LWRlc2t0b3BzLXVwZGF0ZSkpCgkJCSAobGV0IChkZXNrdG9wIG51bWJlcikKCQkJICAgKHNldHEg
-ZGVza3RvcCAocmVhZC1mcm9tLW1pbmlidWZmZXIgImRlc2t0b3AgdG8gZGlzcGxheT8gIikpCgkJ
-CSAgIChpZiAoZXF1YWwgIm5pbCIgZGVza3RvcCkKCQkJCSAgIChzZXRxIG51bWJlciAwKQoJCQkJ
-ICAgKHNldHEgbnVtYmVyIChzdHJpbmctdG8tbnVtYmVyIGRlc2t0b3ApKSkKCQkJICAgKHNldHEg
-dmlydHVhbC1kZXNrdG9wcy1jdXJyZW50IG51bWJlcikpCgkJCSAodmlydHVhbC1kZXNrdG9wcy1y
-ZXN0b3JlIHZpcnR1YWwtZGVza3RvcHMtY3VycmVudCkKCQkJICh2aXJ0dWFsLWRlc2t0b3BzLXVw
-ZGF0ZS1tb2RlLWxpbmUpKQoJICAocHJpbnQgInZpcnR1YWwtZGVza3RvcHMtbW9kZSBtdXN0IGJl
-IGVuYWJsZWQiKSkKKQoKKGRlZnVuIHZpcnR1YWwtZGVza3RvcHMtbGlzdCAoKQogIChpbnRlcmFj
-dGl2ZSkKICAoaWYgdmlydHVhbC1kZXNrdG9wcy1tb2RlCgkgIChwcm9nbiAobGV0IChidWZmZXIg
-aSkKCQkJICAgOztraWxsaW5nIGJ1ZmZlciBpZiBpdCBleGlzdHMKCQkJICAgKGlmIChub3QgKGVx
-dWFsIG5pbCAoZ2V0LWJ1ZmZlciB2aXJ0dWFsLWRlc2t0b3BzLWxpc3QtYnVmZmVyLW5hbWUpKSkK
-CQkJCSAgIChraWxsLWJ1ZmZlciB2aXJ0dWFsLWRlc2t0b3BzLWxpc3QtYnVmZmVyLW5hbWUpKQoJ
-CgkJCSAgIDs7Y3JlYXRpbmcgYnVmZmVyCgkJCSAgIChzZXRxIGJ1ZmZlciAoZ2V0LWJ1ZmZlci1j
-cmVhdGUgdmlydHVhbC1kZXNrdG9wcy1saXN0LWJ1ZmZlci1uYW1lKSkKCQkJICAgKHN3aXRjaC10
-by1idWZmZXIgYnVmZmVyKQoJCgkJCSAgIDs7aW5zZXJ0IGRlc2t0b3AgbGlzdAoJCQkgICAoaW5z
-ZXJ0ICJUaGlzIGlzIGRlc2t0b3AgbGlzdFxuWW91IGNhbiBzZXQgcG9pbnQgb24gdGhlIGRlc2ly
-ZWQgb25lIGFuZCBwcmVzcyBSRVQgdG8gc3dpdGNoIHRvIHRoaXMgZGVza3RvcFxuXG4iKQoJCQkg
-ICAoc2V0cSBpIDApCgkJCSAgICh3aGlsZSAoPCBpIChzYWZlLWxlbmd0aCB2aXJ0dWFsLWRlc2t0
-b3BzLWxpc3QpKQoJCQkJIChpbnNlcnQgKHByb3BlcnRpemUgKG51bWJlci10by1zdHJpbmcgaSkg
-J2ZvbnQtbG9jay1mYWNlICcoOmZvcmVncm91bmQgInJlZCIpKSkKCQkJCSAoaW5zZXJ0ICJcdCIp
-CgkJCQkgKGxldCAod2luZG93IHdpbmRvdy1saXN0KQoJCQkJICAgKHNldHEgd2luZG93LWxpc3Qg
-KG50aCBpIHZpcnR1YWwtZGVza3RvcHMtbGlzdCkpCgkJCQkgICAoaWYgKGVxdWFsIHdpbmRvdy1s
-aXN0IG5pbCkKCQkJCQkgICAoaW5zZXJ0ICJuaWwiKQoJCQkJCSAoZG9saXN0ICh3aW5kb3cgd2lu
-ZG93LWxpc3QpCgkJCQkJICAgKGluc2VydCAiPCIpCgkJCQkJICAgKGlmIChlcXVhbCBuaWwgKGJ1
-ZmZlci1uYW1lICh2aXJ0dWFsLWRlc2t0b3BzLWdldC13aW5kb3ctYnVmZmVyIHdpbmRvdykpKQoJ
-CQkJCQkgICAoaW5zZXJ0ICJEZWxldGVkIGJ1ZmZlciIpCgkJCQkJCSAoaW5zZXJ0IChidWZmZXIt
-bmFtZSAodmlydHVhbC1kZXNrdG9wcy1nZXQtd2luZG93LWJ1ZmZlciB3aW5kb3cpKSkpCgkJCQkJ
-ICAgKGluc2VydCAiPiAiKSkpKQoJCQkJIChpbnNlcnQgIlxuXG4iKQoJCQkJIChzZXRxIGkgKDEr
-IGkpKSkKCQoJCQkgICA7O3NldHRpbmcgYnVmZmVyIHJlYWQgb25seQoJCQkgICAodG9nZ2xlLXJl
-YWQtb25seSkpKQoJCQkgKHByaW50ICJ2aXJ0dWFsLWRlc2t0b3BzLW1vZGUgbXVzdCBiZSBlbmFi
-bGVkIikpCikKCjs7dmlydHVhbC1kZXNrdG9wcy5lbCBlbmRzIGhlcmU=
+;;; virtual-desktops.el --- allows you to save/restore a frame configuration: windows and buffers.
+;;
+;; Filename: virtual-desktops.el
+;; Description: allows you to save/retore a frame configuration: windows and buffers.
+;; Author: Cédric Chépied <cedric.chepied@gmail.com>
+;; Maintainer: Cédric Chépied
+;; Copyright (C) 2012, Cédric Chépied
+;; Last updated: Wed Jul  4 17:47:07 UTC
+;;     By Cédric Chépied
+;;     Update 1
+;; Keywords: virtual, desktop
+;;
+;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;
+;; Commentary:
+;;
+;;allows you to save/retore a frame configuration: windows and buffers.
+;;
+;;
+;; Keys and interactive functions:
+;; virtual-desktops-add:             save current configuration in a new virtual desktop and select it (C-c C-d a)
+;; virtual-desktops-delete:          delete current desktop and select the nil desktop (C-c C-d d)
+;; virtual-desktops-delete-specific: delete a specific desktop and select the nil desktop if you choose current desktop (C-c C-d D)
+;; virtual-desktops-goto:            restore a specific desktop (C-c C-d g)
+;; virtual-desktops-next:            go to next desktop (C->)
+;; virtual-desktops-previous:        go to previous desktop (C-<)
+;; virtual-desktops-list:            list all desktops (C-c C-d l)
+;; virtual-desktops-update:          save current configuration in current desktop
+;;
+;;
+;; Variables:
+;; virtual-desktops-auto-update: if non nil, current desktop will be updated before execution of virtual-desktops-next, virtual-desktops-prev, virtual-desktops-goto
+;;
+;;
+;;
+;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; This program is free software; you can redistribute it and/or modify
+;; it under the terms of the GNU General Public License as published by
+;; the Free Software Foundation; either version 3, or (at your option)
+;; any later version.
+
+;; This program is distributed in the hope that it will be useful,
+;; but WITHOUT ANY WARRANTY; without even the implied warranty of
+;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+;; GNU General Public License for more details.
+
+;; You should have received a copy of the GNU General Public License
+;; along with this program; see the file COPYING.  If not, write to
+;; the Free Software Foundation, Inc., 51 Franklin Street, Fifth
+;; Floor, Boston, MA 02110-1301, USA.
+;;
+;; Copyright Cédric Chépied 2012
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;
+;;
+;;
+;;
+;;
+;;
+;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;
+;; TODO
+;;
+;; list buffer must be interactive
+;; make current desktop frame specific
+;; test very complicated window configuration
+;;
+;;
+;;
+;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;
+;; desktop format
+;;
+;; desktop list : [desktop 1] [desktop 2]
+;;    				|
+;; 	    			---> [Window 1] [Window 2]
+;;							 |
+;;							 ---> [Window Edges] [buffer name]
+;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+
+
+;; Code:
+
+(provide 'virtual-desktops)
+
+;;constants
+(defconst virtual-desktops-list-buffer-name "##virtual-desktops##")
+
+;;global variables
+(defvar virtual-desktops-list (list nil))
+(defvar virtual-desktops-current 0)
+(defvar virtual-desktops-mode-line-string nil)
+
+
+;;group
+(defgroup virtual-desktop nil "Customization of virtual-desktop variables."
+  :tag "virtual-desktop"
+  :group 'emacs)
+
+
+;;customizable variables
+(defcustom virtual-desktops-auto-update "desktop auto update" "If non nil, current desktop will be updated when calling any virtual-desktops function."
+  :type 'boolean
+  :group 'virtual-desktop)
+
+
+;; Custom Minor Mode
+(define-minor-mode virtual-desktops-mode
+  "Enable desktops creation which save or restore windows and buffers of the frame."
+  ;; The initial value - Set to 1 to enable by default
+  nil
+  ;; The indicator for the mode line.
+  ""
+  ;; The minor mode keymap
+  `(
+    (,(kbd "C->") . virtual-desktops-next)
+    (,(kbd "C-<") . virtual-desktops-prev)
+	(,(kbd "C-c C-d a") . virtual-desktops-add)
+  	(,(kbd "C-c C-d d") . virtual-desktops-del)
+  	(,(kbd "C-c C-d D") . virtual-desktops-del-specific)
+  	(,(kbd "C-c C-d g") . virtual-desktops-goto)
+  	(,(kbd "C-c C-d l") . virtual-desktops-list)
+   )
+   ;; Make mode global rather than buffer local
+   :global 1
+
+   ;;initialize variables
+   (progn
+	 (setq virtual-desktops-list (list nil))
+	 (setq virtual-desktops-current 0)
+	 (if virtual-desktops-mode
+		 (setq virtual-desktops-mode-line-string "-Desk: nil-")
+	     (setq virtual-desktops-mode-line-string ""))
+	 (or global-mode-string
+		 (setq global-mode-string '("")))
+	 (or (memq 'virtual-desktops-mode-line-string global-mode-string)
+		 (setq global-mode-string
+			   (append global-mode-string '(virtual-desktops-mode-line-string)))))
+)
+
+
+
+
+(defun virtual-desktops-get-window-xmin (window)
+  (nth 0 (nth 0 window))
+)
+
+(defun virtual-desktops-get-window-xmax (window)
+  (nth 2 (nth 0 window))
+)
+
+(defun virtual-desktops-get-window-ymin (window)
+  (nth 1 (nth 0 window))
+)
+
+(defun virtual-desktops-get-window-ymax (window)
+  (nth 3 (nth 0 window))
+)
+
+(defun virtual-desktops-get-window-buffer (window)
+  (nth 1 window)
+)
+
+(defun virtual-desktops-get-window-width (window)
+  (- (virtual-desktops-get-window-xmax window) (virtual-desktops-get-window-xmin window))
+)
+
+(defun virtual-desktops-get-window-height (window)
+  (- (virtual-desktops-get-window-ymax window) (virtual-desktops-get-window-ymin window))
+)
+
+(defun virtual-desktops-get-window (x y window-list)
+  (let (window)
+	(setq window nil)
+	(catch 'break;
+	  (dolist (w window-list)
+		(progn (if (and (>= x (virtual-desktops-get-window-xmin w))
+						(<= x (virtual-desktops-get-window-xmax w))
+						(>= y (virtual-desktops-get-window-ymin w))
+						(<= y (virtual-desktops-get-window-ymax w)))
+				   (progn (setq window w)
+						  (throw 'break t))))))
+	window)
+)
+
+
+;; returns (block-xmin block-ymin block-xmax block-ymax block-width block-height)
+(defun virtual-desktops-get-block-dimensions (block)
+  (let (block-xmin block-ymin block-xmax block-ymax block-width block-height)
+	(dolist (window block)
+	  (progn (if (or (equal nil block-xmin)
+					 (< (virtual-desktops-get-window-xmin window) block-xmin))
+				 (setq block-xmin (virtual-desktops-get-window-xmin window)))
+			 (if (or (equal nil block-xmax)
+					 (> (virtual-desktops-get-window-xmax window) block-xmax))
+				 (setq block-xmax (virtual-desktops-get-window-xmax window)))
+			 (if (or (equal nil block-ymin)
+					 (< (virtual-desktops-get-window-ymin window) block-ymin))
+				 (setq block-ymin (virtual-desktops-get-window-ymin window)))
+			 (if (or (equal nil block-ymax)
+					 (> (virtual-desktops-get-window-ymax window) block-ymax))
+				 (setq block-ymax (virtual-desktops-get-window-ymax window)))))
+	(setq block-width (- block-xmax block-xmin))
+	(setq block-height (- block-ymax block-ymin))
+
+	(list block-xmin block-ymin block-xmax block-ymax block-width block-height))
+)
+
+;; splits vertically and return the 2 new blocks
+;; return nil if can't split
+(defun virtual-desktops-split-vertically (window-list total-frame-width total-frame-height)
+  (let (dimensions block-xmin block-xmax block-ymin block-ymax block-width block-height window windows-width split-y)
+	(setq windows-width 0)
+	(setq split-y nil)
+
+	;;get size
+	(setq dimensions (virtual-desktops-get-block-dimensions window-list))
+	(setq block-xmin (nth 0 dimensions))
+	(setq block-ymin (nth 1 dimensions))
+	(setq block-xmax (nth 2 dimensions))
+	(setq block-ymax (nth 3 dimensions))
+	(setq block-width (nth 4 dimensions))
+	(setq block-height (nth 5 dimensions))
+
+	;;select window
+	(let (tempx tempy framey)
+	  (setq framey (1- (frame-height))) ;;remove minibuffer
+	  (setq tempx (1- (/ (* block-xmax (frame-width)) total-frame-width)))
+	  (setq tempy (1- (/ (* block-ymax framey) total-frame-height)))
+	  (select-window (window-at tempx tempy)))
+
+
+	(catch 'break
+	  (let (y window)
+		(setq y block-ymin)
+		(while (< y block-ymax) ;;while there are windows left
+		  (setq window (virtual-desktops-get-window block-xmin y window-list)) ;; get window in (0,y)
+		  (setq windows-width (virtual-desktops-get-window-width window)) ;;windows-width is window width
+		  (if (>= windows-width block-width) ;;if there is only one window in all width we can split
+			  (progn (setq split-y (virtual-desktops-get-window-height window))
+					 (throw 'break t)))
+		  (progn (let (wtemp)
+				   (dolist (wtemp window-list)
+					 (progn (if (not (equal wtemp window)) ;;if wtemp is not the same window
+								(if (= (virtual-desktops-get-window-ymax wtemp) (virtual-desktops-get-window-ymax window)) ;;if wtemp ymax = window ymax they are forming a line
+									(progn (setq windows-width (+ windows-width (virtual-desktops-get-window-width wtemp))) ;;add window width to total width
+										   (if (>= windows-width block-width) ;;if all selected window width is the block width we can split
+											   (progn (setq split-y (- (virtual-desktops-get-window-ymax window) block-ymin))
+													  (throw 'break t))))))))))
+		  (setq y (+ y (virtual-desktops-get-window-height window)))))) ;;next window
+
+
+	(if (and split-y
+			 (< split-y block-height))
+		(progn (let (temp)
+				 (setq temp (/ (* split-y (window-height)) block-height))
+				 (split-window-vertically temp))
+			   ;;window is splitted we need to create the two blocks
+			   (let (block-1 block-2)
+				 (setq block-1 'nil)
+				 (setq block-2 'nil)
+				 (dolist (window window-list)
+				   (progn (if (< (virtual-desktops-get-window-ymin window) (+ block-ymin split-y))
+							  (setq block-1 (cons window block-1))
+							  (setq block-2 (cons window block-2)))))
+				 (list block-1 block-2)))
+	    nil))
+)
+
+
+;; splits horizontally and return the 2 new blocks
+;; return nil if can't split
+(defun virtual-desktops-split-horizontally (window-list total-frame-width total-frame-height)
+  (let (block-xmin block-xmax block-ymin block-ymax block-width block-height window windows-height split-x dimensions)
+	(setq windows-height 0)
+	(setq split-x nil)
+
+	;;get size
+	(setq dimensions (virtual-desktops-get-block-dimensions window-list))
+	(setq block-xmin (nth 0 dimensions))
+	(setq block-ymin (nth 1 dimensions))
+	(setq block-xmax (nth 2 dimensions))
+	(setq block-ymax (nth 3 dimensions))
+	(setq block-width (nth 4 dimensions))
+	(setq block-height (nth 5 dimensions))
+
+	;;select window
+	(let (tempx tempy framey)
+	  (setq framey (1- (frame-height))) ;;remove minibuffer
+	  (setq tempx (1- (/ (* block-xmax (frame-width)) total-frame-width)))
+	  (setq tempy (1- (/ (* block-ymax framey) total-frame-height)))
+	  (select-window (window-at tempx tempy)))
+
+	(catch 'break
+	  (let (x window)
+		(setq x block-xmin)
+		(while (< x block-xmax) ;;while there are windows left
+		  (setq window (virtual-desktops-get-window x block-ymin window-list)) ;; get window in (0,y)
+		  (setq windows-height (virtual-desktops-get-window-height window)) ;;windows-width is window width
+		  (if (>= windows-height block-height) ;;if there is only one window in all height we can split
+			  (progn (setq split-x (virtual-desktops-get-window-width window))
+					 (throw 'break t)))
+		  (progn (let (wtemp)
+				   (dolist (wtemp window-list)
+					 (progn (if (not (equal wtemp window)) ;;if wtemp is not the same window
+								(if (= (virtual-desktops-get-window-xmax wtemp) (virtual-desktops-get-window-xmax window)) ;;if wtemp xmax = window xmax they are forming a line
+									(progn  (setq windows-height (+ windows-height (virtual-desktops-get-window-height wtemp))) ;;add window height to total height
+											(if (>= windows-height block-height) ;;if all selected window height is the block height we can split
+												(progn (setq split-x (- (virtual-desktops-get-window-xmax window) block-xmin))
+													   (throw 'break t))))))))))
+		  (setq x (+ x (virtual-desktops-get-window-width window)))))) ;;next window
+
+
+
+	(if (and split-x
+			 (< split-x block-width))
+		(progn (let (temp)
+				 (setq temp (1+ (/ (* split-x (window-width)) block-width)))
+				 (split-window-horizontally temp))
+			   ;;window is splitted we need to create the two blocks
+			   (let (block-1 block-2)
+				 (setq block-1 'nil)
+				 (setq block-2 'nil)
+				 (dolist (window window-list)
+				   (progn (if (< (virtual-desktops-get-window-xmin window) (+ block-xmin split-x))
+							  (setq block-1 (cons window block-1))
+							  (setq block-2 (cons window block-2)))))
+				 (list block-1 block-2)))
+	    nil))
+)
+
+
+;;splits the block until there is only one window in each block
+(defun virtual-desktops-split-block (window-list total-frame-width total-frame-height)
+  (if (> (safe-length window-list) 1)
+	  (progn (let (block-1 block-2 result)
+			   ;;search for a split
+			   (setq result (virtual-desktops-split-vertically window-list total-frame-width total-frame-height))
+			   (if (equal result nil)
+				   (setq result (virtual-desktops-split-horizontally window-list total-frame-width total-frame-height)))
+			   (if (not (equal result nil))
+				   (progn (setq block-1 (nth 0 result))
+						  (setq block-2 (nth 1 result))
+						  (virtual-desktops-split-block block-1 total-frame-width total-frame-height)
+						  (virtual-desktops-split-block block-2 total-frame-width total-frame-height))
+				 (print "Error: No split Found!"))))
+	  (progn (if (not (equal nil (buffer-name (virtual-desktops-get-window-buffer (nth 0 window-list)))))
+				 (set-window-buffer (window-at (- (/ (* (virtual-desktops-get-window-xmax (nth 0 window-list)) (frame-width)) total-frame-width) 2)
+											   (- (/ (* (virtual-desktops-get-window-ymax (nth 0 window-list)) (frame-height)) total-frame-height) 2))
+									(virtual-desktops-get-window-buffer (nth 0 window-list))))))
+)
+
+
+;;restore the desired desktop
+(defun virtual-desktops-restore (number)
+  (let (desktop)
+ 	(setq desktop (nth number virtual-desktops-list))
+	(if (not (equal nil desktop))
+		(progn (let (frame-width frame-height temp-list)
+				 (delete-other-windows)
+				 (setq temp-list (virtual-desktops-get-block-dimensions desktop))
+				 (setq frame-width (nth 4 temp-list))
+				 (setq frame-height (nth 5 temp-list))
+				 (virtual-desktops-split-block desktop frame-width frame-height)))))
+)
+
+
+;;save desktop and return it
+(defun virtual-desktops-create-desktop ()
+  (let (window-list user-window top-left-window)
+	;;save user window
+	(setq user-window (selected-window))
+
+	;;go to the top left window
+	(select-window (window-at 0 0))
+	(setq top-left-window (selected-window))
+
+	;;create list with the first windo
+	(setq window-list (list (list (window-edges) (window-buffer))))
+	(select-window (next-window))
+
+	(while (not (equal top-left-window (selected-window)))
+	  (setq window-list (cons (list (window-edges) (window-buffer)) window-list))
+	  (select-window (next-window)))
+			 			 
+	(select-window user-window)
+	window-list)
+)
+
+
+;;delete a desktop if it is not the nil desktop
+(defun virtual-desktops-delete (number)
+  (if (and (< number (safe-length virtual-desktops-list))
+		   (> number 0))
+	  (setq virtual-desktops-list (delq (nth number virtual-desktops-list) virtual-desktops-list))
+	  (print (concat "Cant delete this desktop :" (number-to-string number))))
+)
+
+
+(defun virtual-desktops-update-mode-line ()
+  (if (= virtual-desktops-current 0)
+	  (setq virtual-desktops-mode-line-string "-Desk: nil")
+	  (setq virtual-desktops-mode-line-string (concat "-Desk: " (number-to-string virtual-desktops-current))))
+  (force-mode-line-update)
+)
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;								Interactive functions									;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(defun virtual-desktops-add ()
+  (interactive)
+  (if virtual-desktops-mode
+	  (progn (setq virtual-desktops-list (append virtual-desktops-list (list (virtual-desktops-create-desktop))))
+			 (setq virtual-desktops-current (1- (safe-length virtual-desktops-list)))
+			 (virtual-desktops-update-mode-line))
+	  (print "virtual-desktops-mode must be enabled"))
+)
+
+
+(defun virtual-desktops-update ()
+  (interactive)
+  (if virtual-desktops-mode
+	  (progn (if (not (= virtual-desktops-current 0))
+				 (let (desktop)
+				   (setq desktop (virtual-desktops-create-desktop))
+				   (setcar (nthcdr virtual-desktops-current virtual-desktops-list) desktop))))
+  	  (print "virtual-desktops-mode must be enabled"))
+)
+
+(defun virtual-desktops-del ()
+  (interactive)
+    (if virtual-desktops-mode
+		(progn (virtual-desktops-delete virtual-desktops-current)
+			   (setq virtual-desktops-current 0)
+			   (virtual-desktops-update-mode-line))
+	    (print "virtual-desktops-mode must be enabled"))
+)
+
+(defun virtual-desktops-del-specific ()
+  (interactive)
+  (if virtual-desktops-mode
+	  (progn (let (desktop)
+			   (setq desktop (read-from-minibuffer "desktop to delete? "))
+			   (virtual-desktops-delete (string-to-number desktop))
+			   (if (= virtual-desktops-current (string-to-number desktop))
+				   (setq virtual-desktops-current 0)))
+			 (virtual-desktops-update-mode-line))
+	  (print "virtual-desktops-mode must be enabled"))
+)
+
+(defun virtual-desktops-next ()
+  (interactive)
+  (if virtual-desktops-mode
+	  (progn (if (not (equal nil virtual-desktops-auto-update))
+				 (virtual-desktops-update))
+			 (setq virtual-desktops-current (1+ virtual-desktops-current))
+			 (if (>= virtual-desktops-current (safe-length virtual-desktops-list))
+				 (setq virtual-desktops-current 0))
+			 (virtual-desktops-restore virtual-desktops-current)
+			 (virtual-desktops-update-mode-line))
+	  (print "virtual-desktops-mode must be enabled"))
+)
+
+(defun virtual-desktops-prev ()
+  (interactive)
+  (if virtual-desktops-mode
+	  (progn (if (not (equal nil virtual-desktops-auto-update))
+				 (virtual-desktops-update))
+			 (setq virtual-desktops-current (1- virtual-desktops-current))
+			 (if (< virtual-desktops-current 0)
+				 (setq virtual-desktops-current (1- (safe-length virtual-desktops-list))))
+			 (virtual-desktops-restore virtual-desktops-current)
+			 (virtual-desktops-update-mode-line))
+	  (print "virtual-desktops-mode must be enabled"))
+)
+
+(defun virtual-desktops-goto ()
+  (interactive)
+  (if virtual-desktops-mode
+	  (progn (if (not (equal nil virtual-desktops-auto-update))
+				 (virtual-desktops-update))
+			 (let (desktop number)
+			   (setq desktop (read-from-minibuffer "desktop to display? "))
+			   (if (equal "nil" desktop)
+				   (setq number 0)
+				   (setq number (string-to-number desktop)))
+			   (setq virtual-desktops-current number))
+			 (virtual-desktops-restore virtual-desktops-current)
+			 (virtual-desktops-update-mode-line))
+	  (print "virtual-desktops-mode must be enabled"))
+)
+
+(defun virtual-desktops-list ()
+  (interactive)
+  (if virtual-desktops-mode
+	  (progn (let (buffer i)
+			   ;;killing buffer if it exists
+			   (if (not (equal nil (get-buffer virtual-desktops-list-buffer-name)))
+				   (kill-buffer virtual-desktops-list-buffer-name))
+	
+			   ;;creating buffer
+			   (setq buffer (get-buffer-create virtual-desktops-list-buffer-name))
+			   (switch-to-buffer buffer)
+	
+			   ;;insert desktop list
+			   (insert "This is desktop list\nYou can set point on the desired one and press RET to switch to this desktop\n\n")
+			   (setq i 0)
+			   (while (< i (safe-length virtual-desktops-list))
+				 (insert (propertize (number-to-string i) 'font-lock-face '(:foreground "red")))
+				 (insert "\t")
+				 (let (window window-list)
+				   (setq window-list (nth i virtual-desktops-list))
+				   (if (equal window-list nil)
+					   (insert "nil")
+					 (dolist (window window-list)
+					   (insert "<")
+					   (if (equal nil (buffer-name (virtual-desktops-get-window-buffer window)))
+						   (insert "Deleted buffer")
+						 (insert (buffer-name (virtual-desktops-get-window-buffer window))))
+					   (insert "> "))))
+				 (insert "\n\n")
+				 (setq i (1+ i)))
+	
+			   ;;setting buffer read only
+			   (toggle-read-only)))
+			 (print "virtual-desktops-mode must be enabled"))
+)
+
+;;virtual-desktops.el ends here
