@@ -169,12 +169,12 @@ static char * %s[] = {
     (let ((len  (length data))
           (idx  0))
       (apply 'concat
-             (mapcar '(lambda (dl)
+             (mapcar #'(lambda (dl)
                         (setq idx (+ idx 1))
                         (concat
                          "\""
                          (concat
-                          (mapcar '(lambda (d)
+                          (mapcar #'(lambda (d)
                                      (if (eq d 0)
                                          (string-to-char " ")
                                        (string-to-char ".")))
@@ -414,7 +414,7 @@ install the memoized function over the original function."
 (defpowerline process      mode-line-process)
 (defpowerline minor-modes (let ((mms (split-string (format-mode-line minor-mode-alist))))
                             (apply 'concat
-                                   (mapcar '(lambda (mm)
+                                   (mapcar #'(lambda (mm)
                                               (propertize (if (string= (car mms)
                                                                        mm)
                                                               mm
@@ -444,9 +444,11 @@ install the memoized function over the original function."
 (defpowerline status      "%s")
 (defpowerline global      global-mode-string)
 (defpowerline emacsclient mode-line-client)
+
 (defpowerline vc          (when (and (buffer-file-name (current-buffer))
                                      vc-mode)
-                                  vc-mode-line))
+							(symbol-name (vc-mode-line (buffer-file-name (current-buffer) )))))
+
 (defpowerline percent-xpm (propertize "  "
                                       'display
                                       (let (pmax
