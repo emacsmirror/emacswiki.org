@@ -1,12 +1,16 @@
+== Power Line ==
 Some code to modify mode-line to display things like in the VIM powerline (https://github.com/Lokaltog/vim-powerline)
 
 http://www.loria.fr/~rougier/images/emacs-powerline.png
 
 A more complete version, including minor modes, is included in Lisp:powerline.el
 
-If you see a yucky olive green blank line, instead of something pretty, it is probably because there is a problem with the powerline code. I find it is easiest to grab the value of mode-line-format, stuff it in the buffer that is causing you problems, and just issue a Control-x Control-e to see what the problem is. 
+=== Hacking ===
 
------
+I got tired of seeing blank olive-drab mode-lines and fixed it up a little to warn the user when there was a problem displaying the modeline, by A) outputting "ERR" on the modeline where the problem was and B) sending a message out to the console telling the user as much.  This should make tracking-down and removing errors a little easier.  --JonathanArkell
+
+
+=== Original Powerline ===
 
 (original code kept for posterity.  If you delete it, lets at least keep Nicolas's name somewhere on the page, as he may be the originator of this awesomeness.)
 
