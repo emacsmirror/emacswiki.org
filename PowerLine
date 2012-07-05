@@ -2,6 +2,14 @@ Some code to modify mode-line to display things like in the VIM powerline (https
 
 http://www.loria.fr/~rougier/images/emacs-powerline.png
 
+A more complete version, including minor modes, is included in Lisp:powerline.el
+
+If you see a yucky olive green blank line, instead of something pretty, it is probably because there is a problem with the powerline code. I find it is easiest to grab the value of mode-line-format, stuff it in the buffer that is causing you problems, and just issue a Control-x Control-e to see what the problem is. 
+
+-----
+
+(original code kept for posterity.  If you delete it, lets at least keep Nicolas's name somewhere on the page, as he may be the originator of this awesomeness.)
+
 
 Code:
 
@@ -103,6 +111,3 @@ static char * arrow_right[] = {
 }}}
 
 NicolasRougier
-
-A more complete version, including minor modes, is included in Lisp:powerline.el
-
