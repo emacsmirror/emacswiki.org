@@ -13,6 +13,10 @@ https://ac-math.googlecode.com/svn/trunk/unicode-math.png
 
 Direct download [[https://ac-math.googlecode.com/svn/trunk/ac-math.el|ac-math.el]]
 
+== Auctex ==
+
+[[https://github.com/monsanto/auto-complete-auctex]] uses auctex's parsing to give up-to-date, accurate completions of commands, environments, bib entries, and labels.
+
 == Python ==
 
 Completion for python without rope or anything like that: http://chrispoole.com/project/ac-python
