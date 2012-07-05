@@ -37,8 +37,8 @@ If you want to contribute or just help me to make code efficient you are welcome
 
 == Todo ==
 
-Learn lisp.
-Make the list buffer interactive: RET should make a virtual-desktops-goto, D virtual-desktops-del-specific, ...
-Make current desktop frame specific: each frame could host a specific desktop.
-Improve code and restore algorithm.
-Learn lisp.
+* Learn lisp.
+* Make the list buffer interactive: RET should make a virtual-desktops-goto, D virtual-desktops-del-specific, ...
+* Make current desktop frame specific: each frame could host a specific desktop.
+* Improve code and restore algorithm.
+* Learn lisp.
