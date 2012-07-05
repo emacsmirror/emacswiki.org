@@ -286,8 +286,7 @@ variables and short descriptions. Here is a function which searches the current 
                                               (substring wholestr pos2))))))
                (if pair (insert (concat (car pair) "\n;;  " spaces (cdr pair)))
                  (insert wholestr))))))
-</pre> [new:JoeBloggs:2012-07-04 23:44 UTC]
-       -- JoeBloggs
+</pre>        -- JoeBloggs
 
 
 ----
