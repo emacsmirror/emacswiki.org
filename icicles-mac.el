@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:24:28 2006
 ;; Version: 22.0
-;; Last-Updated: Sun Apr 22 07:51:00 2012 (-0700)
+;; Last-Updated: Thu Jul  5 10:44:31 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 981
+;;     Update #: 986
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-mac.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -350,8 +350,8 @@ the buffer list ordering."
            ;; It is necessary to save all of these, because calling
            ;; select-window changes frame-selected-window for whatever
            ;; frame that window is in.
-           (save-selected-window-alist   (mapcar #'(lambda (frame)
-                                                     (list frame (frame-selected-window frame)))
+           (save-selected-window-alist   (mapcar (lambda (frame)
+                                                   (list frame (frame-selected-window frame)))
                                           (frame-list))))
       (save-current-buffer
         (unwind-protect
@@ -447,8 +447,8 @@ created after the others."
        (icicle-bufflist
         (if current-prefix-arg
             (cond ((and (consp current-prefix-arg)  (fboundp 'derived-mode-p)) ; `C-u'
-                   (icicle-remove-if-not #'(lambda (bf)
-                                             (derived-mode-p (with-current-buffer bf major-mode)))
+                   (icicle-remove-if-not (lambda (bf)
+                                           (derived-mode-p (with-current-buffer bf major-mode)))
                                          (buffer-list)))
                   ((zerop (prefix-numeric-value current-prefix-arg)) ; `C-0'
                    (let ((this-mode  major-mode))
@@ -458,7 +458,7 @@ created after the others."
                   ((< (prefix-numeric-value current-prefix-arg) 0) ; `C--'
                    (cdr (assq 'buffer-list (frame-parameters))))
                   (t                    ; `C-1'
-                   (icicle-remove-if-not #'(lambda (bf) (buffer-file-name bf)) (buffer-list))))
+                   (icicle-remove-if-not (lambda (bf) (buffer-file-name bf)) (buffer-list))))
           (buffer-list))))
      post-bindings))
 
@@ -504,8 +504,8 @@ created after the others."
                                                                                 icicle--temp-orders)))
                        (cons `("by `icicle-file-sort'" ,@icicle-file-sort) icicle--temp-orders)))
                  icicle--temp-orders)))
-       (icicle-candidate-help-fn                    #'(lambda (cand)
-                                                        (icicle-describe-file cand current-prefix-arg)))
+       (icicle-candidate-help-fn                    (lambda (cand)
+                                                      (icicle-describe-file cand current-prefix-arg)))
        (icicle-candidate-alt-action-fn
         (or icicle-candidate-alt-action-fn (icicle-alt-act-fn-for-type "file")))
        (icicle-all-candidates-list-alt-action-fn
@@ -951,13 +951,13 @@ to update the list of tags available for completion." "")) ; Doc string
        '(("by previous use alphabetically" . icicle-historical-alphabetic-p)
          ("case insensitive" . icicle-case-insensitive-string-less-p))))
      (icicle-candidate-help-fn
-      #'(lambda (cand)
-          (when icicle-show-multi-completion-flag
-            (setq cand  (funcall icicle-get-alist-candidate-function cand))
-            (setq cand  (cons (caar cand) (cdr cand))))
-          (if current-prefix-arg
-              (bmkp-describe-bookmark-internals cand)
-            (bmkp-describe-bookmark cand)))))
+      (lambda (cand)
+        (when icicle-show-multi-completion-flag
+          (setq cand  (funcall icicle-get-alist-candidate-function cand))
+          (setq cand  (cons (caar cand) (cdr cand))))
+        (if current-prefix-arg
+            (bmkp-describe-bookmark-internals cand)
+          (bmkp-describe-bookmark cand)))))
     (when (equal ,type "autofile") (icicle-bind-file-candidate-keys)) ; First code
     (icicle-bookmark-cleanup-on-quit)	; Undo code
     (progn (when (equal ,type "autofile") (icicle-unbind-file-candidate-keys))
@@ -1046,12 +1046,12 @@ command")))
        '(("by previous use alphabetically" . icicle-historical-alphabetic-p)
          ("case insensitive" . icicle-case-insensitive-string-less-p))))
      (icicle-candidate-help-fn
-      #'(lambda (cand)
-          (when icicle-show-multi-completion-flag
-            (setq cand  (funcall icicle-get-alist-candidate-function cand))
-            (setq cand  (cons (caar cand) (cdr cand))))
-          (if current-prefix-arg
-              (bmkp-describe-bookmark-internals cand)
+      (lambda (cand)
+        (when icicle-show-multi-completion-flag
+          (setq cand  (funcall icicle-get-alist-candidate-function cand))
+          (setq cand  (cons (caar cand) (cdr cand))))
+        (if current-prefix-arg
+            (bmkp-describe-bookmark-internals cand)
             (bmkp-describe-bookmark cand)))))
     (when (equal ,type "autofile") (icicle-bind-file-candidate-keys)) ; First code
     (icicle-bookmark-cleanup-on-quit)   ; Undo code
