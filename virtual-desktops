@@ -13,7 +13,7 @@ When mode is enabled the number of the desktop is added in the mode line. By def
 This is the default desktop. You can't save/restore/delete it. It is only a useless desktop. But you can use it.  Your windows won't be saved and it could be what you want.
 
 === Create, select and delete desktops ===
-To create a desktop, use M-x virtual-desktops-add. All windows in the frame will be saved in a new desktop and this desktop will be selected. You can see the current desktop in the mode line.
+To create a desktop, use M-x virtual-desktops-add. All windows in the frame will be saved in a new desktop and this desktop will be selected. You can see the current desktop in the mode line.<br>
 You can create as many desktops as you want.
 
 To select a desktop, you can use M-x virtual-desktops-next, M-x virtual-desktops-prev, M-x virtual-desktops-goto.
@@ -21,25 +21,24 @@ To select a desktop, you can use M-x virtual-desktops-next, M-x virtual-desktops
 To delete current desktop, use M-x virtual-desktop-del. To delete a specific desktop, use M-x virtual-desktops-del-specific.
 
 === Update a desktop ===
-When you save a desktop, it contains windows which contain buffers. If you change the geometry of windows or the buffers displayed you need to update the desktop if you want your changes to be saved. This can be done with M-x virtual-desktops-update.
-
+When you save a desktop, it contains windows which contain buffers. If you change the geometry of windows or the buffers displayed you need to update the desktop if you want your changes to be saved. This can be done with M-x virtual-desktops-update.<br>
 If you want your desktops to be automatically updated when you leave them, you can set the virtual-desktops-auto-update variable to t. virtual-desktops-update function will be called automatically when you use next/prev/goto functions.
 
 === List desktops ===
-You can list all virtual desktops with M-x virtual-desktops-list. It will create a buffer which contains a list of all desktops with their buffers.
+You can list all virtual desktops with M-x virtual-desktops-list. It will create a buffer which contains a list of all desktops with their buffers.<br>
 This buffer is not yet interactive but this feature may be able "soon".
 
 
 == Notes ==
 
-Virtual desktops are not fully functional. This is my first "real" program in lisp so code is not really optimized.
+Virtual desktops are not fully functional. This is my first "real" program in lisp so code is not really optimized.<br>
 If you want to contribute or just help me to make code efficient you are welcome.
 
 
 == Todo ==
 
-Learn lisp.
-Make the list buffer interactive: RET should make a virtual-desktops-goto, D virtual-desktops-del-specific, ...
-Make current desktop frame specific: each frame could host a specific desktop.
-Improve code and restore algorithm.
-Learn lisp.
+Learn lisp.<br>
+Make the list buffer interactive: RET should make a virtual-desktops-goto, D virtual-desktops-del-specific, ...<br>
+Make current desktop frame specific: each frame could host a specific desktop.<br>
+Improve code and restore algorithm.<br>
+Learn lisp.<br>
