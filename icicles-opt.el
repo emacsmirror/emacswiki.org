@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:22:14 2006
 ;; Version: 22.0
-;; Last-Updated: Fri Jun 29 17:09:02 2012 (-0700)
+;; Last-Updated: Thu Jul  5 10:35:05 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 5012
+;;     Update #: 5019
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-opt.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -1450,9 +1450,9 @@ This has no effect for Emacs versions prior to 21: acts as if non-nil."
 It is either \".\" or the value of `icicle-anychar-regexp'.
 You can toggle this at any time using command `icicle-toggle-dot',
 bound to \\<minibuffer-local-completion-map>`\\[icicle-toggle-dot]' during completion."
-  :set #'(lambda (sym defs)
-           (custom-set-default sym defs)
-           (setq icicle-dot-string-internal  icicle-dot-string))
+  :set (lambda (sym defs)
+         (custom-set-default sym defs)
+         (setq icicle-dot-string-internal  icicle-dot-string))
   :type `(choice
           (const :tag "Match any char EXCEPT newline"       ".")
           (const :tag "Match any char, including NEWLINE"   ,icicle-anychar-regexp))
@@ -1660,10 +1660,10 @@ See also option `icicle-top-level-key-bindings'."
                   ;; Use `symbolp' instead of `functionp' or `fboundp', in case the library
                   ;; defining the function is not loaded.
                   :match-alternatives (symbolp) :value ignore))
-  :set #'(lambda (sym defs)
-           (custom-set-default sym defs)
-           (when (boundp 'icicle-mode-map) ; Avoid error on initialization.
-             (icicle-redefine-standard-functions)))
+  :set (lambda (sym defs)
+         (custom-set-default sym defs)
+         (when (boundp 'icicle-mode-map) ; Avoid error on initialization.
+           (icicle-redefine-standard-functions)))
   :initialize #'custom-initialize-default
   :group 'Icicles-Miscellaneous)
 
@@ -2734,7 +2734,7 @@ The candidates are the executable files in your search path or, if
          (path-dirs          (cdr (reverse exec-path)))
          (cwd                (file-name-as-directory (expand-file-name default-directory)))
          (ignored-extensions (and comint-completion-fignore
-                                  (mapconcat #'(lambda (x) (concat (regexp-quote x) "$"))
+                                  (mapconcat (lambda (x) (concat (regexp-quote x) "$"))
                                              comint-completion-fignore "\\|")))
          (dir                "")
          (comps-in-dir       ())
@@ -3056,7 +3056,7 @@ prefix argument (or else start a new Emacs session)."
                   methods)
             (push '(const :tag "Levenshtein" ("Levenshtein" . icicle-levenshtein-match))
                   methods))
-          (when (require 'fuzzy nil t) ; `fuzzy.el', part of library Autocomplete.
+          (when (require 'fuzzy nil t)  ; `fuzzy.el', part of library Autocomplete.
             (push '(const :tag "Jaro-Winkler" ("Jaro-Winkler" . fuzzy-match)) methods))
           (push '(const :tag "scatter" ("scatter" . icicle-scatter-match)) methods)
           (push '(const :tag "apropos" ("apropos" . string-match)) methods)
@@ -3067,11 +3067,11 @@ prefix argument (or else start a new Emacs session)."
                          ;; defining the command is not yet loaded.
                          :match-alternatives (symbolp) :value ignore)
             :value-type (repeat :tag "S-TAB completion methods" (choice ,@methods))))
-  :set #'(lambda (sym val)
-           (custom-set-default sym val)
-           (when (fboundp 'icicle-set-S-TAB-methods-for-command)
-             (dolist (entry  val)
-               (icicle-set-S-TAB-methods-for-command (car entry) (cdr entry)))))
+  :set (lambda (sym val)
+         (custom-set-default sym val)
+         (when (fboundp 'icicle-set-S-TAB-methods-for-command)
+           (dolist (entry  val)
+             (icicle-set-S-TAB-methods-for-command (car entry) (cdr entry)))))
   :initialize #'custom-initialize-default
   :group 'Icicles-matching)
 
@@ -3214,11 +3214,11 @@ prefix argument (or else start a new Emacs session)."
                          ;; defining the command is not yet loaded.
                          :match-alternatives (symbolp) :value ignore)
             :value-type (repeat :tag "TAB completion methods" (choice ,@methods))))
-  :set #'(lambda (sym val)
-           (custom-set-default sym val)
-           (when (fboundp 'icicle-set-TAB-methods-for-command)
-             (dolist (entry  val)
-               (icicle-set-TAB-methods-for-command (car entry) (cdr entry)))))
+  :set (lambda (sym val)
+         (custom-set-default sym val)
+         (when (fboundp 'icicle-set-TAB-methods-for-command)
+           (dolist (entry  val)
+             (icicle-set-TAB-methods-for-command (car entry) (cdr entry)))))
   :initialize #'custom-initialize-default
   :group 'Icicles-Matching)
 
@@ -3269,10 +3269,10 @@ avoid the cost of remote file name completion.
 You can toggle this option from the minibuffer using `C-^' (except
 during Icicles search)."
   :initialize (lambda (opt-name val) (set opt-name t))
-  :set #'(lambda (opt-name val)
-           (or (not (require 'tramp nil t))
-               (prog1 (set opt-name (not val))
-                 (icicle-toggle-remote-file-testing))))
+  :set (lambda (opt-name val)
+         (or (not (require 'tramp nil t))
+             (prog1 (set opt-name (not val))
+               (icicle-toggle-remote-file-testing))))
   :type 'boolean :group 'Icicles-Matching)
 
 ;;;###autoload
@@ -3405,7 +3405,7 @@ toggle Icicle mode off and then back on."
     ("\C-c'"                     icicle-occur                        t) ; `C-c ''
     ("\C-c="                     icicle-imenu                        t) ; `C-c ='
     ("\C-c\""                    icicle-search-text-property         t) ; `C-c "'
-    ("\C-c/"                     icicle-complete-thesaurus-entry        ; `C-c /'
+    ("\C-c/"                     icicle-complete-thesaurus-entry ; `C-c /'
      (fboundp 'icicle-complete-thesaurus-entry))
     ("\C-x\M-e"                  icicle-execute-named-keyboard-macro t) ; `C-x M-e'
     ("\C-x "                     icicle-command-abbrev               t) ; `C-x SPC'
@@ -3712,10 +3712,10 @@ See also option `icicle-functions-to-redefine'."
              (restricted-sexp :tag "Command"
               :match-alternatives (symbolp) :value ignore)
              (sexp :tag "Condition"))))
-  :set #'(lambda (sym defs)
-           (custom-set-default sym defs)
-           (when (boundp 'icicle-mode-map) ; Avoid error on initialization.
-             (icicle-bind-top-level-commands defs)))
+  :set (lambda (sym defs)
+         (custom-set-default sym defs)
+         (when (boundp 'icicle-mode-map) ; Avoid error on initialization.
+           (icicle-bind-top-level-commands defs)))
   :initialize #'custom-initialize-default
   :group 'Icicles-Key-Bindings)
 
