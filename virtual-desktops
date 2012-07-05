@@ -13,7 +13,7 @@ When mode is enabled the number of the desktop is added in the mode line. By def
 This is the default desktop. You can't save/restore/delete it. It is only a useless desktop. But you can use it.  Your windows won't be saved and it could be what you want.
 
 === Create, select and delete desktops ===
-To create a desktop, use M-x virtual-desktops-add. All windows in the frame will be saved in a new desktop and this desktop will be selected. You can see the current desktop in the mode line.<br>
+To create a desktop, use M-x virtual-desktops-add. All windows in the frame will be saved in a new desktop and this desktop will be selected. You can see the current desktop in the mode line.</br>
 You can create as many desktops as you want.
 
 To select a desktop, you can use M-x virtual-desktops-next, M-x virtual-desktops-prev, M-x virtual-desktops-goto.
