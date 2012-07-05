@@ -138,6 +138,9 @@ By default, !AUCTeX shares its abbreviations with the major mode text-mode. This
 
 Abbrevs defined from a file in one of the auctex modes will then be stored in the default .abbrev_defs file using the table <code>TeX-mode-abbrev-table</code> instead of <code>text-mode-table</code>.
 
+== Autocomplete mode and AUCTeX ==
+
+[[https://github.com/monsanto/auto-complete-auctex|auto-complete-auctex]] gives a pretty interface to auctex completions using auto-complete.el and yasnippet.
 
 == Predictive Completion and AUCTeX ==
 
