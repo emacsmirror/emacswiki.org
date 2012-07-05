@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Fri Jun 29 17:24:49 2012 (-0700)
+;; Last-Updated: Thu Jul  5 10:36:37 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 8559
+;;     Update #: 8568
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-chg.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -651,6 +651,10 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd2.el'")
 ;;
+;; 2012/07/02 dadams
+;;     Moved defcustom of icicle-byte-compile-eval-after-load-flag to icicles-mcmd.el (loaded first).
+;;     icicle-search-bookmark(-action): Use *-search-context-regexp, not regexp, so no free warning.
+;;     Changed #'(lambda...) to (lambda...).
 ;; 2012/05/22 dadams
 ;;     icicle-search-define-candidates, icicle-char-properties-in-buffers:
 ;;       Test with icicle-file-remote-p before file-exists-p, to avoid Tramp.
@@ -3013,6 +3017,8 @@
 ;;       macros needs to be byte-compiled anew after loading the updated macros.
 ;; ****************************************************************************************************
 ;;
+;; 2012/07/05 dadams
+;;     Removed #' from lambdas.
 ;; 2012/04/22 dadams
 ;;     icicle-buffer-bindings: C-u keeps only derived-mode buffers.
 ;;                             Use backquote for lambda to handle free var THIS-MODE.
@@ -3189,6 +3195,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-mcmd.el'")
 ;;
+;; 2012/07/02 dadams
+;;     Moved here (since loaded first) from icicles-cmd2.el: icicle-byte-compile-eval-after-load-flag.
 ;; 2012/06/29 dadams
 ;;     icicle-current-sort-functions: Do not exclude if PRED is icicle-allowed-sort-predicate.
 ;;     icicle-help-on-candidate-symbol: select-frame-set-input-focus after apropos-command regexp.
@@ -5737,6 +5745,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-opt.el'")
 ;;
+;; 2012/07/05 dadams
+;;     Removed #' from lambdas.
 ;; 2012/06/29 dadams
 ;;     icicle-inhibit-advice-functions: Exclude commands that are not redefined in certain releases.
 ;;     icicle-command-abbrev-alist: Added :tag strings.
