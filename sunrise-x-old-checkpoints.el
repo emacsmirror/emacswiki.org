@@ -7,7 +7,7 @@
 ;; Maintainer: José Alfredo Romero L. <escherdragon@gmail.com>
 ;; Created: 28 Dec 2009
 ;; Version: 1
-;; RCS Version: $Rev: 423 $
+;; RCS Version: $Rev: 427 $
 ;; Keywords: sunrise commander, old checkpoints
 ;; URL: http://www.emacswiki.org/emacs/sunrise-x-old-checkpoints.el
 ;; Compatibility: GNU Emacs 22
@@ -65,9 +65,8 @@
     (sr-save-directories)
     (if (null my-cell)
         (setq sr-checkpoint-registry
-              (acons name
-                     (list sr-left-directory sr-right-directory)
-                     sr-checkpoint-registry))
+              (cons (cons name (list sr-left-directory sr-right-directory))
+                    sr-checkpoint-registry))
       (setcdr my-cell (list sr-left-directory sr-right-directory)))
   (message "%s" (concat "Checkpoint \"" name "\" saved"))))
 
