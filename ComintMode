@@ -47,3 +47,30 @@ You can use [[Icicles]] [[completion]] in Comint mode. Whenever there are multip
 
 You can also use `##C-`##' to quickly find, reuse, and edit a previous shell input, matching it in several ways. See [[Icicles - Other Search Commands#IciclesShell|Icicles - Reuse Comint Inputs]].
 
+== Handy functions for navigating history ==
+
+Here's a couple of functions that I find useful for comint buffers.
+
+  (defun comint-jump-to-input-ring ()
+    "Jump to the buffer containing the input history."
+    (interactive)
+    (progn
+      (comint-dynamic-list-input-ring)
+      (other-window 1)))
+
+  (defun comint-goto-first-input nil
+    "Move the command history back to the first input."
+    (interactive)
+    (if comint-input-ring-index
+        (comint-previous-input (- comint-input-ring-index))))
+
+
+You can bind them to keys by adding them to the comint-mode-hook like this:
+
+  (add-hook 'comint-mode-hook
+  	  (function (lambda ()
+  		      (local-set-key (kbd "C-<f7>") 'comint-jump-to-input-ring)
+  		      (local-set-key (kbd "C-<") 'comint-goto-first-input))))
+
+-- JoeBloggs
+                      
