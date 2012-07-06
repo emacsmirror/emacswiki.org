@@ -4,4 +4,6 @@
 
 # editing any page including another page containing non-ASCII characters will result in double encoding; this affects all the front pages for the various languages such as SiteMap and [[Übersicht]] since they include the WikiLanguageMenu -- this problem would disappear if I got rid of the TOC extension... :)
 
-# processes running in the background such as the one precomputing the Emacs Wiki RSS feed will produce several "wide character in print" warnings; I hope that these warnings are not visible to site visitors
+# [strike]processes running in the background such as the one precomputing the Emacs Wiki RSS feed will produce several "wide character in print" warnings; I hope that these warnings are not visible to site visitors
+
+*Update*: Hopefully #2 is fixed, now.
