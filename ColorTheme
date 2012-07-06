@@ -478,6 +478,9 @@ Pomgranate Explosion, an elegant and soft color theme for GNU Emacs. Available a
 
 [[monokai-theme.el]] is based on TextMate's monokai theme. Can anybody make it Emacs 24 deftheme and package.el compatible?
 
+[new]
+My take on Monokai for emacs: https://github.com/stafu/AnotherMonokai -- SM
+
 == History ==
 The original color theme code was written by Jonadab the Unsightly
 One.
