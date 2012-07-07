@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Thu Jul  5 10:36:37 2012 (-0700)
+;; Last-Updated: Sat Jul  7 15:19:26 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 8568
+;;     Update #: 8607
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-chg.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -651,6 +651,10 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd2.el'")
 ;;
+;; 2012/07/07 dadams
+;;     icicle-Info-index:
+;;       Bind icicle-Info-(index-nodes|manual|hist-list), for highlighting visited nodes.
+;;       Raise error if not in Info-mode.
 ;; 2012/07/02 dadams
 ;;     Moved defcustom of icicle-byte-compile-eval-after-load-flag to icicles-mcmd.el (loaded first).
 ;;     icicle-search-bookmark(-action): Use *-search-context-regexp, not regexp, so no free warning.
@@ -1233,6 +1237,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-face.el'")
 ;;
+;; 2012/07/07 dadams
+;;     Added: icicle-historical-candidate-other (used only for icicle-Info-index so far).
 ;; 2012/03/29 dadams
 ;;     Removed autoload cookies: hexrgb require, defs of *-increment-*, and *-search-context-level-*.
 ;; 2012/03/28 dadams
@@ -1354,6 +1360,22 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-fn.el'")
 ;;
+;; 2012/07/07 dadams
+;;     Added: icicle-Info-node-is-indexed-by-topic.
+;;     icicle-display-candidates-in-Completions:
+;;       Added highlighting of topics pointing to visited Info nodes, for icicle-Info-index.
+;;       Call icicle-transform-multi-completion on file-name cand for historical-cand highlighting.
+;;     File-name completion fixes (thx to Michael Heerdegen):
+;;       Added: icicle-completion--embedded-envvar-table.
+;;       icicle-unsorted-file-name-prefix-candidates:
+;;         Use substitute-in-file-name on arg INPUT.
+;;         For Emacs 24+, bind minibuffer-completion-table to icicle-file-name-completion-table.
+;;       icicle-insert-cand-in-minibuffer: Removed insert-default-directory from AND as condition.
+;;       icicle-save-or-restore-input:
+;;         Removed insert-default-directory from COMMON condition for file-name completion.
+;;         Pass (NOT INSERT-DEFAULT-DIRECTORY) as 3rd arg to icicle-abbreviate-or-expand-file-name.
+;;       icicle-abbreviate-or-expand-file-name: Added optional arg DONT-ADD-DEFAULT-DIR-P.
+;;     Removed #' from lambdas.
 ;; 2012/06/25 dadams
 ;;     Corrected change of 5/13: Removed call to file-name-as-directory.
 ;;     icicle-alt-act-fn-for-type: Removed backquoting from lambda, since it uses a macro in *-mac.el.
@@ -5745,6 +5767,9 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-opt.el'")
 ;;
+;; 2012/07/07 dadams
+;;     Added: icicle-Info-visited-max-candidates.
+;;     Added reminder about icicle-(increment|toggle)-option to doc strings for boolean|integer|number.
 ;; 2012/07/05 dadams
 ;;     Removed #' from lambdas.
 ;; 2012/06/29 dadams
@@ -6437,6 +6462,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-var.el'")
 ;;
+;; 2012/07/07 dadams
+;;     Added: icicle-file-name-completion-table.  Thx to Michael Heerdegen.
 ;; 2012/06/29 dadams
 ;;     Added: icicle-allowed-sort-predicate.
 ;; 2012/06/28 dadams
