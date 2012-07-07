@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Thu May 21 13:31:43 2009 (-0700)
 ;; Version: 22.0
-;; Last-Updated: Mon Jul  2 23:01:21 2012 (-0700)
+;; Last-Updated: Sat Jul  7 15:19:01 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 5685
+;;     Update #: 5699
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-cmd2.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -2013,15 +2013,26 @@ Return nil if `x-decompose-font-name' returns nil for FONT.
 
 ;;;###autoload (autoload 'icicle-Info-index "icicles")
 (defun icicle-Info-index (&optional topic)
-  "Like vanilla `Info-index', but you can use multi-command keys `C-RET', `C-up' etc."
+  "Like vanilla `Info-index', but you can use multi-command keys `C-RET', `C-up' etc.
+Also, for Emacs 22 and later, completion candidates (index topics) for
+nodes already visited are highlighted with face
+`icicle-historical-candidate-other' if there are fewer matching
+candidates than `icicle-Info-visited-max-candidates'"
   ;; We allow an arg only for non-interactive use.  E.g., `Info-virtual-index' calls (Info-index TOPIC).
   (interactive)
+  (unless (and (featurep 'info)  (eq major-mode 'Info-mode))
+    (error "You must be in Info mode to use this command"))
   (when (and (boundp 'Info-current-file) (equal Info-current-file "dir"))
     (error "The Info directory node has no index; use `m' to select a manual"))
   (let ((icicle-info-buff            (current-buffer))
         (icicle-info-window          (selected-window))
         (icicle-candidate-action-fn  'icicle-Info-index-action)
-        (C-x-m                       (lookup-key minibuffer-local-completion-map "\C-xm")))
+        (C-x-m                       (lookup-key minibuffer-local-completion-map "\C-xm"))
+        ;; These next 3 are used as FREE vars
+        ;; in `icicle-Info-node-is-indexed-by-topic' and `icicle-display-candidates-in-Completions'
+        (icicle-Info-index-nodes     (and (fboundp 'Info-index-nodes)  (Info-index-nodes))) ; Emacs 22+
+        (icicle-Info-manual          Info-current-file)
+        (icicle-Info-hist-list       (and (boundp 'Info-history-list)  Info-history-list))) ; Emacs 22+
     (when (and (require 'bookmark+ nil t) (fboundp 'icicle-bookmark-info-other-window))
       (define-key minibuffer-local-completion-map (icicle-kbd "C-x m")
         'icicle-bookmark-info-other-window))
