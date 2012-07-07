@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Fri May 25 09:34:45 2012 (-0700)
+;; Last-Updated: Sat Jul  7 14:59:14 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 23138
+;;     Update #: 23145
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -20,20 +20,20 @@
 ;;   `advice', `advice-preload', `apropos', `apropos+',
 ;;   `apropos-fn+var', `avoid', `backquote', `bookmark', `bookmark+',
 ;;   `bookmark+-1', `bookmark+-bmu', `bookmark+-key',
-;;   `bookmark+-lit', `bookmark+-mac', `bytecomp', `cl', `cus-edit',
-;;   `cus-face', `cus-load', `cus-start', `dired', `dired+',
-;;   `dired-aux', `dired-x', `doremi', `easymenu', `ediff-diff',
-;;   `ediff-help', `ediff-init', `ediff-merg', `ediff-mult',
-;;   `ediff-util', `ediff-wind', `el-swank-fuzzy', `ffap', `ffap-',
-;;   `fit-frame', `frame-cmds', `frame-fns', `fuzzy', `fuzzy-match',
-;;   `help+20', `hexrgb', `icicles-cmd1', `icicles-cmd2',
-;;   `icicles-face', `icicles-fn', `icicles-mcmd', `icicles-mode',
-;;   `icicles-opt', `icicles-var', `image-dired', `info', `info+',
-;;   `kmacro', `levenshtein', `menu-bar', `menu-bar+', `misc-cmds',
-;;   `misc-fns', `mouse3', `mwheel', `naked', `pp', `pp+',
-;;   `regexp-opt', `ring', `ring+', `second-sel', `strings',
-;;   `thingatpt', `thingatpt+', `unaccent', `w32-browser',
-;;   `w32browser-dlgopen', `wid-edit', `wid-edit+', `widget'.
+;;   `bookmark+-lit', `bytecomp', `cl', `cus-edit', `cus-face',
+;;   `cus-load', `cus-start', `dired', `dired+', `dired-aux',
+;;   `dired-x', `doremi', `easymenu', `ediff-diff', `ediff-help',
+;;   `ediff-init', `ediff-merg', `ediff-mult', `ediff-util',
+;;   `ediff-wind', `el-swank-fuzzy', `ffap', `ffap-', `fit-frame',
+;;   `frame-cmds', `frame-fns', `fuzzy', `fuzzy-match', `help+20',
+;;   `hexrgb', `icicles-cmd1', `icicles-cmd2', `icicles-face',
+;;   `icicles-fn', `icicles-mcmd', `icicles-mode', `icicles-opt',
+;;   `icicles-var', `image-dired', `info', `info+', `kmacro',
+;;   `levenshtein', `menu-bar', `menu-bar+', `misc-cmds', `misc-fns',
+;;   `mouse3', `mwheel', `naked', `pp', `pp+', `regexp-opt', `ring',
+;;   `ring+', `second-sel', `strings', `thingatpt', `thingatpt+',
+;;   `unaccent', `w32-browser', `w32browser-dlgopen', `wid-edit',
+;;   `wid-edit+', `widget'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -646,7 +646,9 @@
 ;;    `icicle-Completions-instruction-1',
 ;;    `icicle-Completions-instruction-2',
 ;;    `icicle-current-candidate-highlight', `icicle-extra-candidate',
-;;    `icicle-historical-candidate', `icicle-input-completion-fail',
+;;    `icicle-historical-candidate',
+;;    `icicle-historical-candidate-other',
+;;    `icicle-input-completion-fail',
 ;;    `icicle-input-completion-fail-lax',
 ;;    `icicle-match-highlight-Completions',
 ;;    `icicle-match-highlight-minibuffer', `icicle-mode-line-help',
@@ -736,6 +738,7 @@
 ;;    `icicle-incremental-completion',
 ;;    `icicle-incremental-completion-delay',
 ;;    `icicle-incremental-completion-threshold',
+;;    `icicle-Info-visited-max-candidates',
 ;;    `icicle-inhibit-advice-functions', `icicle-inhibit-ding-flag',
 ;;    `icicle-input-string', `icicle-inter-candidates-min-spaces',
 ;;    `icicle-isearch-complete-keys', `icicle-key-complete-keys',
@@ -874,6 +877,7 @@
 ;;    `icicle-color-hue-lessp', `icicle-color-name-w-bg',
 ;;    `icicle-color-red-lessp', `icicle-color-saturation-lessp',
 ;;    `icicle-color-value-lessp', `icicle-column-wise-cand-nb',
+;;    `icicle-completion--embedded-envvar-table',
 ;;    `icicle-Completions-popup-choice',
 ;;    `icicle-Completions-popup-choice-1',
 ;;    `icicle-comint-dynamic-complete-as-filename',
@@ -980,8 +984,9 @@
 ;;    `icicle-Info-build-node-completions',
 ;;    `icicle-Info-build-node-completions-1',
 ;;    `icicle-Info-goto-node-1', `icicle-Info-goto-node-action',
-;;    `icicle-Info-index-action', `icicle-Info-read-node-name',
-;;    `icicle-input-from-minibuffer',
+;;    `icicle-Info-index-action',
+;;    `icicle-Info-node-is-indexed-by-topic',
+;;    `icicle-Info-read-node-name', `icicle-input-from-minibuffer',
 ;;    `icicle-input-is-a-completion-p', `icicle-insert-candidates',
 ;;    `icicle-insert-cand-in-minibuffer',
 ;;    `icicle-insert-Completions-help-string', `icicle-insert-dot',
@@ -1162,10 +1167,11 @@
 ;;    `icicle-all-candidates-action',
 ;;    `icicle-all-candidates-list-action-fn',
 ;;    `icicle-all-candidates-list-alt-action-fn',
-;;    `icicle-anychar-regexp', `icicle-apply-nomsg',
-;;    `icicle-apropos-complete-match-fn', `icicle-bookmark-history',
-;;    `icicle-bookmark-list-names-only-p', `icicle-bookmark-menu-map',
-;;    `icicle-bookmark-types', `icicle-buffer-config-history',
+;;    `icicle-allowed-sort-predicate', `icicle-anychar-regexp',
+;;    `icicle-apply-nomsg', `icicle-apropos-complete-match-fn',
+;;    `icicle-bookmark-history', `icicle-bookmark-list-names-only-p',
+;;    `icicle-bookmark-menu-map', `icicle-bookmark-types',
+;;    `icicle-buffer-config-history',
 ;;    `icicle-buffer-sort-first-time-p', `icicle-bufflist',
 ;;    `icicle-candidate-action-fn', `icicle-candidate-alt-action-fn',
 ;;    `icicle-candidate-entry-fn', `icicle-candidate-help-fn',
@@ -1206,7 +1212,8 @@
 ;;    `icicle-extra-candidates-dir-insert-p',
 ;;    `icicle-face-name-history', `icicle-fancy-candidates-p',
 ;;    `icicle-fancy-cands-internal-p', `icicle-file-menu-map',
-;;    `icicle-files', `icicle-file-sort-first-time-p',
+;;    `icicle-file-name-completion-table', `icicle-files',
+;;    `icicle-file-sort-first-time-p',
 ;;    `icicle-filtered-default-value', `icicle-font-name-history',
 ;;    `icicle-frame-alist', `icicle-frame-name-history',
 ;;    `icicle-frames-menu-map', `icicle-full-cand-fn',
