@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Thu Jun 28 14:14:54 2012 (-0700)
+;; Last-Updated: Sat Jul  7 16:15:10 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 28887
+;;     Update #: 28911
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-doc2.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -2656,8 +2656,16 @@
 ;;
 ;;  * Icicles completion is available for any input.
 ;;
+;;  * Index-topic completion highlights candidate topics that
+;;    reference nodes you have already visited.
+;;
+;;  * You can create virtual Info books composed of an arbitrary set
+;;    of nodes from any set of manuals.
+;;
 ;;  * You can use `icicle-search' on part or all of a manual, if you
 ;;    flatten it first with `Info-merge-subnodes' .
+;;
+;;  These features are described below.
 ;;
 ;;(@* "Icicles Completion for Info")
 ;;  ** Icicles Completion for Info **
@@ -2709,8 +2717,53 @@
 ;;  `g' in Info not only to explore nodes by name, but also as another
 ;;  means to traverse the Info menu hierarchy.
 ;;
+;;(@* "Highlighting Index Topics for Visited Info Nodes")
+;;  *** Highlighting Index Topics for Visited Info Nodes ***
+;;
+;;  When you are looking for something in an Info manual, `i'
+;;  (multi-command `icicle-Info-index') is your friend.  It is
+;;  typically better than brute search (`C-s' or `C-M-s'), because a
+;;  human has decided what topics to add to the index based on
+;;  understanding user/reader needs.
+;;
+;;  When you use `i' to look up a topic in the indexes of a manual,
+;;  you can use completion.  In particular, apropos completion and
+;;  progressive completion can help here.
+;;
+;;  Naturally, a single Info node can be indexed under multiple
+;;  topics.  And some of those index entries might even represent the
+;;  same topic, using different word order or terminology.
+;;
+;;  Suppose you are looking up information about Emacs fringe, for
+;;  example.  You might type `i fringe S-TAB' to see all indexed
+;;  topics with the substring `fringe'.  But because of double-entry
+;;  indexing, several of the topics matching your input can take you
+;;  to the same node.
+;;
+;;  When you are investigating a topic this way you might want to
+;;  visit different nodes that are pertinent to the same topic.  But
+;;  how can you tell whether you have already visited a node that one
+;;  of the matching topic candidates takes you to?  Icicles
+;;  highlighting of past inputs does not help here.  What matters is
+;;  not whether you have entered a given topic previously but whether
+;;  you have already visited a given topic's node.
+;;
+;;  Icicles can also help here, by highlighting the topics whose nodes
+;;  you have visited.  It uses face
+;;  `icicle-historical-candidate-other' for this (not face
+;;  `icicle-historical-candidate').  (This feature is not available
+;;  for Emacs 20 or 21.)
+;;
+;;  But because it takes extra time to track down each of the current
+;;  topic candidates, this can be costly.  You can customize option
+;;  `icicle-Info-visited-max-candidates' to control the behavior.
+;;  This extra highlighting is skipped whenever there are more
+;;  candidates that the option value.  It is also skipped if you turn
+;;  off historical candidate highlighting altogether, by setting
+;;  option `icicle-highlight-historical-candidates-flag' to `nil'.
+;;
 ;;(@* "Virtual Info Books")
-;;  *** Virtual Info Books ***
+;;  ** Virtual Info Books **
 ;;
 ;;  You can take advantage of Icicles completion-candidate set
 ;;  operations to create your own virtual Info books.  That is, you
@@ -4922,6 +4975,15 @@
 ;;    `icicle-highlight-historical-candidates-flag'.  You can toggle
 ;;    this option from the minibuffer at any time using `C-pause'.
 ;;    See (@file :file-name "icicles-doc1.el" :to "History Enhancements").
+;;
+;;  * In buffer `*Completions*' during completion for multi-command
+;;    `icicle-Info-index' (`i' in Info), face
+;;    `icicle-historical-candidate-other' is used to highlight index
+;;    topics that refer to Info nodes that you have already visited.
+;;    This highlighting is controlled by user option
+;;    `icicle-Info-visited-max-candidates' as well as option
+;;    `icicle-highlight-historical-candidates-flag'.
+;;    See (@> "Highlighting Index Topics for Visited Info Nodes").
 ;;
 ;;  * In buffer `*Completions*', face `icicle-saved-candidate' is used
 ;;    to highlight completion candidates that you have saved (e.g.,
