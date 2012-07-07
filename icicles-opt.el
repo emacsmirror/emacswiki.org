@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:22:14 2006
 ;; Version: 22.0
-;; Last-Updated: Thu Jul  5 10:35:05 2012 (-0700)
+;; Last-Updated: Sat Jul  7 12:03:47 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 5019
+;;     Update #: 5235
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-opt.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -535,7 +535,10 @@ This affects keys such as the following:
  `C-S-down', `C-S-wheel-down', `C-S-next', `C-S-end'.
 
 Note: A few Icicles commands ignore this setting, in order to \"do the
-right thing\"."
+right thing\".
+
+Remember that you can use multi-command `icicle-toggle-option' anytime
+to toggle the option."
   :type 'boolean :group 'Icicles-Key-Bindings :group 'Icicles-Miscellaneous)
 
 ;;;###autoload
@@ -554,7 +557,10 @@ You can toggle this option at any time from the minibuffer using
 commands that provide many proxy candidates, if
 the flag is off initially when input is read, then you must re-invoke
 the completing command for the new value to take effect.  (This is for
-performance reasons.)"
+performance reasons.)
+
+Remember that you can use multi-command `icicle-toggle-option' anytime
+to toggle the option."
   :type 'boolean :group 'Icicles-Matching)
 
 ;;;###autoload
@@ -606,7 +612,10 @@ actions for the same candidate, within a single invocation of
 The advantage of a non-nil value is that some of the displayed
 Anything candidates might be more readable.
 
-This option has no effect if library `anything.el' cannot be loaded."
+This option has no effect if library `anything.el' cannot be loaded.
+
+Remember that you can use multi-command `icicle-toggle-option' anytime
+to toggle the option."
   :type 'boolean :group 'Icicles-Completions-Display :group 'Icicles-Matching)
 
 ;;;###autoload
@@ -716,7 +725,11 @@ different keyboards."
 (defcustom icicle-bookmark-name-length-max 70
   "*Maximum number of characters used to name a bookmark.
 When `icicle-bookmark-cmd' is used with a non-negative numeric prefix
-arg, the name of the bookmark that is set has at most this many chars."
+arg, the name of the bookmark that is set has at most this many chars.
+
+If you use Do Re Mi (library `doremi.el') then you can use
+multi-command `icicle-increment-option' anytime to change the option
+value incrementally."
   :type 'integer :group 'Icicles-Miscellaneous)
 
 ;;;###autoload
@@ -736,7 +749,10 @@ of a negative prefix arg with
 `\\[icicle-bookmark-cmd]'.
 
 Regardless of the option value, the cache is refreshed whenever you
-use `S-delete' to delete a candidate bookmark."
+use `S-delete' to delete a candidate bookmark.
+
+Remember that you can use multi-command `icicle-toggle-option' anytime
+to toggle the option."
   :type 'boolean :group 'Icicles-Completions-Display :group 'Icicles-Matching)
 
 ;;;###autoload
@@ -750,7 +766,10 @@ List elements are strings."
   "*Override `icicle-ignore-space-prefix-flag' for `icicle-buffer*'.
 Note: This option is provided mainly for use (binding) in
 `icicle-define-command' and `icicle-define-file-command'.
-You probably do not want to set this globally, but you can."
+You probably do not want to set this globally, but you can.
+
+Remember that you can use multi-command `icicle-toggle-option' anytime
+to toggle the option."
   :type 'boolean :group 'Icicles-Buffers :group 'Icicles-Matching)
 
 ;;;###autoload
@@ -823,9 +842,11 @@ Examples of sort functions are `icicle-buffer-sort-*...*-last' and
 Specifically, those commands then bind these options to t:
  `icicle-show-Completions-initially-flag'
  `icicle-top-level-when-sole-completion-flag'
- `icicle-default-value'"
-  :type 'boolean
-  :group 'Icicles-Buffers :group 'Icicles-Completions-Display :group 'Icicles-Matching)
+ `icicle-default-value'
+
+Remember that you can use multi-command `icicle-toggle-option' anytime
+to toggle the option."
+  :type 'boolean :group 'Icicles-Buffers :group 'Icicles-Completions-Display :group 'Icicles-Matching)
 
 ;;;###autoload
 (defcustom icicle-candidate-action-keys '([C-return]) ; `C-return'
@@ -865,11 +886,15 @@ When most candidates are almost as wide as the widest candidate, a
 high value works well.  When most candidates are much shorter than the
 widest candidate, a low value works well.
 
-If you use Do Re Mi (library `doremi.el'), then you can modify this
+If you use Do Re Mi (library `doremi.el') then you can modify this
 option incrementally during completion, seeing the effect as it
 changes.  Use `C-x w' from the minibuffer, then use the `right' and
 `left' arrow keys or the mouse wheel to increment and decrement the
 value.  WYSIWYG.
+
+If you use `doremi.el' then you can also use multi-command
+`icicle-increment-option' anytime to change the option value
+incrementally.
 
 See also option `icicle-inter-candidates-min-spaces' and (starting
 with Emacs 23) option `icicle-Completions-text-scale-decrease'."
@@ -918,14 +943,20 @@ different hue from your normal background color.  This makes
 minibuffer input easier to read than if your normal `region' face were
 used.  This has an effect only during minibuffer input.  A non-nil
 value for this option is particularly useful if you use
-delete-selection mode."
+delete-selection mode.
+
+Remember that you can use multi-command `icicle-toggle-option' anytime
+to toggle the option."
   :type 'boolean :group 'Icicles-Minibuffer-Display)
 
 ;;;###autoload
 (defcustom icicle-change-sort-order-completion-flag nil
   "*Non-nil means `icicle-change-sort-order' uses completion, by default.
 Otherwise, it cycles among the possible sort orders.  You can override
-the behavior by using `C-u' with `icicle-change-sort-order'."
+the behavior by using `C-u' with `icicle-change-sort-order'.
+
+Remember that you can use multi-command `icicle-toggle-option' anytime
+to toggle the option."
   :type 'boolean :group 'Icicles-Completions-Display :group 'Icicles-Matching)
 
 ;;;###autoload
@@ -933,7 +964,10 @@ the behavior by using `C-u' with `icicle-change-sort-order'."
   "*Non-nil means \\<minibuffer-local-completion-map>\
 `\\[icicle-retrieve-previous-input]' uses completion for choosing completion history
 entries, by default.  Otherwise, it cycles among the possible previous
-inputs.  You can override the behavior by using `C-u' with `\\[icicle-retrieve-previous-input]'."
+inputs.  You can override the behavior by using `C-u' with `\\[icicle-retrieve-previous-input]'.
+
+Remember that you can use multi-command `icicle-toggle-option' anytime
+to toggle the option."
   :type 'boolean :group 'Icicles-Minibuffer-Display :group 'Icicles-Matching)
 
 ;; Replace this list by your favorite color themes. Each must be the name of a defined function.
@@ -993,13 +1027,19 @@ invoked via ABBREV.  Both COMMAND and ABBREV are symbols."
 ;;;###autoload
 (defcustom icicle-command-abbrev-match-all-parts-flag nil
   "*Non-nil means `icicle-command-abbrev' matches each command-name part.
-Otherwise, an abbrev need match only a prefix of the command name."
+Otherwise, an abbrev need match only a prefix of the command name.
+
+Remember that you can use multi-command `icicle-toggle-option' anytime
+to toggle the option."
   :type 'boolean :group 'Icicles-Matching)
 
 ;;;###autoload
 (defcustom icicle-command-abbrev-priority-flag nil
   "*nil means commands take precedence over abbreviations for `\\<icicle-mode-map>\
-\\[icicle-command-abbrev]'."
+\\[icicle-command-abbrev]'.
+
+Remember that you can use multi-command `icicle-toggle-option' anytime
+to toggle the option."
   :type 'boolean :group 'Icicles-Matching)
 
 ;;;###autoload
@@ -1012,7 +1052,10 @@ bound in the keymap.
 
 Note: the keys in `icicle-key-complete-keys' are always bound to
 `icicle-complete-keys' in `icicle-mode-map'.  This option affects only
-the binding of those keys in `icicle-keymaps-for-key-completion'."
+the binding of those keys in `icicle-keymaps-for-key-completion'.
+
+Remember that you can use multi-command `icicle-toggle-option' anytime
+to toggle the option."
   :type 'boolean :group 'Icicles-Key-Completion :group 'Icicles-Key-Bindings)
 
 (when (fboundp 'map-keymap)             ; Emacs 22+.
@@ -1070,7 +1113,11 @@ Such a key has no effect unless
 (defcustom icicle-completion-history-max-length (if icicle-C-l-uses-completion-flag 1000 100)
   "*Maximum number of inputs to save in the completion history.
 This is the history that you access using \\<minibuffer-local-completion-map>\
-`\\[icicle-retrieve-previous-input]' and `\\[icicle-retrieve-next-input]'."
+`\\[icicle-retrieve-previous-input]' and `\\[icicle-retrieve-next-input]'.
+
+If you use Do Re Mi (library `doremi.el') then you can use
+multi-command `icicle-increment-option' anytime to change the option
+value incrementally."
   :type 'integer :group 'Icicles-Miscellaneous)
 
 ;;;###autoload
@@ -1079,7 +1126,11 @@ This is the history that you access using \\<minibuffer-local-completion-map>\
 You might want to set this to, say 1 or 2, to avoid display of a large
 set of candidates during incremental completion.  The default value of
 0 causes this option to have no effect: `*Completions*' is never
-removed based only on the number of input characters."
+removed based only on the number of input characters.
+
+If you use Do Re Mi (library `doremi.el') then you can use
+multi-command `icicle-increment-option' anytime to change the option
+value incrementally."
   :type 'integer :group 'Icicles-Completions-Display)
 
 ;;;###autoload
@@ -1120,7 +1171,11 @@ Possible values are `right', `left', and nil (do not move)."
 If nil, the number is calculated automatically.  I recommend that you
 leave this nil and use options `icicle-inter-candidates-min-spaces'
 and `icicle-candidate-width-factor' to control columns and candidate
-spacing."
+spacing.
+
+If the value is an integer and you use Do Re Mi (library `doremi.el')
+then you can use multi-command `icicle-increment-option' anytime to
+change the option value incrementally."
   :type '(choice
           (const   :tag "Calculate columns automatically"  nil)
           (integer :tag "Maximum number of columns" :value 1))
@@ -1230,8 +1285,13 @@ Example selectable menu-item element:
     "*Initial height decrease for text in buffer `*Completions*'.
 A value of 0.0 means the height is not decreased at all.
 This is used as the argument to function `text-scale-decrease'.
-If you use library `doremi-frm.el', you can use `C-x -' to
-incrementally resize the text during completion.
+
+If you use library Do Re Mi (library `doremi.el') then you can use
+`C-x -' to incrementally resize the text during completion.
+
+If you use `doremi.el' then you can also use multi-command
+`icicle-increment-option' anytime to change the option value
+incrementally.
 
 See also options `icicle-candidate-width-factor' and
 `icicle-inter-candidates-min-spaces'."
@@ -1242,7 +1302,11 @@ See also options `icicle-candidate-width-factor' and
   "*Maximum height of `*Completions*' window, in lines.
 The window is fit to the buffer size, with this as maximum height.
 Not used if `*Completions*' is a special buffer with its own frame.
-Not used in Emacs releases prior to 21."
+Not used in Emacs releases prior to 21.
+
+If you use Do Re Mi (library `doremi.el') then you can use
+multi-command `icicle-increment-option' anytime to change the option
+value incrementally."
   :type 'integer :group 'Icicles-Completions-Display)
 
 ;;;###autoload
@@ -1251,7 +1315,10 @@ Not used in Emacs releases prior to 21."
 That is, add some functions to `kill-emacs-hook' that call
 `customize-save-variable'.  Currently, this includes only function
 `icicle-command-abbrev-save', which saves updated option
-`icicle-command-abbrev-alist'."
+`icicle-command-abbrev-alist'.
+
+Remember that you can use multi-command `icicle-toggle-option' anytime
+to toggle the option."
   :type 'boolean :group 'Icicles-Minibuffer-Display)
 
 ;;;###autoload
@@ -1421,7 +1488,10 @@ For convenience, a few top-level commands are defined, typically as
 aliases for commands with longer names.  For example, command `toggle'
 is defined as an alias for command `icicle-toggle-option'.  In any
 case, no such command is ever defined by Icicles if a function with
-the same name is already defined."
+the same name is already defined.
+
+Remember that you can use multi-command `icicle-toggle-option' anytime
+to toggle the option."
    :type 'boolean :group 'Icicles-Miscellaneous)
 
 ;;;###autoload
@@ -1434,14 +1504,20 @@ effect.
 
 If you are worried about inadvertently deleting an object by
 accidentally hitting `S-delete', you can customize this to nil to
-inhibit `S-delete' object deletion during completion."
+inhibit `S-delete' object deletion during completion.
+
+Remember that you can use multi-command `icicle-toggle-option' anytime
+to toggle the option."
   :type 'boolean :group 'Icicles-Miscellaneous)
 
 ;;;###autoload
 (defcustom icicle-dot-show-regexp-flag nil
   "*Non-nil means show `icicle-anychar-regexp' explicitly for `.'.
 Otherwise, display it as a highlighted `.' only.
-This has no effect for Emacs versions prior to 21: acts as if non-nil."
+This has no effect for Emacs versions prior to 21: acts as if non-nil.
+
+Remember that you can use multi-command `icicle-toggle-option' anytime
+to toggle the option."
   :type 'boolean :group 'Icicles-Matching :group 'Icicles-Minibuffer-Display)
 
 ;;;###autoload
@@ -1602,7 +1678,10 @@ Specifically, those commands then bind these options to t:
  `icicle-show-Completions-initially-flag'
  `icicle-top-level-when-sole-completion-flag'
  `icicle-default-value'
-This option has no effect for Emacs 20."
+This option has no effect for Emacs 20.
+
+Remember that you can use multi-command `icicle-toggle-option' anytime
+to toggle the option."
   :type 'boolean
   :group 'Icicles-Files :group 'Icicles-Completions-Display :group 'Icicles-Matching)
 
@@ -1614,7 +1693,10 @@ Icicles saved completion set (cache file) or in in an Emacs fileset.
 It also means that an Icicles persistent completion set can contain
 filesets, in addition to file names: any number of filesets, and
 filesets of different type.  Available only for Emacs 22 and later,
-and you must load library `filesets.el'."
+and you must load library `filesets.el'.
+
+Remember that you can use multi-command `icicle-toggle-option' anytime
+to toggle the option."
   :type 'boolean :group 'Icicles-Matching)
 
 ;;;###autoload
@@ -1718,18 +1800,25 @@ A value of zero means do not show such help at all.  In any case, a
 user event (e.g. a key press) always interrupts this display.
 
 Note that `post-command-hook' actions do not take place until this
-display is finished."
+display is finished.
+
+If you use Do Re Mi (library `doremi.el') then you can use
+multi-command `icicle-increment-option' anytime to change the option
+value incrementally."
   :type 'number :group 'Icicles-Completions-Display :group 'Icicles-Miscellaneous)
 
 ;;;###autoload
 (defcustom icicle-hide-common-match-in-Completions-flag nil
   "*Non-nil means hide the common match for your input, in `*Completions*'.
-You can toggle this option during completion using `C-x .' (no prefix
-arg).  See also option `icicle-hide-non-matching-lines-flag'.
-
 The common match used here is governed by option
 `icicle-expand-input-to-common-match'.  It is elided using
-ellipsis (`...')."
+ellipsis (`...').
+
+You can toggle this option during completion using `C-x .' (no prefix
+arg).  You can also use multi-command `icicle-toggle-option' anytime
+to toggle the option.
+
+See also option `icicle-hide-non-matching-lines-flag'."
   :type 'boolean :group 'Icicles-Miscellaneous)
 
 ;;;###autoload
@@ -1738,7 +1827,10 @@ ellipsis (`...')."
 This applies only to multi-line candidates in buffer `*Completions*'.
 Lines that do not contain text matched by your current
 minibuffer input are elided using ellipsis (`...').
-You can toggle this option during completion using `C-u C-x .'.
+
+You can toggle this option during completion using `C-u C-x .'.  You
+can also use multi-command `icicle-toggle-option' anytime to toggle
+the option.
 
 See also option `icicle-hide-common-match-in-Completions-flag'."
   :type 'boolean :group 'Icicles-Completions-Display)
@@ -1748,8 +1840,11 @@ See also option `icicle-hide-common-match-in-Completions-flag'."
   "*Non-nil means highlight `*Completions*' candidates that have been used.
 This is done using face `icicle-historical-candidate'.
 Historical candidates are those that you have entered (using `RET' or
-`S-RET') previously.  You can toggle this option from the minibuffer
-at any time using `C-pause'."
+`S-RET') previously.
+
+You can toggle this option from the minibuffer at any time using
+`C-pause'.  You can also use multi-command `icicle-toggle-option'
+anytime to toggle the option."
   :type 'boolean :group 'Icicles-Completions-Display)
 
 ;;;###autoload
@@ -1826,13 +1921,21 @@ See also:
 ;;;###autoload
 (defcustom icicle-highlight-input-completion-failure-delay 0.7
   "*Seconds to wait before highlighting non-completing part of your input.
-Zero means there is no wait."
+Zero means there is no wait.
+
+If you use Do Re Mi (library `doremi.el') then you can use
+multi-command `icicle-increment-option' anytime to change the option
+value incrementally."
   :type 'number :group 'Icicles-Minibuffer-Display)
 
 ;;;###autoload
 (defcustom icicle-highlight-input-completion-failure-threshold 1000
   "*More candidates means do not highlight non-completing part of input.
-See also `icicle-highlight-input-completion-failure'."
+See also `icicle-highlight-input-completion-failure'.
+
+If you use Do Re Mi (library `doremi.el') then you can use
+multi-command `icicle-increment-option' anytime to change the option
+value incrementally."
   :type 'integer :group 'Icicles-Minibuffer-Display)
 
 ;;;###autoload
@@ -1847,29 +1950,41 @@ Note: Highlighting input completion failure (see option
 `icicle-highlight-input-completion-failure') subsumes
 initial-whitespace highlighting.  This means that if no completion
 candidate starts with whitespace, and if Icicles is highlighting input
-completion failure, then only that highlighting is shown."
+completion failure, then only that highlighting is shown.
+
+Remember that you can use multi-command `icicle-toggle-option' anytime
+to toggle the option."
   :type 'boolean :group 'Icicles-Minibuffer-Display)
 
 ;;;###autoload
 (defcustom icicle-highlight-lighter-flag t
   "*Non-nil means highlight the `Icy' mode-line lighter during completion.
 See the Icicles doc, section `Nutshell View of Icicles', subsection
-`Completion Status Indicators' for more information."
+`Completion Status Indicators' for more information.
+
+Remember that you can use multi-command `icicle-toggle-option' anytime
+to toggle the option."
   :type 'boolean :group 'Icicles-Miscellaneous)
 
 ;;;###autoload
 (defcustom icicle-highlight-saved-candidates-flag t ; Toggle with `S-pause'.
   "*Non-nil means highlight `*Completions*' candidates that have been saved.
 This is done using face `icicle-saved-candidate'.
-You save candidates using, for example, `C-M->'.  You can toggle this
-option from the minibuffer at any time using `S-pause'."
+You save candidates using, for example, `C-M->'.
+
+You can toggle this option from the minibuffer at any time using
+`S-pause'.  You can also use multi-command `icicle-toggle-option'
+anytime to toggle the option."
   :type 'boolean :group 'Icicles-Completions-Display)
 
 ;;;###autoload
 (defcustom icicle-ignore-comments-flag t
   "Non-nil means `icicle-with-comments-hidden' hides comments.
 You can toggle this option using `C-M-;' in the minibuffer, but to see
-the effect you might need to invoke the current command again."
+the effect you might need to invoke the current command again.
+
+You can also use multi-command `icicle-toggle-option' anytime to
+toggle the option."
   :type 'boolean :group 'Icicles-Searching)
 
 ;;;###autoload
@@ -1882,8 +1997,12 @@ the effect you might need to invoke the current command again."
 (defcustom icicle-ignore-space-prefix-flag nil ; Toggle with `M-_'.
   "*Non-nil means ignore completion candidates that start with a space.
 However, such candidates are not ignored for prefix completion when
-the input also starts with a space.  You can toggle this option from
-the minibuffer using `M-_'.
+the input also starts with a space.
+
+You can toggle this option from the minibuffer using `M-_'.  You can
+also use multi-command `icicle-toggle-option' anytime to toggle the
+option.
+
 Note: Some Icicles functionalities ignore the value of this option."
   :type 'boolean :group 'Icicles-Matching)
 
@@ -1912,7 +2031,11 @@ You can cycle the value during completion using `C-x t'."
   "*Number of seconds to wait before updating `*Completions*' incrementally.
 There is no wait if the number of completion candidates is less than
 or equal to `icicle-incremental-completion-threshold'.
-See also `icicle-incremental-completion'."
+See also `icicle-incremental-completion'.
+
+If you use Do Re Mi (library `doremi.el') then you can use
+multi-command `icicle-increment-option' anytime to change the option
+value incrementally."
   :type 'number :group 'Icicles-Completions-Display)
 
 ;;;###autoload
@@ -1944,7 +2067,11 @@ See also `icicle-incremental-completion-delay' and
 See also `icicle-incremental-completion' and
 `icicle-incremental-completion-delay'.
 This threshold is also used to decide when to display the message
- \"Displaying completion candidates...\"."
+ \"Displaying completion candidates...\".
+
+If you use Do Re Mi (library `doremi.el') then you can use
+multi-command `icicle-increment-option' anytime to change the option
+value incrementally."
   :type 'integer :group 'Icicles-Completions-Display)
 
 ;;;###autoload
@@ -1967,7 +2094,10 @@ reactivated when you leave Icicle mode."
 ;;;###autoload
 (defcustom icicle-inhibit-ding-flag nil
   "*Non-nil means Icicles never uses an audible bell (ding).
-If nil, Icicles sometimes signals you with a sound."
+If nil, Icicles sometimes signals you with a sound.
+
+Remember that you can use multi-command `icicle-toggle-option' anytime
+to toggle the option."
   :type 'boolean :group 'Icicles-Miscellaneous)
 
 ;;;###autoload
@@ -1990,6 +2120,10 @@ changes.  Use `\\<minibuffer-local-completion-map>\
 \\[icicle-doremi-inter-candidates-min-spaces+]' from the minibuffer, then use the `up' and
 `down' arrow keys or the mouse wheel to increment and decrement the
 value.  WYSIWYG.
+
+If you use `doremi.el' then you can also use multi-command
+`icicle-increment-option' anytime to change the option value
+incrementally.
 
 See also option `icicle-candidate-width-factor' and (starting with
 Emacs 23) option `icicle-Completions-text-scale-decrease'."
@@ -2043,7 +2177,10 @@ different keyboards - for example, `S-tab' and `S-iso-lefttab'."
 For example, non-nil gives `<mode-line>'; nil gives `mode-line'.
 This does not affect Emacs key descriptions outside of Icicles.
 This has no effect for versions of Emacs prior to 21, because
-they never use angle brackets."
+they never use angle brackets.
+
+Remember that you can use multi-command `icicle-toggle-option' anytime
+to toggle the option."
   :type 'boolean :group 'Icicles-Key-Completion :group 'Icicles-Minibuffer-Display)
 
 ;;;###autoload
@@ -2076,7 +2213,10 @@ will not work."
   (defcustom icicle-kmacro-ring-max (if (boundp 'most-positive-fixnum)
                                         most-positive-fixnum
                                       67108863) ; 1/2 of `most-positive-fixnum' on Windows.
-    "*Icicles version of `kmacro-ring-max'."
+    "*Icicles version of `kmacro-ring-max'.
+If you use Do Re Mi (library `doremi.el') then you can use
+multi-command `icicle-increment-option' anytime to change the option
+value incrementally."
     :type 'integer :group 'Icicles-Miscellaneous))
 
 ;;;###autoload
@@ -2085,7 +2225,11 @@ will not work."
 Icicles matching function `icicle-levenshtein-match' considers a
 string to match another if the first string is within this distance of
 some substring of the second.
-This option is used only if you have library `levenshtein.el'."
+This option is used only if you have library `levenshtein.el'.
+
+If you use Do Re Mi (library `doremi.el') then you can use
+multi-command `icicle-increment-option' anytime to change the option
+value incrementally."
   :type 'integer :group 'Icicles-Matching)
 
 ;;; $$$$$$
@@ -2171,7 +2315,11 @@ If you use library `doremi.el' then you can use `C-x #' during
 completion to increment or decrement the option value using the
 vertical arrow keys or the mouse wheel.  A numeric prefix argument for
 `C-x #' sets the increment size.  A plain prefix argument (`C-u')
-resets `icicle-max-candidates' to nil, meaning no truncation."
+resets `icicle-max-candidates' to nil, meaning no truncation.
+
+If the value is an integer and you use Do Re Mi (library `doremi.el')
+then you can use multi-command `icicle-increment-option' anytime to
+change the option value incrementally."
   :type '(choice (const :tag "None" nil) integer)
   :group 'Icicles-Completions-Display :group 'Icicles-Matching
   :group 'Icicles-Buffers :group 'Icicles-Files)
@@ -2182,7 +2330,10 @@ resets `icicle-max-candidates' to nil, meaning no truncation."
 This history is `extended-command-history'.
 
 After you change the value of this option, toggle Icicle mode off,
-then on again, for the change to take effect in the same session."
+then on again, for the change to take effect in the same session.
+
+Remember that you can use multi-command `icicle-toggle-option' anytime
+to toggle the option."
   :type 'boolean :group 'Icicles-Miscellaneous)
 
 ;; Inspired from `icomplete-minibuffer-setup-hook'.
@@ -2339,7 +2490,10 @@ prefix-argument bindings for the command."
 
 (defcustom icicle-network-drive-means-remote-flag t
   "*Non-nil means that a file on a network drive is considered remote.
-This pertains to an MS Windows mapped netword drive, such as `f:'."
+This pertains to an MS Windows mapped netword drive, such as `f:'.
+
+Remember that you can use multi-command `icicle-toggle-option' anytime
+to toggle the option."
   :type 'boolean :group 'Icicles-Files)
 
 (when (> emacs-major-version 22)
@@ -2356,19 +2510,30 @@ Be aware that this history can become quite long.
 Furthermore, there is an Emacs bug (#3984) that causes interactiveness
 tests (`interactive-p' and `called-interactively-p') to fail, whenever
 `call-interactively' is advised (which is how Icicles implements this
-feature)."
+feature).
+
+Remember that you can use multi-command `icicle-toggle-option' anytime
+to toggle the option."
     :type 'boolean :group 'Icicles-Miscellaneous))
 
 ;;;###autoload
 (defcustom icicle-pp-eval-expression-print-length nil
   "*Value for `print-length' while printing value in `pp-eval-expression'.
-A value of nil means no limit."
+A value of nil means no limit.
+
+If the value is an integer and you use Do Re Mi (library `doremi.el')
+then you can use multi-command `icicle-increment-option' anytime to
+change the option value incrementally."
   :type '(choice (const :tag "No Limit" nil) integer) :group 'Icicles-Miscellaneous)
 
 ;;;###autoload
 (defcustom icicle-pp-eval-expression-print-level nil
   "*Value for `print-level' while printing value in `pp-eval-expression'.
-A value of nil means no limit."
+A value of nil means no limit.
+
+If the value is an integer and you use Do Re Mi (library `doremi.el')
+then you can use multi-command `icicle-increment-option' anytime to
+change the option value incrementally."
   :type '(choice (const :tag "No Limit" nil) integer) :group 'Icicles-Miscellaneous)
 
 ;;;###autoload
@@ -2501,7 +2666,10 @@ passed to the shell as
 `\"c:/Program Files/My Dir/mycmd.exe\" arg1 arg2 &'.
 
 See the doc string of `icicle-quote-file-name-part-of-cmd' for
-information about the characters that, like SPC, lead to quoting."
+information about the characters that, like SPC, lead to quoting.
+
+Remember that you can use multi-command `icicle-toggle-option' anytime
+to toggle the option."
   :type 'boolean :group 'Icicles-Miscellaneous)
 
 ;;;###autoload
@@ -2518,15 +2686,20 @@ different keyboards."
 This means that no characters are recognized as special: they match
 themselves.  This turns apropos completion into simple substring
 completion.  It also turns Icicles searching into literal searching.
-You can toggle this option from the minibuffer at any
-time using `C-`'."
+
+You can toggle this option from the minibuffer at any time using
+`C-`'.  You can also use multi-command `icicle-toggle-option' anytime
+to toggle the option."
   :type 'boolean :group 'Icicles-Matching)
 
 ;;;###autoload
 (defcustom icicle-regexp-search-ring-max (if (boundp 'most-positive-fixnum)
                                              (/ most-positive-fixnum 10)
                                            13421772) ; 1/10 of `most-positive-fixnum' on Windows.
-  "*Icicles version of `regexp-search-ring-max'."
+  "*Icicles version of `regexp-search-ring-max'.
+If you use Do Re Mi (library `doremi.el') then you can use
+multi-command `icicle-increment-option' anytime to change the option
+value incrementally."
   :type 'integer :group 'Icicles-Searching)
 
 ;; You can use `icicle-increment-color-value' in place of `icicle-increment-color-hue', if you
@@ -2602,8 +2775,9 @@ Instead, you add or remove sets using commands
 If this is nil, highlighting can be removed manually with
 `\\[icicle-search-highlight-cleanup]'.
 
-You can toggle this option from the minibuffer during Icicles
-search (e.g., `C-c`') using `C-.'."
+You can toggle this option from the minibuffer during Icicles search
+\(e.g., `C-c`') using `C-.'.  You can also use multi-command
+`icicle-toggle-option' anytime to toggle the option."
   :type 'boolean :group 'Icicles-Searching)
 
 ;;;###autoload
@@ -2630,9 +2804,11 @@ different keyboards - for example, `S-tab' and `S-iso-lefttab'."
 (defcustom icicle-search-highlight-all-current-flag nil ; Toggle with `C-^'.
   "*Non-nil means highlight input match in each context search hit.
 Setting this to non-nil can impact performance negatively, because the
-highlighting is updated with each input change.  You can toggle this
-option from the minibuffer during Icicles search (e.g., `C-c`') using
-`C-^'."
+highlighting is updated with each input change.
+
+You can toggle this option from the minibuffer during Icicles search
+\(e.g., `C-c`') using `C-^'.  You can also use multi-command
+`icicle-toggle-option' anytime to toggle the option."
   :type 'boolean :group 'Icicles-Searching)
 
 ;;;###autoload
@@ -2640,14 +2816,21 @@ option from the minibuffer during Icicles search (e.g., `C-c`') using
   "*Non-nil means highlight 1-8 context levels, within the search context.
 Level highlighting is done only when this is non-nil and a subgroup is
 not used as the search context, that is, the context corresponds to
-the entire search regexp."
+the entire search regexp.
+
+Remember that you can use multi-command `icicle-toggle-option' anytime
+to toggle the option."
   :type 'boolean :group 'Icicles-Searching)
 
 ;;;###autoload
 (defcustom icicle-search-highlight-threshold 100000
   "*Max number of context search hits to highlight at once.
 If the value is `t' then there is no limit.
-This highlighting uses face `icicle-search-main-regexp-others'."
+This highlighting uses face `icicle-search-main-regexp-others'.
+
+If the value is an integer and you use Do Re Mi (library `doremi.el')
+then you can use multi-command `icicle-increment-option' anytime to
+change the option value incrementally."
   :type '(choice
           (const    :tag "Highlight all search hits (no limit)" t)
           (integer  :tag "Max number of search hits to highlight"))
@@ -2679,7 +2862,10 @@ nil or `icicle-expand-input-to-common-match' does not cause expansion.
 
 You can cycle those options from the minibuffer using `C-^' and
 `C-M-\"', respectively.  You can toggle
-`icicle-search-replace-common-match-flag' using `M-;'."
+`icicle-search-replace-common-match-flag' using `M-;'.
+
+Remember that you can also use multi-command `icicle-toggle-option'
+anytime to toggle the option."
   :type 'boolean :group 'Icicles-Searching)
 
 ;;;###autoload
@@ -2688,7 +2874,9 @@ You can cycle those options from the minibuffer using `C-^' and
 Otherwise (nil), interpret `\\' specially in replacement text, as in
 the LITERAL argument to `replace-match'.
 
-You can use `M-`' to toggle this at any time during Icicles search."
+You can use `M-`' to toggle this at any time during Icicles search.
+You can also use multi-command `icicle-toggle-option' anytime to
+toggle the option."
   :type 'boolean :group 'Icicles-Searching)
 
 ;;;###autoload
@@ -2696,22 +2884,24 @@ You can use `M-`' to toggle this at any time during Icicles search."
   "*Non-nil means replacement during search replaces the entire search hit.
 Otherwise (nil), replace only what matches your current input.
 
-You can use `C-,' to toggle this at any time during Icicles search."
+You can use `C-,' to toggle this at any time during Icicles search.
+You can also use multi-command `icicle-toggle-option' anytime to
+toggle the option."
   :type 'boolean :group 'Icicles-Searching)
 
 ;;;###autoload
 (defcustom icicle-search-ring-max (if (boundp 'most-positive-fixnum)
                                              (/ most-positive-fixnum 10)
                                            13421772) ; 1/10 of `most-positive-fixnum' on Windows.
-  "*Icicles version of `search-ring-max'."
+  "*Icicles version of `search-ring-max'.
+If you use Do Re Mi (library `doremi.el') then you can use
+multi-command `icicle-increment-option' anytime to change the option
+value incrementally."
   :type 'integer :group 'Icicles-Searching)
 
 ;;;###autoload
 (defcustom icicle-search-whole-word-flag nil ; Toggle with `M-q'.
   "*Non-nil means that `icicle-search' looks for a whole word.
-You can use `M-q' to toggle this at any time during Icicles search;
-the new value takes effect for the next complete search.
-
 Whole-word searching here means that matches can contain embedded
 strings of non word-constituent chars (they are skipped over, when
 matching, included in the match), and any leading or trailing
@@ -2719,7 +2909,12 @@ word-constituent chars in the search string are dropped (ignored for
 matching, not included in the match).  This means, for instance, that
 you can match `foo-bar' as a word, even in contexts (such as Emacs
 Lisp) where `-' is not a word-constituent character.  Similarly, you
-can include embedded whitespace in a \"word\", e.g., `foo bar'."
+can include embedded whitespace in a \"word\", e.g., `foo bar'.
+
+You can use `M-q' to toggle this at any time during Icicles search;
+the new value takes effect for the next complete search.  You can also
+use multi-command `icicle-toggle-option' anytime to toggle the
+option."
   :type 'boolean :group 'Icicles-Searching)
 
 ;; Based more or less on `shell-dynamic-complete-as-command'.
@@ -2773,7 +2968,10 @@ See `icicle-guess-commands-in-path'."
 A nil value means show only the completion candidates themselves.
 But if there are no candidates then say so in `*Completions*'.
 Note that vanilla Emacs option `completion-show-help' has no effect in
-Icicle mode."
+Icicle mode.
+
+Remember that you can use multi-command `icicle-toggle-option' anytime
+to toggle the option."
   :type 'boolean :group 'Icicles-Completions-Display)
 
 ;;;###autoload
@@ -2786,7 +2984,10 @@ For an alternative but similar behavior to using non-nil for
 `icicle-show-Completions-initially-flag', you can set option
 `icicle-incremental-completion' to a value that is neither nil nor t.
 That displays buffer `*Completions*' as soon as you type or delete
-input, but not initially."
+input, but not initially.
+
+Remember that you can use multi-command `icicle-toggle-option' anytime
+to toggle the option."
   :type 'boolean :group 'Icicles-Completions-Display)
 
 ;;;###autoload
@@ -2811,7 +3012,8 @@ shown.
 
 You can toggle this option from the minibuffer using `M-m'.  The new
 value takes effect after you exit the minibuffer (i.e., for the next
-command)."
+command).  You can also use multi-command `icicle-toggle-option'
+anytime to toggle the option."
   :type 'boolean :group 'Icicles-Completions-Display)
 
 ;; This is similar to `bmkp-sort-comparer'.
@@ -3077,12 +3279,18 @@ prefix argument (or else start a new Emacs session)."
 
 ;;;###autoload
 (defcustom icicle-swank-prefix-length 1
-  "*Length (chars) of symbol prefix that much match, for swank completion."
+  "*Length (chars) of symbol prefix that much match, for swank completion.
+If you use Do Re Mi (library `doremi.el') then you can use
+multi-command `icicle-increment-option' anytime to change the option
+value incrementally."
   :type 'integer :group 'Icicles-Matching)
 
 ;;;###autoload
 (defcustom icicle-swank-timeout 3000
-  "*Number of msec before swank (fuzzy symbol) completion gives up."
+  "*Number of msec before swank (fuzzy symbol) completion gives up.
+If you use Do Re Mi (library `doremi.el') then you can use
+multi-command `icicle-increment-option' anytime to change the option
+value incrementally."
   :type 'integer :group 'Icicles-Matching)
 
 ;;;###autoload
@@ -3230,14 +3438,21 @@ the longest common prefix, and only displaying the candidates after a
 second `TAB'.
 
 Actually, the concerned keys are those defined by option
-`icicle-prefix-complete-keys', not necessarily `TAB'."
+`icicle-prefix-complete-keys', not necessarily `TAB'.
+
+Remember that you can use multi-command `icicle-toggle-option' anytime
+to toggle the option."
   :type 'boolean :group 'Icicles-Key-Bindings)
 
 ;;;###autoload
 (defcustom icicle-recenter -4
   "Argument passed to `recenter' to recenter point in the target window.
 Used during functions such as `icicle-search' when the destination to
-visit would otherwise be off-screen."
+visit would otherwise be off-screen.
+
+If the value is an integer and you use Do Re Mi (library `doremi.el')
+then you can use multi-command `icicle-increment-option' anytime to
+change the option value incrementally."
   :type '(choice
 	  (const   :tag "To mid-window" nil)
 	  (integer :tag "On this line number (negative: from bottom)" -4))
@@ -3267,7 +3482,8 @@ assumption here is that you use these highlighting values only to
 avoid the cost of remote file name completion.
 
 You can toggle this option from the minibuffer using `C-^' (except
-during Icicles search)."
+during Icicles search).  You can also use multi-command
+`icicle-toggle-option' anytime to toggle the option."
   :initialize (lambda (opt-name val) (set opt-name t))
   :set (lambda (opt-name val)
          (or (not (require 'tramp nil t))
@@ -3727,13 +3943,20 @@ nil.  Editing the completion (typing or deleting a character) before
 the delay expires prevents its automatic acceptance.
 
 Do not set this to 0.0.  Set it to slightly more than zero if you want
-instant action."
+instant action.
+
+If you use Do Re Mi (library `doremi.el') then you can use
+multi-command `icicle-increment-option' anytime to change the option
+value incrementally."
   :type 'number :group 'Icicles-Matching)
 
 ;;;###autoload
 (defcustom icicle-top-level-when-sole-completion-flag nil
   "*Non-nil means to return to top level if only one matching completion.
-The sole completion is accepted."
+The sole completion is accepted.
+
+Remember that you can use multi-command `icicle-toggle-option' anytime
+to toggle the option."
   :type 'boolean :group 'Icicles-Matching)
 
 ;;;###autoload
@@ -3756,7 +3979,10 @@ you enter Icicle mode.  This means that you must ensure that the code
 that sets it is invoked before you enter Icicle mode.  If you use
 Customize to change this option, then ensure that the code inserted by
 Customize into your `user-init-file' or your `custom-file' is invoked
-before you enter Icicle mode."
+before you enter Icicle mode.
+
+Remember that you can use multi-command `icicle-toggle-option' anytime
+to toggle the option."
   :type 'boolean :group 'Icicles-Key-Bindings)
 
 ;;;###autoload
@@ -3966,11 +4192,14 @@ There is no doubt that the default value could be improved.]"
   "*Non-nil means strip text properties from the completion result.
 Set or bind this option to non-nil only if you need to ensure, for
 some other library, that the string returned by `completing-read' and
-(starting with Emacs 23) `read-file-name' has no text properties.
+\(starting with Emacs 23) `read-file-name' has no text properties.
 
 Typically, you will not use a non-nil value.  Internal text properties
 added by Icicles are always removed anyway.  A non-nil value lets you
-also remove properties such as `face'."
+also remove properties such as `face'.
+
+Remember that you can use multi-command `icicle-toggle-option' anytime
+to toggle the option."
   :type 'boolean :group 'Icicles-Miscellaneous)
 
 ;;;###autoload
@@ -3982,7 +4211,8 @@ also remove properties such as `face'."
 (defcustom icicle-use-~-for-home-dir-flag t ; Toggle with `M-~'.
   "*Non-nil means abbreviate your home directory using `~'.
 You can toggle this option from the minibuffer at any time using
-`M-~'."
+`M-~'.  You can also use multi-command `icicle-toggle-option' anytime
+to toggle the option."
   :type 'boolean :group 'Icicles-Key-Bindings)
 
 ;;;###autoload
@@ -4003,7 +4233,8 @@ those defined by these options:
  `icicle-prefix-cycle-previous-action-keys'
 
 You can toggle this option from the minibuffer at any time using
-`M-g'."
+`M-g'.  You can also use multi-command `icicle-toggle-option' anytime
+to toggle the option."
   :type 'boolean :group 'Icicles-Key-Bindings)
 
 ;;;###autoload
@@ -4013,7 +4244,10 @@ When non-nil, Anything actions are used for candidate alternate
 actions in some Icicles commands, and Anything types and actions are
 used by command `icicle-object-action' (aka `a' and `what-which-how').
 
-This option has no effect if library `anything.el' cannot be loaded."
+This option has no effect if library `anything.el' cannot be loaded.
+
+Remember that you can use multi-command `icicle-toggle-option' anytime
+to toggle the option."
   :type 'boolean :group 'Icicles-Matching)
 
 ;;;###autoload
@@ -4032,7 +4266,10 @@ completion in contexts where it makes little sense for users to act on
 the same candidate more than once.  That way, users cannot choose it
 again, and they are not distracted seeing it as a candidate.
 
-See also non-option variable `icicle-use-candidates-only-once-alt-p'."
+See also non-option variable `icicle-use-candidates-only-once-alt-p'.
+
+Remember that you can use multi-command `icicle-toggle-option' anytime
+to toggle the option."
   :type 'boolean :group 'Icicles-Matching)
 
 ;;;###autoload
