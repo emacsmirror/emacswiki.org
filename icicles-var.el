@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:23:26 2006
 ;; Version: 22.0
-;; Last-Updated: Fri Jun 29 12:00:27 2012 (-0700)
+;; Last-Updated: Sat Jul  7 14:51:51 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 1627
+;;     Update #: 1631
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-var.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -70,6 +70,7 @@
 ;;    `icicle-extra-candidates-dir-insert-p',
 ;;    `icicle-face-name-history', `icicle-fancy-candidates-p',
 ;;    `icicle-fancy-cands-internal-p',
+;;    `icicle-file-name-completion-table',
 ;;    `icicle-file-sort-first-time-p',
 ;;    `icicle-filtered-default-value', `icicle-font-name-history',
 ;;    `icicle-frame-alist', `icicle-frame-name-history',
@@ -500,6 +501,12 @@ can be costly.")
 (defvar icicle-fancy-cands-internal-p nil
   "Same as `icicle-fancy-candidates-p', but for internal use only.
 Do not set or bind this.  This is bound only by `completing-read'.")
+
+(when (> emacs-major-version 23)
+  (defvar icicle-file-name-completion-table
+    (completion-table-in-turn #'icicle-completion--embedded-envvar-table
+                              #'completion-file-name-table)
+    "Completion table used for file-name completion."))
 
 (defvar icicle-file-sort-first-time-p t
   "Non-nil means file-name completion has not yet been used.")
