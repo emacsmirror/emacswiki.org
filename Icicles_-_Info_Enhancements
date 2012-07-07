@@ -10,7 +10,18 @@
 
 * '''Icicles''' [[completion]] is available for any input.
 
+* Index-topic completion highlights candidate topics that
+reference nodes you have already visited.
+
+* You can create virtual Info books composed of an arbitrary set
+of nodes from any set of manuals.
+
 * You can use `icicle-search' on part or all of a manual, if you flatten it first with `Info-merge-subnodes' .
+
+These features are described below.
+
+
+
 
 
 
@@ -59,6 +70,59 @@ In addition, except when you are at the `Top' node, a pseudo-node
 takes you up to the parent of the current node.  You can thus use
 `g' in Info not only to explore nodes by name, but also as another
 means to traverse the Info menu hierarchy.
+
+
+
+
+
+
+[:HighlightTopicsForVisitedNodes]
+=== Highlighting Index Topics for Visited Info Nodes ===
+
+When you are looking for something in an Info manual, `i'
+(multi-command `icicle-Info-index') is your friend.  It is
+typically better than brute search (`C-s' or `C-M-s'), because a
+human has decided what topics to add to the index based on
+understanding user/reader needs.
+
+When you use `i' to look up a topic in the indexes of a manual,
+you can use completion.  In particular, [[apropos completion]] and
+[[progressive completion]] can help here.
+
+Naturally, a single Info node can be indexed under multiple
+topics.  And some of those index entries might even represent the
+same topic, using different word order or terminology.
+
+Suppose you are looking up information about Emacs fringe, for
+example.  You might type '''`##i fringe S-TAB##'''' to see all indexed
+topics with the substring `fringe'.  But because of double-entry
+indexing, several of the topics matching your input can take you
+to the same node.
+
+When you are investigating a topic this way you might want to
+visit different nodes that are pertinent to the same topic.  ''But
+how can you tell whether you have already visited a node'' that one
+of the matching topic candidates takes you to?  '''Icicles'''
+highlighting of past inputs does not help here.  What matters is
+not whether you have entered a given topic previously but whether
+you have already visited a given topic's node.
+
+'''Icicles''' can also help here, by ''highlighting the topics whose nodes
+you have visited''.  It uses face
+'''`icicle-historical-candidate-other'''' for this (not face
+`icicle-historical-candidate').  (This feature is not available
+for Emacs 20 or 21.)
+
+But because it takes extra time to track down each of the current
+topic candidates, this can be costly.  You can customize [[option]]
+'''`icicle-Info-visited-max-candidates'''' to control the behavior.
+This extra highlighting is skipped whenever there are more
+candidates that the option value.  It is also skipped if you turn
+off historical candidate highlighting altogether, by setting
+option `icicle-highlight-historical-candidates-flag' to `nil'.
+
+
+
 
 
 
