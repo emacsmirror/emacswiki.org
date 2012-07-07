@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:19:43 2006
 ;; Version: 22.0
-;; Last-Updated: Sun Apr  8 13:02:23 2012 (-0700)
+;; Last-Updated: Sat Jul  7 13:40:23 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 645
+;;     Update #: 652
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-face.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -43,7 +43,9 @@
 ;;    `icicle-Completions-instruction-1',
 ;;    `icicle-Completions-instruction-2',
 ;;    `icicle-current-candidate-highlight', `icicle-extra-candidate',
-;;    `icicle-historical-candidate', `icicle-input-completion-fail',
+;;    `icicle-historical-candidate',
+;;    `icicle-historical-candidate-other',
+;;    `icicle-input-completion-fail',
 ;;    `icicle-input-completion-fail-lax',
 ;;    `icicle-match-highlight-Completions',
 ;;    `icicle-match-highlight-minibuffer', `icicle-mode-line-help',
@@ -439,6 +441,20 @@ This means that they belong to list `icicle-extra-candidates'."
     (t (:foreground "Blue")))
   "*Face used to highlight `*Completions*' candidates that have been used."
   :group 'Icicles-Completions-Display :group 'faces)
+
+(when (> emacs-major-version 21)
+  (defface icicle-historical-candidate-other '((t (:inherit icicle-historical-candidate
+                                                   :underline t)))
+    "*Face to highlight `*Completions*' candidates that were used indirectly.
+That is, you might or might not have entered these candidates but in
+some sense you have used or visited them.  Example: index topics that
+point to Info nodes that you have visited.
+
+Whether or not such highlighting is done at all is governed by option
+`icicle-highlight-historical-candidates-flag'.  Whether it is done for
+a given set of candidates is governed by option
+`icicle-Info-visited-max-candidates'."
+    :group 'Icicles-Completions-Display :group 'faces))
 
 ;;;###autoload
 (defface icicle-input-completion-fail
