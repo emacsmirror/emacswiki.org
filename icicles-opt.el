@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:22:14 2006
 ;; Version: 22.0
-;; Last-Updated: Sat Jul  7 12:03:47 2012 (-0700)
+;; Last-Updated: Sat Jul  7 13:42:00 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 5235
+;;     Update #: 5246
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-opt.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -112,6 +112,7 @@
 ;;    `icicle-incremental-completion',
 ;;    `icicle-incremental-completion-delay',
 ;;    `icicle-incremental-completion-threshold',
+;;    `icicle-Info-visited-max-candidates',
 ;;    `icicle-inhibit-advice-functions', `icicle-inhibit-ding-flag',
 ;;    `icicle-input-string', `icicle-inter-candidates-min-spaces',
 ;;    `icicle-isearch-complete-keys', `icicle-key-complete-keys',
@@ -2073,6 +2074,28 @@ If you use Do Re Mi (library `doremi.el') then you can use
 multi-command `icicle-increment-option' anytime to change the option
 value incrementally."
   :type 'integer :group 'Icicles-Completions-Display)
+
+(when (> emacs-major-version 21)
+  (defcustom icicle-Info-visited-max-candidates 10
+    "*Max number of Info index-entry candidates for visited highlighting.
+This is used for command `icicle-Info-index'.
+
+If there are more than this many candidates matching your current
+index-topic input, then no attempt is made to higlight specially those
+that refer to nodes you have visited.  Otherwise, they are highlighted
+using face `icicle-historical-candidate-other'.
+
+Be aware that this highlighting can be costly, especially for large
+values of the option.
+
+If you use `doremi.el' then you can use multi-command
+`icicle-increment-option' anytime to change the option value
+incrementally.
+
+To turn the highlighting off, set the value to 0 or set option
+`icicle-highlight-historical-candidates-flag' to nil.  You can toggle
+that option from the minibuffer anytime using `C-pause'."
+    :type 'integer :group 'Icicles-Completions-Display :group 'Icicles-Matching))
 
 ;;;###autoload
 (defcustom icicle-inhibit-advice-functions
