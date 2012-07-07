@@ -65,7 +65,7 @@ means to traverse the Info menu hierarchy.
 
 
 [:VirtualInfoBooks]
-==== Virtual Info Books ====
+=== Virtual Info Books ===
 
 You can take advantage of '''Icicles''' set operations to create your
 own ''virtual'' Info books.  That is, you can define and save sets of
