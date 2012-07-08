@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:53 2006
 ;; Version: 22.0
-;; Last-Updated: Sat Jul  7 15:07:22 2012 (-0700)
+;; Last-Updated: Sun Jul  8 12:08:35 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 13160
+;;     Update #: 13161
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-fn.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -321,6 +321,7 @@
 (when (< emacs-major-version 22)
   (defvar completion-common-substring)
   (defvar completion-root-regexp)
+  (defvar icicle-Info-visited-max-candidates) ; In `icicles-opt.el' (for Emacs 22+)
   (defvar minibuffer-completing-symbol)
   (defvar minibuffer-prompt-properties)
   (defvar partial-completion-mode)
