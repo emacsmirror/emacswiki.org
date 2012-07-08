@@ -1,3 +1,22 @@
+This is about installing Emacs into an Android device. See GoogleAndroid for tips about using Emacs to develop Android applications.
+
+== Introduction: ways to run Emacs on Android devices ==
+Some of them are hypothetical.
+===Native port (installable Android application)===
+That would be very nice, but for the moment is not possible because Emacs depends on libraries which have no Android version or are not present there.
+See: http://android.stackexchange.com/questions/19558/emacs-on-android
+===Remove Android, install another GNU/Linux, install Emacs there===
+This is known to work, but you need to get root access to your tablet and remove Android.
+See below for some experiences with particular tablets.
+
+===Don't run Emacs, just use a SSH client to connect to a server which runs Emacs===
+This is by far the easiest and fastest way. It does not require uninstalling Android, and Emacs will run at normal speed.
+
+You could also use VNC if you need graphics.
+===Or even… use other programmer editor, and simulate Emacs behaviour there===
+There are libre editors which can be extended to use Emacs key bindings, for instance:
+* Terminal IDE: https://play.google.com/store/apps/details?id=com.spartacusrex.spartacuside&hl=en
+
 ==Installing Debian/Ubuntu and Emacs on G1/G2 phone==
 
 There is a lot of online information for hacking HTC mobile phones on the [http://www.xda-developers.com/ xda-developers website].
