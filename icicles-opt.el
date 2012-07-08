@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:22:14 2006
 ;; Version: 22.0
-;; Last-Updated: Sat Jul  7 13:42:00 2012 (-0700)
+;; Last-Updated: Sun Jul  8 08:42:48 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 5246
+;;     Update #: 5248
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-opt.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -1702,8 +1702,9 @@ to toggle the option."
 
 ;;;###autoload
 (defcustom icicle-functions-to-redefine
-  '(bbdb-complete-name                   comint-dynamic-complete
-    comint-dynamic-complete-filename     comint-replace-by-expanded-filename
+  `(bbdb-complete-name
+    ,@(if (> emacs-major-version 23) '(comint-completion-at-point) '(comint-dynamic-complete))
+    comint-dynamic-complete-filename comint-replace-by-expanded-filename
     ;; Use these two if you want Icicles completion for shell commands.
     ;; See http://www.emacswiki.org/emacs/Icicles_-_Shell-Command_Enhancements.
     ;; dired-read-shell-command
