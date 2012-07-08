@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 10:21:10 2006
 ;; Version: 22.0
-;; Last-Updated: Fri Jun 29 16:23:01 2012 (-0700)
+;; Last-Updated: Sun Jul  8 11:49:24 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 8990
+;;     Update #: 8994
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-mode.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -491,7 +491,7 @@ there are also `-other-window' versions.
 `icicle-increment-variable'            - Increment numeric variable
 `icicle-Info-goto-node'                - Multi-cmd `Info-goto-node'
 `icicle-Info-index'                    - Multi-command `Info-index'
-`icicle-Info-menu-cmd'                 - Multi-command `Info-menu'
+`icicle-Info-menu'                     - Multi-command `Info-menu'
 `icicle-Info-virtual-book'             - Open a virtual Info book
 `icicle-insert-buffer'                 - Multi-command `insert-buffer'
 `icicle-insert-thesaurus-entry'        - Insert thesaurus entry(s)
@@ -918,7 +918,7 @@ there are also `-other-window' versions.
 `icicle-increment-variable'            - Increment numeric variable
 `icicle-Info-goto-node'                - Multi-cmd `Info-goto-node'
 `icicle-Info-index'                    - Multi-command `Info-index'
-`icicle-Info-menu-cmd'                 - Multi-command `Info-menu'
+`icicle-Info-menu'                     - Multi-command `Info-menu'
 `icicle-insert-buffer'                 - Multi-command `insert-buffer'
 `icicle-insert-thesaurus-entry'        - Insert thesaurus entry(s)
 `icicle-keyword-list'                  - Choose a list of keywords
@@ -4392,7 +4392,8 @@ if `icicle-change-region-background-flag' is non-nil."
 ;;; Note: The `boundp' test for `icicle-mode' is just in case the form gets evaluated while
 ;;; loading `icicles-mode.el' (e.g. the library gets loaded while loading `icicles-mode.el').
 
-;;; `comint.el' - `comint-dynamic-complete', `comint-replace-by-expanded-filename'.
+;;; `comint.el' - `comint-dynamic-complete', `comint-dynamic-complete-filename',
+;;;               `comint-replace-by-expanded-filename', `comint-completion-at-point'.
 (let ((form  '(let ((icyp  (and (boundp 'icicle-mode) icicle-mode)))
                (when icyp (icicle-mode -1))
                (when (and (fboundp 'comint-dynamic-complete)
@@ -4406,6 +4407,10 @@ if `icicle-change-region-background-flag' is non-nil."
                           (not (fboundp 'old-comint-replace-by-expanded-filename)))
                  (defalias 'old-comint-replace-by-expanded-filename
                      (symbol-function 'comint-replace-by-expanded-filename)))
+	       (when (and (fboundp 'comint-completion-at-point) ; Emacs 24+
+                          (not (fboundp 'old-comint-completion-at-point)))
+                 (defalias 'old-comint-completion-at-point
+                     (symbol-function 'comint-completion-at-point)))
                (when icyp (icicle-mode 1)))))
   (if (featurep 'comint) (eval-after-load "icicles-mode" form) (eval-after-load "comint" form)))
 
