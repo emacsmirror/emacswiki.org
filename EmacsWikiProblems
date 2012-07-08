@@ -327,5 +327,7 @@ When I look at the RSS feed, I get to see the latest revision of the page. I mus
 [new]
 Someone edited [[Emacsmirror]] months ago but the change is not visible on the page. When I edit the page I can see the added text.  I haven't tried yet what happens when I save the page.  Maybe that would cause the old edit to become effective but I wanted to leave it as-is so you can see for yourself. -- JonasBernoulli
 
+[new]
+Hm, I'm not sure. When [http://www.emacswiki.org/emacs/Emacsmirror?cache=0 using the cache=0 parameter] the page doesn't mention "solarized" so I think editing the page will not make a big change. I wonder where the diff comes from, however.
 ----
 CategoryEmacsWikiSite
