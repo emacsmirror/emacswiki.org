@@ -258,7 +258,13 @@ I used a table instead of single lines in a paragraph and I'll use the link to r
 [new:DrewAdams:2011-10-19 22:17 UTC]
 Yowza! Looks good to me.  Thx -- DrewAdams
 
+[new:AlexSchroeder:2012-07-08 23:36 UTC]
+As the alphabetical listing was taking a long time (every page file has to be opened to determine meta data such as last author and last modification date), a cron job will be computing this list every four hours.
 
+The following two URLs are rewritten as follows:
+
+* http://www.emacswiki.org/emacs/?action=elisp-area;context=0 -> http://www.emacswiki.org/emacs/elisp-area.html
+* http://www.emacswiki.org/emacs/?action=elisp-area -> http://www.emacswiki.org/emacs/elisp-area-context.html
 
 == Suggestion: Adding provide form to libraries that miss it ==
 
