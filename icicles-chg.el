@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Sat Jul  7 15:19:26 2012 (-0700)
+;; Last-Updated: Sun Jul  8 14:35:43 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 8607
+;;     Update #: 8617
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-chg.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -85,6 +85,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd1.el'")
 ;;
+;; 2012/07/08 dadams
+;;     Added icicle-comint-completion-at-point.  Thx to Christopher Schmidt and Michael Heerdegen.
 ;; 2012/06/29 dadams
 ;;     icicle-command-abbrev:
 ;;       Bind icicle-sort-comparer to icicle-proxy-candidate-first-p, not
@@ -4661,6 +4663,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-mode.el'")
 ;;
+;; 2012/07/08 dadams
+;;     Defalias old-comint-completion-at-point for Emacs 24+. Thx to Christopher Schmidt, M. Heerdegen.
 ;; 2012/06/08 dadams
 ;;     icicle-define-minibuffer-maps: fboundp of icicle-yank-secondary, not yank-secondary.
 ;; 2012/05/25 dadams
@@ -5767,6 +5771,9 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-opt.el'")
 ;;
+;; 2012/07/08 dadams
+;;     icicle-functions-to-redefine: Updated comint stuff for Emacs 24: comint-completion-at-point.
+;;       Thx to Christopher Schmidt and Michael Heerdegen.
 ;; 2012/07/07 dadams
 ;;     Added: icicle-Info-visited-max-candidates.
 ;;     Added reminder about icicle-(increment|toggle)-option to doc strings for boolean|integer|number.
