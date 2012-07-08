@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Fri Jun 29 15:55:05 2012 (-0700)
+;; Last-Updated: Sun Jul  8 14:11:07 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 24345
+;;     Update #: 24377
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-cmd1.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -254,6 +254,7 @@
 ;;    `icicle-bookmark-delete-action', `icicle-bookmark-help-string',
 ;;    `icicle-bookmark-jump-1', `icicle-buffer-name-prompt',
 ;;    `icicle-clear-history-1', `icicle-clear-history-entry',
+;;    `icicle-comint-completion-at-point',
 ;;    `icicle-comint-dynamic-complete-as-filename',
 ;;    `icicle-comint-dynamic-simple-complete',
 ;;    `icicle-comint-replace-orig-completion-fns',
@@ -664,10 +665,39 @@ the cache is updated when you next use it, but it is not saved."
   icicle-shell-command-candidates-cache)
 
 
+;; REPLACE ORIGINAL `comint-completion-at-point' defined in `comint.el',
+;; saving it for restoration when you toggle `icicle-mode'.
+;;
+;; Use Icicles completion for file-name completion.
+;;
+;;;###autoload (autoload 'icicle-comint-completion-at-point "icicles")
+(when (> emacs-major-version 23)
+  (defun icicle-comint-completion-at-point ()
+    "Dynamically perform completion at point.
+Calls the functions in `comint-dynamic-complete-functions', but
+with additional Icicles completion for file names."
+    ;; Need a symbol for `run-hook-with-args-until-success', so bind one.
+    (let ((hook           ())
+          (added-icdcf-p  nil))
+      (dolist (fn  (icicle-comint-replace-orig-completion-fns))
+        (when (and (not added-icdcf-p)
+                   (memq fn '(pcomplete-completions-at-point
+                              comint-filename-completion
+                              shell-filename-completion)))
+          ;; Ensure that, for file-name completion, `icicle-comint-dynamic-complete-filename'
+          ;; ends up in front, as the first completion function, so it is used instead of other (vanilla) fns.
+          (push (lambda () (and (comint-match-partial-filename)  #'icicle-comint-dynamic-complete-filename))
+                hook)
+          (setq added-icdcf-p  t))
+        (push fn hook))
+      (setq hook  (nreverse hook))
+      (run-hook-with-args-until-success 'hook))))
+
+
 ;; REPLACE ORIGINAL `comint-dynamic-complete' defined in `comint.el',
 ;; saving it for restoration when you toggle `icicle-mode'.
 ;;
-;; Uses Icicles completion when there are multiple candidates.
+;; Use Icicles completion when there are multiple candidates.
 ;;
 ;;;###autoload (autoload 'icicle-comint-dynamic-complete "icicles")
 (defun icicle-comint-dynamic-complete () ; Bound to `TAB' in Comint (and Shell) mode.
