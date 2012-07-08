@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Thu May 21 13:31:43 2009 (-0700)
 ;; Version: 22.0
-;; Last-Updated: Sat Jul  7 15:19:01 2012 (-0700)
+;; Last-Updated: Sun Jul  8 12:05:35 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 5699
+;;     Update #: 5700
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-cmd2.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -396,6 +396,7 @@
 
 ;; (< emacs-major-version 22)
 (defvar compilation-current-error)
+(defvar Info-history-list)              ; In `info.el'
 (defvar Info-menu-entry-name-re)        ; In `info.el'
 (defvar Info-read-node-completion-table) ; In `info.el'
 (defvar list-colors-sort)               ; In `facemenu.el' (Emacs 23+)
