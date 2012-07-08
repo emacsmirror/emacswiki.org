@@ -325,7 +325,7 @@ When I look at the RSS feed, I get to see the latest revision of the page. I mus
 == Invisible change ==
 
 [new]
-Someone edited [Emacsmirror] months ago but the change is not visible on the page. When I edit the page I can see the added text.  I haven't tried yet what happens when I save the page.  Maybe that would cause the old edit to become effective but I wanted to leave it as-is so you can see for yourself. -- JonasBernoulli
+Someone edited [[Emacsmirror]] months ago but the change is not visible on the page. When I edit the page I can see the added text.  I haven't tried yet what happens when I save the page.  Maybe that would cause the old edit to become effective but I wanted to leave it as-is so you can see for yourself. -- JonasBernoulli
 
 ----
 CategoryEmacsWikiSite
