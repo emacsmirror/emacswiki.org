@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Sun Jul  8 14:11:07 2012 (-0700)
+;; Last-Updated: Sun Jul  8 15:15:21 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 24377
+;;     Update #: 24378
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-cmd1.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -681,9 +681,11 @@ with additional Icicles completion for file names."
           (added-icdcf-p  nil))
       (dolist (fn  (icicle-comint-replace-orig-completion-fns))
         (when (and (not added-icdcf-p)
-                   (memq fn '(pcomplete-completions-at-point
-                              comint-filename-completion
-                              shell-filename-completion)))
+                   (memq fn
+                         ;; This hard-coded list is based on checking vanilla code such as
+                         ;; `shell-dynamic-complete-functions' for file-name completion functions.
+                         '(pcomplete-completions-at-point comint-filename-completion
+                           shell-filename-completion)))
           ;; Ensure that, for file-name completion, `icicle-comint-dynamic-complete-filename'
           ;; ends up in front, as the first completion function, so it is used instead of other (vanilla) fns.
           (push (lambda () (and (comint-match-partial-filename)  #'icicle-comint-dynamic-complete-filename))
