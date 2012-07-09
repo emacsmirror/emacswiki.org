@@ -7,9 +7,9 @@
 ;; Copyright (C) 1999-2012, Drew Adams, all rights reserved.
 ;; Created: Fri Apr  2 12:34:20 1999
 ;; Version: 21.1
-;; Last-Updated: Mon Jul  2 09:05:58 2012 (-0700)
+;; Last-Updated: Sun Jul  8 22:51:22 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 1135
+;;     Update #: 1141
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/setup-keys.el
 ;; Keywords: mouse, keyboard, menus, menu-bar
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -67,6 +67,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2012/07/08 dadams
+;;     Bind C-mouse-1 to ignore, so don't see error msg on up event.
 ;; 2012/07/02 dadams
 ;;     Bind find-library-other-window to C-x 4 l.
 ;; 2012/06/02 dadams
@@ -407,6 +409,7 @@
     ;; $$$$ (global-set-key [(control ?x) (control ?z)] 'iconify-everything)
     (global-set-key [(shift control meta ?z)] 'show-hide)                        ; `C-M-S-z'
     (global-set-key [C-down-mouse-1] 'mouse-show-hide-mark-unmark)               ; `C-mouse-1'
+    (global-set-key [C-mouse-1] 'ignore)
     (global-set-key [S-down-mouse-1] nil) ; Get rid of `mouse-set-font'.         ; `S-mouse-1'
     ;;(global-set-key [vertical-line mouse-1] 'ignore)
     (global-set-key [vertical-line C-down-mouse-1] 'show-hide)
