@@ -1,8 +1,8 @@
 ;;; powerline.el --- fancy statusline
 
 ;; Name: Emacs Powerline
-;; Author: Unknown
-;; Version: 1.1
+;; Author: Unknown (NicolasRougier perhaps?  with modifications from milypostman?) 
+;; Version: 1.2
 ;; Keywords: statusline
 
 ;;; Commentary:
@@ -15,11 +15,15 @@
 ;; v1.1 - Guard clause around the powerline output, so that if
 ;;        powerline tries to output something unexpected, it won't
 ;;        just fail and flail-barf.  (JonathanArkell)
+;; v1.2 - Fixed the Guard Clause to not just sit there and message like mad
+;;        When a list is encountered, it is interpreted as a mode line. Fixes 
+;;        problems with shell mode and nXhtml mode. 
 
 ;;; Code:
 
 (defvar powerline-color1)
 (defvar powerline-color2)
+
 
 (setq powerline-color1 "grey22")
 (setq powerline-color2 "grey40")
@@ -276,6 +280,7 @@ install the memoized function over the original function."
                             :box nil))
         cface)
     nil))
+
 (defun powerline-make-left
   (string color1 &optional color2 localmap)
   (let ((plface (powerline-make-face color1))
@@ -311,6 +316,7 @@ install the memoized function over the original function."
                                                         (t                                 'arrow)))
                                             (redraw-modeline))))
        ""))))
+
 (defun powerline-make-right
   (string color2 &optional color1 localmap)
   (let ((plface (powerline-make-face color2))
@@ -346,6 +352,7 @@ install the memoized function over the original function."
      (if (or (not string) (string= string ""))
          ""
        (propertize " " 'face plface)))))
+
 (defun powerline-make-fill
   (color)
   ;; justify right by filling with spaces to right fringe, 20 should be calculated
@@ -355,6 +362,7 @@ install the memoized function over the original function."
                     'face plface)
       (propertize " " 'display '((space :align-to (- right-fringe 24)))
                   'face plface))))
+
 (defun powerline-make-text
   (string color &optional fg localmap)
   (let ((plface (powerline-make-face color)))
@@ -363,6 +371,7 @@ install the memoized function over the original function."
             (propertize string 'face plface 'mouse-face plface 'local-map localmap)
           (propertize string 'face plface))
       "")))
+
 (defun powerline-make (side string color1 &optional color2 localmap)
   (cond ((and (eq side 'right) color2) (powerline-make-right  string color1 color2 localmap))
         ((and (eq side 'left) color2)  (powerline-make-left   string color1 color2 localmap))
@@ -371,17 +380,22 @@ install the memoized function over the original function."
         (t                             (powerline-make-text   string color1 localmap))))
 
 (defmacro defpowerline (name string)
+  "Macro to create a powerline chunk."
   `(defun ,(intern (concat "powerline-" (symbol-name name)))
      (side color1 &optional color2)
      (powerline-make side
                      (let ((result ,string))
-					   (if (not (or (stringp result)
-									(null result)))
-						   (progn
-							 (message "Powerline got %S but expected a string" result)
-							 " ERR")
-						   result))
+					   (cond ((listp result)
+							  (format-mode-line result)) 
+							 ((not (or (stringp result)
+									   (null result)))
+							  (progn
+								" ERR"))
+							 (t
+							  result)))
                      color1 color2)))
+
+
 
 (defun powerline-mouse (click-group click-type string)
   (cond ((eq click-group 'minor)
