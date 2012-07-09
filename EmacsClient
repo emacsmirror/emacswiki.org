@@ -48,6 +48,10 @@ Pro tip: Under Windows Vista/7 with your emacs directory in "Program Files", do 
 
 17 Dec 2010: @Pro tip: what do you mean "when it sees an executable messing with it's own directory"?  Can't an executable run another executable under same directory?  Could you please provide more details?  Thanks.
 
+9 Jul 2012: I believe he means that, to bypass permissions issues, any edits made in Program Files by programs stored there, are actually written to a virtual version of that folder somehwere in the user's home folder in C:\Users\<Username> (I cannot exactly remember where)
+
+Also, two things, with .cmd files, you can avoid the cmd window from opening if you use "start emacsclient <put your options here> %*", and that using %* is far better than using %1 since that collects all command line arguments after the command, and not just the first one.
+
 [new]
 CaptainObvious : The problem is with the creation of files, not running. http://answers.microsoft.com/en-us/windows/forum/windows_7-security/how-to-disable-virtualstore-in-windows-7/55dce284-0dcd-46af-892e-d2b9cf5bcff6
 [new]
@@ -720,7 +724,7 @@ if ! which wmctrl >/dev/null 2>&1; then
 fi
 
 # Note that the exit in END is what determines the final exit status,
-# even though the previous exit initiates the exit.
+# even t/pre~hough the previous exit initiates the exit.
 wmctrl -a :ACTIVE: -v 2>&1 \
   | awk 'BEGIN { exit_status = 1 }
          /^Using window:/ { print $3; exit_status = 0; exit } 
