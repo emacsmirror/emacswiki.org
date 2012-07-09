@@ -110,13 +110,13 @@ The method described above is convenient but missing an important piece of the p
 
 The snippet below resolves this issue.
 
-(defun gnus-grace-exit-before-kill-emacs ()
-  (if (and (fboundp 'gnus-alive-p)
-           (gnus-alive-p))
-      (let ((noninteractive t))
-        (gnus-group-exit))))
-
-(add-hook 'kill-emacs-hook 'gnus-grace-exit-before-kill-emacs)
+    (defun gnus-grace-exit-before-kill-emacs ()
+      (if (and (fboundp 'gnus-alive-p)
+               (gnus-alive-p))
+          (let ((noninteractive t))
+            (gnus-group-exit))))
+    
+    (add-hook 'kill-emacs-hook 'gnus-grace-exit-before-kill-emacs)
 
 
 ----
