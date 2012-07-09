@@ -731,4 +731,4 @@ This insures we get and display the prompt.
 
 (provide 'powershell)
 
-;; powershell.el ends here
+;;; powershell.el ends here
