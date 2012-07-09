@@ -105,5 +105,19 @@ Note that you will need at least rsync 2.6.7. or newer for this to work.
 
 Now every time when you start or exit Gnus you will be asked if you want to sync the two Gnus installations. The output of rsync will be shown in a new buffer. Again: Make backups before using this! If you want to be extra careful, you can also remove the <code>--delete</code> option (see above).
 
+[new]
+The method described above is convenient but missing an important piece of the puzzle: when one leaves (kills) emacs directly without exiting gnus, then the entire state-in-process won't be properly updated before rsync, hence losing mail.
+
+The snippet below resolves this issue.
+
+(defun gnus-grace-exit-before-kill-emacs ()
+  (if (and (fboundp 'gnus-alive-p)
+           (gnus-alive-p))
+      (let ((noninteractive t))
+        (gnus-group-exit))))
+
+(add-hook 'kill-emacs-hook 'gnus-grace-exit-before-kill-emacs)
+
+
 ----
 CategoryGnus
