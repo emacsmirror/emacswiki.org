@@ -398,6 +398,7 @@ second."
     (toe-score letter-count total-word-count game-start (current-time))))
   
 ;; Main entry point
+;;;###autoload
 (defun typing-of-emacs (&optional zombie)
   "Play the game The Typing Of Emacs.
 The game builds a list of words from the current buffer.
