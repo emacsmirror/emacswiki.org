@@ -7,9 +7,9 @@
 ;; Copyright (C) 1999-2012, Drew Adams, all rights reserved.
 ;; Created: Fri Mar 19 15:58:58 1999
 ;; Version: 21.2
-;; Last-Updated: Tue Jun 26 07:44:27 2012 (-0700)
+;; Last-Updated: Mon Jul  9 15:09:14 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 6025
+;;     Update #: 6052
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/dired+.el
 ;; Keywords: unix, mouse, directories, diredp, dired
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -374,6 +374,7 @@
 ;;                              (don't just use nil). (Emacs 23+, and
 ;;                              only for MS Windows)
 ;;  `dired-insert-set-properties' - `mouse-face' on whole line.
+;;  `dired-mark-files-regexp' - Add regexp to `regexp-search-ring'.
 ;;
 ;;; NOT YET:
 ;;; ;;  `dired-readin-insert'     - Use t as WILDCARD arg to
@@ -422,6 +423,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2012/07/09 dadams
+;;     Added redefinition of dired-mark-files-regexp: Push REGEXP onto regexp-search-ring.
 ;; 2012/06/21 dadams
 ;;     diredp-nb-marked-in-mode-name:
 ;;       Add marker numbers regardless of name match.
@@ -6040,6 +6043,34 @@ just the current file."
             (error nil)))
         (bury-buffer bufname)))
     result))
+
+
+;; REPLACE ORIGINAL in `dired.el':
+;;
+;; Push REGEXP onto `regexp-search-ring'.
+;;
+;;;###autoload
+(defun dired-mark-files-regexp (regexp &optional marker-char)
+  "Mark all files matching REGEXP for use in later commands.
+A prefix argument means to unmark them instead.
+`.' and `..' are never marked.
+
+REGEXP is an Emacs regexp, not a shell wildcard.  Thus, use `\\.o$' for
+object files--just `.o' will mark more than you might think.
+
+REGEXP is added to `regexp-search-ring', for regexp search."
+  (interactive
+   (list (dired-read-regexp (concat (if current-prefix-arg "Unmark" "Mark")
+				    " files (regexp): "))
+	 (if current-prefix-arg ?\040)))
+  (add-to-list 'regexp-search-ring regexp) ; Add REGEXP to `regexp-search-ring.
+  (let ((dired-marker-char (or marker-char dired-marker-char)))
+    (dired-mark-if
+     (and (not (looking-at dired-re-dot))
+	  (not (eolp))			; empty line
+	  (let ((fn (dired-get-filename t t)))
+	    (and fn (string-match regexp fn))))
+     "matching file")))
 
 ;;;###autoload
 (defun diredp-capitalize (&optional arg) ; Bound to `% c'
