@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Sat Jul  7 16:15:10 2012 (-0700)
+;; Last-Updated: Tue Jul 10 09:03:50 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 28911
+;;     Update #: 28914
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-doc2.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -2357,9 +2357,9 @@
 ;;
 ;;  If `icicle-guess-commands-in-path' is non-`nil', the list of
 ;;  search-path candidate commands is computed once and cached as the
-;;  value of option `icicle-shell-command-candidates-cache'.  The
-;;  particular non-`nil' value of `icicle-guess-commands-in-path'
-;;  determines when the cache is filled.
+;;  value of `icicle-shell-command-candidates-cache'.  The particular
+;;  non-`nil' value of `icicle-guess-commands-in-path' determines when
+;;  the cache is filled.
 ;;
 ;;  If the value of `icicle-guess-commands-in-path' is `first-use',
 ;;  the cache is filled the first time you use it, and each time you
@@ -6214,7 +6214,8 @@
 ;;    included among the completion candidates whenever a shell
 ;;    command is read.  The particular non-`nil' value determines when
 ;;    this list of commands is updated from your current search path.
-;;    The default value is `nil'.
+;;    The default value is `nil'.  (The computed commands are cached
+;;    in `icicle-shell-command-candidates-cache'.)
 ;;    See (@> "Icicles Shell-Command Enhancements").
 ;;
 ;;  * Non-`nil' option `icicle-quote-shell-file-name-flag' means that
