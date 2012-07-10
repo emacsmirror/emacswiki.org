@@ -195,6 +195,7 @@ This also serves as an example as to how to add your own default SDWIM hooks"
 	  (global-set-key "C-x C-s" 'save-dwim))
 
 (provide 'sdwim)
+(provide 'save-and-dwim)
 
 ;;* test
 (defun sdwim-test ()
