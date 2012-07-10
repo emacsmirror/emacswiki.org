@@ -34,7 +34,7 @@ Add-on games:
 * EightPuzzle -- a game of eight puzzle
 * [[Sudoku]] -- classic number puzzle
 * EmacsPoker - simple video poker game for Emacs
-* [http://cycojesus.free.fr/wordpress/?page_id=206 Emstar] - another implementation of dstar ([http://github.com/cycojesus/emstar/tree/master github repository])
+* [http://www.gwenhael.net/emstar/ Emstar] - another implementation of dstar ([http://github.com/cycojesus/emstar/tree/master github repository])
 
 Builtin games/amusements:
 
