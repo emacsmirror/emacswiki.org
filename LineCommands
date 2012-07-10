@@ -16,6 +16,8 @@ See BackToIndentationOrBeginning for a way to go to the beginning of the first w
 
 See GotoLine for jumping to a line number.
 
+See KillMatchingLines for the power of `M-x flush-lines' combined with KillingText.
+
 Some more advanced commands:
 
  (defun pg-kill-this-line (n)
