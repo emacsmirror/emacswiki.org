@@ -858,6 +858,5 @@ implementation file."
 	    (set-buffer-modified-p nil))
           (kill-buffer temp-file))))))
 
-(provide 'member-function)
-
-;;; member-function.el ends here.
+(provide 'member-functions)
+;;; member-functions.el ends here.
