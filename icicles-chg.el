@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Sun Jul  8 14:35:43 2012 (-0700)
+;; Last-Updated: Tue Jul 10 08:15:50 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 8617
+;;     Update #: 8619
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-chg.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -85,6 +85,10 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd1.el'")
 ;;
+;; 2012/07/10 dadams
+;;     icicle-comint-dynamic-complete-as-filename:
+;;       (file-name-nondir* (directory-file-name...)) -> (directory-file-name (file-relative-name...))
+;;       Thx to Christopher Schmidt.
 ;; 2012/07/08 dadams
 ;;     Added icicle-comint-completion-at-point.  Thx to Christopher Schmidt and Michael Heerdegen.
 ;; 2012/06/29 dadams
