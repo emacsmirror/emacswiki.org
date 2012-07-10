@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Sun Jul  8 15:15:21 2012 (-0700)
+;; Last-Updated: Tue Jul 10 07:54:10 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 24378
+;;     Update #: 24380
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-cmd1.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -790,7 +790,7 @@ Returns t if successful."
                          (save-window-excursion (read-file-name "Complete: " directory nil t)))))
                  (when (and choice  (not (string= choice directory)))
                    (insert (comint-quote-filename
-                            (file-name-nondirectory (directory-file-name choice))))
+                            (directory-file-name (file-relative-name choice directory))))
                    (insert (if (file-directory-p choice) dirsuffix filesuffix))))
              (error nil)))
           (t                            ; COMPLETION is the common prefix string.
@@ -828,7 +828,7 @@ Returns t if successful."
                           (when choice
                             (delete-backward-char (length completion))
                             (insert (comint-quote-filename
-                                     (file-name-nondirectory (directory-file-name choice))))
+                                     (directory-file-name (file-relative-name choice directory))))
                             (insert (if (file-directory-p choice) dirsuffix filesuffix))))
                       (error nil)))
                    (t (unless minibuffer-p (message "Partially completed")))))))
