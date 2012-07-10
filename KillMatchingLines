@@ -23,7 +23,7 @@ even beep.)"
                      (or rend (point-max))))
       (kill-buffer)))
   (unless (and buffer-read-only kill-read-only-ok)
-    ;; Delete lines or make the "Show Buffer is read-only" error.
+    ;; Delete lines or make the "Buffer is read-only" error.
     (flush-lines regexp rstart rend interactive)))
 }}}
 
