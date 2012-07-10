@@ -7,9 +7,9 @@
 ;; Copyright (C) 1999-2012, Drew Adams, all rights reserved.
 ;; Created: Fri Mar 19 15:58:58 1999
 ;; Version: 21.2
-;; Last-Updated: Mon Jul  9 15:09:14 2012 (-0700)
+;; Last-Updated: Tue Jul 10 07:27:29 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 6052
+;;     Update #: 6054
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/dired+.el
 ;; Keywords: unix, mouse, directories, diredp, dired
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -423,6 +423,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2012/07/10 dadams
+;;     Removed unneeded substitute-key-definition for (next|previous)-line.
 ;; 2012/07/09 dadams
 ;;     Added redefinition of dired-mark-files-regexp: Push REGEXP onto regexp-search-ring.
 ;; 2012/06/21 dadams
@@ -2259,10 +2261,6 @@ If HDR is non-nil, insert a header line with the directory name."
 (when (fboundp 'mkhtml-dired-files)
   (define-key dired-mode-map "\M-h"  'mkhtml-dired-files))                          ; `M-h'
 (define-key dired-mode-map "U"       'dired-unmark-all-marks)                       ; `U'
-(substitute-key-definition 'next-line 'dired-next-line                            ; `C-n', `down'
-                           dired-mode-map (current-global-map))
-(substitute-key-definition 'previous-line 'dired-previous-line                      ; `C-p', `up'
-                           dired-mode-map (current-global-map))
 (substitute-key-definition 'describe-mode 'diredp-describe-mode                    ; `h', `C-h m'
                            dired-mode-map (current-global-map))
 
