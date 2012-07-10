@@ -149,7 +149,7 @@ have face `icicle-proxy-candidates'.  See [[Icicles - Completions Display#ProxyC
 [:icicle-shell-command-candidates-cache]
 If `icicle-guess-commands-in-path' is non-`nil', the list of
 search-path candidate commands is computed once and cached as the
-value of option '''`<tt>[[Icicles - Customization and General Tips#icicle-shell-command-candidates-cache|icicle-shell-command-candidates-cache]]</tt>''''.  The
+value of '''`<tt>[[Icicles - Customization and General Tips#icicle-shell-command-candidates-cache|icicle-shell-command-candidates-cache]]</tt>''''.  The
 particular non-`nil' value of `icicle-guess-commands-in-path'
 determines when the cache is filled.
 If the value of `icicle-guess-commands-in-path' is '''`first-use'''', the cache is filled the first time you use it, and each time you turn on ''Icicle''
