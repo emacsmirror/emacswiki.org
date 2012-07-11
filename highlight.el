@@ -7,9 +7,9 @@
 ;; Copyright (C) 1995-2012, Drew Adams, all rights reserved.
 ;; Created: Wed Oct 11 15:07:46 1995
 ;; Version: 21.0
-;; Last-Updated: Wed Feb 29 10:36:21 2012 (-0800)
+;; Last-Updated: Wed Jul 11 13:48:12 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 3143
+;;     Update #: 3146
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/highlight.el
 ;; Keywords: faces, help, local
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -540,6 +540,8 @@
 ;;
 ;;(@* "Change log")
 ;;
+;; 2012/07/11 dadams
+;;     hlt-(highlighter|eraser)-mouse: Skip over event of choosing menu item, for Emacs 20-21.
 ;; 2011/12/01 dadams
 ;;     hlt-eraser: Fixed so it works backwards too.  Thx to Michael Heerdegen.
 ;;     hlt-unhighlight-region, hlt-replace-highlight-face, hlt-eraser: Use dolist, not mapcar.
@@ -976,14 +978,20 @@ overlays for the last face and text properties for all faces."
   "Same as `hlt-highlighter', but for binding to a menu item."
   (interactive)
   (message "Drag mouse to highlight text") (sleep-for 1)
-  (hlt-highlighter (read-event)))
+  (hlt-highlighter (if (> emacs-major-version 21)
+                       (read-event)
+                     (read-event)       ; Emacs 20-21: Skip event of choosing menu item.
+                     (read-event))))
 
 ;;;###autoload
 (defun hlt-eraser-mouse ()
   "Same as `hlt-eraser', but for binding to a menu item."
   (interactive)
   (message "Drag mouse over to erase highlighting") (sleep-for 1)
-  (hlt-eraser (read-event)))
+  (hlt-eraser (if (> emacs-major-version 21)
+                  (read-event)
+                (read-event)            ; Emacs 20-21: Skip event of choosing menu item.
+                (read-event))))
 
 ;;;###autoload
 (defun hlt-highlight (&optional prefix) ; Suggested binding: `C-x C-y'.
