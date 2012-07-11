@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Mon Jul  2 23:01:34 2012 (-0700)
+;; Last-Updated: Wed Jul 11 00:46:54 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 18267
+;;     Update #: 18275
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-mcmd.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -6971,11 +6971,14 @@ See also `\\[icicle-history]' (`icicle-history')."
 (defun icicle-other-history (arg)       ; Bound to `C-M-pause' in minibuffer.
   "Choose a history, or complete against `icicle-interactive-history'.
 For Emacs 23 or later, if no prefix arg and you are completing a
-  command, abbrev, or keyboard macro name, then complete against
-  (non-nil) `icicle-interactive-history'.
+command, abbrev, or keyboard macro name, then complete against
+\(non-nil) `icicle-interactive-history'.
+
 Otherwise, prompt with completion for a minibuffer history to use.
-  The history choice lasts only for the current (main) completion.
-  (To then complete against this history, use `M-h'.)"
+The history choice lasts only for the current (main) minibuffer
+reading.  You can then cycle through that history or use \
+\\<minibuffer-local-map>`\\[icicle-insert-history-element]' to
+complete against it."
   (interactive "P")
   (if (and (> emacs-major-version 22)
            (memq minibuffer-history-variable
