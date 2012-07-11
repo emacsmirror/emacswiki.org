@@ -96,7 +96,6 @@ such menu items to your ''completion'' history, which you access
 using `C-l' (see [[#Which|What Input, What History?]]). 
 
 
-[:M-o]
 '''2.''' Command '''`icicle-insert-history-element'''' (bound to '''`M-o'''' in the
 minibuffer) lets you use ([[lax]]) completion to insert a history
 element in the minibuffer.
@@ -115,7 +114,6 @@ element in the minibuffer.
    placing previously used candidates first.  This is a toggle: repeat it 
    to return to the original order.
 
-[:M-pause]
 '''5.''' Command '''`icicle-keep-only-past-inputs'''' ('''`M-pause'''' in the
    minibuffer) restricts the current set of completion candidates
    to those that you have used previously.  In other words, it
@@ -126,16 +124,15 @@ element in the minibuffer.
    chronologically, most recent first.  Without `C-u', the normal
    sort order is used (`icicle-sort-comparer').
 
-[:M-h]
 '''6.''' Command '''`icicle-history'''' ('''`M-h'''' in the minibuffer) matches the
    current input against the minibuffer history directly.  It can
    be used during completion.
 
-[:C-M-pause]
 '''7.''' Command '''`icicle-other-history'''' ('''`C-M-pause'''' in the minibuffer)
-lets you use a different history for the current completion.  You can choose the history using completion.
+lets you use a different history for the minibuffer reading.  You can choose the history using completion (even if
+the main minibuffer reading does not allow completion).
 
-[:M-i]
+
 '''8.''' Commands '''`icicle-clear-history'''' and '''`icicle-clear-current-history'''' ('''`M-i'''' in the minibuffer) provide a general way to clean up histories.
 
 [:M-k]
@@ -164,7 +161,7 @@ practice.  Among other things, it means that you can work with
 
 
 
-
+[:M-o]
 [:icicle-insert-history-element]
 [:InsertPreviousInputs]
 === Using Completion to Insert Previous Inputs: `M-o' ===
@@ -198,7 +195,7 @@ to the main completion.
 
 
 
-
+[:C-M-comma]
 [:icicle-toggle-alternative-sorting]
 [:SortPreviousFirst]
 === Putting Previous Candidates First: `C-M-,' ===
@@ -232,7 +229,8 @@ a sort-order choice available through'''`##C-,##'''', this gives you quite a lot
 
 
 
-
+[:M-h]
+[:M-pause]
 [:MatchHistoricalCandidates]
 === Matching Only Historical Candidates: `M-h' and `M-pause' ===
 
@@ -327,6 +325,8 @@ harder to describe than it is to experience.
 
 
 
+
+
 [:UsingOtherHistories]
 === Using Other Histories; Commands Any Which Way ===
 
@@ -342,6 +342,7 @@ includes commands invoked using a menu.
 
 [:C-M-pause]
 [:icicle-other-history]
+[:CompletingAgainstAllInteractiveCommands]
 ==== Completing Against All Interactive Commands ====
 
 When you execute a command using `M-x', it is added to the history
@@ -366,35 +367,51 @@ customize option '''`<tt>[[Icicles - Customization and General Tips#icicle-popul
 make it non-`nil'.  Thereafter, when you enter ''Icicle'' mode, all
 interactive use of commands records them on this special history.
 
+Be aware that use of this feature can slow Emacs down, and the
+history list can become quite large.
+
 During completion, you can then use '''`C-M-pause''''
 ('''`icicle-other-history'''') to complete against this extended set of
 previously used commands.  For example, if you use menu item '''Open File''', then the corresponding
 command, `menu-find-file-existing', becomes available as a completion
 candidate.  (Recall too that the command associated with a given
-menu item is shown in the `*Completions*' [[mode line]] whenever you cycle
-to it.)
-
-Be aware that use of this feature can slow Emacs down, and the
-history list can become quite large.
+menu item is shown in the `*Completions*' [[mode line]] whenever you cycle to it.)  This is a
+special case of using `C-M-pause', of which see more [[#UsingAnAlternativeHistory|below]].
 
 
 
 
+
+[:C-M-pause]
+[:UsingAnAlternativeHistory]
 ==== Using an Alternative History ====
 
-When you are completing something other than a command, abbrev, or
-[[keyboard macro]] (or even when you complete one of those, if you use
-a prefix argument), `C-M-pause' prompts you for an alternative
-history to use -- any history you like.  You can choose the history using completion.  This
-does not automatically complete your current input against the history you
-choose; it simply changes the current history for the duration of
-the current minibuffer completion.  (You can use `M-h', as usual,
-if you want to complete against the chosen history.)
+Anytime you enter input in the [[minibuffer]], regardless of whether
+completion is available, '''`C-M-pause'''' prompts you for an
+alternative history to use -- any history you like.  You can choose
+the history using [[completion]].
+
+That is, you can change which history to use, on the fly, as many
+times as you like.  You can use this before using '''`M-o'''', for
+instance, to complete against different histories for different
+parts of your overall minibuffer input.  If you are inputting a
+complex shell command with arguments, for example, you can use
+different histories to compose different parts of the overall
+command.
+
+(If you are completing a [[command]], abbrev, or [[keyboard macro]], then
+for `C-M-pause' to prompt for an alternative history you must use
+a [[prefix argument]].  Otherwise, you get the special `C-M-pause'
+behavior described above -- see [[#CompletingAgainstAllInteractiveCommands|Completing Against All Interactive Commands]], above.
 
 
 
 
 
+
+
+
+[:M-i]
 [:ClearHistoryEntries]
 === Cleaning Up History Lists ===
 
