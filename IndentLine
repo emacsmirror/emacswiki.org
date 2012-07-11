@@ -1,0 +1,10 @@
+An anonymous user left this link on a [[News]] page with barely a comment. I guess it's code to indent code? -- AlexSchroeder
+
+Source:
+
+* https://github.com/ran9er/init.emacs/blob/3bbfdbdf8a9abac955dcebbd7233195fa8865080/20_aux-line.el
+
+Usage:
+
+; M-x indent-vline-lisp:  for lisp (no idea what it does)
+; M-x indent-hint-mode: for other (no idea what it does)
