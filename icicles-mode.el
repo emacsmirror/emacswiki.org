@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 10:21:10 2006
 ;; Version: 22.0
-;; Last-Updated: Sun Jul  8 11:49:24 2012 (-0700)
+;; Last-Updated: Wed Jul 11 00:12:33 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 8994
+;;     Update #: 9024
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-mode.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -2814,14 +2814,15 @@ keymap.  If KEYMAP-VAR is not bound to a keymap, it is ignored."
        (define-key map (icicle-kbd "M-.")           'icicle-insert-string-at-point) ; `M-.'
        (define-key map (icicle-kbd "C-x C-f")       'icicle-resolve-file-name) ; `C-x C-f'
        (define-key map (icicle-kbd "C-=")           'icicle-insert-string-from-variable) ; `C-='
-       (define-key map (icicle-kbd "M-o")           'icicle-insert-history-element) ; `M-o'
        (define-key map (icicle-kbd "M-i")           'icicle-clear-current-history) ; `M-i'
        (define-key map (icicle-kbd "M-k")      'icicle-erase-minibuffer-or-history-element) ; `M-k'
+       (define-key map (icicle-kbd "M-o")           'icicle-insert-history-element) ; `M-o'
        (define-key map (icicle-kbd "M-:")         'icicle-pp-eval-expression-in-minibuffer) ; `M-:'
        (define-key map (icicle-kbd "C-a")           'icicle-beginning-of-line+) ; `C-a'
        (define-key map (icicle-kbd "C-e")           'icicle-end-of-line+) ; `C-e'
        (define-key map (icicle-kbd "C-M-v")         'icicle-scroll-forward) ; `C-M-v'
        (define-key map (icicle-kbd "C-M-S-v")    'icicle-scroll-backward) ; `C-M-S-v' (aka `C-M-V')
+       (define-key map (icicle-kbd "C-M-pause")     'icicle-other-history) ; `C-M-pause'
        (dolist (key  icicle-completing-read+insert-keys)
          (define-key map key 'icicle-completing-read+insert)) ; `C-M-S-c'
        (dolist (key  icicle-read+insert-file-name-keys)
@@ -2919,14 +2920,15 @@ keymap.  If KEYMAP-VAR is not bound to a keymap, it is ignored."
          (define-key map (icicle-kbd "M-.")           'icicle-insert-string-at-point) ; `M-.'
          (define-key map (icicle-kbd "C-x C-f")       'icicle-resolve-file-name) ; `C-x C-f'
          (define-key map (icicle-kbd "C-=")           'icicle-insert-string-from-variable) ; `C-='
-         (define-key map (icicle-kbd "M-o")           'icicle-insert-history-element) ; `M-o'
          (define-key map (icicle-kbd "M-i")           'icicle-clear-current-history) ; `M-i'
          (define-key map (icicle-kbd "M-k")    'icicle-erase-minibuffer-or-history-element) ; `M-k'
+         (define-key map (icicle-kbd "M-o")           'icicle-insert-history-element) ; `M-o'
          (define-key map (icicle-kbd "M-:")       'icicle-pp-eval-expression-in-minibuffer) ; `M-:'
          (define-key map (icicle-kbd "C-a")           'icicle-beginning-of-line+) ; `C-a'
          (define-key map (icicle-kbd "C-e")           'icicle-end-of-line+) ; `C-e'
          (define-key map (icicle-kbd "C-M-v")         'icicle-scroll-forward) ; `C-M-v'
          (define-key map (icicle-kbd "C-M-S-v")  'icicle-scroll-backward) ; `C-M-S-v' (aka `C-M-V')
+         (define-key map (icicle-kbd "C-M-pause")     'icicle-other-history) ; `C-M-pause'
          (dolist (key  icicle-completing-read+insert-keys)
            (define-key map key 'icicle-completing-read+insert)) ; `C-M-S-c'
          (dolist (key  icicle-read+insert-file-name-keys)
@@ -3024,14 +3026,15 @@ keymap.  If KEYMAP-VAR is not bound to a keymap, it is ignored."
          (define-key map (icicle-kbd "M-.")           'icicle-insert-string-at-point) ; `M-.'
          (define-key map (icicle-kbd "C-x C-f")       'icicle-resolve-file-name) ; `C-x C-f'
          (define-key map (icicle-kbd "C-=")           'icicle-insert-string-from-variable) ; `C-='
-         (define-key map (icicle-kbd "M-o")           'icicle-insert-history-element) ; `M-o'
          (define-key map (icicle-kbd "M-i")           'icicle-clear-current-history) ; `M-i'
+         (define-key map (icicle-kbd "M-o")           'icicle-insert-history-element) ; `M-o'
          (define-key map (icicle-kbd "M-k")    'icicle-erase-minibuffer-or-history-element) ; `M-k'
          (define-key map (icicle-kbd "M-:")       'icicle-pp-eval-expression-in-minibuffer) ; `M-:'
          (define-key map (icicle-kbd "C-a")           'icicle-beginning-of-line+) ; `C-a'
          (define-key map (icicle-kbd "C-e")           'icicle-end-of-line+) ; `C-e'
          (define-key map (icicle-kbd "C-M-v")         'icicle-scroll-forward) ; `C-M-v'
          (define-key map (icicle-kbd "C-M-S-v")  'icicle-scroll-backward) ; `C-M-S-v' (aka `C-M-V')
+         (define-key map (icicle-kbd "C-M-pause")     'icicle-other-history) ; `C-M-pause'
          (dolist (key  icicle-completing-read+insert-keys)
            (define-key map key 'icicle-completing-read+insert)) ; `C-M-S-c'
          (dolist (key  icicle-read+insert-file-name-keys)
@@ -3158,14 +3161,15 @@ keymap.  If KEYMAP-VAR is not bound to a keymap, it is ignored."
        (define-key map (icicle-kbd "M-.")           nil) ; `M-.'
        (define-key map (icicle-kbd "C-x C-f")       nil) ; `C-x C-f'
        (define-key map (icicle-kbd "C-=")           nil) ; `C-='
-       (define-key map (icicle-kbd "M-o")           nil) ; `M-o'
        (define-key map (icicle-kbd "M-i")           nil) ; `M-i'
        (define-key map (icicle-kbd "M-k")           nil) ; `M-k'
+       (define-key map (icicle-kbd "M-o")           nil) ; `M-o'
        (define-key map (icicle-kbd "M-:")           nil) ; `M-:'
        (define-key map (icicle-kbd "C-a")           nil) ; `C-a'
        (define-key map (icicle-kbd "C-e")           nil) ; `C-e'
        (define-key map (icicle-kbd "C-M-v")         nil) ; `C-M-v'
        (define-key map (icicle-kbd "C-M-S-v")       nil) ; `C-M-S-v' (aka `C-M-V')
+       (define-key map (icicle-kbd "C-M-pause")     nil) ; `C-M-pause'
        (dolist (key  icicle-completing-read+insert-keys) (define-key map key nil)) ; `C-M-S-c'
        (dolist (key  icicle-read+insert-file-name-keys) (define-key map key nil)) ; `C-M-S-f'
        (define-key map (icicle-kbd "C-j")           'exit-minibuffer) ; `C-j'
@@ -3211,14 +3215,15 @@ keymap.  If KEYMAP-VAR is not bound to a keymap, it is ignored."
          (define-key map (icicle-kbd "M-.")           nil) ; `M-.'
          (define-key map (icicle-kbd "C-x C-f")       nil) ; `C-x C-f'
          (define-key map (icicle-kbd "C-=")           nil) ; `C-='
-         (define-key map (icicle-kbd "M-o")           nil) ; `M-o'
          (define-key map (icicle-kbd "M-i")           nil) ; `M-i'
          (define-key map (icicle-kbd "M-k")           nil) ; `M-k'
+         (define-key map (icicle-kbd "M-o")           nil) ; `M-o'
          (define-key map (icicle-kbd "M-:")           nil) ; `M-:'
          (define-key map (icicle-kbd "C-a")           nil) ; `C-a'
          (define-key map (icicle-kbd "C-e")           nil) ; `C-e'
          (define-key map (icicle-kbd "C-M-v")         nil) ; `C-M-v'
          (define-key map (icicle-kbd "C-M-S-v")       nil) ; `C-M-S-v' (aka `C-M-V')
+         (define-key map (icicle-kbd "C-M-pause")     nil) ; `C-M-pause'
          (dolist (key  icicle-completing-read+insert-keys) (define-key map key nil)) ; `C-M-S-c'
          (dolist (key  icicle-read+insert-file-name-keys) (define-key map key nil)) ; `C-M-S-f'
          (define-key map (icicle-kbd "C-j")           'exit-minibuffer) ; `C-j'
@@ -3264,14 +3269,15 @@ keymap.  If KEYMAP-VAR is not bound to a keymap, it is ignored."
          (define-key map (icicle-kbd "M-.")           nil) ; `M-.'
          (define-key map (icicle-kbd "C-x C-f")       nil) ; `C-x C-f'
          (define-key map (icicle-kbd "C-=")           nil) ; `C-='
-         (define-key map (icicle-kbd "M-o")           nil) ; `M-o'
          (define-key map (icicle-kbd "M-i")           nil) ; `M-i'
          (define-key map (icicle-kbd "M-k")           nil) ; `M-k'
+         (define-key map (icicle-kbd "M-o")           nil) ; `M-o'
          (define-key map (icicle-kbd "M-:")           nil) ; `M-:'
          (define-key map (icicle-kbd "C-a")           nil) ; `C-a'
          (define-key map (icicle-kbd "C-e")           nil) ; `C-e'
          (define-key map (icicle-kbd "C-M-v")         nil) ; `C-M-v'
          (define-key map (icicle-kbd "C-M-S-v")       nil) ; `C-M-S-v' (aka `C-M-V')
+         (define-key map (icicle-kbd "C-M-pause")     nil) ; `C-M-pause'
          (dolist (key  icicle-completing-read+insert-keys) (define-key map key nil)) ; `C-M-S-c'
          (dolist (key  icicle-read+insert-file-name-keys) (define-key map key nil)) ; `C-M-S-f'
          (define-key map (icicle-kbd "C-j")           'exit-minibuffer))) ; `C-j'
@@ -3649,7 +3655,7 @@ complete)"))
   (define-key map (icicle-kbd "M-pause")   'icicle-keep-only-past-inputs) ; `M-pause'
   (define-key map (icicle-kbd "C-pause") 'icicle-toggle-highlight-historical-candidates) ;`C-pause'
   (define-key map (icicle-kbd "S-pause")   'icicle-toggle-highlight-saved-candidates) ; `S-pause'
-  (define-key map (icicle-kbd "C-M-pause") 'icicle-other-history) ; `C-M-pause'
+;$$$$$$  (define-key map (icicle-kbd "C-M-pause") 'icicle-other-history) ; `C-M-pause'
   (define-key map (icicle-kbd "C-insert")  'icicle-switch-to-Completions-buf) ; `C-insert'
   (define-key map (icicle-kbd "insert")    'icicle-save/unsave-candidate) ; `insert'
 
@@ -3671,6 +3677,7 @@ complete)"))
     (define-key map (icicle-kbd "M-:")     'icicle-pp-eval-expression-in-minibuffer) ; `M-:'
     (when (fboundp 'icicle-yank-secondary)
       (define-key map (icicle-kbd "C-M-y") 'icicle-yank-secondary)) ; `C-M-y'
+    (define-key map (icicle-kbd "C-M-pause")  'icicle-other-history) ; `C-M-pause'
     (define-key map (icicle-kbd "M-S-backspace") 'icicle-erase-minibuffer) ; `M-S-backspace'
     (define-key map (icicle-kbd "M-S-delete") 'icicle-erase-minibuffer) ; `M-S-delete'
     (dolist (key  icicle-completing-read+insert-keys)
@@ -3912,7 +3919,7 @@ MAP is `minibuffer-local-completion-map',
   (define-key map (icicle-kbd "M-pause")   nil)
   (define-key map (icicle-kbd "C-pause")   nil)
   (define-key map (icicle-kbd "S-pause")   nil)
-  (define-key map (icicle-kbd "C-M-pause") nil)
+  ;; $$$$$$ (define-key map (icicle-kbd "C-M-pause") nil)
   (define-key map (icicle-kbd "C-insert")  nil)
   (define-key map (icicle-kbd "insert")    nil)
 
@@ -3928,6 +3935,7 @@ MAP is `minibuffer-local-completion-map',
     (define-key map (icicle-kbd "C-x C-f") nil)
     (define-key map (icicle-kbd "M-:")     nil)
     (define-key map (icicle-kbd "C-M-y")   nil)
+    (define-key map (icicle-kbd "C-M-pause") nil)
     (define-key map (icicle-kbd "M-S-backspace") nil)
     (define-key map (icicle-kbd "M-S-delete") nil)
     (dolist (key  icicle-completing-read+insert-keys)
