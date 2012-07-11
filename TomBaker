@@ -59,7 +59,7 @@ BUT, in those very real and not rare cases in which a final newline is a bad ide
 
 
 (Trivia answer:  --  
-The cursor would be at the beginning, not of the -next- line, but of the -same- line.  The underlying TECO would emulate the movements that had been defined for printers and teletypes.  That is, CR would make the cursor jump back to the left margin (also change onscreen into a circle, like the letter "o" up above that looks like a typo).  Please, please note: When the cursor jumped to the beginning of a line and changed to a circle, -it- -would- -cover- -up- -one- -of- -your- -characters- (again, like the letter "o" above covering up the letter "b", obscuring half of the word "be"). One byte index movement later, the LF would make the cursor move down one line (and on the display the cursor would return to being a box).
+The cursor would be at the beginning, not of the -next- line, but of the -same- line.  The underlying TECO would emulate the movements that had been defined for printers and teletypes.  That is, CR would make the cursor jump back to the left margin (also change onscreen into a circle, like the letter "o" up above that looks like a typo).  Please, please note: When the cursor jumped to the beginning of a line and changed to a circle, -it- -would- -cover- -up- -one- -of- -your- -characters- (again, like the letter "o" above covering up the letter "b", obscuring half of the word "be"). One byte index movement later, the LF would make the cursor move down one line (and on the display the cursor would return to being a box). )
 
 
 ----
