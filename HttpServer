@@ -1,5 +1,20 @@
-httpd.el was originally written by EricMarsden. See EmacsHttpd for the original.
+Emacs 23 supports server sockets and asynchronous server sockets. [[Elnode]] is an asychronous http server in elisp by NicFerrier. 
 
+The async approach has several benefits:
+
+* emacs can use an external program (asynchronously of course) to do things
+** Elnode uses cat as part of its webserver
+* writing dynamic handlers is relatively easy
+* it could serve as the foundation for many different services, [[Edit_with_Emacs]] (the Chrome browser edit tool) needs an Emacs http server
+* the async approach doesn't require threads to serve quite high loads
+
+----
+
+Below are two older approaches.
+
+----
+
+httpd.el was originally written by EricMarsden. See EmacsHttpd for the original.
 
 JohnWiegley posted version 1.0 as:
 : <em>2003-11-14 (1.0): This customized version of [ftp://ftp.newartisans.com:/pub/emacs/httpd.el httpd.el] is always current, plus whatever other modifications emacs-wiki.el or httpd-serve need.</em>
@@ -18,18 +33,6 @@ Note the following if you use Emacs version 21.4 or lower: Since Emacs doesn't s
 The first one above does not work for emacs23, and the second one redirects to a blank page.
 
 Here's one that I am using now - http://nullprogram.com/blog/2009/05/17/
-
-----
-
-Emacs 23 supports server sockets and asynchronous server sockets. [[Elnode]] is an asychronous http server in elisp by NicFerrier. 
-
-The async approach has several benefits:
-
-* emacs can use an external program (asynchronously of course) to do things
-** Elnode uses cat as part of its webserver
-* writing dynamic handlers is relatively easy
-* it could serve as the foundation for many different services, [[Edit_with_Emacs]] (the Chrome browser edit tool) needs an Emacs http server
-* the async approach doesn't require threads to serve quite high loads
 
 ----
 
