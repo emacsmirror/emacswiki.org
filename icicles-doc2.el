@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Tue Jul 10 09:03:50 2012 (-0700)
+;; Last-Updated: Wed Jul 11 00:40:53 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 28914
+;;     Update #: 28943
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-doc2.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -2241,8 +2241,10 @@
 ;;
 ;;  * In Shell mode and related modes, it enhances completion of
 ;;    commands, previous inputs (commands plus their switches and
-;;    arguments), file names, and environment variables.
-;;    See (@> "Completion in Comint Modes").
+;;    arguments), file names, and environment variables.  This is the
+;;    main shell-related completion enhancement that Icicles offers.
+;;    It is documented not here but in section
+;;    (@> "Completion in Comint Modes").
 ;;
 ;;  * In any buffer, it provides Icicles completion for `M-!' and
 ;;    `M-|'.  This is an optional feature that is not enabled by
@@ -2257,14 +2259,15 @@
 ;;  `&' in Dired (but those have additional enhancements).
 ;;
 ;;  In vanilla Emacs, when you enter a shell command at the prompt for
-;;  `M-!' or `M-|', no completion is available for Emacs prior to
-;;  Emacs 23.  In Emacs 23, no completion is available for empty
-;;  input, and non-empty input is completed only to a shell command
-;;  that is in your search path.
+;;  `M-!' or `M-|', no completion is available for empty input, and
+;;  non-empty input is completed only to an environment variable or to
+;;  a shell command that is in your search path.  For Emacs releases
+;;  prior to Emacs 23, vanilla Emacs offers no completion at all.
 ;;
-;;  In Icicle mode, `M-!' and `M-|' can, like in vanilla Emacs 23,
-;;  complete using commands in your search path.  This depends on the
-;;  the value of option `icicle-guess-commands-in-path' (see below).
+;;  In Icicle mode, `M-!' and `M-|' can, like vanilla Emacs (23 and
+;;  later), complete using commands in your search path.  This depends
+;;  on the the value of option `icicle-guess-commands-in-path' (see
+;;  below).
 ;;
 ;;(@* "Shell Command Completion as File-Name Completion")
 ;;  ** Shell Command Completion as File-Name Completion **
@@ -2289,10 +2292,11 @@
 ;;  that input is interpreted by `read-file-name' as a file name,
 ;;  before it gets passed on to the shell.
 ;;
-;;  The reason for providing file-name completion for a shell command
-;;  is to let you easily invoke a program no matter where it resides,
-;;  whether or not its directory is in your search path.  You can use
-;;  completion to navigate to the command's location.
+;;  The reason for optionally providing file-name completion for a
+;;  shell command is to let you easily invoke a program no matter
+;;  where it resides, whether or not its directory is in your search
+;;  path.  You can use completion to navigate to the command's
+;;  location.
 ;;
 ;;  Icicles shell-command completion is lax, so you can enter any
 ;;  command you want, not just a file-name completion candidate.  And
@@ -2300,6 +2304,10 @@
 ;;  command switches (options) and arguments.  The overall input
 ;;  string is taken as a (pseudo) file name, but it is then passed to
 ;;  the shell for execution.
+;;
+;;  One drawback to this approach of using file-name completion is
+;;  that the history list is the file-name history, not the history of
+;;  previous shell commands.
 ;;
 ;;(@* "Gotcha: `$' in Shell Commands")
 ;;  ** Gotcha: `$' in Shell Commands **
@@ -2391,21 +2399,37 @@
 ;;  candidate, help shows the file's properties.  See
 ;;  (@file :file-name "icicles-doc1.el" :to "Get Help on Completion Candidates").
 ;;
-;;  Remember also:
+;;(@* "Using On-Demand Completion with Shell-Command Input")
+;;  ** Using On-Demand Completion with Shell-Command Input **
 ;;
-;;  * After you have typed or completed the shell command per se
-;;    (e.g. a file name or search-path command), you can use `C-M-S-f'
-;;    (file-name completion on demand) to complete (relative) file
-;;    names to insert as shell-command arguments as part of the
-;;    command line to submit to the shell.  See
-;;    (@file :file-name "icicles-doc2.el" :to "Completion On Demand").
+;;  Even if you do not choose to turn on the file-name completion
+;;  feature described above, you can still get file-name completion
+;;  when you input a shell command.  Just do it on the fly, using
+;;  `C-M-S-f' (aka `C-M-F').
 ;;
-;;  * You can use `M-o' anytime in the minibuffer to complete against
-;;    a previous input.  This means that if you have previously
-;;    entered some complex shell command (e.g. with various switches
-;;    or arguments), then you can use `M-o' to retrieve it for reuse
-;;    (possibly editing it).  See
-;;    (@file :file-name "icicles-doc2.el" :to "Using Completion to Insert Previous Inputs: `M-o'")
+;;  After you have typed or completed the shell command per se (e.g. a
+;;  file name or a search-path command), you can use `C-M-F' to
+;;  complete (relative) file names to insert as shell-command
+;;  arguments as part of the command line to submit to the shell.  See
+;;  (@file :file-name "icicles-doc1.el" :to "Completion On Demand").
+;;
+;;  In addition, remember that you can use `M-o' anytime in the
+;;  minibuffer to complete against a previous input.  This means that
+;;  if you have previously entered some complex shell command
+;;  (e.g. with various switches or arguments), then you can use `M-o'
+;;  to retrieve it for reuse (possibly editing it).  See
+;;  (@file :file-name "icicles-doc1.el" :to "Using Completion to Insert Previous Inputs: `M-o'")
+;;
+;;  In addition, you can use `C-M-pause' to switch to another history,
+;;  then use `M-o' to complete against that history.  And you can do
+;;  this as many times as you like during the same overall
+;;  shell-command input.  You can thus use different histories to
+;;  compose different parts of the overall command.  See
+;;  (@> "Using Other Histories; Commands Any Which Way").
+;;
+;;  None of this is special to shell-command input.  `C-M-F',
+;;  `C-M-pause', and `M-o' are all available in Icicle mode for any
+;;  minibuffer input.
  
 ;;(@* "Icicles Dired Enhancements")
 ;;
@@ -5154,7 +5178,8 @@
 ;;    `C-M-S-f' is the only such key.  Option
 ;;    `icicle-completing-read+insert-keys' is the list of keys for
 ;;    invoking non file-name completion on demand.  By default,
-;;    `C-M-S-c' is the only such key.  See (@> "Completion On Demand").
+;;    `C-M-S-c' is the only such key.  See 
+;;    (@file :file-name "icicles-doc1.el" :to "Completion On Demand").
 ;;
 ;;  * User option `icicle-act-before-cycle-flag' `nil' means that keys
 ;;    such as `C-next', which combine candidate action and cycling,
