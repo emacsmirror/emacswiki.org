@@ -7,9 +7,9 @@
 ;; Copyright (C) 2005-2012, Drew Adams, all rights reserved.
 ;; Created: Sat Jun 25 14:42:07 2005
 ;; Version:
-;; Last-Updated: Wed Jun 20 08:52:34 2012 (-0700)
+;; Last-Updated: Wed Jul 11 10:30:31 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 1766
+;;     Update #: 1769
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/facemenu+.el
 ;; Keywords: faces, extensions, convenience, menus, local
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -345,7 +345,8 @@
 (when (> emacs-major-version 22) (require 'help-fns+ nil t)) ;; help-commands-to-key-buttons
 
 ;; Quiet the byte-compiler.
-(defvar palette-action) ;; Defined in `palette.el'.
+(defvar facemenu-self-insert-data) ;; In `facemenu.el'
+(defvar palette-action)            ;; In `palette.el'.
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
