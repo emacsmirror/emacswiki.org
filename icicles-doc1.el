@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Fri Jun 29 08:34:52 2012 (-0700)
+;; Last-Updated: Wed Jul 11 00:37:07 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 26634
+;;     Update #: 26639
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-doc1.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -7130,8 +7130,9 @@
 ;;     be used during completion.
 ;;
 ;;  7. Command `icicle-other-history' (`C-M-pause' in the minibuffer)
-;;     lets you use a different history for the current completion.
-;;     You can choose the history using completion.
+;;     lets you use a different history for the current minibuffer
+;;     reading.  You can choose the history using completion (even if
+;;     the main minibuffer reading does not allow completion).
 ;;
 ;;  8. Commands `icicle-clear-history' and
 ;;     `icicle-clear-current-history' (`M-i' in the minibuffer)
@@ -7361,29 +7362,39 @@
 ;;  make it non-`nil'.  Thereafter, when you enter Icicle mode, all
 ;;  interactive use of commands records them on this special history.
 ;;
+;;  Be aware that use of this feature can slow Emacs down, and the
+;;  history list can become quite large.
+;;
 ;;  During completion, you can then use `C-M-pause'
 ;;  (`icicle-other-history') to complete against this extended set of
 ;;  previously used commands.  For example, if you use menu item `Open
 ;;  File', then the corresponding command, `menu-find-file-existing',
 ;;  becomes available as a completion candidate.  (Recall too that the
 ;;  command associated with a given menu item is shown in the
-;;  `*Completions*' mode line whenever you cycle to it.)
-;;
-;;  Be aware that use of this feature can slow Emacs down, and the
-;;  history list can become quite large.
+;;  `*Completions*' mode line whenever you cycle to it.)  This is a
+;;  special case of using `C-M-pause', of which see more below.
 ;;
 ;;(@* "Using an Alternative History")
 ;;  *** Using an Alternative History ***
 ;;
-;;  When you are completing something other than a command, abbrev, or
-;;  keyboard macro (or even when you complete one of those, if you use
-;;  a prefix argument), `C-M-pause' prompts you for an alternative
-;;  history to use - any history you like.  You can choose the history
-;;  using completion.  This does not automatically complete your
-;;  current input against the history you choose; it simply changes
-;;  the current history for the duration of the current minibuffer
-;;  completion.  (You can use `M-h', as usual, if you want to complete
-;;  against the chosen history.)
+;;  Anytime you enter input in the minibuffer, regardless of whether
+;;  completion is available, `C-M-pause' prompts you for an
+;;  alternative history to use - any history you like.  You can choose
+;;  the history using completion.
+;;
+;;  That is, you can change which history to use, on the fly, as many
+;;  times as you like.  You can use this before using `M-o', for
+;;  instance, to complete against different histories for different
+;;  parts of your overall minibuffer input.  If you are inputting a
+;;  complex shell command with arguments, for example, you can use
+;;  different histories to compose different parts of the overall
+;;  command.
+;;
+;;  (If you are completing a command, abbrev, or keyboard macro, then
+;;  for `C-M-pause' to prompt for an alternative history you must use
+;;  a prefix argument.  Otherwise, you get the special `C-M-pause'
+;;  behavior described above - see
+;;  (@> "Completing Against All Interactive Commands").
 ;;
 ;;(@* "Cleaning Up History Lists")
 ;;  ** Cleaning Up History Lists **
