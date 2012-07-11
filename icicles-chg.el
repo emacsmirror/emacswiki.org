@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Tue Jul 10 08:15:50 2012 (-0700)
+;; Last-Updated: Wed Jul 11 00:51:30 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 8619
+;;     Update #: 8628
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-chg.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -3223,6 +3223,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-mcmd.el'")
 ;;
+;; 2012/07/10 dadams
+;;     icicle-other-history: Updated doc - now available for any minibuffer input, not just completion.
 ;; 2012/07/02 dadams
 ;;     Moved here (since loaded first) from icicles-cmd2.el: icicle-byte-compile-eval-after-load-flag.
 ;; 2012/06/29 dadams
@@ -4667,6 +4669,9 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-mode.el'")
 ;;
+;; 2012/07/10 dadams
+;;     icicle-define-minibuffer-maps, icicle-(bind|restore)-completion-keys:
+;;       Bind C-M-pause in all minibuffer maps, not just completion maps.
 ;; 2012/07/08 dadams
 ;;     Defalias old-comint-completion-at-point for Emacs 24+. Thx to Christopher Schmidt, M. Heerdegen.
 ;; 2012/06/08 dadams
