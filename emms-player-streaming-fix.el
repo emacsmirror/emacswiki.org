@@ -82,4 +82,4 @@ Otherwise, return the type and the name with a colon in between."
 		name))
 	    (symbol-name (emms-track-type track)))))
 
-(provide 'emms-mplayer-streaming-fix)
+(provide 'emms-player-streaming-fix)
