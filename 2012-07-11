@@ -1,0 +1,9 @@
+======
+indent hint line
+======
+
+load this
+https://github.com/ran9er/init.emacs/blob/3bbfdbdf8a9abac955dcebbd7233195fa8865080/20_aux-line.el
+
+M-x indent-vline-lisp for lisp
+M-x indent-hint-mode for other
