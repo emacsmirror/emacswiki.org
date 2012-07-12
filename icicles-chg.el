@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Wed Jul 11 00:51:30 2012 (-0700)
+;; Last-Updated: Thu Jul 12 13:56:26 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 8628
+;;     Update #: 8630
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-chg.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -3223,6 +3223,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-mcmd.el'")
 ;;
+;; 2012/07/12 dadams
+;;     icicle-help-string-completion: Better representation of option values.
 ;; 2012/07/10 dadams
 ;;     icicle-other-history: Updated doc - now available for any minibuffer input, not just completion.
 ;; 2012/07/02 dadams
