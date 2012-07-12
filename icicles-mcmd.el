@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Wed Jul 11 00:46:54 2012 (-0700)
+;; Last-Updated: Thu Jul 12 13:52:31 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 18275
+;;     Update #: 18356
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-mcmd.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -1974,22 +1974,22 @@ These are the main Icicles actions and their minibuffer key bindings:
  * Toggle/cycle Icicles options on the fly.  Key:   \tCurrently:
      Highlighting of past inputs             \\[icicle-toggle-highlight-historical-candidates]\t%S
      Highlighting of saved candidates        \\[icicle-toggle-highlight-saved-candidates]\t%S
-     Removal of duplicate candidates         \\[icicle-toggle-transforming]\t%S
+     Removal of duplicate candidates         \\[icicle-toggle-transforming]\t%s
      Sort order                              \\[icicle-change-sort-order]\t%s
      Alternative sort order                  \\[icicle-dispatch-M-comma]\t%s
-     Swap alternative/normal sort            \\[icicle-toggle-alternative-sorting]\t- (swaps) -
+     Swap alternative/normal sort            \\[icicle-toggle-alternative-sorting]
      Case sensitivity                        \\[icicle-toggle-case-sensitivity]\t%S
      `.' matching newlines too (any char)    \\[icicle-toggle-dot]\t%S
      Escaping of special regexp chars        \\[icicle-toggle-regexp-quote]\t%S
-     Incremental completion                  \\[icicle-cycle-incremental-completion]\t%S
+     Incremental completion                  \\[icicle-cycle-incremental-completion]\t%s
      Input expansion to common match (toggle)\\[icicle-toggle-expand-to-common-match]\t%S
-     Input expansion to common match (cycle) \\[icicle-cycle-expand-to-common-match]\t%S
+     Input expansion to common match (cycle) \\[icicle-cycle-expand-to-common-match]\t%s
      Hiding common match in `*Completions*'  \\[icicle-dispatch-C-x.]\t%S
-     Hiding no-match lines in `*Completions*' C-u \\[icicle-dispatch-C-x.]\t%S
+     Hiding no-match lines in `*Completions*' C-u \\[icicle-dispatch-C-x.]\t%s
      Horizontal/vertical candidate layout    \\[icicle-toggle-completions-format]\t%s
      S-TAB completion method                 \\[icicle-next-S-TAB-completion-method]\t%s
      TAB completion method                   \\[icicle-next-TAB-completion-method]\t%s
-     Showing image-file thumbnails (E22+)    C-x t\t%S
+     Showing image-file thumbnails (E22+)    C-x t\t%s
      Inclusion of proxy candidates           \\[icicle-toggle-proxy-candidates]\t%S
      Ignoring certain file extensions        \\[icicle-dispatch-C-.]\t%S
      Checking for remote file names          \\[icicle-dispatch-C-^]\t%S
@@ -2157,34 +2157,52 @@ This calls `icicle-pp-eval-expression-in-minibuffer', which displays
 the result in the echo area or a popup buffer, *Pp Eval Output*.
 It also provides some of the Emacs-Lisp key bindings during expression
 editing."
-             icicle-highlight-historical-candidates-flag
-             icicle-highlight-saved-candidates-flag
-             icicle-transform-function
+             (if icicle-highlight-historical-candidates-flag 'yes 'no)
+             (if icicle-highlight-saved-candidates-flag 'yes 'no)
+             (cond ((not icicle-transform-function) "no")
+                   ((or (eq 'icicle-remove-duplicates          icicle-transform-function)
+                        (and icicle-extra-candidates
+                             (eq 'icicle-remove-dups-if-extras icicle-transform-function)))
+                    "yes")
+                   ((eq 'icicle-remove-dups-if-extras icicle-transform-function)
+                    "yes in general, but not now")
+                   (t icicle-transform-function))
              (icicle-current-sort-order nil)
              (icicle-current-sort-order 'ALTERNATIVE)
-             (not case-fold-search)
-             (string= icicle-dot-string icicle-anychar-regexp)
-             icicle-regexp-quote-flag
-             icicle-incremental-completion
-             icicle-expand-input-to-common-match
-             icicle-expand-input-to-common-match
-             icicle-hide-common-match-in-Completions-flag
-             icicle-hide-non-matching-lines-flag
+             (if case-fold-search 'no 'yes)
+             (if (string= icicle-dot-string icicle-anychar-regexp) 'yes 'no)
+             (if icicle-regexp-quote-flag 'yes 'no)
+             (case icicle-incremental-completion
+               ((nil) "no")
+               ((t)   "yes, if *Completions* showing")
+               (t     "yes, always (eager)"))
+             (if (eq icicle-expand-input-to-common-match 0) 'no 'yes)
+             (case icicle-expand-input-to-common-match
+               (0 "never")
+               (1 "explicit completion")
+               (2 "only one completion")
+               (3 "`TAB' or only one")
+               (t "always"))
+             (if icicle-hide-common-match-in-Completions-flag 'yes 'no)
+             (if icicle-hide-non-matching-lines-flag 'yes 'no)
              icicle-completions-format
              (car (rassq icicle-apropos-complete-match-fn icicle-S-TAB-completion-methods-alist))
              (icicle-current-TAB-method)
-             icicle-add-proxy-candidates-flag
-             (and completion-ignored-extensions  t)
-             icicle-image-files-in-Completions
-             icicle-test-for-remote-files-flag
-             icicle-ignore-space-prefix-flag
-             icicle-use-C-for-actions-flag
-             icicle-use-~-for-home-dir-flag
-             icicle-search-highlight-all-current-flag
-             icicle-search-whole-word-flag
-             icicle-search-cleanup-flag                
-             icicle-search-replace-whole-candidate-flag
-             icicle-search-replace-common-match-flag)
+             (case icicle-image-files-in-Completions
+               ((nil) "no")
+               (image "image only")
+               (t "image and name"))
+             (if icicle-add-proxy-candidates-flag 'yes 'no)
+             (if completion-ignored-extensions 'yes 'no)
+             (if icicle-test-for-remote-files-flag 'yes 'no)
+             (if icicle-ignore-space-prefix-flag 'yes 'no)
+             (if icicle-use-C-for-actions-flag 'yes 'no)
+             (if icicle-use-~-for-home-dir-flag 'yes 'no)
+             (if icicle-search-highlight-all-current-flag 'yes 'no)
+             (if icicle-search-whole-word-flag 'yes 'no)
+             (if icicle-search-cleanup-flag 'yes 'no)                
+             (if icicle-search-replace-whole-candidate-flag 'yes 'no)
+             (if icicle-search-replace-common-match-flag 'yes 'no))
      icicle-general-help-string
      " 
 
