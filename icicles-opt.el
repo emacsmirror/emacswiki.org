@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:22:14 2006
 ;; Version: 22.0
-;; Last-Updated: Sun Jul  8 08:42:48 2012 (-0700)
+;; Last-Updated: Thu Jul 12 13:03:52 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 5248
+;;     Update #: 5253
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-opt.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -1547,24 +1547,20 @@ This option controls when such expansion occurs.  You can cycle among
 the possible values using \\<minibuffer-local-completion-map>\
 `\\[icicle-cycle-expand-to-common-match]' in the minibuffer.
 
-0 `never'    - Do not expand your input, except when you use `C-M-TAB'
-             or `C-M-S-TAB', which do not display `*Completions*'.
+0 Do not expand your input, except when you use `C-M-TAB' or
+  `C-M-S-TAB', which does not display `*Completions*'.
 
-1 `explicit' - Do not expand your input automatically, during
-             incremental completion, but expand it whenever you use
-             `TAB' or `S-TAB'.
+1 Do not expand your input automatically, during incremental
+  completion.  Expand it only when you use `TAB' or `S-TAB'.
 
-2 `sole-match' - Expand your input when you use `TAB' or `S-TAB'.
-             Expand it also automatically, whenever  only one
-             candidate matches it.
+2 Expand your input when you use `TAB' or `S-TAB'.
+  Expand it also automatically whenever only one candidate matches it.
 
-3 `nil'      - Expand your input when you use `TAB' or `S-TAB'.
-             Expand it also whenever  only one candidate matches it.
-             Expand it also automatically, during incremental prefix
-             completion.
+3 Expand your input when you use `TAB' or `S-TAB'.
+  Expand it also whenever  only one candidate matches it.
+  Expand it also automatically, during incremental prefix completion.
 
-4 other      - Expand your input always, including for incremental
-             completion.
+4 Expand your input always, including for incremental completion.
 
 If you want to return to your original, unexpanded input, use \\<minibuffer-local-completion-map>\
 `\\[icicle-retrieve-previous-input]'.
@@ -1580,7 +1576,7 @@ and one of the other values, then see also option
 values of these two options using \\<minibuffer-local-completion-map>\
 `\\[icicle-toggle-expand-to-common-match]' in the minibuffer."
   :type '(choice
-          (const :tag "Never expand (except for `C-M-TAB', `C-M-S-TAB')"          0)
+          (const :tag "Never expand (except for `C-M-TAB' and `C-M-S-TAB')"       0)
           (const :tag "No auto-expansion.  Expand only for explicit completion"   1)
           (const :tag "Auto-expand when only one matching completion"             2)
           (const :tag "Auto-expand for prefix completion or when only one match"  3)
@@ -1594,7 +1590,7 @@ The values of the two options should be different.  The value choices
 are the same.  You can use \\<minibuffer-local-completion-map>\
 `\\[icicle-toggle-expand-to-common-match]' to toggle between the two values."
   :type '(choice
-          (const :tag "Never expand (except for `C-M-TAB', `C-M-S-TAB')"          0)
+          (const :tag "Never expand (except for `C-M-TAB' and `C-M-S-TAB')"       0)
           (const :tag "No auto-expansion.  Expand only for explicit completion"   1)
           (const :tag "Auto-expand when only one matching completion"             2)
           (const :tag "Auto-expand for prefix completion or when only one match"  3)
