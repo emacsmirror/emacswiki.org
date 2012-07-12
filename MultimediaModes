@@ -10,6 +10,7 @@ But see MusicPlayers.
 * EmacsPhotoDatabase -- manage film, negative, and print information (silver-based photography)
 * EmacsSuperCollider -- Develop synthetic audio
 * ImageMode -- new in Emacs 22
+** [http://user42.tuxfamily.org/imagetext/index.html imagetext.el] -- view text comments from PNG etc in ImageMode and AutoImageFileMode
 * JpegMode -- details of jpeg file internals
 * LookMode -- opens a list of files in a temporary, writable buffer.  Allows safe resizing of images with EmacsImageManipulation mode.
 * MusicPlayers -- play CDs and MP3s in your favourite editor
