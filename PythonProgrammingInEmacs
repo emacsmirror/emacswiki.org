@@ -185,6 +185,58 @@ I did a copy 'n paste for simplicity.
 The normal operation of flymake allows the user to see the error message for a particular line by "hovering" the mouse over the line. This is inconvenient for people who try to use the keyboard for all input. FlymakeCursor was designed to address that: it displays the flymake error in the minibuffer region, when the cursor is placed on a line containing a flymake error.
 
 
+= Using flymake with pyflakes on Windows =
+
+Download the pyflakes tgz file from [http://pypi.python.org/pypi/pyflakes/  Pypi]. Unpack it, then run the setup: 
+
+<code>\Python27\python.exe \temp\\temp\pyflakes-0.5.0\setup.py install</code>
+
+This will install pyflakes. 
+
+To run pyflakes from a command prompt, you then need something like this: 
+
+<code>\Python27\python.exe \Python27\Scripts\pyflakes myfile.py</code>
+
+To make it simpler, you can create a file called <code>pyflakes.cmd</code> and put it into c:\python27 . The contents should be:
+
+<pre>
+@echo off
+goto START
+-------------------------------------------------------
+ pyflakes.cmd
+-------------------------------------------------------
+:START
+SETLOCAL
+if  _%1==_ goto USAGE
+%~dp0\python.exe %~dp0\Scripts\pyflakes %*
+goto ALL_DONE
+
+:USAGE
+  echo usage:  pyflakes ^<file^> [^<optionalargs^>]
+  echo run the pyflakes syntax checker on a python source file.
+
+:ALL_DONE
+ENDLOCAL
+</pre>
+
+Then, modify one line in the elisp snip given above, to be like this:
+
+{{{
+(when (load "flymake" t) 
+  (defun flymake-pyflakes-init () 
+     ; Make sure it's not a remote buffer or flymake would not work
+     (when (not (subsetp (list (current-buffer)) (tramp-list-remote-buffers)))
+      (let* ((temp-file (flymake-init-create-temp-buffer-copy 
+                         'flymake-create-temp-inplace)) 
+             (local-file (file-relative-name 
+                          temp-file 
+                          (file-name-directory buffer-file-name)))) 
+        (list "c:\\Python27\\pyflakes.cmd" (list local-file)))))
+  (add-to-list 'flymake-allowed-file-name-masks 
+               '("\\.py\\'" flymake-pyflakes-init))) 
+}}}
+
+
 * PyIndent
 
 == Issues ==
