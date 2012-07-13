@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 10:21:10 2006
 ;; Version: 22.0
-;; Last-Updated: Wed Jul 11 00:12:33 2012 (-0700)
+;; Last-Updated: Fri Jul 13 14:46:54 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 9024
+;;     Update #: 9026
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-mode.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -3750,7 +3750,8 @@ complete)"))
   (define-key map (icicle-kbd "M-v")       'icicle-scroll-Completions-backward) ; `M-v'
   (define-key map (icicle-kbd ".")         'icicle-insert-dot-command) ; `.'
   (define-key map (icicle-kbd "M-m")       'icicle-toggle-show-multi-completion) ; `M-m'
-  (define-key map (icicle-kbd "C-x .")     'icicle-dispatch-C-x.) ; `C-x .'
+  (define-key map (icicle-kbd "C-x .")     'icicle-dispatch-C-x.)                   ; `C-x .'
+  (define-key map (icicle-kbd "C-x :")     'icicle-toggle-network-drives-as-remote) ; `C-x :'
   (when (fboundp 'icicle-cycle-image-file-thumbnail) ; Emacs 23+
     (define-key map (icicle-kbd "C-x t")   'icicle-cycle-image-file-thumbnail)) ; `C-x t'
   (when (fboundp 'doremi)
@@ -4006,6 +4007,7 @@ MAP is `minibuffer-local-completion-map',
   (define-key map (icicle-kbd ".")         nil)
   (define-key map (icicle-kbd "M-m")       nil)
   (define-key map (icicle-kbd "C-x .")     nil)
+  (define-key map (icicle-kbd "C-x :")     nil)
   (when (fboundp 'icicle-cycle-image-file-thumbnail) ; Emacs 23+
     (define-key map (icicle-kbd "C-x t")   nil))
   (when (fboundp 'doremi)
