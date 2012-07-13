@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Wed Jul 11 00:40:53 2012 (-0700)
+;; Last-Updated: Fri Jul 13 15:10:00 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 28943
+;;     Update #: 28946
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-doc2.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -5612,7 +5612,8 @@
 ;;  * Non-`nil' user option `icicle-network-drive-means-remote-flag'
 ;;    means that a file on a mapped MS Windows network drive is
 ;;    considered remote.  This has an effect on things like
-;;    incremental completion.
+;;    incremental completion.  You can toggle this option anytime
+;;    during completion using `C-x :'.
 ;;
 ;;  * Non-`nil' user option `icicle-regexp-quote-flag' reduces apropos
 ;;    completion to simple substring completion and Icicles regexp
@@ -6358,7 +6359,8 @@
 ;;    suffer from performance similar to remote files.  This
 ;;    assumption is controlled by user option
 ;;    `icicle-network-drive-means-remote-flag': set it to `nil' if you
-;;    want such files to be treated as local files.
+;;    want such files to be treated as local files.  You can toggle
+;;    this option anytime during completion, using `C-x :'.
 ;;
 ;;    Other than this, there is no special treatment of MS Windows
 ;;    drive letters (e.g. `C:') - I use Cygwin on Windows.
