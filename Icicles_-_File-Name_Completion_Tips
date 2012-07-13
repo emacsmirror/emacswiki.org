@@ -37,7 +37,7 @@ and you can use '''`##/##'''' and '''`##~/##'''' to shadow input to the left.
 By default, files on MS Windows mapped network drives are
 treated by Icicles as remote files, because they can sometimes
 suffer from performance similar to remote files.  This
-assumption is controlled by user option '''`<tt>[[Icicles - Customization and General Tips#icicle-network-drive-means-remote-flag|icicle-network-drive-means-remote-flag]]</tt>'''': set it to `nil' if you want such files to be treated as local files.
+assumption is controlled by user option '''`<tt>[[Icicles - Customization and General Tips#icicle-network-drive-means-remote-flag|icicle-network-drive-means-remote-flag]]</tt>'''': set it to `nil' if you want such files to be treated as local files.  You can toggle this option anytime during completion, using '''`##C-x :##''''.
 
 Other than this, there is no special treatment of MS Windows drive letters (e.g. `<code>C:</code>') -- I use CygWin on Windows.
 
