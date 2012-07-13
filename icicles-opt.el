@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:22:14 2006
 ;; Version: 22.0
-;; Last-Updated: Thu Jul 12 13:03:52 2012 (-0700)
+;; Last-Updated: Fri Jul 13 14:32:28 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 5253
+;;     Update #: 5254
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-opt.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -2512,8 +2512,7 @@ prefix-argument bindings for the command."
   "*Non-nil means that a file on a network drive is considered remote.
 This pertains to an MS Windows mapped netword drive, such as `f:'.
 
-Remember that you can use multi-command `icicle-toggle-option' anytime
-to toggle the option."
+You can use `C-x :' during completion to toggle this option."
   :type 'boolean :group 'Icicles-Files)
 
 (when (> emacs-major-version 22)
