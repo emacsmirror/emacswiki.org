@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Thu Jul 12 13:56:26 2012 (-0700)
+;; Last-Updated: Fri Jul 13 15:05:43 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 8630
+;;     Update #: 8635
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-chg.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -3223,6 +3223,9 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-mcmd.el'")
 ;;
+;; 2012/07/13 dadams
+;;     Added: icicle-toggle-network-drives-as-remote.
+;;     icicle-help-string-completion: Added icicle-toggle-network-drives-as-remote.
 ;; 2012/07/12 dadams
 ;;     icicle-help-string-completion: Better representation of option values.
 ;; 2012/07/10 dadams
@@ -4671,6 +4674,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-mode.el'")
 ;;
+;; 2012/07/13 dadams
+;;     icicle-(bind|restore)-completion-keys: Bind icicle-toggle-network-drives-as-remote to C-x :.
 ;; 2012/07/10 dadams
 ;;     icicle-define-minibuffer-maps, icicle-(bind|restore)-completion-keys:
 ;;       Bind C-M-pause in all minibuffer maps, not just completion maps.
@@ -5782,6 +5787,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-opt.el'")
 ;;
+;; 2012/07/13 dadams
+;;     icicle-network-drive-means-remote-flag: Update doc string for toggle, C-x :.
 ;; 2012/07/08 dadams
 ;;     icicle-functions-to-redefine: Updated comint stuff for Emacs 24: comint-completion-at-point.
 ;;       Thx to Christopher Schmidt and Michael Heerdegen.
