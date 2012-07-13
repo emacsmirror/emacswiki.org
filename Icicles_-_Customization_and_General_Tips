@@ -1188,7 +1188,8 @@ not complete (see `<tt>[[#icicle-highlight-input-completion-failure]]</tt>').
 
 Non-`nil' user option '''`icicle-network-drive-means-remote-flag''''
 means that a file on a mapped MS Windows network drive is considered
-remote.  This has an effect on things like [[Icicles - Icompletion#icicle-network-drive-means-remote-flag|incremental completion]].
+remote.  This has an effect on things like [[Icicles - Icompletion#icicle-network-drive-means-remote-flag|incremental completion]].  You can toggle this option anytime
+during completion using '''`##C-x :##''''.
 
 
 
