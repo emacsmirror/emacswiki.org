@@ -7,7 +7,7 @@
 ;; Maintainer: José Alfredo Romero L. <escherdragon@gmail.com>
 ;; Created: 24 Sep 2007
 ;; Version: 6
-;; RCS Version: $Rev: 426 $
+;; RCS Version: $Rev: 429 $
 ;; Keywords: files, dired, midnight commander, norton, orthodox
 ;; URL: http://www.emacswiki.org/emacs/sunrise-commander.el
 ;; Compatibility: GNU Emacs 22+
@@ -468,7 +468,10 @@ Initial value is 2/3 the viewport height.")
 (make-variable-buffer-local 'sr-current-path-faces)
 
 (defvar sr-inhibit-highlight nil
-  "Private variable used to temporarily inhibit highlighting in panes.")
+  "Special variable used to temporarily inhibit highlighting in panes.")
+
+(defvar sr-find-items nil
+  "Special variable used by `sr-find' to control the scope of find operations.")
 
 (defvar sr-desktop-save-handlers nil
   "List of extension-defined handlers to save Sunrise buffers with desktop.")
@@ -3189,8 +3192,26 @@ as its first argument."
                          map)
   "Local map used in Sunrise panes during find and locate operations.")
 
-(defun sr-find-prompt ()
-  "Display the message that appears when a find process is launched."
+(defun sr-find-decorate-buffer (find-items)
+  "Provide details on `sr-find' execution in the current buffer.
+If the current find operation is done only in selected files and directories,
+modify the info line of the buffer to reflect this. Additionally, display an
+appropriate message in the minibuffer."
+  (rename-uniquely)
+  (when find-items
+    (let ((items-len (length find-items))
+          (max-items-len (window-width))
+          (inhibit-read-only t))
+      (goto-char (point-min))
+      (forward-line 1)
+      (when (re-search-forward "find \." nil t)
+        (if (> items-len max-items-len)
+            (setq find-items
+                  (concat (substring find-items 0 max-items-len) " ...")))
+        (replace-match (format "find %s" find-items)))))
+  (sr-beginning-of-buffer)
+  (sr-highlight)
+  (hl-line-mode 1)
   (message (propertize "Sunrise find (C-c C-k to kill)"
                        'face 'minibuffer-prompt)))
 
@@ -3212,9 +3233,7 @@ as its first argument."
      (sr-virtual-mode)
      (use-local-map sr-process-map)
      (sr-keep-buffer))
-    (run-with-idle-timer 0.01 nil 'sr-find-prompt)
-    (if sr-find-items
-      (set (make-local-variable 'sr-find-items) sr-find-items))))
+    (run-with-idle-timer 0.01 nil 'sr-find-decorate-buffer sr-find-items)))
 
 (defun sr-find (pattern)
   "Run `find-dired' passing the current directory as first parameter."
@@ -3240,28 +3259,12 @@ parameter. Called with prefix asks for additional grep options."
 
 (defadvice find-dired-sentinel
   (after sr-advice-find-dired-sentinel (proc state))
-  "Automatically rename the *Find* buffer after every find operation in the
-Sunrise Commander and replace the status line if the find operation was made
-only inside subdirs."
-  (when (eq 'sr-virtual-mode major-mode)
-    (rename-uniquely)
-    (let* ((find-items (and (boundp 'sr-find-items) (symbol-value 'sr-find-items)))
-           (items-len (length find-items))
-           (max-items-len (frame-width))
-           (inhibit-read-only t))
-      (when find-items
-        (goto-char (point-min))
-        (forward-line 1)
-        (when (re-search-forward "find \." nil t)
-          (if (> items-len max-items-len)
-              (setq find-items
-                    (concat (substring find-items 0 max-items-len) "...")))
-          (replace-match (format "find %s" find-items)))
-        (kill-local-variable 'sr-find-items)))
-    (sr-beginning-of-buffer)
-    (sr-highlight)
-    (hl-line-mode 1)
-    (sr-backup-buffer)))
+  "If the current find operation was launched inside the Sunrise
+Commander, create a new backup buffer on operation completion or
+abort."
+  (with-current-buffer (process-buffer proc)
+    (when (eq 'sr-virtual-mode major-mode)
+      (sr-backup-buffer))))
 (ad-activate 'find-dired-sentinel)
 
 (defadvice find-dired-filter
@@ -3285,14 +3288,13 @@ items (as opposed to the current default directory). Removes itself from the
          (cons 'sr-multifind-handler
                (and (eq inhibit-file-name-operation operation)
                     inhibit-file-name-handlers)))
-        (inhibit-file-name-operation operation)
-        (find-items (and (boundp 'sr-find-items) (symbol-value 'sr-find-items))))
+        (inhibit-file-name-operation operation))
     (when (eq operation 'shell-command)
       (setq file-name-handler-alist
             (rassq-delete-all 'sr-multifind-handler file-name-handler-alist))
-      (if find-items
-          (setcar args (replace-regexp-in-string
-                        "find \." (format "find %s" find-items) (car args)))))
+      (when sr-find-items
+        (setcar args (replace-regexp-in-string
+                      "find \." (format "find %s" sr-find-items) (car args)))))
     (apply operation args)))
 
 (defun sr-flatten-branch (&optional mode)
