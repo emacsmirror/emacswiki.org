@@ -5,7 +5,7 @@ You can find the Template package at http://emacs-template.sourceforge.net/
 The template.el system is a way of automating initial file-creation from templates with place-holder tags that are filled-in when the template is used.  
 To use template.el, you place a series of template files in your ~/.templates directory, for example TEMPLATE.xml.tpl, README.tpl, Makefile.tpl.  When you create a new file, some file extension mappings are used to find the appropriate template, and the template.el tags are filled-in automatically (sometimes based on user prompts). 
 For example, there are standard embedded tags like <TT>(>>>FILE<<&lt;)</TT> or <TT>(>>>DATE<<&lt;)</TT> that expand to the filename and the date, respectively.
-There are other features such as <TT>(>>>POINT<<&lt;)</TT>: which marks the place to leave the cursor after file creation.
+There are other features such as <TT>(>>>POINT<<&lt;)</TT>, which marks the place to leave the cursor after file creation.
 
 These tag-substitution templates use boiler-plate that look very much like the finished product, so it is likely that they will be easier to set-up than than by using TempoMode or SkeletonMode, though template.el is geared towards creating initial file content: unlike TempoMode or SkeletonMode, template.el is not intended for inserting code snippets, 
 such as a new class or a new function body.
