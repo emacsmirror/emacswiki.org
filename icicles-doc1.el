@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Wed Jul 11 00:37:07 2012 (-0700)
+;; Last-Updated: Fri Jul 13 15:09:08 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 26639
+;;     Update #: 26640
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-doc1.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -3634,7 +3634,8 @@
 ;;  drives as remote or local for things like incremental completion
 ;;  is controlled by option `icicle-network-drive-means-remote-flag'.
 ;;  Customize it to `nil' if you would like such files to be treated
-;;  as local files.
+;;  as local files.  You can toggle this option anytime during
+;;  completion, using `C-x :'.
  
 ;;(@* "Sorting Candidates and Removing Duplicates")
 ;;
