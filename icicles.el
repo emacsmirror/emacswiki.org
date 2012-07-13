@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Sun Jul  8 11:59:12 2012 (-0700)
+;; Last-Updated: Fri Jul 13 15:02:29 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 23146
+;;     Update #: 23147
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -376,8 +376,10 @@
 ;;    `icicle-toggle-ignored-extensions',
 ;;    `icicle-toggle-ignored-space-prefix',
 ;;    `icicle-toggle-ignoring-comments',
-;;    `icicle-toggle-literal-replacement', `icicle-toggle-option',
-;;    `icicle-toggle-proxy-candidates', `icicle-toggle-regexp-quote',
+;;    `icicle-toggle-literal-replacement',
+;;    `icicle-toggle-network-drives-as-remote',
+;;    `icicle-toggle-option', `icicle-toggle-proxy-candidates',
+;;    `icicle-toggle-regexp-quote',
 ;;    `icicle-toggle-remote-file-testing',
 ;;    `icicle-toggle-search-cleanup',
 ;;    `icicle-toggle-search-complementing-domain',
@@ -630,6 +632,7 @@
 ;;    `toggle-icicle-ignored-space-prefix',
 ;;    `toggle-icicle-incremental-completion',
 ;;    `toggle-icicle-literal-replacement',
+;;    `toggle-icicle-network-drives-as-remote',
 ;;    `toggle-icicle-proxy-candidates', `toggle-icicle-regexp-quote',
 ;;    `toggle-icicle-search-cleanup',
 ;;    `toggle-icicle-search-complementing-domain',
