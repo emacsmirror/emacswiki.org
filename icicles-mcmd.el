@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Thu Jul 12 13:52:31 2012 (-0700)
+;; Last-Updated: Fri Jul 13 15:02:46 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 18356
+;;     Update #: 18371
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-mcmd.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -200,6 +200,7 @@
 ;;    `icicle-toggle-ignored-space-prefix',
 ;;    `icicle-toggle-ignoring-comments',
 ;;    `icicle-toggle-literal-replacement',
+;;    `icicle-toggle-network-drives-as-remote',
 ;;    `icicle-toggle-proxy-candidates', `icicle-toggle-regexp-quote',
 ;;    `icicle-toggle-remote-file-testing',
 ;;    `icicle-toggle-search-cleanup',
@@ -234,6 +235,7 @@
 ;;    `toggle-icicle-ignored-space-prefix',
 ;;    `toggle-icicle-incremental-completion',
 ;;    `toggle-icicle-literal-replacement',
+;;    `toggle-icicle-network-drives-as-remote',
 ;;    `toggle-icicle-proxy-candidates', `toggle-icicle-regexp-quote',
 ;;    `toggle-icicle-remote-file-testing',
 ;;    `toggle-icicle-search-cleanup',
@@ -1876,7 +1878,7 @@ If ALTERNATIVEP is non-nil, the alternative sort order is returned."
 ;; is, for now, in hopes Emacs will eventually fix this.
 ;;
 ;;;###autoload (autoload 'icicle-minibuffer-help "icicles")
-(defun icicle-minibuffer-help ()        ; Bound to `M-?' in the minibuffer.
+(defun icicle-minibuffer-help ()        ; Bound to `M-?' (and `C-?') in the minibuffer.
   "Describe Icicles minibuffer and *Completion* buffer bindings."
   (interactive)
   (let ((cur-buf  (current-buffer)))
@@ -1992,7 +1994,52 @@ These are the main Icicles actions and their minibuffer key bindings:
      Showing image-file thumbnails (E22+)    C-x t\t%s
      Inclusion of proxy candidates           \\[icicle-toggle-proxy-candidates]\t%S
      Ignoring certain file extensions        \\[icicle-dispatch-C-.]\t%S
-     Checking for remote file names          \\[icicle-dispatch-C-^]\t%S
+     Checking for remote file names          \\[icicle-dispatch-C-^]\t%S"
+             (if icicle-highlight-historical-candidates-flag 'yes 'no)
+             (if icicle-highlight-saved-candidates-flag 'yes 'no)
+             (cond ((not icicle-transform-function) "no")
+                   ((or (eq 'icicle-remove-duplicates          icicle-transform-function)
+                        (and icicle-extra-candidates
+                             (eq 'icicle-remove-dups-if-extras icicle-transform-function)))
+                    "yes")
+                   ((eq 'icicle-remove-dups-if-extras icicle-transform-function)
+                    "yes in general, but not now")
+                   (t icicle-transform-function))
+             (icicle-current-sort-order nil)
+             (icicle-current-sort-order 'ALTERNATIVE)
+             (if case-fold-search 'no 'yes)
+             (if (string= icicle-dot-string icicle-anychar-regexp) 'yes 'no)
+             (if icicle-regexp-quote-flag 'yes 'no)
+             (case icicle-incremental-completion
+               ((nil) "no")
+               ((t)   "yes, if *Completions* showing")
+               (t     "yes, always (eager)"))
+             (if (eq icicle-expand-input-to-common-match 0) 'no 'yes)
+             (case icicle-expand-input-to-common-match
+               (0 "never")
+               (1 "explicit completion")
+               (2 "only one completion")
+               (3 "`TAB' or only one")
+               (t "always"))
+             (if icicle-hide-common-match-in-Completions-flag 'yes 'no)
+             (if icicle-hide-non-matching-lines-flag 'yes 'no)
+             icicle-completions-format
+             (car (rassq icicle-apropos-complete-match-fn icicle-S-TAB-completion-methods-alist))
+             (icicle-current-TAB-method)
+             (case icicle-image-files-in-Completions
+               ((nil) "no")
+               (image "image only")
+               (t "image and name"))
+             (if icicle-add-proxy-candidates-flag 'yes 'no)
+             (if completion-ignored-extensions 'yes 'no)
+             (if icicle-test-for-remote-files-flag 'yes 'no))
+
+     (and (memq system-type '(ms-dos windows-nt cygwin)) ; MS Windows only.
+          (format "\\<minibuffer-local-completion-map>
+     Considering network drives as remote    \\[icicle-toggle-network-drives-as-remote]\t%S"
+                  (if icicle-network-drive-means-remote-flag 'yes 'no)))
+
+     (format "\\<minibuffer-local-completion-map>
      Ignoring space prefix                   \\[icicle-dispatch-M-_]\t%S
      Using `C-' for multi-command actions    \\[icicle-toggle-C-for-actions]\t%S
      Using `~' for your home directory       \\[icicle-toggle-~-for-home-dir]\t%S
@@ -2157,44 +2204,6 @@ This calls `icicle-pp-eval-expression-in-minibuffer', which displays
 the result in the echo area or a popup buffer, *Pp Eval Output*.
 It also provides some of the Emacs-Lisp key bindings during expression
 editing."
-             (if icicle-highlight-historical-candidates-flag 'yes 'no)
-             (if icicle-highlight-saved-candidates-flag 'yes 'no)
-             (cond ((not icicle-transform-function) "no")
-                   ((or (eq 'icicle-remove-duplicates          icicle-transform-function)
-                        (and icicle-extra-candidates
-                             (eq 'icicle-remove-dups-if-extras icicle-transform-function)))
-                    "yes")
-                   ((eq 'icicle-remove-dups-if-extras icicle-transform-function)
-                    "yes in general, but not now")
-                   (t icicle-transform-function))
-             (icicle-current-sort-order nil)
-             (icicle-current-sort-order 'ALTERNATIVE)
-             (if case-fold-search 'no 'yes)
-             (if (string= icicle-dot-string icicle-anychar-regexp) 'yes 'no)
-             (if icicle-regexp-quote-flag 'yes 'no)
-             (case icicle-incremental-completion
-               ((nil) "no")
-               ((t)   "yes, if *Completions* showing")
-               (t     "yes, always (eager)"))
-             (if (eq icicle-expand-input-to-common-match 0) 'no 'yes)
-             (case icicle-expand-input-to-common-match
-               (0 "never")
-               (1 "explicit completion")
-               (2 "only one completion")
-               (3 "`TAB' or only one")
-               (t "always"))
-             (if icicle-hide-common-match-in-Completions-flag 'yes 'no)
-             (if icicle-hide-non-matching-lines-flag 'yes 'no)
-             icicle-completions-format
-             (car (rassq icicle-apropos-complete-match-fn icicle-S-TAB-completion-methods-alist))
-             (icicle-current-TAB-method)
-             (case icicle-image-files-in-Completions
-               ((nil) "no")
-               (image "image only")
-               (t "image and name"))
-             (if icicle-add-proxy-candidates-flag 'yes 'no)
-             (if completion-ignored-extensions 'yes 'no)
-             (if icicle-test-for-remote-files-flag 'yes 'no)
              (if icicle-ignore-space-prefix-flag 'yes 'no)
              (if icicle-use-C-for-actions-flag 'yes 'no)
              (if icicle-use-~-for-home-dir-flag 'yes 'no)
@@ -7523,6 +7532,23 @@ Bound to `C-^' in the minibuffer, except during Icicles searching."
   (icicle-msg-maybe-in-minibuffer
    "Testing remote file names is now %s"
    (icicle-propertize (if icicle-test-for-remote-files-flag "ON" "OFF") 'face 'icicle-msg-emphasis)))
+
+;; Top-level commands.  Could instead be in `icicles-cmd2.el'.
+;;
+;;;###autoload (autoload 'toggle-icicle-network-drives-as-remote "icicles")
+(when (memq system-type '(ms-dos windows-nt cygwin))
+  (defalias 'toggle-icicle-network-drives-as-remote 'icicle-toggle-network-drives-as-remote)
+;;;###autoload (autoload 'icicle-toggle-network-drives-as-remote "icicles")
+  (defun icicle-toggle-network-drives-as-remote () ; Bound to `C-x :' in minibuffer.
+    "Toggle `icicle-network-drive-means-remote-flag'.
+Bound to `C-x :' in the minibuffer."
+    (interactive)
+    (setq icicle-network-drive-means-remote-flag  (not icicle-network-drive-means-remote-flag))
+    (icicle-complete-again-update)
+    (icicle-msg-maybe-in-minibuffer
+     "MS Windows network drives are now considered %s"
+     (icicle-propertize (if icicle-network-drive-means-remote-flag "REMOTE" "LOCAL")
+                        'face 'icicle-msg-emphasis))))
 
 ;; NOT a top-level command (most toggle commands can be used at top-level).
 ;;
