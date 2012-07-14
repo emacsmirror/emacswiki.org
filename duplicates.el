@@ -1,8 +1,7 @@
 ;;;; Find marked files in a dired buffer and display which ones have identical contents
-;;;; (C)2012 Justin Heyes-Jones
+;;;; by Justin Heyes-Jones, 2011
 ;;;; How to use... mark files you're interest in the dired window, perhaps with `dired-mark-files-regexp'
 ;;;; then `dired-show-marked-duplicate-files' will open a buffer with a list of duplicated files
-;;;; MIT License
 
 (defvar *duplicate-buffer* nil)
 
