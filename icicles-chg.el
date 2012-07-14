@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Fri Jul 13 15:05:43 2012 (-0700)
+;; Last-Updated: Sat Jul 14 12:52:41 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 8635
+;;     Update #: 8642
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-chg.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -3223,6 +3223,11 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-mcmd.el'")
 ;;
+;; 2012/07/14 dadams
+;;     icicle-mouse-candidate-action-1: Fix for Emacs 24.  Use code similar to i*-candidate-action-1:
+;;       Set icicle-last-input, not icicle-last-completion-candidate, to choice.
+;;       Update default-directory.  Remove candidate only if choice = icicle-last-completion-candidate.
+;;     icicle-(prefix|apropos)-complete-1: Do not use icicle-transform-sole-candidate.
 ;; 2012/07/13 dadams
 ;;     Added: icicle-toggle-network-drives-as-remote.
 ;;     icicle-help-string-completion: Added icicle-toggle-network-drives-as-remote.
