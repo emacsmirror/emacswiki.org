@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Fri Jul 13 15:02:46 2012 (-0700)
+;; Last-Updated: Sat Jul 14 13:03:59 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 18371
+;;     Update #: 18381
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-mcmd.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -3614,7 +3614,11 @@ Optional argument WORD-P non-nil means complete only a word at a time."
                           (setq icicle-default-directory  (icicle-abbreviate-or-expand-file-name
                                                            inserted))))
                       (save-selected-window (icicle-remove-Completions-window))
-                      (icicle-transform-sole-candidate))))
+                      ;; Do not transform multi-completion here.  It should be done in the function that acts
+                      ;; on the chosen completion candidate.  For a multi-command, that means it should be
+                      ;; done in the action function.
+                      ;; $$$$$$ (icicle-transform-sole-candidate)
+                      icicle-current-input)))
              (unless (boundp 'icicle-prefix-complete-and-exit-p)
                (icicle-highlight-complete-input)
                (cond ((and icicle-top-level-when-sole-completion-flag
@@ -3999,7 +4003,11 @@ message either.  NO-DISPLAY-P is passed to
                         (setq icicle-default-directory  (icicle-abbreviate-or-expand-file-name
                                                          inserted)))))
                   (save-selected-window (icicle-remove-Completions-window))
-                  (icicle-transform-sole-candidate)))
+                  ;; Do not transform multi-completion here.  It should be done in the function that acts
+                  ;; on the chosen completion candidate.  For a multi-command, that means it should be
+                  ;; done in the action function.
+                  ;; $$$$$$ (icicle-transform-sole-candidate)
+                  icicle-current-input))
            (unless (boundp 'icicle-apropos-complete-and-exit-p)
              (icicle-highlight-complete-input)
              (cond ((and icicle-top-level-when-sole-completion-flag
@@ -4120,6 +4128,7 @@ value of this condition: nil or non-nil."
     (when complete-&-not-exiting-p (icicle-highlight-complete-input))
     (and complete-&-not-exiting-p  input-sans-dir)))
 
+;; Not used anymore.
 (defun icicle-transform-sole-candidate ()
   "Transform matching candidate according to `icicle-list-use-nth-parts'."
   (when (and icicle-list-use-nth-parts  icicle-current-input)
@@ -4769,39 +4778,44 @@ performed: display help on the candidate - see
           (unless beg (error "No completion here"))
           (setq beg  (previous-single-property-change beg 'mouse-face)
                 end  (or (next-single-property-change end 'mouse-face)  (point-max)))
-          (setq choice  (if (and (icicle-file-name-input-p)  insert-default-directory
-                                 (or (not (member (buffer-substring-no-properties beg end)
-                                                  icicle-extra-candidates))
-                                     icicle-extra-candidates-dir-insert-p))
-                            (concat default-directory (buffer-substring-no-properties beg end))
-                          ;; $$$$$$ (buffer-substring-no-properties beg end))))))
-                          (buffer-substring beg end)))
+          (setq choice  (buffer-substring beg end))
           (remove-text-properties 0 (length choice) '(mouse-face nil) choice))))
-    (save-window-excursion
-      (select-window (active-minibuffer-window))
-      (delete-region (icicle-minibuffer-prompt-end) (point-max))
-      (insert choice))
-    (setq icicle-candidate-nb               (icicle-nb-of-cand-at-Completions-pos posn-pt)
-          icicle-last-completion-candidate  choice)
-    (if (not fn-var)
-        (with-current-buffer (or icicle-orig-buff  posn-buf)
-          (icicle-help-on-candidate))   ; Doesn't `icicle-raise-Completions-frame'.
 
-      ;; NOTE: We no longer save and restore these things here.
-      ;; We purposely allow an action function to modify these for subsequent actions.
-      ;; If you need to save and restore these for a particular action function you define,
-      ;; then you must do so in the action function itself.  This might be the case, for instance,
-      ;; if your action function does its own completion (e.g. calls `completing-read'), that is, if
-      ;; it uses a recursive minibuffer.  (But do not save and restore if you want the side effect.)
-      (let (;; (icicle-candidate-nb               icicle-candidate-nb)              ; $$$$$$
-            ;; (icicle-last-completion-candidate  icicle-last-completion-candidate) ; $$$$$$
-            ;; (icicle-completion-candidates      icicle-completion-candidates)     ; $$$$$$
-            )
-        (funcall fn-var icicle-last-completion-candidate))
-      (if icicle-use-candidates-only-once-flag
-          (icicle-remove-candidate-display-others 'all)
-        (when icicle-completion-candidates (icicle-update-and-next)))
-      (icicle-raise-Completions-frame posn-col posn-row))))
+
+    (let ((icicle-last-input         choice)
+          (icicle-default-directory  icicle-default-directory))
+      (when (and (icicle-file-name-input-p)  (icicle-file-directory-p icicle-last-input))
+        (setq icicle-default-directory  icicle-last-input))
+      (setq icicle-candidate-nb  (icicle-nb-of-cand-at-Completions-pos posn-pt))
+
+      (save-window-excursion
+        (select-window (active-minibuffer-window))
+        (delete-region (icicle-minibuffer-prompt-end) (point-max))
+        (insert choice))
+      (if (not fn-var)
+          (with-current-buffer (or icicle-orig-buff  posn-buf)
+            (icicle-help-on-candidate)) ; Does not `icicle-raise-Completions-frame'.
+
+        ;; NOTE: We no longer save and restore these things here.
+        ;; We purposely allow an action function to modify these for subsequent actions.
+        ;; If you need to save and restore these for a particular action function you define,
+        ;; then you must do so in the action function itself.  This might be the case, for instance,
+        ;; if your action function does its own completion (e.g. calls `completing-read'), that is, if
+        ;; it uses a recursive minibuffer.  (But do not save and restore if you want the side effect.)
+        (let (;; (icicle-candidate-nb               icicle-candidate-nb)              ; $$$$$$
+              ;; (icicle-last-completion-candidate  icicle-last-completion-candidate) ; $$$$$$
+              ;; (icicle-completion-candidates      icicle-completion-candidates)     ; $$$$$$
+              )
+          (funcall fn-var icicle-last-input))
+        (when (and icicle-use-candidates-only-once-flag
+                   (equal icicle-last-input
+                          (if (icicle-file-name-input-p)
+                              (expand-file-name icicle-last-completion-candidate
+                                                (and icicle-last-input ; User did not use `(S-)TAB'.
+                                                     (icicle-file-name-directory icicle-last-input)))
+                            icicle-last-completion-candidate)))
+          (icicle-remove-candidate-display-others 'all))
+        (icicle-raise-Completions-frame posn-col posn-row)))))
 
 
 ;; $$$$$ ??? (put 'icicle-remove-candidate 'icicle-action-command t)
