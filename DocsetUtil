@@ -1,0 +1,5 @@
+Documentation sets are special bundles which hold documentation that can be loaded and searched by Xcode 3.0 and later.
+
+The docsetutil tool performs several operations on documentation sets. The tool's primary operations are generating the full-text and API indexes for a documentation set bundle and then packaging up the documentation set for distribution. When indexing, the tool uses one or more XML files in the bundle's Resources folder to learn about the contents of the documentation set. Once the indexes are generated, docsetutil can be used to test and perform searches on those indexes.
+
+Emacs interface to docsetutil: https://github.com/leoliu/docsetutil-el
