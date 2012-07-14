@@ -1,11 +1,3 @@
 Ioccur is incremental occur, more convenient and faster than OccurMode.
 
-You can get it here with hg:
-
-hg clone http://mercurial.intuxication.org/hg/ioccur
-
--- manandbytes: repository not found
-
-for development version:
-
-hg update -C development
+You can get it here https://github.com/thierryvolpiatto/ioccur
