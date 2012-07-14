@@ -35,3 +35,5 @@ Finally I want to display the results, so I create a buffer and then use maphash
 
 Further work would be to optimize the code a bit. For example by looking at the file size before calculating the md5sum, so that if two files are not the same size we know they cannot be duplicates. 
 
+----
+CategoryDirectories
