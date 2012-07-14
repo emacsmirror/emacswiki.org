@@ -7,7 +7,7 @@
 ;; Maintainer: José Alfredo Romero L. <escherdragon@gmail.com>
 ;; Created: 24 Sep 2007
 ;; Version: 6
-;; RCS Version: $Rev: 429 $
+;; RCS Version: $Rev: 430 $
 ;; Keywords: files, dired, midnight commander, norton, orthodox
 ;; URL: http://www.emacswiki.org/emacs/sunrise-commander.el
 ;; Compatibility: GNU Emacs 22+
@@ -345,6 +345,16 @@ the contents of the corresponding column and its result will be
 displayed instead."
   :group 'sunrise
   :type '(repeat symbol))
+
+(defcustom sr-fast-backup-extension ".bak"
+  "Determines the extension to append to the names of new files
+created with the `sr-fast-backup-files' function (@!). This can
+be either a simple string or an s-expression to be evaluated at
+run-time."
+  :group 'sunrise
+  :type '(choice
+          (string :tag "Literal text")
+          (sexp :tag "Symbolic expression")))
 
 (defcustom sr-fuzzy-negation-character ?!
   "Character to use for negating patterns when fuzzy-narrowing a pane."
@@ -2803,10 +2813,14 @@ See `dired-make-relative-symlink'."
 
 (defun sr-fast-backup-files ()
   "Make backup copies of all marked files inside the same directory.
-The extension \".bak\" is appended to each filename. Directories
-are not copied."
+The extension to append to each filename can be controlled by
+setting the value of the `sr-fast-backup-extension' custom
+variable. Directories are not copied."
   (interactive)
-  (dired-do-copy-regexp "$" ".bak")
+  (let ((extension (if (listp sr-fast-backup-extension)
+                       (eval sr-fast-backup-extension)
+                     sr-fast-backup-extension)))
+    (dired-do-copy-regexp "$" extension))
   (revert-buffer))
 
 (defun sr-clone (items target clone-op progress mark-char)
