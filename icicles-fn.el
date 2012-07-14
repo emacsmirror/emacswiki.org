@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:53 2006
 ;; Version: 22.0
-;; Last-Updated: Sun Jul  8 12:08:35 2012 (-0700)
+;; Last-Updated: Sat Jul 14 10:46:46 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 13161
+;;     Update #: 13162
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-fn.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -4452,10 +4452,12 @@ If `icicle-sort-comparer' is nil, then do not sort."
   "Apply `icicle-transform-function' to CANDIDATES.
 If `icicle-transform-function' is nil, return CANDIDATES.
 
-Note that this transformation is applied before completion candidates
-are made available to the user, in particular, before they are
-displayed in `*Completions*'.  Its use is thus quite different from
-that of `icicle-transform-sole-candidate'."
+This transformation is applied before completion candidates are made
+available to the user, in particular, before they are displayed in
+`*Completions*'.
+
+This transformation has nothing to do with that performed by
+`icicle-transform-multi-completion'."
   (if icicle-transform-function  (funcall icicle-transform-function candidates)  candidates))
 
 (defun icicle-transform-multi-completion (candidate)
