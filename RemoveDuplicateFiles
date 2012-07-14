@@ -1,0 +1,37 @@
+This page is adapted from JustinHeyesJones blog post http://justinsboringpage.blogspot.ca/search?q=duplicate+files
+
+duplicates let's you mark duplicate files in a dired buffer so that you can locate and delete them more easily.
+
+Lisp:duplicates.el 
+
+After downloading you can load the source into emacs and call `eval-buffer', then open up a dired buffer to try it out. For this to be useful you need some duplicated files, so make some if you need to.
+
+Mark the files you want to check for duplicates. For example to mark all jpg files you would type %m to mark files matching a regexp and type .*\.jpg
+
+Now execute the command `dired-show-marked-duplicate-files' and after a short delay (in my test 80 jpg photos took about 5 seconds) you'll see a buffer called 'Duplicated files' which contains a list of the files which have the same contents.
+
+Now some comments about the code involved...
+
+Most of the work is done in the function dired-show-marked-duplicate-files. First line " (interactive)" makes it an interactive function, meaning the user of emacs can invoke it.
+
+"(if (eq major-mode 'dired-mode)" will check that we're in the right kind of buffer, because it makes no sense to run this in another mode.
+
+In order to find the duplicate files I just need to walk the list of marked files, generate the md5 value of the contents of each one and add it to hash table. The keys in the hash table will be the md5, and the values will be a list of files with that md5. Once we've done that, finding duplicates is a simple matter of walking the hash table keys and displaying any where the value has multiple entries.
+
+"(let ((md5-map (make-hash-table :test 'equal :size 40)))" Creates the hash table, making sure we use 'equal to match our filenames.
+
+"(let ((filenames (dired-get-marked-files)))" this gets the marked files as a list of filenames
+
+The next little bit of code is just to store the item in the hash table after getting the md5. There's no function in emacs to get the md5 of a file, but you can get the md5 of a string, so I wrote a helper function for getting the contents of a file into a temporary buffer first.
+
+(defun md5-file(filename)
+"Open FILENAME, load it into a buffer and generate the md5 of its contents"
+(interactive "f")
+(with-temp-buffer
+(insert-file-contents filename)
+(md5 (current-buffer))))
+
+Finally I want to display the results, so I create a buffer and then use maphash (walks the keys of a hash table executing a function on each) with a helper function `show-duplicate' which simply writes the values of the hash table entry into that buffer.
+
+Further work would be to optimize the code a bit. For example by looking at the file size before calculating the md5sum, so that if two files are not the same size we know they cannot be duplicates. 
+
