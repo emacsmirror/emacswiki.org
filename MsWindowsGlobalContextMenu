@@ -16,6 +16,10 @@ REGEDIT4
 # The above value appears in the global context menu, 
 # i.e., when you right click on a file.
 # (The '&' makes the next character a shortcut.)
+"Icon"="C:\\Program Files\\Emacs\\bin\\emacs.exe,0"
+# The above uses the icon of the Emacs exe for the context
+# and should match the path used for the command below.
+# The ,0 selects the main icon.
 
 [HKEY_CLASSES_ROOT\*\shell\openwemacs\command]
 @="C:\\Program Files\\Emacs\\bin\\runemacs.exe \"%1\""
