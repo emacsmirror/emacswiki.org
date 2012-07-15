@@ -38,7 +38,7 @@
 
 ;; To toggle graphical indication of the fill column in a buffer, use the
 ;; command `fci-mode'.
-
+ 
 ;; Configuration
 ;; =============
 
@@ -263,7 +263,7 @@ function `fci-mode' is run."
   :type 'float)
 
 (defcustom fci-rule-character ?|
-  "Character use to draw the fill-column rule on character terminals.
+  "Character used to draw the fill-column rule on character terminals.
 
 Changes to this variable do not take effect until the mode
 function `fci-mode' is run."
@@ -386,13 +386,13 @@ U+E000-U+F8FF, inclusive)."
 
 ;; Hooks we use.
 (defconst fci-hook-assignments
-  '((after-change-functions fci-redraw-region 'local)
-    (before-change-functions fci-extend-rule-for-deletion 'local)
-    (window-scroll-functions fci-update-window-for-scroll 'local)
+  '((after-change-functions fci-redraw-region t)
+    (before-change-functions fci-extend-rule-for-deletion t)
+    (window-scroll-functions fci-update-window-for-scroll t)
     (window-configuration-change-hook  fci-redraw-frame)
-    (post-command-hook  fci-post-command-check 'local)
-    (change-major-mode-hook turn-off-fci-mode 'local)
-    (longlines-mode-hook  fci-update-all-windows 'local)))
+    (post-command-hook  fci-post-command-check t)
+    (change-major-mode-hook turn-off-fci-mode t)
+    (longlines-mode-hook  fci-update-all-windows t)))
 
 ;;; ---------------------------------------------------------------------
 ;;; Miscellany
@@ -701,7 +701,7 @@ rough heuristic.)"
   (memq t (mapcar #'fci-overlay-fills-background-p (overlays-at posn))))
 
 ;; The display spec used in overlay before strings to pad out the rule to the
-;; fill-column.
+;; fill-column. 
 (defconst fci-padding-display
   '((when (not (fci-competing-overlay-p buffer-position))
       . (space :align-to fci-column))
@@ -715,15 +715,16 @@ rough heuristic.)"
 (defun fci-rule-display (blank rule-img rule-str for-pre-string)
   "Generate a display specification for a fill-column rule overlay string."
   (let* ((cursor-prop (if (and (not for-pre-string) (not fci-newline)) 1))
+         (propertized-rule-str (propertize rule-str 'cursor cursor-prop))
          (display-prop (if rule-img
                            `((when (not (or (display-images-p)
                                             (fci-competing-overlay-p buffer-position)))
-                               . ,(propertize rule-str 'cursor cursor-prop))
+                               . ,propertized-rule-str)
                              (when (not (fci-competing-overlay-p buffer-position))
                                . ,rule-img)
                              (space :width 0))
                          `((when (not (fci-competing-overlay-p buffer-position))
-                             . ,(propertize rule-str 'cursor cursor-prop))
+                             . ,propertized-rule-str)
                            (space :width 0)))))
     (propertize blank 'cursor cursor-prop 'display display-prop)))
 
