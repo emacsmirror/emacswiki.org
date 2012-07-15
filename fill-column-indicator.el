@@ -480,6 +480,48 @@ on troubleshooting.)"
   (fci-mode 0))
 
 ;;; ---------------------------------------------------------------------
+;;; Display Property Specs
+;;; ---------------------------------------------------------------------
+
+(defun fci-overlay-fills-background-p (olay)
+  "Return true if OLAY specifies a background color."
+  (and (overlay-get olay 'face)
+       (not (eq (face-attribute (overlay-get olay 'face) :background nil t)
+                'unspecified))))
+
+(defun fci-competing-overlay-p (posn)
+  "Return true if there is an overlay at POSN that fills the background."
+  (memq t (mapcar #'fci-overlay-fills-background-p (overlays-at posn))))
+
+;; The display spec used in overlay before strings to pad out the rule to the
+;; fill-column. 
+(defconst fci-padding-display
+  '((when (not (fci-competing-overlay-p buffer-position))
+      . (space :align-to fci-column))
+    (space :width 0)))
+
+;; Generate the display spec for the rule.  Basic idea is to use a "cascading
+;; display property" to display the textual rule if the display doesn't
+;; support images and the graphical rule if it does, but in either case only
+;; display a rule if no other overlay wants to fill the background at the
+;; relevant buffer position.
+(defun fci-rule-display (blank rule-img rule-str for-pre-string)
+  "Generate a display specification for a fill-column rule overlay string."
+  (let* ((cursor-prop (if (and (not for-pre-string) (not fci-newline)) 1))
+         (propertized-rule-str (propertize rule-str 'cursor cursor-prop))
+         (display-prop (if rule-img
+                           `((when (not (or (display-images-p)
+                                            (fci-competing-overlay-p buffer-position)))
+                               . ,propertized-rule-str)
+                             (when (not (fci-competing-overlay-p buffer-position))
+                               . ,rule-img)
+                             (space :width 0))
+                         `((when (not (fci-competing-overlay-p buffer-position))
+                             . ,propertized-rule-str)
+                           (space :width 0)))))
+    (propertize blank 'cursor cursor-prop 'display display-prop)))
+
+;;; ---------------------------------------------------------------------
 ;;; Enabling
 ;;; ---------------------------------------------------------------------
 
@@ -685,48 +727,6 @@ rough heuristic.)"
     (when (and fci-made-display-table
                (equal buffer-display-table (make-display-table)))
       (setq buffer-display-table nil))))
-
-;;; ---------------------------------------------------------------------
-;;; Display Property Specs
-;;; ---------------------------------------------------------------------
-
-(defun fci-overlay-fills-background-p (olay)
-  "Return true if OLAY specifies a background color."
-  (and (overlay-get olay 'face)
-       (not (eq (face-attribute (overlay-get olay 'face) :background nil t)
-                'unspecified))))
-
-(defun fci-competing-overlay-p (posn)
-  "Return true if there is an overlay at POSN that fills the background."
-  (memq t (mapcar #'fci-overlay-fills-background-p (overlays-at posn))))
-
-;; The display spec used in overlay before strings to pad out the rule to the
-;; fill-column. 
-(defconst fci-padding-display
-  '((when (not (fci-competing-overlay-p buffer-position))
-      . (space :align-to fci-column))
-    (space :width 0)))
-
-;; Generate the display spec for the rule.  Basic idea is to use a "cascading
-;; display property" to display the textual rule if the display doesn't
-;; support images and the graphical rule if it does, but in either case only
-;; display a rule if no other overlay wants to fill the background at the
-;; relevant buffer position.
-(defun fci-rule-display (blank rule-img rule-str for-pre-string)
-  "Generate a display specification for a fill-column rule overlay string."
-  (let* ((cursor-prop (if (and (not for-pre-string) (not fci-newline)) 1))
-         (propertized-rule-str (propertize rule-str 'cursor cursor-prop))
-         (display-prop (if rule-img
-                           `((when (not (or (display-images-p)
-                                            (fci-competing-overlay-p buffer-position)))
-                               . ,propertized-rule-str)
-                             (when (not (fci-competing-overlay-p buffer-position))
-                               . ,rule-img)
-                             (space :width 0))
-                         `((when (not (fci-competing-overlay-p buffer-position))
-                             . ,propertized-rule-str)
-                           (space :width 0)))))
-    (propertize blank 'cursor cursor-prop 'display display-prop)))
 
 ;;; ---------------------------------------------------------------------
 ;;; Drawing and Erasing
