@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:22:14 2006
 ;; Version: 22.0
-;; Last-Updated: Fri Jul 13 14:32:28 2012 (-0700)
+;; Last-Updated: Mon Jul 16 09:10:45 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 5254
+;;     Update #: 5256
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-opt.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -991,7 +991,8 @@ in your `load-path'."
 ;;;###autoload
 (defcustom icicle-comint-dynamic-complete-replacements
   '((comint-dynamic-complete-filename    'icicle-comint-dynamic-complete-filename)
-    (shell-dynamic-complete-command      'icicle-shell-dynamic-complete-command)
+    (shell-command-completion            'icicle-shell-dynamic-complete-command) ; Emacs 24+
+    (shell-dynamic-complete-command      'icicle-shell-dynamic-complete-command) ; Emacs 20-23
     (shell-dynamic-complete-environment-variable
      'icicle-shell-dynamic-complete-environment-variable)
     (shell-dynamic-complete-filename     'icicle-shell-dynamic-complete-filename)
