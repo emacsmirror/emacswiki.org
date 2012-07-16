@@ -5,8 +5,13 @@ http://www.loria.fr/~rougier/images/emacs-powerline.png
 
 A more complete version, including minor modes, is included in Lisp:powerline.el
 
-There is also a similar package available on MELPA called powerline that is a new version of PowerLine that incorporates a number of bug fixes and cleaner mechanism.  It is a rewrite by DonaldCurtis (milkypostman).
+
+=== New Version / Rewrite ===
+
 https://github.com/milkypostman/powerline
+
+I have rewritten this package and am hosting the repository on Github.  My version uses many of the techniques in the original---posted here---but tries to make it easier to add new things.  Please submit issues there and any of your own mode-line themes using PowerLine
+
 
 
 === Hacking ===
