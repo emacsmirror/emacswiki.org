@@ -1,8 +1,8 @@
-= Donald Curtis =
+==Packages==
 
-I currently maintain a number of Emacs-related projects,
+Current list of Emacs-related projects I maintain,
 
-[https://github.com/milkypostman/melpa MELPA - Emacs Package Repository]
-[https://github.com/milkypostman/powerline PowerLine - Mode-Line Enhancement]
-[https://github.com/milkypostman/hl-sentence - Highlight the Current Sentence]
+* [https://github.com/milkypostman/melpa MELPA - Emacs Package Repository]
+* [https://github.com/milkypostman/powerline PowerLine - Mode-Line Enhancement]
+* [https://github.com/milkypostman/hl-sentence - Highlight the Current Sentence]
 
