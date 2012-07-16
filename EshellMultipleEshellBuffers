@@ -1,6 +1,15 @@
 It is sometimes annoying to use multiple shells from within emacs. One must create a shell, rename it, create another, etc.
 
-To solve this, [http://cims.nyu.edu/~stucchio/software/elisp/multi-eshell.el.html multi-eshell.el] exists. It maintains a ring of shell buffers, and has 3 useful functions:
+== Shell-switcher ==
+
+[https://github.com/DamienCassou/shell-switcher shell-switcher] is an emacs minor mode to easily switch between shell buffers (like with alt+tab). It works with eshell and any other shell.
+
+Check the [http://www.youtube.com/watch?v=jNSrrQwcCr4 screencast]!
+
+
+== Multi-eshell ==
+
+[http://cims.nyu.edu/~stucchio/software/elisp/multi-eshell.el.html multi-eshell.el] exists. It maintains a ring of shell buffers, and has 3 useful functions:
 
 multi-eshell -- Creates a NEW shell and switches to it, even if one already exists.
 
