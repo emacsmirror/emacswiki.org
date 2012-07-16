@@ -20,8 +20,6 @@ The resulting prompt:
 2006-01-10 11:03 $ 
 </pre>
 
-= More examples =
-
  (setq eshell-prompt-function
   (lambda nil
     (concat
@@ -31,6 +29,16 @@ The resulting prompt:
 The resulting prompt:
 
  c:/home $ 
+
+== A colored prompt ==
+
+If you want colors in your prompt, use something like this:
+
+  (setq eshell-prompt-function (lambda nil
+    (concat
+     (propertize (eshell/pwd) 'face `(:foreground "blue"))
+     (propertize " $ " 'face `(:foreground "green")))))
+  (setq eshell-highlight-prompt nil)
 
 ----
 CategoryEshell
