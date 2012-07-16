@@ -5,8 +5,9 @@ http://www.loria.fr/~rougier/images/emacs-powerline.png
 
 A more complete version, including minor modes, is included in Lisp:powerline.el
 
-There is also a similar package available on MELPA called highline
-https://github.com/milkypostman/highline
+There is also a similar package available on MELPA called powerline that is a new version of PowerLine that incorporates a number of bug fixes and cleaner mechanism.  It is a rewrite by DonaldCurtis (milkypostman).
+https://github.com/milkypostman/powerline
+
 
 === Hacking ===
 
