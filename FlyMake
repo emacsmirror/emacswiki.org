@@ -85,7 +85,7 @@ Then, the <tt>flymake.mk</tt> file, would look something like:
 * ''Warning'': This will only work for files that are compiled using the automake-provided compilation rules.
 * ''Warning'': This only includes the compiler flags. So if you are passing include directories with CPPFLAGS (i.e. foo_CPPFLAGS=-I $pathToIncludeDir) you need to replace for example the line ''"elif [ "$$s" = ".cpp" ]; then $(call get_cs_cmdline,CXX) $(CHK_SOURCES);\"'' by   ''"elif [ "$$s" = ".cpp" ]; then $(call get_cs_cmdline,CXX) $(call get_cs_cmdline,CPP) $(CHK_SOURCES);\"''.
 
--- Lluís
+-- LluÃ­s
 
 === SCons/bjam ===
 
@@ -221,6 +221,27 @@ For example, you're editing the source to a folder which you do not have write p
 [new:SamGraham:2011-08-02 22:06 UTC]
 I use the trick documented in [http://blog.urth.org/2011/06/flymake-versus-the-catalyst-restarter.html this blog] to make temporary copies in my <code>~/.emacs.d/tmp</code> dir, I've also integrated this tweak and others into a patched version of FlyMake available at https://github.com/illusori/emacs-flymake which may be easier to install. -- SamGraham
 
+[new]
+
+I use the following hook so flymake can write temporary files, but if
+it can't, it just doesn't activate and gives a minor warning to the
+user.
+
+<pre>
+(defun cwebber/safer-flymake-find-file-hook ()
+  "Don't barf if we can't open this flymake file"
+  (let ((flymake-filename
+         (flymake-create-temp-inplace (buffer-file-name) "flymake")))
+    (if (file-writable-p flymake-filename)
+        (flymake-find-file-hook)
+      (message
+       (format
+        "Couldn't enable flymake; permission denied on %s" flymake-filename)))))
+
+(add-hook 'find-file-hook 'cwebber/safer-flymake-find-file-hook)
+</pre>
+
+-- ChrisWebber
 
 === Resource consumption? ===
 What about resource consumption ? Does it eat all the CPU or RAM ?
@@ -396,7 +417,7 @@ Has anyone got this to work with tramp (i.e. for remote files)? I've seen someth
 
 [new:SamGraham:2012-01-01 10:25 UTC]
 The version of FlyMake distributed with Emacs 23 can work with files over tramp but has a few bugs that might crop up resulting in the appending of "login messages" to the end of the buffer you're editing. My fork of FlyMake at
-https://github.com/illusori/emacs-flymake patches this with more robust Tramp support. – SamGraham
+https://github.com/illusori/emacs-flymake patches this with more robust Tramp support. â SamGraham
 
 ----
 CategoryModes
