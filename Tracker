@@ -25,6 +25,6 @@ to my .emacs file.
 To answer the question about searching by tags above: The code in [[http://waits.cp.jku.at/~maarten/downloads/tracker-dired.el|tracker-dired.el]] builds a sparql query around the search terms to perform a fulltext search. I guess you can trivially change the sparql query (even if sparql syntax is not especially trivial :-) to perform the search on tags.
 
 [new:CyrilB:2012-07-16 28:58 UTC]
-Past, some of the above links seems to be regularly outdated (page is missing or host is down). So I upload it on this Wiki, so it will be available forever : Lisp:tracker-dired.el .
+Past, some of the above links seems to be regularly outdated (page is missing or host is down). So I upload it on this Wiki. You could get it here : Lisp:tracker-dired.el .
 
 Thanks to MaartenGrachten for his help. - CyrilB
