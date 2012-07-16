@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Sat Jul 14 12:52:41 2012 (-0700)
+;; Last-Updated: Mon Jul 16 09:10:22 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 8642
+;;     Update #: 8644
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-chg.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -5792,6 +5792,9 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-opt.el'")
 ;;
+;; 2012/07/16 dadams
+;;     icicle-comint-dynamic-complete-replacements:
+;;       Added (shell-command-completion 'icicle-shell-dynamic-complete-command).
 ;; 2012/07/13 dadams
 ;;     icicle-network-drive-means-remote-flag: Update doc string for toggle, C-x :.
 ;; 2012/07/08 dadams
