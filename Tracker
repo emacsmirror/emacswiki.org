@@ -16,13 +16,13 @@ Yes, see [[BookmarkPlus#BookmarkTags|Bookmark Tags]]. You can bookmark files and
 
 
 [new]
-The file [[http://waits.cp.jku.at/~maarten/downloads/tracker-dired.el|tracker-dired.el]] provides access to Tracker from within Emacs, via dbus. It is analogous to (and based on) find-dired.el. I use it by adding
+The file Lisp:tracker-dired.el provides access to Tracker from within Emacs, via dbus. It is analogous to (and based on) find-dired.el. I use it by adding
 * (require 'tracker-dired)
 * (global-set-key (kbd "C-c s") 'tracker-dired)
 
 to my .emacs file.
 
-To answer the question about searching by tags above: The code in [[http://waits.cp.jku.at/~maarten/downloads/tracker-dired.el|tracker-dired.el]] builds a sparql query around the search terms to perform a fulltext search. I guess you can trivially change the sparql query (even if sparql syntax is not especially trivial :-) to perform the search on tags.
+To answer the question about searching by tags above: The code in Lisp:tracker-dired.el builds a sparql query around the search terms to perform a fulltext search. I guess you can trivially change the sparql query (even if sparql syntax is not especially trivial :-) to perform the search on tags.
 
 [new:CyrilB:2012-07-16 28:58 UTC]
 Past, some of the above links seems to be regularly outdated (page is missing or host is down). So I upload it on this Wiki. You could get it here : Lisp:tracker-dired.el .
