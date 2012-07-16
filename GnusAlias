@@ -31,7 +31,7 @@ And this version adds a few goodies, including support swapping identities in mu
 (setq gnus-alias-identity-alist
       '(("work"
          nil
-         "My Name <my.name@emailaddress.com>"
+         My Name <my.name@emailaddress.com>"
          nil ;; No organization header
          (("Fcc" . "/home/myname/Mail/Gmail/Archive")) ;; extra headers to save outgoing mail
          nil ;; No extra body text
