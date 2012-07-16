@@ -10,7 +10,7 @@ A more complete version, including minor modes, is included in Lisp:powerline.el
 
 https://github.com/milkypostman/powerline
 
-I have rewritten this package and am hosting the repository on Github.  My version uses many of the techniques in the original---posted here---but tries to make it easier to add new things.  Please submit issues there and any of your own mode-line themes using PowerLine
+I have rewritten this package and am hosting the repository on Github.  My version uses many of the techniques in the original---posted here---but tries to make it easier to add new things.  Please submit issues there and any of your own mode-line themes using PowerLine --DonaldCurtis
 
 
 
