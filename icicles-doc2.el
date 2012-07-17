@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Fri Jul 13 15:10:00 2012 (-0700)
+;; Last-Updated: Tue Jul 17 09:14:31 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 28946
+;;     Update #: 28947
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-doc2.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -6065,17 +6065,6 @@
 ;;    `icicle-toggle-option'.  In any case, no such command is ever
 ;;    defined by Icicles if a function with the same name is already
 ;;    defined.
-;;
-;;  * Non-`nil' option `icicle-byte-compile-eval-after-load-flag'
-;;    means byte-compile definitions made within `eval-after-load'.
-;;    Some Icicles functions (commands, in particular) work only if a
-;;    given library is loaded.  Some such functions are defined inside
-;;    an `eval-after-load' form, which means they are defined only,
-;;    and as soon as, the required library is loaded.
-;;
-;;    If this option is non-`nil' then those function definitions are
-;;    byte-compiled.  This compilation adds a bit to the load time, in
-;;    effect, but it means that the functions run faster.
 ;;
 ;;  * User option `icicle-color-themes' is a list of color themes to
 ;;    cycle through when you use command `icicle-color-theme'.
