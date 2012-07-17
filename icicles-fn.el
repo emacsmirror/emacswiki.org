@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:53 2006
 ;; Version: 22.0
-;; Last-Updated: Tue Jul 17 10:03:38 2012 (-0700)
+;; Last-Updated: Tue Jul 17 13:02:37 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 13163
+;;     Update #: 13180
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-fn.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -1711,11 +1711,16 @@ CHARS defaults to the value of `icicle-read-char-history'."
 Display PROMPT and read a string that represents a character by its
 Unicode property `name' or `old-name'.  Return the char as a number.
 
-You can use Icicles completion against the Unicode name.
+You can use completion against the Unicode name of the character.
 
-A completion candidate is a Unicode name.  In Icicle mode, the Unicode
-character is also displayed next to the name, even though it is not
-part of the completion candidate.
+In Icicle mode:
+
+* The character itself is displayed next to its name, even though it
+  is not part of the completion candidate.  WYSIWYG.
+
+* When you cycle among candidates, the current character and its
+  Unicode code point are shown in the mode line (provided user option
+  `icicle-help-in-mode-line-delay' is greater than zero.)
 
 If you use a dedicated `*Completions*' frame, then the font used in
 `*Completions*' is the same as the frame from which you invoked
@@ -1744,6 +1749,8 @@ such a return value: (CHAR-NAME . CHAR-CODE)."
                                                  'face 'icicle-extra-candidate)))
                (symb         (intern (car name.char))))
           (put symb 'icicle-display-string disp-string)
+          (icicle-candidate-short-help (format "Char: %-10cCode Point: %d" (cdr name.char) (cdr name.char))
+                                       disp-string)
           (put-text-property 0 1 'icicle-orig-cand symb disp-string))))
     (let* ((new-prompt              (copy-sequence prompt))
            (IGNORE-1                (put-text-property 0 1 'icicle-fancy-candidates t new-prompt))
