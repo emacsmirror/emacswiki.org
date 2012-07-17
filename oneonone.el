@@ -7,9 +7,9 @@
 ;; Copyright (C) 1999-2012, Drew Adams, all rights reserved.
 ;; Created: Fri Apr  2 12:34:20 1999
 ;; Version: 21.1
-;; Last-Updated: Tue Jul 17 07:45:50 2012 (-0700)
+;; Last-Updated: Tue Jul 17 07:48:40 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 2637
+;;     Update #: 2638
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/oneonone.el
 ;; Keywords: local, frames
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -1695,8 +1695,7 @@ This command requires library `fit-frame.el'."
              (active-minibuffer-window)
              ;; Do this because this command is on `post-command-hook', and an event such as
              ;; `handle-switch-frame' might have changed the selected frame.
-             (eq last-event-frame (save-selected-window
-				    (select-window (minibuffer-window)) (selected-frame)))
+             (eq last-event-frame (window-frame (minibuffer-window)))
              (save-selected-window
                (select-window (minibuffer-window))
                ;; We should be able to use just (one-window-p),
