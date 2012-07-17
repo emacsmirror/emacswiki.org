@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Fri Jul 13 15:02:29 2012 (-0700)
+;; Last-Updated: Tue Jul 17 09:15:56 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 23147
+;;     Update #: 23150
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -104,9 +104,9 @@
 ;;    `icicle-define-command', `icicle-define-file-command',
 ;;    `icicle-define-search-bookmark-command',
 ;;    `icicle-define-sort-command', `icicle-file-bindings',
-;;    `icicle-kbd', `icicle-maybe-byte-compile-after-load'
-;;    `icicle-maybe-cached-action', `icicle-search-modes',
-;;    `icicle-with-comments-hidden', `icicle-with-selected-window'.
+;;    `icicle-kbd', `icicle-maybe-cached-action',
+;;    `icicle-search-modes', `icicle-with-comments-hidden',
+;;    `icicle-with-selected-window'.
 ;;
 ;;  Commands defined in Icicles -
 ;;
@@ -693,7 +693,6 @@
 ;;    `icicle-buffer-match-regexp', `icicle-buffer-no-match-regexp',
 ;;    `icicle-buffer-predicate', `icicle-buffer-require-match-flag'
 ;;    `icicle-buffer-sort', `icicle-buffers-ido-like-flag',
-;;    `icicle-byte-compile-eval-after-load-flag',
 ;;    `icicle-candidate-action-keys', `icicle-candidate-help-keys',
 ;;    `icicle-candidate-width-factor',
 ;;    `icicle-change-region-background-flag',
@@ -1403,20 +1402,6 @@
 
 
 ;;; Load other Icicles files (except documentation) ------------------
-
-;; Put this first
-;;;###autoload
-(defcustom icicle-byte-compile-eval-after-load-flag t
-  "*Non-nil means byte-compile definitions made within `eval-after-load'.
-Some Icicles functions (commands, in particular) work only if a given
-library is loaded.  Some such functions are defined inside an
-`eval-after-load' form, which means they are defined only, and as soon
-as, the required library is loaded.
-
-If this option is non-nil then those function definitions are
-byte-compiled.  This compilation adds a bit to the load time, in
-effect, but it means that the functions run faster."
-  :type 'boolean :group 'Icicles-Miscellaneous)
 
 (eval-when-compile
  (or (condition-case nil
