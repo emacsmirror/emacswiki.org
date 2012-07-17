@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Mon Jul 16 09:10:22 2012 (-0700)
+;; Last-Updated: Tue Jul 17 09:53:29 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 8644
+;;     Update #: 8652
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-chg.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -657,6 +657,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd2.el'")
 ;;
+;; 2012/07/17 dadams
+;;     Removed: icicle-maybe-byte-compile-after-load (macro).  Removed all calls to it.
 ;; 2012/07/07 dadams
 ;;     icicle-Info-index:
 ;;       Bind icicle-Info-(index-nodes|manual|hist-list), for highlighting visited nodes.
@@ -3223,6 +3225,10 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-mcmd.el'")
 ;;
+;; 2012/07/17 dadams
+;;     Removed: icicle-maybe-byte-compile-after-load (macro),
+;;              icicle-byte-compile-eval-after-load-flag (option).
+;;     Removed all calls to icicle-maybe-byte-compile-after-load.
 ;; 2012/07/14 dadams
 ;;     icicle-mouse-candidate-action-1: Fix for Emacs 24.  Use code similar to i*-candidate-action-1:
 ;;       Set icicle-last-input, not icicle-last-completion-candidate, to choice.
@@ -6876,6 +6882,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles.el'")
 ;;
+;; 2012/07/17 dadams
+;;     Removed: icicle-byte-compile-eval-after-load-flag.
 ;; 2012/02/28 dadams
 ;;     Removed eval-when-compile for Emacs < 20.
 ;; 2011/12/11 dadams
