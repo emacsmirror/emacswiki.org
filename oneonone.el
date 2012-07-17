@@ -7,9 +7,9 @@
 ;; Copyright (C) 1999-2012, Drew Adams, all rights reserved.
 ;; Created: Fri Apr  2 12:34:20 1999
 ;; Version: 21.1
-;; Last-Updated: Sat Mar 31 09:05:44 2012 (-0700)
+;; Last-Updated: Mon Jul 16 17:01:13 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 2629
+;;     Update #: 2636
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/oneonone.el
 ;; Keywords: local, frames
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -274,6 +274,11 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2012/07/16 dadams
+;;     1on1-fit-minibuffer-frame:
+;;       Do nothing if last-event-frame is not the minibuffer frame.  Alternatively we could do
+;;       nothing if this-command is handle-switch-frame.  Or we could just call
+;;       select-frame-set-input-focus at its end to ensure minibuffer frame still has the focus.
 ;; 2012/03/31 dadams
 ;;     Wrap count-screen-lines with with-current buffer.  Fixes bug: M in Dired pops up and
 ;;      selects frame listing marked files - and that frame's screen lines were being used.
@@ -1332,7 +1337,7 @@ If `1on1-separate-minibuffer-*Completions*-flag' is non-nil, then
     (if 1on1-minibuffer-frame
         (modify-frame-parameters 1on1-minibuffer-frame 1on1-minibuffer-frame-alist)
       (setq 1on1-minibuffer-frame
-            (let ((after-make-frame-functions nil)) ; E.g. inhibit `fit-frame'.
+            (let ((after-make-frame-functions  ())) ; E.g. inhibit `fit-frame'.
               (make-frame 1on1-minibuffer-frame-alist))))
 
     ;; Resize and reposition it.  If variable `1on1-minibuffer-frame-width'
@@ -1516,45 +1521,15 @@ If `zoom-frm.el' is used, then shrink the text according to
        (selected-frame)                 ; Hard-code 7 here - what does it depend on?
        `((left . ,(- (x-display-pixel-width) (+ (frame-pixel-width) 7))))))
     (raise-frame)
-    (when (boundp '1on1-minibuffer-frame)
-      (redirect-frame-focus (selected-frame) 1on1-minibuffer-frame))
+    (when 1on1-minibuffer-frame (redirect-frame-focus (selected-frame) 1on1-minibuffer-frame))
     (when (and 1on1-*Completions*-frame-flag (boundp 'x-pointer-box-spiral))
       (setq x-pointer-shape old-ptr-shape))
     return-window))
 
-(defun 1on1-set-minibuffer-frame-top/bottom ()
-  "Set position of minibuffer frame.
-Use `1on1-minibuffer-frame-top/bottom' if non-nil.
-Else, place minibuffer at bottom of display."
-  (when (boundp '1on1-minibuffer-frame)
-    (condition-case nil
-        (if (fboundp 'redisplay) (redisplay t) (force-mode-line-update t))
-      (error nil))                      ; Ignore errors from, e.g., killed buffers.
-    (modify-frame-parameters
-     1on1-minibuffer-frame
-     `((top ,@ (or 1on1-minibuffer-frame-top/bottom
-                (- (* 2 (frame-char-height 1on1-minibuffer-frame)))))))))
-
-(defun 1on1-set-minibuffer-frame-width ()
-  "Set width of minibuffer frame, in characters.
-Use `1on1-minibuffer-frame-width' if not nil.
-Else, set width relative to character size of `1on1-minibuffer-frame'
-and display size, and depending on
-`1on1-minibuffer-frame-width-percent':
-
-  (/ (* 1on1-minibuffer-frame-width-percent (x-display-pixel-width))
-     (* 100 (frame-char-width 1on1-minibuffer-frame)))"
-  (when (boundp '1on1-minibuffer-frame)
-    (set-frame-width
-     1on1-minibuffer-frame
-     (or 1on1-minibuffer-frame-width
-         (/ (* 1on1-minibuffer-frame-width-percent (x-display-pixel-width))
-            (* 100 (frame-char-width 1on1-minibuffer-frame)))))))
-
 (defun 1on1-color-minibuffer-frame-on-setup ()
   "Change background of minibuffer frame to reflect the minibuffer depth.
 Use this when increasing the minibuffer recursion depth."
-  (when (boundp '1on1-minibuffer-frame)
+  (when 1on1-minibuffer-frame
     (save-window-excursion
       (select-frame 1on1-minibuffer-frame)
       (set-background-color 1on1-active-minibuffer-frame-background)
@@ -1568,7 +1543,7 @@ Use this when increasing the minibuffer recursion depth."
 (defun 1on1-color-minibuffer-frame-on-exit ()
   "Change background of minibuffer frame to reflect the minibuffer depth.
 Use this when reducing the minibuffer recursion depth."
-  (when (boundp '1on1-minibuffer-frame)
+  (when 1on1-minibuffer-frame
     (save-window-excursion
       (select-frame 1on1-minibuffer-frame)
       (if (< (minibuffer-depth) 2)
@@ -1598,7 +1573,7 @@ Use this when reducing the minibuffer recursion depth."
 
 (defun 1on1-color-isearch-minibuffer-frame ()
   "Use `1on1-isearch-minibuffer-frame-background' for minibuffer."
-  (and (boundp '1on1-minibuffer-frame)
+  (and 1on1-minibuffer-frame
        (save-window-excursion
          (select-frame 1on1-minibuffer-frame)
          (set-background-color
@@ -1611,8 +1586,7 @@ Use this when reducing the minibuffer recursion depth."
 (defun 1on1-flash-ding-minibuffer-frame (&optional do-not-terminate)
   "Ring bell (`ding'), after flashing minibuffer frame, if relevant.
 Terminates any keyboard macro executing, unless arg DO-NOT-TERMINATE non-nil."
-  (flash-ding do-not-terminate (and (boundp '1on1-minibuffer-frame)
-                                    1on1-minibuffer-frame)))
+  (flash-ding do-not-terminate 1on1-minibuffer-frame))
 
 (defun 1on1-setup-minibuffer-frame-coloring ()
   "Redefine some built-in functions so they color the minibuffer frame.
@@ -1669,12 +1643,42 @@ Also accepts SPC to mean yes, or DEL to mean no."
     (when (facep 'mode-line-inactive)   ; Emacs 22
       (set-face-background 'mode-line-inactive 1on1-inactive-mode-line-background))))
 
-(defun 1on1-reset-minibuffer-frame ()
+(defun 1on1-reset-minibuffer-frame ()   ; On `minibuffer-exit-hook'.
+  "Reset frame `1on1-minibuffer-frame' to its normal size and position."
   (when 1on1-minibuffer-frame
     (set-frame-size 1on1-minibuffer-frame
                     (frame-width 1on1-minibuffer-frame)
                     1on1-minibuffer-frame-height)
     (1on1-set-minibuffer-frame-top/bottom)))
+
+(defun 1on1-set-minibuffer-frame-top/bottom ()
+  "Set position of minibuffer frame.
+Use `1on1-minibuffer-frame-top/bottom' if non-nil.
+Else, place minibuffer at bottom of display."
+  (when 1on1-minibuffer-frame
+    (condition-case nil
+        (if (fboundp 'redisplay) (redisplay t) (force-mode-line-update t))
+      (error nil))                      ; Ignore errors from, e.g., killed buffers.
+    (modify-frame-parameters
+     1on1-minibuffer-frame
+     `((top ,@ (or 1on1-minibuffer-frame-top/bottom
+                (- (* 2 (frame-char-height 1on1-minibuffer-frame)))))))))
+
+(defun 1on1-set-minibuffer-frame-width ()
+  "Set width of minibuffer frame, in characters.
+Use `1on1-minibuffer-frame-width' if not nil.
+Else, set width relative to character size of `1on1-minibuffer-frame'
+and display size, and depending on
+`1on1-minibuffer-frame-width-percent':
+
+  (/ (* 1on1-minibuffer-frame-width-percent (x-display-pixel-width))
+     (* 100 (frame-char-width 1on1-minibuffer-frame)))"
+  (when 1on1-minibuffer-frame
+    (set-frame-width
+     1on1-minibuffer-frame
+     (or 1on1-minibuffer-frame-width
+         (/ (* 1on1-minibuffer-frame-width-percent (x-display-pixel-width))
+            (* 100 (frame-char-width 1on1-minibuffer-frame)))))))
 
 ;;;###autoload
 (defun 1on1-fit-minibuffer-frame ()
@@ -1723,7 +1727,6 @@ This has no effect if you do not also use library `fit-frame.el'."
                ;; For `icomplete.el', Emacs 23+ uses an overlay instead of inserting text into
                ;; the buffer.  `fit-frame' cannot take the height of that overlay into account.
                ;; So we use `count-screen-lines' to get the height.
-               ;; For now, there remains an Emacs bug wrt the cursor placement: #11035.
                (fit-frame frame (frame-width frame)
                           ;; Need to be sure to use the right buffer.  Some commands etc. can
                           ;; pop up a frame and select it, or otherwise change the selected buf.
