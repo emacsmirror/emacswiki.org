@@ -7,9 +7,9 @@
 ;; Copyright (C) 1999-2012, Drew Adams, all rights reserved.
 ;; Created: Fri Apr  2 12:34:20 1999
 ;; Version: 21.1
-;; Last-Updated: Mon Jul 16 17:01:13 2012 (-0700)
+;; Last-Updated: Tue Jul 17 07:45:50 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 2636
+;;     Update #: 2637
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/oneonone.el
 ;; Keywords: local, frames
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -1686,13 +1686,17 @@ and display size, and depending on
 Repeat to increase the height by 1.
 Bind this in minibuffer keymaps to a key such as `C-o' that you can
 use during minibuffer input.
-This has no effect if you do not also use library `fit-frame.el'."
+This command requires library `fit-frame.el'."
   (interactive)
   (unless (require 'fit-frame nil t)
     (error "You need to load library `fit-frame.el' to use this command"))
-  ;; We could assume the minibuffer frame is `1on1-minibuffer-frame', but we don't.
+  ;; We could assume the minibuffer frame is `1on1-minibuffer-frame', but we do not.
   (when (and 1on1-fit-minibuffer-frame-flag
              (active-minibuffer-window)
+             ;; Do this because this command is on `post-command-hook', and an event such as
+             ;; `handle-switch-frame' might have changed the selected frame.
+             (eq last-event-frame (save-selected-window
+				    (select-window (minibuffer-window)) (selected-frame)))
              (save-selected-window
                (select-window (minibuffer-window))
                ;; We should be able to use just (one-window-p),
@@ -1710,8 +1714,7 @@ This has no effect if you do not also use library `fit-frame.el'."
          )
         (t
          (let* ((beg                                     (1on1-minibuffer-prompt-end))
-                (fit-frame-max-height
-                 1on1-fit-minibuffer-frame-max-height)
+                (fit-frame-max-height                    1on1-fit-minibuffer-frame-max-height)
                 (fit-frame-max-height-percent
                  1on1-fit-minibuffer-frame-max-height-percent)
                 (fit-frame-min-height                    1on1-minibuffer-frame-height)
