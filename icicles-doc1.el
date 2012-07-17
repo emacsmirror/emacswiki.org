@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Tue Jul 17 10:04:03 2012 (-0700)
+;; Last-Updated: Tue Jul 17 13:13:07 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 26641
+;;     Update #: 26649
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-doc1.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -5435,13 +5435,17 @@
 ;;
 ;;  Starting with Emacs 23, vanilla Emacs has Unicode support, and you
 ;;  can insert any Unicode characters using either an input method or
-;;  command `ucs-insert' (`C-x 8 RET'), which lets you complete
-;;  against the Unicode character name.  Icicles enhances `ucs-insert'
-;;  by showing the character to be inserted after its name in
-;;  `*Completions*' (but you complete against only the name).  I
-;;  recommend that you use `ucs-insert', not key completion, to insert
-;;  Unicode characters.  You might also find my library `ucs-cmds.el'
-;;  useful in this regard.
+;;  `C-x 8 RET' (command `ucs-insert' or, if you use my library
+;;  `ucs-cmds.el', command `ucsc-insert'), which lets you complete
+;;  against the Unicode character name.
+;;
+;;  Icicles enhances this by (a) showing the character to be inserted
+;;  after its name in `*Completions*' (but you complete against only
+;;  the name), and (b) showing the current character and its code
+;;  point in the mode line when you cycle.
+;;
+;;  I recommend that you use `ucs-insert' (or better, `ucsc-insert'),
+;;  not key completion, to insert Unicode characters.
 ;;
 ;;  There are thousands of Unicode characters.  So if you do use a
 ;;  non-`nil' value for `icicle-complete-keys-self-insert-ranges' then
@@ -5454,8 +5458,8 @@
 ;;  For each Unicode character, the completion candidate is
 ;;  `CHAR  =  UNICODE-NAME', where UNICODE-NAME is the name of the
 ;;  Unicode character.  This is so that you can complete against the
-;;  name.  But again, I recommend that you use command `ucs-insert',
-;;  not key completion, to insert a Unicode character.
+;;  name.  But again, I recommend that you use  `C-x 8 RET', not key
+;;  completion, to insert a Unicode character.
 ;;
 ;;(@* "Handling Keymaps That Are Inaccessible From the Global Map")
 ;;  ** Handling Keymaps That Are Inaccessible From the Global Map **
