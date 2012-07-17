@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:22:14 2006
 ;; Version: 22.0
-;; Last-Updated: Tue Jul 17 10:02:55 2012 (-0700)
+;; Last-Updated: Tue Jul 17 11:55:10 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 5257
+;;     Update #: 5260
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-opt.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -1077,14 +1077,14 @@ candidates.
 For Emacs 23+, if you use a non-nil value then use only small ranges
 for better performance, e.g., `((0 . 687))' covers Latin characters.
 
-In general, leave the value as nil.  Use Emacs 23+ command
-`ucs-insert' (`C-x 8 RET') to insert characters by completing against
-their Unicode names.  With Icicles, you can see the characters
-themselves in `*Completions*' whether you use key completion or
-`ucs-insert', but in both cases you complete against the character
-name.
+In general, leave the value as nil.  Use `C-x 8 RET' in Emacs 23+
+\(command `ucs-insert' or, if you use my library `ucs-cmds.el',
+`ucsc-insert') to insert characters by completing against their
+Unicode names.  With Icicles, you can see the characters themselves in
+`*Completions*' whether you use key completion or `C-x 8 RET', but in
+both cases you complete against the character name.
 
-For reference, below are the ranges supported by `ucs-insert' (Emacs
+For reference, below are the ranges supported by `C-x 8 RET' (Emacs
 23+).  But unless you have a very powerful computer, choose only only
 one or two small ranges of characters you actually might use.
 
