@@ -3,7 +3,7 @@ Pomodoro is a time management technique. http://www.pomodorotechnique.com
 There are at least three emacs modes specifically for this.
 * http://github.com/konr/tomatinho
 * http://github.com/docgnome/pomodoro.el 
-* http://kanis.fr/hg/lisp/ivan/pomodoro.el
+* http://ivan.kanis.fr/pomodoro.el
 
 == Pomodoro & Org-Mode integration ==
 * One way of [http://theadmin.org/articles/pomodoro-emacs-with-orgmode/ doing it]. More of Pomodoro diary 
