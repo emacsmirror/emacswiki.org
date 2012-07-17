@@ -7,12 +7,12 @@
 ;; Copyright (C) 2005-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Dec 20 13:33:01 2005
 ;; Version: 
-;; Last-Updated: Sun Jan  1 14:26:09 2012 (-0800)
+;; Last-Updated: Tue Jul 17 10:34:35 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 193
+;;     Update #: 194
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/dired-details+.el
 ;; Keywords: dired, frames
-;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
+;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x
 ;; 
 ;; Features that might be required by this library:
 ;;
