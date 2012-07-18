@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Tue Jul 17 13:02:20 2012 (-0700)
+;; Last-Updated: Wed Jul 18 07:16:10 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 8654
+;;     Update #: 8656
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-chg.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -1368,6 +1368,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-fn.el'")
 ;;
+;; 2012/07/18 dadams
+;;     icicle-insert-candidates: Handle annotations.
 ;; 2012/07/17 dadams
 ;;     icicle-read-char-by-name: Show char and its code point in mode line when cycle.
 ;; 2012/07/07 dadams
