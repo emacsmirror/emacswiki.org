@@ -52,11 +52,8 @@
 ;;
 ;; in your .emacs to enable it automatically.
 
-;; A Note on v24 (July, 2011):  The buffer display routines in v24 are
-;; currently being rewritten in preparation for the release of v24.1.  I'm
-;; not going to try to keep up with these changes until the relevant code
-;; stabilizes.  Until then, users who build v24 from source using a recent rev
-;; might see irregular behavior.
+;; A Note on v24:  The buffer display routines were substantially rewritten
+;; for v24, and this package hasn't been fully tested with with that version.
 
 ;;; Code: 
 
@@ -117,12 +114,12 @@ Do not set this variable directly.  Use the command
 for a description of the mode.")
 
 ;; Alist that records all per-window-point's data. Each element is of the
-;; form (WIN BUF-DATA BUF-DATA ...). Each BUF-DATA is of the form (BUFFER
-;; MARKER MARKER), where the markers record, respectively, the last values
-;; for window-point and window-start for BUFFER in WIN.  (We can't store the
-;; BUF-DATA for each window in a window-parameter because (a)
-;; window-parameters aren't preserved by save-window-excursion, and (b)
-;; they're not available on v22.)
+;; form (WIN BUF-DATA BUF-DATA ...). Each BUF-DATA is in turn an alist whose
+;; elements have the form (BUFFER MARKER MARKER), where the markers record,
+;; respectively, the last values for window-point and window-start for BUFFER
+;; in WIN.  (We can't store the data for each window in a window-parameter
+;; because (a) window-parameters aren't preserved by save-window-excursion,
+;; and (b) they're not available on v22.)
 (defvar pwp-alist nil)
 
 (defconst pwp-hook-assignments 
@@ -207,16 +204,16 @@ and `pwp-reposition-tests'."
 
 (when (version< emacs-version "23")
   (defadvice display-buffer (around per-window-point)
-    (mapc #'pwp-register-win (window-list))
+    (apply #'pwp-register-win (window-list))
     ad-do-it
     (pwp-reposition ad-return-value)))
 
 (defadvice replace-buffer-in-windows (around per-window-point)
   (let* ((buf (or (ad-get-arg 0) (current-buffer)))
          (winlist (get-buffer-window-list buf 'no-minibuf t)))
-    (mapc #'pwp-register-win winlist)
+    (apply #'pwp-register-win winlist)
     ad-do-it
-    (mapc #'pwp-reposition winlist)))
+    (apply #'pwp-reposition winlist)))
 
 ;; The following two primitives call buffer display functions from C code,
 ;; bypassing our advice.  So we also advise them.
@@ -240,7 +237,7 @@ and `pwp-reposition-tests'."
     ;; Kill-buffer returns non-nil only when the buffer was successfully
     ;; killed, which is the only case in which we need to act.
     (when ad-return-value 
-      (mapc #'pwp-reposition winlist))))
+      (apply #'pwp-reposition winlist))))
 
 ;; The special form with-output-to-temp-buffer also calls one of our advised
 ;; primitives from within C code.  But here we have a hook we can use, so we
@@ -248,7 +245,7 @@ and `pwp-reposition-tests'."
 ;; assumption that this form is only used when generating new content for the
 ;; temp buffer, in which case repositioning would be pointless.)
 (defun pwp-before-temp-buffer () 
-  (mapc #'pwp-register-win (window-list nil 'no-minibuf)))
+  (apply #'pwp-register-win (window-list nil 'no-minibuf)))
 
 ;;; ---------------------------------------------------------------------
 ;;; List Maintenance
@@ -292,18 +289,19 @@ and `pwp-reposition-tests'."
 
 ;; Called with argument WIN, records window-point and window-start for the
 ;; buffer currently displayed in WIN.
-(defun pwp-register-win (win)
-  ;; Never bother with minibuffer windows.
-  (when (and (not (window-minibuffer-p win))
-             (window-live-p win))
-    ;; Get window data from the main alist, then buffer data from WIN's own
-    ;; alist.  
-    (let* ((buf (window-buffer win)) 
-           (win-data (pwp-get-win-data win))
-           (buf-data (pwp-get-buf-data buf win-data)))
-      ;; Update the markers.
-      (set-marker (nth 1 buf-data) (window-point win) buf)
-      (set-marker (nth 2 buf-data) (window-start win) buf))))
+(defun pwp-register-win (&rest wins)
+  (dolist (win wins)
+    ;; Never bother with minibuffer windows.
+    (when (and (not (window-minibuffer-p win))
+               (window-live-p win))
+      ;; Get window data from the main alist, then buffer data from WIN's own
+      ;; alist.  
+      (let* ((buf (window-buffer win)) 
+             (win-data (pwp-get-win-data win))
+             (buf-data (pwp-get-buf-data buf win-data)))
+        ;; Update the markers.
+        (set-marker (nth 1 buf-data) (window-point win) buf)
+        (set-marker (nth 2 buf-data) (window-start win) buf)))))
 
 ;; Called with argument WIN, returns the element of `pwp-alist'
 ;; that has WIN as key.  If no such element exists, add one to pwp-alist
@@ -325,17 +323,18 @@ and `pwp-reposition-tests'."
 ;;; Repositioning Re-displayed Buffers
 ;;; ---------------------------------------------------------------------
 
-(defun pwp-reposition (win)
-  (when (window-live-p win)
-    (let ((buf (window-buffer win)))
-      ;; First, check to see whether BUF is one we should ignore in WIN.
-      (unless (pwp-exception-p buf win)
-        ;; If not, check to see if there's point and window-start info for
-        ;; displaying BUF in WIN. Reposition if so.
-        (let ((data (assq buf (assq win pwp-alist))))
-          (when data
-            (set-window-point win (nth 1 data))
-            (set-window-start win (nth 2 data))))))))
+(defun pwp-reposition (&rest wins)
+  (dolist (win wins)
+    (when (window-live-p win)
+      (let ((buf (window-buffer win)))
+        ;; First, check to see whether BUF is one we should ignore in WIN.
+        (unless (pwp-exception-p buf win)
+          ;; If not, check to see if there's point and window-start info for
+          ;; displaying BUF in WIN. Reposition if so.
+          (let ((data (assq buf (assq win pwp-alist))))
+            (when data
+              (set-window-point win (nth 1 data))
+              (set-window-start win (nth 2 data)))))))))
 
 ;; Function called to determine whether per-window-point should reposition a
 ;; buffer.  If it returns t, per-window-point does not reposition.
@@ -373,8 +372,8 @@ and `pwp-reposition-tests'."
 (defun pwp-buffer-name-exception-p (buf)
   (let ((name (buffer-name buf)))
     (or (member name pwp-no-reposition-names)
-        (memq t (mapcar #'(lambda (x) (string-match x name)) 
-                        pwp-no-reposition-regexps)))))
+        (memq nil (mapcar #'(lambda (x) (not (string-match x name)))
+                          pwp-no-reposition-regexps)))))
 
 ;; Check WIN and BUF against test functions the user has supplied.  
 (defun pwp-run-reposition-tests (buf win)
