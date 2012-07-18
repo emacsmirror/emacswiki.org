@@ -14,7 +14,7 @@ Three variables provide control over whether pwp-mode should reposition a buffer
 
 === A Note on v24 ===
 
-The buffer display routines in v24 are currently being rewritten in preparation for the release of v24.1.  I'm not going to try to keep up with the changes until the relevant code stabilizes.  Until then, users who build v24 from source using a recent rev might see irregular behavior.
+The buffer display routines were substantially rewritten for v24, and this package hasn't been fully tested with with that version.
 
 ==Discussion==
 
