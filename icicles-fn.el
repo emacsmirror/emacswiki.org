@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:53 2006
 ;; Version: 22.0
-;; Last-Updated: Tue Jul 17 13:02:37 2012 (-0700)
+;; Last-Updated: Wed Jul 18 07:11:50 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 13180
+;;     Update #: 13193
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-fn.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -319,7 +319,9 @@
 ;;; Defvars to quiet the byte-compiler:
 
 (when (< emacs-major-version 22)
+  (defvar completion-annotate-function)
   (defvar completion-common-substring)
+  (defvar completion-extra-properties)
   (defvar completion-root-regexp)
   (defvar icicle-Info-visited-max-candidates) ; In `icicles-opt.el' (for Emacs 22+)
   (defvar minibuffer-completing-symbol)
@@ -2790,7 +2792,7 @@ NO-DISPLAY-P non-nil means do not display the candidates; just
   (setq icicle-incremental-completion-p  icicle-incremental-completion)
   (when (and (eq t icicle-incremental-completion-p) (get-buffer-window "*Completions*" 0))
     (setq icicle-incremental-completion-p  'always))
-  (let ((nb-cands             (length icicle-completion-candidates)))
+  (let ((nb-cands  (length icicle-completion-candidates)))
     ;; $$$$$$ Could use this binding to prevent frame fitting, to allow room for images.
     ;; But that is not really the solution.  Really should fit the frame or window in such a way
     ;; that it takes image sizes into account.  Might need to wait for a fix to Emacs bug #7822.
@@ -3284,9 +3286,19 @@ The optional second arg is ignored."
 (defun icicle-insert-candidates (candidates)
   "Insert completion candidates from list CANDIDATES into the current buffer."
   (when (consp candidates)
+    (let ((annotation-fn  (or           ; Emacs 23+
+                           ;; (completion-metadata-get ALL-MD 'annotation-function)
+                           (and (boundp 'completion-extra-properties) (plist-get completion-extra-properties
+                                                                                 :annotation-function))
+                           (and (boundp 'completion-annotate-function) completion-annotate-function))))
+      (when annotation-fn               ; Emacs 23+ uses a list (CAND ANNOTATION) for the candidate.
+        (setq candidates  (mapcar (lambda (cand)
+                                    (let ((ann  (funcall annotation-fn cand)))
+                                      (if ann (list cand ann) cand)))
+                                  candidates))))
     (let* ((multilinep       (lambda (cand)
                                (if (consp cand)
-                                   (or (string-match "\n" (car cand))  (string-match "\n" (cdr cand)))
+                                   (or (string-match "\n" (car cand))  (string-match "\n" (cadr cand)))
                                  (string-match "\n" cand))))
            (any-multiline-p  (loop for cand in candidates
                                    if (funcall multilinep cand) return t
