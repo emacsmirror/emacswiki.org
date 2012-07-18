@@ -1,5 +1,5 @@
 ;;;; yasnippet-config.el --- Configuration of yasnippet.el
-;; $Id: yasnippet-config.el,v 1.6 2010/04/09 04:56:00 rubikitch Exp $
+;; $Id: yasnippet-config.el,v 1.8 2012/07/18 17:19:12 rubikitch Exp $
 
 ;; Copyright (C) 2009  rubikitch
 
@@ -41,27 +41,21 @@
 ;;; Installation:
 
 ;;
-;; For full install of the normal archive, just download and unpack
-;; the latest yasnippet-x.y.z.tar.bz2. You'll get a directory named
-;; `yasnippet, put it in ~/.emacs.d/plugins/
+;; Extension and configuration of yasnippet.
 ;;
-;; http://code.google.com/p/yasnippet/
-;;
-;; Put yasnippet-config.el to your load-path.  The load-path is
-;; usually ~/.emacs.d/.  It's set in your ~/.emacs like this:
-;; (add-to-list 'load-path (expand-file-name "~/.emacs.d"))
-;;
-;; And the following to your ~/.emacs startup file.
-;;
-;; (setq yas/trigger-key "TAB")
 ;; (require 'yasnippet-config)
-;; (yas/setup "~/.emacs.d/plugins/yasnippet")
 ;;
 ;; No need more.
 
 ;;; History:
 
 ;; $Log: yasnippet-config.el,v $
+;; Revision 1.8  2012/07/18 17:19:12  rubikitch
+;; cleanup: Remove `yas/setup' and backward compatibility code / Rewrite Installation
+;;
+;; Revision 1.7  2012/07/14 14:11:29  rubikitch
+;; bugfix about yas/snippet-table-parent
+;;
 ;; Revision 1.6  2010/04/09 04:56:00  rubikitch
 ;; New command: `yas/oneshot-snippet'
 ;;
@@ -85,23 +79,10 @@
 
 ;;; Code:
 
-(defvar yasnippet-config-version "$Id: yasnippet-config.el,v 1.6 2010/04/09 04:56:00 rubikitch Exp $")
+(defvar yasnippet-config-version "$Id: yasnippet-config.el,v 1.8 2012/07/18 17:19:12 rubikitch Exp $")
 (eval-when-compile (require 'cl))
 
 (require 'yasnippet) ;; not yasnippet-bundle
-
-;;; Backward compatibility
-(unless (fboundp 'yas/snippet-table) ;for auto-complete-yasnippet.el and anything-c-yasnippet.el
-  (defalias 'yas/snippet-table 'yas/snippet-table-get-create)
-  (defalias 'yas/snippet-table-parent 'yas/snippet-table-parents))
-
-;;; Setup
-(defun yas/setup (package-directory)
-  ;; Ensure to end with /
-  (setq package-directory (file-name-as-directory package-directory))
-  (add-to-list 'load-path package-directory)
-  (yas/initialize)
-  (yas/load-directory (concat package-directory "snippets")))
 
 ;;; dropdown-list
 ;; (require 'dropdown-list)
@@ -153,22 +134,6 @@
       '(or (not (memq (get-text-property (point) 'face)
                       '(font-lock-comment-face font-lock-doc-face font-lock-string-face)))
            '(require-snippet-condition . force-in-comment)))
-
-
-;;; Automatic reload after snippet modification
-;;; It is not needed since v0.6
-;; (defun yas/snippet-file-p (filename)
-;;   "Return non-nil if FILENAME is yasnippet snippet file."
-;;   (when filename
-;;     (setq filename (expand-file-name filename))
-;;     (loop for dir in yas/root-directory
-;;           for edir = (expand-file-name dir)
-;;           for len = (length edir)
-;;           thereis (equal edir (ignore-errors (substring filename 0 len))))))
-;; (defun yas/after-save-hook ()
-;;   (when (yas/snippet-file-p buffer-file-name)
-;;     (yas/reload-all)))
-;; (add-hook 'after-save-hook 'yas/after-save-hook)
 
 ;;; oneshot snippet
 (defvar yas/oneshot-snippet nil)
