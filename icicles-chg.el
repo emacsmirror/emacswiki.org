@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Wed Jul 18 07:16:10 2012 (-0700)
+;; Last-Updated: Thu Jul 19 10:54:17 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 8656
+;;     Update #: 8657
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-chg.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -1368,6 +1368,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-fn.el'")
 ;;
+;; 2012/07/19 dadams
+;;     icicle-insert-candidates: Fix change from 7/18: ensure icicle-last-completion is non-nil.
 ;; 2012/07/18 dadams
 ;;     icicle-insert-candidates: Handle annotations.
 ;; 2012/07/17 dadams
