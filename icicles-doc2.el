@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Tue Jul 17 10:03:56 2012 (-0700)
+;; Last-Updated: Thu Jul 19 13:59:45 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 28948
+;;     Update #: 28949
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-doc2.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -8262,7 +8262,8 @@
 ;;     insert-buffer                               ;  Action function
 ;;     "Buffer: "                            ; `completing-read' args
 ;;     (mapcar #'(lambda (buf) (list (buffer-name buf))) (buffer-list))
-;;     nil t nil 'buffer-name-history (icicle-default-buffer-names) nil)
+;;     nil t nil 'buffer-name-history 
+;;     (icicle-default-buffer-names current-prefix-arg) nil)
 ;;
 ;;  Macros `icicle-define-command' and `icicle-define-file-command'
 ;;  make it easy to define a multi-command.  Without them, it is
@@ -9450,7 +9451,7 @@
 ;;    "Switch to buffer: "                   ; `completing-read' args
 ;;    (mapcar (lambda (buf) (list (buffer-name buf))) (buffer-list))
 ;;    nil nil nil 'buffer-name-history
-;;    (icicle-default-buffer-names) nil
+;;    (icicle-default-buffer-names current-prefix-arg) nil
 ;;    ;; Filter bindings
 ;;    (icicle-buffer-bindings))       ; Macro provides buffer bindings
 ;;
