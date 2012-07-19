@@ -311,7 +311,6 @@ Of course, you also need to define this ##guess-TeX-master## function, for examp
 
 Feel free to improve this function to suit your needs (for example by adding support for other forms of the the "##include##" syntax), but it works quite well for me. Note that it will return ##nil## for files that do not get included in other files, which is the case for single file documents, or for the master files themselves. In this case, the ##TeX-master## variable gets set to ##nil##, which works.
 
-
 == Synctex and Evince ==
 
 Recent versions of the document reader Evince (since 2.32) have support for backward search; i.e. you press Ctrl
@@ -409,6 +408,12 @@ AUCTeX 11.85 does this differently than later versions.  All viewers are set wit
         ("^html?$" "." "iceweasel %o"))))
 }}}
 for example.  (Solution based on code here: https://cosinepi.wordpress.com/2010/09/10/emacs-configurations-auctex/ which was designed for windows configuration.)
+
+== Synctex and Sumatra PDF ==
+
+On Windows, [http://blog.kowalczyk.info/software/sumatrapdf/free-pdf-reader.html Sumatra PDF] serves a similar purpose to Evince by also allowing forward and backward searches. The forward searches can be done either through command-line arguments or through the ddeclient.
+
+Unfortunately, configuration can be tricky to get right, mainly because there are so many steps. See [http://www.barik.net/archive/2012/07/18/154432/ Emacs AUCTeX and PDF Synchronization on Windows] for using the command-line mode in Sumatra PDF to configure AUCTex and Emacs or [http://william.famille-blum.org/blog/static.php?page=static081010-000413 Configuring editors with SumatraPDF] if for some reason you need to use DDE.
 
 == Discussion ==
 
