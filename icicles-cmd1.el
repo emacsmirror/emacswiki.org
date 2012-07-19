@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Tue Jul 17 10:04:23 2012 (-0700)
+;; Last-Updated: Thu Jul 19 16:26:11 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 24381
+;;     Update #: 24402
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-cmd1.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -17,15 +17,14 @@
 ;;
 ;; Features that might be required by this library:
 ;;
-;;   `apropos', `apropos-fn+var', `avoid', `backquote', `bytecomp',
-;;   `cl', `cus-edit', `cus-face', `cus-load', `cus-start', `doremi',
-;;   `easymenu', `el-swank-fuzzy', `ffap', `ffap-', `frame-cmds',
-;;   `frame-fns', `fuzzy', `fuzzy-match', `hexrgb', `icicles-face',
-;;   `icicles-fn', `icicles-mcmd', `icicles-opt', `icicles-var',
-;;   `image-dired', `kmacro', `levenshtein', `misc-fns', `mouse3',
-;;   `mwheel', `naked', `regexp-opt', `ring', `ring+', `second-sel',
-;;   `strings', `thingatpt', `thingatpt+', `wid-edit', `wid-edit+',
-;;   `widget'.
+;;   `apropos', `apropos-fn+var', `avoid', `cl', `cus-edit',
+;;   `cus-face', `cus-load', `cus-start', `doremi', `easymenu',
+;;   `el-swank-fuzzy', `ffap', `ffap-', `frame-cmds', `frame-fns',
+;;   `fuzzy', `fuzzy-match', `hexrgb', `icicles-face', `icicles-fn',
+;;   `icicles-mcmd', `icicles-opt', `icicles-var', `image-dired',
+;;   `kmacro', `levenshtein', `misc-fns', `mouse3', `mwheel',
+;;   `naked', `regexp-opt', `ring', `ring+', `second-sel', `strings',
+;;   `thingatpt', `thingatpt+', `wid-edit', `wid-edit+', `widget'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -5698,41 +5697,13 @@ want this remapping, then customize option
 ;;;###autoload (autoload 'icicle-kill-buffer "icicles")
 (icicle-define-command icicle-kill-buffer ; Bound to `C-x k' in Icicle mode.
   "Kill a buffer.
-Buffer-name completion candidates are as follows, depending on the
-prefix arg:
-
-* No prefix arg: all buffers
-* Numeric arg > 0: buffers visiting files
-* Numeric arg < 0: buffers associated with the selected frame
-* Numeric arg = 0: buffers with the same mode as the current buffer
-* Plain prefix arg (`C-u'): buffers with the same mode as current, or
-  with a mode that the current mode is derived from
-
-You can use these additional keys during buffer-name completion:
-* `C-x m'     Visit a bookmarked buffer (only if you use Bookmark+).
-* `C-x C-m -' Remove buffers with a mode that is derived from a given
-              mode.  Repeatable.  (`C-m' = `RET'.)
-* `C-x M -'   Remove buffers with a given mode.  Repeatable.
-* `C-x C-m +' Keep only buffers with a mode derived from a given mode.
-* `C-x M +'   Keep only buffers with a given mode.
-
-These options, when non-nil, control candidate matching and filtering:
-
- `icicle-buffer-ignore-space-prefix-flag' - Ignore space-prefix names
- `icicle-buffer-extras'             - Extra buffers to display
- `icicle-buffer-match-regexp'       - Regexp that buffers must match
- `icicle-buffer-no-match-regexp'    - Regexp buffers must not match
- `icicle-buffer-predicate'          - Predicate buffer names satisfy
- `icicle-buffer-sort'               - Sort function for candidates
+See `icicle-buffer' for more information, including about buffer-name
+completion candidates, default values, and additional key bindings.
 
 By default, Icicle mode remaps all key sequences that are normally
 bound to `kill-buffer' to `icicle-kill-buffer'.  If you do not want
 this remapping, then customize option
-`icicle-top-level-key-bindings'.
-
-Note: The prefix arg is tested, even when this is called
-noninteractively.  Lisp code can bind `current-prefix-arg' to control
-the behavior."                          ; Doc string
+`icicle-top-level-key-bindings'."       ; Doc string
   icicle-kill-a-buffer-and-update-completions ; Action function
   (icicle-buffer-name-prompt "Kill")    ; `completing-read' args
   (mapcar (lambda (buf) (list (buffer-name buf))) icicle-bufflist) nil ; `icicle-bufflist' is free.
@@ -5793,6 +5764,9 @@ prefix arg:
 * Plain prefix arg (`C-u'): buffers with the same mode as current, or
   with a mode that the current mode is derived from
 
+For Emacs 23 and later, the default values (via `M-n') are the first
+four completion candidates (respecting the prefix argument).
+
 You can use these additional keys during buffer-name completion:
 * `C-x m'     Visit a bookmarked buffer (only if you use Bookmark+).
 * `C-x C-m -' Remove buffers with a mode that is derived from a given
@@ -5834,24 +5808,34 @@ the behavior."                          ; Doc string
   (icicle-buffer-name-prompt "Switch to") ; `completing-read' args
   (mapcar (lambda (buf) (list (buffer-name buf))) icicle-bufflist) nil ; `icicle-bufflist' is free.
   (and (fboundp 'confirm-nonexistent-file-or-buffer)  (confirm-nonexistent-file-or-buffer)) ; Emacs 23.
-  nil 'buffer-name-history (icicle-default-buffer-names) nil
+  nil 'buffer-name-history (icicle-default-buffer-names current-prefix-arg) nil
   (icicle-buffer-bindings)              ; Bindings
   (icicle-bind-buffer-candidate-keys)   ; First code
   nil                                   ; Undo code
   (icicle-unbind-buffer-candidate-keys)) ; Last code
 
 ;; Free var here: `icicle-bufflist' is bound by `icicle-buffer-bindings'.
-(defun icicle-default-buffer-names ()
-  "Default buffer names (Emacs 23+) or name (< Emacs 23)."
+(defun icicle-default-buffer-names (&optional arg)
+  "Default buffer names (Emacs 23+) or name (< Emacs 23).
+For Emacs 23+, up to four names are returned.
+
+Optional ARG is used only for Emacs 23+.  Its meaning is the same as
+the prefix argument in Icicles buffer commands:
+ * nil       :  all buffers
+ * Number > 0: buffers visiting files
+ * Number < 0: buffers associated with the selected frame
+ * Number = 0: buffers with the same mode as the current buffer
+ * Cons      : buffers with the same mode as current, or with
+               a mode that the current mode is derived from"
   (let ((bname  (buffer-name (if (fboundp 'another-buffer) ; In `misc-fns.el'.
                                  (another-buffer nil t)
                                (other-buffer (current-buffer))))))
-    (if (> emacs-major-version 22)      ; Emacs 23 accepts a list of default values.
-        (cons bname
-              (mapcar #'buffer-name
-                      (delete (current-buffer) ; Just keep the first 4.  (This could be an option.)
-                              (icicle-first-N 4 (or icicle-bufflist  (buffer-list))))))
-      bname)))
+    (if (< emacs-major-version 23)
+        bname
+      (let ((bufs  (mapcar #'buffer-name ; Emacs 23 accepts a list of default values.
+                           (delete (current-buffer) ; Just keep the first 4.  (This could be an option.)
+                                   (icicle-first-N 4 (or icicle-bufflist  (buffer-list)))))))
+        (if arg  bufs  (cons bname bufs))))))
 
 ;;;###autoload (autoload 'icicle-buffer-other-window "icicles")
 (icicle-define-command icicle-buffer-other-window ; Bound to `C-x 4 b' in Icicle mode.
@@ -5861,7 +5845,7 @@ Same as `icicle-buffer' except it uses a different window." ; Doc string
   (icicle-buffer-name-prompt "Switch to" t) ; `completing-read' args
   (mapcar (lambda (buf) (list (buffer-name buf))) icicle-bufflist) nil ; `icicle-bufflist' is free.
   (and (fboundp 'confirm-nonexistent-file-or-buffer)  (confirm-nonexistent-file-or-buffer)) ; Emacs 23.
-  nil 'buffer-name-history (icicle-default-buffer-names) nil
+  nil 'buffer-name-history (icicle-default-buffer-names current-prefix-arg) nil
   (icicle-buffer-bindings)              ; Bindings
   (icicle-bind-buffer-candidate-keys)   ; First code
   nil                                   ; Undo code
@@ -5870,50 +5854,13 @@ Same as `icicle-buffer' except it uses a different window." ; Doc string
 ;;;###autoload (autoload 'icicle-insert-buffer "icicles")
 (icicle-define-command icicle-insert-buffer
   "Multi-command version of `insert-buffer'.
-Buffer-name completion candidates are as follows, depending on the
-prefix arg:
-
-* No prefix arg: all buffers
-* Numeric arg > 0: buffers visiting files
-* Numeric arg < 0: buffers associated with the selected frame
-* Numeric arg = 0: buffers with the same mode as the current buffer
-* Plain prefix arg (`C-u'): buffers with the same mode as current, or
-  with a mode that the current mode is derived from
-
-You can use these additional keys during buffer-name completion:
-* `C-x m'     Visit a bookmarked buffer (only if you use Bookmark+).
-* `C-x C-m -' Remove buffers with a mode that is derived from a given
-              mode.  Repeatable.  (`C-m' = `RET'.)
-* `C-x M -'   Remove buffers with a given mode.  Repeatable.
-* `C-x C-m +' Keep only buffers with a mode derived from a given mode.
-* `C-x M +'   Keep only buffers with a given mode.
-* `S-delete'  Kill the buffer named by a completion candidate.
-
-These options, when non-nil, control candidate matching and filtering:
-
- `icicle-buffer-ignore-space-prefix-flag' - Ignore space-prefix names
- `icicle-buffer-extras'             - Extra buffers to display
- `icicle-buffer-match-regexp'       - Regexp that buffers must match
- `icicle-buffer-no-match-regexp'    - Regexp buffers must not match
- `icicle-buffer-predicate'          - Predicate buffer names satisfy
- `icicle-buffer-sort'               - Sort function for candidates
-
-For example, to show only buffers that are associated with files, set
-`icicle-buffer-predicate' to (lambda (buf) (buffer-file-name buf)).
-
-Option `icicle-buffer-require-match-flag' can be used to override
-option `icicle-require-match-flag'.
-
-See also command `icicle-buffer-config'.
-
-Note: The prefix arg is tested, even when this is called
-noninteractively.  Lisp code can bind `current-prefix-arg' to control
-the behavior."                          ; Doc string
+See `icicle-buffer' for more information, including about buffer-name
+completion candidates, default values, and additional key bindings." ; Doc string
   insert-buffer                         ; Action function
   (icicle-buffer-name-prompt "Insert")  ; `completing-read' args
   (mapcar (lambda (buf) (list (buffer-name buf))) icicle-bufflist) nil ; `icicle-bufflist' is free.
   (and (fboundp 'confirm-nonexistent-file-or-buffer)  (confirm-nonexistent-file-or-buffer)) ; Emacs 23.
-  nil 'buffer-name-history (icicle-default-buffer-names) nil
+  nil 'buffer-name-history (icicle-default-buffer-names current-prefix-arg) nil
   (icicle-buffer-bindings)              ; Bindings
   ;; Actually, there is no reason to bind `C-x m' to `icicle-bookmark-non-file-other-window' here,
   ;; but to keep things simple we do it anyway.
@@ -5925,29 +5872,8 @@ the behavior."                          ; Doc string
 (icicle-define-command icicle-add-buffer-candidate ; Command name
   "Add buffer as an always-show completion candidate.
 Add the buffer to `icicle-buffer-extras'.  Save the updated option.
-Buffer-name completion candidates are as follows, depending on the
-prefix arg:
-
-* No prefix arg: all buffers
-* Numeric arg > 0: buffers visiting files
-* Numeric arg < 0: buffers associated with the selected frame
-* Numeric arg = 0: buffers with the same mode as the current buffer
-* Plain prefix arg (`C-u'): buffers with the same mode as current, or
-  with a mode that the current mode is derived from
-
-You can use these additional keys during buffer-name completion:
-* `C-x m'     Visit a bookmarked buffer (only if you use Bookmark+).
-* `C-x C-m -' Remove buffers with a mode that is derived from a given
-              mode.  Repeatable.  (`C-m' = `RET'.)
-* `C-x M -'   Remove buffers with a given mode.  Repeatable.
-* `C-x C-m +' Keep only buffers with a mode derived from a given mode.
-* `C-x M +'   Keep only buffers with a given mode.
-* `S-delete'  Remove the buffer named by a completion candidate from
-              `icicle-buffer-extras'.
-
-Note: The prefix arg is tested, even when this is called
-noninteractively.  Lisp code can bind `current-prefix-arg' to control
-the behavior."
+See `icicle-buffer' for more information, including about buffer-name
+completion candidates, default values, and additional key bindings." ; Doc string
   ;; FREE here: ICICLE-BUFFER-EXTRAS, ICICLE-CUSTOMIZE-SAVE-VARIABLE-FUNCTION.
   (lambda (buf)
     (add-to-list 'icicle-buffer-extras buf) ; Action function
@@ -5957,7 +5883,7 @@ the behavior."
   (icicle-buffer-name-prompt "Show always") ; `completing-read' args
   (mapcar (lambda (buf) (list (buffer-name buf))) icicle-bufflist) nil ; `icicle-bufflist' is free.
   (and (fboundp 'confirm-nonexistent-file-or-buffer)  (confirm-nonexistent-file-or-buffer)) ; Emacs 23.
-  nil 'buffer-name-history (icicle-default-buffer-names) nil
+  nil 'buffer-name-history (icicle-default-buffer-names current-prefix-arg) nil
   (icicle-buffer-bindings               ; Bindings
    ((icicle-delete-candidate-object        'icicle-remove-buffer-candidate-action) ; Override default (kill).
     (icicle-use-candidates-only-once-flag  t)))
