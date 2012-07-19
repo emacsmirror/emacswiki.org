@@ -1,4 +1,8 @@
-Scheme-lookup is a modified version of <code>hyperspec.el</code> (see CommonLispHyperspec), seeded with symbols from R5RS, finalized SRFIs and the manuals of several [[Scheme]] systems.  
+The best way to lookup Scheme symbols and read about them is with InfoMode and InfoLook.  This is setup in Emacs by default.  In Scheme Mode buffers, typing `C-h S' will search in the index Revised5 Report on Schema Programing (R5RS) for the the symbol at point.  You just need to install the R5RS info file into your InfoPath.
+
+http://groups.csail.mit.edu/mac/ftpdir/scm/
+
+Scheme-lookup was a modified version of <code>hyperspec.el</code> (see CommonLispHyperspec), seeded with symbols from R5RS, finalized SRFIs and the manuals of several [[Scheme]] systems.  
 It allows to simply put the TextCursor over a symbol and hit M-x scheme-lookup to jump to the relevant documentation.
 
 To get scheme-lookup do
@@ -7,9 +11,8 @@ To get scheme-lookup do
 
 then follow the instructions at the top of scheme-lookup.el.  It should all be pretty self-explanatory.
 
-(But that site is a dead link as of 2009-10-31).
-
+(But that site has been dead since 2009-10-31).
 
 == r5rs.el ==
 
-The scheme-lookup project seems dead, so that I've written the Lisp:r5rs.el simple file to browse documentation from the R5RS Revised5 Report on Schema Programing language.
+Since scheme-lookup was dead, NumaTortolero wrote the Lisp:r5rs.el simple file to browse documentation from the R5RS Revised5 Report on Scheme Programing language.
