@@ -5,6 +5,7 @@ Instructions: Please change the path of vim/gvim to where it is on your computer
  - Todo: re-open the edited file in Emacs, after opening it in vim.
 
 
+{{{
 (defun vim-current-buffer ()
   (interactive)
   "Open current buffer file in gvim \n
@@ -18,3 +19,4 @@ Instructions: Please change the path of vim/gvim to where it is on your computer
 	  (setq result (start-process "gvim" nil gvim-program gvim-file-name)))
       (error "Current buffer doesn't point to a file yet."))
     (unless result (find-file gvim-file-name))))
+}}}
