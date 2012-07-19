@@ -53,7 +53,8 @@ detail after reading the next section.
     insert-buffer                               ;  Action function
     "Buffer: "                                  ; `completing-read' args
     (mapcar #'(lambda (buf) (list (buffer-name buf))) (buffer-list))
-    nil t nil 'buffer-name-history (icicle-default-buffer-names) nil)
+    nil t nil 'buffer-name-history
+    (icicle-default-buffer-names current-prefix-arg) nil)
 
 Macros '''`icicle-define-command'''' and '''`icicle-define-file-command''''
 make it easy to define a multi-command.  Without them, it is sometimes not
