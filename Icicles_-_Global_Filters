@@ -210,7 +210,7 @@ As an example of using this macro, here is the core definition of `icicle-buffer
   "Switch to buffer: "                   ; `completing-read' args
   (mapcar (lambda (buf) (list (buffer-name buf))) (buffer-list))
   nil nil nil 'buffer-name-history
-  (icicle-default-buffer-names) nil
+  (icicle-default-buffer-names current-prefix-arg) nil
   ;; Filter bindings
   (icicle-buffer-bindings))       ; Macro provides buffer bindings
 
