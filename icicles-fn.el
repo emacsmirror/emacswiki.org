@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:53 2006
 ;; Version: 22.0
-;; Last-Updated: Wed Jul 18 15:27:26 2012 (-0700)
+;; Last-Updated: Thu Jul 19 10:53:01 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 13194
+;;     Update #: 13195
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-fn.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -3287,7 +3287,8 @@ The optional second arg is ignored."
   "Insert completion candidates from list CANDIDATES into the current buffer."
   (when (consp candidates)
     (let ((annotation-fn  (or           ; Emacs 23+
-                           (and (fboundp 'completion-metadata-get)
+                           (and icicle-last-completion-candidate
+                                (fboundp 'completion-metadata-get)
                                 (completion-metadata-get
                                  (completion-metadata icicle-last-completion-candidate
                                                       minibuffer-completion-table
