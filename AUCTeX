@@ -411,7 +411,7 @@ for example.  (Solution based on code here: https://cosinepi.wordpress.com/2010/
 
 == Synctex and Sumatra PDF ==
 
-On Windows, [http://blog.kowalczyk.info/software/sumatrapdf/free-pdf-reader.html Sumatra PDF] serves a similar purpose to Evince by also allowing forward and backward searches. The forward searches can be done either through command-line arguments or through the ddeclient.
+On Windows, [http://blog.kowalczyk.info/software/sumatrapdf/free-pdf-reader.html Sumatra PDF] serves a similar purpose to Evince by also allowing forward and backward searches (and unlike Adobe Acrobat Reader, won't lock the PDF while while the viewer is open). The forward searches can be done either through command-line arguments or through the ddeclient.
 
 Unfortunately, configuration can be tricky to get right, mainly because there are so many steps. See [http://www.barik.net/archive/2012/07/18/154432/ Emacs AUCTeX and PDF Synchronization on Windows] for using the command-line mode in Sumatra PDF to configure AUCTex and Emacs or [http://william.famille-blum.org/blog/static.php?page=static081010-000413 Configuring editors with SumatraPDF] if for some reason you need to use DDE.
 
