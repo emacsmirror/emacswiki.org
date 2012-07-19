@@ -415,7 +415,7 @@ On Windows, [http://blog.kowalczyk.info/software/sumatrapdf/free-pdf-reader.html
 
 Unfortunately, configuration can be tricky to get right, mainly because there are so many steps. See [http://www.barik.net/archive/2012/07/18/154432/ Emacs AUCTeX and PDF Synchronization on Windows] for using the command-line mode in Sumatra PDF to configure AUCTex and Emacs or [http://william.famille-blum.org/blog/static.php?page=static081010-000413 Configuring editors with SumatraPDF] if for some reason you need to use DDE.
 
-When correctly configured, you can perform a forward search (from within Emacs) by using AucTex's built-in View command: C-c C-v. To perform inverse search (from within Sumatra PDF), simply double-click the area of text. This also works with multi-file LaTeX projects.
+When correctly configured, you can perform a forward search (from within Emacs) by using AUCTeX's built-in View command: C-c C-v. To perform inverse search (from within Sumatra PDF), simply double-click the area of text. This also works with multi-file LaTeX projects.
 
 == Discussion ==
 
