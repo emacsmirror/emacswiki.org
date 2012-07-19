@@ -1,0 +1,20 @@
+A simple elisp function to call vim to open and edit current buffer. 
+
+Instructions: Please change the path of vim/gvim to where it is on your computer.
+
+ - Todo: re-open the edited file in Emacs, after opening it in vim.
+
+
+(defun vim-current-buffer ()
+  (interactive)
+  "Open current buffer file in gvim \n
+  (let ((gvim-program "c:/vim/gvim.exe")
+	(gvim-file-name (buffer-file-name (current-buffer))))
+    (if gvim-file-name
+	(progn
+	  (kill-buffer (current-buffer) )
+	  ;; need to understand the start-process and how to handle the process exit
+	  ;; to be implemented: when process ends, will reopen file in emacs
+	  (setq result (start-process "gvim" nil gvim-program gvim-file-name)))
+      (error "Current buffer doesn't point to a file yet."))
+    (unless result (find-file gvim-file-name))))
