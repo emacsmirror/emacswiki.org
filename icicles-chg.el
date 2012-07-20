@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Thu Jul 19 10:54:17 2012 (-0700)
+;; Last-Updated: Thu Jul 19 17:13:06 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 8657
+;;     Update #: 8670
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-chg.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -85,6 +85,11 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd1.el'")
 ;;
+;; 2012/07/19 dadams
+;;     icicle-default-buffer-names: Added optional ARG.  Use in all calls to it.
+;;     icicle-buffer-list: Allow also Dired buffers for positive prefix arg.
+;;     icicle-(kill|insert)-buffer, icicle-add-buffer-candidate:
+;;       Removed doc string content - just refer to icicle-buffer doc.
 ;; 2012/07/10 dadams
 ;;     icicle-comint-dynamic-complete-as-filename:
 ;;       (file-name-nondir* (directory-file-name...)) -> (directory-file-name (file-relative-name...))
@@ -3053,6 +3058,8 @@
 ;;       macros needs to be byte-compiled anew after loading the updated macros.
 ;; ****************************************************************************************************
 ;;
+;; 2012/07/19 dadams
+;;     icicle-buffer-bindings: Positive prefix arg now includes Dired buffers, along with file bufs.
 ;; 2012/07/05 dadams
 ;;     Removed #' from lambdas.
 ;; 2012/04/22 dadams
