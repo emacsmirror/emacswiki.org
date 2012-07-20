@@ -15,6 +15,7 @@ author/maintainer/contributor on:
 * [http://www.emacswiki.org/emacs/FlymakePhp#toc2 Flymake for PHP CodeSniffer] 
 * VbDotNetMode - editing for VB.NET.  Surprisingly easy to code in comparison to csharp-mode.
 * [http://www.emacswiki.org/emacs/thesaurus.el Thesaurus] - a thesaurus. Lookup synonyms, or replace a word in your text with a synonym. 
+* [http://www.emacswiki.org/emacs/wordnik.el WordNik] - a dictionary. Lookup definitions of words without leaving emacs. 
 
 dpchiesa0hotmail0com
 
