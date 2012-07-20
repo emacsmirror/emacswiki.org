@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:24:28 2006
 ;; Version: 22.0
-;; Last-Updated: Tue Jul 17 10:03:29 2012 (-0700)
+;; Last-Updated: Thu Jul 19 17:07:34 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 987
+;;     Update #: 999
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-mac.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -453,12 +453,15 @@ created after the others."
                   ((zerop (prefix-numeric-value current-prefix-arg)) ; `C-0'
                    (let ((this-mode  major-mode))
                      (icicle-remove-if-not `(lambda (bf)
-                                               (with-current-buffer bf (eq major-mode ',this-mode)))
+                                             (with-current-buffer bf (eq major-mode ',this-mode)))
                                            (buffer-list))))
                   ((< (prefix-numeric-value current-prefix-arg) 0) ; `C--'
                    (cdr (assq 'buffer-list (frame-parameters))))
                   (t                    ; `C-1'
-                   (icicle-remove-if-not (lambda (bf) (buffer-file-name bf)) (buffer-list))))
+                   (icicle-remove-if-not (lambda (bf)
+                                           (or (buffer-file-name bf)
+                                               (with-current-buffer bf (eq major-mode 'dired-mode))))
+                                         (buffer-list))))
           (buffer-list))))
      post-bindings))
 
