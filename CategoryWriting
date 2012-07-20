@@ -4,6 +4,7 @@ Clicking the title heading to search for pages about writing in natural language
 * Xemacs' -- dictionary.el is probably different from dictionary-el  See DictMode above. 
 * DictWeb -- provides a possibility to query a dict server
 * DictEm -- another dict server querier, using the <code>dict</code> program
+* Wordnik.el -- <tt>[[wordnik.el]]</tt>  to look up word definitions on [[http://WordNik.com|WordNik.com]], and display them.
 * LookUp -- "Lookup provides the simple and unified search interfacefor the commercial electric dictionary as well as the network dictionary server ."  Available as the debian package lookup-el, woody onwards. 
 * Hachette (hachette.el) -- looks up online French dictionaries.
 * NaturalLanguageMode -- Conceptual ideas for how Emacs could support writers.
