@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Thu Jul 19 16:26:11 2012 (-0700)
+;; Last-Updated: Thu Jul 19 17:10:15 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 24402
+;;     Update #: 24413
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-cmd1.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -5758,7 +5758,7 @@ Buffer-name completion candidates are as follows, depending on the
 prefix arg:
 
 * No prefix arg: all buffers
-* Numeric arg > 0: buffers visiting files
+* Numeric arg > 0: buffers visiting files or directories (Dired)
 * Numeric arg < 0: buffers associated with the selected frame
 * Numeric arg = 0: buffers with the same mode as the current buffer
 * Plain prefix arg (`C-u'): buffers with the same mode as current, or
@@ -5822,7 +5822,7 @@ For Emacs 23+, up to four names are returned.
 Optional ARG is used only for Emacs 23+.  Its meaning is the same as
 the prefix argument in Icicles buffer commands:
  * nil       :  all buffers
- * Number > 0: buffers visiting files
+ * Number > 0: buffers visiting files or directories (Dired)
  * Number < 0: buffers associated with the selected frame
  * Number = 0: buffers with the same mode as the current buffer
  * Cons      : buffers with the same mode as current, or with
@@ -7411,7 +7411,9 @@ and a final-choice key (e.g. `RET', `mouse-2') to choose the last one." ; Doc st
 ;;;###autoload (autoload 'icicle-buffer-list "icicles")
 (icicle-define-command icicle-buffer-list ; Command name
   "Choose a list of buffer names.
-With a positive prefix arg, only buffers visiting files are candidates.
+With a positive prefix arg, only buffers visiting files or directories
+\(Dired) are candidates.
+
 With a negative prefix arg, only buffers associated with the selected
 frame are candidates.
 
@@ -7433,7 +7435,7 @@ These options, when non-nil, control candidate matching and filtering:
 Note: The prefix arg is tested, even when this is called
 noninteractively.  Lisp code can bind `current-prefix-arg' to control
 the behavior."                          ; Doc string
-  (lambda (name)                        ; FREE here: BUF-NAMES.
+  (lambda (name)                        ; Action function.  FREE here: BUF-NAMES.
     (push name buf-names)
     (when (interactive-p)
       (message "Added buffer name `%s'" (icicle-propertize name 'face 'icicle-msg-emphasis))
@@ -7441,7 +7443,10 @@ the behavior."                          ; Doc string
   prompt (mapcar (lambda (buf) (list (buffer-name buf))) ; `completing-read' args
                  (if current-prefix-arg
                      (if (wholenump (prefix-numeric-value current-prefix-arg))
-                         (icicle-remove-if-not (lambda (bf) (buffer-file-name bf)) (buffer-list))
+                         (icicle-remove-if-not (lambda (bf)
+                                                 (or (buffer-file-name bf)
+                                                     (with-current-buffer bf (eq major-mode 'dired-mode))))
+                                               (buffer-list))
                        (cdr (assq 'buffer-list (frame-parameters))))
                    (buffer-list)))
   (and icompletep  icicle-buffer-predicate
