@@ -76,6 +76,9 @@ The following new commands are provided:
 * '''`describe-keymap'''' ('''`C-h M-k'''') -- Describe the bindings in a keymap. Enter the keymap variable using completion.
 
 * '''`describe-file'''' ('''`C-h M-f'''') -- Display information about a file or directory: its type, permissions, size, time of last access/modification/status change, number of links, UID, GID, inode, and device number.  Starting with Emacs 22, if the file is an image file and you have command-line tool `exiftool' installed and in your `##$PATH##' or `exec-path', then some EXIF data (metadata) about the image is included.  See standard Emacs library ##image-dired.el## for more information about `exiftool'.
+
+* '''`describe-buffer'''' ('''`C-h B'''') -- Display information about a buffer.  This includes the `describe-mode' information for the buffer, but it also includes other info: its file name (if any), mode, size in chars, time/date of last display, whether it is modified (unsaved), and whether it is read-only.
+
 * `'''<code>help-on-click/key</code>'''' ('''`C-h RET'''') -- ''Super'' help: it gives help on ''any key/menu'' sequence or ''any object'' clicked with the mouse. Bind it to, for instance, `C-h RET'. The object can be ''any part of an Emacs window'' or ''any name'' appearing in a
 buffer.  You can do any of the following:
 ** type a KeySequence (e.g. `C-M-s')
@@ -110,22 +113,23 @@ The following ''standard'' Emacs commands have been ''improved'':
 
 The following key bindings have been added:
 
-* '''`C-h c'''' --  `describe-command' (replaces `describe-key-briefly')
-* '''`C-h o''''    --     `describe-option'
-* '''`C-h u''''    --         `manual-entry'
-* '''`C-h C-a''''  --         `apropos'
+* '''`C-h C-a''''  --  `<tt><u><i>a</i></u>propos</tt>'
+* '''`C-h M-a''''  --  `<tt><u><i>a</i></u>propos-documentation'
+* '''`C-h C-M-a''''  --    `<tt>tags-<u><i>a</i></u>propos'
+* '''`C-h B''''    -- `<tt>describe-<u><i>b</i></u>uffer'
+* '''`C-h c'''' --  `<tt>describe-<u><i>c</i></u>ommand' (replaces `describe-key-briefly')
 * '''`C-h C-c''''  -- `describe-key-briefly' (replaces `C-h c')
-* '''`C-h C-l''''  --         `locate-library'
-* '''`C-h C-n''''  --         `view-emacs-lisp-news' (Emacs 20 only)
-* '''`C-h C-o'''' -- `describe-option-of-type'
-* '''`C-h C-s''''  --         `save-*Help*-buffer' (Emacs 20 only)
-* '''`C-h RET''''  --     `help-on-click/key'
-* '''`C-h M-a''''  --         `apropos-documentation'
-* '''`C-h M-c'''' --       `describe-copying' (replaces (`C-h C-c')
-* '''`C-h M-k'''' --     `describe-keymap'
+* '''`C-h M-c'''' --       `<tt>describe-<u><i>c</i></u>opying' (replaces (`C-h C-c')
+* '''`C-h M-k'''' --     `<tt>describe-<u><i>k</i></u>eymap'
+* '''`C-h C-l''''  -- `<tt>locate-<u><i>l</i></u>ibrary'
 * '''`C-h M-l'''' -- `find-function-on-key'
-* '''`C-h M-o''''  --     `pop-to-help-toggle'
-* '''`C-h C-M-a''''  --       `tags-apropos'
+* '''`C-h C-n''''  -- `<tt>view-emacs-lisp-<u><i>n</i></u>ews' (Emacs 20 only)
+* '''`C-h o''''    -- `<tt>describe-<u><i>o</i></u>ption'
+* '''`C-h C-o'''' -- `<tt>describe-<u><i>o</i></u>ption-of-type'
+* '''`C-h M-o''''  --     `<tt>p<u><i>o</i></u>p-to-help-toggle'
+* '''`C-h C-s''''  --         `<tt><u><i>s</i></u>ave-*Help*-buffer' (Emacs 20 only)
+* '''`C-h u''''    --         `manual-entry'
+* '''`C-h RET''''  --     `help-on-click/key'
 * '''`mouse-1''''  --         `mouse-help-on-click' (not on mode-line)
 * '''`mouse-1''''   --        `mouse-help-on-mode-line-click' (mode-line)
 
