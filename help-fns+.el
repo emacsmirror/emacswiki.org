@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2012, Drew Adams, all rights reserved.
 ;; Created: Sat Sep 01 11:01:42 2007
 ;; Version: 22.1
-;; Last-Updated: Fri Jul 20 14:40:04 2012 (-0700)
+;; Last-Updated: Fri Jul 20 15:02:47 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 1252
+;;     Update #: 1257
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/help-fns+.el
 ;; Keywords: help, faces, characters, packages, description
 ;; Compatibility: GNU Emacs: 22.x, 23.x
@@ -688,11 +688,13 @@ By default, describe the current buffer."
     (help-setup-xref `(describe-buffer ,buffer-name) (interactive-p))
     (let ((buf  (get-buffer buffer-name)))
       (unless (and buf  (buffer-live-p buf))  (error(format "No such live buffer `%s'" buffer-name)))
-      (let* ((file       (buffer-file-name buf))
+      (let* ((file       (or (buffer-file-name buf)
+                             (with-current-buffer buf
+                               (and (eq major-mode 'dired-mode)  default-directory))))
              (help-text  (concat
                           (format "Buffer `%s'\n%s\n\n" buffer-name (make-string
                                                                      (+ 9 (length buffer-name)) ?-))
-                          (and file  (format "File:\t\t%s\n" file))
+                          (and file  (format "File/directory:\t%s\n" file))
                           (format "Mode:\t\t%s\n"
                                   (with-current-buffer buf (format-mode-line mode-name)))
                           (format "Size in chars:\t%g\n" (buffer-size buf))
