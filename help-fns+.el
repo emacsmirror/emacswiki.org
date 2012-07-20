@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2012, Drew Adams, all rights reserved.
 ;; Created: Sat Sep 01 11:01:42 2007
 ;; Version: 22.1
-;; Last-Updated: Tue Jul  3 10:20:37 2012 (-0700)
+;; Last-Updated: Fri Jul 20 14:40:04 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 1228
+;;     Update #: 1252
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/help-fns+.el
 ;; Keywords: help, faces, characters, packages, description
 ;; Compatibility: GNU Emacs: 22.x, 23.x
@@ -40,6 +40,7 @@
 ;;
 ;;  Keys bound here:
 ;;
+;;    `C-h B'      `describe-buffer'
 ;;    `C-h c'      `describe-command'     (replaces `describe-key-briefly')
 ;;    `C-h o'      `describe-option'
 ;;    `C-h C-c'    `describe-key-briefly' (replaces `C-h c')
@@ -51,8 +52,8 @@
 ;;
 ;;  Commands defined here:
 ;;
-;;    `describe-command', `describe-file', `describe-keymap',
-;;    `describe-option', `describe-option-of-type'.
+;;    `describe-buffer', `describe-command', `describe-file',
+;;    `describe-keymap', `describe-option', `describe-option-of-type'.
 ;;
 ;;  User options defined here:
 ;;
@@ -60,18 +61,18 @@
 ;;
 ;;  Non-interactive functions defined here:
 ;;
-;;    `help-all-exif-data', `help-commands-to-key-buttons',
-;;    `help-custom-type', `help-documentation',
-;;    `help-documentation-property', `help-key-button-string',
-;;    `help-remove-duplicates', `help-substitute-command-keys',
-;;    `help-value-satisfies-type-p', `help-var-inherits-type-p',
-;;    `help-var-is-of-type-p', `help-var-matches-type-p',
-;;    `help-var-val-satisfies-type-p', `Info-any-index-occurrences-p'
-;;    (Emacs 23.2+), `Info-indexed-find-file' (Emacs 23.2+),
-;;    `Info-indexed-find-node' (Emacs 23.2+),
-;;    `Info-index-entries-across-manuals' (Emacs 23.2+),
-;;    `Info-index-occurrences' (Emacs 23.2+), `Info-make-manuals-xref'
-;;    (Emacs 23.2+).
+;;    `describe-mode-1', `help-all-exif-data',
+;;    `help-commands-to-key-buttons', `help-custom-type',
+;;    `help-documentation', `help-documentation-property',
+;;    `help-key-button-string', `help-remove-duplicates',
+;;    `help-substitute-command-keys', `help-value-satisfies-type-p',
+;;    `help-var-inherits-type-p', `help-var-is-of-type-p',
+;;    `help-var-matches-type-p', `help-var-val-satisfies-type-p',
+;;    `Info-any-index-occurrences-p' (Emacs 23.2+),
+;;    `Info-indexed-find-file' (Emacs 23.2+), `Info-indexed-find-node'
+;;    (Emacs 23.2+), `Info-index-entries-across-manuals' (Emacs
+;;    23.2+), `Info-index-occurrences' (Emacs 23.2+),
+;;    `Info-make-manuals-xref' (Emacs 23.2+).
 ;;
 ;;  Internal variables defined here:
 ;;
@@ -116,6 +117,9 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2012/07/20 dadams
+;;     Added: describe-buffer, describe-mode-1.  Bound describe-buffer to C-h B.
+;;     describe-mode: Redefined to use describe-mode-1.
 ;; 2012/07/03 dadams
 ;;     Info-make-manuals-xref, Info-index-entries-across-manuals, Info-index-occurrences,
 ;;       Info-any-index-occurrences-p:
@@ -307,8 +311,9 @@
 
 (defvar variable-name-history () "Minibuffer history for variable names.")
 
-(define-key help-map "c" 'describe-command)
-(define-key help-map "o" 'describe-option)
+(define-key help-map "B"    'describe-buffer)
+(define-key help-map "c"    'describe-command)
+(define-key help-map "o"    'describe-option)
 (define-key help-map "\C-c" 'describe-key-briefly)
 (define-key help-map "\C-o" 'describe-option-of-type)
 (define-key help-map "\M-c" 'describe-copying)
@@ -673,12 +678,50 @@ Optional arg NOMSG non-nil means do not display a progress message."
              (error nil))
            any?)))
 
+  (defun describe-buffer (&optional buffer-name) ; Bound to `C-h B'
+    "Describe the existing buffer named BUFFER-NAME.
+The description includes the information provided by `describe-mode'.
+By default, describe the current buffer."
+    ;; (interactive "bDescribe buffer: ")
+    (interactive "@")
+    (unless buffer-name (setq buffer-name  (buffer-name)))
+    (help-setup-xref `(describe-buffer ,buffer-name) (interactive-p))
+    (let ((buf  (get-buffer buffer-name)))
+      (unless (and buf  (buffer-live-p buf))  (error(format "No such live buffer `%s'" buffer-name)))
+      (let* ((file       (buffer-file-name buf))
+             (help-text  (concat
+                          (format "Buffer `%s'\n%s\n\n" buffer-name (make-string
+                                                                     (+ 9 (length buffer-name)) ?-))
+                          (and file  (format "File:\t\t%s\n" file))
+                          (format "Mode:\t\t%s\n"
+                                  (with-current-buffer buf (format-mode-line mode-name)))
+                          (format "Size in chars:\t%g\n" (buffer-size buf))
+                          (with-current-buffer buf
+                            (if (not buffer-display-time)
+                                "Never displayed\n"
+                              (format "Last displayed:\t%s\n"
+                                      (format-time-string
+                                       ;; Could use this, for short format: "%02H:%02M:%02S"
+                                       ;; Or this, for a bit longer: "%_3a %_2l:%02M:%02S %_2p"
+                                       "%a %b %e %T %Y (%z)"
+                                       buffer-display-time))))
+                          (format "Modified:\t%s\n" (if (buffer-modified-p buf)"yes" "no"))
+                          (with-current-buffer buf
+                            (format "Read-only:\t%s\n\n\n" (if buffer-read-only "yes" "no"))))))
+        (with-help-window (help-buffer)
+          (describe-mode-1 buf))
+        (with-current-buffer (help-buffer)
+          (let ((inhibit-read-only  t))
+            (goto-char (point-min))
+            (insert help-text))))))
 
 
   ;; REPLACE ORIGINAL
   ;;
-  ;; 1. Call `Info-make-manuals-xref' to create a cross-ref link to manuals.
-  ;; 2. Add key-description buttons to command help.  Use `insert', not `princ'.
+  ;; Use `describe-mode-1', which is different from the original `describe-mode' in these ways:
+  ;;
+  ;;  1. Call `Info-make-manuals-xref' to create a cross-ref link to manuals.
+  ;;  2. Add key-description buttons to command help.  Use `insert', not `princ'.
   ;;
   (defun describe-mode (&optional buffer)
     "Display documentation of current major mode and minor modes.
@@ -692,77 +735,84 @@ whose documentation describes the minor mode."
     (interactive "@")
     (unless buffer (setq buffer  (current-buffer)))
     (help-setup-xref (list #'describe-mode buffer) (called-interactively-p 'interactive))
+    (with-help-window (help-buffer) (describe-mode-1 buffer))
+    nil)                       ; For the sake of IELM and maybe others
+
+  (defun describe-mode-1 (buffer)
+    "Helper for `describe-mode'.
+Does everything except create the help window and set up the
+back/forward buttons, so you can use this in other help commands that
+have their own back/forward buttons."
     ;; For the sake of `help-do-xref' and `help-xref-go-back', do not switch buffers
     ;; before calling `help-buffer'.
-    (with-help-window (help-buffer)
-      (with-current-buffer buffer
-        (let (minor-modes)
-          ;; Older packages do not register in minor-mode-list but only in `minor-mode-alist'.
-          (dolist (x minor-mode-alist)
-            (setq x  (car x))
-            (unless (memq x minor-mode-list) (push x minor-mode-list)))
-          (dolist (mode minor-mode-list) ; Find enabled minor mode we will want to mention.
-            ;; Document minor mode if listed in `minor-mode-alist', non-nil, and has a function def.
-            (let ((fmode  (or (get mode :minor-mode-function) mode)))
-              (and (boundp mode)  (symbol-value mode)  (fboundp fmode)
-                   (let ((pretty-minor-mode  (if (string-match "\\(\\(-minor\\)?-mode\\)?\\'"
-                                                               (symbol-name fmode))
-                                                 (capitalize (substring (symbol-name fmode)
-                                                                        0 (match-beginning 0)))
-                                               fmode)))
-                     (push (list fmode pretty-minor-mode
-                                 (format-mode-line (assq mode minor-mode-alist)))
-                           minor-modes)))))
-          (setq minor-modes  (sort minor-modes (lambda (a b) (string-lessp (cadr a) (cadr b)))))
-          (when minor-modes
-            (princ "Enabled minor modes:\n")
-            (make-local-variable 'help-button-cache)
-            (with-current-buffer standard-output
-              (dolist (mode  minor-modes)
-                (let ((mode-function      (nth 0 mode))
-                      (pretty-minor-mode  (nth 1 mode))
-                      (indicator          (nth 2 mode)))
-                  (add-text-properties 0 (length pretty-minor-mode) '(face bold) pretty-minor-mode)
-                  (save-excursion
-                    (goto-char (point-max))
-                    (princ "\n\f\n")
-                    (push (point-marker) help-button-cache)
-                    ;; Document the minor modes fully.
-                    (insert pretty-minor-mode)
-                    (princ (format " minor mode (%s):\n" (if (zerop (length indicator))
-                                                             "no indicator"
-                                                           (format "indicator%s" indicator))))
-                    (with-current-buffer standard-output
-                      (insert (help-documentation mode-function nil 'ADD-HELP-BUTTONS)))
-                    (Info-make-manuals-xref mode-function t nil (not (interactive-p)))) ; Link manuals.
-                  (insert-button pretty-minor-mode 'action (car help-button-cache)
-                                 'follow-link t 'help-echo "mouse-2, RET: show full information")
-                  (newline)))
-              (forward-line -1)
-              (fill-paragraph nil)
-              (forward-line 1))
-            (princ "\n(Information about these minor modes follows the major mode info.)\n\n"))
-          (let ((mode  mode-name))      ; Document the major mode.
-            (with-current-buffer standard-output
-              (let ((start  (point)))
-                (insert (format-mode-line mode nil nil buffer))
-                (add-text-properties start (point) '(face bold)))))
-          (princ " mode")
-          (let* ((mode       major-mode)
-                 (file-name  (find-lisp-object-file-name mode nil)))
-            (when file-name
-              (princ (concat " defined in `" (file-name-nondirectory file-name) "'"))
-              (with-current-buffer standard-output ; Make a hyperlink to the library.
-                (save-excursion (re-search-backward "`\\([^`']+\\)'" nil t)
-                                (help-xref-button 1 'help-function-def mode file-name)))))
-          (princ ":\n")
-          (let* ((maj      major-mode)
-                 (maj-doc  (help-documentation maj nil 'ADD-HELP-BUTTONS)))
-            (with-current-buffer standard-output
-              (insert maj-doc)
-              (Info-make-manuals-xref maj t nil (not (interactive-p)))))))) ; Link to manuals.
-    ;; For the sake of IELM and maybe others
-    nil))
+    (with-current-buffer buffer
+      (let (minor-modes)
+        ;; Older packages do not register in minor-mode-list but only in `minor-mode-alist'.
+        (dolist (x minor-mode-alist)
+          (setq x  (car x))
+          (unless (memq x minor-mode-list) (push x minor-mode-list)))
+        (dolist (mode minor-mode-list) ; Find enabled minor mode we will want to mention.
+          ;; Document minor mode if listed in `minor-mode-alist', non-nil, and has a function def.
+          (let ((fmode  (or (get mode :minor-mode-function) mode)))
+            (and (boundp mode)  (symbol-value mode)  (fboundp fmode)
+                 (let ((pretty-minor-mode  (if (string-match "\\(\\(-minor\\)?-mode\\)?\\'"
+                                                             (symbol-name fmode))
+                                               (capitalize (substring (symbol-name fmode)
+                                                                      0 (match-beginning 0)))
+                                             fmode)))
+                   (push (list fmode pretty-minor-mode
+                               (format-mode-line (assq mode minor-mode-alist)))
+                         minor-modes)))))
+        (setq minor-modes  (sort minor-modes (lambda (a b) (string-lessp (cadr a) (cadr b)))))
+        (when minor-modes
+          (princ "Enabled minor modes:\n")
+          (make-local-variable 'help-button-cache)
+          (with-current-buffer standard-output
+            (dolist (mode  minor-modes)
+              (let ((mode-function      (nth 0 mode))
+                    (pretty-minor-mode  (nth 1 mode))
+                    (indicator          (nth 2 mode)))
+                (add-text-properties 0 (length pretty-minor-mode) '(face bold) pretty-minor-mode)
+                (save-excursion
+                  (goto-char (point-max))
+                  (princ "\n\f\n")
+                  (push (point-marker) help-button-cache)
+                  ;; Document the minor modes fully.
+                  (insert pretty-minor-mode)
+                  (princ (format " minor mode (%s):\n" (if (zerop (length indicator))
+                                                           "no indicator"
+                                                         (format "indicator%s" indicator))))
+                  (with-current-buffer standard-output
+                    (insert (help-documentation mode-function nil 'ADD-HELP-BUTTONS)))
+                  (Info-make-manuals-xref mode-function t nil (not (interactive-p)))) ; Link manuals.
+                (insert-button pretty-minor-mode 'action (car help-button-cache)
+                               'follow-link t 'help-echo "mouse-2, RET: show full information")
+                (newline)))
+            (forward-line -1)
+            (fill-paragraph nil)
+            (forward-line 1))
+          (princ "\n(Information about these minor modes follows the major mode info.)\n\n"))
+        (let ((mode  mode-name))        ; Document the major mode.
+          (with-current-buffer standard-output
+            (let ((start  (point)))
+              (insert (format-mode-line mode nil nil buffer))
+              (add-text-properties start (point) '(face bold)))))
+        (princ " mode")
+        (let* ((mode       major-mode)
+               (file-name  (find-lisp-object-file-name mode nil)))
+          (when file-name
+            (princ (concat " defined in `" (file-name-nondirectory file-name) "'"))
+            (with-current-buffer standard-output ; Make a hyperlink to the library.
+              (save-excursion (re-search-backward "`\\([^`']+\\)'" nil t)
+                              (help-xref-button 1 'help-function-def mode file-name)))))
+        (princ ":\n")
+        (let* ((maj      major-mode)
+               (maj-doc  (help-documentation maj nil 'ADD-HELP-BUTTONS)))
+          (with-current-buffer standard-output
+            (insert maj-doc)
+            (Info-make-manuals-xref maj t nil (not (interactive-p)))))))) ; Link to manuals.
+  )
+
 
 
 ;; REPLACE ORIGINAL in `help-fns.el':
@@ -1113,7 +1163,7 @@ Return the description that was displayed, as a string."
               (insert (or doc  "Not documented.")))))))))
 
 ;;;###autoload
-(defun describe-command (function)
+(defun describe-command (function)      ; Bound to `C-h c'
   "Describe an Emacs command (interactive function).
 Same as using a prefix arg with `describe-function'."
   (interactive
@@ -1740,7 +1790,7 @@ file local variable.\n")
               (with-current-buffer standard-output (buffer-string))))))))) ; Return the text displayed.
 
 ;;;###autoload
-(defun describe-option (variable &optional buffer)
+(defun describe-option (variable &optional buffer) ; Bound to `C-h o'
   "Describe an Emacs user variable (option).
 Same as using a prefix arg with `describe-variable'."
   (interactive (let ((symb                          (or (and (fboundp 'symbol-nearest-point)
@@ -1753,7 +1803,7 @@ Same as using a prefix arg with `describe-variable'."
   (describe-variable variable buffer t))
 
 ;;;###autoload
-(defun describe-option-of-type (type option)
+(defun describe-option-of-type (type option) ; Bound to `C-h C-o'
   "Describe an Emacs user OPTION (variable) of a given `defcustom' TYPE.
 A prefix argument determines the type-checking behavior:
  - None:         OPTION is defined with TYPE or a subtype of TYPE.
@@ -2019,7 +2069,7 @@ If FRAME is omitted or nil, use the selected frame."
               (terpri))))))))
 
 ;;;###autoload
-(defun describe-file (filename &optional internal-form-p)
+(defun describe-file (filename &optional internal-form-p) ; Bound to `C-h M-f'
   "Describe the file named FILENAME.
 If FILENAME is nil, describe current directory (`default-directory').
 
@@ -2134,7 +2184,7 @@ this case, a prefix arg shows the internal form of the bookmark."
     (buffer-substring (point-min) (point-max))))
 
 ;;;###autoload
-(defun describe-keymap (keymap)
+(defun describe-keymap (keymap)         ; Bound to `C-h M-k'
   "Describe bindings in KEYMAP, a variable whose value is a keymap.
 Completion is available for the keymap name."
   (interactive
