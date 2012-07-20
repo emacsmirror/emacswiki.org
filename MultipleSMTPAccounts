@@ -186,7 +186,8 @@ See above for the additional `gnus-posting-styles' modification.
 
 [new:匿名者:2012-06-16 12:08 UTC]
 In the recently released Emacs 24.1, one could utilitize the fact that SMTPMAIL would consult ~/.authinfo for all credential details, and the brand new smtpmail-stream-type variable makes using a separate (set-smtp-ssl) unnecessary. In fact the original solution could be widely simplified to using only one function for the defadvise:
-
+    (require 'cl)
+    (setq smtpmail-stream-type 'ssl) ;; If using TLS/SSL.  Use C-h v smtpmail-stream-type RET to see possible values
     (setq smtp-accounts
           '(("aa@bb.cc" "John Doe" "default.server.com")
             ("qq@rr.ss" "Mary Johnson" "server2.com")))
