@@ -1,64 +1,136 @@
 {{{
 #!/bin/bash
-# Author: Ian Yang
+# ---------------------
+# DWIM - do what i mean
+# ---------------------
+# if supplied -q then kill otherwise DWIM
+# original script by Ian Yang.
+# updated by Tim O'Callagan
+# - added colourisation, path checking, +comments
+
+# default TMPDIR to /tmp
+if [ -z "${TMPDIR}" ] ; then
+    TMPDIR=/tmp
+fi
+
+# change this if you have modified server-socket-dir,
+# server-socket-diret-dir or similar in your .emacs
+_EMACS_SERVER_DIR="${TMPDIR}/emacs${UID}"
+
+# define some ansi terminal colours
+_C_RED_="\e[0;31m"
+_C_GRN_="\e[0;32m"
+_C_OFF_="\e[m\017"
+
+_log_success () { echo -e "${_C_GRN_}[SUCCESS]${_C_OFF_} -> $1" ; }
+_log_failure () { echo -e "${_C_RED_}[FAILURE]${_C_OFF_} -> $1" ; }
 
 _is_emacs_daemon_started () {
-    netstat -nlpx 2> /dev/null | awk '{print $NF}' | grep -qF "/tmp/emacs$UID/server"
+    ${_DWIM_NETSTAT} -nlpx 2> /dev/null | awk '{print $NF}' | grep -qF "${_EMACS_SERVER_DIR}/server"
 }
 
 _is_emacs_window_exist () {
-    wmctrl -lx 2> /dev/null | awk '{print $3}' | grep -qF 'emacs.Emacs'
+    ${_DWIM_WMCTRL} -lx 2> /dev/null | awk '{print $3}' | grep -qF 'emacs.Emacs'
 }
 
 _active_window_id () {
-    xprop -root 2> /dev/null |\
+    ${_DWIM_XPROP} -root 2> /dev/null |\
         sed -n 's/^_NET_ACTIVE_WINDOW(WINDOW): window id # //p;T;q'
 }
 
-main () {
-    if ! _is_emacs_daemon_started; then
-        echo -n 'starting emacs daemon'
-        if /usr/bin/emacs --daemon &> /tmp/emacs$UID.log; then
-            echo ' [sucess]'
+_kill_emacs () {
+    if _is_emacs_window_exist ; then
+        # store existing window id
+        local cur=$(_active_window_id)
+        
+        # bring forward and focus emacs window
+        ${_DWIM_WMCTRL} -x -a emacs.Emacs &> /dev/null
+
+        # send kill signal
+        ${_DWIM_EMACSCLIENT} -n -e '(progn (dolist (f (cdr-safe (reverse (frame-list)))) (delete-frame f t)) (kill-emacs))'
+        
+        # switch back to calling window when done
+        [ -n "$cur" ] && ${_DWIM_WMCTRL} -i -a "$cur"
+        _log_success "killed all running emacs instances"
+    else
+        _log_failure "emacs not running"
+    fi
+}
+
+_dwim_main () {
+    # if called without an emacs deamon running, if not then exit
+    if ! _is_emacs_daemon_started ; then
+        _EMACS_LOGFILE="${_EMACS_SERVER_DIR}/emacs-${UID}.log"
+        _EMACS_LOGMESG="starting emacs daemon with ${_EMACS_LOGFILE} file"
+
+        if ${_DWIM_EMACS} --daemon &> ${_EMACS_LOGFILE} ; then
+            _log_success "${_EMACS_LOGMESG}"
         else
-            echo ' [faild]'
+            _log_failure "${_EMACS_LOGMESG}"
             return 1
         fi
     fi
 
+    # if DISPLAY ise set then an Xserver exists
     if [ -n "$DISPLAY" ]; then
+        # store active window id for shell window
         local cur=$(_active_window_id)
-        if _is_emacs_window_exist; then
-            wmctrl -x -a emacs.Emacs &> /dev/null
+        
+        # if an emacs window exists then
+        if _is_emacs_window_exist ; then
+
+            # bring forward and focus emacs window
+            ${_DWIM_WMCTRL} -x -a emacs.Emacs &> /dev/null
+
+            # if filename supplied then open with filename
             if [ -n "$1" ]; then
-                /usr/bin/emacsclient "$@"
-                [ -n "$cur" ] && wmctrl -i -a "$cur"
+                ${_DWIM_EMACSCLIENT} "$@"
+                # switch back to calling window when done
+                [ -n "$cur" ] && ${_DWIM_WMCTRL} -i -a "$cur"
             fi
         else
+            # no emacs window exits, so if filename supplied
             if [ -n "$1" ]; then
-                /usr/bin/emacsclient -c "$@" &
+                # open file in new frame and send tty into background 
+                ${_DWIM_EMACSCLIENT} -c "$@" &
             else
-                /usr/bin/emacsclient -n -c &
+                # open file in new frame with no wait and send tty into background 
+                ${_DWIM_EMACSCLIENT} -n -c &
             fi
+            # create an integer variable i, and set it to 3
             local -i tries=3
-            while ! wmctrl -x -a emacs.Emacs &> /dev/null &&\
-                    [ $tries -gt 0 ]; do
+            # try 3 times (once per second) to switch focus to the opened emacs frame
+            while ! ${_DWIM_WMCTRL} -x -a emacs.Emacs &> /dev/null && [ $tries -gt 0 ]; do 
                 sleep 1
                 tries=tries-1
             done
-            wait $!
-            [ -n "$1" -a -n "$cur" ] && wmctrl -i -a "$cur"
+            # ${!} Expands to the process ID of the most recently
+            # executed background (asynchronous) command. 
+            # so wait until the emacs instance returns
+            wait ${!}
+            # switch back to calling window when done if there is one and a filename was used
+            [ -n "$1" -a -n "$cur" ] && ${_DWIM_WMCTRL} -i -a "$cur"
         fi
     else
-        /usr/bin/emacsclient -t "$@"
+        # otherwise run emacs in text mode
+        ${_DWIM_EMACSCLIENT} -t "$@"
     fi
 }
 
-kill_emacs () {
-    emacsclient -e -n '(progn (dolist (f (cdr-safe (reverse (frame-list)))) (delete-frame f t)) (kill-emacs))'
-}
+# going to assume awk and grep exists, testing for other binaries
+# check required dwim binaries are here
+for i in emacs emacsclient netstat wmctrl xprop ; do
+    _WHCIH=$(which $i)
+    if [[ -z "${_WHCIH}" ]] ; then
+        echo "$i is not found in path!"
+        exit 1
+    else
+        eval "_DWIM_${i^^}=${_WHCIH}"
+#        echo $(eval "echo _DWIM_${i^^}=\$_DWIM_${i^^}")
+    fi
+done
 
-[ -n "$1" -a "$1" = "-q" ] \
-    && kill_emacs \
-    || main "$@"
+# if $1 (filename) is not empty and is -q then kill emacs, otherwise do what i mean
+[ -n "$1" -a "$1" = "-q" ] && _kill_emacs || _dwim_main "$@"
+
 }}}
