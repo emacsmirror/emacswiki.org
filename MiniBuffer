@@ -1,10 +1,10 @@
 The '''[::minibuffer]''' is a special [[buffer]] for entering [[command]]s or input arguments to commands.  It appears either in a separate [[frame]] or at the bottom of each frame.  Sometimes, the area where you input commands is used to display informative messages. When this area is used this way, it is called the '''EchoArea''', not the minibuffer.
 
-In many respects, the minibuffer is a buffer like any other: You can edit the text you are inputting there. Most editing [[KeySequence]]s are available for this, including SearchingTheMinibuffer.  It's also possible to [ResizeMinibuffer resize the minibuffer] and 
+In many respects, the minibuffer is a buffer like any other: You can edit the text you are inputting there. Most editing [[KeySequence]]s are available for this, including SearchingTheMinibuffer.  It's also possible to [ResizeMinibuffer resize the minibuffer].
 
 Everything you enter in the minibuffer (commands, input arguments) is added to a MinibufferHistory. You can retrieve inputs from minibuffer histories to edit and reuse them.
 
-To cancel whatever you're doing in the minibuffer, use `C-g'. To cancel minibuffer if your focus is in another window, try the command `abort-recursive-edit' which by default is bound to `##C-]##'.  Because the minibuffer window is so narrow, it's difficult to click inside it with the mouse. If you have a lot of windows, switching to the minibuffer might take many iterations of `C-x o' (`other-window').  If you have `enable-recursive-minibuffers' turned on then this situation is more likely to happen and without the mouse.  
+To cancel whatever you're doing in the minibuffer, use `C-g'. To cancel minibuffer if your focus is in another window, try the command `abort-recursive-edit' which by default is bound to `##C-]##'.  Because the minibuffer window is so narrow, it's difficult to click inside it with the mouse. If you have a lot of windows, switching to the minibuffer might take many iterations of `C-x o' (`other-window').  If you have `enable-recursive-minibuffers' turned on then this situation is more likely to happen with or without a mouse.  
 
 To deal with this situation, this command returns the focus to the minibuffer, no matter which window is currently selected.
 
