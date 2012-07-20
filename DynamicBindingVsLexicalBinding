@@ -150,7 +150,7 @@ long time ago, if it weren't for backwards compatibility issues.
 
 Most languages only have lexical bindings for names.
 
-* EmacsLisp has dynamic binding only.
+* EmacsLisp has dynamic binding only.  As of emacs 24 lexical binding may be turned on for a file or buffer.
 * CommonLisp has both dynamic binding and lexical binding.  You get lexical binding by default, but you can ask for dynamic binding by `defvar'ing your name or `declare'ing it "special".
 
 [:Scheme]
