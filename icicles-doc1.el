@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Tue Jul 17 13:13:07 2012 (-0700)
+;; Last-Updated: Sat Jul 21 15:30:07 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 26649
+;;     Update #: 26672
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-doc1.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -3053,7 +3053,7 @@
 ;;
 ;;    - The current candidate is highlighted in `*Completions*'.
 ;;
-;;    - Help on the current candidate (typically, the first line of a
+;;    - Help on the current candidate (typically the first line of a
 ;;      doc string) is displayed in the mode line, provided user
 ;;      option `icicle-help-in-mode-line-delay' is greater than zero.
 ;;
@@ -4055,6 +4055,12 @@
 ;;  candidate's doc string, but alternative help sources can be used
 ;;  (and a doc string is not available for some kinds of candidates).
 ;;
+;;  For some common object types the mode-line candidate help is a
+;;  summary of useful information.  For a buffer-name candidate, for
+;;  example, it includes the mode name, buffer size, and associated
+;;  file or directory, if any.  The full directory name can be
+;;  especially helpful for choosing among Dired buffers.
+;;
 ;;  To see more help than what is shown in the mode-line, for each
 ;;  candidate or any given candidate as you cycle, press and hold the
 ;;  Control and Meta keys while using the vertical arrow keys, for
@@ -4066,10 +4072,13 @@
 ;;  `*Completions*'.
 ;;
 ;;  For example, if you use standard command `switch-to-buffer' and
-;;  you cycle among candidate buffer names using `C-M-end' (prefix
-;;  completion), then the major and minor modes of each candidate
-;;  buffer are described in buffer `*Help*' as the buffer name appears
-;;  in the minibuffer.
+;;  you cycle among candidate buffer names, the buffer is described in
+;;  buffer `*Help*' as the buffer name appears in the minibuffer.
+;;  This includes descriptions of the major and minor modes.  If you
+;;  use library `help-fns+.el' then it also includes the full name of
+;;  the file or directory associated with the buffer (if any), the
+;;  buffer size, the time it was last displayed, whether it has been
+;;  modified, and whether it is read-only.
 ;;
 ;;  By default, you need not use the Meta key for candidate help; the
 ;;  same bindings work with just the Control key.  So, for example,
@@ -6322,6 +6331,18 @@
 ;;  * by major mode name
 ;;  * by mode-line mode name (mode name that appears in the mode line)
 ;;  * by (absolute) file or process name
+;;
+;;  Remember too that the mode-line candidate help for a buffer-name
+;;  candidate includes the mode name, buffer size, and associated file
+;;  or directory, if any.  The directory name can be especially
+;;  helpful for Dired buffer candidates, since the buffer name does
+;;  not tell you the full directory.  For example, if you do `C-u C-x
+;;  b' from Dired, so the candidates are names of Dired buffers only,
+;;  then cycling shows you the directory for each one.
+;;
+;;  Similarly, the more detailed help available from `C-M-RET'
+;;  etc. also lists the full name of the file or directory associated
+;;  with the buffer.
 ;;
 ;;  Finally, several user options control the completion behavior.
 ;;  See (@file :file-name "icicles-doc2.el" :to "Customization and General Tips")
