@@ -58,6 +58,19 @@ During completion, candidate sorting is specific to buffer names.
 * by mode-line mode name (''mode name'' that appears in the [[mode line]])
 * by (absolute) ''file'' or ''process'' name
 
+Remember too that the [[mode line|mode-line]] candidate help for a buffer-name
+candidate includes the mode name, buffer size, and associated
+file or directory, if any.  The directory name can be especially helpful for [[Dired]]
+buffer candidates, since the buffer name does not tell you the
+full directory.  For example, if you do `C-u C-x b' from Dired, so
+the candidates are names of Dired buffers only, then cycling shows you
+the directory for each one.
+
+Similarly, the more detailed help available from `C-M-RET'
+etc. also lists the full name of the file or directory associated
+with the buffer.
+
+
 Finally, several [[user option]]s control the completion behavior.
 See [[Icicles - Customization and General Tips#icicle-buffer-match-regexp|buffer-name options]]
 and [[Icicles - Global Filters]].
