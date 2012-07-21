@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Thu Jul 19 17:10:15 2012 (-0700)
+;; Last-Updated: Sat Jul 21 14:38:30 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 24413
+;;     Update #: 24421
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-cmd1.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -3451,7 +3451,9 @@ then customize option `icicle-top-level-key-bindings'." ; Doc string
                (not (or (get this-command 'icicle-action-command)
                         ;; This one is used for `*-per-mode-action', which sets `this-command' to the cycler.
                         (get this-command 'icicle-cycling-command))))
-      (let* ((bindings   (where-is-internal cmd overriding-local-map t))
+      (let* ((bindings   (if (> emacs-major-version 21)
+                             (where-is-internal cmd overriding-local-map t 'NOINDIRECT)
+                           (where-is-internal cmd overriding-local-map t)))
              (curr-msg   (current-message))
              ;; $$$$$$ (wait-time  (if curr-msg
              ;; $$$$$$                 (or (and (numberp suggest-key-bindings)  suggest-key-bindings) 2)
