@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:53 2006
 ;; Version: 22.0
-;; Last-Updated: Thu Jul 19 10:53:01 2012 (-0700)
+;; Last-Updated: Sat Jul 21 14:13:43 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 13195
+;;     Update #: 13230
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-fn.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -4086,6 +4086,7 @@ occurrence of `*'.  Otherwise, this is just `file-name-directory'."
       (substring filename 0 (1+ (match-beginning 0)))
     (or (file-name-directory filename) ""))) ; Don't return nil, in any case.
 
+;; Note: Property `icicle-mode-line-help' with a function value is not used yet in Icicles code.
 (defun icicle-show-help-in-mode-line (candidate)
   "If short help for CANDIDATE is available, show it in the mode-line.
 Do this only if `icicle-help-in-mode-line-delay' is positive.
@@ -4093,7 +4094,11 @@ Do this only if `icicle-help-in-mode-line-delay' is positive.
 For a string or symbol CANDIDATE: Use the help from property
 `icicle-mode-line-help', if that is non-nil, or the help from
 property `help-echo' if that is non-nil.  For a string CANDIDATE,
-check only the first char for the property."
+check only the first char for the property.
+
+The value of property `icicle-mode-line-help' can be a string or a
+function.  If a string, use that as the help.  If a function, apply
+the function to the candidate and use the result as the help."
   (when (> icicle-help-in-mode-line-delay 0)
     (let* ((cand       (cond (;; Call to `lacarte-execute(-menu)-command' (in `lacarte.el').
                               ;; Use command associated with menu item.
@@ -4118,8 +4123,12 @@ check only the first char for the property."
            (doc        (progn (when (stringp candidate)
                                 (setq candidate  (icicle-transform-multi-completion candidate)))
                               (cond ((and (stringp candidate) ; String with help as property.
-                                          (or (get-text-property 0 'icicle-mode-line-help candidate)
-                                              (get-text-property 0 'help-echo candidate))))
+                                          (let ((prop  (or (get-text-property 0 'icicle-mode-line-help
+                                                                              candidate)
+                                                           (get-text-property 0 'help-echo candidate))))
+                                            (if (functionp prop)
+                                                (funcall prop candidate)
+                                              prop))))
                                     ((and cand (symbolp cand) ; Symbol.
                                           (cond ((get cand 'icicle-mode-line-help)) ; Icicles help prop.
                                                 ((get cand 'help-echo)) ; General help prop.
@@ -4143,9 +4152,11 @@ check only the first char for the property."
                                                  (or (icicle-file-remote-p candidate) ; Avoid Tramp.
                                                      (file-exists-p candidate)))
                                             (if (get-file-buffer candidate)
-                                                (concat (icicle-help-line-buffer
-                                                         (get-file-buffer candidate) 'no-bytes-p) " "
-                                                         (icicle-help-line-file cand))
+                                                (concat (icicle-help-line-buffer (get-file-buffer candidate)
+                                                                                 'NO-BYTES-P
+                                                                                 'NO-FILE-P)
+                                                        " "
+                                                        (icicle-help-line-file cand))
                                               (icicle-help-line-file candidate)))
                                            ((get-buffer candidate) ; Non-file buffer.
                                             (icicle-help-line-buffer candidate))
@@ -4159,17 +4170,23 @@ check only the first char for the property."
                ((eq (current-buffer) (window-buffer (minibuffer-window))) (cadr (buffer-list)))
                (t (current-buffer))))))))
 
-(defun icicle-help-line-buffer (buffer &optional no-bytes-p)
-  "Simple help string for BUFFER."
+(defun icicle-help-line-buffer (buffer &optional no-bytes-p no-file-p)
+  "Simple help string for BUFFER.
+Non-nil NO-BYTES-P means do not include the number of bytes.
+Non-nil NO-FILE-P means do not include the buffer's file name."
   (with-current-buffer buffer
-    (if no-bytes-p
-        (format "Mode: %s" (if (fboundp 'format-mode-line) (format-mode-line mode-name) mode-name))
-      (format "Bytes: %s, Mode: %s"
-              (let ((size  (buffer-size)))
-                (if (> size most-positive-fixnum)
-                    (format "> %d" most-positive-fixnum)
-                  size))
-              (if (fboundp 'format-mode-line) (format-mode-line mode-name) mode-name)))))
+    (let* ((mode   (format "Mode: %s"
+                           (if (fboundp 'format-mode-line) (format-mode-line mode-name) mode-name)))
+           (bytes  (format "Bytes: %s"
+                           (let ((size  (buffer-size)))
+                             (if (> size most-positive-fixnum) (format "> %d" most-positive-fixnum) size))))
+           (file   (or (buffer-file-name)
+                       (and (eq major-mode 'dired-mode)  default-directory))))
+      (cond ((and no-bytes-p  no-file-p)  mode)
+            ((or no-file-p  (not file))   (concat mode ", " bytes))
+            (t
+             (setq file  (format "File: %s" (icicle-abbreviate-or-expand-file-name file)))
+             (if no-bytes-p (concat mode ", " file) (concat mode ", " bytes ", " file)))))))
 
 (defun icicle-help-line-file (file)
   "Simple help string for FILE."
@@ -6216,8 +6233,13 @@ Return non-nil if current REQUIRE-MATCH arg to `completing-read' or
 `read-file-name' really means require match (sheesh!)."
   (if (> emacs-major-version 22)  (eq t icicle-require-match-p)  icicle-require-match-p))
 
+;; Note: Property `icicle-mode-line-help' with a function value is not used yet in Icicles code.
 (defun icicle-candidate-short-help (help string)
-  "Put string of text HELP on STRING as text properties.
+  "Put HELP on STRING as text properties.
+HELP is a help string or a function that takes a display completion
+candidate as argument.  To display help for a candidate, the function
+is applied to the candidate to obtain its help string.
+
 Put `help-echo' property if `tooltip-mode' is non-nil.
 Put `icicle-mode-line-help' property (on the first character only) if
  `icicle-help-in-mode-line-delay' is positive.
