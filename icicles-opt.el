@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:22:14 2006
 ;; Version: 22.0
-;; Last-Updated: Tue Jul 17 11:55:10 2012 (-0700)
+;; Last-Updated: Sat Jul 21 16:39:39 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 5260
+;;     Update #: 5272
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-opt.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -990,9 +990,13 @@ in your `load-path'."
 
 ;;;###autoload
 (defcustom icicle-comint-dynamic-complete-replacements
-  '((comint-dynamic-complete-filename    'icicle-comint-dynamic-complete-filename)
+  `((comint-dynamic-complete-filename    'icicle-comint-dynamic-complete-filename)
     (shell-command-completion            'icicle-shell-dynamic-complete-command) ; Emacs 24+
     (shell-dynamic-complete-command      'icicle-shell-dynamic-complete-command) ; Emacs 20-23
+    ((pcomplete-completions-at-point
+      comint-filename-completion
+      shell-filename-completion)
+     ,(lambda () (and (comint-match-partial-filename)  #'icicle-comint-dynamic-complete-filename)))
     (shell-dynamic-complete-environment-variable
      'icicle-shell-dynamic-complete-environment-variable)
     (shell-dynamic-complete-filename     'icicle-shell-dynamic-complete-filename)
@@ -1001,18 +1005,31 @@ in your `load-path'."
     )
   "*List of function replacements for `comint-dynamic-complete-functions'.
 Instead of using `comint-dynamic-complete-functions' as is, command
-`icicle-comint-dynamic-complete' replaces functions in that list
+`icicle-comint-dynamic-complete' uses a modified version of that list
 according to the value of this option.
-
-Each option list element is itself a list of two elements.  The first
-is a function to replace (a symbol), and the second is the replacement
-function (a sexp that evaluates to a function).  For example, this
-list element says to replace completion function `foo' by completion
-function `my-foo': (foo 'my-foo).
 
 You can use this option to provide Icicles completion for various
 modes that inherit from Comint mode or otherwise use
-`comint-dynamic-complete'."
+`comint-dynamic-complete'.
+
+Each option list element is itself a list of two elements, (OLD NEW).
+OLD specifies a function in `comint-dynamic-complete-functions'.  NEW
+is a sexp that evaluates to an Icicles completion function to use
+instead of OLD.
+
+If OLD is a symbol then the value of NEW, in effect, replaces OLD in
+`comint-dynamic-complete-functions'.
+
+If OLD is a list then the value of NEW is inserted in
+`comint-dynamic-complete-functions' before whichever element of OLD
+occurs first in `comint-dynamic-complete-functions'.  That ensures
+that NEW is invoked before OLD when attempting completion.  OLD is
+invoked only if NEW cannot find a completion.
+
+For example, this list element says to replace completion function
+`foo' by completion function `my-foo': (foo 'my-foo).  And this one
+says to try completing with function `mine' before `foo' or `bar':
+\((foo bar) 'mine)."
   :type '(repeat (list symbol sexp)) :group 'Icicles-Miscellaneous)
 
 ;;;###autoload
