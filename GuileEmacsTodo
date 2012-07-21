@@ -1,0 +1,5 @@
+* Compact buffers after GC. (Perhaps using [http://permalink.gmane.org/gmane.emacs.diffs/115317])
+* Undo list truncation
+* Shrink regexp cache after GC
+* GC messages
+* Automatic deletion of undo list elements updating freed markers
