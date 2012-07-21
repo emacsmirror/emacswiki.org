@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Sat Jul 21 14:38:30 2012 (-0700)
+;; Last-Updated: Sat Jul 21 16:02:17 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 24421
+;;     Update #: 24435
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-cmd1.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -667,32 +667,9 @@ the cache is updated when you next use it, but it is not saved."
 ;; REPLACE ORIGINAL `comint-completion-at-point' defined in `comint.el',
 ;; saving it for restoration when you toggle `icicle-mode'.
 ;;
-;; Use Icicles completion for file-name completion.
-;;
 ;;;###autoload (autoload 'icicle-comint-completion-at-point "icicles")
 (when (> emacs-major-version 23)
-  (defun icicle-comint-completion-at-point ()
-    "Dynamically perform completion at point.
-Calls the functions in `comint-dynamic-complete-functions', but
-with additional Icicles completion for file names."
-    ;; Need a symbol for `run-hook-with-args-until-success', so bind one.
-    (let ((hook           ())
-          (added-icdcf-p  nil))
-      (dolist (fn  (icicle-comint-replace-orig-completion-fns))
-        (when (and (not added-icdcf-p)
-                   (memq fn
-                         ;; This hard-coded list is based on checking vanilla code such as
-                         ;; `shell-dynamic-complete-functions' for file-name completion functions.
-                         '(pcomplete-completions-at-point comint-filename-completion
-                           shell-filename-completion)))
-          ;; Ensure that, for file-name completion, `icicle-comint-dynamic-complete-filename'
-          ;; ends up in front, as the first completion function, so it is used instead of other (vanilla) fns.
-          (push (lambda () (and (comint-match-partial-filename)  #'icicle-comint-dynamic-complete-filename))
-                hook)
-          (setq added-icdcf-p  t))
-        (push fn hook))
-      (setq hook  (nreverse hook))
-      (run-hook-with-args-until-success 'hook))))
+  (defalias 'icicle-comint-completion-at-point 'icicle-comint-dynamic-complete))
 
 
 ;; REPLACE ORIGINAL `comint-dynamic-complete' defined in `comint.el',
@@ -705,25 +682,31 @@ with additional Icicles completion for file names."
   "Dynamically perform completion at point.
 Calls the functions in `comint-dynamic-complete-functions', but with
 Icicles functions substituted, to perform completion until a function
-returns non-nil, at which point completion is assumed to have
-occurred.
-
-Uses Icicles completion."
+returns non-nil.  Return that value."
   (interactive)
   ;; Need a symbol for `run-hook-with-args-until-success', so bind one.
   (let ((hook  (icicle-comint-replace-orig-completion-fns)))
     (run-hook-with-args-until-success 'hook)))
 
 (defun icicle-comint-replace-orig-completion-fns ()
-  "Return `comint-dynamic-complete-functions', but with Icicles functions."
-  (let ((old  comint-dynamic-complete-functions)
-        (new  ())
-        pair)
-    (dolist (fn  old)
-      (if (setq pair  (assoc fn icicle-comint-dynamic-complete-replacements))
-          (push (eval (cadr pair)) new)
-        (push fn new)))
-    (nreverse new)))
+  "Return `comint-dynamic-complete-functions', but with Icicles functions.
+Get the Icicles functions from option
+`icicle-comint-dynamic-complete-replacements'.
+
+Only one (the first matching) replacement is made for any function."
+  (let ((result        ())
+	(replacements  (copy-sequence icicle-comint-dynamic-complete-replacements)))
+    (dolist (fn  comint-dynamic-complete-functions)
+      (catch 'c-d-c-f-replacements-loop
+	(dolist (rep  replacements)
+	  (when (or (eq (car rep) fn)
+		    (and (listp (car rep))  (memq fn (car rep))))
+	    (push (eval (cadr rep)) result)
+	    (unless (eq (car rep) fn)  (push fn result))
+	    (setq replacements  (delete rep replacements))
+	    (throw 'c-d-c-f-replacements-loop nil))) ; Allow only one replacement.
+	(push fn result)))
+    (nreverse result)))
 
 ;;;###autoload (autoload 'icicle-comint-dynamic-complete-filename "icicles")
 (defun icicle-comint-dynamic-complete-filename ()
