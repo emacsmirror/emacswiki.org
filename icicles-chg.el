@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Sat Jul 21 15:36:37 2012 (-0700)
+;; Last-Updated: Sat Jul 21 16:46:05 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 8681
+;;     Update #: 8688
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-chg.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -86,6 +86,9 @@
 ;;;(@* "CHANGE LOG FOR `icicles-cmd1.el'")
 ;;
 ;; 2012/07/21 dadams
+;;     Replace defun of *-comint-completion-at-point by defalias to *-comint-dynamic-complete.
+;;     icicle-comint-replace-orig-completion-fns: Redefined for new format of
+;;       icicle-comint-dynamic-complete-replacements.  Thx to Christopher Schmidt.
 ;;     icicle-execute-extended-command-1: Pass non-nil NOINDIRECT arg to where-is-internal.
 ;; 2012/07/19 dadams
 ;;     icicle-default-buffer-names: Added optional ARG.  Use in all calls to it.
@@ -5820,6 +5823,9 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-opt.el'")
 ;;
+;; 2012/07/21 dadams
+;;     icicle-comint-dynamic-complete-replacements:
+;;       Added entry for pcomplete and comint/shell file-name completion.  Thx to C. Schmidt.
 ;; 2012/07/16 dadams
 ;;     icicle-comint-dynamic-complete-replacements:
 ;;       Added (shell-command-completion 'icicle-shell-dynamic-complete-command).
