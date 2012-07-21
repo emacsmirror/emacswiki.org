@@ -1,6 +1,6 @@
 An anonymous user left this link on a [[News]] page with barely a comment. I guess it's code to indent code? -- AlexSchroeder
 
-indent hint line
+please rename this page to : indent hint line
 
 Snapshot:
 
@@ -12,5 +12,9 @@ Source:
 
 Usage:
 
-; M-x indent-vline-lisp:  for lisp (no idea what it does)
+; M-x indent-vline-lisp:  for lisp (old interface)
 ; M-x indent-hint-mode: for other (no idea what it does)
+
+Bug:
+
+* when multiline has been modified at once, some overlays cann't been delete correct.
