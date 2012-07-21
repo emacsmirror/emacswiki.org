@@ -17,4 +17,4 @@ Usage:
 
 Bug:
 
-* when multiline has been modified at once, some overlays cann't been delete correct.
+* when multilines have been modified at once, some overlays cann't been delete correct.
