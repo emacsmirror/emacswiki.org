@@ -157,7 +157,10 @@ As with the other methods, you can use any text properties you like, including t
 * `face' -- to make some completion candidates stand out in particular ways
 * '''`icicle-mode-line-help'''' -- [[Icicles - Help on Candidates|candidate help]] shown in the
 mode-line when the candidate is current, provided option '''`<tt>[[Icicles - Customization and General Tips#icicle-help-in-mode-line-delay|icicle-help-in-mode-line-delay]]</tt>'''' is greater than zero (only the first
-character of a candidate string is tested for this text property)
+character of a candidate string is tested for this text property).
+If the property value is not a string then it should be a
+function, which is applied to the candidate string to obtain the
+help string.
 * `help-echo':
 ** same as `icicle-mode-line-help', if that property is `nil'
 ** candidate help shown in a mouseover tooltip, provided `tooltip-mode' is on
