@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Tue Jul 17 10:03:20 2012 (-0700)
+;; Last-Updated: Sat Jul 21 12:15:34 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 18387
+;;     Update #: 18391
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-mcmd.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -17,13 +17,12 @@
 ;;
 ;; Features that might be required by this library:
 ;;
-;;   `apropos', `apropos-fn+var', `backquote', `bytecomp', `cl',
-;;   `doremi', `el-swank-fuzzy', `ffap', `ffap-', `fuzzy',
-;;   `fuzzy-match', `hexrgb', `icicles-face', `icicles-fn',
-;;   `icicles-opt', `icicles-var', `image-dired', `kmacro',
-;;   `levenshtein', `mouse3', `mwheel', `naked', `regexp-opt',
-;;   `ring', `ring+', `thingatpt', `thingatpt+', `wid-edit',
-;;   `wid-edit+', `widget'.
+;;   `apropos', `apropos-fn+var', `cl', `doremi', `el-swank-fuzzy',
+;;   `ffap', `ffap-', `fuzzy', `fuzzy-match', `hexrgb',
+;;   `icicles-face', `icicles-fn', `icicles-opt', `icicles-var',
+;;   `image-dired', `kmacro', `levenshtein', `mouse3', `mwheel',
+;;   `naked', `regexp-opt', `ring', `ring+', `thingatpt',
+;;   `thingatpt+', `wid-edit', `wid-edit+', `widget'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -5198,7 +5197,10 @@ You can use this command only from the minibuffer or `*Completions*'
            (setq transformed-cand  (icicle-transform-multi-completion icicle-last-completion-candidate))
            ;; If buffer or file, describe its properties.  Otherwise, create symbol and get its help.
            (cond ((and (bufferp (get-buffer transformed-cand))
-                       (with-current-buffer transformed-cand (describe-mode) t)))
+                       (with-current-buffer transformed-cand
+                         (if (fboundp 'describe-buffer) ; Defined in `help-fns+.el', Emacs 23+.
+                             (describe-buffer)
+                           (describe-mode)) t)))
                  ((or (icicle-file-remote-p transformed-cand) ; Don't let Tramp try to access it.
                       (file-exists-p transformed-cand))
                   (icicle-describe-file transformed-cand current-prefix-arg))
@@ -5236,7 +5238,11 @@ You can use this command only from the minibuffer or `*Completions*'
         (t
          (setq symb  (symbol-name symb)) ; Convert symbol to string, and try some more.
          (cond ((and (bufferp (get-buffer symb))
-                     (with-current-buffer (get-buffer symb) (describe-mode) t)))
+                     (with-current-buffer (get-buffer symb)
+                       (if (fboundp 'describe-buffer) ; Defined in `help-fns+.el', Emacs 23+.
+                           (describe-buffer)
+                         (describe-mode))
+                       t)))
                ((or (icicle-file-remote-p symb) ; Don't let Tramp try to access it.
                     (file-exists-p symb))
                 (icicle-describe-file symb current-prefix-arg))
