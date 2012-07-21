@@ -49,6 +49,11 @@ Typically, this candidate mode-line help is the first line of the
 candidate's [[doc string]], but alternative help sources can be used
 (and a doc string is not available for some kinds of candidates).
 
+For some common object types the mode-line candidate help is a
+summary of useful information.  For a [[buffer]]-name candidate, for
+example, it includes the [[major mode|mode]] name, buffer size, and associated
+file or directory, if any.  The full directory name can be especially helpful for choosing among [[Dired]] buffers.
+
 To see more help than what is shown in the mode-line, for each candidate or any given candidate as you
 cycle, press and
 hold the Control key while using the vertical arrow keys, for [[prefix completion]], or the `prior' and `next' keys (often labeled '''Page Up''' and '''Page Down'''), for [[apropos completion]].  To
@@ -58,9 +63,14 @@ press Control and click it with `mouse-2' ('''`C-M-mouse-2'''') in [[buffer]]
 `*Completions*'.
 
 For example, if you use standard [[command]] `switch-to-buffer' and
-you cycle among candidate buffer names using `C-M-end' (prefix completion), then the [[major mode|major]] and
-[[minor mode]]s of each candidate buffer are described in buffer
-`*Help*' as the buffer name appears in the minibuffer.
+you cycle among candidate buffer names, the buffer is described in buffer
+`*Help*' as the buffer name appears in the minibuffer.  This includes
+descriptions of the [[major mode|major]] and [[minor mode]]s.
+If you use library
+<tt>[[help-fns+.el]]</tt> then it also includes the full name of the ''file'' or ''directory''
+associated with the buffer (if any), the buffer ''size'', the ''time'' it
+was last displayed, whether it has been ''modified'', and whether it
+is ''read-only''.
 
 By default, you need not use the Meta key for candidate help; the
 same bindings work with just the Control key.  So, for example,
