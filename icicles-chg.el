@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Thu Jul 19 17:13:06 2012 (-0700)
+;; Last-Updated: Sat Jul 21 14:18:50 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 8670
+;;     Update #: 8680
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-chg.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -1373,6 +1373,11 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-fn.el'")
 ;;
+;; 2012/07/21 dadams
+;;     icicle-show-help-in-mode-line:
+;;       Allow value of property icicle-mode-line-help to be a function.
+;;       For a file-name candidate, call icicle-help-line-buffer with NO-FILE-P.
+;;     icicle-help-line-buffer: Added optional arg NO-FILE-P.  Include file name, if any.
 ;; 2012/07/19 dadams
 ;;     icicle-insert-candidates: Fix change from 7/18: ensure icicle-last-completion is non-nil.
 ;; 2012/07/18 dadams
@@ -3238,6 +3243,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-mcmd.el'")
 ;;
+;; 2012/07/21 dadams
+;;     icicle-help-on-candidate(-symbol): If available, use describe-buffer for buffers.
 ;; 2012/07/17 dadams
 ;;     Removed: icicle-maybe-byte-compile-after-load (macro),
 ;;              icicle-byte-compile-eval-after-load-flag (option).
