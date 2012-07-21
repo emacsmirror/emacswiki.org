@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Oct 16 13:33:18 1995
 ;; Version: 21.0
-;; Last-Updated: Sat Jun 23 21:12:57 2012 (-0700)
+;; Last-Updated: Sat Jul 21 08:25:46 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 1340
+;;     Update #: 1343
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icomplete+.el
 ;; Keywords: help, abbrev, internal, extensions, local
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -72,6 +72,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2012/07/21 dadams
+;;     icomplete-completions: Fixed typo for Emacs 23 version: COLLECTION everywhere, not CANDIDATES.
 ;; 2012/06/23 dadams
 ;;     icomplete-completions: Added new version for Emacs 24.  Remove 24 stuff from Emacs 23 version.
 ;;                            For Emacs 23 & 24: Use try-completion, not completion-try-completion.
@@ -571,10 +573,10 @@ following the rest of the icomplete info:
 ;; 4. Appends number of remaining cycle candidates (for Icicles).
 ;;
 (when (= emacs-major-version 23)
-  (defun icomplete-completions (name candidates predicate require-match)
+  (defun icomplete-completions (name collection predicate require-match)
     "Identify prospective candidates for minibuffer completion.
 NAME is the name to complete.
-CANDIDATES are the candidates to match.
+COLLECTION is the collection of candidates to match.
 PREDICATE filters matches: they succeed only if it returns non-nil.
 REQUIRE-MATCH non-nil means the input must match a candidate.
 
@@ -605,11 +607,11 @@ additional cycle candidates, besides the current one, is displayed
 following the rest of the icomplete info:
   M-x forward-line   [Matched]  (13 more)."
     ;; `all-completions' doesn't like empty `minibuffer-completion-table's (ie: (nil))
-    (when (and (listp candidates)  (null (car candidates))) (setq candidates  ()))
+    (when (and (listp collection)  (null (car collection))) (setq collection  ()))
     (let* (;; Do not use `completion-all-sorted-completions' as in vanilla Emacs.
            ;; We need the number of comps, and we do not need that sort order.
            ;; (comps (completion-all-sorted-completions))
-           (comps            (all-completions name candidates predicate))
+           (comps            (all-completions name collection predicate))
            (nb-candidates    (length comps))
            (nb-cands-string  (if (< nb-candidates 2) "" (format "%7d " nb-candidates)))
 ;;; We do not use `completion-all-sorted-completions', so we do not need `last' or `base-size'.
