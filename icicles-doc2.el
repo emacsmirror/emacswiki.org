@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Thu Jul 19 13:59:45 2012 (-0700)
+;; Last-Updated: Sat Jul 21 12:50:56 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 28949
+;;     Update #: 28950
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-doc2.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -8063,7 +8063,11 @@
 ;;    when the candidate is current, provided option
 ;;    `icicle-help-in-mode-line-delay' is greater than zero (only the
 ;;    first character of a candidate string is tested for this text
-;;    property)
+;;    property).
+;;
+;;    If the property value is not a string then it should be a
+;;    function, which is applied to the candidate string to obtain the
+;;    help string.
 ;;
 ;;  * `help-echo':
 ;;     - same as `icicle-mode-line-help', if that property is `nil'
