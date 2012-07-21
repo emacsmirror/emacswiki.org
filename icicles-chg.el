@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Sat Jul 21 14:18:50 2012 (-0700)
+;; Last-Updated: Sat Jul 21 15:36:37 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 8680
+;;     Update #: 8681
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-chg.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -85,6 +85,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd1.el'")
 ;;
+;; 2012/07/21 dadams
+;;     icicle-execute-extended-command-1: Pass non-nil NOINDIRECT arg to where-is-internal.
 ;; 2012/07/19 dadams
 ;;     icicle-default-buffer-names: Added optional ARG.  Use in all calls to it.
 ;;     icicle-buffer-list: Allow also Dired buffers for positive prefix arg.
