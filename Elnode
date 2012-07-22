@@ -24,6 +24,7 @@ Some suggestions:
 * Elnode can do defer processing so could also be used for writing general purpose comet apps
 
 
+[:nodejs]
 == What is node.js? ==
 
 node.js is an evented IO server framework in Javascript. node.js is
