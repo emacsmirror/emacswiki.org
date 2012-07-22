@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:22:14 2006
 ;; Version: 22.0
-;; Last-Updated: Sat Jul 21 16:39:39 2012 (-0700)
+;; Last-Updated: Sat Jul 21 17:51:33 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 5272
+;;     Update #: 5275
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-opt.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -990,18 +990,17 @@ in your `load-path'."
 
 ;;;###autoload
 (defcustom icicle-comint-dynamic-complete-replacements
-  `((comint-dynamic-complete-filename    'icicle-comint-dynamic-complete-filename)
-    (shell-command-completion            'icicle-shell-dynamic-complete-command) ; Emacs 24+
+  '((shell-command-completion            'icicle-shell-dynamic-complete-command) ; Emacs 24+
     (shell-dynamic-complete-command      'icicle-shell-dynamic-complete-command) ; Emacs 20-23
-    ((pcomplete-completions-at-point
-      comint-filename-completion
-      shell-filename-completion)
-     ,(lambda () (and (comint-match-partial-filename)  #'icicle-comint-dynamic-complete-filename)))
     (shell-dynamic-complete-environment-variable
      'icicle-shell-dynamic-complete-environment-variable)
     (shell-dynamic-complete-filename     'icicle-shell-dynamic-complete-filename)
     (ess-complete-filename               'icicle-ess-complete-filename)
     (ess-complete-object-name            'icicle-ess-complete-object-name)
+    ((pcomplete-completions-at-point
+      comint-filename-completion
+      shell-filename-completion)
+     (lambda () (and (comint-match-partial-filename)  #'icicle-comint-dynamic-complete-filename)))
     )
   "*List of function replacements for `comint-dynamic-complete-functions'.
 Instead of using `comint-dynamic-complete-functions' as is, command
