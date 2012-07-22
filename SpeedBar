@@ -144,6 +144,10 @@ Also see the comment about EmacsCodeBrowser (ECB) below.
 
 = Questions =
 
+: ''Question: The above hack works well, but only for the windows in initial frame, any way to make it work for all frames?  -- paul424''
+
+
+
 : ''Question: is there a way to tell speed-bar to expand ALL groups?  -- Badari''
 
 :: Answer: Not by default, but you could easily write that function, like for example:
