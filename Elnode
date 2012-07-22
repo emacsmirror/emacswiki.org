@@ -6,10 +6,9 @@ Elnode is an asynchronous HttpServer framework. You can use it to write HTTP ser
 
 == What Elnode is ==
 
-Elnode is a non-blocking IO webserver written entirely in EmacsLisp.  It's like an ELisp version of [http://nodejs.org/ node.js],
-the asynchronous HTTP framework for Google's Javascript engine.
+Elnode is a non-blocking IO webserver written entirely in EmacsLisp.  It's like an EmacsLisp version of [http://nodejs.org/ node.js].
 
-Elnode's performance is better than I expected, we can get about 5000 request per second out of it.  The limitating factor is likely Emacs async IO which uses //select//.  Replacing that with //epoll// or some other fast equivalent would likely give us node.js like performance. 
+Elnode's performance is better than I expected, we can get about 5000 request per second out of it.  The limiting factor is likely Emacs async IO which uses //select//.  Replacing that with //epoll// or some other fast equivalent would likely give us node.js like performance. 
 
 Elnode comes with a webserver and a wiki server application.
 
@@ -33,6 +32,20 @@ servers in it. That means you write all your code in a single process
 and rely on the natural blocking of clients to give you
 concurrency. Of course, a standard technique is to to spawn processes
 to handle work - again, communicating asynchronously.
+
+== Using the builtin Wiki ==
+
+Installing the latest versions of Elnode should automatically install working Wiki and Webserver apps listening on port 8000.
+
+The webserver, by default, serves files (with an example included) from:  <code>~/.emacs.d/elnode/public_html</code>.  Lots of stuff about the builtin webserver (including where it serves files from) can be configured with Elnode customizations:
+
+{{{
+M-x customize-group [RET] elnode [RET]
+}}}
+
+to see them all.
+
+The Wiki server, by default, serves Wiki pages from <code>~/.emacs.d/elnode/wiki</code>.  That can be configured too. 
 
 
 == An example with Elnode ==
