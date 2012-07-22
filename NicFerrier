@@ -40,36 +40,6 @@ I am also improving and extending the [[https://github.com/nicferrier/elnode/blo
 
 It's pretty good. I hope people pick it up because it's an interesting way to leverage Emacs.
 
-== Batch testing in a clean environment ==
-
-Elnode has a bunch of tests written with [[ErtTestLibrary]] and I use them often but because Elnode is quite complex I would like to prove that it works in a clean environment. So I investigated starting a clean Emacs (which means no site init and no package state).
-
-This is what I have for Elnode right now:
-
-{{{
-;; Batch test Elnode
-
-(setq package-dir "~/work/elnode/elpa")
-(when (file-exists-p package-dir)
-  (delete-directory package-dir t))
-(setq package-user-dir package-dir)
-(setq package-archives
-      '(("gnu" . "http://elpa.gnu.org/packages/")
-        ("marmalade" . "http://marmalade-repo.org/packages/")))
-(package-list-packages)
-(setq elnode-init-port nil)
-(package-install 'creole)
-(package-install-file "~/work/elnode/elnode.el")
-(ert-run-tests-batch-and-exit)
-
-;; End
-}}}
-
-It works perfectly! It trashes a temporary package store (//elpa//) and then sets it up again, then package loads Elnode, which tests that the package depends work properly and then runs all tests.
-
-Note that the installation of //creole// is deliberate, Elnode can use //creole// but does not depend on it. Maybe I should change that to a proper dependancy.
-
-Anyway, it's no coincidence that one of my interests is continuous integration and this could certainly be used as a way of doing continuous integration with Elnode (or any other EmacsLisp package). One thing stopping that is that ERT currently uses a non-xUnit output format for reporting success and failure of tests.  I am wondering whether some sort of text pipeline processing could be used for now, or whether ERT could be adapted to spit out in xUnit format.
 
 == WikiCreole ==
 
@@ -212,44 +182,9 @@ This toggles bold on the dark ones, which I think is all the vim thing is doing.
 
 == Small Init Files ==
 
-For a long time I've used a complex init file with loads of stuff in
-it. This is great, it means Emacs starts up with all my goodies. But
-it also means when I go to another Emacs I'm lost. It's also
-non-trivial to move my stuff to another Emacs.
+Another interest of mine is achieving portable Emacs config.  My plan is to achieve this through use of packages.
 
-It's also difficult to test code written in EmacsLisp, which I'm doing more and more of with Elnode.
-
-I am trying to pair down my emacs use to the standard dist delivered
-behaviour and then add obvious extras on top. This is a process I
-started long ago but is still underway.
-
-Here's the initial bit of my init file:
-
-{{{
-;; Nic's init file
-
-(add-to-list 'load-path (file-name-directory (or (buffer-file-name) load-file-name)))
-
-(require 'auto-install)
-(require 'package)
-(setq package-archives '(("gnu" . "http://elpa.gnu.org/packages/")
-                         ("marmalade" . "http://marmalade-repo.org/packages/")))
-}}}
-
-The load-path hack is down to [[PhilHagelberg|Technomancy]] and it's a great little hack. I can now take copies of my init directory (say ~/.emacs2.d/) and load it all in a new emacs like:
-
-{{{
-emacs -nw -q -l ~/.emacs2.d/init.el
-}}}
-
-This is great for testing things. It should also make it easy to clone my config dir's git or hg repository around for testing:
-
-* clone your config repo
-* start a new emacs in the new repo
-* install the new package (from elpa even)
-* does it work?
-* if yes then commit the changes to the config dir and pull them back into the origin
-* if no then don't commit the changes, just throw it away
+[[https://gist.github.com/3159186|This gist]] shows my self installing Emacs config except for the customizations.  The customizations are insecure because they contain passwords and such.  Solving portable customizations seems like a doable problem however.
 
 
 == List of various other ELisp bits and pieces ==
