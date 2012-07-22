@@ -147,6 +147,8 @@ Alternatively, there are a few ways you can download all of the files at once. S
 
 
 '''2.''' '''Using a shell script:''' (UNIX, GNU/Linux) Use `wget': <tt>[[get-icicles.sh]]</tt>. Thanks to LeWang for that. Thanks to MishaGorodnitzky for tweaking it to get around an EmacsWiki limit on how many files you can download per second.
+	  
+Note: Bash complains with the message "./get-icicles.sh: line 67: [: missing `]'", but the line looks fine, and the script works anyway.
 
 
 
