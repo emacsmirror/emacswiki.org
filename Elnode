@@ -50,7 +50,7 @@ The Wiki server, by default, serves Wiki pages from <code>~/.emacs.d/elnode/wiki
 
 == An example with Elnode ==
 
-Want to publis a directory of org-mode files? Here's a full Elnode program that defines a handler to publish org files in a directory and also starts a server on port 8002.
+Want to publish a directory of org-mode files? Here's a full Elnode program that defines a handler to publish org files in a directory and also starts a server on port 8002.
 
 {{{
   ;;; server.el ---  -*- lexical-binding: t -*-
