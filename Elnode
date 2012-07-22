@@ -6,12 +6,23 @@ Elnode is an asynchronous HttpServer framework. You can use it to write HTTP ser
 
 == What Elnode is ==
 
-Elnode is basically an ELisp version of [http://nodejs.org/ node.js],
+Elnode is a non-blocking IO webserver written entirely in EmacsLisp.  It's like an ELisp version of [http://nodejs.org/ node.js],
 the asynchronous HTTP framework for Google's Javascript engine.
 
-Hacking HTTP servers with Elnode is quite easy because of the Emacs editing and debugging framework around it. 
-
 Elnode's performance is better than I expected, we can get about 5000 request per second out of it.  The limitating factor is likely Emacs async IO which uses //select//.  Replacing that with //epoll// or some other fast equivalent would likely give us node.js like performance. 
+
+Elnode comes with a webserver and a wiki server application.
+
+
+== What is Elnode good for? ==
+
+Elnode has been optimized for rapid development.  It's designed to get you going quickly.  Emacs is a great development environment for EmacsLisp and that's why Elnode is rapid and easy to build.
+
+Some suggestions:
+
+* Elnode can be a very useful personal webserver, it's easy to mix file serving, wiki serving and your own hacks
+* Elnode can serve Emacs data, especially exciting is Emacs data that is often locked away, like diary
+* Elnode can do defer processing so could also be used for writing general purpose comet apps
 
 
 == What is node.js? ==
@@ -24,15 +35,28 @@ concurrency. Of course, a standard technique is to to spawn processes
 to handle work - again, communicating asynchronously.
 
 
-== What is Elnode? ==
+== An example with Elnode ==
 
-Emacs includes a low level event IO framework: processes, filters and
-sentinels. Elnode builds mechanisms for making HTTP servers on top of
-these in similar ways to node.js.
+Want to publis a directory of org-mode files? Here's a full Elnode program that defines a handler to publish org files in a directory and also starts a server on port 8002.
 
-Elnode should be used for making small, personal web services or for developing a first draft of a web service you may later do in Clojure or Node.js or some other web framework.
+{{{
+;;; server.el ---  -*- lexical-binding: t -*-
+(defvar my-org-dir "~/work/org")
 
-Emacs is a very good Lisp programming environment as well as a great editor. Now that Emacs 24 has lexical scope EmacsLisp is a very powerful language. A webserver framework inside such a powerful Lisp environment therefore makes sense.
+(defun my-elnode-org-handler (httpcon)
+  (elnode-docroot-for my-org-dir
+      with org-file
+      on httpcon
+      do (with-current-buffer (find-file-noselect org-file)
+           (let ((org-html
+                  ;; This might throw errors so you could condition-case it
+                  (org-export-as-html 3 nil nil 'string)))
+             (elnode-send-html httpcon org-html)))))
+
+(elnode-start 'my-elnode-org-handler :port 8002) 
+}}}
+
+Now you can visit one of those files directly.  A bit more work would be adding an index so you could pick which org-file you wanted to look at.
 
 
 == Getting Elnode ==
