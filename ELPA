@@ -26,32 +26,32 @@ So packages are initialized //AFTER// the init.el is loaded.  This means you sho
 * auto-mode-alist changes can be made in a way that does not require the package to be loaded before they are setup:
 
 {{{
-(add-to-list 'auto-mode-alist '("\\.gradle" . groovy-mode))
+    (add-to-list 'auto-mode-alist '("\\.gradle" . groovy-mode))
 }}}
 
 * mode specific customization of a package could go in a package hook which can be set before the package is loaded, for example:
 
 {{{
-(add-hook 'groovy-mode-hook (lambda () (setq tab-width 4)))
+    (add-hook 'groovy-mode-hook (lambda () (setq tab-width 4)))
 }}} 
 
 * key bindings can also be done in such a way to not cause init failure, even if the package is not loaded:
 
 
 {{{
-(global-set-key
- "\M-?"
- (lambda ()
-   (interactive)
-   (call-interactively 'magit-status)))
+    (global-set-key
+     "\M-?"
+     (lambda ()
+       (interactive)
+       (call-interactively 'magit-status)))
 
-(global-set-key (kbd "C-'")     'shell-switcher-switch-buffer)
+    (global-set-key (kbd "C-'")     'shell-switcher-switch-buffer)
 }}}
 
 * if all these tricks don't work you can still postpone config until after the packages have been loaded like this:
 
 {{{
-(add-hook 'after-init-hook 'cycbuf-init)
+    (add-hook 'after-init-hook 'cycbuf-init)
 }}}
 
 Using //after-init-hook// seems like a last resort because you will cause packages to be loaded, perhaps unnecessarily.  That slows down your Emacs loading time.
