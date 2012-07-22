@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Sat Jul 21 16:02:17 2012 (-0700)
+;; Last-Updated: Sat Jul 21 17:55:52 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 24435
+;;     Update #: 24438
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-cmd1.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -703,7 +703,7 @@ Only one (the first matching) replacement is made for any function."
 		    (and (listp (car rep))  (memq fn (car rep))))
 	    (push (eval (cadr rep)) result)
 	    (unless (eq (car rep) fn)  (push fn result))
-	    (setq replacements  (delete rep replacements))
+	    (setq replacements  (delete rep replacements)) ; For ((a b c) 'NEW), put NEW in front of only one.
 	    (throw 'c-d-c-f-replacements-loop nil))) ; Allow only one replacement.
 	(push fn result)))
     (nreverse result)))
