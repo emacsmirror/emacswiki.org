@@ -7,7 +7,7 @@
 ;; Maintainer: José Alfredo Romero L. <escherdragon@gmail.com>
 ;; Created: 24 Oct 2009
 ;; Version: 1
-;; RCS Version: $Rev: 425 $
+;; RCS Version: $Rev: 432 $
 ;; Keywords: sunrise commander, tabs
 ;; URL: http://www.emacswiki.org/emacs/sunrise-x-tabs.el
 ;; Compatibility: GNU Emacs 22+
@@ -236,10 +236,14 @@ The direction depends on the value of BACK."
       (set (sr-symbol sr-selected-window 'buffer) (current-buffer))
       (set (sr-symbol sr-selected-window 'directory) default-directory)
       (unless (eq from-buffer (sr-other 'buffer))
-        (kill-buffer from-buffer))
-      (revert-buffer)
-      (sr-history-push default-directory)))
-  (sr-tabs-refresh))
+        (with-current-buffer from-buffer
+          (set-buffer-modified-p nil)
+          (kill-buffer (current-buffer))))
+      (condition-case nil
+          (revert-buffer t t)
+        (error (ignore)))
+      (sr-history-push default-directory))
+    (sr-tabs-refresh)))
 
 (defun sr-tabs-focus (name side)
   "Give focus to the tab with name NAME in SIDE pane."
