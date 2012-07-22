@@ -15,7 +15,7 @@ Elnode comes with a webserver and a wiki server application.
 
 == What is Elnode good for? ==
 
-Elnode has been optimized for rapid development.  It's designed to get you going quickly.  Emacs is a great development environment for EmacsLisp and that's why Elnode is rapid and easy to build.
+Elnode has been optimized for rapid development.  It's designed to get you going quickly.  Emacs is a great development environment for EmacsLisp and that's why Elnode applications are rapid and easy to build.
 
 Some suggestions:
 
