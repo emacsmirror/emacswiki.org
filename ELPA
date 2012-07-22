@@ -86,7 +86,11 @@ NicFerrier maintains this repository.  He asks that you report issues or suggest
 
 == Melpa ==
 
-See also MELPA at http://melpa.milkbox.net/
+[http://melpa.milkbox.net/ MELPA] is a further package repository which hosts snapshot packages of many hundreds of libraries. Packages are built on the MELPA server directly from upstream source code according to small recipe files; in this sense MELPA is akin to a server-side version of el-get which eliminates the need for a user to have multiple version-control tools on his local machine.
+
+Library authors do not need to upload new versions of their packages to MELPA, since they are built automatically. The MELPA maintainers plan to add support for automatic builds of stable version packages triggered by upstream version tags.
+
+Currently supported backends are git, svn, bzr, hg, darcs and emacswiki. The collaboration model for MELPA is like that of the Homebrew package manager on OS X -- to add new recipes, simply file a pull request [https://github.com/milkypostman/melpa on Github].
 
 Melpa uses a recipe system similar to [[el-get]].  Recipes are stored on a git-hub repository which tells the updated package.el how to download each package.  The source of the package might be from git, svn, darcs or this wiki.
 
