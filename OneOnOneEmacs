@@ -168,6 +168,9 @@ These are the libraries for (my version of) One-On-One Emacs:
 * <tt>[[buff-menu+.el]]</tt> -- extensions to standard library `buff-menu'; see also '''BufferMenuPlus'''
 * <tt>[[compile-.el]]</tt>, <tt>[[compile+.el]]</tt> and <tt>[[grep+.el]]</tt> -- extensions to standard libraries `compile' and `grep'; see also '''GrepMode'''
 * <tt>[[dired+.el]]</tt> -- extensions to standard libraries `dired', `dired-aux', and `dired-x'; see also '''DiredPlus'''
+* <tt>[[dired-details+.el]]</tt> -- extensions to library <tt>[[dired-details.el]]</tt>  -- see '''DiredDetails'''
+* <tt>[[doremi-frm.el]]</tt> -- incrementally adjust [[frame]] properties using arrow keys and/or mouse wheel -- see also '''DoReMi'''
+* <tt>[[facemenu+.el]]</tt> -- extensions to standard library `facemenu' -- see '''FaceMenuPlus'''
 * <tt>[[fit-frame.el]]</tt> -- fit a frame to its selected window (buffer); see also '''[[Shrink-Wrapping Frames]]'''
 * <tt>[[frame-cmds.el]]</tt> -- frame and window commands (interactive functions); see also '''[[Frame Tiling Commands]]''', '''[[Iconifying, Deiconifying, and Hiding Frames]]''', '''[[Delete Frames Easily - But Not Too Easily]]''', and '''FrameModes'''
 * <tt>[[frame-fns.el]]</tt> -- non-interactive frame and window functions
@@ -179,8 +182,14 @@ These are the libraries for (my version of) One-On-One Emacs:
 * <tt>[[oneonone.el]]</tt> -- define a special multi-frame setup; see also '''[[Dedicated Minibuffer Frame]]''', '''[[Special Frames]]''', and '''[[Help and Completions Frames]]'''
 * <tt>[[setup-keys.el]]</tt> -- some key bindings
 * <tt>[[simple+.el]]</tt> -- extensions to standard library `simple'
-* <tt>[[thumb-frm.el]]</tt> -- use thumbnail frames in addition to or instead of frame icons
+* <tt>[[thumb-frm.el]]</tt> -- use thumbnail frames in addition to or instead of frame icons --  see '''FisheyeWithThumbs'''
 * <tt>[[window+.el]]</tt> -- extensions to standard library `window'
+* <tt>[[zoom-frm.el]]</tt> -- commands to zoom a frame or buffer (change its font size) -- see also <tt>[[doremi-frm.el]]</tt> for alternatives
+
+No, those are not all required.  They are libraries that I find help me work using frames with Emacs.  If you want to start small, the minimum is ##oneonone.el## plus ##hexrgb.el##.  And see the setting recommendations in the file header of ##oneonone.el##.
+
+After that, I strongly recommend ##fit-frame.el##, ##autofit-frame.el##, and ##dired-details+.el##, to save screen real estate.
+
 
 All of the libraries I've posted at EmacsWiki are listed at '''DrewsElispLibraries'''. Putting all of them in a directory pointed to by variable `drews-lisp-dir', and using <tt>[[emacs-init.el]]</tt> as is, you live Emacs more or less as I do.
 
@@ -538,7 +547,8 @@ Just general crankiness about the lack of progress I've seen in OSs in general.
 
 PS: Aquamacs comes with OneBufferOneFrame (OBOF). Never tried it but it may work.
 
-
+[new:DrewAdams:2012-07-22 19:57 UTC]
+As far as I know, Aquamacs's OneBufferOneFrame is still based on some of the OneOnOneEmacs code (e.g. frame fitting). -- DrewAdams
 
 ----
 
