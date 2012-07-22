@@ -92,7 +92,7 @@ The 1.0.0 version is planned and will include:
 * easy logging to processes
 * heroku runnability
 * a stable vagrant image
-* a stable AMI 
+* a stable AMI for running Elnode on Amazon EC2
 
 
 == Talking about Elnode ==
