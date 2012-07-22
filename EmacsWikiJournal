@@ -6,7 +6,7 @@ Emacs Wiki Journal provides a journal environment based on EmacsWikiMode, suppor
 
 Get the latest version from here:
 
-* http://suchang.net/code/emacs-wiki-journal-latest.el.tar.gz.
+* https://github.com/lalawue/emacs-wiki-journal
 
 Uncompress it, change its name to emacs-wiki-journal.el and move it to your load-path, and add the following to your .emacs:
 
