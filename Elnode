@@ -40,20 +40,20 @@ to handle work - again, communicating asynchronously.
 Want to publis a directory of org-mode files? Here's a full Elnode program that defines a handler to publish org files in a directory and also starts a server on port 8002.
 
 {{{
-;;; server.el ---  -*- lexical-binding: t -*-
-(defvar my-org-dir "~/work/org")
+  ;;; server.el ---  -*- lexical-binding: t -*-
+  (defvar my-org-dir "~/work/org")
 
-(defun my-elnode-org-handler (httpcon)
-  (elnode-docroot-for my-org-dir
-      with org-file
-      on httpcon
-      do (with-current-buffer (find-file-noselect org-file)
-           (let ((org-html
-                  ;; This might throw errors so you could condition-case it
-                  (org-export-as-html 3 nil nil 'string)))
-             (elnode-send-html httpcon org-html)))))
+  (defun my-elnode-org-handler (httpcon)
+    (elnode-docroot-for my-org-dir
+        with org-file
+        on httpcon
+        do (with-current-buffer (find-file-noselect org-file)
+             (let ((org-html
+                    ;; This might throw errors so you could condition-case it
+                    (org-export-as-html 3 nil nil 'string)))
+               (elnode-send-html httpcon org-html)))))
 
-(elnode-start 'my-elnode-org-handler :port 8002) 
+  (elnode-start 'my-elnode-org-handler :port 8002) 
 }}}
 
 Now you can visit one of those files directly.  A bit more work would be adding an index so you could pick which org-file you wanted to look at.
