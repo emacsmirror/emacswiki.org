@@ -1,24 +1,86 @@
-ELPA is the *Emacs Lisp Package Archive*, by TomTromey.    
+ELPA is the *Emacs Lisp Package Archive*, originally by TomTromey, now included in Emacs 24 after contributions from others.
 
 == ELPA  ==
 "Our goal is to make it simple to install, use, and upgrade Emacs Lisp packages. We supply ##package.el##, a simple package manager for Emacs, and a repository of pre-packed Emacs Lisp code."
 
-##package.el## (from ELPA) will be added to vanilla GnuEmacs, version 24.  As of 2010-06-18, ##package.el## has been merged with the development version of Emacs, and an ELPA repository has been set up at http://elpa.gnu.org/.
+##package.el## (from ELPA) has been added to vanilla GnuEmacs, version 24.  As of 2010-06-18, ##package.el## has been merged with the development version of Emacs, and an ELPA repository has been set up at http://elpa.gnu.org/.
 
-The Emacs version of ##package.el## will support multiple repositories.  You can use the global ELPA plus the Emacs GNU repository like this:
+The Emacs version of ##package.el## will support multiple repositories.  You can use the GNU ELPA plus another repository like this:
 
-  (setq package-archives '(("ELPA" . "http://tromey.com/elpa/") 
-                           ("gnu" . "http://elpa.gnu.org/packages/")))
+  (setq package-archives '(("gnu" . "http://elpa.gnu.org/packages/")
+                           ("marmalade" . "http://marmalde)))
 
-The old URL, for historical purposes is at: http://tromey.com/elpa/
+== How Packages work in Emacs 24 ==
 
-See also 2010-11-15 discussion about ELPA in Emacs 24.x at http://thread.gmane.org/gmane.emacs.devel/132634/focus=132640
+[[http://www.gnu.org/software/emacs/manual/html_node/elisp/Packaging-Basics.html#Packaging-Basics|The Elisp Manual describes how the package system is initialized]]:
+
+:Whenever Emacs starts up, it automatically calls the function
+:package-initialize to load installed packages. This is done after
+:loading the init file and abbrev file (if any) and before running
+:after-init-hook (see Startup Summary). Automatic package loading is
+:disabled if the user option package-enable-at-startup is nil.
+
+So packages are initialized //AFTER// the init.el is loaded.  This means you should //NOT// put package specific initialization into your init.el except in a few ways:
+
+* customization variables for a package are fine, they can be set before a package has loaded
+* auto-mode-alist changes can be made in a way that does not require the package to be loaded before they are setup:
+
+{{{
+(add-to-list 'auto-mode-alist '("\\.gradle" . groovy-mode))
+}}}
+
+* mode specific customization of a package could go in a package hook which can be set before the package is loaded, for example:
+
+{{{
+(add-hook 'groovy-mode-hook (lambda () (setq tab-width 4)))
+}}} 
+
+* key bindings can also be done in such a way to not cause init failure, even if the package is not loaded:
+
+
+{{{
+(global-set-key
+ "\M-?"
+ (lambda ()
+   (interactive)
+   (call-interactively 'magit-status)))
+
+(global-set-key (kbd "C-'")     'shell-switcher-switch-buffer)
+}}}
+
+* if all these tricks don't work you can still postpone config until after the packages have been loaded like this:
+
+{{{
+(add-hook 'after-init-hook 'cycbuf-init)
+}}}
+
+Using //after-init-hook// seems like a last resort because you will cause packages to be loaded, perhaps unnecessarily.  That slows down your Emacs loading time.
+
+=== ELPA policy ===
+
+ELPA policy for Emacs 24 was discussed here: http://thread.gmane.org/gmane.emacs.devel/132634/focus=132640
+
+== How packages work in Emacs 23 ==
+
+You can make packages work in Emacs 23, you need to add something like this to your //init.el//:
+
+{{{
+(require 'package)
+;; Any add to list for package-archives (to add marmalade or melpa) goes here
+(add-to-list 'package-archives 
+    '("marmalade" .
+      "http://marmalade-repo.org/packages/"))
+(package-initialize)
+}}}
+
 
 == Marmalade ==
 
 [http://marmalade-repo.org/ Marmalade], a package.el friendly community package source that allows users to upload their own packages.  Package maintainers don't have to be the same as the maintainers of the original code.  
 
 Some packages (for instance, slime) are out of date however.
+
+NicFerier maintains this repository.  He asks that you report issues or suggest features through the [[https://github.com/nicferrier/marmalade/issues|Github issues system]].
 
 == Melpa ==
 
