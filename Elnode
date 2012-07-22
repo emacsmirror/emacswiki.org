@@ -74,9 +74,24 @@ Now you can visit one of those files directly.  A bit more work would be adding 
 
 == Getting Elnode ==
 
+The latest version of Elnode is 0.9.8.
+
 * marmalade - M-x install-package [ENTER] elnode
 * [http://github.com/nicferrier/elnode Download elnode from github]
 ** if you do this you should build and install the package, see the [[https://github.com/nicferrier/elnode/blob/master/Makefile#L30|Makefile]]
+
+The latest development version of Elnode is 0.9.9 and includes:
+
+* the magic to make the webserver and the wiki work out of the box with no config
+* proper child processing with async spawned child processes that communicate over Elnode servers
+* fixes for other bits and pieces 
+
+The 1.0.0 version is planned and will include:
+
+* easy logging to processes
+* heroku runnability
+* a stable vagrant image
+* a stable AMI 
 
 
 == Talking about Elnode ==
