@@ -1,9 +1,9 @@
 The FileNameCache is a really nice piece of functionality in Emacs. It provides functionality to quickly find often-needed files without using [[bookmark]]s. From the Commentary:
 
-: ''The file-cache package is an attempt to make it easy to locate files by name, without having to remember exactly where they are located. This is very handy when working with source trees. You can also add frequently used files to the cache to create a hotlist effect. The cache can be used with any interactive command which takes a filename as an argument.
+: The file-cache package is an attempt to make it easy to locate files by name, without having to remember exactly where they are located. This is very handy when working with source trees. You can also add frequently used files to the cache to create a hotlist effect. The cache can be used with any interactive command which takes a filename as an argument.
 
-You can start the [::file-cache] by either using `C-TAB' when entering a file name in the MiniBuffer (`C-x C-f C-TAB C-g' works), or loading library <tt>filecache</tt>  (`M-x load-library' or <tt>(require 'filecache)</tt>).
-More information on this feature is available in section '''File Name Cache''' of the EmacsManual: [[Manual:File Name Cache]].
+You can start the [::file-cache] by either using `C-TAB' when entering a file name in the [[minibuffer]] (`C-x C-f C-TAB C-g' works), or loading library <tt>filecache</tt>  (`M-x load-library' or <tt>(require 'filecache)</tt>).
+More information on this feature is available in node '''File Name Cache''' of the EmacsManual: [[Manual:File Name Cache]].
 
 '''See also:'''
 
@@ -13,6 +13,8 @@ More information on this feature is available in section '''File Name Cache''' o
 * [[Icicles - File-Name Input#ReadingFileNames|`icicle-locate']] -- a [[multi-command]] version of `locate': find files without knowing their locations
 * LocateFilesAnywhere
 * RecentFiles
+
+
 
 == Add files to the cache ==
 
@@ -25,6 +27,11 @@ Adding files to the file name cache is easy:
 ; ##`M-x file-cache-add-directory-using-locate <RET> DIRECTORY <RET>'##: Add each file name in DIRECTORY and all of its nested subdirectories to the file name cache, using `locate' to find them all.
 
 ; ##`M-x file-cache-add-directory-list <RET> VARIABLE <RET>'##: Add each file name in each directory listed in VARIABLE to the file name cache.  VARIABLE should be a Lisp variable such as `load-path' or `exec-path', whose value is a list of directory names.
+
+
+
+
+
 
 == Try it out ==
 
@@ -57,6 +64,11 @@ The suggested way to add files automatically:
 	    (file-cache-add-directory "~/")
 	    (file-cache-add-file-list (list "~/foo/bar" "~/baz/bar"))
  	   ))
+
+
+
+
+
 
 [:SaveCacheToFile]
 == Save cache to a file ==
@@ -100,7 +112,7 @@ In my .emacs, I have this:
 ** Use `find-file-noselect' instead of `insert-file-contents'.
 ** Use `read' on the buffer contents, instead of `read-from-string' -- no need to create a string with the buffer contents. 
 
-: For an example, see functions `icicle-candidate-set-save' and `icicle-retrieve-candidates-from-set' in library Lisp:icicles-cmd.el. -- DrewAdams
+: For an example, see functions `icicle-candidate-set-save' and `icicle-retrieve-candidates-from-set' in library <tt>[[icicles-mcmd.el]]</tt>. -- DrewAdams
 [new]
 Thanks Drew! Very good hints. Much smaller and neater! Me like Lisp! -- MaDa
 
@@ -120,6 +132,9 @@ There is a problem with the above version of `file-cache-read-cache-from-file' s
 
 -- MartinNordholts
 
+
+
+
 == iswitchb-fc: Integrate file-cache with iswitchb ==
 
 http://tao.uab.es/cgi-bin/archzoom.cgi/jao@gnu.org--2004/unix--emacs--0--patch-23/other/iswitchb-fc.el?download
@@ -136,9 +151,13 @@ I think iswitchb-fc is awesome!! -- [[Anonymous]]
 [http://lists.gnu.org/archive/html/gnu-emacs-sources/2006-12/msg00034.html patch to integrate find-file] -- [[rubikitch]]
 
 
+
+
+
+
 == Using iswitchb to open files from file name cache -- take two ==
 
-Filecache rules but I did not like the way it completes the file names. Iswitchb-fc above is a really cool enhancement to filecache but I did not like that it was integrated with C-x b (I guess I *want* to know what files I actually have open). Hence this little hack:
+Filecache rules but I did not like the way it completes the file names. Iswitchb-fc above is a really cool enhancement to filecache but I did not like that it was integrated with `C-x b' (I guess I *want* to know what files I actually have open). Hence this little hack:
 
 <pre>
 (defun file-cache-iswitchb-file ()
@@ -167,19 +186,17 @@ directory, select directory. Lastly the file is opened."
     (iswitchb-read-buffer prompt)))
 </pre>
 
-I bound C-c f to it:
+I bind `C-c f' to it:
 
-<pre>
-(global-set-key "\C-cf" 'file-cache-iswitchb-file)
-</pre>
+  (global-set-key "\C-cf" 'file-cache-iswitchb-file)
 
-Happy happy, joy joy!
+[new]
+Happy happy, joy joy! -- MaDa
+[new]
+Oh man, this is the best enhancement I've seen in years -- Alex
 
--- MaDa
 
-Oh man, this is the best enhancement I've seen in years
 
--- Alex
 
 == Using ido to open files from file name cache==
 
@@ -214,10 +231,15 @@ directory, select directory. Lastly the file is opened."
 
 -- MartinNordholts
 
+
+
+
+
+
 == Using ido to open files from file name cache or current directory==
 
-Copied the previous command and added C-f to fallback to the current
-directory.  Typically you hit C-f when you realize the file was not
+Copied the previous command and added `C-f' to fallback to the current
+directory.  Typically you hit `C-f' when you realize the file was not
 found in the file name cache.  
 
 <pre>
