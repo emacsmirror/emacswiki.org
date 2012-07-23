@@ -28,6 +28,8 @@ For the vi user:
 
 * If you miss "'''##:q!##'''", use `M-x kill-emacs'.  See also ViQuit
 
+* If you miss text objects, see https://github.com/aarzilli/emacs-textobjects
+
 See also ViEmacsTable.
 
 ViAndEmacs have different philosophies when it comes to keystrokes. Emacs has long keystrokes for editing involving special modifier keys, such as Meta and Control (see EscapeMetaAltControlShift :)). This is analogous to a Very Long Instruction Word (VLIW) architecture.
