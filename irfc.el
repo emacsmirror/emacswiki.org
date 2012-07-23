@@ -1155,7 +1155,7 @@ Argument TITLE-LINE-POINT is the title line point of RFC buffer after render."
 Argument TOP-POINT is the top point of RFC buffer after render."
   (goto-char top-point)
   (while (let ((case-fold-search nil))
-           (re-search-forward (regexp-opt irfc-requirement-keywords)
+           (re-search-forward (regexp-opt irfc-requirement-keywords 'words)
                               nil t))
     ;; Overlay RFC requirement keyword.
     (irfc-overlay-add (match-beginning 0)
