@@ -7,9 +7,9 @@
 ;; Copyright (C) 1999-2012, Drew Adams, all rights reserved.
 ;; Created: Fri Sep  3 13:45:40 1999
 ;; Version: 21.0
-;; Last-Updated: Sun Jan  1 14:05:12 2012 (-0800)
+;; Last-Updated: Sun Jul 22 17:52:03 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 202
+;;     Update #: 205
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/pp+.el
 ;; Keywords: lisp
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -48,6 +48,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2012/07/22 dadams
+;;     pp-display-expression: Use backquote + comma, to replace free var.
 ;; 2011/01/04 dadams
 ;;     Added autoload cookies for defcustom.
 ;; 2010/06/21 dadams
@@ -198,24 +200,24 @@ OUT-BUFFER-NAME."
          ;; This function either decides not to display it at all
          ;; or displays it in the usual way.
          (temp-buffer-show-function
-          #'(lambda (buf)
-              (with-current-buffer buf
-                (goto-char (point-min))
-                (end-of-line 1)
-                (if (or (< (1+ (point)) (point-max))
-                        (>= (- (point) (point-min)) (frame-width)))
-                    (let ((temp-buffer-show-function  old-show-function)
-                          (old-selected               (selected-window))
-                          (window                     (display-buffer buf)))
-                      (goto-char (point-min)) ; expected by some hooks ...
-                      (make-frame-visible (window-frame window))
-                      (unwind-protect
-                           (progn (select-window window)
-                                  (run-hooks 'temp-buffer-show-hook))
-                        (select-window old-selected)
-                        (message "Evaluating...done. See buffer `%s'."
-                                 out-buffer-name)))
-                  (message "%s" (buffer-substring (point-min) (point))))))))
+          `(lambda (buf)
+            (with-current-buffer buf
+              (goto-char (point-min))
+              (end-of-line 1)
+              (if (or (< (1+ (point)) (point-max))
+                      (>= (- (point) (point-min)) (frame-width)))
+                  (let ((temp-buffer-show-function  ',old-show-function)
+                        (old-selected               (selected-window))
+                        (window                     (display-buffer buf)))
+                    (goto-char (point-min)) ; expected by some hooks ...
+                    (make-frame-visible (window-frame window))
+                    (unwind-protect
+                         (progn (select-window window)
+                                (run-hooks 'temp-buffer-show-hook))
+                      (select-window old-selected)
+                      (message "Evaluating...done.  See buffer `%s'."
+                               out-buffer-name)))
+                (message "%s" (buffer-substring (point-min) (point))))))))
     (with-output-to-temp-buffer out-buffer-name
       (pp expression)
       (with-current-buffer standard-output
@@ -223,7 +225,7 @@ OUT-BUFFER-NAME."
         ;; Avoid `let'-binding because `change-major-mode-hook' is local.
         ;; IOW, avoid this runtime message:
         ;; "Making change-major-mode-hook buffer-local while locally let-bound!"
-        ;; Suggestion from Stefan: Can just set these hooks instead of binding,
+        ;; Suggestion from Stefan M.: Can just set these hooks instead of binding,
         ;; because they are not permanent-local.  They'll be emptied and
         ;; repopulated as needed by the call to emacs-lisp-mode.
         (set (make-local-variable 'emacs-lisp-mode-hook) nil)
