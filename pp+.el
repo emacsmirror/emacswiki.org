@@ -7,9 +7,9 @@
 ;; Copyright (C) 1999-2012, Drew Adams, all rights reserved.
 ;; Created: Fri Sep  3 13:45:40 1999
 ;; Version: 21.0
-;; Last-Updated: Sun Jul 22 17:52:03 2012 (-0700)
+;; Last-Updated: Sun Jul 22 19:40:42 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 205
+;;     Update #: 207
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/pp+.el
 ;; Keywords: lisp
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -49,7 +49,9 @@
 ;;; Change Log:
 ;;
 ;; 2012/07/22 dadams
-;;     pp-display-expression: Use backquote + comma, to replace free var.
+;;     pp-display-expression:
+;;       Do not try to select old-window if it is no longer live.
+;;       Use backquote + comma, to replace free var.
 ;; 2011/01/04 dadams
 ;;     Added autoload cookies for defcustom.
 ;; 2010/06/21 dadams
@@ -214,7 +216,8 @@ OUT-BUFFER-NAME."
                     (unwind-protect
                          (progn (select-window window)
                                 (run-hooks 'temp-buffer-show-hook))
-                      (select-window old-selected)
+                      (when (window-live-p old-selected)
+                        (select-window old-selected))
                       (message "Evaluating...done.  See buffer `%s'."
                                out-buffer-name)))
                 (message "%s" (buffer-substring (point-min) (point))))))))
