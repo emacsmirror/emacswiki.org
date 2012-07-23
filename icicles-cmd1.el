@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Sat Jul 21 17:55:52 2012 (-0700)
+;; Last-Updated: Sun Jul 22 19:39:01 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 24438
+;;     Update #: 24440
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-cmd1.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -594,8 +594,11 @@ customize option `icicle-top-level-key-bindings'."
 
 
 ;; REPLACE ORIGINAL in `pp.el':
+;;
 ;; 1. Use no `emacs-lisp-mode-hook' or `change-major-mode-hook'.
 ;; 2. Call `font-lock-fontify-buffer'.
+;;
+;; Same as `pp-display-expression' definition in `pp+.el'.
 ;;
 (defun icicle-pp-display-expression (expression out-buffer-name)
   "Prettify and show EXPRESSION in a way appropriate to its length.
@@ -620,7 +623,7 @@ OUT-BUFFER-NAME."
                     (unwind-protect
                          (progn (select-window window)
                                 (run-hooks 'temp-buffer-show-hook))
-                      (select-window old-selected)
+                      (when (window-live-p old-selected) (select-window old-selected))
                       (message "Evaluating...done.  See buffer `%s'."
                                out-buffer-name)))
                 (message "%s" (buffer-substring (point-min) (point))))))))
