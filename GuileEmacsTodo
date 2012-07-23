@@ -3,5 +3,5 @@
 * Shrink regexp cache after GC
 * GC messages
 * Automatic deletion of undo list elements updating freed markers
-* Guile 2.0.0 compatibility
+* '''DONE''' Guile 2.0.0 compatibility
 * '''DONE''' Fix backtraces
