@@ -1,0 +1,121 @@
+diff --git a/src/frame.c b/src/frame.c
+index 1db24cc..ccfd24e 100644
+--- a/src/frame.c
++++ b/src/frame.c
+@@ -2736,33 +2736,41 @@ x_fullscreen_adjust (struct frame *f, int *width, int *height, int *top_pos, int
+ 
+   *top_pos = f->top_pos;
+   *left_pos = f->left_pos;
+ 
+   if (f->want_fullscreen & FULLSCREEN_HEIGHT)
+     {
+       int ph;
+ 
+       ph = x_display_pixel_height (dpyinfo);
+       newheight = FRAME_PIXEL_HEIGHT_TO_TEXT_LINES (f, ph);
+-      ph = FRAME_TEXT_LINES_TO_PIXEL_HEIGHT (f, newheight) - f->y_pixels_diff;
++      ph = FRAME_TEXT_LINES_TO_PIXEL_HEIGHT (f, newheight) -
++        (f->want_fullscreen & FULLSCREEN_BOTH ? 0 : f->y_pixels_diff);
+       newheight = FRAME_PIXEL_HEIGHT_TO_TEXT_LINES (f, ph);
++      if (ph < x_display_pixel_height (dpyinfo))
++        newheight++;
++
+       *top_pos = 0;
+     }
+ 
+   if (f->want_fullscreen & FULLSCREEN_WIDTH)
+     {
+       int pw;
+ 
+       pw = x_display_pixel_width (dpyinfo);
+       newwidth = FRAME_PIXEL_WIDTH_TO_TEXT_COLS (f, pw);
+-      pw = FRAME_TEXT_COLS_TO_PIXEL_WIDTH (f, newwidth) - f->x_pixels_diff;
++      pw = FRAME_TEXT_COLS_TO_PIXEL_WIDTH (f, newwidth) -
++        (f->want_fullscreen & FULLSCREEN_BOTH ? 0 : f->x_pixels_diff);
+       newwidth = FRAME_PIXEL_WIDTH_TO_TEXT_COLS (f, pw);
++      if (pw < x_display_pixel_width (dpyinfo))
++        newwidth++;
++
+       *left_pos = 0;
+     }
+ 
+   *width = newwidth;
+   *height = newheight;
+ }
+ 
+ #endif /* WINDOWSNT */
+ 
+ #ifdef HAVE_WINDOW_SYSTEM
+diff --git a/src/w32fns.c b/src/w32fns.c
+index 510d1e9..4d3d65f 100644
+--- a/src/w32fns.c
++++ b/src/w32fns.c
+@@ -1846,31 +1846,31 @@ w32_createwindow (struct frame *f)
+     }
+   else if (EQ (left, Qunbound) && EQ (top, Qunbound))
+     {
+       /* When called with RES_TYPE_NUMBER, w32_get_arg will return zero
+ 	 for anything that is not a number and is not Qunbound.  */
+       left = x_get_arg (dpyinfo, Qnil, Qleft, "left", "Left", RES_TYPE_NUMBER);
+       top = x_get_arg (dpyinfo, Qnil, Qtop, "top", "Top", RES_TYPE_NUMBER);
+     }
+ 
+   FRAME_W32_WINDOW (f) = hwnd
+-    = CreateWindow (EMACS_CLASS,
+-		    f->namebuf,
+-		    f->output_data.w32->dwStyle | WS_CLIPCHILDREN,
+-		    EQ (left, Qunbound) ? CW_USEDEFAULT : XINT (left),
+-		    EQ (top, Qunbound) ? CW_USEDEFAULT : XINT (top),
+-		    rect.right - rect.left,
+-		    rect.bottom - rect.top,
+-		    NULL,
+-		    NULL,
+-		    hinst,
+-		    NULL);
++    = CreateWindow(EMACS_CLASS,
++                   f->namebuf,
++                   f->output_data.w32->dwStyle,
++                   EQ (left, Qunbound) ? CW_USEDEFAULT : XINT (left),
++                   EQ (top, Qunbound) ? CW_USEDEFAULT : XINT (top),
++                   rect.right - rect.left,
++                   rect.bottom - rect.top,
++                   NULL,
++                   NULL,
++                   hinst,
++                   NULL);
+ 
+   if (hwnd)
+     {
+       SetWindowLong (hwnd, WND_FONTWIDTH_INDEX, FRAME_COLUMN_WIDTH (f));
+       SetWindowLong (hwnd, WND_LINEHEIGHT_INDEX, FRAME_LINE_HEIGHT (f));
+       SetWindowLong (hwnd, WND_BORDER_INDEX, FRAME_INTERNAL_BORDER_WIDTH (f));
+       SetWindowLong (hwnd, WND_SCROLLBAR_INDEX, f->scroll_bar_actual_width);
+       SetWindowLong (hwnd, WND_BACKGROUND_INDEX, FRAME_BACKGROUND_PIXEL (f));
+ 
+       /* Enable drag-n-drop.  */
+@@ -4262,21 +4262,24 @@ This function is an internal primitive--use `make-frame' instead.  */)
+ 		       ? make_number (0) : make_number (1),
+ 		       NULL, NULL, RES_TYPE_NUMBER);
+ 
+   x_default_parameter (f, parameters, Qbuffer_predicate, Qnil,
+ 		       "bufferPredicate", "BufferPredicate", RES_TYPE_SYMBOL);
+   x_default_parameter (f, parameters, Qtitle, Qnil,
+ 		       "title", "Title", RES_TYPE_STRING);
+   x_default_parameter (f, parameters, Qfullscreen, Qnil,
+                        "fullscreen", "Fullscreen", RES_TYPE_SYMBOL);
+ 
+-  f->output_data.w32->dwStyle = WS_OVERLAPPEDWINDOW;
++  if (f->want_fullscreen == FULLSCREEN_BOTH)
++    f->output_data.w32->dwStyle = WS_POPUP;
++  else
++    f->output_data.w32->dwStyle = WS_OVERLAPPEDWINDOW | WS_CLIPCHILDREN;
+   f->output_data.w32->parent_desc = FRAME_W32_DISPLAY_INFO (f)->root_window;
+ 
+   f->output_data.w32->text_cursor = w32_load_cursor (IDC_IBEAM);
+   f->output_data.w32->nontext_cursor = w32_load_cursor (IDC_ARROW);
+   f->output_data.w32->modeline_cursor = w32_load_cursor (IDC_ARROW);
+   f->output_data.w32->hand_cursor = w32_load_cursor (IDC_HAND);
+   f->output_data.w32->hourglass_cursor = w32_load_cursor (IDC_WAIT);
+   f->output_data.w32->horizontal_drag_cursor = w32_load_cursor (IDC_SIZEWE);
+ 
+   f->output_data.w32->current_cursor = f->output_data.w32->nontext_cursor;
