@@ -193,6 +193,30 @@ used.  The value
 (setq window-setup-hook 'jbr-init)
 }}}
 
+
+==== True Fullscreen Patch for Emacs 24.1 ====
+
+I admire the unobtrusive UI of Emacs. But the one thing I painfully missed was the ability to truly fullscreen Emacs on Windows. So I took the Emacs 24.1 codebase and crudely patched the window handling code to let it create a window without the title bar for the first frame. I use this patch on Windows XP SP3 and Windows 7.
+
+[[trueFullscreen.patch]]
+
+The combination of the font and screen size could leave gaps on the lower and right side of the screen. To correct this, play around with the font size and the internal border width:
+
+{{{
+%EMACS_DIR%\bin\runemacs.exe --xrm="emacs.verticalScrollBars:off" --xrm="emacs.menuBar:off" --xrm="emacs.toolBar:0" --font "Courier New-13" --fullscreen --internal-border=4
+}}}
+
+If you need to minimize the frame, you can use something like this:
+
+{{{
+(defun minimize-frame ()
+  (interactive)
+  (w32-send-sys-command #xf020))
+}}}
+
+-- [[MikeVeldink]]
+
+
 === X Windows ===
 ==== Send X Messages to the Window Manager ====
 
@@ -378,7 +402,6 @@ See also [[Fullscreen]].
   "Maximize frame every time it receives focus, i.e. a switch-frame event."
   (w32-send-sys-command #xf030))
 }}}
-
 
 
 
