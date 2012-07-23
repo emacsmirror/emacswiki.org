@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Sat Jul 21 16:46:05 2012 (-0700)
+;; Last-Updated: Sun Jul 22 19:39:56 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 8688
+;;     Update #: 8689
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-chg.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -85,6 +85,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd1.el'")
 ;;
+;; 2012/07/22 dadams
+;;     icicle-pp-display-expression: Do not try to select old-window if it is no longer live.
 ;; 2012/07/21 dadams
 ;;     Replace defun of *-comint-completion-at-point by defalias to *-comint-dynamic-complete.
 ;;     icicle-comint-replace-orig-completion-fns: Redefined for new format of
