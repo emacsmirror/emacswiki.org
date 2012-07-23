@@ -7,8 +7,10 @@ More information on this feature is available in section '''File Name Cache''' o
 
 '''See also:'''
 
+* [[Bookmark+]] autofiles: treat files like bookmarks.  Persistent.
 * FileSets -- Persistent, named sets of files (i.e. file names) for managing your projects. Part of GnuEmacs starting with release 22.
-* [[Icicles - Persistent Completions]] -- Save or retrieve persistent file sets as file-name [[completion]] candidates. Use with Emacs FileSets or [[Icicles]] saved completion sets (which can include arbitrary combinations of Emacs FileSets of different types).
+* [[Icicles - Persistent Completions]] -- Save or retrieve persistent file sets as file-name [[completion]] candidates. Use with Emacs [[fileset]]s or [[Icicles - Candidate Sets#SavingAndRetrieving|Icicles saved completion sets]] (which can include arbitrary combinations of Emacs filesets of different types).
+* [[Icicles - File-Name Input#ReadingFileNames|`icicle-locate']] -- a [[multi-command]] version of `locate': find files without knowing their locations
 * LocateFilesAnywhere
 * RecentFiles
 
