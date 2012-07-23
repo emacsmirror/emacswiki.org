@@ -151,8 +151,14 @@ Maybe somewhere in the footer close to where the language links are too.  Then a
 
 == Subscription service to  watch changes == 
 
-   There should be a way to subscribe to changes to pages of interest to users, including Emacs Lisp files.
-  
+There should be a way to subscribe to changes to pages of interest to users, including Emacs Lisp files.
+
+[new]
+The current option is to subscribe to RSS feeds for each page or for pages matching a particular regular expression. The html has appropriate meta links. Alternatively you could go to RecentChanges, figure out what settings you need and change "action=rc" in the URL to "action=rss".
+
+Finally, if a few people were interested, we could add an email subscription extension to the wiki.
+-- AlexSchroeder
+
 ----
 CategoryEmacsWikiSite
 wiki projects
