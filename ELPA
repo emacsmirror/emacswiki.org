@@ -9,17 +9,10 @@ The Emacs version of ##package.el## will support multiple repositories.  You can
 
   (setq package-archives '(("gnu" . "http://elpa.gnu.org/packages/")
                            ("marmalade" . "http://marmalade-repo.org/packages")
-<<<<<<< you
-                           ("melpa" . "http://melpa.milkbox.net/packages/")))
-||||||| ancestor
-                           ("melpa" . "http://melpa.milkbox.net/packages/")
-                           ("tromey" . "http://tromey.com/elpa/")))
-=======
                            ("melpa" . "http://melpa.milkbox.net/packages/")))
 
 Any combination of repositories is fine.  You should probably always include GNU's core repository but it's not required.
 
->>>>>>> other
 
 == How Packages work in Emacs 24 ==
 
