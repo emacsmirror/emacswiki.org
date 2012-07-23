@@ -139,8 +139,13 @@ There is a problem with the above version of `file-cache-read-cache-from-file' s
 
 http://tao.uab.es/cgi-bin/archzoom.cgi/jao@gnu.org--2004/unix--emacs--0--patch-23/other/iswitchb-fc.el?download
 
+[new:DrewAdams:2012-07-23 16:51 UTC]
+: That site seems no longer to be available (2012-07-23). -- DrewAdams
+
+[new]
 I think iswitchb-fc is awesome!! -- [[Anonymous]]
 
+[new]
 <pre>
 (defun iswitchb-fc-read-buffer (prompt &optional default existing)
   (save-window-excursion (buffer-name (iswitchb))))
@@ -148,6 +153,7 @@ I think iswitchb-fc is awesome!! -- [[Anonymous]]
   (setq ad-return-value (iswitchb-fc-read-buffer prompt)))
 </pre>
 
+[new]
 [http://lists.gnu.org/archive/html/gnu-emacs-sources/2006-12/msg00034.html patch to integrate find-file] -- [[rubikitch]]
 
 
