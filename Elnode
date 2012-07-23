@@ -72,6 +72,9 @@ Want to publish a directory of org-mode files? Here's a full Elnode program that
 
 Now you can visit one of those files directly.  A bit more work would be adding an index so you could pick which org-file you wanted to look at.
 
+=== More org examples ===
+
+Lot's of people ask for org-mode Elnode integration so NicFerrier started a specific [[https://github.com/nicferrier/elnode-org|GitHub project]] to package up some tools and utils.
 
 == Getting Elnode ==
 
