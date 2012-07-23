@@ -1,0 +1,14 @@
+*A software project tool for emacs* - [https://github.com/abingham/prosjekt Project page]
+
+------------------------------
+*Description*
+
+Prosjekt is an emacs package for managing software projects. A project in Prosjekt is defined as:
+
+ * A top-level project directory
+ * Files under that directory which are part of the project
+ * Commands which can be executed on the project
+
+Prosjekt is unabashedly based on the wonderful [http://www.emacswiki.org/emacs/eproject eproject], to which I owe a great debt. Prosjekt largely grew out of the desire to learn more about emacs and elisp, and eproject was the platform I used. I've been happy with the results.
+
+For documentation, source, and other project-related stuff, please see the [https://github.com/abingham/prosjekt Prosjekt project page].
