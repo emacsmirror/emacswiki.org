@@ -140,7 +140,7 @@ There is a problem with the above version of `file-cache-read-cache-from-file' s
 http://tao.uab.es/cgi-bin/archzoom.cgi/jao@gnu.org--2004/unix--emacs--0--patch-23/other/iswitchb-fc.el?download
 
 [new:DrewAdams:2012-07-23 16:51 UTC]
-: That site seems no longer to be available (2012-07-23). -- DrewAdams
+: That site seems no longer to be available (2012-07-23). This seems to work: https://github.com/emacsmirror/iswitchb-fc/blob/master/iswitchb-fc.el -- DrewAdams
 
 [new]
 I think iswitchb-fc is awesome!! -- [[Anonymous]]
