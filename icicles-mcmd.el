@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Sat Jul 21 12:15:34 2012 (-0700)
+;; Last-Updated: Tue Jul 24 13:28:20 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 18391
+;;     Update #: 18392
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-mcmd.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -7627,23 +7627,32 @@ Bound to `M-m' in the minibuffer."
 ;;;###autoload (autoload 'toggle-icicle-ignored-space-prefix "icicles")
 (defalias 'toggle-icicle-ignored-space-prefix 'icicle-toggle-ignored-space-prefix)
 ;;;###autoload (autoload 'icicle-toggle-ignored-space-prefix "icicles")
-(defun icicle-toggle-ignored-space-prefix () ; Bound to `M-_' in minibuffer, except when searching.
+(defun icicle-toggle-ignored-space-prefix (&optional buffer-instead-p)
+                                        ; Bound to `M-_' in minibuffer, except when searching.
   "Toggle `icicle-ignore-space-prefix-flag'.
 Bound to `M-_' in the minibuffer, except during Icicles searching.
 
-Note: If the current command binds `icicle-ignore-space-prefix-flag'
-locally, then it is the local, not the global, value that is changed.
-For example, `icicle-buffer' binds it to the value of
-`icicle-buffer-ignore-space-prefix-flag'.  If that is non-nil, then
-\\<minibuffer-local-completion-map>`\\[icicle-toggle-ignored-space-prefix]' toggles \
-`icicle-ignore-space-prefix-flag' to nil only for the
-duration of `icicle-buffer'."
-  (interactive)
-  (setq icicle-ignore-space-prefix-flag  (not icicle-ignore-space-prefix-flag))
-  (icicle-complete-again-update)
-  (icicle-msg-maybe-in-minibuffer
-   "Ignoring space prefix is now %s"
-   (icicle-propertize (if icicle-ignore-space-prefix-flag "ON" "OFF") 'face 'icicle-msg-emphasis)))
+With a prefix arg, toggle `icicle-buffer-ignore-space-prefix-flag'
+instead (not `icicle-ignore-space-prefix-flag').
+
+With no prefix arg: If the current command binds
+`icicle-ignore-space-prefix-flag' locally, then it is the local, not
+the global, value that is changed.  For example, `icicle-buffer' binds
+it to the value of `icicle-buffer-ignore-space-prefix-flag'.  If that
+is non-nil, then \\<minibuffer-local-completion-map>`\\[icicle-dispatch-M-_]' toggles \
+`icicle-ignore-space-prefix-flag' to
+nil only for the duration of `icicle-buffer'."
+  (interactive "P")
+  (let ((opt  (if buffer-instead-p
+                  'icicle-buffer-ignore-space-prefix-flag
+                'icicle-ignore-space-prefix-flag)))
+    (set opt (not (symbol-value opt)))
+    (icicle-complete-again-update)
+    (icicle-msg-maybe-in-minibuffer
+     "Ignoring space prefix is now %s%s"
+     (icicle-propertize (if (symbol-value opt) "ON" "OFF")
+                        'face 'icicle-msg-emphasis)
+     (if buffer-instead-p " for buffers" ""))))
 
 ;; Top-level commands.  Could instead be in `icicles-cmd2.el'.
 ;;
