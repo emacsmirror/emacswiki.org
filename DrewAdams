@@ -482,6 +482,12 @@ FWIW, I rarely use ##browse-kill-ring[+].el## myself.  Instead, I use '''[[Icicl
 [new]
 Could you please fix this warning: icomplete+.el:1034:1:Warning: the function `icicle-completing-p' is not known to be defined. -- JonasBernoulli
 
+
+[new:DrewAdams:2012-07-25 12:56 UTC]
+Nope, sorry.  The code is correct.  The use of that function is guarded by a test for (a) the library it is defined in and (b) the mode where it would be active.
+
+There are many such warnings in code that is designed to work, ''optionally'', with some other libraries or with more than one Emacs version.  In recent Emacs versions you can use `declare-function' to declare that a given function is defined in a given library, but that is not possible in older Emacs versions, where `declare-function' is not available. (<tt>[[icomplete+.el]]</tt>, for example, supports Emacs versions back to at least Emacs 20. -- DrewAdams
+
 ----
 
 
