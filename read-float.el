@@ -1,4 +1,4 @@
-;; Copyright (C) 2012  Tobias.Naehring -- Read float values in binary format from literal buffer
+;;; Copyright (C) 2012  Tobias.Naehring -- Read float values in binary format from literal buffer
 
 ;; Author: Tobias.Naehring <i@tn-home.de>
 ;; Keywords: Search for mouse selection.
@@ -115,3 +115,4 @@ After success point is behind the read bytes."
   )
 
 (provide 'read-float)
+;; read-float.el ends here
