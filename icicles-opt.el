@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:22:14 2006
 ;; Version: 22.0
-;; Last-Updated: Tue Jul 24 13:36:48 2012 (-0700)
+;; Last-Updated: Tue Jul 24 17:22:25 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 5277
+;;     Update #: 5278
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-opt.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -3461,12 +3461,16 @@ prefix argument (or else start a new Emacs session)."
                          :match-alternatives (symbolp) :value ignore)
             :value-type (repeat :tag "TAB completion methods" (choice ,@methods))))
   :set (lambda (sym val)
-         (custom-set-default sym val)
          (when (fboundp 'icicle-set-TAB-methods-for-command)
-           (dolist (entry  val)
-             (icicle-set-TAB-methods-for-command (car entry) (cdr entry)))))
+           (let ((old-val  (symbol-value sym)))
+             (dolist (entry  old-val)
+               (icicle-set-TAB-methods-for-command (car entry) nil))
+             (custom-set-default sym val)
+             (dolist (entry  val)
+               (icicle-set-TAB-methods-for-command (car entry) (cdr entry))))))
   :initialize #'custom-initialize-default
   :group 'Icicles-Matching)
+
 
 ;;;###autoload
 (defcustom icicle-TAB-shows-candidates-flag t
