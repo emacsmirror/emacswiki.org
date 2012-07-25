@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Sun Jul 22 19:39:56 2012 (-0700)
+;; Last-Updated: Tue Jul 24 17:25:32 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 8689
+;;     Update #: 8696
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-chg.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -3070,6 +3070,8 @@
 ;;       macros needs to be byte-compiled anew after loading the updated macros.
 ;; ****************************************************************************************************
 ;;
+;; 2012/07/24 dadams
+;;     icicle-buffer-bindings: If icicle-ignore-space-prefix-flag & VANILLA then remove internal bufs.
 ;; 2012/07/19 dadams
 ;;     icicle-buffer-bindings: Positive prefix arg now includes Dired buffers, along with file bufs.
 ;; 2012/07/05 dadams
@@ -3250,6 +3252,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-mcmd.el'")
 ;;
+;; 2012/07/24 dadams
+;;     icicle-toggle-ignored-space-prefix: Added prefix arg, so you can toggle buffer option.
 ;; 2012/07/21 dadams
 ;;     icicle-help-on-candidate(-symbol): If available, use describe-buffer for buffers.
 ;; 2012/07/17 dadams
@@ -5825,6 +5829,9 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-opt.el'")
 ;;
+;; 2012/07/24 dadams
+;;     icicle-TAB-completion-methods-per-command: Fix bug when delete entries: set them to nil first.
+;;     icicle-buffer-ignore-space-prefix-flag: Updated doc string - C-u M-_ now toggles this.
 ;; 2012/07/21 dadams
 ;;     icicle-comint-dynamic-complete-replacements:
 ;;       Added entry for pcomplete and comint/shell file-name completion.  Thx to C. Schmidt.
