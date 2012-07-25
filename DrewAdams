@@ -488,6 +488,16 @@ Nope, sorry.  The code is correct.  The use of that function is guarded by a tes
 
 There are many such warnings in code that is designed to work, ''optionally'', with some other libraries or with more than one Emacs version.  In recent Emacs versions you can use `declare-function' to declare that a given function is defined in a given library, but that is not possible in older Emacs versions, where `declare-function' is not available. (<tt>[[icomplete+.el]]</tt>, for example, supports Emacs versions back to at least Emacs 20. -- DrewAdams
 
+[new]
+I am using 24.1 which is fairly recent and nope it is not correctly garded. This would do: 
+<pre>
+- (and (boundp 'icicle-mode)  icicle-mode  (icicle-completing-p))
++ (and (boundp 'icicle-mode) (fboundp 'icicle-completing-p)  icicle-mode  (icicle-completing-p))
+</pre>
+
+Testing whether icicle-mode is boundp has nothing to with whether icicle-completing-p is fboundp as far as the byte-compiler is concerned.
+-- JonasBernoulli
+
 ----
 
 
