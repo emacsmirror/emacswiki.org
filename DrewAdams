@@ -498,6 +498,21 @@ I am using 24.1 which is fairly recent and nope it is not correctly garded. This
 Testing whether icicle-mode is boundp has nothing to with whether icicle-completing-p is fboundp as far as the byte-compiler is concerned.
 -- JonasBernoulli
 
+[new:DrewAdams:2012-07-25 18:15 UTC]
+Sorry, I disagree completely with the idea of writing such guards solely to inhibit byte-compiler warnings.  That is not their purpose.  And that is not the right way to inhibit such byte-compiler warnings.  (The right way is to use `declare-function', as I mentioned.)
+
+The purpose of the guards in this code is to ensure that the program logic is correct.  And as such they should also be as simple and transparent to someone reading the code as is possible without sacrificing other programming concerns that might be relevant in the given context (correctness, performance, etc.). 
+
+Reducing byte-compiler noise is not such a concern.  Or rather, that concern is secondary and should not be mixed in with the program logic.  That is why we have ''separate'' means of handling it: (1) vacuous `defvar's for variables and (2) `declare-function' for functions.
+
+If the guard `icicle-mode' is true then ##(fboundp 'icicle-completing-p)## is true also -- the latter serves ''no'' purpose for the ''program logic'', and is only distracting, if not misleading, for a human reader of the code.
+
+[Well, it is not ''necessarily'' the case that non-`nil' `icicle-mode' implies that `icicle-completing-p' is defined.  Nothing prevents someone from defining a variable `icicle-mode' without loading '''Icicles'''.  There is no guarantee, with any such guards.]
+
+Not to mention the fact that adding the `fboundp' guard you propose will ''not'' prevent such a byte-compiler warning in older Emacs versions.
+
+That the byte-compiler cannot recognize the relation between `icicle-mode' being true and `icicle-completing-p' being defined is a byte-compiler limitation, not a code problem.  Enabling the byte compiler to detect more possibly problematic situations is in general a good thing.  But if sufficient smarts do not accompany and temper/control the printing of such warnings then the result can be extra noise, which is not always helpful. -- DrewAdams
+
 ----
 
 
