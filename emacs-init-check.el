@@ -1,5 +1,5 @@
 ;;;; emacs-init-check.el --- Automatic init file checker
-;; Time-stamp: <2010-11-25 10:22:16 rubikitch>
+;; Time-stamp: <2012-07-26 23:22:50 rubikitch>
 
 ;; Copyright (C) 2010  rubikitch
 
@@ -106,9 +106,6 @@
   (when (and auto-emacs-init-check buffer-file-name
              (string-match auto-emacs-init-check-file-regexp buffer-file-name))
     (emacs-init-check)))
-
-(provide 'emacs-init-check)
-
 
 (provide 'emacs-init-check)
 
