@@ -6,7 +6,9 @@ DistributedVersionControl supports Mercurial.
 
 Another Mercurial mode can be found at http://hg.intevation.org/mercurial/file/tip/contrib/mercurial.el.  It's being developed under [[XEmacs]].
 
-There's another Mercurial mode, aHg, at https://es.fbk.eu/people/griggio/ahg.html
+There's another Mercurial mode, aHg, at https://es.fbk.eu/people/griggio/ahg.html .
+
+If you like using Magit for Git, you will find it interesting to work with [https://github.com/ananthakumaran/monky Monky] - Magit for Hg.
 
 == Using Ediff to merge ==
 
