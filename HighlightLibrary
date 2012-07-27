@@ -414,11 +414,15 @@ You might also want to bind `hlt-choose-default-face', which you
 can use to change the current default highlighting face.
 
 
-== Relation to Hi-Lock Mode ==
+== See Also ==
 
-The features of library <tt>[[highlight.el]]</tt> are complementary to those of the
-standard Emacs library ##hi-lock.el##, so you can use the two
-libraries together. See also HighlightTemporarily for comparison with other libraries.
+* <tt>[[show-wspace.el]]</tt> -- This library provides ways to highlight
+different sets of characters, including whitespace and Unicode
+characters.  See [[ShowWhiteSpace#ShowWspace|ShowWhiteSpace]].
+
+* he features of library <tt>[[highlight.el]]</tt> are complementary to those of the
+vanilla Emacs library ##hi-lock.el##, so you can use the two
+libraries together.  See also HighlightTemporarily for comparison with other libraries.
 
 
 == Commands That Won't Work in Emacs 20 ==
@@ -438,6 +442,15 @@ more recent than Emacs 20:
 : Here is a screenshot showing highlighting with `hlt-highlight-single-quotations':
 
 : [[image:DrewsEmacsHighlight]]
+
+
+
+
+
+
+
+
+
 
 
 
