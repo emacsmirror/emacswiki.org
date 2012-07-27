@@ -21,6 +21,8 @@ http://www.sixfingeredman.net/proj/xemacs/camelCase-mode.el is a hacked version 
 
 :: Had the same problem but fixed it by downloading camelCase.tgz instead from http://www.hotdispatch.com/download/ip/14312566/739119894/camelCase.tgz --tankboy
 
+:: The above link is dead. I've made a fixed version at http://paste.lisp.org/display/130705//raw
+
 ::: I must say that I greatly prefer this having a global effect instead of a buffer local effect.   To change the behavior to be global is very simple.  Here's a diff output for such a change:
 <pre>
 < ;;;  camelCase.el --- quasi-minor mode for editing with camelCase words
