@@ -7,9 +7,9 @@
 ;; Copyright (C) 1995-2012, Drew Adams, all rights reserved.
 ;; Created: Wed Oct 11 15:07:46 1995
 ;; Version: 21.0
-;; Last-Updated: Wed Jul 11 13:48:12 2012 (-0700)
+;; Last-Updated: Fri Jul 27 14:17:50 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 3146
+;;     Update #: 3155
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/highlight.el
 ;; Keywords: faces, help, local
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -54,7 +54,7 @@
 ;;    (@> "What Gets Highlighted: Region, Buffer, New Text You Type")
 ;;    (@> "Interference by Font Lock")
 ;;    (@> "Suggested Bindings")
-;;    (@> "Relation to Hi-Lock Mode")
+;;    (@> "See Also")
 ;;    (@> "Commands That Won't Work in Emacs 20")
 ;;    (@> "To Do")
 ;;  (@> "Change log")
@@ -498,12 +498,19 @@
 ;;  You might also want to bind command `hlt-choose-default-face',
 ;;  which you can use to change the current default highlighting face.
 ;;
-;;(@* "Relation to Hi-Lock Mode")
-;;  ** Relation to Hi-Lock Mode **
+;;(@* "See Also")
+;;  ** See Also **
 ;;
-;;  The features of this library are complementary to those of the
-;;  standard Emacs library `hi-lock.el', so you can use the two
-;;  libraries together.
+;;  * `show-space.el' - This library provides ways to highlight
+;;    different sets of characters, including whitespace and Unicode
+;;    characters.  It is available here:
+;;    http://www.emacswiki.org/cgi-bin/wiki/show-wspace.el (code)
+;;    http://www.emacswiki.org/ShowWhiteSpace#ShowWspace   (doc)
+;;
+;;  * `hi-lock.el' - The features of `highlight.el' are complementary
+;;    to those of vanilla Emacs library `hi-lock.el', so you can use
+;;    the two libraries together.  See this page for a comparison:
+;;    http://www.emacswiki.org/HighlightTemporarily.
 ;;
 ;;(@* "Commands That Won't Work in Emacs 20")
 ;;  ** Commands That Won't Work in Emacs 20 **
