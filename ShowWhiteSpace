@@ -9,31 +9,36 @@ highlight trailing whitespace in face `trailing-whitespace'. To disable showing 
 
 Starting with Emacs 22, library <tt>[[whitespace.el]]</tt> is part of GnuEmacs. It provides various ways to visualize spaces, hard spaces, and TABs. See WhiteSpace. 
 
-
-== blank-mode.el: Replaced by whitespace.el ==
-
 [[blank-mode.el]] (BlankMode) was a precursor to [[whitespace.el]] (WhiteSpace) and has been replaced by it. When <code>blank-mode</code> is on, it looks like this:
 
 [[image:BlankModeOn]]
  
 %%BlankMode%% saves and restores the font-lock state when it is turned on and off. So, if %%BlankMode%% is turned on and font-lock is off, %%BlankMode%% also turns on the font-lock to highlight blanks, but font-lock is turned off when %%BlankMode%% is turned off. So turn on font-lock before %%BlankMode%%, if you want font-lock to stay on after %%BlankMode%% is turned off.
 
+
+
+
+
+
+[:ShowWspace]
 == show-wspace.el ==
 
-Library <tt>[[show-wspace.el]]</tt> lets you toggle highlighting of TABs, trailing whitespace, or hard spaces. The following commands are defined:
+Library <tt>[[show-wspace.el]]</tt> lets you easily highlight any sets of characters that you choose.  There are toggle commands and functions to use on hooks.
 
-* `toggle-show-tabs-show-ws' -- Toggle highlighting of TABs, using [[face]] `show-ws-tab'.
-* `toggle-show-hard-spaces-show-ws' -- Toggle highlighting of hard space characters (octal 240, hex A0, decimal 160), using face `show-ws-hard-space'.
-* `toggle-show-trailing-whitespace-show-ws' -- Toggle highlighting of whitespace at line ends, using face `show-ws-trailing-whitespace'.
+These highlight whitespace and confusing characters such as spaces, tabs, hard spaces, hard hyphens, and trailing whitespace.  But you can also highlight a customized set of characters.  You define that set using any number of entries of any of these kinds:
 
-In addition, you can you can turn on tab highlighting by default by adding
-one or more functions to `font-lock-mode-hook'. For example, this adds TAB highlighting:
+* string of chars
+* range of successive chars (Emacs characters are integers)
+* character class (e.g. ##[:nonascii:]##, ##[:space:]##)
 
-     (add-hook 'font-lock-mode-hook 'show-ws-highlight-tabs)
+For example, you can use command `ws-toggle-highlight-tabs' to turn on/off highlighting of tab chars.  Or you can turn on tab highlighting by default by adding function `ws-highlight-tabs' to `font-lock-mode-hook' in your [[init file]]:
 
-Here is a screenshot showing highlighting of trailing whitespace:
+   (add-hook 'font-lock-mode-hook 'ws-highlight-tabs)
 
-[[image:DrewsEmacsShowWspace]]
+
+
+
+
 
 == Visible Whitespace Mode ==
 [[visws.el]] - Simple and very easy to use.  Shows you tabs, spaces and newlines:
@@ -41,14 +46,26 @@ Here is a screenshot showing highlighting of trailing whitespace:
 [[image:VisWS]]
 
 
+
+
+
+
 == Red Space ==
 
 Library <tt>[[redspace.el]]</tt> detects and highlights trailing whitespace.
 
 
+
+
+
+
 == 80-Column Rule ==
 
 EightyColumnRule provides highlighting of trailing spaces, TABs, and lines past column 80.
+
+
+
+
 
 == Show Whitespace Minor Mode ==
 
@@ -56,6 +73,11 @@ ShowWhitespaceMode shows whitespace in either of two ways:
 
 * using faces (highlighting)
 * using typographical symbols (pilcrow for return, middle dot for space, guillmet for tab)
+
+
+
+
+
 
 
 == Show Tabs in Modes ==
@@ -87,6 +109,11 @@ To show tabs in the same color as trailing whitespace:
                   nil  
                   '(("\t" 0 'trailing-whitespace prepend)))))
 
+
+
+
+
+
 == Show TABs Using a String (^I) ==
 
 To make TAB display as ##^I##, you can do this:
@@ -94,9 +121,12 @@ To make TAB display as ##^I##, you can do this:
  (standard-display-ascii ?\t "^I")
 
 
+
+
 == Show TAB with Wide Cursor ==
 
 Customize `x-stretch-cursor' to non-`nil' to make the cursor as wide as the character it is over.
+
 
 
 == Get Rid of Tabs ==
