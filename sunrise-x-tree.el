@@ -448,9 +448,9 @@ See also the variable `sr-goto-dir-function'."
   (sr-keep-buffer)
   (sr-history-push root))
 
-;; This forces deactivation of Tree View mode before focusing a regular file:
 (defadvice sr-focus-filename
   (around sr-tree-advice-sr-focus-filename (filename))
+  "Force deactivation of Sunrise Tree View before focusing a regular file."
   (if (eq major-mode 'sr-tree-mode)
       (if (file-directory-p filename)
           (let* ((path (directory-file-name (expand-file-name filename)))
