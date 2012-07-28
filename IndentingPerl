@@ -250,5 +250,14 @@ Above one by SteveSanbeg works fine and portable except the continued statement 
 
 --KukiYomanai
 
+Is there customization to have auto-indent like this:
+
+    $something->create('sphere', sub {
+        my ($c, @args) = @_;
+        ...
+    });
+
+?
+
 ----
 CategoryIndentation
