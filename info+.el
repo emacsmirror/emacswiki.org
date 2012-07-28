@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Sep 12 16:30:11 1995
 ;; Version: 21.1
-;; Last-Updated: Tue Jul 17 14:19:10 2012 (-0700)
+;; Last-Updated: Sat Jul 28 16:57:42 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 4594
+;;     Update #: 4597
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/info+.el
 ;; Keywords: help, docs, internal
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x
@@ -184,6 +184,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2012/07/28 dadams
+;;     Info-fontify-node: Typo on guard: (/= 1 emacs-minor-version) should have been =, not /=.
 ;; 2012/07/17 dadams
 ;;     Added redefinition of Info-fontify-node for post-Emacs 24.1.
 ;;     Added redefinitions of Info-insert-dir, Info(-directory)-find-node, with args controlling msgs.
@@ -3218,7 +3220,7 @@ to search again for `%s'.")
 ;;    "..." in face `info-string', and ' in face `info-single-quote'.
 ;;
 (when (and (> emacs-major-version 22) (fboundp 'Info-breadcrumbs) ; Emacs 23.2 through 24.1
-           (or (/= emacs-major-version 24)  (/= emacs-minor-version 1)))
+           (or (/= emacs-major-version 24)  (= emacs-minor-version 1)))
   (defun Info-fontify-node ()
     "Fontify the node."
     (save-excursion
