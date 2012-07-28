@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2012, Drew Adams, all rights reserved.
 ;; Created: Wed Jun 21 08:54:53 2000
 ;; Version: 21.0
-;; Last-Updated: Fri Jul 27 14:04:22 2012 (-0700)
+;; Last-Updated: Sat Jul 28 13:57:43 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 609
+;;     Update #: 664
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/show-wspace.el
 ;; Keywords: highlight, whitespace, characters, Unicode
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x
@@ -45,17 +45,30 @@
 ;;   a line of text (command
 ;;   `ws-toggle-highlight-trailing-whitespace')
 ;;
-;; * Any set of chars you choose (command
+;; * Any set of chars you choose (commands `ws-highlight-chars' and
 ;;   `ws-toggle-highlight-other-chars').  You can specify characters
-;;   in three ways: individually, using ranges, and using character
-;;   classes (e.g. [:digit:]).  See user option `ws-other-chars'.
+;;   in three ways: (1) individually, (2) using ranges, and (3) using
+;;   character classes (e.g. [:digit:]).
+;;
+;;   - Command `ws-highlight-chars' prompts you for the characters to
+;;     highlight and the face to use.  With a prefix arg it
+;;     unhighlights.
+;;
+;;   - Command `ws-toggle-highlight-other-chars' toggles highlighting
+;;     of the characters specified in user option `ws-other-chars',
+;;     using face `ws-other-char'.
+;;
+;;   For these particular commands and functions, option
+;;   `ws-other-chars-font-lock-override' controls whether the current
+;;   highlighting face overrides (`t'), is overridden by (`keep'), or
+;;   merges with (`append' or `prepend') any existing highlighting.
 ;;
 ;; To use this library, add this to your init file (~/.emacs):
 ;;
 ;;      (require 'show-wspace) ; Load this library.
 ;;
-;; You can then use the toggle commands defined here to turn the
-;; various kinds of highlighting on and off when in Font-Lock mode.
+;; You can then use the commands defined here to turn the various
+;; kinds of highlighting on and off when in Font-Lock mode.
 ;;
 ;; If you want to always use a particular kind of highlighting defined
 ;; here by default, then add the corresponding `ws-highlight-*'
@@ -142,7 +155,7 @@
 ;;
 ;; User options defined here:
 ;;
-;;    `ws-other-chars'.
+;;    `ws-other-chars', `ws-other-chars-font-lock-override'.
 ;;
 ;; Commands defined here:
 ;;
@@ -150,8 +163,8 @@
 ;;    `toggle-highlight-hard-spaces' (alias),
 ;;    `toggle-highlight-other-chars', `toggle-highlight-tabs' (alias),
 ;;    `toggle-highlight-trailing-whitespace' (alias),
-;;    `ws-toggle-highlight-hard-hyphens' (Emacs 23+),
-;;    `ws-toggle-highlight-hard-spaces',
+;;    `ws-highlight-chars', `ws-toggle-highlight-hard-hyphens' (Emacs
+;;    23+), `ws-toggle-highlight-hard-spaces',
 ;;    `ws-toggle-highlight-other-chars', `ws-toggle-highlight-tabs',
 ;;    `ws-toggle-highlight-trailing-whitespace'.
 ;;
@@ -186,6 +199,11 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2012/07/28 dadams
+;;     Added: ws-highlight-chars, ws-other-chars-font-lock-override.
+;;     ws(-dont)-highlight-other-chars, ws-other-chars-font-lock-spec:
+;;       Added optional args CHARS and FACE.
+;;     ws-other-chars-font-lock-spec: Use ws-other-chars-font-lock-override.
 ;; 2012/07/26 dadams
 ;;     Changed prefix from show-ws- to just ws-.  Removed suffix -show-ws from toggle-*.
 ;;     Added: *-hard-hyphen*, *-other(s)*, ws--saved*.  Renamed *-show* to *-highlight*.
@@ -339,9 +357,30 @@ The last alternative is available only for Emacs 22 and later.
 
 For the first alternative, remember that you can insert any character
 into the string using `C-q', and (for Emacs 23 and later) you can
-insert any Unicode character using `C-x 8 RET'."
+insert any Unicode character using `C-x 8 RET'.
+
+For Emacs 20, the first alternative is not well supported: Do not use
+chars that are special within a regexp character alternative (i.e.,
+\[...]).  In Emacs 20, the string you specify is simply wrapped with
+\[...], which is not correct for all chars."
   :type (ws-other-chars-defcustom-spec) :group 'Show-Whitespace)
 
+(defcustom ws-other-chars-font-lock-override 'append
+  "*How to highlighting for other chars interacts with existing highlighting.
+The values correspond to the values for an OVERRIDE spec in
+`font-lock-keywords'.  See (elisp) `Search-based Fontification'.
+
+This affects commands `ws-toggle-highlight-other-chars' and
+ `ws-highlight-chars', and functions `ws-highlight-other-chars' and
+ `ws-dont-highlight-other-chars'."
+  :type '(choice
+          (const :tag "Do not override existing highlighting (`keep')" keep)
+          (const :tag "Merge after existing highlighting (`append')"   append)
+          (const :tag "Merge before existing highlighting (`prepend')" prepend)
+          (const :tag "Replace (override) existing highlighting"       t))
+  :group 'Show-Whitespace)
+
+;;;###autoload
 (defvar ws-highlight-tabs-p nil
   "Non-nil means font-lock mode highlights TAB characters (`C-i').")
 
@@ -367,6 +406,93 @@ spaces in Emacs 23+.")
 Whenever you turn on `show-wspace' highlighting of hard spaces or hard
 hyphens, if the value of `nobreak-char-display' is non-nil then this
 is set to that value and `nobreak-char-display' is set to nil."))
+
+;;;###autoload
+(defun ws-highlight-chars (chars face &optional offp msgp)
+  "Read a string of CHARS, read a FACE name, then highlight the CHARS.
+With a prefix arg, unhighlight the CHARS.
+
+In addition to being just a string of characters, CHARS can be either
+of the following (the second is only for Emacs 22+):
+
+* A cons (C1 C2), where C1 and C2 are characters, that is, integers,
+  which you can represent using character notation.  This represents
+  the range of characters from C1 through C2.
+
+  For example, you would enter `(?a . ?b)' to mean the characters from
+  `a' through `g', inclusive.  Note that you enter the parentheses and
+  the dot, and you can use character read syntax (e.g., `?a' for `a').
+
+* A character class, such as `[:digit:]'.  This matches all characters
+  in the class.  You must type the brackets and colons (`:').  (This
+  possibility is available only for Emacs 22 and later.)
+
+If you mistype the cons or char class representation, then what you
+type is interpreted as just a string of the characters to highlight."
+  (interactive
+   (let* ((prompt  (format "Chars to %shighlight: " (if current-prefix-arg "UN" "")))
+          (chrs    (read-string prompt))
+          (chrs    (progn (while (string= "" chrs)
+                            (setq chrs  (read-string (concat (substring prompt 0 -2)
+                                                             " (not empty): "))))
+                          chrs))
+          (face    (read-face-name "Face: ")))
+     (list (let ((cs  (condition-case nil  (read chrs)  (error nil))))
+             (cond
+               ;; Character range: (?a . ?g)
+               ((and (consp cs)
+                     (if (fboundp 'characterp)
+                         (characterp (car cs))
+                       (integerp (car cs)))
+                     (if (fboundp 'characterp)
+                         (characterp (cdr cs))
+                       (integerp (cdr cs))))
+                (list cs))
+               ;; Character class: [:digit:]
+               ((and (> emacs-major-version 21) ; No char classes < Emacs 22.
+                     (vectorp cs)  (= 1 (length cs))  (keywordp (aref cs 0))
+                     (let ((name  (symbol-name (aref cs 0))))
+                       (eq ?: (aref name (1- (length name))))))
+                (list cs))
+               ;; Separate characters: abcd
+               (t (list chrs))))
+           face
+           current-prefix-arg
+           t)))
+  (if (not offp)
+      (add-hook 'font-lock-mode-hook
+                `(lambda () (ws-highlight-other-chars ',chars ',face))
+                'APPEND)
+    (remove-hook 'font-lock-mode-hook `
+                 (lambda () (ws-highlight-other-chars ',chars ',face)))
+    (ws-dont-highlight-other-chars chars face))
+  (font-lock-mode) (font-lock-mode)
+  (when msgp
+    (message "Highlighting of %s with face `%s' is now %s."
+             (mapconcat
+              (lambda (chars)
+                (cond ((consp chars)
+                       (let ((range  (format "%s to %s"
+                                             (char-to-string (car chars))
+                                             (char-to-string (cdr chars)))))
+                         (if (fboundp 'propertize)
+                             (format "`%s'" (propertize range 'face face))
+                           range)))
+                      ((vectorp chars)
+                       (if (fboundp 'propertize)
+                           (format "`%s'" (propertize (format "%s" chars) 'face face))
+                         (format "%s" chars)))
+                      ((stringp chars)
+                       (mapconcat
+                        (if (fboundp 'propertize)
+                            (lambda (chr) (propertize (char-to-string chr) 'face face))
+                          #'char-to-string)
+                        chars
+                        ", "))))
+              chars
+              ", ")
+             face
+             (if offp "OFF" "ON"))))
 
 ;;;###autoload
 (defalias 'toggle-highlight-tabs 'ws-toggle-highlight-tabs)
@@ -547,28 +673,37 @@ vanilla highlighting."
     (when (fboundp 'font-lock-remove-keywords)
       (font-lock-remove-keywords nil '(("[\u2011]+" (0 'ws-hard-hyphen t)))))))
 
-(defun ws-highlight-other-chars ()
-  "Highlight chars in `ws-other-chars' using face `ws-other-char'.
+(defun ws-highlight-other-chars (&optional chars face)
+  "Highlight CHARS using FACE.
+CHARS is a list of character specifications acceptable as a value of
+`ws-other-chars'.  It defaults to the value of `ws-other-chars'.
+FACE defaults to face `ws-other-char'.
+
 This also sets `nobreak-char-display' to nil, to turn off its
 low-level, vanilla highlighting.  It saves the previous value of
 `nobreak-char-display' in `ws--saved-nobreak-char-display'."
   (when (and (boundp 'nobreak-char-display)  nobreak-char-display)
     (setq ws--saved-nobreak-char-display  nobreak-char-display
           nobreak-char-display            nil))
-  (font-lock-add-keywords nil (ws-other-chars-font-lock-spec) 'APPEND))
+  (font-lock-add-keywords nil (ws-other-chars-font-lock-spec chars face) 'APPEND))
 
-(defun ws-dont-highlight-other-chars ()
-  "Do not highlight chars in `ws-other-chars'.
+(defun ws-dont-highlight-other-chars (&optional chars face)
+  "Do not highlight CHARS using FACE.  That is, unhighlight any such.
+CHARS and FACE are the same as for `ws-highlight-other-chars'.
+
 This also resets `nobreak-char-display' to its saved value in
 `ws--saved-nobreak-char-display', in order to restore its low-level,
 vanilla highlighting."
   (when (and (boundp 'nobreak-char-display)  (not nobreak-char-display))
     (setq nobreak-char-display  ws--saved-nobreak-char-display))
   (when (fboundp 'font-lock-remove-keywords)
-    (font-lock-remove-keywords nil (ws-other-chars-font-lock-spec))))
+    (font-lock-remove-keywords nil (ws-other-chars-font-lock-spec chars face))))
 
-(defun ws-other-chars-font-lock-spec ()
-  "Font-lock spec to use for highlighting chars in `ws-other-chars'."
+(defun ws-other-chars-font-lock-spec (&optional characters face)
+  "Font-lock spec used for highlighting CHARACTERS in FACE.
+CHARS and FACE are the same as for `ws-highlight-other-chars'."
+  (setq face        (or face  'ws-other-char)
+        characters  (or characters  ws-other-chars))
   (mapcar (lambda (chars)
             (cond ((consp chars)
                    (let ((class  "[")
@@ -577,14 +712,19 @@ vanilla highlighting."
                      (while (<= chr last)
                        (setq class  (concat class (string chr))
                              chr    (1+ chr)))
-                     (list (concat class "]+") (list 0 ''ws-other-char t))))
+                     (list (concat class "]+")
+                           (list 0 `',face ws-other-chars-font-lock-override))))
                   ((vectorp chars)
                    (list (concat "[" (format "%s" chars) "]+")
-                         (list 0 ''ws-other-char t)))
+                         (list 0 `',face ws-other-chars-font-lock-override)))
                   ((stringp chars)
-                   (list (regexp-opt-charset (append chars ()))
-                         (list 0 ''ws-other-char t)))))
-          ws-other-chars))
+                   (if (> emacs-major-version 20)
+                       (list (regexp-opt-charset (append chars ()))
+                             (list 0 `',face ws-other-chars-font-lock-override))
+                     ;; Emacs 20 `regexp-opt-charset' just does not work.  Fake it.
+                     (list (concat "[" chars "]+")
+                           (list 0 `',face ws-other-chars-font-lock-override))))))
+          characters))
 
 (defun ws-dont-highlight-trailing-whitespace ()
   "Do not highlight whitespace characters at line ends.
