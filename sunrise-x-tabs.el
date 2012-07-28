@@ -7,7 +7,7 @@
 ;; Maintainer: José Alfredo Romero L. <escherdragon@gmail.com>
 ;; Created: 24 Oct 2009
 ;; Version: 1
-;; RCS Version: $Rev: 432 $
+;; RCS Version: $Rev: 433 $
 ;; Keywords: sunrise commander, tabs
 ;; URL: http://www.emacswiki.org/emacs/sunrise-x-tabs.el
 ;; Compatibility: GNU Emacs 22+
@@ -231,7 +231,7 @@ The direction depends on the value of BACK."
   "Change context of the active Sunrise pane when switching buffers."
   (let ((from-buffer (current-buffer)))
     (unless (eq from-buffer to-buffer)
-      (switch-to-buffer to-buffer)
+      (sr-save-aspect (switch-to-buffer to-buffer))
       (setq sr-this-directory default-directory)
       (set (sr-symbol sr-selected-window 'buffer) (current-buffer))
       (set (sr-symbol sr-selected-window 'directory) default-directory)
