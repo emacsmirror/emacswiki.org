@@ -19,11 +19,9 @@
 
 (require 'cl)
 
-(defvar lively-overlays nil "List of all overlays representing lively
-text.")
+(defvar lively-overlays nil "List of all overlays representing lively text.")
 (defvar lively-timer    nil "Idle timer for updating lively text.")
-(defvar lively-interval 0.25 "Idle time before lively text update in
-seconds.")
+(defvar lively-interval 0.25 "Idle time before lively text update in seconds.")
 
 ;;;###autoload
 (defun lively ()
@@ -61,8 +59,7 @@ seconds.")
 
 (defun lively-init-timer ()
  "Setup background timer to update lively text."
- (setq lively-timer (run-with-timer 0 lively-interval 'lively-
-update)))
+ (setq lively-timer (run-with-timer 0 lively-interval 'lively-update)))
 
 (defun lively-stop ()
  "Remove all lively regions in Emacs."
