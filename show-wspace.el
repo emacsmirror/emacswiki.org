@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2012, Drew Adams, all rights reserved.
 ;; Created: Wed Jun 21 08:54:53 2000
 ;; Version: 21.0
-;; Last-Updated: Sat Jul 28 13:57:43 2012 (-0700)
+;; Last-Updated: Sun Jul 29 10:18:17 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 664
+;;     Update #: 694
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/show-wspace.el
 ;; Keywords: highlight, whitespace, characters, Unicode
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x
@@ -67,20 +67,52 @@
 ;;
 ;;      (require 'show-wspace) ; Load this library.
 ;;
-;; You can then use the commands defined here to turn the various
-;; kinds of highlighting on and off when in Font-Lock mode.
+;; You can then use the commands and functions defined here to turn
+;; the various kinds of highlighting on and off when in Font-Lock
+;; mode.  For example, you can bind a key to toggle highlighting of
+;; trailing whitespace:
 ;;
-;; If you want to always use a particular kind of highlighting defined
-;; here by default, then add the corresponding `ws-highlight-*'
-;; function (see below) to the hook `font-lock-mode-hook'.  Then,
-;; whenever Font-Lock mode is turned on, the appropriate highlighting
-;; will also be turned on.
+;;      (global-set-key (kbd "<f11>")
+;;                      'ws-toggle-highlight-trailing-whitespace)
 ;;
-;; For example, you can turn on tab highlighting by default by adding
-;; function `ws-highlight-tabs' to `font-lock-mode-hook' in your init
-;; file (`~/.emacs'), as follows:
+;; Because variable `font-lock-keywords' is buffer-local, that key
+;; binding lets you use `f11' to toggle highlighting separately in
+;; each buffer.
+;;
+;; But if you want to use a particular kind of highlighting by default
+;; globally, then just add the corresponding `ws-highlight-*' function
+;; to the hook `font-lock-mode-hook'.  Then, whenever Font-Lock mode
+;; is turned on (in any buffer), the appropriate highlighting will
+;; also be turned on.
+;;
+;; For example, you can turn on tab highlighting everywhere by default
+;; by adding function `ws-highlight-tabs' to `font-lock-mode-hook' in
+;; your init file (`~/.emacs'), as follows:
 ;;
 ;;     (add-hook 'font-lock-mode-hook 'ws-highlight-tabs)
+;;
+;; In addition to buffer-specific highlighting and global
+;; highlighting, you can turn on a given kind of highlighting
+;; automatically for all buffers that are in a certain major mode.
+;;
+;; For that, do the following, where `THE-MODE' is the appropriate
+;; mode symbol (value of variable `major-mode'), such as `text-mode'.
+;; This example turns on trailing whitespace highlighting - use
+;; different `ws-highlight-*' and `ws-dont-highlight-*' functions for
+;; other kinds of highlighting.
+;;
+;;      (add-hook 'change-major-mode-hook
+;;                (lambda ()
+;;                  (add-hook 'font-lock-mode-hook
+;;                            'ws-highlight-trailing-whitespace)))
+;
+;;      (add-hook 'after-change-major-mode-hook
+;;                (lambda ()
+;;                  (when (eq major-mode 'THE-MODE)
+;;                    (remove-hook 'font-lock-mode-hook
+;;                                 'ws-highlight-trailing-whitespace)
+;;                    (ws-dont-highlight-trailing-whitespace)))
+;;                'APPEND)
 ;;
 ;;
 ;; Vanilla Emacs Highlighting of Hard Spaces and Hyphens
@@ -565,7 +597,7 @@ Uses face `ws-hyphen-space'."
   "Toggle highlighting chars in `ws-other-chars', using face `ws-other-char'."
   (interactive "p")
   (when (and (not ws-other-chars)  msgp)
-    (error "No chars in `ws-other-chars' to highlight")) 
+    (error "No chars in `ws-other-chars' to highlight"))
   (setq ws-highlight-other-chars-p  (not ws-highlight-other-chars-p))
   (cond (ws-highlight-other-chars-p
          ;; Do this in `ws-highlight-other-chars', instead:
