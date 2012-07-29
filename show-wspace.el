@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2012, Drew Adams, all rights reserved.
 ;; Created: Wed Jun 21 08:54:53 2000
 ;; Version: 21.0
-;; Last-Updated: Sun Jul 29 10:18:17 2012 (-0700)
+;; Last-Updated: Sun Jul 29 14:22:03 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 694
+;;     Update #: 696
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/show-wspace.el
 ;; Keywords: highlight, whitespace, characters, Unicode
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x
@@ -231,6 +231,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2012/07/29 dadams
+;;     ws-other-chars-font-lock-spec: Use regexp-opt-charset for range, for Emacs 22+.
 ;; 2012/07/28 dadams
 ;;     Added: ws-highlight-chars, ws-other-chars-font-lock-override.
 ;;     ws(-dont)-highlight-other-chars, ws-other-chars-font-lock-spec:
@@ -737,15 +739,28 @@ CHARS and FACE are the same as for `ws-highlight-other-chars'."
   (setq face        (or face  'ws-other-char)
         characters  (or characters  ws-other-chars))
   (mapcar (lambda (chars)
-            (cond ((consp chars)
-                   (let ((class  "[")
-                         (chr    (car chars))
-                         (last   (cdr chars)))
-                     (while (<= chr last)
-                       (setq class  (concat class (string chr))
-                             chr    (1+ chr)))
-                     (list (concat class "]+")
-                           (list 0 `',face ws-other-chars-font-lock-override))))
+            (cond ((and (consp chars)
+                        (if (fboundp 'characterp)
+                            (characterp (car chars))
+                          (integerp (car chars)))
+                        (if (fboundp 'characterp)
+                            (characterp (cdr chars))
+                          (integerp (cdr chars))))
+                   (let ((chr   (car chars))
+                         (last  (cdr chars)))
+                     (if (> emacs-major-version 20)
+                         (let ((chs  ()))
+                           (while (<= chr last)
+                             (push chr chs)
+                             (setq chr  (1+ chr)))
+                           (list (regexp-opt-charset (nreverse chs))
+                                 (list 0 `',face ws-other-chars-font-lock-override)))
+                       (let ((class  "["))
+                         (while (<= chr last)
+                           (setq class  (concat class (string chr))
+                                 chr    (1+ chr)))
+                         (list (concat class "]+")
+                               (list 0 `',face ws-other-chars-font-lock-override))))))
                   ((vectorp chars)
                    (list (concat "[" (format "%s" chars) "]+")
                          (list 0 `',face ws-other-chars-font-lock-override)))
