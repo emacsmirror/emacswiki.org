@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2012, Drew Adams, all rights reserved.
 ;; Created: Wed Jun 21 08:54:53 2000
 ;; Version: 21.0
-;; Last-Updated: Sun Jul 29 14:22:03 2012 (-0700)
+;; Last-Updated: Sun Jul 29 16:00:34 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 696
+;;     Update #: 717
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/show-wspace.el
 ;; Keywords: highlight, whitespace, characters, Unicode
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x
@@ -232,6 +232,9 @@
 ;;; Change Log:
 ;;
 ;; 2012/07/29 dadams
+;;     ws-other-chars-defcustom-spec, ws-highlight-chars, ws-other-chars-font-lock-spec,
+;;       ws-toggle-highlight-other-chars:
+;;         Handle charsets too now.
 ;;     ws-other-chars-font-lock-spec: Use regexp-opt-charset for range, for Emacs 22+.
 ;; 2012/07/28 dadams
 ;;     Added: ws-highlight-chars, ws-other-chars-font-lock-override.
@@ -351,9 +354,13 @@ This includes tab, space, and hard (non-breaking) space characters."
 (defun ws-other-chars-defcustom-spec ()
   "Custom :type spec for `ws-other-chars'."
   (if (> emacs-major-version 21)
-      '(repeat
+      `(repeat
         (choice
          (string :tag "Characters (string)")
+         (choice :tag "Character set" ,@(mapcar (lambda (cset) `(const ,cset))
+                                                (if (fboundp 'charset-priority-list)
+                                                    (charset-priority-list)
+                                                  charset-list)))
          (cons   :tag "Character range" (character :tag "From") (character :tag "To"))
          (choice :tag "Character class"
           (const   :tag "ASCII char\t[:ascii:]"                        [:ascii:])
@@ -386,8 +393,9 @@ A list of entries, each of which can be any of these:
  * a character range, represented as a cons (FROM . TO),
    where FROM and TO are both included
  * a character class, such as [:nonascii:]
+ * a character set, such as `iso-8859-1' or `lao'
 
-The last alternative is available only for Emacs 22 and later.
+The last two alternatives are available only for Emacs 22 and later.
 
 For the first alternative, remember that you can insert any character
 into the string using `C-q', and (for Emacs 23 and later) you can
@@ -446,8 +454,8 @@ is set to that value and `nobreak-char-display' is set to nil."))
   "Read a string of CHARS, read a FACE name, then highlight the CHARS.
 With a prefix arg, unhighlight the CHARS.
 
-In addition to being just a string of characters, CHARS can be either
-of the following (the second is only for Emacs 22+):
+In addition to being just a string of characters, CHARS can be any
+of the following (the last two are only for Emacs 22+):
 
 * A cons (C1 C2), where C1 and C2 are characters, that is, integers,
   which you can represent using character notation.  This represents
@@ -461,8 +469,13 @@ of the following (the second is only for Emacs 22+):
   in the class.  You must type the brackets and colons (`:').  (This
   possibility is available only for Emacs 22 and later.)
 
-If you mistype the cons or char class representation, then what you
-type is interpreted as just a string of the characters to highlight."
+* A character set, such as `iso-8859-1' or `lao'.  This matches all
+  characters in the set.
+
+If you mistype CHARS in one of the above representations, then what
+you type is interpreted as just a string of the characters to
+highlight.  For example, if you mean to type `[:digit:]' but type
+`[:digit]', then characters [, ], :, d, g, i, and t are highlighted."
   (interactive
    (let* ((prompt  (format "Chars to %shighlight: " (if current-prefix-arg "UN" "")))
           (chrs    (read-string prompt))
@@ -473,6 +486,9 @@ type is interpreted as just a string of the characters to highlight."
           (face    (read-face-name "Face: ")))
      (list (let ((cs  (condition-case nil  (read chrs)  (error nil))))
              (cond
+               ;; Charset
+               ((and (fboundp 'charsetp)  (charsetp cs))
+                (list cs))
                ;; Character range: (?a . ?g)
                ((and (consp cs)
                      (if (fboundp 'characterp)
@@ -497,21 +513,29 @@ type is interpreted as just a string of the characters to highlight."
       (add-hook 'font-lock-mode-hook
                 `(lambda () (ws-highlight-other-chars ',chars ',face))
                 'APPEND)
-    (remove-hook 'font-lock-mode-hook `
-                 (lambda () (ws-highlight-other-chars ',chars ',face)))
+    (remove-hook 'font-lock-mode-hook
+                 `(lambda () (ws-highlight-other-chars ',chars ',face)))
     (ws-dont-highlight-other-chars chars face))
   (font-lock-mode) (font-lock-mode)
   (when msgp
     (message "Highlighting of %s with face `%s' is now %s."
              (mapconcat
               (lambda (chars)
-                (cond ((consp chars)
+                (cond ((and (consp chars)
+                            (if (fboundp 'characterp)
+                                (characterp (car chars))
+                              (integerp (car chars)))
+                            (if (fboundp 'characterp)
+                                (characterp (cdr chars))
+                              (integerp (cdr chars))))
                        (let ((range  (format "%s to %s"
                                              (char-to-string (car chars))
                                              (char-to-string (cdr chars)))))
                          (if (fboundp 'propertize)
                              (format "`%s'" (propertize range 'face face))
                            range)))
+                      ((and (fboundp 'charsetp)  (charsetp chars))
+                       (format "charset `%s'" chars))
                       ((vectorp chars)
                        (if (fboundp 'propertize)
                            (format "`%s'" (propertize (format "%s" chars) 'face face))
@@ -618,9 +642,18 @@ Uses face `ws-hyphen-space'."
     (message "Highlighting of %s is now %s."
              (mapconcat
               (lambda (chars)
-                (cond ((consp chars)   (format "%s to %s"
-                                               (char-to-string (car chars))
-                                               (char-to-string (cdr chars))))
+                (cond ((and (fboundp 'charsetp)  (charsetp chars))
+                       (format "character set `%s'" chars))
+                      ((and (consp chars)
+                        (if (fboundp 'characterp)
+                                (characterp (car chars))
+                              (integerp (car chars)))
+                            (if (fboundp 'characterp)
+                                (characterp (cdr chars))
+                              (integerp (cdr chars))))
+                       (format "%s to %s"
+                               (char-to-string (car chars))
+                               (char-to-string (cdr chars))))
                       ((vectorp chars) (format "%s" chars))
                       ((stringp chars) (mapconcat #'char-to-string chars ", "))))
               ws-other-chars
@@ -761,6 +794,18 @@ CHARS and FACE are the same as for `ws-highlight-other-chars'."
                                  chr    (1+ chr)))
                          (list (concat class "]+")
                                (list 0 `',face ws-other-chars-font-lock-override))))))
+                  ((and (fboundp 'charsetp)  (charsetp chars))
+                   (let ((chs    ()))
+                     (map-charset-chars
+                      (lambda (range ARG)
+                        (let ((chr   (car range))
+                              (last  (cdr range)))
+                          (while (<= chr last)
+                            (push chr chs)
+                            (setq chr  (1+ chr)))))
+                      chars)
+                     (list (regexp-opt-charset (nreverse chs))
+                           (list 0 `',face ws-other-chars-font-lock-override))))
                   ((vectorp chars)
                    (list (concat "[" (format "%s" chars) "]+")
                          (list 0 `',face ws-other-chars-font-lock-override)))
