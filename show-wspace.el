@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2012, Drew Adams, all rights reserved.
 ;; Created: Wed Jun 21 08:54:53 2000
 ;; Version: 21.0
-;; Last-Updated: Sun Jul 29 16:00:34 2012 (-0700)
+;; Last-Updated: Sun Jul 29 16:04:40 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 717
+;;     Update #: 718
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/show-wspace.el
 ;; Keywords: highlight, whitespace, characters, Unicode
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x
@@ -47,8 +47,9 @@
 ;;
 ;; * Any set of chars you choose (commands `ws-highlight-chars' and
 ;;   `ws-toggle-highlight-other-chars').  You can specify characters
-;;   in three ways: (1) individually, (2) using ranges, and (3) using
-;;   character classes (e.g. [:digit:]).
+;;   in four ways: (1) individually, (2) using ranges, (3) using
+;;   character classes (e.g. [:digit:]), and (4) using character sets
+;;   (e.g. `iso-8859-1' or `lao').
 ;;
 ;;   - Command `ws-highlight-chars' prompts you for the characters to
 ;;     highlight and the face to use.  With a prefix arg it
