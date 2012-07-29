@@ -16,6 +16,8 @@ I am the author and maintainer of [[Elnode]], the Emacs Async Webserver; more in
 
 == Recent Emacs related blog posts ==
 
+* [http://nic.ferrier.me.uk/blog/2012_07/tips-and-tricks-for-emacslisp|EmacsLisp tips and tricks]
+
 * [http://nic.ferrier.me.uk/blog/2012_07/emacs-packages-for-programmers|tips and tricks for EmacsLisp developers on using packages]  
 
 * [http://nic.ferrier.me.uk/blog//home/nferrier/blog/2011_10/emacs_lisp_is_good_further_reports_suggest about using lexical scope to code sentinels better, with an example macro]
