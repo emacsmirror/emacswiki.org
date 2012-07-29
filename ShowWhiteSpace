@@ -30,10 +30,18 @@ These highlight whitespace and confusing characters such as spaces, tabs, hard s
 * string of chars
 * range of successive chars (Emacs characters are integers)
 * character class (e.g. ##[:nonascii:]##, ##[:space:]##)
+* character set (e.g. `iso-8859-1' or `lao')
 
 For example, you can use command `ws-toggle-highlight-tabs' to turn on/off highlighting of tab chars.  Or you can turn on tab highlighting by default by adding function `ws-highlight-tabs' to `font-lock-mode-hook' in your [[init file]]:
 
    (add-hook 'font-lock-mode-hook 'ws-highlight-tabs)
+
+You can turn on/off the highlighting provided by library ##show-wspace.el## in the current buffer only (i.e., locally), globally whenever FontLockMode is turned on, or automatically whenever a buffer is in a given [[major mode]].
+
+
+
+
+
 
 
 
