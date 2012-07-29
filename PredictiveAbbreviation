@@ -130,8 +130,8 @@ Here's an alternative to the above: hitting ##TAB## a second time uses ido-mode 
 (defun pabbrev-suggestions-ido (suggestion-list)
   "Use ido to display menu of all pabbrev suggestions."
   (when suggestion-list
-    (pabbrev-suggestions-insert-safe pabbrev-expand-previous-word)
-    (pabbrev-suggestions-insert-safe
+    (pabbrev-suggestions-insert-word pabbrev-expand-previous-word)
+    (pabbrev-suggestions-insert-word
      (ido-completing-read "Completions: " (mapcar 'car suggestion-list)))))
 
 (defun pabbrev-suggestions-insert-word (word)
