@@ -7,7 +7,7 @@
 ;; Maintainer: José Alfredo Romero L. <escherdragon@gmail.com>
 ;; Created: 24 Sep 2007
 ;; Version: 6
-;; RCS Version: $Rev: 430 $
+;; RCS Version: $Rev: 434 $
 ;; Keywords: files, dired, midnight commander, norton, orthodox
 ;; URL: http://www.emacswiki.org/emacs/sunrise-commander.el
 ;; Compatibility: GNU Emacs 22+
@@ -2382,13 +2382,13 @@ on this kind of sorting."
       (lambda (x)
         (let ((key (buffer-substring-no-properties (car x) (cddr x))))
           (append
-           (list (replace-regexp-in-string "[0-9]" "" key)
-                 (string-to-number (replace-regexp-in-string "[^0-9]" "" key))
+           (list key
+                 (string-to-number (replace-regexp-in-string "^[^0-9]*" "" key))
                  (cdr x))
            (cdr x))))
       sort-lists)
-     (lambda (a b) (< (cadr a) (cadr b))))
-    (lambda (a b) (string< (car a) (car b))))))
+     (lambda (a b) (string< (car a) (car b))))
+    (lambda (a b) (< (cadr a) (cadr b))))))
 
 (defun sr-attribute-sort-op (nth-attr as-number sort-lists)
   "Strategy used to sort contents of a Sunrise pane according to file attributes.
