@@ -156,7 +156,24 @@ There should be a way to subscribe to changes to pages of interest to users, inc
 [new]
 The current option is to subscribe to RSS feeds for each page or for pages matching a particular regular expression. The html has appropriate meta links. Alternatively you could go to RecentChanges, figure out what settings you need and change "action=rc" in the URL to "action=rss".
 
-Finally, if a few people were interested, we could add an email subscription extension to the wiki.
+The URL for this page, for example, would be one of these:
+
+* ##http://www.emacswiki.org/emacs?action=rss;rcidonly=EmacsWikiSuggestions## -- the default, listing the last major change in the last 7 days
+
+* ##http://www.emacswiki.org/emacs?action=rss;rcidonly=EmacsWikiSuggestions;days=30## -- listing the last major change in the last 30 days
+
+* ##http://www.emacswiki.org/emacs?action=rss;rcidonly=EmacsWikiSuggestions;showedit=1## -- listing the last change (major or minor) in the last 7 days
+
+* ##http://www.emacswiki.org/emacs?action=rss;rcidonly=EmacsWikiSuggestions;full=1## -- listing the last major change in the last 7 days with full page content (unless it's blows the arbitrary limit I've set in order to save bandwidth)
+
+* ##http://www.emacswiki.org/emacs?action=rss;rcidonly=EmacsWikiSuggestions;full=1;diff=1## -- listing the last major change in the last 7 days with full page content and diff
+
+* ##http://www.emacswiki.org/emacs/?action=rss;match=emacs## -- listing the last major change for any page matching the Perl regular expression "emacs" in the last 7 days
+
+There are many more parameters to tune this.
+
+Finally, if a few people were interested, we could add an _email subscription_ extension to the wiki. If you'd like to see this, edit this page and leave your name or send me an email <mailto:alex@emacswiki.org>.
+
 -- AlexSchroeder
 
 ----
