@@ -10,7 +10,7 @@ The development history can be found here: [http://ch.ristopher.com/git/?p=ampc;
 
 ----
 
-The development repository of ampc now features a full-blown meta-data tagger, including dired integration and tab completion.  I would appreciate it if a few people gave this a try and gave me some feedback.  I am open to suggestions of any type, not only regarding the tagger but to every aspect of ampc.  Feel free to add your comments to this page, or, even better, send me an EMail.  My EMail address can be found in the header of ampc.el.
+The development repository of ampc now features a full-blown meta-data tagger with including dired integration and tab completion.  I would appreciate it if a few people gave this a try and gave me some feedback.  I am open to suggestions of any type, not only regarding the tagger but to every aspect of ampc.  Feel free to add your comments to this page, or, even better, send me an EMail.  My EMail address can be found in the header of ampc.el.
 
 == installation ==
 
