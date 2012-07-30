@@ -58,7 +58,8 @@ With the following setup, wanderlust will automatically send from the right emai
 TODO: This does NOT set the correct Draft folder!
 [new]
 It is not possible to change the draft folder using the mechanism below, unfortunately.
-
+[new]
+With the modified code below (non-header conses moved from wl-template-alist to wl-draft-config-alist), wl-draft-folder is properly set inside the draft buffer, but the draft is still not saved to the proper draft folder.
 ----
 ~/.wl
 {{{
