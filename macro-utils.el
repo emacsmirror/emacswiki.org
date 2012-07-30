@@ -40,3 +40,8 @@ to the corresponding gensym."
     (assert (equal form2
                    `(let ((,sym2 (bar)))
                      (foo ,sym2))))))
+
+(provide 'macro-utils)
+
+;; macro-utils.el ends here.
+
