@@ -79,40 +79,32 @@ It is not possible to change the draft folder using the mechanism below, unfortu
 ;;is run when wl-draft-send-and-exit or wl-draft-send is invoked:
 ;;(NOTE: "M-: wl-draft-parent-folder" => %INBOX:myname/clear@imap.gmail.com:993)
 (setq wl-draft-config-alist
-      '(
-        ((string-match "company.com" wl-draft-parent-folder)
-         (template . "work"))
+      '(((string-match "company.com" wl-draft-parent-folder)
+         (template . "work")
+         (wl-smtp-posting-user . "myname@company.com")
+         (wl-smtp-posting-server . "mail.company.com")
+         (wl-local-domain . "mail.company.com")
+         (wl-draft-folder . "%[Gmail]/Draft:myname/clear@imap.gmail.com:993!")
+         ("Fcc" . "%INBOX.Sent:\"myname@company.com\"/clear@mail.company.com")
+         (wl-draft-folder . "%INBOX.Drafts:\"myname@company.com\"/clear@mail.company.com"))
         ((string-match "gmail.com" wl-draft-parent-folder)
          (template . "gmail")
-         )))
-
-;;choose template with C-c C-j
-(setq wl-template-alist
-      '(("gmail"
-         (wl-from . "My Name <myname@gmail.com>")
-         ("From" . wl-from)
          (wl-smtp-posting-user . "myname")
          (wl-smtp-posting-server . "smtp.gmail.com")
          (wl-smtp-authenticate-type ."plain")
          (wl-smtp-connection-type . 'starttls)
          (wl-smtp-posting-port . 587)
          (wl-local-domain . "gmail.com")
-         (wl-message-id-domain . "smtp.gmail.com")
+         (wl-message-id-domain . "smtp.gmail.com"))))
 
-
-         ("Fcc" . "%[Gmail]/Sent:myname/clear@imap.gmail.com:993!")
-         (wl-draft-folder . "%[Gmail]/Draft:myname/clear@imap.gmail.com:993!")
-         )
+;;choose template with C-c C-j
+(setq wl-template-alist
+      '(("gmail"
+         (wl-from . "My Name <myname@gmail.com>")
+         ("From" . wl-from))
         ("work"
          (wl-from . "My Name <myname@company.com>")
-         ("From" . wl-from)
-         (wl-smtp-posting-user . "myname@company.com")
-         (wl-smtp-posting-server . "mail.company.com")
-         (wl-local-domain . "mail.company.com")
-
-         ("Fcc" . "%INBOX.Sent:\"myname@company.com\"/clear@mail.company.com")
-         (wl-draft-folder . "%INBOX.Drafts:\"myname@company.com\"/clear@mail.company.com"))
-        ))
+         ("From" . wl-from))))
 
 ;; Use different signature files based on From: address
 (setq signature-file-alist
