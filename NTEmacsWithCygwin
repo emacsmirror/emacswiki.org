@@ -22,6 +22,8 @@ I took route 1. and I can say, that it is quite a hassle when you are coming fro
 Update:
 It was suggested somewhere that one could remove the test for the terminal using a pty in bash and I tried this on the cygwin source for bash-4.2, i.e., I edited jobs.c to remove the test (on line 3703).  This removes the error message, but still does not allow seem to allow any job control.  I hope someone is working on this.  
 
+To avoid this, using '''`fakecygpty''''[https://github.com/Shougo/fakecygpty/blob/master/fakecygpty.c] for '''`shell'''' command, and remove "-i" option from '''`shell-command-switchs'''' for '''`shell-command'''' command.
+
 ==Why use NTEmacs with Cygwin?==
 
 Because Cygwin is wonderful ... but the Emacsen that come with it suffer from a few problems:
