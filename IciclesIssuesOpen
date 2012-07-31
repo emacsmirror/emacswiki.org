@@ -306,14 +306,28 @@ That gives you essentially the Emacs 23 '''Icicles''' completion for this.
 
 If you do not want '''Icicles''' to get involved with such completion, then you can instead customize `icicle-comint-dynamic-complete-replacements' to `nil' and customize `icicle-functions-to-redefine' to remove the comint functions that are there by default. HTH -- DrewAdams
 
-<pre>
 
- </pre>
- ----
- <pre>
 
- </pre>
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+----
+
+
+[new:DanColish:2012-07-31 20:00 UTC]
 I am using Icicles with Emacs 24.1 and 23.4, both exhibit the same completion behavior. When I TAB to complete in the minibuffer while using find-file, the completion is appended to the input text. This differs from expansion in when using execute-command. I was expecting the buffer input to be replaced by the completion when hitting tab. The same behavior exists for apropos-completion. Is there any way to have completions expand and replace the existing input in the mini buffer?
 
 
