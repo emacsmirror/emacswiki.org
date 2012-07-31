@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Tue Jul 31 08:34:43 2012 (-0700)
+;; Last-Updated: Tue Jul 31 11:16:15 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 24468
+;;     Update #: 24480
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-cmd1.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -718,26 +718,25 @@ Only one (the first matching) replacement is made for any function."
 
 ;;;###autoload (autoload 'icicle-comint-dynamic-complete-filename "icicles")
 (defun icicle-comint-dynamic-complete-filename (&optional replace-to-eol-p)
-  "Dynamically complete the filename at point.
-Completes if after a filename.  See `comint-match-partial-filename' and
-`icicle-comint-dynamic-complete-as-filename'.
-This function is similar to `comint-replace-by-expanded-filename', except that
-it won't change parts of the filename already entered in the buffer; it just
-adds completion characters to the end of the filename.  A completions listing
-may be shown in a help buffer if completion is ambiguous.
+  "Dynamically complete the file name before point, using Icicles completion.
+Similar to `comint-replace-by-expanded-filename', except that this
+does not change parts of the file name already in the buffer before
+point.  It just appends completion characters at point.
+
+Return t if successful, nil otherwise.
 
 With a prefix arg, replace the rest of the line after point with the
 completion choice.  Otherwise, replace only the filename-matching text
 before point.
 
 Completion is dependent on the value of `comint-completion-addsuffix',
-`comint-completion-recexact' and `comint-completion-fignore', and the timing of
-completions listing is dependent on the value of `comint-completion-autolist'.
-
-Returns t if successful.
-
-Uses Icicles completion."
+`comint-completion-recexact' and `comint-completion-fignore', and the
+timing of completions listing is dependent on the value of
+`comint-completion-autolist'.  See also
+`comint-match-partial-filename' and
+`icicle-comint-dynamic-complete-as-filename'."
   (interactive "P")
+  (require 'comint)
   (when (comint-match-partial-filename)
     (unless (window-minibuffer-p (selected-window)) (message "Completing file name..."))
     (icicle-comint-dynamic-complete-as-filename replace-to-eol-p)))
@@ -903,10 +902,12 @@ Return t if successful."
 
 ;;;###autoload (autoload 'icicle-comint-replace-by-expanded-filename "icicles")
 (defun icicle-comint-replace-by-expanded-filename (&optional replace-to-eol-p)
-  "`comint-replace-by-expanded-filename', but uses Icicles completion.
-Dynamically complete, expand, and canonicalize the filename at point.
+  "Dynamically complete, expand, and canonicalize the filename at point.
 With a prefix arg, replace everthing past point on the current line.
-Otherwise, replace only the filename-matching text before point."
+Otherwise, replace only the filename-matching text before point.
+
+Like vanilla `comint-replace-by-expanded-filename', but uses Icicles
+completion."
   (interactive "P")
   (let ((filename  (comint-match-partial-filename)))
     (when filename
