@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 10:21:10 2006
 ;; Version: 22.0
-;; Last-Updated: Tue Jul 17 10:03:06 2012 (-0700)
+;; Last-Updated: Tue Jul 31 07:38:57 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 9027
+;;     Update #: 9030
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-mode.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -18,19 +18,19 @@
 ;; Features that might be required by this library:
 ;;
 ;;   `advice', `advice-preload', `apropos', `apropos+',
-;;   `apropos-fn+var', `avoid', `backquote', `bookmark', `bookmark+',
+;;   `apropos-fn+var', `avoid', `bookmark', `bookmark+',
 ;;   `bookmark+-1', `bookmark+-bmu', `bookmark+-key',
-;;   `bookmark+-lit', `bytecomp', `cl', `cus-edit', `cus-face',
-;;   `cus-load', `cus-start', `dired', `dired+', `dired-aux',
-;;   `dired-x', `doremi', `easymenu', `ediff-diff', `ediff-help',
-;;   `ediff-init', `ediff-merg', `ediff-mult', `ediff-util',
-;;   `ediff-wind', `el-swank-fuzzy', `ffap', `ffap-', `fit-frame',
-;;   `frame-cmds', `frame-fns', `fuzzy', `fuzzy-match', `help+20',
-;;   `hexrgb', `icicles-cmd1', `icicles-cmd2', `icicles-face',
-;;   `icicles-fn', `icicles-mcmd', `icicles-opt', `icicles-var',
-;;   `image-dired', `info', `info+', `kmacro', `levenshtein',
-;;   `menu-bar', `menu-bar+', `misc-cmds', `misc-fns', `mouse3',
-;;   `mwheel', `naked', `pp', `pp+', `regexp-opt', `ring', `ring+',
+;;   `bookmark+-lit', `cl', `cus-edit', `cus-face', `cus-load',
+;;   `cus-start', `dired', `dired+', `dired-aux', `dired-x',
+;;   `doremi', `easymenu', `ediff-diff', `ediff-help', `ediff-init',
+;;   `ediff-merg', `ediff-mult', `ediff-util', `ediff-wind',
+;;   `el-swank-fuzzy', `ffap', `ffap-', `fit-frame', `frame-cmds',
+;;   `frame-fns', `fuzzy', `fuzzy-match', `help+20', `hexrgb',
+;;   `icicles-cmd1', `icicles-cmd2', `icicles-face', `icicles-fn',
+;;   `icicles-mcmd', `icicles-opt', `icicles-var', `image-dired',
+;;   `info', `info+', `kmacro', `levenshtein', `menu-bar',
+;;   `menu-bar+', `misc-cmds', `misc-fns', `mouse3', `mwheel',
+;;   `naked', `pp', `pp+', `regexp-opt', `ring', `ring+',
 ;;   `second-sel', `strings', `thingatpt', `thingatpt+', `unaccent',
 ;;   `w32-browser', `w32browser-dlgopen', `wid-edit', `wid-edit+',
 ;;   `widget'.
@@ -666,6 +666,7 @@ there are also `-other-window' versions.
                  (icicle-redefine-std-completion-fns)
                  (icicle-redefine-standard-functions)
                  (icicle-redefine-standard-options)
+                 (icicle-redefine-standard-widgets)
                  (when (ad-find-some-advice 'describe-face 'before 'icicle-respect-WYSIWYG)
                    (ad-enable-advice 'describe-face 'before 'icicle-respect-WYSIWYG))
                  (when (fboundp 'minibuffer-depth-indicate-mode) ; In `mb-depth(+).el'
@@ -706,6 +707,7 @@ there are also `-other-window' versions.
                  (icicle-restore-std-completion-fns)
                  (icicle-restore-standard-functions)
                  (icicle-restore-standard-options)
+                 (icicle-restore-standard-widgets)
                  (when (ad-find-some-advice 'describe-face 'before 'icicle-respect-WYSIWYG)
                    (ad-disable-advice 'describe-face 'before 'icicle-respect-WYSIWYG))
                  (when (fboundp 'minibuffer-depth-indicate-mode)
@@ -1088,6 +1090,7 @@ there are also `-other-window' versions.
            (icicle-redefine-std-completion-fns)
            (icicle-redefine-standard-functions)
            (icicle-redefine-standard-options)
+           (icicle-redefine-standard-widgets)
            (if icicle-menu-items-to-history-flag
                (add-hook 'pre-command-hook 'icicle-add-menu-item-to-cmd-history)
              (remove-hook 'pre-command-hook 'icicle-add-menu-item-to-cmd-history))
@@ -1120,6 +1123,7 @@ there are also `-other-window' versions.
            (icicle-restore-std-completion-fns)
            (icicle-restore-standard-functions)
            (icicle-restore-standard-options)
+           (icicle-restore-standard-widgets)
            (unless (eq icicle-guess-commands-in-path 'load)
              (setq icicle-shell-command-candidates-cache  ())) ; Reset - toggle Icy to update.
            (remove-hook 'pre-command-hook 'icicle-add-menu-item-to-cmd-history)
@@ -4280,6 +4284,25 @@ if `icicle-change-region-background-flag' is non-nil."
       (dolist (fn  icicle-functions-to-redefine)
         (when (fboundp (setq old-fn  (intern (concat "old-" (symbol-name fn)))))
           (defalias fn old-fn))))))
+
+(defun icicle-redefine-standard-widgets ()
+  "Alias the widgets in `icicle-widgets-to-redefine' to Icicles versions."
+  (when (fboundp 'icicle-completing-read)
+    (let (ici-wid)
+      (dolist (wid  icicle-widgets-to-redefine)
+        (when (icicle-widgetp (intern (concat "old-" (symbol-name wid))))
+          (setq ici-wid  (intern (concat "icicle-" (symbol-name wid))))
+          (put wid 'widget-type (get ici-wid 'widget-type))
+          (put wid 'widget-documentation (get ici-wid 'widget-documentation)))))))
+
+(defun icicle-restore-standard-widgets ()
+  "Restore original versions of widgets in `icicle-widgets-to-redefine'."
+  (when (fboundp 'old-completing-read)
+    (let (old-wid)
+      (dolist (wid  icicle-widgets-to-redefine)
+        (when (icicle-widgetp (setq old-wid  (intern (concat "old-" (symbol-name wid)))))
+          (put wid 'widget-type (get old-wid 'widget-type))
+          (put wid 'widget-documentation (get old-wid 'widget-documentation)))))))
 
 ;;; In Emacs versions before 22:
 ;;; Save original `read-file-name'.  We redefine it as `icicle-read-file-name' (which calls it).
