@@ -194,7 +194,7 @@ I would like to only type: '~/workspace/xap/xap-cor/inc/xapi' and use 'TAB' to e
 
 If I were to hit 'RET', a new buffer would be created under that complete dir structure.
 
-
+I should add that I also tried this with ##emacs -Q## and loading '''Icicles''' with my customizations. 
 
 
 
