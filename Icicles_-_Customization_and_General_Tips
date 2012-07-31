@@ -409,6 +409,29 @@ twice, so that this option can have the proper effect.
 
 
 ----
+[:icicle-widgets-to-redefine]
+==== Option icicle-widgets-to-redefine ====
+
+Option '''`icicle-widgets-to-redefine'''' is a list of widgets that
+'''Icicles''' redefines for Icicle mode.  Widgets are Emacs objects
+used, in particular, by Customize.  The default value is
+`(file)', meaning that only the `file' widget is redefined.  It
+is redefined to allow '''Icicles''' completion on file-name fields.
+
+With this redefinition, when you edit a file-name field in
+[[Customize]] (in ''Icicle'' mode) `M-TAB' performs '''Icicles''' completion.
+Initially, [[prefix completion]] is used, but you can then use
+[[apropos completion]], [[progressive completion]], and so on.
+
+The portion of the file name before [[point]] in the editing field
+is completed.  By default, the rest of the field content, past
+point, is not deleted.  If you use a [[prefix argument]] (i.e., `C-u M-TAB') then the rest of the line is deleted.
+
+
+
+
+
+----
 [:icicle-candidate-help-keys]
 ==== Option icicle-candidate-help-keys ====
 
