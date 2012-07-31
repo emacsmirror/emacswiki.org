@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:22:14 2006
 ;; Version: 22.0
-;; Last-Updated: Tue Jul 24 17:22:25 2012 (-0700)
+;; Last-Updated: Tue Jul 31 08:08:45 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 5278
+;;     Update #: 5282
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-opt.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -185,7 +185,7 @@
 ;;    `icicle-use-C-for-actions-flag',
 ;;    `icicle-use-anything-candidates-flag',
 ;;    `icicle-use-candidates-only-once-flag',
-;;    `icicle-word-completion-keys',
+;;    `icicle-widgets-to-redefine', `icicle-word-completion-keys',
 ;;    `icicle-WYSIWYG-Completions-flag', `icicle-yank-function',
 ;;    `icicle-zap-to-char-candidates'.
 ;;
@@ -193,7 +193,8 @@
 ;;
 ;;    `icicle-bind-top-level-commands',
 ;;    `icicle-buffer-sort-*...*-last',
-;;    `icicle-compute-shell-command-candidates', `icicle-remap'.
+;;    `icicle-compute-shell-command-candidates', `icicle-remap',
+;;    `icicle-widgetp'.
 ;;
 ;;  For descriptions of changes to this file, see `icicles-chg.el'.
 ;;
@@ -4313,6 +4314,36 @@ See also non-option variable `icicle-use-candidates-only-once-alt-p'.
 Remember that you can use multi-command `icicle-toggle-option' anytime
 to toggle the option."
   :type 'boolean :group 'Icicles-Matching)
+
+(defun icicle-widgetp (widget)
+  "Return non-nil if WIDGET is a widget.
+Same as `widgetp' in Emacs 22+.  Defined for Emacs 20 and 21."
+  (if (symbolp widget)
+      (get widget 'widget-type)
+    (and (consp widget)  (symbolp (car widget)) (get (car widget) 'widget-type))))
+
+;;;###autoload
+(defcustom icicle-widgets-to-redefine '(file)
+  "*List of widgets to be redefined to provide Icicles completion.
+When in Icicle mode, Icicles completion is available.  Otherwise,
+vanilla completion is available.  In other words, with Icicle mode
+turned off, you should get the ordinary behavior.
+
+For this option to have an effect upon startup, it must be set before
+you enter Icicle mode.  This means that you must ensure that the code
+that sets it is invoked before you enter Icicle mode.  If you use
+Customize to change this option, then ensure that the code inserted by
+Customize into your `user-init-file' or your `custom-file' is invoked
+before you enter Icicle mode.  (Alternatively, you can toggle Icicle
+mode twice.)"
+  :type '(repeat (restricted-sexp :tag "Widget (a symbol)"
+                  :match-alternatives (icicle-widgetp) :value ignore))
+  :set (lambda (sym defs)
+         (custom-set-default sym defs)
+         (when (boundp 'icicle-mode-map) ; Avoid error on initialization.
+           (icicle-redefine-standard-widgets)))
+  :initialize #'custom-initialize-default
+  :group 'Icicles-Miscellaneous)
 
 ;;;###autoload
 (defcustom icicle-word-completion-keys '([(meta ?\ )]) ; `M-SPC'
