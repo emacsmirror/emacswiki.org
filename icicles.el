@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Thu Jul 19 14:27:22 2012 (-0700)
+;; Last-Updated: Tue Jul 31 07:53:20 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 23152
+;;     Update #: 23156
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -390,9 +390,9 @@
 ;;    `icicle-toggle-transforming',
 ;;    `icicle-toggle-WYSIWYG-Completions', `icicle-untag-a-file',
 ;;    `icicle-vardoc', `icicle-where-is',
-;;    `icicle-yank-maybe-completing', `icicle-yank-pop-commands',
-;;    `icicle-zap-to-char', `old-bbdb-complete-name',
-;;    `old-comint-dynamic-complete',
+;;    `icicle-widget-file-complete', `icicle-yank-maybe-completing',
+;;    `icicle-yank-pop-commands', `icicle-zap-to-char',
+;;    `old-bbdb-complete-name', `old-comint-dynamic-complete',
 ;;    `old-comint-dynamic-complete-filename',
 ;;    `old-comint-replace-by-expanded-filename',
 ;;    `old-dired-read-shell-command', `old-ess-complete-object-name',
@@ -669,6 +669,10 @@
 ;;    `icicle-search-main-regexp-others', `icicle-special-candidate',
 ;;    `icicle-whitespace-highlight', `minibuffer-prompt'.
 ;;
+;;  Widgets defined in Icicles:
+;;
+;;    `icicle-file', `old-file'.
+;;
 ;;  User options defined in Icicles:
 ;;
 ;;    `icicle-act-before-cycle-flag',
@@ -814,7 +818,7 @@
 ;;    `icicle-use-C-for-actions-flag',
 ;;    `icicle-use-anything-candidates-flag',
 ;;    `icicle-use-candidates-only-once-flag',
-;;    `icicle-word-completion-keys',
+;;    `icicle-widgets-to-redefine', `icicle-word-completion-keys',
 ;;    `icicle-WYSIWYG-Completions-flag', `icicle-yank-function',
 ;;    `icicle-zap-to-char-candidates'.
 ;;
@@ -1152,7 +1156,7 @@
 ;;    `icicle-update-ignored-extensions-regexp',
 ;;    `icicle-value-satisfies-type-p', `icicle-var-inherits-type-p',
 ;;    `icicle-var-is-of-type-p', `icicle-var-matches-type-p',
-;;    `icicle-var-val-satisfies-type-p',
+;;    `icicle-var-val-satisfies-type-p', `icicle-widgetp',
 ;;    `old-choose-completion-string', `old-completing-read',
 ;;    `old-completing-read-multiple', `old-completion-setup-function',
 ;;    `old-dired-smart-shell-command', `old-display-completion-list',
