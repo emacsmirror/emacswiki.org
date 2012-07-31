@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Sat Jul 21 12:50:56 2012 (-0700)
+;; Last-Updated: Tue Jul 31 08:07:14 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 28950
+;;     Update #: 28953
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-doc2.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -5060,6 +5060,22 @@
 ;;    Note: If you or a library you load advises one of these
 ;;    functions while you are in Icicle mode, then toggle Icicle mode
 ;;    twice, so that this option can have the proper effect.
+;;
+;;  * Option `icicle-widgets-to-redefine' is a list of widgets that
+;;    Icicles redefines for Icicle mode.  Widgets are Emacs objects
+;;    used, in particular, by Customize.  The default value is
+;;    `(file)', meaning that only the `file' widget is redefined.  It
+;;    is redefined to allow Icicles completion on file-name fields.
+;;
+;;    With this redefinition, when you edit a file-name field in
+;;    Customize (in Icicle mode) `M-TAB' performs Icicles completion.
+;;    Initially, prefix completion is used, but you can then use
+;;    apropos completion, progressive completion, and so on.
+;;
+;;    The portion of the file name before point in the editing field
+;;    is completed.  By default, the rest of the field content, past
+;;    point, is not deleted.  If you use a prefix arg (i.e., `C-u
+;;    M-TAB') then the rest of the line is deleted.
 ;;
 ;;  * User option `icicle-candidate-help-keys' specifies the keys that
 ;;    display help about the current completion candidate.  The
