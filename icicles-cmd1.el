@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Sun Jul 22 19:39:01 2012 (-0700)
+;; Last-Updated: Tue Jul 31 08:34:43 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 24440
+;;     Update #: 24468
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-cmd1.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -46,6 +46,10 @@
 ;;  `icicles-cmd1.elc', in Emacs 23, then it must be byte-compiled
 ;;  using Emacs 23.  Otherwise, Icicles key completion (and perhaps
 ;;  other things?) will not work correctly.
+;;
+;;  Widgets defined here:
+;;
+;;    `icicle-file', `old-file'.
 ;;
 ;;  Commands defined here - (+) means a multi-command:
 ;;
@@ -240,6 +244,7 @@
 ;;    `icicle-shell-dynamic-complete-environment-variable',
 ;;    `icicle-shell-dynamic-complete-filename',
 ;;    (+)`icicle-string-list', (+)`icicle-toggle-option',
+;;    `icicle-widget-file-complete',
 ;;    (+)`icicle-yank-maybe-completing',
 ;;    (+)`icicle-yank-pop-commands', `icicle-zap-to-char',
 ;;    (+)`toggle'.
@@ -712,7 +717,7 @@ Only one (the first matching) replacement is made for any function."
     (nreverse result)))
 
 ;;;###autoload (autoload 'icicle-comint-dynamic-complete-filename "icicles")
-(defun icicle-comint-dynamic-complete-filename ()
+(defun icicle-comint-dynamic-complete-filename (&optional replace-to-eol-p)
   "Dynamically complete the filename at point.
 Completes if after a filename.  See `comint-match-partial-filename' and
 `icicle-comint-dynamic-complete-as-filename'.
@@ -721,6 +726,10 @@ it won't change parts of the filename already entered in the buffer; it just
 adds completion characters to the end of the filename.  A completions listing
 may be shown in a help buffer if completion is ambiguous.
 
+With a prefix arg, replace the rest of the line after point with the
+completion choice.  Otherwise, replace only the filename-matching text
+before point.
+
 Completion is dependent on the value of `comint-completion-addsuffix',
 `comint-completion-recexact' and `comint-completion-fignore', and the timing of
 completions listing is dependent on the value of `comint-completion-autolist'.
@@ -728,15 +737,17 @@ completions listing is dependent on the value of `comint-completion-autolist'.
 Returns t if successful.
 
 Uses Icicles completion."
-  (interactive)
+  (interactive "P")
   (when (comint-match-partial-filename)
     (unless (window-minibuffer-p (selected-window)) (message "Completing file name..."))
-    (icicle-comint-dynamic-complete-as-filename)))
+    (icicle-comint-dynamic-complete-as-filename replace-to-eol-p)))
 
-(defun icicle-comint-dynamic-complete-as-filename ()
+(defun icicle-comint-dynamic-complete-as-filename (&optional replace-to-eol-p)
   "Dynamically complete at point as a filename.
-See `icicle-comint-dynamic-complete-filename'.
-Returns t if successful."
+Optional arg REPLACE-TO-EOL-P non-nil means replace the rest of the
+line after point with the completion choice.
+Return t if successful.
+See `icicle-comint-dynamic-complete-filename'."
   (lexical-let* ((completion-ignore-case         (if (boundp 'read-file-name-completion-ignore-case)
                                                      read-file-name-completion-ignore-case
                                                    (memq system-type '(ms-dos windows-nt cygwin))))
@@ -751,7 +762,11 @@ Returns t if successful."
                                                        (t  (cdr comint-completion-addsuffix))))
                  (filename                       (comint-match-partial-filename))
                  (filename-beg                   (if filename (match-beginning 0) (point)))
-                 (filename-end                   (if filename (match-end 0) (point)))
+                 (filename-end                   (if filename
+                                                     (if replace-to-eol-p
+                                                         (line-end-position)
+                                                       (match-end 0))
+                                                   (point)))
                  (filename                       (or filename  ""))
                  (filedir                        (file-name-directory filename))
                  (filenondir                     (file-name-nondirectory filename))
@@ -776,7 +791,8 @@ Returns t if successful."
                  (when (and choice  (not (string= choice directory)))
                    (insert (comint-quote-filename
                             (directory-file-name (file-relative-name choice directory))))
-                   (insert (if (file-directory-p choice) dirsuffix filesuffix))))
+                   (insert (if (file-directory-p choice) dirsuffix filesuffix))
+                   (when replace-to-eol-p (delete-region (point) (line-end-position)))))
              (error nil)))
           (t                            ; COMPLETION is the common prefix string.
            (let ((file            (concat (file-name-as-directory directory) completion))
@@ -886,14 +902,16 @@ Return t if successful."
       success)))
 
 ;;;###autoload (autoload 'icicle-comint-replace-by-expanded-filename "icicles")
-(defun icicle-comint-replace-by-expanded-filename ()
+(defun icicle-comint-replace-by-expanded-filename (&optional replace-to-eol-p)
   "`comint-replace-by-expanded-filename', but uses Icicles completion.
-Dynamically complete, expand, and canonicalize the filename at point."
-  (interactive)
+Dynamically complete, expand, and canonicalize the filename at point.
+With a prefix arg, replace everthing past point on the current line.
+Otherwise, replace only the filename-matching text before point."
+  (interactive "P")
   (let ((filename  (comint-match-partial-filename)))
     (when filename
       (replace-match (expand-file-name filename) t t)
-      (icicle-comint-dynamic-complete-filename))))
+      (icicle-comint-dynamic-complete-filename replace-to-eol-p))))
 
 (defun icicle-comint-dynamic-simple-complete (stub candidates)
   "Dynamically complete STUB from CANDIDATES list.
@@ -1000,6 +1018,50 @@ argument."
                                     (t                                                         " "))))
           (insert protection  suffix)))
     success))
+
+
+;; Save vanilla `file' widget as `old-file' widget, for restoring when you quit Icicle mode.
+(unless (get 'old-file 'widget-type)
+  (put 'old-file 'widget-type (get 'file 'widget-type))
+  (put 'old-file 'widget-documentation (get 'file 'widget-documentation)))
+
+;;;###autoload
+(define-widget 'icicle-file 'string
+  "Icicles version of the `file' widget.
+Reads a file name from an editable text field, with Icicles completion."
+  ;; `icicle-widget-file-complete' handles both nil and non-nil `icicle-mode'.
+  ;; Use the following instead of:
+  ;;   :completions #'completion-file-name-table
+  :complete-function #'icicle-widget-file-complete
+  :prompt-value 'widget-file-prompt-value
+  :format "%{%t%}: %v"
+  ;; Vanilla Emacs comment: This does not work well with terminating newline.
+  ;;                        :value-face 'widget-single-line-field
+  :tag "File")
+
+;;;###autoload (autoload 'icicle-widget-file-complete "icicles")
+(defun icicle-widget-file-complete (&optional replace-to-eol-p)
+  "Perform Icicles completion on the file name at point.
+Like `widget-file-complete', but allows Icicles completion.
+With a prefix arg, replace everthing past point on the current line.
+Otherwise, replace only the filename-matching text before point."
+  (interactive "P")
+  (if (and (boundp 'icicle-mode)  icicle-mode)
+      (let ((comint-completion-addsuffix  nil)) ; Do not append a space.
+        (icicle-comint-dynamic-complete-filename replace-to-eol-p))
+    (cond ((> emacs-major-version 23)
+           ;; Vanilla Emacs 24+ `file' widget just has this:
+           ;;   :completions #'completion-file-name-table
+           ;; But we need the equivalent using `:complete-function', not `:completions'.
+           ;; This is it - this is in fact the Emacs 23 `widget-file-complete'.
+           ;; See `widget-default-completions' for the relations between keywords
+           ;; `:completions' and `:complete-function'.
+           (let* ((field  (widget-field-find (point)))
+                  (start  (widget-field-start field))
+                  (end    (max (point) (widget-field-text-end field))))
+             (completion-in-region start end #'completion-file-name-table)))
+          (t                            ; @@@@@ (< emacs-major-version 21)
+           (widget-file-complete)))))
 
 ;;;###autoload (autoload 'icicle-ess-complete-object-name "icicles")
 (defun icicle-ess-complete-object-name (&optional listcomp)
