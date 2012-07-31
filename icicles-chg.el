@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Tue Jul 24 17:25:32 2012 (-0700)
+;; Last-Updated: Tue Jul 31 09:41:26 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 8696
+;;     Update #: 8708
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-chg.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -85,6 +85,10 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd1.el'")
 ;;
+;; 2012/07/31 dadams
+;;     Added widgets icicle-file, old-file.  Added command icicle-widget-file-complete.
+;;     icicle-comint-dynamic-complete(-as)-filename, icicle-comint-replace-by-expanded-filename:
+;;       Added optional (prefix) arg REPLACE-TO-EOL-P.
 ;; 2012/07/22 dadams
 ;;     icicle-pp-display-expression: Do not try to select old-window if it is no longer live.
 ;; 2012/07/21 dadams
@@ -4716,6 +4720,9 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-mode.el'")
 ;;
+;; 2012/07/31 dadams
+;;     Added: icicle-(redefine|restore)-standard-widgets.
+;;     icicle-mode: Added call to icicle-(redefine|restore)-standard-widgets.
 ;; 2012/07/13 dadams
 ;;     icicle-(bind|restore)-completion-keys: Bind icicle-toggle-network-drives-as-remote to C-x :.
 ;; 2012/07/10 dadams
@@ -5829,6 +5836,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-opt.el'")
 ;;
+;; 2012/07/31 dadams
+;;     Added: icicle-widgets-to-redefine, icicle-widgetp.
 ;; 2012/07/24 dadams
 ;;     icicle-TAB-completion-methods-per-command: Fix bug when delete entries: set them to nil first.
 ;;     icicle-buffer-ignore-space-prefix-flag: Updated doc string - C-u M-_ now toggles this.
