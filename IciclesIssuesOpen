@@ -199,9 +199,9 @@ I should add that I also tried this with ##emacs -Q## and loading '''Icicles''' 
 
 
 [new:DrewAdams:2012-08-01 00:57 UTC]
-I cannot reproduce it with those settings (or with different ones).  With the incremental completion settings and Ido setting the way you have them, do you even need to hit `TAB'?  I get immediate (eager) completion.
+I cannot reproduce the problem with those settings (or with different ones).  With the incremental completion settings and Ido setting the way you have them, do you even need to hit `TAB'?  I get immediate (eager) completion as soon as I type.
 
-Perhaps it has something to do with what is in those directories, e.g., whether there is more than one subdir.  Try to come up with a tiny (minimal) directory structure that I can try to reproduce (although things might be a bit different because I am using MS Windows).
+Perhaps the problem has something to do with what is in those directories, e.g., whether there is more than one subdir, so more than one possibility.  Try to come up with a tiny (minimal) directory structure that I can use to try to reproduce the problem (although things might be a bit different because I am using MS Windows).
 
 The fewer customizations you have to repro the problem, the easier it will be to debug.  Try to come up with something that minimally reproduces the problem.   (And leave `insert-default-directory' = non-`nil'.)
 
