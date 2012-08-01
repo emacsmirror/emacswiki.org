@@ -527,6 +527,41 @@ Alternative without regular expressions: `search-forward'.
 
 See also StringSearchAndReplace.
 
+=== Mapping with a regex ===
+
+This function provides a mapping function using regexs:
+
+   (defun map-regex (buffer regex fn)
+     "Map the REGEX over the BUFFER executing FN.
+
+   FN is called with the match-data of the regex.
+
+   Returns the results of the FN as a list."
+     (with-current-buffer buffer
+       (save-excursion
+         (goto-char (point-min))
+         (let (res)
+           (save-match-data
+             (while (re-search-forward regex nil t)
+               (let ((f (match-data)))
+                 (setq res
+                       (append res
+                               (list
+                                (save-match-data
+                                  (funcall fn f))))))))
+           res))))
+
+An example use might be:
+
+    (map-regex
+     (find-file-noselect "~/work/elnode-auth/build-parts.txt")
+     "^\\(.*.el\\(\\.gz\\)*\\)$"
+     (lambda (md)
+       (let ((filename (match-string 0)))
+         (when (file-exists-p filename)
+           (load-file filename))))))
+
+
 === Verifying ===
 
 Sometimes you just want to check whether you're at the right place:
