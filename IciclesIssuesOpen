@@ -159,11 +159,11 @@ Also, if you are using other libraries that you think might interact, try report
 
 
 [new:DanColish:2012-07-31 21:36 UTC]
-Sorry, I am using 'C-x C-f'. I thought that called 'find-file' which called 'icicle-file'.
+Sorry, I am using `C-x C-f'. I thought that called 'find-file' which called 'icicle-file'.
 
-Currently, I have 'insert-default-directory' set non-'nil'. I tried setting it to 'nil' but the behavior did not change. The other customizations I have are:
+Currently, I have `insert-default-directory' set non-`nil'. I tried setting it to `nil' but the behavior did not change. The other customizations I have are:
 
-<code>
+<pre>
 (custom-set-variables
  '(icicle-Completions-text-scale-decrease 0.1)
  '(icicle-TAB-completion-methods (quote (vanilla basic)))
@@ -176,25 +176,41 @@ Currently, I have 'insert-default-directory' set non-'nil'. I tried setting it t
  '(icicle-max-candidates nil)
  '(icicle-point-position-in-candidate (quote root-end))
 )
-</code>
+</pre>
 
-For example, I do a 'C-x C-f' over this dir structure:
+For example, I do a `C-x C-f' over this dir structure:
 
-    ~/workspace
-         ./xapian-github
-         ./xapian
-             ./xapian-core
-                ./include
-                     ./xapian/
-                         ./database.h
+  ~/workspace
+    ./xapian-github
+      ./xapian
+        ./xapian-core
+          ./include
+            ./xapian/
+              ./database.h
 
-I would like to only type: '~/workspace/xap/xap-cor/inc/xapi' and use 'TAB' to expand. However, when I do hit tab the minibuffer input ends up like this:
+I would like to only type: ##~/workspace/xap/xap-cor/inc/xapi## and use `TAB' to expand. However, when I do hit tab the minibuffer input ends up like this:
 
-    'File or directory: ~/workspace/xap/xap-cor/inc/xapi/xapian/xapian-core/include/xapian/database.h'
+ File or directory: ~/workspace/xap/xap-cor/inc/xapi/xapian/xapian-core/include/xapian/database.h
 
-If I were to hit 'RET', a new buffer would be created under that complete dir structure.
+If I were to hit `RET', a new buffer would be created under that complete dir structure.
 
-I should add that I also tried this with ##emacs -Q## and loading '''Icicles''' with my customizations. 
+I should add that I also tried this with ##emacs -Q## and loading '''Icicles''' with my customizations.  -- DanColish
+
+
+[new:DrewAdams:2012-08-01 00:57 UTC]
+I cannot reproduce it with those settings (or with different ones).  With the incremental completion settings and Ido setting the way you have them, do you even need to hit `TAB'?  I get immediate (eager) completion.
+
+Perhaps it has something to do with what is in those directories, e.g., whether there is more than one subdir.  Try to come up with a tiny (minimal) directory structure that I can try to reproduce (although things might be a bit different because I am using MS Windows).
+
+The fewer customizations you have to repro the problem, the easier it will be to debug.  Try to come up with something that minimally reproduces the problem.   (And leave `insert-default-directory' = non-`nil'.)
+
+Are you sure you have `icicle-TAB-completion-methods' = ##(vanilla basic)## at the time you test?  Can you please use `##C-(##' during completion to cycle to `VANILLA', to be sure vanilla completion is current?  The completion you seem to see looks more like `BASIC'.
+
+Sorry for your trouble.  Thx -- DrewAdams
+
+
+
+
 
 
 
