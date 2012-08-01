@@ -122,6 +122,7 @@ Better yet, use this to separate threads (puts space before and after the horizo
 </pre>
 
 
+[:DanColishFileNameCompletion]
 [new:DanColish:2012-07-31 20:00 UTC]
 I am using Icicles with Emacs 24.1 and 23.4, both exhibit the same completion behavior. When I TAB to complete in the minibuffer while using find-file, the completion is appended to the input text. This differs from expansion in when using execute-command. I was expecting the buffer input to be replaced by the completion when hitting tab. The same behavior exists for apropos-completion. Is there any way to have completions expand and replace the existing input in the mini buffer? -- DanColish
 
@@ -206,7 +207,7 @@ The fewer customizations you have to repro the problem, the easier it will be to
 
 Are you sure you have `icicle-TAB-completion-methods' = ##(vanilla basic)## at the time you test?  Can you please use `##C-(##' during completion to cycle to `VANILLA', to be sure vanilla completion is current?  The completion you seem to see looks more like `BASIC'.
 
-Sorry for your trouble.  Thx -- DrewAdams
+Sorry for your trouble.  BTW, if you prefer to follow up using email instead of the wiki, that will also be easier for me.  Thx -- DrewAdams
 
 
 
