@@ -6,3 +6,4 @@
 * '''DONE''' Guile 2.0.0 compatibility
 * '''DONE''' Fix backtraces
 * Use Guile exceptions
+* QUIT at each SCM_TICK
