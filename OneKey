@@ -326,6 +326,21 @@ I wrote a new routine to bind e.g. `ESC C-x' to the one-key-menu. `C-x' is still
 }}}
 
 [new]
+The above code won't work with the new version of one-key and is not recommended.
+Also `one-key-default.el' is now redundant.
+
+The new version has a "top-level" menu containing all the common prefix keys.
+This is much safer than the above method since the old keybindings are not lost.
+It is also just as fast since you only need press a single key to open the top-level one-key menu, followed by the
+key for the required prefix key.
+
+[new:JoeBloggs:2012-08-02 17:56 UTC]
+-- JoeBloggs
+
+[new]
+
+
+[new]
 
 I found that when I have (one-key-default-setup-keys) in my .emacs, I do not get the eshell prompt.
 [new]
