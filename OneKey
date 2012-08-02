@@ -277,6 +277,7 @@ In the *One-Key* buffer:
 The OneKey "top-level" menu.
 Notice that "top-level" is highlighted in yellow in the header line, and other menu types are listed to the left
 and right of this. The user can navigate to the other menus by pressing the left/right arrow keys.
+Notice also that the mode line indicates the current sort method.
 
 [[image:OneKeyScreenshot]]
 
