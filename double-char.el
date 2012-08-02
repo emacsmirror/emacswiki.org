@@ -5,7 +5,7 @@
 ;; (defdoublechar albatros "12" "abc")
 ;; (local-set-key "ù" 'double-char---albatros)
 ;; then press "ùù" in less than 0.3 second and get "abc"
-;; or "12" if more than 0.3 second
+;; or "1212" if more than 0.3 second
 ;; change the delay with the var double-char-delay
 ;; A less silly example:
 ;; (defdoublechar great "<" ">")
