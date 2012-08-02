@@ -3,6 +3,7 @@
 
 The following works on Emacs above 24:
 
+{{{
 (defun toggle-fullscreen ()
   "Toggle full screen on X11"
   (interactive)
@@ -10,7 +11,7 @@ The following works on Emacs above 24:
     (set-frame-parameter nil (frame-parameter nil 'fullscreen))))
 
 (global-set-key [f11] 'toggle-fullscreen)
-
+}}}
 
 It does not work on MS Windows or vanilla Mac Emacs 23; see [[#PlatformSpecific]], below.
 
