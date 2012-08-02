@@ -253,7 +253,6 @@ All the options below can be customized by M-x customize-group RET one-key RET
 ==Tips==
 
 : Press "F1" to toggle the help window showing special keybindings and their associated actions.
-: Press "/" to restrict the menu items to those matching a regular expression
 : Press "C-h" followed by one of the keys in the menu to show a description of the associated command.
 : Press "ESC" to quit OneKey and hide the *One-Key* window.
 
