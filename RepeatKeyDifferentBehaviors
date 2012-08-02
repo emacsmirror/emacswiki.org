@@ -20,6 +20,8 @@ The following are additional ways to make a command or key act differently when 
 
 * DoubleKeyBinding
 
+* DoubleChar -- Hit a char twice and given a delay get one insertion or another one.
+
 ----
 CategoryCommands
 CategoryKeys
