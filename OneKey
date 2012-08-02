@@ -104,7 +104,7 @@ to the menu type defined in the library.
 
 By default the following special keybindings are defined:
 
-ESC        : Quit and close menu window                       
+<ESC>      : Quit and close menu window                       
 <C-escape> : Quit, but keep menu window open                  
 <C-menu>   : Toggle menu persistence                          
 <menu>     : Toggle menu display                              
@@ -114,15 +114,15 @@ ESC        : Quit and close menu window
 <down>     : Scroll/move down one line                        
 <prior>    : Scroll menu down one page                        
 <next>     : Scroll menu up one page                          
-C-h        : Show help for next item chosen                   
-C-s        : Save current state of menu                       
+<C-h>      : Show help for next item chosen                   
+<C-s>      : Save current state of menu                       
 <f1>       : Toggle this help buffer                          
 <f2>       : Toggle column/row ordering of items              
 <f3>       : Sort items by next method
 <C-f3>     : Sort items by previous method          
 <f4>       : Reverse order of items                 
-/          : Limit items to those matching regexp   
-C-/        : Highlight items matching regexp        
+</>        : Limit items to those matching regexp   
+<C-/>      : Highlight items matching regexp        
 <f5>       : Edit a menu item                       
 <f6>       : Delete a menu item                     
 <f7>       : Copy/kill coloured items               
