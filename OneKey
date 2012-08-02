@@ -277,7 +277,9 @@ In the *One-Key* buffer:
 The OneKey "top-level" menu.
 The two menu items "mode specific bindings" and "outline commands" are highlighted which indicates that they have been
 used more often than the others.
+
 [[image:OneKeyScreenshot]]
+
 Notice that "top-level" is highlighted in yellow in the header line, and other menu types are listed to the left
 and right of this. The user can navigate to the other menus by pressing the left/right arrow keys.
 Notice also that the mode line indicates the current sort method.
