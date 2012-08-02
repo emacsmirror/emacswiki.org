@@ -1,25 +1,3 @@
-[[zh:全屏模式]]
-== Emacs Frame Properties ==
-
-The following maps the function 11 key to toggle fullscreen on X11 (Linux, BSD, etc...).
-
-I (Ivan Kanis) have tested it works on Emacs 24.1.
-
-{{{
-
-(defun toggle-fullscreen ()
-  "Toggle full screen on X11"
-  (interactive)
-  (when (eq window-system 'x)
-    (set-frame-parameter
-     nil 'fullscreen
-     (when (not (frame-parameter nil 'fullscreen)) 'fullboth))))
-
-(global-set-key [f11] 'toggle-fullscreen)
-}}}
-
-It does not work on MS Windows or vanilla Mac Emacs 23; see [[#PlatformSpecific]], below.
-
 == Starting in fullscreen mode ==
 
 [new]
@@ -212,6 +190,25 @@ If you need to minimize the frame, you can use something like this:
 
 
 === X Windows ===
+==== Emacs Frame Properties ====
+
+The following maps the function 11 key to toggle fullscreen on X11 (Linux, BSD, etc...).
+
+I (Ivan Kanis) have tested it works on Emacs 24.1.
+
+{{{
+
+(defun toggle-fullscreen ()
+  "Toggle full screen on X11"
+  (interactive)
+  (when (eq window-system 'x)
+    (set-frame-parameter
+     nil 'fullscreen
+     (when (not (frame-parameter nil 'fullscreen)) 'fullboth))))
+
+(global-set-key [f11] 'toggle-fullscreen)
+}}}
+
 ==== Send X Messages to the Window Manager ====
 
      (defun fullscreen ()
