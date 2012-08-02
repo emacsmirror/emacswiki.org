@@ -3,10 +3,6 @@ OneKey is designed to help you remember keybindings.  It saves you time and free
 [new]
 Please send suggestions and bug reports to [http://www.emacswiki.org/emacs/JoeBloggs JoeBloggs], he's the new maintainer. Thanks! -- AndyStewart
 
-[new:JoeBloggs:2012-02-23 04:38 UTC]
-OneKey is currently undergoing some major improvements, however it's going to take a while for me to write up the documentation.
-Stay tuned... -- JoeBloggs Thu Feb 23 04:44:18 2012
-
 [new]
 JoeBloggs, why don't you put this on github.  This way you get issue tracking, git repo, etc all for free. -- LeWang
 
@@ -15,92 +11,36 @@ OneKey is a popup help window which appears when you type a *Top Key*.
 It shows *Keystrokes* and *Commands* in a help window.
 
 ==Why I needed OneKey ?==
-* *I had too many commands I needed to remember*:
+* *I am new to emacs and want to learn the common keybindings*
+:: By default OneKey comes with a *top-level* menu containing submenus for all the common prefix keys and commands.
+:: The emacs keybindings are displayed next to the commands to help you learn them. More frequently accessed items
+:: are highlighted to help you quickly pick them out.
+* *I have too many commands I need to remember*:
 :: When I install lots of useful extension in Emacs, I always forget the bindings for their commands, because there are so many to remember.
+:: OneKey contains a *major-mode* menu which contains the keybindings and menu items for the current major-mode, and it
+:: also allows you to quickly find a command by filtering by regular expressions.
+:: You can also easily create your own menus.
 * *I don't have a spare, easy keystroke free to bind to a command.*:
 :: Emacs has so many handy commands, but I don't have any keystrokes free to bind new commands to.
 
-: OneKey provides a single top-level keystroke, which gives you a kestroke menu in a pop-up window. 
-: You simply type the keystroke shown in the window, which executes the corresponding command.
+: OneKey provides a single top-level keystroke, which gives you access to kestroke menus in a pop-up window. 
+: You simply type the keystroke shown in the window, which executes the corresponding command, or press the left/right
+: arrow key to change to a different menu. You can also easily create your own menus.
 : So you just need remember the Top keystroke with the group command, and the other keystrokes will be displayed in a pop-up window.
-: You can also have different menus displayed depending on the current major mode.
+
 
 : [http://www.emacswiki.org/cgi-bin/emacs/OneKey#toc11 Here] is a screenshot to show how OneKey works.
-: [[rubikitch]] wrote Lisp:one-key-default.el for learning Emacs's default keymaps, [http://www.emacswiki.org/cgi-bin/emacs/OneKey#toc10 here] you can find the install tutorial.
 
 ==To Install==
 : Add Lisp:one-key.el in your load-path, then add 
 {{{
         (require 'one-key)
+        (global-set-key (kbd "<menu>") 'one-key-open-default-menu-set)
 }}}
-: in ~/.emacs .
+: in ~/.emacs (replace "<menu>" with whatever key you want to use).
 
 ==Usage==
-* Move to ~/.emacs and run command `one-key-insert-template', 
-: you will get the Keymap prompt:
-:: "Keymap to One-Key: ", type the some keystroke, example "C-x r".
-: And then you will got Title prompt:
-:: "Title: ", input any name you like, example "bookmark".
-: This will then insert the following template code in ~/.emacs:
 
-{{{
-        (defvar one-key-menu-bookmark-alist nil
-          "The `one-key' menu list for BOOKMARK.")
-       
-        (setq one-key-menu-bookmark-alist
-           '(
-             (("C-@" . "point-to-register") . point-to-register)
-             (("SPC" . "point-to-register") . point-to-register)
-             (("+" . "increment-register") . increment-register)
-             (("b" . "bookmark-jump") . bookmark-jump)
-             (("c" . "clear-rectangle") . clear-rectangle)
-             (("d" . "delete-rectangle") . delete-rectangle)
-             (("f" . "frame-configuration-to-register") . frame-configuration-to-register)
-             (("g" . "insert-register") . insert-register)
-             (("i" . "insert-register") . insert-register)
-             (("j" . "jump-to-register") . jump-to-register)
-             (("k" . "kill-rectangle") . kill-rectangle)
-             (("l" . "bookmark-bmenu-list") . bookmark-bmenu-list)
-             (("m" . "bookmark-set") . bookmark-set)
-             (("n" . "number-to-register") . number-to-register)
-             (("o" . "open-rectangle") . open-rectangle)
-             (("r" . "copy-rectangle-to-register") . copy-rectangle-to-register)
-             (("s" . "copy-to-register") . copy-to-register)
-             (("t" . "string-rectangle") . string-rectangle)
-             (("w" . "window-configuration-to-register") . window-configuration-to-register)
-             (("x" . "copy-to-register") . copy-to-register)
-             (("y" . "yank-rectangle") . yank-rectangle)
-             (("C-SPC" . "point-to-register") . point-to-register)
-             ))
-       
-        (defun one-key-menu-bookmark ()
-          (interactive)
-          (one-key-menu "BOOKMARK" one-key-menu-bookmark-alist))
-}}}
-
-* Add the following to your ~/.emacs:
-{{{
-    (global-set-key (kbd "C-x r") 'one-key-menu-bookmark)
-}}}
-
-* Execute command: M-x eval-buffer RET.
-
-: That's all. Then, when you type "Ctrl+x" and "r", OneKey will popup a help window to show commands and key descriptions.  Then you type, for example, "w" to execute the command "window-configuration-to-register".  In the same way you can type any key shown in the help window.
-
-==Generate Template Code==
-* You can use the command `one-key-insert-template" to insert template code in the current buffer.
-* Or you can use command `one-key-show-template'.  It is like `one-key-insert-template', instead of inserting the template code, it shows it in a buffer called "One-Key-Template". 
-
-: Thanks [[rubikitch]] add this feature! Very convenient! ;) -- AndyStewart
-
-* I have added a major mode for the "One-Key-Template" buffer which binds some keys to useful functions to help you create your menu (E.g. "C-c C-t" to load the menu, "M-<up>/<down>" to move the current entry up/down, functions to sort the entries, etc.). I have also made a one-key menu for this mode so you just need to type M-x one-key-get-menu (or press the associated keybinding) in this mode to see the available helper functions. -- JoeBloggs
-* Also, when you use the `one-key-show-template' or `one-key-insert-template' command, the default choices for keymap and title will be chosen according to the current major mode.
-* Also you can edit an existing menu by pressing "C-/" in the menu. This keybinding can be configured (along with the
-* keybindings for other fixed keys).
-
-==Example Template Code==
-: Lisp:one-key-config.el has many examples of template code for use with OneKey . 
-:: Note: Lisp:one-key-config.el depends on many packages.  It is intended as an *example* of OneKey usage, not a standalone package.  Copy any code you like.
 
 ==Customize==
 All the options below can be customized by M-x customize-group RET one-key RET
@@ -179,13 +119,6 @@ The core function is `one-key-menu'.  Here is some more detail about its argumen
 : Whether to execute last input command when miss matched keystroke alist.
 
 ==Related==
-* Lisp:one-key-default.el -- default One Key configuration for learn Emacs keymaps.
-
-:: Just add below code at the *bottom* of your ~/.emacs:
-{{{
-        (require 'one-key-default)
-        (one-key-default-setup-keys)
-}}}
 
 * LazySearch -- A new search mode base on OneKey.
 
