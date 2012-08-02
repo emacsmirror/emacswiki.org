@@ -7,3 +7,4 @@
 * '''DONE''' Fix backtraces
 * Use Guile facilities for control flow
 * QUIT at each SCM_TICK
+* Use guile-snarf for subr definition
