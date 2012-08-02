@@ -121,7 +121,7 @@ By default the following special keybindings are defined:
 <f3>       : Sort items by next method
 <C-f3>     : Sort items by previous method          
 <f4>       : Reverse order of items                 
-<\/>     : Limit items to those matching regexp   
+<\\/>     : Limit items to those matching regexp   
 <C-/     : Highlight items matching regexp        
 <f5>       : Edit a menu item                       
 <f6>       : Delete a menu item                     
