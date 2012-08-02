@@ -51,7 +51,7 @@ tree navigation), or you can create your own types. See "Creating menus" below.
 
 ==Installation==
 : Download Lisp:one-key.el and save it in your load-path (usually "~/.emacs.d/").
-: Then add 
+: Then add:
 {{{
         (require 'one-key)
         (global-set-key (kbd "<menu>") 'one-key-open-default-menu-set)
