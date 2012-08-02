@@ -16,7 +16,7 @@ It shows *Keystrokes* and *Commands* in a help window.
 :: The emacs keybindings are displayed next to the commands to help you learn them. More frequently accessed items
 :: are highlighted to help you quickly pick them out.
 * *I have too many commands I need to remember*:
-:: When I install lots of useful extension in Emacs, I always forget the bindings for their commands, because there are so many to remember.
+:: When I install lots of useful extension in Emacs I always forget the bindings for their commands because there are so many to remember.
 :: OneKey contains a *major-mode* menu which contains the keybindings and menu items for the current major-mode, and it
 :: also allows you to quickly find a command by filtering by regular expressions.
 :: You can also easily create your own menus.
@@ -26,7 +26,7 @@ It shows *Keystrokes* and *Commands* in a help window.
 : OneKey provides a single top-level keystroke, which gives you access to kestroke menus in a pop-up window. 
 : You simply type the keystroke shown in the window, which executes the corresponding command, or press the left/right
 : arrow key to change to a different menu. You can also easily create your own menus.
-: So you just need remember the Top keystroke with the group command, and the other keystrokes will be displayed in a pop-up window.
+: So you just need remember the Top keystroke, and the other keystrokes will be displayed in a pop-up window.
 
 
 : [http://www.emacswiki.org/cgi-bin/emacs/OneKey#toc11 Here] is a screenshot to show how OneKey works.
@@ -45,32 +45,44 @@ It shows *Keystrokes* and *Commands* in a help window.
 ==Customize==
 All the options below can be customized by M-x customize-group RET one-key RET
 
-* Don't popup help window automatically:
+;; `one-key-default-menu-keys' : A list of chars which may be used as the default keys in automatically generated 
+;;                               `one-key' menus.
+;; `one-key-min-keymap-submenu-size' : The minimum number of elements allowed in a submenu when creating menus from 
+;;                                     keymaps.
+;; `one-key-popup-window' : Whether to popup window when `one-key-menu' is run for the first time.
+;; `one-key-buffer-name' : The buffer name of the popup menu window.
+;; `one-key-column-major-order' : If true then menu items are displayed in column major order, otherwise row major order.
+;; `one-key-force-multi-column-keymap-menus' : If non-nil then one-key menus created from keymaps will have command 
+;;                                             descriptions shortened to fit two columns.
+;; `one-key-menu-window-max-height' : The max height of popup menu window.
+;; `one-key-menus-save-file' : The file where `one-key' menus are saved.
+;; `one-key-autosave-menus' : If non-nil then one-key menus will automatically be saved when created or changed.
+;; `one-key-exclude-from-save' : List of regular expressions matching names of menus which should not be autosaved.
+;; `one-key-include-menubar-items' : Whether or not to include menu items with no keybinding when creating one-key menus 
+;;                                   from keymaps.
+;; `one-key-item-foreground-colour' : Foreground colour of highlighted items in `one-key' menus.
+;; `one-key-auto-brighten-used-keys' : If non-nil then set brightness of menu items colours according to how often the 
+;;                                     keys are pressed.
+;; `one-key-submenus-replace-parents' : If non-nil then when a submenu of a `one-key' menu is opened it will replace the 
+;;                                      parent menu.
+;; `one-key-major-mode-remap-alist' : A list of cons cells mapping major modes to one-key-menus.
+;; `one-key-toplevel-alist' : The `one-key' top-level alist.
+;; `one-key-sets-of-menus-alist' : Saved menu sets (sets of menus).
+;; `one-key-default-menu-set' : The default menu set. It's value should be the car of one of the items in 
+;;                              `one-key-sets-of-menus-alist'.
+;; `one-key-default-sort-method-alist' : An alist of sorting methods to use on the `one-key' menu items.
+;; `one-key-special-keybindings' : An list of special keys; labels, keybindings, descriptions and associated functions.
+;; `one-key-default-special-keybindings' : List of special keys to be used if no other set of special keys is defined for 
+;;                                         a given one-key menu type.
+;; `one-key-menu-sets-special-keybindings' : List of special keys to be used for menu-sets menus (see 
+;;                                           `one-key-default-special-keybindings' for more info).
+;; `one-key-disallowed-keymap-menu-keys' : List of keys that should be excluded from one-key menus created from keymaps.
+;; `one-key-types-of-menu' : A list of names of different types of `one-key' menu, and associated functions.
+;; `one-key-persistent-menu-number' : If non-nil then when the default menu set is opened it will start with the same 
+;;                                    menu as when previously opened.
+;; `one-key-mode-line-message' : Form that when evaluated should produce a string for the mode-line in the *One-Key* 
+;;                               buffer.
 
-: You can setup option `one-key-popup-window' with 'nil' if you don't like help window popup automatically the fist time call it.
-
-* Number of items per line.
-
-: You can setup option `one-key-items-per-line' to customize the number of items per line.
-: If the value of this option is `nil', the number will be calculated by `window-width'.
-
-* Maximum height of help window:
-
-: Option `one-key-help-window-max-height' is the maximum height of the help window. 
-
-* Name of help window.
-
-: You can customize `one-key-buffer-name' to change the name of the help buffer.
-
-* Buffer name for generate template code.
-
-: You can customize `one-key-template-buffer-name' to change the buffer name that contain template code.
-
-* Auto-load one-key menus
-
-: If you have a lot of one-key menus you may want to keep them in seperate files instead of cluttering your .emacs file.
-: You can define a directory in which to keep your one-key menus as seperate .el files, and have them automatically
-: loaded at startup.
 
 * Major mode associations
 
