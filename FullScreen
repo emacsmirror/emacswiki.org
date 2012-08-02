@@ -1,30 +1,18 @@
 [[zh:全屏模式]]
 == Emacs Frame Properties ==
 
-The following should work in Emacs 23:
+The following works on Emacs above 24:
 
-    (defun toggle-fullscreen (&optional f)
-      (interactive)
-      (let ((current-value (frame-parameter nil 'fullscreen)))
-           (set-frame-parameter nil 'fullscreen
-                                (if (equal 'fullboth current-value)
-                                    (if (boundp 'old-fullscreen) old-fullscreen nil)
-                                    (progn (setq old-fullscreen current-value)
-                                           'fullboth)))))
+(defun toggle-fullscreen ()
+  "Toggle full screen on X11"
+  (interactive)
+  (when (eq window-system 'x)
+    (set-frame-parameter nil (frame-parameter nil 'fullscreen))))
 
-    (global-set-key [f11] 'toggle-fullscreen)
+(global-set-key [f11] 'toggle-fullscreen)
 
-    ; Make new frames fullscreen by default. Note: this hook doesn't do
-    ; anything to the initial frame if it's in your .emacs, since that file is
-    ; read _after_ the initial frame is created.
-    (add-hook 'after-make-frame-functions 'toggle-fullscreen)
 
 It does not work on MS Windows or vanilla Mac Emacs 23; see [[#PlatformSpecific]], below.
-
-
-
-
-
 
 == Starting in fullscreen mode ==
 
