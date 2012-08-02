@@ -11,7 +11,7 @@ typically on azerty keybord you can do:
 (global-set-key (kbd "<") 'double-char---great)
 }}}
 Then type "<<" in less than 0.3 second to get ">"
-Or "<" if it exceed 0.3 second.
+Or "<<" if it exceed 0.3 second.
 In that example it will permit to skip the use of the modifier Shift (azerty keyborad).
 
 Change the 'double-char-delay to change the delay (0.3 second as default).
