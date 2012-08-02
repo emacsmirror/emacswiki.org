@@ -7,12 +7,12 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Jan 30 15:01:06 1996
 ;; Version: 21.0
-;; Last-Updated: Fri Mar  2 08:34:59 2012 (-0800)
+;; Last-Updated: Thu Aug  2 10:21:11 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 1176
+;;     Update #: 1237
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/replace+.el
 ;; Keywords: matching, help, internal, tools, local
-;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
+;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x
 ;;
 ;; Features that might be required by this library:
 ;;
@@ -96,6 +96,9 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2012/08/02 dadams
+;;     occur-read-primary-args, occur-mode-goto-occurrence-other-window, occur-mode-display-occurrence:
+;;       Updated for Emacs 24.
 ;; 2011/12/19 dadams
 ;;     (keep|flush)-lines, occur(-mode-(mouse-goto|goto-occurrence(-other-window)|display-occurrence)):
 ;;       Use line-(beginning|end)-position, not (beginning|end)-of-line + point.
@@ -237,6 +240,9 @@
                           ;; isearchp-set-region-around-search-target, isearchp-set-region-flag
 (require 'menu-bar+ nil t) ;; menu-bar-options-menu, menu-bar-search-replace-menu
 
+;; Quiet the byte compiler.
+(defvar occur-collect-regexp-history)   ; In `replace.el' (Emacs 24+).
+
 ;;;;;;;;;;;;;;;;;;;;;
 
 ;; Same as the version in `menu-bar+.el'.
@@ -317,9 +323,10 @@ restrict query-replace scope to the region I just narrow the buffer."
 
 
 
-;; REPLACES ORIGINAL in `replace.el'.
-;; 1. Uses `completing-read' if `replace-w-completion-flag' is non-nil.
-;; 2. Default values are provided by `search/replace-default-fn'.
+;; REPLACE ORIGINAL in `replace.el'.
+;;
+;; 1. Use `completing-read' if `replace-w-completion-flag' is non-nil.
+;; 2. Provide default values using `search/replace-default-fn'.
 ;;
 ;; You can still use the history lists, and you can still enter
 ;; nothing to repeat the previous query replacement operation.
@@ -376,9 +383,10 @@ Non-nil `replace-w-completion-flag' means you can use completion."
 
 
 
-;; REPLACES ORIGINAL in `replace.el'.
-;; 1. Uses `completing-read' if `replace-w-completion-flag' is non-nil.
-;; 2. Default values are provided by `search/replace-default-fn'.
+;; REPLACE ORIGINAL in `replace.el'.
+;;
+;; 1. Use `completing-read' if `replace-w-completion-flag' is non-nil.
+;; 2. Provide default values using `search/replace-default-fn'.
 ;;
 ;; You can still use the history lists, and you can still enter
 ;; nothing to repeat the previous query replacement operation.
@@ -511,9 +519,10 @@ replacement."
     (isearchp-set-region-around-search-target))) ; Defined in `isearch+.el'.
 
 
-;; REPLACES ORIGINAL in `replace.el'.
-;; 1. Uses `completing-read' if `replace-w-completion-flag' is non-nil.
-;; 2. The default regexps are provided by `search/replace-default-fn'.
+;; REPLACE ORIGINAL in `replace.el'.
+;;
+;; 1. Use `completing-read' if `replace-w-completion-flag' is non-nil.
+;; 2. Provide default regexps using `search/replace-default-fn'.
 ;;
 (unless (> emacs-major-version 21)
   (defun query-replace-read-args (string regexp-flag &optional noerror)
@@ -545,10 +554,12 @@ insert a `SPC' or `TAB' character, you will need to preceed it by \
 
 
 
-;; REPLACES ORIGINAL in `replace.el':
-;; 1. Prompt changed, to mention that lines after point are affected.
-;; 2. The default regexp is provided by `search/replace-default-fn'.
-;; 3. An in-progress message has been added.
+;; REPLACE ORIGINAL in `replace.el':
+;;
+;; 1. Prompt mentions that lines after point are affected.
+;; 2. Provide default regexp using `search/replace-default-fn'.
+;; 3. Add an in-progress message.
+;;
 (when (< emacs-major-version 21)
   (defun keep-lines (regexp)
     "Delete all lines after point except those with a match for REGEXP.
@@ -584,10 +595,12 @@ the matching is case-sensitive."
 
 
 
-;; REPLACES ORIGINAL in `replace.el':
-;; 1. Prompt changed, to mention that lines after point are affected.
-;; 2. The default regexp is provided by `search/replace-default-fn'.
-;; 3. An in-progress message has been added.
+;; REPLACE ORIGINAL in `replace.el':
+;;
+;; 1. Prompt mentions that lines after point are affected.
+;; 2. Provide default regexp using `search/replace-default-fn'.
+;; 3. Add an in-progress message.
+;;
 (when (< emacs-major-version 21)
   (defun flush-lines (regexp)
     "Delete lines after point that contain a match for REGEXP.
@@ -613,10 +626,12 @@ the matching is case-sensitive."
 
 
 
-;; REPLACES ORIGINAL in `replace.el':
-;; 1. Prompt changed, to mention that lines after point are affected.
-;; 2. The default regexp is provided by `search/replace-default-fn'.
-;; 3. An in-progress message has been added.
+;; REPLACE ORIGINAL in `replace.el':
+;;
+;; 1. Prompt mentions that lines after point are affected.
+;; 2. Provide default regexp using `search/replace-default-fn'.
+;; 3. Add an in-progress message.
+;;
 (when (< emacs-major-version 21)
   (defun how-many (regexp)
     "Print number of matches for REGEXP following point.
@@ -647,10 +662,11 @@ the matching is case-sensitive."
 
 
 
-;; REPLACES ORIGINAL in `replace.el':
-;; 1. The default regexp is provided by `search/replace-default-fn'.
-;; 2. Regexp is saved as `occur-regexp' for use by `occur-mode-mouse-goto'
-;;    and `occur-mode-goto-occurrence'.
+;; REPLACE ORIGINAL in `replace.el':
+;;
+;; 1. Provide default regexp using `search/replace-default-fn'.
+;; 2. Save regexp as `occur-regexp' for use by `occur-mode-mouse-goto' and `occur-mode-goto-occurrence'.
+;;
 (when (< emacs-major-version 21)
   (defun occur (regexp &optional nlines)
     "Show all lines in the current buffer containing a match for REGEXP.
@@ -863,38 +879,59 @@ the matching is case-sensitive."
 
 
 
-;; REPLACES ORIGINAL in `replace.el':
-;; Regexp is saved as `occur-regexp' for use by `occur-mode-mouse-goto' and `occur-mode-goto-occurrence'.
+;; REPLACE ORIGINAL in `replace.el':
+;;
+;; Save regexp as `occur-regexp' for use by `occur-mode-mouse-goto' and `occur-mode-goto-occurrence'.
+;;
 (when (>= emacs-major-version 21)
   (defadvice occur (before occur-save-regexp activate compile)
     (setq occur-regexp  (ad-get-arg 0)))) ; Save for highlighting.
 
 
 
-;; REPLACES ORIGINAL in `replace.el':
-;; The default regexp is provided by `search/replace-default-fn'.
+;; REPLACE ORIGINAL in `replace.el':
+;;
+;; Provide default regexp using `search/replace-default-fn'.
+;;
 (when (>= emacs-major-version 21)
   (defun occur-read-primary-args ()
-    (list (let* ((default  (if (functionp search/replace-default-fn)
-                               (funcall search/replace-default-fn)
-                             (car regexp-history)))
-                 (input    (read-from-minibuffer
-                            (if default
-                                (format "List lines matching regexp (default `%s'): "
-                                        (query-replace-descr default))
-                              "List lines matching regexp: ")
-                            nil nil nil 'regexp-history default)))
-            (if (equal input "") default input))
-          (and current-prefix-arg (prefix-numeric-value current-prefix-arg)))))
+    (let* ((perform-collect  (and (> emacs-major-version 23)  (consp current-prefix-arg)))
+           (default          (if (functionp search/replace-default-fn)
+                                 (funcall search/replace-default-fn)
+                               (car regexp-history)))                 
+           (regexp           (if (fboundp 'read-regexp) ; Emacs 23+
+                                 (read-regexp (if perform-collect
+                                                  "Collect strings matching regexp"
+                                                "List lines matching regexp")
+                                              default)
+                               (read-from-minibuffer ; Emacs 20-22
+                                (if default
+                                    (format "List lines matching regexp (default `%s'): "
+                                            (query-replace-descr default))
+                                  "List lines matching regexp: ")
+                                nil nil nil 'regexp-history default))))
+      (when (equal regexp "") (setq regexp  default))
+      (list regexp
+            (if perform-collect
+                (if (zerop (regexp-opt-depth regexp)) ; Perform collect operation
+                    "\\&" ; No subexpression, so collect entire match.
+                  (let ((coll-def  (car occur-collect-regexp-history))) ; Regexp for collection pattern.
+                    (read-string (format "Regexp to collect (default %s): " coll-def)
+                                 nil 'occur-collect-regexp-history coll-def)))
+              ;; Otherwise normal occur takes numerical prefix argument.
+              (and current-prefix-arg  (prefix-numeric-value current-prefix-arg)))))))
 
 
 
-;; REPLACES ORIGINAL in `replace.el':
-;; Highlights visited linenum in occur buffer.
-;; Highlights regexp in source buffer.
+;; REPLACE ORIGINAL in `replace.el':
+;;
+;; Highlight visited linenum in occur buffer.
+;; Highlight regexp in source buffer.
+;;
 (defadvice occur-mode-mouse-goto (around occur-mode-mouse-goto-highlight activate compile)
-  "Highlight visited line number in occur buffer.
-Alo highlight occur regexp in source buffer."
+  "Go to the occurrence for the clicked line.
+Highlight visited line number in the occur buffer.
+Highlight the occur regexp in the source buffer."
   (with-current-buffer (window-buffer (posn-window (event-end (ad-get-arg 0))))
     (save-excursion
       (goto-char (posn-point (event-end (ad-get-arg 0))))
@@ -912,12 +949,15 @@ Alo highlight occur regexp in source buffer."
 
 
 
-;; REPLACES ORIGINAL in `replace.el':
-;; Highlights visited linenum in occur buffer.
-;; Highlights regexp in source buffer.
+;; REPLACE ORIGINAL in `replace.el':
+;;
+;; Highlight visited linenum in occur buffer.
+;; Highlight regexp in source buffer.
+;;
 (defadvice occur-mode-goto-occurrence (around occur-mode-goto-occurrence-highlight activate compile)
-  "Highlight visited line number in occur buffer.
-Also highlight occur regexp in source buffer."
+  "Go to the occurrence for the current line.
+Highlight visited line number in the occur buffer.
+Highlight the occur regexp in the source buffer."
   (when (fboundp 'hlt-highlight-regexp-region) ; Highlight goto lineno.
     (let ((bol  (line-beginning-position)))
       (hlt-highlight-regexp-region bol (save-excursion (beginning-of-line)
@@ -937,12 +977,16 @@ Also highlight occur regexp in source buffer."
 
 
 
-;; REPLACES ORIGINAL in `replace.el' (Emacs 22):
-;; Highlights visited linenum in occur buffer.
-;; Highlights regexp in source buffer.
+;; REPLACE ORIGINAL in `replace.el' (Emacs 22):
+;;
+;; Highlight visited linenum in occur buffer.
+;; Highlight regexp in source buffer.
+;;
 ;;;###autoload
 (defun occur-mode-goto-occurrence-other-window ()
-  "Go to the occurrence the current line describes, in another window."
+  "Go to the occurrence for the current line, in another window.
+Highlight the visited line number in the occur buffer.
+Highlight the occur regexp in the source buffer."
   (interactive)
   (when (fboundp 'hlt-highlight-regexp-region) ; Highlight goto lineno.
     (let ((bol  (line-beginning-position)))
@@ -953,6 +997,7 @@ Also highlight occur regexp in source buffer."
   (let ((pos  (occur-mode-find-occurrence)))
     (switch-to-buffer-other-window (marker-buffer pos))
     (goto-char pos)
+    (when (boundp 'occur-mode-find-occurrence-hook) (run-hooks 'occur-mode-find-occurrence-hook))
     (when (fboundp 'hlt-highlight-regexp-region)
       (let ((inhibit-field-text-motion  t)) ; Just to be sure, for `line-end-position'.
         (hlt-highlight-regexp-region (line-beginning-position) (line-end-position)
@@ -960,12 +1005,16 @@ Also highlight occur regexp in source buffer."
 
 
 
-;; REPLACES ORIGINAL in `replace.el' (Emacs 22):
-;; Highlights visited linenum in occur buffer.
-;; Highlights regexp in source buffer.
+;; REPLACE ORIGINAL in `replace.el' (Emacs 22):
+;;
+;; Highlight visited linenum in occur buffer.
+;; Highlight regexp in source buffer.
+;;
 ;;;###autoload
 (defun occur-mode-display-occurrence ()
-  "Display in another window the occurrence the current line describes."
+  "Display in another window the occurrence for the current line.
+Highlight the visited line number in the occur buffer.
+Highlight the occur regexp in the source buffer."
   (interactive)
   (when (fboundp 'hlt-highlight-regexp-region) ; Highlight goto lineno.
     (let ((bol  (line-beginning-position)))
@@ -973,14 +1022,9 @@ Also highlight occur regexp in source buffer."
                                                        (search-forward ":" (+ bol 20) t)
                                                        (point))
                                    "[0-9]+:" 'occur-highlight-linenum)))
-  (let ((pos  (occur-mode-find-occurrence))
-        window
-        ;; Bind these to ensure `display-buffer' puts it in another window.
-        same-window-buffer-names
-        same-window-regexps)
-    (setq window  (display-buffer (marker-buffer pos)))
-    ;; This is the way to set point in the proper window.
-    (save-selected-window
+  (let* ((pos     (occur-mode-find-occurrence))
+         (window  (display-buffer (marker-buffer pos) t)))
+    (save-selected-window            ; Set point in the proper window.
       (select-window window)
       (goto-char pos)
       (when (fboundp 'hlt-highlight-regexp-region)
