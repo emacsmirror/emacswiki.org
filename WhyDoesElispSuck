@@ -214,6 +214,11 @@ I think it's fun to program in Emacs Lisp, a huge project with a long history in
 
  -- pro-emacs
 
+= EmacsLisp is not a general purpose language =
+Get over it. Emacs lisp is designed to be an extension language for Emacs editor. It is ridiculous to compare EmacsLisp to Haskel, Scheme and Common Lisp.
+
+ -- unlocksmith
+
 ----
 CategoryCode
 CategoryHistory
