@@ -61,6 +61,12 @@ tree navigation), or you can create your own types. See "Creating menus" below.
 : The key description in the top left of the <nowiki>"*Help*"</nowiki> buffer that pops up is what you
 : should use to replace <menu> above.
 
+: It is also recommended that you increase the values of `max-lisp-eval-depth' and `max-specpdl-size'
+: from their defaults to prevent the probability of an error occurring.
+: You can do this with: M-x customize-variable max-lisp-eval-depth
+: and: M-x customize-variable max-specpdl-size
+: It is recommended to use values of 10000 or larger
+
 ==Usage==
 
 Press the top key (e.g. "<menu>") and the *One-Key* buffer will popup. Read on for further details...
