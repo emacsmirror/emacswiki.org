@@ -50,7 +50,7 @@ tree navigation), or you can create your own types. See "Creating menus" below.
 : [http://www.emacswiki.org/cgi-bin/emacs/OneKey#toc11 Here] is a screenshot to show how OneKey works.
 
 ==Installation==
-: Add Lisp:one-key.el in your load-path, then add 
+: Add Lisp:one-key.el in your load-path (usually "~/.emacs.d/"), then add 
 {{{
         (require 'one-key)
         (global-set-key (kbd "<menu>") 'one-key-open-default-menu-set)
