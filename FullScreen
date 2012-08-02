@@ -1,14 +1,19 @@
 [[zh:全屏模式]]
 == Emacs Frame Properties ==
 
-The following works on Emacs above 24:
+The following maps the function 11 key to toggle fullscreen on X11 (Linux, BSD, etc...).
+
+I (Ivan Kanis) have tested it works on Emacs 24.1.
 
 {{{
+
 (defun toggle-fullscreen ()
   "Toggle full screen on X11"
   (interactive)
   (when (eq window-system 'x)
-    (set-frame-parameter 'fullscreen (frame-parameter nil 'fullscreen))))
+    (set-frame-parameter
+     nil 'fullscreen
+     (when (not (frame-parameter nil 'fullscreen)) 'fullboth))))
 
 (global-set-key [f11] 'toggle-fullscreen)
 }}}
