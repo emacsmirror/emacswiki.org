@@ -10,7 +10,7 @@ JoeBloggs, why don't you put this on github.  This way you get issue tracking, g
 OneKey is a popup help window which appears when you type a *Top Key*.
 It shows *Keystrokes* and *Commands* in a help window.
 
-==Why I needed OneKey ?==
+==Why do I need OneKey ?==
 * *I am new to emacs and want to learn the common keybindings*
 :: By default OneKey comes with a *top-level* menu containing submenus for all the common prefix keys and commands.
 :: The emacs keybindings are displayed next to the commands to help you learn them. More frequently accessed items
