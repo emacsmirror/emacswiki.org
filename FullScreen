@@ -8,7 +8,7 @@ The following works on Emacs above 24:
   "Toggle full screen on X11"
   (interactive)
   (when (eq window-system 'x)
-    (set-frame-parameter nil (frame-parameter nil 'fullscreen))))
+    (set-frame-parameter 'fullscreen (frame-parameter nil 'fullscreen))))
 
 (global-set-key [f11] 'toggle-fullscreen)
 }}}
