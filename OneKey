@@ -62,10 +62,11 @@ tree navigation), or you can create your own types. See "Creating menus" below.
 : should use to replace <menu> above.
 
 : It is also recommended that you increase the values of `max-lisp-eval-depth' and `max-specpdl-size'
-: from their defaults to prevent the probability of an error occurring.
-: You can do this with: M-x customize-variable max-lisp-eval-depth
-: and: M-x customize-variable max-specpdl-size
-: It is recommended to use values of 10000 or larger
+: from their defaults to prevent the probability of an error occurring. You can do this with:
+:: M-x customize-variable max-lisp-eval-depth
+: and:
+:: M-x customize-variable max-specpdl-size
+: It is recommended to use values of 10000 or larger.
 
 ==Usage==
 
