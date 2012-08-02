@@ -344,6 +344,9 @@ key for the required prefix key.
 
 I found that when I have (one-key-default-setup-keys) in my .emacs, I do not get the eshell prompt.
 [new]
-That is strange, it works fine for me [[JoeBloggs]]
+That command is now redundant. Just use the "top-level" menu instead.
+[new:JoeBloggs:2012-08-02 17:56 UTC]
+-- JoeBloggs
+
 
 [new]
