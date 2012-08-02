@@ -63,119 +63,117 @@ Press the top key (e.g. "<menu>") and the *One-Key* buffer will popup.
 
 ===The *One-Key* buffer===
 
- Running the command `one-key-open-default-menu-set' or `one-key-open-menu-set' opens the *One-Key* buffer.
- (these commands may be bound to keys - see "Installation" below).
+Running the command `one-key-open-default-menu-set' or `one-key-open-menu-set' opens the *One-Key* buffer.
+(these commands may be bound to keys - see "Installation" below).
 
- Within the *One-Key* buffer you will see a list of command descriptions each with a corresponding key in square
- brackets to its left. Pressing the key executes the command.
- Along the top of the buffer in the header line you will see a list of menu names. One of these names will be
- highlighted and indicates the current menu. You can navigate between the different menus by pressing the left/right
- arrow keys (unless these have been redefined to other keys in `one-key-special-keybindings', see below).
+Within the *One-Key* buffer you will see a list of command descriptions each with a corresponding key in square
+brackets to its left. Pressing the key executes the command.
+Along the top of the buffer in the header line you will see a list of menu names. One of these names will be
+highlighted and indicates the current menu. You can navigate between the different menus by pressing the left/right
+arrow keys (unless these have been redefined to other keys in `one-key-special-keybindings', see below).
 
- You can toggle the size of the window holding the *One-Key* buffer by pressing the appropriate special key (see below).
- The window size is toggled between default size, large size (so that all items fit in the window), and hidden (window
- is closed, but one-key is still active). This is useful if there are a large number of items in the menu, or when you
- need to see part of the buffer that is obscured by the *One-Key* window.
+You can toggle the size of the window holding the *One-Key* buffer by pressing the appropriate special key (see below).
+The window size is toggled between default size, large size (so that all items fit in the window), and hidden (window
+is closed, but one-key is still active). This is useful if there are a large number of items in the menu, or when you
+need to see part of the buffer that is obscured by the *One-Key* window.
 
- By default one-key will quit and the *One-Key* window will close after pressing a key corresponding to one of the
- menu items. If you want one-key to stay active after pressing an item key you should toggle the menu persistence
- by pressing the appropriate special key (C-menu by default, see "Special keybindings" below).
- To quit one-key and close the *One-Key* window press ESC. If you want to quit but keep the window open (e.g. to see
- the keybindings for a major mode), press C-ESC.
+By default one-key will quit and the *One-Key* window will close after pressing a key corresponding to one of the
+menu items. If you want one-key to stay active after pressing an item key you should toggle the menu persistence
+by pressing the appropriate special key (C-menu by default, see "Special keybindings" below).
+To quit one-key and close the *One-Key* window press ESC. If you want to quit but keep the window open (e.g. to see
+the keybindings for a major mode), press C-ESC.
 
 ===Special keybindings===
 
- For each different type of menu certain "special" keybindings are defined which activate menu specific commands,
- such as sorting or editing the menu items, adding new menus, etc.
- These special keybindings are specific to each menu type, though many of them will be the same for all menu types.
- For example the arrow keys are defined as special keybindings for navigating around menus.
+For each different type of menu certain "special" keybindings are defined which activate menu specific commands,
+such as sorting or editing the menu items, adding new menus, etc.
+These special keybindings are specific to each menu type, though many of them will be the same for all menu types.
+For example the arrow keys are defined as special keybindings for navigating around menus.
 
- Pressing the f1 key displays a help message listing all the special keybindings for the current menu.
+Pressing the f1 key displays a help message listing all the special keybindings for the current menu.
 
- By default, when a menu is created one-key will ensure that the keys corresponding to menu items do not clash with
- the special keybindings for that menu type. However, if for some reason there is a clash then the menu item gets
- priority over the special keybinding unless the help window is displayed (by pressing f1), in which case the special
- keybinding gets priority.
+By default, when a menu is created one-key will ensure that the keys corresponding to menu items do not clash with
+the special keybindings for that menu type. However, if for some reason there is a clash then the menu item gets
+priority over the special keybinding unless the help window is displayed (by pressing f1), in which case the special
+keybinding gets priority.
 
- You can alter or add new special keybindings by customizing `one-key-special-keybindings',
- and `one-key-default-special-keybindings'.
- Extension libraries (such as `one-key-dir' or `one-key-regs') may also define customizable special keys specific
- to the menu type defined in the library.
+You can alter or add new special keybindings by customizing `one-key-special-keybindings',
+and `one-key-default-special-keybindings'.
+Extension libraries (such as `one-key-dir' or `one-key-regs') may also define customizable special keys specific
+to the menu type defined in the library.
 
 
 ===Creating menus===
  
- All of the menus are stored in the file `one-key-menus-save-file' (customizable), but you should never need to
- edit this file. Instead you can create and edit menus from within the *One-Key* buffer.
- If you press the special key corresponding to "Add a menu" you will be prompted for the type of menu to add.
- By default the following menu types are defined, but more may be added with extension libraries, or by creating
- them yourself (see `one-key-types-of-menu'):
+All of the menus are stored in the file `one-key-menus-save-file' (customizable), but you should never need to
+edit this file. Instead you can create and edit menus from within the *One-Key* buffer.
+If you press the special key corresponding to "Add a menu" you will be prompted for the type of menu to add.
+By default the following menu types are defined, but more may be added with extension libraries, or by creating
+them yourself (see `one-key-types-of-menu'):
 
 ===Default menu types===
 
- top-level         : contains items defined in `one-key-toplevel-alist', which by default contains common prefix key
-                     menus, and menus for common commands to help new users learn emacs
- blank menu        : creates a blank menu with no items
- major-mode        : contains items corresponding to the current major mode (keybindings and menu-bar items)
- existing menu     : prompts for an existing menu to use
- existing keymap   : contains items in a given keymap (prompted for)
- prefix key keymap : contains items whose usual keybindings begin with a given prefix key (prompted for)
- menu-sets         : contains items for opening menu sets (see below)
+top-level         : contains items defined in `one-key-toplevel-alist', which by default contains common prefix key
+                    menus, and menus for common commands to help new users learn emacs
+blank menu        : creates a blank menu with no items
+major-mode        : contains items corresponding to the current major mode (keybindings and menu-bar items)
+existing menu     : prompts for an existing menu to use
+existing keymap   : contains items in a given keymap (prompted for)
+prefix key keymap : contains items whose usual keybindings begin with a given prefix key (prompted for)
+menu-sets         : contains items for opening menu sets (see below)
 
 ===Saving menus===
 
- If `one-key-autosave-menus' is non-nil then any new menus or menus that have been changed will be saved
- on Emacs exit, unless they are listed in `one-key-exclude-from-save'
- Alternatively you may save individual menus by pressing the special key for "Save the current state of menu"
- (C-s by default).
+If `one-key-autosave-menus' is non-nil then any new menus or menus that have been changed will be saved
+on Emacs exit, unless they are listed in `one-key-exclude-from-save'
+Alternatively you may save individual menus by pressing the special key for "Save the current state of menu"
+(C-s by default).
 
 ===Menu sets===
 
- A menu set is a collection of menu names. When you open the *One-Key* buffer with `one-key-open-default-menu-set'
- it opens the default set of menus `one-key-default-menu-set'. You can define other sets of menus by customizing
- `one-key-sets-of-menus-alist'. Each menu set consists of a name for the menu set, and a list of menu names.
- one-key reconstructs a menu from its name by searching `one-key-types-of-menu' for a matching entry, and applying
- the associated function to create the menu.
- You can see what menu sets are currently defined, and switch menu sets, using the "menu-sets" menu.
- See "Creating menus" above for info on how to add the "menu-sets" menu to the *One-Key* buffer.
+A menu set is a collection of menu names. When you open the *One-Key* buffer with `one-key-open-default-menu-set'
+it opens the default set of menus `one-key-default-menu-set'. You can define other sets of menus by customizing
+`one-key-sets-of-menus-alist'. Each menu set consists of a name for the menu set, and a list of menu names.
+one-key reconstructs a menu from its name by searching `one-key-types-of-menu' for a matching entry, and applying
+the associated function to create the menu.
+You can see what menu sets are currently defined, and switch menu sets, using the "menu-sets" menu.
+See "Creating menus" above for info on how to add the "menu-sets" menu to the *One-Key* buffer.
 
 ===Other features===
 
- Item help: to get help on a particular menu item press C-h followed by the key for the item. The help page
- for the associated command will be displayed. If part of the *Help* buffer is obscured by the *One-Key* buffer,
- you can hide the *One-Key* buffer by pressing the special key to toggle the display (<menu> by default).
+Item help: to get help on a particular menu item press C-h followed by the key for the item. The help page
+for the associated command will be displayed. If part of the *Help* buffer is obscured by the *One-Key* buffer,
+you can hide the *One-Key* buffer by pressing the special key to toggle the display (<menu> by default).
 
- Item brightening: By default the background colour of a menu item is increased relative to the brightness
- of other items each time the item is executed. This means you can quickly find the most frequently used items
- in a large menu. To turn this feature off set `one-key-auto-brighten-used-keys' to nil.
+Item brightening: By default the background colour of a menu item is increased relative to the brightness
+of other items each time the item is executed. This means you can quickly find the most frequently used items
+in a large menu. To turn this feature off set `one-key-auto-brighten-used-keys' to nil.
 
- Sorting/ordering: you can sort the items in a menu by pressing the appropriate special key, and add new sort
- methods by customizing `one-key-default-sort-method-alist'. The current sort method is displayed in the mode-line,
- however this information is not guaranteed to be correct when the *One-Key* menu is initially opened.
- You can also toggle between row/column ordering of items, and reverse the order of items.
- By trying out different sort and ordering combinations you can find a configuration which is most readable,
- or fits most items on screen. The order of menu items is persistent between sessions if the menus are saved
- (see "Saving menus").
+Sorting/ordering: you can sort the items in a menu by pressing the appropriate special key, and add new sort
+methods by customizing `one-key-default-sort-method-alist'. The current sort method is displayed in the mode-line,
+however this information is not guaranteed to be correct when the *One-Key* menu is initially opened.
+You can also toggle between row/column ordering of items, and reverse the order of items.
+By trying out different sort and ordering combinations you can find a configuration which is most readable,
+or fits most items on screen. The order of menu items is persistent between sessions if the menus are saved
+(see "Saving menus").
 
- Filtering and colouring items: you can filter the items displayed to match a regular expression, or specify
- the background colour of items that match a given regular expression (press f1 to see which key to press).
- This can make the menus more readable. The background colours will be saved with the menu.
+Filtering and colouring items: you can filter the items displayed to match a regular expression, or specify
+the background colour of items that match a given regular expression (press f1 to see which key to press).
+This can make the menus more readable. The background colours will be saved with the menu.
 
- Editing menus: you can add, delete and edit menu items, and also copy or kill (i.e. cut) and yank (i.e. paste)
- menu items from one menu to another. To copy or kill a bunch of items first make sure they are all highlighted
- with the same background colour (doesn't matter if they have different brightness levels), and then press the
- appropriate special key (press f1 for help). You will be prompted for an item in the group, and whether or not
- you want to also kill (cut) the items from the current menu. The items will be saved in `one-key-copied-items' and
- can be then be yanked (pasted) into another menu.
- Any further copy/kills will overwrite the value of `one-key-copied-items', and you cannot retrieve previous kills
- so take care.
- You can also reposition items in a menu:
-    1) press the appropriate specialkey
-    2) press the key of the item to be moved
-    3) use the up/down arrow keys to move the item
-    4) exit one-key to fix the item
-
-
+Editing menus: you can add, delete and edit menu items, and also copy or kill (i.e. cut) and yank (i.e. paste)
+menu items from one menu to another. To copy or kill a bunch of items first make sure they are all highlighted
+with the same background colour (doesn't matter if they have different brightness levels), and then press the
+appropriate special key (press f1 for help). You will be prompted for an item in the group, and whether or not
+you want to also kill (cut) the items from the current menu. The items will be saved in `one-key-copied-items' and
+can be then be yanked (pasted) into another menu.
+Any further copy/kills will overwrite the value of `one-key-copied-items', and you cannot retrieve previous kills
+so take care.
+You can also reposition items in a menu:
+   1) press the appropriate specialkey
+   2) press the key of the item to be moved
+   3) use the up/down arrow keys to move the item
+   4) exit one-key to fix the item
 
 ==Customize==
 All the options below can be customized by M-x customize-group RET one-key RET
