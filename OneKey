@@ -56,7 +56,10 @@ tree navigation), or you can create your own types. See "Creating menus" below.
         (require 'one-key)
         (global-set-key (kbd "<menu>") 'one-key-open-default-menu-set)
 }}}
-: in ~/.emacs (replace "<menu>" with whatever top key you want to use).
+: to your ~/.emacs file, and replace "<menu>" with whatever top key you want to use.
+: To find the emacs code for a particular keybinding press C-h k followed by the key.
+: The key description in the top left of the "*Help*" buffer that pops up is what you
+: should use to replace <menu> above.
 
 ==Usage==
 
