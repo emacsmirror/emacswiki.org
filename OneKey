@@ -49,7 +49,7 @@ tree navigation), or you can create your own types. See "Creating menus" below.
 
 : [http://www.emacswiki.org/cgi-bin/emacs/OneKey#toc11 Here] is a screenshot to show how OneKey works.
 
-==To Install==
+==Installation==
 : Add Lisp:one-key.el in your load-path, then add 
 {{{
         (require 'one-key)
@@ -64,7 +64,7 @@ Press the top key (e.g. "<menu>") and the *One-Key* buffer will popup.
 ===The *One-Key* buffer===
 
 Running the command `one-key-open-default-menu-set' or `one-key-open-menu-set' opens the *One-Key* buffer.
-(these commands may be bound to keys - see "Installation" below).
+(these commands may be bound to keys - see "Installation" above).
 
 Within the *One-Key* buffer you will see a list of command descriptions each with a corresponding key in square
 brackets to its left. Pressing the key executes the command.
