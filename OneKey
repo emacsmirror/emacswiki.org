@@ -10,6 +10,24 @@ JoeBloggs, why don't you put this on github.  This way you get issue tracking, g
 OneKey is a popup help window which appears when you type a *Top Key*.
 It shows *Keystrokes* and *Commands* in a help window.
 
+With so many Emacs extensions, you have a lot of keystrokes to remember, and you probably forget most of them.
+
+This package fixes that problem, and helps new users to learn the common keybindings.
+
+One Key provides a single keystroke that when pressed presents you with a menu of choices in a popup window
+for commands to execute with a further keystroke. By default menus for common prefix keys and commands are defined.
+
+Just type one of the listed keystrokes to execute the corresponding command.
+
+You can delete, edit, sort, highlight and filter the menu items, add new menu items and even add new menus.
+You can have access to several different menus from the same window which can be navigated with the arrow keys.
+Such a collection of menus is called a menu set and you can define several different menu sets containing different
+types of menus.
+Several different types of menus are defined (and more may be added) for holding different types of menu items.
+For example the "major-mode" type opens the menu corresponding to the current major-mode.
+More different types are defined by one-key extension libraries (e.g. `one-key-dir' for fast directory
+tree navigation), or you can create your own types. See "Creating menus" below.
+
 ==Why do I need OneKey ?==
 * *I am new to emacs and want to learn the common keybindings*
 :: By default OneKey comes with a *top-level* menu containing submenus for all the common prefix keys and commands.
@@ -37,10 +55,11 @@ It shows *Keystrokes* and *Commands* in a help window.
         (require 'one-key)
         (global-set-key (kbd "<menu>") 'one-key-open-default-menu-set)
 }}}
-: in ~/.emacs (replace "<menu>" with whatever key you want to use).
+: in ~/.emacs (replace "<menu>" with whatever top key you want to use).
 
 ==Usage==
 
+Press the top key (e.g. "<menu>") and the *One-Key* buffer will popup.
 
 ==Customize==
 All the options below can be customized by M-x customize-group RET one-key RET
@@ -83,10 +102,6 @@ All the options below can be customized by M-x customize-group RET one-key RET
 ;; `one-key-mode-line-message' : Form that when evaluated should produce a string for the mode-line in the *One-Key* 
 ;;                               buffer.
 
-
-* Major mode associations
-
-: You can associate a different one-key menu with each major mode which is opened by default for that mode.
 
 ==Tips==
 
