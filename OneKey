@@ -219,45 +219,15 @@ All the options below can be customized by M-x customize-group RET one-key RET
 
 ==Tips==
 
-: Type "?" to toggle help window display.
-: Type "C-?" followed by one of the keys in the menu to show a description of the associated command.
-: Type "q" to quit OneKey and hide help window.
-: Type "C-b" to go back to the previous or toplevel menu
+: Press "F1" to toggle the help window showing special keybindings and their associated actions.
+: Press "/" to restrict the menu items to those matching a regular expression
+: Press "C-h" followed by one of the keys in the menu to show a description of the associated command.
+: Press "ESC" to quit OneKey and hide the *One-Key* window.
 
-:: NOTE: The keystrokes above are built-ins for controlling the help window.  Of course if you bind them to another command, OneKey will instead execute that. 
+:: NOTE: The keystrokes above are built-ins for controlling the *One-Key* window.
+:: They can be changed by customizing `one-key-default-special-keybindings'
 
-:: And whatever your binding, you can use the keystroke "C-g" to abort OneKey. 
-
-==Description==
-The core function is `one-key-menu'.  Here is some more detail about its arguments.
-
-* title:
-
-: The title information shown in echo-area or help window for identified.
-
-* info-alist:
-
-: The alist contains help information, with the format (("KEY" . "HELP") . COMMAND)
-
-* miss-match-exit-p
-
-: Whether to hide the help window when you type a *mismatched* keystroke.
-
-* recursion-p
-
-: Whether recursion execute self until you type "q".
-
-* protect-function
-
-: The protect function to make OneKey execute it when exception abort OneKey.
-
-* alternate-function
-
-: The last function call after OneKey command execute.
-
-* execute-last-command-when-miss-match
-
-: Whether to execute last input command when miss matched keystroke alist.
+:: You can always use the keystroke "C-g" to abort OneKey, whatever special keybindings you have set.
 
 ==Related==
 
