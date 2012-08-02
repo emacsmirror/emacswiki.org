@@ -112,8 +112,8 @@ By default the following special keybindings are defined:
 ; **right**    : Change to previous menu                          
 ; **up**       : Scroll/move up one line                          
 ; **down**     : Scroll/move down one line                        
-; **prior**    : Scroll menu down one page                        
-; **next**     : Scroll menu up one page                          
+; **Page Up**    : Scroll menu down one page                        
+; **Page Down**     : Scroll menu up one page                          
 ; **C-h**      : Show help for next item chosen                   
 ; **C-s**      : Save current state of menu                       
 ; **f1**       : Toggle this help buffer                          
