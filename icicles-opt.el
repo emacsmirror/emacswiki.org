@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:22:14 2006
 ;; Version: 22.0
-;; Last-Updated: Tue Jul 31 08:08:45 2012 (-0700)
+;; Last-Updated: Fri Aug  3 13:45:36 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 5282
+;;     Update #: 5289
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-opt.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -116,6 +116,7 @@
 ;;    `icicle-inhibit-advice-functions', `icicle-inhibit-ding-flag',
 ;;    `icicle-input-string', `icicle-inter-candidates-min-spaces',
 ;;    `icicle-isearch-complete-keys', `icicle-key-complete-keys',
+;;    `icicle-key-complete-keys-for-minibuffer',
 ;;    `icicle-key-descriptions-use-<>-flag',
 ;;    `icicle-key-descriptions-use-angle-brackets-flag',
 ;;    `icicle-keymaps-for-key-completion', `icicle-kmacro-ring-max',
@@ -2192,23 +2193,29 @@ during minibuffer completion."
   :type '(repeat sexp) :group 'Icicles-Key-Bindings)
 
 ;;;###autoload
-(defcustom icicle-key-complete-keys '([S-tab] [S-iso-lefttab]) ; `S-TAB'
-  ;; $$$$$ The following should be sufficient, but some Emacs 22+ libraries, such as `info.el',
-  ;; are brain-dead and explicitly bind both `backtab' and `S-tab'.  I filed Emacs bug #1281.
-  ;;   (if (> emacs-major-version 21)
-  ;;       '([backtab])
-  ;;     '([S-tab] [S-iso-lefttab]))
+(defcustom icicle-key-complete-keys (if (> emacs-major-version 23) ; `S-TAB'
+                                        '([backtab])
+                                      '([S-tab] [S-iso-lefttab]))
+  ;; In Emacs 22 and later, `backtab' is the canonical key that represents both `S-tab' and
+  ;; `S-iso-lefttab', so that is used in the default value.  If, for some reason, `backtab' is not being
+  ;; translated to `S-tab' and `S-iso-lefttab' on your platform, you might want to customize the value
+  ;; to ([S-tab] [S-iso-lefttab]).  And if your Emacs version is 22 or later, please file an Emacs bug
+  ;; about the lack of translation.
+  
+  ;; The reason that the default value here is not just ([backtab]) for Emacs < 24 is that some Emacs
+  ;; libraries, such as `info.el', explicitly bind both `backtab' and `S-tab'.  I filed Emacs bug #1281,
+  ;; which took care of this for Emacs 24+.
   "*Key sequences to use for `icicle-complete-keys'.
 A list of values that each has the same form as a key-sequence
 argument to `define-key'.  It is a list mainly in order to accommodate
 different keyboards - for example, `S-tab' and `S-iso-lefttab'."
-  ;; In Emacs 22 and later, `backtab' is the canonical key that represents
-  ;; both `S-tab' and `S-iso-lefttab', so that is used in the default
-  ;; value.  If, for some reason, `backtab' is not being translated to
-  ;; `S-tab' and `S-iso-lefttab' on your platform, you might want to
-  ;; customize the value to ([S-tab] [S-iso-lefttab]).  And if your Emacs
-  ;; version is 22 or later, please file an Emacs bug about the lack of
-  ;; translation.
+  :type '(repeat sexp) :group 'Icicles-Key-Completion :group 'Icicles-Key-Bindings)
+
+;;;###autoload
+(defcustom icicle-key-complete-keys-for-minibuffer '([M-backtab]) ; `M-S-TAB'
+  "*Key sequences to use for `icicle-complete-keys' in the minibuffer.
+A list of values that each has the same form as a key-sequence
+argument to `define-key'."
   :type '(repeat sexp) :group 'Icicles-Key-Completion :group 'Icicles-Key-Bindings)
 
 ;;;###autoload
@@ -3623,7 +3630,7 @@ whatever OLD is bound to in MAP, or in OLDMAP, if provided."
         key command condition)
     (unless icicle-mode  (icy-mode 1))  ; Need `icicle-mode-map', which is unbound unless in Icicle mode.
     (unless defs  (setq defs  icicle-top-level-key-bindings))
-    (dolist (key-def defs)
+    (dolist (key-def  defs)
       (setq key        (car key-def)
             command    (cadr key-def)
             condition  (car (cddr key-def)))
