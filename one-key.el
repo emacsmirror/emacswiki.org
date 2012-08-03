@@ -100,6 +100,38 @@
 ;; Extension libraries (such as `one-key-dir' or `one-key-regs') may also define customizable special keys specific
 ;; to the menu type defined in the library.
 ;;
+;; By default the following special keybindings are defined:
+;;
+;; ESC        : Quit and close menu window                       
+;; <C-escape> : Quit, but keep menu window open                  
+;; <C-menu>   : Toggle menu persistence                          
+;; <menu>     : Toggle menu display                              
+;; <left>     : Change to next menu                              
+;; <right>    : Change to previous menu                          
+;; <up>       : Scroll/move up one line                          
+;; <down>     : Scroll/move down one line                        
+;; <prior>    : Scroll menu down one page                        
+;; <next>     : Scroll menu up one page                          
+;; C-h        : Show help for next item chosen                   
+;; C-s        : Save current state of menu                       
+;; <f1>       : Toggle this help buffer                          
+;; <f2>       : Toggle column/row ordering of items              
+;; <f3>       : Sort items by next method
+;; <C-f3>     : Sort items by previous method          
+;; <f4>       : Reverse order of items                 
+;; /          : Limit items to those matching regexp   
+;; C-/        : Highlight items matching regexp        
+;; <f5>       : Edit a menu item                       
+;; <f6>       : Delete a menu item                     
+;; <f7>       : Copy/kill coloured items               
+;; <C-f7>     : Yank copied items                      
+;; <f8>       : Swap menu item keys                    
+;; <f9>       : Add a menu item                        
+;; <C-f9>     : Add a menu                             
+;; <C-S-f9>   : Remove this menu                       
+;; <f10>      : Reposition item (with arrow keys)      
+;; <f11>      : Donate to support further development  
+;; <C-f11>    : Report a bug                           
 
 ;;; Creating menus:
 ;; 
@@ -111,7 +143,7 @@
 
 ;;; Default menu types:
 ;;
-;; top-level         : contains items defined in `one-key-toplevel-alist', which by default contains common prefix key
+;; top-level         : contains items defined in `one-key-menu-toplevel-alist', which by default contains common prefix key
 ;;                     menus, and menus for common commands to help new users learn emacs
 ;; blank menu        : creates a blank menu with no items
 ;; major-mode        : contains items corresponding to the current major mode (keybindings and menu-bar items)
@@ -172,6 +204,11 @@
 ;;    2) press the key of the item to be moved
 ;;    3) use the up/down arrow keys to move the item
 ;;    4) exit one-key to fix the item
+;;
+;; Support further development: writing this code required a significant amount of unpaid labour on my part.
+;; Please consider donating to help support further development by pressing f11 in the *One-Key* menu.
+;; To report a bug press C-f11. Please report the circumstances in which the bug occured (where you creating a new
+;; menu? what major-mode was in use at the time? etc.).
 
 
 ;;; Installation:
@@ -182,6 +219,9 @@
 ;; where ~/elisp is the directory you want to add
 ;; (you don't need to do this for ~/.emacs.d - it's added by default).
 ;;
+;; Make sure that you also have hexrgb.el in your load-path.
+;; At the time of writing it can be obtained from here: http://emacswiki.org/emacs/hexrgb.el
+
 ;; Add the following to your ~/.emacs startup file, replacing <menu> with whatever key you
 ;; want to use to open the *One-Key* buffer.
 ;;
@@ -229,7 +269,7 @@
 ;; `one-key-submenus-replace-parents' : If non-nil then when a submenu of a `one-key' menu is opened it will replace the 
 ;;                                      parent menu.
 ;; `one-key-major-mode-remap-alist' : A list of cons cells mapping major modes to one-key-menus.
-;; `one-key-toplevel-alist' : The `one-key' top-level alist.
+;; `one-key-menu-toplevel-alist' : The `one-key' top-level alist.
 ;; `one-key-sets-of-menus-alist' : Saved menu sets (sets of menus).
 ;; `one-key-default-menu-set' : The default menu set. It's value should be the car of one of the items in 
 ;;                              `one-key-sets-of-menus-alist'.
@@ -524,7 +564,7 @@ current major mode) will be used (and created if necessary)."
   :type '(alist :key-type (function :tag "Major mode" :help-echo "A major mode function") :value-type (string :tag "Name of associated menu" :help-echo "The name of the menu to be associated with the major mode"))
   :group 'one-key)
 
-(defcustom one-key-toplevel-alist '((("M" . "Cursor motion commands") .
+(defcustom one-key-menu-toplevel-alist '((("M" . "Cursor motion commands") .
                                      (lambda nil (interactive)
                                        (one-key-open-submenu "Cursor motion commands"
                                                              one-key-menu-cursor-motion-commands-alist)))
@@ -1402,8 +1442,7 @@ NAME is the name of the menu, INFO-ALIST and FULL-LIST are as in the `one-key-me
          (file one-key-menus-save-file)
          (buf (get-file-buffer file)))
     (if file
-        (if (file-exists-p file)
-            (if (file-writable-p file)
+        (if (file-writable-p file)
                 (with-current-buffer (find-file-noselect file)
                   (goto-char (point-min))
                   (if (not (search-forward (concat "(setq " varname) nil t))
@@ -1418,7 +1457,6 @@ NAME is the name of the menu, INFO-ALIST and FULL-LIST are as in the `one-key-me
                   (save-buffer)
                   (if (not buf) (kill-buffer (get-file-buffer file))))
               (message "Can't write to file %s" file))
-          (message "Can't file file %s" file))
       (message "`one-key-menus-save-file' not set" file))))
 
 (defun one-key-get-next-alist-item (currentcar allitems-alist &optional prev)
@@ -2564,7 +2602,7 @@ If SUBMENUP is non-nil then the `one-key-open-submenu' command is used to add/re
            'one-key-sets-of-menus-alist
            'one-key-special-keybindings
            'one-key-submenus-replace-parents
-           'one-key-toplevel-alist
+           'one-key-menu-toplevel-alist
            'one-key-types-of-menu)
      nil nil
      "Remember to cover the basics, that is, what you expected to happen and
@@ -2581,7 +2619,7 @@ http://www.gnu.org/software/emacs/manual/html_node/emacs/Understanding-Bug-Repor
 (one-key-add-to-alist 'one-key-types-of-menu
                       (list "top-level"
                             (lambda (name) (equal name "top-level"))
-                            (cons "top-level" 'one-key-toplevel-alist)
+                            (cons "top-level" 'one-key-menu-toplevel-alist)
                             one-key-default-title-func nil) t)
 (one-key-add-to-alist 'one-key-types-of-menu
                       (list "blank menu"
@@ -2626,11 +2664,9 @@ http://www.gnu.org/software/emacs/manual/html_node/emacs/Understanding-Bug-Repor
 
 ;; Load the saved one-key menus.
 (if one-key-menus-save-file
-    (if (file-exists-p one-key-menus-save-file)
-        (if (file-readable-p one-key-menus-save-file)
-            (load-file one-key-menus-save-file)
-          (message "Can't read file %s" one-key-menus-save-file))
-      (message "Can't find file %s" one-key-menus-save-file))
+    (if (file-readable-p one-key-menus-save-file)
+        (load-file one-key-menus-save-file)
+      (message "Can't read file %s" one-key-menus-save-file))
   (message "`one-key-menus-save-file' is not set, no menus loaded"))
 
 
