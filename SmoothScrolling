@@ -30,6 +30,13 @@ Unfortunately, the text still jumps sometimes, in a really irritating way.  I ha
 The scrolling will still be jumpy if Emacs is unable to redisplay text fast enough to keep the scrolling rate up (this typically happens on slow terminals). The view will then be recentered around the cursor.  Recentering also occurs if you move more than one (or the number specified by scroll-step) lines away from the visible portion of the buffer. -- MicheleBini
 
 [new]
+I was driven crazy by the jumps. I had set scroll-step and scroll-conservatively as suggested here but it was still jumping half-screens at random times when scrolling. FINALLY, after many years of cursing, the suggestion of setting auto-window-vscroll to nil, below on this page, worked  - even though Emacs documentation only says it applies to tall lines with large images, which I don't use. In fact it seems to apply to any scrolling with too-slow terminal and too-fast keyboard repeat rate. So, here's my tested recipe for civilized scrolling, which works regardless of your screen speed and keyboard speed:
+
+    (setq scroll-step 1)
+    (setq scroll-conservatively 10000)
+    (setq auto-window-vscroll nil)
+
+[new]
 I've discovered that it is possible to get rid of the jumpiness at the cost of slowing scrolling down quite a bit (but I think I prefer it slow-and-smooth):
 
    (setq scroll-step           1
