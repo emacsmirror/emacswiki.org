@@ -13,6 +13,16 @@ The Emacs version of ##package.el## will support multiple repositories.  You can
 
 Any combination of repositories is fine.  You should probably always include GNU's core repository but it's not required.
 
+You can add just one like this:
+
+  (add-to-list package-archives '("marmalade" . "http://marmalade-repo.org/packages"))
+
+or for Melpa:
+
+  (add-to-list package-archives '("melpa" . "http://melpa.milkbox.net/packages/"))
+
+You can also customize these variables.
+
 
 == How Packages work in Emacs 24 ==
 
