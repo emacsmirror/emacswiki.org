@@ -1,13 +1,13 @@
-Everything is a very fast and lightweight desktop search-engine
-for Windows for finding files scattered around your hard discs
+[[http://www.voidtools.com/|Everything]] is a very fast and lightweight desktop search-engine
+for MS Windows for finding files scattered around your hard discs
 (see http://www.voidtools.com).
-The package [[everything.el]] provides a simple interface to access
+The EmacsLisp package [[everything.el]] provides a simple interface to access
 Everything's search power via its ftp interface within Emacs.
 
-Everything.el can also integrate itself into 
+##everything.el## can also integrate itself into 
 [[FindFileAtPoint]]. So, whenever all other methods of ffap fail, let everything
 try finding the file at point. Best used in combination with
-the exquicit [[Icicles]] package.
+the exquisite [[Icicles]] package.
 
 Basic steps to setup:
 
@@ -19,4 +19,12 @@ Usage:
        M-x everything
 
 Prompts for a query and let you choose one of the files returned by Everything and opens it.
+
+
+
+
+----
+CategoryFiles CategoryDirectories CategoryProgrammerUtils
+
+
 
