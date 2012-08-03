@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Jan 30 15:01:06 1996
 ;; Version: 21.0
-;; Last-Updated: Thu Aug  2 10:21:11 2012 (-0700)
+;; Last-Updated: Fri Aug  3 14:45:03 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 1237
+;;     Update #: 1241
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/replace+.el
 ;; Keywords: matching, help, internal, tools, local
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x
@@ -45,7 +45,7 @@
 ;;
 ;;
 ;;  ***** NOTE: The following functions defined in `replace.el' have
-;;              been REDEFINED HERE:
+;;              been REDEFINED or ADVISED HERE:
 ;;
 ;;    `flush-lines' - (Not needed for Emacs 21)
 ;;                    1. The prompt has been changed, to mention that
@@ -58,9 +58,11 @@
 ;;                 2. Default regexp: `search/replace-default-fn'.
 ;;                 3. An in-progress message has been added.
 ;;    `keep-lines' - Same as `flush-lines'. (Not needed for Emacs 21)
-;;    `occur' - 1. Default regexp is from `search/replace-default-fn'.
-;;              2. Regexp is saved as `occur-regexp' for use by
-;;                 `occur-mode-mouse-goto'
+;;    `occur' - Default regexp is from `search/replace-default-fn'
+;;              (Emacs 20 only)
+;;    `occur', `multi-occur', `multi-occur-in-matching-buffers' -
+;;              Regexp is saved as `occur-regexp' for use by
+;;              `occur-mode-mouse-goto'
 ;;    `occur-mode-goto-occurrence', `occur-mode-display-occurrence', 
 ;;    `occur-mode-goto-occurrence-other-window',
 ;;    `occur-mode-mouse-goto' - Highlights regexp in source buffer
@@ -96,6 +98,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2012/08/03 dadams
+;;     Advise multi-occur(--in-matching-buffers), to highlight source match.
 ;; 2012/08/02 dadams
 ;;     occur-read-primary-args, occur-mode-goto-occurrence-other-window, occur-mode-display-occurrence:
 ;;       Updated for Emacs 24.
@@ -886,6 +890,27 @@ the matching is case-sensitive."
 (when (>= emacs-major-version 21)
   (defadvice occur (before occur-save-regexp activate compile)
     (setq occur-regexp  (ad-get-arg 0)))) ; Save for highlighting.
+
+
+
+;; REPLACE ORIGINAL in `replace.el':
+;;
+;; Save regexp as `occur-regexp' for use by `occur-mode-mouse-goto' and `occur-mode-goto-occurrence'.
+;;
+(when (>= emacs-major-version 21)
+  (defadvice multi-occur (before multi-occur-save-regexp activate compile)
+    (setq occur-regexp  (ad-get-arg 1)))) ; Save for highlighting.
+
+
+
+;; REPLACE ORIGINAL in `replace.el':
+;;
+;; Save regexp as `occur-regexp' for use by `occur-mode-mouse-goto' and `occur-mode-goto-occurrence'.
+;;
+(when (>= emacs-major-version 21)
+  (defadvice multi-occur-in-matching-buffers (before multi-occur-in-matching-buffers-save-regexp
+                                                     activate compile)
+    (setq occur-regexp  (ad-get-arg 1)))) ; Save for highlighting.
 
 
 
