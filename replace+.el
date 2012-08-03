@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Jan 30 15:01:06 1996
 ;; Version: 21.0
-;; Last-Updated: Fri Aug  3 14:45:03 2012 (-0700)
+;; Last-Updated: Fri Aug  3 15:07:56 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 1241
+;;     Update #: 1256
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/replace+.el
 ;; Keywords: matching, help, internal, tools, local
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x
@@ -29,9 +29,10 @@
 ;;
 ;;    Extensions to `replace.el'.
 ;;
-;;  Functions defined here:
+;;  Commands defined here:
 ;;
-;;    `query-replace-w-options', `toggle-replace-w-completion'.
+;;    `occur-unhighlight-visited-hits', `query-replace-w-options',
+;;    `toggle-replace-w-completion'.
 ;;
 ;;  Faces defined here:
 ;;
@@ -41,7 +42,9 @@
 ;;
 ;;    `replace-w-completion-flag', `search/replace-default-fn'.
 ;;
-;;  Internal variable defined here: `occur-regexp'.
+;;  Internal variable defined here:
+;;
+;;    `occur-regexp', `occur-searched-buffers'.
 ;;
 ;;
 ;;  ***** NOTE: The following functions defined in `replace.el' have
@@ -63,9 +66,11 @@
 ;;    `occur', `multi-occur', `multi-occur-in-matching-buffers' -
 ;;              Regexp is saved as `occur-regexp' for use by
 ;;              `occur-mode-mouse-goto'
+;;    `occur-engine' - Save list of searched buffers in
+;;                     `occur-searched-buffers' (Emacs 22+)
 ;;    `occur-mode-goto-occurrence', `occur-mode-display-occurrence', 
 ;;    `occur-mode-goto-occurrence-other-window',
-;;    `occur-mode-mouse-goto' - Highlights regexp in source buffer
+;;    `occur-mode-mouse-goto' - Highlight regexp in source buffer
 ;;                              and visited linenum in occur buffer.
 ;;    `occur-read-primary-args' - (Emacs 21 only) Default regexps via
 ;;                                `search/replace-default-fn'.
@@ -94,12 +99,21 @@
 ;;   (substitute-key-definition 'query-replace 'query-replace-w-options
 ;;                              global-map)
 ;;
+;;  If you want the highlighting of regexp matches in the searched
+;;  buffers to be removed when you quit occur or multi-occur, then add
+;;  function `occur-unhighlight-visited-hits' to an appropripate hook.
+;;  For example, to have this happen when you kill the occur buffer,
+;;  add it to `kill-buffer-hook':
+;;
+;;    (add-hook 'kill-buffer-hook 'occur-unhighlight-visited-hits)
+;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;;; Change Log:
 ;;
 ;; 2012/08/03 dadams
-;;     Advise multi-occur(--in-matching-buffers), to highlight source match.
+;;     Added: occur-searched-buffers, occur-unhighlight-visited-hits.
+;;     Advised multi-occur(--in-matching-buffers), to highlight source match.
 ;; 2012/08/02 dadams
 ;;     occur-read-primary-args, occur-mode-goto-occurrence-other-window, occur-mode-display-occurrence:
 ;;       Updated for Emacs 24.
@@ -275,6 +289,9 @@ setting the variable and displaying a status message (not MESSAGE)."
     :group 'basic-faces))
 
 (defvar occur-regexp nil "Search pattern used by `occur' command.") ; Internal variable.
+
+(defvar occur-searched-buffers ()
+  "Source buffers searched by `occur' and `multi-occur'.")
 
 (defcustom replace-w-completion-flag nil
   "*Non-nil means use minibuffer completion for replacement commands
@@ -1056,6 +1073,29 @@ Highlight the occur regexp in the source buffer."
         (let ((inhibit-field-text-motion  t)) ; Just to be sure, for `line-end-position'.
           (hlt-highlight-regexp-region (line-beginning-position) (line-end-position)
                                        occur-regexp list-matching-lines-face))))))
+
+
+
+;; REPLACE ORIGINAL in `replace.el' (Emacs 22):
+;;
+;; Save list of searched buffers in `occur-searched-buffers'.
+;;
+(defadvice occur-engine (after record-buffers activate)
+  (setq occur-searched-buffers  (ad-get-arg 1)))
+
+(defun occur-unhighlight-visited-hits (&optional msgp)
+  "Unhighlight visited search hits for current occur-mode buffer.
+Non-interactively, is a no-op without library `highlight.el'."
+  (interactive "p")
+  (unless (eq major-mode 'occur-mode)
+    (error "This function must be invoked from an Occur mode buffer"))
+  (when (and msgp  (not (fboundp 'hlt-unhighlight-region)))
+    (error "This command requires library `highlight.el'"))
+  (when (and (fboundp 'hlt-unhighlight-region)
+             (listp occur-searched-buffers))
+    (dolist (buf  occur-searched-buffers)
+      (with-current-buffer buf (hlt-unhighlight-region)))
+    (setq occur-searched-buffers  ())))
 
 ;;;;;;;;;;;;;;;;;;;;;;;
 
