@@ -7,11 +7,15 @@
 
 == Key Completion ==
 
-Here's another weird '''Icicles''' feature: [[Completion]] of ''[[key sequence]]s'', instead of [[command]]s.   (This feature works only for Emacs 22 and later.)
+Here's another weird '''Icicles''' feature: [[Completion]] of ''[[key sequence]]s'', instead of [[command]]s or other [[minibuffer]] input text.   (This feature works only for Emacs 22 and later.)
 
-''What on earth for?'' Ever want to use one of those myriad `C-x' key sequences, but forget just what it was? The standard solution to that is to use `C-x C-h', to display all of the `C-x' [[key binding|bindings]] together with their commands.
+''What on earth for?'' Have you ever wanted to use one of those myriad `C-x' key sequences, but forgot just what it was? The standard solution to that is to use `C-x C-h', to display all of the `C-x' [[key binding|bindings]] together with their commands.
 
 OK, but then you have to scroll down the list of bindings, searching for the command you want, and then use its key binding. You can use `C-M-s' to search for a substring of the command name, in case you do not recall the exact name, but why not use '''Icicles''' completion for this? Why not ''match against possible key sequences and commands''?
+
+
+
+
 
 
 
@@ -42,12 +46,23 @@ You can customize it, using [[option]] '''`<tt>[[Icicles - Customization and Gen
 
 
 
+
+
+
+
+
 [:StartWithS-TAB]
 === `S-TAB' Is Everywhere - Start With It ===
 
 In ''Icicle'' mode, whenever you are not in the minibuffer or [[buffer]] `*Completions*', key `S-TAB' (`S-tab') initiates key completion. That is, you do not need to first type part of a key sequence to use it -- you can ''start with it''. Hit `S-TAB' at any time, and you're completing a key sequence, even if you have not yet hit any keys. This lets you see all key sequences that are available in a given context. For example, in [[DiredMode|Dired]], keys special to that mode are included (and are highlighted as local bindings -- see [[#HighlightLocalBindings]], below).
 
 When completing a key sequence, you can type part of a command name, then hit `S-TAB' again to [[apropos completion|apropos-complete]] against the command name. In this respect, `S-TAB' acts like `M-x', but the key binding is also part of the completion candidate, so you can also match key names.
+
+
+
+
+
+
 
 
 
@@ -64,6 +79,11 @@ Suppose that you type `C-x S-TAB' to show all key sequences that begin with `C-x
   C-q  =  toggle-read-only
 
 You can then type "##C-q##" or "##d-onl##" or any other substring, and then use `S-TAB' to complete the candidate. (This second use of `S-TAB' invokes the command `icicle-apropos-complete', which has nothing to do with `icicle-key-complete', which was invoked by the first `S-TAB'. The first was invoked outside the minibuffer; the second was invoked from the minibuffer, during completion.)
+
+
+
+
+
 
 
 
@@ -136,6 +156,12 @@ This feature means that you can navigate the key-binding hierachy just as you wo
 
 
 
+
+
+
+
+
+
 [:HighlightLocalBindings]
 === Local Bindings Are Highlighted ===
 
@@ -146,6 +172,13 @@ example, DiredMode defines keys specific to Dired buffer, such as
 from others ([[global key binding|global]] and [[minor-mode key binding|minor-mode]] bindings), local bindings are
 highlighted in buffer `*Completions*' using face
 `icicle-special-candidate'. See the screenshots above.
+
+
+
+
+
+
+
 
 
 
@@ -171,6 +204,12 @@ no-angle-brackets style also outside of '''Icicles'''.
 
 
 
+
+
+
+
+
+
 [:KeyCommandHelp]
 === Key and Command Help ===
 
@@ -179,6 +218,11 @@ That points out another use of key completion, opposite to learning the bindings
 The point here is not that `##S-TAB M-q##' is quicker than `C-h w' or `C-h c' or `C-h b' -- it's not. The point is that key completion can be handy in several ways, and it can teach you various things about keys and commands as you use it.
 
 In addition to this key-completion help about bindings, you can display help on the commands that are the right sides of the `S-TAB' completion-candidate equations, by using the [[multi-command]] help keys (see [[Icicles - Help on Candidates]]). That is, while completing, you can use `C-M-mouse-2', `C-M-RET', `C-M-next', and so on to describe the command named in the current completion candidate.
+
+
+
+
+
 
 
 
@@ -197,6 +241,10 @@ other way (`C-RET', `C-next', and so on).
 Since you can navigate up and down the key-binding hierarchy, you
 could even stay within a single `S-TAB' invocation to do nearly
 everything you want in Emacs (see [[#ThreeKeyEmacs]], below)!
+
+
+
+
 
 
 
@@ -227,6 +275,28 @@ indicated when you are prompted for input, it means that `S-TAB' is available, n
 
 If you nevertheless find the overloaded use of `S-TAB' confusing, you can change the bindings of the key `S-TAB' in these different
 contexts.  To do that, you can customize options '''`<tt>[[Icicles - Customization and General Tips#icicle-apropos-complete-keys|icicle-apropos-complete-keys]]</tt>'''', '''`<tt>[[Icicles - Customization and General Tips#icicle-key-complete-keys|icicle-key-complete-keys]]</tt>'''', and '''`<tt>[[Icicles - Customization and General Tips#icicle-previous-candidate-keys|icicle-previous-candidate-keys]]</tt>''''. 
+
+
+
+
+
+
+
+
+
+
+[:CompleteKeysInMinibuffer]
+=== Complete Keys in the Minibuffer Also ===
+
+In the [[minibuffer]], `S-TAB' performs [[apropos completion]] of your
+typed input.  So it is not available for key completion.  But you
+can still complete keys in the minibuffer.  You just use '''`M-S-TAB'''' instead of `S-TAB'.
+
+(And just as the actual keys that perform key completion outside
+the minibuffer are customizable using [[option]] `<tt>[[Icicles - Customization and General Tips#icicle-key-complete-keys|icicle-key-complete-keys]]</tt>', so too for the key-completion keys in
+the minibuffer: It is actually the keys defined by option
+'''`<tt>[[Icicles - Customization and General Tips#icicle-key-complete-keys-for-minibuffer|icicle-key-complete-keys-for-minibuffer]]</tt>'''' that are used --
+`M-S-TAB' is just the key used by default.)
 
 
 
