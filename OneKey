@@ -47,7 +47,7 @@ tree navigation), or you can create your own types. See "Creating menus" below.
 : So you just need remember the Top keystroke, and the other keystrokes will be displayed in a pop-up window.
 
 
-: [http://www.emacswiki.org/cgi-bin/emacs/OneKey#toc11 Here] is a screenshot to show how OneKey works.
+: [http://www.emacswiki.org/cgi-bin/emacs/OneKey#toc15 Here] is a screenshot to show how OneKey works.
 
 ==Installation==
 : Download Lisp:one-key.el and save it in your load-path (usually "~/.emacs.d/").
