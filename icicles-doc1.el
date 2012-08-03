@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Sat Jul 21 15:30:07 2012 (-0700)
+;; Last-Updated: Fri Aug  3 13:58:54 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 26672
+;;     Update #: 26681
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-doc1.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -1429,6 +1429,10 @@
 ;;  character (except a newline).  To match only `..' (to go up a
 ;;  level), either use prefix completion (`TAB') or escape the regexp
 ;;  special character: `\.\.' (or use `^\.').  Or cycle to it.
+;;
+;;  Icicles key completion is also available in the minibuffer, but
+;;  there, since `S-TAB' performs apropos completion of your input,
+;;  the key that initiates key completion is `M-S-TAB', not `S-TAB'.
 ;;
 ;;  See (@> "Key Completion") for more about Icicles key completion.
 ;;
@@ -5044,14 +5048,14 @@
 ;;  Key Completion
 ;;  --------------
 ;;
-;;  Here's another weird Icicles feature: completing key sequences,
-;;  instead of commands.  (This feature works only for Emacs 22 and
-;;  later.)
+;;  Here's another weird Icicles feature: completing key sequences
+;;  instead of commands or other minibuffer input text.  (This feature
+;;  works only for Emacs 22 and later.)
 ;;
-;;  What on earth for?  Ever want to use one of those myriad `C-x' key
-;;  sequences, but forget just what it was?  The standard solution to
-;;  that is to use `C-x C-h', to display all of the `C-x' bindings
-;;  together with their commands.
+;;  What on earth for?  Have you ever wanted to use one of those
+;;  myriad `C-x' key sequences, but forgot just what it was?  The
+;;  standard solution to that is to use `C-x C-h', to display all of
+;;  the `C-x' bindings together with their commands.
 ;;
 ;;  OK, but then you have to scroll down the list of bindings,
 ;;  searching for the command you want, and then use its key binding.
@@ -5336,6 +5340,21 @@
 ;;  contexts.  To do that, you can customize options
 ;;  `icicle-apropos-complete-keys', `icicle-key-complete-keys', and
 ;;  `icicle-previous-candidate-keys'.
+;;
+;;*@* "Complete Keys in the Minibuffer Also")
+;;  ** Complete Keys in the Minibuffer Also **
+;;
+;;  In the minibuffer, `S-TAB' performs apropos completion of your
+;;  typed input.  So it is not available for key completion.  But you
+;;  can still complete keys in the minibuffer.  You just use `M-S-TAB'
+;;  instead of `S-TAB'.
+;;
+;;  (And just as the actual keys that perform key completion outside
+;;  the minibuffer are customizable using option
+;;  `icicle-key-complete-keys', so too for the key-completion keys in
+;;  the minibuffer: It is actually the keys defined by option
+;;  `icicle-key-complete-keys-for-minibuffer' that are used -
+;;  `M-S-TAB' is just the key used by default.)
 ;;
 ;;(@* "Three-Key Emacs")
 ;;  ** Three-Key Emacs **
