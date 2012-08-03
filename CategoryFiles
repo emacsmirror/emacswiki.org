@@ -16,6 +16,7 @@ files.
 * DfMode -- keep an eye on disk space usage
 * [http://user42.tuxfamily.org/do-not-edit/index.html do-not-edit.el] -- read-only from DO NOT EDIT
 * DosToUnix -- replace DOS carriage returns with UNIX line feeds
+* [[Everything]] -- Bridge to Windows desktop-search engine Everything
 * FileFormat -- conversions on read/write for certain types or markup
 * FileModes -- the <code>rwx</code> permissions bits on files
 * FileSets -- persistent sets of files
