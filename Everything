@@ -4,7 +4,7 @@ for Windows for finding files scattered around your hard discs
 The package [[everything.el]] provides a simple interface to access
 Everything's search power via its ftp interface within Emacs.
 
-Everything.el can also integrate itself into find-file-at-point
-aka [[FindFileAtPoint]]. So, whenever all other methods of ffap fail, let everything
+Everything.el can also integrate itself into 
+[[FindFileAtPoint]]. So, whenever all other methods of ffap fail, let everything
 try finding the file at point. Best used in combination with
 the exquicit [[Icicles]] package.
