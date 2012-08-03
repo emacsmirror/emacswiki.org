@@ -8,3 +8,15 @@ Everything.el can also integrate itself into
 [[FindFileAtPoint]]. So, whenever all other methods of ffap fail, let everything
 try finding the file at point. Best used in combination with
 the exquicit [[Icicles]] package.
+
+Basic steps to setup:
+
+      (add-to-list 'load-path "~/path/to/everything.el")
+      (require 'everything)
+
+Usage:
+
+       M-x everything
+
+Prompts for a query and let you choose one of the files returned by Everything and opens it.
+
