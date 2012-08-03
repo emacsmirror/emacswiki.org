@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 10:21:10 2006
 ;; Version: 22.0
-;; Last-Updated: Tue Jul 31 07:38:57 2012 (-0700)
+;; Last-Updated: Fri Aug  3 15:23:23 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 9030
+;;     Update #: 9062
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-mode.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -1158,7 +1158,7 @@ Used on `pre-command-hook'."
     (let ((TAB-method  (get 'icicle-last-top-level-command 'icicle-current-TAB-method))
           (apropos-fn  (get 'icicle-last-top-level-command 'icicle-apropos-complete-match-fn)))
       (when TAB-method (setq icicle-current-TAB-method  TAB-method))
-      (when apropos-fn (setq icicle-apropos-complete-match-fn apropos-fn)))
+      (when apropos-fn (setq icicle-apropos-complete-match-fn  apropos-fn)))
     (setq icicle-last-top-level-command   this-command
           icicle-candidates-alist         ())))
 
@@ -1948,7 +1948,7 @@ Used on `pre-command-hook'."
                     (list 'menu-item "Icicles" icicle-bookmark-menu-map :visible 'icicle-mode))
                   (defvar icicle-bookmark-with-tags-menu-map (make-sparse-keymap)
                     "For tags commands on `icicle-bookmark-menu-map'.")
-                  (setq icicle-bookmark-with-tags-menu-map icicle-bookmark-menu-map))))
+                  (setq icicle-bookmark-with-tags-menu-map  icicle-bookmark-menu-map))))
           (t
            (defvar icicle-bookmark-menu-map (make-sparse-keymap)
              "`Icicles' > `Bookmarks' submenu.")
@@ -1956,7 +1956,7 @@ Used on `pre-command-hook'."
              (list 'menu-item "Bookmarks" icicle-bookmark-menu-map))
            (defvar icicle-bookmark-with-tags-menu-map (make-sparse-keymap)
              "For tags commands on `icicle-bookmark-menu-map'.")
-           (setq icicle-bookmark-with-tags-menu-map icicle-bookmark-menu-map)))
+           (setq icicle-bookmark-with-tags-menu-map  icicle-bookmark-menu-map)))
 
     (when (featurep 'bookmark+)
       (define-key icicle-bookmark-with-tags-menu-map
@@ -2566,41 +2566,51 @@ Used on `pre-command-hook'."
     (icicle-bind-key-completion-keys-in-keymaps-from (current-global-map))
     (mapcar #'icicle-bind-key-completion-keys-for-map-var icicle-keymaps-for-key-completion))
 
+  ;; Bind `M-S-TAB' in `minibuffer-local-map', for key completion.
+  (when (fboundp 'map-keymap)           ; Emacs 22+.
+    (icicle-bind-key-completion-keys-for-map-var 'minibuffer-local-map
+                                                 icicle-key-complete-keys-for-minibuffer))
+
   ;; Prevent `this-command' from being set to `handle-switch-frame'.
   (define-key global-map [handle-switch-frame] 'icicle-skip-this-command)
   (define-key global-map [switch-frame] 'icicle-handle-switch-frame))
 
 (defun icicle-bind-isearch-keys ()
   "Bind Icicles Isearch commands."
-  (dolist (key icicle-search-from-isearch-keys)
+  (dolist (key  icicle-search-from-isearch-keys)
     (define-key isearch-mode-map key 'icicle-search-w-isearch-string)) ; In `icicles-cmd2.el'.
-  (dolist (key icicle-isearch-complete-keys)
+  (dolist (key  icicle-isearch-complete-keys)
     (define-key isearch-mode-map key 'icicle-isearch-complete))
   (cond ((fboundp 'isearch-moccur)      ; In `moccur.el'.
          (define-key isearch-mode-map (icicle-kbd "C-o") 'isearch-moccur)) ; `C-s C-o'
         ((fboundp 'isearch-occur)       ; In `occur-schroeder.el'.
          (define-key isearch-mode-map (icicle-kbd "C-o") 'isearch-occur)))) ; `C-s C-o'
 
-(defun icicle-bind-key-completion-keys-for-map-var (keymap-var)
+(defun icicle-bind-key-completion-keys-for-map-var (keymap-var &optional keys)
   "Bind `S-TAB' in keymaps accessible from keymap KEYMAP-VAR.
 KEYMAP-VAR should be bound to a keymap that has at least one prefix
-keymap.  If KEYMAP-VAR is not bound to a keymap, it is ignored."
+keymap.  If KEYMAP-VAR is not bound to a keymap, it is ignored.
+
+Actually, by default, it is the keys in `icicle-key-complete-keys'
+that are bound, not `S-TAB'.  And if optional arg KEYS is non-nil then
+it, not `icicle-key-complete-keys', is the list of keys that are
+bound."
   (let ((temp  keymap-var))
     (when (boundp temp)
       (setq temp  (symbol-value temp))
-      (when (keymapp temp) (icicle-bind-key-completion-keys-in-keymaps-from temp)))))
+      (when (keymapp temp) (icicle-bind-key-completion-keys-in-keymaps-from temp keys)))))
 
-(defun icicle-bind-key-completion-keys-in-keymaps-from (map)
+(defun icicle-bind-key-completion-keys-in-keymaps-from (map &optional keys)
   "Bind keys in `icicle-key-complete-keys' to `icicle-complete-keys'.
-Each key in `icicle-complete-keys' is bound in all keymaps accessible
-from keymap MAP."
+Each key in `icicle-complete-keys' (or optional arg KEYS, if non-nil)
+is bound in all keymaps accessible from keymap MAP."
   (dolist (key+map  (accessible-keymaps map))
     (let ((map  (cdr key+map)))
       ;; We could try to exclude menu maps, by testing (not (keymap-prompt map)).
       ;; But we want to include at least some menu maps - those, such as `facemenu-keymap',
       ;; that are bound to keyboard keys. (when (and (keymapp map) (not (keymap-prompt map)))...)
       (when (keymapp map)
-        (dolist (key  icicle-key-complete-keys)
+        (dolist (key  (or keys  icicle-key-complete-keys))
           (when (or icicle-complete-key-anyway-flag (not (lookup-key map key)))
             (condition-case nil (define-key map key 'icicle-complete-keys) (error nil))))))))
 
@@ -2673,37 +2683,48 @@ from keymap MAP."
     (icicle-unbind-key-completion-keys-in-keymaps-from (current-global-map))
     (mapcar #'icicle-unbind-key-completion-keys-for-map-var icicle-keymaps-for-key-completion))
 
+  ;; Unbind `M-S-TAB' in `minibuffer-local-map'.
+  (when (fboundp 'map-keymap)           ; Emacs 22+.
+    (icicle-unbind-key-completion-keys-for-map-var 'minibuffer-local-map
+                                                   icicle-key-complete-keys-for-minibuffer))
   ;; Restore prevention of `this-command' being `handle-switch-frame'.
   (define-key global-map [handle-switch-frame] nil)
   (define-key global-map [switch-frame] 'handle-switch-frame))
 
 (defun icicle-unbind-isearch-keys ()
   "Unbind Icicles Isearch commands."
-  (dolist (key icicle-search-from-isearch-keys) (define-key isearch-mode-map key nil))
-  (dolist (key icicle-isearch-complete-keys) (define-key isearch-mode-map key nil))
+  (dolist (key  icicle-search-from-isearch-keys) (define-key isearch-mode-map key nil))
+  (dolist (key  icicle-isearch-complete-keys) (define-key isearch-mode-map key nil))
   (define-key isearch-mode-map (icicle-kbd "C-M-i") 'isearch-complete)
   (when (fboundp 'isearch-moccur)       ; Restore `moccur.el' binding.
     (define-key isearch-mode-map (icicle-kbd "M-o") 'isearch-moccur))
   (define-key isearch-mode-map (icicle-kbd "C-o") nil))
 
-(defun icicle-unbind-key-completion-keys-for-map-var (keymap-var)
+(defun icicle-unbind-key-completion-keys-for-map-var (keymap-var &optional keys)
   "Unbind `S-TAB' in keymaps accessible from keymap KEYMAP-VAR.
 KEYMAP-VAR should be bound to a keymap that has at least one prefix
-keymap.  If KEYMAP-VAR is not bound to a keymap, it is ignored."
+keymap.  If KEYMAP-VAR is not bound to a keymap, it is ignored.
+
+Actually, by default, it is the keys in `icicle-key-complete-keys'
+that are unbound, not `S-TAB'.  And if optional arg KEYS is non-nil
+then it, not `icicle-key-complete-keys', is the list of keys that are
+unbound."
   (let ((temp  keymap-var))
     (when (boundp temp)
       (setq temp  (symbol-value temp))
-      (when (keymapp temp) (icicle-unbind-key-completion-keys-in-keymaps-from temp)))))
+      (when (keymapp temp) (icicle-unbind-key-completion-keys-in-keymaps-from temp keys)))))
 
-(defun icicle-unbind-key-completion-keys-in-keymaps-from (map)
-  "Unbind `icicle-key-complete-keys' in keymaps accessible from MAP."
-  (dolist (key+map (accessible-keymaps map))
+(defun icicle-unbind-key-completion-keys-in-keymaps-from (map &optional keys)
+  "Unbind `icicle-key-complete-keys' in keymaps accessible from MAP.
+Each key in `icicle-complete-keys' (or optional arg KEYS, if non-nil)
+is unbound in all keymaps accessible from keymap MAP."
+  (dolist (key+map  (accessible-keymaps map))
     (let ((map  (cdr key+map)))
       (while (and (symbolp map) (fboundp map)) (setq map  (symbol-function map))) ; Get a list.
       (when (and (keymapp map)
                  (not (eq 'autoload (car-safe map))) ; Skip autoload keymaps.
                  (not (stringp (car-safe (last map))))) ; Try to exclude menu maps.
-        (dolist (key icicle-key-complete-keys)
+        (dolist (key  (or keys  icicle-key-complete-keys))
           (when (eq (lookup-key map key) 'icicle-complete-keys)
             (condition-case nil (define-key map key nil) (error nil))))))))
  
@@ -2819,18 +2840,18 @@ keymap.  If KEYMAP-VAR is not bound to a keymap, it is ignored."
        (define-key map (icicle-kbd "C-x C-f")       'icicle-resolve-file-name) ; `C-x C-f'
        (define-key map (icicle-kbd "C-=")           'icicle-insert-string-from-variable) ; `C-='
        (define-key map (icicle-kbd "M-i")           'icicle-clear-current-history) ; `M-i'
-       (define-key map (icicle-kbd "M-k")      'icicle-erase-minibuffer-or-history-element) ; `M-k'
+       (define-key map (icicle-kbd "M-k")          'icicle-erase-minibuffer-or-history-element) ; `M-k'
        (define-key map (icicle-kbd "M-o")           'icicle-insert-history-element) ; `M-o'
-       (define-key map (icicle-kbd "M-:")         'icicle-pp-eval-expression-in-minibuffer) ; `M-:'
+       (define-key map (icicle-kbd "M-:")           'icicle-pp-eval-expression-in-minibuffer) ; `M-:'
        (define-key map (icicle-kbd "C-a")           'icicle-beginning-of-line+) ; `C-a'
        (define-key map (icicle-kbd "C-e")           'icicle-end-of-line+) ; `C-e'
        (define-key map (icicle-kbd "C-M-v")         'icicle-scroll-forward) ; `C-M-v'
-       (define-key map (icicle-kbd "C-M-S-v")    'icicle-scroll-backward) ; `C-M-S-v' (aka `C-M-V')
+       (define-key map (icicle-kbd "C-M-S-v")       'icicle-scroll-backward) ; `C-M-S-v' (aka `C-M-V')
        (define-key map (icicle-kbd "C-M-pause")     'icicle-other-history) ; `C-M-pause'
        (dolist (key  icicle-completing-read+insert-keys)
-         (define-key map key 'icicle-completing-read+insert)) ; `C-M-S-c'
+         (define-key map key                        'icicle-completing-read+insert)) ; `C-M-S-c'
        (dolist (key  icicle-read+insert-file-name-keys)
-         (define-key map key 'icicle-read+insert-file-name)) ; `C-M-S-f'
+         (define-key map key                        'icicle-read+insert-file-name)) ; `C-M-S-f'
        (define-key map (icicle-kbd "C-j")           'icicle-insert-newline-in-minibuffer) ; `C-j'
        (when (fboundp 'icicle-yank-secondary)
          (define-key map (icicle-kbd "C-M-y") 'icicle-yank-secondary))) ; `C-M-y'
@@ -3311,9 +3332,9 @@ keymap.  If KEYMAP-VAR is not bound to a keymap, it is ignored."
        (define-key map (icicle-kbd "C-g")              nil)
        (define-key map (icicle-kbd "q")                nil)
        (define-key map (icicle-kbd "C-insert")         nil)
-       (dolist (key icicle-prefix-cycle-next-keys)     (define-key map key nil))
-       (dolist (key icicle-prefix-cycle-previous-keys) (define-key map key nil))
-       (dolist (key icicle-previous-candidate-keys)    (define-key map key nil))
+       (dolist (key  icicle-prefix-cycle-next-keys)     (define-key map key nil))
+       (dolist (key  icicle-prefix-cycle-previous-keys) (define-key map key nil))
+       (dolist (key  icicle-previous-candidate-keys)    (define-key map key nil))
        (define-key map (icicle-kbd "C-i")              nil)
        (define-key map (icicle-kbd "tab")              nil)
        (define-key map (icicle-kbd "S-down-mouse-2")   nil)
@@ -4086,7 +4107,7 @@ Usually run by inclusion in `minibuffer-setup-hook'."
           icicle-pre-minibuffer-buffer           (cadr (buffer-list)) ; $$$$$$ (other-buffer nil t)
           )
     (when (and (icicle-completing-p) (> emacs-major-version 20))
-      (let ((prompt-prefix   (if icicle-candidate-action-fn "+ " ". ")))
+      (let ((prompt-prefix  (if icicle-candidate-action-fn "+ " ". ")))
         (put-text-property 0 1 'face
                            (cond ((and icicle-candidate-action-fn (icicle-require-match-p))
                                   '(icicle-multi-command-completion icicle-mustmatch-completion))
@@ -4127,87 +4148,87 @@ For example, if you define both `icicle-modal-cycle-up-keys' and
 binding."
   (cond (icicle-use-C-for-actions-flag  ; Use `C-' for actions, no `C-' for plain cycling.
          ;; Modal cycling keys.
-         (dolist (key icicle-modal-cycle-up-keys)
+         (dolist (key  icicle-modal-cycle-up-keys)
            (define-key map key 'icicle-previous-candidate-per-mode)) ; `up'
-         (dolist (key icicle-modal-cycle-down-keys)
+         (dolist (key  icicle-modal-cycle-down-keys)
            (define-key map key 'icicle-next-candidate-per-mode)) ; `down'
-         (dolist (key icicle-modal-cycle-up-action-keys)
+         (dolist (key  icicle-modal-cycle-up-action-keys)
            (define-key map key 'icicle-previous-candidate-per-mode-action)) ; `C-up'
-         (dolist (key icicle-modal-cycle-down-action-keys)
+         (dolist (key  icicle-modal-cycle-down-action-keys)
            (define-key map key 'icicle-next-candidate-per-mode-action)) ; `C-down'
          ;; Non-modal cycling keys.  In case of conflict, these will prevail over modal keys.
-         (dolist (key icicle-prefix-cycle-previous-keys)
+         (dolist (key  icicle-prefix-cycle-previous-keys)
            (define-key map key 'icicle-previous-prefix-candidate)) ; `home'
-         (dolist (key icicle-prefix-cycle-next-keys)
+         (dolist (key  icicle-prefix-cycle-next-keys)
            (define-key map key 'icicle-next-prefix-candidate)) ; `end'
-         (dolist (key icicle-apropos-cycle-previous-keys)
+         (dolist (key  icicle-apropos-cycle-previous-keys)
            (define-key map key 'icicle-previous-apropos-candidate)) ; `prior'
-         (dolist (key icicle-apropos-cycle-next-keys)
+         (dolist (key  icicle-apropos-cycle-next-keys)
            (define-key map key 'icicle-next-apropos-candidate)) ; `next'
-         (dolist (key icicle-prefix-cycle-previous-action-keys)
+         (dolist (key  icicle-prefix-cycle-previous-action-keys)
            (define-key map key 'icicle-previous-prefix-candidate-action)) ; `C-home'
-         (dolist (key icicle-prefix-cycle-next-action-keys)
+         (dolist (key  icicle-prefix-cycle-next-action-keys)
            (define-key map key 'icicle-next-prefix-candidate-action)) ; `C-end'
-         (dolist (key icicle-apropos-cycle-previous-action-keys)
+         (dolist (key  icicle-apropos-cycle-previous-action-keys)
            (define-key map key 'icicle-previous-apropos-candidate-action)) ; `C-prior'
-         (dolist (key icicle-apropos-cycle-next-action-keys)
+         (dolist (key  icicle-apropos-cycle-next-action-keys)
            (define-key map key 'icicle-next-apropos-candidate-action))) ; `C-next'
 
         (t                              ; Use `C-' for plain cycling, NO `C-' for action.
          ;; Modal cycling keys.  At least some of these will overwrite non-modal keys.
-         (dolist (key icicle-modal-cycle-up-keys)
+         (dolist (key  icicle-modal-cycle-up-keys)
            (define-key map key 'icicle-previous-candidate-per-mode-action)) ; `up'
-         (dolist (key icicle-modal-cycle-down-keys)
+         (dolist (key  icicle-modal-cycle-down-keys)
            (define-key map key 'icicle-next-candidate-per-mode-action)) ; `down'
-         (dolist (key icicle-modal-cycle-up-action-keys)
+         (dolist (key  icicle-modal-cycle-up-action-keys)
            (define-key map key 'icicle-previous-candidate-per-mode)) ; `C-up'
-         (dolist (key icicle-modal-cycle-down-action-keys)
+         (dolist (key  icicle-modal-cycle-down-action-keys)
            (define-key map key 'icicle-next-candidate-per-mode)) ; `C-down'
          ;; Non-modal cycling keys.  In case of conflict, these will prevail over modal keys.
-         (dolist (key icicle-prefix-cycle-previous-keys)
+         (dolist (key  icicle-prefix-cycle-previous-keys)
            (define-key map key 'icicle-previous-prefix-candidate-action)) ; `home'
-         (dolist (key icicle-prefix-cycle-next-keys)
+         (dolist (key  icicle-prefix-cycle-next-keys)
            (define-key map key 'icicle-next-prefix-candidate-action)) ; `end'
-         (dolist (key icicle-apropos-cycle-previous-keys)
+         (dolist (key  icicle-apropos-cycle-previous-keys)
            (define-key map key 'icicle-previous-apropos-candidate-action)) ; `prior'
-         (dolist (key icicle-apropos-cycle-next-keys)
+         (dolist (key  icicle-apropos-cycle-next-keys)
            (define-key map key 'icicle-next-apropos-candidate-action)) ; `next'
-         (dolist (key icicle-prefix-cycle-previous-action-keys)
+         (dolist (key  icicle-prefix-cycle-previous-action-keys)
            (define-key map key 'icicle-previous-prefix-candidate)) ; `C-home'
-         (dolist (key icicle-prefix-cycle-next-action-keys)
+         (dolist (key  icicle-prefix-cycle-next-action-keys)
            (define-key map key 'icicle-next-prefix-candidate)) ; `C-end'
-         (dolist (key icicle-apropos-cycle-previous-action-keys)
+         (dolist (key  icicle-apropos-cycle-previous-action-keys)
            (define-key map key 'icicle-previous-apropos-candidate)) ; `C-prior'
-         (dolist (key icicle-apropos-cycle-next-action-keys)
+         (dolist (key  icicle-apropos-cycle-next-action-keys)
            (define-key map key 'icicle-next-apropos-candidate))))
 
   ;; Help and alternative-action keys are NOT controlled by `icicle-use-C-for-actions-flag'.
   ;;
   ;; Define modal cycling help and alternative action keys.
-  (dolist (key icicle-modal-cycle-up-help-keys)
+  (dolist (key  icicle-modal-cycle-up-help-keys)
     (define-key map key 'icicle-previous-candidate-per-mode-help)) ; `C-M-up'
-  (dolist (key icicle-modal-cycle-down-help-keys)
+  (dolist (key  icicle-modal-cycle-down-help-keys)
     (define-key map key 'icicle-next-candidate-per-mode-help)) ; `C-M-down'
-  (dolist (key icicle-modal-cycle-up-alt-action-keys)
+  (dolist (key  icicle-modal-cycle-up-alt-action-keys)
     (define-key map key 'icicle-previous-candidate-per-mode-alt-action)) ; `C-S-up'
-  (dolist (key icicle-modal-cycle-down-alt-action-keys)
+  (dolist (key  icicle-modal-cycle-down-alt-action-keys)
     (define-key map key 'icicle-next-candidate-per-mode-alt-action)) ; `C-S-down'
   ;; Define non-modal cycling help and alternative action keys.
-  (dolist (key icicle-prefix-cycle-previous-help-keys)
+  (dolist (key  icicle-prefix-cycle-previous-help-keys)
     (define-key map key 'icicle-help-on-previous-prefix-candidate)) ; `C-M-home'
-  (dolist (key icicle-prefix-cycle-next-help-keys)
+  (dolist (key  icicle-prefix-cycle-next-help-keys)
     (define-key map key 'icicle-help-on-next-prefix-candidate)) ; `C-M-end'
-  (dolist (key icicle-apropos-cycle-previous-help-keys)
+  (dolist (key  icicle-apropos-cycle-previous-help-keys)
     (define-key map key 'icicle-help-on-previous-apropos-candidate)) ; `C-M-prior'
-  (dolist (key icicle-apropos-cycle-next-help-keys)
+  (dolist (key  icicle-apropos-cycle-next-help-keys)
     (define-key map key 'icicle-help-on-next-apropos-candidate)) ; `C-M-next'
-  (dolist (key icicle-prefix-cycle-previous-alt-action-keys)
+  (dolist (key  icicle-prefix-cycle-previous-alt-action-keys)
     (define-key map key 'icicle-previous-prefix-candidate-alt-action)) ; `C-S-home'
-  (dolist (key icicle-prefix-cycle-next-alt-action-keys)
+  (dolist (key  icicle-prefix-cycle-next-alt-action-keys)
     (define-key map key 'icicle-next-prefix-candidate-alt-action)) ; `C-S-end'
-  (dolist (key icicle-apropos-cycle-previous-alt-action-keys)
+  (dolist (key  icicle-apropos-cycle-previous-alt-action-keys)
     (define-key map key 'icicle-previous-apropos-candidate-alt-action)) ; `C-S-prior'
-  (dolist (key icicle-apropos-cycle-next-alt-action-keys)
+  (dolist (key  icicle-apropos-cycle-next-alt-action-keys)
     (define-key map key 'icicle-next-apropos-candidate-alt-action))) ; `C-S-next'
 
 (defun icicle-select-minibuffer-contents ()
@@ -4534,9 +4555,9 @@ if `icicle-change-region-background-flag' is non-nil."
 ;; Do this last.
 ;;
 ;; When these libraries are first loaded, toggle Icicle mode to pick up the definitions
-(dolist (library '("bookmark+" "buff-menu" "comint" "dired" "ess-site" "gud" "ibuffer"
-                   "idlw-shell"         ; (untested - I don't have an `idl' program)
-                   "ielm" "info" "net-utils" "rlogin" "shell" "sh-script" "tcl"))
+(dolist (library  '("bookmark+" "buff-menu" "comint" "dired" "ess-site" "gud" "ibuffer"
+                    "idlw-shell"         ; (untested - I don't have an `idl' program)
+                    "ielm" "info" "net-utils" "rlogin" "shell" "sh-script" "tcl"))
   (unless (if (fboundp 'load-history-regexp) ; Emacs 22+
               (load-history-filename-element (load-history-regexp library))
             (assoc library load-history))
