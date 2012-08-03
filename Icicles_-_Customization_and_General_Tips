@@ -612,12 +612,25 @@ the default value.)
 [:icicle-key-complete-keys]
 ==== Option icicle-key-complete-keys ====
 
-Option `icicle-key-complete-keys' is the list of keys to bind to
-`icicle-complete-keys'.  By default, these keys are `S-tab' and
-`S-iso-lefttab', which together implement `S-TAB'.  (In Emacs 22
-and later, `backtab' is the canonical key that represents both
-`S-tab' and `S-iso-lefttab', so that is used in the default
-value.)
+Option '''`icicle-key-complete-keys'''' is the list of keys to bind to
+`icicle-complete-keys'.  By default, this is the singleton list
+##([backtab])##.  The `backtab' key is the canonical key that
+represents both `S-tab' and `S-iso-lefttab'.  All three of these
+keys implement `S-TAB'.
+
+
+----
+[:icicle-key-complete-keys-for-minibuffer]
+==== Option icicle-key-complete-keys-for-minibuffer ====
+
+Option '''`icicle-key-complete-keys-for-minibuffer'''' is the list of
+keys to bind to `icicle-complete-keys' in the minibuffer
+keymaps.  By default, this is the singleton list ##([M-backtab])##,
+which means `M-S-TAB'.  `S-TAB' itself is of course used (by
+default) for apropos completion of your minibuffer input, so it
+cannot also be used for key completion in the minibuffer.
+
+
 
 
 ----
