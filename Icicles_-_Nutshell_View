@@ -1050,6 +1050,10 @@ You can start directly with a key prefix, and then hit `S-TAB' to complete it --
 
 Instead of clicking a completion candidate with `mouse-2', you can of course type part of the key name or command name, and then complete the name and enter it. ''Gotcha:'' `S-TAB' uses [[Icicles - Apropos Completions | apropos completion]], by default, so remember that typing `##.##' matches any character (except a newline). To match only `##..##' (to go up a level), either use [[Icicles - Background on Input Completion|prefix completion]] (`TAB') or escape the regexp special character: `##\.\.##' (or use `##^\.##').  Or cycle to it.
 
+'''Icicles''' key completion is also available in the [[minibuffer]], but
+there, since `S-TAB' performs [[apropos completion]] of your input,
+the key that initiates key completion is '''`M-S-TAB'''', not `S-TAB'.
+
 See [[Icicles - Key Completion]] for more about completing [[key sequence]]s.
 
 
