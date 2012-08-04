@@ -6,10 +6,10 @@
 ;; Maintainer: Christopher R. Genovese <genovese@cmu.edu>
 ;; URL: http://www.stat.cmu.edu/~genovese/emacs/win-switch/
 
-;; Version: 1.0.5
-;; Update#: 16
+;; Version: 1.0.6
+;; Update#: 17
 ;; Created:      Wed 28 Jul 2011 at 00:27 EDT
-;; Last-Updated: Sat 17 Mar 2012 at 14:49 EDT
+;; Last-Updated: Sat 04 Aug 2012 at 14:58 EDT
 ;; By: Christopher R. Genovese
 
 ;; Keywords: window, switch, key bindings, ergonomic, efficient
@@ -733,9 +733,9 @@ keys with the same prefix."
   (let ((fixed-map
          (mapcar (lambda (entry)
                    (if (and (consp entry)
-                            (keymapp (rest entry))
-                            (null (lookup-key (rest entry) [t])))
-                       (cons (first entry) (win-switch-fix-keymap-defaults (rest entry)))
+                            (keymapp (cdr entry))
+                            (null (lookup-key (cdr entry) [t])))
+                       (cons (car entry) (win-switch-fix-keymap-defaults (cdr entry)))
                      entry)) map)))
     (unless (lookup-key fixed-map [t])
       (define-key fixed-map [t] 'win-switch-exit-and-redo))
@@ -845,7 +845,7 @@ arguments to `run-with-idle-timer'."
   "Save keymap bound to symbol MAP and set MAP to `win-switch-map'."
   `(progn
      (when (and ,map
-                (not (eq ,map (first win-switch-overriding-map-stack))))
+                (not (eq ,map (car win-switch-overriding-map-stack))))
        (push ,map win-switch-overriding-map-stack))
      (setq ,map win-switch-map)))
 
@@ -979,7 +979,7 @@ an exit command event."
   (when win-switch-engaged
     (mapc (lambda (u) (push u unread-command-events))
           (reverse (listify-key-sequence
-                    (first win-switch-exit-keys))))))
+                    (car win-switch-exit-keys))))))
 
 (defun win-switch-emergency-exit ()
   "Exit from window switching mode without niceties."
@@ -1124,7 +1124,7 @@ message."
       (error "%s is not a valid win-switch key type" name))
     (unless (member key lst)
       (error "Key %s is not associated with command %s" key name))
-    (when (null (rest lst))       ; only one key remaining to be deleted
+    (when (null (cdr lst))       ; only one key remaining to be deleted
       (if (eq name 'exit)
           (error "The exit keys list for win-switch must remain non-empty")
         (message "Removing last key from command list win-switch-%s-keys" name)))
@@ -1142,7 +1142,7 @@ keymap (and all sub-keymaps) have an exit-inducing
 default (`win-switch-exit-and-redo'), unless FORCE-NO-DEFAULT is
 non-nil."
   (interactive "KKey sequence: \nCSet key %s to command: ")
-  (when (and (null (rest win-switch-exit-keys)) ; length <= 1
+  (when (and (null (cdr win-switch-exit-keys)) ; length <= 1
              (member key win-switch-exit-keys)
              (not (eq def 'win-switch-exit)))
     (error "The exit keys list for win-switch must remain non-empty"))
