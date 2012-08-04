@@ -8,7 +8,6 @@ The development history can be found here: [http://ch.ristopher.com/git/?p=ampc;
 [[image:AmpcScreenShot]]
 
 ----
-
 == installation ==
 
 If you use GNU [[ELPA]], install ampc via M-x package-list-packages RET or
@@ -297,6 +296,7 @@ To start ampc suspended, call `ampc' with the third argument being non-nil.
 To check whether ampc is connected to the daemon and/or suspended, call
 `ampc-is-on-p' or `ampc-suspended-p'.
 
+<pre>
 (global-set-key (kbd "<f7>")
                 (lambda ()
                   (interactive)
@@ -309,3 +309,5 @@ To check whether ampc is connected to the daemon and/or suspended, call
                   (unless (ampc-on-p)
                     (ampc nil nil t))
                   (ampc-mini)))
+</pre>
+
