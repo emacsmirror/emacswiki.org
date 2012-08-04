@@ -732,7 +732,7 @@ the first item should come before the second in the menu."
 
 (defcustom one-key-special-keybindings
   '((quit-close "ESC" "Quit and close menu window" (lambda nil (keyboard-quit) nil))
-    (quit-open"<C-escape>" "Quit, but keep menu window open"
+    (quit-open"C-ESC" "Quit, but keep menu window open"
               (lambda nil (setq keep-window-p t) nil))
     (toggle-persistence "<C-menu>" "Toggle menu persistence"
                         (lambda nil (if match-recursion-p
@@ -762,7 +762,7 @@ the first item should come before the second in the menu."
     (scroll-up "<next>" "Scroll menu up one page" (lambda nil (one-key-menu-window-scroll-up) t))
     (help "C-h" "Show help for next item chosen"
           (lambda nil
-            (let ((key (read-key "Enter the key for the item that you want help on")))
+            (let ((key (read-event "Enter the key for the item that you want help on")))
               (one-key-show-item-help key full-list)
               (setq match-recursion-p t)) t))
     (save-menu "C-s" "Save current state of menu"
@@ -816,7 +816,7 @@ the first item should come before the second in the menu."
                  (lambda nil (one-key-delete-menu) t))
     (move-item "<f10>" "Reposition item (with arrow keys)"
                (lambda nil (let ((key (one-key-key-description
-                                       (read-key "Enter key of item to be moved"))))
+                                       (read-event "Enter key of item to be moved"))))
                              (setq one-key-current-item-being-moved key)
                              (setq one-key-menu-call-first-time t)) t))
     (donate "<f11>" "Donate to support further development"
@@ -824,7 +824,7 @@ the first item should come before the second in the menu."
     (report-bug "<C-f11>" "Report a bug" one-key-submit-bug-report)
     (show-menusets "C-h" "Show menus in menu set"
                    (lambda nil
-                     (let* ((key (read-key "Enter the key for the menu set"))
+                     (let* ((key (read-event "Enter the key for the menu set"))
                             (item (one-key-get-menu-item key full-list))
                             (menuset (assoc (cdar item) one-key-sets-of-menus-alist))
                             (desc (car menuset))
@@ -1205,7 +1205,9 @@ containing the name of the buffer that was displayed when the one-key menu windo
                        maximize (+ 3 maxkey (length (cadr elt)))))
          (width (/ (window-width) 2))
          (keystr (if (> maxstr width)
-                     (mapconcat (lambda (elt) (format "%s\t: %s" (car elt) (cadr elt)))
+                     (mapconcat (lambda (elt) (format "%s\t: %s"
+                                                      (one-key-remap-key-description (car elt))
+                                                      (cadr elt)))
                                 special-keybindings "\n")
                    (loop with colsize = (+ (/ (length special-keybindings) 2)
                                            (% (length special-keybindings) 2))
@@ -1213,12 +1215,14 @@ containing the name of the buffer that was displayed when the one-key menu windo
                          for n from 0 to (1- colsize)
                          for (key1 desc1) = (nth n special-keybindings)
                          for (key2 desc2) = (nth (+ n colsize) special-keybindings)
-                         for keyspc1 = (make-string (- maxkey (length key1)) ? )
-                         for keyspc2 = (make-string (- maxkey (length key2)) ? )
-                         for str1 = (format "%s%s: %s" key1 keyspc1 desc1)
-                         for str2 = (format "%s%s: %s" key2 keyspc2 desc2)
+                         for key1a = (one-key-remap-key-description key1)
+                         for key2a = (one-key-remap-key-description key2)
+                         for keyspc1 = (make-string (- maxkey (length key1a)) ? )
+                         for keyspc2 = (make-string (- maxkey (length key2a)) ? )
+                         for str1 = (format "%s%s: %s" key1a keyspc1 desc1)
+                         for str2 = (format "%s%s: %s" key2a keyspc2 desc2)
                          for spc = (make-string (- width (length str1)) ? ) do
-                         (push (concat str1 spc (if key2 str2) "\n") finalstr)
+                         (push (concat str1 spc (if key2a str2) "\n") finalstr)
                          finally return (mapconcat 'identity (nreverse finalstr) "")))))
     (with-help-window (help-buffer)
       (princ (concat "Press the highlighted key in the menu to perform the corresponding action written next to it.
@@ -1295,10 +1299,10 @@ MENU-ALIST should be a menu of items as used by the `one-key-menu' function."
   "Prompt the user for item details and add it to the current `one-key' menu.
 INFO-ALIST and FULL-LIST are as in the `one-key-menu' function."
   (let* ((isref (symbolp info-alist))
-         (newkey (let ((key (read-key "Enter the key for the new item")))
+         (newkey (let ((key (read-event "Enter the key for the new item")))
                    (while (and (one-key-get-menu-item key full-list)
                                (not (y-or-n-p "That key is already used! Overwrite old item?")))
-                     (setq key (read-key "Enter new key for the item")))
+                     (setq key (read-event "Enter new key for the item")))
                    key))
          (desc (read-string "Item description: "))
          (contents (read-from-minibuffer "Command: " nil nil t)))
@@ -1315,7 +1319,7 @@ INFO-ALIST and FULL-LIST are as in the `one-key-menu' function."
   (let* ((keya (read-event "Press key for first item"))
          (keyastr (one-key-key-description keya))
          (itema (one-key-get-menu-item keyastr full-list))
-         (keyb (read-key "Press key for second item"))
+         (keyb (read-event "Press key for second item"))
          (keybstr (one-key-key-description keyb))
          (itemb (one-key-get-menu-item keybstr full-list)))
     (if (not (and itema itemb)) (message "Invalid key!")
@@ -1400,11 +1404,11 @@ By default the colour will be returned in hex string format."
 INFO-ALIST and FULL-LIST are as in the `one-key-menu' function."
   (let* ((oldkey (read-event "Press the key of the item you want to edit"))
          (item (one-key-get-menu-item oldkey full-list))
-         (newkey (let ((key (read-key "Enter new key for the item")))
+         (newkey (let ((key (read-event "Enter new key for the item")))
                    (while (and (one-key-get-menu-item key full-list)
                                (not (eq key oldkey))
                                (not (y-or-n-p "That key is already used! Use it anyway?")))
-                     (setq key (read-key "Enter new key for the item")))
+                     (setq key (read-event "Enter new key for the item")))
                    key))
          (desc (read-string "Item description: " (cdar item) nil nil))
          (oldcontents (cdr item))
@@ -1748,7 +1752,7 @@ If FILTER-REGEX is non-nil then only menu items whose descriptions match FILTER-
     (unwind-protect
         ;; read a key and get the key description
         (let* ((namelist (if (listp names) names nil))
-               (event (read-key (if one-key-menu-call-first-time
+               (event (read-event (if one-key-menu-call-first-time
                                     ;; just show the menu buffer when first called
                                     (progn (setq one-key-menu-call-first-time nil)
                                            (if one-key-popup-window
@@ -1760,13 +1764,14 @@ If FILTER-REGEX is non-nil then only menu items whose descriptions match FILTER-
                  (and (not (get-buffer-window (help-buffer)))
                       (catch 'match
                         (loop for item in filtered-list
-                              for match-key = (caar item)
+                              for match-key = (one-key-remap-key-description (caar item))
                               for desc = (cdar item)
                               for rest = (cdr item)
                               for command = (if (commandp rest) rest
                                               (if (one-key-list-longer-than-1-p rest)
                                                   (car rest)
-                                                (lambda nil (interactive) (message "Invalid command %S" rest)))) do
+                                                (lambda nil (interactive) (message "Invalid command %S" rest))))
+                              do
                               (when (equal key match-key)
                                 ;; Update key usage statistics if necessary
                                 (if one-key-auto-brighten-used-keys
@@ -1793,10 +1798,13 @@ If FILTER-REGEX is non-nil then only menu items whose descriptions match FILTER-
                    (if match-recursion-p
                        (setq keep-window-p temp))))
                 ;; HANDLE SPECIAL KEYS:
-                ((assoc key special-keybindings)
+                ((assoc* key special-keybindings :test (lambda (x y) (equal x (one-key-remap-key-description y))))
                  ;; call the `alternate-function' and the function associated with the special key
                  ;; if this function returns non-nil then wait for the next keypress
-                 (let* ((again (funcall (caddr (assoc key special-keybindings))))
+                 (let* ((again (funcall
+                                (caddr
+                                 (assoc* key special-keybindings
+                                         :test (lambda (x y) (equal x (one-key-remap-key-description y)))))))
                         (temp (one-key-handle-last alternate-function self again)))
                    ;; if necessary, propagate the value of `keep-window-p' back up
                    (if again (setq keep-window-p temp))))
@@ -2029,7 +2037,8 @@ Each element of this list is in the form: ((key . describe) . command)."
   (let ((items-alist (if (symbolp info-alist) (eval info-alist) info-alist)))
     (if (> (length items-alist) 0)
         (let* ((item-lengths (mapcar (lambda (item) (+ (length (cdar item))
-                                                       (length (caar item)) 4)) items-alist))
+                                                       (length (one-key-remap-key-description (caar item))) 4))
+                                     items-alist))
                (colspecs (one-key-optimize-col-widths item-lengths (- (window-width) 3)))
                (numitems (length items-alist))
                (maxcols (length colspecs))
@@ -2045,7 +2054,7 @@ Each element of this list is in the form: ((key . describe) . command)."
                                       (+ (* row maxcols) col))
                       for item = (nth itemnum items-alist)
                       for (key . desc) = (car item)
-                      for keytext = (format "[%s] %s " key desc)
+                      for keytext = (format "[%s] %s " (one-key-remap-key-description key) desc)
                       if item do
                       (push keytext keystroke-msg)
                       (push (make-string (- width (length keytext)) ? ) keystroke-msg)
@@ -2058,8 +2067,9 @@ Each element of this list is in the form: ((key . describe) . command)."
   "Return the member of MENU-ALIST corresponding to key KEY, or nil if no such item exists.
 KEY may be a char or the string representation of a char.
 MENU-ALIST is a list of `one-key' menu items."
-  (let ((thekey (if (stringp key) key (one-key-key-description key))))
-    (find-if (lambda (x) (equal (caar x) thekey)) menu-alist)))
+  (let ((thekey (one-key-key-description key)))
+    (find-if (lambda (x) (equal (one-key-remap-key-description (caar x)) thekey))
+             menu-alist)))
 
 (defun one-key-add-menu-item (key desc contents menu-alist)
   "Add a new item to MENU-ALIST in the form ((KEY . DESC) . CONTENTS), overwriting any item with the same key.
@@ -2067,7 +2077,7 @@ Return the new value of MENU-ALIST after adding the item.
 KEY may be a char or the string representation of a char.
 DESC must be a string (the description to display in the menu).
 CONTENTS may be a command or a list whose first element is a command (it will be executed when KEY is pressed in the menu)."
-  (let* ((thekey (if (stringp key) key (one-key-key-description key)))
+  (let* ((thekey (one-key-key-description key))
          (item (one-key-get-menu-item thekey menu-alist)))
     (if item (progn (setf (cdar item) desc (cdr item) contents) menu-alist)
       (add-to-list 'menu-alist (cons (cons thekey desc) contents)))))
@@ -2217,7 +2227,7 @@ created for them."
                      "unknown")))
          (keymap1 (if (functionp keymap) (symbol-function keymap)
                     (if (symbolp keymap) (eval keymap)
-                      keymap))) ;get the keymap value
+                      keymap)))         ;get the keymap value
          (menubar (lookup-key keymap1 [menu-bar])) ;get any menu-bar items
          (mainvar (intern (concat "one-key-menu-" name "-alist"))) ;variable to hold the main menu
          (winwidth (window-width)) ;need to know the window width to make sure descriptions aren't too long
@@ -2271,8 +2281,8 @@ created for them."
                            (submenuname (concat name "_" keystr))
                            (desc2 (concat "Prefix key (" keydesc ")"))
                            (desc3 (propertize desc2 'face
-                                            (list :background "cyan"
-                                                  :foreground one-key-item-foreground-colour)))
+                                              (list :background "cyan"
+                                                    :foreground one-key-item-foreground-colour)))
                            ;; if the key is invalid, generate a new one
                            (keystr2 (if (member keystr one-key-disallowed-keymap-menu-keys)
                                         (one-key-generate-key desc2 usedkeys)
@@ -2314,37 +2324,54 @@ created for them."
     ;; return the main menu variable
     mainvar))
 
-(defun one-key-generate-key (desc &optional usedkeys elements trykey)
-  "Return a key for the menu item whose description string is DESC.
-The generated key can be used in a `one-key' menu.
-If provided, ELEMENTS should be a list of keys to choose from, (otherwise `one-key-default-menu-keys' will be used),
-USEDKEYS should be a list of keys which cannot be used (since they have already be used),
-and TRYKEY is a key which will be returned if it is not in USEDKEYS (otherwise another key will be found).
-This function can be used to help automatic creation of `one-key' menus."
-  (let ((elements (or elements one-key-default-menu-keys)))
-    (or (and trykey
-             (not (memq trykey usedkeys))
-             (not (member (one-key-key-description trykey) usedkeys))
-             trykey)
-        (loop for element in elements
-              for keystr = (one-key-key-description element)
-              if (not (or (memq element usedkeys)
-                          (member keystr usedkeys)))
-              return (one-key-key-description element))
-        (error "Can not generate a unique key for menu item : %s" desc))))
+ (defun one-key-generate-key (desc &optional usedkeys elements trykey)
+   "Return a key for the menu item whose description string is DESC.
+ The generated key can be used in a `one-key' menu.
+ If provided, ELEMENTS should be a list of keys to choose from, (otherwise `one-key-default-menu-keys' will be used),
+ USEDKEYS should be a list of keys which cannot be used (since they have already be used),
+ and TRYKEY is a key which will be returned if it is not in USEDKEYS (otherwise another key will be found).
+ This function can be used to help automatic creation of `one-key' menus."
+   (let ((elements (or elements one-key-default-menu-keys)))
+     (or (and trykey
+              (not (memq trykey usedkeys))
+              (not (member (one-key-key-description trykey) usedkeys))
+              trykey)
+         (loop for element in elements
+               for keystr = (one-key-key-description element)
+               if (not (or (memq element usedkeys)
+                           (member keystr usedkeys)))
+               return (one-key-key-description element))
+         (error "Can not generate a unique key for menu item : %s" desc))))
+
+(defvar one-key-key-description-remap
+  '(("<return>" . "RET")
+    ("<tab>" . "TAB")
+    ("<space>" . "SPC")
+    ("<begin>" . "<home>")
+    ("<escape>" . "ESC")
+    ("<C-escape>" . "C-ESC")
+    ("<delete>" . "DEL"))
+  "Alist of key descriptions and their preferred versions.
+This is required in order that keys such as RET (which can also be described as <return> are always described and
+recognized the same way.")
+
+(defun one-key-remap-key-description (keydesc)
+  (let ((pair (assoc keydesc one-key-key-description-remap)))
+    (if pair (cdr pair) keydesc)))
 
 (defun one-key-key-description (keyseq)
   "Return the key description for the key sequence or single key KEYSEQ.
 KEYSEQ may be a vector, integer, symbol or string representing a key sequence, or nil.
 If KEYSEQ is nil then nil is returned, if it is non-nil and not a string, vector, symbol or number then an error is flagged."
-  (cond ((not keyseq) nil)
-        ((vectorp keyseq) (key-description keyseq))
-        ((numberp keyseq) (single-key-description keyseq))
-        ((symbolp keyseq) (single-key-description keyseq))
-        ((stringp keyseq) (if (string-match "^C-\\|^M-\\|^RET\\|^SPC\\|^TAB\\|^<[a-z0-9-]+>" keyseq)
-                              keyseq
-                            (key-description keyseq)))
-        (t (error "Invalid key sequence: %S" keyseq))))
+  (one-key-remap-key-description
+   (cond ((not keyseq) nil)
+         ((vectorp keyseq) (key-description keyseq))
+         ((numberp keyseq) (single-key-description keyseq))
+         ((symbolp keyseq) (single-key-description keyseq))
+         ((stringp keyseq) (if (string-match "^C-\\|^M-\\|^RET\\|^SPC\\|^TAB\\|^<[a-z0-9-]+>\\|^[a-zA-Z0-9]" keyseq)
+                               keyseq
+                             (key-description keyseq)))
+         (t (error "Invalid key sequence: %S" keyseq)))))
 
 (defun one-key-append-keys-to-descriptions (descriptions keys)
   "Append key descriptions for keys in KEYS to corresponding descriptions in DESCRIPTIONS, and return result.
