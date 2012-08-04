@@ -49,45 +49,26 @@ and share a single TAGS file across work areas of the same project.  See [[find-
 See EtagsTable
 
 [new]
-Vim has a nice feature where you can indicate that you would like the editor to 
-search up the directory tree from the current working directory for a file named 
-"tags". These two functions provide that for vtags, searching up the filesystem from
-the <code>buffer-file-name</code> of the current buffer.
+To load an existing TAGS file by searching parent directories, use this:
 
 <pre>
-(defun jds-find-tags-file ()
-  "recursively searches each parent directory for a file named `tags' and returns the
-path to that file or nil if a tags file is not found. Returns nil if the buffer is
-not visiting a file"
+(defun find-file-upwards (file-to-find)
+  "Recursively searches each parent directory starting from the default-directory.
+looking for a file with name file-to-find.  Returns the path to it
+or nil if not found."
   (labels
-      ((find-tags-file-r (path)
-         (let* ((parent (file-name-directory path))
-                (possible-tags-file (concat parent "tags")))
-           (cond
-             ((file-exists-p possible-tags-file) (throw 'found-it possible-tags-file))
-             ((string= "/tags" possible-tags-file) (error "no tags file found"))
-             (t (find-tags-file-r (directory-file-name parent)))))))
-
-    (if (buffer-file-name)
-        (catch 'found-it 
-          (find-tags-file-r (buffer-file-name)))
-        (error "buffer is not visiting a file"))))
-
-(defun jds-set-tags-file-path ()
-  "calls `jds-find-tags-file' to recursively search up the directory tree to find
-a file named `tags'. If found, calls `vtags-set-tags-file' with that path as an argument
-otherwise raises an error."
-  (interactive)
-  (vtags-set-tagfile (jds-find-tags-file)))
+      ((find-file-r (path)
+                    (let* ((parent (file-name-directory path))
+                           (possible-file (concat parent file-to-find)))
+                      (cond
+                       ((file-exists-p possible-file) possible-file) ; Found
+                       ((string= (concat "/" file-to-find) possible-file) nil) ; Not found
+                       (t (find-file-r (directory-file-name parent))))))) ; Continue
+    (find-file-r default-directory)))
+(visit-tags-table (find-file-upwards "TAGS"))
 </pre>
 
-
-[new]
-two possible improvements:
-# make the name of the tags file a parameter to the <code>jds-set-tags-file-path</code> function
-# make the end-condition of matching "/tags" work with Win32 filesystems.
-
--- JonathanSimms
+Someone can modify to make it work on MS Windows.
 
 == Revisit Tags Chronologically ==
 
