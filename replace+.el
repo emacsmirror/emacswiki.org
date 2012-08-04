@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Jan 30 15:01:06 1996
 ;; Version: 21.0
-;; Last-Updated: Fri Aug  3 15:07:56 2012 (-0700)
+;; Last-Updated: Sat Aug  4 08:19:15 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 1256
+;;     Update #: 1274
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/replace+.el
 ;; Keywords: matching, help, internal, tools, local
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x
@@ -111,6 +111,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2012/08/04 dadams
+;;     occur-unhighlight-visited-hits: Removed requirement that it be called from occur mode.
 ;; 2012/08/03 dadams
 ;;     Added: occur-searched-buffers, occur-unhighlight-visited-hits.
 ;;     Advised multi-occur(--in-matching-buffers), to highlight source match.
@@ -1084,17 +1086,13 @@ Highlight the occur regexp in the source buffer."
   (setq occur-searched-buffers  (ad-get-arg 1)))
 
 (defun occur-unhighlight-visited-hits (&optional msgp)
-  "Unhighlight visited search hits for current occur-mode buffer.
-Non-interactively, is a no-op without library `highlight.el'."
+  "Unhighlight visited search hits for the latest occur-mode buffer.
+Non-interactively, this is a no-op without library `highlight.el'."
   (interactive "p")
-  (unless (eq major-mode 'occur-mode)
-    (error "This function must be invoked from an Occur mode buffer"))
   (when (and msgp  (not (fboundp 'hlt-unhighlight-region)))
-    (error "This command requires library `highlight.el'"))
-  (when (and (fboundp 'hlt-unhighlight-region)
-             (listp occur-searched-buffers))
-    (dolist (buf  occur-searched-buffers)
-      (with-current-buffer buf (hlt-unhighlight-region)))
+    (error "`occur-unhighlight-visited-hits' requires library `highlight.el'"))
+  (when (and (fboundp 'hlt-unhighlight-region)  (listp occur-searched-buffers))
+    (dolist (buf  occur-searched-buffers)  (with-current-buffer buf (hlt-unhighlight-region)))
     (setq occur-searched-buffers  ())))
 
 ;;;;;;;;;;;;;;;;;;;;;;;
