@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Tue Jul 31 08:07:14 2012 (-0700)
+;; Last-Updated: Fri Aug  3 16:02:06 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 28953
+;;     Update #: 28955
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-doc2.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -5171,11 +5171,17 @@
 ;;    the default value.)
 ;;
 ;;  * Option `icicle-key-complete-keys' is the list of keys to bind to
-;;    `icicle-complete-keys'.  By default, these keys are `S-tab' and
-;;    `S-iso-lefttab', which together implement `S-TAB'.  (In Emacs 22
-;;    and later, `backtab' is the canonical key that represents both
-;;    `S-tab' and `S-iso-lefttab', so that is used in the default
-;;    value.)
+;;    `icicle-complete-keys'.  By default, this is the singleton list
+;;    ([backtab]).  The `backtab' key is the canonical key that
+;;    represents both `S-tab' and `S-iso-lefttab'.  All three of these
+;;    keys implement `S-TAB'.
+;;
+;;  * Option `icicle-key-complete-keys-for-minibuffer' is the list of
+;;    keys to bind to `icicle-complete-keys' in the minibuffer
+;;    keymaps.  By default, this is the singleton list ([M-backtab]),
+;;    which means `M-S-TAB'.  `S-TAB' itself is of course used (by
+;;    default) for apropos completion of your minibuffer input, so it
+;;    cannot also be used for key completion in the minibuffer.
 ;;
 ;;  * Option `icicle-previous-candidate-keys' is the list of keys to
 ;;    bind to `icicle-move-to-previous-completion', for moving among
