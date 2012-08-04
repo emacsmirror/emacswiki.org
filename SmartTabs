@@ -221,5 +221,11 @@ the [http://dhaumann.blogspot.com/2009/10/extending-kate-with-scripts.html#advan
 
 [[image:SmartTabsScreenshot]]
 
+
+== Questions ==
+
+[new]
+I tried to use [https://github.com/jcsalomon/smarttabs/issues/11 smart-tabs-mode.el working with sh-mode] and did not managed to, any idea? --DanielDehennin
+
 ----
 CategoryIndentation
