@@ -8,6 +8,7 @@ The development history can be found here: [http://ch.ristopher.com/git/?p=ampc;
 [[image:AmpcScreenShot]]
 
 ----
+
 == installation ==
 
 If you use GNU [[ELPA]], install ampc via M-x package-list-packages RET or
@@ -32,7 +33,7 @@ which in turn uses TagLib (http://taglib.github.com/), a dual-licended
 dependencies on its own.
 
 To build `ampc_tagger', locate ampc_tagger.cpp.  The file can be found in the
-directory in which this file (Lisp:ampc.el), ampc.el, is located.  Compile the file and
+directory in which this file, ampc.el, is located.  Compile the file and
 either customize `ampc-tagger-executable' to point to the binary file or move
 the executable in a suitable directory so Emacs finds it via consulting
 `exec-path'.
@@ -310,4 +311,3 @@ To check whether ampc is connected to the daemon and/or suspended, call
                     (ampc nil nil t))
                   (ampc-mini)))
 </pre>
-
