@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Tue Jul 31 09:41:26 2012 (-0700)
+;; Last-Updated: Fri Aug  3 15:23:39 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 8708
+;;     Update #: 8719
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-chg.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -4720,6 +4720,10 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-mode.el'")
 ;;
+;; 2012/08/03 dadams
+;;     icicle-(un)bind-key-completion-keys-(for-map-var|in-keymaps-from): Added optional arg KEYS.
+;;     icicle-(bind|restore)-other-keymap-keys:
+;;       (Un-)bind icicle-key-complete-keys-for-minibuffer in minibuffer-local-map, for key completion.
 ;; 2012/07/31 dadams
 ;;     Added: icicle-(redefine|restore)-standard-widgets.
 ;;     icicle-mode: Added call to icicle-(redefine|restore)-standard-widgets.
@@ -5836,6 +5840,9 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-opt.el'")
 ;;
+;; 2012/08/03 dadams
+;;     Added: icicle-key-complete-keys-for-minibuffer.
+;;     icicle-key-complete-keys: Updated default value, since Emacs bug #1281 was fixed.
 ;; 2012/07/31 dadams
 ;;     Added: icicle-widgets-to-redefine, icicle-widgetp.
 ;; 2012/07/24 dadams
