@@ -71,8 +71,6 @@ or nil if not found."
     (visit-tags-table my-tags-file)))
 </pre>
 
-Someone can modify to make it work on MS Windows.
-
 == Revisit Tags Chronologically ==
 
 You can use EtagsStack to see the history of which tags you have visited (using, for example, `##M-.##') and retrace your visits chronologically.
