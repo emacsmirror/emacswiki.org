@@ -16,7 +16,12 @@ Discussion about the TextFormattingRules used in contributing to pages  is at Te
 
 == Provide alternate stylesheets ==
 
-I would like to choose the stylesheet for EmacsWiki easily.  If Emacswiki could provide alternate stylesheets - see  http://orgmode.org/worg/ - then I will be able to choose the theme using View->Page Style->etc menu in Firefox.
+I would like to choose the stylesheet for EmacsWiki easily.  If Emacswiki could provide alternate stylesheets - see  http://orgmode.org/worg/ - then I will be able to choose the theme using View->Page Style->etc menu in Firefox. -- [[115.241.16.57]]
+
+[new:DrewAdams:2012-08-05 16:41 UTC]
+Does [[CSS]] correspond to your request?  I don't use alternative stylesheets myself, but last time I tried this (years ago) it seemed to do what you are suggesting. 
+
+(I've updated HowTo to mention page [[CSS]].) -- DrewAdams
 
 
 == Content Fixes ==
