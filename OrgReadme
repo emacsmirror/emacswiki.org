@@ -1,12 +1,30 @@
 This page describes [[org-readme.el]].
 
-== Org-readme ==
-This file is to help generate <tt>Readme.org</tt> files based on emacs lisp
-files.
-== Changelog ==
-Currently this library allows changelog to become a history section in
-Readme.org
+
+
+
+== Library Information ==
+*org-readme.el* --- Integrates Readme.org and Commentary/Change-logs.
+
+* <b>Filename </b> --  [[org-readme.el]]
+* <b>Description </b> --  Integrate Readme.org and Commentary/Change Logs.
+* <b>Author </b> --  Matthew L. Fidler
+* <b>Maintainer </b> --  Matthew L. Fidler
+* <b>Created </b> --  Fri Aug  3 22:33:41 2012 (-0500)
+* <b>Version </b> --  0.01
+* <b>Last-Updated </b> --  Sun Aug  5 12:22:38 2012 (-0500)
+* <b>By </b> --  Matthew L. Fidler
+* <b>Update # </b> --  239
+* <B>URL </B> --  https://github.com/mlf176f2/org-readme
+* <b>Keywords </b> --  Header2, Readme.org, Emacswiki
+* <b>Compatibility </b> --  Tested with Emacs 24.1 on Windows.
+
+== Possible Dependencies ==
+
+None
+
 == History ==
 
+* <b>05-Aug-2012 </b> --   Added git support as well as a comment mode. The only thing that should need to be called is = = (Matthew L. Fidler)
 * <b>04-Aug-2012 </b> --   Added syncing with emacswiki.  (Matthew L. Fidler)
 * <b>04-Aug-2012 </b> --   Initial Release  (Matthew L. Fidler)
