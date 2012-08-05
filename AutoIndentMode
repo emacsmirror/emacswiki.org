@@ -184,6 +184,7 @@ Should give the following code on paste:
 
 == History ==
 
+* <b>04-Aug-2012 </b> --   Added ability to turn off dynamic growth of timers per mode. The algorithm to change has not been perfected yet. (Matthew L. Fidler)
 * <b>04-Aug-2012 </b> --   Fixed a bug introduced by cleaning typos. Changing again. (Matthew L. Fidler)
 * <b>03-Aug-2012 </b> --   Save indentation settings on exit emacs. (Matthew L. Fidler)
 * <b>03-Aug-2012 </b> --   Fixed Documentation, and a few minor bugs caught by linting. (Matthew L. Fidler)
@@ -256,7 +257,7 @@ Should give the following code on paste:
 * <b>18-Jan-2011 </b> --   Added support to turn on = = when inside an org-file. (Matthew L. Fidler)
 * <b>12-Jan-2011 </b> --   Added fix for ortbl-minor-mode. Now it will work when orgtbl-minor mode is enabled. (Matthew L. Fidler)
 * <b>09-Dec-2010 </b> --   Bugfix. Now instead of indenting the region pasted, indent the region-pasted + beginning of line at region begin and end of line at region end. (Matthew L. Fidler)
-* <b>02-Dec-2010 </b> --   Last-Updated: Sat Aug  4 21:29:14 2012 (-0500)
+* <b>02-Dec-2010 </b> --   Last-Updated: Sat Aug  4 21:31:33 2012 (-0500)
 * <b>02-Dec-2010 </b> --   Removed auto-indent on paste/yank for modes with indent-relative and indent-relative-maybe. This has annoyed me forever. (Matthew L. Fidler)
 * <b>02-Dec-2010 </b> --   Added an advice to delete-char. When deleting a new-line character, shrink white-spaces afterward. (Matthew L. Fidler)
 * <b>02-Dec-2010 </b> --   Speed enhancement by checking for yasnippets only on indentation. (Matthew L. Fidler)
