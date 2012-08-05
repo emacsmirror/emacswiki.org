@@ -6,9 +6,9 @@
 ;; Maintainer: Matthew L. Fidler
 ;; Created: Sat Nov  6 11:02:07 2010 (-0500)
 ;; Version: 0.64
-;; Last-Updated: Sat Aug  4 21:34:20 2012 (-0500)
+;; Last-Updated: Sat Aug  4 21:40:33 2012 (-0500)
 ;;           By: Matthew L. Fidler
-;;     Update #: 1406
+;;     Update #: 1407
 ;; URL: https://github.com/mlf176f2/auto-indent-mode.el/
 ;; Keywords: Auto Indentation
 ;; Compatibility: Tested with Emacs 23.x
@@ -40,7 +40,7 @@
 ;;     (if desired and enabled)
 ;; 
 ;;   - Automatically indent balanced parenthetical expression, or sexp, if desired
-;;      =auto-indent-current-pairs= or =auto-indent-next-pair= is set
+;;      <tt>auto-indent-current-pairs</tt> or <tt>auto-indent-next-pair</tt> is set
 ;;     to be true (enabled by default).  This is not immediate but occurs
 ;;     after 1/4 a second to allow better responsiveness in emacs.
 ;; 
@@ -60,7 +60,7 @@
 ;; 
 ;;  
 ;; 
-;;   Excluded modes are defined in =auto-indent-disabled-modes-list=
+;;   Excluded modes are defined in <tt>auto-indent-disabled-modes-list</tt>
 ;; 
 ;;   If you only want this on for a single mode, you would add the following to
 ;;   ~/.emacs
@@ -71,7 +71,7 @@
 ;; 
 ;; 
 ;;   You could always turn on the minor mode with the command
-;;   =auto-indent-minor-mode=
+;;   <tt>auto-indent-minor-mode</tt>
 ;; * TextMate Meta-Return behavior
 ;;   If you would like TextMate behavior of Meta-RETURN going to the
 ;;   end of the line and then inserting a newline, as well as
@@ -129,13 +129,13 @@
 ;; 
 ;;  
 ;;   However, this does not honor the excluded modes in
-;;   =auto-indent-disabled-modes-list=
+;;   <tt>auto-indent-disabled-modes-list</tt>
 ;; 
 ;; 
 ;; * Making certain modes perform tasks on paste/yank.
 ;; Sometimes, like in R, it is convenient to paste c:\ and change it to
 ;; c:/.  This can be accomplished by modifying the
-;; =auto-indent-after-yank-hook=.
+;; <tt>auto-indent-after-yank-hook</tt>.
 ;; 
 ;; The code for changing the paths is as follows:  
 ;; 
