@@ -6,9 +6,9 @@
 ;; Maintainer: Matthew L. Fidler
 ;; Created: Sat Nov  6 11:02:07 2010 (-0500)
 ;; Version: 0.64
-;; Last-Updated: Sat Aug  4 20:59:48 2012 (-0500)
+;; Last-Updated: Sat Aug  4 21:24:57 2012 (-0500)
 ;;           By: Matthew L. Fidler
-;;     Update #: 1401
+;;     Update #: 1402
 ;; URL: https://github.com/mlf176f2/auto-indent-mode.el/
 ;; Keywords: Auto Indentation
 ;; Compatibility: Tested with Emacs 23.x
@@ -20,7 +20,7 @@
 ;; * About auto-indent-mode
 ;; 
 ;;  Provides auto-indentation minor mode for Emacs.  This allows the
-;;   following:
+;;   following: 
 ;; 
 ;;   - Return automatically indents the code appropriately (if enabled)
 ;; 
@@ -88,7 +88,7 @@
 ;;   This may or may not work on your system.  Many times emacs cannot
 ;;   distinguish between M-RET and M-S-RET, so if you don't mind a
 ;;   slight redefinition use:
-;;
+;; 
 ;; 
 ;;   (setq auto-indent-key-for-end-of-line-then-newline "<M-return>")
 ;;   (setq auto-indent-key-for-end-of-line-insert-char-then-newline "<C-M-return>")
