@@ -6,9 +6,9 @@
 ;; Maintainer: Matthew L. Fidler
 ;; Created: Fri Aug  3 22:33:41 2012 (-0500)
 ;; Version: 0.01
-;; Last-Updated: Sun Aug  5 12:22:38 2012 (-0500)
+;; Last-Updated: Sun Aug  5 12:30:49 2012 (-0500)
 ;;           By: Matthew L. Fidler
-;;     Update #: 239
+;;     Update #: 252
 ;; URL: https://github.com/mlf176f2/org-readme
 ;; Keywords: Header2, Readme.org, Emacswiki
 ;; Compatibility: Tested with Emacs 24.1 on Windows.
@@ -25,6 +25,9 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; 
 ;;; Change Log:
+;; 05-Aug-2012    Matthew L. Fidler  
+;;    Last-Updated: Sun Aug  5 12:30:26 2012 (-0500) #250 (Matthew L. Fidler)
+;;    Added git pushing to org-readme
 ;; 05-Aug-2012    Matthew L. Fidler  
 ;;    Last-Updated: Sun Aug  5 12:21:53 2012 (-0500) #237 (Matthew L. Fidler)
 ;;    Added git support as well as a comment mode.  The only thing that
@@ -218,8 +221,9 @@
 
 (defun org-readme-git ()
   "Add The files to git."
-  (let ((df (file-name-directory (buffer-file-name)))
-        (default-directory df))
+  (interactive)
+  (let* ((df (file-name-directory (buffer-file-name)))
+         (default-directory df))
     (message "Git Adding Readme")
     (shell-command
      (format "git add %s"
@@ -231,8 +235,12 @@
     (when (file-exists-p (org-readme-get-change))
       (message "Git Committing")
       (shell-command
-       "git commit --file %s" (org-readme-get-change))
-      (delete-file (org-readme-get-change)))))
+       (format "git commit -F %s"
+               (file-name-nondirectory
+                (org-readme-get-change))))
+      (delete-file (org-readme-get-change))
+      (message "Git push")
+      (shell-command "git push"))))
 
 
 ;;;###autoload
