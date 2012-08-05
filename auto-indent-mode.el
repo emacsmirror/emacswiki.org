@@ -6,9 +6,9 @@
 ;; Maintainer: Matthew L. Fidler
 ;; Created: Sat Nov  6 11:02:07 2010 (-0500)
 ;; Version: 0.64
-;; Last-Updated: Sat Aug  4 21:24:57 2012 (-0500)
+;; Last-Updated: Sat Aug  4 21:31:16 2012 (-0500)
 ;;           By: Matthew L. Fidler
-;;     Update #: 1402
+;;     Update #: 1404
 ;; URL: https://github.com/mlf176f2/auto-indent-mode.el/
 ;; Keywords: Auto Indentation
 ;; Compatibility: Tested with Emacs 23.x
@@ -190,11 +190,15 @@
 ;;     (when (string= "S" ess-language)
 ;;       (add-hook 'auto-indent-after-yank-hook 'kicker-ess-fix-code t t)))
 ;;   (add-hook 'ess-mode-hook 'kicker-ess-turn-on-fix-code)
-;; 
+;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;;; Change Log:
 ;; 04-Aug-2012    Matthew L. Fidler  
+;;    Last-Updated: Sat Aug  4 21:30:02 2012 (-0500) #1403 (Matthew L. Fidler)
+;;    Added ability to turn off dynamic growth of timers per mode.
+;;    The algorithm to change has not been perfected yet.
+;; 04-Aug-2012    Matthew L. Fidler
 ;;    Last-Updated: Sat Aug  4 01:25:56 2012 (-0500) #1390 (Matthew L. Fidler)
 ;;    Fixed a bug introduced by cleaning typos.
 ;;    Changing again.
