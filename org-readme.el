@@ -3,30 +3,32 @@
 ;; Filename: org-readme.el
 ;; Description: Integrate Readme.org and Commentary/Change Logs.
 ;; Author: Matthew L. Fidler
-;; Maintainer: 
+;; Maintainer: Matthew L. Fidler
 ;; Created: Fri Aug  3 22:33:41 2012 (-0500)
-;; Version: 
-;; Last-Updated: Sat Aug  4 21:45:57 2012 (-0500)
+;; Version: 0.01
+;; Last-Updated: Sun Aug  5 12:22:38 2012 (-0500)
 ;;           By: Matthew L. Fidler
-;;     Update #: 125
+;;     Update #: 239
 ;; URL: https://github.com/mlf176f2/org-readme
-;; Keywords: 
-;; Compatibility: 
+;; Keywords: Header2, Readme.org, Emacswiki
+;; Compatibility: Tested with Emacs 24.1 on Windows.
+;;
+;; Features that might be required by this library:
+;;
+;;   None
 ;; 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; 
 ;;; Commentary: 
 ;; 
-;; * Org-readme
-;; This file is to help generate <tt>Readme.org</tt> files based on emacs lisp
-;; files.
-;; * Changelog
-;; Currently this library allows changelog to become a history section in
-;; Readme.org
 ;; 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; 
 ;;; Change Log:
+;; 05-Aug-2012    Matthew L. Fidler  
+;;    Last-Updated: Sun Aug  5 12:21:53 2012 (-0500) #237 (Matthew L. Fidler)
+;;    Added git support as well as a comment mode.  The only thing that
+;;    should need to be called is `org-readme-sync'
 ;; 04-Aug-2012    Matthew L. Fidler  
 ;;    Last-Updated: Sat Aug  4 21:40:14 2012 (-0500) #122 (Matthew L. Fidler)
 ;;    Added syncing with emacswiki. 
@@ -61,10 +63,60 @@
 (defgroup org-readme nil
   "Org-readme is a way to create Readme.org files based on an elisp file.")
 
-(defcustom org-readme-remove-sections '("History")
+(defcustom org-readme-remove-sections '("History" "Possible Dependencies" "Library Information")
   "List of sections to remove when changing the Readme.org to Change-log."
   :group 'org-readme
   :type '(repeat (string :tag "Section")))
+
+(defvar org-readme-edit-mode-map nil
+  "Keymap for editing change-logs.")
+
+(unless org-readme-edit-mode-map
+  (let ((map (make-sparse-keymap)))
+    (define-key map (kbd "C-c C-c") 'org-readme-edit-commit)
+    (define-key map (kbd "C-x C-s") 'org-readme-edit-commit)
+    (define-key map (kbd "C-c C-k") 'org-readme-edit-cancel)
+    (setq org-readme-edit-mode-map map)))
+
+(defun org-readme-edit-commit ()
+  "Changelog for editing."
+  (interactive)
+  (let ((comment (buffer-substring (point-min) (point-max)))
+        mr)
+    (kill-buffer (get-buffer "*Change Comment*"))
+    (when org-readme-edit-last-window-configuration
+      (set-window-configuration org-readme-edit-last-window-configuration))
+    (with-temp-buffer
+      (insert comment)
+      (goto-char (point-min))
+      (end-of-line)
+      (while (re-search-forward "^" nil t)
+        (insert ";;    "))
+      (setq mr (buffer-substring (point-min) (point-max))))
+    (make-revision)
+    (insert mr)
+    (save-buffer)
+    (with-temp-file (org-readme-get-change)
+      (insert comment))
+    (org-readme-sync t)))
+
+(defun org-readme-edit-cancel ()
+  "Cancel the edit log."
+  (interactive)
+  (kill-buffer (get-buffer "*Change Comment*"))
+  (when org-readme-edit-last-window-configuration
+    (set-window-configuration org-readme-edit-last-window-configuration)))
+
+(defvar org-readme-edit-last-window-configuration nil)
+
+(defun org-readme-edit ()
+  "Edit change comment for commit."
+  (interactive)
+  (setq org-readme-edit-last-window-configuration (current-window-configuration))
+  (switch-to-buffer-other-window (get-buffer-create "*Change Comment*"))
+  (org-readme-edit-mode))
+
+(define-derived-mode org-readme-edit-mode text-mode "Org-readme Log edit.")
 
 (defun org-readme-convert-to-emacswiki ()
   "Converts Readme.org to oddmuse markup and uploads to emacswiki."
@@ -75,10 +127,13 @@
         tmp tmp2)                       
     (with-temp-buffer
       (insert-file-contents readme)
-
+      
       (goto-char (point-min))
       (while (re-search-forward "^[ \t]*[A-Z]+:[ \t]*\\[[0-9]\\{4\\}-[0-9]\\{2\\}-[0-9]\\{2\\}.*" nil t)
         (replace-match ""))
+      (goto-char (point-min))
+      (while (re-search-forward "\\[\\[file:\\(.*?\\)\\]\\[\\1\\]\\]" nil t)
+        (replace-match "[[\\1]]"))
       
       (goto-char (point-min))
       (while (re-search-forward "=\\<\\(.*?\\)\\>=" nil t)
@@ -161,20 +216,44 @@
       (kill-buffer (current-buffer)))
     (delete-file wiki)))
 
+(defun org-readme-git ()
+  "Add The files to git."
+  (let ((df (file-name-directory (buffer-file-name)))
+        (default-directory df))
+    (message "Git Adding Readme")
+    (shell-command
+     (format "git add %s"
+             (file-name-nondirectory (org-readme-find-readme))))
+    (message "Git Adding %s" (file-name-nondirectory (buffer-file-name)))
+    (shell-command
+     (format "git add %s"
+             (file-name-nondirectory (buffer-file-name))))
+    (when (file-exists-p (org-readme-get-change))
+      (message "Git Committing")
+      (shell-command
+       "git commit --file %s" (org-readme-get-change))
+      (delete-file (org-readme-get-change)))))
+
 
 ;;;###autoload
-(defun org-readme-sync ()
-  "Syncs Readme.org with current buffer."
+(defun org-readme-sync (&optional comment-added)
+  "Syncs Readme.org with current buffer.
+When COMMENT-ADDED is non-nil, the comment has been added and the syncing should begin.
+"
   (interactive)
-  (message "Adding Readme to Header Commentary")
-  (org-readme-to-commentary)
-  (save-buffer)
-  (message "Updating Changelog in current file.")
-  (org-readme-changelog-to-readme)
-  (message "Posting lisp file to emacswiki")
-  (emacswiki-post nil "")
-  (message "Posting Description to emacswiki")
-  (org-readme-convert-to-emacswiki))
+  (if (not comment-added)
+      (org-readme-edit)
+    (message "Adding Readme to Header Commentary")
+    (org-readme-to-commentary)
+    (save-buffer)
+    (message "Updating Changelog in current file.")
+    (org-readme-changelog-to-readme)
+    (org-readme-top-header-to-readme)
+    (message "Posting lisp file to emacswiki")
+    (emacswiki-post nil "")
+    (message "Posting Description to emacswiki")
+    (org-readme-convert-to-emacswiki)
+    (org-readme-git)))
 
 ;;;###autoload
 (defun org-readme-to-commentary ()
@@ -187,7 +266,7 @@
        (lambda(section)
          (org-readme-remove-section section))
        org-readme-remove-sections)
-
+      
       (goto-char (point-min))
       (while (re-search-forward "=\\<\\(.*?\\)\\>=" nil t)
         (replace-match (format "<tt>%s</tt>" (match-string 1))))
@@ -244,6 +323,10 @@
       (setq name (concat dir (buffer-substring (point-min) (point-max)))))
     (symbol-value 'name)))
 
+(defun org-readme-get-change ()
+  "Get file for changelog commits."
+  (expand-file-name "Changelog" (file-name-directory (buffer-file-name))))
+
 (defun org-readme-find-readme ()
   "Find the Readme.org."
   (let* ((dir (file-name-directory (buffer-file-name)))
@@ -253,33 +336,85 @@
       (setq df (expand-file-name "Readme.org" dir))
       (symbol-value 'df))))
 
-(defun org-readme-remove-section (section &optional txt any-level)
+(defun org-readme-remove-section (section &optional txt any-level at-beginning)
   "Remove `org-mode' SECTION. Optionally insert TXT.
-When ANY-LEVEL is non-nil, any level may be specified."
-  (let ((case-fold-search t))
+When ANY-LEVEL is non-nil, any level may be specified.
+When AT-BEGINNING is non-nil, if the section is not found, insert it at the beginning."
+  (let ((case-fold-search t)
+        (mtch ""))
     (save-excursion
       (goto-char (point-min))
       (if (re-search-forward
-           (format "^[*]%s %s"
+           (format "^\\([*]%s\\) +%s"
                    (if any-level
                        "+" "")
                    section) nil t)
           (progn
+            (setq mtch (match-string 1))
             (delete-region
              (match-beginning 0)
-             (or
-              (if (re-search-forward  "^[*] " nil t)
-                  (progn
-                    (- (match-beginning 0) 1))
-                nil)
-              (point-max)))
+             (if (re-search-forward (format "^%s +" (regexp-quote mtch)) nil t)
+                 (progn
+                   (- (match-beginning 0) 1))
+               (point-max)))
             (when txt
+              (beginning-of-line)
+              (skip-chars-backward " \t\n")
+              (skip-chars-forward "\n")
               (insert txt))
             t)
-        (goto-char (point-max))
         (when txt
+          (goto-char (if at-beginning
+                         (point-min)
+                       (point-max)))
+          ;; Skip comments 
+          (if at-beginning
+              (while (re-search-forward "\\=[ \t]*#.*\n" nil t))
+            (while (re-search-backward "\n[ \t]*#.*\\=" nil t)))
+          (beginning-of-line)
           (insert txt))
         nil))))
+
+;;;###autoload
+(defun org-readme-top-header-to-readme ()
+  "This puts the top header into the Readme.org file as Library Information"
+  (interactive)
+  (let ((top-header "")
+        (readme (org-readme-find-readme)))
+    (save-excursion
+      (goto-char (point-min))
+      (when (re-search-forward "^;;;;+[ \t]*$" nil t)
+        (beginning-of-line)
+        (setq top-header (buffer-substring (point-min) (point)))))
+    (with-temp-buffer
+      (insert top-header)
+      (goto-char (point-min))
+      (when (looking-at ";;; *\\(.*?\\) *--+ *\\(.*\\)")
+        (replace-match " *\\1* --- \\2"))
+      
+      (goto-char (point-min))
+      (while (re-search-forward "^ *;; ?" nil t)
+        (replace-match ""))
+      
+      (goto-char (point-min))
+      (when (re-search-forward "[Ff]ile[Nn]ame: *\\(.*\\) *$" nil t)
+        (replace-match "Filename: [[file:\\1][\\1]]"))
+      
+      (goto-char (point-min))
+      (while (re-search-forward "^\\(.*?\\):\\(.*?[A-Za-z0-9.].*\\)$" nil t)
+        (replace-match " - \\1 ::\\2"))
+      (goto-char (point-min))
+      (insert "* Library Information\n")
+      
+      (goto-char (point-min))
+      (when (re-search-forward "^[ \t]*Features that might be required by this library:[ \t]*$" nil t)
+        (replace-match "* Possible Dependencies"))
+      (setq top-header (buffer-substring (point-min) (point-max))))
+    (with-temp-buffer
+      (insert-file-contents readme)
+      (org-readme-remove-section "Possible Dependencies")
+      (org-readme-remove-section "Library Information" top-header nil t)
+      (write-file readme))))
 
 ;;;###autoload
 (defun org-readme-changelog-to-readme ()
@@ -302,7 +437,7 @@ When ANY-LEVEL is non-nil, any level may be specified."
               (while (re-search-forward "^[ \t]*;+ ?" nil t)
                 (replace-match ""))
               (goto-char (point-min))
-              (while (re-search-forward "\\([0-9][0-9]-[A-Za-z][A-Za-z][A-Za-z]-[0-9][0-9][0-9][0-9]\\)[ \t]+\\(.*\\)\n.*\n\\(\\(?:\n\\|.\\)*?\\)\n[ \t]*\\([0-9][0-9]\\)" nil t)
+              (while (re-search-forward "^[ \t]*\\([0-9][0-9]-[A-Za-z][A-Za-z][A-Za-z]-[0-9][0-9][0-9][0-9]\\)[ \t]+\\(.*\\)\n.*\n\\(\\(?:\n\\|.\\)*?\\)\n[ \t]*\\([0-9][0-9]\\)" nil t)
                 (replace-match
                  (format " - %s :: %s (%s)\n %s"
                          (match-string 1)
@@ -336,7 +471,7 @@ When ANY-LEVEL is non-nil, any level may be specified."
                          (save-match-data
                            (replace-regexp-in-string
                             "[ \t]*$" ""
-                            (match-string 2)))) t t))
+                              (match-string 2)))) t t))
               (goto-char (point-min))
               (while (re-search-forward "`\\(.*?\\)'" nil t)
                 (replace-match "=\1="))
