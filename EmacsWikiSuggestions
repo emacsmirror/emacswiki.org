@@ -14,6 +14,11 @@ Discussion about the TextFormattingRules used in contributing to pages  is at Te
 
 '''Add your suggestions below this line.'''
 
+== Provide alternate stylesheets ==
+
+I would like to choose the stylesheet for EmacsWiki easily.  If Emacswiki could provide alternate stylesheets - see  http://orgmode.org/worg/ - then I will be able to choose the theme using View->Page Style->etc menu in Firefox.
+
+
 == Content Fixes ==
 
 The emacs wiki content could use some refactoring and updating, especially if some snarky blog entries and reddit postings/comments are to be believed.  I can see 2 main ways to handle this: a top down approach (like Wikipedias "wiki projects") and a bottom up approach where wikizens can pick an individual page from a hit-list and work from there. To try and get this ball rolling, I have started up an EmacsWikiContent page. --JonathanArkell
