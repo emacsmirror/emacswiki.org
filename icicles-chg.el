@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Fri Aug  3 15:23:39 2012 (-0700)
+;; Last-Updated: Sun Aug  5 13:57:21 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 8719
+;;     Update #: 8728
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-chg.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -673,6 +673,10 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd2.el'")
 ;;
+;; 2012/08/05 dadams
+;;     icicle-read-color-wysiwyg:
+;;       Added optional arg INITIAL-INPUT.
+;;       Return only variable's value if user-option candidate is chosen.
 ;; 2012/07/17 dadams
 ;;     Removed: icicle-maybe-byte-compile-after-load (macro).  Removed all calls to it.
 ;; 2012/07/07 dadams
@@ -3256,6 +3260,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-mcmd.el'")
 ;;
+;; 2012/08/05 dadams
+;;     icicle-exit-minibuffer: If no faces to keep then remove all faces (they are Icicles faces).
 ;; 2012/07/24 dadams
 ;;     icicle-toggle-ignored-space-prefix: Added prefix arg, so you can toggle buffer option.
 ;; 2012/07/21 dadams
