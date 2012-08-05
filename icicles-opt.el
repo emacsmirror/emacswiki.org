@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:22:14 2006
 ;; Version: 22.0
-;; Last-Updated: Fri Aug  3 13:45:36 2012 (-0700)
+;; Last-Updated: Sun Aug  5 09:32:25 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 5289
+;;     Update #: 5290
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-opt.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -2215,7 +2215,11 @@ different keyboards - for example, `S-tab' and `S-iso-lefttab'."
 (defcustom icicle-key-complete-keys-for-minibuffer '([M-backtab]) ; `M-S-TAB'
   "*Key sequences to use for `icicle-complete-keys' in the minibuffer.
 A list of values that each has the same form as a key-sequence
-argument to `define-key'."
+argument to `define-key'.
+
+Note: Some operating systems intercept `M-S-TAB' for their own use.
+For MS Windows, you can use (w32-register-hot-key [M-S-tab]) to allow
+Emacs to use `M-S-TAB'."
   :type '(repeat sexp) :group 'Icicles-Key-Completion :group 'Icicles-Key-Bindings)
 
 ;;;###autoload
