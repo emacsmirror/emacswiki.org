@@ -6,12 +6,16 @@
 ;; Maintainer: Matthew L. Fidler
 ;; Created: Sat Nov  6 11:02:07 2010 (-0500)
 ;; Version: 0.64
-;; Last-Updated: Sat Aug  4 21:40:33 2012 (-0500)
+;; Last-Updated: Sat Aug  4 23:50:19 2012 (-0500)
 ;;           By: Matthew L. Fidler
-;;     Update #: 1407
+;;     Update #: 1410
 ;; URL: https://github.com/mlf176f2/auto-indent-mode.el/
 ;; Keywords: Auto Indentation
 ;; Compatibility: Tested with Emacs 23.x
+;; 
+;; Features that might be required by this library:
+;;
+;;   None
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
