@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Tue Jul 31 11:16:15 2012 (-0700)
+;; Last-Updated: Sun Aug  5 10:00:11 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 24480
+;;     Update #: 24481
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-cmd1.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -1061,7 +1061,7 @@ Otherwise, replace only the filename-matching text before point."
                   (start  (widget-field-start field))
                   (end    (max (point) (widget-field-text-end field))))
              (completion-in-region start end #'completion-file-name-table)))
-          (t                            ; @@@@@ (< emacs-major-version 21)
+          (t
            (widget-file-complete)))))
 
 ;;;###autoload (autoload 'icicle-ess-complete-object-name "icicles")
