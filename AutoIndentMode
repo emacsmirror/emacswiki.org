@@ -120,7 +120,9 @@ However, this does not honor the excluded modes in
 == Making certain modes perform tasks on paste/yank. ==
 Sometimes, like in R, it is convenient to paste c:\ and change it to
 c:/.  This can be accomplished by modifying the
-auto-indent-after-yank-hook.  
+<tt>auto-indent-after-yank-hook</tt>.
+
+The code for changing the paths is as follows:  
 
 {{{
 (defun kicker-ess-fix-path (beg end)
@@ -152,12 +154,16 @@ copy. For example copying:
 
 
 Should give the following code on paste:
+
 <pre>
 ## set up
  availDists <- c(Normal="rnorm", Exponential="rexp")
  availKernels <- c("gaussian", "epanechnikov", "rectangular",
  "triangular", "biweight", "cosine", "optcosine")
 </pre>
+
+
+This is setup by the following code snippet:
 
 {{{
   (defun kicker-ess-fix-code (beg end)
@@ -257,7 +263,7 @@ Should give the following code on paste:
 * <b>18-Jan-2011 </b> --   Added support to turn on = = when inside an org-file. (Matthew L. Fidler)
 * <b>12-Jan-2011 </b> --   Added fix for ortbl-minor-mode. Now it will work when orgtbl-minor mode is enabled. (Matthew L. Fidler)
 * <b>09-Dec-2010 </b> --   Bugfix. Now instead of indenting the region pasted, indent the region-pasted + beginning of line at region begin and end of line at region end. (Matthew L. Fidler)
-* <b>02-Dec-2010 </b> --   Last-Updated: Sat Aug  4 21:31:33 2012 (-0500)
+* <b>02-Dec-2010 </b> --   Last-Updated: Sat Aug  4 21:34:22 2012 (-0500)
 * <b>02-Dec-2010 </b> --   Removed auto-indent on paste/yank for modes with indent-relative and indent-relative-maybe. This has annoyed me forever. (Matthew L. Fidler)
 * <b>02-Dec-2010 </b> --   Added an advice to delete-char. When deleting a new-line character, shrink white-spaces afterward. (Matthew L. Fidler)
 * <b>02-Dec-2010 </b> --   Speed enhancement by checking for yasnippets only on indentation. (Matthew L. Fidler)
