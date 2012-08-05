@@ -1,0 +1,12 @@
+This page describes [[org-readme.el]].
+
+== Org-readme ==
+This file is to help generate <tt>Readme.org</tt> files based on emacs lisp
+files.
+== Changelog ==
+Currently this library allows changelog to become a history section in
+Readme.org
+== History ==
+
+* <b>04-Aug-2012 </b> --   Added syncing with emacswiki.  (Matthew L. Fidler)
+* <b>04-Aug-2012 </b> --   Initial Release  (Matthew L. Fidler)
