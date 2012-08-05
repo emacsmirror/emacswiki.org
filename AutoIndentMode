@@ -3,7 +3,7 @@ This page describes [[auto-indent-mode.el]].
 
 
 == About auto-indent-mode ==
-CLOSED: [2011-12-08 Thu 15:30]
+
 Provides auto-indentation minor mode for Emacs.  This allows the
 following: 
 
@@ -256,7 +256,7 @@ Should give the following code on paste:
 * <b>18-Jan-2011 </b> --   Added support to turn on = = when inside an org-file. (Matthew L. Fidler)
 * <b>12-Jan-2011 </b> --   Added fix for ortbl-minor-mode. Now it will work when orgtbl-minor mode is enabled. (Matthew L. Fidler)
 * <b>09-Dec-2010 </b> --   Bugfix. Now instead of indenting the region pasted, indent the region-pasted + beginning of line at region begin and end of line at region end. (Matthew L. Fidler)
-* <b>02-Dec-2010 </b> --   Last-Updated: Sat Aug  4 21:24:44 2012 (-0500)
+* <b>02-Dec-2010 </b> --   Last-Updated: Sat Aug  4 21:29:14 2012 (-0500)
 * <b>02-Dec-2010 </b> --   Removed auto-indent on paste/yank for modes with indent-relative and indent-relative-maybe. This has annoyed me forever. (Matthew L. Fidler)
 * <b>02-Dec-2010 </b> --   Added an advice to delete-char. When deleting a new-line character, shrink white-spaces afterward. (Matthew L. Fidler)
 * <b>02-Dec-2010 </b> --   Speed enhancement by checking for yasnippets only on indentation. (Matthew L. Fidler)
