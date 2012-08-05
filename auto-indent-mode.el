@@ -6,9 +6,9 @@
 ;; Maintainer: Matthew L. Fidler
 ;; Created: Sat Nov  6 11:02:07 2010 (-0500)
 ;; Version: 0.64
-;; Last-Updated: Sat Aug  4 21:31:16 2012 (-0500)
+;; Last-Updated: Sat Aug  4 21:34:20 2012 (-0500)
 ;;           By: Matthew L. Fidler
-;;     Update #: 1404
+;;     Update #: 1406
 ;; URL: https://github.com/mlf176f2/auto-indent-mode.el/
 ;; Keywords: Auto Indentation
 ;; Compatibility: Tested with Emacs 23.x
@@ -135,7 +135,9 @@
 ;; * Making certain modes perform tasks on paste/yank.
 ;; Sometimes, like in R, it is convenient to paste c:\ and change it to
 ;; c:/.  This can be accomplished by modifying the
-;; auto-indent-after-yank-hook.  
+;; =auto-indent-after-yank-hook=.
+;; 
+;; The code for changing the paths is as follows:  
 ;; 
 ;; 
 ;; (defun kicker-ess-fix-path (beg end)
@@ -165,10 +167,14 @@
 ;; 
 ;; 
 ;; Should give the following code on paste:
+;; 
 ;;  
 ;;  availDists <- c(Normal="rnorm", Exponential="rexp")
 ;;  availKernels <- c("gaussian", "epanechnikov", "rectangular",
 ;;  "triangular", "biweight", "cosine", "optcosine")
+;; 
+;; 
+;; This is setup by the following code snippet:
 ;; 
 ;; 
 ;;   (defun kicker-ess-fix-code (beg end)
@@ -190,7 +196,7 @@
 ;;     (when (string= "S" ess-language)
 ;;       (add-hook 'auto-indent-after-yank-hook 'kicker-ess-fix-code t t)))
 ;;   (add-hook 'ess-mode-hook 'kicker-ess-turn-on-fix-code)
-;;
+;; 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;;; Change Log:
