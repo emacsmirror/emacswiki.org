@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Tue Jul 24 13:28:20 2012 (-0700)
+;; Last-Updated: Sun Aug  5 10:37:10 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 18392
+;;     Update #: 18395
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-mcmd.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -486,8 +486,11 @@ Remove `*Completions*' window.  Remove Icicles minibuffer faces."
             (setq keep-faces  (icicle-set-union keep-faces
                                                 (icicle-set-difference faces icy-minibuf-faces))))
           (setq pos  (1+ pos)))
-        (when keep-faces                ; Don't add a nil `face' property.
-          (put-text-property (icicle-minibuffer-prompt-end) (point-max) 'face keep-faces)))
+        ;; If KEEP-FACES is (), use `remove-text-properties' instead of just `put-text-property',
+        ;; so we do not add a nil `face' property.
+        (if keep-faces
+            (put-text-property (icicle-minibuffer-prompt-end) (point-max) 'face keep-faces)
+          (remove-text-properties (icicle-minibuffer-prompt-end) (point-max) '(face nil))))
       ;; $$$$$  (let ((pos  (icicle-minibuffer-prompt-end)))
       ;;     (while (< pos (point-max))
       ;;       (when (memq (get-text-property pos 'face)
