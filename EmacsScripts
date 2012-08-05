@@ -42,7 +42,7 @@ The semicolon is a command delimiter in all three shells.  And, in all
 three shells, the exec command has the same meaning.  Hence,
 
 
-   :;exec emacs -batch -l "$0" -f main "$@"
+   :;exec emacs -batch -l "$0" -f main -- "$@"
 
 
 will have Emacs interpreting the current script, with the entry
@@ -54,11 +54,12 @@ is a self-evaluating constant in current versions of Emacs) and the
 remainder of the line is ignored as a comment.
 
 
-The remaining arguments, "$@", are accessabile by way of the variable
-"command-line-args-left".  Setting this variable to nil or calling the
-function kill-emacs at the exit point of the script will prevent Emacs
-from loading the remaining arguments as files or directories into
-buffers if that is so desired.
+The remaining arguments, "$@", are accessible to your script by way of the
+variable "command-line-args-left".  The -- argument preceding this prevents
+Emacs from processing those arguments itself (either as arguments to Emacs,
+or as files to be loaded into buffers). The alternatives are to explicitly
+set command-line-args-left to nil, or call the function kill-emacs at the
+exit point of the script.
 
 
 So, Emacs is already quite fit as an interpreter of scripts.  For
