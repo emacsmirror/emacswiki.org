@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Sun Aug  5 19:28:27 2012 (-0700)
+;; Last-Updated: Mon Aug  6 10:22:42 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 8731
+;;     Update #: 8776
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-chg.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -85,6 +85,11 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd1.el'")
 ;;
+;; 2012/08/06 dadams
+;;     Renamed old-* to icicle-ORIG-*:
+;;       icicle-ORIG-file, icicle-ORIG-customize-face, icicle-ORIG-customize-face-other-window,
+;;       icicle-ORIG-dabbrev-completion, icicle-ORIG-lisp-complete-symbol,
+;;       icicle-ORIG-lisp-completion-at-point, icicle-ORIG-repeat-complex-command.
 ;; 2012/07/31 dadams
 ;;     Added widgets icicle-file, old-file.  Added command icicle-widget-file-complete.
 ;;     icicle-comint-dynamic-complete(-as)-filename, icicle-comint-replace-by-expanded-filename:
@@ -673,6 +678,11 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd2.el'")
 ;;
+;; 2012/08/06 dadams
+;;     Renamed old-* to icicle-ORIG-*:
+;;       icicle-ORIG-color, icicle-ORIG-read-color, icicle-ORIG-widget-color-complete.
+;;     icicle-Info-index(-20|-action), icicle-Info-menu, icicle-Info-goto-node-1:
+;;       Applied renaming to new: icicle-ORIG-*.
 ;; 2012/08/05 dadams
 ;;     Added: widgets icicle-color, old-color.  Added function icicle-widget-color-complete.
 ;;     icicle-read-color-wysiwyg:
@@ -1389,6 +1399,17 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-fn.el'")
 ;;
+;; 2012/08/06 dadams
+;;     Renamed old-* to icicle-ORIG-*:
+;;       icicle-ORIG-choose-completion-string, icicle-ORIG-completing-read,
+;;       icicle-ORIG-completing-read-multiple, icicle-ORIG-completion-setup-function,
+;;       icicle-ORIG-dired-smart-shell-command, icicle-ORIG-display-completion-list,
+;;       icicle-ORIG-face-valid-attribute-values, icicle-ORIG-minibuffer-default-add-completions,
+;;       icicle-ORIG-read-char-by-name, icicle-ORIG-read-face-name,
+;;       icicle-ORIG-read-from-minibuffer, icicle-ORIG-read-number,
+;;       icicle-ORIG-read-string, icicle-ORIG-shell-command, icicle-ORIG-shell-command-on-region,
+;;       icicle-ORIG-crm-local-completion-map, icicle-ORIG-crm-local-must-match-map.
+;;     icicle-read-file-name-1: Applied renaming: new name icicle-orig-read-file-name-fn.
 ;; 2012/07/21 dadams
 ;;     icicle-show-help-in-mode-line:
 ;;       Allow value of property icicle-mode-line-help to be a function.
@@ -3261,6 +3282,11 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-mcmd.el'")
 ;;
+;; 2012/08/06 dadams
+;;     Renamed old-* to icicle-ORIG-*:
+;;       icicle-ORIG-choose-completion, icicle-ORIG-exit-minibuffer,
+;;       icicle-ORIG-minibuffer-complete-and-exit, icicle-ORIG-mouse-choose-completion,
+;;       icicle-ORIG-next-history-element, icicle-ORIG-sit-for, icicle-ORIG-switch-to-completions.
 ;; 2012/08/05 dadams
 ;;     icicle-exit-minibuffer: If no faces to keep then remove all faces (they are Icicles faces).
 ;; 2012/07/24 dadams
@@ -4727,6 +4753,20 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-mode.el'")
 ;;
+;; 2012/08/06 dadams
+;;     Renamed old-* to icicle-ORIG-*:
+;;       icicle-ORIG-bbdb-complete-name, icicle-ORIG-comint-dynamic-complete,
+;;       icicle-ORIG-comint-dynamic-complete-filename,
+;;       icicle-ORIG-comint-replace-by-expanded-filename,
+;;       icicle-ORIG-dired-read-shell-command, icicle-ORIG-ess-complete-object-name,
+;;       icicle-ORIG-gud-gdb-complete-command, icicle-ORIG-read-file-name,
+;;       icicle-ORIG-read-shell-command, icicle-ORIG-crm-local-completion-map,
+;;       icicle-ORIG-crm-local-must-match-map.
+;;     icicle-(redefine|restore)-standard-(functions|widgets|completion-fns):
+;;       Use new prefix, icicle-ORIG-, not old-.
+;;     icicle-(redefine|restore)-std-completion-fns:
+;;       Applied renaming to new: icicle-orig-read-file-name-fn.
+;;     Top level aliasing to save originals: Use new prefix, icicle-ORIG-, not old-.
 ;; 2012/08/03 dadams
 ;;     icicle-(un)bind-key-completion-keys-(for-map-var|in-keymaps-from): Added optional arg KEYS.
 ;;     icicle-(bind|restore)-other-keymap-keys:
@@ -5847,6 +5887,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-opt.el'")
 ;;
+;; 2012/08/06 dadams
+;;     icicle-functions-to-redefine: Updated doc string for new name prefix icicle-ORIG-.
 ;; 2012/08/05 dadams
 ;;     icicle-widgets-to-redefine: Added color to the default value.
 ;; 2012/08/03 dadams
@@ -6563,6 +6605,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-var.el'")
 ;;
+;; 2012/08/06 dadams
+;;     Renamed: icicle-old-read-file-name-fn to icicle-orig-read-file-name-fn.
 ;; 2012/07/07 dadams
 ;;     Added: icicle-file-name-completion-table.  Thx to Michael Heerdegen.
 ;; 2012/06/29 dadams
@@ -6944,6 +6988,24 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles.el'")
 ;;
+;; 2012/08/06 dadams
+;;     Renamed old-* to icicle-ORIG-*:
+;;       icicle-ORIG-bbdb-complete-name, icicle-ORIG-choose-completion,
+;;       icicle-ORIG-choose-completion-string, icicle-ORIG-color, icicle-ORIG-comint-dynamic-complete, 
+;;       icicle-ORIG-comint-dynamic-complete-filename, icicle-ORIG-comint-replace-by-expanded-filename,
+;;       icicle-ORIG-completing-read, icicle-ORIG-completing-read-multiple,
+;;       icicle-ORIG-completion-setup-function, icicle-ORIG-crm-local-completion-map,
+;;       icicle-ORIG-crm-local-must-match-map, icicle-ORIG-dired-read-shell-command,
+;;       icicle-ORIG-dired-smart-shell-command, icicle-ORIG-display-completion-list,
+;;       icicle-ORIG-ess-complete-object-name, icicle-ORIG-exit-minibuffer,
+;;       icicle-ORIG-face-valid-attribute-values, icicle-ORIG-file,
+;;       icicle-ORIG-gud-gdb-complete-command, icicle-ORIG-minibuffer-complete-and-exit,
+;;       icicle-ORIG-minibuffer-default-add-completions, icicle-ORIG-mouse-choose-completion,
+;;       icicle-ORIG-next-history-element, icicle-ORIG-read-char-by-name, icicle-ORIG-read-color,
+;;       icicle-ORIG-read-face-name, icicle-ORIG-read-file-name, icicle-orig-read-file-name-fn,
+;;       icicle-ORIG-read-from-minibuffer, icicle-ORIG-read-number, icicle-ORIG-shell-command,
+;;       icicle-ORIG-read-shell-command, icicle-ORIG-read-string, icicle-ORIG-shell-command-on-region,
+;;       icicle-ORIG-sit-for, icicle-ORIG-switch-to-completions, icicle-ORIG-widget-color-complete.
 ;; 2012/07/17 dadams
 ;;     Removed: icicle-byte-compile-eval-after-load-flag.
 ;; 2012/02/28 dadams
