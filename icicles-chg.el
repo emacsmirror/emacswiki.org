@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Sun Aug  5 13:57:21 2012 (-0700)
+;; Last-Updated: Sun Aug  5 19:28:27 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 8728
+;;     Update #: 8731
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-chg.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -674,6 +674,7 @@
 ;;;(@* "CHANGE LOG FOR `icicles-cmd2.el'")
 ;;
 ;; 2012/08/05 dadams
+;;     Added: widgets icicle-color, old-color.  Added function icicle-widget-color-complete.
 ;;     icicle-read-color-wysiwyg:
 ;;       Added optional arg INITIAL-INPUT.
 ;;       Return only variable's value if user-option candidate is chosen.
@@ -5846,6 +5847,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-opt.el'")
 ;;
+;; 2012/08/05 dadams
+;;     icicle-widgets-to-redefine: Added color to the default value.
 ;; 2012/08/03 dadams
 ;;     Added: icicle-key-complete-keys-for-minibuffer.
 ;;     icicle-key-complete-keys: Updated default value, since Emacs bug #1281 was fixed.
