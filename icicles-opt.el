@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:22:14 2006
 ;; Version: 22.0
-;; Last-Updated: Sun Aug  5 14:21:41 2012 (-0700)
+;; Last-Updated: Mon Aug  6 09:03:01 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 5291
+;;     Update #: 5295
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-opt.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -1737,14 +1737,15 @@ to toggle the option."
   "*List of symbols representing functions to be redefined in Icicle mode.
 In Icicle mode, each such FUNCTION is aliased to Icicles function
 `icicle-FUNCTION'.  The original functions are restored when you exit
-Icicle mode, by aliasing each FUNCTION to `old-FUNCTION'.
+Icicle mode, by aliasing each FUNCTION to `icicle-ORIG-FUNCTION', that
+is, using the prefix `icicle-ORIG-' instead of `icicle-'.
 
-Aliasing takes place only if `old-FUNCTION' is defined.  Icicles
-predefines each `old-FUNCTION' found in the default value, as well as
-each corresponding `icicle-FUNCTION' .  If you add additional
-functions of your own choosing, then you will also need to define
-`old-FUNCTION' and `icicle-FUNCTION' accordingly - see the Icicles
-code for examples.
+Aliasing takes place only if `icicle-ORIG-FUNCTION' is defined.
+Icicles predefines each `icicle-ORIG-FUNCTION' found in the default
+value, as well as each corresponding `icicle-FUNCTION' .  If you add
+additional functions of your own choosing, then you will also need to
+define `icicle-ORIG-FUNCTION' and `icicle-FUNCTION' accordingly - see
+the Icicles code for examples.
 
 If you customize this option, then you must exit and re-enter Icicle
 mode to ensure that the change takes effect.
