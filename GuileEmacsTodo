@@ -8,3 +8,5 @@
 * Use Guile facilities for control flow
 * QUIT at each SCM_TICK
 * '''DONE''' Use guile-snarf for subr definition
+* Installation instructions
+* Debugging instructions
