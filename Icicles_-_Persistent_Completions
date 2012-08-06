@@ -193,7 +193,7 @@ candidates persistently, using `##C-u C-M->##' or `##C-}##'.  You are then
 prompted for the names of the candidate set and cache file to use,
 and the names you enter are automatically entered in option
 `icicle-saved-completion-sets'.  That option is automatically
-saved to your [[custom file]], so the next time you use Emacs you can
+saved to your [[custom file]] (or [[init file]]), so the next time you use Emacs you can
 retrieve any saved set of candidates that you like.  When you try to retrieve a persistent set of completion
 candidates, you are similarly prompted for the candidate-set name
 and the cache-file name.
