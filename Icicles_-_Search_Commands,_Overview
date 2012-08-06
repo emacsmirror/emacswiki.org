@@ -585,7 +585,7 @@ of these commands.  These commands are also available in the
 [:UserOptions]
 == User Options for Icicles Searching ==
 
-You can [[Customize]] the following [[user option]]s, to control search
+You can [[Customize]] the following [[user option]]s to control search
 and replacement behavior.
 
 * If '''`<tt>[[Icicles - Customization and General Tips#icicle-show-multi-completion-flag|icicle-show-multi-completion-flag]]</tt>'''' is non-`nil' (the default
