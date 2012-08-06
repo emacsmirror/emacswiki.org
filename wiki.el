@@ -1,10 +1,10 @@
 ;;; wiki.el --- hypertext authoring the WikiWay
 
-;; Copyright (C) 2001, 2002  Alex Schroeder <alex@gnu.org>
+;; Copyright (C) 2001, 2002, 2012  Alex Schroeder <alex@gnu.org>
 
 ;; Emacs Lisp Archive Entry
 ;; Filename: wiki.el
-;; Version: 2.1.8
+;; Version: 2.1.9
 ;; Keywords: hypermedia
 ;; Author: Alex Schroeder <alex@gnu.org>
 ;; Maintainer: Alex Schroeder <alex@gnu.org>
@@ -13,20 +13,18 @@
 
 ;; This file is not part of GNU Emacs.
 
-;; This is free software; you can redistribute it and/or modify it under
-;; the terms of the GNU General Public License as published by the Free
-;; Software Foundation; either version 2, or (at your option) any later
+;; This program is free software: you can redistribute it and/or modify it under
+;; the terms of the GNU General Public License as published by the Free Software
+;; Foundation, either version 3 of the License, or (at your option) any later
 ;; version.
 ;;
-;; This is distributed in the hope that it will be useful, but WITHOUT
-;; ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-;; FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
-;; for more details.
+;; This program is distributed in the hope that it will be useful, but WITHOUT
+;; ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+;; FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more
+;; details.
 ;;
-;; You should have received a copy of the GNU General Public License
-;; along with GNU Emacs; see the file COPYING.  If not, write to the
-;; Free Software Foundation, Inc., 59 Temple Place - Suite 330, Boston,
-;; MA 02111-1307, USA.
+;; You should have received a copy of the GNU General Public License along with
+;; GNU Emacs.  If not, see <http://www.gnu.org/licenses/>.
 
 ;;; Commentary:
 
@@ -98,9 +96,10 @@
 ;;   His latest version is here: http://www.s.netic.de/fg/wiki-mode/wiki.el
 ;; Thomas Link <t.link@gmx.at>
 ;; John Wiegley <johnw@gnu.org>, author of emacs-wiki.el.
-;;   His latest version is here: http://www.gci-net.com/~johnw/Emacs/emacs-wiki.el
+;;   His latest version is here: http://www.emacswiki.org/emacs/EmacsWikiMode
+;; and evolved into Emacs Muse: http://www.emacswiki.org/emacs/EmacsMuse
 
-
+ 
 
 ;;; Code:
 
@@ -125,6 +124,13 @@ function returns trailing slashes.  Use `expand-file-name' to expand
 directory names if necessary."
   :group 'wiki
   :type '(repeat directory))
+
+(defcustom wiki-extension nil
+  "Extension to use for saved files.
+A typical extension to use would be \"txt\"."
+  :group 'wiki
+  :type '(choice (const :tag "none" nil)
+		 (const :tag "Text" "txt")))
 
 (defcustom wiki-pub-directory "~/WebWiki"
   "Directory where all wikis are published to.
@@ -469,14 +475,17 @@ qualified filename.  Use `wiki-existing-page-names' and
 (defun wiki-read-directories ()
   "Return list of all files in `wiki-directories'.
 Each element in the list is a cons cell.  The car holds the pagename,
-the cdr holds the fully qualified filename."
+the cdr holds the fully qualified filename. If set, `wiki-extension'
+is appended to the filenames."
   (let ((dirs wiki-directories)
-	(regexp (concat "^" wiki-name-regexp "$"))
+	(regexp (concat "^" wiki-name-regexp 
+			(if wiki-extension (concat "\\." wiki-extension) "") "$"))
 	result)
     (setq dirs wiki-directories)
     (while dirs
       (let ((files (mapcar (lambda (f)
-			     (cons (file-name-nondirectory f) f))
+			     (cons (file-name-nondirectory
+				    (file-name-sans-extension f)) f))
 			   (directory-files (car dirs) t regexp t))))
 	(setq result (nconc files result)))
       (setq dirs (cdr dirs)))
@@ -500,7 +509,8 @@ then the corresponding filename is used instead of NAME."
   (let ((file (cdr (assoc name (wiki-existing-names)))))
     (if file
 	(funcall wiki-follow-name-action file)
-      (funcall wiki-follow-name-action name))))
+      (funcall wiki-follow-name-action
+	       (concat name (if wiki-extension (concat "." wiki-extension) ""))))))
   
 (defun wiki-follow-name-at-point ()
   "Find wiki name at point.
@@ -769,7 +779,7 @@ FORCE is non-nil, the file is published no matter what."
 	    files (cdr files)
 	    wiki-current-date (nth 5 (file-attributes file))
 	    page (wiki-write-file-name
-		       (concat (file-name-nondirectory file)
+		       (concat (file-name-nondirectory (file-name-sans-extension file))
 			       wiki-pub-file-name-suffix)))
       (when (or force (file-newer-than-file-p file page))
 	(with-temp-buffer
@@ -783,7 +793,7 @@ publish several files at once from a dired buffer using
 `dired-do-wiki-publish', or you can publish all files using
 `wiki-publish-all'."
   (interactive)
-  (let ((file-name buffer-file-name)
+  (let ((file-name (file-name-sans-extension buffer-file-name))
 	(content (buffer-substring (point-min) (point-max))))
     (message "Publishing %s" file-name)
     (with-temp-buffer
