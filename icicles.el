@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Fri Aug  3 13:37:20 2012 (-0700)
+;; Last-Updated: Sun Aug  5 19:27:54 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 23157
+;;     Update #: 23159
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -671,7 +671,7 @@
 ;;
 ;;  Widgets defined in Icicles:
 ;;
-;;    `icicle-file', `old-file'.
+;;    `icicle-color', `icicle-file', `old-color', `old-file'.
 ;;
 ;;  User options defined in Icicles:
 ;;
@@ -1157,16 +1157,17 @@
 ;;    `icicle-update-ignored-extensions-regexp',
 ;;    `icicle-value-satisfies-type-p', `icicle-var-inherits-type-p',
 ;;    `icicle-var-is-of-type-p', `icicle-var-matches-type-p',
-;;    `icicle-var-val-satisfies-type-p', `icicle-widgetp',
+;;    `icicle-var-val-satisfies-type-p',
+;;    `icicle-widget-color-complete', `icicle-widgetp',
 ;;    `old-choose-completion-string', `old-completing-read',
 ;;    `old-completing-read-multiple', `old-completion-setup-function',
 ;;    `old-dired-smart-shell-command', `old-display-completion-list',
 ;;    `old-face-valid-attribute-values',
 ;;    `old-minibuffer-default-add-completions',
-;;    `old-read-char-by-name', `old-read-face-name',
+;;    `old-read-char-by-name', `old-read-color', `old-read-face-name',
 ;;    `old-read-from-minibuffer', `old-read-number',
 ;;    `old-read-string', `old-shell-command',
-;;    `old-shell-command-on-region'.
+;;    `old-shell-command-on-region', `old-widget-color-complete'.
 ;;
 ;;  Internal variables and constants defined in Icicles:
 ;;
