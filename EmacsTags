@@ -62,7 +62,10 @@ or nil if not found."
                            (possible-file (concat parent file-to-find)))
                       (cond
                        ((file-exists-p possible-file) possible-file) ; Found
-                       ((null parent) nil) ; Not found
+                       ;; The parent of ~ is nil and the parent of / is itself.
+                       ;; Thus the terminating condition for not finding the file
+                       ;; accounts for both.
+                       ((or (null parent) (equal parent (directory-file-name parent))) nil) ; Not found
                        (t (find-file-r (directory-file-name parent))))))) ; Continue
     (find-file-r default-directory)))
 (let ((my-tags-file (find-file-upwards "TAGS")))
