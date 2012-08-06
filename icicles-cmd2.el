@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Thu May 21 13:31:43 2009 (-0700)
 ;; Version: 22.0
-;; Last-Updated: Sun Aug  5 19:24:41 2012 (-0700)
+;; Last-Updated: Mon Aug  6 08:40:30 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 5732
+;;     Update #: 5739
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-cmd2.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -54,7 +54,7 @@
 ;;
 ;;  Widgets defined here:
 ;;
-;;    `icicle-color', `old-color'.
+;;    `icicle-color', `icicle-ORIG-color'.
 ;;
 ;;  Commands defined here - (+) means a multi-command:
 ;;
@@ -201,6 +201,7 @@
 ;;    `icicle-next-single-char-property-change',
 ;;    `icicle-next-visible-thing-1', `icicle-next-visible-thing-2',
 ;;    `icicle-next-visible-thing-and-bounds',
+;;    `icicle-ORIG-read-color', `icicle-ORIG-widget-color-complete',
 ;;    `icicle-pick-color-by-name-action',
 ;;    `icicle-previous-single-char-property-change',
 ;;    `icicle-read-args-for-set-completion-methods',
@@ -231,8 +232,7 @@
 ;;    `icicle-search-thing-scan', `icicle-search-where-arg',
 ;;    `icicle-set-completion-methods-for-command',
 ;;    `icicle-things-alist', `icicle-this-command-keys-prefix',
-;;    `icicle-widget-color-complete', `old-read-color',
-;;    `old-widget-color-complete'.
+;;    `icicle-widget-color-complete'.
 ;;
 ;;  Internal variables defined here:
 ;;
@@ -373,6 +373,9 @@
   ;; icicle-bookmark-propertize-candidate, icicle-buffer-list,
   ;; icicle-explore, icicle-face-list, icicle-file-list, icicle-keyword-list, icicle-make-bookmark-candidate,
   ;; icicle-make-frame-alist, icicle-select-bookmarked-region
+
+;;; (require 'icicles-mode)
+;;;   ;; icicle-ORIG-Info-goto-node, icicle-ORIG-Info-index, icicle-ORIG-Info-menu
 
 
 
@@ -870,8 +873,8 @@ at point, or if none then the visited file."
 
 (defun icicle-cmd2-after-load-hexrgb ()
   "Things to do for `icicles-cmd2.el' after loading `hexrgb.el'."
-  (when (and (fboundp 'read-color) (not (fboundp 'old-read-color))) ; Exists with Emacs 23+.
-    (defalias 'old-read-color (symbol-function 'read-color))) ; Not used, but save it anyway.
+  (when (and (fboundp 'read-color) (not (fboundp 'icicle-ORIG-read-color))) ; Exists with Emacs 23+.
+    (defalias 'icicle-ORIG-read-color (symbol-function 'read-color))) ; Not used, but save it anyway.
 
   ;; See also `hexrgb-read-color' in `hexrgb.el'.
   (defun icicle-read-color (&optional prompt convert-to-RGB-p allow-empty-name-p msgp)
@@ -1617,10 +1620,10 @@ cycling, these keys with prefix `C-' act on the current face name:
                      ,(mapcar #'intern (icicle-choose-faces)))) ; An Icicles multi-command
       (dolist (face faces) (hlt-hide-default-face start end face)))
 
-    ;; Save vanilla `color' widget as `old-color' widget, for restoring when you quit Icicle mode.
-    (unless (get 'old-color 'widget-type)
-      (put 'old-color 'widget-type (get 'color 'widget-type))
-      (put 'old-color 'widget-documentation (get 'color 'widget-documentation)))
+    ;; Save vanilla `color' widget as `icicle-ORIG-color' widget, for restoring when you quit Icicle mode.
+    (unless (get 'icicle-ORIG-color 'widget-type)
+      (put 'icicle-ORIG-color 'widget-type (get 'color 'widget-type))
+      (put 'icicle-ORIG-color 'widget-documentation (get 'color 'widget-documentation)))
 
 ;;;###autoload
     (define-widget 'icicle-color 'editable-field
@@ -1638,8 +1641,8 @@ See `icicle-widget-color-complete'."
       :notify   'widget-color-notify
       :action   'widget-color-action)
 
-    (unless (fboundp 'old-widget-color-complete)
-      (defalias 'old-widget-color-complete (symbol-function 'widget-color-complete)))
+    (unless (fboundp 'icicle-ORIG-widget-color-complete)
+      (defalias 'icicle-ORIG-widget-color-complete (symbol-function 'widget-color-complete)))
 
 ;;;###autoload (autoload 'icicle-lisp-complete-symbol "icicles")
     (defun icicle-widget-color-complete (widget)
@@ -2035,8 +2038,8 @@ candidates than `icicle-Info-visited-max-candidates'"
         'icicle-bookmark-info-other-window))
     (unwind-protect
          (if topic
-             (old-Info-index topic)
-           (call-interactively (if (> emacs-major-version 21) 'old-Info-index 'icicle-Info-index-20)))
+             (icicle-ORIG-Info-index topic)
+           (call-interactively (if (> emacs-major-version 21) 'icicle-ORIG-Info-index 'icicle-Info-index-20)))
       (define-key minibuffer-local-completion-map (icicle-kbd "C-x m") C-x-m))))
 
 ;; Thx to Tamas Patrovics for this Emacs 20 version.
@@ -2049,12 +2052,12 @@ candidates than `icicle-Info-visited-max-candidates'"
                         (symbol-nearest-point))
                    (symbol-at-point)))
          (topic (and symb (symbol-name symb))))
-    (old-Info-index "")
+    (icicle-ORIG-Info-index "")
     (let ((pattern     "\\* +\\([^:]*\\):.")
           (candidates  ()))
       (goto-char (point-min))
       (while (re-search-forward pattern nil t) (push (list (match-string 1)) candidates))
-      (old-Info-index (completing-read "Index topic: " candidates nil t nil nil topic)))))
+      (icicle-ORIG-Info-index (completing-read "Index topic: " candidates nil t nil nil topic)))))
 
 ;; Free vars here: `icicle-info-buff' and `icicle-info-window' are bound in `icicle-Info-index'.
 (defun icicle-Info-index-action (topic)
@@ -2062,17 +2065,17 @@ candidates than `icicle-Info-visited-max-candidates'"
   (let ((minibuf-win  (selected-window)))
     (set-buffer icicle-info-buff)
     (select-window icicle-info-window)
-    (old-Info-index topic)
+    (icicle-ORIG-Info-index topic)
     (select-window minibuf-win)))
 
 (defun icicle-Info-menu (&optional menu-item fork)
   "Go to a menu node.
-See `old-Info-menu'."
+See `icicle-ORIG-Info-menu'."
   (interactive)
   (if menu-item
       (if (< emacs-major-version 21)
-          (old-Info-menu menu-item)
-        (old-Info-menu menu-item fork))
+          (icicle-ORIG-Info-menu menu-item)
+        (icicle-ORIG-Info-menu menu-item fork))
     (call-interactively #'icicle-Info-menu-cmd)))
 
 ;; Free vars here: `Info-menu-entry-name-re' is bound in `info.el'.
@@ -2171,8 +2174,8 @@ This is an Icicles command - see command `icicle-mode'."
   (if (and (string= nodename "..") (Info-check-pointer "up"))
       (Info-up)
     (if (> emacs-major-version 20)
-        (old-Info-goto-node nodename (and (not icicle-Info-only-rest-of-book-p) arg))
-      (old-Info-goto-node nodename))))
+        (icicle-ORIG-Info-goto-node nodename (and (not icicle-Info-only-rest-of-book-p) arg))
+      (icicle-ORIG-Info-goto-node nodename))))
 
 (defun icicle-Info-read-node-name (prompt &optional include-file-p)
   "Read a node name, prompting with PROMPT.
