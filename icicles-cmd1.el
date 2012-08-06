@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Sun Aug  5 10:00:11 2012 (-0700)
+;; Last-Updated: Mon Aug  6 08:31:13 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 24481
+;;     Update #: 24488
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-cmd1.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -49,7 +49,7 @@
 ;;
 ;;  Widgets defined here:
 ;;
-;;    `icicle-file', `old-file'.
+;;    `icicle-file', `icicle-ORIG-file'.
 ;;
 ;;  Commands defined here - (+) means a multi-command:
 ;;
@@ -224,7 +224,12 @@
 ;;    (+)`icicle-locate-file-no-symlinks',
 ;;    (+)`icicle-locate-file-no-symlinks-other-window',
 ;;    (+)`icicle-locate-file-other-window',
-;;    (+)`icicle-locate-other-window',
+;;    (+)`icicle-locate-other-window', `icicle-ORIG-customize-face',
+;;    `icicle-ORIG-customize-face-other-window',
+;;    `icicle-ORIG-dabbrev-completion',
+;;    `icicle-ORIG-lisp-complete-symbol',
+;;    `icicle-ORIG-lisp-completion-at-point',
+;;    `icicle-ORIG-repeat-complex-command',
 ;;    (+)`icicle-other-window-or-frame', `icicle-pop-tag-mark',
 ;;    `icicle-pp-eval-expression', (+)`icicle-recent-file',
 ;;    (+)`icicle-recent-file-other-window',
@@ -1021,10 +1026,10 @@ argument."
     success))
 
 
-;; Save vanilla `file' widget as `old-file' widget, for restoring when you quit Icicle mode.
-(unless (get 'old-file 'widget-type)
-  (put 'old-file 'widget-type (get 'file 'widget-type))
-  (put 'old-file 'widget-documentation (get 'file 'widget-documentation)))
+;; Save vanilla `file' widget as `icicle-ORIG-file' widget, for restoring when you quit Icicle mode.
+(unless (get 'icicle-ORIG-file 'widget-type)
+  (put 'icicle-ORIG-file 'widget-type (get 'file 'widget-type))
+  (put 'icicle-ORIG-file 'widget-documentation (get 'file 'widget-documentation)))
 
 ;;;###autoload
 (define-widget 'icicle-file 'string
@@ -1204,8 +1209,8 @@ Perform completion on the GDB command preceding point."
 ;; You can complete from an empty abbrev also.
 ;; Uses Icicles completion when there are multiple candidates.
 ;;
-(when (and (fboundp 'dabbrev-completion)  (not (fboundp 'old-dabbrev-completion)))
-  (defalias 'old-dabbrev-completion (symbol-function 'dabbrev-completion)))
+(when (and (fboundp 'dabbrev-completion)  (not (fboundp 'icicle-ORIG-dabbrev-completion)))
+  (defalias 'icicle-ORIG-dabbrev-completion (symbol-function 'dabbrev-completion)))
 
 ;;;###autoload (autoload 'icicle-dabbrev-completion "icicles")
 (defun icicle-dabbrev-completion (&optional arg) ; Bound to `C-M-/' globally.
@@ -1585,8 +1590,8 @@ control completion behaviour using `bbdb-completion-type'."
 ;;
 ;; Select `*Completions*' window even if on another frame.
 ;;
-(unless (fboundp 'old-lisp-complete-symbol)
-  (defalias 'old-lisp-complete-symbol (symbol-function 'lisp-complete-symbol)))
+(unless (fboundp 'icicle-ORIG-lisp-complete-symbol)
+  (defalias 'icicle-ORIG-lisp-complete-symbol (symbol-function 'lisp-complete-symbol)))
 
 ;;;###autoload (autoload 'icicle-lisp-complete-symbol "icicles")
 (defun icicle-lisp-complete-symbol (&optional predicate) ; `M-TAB' (`C-M-i', `ESC-TAB'), globally.
@@ -1659,8 +1664,8 @@ considered."
 ;; Select `*Completions*' window even if on another frame.
 ;;
 (when (fboundp 'completion-at-point)    ; Emacs 23.2+.
-  (unless (fboundp 'old-lisp-completion-at-point)
-    (defalias 'old-lisp-completion-at-point (symbol-function 'lisp-completion-at-point))
+  (unless (fboundp 'icicle-ORIG-lisp-completion-at-point)
+    (defalias 'icicle-ORIG-lisp-completion-at-point (symbol-function 'lisp-completion-at-point))
     ;; Return a function that does all of the completion.
     (defun icicle-lisp-completion-at-point () #'icicle-lisp-complete-symbol)))
 
@@ -1687,8 +1692,8 @@ Each Icicles file has a header `Update #' that you can use to identify it.\
 ;;
 ;; Multi-command version.
 ;;
-(unless (fboundp 'old-customize-face-other-window)
-  (defalias 'old-customize-face-other-window (symbol-function 'customize-face-other-window)))
+(unless (fboundp 'icicle-ORIG-customize-face-other-window)
+  (defalias 'icicle-ORIG-customize-face-other-window (symbol-function 'customize-face-other-window)))
 
 ;;;###autoload (autoload 'icicle-customize-face-other-window "icicles")
 (defun icicle-customize-face-other-window (face)
@@ -1698,7 +1703,7 @@ Same as `icicle-customize-face' except it uses a different window."
    (list (let* ((icicle-list-use-nth-parts             '(1))
                 (icicle-candidate-action-fn
                  (lambda (x)
-                   (old-customize-face-other-window (intern (icicle-transform-multi-completion x)))
+                   (icicle-ORIG-customize-face-other-window (intern (icicle-transform-multi-completion x)))
                    (select-window (minibuffer-window))
                    (select-frame-set-input-focus (selected-frame))))
                 (icicle-all-candidates-list-action-fn  'icicle-customize-faces)
@@ -1714,7 +1719,7 @@ Same as `icicle-customize-face' except it uses a different window."
            (if (and (> emacs-major-version 21)  current-prefix-arg)
                (read-face-name "Customize face: " "all faces" t)
              (read-face-name "Customize face: ")))))
-  (old-customize-face-other-window face))
+  (icicle-ORIG-customize-face-other-window face))
 
 
 ;; REPLACE ORIGINAL `customize-face' defined in `cus-edit.el',
@@ -1722,8 +1727,8 @@ Same as `icicle-customize-face' except it uses a different window."
 ;;
 ;; Multi-command version.
 ;;
-(unless (fboundp 'old-customize-face)
-  (defalias 'old-customize-face (symbol-function 'customize-face)))
+(unless (fboundp 'icicle-ORIG-customize-face)
+  (defalias 'icicle-ORIG-customize-face (symbol-function 'customize-face)))
 
 ;;;###autoload (autoload 'icicle-customize-face "icicles")
 (defun icicle-customize-face (face &optional other-window)
@@ -1764,7 +1769,7 @@ This is an Icicles command - see command `icicle-mode'."
    (list (let* ((icicle-list-use-nth-parts             '(1))
                 (icicle-candidate-action-fn
                  (lambda (x)
-                   (old-customize-face (intern (icicle-transform-multi-completion x)))
+                   (icicle-ORIG-customize-face (intern (icicle-transform-multi-completion x)))
                    (select-window (minibuffer-window))
                    (select-frame-set-input-focus (selected-frame))))
                 (icicle-all-candidates-list-action-fn  'icicle-customize-faces)
@@ -1781,9 +1786,9 @@ This is an Icicles command - see command `icicle-mode'."
              (read-face-name "Customize face: ")))))
   (if other-window
       (if (> emacs-major-version 23)
-          (old-customize-face face t)
-        (old-customize-face-other-window face))
-    (old-customize-face face)))
+          (icicle-ORIG-customize-face face t)
+        (icicle-ORIG-customize-face-other-window face))
+    (icicle-ORIG-customize-face face)))
 
 (defun icicle-customize-faces (faces)
   "Open Customize buffer on all faces in list FACES."
@@ -2658,8 +2663,8 @@ return the symbol with that name."
 ;; Uses `completing-read' to read the command to repeat, letting you use `S-TAB' and
 ;; `TAB' to see the history list and `C-,' to toggle sorting that display.
 ;;
-(unless (fboundp 'old-repeat-complex-command)
-  (defalias 'old-repeat-complex-command (symbol-function 'repeat-complex-command)))
+(unless (fboundp 'icicle-ORIG-repeat-complex-command)
+  (defalias 'icicle-ORIG-repeat-complex-command (symbol-function 'repeat-complex-command)))
 
 ;;;###autoload (autoload 'icicle-repeat-complex-command "icicles")
 (defun icicle-repeat-complex-command (arg) ; Bound to `C-x ESC ESC', `C-x M-:' in Icicle mode.
