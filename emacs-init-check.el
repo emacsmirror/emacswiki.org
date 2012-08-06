@@ -1,5 +1,5 @@
 ;;;; emacs-init-check.el --- Automatic init file checker
-;; Time-stamp: <2012-07-26 23:22:50 rubikitch>
+;; Time-stamp: <2012-08-06 18:26:13 rubikitch>
 
 ;; Copyright (C) 2010  rubikitch
 
@@ -44,6 +44,12 @@
 ;;  `auto-emacs-init-check-file-regexp'
 ;;    *Do `emacs-init-check' after files matching this regexp are checked in to VC.
 ;;    default = "/\\.emacs\\.d/"
+;;  `emacs-init-check-success-functions'
+;;    *Functions called after `emacs-init-check' exits normally.
+;;    default = (quote (emacs-init-check-success-message))
+;;  `emacs-init-check-fail-functions'
+;;    *Functions called after `emacs-init-check' exits abnormally.
+;;    default = (quote (emacs-init-check-display-result))
 
 ;;; Installation:
 ;;
@@ -88,22 +94,46 @@
 (defvar auto-emacs-init-check-program-args
   (list (car command-line-args) "-batch" "--eval" "(setq debug-on-error t)" "-l" user-init-file)
   "Command line of `emacs-init-check'.")
+(defcustom emacs-init-check-success-functions '(emacs-init-check-success-message)
+  "*Functions called after `emacs-init-check' exits normally.
+They have one argument, `emacs-init-check' process."
+  :type 'list
+  :group 'emacs-init-check)
+(defcustom emacs-init-check-fail-functions '(emacs-init-check-display-result)
+  "*Functions called after `emacs-init-check' exits abnormally.
+They have one argument, `emacs-init-check' process."
+  :type 'list
+  :group 'emacs-init-check)
+
+(defvar emacs-init-check-process nil)
+
+(defun emacs-init-check-success-message (proc)
+  (message "emacs-init-check exited normally."))
+(defun emacs-init-check-display-result (proc)
+  (display-buffer (process-buffer proc)))
+
 (defun emacs-init-check ()
   "Do init file check."
   (interactive)
+  (when (and emacs-init-check-process
+             (eq (process-status emacs-init-check-process) 'run))
+    (quit-process emacs-init-check-process))
   (with-current-buffer (get-buffer-create "*emacs init check*")
     (erase-buffer)
     (buffer-disable-undo)
     (set-process-sentinel
-     (apply 'start-process "emacs init check" (current-buffer)
-            auto-emacs-init-check-program-args)
+     (setq emacs-init-check-process
+           (apply 'start-process "emacs init check" (current-buffer)
+                  auto-emacs-init-check-program-args))
      (lambda (proc stat)
-       (if (zerop (process-exit-status proc))
-           (message "emacs-init-check exited normally.")
-         (display-buffer (process-buffer proc)))))))
+       (unless (eq (process-status proc) 'signal)
+         (if (zerop (process-exit-status proc))
+             (run-hook-with-args 'emacs-init-check-success-functions proc)
+           (run-hook-with-args 'emacs-init-check-fail-functions proc)))))))
 (defun auto-emacs-init-check ()
   "Do `emacs-init-check' automatically. It is intended for hook."
   (when (and auto-emacs-init-check buffer-file-name
+             (eq major-mode 'emacs-lisp-mode)
              (string-match auto-emacs-init-check-file-regexp buffer-file-name))
     (emacs-init-check)))
 
