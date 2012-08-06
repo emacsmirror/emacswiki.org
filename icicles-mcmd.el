@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Sun Aug  5 10:37:10 2012 (-0700)
+;; Last-Updated: Mon Aug  6 08:50:48 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 18395
+;;     Update #: 18403
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-mcmd.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -141,7 +141,12 @@
 ;;    `icicle-next-prefix-candidate-action',
 ;;    `icicle-next-prefix-candidate-alt-action',
 ;;    `icicle-next-S-TAB-completion-method',
-;;    `icicle-next-TAB-completion-method', `icicle-other-history',
+;;    `icicle-next-TAB-completion-method',
+;;    `icicle-ORIG-choose-completion', `icicle-ORIG-exit-minibuffer',
+;;    `icicle-ORIG-minibuffer-complete-and-exit',
+;;    `icicle-ORIG-mouse-choose-completion',
+;;    `icicle-ORIG-next-history-element', `icicle-ORIG-sit-for',
+;;    `icicle-ORIG-switch-to-completions', `icicle-other-history',
 ;;    `icicle-plus-saved-sort',
 ;;    `icicle-pp-eval-expression-in-minibuffer',
 ;;    `icicle-prefix-complete', `icicle-prefix-complete-no-display',
@@ -212,9 +217,7 @@
 ;;    `icicle-universal-argument-other-key', `icicle-up-directory',
 ;;    `icicle-use-interactive-command-history',
 ;;    `icicle-widen-candidates', `icicle-yank', `icicle-yank-pop',
-;;    `icicle-yank-secondary', `old-choose-completion',
-;;    `old-exit-minibuffer', `old-minibuffer-complete-and-exit',
-;;    `old-sit-for', `old-switch-to-completions', `toggle-icicle-.',
+;;    `icicle-yank-secondary', `toggle-icicle-.',
 ;;    `toggle-icicle-~-for-home-dir',
 ;;    `toggle-icicle-alternative-sorting',
 ;;    `toggle-icicle-angle-brackets',
@@ -442,15 +445,15 @@
 ;;
 ;; Selects minibuffer contents and leaves point at its beginning.
 ;;
-(unless (fboundp 'old-next-history-element)
-  (defalias 'old-next-history-element (symbol-function 'next-history-element)))
+(unless (fboundp 'icicle-ORIG-next-history-element)
+  (defalias 'icicle-ORIG-next-history-element (symbol-function 'next-history-element)))
 
 ;;;###autoload (autoload 'icicle-next-history-element "icicles")
 (defun icicle-next-history-element (arg) ; Bound to `M-n' in minibuffer.
   "Insert the next element of the minibuffer history in the minibuffer.
 With argument N, it uses the Nth following element."
   (interactive "p")
-  (old-next-history-element (prefix-numeric-value arg))
+  (icicle-ORIG-next-history-element (prefix-numeric-value arg))
   (when (and icicle-mode  (memq icicle-default-value '(preselect-start preselect-end)))
     (icicle-select-minibuffer-contents)
     (setq deactivate-mark  nil)))
@@ -462,8 +465,8 @@ With argument N, it uses the Nth following element."
 ;; Remove input mismatch highlighting.
 ;; Remove *Completion* window.
 ;;
-(unless (fboundp 'old-exit-minibuffer)
-  (defalias 'old-exit-minibuffer (symbol-function 'exit-minibuffer)))
+(unless (fboundp 'icicle-ORIG-exit-minibuffer)
+  (defalias 'icicle-ORIG-exit-minibuffer (symbol-function 'exit-minibuffer)))
 
 ;;;###autoload (autoload 'icicle-exit-minibuffer "icicles")
 (defun icicle-exit-minibuffer ()        ; Bound to `C-m' (`RET') in minibuffer.
@@ -500,7 +503,7 @@ Remove `*Completions*' window.  Remove Icicles minibuffer faces."
       ;;       (setq pos  (1+ pos))))
       ))
   (icicle-remove-Completions-window)
-  (old-exit-minibuffer))
+  (icicle-ORIG-exit-minibuffer))
 
 
 ;; REPLACE ORIGINAL `minibuffer-complete-and-exit' (built-in function),
@@ -508,8 +511,8 @@ Remove `*Completions*' window.  Remove Icicles minibuffer faces."
 ;;
 ;; Use Icicles completion.
 ;;
-(unless (fboundp 'old-minibuffer-complete-and-exit)
-  (defalias 'old-minibuffer-complete-and-exit (symbol-function 'minibuffer-complete-and-exit)))
+(unless (fboundp 'icicle-ORIG-minibuffer-complete-and-exit)
+  (defalias 'icicle-ORIG-minibuffer-complete-and-exit (symbol-function 'minibuffer-complete-and-exit)))
 
 ;; Bound to `C-m' (`RET') in must-match minibuffer completion maps.
 ;;;###autoload (autoload 'icicle-minibuffer-complete-and-exit "icicles")
@@ -599,7 +602,7 @@ This differs from `icicle-minibuffer-complete-and-exit' (bound to
                   (icicle-apropos-complete-no-display 'nomsg)
                 (icicle-prefix-complete-no-display 'nomsg))
             (icicle-filter-alist icicle-candidates-alist (list icicle-current-input)))))
-    (when (and candidates  (null (cdr candidates))) (old-exit-minibuffer)))) ; Single candidate.
+    (when (and candidates  (null (cdr candidates))) (icicle-ORIG-exit-minibuffer)))) ; Single candidate.
 
 
 ;; REPLACE ORIGINAL `choose-completion' in `simple.el',
@@ -608,8 +611,8 @@ This differs from `icicle-minibuffer-complete-and-exit' (bound to
 ;; Don't iconify frame or bury buffer.
 ;; Don't strip text properties.
 ;;
-(unless (fboundp 'old-choose-completion)
-  (defalias 'old-choose-completion (symbol-function 'choose-completion)))
+(unless (fboundp 'icicle-ORIG-choose-completion)
+  (defalias 'icicle-ORIG-choose-completion (symbol-function 'choose-completion)))
 
 ;;;###autoload (autoload 'icicle-choose-completion "icicles")
 (defun icicle-choose-completion ()
@@ -647,8 +650,8 @@ This differs from `icicle-minibuffer-complete-and-exit' (bound to
 ;; Return the number of the completion.
 ;; Don't strip text properties.
 ;;
-(when (and (fboundp 'mouse-choose-completion)  (not (fboundp 'old-mouse-choose-completion)))
-  (defalias 'old-mouse-choose-completion (symbol-function 'mouse-choose-completion)))
+(when (and (fboundp 'mouse-choose-completion)  (not (fboundp 'icicle-ORIG-mouse-choose-completion)))
+  (defalias 'icicle-ORIG-mouse-choose-completion (symbol-function 'mouse-choose-completion)))
 
 ;;;###autoload (autoload 'icicle-mouse-choose-completion "icicles")
 (defun icicle-mouse-choose-completion (event) ; Bound to `mouse-2' in `*Completions*'.
@@ -659,7 +662,7 @@ Return the number of the candidate: 0 for first, 1 for second, ..."
   ;; Give temporary modes such as isearch a chance to turn off.
   (run-hooks 'mouse-leave-buffer-hook)
   (let ((buffer  (window-buffer))
-         ;; $$$$$$ (icicle-orig-buff  buffer)
+        ;; $$$$$$ (icicle-orig-buff  buffer)
         choice base-size)
     (with-current-buffer (window-buffer (posn-window (event-start event)))
       (save-excursion
@@ -786,8 +789,8 @@ POSITION is a buffer position."
 ;;
 ;; Selects `*Completions*' window even if on another frame.
 ;;
-(unless (fboundp 'old-switch-to-completions)
-  (defalias 'old-switch-to-completions (symbol-function 'switch-to-completions)))
+(unless (fboundp 'icicle-ORIG-switch-to-completions)
+  (defalias 'icicle-ORIG-switch-to-completions (symbol-function 'switch-to-completions)))
 
 ;;;###autoload (autoload 'icicle-switch-to-completions "icicles")
 (defun icicle-switch-to-completions ()
@@ -2366,12 +2369,12 @@ you do not want this remapping, then customize option
 ;;
 ;; 2. Bind `inhibit-quit' to t, so `C-g' is handled after `sit-for', by `icicle-abort-recursive-edit'.
 ;;
-(unless (fboundp 'old-sit-for)
-  (defalias 'old-sit-for (symbol-function 'sit-for)))
+(unless (fboundp 'icicle-ORIG-sit-for)
+  (defalias 'icicle-ORIG-sit-for (symbol-function 'sit-for)))
 
 (when (> emacs-major-version 22)
   (defun icicle-sit-for (seconds &optional nodisp obsolete)
-  "Perform redisplay, then wait for SECONDS seconds or until input is available.
+    "Perform redisplay, then wait for SECONDS seconds or until input is available.
 SECONDS may be a floating-point value.
 \(On operating systems that do not support waiting for fractions of a
 second, floating-point values are rounded down to the nearest integer.)
@@ -2386,31 +2389,31 @@ An obsolete, but still supported form is
 where the optional arg MILLISECONDS specifies an additional wait period,
 in milliseconds; this was useful when Emacs was built without
 floating point support."
-  (if (numberp nodisp)
-      (setq seconds  (+ seconds (* 1e-3 nodisp))
-            nodisp   obsolete)
-    (if obsolete (setq nodisp  obsolete)))
-  (cond (noninteractive
-         (sleep-for seconds)
-         t)
-        ((input-pending-p)
-         nil)
-        ((<= seconds 0)
-         (or nodisp  (redisplay)))
-        (t
-         (or nodisp  (redisplay))
-         (let* ((inhibit-quit  t)
-                (read          (read-event nil nil seconds)))
-           (or (null read)
-               (progn
-                 ;; If last command was a prefix arg, e.g. C-u, push this event onto
-                 ;; `unread-command-events' as (t . EVENT) so it will be added to
-                 ;; `this-command-keys' by `read-key-sequence'.
-                 (when (memq overriding-terminal-local-map
-                             (list universal-argument-map icicle-universal-argument-map))
-                   (setq read  (cons t read)))
-                 (push read unread-command-events)
-                 nil)))))))
+    (if (numberp nodisp)
+        (setq seconds  (+ seconds (* 1e-3 nodisp))
+              nodisp   obsolete)
+      (if obsolete (setq nodisp  obsolete)))
+    (cond (noninteractive
+           (sleep-for seconds)
+           t)
+          ((input-pending-p)
+           nil)
+          ((<= seconds 0)
+           (or nodisp  (redisplay)))
+          (t
+           (or nodisp  (redisplay))
+           (let* ((inhibit-quit  t)
+                  (read          (read-event nil nil seconds)))
+             (or (null read)
+                 (progn
+                   ;; If last command was a prefix arg, e.g. C-u, push this event onto
+                   ;; `unread-command-events' as (t . EVENT) so it will be added to
+                   ;; `this-command-keys' by `read-key-sequence'.
+                   (when (memq overriding-terminal-local-map
+                               (list universal-argument-map icicle-universal-argument-map))
+                     (setq read  (cons t read)))
+                   (push read unread-command-events)
+                   nil)))))))
 
 ;;;###autoload (autoload 'icicle-retrieve-next-input "icicles")
 (defun icicle-retrieve-next-input (&optional arg) ; Bound to `C-S-l' (`C-L') in minibuffer.
@@ -5630,8 +5633,8 @@ narrowing the set of matches.
 
 You can use this command only from the minibuffer (`\\<minibuffer-local-completion-map>\
 \\[icicle-narrow-candidates]')."
-  ;; We handle `no-catch' errors here because `old-completing-read' and
-  ;; `old-read-file-file-name' can still be called in Icicle mode by, for instance, an
+  ;; We handle `no-catch' errors here because `icicle-ORIG-completing-read' and
+  ;; `icicle-ORIG-read-file-file-name' can still be called in Icicle mode by, for instance, an
   ;; `interactive' spec (e.g. (interactive "bBuffer: ")).  In that case, we throw to a
   ;; non-existant catch.  After doing that, we just insert the result, to pass it to the
   ;; next-higher recursive minibuffer.
