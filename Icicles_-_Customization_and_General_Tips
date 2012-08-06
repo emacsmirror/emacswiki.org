@@ -84,7 +84,7 @@ nothing wrong with that; I just want you to be aware of it.
 In general, it can be a good idea to look at the latest change-log
 entry for ##icicles-opt.el## in <tt>[[icicles-chg.el]]</tt>, to see what changes
 have been made.  If you then want to take advantage of some
-change, you can use `M-x customize option' and visually compare
+change, you can use `M-x customize-option' and visually compare
 your customized value with the new default value in
 <tt>[[icicles-opt.el]]</tt>, then edit your customized value as you like.
 
@@ -415,17 +415,25 @@ twice, so that this option can have the proper effect.
 Option '''`icicle-widgets-to-redefine'''' is a list of widgets that
 '''Icicles''' redefines for Icicle mode.  Widgets are Emacs objects
 used, in particular, by Customize.  The default value is
-`(file)', meaning that only the `file' widget is redefined.  It
-is redefined to allow '''Icicles''' completion on file-name fields.
+`(color file)', meaning that the `color' and `file' widgets are redefined.  They are redefined to allow '''Icicles''' completion on color and file-name fields.
 
-With this redefinition, when you edit a file-name field in
+With these redefinitions, when you edit a color or file-name field in
 [[Customize]] (in ''Icicle'' mode) `M-TAB' performs '''Icicles''' completion.
 Initially, [[prefix completion]] is used, but you can then use
 [[apropos completion]], [[progressive completion]], and so on.
 
-The portion of the file name before [[point]] in the editing field
+For file-name completion, the portion of the file name before [[point]] in the editing field
 is completed.  By default, the rest of the field content, past
 point, is not deleted.  If you use a [[prefix argument]] (i.e., `C-u M-TAB') then the rest of the line is deleted.
+
+For color completion, a [[prefix argument]] means to use the RGB
+value of the color, not its name, as the option value.
+
+For color completion, if `<tt>[[#icicle-WYSIWYG-Completions-flag|icicle-WYSIWYG-Completions-flag]]</tt>' is
+non-`nil' then completion is WYSIWYG.  You can complete against
+the color name or its RGB value, or you can enter an RGB value
+with no name without completing.  See function 
+`icicle-widget-color-complete' for more information.
 
 
 
