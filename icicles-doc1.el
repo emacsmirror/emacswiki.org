@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Fri Aug  3 13:58:54 2012 (-0700)
+;; Last-Updated: Sun Aug  5 19:57:02 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 26681
+;;     Update #: 26684
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-doc1.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -4779,7 +4779,8 @@
 ;;    or a list of symbols.  The object that corresponds to the
 ;;    current candidate when `S-delete' is invoked is deleted from the
 ;;    list.  If, in addition, the list variable is a user option, then
-;;    the updated list value is saved in the user's custom file.
+;;    the updated list value is saved in the user's `custom-file' (or
+;;    init file, `~/.emacs').
 ;;
 ;;  For more information about using this feature in Emacs-Lisp code,
 ;;  see the doc of function `icicle-delete-current-candidate-object'
@@ -6784,8 +6785,9 @@
 ;;  of the candidate set and cache file to use, and the names you
 ;;  enter are automatically entered in option
 ;;  `icicle-saved-completion-sets'.  That option is automatically
-;;  saved to your custom file, so the next time you use Emacs you can
-;;  retrieve any saved set of candidates that you like.
+;;  saved to your `custom-file' (or init file, `~/.emacs'), so the
+;;  next time you use Emacs you can retrieve any saved set of
+;;  candidates that you like.
 ;;
 ;;  When you try to retrieve a persistent set of completion
 ;;  candidates, you are similarly prompted for the candidate-set name
