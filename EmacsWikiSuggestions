@@ -23,6 +23,21 @@ Does [[CSS]] correspond to your request?  I don't use alternative stylesheets my
 
 (I've updated HowTo to mention page [[CSS]].) -- DrewAdams
 
+[new]
+
+This is how the directives on http://Orgmode.org/worg looks like
+
+    <link rel="stylesheet" title="Standard" href="/worg/style/worg.css" type="text/css" />
+    <link rel="alternate stylesheet" title="Zenburn" href="/worg/style/worg-zenburn.css" type="text/css" />
+    <link rel="alternate stylesheet" title="Classic" href="/worg/style/worg-classic.css" type="text/css" />
+    <link rel="stylesheet" href="http://orgmode.org/css/lightbox.css" type="text/css" media="screen" />
+
+This is how it looks like on EmacsWiki pages
+
+    <link type="text/css" rel="stylesheet" href="/emacs/wiki.css" />
+
+Note the absence of "alternate stylesheet" attributes.  I am wondering whether such directives could be added to the site.
+
 
 == Content Fixes ==
 
