@@ -21,6 +21,8 @@ Emacs command `find-file' (`C-x C-f') finds a file within a given directory -- y
 
 * [[Icicles - Persistent Completions]] -- Save a set of completion candidates persistently. Create a persistent image of all of the files in your file system. Retrieve it quickly anytime, to find a file. 
 
+* [[Everything]] -- Bridge to MS Windows desktop-search engine [[http://www.voidtools.com/|Everything]] 
+
 * FileNameCache -- You load file names into a (non-persistent) cache, which you can subsequently use for finding files with `find-file'. See section "File Name Cache" in the EmacsManual
 
 * [[gds]] -- Uses Google Desktop Search to find files to open. Current interfaces to the hits are `iswitchb' and `dired'.
@@ -52,4 +54,3 @@ CategoryFiles
 CategoryDirectories
 CategoryCompletion
 CategoryProgrammerUtils
-
