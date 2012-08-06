@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Thu May 21 13:31:43 2009 (-0700)
 ;; Version: 22.0
-;; Last-Updated: Sun Aug  5 13:53:46 2012 (-0700)
+;; Last-Updated: Sun Aug  5 19:24:41 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 5722
+;;     Update #: 5732
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-cmd2.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -51,6 +51,10 @@
 ;;  Macros defined here:
 ;;
 ;;    `icicle-search-modes', `icicle-with-comments-hidden'.
+;;
+;;  Widgets defined here:
+;;
+;;    `icicle-color', `old-color'.
 ;;
 ;;  Commands defined here - (+) means a multi-command:
 ;;
@@ -226,7 +230,9 @@
 ;;    `icicle-search-replace-search-hit', `icicle-search-thing-args',
 ;;    `icicle-search-thing-scan', `icicle-search-where-arg',
 ;;    `icicle-set-completion-methods-for-command',
-;;    `icicle-things-alist', `icicle-this-command-keys-prefix'.
+;;    `icicle-things-alist', `icicle-this-command-keys-prefix',
+;;    `icicle-widget-color-complete', `old-read-color',
+;;    `old-widget-color-complete'.
 ;;
 ;;  Internal variables defined here:
 ;;
@@ -1610,6 +1616,126 @@ cycling, these keys with prefix `C-' act on the current face name:
       (interactive `(,@(hlt-region-or-buffer-limits)
                      ,(mapcar #'intern (icicle-choose-faces)))) ; An Icicles multi-command
       (dolist (face faces) (hlt-hide-default-face start end face)))
+
+    ;; Save vanilla `color' widget as `old-color' widget, for restoring when you quit Icicle mode.
+    (unless (get 'old-color 'widget-type)
+      (put 'old-color 'widget-type (get 'color 'widget-type))
+      (put 'old-color 'widget-documentation (get 'color 'widget-documentation)))
+
+;;;###autoload
+    (define-widget 'icicle-color 'editable-field
+      "Icicles version of the `color' widget.
+`M-TAB' completes the color name using Icicles WYSIWYG completion.
+See `icicle-widget-color-complete'."
+      :format   "%{%t%}: %v (%{sample%})\n"
+      :size     (1+ (apply #'max (mapcar #'length (x-defined-colors))))
+      :tag      "Color"
+      :match    'widgetp-color-match
+      :validate 'widgetp-color-validate
+      :value    "black"
+      :complete 'icicle-widget-color-complete
+      :sample-face-get 'widget-color-sample-face-get
+      :notify   'widget-color-notify
+      :action   'widget-color-action)
+
+    (unless (fboundp 'old-widget-color-complete)
+      (defalias 'old-widget-color-complete (symbol-function 'widget-color-complete)))
+
+;;;###autoload (autoload 'icicle-lisp-complete-symbol "icicles")
+    (defun icicle-widget-color-complete (widget)
+      "Complete the color name in `color' widget WIDGET.
+If you use Icicles, then you get Icicles completion (apropos,
+progressive, complementing...).
+
+If, in addition, option `icicle-WYSIWYG-Completions-flag' is non-nil:
+
+ * Completion is WYSIWYG.  Each candidate is a color name followed by
+   its RGB value as a color swatch.  You can complete against any of
+   this text (name, RGB, or part or all of both).  Or you can enter an
+   RGB value that has no color name without completing.
+
+ * With a prefix arg, when you choose a completion its RGB value is
+   used, not the color name.
+
+If, in addition, option `icicle-add-proxy-candidates-flag' is non-nil
+and library `palette.el' or `eyedropper.el' is available, then the
+following Icicles proxy candidates are available during completion:
+
+* `*copied foreground*'  - last copied foreground, if available
+* `*copied background*'  - last copied background, if available
+* `*mouse-2 foreground*' - foreground where you click `mouse-2'
+* `*mouse-2 background*' - background where you click `mouse-2'
+* `*point foreground*'   - foreground under the text cursor
+* `*point background*'   - background under the text cursor
+
+\(You can copy a color using eyedropper commands such as
+`eyedrop-pick-foreground-at-mouse'.)
+
+In addition, the names of user options (variables) whose custom type
+is `color' are also proxy candidates, but with `'' as a prefix and
+suffix.  So, for example, option `icicle-region-background' appears as
+proxy color candidate `'icicle-region-background''.  If you choose
+such a candidate then (only) the variable's value (color name or RGB)
+is returned.
+
+As always in Icicles, you can toggle the use of proxy candidates using
+`\\<minibuffer-local-completion-map>\\[icicle-toggle-proxy-candidates]' in the minibuffer.
+
+See `icicle-read-color-wysiwyg' for more information."
+      (let* ((prefix      (buffer-substring-no-properties
+                           (widget-field-start widget) (point)))
+             ;; Free variables here: `eyedrop-picked-foreground', `eyedrop-picked-background'.
+             ;; They are defined in library `palette.el' or library `eyedropper.el'.
+             (colors      (if (fboundp 'hexrgb-defined-colors-alist) ; Defined in `hexrgb.el'.
+                              (if (fboundp 'eyedrop-foreground-at-point)
+                                  (append (and eyedrop-picked-foreground
+                                               '(("*copied foreground*")))
+                                          (and eyedrop-picked-background
+                                               '(("*copied background*")))
+                                          '(("*mouse-2 foreground*") ("*mouse-2 background*")
+                                            ("*point foreground*") ("*point background*"))
+                                          (hexrgb-defined-colors-alist))
+                                (hexrgb-defined-colors-alist))
+                            (mapcar #'list (x-defined-colors))))
+             (completion  (try-completion prefix colors)))
+        (cond ((null completion)
+               (widgetp-remove-Completions)
+               (error "No completion for \"%s\"" prefix))
+              ((eq completion t)
+               (widgetp-remove-Completions)
+               (message "Sole completion"))
+              ((and (not (string-equal prefix completion))
+                    (or (not (boundp 'icicle-mode))  (not icicle-mode)))
+               (insert-and-inherit (substring completion (length prefix)))
+               (message "Making completion list...")
+               (widgetp-display-Completions prefix colors)
+               (message "Completed, but not unique"))
+              ((or (not (boundp 'icicle-mode))  (not icicle-mode))
+               (message "Making completion list...")
+               (widgetp-display-Completions prefix colors))
+              (t
+               (let* ((enable-recursive-minibuffers                (active-minibuffer-window))
+                      (icicle-top-level-when-sole-completion-flag  t)
+                      (icicle-show-Completions-initially-flag      t)
+                      (icicle-unpropertize-completion-result-flag  t)
+                      (completion-ignore-case                      t)
+                      (field                                       (widget-field-find (point)))
+                      (beg                                         (widget-field-start field))
+                      (end                                         (max (point)
+                                                                        (if (fboundp 'widget-field-text-end)
+                                                                            (widget-field-text-end field)
+                                                                          (widget-field-end field))))
+
+                      (color
+                       (if (and (fboundp 'icicle-read-color-wysiwyg)
+                                icicle-WYSIWYG-Completions-flag)
+                           (icicle-read-color-wysiwyg (if current-prefix-arg 99 0)
+                                                      "Color (name or #R+G+B+): "
+                                                      prefix 'MSGP)
+                         (completing-read "Color: " colors nil nil prefix))))
+                 (delete-region beg end)
+                 (insert-and-inherit color)
+                 (message "Completed"))))))
     ))
 
 
