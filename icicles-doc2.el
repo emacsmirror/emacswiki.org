@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Fri Aug  3 16:02:06 2012 (-0700)
+;; Last-Updated: Sun Aug  5 20:41:20 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 28955
+;;     Update #: 28975
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-doc2.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -835,8 +835,8 @@
 ;;(@* "User Options for Icicles Searching")
 ;;  ** User Options for Icicles Searching **
 ;;
-;;  You can customize the following user options, to control search
-;;  and replacement behavior.
+;;  You can customize the following user options to control search and
+;;  replacement behavior.
 ;;
 ;;  * If `icicle-show-multi-completion-flag' is non-`nil' (the default
 ;;    value), then, whenever you use a prefix argument, Icicles search
@@ -4831,7 +4831,7 @@
 ;;  In general, it can be a good idea to look at the latest change-log
 ;;  entry for `icicles-opt.el' in `icicles-chg.el', to see what
 ;;  changes have been made.  If you then want to take advantage of
-;;  some change, you can use `M-x customize option' and visually
+;;  some change, you can use `M-x customize-option' and visually
 ;;  compare your customized value with the new default value in
 ;;  `icicles-opt.el', then edit your customized value as you like.
 ;;
@@ -5063,19 +5063,29 @@
 ;;
 ;;  * Option `icicle-widgets-to-redefine' is a list of widgets that
 ;;    Icicles redefines for Icicle mode.  Widgets are Emacs objects
-;;    used, in particular, by Customize.  The default value is
-;;    `(file)', meaning that only the `file' widget is redefined.  It
-;;    is redefined to allow Icicles completion on file-name fields.
+;;    used, in particular, by Customize.  The default value is `(color
+;;    file)', meaning that the `color' and `file' widgets are
+;;    redefined.  They are redefined to allow Icicles completion on
+;;    color and file-name fields.
 ;;
-;;    With this redefinition, when you edit a file-name field in
-;;    Customize (in Icicle mode) `M-TAB' performs Icicles completion.
-;;    Initially, prefix completion is used, but you can then use
-;;    apropos completion, progressive completion, and so on.
+;;    With these redefinitions, when you edit a color or file-name
+;;    field in Customize (in Icicle mode) `M-TAB' performs Icicles
+;;    completion.  Initially, prefix completion is used, but you can
+;;    then use apropos completion, progressive completion, and so on.
 ;;
-;;    The portion of the file name before point in the editing field
-;;    is completed.  By default, the rest of the field content, past
-;;    point, is not deleted.  If you use a prefix arg (i.e., `C-u
-;;    M-TAB') then the rest of the line is deleted.
+;;    For file-name completion, the portion of the name before point
+;;    in the editing field is completed.  By default, the rest of the
+;;    field content, past point, is not deleted.  If you use a prefix
+;;    arg (i.e., `C-u M-TAB') then the rest of the line is deleted.
+;;
+;;    For color completion, a prefix argument means to use the RGB
+;;    value of the color, not its name, as the option value.
+;;
+;;    For color completion, if `icicle-WYSIWYG-Completions-flag' is
+;;    non-`nil' then completion is WYSIWYG.  You can complete against
+;;    the color name or its RGB value, or you can enter an RGB value
+;;    with no name without completing.  See function
+;;    `icicle-widget-color-complete' for more information.
 ;;
 ;;  * User option `icicle-candidate-help-keys' specifies the keys that
 ;;    display help about the current completion candidate.  The
@@ -6308,8 +6318,8 @@
 ;;    Icicles will save the updated value of option
 ;;    `icicle-command-abbrev-alist' when you quit Emacs.  This is the
 ;;    normal behavior.  If you for some reason do not want your
-;;    `custom-file' or init file updated in this way, then customize
-;;    `icicle-customize-save-flag' to `nil'.
+;;    `custom-file' or init file (`~/.emacs') updated in this way,
+;;    then customize `icicle-customize-save-flag' to `nil'.
 ;;
 ;;  * If `icicle-buffers-ido-like-flag' is `t' then `icicle-buffer'
 ;;    and similar commands act more Ido-like.  Specifically, those
@@ -7570,19 +7580,16 @@
 ;;  value of `icicle-functions-to-redefine' contains the following
 ;;  functions:
 ;;
-;;    `bbdb-complete-name' (from BBDB), `comint-dynamic-complete',
+;;    `bbdb-complete-name' (from BBDB), `comint-completion-at-point'
+;;    (or `comint-dynamic-complete', prior to Emacs 24),
 ;;    `comint-dynamic-complete-filename',
-;;    `comint-replace-by-expanded-filename', `customize-apropos',
-;;    `customize-apropos-faces', `customize-apropos-groups',
-;;    `customize-apropos-options', `customize-apropos-options-of-type'
-;;    (from `cus-edit+.el'), `customize-face',
-;;    `customize-face-other-window', `dabbrev-completion',
-;;    `dired-read-shell-command', `ess-complete-object-name' (from
-;;    ESS), `gud-gdb-complete-command', `lisp-complete-symbol',
-;;    `lisp-completion-at-point',
-;;    `minibuffer-default-add-completions', `read-color',
-;;    `read-from-minibuffer', `read-shell-command', `read-string',
-;;    `recentf-make-menu-items', `repeat-complex-command'.
+;;    `comint-replace-by-expanded-filename',
+;;    `ess-complete-object-name' (from ESS),
+;;    `gud-gdb-complete-command', `Info-goto-node', `Info-index',
+;;    `Info-menu', `lisp-complete-symbol', `lisp-completion-at-point',
+;;    `minibuffer-default-add-completions', `read-char-by-name',
+;;    `read-color', `read-from-minibuffer', `read-string',
+;;    `recentf-make-menu-items'.
 ;;
 ;;  Icicles unconditionally redefines these standard Emacs functions
 ;;  while in Icicle mode:
