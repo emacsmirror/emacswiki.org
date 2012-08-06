@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Oct 16 13:33:18 1995
 ;; Version: 21.0
-;; Last-Updated: Sat Jul 21 08:25:46 2012 (-0700)
+;; Last-Updated: Mon Aug  6 10:26:42 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 1343
+;;     Update #: 1345
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icomplete+.el
 ;; Keywords: help, abbrev, internal, extensions, local
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -72,6 +72,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2012/08/06 dadams
+;;     Removed old, commented code at end of file.
 ;; 2012/07/21 dadams
 ;;     icomplete-completions: Fixed typo for Emacs 23 version: COLLECTION everywhere, not CANDIDATES.
 ;; 2012/06/23 dadams
@@ -909,120 +911,6 @@ following the rest of the icomplete info:
                                'face 'icompletep-nb-candidates nb-cands-string)
             (setq prompt  (concat prompt nb-cands-string)))
           prompt)))))
-
-
-;;; The following functions have been REDEFINED to reset the
-;;; `minibuffer-completion-table' in order to avoid icompletion.
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-
-;; Note:  The function `read-input' is an alias for `read-string'.
-
-;; (or (fboundp 'old-read-string)
-;; (fset 'old-read-string (symbol-function 'read-string)))
-
-;; ;; REPLACES ORIGINAL:
-;; ;; Resets `minibuffer-completion-table' to avoid icompletion.
-;; (defsubst read-string
-;;   (prompt &optional initial-input history default-value inherit-input-method)
-;;   "Read a string from the minibuffer, prompting with string PROMPT.
-;; If non-nil, second arg INITIAL-INPUT is a string to insert before
-;;     reading.  This argument has been superseded by DEFAULT-VALUE and
-;;     should normally be `nil' in new code.  It behaves as in
-;;     `read-from-minibuffer'.  See the documentation for that function.
-;; The third arg HISTORY, if non-nil, specifies a history list and
-;;     optionally the initial position in that list.
-;;     See `read-from-minibuffer' for details of argument HISTORY.
-;; Fourth arg DEFAULT-VALUE is the default value.  If non-nil, it is used
-;;     for history commands and as the value to return if the user enters
-;;     an empty string.
-;; Fifth arg INHERIT-INPUT-METHOD, if non-nil, means the minibuffer
-;;     inherits the current input method and setting of
-;;     `enable-multibyte-characters'."
-;;   (setq minibuffer-completion-table  nil) ; So won't icomplete by default.
-;;   (old-read-string prompt initial-input history default-value inherit-input-method))
-
-
-;; (or (fboundp 'old-read-from-minibuffer)
-;; (fset 'old-read-from-minibuffer (symbol-function 'read-from-minibuffer)))
-
-;; ;; REPLACES ORIGINAL:
-;; ;; Resets `minibuffer-completion-table' to avoid icompletion.
-;; (defsubst read-from-minibuffer
-;;   (prompt &optional initial-contents keymap read hist default-value
-;;           inherit-input-method keep-all)
-;;   "Read a string from the minibuffer, prompting with string PROMPT.
-;; The optional second arg INITIAL-CONTENTS is an obsolete alternative to
-;;   DEFAULT-VALUE.  It normally should be nil in new code, except when
-;;   HIST is a cons.  It is discussed in more detail below.
-;; Third arg KEYMAP is a keymap to use while reading;
-;;   if omitted or nil, the default is `minibuffer-local-map'.
-;; If fourth arg READ is non-nil, then interpret the result as a Lisp
-;;   object and return that object.  In other words, do this:
-;;       `(car (read-from-string INPUT-STRING))'
-;; Fifth arg HIST, if non-nil, specifies a history list and optionally
-;;   the initial position in the list.
-;;   It can be a symbol, which is the history list variable to use,
-;;   or it can be a cons cell (HISTVAR . HISTPOS).
-;;   In that case, HISTVAR is the history-list variable to use,
-;;   and HISTPOS is the initial position for use by the minibuffer
-;;   history commands.  For consistency, you should also specify that
-;;   element of the history as the value of INITIAL-CONTENTS.
-;;   Positions are counted starting from 1 at the beginning of the list.
-;; Sixth arg DEFAULT-VALUE is the default value.  If non-nil, it is
-;;   available for history commands; but, unless READ is non-nil,
-;;   `read-from-minibuffer' does NOT return DEFAULT-VALUE if the user
-;;   enters empty input!  It returns the empty string.
-;; Seventh arg INHERIT-INPUT-METHOD, if non-nil, means the minibuffer
-;;   inherits the current input method and the setting of
-;;   `enable-multibyte-characters'.
-;; Eighth arg KEEP-ALL, if non-nil, says to put all inputs in the history
-;;  list, even empty or duplicate inputs. (This argument is not available
-;;  in Emacs versions prior to Emacs 22.)
-;; If variable `minibuffer-allow-text-properties' is non-nil, then the
-;;   string returned includes whatever text properties were present in
-;;   the minibuffer.  Otherwise the value has no text properties.
-
-;; The remainder of this documentation describes INITIAL-CONTENTS in more
-;; detail.  It is relevant only when studying existing code, or when HIST
-;; is a cons.  If non-nil, INITIAL-CONTENTS is a string to be inserted
-;; into the minibuffer before reading input.  Normally, point is put at
-;; the end of that string.  However, if INITIAL-CONTENTS is (STRING .
-;; POSITION), the initial input is STRING, but point is placed at
-;; _one-indexed_ position POSITION in the minibuffer.  Any integer value
-;; less than or equal to one puts point at the beginning of the string.
-;; *Note* that this behavior differs from the way such arguments are used
-;; in `completing-read' and some related functions, which use
-;; zero-indexing for POSITION."
-;;   (setq minibuffer-completion-table  nil) ; So won't icomplete by default.
-;;   (if (or (string-match "22." emacs-version) (string-match "21.3.50" emacs-version))
-;;       (old-read-from-minibuffer prompt initial-contents keymap read hist
-;;                                 default-value inherit-input-method keep-all)
-;;     (old-read-from-minibuffer prompt initial-contents keymap read hist
-;;                               default-value inherit-input-method))) ; No KEEP-ALL
-
-
-;; (or (fboundp 'old-read-no-blanks-input)
-;; (fset 'old-read-no-blanks-input (symbol-function 'read-no-blanks-input)))
-
-;; ;; REPLACES ORIGINAL:
-;; ;; Resets `minibuffer-completion-table' to avoid icompletion.
-;; (defsubst read-no-blanks-input (prompt &optional initial-contents inherit-input-method)
-;;   "Read a string from the minibuffer, not allowing blanks.
-;; Arg PROMPT is a prompt string.  Whitespace terminates the input.
-
-;; If optional second arg INITIAL-CONTENTS is non-nil, it should be a
-;; string, which is used as initial input, with point positioned at the
-;; end, so that a SPACE will accept the input.  INITIAL-CONTENTS can
-;; alternatively be a cons of a string and an integer.  Such values are
-;; treated as in `read-from-minibuffer', but are normally not useful in
-;; this function.
-
-;; Third arg INHERIT-INPUT-METHOD, if non-nil, means the minibuffer
-;; inherits the current input method and the setting of
-;; `enable-multibyte-characters'."
-;;   (setq minibuffer-completion-table  nil) ; So won't icomplete by default.
-;;   (old-read-no-blanks-input prompt initial-contents inherit-input-method))
 
 ;;;;;;;;;;;;;;;;;;;;;;;
 
