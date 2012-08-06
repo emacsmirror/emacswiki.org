@@ -246,7 +246,7 @@ be the ##COLLECTION## argument to `completing-read'.  The list can be
   corresponds to the current candidate when `S-delete' is invoked
   is deleted from the list.  If, in addition, the list variable
   is a [[user option]], then the updated list value is saved in the
-  user's custom file.
+  user's `custom-file' (or [[init file]], ##~/.emacs##).
 
 For more information about using this feature in EmacsLisp code,
 see the doc of function '''`icicle-delete-current-candidate-object''''
