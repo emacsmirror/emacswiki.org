@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 10:21:10 2006
 ;; Version: 22.0
-;; Last-Updated: Fri Aug  3 15:23:23 2012 (-0700)
+;; Last-Updated: Sun Aug  5 20:11:49 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 9062
+;;     Update #: 9067
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-mode.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -4337,6 +4337,10 @@ if `icicle-change-region-background-flag' is non-nil."
     (defalias 'choose-completion            'icicle-choose-completion)
     (defalias 'choose-completion-string     'icicle-choose-completion-string)
     (defalias 'completing-read              'icicle-completing-read)
+    (when (fboundp 'icicle-completing-read-multiple)
+      (defalias 'completing-read-multiple   'icicle-completing-read-multiple)
+      (setq crm-local-completion-map  icicle-crm-local-completion-map
+            crm-local-must-match-map  icicle-crm-local-must-match-map))
     (defalias 'completion-setup-function    'icicle-completion-setup-function)
     (unless (> emacs-major-version 22)
       (defalias 'dired-smart-shell-command  'icicle-dired-smart-shell-command))
@@ -4361,13 +4365,9 @@ if `icicle-change-region-background-flag' is non-nil."
       (defalias 'shell-command              'icicle-shell-command))
     (unless (> emacs-major-version 22)
       (defalias 'shell-command-on-region    'icicle-shell-command-on-region))
-    (defalias 'switch-to-completions        'icicle-switch-to-completions)
-    (when (fboundp 'icicle-completing-read-multiple)
-      (defalias 'completing-read-multiple   'icicle-completing-read-multiple)
-      (setq crm-local-completion-map  icicle-crm-local-completion-map
-            crm-local-must-match-map  icicle-crm-local-must-match-map))
     (when (> emacs-major-version 22)
       (defalias 'sit-for                    'icicle-sit-for))
+    (defalias 'switch-to-completions        'icicle-switch-to-completions)
     ))
 
 (defun icicle-restore-std-completion-fns ()
@@ -4376,6 +4376,10 @@ if `icicle-change-region-background-flag' is non-nil."
     (defalias 'choose-completion            'old-choose-completion)
     (defalias 'choose-completion-string     'old-choose-completion-string)
     (defalias 'completing-read              'old-completing-read)
+    (when (fboundp 'old-completing-read-multiple)
+      (defalias 'completing-read-multiple   'old-completing-read-multiple)
+      (setq crm-local-completion-map  old-crm-local-completion-map
+            crm-local-must-match-map  old-crm-local-must-match-map))
     (defalias 'completion-setup-function    'old-completion-setup-function)
     (when (fboundp 'old-dired-smart-shell-command) ; Emacs 23
       (defalias 'dired-smart-shell-command  'old-dired-smart-shell-command))
@@ -4398,13 +4402,9 @@ if `icicle-change-region-background-flag' is non-nil."
       (defalias 'shell-command              'old-shell-command))
     (when (fboundp 'old-shell-command-on-region) ; Emacs < 23
       (defalias 'shell-command-on-region    'old-shell-command-on-region))
-    (defalias 'switch-to-completions        'old-switch-to-completions)
-    (when (fboundp 'old-completing-read-multiple)
-      (defalias 'completing-read-multiple   'old-completing-read-multiple)
-      (setq crm-local-completion-map  old-crm-local-completion-map
-            crm-local-must-match-map  old-crm-local-must-match-map))
     (when (> emacs-major-version 22)
       (defalias 'sit-for                    'old-sit-for))
+    (defalias 'switch-to-completions        'old-switch-to-completions)
     ))
 
 ;; Free vars here: `icicle-saved-kmacro-ring-max' is bound in `icicles-var.el'.
