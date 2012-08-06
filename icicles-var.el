@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:23:26 2006
 ;; Version: 22.0
-;; Last-Updated: Tue Jul 17 10:02:46 2012 (-0700)
+;; Last-Updated: Mon Aug  6 09:10:12 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 1632
+;;     Update #: 1636
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-var.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -103,12 +103,11 @@
 ;;    `icicle-nb-candidates-before-truncation',
 ;;    `icicle-nb-of-other-cycle-candidates', `icicle-new-last-cmd',
 ;;    `icicle-next-apropos-complete-cycles-p',
-;;    `icicle-next-prefix-complete-cycles-p',
-;;    `icicle-old-read-file-name-fn', `icicle-orig-buff',
+;;    `icicle-next-prefix-complete-cycles-p', `icicle-orig-buff',
 ;;    `icicle-orig-must-pass-after-match-pred',
-;;    `icicle-orig-pt-explore', `icicle-orig-window',
-;;    `icicle-orig-win-explore', `icicle-other-window',
-;;    `icicle-plist-last-initial-cand-set',
+;;    `icicle-orig-pt-explore', `icicle-orig-read-file-name-fn',
+;;    `icicle-orig-window', `icicle-orig-win-explore',
+;;    `icicle-other-window', `icicle-plist-last-initial-cand-set',
 ;;    `icicle-predicate-types-alist', `icicle-pref-arg',
 ;;    `icicle-pre-minibuffer-buffer', `icicle-post-command-hook',
 ;;    `icicle-pre-command-hook',
@@ -1090,11 +1089,6 @@ Used by, e.g., `icicle-execute-extended-command'.")
 (defvar icicle-next-prefix-complete-cycles-p nil
   "Whether the next prefix-completion command should cycle.")
 
-(defvar icicle-old-read-file-name-fn (and (not (boundp 'read-file-name-function)) ; Em 22+
-                                          'orig-read-file-name) ; Emacs 20, 21
-  "Value of `read-file-name-function' outside of Icicle mode.
-For versions of Emacs < 22, this is the original `read-file-name'.")
-
 (defvar icicle-orig-buff nil
   "Current buffer when you invoked an Icicles multi-command.")
 
@@ -1103,6 +1097,11 @@ For versions of Emacs < 22, this is the original `read-file-name'.")
 
 (defvar icicle-orig-pt-explore nil
   "Point when you invoked `icicle-explore'.")
+
+(defvar icicle-orig-read-file-name-fn (and (not (boundp 'read-file-name-function)) ; Em 22+
+                                           'icicle-ORIG-read-file-name) ; Emacs 20, 21
+  "Value of `read-file-name-function' outside of Icicle mode.
+For versions of Emacs < 22, this is the original `read-file-name'.")
 
 (defvar icicle-orig-window nil
   "Selected window when you invoked an Icicles multi-command.")
