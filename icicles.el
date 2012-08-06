@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Sun Aug  5 19:27:54 2012 (-0700)
+;; Last-Updated: Mon Aug  6 09:24:57 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 23159
+;;     Update #: 23180
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -304,12 +304,20 @@
 ;;    `icicle-minibuffer-default-add-dired-shell-commands',
 ;;    `icicle-minibuffer-help', `icicle-mode', `icy-mode',
 ;;    `icicle-next-visible-thing', `icicle-object-action',
-;;    `icicle-occur', `icicle-other-window-or-frame',
-;;    `icicle-pick-color-by-name', `icicle-plist',
-;;    `icicle-pop-tag-mark', `icicle-pp-eval-expression',
-;;    `icicle-previous-visible-thing', `icicle-read-color',
-;;    `icicle-read-color-wysiwyg', `icicle-read-kbd-macro',
-;;    `icicle-recent-file', `icicle-recent-file-other-window',
+;;    `icicle-occur', `icicle-ORIG-bbdb-complete-name',
+;;    `icicle-ORIG-comint-dynamic-complete',
+;;    `icicle-ORIG-comint-dynamic-complete-filename',
+;;    `icicle-ORIG-comint-replace-by-expanded-filename',
+;;    `icicle-ORIG-dired-read-shell-command',
+;;    `icicle-ORIG-ess-complete-object-name',
+;;    `icicle-ORIG-gud-gdb-complete-command',
+;;    `icicle-ORIG-read-file-name', `icicle-ORIG-read-shell-command',
+;;    `icicle-other-window-or-frame', `icicle-pick-color-by-name',
+;;    `icicle-plist', `icicle-pop-tag-mark',
+;;    `icicle-pp-eval-expression', `icicle-previous-visible-thing',
+;;    `icicle-read-color', `icicle-read-color-wysiwyg',
+;;    `icicle-read-kbd-macro', `icicle-recent-file',
+;;    `icicle-recent-file-other-window',
 ;;    `icicle-recompute-shell-command-candidates',
 ;;    `icicle-regexp-list', `icicle-remove-buffer-candidate',
 ;;    `icicle-remove-buffer-config',
@@ -391,14 +399,8 @@
 ;;    `icicle-toggle-WYSIWYG-Completions', `icicle-untag-a-file',
 ;;    `icicle-vardoc', `icicle-where-is',
 ;;    `icicle-widget-file-complete', `icicle-yank-maybe-completing',
-;;    `icicle-yank-pop-commands', `icicle-zap-to-char',
-;;    `old-bbdb-complete-name', `old-comint-dynamic-complete',
-;;    `old-comint-dynamic-complete-filename',
-;;    `old-comint-replace-by-expanded-filename',
-;;    `old-dired-read-shell-command', `old-ess-complete-object-name',
-;;    `old-gud-gdb-complete-command', `old-read-shell-command',
-;;    `orig-read-file-name', `toggle', `synonyms',
-;;    `toggle-icicle-~-for-home-dir',
+;;    `icicle-yank-pop-commands', `icicle-zap-to-char', `toggle',
+;;    `synonyms', `toggle-icicle-~-for-home-dir',
 ;;    `toggle-icicle-alternative-sorting',
 ;;    `toggle-icicle-angle-brackets',
 ;;    `toggle-icicle-case-sensitivity', `toggle-icicle-C-for-actions',
@@ -542,7 +544,12 @@
 ;;    `icicle-next-prefix-candidate',
 ;;    `icicle-next-prefix-candidate-action',
 ;;    `icicle-next-prefix-candidate-alt-action',
-;;    `icicle-next-S-TAB-completion-method', `icicle-other-history',
+;;    `icicle-next-S-TAB-completion-method',
+;;    `icicle-ORIG-choose-completion', `icicle-ORIG-exit-minibuffer',
+;;    `icicle-ORIG-minibuffer-complete-and-exit',
+;;    `icicle-ORIG-mouse-choose-completion',
+;;    `icicle-ORIG-next-history-element', `icicle-ORIG-sit-for',
+;;    `icicle-ORIG-switch-to-completions', `icicle-other-history',
 ;;    `icicle-plus-saved-sort',
 ;;    `icicle-pp-eval-expression-in-minibuffer',
 ;;    `icicle-prefix-complete', `icicle-prefix-complete-no-display',
@@ -614,9 +621,7 @@
 ;;    `icicle-universal-argument-other-key', `icicle-up-directory',
 ;;    `icicle-use-interactive-command-history',
 ;;    `icicle-widen-candidates', `icicle-yank', `icicle-yank-pop',
-;;    `icicle-yank-secondary', `old-choose-completion',
-;;    `old-exit-minibuffer', `old-minibuffer-complete-and-exit',
-;;    `old-sit-for', `old-switch-to-completions', `toggle-icicle-.',
+;;    `icicle-yank-secondary', `toggle-icicle-.',
 ;;    `toggle-icicle-~-for-home-dir',
 ;;    `toggle-icicle-alternative-sorting',
 ;;    `toggle-icicle-angle-brackets',
@@ -671,7 +676,8 @@
 ;;
 ;;  Widgets defined in Icicles:
 ;;
-;;    `icicle-color', `icicle-file', `old-color', `old-file'.
+;;    `icicle-color', `icicle-file', `icicle-ORIG-color',
+;;    `icicle-ORIG-file'.
 ;;
 ;;  User options defined in Icicles:
 ;;
@@ -1044,12 +1050,25 @@
 ;;    `icicle-next-visible-thing-and-bounds',
 ;;    `icicle-non-whitespace-string-p',
 ;;    `icicle-not-basic-prefix-completion-p',
-;;    `icicle-part-1-cdr-lessp', `icicle-part-1-lessp',
-;;    `icicle-part-2-lessp', `icicle-part-3-lessp',
-;;    `icicle-part-4-lessp', `icicle-part-N-lessp',
-;;    `icicle-pick-color-by-name-action', `icicle-place-cursor',
-;;    `icicle-place-overlay', `icicle-position',
-;;    `icicle-prefix-any-candidates-p',
+;;    `icicle-ORIG-choose-completion-string',
+;;    `icicle-ORIG-completing-read',
+;;    `icicle-ORIG-completing-read-multiple',
+;;    `icicle-ORIG-completion-setup-function',
+;;    `icicle-ORIG-dired-smart-shell-command',
+;;    `icicle-ORIG-display-completion-list',
+;;    `icicle-ORIG-face-valid-attribute-values',
+;;    `icicle-ORIG-minibuffer-default-add-completions',
+;;    `icicle-ORIG-read-char-by-name', `icicle-ORIG-read-color',
+;;    `icicle-ORIG-read-face-name',
+;;    `icicle-ORIG-read-from-minibuffer', `icicle-ORIG-read-number',
+;;    `icicle-ORIG-read-string', `icicle-ORIG-shell-command',
+;;    `icicle-ORIG-shell-command-on-region',
+;;    `icicle-ORIG-widget-color-complete', `icicle-part-1-cdr-lessp',
+;;    `icicle-part-1-lessp', `icicle-part-2-lessp',
+;;    `icicle-part-3-lessp', `icicle-part-4-lessp',
+;;    `icicle-part-N-lessp', `icicle-pick-color-by-name-action',
+;;    `icicle-place-cursor', `icicle-place-overlay',
+;;    `icicle-position', `icicle-prefix-any-candidates-p',
 ;;    `icicle-prefix-any-file-name-candidates-p',
 ;;    `icicle-prefix-candidates', `icicle-prefix-complete-1',
 ;;    `icicle-prefix-complete-2', `icicle-prefix-keys-first-p',
@@ -1158,16 +1177,7 @@
 ;;    `icicle-value-satisfies-type-p', `icicle-var-inherits-type-p',
 ;;    `icicle-var-is-of-type-p', `icicle-var-matches-type-p',
 ;;    `icicle-var-val-satisfies-type-p',
-;;    `icicle-widget-color-complete', `icicle-widgetp',
-;;    `old-choose-completion-string', `old-completing-read',
-;;    `old-completing-read-multiple', `old-completion-setup-function',
-;;    `old-dired-smart-shell-command', `old-display-completion-list',
-;;    `old-face-valid-attribute-values',
-;;    `old-minibuffer-default-add-completions',
-;;    `old-read-char-by-name', `old-read-color', `old-read-face-name',
-;;    `old-read-from-minibuffer', `old-read-number',
-;;    `old-read-string', `old-shell-command',
-;;    `old-shell-command-on-region', `old-widget-color-complete'.
+;;    `icicle-widget-color-complete', `icicle-widgetp'.
 ;;
 ;;  Internal variables and constants defined in Icicles:
 ;;
@@ -1260,12 +1270,15 @@
 ;;    `icicle-nb-of-other-cycle-candidates', `icicle-new-last-cmd',
 ;;    `icicle-next-apropos-complete-cycles-p',
 ;;    `icicle-next-prefix-complete-cycles-p',
-;;    `icicle-old-read-file-name-fn', `icicle-options-menu-map',
-;;    `icicle-orig-buff', `icicle-orig-extra-cands',
-;;    `icicle-orig-font', `icicle-orig-frame', `icicle-orig-menu-bar',
+;;    `icicle-options-menu-map', `icicle-orig-buff',
+;;    `icicle-ORIG-crm-local-completion-map',
+;;    `icicle-ORIG-crm-local-must-match-map',
+;;    `icicle-orig-extra-cands', `icicle-orig-font',
+;;    `icicle-orig-frame', `icicle-orig-menu-bar',
 ;;    `icicle-orig-must-pass-after-match-pred',
 ;;    `icicle-orig-pixelsize', `icicle-orig-pointsize',
-;;    `icicle-orig-pt-explore', `icicle-orig-show-initially-flag',
+;;    `icicle-orig-pt-explore', `icicle-orig-read-file-name-fn',
+;;    `icicle-orig-show-initially-flag',
 ;;    `icicle-orig-sort-orders-alist', `icicle-orig-window',
 ;;    `icicle-other-window', `icicle-plist-last-initial-cand-set',
 ;;    `icicle-pre-minibuffer-buffer', `icicle-post-command-hook',
@@ -1307,8 +1320,7 @@
 ;;    `icicle-vardoc-last-initial-option-cand-set',
 ;;    `icicle-variable-name-history',
 ;;    `icicle-whole-candidate-as-text-prop-p',
-;;    `lacarte-menu-items-alist', `old-crm-local-completion-map',
-;;    `old-crm-local-must-match-map'.
+;;    `lacarte-menu-items-alist'.
 ;;
 ;;  Emacs functions defined in Icicles for older Emacs versions:
 ;;
