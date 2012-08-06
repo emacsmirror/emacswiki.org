@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:22:14 2006
 ;; Version: 22.0
-;; Last-Updated: Sun Aug  5 09:32:25 2012 (-0700)
+;; Last-Updated: Sun Aug  5 14:21:41 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 5290
+;;     Update #: 5291
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-opt.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -4334,7 +4334,7 @@ Same as `widgetp' in Emacs 22+.  Defined for Emacs 20 and 21."
     (and (consp widget)  (symbolp (car widget)) (get (car widget) 'widget-type))))
 
 ;;;###autoload
-(defcustom icicle-widgets-to-redefine '(file)
+(defcustom icicle-widgets-to-redefine '(color file)
   "*List of widgets to be redefined to provide Icicles completion.
 When in Icicle mode, Icicles completion is available.  Otherwise,
 vanilla completion is available.  In other words, with Icicle mode
