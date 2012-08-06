@@ -1,10 +1,10 @@
-;;; everything.el --- Bridge to Windows desktop-search engine Everything
+;;; everything.el --- Bridge to MS Windows desktop-search engine Everything
 
 ;; Copyright (C) 2012 Martin Weinig
 
 ;; Author: Martin Weinig
-;; Keywords: tools,windows
-;; Version: 0.1
+;; Keywords: tools,windows,files,searching
+;; Version: 0.1.2
 ;; Filename: everything.el
 ;; Compatibility: GNU Emacs 23.x
 
@@ -25,7 +25,7 @@
 ;;; Commentary:
 ;;
 ;;   Everything is a very fast and lightweight desktop search-engine
-;;   for Windows for finding files scattered around your hard discs
+;;   for MS Windows for finding files scattered around your hard discs
 ;;   (see http://www.voidtools.com).
 ;;   The package everything.el provides a simple interface to access
 ;;   Everything's search power via its ftp interface within Emacs.
@@ -33,10 +33,30 @@
 ;;   Everything.el can also integrate itself into find-file-at-point
 ;;   aka ffap. So, whenever all other methods of ffap fail, let everything
 ;;   try finding the file at point. Best used in combination with
-;;   the exquicit Icicles package.
+;;   the exquisite Icicles package.
+;;
+;;   Everything.el supports the following search patterns:
+;;
+;;   + wildcards:
+;;     * ?
+;;
+;;   + boolean operators (besides the default 'and'):
+;;     | 'or'
+;;     ! 'not'
+;;
+;;   + case matching
+;;
+;;   + whole words matching
+;;
+;;   + full path matching
+;;     via \ in your query
+;;
+
+;;; Installation:
 ;;
 ;;   Features that are required: `cl'.
-;;   Features that might be required: `ffap'.
+;;   Features that are recommended: `ffap', `icicles'.
+;;
 ;;
 ;;   Basic steps to setup:
 ;;
@@ -44,11 +64,13 @@
 ;;    (setq everything-ffap-integration nil) ;; to disable ffap integration
 ;;    (require 'everything)
 ;;
+;;   Alternatively use the package archive at http://marmalade-repo.org
+;;   and find everything.el via M-x list-packages.
 ;;
+;;   ... and finally dont forget to start Everthings
+;;       fpt server via Tools->Start ETP/FTP Server!
+
 ;;   Interesting variables:
-;;
-;;    As everything.el connects to Everything's ftp interface the following
-;;    variables are self-explanatory:
 ;;
 ;;    `everything-host'             defaults to 127.0.0.1
 ;;    `everything-port'             defaults to 21
@@ -65,9 +87,25 @@
 ;;        Prompts for a query and let you choose
 ;;        one of the files returned by Everything and opens it.
 ;;
+;;    M-x everything-toggle-case
+;;
+;;        Toggle case-(in)sensitive matching.
+;;
+;;    M-x everything-toggle-wholeword
+;;
+;;        Toggle matching whole words.
+;;
+;;    M-x everything-toggle-path
+;;
+;;        Toggle including the path.
+;;
+
 ;;
 ;;  Todo:
-;;  + make it possible to call everything-toggle-xyz via shortcuts while typing the query
+;;  + support changing matching-options (toggle-xyz) via shortcuts while typing
+;;    the query in the minibuffer
+;;  + support limiting the search to a specific sub-directory (and/or sub-directories?)
+;;    while typing the query
 ;;  + integrate icicle-define-command to be able to use icicles action subsystem
 ;;
 
@@ -144,6 +182,19 @@ open it."
   (interactive)
   (find-file (everything-find-prompt)))
 
+;;;###autoload
+(defun everything-find-prompt ()
+  "Prompt for a query and return the chosen filename.
+If the current major mode is dired or (e)shell-mode limit the search to
+the current directory and its sub-directories."
+  (let ((query (read-from-minibuffer (everything-create-query-prompt)
+				     (when (or (eq major-mode 'shell-mode)
+					       (eq major-mode 'eshell-mode)
+					       (eq major-mode 'dired-mode))
+				       (format "\"%s\" " (expand-file-name default-directory))))))
+    (unless (string= query "")
+      (everything-select query))))
+
 
 (defun everything-toggle-case ()
   (interactive)
@@ -163,11 +214,12 @@ open it."
 (defun everything-set-passwd ()
   (setq everything-pass (read-passwd "Password: " nil)))
 
-(defun everything-find-prompt ()
-  "Prompt for a query and return the chosen filename."
-  (let ((query (read-from-minibuffer "Query everything: ")))
-    (unless (string= query "")
-      (everything-select query))))
+(defun everything-create-query-prompt ()
+  (format "Query everything [%s%s%s]: "
+	  (if everything-matchcase "C" "c")
+	  (if everything-matchpath "P" "p")
+	  (if everything-matchwholeword "W" "w")))
+
 
 (defun everything-select (query)
   "Run the query query and return the chosen file.
@@ -181,11 +233,9 @@ If query is already an existing file, return it without running a query."
 	    ((eq (length files) 1)
 	     (car files))
 	    (t
-	     (completing-read (format "Select from query '%s' (%s matches): "
-				   query
-				   (length files))
-			   files nil nil (when (eq (length files) 1)
-					   (car files))))))))
+	     (completing-read (format "Select from query '%s' (%s matches): " query (length files))
+			      files nil nil (when (eq (length files) 1)
+					      (car files))))))))
 
 (defun everything-locate (query)
   "Run a query via Everything and return a list of files, nil
@@ -201,7 +251,7 @@ otherwise."
   (save-excursion
     (set-buffer (get-buffer-create everything-result-buffer))
     (goto-char (point-min))
-    (while (search-forward "\\" nil t)  ;; we dont want crappy backslashes in out path names
+    (while (search-forward "\\" nil t)  ;; we dont want crappy backslashes in our path names
       (replace-match "/" nil t))
     (run-hooks 'everything-post-process-hook)
     (split-string
@@ -296,6 +346,7 @@ otherwise."
 					 :host host
 					 :service service
 					 :filter 'everything-filter-fnc))
+      ; is this kosher in elisp?
       ('error (error (format "Failed to connect to Everything's ftp server at %s:%i. Is the server running?" host service))))
     (sleep-for 0 everything-wait)
     (unwind-protect
@@ -318,21 +369,25 @@ otherwise."
 
 
 
-;;;; ffap integration
-
+;;;; ffap integration (experimental)
 (defun everything-ffap-guesser (file)
-  "Called by ffap whenever all other methods of finding the file at point fail."
-;; For everything to work we must clean the file at point, that means, removing
-;; leading ../ and ..\ etc.
-  (let* ((query (replace-regexp-in-string "\\.\\." "" file))  ;; remove ..
-	 (query (replace-regexp-in-string "//" "" query))     ;; remove //
-	 (query (replace-regexp-in-string "\\\\" "" query))   ;; remove \\
-	 ;; (query (replace-regexp-in-string "/" "\\" query))    ;; replace / into \
-	 (query (if (string-match "^[/\\]" query) (substring query 1) query))) ;; remove starting / or \
-    (everything-select query)))
+  (let* ((match nil)
+	 (file (replace-regexp-in-string "\\\\" "/" file))     ;; replace \ with /
+	 (file (replace-regexp-in-string "//" "/" file))       ;; replace // with /
+	 (file (replace-regexp-in-string "\\.\\./" "" file))   ;; remove starting ../
+	 (file (replace-regexp-in-string "\\./" "" file))      ;; remove starting ./
+	 (file (replace-regexp-in-string "^/" "" file))        ;; remove starting /
+	 (query (if (eq (length (split-string file "/" t)) 1)
+		    file
+		  (concat "\\" file))))                        ;; add leading \ to tell everything to enable path matching
+    (setq match (everything-select query))
+    (while (not match)
+      (setq query (read-from-minibuffer "Nothing found. Try again: " query))
+      (setq match (everything-select query)))
+    match))
 
 (when everything-ffap-integration
-  (when (require 'ffap)
+  (when (require 'ffap nil t)
 ;; Integrate everything into ffap.
 ;; So, whenever all other methods in ffap-alist fail, let everything
 ;; try to find the file at point.
