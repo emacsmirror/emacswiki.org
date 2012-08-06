@@ -14,29 +14,22 @@ value of `icicle-functions-to-redefine' contains the following
 functions:
 
 * `bbdb-complete-name' (from [[BBDB]])
-* `comint-dynamic-complete'
+* `comint-completion-at-point' (or `comint-dynamic-complete', prior to Emacs 24)
 * `comint-dynamic-complete-filename'
 * `comint-replace-by-expanded-filename'
-* `customize-apropos'
-* `customize-apropos-faces'
-* `customize-apropos-groups'
-* `customize-apropos-options'
-* `customize-apropos-options-of-type' (from <tt>[[cus-edit+.el]]</tt>)
-* `customize-face'
-* `customize-face-other-window'
-* `dabbrev-completion'
-* `dired-read-shell-command'
 * `ess-complete-object-name' (from [[ESS]])
 * `gud-gdb-complete-command'
+* `Info-goto-node'
+* `Info-index'
+* `Info-menu'
 * `lisp-complete-symbol'
 * `lisp-completion-at-point'
 * `minibuffer-default-add-completions'
+* `read-char-by-name'
 * `read-color'
 * `read-from-minibuffer'
-* `read-shell-command'
 * `read-string'
 * `recentf-make-menu-items'
-* `repeat-complex-command'
 
 '''Icicles''' unconditionally redefines these standard Emacs functions while in ''Icicle'' mode:
 
