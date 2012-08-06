@@ -7,9 +7,9 @@
 ;; Copyright (C) 1999-2012, Drew Adams, all rights reserved.
 ;; Created: Fri Apr  2 12:34:20 1999
 ;; Version: 21.1
-;; Last-Updated: Tue Jul 17 10:42:51 2012 (-0700)
+;; Last-Updated: Mon Aug  6 15:00:34 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 2639
+;;     Update #: 2649
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/oneonone.el
 ;; Keywords: local, frames
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x
@@ -186,7 +186,8 @@
 ;;    `1on1-display-*Completions*-frame', `1on1-display-*Help*-frame',
 ;;    `1on1-emacs', `1on1-fit-minibuffer-frame',
 ;;    `1on1-flash-ding-minibuffer-frame', `1on1-increment-color-hue',
-;;    `1on1-minibuffer-prompt-end', `1on1-remove-if',
+;;    `1on1-minibuffer-prompt-end', `1on1-ORIG-abort-recursive-edit',
+;;    `1on1-ORIG-top-level', `1on1-ORIG-y-or-n-p', `1on1-remove-if',
 ;;    `1on1-reset-minibuffer-frame',
 ;;    `1on1-set-box-cursor-when-idle-interval',
 ;;    `1on1-set-cursor-type', `1on1-set-minibuffer-frame-top/bottom',
@@ -274,6 +275,9 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2012/08/06 dadams
+;;     Renamed: old-* to 1on1-ORIG-*:
+;;       1on1-ORIG-abort-recursive-edit, 1on1-ORIG-top-level, 1on1-ORIG-y-or-n-p, 
 ;; 2012/07/16 dadams
 ;;     1on1-fit-minibuffer-frame:
 ;;       Do nothing if last-event-frame is not the minibuffer frame.  Alternatively we could do
@@ -1592,8 +1596,8 @@ Terminates any keyboard macro executing, unless arg DO-NOT-TERMINATE non-nil."
   "Redefine some built-in functions so they color the minibuffer frame.
 Functions redefined: `y-or-n-p', `top-level', `abort-recursive-exit'."
 
-  (or (fboundp 'old-y-or-n-p)
-      (fset 'old-y-or-n-p (symbol-function 'y-or-n-p)))
+  (or (fboundp '1on1-ORIG-y-or-n-p)
+      (fset '1on1-ORIG-y-or-n-p (symbol-function 'y-or-n-p)))
 
   ;; REPLACES ORIGINAL (built-in function):
   ;; Temporarily colors minibuffer frame to "active" color if at top-level.
@@ -1605,14 +1609,14 @@ It should end in a space; `y-or-n-p' adds `(y or n) ' to it.
 No confirmation of answer is requested; a single character is enough.
 Also accepts SPC to mean yes, or DEL to mean no."
     (if (> (minibuffer-depth) 0)
-        (old-y-or-n-p prompt)           ; Don't do anything special if in minibuffer.
+        (1on1-ORIG-y-or-n-p prompt)     ; Don't do anything special if in minibuffer.
       (1on1-color-minibuffer-frame-on-setup)
-      (prog1 (old-y-or-n-p prompt)
+      (prog1 (1on1-ORIG-y-or-n-p prompt)
         (1on1-color-minibuffer-frame-on-exit))))
 
 
-  (or (fboundp 'old-top-level)
-      (fset 'old-top-level (symbol-function 'top-level)))
+  (or (fboundp '1on1-ORIG-top-level)
+      (fset '1on1-ORIG-top-level (symbol-function 'top-level)))
 
   ;; REPLACES ORIGINAL (built-in function):
   ;; Resets color of minibuffer frame to "inactive" color.
@@ -1621,11 +1625,11 @@ Also accepts SPC to mean yes, or DEL to mean no."
     "Exit all recursive editing levels."
     (interactive)
     (1on1-color-minibuffer-frame-on-exit)
-    (old-top-level))
+    (1on1-ORIG-top-level))
 
 
-  (or (fboundp 'old-abort-recursive-edit)
-      (fset 'old-abort-recursive-edit (symbol-function 'abort-recursive-edit)))
+  (or (fboundp '1on1-ORIG-abort-recursive-edit)
+      (fset '1on1-ORIG-abort-recursive-edit (symbol-function 'abort-recursive-edit)))
 
   ;; REPLACES ORIGINAL (built-in function):
   ;; Resets color of minibuffer frame to "inactive" color.
@@ -1634,7 +1638,7 @@ Also accepts SPC to mean yes, or DEL to mean no."
     "Abort command that requested this recursive edit or minibuffer input."
     (interactive)
     (1on1-color-minibuffer-frame-on-exit)
-    (old-abort-recursive-edit)))
+    (1on1-ORIG-abort-recursive-edit)))
 
 (defun 1on1-setup-mode-line ()
   "Set up mode-line faces."
