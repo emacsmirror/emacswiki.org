@@ -9,16 +9,24 @@ Everything's search power via its ftp interface within Emacs.
 try finding the file at point. Best used in combination with
 the exquisite [[Icicles]] package.
 
+[[everything.el]] supports the following search patterns:
+* Wildcards
+* Boolean Operators
+* Case Matching
+* Whole Words Matching
+* Full Path Matching
+
 Basic steps to setup:
 
       (add-to-list 'load-path "~/path/to/everything.el")
       (require 'everything)
 
+Alternatively use the package archive at [[http://marmalade-repo.org|http://marmalade-repo.org]]
+and find everything.el via M-x list-packages.
+
 Usage:
 
-       M-x everything
-
-Prompts for a query and let you choose one of the files returned by Everything and opens it.
+       M-x everything           Prompts for a query, let you choose one of the files and opens it.
 
 
 See also: LocateFilesAnywhere
@@ -26,6 +34,3 @@ See also: LocateFilesAnywhere
 
 ----
 CategoryFiles CategoryExternalUtilities
-
-
-
