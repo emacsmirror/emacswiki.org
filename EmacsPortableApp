@@ -1,12 +1,12 @@
 
 
-== !EmacsPortable.App Introduction  ==
+== EmacsPortable.App Introduction  ==
 !EmacsPortable.App attempts to make a portable version of Emacs that
 runs off a USB drive under either Windows, or Mac OSX.  
 
 To install before a release, please follow [[*Using%20!EmacsPortable.App%20before%20a%20release][the directions for using
 !EmacsPortable.App before a release]]. 
-== !EmacsPortable.App Idiosyncrasies ==
+== EmacsPortable.App Idiosyncrasies ==
 === Home Directory configuration ===
 The <tt>HOME</tt> Directory is where Emacs stores the <tt>.emacs</tt> file;  Other
 emacs programs also store information here. !EmacsPortable.App has a
@@ -156,7 +156,7 @@ emacs binaries are extracted to the temporary directory before
 running.  I have found that running emacs in this manner is faster
 than running it on the USB stick alone.  If not selected the binaries
 will run from the usb drive.  If you are running !EmacsPortable.App locally
-==== !LiberKey Support ====
+==== LiberKey Support ====
 !EmacsPortable.App will add !LiberKey File associations when it locates
 !LiberKey, and the !LiberKey support is checked.  Note that you should
 restart !LiberKey and make sure that the associations actually
@@ -279,7 +279,7 @@ When using !EmacsPortable.App's startup mechanism, t
 === Home Directory ===
 
 == How !EmacsPortable.App Works ==
-=== !EmacsPortable.App Startup (Windows Only) ===
+=== EmacsPortable.App Startup (Windows Only) ===
 The Pseudo-Daemon Start-up script among other things:
 * Opens Emacs
 * Renames the current Frame
@@ -415,7 +415,7 @@ though.  Emacs will set the <tt>%!AppData%</tt> Environment variable to
 
 
 
-=== !SumatraPDF Portable ===
+=== SumatraPDF Portable ===
 Using AUC!TeX inverse-search and forward search is supported with
 [http://portableapps.com/apps/office/sumatra_pdf_portable SumatraPDFPortable].  There should be no set-up, !EmacsPortable.App with
 setup both Emacs and [http://portableapps.com/apps/office/sumatra_pdf_portable SumatraPDFPortable].  
@@ -429,17 +429,17 @@ Then install gpg from here
 
 http://portableapps.com/support/thunderbird_portable#encryption
 
-=== !MikTeX Portable ===
+=== MikTeX Portable ===
 If you extract !MikTeX portable to <tt>!PortableApps/!MikTexPortable/</tt>,
 !EmacsPortable.App will be recognized and used.
 === Unix Ports ===
 ==== Cygwin ====
 ==== MSYS ====
 Supports MSYS portable.
-==== !GnuWin32 ====
-==== !EzWin ====
-=== !PuTTY ===
-==== !PuTTY and magit ====
+==== GnuWin32 ====
+==== EzWin ====
+=== PuTTY ===
+==== PuTTY and magit ====
 Since magit and !OpenSSH does not work correctly in windows, you can
 use !PuTTY to connect to your host via plink.  Note that you must
 connect to the host first via !PuTTY or you will get one of the
@@ -480,7 +480,7 @@ This is done automatically when running TRAMP.
 Therefore, if you want to use magit for github, you need open
 puttyportable and attempt to open <tt>git@github.com</tt> so it can cache the
 host id.
-==== !PuTTY and Tramp ====
+==== PuTTY and Tramp ====
 From Jeremy Engilsh there is a tutorial on how to get TRAMP to work
 with windows 2K.  This is adapted from [http://www.jeremyenglish.org/docs/tramp_ntmacs.pdf that tutorial].
 
@@ -543,10 +543,10 @@ running and set up tramp to use plink.  This is done by the
 site-start.
 
 
-==== !PuTTYPortable ====
+==== PuTTYPortable ====
 To use the settings of !PuTTYPortable, you have to have a !PuTTYPortable
 session open.
-==== !PuTTY and Proxy settings ====
+==== PuTTY and Proxy settings ====
 !PuTTY currently stores proxy settings in the registry. If
 !EmacsPortable.App is started up AND !PuTTY Pageant has not started up,
 then:
@@ -578,7 +578,7 @@ installed, type
 bzr branch --stacked bzr://bzr.savannah.gnu.org/emacs/trunk emacs-bzr
 </pre>
 
-== !EmacsPortable.App Wish List/TODO list ==
+== EmacsPortable.App Wish List/TODO list ==
 === TODO Add Mac Support of Daemon Mode ===
 [2011-12-14 Wed 21:48]
 === TODO Add Mac Support of Portable Dictionaries  ===
