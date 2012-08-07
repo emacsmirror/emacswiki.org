@@ -6,11 +6,11 @@
 ;; Maintainer: Matthew L. Fidler
 ;; Created: Fri Aug  3 22:33:41 2012 (-0500)
 ;; Version: 0.01
-;; Last-Updated: Sun Aug  5 12:30:49 2012 (-0500)
+;; Last-Updated: Mon Aug  6 20:46:06 2012 (-0500)
 ;;           By: Matthew L. Fidler
-;;     Update #: 252
+;;     Update #: 284
 ;; URL: https://github.com/mlf176f2/org-readme
-;; Keywords: Header2, Readme.org, Emacswiki
+;; Keywords: Header2, Readme.org, Emacswiki, Git
 ;; Compatibility: Tested with Emacs 24.1 on Windows.
 ;;
 ;; Features that might be required by this library:
@@ -21,10 +21,34 @@
 ;; 
 ;;; Commentary: 
 ;; 
+;; * Using org-readme
+;; Org readme is used to:
+;; 
+;; - Create/Update a "History" section in the Readme.org based on the changelog
+;;   section of the Emacs Log.
+;; - Create/Update a "Library Information" Section Based on the Emacs lisp header.
+;; - Create/Update a "Possible Dependencies" Section Based on the Emacs
+;;   lisp header.
+;; 
+;; All other sections of the Readme.org are then put into the
+;; "Commentary" section of the readme.org.
+;; 
+;; In addition this library defines <tt>org-readme-sync</tt>,  a convenience function that:
+;; 
+;; - Asks for a commentary about the library change.
+;; - Syncs the Readme.org with the lisp file as described above.
+;; - Updates emacswiki with the library description and the library itself.
+;; - Updates the git repository with the differences that you posted.
 ;; 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; 
 ;;; Change Log:
+;; 06-Aug-2012    Matthew L. Fidler  
+;;    Last-Updated: Mon Aug  6 20:44:55 2012 (-0500) #282 (Matthew L. Fidler)
+;;    Bug fix for syncing from the single lisp file.
+;; 06-Aug-2012    Matthew L. Fidler  
+;;    Last-Updated: Mon Aug  6 20:12:50 2012 (-0500) #274 (Matthew L. Fidler)
+;;    Added the ability to call `org-readme-sync' from Readme.org
 ;; 05-Aug-2012    Matthew L. Fidler  
 ;;    Last-Updated: Sun Aug  5 12:30:26 2012 (-0500) #250 (Matthew L. Fidler)
 ;;    Added git pushing to org-readme
@@ -87,8 +111,6 @@
   (let ((comment (buffer-substring (point-min) (point-max)))
         mr)
     (kill-buffer (get-buffer "*Change Comment*"))
-    (when org-readme-edit-last-window-configuration
-      (set-window-configuration org-readme-edit-last-window-configuration))
     (with-temp-buffer
       (insert comment)
       (goto-char (point-min))
@@ -96,6 +118,7 @@
       (while (re-search-forward "^" nil t)
         (insert ";;    "))
       (setq mr (buffer-substring (point-min) (point-max))))
+    (set-buffer org-readme-edit-last-buffer)
     (make-revision)
     (insert mr)
     (save-buffer)
@@ -112,10 +135,13 @@
 
 (defvar org-readme-edit-last-window-configuration nil)
 
+(defvar org-readme-edit-last-buffer nil)
+
 (defun org-readme-edit ()
   "Edit change comment for commit."
   (interactive)
-  (setq org-readme-edit-last-window-configuration (current-window-configuration))
+  (unless org-readme-edit-last-window-configuration
+    (setq org-readme-edit-last-window-configuration (current-window-configuration)))
   (switch-to-buffer-other-window (get-buffer-create "*Change Comment*"))
   (org-readme-edit-mode))
 
@@ -242,6 +268,21 @@
       (message "Git push")
       (shell-command "git push"))))
 
+(defun org-readme-in-readme-org-p ()
+  "Determine if the currently open buffer is the Readme.org"
+  (string= "readme.org"
+           (downcase (file-name-nondirectory (buffer-file-name)))))
+
+(defun org-readme-single-lisp-p ()
+  "Determine if the Readme.org is in a directory with a single lisp file.
+If so, return the name of that lisp file, otherwise return nil."
+  (let* ((dn (file-name-directory (buffer-file-name)))
+         (df (directory-files dn t "[.][Ee][Ll]$")))
+    (if (= 1 (length df))
+        (progn
+          (setq df (nth 0 df))
+          (symbol-value 'df))
+      nil)))
 
 ;;;###autoload
 (defun org-readme-sync (&optional comment-added)
@@ -249,19 +290,36 @@
 When COMMENT-ADDED is non-nil, the comment has been added and the syncing should begin.
 "
   (interactive)
-  (if (not comment-added)
-      (org-readme-edit)
-    (message "Adding Readme to Header Commentary")
-    (org-readme-to-commentary)
-    (save-buffer)
-    (message "Updating Changelog in current file.")
-    (org-readme-changelog-to-readme)
-    (org-readme-top-header-to-readme)
-    (message "Posting lisp file to emacswiki")
-    (emacswiki-post nil "")
-    (message "Posting Description to emacswiki")
-    (org-readme-convert-to-emacswiki)
-    (org-readme-git)))
+  (if (and (not comment-added)
+           (org-readme-in-readme-org-p))
+      (let ((single-lisp-file (org-readme-single-lisp-p)))
+        (message "In Readme.org")
+        (if single-lisp-file
+            (progn
+              (setq org-readme-edit-last-window-configuration (current-window-configuration))
+              (find-file single-lisp-file)
+              (setq org-readme-edit-last-buffer (current-buffer))
+              (org-readme-sync))
+          ;; Multiple lisp files or no lisp files.
+          ))
+    (if (not comment-added)
+        (progn
+          (setq org-readme-edit-last-buffer (current-buffer))
+          (org-readme-edit))
+      (message "Adding Readme to Header Commentary")
+      (org-readme-to-commentary)
+      (message "Updating Changelog in current file.")
+      (org-readme-changelog-to-readme)
+      (org-readme-top-header-to-readme)
+      (save-buffer)
+      (when org-readme-edit-last-window-configuration
+        (set-window-configuration org-readme-edit-last-window-configuration)
+        (setq org-readme-edit-last-window-configuration nil))
+      (message "Posting lisp file to emacswiki")
+      (emacswiki-post nil "")
+      (message "Posting Description to emacswiki")
+      (org-readme-convert-to-emacswiki)
+      (org-readme-git))))
 
 ;;;###autoload
 (defun org-readme-to-commentary ()
@@ -479,10 +537,10 @@ When AT-BEGINNING is non-nil, if the section is not found, insert it at the begi
                          (save-match-data
                            (replace-regexp-in-string
                             "[ \t]*$" ""
-                              (match-string 2)))) t t))
+                            (match-string 2)))) t t))
               (goto-char (point-min))
               (while (re-search-forward "`\\(.*?\\)'" nil t)
-                (replace-match "=\1="))
+                (replace-match "=\\1="))
               (goto-char (point-min))
               (insert "* History\n")
               (setq txt (buffer-substring (point-min) (point-max))))
