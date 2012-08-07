@@ -6,9 +6,9 @@
 ;; Maintainer: Matthew L. Fidler
 ;; Created: Fri Aug  3 22:33:41 2012 (-0500)
 ;; Version: 0.01
-;; Last-Updated: Mon Aug  6 20:46:06 2012 (-0500)
+;; Last-Updated: Mon Aug  6 23:42:02 2012 (-0500)
 ;;           By: Matthew L. Fidler
-;;     Update #: 284
+;;     Update #: 328
 ;; URL: https://github.com/mlf176f2/org-readme
 ;; Keywords: Header2, Readme.org, Emacswiki, Git
 ;; Compatibility: Tested with Emacs 24.1 on Windows.
@@ -43,6 +43,10 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; 
 ;;; Change Log:
+;; 06-Aug-2012    Matthew L. Fidler  
+;;    Last-Updated: Mon Aug  6 23:24:22 2012 (-0500) #326 (Matthew L. Fidler)
+;;    Added support for uploading Readme.org files to emacswiki without
+;;    having to have a single associated lisp file.
 ;; 06-Aug-2012    Matthew L. Fidler  
 ;;    Last-Updated: Mon Aug  6 20:44:55 2012 (-0500) #282 (Matthew L. Fidler)
 ;;    Bug fix for syncing from the single lisp file.
@@ -157,21 +161,55 @@
     (with-temp-buffer
       (insert-file-contents readme)
       
+      ;; Take out CamelCase Links
+      (goto-char (point-min))
+      (let ((case-fold-search nil))
+        (while (re-search-forward "\\([A-Z][a-z]+[A-Z][A-Za-z]*\\)" nil t)
+          (replace-match (format "!%s" (match-string 1)) t t)))
+      
+      ;; Convert Tables.
+      (goto-char (point-min))
+      (while (re-search-forward "^[ \t]*|[-+]+|[ \t]*\n" nil t)
+        (replace-match ""))
+      
+      (goto-char (point-min))
+      (while (re-search-forward "^[ \t]*|" nil t)
+        (replace-match "||")
+        (while (re-search-forward "|" (point-at-eol) t)
+          (replace-match "||")))
+      
+      
+      
+      ;; Convert Links
+      (goto-char (point-min))
+      (while (re-search-forward "\\[\\[\\(\\(?:https?\\|ftp\\).*?\\)\\]\\[!?\\(.*?\\)\\]\\]" nil t)
+        (replace-match "[\\1 \\2]" t))
+      
+      
       (goto-char (point-min))
       (while (re-search-forward "^[ \t]*[A-Z]+:[ \t]*\\[[0-9]\\{4\\}-[0-9]\\{2\\}-[0-9]\\{2\\}.*" nil t)
         (replace-match ""))
+      
       (goto-char (point-min))
-      (while (re-search-forward "\\[\\[file:\\(.*?\\)\\]\\[\\1\\]\\]" nil t)
+      (while (re-search-forward "\\[\\[file:\\(.*?[.]el\\)\\]\\[\\1\\]\\]" nil t)
         (replace-match "[[\\1]]"))
       
       (goto-char (point-min))
-      (while (re-search-forward "=\\<\\(.*?\\)\\>=" nil t)
-        (replace-match (format "<tt>%s</tt>" (match-string 1))))
+      (while (re-search-forward "\\[\\[\\(.*?\\)\\]\\[\\(.*?\\)\\]\\]" nil t)
+        (replace-match "\\2"))
       
       (goto-char (point-min))
-      (while (re-search-forward "^\\([*]+\\) *\\(.*\\)" nil t)
+      (while (re-search-forward "=\\(.*?\\)=" nil t)
+        (replace-match (format "<tt>%s</tt>" (match-string 1)) t t))
+      
+      (goto-char (point-min))
+      (while (re-search-forward "^\\([*]+\\) *!?\\(.*\\)" nil t)
         (setq tmp (make-string (min 4 (+ 1 (length (match-string 1)))) ?=))
-        (replace-match (format "%s %s %s" tmp (match-string 2) tmp) t t))
+        (replace-match (format "%s %s %s" tmp (match-string 2) tmp) t t)
+        (beginning-of-line)
+        (let ((case-fold-search nil))
+          (while (re-search-forward "!\\([A-Z][a-z]+[A-Z][A-Za-z]*\\)" (point-at-eol) t)
+            (replace-match "\\1" t))))
       
       (goto-char (point-min))
       (while (re-search-forward "^: " nil t)
@@ -201,7 +239,7 @@
         (replace-match "<pre>")
         (setq tmp (point))
         (when (re-search-forward "^ *#[+]END_SRC" nil t)
-          (replace-match "</pre>")
+          (replace-match "</pre>" t)
           (beginning-of-line)
           (setq tmp2 (point))
           (goto-char tmp)
@@ -231,11 +269,11 @@
       
       (goto-char (point-min))
       (while (re-search-forward "^::::" nil t)
-        (replace-match ""))
-      (goto-char (point-min))
-      (insert "This page describes [[")
-      (insert what)
-      (insert "]].\n\n")
+        (replace-match "")
+        (let ((case-fold-search nil))
+          (while (re-search-forward "!\\([A-Z][a-z]+[A-Z][A-Za-z]*\\)" (point-at-eol) t)
+            (replace-match "\\1" t))))
+      
       (setq readme (buffer-substring (point-min) (point-max))))
     (with-temp-file wiki
       (insert readme))
@@ -301,7 +339,8 @@ When COMMENT-ADDED is non-nil, the comment has been added and the syncing should
               (setq org-readme-edit-last-buffer (current-buffer))
               (org-readme-sync))
           ;; Multiple lisp files or no lisp files.
-          ))
+          (message "Posting Description to emacswiki")
+          (org-readme-convert-to-emacswiki)))
     (if (not comment-added)
         (progn
           (setq org-readme-edit-last-buffer (current-buffer))
@@ -317,9 +356,9 @@ When COMMENT-ADDED is non-nil, the comment has been added and the syncing should
         (setq org-readme-edit-last-window-configuration nil))
       (message "Posting lisp file to emacswiki")
       (emacswiki-post nil "")
+      (org-readme-git)
       (message "Posting Description to emacswiki")
-      (org-readme-convert-to-emacswiki)
-      (org-readme-git))))
+      (org-readme-convert-to-emacswiki))))
 
 ;;;###autoload
 (defun org-readme-to-commentary ()
@@ -377,17 +416,28 @@ When COMMENT-ADDED is non-nil, the comment has been added and the syncing should
 
 (defun org-readme-get-emacswiki-name ()
   "Gets emacswiki-style name based on buffer."
-  (let ((dir (file-name-directory (buffer-file-name)))
-        (name (file-name-sans-extension (file-name-nondirectory (buffer-file-name)))))
-    (with-temp-buffer
-      (insert (downcase name))
-      (goto-char (point-min))
-      (when (looking-at ".")
-        (replace-match (upcase (match-string 0))))
-      (while (re-search-forward "-\\(.\\)" nil t)
-        (replace-match  (upcase (match-string 1))) t t)
-      (setq name (concat dir (buffer-substring (point-min) (point-max)))))
-    (symbol-value 'name)))
+  (if (org-readme-in-readme-org-p)
+      (let ((wiki (file-name-nondirectory (substring (file-name-directory (buffer-file-name)) 0 -1))))
+        (with-temp-buffer
+          (insert wiki)
+          (goto-char (point-min))
+          (when (looking-at ".")
+            (replace-match (upcase (match-string 0))))
+          (while (re-search-forward "[-._]\\(.\\)" nil t)
+            (replace-match  (upcase (match-string 1))) t t)
+          (setq wiki (buffer-substring (point-min) (point-max))))
+        (symbol-value 'wiki))
+    (let ((dir (file-name-directory (buffer-file-name)))
+          (name (file-name-sans-extension (file-name-nondirectory (buffer-file-name)))))
+      (with-temp-buffer
+        (insert (downcase name))
+        (goto-char (point-min))
+        (when (looking-at ".")
+          (replace-match (upcase (match-string 0))))
+        (while (re-search-forward "-\\(.\\)" nil t)
+          (replace-match  (upcase (match-string 1))) t t)
+        (setq name (concat dir (buffer-substring (point-min) (point-max)))))
+      (symbol-value 'name))))
 
 (defun org-readme-get-change ()
   "Get file for changelog commits."
