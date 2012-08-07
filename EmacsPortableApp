@@ -8,7 +8,7 @@ To install before a release, please follow [[*Using%20EmacsPortable.App%20before
 EmacsPortable.App before a release]]. 
 == EmacsPortable.App Idiosyncrasies ==
 === Home Directory configuration ===
-The <tt>HOME</tt> Directory is where Emacs stores the =.emacs= file;  Other
+The <tt>HOME</tt> Directory is where Emacs stores the <tt>.emacs</tt> file;  Other
 emacs programs also store information here. EmacsPortable.App has a
 few options for home directories
 ==== USB home directory ====
@@ -45,11 +45,11 @@ the home is set when that file exists.  For example:
   Home=c:\
 </pre>
 
-will set the home directory to =c:\= on Windows computers.  Currently,
+will set the home directory to <tt>c:\</tt> on Windows computers.  Currently,
 this is supported only on windows.
 ==== System home directory ====
 If the <tt>Data/ini/EmacsPortableApp.ini</tt> file contains an ini Home Entry
-that doesn't start with either =EXEDIR:/= or =USB:/=, and doesn't
+that doesn't start with either <tt>EXEDIR:/</tt> or <tt>USB:/</tt>, and doesn't
 exist then the
 original home directory is maintained.
 <pre>
@@ -68,7 +68,7 @@ with an actual directory.
 |-------------+-------------------------+-------------------------------------|
 | Alias       | True Directory          | Directory Purpose                   |
 |-------------+-------------------------+-------------------------------------|
-| =/tmp/=     | Temporary Directory     | Temporary Directory.                |
+| <tt>/tmp/</tt>     | Temporary Directory     | Temporary Directory.                |
 | ~ahk/       | Other/source/ahk        | AHK Sources Directory               |
 | ~app/       | App/                    | EmacsPortable.App Application Files |
 | ~doc/       | USB Drive:/Documents    | Documents Directory                 |
@@ -190,8 +190,8 @@ elisp or org-mode w/embedded elisp files in it will be loaded.
 * <b>User specific config </b> --  Your personal configuration information can
 be stored in a user-specific-config file in
 <tt>Data/init/user/$USER.org</tt> or <tt>Data/init/user/$USER.el</tt>.  This is
-the file named after your user with the extensions =.el= or
-=.org= [2].  This should be your windows log-in name, or under a
+the file named after your user with the extensions <tt>.el</tt> or
+<tt>.org</tt> [2].  This should be your windows log-in name, or under a
 mac if you're unsure of your user name evaluate the
 following code block to find out.
 
@@ -209,8 +209,8 @@ w/embedded elisp files in it will be loaded.
 
 * <b>System specific config </b> --  Finally, you may want to configure
 different settings for different machines.  The Starter Kit will
-look for a file named after the current hostname ending in =.el=
-or =.org= in the =Data/init/system/= folder which will allow
+look for a file named after the current hostname ending in <tt>.el</tt>
+or <tt>.org</tt> in the <tt>Data/init/system/</tt> folder which will allow
 host-specific configuration.  If you're unsure of your hostname
 the following can be executed to find out.
 <pre>
@@ -234,7 +234,7 @@ added to the load-path, and any elisp or org-mode w/embedded
 elisp files in it will be loaded.
 * <b>Overall config </b> --  If you wish to add literate/non-literate startup
 files, you may also put them in
-=Data/init/shared/=.  This should be loaded
+<tt>Data/init/shared/</tt>.  This should be loaded
 regardless of the user or system.
 === Installing Additional Libraries ===
 * <b>Installing more elisp libraries </b> --  The easiest way to install new
@@ -242,7 +242,7 @@ libraries is through the Emacs Lisp Package Archive (see [[#emacs-lisp-package-a
 Lisp Package Archive]] below).  When a library is not available
 through ELPA, or the library is outdated for your tastes you have two
 options:
-# You can grab it's source and place it directly in the =/Data/src=
+# You can grab it's source and place it directly in the <tt>/Data/src</tt>
 directory.  Any packages found there will automatically be added
 to your load-path when Emacs starts up, and are guaranteed not to
 conflict with future updates.
@@ -265,7 +265,7 @@ change the colors used by Emacs.
 started suggestions
 * First see the [[http://www.gnu.org/software/emacs/manual/html_node/emacs/Customization.html#Customization][Customization]] node in the Emacs manual.  Available
 online or through the <tt>info</tt> command (run with <tt>C-h i</tt>).
-* <tt>grep</tt>'ing through the =starter-kit-*= files in this directory
+* <tt>grep</tt>'ing through the <tt>starter-kit-*</tt> files in this directory
 can provide useful examples for how to do things like install
 major modes, define keybindings, etc..
 * read the following [[http://www.gnu.org/software/emacs/elisp/html_node/Key-Binding-Conventions.html][Key-Binding-Conventions]] before defining too
@@ -275,10 +275,10 @@ many personal key bindings
 Load Path for source directory is in <tt>Data/src</tt>.
 === Literate Initialization ===
 When using EmacsPortable.App's startup mechanism, t
-# Any =.org=, =.el= or =.elc= files in <tt>Data/init</tt> and loads them
-# User-based =.org=, =.el=, or =.elc= files in <tt>Data/init/user</tt>.
+# Any <tt>.org</tt>, <tt>.el</tt> or <tt>.elc</tt> files in <tt>Data/init</tt> and loads them
+# User-based <tt>.org</tt>, <tt>.el</tt>, or <tt>.elc</tt> files in <tt>Data/init/user</tt>.
 
-# System based =.org=, =.el= or =.elc= files in <tt>Data/init/system</tt>.
+# System based <tt>.org</tt>, <tt>.el</tt> or <tt>.elc</tt> files in <tt>Data/init/system</tt>.
 === Home Directory ===
 
 == How EmacsPortable.App Works ==
@@ -316,7 +316,7 @@ However the <tt>HTTP_PROXY</tt> environment variable will contain the
 password in clear text.
 === Fonts ===
 ==== Windows ====
-Under windows the fonts in the =App/fonts/= directory are temporarily
+Under windows the fonts in the <tt>App/fonts/</tt> directory are temporarily
 installed by opening them using <tt>fontview</tt> (if they are not already
 installed on the base system).  This is done by a autohotkey script.
 Once Emacs Exits, the fonts are "uninstalled" by closing the fontview
@@ -348,13 +348,13 @@ gitmsys2=msysgit\mingw\bin
 
 In this example <tt>git</tt> The following paths are checked:
 # <tt>c:\msysgit\msysgit\bin</tt>
-* The root is set to =c:\=
+* The root is set to <tt>c:\</tt>
 # <tt>%ProgramFiles%\msysgit\msysgit\bin</tt>
 * The root is set to <tt>%ProgramFiles%</tt>
 
 If they exist they are added to the path environment before starting
 emacs.  If the directory in fact /exists/, then two additional ini
-sections are checked, =[local.git.path]= and =[local.git.set]=.  
+sections are checked, <tt>[local.git.path]</tt> and <tt>[local.git.set]</tt>.  
 
 For the <tt>git</tt> local setup, there are two sections.  The first
 <tt>local.git.path</tt> is specified as follows:
@@ -369,7 +369,7 @@ before the right handed value.  In this case, the environmental
 variable is set to <tt>c:\msysgit\msysgit</tt> or
 <tt>%ProgramFiles%\msysgit\msysgit</tt> depending on which path was found.   
 
-The other type of section that is used is the =[local.git.set]=.  In
+The other type of section that is used is the <tt>[local.git.set]</tt>.  In
 the case of <tt>git</tt> this section is defined as:
 
 <pre>
@@ -383,7 +383,7 @@ Therefore, if <tt>git</tt> is found then the environmental variable
 ==== Portable Paths [portable] ====
 The portable paths are set in the same way as the local paths with the
 exception of the places they check for the existence of paths.  The
-<tt>portable</tt> section checks for paths in =USB:\=, and =USB:\PortableApps\=.
+<tt>portable</tt> section checks for paths in <tt>USB:\</tt>, and <tt>USB:\PortableApps\</tt>.
 ==== Relative Paths [exedir] ====
 The <tt>exedir</tt> section checks for paths relative to the portable
 application. 
@@ -433,7 +433,7 @@ Then install gpg from here
 http://portableapps.com/support/thunderbird_portable#encryption
 
 === MikTeX Portable ===
-If you extract MikTeX portable to =PortableApps/MikTexPortable/=,
+If you extract MikTeX portable to <tt>PortableApps/MikTexPortable/</tt>,
 EmacsPortable.App will be recognized and used.
 === Unix Ports ===
 ==== Cygwin ====
