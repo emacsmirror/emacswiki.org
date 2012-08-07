@@ -1,26 +1,11 @@
 This page describes [[Readme.org]].
 
+
+
+
+
+
 == Library Information ==
-*org-readme.el* --- Integrates Readme.org and Commentary/Change-logs.
-
-* <b>Filename </b> --  [[org-readme.el]]
-* <b>Description </b> --  Integrate Readme.org and Commentary/Change Logs.
-* <b>Author </b> --  Matthew L. Fidler
-* <b>Maintainer </b> --  Matthew L. Fidler
-* <b>Created </b> --  Fri Aug  3 22:33:41 2012 (-0500)
-* <b>Version </b> --  0.01
-* <b>Last-Updated </b> --  Mon Aug  6 20:14:44 2012 (-0500)
-* <b>By </b> --  Matthew L. Fidler
-* <b>Update # </b> --  275
-* <B>URL </B> --  https://github.com/mlf176f2/org-readme
-* <b>Keywords </b> --  Header2, Readme.org, Emacswiki, Git
-* <b>Compatibility </b> --  Tested with Emacs 24.1 on Windows.
-
-== Possible Dependencies ==
-
-None
-
-
 == Using org-readme ==
 Org readme is used to:
 
