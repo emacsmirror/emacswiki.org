@@ -102,11 +102,11 @@ Will install specific fonts, if needed.
 === Running Debug under windows ===
 Under windows, debug mode starts <tt>gdb</tt> if found.  Additionally, if
 <tt>App/gdbinit</tt> is found, gdb sources this before running emacs.  You
-can download an appropriate gdbinit for emacs [http://bzr.savannah.gnu.org/lh/emacs/trunk/annotate/head:/src/.gdbinit http].
+can download an appropriate gdbinit for emacs [http://bzr.savannah.gnu.org/lh/emacs/trunk/annotate/head:/src/.gdbinit here].
 
 == Customizing and using your own packages ==
 The settings in EmacsPortable.app were originally fork of the literate
-starter kit by [https://github.com/eschulte https] (some of my documentation text is probably
+starter kit by [https://github.com/eschulte Eric Schulte] (some of my documentation text is probably
 reminiscent of . Now my philosophy is a little more
 liberal in providing a customized emacs that does not include too much
 startup customizations, but allow you to pull your own startup
@@ -260,12 +260,12 @@ change the colors used by Emacs.
 
 * <b>Misc </b> --  Some additional miscellaneous configuration and getting
 started suggestions
-* First see the [http://www.gnu.org/software/emacs/manual/html_node/emacs/Customization.html#Customization http] node in the Emacs manual.  Available
+* First see the [http://www.gnu.org/software/emacs/manual/html_node/emacs/Customization.html#Customization Customization] node in the Emacs manual.  Available
 online or through the <tt>info</tt> command (run with <tt>C-h i</tt>).
 * <tt>grep</tt>'ing through the <tt>starter-kit-*</tt> files in this directory
 can provide useful examples for how to do things like install
 major modes, define keybindings, etc..
-* read the following [http://www.gnu.org/software/emacs/elisp/html_node/Key-Binding-Conventions.html http] before defining too
+* read the following [http://www.gnu.org/software/emacs/elisp/html_node/Key-Binding-Conventions.html Key-Binding-Conventions] before defining too
 many personal key bindings
 
 === Load Path ===
@@ -390,14 +390,14 @@ Emacs doesn't know about by a similar manner as the general paths,
 above. 
 ==== Unix Manual Paths ====
 === Java-based Apps ===
-EmacsPortable supports [http://plantuml.sourceforge.net/download.html http] and [http://ditaa.sourceforge.net/ http] for [http://orgmode.org http] assuming that
-[http://portableapps.com/apps/utilities/java_portable_launcher http] is installed. 
+EmacsPortable supports [http://plantuml.sourceforge.net/download.html PlantUML] and [http://ditaa.sourceforge.net/ ditaa] for [http://orgmode.org org-mode] assuming that
+[http://portableapps.com/apps/utilities/java_portable_launcher JavaPortable] is installed. 
 
-[http://plantuml.sourceforge.net/download.html http] requires <tt>dot</tt> from GraphViz.  Therefore, GraphVizPortable
-would need to be installed for [http://plantuml.sourceforge.net/download.html http] to work. 
+[http://plantuml.sourceforge.net/download.html PlantUML] requires <tt>dot</tt> from GraphViz.  Therefore, GraphVizPortable
+would need to be installed for [http://plantuml.sourceforge.net/download.html PlantUML] to work. 
 
 === Python based Apps ===
-By installing [http://www.portablepython.com http] into your <tt>PortableApps</tt> Directory,
+By installing [http://www.portablepython.com Python Portable] into your <tt>PortableApps</tt> Directory,
 python is available to Emacs.  This is useful for installing Bazaar,
 which Emacs uses as its version control.
 === Version control Software ===
@@ -405,7 +405,7 @@ which Emacs uses as its version control.
 I have created a portable Bazaar.  There are some reports of troubling
 errors. 
 ==== Subversion in Windows ====
-Not quite portable, but you can get the binaries [http://www.visualsvn.com/downloads/ http].
+Not quite portable, but you can get the binaries [http://www.visualsvn.com/downloads/ here].
 
 Running in subversion from within EmacsPortable.App /is/ portable,
 though.  Emacs will set the <tt>%AppData%</tt> Environment variable to
@@ -417,8 +417,8 @@ though.  Emacs will set the <tt>%AppData%</tt> Environment variable to
 
 === SumatraPDF Portable ===
 Using AUCTeX inverse-search and forward search is supported with
-[http://portableapps.com/apps/office/sumatra_pdf_portable http].  There should be no set-up, EmacsPortable.App with
-setup both Emacs and [http://portableapps.com/apps/office/sumatra_pdf_portable http].  
+[http://portableapps.com/apps/office/sumatra_pdf_portable SumatraPDFPortable].  There should be no set-up, EmacsPortable.App with
+setup both Emacs and [http://portableapps.com/apps/office/sumatra_pdf_portable SumatraPDFPortable].  
 === GPG for encryption ===
 EmacsPortableApp looks for the gpg package that is installed with
 Mozilla Thunderbird.  First install Thunderbird Portable:
@@ -482,7 +482,7 @@ puttyportable and attempt to open <tt>git@github.com</tt> so it can cache the
 host id.
 ==== PuTTY and Tramp ====
 From Jeremy Engilsh there is a tutorial on how to get TRAMP to work
-with windows 2K.  This is adapted from [http://www.jeremyenglish.org/docs/tramp_ntmacs.pdf http].
+with windows 2K.  This is adapted from [http://www.jeremyenglish.org/docs/tramp_ntmacs.pdf that tutorial].
 
 EmacsPortable.App will download and setup the appropriate files for
 PuTTY portable, if you need them.  In addition to putty.exe, you will
@@ -559,7 +559,7 @@ Therefore, you do not need to always manually edit proxy settings, and
 plink should work most of the time.
 == Icons ==
 Icons came from various places:
-* [http://findicons.com/icon/93514/new_go_down?id=344599# http]
+* [http://findicons.com/icon/93514/new_go_down?id=344599# Download Icon]
 * USB Icon
 * http://www.clker.com/clipart-10031.html
 * Modified Lady Bug http://www.clker.com/clipart-23283.html
