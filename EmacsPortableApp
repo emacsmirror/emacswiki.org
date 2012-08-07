@@ -18,7 +18,7 @@ If the <tt>Data/ini/EmacsPortableApp.ini</tt> file contains an ini Home Entry
 <pre>
   [EmacsPortableApp]
   Home=USB:/Documents/
-</PRE>
+</pre>
 The USB directory is changed for what EmacsPortableApp deems is the
 usb directory.  This setting uses the PortableApps Documents Directory
 as the home-directory.  This is slightly different depending on the
@@ -33,7 +33,7 @@ If the <tt>Data/ini/EmacsPortableApp.ini</tt> file contains an ini Home Entry
 <pre>
   [EmacsPortableApp]
   Home=EXEDIR:/Data/Home
-</PRE>
+</pre>
 The EXEDIR directory is changed for the base directory that
 EmacsPortable.App is run from.
 
@@ -45,7 +45,7 @@ the home is set when that file exists.  For example:
 <pre>
   [EmacsPortableApp]
   Home=c:\
-</PRE>
+</pre>
 
 will set the home directory to =c:\= on Windows computers.  Currently,
 this is supported only on windows.
@@ -57,7 +57,7 @@ original home directory is maintained.
 <pre>
   [EmacsPortableApp]
   Home=Set as original
-</PRE>
+</pre>
 ==== Selecting the Home directory with EmacsOptions.exe ====
 When using EmacsOptions.exe, you do not have to worry about selecting
 which type of file is used.  If you select a directory on the USB
@@ -154,7 +154,7 @@ package, the following ini-file will set the
 <pre>
 [Environment]
 ERGOEMACS_KEYBOARD_LAYOUT=colemak
-</PRE>
+</pre>
 ==== Determining if Emacs Binaries should be zipped ====
 Emacs binaries can be zipped to save space.  This requires that the
 emacs binaries are extracted to the temporary directory before
@@ -346,7 +346,7 @@ git=msysgit\msysgit\bin
 git2=msysgit\bin
 gitmsys=msysgit\msysgit\mingw\bin
 gitmsys2=msysgit\mingw\bin
-</PRE>
+</pre>
 
 In this example <tt>git</tt> The following paths are checked:
 # <tt>c:\msysgit\msysgit\bin</tt>
@@ -364,7 +364,7 @@ For the <tt>git</tt> local setup, there are two sections.  The first
 <pre>
 [local.git.path]
 git_install_root=msysgit\msysgit
-</PRE>
+</pre>
 
 Then each key is added to the environment putting the root location
 before the right handed value.  In this case, the environmental
@@ -377,7 +377,7 @@ the case of <tt>git</tt> this section is defined as:
 <pre>
 [local.git.set]
 PLINK_PROTOCOL=ssh
-</PRE>
+</pre>
 
 Therefore, if <tt>git</tt> is found then the environmental variable
 <tt>PLINK_PROTOCOL</tt> is set to <tt>ssh</tt>.
@@ -522,7 +522,7 @@ command
 
 <pre>
 scp key user@host:~/
-</PRE>
+</pre>
 
 # Log into the host and add to authorized keys
 
@@ -533,7 +533,7 @@ chmod 700 ~/.ssh
 cat ~/key >> ~/.ssh/authorized_keys
 chmod 600 ~/.ssh/authorized_keys
 rm ~/key
-</PRE>
+</pre>
 
 # Let EmacsPortable.App know about the key
 
@@ -581,7 +581,7 @@ installed, type
 
 <pre>
 bzr branch --stacked bzr://bzr.savannah.gnu.org/emacs/trunk emacs-bzr
-</PRE>
+</pre>
 
 == EmacsPortable.App Wish List/TODO list ==
 === TODO Add Mac Support of Daemon Mode ===
