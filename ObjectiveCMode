@@ -1,4 +1,4 @@
-Emacs and CcMode don't know about Objective C++. If you open a ".mm" file, it'll be in text-mode or lisp-mode or whatever your default is, which is not very useful.
+Emacs and CcMode don't know about Objective C++. If you open a ".mm" file, it'll be in text-mode or lisp-mode or whatever your default is, which is not very useful. This is [http://debbugs.gnu.org/cgi/bugreport.cgi?bug=2732 Bug #2732].
 
 Unfortunately, until someone writes an objc++-mode, you have to choose between objc-mode and c++-mode. Either one is going to have incomplete syntax highlighting, but the latter also often gets confused with indentation. So, add something like this to your .emacs to open ".mm" files as objc-mode:
 
