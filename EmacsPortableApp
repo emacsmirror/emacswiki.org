@@ -56,7 +56,7 @@ original home directory is maintained.
   [EmacsPortableApp]
   Home=Set as original
 </pre>
-==== Selecting the Home directory with !EmacsOptions.exe ====
+==== Selecting the Home directory with EmacsOptions.exe ====
 When using !EmacsOptions.exe, you do not have to worry about selecting
 which type of file is used.  If you select a directory on the USB
 drive, the !EmacsPortableApp is updated accordingly.  If you select
@@ -98,7 +98,7 @@ windows, this is handled by emacs only.
 === Font installation, if needed ===
 Will install specific fonts, if needed.
 ==== STARTED Allow Mac to install specific fonts. ====
-== Running !EmacsPortable.App ==
+== Running EmacsPortable.App ==
 === Running Debug under windows ===
 Under windows, debug mode starts <tt>gdb</tt> if found.  Additionally, if
 <tt>App/gdbinit</tt> is found, gdb sources this before running emacs.  You
@@ -278,7 +278,7 @@ When using !EmacsPortable.App's startup mechanism, t
 # System based <tt>.org</tt>, <tt>.el</tt> or <tt>.elc</tt> files in <tt>Data/init/system</tt>.
 === Home Directory ===
 
-== How !EmacsPortable.App Works ==
+== How EmacsPortable.App Works ==
 === EmacsPortable.App Startup (Windows Only) ===
 The Pseudo-Daemon Start-up script among other things:
 * Opens Emacs
@@ -587,4 +587,4 @@ bzr branch --stacked bzr://bzr.savannah.gnu.org/emacs/trunk emacs-bzr
 === TODO Add XML to the NSIS downloads ===
 === TODO Add Large String support to the NSIS compiler. ===
 === TODO Add md5 to the NSIS downloads ===
-=== TODO Add !NotifyPlugin to the downloads. ===
+=== TODO Add NotifyPlugin to the downloads. ===
