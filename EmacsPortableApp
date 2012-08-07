@@ -65,33 +65,30 @@ Note that any where else may change depending on the computer you use.
 === Emacs-only directory aliases ===
 Emacs has a list of aliases that are convinces, but do not correspond
 with an actual directory.  
-|-------------+-------------------------+-------------------------------------|
-| Alias       | True Directory          | Directory Purpose                   |
-|-------------+-------------------------+-------------------------------------|
-| <tt>/tmp/</tt>     | Temporary Directory     | Temporary Directory.                |
-| ~ahk/       | Other/source/ahk        | AHK Sources Directory               |
-| ~app/       | App/                    | EmacsPortable.App Application Files |
-| ~doc/       | USB Drive:/Documents    | Documents Directory                 |
-| ~el-get     | Data/lisp/el-get        | El Git package Repository           |
-| ~elpa/      | Data/lisp/elpa          | Elpa Package Repository             |
-| ~ep/        | .                       | EmacsPortable.App Directory         |
-| ~h/         | System Home Directory   | System Home Directory               |
-| ~ini/       | Data/ini                | EmacsPortable.App ini files         |
-| ~kick/      | Data/lisp/kicker        | Kicker Directory                    |
-| ~nsi/       | Other/source/nsi        | NSIS Sources Directory              |
-| ~pa/        | USB Drive:/PortableApps | Portable Apps                       |
-| ~rcp/       | Data/lisp/kicker/rcp    | extra el-get recipies Directory     |
-| ~saves/     | Data/saves              | EmacsPortable.App Saves             |
-| ~shared/    | Data/start/shared       | Shared Customizations               |
-| ~site-lisp/ | App/site-lisp           | Site Lisp Directory                 |
-| ~snips/     | Data/snippets           | YaSnippets                          |
-| ~src/       | Data/src                | EmacsPortable.App lisp source files |
-| ~start/     | Data/start              | EmacsPortable.App Customizations    |
-| ~system/    | Data/start/system       | System-based Customizations         |
-| ~themes/    | Data/themes             | Emacs 24 Theme Directory            |
-| ~usb/       | USB Drive               | USB Drive                           |
-| ~user/      | Data/start/user         | User-based Customizations           |
-|-------------+-------------------------+-------------------------------------|
+|| Alias       || True Directory          || Directory Purpose                   ||
+|| <tt>/tmp/</tt>     || Temporary Directory     || Temporary Directory.                ||
+|| ~ahk/       || Other/source/ahk        || AHK Sources Directory               ||
+|| ~app/       || App/                    || EmacsPortable.App Application Files ||
+|| ~doc/       || USB Drive:/Documents    || Documents Directory                 ||
+|| ~el-get     || Data/lisp/el-get        || El Git package Repository           ||
+|| ~elpa/      || Data/lisp/elpa          || Elpa Package Repository             ||
+|| ~ep/        || .                       || EmacsPortable.App Directory         ||
+|| ~h/         || System Home Directory   || System Home Directory               ||
+|| ~ini/       || Data/ini                || EmacsPortable.App ini files         ||
+|| ~kick/      || Data/lisp/kicker        || Kicker Directory                    ||
+|| ~nsi/       || Other/source/nsi        || NSIS Sources Directory              ||
+|| ~pa/        || USB Drive:/PortableApps || Portable Apps                       ||
+|| ~rcp/       || Data/lisp/kicker/rcp    || extra el-get recipies Directory     ||
+|| ~saves/     || Data/saves              || EmacsPortable.App Saves             ||
+|| ~shared/    || Data/start/shared       || Shared Customizations               ||
+|| ~site-lisp/ || App/site-lisp           || Site Lisp Directory                 ||
+|| ~snips/     || Data/snippets           || YaSnippets                          ||
+|| ~src/       || Data/src                || EmacsPortable.App lisp source files ||
+|| ~start/     || Data/start              || EmacsPortable.App Customizations    ||
+|| ~system/    || Data/start/system       || System-based Customizations         ||
+|| ~themes/    || Data/themes             || Emacs 24 Theme Directory            ||
+|| ~usb/       || USB Drive               || USB Drive                           ||
+|| ~user/      || Data/start/user         || User-based Customizations           ||
 
 Other aliases are added ~el-get/package/elpa is changed to ~elpa, as
 if it were a symbolic link.  Since symbolic links are not supported in
