@@ -1,24 +1,9 @@
+
+## Change Log:
+## 06-Aug-2012    Matthew L. Fidler  
+##    Bug fix for syncing history
+
 * Library Information
- *org-readme.el* --- Integrates Readme.org and Commentary/Change-logs.
-
- - Filename :: [[file:org-readme.el][org-readme.el]]
- - Description :: Integrate Readme.org and Commentary/Change Logs.
- - Author :: Matthew L. Fidler
- - Maintainer :: Matthew L. Fidler
- - Created :: Fri Aug  3 22:33:41 2012 (-0500)
- - Version :: 0.01
- - Last-Updated :: Mon Aug  6 20:14:44 2012 (-0500)
- -           By :: Matthew L. Fidler
- -     Update # :: 275
- - URL :: https://github.com/mlf176f2/org-readme
- - Keywords :: Header2, Readme.org, Emacswiki, Git
- - Compatibility :: Tested with Emacs 24.1 on Windows.
-
-* Possible Dependencies
-
-  None
-
-
 * Using org-readme
 Org readme is used to:
 
@@ -44,4 +29,4 @@ In addition this library defines =org-readme-sync=,  a convenience function that
  - 05-Aug-2012 ::  Added git pushing to org-readme (Matthew L. Fidler)
  - 05-Aug-2012 ::  Added git support as well as a comment mode. The only thing that should need to be called is = = (Matthew L. Fidler)
  - 04-Aug-2012 ::  Added syncing with emacswiki.  (Matthew L. Fidler)
-  - 04-Aug-2012 ::  Initial Release  (Matthew L. Fidler)
+ - 04-Aug-2012 ::  Initial Release  (Matthew L. Fidler)
