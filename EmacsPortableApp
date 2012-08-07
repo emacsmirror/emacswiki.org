@@ -391,7 +391,7 @@ above.
 ==== Unix Manual Paths ====
 === Java-based Apps ===
 !EmacsPortable supports [http://plantuml.sourceforge.net/download.html PlantUML] and [http://ditaa.sourceforge.net/ ditaa] for [http://orgmode.org org-mode] assuming that
-[http://portableapps.com/apps/utilities/java_portable_launcher !JavaPortable] is installed. 
+[http://portableapps.com/apps/utilities/java_portable_launcher JavaPortable] is installed. 
 
 [http://plantuml.sourceforge.net/download.html PlantUML] requires <tt>dot</tt> from !GraphViz.  Therefore, !GraphVizPortable
 would need to be installed for [http://plantuml.sourceforge.net/download.html PlantUML] to work. 
