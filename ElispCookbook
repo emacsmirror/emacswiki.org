@@ -334,7 +334,8 @@ Alternatively, replacing the `let' with `save-excursion'.
   (defun decimal-number (string)
     (let ((n (string-to-number string)))
       (if (and (zerop n)
-               (not (string-match "\\`\\s-*0+\\.?0*\\s-*\\'" string)))
+               (not (save-match-data
+                      (string-match "\\`\\s-*0+\\.?0*\\s-*\\'" string))))
           nil
         n)))
   
@@ -527,9 +528,28 @@ Alternative without regular expressions: `search-forward'.
 
 See also StringSearchAndReplace.
 
+=== Search and do something with match ===
+
+This finds numbers and increments them by one.  It depends on `decimal-number' that was defined above.  See also IncrementNumber.
+
+  (while (re-search-forward "[0-9]" nil t)
+    (goto-char (match-beginning 0))
+    (when (and (looking-at "[-+]?[0-9]+\\.?[0-9]*")
+               (decimal-number (match-string 0)))
+      (replace-match
+       (number-to-string (1+ (string-to-number (match-string 0)))))))
+
+This loads Emacs Lisp files listed one per line in a text file.
+
+  (with-current-buffer (find-file-noselect "~/load-files.txt")
+    (while (re-search-forward "^.*\\.el\\(\\.gz\\)?$" nil t)
+      (let ((filename (match-string 0)))
+        (when (file-exists-p filename)
+          (load-file filename)))))
+
 === Mapping with a regex ===
 
-This function provides a mapping function using regexs:
+This function proposes a mapping function using regexs:
 
    (defun map-regex (buffer regex fn)
      "Map the REGEX over the BUFFER executing FN.
