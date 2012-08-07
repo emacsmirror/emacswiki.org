@@ -4,7 +4,7 @@
 
 ;; Emacs Lisp Archive Entry
 ;; Filename: wiki.el
-;; Version: 2.1.9
+;; Version: 2.1.10
 ;; Keywords: hypermedia
 ;; Author: Alex Schroeder <alex@gnu.org>
 ;; Maintainer: Alex Schroeder <alex@gnu.org>
@@ -321,7 +321,7 @@ possible value for `wiki-include-function'."
 
 (defsubst wiki-page-name ()
   "Return page name."
-  (file-name-nondirectory buffer-file-name))
+  (file-name-nondirectory (file-name-sans-extension buffer-file-name)))
 
 (defun wiki-no-name-p ()
   "Return non-nil if point is within a URL.
