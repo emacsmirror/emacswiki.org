@@ -255,7 +255,7 @@ el-get.
 starter kit downloads and installs two generally helpful elisp
 libraries.
 * <b>color-themes </b> --  The starter-kit comes pre-bundled with a variety
-of color themes.  See [[file:starter-kit-misc.org::*Color%20Themes][Color Themes]] for instructions on how to
+of color themes.  See Color Themes for instructions on how to
 change the colors used by Emacs.
 
 * <b>Misc </b> --  Some additional miscellaneous configuration and getting
@@ -299,7 +299,7 @@ EMACS_SERVER_FILE to the temporary directory
 Subsequent calls to emacsclient.exe specify this server location.
 Therefore an emacs server can be run for each distinct emacs version
 
-More information about the startup is found in [[file:./App/site-lisp/site-start.org][site-start.org]]
+More information about the startup is found in site-start.org
 
 === Proxy Configuration (Windows Only) ===
 !EmacsPortable.App will setup the <tt>HTTPS_PROXY</tt>, <tt>HTTP_PROXY</tt> and
