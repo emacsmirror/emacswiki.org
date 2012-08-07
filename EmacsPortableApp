@@ -14,7 +14,7 @@ few options for home directories
 ==== USB home directory ====
 If the <tt>Data/ini/!EmacsPortableApp.ini</tt> file contains an ini Home Entry 
 <pre>
-  [!EmacsPortableApp]
+  [EmacsPortableApp]
   Home=USB:/Documents/
 </pre>
 The USB directory is changed for what !EmacsPortableApp deems is the
@@ -29,7 +29,7 @@ initialization from the hard drive
 ==== EXEDIR home directory ====
 If the <tt>Data/ini/!EmacsPortableApp.ini</tt> file contains an ini Home Entry 
 <pre>
-  [!EmacsPortableApp]
+  [EmacsPortableApp]
   Home=EXEDIR:/Data/Home
 </pre>
 The EXEDIR directory is changed for the base directory that
@@ -41,7 +41,7 @@ and all your customizations will be dragged with it.
 If the <tt>Data/ini/!EmacsPortableApp.ini</tt> file contains a full path, then
 the home is set when that file exists.  For example:
 <pre>
-  [!EmacsPortableApp]
+  [EmacsPortableApp]
   Home=c:\
 </pre>
 
@@ -53,7 +53,7 @@ that doesn't start with either <tt>EXEDIR:/</tt> or <tt>USB:/</tt>, and doesn't
 exist then the
 original home directory is maintained.
 <pre>
-  [!EmacsPortableApp]
+  [EmacsPortableApp]
   Home=Set as original
 </pre>
 ==== Selecting the Home directory with !EmacsOptions.exe ====
@@ -459,7 +459,7 @@ or
 
 <pre>
 WARNING - POTENTIAL SECURITY BREACH!
- The server's host key does not match the one !PuTTY has
+ The server's host key does not match the one PuTTY has
  cached in the registry. This means that either the
  server administrator has changed the host key, or you
  have actually connected to another computer pretending
