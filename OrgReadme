@@ -1,4 +1,3 @@
-This page describes [[org-readme.el]].
 
 
 
@@ -12,9 +11,9 @@ This page describes [[org-readme.el]].
 * <b>Maintainer </b> --  Matthew L. Fidler
 * <b>Created </b> --  Fri Aug  3 22:33:41 2012 (-0500)
 * <b>Version </b> --  0.01
-* <b>Last-Updated </b> --  Mon Aug  6 20:45:40 2012 (-0500)
+* <b>Last-Updated </b> --  Mon Aug  6 23:41:30 2012 (-0500)
 * <b>By </b> --  Matthew L. Fidler
-* <b>Update # </b> --  283
+* <b>Update # </b> --  327
 * <B>URL </B> --  https://github.com/mlf176f2/org-readme
 * <b>Keywords </b> --  Header2, Readme.org, Emacswiki, Git
 * <b>Compatibility </b> --  Tested with Emacs 24.1 on Windows.
@@ -44,6 +43,7 @@ In addition this library defines <tt>org-readme-sync</tt>,  a convenience functi
 
 == History ==
 
+* <b>06-Aug-2012 </b> --   Added support for uploading Readme.org files to emacswiki without having to have a single associated lisp file. (Matthew L. Fidler)
 * <b>06-Aug-2012 </b> --   Bug fix for syncing from the single lisp file. (Matthew L. Fidler)
 * <b>06-Aug-2012 </b> --   Added the ability to call <tt>org-readme-sync</tt> from Readme.org (Matthew L. Fidler)
 * <b>05-Aug-2012 </b> --   Added git pushing to org-readme (Matthew L. Fidler)
