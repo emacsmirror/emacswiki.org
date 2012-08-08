@@ -1,0 +1,90 @@
+
+
+== Library Information ==
+*ess-smart-underscore.el* --- Ess Smart Underscore
+
+* <b>Filename </b> --  [[ess-smart-underscore.el]]
+* <b>Description </b> --  ess-smart-underscore
+* <b>Author </b> --  Matthew L. Fidler
+* <b>Maintainer </b> --  Matthew Fidler
+* <b>Created </b> --  Thu Jul 14 11:04:42 2011 (-0500)
+* <b>Version </b> --  0.73
+* <b>Last-Updated </b> --  Tue Aug  7 22:33:36 2012 (-0500)
+* <b>By </b> --  Matthew L. Fidler
+* <b>Update # </b> --  148
+* <B>URL </B> --  http://github.com/mlf176f2/ess-smart-underscore.el
+* <b>Keywords </b> --  ESS, underscore
+Compatibility:
+
+== Possible Dependencies ==
+
+`custom', `easymenu', `ess', `ess-compat', `ess-custom',
+`font-lock', `syntax', `widget'.
+
+== Installation ==
+
+To use without using a package manager:
+
+* Put the library in a directory in the emacs load path, like ~/.emacs.d
+* Add (require 'ess-smart-underscore) in your ~/.emacs file
+
+This is in emacswiki, so this package can also be installed using el-get.
+
+After installing el-get, Type M-x el-get-install ess-smart-underscore.
+== Ess-Smart Underscore Package Information ==
+Smart "_" key: insert <tt>ess-S-assign</tt>, unless:
+
+# in string/comment
+# after a $ (like d$one_two) (toggle with <tt>ess-S-underscore-after-$</tt>)
+# when the underscore is part of a variable definition previously defined.
+(toggle with `ess-S-underscore-after-defined')
+# when the underscore is after a "=" or "<-" on the same line.
+# inside a parenthetical statement () or [].
+(toggle with <tt>ess-S-underscore-when-inside-paren</tt>)
+# At the beginning of a line.
+# In a variable that contains underscores already (for example foo_a)
+(toggle with <tt>ess-S-underscore-when-variable-contains-underscores</tt>)
+# The preceding character is not a tab/space (toggle with
+<tt>ess-S-underscore-when-last-character-is-a-space</tt>.  Not enabled
+by default.)
+
+An exception to #4 is in the following situation:
+
+a <- b |
+
+Pressing an underscore here would produce
+
+a <- b <-
+
+However when in the following situation
+
+a <- b|
+
+Pressing an underscore would produce
+
+a <- b_
+
+This behavior can be toggled by <tt>ess-S-space-underscore-is-assignment</tt>
+
+If the underscore key is pressed a second time, the assignment
+operator is removed and replaced by the underscore.  <tt>ess-S-assign</tt>,
+typically " <- ", can be customized.  In ESS modes other than R/S,
+an underscore is always inserted.
+
+== History ==
+
+* <b>07-Aug-2012 </b> --   Attempt to upload and convert again. (Matthew L. Fidler)
+* <b>07-Aug-2012 </b> --   Added more information to Readme.org (Matthew L. Fidler)
+* <b>07-Aug-2012 </b> --   Added Readme.org (Matthew L. Fidler)
+* <b>07-Aug-2012 </b> --   Added readme.org (Matthew L. Fidler)
+* <b>07-Aug-2012 </b> --   Added readme.org (Matthew L. Fidler)
+* <b>07-Aug-2012 </b> --   To use, put (require 'ess-smart-underscore) in your ~/.emacs file (Matthew L. Fidler)
+* <b>07-Aug-2012 </b> --   Added a Readme.org (Matthew L. Fidler)
+* <b>22-Feb-2012 </b> --   Support unbalanced sexps. (Matthew L. Fidler)
+* <b>02-Feb-2012 </b> --   Took out auto-installing. Most package managers don't want you to do this. (Matthew L. Fidler)
+* <b>03-Aug-2011 </b> --   Bug fix for parenthetical statement (Matthew L. Fidler)
+* <b>20-Jul-2011 </b> --   Changed to allow underscore instead of assign when inside a parenthetical statement.  (Matthew L. Fidler)
+* <b>15-Jul-2011 </b> --   Bug fix for d[d$CMT <tt></tt> 2,"DV"] _ to produce d[d$CMT <tt></tt> 2,"DV"] <-  (Matthew L. Fidler)
+
+
+This was generated with OrgReadme.  On updating the library, this page is likely to be replaced with updated content.
