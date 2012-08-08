@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Fri Dec 15 10:44:14 1995
 ;; Version: 21.0
-;; Last-Updated: Wed Feb  8 11:02:09 2012 (-0800)
+;; Last-Updated: Wed Aug  8 14:41:28 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 1182
+;;     Update #: 1264
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/isearch+.el
 ;; Keywords: help, matching, internal, local
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -77,7 +77,8 @@
 ;;    `isearchp-char-prop-end', `isearchp-char-properties-in-buffer',
 ;;    `isearchp-char-prop-filter-pred',
 ;;    `isearchp-char-prop-matches-p', `isearchp-fail-pos',
-;;    `isearchp-highlight-lighter', `isearchp-read-face-names',
+;;    `isearchp-highlight-lighter', `isearchp-message-prefix',
+;;    `isearchp-message-suffix', `isearchp-read-face-names',
 ;;    `isearchp-read-face-names--read', `isearchp-read-sexps',
 ;;    `isearchp-remove-duplicates', `isearchp-set-region',
 ;;    `isearchp-set-sel-and-yank', `isearchp-some',
@@ -252,6 +253,10 @@
 ;;
 ;;(@* "Change log")
 ;;
+;; 2012/08/08 dadams
+;;     Added: isearchp-message-prefix, isearchp-message-suffix.  Use everywhere in place of vanilla.
+;;     isearch-message, isearch-fail-pos: Redefine only for Emacs 22 & 23.  Use vanilla definitions.
+;;     isearch-message-prefix: Added redefinition for Emacs 24.2+ (changed arglist).
 ;; 2012/02/08 dadams
 ;;     isearchp-remove-duplicates: Redefined to use a hash table.
 ;; 2012/01/11 dadams
@@ -398,13 +403,14 @@
 
 
 ;; Quiet the byte compiler.
-(defvar subword-mode)
+(defvar bidi-display-reordering)        ; Emacs 24+, built-in.
 (defvar isearch-error)                  ; In `isearch.el'.
 (defvar isearch-filter-predicate)       ; In `isearch.el'.
 (defvar isearch-message-prefix-add)     ; In `isearch.el'.
 (defvar isearch-original-minibuffer-message-timeout) ; In `isearch.el'.
 (defvar isearch-wrap-function)          ; In `isearch.el'.
 (defvar multi-isearch-next-buffer-current-function) ; In `isearch.el'.
+(defvar subword-mode)
 
 (defvar isearchp-initiate-edit-commands) ; Below.
 
@@ -701,6 +707,24 @@ This is used only for Transient Mark mode."
     (t (push-mark (match-beginning 0) t 'activate)))
   (setq deactivate-mark nil))
 
+(defun isearchp-message-prefix (&optional arg1 arg2 arg3)
+  "Version of `isearch-message-prefix' that works for all Emacs releases."
+  (if (or (< emacs-major-version 24)
+          (and (= emacs-major-version 24)
+               (= emacs-minor-version 1)
+               (not (string-match "^[0-9]+\\.[0-9]+\\.[0-9]+" emacs-version))))
+      (isearch-message-prefix arg1 arg2 arg3) ; Emacs 20 through 24.1.
+    (isearch-message-prefix arg1 arg2))) ; Emacs 24.1.N and 24.2+
+    
+(defun isearchp-message-suffix (&optional arg1 arg2)
+  "Version of `isearch-message-suffix' that works for all Emacs releases."
+  (if (or (< emacs-major-version 24)
+          (and (= emacs-major-version 24)
+               (= emacs-minor-version 1)
+               (not (string-match "^[0-9]+\\.[0-9]+\\.[0-9]+" emacs-version))))
+      (isearch-message-suffix arg1 arg2) ; Emacs 20 through 24.1.
+    (isearch-message-suffix arg1)))     ; Emacs 24.1.N and  24.2+
+
 
 ;; REPLACE ORIGINAL in `isearch.el'.
 ;;
@@ -717,7 +741,7 @@ for case-sensitive."
         isearch-adjusted  t)
   (isearchp-highlight-lighter)
   (let ((message-log-max  nil))
-    (message "%s%s [case %ssensitive]" (isearch-message-prefix nil nil isearch-nonincremental)
+    (message "%s%s [case %ssensitive]" (isearchp-message-prefix nil nil isearch-nonincremental)
 	     isearch-message (if isearch-case-fold-search "in" "")))
   (sit-for 1)
   (isearch-update))
@@ -830,7 +854,7 @@ If first char entered is \\[isearch-yank-word-or-char], then do word search inst
                         (minibuffer-history-symbol))
                    (setq isearch-new-string
                          (read-from-minibuffer
-                          (isearch-message-prefix nil nil isearch-nonincremental)
+                          (isearchp-message-prefix nil nil isearch-nonincremental)
                           (cons isearch-string (1+ (isearchp-fail-pos)))
                           minibuffer-local-isearch-map nil
                           (if isearch-regexp
@@ -1014,7 +1038,6 @@ outside of Isearch."
   (isearch-yank-x-selection))
 
 
-
 ;; $$$$$$
 ;; (when (> emacs-major-version 21)        ; Emacs 22+
 ;;   (defun isearch-message (&optional c-q-hack ellipsis)
@@ -1027,7 +1050,7 @@ outside of Isearch."
 ;;                          (and cmds (isearch-message-state (car cmds)))
 ;;                        isearch-message))
 ;;       (setq m (concat
-;;                (isearch-message-prefix c-q-hack ellipsis isearch-nonincremental)
+;;                (isearchp-message-prefix c-q-hack ellipsis isearch-nonincremental)
 ;;                succ-msg
 ;;                (and (not isearch-success)
 ;;                     (string-match (regexp-quote succ-msg) isearch-message)
@@ -1036,50 +1059,48 @@ outside of Isearch."
 ;;                                 'face 'isearch-fail))))
 ;;       (when (and (not isearch-success) (string-match " +$" m))
 ;;         (put-text-property (match-beginning 0) (length m) 'face 'trailing-whitespace m))
-;;       (setq m (concat m (isearch-message-suffix c-q-hack ellipsis)))
+;;       (setq m (concat m (isearchp-message-suffix c-q-hack ellipsis)))
 ;;       (if c-q-hack m (let ((message-log-max nil)) (message "%s" m))))))
-
 
 
 ;; REPLACE ORIGINAL in `isearch.el'.
 ;;
 ;; Highlight failed part of search string in echo area, in face `isearch-fail'.
+;; (Same as what I added to vanilla Emacs 24+.)
 ;;
-(when (> emacs-major-version 21)        ; Emacs 22+
+(when (or (= emacs-major-version 22)  (= emacs-major-version 23)) ; Emacs 22 & 23.
   (defun isearch-message (&optional c-q-hack ellipsis)
     ;; Generate and print the message string.
     (let ((cursor-in-echo-area  ellipsis)
           (msg                  isearch-message)
-          (cmds                 isearch-cmds)
-          succ-msg)
-      (when (or (not isearch-success) isearch-error)
-        (while (or (not (isearch-success-state (car cmds))) (isearch-error-state (car cmds)))
-          (pop cmds))
-        (setq succ-msg  (and cmds (isearch-message-state (car cmds)))
-              msg       (copy-sequence msg))
-        (when (and (stringp succ-msg)   ; Highlight failed part of input.
-                   (< (length succ-msg) (length msg)))
-          (add-text-properties (length succ-msg) (length msg) '(face isearch-fail) msg))
-        (when (string-match " +$" msg)  ; Highlight trailing whitespace.
-          (add-text-properties (match-beginning 0) (match-end 0)
-                               '(face trailing-whitespace) msg)))
+          (fail-pos             (isearch-fail-pos t)))
+      ;; Highlight failed part
+      (when fail-pos
+        (setq msg  (copy-sequence msg))
+        (add-text-properties fail-pos (length msg) '(face isearch-fail) msg)
+        (when (string-match " +$" msg)  ; Highlight trailing whitespace
+          (add-text-properties (match-beginning 0) (match-end 0) '(face trailing-whitespace) msg)))
       (setq msg  (concat (isearch-message-prefix c-q-hack ellipsis isearch-nonincremental)
                          msg
                          (isearch-message-suffix c-q-hack ellipsis)))
-      (if c-q-hack msg (let ((message-log-max  nil)) (message "%s" msg)))))
+      (if c-q-hack  msg  (let ((message-log-max  nil)) (message "%s" msg)))))
 
-  (defun isearchp-fail-pos ()
-    "Position of first mismatch in search string, or its length if none."
-    (let ((cmds  isearch-cmds)
+  (defun isearch-fail-pos (&optional msg)
+    "Return position of first mismatch in search string, or nil if none.
+If MSG is non-nil, use `isearch-message', otherwise `isearch-string'."
+    (let ((cmds      isearch-cmds)
+          (curr-msg  (if msg isearch-message isearch-string))
           succ-msg)
-      (if (and isearch-success (not isearch-error))
-          (length isearch-string)
+      (when (or (not isearch-success)  isearch-error)
         (while (or (not (isearch-success-state (car cmds)))
                    (isearch-error-state (car cmds)))
           (pop cmds))
-        (setq succ-msg  (and cmds (isearch-string-state (car cmds))))
-        (if (and (stringp succ-msg)  (< (length succ-msg) (length isearch-string))
-                 (equal succ-msg (substring isearch-string 0 (length succ-msg))))
+        (setq succ-msg  (and cmds  (if msg
+                                       (isearch-message-state (car cmds))
+                                     (isearch-string-state (car cmds)))))
+        (if (and (stringp succ-msg)
+                 (< (length succ-msg) (length curr-msg))
+                 (equal succ-msg (substring curr-msg 0 (length succ-msg))))
             (length succ-msg)
           0)))))
 
@@ -1088,7 +1109,9 @@ outside of Isearch."
 ;;
 ;; Highlight message according to search characteristics.
 ;;
-(when (> emacs-major-version 21)        ; Emacs 22+
+(when (and (> emacs-major-version 21)   ; Emacs 22 through Emacs 24.1
+           (or (< emacs-major-version 24)
+               (and (= emacs-major-version 24)  (= emacs-minor-version 1))))
   (defun isearch-message-prefix (&optional _c-q-hack ellipsis nonincremental)
     ;; If about to search, and previous search regexp was invalid,
     ;; check that it still is.  If it is valid now,
@@ -1121,6 +1144,50 @@ outside of Isearch."
                      (and (not isearch-forward) (propertize " backward" 'face 'minibuffer-prompt))
                      (propertize (if (and (boundp 'bidi-display-reordering) ; Emacs 24+
                                           current-input-method)
+                                     ;; Input methods for RTL languages use RTL chars for their
+                                     ;; title.  That messes up display of search text after prompt.
+                                     (bidi-string-mark-left-to-right
+                                      (concat " [" current-input-method-title "]: "))
+                                   ": ")
+                                 'face 'minibuffer-prompt))))
+      (concat (upcase (substring m 0 1)) (substring m 1)))))
+
+(when (and (> emacs-major-version 23)   ; Emacs 24.2+
+           (or (> emacs-major-version 24)
+               (and (= emacs-major-version 24)  (> emacs-minor-version 1))))
+  (defun isearch-message-prefix (&optional ellipsis nonincremental)
+    ;; If about to search, and previous search regexp was invalid,
+    ;; check that it still is.  If it is valid now,
+    ;; let the message we display while searching say that it is valid.
+    (and isearch-error ellipsis
+         (condition-case ()
+             (progn (re-search-forward isearch-string (point) t)
+                    (setq isearch-error nil))
+           (error nil)))
+    ;; If currently failing, display no ellipsis.
+    (or isearch-success (setq ellipsis nil))
+    (let ((m (concat (and (not isearch-success) (propertize "failing " 'face 'minibuffer-prompt))
+                     (and isearch-adjusted (propertize "pending " 'face 'minibuffer-prompt))
+                     (and isearch-wrapped
+                          (not isearch-wrap-function)
+                          (if isearch-forward
+                              (> (point) isearch-opoint)
+                            (< (point) isearch-opoint))
+                          (propertize "over" 'face 'isearchp-wrapped))
+                     (and isearch-wrapped (propertize "wrapped " 'face 'isearchp-wrapped))
+                     (and isearch-word
+                          (propertize (or (and (symbolp isearch-word)
+                                               (get isearch-word 'isearch-message-prefix))
+                                          "word ")
+                                      'face 'isearchp-word))
+                     (and isearch-regexp (propertize "regexp " 'face 'isearchp-regexp))
+                     (and multi-isearch-next-buffer-current-function
+                          (propertize "multi " 'face 'isearchp-multi))
+                     (and isearch-message-prefix-add
+                          (propertize isearch-message-prefix-add 'face 'minibuffer-prompt))
+                     (propertize (if nonincremental "search" "I-search") 'face 'minibuffer-prompt)
+                     (and (not isearch-forward)  (propertize " backward" 'face 'minibuffer-prompt))
+                     (propertize (if current-input-method
                                      ;; Input methods for RTL languages use RTL chars for their
                                      ;; title.  That messes up display of search text after prompt.
                                      (bidi-string-mark-left-to-right
@@ -1336,7 +1403,7 @@ See `isearchp-char-prop-backward'."
     "Helper for `isearchp-char-prop-(forward|backward)(-regexp)'."
     (isearch-done)
     (let ((message-log-max  nil))
-      (message "CHAR PROP %s%s" (isearch-message-prefix nil nil isearch-nonincremental)
+      (message "CHAR PROP %s%s" (isearchp-message-prefix nil nil isearch-nonincremental)
                isearch-message))
     (sit-for 1)
     (setq isearch-success t isearch-adjusted t)
