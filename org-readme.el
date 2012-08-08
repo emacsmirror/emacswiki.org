@@ -6,9 +6,9 @@
 ;; Maintainer: Matthew L. Fidler
 ;; Created: Fri Aug  3 22:33:41 2012 (-0500)
 ;; Version: 0.01
-;; Last-Updated: Tue Aug  7 19:22:53 2012 (-0500)
+;; Last-Updated: Wed Aug  8 18:46:02 2012 (-0500)
 ;;           By: Matthew L. Fidler
-;;     Update #: 333
+;;     Update #: 345
 ;; URL: https://github.com/mlf176f2/org-readme
 ;; Keywords: Header2, Readme.org, Emacswiki, Git
 ;; Compatibility: Tested with Emacs 24.1 on Windows.
@@ -63,6 +63,14 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; 
 ;;; Change Log:
+;; 08-Aug-2012    Matthew L. Fidler  
+;;    Last-Updated: Wed Aug  8 18:44:37 2012 (-0500) #343 (Matthew L. Fidler)
+;;    Fixed preformatting tags in emacswiki post.  Previously they may have
+;;    been replaced with <PRE></pre> instead of <pre></pre>.  This makes the
+;;    emacswiki page display correctly.
+;; 07-Aug-2012    Matthew L. Fidler  
+;;    Last-Updated: Tue Aug  7 19:22:53 2012 (-0500) #333 (Matthew L. Fidler)
+;;    To use, put (require 'ess-smart-underscore) in your ~/.emacs file
 ;; 7-Aug-2012    Matthew L. Fidler  
 ;;    Last-Updated: Tue Aug  7 19:14:34 2012 (-0500) #331 (Matthew L. Fidler)
 ;;    Added a Comment to EmcsWiki pages that states that the content of the
@@ -178,6 +186,7 @@
 
 (define-derived-mode org-readme-edit-mode text-mode "Org-readme Log edit.")
 
+(defalias 'org-readme-sync-emacswiki 'org-readme-convert-to-emacswiki)
 (defun org-readme-convert-to-emacswiki ()
   "Converts Readme.org to oddmuse markup and uploads to emacswiki."
   (interactive)
@@ -240,7 +249,7 @@
       
       (goto-char (point-min))
       (while (re-search-forward "^: " nil t)
-        (replace-match "<pre>\n::::")
+        (replace-match "<pre>\n::::" t)
         (while (progn
                  (end-of-line)
                  (re-search-forward "\\=\n: " nil t))
@@ -263,7 +272,7 @@
       
       (goto-char (point-min))
       (while (re-search-forward "^ *#[+]BEGIN_SRC.*" nil t)
-        (replace-match "<pre>")
+        (replace-match "<pre>" t)
         (setq tmp (point))
         (when (re-search-forward "^ *#[+]END_SRC" nil t)
           (replace-match "</pre>" t)
@@ -471,6 +480,22 @@ When COMMENT-ADDED is non-nil, the comment has been added and the syncing should
   "Get file for changelog commits."
   (expand-file-name "Changelog" (file-name-directory (buffer-file-name))))
 
+(defcustom org-readme-default-template "
+* Installation
+
+To use without using a package manager:
+
+ - Put the library in a directory in the emacs load path, like ~/.emacs.d
+ - Add (require 'LIB-NAME) in your ~/.emacs file
+
+This is in emacswiki, so this package can also be installed using el-get.
+
+After installing el-get, Type M-x el-get-install LIB-NAME.
+"
+  "Default template for blank Readme.org Files. LIB-NAME is replaced with the library."
+  :type 'string
+  :group 'org-readme)
+
 (defun org-readme-find-readme ()
   "Find the Readme.org."
   (let* ((dir (file-name-directory (buffer-file-name)))
@@ -478,7 +503,14 @@ When COMMENT-ADDED is non-nil, the comment has been added and the syncing should
     (if (= 1 (length df))
         (setq df (nth 0 df))
       (setq df (expand-file-name "Readme.org" dir))
-      (symbol-value 'df))))
+      (let ((lib-name (file-name-sans-extension
+                       (file-name-nondirectory (buffer-file-name)))))
+        (with-temp-file df
+          (insert org-readme-default-template)
+          (goto-char (point-min))
+          (while (re-search-forward "LIB-NAME" nil t)
+            (replace-match lib-name t t)))))
+    (symbol-value 'df)))
 
 (defun org-readme-remove-section (section &optional txt any-level at-beginning)
   "Remove `org-mode' SECTION. Optionally insert TXT.
