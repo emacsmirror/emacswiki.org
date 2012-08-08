@@ -1,5 +1,6 @@
 
 
+
 == Library Information ==
 *ess-smart-underscore.el* --- Ess Smart Underscore
 
@@ -9,9 +10,9 @@
 * <b>Maintainer </b> --  Matthew Fidler
 * <b>Created </b> --  Thu Jul 14 11:04:42 2011 (-0500)
 * <b>Version </b> --  0.73
-* <b>Last-Updated </b> --  Tue Aug  7 22:33:36 2012 (-0500)
+* <b>Last-Updated </b> --  Wed Aug  8 18:42:23 2012 (-0500)
 * <b>By </b> --  Matthew L. Fidler
-* <b>Update # </b> --  148
+* <b>Update # </b> --  151
 * <B>URL </B> --  http://github.com/mlf176f2/ess-smart-underscore.el
 * <b>Keywords </b> --  ESS, underscore
 Compatibility:
@@ -50,19 +51,28 @@ by default.)
 
 An exception to #4 is in the following situation:
 
+<PRE>
 a <- b |
+</pre>
 
 Pressing an underscore here would produce
 
+
+<PRE>
 a <- b <-
+</pre>
 
 However when in the following situation
 
+<PRE>
 a <- b|
+</pre>
 
 Pressing an underscore would produce
 
+<PRE>
 a <- b_
+</pre>
 
 This behavior can be toggled by <tt>ess-S-space-underscore-is-assignment</tt>
 
@@ -73,6 +83,7 @@ an underscore is always inserted.
 
 == History ==
 
+* <b>08-Aug-2012 </b> --   Updated the documentation to have the R code preformatted. (Matthew L. Fidler)
 * <b>07-Aug-2012 </b> --   Attempt to upload and convert again. (Matthew L. Fidler)
 * <b>07-Aug-2012 </b> --   Added more information to Readme.org (Matthew L. Fidler)
 * <b>07-Aug-2012 </b> --   Added Readme.org (Matthew L. Fidler)
