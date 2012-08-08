@@ -6,9 +6,9 @@
 ;; Maintainer: Matthew L. Fidler
 ;; Created: Fri Aug  3 22:33:41 2012 (-0500)
 ;; Version: 0.01
-;; Last-Updated: Mon Aug  6 23:42:02 2012 (-0500)
+;; Last-Updated: Tue Aug  7 19:07:34 2012 (-0500)
 ;;           By: Matthew L. Fidler
-;;     Update #: 328
+;;     Update #: 330
 ;; URL: https://github.com/mlf176f2/org-readme
 ;; Keywords: Header2, Readme.org, Emacswiki, Git
 ;; Compatibility: Tested with Emacs 24.1 on Windows.
@@ -40,9 +40,32 @@
 ;; - Updates emacswiki with the library description and the library itself.
 ;; - Updates the git repository with the differences that you posted.
 ;; 
+;; When <tt>org-readme-sync</tt> is called in a <tt>Readme.org</tt> file that is not a
+;; single lisp file, the function exports the readme in EmacsWiki format
+;; and posts it to the EmacsWiki.
+;; ** EmacsWiki Page Names
+;; When exporting the Readme.org to EmacsWiki, the names are transformed
+;; as follows:
+;; 
+;; - When the library is a single lisp function, the single lisp file is
+;;   converted to the emacswiki name by taking out the "-" and ".el" of
+;;   the library and converting to Camel Case.  For example,
+;;   org-readme.el would be converted to OrgReadme.
+;; - When the library is a multiple file lisp library, or a library
+;;   without any direct lisp calls, the Readme.org is converted to an
+;;   appropriate EmacsWiki documentation file by the Parent Directory of
+;;   the <tt>Readme.org</tt>.  For example, =EmacsPortable.App" is converted to
+;;   EmacsPortableApp
+;; ** Library assumptions
+;; This library assumes that the Emacs Lisp libraries are created using
+;; [[http://emacswiki.org/emacs/header2.el][header2.el]], and optionally with the [[http://emacswiki.org/emacs/lib-requires.el][lib-requires.el]] libraries.
+;; 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; 
 ;;; Change Log:
+;; 7-Aug-2012    Matthew L. Fidler  
+;;    Last-Updated: Mon Aug  6 23:42:02 2012 (-0500) #328 (Matthew L. Fidler)
+;;    Added more documentation.
 ;; 06-Aug-2012    Matthew L. Fidler  
 ;;    Last-Updated: Mon Aug  6 23:24:22 2012 (-0500) #326 (Matthew L. Fidler)
 ;;    Added support for uploading Readme.org files to emacswiki without
