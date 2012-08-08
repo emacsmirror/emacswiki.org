@@ -19,6 +19,8 @@ However SHIFT plus _two_ normal keys might be a "key chord".)
 [new:rubikitch:2008-11-05 03:40 UTC]
 A thumb is a finger of the strongest! Let's utilize a thumb.
 Small hack to define a key-chord starting with Space.
+Add (key-chord-mode 1) to your .emacs file to activate parent mode.
+
 
 Lisp:space-chord.el  -- [[rubikitch]]
 
