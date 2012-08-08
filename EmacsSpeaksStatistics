@@ -34,6 +34,6 @@ Consider using the prefix "ESS" for new ESS-related pages. -- PaulJohnson
 
 * [[ESSr-autoyas|Automatic YASnippets for function arguments]] -- Easy insertion and editing of arguments and values of a R function.
 
-* [[ess-smart-underscore.el|Smarter Ess Underscore behavior]] 
+* [[EssSmartUnderscore|Smarter Ess Underscore behavior]] 
 
 * [[ESSRParser|Format your code with R parser]]
