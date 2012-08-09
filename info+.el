@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Sep 12 16:30:11 1995
 ;; Version: 21.1
-;; Last-Updated: Sat Jul 28 16:57:42 2012 (-0700)
+;; Last-Updated: Thu Aug  9 11:21:49 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 4597
+;;     Update #: 4606
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/info+.el
 ;; Keywords: help, docs, internal
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x
@@ -184,6 +184,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2012/08/09 dadams
+;;     Info-fontify-node: Updated guards for Emacs 24 versions.
 ;; 2012/07/28 dadams
 ;;     Info-fontify-node: Typo on guard: (/= 1 emacs-minor-version) should have been =, not /=.
 ;; 2012/07/17 dadams
@@ -495,42 +497,38 @@
 
 ;; Quiet the byte compiler a bit.
 ;;
-;; (when (< emacs-major-version 21)
-;;   (eval-when-compile
 (defvar desktop-save-buffer)
 (defvar header-line-format)
+(defvar Info-breadcrumbs-depth)
+(defvar Info-breadcrumbs-depth-internal)
+(defvar Info-breadcrumbs-in-header-flag)
 (defvar Info-breadcrumbs-in-mode-line-mode)
+(defvar Info-current-node-virtual)
+(defvar isearch-filter-predicate)
 (defvar Info-fontify-visited-nodes)
 (defvar Info-hide-note-references)
 (defvar Info-history-list)
 (defvar Info-isearch-initial-node)
 (defvar Info-isearch-search)
+(defvar Info-last-search)
+(defvar Info-link-keymap)
 (defvar Info-menu-entry-name-re)
 (defvar Info-next-link-keymap)
 (defvar Info-mode-line-node-keymap)
 (defvar Info-node-spec-re)
 (defvar Info-point-loc)
 (defvar Info-prev-link-keymap)
+(defvar Info-read-node-completion-table)
 (defvar Info-refill-paragraphs)
 (defvar Info-saved-nodes)
 (defvar Info-search-case-fold)
 (defvar Info-search-history)
 (defvar Info-search-whitespace-regexp)
+(defvar Info-title-face-alist)
 (defvar info-tool-bar-map)
 (defvar Info-up-link-keymap)
 (defvar Info-use-header-line)
 (defvar widen-automatically)
-
-;; (when (< emacs-major-version 23)
-;;   (eval-when-compile
-(defvar Info-read-node-completion-table)
-(defvar Info-breadcrumbs-depth)
-(defvar Info-breadcrumbs-depth-internal)
-(defvar Info-breadcrumbs-in-header-flag)
-(defvar Info-current-node-virtual)
-(defvar Info-last-search)
-(defvar Info-title-face-alist)
-(defvar isearch-filter-predicate)
 
 ;;; You will likely get byte-compiler messages saying that variable
 ;;; `node-name' is free.  In older Emacs versions, you might also get
@@ -3220,7 +3218,10 @@ to search again for `%s'.")
 ;;    "..." in face `info-string', and ' in face `info-single-quote'.
 ;;
 (when (and (> emacs-major-version 22) (fboundp 'Info-breadcrumbs) ; Emacs 23.2 through 24.1
-           (or (/= emacs-major-version 24)  (= emacs-minor-version 1)))
+           (or (= emacs-major-version 23)
+               (and (= emacs-major-version 24)
+                    (= emacs-minor-version 1)
+                    (not (string-match "^[0-9]+\\.[0-9]+\\.[0-9]+" emacs-version)))))
   (defun Info-fontify-node ()
     "Fontify the node."
     (save-excursion
@@ -3587,8 +3588,8 @@ to search again for `%s'.")
 ;; 2. If `Info-fontify-quotations-flag', fontify `...' in face `info-quoted-name',
 ;;    "..." in face `info-string', and ' in face `info-single-quote'.
 ;;
-(when (and (> emacs-major-version 23)   ; Emacs 23.2 through 24.1
-           (or (/= emacs-major-version 24)  (> emacs-minor-version 1)))
+(when (and (> emacs-major-version 23)   ; Emacs 24.1.N and 24.2+
+           (or (> emacs-major-version 24)  (string-match "^[0-9]+\\.[0-9]+\\.[0-9]+" emacs-version)))
   (defun Info-fontify-node ()
     "Fontify the node."
     (save-excursion
