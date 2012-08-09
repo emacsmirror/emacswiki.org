@@ -89,7 +89,7 @@ example:
                    "imap-ssl:HOST:PORT:MAILBOX:AUTH:USER:PASSWORD"
                    "~/mail/IMAP-INBOX.CRASH"))
 
-If <code>PASSWORDM</code> is given as *, it will be prompted for the
+If <code>PASSWORD</code> is given as *, it will be prompted for the
 first time that mail is retrieved.
 
 To delete the messages from the server after downloading, put this in
