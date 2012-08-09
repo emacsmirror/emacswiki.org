@@ -1,8 +1,8 @@
 Elnode is an asynchronous HttpServer framework. You can use it to write HTTP services in EmacsLisp.
 
-* [[http://elnode.org|the homepage]]
+* [[http://elnode.org|the homepage]] - the video is there, as well as [[http://www.youtube.com/watch?feature=player_embedded&v=TR7DPvEi7Jg|here]]
 * [[http://github.com/nicferrier/elnode|the GitHub project]]
-
+* Nic's [[http://nic.ferrier.me.uk/blog/2012_08/elnode-nears-1-point-0|latest blog post]] on Elnode 0.9.9
 
 == What Elnode is ==
 
