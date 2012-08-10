@@ -58,7 +58,7 @@ tree navigation), or you can create your own types. See "Creating menus" below.
 : Then add:
 {{{
         (require 'one-key)
-        (global-set-key (kbd "<menu>") 'one-key-open-default-menu-set)
+        (global-set-key (kbd "<menu>") 'one-key-open-associated-menu-set)
 }}}
 : to your ~/.emacs file, and replace <menu> with whatever top key you want to use.
 : To find the emacs code for a particular keybinding press C-h k followed by the key.
@@ -179,12 +179,15 @@ Alternatively you may save individual menus by pressing the special key for "Sav
 
 ===Menu sets===
 
-A menu set is a collection of menu names. When you open the *One-Key* buffer with `one-key-open-default-menu-set'
-it opens the default set of menus `one-key-default-menu-set'. You can define other sets of menus by customizing
-`one-key-sets-of-menus-alist'. Each menu set consists of a name for the menu set, and a list of menu names.
+A menu set is a collection of menu names. When you open the *One-Key* buffer with `one-key-open-associated-menu-set'
+it opens a collection of menus associated with the current major-mode or buffer. By default this is the set of menus
+in `one-key-default-menu-set'. You can define other menu sets by customizing `one-key-sets-of-menus-alist', and
+associate them with different major-modes or buffers by customizing `one-key-associations-for-menu-sets'.
+Each menu set consists of a name for the menu set, and a list of menu names.
 one-key reconstructs a menu from its name by searching `one-key-types-of-menu' for a matching entry, and applying
 the associated function to create the menu.
-You can see what menu sets are currently defined, and switch menu sets, using the "menu-sets" menu.
+With the "menu-sets" menu you can see what menu sets are currently defined, switch menu sets, and save the current
+menus as a menu set (C-s).
 See "Creating menus" above for info on how to add the "menu-sets" menu to the *One-Key* buffer.
 
 ===Other features===
