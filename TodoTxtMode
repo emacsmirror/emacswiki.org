@@ -1,0 +1,7 @@
+todotxt.el mode by AdolfoVillafiorita is a major mode for editing todo.txt files.
+
+It supports an extension to the default format to manage due dates and recurring tasks. 
+
+Available from: 
+
+* https://github.com/avillafiorita/todotxt-mode
