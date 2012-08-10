@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Sep 12 16:30:11 1995
 ;; Version: 21.1
-;; Last-Updated: Thu Aug  9 11:21:49 2012 (-0700)
+;; Last-Updated: Fri Aug 10 13:00:38 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 4606
+;;     Update #: 4609
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/info+.el
 ;; Keywords: help, docs, internal
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x
@@ -184,6 +184,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2012/08/10 dadams
+;;     Info-search: Use latest Emacs 24 msg: _end of node_, not _initial node_.
 ;; 2012/08/09 dadams
 ;;     Info-fontify-node: Updated guards for Emacs 24 versions.
 ;; 2012/07/28 dadams
@@ -4219,7 +4221,7 @@ To remove the highlighting, just start an incremental search: \
                        (not bound)
                        (or give-up (and found (not (and (> found opoint-min)
                                                         (< found opoint-max))))))
-              (signal 'search-failed (list regexp "initial node")))
+              (signal 'search-failed (list regexp "end of node")))
 
             ;; If no subfiles, give error now.
             (if give-up
@@ -4401,7 +4403,7 @@ To remove the highlighting, just start an incremental search: \
                        (not Info-isearch-initial-node) ; `Info-isearch-initial-node' is free here.
                        (not bound)
                        (or give-up (and found (not (and (> found opoint-min) (< found opoint-max))))))
-              (signal 'search-failed (list regexp "initial node")))
+              (signal 'search-failed (list regexp "end of node")))
 
             ;; If no subfiles, give error now.
             (if give-up
