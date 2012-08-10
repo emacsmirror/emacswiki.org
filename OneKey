@@ -6,6 +6,9 @@ Please send suggestions and bug reports to [http://www.emacswiki.org/emacs/JoeBl
 [new]
 JoeBloggs, why don't you put this on github.  This way you get issue tracking, git repo, etc all for free. -- LeWang
 
+[new]
+
+Here is the github repo: https://github.com/vapniks/one-key -- JoeBloggs
 ==What is OneKey ?==
 OneKey is a popup help window which appears when you type a *Top Key*.
 It shows *Keystrokes* and *Commands* in a help window.
@@ -278,6 +281,7 @@ In the *One-Key* buffer:
 : To report a bug either enter M-x one-key-submit-bug-report, or press C-f11 in the *One-Key* buffer.
 
 ==Plugins==
+
 The following libraries are available for defining extra one-key menu types:
 : Lisp:one-key-dir.el - one-key menus for quickly navigating directories 
 : Lisp:one-key-yas.el - one-key menus for yasnippet templates (see [[Yasnippet]])
