@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Mon Aug  6 08:31:13 2012 (-0700)
+;; Last-Updated: Fri Aug 10 11:23:16 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 24488
+;;     Update #: 24490
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-cmd1.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -4259,13 +4259,16 @@ instead of those for the current buffer."
                  bookmark-current-buffer  (current-buffer))
            (save-excursion (skip-chars-forward " ") (setq bookmark-yank-point  (point)))
            (let* ((record   (bookmark-make-record))
-                  (defname  (cond ((eq major-mode 'w3m-mode) w3m-current-title)
-                                  ((eq major-mode 'gnus-summary-mode) (elt (gnus-summary-article-header) 1))
-                                  ((memq major-mode '(Man-mode woman-mode))
-                                   (buffer-substring (point-min) (save-excursion (goto-char (point-min))
-                                                                                 (skip-syntax-forward "^ ")
-                                                                                 (point))))
-                                  (t nil)))
+                  (defname  (or (and (stringp (car record))  (car record))
+                                (cond ((eq major-mode 'w3m-mode) w3m-current-title)
+                                      ((eq major-mode 'gnus-summary-mode)
+                                       (elt (gnus-summary-article-header) 1))
+                                      ((memq major-mode '(Man-mode woman-mode))
+                                       (buffer-substring (point-min) (save-excursion
+                                                                       (goto-char (point-min))
+                                                                       (skip-syntax-forward "^ ")
+                                                                       (point))))
+                                      (t nil))))
                   (defname  (and defname  (bmkp-replace-regexp-in-string "\n" " " defname)))
                   (bname    (or name  (icicle-transform-multi-completion
                                        (bmkp-completing-read-lax "Set bookmark "
