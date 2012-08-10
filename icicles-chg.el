@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Mon Aug  6 10:22:42 2012 (-0700)
+;; Last-Updated: Fri Aug 10 11:36:42 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 8776
+;;     Update #: 8784
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-chg.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -85,6 +85,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd1.el'")
 ;;
+;; 2012/08/10 dadams
+;;     icicle-bookmark-set: If bookmark-make-record provides a name, use that as default.
 ;; 2012/08/06 dadams
 ;;     Renamed old-* to icicle-ORIG-*:
 ;;       icicle-ORIG-file, icicle-ORIG-customize-face, icicle-ORIG-customize-face-other-window,
@@ -144,7 +146,7 @@
 ;;       icicle-grep-saved-file-candidates:
 ;;         Test with icicle-file-remote-p before file-exists-p, to avoid Tramp.
 ;; 2012/05/13 dadams
-;;     Added: icicle-dired-save-marked(-more|to-cache-file|to-fileset|to-variable)-recursive, 
+;;     Added: icicle-dired-save-marked(-more|to-cache-file|to-fileset|to-variable)-recursive,
 ;; 2012/04/22 dadams
 ;;     Added: icicle-buffer-name-prompt.
 ;;     Removed: icicle-filter-buffer-cands-for-mode (replaced by *-(remove|keep-only)* in *-mcmd.el).
@@ -3426,7 +3428,7 @@
 ;;     icicle-help-string-completion: Updated to add icicle-toggle-completions-format.
 ;; 2012/01/20 dadams
 ;;     Renamed icicle-toggle-incremental-completion to icicle-cycle-incremental-completion.
-;;     icicle-apropos-complete-and-exit: 
+;;     icicle-apropos-complete-and-exit:
 ;;       Bind icicle-expand-input-to-common-match-flag and icicle-prefix-complete-and-exit-p also.
 ;;       Complete based on icicle-current-completion-mode, not just apropos.
 ;;       Use icicle-candidates-alist if appropriate.
@@ -5973,7 +5975,7 @@
 ;;     icicle-default-value: Updated doc wrt new behavior for icicle-read-from-minibuffer.
 ;; 2011/11/01 dadams
 ;;     icicle-top-level-key-bindings: Added: icicle-bookmark-(autonamed(-this-buffer)|autofile|
-;;                                                            bookmark-file|temporary)(-other-window). 
+;;                                                            bookmark-file|temporary)(-other-window).
 ;; 2011/10/10 dadams
 ;;     Removed use of icicle-kbd in option values, because byte-compile of defcustom does not eval.
 ;;     Removed eval-when-compile to load icicles-mac.
@@ -6991,7 +6993,7 @@
 ;; 2012/08/06 dadams
 ;;     Renamed old-* to icicle-ORIG-*:
 ;;       icicle-ORIG-bbdb-complete-name, icicle-ORIG-choose-completion,
-;;       icicle-ORIG-choose-completion-string, icicle-ORIG-color, icicle-ORIG-comint-dynamic-complete, 
+;;       icicle-ORIG-choose-completion-string, icicle-ORIG-color, icicle-ORIG-comint-dynamic-complete,
 ;;       icicle-ORIG-comint-dynamic-complete-filename, icicle-ORIG-comint-replace-by-expanded-filename,
 ;;       icicle-ORIG-completing-read, icicle-ORIG-completing-read-multiple,
 ;;       icicle-ORIG-completion-setup-function, icicle-ORIG-crm-local-completion-map,
