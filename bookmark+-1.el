@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2012, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 13:43:55 2010 (-0700)
-;; Last-Updated: Fri Aug 10 11:09:14 2012 (-0700)
+;; Last-Updated: Fri Aug 10 13:07:33 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 5788
+;;     Update #: 5790
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-1.el
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x
@@ -221,9 +221,10 @@
 ;;    `bmkp-next-url-bookmark', `bmkp-next-url-bookmark-repeat',
 ;;    `bmkp-non-file-jump', `bmkp-non-file-jump-other-window',
 ;;    `bmkp-occur-create-autonamed-bookmarks',
-;;    `bmkp-occur-target-set', `bmkp-occur-target-set-all',
-;;    `bmkp-paste-add-tags', `bmkp-paste-replace-tags',
-;;    `bmkp-previous-bookmark', `bmkp-previous-bookmark-repeat',
+;;    `bmkp-ORIG-bookmark-insert', `bmkp-occur-target-set',
+;;    `bmkp-occur-target-set-all', `bmkp-paste-add-tags',
+;;    `bmkp-paste-replace-tags', `bmkp-previous-bookmark',
+;;    `bmkp-previous-bookmark-repeat',
 ;;    `bmkp-previous-bookmark-this-buffer',
 ;;    `bmkp-previous-bookmark-this-buffer-repeat',
 ;;    `bmkp-previous-bookmark-this-file',
@@ -271,7 +272,7 @@
 ;;    `bmkp-url-jump', `bmkp-url-jump-other-window',
 ;;    `bmkp-variable-list-jump', `bmkp-version',
 ;;    `bmkp-w32-browser-jump', `bmkp-w3m-jump',
-;;    `bmkp-w3m-jump-other-window', `old-bookmark-insert'.
+;;    `bmkp-w3m-jump-other-window'.
 ;;
 ;;  User options defined here:
 ;;
@@ -2562,8 +2563,8 @@ candidate."
 ;; 2. Added note about `S-delete' to doc string.
 ;; 3. Changed arg name: BOOKMARK -> BOOKMARK-NAME.
 ;;
-(or (fboundp 'old-bookmark-insert)
-(fset 'old-bookmark-insert (symbol-function 'bookmark-insert)))
+(or (fboundp 'bmkp-ORIG-bookmark-insert)
+(fset 'bmkp-ORIG-bookmark-insert (symbol-function 'bookmark-insert)))
 
 ;;;###autoload
 (defun bookmark-insert (bookmark-name)  ; Bound to `C-x p i'
@@ -2577,7 +2578,7 @@ If you use Icicles, then you can use `S-delete' during completion of a
 bookmark name to delete the bookmark named by the current completion
 candidate."
   (interactive (list (bookmark-completing-read "Insert bookmark contents" (bmkp-default-bookmark-name))))
-  (old-bookmark-insert bookmark-name))
+  (bmkp-ORIG-bookmark-insert bookmark-name))
 
 
 ;; REPLACES ORIGINAL in `bookmark.el'.
