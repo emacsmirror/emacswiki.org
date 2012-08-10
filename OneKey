@@ -278,7 +278,7 @@ In the *One-Key* buffer:
 : To report a bug either enter M-x one-key-submit-bug-report, or press C-f11 in the *One-Key* buffer.
 
 ==Plugins==
-The following extra libraries are available for defining extra one-key menu types:
+The following libraries are available for defining extra one-key menu types:
 : Lisp:one-key-dir.el - one-key menus for quickly navigating directories 
 : Lisp:one-key-yas.el - one-key menus for yasnippet templates (see [[Yasnippet]])
 
