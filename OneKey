@@ -305,7 +305,7 @@ Notice that "top-level" is highlighted in yellow in the header line, and other m
 and right of this. The user can navigate to the other menus by pressing the left/right arrow keys.
 Notice also that the mode line indicates the current sort method.
 
-==Dialog==
+==Discussion==
 : Do you know OneTwoThreeMenu? -- [[rubikitch]]
 :: Wow, i have never heard it, and looks have same design purpose for remember keystroke.
 :: At the beginning, i just want write a mode to help me remember keystroke and *free* my handy keystrokes for other extensions.
