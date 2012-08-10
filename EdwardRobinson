@@ -4,6 +4,20 @@ I'm currently using emacs on windows, but occasionally use it on Sun OS as well.
 
 I recently wrote a major mode for Procomm Aspect scripts at Lisp:procomm-mode.el.
 
+__My .emacs file(s)__
+
+I keep my .emacs file in a SVN repository on Assembla here:
+: http://www.assembla.com/code/emacs_osnibore/subversion/nodes/trunk/.emacs
+
+My .emacs is basically a launching platform for a bunch of task-specific customization files that are conditionally loaded based on where I am using Emacs (home, work, Unix).  The customization files that actually do the work are located in a "dotemacs" folder:
+: http://www.assembla.com/code/emacs_osnibore/subversion/nodes/trunk/site/dotemacs
+
+You can see my entire usr/home (including all of the support packages) here:
+:  http://www.assembla.com/code/emacs_osnibore/subversion/nodes/trunk
+
+
+
+
 [new]
 Welcome to the wiki! Giving back is what it's all about. :) -- AlexSchroeder
 ----
