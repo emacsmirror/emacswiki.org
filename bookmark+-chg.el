@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2012, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Fri Aug 10 11:42:39 2012 (-0700)
+;; Last-Updated: Fri Aug 10 13:11:15 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 14996
+;;     Update #: 15007
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-chg.el
 ;; Keywords: bookmarks, bookmark+
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x
@@ -48,7 +48,7 @@
 ;;
 ;;    2. From the Emacs-Wiki Web site:
 ;;       http://www.emacswiki.org/cgi-bin/wiki/BookmarkPlus.
-;;    
+;;
 ;;    3. From the Bookmark+ group customization buffer:
 ;;       `M-x customize-group bookmark-plus', then click link
 ;;       `Commentary'.
@@ -147,6 +147,7 @@
 ;;
 ;; 2012/08/10 dadams
 ;;     Info-bookmark-make-record: Updated wrt Emacs 24.
+;;     Renamed: old-bookmark-insert to bmkp-ORIG-bookmark-insert.
 ;; 2012/07/04 dadams
 ;;     bmkp-create-variable-list-bookmark: Removed INTERACTIVEP arg to bookmark-set.
 ;;     #'(lambda...) -> (lambda...).
@@ -169,7 +170,7 @@
 ;;     bmkp-list-all-tags: List tags alphabetically.  Thx to Anders Johansson for the suggestion.
 ;; 2012/05/05 dadams
 ;;     bookmark-store, bmkp-make-function-bookmark, bmkp-unomit-all, bmkp-url-target-set:
-;;       Added optional arg NO-MSG-P. 
+;;       Added optional arg NO-MSG-P.
 ;;     bookmark-store, bookmark-set, bmkp-record-visit, bmkp-make-function-bookmark,
 ;;       bmkp-current-bookmark-list-state, bmkp-unomit-all, bmkp-url-target-set, bmkp-file-target-set,
 ;;       bmkp-replace-existing-bookmark:
@@ -683,7 +684,7 @@
 ;; 2011/03/26 dadams
 ;;     Added: bmkp-file-(all|some)-tags(-regexp)-(alist-only|jump(-other-window)).
 ;;     bmkp-jump-menu: Added the new commands, but not Emacs 20, to avoid crash if byte-compiled.
-;;     bmkp-bookmark-jump*-other-window: Simplified doc strings - refer to same-window version. 
+;;     bmkp-bookmark-jump*-other-window: Simplified doc strings - refer to same-window version.
 ;; 2011/03/17 dadams
 ;;     bmkp-describe-bookmark: Added 10-pixel margin around thumbnail image.
 ;; 2011/03/11 dadams
@@ -762,7 +763,7 @@
 ;;     bookmark-handle-bookmark:
 ;;       Move non-default handler call outside condition-case.
 ;;       Updated for Emacs 24: Use error condition bookmark-error-no-filename.  Added props for it.
-;;     bookmark-default-handler: Updated for Emacs 24: 
+;;     bookmark-default-handler: Updated for Emacs 24:
 ;;       Signal condition bookmark-error-no-filename, not file-error, and pass (stringp FILE).
 ;;     bookmark-make-record-default: Added optional args NO-CONTEXT, POSITION (Emacs 24), and VISITS.
 ;;     bookmark-load: Updated for Emacs 24: Wrap with abbreviate-file-name.
@@ -868,7 +869,7 @@
 ;; 2012/04/10 dadams
 ;;     bmkp-bmenu-load-marked-bookmark-file-bookmarks:
 ;;       Use bmkp-refresh-menu-list, not bmkp-refresh/rebuild-menu-list.
-;;     bmkp-bmenu-(add|remove)-tags-(to|from)-marked, bmkp-bmenu-paste-(add|replace)-tags-to-marked: 
+;;     bmkp-bmenu-(add|remove)-tags-(to|from)-marked, bmkp-bmenu-paste-(add|replace)-tags-to-marked:
 ;;       Corrected bookmark-save to bookmark-save-flag in bindings to nil.
 ;;       Use bmkp-count-multi-mods-as-one-flag for the binding.
 ;;       Call bmkp-refresh-menu-list.
@@ -946,7 +947,7 @@
 ;;     bmkp-bmenu-tags-menu: Added bmkp-bmenu-edit-marked.
 ;;     bmkp-bmenu-mouse-3-menu:
 ;;       Added: bmkp-bmenu-edit-tags.
-;;       Replaced *-rename and *-relocate with bmkp-bmenu-edit-bookmark-name-and-file. 
+;;       Replaced *-rename and *-relocate with bmkp-bmenu-edit-bookmark-name-and-file.
 ;; 2011/12/24 dadams
 ;;     Added: bookmark-bmenu-toggle-filenames, with optional arg NO-MSG-P.
 ;;     bookmark-bmenu-surreptitiously-rebuild-list, bookmark-bmenu-(show|hide)-filenames:
@@ -1332,7 +1333,7 @@
 ;;     bmkp-bmenu-define-full-snapshot-command: Set bmkp-last-bookmark-file.
 ;;     bmkp-bookmark-description: Fixed typo: bmkp-bookmark-file-bookmark-p (not desktop).
 ;;     bmkp-make-bookmark-file-record: Use arg file (not bmkp-non-file-filename) as filename entry.
-;;     
+;;
 ;;     Added more autoload cookies.
 ;; 2010/07/09 dadams
 ;;     Added: bmkp-bmenu-mark-bookmark-file-bookmarks, bmkp-bmenu-show-only-bookmark-files,
@@ -1413,7 +1414,7 @@
 ;;     Renamed: bmkp-toggle-autoname-bookmark-set/delete to bmkp-toggle-autonamed-bookmark-set/delete,
 ;;              bmkp-autonamed-bookmarks-alist-only to bmkp-autonamed-this-buffer-alist-only,
 ;;              bmkp-bookmark-autoname-p to bmkp-autonamed-bookmark-for-buffer-p,
-;;     Added: bmkp-autonamed-alist-only, bmkp-non-autonamed-alist-only, bmkp-autonamed-bookmark-p, 
+;;     Added: bmkp-autonamed-alist-only, bmkp-non-autonamed-alist-only, bmkp-autonamed-bookmark-p,
 ;;     bmkp-completing-read-1: Use DEFAULT as default.  Use just (not lax) - no non-t.
 ;;                             Use DEFAULT if empty input only if DEFAULT is non-nil.
 ;;     bmkp-choose-navlist-of-type: Added pseudo-type "any".
@@ -1432,7 +1433,7 @@
 ;;     Wrap all (require '* nil t) in condition-case.
 ;; 2010/06/07 dadams
 ;;     Fix deskstop bookmarks for Emacs < 22.  Protect:
-;;       *-release-lock with fboundp, *-buffer-args-list with boundp, *-dir with Emacs version #, 
+;;       *-release-lock with fboundp, *-buffer-args-list with boundp, *-dir with Emacs version #,
 ;; 2010/05/30 dadams
 ;;     Added: bookmarkp-(next|previous)-bookmark-w32(-repeat).  Bound to C-x p (next|prior).
 ;; 2010/05/29 dadams
@@ -1446,14 +1447,14 @@
 ;;       Bookmark List for Navlist, Set Navlist to Bookmarks of Type,
 ;;       Set Navlist from Bookmark-List Bookmark, Insert Bookmark Contents, Insert Bookmark Location.
 ;;     Added to Bookmark+ menu: Set Navlist *.
-;;     Added to bookmarkp-bmenu-jump-menu: In Navigation List. 
+;;     Added to bookmarkp-bmenu-jump-menu: In Navigation List.
 ;;     Added :enable entries for menu items.
 ;;     Updated bookmark-bmenu-mode doc string for cycling, navlist, and options.
 ;;     Corrected bindings of bookmarkp-jump-in-navlist(-other-window).
 ;; 2010/05/26 dadams
 ;;     Added:
 ;;       bookmarkp-choose-navlist-(from-bookmark-list|of-type), bookmarkp-crosshairs-highlight,
-;;       bookmarkp-cycle(-this-buffer)(-other-window), bookmarkp-delete-bookmarks, 
+;;       bookmarkp-cycle(-this-buffer)(-other-window), bookmarkp-delete-bookmarks,
 ;;       bookmarkp-jump-in-navlist(-other-window), bookmarkp-navlist-bmenu-list,
 ;;       bookmarkp-(next|previous)-bookmark(-this-buffer)(-repeat),
 ;;       bookmarkp-toggle-autoname-bookmark-set/delete, bookmarkp-autoname-bookmark(-function),
@@ -1540,7 +1541,7 @@
 ;;     bookmark-set: Use bookmark-completing-read-lax w/ buffer's bookmarks, not read-from-minibuffer.
 ;;     bookmark-completing-read: Define using bookmarkp-completing-read-1.
 ;; 2010/04/09 dadams
-;;     bookmarkp-edit-bookmark: Update dired-directory property along with filename property. 
+;;     bookmarkp-edit-bookmark: Update dired-directory property along with filename property.
 ;; 2010/03/28 dadams
 ;;     bookmarkp-goto-position: Don't funcall bookmarkp-jump-display-function if it is nil.
 ;; 2010/03/28 dadams
@@ -1811,7 +1812,7 @@
 ;;     Added: bookmarkp-list-defuns-in-commands-file, bookmarkp-remove-dups.
 ;; 2009/12/06 dadams
 ;;     Added: bookmarkp-bmenu-mouse-3-menu (bound to mouse-3),
-;;            bookmarkp-bmenu-(menubar|define-command|sort|show|tags|mark)-menu. 
+;;            bookmarkp-bmenu-(menubar|define-command|sort|show|tags|mark)-menu.
 ;;     bookmark-bmenu-delete: Remove newly flagged bookmark from bookmarkp-bookmark-marked-list.
 ;;     bookmarkp-define-tags-sort-command: Save macroexpanded definition in
 ;;                                         bookmarkp-bmenu-commands-file.
@@ -2336,22 +2337,22 @@
 ;;     Only define bookmark-menu-jump-other-window if < Emacs 22.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; 
+;;
 ;; This program is free software; you can redistribute it and/or
 ;; modify it under the terms of the GNU General Public License as
 ;; published by the Free Software Foundation; either version 3, or
 ;; (at your option) any later version.
-;; 
+;;
 ;; This program is distributed in the hope that it will be useful,
 ;; but WITHOUT ANY WARRANTY; without even the implied warranty of
 ;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
 ;; General Public License for more details.
-;; 
+;;
 ;; You should have received a copy of the GNU General Public License
 ;; along with this program; see the file COPYING.  If not, write to
 ;; the Free Software Foundation, Inc., 51 Franklin Street, Fifth
 ;; Floor, Boston, MA 02110-1301, USA.
-;; 
+;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;;; Code:
