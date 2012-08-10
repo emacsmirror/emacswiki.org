@@ -799,11 +799,11 @@ the first item should come before the second in the menu."
     (delete-item "<f6>" "Delete a menu item"
                  (lambda nil (one-key-delete-menu-item okm-info-alist okm-full-list) t))
     (kill-items "<f7>" "Copy/kill coloured items"
-               (lambda nil (one-key-copy/kill-items okm-info-alist okm-full-list filtered-list)
-                 (setq one-key-menu-call-first-time t) t))
+                (lambda nil (one-key-copy/kill-items okm-info-alist okm-full-list filtered-list)
+                  (setq one-key-menu-call-first-time t) t))
     (yank-items "<C-f7>" "Yank copied items"
                 (lambda nil (one-key-yank-items okm-info-alist okm-full-list filtered-list)
-                 (setq one-key-menu-call-first-time t) t))
+                  (setq one-key-menu-call-first-time t) t))
     (swap-keys "<f8>" "Swap menu item keys"
                (lambda nil (one-key-swap-menu-items okm-info-alist okm-full-list) t))
     (add-item "<f9>" "Add a menu item"
@@ -831,7 +831,7 @@ the first item should come before the second in the menu."
                             (desc (car menuset))
                             (names (cdr menuset)))
                        (message "%S" names) t)))
-    (customize-menusets "C-s" "Customize menu sets"
+    (customize-menusets "C-c" "Customize menu sets"
                         (lambda nil
                           (setq one-key-menu-window-configuration nil)
                           (with-selected-window (previous-window)
@@ -847,7 +847,24 @@ the first item should come before the second in the menu."
                                 (if pos (setf (nth pos okm-menu-alists) (one-key-build-menu-sets-menu-alist))
                                   (setq okm-menu-alists (one-key-build-menu-sets-menu-alist))))
                               (setq one-key-menu-call-first-time t)
-                              (one-key-menu-window-close) t)))
+                              (one-key-menu-window-close) t))
+    (save-menuset save-menu "Save current menu set"
+                  (lambda nil
+                    (let* ((names (mapcar 'car one-key-sets-of-menus-alist)) 
+                           (newname (read-string "Name for menu set: "))
+                           newset oldsets)
+                      (unless (and (member newname names)
+                                   (not (y-or-n-p
+                                         "A menu set with that name already exists, overwrite it?")))
+                        (setq newset (if (y-or-n-p "Include \"menu-sets\" menu?")
+                                         (append (list newname) okm-menu-names)
+                                       (remove "menu-sets" (append (list newname) okm-menu-names))))
+                        (setq oldsets (remove-if (lambda (item) (string= (car item) newname))
+                                                 one-key-sets-of-menus-alist))
+                        (eval `(customize-save-variable 'one-key-sets-of-menus-alist
+                                                        ',(append oldsets (list newset))))))
+                      (setq one-key-menu-call-first-time t)
+                      (one-key-menu-window-close))))
   "An list of special keys; labels, keybindings, descriptions and associated functions.
 Each item in the list contains (in this order):
 
@@ -887,8 +904,8 @@ The keys will be displayed in the one-key help buffer in the order shown when th
 
 (defcustom one-key-menu-sets-special-keybindings
   '(quit-close quit-open toggle-persistence toggle-display next-menu prev-menu up down scroll-down scroll-up show-menusets
-               customize-menusets toggle-help toggle-row/column-order sort-next sort-prev reverse-order limit-items
-               highlight-items change-default-menuset add-menu remove-menu donate report-bug)
+               save-menuset customize-menusets toggle-help toggle-row/column-order sort-next sort-prev reverse-order
+               limit-items highlight-items change-default-menuset add-menu remove-menu donate report-bug)
   "List of special keys to be used for menu-sets menus (see `one-key-default-special-keybindings' for more info)."
   :group 'one-key
   :type '(repeat (symbol :tag "Name" :help-echo "The name/symbol corresponding to the keybinding.")))
