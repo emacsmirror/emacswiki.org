@@ -7,9 +7,9 @@
 ;; Copyright (C) 1995-2012, Drew Adams, all rights reserved.
 ;; Created: Wed Aug  2 11:12:24 1995
 ;; Version: 21.1
-;; Last-Updated: Sat Jun  2 07:05:34 2012 (-0700)
+;; Last-Updated: Fri Aug 10 11:39:50 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 2928
+;;     Update #: 2933
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/start.el
 ;; Keywords: abbrev, internal, local, init
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -19,22 +19,22 @@
 ;;   `apropos', `apropos+', `apropos-fn+var', `assoc',
 ;;   `autofit-frame', `avoid', `bookmark', `bookmark+',
 ;;   `bookmark+-1', `bookmark+-bmu', `bookmark+-key',
-;;   `bookmark+-lit', `bookmark+-mac', `browse-kill-ring',
-;;   `browse-kill-ring+', `buff-menu+', `cl', `color-moccur',
-;;   `compile', `compile+20', `compile-20', `cus-edit', `cus-edit+',
-;;   `cus-face', `cus-load', `cus-start', `custom', `dired',
-;;   `dired+', `dired-aux', `dired-details', `dired-details+',
-;;   `dired-sort-menu', `dired-sort-menu+', `dired-x', `doremi',
-;;   `doremi-cmd', `doremi-frm', `easymenu', `ediff', `ediff+',
-;;   `ediff-diff', `ediff-help', `ediff-init', `ediff-merg',
-;;   `ediff-mult', `ediff-util', `ediff-wind', `em-joc', `emacsbug',
-;;   `eshell-auto', `eyedropper', `facemenu', `facemenu+', `faces',
-;;   `faces+', `ffap', `files+', `find-dired', `find-dired+',
-;;   `find-dired-', `finder', `finder+', `finder-inf', `fit-frame',
-;;   `font-lock', `font-menus', `frame', `frame+', `frame-cmds',
-;;   `frame-fns', `fuzzy-match', `header2', `help+20', `hexrgb',
-;;   `hide-comnt', `highlight', `icomplete', `icomplete+', `imenu',
-;;   `imenu+', `info', `info+', `isearch+', `iso-transl', `lacarte',
+;;   `bookmark+-lit', `browse-kill-ring', `browse-kill-ring+',
+;;   `buff-menu+', `cl', `color-moccur', `compile', `compile+20',
+;;   `compile-20', `cus-edit', `cus-edit+', `cus-face', `cus-load',
+;;   `cus-start', `custom', `dired', `dired+', `dired-aux',
+;;   `dired-details', `dired-details+', `dired-sort-menu',
+;;   `dired-sort-menu+', `dired-x', `doremi', `doremi-cmd',
+;;   `doremi-frm', `easymenu', `ediff', `ediff+', `ediff-diff',
+;;   `ediff-help', `ediff-init', `ediff-merg', `ediff-mult',
+;;   `ediff-util', `ediff-wind', `em-joc', `emacsbug', `eshell-auto',
+;;   `eyedropper', `facemenu', `facemenu+', `faces', `faces+',
+;;   `ffap', `files+', `find-dired', `find-dired+', `find-dired-',
+;;   `finder', `finder+', `finder-inf', `fit-frame', `font-lock',
+;;   `font-menus', `frame', `frame+', `frame-cmds', `frame-fns',
+;;   `fuzzy-match', `header2', `help+20', `hexrgb', `hide-comnt',
+;;   `highlight', `icomplete', `icomplete+', `imenu', `imenu+',
+;;   `info', `info+', `isearch+', `iso-transl', `lacarte',
 ;;   `lib-requires', `lisp-mnt', `loadhist', `local-lpr',
 ;;   `local-ps-print', `lpr', `ls-lisp', `ls-lisp+',
 ;;   `ls-lisp-verbosity', `menu-bar', `menu-bar+', `misc-cmds',
@@ -53,7 +53,7 @@
 ;;
 ;;; Commentary:
 ;;
-;;  Drew Adams' Emacs startup file: requires/autoloads other files.
+;;  Drew Adams's Emacs startup file: requires/autoloads other files.
 ;;
 ;;  This file basically just does `require' and `autoload'.
 ;;
@@ -83,6 +83,8 @@
 ;;
 ;; Change Log:
 ;;
+;; 2012/08/10 dadams
+;;     Updated names of show-wspace commands.
 ;; 2012/06/02 dadams
 ;;     Soft require ucs-cmds.el (Emacs 23+).
 ;; 2012/05/07 dadams
@@ -665,15 +667,15 @@ See the Dired-X Info pages (type \\[info]) for information on this package.")
   "Temporarily display line numbers in left margin of current buffer." t)
 (autoload 'setup-training-cc "training-cc" "Set up for code display with projector." t)
 
-(autoload 'toggle-show-tabs-show-ws "show-wspace" "Toggle highlighting of TABs." t)
-(autoload 'show-ws-toggle-show-tabs "show-wspace" "Toggle highlighting of TABs." t)
-(autoload 'toggle-show-hard-spaces-show-ws "show-wspace"
+(autoload 'toggle-highlight-tabs    "show-wspace" "Toggle highlighting of TABs." t)
+(autoload 'ws-toggle-highlight-tabs "show-wspace" "Toggle highlighting of TABs." t)
+(autoload 'toggle-highlight-hard-spaces "show-wspace"
   "Toggle highlighting of hard SPACE characters." t)
-(autoload 'show-ws-toggle-show-hard-spaces "show-wspace"
+(autoload 'ws-toggle-highlight-hard-spaces "show-wspace"
   "Toggle highlighting of hard SPACE characters." t)
-(autoload 'toggle-show-trailing-whitespace-show-ws "show-wspace"
+(autoload 'toggle-highlight-trailing-whitespace "show-wspace"
   "Toggle highlighting of trailing whitespace." t)
-(autoload 'show-ws-toggle-show-trailing-whitespace "show-wspace"
+(autoload 'ws-toggle-highlight-trailing-whitespace "show-wspace"
   "Toggle highlighting of trailing whitespace." t)
 
 (autoload 'joc-cursor-type-set-hook "cursors" "Make cursor reflect insert/overwrite mode." t)
