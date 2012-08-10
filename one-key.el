@@ -441,7 +441,6 @@
 
 ;;; TODO
 ;;
-;; Conditional menu sets : opened when condition is satisfied (e.g. major-mode)
 ;; New special keybinding for limiting by regexp all items in current menu and all submenus?
 ;; Make functions autoloadable.
 ;; Prompt to save submenus when saving menu. Special keybinding to save all altered menus?
@@ -1584,26 +1583,26 @@ or the list that it points to (if its value is a symbol)."
 
 (defun one-key-get-menu-type (name)
   "Return the element of ``one-key-types-of-menu' corresponding to menu with name NAME, or nil if none exists."
-  (find-if (lambda (x)
-             (let ((one (first x))
-                   (two (second x)))
-               (or (equal one name) 
-                   (and (functionp two)
-                        (funcall two name)))))
-           one-key-types-of-menu))
+  (if name (find-if (lambda (x)
+                      (let ((one (first x))
+                            (two (second x)))
+                        (or (equal one name) 
+                            (and (functionp two)
+                                 (funcall two name)))))
+                    one-key-types-of-menu)))
 
 (defun one-key-get-menus-for-type (name)
   "Given the name of an existing menu or menu type in `one-key-types-of-menu', return associated names and menu alists.
 If no such menu or menu type exists, return nil."
-  (let* ((listname (concat "one-key-menu-" name "-alist"))
-         (type (one-key-get-menu-type name))
-         (func (or (third type)
-                   (and (not type)
-                        (loop for sym being the symbols
-                              for symname = (symbol-name sym)
-                              when (equal listname symname)
-                              return (cons name sym))))))
-    (if (functionp func) (funcall func name) func)))
+  (if name (let* ((listname (concat "one-key-menu-" name "-alist"))
+                  (type (one-key-get-menu-type name))
+                  (func (or (third type)
+                            (and (not type)
+                                 (loop for sym being the symbols
+                                       for symname = (symbol-name sym)
+                                       when (equal listname symname)
+                                       return (cons name sym))))))
+             (if (functionp func) (funcall func name) func))))
 
 (defun one-key-prompt-for-menu nil
   "Prompt the user for a `one-key' menu type, and return menu name(s) and menu alist(s)."
@@ -1675,9 +1674,11 @@ If called interactively a single name will be prompted for."
          (names (mapcan (lambda (x) (let ((y (car x))) (if (stringp y) (list y) y))) pairs))
          (alists (mapcan (lambda (x) (let ((a (car x)) (b (cdr x)))
                                        (if (stringp a) (list b) b))) pairs)))
-    (one-key-menu names alists
-                  :okm-menu-number menu-number
-                  :okm-protect-function protect-function)))
+    (if (and names alists)
+        (one-key-menu names alists
+                      :okm-menu-number menu-number
+                      :okm-protect-function protect-function)
+      (message "Invalid menu names!"))))
 
 (defun one-key-open-menu-set (menuset &optional menu-number protect-function)
   "Open `one-key' menus defined by `one-key' menu set MENUSET.
@@ -1688,7 +1689,9 @@ If called interactively, MENUSET will be prompted for."
                        (completing-read "Menu set: " (mapcar 'car one-key-sets-of-menus-alist)))))
   (let* ((item (assoc menuset one-key-sets-of-menus-alist))
          (names (cdr item)))
-    (one-key-open-menus names menu-number protect-function)))
+    (if item
+        (one-key-open-menus names menu-number protect-function)
+      (message "Invalid menu set name!"))))
 
 (defun one-key-open-default-menu-set nil
   "Open the menu set defined by `one-key-default-menu-set'."
