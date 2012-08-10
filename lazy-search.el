@@ -188,11 +188,19 @@ Otherwise region will be cleared."
   "The `one-key' menu alist for `lazy-search'.")
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; Utilise Function ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+
 (defun lazy-search-menu ()
   "The `one-key' menu for `lazy-search'."
   (interactive)
   (lazy-search-init)
-  (one-key-menu "Lazy Search" lazy-search-menu-alist t t 'lazy-search-abort nil t))
+  (one-key-menu "Lazy Search" 'lazy-search-menu-alist
+                :okm-execute-when-miss-match-p t
+                :okm-miss-match-recursion-p t
+                :okm-match-recursion-p t
+                :okm-protect-function 'lazy-search-abort))
+
+
 
 (defun lazy-search-init ()
   "Lazy search initialization."
@@ -760,7 +768,7 @@ Search backward if option `REVERSE' is `non-nil'."
            (("E" . "Edit Search Object") . lazy-search-edit-object)
            (("." . "Return Mark Init Position") . lazy-search-return-mark-init-position)
            ))
-  (add-to-alist 'lazy-search-menu-alist elt-cons))
+  (one-key-add-to-alist 'lazy-search-menu-alist elt-cons))
 
 (provide 'lazy-search)
 
