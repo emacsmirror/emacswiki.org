@@ -61,6 +61,28 @@ Here's another example, that handles [[Gmane]]'s encrypted addresses (snatched f
            net)))
 </pre>
 
+Some people tend to switch around their first and last names a lot in their from fields, in which case you might try looking up both "First Last" and "Last First":
+<pre>
+(setq bbdb-canonicalize-net-hook
+      '(lambda (net)
+         (let ((buf (get-buffer gnus-article-buffer)))
+           (if buf
+               (save-excursion
+                 (goto-char (point-min))
+                 (if (and (string-match "@public.gmane.org" net)
+                          (re-search-forward (format "[^:,]*<%s>" net) (point-max) t))
+                     (let ((ad (mail-extract-address-components (match-string 0)))
+                           realnet)
+                       (message "Found `%S' in headers! Doing realname search!" ad)
+                       (and (car ad)
+                            (setq realnet (or 
+                                            (bbdb-search-simple (car ad) nil)
+                                            (bbdb-search-simple (combine-and-quote-strings (reverse (split-string-and-unquote (car ad)))) nil)))
+                            (setq realnet (car (bbdb-record-net realnet)))
+                            (setq net realnet))))
+                 net))
+           net)))
+</pre>
 ----
 Here's one that canonicalizes those member@orkut.com addresses out of existence.
 
@@ -72,5 +94,20 @@ Here's one that canonicalizes those member@orkut.com addresses out of existence.
         (t addr)))
 (setq bbdb-canonicalize-net-hook 'sacha/bbdb-canonicalize-net-hook)
 </pre>
+
 ----
+For some reason, bbdb-canonicalise-address doesn't seem to work on my setup (emacs 24), run-hook-with-args always returns nil, so I rewrote it to not use run-hook-with-args:
+
+<pre>
+(defun bbdb-canonicalize-address (net)
+  (if (functionp bbdb-canonicalize-net-hook)
+      (setq bbdb-canonicalize-net-hook (list bbdb-canonicalize-net-hook)))
+
+  (while (not (equal net
+		     (dolist (hook bbdb-canonicalize-net-hook net)
+		       (setq net (funcall hook net))))))
+  net)
+</pre>
+----
+
 CategoryBbdb
