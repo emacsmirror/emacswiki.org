@@ -350,7 +350,7 @@ lists will be returned (as list of lists). These lists can be navigated from the
                                                     :topdir ,topdir
                                                     :visitable ,visitable))
                                        (nummenus (length dir-alists))
-                                       (dirname ,(file-name-as-directory (file-truename item)))
+                                       (dirname (concat "dir:" ,(file-name-as-directory (file-truename item))))
                                        (menunames (one-key-append-numbers-to-menu-name dirname nummenus)))
                                   (one-key-open-submenu menunames dir-alists)))
                            `(lambda nil ; command for files
@@ -393,18 +393,25 @@ If ALLOW-EQUAL is non-nil also return t if DIR is the same dir as TOPDIR."
 (one-key-add-to-alist 'one-key-types-of-menu
                       (list "directory"
                             (lambda (name) ;; this type accepts the path to any existing directory
-                              (and (> (length name) 4)
-                                   (let ((dir (substring name 0 -4)))
-                                     (file-directory-p dir))))
+                              (or (string= name "directory")
+                                  (and (string-match "^dir:\\(.*?\\)\\( ([0-9]+)\\)?$" name)
+                                       (file-directory-p (match-string 1 name)))))
                             (lambda (name)
-                              (let* ((dir (if (file-directory-p name) name
+                              (let* ((match (and (string-match "dir:\\(.*?\\)\\( ([0-9]*)\\)?$" name)
+                                                 (match-string 1 name)))
+                                     (match2 (and match (match-string 2 name)))
+                                     (dir (if (and match (file-directory-p match))
+                                              (if (or (not match2)
+                                                      (string= match2 " (1)"))
+                                                  match)
                                             (if (featurep 'ido)
                                                 (ido-read-directory-name "Directory to use: " default-directory)
                                               (read-directory-name "Directory to use: " default-directory))))
-                                     (menulists (one-key-dir-build-menu-alist dir))
-                                     (nummenus (length menulists))
-                                     (names (one-key-append-numbers-to-menu-name dir nummenus)))
-                                (cons names menulists)))
+                                     (menulists (if dir (one-key-dir-build-menu-alist dir)))
+                                     (nummenus (if dir (length menulists)))
+                                     (names (if dir (one-key-append-numbers-to-menu-name
+                                                     (concat "dir:" dir) nummenus))))
+                                (if dir (cons names menulists))))
                             (lambda nil (format "Files sorted by %s (%s first). Press <f1> for help.\n"
                                                 one-key-dir-current-sort-method
                                                 (if one-key-column-major-order "columns" "rows")))
